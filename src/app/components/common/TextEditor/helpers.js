@@ -1,7 +1,12 @@
 /* eslint-disable @typescript-eslint/camelcase */
 import React from 'react';
 import { isEmpty } from 'ramda';
-import { EditorState, convertToRaw, CompositeDecorator } from 'draft-js';
+import {
+  EditorState,
+  convertToRaw,
+  CompositeDecorator,
+  SelectionState,
+} from 'draft-js';
 import { draftToMarkdown } from 'markdown-draft-js';
 import { createMentionEntities } from './create-mention-entities';
 import { HighlightedElement } from './styled';
@@ -120,6 +125,40 @@ export const createHighlightDecorator = words =>
     },
   ]);
 
+function findLinkEntities(contentBlock, callback, contentState) {
+  contentBlock.findEntityRanges(character => {
+    const entityKey = character.getEntity();
+    return (
+      entityKey !== null &&
+      contentState.getEntity(entityKey).getType() === 'LINK'
+    );
+  }, callback);
+}
+
+const Link = ({ contentState, entityKey, children }) => {
+  const { url } = contentState.getEntity(entityKey).getData();
+  return (
+    <a
+      href={url}
+      style={{
+        link: {
+          color: '#3b5998',
+          textDecoration: 'underline',
+        },
+      }}
+    >
+      {children}
+    </a>
+  );
+};
+
+export const createLinkDecorator = new CompositeDecorator([
+  {
+    strategy: findLinkEntities,
+    component: Link,
+  },
+]);
+
 export const convertToEditorState = state => {
   if (!state || isEmpty(state) || !state.rawText) {
     return EditorState.createEmpty();
@@ -142,4 +181,18 @@ export const isEditorStateEmpty = state => {
     return true;
   }
   return false;
+};
+
+export const moveSelectionToEnd = editorState => {
+  const content = editorState.getCurrentContent();
+  const blockMap = content.getBlockMap();
+  const key = blockMap.last().getKey();
+  const length = blockMap.last().getLength();
+  const selection = new SelectionState({
+    anchorKey: key,
+    anchorOffset: length,
+    focusKey: key,
+    focusOffset: length,
+  });
+  return EditorState.forceSelection(editorState, selection);
 };

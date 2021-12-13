@@ -123,8 +123,15 @@ export const EmojiContainer = styled.div`
     position: fixed;
   }
 `;
+
 export const ToolbarContainer = styled.div`
   box-sizing: border-box;
   margin-top: 0px;
   padding-bottom: 5px;
+`;
+
+export const LinkIconContainer = styled.div`
+  & button {
+    padding-top: 0px;
+  }
 `;

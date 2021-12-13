@@ -1,14 +1,7 @@
-import React, {
-  useCallback,
-  useEffect,
-  useLayoutEffect,
-  useMemo,
-  useRef,
-} from 'react';
+import React, { useCallback, useLayoutEffect, useMemo, useRef } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { EditorState } from 'draft-js';
 import { useBoolean } from 'hooks/useBoolean';
-import usePrevious from 'hooks/use-previous';
 import { updateTaskDetails } from 'actions/task-actions';
 import { checkIfTemplateTask } from 'helpers/task-helpers';
 import CustomTextEditor from 'components/task-drawer/CustomTextEditor/CustomTextEditor';
@@ -21,18 +14,17 @@ import {
   isEditorStateEmpty,
 } from 'components/common/TextEditor/helpers';
 import { selectedTaskSelector } from 'selectors/task-drawer-selectors';
+import debounce from 'lodash.debounce';
 import { DetailsContainer } from './styled';
 
 const TaskDetails = () => {
+  const DEBOUNCE_TIME = 3000;
   const selectedTask = useSelector(selectedTaskSelector);
-  const { taskList } = selectedTask || {};
+  const { taskList, taskIdentifier } = selectedTask || {};
   const { taskListIdentifier } = taskList || {};
-
   const dispatch = useDispatch();
   const detailsReference = useRef(null);
-  const firstRender = useRef(true);
   const [isFocused, setFocused, unsetFocused] = useBoolean();
-  const previousIsFocused = usePrevious(isFocused);
   const [detailsState, setDetailsState] = useMentionsEditorState(
     convertToEditorState({
       rawText: selectedTask?.details,
@@ -41,7 +33,6 @@ const TaskDetails = () => {
       handleRichText: true,
     }),
   );
-
   const isTemplateTask = checkIfTemplateTask(selectedTask);
 
   const isEmptyDetailsState = useMemo(() => isEditorStateEmpty(detailsState), [
@@ -49,7 +40,7 @@ const TaskDetails = () => {
   ]);
 
   useLayoutEffect(() => {
-    if (!firstRender.current && selectedTask) {
+    if (selectedTask) {
       if (selectedTask.details) {
         const newContent = createMentionEntities(
           selectedTask.tokenizedDetails,
@@ -63,36 +54,46 @@ const TaskDetails = () => {
       }
     }
 
-    if (firstRender) firstRender.current = false;
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [selectedTask]);
+  }, [taskIdentifier]);
 
-  useEffect(() => {
-    if (!isFocused && previousIsFocused === true) {
-      const {
-        tokenizedText,
-        rawText,
-        mentions,
-      } = convertFromEditorStateToOutput(detailsState, true);
+  const updateDetails = useCallback(
+    state => {
+      if (selectedTask) {
+        const {
+          tokenizedText,
+          rawText,
+          mentions,
+        } = convertFromEditorStateToOutput(state, true);
 
-      dispatch(
-        updateTaskDetails(selectedTask, {
-          tokenizedDetails: tokenizedText || '',
-          details: rawText || '',
-          taskMentions: [
-            ...(selectedTask.taskMentions || []),
-            ...(mentions || []),
-          ],
-        }),
-      );
-    }
-  }, [detailsState, dispatch, isFocused, previousIsFocused, selectedTask]);
+        dispatch(
+          updateTaskDetails(selectedTask, {
+            tokenizedDetails: tokenizedText || '',
+            details: rawText || '',
+            taskMentions: [
+              ...(selectedTask.taskMentions || []),
+              ...(mentions || []),
+            ],
+          }),
+        );
+      }
+    },
+    [dispatch, selectedTask],
+  );
+
+  const onDebouncedChange = useCallback(
+    debounce(newState => {
+      updateDetails(newState);
+    }, DEBOUNCE_TIME),
+    [updateDetails],
+  );
 
   const onChangeDetailsEditor = useCallback(
     state => {
       setDetailsState(state);
+      onDebouncedChange(state);
     },
-    [setDetailsState],
+    [onDebouncedChange, setDetailsState],
   );
 
   return (

@@ -11,8 +11,8 @@ import createToolbarPlugin, {
   Separator,
 } from '@draft-js-plugins/static-toolbar';
 import StrikethroughSIcon from '@material-ui/icons/StrikethroughS';
-// import createEmojiPlugin from '@draft-js-plugins/emoji';
 import Spacing from 'components/common/Spacing.tsx';
+import { ClickAwayListener } from '@material-ui/core';
 import {
   ItalicButton,
   BoldButton,
@@ -31,24 +31,20 @@ import PatientsSuggestionsPopover from './PatientsSuggestionsPopover/PatientsSug
 import PatientSuggestionItem from './PatientSuggestionItem/PatientSuggestionItem';
 import UserSuggestionItem from './UserSuggestionItem/UserSuggestionItem';
 import '@draft-js-plugins/static-toolbar/lib/plugin.css';
-// import '@draft-js-plugins/emoji/lib/plugin.css';
 import {
   initializeLinkifyPlugin,
   initializeUsersMentionPlugin,
   initializePatientMentionPlugin,
 } from './plugin-config';
-
 import {
   SUGGESTIONS_PLACEHOLDER,
   mapPatientsToSuggestions,
   mapUsersToSuggestions,
   createHighlightDecorator,
+  createLinkDecorator,
 } from './helpers';
-import {
-  StyledEditorContainer,
-  // EmojiContainer,
-  ToolbarContainer,
-} from './styled';
+import { StyledEditorContainer, ToolbarContainer } from './styled';
+import LinkButton from './Link/LinkButton';
 
 const fetchPatientsWithDebounce = debounce(
   (value, setPatientSuggestions, areSuggestionsOpened) => {
@@ -100,18 +96,15 @@ const TextEditor = React.forwardRef(
     outerReference,
   ) => {
     const innerReference = useRef();
+    const StyledEditorContainerReference = useRef();
     const reference = outerReference || innerReference;
     const staticToolbarPlugin = useRef(createToolbarPlugin());
-    // const emojiPlugin = useRef(createEmojiPlugin());
-    // const { EmojiSelect } = emojiPlugin.current;
     const { Toolbar } = staticToolbarPlugin.current;
     const linkifyPlugin = useRef(initializeLinkifyPlugin());
     const usersMentionPlugin = useRef(initializeUsersMentionPlugin());
     const patientMentionPlugin = useRef(initializePatientMentionPlugin());
-
     const [editorState, setEditorState] = useMentionsEditorState(initialState);
     const [isFocused, setIsFocused] = useState(false);
-
     const [usersSuggestions, setUsersSuggestions] = useState([
       [SUGGESTIONS_PLACEHOLDER],
     ]);
@@ -124,7 +117,6 @@ const TextEditor = React.forwardRef(
     ]);
     const [patientSearchValue, setPatientSearchValue] = useState(null);
     const [usersSearchValue, setUsersSearchValue] = useState(null);
-
     const areUsersSuggestionsOpened = useRef(false);
     const arePatientSuggestionsOpened = useRef(false);
 
@@ -135,11 +127,6 @@ const TextEditor = React.forwardRef(
     const currentState = state || editorState;
 
     const customerTypeLabel = getCustomerTypeLabel(currentUser);
-
-    const handleChange = newState => {
-      if (!state) setEditorState(newState);
-      onChange(newState);
-    };
 
     const showPlaceholder = useMemo(() => {
       const rawState = convertToRaw(currentState.getCurrentContent());
@@ -158,14 +145,22 @@ const TextEditor = React.forwardRef(
       setIsFocused(true);
     };
 
-    const handleBlur = () => {
+    const handleClickAway = useCallback(() => {
       setIsFocused(false);
       onBlur(currentState);
-    };
+    }, [currentState, onBlur]);
 
     const clearUsersSuggestions = () => {
       setUsersSuggestions([SUGGESTIONS_PLACEHOLDER]);
     };
+
+    const handleChange = useCallback(
+      newState => {
+        if (!state) setEditorState(newState);
+        onChange(newState);
+      },
+      [onChange, setEditorState, state],
+    );
 
     const fetchUsersWithDebounce = useCallback(
       debounce(value => {
@@ -231,7 +226,6 @@ const TextEditor = React.forwardRef(
       patientMentionPlugin.current,
       linkifyPlugin.current,
       staticToolbarPlugin.current,
-      // emojiPlugin.current,
     ];
 
     const ThroughLineButton = outerProps => {
@@ -248,19 +242,6 @@ const TextEditor = React.forwardRef(
       );
       return <StrikethroughButton {...outerProps} />;
     };
-    // const EmojiiButton = outerProps => {
-    //   const StrikethroughButton = createInlineStyleButton(
-    //     {
-    //       children: (
-    //         <EmojiContainer>
-    //           <EmojiSelect style={{ border: 'none' }} />
-    //         </EmojiContainer>
-    //       ),
-    //     },
-    //     'STRIKETHROUGH',
-    //   );
-    //   return <StrikethroughButton {...outerProps} />;
-    // };
 
     const styleMap = {
       STRIKETHROUGH: {
@@ -271,112 +252,118 @@ const TextEditor = React.forwardRef(
     const separaterClass = separatorStyles();
 
     return (
-      <StyledEditorContainer
-        withEditedLabel={withEditedLabel && readOnly}
-        isReadOnly={readOnly}
-        isOneline={oneline}
-        onClick={focus}
-        minHeight={minHeight}
-      >
-        {showToolbar && isFocused && (
-          <ToolbarContainer>
-            <Toolbar>
-              {externalProps => {
-                const currentProps = {
-                  ...externalProps,
-                  getEditorState: () => currentState,
-                };
-                return (
-                  <div>
-                    <BoldButton {...currentProps} />
-                    <ItalicButton {...currentProps} />
-                    <UnderlineButton {...currentProps} />
-                    <ThroughLineButton {...currentProps} />
-                    <Separator
-                      {...currentProps}
-                      className={separaterClass.root}
-                    />
-                    <UnorderedListButton {...currentProps} />
-                    <OrderedListButton {...currentProps} />
-                    <Separator
-                      {...currentProps}
-                      className={separaterClass.root}
-                    />
-                    <HeadlineOneButton {...currentProps} />
-                    <HeadlineTwoButton {...currentProps} />
-                    <HeadlineThreeButton {...currentProps} />
-                    {/* <EmojiiButton {...currentProps} /> */}
-                  </div>
-                );
+      <ClickAwayListener onClickAway={handleClickAway}>
+        <StyledEditorContainer
+          withEditedLabel={withEditedLabel && readOnly}
+          isReadOnly={readOnly}
+          isOneline={oneline}
+          onClick={focus}
+          minHeight={minHeight}
+          ref={StyledEditorContainerReference}
+        >
+          {showToolbar && isFocused && (
+            <ToolbarContainer>
+              <Toolbar>
+                {externalProps => {
+                  const currentProps = {
+                    ...externalProps,
+                    getEditorState: () => currentState,
+                  };
+                  return (
+                    <div>
+                      <BoldButton {...currentProps} />
+                      <ItalicButton {...currentProps} />
+                      <UnderlineButton {...currentProps} />
+                      <ThroughLineButton {...currentProps} />
+                      <Separator
+                        {...currentProps}
+                        className={separaterClass.root}
+                      />
+                      <UnorderedListButton {...currentProps} />
+                      <OrderedListButton {...currentProps} />
+                      <Separator
+                        {...currentProps}
+                        className={separaterClass.root}
+                      />
+                      <HeadlineOneButton {...currentProps} />
+                      <HeadlineTwoButton {...currentProps} />
+                      <HeadlineThreeButton {...currentProps} />
+                      <Separator
+                        {...currentProps}
+                        className={separaterClass.root}
+                      />
+                      <LinkButton {...currentProps} />
+                    </div>
+                  );
+                }}
+              </Toolbar>
+            </ToolbarContainer>
+          )}
+          <Editor
+            customStyleMap={styleMap}
+            ref={reference}
+            plugins={plugins}
+            editorState={currentState}
+            readOnly={readOnly}
+            placeholder={showPlaceholder ? placeholder : ''}
+            onFocus={handleFocus}
+            onChange={handleChange}
+            keyBindingFn={keyBindingFn}
+            handleKeyCommand={handleKeyCommand}
+            decorators={[
+              ...(highlightedValues?.length > 0
+                ? [createHighlightDecorator(highlightedValues)]
+                : []),
+              createLinkDecorator,
+            ]}
+          />
+          <Spacing horizontal={4} />
+          {!disableMentions && taskListIdentifier && (
+            <UsersMentionSuggestions
+              onSearchChange={onUsersSearchChange}
+              suggestions={usersSuggestions}
+              onAddMention={onAddMention}
+              entryComponent={UserSuggestionItem}
+              popoverComponent={
+                <UsersSuggestionsPopover
+                  searchValue={usersSearchValue}
+                  isFetching={isFetchingUsersSuggestions}
+                />
+              }
+              onOpen={() => {
+                areUsersSuggestionsOpened.current = true;
+                setUsersSearchValue('');
               }}
-            </Toolbar>
-          </ToolbarContainer>
-        )}
-        <Editor
-          customStyleMap={styleMap}
-          ref={reference}
-          plugins={plugins}
-          editorState={currentState}
-          readOnly={readOnly}
-          placeholder={showPlaceholder ? placeholder : ''}
-          onFocus={handleFocus}
-          onBlur={handleBlur}
-          onChange={handleChange}
-          keyBindingFn={keyBindingFn}
-          handleKeyCommand={handleKeyCommand}
-          decorators={
-            highlightedValues?.length > 0
-              ? [createHighlightDecorator(highlightedValues)]
-              : null
-          }
-        />
-
-        <Spacing horizontal={4} />
-        {!disableMentions && taskListIdentifier && (
-          <UsersMentionSuggestions
-            onSearchChange={onUsersSearchChange}
-            suggestions={usersSuggestions}
-            onAddMention={onAddMention}
-            entryComponent={UserSuggestionItem}
-            popoverComponent={
-              <UsersSuggestionsPopover
-                searchValue={usersSearchValue}
-                isFetching={isFetchingUsersSuggestions}
-              />
-            }
-            onOpen={() => {
-              areUsersSuggestionsOpened.current = true;
-              setUsersSearchValue('');
-            }}
-            onClose={() => {
-              areUsersSuggestionsOpened.current = false;
-              setUsersSearchValue(null);
-            }}
-          />
-        )}
-        {!disableMentions && (
-          <PatientsMentionSuggestions
-            onSearchChange={onPatientSearchChange}
-            suggestions={patientSuggestions}
-            onAddMention={onAddMention}
-            entryComponent={PatientSuggestionItem}
-            popoverComponent={
-              <PatientsSuggestionsPopover
-                searchValue={patientSearchValue}
-                customerTypeLabel={customerTypeLabel}
-              />
-            }
-            onOpen={() => {
-              arePatientSuggestionsOpened.current = true;
-              setPatientSearchValue('');
-            }}
-            onClose={() => {
-              arePatientSuggestionsOpened.current = false;
-              setPatientSearchValue(null);
-            }}
-          />
-        )}
-      </StyledEditorContainer>
+              onClose={() => {
+                areUsersSuggestionsOpened.current = false;
+                setUsersSearchValue(null);
+              }}
+            />
+          )}
+          {!disableMentions && (
+            <PatientsMentionSuggestions
+              onSearchChange={onPatientSearchChange}
+              suggestions={patientSuggestions}
+              onAddMention={onAddMention}
+              entryComponent={PatientSuggestionItem}
+              popoverComponent={
+                <PatientsSuggestionsPopover
+                  searchValue={patientSearchValue}
+                  customerTypeLabel={customerTypeLabel}
+                />
+              }
+              onOpen={() => {
+                arePatientSuggestionsOpened.current = true;
+                setPatientSearchValue('');
+              }}
+              onClose={() => {
+                arePatientSuggestionsOpened.current = false;
+                setPatientSearchValue(null);
+              }}
+            />
+          )}
+        </StyledEditorContainer>
+      </ClickAwayListener>
     );
   },
 );
