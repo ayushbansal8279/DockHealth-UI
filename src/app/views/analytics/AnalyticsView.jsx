@@ -69,10 +69,10 @@ const AnalyticsView = () => {
         />
         <Box p={1} />
         <ChartsContainer>
-          <ChartTail name="Tasks Created and Completed">
+          <ChartTail name="Tasks Created and Completed (last 30 days)">
             <TasksStatisticsChart />
           </ChartTail>
-          <ChartTail name="Comments Created">
+          <ChartTail name="Comments Created (last 30 days)">
             <CreatedCommentsChart />
           </ChartTail>
           <ChartTail name="Open Tasks by Status">
