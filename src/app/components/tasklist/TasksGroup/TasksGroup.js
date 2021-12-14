@@ -118,10 +118,10 @@ const TasksGroup = ({
   ]);
 
   useEffect(() => {
-    if (groupTaskCounts > 0 && tasks?.length > 0) {
+    if ((groupTaskCounts > 0 || isCompletedGroup) && tasks?.length > 0) {
       switchOpen(true);
     }
-  }, [groupTaskCounts, tasks, switchOpen]);
+  }, [groupTaskCounts, tasks, isCompletedGroup, switchOpen]);
 
   const onQuickAddTask = useCallback(
     task => {
