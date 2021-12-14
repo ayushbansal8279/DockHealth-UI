@@ -880,10 +880,10 @@ export function addTask(task) {
   };
 }
 
-export function changeTaskPriority(taskIdentifier, priority) {
+export function changeTaskPriority(task, priority) {
   return {
     type: ActionTypes.CHANGE_TASK_PRIORITY,
-    taskIdentifier,
+    task,
     priority,
   };
 }

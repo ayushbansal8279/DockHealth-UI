@@ -247,16 +247,31 @@ function* updateTaskDueDate({ task, dueDate }) {
   }
 }
 
-function* changeTaskPriority({ taskIdentifier, priority }) {
+function* changeTaskPriority({ task, priority }) {
   try {
-    const task = yield call(TaskApi.partialUpdateTask, taskIdentifier, {
-      priority,
-    });
-    yield put(showGlobalAlert(AlertMessages.UPDATED));
-    yield put({ type: ActionTypes.CHANGE_TASK_PRIORITY_SUCCESS, task });
+    const response = yield call(
+      TaskApi.partialUpdateTask,
+      task.taskIdentifier,
+      {
+        priority,
+      },
+    );
+    yield all([
+      put(showGlobalAlert(AlertMessages.UPDATED)),
+      put({
+        type: ActionTypes.CHANGE_TASK_PRIORITY_SUCCESS,
+        task: response,
+      }),
+    ]);
   } catch {
-    yield put({ type: ActionTypes.CHANGE_TASK_PRIORITY_FAILURE });
-    yield put(showGlobalErrorAlert());
+    yield all([
+      put({
+        type: ActionTypes.CHANGE_TASK_PRIORITY_FAILURE,
+        task,
+        priority: task.priority,
+      }),
+      put(showGlobalErrorAlert()),
+    ]);
   }
 }
 

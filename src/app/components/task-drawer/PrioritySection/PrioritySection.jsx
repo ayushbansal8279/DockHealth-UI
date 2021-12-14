@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { selectedTaskSelector } from 'selectors/task-drawer-selectors';
 import Select from 'components/common/Select/Select';
@@ -12,33 +12,25 @@ import { PRIORITY_OPTIONS } from './helpers';
 const PrioritySection = () => {
   const dispatch = useDispatch();
   const selectedTask = useSelector(selectedTaskSelector);
-  const { taskIdentifier, priority } = selectedTask || {};
-
-  const [currentTaskPriority, setCurrentTaskPriority] = useState(null);
-
-  useEffect(() => {
-    setCurrentTaskPriority(priority);
-  }, [priority]);
+  const { priority } = selectedTask || {};
 
   const handleOptionChange = event => {
     const { value } = event.target;
-    onTaskDrawerTaskPriorityChanged(value);
-
     const nextValue = value !== TaskPriority.NONE ? value : null;
 
-    setCurrentTaskPriority(nextValue);
-    dispatch(changeTaskPriority(taskIdentifier, nextValue));
+    onTaskDrawerTaskPriorityChanged(value);
+    dispatch(changeTaskPriority(selectedTask, nextValue));
   };
 
   return (
     <PriorityFieldContainer>
       <PriorityFlagContainer>
-        <PriorityFlag color={getPriorityColor(currentTaskPriority)} />
+        <PriorityFlag color={getPriorityColor(priority)} />
       </PriorityFlagContainer>
       <Select
         label="Priority"
         name="priority"
-        value={currentTaskPriority || TaskPriority.NONE}
+        value={priority || TaskPriority.NONE}
         onChange={handleOptionChange}
         options={PRIORITY_OPTIONS}
       />

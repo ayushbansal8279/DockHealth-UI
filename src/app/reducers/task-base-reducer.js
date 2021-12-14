@@ -25,7 +25,8 @@ import {
   UPDATE_TASK_DUE_DATE_FAILURE,
   UPDATE_TASK_DESCRIPTION_SUCCESS,
   UPDATE_TASK_DETAILS_SUCCESS,
-  CHANGE_TASK_PRIORITY_SUCCESS,
+  CHANGE_TASK_PRIORITY,
+  CHANGE_TASK_PRIORITY_FAILURE,
 } from 'actions/action-types';
 import { checkIfTaskMatchesFilters } from 'helpers/filters-helpers';
 import { checkIfTaskMatchesSearch } from 'helpers/search-helpers';
@@ -225,7 +226,6 @@ const TaskBaseReducer = (state, action, updateStateCallback) => {
 
     case UPDATE_TASK_DESCRIPTION_SUCCESS:
     case UPDATE_TASK_DETAILS_SUCCESS:
-    case CHANGE_TASK_PRIORITY_SUCCESS:
     case UPDATE_TASK_SUCCESS: {
       const { task } = action;
 
@@ -250,6 +250,21 @@ const TaskBaseReducer = (state, action, updateStateCallback) => {
         }
 
         return updateNestedTask({ dueDate }, task.taskIdentifier, t);
+      };
+
+      return updateStateCallback(state, updateTaskFromAction);
+    }
+
+    case CHANGE_TASK_PRIORITY:
+    case CHANGE_TASK_PRIORITY_FAILURE: {
+      const { task, priority } = action;
+
+      const updateTaskFromAction = t => {
+        if (t.taskIdentifier === task.taskIdentifier) {
+          return { ...t, priority };
+        }
+
+        return updateNestedTask({ priority }, task.taskIdentifier, t);
       };
 
       return updateStateCallback(state, updateTaskFromAction);
