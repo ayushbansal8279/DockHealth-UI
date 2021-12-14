@@ -1,8 +1,11 @@
-import React, { useState, useEffect } from 'react';
+/* eslint-disable sonarjs/cognitive-complexity */
+import React, { useState, useEffect, useRef } from 'react';
+import { initializePusher } from 'helpers/pusher-instance';
 import { useDispatch, useSelector } from 'react-redux';
 import { useMount } from 'react-use';
 import { isEmpty } from 'ramda';
 import * as TemplateActions from 'actions/template-actions';
+import * as TaskActions from 'actions/task-actions';
 import {
   clearDashboardState,
   initializeDashboardState,
@@ -31,8 +34,10 @@ import DashboardHeader from './DashboardHeader/DashboardHeader';
 import newUserTourHooks from './new-user-tour-hooks';
 
 const DashboardView = ({ tabName }) => {
+  const pusher = useRef(initializePusher());
   const dispatch = useDispatch();
   const currentUser = useSelector(userProfileSelector);
+  const { userIdentifier: currentUserIdentifier } = currentUser || {};
   const [
     firstCreatedUserListIdentifier,
     setFirstCreatedUserListIdentifier,
@@ -62,6 +67,41 @@ const DashboardView = ({ tabName }) => {
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
+
+  useEffect(() => {
+    // eslint-disable-next-line unicorn/consistent-function-scoping
+    const callback = ({ eventType, task }) => {
+      if (
+        task.assignedToUsers?.some(
+          ({ userIdentifier }) => userIdentifier === currentUserIdentifier,
+        )
+      ) {
+        if (
+          eventType?.startsWith('CREATE_TASK') ||
+          eventType?.startsWith('DUPLICATE_TASK')
+        ) {
+          dispatch(TaskActions.insertCreatedTask(task.taskIdentifier));
+        } else {
+          dispatch(TaskActions.refreshTask(task.taskIdentifier));
+        }
+      }
+    };
+
+    const channelName = `private-dock-user-channel-${currentUserIdentifier}`;
+    let ch;
+
+    if (currentUserIdentifier) {
+      ch = pusher.current.subscribe(channelName);
+      ch.bind('task-update', callback);
+    }
+
+    return () => {
+      if (ch) {
+        ch.unbind('task-update', callback);
+        ch.unsubscribe(channelName);
+      }
+    };
+  }, [currentUserIdentifier, dispatch]);
 
   useEffect(() => {
     dispatch(TaskListActions.getTaskListForUser());

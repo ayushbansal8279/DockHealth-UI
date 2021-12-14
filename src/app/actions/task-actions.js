@@ -608,20 +608,19 @@ export const removeTaskAttachment = (
       throw error;
     });
 
-export const refreshTask = taskIdentifier => dispatch =>
-  TaskApi.getTaskDetails(taskIdentifier)
-    .then(task => {
-      // explicitly mark task as updated so we can show the flag
-      task.updated = true; // eslint-disable-line no-param-reassign
-      dispatch({
-        type: ActionTypes.UPDATE_TASK_SUCCESS,
-        task,
-      });
-      return task;
-    })
-    .catch(error => {
-      throw error;
-    });
+export function refreshTask(taskIdentifier) {
+  return {
+    type: ActionTypes.REFRESH_TASK,
+    taskIdentifier,
+  };
+}
+
+export function insertCreatedTask(taskIdentifier) {
+  return {
+    type: ActionTypes.INSERT_CREATED_TASK,
+    taskIdentifier,
+  };
+}
 
 export const refreshAndOpenAsCurrentTask = selectedTask => dispatch =>
   TaskApi.getTaskDetails(selectedTask.taskIdentifier)

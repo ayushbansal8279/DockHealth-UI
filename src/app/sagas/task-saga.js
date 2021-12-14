@@ -275,6 +275,26 @@ function* changeTaskPriority({ task, priority }) {
   }
 }
 
+function* refreshTask({ taskIdentifier }) {
+  try {
+    const task = yield call(TaskApi.getTaskDetails, taskIdentifier);
+
+    yield put({ type: ActionTypes.REFRESH_TASK_SUCCESS, task });
+  } catch {
+    yield put({ type: ActionTypes.REFRESH_TASK_FAILURE });
+  }
+}
+
+function* insertCreatedTask({ taskIdentifier }) {
+  try {
+    const task = yield call(TaskApi.getTaskDetails, taskIdentifier);
+
+    yield put({ type: ActionTypes.INSERT_CREATED_TASK_SUCCESS, task });
+  } catch {
+    yield put({ type: ActionTypes.INSERT_CREATED_TASK_FAILURE });
+  }
+}
+
 export default function* watchTask() {
   yield takeEvery(ActionTypes.REORDER_SUBTASKS, reorderSubtasks);
   yield takeEvery(ActionTypes.ADD_TASK_DEPENDENCY_LINK, addTaskDependencyLink);
@@ -288,4 +308,6 @@ export default function* watchTask() {
   yield takeEvery(ActionTypes.UPDATE_TASK_DETAILS, updateTaskDetails);
   yield takeEvery(ActionTypes.UPDATE_TASK_DUE_DATE, updateTaskDueDate);
   yield takeEvery(ActionTypes.CHANGE_TASK_PRIORITY, changeTaskPriority);
+  yield takeEvery(ActionTypes.REFRESH_TASK, refreshTask);
+  yield takeEvery(ActionTypes.INSERT_CREATED_TASK, insertCreatedTask);
 }

@@ -29,6 +29,7 @@ import {
   TOGGLE_PATIENT_COMPLETE_TASKS_VISIBLE,
   MOVE_TEMPLATE_BUNDLE_SUCCESS,
   UPDATE_TEMPLATE_BUNDLE_FAILURE,
+  INSERT_CREATED_TASK_SUCCESS,
 } from 'actions/action-types';
 import { TaskGroupType, TaskItemType } from 'helpers/task-helpers';
 import { mapWithRemove } from 'helpers/utility-functions';
@@ -348,6 +349,36 @@ export default function(state = INITIAL_STATE, action = {}) {
               : note,
           ),
         },
+      };
+    }
+
+    case INSERT_CREATED_TASK_SUCCESS: {
+      const { task } = action;
+      const { parentTaskIdentifier, patient, taskList } = task;
+      const currentPatientIdentifier = state.patientIdentifier;
+
+      if (
+        !currentPatientIdentifier ||
+        patient?.patientIdentifier !== currentPatientIdentifier ||
+        !!parentTaskIdentifier
+      ) {
+        return { ...state };
+      }
+
+      return {
+        ...state,
+        lists: state.lists?.map(l => {
+          if (
+            l.taskListIdentifier === taskList.taskListIdentifier &&
+            !l.tasks?.some(
+              ({ taskIdentifier }) => taskIdentifier === task.taskIdentifier,
+            )
+          ) {
+            return { ...l, tasks: [task, ...(l.tasks || [])] };
+          }
+
+          return l;
+        }),
       };
     }
 

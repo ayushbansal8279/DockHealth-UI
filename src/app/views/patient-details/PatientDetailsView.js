@@ -1,5 +1,11 @@
 /* eslint-disable sonarjs/cognitive-complexity */
-import React, { useCallback, useEffect, useMemo, useState } from 'react';
+import React, {
+  useCallback,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from 'react';
 import { Tabs, Grid } from '@material-ui/core';
 import { compose } from 'ramda';
 import { useDispatch, useSelector } from 'react-redux';
@@ -12,6 +18,7 @@ import {
   Redirect,
   useParams,
 } from 'react-router-dom';
+import { initializePusher } from 'helpers/pusher-instance';
 import { isFetchingPatientsListsSelector } from 'selectors/patients-selectors';
 import {
   availableFiltersInInMegaFilterSelector,
@@ -29,6 +36,7 @@ import Spacing from 'components/common/Spacing';
 import MegaFilter from 'components/tasklist/MegaFilter/MegaFilter';
 import GenericHeader from 'components/template/GenericHeader/GenericHeader';
 import Search from 'components/task-view/Search/Search';
+import * as TaskActions from 'actions/task-actions';
 import { setHeader } from 'actions/template-actions';
 import { getPatientFilterOptions } from 'actions/patient-details-actions';
 import { getCustomerTypeLabel } from 'helpers/customer-type-helper';
@@ -82,9 +90,11 @@ const PatientDetailsView = () => {
   const { path, url } = useRouteMatch();
   const { pathname } = useLocation();
   const currentUser = useSelector(userProfileSelector);
+  const { userIdentifier: currentUserIdentifier } = currentUser || {};
   const isFetchingLists = useSelector(isFetchingPatientsListsSelector);
   const filters = useSelector(availableFiltersInInMegaFilterSelector);
   const selectedFilters = useSelector(selectedFiltersInMegaFilterSelector);
+  const pusher = useRef(initializePusher());
 
   useEffect(() => {
     (async () => {
@@ -104,6 +114,35 @@ const PatientDetailsView = () => {
     })();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
+
+  useEffect(() => {
+    // eslint-disable-next-line unicorn/consistent-function-scoping
+    const callback = ({ eventType, task }) => {
+      if (
+        eventType?.startsWith('CREATE_TASK') ||
+        eventType?.startsWith('DUPLICATE_TASK')
+      ) {
+        dispatch(TaskActions.insertCreatedTask(task.taskIdentifier));
+      } else {
+        dispatch(TaskActions.refreshTask(task.taskIdentifier));
+      }
+    };
+
+    const channelName = `private-dock-user-channel-${currentUserIdentifier}`;
+    let ch;
+
+    if (currentUserIdentifier) {
+      ch = pusher.current.subscribe(channelName);
+      ch.bind('task-update', callback);
+    }
+
+    return () => {
+      if (ch) {
+        ch.unbind('task-update', callback);
+        ch.unsubscribe(channelName);
+      }
+    };
+  }, [currentUserIdentifier, dispatch]);
 
   const activeTabPath = useMemo(() => {
     // eslint-disable-next-line no-restricted-syntax

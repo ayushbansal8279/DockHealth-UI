@@ -1,4 +1,5 @@
 import * as ActionTypes from 'actions/action-types';
+import { getGroupByDueDate } from 'helpers/dashboard-helpers';
 import { mapWithRemove } from 'helpers/utility-functions';
 import TaskBaseReducer from './task-base-reducer';
 
@@ -154,6 +155,34 @@ const DashboardTasksReducer = (state = initialState, action) => {
       return {
         ...state,
         tasksList: newTasksList,
+      };
+    }
+
+    case ActionTypes.INSERT_CREATED_TASK_SUCCESS: {
+      if (!state.tabName) {
+        return { ...state };
+      }
+
+      const { task } = action;
+      const groupType = getGroupByDueDate(task.dueDate, state.tabName);
+
+      return {
+        ...state,
+        tasksList: state.tasksList?.map(g => {
+          if (
+            g.groupType === groupType &&
+            !g.tasks.some(
+              ({ taskIdentifier }) => taskIdentifier === task.taskIdentifier,
+            )
+          ) {
+            return {
+              ...g,
+              tasks: [task, ...(g.tasks || [])],
+            };
+          }
+
+          return g;
+        }),
       };
     }
 

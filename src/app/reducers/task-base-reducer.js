@@ -27,6 +27,7 @@ import {
   UPDATE_TASK_DETAILS_SUCCESS,
   CHANGE_TASK_PRIORITY,
   CHANGE_TASK_PRIORITY_FAILURE,
+  REFRESH_TASK_SUCCESS,
 } from 'actions/action-types';
 import { checkIfTaskMatchesFilters } from 'helpers/filters-helpers';
 import { checkIfTaskMatchesSearch } from 'helpers/search-helpers';
@@ -226,7 +227,8 @@ const TaskBaseReducer = (state, action, updateStateCallback) => {
 
     case UPDATE_TASK_DESCRIPTION_SUCCESS:
     case UPDATE_TASK_DETAILS_SUCCESS:
-    case UPDATE_TASK_SUCCESS: {
+    case UPDATE_TASK_SUCCESS:
+    case REFRESH_TASK_SUCCESS: {
       const { task } = action;
 
       const updateTaskFromAction = t => {
