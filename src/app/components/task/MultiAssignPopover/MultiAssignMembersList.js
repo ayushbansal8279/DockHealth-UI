@@ -63,12 +63,21 @@ const MultiAssignMembersList = ({
     () =>
       enableLazyLoading
         ? membersOptions
-        : membersOptions?.filter(
-            ({ name, identifier }) =>
+        : membersOptions?.filter(({ name, identifier }) => {
+            const isSelected = selectedMembersIdentifiers.includes(identifier);
+            return (
+              !isSelected &&
               name.toLowerCase().startsWith(searchValue.toLowerCase()) &&
-              identifier !== currentUser?.identifier,
-          ),
-    [enableLazyLoading, membersOptions, currentUser, searchValue],
+              identifier !== currentUser?.identifier
+            );
+          }),
+    [
+      enableLazyLoading,
+      membersOptions,
+      selectedMembersIdentifiers,
+      searchValue,
+      currentUser,
+    ],
   );
 
   const filteredSelectedMembers = useMemo(
@@ -360,12 +369,7 @@ const MultiAssignMembersList = ({
         {displayUsersList && (
           <ListContentSection>
             {!isFetchingMembers ? (
-              filteredMembers?.map(member => {
-                const isSelected = selectedMembersIdentifiers.includes(
-                  member?.identifier,
-                );
-                return renderSelectOption(member, isSelected);
-              })
+              filteredMembers?.map(member => renderSelectOption(member, false))
             ) : (
               <>
                 {new Array(4).fill().map((_, index) => (
