@@ -247,6 +247,19 @@ function* updateTaskDueDate({ task, dueDate }) {
   }
 }
 
+function* changeTaskPriority({ taskIdentifier, priority }) {
+  try {
+    const task = yield call(TaskApi.partialUpdateTask, taskIdentifier, {
+      priority,
+    });
+    yield put(showGlobalAlert(AlertMessages.UPDATED));
+    yield put({ type: ActionTypes.CHANGE_TASK_PRIORITY_SUCCESS, task });
+  } catch {
+    yield put({ type: ActionTypes.CHANGE_TASK_PRIORITY_FAILURE });
+    yield put(showGlobalErrorAlert());
+  }
+}
+
 export default function* watchTask() {
   yield takeEvery(ActionTypes.REORDER_SUBTASKS, reorderSubtasks);
   yield takeEvery(ActionTypes.ADD_TASK_DEPENDENCY_LINK, addTaskDependencyLink);
@@ -259,4 +272,5 @@ export default function* watchTask() {
   yield takeEvery(ActionTypes.UPDATE_TASK_DESCRIPTION, updateTaskDescription);
   yield takeEvery(ActionTypes.UPDATE_TASK_DETAILS, updateTaskDetails);
   yield takeEvery(ActionTypes.UPDATE_TASK_DUE_DATE, updateTaskDueDate);
+  yield takeEvery(ActionTypes.CHANGE_TASK_PRIORITY, changeTaskPriority);
 }

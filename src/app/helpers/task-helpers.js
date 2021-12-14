@@ -13,6 +13,7 @@ import {
   isNil,
   unless,
 } from 'ramda';
+import palette from 'styles/palette';
 
 /* eslint-disable import/prefer-default-export */
 export const TaskStatus = {
@@ -24,6 +25,27 @@ export const TaskItemType = {
   BUNDLE: 'BUNDLE',
   TASK: 'TASK',
 };
+
+export const TaskPriority = {
+  NONE: 'NONE',
+  LOW: 'LOW',
+  MEDIUM: 'MEDIUM',
+  HIGH: 'HIGH',
+};
+
+export function getPriorityColor(priority) {
+  switch (priority) {
+    case TaskPriority.HIGH:
+      return palette.tomatoInYoFace;
+    case TaskPriority.MEDIUM:
+      return palette.orangeJulius;
+    case TaskPriority.LOW:
+      return palette.accentYellow;
+    case TaskPriority.NONE:
+    default:
+      return 'transparent';
+  }
+}
 
 export const TaskGroupType = {
   TASKLIST_DEFAULT: 'TASKLIST_DEFAULT',

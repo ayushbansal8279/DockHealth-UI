@@ -540,35 +540,6 @@ export const updateWorkflowStatus = (task, workflowStatus) => dispatch => {
     });
 };
 
-export function toggleTaskPriority(task, priority) {
-  return dispatch => {
-    const { newPriority, apiEndpoint } =
-      !priority ||
-      priority === 'NONE' ||
-      priority === 'LOW' ||
-      priority === null
-        ? { newPriority: 'LOW', apiEndpoint: 'markLowPriority' }
-        : { newPriority: 'HIGH', apiEndpoint: 'markHighPriority' };
-
-    return TaskApi[apiEndpoint](task.taskIdentifier, priority)
-      .then(() => {
-        const newTask = task;
-        newTask.priority = newPriority;
-        dispatch({
-          type: ActionTypes.UPDATE_TASK_SUCCESS,
-          task: newTask,
-        });
-
-        dispatch(AlertActions.showGlobalAlert(AlertMessages.UPDATED));
-
-        return task;
-      })
-      .catch(error => {
-        throw error;
-      });
-  };
-}
-
 export function assignOrReassignTask(task, assignedToUserIdentifier) {
   return dispatch =>
     TaskApi.assignOrReassignTask(task, assignedToUserIdentifier)
@@ -906,5 +877,13 @@ export function addTask(task) {
   return {
     type: ActionTypes.ADD_TASK,
     task,
+  };
+}
+
+export function changeTaskPriority(taskIdentifier, priority) {
+  return {
+    type: ActionTypes.CHANGE_TASK_PRIORITY,
+    taskIdentifier,
+    priority,
   };
 }

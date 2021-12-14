@@ -69,7 +69,7 @@ export const PrioritySwitch = styled.button`
 export const PriorityIndicator = styled.div`
   width: 2px;
   height: 100%;
-  background-color: red;
+  background-color: ${({ color }) => color};
   position: absolute;
   left: 0;
 `;
