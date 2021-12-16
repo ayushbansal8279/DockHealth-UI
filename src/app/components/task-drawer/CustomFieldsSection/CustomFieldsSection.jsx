@@ -42,9 +42,7 @@ const CustomFieldsSection = ({ taskCustomReference }) => {
   const onBlur = useCallback(
     ({ taskMetaData }) => {
       if (taskMetaData.length > 0) {
-        dispatch(
-          partialUpdateTask(task?.identifier, { ...task, taskMetaData }),
-        );
+        dispatch(partialUpdateTask(task?.identifier, { taskMetaData }));
         dispatch(showGlobalAlert(AlertMessages.UPDATED));
       }
     },
@@ -87,6 +85,7 @@ const CustomFieldsSection = ({ taskCustomReference }) => {
                 onBlur={handleSubmit(compose(onBlur, formatMetaDataOutput))}
                 fieldsGroupKey="taskMetaData"
                 isFocused={isFocused}
+                taskIdentifier={task.identifier}
               />
             </Grid>
           </HidableContainer>
@@ -99,6 +98,7 @@ const CustomFieldsSection = ({ taskCustomReference }) => {
       getValues,
       handleSubmit,
       onBlur,
+      task,
       taskCustomReference,
       taskDrawerFocusField,
     ],

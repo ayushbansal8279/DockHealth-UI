@@ -26,7 +26,6 @@ import { DescriptionTextContainer, DescriptionError } from './styled';
 
 const TaskDescription = () => {
   const selectedTask = useSelector(selectedTaskSelector);
-
   const {
     description,
     tokenizedDescription,

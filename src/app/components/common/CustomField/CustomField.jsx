@@ -4,6 +4,7 @@ import FormInput from 'components/common/Input/FormInput';
 import FormSelect from 'components/common/Select/FormSelect';
 import DateInput from 'components/common/DateInput/DateInput';
 import { useFormContext } from 'react-hook-form';
+import CustomFieldTextEditor from './CustomFieldTextEditor';
 
 const BOOL_SELECT_OPTIONS = [
   {
@@ -24,9 +25,11 @@ const CustomField = ({
   fieldsGroupKey,
   isFocused,
   scrollToRef,
+  taskIdentifier,
 }) => {
   const { identifier, name, placeholder, fieldType, options } = field;
   const inputReference = useRef(null);
+  const { current } = inputReference || {};
   const componentReference = useRef(null);
   const { setValue } = useFormContext();
 
@@ -47,29 +50,28 @@ const CustomField = ({
   }, []);
 
   useLayoutEffect(() => {
-    if (inputReference.current && isFocused) {
+    if (current && isFocused) {
       setTimeout(() => {
-        inputReference.current.focus();
+        current.focus();
         if (scrollToRef?.current)
           scrollToRef.current.scrollIntoView({
             block: 'end',
           });
       }, 500);
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [isFocused, inputReference?.current]);
+  }, [current, fieldName, isFocused, scrollToRef]);
 
   switch (fieldType) {
     case FieldType.TEXT:
       return (
-        <FormInput
+        <CustomFieldTextEditor
           readOnly={readOnly}
           label={name}
           name={fieldName}
           placeholder={placeholder}
-          onBlur={onBlur}
+          taskIdentifier={taskIdentifier}
+          fieldsGroupKey={fieldsGroupKey}
           inputRef={inputReference}
-          ref={componentReference}
         />
       );
     case FieldType.LONG_TEXT:

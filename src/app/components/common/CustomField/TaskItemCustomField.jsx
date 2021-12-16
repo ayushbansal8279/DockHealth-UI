@@ -6,19 +6,24 @@ import TaskItemDropdown from 'components/task/StandardTaskItem/customFieldsTaskI
 import TaskItemText from 'components/task/StandardTaskItem/customFieldsTaskItemComponents/TaskItemText';
 import TaskItemLongText from 'components/task/StandardTaskItem/customFieldsTaskItemComponents/TaskItemLongText';
 import TaskItemNumber from 'components/task/StandardTaskItem/customFieldsTaskItemComponents/TaskItemNumber';
+import { useDispatch } from 'react-redux';
+import { openDrawer } from 'actions/task-drawer-actions';
+import { storeAsCurrentTask } from 'actions/task-actions';
 
 const TaskItemCustomField = ({
   readOnly,
   field,
   customFieldValue,
   onChange,
-  onClick,
+  task,
 }) => {
   const { value } = customFieldValue || {};
+  const dispatch = useDispatch();
 
   const handleClick = useCallback(() => {
-    onClick(field);
-  }, [field, onClick]);
+    dispatch(openDrawer(field.identifier));
+    dispatch(storeAsCurrentTask(task));
+  }, [dispatch, field.identifier, task]);
 
   switch (field.fieldType) {
     case FieldType.BOOL:

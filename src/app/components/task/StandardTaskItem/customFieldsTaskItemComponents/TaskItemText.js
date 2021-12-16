@@ -1,11 +1,21 @@
 import React from 'react';
 import Tooltip from 'components/common/Tooltip/Tooltip';
 import { CustomFieldWidthConfig, FieldType } from 'helpers/field-type-helpers';
-import { trunc } from 'helpers/utility-functions';
-import { Typography } from '@material-ui/core';
+import TextEditor from 'components/common/TextEditor/TextEditor';
+import { convertToEditorState } from 'components/common/TextEditor/helpers';
+import { useMentionsEditorState } from 'components/common/TextEditor/use-mentions-editor-state';
 import { StandardTaskItemCell } from './styled';
 
 const TaskItemText = ({ value = '', onClick }) => {
+  const [state, setState] = useMentionsEditorState(
+    convertToEditorState({
+      rawText: value,
+      tokenizedText: value,
+      mentions: [],
+      handleRichText: false,
+    }),
+  );
+
   return (
     <StandardTaskItemCell
       paddingLeft="tiny"
@@ -18,7 +28,15 @@ const TaskItemText = ({ value = '', onClick }) => {
       onClick={onClick}
     >
       <Tooltip placement="top" title={value}>
-        <Typography>{trunc(value, 15)}</Typography>
+        <TextEditor
+          readOnly
+          state={state}
+          onChange={data => {
+            setState(data);
+          }}
+          disableMentions
+          oneline
+        />
       </Tooltip>
     </StandardTaskItemCell>
   );
