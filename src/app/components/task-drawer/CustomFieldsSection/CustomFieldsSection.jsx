@@ -39,7 +39,7 @@ const CustomFieldsSection = ({ taskCustomReference }) => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [dispatch, task?.identifier]);
 
-  const onBlur = useCallback(
+  const updateCustomFields = useCallback(
     ({ taskMetaData }) => {
       if (taskMetaData.length > 0) {
         dispatch(partialUpdateTask(task?.identifier, { taskMetaData }));
@@ -82,7 +82,13 @@ const CustomFieldsSection = ({ taskCustomReference }) => {
                 scrollToRef={taskCustomReference}
                 readOnly={false}
                 field={field}
-                onBlur={handleSubmit(compose(onBlur, formatMetaDataOutput))}
+                onBlur={(data, wasChanged = false) => {
+                  if (wasChanged) {
+                    handleSubmit(
+                      compose(updateCustomFields, formatMetaDataOutput),
+                    )(data);
+                  }
+                }}
                 fieldsGroupKey="taskMetaData"
                 isFocused={isFocused}
                 taskIdentifier={task.identifier}
@@ -97,7 +103,7 @@ const CustomFieldsSection = ({ taskCustomReference }) => {
       formMethods,
       getValues,
       handleSubmit,
-      onBlur,
+      updateCustomFields,
       task,
       taskCustomReference,
       taskDrawerFocusField,

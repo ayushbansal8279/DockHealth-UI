@@ -147,9 +147,10 @@ const TextEditor = React.forwardRef(
     };
 
     const handleClickAway = useCallback(() => {
-      setIsFocused(false);
-      onBlur(currentState);
-    }, [currentState, onBlur]);
+      if (isFocused) {
+        setIsFocused(false);
+      }
+    }, [isFocused]);
 
     const clearUsersSuggestions = () => {
       setUsersSuggestions([SUGGESTIONS_PLACEHOLDER]);
@@ -313,6 +314,7 @@ const TextEditor = React.forwardRef(
             readOnly={readOnly}
             placeholder={showPlaceholder ? placeholder : ''}
             onFocus={handleFocus}
+            onBlur={onBlur}
             onChange={handleChange}
             keyBindingFn={keyBindingFn}
             handleKeyCommand={handleKeyCommand}

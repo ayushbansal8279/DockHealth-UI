@@ -139,13 +139,16 @@ const Link = ({ contentState, entityKey, children }) => {
   const { url } = contentState.getEntity(entityKey).getData();
   return (
     <a
+      onClick={() => window.open(url, '_blank')}
       href={url}
+      target="_blank"
       style={{
         link: {
           color: '#3b5998',
           textDecoration: 'underline',
         },
       }}
+      rel="noreferrer"
     >
       {children}
     </a>
