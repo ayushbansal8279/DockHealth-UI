@@ -39,6 +39,8 @@ import {
 import { compose, identity, differenceWith, eqBy, prop } from 'ramda';
 import { SortOrderType } from 'helpers/sorting-helper';
 import moment from 'moment';
+import ViewLayout from 'components/template/ViewLayout/ViewLayout';
+import BasicLayoutHeader from 'components/template/BasicLayoutHeader/BasicLayoutHeader';
 import Search from 'components/task-view/Search/Search';
 import debounce from 'lodash.debounce';
 import usePrevious from 'hooks/use-previous';
@@ -193,113 +195,115 @@ const TaskTemplateView = () => {
   };
 
   return (
-    <TaskTemplateBulkEditContainer
-      optionsConfig={BULK_EDIT_OPTIONS_CONFIG}
-      refreshTasks={() =>
-        dispatch(TaskTemplateActions.reloadOpenedTemplateTasks())
-      }
-    >
-      <TaskTemplateViewContainer>
-        {isBannerOpen && (
-          <>
-            <TaskTemplateBanner
-              firstTemplate={taskTemplates?.length <= 2}
-              onCreateTemplate={handleCreateTemplate}
-              onClose={() => {
-                setIsBannerOpen(false);
-                localStorageHelper.setItem(
-                  TASK_TEMPLATES_BANNER_CLOSED_STORAGE_KEY,
-                  true,
-                );
-              }}
-            />
-            <Spacing vertical={4} />
-          </>
-        )}
-        <TemplateBreadcrumbs
-          onRootClick={handleBreadcrumbsRootClick}
-          onChildClick={handleBreadcrumbsChildClick}
-        />
-        <Spacing vertical={4} />
-        <SearchAndFilterContainer>
-          <SearchWrapper fullWidth={isSearchFocused}>
-            <Search
-              fullWidth
-              noBackground
-              value={searchPhrase}
-              onFocus={() => setSearchFocused(true)}
-              onBlur={() => setSearchFocused(false)}
-              onChange={onSearchHandle}
-              placeholder={
-                isSearchFocused ? 'Search Workflows and Folders' : 'Search'
-              }
-            />
-          </SearchWrapper>
-          <Grid container justify="flex-end" alignItems="center">
-            <AddButton onClick={handleCreateTemplate}>Add Workflow</AddButton>
-            {smartFlowAvailable && (
-              <AddButton onClick={handleCreateSmartFlow}>
-                Add SmartFlow
+    <ViewLayout header={<BasicLayoutHeader title="Workflow Library" />}>
+      <TaskTemplateBulkEditContainer
+        optionsConfig={BULK_EDIT_OPTIONS_CONFIG}
+        refreshTasks={() =>
+          dispatch(TaskTemplateActions.reloadOpenedTemplateTasks())
+        }
+      >
+        <TaskTemplateViewContainer>
+          {isBannerOpen && (
+            <>
+              <TaskTemplateBanner
+                firstTemplate={taskTemplates?.length <= 2}
+                onCreateTemplate={handleCreateTemplate}
+                onClose={() => {
+                  setIsBannerOpen(false);
+                  localStorageHelper.setItem(
+                    TASK_TEMPLATES_BANNER_CLOSED_STORAGE_KEY,
+                    true,
+                  );
+                }}
+              />
+              <Spacing vertical={4} />
+            </>
+          )}
+          <TemplateBreadcrumbs
+            onRootClick={handleBreadcrumbsRootClick}
+            onChildClick={handleBreadcrumbsChildClick}
+          />
+          <Spacing vertical={4} />
+          <SearchAndFilterContainer>
+            <SearchWrapper fullWidth={isSearchFocused}>
+              <Search
+                fullWidth
+                noBackground
+                value={searchPhrase}
+                onFocus={() => setSearchFocused(true)}
+                onBlur={() => setSearchFocused(false)}
+                onChange={onSearchHandle}
+                placeholder={
+                  isSearchFocused ? 'Search Workflows and Folders' : 'Search'
+                }
+              />
+            </SearchWrapper>
+            <Grid container justify="flex-end" alignItems="center">
+              <AddButton onClick={handleCreateTemplate}>Add Workflow</AddButton>
+              {smartFlowAvailable && (
+                <AddButton onClick={handleCreateSmartFlow}>
+                  Add SmartFlow
+                </AddButton>
+              )}
+              <AddButton onClick={handleCreateTemplateFolder}>
+                Add Folder
               </AddButton>
-            )}
-            <AddButton onClick={handleCreateTemplateFolder}>
-              Add Folder
-            </AddButton>
-            <ViewTypeSwitch value={viewType} onChange={setViewType} />
-          </Grid>
-        </SearchAndFilterContainer>
-        <Spacing vertical={4} />
-        <TasksTemplatesHeader sort={sort} onSortChange={handleSortChange} />
-        {!isFetchingTaskTemplates ? (
-          <>
-            {currentSortMethodWithOrder(folders).map(template => (
-              <TaskTemplateFolder
-                highlighted={
-                  newlyCreatedTemplateId === template.taskTemplateIdentifier
-                }
-                key={template.taskTemplateIdentifier}
-                template={template}
-                onClick={() =>
-                  handleGoToFolder(
-                    template.taskTemplateIdentifier,
-                    template.name,
-                  )
-                }
-              >
-                <TaskTemplateHeader
-                  createdBy={template.creator.userName}
-                  createdDate={moment(template.createdDateTime).format(
-                    'MM/DD/YYYY',
-                  )}
-                  taskTemplate={template}
-                />
-              </TaskTemplateFolder>
-            ))}
-            {currentSortMethodWithOrder(templates).map(template => (
-              <TaskTemplate
-                highlighted={
-                  newlyCreatedTemplateId === template.taskTemplateIdentifier
-                }
-                key={template.taskTemplateIdentifier}
-                template={template}
-                isFullView={viewType === ViewType.FULL_VIEW}
-              >
-                <TaskTemplateHeader
-                  createdBy={template.creator.userName}
-                  createdDate={moment(template.createdDateTime).format(
-                    'MM/DD/YYYY',
-                  )}
-                  taskTemplate={template}
-                />
-              </TaskTemplate>
-            ))}
-          </>
-        ) : (
-          <TaskTemplatesLoader />
-        )}
-        <TaskDrawer />
-      </TaskTemplateViewContainer>
-    </TaskTemplateBulkEditContainer>
+              <ViewTypeSwitch value={viewType} onChange={setViewType} />
+            </Grid>
+          </SearchAndFilterContainer>
+          <Spacing vertical={4} />
+          <TasksTemplatesHeader sort={sort} onSortChange={handleSortChange} />
+          {!isFetchingTaskTemplates ? (
+            <>
+              {currentSortMethodWithOrder(folders).map(template => (
+                <TaskTemplateFolder
+                  highlighted={
+                    newlyCreatedTemplateId === template.taskTemplateIdentifier
+                  }
+                  key={template.taskTemplateIdentifier}
+                  template={template}
+                  onClick={() =>
+                    handleGoToFolder(
+                      template.taskTemplateIdentifier,
+                      template.name,
+                    )
+                  }
+                >
+                  <TaskTemplateHeader
+                    createdBy={template.creator.userName}
+                    createdDate={moment(template.createdDateTime).format(
+                      'MM/DD/YYYY',
+                    )}
+                    taskTemplate={template}
+                  />
+                </TaskTemplateFolder>
+              ))}
+              {currentSortMethodWithOrder(templates).map(template => (
+                <TaskTemplate
+                  highlighted={
+                    newlyCreatedTemplateId === template.taskTemplateIdentifier
+                  }
+                  key={template.taskTemplateIdentifier}
+                  template={template}
+                  isFullView={viewType === ViewType.FULL_VIEW}
+                >
+                  <TaskTemplateHeader
+                    createdBy={template.creator.userName}
+                    createdDate={moment(template.createdDateTime).format(
+                      'MM/DD/YYYY',
+                    )}
+                    taskTemplate={template}
+                  />
+                </TaskTemplate>
+              ))}
+            </>
+          ) : (
+            <TaskTemplatesLoader />
+          )}
+          <TaskDrawer />
+        </TaskTemplateViewContainer>
+      </TaskTemplateBulkEditContainer>
+    </ViewLayout>
   );
 };
 

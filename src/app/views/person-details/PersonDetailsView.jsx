@@ -2,16 +2,16 @@
 import React, { useState, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useParams } from 'react-router-dom';
-import { setHeader } from 'actions/template-actions';
 import * as PersonDetailsActions from 'actions/person-details-actions';
 import * as TaskActions from 'actions/task-actions';
 import * as MegaFilterActions from 'actions/mega-filter-actions';
 import * as ModalActions from 'modal/actions';
 import { userProfileSelector } from 'selectors/user-selectors';
-import GenericHeader from 'components/template/GenericHeader/GenericHeader';
 import { onSearchChanged } from 'helpers/ga-event-helper';
 import { TaskListTabName } from 'helpers/tasklist-helpers';
 import { TaskItemColumn, TaskStatus } from 'helpers/task-helpers';
+import ViewLayout from 'components/template/ViewLayout/ViewLayout';
+import BasicLayoutHeader from 'components/template/BasicLayoutHeader/BasicLayoutHeader';
 import TaskDrawer from 'components/task-drawer/TaskDrawer/TaskDrawer';
 import { TASK_DISAPPEAR_DELAY } from 'helpers/task-update-helper';
 import OpenedTasksView from './PersonDetailsOpenedTasksContainer/PersonDetailsOpenedTasks';
@@ -33,17 +33,6 @@ const PersonDetailsView = () => {
   const currentUser = useSelector(userProfileSelector);
 
   useEffect(() => {
-    dispatch(
-      setHeader({
-        layout: [
-          {
-            key: 'generic-header',
-            component: <GenericHeader>People</GenericHeader>,
-          },
-        ],
-      }),
-    );
-
     return () => {
       dispatch(PersonDetailsActions.clearUserDetailsState());
       dispatch(MegaFilterActions.clearFiltersForMegaFilter());
@@ -121,7 +110,7 @@ const PersonDetailsView = () => {
 
   return (
     <>
-      <div>
+      <ViewLayout header={<BasicLayoutHeader title="People" />}>
         <PersonInfoPanel />
         <TaskViewContainer>
           <UserTasksToolbar
@@ -148,7 +137,7 @@ const PersonDetailsView = () => {
             />
           )}
         </TaskViewContainer>
-      </div>
+      </ViewLayout>
       <TaskDrawer
         onTaskUpdate={refreshTabAfterTaskUpdate}
         onTaskDelete={handleTaskDelete}

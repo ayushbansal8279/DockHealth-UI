@@ -18,7 +18,9 @@ import { userProfileSelector } from 'selectors/user-selectors';
 import * as TaskDrawerActions from 'actions/task-drawer-actions';
 import * as TaskActions from 'actions/task-actions';
 import { GlobalSearchSagaActions } from 'sagas/global-search-saga';
+import BasicLayoutHeader from 'components/template/BasicLayoutHeader/BasicLayoutHeader';
 import GroupedListSkeletonLoader from 'components/tasklist/GroupedListSkeletonLoader/GroupedListSkeletonLoader';
+import ViewLayout from 'components/template/ViewLayout/ViewLayout';
 import TaskDrawer from 'components/task-drawer/TaskDrawer/TaskDrawer';
 import {
   GlobalSearchWrapper,
@@ -85,41 +87,45 @@ const GlobalSearchView = ({
   };
 
   return (
-    <GlobalSearchWrapper>
-      <GlobalSearchStickyHeader>
-        <GlobalSearchHeader />
-      </GlobalSearchStickyHeader>
-      <ViewSidePadding>
-        {isLoadingView ? (
-          <GroupedListSkeletonLoader />
-        ) : (
-          <>
-            <Spacing vertical={5} />
-            {!isEmpty(lists)
-              ? lists?.map(list =>
-                  list.tasks?.length > 0 ? (
-                    <GlobalSearchList
-                      list={list}
-                      currentUser={currentUser}
-                      selectedTask={selectedTask}
-                      openDrawer={openDrawer}
-                      storeAsCurrentTask={storeAsCurrentTask}
-                      toggleTaskStatus={toggleTaskStatus}
-                      onTaskUpdate={updateTask}
-                      updateWorkflowStatus={setWorkflowStatus}
-                      highlightedValue={searchValue}
-                      isCompletedList={isSearchingCompletedTasks}
-                      getMoreTasksForTaskList={getMoreTasksForTaskList}
-                      isLoadingMore={isLoadingMore}
-                    />
-                  ) : null,
-                )
-              : renderEmptyState()}
-          </>
-        )}
-      </ViewSidePadding>
-      <TaskDrawer />
-    </GlobalSearchWrapper>
+    <>
+      <ViewLayout header={<BasicLayoutHeader title="Search" />}>
+        <GlobalSearchWrapper>
+          <GlobalSearchStickyHeader>
+            <GlobalSearchHeader />
+          </GlobalSearchStickyHeader>
+          <ViewSidePadding>
+            {isLoadingView ? (
+              <GroupedListSkeletonLoader />
+            ) : (
+              <>
+                <Spacing vertical={5} />
+                {!isEmpty(lists)
+                  ? lists?.map(list =>
+                      list.tasks?.length > 0 ? (
+                        <GlobalSearchList
+                          list={list}
+                          currentUser={currentUser}
+                          selectedTask={selectedTask}
+                          openDrawer={openDrawer}
+                          storeAsCurrentTask={storeAsCurrentTask}
+                          toggleTaskStatus={toggleTaskStatus}
+                          onTaskUpdate={updateTask}
+                          updateWorkflowStatus={setWorkflowStatus}
+                          highlightedValue={searchValue}
+                          isCompletedList={isSearchingCompletedTasks}
+                          getMoreTasksForTaskList={getMoreTasksForTaskList}
+                          isLoadingMore={isLoadingMore}
+                        />
+                      ) : null,
+                    )
+                  : renderEmptyState()}
+              </>
+            )}
+          </ViewSidePadding>
+          <TaskDrawer />
+        </GlobalSearchWrapper>
+      </ViewLayout>
+    </>
   );
 };
 

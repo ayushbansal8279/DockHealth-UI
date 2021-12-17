@@ -34,12 +34,10 @@ export const Title = styled(H1)`
 
 export const DocumentsViewContainer = styled(Grid)`
   && {
+    flex: 1;
     background-color: ${palette.white};
-    left: 0;
     min-height: 100%;
     padding: 2.625rem 4.625rem;
-    position: absolute;
-    top: 0;
     width: 100%;
   }
 `;

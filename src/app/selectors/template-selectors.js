@@ -2,9 +2,9 @@ import { createSelector } from 'reselect';
 
 export const templateStateSelector = state => state.templateState;
 
-export const isHeaderVisibleSelector = createSelector(
+export const isNavbarVisibleSelector = createSelector(
   templateStateSelector,
-  ({ isHeaderVisible }) => isHeaderVisible,
+  ({ isNavbarVisible }) => isNavbarVisible,
 );
 
 export const subMenuKeySelector = createSelector(

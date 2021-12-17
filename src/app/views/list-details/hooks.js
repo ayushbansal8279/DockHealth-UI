@@ -1,12 +1,6 @@
 /* eslint-disable unicorn/prevent-abbreviations */
 /* eslint-disable react-hooks/rules-of-hooks */
-import React, {
-  useEffect,
-  useCallback,
-  useState,
-  useMemo,
-  useRef,
-} from 'react';
+import { useEffect, useCallback, useState, useMemo, useRef } from 'react';
 import { useLocation } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { isEmpty, isNil, move } from 'ramda';
@@ -44,14 +38,12 @@ import { userProfileSelector } from 'selectors/user-selectors';
 import { selectedFiltersInMegaFilterSelector } from 'selectors/mega-filter-selectors';
 
 import { useColumnsConfig } from 'context-api/ColumnsConfigContext';
-import * as TemplateActions from 'actions/template-actions';
 import * as TaskActions from 'actions/task-actions';
 import * as ListDetailsActions from 'actions/list-details-actions';
 import { ListDetailsSagaActions } from 'sagas/list-details-saga';
 import * as ModalActions from 'modal/actions';
 import { getListCustomFields } from 'actions/list-details-actions';
 import * as UserAuthApi from 'api/user-auth-api';
-import ListSelectHeader from 'components/task-view/ListSelectHeader/ListSelectHeader';
 import { getViewTypeFromQueryString } from 'helpers/view-type-helper';
 
 const LIST_DETAILS_FIRST_TIME_KEY = 'LIST_DETAILS_FIRST_TIME_KEY';
@@ -61,7 +53,6 @@ const initializeListDetailsViewHooks = (match, history) => {
   const viewType = getViewTypeFromQueryString(search);
   const sort = useSelector(taskDetailsSortSelector);
   const taskList = useSelector(currentTaskListSelector);
-  const { listName, listDescription } = taskList || {};
   const { columnsConfig, setColumnsConfig } = useColumnsConfig();
   const currentUser = useSelector(userProfileSelector);
   const { userIdentifier: currentUserIdentifier } = currentUser || {};
@@ -79,7 +70,6 @@ const initializeListDetailsViewHooks = (match, history) => {
 
   const actions = useActions(TaskActions);
   const listDetailsSagaActions = useActions(ListDetailsSagaActions);
-  const templateActions = useActions(TemplateActions);
   const modalActions = useActions(ModalActions);
   const listDetailsActions = useActions(ListDetailsActions);
 
@@ -113,27 +103,6 @@ const initializeListDetailsViewHooks = (match, history) => {
       dispatch(getListCustomFields(taskListIdentifierParam));
     }
   }, [dispatch, taskListIdentifierParam]);
-
-  useEffect(() => {
-    if (listName) {
-      const headerComponent = (
-        <ListSelectHeader
-          listName={listName}
-          listDescription={listDescription}
-        />
-      );
-
-      templateActions.setHeader({
-        layout: [
-          {
-            key: 'header',
-            component: headerComponent,
-            xs: 12,
-          },
-        ],
-      });
-    }
-  }, [listName, listDescription, templateActions]);
 
   const searchTasks = useCallback(
     searchQuery => {

@@ -6,14 +6,14 @@ import { checkIfUserIsOrganizationAdmin } from 'helpers/user-helper';
 import FilterButton from 'components/filter/FilterButton/FilterButton';
 import { userProfileSelector } from 'selectors/user-selectors';
 import { analyticsFiltersActiveSelector } from 'selectors/analytics-selectors';
-import { setHeader, unsetHeader } from 'actions/template-actions';
 import { clearAnalyticsFilter } from 'actions/analytics-actions';
-import GenericHeader from 'components/template/GenericHeader/GenericHeader';
 import FilterPopover from 'components/filter/FilterPopover/FilterPopover';
+import ViewLayout from 'components/template/ViewLayout/ViewLayout';
+import BasicLayoutHeader from 'components/template/BasicLayoutHeader/BasicLayoutHeader';
 import { useDispatch, useSelector } from 'react-redux';
 import ChartTail from './ChartTail/ChartTail';
 import AnalyticsFilters from './AnalyticsFilters/AnalyticsFilters';
-import { ViewContainer, ChartsContainer } from './styled';
+import { Container, ChartsContainer } from './styled';
 import WorkflowStatusStatisticsChart from './WorkflowStatusStatisticsChart/WorkflowStatusStatisticsChart';
 import AssignedToStatisticsChart from './AssignedToStatisticsChart/AssignedToStatisticsChart';
 import TaskLabelStatisticsChart from './TaskLabelStatisticsChart/TaskLabelStatisticsChart';
@@ -30,28 +30,6 @@ const AnalyticsView = () => {
   const { 0: filterOpen, 2: closeFilter, 3: toggleFilter } = useBoolean(false);
 
   useEffect(() => {
-    dispatch(
-      setHeader({
-        layout: [
-          {
-            key: 'dashboard',
-            component: (
-              <>
-                <GenericHeader>Analytics</GenericHeader>
-              </>
-            ),
-          },
-        ],
-      }),
-    );
-
-    return () => {
-      dispatch(unsetHeader);
-    };
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
-
-  useEffect(() => {
     if (!checkIfUserIsOrganizationAdmin(userProfile)) {
       history.push('/');
     }
@@ -59,8 +37,8 @@ const AnalyticsView = () => {
   }, [userProfile]);
 
   return (
-    <>
-      <ViewContainer>
+    <ViewLayout header={<BasicLayoutHeader title="Analytics" />}>
+      <Container>
         <FilterButton
           ref={filterButtonReference}
           active={analyticsFiltersActive}
@@ -88,7 +66,7 @@ const AnalyticsView = () => {
             <PatientLabelStatisticsChart />
           </ChartTail>
         </ChartsContainer>
-      </ViewContainer>
+      </Container>
       <FilterPopover
         anchorEl={filterButtonReference.current}
         open={filterOpen}
@@ -96,7 +74,7 @@ const AnalyticsView = () => {
       >
         <AnalyticsFilters />
       </FilterPopover>
-    </>
+    </ViewLayout>
   );
 };
 

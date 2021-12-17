@@ -4,18 +4,17 @@ import { useHistory } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { useMount } from 'react-use';
 import { SUBS_SETTINGS_PATH } from 'routing/helpers/paths';
-import { setHeader } from 'actions/template-actions';
 import Button from 'components/common/Button/Button';
 import {
   getBillingDetails,
   getBillingEstimate,
   getOrganizationById,
 } from 'actions/organization-actions';
-import GenericHeader from 'components/template/GenericHeader/GenericHeader';
+import ViewLayout from 'components/template/ViewLayout/ViewLayout';
+import LayoutHeader from 'components/template/LayoutHeader/LayoutHeader';
 import {
   H2,
   SubscriptionPaymentViewContainer,
-  SubscriptionPaymentViewOuterContainer,
 } from './SubscriptionPaymentView.Components';
 
 const SubscriptionPaymentFinishedView = () => {
@@ -27,18 +26,6 @@ const SubscriptionPaymentFinishedView = () => {
   );
 
   useMount(() => {
-    dispatch(
-      setHeader({
-        layout: [
-          {
-            key: 'title',
-            component: <GenericHeader />,
-            alignItems: 'center',
-          },
-        ],
-      }),
-    );
-
     getOrganizationById({ organizationIdentifier })(dispatch);
     getBillingDetails({ organizationIdentifier })(dispatch);
     getBillingEstimate()(dispatch);
@@ -46,7 +33,7 @@ const SubscriptionPaymentFinishedView = () => {
   });
 
   return (
-    <SubscriptionPaymentViewOuterContainer>
+    <ViewLayout header={<LayoutHeader />}>
       <SubscriptionPaymentViewContainer>
         <Grid container spacing={4}>
           <Grid item sm={12}>
@@ -65,7 +52,7 @@ const SubscriptionPaymentFinishedView = () => {
           </Grid>
         </Grid>
       </SubscriptionPaymentViewContainer>
-    </SubscriptionPaymentViewOuterContainer>
+    </ViewLayout>
   );
 };
 

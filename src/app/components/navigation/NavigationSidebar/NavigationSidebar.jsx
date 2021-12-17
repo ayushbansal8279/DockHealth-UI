@@ -10,9 +10,11 @@ import {
   USERS_SETTINGS_PATH,
 } from 'routing/helpers/paths';
 import Spacing from 'components/common/Spacing.tsx';
+import { userProfileSelector } from 'selectors/user-selectors';
 import { UserOrganizationRole } from 'helpers/user-helper';
 import { getCustomerTypeLabel } from 'helpers/customer-type-helper';
 import { capitalize } from 'helpers/capitalize';
+import { selectCurrentOrganization } from 'api/organization-api';
 import { subMenuKeySelector } from 'selectors/template-selectors';
 import * as TemplateActions from 'actions/template-actions';
 import SearchIcon from 'img/navigation/SearchIcon';
@@ -66,18 +68,24 @@ const SubmenuComponents = {
   [SubmenuKey.EDUCATION_CENTER]: EducationCenterSubmenu,
 };
 
-const NavigationSidebar = ({
-  currentUser,
-  currentOrganization,
-  selectCurrentOrganization,
-}) => {
+const NavigationSidebar = () => {
   const history = useHistory();
   const dispatch = useDispatch();
+  const currentUser = useSelector(userProfileSelector);
   const openedSubMenuKey = useSelector(subMenuKeySelector);
 
   const { orgUserRole } = currentUser || {};
   const isUserAdmin = ['ADMIN', 'OWNER'].includes(orgUserRole);
   const isGuest = orgUserRole === UserOrganizationRole.GUEST;
+
+  const currentOrganizationIdentifier = sessionStorage.getItem(
+    'currentOrganizationIdentifier',
+  );
+  const { organizationProfileColor, organizationInitials } =
+    currentUser?.userOrganizations?.find(
+      ({ organizationIdentifier }) =>
+        organizationIdentifier === currentOrganizationIdentifier,
+    ) || {};
 
   const {
     orgMenuReference,
@@ -93,9 +101,6 @@ const NavigationSidebar = ({
   const SubMenuComponent = openedSubMenuKey
     ? SubmenuComponents[openedSubMenuKey]
     : null;
-
-  const { organizationProfileColor, organizationInitials } =
-    currentOrganization || {};
 
   const customerTypeLabel = getCustomerTypeLabel(currentUser);
   const customerTypeLabelCapitalized = capitalize(customerTypeLabel);

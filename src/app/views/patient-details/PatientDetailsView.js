@@ -34,10 +34,10 @@ import { onSearchChanged } from 'helpers/ga-event-helper';
 import { RouteWrapper } from 'routing/components';
 import Spacing from 'components/common/Spacing';
 import MegaFilter from 'components/tasklist/MegaFilter/MegaFilter';
-import GenericHeader from 'components/template/GenericHeader/GenericHeader';
 import Search from 'components/task-view/Search/Search';
 import * as TaskActions from 'actions/task-actions';
-import { setHeader } from 'actions/template-actions';
+import BasicLayoutHeader from 'components/template/BasicLayoutHeader/BasicLayoutHeader';
+import ViewLayout from 'components/template/ViewLayout/ViewLayout';
 import { getPatientFilterOptions } from 'actions/patient-details-actions';
 import { getCustomerTypeLabel } from 'helpers/customer-type-helper';
 import { capitalize } from 'helpers/capitalize';
@@ -95,6 +95,7 @@ const PatientDetailsView = () => {
   const filters = useSelector(availableFiltersInInMegaFilterSelector);
   const selectedFilters = useSelector(selectedFiltersInMegaFilterSelector);
   const pusher = useRef(initializePusher());
+  const customerTypeLabel = getCustomerTypeLabel(currentUser);
 
   useEffect(() => {
     (async () => {
@@ -155,26 +156,6 @@ const PatientDetailsView = () => {
     return DEFAULT_TAB.mainPath;
   }, [pathname]);
 
-  useEffect(() => {
-    const customerTypeLabel = getCustomerTypeLabel(currentUser);
-
-    dispatch(
-      setHeader({
-        layout: [
-          {
-            key: 'patients-header',
-            component: (
-              <>
-                <GenericHeader>{capitalize(customerTypeLabel)}</GenericHeader>
-              </>
-            ),
-          },
-        ],
-      }),
-    );
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
-
   const handleTabChange = (_, newTabValue) => {
     history.push(`${url}/${newTabValue}`);
   };
@@ -196,7 +177,9 @@ const PatientDetailsView = () => {
   const handleFilterChange = compose(dispatch, patientTasksFilterChange);
 
   return (
-    <div>
+    <ViewLayout
+      header={<BasicLayoutHeader title={capitalize(customerTypeLabel)} />}
+    >
       <ColumnsConfigProvider>
         <PatientDetailsHeader />
         <PatientDetailsTabsContainer>
@@ -275,7 +258,7 @@ const PatientDetailsView = () => {
           </Switch>
         </PatientDetailsContainer>
       </ColumnsConfigProvider>
-    </div>
+    </ViewLayout>
   );
 };
 
