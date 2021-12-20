@@ -76,6 +76,7 @@ export function applyTemplate({
   taskListIdentifier,
   taskGroupIdentifier,
   patientIdentifier,
+  unassign = false,
 }) {
   return {
     type: ActionTypes.APPLY_TEMPLATE,
@@ -83,5 +84,8 @@ export function applyTemplate({
     taskListIdentifier,
     taskGroupIdentifier,
     patientIdentifier,
+    options: {
+      unassign,
+    },
   };
 }
