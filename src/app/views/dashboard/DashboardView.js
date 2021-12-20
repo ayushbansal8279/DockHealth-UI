@@ -158,8 +158,8 @@ const DashboardView = ({ tabName }) => {
                         }),
                       );
                     }}
-                    acceptInvitation={() =>
-                      dispatch(TaskListActions.acceptInviteToTaskList())
+                    acceptInvitation={list =>
+                      dispatch(TaskListActions.acceptInviteToTaskList(list))
                     }
                   />
                 </DashboardFirstVisitViewWrapper>
