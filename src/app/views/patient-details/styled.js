@@ -15,11 +15,6 @@ export const PatientDetailsContainer = styled.div`
   background-color: ${palette.coolGrey4};
 `;
 
-export const SearchWrapper = styled.div`
-  width: ${({ fullWidth }) => (fullWidth ? 374 : 115)}px;
-  transition: width 0.25s ease-out;
-`;
-
 export const MainTab = styled(Tab)`
   .MuiTab-wrapper {
     font-weight: ${fontWeights.bold};

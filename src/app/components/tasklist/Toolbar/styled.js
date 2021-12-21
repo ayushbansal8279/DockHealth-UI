@@ -60,18 +60,6 @@ export const LeftContainer = styled.div`
   align-items: center;
 `;
 
-export const SearchWrapper = styled.div`
-  width: ${({ fullWidth }) => (fullWidth ? 374 : 115)}px;
-  transition: width 0.25s ease-out;
-`;
-
-export const MemberWrapper = styled.div`
-  display: flex;
-  flex-direction: row;
-
-  ${({ isPending }) => isPending && `opacity: 0.7;`}
-`;
-
 export const ListDescription = styled.div`
   padding-left: ${spacing.giga};
   padding-right: 72px;

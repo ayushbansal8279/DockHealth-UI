@@ -42,7 +42,7 @@ export const StickyHeader = styled.div`
   top: 0;
   z-index: 100;
   background-color: ${palette.white};
-  padding: 0 55px ${spacing.small} 55px;
+  padding: 0 32px ${spacing.small} 32px;
 `;
 
 export const DashboardTasksGroupContainer = styled.div`
@@ -57,8 +57,8 @@ export const DashboardTasksGroupList = styled.div`
   display: flex;
   flex-direction: column;
   margin-top: ${spacing.small};
-  margin-left: 55px;
-  margin-right: 55px;
+  margin-left: 32px;
+  margin-right: 32px;
 `;
 
 export const DroppableBox = styled.div`

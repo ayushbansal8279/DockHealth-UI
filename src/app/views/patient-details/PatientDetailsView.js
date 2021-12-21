@@ -25,18 +25,16 @@ import {
   selectedFiltersInMegaFilterSelector,
 } from 'selectors/mega-filter-selectors';
 import { userProfileSelector } from 'selectors/user-selectors';
-import { useBoolean } from 'hooks/useBoolean';
 import {
   setPatientTaskSearch,
   patientTasksFilterChange,
 } from 'sagas/patient-details-saga';
 import { onSearchChanged } from 'helpers/ga-event-helper';
 import { RouteWrapper } from 'routing/components';
-import Spacing from 'components/common/Spacing';
 import MegaFilter from 'components/tasklist/MegaFilter/MegaFilter';
-import Search from 'components/task-view/Search/Search';
 import * as TaskActions from 'actions/task-actions';
-import BasicLayoutHeader from 'components/template/BasicLayoutHeader/BasicLayoutHeader';
+import LayoutHeader from 'components/template/LayoutHeader/LayoutHeader';
+import HeaderSearch from 'components/template/HeaderSearch/HeaderSearch';
 import ViewLayout from 'components/template/ViewLayout/ViewLayout';
 import { getPatientFilterOptions } from 'actions/patient-details-actions';
 import { getCustomerTypeLabel } from 'helpers/customer-type-helper';
@@ -47,7 +45,6 @@ import PatientDetailsHeader from './PatientDetailsHeader/PatientDetailsHeader';
 import {
   PatientDetailsContainer,
   PatientDetailsTabsContainer,
-  SearchWrapper,
   MainTab,
 } from './styled';
 import PatientTasksList from './PatientTasksList/PatientTasksList';
@@ -79,11 +76,6 @@ const DEFAULT_TAB = TABS_CONFIG[0];
 
 const PatientDetailsView = () => {
   const { patientIdentifier } = useParams();
-  const [
-    isSearchFocused,
-    setIsSearchFocused,
-    unsetIsSearchFocused,
-  ] = useBoolean(false);
   const [searchValue, setSearchValue] = useState('');
   const dispatch = useDispatch();
   const history = useHistory();
@@ -168,8 +160,7 @@ const PatientDetailsView = () => {
     [setPatientTaskSearch, onSearchChanged],
   );
 
-  const handleSearchValueChange = event => {
-    const newValue = event.target?.value;
+  const handleSearchValueChange = newValue => {
     setSearchValue(newValue);
     onSearchChangedWithDebounce(newValue);
   };
@@ -178,56 +169,34 @@ const PatientDetailsView = () => {
 
   return (
     <ViewLayout
-      header={<BasicLayoutHeader title={capitalize(customerTypeLabel)} />}
+      header={
+        <LayoutHeader>
+          <LayoutHeader.Title title={capitalize(customerTypeLabel)} />
+          <LayoutHeader.Spacer />
+          <HeaderSearch
+            value={searchValue}
+            onChange={handleSearchValueChange}
+          />
+          <LayoutHeader.Spacer />
+          <MegaFilter
+            filters={filters}
+            selectedFilters={selectedFilters}
+            onSelectFilters={handleFilterChange}
+            isFetching={isFetchingLists}
+            onOpen={() => dispatch(getPatientFilterOptions(patientIdentifier))}
+          />
+        </LayoutHeader>
+      }
     >
       <ColumnsConfigProvider>
         <PatientDetailsHeader />
         <PatientDetailsTabsContainer>
-          <Grid container justify="space-between">
-            <Grid item xs={8}>
-              <Tabs value={activeTabPath} onChange={handleTabChange}>
-                {TABS_CONFIG.map(t => (
-                  <MainTab
-                    key={t.mainPath}
-                    value={t.mainPath}
-                    label={t.label}
-                  />
-                ))}
-              </Tabs>
-            </Grid>
-            {activeTabPath === 'tasks' && (
-              <Grid
-                container
-                item
-                xs={4}
-                justify="flex-end"
-                alignItems="center"
-              >
-                <MegaFilter
-                  filters={filters}
-                  selectedFilters={selectedFilters}
-                  onSelectFilters={handleFilterChange}
-                  isFetching={isFetchingLists}
-                  onOpen={() =>
-                    dispatch(getPatientFilterOptions(patientIdentifier))
-                  }
-                />
-                <Spacing horizontal={5} />
-                <SearchWrapper fullWidth={isSearchFocused || searchValue}>
-                  <Search
-                    fullWidth
-                    noBackground
-                    value={searchValue}
-                    onFocus={setIsSearchFocused}
-                    onBlur={unsetIsSearchFocused}
-                    onChange={handleSearchValueChange}
-                    placeholder={
-                      isSearchFocused ? 'Search Tasks and Comments' : 'Search'
-                    }
-                  />
-                </SearchWrapper>
-              </Grid>
-            )}
+          <Grid container>
+            <Tabs value={activeTabPath} onChange={handleTabChange}>
+              {TABS_CONFIG.map(t => (
+                <MainTab key={t.mainPath} value={t.mainPath} label={t.label} />
+              ))}
+            </Tabs>
           </Grid>
         </PatientDetailsTabsContainer>
         <PatientDetailsContainer>

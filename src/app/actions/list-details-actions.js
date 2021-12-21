@@ -37,7 +37,7 @@ export function sortListDetailsTasks(key, order) {
 
 export function filterListDetailsTasks(filters) {
   return {
-    type: ActionTypes.FILTER__LIST_DETAILS_TASKS,
+    type: ActionTypes.FILTER_LIST_DETAILS_TASKS,
     payload: {
       filters,
     },

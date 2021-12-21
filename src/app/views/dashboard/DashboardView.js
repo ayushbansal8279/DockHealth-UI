@@ -23,7 +23,6 @@ import DashboardFirstVisitView from './DashboardFirstVisitView/DashboardFirstVis
 import {
   DashboardViewWrapper,
   DashboardContentWrapper,
-  DashboardHeaderContainer,
   DashboardFirstVisitViewWrapper,
   DashboardScrollableList,
   DashboardListWrapper,
@@ -170,14 +169,7 @@ const DashboardView = ({ tabName }) => {
             {openConfetti && <StyledConfetti recycle={false} />}
             <DashboardScrollableList>
               <div>
-                <DashboardHeaderContainer>
-                  <DashboardHeader
-                    isUserFirstTime={
-                      createListViewVisible || firstCreatedUserListIdentifier
-                    }
-                    currentUser={currentUser}
-                  />
-                </DashboardHeaderContainer>
+                <DashboardHeader currentUser={currentUser} />
                 <Spacing vertical={3} />
               </div>
               {createListViewVisible ? (

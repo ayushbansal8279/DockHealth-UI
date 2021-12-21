@@ -16,6 +16,12 @@ export function initializeTaskListState(
   };
 }
 
+export function clearTaskListState() {
+  return {
+    type: ActionTypes.CLEAR_TASK_LIST_STATE,
+  };
+}
+
 export function getCurrentTaskList() {
   return {
     type: ActionTypes.GET_CURRENT_TASK_LIST,

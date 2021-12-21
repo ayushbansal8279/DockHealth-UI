@@ -15,6 +15,7 @@ import {
   updateUserListViewSetup,
   updateColumnOnListPreferences,
   getCurrentTaskListFilterOptions,
+  clearTaskListState,
 } from 'actions/task-list-actions';
 import { updateOrganizationCustomFields } from 'actions/organization-actions';
 
@@ -97,6 +98,13 @@ const initializeListDetailsViewHooks = (match, history) => {
       ),
     );
   }, [dispatch, tabName, taskListIdentifierParam]);
+
+  useEffect(() => {
+    return () => {
+      dispatch(clearTaskListState());
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   useEffect(() => {
     if (taskListIdentifierParam) {

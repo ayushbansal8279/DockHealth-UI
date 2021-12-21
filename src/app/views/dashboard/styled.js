@@ -14,7 +14,6 @@ export const DashboardScrollableList = styled.div`
   flex-direction: column;
   width: 100%;
   height: calc(100% - 24px);
-  margin-top: ${spacing.regular};
   overflow-x: hidden;
   overflow-y: auto;
 `;
@@ -42,13 +41,6 @@ export const DashboardTourWrapper = styled.div`
   left: 50%;
   transform: translateX(-40%);
   z-index: 201;
-`;
-
-export const DashboardHeaderContainer = styled.div`
-  display: flex;
-  align-items: center;
-  flex-direction: row;
-  padding: 0 55px;
 `;
 
 export const DashboardFirstVisitViewWrapper = styled.div`

@@ -11,14 +11,16 @@ import { onSearchChanged } from 'helpers/ga-event-helper';
 import { TaskListTabName } from 'helpers/tasklist-helpers';
 import { TaskItemColumn, TaskStatus } from 'helpers/task-helpers';
 import ViewLayout from 'components/template/ViewLayout/ViewLayout';
-import BasicLayoutHeader from 'components/template/BasicLayoutHeader/BasicLayoutHeader';
 import TaskDrawer from 'components/task-drawer/TaskDrawer/TaskDrawer';
+import LayoutHeader from 'components/template/LayoutHeader/LayoutHeader';
+import HeaderSearch from 'components/template/HeaderSearch/HeaderSearch';
 import { TASK_DISAPPEAR_DELAY } from 'helpers/task-update-helper';
 import OpenedTasksView from './PersonDetailsOpenedTasksContainer/PersonDetailsOpenedTasks';
 import CompletedTasksView from './PersonDetailsCompletedTasksContainer/PersonDetailsCompletedTasks';
 import PersonInfoPanel from './PersonInfoPanel/PersonInfoPanel';
 import { TaskViewContainer } from './styled';
 import UserTasksToolbar from './UserTasksToolbar/UserTasksToolbar';
+import UserDetailsFilters from './UserDetailsFilters/UserDetailsFilters';
 
 const PERSON_VIEW_COLUMNS_CONFIG = {
   [TaskItemColumn.LIST_NAME]: true,
@@ -63,8 +65,8 @@ const PersonDetailsView = () => {
   };
 
   const handleSearchValueChange = newValue => {
-    onSearchChanged();
     setSearchValue(newValue);
+    onSearchChanged();
   };
 
   const invokeToggleCompleteAction = task => {
@@ -110,14 +112,23 @@ const PersonDetailsView = () => {
 
   return (
     <>
-      <ViewLayout header={<BasicLayoutHeader title="People" />}>
+      <ViewLayout
+        header={
+          <LayoutHeader>
+            <LayoutHeader.Title title="People" />
+            <LayoutHeader.Spacer />
+            <HeaderSearch
+              value={searchValue}
+              onChange={handleSearchValueChange}
+            />
+            <LayoutHeader.Spacer />
+            <UserDetailsFilters />
+          </LayoutHeader>
+        }
+      >
         <PersonInfoPanel />
         <TaskViewContainer>
-          <UserTasksToolbar
-            selectedTab={selectedTab}
-            searchValue={searchValue}
-            onSearchChange={handleSearchValueChange}
-          />
+          <UserTasksToolbar selectedTab={selectedTab} />
           {selectedTab === TaskListTabName.COMPLETE ? (
             <CompletedTasksView
               taskItemConfig={PERSON_VIEW_COLUMNS_CONFIG}

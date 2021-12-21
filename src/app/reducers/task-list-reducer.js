@@ -33,6 +33,7 @@ import {
   UPDATE_LIST_COLUMNS_DISPLAY_SETUP,
   UPDATE_LIST_VIEW_SETUP,
   INITIALIZE_TASK_LIST_STATE,
+  CLEAR_TASK_LIST_STATE,
   GET_CURRENT_TASK_LIST_FAILURE,
   GET_CURRENT_TASK_LIST,
   GET_CURRENT_TASK_LIST_SUCCESS,
@@ -103,6 +104,14 @@ const TaskListReducer = (state = initialState, action) => {
         currentTaskListIdentifier: action.taskListIdentifier,
         currentTaskList: null,
         currentTasksStatus: action.currentTasksStatus,
+      };
+
+    case CLEAR_TASK_LIST_STATE:
+      return {
+        ...state,
+        currentTaskListIdentifier: null,
+        currentTaskList: null,
+        currentTasksStatus: null,
       };
 
     case GET_CURRENT_TASK_LIST:

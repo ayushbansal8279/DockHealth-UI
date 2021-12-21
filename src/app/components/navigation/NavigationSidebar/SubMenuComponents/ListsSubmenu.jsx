@@ -6,28 +6,23 @@ import React, {
   useMemo,
 } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
-import { useHistory, useLocation } from 'react-router-dom';
+import { useHistory } from 'react-router-dom';
 import { MoreVert } from '@material-ui/icons';
+import { onTaskListInvitationAccepted } from 'helpers/ga-event-helper';
 import {
-  onTaskListDeleted,
-  onTaskListInvitationAccepted,
-  onTaskListInvitationRejected,
-  onTaskListLeave,
-} from 'helpers/ga-event-helper';
-import {
+  currentTaskListIdentifierSelector,
   taskListsSelector,
   pendingTaskListsSelector,
   archivedTaskListsSelector,
 } from 'selectors/task-list-selectors';
 import { userProfileSelector } from 'selectors/user-selectors';
 import AddButton from 'components/common/AddButton/AddButton.tsx';
-import { openModal, closeModal } from 'modal/actions';
+import { openModal } from 'modal/actions';
 import { hideSubMenu } from 'actions/template-actions';
 import * as TaskListActions from 'actions/task-list-actions';
 import palette from 'styles/palette';
-import { TASK_LIST_PATH, createTaskListPath } from 'routing/helpers/paths';
-import { locationParametersSelector } from 'location/selectors';
-import OptionsMenu from 'components/common/OptionsMenu/OptionsMenu';
+import { createTaskListPath } from 'routing/helpers/paths';
+import ListOptionsMenu from 'components/tasklist/ListOptionsMenu/ListOptionsMenu';
 import LabeledCollapse from 'components/common/LabeledCollapse/LabeledCollapse';
 import { Box } from '@material-ui/core';
 import { useBoolean } from 'hooks/useBoolean';
@@ -47,20 +42,13 @@ import {
   DrawerListsItemLoader,
 } from './styled';
 
-const MASTER_ROLES = ['ADMIN', 'OWNER'];
-const PRIVILEGE_ROLES = [...MASTER_ROLES, 'MEMBER'];
-
 // eslint-disable-next-line sonarjs/cognitive-complexity
 const ListsSubmenu = () => {
   const history = useHistory();
-  const { pathname } = useLocation();
 
-  const { taskListIdentifier: taskListIdentifierParameter } = useSelector(
-    locationParametersSelector,
+  const activeTaskListIdentifier = useSelector(
+    currentTaskListIdentifierSelector,
   );
-  const activeTaskListIdentifier = pathname?.startsWith(TASK_LIST_PATH)
-    ? taskListIdentifierParameter
-    : null;
   const taskLists = useSelector(taskListsSelector);
   const pendingTaskLists = useSelector(pendingTaskListsSelector);
   const archivedTaskLists = useSelector(archivedTaskListsSelector);
@@ -107,182 +95,12 @@ const ListsSubmenu = () => {
     dispatch(hideSubMenu());
   };
 
-  const openListEditModal = useCallback(
-    list => {
-      dispatch(openModal('ListForm', { list }));
-      dispatch(hideSubMenu());
-    },
-    [dispatch],
-  );
-
-  const openInviteToListModal = useCallback(
-    list => {
-      dispatch(openModal('InviteToList', { list }));
-      dispatch(hideSubMenu());
-    },
-    [dispatch],
-  );
-
-  const openDeleteConfirmationModal = useCallback(
-    list => {
-      const modalProps = {
-        title: 'Delete list',
-        description:
-          'Are you sure you want to delete this list? This action cannot be undone.',
-        confirm: () => {
-          onTaskListDeleted();
-          dispatch(
-            TaskListActions.deleteTaskListById(list?.taskListIdentifier),
-          );
-          if (list?.taskListIdentifier === activeTaskListIdentifier) {
-            history.push(`/`);
-          }
-          dispatch(closeModal());
-        },
-      };
-      dispatch(openModal('DeleteConfirmation', modalProps));
-      dispatch(hideSubMenu());
-    },
-    [activeTaskListIdentifier, dispatch, history],
-  );
-
-  const openLeaveListModal = useCallback(
-    list => {
-      const { status, taskListIdentifier } = list;
-
-      const modalProps = {
-        confirm: () => {
-          if (status === 'PENDING') {
-            onTaskListInvitationRejected();
-            dispatch(TaskListActions.rejectInviteToTaskList(list));
-          } else {
-            onTaskListLeave();
-            dispatch(TaskListActions.leaveList(taskListIdentifier));
-          }
-          dispatch(closeModal());
-        },
-      };
-
-      dispatch(openModal('LeaveList', modalProps));
-      dispatch(hideSubMenu());
-    },
-    [dispatch],
-  );
-
-  const isListArchived = useCallback(
-    list => {
-      return !!archivedLists.find(
-        taskList => taskList.taskListIdentifier === list.taskListIdentifier,
-      );
-    },
-    [archivedLists],
-  );
-
-  const handleArchiveList = useCallback(
-    list => {
-      dispatch(TaskListActions.archiveTaskListById(list?.taskListIdentifier));
-      if (list?.taskListIdentifier === activeTaskListIdentifier)
-        history.push(`/`);
-    },
-    [activeTaskListIdentifier, dispatch, history],
-  );
-
-  const handleUnarchiveList = useCallback(
-    list => {
-      dispatch(TaskListActions.unarchiveTaskListById(list?.taskListIdentifier));
-    },
-    [dispatch],
-  );
-
-  const getMenuItems = useCallback(
-    list => {
-      if (MASTER_ROLES.includes(list?.role) && isListArchived(list)) {
-        return [
-          {
-            name: 'Unarchive List',
-            onClick: () => {
-              handleUnarchiveList(list);
-            },
-          },
-        ];
-      }
-      let baseList = [];
-      if (list?.listType !== 'INBOX' && list?.listType !== 'PUBLIC') {
-        baseList = [
-          ...baseList,
-          {
-            key: 'leave',
-            name: 'Leave list',
-            onClick: () => openLeaveListModal(list),
-          },
-        ];
-      }
-
-      if (PRIVILEGE_ROLES.includes(list?.role) && list?.listType !== 'INBOX') {
-        if (!isGuest) {
-          baseList = [
-            ...baseList,
-            {
-              name: 'Invite to list',
-              onClick: () => openInviteToListModal(list),
-            },
-          ];
-        }
-
-        if (MASTER_ROLES.includes(list?.role) && list?.listType !== 'INBOX') {
-          baseList = [
-            ...baseList,
-            {
-              name: 'Edit list',
-              onClick: () => openListEditModal(list),
-            },
-          ];
-        }
-
-        if (MASTER_ROLES.includes(list?.role)) {
-          baseList = [
-            ...baseList,
-            {
-              name: 'Archive List',
-              onClick: () => {
-                handleArchiveList(list);
-              },
-            },
-          ];
-        }
-        if (MASTER_ROLES.includes(list?.role) && list?.listType !== 'INBOX') {
-          baseList = [
-            ...baseList,
-            {
-              name: 'Delete',
-              onClick: () => {
-                openDeleteConfirmationModal(list);
-              },
-              color: palette.oPlusRed,
-            },
-          ];
-        }
-      }
-
-      return baseList;
-    },
-    [
-      openLeaveListModal,
-      isGuest,
-      isListArchived,
-      openInviteToListModal,
-      openListEditModal,
-      handleArchiveList,
-      handleUnarchiveList,
-      openDeleteConfirmationModal,
-    ],
-  );
-
   const hasAnyPendingList = activeLists?.some(
     ({ status }) => status === 'PENDING',
   );
 
   const renderLists = useCallback(
+    // eslint-disable-next-line sonarjs/cognitive-complexity
     (listsList, archived = true) => {
       return listsList
         ? listsList.map(list => (
@@ -320,9 +138,9 @@ const ListsSubmenu = () => {
               <DrawerItemOptions>
                 <div>{list?.numberOfTasks ? list?.numberOfTasks : 0}</div>
                 {!['INBOX', 'PUBLIC'].includes(list?.listType) ? (
-                  <OptionsMenu disablePortal options={getMenuItems(list)}>
+                  <ListOptionsMenu list={list}>
                     <MoreVert color="primary" />
-                  </OptionsMenu>
+                  </ListOptionsMenu>
                 ) : (
                   <Box m={2} />
                 )}
@@ -332,7 +150,7 @@ const ListsSubmenu = () => {
         : // eslint-disable-next-line react/no-array-index-key
           new Array(6).fill().map((_, i) => <DrawerListsItemLoader key={i} />);
     },
-    [activeTaskListIdentifier, dispatch, getMenuItems, history],
+    [activeTaskListIdentifier, dispatch, history],
   );
 
   return (

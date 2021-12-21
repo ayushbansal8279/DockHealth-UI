@@ -6,12 +6,12 @@ import BulkEditSection from 'components/tasklist/BulkEditSection/BulkEditSection
 import { ViewType } from 'helpers/view-type-helper';
 import Calendar from 'components/common/Calendar/Calendar';
 import ViewLayout from 'components/template/ViewLayout/ViewLayout';
-import LayoutHeader from 'components/template/LayoutHeader/LayoutHeader';
 import OpenedTasksView from './ListDetailsOpenedTasksContainer/ListDetailsOpenedTasksContainer';
 import CompletedTasksView from './ListDetailsCompletedTasksContainer/ListDetailsCompletedTasksContainer';
 import InboxHelpPanel from './InboxHelpPanel/InboxHelpPanel';
 import initializeListDetailsViewHooks from './hooks';
 import { TaskViewContainer } from './styled';
+import ListDetailsHeader from './ListDetailsHeader/ListDetailsHeader';
 
 const ListDetailsView = props => {
   const { match, history } = props;
@@ -56,12 +56,19 @@ const ListDetailsView = props => {
   return (
     <ViewLayout
       header={
-        <LayoutHeader>
-          <LayoutHeader.Title
-            title={taskList?.listName}
-            description={taskList?.listDescription}
-          />
-        </LayoutHeader>
+        <ListDetailsHeader
+          isFetchingTasks={isFetching || isCompletedTasksFetching}
+          searchValue={searchValue}
+          onSearchChange={changeSearchValue}
+          tasks={
+            selectedTab === TaskListTabName.OPEN ? openedTasks : completedTasks
+          }
+          totalTasksAmount={
+            selectedTab === TaskListTabName.OPEN
+              ? taskCounters.incomplete
+              : taskCounters.complete
+          }
+        />
       }
     >
       <BulkEditSection
@@ -81,14 +88,12 @@ const ListDetailsView = props => {
               taskList={taskList || undefined}
               openTasksAmount={taskCounters.incomplete}
               completedTasksAmount={taskCounters.complete}
-              onSearchChange={changeSearchValue}
               searchValue={searchValue}
-              onSelectFilters={listDetailsActions.filterListDetailsTasks}
+              onSearchChange={changeSearchValue}
               pdfTitle={taskList?.listName}
               tipsContent={
                 taskList?.listType === 'INBOX' ? InboxHelpPanel : null
               }
-              isFetching={isFetching || isCompletedTasksFetching}
               tasks={openedTasks}
               completedTasks={completedTasks}
               moreOptions={[
