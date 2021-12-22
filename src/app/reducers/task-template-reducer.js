@@ -1,9 +1,10 @@
+/* eslint-disable sonarjs/max-switch-cases */
 import * as ActionTypes from 'actions/action-types';
 import { omit } from 'ramda';
 import { mapWithRemove } from 'helpers/utility-functions';
 import {
   createDecisionTaskNodes,
-  createTaskNode,
+  createTemporaryTaskNode,
   createLinkElement,
 } from 'helpers/task-template-builder-helpers';
 import TaskBaseReducer from './task-base-reducer';
@@ -353,7 +354,37 @@ const TaskTemplateReducer = (state = initialState, action) => {
           {
             temporaryElements: [
               ...(temporaryElements || []),
-              createTaskNode(temporaryElements, position),
+              createTemporaryTaskNode(temporaryElements, position),
+            ],
+          },
+        ),
+      };
+    }
+
+    case ActionTypes.ADD_DECISION_BRANCH: {
+      const { currentTaskTemplateIdentifier } = state;
+      const { sourceTaskIdentifier } = action;
+
+      const { temporaryElements, layout } = state.taskTemplateDetails[
+        currentTaskTemplateIdentifier
+      ];
+
+      const { position } =
+        layout?.find(({ id }) => id === sourceTaskIdentifier) || {};
+
+      const newPosition = { ...position, y: position.y + 300 };
+      const newNode = createTemporaryTaskNode(temporaryElements, newPosition);
+
+      return {
+        ...state,
+        taskTemplateDetails: updateTaskTemplateDetailsState(
+          currentTaskTemplateIdentifier,
+          state.taskTemplateDetails,
+          {
+            temporaryElements: [
+              ...(temporaryElements || []),
+              createLinkElement(sourceTaskIdentifier, newNode.id),
+              newNode,
             ],
           },
         ),

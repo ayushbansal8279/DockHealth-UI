@@ -47,15 +47,18 @@ export function createLinkElement(
   };
 }
 
-export function createTaskNode(currentTemporaryElements, elementPosition) {
+export function createTemporaryTaskNode(
+  currentTemporaryElements,
+  elementPosition,
+  type = NodeType.NEW_STANDARD,
+) {
   const numberOfNewTasks =
-    currentTemporaryElements?.filter(
-      element => element.type === NodeType.NEW_STANDARD,
-    ).length || 0;
+    currentTemporaryElements?.filter(element => element.type === type).length ||
+    0;
 
   return {
-    id: `${NodeType.NEW_STANDARD}-${numberOfNewTasks}`,
-    type: NodeType.NEW_STANDARD,
+    id: `${type}-${numberOfNewTasks}`,
+    type,
     position: elementPosition,
   };
 }
@@ -65,12 +68,15 @@ export function createTemporaryOptionsForDecisionTask(
   decisionTaskId,
   decisionTaskPosition,
 ) {
-  const firstTemporaryStandardTask = createTaskNode(currentTemporaryElements, {
-    x: decisionTaskPosition.x - 200,
-    y: decisionTaskPosition.y + 300,
-  });
+  const firstTemporaryStandardTask = createTemporaryTaskNode(
+    currentTemporaryElements,
+    {
+      x: decisionTaskPosition.x - 200,
+      y: decisionTaskPosition.y + 300,
+    },
+  );
 
-  const secondTemporaryStandardTask = createTaskNode(
+  const secondTemporaryStandardTask = createTemporaryTaskNode(
     [firstTemporaryStandardTask, ...(currentTemporaryElements || [])],
     {
       x: decisionTaskPosition.x + 200,
