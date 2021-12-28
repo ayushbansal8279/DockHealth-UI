@@ -46,6 +46,7 @@ import {
   PatientDetailsContainer,
   PatientDetailsTabsContainer,
   MainTab,
+  PatientStickyContainer,
 } from './styled';
 import PatientTasksList from './PatientTasksList/PatientTasksList';
 import PatientNotes from './PatientNotes/PatientNotes';
@@ -189,16 +190,22 @@ const PatientDetailsView = () => {
       }
     >
       <ColumnsConfigProvider>
-        <PatientDetailsHeader />
-        <PatientDetailsTabsContainer>
-          <Grid container>
-            <Tabs value={activeTabPath} onChange={handleTabChange}>
-              {TABS_CONFIG.map(t => (
-                <MainTab key={t.mainPath} value={t.mainPath} label={t.label} />
-              ))}
-            </Tabs>
-          </Grid>
-        </PatientDetailsTabsContainer>
+        <PatientStickyContainer>
+          <PatientDetailsHeader />
+          <PatientDetailsTabsContainer>
+            <Grid container>
+              <Tabs value={activeTabPath} onChange={handleTabChange}>
+                {TABS_CONFIG.map(t => (
+                  <MainTab
+                    key={t.mainPath}
+                    value={t.mainPath}
+                    label={t.label}
+                  />
+                ))}
+              </Tabs>
+            </Grid>
+          </PatientDetailsTabsContainer>
+        </PatientStickyContainer>
         <PatientDetailsContainer>
           <Switch>
             {TABS_CONFIG?.map(route => (

@@ -3,11 +3,10 @@ import { useSelector } from 'react-redux';
 import { Popover } from '@material-ui/core';
 import ColumnDisplayIcon from 'img/settings-icon';
 import Checkbox from 'components/common/Checkbox/Checkbox';
-import { TaskItemColumn, MAX_COLUMNS_TO_SHOW } from 'helpers/task-helpers';
+import { TaskItemColumn } from 'helpers/task-helpers';
 import { getCustomerTypeLabel } from 'helpers/customer-type-helper';
 import { userProfileSelector } from 'selectors/user-selectors';
 import { capitalize } from 'helpers/capitalize';
-import Tooltip from 'components/common/Tooltip/Tooltip';
 import { useColumnsConfig } from 'context-api/ColumnsConfigContext';
 import {
   ColumnDisplayContainer,
@@ -40,17 +39,6 @@ const ColumnDisplaySettings = ({ onChange }) => {
   const columnsConfigToDisplay = useMemo(() => {
     return limitToConfigurableKeys(Object.entries(columnsConfig));
   }, [columnsConfig]);
-
-  const disableUnchecked = useMemo(() => {
-    const checkedStandardCount = Object.keys(columnsConfigToDisplay).reduce(
-      (accumulator, key) =>
-        columnsConfigToDisplay[key] ? accumulator + 1 : accumulator,
-      0,
-    );
-    const checkedCustomCount = customColumnsConfig.filter(f => f.isChecked)
-      ?.length;
-    return checkedStandardCount + checkedCustomCount >= MAX_COLUMNS_TO_SHOW;
-  }, [columnsConfigToDisplay, customColumnsConfig]);
 
   const onClickCheckbox = useCallback(
     columnKey => {
@@ -102,58 +90,30 @@ const ColumnDisplaySettings = ({ onChange }) => {
       >
         <ColumnDisplayContainer>
           <ColumnDisplayHeader>
-            Which columns would you like to see? (up to 5)
+            Which columns would you like to see?
           </ColumnDisplayHeader>
           {Object.keys(columnsConfigToDisplay).map(columnKey => {
             const optionName = ColumnOptionNames[columnKey];
             const isChecked = columnsConfigToDisplay[columnKey];
-            const isDisabled = disableUnchecked && !isChecked;
             return (
               optionName && (
-                <Tooltip
-                  key={columnKey}
-                  title={`Max ${MAX_COLUMNS_TO_SHOW} selected columns`}
-                  hideTooltip={!isDisabled}
-                >
-                  <div>
-                    <ColumnDisplayOption
-                      isDisabled={isDisabled}
-                      onClick={() => {
-                        return isDisabled ? null : onClickCheckbox(columnKey);
-                      }}
-                    >
-                      <Checkbox isDisabled={isDisabled} isChecked={isChecked} />
-                      <ColumnDisplayLabel>{optionName}</ColumnDisplayLabel>
-                    </ColumnDisplayOption>
-                  </div>
-                </Tooltip>
+                <ColumnDisplayOption onClick={() => onClickCheckbox(columnKey)}>
+                  <Checkbox isChecked={isChecked} />
+                  <ColumnDisplayLabel>{optionName}</ColumnDisplayLabel>
+                </ColumnDisplayOption>
               )
             );
           })}
           {customColumnsConfig.map(column => {
-            const { name, isChecked = false, identifier } = column;
-            const isDisabled = disableUnchecked && !isChecked;
+            const { name, isChecked = false } = column;
             return (
               name && (
-                <Tooltip
-                  key={identifier}
-                  title={`Max ${MAX_COLUMNS_TO_SHOW} selected columns`}
-                  hideTooltip={!isDisabled}
+                <ColumnDisplayOption
+                  onClick={() => onClickCustomFieldsCheckbox(column)}
                 >
-                  <div>
-                    <ColumnDisplayOption
-                      isDisabled={isDisabled}
-                      onClick={() => {
-                        return isDisabled
-                          ? null
-                          : onClickCustomFieldsCheckbox(column);
-                      }}
-                    >
-                      <Checkbox isDisabled={isDisabled} isChecked={isChecked} />
-                      <ColumnDisplayLabel>{name}</ColumnDisplayLabel>
-                    </ColumnDisplayOption>
-                  </div>
-                </Tooltip>
+                  <Checkbox isChecked={isChecked} />
+                  <ColumnDisplayLabel>{name}</ColumnDisplayLabel>
+                </ColumnDisplayOption>
               )
             );
           })}

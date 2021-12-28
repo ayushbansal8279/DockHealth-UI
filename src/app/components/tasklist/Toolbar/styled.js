@@ -11,9 +11,11 @@ export const LabelBox = styled(Box)`
 
 export const ToolbarContainer = styled.div`
   display: block;
-  width: 100%;
   background-color: ${palette.white};
   color: ${palette.coolGrey1};
+  width: calc(100vw - 83px);
+  position: sticky;
+  left: 0px;
 `;
 
 // LEGACY STYLES - REFACTOR REQUIRED

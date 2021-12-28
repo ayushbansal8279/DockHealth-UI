@@ -53,6 +53,7 @@ import { getCustomerTypeLabel } from 'helpers/customer-type-helper';
 import { checkIfAllTasksSelected } from 'helpers/bulk-edit-helpers';
 import { extractTasksAndSubtasks } from 'helpers/tasklist-helpers';
 import { useColumnsConfig } from 'context-api/ColumnsConfigContext';
+import { ListDetailsContainer } from 'components/tasklist/DropdownListSection/styled';
 import { ListViewType } from '../helpers';
 import {
   checkIfSelectedListIsPresent,
@@ -62,6 +63,7 @@ import {
 import TaskListToolbar from '../TaskListToolbar/TaskListToolbar';
 import TaskListGroupCollapse from '../TaskListGroupCollapse/TaskListGroupCollapse';
 import TasksToolbar from '../TasksToolbar/TasksToolbar';
+import { PatientToolbarStickyContainer } from '../styled';
 
 const PATIENT_VIEW_COLUMNS_CONFIG = {
   [TaskItemColumn.PATIENT]: false,
@@ -319,53 +321,57 @@ const PatientTasksListView = () => {
     (tasks, { isFullView, taskGroupIdentifier }) => (
       <>
         {!completeTasksVisible && (
-          <TasksToolbar
-            taskListIdentifier={activeList?.taskListIdentifier}
-            taskGroupIdentifier={taskGroupIdentifier}
-            onQuickAddTask={quickAddTask}
+          <PatientToolbarStickyContainer>
+            <TasksToolbar
+              taskListIdentifier={activeList?.taskListIdentifier}
+              taskGroupIdentifier={taskGroupIdentifier}
+              onQuickAddTask={quickAddTask}
+            />
+          </PatientToolbarStickyContainer>
+        )}
+        <div className="IN" style={{ width: 'fit-content' }}>
+          <TasksHeader
+            bulkEditEnabled
+            sort={sort}
+            onSortChange={sortPatientTasks}
+            taskItemConfig={taskItemConfig}
+            groupHasMultipleAssignees={groupHasMultipleAssignees}
+            isGroupSelected={isGroupSelected(tasks)}
+            onGroupSelect={() => handleGroupSelect(tasks)}
           />
-        )}
-        <TasksHeader
-          bulkEditEnabled
-          sort={sort}
-          onSortChange={sortPatientTasks}
-          taskItemConfig={taskItemConfig}
-          groupHasMultipleAssignees={groupHasMultipleAssignees}
-          isGroupSelected={isGroupSelected(tasks)}
-          onGroupSelect={() => handleGroupSelect(tasks)}
-        />
-        {tasks?.map(task =>
-          task.itemType === TaskItemType.TASK ? (
-            <StandardTaskItem
-              key={task.identifier}
-              currentUser={currentUser}
-              isFullView={isFullView}
-              task={task}
-              isCompletedGroup={completeTasksVisible}
-              toggleCompleteTask={handleToggleTaskStatus}
-              onTaskUpdate={updatePatientTaskInList}
-              updateWorkflowStatus={updatePatientTaskWorkflowStatus}
-              dragAndDropDisabled
-              selectedTask={selectedTask}
-              patientVisible={false}
-              addingNewSubtask={addingNewSubtaskParentId === task.identifier}
-              hideSubtasks={isListFlattened}
-              multipleAssigneesContext={groupHasMultipleAssignees}
-              taskItemConfig={taskItemConfig}
-            />
-          ) : (
-            <TaskTemplateGroup
-              viewSetup={viewSetup}
-              key={task.identifier}
-              templateGroup={task}
-              taskItemConfig={taskItemConfig}
-              groupHasMultipleAssignees={groupHasMultipleAssignees}
-              isFullView={isFullView}
-              groupDragAndDropDisabled
-              disablePatientAssignment
-            />
-          ),
-        )}
+          {tasks?.map(task =>
+            task.itemType === TaskItemType.TASK ? (
+              <StandardTaskItem
+                key={task.identifier}
+                currentUser={currentUser}
+                isFullView={isFullView}
+                task={task}
+                isCompletedGroup={completeTasksVisible}
+                toggleCompleteTask={handleToggleTaskStatus}
+                onTaskUpdate={updatePatientTaskInList}
+                updateWorkflowStatus={updatePatientTaskWorkflowStatus}
+                dragAndDropDisabled
+                selectedTask={selectedTask}
+                patientVisible={false}
+                addingNewSubtask={addingNewSubtaskParentId === task.identifier}
+                hideSubtasks={isListFlattened}
+                multipleAssigneesContext={groupHasMultipleAssignees}
+                taskItemConfig={taskItemConfig}
+              />
+            ) : (
+              <TaskTemplateGroup
+                viewSetup={viewSetup}
+                key={task.identifier}
+                templateGroup={task}
+                taskItemConfig={taskItemConfig}
+                groupHasMultipleAssignees={groupHasMultipleAssignees}
+                isFullView={isFullView}
+                groupDragAndDropDisabled
+                disablePatientAssignment
+              />
+            ),
+          )}
+        </div>
       </>
     ),
     [
@@ -395,25 +401,34 @@ const PatientTasksListView = () => {
         <>
           {filteredLists?.length > 0 ? (
             <>
-              <TaskListToolbar lists={filteredLists} currentList={activeList} />
+              <PatientToolbarStickyContainer>
+                <TaskListToolbar
+                  lists={filteredLists}
+                  currentList={activeList}
+                />
+              </PatientToolbarStickyContainer>
               <Box py={0.5} />
               {activeList ? (
-                <BulkEditSection
-                  allTasks={activeList.tasks}
-                  refreshTasks={handleTaskUpdate}
-                  searchValue={taskSearch}
-                >
-                  <TaskListHeader
-                    list={!isAllTasksView ? activeList : null}
-                    viewSetup={viewSetup}
-                    refreshView={refreshPatientTasks}
+                <ListDetailsContainer>
+                  <BulkEditSection
+                    allTasks={activeList.tasks}
+                    refreshTasks={handleTaskUpdate}
+                    searchValue={taskSearch}
                   >
+                    <PatientToolbarStickyContainer>
+                      <TaskListHeader
+                        list={!isAllTasksView ? activeList : null}
+                        viewSetup={viewSetup}
+                        refreshView={refreshPatientTasks}
+                      />
+                    </PatientToolbarStickyContainer>
+
                     {isAllTasksView ? (
                       renderTasks(activeList.tasks, { isFullView: false })
                     ) : (
                       <>
                         {groupedTasks.map(group => (
-                          <TaskListGroupCollapse group={group}>
+                          <TaskListGroupCollapse group={group} stickyHeader>
                             {({ isFullView }) =>
                               renderTasks(group.tasks, {
                                 isFullView,
@@ -424,8 +439,8 @@ const PatientTasksListView = () => {
                         ))}
                       </>
                     )}
-                  </TaskListHeader>
-                </BulkEditSection>
+                  </BulkEditSection>
+                </ListDetailsContainer>
               ) : (
                 renderEmptyListView()
               )}

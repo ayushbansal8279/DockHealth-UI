@@ -53,6 +53,8 @@ import {
   StandardTaskThreeDots,
   PriorityIndicator,
   DependencyIconContainer,
+  StickyColumnContainer,
+  StatusBar,
 } from '../styled';
 import TaskItemContextMenu from '../TaskItemContextMenu/TaskItemContextMenu';
 
@@ -101,6 +103,7 @@ const TaskItem = ({
   templateBundleIdentifier,
   parentTaskGroupIdentifier,
   isSelectedByHighlighted,
+  pageBackground,
 }) => {
   const {
     taskIdentifier,
@@ -379,10 +382,6 @@ const TaskItem = ({
         onMouseEnter={onMouseEnter}
         onMouseLeave={onMouseLeave}
       >
-        <DotsContainer
-          showDraggableDots={showDraggableDots}
-          dragHandleProps={dragHandleProps}
-        />
         <StandardTaskItemContainer
           isSelected={isSelected || selected}
           height={
@@ -391,78 +390,93 @@ const TaskItem = ({
               : STANDARD_TASK_HEIGHT
           }
         >
-          {showPriority && <PriorityIndicator />}
-          {showSubtaskStylingLink && getSubtaskStylingLink(isLast)}
-          {bulkEditEnabled && (
-            <TaskItemBulkEdit isChecked={selected} onClick={onClickBulkEdit} />
-          )}
-          <MainStandardTaskItemCell
-            bolded
-            paddingLeft="smallPlus"
-            paddingRight="small"
-            onClick={onClickTaskItem}
-            position="static"
+          <StickyColumnContainer
+            isSubtask={showSubtaskStylingLink}
+            backgroundColor={pageBackground}
           >
-            <CircleIcon
-              src={isCompleted ? CircleCompleted : Circle}
-              isClickable={
-                !isTaskStatusTogglingDisabled && isDependencyEmptyOrCompleted
-              }
-              isCompleted={isCompleted}
-              onClick={onCircleClick}
+            <DotsContainer
+              showDraggableDots={showDraggableDots}
+              dragHandleProps={dragHandleProps}
             />
-
-            {!isDependencyEmptyOrCompleted && (
-              <>
-                <DependencyIconContainer
-                  onMouseEnter={openDependencyPopover}
-                  onMouseLeave={closeDependencyPopover}
-                  ref={dependencyIconReference}
-                >
-                  <img src={DependencyIcon} alt="search" />
-                  {dependencyIconReference.current && (
-                    <DependencyListPopover
-                      anchorEl={dependencyIconReference.current}
-                      open={dependencyPopoverOpen}
-                      dependencyTasksCount={dependencyTasksCount}
-                      task={task}
-                    />
-                  )}
-                </DependencyIconContainer>
-              </>
-            )}
-
-            {descriptionIsInConfig && (
-              <TaskItemDescription
-                isCompletedGroup={isCompletedGroup}
-                isCompleted={isCompleted}
-                descriptionState={descriptionState}
-                setDescriptionState={setDescriptionState}
-                matchDescription={matchDescription}
-                highlightedValue={highlightedValue}
-                description={description}
-                edited={isEdited}
-                duplicated={isDuplicated}
-                hasParentTaskLabel={hasParentTaskLabel}
-                parentTask={parentTask}
-                completedByName={completedByName}
-                completedDt={completedDt}
-                dispatch={dispatch}
+            {workflowStatus && <StatusBar color={workflowStatus?.color} />}
+            {showPriority && <PriorityIndicator />}
+            {showSubtaskStylingLink && getSubtaskStylingLink(isLast)}
+            {bulkEditEnabled && (
+              <TaskItemBulkEdit
+                isChecked={selected}
+                onClick={onClickBulkEdit}
               />
             )}
-          </MainStandardTaskItemCell>
-          {decisionInConfig && showDecisionRow && (
-            <TaskItemDecision
-              outcomes={task.taskOutcomes}
-              dispatch={dispatch}
-              onSelect={chooseTaskDecisionOutcome}
-              task={task}
-              templateBundleIdentifier={templateBundleIdentifier}
-              disabled={isCompleted}
-              error={taskDecisionError}
-              clearError={() => setTaskDecisionError(false)}
-            />
-          )}
+            <MainStandardTaskItemCell
+              bolded
+              paddingLeft="smallPlus"
+              paddingRight="small"
+              onClick={onClickTaskItem}
+              position="static"
+              isSubtask={showSubtaskStylingLink}
+              isSticky
+            >
+              <CircleIcon
+                src={isCompleted ? CircleCompleted : Circle}
+                isClickable={
+                  !isTaskStatusTogglingDisabled && isDependencyEmptyOrCompleted
+                }
+                isCompleted={isCompleted}
+                onClick={onCircleClick}
+              />
+
+              {!isDependencyEmptyOrCompleted && (
+                <>
+                  <DependencyIconContainer
+                    onMouseEnter={openDependencyPopover}
+                    onMouseLeave={closeDependencyPopover}
+                    ref={dependencyIconReference}
+                  >
+                    <img src={DependencyIcon} alt="search" />
+                    {dependencyIconReference.current && (
+                      <DependencyListPopover
+                        anchorEl={dependencyIconReference.current}
+                        open={dependencyPopoverOpen}
+                        dependencyTasksCount={dependencyTasksCount}
+                        task={task}
+                      />
+                    )}
+                  </DependencyIconContainer>
+                </>
+              )}
+
+              {descriptionIsInConfig && (
+                <TaskItemDescription
+                  isCompletedGroup={isCompletedGroup}
+                  isCompleted={isCompleted}
+                  descriptionState={descriptionState}
+                  setDescriptionState={setDescriptionState}
+                  matchDescription={matchDescription}
+                  highlightedValue={highlightedValue}
+                  description={description}
+                  edited={isEdited}
+                  duplicated={isDuplicated}
+                  hasParentTaskLabel={hasParentTaskLabel}
+                  parentTask={parentTask}
+                  completedByName={completedByName}
+                  completedDt={completedDt}
+                  dispatch={dispatch}
+                />
+              )}
+            </MainStandardTaskItemCell>
+            {decisionInConfig && showDecisionRow && (
+              <TaskItemDecision
+                outcomes={task.taskOutcomes}
+                dispatch={dispatch}
+                onSelect={chooseTaskDecisionOutcome}
+                task={task}
+                templateBundleIdentifier={templateBundleIdentifier}
+                disabled={isCompleted}
+                error={taskDecisionError}
+                clearError={() => setTaskDecisionError(false)}
+              />
+            )}
+          </StickyColumnContainer>
           {subtasksIsInConfig && (
             <TaskItemSubtasks
               isSubtask={isSubtask}

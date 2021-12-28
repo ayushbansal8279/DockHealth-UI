@@ -6,7 +6,7 @@ import { fontSizes } from 'styles/font';
 
 export const TopSectionGrid = styled(Grid)`
   padding-bottom: ${spacing.largePlus};
-  padding: ${spacing.regularPlus} 43px;
+  padding: ${spacing.regularPlus} 24px;
 `;
 
 export const InputWrapper = styled.div`

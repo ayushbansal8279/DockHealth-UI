@@ -14,10 +14,10 @@ import {
 } from './styled';
 
 const LayoutHeader = props => {
-  const { children } = props;
+  const { children, horizontalSticky } = props;
 
   return (
-    <HeaderContainer>
+    <HeaderContainer horizontalSticky={horizontalSticky}>
       <MainHeader>
         <Box
           display="flex"

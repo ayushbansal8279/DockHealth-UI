@@ -32,5 +32,6 @@ export const SortHeaderRow = styled.div`
   width: 100%;
   background: ${palette.white};
   border: 1px solid ${palette.coolGrey3};
+  border-left: 0px;
   margin-bottom: 3px;
 `;

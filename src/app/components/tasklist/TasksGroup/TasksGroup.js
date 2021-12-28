@@ -39,6 +39,7 @@ import {
   GroupNameSectionWrapper,
   TasksGroupLabelName,
   TasksGroupLabelCounter,
+  StickyContainer,
 } from './styled';
 import TasksHeader from '../TasksHeader/TasksHeader';
 
@@ -88,7 +89,6 @@ const TasksGroup = ({
     sessionStorageKey: groupSessionStorageKey,
   });
   const highlightTimeoutReference = useRef(null);
-  // const previousisOpen = usePrevious(isOpen);
 
   const isFullView =
     viewType === ViewType.FULL_VIEW || areFiltersApplied || isSearchApplied;
@@ -265,18 +265,22 @@ const TasksGroup = ({
       </TasksGroupHeader>
       <Tasks timeout={150} in={isOpen}>
         {!!quickAddTask && !isSearchApplied && (
-          <Grid container>
-            <Grid item xs>
-              <QuickAddTaskInput
-                taskListIdentifier={taskListIdentifier}
-                quickAddTask={onQuickAddTask}
-                validator={quickTaskInputValidator}
-              />
+          <StickyContainer>
+            <Grid container>
+              <Grid item xs>
+                <QuickAddTaskInput
+                  taskListIdentifier={taskListIdentifier}
+                  quickAddTask={onQuickAddTask}
+                  validator={quickTaskInputValidator}
+                />
+              </Grid>
+              {applyTemplate && (
+                <TaskTemplateApplicator
+                  onTemplateSelect={handleTemplateSelect}
+                />
+              )}
             </Grid>
-            {applyTemplate && (
-              <TaskTemplateApplicator onTemplateSelect={handleTemplateSelect} />
-            )}
-          </Grid>
+          </StickyContainer>
         )}
         {(tasks?.length > 0 || isLoadingGroup) && (
           <TasksHeader

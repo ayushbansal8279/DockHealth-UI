@@ -15,6 +15,14 @@ export const GroupHeader = styled.div`
   padding: 8px 0;
   justify-content: space-between;
   align-items: center;
+  ${({ stickyHeader }) =>
+    stickyHeader
+      ? `
+  position: sticky;
+  left: 24px;
+  width: calc(100vw - 115px);
+  `
+      : ''}
 `;
 
 export const GroupTitle = styled.div`

@@ -68,11 +68,13 @@ import {
   ToolbarContainer,
   ActionsContainer,
   StickyHeader,
-  DasboardTabsContainer,
+  DashboardTabsContainer,
   DashboardTab as StyledDashboardTab,
   DashboardTabHighlight,
   EmptyStateContainer,
   TipsSwitchLabel,
+  VerticalScrollContainer,
+  DashboardTaskGroupsWrapper,
 } from './styled';
 
 const DASHBOARD_BASE_COLUMNS_CONFIG = {
@@ -337,7 +339,7 @@ const DashboardList = ({
       <StickyHeader>
         <ToolbarContainer container direction="row" justify="space-between">
           <Grid item md={4}>
-            <DasboardTabsContainer>
+            <DashboardTabsContainer>
               <DashboardTab
                 label="My Tasks"
                 setHighlightPosition={setHighlightPosition}
@@ -355,7 +357,7 @@ const DashboardList = ({
                 isSelected={tabName === DashboardTasksTab.ALL_TASKS}
               />
               <DashboardTabHighlight {...highlightPosition} />
-            </DasboardTabsContainer>
+            </DashboardTabsContainer>
           </Grid>
           <ActionsContainer item md={8}>
             <OutlinedSelect
@@ -380,11 +382,11 @@ const DashboardList = ({
         <Calendar taskList={tasks} showInCompleteTasksOnly />
       )}
       {viewType === ViewType.LIST_VIEW && (
-        <>
+        <VerticalScrollContainer>
           {dashboardTasksIsLoading || completeTaskCount === undefined ? (
             <GroupedListSkeletonLoader numberOfGroups={3} />
           ) : (
-            <>
+            <DashboardTaskGroupsWrapper>
               {!isEmpty(filteredDashboardTasks) ? (
                 filteredDashboardTasks?.map(
                   item =>
@@ -414,9 +416,9 @@ const DashboardList = ({
               ) : (
                 <EmptyStateContainer>{renderEmptyState()}</EmptyStateContainer>
               )}
-            </>
+            </DashboardTaskGroupsWrapper>
           )}
-        </>
+        </VerticalScrollContainer>
       )}
       <TaskDrawer
         onTaskUpdate={handleTaskUpdate}

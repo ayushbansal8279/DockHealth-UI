@@ -30,6 +30,7 @@ import {
   EmptyGlobaSearchWrapper,
   EmptySearchText,
   EmptyResultsText,
+  VerticalScrollContainer,
 } from './styled';
 import GlobalSearchHeader from './GlobalSearchHeader/GlobalSearchHeader';
 import GlobalSearchList from './GlobalSearchList/GlobalSearchList';
@@ -97,7 +98,7 @@ const GlobalSearchView = ({
             {isLoadingView ? (
               <GroupedListSkeletonLoader />
             ) : (
-              <>
+              <VerticalScrollContainer>
                 <Spacing vertical={5} />
                 {!isEmpty(lists)
                   ? lists?.map(list =>
@@ -119,7 +120,7 @@ const GlobalSearchView = ({
                       ) : null,
                     )
                   : renderEmptyState()}
-              </>
+              </VerticalScrollContainer>
             )}
           </ViewSidePadding>
           <TaskDrawer />

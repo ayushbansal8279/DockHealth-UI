@@ -20,7 +20,7 @@ export const PersonDetailsViewHeader = styled.div`
 `;
 
 export const TaskGroupsContainer = styled.div`
-  margin: 0 ${spacing.huge} ${spacing.large} ${spacing.huge};
+  margin: 0 ${spacing.large} ${spacing.huge} ${spacing.large};
 `;
 
 export const TaskViewContainer = styled.div`
@@ -30,4 +30,10 @@ export const TaskViewContainer = styled.div`
   justify-content: flex-start;
   height: 100%;
   background-color: ${palette.coolGrey4};
+`;
+
+export const StickyContainer = styled.div`
+  position: sticky;
+  left: 24px;
+  width: calc(100vw - 115px);
 `;

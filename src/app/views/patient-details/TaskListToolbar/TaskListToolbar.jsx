@@ -249,7 +249,6 @@ const TaskListToolbar = props => {
       <Popper
         anchorEl={menuReference?.current}
         placement="bottom-end"
-        disablePortal
         open={menuOpen}
         style={{
           zIndex: zIndex.optionsMenu,

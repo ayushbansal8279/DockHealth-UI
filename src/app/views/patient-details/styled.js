@@ -10,8 +10,20 @@ export const PatientDetailsTabsContainer = styled.div`
   background-color: ${palette.white};
 `;
 
+export const PatientStickyContainer = styled.div`
+  position: sticky;
+  left: 0px;
+  width: calc(100vw - 83px);
+`;
+
+export const PatientToolbarStickyContainer = styled.div`
+  position: sticky;
+  left: 24px;
+  width: calc(100vw - 115px);
+`;
+
 export const PatientDetailsContainer = styled.div`
-  padding: ${spacing.large} ${spacing.huge};
+  padding: ${spacing.huge} ${spacing.large};
   background-color: ${palette.coolGrey4};
 `;
 

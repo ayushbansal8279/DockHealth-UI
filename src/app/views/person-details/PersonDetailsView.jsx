@@ -18,7 +18,7 @@ import { TASK_DISAPPEAR_DELAY } from 'helpers/task-update-helper';
 import OpenedTasksView from './PersonDetailsOpenedTasksContainer/PersonDetailsOpenedTasks';
 import CompletedTasksView from './PersonDetailsCompletedTasksContainer/PersonDetailsCompletedTasks';
 import PersonInfoPanel from './PersonInfoPanel/PersonInfoPanel';
-import { TaskViewContainer } from './styled';
+import { TaskViewContainer, StickyContainer } from './styled';
 import UserTasksToolbar from './UserTasksToolbar/UserTasksToolbar';
 import UserDetailsFilters from './UserDetailsFilters/UserDetailsFilters';
 
@@ -126,7 +126,9 @@ const PersonDetailsView = () => {
           </LayoutHeader>
         }
       >
-        <PersonInfoPanel />
+        <StickyContainer>
+          <PersonInfoPanel />
+        </StickyContainer>
         <TaskViewContainer>
           <UserTasksToolbar selectedTab={selectedTab} />
           {selectedTab === TaskListTabName.COMPLETE ? (

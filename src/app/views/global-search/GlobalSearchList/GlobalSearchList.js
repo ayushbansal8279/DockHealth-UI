@@ -15,6 +15,8 @@ import LoadMoreButton, {
 } from 'components/common/LoadMoreButton/LoadMoreButton';
 import TasksSkeletonLoader from 'components/task/TasksSkeletonLoader/TasksSkeletonLoader';
 import { addingNewSubtaskParentIdSelector } from 'selectors/task-drawer-selectors';
+import palette from 'styles/palette';
+import { GlobalSearchToolbarStickyContainer } from '../styled';
 
 const GlobalSearchList = ({
   list,
@@ -58,27 +60,30 @@ const GlobalSearchList = ({
 
   return (
     <ListDetailsContainer>
-      <ListDetailsHeader>
-        <ListNameContainer
-          container
-          direction="row"
-          justify="flex-start"
-          alignItems="center"
-        >
-          <Arrow
-            alt="arrow"
-            isOpen={isOpen}
-            onClick={() => switchOpen(!isOpen)}
-            src={ArrowIcon}
-          />
-          <ListNameSection>
-            {listName} ({tasks?.length || 0})
-          </ListNameSection>
-        </ListNameContainer>
-      </ListDetailsHeader>
+      <GlobalSearchToolbarStickyContainer>
+        <ListDetailsHeader>
+          <ListNameContainer
+            container
+            direction="row"
+            justify="flex-start"
+            alignItems="center"
+          >
+            <Arrow
+              alt="arrow"
+              isOpen={isOpen}
+              onClick={() => switchOpen(!isOpen)}
+              src={ArrowIcon}
+            />
+            <ListNameSection>
+              {listName} ({tasks?.length || 0})
+            </ListNameSection>
+          </ListNameContainer>
+        </ListDetailsHeader>
+      </GlobalSearchToolbarStickyContainer>
       <Tasks timeout={150} in={isOpen}>
         {tasks?.map(task => (
           <StandardTaskItem
+            pageBackground={palette.blueGrey}
             key={task.taskIdentifier}
             currentUser={currentUser}
             openDrawer={openDrawer}

@@ -49,17 +49,19 @@ export const AddPlaceholder = styled(Placeholder)`
 `;
 
 export const TaskTemplateGroupHeaderContainer = styled.div`
-  position: relative;
   display: flex;
   align-items: center;
   justify-content: space-between;
-  width: 100%;
   padding: 0 0 0 ${spacing.smallPlus};
   border: 1px solid ${palette.coolGrey3};
   background-color: ${palette.white};
   font-family: 'Roboto', sans-serif;
   font-size: ${fontSizes.smallPlus};
   flex: 1;
+
+  width: calc(100vw - 130px);
+  position: sticky;
+  left: 24px;
 
   &:hover {
     & ${TemplateHandle}, ${AddPlaceholder} {

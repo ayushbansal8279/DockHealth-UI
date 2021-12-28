@@ -75,7 +75,7 @@ const ListDetailsHeader = props => {
   });
 
   return (
-    <LayoutHeader>
+    <LayoutHeader horizontalSticky>
       {taskList && !['INBOX', 'PUBLIC'].includes(listType) && (
         <Box position="absolute" top={listDescription ? 17 : 27} left={10}>
           <ListOptionsMenu list={taskList}>

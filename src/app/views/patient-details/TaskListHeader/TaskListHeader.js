@@ -11,21 +11,18 @@ const TaskListHeader = ({ list, refreshView, children }) => {
   const { listUsers } = list || {};
 
   return (
-    <ListDetailsContainer>
-      <ListDetailsHeader>
-        <ListNameContainer>
-          <ListDescription>{list?.listDescription}</ListDescription>
-        </ListNameContainer>
-        {listUsers?.length > 0 && (
-          <TaskListMembers
-            members={listUsers}
-            list={list}
-            refreshMembers={refreshView}
-          />
-        )}
-      </ListDetailsHeader>
-      {children}
-    </ListDetailsContainer>
+    <ListDetailsHeader>
+      <ListNameContainer>
+        <ListDescription>{list?.listDescription}</ListDescription>
+      </ListNameContainer>
+      {listUsers?.length > 0 && (
+        <TaskListMembers
+          members={listUsers}
+          list={list}
+          refreshMembers={refreshView}
+        />
+      )}
+    </ListDetailsHeader>
   );
 };
 

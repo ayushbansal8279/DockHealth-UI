@@ -9,19 +9,6 @@ export const DrawerContainer = styled.div`
   flex-flow: row nowrap;
 `;
 
-// export const useAppBarClasses = makeStyles({
-//   appBar: {
-//     display: 'block',
-//     backgroundColor: palette.white,
-//     color: palette.mediumGrey,
-//     fontSize: '2.25rem',
-//     height: 'auto',
-//     position: 'relative',
-//     width: '100%',
-//     boxShadow: 'none',
-//   },
-// });
-
 export const useDrawerClasses = makeStyles({
   drawer: {
     position: 'relative',
@@ -45,7 +32,7 @@ export const MainContainer = styled.div`
   display: flex;
   flex-direction: column;
   flex: 1;
-  overflow-x: hidden;
+  overflow-x: auto;
   overflow-y: auto;
   z-index: 9;
 `;
