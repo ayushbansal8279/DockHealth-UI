@@ -28,15 +28,6 @@ export const ActionsContainer = styled(Grid)`
   justify-content: flex-end;
 `;
 
-export const SearchGrid = styled(({ isFocused, ...otherProps }) => (
-  <Grid {...otherProps} />
-))`
-  display: flex;
-  width: ${({ isFocused }) => (isFocused ? 300 : 115)}px;
-  transition: width 0.2s ease-out;
-  justify-content: flex-end;
-`;
-
 export const StickyHeader = styled.div`
   position: sticky;
   top: 0;
