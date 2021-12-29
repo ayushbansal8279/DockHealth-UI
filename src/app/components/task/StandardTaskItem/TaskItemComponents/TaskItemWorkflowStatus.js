@@ -8,6 +8,7 @@ import {
   StandardTaskItemCell,
   StatusName,
   StatusWrapper,
+  StatusBar,
 } from '../../styled';
 
 const TaskItemWorkflowStatus = ({
@@ -47,6 +48,7 @@ const TaskItemWorkflowStatus = ({
       >
         {workflowStatus ? (
           <StatusWrapper>
+            <StatusBar color={workflowStatus?.color} />
             <Tooltip title={name} placement="top" hideTooltip={!tooltipVisible}>
               <StatusName ref={statusNameReference}>
                 {matchWorkflowStatus ? (

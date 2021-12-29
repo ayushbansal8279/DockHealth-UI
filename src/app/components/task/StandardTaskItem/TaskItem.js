@@ -54,7 +54,6 @@ import {
   PriorityIndicator,
   DependencyIconContainer,
   StickyColumnContainer,
-  StatusBar,
 } from '../styled';
 import TaskItemContextMenu from '../TaskItemContextMenu/TaskItemContextMenu';
 
@@ -398,7 +397,7 @@ const TaskItem = ({
               showDraggableDots={showDraggableDots}
               dragHandleProps={dragHandleProps}
             />
-            {workflowStatus && <StatusBar color={workflowStatus?.color} />}
+            {/* {workflowStatus && <StatusBar color={workflowStatus?.color} />} */}
             {showPriority && <PriorityIndicator />}
             {showSubtaskStylingLink && getSubtaskStylingLink(isLast)}
             {bulkEditEnabled && (

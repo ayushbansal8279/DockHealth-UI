@@ -12,6 +12,7 @@ import InboxHelpPanel from './InboxHelpPanel/InboxHelpPanel';
 import initializeListDetailsViewHooks from './hooks';
 import { TaskViewContainer } from './styled';
 import ListDetailsHeader from './ListDetailsHeader/ListDetailsHeader';
+import ListDetailsToolbar from './ListDetailsToolbar/ListDetailsToolbar';
 
 const ListDetailsView = props => {
   const { match, history } = props;
@@ -79,7 +80,7 @@ const ListDetailsView = props => {
       >
         <div>
           <TaskViewContainer>
-            <ListDetailsToolbarContainer
+            {/* <ListDetailsToolbarContainer
               onColumnSetupChange={setDisplayColumnPreferences}
               members={members}
               showMembers={taskList?.listType !== 'PUBLIC'}
@@ -117,7 +118,8 @@ const ListDetailsView = props => {
                   checked: displayListPreferences.SHOW_WORKFLOW_COMPLETED_TASKS,
                 },
               ]}
-            />
+            /> */}
+            <ListDetailsToolbar />
             {viewType === ViewType.CALENDAR_VIEW && (
               <Calendar
                 taskList={[...openedTasks, ...completedTasks]}

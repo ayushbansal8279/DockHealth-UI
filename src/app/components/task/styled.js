@@ -321,12 +321,13 @@ export const StandardTaskItemContainer = styled.div`
 
 export const StatusBar = styled.div`
   background-color: ${props => props.color};
-  height: 100%;
+  height: calc(100% - 2px);
   top: 0;
   left: 0;
   position: absolute;
   width: 6px;
-  z-index: 12;
+  top: 50%;
+  transform: translateY(-50%);
 `;
 
 export const TaskIconsBox = styled.div`
