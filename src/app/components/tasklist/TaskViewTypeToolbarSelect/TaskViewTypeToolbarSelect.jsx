@@ -5,7 +5,7 @@ import { ViewType } from 'helpers/view-type-helper';
 
 const OPTIONS = [
   {
-    label: 'List view',
+    label: 'Table view',
     value: ViewType.LIST_VIEW,
   },
   {

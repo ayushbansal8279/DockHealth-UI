@@ -1,6 +1,6 @@
 import React from 'react';
 import { TaskListTabName } from 'helpers/tasklist-helpers';
-import Toolbar from 'components/tasklist/Toolbar/NewToolbar';
+import Toolbar from 'components/tasklist/Toolbar/Toolbar';
 
 const ListDetailsToolbarContainer = props => {
   const {

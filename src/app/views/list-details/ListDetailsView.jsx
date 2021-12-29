@@ -119,7 +119,10 @@ const ListDetailsView = props => {
                 },
               ]}
             /> */}
-            <ListDetailsToolbar />
+            <ListDetailsToolbar
+              onSelectTab={navigateToTab}
+              selectedTab={selectedTab}
+            />
             {viewType === ViewType.CALENDAR_VIEW && (
               <Calendar
                 taskList={[...openedTasks, ...completedTasks]}
