@@ -4,6 +4,13 @@ import spacing from 'styles/spacing';
 import { fontWeights, fontSizes } from 'styles/font';
 import palette from 'styles/palette';
 
+export const GroupOptionsContainer = styled.div`
+  position: absolute;
+  left: -20px;
+  top: 50%;
+  transform: translateY(-80%);
+`;
+
 export const StickyContainer = styled.div`
   width: calc(100vw - 130px);
   position: sticky;
