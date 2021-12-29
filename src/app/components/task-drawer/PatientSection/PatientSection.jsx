@@ -33,12 +33,14 @@ const PatientSection = ({
   const dispatch = useDispatch();
   const patientInputReference = useRef(null);
   const [patients, setPatients] = useState([]);
-  const [assignedPatient, setAssignedPatient] = useState();
+  const [assignedPatient, setAssignedPatient] = useState(null);
 
   useEffect(() => {
     if (selectedPatient) {
       setPatients([selectedPatient]);
       setAssignedPatient(getFormattedPatient(selectedPatient));
+    } else {
+      setAssignedPatient(null);
     }
   }, [selectedPatient]);
   const [isLoadingPatients, setIsLoadingPatients] = useState(true);
