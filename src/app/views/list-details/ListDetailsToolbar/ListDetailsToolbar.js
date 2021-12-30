@@ -1,5 +1,6 @@
 import React, { useCallback, useState } from 'react';
 import TaskViewTypeToolbarSelect from 'components/tasklist/TaskViewTypeToolbarSelect/TaskViewTypeToolbarSelect';
+import { Box } from '@material-ui/core';
 import TaskStatusToolbarSelect from 'components/tasklist/TaskStatusToolbarSelect/TaskStatusToolbarSelect';
 import InboxTips from 'components/tasklist/InboxTips/InboxTips';
 import { ViewType, getViewTypeFromQueryString } from 'helpers/view-type-helper';
@@ -26,8 +27,6 @@ const ListDetailsToolbar = ({
   const isListCreator =
     taskList?.creator?.identifier === currentUser.identifier;
 
-  console.log('taskList', taskList);
-
   const handleChangeViewType = useCallback(
     event => {
       const queryParameters = new URLSearchParams(search);
@@ -44,26 +43,31 @@ const ListDetailsToolbar = ({
 
   return (
     <ToolbarContainer>
-      {taskList?.listType === 'INBOX' && <InboxTips />}
-      <CustomizeToolbarButton
-        onChange={onColumnSetupChange}
-        openCustomFieldModal={() => setCustomFieldsModalOpened(true)}
-      />
-      <TaskViewTypeToolbarSelect
-        value={getViewTypeFromQueryString(search)}
-        onChange={handleChangeViewType}
-      />
-      <TaskStatusToolbarSelect
-        value={selectedTab}
-        onChange={event => onSelectTab(event.target.value)}
-      />
-      <TaskCustomFieldsModal
-        opened={customFieldsModalOpened}
-        handleClose={() => setCustomFieldsModalOpened(false)}
-        taskListIdentifier={taskList?.taskListIdentifier}
-        isOrganizationAdmin={isOrganizationAdmin}
-        isListCreator={isListCreator}
-      />
+      <Box>{taskList?.listType === 'INBOX' && <InboxTips />}</Box>
+      <Box display="flex" flex={1} justifyContent="flex-end">
+        <CustomizeToolbarButton
+          onChange={onColumnSetupChange}
+          openCustomFieldModal={() => setCustomFieldsModalOpened(true)}
+        />
+        <Box mx={0.5} />
+        <TaskViewTypeToolbarSelect
+          value={getViewTypeFromQueryString(search)}
+          onChange={handleChangeViewType}
+        />
+        <Box mx={0.5} />
+        <TaskStatusToolbarSelect
+          value={selectedTab}
+          onChange={event => onSelectTab(event.target.value)}
+        />
+        <Box mx={0.5} />
+        <TaskCustomFieldsModal
+          opened={customFieldsModalOpened}
+          handleClose={() => setCustomFieldsModalOpened(false)}
+          taskListIdentifier={taskList?.taskListIdentifier}
+          isOrganizationAdmin={isOrganizationAdmin}
+          isListCreator={isListCreator}
+        />
+      </Box>
     </ToolbarContainer>
   );
 };
