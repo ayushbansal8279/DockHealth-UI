@@ -7,21 +7,17 @@ import { getPatientListIdentifierByUrlParameter } from 'helpers/patient-list-hel
 import { useBoolean } from 'hooks/useBoolean';
 import * as PatientsActions from 'actions/patients-actions';
 import * as PatientApi from 'api/patient-api';
-import { setHeader } from 'actions/template-actions';
+import ViewLayout from 'components/template/ViewLayout/ViewLayout';
+import BasicLayoutHeader from 'components/template/BasicLayoutHeader/BasicLayoutHeader';
 import {
   patientsListDetailsSelector,
   patientsSelector,
   isFetchingPatientsSelector,
   patientsListSearchTermSelector,
 } from 'selectors/patients-selectors';
-import GenericHeader from 'components/template/GenericHeader/GenericHeader';
 import PatientsList from './PatientsList/PatientsList';
 import PatientsToolbar from './PatientsToolbar/PatientsToolbar';
-import {
-  PatientsViewContainer,
-  PatientsListDescription,
-  PatientsListContainer,
-} from './styled';
+import { PatientsViewContainer, PatientsListContainer } from './styled';
 
 const PatientsView = () => {
   const dispatch = useDispatch();
@@ -47,30 +43,6 @@ const PatientsView = () => {
   useEffect(() => {
     dispatch(PatientsActions.initializePatientsListState(listIdentifier));
   }, [dispatch, listIdentifier]);
-
-  useEffect(() => {
-    if (listName) {
-      dispatch(
-        setHeader({
-          layout: [
-            {
-              key: 'patients-view-header',
-              component: (
-                <>
-                  <GenericHeader>
-                    {listName}
-                    <PatientsListDescription>
-                      {listDescription}
-                    </PatientsListDescription>
-                  </GenericHeader>
-                </>
-              ),
-            },
-          ],
-        }),
-      );
-    }
-  }, [dispatch, listDescription, listName]);
 
   const refreshPatients = useCallback(() => {
     dispatch(PatientsActions.getCurrentPatients());
@@ -107,25 +79,31 @@ const PatientsView = () => {
   );
 
   return (
-    <PatientsViewContainer>
-      <PatientsToolbar
-        refreshPatientList={refreshPatientList}
-        setImportPopoverOpen={setImportPopoverOpen}
-      />
-      <PatientsListContainer>
-        <Grid container>
-          <PatientsList
-            isFiltered={searchValue}
-            patients={patients}
-            patientImportDetails={patientImportDetails}
-            importPopoverOpen={importPopoverOpen}
-            setImportPopoverOpen={setImportPopoverOpen}
-            hasImportErrors={hasImportErrors}
-            isFetching={isFetchingPatients && !patients}
-          />
-        </Grid>
-      </PatientsListContainer>
-    </PatientsViewContainer>
+    <ViewLayout
+      header={
+        <BasicLayoutHeader title={listName} description={listDescription} />
+      }
+    >
+      <PatientsViewContainer>
+        <PatientsToolbar
+          refreshPatientList={refreshPatientList}
+          setImportPopoverOpen={setImportPopoverOpen}
+        />
+        <PatientsListContainer>
+          <Grid container>
+            <PatientsList
+              isFiltered={searchValue}
+              patients={patients}
+              patientImportDetails={patientImportDetails}
+              importPopoverOpen={importPopoverOpen}
+              setImportPopoverOpen={setImportPopoverOpen}
+              hasImportErrors={hasImportErrors}
+              isFetching={isFetchingPatients && !patients}
+            />
+          </Grid>
+        </PatientsListContainer>
+      </PatientsViewContainer>
+    </ViewLayout>
   );
 };
 

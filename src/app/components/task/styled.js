@@ -74,6 +74,44 @@ export const PriorityIndicator = styled.div`
   left: 0;
 `;
 
+export const StickyColumnContainer = styled.div`
+  display: flex;
+  width: 100%;
+  position: sticky;
+  left: ${({ isSubtask }) => (isSubtask ? '61px' : '24px')};
+  z-index: 11;
+  border-right: 1px solid ${palette.coolGrey3};
+  border-left: 1px solid ${palette.coolGrey3};
+  min-width: 200px;
+
+  &::before {
+    content: '';
+    display: block;
+    background: ${({ backgroundColor }) =>
+      backgroundColor || palette.coolGrey4};
+    position: absolute;
+    left: -101px;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 100px;
+    height: calc(100% + 4px);
+    z-index: -1;
+  }
+
+  &::after {
+    content: '';
+    display: block;
+    background: ${palette.white};
+    position: absolute;
+    left: 0px;
+    top: 50%;
+    width: 100%;
+    height: calc(100% - 2px);
+    z-index: -1;
+    transform: translateY(-50%);
+  }
+`;
+
 export const DependencyIconContainer = styled.div`
   margin-right: ${spacing.small};
 `;
@@ -229,7 +267,6 @@ export const SubtasksGroupLabel = styled.span`
 `;
 
 export const StandardTaskItemCell = styled.div`
-  position: ${({ position }) => position || 'relative'};
   align-items: ${({ alignItems }) => alignItems || 'center'};
   border-right: 1px solid ${palette.coolGrey3};
   color: ${props => props.color || palette.mediumGrey};
@@ -249,6 +286,7 @@ export const StandardTaskItemCell = styled.div`
   width: ${props => (!props.width ? '100%' : '')};
   justify-content: ${props => props.justify || 'flex-start'};
   overflow: hidden;
+  position: relative;
 
   &:last-of-type {
     border-right: 0;
@@ -277,6 +315,7 @@ export const StandardTaskItemContainer = styled.div`
   width: 100%;
   height: ${({ height }) => height || 35}px;
   border-top: none;
+  border-left: none;
   transition: background-color 0.3s ease-out;
 `;
 
@@ -287,6 +326,7 @@ export const StatusBar = styled.div`
   left: 0;
   position: absolute;
   width: 6px;
+  z-index: 12;
 `;
 
 export const TaskIconsBox = styled.div`
@@ -313,6 +353,7 @@ export const StandardTaskThreeDots = styled(ThreeDots)`
   left: -12px;
   background-color: ${palette.coolGrey4};
   padding: 2px 1px 2px 2px;
+  z-index: 12;
 `;
 
 export const StandardTaskItemPanel = styled.div`

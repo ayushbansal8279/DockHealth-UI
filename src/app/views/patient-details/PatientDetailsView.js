@@ -25,19 +25,17 @@ import {
   selectedFiltersInMegaFilterSelector,
 } from 'selectors/mega-filter-selectors';
 import { userProfileSelector } from 'selectors/user-selectors';
-import { useBoolean } from 'hooks/useBoolean';
 import {
   setPatientTaskSearch,
   patientTasksFilterChange,
 } from 'sagas/patient-details-saga';
 import { onSearchChanged } from 'helpers/ga-event-helper';
 import { RouteWrapper } from 'routing/components';
-import Spacing from 'components/common/Spacing';
 import MegaFilter from 'components/tasklist/MegaFilter/MegaFilter';
-import GenericHeader from 'components/template/GenericHeader/GenericHeader';
-import Search from 'components/task-view/Search/Search';
 import * as TaskActions from 'actions/task-actions';
-import { setHeader } from 'actions/template-actions';
+import LayoutHeader from 'components/template/LayoutHeader/LayoutHeader';
+import HeaderSearch from 'components/template/HeaderSearch/HeaderSearch';
+import ViewLayout from 'components/template/ViewLayout/ViewLayout';
 import { getPatientFilterOptions } from 'actions/patient-details-actions';
 import { getCustomerTypeLabel } from 'helpers/customer-type-helper';
 import { capitalize } from 'helpers/capitalize';
@@ -47,8 +45,8 @@ import PatientDetailsHeader from './PatientDetailsHeader/PatientDetailsHeader';
 import {
   PatientDetailsContainer,
   PatientDetailsTabsContainer,
-  SearchWrapper,
   MainTab,
+  PatientStickyContainer,
 } from './styled';
 import PatientTasksList from './PatientTasksList/PatientTasksList';
 import PatientNotes from './PatientNotes/PatientNotes';
@@ -79,11 +77,6 @@ const DEFAULT_TAB = TABS_CONFIG[0];
 
 const PatientDetailsView = () => {
   const { patientIdentifier } = useParams();
-  const [
-    isSearchFocused,
-    setIsSearchFocused,
-    unsetIsSearchFocused,
-  ] = useBoolean(false);
   const [searchValue, setSearchValue] = useState('');
   const dispatch = useDispatch();
   const history = useHistory();
@@ -95,6 +88,7 @@ const PatientDetailsView = () => {
   const filters = useSelector(availableFiltersInInMegaFilterSelector);
   const selectedFilters = useSelector(selectedFiltersInMegaFilterSelector);
   const pusher = useRef(initializePusher());
+  const customerTypeLabel = getCustomerTypeLabel(currentUser);
 
   useEffect(() => {
     (async () => {
@@ -155,26 +149,6 @@ const PatientDetailsView = () => {
     return DEFAULT_TAB.mainPath;
   }, [pathname]);
 
-  useEffect(() => {
-    const customerTypeLabel = getCustomerTypeLabel(currentUser);
-
-    dispatch(
-      setHeader({
-        layout: [
-          {
-            key: 'patients-header',
-            component: (
-              <>
-                <GenericHeader>{capitalize(customerTypeLabel)}</GenericHeader>
-              </>
-            ),
-          },
-        ],
-      }),
-    );
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
-
   const handleTabChange = (_, newTabValue) => {
     history.push(`${url}/${newTabValue}`);
   };
@@ -187,8 +161,7 @@ const PatientDetailsView = () => {
     [setPatientTaskSearch, onSearchChanged],
   );
 
-  const handleSearchValueChange = event => {
-    const newValue = event.target?.value;
+  const handleSearchValueChange = newValue => {
     setSearchValue(newValue);
     onSearchChangedWithDebounce(newValue);
   };
@@ -196,12 +169,31 @@ const PatientDetailsView = () => {
   const handleFilterChange = compose(dispatch, patientTasksFilterChange);
 
   return (
-    <div>
+    <ViewLayout
+      header={
+        <LayoutHeader>
+          <LayoutHeader.Title title={capitalize(customerTypeLabel)} />
+          <LayoutHeader.Spacer />
+          <HeaderSearch
+            value={searchValue}
+            onChange={handleSearchValueChange}
+          />
+          <LayoutHeader.Spacer />
+          <MegaFilter
+            filters={filters}
+            selectedFilters={selectedFilters}
+            onSelectFilters={handleFilterChange}
+            isFetching={isFetchingLists}
+            onOpen={() => dispatch(getPatientFilterOptions(patientIdentifier))}
+          />
+        </LayoutHeader>
+      }
+    >
       <ColumnsConfigProvider>
-        <PatientDetailsHeader />
-        <PatientDetailsTabsContainer>
-          <Grid container justify="space-between">
-            <Grid item xs={8}>
+        <PatientStickyContainer>
+          <PatientDetailsHeader />
+          <PatientDetailsTabsContainer>
+            <Grid container>
               <Tabs value={activeTabPath} onChange={handleTabChange}>
                 {TABS_CONFIG.map(t => (
                   <MainTab
@@ -212,41 +204,8 @@ const PatientDetailsView = () => {
                 ))}
               </Tabs>
             </Grid>
-            {activeTabPath === 'tasks' && (
-              <Grid
-                container
-                item
-                xs={4}
-                justify="flex-end"
-                alignItems="center"
-              >
-                <MegaFilter
-                  filters={filters}
-                  selectedFilters={selectedFilters}
-                  onSelectFilters={handleFilterChange}
-                  isFetching={isFetchingLists}
-                  onOpen={() =>
-                    dispatch(getPatientFilterOptions(patientIdentifier))
-                  }
-                />
-                <Spacing horizontal={5} />
-                <SearchWrapper fullWidth={isSearchFocused || searchValue}>
-                  <Search
-                    fullWidth
-                    noBackground
-                    value={searchValue}
-                    onFocus={setIsSearchFocused}
-                    onBlur={unsetIsSearchFocused}
-                    onChange={handleSearchValueChange}
-                    placeholder={
-                      isSearchFocused ? 'Search Tasks and Comments' : 'Search'
-                    }
-                  />
-                </SearchWrapper>
-              </Grid>
-            )}
-          </Grid>
-        </PatientDetailsTabsContainer>
+          </PatientDetailsTabsContainer>
+        </PatientStickyContainer>
         <PatientDetailsContainer>
           <Switch>
             {TABS_CONFIG?.map(route => (
@@ -275,7 +234,7 @@ const PatientDetailsView = () => {
           </Switch>
         </PatientDetailsContainer>
       </ColumnsConfigProvider>
-    </div>
+    </ViewLayout>
   );
 };
 

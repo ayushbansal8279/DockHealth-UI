@@ -1,17 +1,24 @@
-import { bool, arrayOf, string, objectOf, func, shape } from 'prop-types';
+import { arrayOf, string, objectOf, func, shape } from 'prop-types';
 import React, { useCallback } from 'react';
 import { isUserGroup } from 'helpers/user-helper';
 import UserAvatar from 'components/user/UserAvatar/UserAvatar';
 import GroupAvatar from 'components/user/GroupAvatar/GroupAvatar';
 import {
   FilterOptionsCategory,
+  isOptionSelected,
   selectFilterOption,
   unselectFilterOption,
 } from 'helpers/filter-options-helpers';
 
 const AvatarFilterMember = props => {
-  const { onSelectFilters, selectedFilters, isSelected, member } = props;
+  const { onSelectFilters, selectedFilters, member } = props;
   const { identifier } = member || {};
+
+  const isSelected = isOptionSelected(
+    FilterOptionsCategory.ASSIGNED_TO,
+    member?.identifier,
+    selectedFilters,
+  );
 
   const toggleSelect = useCallback(() => {
     if (isSelected) {
@@ -34,9 +41,19 @@ const AvatarFilterMember = props => {
   }, [identifier, selectedFilters, isSelected, onSelectFilters]);
 
   return isUserGroup(member) ? (
-    <GroupAvatar onClick={toggleSelect} {...props} group={member} />
+    <GroupAvatar
+      isSelected={isSelected}
+      onClick={toggleSelect}
+      {...props}
+      group={member}
+    />
   ) : (
-    <UserAvatar onClick={toggleSelect} {...props} user={member} />
+    <UserAvatar
+      isSelected={isSelected}
+      onClick={toggleSelect}
+      {...props}
+      user={member}
+    />
   );
 };
 
@@ -48,14 +65,12 @@ AvatarFilterMember.propTypes = {
     initials: string,
     profileThumbnailPictureHash: string,
   }),
-  isSelected: bool,
   onSelectFilters: func.isRequired,
   selectedFilters: objectOf(arrayOf(string)).isRequired,
 };
 
 AvatarFilterMember.defaultProps = {
   member: null,
-  isSelected: false,
 };
 
 export default AvatarFilterMember;

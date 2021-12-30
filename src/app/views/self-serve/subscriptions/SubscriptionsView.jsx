@@ -19,12 +19,12 @@ import {
 import { checkIfUserIsOrganizationAdmin } from 'helpers/user-helper';
 import { userProfileSelector } from 'selectors/user-selectors';
 import Button from 'components/common/Button/Button';
+import ViewLayout from 'components/template/ViewLayout/ViewLayout';
+import BasicLayoutHeader from 'components/template/BasicLayoutHeader/BasicLayoutHeader';
 import {
   currentSubscriptionPlanSelector,
   isSavingNewPlanSelector,
 } from 'selectors/organization-selectors';
-import { setHeader } from 'actions/template-actions';
-import GenericHeader from 'components/template/GenericHeader/GenericHeader';
 import { getUserByEmail } from 'api/user-auth-api';
 import CurrentPlan from './CurrentPlan/CurrentPlan';
 import SubscriptionPlanTail from './SubscriptionPlanTail/SubscriptionPlanTail';
@@ -78,18 +78,6 @@ const SubscriptionsView = () => {
   }, [currentUser]);
 
   useEffect(() => {
-    dispatch(
-      setHeader({
-        layout: [
-          {
-            key: 'title',
-            component: <GenericHeader>Subscriptions</GenericHeader>,
-            alignItems: 'center',
-          },
-        ],
-      }),
-    );
-
     dispatch(getBillingEstimate());
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
@@ -175,170 +163,172 @@ const SubscriptionsView = () => {
     ?.trialEndDate;
 
   return (
-    <SubscriptionsViewOuterContainer>
-      <SubscriptionsViewContainer>
-        {currentSubscriptionPlan && (
-          <CurrentPlan currentSubscriptionPlan={currentSubscriptionPlan} />
-        )}
-        <Box p={2} />
-        <Box
-          width="100%"
-          display="flex"
-          justifyContent="space-between"
-          alignItems="center"
-        >
-          <SubscriptionsTitle>
-            {hasExistingSubscription
-              ? 'Available plans'
-              : `Select the plan that's right for you`}
-          </SubscriptionsTitle>
-          <SwitchContainer>
-            <SwitchLabel
-              active={selectedBillingFrequency === BillingFrequency.ANNUAL}
-            >
-              Yearly
-            </SwitchLabel>
-            <Switch
-              checked={selectedBillingFrequency === BillingFrequency.MONTHLY}
-              onChange={event =>
-                setSelectedBillingFrequency(
-                  event.target.checked
-                    ? BillingFrequency.MONTHLY
-                    : BillingFrequency.ANNUAL,
-                )
-              }
-            />
-            <SwitchLabel
-              active={selectedBillingFrequency === BillingFrequency.MONTHLY}
-            >
-              Monthly
-            </SwitchLabel>
-          </SwitchContainer>
-        </Box>
-        <Box p={1} />
-        <SubscriptionPlansContainer>
-          <Box display="flex" justifyContent="space-between">
-            {SUBSCRIPTION_PLANS.map(plan => (
-              <SubscriptionPlanTail
-                key={plan.key}
-                active={subscriptionPlan === plan.subscriptionPlan}
-                selected={selectedPlan === plan.subscriptionPlan}
-                plan={plan}
-                hasExistingSubscription={hasExistingSubscription}
-                billingFrequency={selectedBillingFrequency}
-                onSelect={newPlan => {
-                  if (newPlan === selectedPlan) {
-                    setSelectedPlan(subscriptionPlan);
-                  } else {
-                    setSelectedPlan(newPlan);
-                    scrollReference.current.scrollIntoView({
-                      behavior: 'smooth',
-                    });
-                  }
-                }}
-              />
-            ))}
-          </Box>
-          {!professionalServicesIncluded && (
-            <>
-              <Box
-                width="100%"
-                display="flex"
-                justifyContent="space-between"
-                alignItems="center"
-                my={2}
-              >
-                <ProfessionalServicesTitle>
-                  Include Professional Services:
-                </ProfessionalServicesTitle>
-                <SwitchContainer>
-                  <SwitchLabel active={!selectedProfessionalServices}>
-                    No
-                  </SwitchLabel>
-                  <Switch
-                    checked={selectedProfessionalServices}
-                    disabled={!selectedPlan || selectedPlan.includes('TRIAL')}
-                    onChange={event =>
-                      setSelectedProfessionalServices(event.target.checked)
-                    }
-                  />
-                  <SwitchLabel active={selectedProfessionalServices}>
-                    Yes
-                  </SwitchLabel>
-                </SwitchContainer>
-              </Box>
-              <ProfessionalServicesTail />
-            </>
+    <ViewLayout header={<BasicLayoutHeader title="Subscriptions" />}>
+      <SubscriptionsViewOuterContainer>
+        <SubscriptionsViewContainer>
+          {currentSubscriptionPlan && (
+            <CurrentPlan currentSubscriptionPlan={currentSubscriptionPlan} />
           )}
+          <Box p={2} />
+          <Box
+            width="100%"
+            display="flex"
+            justifyContent="space-between"
+            alignItems="center"
+          >
+            <SubscriptionsTitle>
+              {hasExistingSubscription
+                ? 'Available plans'
+                : `Select the plan that's right for you`}
+            </SubscriptionsTitle>
+            <SwitchContainer>
+              <SwitchLabel
+                active={selectedBillingFrequency === BillingFrequency.ANNUAL}
+              >
+                Yearly
+              </SwitchLabel>
+              <Switch
+                checked={selectedBillingFrequency === BillingFrequency.MONTHLY}
+                onChange={event =>
+                  setSelectedBillingFrequency(
+                    event.target.checked
+                      ? BillingFrequency.MONTHLY
+                      : BillingFrequency.ANNUAL,
+                  )
+                }
+              />
+              <SwitchLabel
+                active={selectedBillingFrequency === BillingFrequency.MONTHLY}
+              >
+                Monthly
+              </SwitchLabel>
+            </SwitchContainer>
+          </Box>
           <Box p={1} />
-          <Title>
-            Billing <SubTitleDescription>Est</SubTitleDescription>
-          </Title>
-          <Box p={1} />
-          <BillingTable>
-            <BillingTableHeaderRow>
-              <BillingTableHeaderCell>Plan</BillingTableHeaderCell>
-              <BillingTableHeaderCell>Count</BillingTableHeaderCell>
-              <BillingTableHeaderCell>Cost</BillingTableHeaderCell>
-            </BillingTableHeaderRow>
-            <BillingTableRow>
-              <BillingTableCell>
-                {selectedBillingFrequency === BillingFrequency.ANNUAL
-                  ? 'Annual'
-                  : 'Monthly'}{' '}
-                Plan
-              </BillingTableCell>
-              <BillingTableCell>{activeUserCount} users</BillingTableCell>
-              <BillingTableCell>
-                {priceFormatter(
-                  selectedBillingFrequency === BillingFrequency.ANNUAL
-                    ? selectedPlanDetails?.annualPrice
-                    : selectedPlanDetails?.monthlyPrice,
-                )}{' '}
-                /{' '}
-                {selectedBillingFrequency === BillingFrequency.ANNUAL
-                  ? 'year'
-                  : 'month'}
-              </BillingTableCell>
-            </BillingTableRow>
-            {includeProfessionalServices && (
+          <SubscriptionPlansContainer>
+            <Box display="flex" justifyContent="space-between">
+              {SUBSCRIPTION_PLANS.map(plan => (
+                <SubscriptionPlanTail
+                  key={plan.key}
+                  active={subscriptionPlan === plan.subscriptionPlan}
+                  selected={selectedPlan === plan.subscriptionPlan}
+                  plan={plan}
+                  hasExistingSubscription={hasExistingSubscription}
+                  billingFrequency={selectedBillingFrequency}
+                  onSelect={newPlan => {
+                    if (newPlan === selectedPlan) {
+                      setSelectedPlan(subscriptionPlan);
+                    } else {
+                      setSelectedPlan(newPlan);
+                      scrollReference.current.scrollIntoView({
+                        behavior: 'smooth',
+                      });
+                    }
+                  }}
+                />
+              ))}
+            </Box>
+            {!professionalServicesIncluded && (
+              <>
+                <Box
+                  width="100%"
+                  display="flex"
+                  justifyContent="space-between"
+                  alignItems="center"
+                  my={2}
+                >
+                  <ProfessionalServicesTitle>
+                    Include Professional Services:
+                  </ProfessionalServicesTitle>
+                  <SwitchContainer>
+                    <SwitchLabel active={!selectedProfessionalServices}>
+                      No
+                    </SwitchLabel>
+                    <Switch
+                      checked={selectedProfessionalServices}
+                      disabled={!selectedPlan || selectedPlan.includes('TRIAL')}
+                      onChange={event =>
+                        setSelectedProfessionalServices(event.target.checked)
+                      }
+                    />
+                    <SwitchLabel active={selectedProfessionalServices}>
+                      Yes
+                    </SwitchLabel>
+                  </SwitchContainer>
+                </Box>
+                <ProfessionalServicesTail />
+              </>
+            )}
+            <Box p={1} />
+            <Title>
+              Billing <SubTitleDescription>Est</SubTitleDescription>
+            </Title>
+            <Box p={1} />
+            <BillingTable>
+              <BillingTableHeaderRow>
+                <BillingTableHeaderCell>Plan</BillingTableHeaderCell>
+                <BillingTableHeaderCell>Count</BillingTableHeaderCell>
+                <BillingTableHeaderCell>Cost</BillingTableHeaderCell>
+              </BillingTableHeaderRow>
               <BillingTableRow>
-                <BillingTableCell>Professional Services</BillingTableCell>
-                <BillingTableCell />
                 <BillingTableCell>
-                  {priceFormatter(PROFESSIONAL_SERVICES_PRICE)} / one time
+                  {selectedBillingFrequency === BillingFrequency.ANNUAL
+                    ? 'Annual'
+                    : 'Monthly'}{' '}
+                  Plan
+                </BillingTableCell>
+                <BillingTableCell>{activeUserCount} users</BillingTableCell>
+                <BillingTableCell>
+                  {priceFormatter(
+                    selectedBillingFrequency === BillingFrequency.ANNUAL
+                      ? selectedPlanDetails?.annualPrice
+                      : selectedPlanDetails?.monthlyPrice,
+                  )}{' '}
+                  /{' '}
+                  {selectedBillingFrequency === BillingFrequency.ANNUAL
+                    ? 'year'
+                    : 'month'}
                 </BillingTableCell>
               </BillingTableRow>
-            )}
-            <BillingTableSummaryRow>
-              <BillingTableCell>
-                <TitleDescription>Total</TitleDescription>{' '}
-                <SubTitleDescription>Est</SubTitleDescription>
-              </BillingTableCell>
-              <BillingTableCell />
-              <BillingTableCell>
-                {priceFormatter(getTotalPrice())}
-              </BillingTableCell>
-            </BillingTableSummaryRow>
-          </BillingTable>
-          <Box p={1} />
-          <Grid container justify="flex-end">
-            {isCurrentPlanChanged && (
-              <Button
-                width="200px"
-                disabled={isSavingNewPlan}
-                onClick={handleSubscriptionPlanBuy}
-              >
-                {isPlanTrial(subscriptionDetails)
-                  ? 'Buy this plan'
-                  : 'Update plan'}
-              </Button>
-            )}
-          </Grid>
-          <div ref={scrollReference} />
-        </SubscriptionPlansContainer>
-      </SubscriptionsViewContainer>
-    </SubscriptionsViewOuterContainer>
+              {includeProfessionalServices && (
+                <BillingTableRow>
+                  <BillingTableCell>Professional Services</BillingTableCell>
+                  <BillingTableCell />
+                  <BillingTableCell>
+                    {priceFormatter(PROFESSIONAL_SERVICES_PRICE)} / one time
+                  </BillingTableCell>
+                </BillingTableRow>
+              )}
+              <BillingTableSummaryRow>
+                <BillingTableCell>
+                  <TitleDescription>Total</TitleDescription>{' '}
+                  <SubTitleDescription>Est</SubTitleDescription>
+                </BillingTableCell>
+                <BillingTableCell />
+                <BillingTableCell>
+                  {priceFormatter(getTotalPrice())}
+                </BillingTableCell>
+              </BillingTableSummaryRow>
+            </BillingTable>
+            <Box p={1} />
+            <Grid container justify="flex-end">
+              {isCurrentPlanChanged && (
+                <Button
+                  width="200px"
+                  disabled={isSavingNewPlan}
+                  onClick={handleSubscriptionPlanBuy}
+                >
+                  {isPlanTrial(subscriptionDetails)
+                    ? 'Buy this plan'
+                    : 'Update plan'}
+                </Button>
+              )}
+            </Grid>
+            <div ref={scrollReference} />
+          </SubscriptionPlansContainer>
+        </SubscriptionsViewContainer>
+      </SubscriptionsViewOuterContainer>
+    </ViewLayout>
   );
 };
 

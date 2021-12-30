@@ -55,8 +55,6 @@ const Calendar = ({
 
   const uniqueTasks = dedupe(tasks);
 
-  // console.log('tasks', tasks);
-
   const handleEventClick = useCallback(
     data => {
       const { id } = data.event;

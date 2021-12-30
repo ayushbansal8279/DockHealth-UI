@@ -11,7 +11,6 @@ import { connect, useDispatch, useSelector } from 'react-redux';
 import { useHistory, useLocation } from 'react-router-dom';
 import { identity, isEmpty } from 'ramda';
 import { bindActionCreators } from 'redux';
-import debounce from 'lodash.debounce';
 import EmptyTaskListBird from 'img/animals/bird';
 import EmptyTaskListAlpaca from 'img/animals/alpaca';
 import { Grid } from '@material-ui/core';
@@ -24,8 +23,8 @@ import {
   dashboardTasksIsLoadingSelector,
   dashboardAllTaskItemsSelector,
   dashboardTabNameSelector,
+  dashboardSearchValueSelector,
 } from 'selectors/dashboard-tasks-selectors';
-import * as MegaFilterActions from 'actions/mega-filter-actions';
 import { userProfileDashboardPrefsSelector } from 'selectors/user-selectors';
 import {
   selectedTaskIdentifierSelector,
@@ -33,13 +32,10 @@ import {
 } from 'selectors/task-drawer-selectors';
 import DashboardNewUserInfo from 'views/dashboard/DashboardNewUserInfo/DashboardNewUserInfo';
 import NoSearchResultsView from 'components/tasklist/EmptyListView/NoSearchResultsView';
-import Search from 'components/task-view/Search/Search';
 import EmptyListView from 'components/tasklist/EmptyListView/EmptyListView';
 import {
   getDashboardFilters,
   getDashboardTasks,
-  initializeDashboardState,
-  searchDashboardTasks,
 } from 'actions/dashboard-actions';
 import { HOME_ALL_TASKS_PATH, HOME_PATH } from 'routing/helpers/paths';
 import {
@@ -47,18 +43,13 @@ import {
   TASK_ITEM_SORT_METHODS,
   TASK_ITEM_SORT_DESC_METHODS,
 } from 'helpers/task-helpers';
-import usePrevious from 'hooks/use-previous';
 import * as TaskActions from 'actions/task-actions';
 import * as TaskDrawerActions from 'actions/task-drawer-actions';
 import { showNavbar as showNavbarAction } from 'actions/template-actions';
 import TaskDrawer from 'components/task-drawer/TaskDrawer/TaskDrawer';
-import MegaFilter from 'components/tasklist/MegaFilter/MegaFilter';
 import NoFilterResultsView from 'components/tasklist/EmptyListView/NoFilterResultsView';
-import {
-  megaFilterSelector,
-  hasFiltersAppliedSelector,
-} from 'selectors/mega-filter-selectors';
-import { onSearchChanged, onSortChanged } from 'helpers/ga-event-helper';
+import { hasFiltersAppliedSelector } from 'selectors/mega-filter-selectors';
+import { onSortChanged } from 'helpers/ga-event-helper';
 import { SortOrderType } from 'helpers/sorting-helper';
 import BulkEditSection from 'components/tasklist/BulkEditSection/BulkEditSection';
 import ColumnDisplaySettings from 'components/common/ColumnDisplaySettings/ColumnDisplaySettings';
@@ -75,14 +66,15 @@ import GroupedListSkeletonLoader from 'components/tasklist/GroupedListSkeletonLo
 import DashboardTasksGroup from './DashboardTasksGroup';
 import {
   ToolbarContainer,
-  SearchGrid,
   ActionsContainer,
   StickyHeader,
-  DasboardTabsContainer,
+  DashboardTabsContainer,
   DashboardTab as StyledDashboardTab,
   DashboardTabHighlight,
   EmptyStateContainer,
   TipsSwitchLabel,
+  VerticalScrollContainer,
+  DashboardTaskGroupsWrapper,
 } from './styled';
 
 const DASHBOARD_BASE_COLUMNS_CONFIG = {
@@ -124,8 +116,6 @@ export const DashboardTab = ({
   );
 };
 
-const debouncer = debounce(f => f(), 1100, { leading: true });
-
 const DashboardList = ({
   allDashboardTasks,
   dashboardTasks,
@@ -137,11 +127,11 @@ const DashboardList = ({
   isTaskDrawerOpen,
   selectedTaskIdentifier,
   userPreferColumns,
-  megaFilter,
   areFiltersApplied,
   tourModalIsOpen,
   openTourModal,
 }) => {
+  const searchValue = useSelector(dashboardSearchValueSelector);
   const dispatch = useDispatch();
   const history = useHistory();
   const { search } = useLocation();
@@ -153,17 +143,11 @@ const DashboardList = ({
     width: 0,
     left: 0,
   });
-  const [searchValue, setSearchValue] = useState('');
-  const previousSearchState = usePrevious({ searchValue });
-  const [searchFocused, setSearchFocused] = useState(false);
   const [currentSort, setCurrentSort] = useState({
     key: null,
     order: null,
   });
   const [completeTaskCount, setCompleteTaskCount] = useState(undefined);
-  const { filters, selectedFilters } = megaFilter;
-  const previousSelectedFilters = useRef(selectedFilters);
-  const previousSearchValue = useRef(null);
 
   useEffect(() => {
     const config =
@@ -180,14 +164,6 @@ const DashboardList = ({
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [setColumnsConfig, userPreferColumns]);
-
-  useEffect(() => {
-    previousSelectedFilters.current = selectedFilters;
-  }, [selectedFilters]);
-
-  useEffect(() => {
-    previousSearchValue.current = searchValue;
-  }, [searchValue]);
 
   const filteredDashboardTasks = dashboardTasks?.filter(
     taskGroupInfo => taskGroupInfo?.metricValue !== 0,
@@ -240,24 +216,7 @@ const DashboardList = ({
     }
   }, [currentUser, tabName]);
 
-  useEffect(
-    () =>
-      debouncer(() => {
-        if (searchValue !== previousSearchState?.searchValue && searchFocused) {
-          onSearchChanged();
-          dispatch(searchDashboardTasks(searchValue));
-        }
-
-        if (previousSearchState?.searchValue && !searchValue && searchFocused) {
-          dispatch(initializeDashboardState());
-        }
-      }),
-    [searchValue, searchFocused, previousSearchState, dispatch],
-  );
-
   useEffect(() => {
-    setSearchValue('');
-    setSearchFocused(false);
     resetSort();
   }, [tabName]);
 
@@ -314,16 +273,6 @@ const DashboardList = ({
     );
   };
 
-  const activeTasksCount = useMemo(
-    () =>
-      filteredDashboardTasks?.reduce(
-        (accumulator, currentValue) =>
-          accumulator + (currentValue?.tasks?.length || 0),
-        0,
-      ),
-    [filteredDashboardTasks],
-  );
-
   const handleTaskUpdate = useCallback(() => {
     dispatch(getDashboardFilters());
   }, [dispatch]);
@@ -372,11 +321,6 @@ const DashboardList = ({
     [search, history],
   );
 
-  const handleMegaFilterOpen = useCallback(() => {
-    if (!selectedFilters || isEmpty(selectedFilters))
-      dispatch(getDashboardFilters());
-  }, [dispatch, selectedFilters]);
-
   const tasks = useMemo(
     () =>
       filteredDashboardTasks.reduce((accumulator, value) => {
@@ -395,7 +339,7 @@ const DashboardList = ({
       <StickyHeader>
         <ToolbarContainer container direction="row" justify="space-between">
           <Grid item md={4}>
-            <DasboardTabsContainer>
+            <DashboardTabsContainer>
               <DashboardTab
                 label="My Tasks"
                 setHighlightPosition={setHighlightPosition}
@@ -413,38 +357,9 @@ const DashboardList = ({
                 isSelected={tabName === DashboardTasksTab.ALL_TASKS}
               />
               <DashboardTabHighlight {...highlightPosition} />
-            </DasboardTabsContainer>
+            </DashboardTabsContainer>
           </Grid>
           <ActionsContainer item md={8}>
-            <MegaFilter
-              filters={filters}
-              selectedFilters={selectedFilters}
-              onSelectFilters={sf =>
-                dispatch(
-                  MegaFilterActions.selectFiltersForMegaFilter(
-                    sf,
-                    'dashboard',
-                    tabName,
-                  ),
-                )
-              }
-              taskStatus="INCOMPLETE"
-              activeItemsAmount={activeTasksCount}
-              onOpen={handleMegaFilterOpen}
-              isFetching={dashboardTasksIsLoading}
-            />
-            <Spacing horizontal={4} />
-            <SearchGrid isFocused={searchFocused || searchValue}>
-              <Search
-                fullWidth
-                onFocus={() => setSearchFocused(true)}
-                onBlur={() => setSearchFocused(false)}
-                value={searchValue}
-                onChange={event => setSearchValue(event?.target?.value)}
-                placeholder="Search Tasks"
-              />
-            </SearchGrid>
-            <Spacing horizontal={4} />
             <OutlinedSelect
               width={170}
               name="viewType"
@@ -467,11 +382,11 @@ const DashboardList = ({
         <Calendar taskList={tasks} showInCompleteTasksOnly />
       )}
       {viewType === ViewType.LIST_VIEW && (
-        <>
+        <VerticalScrollContainer>
           {dashboardTasksIsLoading || completeTaskCount === undefined ? (
             <GroupedListSkeletonLoader numberOfGroups={3} />
           ) : (
-            <>
+            <DashboardTaskGroupsWrapper>
               {!isEmpty(filteredDashboardTasks) ? (
                 filteredDashboardTasks?.map(
                   item =>
@@ -501,9 +416,9 @@ const DashboardList = ({
               ) : (
                 <EmptyStateContainer>{renderEmptyState()}</EmptyStateContainer>
               )}
-            </>
+            </DashboardTaskGroupsWrapper>
           )}
-        </>
+        </VerticalScrollContainer>
       )}
       <TaskDrawer
         onTaskUpdate={handleTaskUpdate}
@@ -520,7 +435,6 @@ const mapStateToProps = state => ({
   dashboardTasksIsLoading: dashboardTasksIsLoadingSelector(state),
   selectedTaskIdentifier: selectedTaskIdentifierSelector(state),
   userPreferColumns: userProfileDashboardPrefsSelector(state),
-  megaFilter: megaFilterSelector(state),
   areFiltersApplied: hasFiltersAppliedSelector(state),
   isTaskDrawerOpen: taskDrawerOpenSelector(state),
 });

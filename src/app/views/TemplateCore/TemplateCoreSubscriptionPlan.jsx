@@ -56,7 +56,7 @@ const TemplateCoreSubscriptionPlan = ({
   }, [dispatch, history, onEnter, onLeave, setRedirection]);
 
   return (
-    <NavigationTemplate locationPathname={history?.location?.pathname}>
+    <NavigationTemplate>
       {!isLoading && (
         <Switch>
           {isLoaded &&

@@ -7,8 +7,9 @@ import palette from 'styles/palette';
 import { fontSizes, fontWeights } from 'styles/font';
 
 export const TaskCommentsContainer = styled(Collapse)`
-  width: 100%;
-  padding-right: 555px;
+  width: calc(100vw - 130px) !important;
+  position: sticky;
+  left: 24px;
 `;
 
 export const TaskCommentsPadding = styled.div`

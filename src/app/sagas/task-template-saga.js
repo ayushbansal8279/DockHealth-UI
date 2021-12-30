@@ -583,7 +583,7 @@ function* linkTasks({ source, target }) {
         ]);
         yield take(
           action =>
-            action.type === ActionTypes.UPDATE_TASK_SUCCESS &&
+            action.type === ActionTypes.REFRESH_TASK_SUCCESS &&
             action.task?.identifier === sourceTaskIdentifier,
         );
         yield put(TaskTemplateActions.deleteTemporaryElement(linkId));

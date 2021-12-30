@@ -17,7 +17,7 @@ import {
 } from './styled';
 
 const TaskListGroupCollapse = props => {
-  const { children, group, count } = props;
+  const { children, group, count, stickyHeader = false } = props;
   // TODO: remove or when group will be added
   const { 0: open, 3: toggleOpen } = useBoolean(true);
   const [viewType, setViewType] = useState(ViewType.SLIM_VIEW);
@@ -34,7 +34,7 @@ const TaskListGroupCollapse = props => {
 
   return (
     <Container>
-      <GroupHeader>
+      <GroupHeader stickyHeader={stickyHeader}>
         <Box
           display="flex"
           flex={1}

@@ -10,6 +10,7 @@ import React, {
 import { useSelector, useDispatch } from 'react-redux';
 import { isNil, pluck } from 'ramda';
 import { Grid } from '@material-ui/core';
+import MoreVert from '@material-ui/icons/MoreVert';
 import ArrowIcon from 'img/arrow';
 import * as TaskActions from 'actions/task-actions';
 import { checkIfAllTasksSelected } from 'helpers/bulk-edit-helpers';
@@ -27,10 +28,11 @@ import GroupNameSection from 'components/tasklist/GroupNameSection/GroupNameSect
 import ViewTypeSwitch, {
   ViewType,
 } from 'components/tasklist/ViewTypeSwitch/ViewTypeSwitch';
+import OptionsMenu from 'components/common/OptionsMenu/OptionsMenu';
+import palette from 'styles/palette';
 import TaskTemplateApplicator from 'components/task-template/TaskTemplateApplicator/TaskTemplateApplicator';
 import { addingNewSubtaskParentIdSelector } from 'selectors/task-drawer-selectors';
 
-import TasksGroupHeaderActionButtons from './TasksGroupHeaderActionButtons';
 import {
   TasksGroupContainer,
   TasksGroupHeader,
@@ -39,6 +41,8 @@ import {
   GroupNameSectionWrapper,
   TasksGroupLabelName,
   TasksGroupLabelCounter,
+  StickyContainer,
+  GroupOptionsContainer,
 } from './styled';
 import TasksHeader from '../TasksHeader/TasksHeader';
 
@@ -88,7 +92,6 @@ const TasksGroup = ({
     sessionStorageKey: groupSessionStorageKey,
   });
   const highlightTimeoutReference = useRef(null);
-  // const previousisOpen = usePrevious(isOpen);
 
   const isFullView =
     viewType === ViewType.FULL_VIEW || areFiltersApplied || isSearchApplied;
@@ -221,9 +224,42 @@ const TasksGroup = ({
     return null;
   };
 
+  const options = useMemo(
+    () => [
+      !isFirstGroup && {
+        name: 'Move up',
+        onClick: moveGroupUp,
+      },
+      !isLastGroup && {
+        name: 'Move down',
+        onClick: moveGroupDown,
+      },
+      !isDefaultGroup && {
+        name: 'Delete',
+        color: palette.red,
+        onClick: onDeleteGroup,
+      },
+    ],
+    [
+      isDefaultGroup,
+      isFirstGroup,
+      isLastGroup,
+      moveGroupDown,
+      moveGroupUp,
+      onDeleteGroup,
+    ],
+  );
+
   return (
     <TasksGroupContainer>
       <TasksGroupHeader>
+        {!isCompletedGroup && (
+          <GroupOptionsContainer>
+            <OptionsMenu options={options} placement="bottom-start">
+              <MoreVert color="primary" />
+            </OptionsMenu>
+          </GroupOptionsContainer>
+        )}
         <Arrow
           alt="arrow"
           isOpen={isOpen}
@@ -249,34 +285,28 @@ const TasksGroup = ({
             </TasksGroupLabel>
           </GroupNameSection>
         </GroupNameSectionWrapper>
-        {!isCompletedGroup && (
-          <TasksGroupHeaderActionButtons
-            isDefaultGroup={isDefaultGroup}
-            isFirstGroup={isFirstGroup}
-            isLastGroup={isLastGroup}
-            moveGroupUp={moveGroupUp}
-            moveGroupDown={moveGroupDown}
-            deleteGroup={onDeleteGroup}
-          />
-        )}
         {!changingGroupOrderDisabled && (
           <ViewTypeSwitch value={viewType} onChange={changeViewType} />
         )}
       </TasksGroupHeader>
       <Tasks timeout={150} in={isOpen}>
         {!!quickAddTask && !isSearchApplied && (
-          <Grid container>
-            <Grid item xs>
-              <QuickAddTaskInput
-                taskListIdentifier={taskListIdentifier}
-                quickAddTask={onQuickAddTask}
-                validator={quickTaskInputValidator}
-              />
+          <StickyContainer>
+            <Grid container>
+              <Grid item xs>
+                <QuickAddTaskInput
+                  taskListIdentifier={taskListIdentifier}
+                  quickAddTask={onQuickAddTask}
+                  validator={quickTaskInputValidator}
+                />
+              </Grid>
+              {applyTemplate && (
+                <TaskTemplateApplicator
+                  onTemplateSelect={handleTemplateSelect}
+                />
+              )}
             </Grid>
-            {applyTemplate && (
-              <TaskTemplateApplicator onTemplateSelect={handleTemplateSelect} />
-            )}
-          </Grid>
+          </StickyContainer>
         )}
         {(tasks?.length > 0 || isLoadingGroup) && (
           <TasksHeader

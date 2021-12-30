@@ -90,6 +90,7 @@ const TextEditor = React.forwardRef(
       highlightedValues,
       taskListIdentifier,
       oneline = false,
+      disableNativeLinks = false,
       disableMentions = false,
       minHeight,
     },
@@ -146,9 +147,10 @@ const TextEditor = React.forwardRef(
     };
 
     const handleClickAway = useCallback(() => {
-      setIsFocused(false);
-      onBlur(currentState);
-    }, [currentState, onBlur]);
+      if (isFocused) {
+        setIsFocused(false);
+      }
+    }, [isFocused]);
 
     const clearUsersSuggestions = () => {
       setUsersSuggestions([SUGGESTIONS_PLACEHOLDER]);
@@ -221,12 +223,17 @@ const TextEditor = React.forwardRef(
     const {
       MentionSuggestions: PatientsMentionSuggestions,
     } = patientMentionPlugin.current;
-    const plugins = [
-      usersMentionPlugin.current,
-      patientMentionPlugin.current,
-      linkifyPlugin.current,
-      staticToolbarPlugin.current,
-    ];
+
+    const plugins = useMemo(() => {
+      const pluginArray = [];
+      if (!disableMentions) {
+        pluginArray.push(usersMentionPlugin.current);
+        pluginArray.push(patientMentionPlugin.current);
+      }
+      if (showToolbar) pluginArray.push(staticToolbarPlugin.current);
+      if (!disableNativeLinks) pluginArray.push(linkifyPlugin.current);
+      return pluginArray;
+    }, [disableMentions, disableNativeLinks, showToolbar]);
 
     const ThroughLineButton = outerProps => {
       const StrikethroughButton = createInlineStyleButton(
@@ -307,6 +314,7 @@ const TextEditor = React.forwardRef(
             readOnly={readOnly}
             placeholder={showPlaceholder ? placeholder : ''}
             onFocus={handleFocus}
+            onBlur={onBlur}
             onChange={handleChange}
             keyBindingFn={keyBindingFn}
             handleKeyCommand={handleKeyCommand}

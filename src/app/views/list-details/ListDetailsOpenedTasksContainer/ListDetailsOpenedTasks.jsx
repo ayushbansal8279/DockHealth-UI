@@ -376,17 +376,19 @@ const ListDetailsOpenedTasks = ({
             onBeforeDragStart={showClearSortFiltersModal}
             onDragEnd={!isSortApplied ? onDragEnd : () => {}}
           >
-            {renderTasks()}
+            <div style={{ width: 'fit-content' }}>
+              {renderTasks()}
+              {!!createTaskGroupList && !isSearchApplied && !areFiltersApplied && (
+                <GroupNameSection
+                  onEnterClick={onGroupNameClick}
+                  placeholder={messages.placeholder}
+                  closeOnEnter
+                >
+                  <AddGroupNameButton />
+                </GroupNameSection>
+              )}
+            </div>
           </DragDropContext>
-          {!!createTaskGroupList && !isSearchApplied && !areFiltersApplied && (
-            <GroupNameSection
-              onEnterClick={onGroupNameClick}
-              placeholder={messages.placeholder}
-              closeOnEnter
-            >
-              <AddGroupNameButton />
-            </GroupNameSection>
-          )}
         </>
       )}
     </TaskGroupsContainer>

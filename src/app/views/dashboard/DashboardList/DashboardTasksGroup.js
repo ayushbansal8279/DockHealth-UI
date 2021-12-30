@@ -34,6 +34,7 @@ import StandardTaskItem from 'components/task/StandardTaskItem/TaskItem';
 import TasksSkeletonLoader from 'components/task/TasksSkeletonLoader/TasksSkeletonLoader';
 import TasksHeader from 'components/tasklist/TasksHeader/TasksHeader';
 import { extractTasksAndSubtasks } from 'helpers/tasklist-helpers';
+import palette from 'styles/palette';
 import {
   DashboardTasksGroupContainer,
   DashboardTasksGroupLabel,
@@ -43,6 +44,7 @@ import {
   DashboardTasksGroupHeader,
   GroupNameSectionWrapper,
   DashboardTaskItemContainer,
+  StickyElement,
 } from './styled';
 
 const DashboardTasksGroup = ({
@@ -165,22 +167,24 @@ const DashboardTasksGroup = ({
 
   return (
     <DashboardTasksGroupContainer>
-      <DashboardTasksGroupHeader>
-        <Arrow
-          alt="arrow"
-          isOpen={groupIsOpen}
-          onClick={onSwitchGroup}
-          src={ArrowIcon}
-        />
-        <GroupNameSectionWrapper>
-          <DashboardTasksGroupLabel>
-            <DashboardTasksGroupLabelName>
-              {groupName}
-            </DashboardTasksGroupLabelName>
-            ({metricValue})
-          </DashboardTasksGroupLabel>
-        </GroupNameSectionWrapper>
-      </DashboardTasksGroupHeader>
+      <StickyElement>
+        <DashboardTasksGroupHeader>
+          <Arrow
+            alt="arrow"
+            isOpen={groupIsOpen}
+            onClick={onSwitchGroup}
+            src={ArrowIcon}
+          />
+          <GroupNameSectionWrapper>
+            <DashboardTasksGroupLabel>
+              <DashboardTasksGroupLabelName>
+                {groupName}
+              </DashboardTasksGroupLabelName>
+              ({metricValue})
+            </DashboardTasksGroupLabel>
+          </GroupNameSectionWrapper>
+        </DashboardTasksGroupHeader>
+      </StickyElement>
       {isLoading && !tasks ? (
         <DashboardTasksGroupList>
           <TasksSkeletonLoader rows={4} />
@@ -189,24 +193,27 @@ const DashboardTasksGroup = ({
         <Collapse timeout={500} in={groupIsOpen}>
           <DashboardTasksGroupList>
             {GROUPS_WITH_QUICK_ADD_TASK_INPUT.includes(groupType) && (
-              <QuickAddTaskInput
-                ref={quickAddTaskInputReference}
-                quickAddTask={handleQuickAddTask}
-                onFocus={() => {
-                  if (isTaskDrawerOpen) {
-                    closeDrawer();
-                    storeAsCurrentTask(null);
-                  }
-                }}
-                validator={value => {
-                  if ([...value]?.filter(char => char !== ' ').length < 2)
-                    return 'The task description is too short (min. 2 characters)';
+              <StickyElement>
+                <QuickAddTaskInput
+                  ref={quickAddTaskInputReference}
+                  quickAddTask={handleQuickAddTask}
+                  onFocus={() => {
+                    if (isTaskDrawerOpen) {
+                      closeDrawer();
+                      storeAsCurrentTask(null);
+                    }
+                  }}
+                  validator={value => {
+                    if ([...value]?.filter(char => char !== ' ').length < 2)
+                      return 'The task description is too short (min. 2 characters)';
 
-                  return null;
-                }}
-              />
+                    return null;
+                  }}
+                />
+              </StickyElement>
             )}
             <TasksHeader
+              pageBackground={palette.white}
               bulkEditEnabled
               isGroupSelected={isGroupSelected}
               onGroupSelect={handleGroupSelect}
@@ -264,6 +271,7 @@ const DashboardTasksGroup = ({
                               >
                                 <DashboardTaskItemContainer>
                                   <StandardTaskItem
+                                    pageBackground={palette.white}
                                     task={task}
                                     toggleCompleteTask={() =>
                                       dispatch(

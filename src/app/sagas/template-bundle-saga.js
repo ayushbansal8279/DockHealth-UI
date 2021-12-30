@@ -5,6 +5,14 @@ import * as TemplateBundleApi from 'api/template-bundle-api';
 import { call, put, takeEvery } from 'redux-saga/effects';
 import { showGlobalAlert, showGlobalErrorAlert } from 'alert/actions';
 import { TaskStatus } from 'helpers/task-helpers';
+import { applyTemplate as applyTemplateAction } from 'actions/template-bundle-actions';
+import { openModal } from 'modal/actions';
+import store from '../store';
+
+const ERROR_TYPES = {
+  ASSIGNED_USERS_ARE_NOT_IN_THE_TASK_LIST:
+    'TASK_TEMPLATE/ASSIGNED_USERS_ARE_NOT_IN_THE_TASK_LIST',
+};
 
 function* reorderTasksInTemplateBundle(payload) {
   const {
@@ -178,11 +186,34 @@ function* changePatientForTemplateBundle({ taskTemplateIdentifier, patient }) {
   }
 }
 
+function* applyTaskBundleFailure({
+  error,
+  errorType,
+  failureDetails: { taskCount },
+  templateDetails,
+}) {
+  if (errorType === ERROR_TYPES.ASSIGNED_USERS_ARE_NOT_IN_THE_TASK_LIST) {
+    const modalProps = {
+      taskCount,
+      confirm: () => {
+        store.dispatch(
+          applyTemplateAction({ ...templateDetails, unassign: true }),
+        );
+      },
+    };
+    yield put(openModal('UnassignTaskTemplate', modalProps));
+  } else {
+    console.log(error);
+    yield put(showGlobalErrorAlert());
+  }
+}
+
 function* applyTemplate({
   taskTemplateIdentifier,
   taskListIdentifier,
   taskGroupIdentifier,
   patientIdentifier,
+  options: { unassign = false },
 }) {
   try {
     const addedBundle = yield call(TemplateBundleApi.applyTemplate, {
@@ -190,12 +221,28 @@ function* applyTemplate({
       taskListIdentifier,
       taskGroupIdentifier,
       patientIdentifier,
+      unassign,
     });
-    yield put(showGlobalAlert(AlertMessages.CREATED));
-    yield put({
-      type: ActionTypes.APPLY_TEMPLATE_SUCCESS,
-      bundle: addedBundle,
-    });
+    const isWarning = addedBundle.statusCode === 'WARNING';
+
+    if (isWarning) {
+      yield applyTaskBundleFailure({
+        errorType: ERROR_TYPES.ASSIGNED_USERS_ARE_NOT_IN_THE_TASK_LIST,
+        failureDetails: { taskCount: addedBundle.assignmentsMismatchCount },
+        templateDetails: {
+          taskTemplateIdentifier,
+          taskGroupIdentifier,
+          taskListIdentifier,
+          patientIdentifier,
+        },
+      });
+    } else {
+      yield put(showGlobalAlert(AlertMessages.CREATED));
+      yield put({
+        type: ActionTypes.APPLY_TEMPLATE_SUCCESS,
+        bundle: addedBundle,
+      });
+    }
   } catch {
     yield put({ type: ActionTypes.APPLY_TEMPLATE_FAILURE });
     yield put(showGlobalErrorAlert());

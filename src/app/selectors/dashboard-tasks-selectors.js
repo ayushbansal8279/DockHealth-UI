@@ -7,6 +7,11 @@ export const dashboardTasksSelector = createSelector(
   ({ tasksList }) => tasksList,
 );
 
+export const dashboardSearchValueSelector = createSelector(
+  dashboardTasksStateSelector,
+  ({ searchValue }) => searchValue,
+);
+
 export const dashboardTasksIsLoadingSelector = createSelector(
   dashboardTasksStateSelector,
   ({ isLoading }) => isLoading,

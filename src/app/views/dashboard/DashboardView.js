@@ -4,7 +4,6 @@ import { initializePusher } from 'helpers/pusher-instance';
 import { useDispatch, useSelector } from 'react-redux';
 import { useMount } from 'react-use';
 import { isEmpty } from 'ramda';
-import * as TemplateActions from 'actions/template-actions';
 import * as TaskActions from 'actions/task-actions';
 import {
   clearDashboardState,
@@ -24,7 +23,6 @@ import DashboardFirstVisitView from './DashboardFirstVisitView/DashboardFirstVis
 import {
   DashboardViewWrapper,
   DashboardContentWrapper,
-  DashboardHeaderContainer,
   DashboardFirstVisitViewWrapper,
   DashboardScrollableList,
   DashboardListWrapper,
@@ -59,10 +57,7 @@ const DashboardView = ({ tabName }) => {
   }, [dispatch, tabName]);
 
   useEffect(() => {
-    dispatch(TemplateActions.hideHeader());
-
     return () => {
-      dispatch(TemplateActions.showHeader());
       dispatch(clearDashboardState());
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -174,14 +169,7 @@ const DashboardView = ({ tabName }) => {
             {openConfetti && <StyledConfetti recycle={false} />}
             <DashboardScrollableList>
               <div>
-                <DashboardHeaderContainer>
-                  <DashboardHeader
-                    isUserFirstTime={
-                      createListViewVisible || firstCreatedUserListIdentifier
-                    }
-                    currentUser={currentUser}
-                  />
-                </DashboardHeaderContainer>
+                <DashboardHeader currentUser={currentUser} />
                 <Spacing vertical={3} />
               </div>
               {createListViewVisible ? (
@@ -198,8 +186,8 @@ const DashboardView = ({ tabName }) => {
                         }),
                       );
                     }}
-                    acceptInvitation={() =>
-                      dispatch(TaskListActions.acceptInviteToTaskList())
+                    acceptInvitation={list =>
+                      dispatch(TaskListActions.acceptInviteToTaskList(list))
                     }
                   />
                 </DashboardFirstVisitViewWrapper>

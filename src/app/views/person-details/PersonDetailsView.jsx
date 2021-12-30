@@ -2,23 +2,25 @@
 import React, { useState, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useParams } from 'react-router-dom';
-import { setHeader } from 'actions/template-actions';
 import * as PersonDetailsActions from 'actions/person-details-actions';
 import * as TaskActions from 'actions/task-actions';
 import * as MegaFilterActions from 'actions/mega-filter-actions';
 import * as ModalActions from 'modal/actions';
 import { userProfileSelector } from 'selectors/user-selectors';
-import GenericHeader from 'components/template/GenericHeader/GenericHeader';
 import { onSearchChanged } from 'helpers/ga-event-helper';
 import { TaskListTabName } from 'helpers/tasklist-helpers';
 import { TaskItemColumn, TaskStatus } from 'helpers/task-helpers';
+import ViewLayout from 'components/template/ViewLayout/ViewLayout';
 import TaskDrawer from 'components/task-drawer/TaskDrawer/TaskDrawer';
+import LayoutHeader from 'components/template/LayoutHeader/LayoutHeader';
+import HeaderSearch from 'components/template/HeaderSearch/HeaderSearch';
 import { TASK_DISAPPEAR_DELAY } from 'helpers/task-update-helper';
 import OpenedTasksView from './PersonDetailsOpenedTasksContainer/PersonDetailsOpenedTasks';
 import CompletedTasksView from './PersonDetailsCompletedTasksContainer/PersonDetailsCompletedTasks';
 import PersonInfoPanel from './PersonInfoPanel/PersonInfoPanel';
-import { TaskViewContainer } from './styled';
+import { TaskViewContainer, StickyContainer } from './styled';
 import UserTasksToolbar from './UserTasksToolbar/UserTasksToolbar';
+import UserDetailsFilters from './UserDetailsFilters/UserDetailsFilters';
 
 const PERSON_VIEW_COLUMNS_CONFIG = {
   [TaskItemColumn.LIST_NAME]: true,
@@ -33,17 +35,6 @@ const PersonDetailsView = () => {
   const currentUser = useSelector(userProfileSelector);
 
   useEffect(() => {
-    dispatch(
-      setHeader({
-        layout: [
-          {
-            key: 'generic-header',
-            component: <GenericHeader>People</GenericHeader>,
-          },
-        ],
-      }),
-    );
-
     return () => {
       dispatch(PersonDetailsActions.clearUserDetailsState());
       dispatch(MegaFilterActions.clearFiltersForMegaFilter());
@@ -74,8 +65,8 @@ const PersonDetailsView = () => {
   };
 
   const handleSearchValueChange = newValue => {
-    onSearchChanged();
     setSearchValue(newValue);
+    onSearchChanged();
   };
 
   const invokeToggleCompleteAction = task => {
@@ -121,14 +112,25 @@ const PersonDetailsView = () => {
 
   return (
     <>
-      <div>
-        <PersonInfoPanel />
+      <ViewLayout
+        header={
+          <LayoutHeader>
+            <LayoutHeader.Title title="People" />
+            <LayoutHeader.Spacer />
+            <HeaderSearch
+              value={searchValue}
+              onChange={handleSearchValueChange}
+            />
+            <LayoutHeader.Spacer />
+            <UserDetailsFilters />
+          </LayoutHeader>
+        }
+      >
+        <StickyContainer>
+          <PersonInfoPanel />
+        </StickyContainer>
         <TaskViewContainer>
-          <UserTasksToolbar
-            selectedTab={selectedTab}
-            searchValue={searchValue}
-            onSearchChange={handleSearchValueChange}
-          />
+          <UserTasksToolbar selectedTab={selectedTab} />
           {selectedTab === TaskListTabName.COMPLETE ? (
             <CompletedTasksView
               taskItemConfig={PERSON_VIEW_COLUMNS_CONFIG}
@@ -148,7 +150,7 @@ const PersonDetailsView = () => {
             />
           )}
         </TaskViewContainer>
-      </div>
+      </ViewLayout>
       <TaskDrawer
         onTaskUpdate={refreshTabAfterTaskUpdate}
         onTaskDelete={handleTaskDelete}

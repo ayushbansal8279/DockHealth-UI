@@ -10,7 +10,6 @@ export const ToolbarContainer = styled(Grid)`
   position: relative;
   height: 42px;
   border-bottom: 2px solid ${palette.blueGrey};
-  margin-bottom: ${spacing.regular};
   flex-direction: column-reverse !important;
   align-items: flex-start !important;
   flex-wrap: inherit !important;
@@ -28,26 +27,39 @@ export const ActionsContainer = styled(Grid)`
   justify-content: flex-end;
 `;
 
-export const SearchGrid = styled(({ isFocused, ...otherProps }) => (
-  <Grid {...otherProps} />
-))`
-  display: flex;
-  width: ${({ isFocused }) => (isFocused ? 300 : 115)}px;
-  transition: width 0.2s ease-out;
-  justify-content: flex-end;
-`;
-
 export const StickyHeader = styled.div`
   position: sticky;
   top: 0;
+  z-index: 101;
+  background-color: ${palette.white};
+  padding: 0 55px 0 55px;
+  width: calc(100vw - 67px);
+  left: 0px;
+  margin-bottom: ${spacing.regular};
+`;
+
+export const StickyElement = styled.div`
+  position: sticky;
+  left: 24px;
   z-index: 100;
   background-color: ${palette.white};
-  padding: 0 55px ${spacing.small} 55px;
+  width: calc(100vw - 115px);
+`;
+
+export const VerticalScrollContainer = styled.div`
+  padding: 0 ${spacing.large};
+  box-sizing: border-box;
+  width: 100%;
+  position: relative;
+  background: ${palette.white};
+`;
+
+export const DashboardTaskGroupsWrapper = styled.div`
+  width: fit-content;
 `;
 
 export const DashboardTasksGroupContainer = styled.div`
   padding-bottom: 30px;
-
   &:last-child {
     padding-bottom: 0;
   }
@@ -57,15 +69,13 @@ export const DashboardTasksGroupList = styled.div`
   display: flex;
   flex-direction: column;
   margin-top: ${spacing.small};
-  margin-left: 55px;
-  margin-right: 55px;
 `;
 
 export const DroppableBox = styled.div`
   border-radius: 4px;
 `;
 
-export const DasboardTabsContainer = styled.div`
+export const DashboardTabsContainer = styled.div`
   height: 100%;
   display: flex;
 `;
@@ -120,7 +130,6 @@ export const ShowMoreButton = styled.button`
 export const DashboardTasksGroupHeader = styled.div`
   align-items: center;
   display: flex;
-  margin-left: 55px;
 `;
 
 export const GroupNameSectionWrapper = styled.div`

@@ -19,7 +19,6 @@ import * as TaskApi from 'api/task-api';
 import {
   partialUpdateTask,
   storeAsCurrentTask,
-  moveTask,
   deleteTask,
   duplicateTask,
   markTaskRead,
@@ -164,35 +163,6 @@ const initializeTaskDrawerHooks = ({
     [dispatch],
   );
 
-  const reFileTask = useCallback(
-    ({ newTaskList }) => {
-      moveTask(
-        selectedTask,
-        newTaskList,
-      )(dispatch)
-        .then(() => {
-          dispatch(
-            AlertActions.showGlobalAlert(
-              `${AlertMessages.TASK_MOVED} to list ${newTaskList.listName}`,
-            ),
-          );
-          onTaskDelete(selectedTask);
-          storeAsCurrentTask(null)(dispatch);
-          closeDrawer();
-        })
-        .catch(() => {
-          dispatch(
-            AlertActions.showGlobalAlert(
-              `Error moving task to list ${newTaskList.listName}, please try again later`,
-              'error',
-            ),
-          );
-        });
-    },
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-    [selectedTask],
-  );
-
   const onDelete = useCallback(
     async ({ afterDelete }) => {
       if (selectedTask) {
@@ -278,7 +248,6 @@ const initializeTaskDrawerHooks = ({
     onDuplicate,
     openTaskDrawer,
     parentDescriptionState,
-    reFileTask,
     selectedParentTask,
     selectedTask,
     setParentDescriptionState,

@@ -13,19 +13,33 @@ const LinkPopover = ({
   close,
   onSave,
   initText = '',
+  initLink = '',
 }) => {
   const textInputReference = useRef(null);
   const linkInputReference = useRef(null);
-  const [formState, setFormState] = useState({ text: initText, link: '' });
+  const [formState, setFormState] = useState({
+    text: initText,
+    link: initLink,
+  });
   const clearForm = useCallback(() => {
     setFormState({ text: '', link: '' });
   }, [setFormState]);
 
   useEffect(() => {
     if (isPopoverOpen) {
-      setFormState(state => ({ ...state, text: initText }));
+      textInputReference.current.focus();
     }
   }, [initText, isPopoverOpen]);
+
+  useEffect(() => {
+    if (isPopoverOpen) {
+      setFormState({
+        text: initText,
+        link: initLink,
+      });
+      setFormState(state => ({ ...state, text: initText }));
+    }
+  }, [initLink, initText, isPopoverOpen]);
 
   const handleClose = useCallback(() => {
     if (typeof close === 'function') close();

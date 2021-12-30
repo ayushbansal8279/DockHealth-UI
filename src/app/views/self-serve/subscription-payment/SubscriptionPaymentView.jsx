@@ -4,14 +4,14 @@ import { useDispatch, useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
 import { Elements } from 'react-stripe-elements';
 import { useMount } from 'react-use';
-import { setHeader } from 'actions/template-actions';
 import {
   getBillingEstimate,
   setPaymentNewPlan,
 } from 'actions/organization-actions';
 import { saveBillingDetails } from 'api/organization-api';
 import { currentSubscriptionPlanSelector } from 'selectors/organization-selectors';
-import GenericHeader from 'components/template/GenericHeader/GenericHeader';
+import ViewLayout from 'components/template/ViewLayout/ViewLayout';
+import LayoutHeader from 'components/template/LayoutHeader/LayoutHeader';
 import Spacing from 'components/common/Spacing';
 import { getUserByEmail } from 'api/user-auth-api';
 import { noop, showAlert } from 'helpers/utility-functions';
@@ -32,7 +32,6 @@ import {
   PricingItemVerticallyExpanded,
   StyledLink,
   SubscriptionPaymentViewContainer,
-  SubscriptionPaymentViewOuterContainer,
 } from './SubscriptionPaymentView.Components';
 
 const finishSubscriptionPayment = (history, currentUser) => {
@@ -159,18 +158,6 @@ const SubscriptionPaymentView = () => {
       goToSubscriptions(history);
     }
 
-    dispatch(
-      setHeader({
-        layout: [
-          {
-            key: 'title',
-            component: <GenericHeader />,
-            alignItems: 'center',
-          },
-        ],
-      }),
-    );
-
     dispatch(getBillingEstimate());
   });
 
@@ -198,7 +185,7 @@ const SubscriptionPaymentView = () => {
   const planPricePerUser = priceFormatter(totalPerUserCost);
 
   return (
-    <SubscriptionPaymentViewOuterContainer>
+    <ViewLayout header={<LayoutHeader />}>
       <SubscriptionPaymentViewContainer>
         <Grid container spacing={4}>
           <Grid item sm={12}>
@@ -317,7 +304,7 @@ const SubscriptionPaymentView = () => {
           </Grid>
         </Grid>
       </SubscriptionPaymentViewContainer>
-    </SubscriptionPaymentViewOuterContainer>
+    </ViewLayout>
   );
 };
 

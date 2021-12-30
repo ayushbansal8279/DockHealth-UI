@@ -10,14 +10,21 @@ export const PatientDetailsTabsContainer = styled.div`
   background-color: ${palette.white};
 `;
 
-export const PatientDetailsContainer = styled.div`
-  padding: ${spacing.large} ${spacing.huge};
-  background-color: ${palette.coolGrey4};
+export const PatientStickyContainer = styled.div`
+  position: sticky;
+  left: 0px;
+  width: calc(100vw - 83px);
 `;
 
-export const SearchWrapper = styled.div`
-  width: ${({ fullWidth }) => (fullWidth ? 374 : 115)}px;
-  transition: width 0.25s ease-out;
+export const PatientToolbarStickyContainer = styled.div`
+  position: sticky;
+  left: 24px;
+  width: calc(100vw - 115px);
+`;
+
+export const PatientDetailsContainer = styled.div`
+  padding: ${spacing.huge} ${spacing.large};
+  background-color: ${palette.coolGrey4};
 `;
 
 export const MainTab = styled(Tab)`

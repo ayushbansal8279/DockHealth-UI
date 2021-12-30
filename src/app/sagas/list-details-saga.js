@@ -850,7 +850,7 @@ export default function* watchTasksGroupsList() {
     doRefreshGroupedTasks,
   );
   yield takeLatest(
-    ActionTypes.FILTER__LIST_DETAILS_TASKS,
+    ActionTypes.FILTER_LIST_DETAILS_TASKS,
     doFilterListDetailsTasks,
   );
   yield takeLatest([ActionTypes.ADD_TASK_SUCCESS], taskCounterIncreaseWatcher);

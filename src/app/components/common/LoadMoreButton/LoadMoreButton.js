@@ -19,6 +19,9 @@ export const LoadMoreSection = styled.div`
   align-items: center;
   justify-content: center;
   padding: ${spacing.large} 0;
+  width: calc(100vw - 130px);
+  position: sticky;
+  left: 24px;
 `;
 
 const LoadMoreButton = ({ onClick, disabled }) => (

@@ -11,9 +11,11 @@ export const LabelBox = styled(Box)`
 
 export const ToolbarContainer = styled.div`
   display: block;
-  width: 100%;
   background-color: ${palette.white};
   color: ${palette.coolGrey1};
+  width: calc(100vw - 83px);
+  position: sticky;
+  left: 0px;
 `;
 
 // LEGACY STYLES - REFACTOR REQUIRED
@@ -58,18 +60,6 @@ export const LeftContainer = styled.div`
   margin-left: auto !important;
   display: flex;
   align-items: center;
-`;
-
-export const SearchWrapper = styled.div`
-  width: ${({ fullWidth }) => (fullWidth ? 374 : 115)}px;
-  transition: width 0.25s ease-out;
-`;
-
-export const MemberWrapper = styled.div`
-  display: flex;
-  flex-direction: row;
-
-  ${({ isPending }) => isPending && `opacity: 0.7;`}
 `;
 
 export const ListDescription = styled.div`

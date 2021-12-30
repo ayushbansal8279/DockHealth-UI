@@ -61,7 +61,6 @@ const TaskDrawer = ({
     onDelete,
     onDuplicate,
     parentDescriptionState,
-    reFileTask,
     selectedParentTask,
     selectedTask,
     setParentDescriptionState,
@@ -117,10 +116,8 @@ const TaskDrawer = ({
             style={styleFirstRow}
           >
             <TopSection
-              reFileTask={reFileTask}
               onDelete={onDelete}
               onDuplicate={onDuplicate}
-              isInbox={isInbox}
               closeTaskDrawer={closeTaskDrawer}
               setTourTaskMenuReference={element => {
                 taskMenuReference.current = element;

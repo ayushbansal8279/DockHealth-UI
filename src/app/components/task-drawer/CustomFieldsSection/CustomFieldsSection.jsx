@@ -1,3 +1,4 @@
+/* eslint-disable sonarjs/cognitive-complexity */
 /* eslint-disable no-unused-expressions */
 import React, { useEffect, useCallback } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
@@ -39,12 +40,10 @@ const CustomFieldsSection = ({ taskCustomReference }) => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [dispatch, task?.identifier]);
 
-  const onBlur = useCallback(
+  const updateCustomFields = useCallback(
     ({ taskMetaData }) => {
       if (taskMetaData.length > 0) {
-        dispatch(
-          partialUpdateTask(task?.identifier, { ...task, taskMetaData }),
-        );
+        dispatch(partialUpdateTask(task?.identifier, { taskMetaData }));
         dispatch(showGlobalAlert(AlertMessages.UPDATED));
       }
     },
@@ -84,9 +83,16 @@ const CustomFieldsSection = ({ taskCustomReference }) => {
                 scrollToRef={taskCustomReference}
                 readOnly={false}
                 field={field}
-                onBlur={handleSubmit(compose(onBlur, formatMetaDataOutput))}
+                onBlur={(data, wasChanged = false) => {
+                  if (wasChanged) {
+                    handleSubmit(
+                      compose(updateCustomFields, formatMetaDataOutput),
+                    )(data);
+                  }
+                }}
                 fieldsGroupKey="taskMetaData"
                 isFocused={isFocused}
+                taskIdentifier={task.identifier}
               />
             </Grid>
           </HidableContainer>
@@ -98,7 +104,8 @@ const CustomFieldsSection = ({ taskCustomReference }) => {
       formMethods,
       getValues,
       handleSubmit,
-      onBlur,
+      updateCustomFields,
+      task,
       taskCustomReference,
       taskDrawerFocusField,
     ],

@@ -1,36 +1,19 @@
 /* eslint-disable sonarjs/cognitive-complexity */
-import React, {
-  useCallback,
-  useRef,
-  useState,
-  useEffect,
-  useMemo,
-} from 'react';
+import React, { useCallback, useRef, useState, useEffect } from 'react';
 import { useLocation, useHistory } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { Grid, ClickAwayListener, Popper, Paper } from '@material-ui/core';
-import { splitAt, isEmpty, isNil } from 'ramda';
+import { isNil } from 'ramda';
 import OutlinedSelect from 'components/common/OutlinedSelect/OutlinedSelect';
-import {
-  toggleListNotifications,
-  getMembersByTaskListId,
-} from 'actions/task-list-actions';
-import { openModal } from 'modal/actions';
+import { toggleListNotifications } from 'actions/task-list-actions';
 import { onNotificationsToggled } from 'helpers/ga-event-helper';
 import { showAlert } from 'helpers/utility-functions';
-import { isMemberPending } from 'helpers/list-members-helper';
 import localStorageHelper from 'helpers/local-storage-helper';
-import { TaskListTabName } from 'helpers/tasklist-helpers';
 import { useBoolean } from 'hooks/useBoolean';
 import palette from 'styles/palette';
 import RotatableChevron from 'components/common/RotatableChevron/RotatableChevron.tsx';
 import Spacing from 'components/common/Spacing.tsx';
-import AdditionalMembersCounterPopover from 'components/user/AdditionalMembersCounterPopover/AdditionalMembersCounterPopover';
-import Search from 'components/task-view/Search/Search';
 import Tabs from 'components/common/Tabs/Tabs';
-import MegaFilter from 'components/tasklist/MegaFilter/MegaFilter';
-import AvatarFilterMember from 'components/user/AvatarFilterMember/AvatarFilterMember';
-import InviteMemberButton from 'components/user/InviteMemberButton/InviteMemberButton';
 import TipsPopover from 'components/tasklist/TipsPopover/TipsPopover.tsx';
 import Button from 'components/common/Button/Button';
 import { showGlobalAlert } from 'alert/actions';
@@ -45,18 +28,12 @@ import {
   ViewType,
   getViewTypeFromQueryString,
 } from 'helpers/view-type-helper';
-import {
-  FilterOptionsCategory,
-  isOptionSelected,
-} from 'helpers/filter-options-helpers';
 import TipsButton from './TipsButton';
 import MorePopover from './MorePopover.tsx';
 import {
   ToolbarLabel,
   ToolbarBottomGrid,
   HeaderActionButtonsGrid,
-  SearchWrapper,
-  MemberWrapper,
   ToolbarContainer,
   MenuText,
   StyledIconButton,
@@ -101,8 +78,6 @@ const useToggleNotifications = ({
   }, [closeMorePopover, dispatch, notificationsEnabled, taskListIdentifier]);
 
 const Toolbar = ({
-  members,
-  showMembers = true,
   onSelectTab,
   printData: { openedTasks = [], completedTasks = [], taskListMembers = [] },
   selectedTab,
@@ -110,27 +85,19 @@ const Toolbar = ({
   taskList,
   openTasksAmount,
   completedTasksAmount,
-  onSearchChange,
-  searchValue,
   haveTasks,
-  tasksAndSubTasksCount,
-  onSelectFilters,
   pdfTitle,
-  megaFilter = {},
   listNameColumnVisible = false,
   patientColumnVisible = true,
   tipsContent,
-  isFetching,
   moreOptions,
   onColumnSetupChange,
-  onFilterOpen,
 }) => {
   const { search } = useLocation();
   const history = useHistory();
   const moreButtonReference = useRef(null);
   const tipsButtonReference = useRef(null);
   const menuReference = useRef(null);
-  const [isSearchFocused, setSearchFocused] = useState(false);
   const [tipsOpened, setTipsOpened] = useState(false);
   const [customFieldsModalOpened, setCustomFieldsModalOpened] = useState(false);
   const [menuOpen, , unsetMenuOpen, toggleMenuOpen] = useBoolean(false);
@@ -142,29 +109,12 @@ const Toolbar = ({
   const taskListIdentifier = taskList?.taskListIdentifier;
   const dispatch = useDispatch();
 
-  const { filters, selectedFilters } = megaFilter;
-
   const toggleNotifications = useToggleNotifications({
     notificationsEnabled,
     closeMorePopover,
     taskListIdentifier,
     dispatch,
   });
-  const { userIdentifier, orgUserRole } = useSelector(userProfileSelector);
-  const currentMember = useMemo(
-    () => members?.filter(member => member?.userIdentifier === userIdentifier),
-    [members, userIdentifier],
-  );
-  const anotherMembers = useMemo(
-    () => members?.filter(member => member?.userIdentifier !== userIdentifier),
-    [members, userIdentifier],
-  );
-  const [shownMembers, hiddenMembers] = splitAt(3, anotherMembers ?? []);
-  const shownMembersWithCurrent = currentMember
-    ? [...currentMember, ...shownMembers]
-    : [];
-
-  const isGuest = orgUserRole === 'GUEST';
 
   useEffect(() => {
     if (!tipsContent || taskList?.listType !== 'INBOX') {
@@ -254,67 +204,6 @@ const Toolbar = ({
                 </ToolbarLabel>
               </div>
             </Button>
-            <Spacing horizontal={4} />
-            {showMembers && (
-              <>
-                {shownMembersWithCurrent?.map(member => {
-                  const isSelected = isOptionSelected(
-                    FilterOptionsCategory.ASSIGNED_TO,
-                    member?.identifier,
-                    selectedFilters,
-                  );
-
-                  return (
-                    <MemberWrapper
-                      key={member?.identifier}
-                      isPending={isMemberPending(member)}
-                    >
-                      <Spacing horizontal={2} />
-                      <AvatarFilterMember
-                        member={member}
-                        size={45}
-                        isSelected={isSelected}
-                        onSelectFilters={onSelectFilters}
-                        selectedFilters={selectedFilters}
-                      />
-                    </MemberWrapper>
-                  );
-                })}
-                {hiddenMembers?.length > 0 && (
-                  <>
-                    <Spacing horizontal={2} />
-                    <AdditionalMembersCounterPopover
-                      hiddenMembers={hiddenMembers}
-                      size={45}
-                      onSelectFilters={onSelectFilters}
-                      selectedFilters={selectedFilters}
-                    />
-                  </>
-                )}
-                <Spacing horizontal={2} />
-                {!isGuest &&
-                  taskList?.listType !== 'INBOX' &&
-                  taskList?.listType !== 'PUBLIC' && (
-                    <InviteMemberButton
-                      size={45}
-                      onClick={() =>
-                        dispatch(
-                          openModal('InviteToList', {
-                            list: taskList,
-                            onMembersRefresh: () =>
-                              dispatch(
-                                getMembersByTaskListId(
-                                  taskList.taskListIdentifier,
-                                  'ALL',
-                                ),
-                              ),
-                          }),
-                        )
-                      }
-                    />
-                  )}
-              </>
-            )}
           </HeaderActionButtonsGrid>
         </Grid>
         <MorePopover
@@ -337,51 +226,15 @@ const Toolbar = ({
           }
         />
       </Grid>
-      {(haveTasks ||
-        searchValue ||
-        !isEmpty(selectedFilters) ||
-        taskList?.listType === 'INBOX') && (
+      {(haveTasks || taskList?.listType === 'INBOX') && (
         <ToolbarBottomGrid container direction="row" justify="flex-start">
-          <>
-            <MegaFilter
-              filters={filters}
-              selectedFilters={selectedFilters}
-              onSelectFilters={onSelectFilters}
-              tasksAndSubTasksCount={tasksAndSubTasksCount}
-              activeItemsAmount={
-                selectedTab === TaskListTabName.OPEN
-                  ? openTasksAmount
-                  : completedTasksAmount
-              }
-              isFetching={isFetching}
-              onOpen={onFilterOpen}
-            />
-            <>
-              <Spacing horizontal={5} />
-              <OutlinedSelect
-                width={170}
-                name="viewType"
-                value={getViewTypeFromQueryString(search)}
-                onChange={handleChangeViewType}
-                options={VIEW_TYPE_OPTIONS}
-              />
-            </>
-            <Spacing horizontal={5} />
-            <SearchWrapper fullWidth={isSearchFocused || searchValue}>
-              <Search
-                fullWidth
-                noBackground
-                value={searchValue}
-                onFocus={() => setSearchFocused(true)}
-                onBlur={() => setSearchFocused(false)}
-                onChange={event => onSearchChange(event?.target?.value)}
-                placeholder={
-                  isSearchFocused ? 'Search Tasks and Comments' : 'Search'
-                }
-              />
-              <Spacing horizontal={5} />
-            </SearchWrapper>
-          </>
+          <OutlinedSelect
+            width={170}
+            name="viewType"
+            value={getViewTypeFromQueryString(search)}
+            onChange={handleChangeViewType}
+            options={VIEW_TYPE_OPTIONS}
+          />
           {tipsContent && (
             <>
               {haveTasks && <Spacing horizontal={5} />}

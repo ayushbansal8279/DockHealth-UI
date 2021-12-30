@@ -204,6 +204,13 @@ export function addTemporaryElements(elements) {
   };
 }
 
+export function addDecisionBranch(sourceTaskIdentifier) {
+  return {
+    type: ActionTypes.ADD_DECISION_BRANCH,
+    sourceTaskIdentifier,
+  };
+}
+
 export function deleteTemporaryElement(elementId) {
   return {
     type: ActionTypes.DELETE_TEMPORARY_ELEMENT,

@@ -21,6 +21,7 @@ import {
 } from 'actions/task-actions';
 import { openModal } from 'modal/actions';
 import {
+  addDecisionBranch,
   addNewDecisionTaskElement,
   addNewTaskElement,
   deleteTemporaryElement,
@@ -272,6 +273,26 @@ const TaskTemplateDetailsView = () => {
           icon: () => <CalendarIcon size={18} />,
           onClick: openDelayPopover,
           ref: delayPeriodOptionReference,
+        },
+      ];
+    }
+
+    if (
+      selectedTasks?.length === 1 &&
+      selectedTasks[0].data.task &&
+      selectedTasks[0].type === NodeType.DECISION
+    ) {
+      actions = [
+        ...actions,
+        {
+          id: 'ADD_BRANCH',
+          label: 'Add branch',
+          icon: DecisionTaskElementIcon,
+          onClick: () => {
+            dispatch(
+              addDecisionBranch(selectedTasks[0].data.task.taskIdentifier),
+            );
+          },
         },
       ];
     }

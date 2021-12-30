@@ -1,4 +1,10 @@
-import React, { useCallback, useLayoutEffect, useMemo, useRef } from 'react';
+import React, {
+  useCallback,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { EditorState } from 'draft-js';
 import { useBoolean } from 'hooks/useBoolean';
@@ -20,7 +26,7 @@ import { DetailsContainer } from './styled';
 const TaskDetails = () => {
   const DEBOUNCE_TIME = 3000;
   const selectedTask = useSelector(selectedTaskSelector);
-  const { taskList, taskIdentifier } = selectedTask || {};
+  const { taskList } = selectedTask || {};
   const { taskListIdentifier } = taskList || {};
   const dispatch = useDispatch();
   const detailsReference = useRef(null);
@@ -33,13 +39,16 @@ const TaskDetails = () => {
       handleRichText: true,
     }),
   );
+  const [rawTextState, setRawTextState] = useState(
+    selectedTask?.tokenizedDetails,
+  );
   const isTemplateTask = checkIfTemplateTask(selectedTask);
 
   const isEmptyDetailsState = useMemo(() => isEditorStateEmpty(detailsState), [
     detailsState,
   ]);
 
-  useLayoutEffect(() => {
+  useEffect(() => {
     if (selectedTask) {
       if (selectedTask.details) {
         const newContent = createMentionEntities(
@@ -49,13 +58,13 @@ const TaskDetails = () => {
           true,
         );
         setDetailsState(EditorState.push(detailsState, newContent));
+        setRawTextState(selectedTask.tokenizedDetails);
       } else {
         setDetailsState();
       }
     }
-
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [taskIdentifier]);
+  }, [selectedTask?.taskIdentifier]);
 
   const updateDetails = useCallback(
     state => {
@@ -65,20 +74,24 @@ const TaskDetails = () => {
           rawText,
           mentions,
         } = convertFromEditorStateToOutput(state, true);
-
-        dispatch(
-          updateTaskDetails(selectedTask, {
-            tokenizedDetails: tokenizedText || '',
-            details: rawText || '',
-            taskMentions: [
-              ...(selectedTask.taskMentions || []),
-              ...(mentions || []),
-            ],
-          }),
-        );
+        const isChangedText = tokenizedText?.trim() !== rawTextState?.trim();
+        if (!rawTextState && tokenizedText.length === 0) return;
+        if (isChangedText) {
+          setRawTextState(tokenizedText);
+          dispatch(
+            updateTaskDetails(selectedTask, {
+              tokenizedDetails: tokenizedText || '',
+              details: rawText || '',
+              taskMentions: [
+                ...(selectedTask.taskMentions || []),
+                ...(mentions || []),
+              ],
+            }),
+          );
+        }
       }
     },
-    [dispatch, selectedTask],
+    [dispatch, rawTextState, selectedTask],
   );
 
   const onDebouncedChange = useCallback(
@@ -114,20 +127,6 @@ const TaskDetails = () => {
           onBlur={unsetFocused}
           state={detailsState}
           onChange={onChangeDetailsEditor}
-          keyBindingFn={event => {
-            if (event.keyCode === 13 && !event.nativeEvent.shiftKey) {
-              return 'enter-command';
-            }
-            return undefined;
-          }}
-          handleKeyCommand={command => {
-            if (command === 'enter-command') {
-              detailsReference.current.blur();
-              return 'handled';
-            }
-
-            return 'not-handled';
-          }}
         />
       </CustomTextEditor>
     </DetailsContainer>

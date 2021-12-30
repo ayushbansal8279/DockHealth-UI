@@ -25,6 +25,10 @@ export const checkIfUserIsOrganizationAdmin = user =>
     user.orgUserRole,
   );
 
+export function isUserGuest(user) {
+  return user?.orgUserRole === UserOrganizationRole.GUEST;
+}
+
 export const UserStatus = {
   INVITED: 'INVITED',
   PENDING: 'PENDING',

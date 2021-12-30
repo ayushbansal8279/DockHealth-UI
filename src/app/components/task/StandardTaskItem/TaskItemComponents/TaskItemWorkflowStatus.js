@@ -7,7 +7,6 @@ import {
   AddPlaceholder,
   StandardTaskItemCell,
   StatusName,
-  StatusBar,
   StatusWrapper,
 } from '../../styled';
 
@@ -19,7 +18,7 @@ const TaskItemWorkflowStatus = ({
   highlightedValue,
 }) => {
   const statusNameReference = useRef(null);
-  const { name, color } = workflowStatus || {};
+  const { name } = workflowStatus || {};
   const searchWords = highlightedValue?.toLowerCase().split(/\s+/);
   const tooltipVisible =
     statusNameReference.current &&
@@ -48,7 +47,6 @@ const TaskItemWorkflowStatus = ({
       >
         {workflowStatus ? (
           <StatusWrapper>
-            <StatusBar color={color} />
             <Tooltip title={name} placement="top" hideTooltip={!tooltipVisible}>
               <StatusName ref={statusNameReference}>
                 {matchWorkflowStatus ? (

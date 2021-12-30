@@ -9,7 +9,7 @@ import { capitalize } from 'helpers/capitalize';
 import { useColumnsConfig } from 'context-api/ColumnsConfigContext';
 import { CustomFieldWidthConfig } from 'helpers/field-type-helpers';
 import { trunc } from 'helpers/utility-functions';
-import { BulkContainer } from './styled';
+import { BulkContainer, StickyColumnContainer } from './styled';
 
 const TasksHeader = ({
   bulkEditEnabled,
@@ -18,6 +18,7 @@ const TasksHeader = ({
   isGroupSelected,
   onGroupSelect,
   groupHasMultipleAssignees,
+  pageBackground,
 }) => {
   const { currentUser } = useSelector(store => ({
     currentUser: store.userState.userProfile,
@@ -35,20 +36,22 @@ const TasksHeader = ({
 
   return (
     <SortHeaderRow>
-      {bulkEditEnabled && (
-        <BulkContainer>
-          <Checkbox isChecked={isGroupSelected} onClick={onGroupSelect} />
-        </BulkContainer>
-      )}
-      <ColumnSortHeader width={35} />
-      {mergedConfig[TaskItemColumn.DESCRIPTION] && (
-        <ColumnSortHeader
-          id={TaskItemColumn.DESCRIPTION}
-          label="Tasks"
-          sort={sort}
-          onSortChange={onSortChange}
-        />
-      )}
+      <StickyColumnContainer backgroundColor={pageBackground}>
+        {bulkEditEnabled && (
+          <BulkContainer>
+            <Checkbox isChecked={isGroupSelected} onClick={onGroupSelect} />
+          </BulkContainer>
+        )}
+        <ColumnSortHeader width={35} />
+        {mergedConfig[TaskItemColumn.DESCRIPTION] && (
+          <ColumnSortHeader
+            id={TaskItemColumn.DESCRIPTION}
+            label="Tasks"
+            sort={sort}
+            onSortChange={onSortChange}
+          />
+        )}
+      </StickyColumnContainer>
       {mergedConfig[TaskItemColumn.SUBTASKS_COUNT] && (
         <ColumnSortHeader
           id={TaskItemColumn.SUBTASKS_COUNT}

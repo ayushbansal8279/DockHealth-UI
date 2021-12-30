@@ -10,13 +10,13 @@ import { getCurrentUserGroupDetailsSelector } from 'selectors/user-groups-select
 import { userProfileSelector } from 'selectors/user-selectors';
 import { getUserGroupIdentifierByUrlParameter } from 'helpers/user-groups-helper';
 import { checkIfUserIsOrganizationAdmin } from 'helpers/user-helper';
-import { setHeader } from 'actions/template-actions';
 import {
   setCurrentUserGroup,
   unsetCurrentUserGroup,
 } from 'actions/user-groups-actions';
+import ViewLayout from 'components/template/ViewLayout/ViewLayout';
+import BasicLayoutHeader from 'components/template/BasicLayoutHeader/BasicLayoutHeader';
 import ListSkeletonLoader from 'components/common/ListSkeletonLoader/ListSkeletonLoader';
-import GenericHeader from 'components/template/GenericHeader/GenericHeader';
 import PageContentHeader from 'components/common/PageContentHeader/PageContentHeader';
 import Spacing from 'components/common/Spacing';
 import Button from 'components/common/Button/Button';
@@ -60,19 +60,6 @@ function UserGroupView() {
   }, [dispatch, groupIdentifier]);
 
   useEffect(() => {
-    dispatch(
-      setHeader({
-        layout: [
-          {
-            key: 'user-groups-header',
-            component: <GenericHeader>{name}</GenericHeader>,
-          },
-        ],
-      }),
-    );
-  }, [dispatch, name]);
-
-  useEffect(() => {
     const { searchName } = queryString.parse(search) ?? {};
 
     if (searchName) {
@@ -97,58 +84,60 @@ function UserGroupView() {
   };
 
   return (
-    <Grid container justify="center">
-      <PageContentHeader>
-        <Grid container wrap="nowrap">
-          <Grid item xs={6} xl={6} md={5} lg={4} justify="flex-start">
-            <SearchInputWrapper fullWidth={isSearchFocused || searchTerm}>
-              <SearchInput
-                value={searchTerm}
-                onValueChange={handleSearchTermChange}
-                onFocus={setSearchFocused}
-                onBlur={unsetSearchFocused}
-              />
-            </SearchInputWrapper>
+    <ViewLayout header={<BasicLayoutHeader title={name} />}>
+      <Grid container justify="center">
+        <PageContentHeader>
+          <Grid container wrap="nowrap">
+            <Grid item xs={6} xl={6} md={5} lg={4} justify="flex-start">
+              <SearchInputWrapper fullWidth={isSearchFocused || searchTerm}>
+                <SearchInput
+                  value={searchTerm}
+                  onValueChange={handleSearchTermChange}
+                  onFocus={setSearchFocused}
+                  onBlur={unsetSearchFocused}
+                />
+              </SearchInputWrapper>
+            </Grid>
+          </Grid>
+        </PageContentHeader>
+        <Grid container xs={12} item justify="center">
+          <Grid item xs={12} sm={12} md={8}>
+            <Spacing vertical={4} />
+            {isOrganizationAdmin && (
+              <ManageUsersContainer>
+                <Grid item xs={12} sm={12} md={8}>
+                  <HeaderMessageContainer>
+                    <img alt="lightbulb" src={LightbulbBig} />
+                    <HeaderMessage>
+                      <HeaderMessageTitle>
+                        Manage people in the Subscription and Users section.
+                      </HeaderMessageTitle>
+                      <HeaderMessageDescription>
+                        Invite, remove, and change roles for people within your
+                        organization.
+                      </HeaderMessageDescription>
+                    </HeaderMessage>
+                  </HeaderMessageContainer>
+                </Grid>
+                <Grid item xs={12} sm={12} md={4}>
+                  <Link to={USERS_SETTINGS_PATH}>
+                    <Button fullWidth>Manage Users</Button>
+                  </Link>
+                </Grid>
+              </ManageUsersContainer>
+            )}
+            <Spacing vertical={4} />
+            {isNil(users) ? (
+              <ListLoaderContainer>
+                <ListSkeletonLoader header />
+              </ListLoaderContainer>
+            ) : (
+              <UsersList users={users} searchTerm={searchTerm} />
+            )}
           </Grid>
         </Grid>
-      </PageContentHeader>
-      <Grid container xs={12} item justify="center">
-        <Grid item xs={12} sm={12} md={8}>
-          <Spacing vertical={4} />
-          {isOrganizationAdmin && (
-            <ManageUsersContainer>
-              <Grid item xs={12} sm={12} md={8}>
-                <HeaderMessageContainer>
-                  <img alt="lightbulb" src={LightbulbBig} />
-                  <HeaderMessage>
-                    <HeaderMessageTitle>
-                      Manage people in the Subscription and Users section.
-                    </HeaderMessageTitle>
-                    <HeaderMessageDescription>
-                      Invite, remove, and change roles for people within your
-                      organization.
-                    </HeaderMessageDescription>
-                  </HeaderMessage>
-                </HeaderMessageContainer>
-              </Grid>
-              <Grid item xs={12} sm={12} md={4}>
-                <Link to={USERS_SETTINGS_PATH}>
-                  <Button fullWidth>Manage Users</Button>
-                </Link>
-              </Grid>
-            </ManageUsersContainer>
-          )}
-          <Spacing vertical={4} />
-          {isNil(users) ? (
-            <ListLoaderContainer>
-              <ListSkeletonLoader header />
-            </ListLoaderContainer>
-          ) : (
-            <UsersList users={users} searchTerm={searchTerm} />
-          )}
-        </Grid>
       </Grid>
-    </Grid>
+    </ViewLayout>
   );
 }
 

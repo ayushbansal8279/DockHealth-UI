@@ -5,6 +5,7 @@ import TaskBaseReducer from './task-base-reducer';
 
 const initialState = {
   tabName: null,
+  searchValue: '',
   tasksList: [],
   isLoading: false,
   error: '',
@@ -41,11 +42,17 @@ const DashboardTasksReducer = (state = initialState, action) => {
       };
 
     case ActionTypes.GET_DASHBOARD_GROUPS:
-    case ActionTypes.SEARCH_DASHBOARD_TASKS:
     case ActionTypes.GET_DASHBOARD_TASKS:
       return {
         ...state,
         isLoading: true,
+      };
+
+    case ActionTypes.SEARCH_DASHBOARD_TASKS:
+      return {
+        ...state,
+        isLoading: true,
+        searchValue: action.searchTerm,
       };
 
     case ActionTypes.GET_DASHBOARD_GROUP_STATS_SUCCESS:

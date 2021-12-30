@@ -1,9 +1,17 @@
-import React, { useMemo, useEffect, useRef, useLayoutEffect } from 'react';
+import React, {
+  useMemo,
+  useEffect,
+  useRef,
+  useLayoutEffect,
+  useCallback,
+  useState,
+} from 'react';
 import { FieldType } from 'helpers/field-type-helpers';
 import FormInput from 'components/common/Input/FormInput';
 import FormSelect from 'components/common/Select/FormSelect';
 import DateInput from 'components/common/DateInput/DateInput';
 import { useFormContext } from 'react-hook-form';
+import CustomFieldTextEditor from './CustomFieldTextEditor';
 
 const BOOL_SELECT_OPTIONS = [
   {
@@ -24,11 +32,14 @@ const CustomField = ({
   fieldsGroupKey,
   isFocused,
   scrollToRef,
+  taskIdentifier,
 }) => {
   const { identifier, name, placeholder, fieldType, options } = field;
   const inputReference = useRef(null);
+  const { current } = inputReference || {};
   const componentReference = useRef(null);
   const { setValue } = useFormContext();
+  const [wasChanged, setWasChanged] = useState(false);
 
   const dropdownOptions = useMemo(
     () =>
@@ -39,6 +50,13 @@ const CustomField = ({
     [options],
   );
 
+  const handleBlur = useCallback(
+    data => {
+      onBlur(data, wasChanged);
+    },
+    [onBlur, wasChanged],
+  );
+
   const fieldName = `${fieldsGroupKey}.${identifier}`;
 
   useEffect(() => {
@@ -47,29 +65,29 @@ const CustomField = ({
   }, []);
 
   useLayoutEffect(() => {
-    if (inputReference.current && isFocused) {
+    if (current && isFocused) {
       setTimeout(() => {
-        inputReference.current.focus();
+        current.focus();
         if (scrollToRef?.current)
           scrollToRef.current.scrollIntoView({
             block: 'end',
           });
       }, 500);
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [isFocused, inputReference?.current]);
+  }, [current, fieldName, isFocused, scrollToRef]);
 
   switch (fieldType) {
     case FieldType.TEXT:
       return (
-        <FormInput
+        <CustomFieldTextEditor
           readOnly={readOnly}
           label={name}
           name={fieldName}
           placeholder={placeholder}
-          onBlur={onBlur}
+          taskIdentifier={taskIdentifier}
+          fieldsGroupKey={fieldsGroupKey}
           inputRef={inputReference}
-          ref={componentReference}
+          onChange={() => setWasChanged(true)}
         />
       );
     case FieldType.LONG_TEXT:
@@ -80,9 +98,10 @@ const CustomField = ({
           name={fieldName}
           placeholder={placeholder}
           multiline
-          onBlur={onBlur}
+          onBlur={handleBlur}
           inputRef={inputReference}
           ref={componentReference}
+          onChange={() => setWasChanged(true)}
         />
       );
     case FieldType.NUMBER:
@@ -93,9 +112,10 @@ const CustomField = ({
           label={name}
           name={fieldName}
           placeholder={placeholder}
-          onBlur={onBlur}
+          onBlur={handleBlur}
           inputRef={inputReference}
           ref={componentReference}
+          onChange={() => setWasChanged(true)}
         />
       );
     case FieldType.BOOL:
@@ -106,9 +126,10 @@ const CustomField = ({
           options={BOOL_SELECT_OPTIONS}
           name={fieldName}
           placeholder={placeholder}
-          onBlur={onBlur}
+          onBlur={handleBlur}
           inputRef={inputReference}
           ref={componentReference}
+          onChange={() => setWasChanged(true)}
         />
       );
     case FieldType.DATE:
@@ -119,9 +140,10 @@ const CustomField = ({
           placeholder="MM/DD/YYYY"
           inputComponent={DateInput}
           name={fieldName}
-          onBlur={onBlur}
+          onBlur={handleBlur}
           inputRef={inputReference}
           ref={componentReference}
+          onChange={() => setWasChanged(true)}
         />
       );
     case FieldType.DROPDOWN:
@@ -131,9 +153,10 @@ const CustomField = ({
           label={name}
           options={dropdownOptions}
           name={fieldName}
-          onBlur={onBlur}
+          onBlur={handleBlur}
           inputRef={inputReference}
           ref={componentReference}
+          onChange={() => setWasChanged(true)}
         />
       );
     default:

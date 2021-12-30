@@ -1,15 +1,10 @@
 import {
-  SHOW_TEMPLATE_HEADER,
-  HIDE_TEMPLATE_HEADER,
   SHOW_NAVBAR,
   HIDE_NAVBAR,
   SHOW_SUB_MENU,
   HIDE_SUB_MENU,
   OPEN_NOTIFICATIONS,
   CLEAR_NOTIFICATIONS,
-  SET_HEADER,
-  UNSET_HEADER,
-  HIDE_HEADER,
 } from 'actions/action-types';
 
 export const showNavbar = () => ({
@@ -18,14 +13,6 @@ export const showNavbar = () => ({
 
 export const hideNavbar = () => ({
   type: HIDE_NAVBAR,
-});
-
-export const hideHeader = () => ({
-  type: HIDE_TEMPLATE_HEADER,
-});
-
-export const showHeader = () => ({
-  type: SHOW_TEMPLATE_HEADER,
 });
 
 export const showSubMenu = subMenuKey => ({
@@ -45,20 +32,3 @@ export const openNotifications = notificationsPage => ({
 export const clearNotifications = () => ({
   type: CLEAR_NOTIFICATIONS,
 });
-
-export const setHeader = headerData => ({
-  type: SET_HEADER,
-  headerData,
-});
-
-export const unsetHeader = dispatch => () => {
-  dispatch({
-    type: HIDE_HEADER,
-  });
-
-  setTimeout(() => {
-    dispatch({
-      type: UNSET_HEADER,
-    });
-  }, 200);
-};
