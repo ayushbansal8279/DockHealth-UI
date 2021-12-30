@@ -1,6 +1,5 @@
 import styled from 'styled-components';
 import palette from 'styles/palette';
-import spacing from 'styles/spacing';
 
 export const CustomizeButton = styled.button`
   display: flex;
@@ -21,31 +20,20 @@ export const CustomizeImg = styled.img`
 
 export const PopoverContainer = styled.div`
   background-color: ${palette.white};
-  width: 350px;
+  width: 233px;
   box-shadow: 0px 4px 11px grey;
   max-height: 800px;
   overflow-x: hidden;
   overflow-y: auto;
 `;
 
-export const SectionContainer = styled.div`
-  padding: ${spacing.regularPlus};
+export const PlusIcon = styled.div`
+  padding: 0 2px;
 `;
 
-export const ListElement = styled.div`
-  padding-bottom: ${spacing.regularPlus};
-  display: flex;
-  cursor: pointer;
-  align-items: center;
-  &:last-of-type {
-    padding-bottom: 0px;
-  }
-`;
-
-export const TextElement = styled.div`
-  padding-left: ${spacing.regular};
-`;
-
-export const PlusIcon = styled.span`
-  color: ${palette.coolGrey2};
+export const Spacer = styled.hr`
+  margin: 0;
+  width: 100%;
+  border-color: ${palette.coolGrey3};
+  height: 0.5px;
 `;

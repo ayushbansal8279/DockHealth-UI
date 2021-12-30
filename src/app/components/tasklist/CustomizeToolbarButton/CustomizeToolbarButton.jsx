@@ -1,5 +1,5 @@
 import React, { useState, useRef, useMemo, useCallback } from 'react';
-import { Box, Popover } from '@material-ui/core';
+import { Box, List, ListItemText, MenuItem, Popover } from '@material-ui/core';
 import CustomizeIcon from 'img/customize-icon';
 import Checkbox from 'components/common/Checkbox/Checkbox';
 import { useColumnsConfig } from 'context-api/ColumnsConfigContext';
@@ -10,13 +10,11 @@ import { capitalize } from 'helpers/capitalize';
 import { getCustomerTypeLabel } from 'helpers/customer-type-helper';
 import { isEmpty } from 'ramda';
 import {
-  SectionContainer,
-  ListElement,
-  TextElement,
   PlusIcon,
   PopoverContainer,
   CustomizeImg,
   CustomizeButton,
+  Spacer,
 } from './styled';
 import { limitToConfigurableKeys } from './helpers';
 
@@ -32,7 +30,7 @@ const CustomizeToolbarButton = ({ onChange, openCustomFieldModal }) => {
   } = useColumnsConfig();
 
   const ColumnOptionNames = {
-    [TaskItemColumn.ACTIVITY]: 'Comments, labels and attachments',
+    [TaskItemColumn.ACTIVITY]: 'Details',
     [TaskItemColumn.ASSIGNED]: 'Assigned',
     [TaskItemColumn.WORKFLOW_STATUS]: 'Status',
     [TaskItemColumn.DUE_DATE]: 'Date',
@@ -96,42 +94,50 @@ const CustomizeToolbarButton = ({ onChange, openCustomFieldModal }) => {
         }}
       >
         <PopoverContainer>
-          <SectionContainer>
+          <List>
             {Object.keys(columnsConfigToDisplay).map(columnKey => {
               const optionName = ColumnOptionNames[columnKey];
               const isChecked = columnsConfigToDisplay[columnKey];
               return (
                 optionName && (
-                  <ListElement onClick={() => onClickCheckbox(columnKey)}>
+                  <MenuItem onClick={() => onClickCheckbox(columnKey)}>
                     <Checkbox isChecked={isChecked} />
-                    <TextElement>{optionName}</TextElement>
-                  </ListElement>
+                    <Box mx={0.5} />
+                    <ListItemText>{optionName}</ListItemText>
+                  </MenuItem>
                 )
               );
             })}
-          </SectionContainer>
+          </List>
           {!isEmpty(customColumnsConfig) && (
-            <SectionContainer>
-              {customColumnsConfig.map(column => {
-                const { name, isChecked = false } = column;
-                return (
-                  name && (
-                    <ListElement
-                      onClick={() => onClickCustomFieldsCheckbox(column)}
-                    >
-                      <Checkbox isChecked={isChecked} />
-                      <TextElement>{name}</TextElement>
-                    </ListElement>
-                  )
-                );
-              })}
-            </SectionContainer>
+            <>
+              <Spacer />
+              <List>
+                {customColumnsConfig.map(column => {
+                  const { name, isChecked = false } = column;
+                  return (
+                    name && (
+                      <MenuItem
+                        onClick={() => onClickCustomFieldsCheckbox(column)}
+                      >
+                        <Checkbox isChecked={isChecked} />
+                        <Box mx={0.5} />
+                        <ListItemText>{name}</ListItemText>
+                      </MenuItem>
+                    )
+                  );
+                })}
+              </List>
+            </>
           )}
-          <SectionContainer>
-            <TextElement onClick={openCustomFieldModal}>
-              <PlusIcon>+</PlusIcon> Create custom column
-            </TextElement>
-          </SectionContainer>
+          <Spacer />
+          <List>
+            <MenuItem onClick={openCustomFieldModal}>
+              <PlusIcon>+</PlusIcon>
+              <Box mx={0.5} />
+              <ListItemText>Create custom column</ListItemText>
+            </MenuItem>
+          </List>
         </PopoverContainer>
       </Popover>
     </>
