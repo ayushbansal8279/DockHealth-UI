@@ -130,7 +130,7 @@ const PersonDetailsView = () => {
           <PersonInfoPanel />
         </StickyContainer>
         <TaskViewContainer>
-          <UserTasksToolbar selectedTab={selectedTab} />
+          <UserTasksToolbar />
           {selectedTab === TaskListTabName.COMPLETE ? (
             <CompletedTasksView
               taskItemConfig={PERSON_VIEW_COLUMNS_CONFIG}
