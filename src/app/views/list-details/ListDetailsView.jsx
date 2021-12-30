@@ -120,8 +120,10 @@ const ListDetailsView = props => {
               ]}
             /> */}
             <ListDetailsToolbar
+              onColumnSetupChange={setDisplayColumnPreferences}
               onSelectTab={navigateToTab}
               selectedTab={selectedTab}
+              taskList={taskList || undefined}
             />
             {viewType === ViewType.CALENDAR_VIEW && (
               <Calendar
