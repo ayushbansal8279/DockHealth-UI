@@ -1,22 +1,27 @@
 import React from 'react';
-import { Select as MuiSelect, MenuItem } from '@material-ui/core';
+import { MenuItem, Box, Select } from '@material-ui/core';
 import zIndex from 'styles/z-index';
+import { useStyles } from './styled';
 
 const ToolbarSelect = ({ options, name, value, icon, ...restProps }) => {
+  const classes = useStyles();
+
   return (
-    <MuiSelect
+    <Select
+      className={classes.select}
       MenuProps={{
         anchorOrigin: {
           vertical: 'bottom',
-          horizontal: 'left',
+          horizontal: 'right',
         },
         transformOrigin: {
           vertical: 'top',
-          horizontal: 'left',
+          horizontal: 'right',
         },
         getContentAnchorEl: null,
         style: { zIndex: zIndex.optionsMenu },
       }}
+      variant="outlined"
       inputProps={{ name }}
       value={value}
       renderValue={selectedValue => {
@@ -24,10 +29,11 @@ const ToolbarSelect = ({ options, name, value, icon, ...restProps }) => {
           option => option.value === selectedValue,
         );
         return (
-          <div>
+          <>
             {icon}
+            <Box component="span" mx={0.5} />
             {label}
-          </div>
+          </>
         );
       }}
       {...restProps}
@@ -39,7 +45,7 @@ const ToolbarSelect = ({ options, name, value, icon, ...restProps }) => {
           </MenuItem>
         );
       })}
-    </MuiSelect>
+    </Select>
   );
 };
 
