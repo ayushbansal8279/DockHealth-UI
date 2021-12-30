@@ -19,3 +19,7 @@ export const ToolbarContainer = styled.div`
   z-index: 13;
   padding: 18px 24px;
 `;
+
+export const VisibilityImg = styled.img`
+  width: 21px;
+`;

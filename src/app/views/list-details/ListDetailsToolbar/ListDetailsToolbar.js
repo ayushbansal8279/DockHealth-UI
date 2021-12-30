@@ -1,7 +1,11 @@
 import React, { useCallback, useState } from 'react';
+import palette from 'styles/palette';
+import CompleteTasksVisibleIcon from 'img/complete-tasks-visible-icon';
+import CompleteTasksHiddenIcon from 'img/complete-tasks-hidden-icon';
 import TaskViewTypeToolbarSelect from 'components/tasklist/TaskViewTypeToolbarSelect/TaskViewTypeToolbarSelect';
 import { Box } from '@material-ui/core';
 import TaskStatusToolbarSelect from 'components/tasklist/TaskStatusToolbarSelect/TaskStatusToolbarSelect';
+import ToolbarButton from 'components/tasklist/ToolbarButton/ToolbarButton';
 import InboxTips from 'components/tasklist/InboxTips/InboxTips';
 import { ViewType, getViewTypeFromQueryString } from 'helpers/view-type-helper';
 import { useLocation, useHistory } from 'react-router-dom';
@@ -10,7 +14,7 @@ import { checkIfUserIsOrganizationAdmin } from 'helpers/user-helper';
 import { userProfileSelector } from 'selectors/user-selectors';
 import { useSelector } from 'react-redux';
 import { currentTaskListSelector } from 'selectors/task-list-selectors';
-import { ToolbarContainer } from './styled';
+import { ToolbarContainer, VisibilityImg } from './styled';
 import TaskCustomFieldsModal from '../../../modal/customModals/TaskCustomFieldsModal';
 
 const ListDetailsToolbar = ({
@@ -41,10 +45,32 @@ const ListDetailsToolbar = ({
     [search, history],
   );
 
+  const tasksVisible = false;
+
   return (
     <ToolbarContainer>
       <Box>{taskList?.listType === 'INBOX' && <InboxTips />}</Box>
       <Box display="flex" flex={1} justifyContent="flex-end">
+        <ToolbarButton
+          color={!tasksVisible && palette.coolGrey1}
+          icon={
+            <VisibilityImg
+              src={
+                tasksVisible
+                  ? CompleteTasksVisibleIcon
+                  : CompleteTasksHiddenIcon
+              }
+              alt={
+                tasksVisible
+                  ? 'complete-tasks-visible'
+                  : 'complete-tasks-hidden'
+              }
+            />
+          }
+        >
+          Completed Tasks
+        </ToolbarButton>
+        <Box mx={0.5} />
         <CustomizeToolbarButton
           onChange={onColumnSetupChange}
           openCustomFieldModal={() => setCustomFieldsModalOpened(true)}
