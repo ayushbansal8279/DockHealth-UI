@@ -28,11 +28,13 @@ import StandardTaskItemContainer from 'components/task/StandardTaskItemContainer
 import OptionsMenu from 'components/common/OptionsMenu/OptionsMenu';
 import QuickAddTaskInput from 'components/tasklist/QuickAddTaskInput/QuickAddTaskInput';
 import PatientCard from 'components/patients/PatientCard/PatientCard';
-import OverflowTooltip from 'components/task/OverflowTooltip/OverflowTooltip';
+import { checkIfShouldDisplayTooltip } from 'components/task/OverflowTooltip/OverflowTooltip';
 import TaskItemPopover from 'components/task/TaskItemPopover/TaskItemPopover';
 import PatientList from 'components/patients/PatientDropdown/PatientList';
 import { getCustomerTypeLabel } from 'helpers/customer-type-helper';
 import { capitalize } from 'helpers/capitalize';
+import Tooltip from 'components/common/Tooltip/Tooltip';
+
 import {
   TaskTemplateGroupContainer,
   TaskTemplateGroupHeader,
@@ -47,7 +49,6 @@ import {
   Placeholder,
   TaskTemplateRight,
   NameContainer,
-  NameTooltip,
   QuickAddInputWrapper,
 } from './styled';
 
@@ -389,32 +390,36 @@ const TaskTemplateGroup = ({
           <Checkbox isChecked={isBundleSelected} onClick={handleBundleSelect} />
           <Box m={1} />
           <RotatableChevron rotated={isOpen} onClick={() => setOpen(!isOpen)} />
-          <NameContainer
-            onClick={() => {
-              if (!isEditing) {
-                setOpen(!isOpen);
-              }
-            }}
+          <Tooltip
+            title={name}
+            hideTooltip={
+              !checkIfShouldDisplayTooltip(nameInputReference.current)
+            }
           >
-            <TaskTemplateNameInput
-              ref={nameInputReference}
-              readOnly={!isEditing}
-              error={nameInputError}
-              onChange={event => {
-                setNameInputValue(event.target?.value);
-                setNameInputError(false);
+            <NameContainer
+              onClick={() => {
+                if (!isEditing) {
+                  setOpen(!isOpen);
+                }
               }}
-              onBlur={() => {
-                setIsEditing(false);
-                setNameInputValue(name);
-              }}
-              onKeyDown={handleNameInputKeyDown}
-              value={nameInputValue}
-            />
-            <OverflowTooltip textReference={nameInputReference.current}>
-              <NameTooltip>{name}</NameTooltip>
-            </OverflowTooltip>
-          </NameContainer>
+            >
+              <TaskTemplateNameInput
+                ref={nameInputReference}
+                readOnly={!isEditing}
+                error={nameInputError}
+                onChange={event => {
+                  setNameInputValue(event.target?.value);
+                  setNameInputError(false);
+                }}
+                onBlur={() => {
+                  setIsEditing(false);
+                  setNameInputValue(name);
+                }}
+                onKeyDown={handleNameInputKeyDown}
+                value={nameInputValue}
+              />
+            </NameContainer>
+          </Tooltip>
         </TaskTemplateGroupHeader>
         <TaskTemplateRight>
           {!disablePatientAssignment && (

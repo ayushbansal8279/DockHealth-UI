@@ -36,7 +36,7 @@ import QuickAddTaskInput from 'components/tasklist/QuickAddTaskInput/QuickAddTas
 import { checkIfAllTasksSelected } from 'helpers/bulk-edit-helpers';
 import { extractTasksAndSubtasks } from 'helpers/tasklist-helpers';
 import { changeTasksSelectedState } from 'actions/task-actions';
-import { TaskGroupsContainer } from '../styled';
+import { TaskGroupsContainer, StickyContainer } from '../styled';
 
 const PersonDetailsOpenedTasks = ({
   taskItemConfig,
@@ -133,18 +133,23 @@ const PersonDetailsOpenedTasks = ({
       ) : (
         <TaskGroupsContainer>
           {!isEmpty(filteredTasks) ? (
-            <TaskListGroupCollapse group={{ groupName: 'All tasks' }}>
+            <TaskListGroupCollapse
+              group={{ groupName: 'All tasks' }}
+              stickyHeader
+            >
               {({ isFullView }) => (
                 <>
-                  <QuickAddTaskInput
-                    ref={quickAddTaskInputReference}
-                    quickAddTask={task => {
-                      handleQuickAddTask(task);
-                      setTimeout(() => {
-                        quickAddTaskInputReference.current.focus();
-                      }, 0);
-                    }}
-                  />
+                  <StickyContainer>
+                    <QuickAddTaskInput
+                      ref={quickAddTaskInputReference}
+                      quickAddTask={task => {
+                        handleQuickAddTask(task);
+                        setTimeout(() => {
+                          quickAddTaskInputReference.current.focus();
+                        }, 0);
+                      }}
+                    />
+                  </StickyContainer>
                   <TasksHeader
                     bulkEditEnabled
                     sort={sort}

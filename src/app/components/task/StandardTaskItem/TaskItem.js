@@ -392,12 +392,12 @@ const TaskItem = ({
           <StickyColumnContainer
             isSubtask={showSubtaskStylingLink}
             backgroundColor={pageBackground}
+            isSelected={isSelected || selected}
           >
             <DotsContainer
               showDraggableDots={showDraggableDots}
               dragHandleProps={dragHandleProps}
             />
-            {/* {workflowStatus && <StatusBar color={workflowStatus?.color} />} */}
             {showPriority && <PriorityIndicator />}
             {showSubtaskStylingLink && getSubtaskStylingLink(isLast)}
             {bulkEditEnabled && (

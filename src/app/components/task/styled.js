@@ -101,7 +101,9 @@ export const StickyColumnContainer = styled.div`
   &::after {
     content: '';
     display: block;
-    background: ${palette.white};
+    background-color: ${props =>
+      props.isSelected ? '#e0eff9' : palette.white};
+    transition: background-color 0.3s ease-out;
     position: absolute;
     left: 0px;
     top: 50%;
@@ -152,7 +154,7 @@ export const DescriptionTooltip = styled.div`
   padding: ${spacing.small};
   color: ${palette.white};
   background: ${palette.mediumGrey};
-  z-index: 10;
+  z-index: 99;
   font-size: ${fontSizes.smallPlus};
   cursor: initial;
 `;

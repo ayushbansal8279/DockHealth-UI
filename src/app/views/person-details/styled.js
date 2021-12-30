@@ -37,3 +37,9 @@ export const StickyContainer = styled.div`
   left: 24px;
   width: calc(100vw - 115px);
 `;
+
+export const PersonalInfoStickyContainer = styled.div`
+  position: sticky;
+  left: 0px;
+  width: calc(100vw - 67px);
+`;
