@@ -1,4 +1,5 @@
-import React, { useCallback, useState } from 'react';
+import React, { useCallback, useState, useMemo } from 'react';
+import { uniq } from 'ramda';
 import TaskViewTypeToolbarSelect from 'components/tasklist/TaskViewTypeToolbarSelect/TaskViewTypeToolbarSelect';
 import { Box } from '@material-ui/core';
 import TaskStatusToolbarSelect from 'components/tasklist/TaskStatusToolbarSelect/TaskStatusToolbarSelect';
@@ -6,26 +7,31 @@ import CompleteTasksVisibilitySwitch from 'components/tasklist/CompleteTasksVisi
 import InboxTips from 'components/tasklist/InboxTips/InboxTips';
 import { ViewType, getViewTypeFromQueryString } from 'helpers/view-type-helper';
 import { useLocation, useHistory } from 'react-router-dom';
+import { TaskStatus } from 'helpers/task-helpers';
+import { updateUserListViewSetup } from 'actions/task-list-actions';
 import CustomizeToolbarButton from 'components/tasklist/CustomizeToolbarButton/CustomizeToolbarButton';
 import { checkIfUserIsOrganizationAdmin } from 'helpers/user-helper';
 import { userProfileSelector } from 'selectors/user-selectors';
-import { useSelector } from 'react-redux';
-import { currentTaskListSelector } from 'selectors/task-list-selectors';
+import { useDispatch, useSelector } from 'react-redux';
+import {
+  currentTaskListSelector,
+  currentTaskListTasksStatusSelector,
+} from 'selectors/task-list-selectors';
 import { ToolbarContainer } from './styled';
 import TaskCustomFieldsModal from '../../../modal/customModals/TaskCustomFieldsModal';
 
-const ListDetailsToolbar = ({
-  onSelectTab,
-  selectedTab,
-  onColumnSetupChange,
-  additionalOptions,
-}) => {
+const TASKS_VISIBILITY_KEY = 'SHOW_WORKFLOW_COMPLETED_TASKS';
+
+const ListDetailsToolbar = ({ onColumnSetupChange, additionalOptions }) => {
+  const dispatch = useDispatch();
   const { search } = useLocation();
   const history = useHistory();
   const [customFieldsModalOpened, setCustomFieldsModalOpened] = useState(false);
   const currentUser = useSelector(userProfileSelector);
+  const tasksStatus = useSelector(currentTaskListTasksStatusSelector);
   const isOrganizationAdmin = checkIfUserIsOrganizationAdmin(currentUser);
   const taskList = useSelector(currentTaskListSelector);
+  const { taskListIdentifier } = taskList || {};
   const isListCreator =
     taskList?.creator?.identifier === currentUser.identifier;
 
@@ -43,17 +49,51 @@ const ListDetailsToolbar = ({
     [search, history],
   );
 
-  // TODO: change for visibility state
-  const [visible, setVisible] = useState(false);
+  const { displayOptions = [] } = useMemo(
+    () =>
+      taskList?.listUsers?.find(
+        user => user.identifier === currentUser.identifier,
+      ) || {},
+    [taskList, currentUser],
+  );
+
+  const handleChangeTasksStatus = useCallback(
+    event => {
+      history.push(
+        `/core/tasks/${taskListIdentifier}${
+          event.target.value === TaskStatus.INCOMPLETE
+            ? ''
+            : `/${TaskStatus.COMPLETE}`
+        }`,
+      );
+    },
+    [history, taskListIdentifier],
+  );
+
+  const handleTasksVisibilityChange = visible => {
+    const newDisplayOptions = visible
+      ? uniq([...displayOptions, TASKS_VISIBILITY_KEY])
+      : displayOptions.filter(k => k !== TASKS_VISIBILITY_KEY);
+
+    dispatch(
+      updateUserListViewSetup(
+        taskList.taskListIdentifier,
+        newDisplayOptions,
+        currentUser.identifier,
+      ),
+    );
+  };
 
   return (
     <ToolbarContainer>
       <Box>{taskList?.listType === 'INBOX' && <InboxTips />}</Box>
       <Box display="flex" flex={1} justifyContent="flex-end">
-        <CompleteTasksVisibilitySwitch
-          visible={visible}
-          onChange={setVisible}
-        />
+        {tasksStatus === TaskStatus.INCOMPLETE && (
+          <CompleteTasksVisibilitySwitch
+            visible={displayOptions.includes(TASKS_VISIBILITY_KEY)}
+            onChange={handleTasksVisibilityChange}
+          />
+        )}
         <Box mx={0.5} />
         <CustomizeToolbarButton
           onChange={onColumnSetupChange}
@@ -67,8 +107,8 @@ const ListDetailsToolbar = ({
         />
         <Box mx={0.5} />
         <TaskStatusToolbarSelect
-          value={selectedTab}
-          onChange={event => onSelectTab(event.target.value)}
+          value={tasksStatus}
+          onChange={handleChangeTasksStatus}
         />
         <Box mx={0.5} />
         <TaskCustomFieldsModal

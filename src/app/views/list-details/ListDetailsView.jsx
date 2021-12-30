@@ -1,14 +1,14 @@
 import React from 'react';
 import { TaskListTabName } from 'helpers/tasklist-helpers';
 import TaskDrawer from 'components/task-drawer/TaskDrawer/TaskDrawer';
-import ListDetailsToolbarContainer from 'views/list-details/ListDetailsToolbarContainer/ListDetailsToolbarContainer';
+// import ListDetailsToolbarContainer from 'views/list-details/ListDetailsToolbarContainer/ListDetailsToolbarContainer';
 import BulkEditSection from 'components/tasklist/BulkEditSection/BulkEditSection';
 import { ViewType } from 'helpers/view-type-helper';
 import Calendar from 'components/common/Calendar/Calendar';
 import ViewLayout from 'components/template/ViewLayout/ViewLayout';
 import OpenedTasksView from './ListDetailsOpenedTasksContainer/ListDetailsOpenedTasksContainer';
 import CompletedTasksView from './ListDetailsCompletedTasksContainer/ListDetailsCompletedTasksContainer';
-import InboxHelpPanel from './InboxHelpPanel/InboxHelpPanel';
+// import InboxHelpPanel from './InboxHelpPanel/InboxHelpPanel';
 import initializeListDetailsViewHooks from './hooks';
 import { TaskViewContainer } from './styled';
 import ListDetailsHeader from './ListDetailsHeader/ListDetailsHeader';
@@ -32,11 +32,10 @@ const ListDetailsView = props => {
     isFetching,
     isTourOpen,
     listDetailsActions,
-    taskList,
+    // taskList,
     loadMoreTasksForList,
     loadTasksForTaskGroup,
-    members,
-    navigateToTab,
+    // members,
     openedTasks,
     quickAddTask,
     refreshTab,
@@ -142,8 +141,6 @@ const ListDetailsView = props => {
             /> */}
             <ListDetailsToolbar
               onColumnSetupChange={setDisplayColumnPreferences}
-              onSelectTab={navigateToTab}
-              selectedTab={selectedTab}
               additionalOptions={additionalToolbarOptions}
             />
             {viewType === ViewType.CALENDAR_VIEW && (
