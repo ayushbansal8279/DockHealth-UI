@@ -5,7 +5,9 @@ import { storeAsCurrentTask } from 'actions/task-actions';
 import { openDrawer } from 'actions/task-drawer-actions';
 import TextEditor from 'components/common/TextEditor/TextEditor';
 import Spacing from 'components/common/Spacing';
-import OverflowTooltip from 'components/task/OverflowTooltip/OverflowTooltip';
+import { checkIfShouldDisplayTooltip } from 'components/task/OverflowTooltip/OverflowTooltip';
+import Tooltip from 'components/common/Tooltip/Tooltip';
+
 import {
   Description,
   DescriptionBox,
@@ -48,33 +50,39 @@ const TaskItemDescription = ({
 
   return (
     <DescriptionBox>
-      <DescriptionWrapper>
-        <Description
-          ref={reference => {
-            if (reference) {
-              descriptionTextReference.current = reference.querySelector(
-                '.public-DraftStyleDefault-block',
-              );
-            }
-          }}
-          isCrossedOut={!isCompletedGroup && isCompleted}
-        >
-          <TextEditor
-            readOnly
-            oneline
-            state={descriptionState}
-            onChange={setDescriptionState}
-            highlightedValues={
-              matchDescription && highlightedValue?.toLowerCase().split(/\s+/)
-            }
-          />
-          <OverflowTooltip textReference={descriptionTextReference.current}>
-            <DescriptionTooltip>{description}</DescriptionTooltip>
-          </OverflowTooltip>
-        </Description>
-        {edited && !duplicated && <DescriptionLabel>(edited)</DescriptionLabel>}
-        {duplicated && <DescriptionLabel>(duplicated)</DescriptionLabel>}
-      </DescriptionWrapper>
+      <Tooltip
+        title={description}
+        hideTooltip={
+          !checkIfShouldDisplayTooltip(descriptionTextReference.current)
+        }
+      >
+        <DescriptionWrapper>
+          <Description
+            ref={reference => {
+              if (reference) {
+                descriptionTextReference.current = reference.querySelector(
+                  '.public-DraftStyleDefault-block',
+                );
+              }
+            }}
+            isCrossedOut={!isCompletedGroup && isCompleted}
+          >
+            <TextEditor
+              readOnly
+              oneline
+              state={descriptionState}
+              onChange={setDescriptionState}
+              highlightedValues={
+                matchDescription && highlightedValue?.toLowerCase().split(/\s+/)
+              }
+            />
+          </Description>
+          {edited && !duplicated && (
+            <DescriptionLabel>(edited)</DescriptionLabel>
+          )}
+          {duplicated && <DescriptionLabel>(duplicated)</DescriptionLabel>}
+        </DescriptionWrapper>
+      </Tooltip>
       <TaskItemDescriptionIndicators>
         {isCompletedGroup && (
           <CompletedBy isCompleted={isCompleted}>

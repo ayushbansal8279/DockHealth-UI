@@ -83,6 +83,7 @@ export const StickyColumnContainer = styled.div`
   border-right: 1px solid ${palette.coolGrey3};
   border-left: 1px solid ${palette.coolGrey3};
   min-width: 200px;
+  max-width: 200px;
 
   &::before {
     content: '';
@@ -154,7 +155,7 @@ export const DescriptionTooltip = styled.div`
   padding: ${spacing.small};
   color: ${palette.white};
   background: ${palette.mediumGrey};
-  z-index: 10;
+  z-index: 99;
   font-size: ${fontSizes.smallPlus};
   cursor: initial;
 `;
