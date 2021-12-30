@@ -11,6 +11,7 @@ export const useStyles = makeStyles({
       padding: '4px 32px 4px 12px',
       boxSizing: 'border-box',
       borderRadius: 5,
+      color: palette.darkGrey,
     },
     '&:hover .MuiSelect-root, &.Mui-focused .MuiSelect-root': {
       background: palette.coolGrey3,
