@@ -13,7 +13,11 @@ import { PlusIcon, PopoverContainer, CustomizeImg, Spacer } from './styled';
 import { limitToConfigurableKeys } from './helpers';
 import ToolbarButton from '../ToolbarButton/ToolbarButton';
 
-const CustomizeToolbarButton = ({ onChange, openCustomFieldModal }) => {
+const CustomizeToolbarButton = ({
+  onChange,
+  openCustomFieldModal,
+  additionalOptions,
+}) => {
   const [open, setOpen] = useState(false);
   const buttonReference = useRef(null);
   const userProfile = useSelector(userProfileSelector);
@@ -115,9 +119,41 @@ const CustomizeToolbarButton = ({ onChange, openCustomFieldModal }) => {
                   return (
                     name && (
                       <MenuItem
+                        key={column.identifier}
                         onClick={() => onClickCustomFieldsCheckbox(column)}
                       >
                         <Checkbox isChecked={isChecked} />
+                        <Box mx={0.5} />
+                        <ListItemText>{name}</ListItemText>
+                      </MenuItem>
+                    )
+                  );
+                })}
+              </List>
+            </>
+          )}
+          {additionalOptions.length > 0 && (
+            <>
+              <Spacer />
+              <List>
+                {additionalOptions.map(option => {
+                  const {
+                    name,
+                    checked = false,
+                    disabled,
+                    key,
+                    onClick,
+                  } = option;
+                  return (
+                    name && (
+                      <MenuItem
+                        key={key}
+                        onClick={() => {
+                          if (typeof onClick === 'function' && !disabled)
+                            onClick(key);
+                        }}
+                      >
+                        <Checkbox isDisabled={disabled} isChecked={checked} />
                         <Box mx={0.5} />
                         <ListItemText>{name}</ListItemText>
                       </MenuItem>

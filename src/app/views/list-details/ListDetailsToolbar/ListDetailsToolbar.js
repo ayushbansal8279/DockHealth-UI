@@ -18,6 +18,7 @@ const ListDetailsToolbar = ({
   onSelectTab,
   selectedTab,
   onColumnSetupChange,
+  additionalOptions,
 }) => {
   const { search } = useLocation();
   const history = useHistory();
@@ -57,6 +58,7 @@ const ListDetailsToolbar = ({
         <CustomizeToolbarButton
           onChange={onColumnSetupChange}
           openCustomFieldModal={() => setCustomFieldsModalOpened(true)}
+          additionalOptions={additionalOptions}
         />
         <Box mx={0.5} />
         <TaskViewTypeToolbarSelect

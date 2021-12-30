@@ -44,7 +44,6 @@ const UserTasksToolbar = () => {
           openCustomFieldModal={() => setCustomFieldsModalOpened(true)}
         />
         <Box mx={0.5} />
-        <Box mx={0.5} />
         <TaskStatusToolbarSelect
           value={tasksStatus}
           onChange={event => handleSelectTab(event.target.value)}

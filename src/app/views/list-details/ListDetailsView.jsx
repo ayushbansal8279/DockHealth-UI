@@ -54,6 +54,27 @@ const ListDetailsView = props => {
     viewType,
   } = initializeListDetailsViewHooks(match, history);
 
+  const additionalToolbarOptions = [
+    {
+      name: 'Show Workflow Details',
+      onClick: () => {
+        setDisplayListPreferences('SHOW_WORKFLOW_DETAILS');
+      },
+      key: 'SHOW_WORKFLOW_DETAILS',
+      checked: displayListPreferences.SHOW_WORKFLOW_DETAILS,
+    },
+    {
+      disabled: !displayListPreferences.SHOW_WORKFLOW_DETAILS,
+      name:
+        selectedTab === TaskListTabName.COMPLETE
+          ? 'Show Workflow Uncompleted Tasks'
+          : 'Show Workflow Completed Tasks',
+      onClick: () => setDisplayListPreferences('SHOW_WORKFLOW_COMPLETED_TASKS'),
+      key: 'SHOW_COMPLETED_OR_UNCOMPLETED_WORKFLOW_DETAILS',
+      checked: displayListPreferences.SHOW_WORKFLOW_COMPLETED_TASKS,
+    },
+  ];
+
   return (
     <ViewLayout
       header={
@@ -123,6 +144,7 @@ const ListDetailsView = props => {
               onColumnSetupChange={setDisplayColumnPreferences}
               onSelectTab={navigateToTab}
               selectedTab={selectedTab}
+              additionalOptions={additionalToolbarOptions}
             />
             {viewType === ViewType.CALENDAR_VIEW && (
               <Calendar
