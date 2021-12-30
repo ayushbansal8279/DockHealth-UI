@@ -15,6 +15,7 @@ import TaskDrawer from 'components/task-drawer/TaskDrawer/TaskDrawer';
 import LayoutHeader from 'components/template/LayoutHeader/LayoutHeader';
 import HeaderSearch from 'components/template/HeaderSearch/HeaderSearch';
 import { TASK_DISAPPEAR_DELAY } from 'helpers/task-update-helper';
+import { ColumnsConfigProvider } from 'context-api/ColumnsConfigContext';
 import OpenedTasksView from './PersonDetailsOpenedTasksContainer/PersonDetailsOpenedTasks';
 import CompletedTasksView from './PersonDetailsCompletedTasksContainer/PersonDetailsCompletedTasks';
 import PersonInfoPanel from './PersonInfoPanel/PersonInfoPanel';
@@ -111,7 +112,7 @@ const PersonDetailsView = () => {
   const selectedTab = tabName || TaskListTabName.OPEN;
 
   return (
-    <>
+    <ColumnsConfigProvider>
       <ViewLayout
         header={
           <LayoutHeader>
@@ -156,7 +157,7 @@ const PersonDetailsView = () => {
         onTaskDelete={handleTaskDelete}
         onTaskCreation={refreshTabAfterTaskUpdate}
       />
-    </>
+    </ColumnsConfigProvider>
   );
 };
 
