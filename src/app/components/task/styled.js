@@ -101,7 +101,9 @@ export const StickyColumnContainer = styled.div`
   &::after {
     content: '';
     display: block;
-    background: ${palette.white};
+    background-color: ${props =>
+      props.isSelected ? '#e0eff9' : palette.white};
+    transition: background-color 0.3s ease-out;
     position: absolute;
     left: 0px;
     top: 50%;
