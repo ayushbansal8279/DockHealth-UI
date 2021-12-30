@@ -9,14 +9,9 @@ import { TaskItemColumn } from 'helpers/task-helpers';
 import { capitalize } from 'helpers/capitalize';
 import { getCustomerTypeLabel } from 'helpers/customer-type-helper';
 import { isEmpty } from 'ramda';
-import {
-  PlusIcon,
-  PopoverContainer,
-  CustomizeImg,
-  CustomizeButton,
-  Spacer,
-} from './styled';
+import { PlusIcon, PopoverContainer, CustomizeImg, Spacer } from './styled';
 import { limitToConfigurableKeys } from './helpers';
+import ToolbarButton from '../ToolbarButton/ToolbarButton';
 
 const CustomizeToolbarButton = ({ onChange, openCustomFieldModal }) => {
   const [open, setOpen] = useState(false);
@@ -75,11 +70,13 @@ const CustomizeToolbarButton = ({ onChange, openCustomFieldModal }) => {
 
   return (
     <>
-      <CustomizeButton ref={buttonReference} onClick={() => setOpen(!open)}>
-        <CustomizeImg src={CustomizeIcon} alt="view type icon" />
-        <Box mx={0.5} />
+      <ToolbarButton
+        ref={buttonReference}
+        icon={<CustomizeImg src={CustomizeIcon} alt="view type icon" />}
+        onClick={() => setOpen(!open)}
+      >
         Customize
-      </CustomizeButton>
+      </ToolbarButton>
       <Popover
         anchorEl={buttonReference?.current}
         open={open}

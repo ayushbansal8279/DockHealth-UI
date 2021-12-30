@@ -1,19 +1,6 @@
 import styled from 'styled-components';
 import palette from 'styles/palette';
 
-export const CustomizeButton = styled.button`
-  display: flex;
-  height: 46px;
-  padding: 4px 12px;
-  align-items: center;
-  border-radius: 5px;
-  color: ${palette.darkGrey};
-
-  &:hover {
-    background: ${palette.coolGrey3};
-  }
-`;
-
 export const CustomizeImg = styled.img`
   width: 21px;
 `;
