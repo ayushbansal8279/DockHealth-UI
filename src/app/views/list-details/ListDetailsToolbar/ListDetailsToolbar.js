@@ -1,14 +1,28 @@
-import React, { useCallback } from 'react';
+import React, { useCallback, useState } from 'react';
 import TaskViewTypeToolbarSelect from 'components/tasklist/TaskViewTypeToolbarSelect/TaskViewTypeToolbarSelect';
 import TaskStatusToolbarSelect from 'components/tasklist/TaskStatusToolbarSelect/TaskStatusToolbarSelect';
 import { ViewType, getViewTypeFromQueryString } from 'helpers/view-type-helper';
 import { useLocation, useHistory } from 'react-router-dom';
 import CustomizeToolbarButton from 'components/tasklist/CustomizeToolbarButton/CustomizeToolbarButton';
+import { checkIfUserIsOrganizationAdmin } from 'helpers/user-helper';
+import { userProfileSelector } from 'selectors/user-selectors';
+import { useSelector } from 'react-redux';
 import { ToolbarContainer } from './styled';
+import TaskCustomFieldsModal from '../../../modal/customModals/TaskCustomFieldsModal';
 
-const ListDetailsToolbar = ({ onSelectTab, selectedTab }) => {
+const ListDetailsToolbar = ({
+  onSelectTab,
+  selectedTab,
+  onColumnSetupChange,
+  taskList,
+}) => {
   const { search } = useLocation();
   const history = useHistory();
+  const [customFieldsModalOpened, setCustomFieldsModalOpened] = useState(false);
+  const currentUser = useSelector(userProfileSelector);
+  const isOrganizationAdmin = checkIfUserIsOrganizationAdmin(currentUser);
+  const isListCreator =
+    taskList?.creator?.identifier === currentUser.identifier;
 
   const handleChangeViewType = useCallback(
     event => {
@@ -26,7 +40,10 @@ const ListDetailsToolbar = ({ onSelectTab, selectedTab }) => {
 
   return (
     <ToolbarContainer>
-      <CustomizeToolbarButton />
+      <CustomizeToolbarButton
+        onChange={onColumnSetupChange}
+        openCustomFieldModal={() => setCustomFieldsModalOpened(true)}
+      />
       <TaskViewTypeToolbarSelect
         value={getViewTypeFromQueryString(search)}
         onChange={handleChangeViewType}
@@ -34,6 +51,13 @@ const ListDetailsToolbar = ({ onSelectTab, selectedTab }) => {
       <TaskStatusToolbarSelect
         value={selectedTab}
         onChange={event => onSelectTab(event.target.value)}
+      />
+      <TaskCustomFieldsModal
+        opened={customFieldsModalOpened}
+        handleClose={() => setCustomFieldsModalOpened(false)}
+        taskListIdentifier={taskList?.taskListIdentifier}
+        isOrganizationAdmin={isOrganizationAdmin}
+        isListCreator={isListCreator}
       />
     </ToolbarContainer>
   );
