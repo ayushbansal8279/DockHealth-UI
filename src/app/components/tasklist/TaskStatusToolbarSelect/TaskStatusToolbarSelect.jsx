@@ -1,6 +1,6 @@
 import React from 'react';
 import ToolbarSelect from 'components/tasklist/ToolbarSelect/ToolbarSelect';
-import viewTypeIcon from 'img/viewTypeIcon.png';
+import TasksStatusSwitchIcon from 'img/tasks-status-switch-icon';
 import { TaskStatus } from 'helpers/task-helpers';
 
 const OPTIONS = [
@@ -18,7 +18,7 @@ const TaskStatusToolbarSelect = ({ value, onChange, ...restProps }) => {
       value={value}
       name="task-status"
       onChange={onChange}
-      icon={<img src={viewTypeIcon} alt="view type icon" />}
+      icon={<img src={TasksStatusSwitchIcon} alt="view type icon" />}
       {...restProps}
     />
   );
