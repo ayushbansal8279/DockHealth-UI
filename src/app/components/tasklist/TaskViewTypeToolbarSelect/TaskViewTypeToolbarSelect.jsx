@@ -1,6 +1,6 @@
 import React from 'react';
 import ToolbarSelect from 'components/tasklist/ToolbarSelect/ToolbarSelect';
-import viewTypeIcon from 'img/viewTypeIcon.png';
+import ViewTypeIcon from 'img/view-type-icon';
 import { ViewType } from 'helpers/view-type-helper';
 
 const OPTIONS = [
@@ -21,7 +21,7 @@ const TaskViewTypeToolbarSelect = ({ value, onChange, ...restProps }) => {
       value={value}
       name="task-view-type"
       onChange={onChange}
-      icon={<img src={viewTypeIcon} alt="view type icon" />}
+      icon={<img src={ViewTypeIcon} alt="view type icon" />}
       {...restProps}
     />
   );
