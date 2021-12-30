@@ -38,6 +38,8 @@ import {
   checkIfTemplateTask,
   checkColumnIsInConfig,
   TaskItemColumn,
+  TaskPriority,
+  getPriorityColor,
 } from 'helpers/task-helpers';
 import DependencyIcon from 'img/dependency-icon.svg';
 import DependencyListPopover from 'components/common/DependencyListPopover/DependencyListPopover';
@@ -310,7 +312,7 @@ const TaskItem = ({
   );
 
   const showDraggableDots = !dragAndDropDisabled && isDraggable;
-  const showPriority = task.priority === 'HIGH';
+  const showPriority = task.priority && task.priority !== TaskPriority.NONE;
   const showDecisionRow = task.intentType === 'DECISION' && !isTemplateTask;
   const hasParentTaskLabel = isSubtask && !isNestedTask && parentTask;
 
@@ -399,7 +401,9 @@ const TaskItem = ({
               dragHandleProps={dragHandleProps}
             />
             {workflowStatus && <StatusBar color={workflowStatus?.color} />}
-            {showPriority && <PriorityIndicator />}
+            {showPriority && (
+              <PriorityIndicator color={getPriorityColor(task.priority)} />
+            )}
             {showSubtaskStylingLink && getSubtaskStylingLink(isLast)}
             {bulkEditEnabled && (
               <TaskItemBulkEdit

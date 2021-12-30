@@ -1,13 +1,12 @@
 import React from 'react';
 import TaskListMembers from 'components/tasklist/TaskListMembers/TaskListMembers';
 import {
-  ListDetailsContainer,
   ListDetailsHeader,
   ListNameContainer,
   ListDescription,
 } from 'components/tasklist/DropdownListSection/styled';
 
-const TaskListHeader = ({ list, refreshView, children }) => {
+const TaskListHeader = ({ list, refreshView }) => {
   const { listUsers } = list || {};
 
   return (
