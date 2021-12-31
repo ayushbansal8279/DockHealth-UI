@@ -42,6 +42,7 @@ const UserTasksToolbar = () => {
       <Box display="flex" flex={1} justifyContent="flex-end">
         <CustomizeToolbarButton
           openCustomFieldModal={() => setCustomFieldsModalOpened(true)}
+          showCustomColumnCreate={false}
         />
         <Box mx={0.5} />
         <TaskStatusToolbarSelect
