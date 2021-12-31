@@ -8,7 +8,7 @@ const OPTIONS = [
     label: 'Open Tasks',
     value: TaskStatus.INCOMPLETE,
   },
-  { label: 'Complete Tasks', value: TaskStatus.COMPLETE },
+  { label: 'Archived Tasks', value: TaskStatus.COMPLETE },
 ];
 
 const TaskStatusToolbarSelect = ({ value, onChange, ...restProps }) => {
