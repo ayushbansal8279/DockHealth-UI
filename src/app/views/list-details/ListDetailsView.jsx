@@ -1,14 +1,12 @@
 import React from 'react';
 import { TaskListTabName } from 'helpers/tasklist-helpers';
 import TaskDrawer from 'components/task-drawer/TaskDrawer/TaskDrawer';
-// import ListDetailsToolbarContainer from 'views/list-details/ListDetailsToolbarContainer/ListDetailsToolbarContainer';
 import BulkEditSection from 'components/tasklist/BulkEditSection/BulkEditSection';
 import { ViewType } from 'helpers/view-type-helper';
 import Calendar from 'components/common/Calendar/Calendar';
 import ViewLayout from 'components/template/ViewLayout/ViewLayout';
 import OpenedTasksView from './ListDetailsOpenedTasksContainer/ListDetailsOpenedTasksContainer';
 import CompletedTasksView from './ListDetailsCompletedTasksContainer/ListDetailsCompletedTasksContainer';
-// import InboxHelpPanel from './InboxHelpPanel/InboxHelpPanel';
 import initializeListDetailsViewHooks from './hooks';
 import { TaskViewContainer } from './styled';
 import ListDetailsHeader from './ListDetailsHeader/ListDetailsHeader';
@@ -32,10 +30,8 @@ const ListDetailsView = props => {
     isFetching,
     isTourOpen,
     listDetailsActions,
-    // taskList,
     loadMoreTasksForList,
     loadTasksForTaskGroup,
-    // members,
     openedTasks,
     quickAddTask,
     refreshTab,
@@ -100,45 +96,6 @@ const ListDetailsView = props => {
       >
         <div>
           <TaskViewContainer>
-            {/* <ListDetailsToolbarContainer
-              onColumnSetupChange={setDisplayColumnPreferences}
-              members={members}
-              showMembers={taskList?.listType !== 'PUBLIC'}
-              onSelectTab={navigateToTab}
-              selectedTab={selectedTab}
-              taskList={taskList || undefined}
-              openTasksAmount={taskCounters.incomplete}
-              completedTasksAmount={taskCounters.complete}
-              searchValue={searchValue}
-              onSearchChange={changeSearchValue}
-              pdfTitle={taskList?.listName}
-              tipsContent={
-                taskList?.listType === 'INBOX' ? InboxHelpPanel : null
-              }
-              tasks={openedTasks}
-              completedTasks={completedTasks}
-              moreOptions={[
-                {
-                  name: 'Show Workflow Details',
-                  onClick: () => {
-                    setDisplayListPreferences('SHOW_WORKFLOW_DETAILS');
-                  },
-                  key: 'SHOW_WORKFLOW_DETAILS',
-                  checked: displayListPreferences.SHOW_WORKFLOW_DETAILS,
-                },
-                {
-                  disabled: !displayListPreferences.SHOW_WORKFLOW_DETAILS,
-                  name:
-                    selectedTab === TaskListTabName.COMPLETE
-                      ? 'Show Workflow Uncompleted Tasks'
-                      : 'Show Workflow Completed Tasks',
-                  onClick: () =>
-                    setDisplayListPreferences('SHOW_WORKFLOW_COMPLETED_TASKS'),
-                  key: 'SHOW_COMPLETED_OR_UNCOMPLETED_WORKFLOW_DETAILS',
-                  checked: displayListPreferences.SHOW_WORKFLOW_COMPLETED_TASKS,
-                },
-              ]}
-            /> */}
             <ListDetailsToolbar
               onColumnSetupChange={setDisplayColumnPreferences}
               additionalOptions={additionalToolbarOptions}
