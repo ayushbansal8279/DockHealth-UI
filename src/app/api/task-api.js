@@ -213,28 +213,6 @@ export const updateWorkflowStatus = (taskIdentifier, workflowStatus) =>
     )
     .catch(error => error?.response?.data);
 
-export function markHighPriority(taskIdentifier) {
-  return axios
-    .put(`task/changePriority/${taskIdentifier}?priorityLevel=HIGH`)
-    .then(response => {
-      return response;
-    })
-    .catch(error => {
-      throw error;
-    });
-}
-
-export function markLowPriority(taskIdentifier) {
-  return axios
-    .put(`task/changePriority/${taskIdentifier}?priorityLevel=LOW`)
-    .then(response => {
-      return response;
-    })
-    .catch(error => {
-      throw error;
-    });
-}
-
 export function assignOrReassignTask(task, assignedToUserIdentifier) {
   const { taskIdentifier } = task;
   let userIdentifierToAssignTask = assignedToUserIdentifier;
