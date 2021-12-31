@@ -86,19 +86,10 @@ const ListDetailsToolbar = ({ onColumnSetupChange, additionalOptions }) => {
 
   return (
     <ToolbarContainer>
-      <Box>{taskList?.listType === 'INBOX' && <InboxTips />}</Box>
-      <Box display="flex" flex={1} justifyContent="flex-end">
-        {tasksStatus === TaskStatus.INCOMPLETE && (
-          <CompleteTasksVisibilitySwitch
-            visible={displayOptions.includes(TASKS_VISIBILITY_KEY)}
-            onChange={handleTasksVisibilityChange}
-          />
-        )}
-        <Box mx={0.5} />
-        <CustomizeToolbarButton
-          onChange={onColumnSetupChange}
-          openCustomFieldModal={() => setCustomFieldsModalOpened(true)}
-          additionalOptions={additionalOptions}
+      <Box display="flex" flex={1} justifyContent="flex-start">
+        <TaskStatusToolbarSelect
+          value={tasksStatus}
+          onChange={handleChangeTasksStatus}
         />
         <Box mx={0.5} />
         <TaskViewTypeToolbarSelect
@@ -106,9 +97,10 @@ const ListDetailsToolbar = ({ onColumnSetupChange, additionalOptions }) => {
           onChange={handleChangeViewType}
         />
         <Box mx={0.5} />
-        <TaskStatusToolbarSelect
-          value={tasksStatus}
-          onChange={handleChangeTasksStatus}
+        <CustomizeToolbarButton
+          onChange={onColumnSetupChange}
+          openCustomFieldModal={() => setCustomFieldsModalOpened(true)}
+          additionalOptions={additionalOptions}
         />
         <Box mx={0.5} />
         <TaskCustomFieldsModal
@@ -118,6 +110,20 @@ const ListDetailsToolbar = ({ onColumnSetupChange, additionalOptions }) => {
           isOrganizationAdmin={isOrganizationAdmin}
           isListCreator={isListCreator}
         />
+        {taskList?.listType === 'INBOX' && (
+          <>
+            <InboxTips />
+          </>
+        )}
+      </Box>
+      <Box display="flex" flex={1} justifyContent="flex-end">
+        {tasksStatus === TaskStatus.INCOMPLETE && (
+          <CompleteTasksVisibilitySwitch
+            visible={displayOptions.includes(TASKS_VISIBILITY_KEY)}
+            onChange={handleTasksVisibilityChange}
+          />
+        )}
+        <Box mx={0.5} />
       </Box>
     </ToolbarContainer>
   );
