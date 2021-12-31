@@ -17,6 +17,7 @@ const CustomizeToolbarButton = ({
   onChange,
   openCustomFieldModal,
   additionalOptions,
+  showCustomColumnCreate = true,
 }) => {
   const [open, setOpen] = useState(false);
   const buttonReference = useRef(null);
@@ -95,6 +96,12 @@ const CustomizeToolbarButton = ({
         }}
       >
         <PopoverContainer>
+          <Box display="flex" justifyContent="space-between" mt={1}>
+            <Box mx={0.5} />
+            <ListItemText>
+              <b>Default Columns</b>
+            </ListItemText>
+          </Box>
           <List>
             {Object.keys(columnsConfigToDisplay).map(columnKey => {
               const optionName = ColumnOptionNames[columnKey];
@@ -113,6 +120,12 @@ const CustomizeToolbarButton = ({
           {!isEmpty(customColumnsConfig) && (
             <>
               <Spacer />
+              <Box display="flex" justifyContent="space-between" mt={1}>
+                <Box mx={0.5} />
+                <ListItemText>
+                  <b>Custom Columns</b>
+                </ListItemText>
+              </Box>
               <List>
                 {customColumnsConfig.map(column => {
                   const { name, isChecked = false } = column;
@@ -129,12 +142,25 @@ const CustomizeToolbarButton = ({
                     )
                   );
                 })}
+                {showCustomColumnCreate && (
+                  <MenuItem onClick={openCustomFieldModal}>
+                    <PlusIcon>+</PlusIcon>
+                    <Box mx={0.5} />
+                    <ListItemText>Create custom column</ListItemText>
+                  </MenuItem>
+                )}
               </List>
             </>
           )}
-          {additionalOptions.length > 0 && (
+          {additionalOptions && additionalOptions.length > 0 && (
             <>
               <Spacer />
+              <Box display="flex" justifyContent="space-between" mt={1}>
+                <Box mx={0.5} />
+                <ListItemText>
+                  <b>Display Options</b>
+                </ListItemText>
+              </Box>
               <List>
                 {additionalOptions.map(option => {
                   const {
@@ -163,14 +189,6 @@ const CustomizeToolbarButton = ({
               </List>
             </>
           )}
-          <Spacer />
-          <List>
-            <MenuItem onClick={openCustomFieldModal}>
-              <PlusIcon>+</PlusIcon>
-              <Box mx={0.5} />
-              <ListItemText>Create custom column</ListItemText>
-            </MenuItem>
-          </List>
         </PopoverContainer>
       </Popover>
     </>
