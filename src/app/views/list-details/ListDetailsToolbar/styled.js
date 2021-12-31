@@ -1,6 +1,7 @@
 import { Box } from '@material-ui/core';
 import styled from 'styled-components';
 import palette from 'styles/palette';
+import spacing from 'styles/spacing';
 
 export const LabelBox = styled(Box)`
   cursor: pointer;
@@ -17,5 +18,5 @@ export const ToolbarContainer = styled.div`
   justify-content: space-between;
   align-items: center;
   z-index: 13;
-  padding: 18px 24px;
+  padding: ${spacing.small} ${spacing.large};
 `;
