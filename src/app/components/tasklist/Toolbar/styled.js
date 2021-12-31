@@ -24,6 +24,10 @@ export const ToolbarLabel = withStyles({
     color: palette.coolGrey1,
     display: 'inline-block',
   },
+  button: {
+    display: 'flex',
+    alignItems: 'center',
+  },
 })(Typography);
 
 export const ToolbarAvatarContainer = styled.div`

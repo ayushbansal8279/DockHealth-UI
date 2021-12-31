@@ -1,60 +1,63 @@
-import React from 'react';
+import React, { useCallback, useState } from 'react';
 import { useSelector } from 'react-redux';
-import { useHistory, useParams } from 'react-router-dom';
+import { useHistory } from 'react-router-dom';
 import {
-  userDetailsSelector,
-  taskCountersSelector,
-  tasksSelector,
-  completedTasksSelector,
+  currentTasksStatusSelector,
+  userIdentifierSelector,
 } from 'selectors/person-details-selectors';
-import Toolbar from 'components/tasklist/Toolbar/Toolbar';
 import { TaskListTabName } from 'helpers/tasklist-helpers';
+import TaskStatusToolbarSelect from 'components/tasklist/TaskStatusToolbarSelect/TaskStatusToolbarSelect';
+import { Box } from '@material-ui/core';
+import CustomizeToolbarButton from 'components/tasklist/CustomizeToolbarButton/CustomizeToolbarButton';
+import { userProfileSelector } from 'selectors/user-selectors';
+import { currentTaskListSelector } from 'selectors/task-list-selectors';
+import { checkIfUserIsOrganizationAdmin } from 'helpers/user-helper';
+import { ToolbarContainer } from './styled';
+import TaskCustomFieldsModal from '../../../modal/customModals/TaskCustomFieldsModal';
 
-const UserTasksToolbar = props => {
-  const { selectedTab } = props;
-  const { userIdentifier } = useParams();
+const UserTasksToolbar = () => {
   const history = useHistory();
+  const userIdentifier = useSelector(userIdentifierSelector);
+  const tasksStatus = useSelector(currentTasksStatusSelector);
+  const [customFieldsModalOpened, setCustomFieldsModalOpened] = useState(false);
+  const currentUser = useSelector(userProfileSelector);
+  const isOrganizationAdmin = checkIfUserIsOrganizationAdmin(currentUser);
+  const taskList = useSelector(currentTaskListSelector);
+  const isListCreator =
+    taskList?.creator?.identifier === currentUser.identifier;
 
-  const userDetails = useSelector(userDetailsSelector);
-  const taskCounters = useSelector(taskCountersSelector);
-  const tasks = useSelector(tasksSelector);
-  const completedTasks = useSelector(completedTasksSelector);
-
-  const haveTasks =
-    (taskCounters.incomplete > 0 && selectedTab === TaskListTabName.OPEN) ||
-    (taskCounters.complete > 0 && selectedTab === TaskListTabName.COMPLETE);
-
-  const handleSelectTab = tab => {
-    history.push(
-      `/core/assignedToPerson/${userIdentifier}${
-        tab === TaskListTabName.OPEN ? '' : `/${TaskListTabName.COMPLETE}`
-      }`,
-    );
-  };
+  const handleSelectTab = useCallback(
+    tab => {
+      history.push(
+        `/core/assignedToPerson/${userIdentifier}${
+          tab === TaskListTabName.OPEN ? '' : `/${TaskListTabName.COMPLETE}`
+        }`,
+      );
+    },
+    [history, userIdentifier],
+  );
 
   return (
-    <Toolbar
-      listNameColumnVisible
-      showNotifications={false}
-      showMembers={false}
-      members={[userDetails]}
-      pdfTitle={
-        userDetails ? `${userDetails.firstName} ${userDetails.lastName}` : null
-      }
-      openTasksAmount={taskCounters.incomplete}
-      completedTasksAmount={taskCounters.complete}
-      tasks={tasks}
-      completedTasks={completedTasks}
-      haveTasks={haveTasks}
-      printData={{
-        openedTasks: tasks,
-        completedTasks,
-        taskListMembers: [userDetails],
-        showMembers: false,
-      }}
-      onSelectTab={handleSelectTab}
-      {...props}
-    />
+    <ToolbarContainer>
+      <Box display="flex" flex={1} justifyContent="flex-end">
+        <CustomizeToolbarButton
+          openCustomFieldModal={() => setCustomFieldsModalOpened(true)}
+          showCustomColumnCreate={false}
+        />
+        <Box mx={0.5} />
+        <TaskStatusToolbarSelect
+          value={tasksStatus}
+          onChange={event => handleSelectTab(event.target.value)}
+        />
+        <Box mx={0.5} />
+        <TaskCustomFieldsModal
+          opened={customFieldsModalOpened}
+          handleClose={() => setCustomFieldsModalOpened(false)}
+          isOrganizationAdmin={isOrganizationAdmin}
+          isListCreator={isListCreator}
+        />
+      </Box>
+    </ToolbarContainer>
   );
 };
 

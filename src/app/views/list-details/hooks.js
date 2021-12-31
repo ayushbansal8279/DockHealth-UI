@@ -663,7 +663,6 @@ const initializeListDetailsViewHooks = (match, history) => {
     loadMoreTasksForList,
     loadTasksForTaskGroup,
     members,
-    navigateToTab,
     openedTasks,
     quickAddTask,
     refreshTab,

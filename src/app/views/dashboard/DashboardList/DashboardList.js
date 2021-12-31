@@ -52,17 +52,13 @@ import { hasFiltersAppliedSelector } from 'selectors/mega-filter-selectors';
 import { onSortChanged } from 'helpers/ga-event-helper';
 import { SortOrderType } from 'helpers/sorting-helper';
 import BulkEditSection from 'components/tasklist/BulkEditSection/BulkEditSection';
-import ColumnDisplaySettings from 'components/common/ColumnDisplaySettings/ColumnDisplaySettings';
 import { useColumnsConfig } from 'context-api/ColumnsConfigContext';
 import { DashboardTasksTab } from 'helpers/dashboard-helpers';
 import Calendar from 'components/common/Calendar/Calendar';
-import {
-  ViewType,
-  getViewTypeFromQueryString,
-  VIEW_TYPE_OPTIONS,
-} from 'helpers/view-type-helper';
-import OutlinedSelect from 'components/common/OutlinedSelect/OutlinedSelect';
+import { ViewType, getViewTypeFromQueryString } from 'helpers/view-type-helper';
 import GroupedListSkeletonLoader from 'components/tasklist/GroupedListSkeletonLoader/GroupedListSkeletonLoader';
+import TaskViewTypeToolbarSelect from 'components/tasklist/TaskViewTypeToolbarSelect/TaskViewTypeToolbarSelect';
+import CustomizeToolbarButton from 'components/tasklist/CustomizeToolbarButton/CustomizeToolbarButton';
 import DashboardTasksGroup from './DashboardTasksGroup';
 import {
   ToolbarContainer,
@@ -282,7 +278,7 @@ const DashboardList = ({
     dispatch(getDashboardTasks());
   }, [dispatch]);
 
-  const onClickCheckbox = useCallback(
+  const onColumnSetupChange = useCallback(
     (newConfig, options) => {
       if (options?.isCustomColumn) {
         dispatch(
@@ -360,20 +356,20 @@ const DashboardList = ({
             </DashboardTabsContainer>
           </Grid>
           <ActionsContainer item md={8}>
-            <OutlinedSelect
-              width={170}
-              name="viewType"
+            <TaskViewTypeToolbarSelect
               value={getViewTypeFromQueryString(search)}
               onChange={handleChangeViewType}
-              options={VIEW_TYPE_OPTIONS}
+            />
+            <Spacing horizontal={4} />
+            <CustomizeToolbarButton
+              onChange={onColumnSetupChange}
+              showCustomColumnCreate={false}
             />
             <Spacing horizontal={4} />
             <div>
               <TipsSwitchLabel>Tips</TipsSwitchLabel>
               <Switch checked={tourModalIsOpen} onChange={openTourModal} />
             </div>
-            <Spacing horizontal={4} />
-            <ColumnDisplaySettings onChange={onClickCheckbox} />
           </ActionsContainer>
         </ToolbarContainer>
       </StickyHeader>
