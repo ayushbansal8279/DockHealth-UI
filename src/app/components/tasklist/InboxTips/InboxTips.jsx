@@ -11,7 +11,7 @@ const InboxTips = () => {
   const { 0: isOpen, 2: unsetOpen, 3: toggleOpen } = useBoolean(false);
 
   return (
-    <div>
+    <div style={{ height: '46px', paddingTop: '4px' }}>
       <Button
         reference={tipsButtonReference}
         variant="text"
