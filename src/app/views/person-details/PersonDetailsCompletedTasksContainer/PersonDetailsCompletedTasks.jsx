@@ -1,4 +1,4 @@
-import React, { useMemo } from 'react';
+import React, { useMemo, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { onSortChanged } from 'helpers/ga-event-helper';
 import { completedTasksIsFetchingMoreSelector } from 'selectors/list-details-selectors';
@@ -8,6 +8,7 @@ import {
   taskCountersSelector,
   sortSelector,
 } from 'selectors/person-details-selectors';
+import { userProfileDashboardPrefsSelector } from 'selectors/user-selectors';
 import { hasFiltersAppliedSelector } from 'selectors/mega-filter-selectors';
 import { sortUserTasks } from 'actions/person-details-actions';
 import { filterTasksBySearchValue } from 'helpers/task-search-helper';
@@ -18,6 +19,7 @@ import NoFilterResultsView from 'components/tasklist/EmptyListView/NoFilterResul
 import TasksGroup from 'components/tasklist/TasksGroup/TasksGroup';
 import GroupedListSkeletonLoader from 'components/tasklist/GroupedListSkeletonLoader/GroupedListSkeletonLoader';
 import StandardTaskItem from 'components/task/StandardTaskItem/StandardTaskItem';
+import { useColumnsConfig } from 'context-api/ColumnsConfigContext';
 import { TaskGroupsContainer } from '../styled';
 
 const PersonDetailsCompletedTasks = ({
@@ -37,6 +39,24 @@ const PersonDetailsCompletedTasks = ({
   const areFiltersApplied = useSelector(hasFiltersAppliedSelector);
 
   const dispatch = useDispatch();
+  const { columnsConfig, setColumnsConfig } = useColumnsConfig();
+  const userPreferColumns = useSelector(userProfileDashboardPrefsSelector);
+
+  useEffect(() => {
+    const config =
+      userPreferColumns?.reduce(
+        (accumulator, value) => ({ ...accumulator, [value]: true }),
+        taskItemConfig,
+      ) || {};
+    const customizedDashboardConfig = {
+      ...columnsConfig,
+      ...config,
+      ...taskItemConfig,
+    };
+    setColumnsConfig(customizedDashboardConfig);
+
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [setColumnsConfig, userPreferColumns]);
 
   const filteredTasks = useMemo(
     () => (!searchValue ? tasks : filterTasksBySearchValue(tasks, searchValue)),

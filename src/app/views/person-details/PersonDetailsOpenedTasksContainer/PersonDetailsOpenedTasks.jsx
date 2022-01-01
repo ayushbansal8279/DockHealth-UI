@@ -1,5 +1,5 @@
 /* eslint-disable sonarjs/cognitive-complexity */
-import React, { useCallback, useMemo, useRef } from 'react';
+import React, { useCallback, useMemo, useRef, useEffect } from 'react';
 import { isEmpty, pluck } from 'ramda';
 import { useDispatch, useSelector } from 'react-redux';
 import {
@@ -8,7 +8,10 @@ import {
   tasksSelector,
   sortSelector,
 } from 'selectors/person-details-selectors';
-import { userProfileSelector } from 'selectors/user-selectors';
+import {
+  userProfileSelector,
+  userProfileDashboardPrefsSelector,
+} from 'selectors/user-selectors';
 import { hasFiltersAppliedSelector } from 'selectors/mega-filter-selectors';
 import { addingNewSubtaskParentIdSelector } from 'selectors/task-drawer-selectors';
 import { openModal } from 'modal/actions';
@@ -36,6 +39,7 @@ import QuickAddTaskInput from 'components/tasklist/QuickAddTaskInput/QuickAddTas
 import { checkIfAllTasksSelected } from 'helpers/bulk-edit-helpers';
 import { extractTasksAndSubtasks } from 'helpers/tasklist-helpers';
 import { changeTasksSelectedState } from 'actions/task-actions';
+import { useColumnsConfig } from 'context-api/ColumnsConfigContext';
 import { TaskGroupsContainer, StickyContainer } from '../styled';
 
 const PersonDetailsOpenedTasks = ({
@@ -56,6 +60,24 @@ const PersonDetailsOpenedTasks = ({
   const addingNewSubtaskParentId = useSelector(
     addingNewSubtaskParentIdSelector,
   );
+  const { columnsConfig, setColumnsConfig } = useColumnsConfig();
+  const userPreferColumns = useSelector(userProfileDashboardPrefsSelector);
+
+  useEffect(() => {
+    const config =
+      userPreferColumns?.reduce(
+        (accumulator, value) => ({ ...accumulator, [value]: true }),
+        taskItemConfig,
+      ) || {};
+    const customizedDashboardConfig = {
+      ...columnsConfig,
+      ...config,
+      ...taskItemConfig,
+    };
+    setColumnsConfig(customizedDashboardConfig);
+
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [setColumnsConfig, userPreferColumns]);
 
   const quickAddTaskInputReference = useRef(null);
   const filteredTasks = useMemo(
