@@ -200,7 +200,7 @@ function* getDashboardTasks() {
 
     let tasksList = [];
 
-    if (selectedFilters) {
+    if (selectedFilters && Object.keys(selectedFilters).length > 0) {
       tasksList = yield call(
         isAllTasks
           ? getDashboardAllTasksByCriteria

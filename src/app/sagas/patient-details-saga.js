@@ -263,7 +263,7 @@ function* getPatientLists(patientIdentifier) {
 
   let lists;
 
-  if (selectedFilters) {
+  if (selectedFilters && Object.keys(selectedFilters).length > 0) {
     lists = yield call(
       PatientTasksApi.fetchPatientTasksByPatientIdentifierWithFilters,
       patientIdentifier,
