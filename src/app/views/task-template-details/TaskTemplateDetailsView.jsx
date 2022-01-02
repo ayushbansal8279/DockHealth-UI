@@ -395,7 +395,7 @@ const TaskTemplateDetailsView = () => {
   };
 
   return (
-    <>
+    <div style={{ display: 'flex', width: '100vw', height: '100vh' }}>
       <ReactFlowProvider>
         <Box position="relative" display="flex" height="100%" width="100%">
           <ElementsSidebar>
@@ -506,7 +506,7 @@ const TaskTemplateDetailsView = () => {
         </Box>
       </ReactFlowProvider>
       <TaskDrawer />
-    </>
+    </div>
   );
 };
 export default TaskTemplateDetailsView;
