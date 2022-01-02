@@ -136,6 +136,11 @@ const Task = React.memo(
         parentTaskReference.current.scrollIntoView({
           behavior: 'smooth',
           block: 'nearest',
+          inline: 'start',
+        });
+        window.scrollTo({
+          left: 0,
+          behavior: 'smooth',
         });
       }, 500);
     };
