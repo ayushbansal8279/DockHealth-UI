@@ -401,7 +401,9 @@ const TaskItem = ({
               showDraggableDots={showDraggableDots}
               dragHandleProps={dragHandleProps}
             />
-            {showPriority && <PriorityIndicator />}
+            {showPriority && (
+              <PriorityIndicator color={getPriorityColor(task.priority)} />
+            )}
             {showSubtaskStylingLink && getSubtaskStylingLink(isLast)}
             {bulkEditEnabled && (
               <TaskItemBulkEdit
