@@ -82,7 +82,8 @@ export const StickyColumnContainer = styled.div`
   z-index: 11;
   border-right: 1px solid ${palette.coolGrey3};
   border-left: 1px solid ${palette.coolGrey3};
-  min-width: 200px;
+  min-width: 600px;
+  max-width: 700px;
 
   &::before {
     content: '';
@@ -313,7 +314,7 @@ export const StandardTaskItemContainer = styled.div`
     props.isSelected ? palette.brightBlueWithAlpha : palette.white};
   border: 1px solid ${palette.coolGrey3};
   display: flex;
-  justify-content: flex-end;
+  justify-content: ${props => (props.isAddingTask ? 'flex-end' : 'flex-start')};
   width: 100%;
   height: ${({ height }) => height || 35}px;
   border-top: none;

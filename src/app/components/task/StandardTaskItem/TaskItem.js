@@ -390,6 +390,7 @@ const TaskItem = ({
               ? EXTENDED_TASK_HEIGHT
               : STANDARD_TASK_HEIGHT
           }
+          isAddingTask={false}
         >
           <StickyColumnContainer
             isSubtask={showSubtaskStylingLink}

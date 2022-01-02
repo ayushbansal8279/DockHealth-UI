@@ -108,7 +108,7 @@ const QuickAddSubatask = ({
   };
 
   return (
-    <StandardTaskItemContainer>
+    <StandardTaskItemContainer isAddingTask>
       <MainStandardTaskItemCell
         bolded
         position="static"
