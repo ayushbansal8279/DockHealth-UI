@@ -13,7 +13,6 @@ import UserAvatar from 'components/user/UserAvatar/UserAvatar';
 import MagnifierIcon from 'img/magnifier';
 import Checkbox from 'components/common/Checkbox/Checkbox';
 import Spacing from 'components/common/Spacing';
-import { pluck } from 'ramda';
 import { useSelector } from 'react-redux';
 import { userProfileSelector } from 'selectors/user-selectors';
 import AssignMemberIcon from 'components/user/AssignMemberIcon/AssingMemberIcon';
@@ -50,10 +49,7 @@ const MultiAssignMembersList = ({
   const { emrIntegrationEnabled } = useSelector(organizationSelector);
   const currentUser = useSelector(userProfileSelector);
   const [membersOptions, setMembersOptions] = useState([]);
-  const [selectedMembersIdentifiers, setSelectedMembersIdentifiers] = useState(
-    [],
-  );
-  const [, setSelectedMembers] = useState([]);
+  const [selectedMembers, setSelectedMembers] = useState([]);
   const [isFetchingMembers, setIsFetchingMembers] = useState(false);
   const [searchValue, setSearchValue] = useState('');
   const enableLazyLoading = emrIntegrationEnabled && enabled;
@@ -62,9 +58,17 @@ const MultiAssignMembersList = ({
   const filteredMembers = useMemo(
     () =>
       enableLazyLoading
-        ? membersOptions
+        ? membersOptions.map(user => {
+            const { identifier } = user;
+            const isSelected = !!selectedMembers.find(
+              ({ identifier: id }) => id === identifier,
+            );
+            return { ...user, isSelected };
+          })
         : membersOptions?.filter(({ name, identifier }) => {
-            const isSelected = selectedMembersIdentifiers.includes(identifier);
+            const isSelected = !!selectedMembers.find(
+              ({ identifier: id }) => id === identifier,
+            );
             return (
               !isSelected &&
               name.toLowerCase().startsWith(searchValue.toLowerCase()) &&
@@ -74,7 +78,7 @@ const MultiAssignMembersList = ({
     [
       enableLazyLoading,
       membersOptions,
-      selectedMembersIdentifiers,
+      selectedMembers,
       searchValue,
       currentUser,
     ],
@@ -82,11 +86,16 @@ const MultiAssignMembersList = ({
 
   const filteredSelectedMembers = useMemo(
     () =>
-      savedSelectedMembers?.filter(
+      selectedMembers?.filter(
         ({ identifier }) => identifier !== currentUser?.identifier,
       ),
-    [savedSelectedMembers, currentUser],
+    [selectedMembers, currentUser],
   );
+
+  useEffect(() => {
+    setSelectedMembers([...savedSelectedMembers]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   const currentUserMember = useMemo(
     () =>
@@ -139,21 +148,6 @@ const MultiAssignMembersList = ({
 
   useEffect(() => {
     (async () => {
-      setSelectedMembersIdentifiers(
-        savedSelectedMembers?.length > 0
-          ? pluck('identifier', savedSelectedMembers)
-          : [],
-      );
-      if (enableLazyLoading) {
-        setSelectedMembers(
-          savedSelectedMembers?.length > 0 ? savedSelectedMembers : [],
-        );
-      }
-    })();
-  }, [enableLazyLoading, savedSelectedMembers]);
-
-  useEffect(() => {
-    (async () => {
       if (!enableLazyLoading) {
         setIsFetchingMembers(true);
         setMembersOptions([]);
@@ -182,54 +176,24 @@ const MultiAssignMembersList = ({
   const handleOptionClick = useCallback(
     (event, selectedOption) => {
       event.stopPropagation();
-      if (enableLazyLoading) {
-        setSelectedMembers(previousSelection => {
-          let membersToReturn;
-          if (selectedOption === UNASSIGNED_KEY) {
-            membersToReturn = [];
-          } else if (
-            previousSelection.find(
-              ({ identifier }) => selectedOption?.identifier === identifier,
-            )
-          ) {
-            membersToReturn = previousSelection.filter(
-              ({ identifier }) => identifier !== selectedOption?.identifier,
-            );
-          } else {
-            membersToReturn = [...previousSelection, selectedOption];
-          }
-          selectMembersWithDebounce(membersToReturn);
-          return membersToReturn;
-        });
+      let membersToReturn;
+      if (selectedOption === UNASSIGNED_KEY) {
+        membersToReturn = [];
+      } else if (
+        selectedMembers.find(
+          ({ identifier }) => selectedOption?.identifier === identifier,
+        )
+      ) {
+        membersToReturn = selectedMembers.filter(
+          ({ identifier }) => identifier !== selectedOption?.identifier,
+        );
       } else {
-        setSelectedMembersIdentifiers(previousSelection => {
-          let membersToReturn;
-          if (selectedOption === ASSIGN_ALL_KEY) {
-            membersToReturn = membersOptions;
-          } else if (selectedOption === UNASSIGNED_KEY) {
-            membersToReturn = [];
-          } else if (previousSelection.includes(selectedOption?.identifier)) {
-            const newlySelectedMembersIdentifiers = previousSelection.filter(
-              id => id !== selectedOption?.identifier,
-            );
-            membersToReturn = membersOptions.filter(({ identifier }) =>
-              newlySelectedMembersIdentifiers.includes(identifier),
-            );
-          } else {
-            const newlySelectedMembersIdentifiers = [
-              ...previousSelection,
-              selectedOption?.identifier,
-            ];
-            membersToReturn = membersOptions.filter(({ identifier }) =>
-              newlySelectedMembersIdentifiers.includes(identifier),
-            );
-          }
-          selectMembersWithDebounce(membersToReturn);
-          return pluck('identifier', membersToReturn);
-        });
+        membersToReturn = [...selectedMembers, selectedOption];
       }
+      selectMembersWithDebounce(membersToReturn);
+      setSelectedMembers(membersToReturn);
     },
-    [enableLazyLoading, membersOptions, selectMembersWithDebounce],
+    [selectMembersWithDebounce, selectedMembers],
   );
 
   const displayUnassignedOption = 'unassigned'.includes(
@@ -303,7 +267,7 @@ const MultiAssignMembersList = ({
             {displayUnassignedOption && (
               <MemberRow
                 key={UNASSIGNED_KEY}
-                isSelected={selectedMembersIdentifiers?.length === 0}
+                isSelected={selectedMembers?.length === 0}
                 onClick={event => handleOptionClick(event, UNASSIGNED_KEY)}
               >
                 <CheckboxSpacing />
@@ -326,8 +290,7 @@ const MultiAssignMembersList = ({
                   <MemberRow
                     key={ASSIGN_ALL_KEY}
                     isSelected={
-                      selectedMembersIdentifiers?.length ===
-                      membersOptions?.length
+                      selectedMembers?.length === membersOptions?.length
                     }
                     onClick={event => handleOptionClick(event, ASSIGN_ALL_KEY)}
                   >
@@ -354,10 +317,14 @@ const MultiAssignMembersList = ({
         )}
         {displayCurrentUser &&
           (function renderCurrentUserOption() {
-            const isSelected = selectedMembersIdentifiers.includes(
-              currentUserMember?.identifier,
+            const isSelected = !!selectedMembers.find(
+              ({ identifier }) => identifier === currentUserMember?.identifier,
             );
-            return renderSelectOption(currentUserMember, isSelected);
+            return (
+              <ListContentSection>
+                {renderSelectOption(currentUserMember, isSelected)}
+              </ListContentSection>
+            );
           })()}
         {!isValueSendable && (
           <ListContentSection>
@@ -369,7 +336,9 @@ const MultiAssignMembersList = ({
         {displayUsersList && (
           <ListContentSection>
             {!isFetchingMembers ? (
-              filteredMembers?.map(member => renderSelectOption(member, false))
+              filteredMembers?.map(member =>
+                renderSelectOption(member, member.isSelected),
+              )
             ) : (
               <>
                 {new Array(4).fill().map((_, index) => (
