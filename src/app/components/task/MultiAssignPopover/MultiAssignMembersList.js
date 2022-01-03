@@ -320,7 +320,11 @@ const MultiAssignMembersList = ({
             const isSelected = !!selectedMembers.find(
               ({ identifier }) => identifier === currentUserMember?.identifier,
             );
-            return renderSelectOption(currentUserMember, isSelected);
+            return (
+              <ListContentSection>
+                {renderSelectOption(currentUserMember, isSelected)}
+              </ListContentSection>
+            );
           })()}
         {!isValueSendable && (
           <ListContentSection>
