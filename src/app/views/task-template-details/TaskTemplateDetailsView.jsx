@@ -269,7 +269,7 @@ const TaskTemplateDetailsView = () => {
         },
         {
           id: 'TIME_TILL_TASK',
-          label: 'Add Time Till Task',
+          label: 'Add Time Until Task',
           icon: () => <CalendarIcon size={18} />,
           onClick: openDelayPopover,
           ref: delayPeriodOptionReference,

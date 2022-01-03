@@ -109,7 +109,7 @@ const DecisionTaskLink = props => {
       icon: <CalendarIcon size={11} />,
       label: `${
         delayPeriod && delayPeriodUnit ? 'Remove' : 'Add'
-      } time till task`,
+      } time until task`,
       onClick: togglePeriodDelay,
     },
     {
