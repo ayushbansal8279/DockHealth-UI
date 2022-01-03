@@ -293,15 +293,22 @@ const TaskListReducer = (state = initialState, action) => {
     case UPDATE_TASKLIST_SUCCESS:
       return {
         ...state,
-        taskLists: state.taskLists.map(taskList =>
-          taskList.taskListIdentifier ===
+        taskLists: state.taskLists
+          ? state.taskLists.map(taskList =>
+              taskList.taskListIdentifier ===
+              action.updatedTasklist.taskListIdentifier
+                ? {
+                    ...taskList,
+                    ...pickBy(value => !isNil(value), action.updatedTasklist),
+                  }
+                : taskList,
+            )
+          : state.taskLists,
+        currentTaskList:
+          state.currentTaskListIdentifier ===
           action.updatedTasklist.taskListIdentifier
-            ? {
-                ...taskList,
-                ...pickBy(value => !isNil(value), action.updatedTasklist),
-              }
-            : taskList,
-        ),
+            ? { ...state.currentTaskList, ...action.updatedTasklist }
+            : state.currentTasklist,
       };
 
     case DELETE_TASKLIST_SUCCESS:
