@@ -193,7 +193,7 @@ const DashboardTasksGroup = ({
         <Collapse timeout={500} in={groupIsOpen}>
           <DashboardTasksGroupList>
             {GROUPS_WITH_QUICK_ADD_TASK_INPUT.includes(groupType) && (
-              <StickyElement>
+              <StickyElement zIndex={101}>
                 <QuickAddTaskInput
                   ref={quickAddTaskInputReference}
                   quickAddTask={handleQuickAddTask}

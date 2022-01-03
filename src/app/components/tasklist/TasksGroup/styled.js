@@ -15,6 +15,7 @@ export const StickyContainer = styled.div`
   width: calc(100vw - 130px);
   position: sticky;
   left: 24px;
+  z-index: 13;
 `;
 
 export const TasksGroupActionButtonsContainer = styled.div`
