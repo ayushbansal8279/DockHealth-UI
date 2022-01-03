@@ -27,7 +27,7 @@ export const SortArrowWrapper = styled.div`
 export const SortHeaderRow = styled.div`
   display: flex;
   flex-direction: row;
-  justify-content: flex-end;
+  justify-content: flex-start;
   align-items: center;
   width: 100%;
   background: ${palette.white};
