@@ -41,7 +41,7 @@ export const StickyHeader = styled.div`
 export const StickyElement = styled.div`
   position: sticky;
   left: 24px;
-  z-index: 100;
+  z-index: ${({ zIndex }) => zIndex || 100};
   background-color: ${palette.white};
   width: calc(100vw - 115px);
 `;
