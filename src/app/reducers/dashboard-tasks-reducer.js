@@ -193,6 +193,27 @@ const DashboardTasksReducer = (state = initialState, action) => {
       };
     }
 
+    case ActionTypes.DELETE_TASK: {
+      const { taskIdentifier } = action;
+
+      return {
+        ...state,
+        tasksList: state.tasksList.map(g => {
+          const newTasks = g.tasks?.filter(
+            ({ identifier }) => identifier !== taskIdentifier,
+          );
+          return {
+            ...g,
+            tasks: newTasks,
+            metricValue:
+              newTasks?.length === g.tasks?.length
+                ? g.metricValue
+                : g.metricValue - 1,
+          };
+        }),
+      };
+    }
+
     default:
       return TaskBaseReducer(state, action, updateTasksStateCallback);
   }
