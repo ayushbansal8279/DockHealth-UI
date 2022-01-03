@@ -8,6 +8,7 @@ import React, {
 import { useDispatch, useSelector } from 'react-redux';
 import { EditorState } from 'draft-js';
 import { useBoolean } from 'hooks/useBoolean';
+import usePrevious from 'hooks/use-previous';
 import { updateTaskDetails } from 'actions/task-actions';
 import { checkIfTemplateTask } from 'helpers/task-helpers';
 import CustomTextEditor from 'components/task-drawer/CustomTextEditor/CustomTextEditor';
@@ -47,6 +48,8 @@ const TaskDetails = () => {
   const isEmptyDetailsState = useMemo(() => isEditorStateEmpty(detailsState), [
     detailsState,
   ]);
+
+  const previousIsFocused = usePrevious(isFocused);
 
   useEffect(() => {
     if (selectedTask) {
@@ -100,6 +103,14 @@ const TaskDetails = () => {
     }, DEBOUNCE_TIME),
     [updateDetails],
   );
+
+  useEffect(() => {
+    if (previousIsFocused && !isFocused) {
+      onDebouncedChange.cancel();
+      updateDetails(detailsState);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [isFocused]);
 
   const onChangeDetailsEditor = useCallback(
     state => {
