@@ -30,7 +30,7 @@ export const ActionsContainer = styled(Grid)`
 export const StickyHeader = styled.div`
   position: sticky;
   top: 0;
-  z-index: 101;
+  z-index: 102;
   background-color: ${palette.white};
   padding: 0 55px 0 55px;
   width: calc(100vw - 67px);
