@@ -146,7 +146,7 @@ const CustomizeToolbarButton = ({
                   <MenuItem onClick={openCustomFieldModal}>
                     <PlusIcon>+</PlusIcon>
                     <Box mx={0.5} />
-                    <ListItemText>Create custom column</ListItemText>
+                    <ListItemText>Edit Custom Columns</ListItemText>
                   </MenuItem>
                 )}
               </List>
