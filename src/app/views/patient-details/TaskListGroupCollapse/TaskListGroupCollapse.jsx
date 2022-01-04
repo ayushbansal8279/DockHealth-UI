@@ -42,7 +42,7 @@ const TaskListGroupCollapse = props => {
           overflow="hidden"
           onClick={toggleOpen}
         >
-          <RotatableChevron rotated={open} />
+          {group && group?.groupType && <RotatableChevron rotated={open} />}
           <Box p={1} />
           <GroupTitle>
             <GroupName>
