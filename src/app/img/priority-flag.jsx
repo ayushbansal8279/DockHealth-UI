@@ -3,13 +3,20 @@ import { string } from 'prop-types';
 
 const PriorityFlag = ({ color }) => (
   <svg
-    width="17"
-    height="21"
-    viewBox="0 0 17 21"
+    width="6"
+    height="20"
+    viewBox="0 0 6 20"
     fill="none"
     xmlns="http://www.w3.org/2000/svg"
   >
-    <path d="M0 0H17V10.5V21H0L5.14328 10.5L0 0Z" fill={color} />
+    <line
+      x1="3"
+      y1="1.31134e-07"
+      x2="3"
+      y2="20"
+      stroke={color}
+      strokeWidth="4"
+    />
   </svg>
 );
 
