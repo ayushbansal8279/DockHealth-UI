@@ -30,8 +30,8 @@ export const DockHeaderImage = styled.img.attrs({
   alt: 'Dock Health',
   src: DockLogoSrc,
 })`
-  width: 70px;
-  height: 25px;
+  width: 105px;
+  height: 36px;
 `;
 
 export const Title = styled.h1`
