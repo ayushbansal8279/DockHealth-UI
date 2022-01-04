@@ -330,15 +330,17 @@ const PatientTasksListView = () => {
           </PatientToolbarStickyContainer>
         )}
         <div className="IN" style={{ width: 'fit-content' }}>
-          <TasksHeader
-            bulkEditEnabled
-            sort={sort}
-            onSortChange={sortPatientTasks}
-            taskItemConfig={taskItemConfig}
-            groupHasMultipleAssignees={groupHasMultipleAssignees}
-            isGroupSelected={isGroupSelected(tasks)}
-            onGroupSelect={() => handleGroupSelect(tasks)}
-          />
+          {tasks && tasks.length > 0 && (
+            <TasksHeader
+              bulkEditEnabled
+              sort={sort}
+              onSortChange={sortPatientTasks}
+              taskItemConfig={taskItemConfig}
+              groupHasMultipleAssignees={groupHasMultipleAssignees}
+              isGroupSelected={isGroupSelected(tasks)}
+              onGroupSelect={() => handleGroupSelect(tasks)}
+            />
+          )}
           {tasks?.map(task =>
             task.itemType === TaskItemType.TASK ? (
               <StandardTaskItem
