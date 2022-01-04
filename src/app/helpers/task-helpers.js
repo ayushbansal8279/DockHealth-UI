@@ -40,7 +40,7 @@ export function getPriorityColor(priority) {
     case TaskPriority.MEDIUM:
       return palette.orangeJulius;
     case TaskPriority.LOW:
-      return palette.accentYellow;
+      return palette.bananaHammock;
     case TaskPriority.NONE:
     default:
       return 'transparent';
