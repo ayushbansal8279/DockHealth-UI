@@ -17,7 +17,6 @@ export const StickyColumnContainer = styled.div`
   left: 24px;
   z-index: 11;
   border-left: 1px solid ${palette.coolGrey3};
-  max-width: 700px;
 
   &::before {
     content: '';

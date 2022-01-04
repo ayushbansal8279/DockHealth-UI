@@ -82,8 +82,7 @@ export const StickyColumnContainer = styled.div`
   z-index: 11;
   border-right: 1px solid ${palette.coolGrey3};
   border-left: 1px solid ${palette.coolGrey3};
-  min-width: 600px;
-  max-width: 700px;
+  min-width: 500px;
 
   &::before {
     content: '';
@@ -171,6 +170,7 @@ export const Description = styled.div`
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: initial;
+  max-width: 700px;
 
   &:hover {
     ${DescriptionTooltip} {
