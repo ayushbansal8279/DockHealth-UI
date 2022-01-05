@@ -62,8 +62,8 @@ const PatientNotes = () => {
   const onNoteChange = state => setNoteState(state);
   const clearNote = () => setNoteState(EditorState.createEmpty());
 
-  const saveNote = state => {
-    const { tokenizedText } = convertFromEditorStateToOutput(state, true);
+  const saveNote = () => {
+    const { tokenizedText } = convertFromEditorStateToOutput(noteState, true);
     if ([...tokenizedText]?.filter(char => char !== ' ').length > 0) {
       dispatch(addPatientNote(patientIdentifier, tokenizedText));
       clearNote();
