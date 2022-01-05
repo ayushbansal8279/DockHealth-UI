@@ -103,7 +103,7 @@ const ListOptionsMenu = props => {
 
       onPrint();
       return printTaskPdf({
-        title: 'Tasks',
+        title: targetList?.listName,
         tasks,
         taskListMembers,
         isListNameVisible: false,
