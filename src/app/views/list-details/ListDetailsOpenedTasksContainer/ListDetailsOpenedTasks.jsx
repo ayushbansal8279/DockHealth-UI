@@ -34,7 +34,6 @@ const ListDetailsOpenedTasks = ({
   toggleCompleteTask,
   groupedTasks,
   groupList,
-  editGroupName,
   quickAddTask,
   changeGroupsOrder,
   reorderTasksInGroup,
@@ -168,7 +167,6 @@ const ListDetailsOpenedTasks = ({
             isDefaultGroup={groupName === 'DEFAULT'}
             groupName={groupName === 'DEFAULT' ? 'New tasks' : groupName}
             groupTaskCounts={metricValue}
-            editGroupName={editGroupName}
             quickAddTask={quickAddTask}
             moveGroupUp={() => changeGroupsOrder(i, i - 1)}
             moveGroupDown={() => changeGroupsOrder(i, i + 1)}
@@ -340,7 +338,6 @@ const ListDetailsOpenedTasks = ({
       isSearchApplied,
       areFiltersApplied,
       groupedTasks,
-      editGroupName,
       quickAddTask,
       changeGroupsOrder,
       onTaskUpdate,

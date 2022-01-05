@@ -191,22 +191,6 @@ const initializeListDetailsViewHooks = (match, history) => {
     [listDetailsSagaActions, taskCounters],
   );
 
-  const editGroupName = useCallback(
-    (newGroupName, groupId) => {
-      const { params } = match;
-      const { taskListIdentifier } = params;
-
-      if (newGroupName) {
-        listDetailsSagaActions.editTasksGroupName({
-          taskListIdentifier,
-          groupId,
-          newGroupName,
-        });
-      }
-    },
-    [listDetailsSagaActions, match],
-  );
-
   const changeGroupsOrder = useCallback(
     (oldTaskIndex, newTaskIndex, groupList) => {
       const { params } = match;
@@ -628,7 +612,6 @@ const initializeListDetailsViewHooks = (match, history) => {
     changeGroupsOrder,
     changeSearchValue,
     completedTasks,
-    editGroupName,
     handleCreateGroup,
     handleTaskDelete,
     handleTaskUpdate,

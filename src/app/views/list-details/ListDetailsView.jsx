@@ -20,7 +20,6 @@ const ListDetailsView = props => {
     changeGroupsOrder,
     changeSearchValue,
     completedTasks,
-    editGroupName,
     handleCreateGroup,
     handleTaskDelete,
     handleTaskUpdate,
@@ -124,7 +123,6 @@ const ListDetailsView = props => {
                   taskListIdentifier={taskListIdentifier}
                   quickAddTask={quickAddTask}
                   createTaskGroupList={handleCreateGroup}
-                  editGroupName={editGroupName}
                   toggleCompleteTask={toggleTaskCompletedStatus}
                   changeGroupsOrder={changeGroupsOrder}
                   onTaskUpdate={handleTaskUpdate}

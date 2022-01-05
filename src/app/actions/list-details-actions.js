@@ -90,3 +90,11 @@ export function deleteTaskListGroup(groupIdentifier) {
     groupIdentifier,
   };
 }
+
+export function changeTaskListGroupName(groupIdentifier, name) {
+  return {
+    type: ActionTypes.CHANGE_TASK_LIST_GROUP_NAME,
+    groupIdentifier,
+    name,
+  };
+}

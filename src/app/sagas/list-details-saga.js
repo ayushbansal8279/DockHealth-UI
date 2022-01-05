@@ -36,7 +36,10 @@ import {
   groupTasksSelector,
   taskDetailsSortSelector,
 } from 'selectors/list-details-selectors';
-import { currentTaskListSelector } from 'selectors/task-list-selectors';
+import {
+  currentTaskListSelector,
+  currentTaskListIdentifierSelector,
+} from 'selectors/task-list-selectors';
 import { showGlobalAlert, showGlobalErrorAlert } from 'alert/actions';
 import AlertMessages from 'alert/AlertMessages';
 import { openDrawer } from 'actions/task-drawer-actions';
@@ -53,7 +56,6 @@ import store from '../store';
 
 export const DO_GET_TASKS_GROUPS_LIST = 'DO_GET_TASKS_GROUPS_LIST';
 export const DO_CREATE_TASKS_GROUP_LIST = 'DO_CREATE_TASKS_GROUP_LIST';
-export const DO_EDIT_TASKS_GROUP_NAME = 'DO_EDIT_TASKS_GROUP_NAME';
 export const DO_SORT_TASKS_GROUPS = 'DO_SORT_TASKS_GROUPS';
 export const DO_SORT_TASKS_IN_GROUPS = 'DO_SORT_TASKS_IN_GROUPS';
 export const DO_ON_ENTER_LIST_DETAILS = 'DO_ON_ENTER_LIST_DETAILS';
@@ -71,11 +73,6 @@ export const getTasksGroupsList = payload => ({
 
 export const createTaskGroupList = payload => ({
   type: DO_CREATE_TASKS_GROUP_LIST,
-  ...payload,
-});
-
-export const editTasksGroupName = payload => ({
-  type: DO_EDIT_TASKS_GROUP_NAME,
   ...payload,
 });
 
@@ -116,7 +113,6 @@ export const fetchTasksBySearchedTerm = payload => ({
 export const ListDetailsSagaActions = {
   getTasksGroupsList,
   createTaskGroupList,
-  editTasksGroupName,
   sortTasksGroups,
   sortTasksInGroup,
   createTask,
@@ -293,23 +289,6 @@ function* doCreateTasksGroupList(payload) {
       shouldSetRequestState: false,
     });
     yield put(showGlobalAlert(AlertMessages.CREATED));
-  } catch (error) {
-    yield put({ type: ActionTypes.TASK_GROUP_LIST_FAILURE });
-  }
-}
-
-function* doEditTasksGroupName(payload) {
-  const { groupId, newGroupName } = payload;
-
-  try {
-    const { taskListIdentifier } = yield select(locationParametersSelector);
-    yield put({ type: ActionTypes.TASK_GROUP_LIST_REQUEST });
-    yield call(editGroupName, taskListIdentifier, groupId, newGroupName);
-    yield call(doGetTasksGroupsList, {
-      taskListIdentifier,
-      shouldSetRequestState: false,
-    });
-    yield put(showGlobalAlert(AlertMessages.UPDATED));
   } catch (error) {
     yield put({ type: ActionTypes.TASK_GROUP_LIST_FAILURE });
   }
@@ -813,7 +792,7 @@ function* deleteTaskListGroup(payload) {
   const { groupIdentifier } = payload;
 
   try {
-    const taskListIdentifier = yield select(currentTaskListSelector);
+    const taskListIdentifier = yield select(currentTaskListIdentifierSelector);
     yield put({ type: ActionTypes.TASK_GROUP_LIST_REQUEST });
     yield call(deleteGroup, groupIdentifier);
     yield call(doGetTasksGroupsList, {
@@ -833,6 +812,30 @@ function* deleteTaskListGroup(payload) {
       groupIdentifier,
     });
     yield put({ type: ActionTypes.TASK_GROUP_LIST_FAILURE });
+  }
+}
+
+function* changeTaskListGroupName({ groupIdentifier, name }) {
+  try {
+    const taskListIdentifier = yield select(currentTaskListIdentifierSelector);
+    yield put({ type: ActionTypes.TASK_GROUP_LIST_REQUEST });
+    yield call(editGroupName, taskListIdentifier, groupIdentifier, name);
+    yield call(doGetTasksGroupsList, {
+      taskListIdentifier,
+      shouldSetRequestState: false,
+    });
+    yield put(showGlobalAlert(AlertMessages.UPDATED));
+    yield put({
+      type: ActionTypes.CHANGE_TASK_LIST_GROUP_NAME_SUCCESS,
+      groupIdentifier,
+      name,
+    });
+  } catch (error) {
+    yield put({
+      type: ActionTypes.CHANGE_TASK_LIST_GROUP_NAME_FAILURE,
+      groupIdentifier,
+      name,
+    });
   }
 }
 
@@ -861,7 +864,6 @@ export default function* watchTasksGroupsList() {
   yield takeLatest(DO_ON_ENTER_LIST_DETAILS, doOnEnterListDetails);
   yield takeEvery(DO_GET_TASKS_GROUPS_LIST, doGetTasksGroupsList);
   yield takeEvery(DO_CREATE_TASKS_GROUP_LIST, doCreateTasksGroupList);
-  yield takeEvery(DO_EDIT_TASKS_GROUP_NAME, doEditTasksGroupName);
   yield takeEvery(DO_SORT_TASKS_GROUPS, doSortTasksGroups);
   yield takeEvery(DO_SORT_TASKS_IN_GROUPS, doSortTasksInGroup);
   yield takeEvery(DO_CREATE_TASK, doCreateTask);
@@ -880,4 +882,8 @@ export default function* watchTasksGroupsList() {
     updateListCustomFieldsSetup,
   );
   yield takeEvery(ActionTypes.DELETE_TASK_LIST_GROUP, deleteTaskListGroup);
+  yield takeEvery(
+    ActionTypes.CHANGE_TASK_LIST_GROUP_NAME,
+    changeTaskListGroupName,
+  );
 }

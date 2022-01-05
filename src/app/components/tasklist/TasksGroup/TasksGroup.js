@@ -15,7 +15,10 @@ import ArrowIcon from 'img/arrow';
 import * as TaskActions from 'actions/task-actions';
 import { checkIfAllTasksSelected } from 'helpers/bulk-edit-helpers';
 import { closeModal, openModal } from 'modal/actions';
-import { deleteTaskListGroup } from 'actions/list-details-actions';
+import {
+  changeTaskListGroupName,
+  deleteTaskListGroup,
+} from 'actions/list-details-actions';
 import {
   onSlimViewChanged,
   onTaskGroupCollapsed,
@@ -54,7 +57,6 @@ const TasksGroup = ({
   isLastGroup,
   groupName,
   groupTaskCounts,
-  editGroupName,
   quickAddTask,
   moveGroupUp,
   moveGroupDown,
@@ -110,11 +112,6 @@ const TasksGroup = ({
     isSearchApplied ||
     areFiltersApplied ||
     (!!sort?.key && !['PATIENT', 'SUBTASK_COUNT'].includes(sort.key));
-
-  const onGroupNameSectionClick = useCallback(
-    newGroupName => editGroupName(newGroupName, taskGroupIdentifier),
-    [editGroupName, taskGroupIdentifier],
-  );
 
   useEffect(() => {
     if (
@@ -233,6 +230,15 @@ const TasksGroup = ({
     dispatch(openModal('DeleteConfirmation', modalProps));
   }, [dispatch, taskGroupIdentifier]);
 
+  const handleEditGroupName = useCallback(
+    newGroupName => {
+      if (newGroupName) {
+        dispatch(changeTaskListGroupName(taskGroupIdentifier, newGroupName));
+      }
+    },
+    [dispatch, taskGroupIdentifier],
+  );
+
   const options = useMemo(
     () => [
       !isFirstGroup && {
@@ -278,9 +284,9 @@ const TasksGroup = ({
         <GroupNameSectionWrapper>
           <GroupNameSection
             initialValue={groupName}
-            onEnterClick={onGroupNameSectionClick}
+            onEnterClick={handleEditGroupName}
             closeOnEnter
-            disabled={isDefaultGroup || isCompletedGroup || !editGroupName}
+            disabled={isDefaultGroup || isCompletedGroup}
           >
             <TasksGroupLabel>
               <TasksGroupLabelName>{groupName}</TasksGroupLabelName>
