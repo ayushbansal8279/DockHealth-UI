@@ -71,7 +71,7 @@ export const CounterContainer = styled.div`
 export const ChipContainer = styled.div`
   position: fixed;
   top: 20px;
-  right: 180px;
+  left: 50%;
   z-index: 5000;
   transform: translateX(-50%);
   display: flex;
