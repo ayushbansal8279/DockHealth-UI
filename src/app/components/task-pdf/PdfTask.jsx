@@ -71,7 +71,10 @@ const PdfTask = props => {
     const usersString =
       assignedToUsers?.reduce((accumulator, { userName }, index) => {
         if (index + 1 > usersVisible) return accumulator;
-        return `${accumulator}${trunc(userName, maxLength)}, `;
+        return `${accumulator}${index > 0 ? ', ' : ''}${trunc(
+          userName,
+          maxLength,
+        )} `;
       }, '') || '';
     const extraCounter =
       assignedToUsers?.length > 2 ? `+${assignedToUsers.length - 3}` : '';

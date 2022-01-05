@@ -123,7 +123,7 @@ export const AssignedToContainer = styled.View`
 `;
 
 export const AssignToText = styled.Text`
-  color: ${palette.unknownGrey5};
+  color: ${palette.unknownGrey7};
   font-family: 'Open Sans';
   font-size: 7pt;
   margin-left: 2pt;
