@@ -3,7 +3,6 @@ import React, { useState, useEffect, useRef } from 'react';
 import { initializePusher } from 'helpers/pusher-instance';
 import { useDispatch, useSelector } from 'react-redux';
 import { useMount } from 'react-use';
-import { isEmpty } from 'ramda';
 import * as TaskActions from 'actions/task-actions';
 import {
   clearDashboardState,
@@ -42,7 +41,6 @@ const DashboardView = ({ tabName }) => {
   ] = useState(null);
   const [openConfetti, setOpenConfetti] = useState(false);
 
-  const currentUserLoaded = currentUser && !isEmpty(currentUser);
   const { usageState } = currentUser ?? {};
   const { hasExistingLists, hasOnlyInvitedLists } = usageState ?? {};
 
@@ -164,12 +162,12 @@ const DashboardView = ({ tabName }) => {
   return (
     <ColumnsConfigProvider>
       <DashboardViewWrapper>
-        {currentUserLoaded && (
+        {currentUserIdentifier && (
           <DashboardContentWrapper>
             {openConfetti && <StyledConfetti recycle={false} />}
             <DashboardScrollableList>
               <div>
-                <DashboardHeader currentUser={currentUser} />
+                <DashboardHeader />
                 <Spacing vertical={3} />
               </div>
               {createListViewVisible ? (
