@@ -410,29 +410,8 @@ const initializeListDetailsViewHooks = (match, history) => {
     [invokeToggleCompleteAction, modalActions],
   );
 
-  // const launchNewFeaturesModal = useCallback(() => {
-  //   const isNewUser = currentUser?.usageState?.loginCount <= 5;
-
-  //   if (currentUser && !isEmpty(currentUser) && !isNewUser) {
-  //     const { userPreference: { appFeaturesReviewed } = {} } = currentUser;
-
-  //     if (!appFeaturesReviewed?.includes('MULTI_MENTION_ASSIGN')) {
-  //       modalActions.openModal('MultiMentionAssignTour', {
-  //         onClose: () => {
-  //           dispatch(
-  //             updateCurrentUserPreferences({
-  //               appFeaturesReviewed: ['MULTI_MENTION_ASSIGN'],
-  //             }),
-  //           );
-  //         },
-  //       });
-  //     }
-  //   }
-  // }, [currentUser, dispatch, modalActions]);
-
   useEffect(() => {
     refreshAccessToken(currentUser);
-    // launchNewFeaturesModal();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 

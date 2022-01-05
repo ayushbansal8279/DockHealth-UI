@@ -11,6 +11,7 @@ import {
   initializeDashboardState,
   searchDashboardTasks,
 } from 'actions/dashboard-actions';
+import { userProfileSelector } from 'selectors/user-selectors';
 import debounce from 'lodash.debounce';
 import { onSearchChanged } from 'helpers/ga-event-helper';
 import UserAvatar from 'components/user/UserAvatar/UserAvatar';
@@ -20,11 +21,12 @@ import { selectFiltersForMegaFilter } from 'actions/mega-filter-actions';
 import { isEmpty } from 'ramda';
 import HeaderSearch from 'components/template/HeaderSearch/HeaderSearch';
 
-const DashboardHeader = ({ currentUser }) => {
+const DashboardHeader = () => {
   const [searchValue, setSearchValue] = useState('');
   const dispatch = useDispatch();
   const isLoadingTasks = useSelector(dashboardTasksIsLoadingSelector);
   const dashboardTasks = useSelector(dashboardTasksSelector);
+  const currentUser = useSelector(userProfileSelector);
   const tabName = useSelector(dashboardTabNameSelector);
   const megaFilter = useSelector(megaFilterSelector);
   const { filters, selectedFilters } = megaFilter || {};
