@@ -8,6 +8,7 @@ import {
   onTaskListDeleted,
   onTaskListInvitationRejected,
   onTaskListLeave,
+  onPrint,
 } from 'helpers/ga-event-helper';
 import {
   currentTaskListIdentifierSelector,
@@ -18,9 +19,10 @@ import { openModal, closeModal } from 'modal/actions';
 import { hideSubMenu } from 'actions/template-actions';
 import * as TaskListActions from 'actions/task-list-actions';
 import palette from 'styles/palette';
+import { printTaskPdf } from 'components/task-pdf/TaskPdfDocument';
 
 const ListOptionsMenu = props => {
-  const { list, children } = props;
+  const { list, children, tasks, moreOptions } = props;
 
   const dispatch = useDispatch();
   const history = useHistory();
@@ -95,6 +97,22 @@ const ListOptionsMenu = props => {
     [dispatch],
   );
 
+  const onPrintClick = useCallback(
+    targetList => {
+      const { listUsers: taskListMembers } = targetList || {};
+
+      onPrint();
+      return printTaskPdf({
+        title: 'Tasks',
+        tasks,
+        taskListMembers,
+        isListNameVisible: false,
+        isPatientVisible: true,
+      });
+    },
+    [tasks],
+  );
+
   // TODO: change to flag inside list object
   const isListArchived = useCallback(
     targetList => {
@@ -134,7 +152,7 @@ const ListOptionsMenu = props => {
       ) {
         return [
           {
-            name: 'Unarchive List',
+            name: 'Unarchive list',
             onClick: () => {
               handleUnarchiveList(targetList);
             },
@@ -187,7 +205,7 @@ const ListOptionsMenu = props => {
           baseList = [
             ...baseList,
             {
-              name: 'Archive List',
+              name: 'Archive list',
               onClick: () => {
                 handleArchiveList(targetList);
               },
@@ -209,6 +227,16 @@ const ListOptionsMenu = props => {
             },
           ];
         }
+        if (moreOptions) {
+          baseList = [
+            ...baseList,
+            {
+              key: 'print',
+              name: 'Print',
+              onClick: () => onPrintClick(targetList),
+            },
+          ];
+        }
       }
 
       return baseList;
@@ -220,10 +248,12 @@ const ListOptionsMenu = props => {
       handleUnarchiveList,
       openLeaveListModal,
       currentUser,
+      moreOptions,
       openInviteToListModal,
       openListEditModal,
       handleArchiveList,
       openDeleteConfirmationModal,
+      onPrintClick,
     ],
   );
 

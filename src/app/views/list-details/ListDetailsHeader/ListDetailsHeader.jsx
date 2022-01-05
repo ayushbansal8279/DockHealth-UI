@@ -78,7 +78,7 @@ const ListDetailsHeader = props => {
     <LayoutHeader horizontalSticky>
       {taskList && !['INBOX', 'PUBLIC'].includes(listType) && (
         <Box position="absolute" top={listDescription ? 17 : 27} left={10}>
-          <ListOptionsMenu list={taskList}>
+          <ListOptionsMenu list={taskList} moreOptions tasks={tasks}>
             <MoreVert color="primary" />
           </ListOptionsMenu>
         </Box>
