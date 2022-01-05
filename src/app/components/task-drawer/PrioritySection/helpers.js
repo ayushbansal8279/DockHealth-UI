@@ -12,26 +12,26 @@ const PriorityOptionIcon = ({ color }) => (
 
 export const PRIORITY_OPTIONS = [
   {
-    value: TaskPriority.NONE,
-    label: 'No priority',
-    OptionIcon: (
-      <PriorityOptionIcon color={getPriorityColor(TaskPriority.NONE)} />
-    ),
-  },
-  {
     value: TaskPriority.LOW,
-    label: 'Low',
+    label: 'No priority',
     OptionIcon: (
       <PriorityOptionIcon color={getPriorityColor(TaskPriority.LOW)} />
     ),
   },
-  {
-    value: TaskPriority.MEDIUM,
-    label: 'Medium',
-    OptionIcon: (
-      <PriorityOptionIcon color={getPriorityColor(TaskPriority.MEDIUM)} />
-    ),
-  },
+  // {
+  //   value: TaskPriority.LOW,
+  //   label: 'Low',
+  //   OptionIcon: (
+  //     <PriorityOptionIcon color={getPriorityColor(TaskPriority.LOW)} />
+  //   ),
+  // },
+  // {
+  //   value: TaskPriority.MEDIUM,
+  //   label: 'Medium',
+  //   OptionIcon: (
+  //     <PriorityOptionIcon color={getPriorityColor(TaskPriority.MEDIUM)} />
+  //   ),
+  // },
   {
     value: TaskPriority.HIGH,
     label: 'High',
