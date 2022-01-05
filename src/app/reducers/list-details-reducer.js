@@ -25,11 +25,13 @@ import {
   GET_LIST_CUSTOM_FIELDS_SUCCESS,
   GET_LIST_CUSTOM_FIELDS_FAILURE,
   GET_LIST_DETAILS_TASK_COUNTERS_FAILURE,
+  REORDER_TASK_LIST_GROUPS,
+  REORDER_TASK_LIST_GROUPS_FAILURE,
 } from 'actions/action-types';
 import { mapWithRemove } from 'helpers/utility-functions';
 import { TaskGroupType, TaskItemType } from 'helpers/task-helpers';
 import { updateBundleInList } from 'helpers/tasklist-helpers';
-import { pipe, prop, uniqBy } from 'ramda';
+import { pipe, prop, uniqBy, move } from 'ramda';
 import TaskBaseReducer from './task-base-reducer';
 
 const dedupe = pipe(uniqBy(prop('identifier')));
@@ -469,6 +471,20 @@ const ListDetailsReducer = (state = initialState, action) => {
           })),
         },
       };
+    }
+
+    case REORDER_TASK_LIST_GROUPS: {
+      const { newIndex, oldIndex } = action;
+      const newListGroupsOrder = move(oldIndex, newIndex, state.listGroups);
+
+      return { ...state, listGroups: newListGroupsOrder };
+    }
+
+    case REORDER_TASK_LIST_GROUPS_FAILURE: {
+      const { newIndex, oldIndex } = action;
+      const oldListGroupsOrder = move(newIndex, oldIndex, state.listGroups);
+
+      return { ...state, listGroups: oldListGroupsOrder };
     }
 
     default:

@@ -98,3 +98,11 @@ export function changeTaskListGroupName(groupIdentifier, name) {
     name,
   };
 }
+
+export function reorderTaskListGroups(oldIndex, newIndex) {
+  return {
+    type: ActionTypes.REORDER_TASK_LIST_GROUPS,
+    oldIndex,
+    newIndex,
+  };
+}

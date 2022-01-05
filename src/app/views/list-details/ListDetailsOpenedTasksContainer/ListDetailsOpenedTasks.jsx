@@ -8,7 +8,10 @@ import EmptyTaskListAlpaca from 'img/animals/alpaca';
 import EmptyTaskListBear from 'img/animals/bear';
 import { openModal as openModalAction } from 'modal/actions';
 import { onTaskOrderChanged } from 'helpers/ga-event-helper';
-import { applyTaskTemplate } from 'actions/list-details-actions';
+import {
+  applyTaskTemplate,
+  reorderTaskListGroups,
+} from 'actions/list-details-actions';
 
 import NoSearchResultsView from 'components/tasklist/EmptyListView/NoSearchResultsView';
 import EmptyListView from 'components/tasklist/EmptyListView/EmptyListView';
@@ -35,7 +38,6 @@ const ListDetailsOpenedTasks = ({
   groupedTasks,
   groupList,
   quickAddTask,
-  changeGroupsOrder,
   reorderTasksInGroup,
   reassignTasksToAnotherGroup,
   onTaskUpdate,
@@ -168,9 +170,8 @@ const ListDetailsOpenedTasks = ({
             groupName={groupName === 'DEFAULT' ? 'New tasks' : groupName}
             groupTaskCounts={metricValue}
             quickAddTask={quickAddTask}
-            moveGroupUp={() => changeGroupsOrder(i, i - 1)}
-            moveGroupDown={() => changeGroupsOrder(i, i + 1)}
-            changingGroupOrderDisabled={!changeGroupsOrder}
+            moveGroupUp={() => dispatch(reorderTaskListGroups(i, i - 1))}
+            moveGroupDown={() => dispatch(reorderTaskListGroups(i, i + 1))}
             isFirstGroup={i === 0}
             isLastGroup={i === groupList?.length - 1}
             tasks={groupedTasks[taskGroupIdentifier]?.tasks || []}
@@ -339,7 +340,6 @@ const ListDetailsOpenedTasks = ({
       areFiltersApplied,
       groupedTasks,
       quickAddTask,
-      changeGroupsOrder,
       onTaskUpdate,
       draggedId,
       toggleCompleteTask,
@@ -354,6 +354,7 @@ const ListDetailsOpenedTasks = ({
       dragAndDropDisabled,
       showClearSortFiltersModal,
       viewSetup,
+      dispatch,
     ],
   );
 

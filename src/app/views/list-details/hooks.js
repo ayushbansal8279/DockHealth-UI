@@ -3,7 +3,7 @@
 import { useEffect, useCallback, useState, useMemo, useRef } from 'react';
 import { useLocation } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
-import { isEmpty, isNil, move } from 'ramda';
+import { isEmpty, isNil } from 'ramda';
 import { initializePusher } from 'helpers/pusher-instance';
 import useActions from 'hooks/use-actions';
 import usePrevious from 'hooks/use-previous';
@@ -189,24 +189,6 @@ const initializeListDetailsViewHooks = (match, history) => {
       }
     },
     [listDetailsSagaActions, taskCounters],
-  );
-
-  const changeGroupsOrder = useCallback(
-    (oldTaskIndex, newTaskIndex, groupList) => {
-      const { params } = match;
-      const { taskListIdentifier } = params;
-
-      if (newTaskIndex < 0 || newTaskIndex >= groupList.length) {
-        return;
-      }
-      const groupIdsList = groupList.map(group => group.taskGroupIdentifier);
-      const newGroupList = move(oldTaskIndex, newTaskIndex, groupIdsList);
-      listDetailsSagaActions.sortTasksGroups({
-        taskGroupIdentifiers: newGroupList,
-        taskListIdentifier,
-      });
-    },
-    [listDetailsSagaActions, match],
   );
 
   const refreshTabAfterTaskUpdate = useCallback(
@@ -609,7 +591,6 @@ const initializeListDetailsViewHooks = (match, history) => {
     taskList,
     bulkEditIsDisabled,
     bulkEditTasks,
-    changeGroupsOrder,
     changeSearchValue,
     completedTasks,
     handleCreateGroup,

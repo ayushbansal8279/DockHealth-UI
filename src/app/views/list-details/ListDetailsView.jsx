@@ -17,7 +17,6 @@ const ListDetailsView = props => {
   const {
     bulkEditIsDisabled,
     bulkEditTasks,
-    changeGroupsOrder,
     changeSearchValue,
     completedTasks,
     handleCreateGroup,
@@ -124,7 +123,6 @@ const ListDetailsView = props => {
                   quickAddTask={quickAddTask}
                   createTaskGroupList={handleCreateGroup}
                   toggleCompleteTask={toggleTaskCompletedStatus}
-                  changeGroupsOrder={changeGroupsOrder}
                   onTaskUpdate={handleTaskUpdate}
                   updateWorkflowStatus={handleUpdateWorkflowStatus}
                   searchValue={searchValue}
