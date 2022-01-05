@@ -14,6 +14,8 @@ import MoreVert from '@material-ui/icons/MoreVert';
 import ArrowIcon from 'img/arrow';
 import * as TaskActions from 'actions/task-actions';
 import { checkIfAllTasksSelected } from 'helpers/bulk-edit-helpers';
+import { closeModal, openModal } from 'modal/actions';
+import { deleteTaskListGroup } from 'actions/list-details-actions';
 import {
   onSlimViewChanged,
   onTaskGroupCollapsed,
@@ -54,7 +56,6 @@ const TasksGroup = ({
   groupTaskCounts,
   editGroupName,
   quickAddTask,
-  deleteGroup,
   moveGroupUp,
   moveGroupDown,
   tasks,
@@ -114,11 +115,6 @@ const TasksGroup = ({
     newGroupName => editGroupName(newGroupName, taskGroupIdentifier),
     [editGroupName, taskGroupIdentifier],
   );
-
-  const onDeleteGroup = useCallback(() => deleteGroup(taskGroupIdentifier), [
-    deleteGroup,
-    taskGroupIdentifier,
-  ]);
 
   useEffect(() => {
     if (
@@ -224,6 +220,19 @@ const TasksGroup = ({
     return null;
   };
 
+  const handleDeleteGroup = useCallback(() => {
+    const modalProps = {
+      title: 'Delete group',
+      description:
+        'Are you sure you want to delete this group? If you delete this group and there are tasks within the group, the tasks will not be deleted',
+      confirm: () => {
+        dispatch(closeModal());
+        dispatch(deleteTaskListGroup(taskGroupIdentifier));
+      },
+    };
+    dispatch(openModal('DeleteConfirmation', modalProps));
+  }, [dispatch, taskGroupIdentifier]);
+
   const options = useMemo(
     () => [
       !isFirstGroup && {
@@ -237,7 +246,7 @@ const TasksGroup = ({
       !isDefaultGroup && {
         name: 'Delete',
         color: palette.red,
-        onClick: onDeleteGroup,
+        onClick: handleDeleteGroup,
       },
     ],
     [
@@ -246,7 +255,7 @@ const TasksGroup = ({
       isLastGroup,
       moveGroupDown,
       moveGroupUp,
-      onDeleteGroup,
+      handleDeleteGroup,
     ],
   );
 

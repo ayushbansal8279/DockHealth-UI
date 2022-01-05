@@ -36,7 +36,6 @@ const ListDetailsOpenedTasks = ({
   groupList,
   editGroupName,
   quickAddTask,
-  deleteGroup,
   changeGroupsOrder,
   reorderTasksInGroup,
   reassignTasksToAnotherGroup,
@@ -171,7 +170,6 @@ const ListDetailsOpenedTasks = ({
             groupTaskCounts={metricValue}
             editGroupName={editGroupName}
             quickAddTask={quickAddTask}
-            deleteGroup={deleteGroup}
             moveGroupUp={() => changeGroupsOrder(i, i - 1)}
             moveGroupDown={() => changeGroupsOrder(i, i + 1)}
             changingGroupOrderDisabled={!changeGroupsOrder}
@@ -344,7 +342,6 @@ const ListDetailsOpenedTasks = ({
       groupedTasks,
       editGroupName,
       quickAddTask,
-      deleteGroup,
       changeGroupsOrder,
       onTaskUpdate,
       draggedId,

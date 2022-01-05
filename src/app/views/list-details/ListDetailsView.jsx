@@ -20,7 +20,6 @@ const ListDetailsView = props => {
     changeGroupsOrder,
     changeSearchValue,
     completedTasks,
-    deleteGroup,
     editGroupName,
     handleCreateGroup,
     handleTaskDelete,
@@ -127,7 +126,6 @@ const ListDetailsView = props => {
                   createTaskGroupList={handleCreateGroup}
                   editGroupName={editGroupName}
                   toggleCompleteTask={toggleTaskCompletedStatus}
-                  deleteGroup={deleteGroup}
                   changeGroupsOrder={changeGroupsOrder}
                   onTaskUpdate={handleTaskUpdate}
                   updateWorkflowStatus={handleUpdateWorkflowStatus}

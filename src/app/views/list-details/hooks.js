@@ -191,28 +191,6 @@ const initializeListDetailsViewHooks = (match, history) => {
     [listDetailsSagaActions, taskCounters],
   );
 
-  const deleteGroup = useCallback(
-    groupId => {
-      const { params } = match;
-      const { taskListIdentifier } = params;
-
-      const modalProps = {
-        title: 'Delete group',
-        description:
-          'Are you sure you want to delete this group? If you delete this group and there are tasks within the group, the tasks will not be deleted',
-        confirm: () => {
-          modalActions.closeModal();
-          listDetailsSagaActions.deleteTasksGroup({
-            groupId,
-            taskListIdentifier,
-          });
-        },
-      };
-      modalActions.openModal('DeleteConfirmation', modalProps);
-    },
-    [listDetailsSagaActions, match, modalActions],
-  );
-
   const editGroupName = useCallback(
     (newGroupName, groupId) => {
       const { params } = match;
@@ -650,7 +628,6 @@ const initializeListDetailsViewHooks = (match, history) => {
     changeGroupsOrder,
     changeSearchValue,
     completedTasks,
-    deleteGroup,
     editGroupName,
     handleCreateGroup,
     handleTaskDelete,

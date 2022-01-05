@@ -83,3 +83,10 @@ export function applyTaskTemplate({
     },
   };
 }
+
+export function deleteTaskListGroup(groupIdentifier) {
+  return {
+    type: ActionTypes.DELETE_TASK_LIST_GROUP,
+    groupIdentifier,
+  };
+}
