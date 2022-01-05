@@ -170,7 +170,23 @@ export const Description = styled.div`
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: initial;
-  max-width: 700px;
+  max-width: 480px;
+
+  @media screen and (max-width: 1300px) {
+    max-width: 300px;
+  }
+
+  @media screen and (min-width: 1680px) {
+    max-width: 600px;
+  }
+
+  @media screen and (min-width: 2100px) {
+    max-width: 900px;
+  }
+
+  @media screen and (min-width: 2500px) {
+    max-width: 1100px;
+  }
 
   &:hover {
     ${DescriptionTooltip} {
