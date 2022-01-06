@@ -37,11 +37,12 @@ export function getPriorityColor(priority) {
   switch (priority) {
     case TaskPriority.HIGH:
       return palette.tomatoInYoFace;
-    case TaskPriority.MEDIUM:
-      return palette.orangeJulius;
+    // case TaskPriority.MEDIUM:
+    //   return palette.orangeJulius;
+    // case TaskPriority.LOW:
+    //   return palette.bananaHammock;
+    // case TaskPriority.NONE:
     case TaskPriority.LOW:
-      return palette.bananaHammock;
-    case TaskPriority.NONE:
     default:
       return 'transparent';
   }
