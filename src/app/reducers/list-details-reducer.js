@@ -1,8 +1,6 @@
 import {
   GET_COMPLETED_TASKS_BY_GROUPS_SUCCESS,
-  GET_TASKS_BY_GROUPS_SUCCESS,
-  REQUEST_COMPLETED_TASKS,
-  REQUEST_TASKS,
+  GET_CURRENT_LIST_TASKS,
   GET_MORE_TASKS_REQUEST,
   GET_LIST_DETAILS_TASK_COUNTERS_SUCCESS,
   RESET_LIST_DETAILS_TASK_COUNTERS,
@@ -27,6 +25,10 @@ import {
   GET_LIST_DETAILS_TASK_COUNTERS_FAILURE,
   REORDER_TASK_LIST_GROUPS,
   REORDER_TASK_LIST_GROUPS_FAILURE,
+  GET_CURRENT_LIST_COMPLETE_TASKS,
+  GET_CURRENT_LIST_TASKS_SUCCESS,
+  GET_CURRENT_LIST_COMPLETE_TASKS_SUCCESS,
+  SEARCH_CURRENT_LIST_TASKS,
 } from 'actions/action-types';
 import { mapWithRemove } from 'helpers/utility-functions';
 import { TaskGroupType, TaskItemType } from 'helpers/task-helpers';
@@ -56,6 +58,7 @@ const initialState = {
     order: null,
   },
   listCustomFields: [],
+  searchTerm: '',
 };
 
 function updateGroupInState(updateCallback, taskGroupIdentifier, state) {
@@ -159,23 +162,27 @@ const ListDetailsReducer = (state = initialState, action) => {
         isFetchingGroups: false,
       };
 
-    case GET_TASKS_BY_GROUPS_SUCCESS: {
-      const { groupedTasks, taskListIdentifier } = action;
-      const updatedTaskGroups = groupedTasks?.taskGroups?.map(taskGroup => {
-        return {
-          ...taskGroup,
-          isLoadingGroup: false,
-        };
-      });
+    case GET_CURRENT_LIST_TASKS_SUCCESS: {
+      const { groupedTasks } = action;
 
       return {
         ...state,
-        taskListIdentifier,
         groupedTasks: {
-          ...groupedTasks,
-          taskGroups: updatedTaskGroups,
+          taskGroups: groupedTasks,
         },
         isFetching: false,
+      };
+    }
+
+    case GET_CURRENT_LIST_COMPLETE_TASKS_SUCCESS: {
+      const { groupedTasks } = action;
+
+      return {
+        ...state,
+        completedGroupedTasks: {
+          taskGroups: groupedTasks,
+        },
+        isCompletedTasksFetching: false,
       };
     }
 
@@ -312,7 +319,14 @@ const ListDetailsReducer = (state = initialState, action) => {
       };
     }
 
-    case REQUEST_TASKS:
+    case SEARCH_CURRENT_LIST_TASKS: {
+      return {
+        ...state,
+        searchTerm: action.searchTerm,
+      };
+    }
+
+    case GET_CURRENT_LIST_TASKS:
       return {
         ...state,
         isFetching: true,
@@ -321,7 +335,7 @@ const ListDetailsReducer = (state = initialState, action) => {
         showingCompletedTasks: false,
       };
 
-    case REQUEST_COMPLETED_TASKS:
+    case GET_CURRENT_LIST_COMPLETE_TASKS:
       return {
         ...state,
         completedTasks: [],

@@ -9,14 +9,31 @@ export function getListDetailsTaskCounters(taskListIdentifier) {
   };
 }
 
-export const resetListDetailsTaskCounters = () => ({
-  type: ActionTypes.RESET_LIST_DETAILS_TASK_COUNTERS,
-});
+export function resetListDetailsTaskCounters() {
+  return {
+    type: ActionTypes.RESET_LIST_DETAILS_TASK_COUNTERS,
+  };
+}
 
-export const getListDetailsGroupedTasks = payload => ({
-  type: ActionTypes.GET_LIST_DETAILS_GROUPED_TASKS,
-  payload,
-});
+export function getCurrentListTasks(withLoader) {
+  return {
+    type: ActionTypes.GET_CURRENT_LIST_TASKS,
+    withLoader,
+  };
+}
+
+export function getCurrentListCompleteTasks() {
+  return {
+    type: ActionTypes.GET_CURRENT_LIST_COMPLETE_TASKS,
+  };
+}
+
+export function searchCurrentListTasks(searchTerm) {
+  return {
+    type: ActionTypes.SEARCH_CURRENT_LIST_TASKS,
+    searchTerm,
+  };
+}
 
 export const refreshListDetailsGroupedTasks = withLoader => ({
   type: ActionTypes.REFRESH_LIST_DETAILS_GROUPED_TASKS,

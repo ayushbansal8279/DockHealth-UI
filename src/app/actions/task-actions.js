@@ -117,18 +117,6 @@ export function getListTasksGroupedByTaskGroup(
   };
 }
 
-export function loading() {
-  return dispatch => {
-    dispatch({ type: ActionTypes.REQUEST_TASKS });
-  };
-}
-
-export function loadingCompletedTasks() {
-  return dispatch => {
-    dispatch({ type: ActionTypes.REQUEST_COMPLETED_TASKS });
-  };
-}
-
 // eslint-disable-next-line sonarjs/cognitive-complexity
 export function saveTask(newTask, shouldReloadGroups = false) {
   if (newTask.taskIdentifier) {

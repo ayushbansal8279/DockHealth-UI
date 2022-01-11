@@ -27,6 +27,11 @@ export const completedTasksIsFetchingMoreSelector = createSelector(
   ({ isFetchingMoreTasks }) => isFetchingMoreTasks,
 );
 
+export const searchTermSelector = createSelector(
+  listTasksSelector,
+  ({ searchTerm }) => searchTerm,
+);
+
 export const groupTasksSelector = createSelector(
   listTasksSelector,
   ({ groupedTasks }) => {

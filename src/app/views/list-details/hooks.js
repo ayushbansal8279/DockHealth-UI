@@ -28,6 +28,7 @@ import {
   groupTasksSelector,
   taskDetailsSortSelector,
   taskCountersSelector,
+  searchTermSelector,
 } from 'selectors/list-details-selectors';
 import {
   currentTaskListSelector,
@@ -76,7 +77,8 @@ const initializeListDetailsViewHooks = (match, history) => {
 
   const [isTourOpen, setIsTourOpen] = useState(false);
   const [tourConditionChecked, setTourConditionChecked] = useState(false);
-  const [searchValue, setSearchValue] = useState('');
+  // const [searchValue, setSearchValue] = useState('');
+  const searchValue = useSelector(searchTermSelector);
 
   const prevCurrentUser = usePrevious(currentUser);
   const prevTaskCounters = usePrevious(taskCounters);
@@ -111,19 +113,6 @@ const initializeListDetailsViewHooks = (match, history) => {
       dispatch(getListCustomFields(taskListIdentifierParam));
     }
   }, [dispatch, taskListIdentifierParam]);
-
-  const searchTasks = useCallback(
-    searchQuery => {
-      const taskStatus =
-        tabName === TaskListTabName.COMPLETE ? 'COMPLETE' : 'INCOMPLETE';
-
-      listDetailsSagaActions.fetchTasksBySearchedTerm({
-        status: taskStatus,
-        searchedTerm: searchQuery,
-      });
-    },
-    [listDetailsSagaActions, tabName],
-  );
 
   const refreshTab = useCallback(
     (withLoader = false) => {
@@ -228,16 +217,9 @@ const initializeListDetailsViewHooks = (match, history) => {
   ]);
 
   const changeSearchValue = useCallback(
-    searchQuery => {
-      setSearchValue(searchQuery);
-
-      if (searchQuery) {
-        searchTasks(searchQuery);
-      } else {
-        refreshTab(true);
-      }
-    },
-    [refreshTab, searchTasks],
+    searchQuery =>
+      dispatch(ListDetailsActions.searchCurrentListTasks(searchQuery)),
+    [dispatch],
   );
 
   const resetSort = useCallback(() => {

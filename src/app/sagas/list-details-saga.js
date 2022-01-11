@@ -36,8 +36,10 @@ import {
   listDetailsGroupsSelector,
   groupTasksSelector,
   taskDetailsSortSelector,
+  searchTermSelector,
 } from 'selectors/list-details-selectors';
 import {
+  currentTaskListTasksStatusSelector,
   currentTaskListSelector,
   currentTaskListIdentifierSelector,
 } from 'selectors/task-list-selectors';
@@ -63,8 +65,6 @@ export const DO_CREATE_TASK = 'DO_CREATE_TASK';
 export const DO_GET_TASKS_FOR_GROUP = 'DO_GET_TASKS_FOR_GROUP';
 export const DO_REASSIGN_TASKS_TO_ANOTHER_GROUP =
   'DO_REASSIGN_TASKS_TO_ANOTHER_GROUP';
-export const DO_FETCH_TASKS_BY_SEARCHED_TERM =
-  'DO_FETCH_TASKS_BY_SEARCHED_TERM';
 
 export const getTasksGroupsList = payload => ({
   type: DO_GET_TASKS_GROUPS_LIST,
@@ -100,18 +100,12 @@ export const getTasksForTaskGroups = payload => ({
   ...payload,
 });
 
-export const fetchTasksBySearchedTerm = payload => ({
-  type: DO_FETCH_TASKS_BY_SEARCHED_TERM,
-  ...payload,
-});
-
 export const ListDetailsSagaActions = {
   getTasksGroupsList,
   createTaskGroupList,
   sortTasksInGroup,
   createTask,
   getTasksForTaskGroups,
-  fetchTasksBySearchedTerm,
 };
 
 const ERROR_TYPES = {
@@ -179,46 +173,27 @@ function* doGetTasksGroupsList(payload) {
   }
 }
 
-function* doGetGroupedTasks({ payload }) {
-  const {
-    withLoader = true,
-    loadingMore = false,
-    taskListIdentifier,
-    status,
-  } = payload;
-
+function* getCurrentListTasks() {
   try {
-    const isCompletedTasksContext = status?.toLowerCase() === 'complete';
-
-    if (withLoader) {
-      yield put({
-        type: isCompletedTasksContext
-          ? ActionTypes.REQUEST_COMPLETED_TASKS
-          : ActionTypes.REQUEST_TASKS,
-      });
-    }
-
-    if (loadingMore) {
-      yield put({
-        type: ActionTypes.GET_MORE_TASKS_REQUEST,
-      });
-    }
-
-    const tasksActionType = isCompletedTasksContext
-      ? ActionTypes.GET_COMPLETED_TASKS_BY_GROUPS_SUCCESS
-      : ActionTypes.GET_TASKS_BY_GROUPS_SUCCESS;
-
+    const taskListIdentifier = yield select(currentTaskListIdentifierSelector);
     const selectedFilters = yield select(selectedFiltersInMegaFilterSelector);
-
     const sort = yield select(taskDetailsSortSelector);
+    const searchTerm = yield select(searchTermSelector);
 
     let groupedTasks;
 
-    if (!selectedFilters || isEmpty(selectedFilters)) {
+    if (searchTerm) {
+      groupedTasks = yield call(
+        searchTasksByTaskList,
+        taskListIdentifier,
+        searchTerm,
+        TaskStatus.INCOMPLETE,
+      );
+    } else if (!selectedFilters || isEmpty(selectedFilters)) {
       groupedTasks = yield call(
         getListTasksGroupedByTaskGroup,
         taskListIdentifier,
-        status,
+        TaskStatus.INCOMPLETE,
         sort,
         0,
       );
@@ -226,7 +201,7 @@ function* doGetGroupedTasks({ payload }) {
       groupedTasks = yield call(
         TaskListApi.getFilteredTasksForList,
         taskListIdentifier,
-        status,
+        TaskStatus.INCOMPLETE,
         sort,
         selectedFilters,
       );
@@ -237,35 +212,66 @@ function* doGetGroupedTasks({ payload }) {
     }
 
     yield put({
-      type: tasksActionType,
-      groupedTasks,
-      loadingMore,
-      taskListIdentifier,
+      type: ActionTypes.GET_CURRENT_LIST_TASKS_SUCCESS,
+      groupedTasks: groupedTasks.taskGroups,
     });
   } catch (error) {
     yield put({ type: ActionTypes.TASK_GROUP_LIST_FAILURE });
   }
 }
 
+function* getCurrentListCompleteTasks() {
+  try {
+    const taskListIdentifier = yield select(currentTaskListIdentifierSelector);
+    const selectedFilters = yield select(selectedFiltersInMegaFilterSelector);
+    const sort = yield select(taskDetailsSortSelector);
+    const searchTerm = yield select(searchTermSelector);
+
+    let groupedTasks;
+
+    if (searchTerm) {
+      groupedTasks = yield call(
+        searchTasksByTaskList,
+        taskListIdentifier,
+        searchTerm,
+        TaskStatus.COMPLETE,
+      );
+    } else if (!selectedFilters || isEmpty(selectedFilters)) {
+      groupedTasks = yield call(
+        getListTasksGroupedByTaskGroup,
+        taskListIdentifier,
+        TaskStatus.COMPLETE,
+        sort,
+        0,
+      );
+    } else {
+      groupedTasks = yield call(
+        TaskListApi.getFilteredTasksForList,
+        taskListIdentifier,
+        TaskStatus.COMPLETE,
+        sort,
+        selectedFilters,
+      );
+      yield put({
+        type: ActionTypes.GET_CURRENT_TASK_LIST_FILTER_OPTIONS_SUCCESS,
+        filters: groupedTasks.taskFilterOptions,
+      });
+    }
+
+    yield put({
+      type: ActionTypes.GET_CURRENT_LIST_COMPLETE_TASKS_SUCCESS,
+      groupedTasks: groupedTasks.taskGroups,
+    });
+  } catch {
+    yield put({ type: ActionTypes.GET_CURRENT_LIST_COMPLETE_TASKS_FAILURE });
+  }
+}
+
 function* doRefreshGroupedTasks({ payload }) {
   try {
     const { withLoader = true } = payload || {};
-    const { taskListIdentifier, tabName } = yield select(
-      locationParametersSelector,
-    );
 
-    const status =
-      tabName?.toLowerCase() === 'complete'
-        ? TaskStatus.COMPLETE
-        : TaskStatus.INCOMPLETE;
-
-    yield put(
-      ListDetailsActions.getListDetailsGroupedTasks({
-        taskListIdentifier,
-        status,
-        withLoader,
-      }),
-    );
+    yield put(ListDetailsActions.getCurrentListTasks(withLoader));
   } catch (error) {
     console.log(error);
   }
@@ -459,14 +465,9 @@ function* doReassignTasksToAnotherGroup(payload) {
 
 function* doOnEnterListDetails() {
   try {
-    const { taskListIdentifier, taskIdentifier, tabName } = yield select(
-      locationParametersSelector,
-    );
-
-    const status =
-      tabName?.toLowerCase() === 'complete'
-        ? TaskStatus.COMPLETE
-        : TaskStatus.INCOMPLETE;
+    const { taskIdentifier } = yield select(locationParametersSelector);
+    const taskListIdentifier = yield select(currentTaskListIdentifierSelector);
+    const status = yield select(currentTaskListTasksStatusSelector);
 
     yield put({ type: ActionTypes.TASK_GROUP_LIST_REQUEST });
 
@@ -489,12 +490,9 @@ function* doOnEnterListDetails() {
         status === TaskStatus.INCOMPLETE &&
           call(doGetTasksGroupsList, { taskListIdentifier }),
         put(ListDetailsActions.getListDetailsTaskCounters(taskListIdentifier)),
-        put(
-          ListDetailsActions.getListDetailsGroupedTasks({
-            taskListIdentifier,
-            status,
-          }),
-        ),
+        status === TaskStatus.INCOMPLETE
+          ? put(ListDetailsActions.getCurrentListTasks())
+          : put(ListDetailsActions.getCurrentListCompleteTasks()),
       ]);
     }
 
@@ -577,37 +575,18 @@ function* doCreateTask(payload) {
   }
 }
 
-function* doFetchTasksBySearchedTerm(payload) {
+function* searchCurrentListTasks() {
   try {
-    const { status, searchedTerm } = payload;
-    const { taskListIdentifier } = yield select(locationParametersSelector);
-
+    const status = yield select(currentTaskListTasksStatusSelector);
     onSearchChanged();
 
-    yield put({
-      type:
-        status === 'INCOMPLETE'
-          ? ActionTypes.REQUEST_TASKS
-          : ActionTypes.REQUEST_COMPLETED_TASKS,
-    });
-    const groupedTasks = yield call(
-      searchTasksByTaskList,
-      taskListIdentifier,
-      searchedTerm,
-      status,
-    );
-
-    const action =
-      status === 'INCOMPLETE'
-        ? ActionTypes.GET_TASKS_BY_GROUPS_SUCCESS
-        : ActionTypes.GET_COMPLETED_TASKS_BY_GROUPS_SUCCESS;
-
-    yield put({
-      type: action,
-      groupedTasks,
-    });
+    if (status === TaskStatus.INCOMPLETE) {
+      yield put(ListDetailsActions.getCurrentListTasks());
+    } else {
+      yield put(ListDetailsActions.getCurrentListCompleteTasks());
+    }
   } catch (error) {
-    yield put({ type: ActionTypes.TASK_GROUP_LIST_FAILURE });
+    yield put(showGlobalErrorAlert());
   }
 }
 
@@ -841,9 +820,10 @@ export default function* watchTasksGroupsList() {
     ActionTypes.GET_LIST_DETAILS_TASK_COUNTERS,
     doGetListDetailsCounters,
   );
+  yield takeLatest(ActionTypes.GET_CURRENT_LIST_TASKS, getCurrentListTasks);
   yield takeLatest(
-    ActionTypes.GET_LIST_DETAILS_GROUPED_TASKS,
-    doGetGroupedTasks,
+    ActionTypes.GET_CURRENT_LIST_COMPLETE_TASKS,
+    getCurrentListCompleteTasks,
   );
   yield takeLatest(
     ActionTypes.REFRESH_LIST_DETAILS_GROUPED_TASKS,
@@ -869,8 +849,8 @@ export default function* watchTasksGroupsList() {
   yield takeEvery(DO_GET_TASKS_FOR_GROUP, doGetTasksForTaskGroup);
   yield debounce(
     500,
-    DO_FETCH_TASKS_BY_SEARCHED_TERM,
-    doFetchTasksBySearchedTerm,
+    ActionTypes.SEARCH_CURRENT_LIST_TASKS,
+    searchCurrentListTasks,
   );
   yield takeEvery(
     ActionTypes.UPDATE_CUSTOM_LIST_FIELDS_SETUP,
