@@ -35,6 +35,12 @@ export function searchCurrentListTasks(searchTerm) {
   };
 }
 
+export function getCurrentTaskListFilterOptions() {
+  return {
+    type: ActionTypes.GET_CURRENT_TASK_LIST_FILTER_OPTIONS,
+  };
+}
+
 export const refreshListDetailsGroupedTasks = withLoader => ({
   type: ActionTypes.REFRESH_LIST_DETAILS_GROUPED_TASKS,
   payload: {

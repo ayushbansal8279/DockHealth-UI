@@ -267,6 +267,26 @@ function* getCurrentListCompleteTasks() {
   }
 }
 
+function* getCurrentTaskListFilterOptions() {
+  try {
+    const taskListIdentifier = yield select(currentTaskListIdentifierSelector);
+    const status = yield select(currentTaskListTasksStatusSelector);
+    const filters = yield call(
+      TaskListApi.getTaskListFilterOptions,
+      taskListIdentifier,
+      status,
+    );
+    yield put({
+      type: ActionTypes.GET_CURRENT_TASK_LIST_FILTER_OPTIONS_SUCCESS,
+      filters,
+    });
+  } catch {
+    yield put({
+      type: ActionTypes.GET_CURRENT_TASK_LIST_FILTER_OPTIONS_SUCCESS,
+    });
+  }
+}
+
 function* doRefreshGroupedTasks({ payload }) {
   try {
     const { withLoader = true } = payload || {};
@@ -862,4 +882,8 @@ export default function* watchTasksGroupsList() {
     changeTaskListGroupName,
   );
   yield takeEvery(ActionTypes.REORDER_TASK_LIST_GROUPS, reorderTaskListGroups);
+  yield takeEvery(
+    ActionTypes.GET_CURRENT_TASK_LIST_FILTER_OPTIONS,
+    getCurrentTaskListFilterOptions,
+  );
 }

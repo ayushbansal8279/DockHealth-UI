@@ -14,7 +14,6 @@ import {
   initializeTaskListState,
   updateUserListViewSetup,
   updateColumnOnListPreferences,
-  getCurrentTaskListFilterOptions,
   clearTaskListState,
 } from 'actions/task-list-actions';
 import { updateOrganizationCustomFields } from 'actions/organization-actions';
@@ -44,7 +43,6 @@ import * as TaskActions from 'actions/task-actions';
 import * as ListDetailsActions from 'actions/list-details-actions';
 import { ListDetailsSagaActions } from 'sagas/list-details-saga';
 import * as ModalActions from 'modal/actions';
-import { getListCustomFields } from 'actions/list-details-actions';
 import * as UserAuthApi from 'api/user-auth-api';
 import { getViewTypeFromQueryString } from 'helpers/view-type-helper';
 
@@ -110,13 +108,13 @@ const initializeListDetailsViewHooks = (match, history) => {
 
   useEffect(() => {
     if (taskListIdentifierParam) {
-      dispatch(getListCustomFields(taskListIdentifierParam));
+      dispatch(ListDetailsActions.getListCustomFields(taskListIdentifierParam));
     }
   }, [dispatch, taskListIdentifierParam]);
 
   const refreshTab = useCallback(
     (withLoader = false) => {
-      dispatch(getCurrentTaskListFilterOptions());
+      dispatch(ListDetailsActions.getCurrentTaskListFilterOptions());
       listDetailsActions.getListDetailsTaskCounters(taskListIdentifierParam);
       listDetailsActions.refreshListDetailsGroupedTasks(withLoader);
     },
@@ -133,7 +131,7 @@ const initializeListDetailsViewHooks = (match, history) => {
   }, []);
 
   const refreshFilters = useCallback(() => {
-    dispatch(getCurrentTaskListFilterOptions());
+    dispatch(ListDetailsActions.getCurrentTaskListFilterOptions());
   }, [dispatch]);
 
   const refreshAccessToken = useCallback(user => {
