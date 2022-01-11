@@ -86,14 +86,11 @@ const CustomFieldTextEditor = ({
     [dispatch, fieldsGroupKey.length, getValues, name, taskIdentifier],
   );
 
-  const handleBlur = useCallback(
-    newState => {
-      const { rawText } = convertFromEditorStateToOutput(newState, false);
-      updateCustomFields(rawText);
-      setIsFocused(false);
-    },
-    [updateCustomFields],
-  );
+  const handleBlur = useCallback(() => {
+    const { rawText } = convertFromEditorStateToOutput(state, false);
+    updateCustomFields(rawText);
+    setIsFocused(false);
+  }, [state, updateCustomFields]);
 
   return (
     <CustomTextEditor
@@ -107,9 +104,7 @@ const CustomFieldTextEditor = ({
           readOnly={readOnly}
           placeholder={placeholder}
           state={state}
-          onChange={data => {
-            setState(data);
-          }}
+          onChange={setState}
           onBlur={handleBlur}
           disableMentions
           oneline
