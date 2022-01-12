@@ -147,3 +147,8 @@ export const reassignTasksToAnotherGroup = ({ destination, source }) => ({
 export const getTasksGroupsList = () => ({
   type: ActionTypes.GET_TASKS_GROUPS_LIST,
 });
+
+export const getTasksForTaskGroups = payload => ({
+  type: ActionTypes.GET_TASKS_FOR_TASK_GROUP,
+  ...payload,
+});

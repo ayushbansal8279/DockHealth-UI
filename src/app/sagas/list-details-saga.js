@@ -56,7 +56,6 @@ import store from '../store';
 
 export const DO_CREATE_TASKS_GROUP_LIST = 'DO_CREATE_TASKS_GROUP_LIST';
 export const DO_CREATE_TASK = 'DO_CREATE_TASK';
-export const DO_GET_TASKS_FOR_GROUP = 'DO_GET_TASKS_FOR_GROUP';
 
 export const createTaskGroupList = payload => ({
   type: DO_CREATE_TASKS_GROUP_LIST,
@@ -68,15 +67,9 @@ export const createTask = payload => ({
   ...payload,
 });
 
-export const getTasksForTaskGroups = payload => ({
-  type: DO_GET_TASKS_FOR_GROUP,
-  ...payload,
-});
-
 export const ListDetailsSagaActions = {
   createTaskGroupList,
   createTask,
-  getTasksForTaskGroups,
 };
 
 const ERROR_TYPES = {
@@ -280,7 +273,7 @@ function* doCreateTasksGroupList(payload) {
 }
 
 // eslint-disable-next-line consistent-return
-function* doGetTasksForTaskGroup(payload) {
+function* getTasksForTaskGroups(payload) {
   try {
     const {
       taskGroupIdentifier,
@@ -528,7 +521,7 @@ function* doCreateTask(payload) {
         if (!taskGroupIdentifier) {
           yield put(ListDetailsActions.refreshListDetailsGroupedTasks(true));
         } else if (!fetchedTasksGroups[taskGroupIdentifier]) {
-          yield call(doGetTasksForTaskGroup, {
+          yield call(getTasksForTaskGroups, {
             taskGroupIdentifier,
             status: 'INCOMPLETE',
           });
@@ -652,7 +645,7 @@ function* applyTaskTemplate({
       });
     } else {
       yield put(
-        getTasksForTaskGroups({
+        ListDetailsActions.getTasksForTaskGroups({
           taskGroupIdentifier,
           status: 'INCOMPLETE',
           refresh: true,
@@ -817,7 +810,7 @@ export default function* watchTasksGroupsList() {
     ActionTypes.REASSIGN_TASKS_TO_ANOTHER_GROUP,
     reassignTasksToAnotherGroup,
   );
-  yield takeEvery(DO_GET_TASKS_FOR_GROUP, doGetTasksForTaskGroup);
+  yield takeEvery(ActionTypes.GET_TASKS_FOR_TASK_GROUP, getTasksForTaskGroups);
   yield debounce(
     500,
     ActionTypes.SEARCH_CURRENT_LIST_TASKS,

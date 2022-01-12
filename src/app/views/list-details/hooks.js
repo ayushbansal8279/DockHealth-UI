@@ -289,9 +289,9 @@ const initializeListDetailsViewHooks = (match, history) => {
         viewMode,
         refresh,
       };
-      listDetailsSagaActions.getTasksForTaskGroups(payload);
+      dispatch(ListDetailsActions.getTasksForTaskGroups(payload));
     },
-    [listDetailsSagaActions, sort],
+    [dispatch, sort],
   );
 
   const loadMoreTasksForList = useCallback(
