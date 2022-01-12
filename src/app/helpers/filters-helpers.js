@@ -98,58 +98,68 @@ export const checkIfTaskMatchesFilters = (task, filters) => {
   }
 
   return (
-    (!filters.priorityOptions ||
-      isEmpty(filters.priorityOptions) ||
-      filters.priorityOptions.some(
+    ((!filters.priorityOptions ||
+      !filters.priorityOptions.options ||
+      isEmpty(filters.priorityOptions.options) ||
+      filters.priorityOptions.options.some(
         priorityOption =>
           priorityOption === priority ||
           (priorityOption === 'LOW' && !priority),
       )) &&
-    (!filters.workflowStatusOptions ||
-      isEmpty(filters.workflowStatusOptions) ||
-      filters.workflowStatusOptions.some(
-        workflowStatusOption =>
-          workflowStatusOption === workflowStatus ||
-          (workflowStatusOption === 'NO_STATUS' && !workflowStatus),
-      )) &&
-    (!filters.assignedTo ||
-      isEmpty(filters.assignedTo) ||
-      filters.assignedTo.some(
-        assignedToOption =>
-          ((!assignedToUsers || isEmpty(assignedToUsers)) &&
-            assignedToOption === 'UNASSIGNED') ||
-          assignedToUsers.some(
-            ({ userIdentifier }) => userIdentifier === assignedToOption,
+      (!filters.workflowStatusOptions ||
+        !filters.workflowStatusOptions.options ||
+        isEmpty(filters.workflowStatusOptions.options) ||
+        filters.workflowStatusOptions.options.some(
+          workflowStatusOption =>
+            workflowStatusOption === workflowStatus ||
+            (workflowStatusOption === 'NO_STATUS' && !workflowStatus),
+        )) &&
+      (!filters.assignedTo ||
+        !filters.assignedTo.options ||
+        isEmpty(filters.assignedTo.options) ||
+        filters.assignedTo.options.some(
+          assignedToOption =>
+            ((!assignedToUsers || isEmpty(assignedToUsers)) &&
+              assignedToOption === 'UNASSIGNED') ||
+            assignedToUsers.some(
+              ({ userIdentifier }) => userIdentifier === assignedToOption,
+            ),
+        )) &&
+      (!filters.assignedBy ||
+        !filters.assignedBy.options ||
+        isEmpty(filters.assignedBy.options) ||
+        filters.assignedBy.options.some(
+          assignedByOption =>
+            assignedByOption === assignedBy?.userIdentifier ||
+            (assignedByOption === 'UNASSIGNED' && !assignedBy),
+        )) &&
+      (!filters.patients ||
+        !filters.patients.options ||
+        isEmpty(filters.patients.options) ||
+        filters.patients.options.some(
+          patientOption =>
+            patientOption === patient?.patientIdentifier ||
+            (patientOption === 'UNASSIGNED' && !patient),
+        )) &&
+      (!filters.taskLists ||
+        !filters.taskLists.options ||
+        isEmpty(filters.taskLists.options) ||
+        filters.taskLists.options.some(
+          taskListOption => taskListOption === taskList?.taskListIdentifier,
+        )) &&
+      (!filters.labels ||
+        !filters.labels.options ||
+        isEmpty(filters.labels.options) ||
+        filters.labels.options.some(labelOption =>
+          labels?.some(
+            ({ labelIdentifier }) => labelIdentifier === labelOption,
           ),
-      )) &&
-    (!filters.assignedBy ||
-      isEmpty(filters.assignedBy) ||
-      filters.assignedBy.some(
-        assignedByOption =>
-          assignedByOption === assignedBy?.userIdentifier ||
-          (assignedByOption === 'UNASSIGNED' && !assignedBy),
-      )) &&
-    (!filters.patients ||
-      isEmpty(filters.patients) ||
-      filters.patients.some(
-        patientOption =>
-          patientOption === patient?.patientIdentifier ||
-          (patientOption === 'UNASSIGNED' && !patient),
-      )) &&
-    (!filters.taskLists ||
-      isEmpty(filters.taskLists) ||
-      filters.taskLists.some(
-        taskListOption => taskListOption === taskList?.taskListIdentifier,
-      )) &&
-    (!filters.labels ||
-      isEmpty(filters.labels) ||
-      filters.labels.some(labelOption =>
-        labels?.some(({ labelIdentifier }) => labelIdentifier === labelOption),
-      )) &&
+        )) &&
+      !filters.taskDueDateOptions) ||
     checkIfMatchesDueDateCriteria(
-      filters.customDueDateStart,
-      filters.customDueDateEnd,
-      filters.dueDateOptions,
+      filters.taskDueDateOptions.dateStart,
+      filters.taskDueDateOptions.dateEnd,
+      filters.taskDueDateOptions.options,
       dueDate,
     )
   );
