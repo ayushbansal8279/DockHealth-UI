@@ -1,5 +1,7 @@
 import React from 'react';
+import { compose } from 'ramda';
 import { TaskListTabName } from 'helpers/tasklist-helpers';
+import * as ListDetailsActions from 'actions/list-details-actions';
 import TaskDrawer from 'components/task-drawer/TaskDrawer/TaskDrawer';
 import BulkEditSection from 'components/tasklist/BulkEditSection/BulkEditSection';
 import { ViewType } from 'helpers/view-type-helper';
@@ -26,7 +28,6 @@ const ListDetailsView = props => {
     isCompletedTasksFetching,
     isFetching,
     isTourOpen,
-    listDetailsActions,
     loadMoreTasksForList,
     loadTasksForTaskGroup,
     openedTasks,
@@ -44,6 +45,7 @@ const ListDetailsView = props => {
     setDisplayListPreferences,
     setDisplayColumnPreferences,
     viewType,
+    dispatch,
   } = initializeListDetailsViewHooks(match, history);
 
   const additionalToolbarOptions = [
@@ -114,7 +116,10 @@ const ListDetailsView = props => {
                   listUniqueKey={taskListIdentifier}
                   loadMoreTasksForList={loadMoreTasksForList}
                   sort={sort}
-                  onSortChange={listDetailsActions.sortListDetailsTasks}
+                  onSortChange={compose(
+                    dispatch,
+                    ListDetailsActions.sortListDetailsTasks,
+                  )}
                 />
               ) : (
                 <OpenedTasksView
@@ -127,7 +132,10 @@ const ListDetailsView = props => {
                   updateWorkflowStatus={handleUpdateWorkflowStatus}
                   searchValue={searchValue}
                   sort={sort}
-                  onSortChange={listDetailsActions.sortListDetailsTasks}
+                  onSortChange={compose(
+                    dispatch,
+                    ListDetailsActions.sortListDetailsTasks,
+                  )}
                   listUniqueKey={taskListIdentifier}
                   taskCounters={taskCounters}
                   loadTasksForTaskGroup={loadTasksForTaskGroup}

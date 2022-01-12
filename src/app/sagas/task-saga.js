@@ -6,7 +6,6 @@ import * as ActionTypes from 'actions/action-types';
 import * as TaskApi from 'api/task-api';
 import * as TaskActions from 'actions/task-actions';
 import * as ListDetailsActions from 'actions/list-details-actions';
-import { ListDetailsSagaActions } from 'sagas/list-details-saga';
 import { getTemplateBundle } from 'api/template-bundle-api';
 import { TASK_DISAPPEAR_DELAY } from 'helpers/task-update-helper';
 import * as TemplateBundleActions from 'actions/template-bundle-actions';
@@ -132,12 +131,7 @@ function* refreshTemplateBundle({ templateBundleIdentifier }) {
         templateBundle.taskListIdentifier,
       ),
     );
-    yield put(
-      ListDetailsSagaActions.getTasksGroupsList({
-        taskListIdentifier: templateBundle.taskListIdentifier,
-        shouldSetRequestState: false,
-      }),
-    );
+    yield put(ListDetailsActions.getTasksGroupsList());
     if (!checkIfHasIncompleteTasks(templateBundle.tasks)) {
       yield delay(TASK_DISAPPEAR_DELAY);
       yield put(

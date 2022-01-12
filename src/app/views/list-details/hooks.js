@@ -41,7 +41,7 @@ import { selectedFiltersInMegaFilterSelector } from 'selectors/mega-filter-selec
 import { useColumnsConfig } from 'context-api/ColumnsConfigContext';
 import * as TaskActions from 'actions/task-actions';
 import * as ListDetailsActions from 'actions/list-details-actions';
-import { ListDetailsSagaActions } from 'sagas/list-details-saga';
+import { createTask } from 'sagas/list-details-saga';
 import * as ModalActions from 'modal/actions';
 import * as UserAuthApi from 'api/user-auth-api';
 import { getViewTypeFromQueryString } from 'helpers/view-type-helper';
@@ -69,9 +69,7 @@ const initializeListDetailsViewHooks = (match, history) => {
   const selectedFilters = useSelector(selectedFiltersInMegaFilterSelector);
 
   const actions = useActions(TaskActions);
-  const listDetailsSagaActions = useActions(ListDetailsSagaActions);
   const modalActions = useActions(ModalActions);
-  const listDetailsActions = useActions(ListDetailsActions);
 
   const [isTourOpen, setIsTourOpen] = useState(false);
   const [tourConditionChecked, setTourConditionChecked] = useState(false);
@@ -115,10 +113,12 @@ const initializeListDetailsViewHooks = (match, history) => {
   const refreshTab = useCallback(
     (withLoader = false) => {
       dispatch(ListDetailsActions.getCurrentTaskListFilterOptions());
-      listDetailsActions.getListDetailsTaskCounters(taskListIdentifierParam);
-      listDetailsActions.refreshListDetailsGroupedTasks(withLoader);
+      dispatch(
+        ListDetailsActions.getListDetailsTaskCounters(taskListIdentifierParam),
+      );
+      dispatch(ListDetailsActions.refreshListDetailsGroupedTasks(withLoader));
     },
-    [dispatch, listDetailsActions, taskListIdentifierParam],
+    [dispatch, taskListIdentifierParam],
   );
 
   const openTourModal = useCallback(() => {
@@ -172,10 +172,10 @@ const initializeListDetailsViewHooks = (match, history) => {
           autoOpenDrawer: taskCounters?.incomplete === 0,
         };
 
-        listDetailsSagaActions.createTask(payload);
+        dispatch(createTask(payload));
       }
     },
-    [listDetailsSagaActions, taskCounters],
+    [dispatch, taskCounters],
   );
 
   const refreshTabAfterTaskUpdate = useCallback(
@@ -196,23 +196,13 @@ const initializeListDetailsViewHooks = (match, history) => {
     const { params } = match;
     const { taskListIdentifier } = params;
 
-    listDetailsActions.getListDetailsTaskCounters(taskListIdentifier);
-    listDetailsSagaActions.getTasksGroupsList({
-      taskListIdentifier,
-      shouldSetRequestState: false,
-    });
+    dispatch(ListDetailsActions.getListDetailsTaskCounters(taskListIdentifier));
+    dispatch(ListDetailsActions.getTasksGroupsList());
     refreshFilters();
     if (selectedFilters && !isEmpty(selectedFilters)) {
       refreshTab();
     }
-  }, [
-    listDetailsActions,
-    listDetailsSagaActions,
-    match,
-    refreshFilters,
-    refreshTab,
-    selectedFilters,
-  ]);
+  }, [dispatch, match, refreshFilters, refreshTab, selectedFilters]);
 
   const changeSearchValue = useCallback(
     searchQuery =>
@@ -221,8 +211,8 @@ const initializeListDetailsViewHooks = (match, history) => {
   );
 
   const resetSort = useCallback(() => {
-    listDetailsActions.sortListDetailsTasks(null, null);
-  }, [listDetailsActions]);
+    dispatch(ListDetailsActions.sortListDetailsTasks(null, null));
+  }, [dispatch]);
 
   const invokeToggleCompleteAction = useCallback(
     task => {
@@ -233,23 +223,15 @@ const initializeListDetailsViewHooks = (match, history) => {
         .toggleCompleteTask(task, currentUser)
         .then(() => {
           setTimeout(() => {
-            listDetailsActions.getListDetailsTaskCounters(taskListIdentifier);
-            listDetailsSagaActions.getTasksGroupsList({
-              taskListIdentifier,
-              shouldSetRequestState: false,
-            });
+            dispatch(
+              ListDetailsActions.getListDetailsTaskCounters(taskListIdentifier),
+            );
+            dispatch(ListDetailsActions.getTasksGroupsList());
           }, TASK_DISAPPEAR_DELAY);
         })
         .catch(() => refreshTab());
     },
-    [
-      actions,
-      currentUser,
-      listDetailsActions,
-      listDetailsSagaActions,
-      match,
-      refreshTab,
-    ],
+    [actions, currentUser, dispatch, match, refreshTab],
   );
 
   const handleTaskUpdate = useCallback(
@@ -559,7 +541,6 @@ const initializeListDetailsViewHooks = (match, history) => {
     isCompletedTasksFetching,
     isFetching,
     isTourOpen,
-    listDetailsActions,
     loadMoreTasksForList,
     loadTasksForTaskGroup,
     members,
@@ -580,6 +561,7 @@ const initializeListDetailsViewHooks = (match, history) => {
     setDisplayColumnPreferences,
     viewType,
     refreshFilters,
+    dispatch,
   };
 };
 
