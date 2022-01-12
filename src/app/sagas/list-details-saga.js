@@ -220,7 +220,7 @@ function* getCurrentListCompleteTasks() {
 
     yield put({
       type: ActionTypes.GET_CURRENT_LIST_COMPLETE_TASKS_SUCCESS,
-      groupedTasks: groupedTasks.taskGroups,
+      groupedTasks,
     });
   } catch {
     yield put({ type: ActionTypes.GET_CURRENT_LIST_COMPLETE_TASKS_FAILURE });
