@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import Tooltip from 'components/common/Tooltip/Tooltip';
 import { CustomFieldWidthConfig, FieldType } from 'helpers/field-type-helpers';
 import TextEditor from 'components/common/TextEditor/TextEditor';
@@ -7,6 +7,7 @@ import { useMentionsEditorState } from 'components/common/TextEditor/use-mention
 import { StandardTaskItemCell } from './styled';
 
 const TaskItemText = ({ value = '', onClick }) => {
+  const [textValue, setTextValue] = useState(value);
   const [state, setState] = useMentionsEditorState(
     convertToEditorState({
       rawText: value,
@@ -15,6 +16,20 @@ const TaskItemText = ({ value = '', onClick }) => {
       handleRichText: false,
     }),
   );
+
+  useEffect(() => {
+    if (textValue !== value) {
+      setState(
+        convertToEditorState({
+          rawText: value,
+          tokenizedText: value,
+          mentions: [],
+          handleRichText: false,
+        }),
+      );
+      setTextValue(value);
+    }
+  }, [setState, textValue, value]);
 
   return (
     <StandardTaskItemCell
