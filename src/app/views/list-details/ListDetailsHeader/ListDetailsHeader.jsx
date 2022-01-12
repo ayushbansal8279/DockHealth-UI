@@ -12,7 +12,7 @@ import {
 } from 'selectors/task-list-selectors';
 import { openModal } from 'modal/actions';
 import { getMembersByTaskListId } from 'actions/task-list-actions';
-import { isEmpty, splitAt } from 'ramda';
+import { splitAt } from 'ramda';
 import {
   filterListDetailsTasks,
   getCurrentTaskListFilterOptions,
@@ -57,9 +57,7 @@ const ListDetailsHeader = props => {
   const [shownUsers, hiddenUsers] = splitAt(4, sortedUsers);
 
   const handleFilterOpen = () => {
-    if (!selectedFilters || isEmpty(selectedFilters)) {
-      dispatch(getCurrentTaskListFilterOptions());
-    }
+    dispatch(getCurrentTaskListFilterOptions());
   };
 
   const handleFilterSelect = newFilters => {

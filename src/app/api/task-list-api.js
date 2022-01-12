@@ -361,12 +361,33 @@ export function updateUserCustomFieldsOptionsListViewSetup(
     .then(({ data }) => data);
 }
 
-export function getTaskListFilterOptions(taskListIdentifier, status) {
-  return axios
-    .get(`task/filter/filterOptionsForTaskList/${taskListIdentifier}`, {
-      params: { status },
-    })
-    .then(({ data }) => mapFilterOptions(data));
+export function getTaskListFilterOptions(
+  taskListIdentifier,
+  status,
+  selectedFilters,
+) {
+  let request;
+  if (selectedFilters) {
+    request = axios
+      .post(
+        `task/filter/filterSpecificTasksByCriteria/${taskListIdentifier}?includeOptions=true`,
+        mapSelectedOptionsToRequestPayload(selectedFilters),
+        {
+          params: {
+            status,
+          },
+        },
+      )
+      .then(({ data }) => data.taskFilterOptions);
+  } else {
+    request = axios
+      .get(`task/filter/filterOptionsForTaskList/${taskListIdentifier}`, {
+        params: { status },
+      })
+      .then(({ data }) => data);
+  }
+
+  return request.then(responseFilters => mapFilterOptions(responseFilters));
 }
 
 export function getFilteredTasksForList(
@@ -391,6 +412,65 @@ export function getFilteredTasksForList(
       ...data,
       taskFilterOptions: mapFilterOptions(data.taskFilterOptions),
     }))
+    .catch(error => {
+      throw error;
+    });
+}
+
+export function searchTasksByTaskList(taskListIdentifier, searchTerm, status) {
+  return axios
+    .get(
+      `/task/searchTasksByTaskList/${taskListIdentifier}?searchTerm=${searchTerm}&status=${status}`,
+    )
+    .then(({ data }) => data);
+}
+
+export function getTasksForTaskListByTaskGroup(
+  taskListIdentifier,
+  taskGroupIdentifier,
+  status,
+  startPosition = 0,
+  endPosition = 0,
+  sort,
+  viewMode,
+) {
+  return axios
+    .get(
+      `/task/findListTasksByTaskGroup/${taskListIdentifier}/${taskGroupIdentifier}`,
+      {
+        params: {
+          status,
+          startPosition,
+          endPosition,
+          sortBy: sort?.key || undefined,
+          sortDirection: sort?.order || undefined,
+          viewMode: viewMode || undefined,
+        },
+      },
+    )
+    .then(({ data }) => data);
+}
+
+export function getListTasksGroupedByTaskGroup(
+  taskListIdentifier,
+  status = 'INCOMPLETE',
+  sortBy,
+  startPosition = 0,
+  endPosition = 0,
+  viewMode,
+) {
+  return axios
+    .get(`task/findListTasksGroupedByTaskGroup/${taskListIdentifier}`, {
+      params: {
+        status,
+        startPosition,
+        endPosition,
+        sortBy: sortBy?.key || undefined,
+        sortDirection: sortBy?.order || undefined,
+        viewMode: viewMode || undefined,
+      },
+    })
+    .then(response => response?.data)
     .catch(error => {
       throw error;
     });

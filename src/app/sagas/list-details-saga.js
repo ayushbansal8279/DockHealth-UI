@@ -18,10 +18,7 @@ import {
 import {
   addTask as createTaskApi,
   reorderTasksInGroup,
-  getListTasksGroupedByTaskGroup,
   reassignTasksToAnotherGroup as reassignTasksToAnotherGroupApi,
-  getTasksForTaskListByTaskGroup,
-  searchTasksByTaskList,
 } from 'api/task-api';
 import * as ListDetailsApi from 'api/list-details-api';
 import * as TemplateBundleApi from 'api/template-bundle-api';
@@ -184,14 +181,14 @@ function* getCurrentListTasks() {
 
     if (searchTerm) {
       groupedTasks = yield call(
-        searchTasksByTaskList,
+        TaskListApi.searchTasksByTaskList,
         taskListIdentifier,
         searchTerm,
         TaskStatus.INCOMPLETE,
       );
     } else if (!selectedFilters || isEmpty(selectedFilters)) {
       groupedTasks = yield call(
-        getListTasksGroupedByTaskGroup,
+        TaskListApi.getListTasksGroupedByTaskGroup,
         taskListIdentifier,
         TaskStatus.INCOMPLETE,
         sort,
@@ -205,10 +202,6 @@ function* getCurrentListTasks() {
         sort,
         selectedFilters,
       );
-      yield put({
-        type: ActionTypes.GET_CURRENT_TASK_LIST_FILTER_OPTIONS_SUCCESS,
-        filters: groupedTasks.taskFilterOptions,
-      });
     }
 
     yield put({
@@ -231,14 +224,14 @@ function* getCurrentListCompleteTasks() {
 
     if (searchTerm) {
       groupedTasks = yield call(
-        searchTasksByTaskList,
+        TaskListApi.searchTasksByTaskList,
         taskListIdentifier,
         searchTerm,
         TaskStatus.COMPLETE,
       );
     } else if (!selectedFilters || isEmpty(selectedFilters)) {
       groupedTasks = yield call(
-        getListTasksGroupedByTaskGroup,
+        TaskListApi.getListTasksGroupedByTaskGroup,
         taskListIdentifier,
         TaskStatus.COMPLETE,
         sort,
@@ -252,10 +245,6 @@ function* getCurrentListCompleteTasks() {
         sort,
         selectedFilters,
       );
-      yield put({
-        type: ActionTypes.GET_CURRENT_TASK_LIST_FILTER_OPTIONS_SUCCESS,
-        filters: groupedTasks.taskFilterOptions,
-      });
     }
 
     yield put({
@@ -271,10 +260,14 @@ function* getCurrentTaskListFilterOptions() {
   try {
     const taskListIdentifier = yield select(currentTaskListIdentifierSelector);
     const status = yield select(currentTaskListTasksStatusSelector);
+
+    const currentFilters = yield select(selectedFiltersInMegaFilterSelector);
+
     const filters = yield call(
       TaskListApi.getTaskListFilterOptions,
       taskListIdentifier,
       status,
+      currentFilters,
     );
     yield put({
       type: ActionTypes.GET_CURRENT_TASK_LIST_FILTER_OPTIONS_SUCCESS,
@@ -287,11 +280,16 @@ function* getCurrentTaskListFilterOptions() {
   }
 }
 
-function* doRefreshGroupedTasks({ payload }) {
+function* refreshGroupedTasks({ payload }) {
   try {
     const { withLoader = true } = payload || {};
+    const status = yield select(currentTaskListTasksStatusSelector);
 
-    yield put(ListDetailsActions.getCurrentListTasks(withLoader));
+    if (status === TaskStatus.INCOMPLETE) {
+      yield put(ListDetailsActions.getCurrentListTasks(withLoader));
+    } else {
+      yield put(ListDetailsActions.getCurrentListCompleteTasks());
+    }
   } catch (error) {
     console.log(error);
   }
@@ -335,7 +333,7 @@ function* doGetTasksForTaskGroup(payload) {
     });
 
     const groupOfTasks = yield call(
-      getTasksForTaskListByTaskGroup,
+      TaskListApi.getTasksForTaskListByTaskGroup,
       taskListIdentifier,
       taskGroupIdentifier,
       status,
@@ -600,17 +598,20 @@ function* searchCurrentListTasks() {
     const status = yield select(currentTaskListTasksStatusSelector);
     onSearchChanged();
 
-    if (status === TaskStatus.INCOMPLETE) {
-      yield put(ListDetailsActions.getCurrentListTasks());
-    } else {
-      yield put(ListDetailsActions.getCurrentListCompleteTasks());
-    }
+    yield all([
+      put(ListDetailsActions.getCurrentTaskListFilterOptions()),
+      put(
+        status === TaskStatus.INCOMPLETE
+          ? ListDetailsActions.getCurrentListTasks()
+          : ListDetailsActions.getCurrentListCompleteTasks(),
+      ),
+    ]);
   } catch (error) {
     yield put(showGlobalErrorAlert());
   }
 }
 
-function* doSortListDetailsTasks({ payload }) {
+function* sortListDetailsTasks({ payload }) {
   const { key, order } = payload;
   onSortChanged(order ? key : null, order);
   yield all([
@@ -620,17 +621,11 @@ function* doSortListDetailsTasks({ payload }) {
   yield put(ListDetailsActions.refreshListDetailsGroupedTasks(false));
 }
 
-function* doFilterListDetailsTasks({ payload }) {
+function* filterListDetailsTasks({ payload }) {
   const { filters } = payload;
 
-  const { taskListIdentifier, tabName } = yield select(
-    locationParametersSelector,
-  );
-
-  const status =
-    tabName?.toLowerCase() === 'complete'
-      ? TaskStatus.COMPLETE
-      : TaskStatus.INCOMPLETE;
+  const taskListIdentifier = yield select(currentTaskListIdentifierSelector);
+  const status = yield select(currentTaskListTasksStatusSelector);
 
   yield put(
     MegaFilterActions.selectFiltersForMegaFilter(
@@ -639,7 +634,11 @@ function* doFilterListDetailsTasks({ payload }) {
       status,
     ),
   );
-  yield put(ListDetailsActions.refreshListDetailsGroupedTasks());
+
+  yield all([
+    put(ListDetailsActions.getCurrentTaskListFilterOptions()),
+    put(ListDetailsActions.refreshListDetailsGroupedTasks()),
+  ]);
 }
 
 function* applyTaskTemplateFailure({
@@ -775,7 +774,7 @@ function* deleteTaskListGroup(payload) {
       taskListIdentifier,
       shouldSetRequestState: false,
     });
-    yield call(doRefreshGroupedTasks, {});
+    yield call(refreshGroupedTasks, {});
     yield put({
       type: ActionTypes.DELETE_TASK_LIST_GROUP_SUCCESS,
       groupIdentifier,
@@ -847,16 +846,16 @@ export default function* watchTasksGroupsList() {
   );
   yield takeLatest(
     ActionTypes.REFRESH_LIST_DETAILS_GROUPED_TASKS,
-    doRefreshGroupedTasks,
+    refreshGroupedTasks,
   );
   yield takeLatest(
     ActionTypes.FILTER_LIST_DETAILS_TASKS,
-    doFilterListDetailsTasks,
+    filterListDetailsTasks,
   );
   yield takeLatest([ActionTypes.ADD_TASK_SUCCESS], taskCounterIncreaseWatcher);
   yield takeLatest([ActionTypes.DELETE_TASK], taskCounterDecreaseWatcher);
   yield takeLatest(ActionTypes.GET_LIST_CUSTOM_FIELDS, getListCustomFields);
-  yield takeLatest(ActionTypes.SORT_LIST_DETAILS_TASKS, doSortListDetailsTasks);
+  yield takeLatest(ActionTypes.SORT_LIST_DETAILS_TASKS, sortListDetailsTasks);
   yield takeLatest(DO_ON_ENTER_LIST_DETAILS, doOnEnterListDetails);
   yield takeEvery(DO_GET_TASKS_GROUPS_LIST, doGetTasksGroupsList);
   yield takeEvery(DO_CREATE_TASKS_GROUP_LIST, doCreateTasksGroupList);
