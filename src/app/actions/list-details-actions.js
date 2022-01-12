@@ -152,3 +152,8 @@ export const getTasksForTaskGroups = payload => ({
   type: ActionTypes.GET_TASKS_FOR_TASK_GROUP,
   ...payload,
 });
+
+export const createTaskListGroup = groupName => ({
+  type: ActionTypes.CREATE_TASK_LIST_GROUP,
+  groupName,
+});

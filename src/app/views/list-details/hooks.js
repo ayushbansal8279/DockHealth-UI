@@ -274,9 +274,9 @@ const initializeListDetailsViewHooks = (match, history) => {
 
   const handleCreateGroup = useCallback(
     groupName => {
-      listDetailsSagaActions.createTaskGroupList({ groupName });
+      dispatch(ListDetailsActions.createTaskListGroup(groupName));
     },
-    [listDetailsSagaActions],
+    [dispatch],
   );
 
   const loadTasksForTaskGroup = useCallback(

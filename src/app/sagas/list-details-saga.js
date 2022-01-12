@@ -54,13 +54,7 @@ import * as CustomFieldsApi from 'api/custom-fields-api';
 import * as TaskListApi from 'api/task-list-api';
 import store from '../store';
 
-export const DO_CREATE_TASKS_GROUP_LIST = 'DO_CREATE_TASKS_GROUP_LIST';
 export const DO_CREATE_TASK = 'DO_CREATE_TASK';
-
-export const createTaskGroupList = payload => ({
-  type: DO_CREATE_TASKS_GROUP_LIST,
-  ...payload,
-});
 
 export const createTask = payload => ({
   type: DO_CREATE_TASK,
@@ -68,7 +62,6 @@ export const createTask = payload => ({
 });
 
 export const ListDetailsSagaActions = {
-  createTaskGroupList,
   createTask,
 };
 
@@ -259,9 +252,7 @@ function* refreshGroupedTasks({ payload }) {
   }
 }
 
-function* doCreateTasksGroupList(payload) {
-  const { groupName } = payload;
-
+function* createTaskListGroup({ groupName }) {
   try {
     const { taskListIdentifier } = yield select(locationParametersSelector);
     yield call(createGroupAssignedToList, { taskListIdentifier, groupName });
@@ -803,7 +794,7 @@ export default function* watchTasksGroupsList() {
     ActionTypes.INITIALIZE_TASK_LIST_STATE,
     initializeTaskListState,
   );
-  yield takeEvery(DO_CREATE_TASKS_GROUP_LIST, doCreateTasksGroupList);
+  yield takeEvery(ActionTypes.CREATE_TASK_LIST_GROUP, createTaskListGroup);
   yield takeEvery(ActionTypes.REORDER_TASKS_IN_GROUP, sortTasksInGroup);
   yield takeEvery(DO_CREATE_TASK, doCreateTask);
   yield takeEvery(
