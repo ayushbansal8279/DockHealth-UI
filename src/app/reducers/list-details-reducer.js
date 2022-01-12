@@ -8,9 +8,8 @@ import {
   INCREASE_COMPLETE_TASK_COUNTERS,
   REQUEST_TASKLIST_GROUP_TASKS_SUCCESS,
   REQUEST_TASKLIST_GROUP_TASKS,
-  TASK_GROUP_LIST_REQUEST,
-  TASK_GROUP_LIST_SUCCESS,
-  TASK_GROUP_LIST_FAILURE,
+  GET_TASKS_GROUPS_LIST_SUCCESS,
+  GET_TASKS_GROUPS_LIST_FAILURE,
   SET_LIST_DETAILS_TASKS_SORT,
   REQUEST_ALL_LIST_DETAILS_GROUPS,
   ADD_TASK_SUCCESS,
@@ -52,7 +51,6 @@ const initialState = {
   listGroups: [],
   isFetchingGroups: false,
   listGroupsError: '',
-  groupsInitialized: false,
   sort: {
     key: null,
     order: null,
@@ -141,21 +139,15 @@ const ListDetailsReducer = (state = initialState, action) => {
         ...state,
         listCustomFields: [],
       };
-    case TASK_GROUP_LIST_REQUEST:
+    case GET_TASKS_GROUPS_LIST_SUCCESS:
       return {
         ...state,
-        groupsInitialized: true,
-      };
-
-    case TASK_GROUP_LIST_SUCCESS:
-      return {
-        ...state,
-        listGroups: action.listGroups,
+        listGroups: action.groups,
         isFetchingGroups: false,
         groupsInitialized: true,
       };
 
-    case TASK_GROUP_LIST_FAILURE:
+    case GET_TASKS_GROUPS_LIST_FAILURE:
       return {
         ...state,
         listGroupsError: 'Something went wrong',

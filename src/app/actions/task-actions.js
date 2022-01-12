@@ -1,11 +1,8 @@
-/* eslint-disable sonarjs/no-duplicate-string */
 import moment from 'moment';
 import * as TaskApi from 'api/task-api';
 import * as ListDetailsApi from 'api/list-details-api';
 import * as AlertActions from 'alert/actions';
-// eslint-disable-next-line import/no-cycle
-import { getTasksGroupsList } from 'sagas/list-details-saga';
-// eslint-disable-next-line import/no-cycle
+import { getTasksGroupsList } from 'actions/list-details-actions';
 import { openDrawer } from 'actions/task-drawer-actions';
 import { TASK_DISAPPEAR_DELAY } from 'helpers/task-update-helper';
 import * as ActionTypes from './action-types';
@@ -163,11 +160,7 @@ export function saveTask(newTask, shouldReloadGroups = false) {
             addingNewTask: false,
           });
           if (shouldReloadGroups) {
-            dispatch(
-              getTasksGroupsList({
-                taskListIdentifier: newTask.taskListIdentifier,
-              }),
-            );
+            dispatch(getTasksGroupsList());
           }
         }
 
@@ -350,11 +343,7 @@ export function deleteTask(task) {
             },
           ),
         );
-        dispatch(
-          getTasksGroupsList({
-            taskListIdentifier: task?.taskList?.taskListIdentifier,
-          }),
-        );
+        dispatch(getTasksGroupsList());
         return task;
       })
       .catch(error => {
@@ -377,11 +366,7 @@ export function duplicateTask(task, includeAttachments = false) {
             task: duplicatedTask,
           });
         }
-        dispatch(
-          getTasksGroupsList({
-            taskListIdentifier: task?.taskList?.taskListIdentifier,
-          }),
-        );
+        dispatch(getTasksGroupsList());
         dispatch(AlertActions.showGlobalAlert(AlertMessages.TASK_DUPLICATED));
 
         return duplicatedTask;

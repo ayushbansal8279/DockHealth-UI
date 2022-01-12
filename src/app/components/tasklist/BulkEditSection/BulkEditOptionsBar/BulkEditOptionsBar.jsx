@@ -22,8 +22,10 @@ import {
   bulkEditComplete,
 } from 'actions/task-actions';
 import * as ActionTypes from 'actions/action-types';
-import { getListDetailsTaskCounters } from 'actions/list-details-actions';
-import { getTasksGroupsList } from 'sagas/list-details-saga';
+import {
+  getListDetailsTaskCounters,
+  getTasksGroupsList,
+} from 'actions/list-details-actions';
 import { selectedFiltersInMegaFilterSelector } from 'selectors/mega-filter-selectors';
 
 import BulkEditAssignToOption from './BulkEditAssignToOption';
@@ -553,7 +555,7 @@ const BulkEditOptionsBar = ({
         taskIdentifiers: allSelectedTasksIdentifiers,
       })
         .then(({ transactionIdentifier }) => {
-          dispatch(getTasksGroupsList({ shouldSetRequestState: false }));
+          dispatch(getTasksGroupsList());
           dispatch(getListDetailsTaskCounters(taskListIdentifier));
 
           dispatch(
@@ -643,7 +645,7 @@ const BulkEditOptionsBar = ({
             taskIdentifiers: allSelectedTasksIdentifiers,
           })
             .then(({ transactionIdentifier }) => {
-              dispatch(getTasksGroupsList({ shouldSetRequestState: false }));
+              dispatch(getTasksGroupsList());
               dispatch(getListDetailsTaskCounters(taskListIdentifier));
               dispatch(
                 AlertActions.showGlobalAlertWithUndo(

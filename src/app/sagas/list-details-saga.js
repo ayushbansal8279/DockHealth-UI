@@ -54,16 +54,10 @@ import * as CustomFieldsApi from 'api/custom-fields-api';
 import * as TaskListApi from 'api/task-list-api';
 import store from '../store';
 
-export const DO_GET_TASKS_GROUPS_LIST = 'DO_GET_TASKS_GROUPS_LIST';
 export const DO_CREATE_TASKS_GROUP_LIST = 'DO_CREATE_TASKS_GROUP_LIST';
 export const DO_ON_ENTER_LIST_DETAILS = 'DO_ON_ENTER_LIST_DETAILS';
 export const DO_CREATE_TASK = 'DO_CREATE_TASK';
 export const DO_GET_TASKS_FOR_GROUP = 'DO_GET_TASKS_FOR_GROUP';
-
-export const getTasksGroupsList = payload => ({
-  type: DO_GET_TASKS_GROUPS_LIST,
-  ...payload,
-});
 
 export const createTaskGroupList = payload => ({
   type: DO_CREATE_TASKS_GROUP_LIST,
@@ -85,7 +79,6 @@ export const getTasksForTaskGroups = payload => ({
 });
 
 export const ListDetailsSagaActions = {
-  getTasksGroupsList,
   createTaskGroupList,
   createTask,
   getTasksForTaskGroups,
@@ -135,24 +128,20 @@ function* doGetListDetailsCounters({ payload }) {
   }
 }
 
-function* doGetTasksGroupsList(payload) {
-  const { shouldSetRequestState = true } = payload;
+function* getTasksGroupsList() {
   try {
-    const { taskListIdentifier } = yield select(locationParametersSelector);
+    const taskListIdentifier = yield select(currentTaskListIdentifierSelector);
     if (!taskListIdentifier) {
       return;
     }
 
-    if (shouldSetRequestState) {
-      yield put({ type: ActionTypes.TASK_GROUP_LIST_REQUEST });
-    }
     const groups = yield call(getGroupsByListId, taskListIdentifier);
     yield put({
-      type: ActionTypes.TASK_GROUP_LIST_SUCCESS,
-      listGroups: groups,
+      type: ActionTypes.GET_TASKS_GROUPS_LIST_SUCCESS,
+      groups,
     });
   } catch (error) {
-    yield put({ type: ActionTypes.TASK_GROUP_LIST_FAILURE });
+    yield put({ type: ActionTypes.GET_TASKS_GROUPS_LIST_FAILURE });
   }
 }
 
@@ -195,7 +184,8 @@ function* getCurrentListTasks() {
       groupedTasks,
     });
   } catch (error) {
-    yield put({ type: ActionTypes.TASK_GROUP_LIST_FAILURE });
+    yield put(showGlobalErrorAlert());
+    yield put({ type: ActionTypes.GET_CURRENT_LIST_TASKS_FAILURE });
   }
 }
 
@@ -286,15 +276,11 @@ function* doCreateTasksGroupList(payload) {
 
   try {
     const { taskListIdentifier } = yield select(locationParametersSelector);
-    yield put({ type: ActionTypes.TASK_GROUP_LIST_REQUEST });
     yield call(createGroupAssignedToList, { taskListIdentifier, groupName });
-    yield call(doGetTasksGroupsList, {
-      taskListIdentifier,
-      shouldSetRequestState: false,
-    });
+    yield put(ListDetailsActions.getTasksGroupsList());
     yield put(showGlobalAlert(AlertMessages.CREATED));
   } catch (error) {
-    yield put({ type: ActionTypes.TASK_GROUP_LIST_FAILURE });
+    yield put(showGlobalErrorAlert());
   }
 }
 
@@ -339,7 +325,7 @@ function* doGetTasksForTaskGroup(payload) {
 
     return groupOfTasks;
   } catch (error) {
-    yield put({ type: ActionTypes.TASK_GROUP_LIST_FAILURE });
+    yield put(showGlobalErrorAlert());
   }
 }
 
@@ -473,8 +459,6 @@ function* doOnEnterListDetails() {
     const taskListIdentifier = yield select(currentTaskListIdentifierSelector);
     const status = yield select(currentTaskListTasksStatusSelector);
 
-    yield put({ type: ActionTypes.TASK_GROUP_LIST_REQUEST });
-
     if (taskListIdentifier && status) {
       const filters = sessionStorageHelper.getItem(
         `filter-${taskListIdentifier}-${status}`,
@@ -492,7 +476,7 @@ function* doOnEnterListDetails() {
 
       yield all([
         status === TaskStatus.INCOMPLETE &&
-          call(doGetTasksGroupsList, { taskListIdentifier }),
+          put(ListDetailsActions.getTasksGroupsList()),
         put(ListDetailsActions.getListDetailsTaskCounters(taskListIdentifier)),
         status === TaskStatus.INCOMPLETE
           ? put(ListDetailsActions.getCurrentListTasks())
@@ -510,7 +494,8 @@ function* doOnEnterListDetails() {
       yield put(openDrawer());
     }
   } catch (error) {
-    yield put({ type: ActionTypes.TASK_GROUP_LIST_FAILURE });
+    console.log('errror', error);
+    yield put(showGlobalErrorAlert());
   }
 }
 
@@ -524,7 +509,6 @@ function* doCreateTask(payload) {
       autoOpenDrawer,
     } = payload;
     const { taskListIdentifier } = yield select(locationParametersSelector);
-    yield put({ type: ActionTypes.TASK_GROUP_LIST_REQUEST });
 
     if (taskListIdentifier) {
       const createdTask = yield call(createTaskApi, {
@@ -565,17 +549,14 @@ function* doCreateTask(payload) {
         yield put(storeAsCurrentTask(createdTask));
         yield put(openDrawer());
       }
-      yield call(doGetTasksGroupsList, {
-        taskListIdentifier,
-        shouldSetRequestState: false,
-      });
+      yield put(ListDetailsActions.getTasksGroupsList());
       yield put(
         ListDetailsActions.getListDetailsTaskCounters(taskListIdentifier),
       );
       yield put(showGlobalAlert(AlertMessages.TASK_CREATED));
     }
   } catch (error) {
-    yield put({ type: ActionTypes.TASK_GROUP_LIST_FAILURE });
+    yield put(showGlobalErrorAlert());
   }
 }
 
@@ -750,13 +731,8 @@ function* deleteTaskListGroup(payload) {
   const { groupIdentifier } = payload;
 
   try {
-    const taskListIdentifier = yield select(currentTaskListIdentifierSelector);
-    yield put({ type: ActionTypes.TASK_GROUP_LIST_REQUEST });
     yield call(deleteGroup, groupIdentifier);
-    yield call(doGetTasksGroupsList, {
-      taskListIdentifier,
-      shouldSetRequestState: false,
-    });
+    yield put(ListDetailsActions.getTasksGroupsList());
     yield call(refreshGroupedTasks, {});
     yield put({
       type: ActionTypes.DELETE_TASK_LIST_GROUP_SUCCESS,
@@ -769,19 +745,14 @@ function* deleteTaskListGroup(payload) {
       type: ActionTypes.DELETE_TASK_LIST_GROUP_FAILURE,
       groupIdentifier,
     });
-    yield put({ type: ActionTypes.TASK_GROUP_LIST_FAILURE });
   }
 }
 
 function* changeTaskListGroupName({ groupIdentifier, name }) {
   try {
     const taskListIdentifier = yield select(currentTaskListIdentifierSelector);
-    yield put({ type: ActionTypes.TASK_GROUP_LIST_REQUEST });
     yield call(editGroupName, taskListIdentifier, groupIdentifier, name);
-    yield call(doGetTasksGroupsList, {
-      taskListIdentifier,
-      shouldSetRequestState: false,
-    });
+    yield put(ListDetailsActions.getTasksGroupsList());
     yield put(showGlobalAlert(AlertMessages.UPDATED));
     yield put({
       type: ActionTypes.CHANGE_TASK_LIST_GROUP_NAME_SUCCESS,
@@ -839,8 +810,8 @@ export default function* watchTasksGroupsList() {
   yield takeLatest([ActionTypes.DELETE_TASK], taskCounterDecreaseWatcher);
   yield takeLatest(ActionTypes.GET_LIST_CUSTOM_FIELDS, getListCustomFields);
   yield takeLatest(ActionTypes.SORT_LIST_DETAILS_TASKS, sortListDetailsTasks);
+  yield takeEvery(ActionTypes.GET_TASKS_GROUPS_LIST, getTasksGroupsList);
   yield takeLatest(DO_ON_ENTER_LIST_DETAILS, doOnEnterListDetails);
-  yield takeEvery(DO_GET_TASKS_GROUPS_LIST, doGetTasksGroupsList);
   yield takeEvery(DO_CREATE_TASKS_GROUP_LIST, doCreateTasksGroupList);
   yield takeEvery(ActionTypes.REORDER_TASKS_IN_GROUP, sortTasksInGroup);
   yield takeEvery(DO_CREATE_TASK, doCreateTask);
