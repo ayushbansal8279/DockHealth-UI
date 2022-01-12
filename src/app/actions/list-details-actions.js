@@ -129,3 +129,17 @@ export function reorderTaskListGroups(oldIndex, newIndex) {
     newIndex,
   };
 }
+
+export function reorderTasksInGroup({ destination, source }) {
+  return {
+    type: ActionTypes.REORDER_TASKS_IN_GROUP,
+    destination,
+    source,
+  };
+}
+
+export const reassignTasksToAnotherGroup = ({ destination, source }) => ({
+  type: ActionTypes.REASSIGN_TASKS_TO_ANOTHER_GROUP,
+  destination,
+  source,
+});

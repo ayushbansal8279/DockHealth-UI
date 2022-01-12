@@ -56,12 +56,9 @@ import store from '../store';
 
 export const DO_GET_TASKS_GROUPS_LIST = 'DO_GET_TASKS_GROUPS_LIST';
 export const DO_CREATE_TASKS_GROUP_LIST = 'DO_CREATE_TASKS_GROUP_LIST';
-export const DO_SORT_TASKS_IN_GROUPS = 'DO_SORT_TASKS_IN_GROUPS';
 export const DO_ON_ENTER_LIST_DETAILS = 'DO_ON_ENTER_LIST_DETAILS';
 export const DO_CREATE_TASK = 'DO_CREATE_TASK';
 export const DO_GET_TASKS_FOR_GROUP = 'DO_GET_TASKS_FOR_GROUP';
-export const DO_REASSIGN_TASKS_TO_ANOTHER_GROUP =
-  'DO_REASSIGN_TASKS_TO_ANOTHER_GROUP';
 
 export const getTasksGroupsList = payload => ({
   type: DO_GET_TASKS_GROUPS_LIST,
@@ -70,16 +67,6 @@ export const getTasksGroupsList = payload => ({
 
 export const createTaskGroupList = payload => ({
   type: DO_CREATE_TASKS_GROUP_LIST,
-  ...payload,
-});
-
-export const sortTasksInGroup = payload => ({
-  type: DO_SORT_TASKS_IN_GROUPS,
-  ...payload,
-});
-
-export const reassignTasksToAnotherGroup = payload => ({
-  type: DO_REASSIGN_TASKS_TO_ANOTHER_GROUP,
   ...payload,
 });
 
@@ -100,7 +87,6 @@ export const getTasksForTaskGroups = payload => ({
 export const ListDetailsSagaActions = {
   getTasksGroupsList,
   createTaskGroupList,
-  sortTasksInGroup,
   createTask,
   getTasksForTaskGroups,
 };
@@ -206,7 +192,7 @@ function* getCurrentListTasks() {
 
     yield put({
       type: ActionTypes.GET_CURRENT_LIST_TASKS_SUCCESS,
-      groupedTasks: groupedTasks.taskGroups,
+      groupedTasks,
     });
   } catch (error) {
     yield put({ type: ActionTypes.TASK_GROUP_LIST_FAILURE });
@@ -357,7 +343,7 @@ function* doGetTasksForTaskGroup(payload) {
   }
 }
 
-function* doSortTasksInGroup(payload) {
+function* sortTasksInGroup(payload) {
   const {
     destination: { droppableId: taskGroupIdentifier, index: destinationIndex },
     source: { index: sourceIndex },
@@ -407,7 +393,7 @@ function* doSortTasksInGroup(payload) {
   }
 }
 
-function* doReassignTasksToAnotherGroup(payload) {
+function* reassignTasksToAnotherGroup(payload) {
   const {
     destination: {
       index: destinationIndex,
@@ -598,14 +584,11 @@ function* searchCurrentListTasks() {
     const status = yield select(currentTaskListTasksStatusSelector);
     onSearchChanged();
 
-    yield all([
-      put(ListDetailsActions.getCurrentTaskListFilterOptions()),
-      put(
-        status === TaskStatus.INCOMPLETE
-          ? ListDetailsActions.getCurrentListTasks()
-          : ListDetailsActions.getCurrentListCompleteTasks(),
-      ),
-    ]);
+    yield put(
+      status === TaskStatus.INCOMPLETE
+        ? ListDetailsActions.getCurrentListTasks()
+        : ListDetailsActions.getCurrentListCompleteTasks(),
+    );
   } catch (error) {
     yield put(showGlobalErrorAlert());
   }
@@ -859,11 +842,11 @@ export default function* watchTasksGroupsList() {
   yield takeLatest(DO_ON_ENTER_LIST_DETAILS, doOnEnterListDetails);
   yield takeEvery(DO_GET_TASKS_GROUPS_LIST, doGetTasksGroupsList);
   yield takeEvery(DO_CREATE_TASKS_GROUP_LIST, doCreateTasksGroupList);
-  yield takeEvery(DO_SORT_TASKS_IN_GROUPS, doSortTasksInGroup);
+  yield takeEvery(ActionTypes.REORDER_TASKS_IN_GROUP, sortTasksInGroup);
   yield takeEvery(DO_CREATE_TASK, doCreateTask);
   yield takeEvery(
-    DO_REASSIGN_TASKS_TO_ANOTHER_GROUP,
-    doReassignTasksToAnotherGroup,
+    ActionTypes.REASSIGN_TASKS_TO_ANOTHER_GROUP,
+    reassignTasksToAnotherGroup,
   );
   yield takeEvery(DO_GET_TASKS_FOR_GROUP, doGetTasksForTaskGroup);
   yield debounce(

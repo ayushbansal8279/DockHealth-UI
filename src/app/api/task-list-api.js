@@ -408,13 +408,7 @@ export function getFilteredTasksForList(
         },
       },
     )
-    .then(({ data }) => ({
-      ...data,
-      taskFilterOptions: mapFilterOptions(data.taskFilterOptions),
-    }))
-    .catch(error => {
-      throw error;
-    });
+    .then(({ data }) => data.taskFilterOptions);
 }
 
 export function searchTasksByTaskList(taskListIdentifier, searchTerm, status) {
@@ -422,7 +416,7 @@ export function searchTasksByTaskList(taskListIdentifier, searchTerm, status) {
     .get(
       `/task/searchTasksByTaskList/${taskListIdentifier}?searchTerm=${searchTerm}&status=${status}`,
     )
-    .then(({ data }) => data);
+    .then(({ data }) => data.taskGroups);
 }
 
 export function getTasksForTaskListByTaskGroup(
@@ -470,8 +464,5 @@ export function getListTasksGroupedByTaskGroup(
         viewMode: viewMode || undefined,
       },
     })
-    .then(response => response?.data)
-    .catch(error => {
-      throw error;
-    });
+    .then(({ data }) => data.taskGroups);
 }

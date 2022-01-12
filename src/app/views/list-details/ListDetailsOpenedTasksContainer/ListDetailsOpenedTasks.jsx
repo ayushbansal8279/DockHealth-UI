@@ -11,8 +11,9 @@ import { onTaskOrderChanged } from 'helpers/ga-event-helper';
 import {
   applyTaskTemplate,
   reorderTaskListGroups,
+  reorderTasksInGroup,
+  reassignTasksToAnotherGroup,
 } from 'actions/list-details-actions';
-
 import NoSearchResultsView from 'components/tasklist/EmptyListView/NoSearchResultsView';
 import EmptyListView from 'components/tasklist/EmptyListView/EmptyListView';
 import NoFilterResultsView from 'components/tasklist/EmptyListView/NoFilterResultsView';
@@ -38,8 +39,6 @@ const ListDetailsOpenedTasks = ({
   groupedTasks,
   groupList,
   quickAddTask,
-  reorderTasksInGroup,
-  reassignTasksToAnotherGroup,
   onTaskUpdate,
   isFetchingData,
   updateWorkflowStatus,
@@ -102,12 +101,12 @@ const ListDetailsOpenedTasks = ({
       if (!destination) return;
 
       if (source?.droppableId === destination?.droppableId) {
-        reorderTasksInGroup({ destination, source });
+        dispatch(reorderTasksInGroup({ destination, source }));
       } else {
-        reassignTasksToAnotherGroup({ destination, source });
+        dispatch(reassignTasksToAnotherGroup({ destination, source }));
       }
     },
-    [reassignTasksToAnotherGroup, reorderTasksInGroup],
+    [dispatch],
   );
 
   const onBeforeCapture = useCallback(({ draggableId }) => {

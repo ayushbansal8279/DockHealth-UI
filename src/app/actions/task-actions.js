@@ -85,7 +85,7 @@ export function getListTasksGroupedByTaskGroup(
         );
 
         const allTasks = [];
-        groupedTasks.taskGroups.forEach(taskGroup => {
+        groupedTasks.forEach(taskGroup => {
           if (taskGroup.tasks) {
             allTasks.push(taskGroup.tasks);
           }
