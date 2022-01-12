@@ -1,7 +1,7 @@
 /* eslint-disable sonarjs/no-duplicate-string */
 import moment from 'moment';
 import * as TaskApi from 'api/task-api';
-import * as TaskListApi from 'api/task-list-api';
+import * as ListDetailsApi from 'api/list-details-api';
 import * as AlertActions from 'alert/actions';
 // eslint-disable-next-line import/no-cycle
 import { getTasksGroupsList } from 'sagas/list-details-saga';
@@ -69,7 +69,7 @@ export function getListTasksGroupedByTaskGroup(
       });
     }
 
-    return TaskListApi.getListTasksGroupedByTaskGroup(
+    return ListDetailsApi.getListTasksGroupedByTaskGroup(
       taskListIdentifier,
       status,
       sortBy,

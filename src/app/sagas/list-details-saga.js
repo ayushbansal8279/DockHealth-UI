@@ -167,14 +167,14 @@ function* getCurrentListTasks() {
 
     if (searchTerm) {
       groupedTasks = yield call(
-        TaskListApi.searchTasksByTaskList,
+        ListDetailsApi.searchTasksByTaskList,
         taskListIdentifier,
         searchTerm,
         TaskStatus.INCOMPLETE,
       );
     } else if (!selectedFilters || isEmpty(selectedFilters)) {
       groupedTasks = yield call(
-        TaskListApi.getListTasksGroupedByTaskGroup,
+        ListDetailsApi.getListTasksGroupedByTaskGroup,
         taskListIdentifier,
         TaskStatus.INCOMPLETE,
         sort,
@@ -182,7 +182,7 @@ function* getCurrentListTasks() {
       );
     } else {
       groupedTasks = yield call(
-        TaskListApi.getFilteredTasksForList,
+        ListDetailsApi.getFilteredTasksForList,
         taskListIdentifier,
         TaskStatus.INCOMPLETE,
         sort,
@@ -210,14 +210,14 @@ function* getCurrentListCompleteTasks() {
 
     if (searchTerm) {
       groupedTasks = yield call(
-        TaskListApi.searchTasksByTaskList,
+        ListDetailsApi.searchTasksByTaskList,
         taskListIdentifier,
         searchTerm,
         TaskStatus.COMPLETE,
       );
     } else if (!selectedFilters || isEmpty(selectedFilters)) {
       groupedTasks = yield call(
-        TaskListApi.getListTasksGroupedByTaskGroup,
+        ListDetailsApi.getListTasksGroupedByTaskGroup,
         taskListIdentifier,
         TaskStatus.COMPLETE,
         sort,
@@ -225,7 +225,7 @@ function* getCurrentListCompleteTasks() {
       );
     } else {
       groupedTasks = yield call(
-        TaskListApi.getFilteredTasksForList,
+        ListDetailsApi.getFilteredTasksForList,
         taskListIdentifier,
         TaskStatus.COMPLETE,
         sort,
@@ -250,7 +250,7 @@ function* getCurrentTaskListFilterOptions() {
     const currentFilters = yield select(selectedFiltersInMegaFilterSelector);
 
     const filters = yield call(
-      TaskListApi.getTaskListFilterOptions,
+      ListDetailsApi.getTaskListFilterOptions,
       taskListIdentifier,
       status,
       currentFilters,
@@ -319,7 +319,7 @@ function* doGetTasksForTaskGroup(payload) {
     });
 
     const groupOfTasks = yield call(
-      TaskListApi.getTasksForTaskListByTaskGroup,
+      ListDetailsApi.getTasksForTaskListByTaskGroup,
       taskListIdentifier,
       taskGroupIdentifier,
       status,
