@@ -89,7 +89,7 @@ export function getFilteredTasksForList(
         },
       },
     )
-    .then(({ data }) => data.taskFilterOptions);
+    .then(({ data }) => data.taskGroups);
 }
 
 export function getTaskListFilterOptions(

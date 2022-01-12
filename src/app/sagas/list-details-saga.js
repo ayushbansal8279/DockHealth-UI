@@ -55,7 +55,6 @@ import * as TaskListApi from 'api/task-list-api';
 import store from '../store';
 
 export const DO_CREATE_TASKS_GROUP_LIST = 'DO_CREATE_TASKS_GROUP_LIST';
-export const DO_ON_ENTER_LIST_DETAILS = 'DO_ON_ENTER_LIST_DETAILS';
 export const DO_CREATE_TASK = 'DO_CREATE_TASK';
 export const DO_GET_TASKS_FOR_GROUP = 'DO_GET_TASKS_FOR_GROUP';
 
@@ -67,10 +66,6 @@ export const createTaskGroupList = payload => ({
 export const createTask = payload => ({
   type: DO_CREATE_TASK,
   ...payload,
-});
-
-export const onEnterListDetails = () => ({
-  type: DO_ON_ENTER_LIST_DETAILS,
 });
 
 export const getTasksForTaskGroups = payload => ({
@@ -453,7 +448,7 @@ function* reassignTasksToAnotherGroup(payload) {
   }
 }
 
-function* doOnEnterListDetails() {
+function* initializeTaskListState() {
   try {
     const { taskIdentifier } = yield select(locationParametersSelector);
     const taskListIdentifier = yield select(currentTaskListIdentifierSelector);
@@ -811,7 +806,10 @@ export default function* watchTasksGroupsList() {
   yield takeLatest(ActionTypes.GET_LIST_CUSTOM_FIELDS, getListCustomFields);
   yield takeLatest(ActionTypes.SORT_LIST_DETAILS_TASKS, sortListDetailsTasks);
   yield takeEvery(ActionTypes.GET_TASKS_GROUPS_LIST, getTasksGroupsList);
-  yield takeLatest(DO_ON_ENTER_LIST_DETAILS, doOnEnterListDetails);
+  yield takeLatest(
+    ActionTypes.INITIALIZE_TASK_LIST_STATE,
+    initializeTaskListState,
+  );
   yield takeEvery(DO_CREATE_TASKS_GROUP_LIST, doCreateTasksGroupList);
   yield takeEvery(ActionTypes.REORDER_TASKS_IN_GROUP, sortTasksInGroup);
   yield takeEvery(DO_CREATE_TASK, doCreateTask);
