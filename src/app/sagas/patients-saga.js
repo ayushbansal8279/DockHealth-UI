@@ -93,9 +93,12 @@ function* getCurrentPatientsListFilterOptions() {
     const currentPatientsListIdentifier = yield select(
       currentPatientsListIdentifierSelector,
     );
+    const selectedFilters = yield select(patientsSelectedFiltersSelector);
+
     const options = yield call(
       PatientsApi.getPatientsListFilterOptions,
       currentPatientsListIdentifier,
+      selectedFilters,
     );
 
     yield put({
@@ -141,20 +144,13 @@ function* getCurrentPatients() {
     const selectedFilters = yield select(patientsSelectedFiltersSelector);
 
     let patients;
+
     if (selectedFilters) {
-      const { patients: p, options } = yield call(
+      patients = yield call(
         PatientsApi.getPatientsByFilterCriteria,
         currentPatientsListIdentifier,
         selectedFilters,
       );
-
-      if (options)
-        yield put({
-          type: ActionTypes.GET_CURRENT_PATIENTS_LIST_FILTER_OPTIONS_SUCCESS,
-          options,
-        });
-
-      patients = p;
     } else if (searchTerm) {
       patients = yield call(
         PatientsApi.getPatientsByCriteria,
@@ -186,12 +182,7 @@ function* searchPatients() {
 
 function* filtersChange() {
   yield put(PatientsActions.getCurrentPatients());
-
-  const selectedFilters = yield select(patientsSelectedFiltersSelector);
-
-  if (!selectedFilters) {
-    yield put(PatientsActions.getCurrentPatientsListFilterOptions());
-  }
+  yield put(PatientsActions.getCurrentPatientsListFilterOptions());
 }
 
 export default function* watchPatients() {

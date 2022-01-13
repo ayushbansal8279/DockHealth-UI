@@ -22,10 +22,7 @@ export function getPatientsByFilterCriteria(
       `patient/filter/filterPatientsByCriteria/${patientsListIdentifier}`,
       mapSelectedOptionsToRequestPayload(filterOptions),
     )
-    .then(({ data: { patients, patientFilterOptions } }) => ({
-      patients,
-      options: mapFilterOptions(patientFilterOptions),
-    }));
+    .then(({ data: { patients } }) => patients);
 }
 
 export function getPatientsListDetails(identifier) {
@@ -65,8 +62,20 @@ export function deletePatientsList(identifier) {
   return axios.delete(`patient/list/${identifier}`);
 }
 
-export function getPatientsListFilterOptions(patientListIdentifier) {
-  return axios
-    .get(`patient/filter/filterOptionsForList/${patientListIdentifier}`)
-    .then(({ data }) => mapFilterOptions(data));
+export function getPatientsListFilterOptions(
+  patientsListIdentifier,
+  selectedFilters,
+) {
+  const request = !selectedFilters
+    ? axios
+        .get(`patient/filter/filterOptionsForList/${patientsListIdentifier}`)
+        .then(({ data }) => data)
+    : axios
+        .post(
+          `patient/filter/filterPatientsByCriteria/${patientsListIdentifier}`,
+          mapSelectedOptionsToRequestPayload(selectedFilters),
+        )
+        .then(({ data: { patientFilterOptions } }) => patientFilterOptions);
+
+  return request.then(options => mapFilterOptions(options));
 }
