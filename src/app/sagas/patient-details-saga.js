@@ -165,11 +165,6 @@ export const sortPatientTasks = (key, order) => ({
   },
 });
 
-export const fetchPatientAttachments = patientIdentifier => ({
-  type: DO_FETCH_PATIENT_ATTACHMENTS,
-  patientIdentifier,
-});
-
 export const addPatientAttachment = (
   patientIdentifier,
   fileData,
@@ -275,6 +270,27 @@ function* getCurrentPatientLabels() {
   } catch {
     yield put({
       type: ActionTypes.GET_CURRENT_PATIENT_LABELS_FAILURE,
+      patientIdentifier,
+    });
+    yield put(AlertActions.showGlobalErrorAlert());
+  }
+}
+
+function* getCurrentPatientAttachments() {
+  const patientIdentifier = yield select(currentPatientIdentifierSelector);
+
+  try {
+    const attachments = yield call(
+      PatientAttachmentApi.getPatientAttachments,
+      patientIdentifier,
+    );
+    yield put({
+      type: ActionTypes.GET_CURRENT_PATIENT_ATTACHMENTS_SUCCESS,
+      attachments,
+    });
+  } catch {
+    yield put({
+      type: ActionTypes.GET_CURRENT_PATIENT_ATTACHMENTS_FAILURE,
       patientIdentifier,
     });
     yield put(AlertActions.showGlobalErrorAlert());
@@ -581,19 +597,6 @@ function* doSortPatientTasks({ payload }) {
   }
 }
 
-function* doFetchPatientAttachments({ patientIdentifier }) {
-  try {
-    yield put(PatientDetailsActions.setPatientAttachmentsFetching());
-    const attachments = yield call(
-      PatientAttachmentApi.getPatientAttachments,
-      patientIdentifier,
-    );
-    yield put(PatientDetailsActions.setPatientAttachments(attachments));
-  } catch {
-    yield put(AlertActions.showGlobalErrorAlert());
-  }
-}
-
 function* doAddPatientAttachment({
   patientIdentifier,
   fileData,
@@ -611,11 +614,7 @@ function* doAddPatientAttachment({
     );
     setCurrentlyUploadedAttachment(null);
     onAttachmentFileInputChange(restAttachments);
-    const attachments = yield call(
-      PatientAttachmentApi.getPatientAttachments,
-      patientIdentifier,
-    );
-    yield put(PatientDetailsActions.setPatientAttachments(attachments));
+    yield put(PatientDetailsActions.getCurrentPatientAttachments());
   } catch (error) {
     setCurrentlyUploadedAttachment(null);
     onAttachmentFileInputChange(restAttachments);
@@ -632,20 +631,13 @@ function* doAddPatientAttachment({
   }
 }
 
-function* doRemovePatientAttachment({
-  patientIdentifier,
-  attachmentIdentifier,
-}) {
+function* doRemovePatientAttachment({ attachmentIdentifier }) {
   try {
     yield call(
       PatientAttachmentApi.removePatientAttachment,
       attachmentIdentifier,
     );
-    const attachments = yield call(
-      PatientAttachmentApi.getPatientAttachments,
-      patientIdentifier,
-    );
-    yield put(PatientDetailsActions.setPatientAttachments(attachments));
+    yield put(PatientDetailsActions.getCurrentPatientAttachments());
   } catch {
     yield put(AlertActions.showGlobalErrorAlert());
   }
@@ -770,6 +762,10 @@ export default function* watchPatientDetails() {
     ActionTypes.GET_CURRENT_PATIENT_LABELS,
     getCurrentPatientLabels,
   );
+  yield takeLatest(
+    ActionTypes.GET_CURRENT_PATIENT_ATTACHMENTS,
+    getCurrentPatientAttachments,
+  );
   yield takeLatest(ActionTypes.GET_PATIENT_TASKS_STATS, getPatientTasksStats);
   yield takeLatest(ActionTypes.GET_PATIENT_TASKS, getPatientTasks);
   yield takeLatest(DO_TOGGLE_PATIENT_TASK_STATUS, doToggleTaskCompleteStatus);
@@ -800,7 +796,6 @@ export default function* watchPatientDetails() {
   );
   yield takeEvery(DO_CHANGE_MEMBER_ROLE, doChangeMemberRole);
   yield takeEvery(DO_SORT_PATIENT_TASKS, doSortPatientTasks);
-  yield takeLatest(DO_FETCH_PATIENT_ATTACHMENTS, doFetchPatientAttachments);
   yield takeLatest(DO_ADD_PATIENT_ATTACHMENT, doAddPatientAttachment);
   yield takeLatest(DO_REMOVE_PATIENT_ATTACHMENT, doRemovePatientAttachment);
   yield takeLatest(

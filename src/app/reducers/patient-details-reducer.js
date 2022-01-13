@@ -1,3 +1,4 @@
+/* eslint-disable sonarjs/max-switch-cases */
 import * as ActionTypes from 'actions/action-types';
 import { TaskGroupType, TaskItemType } from 'helpers/task-helpers';
 import { mapWithRemove } from 'helpers/utility-functions';
@@ -86,14 +87,22 @@ export default function(state = INITIAL_STATE, action = {}) {
       return { ...state, labels: null, isFetchingLabels: false };
     }
 
-    case ActionTypes.SET_PATIENT_ATTACHMENTS_FETCHING: {
-      return { ...state, attachments: null, isFetchingAttachments: true };
+    case ActionTypes.GET_CURRENT_PATIENT_ATTACHMENTS: {
+      return { ...state, isFetchingAttachments: true };
     }
 
-    case ActionTypes.SET_PATIENT_ATTACHMENTS: {
+    case ActionTypes.GET_CURRENT_PATIENT_ATTACHMENTS_SUCCESS: {
       return {
         ...state,
-        attachments: payload.attachments,
+        attachments: action.attachments,
+        isFetchingAttachments: false,
+      };
+    }
+
+    case ActionTypes.GET_CURRENT_PATIENT_ATTACHMENTS_FAILURE: {
+      return {
+        ...state,
+        attachments: null,
         isFetchingAttachments: false,
       };
     }

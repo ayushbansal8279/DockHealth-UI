@@ -24,16 +24,11 @@ export function getCurrentPatientLabels() {
   };
 }
 
-export const setPatientAttachmentsFetching = () => ({
-  type: ActionTypes.SET_PATIENT_ATTACHMENTS_FETCHING,
-});
-
-export const setPatientAttachments = attachments => ({
-  type: ActionTypes.SET_PATIENT_ATTACHMENTS,
-  payload: {
-    attachments,
-  },
-});
+export function getCurrentPatientAttachments() {
+  return {
+    type: ActionTypes.GET_CURRENT_PATIENT_ATTACHMENTS,
+  };
+}
 
 export const updatePatientNote = (patientNoteIdentifier, note) => ({
   type: ActionTypes.UPDATE_PATIENT_NOTE,
