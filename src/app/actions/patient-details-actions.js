@@ -6,9 +6,9 @@ export function initializePatientState(patientIdentifier) {
     patientIdentifier,
   };
 }
-export function clearPatientTasksState() {
+export function clearPatientState() {
   return {
-    type: ActionTypes.CLEAR_PATIENT_TASKS_STATE,
+    type: ActionTypes.CLEAR_PATIENT_STATE,
   };
 }
 
@@ -18,16 +18,11 @@ export function getCurrentPatient() {
   };
 }
 
-export const setPatientLabelsFetching = () => ({
-  type: ActionTypes.SET_PATIENT_LABELS_FETCHING,
-});
-
-export const setPatientLabels = labels => ({
-  type: ActionTypes.SET_PATIENT_LABELS,
-  payload: {
-    labels,
-  },
-});
+export function getCurrentPatientLabels() {
+  return {
+    type: ActionTypes.GET_CURRENT_PATIENT_LABELS,
+  };
+}
 
 export const setPatientAttachmentsFetching = () => ({
   type: ActionTypes.SET_PATIENT_ATTACHMENTS_FETCHING,

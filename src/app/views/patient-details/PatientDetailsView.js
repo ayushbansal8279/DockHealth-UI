@@ -18,6 +18,7 @@ import {
   Redirect,
   useParams,
 } from 'react-router-dom';
+import * as PatientDetailsActions from 'actions/patient-details-actions';
 import { initializePusher } from 'helpers/pusher-instance';
 import { isFetchingPatientsListsSelector } from 'selectors/patients-selectors';
 import {
@@ -89,6 +90,15 @@ const PatientDetailsView = () => {
   const selectedFilters = useSelector(selectedFiltersInMegaFilterSelector);
   const pusher = useRef(initializePusher());
   const customerTypeLabel = getCustomerTypeLabel(currentUser);
+
+  useEffect(() => {
+    dispatch(PatientDetailsActions.initializePatientState(patientIdentifier));
+
+    return () => {
+      dispatch(PatientDetailsActions.clearPatientState());
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [patientIdentifier]);
 
   useEffect(() => {
     (async () => {

@@ -1,5 +1,4 @@
 /* eslint-disable react-hooks/rules-of-hooks */
-import { useState } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { prop } from 'ramda';
 import {
@@ -9,8 +8,10 @@ import {
   removeLabelFromDatabase,
 } from 'api/patient-label-api';
 import * as PatientDetailsActions from 'actions/patient-details-actions';
-import { fetchPatientLabels } from 'sagas/patient-details-saga';
-import { patientSelector } from 'selectors/patient-details-selectors';
+import {
+  patientSelector,
+  isFetchingPatientLabelsSelector,
+} from 'selectors/patient-details-selectors';
 
 const labelAddOrRemovePromise = ({
   patientIdentifier,
@@ -53,13 +54,10 @@ const labelAddOrRemovePromise = ({
 const initializeLabelsSectionHooks = () => {
   const dispatch = useDispatch();
   const patient = useSelector(patientSelector);
+  const isFetchingLabels = useSelector(isFetchingPatientLabelsSelector);
 
-  const [isLoadingLabels, setIsLoadingLabels] = useState(false);
-
-  const refreshLabels = async () => {
-    setIsLoadingLabels(true);
-    dispatch(fetchPatientLabels());
-    setIsLoadingLabels(false);
+  const refreshLabels = () => {
+    dispatch(PatientDetailsActions.getCurrentPatientLabels());
   };
 
   const refreshLabelsAndPatient = async () => {
@@ -175,7 +173,7 @@ const initializeLabelsSectionHooks = () => {
   };
 
   return {
-    isLoadingLabels,
+    isFetchingLabels,
     saveAddOrRemoveLabel,
     saveAddLabel,
     saveAddLabelWithNewValue,

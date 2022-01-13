@@ -60,7 +60,6 @@ export const DO_CANCEL_USER_INVITE_TO_TASKLIST =
   'DO_CANCEL_USER_INVITE_TO_TASKLIST';
 export const DO_CHANGE_MEMBER_ROLE = 'DO_CHANGE_MEMBER_ROLE';
 export const DO_SORT_PATIENT_TASKS = 'DO_SORT_PATIENT_TASKS';
-export const DO_FETCH_PATIENT_LABELS = 'DO_FETCH_PATIENT_LABELS';
 export const DO_FETCH_PATIENT_ATTACHMENTS = 'DO_FETCH_PATIENT_ATTACHMENTS';
 export const DO_ADD_PATIENT_ATTACHMENT = 'DO_ADD_PATIENT_ATTACHMENT';
 export const DO_REMOVE_PATIENT_ATTACHMENT = 'DO_REMOVE_PATIENT_ATTACHMENT';
@@ -166,10 +165,6 @@ export const sortPatientTasks = (key, order) => ({
   },
 });
 
-export const fetchPatientLabels = () => ({
-  type: DO_FETCH_PATIENT_LABELS,
-});
-
 export const fetchPatientAttachments = patientIdentifier => ({
   type: DO_FETCH_PATIENT_ATTACHMENTS,
   patientIdentifier,
@@ -247,7 +242,7 @@ export const PatientTasksSagaActions = {
 function* initializePatientState() {
   try {
     yield put(PatientDetailsActions.getCurrentPatient());
-    yield put(fetchPatientLabels());
+    yield put(PatientDetailsActions.getCurrentPatientLabels());
   } catch {
     yield put(showGlobalErrorAlert());
   }
@@ -262,6 +257,24 @@ function* getCurrentPatient() {
   } catch {
     yield put({
       type: ActionTypes.GET_CURRENT_PATIENT_FAILURE,
+      patientIdentifier,
+    });
+    yield put(AlertActions.showGlobalErrorAlert());
+  }
+}
+
+function* getCurrentPatientLabels() {
+  const patientIdentifier = yield select(currentPatientIdentifierSelector);
+
+  try {
+    const labels = yield call(PatientLabelApi.getAllPatientLabels);
+    yield put({
+      type: ActionTypes.GET_CURRENT_PATIENT_LABELS_SUCCESS,
+      labels,
+    });
+  } catch {
+    yield put({
+      type: ActionTypes.GET_CURRENT_PATIENT_LABELS_FAILURE,
       patientIdentifier,
     });
     yield put(AlertActions.showGlobalErrorAlert());
@@ -568,16 +581,6 @@ function* doSortPatientTasks({ payload }) {
   }
 }
 
-function* doFetchPatientLabels() {
-  try {
-    yield put(PatientDetailsActions.setPatientLabelsFetching());
-    const labels = yield call(PatientLabelApi.getAllPatientLabels);
-    yield put(PatientDetailsActions.setPatientLabels(labels));
-  } catch {
-    yield put(AlertActions.showGlobalErrorAlert());
-  }
-}
-
 function* doFetchPatientAttachments({ patientIdentifier }) {
   try {
     yield put(PatientDetailsActions.setPatientAttachmentsFetching());
@@ -763,6 +766,10 @@ export default function* watchPatientDetails() {
     initializePatientState,
   );
   yield takeLatest(ActionTypes.GET_CURRENT_PATIENT, getCurrentPatient);
+  yield takeLatest(
+    ActionTypes.GET_CURRENT_PATIENT_LABELS,
+    getCurrentPatientLabels,
+  );
   yield takeLatest(ActionTypes.GET_PATIENT_TASKS_STATS, getPatientTasksStats);
   yield takeLatest(ActionTypes.GET_PATIENT_TASKS, getPatientTasks);
   yield takeLatest(DO_TOGGLE_PATIENT_TASK_STATUS, doToggleTaskCompleteStatus);
@@ -793,7 +800,6 @@ export default function* watchPatientDetails() {
   );
   yield takeEvery(DO_CHANGE_MEMBER_ROLE, doChangeMemberRole);
   yield takeEvery(DO_SORT_PATIENT_TASKS, doSortPatientTasks);
-  yield takeLatest(DO_FETCH_PATIENT_LABELS, doFetchPatientLabels);
   yield takeLatest(DO_FETCH_PATIENT_ATTACHMENTS, doFetchPatientAttachments);
   yield takeLatest(DO_ADD_PATIENT_ATTACHMENT, doAddPatientAttachment);
   yield takeLatest(DO_REMOVE_PATIENT_ATTACHMENT, doRemovePatientAttachment);

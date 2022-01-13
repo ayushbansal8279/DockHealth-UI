@@ -57,13 +57,13 @@ export default function(state = INITIAL_STATE, action = {}) {
       };
     }
 
-    case ActionTypes.CLEAR_PATIENT_TASKS_STATE:
+    case ActionTypes.CLEAR_PATIENT_STATE:
       return {
         ...INITIAL_STATE,
       };
 
     case ActionTypes.GET_CURRENT_PATIENT: {
-      return { ...state, patient: null, isFetchingPatient: true };
+      return { ...state, isFetchingPatient: true };
     }
 
     case ActionTypes.GET_CURRENT_PATIENT_SUCCESS: {
@@ -74,15 +74,22 @@ export default function(state = INITIAL_STATE, action = {}) {
       return { ...state, patient: null, isFetchingPatient: false };
     }
 
-    case ActionTypes.SET_PATIENT_LABELS_FETCHING: {
-      return { ...state, labels: null, isFetchingLabels: true };
+    case ActionTypes.GET_CURRENT_PATIENT_LABELS: {
+      return { ...state, isFetchingLabels: true };
     }
-    case ActionTypes.SET_PATIENT_LABELS: {
-      return { ...state, labels: payload.labels, isFetchingLabels: false };
+
+    case ActionTypes.GET_CURRENT_PATIENT_LABELS_SUCCESS: {
+      return { ...state, labels: action.labels, isFetchingLabels: false };
     }
+
+    case ActionTypes.GET_CURRENT_PATIENT_LABELS_FAILURE: {
+      return { ...state, labels: null, isFetchingLabels: false };
+    }
+
     case ActionTypes.SET_PATIENT_ATTACHMENTS_FETCHING: {
       return { ...state, attachments: null, isFetchingAttachments: true };
     }
+
     case ActionTypes.SET_PATIENT_ATTACHMENTS: {
       return {
         ...state,
