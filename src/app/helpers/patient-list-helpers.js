@@ -22,3 +22,7 @@ export function getPatientListIdentifierByUrlParameter(urlParameter) {
 
   return defaultPatientListIdentifier ?? urlParameter;
 }
+
+export function getPatientsListFiltersStorageKey(patientsListIdentifier) {
+  return `PATIENTS_LIST_${patientsListIdentifier}`;
+}

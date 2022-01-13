@@ -1,5 +1,7 @@
 /* eslint-disable sonarjs/cognitive-complexity */
 import * as ActionTypes from 'actions/action-types';
+import sessionStorageHelper from 'helpers/session-storage-helper';
+import { getPatientsListFiltersStorageKey } from 'helpers/patient-list-helpers';
 
 const initialState = {
   defaultPatientsLists: null,
@@ -11,12 +13,19 @@ const initialState = {
 
 const PatientsReducer = (state = initialState, action) => {
   switch (action.type) {
-    case ActionTypes.INITIALIZE_PATIENTS_LIST_STATE:
+    case ActionTypes.INITIALIZE_PATIENTS_LIST_STATE: {
+      const selectedFilters = sessionStorageHelper.getItem(
+        getPatientsListFiltersStorageKey(action.patientsListIdentifier),
+      );
+
       return {
         ...state,
         currentPatientsListIdentifier: action.patientsListIdentifier,
-        currentPatientsList: null,
+        currentPatientsList: {
+          selectedFilters,
+        },
       };
+    }
 
     case ActionTypes.CLEAR_PATIENTS_LIST_STATE:
       return {
@@ -121,6 +130,16 @@ const PatientsReducer = (state = initialState, action) => {
 
     case ActionTypes.SET_PATIENTS_SELECTED_FILTERS: {
       const { selectedFilters } = action;
+      if (selectedFilters) {
+        sessionStorageHelper.setItem(
+          getPatientsListFiltersStorageKey(state.currentPatientsListIdentifier),
+          selectedFilters,
+        );
+      } else {
+        sessionStorageHelper.removeItem(
+          getPatientsListFiltersStorageKey(state.currentPatientsListIdentifier),
+        );
+      }
 
       return {
         ...state,
@@ -132,7 +151,10 @@ const PatientsReducer = (state = initialState, action) => {
       };
     }
 
-    case ActionTypes.CLEAR_PATIENTS_FILTERS:
+    case ActionTypes.CLEAR_PATIENTS_FILTERS: {
+      sessionStorageHelper.removeItem(
+        getPatientsListFiltersStorageKey(state.currentPatientsListIdentifier),
+      );
       return {
         ...state,
         currentPatientsList: {
@@ -140,6 +162,7 @@ const PatientsReducer = (state = initialState, action) => {
           selectedFilters: null,
         },
       };
+    }
 
     case ActionTypes.GET_PATIENTS_LISTS:
       return {
