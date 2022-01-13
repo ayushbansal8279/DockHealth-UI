@@ -237,7 +237,6 @@ export const PatientTasksSagaActions = {
 function* initializePatientState() {
   try {
     yield put(PatientDetailsActions.getCurrentPatient());
-    yield put(PatientDetailsActions.getCurrentPatientLabels());
   } catch {
     yield put(showGlobalErrorAlert());
   }
