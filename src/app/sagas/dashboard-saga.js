@@ -55,12 +55,13 @@ function* initializeDashboardView() {
 
 function* getDashboardFilters() {
   const tabName = yield select(dashboardTabNameSelector);
+  const selectedFilters = yield select(selectedFiltersInMegaFilterSelector);
 
   try {
     const filters =
       tabName === DashboardTasksTab.ALL_TASKS
-        ? yield call(getDashboardAllTasksFilters)
-        : yield call(getDashboardMyTasksFilters);
+        ? yield call(getDashboardAllTasksFilters, selectedFilters)
+        : yield call(getDashboardMyTasksFilters, selectedFilters);
 
     yield put({
       type: ActionTypes.GET_DASHBOARD_FILTERS_SUCCESS,
@@ -198,10 +199,8 @@ function* getDashboardTasks() {
     const tabName = yield select(dashboardTabNameSelector);
     const isAllTasks = tabName === DashboardTasksTab.ALL_TASKS;
 
-    let tasksList = [];
-
     if (selectedFilters && Object.keys(selectedFilters).length > 0) {
-      tasksList = yield call(
+      const taskGroups = yield call(
         isAllTasks
           ? getDashboardAllTasksByCriteria
           : getDashboardMyTasksByCriteria,
@@ -210,15 +209,11 @@ function* getDashboardTasks() {
 
       yield put({
         type: ActionTypes.GET_DASHBOARD_TASKS_SUCCESS,
-        tasksList: tasksList?.taskGroups?.map(group => ({
+        tasksList: taskGroups?.map(group => ({
           ...group,
           metricValue: group?.tasks?.length || 0,
           defaultOpen: true,
         })),
-      });
-      yield put({
-        type: ActionTypes.GET_DASHBOARD_FILTERS_SUCCESS,
-        filters: tasksList?.taskFilterOptions,
       });
     } else {
       yield all([
@@ -308,7 +303,10 @@ function* selectFiltersForMegaFilter() {
   const tabName = yield select(dashboardTabNameSelector);
 
   if (tabName) {
-    yield put(DashboardActions.getDashboardTasks());
+    yield all([
+      put(DashboardActions.getDashboardTasks()),
+      put(DashboardActions.getDashboardFilters()),
+    ]);
   }
 }
 

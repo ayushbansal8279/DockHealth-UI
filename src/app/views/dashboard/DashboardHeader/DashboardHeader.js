@@ -1,8 +1,10 @@
 import React, { useCallback, useMemo, useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { megaFilterSelector } from 'selectors/mega-filter-selectors';
 import {
-  dashboardTasksIsLoadingSelector,
+  megaFilterSelector,
+  isFetchingFiltersSelector,
+} from 'selectors/mega-filter-selectors';
+import {
   dashboardTasksSelector,
   dashboardTabNameSelector,
 } from 'selectors/dashboard-tasks-selectors';
@@ -18,13 +20,12 @@ import UserAvatar from 'components/user/UserAvatar/UserAvatar';
 import LayoutHeader from 'components/template/LayoutHeader/LayoutHeader';
 import MegaFilter from 'components/tasklist/MegaFilter/MegaFilter';
 import { selectFiltersForMegaFilter } from 'actions/mega-filter-actions';
-import { isEmpty } from 'ramda';
 import HeaderSearch from 'components/template/HeaderSearch/HeaderSearch';
 
 const DashboardHeader = () => {
   const [searchValue, setSearchValue] = useState('');
   const dispatch = useDispatch();
-  const isLoadingTasks = useSelector(dashboardTasksIsLoadingSelector);
+  const isFetchingFilters = useSelector(isFetchingFiltersSelector);
   const dashboardTasks = useSelector(dashboardTasksSelector);
   const currentUser = useSelector(userProfileSelector);
   const tabName = useSelector(dashboardTabNameSelector);
@@ -46,9 +47,8 @@ const DashboardHeader = () => {
   );
 
   const handleMegaFilterOpen = useCallback(() => {
-    if (!selectedFilters || isEmpty(selectedFilters))
-      dispatch(getDashboardFilters());
-  }, [dispatch, selectedFilters]);
+    dispatch(getDashboardFilters());
+  }, [dispatch]);
 
   const searchTasksWithDebounce = useCallback(
     debounce(value => {
@@ -94,7 +94,7 @@ const DashboardHeader = () => {
         taskStatus="INCOMPLETE"
         activeItemsAmount={activeTasksCount}
         onOpen={handleMegaFilterOpen}
-        isFetching={isLoadingTasks}
+        isFetching={isFetchingFilters}
       />
     </LayoutHeader>
   );

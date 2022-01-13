@@ -11,6 +11,7 @@ export default function(state = INITIAL_STATE, action = {}) {
   const { type, error, selectedFilters } = action;
 
   switch (type) {
+    case ActionTypes.GET_DASHBOARD_FILTERS:
     case ActionTypes.GET_USER_TASK_FILTER_OPTIONS:
     case ActionTypes.GET_PATIENT_FILTER_OPTIONS:
     case ActionTypes.GET_CURRENT_TASK_LIST_FILTER_OPTIONS:
