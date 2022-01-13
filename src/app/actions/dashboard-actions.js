@@ -38,6 +38,13 @@ export function getDashboardFilters() {
   };
 }
 
+export function selectDashboardFilters(selectedFilters) {
+  return {
+    type: ActionTypes.SELECT_DASHBOARD_FILTERS,
+    selectedFilters,
+  };
+}
+
 export function reorderDashboardTasks(taskGroupImplicitType, tasksOrder) {
   return {
     type: ActionTypes.REORDER_DASHBOARD_TASKS,

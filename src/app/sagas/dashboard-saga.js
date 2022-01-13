@@ -1,5 +1,3 @@
-/* eslint-disable no-console */
-/* eslint-disable func-names */
 /* eslint-disable sonarjs/no-identical-functions */
 import {
   put,
@@ -23,8 +21,6 @@ import {
   searchTasksByAssignedToUserGroupedByImplicitGroups,
   searchTasksForOrganizationGroupedByImplicitGroups,
 } from 'api/dashboard-api';
-import * as MegaFilterActions from 'actions/mega-filter-actions';
-import { selectedFiltersInMegaFilterSelector } from 'selectors/mega-filter-selectors';
 import {
   DashboardTasksTab,
   getGroupByDueDate,
@@ -33,20 +29,17 @@ import {
   dashboardGroupTasksCountSelector,
   dashboardTabNameSelector,
   dashboardTasksSelector,
+  dashboardSelectedFiltersSelector,
 } from 'selectors/dashboard-tasks-selectors';
-import { getFiltersFromLocalStorage } from 'helpers/mega-filter-helper';
 import { showGlobalErrorAlert } from 'alert/actions';
 
 function* initializeDashboardView() {
   try {
-    const tabName = yield select(dashboardTabNameSelector);
-    const filters = getFiltersFromLocalStorage('dashboard', tabName);
-
-    if (!filters) {
-      yield put(MegaFilterActions.clearFiltersForMegaFilter());
+    const selectedFilters = yield select(dashboardSelectedFiltersSelector);
+    if (!selectedFilters) {
       yield put(DashboardActions.getDashboardGroups());
     } else {
-      yield put(MegaFilterActions.selectFiltersForMegaFilter(filters));
+      yield put(DashboardActions.getDashboardTasks());
     }
   } catch (error) {
     console.log(error);
@@ -55,7 +48,7 @@ function* initializeDashboardView() {
 
 function* getDashboardFilters() {
   const tabName = yield select(dashboardTabNameSelector);
-  const selectedFilters = yield select(selectedFiltersInMegaFilterSelector);
+  const selectedFilters = yield select(dashboardSelectedFiltersSelector);
 
   try {
     const filters =
@@ -194,7 +187,7 @@ function* searchDashboardTasks({ searchTerm }) {
 
 function* getDashboardTasks() {
   try {
-    const selectedFilters = yield select(selectedFiltersInMegaFilterSelector);
+    const selectedFilters = yield select(dashboardSelectedFiltersSelector);
 
     const tabName = yield select(dashboardTabNameSelector);
     const isAllTasks = tabName === DashboardTasksTab.ALL_TASKS;
@@ -299,7 +292,7 @@ function* addTaskSuccess({ task }) {
   }
 }
 
-function* selectFiltersForMegaFilter() {
+function* selectDashboardFilters() {
   const tabName = yield select(dashboardTabNameSelector);
 
   if (tabName) {
@@ -328,10 +321,7 @@ export default function* watchDashboard() {
   yield takeLatest(ActionTypes.SEARCH_DASHBOARD_TASKS, searchDashboardTasks);
   yield takeEvery(ActionTypes.REORDER_DASHBOARD_TASKS, reorderDashboardTasks);
   yield takeLatest(ActionTypes.GET_DASHBOARD_FILTERS, getDashboardFilters);
-  yield takeEvery(
-    ActionTypes.SELECT_FILTERS_FROM_MEGA_FILTER,
-    selectFiltersForMegaFilter,
-  );
+  yield takeEvery(ActionTypes.SELECT_DASHBOARD_FILTERS, selectDashboardFilters);
   yield takeEvery(
     ActionTypes.LOAD_MORE_DASHBOARD_TASKS_FOR_GROUP,
     loadMoreDashboardTasksForGroup,

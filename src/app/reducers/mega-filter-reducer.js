@@ -11,7 +11,6 @@ export default function(state = INITIAL_STATE, action = {}) {
   const { type, error, selectedFilters } = action;
 
   switch (type) {
-    case ActionTypes.GET_DASHBOARD_FILTERS:
     case ActionTypes.GET_USER_TASK_FILTER_OPTIONS:
     case ActionTypes.GET_PATIENT_FILTER_OPTIONS:
     case ActionTypes.GET_CURRENT_TASK_LIST_FILTER_OPTIONS:
@@ -20,7 +19,6 @@ export default function(state = INITIAL_STATE, action = {}) {
         isLoading: true,
       };
 
-    case ActionTypes.GET_DASHBOARD_FILTERS_SUCCESS:
     case ActionTypes.GET_PATIENT_FILTER_OPTIONS_SUCCESS:
     case ActionTypes.GET_CURRENT_TASK_LIST_FILTER_OPTIONS_SUCCESS:
     case ActionTypes.GET_USER_TASK_FILTER_OPTIONS_SUCCESS:
@@ -31,7 +29,6 @@ export default function(state = INITIAL_STATE, action = {}) {
       };
 
     case ActionTypes.GET_USER_TASK_FILTER_OPTIONS_FAILURE:
-    case ActionTypes.GET_DASHBOARD_FILTERS_FAILURE:
     case ActionTypes.GET_PATIENT_FILTER_OPTIONS_FAILURE:
     case ActionTypes.GET_CURRENT_TASK_LIST_FILTER_OPTIONS_FAILURE:
       return { ...state, error, isLoading: false };

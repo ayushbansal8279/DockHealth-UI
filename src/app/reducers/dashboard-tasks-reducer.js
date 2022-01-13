@@ -1,6 +1,10 @@
 import * as ActionTypes from 'actions/action-types';
-import { getGroupByDueDate } from 'helpers/dashboard-helpers';
+import {
+  getDashboardFiltersStorageKey,
+  getGroupByDueDate,
+} from 'helpers/dashboard-helpers';
 import { mapWithRemove } from 'helpers/utility-functions';
+import sessionStorageHelper from 'helpers/session-storage-helper';
 import TaskBaseReducer from './task-base-reducer';
 
 const initialState = {
@@ -9,6 +13,10 @@ const initialState = {
   tasksList: [],
   isLoading: false,
   error: '',
+  selectedFilters: null,
+  filterOptions: null,
+  isFetchingFilters: false,
+  filterOptionsError: false,
 };
 
 const updateTaskInList = (lists, updateTaskCallback) =>
@@ -26,19 +34,69 @@ const updateTasksStateCallback = (state, updateTaskFromAction) => {
   };
 };
 
+// eslint-disable-next-line sonarjs/cognitive-complexity
 const DashboardTasksReducer = (state = initialState, action) => {
   const { type, tasksList, error } = action;
   switch (type) {
-    case ActionTypes.INITIALIZE_DASHBOARD_STATE:
+    case ActionTypes.INITIALIZE_DASHBOARD_STATE: {
+      const selectedFilters = sessionStorageHelper.getItem(
+        getDashboardFiltersStorageKey(action.tabName),
+      );
+
       return {
         ...state,
         ...initialState,
         tabName: action.tabName,
+        selectedFilters,
       };
+    }
 
     case ActionTypes.CLEAR_DASHBOARD_STATE:
       return {
         ...initialState,
+      };
+
+    case ActionTypes.SELECT_DASHBOARD_FILTERS: {
+      const { selectedFilters } = action;
+
+      if (!selectedFilters) {
+        sessionStorageHelper.removeItem(
+          getDashboardFiltersStorageKey(state.tabName),
+        );
+      } else {
+        sessionStorageHelper.setItem(
+          getDashboardFiltersStorageKey(state.tabName),
+          selectedFilters,
+        );
+      }
+
+      return {
+        ...state,
+        selectedFilters: action.selectedFilters,
+      };
+    }
+
+    case ActionTypes.GET_DASHBOARD_FILTERS:
+      return {
+        ...state,
+        isFetchingFilters: true,
+        filterOptionsError: false,
+      };
+
+    case ActionTypes.GET_DASHBOARD_FILTERS_SUCCESS:
+      return {
+        ...state,
+        filterOptions: action.filters,
+        isFetchingFilters: false,
+        filterOptionsError: false,
+      };
+
+    case ActionTypes.GET_DASHBOARD_FILTERS_FAILURE:
+      return {
+        ...state,
+        filterOptions: null,
+        isFetchingFilters: false,
+        filterOptionsError: true,
       };
 
     case ActionTypes.GET_DASHBOARD_GROUPS:
