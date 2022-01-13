@@ -8,7 +8,8 @@ import {
   removeLabelForPatient,
   removeLabelFromDatabase,
 } from 'api/patient-label-api';
-import { reloadPatient, fetchPatientLabels } from 'sagas/patient-details-saga';
+import * as PatientDetailsActions from 'actions/patient-details-actions';
+import { fetchPatientLabels } from 'sagas/patient-details-saga';
 import { patientSelector } from 'selectors/patient-details-selectors';
 
 const labelAddOrRemovePromise = ({
@@ -63,7 +64,7 @@ const initializeLabelsSectionHooks = () => {
 
   const refreshLabelsAndPatient = async () => {
     refreshLabels();
-    dispatch(reloadPatient(patient.patientIdentifier));
+    dispatch(PatientDetailsActions.getCurrentPatient());
   };
 
   const saveAddOrRemoveLabel = async selectedLabels => {

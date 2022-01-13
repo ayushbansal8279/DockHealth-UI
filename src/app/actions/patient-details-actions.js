@@ -1,15 +1,22 @@
 import * as ActionTypes from 'actions/action-types';
 
-export const setPatientFetching = () => ({
-  type: ActionTypes.SET_PATIENT_FETCHING,
-});
+export function initializePatientState(patientIdentifier) {
+  return {
+    type: ActionTypes.INITIALIZE_PATIENT_STATE,
+    patientIdentifier,
+  };
+}
+export function clearPatientTasksState() {
+  return {
+    type: ActionTypes.CLEAR_PATIENT_TASKS_STATE,
+  };
+}
 
-export const setPatient = patient => ({
-  type: ActionTypes.SET_PATIENT,
-  payload: {
-    patient,
-  },
-});
+export function getCurrentPatient() {
+  return {
+    type: ActionTypes.GET_CURRENT_PATIENT,
+  };
+}
 
 export const setPatientLabelsFetching = () => ({
   type: ActionTypes.SET_PATIENT_LABELS_FETCHING,
@@ -31,17 +38,6 @@ export const setPatientAttachments = attachments => ({
   payload: {
     attachments,
   },
-});
-
-export const initializePatient = patientIdentifier => ({
-  type: ActionTypes.INITIALIZE_PATIENT,
-  payload: {
-    patientIdentifier,
-  },
-});
-
-export const clearPatientTasksState = () => ({
-  type: ActionTypes.CLEAR_PATIENT_TASKS,
 });
 
 export const updatePatientNote = (patientNoteIdentifier, note) => ({
