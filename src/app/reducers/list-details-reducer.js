@@ -1,35 +1,8 @@
-import {
-  GET_COMPLETED_TASKS_BY_GROUPS_SUCCESS,
-  GET_TASKS_BY_GROUPS_SUCCESS,
-  REQUEST_COMPLETED_TASKS,
-  REQUEST_TASKS,
-  GET_MORE_TASKS_REQUEST,
-  GET_LIST_DETAILS_TASK_COUNTERS_SUCCESS,
-  RESET_LIST_DETAILS_TASK_COUNTERS,
-  INCREASE_INCOMPLETE_TASK_COUNTERS,
-  INCREASE_COMPLETE_TASK_COUNTERS,
-  REQUEST_TASKLIST_GROUP_TASKS_SUCCESS,
-  REQUEST_TASKLIST_GROUP_TASKS,
-  TASK_GROUP_LIST_REQUEST,
-  TASK_GROUP_LIST_SUCCESS,
-  TASK_GROUP_LIST_FAILURE,
-  SET_LIST_DETAILS_TASKS_SORT,
-  REQUEST_ALL_LIST_DETAILS_GROUPS,
-  ADD_TASK_SUCCESS,
-  UPDATE_TEMPLATE_BUNDLE_SUCCESS,
-  ADD_TEMPLATE_BUNDLE,
-  DELETE_TEMPLATE_BUNDLE,
-  COMPLETE_TEMPLATE_BUNDLE,
-  MOVE_TEMPLATE_BUNDLE_SUCCESS,
-  UPDATE_TEMPLATE_BUNDLE_FAILURE,
-  GET_LIST_CUSTOM_FIELDS_SUCCESS,
-  GET_LIST_CUSTOM_FIELDS_FAILURE,
-  GET_LIST_DETAILS_TASK_COUNTERS_FAILURE,
-} from 'actions/action-types';
+import * as ActionTypes from 'actions/action-types';
 import { mapWithRemove } from 'helpers/utility-functions';
 import { TaskGroupType, TaskItemType } from 'helpers/task-helpers';
 import { updateBundleInList } from 'helpers/tasklist-helpers';
-import { pipe, prop, uniqBy } from 'ramda';
+import { pipe, prop, uniqBy, move } from 'ramda';
 import TaskBaseReducer from './task-base-reducer';
 
 const dedupe = pipe(uniqBy(prop('identifier')));
@@ -48,12 +21,12 @@ const initialState = {
   listGroups: [],
   isFetchingGroups: false,
   listGroupsError: '',
-  groupsInitialized: false,
   sort: {
     key: null,
     order: null,
   },
   listCustomFields: [],
+  searchTerm: '',
 };
 
 function updateGroupInState(updateCallback, taskGroupIdentifier, state) {
@@ -124,60 +97,69 @@ const updateTasksStateCallback = (state, updateTaskFromAction) => {
 const ListDetailsReducer = (state = initialState, action) => {
   // eslint-disable-next-line sonarjs/max-switch-cases
   switch (action.type) {
-    case GET_LIST_CUSTOM_FIELDS_SUCCESS: {
+    case ActionTypes.INITIALIZE_TASK_LIST_STATE: {
+      return {
+        ...state,
+        taskListIdentifier: action.taskListIdentifier,
+      };
+    }
+    case ActionTypes.CLEAR_TASK_LIST_STATE:
+      return {
+        ...state,
+        taskListIdentifier: null,
+      };
+    case ActionTypes.GET_LIST_CUSTOM_FIELDS_SUCCESS: {
       const { listCustomFields } = action;
       return {
         ...state,
         listCustomFields,
       };
     }
-    case GET_LIST_CUSTOM_FIELDS_FAILURE:
+    case ActionTypes.GET_LIST_CUSTOM_FIELDS_FAILURE:
       return {
         ...state,
         listCustomFields: [],
       };
-    case TASK_GROUP_LIST_REQUEST:
+    case ActionTypes.GET_TASKS_GROUPS_LIST_SUCCESS:
       return {
         ...state,
-        groupsInitialized: true,
-      };
-
-    case TASK_GROUP_LIST_SUCCESS:
-      return {
-        ...state,
-        listGroups: action.listGroups,
+        listGroups: action.groups,
         isFetchingGroups: false,
         groupsInitialized: true,
       };
 
-    case TASK_GROUP_LIST_FAILURE:
+    case ActionTypes.GET_TASKS_GROUPS_LIST_FAILURE:
       return {
         ...state,
         listGroupsError: 'Something went wrong',
         isFetchingGroups: false,
       };
 
-    case GET_TASKS_BY_GROUPS_SUCCESS: {
-      const { groupedTasks, taskListIdentifier } = action;
-      const updatedTaskGroups = groupedTasks?.taskGroups?.map(taskGroup => {
-        return {
-          ...taskGroup,
-          isLoadingGroup: false,
-        };
-      });
+    case ActionTypes.GET_CURRENT_LIST_TASKS_SUCCESS: {
+      const { groupedTasks } = action;
 
       return {
         ...state,
-        taskListIdentifier,
         groupedTasks: {
-          ...groupedTasks,
-          taskGroups: updatedTaskGroups,
+          taskGroups: groupedTasks,
         },
         isFetching: false,
       };
     }
 
-    case GET_COMPLETED_TASKS_BY_GROUPS_SUCCESS: {
+    case ActionTypes.GET_CURRENT_LIST_COMPLETE_TASKS_SUCCESS: {
+      const { groupedTasks } = action;
+
+      return {
+        ...state,
+        completedGroupedTasks: {
+          taskGroups: groupedTasks,
+        },
+        isCompletedTasksFetching: false,
+      };
+    }
+
+    case ActionTypes.GET_COMPLETED_TASKS_BY_GROUPS_SUCCESS: {
       const { groupedTasks, loadingMore, taskListIdentifier } = action;
       const group = groupedTasks.taskGroups[0];
 
@@ -218,7 +200,7 @@ const ListDetailsReducer = (state = initialState, action) => {
       };
     }
 
-    case REQUEST_ALL_LIST_DETAILS_GROUPS: {
+    case ActionTypes.REQUEST_ALL_LIST_DETAILS_GROUPS: {
       return {
         ...state,
         groupedTasks: {
@@ -231,7 +213,7 @@ const ListDetailsReducer = (state = initialState, action) => {
       };
     }
 
-    case REQUEST_TASKLIST_GROUP_TASKS: {
+    case ActionTypes.REQUEST_TASKLIST_GROUP_TASKS: {
       const { fetchedGroupIdentifier, refresh } = action;
 
       const groupToUpdate = state.groupedTasks?.taskGroups?.find(
@@ -267,7 +249,7 @@ const ListDetailsReducer = (state = initialState, action) => {
       };
     }
 
-    case REQUEST_TASKLIST_GROUP_TASKS_SUCCESS: {
+    case ActionTypes.REQUEST_TASKLIST_GROUP_TASKS_SUCCESS: {
       const { groupOfTasks, refresh } = action;
 
       const groupsToUpdate = groupOfTasks.taskGroups;
@@ -310,7 +292,14 @@ const ListDetailsReducer = (state = initialState, action) => {
       };
     }
 
-    case REQUEST_TASKS:
+    case ActionTypes.SEARCH_CURRENT_LIST_TASKS: {
+      return {
+        ...state,
+        searchTerm: action.searchTerm,
+      };
+    }
+
+    case ActionTypes.GET_CURRENT_LIST_TASKS:
       return {
         ...state,
         isFetching: true,
@@ -319,27 +308,27 @@ const ListDetailsReducer = (state = initialState, action) => {
         showingCompletedTasks: false,
       };
 
-    case REQUEST_COMPLETED_TASKS:
+    case ActionTypes.GET_CURRENT_LIST_COMPLETE_TASKS:
       return {
         ...state,
         completedTasks: [],
         isCompletedTasksFetching: true,
       };
 
-    case GET_LIST_DETAILS_TASK_COUNTERS_FAILURE:
-    case RESET_LIST_DETAILS_TASK_COUNTERS:
+    case ActionTypes.GET_LIST_DETAILS_TASK_COUNTERS_FAILURE:
+    case ActionTypes.RESET_LIST_DETAILS_TASK_COUNTERS:
       return {
         ...state,
         taskCounters: {},
       };
 
-    case GET_LIST_DETAILS_TASK_COUNTERS_SUCCESS:
+    case ActionTypes.GET_LIST_DETAILS_TASK_COUNTERS_SUCCESS:
       return {
         ...state,
         taskCounters: action.payload,
       };
 
-    case INCREASE_INCOMPLETE_TASK_COUNTERS: {
+    case ActionTypes.INCREASE_INCOMPLETE_TASK_COUNTERS: {
       return {
         ...state,
         taskCounters: state.taskCounters
@@ -351,7 +340,7 @@ const ListDetailsReducer = (state = initialState, action) => {
       };
     }
 
-    case INCREASE_COMPLETE_TASK_COUNTERS:
+    case ActionTypes.INCREASE_COMPLETE_TASK_COUNTERS:
       return {
         ...state,
         taskCounters: state.taskCounters
@@ -362,11 +351,11 @@ const ListDetailsReducer = (state = initialState, action) => {
           : {},
       };
 
-    case GET_MORE_TASKS_REQUEST: {
+    case ActionTypes.GET_MORE_TASKS_REQUEST: {
       return { ...state, isFetchingMoreTasks: true };
     }
 
-    case SET_LIST_DETAILS_TASKS_SORT: {
+    case ActionTypes.SET_LIST_DETAILS_TASKS_SORT: {
       const { key, order } = action.payload || {};
 
       return {
@@ -378,8 +367,8 @@ const ListDetailsReducer = (state = initialState, action) => {
       };
     }
 
-    case UPDATE_TEMPLATE_BUNDLE_FAILURE:
-    case UPDATE_TEMPLATE_BUNDLE_SUCCESS: {
+    case ActionTypes.UPDATE_TEMPLATE_BUNDLE_FAILURE:
+    case ActionTypes.UPDATE_TEMPLATE_BUNDLE_SUCCESS: {
       const { bundleIdentifier, dataToUpdate } = action;
 
       return {
@@ -394,7 +383,7 @@ const ListDetailsReducer = (state = initialState, action) => {
       };
     }
 
-    case ADD_TASK_SUCCESS: {
+    case ActionTypes.ADD_TASK_SUCCESS: {
       const { task: addedTask } = action;
 
       const taskListIdentifier = addedTask.taskList?.taskListIdentifier;
@@ -432,7 +421,7 @@ const ListDetailsReducer = (state = initialState, action) => {
       );
     }
 
-    case ADD_TEMPLATE_BUNDLE: {
+    case ActionTypes.ADD_TEMPLATE_BUNDLE: {
       const { bundle: addedBundle } = action;
 
       const {
@@ -454,9 +443,9 @@ const ListDetailsReducer = (state = initialState, action) => {
       );
     }
 
-    case MOVE_TEMPLATE_BUNDLE_SUCCESS:
-    case DELETE_TEMPLATE_BUNDLE:
-    case COMPLETE_TEMPLATE_BUNDLE: {
+    case ActionTypes.MOVE_TEMPLATE_BUNDLE_SUCCESS:
+    case ActionTypes.DELETE_TEMPLATE_BUNDLE:
+    case ActionTypes.COMPLETE_TEMPLATE_BUNDLE: {
       const { bundleIdentifier } = action;
 
       return {
@@ -469,6 +458,20 @@ const ListDetailsReducer = (state = initialState, action) => {
           })),
         },
       };
+    }
+
+    case ActionTypes.REORDER_TASK_LIST_GROUPS: {
+      const { newIndex, oldIndex } = action;
+      const newListGroupsOrder = move(oldIndex, newIndex, state.listGroups);
+
+      return { ...state, listGroups: newListGroupsOrder };
+    }
+
+    case ActionTypes.REORDER_TASK_LIST_GROUPS_FAILURE: {
+      const { newIndex, oldIndex } = action;
+      const oldListGroupsOrder = move(newIndex, oldIndex, state.listGroups);
+
+      return { ...state, listGroups: oldListGroupsOrder };
     }
 
     default:
