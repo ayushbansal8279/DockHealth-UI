@@ -1,6 +1,6 @@
 import React, { useCallback, useEffect, useState } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
-import { dashboardTabNameSelector } from 'selectors/dashboard-tasks-selectors';
+import { dashboardTabNameSelector } from 'selectors/dashboard-selectors';
 import { useHistory, useLocation } from 'react-router-dom';
 import { updateCurrentUserPreferences } from 'actions/user-actions';
 import { Grid } from '@material-ui/core';

@@ -6,7 +6,7 @@ import {
   dashboardFilterOptionsSelector,
   isFetchingDashboardFiltersSelector,
   dashboardSelectedFiltersSelector,
-} from 'selectors/dashboard-tasks-selectors';
+} from 'selectors/dashboard-selectors';
 import {
   getDashboardFilters,
   initializeDashboardState,

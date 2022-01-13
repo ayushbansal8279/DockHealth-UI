@@ -15,7 +15,7 @@ import {
   dashboardAllTaskItemsSelector,
   dashboardTabNameSelector,
   dashboardSearchValueSelector,
-} from 'selectors/dashboard-tasks-selectors';
+} from 'selectors/dashboard-selectors';
 import {
   selectedTaskIdentifierSelector,
   taskDrawerOpenSelector,

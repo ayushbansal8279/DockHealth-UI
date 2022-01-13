@@ -30,7 +30,7 @@ import {
   dashboardTabNameSelector,
   dashboardTasksSelector,
   dashboardSelectedFiltersSelector,
-} from 'selectors/dashboard-tasks-selectors';
+} from 'selectors/dashboard-selectors';
 import { showGlobalErrorAlert } from 'alert/actions';
 
 function* initializeDashboardView() {
