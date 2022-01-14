@@ -13,7 +13,7 @@ const INITIAL_STATE = {
   labels: null,
   isFetchingLabels: false,
   completeTasksVisible: false,
-  lists: [],
+  lists: null,
   taskSearch: null,
   incompleteTasksCount: null,
   completeTasksCount: null,
@@ -116,7 +116,7 @@ export default function(state = INITIAL_STATE, action = {}) {
     case ActionTypes.GET_CURRENT_PATIENT_TASKS:
       return {
         ...state,
-        isFetching: action.withLoader,
+        isFetching: true,
         error: false,
       };
 

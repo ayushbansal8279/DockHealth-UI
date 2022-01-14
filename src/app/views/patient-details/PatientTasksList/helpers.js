@@ -8,7 +8,7 @@ export const checkIfSelectedListIsPresent = (lists, selectedListIdentifier) =>
   );
 
 export const searchTaskInPatientLists = (patientLists, searchValue) =>
-  patientLists.reduce((accumulator, currentValue) => {
+  patientLists?.reduce((accumulator, currentValue) => {
     const filteredTasks = filterTasksBySearchValue(
       currentValue.tasks,
       searchValue,
@@ -17,7 +17,7 @@ export const searchTaskInPatientLists = (patientLists, searchValue) =>
     if (filteredTasks.length === 0) return accumulator;
 
     return [...accumulator, { ...currentValue, tasks: filteredTasks }];
-  }, []);
+  }, []) || null;
 
 export function groupTasks(tasks) {
   const groupedTasks = tasks?.reduce(
