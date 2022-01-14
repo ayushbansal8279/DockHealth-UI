@@ -35,3 +35,18 @@ export const dashboardTabNameSelector = createSelector(
   dashboardTasksStateSelector,
   ({ tabName }) => tabName,
 );
+
+export const dashboardSelectedFiltersSelector = createSelector(
+  dashboardTasksStateSelector,
+  ({ selectedFilters }) => selectedFilters,
+);
+
+export const dashboardFilterOptionsSelector = createSelector(
+  dashboardTasksStateSelector,
+  ({ filterOptions }) => filterOptions,
+);
+
+export const isFetchingDashboardFiltersSelector = createSelector(
+  dashboardTasksStateSelector,
+  ({ isFetchingFilters }) => isFetchingFilters,
+);

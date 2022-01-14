@@ -18,6 +18,7 @@ import {
   Redirect,
   useParams,
 } from 'react-router-dom';
+import * as PatientDetailsActions from 'actions/patient-details-actions';
 import { initializePusher } from 'helpers/pusher-instance';
 import { isFetchingPatientsListsSelector } from 'selectors/patients-selectors';
 import {
@@ -25,10 +26,7 @@ import {
   selectedFiltersInMegaFilterSelector,
 } from 'selectors/mega-filter-selectors';
 import { userProfileSelector } from 'selectors/user-selectors';
-import {
-  setPatientTaskSearch,
-  patientTasksFilterChange,
-} from 'sagas/patient-details-saga';
+import { setPatientTaskSearch } from 'sagas/patient-details-saga';
 import { onSearchChanged } from 'helpers/ga-event-helper';
 import { RouteWrapper } from 'routing/components';
 import MegaFilter from 'components/tasklist/MegaFilter/MegaFilter';
@@ -89,6 +87,15 @@ const PatientDetailsView = () => {
   const selectedFilters = useSelector(selectedFiltersInMegaFilterSelector);
   const pusher = useRef(initializePusher());
   const customerTypeLabel = getCustomerTypeLabel(currentUser);
+
+  useEffect(() => {
+    dispatch(PatientDetailsActions.initializePatientState(patientIdentifier));
+
+    return () => {
+      dispatch(PatientDetailsActions.clearPatientState());
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [patientIdentifier]);
 
   useEffect(() => {
     (async () => {
@@ -166,7 +173,10 @@ const PatientDetailsView = () => {
     onSearchChangedWithDebounce(newValue);
   };
 
-  const handleFilterChange = compose(dispatch, patientTasksFilterChange);
+  const handleFilterChange = compose(
+    dispatch,
+    PatientDetailsActions.changePatientTasksFilters,
+  );
 
   return (
     <ViewLayout

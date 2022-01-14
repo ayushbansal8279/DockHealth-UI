@@ -97,7 +97,7 @@ const PatientLabels = () => {
     removeLabelFromPatient,
     deleteLabel,
     refreshLabels,
-    isLoadingLabels,
+    isFetchingLabels,
   } = initializeLabelsSectionHooks({});
 
   const patient = useSelector(patientSelector);
@@ -218,7 +218,7 @@ const PatientLabels = () => {
       }}
       noOptionsText={noOptionText}
       onOpen={refreshLabels}
-      isLoading={isLoadingLabels}
+      isLoading={isFetchingLabels}
       onChange={values => {
         const valuesLength = values.length;
         const value = values[valuesLength - 1];

@@ -70,3 +70,7 @@ export const getGroupByDueDate = (dueDate, tabName) => {
   if (date.isBefore(new Date(), 'day')) return DashboardGroup.OVERDUE;
   return undefined;
 };
+
+export function getDashboardFiltersStorageKey(tabName) {
+  return `filter-dashboard-${tabName}`;
+}

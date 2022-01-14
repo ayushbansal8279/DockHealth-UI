@@ -1,48 +1,53 @@
 import * as ActionTypes from 'actions/action-types';
 
-export const setPatientFetching = () => ({
-  type: ActionTypes.SET_PATIENT_FETCHING,
-});
-
-export const setPatient = patient => ({
-  type: ActionTypes.SET_PATIENT,
-  payload: {
-    patient,
-  },
-});
-
-export const setPatientLabelsFetching = () => ({
-  type: ActionTypes.SET_PATIENT_LABELS_FETCHING,
-});
-
-export const setPatientLabels = labels => ({
-  type: ActionTypes.SET_PATIENT_LABELS,
-  payload: {
-    labels,
-  },
-});
-
-export const setPatientAttachmentsFetching = () => ({
-  type: ActionTypes.SET_PATIENT_ATTACHMENTS_FETCHING,
-});
-
-export const setPatientAttachments = attachments => ({
-  type: ActionTypes.SET_PATIENT_ATTACHMENTS,
-  payload: {
-    attachments,
-  },
-});
-
-export const initializePatient = patientIdentifier => ({
-  type: ActionTypes.INITIALIZE_PATIENT,
-  payload: {
+export function initializePatientState(patientIdentifier) {
+  return {
+    type: ActionTypes.INITIALIZE_PATIENT_STATE,
     patientIdentifier,
-  },
-});
+  };
+}
+export function clearPatientState() {
+  return {
+    type: ActionTypes.CLEAR_PATIENT_STATE,
+  };
+}
 
-export const clearPatientTasksState = () => ({
-  type: ActionTypes.CLEAR_PATIENT_TASKS,
-});
+export function getCurrentPatient() {
+  return {
+    type: ActionTypes.GET_CURRENT_PATIENT,
+  };
+}
+
+export function getCurrentPatientLabels() {
+  return {
+    type: ActionTypes.GET_CURRENT_PATIENT_LABELS,
+  };
+}
+
+export function getCurrentPatientAttachments() {
+  return {
+    type: ActionTypes.GET_CURRENT_PATIENT_ATTACHMENTS,
+  };
+}
+
+export function getCurrentPatientTasks() {
+  return {
+    type: ActionTypes.GET_CURRENT_PATIENT_TASKS,
+  };
+}
+
+export function getPatientFilterOptions() {
+  return {
+    type: ActionTypes.GET_PATIENT_FILTER_OPTIONS,
+  };
+}
+
+export function changePatientTasksFilters(selectedFilters) {
+  return {
+    type: ActionTypes.CHANGE_PATIENT_TASKS_FILTERS,
+    selectedFilters,
+  };
+}
 
 export const updatePatientNote = (patientNoteIdentifier, note) => ({
   type: ActionTypes.UPDATE_PATIENT_NOTE,
@@ -80,23 +85,8 @@ export function togglePatientCompleteTasksVisible() {
   };
 }
 
-export function getPatientTasks(patientIdentifier, withLoader = true) {
-  return {
-    type: ActionTypes.GET_PATIENT_TASKS,
-    patientIdentifier,
-    withLoader,
-  };
-}
-
 export function getPatientTasksStats() {
   return {
     type: ActionTypes.GET_PATIENT_TASKS_STATS,
-  };
-}
-
-export function getPatientFilterOptions(patientIdentifier) {
-  return {
-    type: ActionTypes.GET_PATIENT_FILTER_OPTIONS,
-    patientIdentifier,
   };
 }

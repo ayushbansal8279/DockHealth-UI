@@ -22,3 +22,8 @@ export const hasFiltersAppliedSelector = createSelector(
   megaFilterStateSelector,
   ({ selectedFilters }) => !!selectedFilters && !isEmpty(selectedFilters),
 );
+
+export const isFetchingFiltersSelector = createSelector(
+  megaFilterSelector,
+  ({ isLoading }) => isLoading,
+);
