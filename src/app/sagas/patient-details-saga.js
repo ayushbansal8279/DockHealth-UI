@@ -7,6 +7,7 @@ import {
   takeEvery,
   delay,
 } from 'redux-saga/effects';
+import { isEmpty } from 'ramda';
 import * as ActionTypes from 'actions/action-types';
 import * as PatientTasksApi from 'api/patient-tasks-api';
 import * as TaskListApi from 'api/task-list-api';
@@ -304,15 +305,14 @@ function* getPatientLists(patientIdentifier) {
 
   let lists;
 
-  if (selectedFilters && Object.keys(selectedFilters).length > 0) {
-    const filteredTasks = yield call(
+  if (selectedFilters && !isEmpty(selectedFilters)) {
+    lists = yield call(
       PatientTasksApi.fetchPatientTasksByPatientIdentifierWithFilters,
       patientIdentifier,
       sort,
       selectedFilters,
       status,
     );
-    lists = filteredTasks?.taskLists;
   } else {
     lists = yield call(
       PatientTasksApi.fetchPatientTasksByPatientIdentifier,
@@ -373,12 +373,14 @@ function* getPatientTasksStats() {
 function* getPatientFilterOptions({ patientIdentifier }) {
   const completeTasksVisible = yield select(completeTasksVisibilitySelector);
   const status = completeTasksVisible ? 'ALL' : 'INCOMPLETE';
+  const selectedFilters = yield select(selectedFiltersInMegaFilterSelector);
 
   try {
     const filters = yield call(
       PatientTasksApi.getPatientFilters,
       patientIdentifier,
       status,
+      selectedFilters,
     );
     yield put({
       type: ActionTypes.GET_PATIENT_FILTER_OPTIONS_SUCCESS,
