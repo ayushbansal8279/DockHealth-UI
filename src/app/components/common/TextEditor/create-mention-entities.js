@@ -79,7 +79,7 @@ export const createMentionEntitiesFromRawText = (
 
       tags.forEach(({ mentionType, name, identifier }) => {
         const entityRanges = getEntityRanges(
-          block.text,
+          block?.text || '',
           `${mentionType}${name}`,
           identifier,
         );

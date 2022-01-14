@@ -9,7 +9,15 @@ import { DateInputMask } from './styled';
 
 const INPUT_DATE_FORMAT = 'MM/DD/YYYY';
 
-const SecondaryDateInput = ({ value, disabled, onChange, onBlur, error }) => {
+const SecondaryDateInput = ({
+  value,
+  disabled,
+  onChange,
+  onBlur,
+  error,
+  popoverDisabled = false,
+  onEnter,
+}) => {
   const inputReference = useRef(null);
   const [isPopoverOpen, openPopover, closePopover] = useBoolean();
 
@@ -27,6 +35,17 @@ const SecondaryDateInput = ({ value, disabled, onChange, onBlur, error }) => {
       closePopover();
     },
     [closePopover, onChange],
+  );
+
+  const handleInputKeyDown = useCallback(
+    event => {
+      if (event.key === 'Enter') {
+        event.preventDefault();
+        event.stopPropagation();
+        if (typeof onEnter === 'function') onEnter();
+      }
+    },
+    [onEnter],
   );
 
   return (
@@ -51,9 +70,10 @@ const SecondaryDateInput = ({ value, disabled, onChange, onBlur, error }) => {
           error={error}
           autoComplete="off"
           disabled={disabled}
+          onKeyDown={handleInputKeyDown}
         />
       </div>
-      {isPopoverOpen && (
+      {isPopoverOpen && !popoverDisabled && (
         <ClickAwayListener onClickAway={closePopover}>
           <Popper
             anchorEl={inputReference?.current}
