@@ -142,13 +142,13 @@ function* selectFiltersFromMegaFilter({ id, status }) {
     select(userIdentifierSelector),
     select(currentTasksStatusSelector),
   ]);
-  yield put(PersonDetailsActions.getUserTaskFilterOptions());
   if (userIdentifier === id && currentStatus === status) {
-    if (status === TaskStatus.COMPLETE) {
-      yield put(PersonDetailsActions.getUserCompletedTasks());
-    } else {
-      yield put(PersonDetailsActions.getUserTasks());
-    }
+    yield all([
+      put(PersonDetailsActions.getUserTaskFilterOptions()),
+      status === TaskStatus.COMPLETE
+        ? put(PersonDetailsActions.getUserCompletedTasks())
+        : put(PersonDetailsActions.getUserTasks()),
+    ]);
   }
 }
 
