@@ -26,7 +26,7 @@ const INITIAL_STATE = {
 };
 
 const updateTaskInList = (lists, updateTaskCallback) =>
-  lists.map(list => ({
+  lists?.map(list => ({
     ...list,
     tasks: mapWithRemove(t => {
       if (t.itemType === TaskItemType.BUNDLE) {
