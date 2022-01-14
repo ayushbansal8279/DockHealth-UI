@@ -3,7 +3,6 @@ import {
   call,
   takeLatest,
   select,
-  all,
   takeEvery,
   delay,
 } from 'redux-saga/effects';
@@ -395,12 +394,8 @@ function* doToggleTaskCompleteStatus({ payload }) {
     if (!task.parentTaskIdentifier) {
       yield put(PatientDetailsActions.getCurrentPatientTasks());
     }
-    yield put(PatientDetailsActions.getPatientTasksStats());
   } catch (error) {
-    yield all([
-      put(PatientDetailsActions.getCurrentPatientTasks()),
-      put(PatientDetailsActions.getPatientTasksStats()),
-    ]);
+    yield put(PatientDetailsActions.getCurrentPatientTasks());
   }
 }
 
@@ -416,15 +411,9 @@ function* doUpdatePatientTaskWorkflowStatus({ payload }) {
       workflowStatus?.identifier,
     );
     yield put(AlertActions.showGlobalAlert(AlertMessages.UPDATED));
-    yield all([
-      put(PatientDetailsActions.getCurrentPatientTasks()),
-      put(PatientDetailsActions.getPatientTasksStats()),
-    ]);
+    yield put(PatientDetailsActions.getCurrentPatientTasks());
   } catch (error) {
-    yield all([
-      put(PatientDetailsActions.getCurrentPatientTasks()),
-      put(PatientDetailsActions.getPatientTasksStats()),
-    ]);
+    yield put(PatientDetailsActions.getCurrentPatientTasks());
   }
 }
 
@@ -434,23 +423,10 @@ function* doUpdatePatientTaskInList({ payload }) {
   try {
     yield put(updateTaskData(taskIdentifier, dataToUpdate));
     yield call(TaskApi.partialUpdateTask, taskIdentifier, dataToUpdate);
-    yield all([
-      put(PatientDetailsActions.getCurrentPatientTasks()),
-      put(PatientDetailsActions.getPatientTasksStats()),
-    ]);
+    yield put(PatientDetailsActions.getCurrentPatientTasks());
   } catch (error) {
-    yield all([
-      put(PatientDetailsActions.getCurrentPatientTasks()),
-      put(PatientDetailsActions.getPatientTasksStats()),
-    ]);
+    yield put(PatientDetailsActions.getCurrentPatientTasks());
   }
-}
-
-function* addTaskSuccess() {
-  const { patientIdentifier } = yield select(locationParametersSelector);
-
-  if (patientIdentifier)
-    yield put(PatientDetailsActions.getPatientTasksStats());
 }
 
 function* changePatientTasksFilters({ selectedFilters }) {
@@ -723,10 +699,7 @@ function* applyTemplateSuccess() {
   const { patientIdentifier } = yield select(locationParametersSelector);
 
   if (patientIdentifier) {
-    yield all([
-      put(PatientDetailsActions.getCurrentPatientTasks()),
-      put(PatientDetailsActions.getPatientTasksStats()),
-    ]);
+    yield put(PatientDetailsActions.getCurrentPatientTasks());
   }
 }
 
@@ -789,5 +762,4 @@ export default function* watchPatientDetails() {
   yield takeEvery(DO_REMOVE_PATIENT_NOTE, doRemovePatientNote);
   yield takeEvery(DO_CHANGE_PATIENT_NOTE_PIN, doChangePatientNotePin);
   yield takeEvery(ActionTypes.APPLY_TEMPLATE_SUCCESS, applyTemplateSuccess);
-  yield takeEvery(ActionTypes.ADD_TASK_SUCCESS, addTaskSuccess);
 }
