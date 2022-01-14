@@ -48,8 +48,6 @@ export const DO_UPDATE_DUE_DATE = 'DO_UPDATE_PATIENT_TASK_DUE_DATE';
 export const DO_UPDATE_PATIENT_WORKFLOW_STATUS =
   'DO_UPDATE_PATIENT_WORKFLOW_STATUS';
 export const DO_UPDATE_PATIENT_TASK = 'DO_UPDATE_PATIENT_TASK';
-export const DO_UPDATE_PATIENT_TASKS_FILTERS =
-  'DO_UPDATE_PATIENT_TASKS_FILTERS';
 export const DO_INITIALIZE_SAVED_FILTERS_FOR_PATIENT =
   'DO_INITIALIZE_SAVED_FILTERS_FOR_PATIENT';
 export const DO_SET_PATIENT_TASK_SEARCH_VALUE =
@@ -97,13 +95,6 @@ export const updatePatientTaskInList = (taskIdentifier, dataToUpdate) => ({
   payload: {
     taskIdentifier,
     dataToUpdate,
-  },
-});
-
-export const patientTasksFilterChange = selectedFilters => ({
-  type: DO_UPDATE_PATIENT_TASKS_FILTERS,
-  payload: {
-    selectedFilters,
   },
 });
 
@@ -217,7 +208,6 @@ export const PatientTasksSagaActions = {
   togglePatientTaskStatus,
   updateTaskData,
   updatePatientTaskWorkflowStatus,
-  patientTasksFilterChange,
   initializeSavedFilters,
   setPatientTaskSearch,
   inviteUserToTaskList,
@@ -463,10 +453,11 @@ function* addTaskSuccess() {
     yield put(PatientDetailsActions.getPatientTasksStats());
 }
 
-function* doUpdatePatientTasksFilters({ payload }) {
+function* changePatientTasksFilters({ selectedFilters }) {
   try {
-    const { selectedFilters } = payload;
-    const { patientIdentifier } = yield select(locationParametersSelector);
+    const { patientIdentifier } = yield select(
+      currentPatientIdentifierSelector,
+    );
     const completeTasksVisible = yield select(completeTasksVisibilitySelector);
     const status = completeTasksVisible ? 'ALL' : 'INCOMPLETE';
 
@@ -769,8 +760,8 @@ export default function* watchPatientDetails() {
     getPatientFilterOptions,
   );
   yield takeLatest(
-    DO_UPDATE_PATIENT_TASKS_FILTERS,
-    doUpdatePatientTasksFilters,
+    ActionTypes.CHANGE_PATIENT_TASKS_FILTERS,
+    changePatientTasksFilters,
   );
   yield takeLatest(
     DO_INITIALIZE_SAVED_FILTERS_FOR_PATIENT,

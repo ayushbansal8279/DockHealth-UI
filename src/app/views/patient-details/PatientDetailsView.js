@@ -26,10 +26,7 @@ import {
   selectedFiltersInMegaFilterSelector,
 } from 'selectors/mega-filter-selectors';
 import { userProfileSelector } from 'selectors/user-selectors';
-import {
-  setPatientTaskSearch,
-  patientTasksFilterChange,
-} from 'sagas/patient-details-saga';
+import { setPatientTaskSearch } from 'sagas/patient-details-saga';
 import { onSearchChanged } from 'helpers/ga-event-helper';
 import { RouteWrapper } from 'routing/components';
 import MegaFilter from 'components/tasklist/MegaFilter/MegaFilter';
@@ -176,7 +173,10 @@ const PatientDetailsView = () => {
     onSearchChangedWithDebounce(newValue);
   };
 
-  const handleFilterChange = compose(dispatch, patientTasksFilterChange);
+  const handleFilterChange = compose(
+    dispatch,
+    PatientDetailsActions.changePatientTasksFilters,
+  );
 
   return (
     <ViewLayout

@@ -42,6 +42,13 @@ export function getPatientFilterOptions() {
   };
 }
 
+export function changePatientTasksFilters(selectedFilters) {
+  return {
+    type: ActionTypes.CHANGE_PATIENT_TASKS_FILTERS,
+    selectedFilters,
+  };
+}
+
 export const updatePatientNote = (patientNoteIdentifier, note) => ({
   type: ActionTypes.UPDATE_PATIENT_NOTE,
   payload: { patientNoteIdentifier, note },
