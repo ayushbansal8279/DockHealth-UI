@@ -265,33 +265,6 @@ function* updateTaskDueDateSuccess({ task: taskToChange, dueDate }) {
   }
 }
 
-function* addTaskSuccess({ task }) {
-  const tabName = yield select(dashboardTabNameSelector);
-  if (tabName) {
-    const groups = yield select(dashboardTasksSelector);
-    yield all(
-      groups
-        .filter(
-          ({ groupType }) =>
-            groupType === getGroupByDueDate(task.dueDate, tabName),
-        )
-        .map(({ groupType }) =>
-          put(DashboardActions.getDashboardTasksForGroup(groupType)),
-        ),
-    );
-
-    const dashboardGroups = yield call(
-      getDashboardTaskStasForImplicitGroups,
-      tabName,
-    );
-
-    yield put({
-      type: ActionTypes.GET_DASHBOARD_GROUP_STATS_SUCCESS,
-      tasksList: dashboardGroups,
-    });
-  }
-}
-
 function* selectDashboardFilters() {
   const tabName = yield select(dashboardTabNameSelector);
 
@@ -326,7 +299,6 @@ export default function* watchDashboard() {
     ActionTypes.LOAD_MORE_DASHBOARD_TASKS_FOR_GROUP,
     loadMoreDashboardTasksForGroup,
   );
-  yield takeEvery(ActionTypes.ADD_TASK_SUCCESS, addTaskSuccess);
   yield takeEvery(
     ActionTypes.UPDATE_TASK_DUE_DATE_SUCCESS,
     updateTaskDueDateSuccess,

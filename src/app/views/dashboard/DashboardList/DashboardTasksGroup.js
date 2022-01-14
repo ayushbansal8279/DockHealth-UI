@@ -8,7 +8,7 @@ import React, {
 } from 'react';
 import { compose, pluck } from 'ramda';
 import moment from 'moment';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import * as TaskActions from 'actions/task-actions';
 import { Collapse } from '@material-ui/core';
 import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd';
@@ -35,6 +35,8 @@ import TasksSkeletonLoader from 'components/task/TasksSkeletonLoader/TasksSkelet
 import TasksHeader from 'components/tasklist/TasksHeader/TasksHeader';
 import { extractTasksAndSubtasks } from 'helpers/tasklist-helpers';
 import palette from 'styles/palette';
+import { dashboardLastCreatedTaskIdentifierSelector } from 'selectors/dashboard-selectors';
+
 import {
   DashboardTasksGroupContainer,
   DashboardTasksGroupLabel,
@@ -76,9 +78,14 @@ const DashboardTasksGroup = ({
   } = dashboardTasksGroup;
   const { userIdentifier } = currentUser;
 
+  const lastCreatedTaskId = useSelector(
+    dashboardLastCreatedTaskIdentifierSelector,
+  );
+
   const [tasks, setNewTasks] = useState(dashboardTasks);
   const [groupIsOpen, setGroupIsOpen] = useState(defaultOpen);
   const quickAddTaskInputReference = useRef(null);
+  const parentContainerReference = useRef(null);
   const dispatch = useDispatch();
 
   const isGroupSelected = useMemo(() => checkIfAllTasksSelected(tasks), [
@@ -166,7 +173,7 @@ const DashboardTasksGroup = ({
   );
 
   return (
-    <DashboardTasksGroupContainer>
+    <DashboardTasksGroupContainer ref={parentContainerReference}>
       <StickyElement>
         <DashboardTasksGroupHeader>
           <Arrow
@@ -271,6 +278,12 @@ const DashboardTasksGroup = ({
                               >
                                 <DashboardTaskItemContainer>
                                   <StandardTaskItem
+                                    parentContainerReference={
+                                      parentContainerReference
+                                    }
+                                    newlyCreated={
+                                      task.identifier === lastCreatedTaskId
+                                    }
                                     pageBackground={palette.white}
                                     task={task}
                                     toggleCompleteTask={() =>

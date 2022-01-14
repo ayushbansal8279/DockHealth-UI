@@ -13,6 +13,7 @@ const initialState = {
   tasksList: [],
   isLoading: false,
   error: '',
+  lastCreatedTaskIdentifier: null,
   selectedFilters: null,
   filterOptions: null,
   isFetchingFilters: false,
@@ -33,6 +34,16 @@ const updateTasksStateCallback = (state, updateTaskFromAction) => {
     tasksList: updateTaskInList(state.tasksList, updateTaskFromAction),
   };
 };
+
+const addTask = (list, taskToAdd) => {
+  const { tasks = [] } = list;
+  return { ...list, tasks: [taskToAdd, ...tasks] };
+};
+
+const findAndAddTask = ({ lists, groupType: type, task: taskToAdd }) =>
+  lists.map(list =>
+    list.groupType === type ? addTask(list, taskToAdd) : list,
+  );
 
 // eslint-disable-next-line sonarjs/cognitive-complexity
 const DashboardTasksReducer = (state = initialState, action) => {
@@ -269,6 +280,16 @@ const DashboardTasksReducer = (state = initialState, action) => {
                 : g.metricValue - 1,
           };
         }),
+      };
+    }
+
+    case ActionTypes.ADD_TASK_SUCCESS: {
+      const { task } = action;
+      const groupType = getGroupByDueDate(task.dueDate, state.tabName);
+      return {
+        ...state,
+        lastCreatedTaskIdentifier: action?.task?.identifier,
+        tasksList: findAndAddTask({ lists: state.tasksList, groupType, task }),
       };
     }
 
