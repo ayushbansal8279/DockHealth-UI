@@ -72,21 +72,26 @@ export const createMentionEntitiesFromRawText = (
     rawContent.entityMap[element?.data?.mention?.identifier] = element;
   });
 
-  const newBlocks = rawContent.blocks.map(block => {
-    const ranges = [];
+  const newBlocks = rawContent.blocks
+    .filter(block => !!block)
+    .map(block => {
+      const ranges = [];
 
-    tags.forEach(({ mentionType, name, identifier }) => {
-      const entityRanges = getEntityRanges(
-        block.text,
-        `${mentionType}${name}`,
-        identifier,
-      );
-      if (entityRanges) {
-        ranges.push(...entityRanges);
-      }
+      tags.forEach(({ mentionType, name, identifier }) => {
+        const entityRanges = getEntityRanges(
+          block.text,
+          `${mentionType}${name}`,
+          identifier,
+        );
+        if (entityRanges) {
+          ranges.push(...entityRanges);
+        }
+      });
+      return {
+        ...block,
+        entityRanges: [...(block.entityRanges || []), ...ranges],
+      };
     });
-    return { ...block, entityRanges: [...block.entityRanges, ...ranges] };
-  });
 
   return convertFromRaw({ ...rawContent, blocks: newBlocks });
 };
