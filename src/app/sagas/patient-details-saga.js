@@ -297,53 +297,73 @@ function* getCurrentPatientAttachments() {
   }
 }
 
-function* getPatientLists(patientIdentifier) {
-  const selectedFilters = yield select(selectedFiltersInMegaFilterSelector);
-  const completeTasksVisible = yield select(completeTasksVisibilitySelector);
-  const status = completeTasksVisible ? 'ALL' : 'INCOMPLETE';
-  const sort = yield select(patientTasksSortSelector);
-
-  let lists;
-
-  if (selectedFilters && !isEmpty(selectedFilters)) {
-    lists = yield call(
-      PatientTasksApi.fetchPatientTasksByPatientIdentifierWithFilters,
-      patientIdentifier,
-      sort,
-      selectedFilters,
-      status,
-    );
-  } else {
-    lists = yield call(
-      PatientTasksApi.fetchPatientTasksByPatientIdentifier,
-      patientIdentifier,
-      sort,
-      status,
-    );
-  }
-  return lists;
-}
-
-function* getPatientTasks({ patientIdentifier }) {
+function* getCurrentPatientTasks() {
   try {
-    const lists = yield getPatientLists(patientIdentifier);
+    const selectedFilters = yield select(selectedFiltersInMegaFilterSelector);
+    const completeTasksVisible = yield select(completeTasksVisibilitySelector);
+    const status = completeTasksVisible ? 'ALL' : 'INCOMPLETE';
+    const sort = yield select(patientTasksSortSelector);
+    const patientIdentifier = yield select(currentPatientIdentifierSelector);
+
+    let lists;
+
+    if (selectedFilters && !isEmpty(selectedFilters)) {
+      lists = yield call(
+        PatientTasksApi.fetchPatientTasksByPatientIdentifierWithFilters,
+        patientIdentifier,
+        sort,
+        selectedFilters,
+        status,
+      );
+    } else {
+      lists = yield call(
+        PatientTasksApi.fetchPatientTasksByPatientIdentifier,
+        patientIdentifier,
+        sort,
+        status,
+      );
+    }
+
     yield put({
-      type: ActionTypes.GET_PATIENT_TASKS_SUCCESS,
+      type: ActionTypes.GET_CURRENT_PATIENT_TASKS_SUCCESS,
       lists,
     });
   } catch (error) {
     yield put({
-      type: ActionTypes.GET_PATIENT_TASKS_FAILURE,
+      type: ActionTypes.GET_CURRENT_PATIENT_TASKS_FAILURE,
     });
   }
 }
 
-function* doRefreshPatientTasks({ withLoader }) {
-  const { patientIdentifier } = yield select(locationParametersSelector);
-  yield put(
-    PatientDetailsActions.getPatientTasks(patientIdentifier, withLoader),
-  );
-  yield put(PatientDetailsActions.getPatientFilterOptions(patientIdentifier));
+function* doRefreshPatientTasks() {
+  yield put(PatientDetailsActions.getCurrentPatientTasks());
+  yield put(PatientDetailsActions.getPatientFilterOptions());
+}
+
+function* getPatientFilterOptions() {
+  const patientIdentifier = yield select(currentPatientIdentifierSelector);
+
+  try {
+    const completeTasksVisible = yield select(completeTasksVisibilitySelector);
+    const status = completeTasksVisible ? 'ALL' : 'INCOMPLETE';
+    const selectedFilters = yield select(selectedFiltersInMegaFilterSelector);
+
+    const filters = yield call(
+      PatientTasksApi.getPatientFilters,
+      patientIdentifier,
+      status,
+      selectedFilters,
+    );
+    yield put({
+      type: ActionTypes.GET_PATIENT_FILTER_OPTIONS_SUCCESS,
+      filters,
+    });
+  } catch (error) {
+    yield put({
+      type: ActionTypes.GET_PATIENT_FILTER_OPTIONS_FAILURE,
+      patientIdentifier,
+    });
+  }
 }
 
 function* getPatientTasksStats() {
@@ -367,29 +387,6 @@ function* getPatientTasksStats() {
     });
   } catch (error) {
     yield put({ type: ActionTypes.GET_PATIENT_TASKS_STATS_FAILURE });
-  }
-}
-
-function* getPatientFilterOptions({ patientIdentifier }) {
-  const completeTasksVisible = yield select(completeTasksVisibilitySelector);
-  const status = completeTasksVisible ? 'ALL' : 'INCOMPLETE';
-  const selectedFilters = yield select(selectedFiltersInMegaFilterSelector);
-
-  try {
-    const filters = yield call(
-      PatientTasksApi.getPatientFilters,
-      patientIdentifier,
-      status,
-      selectedFilters,
-    );
-    yield put({
-      type: ActionTypes.GET_PATIENT_FILTER_OPTIONS_SUCCESS,
-      filters,
-    });
-  } catch (error) {
-    yield put({
-      type: ActionTypes.GET_PATIENT_FILTER_OPTIONS_FAILURE,
-    });
   }
 }
 
@@ -768,8 +765,11 @@ export default function* watchPatientDetails() {
     ActionTypes.GET_CURRENT_PATIENT_ATTACHMENTS,
     getCurrentPatientAttachments,
   );
+  yield takeLatest(
+    ActionTypes.GET_CURRENT_PATIENT_TASKS,
+    getCurrentPatientTasks,
+  );
   yield takeLatest(ActionTypes.GET_PATIENT_TASKS_STATS, getPatientTasksStats);
-  yield takeLatest(ActionTypes.GET_PATIENT_TASKS, getPatientTasks);
   yield takeLatest(DO_TOGGLE_PATIENT_TASK_STATUS, doToggleTaskCompleteStatus);
   yield takeLatest(DO_REFRESH_PATIENT_TASKS, doRefreshPatientTasks);
   yield takeLatest(

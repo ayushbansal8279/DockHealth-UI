@@ -113,21 +113,21 @@ export default function(state = INITIAL_STATE, action = {}) {
         completeTasksVisible: !state.completeTasksVisible,
       };
 
-    case ActionTypes.GET_PATIENT_TASKS:
+    case ActionTypes.GET_CURRENT_PATIENT_TASKS:
       return {
         ...state,
         isFetching: action.withLoader,
         error: false,
       };
 
-    case ActionTypes.GET_PATIENT_TASKS_SUCCESS:
+    case ActionTypes.GET_CURRENT_PATIENT_TASKS_SUCCESS:
       return {
         ...state,
         lists: action.lists,
         isFetching: false,
       };
 
-    case ActionTypes.GET_PATIENT_TASKS_FAILURE:
+    case ActionTypes.GET_CURRENT_PATIENT_TASKS_FAILURE:
       return {
         ...state,
         isFetching: false,

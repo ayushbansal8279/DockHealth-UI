@@ -12,7 +12,7 @@ import TaskListHeader from 'views/patient-details/TaskListHeader/TaskListHeader'
 import EmptyTaskListBird from 'img/animals/bird';
 import {
   getPatientFilterOptions,
-  getPatientTasks,
+  getCurrentPatientTasks,
 } from 'actions/patient-details-actions';
 import { openModal, closeModal } from 'modal/actions';
 import { PatientTasksSagaActions } from 'sagas/patient-details-saga';
@@ -139,7 +139,7 @@ const PatientTasksListView = () => {
   useEffect(() => {
     if (patientIdentifier) {
       initializeSavedFilters(patientIdentifier);
-      dispatch(getPatientTasks(patientIdentifier));
+      dispatch(getCurrentPatientTasks(patientIdentifier));
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [patientIdentifier]);

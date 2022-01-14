@@ -30,6 +30,18 @@ export function getCurrentPatientAttachments() {
   };
 }
 
+export function getCurrentPatientTasks() {
+  return {
+    type: ActionTypes.GET_CURRENT_PATIENT_TASKS,
+  };
+}
+
+export function getPatientFilterOptions() {
+  return {
+    type: ActionTypes.GET_PATIENT_FILTER_OPTIONS,
+  };
+}
+
 export const updatePatientNote = (patientNoteIdentifier, note) => ({
   type: ActionTypes.UPDATE_PATIENT_NOTE,
   payload: { patientNoteIdentifier, note },
@@ -66,23 +78,8 @@ export function togglePatientCompleteTasksVisible() {
   };
 }
 
-export function getPatientTasks(patientIdentifier, withLoader = true) {
-  return {
-    type: ActionTypes.GET_PATIENT_TASKS,
-    patientIdentifier,
-    withLoader,
-  };
-}
-
 export function getPatientTasksStats() {
   return {
     type: ActionTypes.GET_PATIENT_TASKS_STATS,
-  };
-}
-
-export function getPatientFilterOptions(patientIdentifier) {
-  return {
-    type: ActionTypes.GET_PATIENT_FILTER_OPTIONS,
-    patientIdentifier,
   };
 }
