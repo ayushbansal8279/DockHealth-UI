@@ -407,6 +407,7 @@ function* reassignTasksToAnotherGroup(payload) {
       orderedTaskIds: pluck('identifier', destinationTasks),
       taskGroupIdentifier: destinationGroupIdentifier,
     });
+    yield put(ListDetailsActions.getTasksGroupsList());
 
     yield all([put(showGlobalAlert(AlertMessages.UPDATED))]);
   } catch {
