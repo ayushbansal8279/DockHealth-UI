@@ -142,6 +142,7 @@ function* selectFiltersFromMegaFilter({ id, status }) {
     select(userIdentifierSelector),
     select(currentTasksStatusSelector),
   ]);
+  yield put(PersonDetailsActions.getUserTaskFilterOptions());
   if (userIdentifier === id && currentStatus === status) {
     if (status === TaskStatus.COMPLETE) {
       yield put(PersonDetailsActions.getUserCompletedTasks());
@@ -163,10 +164,7 @@ function* sortUserTasks() {
 
 function* refreshUserTasks() {
   const currentStatus = yield select(currentTasksStatusSelector);
-  yield all([
-    put(PersonDetailsActions.getUserTaskCounters()),
-    put(PersonDetailsActions.getUserTaskFilterOptions()),
-  ]);
+  yield put(PersonDetailsActions.getUserTaskCounters());
 
   if (currentStatus === TaskStatus.COMPLETE) {
     yield put(PersonDetailsActions.getUserCompletedTasks());
@@ -177,14 +175,16 @@ function* refreshUserTasks() {
 
 function* getUserTaskFilterOptions() {
   try {
-    const [userIdentifier, currentStatus] = yield all([
+    const [userIdentifier, currentStatus, selectedFilters] = yield all([
       select(userIdentifierSelector),
       select(currentTasksStatusSelector),
+      select(selectedFiltersInMegaFilterSelector),
     ]);
     const filters = yield call(
       UserApi.getUserTaskFilterOptions,
       userIdentifier,
       currentStatus,
+      selectedFilters,
     );
     yield put({
       type: ActionTypes.GET_USER_TASK_FILTER_OPTIONS_SUCCESS,
