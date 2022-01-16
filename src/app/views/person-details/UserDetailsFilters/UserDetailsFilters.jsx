@@ -4,7 +4,6 @@ import { useDispatch, useSelector } from 'react-redux';
 import { megaFilterSelector } from 'selectors/mega-filter-selectors';
 import { selectFiltersForMegaFilter } from 'actions/mega-filter-actions';
 import { getUserTaskFilterOptions } from 'actions/person-details-actions';
-import { isEmpty } from 'ramda';
 import {
   taskCountersSelector,
   tasksIsFetchingSelector,
@@ -56,8 +55,7 @@ const UserDetailsFilters = () => {
   };
 
   const handleFilterOpen = () => {
-    if (!selectedFilters || isEmpty(selectedFilters))
-      dispatch(getUserTaskFilterOptions());
+    dispatch(getUserTaskFilterOptions());
   };
 
   return (

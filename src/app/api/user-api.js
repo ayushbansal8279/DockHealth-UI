@@ -149,6 +149,7 @@ export function getUserTasks(userIdentifier, sortBy, status) {
     .then(response => response.data);
 }
 
+// here
 export function getUserFilteredTasks(
   userIdentifier,
   sortBy,
@@ -167,20 +168,35 @@ export function getUserFilteredTasks(
         },
       },
     )
-    .then(({ data }) => data);
+    .then(({ data }) => data.tasks);
 }
 
-export function getUserTaskFilterOptions(userIdentifier, status) {
-  return axios
-    .get(`task/filter/filterOptionsForAssignedToUser/${userIdentifier}`, {
-      params: {
-        status,
-      },
-    })
-    .then(({ data }) => mapFilterOptions(data))
-    .catch(error => {
-      throw error;
-    });
+export function getUserTaskFilterOptions(
+  userIdentifier,
+  status,
+  selectedFilters,
+) {
+  const request = selectedFilters
+    ? axios
+        .post(
+          `task/filter/filterTasksByCriteriaForAssignedToUser/${userIdentifier}?includeOptions=true`,
+          mapSelectedOptionsToRequestPayload(selectedFilters),
+          {
+            params: {
+              status,
+            },
+          },
+        )
+        .then(({ data }) => data.taskFilterOptions)
+    : axios
+        .get(`task/filter/filterOptionsForAssignedToUser/${userIdentifier}`, {
+          params: {
+            status,
+          },
+        })
+        .then(({ data }) => data);
+
+  return request.then(options => mapFilterOptions(options));
 }
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
