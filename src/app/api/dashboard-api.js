@@ -66,7 +66,7 @@ export function getDashboardAllTasksFilters(selectedFilters) {
         )
         .then(({ data }) => data.taskFilterOptions);
 
-  request.then(options => mapFilterOptions(options));
+  return request.then(options => mapFilterOptions(options));
 }
 
 export const getDashboardMyTasksByCriteria = selectedFilters =>
