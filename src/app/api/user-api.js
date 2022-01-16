@@ -168,7 +168,7 @@ export function getUserFilteredTasks(
         },
       },
     )
-    .then(({ data }) => data.taskGroups);
+    .then(({ data }) => data.tasks);
 }
 
 export function getUserTaskFilterOptions(
