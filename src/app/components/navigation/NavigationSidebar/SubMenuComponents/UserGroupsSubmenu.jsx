@@ -29,6 +29,8 @@ import {
   DefaultUserGroupUrl,
   getUserGroupIdentifierByUrlParameter,
 } from 'helpers/user-groups-helper';
+import UpgradePlan from 'components/common/UpgradePlan/UpgradePlan';
+import Spacing from 'components/common/Spacing';
 import {
   DrawerMyListsLabel,
   DrawerListsItem,
@@ -36,6 +38,7 @@ import {
   DrawerListsList,
   DrawerItemOptions,
   DrawerListsItemLoader,
+  UpgradePlanContainer,
 } from './styled';
 
 // eslint-disable-next-line sonarjs/cognitive-complexity
@@ -46,7 +49,8 @@ const UserGroupsSubmenu = () => {
   const groups = useSelector(userGroupsSelector);
   const isFetching = useSelector(isFetchingUserGroupsSelector);
   const currentUser = useSelector(userProfileSelector);
-  const userGroupsAvailable = useSelector(userHasUserGroupsFeatureSelector);
+  const userGroupsAvailable = false;
+  // const userGroupsAvailable = useSelector(userHasUserGroupsFeatureSelector);
   const { groupIdentifier: groupIdentifierUrlParameter } = useSelector(
     locationParametersSelector,
   );
@@ -196,6 +200,14 @@ const UserGroupsSubmenu = () => {
             )}
           </DrawerListsList>
         </>
+      )}
+      {!userGroupsAvailable && (
+        <UpgradePlanContainer>
+          <UpgradePlan
+            title="Custom user groups"
+            description="Lorem ipsum dolor sit amet, consectetur adipiscing elit."
+          />
+        </UpgradePlanContainer>
       )}
     </>
   );

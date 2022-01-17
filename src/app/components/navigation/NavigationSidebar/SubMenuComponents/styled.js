@@ -51,6 +51,12 @@ export const DrawerItemOptions = styled.div`
   font-size: ${fontSizes.smallPlus};
 `;
 
+export const UpgradePlanContainer = styled.div`
+  display: flex;
+  padding: ${spacing.regular} 0;
+  justify-content: center;
+`;
+
 export const DrawerSubmenuLabel = styled.div`
   color: ${palette.coolGrey1};
   font-weight: ${fontWeights.bold};
