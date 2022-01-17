@@ -49,8 +49,7 @@ const UserGroupsSubmenu = () => {
   const groups = useSelector(userGroupsSelector);
   const isFetching = useSelector(isFetchingUserGroupsSelector);
   const currentUser = useSelector(userProfileSelector);
-  const userGroupsAvailable = false;
-  // const userGroupsAvailable = useSelector(userHasUserGroupsFeatureSelector);
+  const userGroupsAvailable = useSelector(userHasUserGroupsFeatureSelector);
   const { groupIdentifier: groupIdentifierUrlParameter } = useSelector(
     locationParametersSelector,
   );
