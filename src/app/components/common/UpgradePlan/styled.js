@@ -8,7 +8,7 @@ export const UpgradePlanContainer = styled.div`
   font-family: Roboto Condensed;
   position: relative;
   display: flex;
-  width: 267px;
+  width: 100%;
   background: ${palette.coolGrey4};
   border: 1px solid ${palette.coolGrey3};
   box-sizing: border-box;
@@ -61,7 +61,7 @@ export const UpgradeButtonContainer = styled.div`
 
 export const LearnMoreButtonContainer = styled.div`
   && {
-    & .MuiButton-root {
+    & .MuiLink-root {
       text-transform: none;
       font-family: inherit;
       font-size: ${fontSizes.small};

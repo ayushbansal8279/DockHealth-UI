@@ -42,3 +42,9 @@ export const DrawerWrapper = styled(Drawer)`
     width: 500px;
   }
 `;
+
+export const UpgradePlanContainer = styled.div`
+  display: flex;
+  padding: ${spacing.regular} ${spacing.smallPlus};
+  justify-content: center;
+`;

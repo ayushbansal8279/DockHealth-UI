@@ -3,15 +3,21 @@ import { IconButton } from '@material-ui/core';
 import CloseIcon from '@material-ui/icons/Close';
 import MoreVertIcon from '@material-ui/icons/MoreVert';
 import OptionsMenu from 'components/common/OptionsMenu/OptionsMenu';
+import UpgradePlan from 'components/common/UpgradePlan/UpgradePlan';
+import { useSelector } from 'react-redux';
+import { userHasUserGroupsFeatureSelector } from 'selectors/user-selectors';
 import {
   DrawerWrapper,
   ContentWrapper,
   TitleName,
   StickyHeader,
   MoreActinsWrapper,
+  UpgradePlanContainer,
 } from './styled';
 
 const PatientDrawer = ({ children, title, options, isOpen, onClose }) => {
+  const userGroupsAvailable = useSelector(userHasUserGroupsFeatureSelector);
+
   return (
     <DrawerWrapper open={isOpen} anchor="right" onClose={onClose}>
       <StickyHeader>
@@ -28,6 +34,14 @@ const PatientDrawer = ({ children, title, options, isOpen, onClose }) => {
         </MoreActinsWrapper>
       </StickyHeader>
       <ContentWrapper>{children}</ContentWrapper>
+      {!userGroupsAvailable && (
+        <UpgradePlanContainer>
+          <UpgradePlan
+            title="Custom users groups"
+            description="Lorem ipsum dolor sit amet, consectetur adipiscing elit."
+          />
+        </UpgradePlanContainer>
+      )}
     </DrawerWrapper>
   );
 };

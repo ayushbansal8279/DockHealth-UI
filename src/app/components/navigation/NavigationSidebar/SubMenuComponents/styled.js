@@ -53,7 +53,7 @@ export const DrawerItemOptions = styled.div`
 
 export const UpgradePlanContainer = styled.div`
   display: flex;
-  padding: ${spacing.regular} 0;
+  padding: ${spacing.regular} ${spacing.smallPlus};
   justify-content: center;
 `;
 

@@ -30,7 +30,6 @@ import {
   getUserGroupIdentifierByUrlParameter,
 } from 'helpers/user-groups-helper';
 import UpgradePlan from 'components/common/UpgradePlan/UpgradePlan';
-import Spacing from 'components/common/Spacing';
 import {
   DrawerMyListsLabel,
   DrawerListsItem,
