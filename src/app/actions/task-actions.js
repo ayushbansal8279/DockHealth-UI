@@ -676,7 +676,7 @@ export const bulkEditAssignUser = (
   searchValue,
 ) => dispatch => {
   dispatch({
-    type: ActionTypes.UPDATE_TASKS_SUCCESS,
+    type: ActionTypes.UPDATE_TASKS,
     tasksToUpdate,
     fields: {
       assignedToUsers,
@@ -693,7 +693,7 @@ export const bulkEditWorkflowStatus = (
   searchValue,
 ) => dispatch => {
   dispatch({
-    type: ActionTypes.UPDATE_TASKS_SUCCESS,
+    type: ActionTypes.UPDATE_TASKS,
     tasksToUpdate,
     fields: { workflowStatus },
     filters,
@@ -707,12 +707,20 @@ export const bulkEditDueDate = (
   filters,
 ) => dispatch => {
   dispatch({
-    type: ActionTypes.UPDATE_TASKS_SUCCESS,
+    type: ActionTypes.UPDATE_TASKS,
     tasksToUpdate,
     fields: { dueDate },
     filters,
   });
 };
+
+export function bulkEditDueDateSuccess(tasksToUpdate, dueDate) {
+  return {
+    type: ActionTypes.UPDATE_TASKS_SUCCESS,
+    tasksToUpdate,
+    fields: { dueDate },
+  };
+}
 
 export const bulkEditDelete = tasksToDelete => dispatch => {
   dispatch({
@@ -730,7 +738,7 @@ export function bulkEditComplete(taskToComplete, currentUser = null) {
     };
 
     dispatch({
-      type: ActionTypes.UPDATE_TASKS_SUCCESS,
+      type: ActionTypes.UPDATE_TASKS,
       tasksToUpdate: taskToComplete,
       fields: newTaskData,
     });
