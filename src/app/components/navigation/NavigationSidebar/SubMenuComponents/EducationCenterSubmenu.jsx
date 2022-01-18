@@ -175,7 +175,7 @@ const EducationCenterSubmenu = () => {
           Can&apos;t find what you’re looking for?
         </FooterInfoText>
         <FooterLink
-          href="https://www.dock.health/101"
+          href="https://www.dock.health/quick-start"
           target="_blank"
           rel="noreferrer"
         >

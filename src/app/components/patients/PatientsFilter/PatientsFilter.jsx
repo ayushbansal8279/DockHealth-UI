@@ -16,7 +16,7 @@ const PatientsFilter = () => {
   const selectedFilters = useSelector(patientsSelectedFiltersSelector);
 
   useEffect(() => {
-    if (!selectedFilters && !filterOptions) {
+    if (!filterOptions) {
       dispatch(PatientsActions.getCurrentPatientsListFilterOptions());
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps

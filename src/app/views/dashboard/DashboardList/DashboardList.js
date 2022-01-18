@@ -1,20 +1,11 @@
 /* eslint-disable sonarjs/cognitive-complexity */
-import React, {
-  useState,
-  useMemo,
-  useRef,
-  useEffect,
-  useCallback,
-} from 'react';
-import { updateCurrentUserPreferences } from 'actions/user-actions';
+import React, { useState, useMemo, useEffect, useCallback } from 'react';
 import { connect, useDispatch, useSelector } from 'react-redux';
-import { useHistory, useLocation } from 'react-router-dom';
+import { useLocation } from 'react-router-dom';
 import { identity, isEmpty } from 'ramda';
 import { bindActionCreators } from 'redux';
 import EmptyTaskListBird from 'img/animals/bird';
 import EmptyTaskListAlpaca from 'img/animals/alpaca';
-import { Grid } from '@material-ui/core';
-import Switch from 'components/common/Switch/Switch';
 import Spacing from 'components/common/Spacing';
 import * as ModalActions from 'modal/actions';
 import { getUserTaskStats } from 'api/user-api';
@@ -24,8 +15,7 @@ import {
   dashboardAllTaskItemsSelector,
   dashboardTabNameSelector,
   dashboardSearchValueSelector,
-} from 'selectors/dashboard-tasks-selectors';
-import { userProfileDashboardPrefsSelector } from 'selectors/user-selectors';
+} from 'selectors/dashboard-selectors';
 import {
   selectedTaskIdentifierSelector,
   taskDrawerOpenSelector,
@@ -37,9 +27,7 @@ import {
   getDashboardFilters,
   getDashboardTasks,
 } from 'actions/dashboard-actions';
-import { HOME_ALL_TASKS_PATH, HOME_PATH } from 'routing/helpers/paths';
 import {
-  TaskItemColumn,
   TASK_ITEM_SORT_METHODS,
   TASK_ITEM_SORT_DESC_METHODS,
 } from 'helpers/task-helpers';
@@ -52,65 +40,18 @@ import { hasFiltersAppliedSelector } from 'selectors/mega-filter-selectors';
 import { onSortChanged } from 'helpers/ga-event-helper';
 import { SortOrderType } from 'helpers/sorting-helper';
 import BulkEditSection from 'components/tasklist/BulkEditSection/BulkEditSection';
-import { useColumnsConfig } from 'context-api/ColumnsConfigContext';
 import { DashboardTasksTab } from 'helpers/dashboard-helpers';
 import Calendar from 'components/common/Calendar/Calendar';
 import { ViewType, getViewTypeFromQueryString } from 'helpers/view-type-helper';
 import GroupedListSkeletonLoader from 'components/tasklist/GroupedListSkeletonLoader/GroupedListSkeletonLoader';
-import TaskViewTypeToolbarSelect from 'components/tasklist/TaskViewTypeToolbarSelect/TaskViewTypeToolbarSelect';
-import CustomizeToolbarButton from 'components/tasklist/CustomizeToolbarButton/CustomizeToolbarButton';
 import DashboardTasksGroup from './DashboardTasksGroup';
 import {
-  ToolbarContainer,
-  ActionsContainer,
   StickyHeader,
-  DashboardTabsContainer,
-  DashboardTab as StyledDashboardTab,
-  DashboardTabHighlight,
   EmptyStateContainer,
-  TipsSwitchLabel,
   VerticalScrollContainer,
   DashboardTaskGroupsWrapper,
 } from './styled';
-
-const DASHBOARD_BASE_COLUMNS_CONFIG = {
-  [TaskItemColumn.LIST_NAME]: true,
-};
-
-const DASHBOARD_CONFIGURABLE_COLUMNS_CONFIG = {
-  [TaskItemColumn.WORKFLOW_STATUS]: false,
-  [TaskItemColumn.ASSIGNED]: false,
-  [TaskItemColumn.ACTIVITY]: false,
-  [TaskItemColumn.DUE_DATE]: false,
-  [TaskItemColumn.PATIENT]: false,
-};
-
-export const DashboardTab = ({
-  label,
-  setHighlightPosition,
-  isSelected,
-  onClick,
-}) => {
-  const labelReference = useRef(null);
-  useEffect(() => {
-    if (isSelected) {
-      setHighlightPosition({
-        width: labelReference?.current?.offsetWidth,
-        left: labelReference?.current?.offsetLeft,
-      });
-    }
-  }, [labelReference, setHighlightPosition, isSelected]);
-
-  return (
-    <StyledDashboardTab
-      ref={labelReference}
-      onClick={onClick}
-      isSelected={isSelected}
-    >
-      {label}
-    </StyledDashboardTab>
-  );
-};
+import DashboardToolbar from '../DashboardToolbar/DashboardToolbar';
 
 const DashboardList = ({
   allDashboardTasks,
@@ -122,44 +63,22 @@ const DashboardList = ({
   taskActions,
   isTaskDrawerOpen,
   selectedTaskIdentifier,
-  userPreferColumns,
   areFiltersApplied,
   tourModalIsOpen,
   openTourModal,
 }) => {
   const searchValue = useSelector(dashboardSearchValueSelector);
   const dispatch = useDispatch();
-  const history = useHistory();
   const { search } = useLocation();
   const viewType = getViewTypeFromQueryString(search);
-  const { columnsConfig, setColumnsConfig } = useColumnsConfig();
   const { openModal } = modalActions;
   const tabName = useSelector(dashboardTabNameSelector);
-  const [highlightPosition, setHighlightPosition] = useState({
-    width: 0,
-    left: 0,
-  });
+
   const [currentSort, setCurrentSort] = useState({
     key: null,
     order: null,
   });
   const [completeTaskCount, setCompleteTaskCount] = useState(undefined);
-
-  useEffect(() => {
-    const config =
-      userPreferColumns?.reduce(
-        (accumulator, value) => ({ ...accumulator, [value]: true }),
-        DASHBOARD_CONFIGURABLE_COLUMNS_CONFIG,
-      ) || {};
-    const customizedDashboardConfig = {
-      ...columnsConfig,
-      ...config,
-      ...DASHBOARD_BASE_COLUMNS_CONFIG,
-    };
-    setColumnsConfig(customizedDashboardConfig);
-
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [setColumnsConfig, userPreferColumns]);
 
   const filteredDashboardTasks = dashboardTasks?.filter(
     taskGroupInfo => taskGroupInfo?.metricValue !== 0,
@@ -215,10 +134,6 @@ const DashboardList = ({
   useEffect(() => {
     resetSort();
   }, [tabName]);
-
-  useEffect(() => {
-    resetSort();
-  }, [columnsConfig]);
 
   const handleSortChange = useCallback(
     (key, order) => {
@@ -278,45 +193,6 @@ const DashboardList = ({
     dispatch(getDashboardTasks());
   }, [dispatch]);
 
-  const onColumnSetupChange = useCallback(
-    (newConfig, options) => {
-      if (options?.isCustomColumn) {
-        dispatch(
-          updateCurrentUserPreferences({
-            customFieldDisplayColumns: newConfig
-              .filter(f => f.isChecked)
-              .map(f => f.identifier),
-          }),
-        );
-      } else {
-        dispatch(
-          updateCurrentUserPreferences({
-            displayColumns: Object.entries(newConfig).reduce(
-              (accumulator, [key, value]) =>
-                value ? [...accumulator, key] : accumulator,
-              [],
-            ),
-          }),
-        );
-      }
-    },
-    [dispatch],
-  );
-
-  const handleChangeViewType = useCallback(
-    event => {
-      const queryParameters = new URLSearchParams(search);
-      const value = event?.target.value ?? ViewType.LIST_VIEW;
-      if (value === ViewType.LIST_VIEW) {
-        queryParameters.delete('viewType');
-      } else {
-        queryParameters.set('viewType', value.toLowerCase());
-      }
-      history.push({ search: queryParameters.toString() });
-    },
-    [search, history],
-  );
-
   const tasks = useMemo(
     () =>
       filteredDashboardTasks.reduce((accumulator, value) => {
@@ -333,45 +209,10 @@ const DashboardList = ({
       shouldRefreshTasksEveryTime
     >
       <StickyHeader>
-        <ToolbarContainer container direction="row" justify="space-between">
-          <Grid item md={4}>
-            <DashboardTabsContainer>
-              <DashboardTab
-                label="My Tasks"
-                setHighlightPosition={setHighlightPosition}
-                onClick={() => {
-                  history.push(HOME_PATH);
-                }}
-                isSelected={tabName === DashboardTasksTab.MY_TASKS}
-              />
-              <DashboardTab
-                label="All Tasks"
-                setHighlightPosition={setHighlightPosition}
-                onClick={() => {
-                  history.push(HOME_ALL_TASKS_PATH);
-                }}
-                isSelected={tabName === DashboardTasksTab.ALL_TASKS}
-              />
-              <DashboardTabHighlight {...highlightPosition} />
-            </DashboardTabsContainer>
-          </Grid>
-          <ActionsContainer item md={8}>
-            <TaskViewTypeToolbarSelect
-              value={getViewTypeFromQueryString(search)}
-              onChange={handleChangeViewType}
-            />
-            <Spacing horizontal={4} />
-            <CustomizeToolbarButton
-              onChange={onColumnSetupChange}
-              showCustomColumnCreate={false}
-            />
-            <Spacing horizontal={4} />
-            <div>
-              <TipsSwitchLabel>Tips</TipsSwitchLabel>
-              <Switch checked={tourModalIsOpen} onChange={openTourModal} />
-            </div>
-          </ActionsContainer>
-        </ToolbarContainer>
+        <DashboardToolbar
+          tourModalIsOpen={tourModalIsOpen}
+          openTourModal={openTourModal}
+        />
       </StickyHeader>
       <Spacing vertical={1} />
       {viewType === ViewType.CALENDAR_VIEW && (
@@ -430,7 +271,6 @@ const mapStateToProps = state => ({
   dashboardTasks: dashboardTasksSelector(state),
   dashboardTasksIsLoading: dashboardTasksIsLoadingSelector(state),
   selectedTaskIdentifier: selectedTaskIdentifierSelector(state),
-  userPreferColumns: userProfileDashboardPrefsSelector(state),
   areFiltersApplied: hasFiltersAppliedSelector(state),
   isTaskDrawerOpen: taskDrawerOpenSelector(state),
 });

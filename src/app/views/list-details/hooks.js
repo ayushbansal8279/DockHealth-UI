@@ -3,7 +3,7 @@
 import { useEffect, useCallback, useState, useMemo, useRef } from 'react';
 import { useLocation } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
-import { isEmpty, isNil, move } from 'ramda';
+import { isEmpty, isNil } from 'ramda';
 import { initializePusher } from 'helpers/pusher-instance';
 import useActions from 'hooks/use-actions';
 import usePrevious from 'hooks/use-previous';
@@ -14,7 +14,6 @@ import {
   initializeTaskListState,
   updateUserListViewSetup,
   updateColumnOnListPreferences,
-  getCurrentTaskListFilterOptions,
   clearTaskListState,
 } from 'actions/task-list-actions';
 import { updateOrganizationCustomFields } from 'actions/organization-actions';
@@ -28,6 +27,7 @@ import {
   groupTasksSelector,
   taskDetailsSortSelector,
   taskCountersSelector,
+  searchTermSelector,
 } from 'selectors/list-details-selectors';
 import {
   currentTaskListSelector,
@@ -41,9 +41,8 @@ import { selectedFiltersInMegaFilterSelector } from 'selectors/mega-filter-selec
 import { useColumnsConfig } from 'context-api/ColumnsConfigContext';
 import * as TaskActions from 'actions/task-actions';
 import * as ListDetailsActions from 'actions/list-details-actions';
-import { ListDetailsSagaActions } from 'sagas/list-details-saga';
+import { createTask } from 'sagas/list-details-saga';
 import * as ModalActions from 'modal/actions';
-import { getListCustomFields } from 'actions/list-details-actions';
 import * as UserAuthApi from 'api/user-auth-api';
 import { getViewTypeFromQueryString } from 'helpers/view-type-helper';
 
@@ -70,13 +69,12 @@ const initializeListDetailsViewHooks = (match, history) => {
   const selectedFilters = useSelector(selectedFiltersInMegaFilterSelector);
 
   const actions = useActions(TaskActions);
-  const listDetailsSagaActions = useActions(ListDetailsSagaActions);
   const modalActions = useActions(ModalActions);
-  const listDetailsActions = useActions(ListDetailsActions);
 
   const [isTourOpen, setIsTourOpen] = useState(false);
   const [tourConditionChecked, setTourConditionChecked] = useState(false);
-  const [searchValue, setSearchValue] = useState('');
+  // const [searchValue, setSearchValue] = useState('');
+  const searchValue = useSelector(searchTermSelector);
 
   const prevCurrentUser = usePrevious(currentUser);
   const prevTaskCounters = usePrevious(taskCounters);
@@ -108,30 +106,19 @@ const initializeListDetailsViewHooks = (match, history) => {
 
   useEffect(() => {
     if (taskListIdentifierParam) {
-      dispatch(getListCustomFields(taskListIdentifierParam));
+      dispatch(ListDetailsActions.getListCustomFields(taskListIdentifierParam));
     }
   }, [dispatch, taskListIdentifierParam]);
 
-  const searchTasks = useCallback(
-    searchQuery => {
-      const taskStatus =
-        tabName === TaskListTabName.COMPLETE ? 'COMPLETE' : 'INCOMPLETE';
-
-      listDetailsSagaActions.fetchTasksBySearchedTerm({
-        status: taskStatus,
-        searchedTerm: searchQuery,
-      });
-    },
-    [listDetailsSagaActions, tabName],
-  );
-
   const refreshTab = useCallback(
     (withLoader = false) => {
-      dispatch(getCurrentTaskListFilterOptions());
-      listDetailsActions.getListDetailsTaskCounters(taskListIdentifierParam);
-      listDetailsActions.refreshListDetailsGroupedTasks(withLoader);
+      dispatch(ListDetailsActions.getCurrentTaskListFilterOptions());
+      dispatch(
+        ListDetailsActions.getListDetailsTaskCounters(taskListIdentifierParam),
+      );
+      dispatch(ListDetailsActions.refreshListDetailsGroupedTasks(withLoader));
     },
-    [dispatch, listDetailsActions, taskListIdentifierParam],
+    [dispatch, taskListIdentifierParam],
   );
 
   const openTourModal = useCallback(() => {
@@ -144,7 +131,7 @@ const initializeListDetailsViewHooks = (match, history) => {
   }, []);
 
   const refreshFilters = useCallback(() => {
-    dispatch(getCurrentTaskListFilterOptions());
+    dispatch(ListDetailsActions.getCurrentTaskListFilterOptions());
   }, [dispatch]);
 
   const refreshAccessToken = useCallback(user => {
@@ -185,66 +172,10 @@ const initializeListDetailsViewHooks = (match, history) => {
           autoOpenDrawer: taskCounters?.incomplete === 0,
         };
 
-        listDetailsSagaActions.createTask(payload);
+        dispatch(createTask(payload));
       }
     },
-    [listDetailsSagaActions, taskCounters],
-  );
-
-  const deleteGroup = useCallback(
-    groupId => {
-      const { params } = match;
-      const { taskListIdentifier } = params;
-
-      const modalProps = {
-        title: 'Delete group',
-        description:
-          'Are you sure you want to delete this group? If you delete this group and there are tasks within the group, the tasks will not be deleted',
-        confirm: () => {
-          modalActions.closeModal();
-          listDetailsSagaActions.deleteTasksGroup({
-            groupId,
-            taskListIdentifier,
-          });
-        },
-      };
-      modalActions.openModal('DeleteConfirmation', modalProps);
-    },
-    [listDetailsSagaActions, match, modalActions],
-  );
-
-  const editGroupName = useCallback(
-    (newGroupName, groupId) => {
-      const { params } = match;
-      const { taskListIdentifier } = params;
-
-      if (newGroupName) {
-        listDetailsSagaActions.editTasksGroupName({
-          taskListIdentifier,
-          groupId,
-          newGroupName,
-        });
-      }
-    },
-    [listDetailsSagaActions, match],
-  );
-
-  const changeGroupsOrder = useCallback(
-    (oldTaskIndex, newTaskIndex, groupList) => {
-      const { params } = match;
-      const { taskListIdentifier } = params;
-
-      if (newTaskIndex < 0 || newTaskIndex >= groupList.length) {
-        return;
-      }
-      const groupIdsList = groupList.map(group => group.taskGroupIdentifier);
-      const newGroupList = move(oldTaskIndex, newTaskIndex, groupIdsList);
-      listDetailsSagaActions.sortTasksGroups({
-        taskGroupIdentifiers: newGroupList,
-        taskListIdentifier,
-      });
-    },
-    [listDetailsSagaActions, match],
+    [dispatch, taskCounters],
   );
 
   const refreshTabAfterTaskUpdate = useCallback(
@@ -265,40 +196,23 @@ const initializeListDetailsViewHooks = (match, history) => {
     const { params } = match;
     const { taskListIdentifier } = params;
 
-    listDetailsActions.getListDetailsTaskCounters(taskListIdentifier);
-    listDetailsSagaActions.getTasksGroupsList({
-      taskListIdentifier,
-      shouldSetRequestState: false,
-    });
+    dispatch(ListDetailsActions.getListDetailsTaskCounters(taskListIdentifier));
+    dispatch(ListDetailsActions.getTasksGroupsList());
     refreshFilters();
     if (selectedFilters && !isEmpty(selectedFilters)) {
       refreshTab();
     }
-  }, [
-    listDetailsActions,
-    listDetailsSagaActions,
-    match,
-    refreshFilters,
-    refreshTab,
-    selectedFilters,
-  ]);
+  }, [dispatch, match, refreshFilters, refreshTab, selectedFilters]);
 
   const changeSearchValue = useCallback(
-    searchQuery => {
-      setSearchValue(searchQuery);
-
-      if (searchQuery) {
-        searchTasks(searchQuery);
-      } else {
-        refreshTab(true);
-      }
-    },
-    [refreshTab, searchTasks],
+    searchQuery =>
+      dispatch(ListDetailsActions.searchCurrentListTasks(searchQuery)),
+    [dispatch],
   );
 
   const resetSort = useCallback(() => {
-    listDetailsActions.sortListDetailsTasks(null, null);
-  }, [listDetailsActions]);
+    dispatch(ListDetailsActions.sortListDetailsTasks(null, null));
+  }, [dispatch]);
 
   const invokeToggleCompleteAction = useCallback(
     task => {
@@ -309,23 +223,15 @@ const initializeListDetailsViewHooks = (match, history) => {
         .toggleCompleteTask(task, currentUser)
         .then(() => {
           setTimeout(() => {
-            listDetailsActions.getListDetailsTaskCounters(taskListIdentifier);
-            listDetailsSagaActions.getTasksGroupsList({
-              taskListIdentifier,
-              shouldSetRequestState: false,
-            });
+            dispatch(
+              ListDetailsActions.getListDetailsTaskCounters(taskListIdentifier),
+            );
+            dispatch(ListDetailsActions.getTasksGroupsList());
           }, TASK_DISAPPEAR_DELAY);
         })
         .catch(() => refreshTab());
     },
-    [
-      actions,
-      currentUser,
-      listDetailsActions,
-      listDetailsSagaActions,
-      match,
-      refreshTab,
-    ],
+    [actions, currentUser, dispatch, match, refreshTab],
   );
 
   const handleTaskUpdate = useCallback(
@@ -350,9 +256,9 @@ const initializeListDetailsViewHooks = (match, history) => {
 
   const handleCreateGroup = useCallback(
     groupName => {
-      listDetailsSagaActions.createTaskGroupList({ groupName });
+      dispatch(ListDetailsActions.createTaskListGroup(groupName));
     },
-    [listDetailsSagaActions],
+    [dispatch],
   );
 
   const loadTasksForTaskGroup = useCallback(
@@ -365,9 +271,9 @@ const initializeListDetailsViewHooks = (match, history) => {
         viewMode,
         refresh,
       };
-      listDetailsSagaActions.getTasksForTaskGroups(payload);
+      dispatch(ListDetailsActions.getTasksForTaskGroups(payload));
     },
-    [listDetailsSagaActions, sort],
+    [dispatch, sort],
   );
 
   const loadMoreTasksForList = useCallback(
@@ -410,29 +316,8 @@ const initializeListDetailsViewHooks = (match, history) => {
     [invokeToggleCompleteAction, modalActions],
   );
 
-  // const launchNewFeaturesModal = useCallback(() => {
-  //   const isNewUser = currentUser?.usageState?.loginCount <= 5;
-
-  //   if (currentUser && !isEmpty(currentUser) && !isNewUser) {
-  //     const { userPreference: { appFeaturesReviewed } = {} } = currentUser;
-
-  //     if (!appFeaturesReviewed?.includes('MULTI_MENTION_ASSIGN')) {
-  //       modalActions.openModal('MultiMentionAssignTour', {
-  //         onClose: () => {
-  //           dispatch(
-  //             updateCurrentUserPreferences({
-  //               appFeaturesReviewed: ['MULTI_MENTION_ASSIGN'],
-  //             }),
-  //           );
-  //         },
-  //       });
-  //     }
-  //   }
-  // }, [currentUser, dispatch, modalActions]);
-
   useEffect(() => {
     refreshAccessToken(currentUser);
-    // launchNewFeaturesModal();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
@@ -647,11 +532,8 @@ const initializeListDetailsViewHooks = (match, history) => {
     taskList,
     bulkEditIsDisabled,
     bulkEditTasks,
-    changeGroupsOrder,
     changeSearchValue,
     completedTasks,
-    deleteGroup,
-    editGroupName,
     handleCreateGroup,
     handleTaskDelete,
     handleTaskUpdate,
@@ -659,7 +541,6 @@ const initializeListDetailsViewHooks = (match, history) => {
     isCompletedTasksFetching,
     isFetching,
     isTourOpen,
-    listDetailsActions,
     loadMoreTasksForList,
     loadTasksForTaskGroup,
     members,
@@ -680,6 +561,7 @@ const initializeListDetailsViewHooks = (match, history) => {
     setDisplayColumnPreferences,
     viewType,
     refreshFilters,
+    dispatch,
   };
 };
 

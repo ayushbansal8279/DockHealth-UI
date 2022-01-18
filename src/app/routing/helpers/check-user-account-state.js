@@ -69,8 +69,7 @@ const checkUserAccountState = async ({
       pathname !== SUBS_SETTINGS_PATH &&
       isRequiredSubscription
     ) {
-      dispatch(openModal('TrialExpiration', { closeOnClickBackground: false }));
-      return HOME_PATH;
+      return SUBS_SETTINGS_PATH;
     }
 
     if (isMobile) {

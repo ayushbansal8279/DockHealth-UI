@@ -105,6 +105,8 @@ const TaskItem = ({
   parentTaskGroupIdentifier,
   isSelectedByHighlighted,
   pageBackground,
+  newlyCreated,
+  parentContainerReference,
 }) => {
   const {
     taskIdentifier,
@@ -212,6 +214,16 @@ const TaskItem = ({
     previousDescription.current = description;
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [description]);
+
+  useEffect(() => {
+    if (parentContainerReference?.current && newlyCreated) {
+      parentContainerReference.current.scrollIntoView({
+        behavior: 'smooth',
+        block: 'start',
+        inline: 'start',
+      });
+    }
+  }, [newlyCreated, parentContainerReference]);
 
   const completedByName =
     `${completedBy?.firstName.charAt(0)}. ${completedBy?.lastName}`
@@ -384,6 +396,7 @@ const TaskItem = ({
         onMouseLeave={onMouseLeave}
       >
         <StandardTaskItemContainer
+          newlyCreated={newlyCreated}
           isSelected={isSelected || selected}
           height={
             hasParentTaskLabel || isCompletedGroup
@@ -394,6 +407,7 @@ const TaskItem = ({
         >
           <StickyColumnContainer
             isSubtask={showSubtaskStylingLink}
+            newlyCreated={newlyCreated}
             backgroundColor={pageBackground}
             isSelected={isSelected || selected}
           >

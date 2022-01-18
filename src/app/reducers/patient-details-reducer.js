@@ -1,36 +1,5 @@
-import {
-  GET_PATIENT_TASKS,
-  GET_PATIENT_TASKS_SUCCESS,
-  GET_PATIENT_TASKS_FAILURE,
-  GET_PATIENT_TASKS_STATS_SUCCESS,
-  GET_PATIENT_TASKS_STATS_FAILURE,
-  CLEAR_PATIENT_TASKS,
-  UPDATE_PATIENT_TASK,
-  INITIALIZE_PATIENT,
-  SET_PATIENT_TASK_SEARCH_VALUE,
-  SORT_PATIENT_TASKS,
-  UPDATE_TEMPLATE_BUNDLE_SUCCESS,
-  ADD_TASK_SUCCESS,
-  ADD_TEMPLATE_BUNDLE,
-  DELETE_TEMPLATE_BUNDLE,
-  COMPLETE_TEMPLATE_BUNDLE,
-  SET_PATIENT_FETCHING,
-  SET_PATIENT,
-  UPDATE_PATIENT_NOTE,
-  UPDATE_PATIENT_DETAILS,
-  ADD_PATIENT_NOTE,
-  REMOVE_PATIENT_NOTE,
-  PIN_PATIENT_NOTE,
-  UNPIN_PATIENT_NOTE,
-  SET_PATIENT_LABELS,
-  SET_PATIENT_LABELS_FETCHING,
-  SET_PATIENT_ATTACHMENTS,
-  SET_PATIENT_ATTACHMENTS_FETCHING,
-  TOGGLE_PATIENT_COMPLETE_TASKS_VISIBLE,
-  MOVE_TEMPLATE_BUNDLE_SUCCESS,
-  UPDATE_TEMPLATE_BUNDLE_FAILURE,
-  INSERT_CREATED_TASK_SUCCESS,
-} from 'actions/action-types';
+/* eslint-disable sonarjs/max-switch-cases */
+import * as ActionTypes from 'actions/action-types';
 import { TaskGroupType, TaskItemType } from 'helpers/task-helpers';
 import { mapWithRemove } from 'helpers/utility-functions';
 import { updateTaskOrSubtaskInListsArray } from 'helpers/task-update-helper';
@@ -38,13 +7,13 @@ import { updateBundleInList } from 'helpers/tasklist-helpers';
 import TaskBaseReducer from './task-base-reducer';
 
 const INITIAL_STATE = {
+  patientIdentifier: null,
   patient: null,
   isFetchingPatient: false,
   labels: null,
   isFetchingLabels: false,
   completeTasksVisible: false,
-  patientIdentifier: null,
-  lists: [],
+  lists: null,
   taskSearch: null,
   incompleteTasksCount: null,
   completeTasksCount: null,
@@ -57,7 +26,7 @@ const INITIAL_STATE = {
 };
 
 const updateTaskInList = (lists, updateTaskCallback) =>
-  lists.map(list => ({
+  lists?.map(list => ({
     ...list,
     tasks: mapWithRemove(t => {
       if (t.itemType === TaskItemType.BUNDLE) {
@@ -82,82 +51,104 @@ const updateTasksStateCallback = (state, updateTaskFromAction) => {
 export default function(state = INITIAL_STATE, action = {}) {
   const { type, payload } = action;
   switch (type) {
-    case SET_PATIENT_FETCHING: {
-      return { ...state, patient: null, isFetchingPatient: true };
-    }
-    case SET_PATIENT: {
-      return { ...state, patient: payload.patient, isFetchingPatient: false };
-    }
-    case SET_PATIENT_LABELS_FETCHING: {
-      return { ...state, labels: null, isFetchingLabels: true };
-    }
-    case SET_PATIENT_LABELS: {
-      return { ...state, labels: payload.labels, isFetchingLabels: false };
-    }
-    case SET_PATIENT_ATTACHMENTS_FETCHING: {
-      return { ...state, attachments: null, isFetchingAttachments: true };
-    }
-    case SET_PATIENT_ATTACHMENTS: {
+    case ActionTypes.INITIALIZE_PATIENT_STATE: {
       return {
         ...state,
-        attachments: payload.attachments,
-        isFetchingAttachments: false,
+        patientIdentifier: action.patientIdentifier,
       };
     }
 
-    case CLEAR_PATIENT_TASKS:
+    case ActionTypes.CLEAR_PATIENT_STATE:
       return {
         ...INITIAL_STATE,
       };
 
-    case TOGGLE_PATIENT_COMPLETE_TASKS_VISIBLE:
+    case ActionTypes.GET_CURRENT_PATIENT: {
+      return { ...state, isFetchingPatient: true };
+    }
+
+    case ActionTypes.GET_CURRENT_PATIENT_SUCCESS: {
+      return { ...state, patient: action.patient, isFetchingPatient: false };
+    }
+
+    case ActionTypes.GET_CURRENT_PATIENT_FAILURE: {
+      return { ...state, patient: null, isFetchingPatient: false };
+    }
+
+    case ActionTypes.GET_CURRENT_PATIENT_LABELS: {
+      return { ...state, isFetchingLabels: true };
+    }
+
+    case ActionTypes.GET_CURRENT_PATIENT_LABELS_SUCCESS: {
+      return { ...state, labels: action.labels, isFetchingLabels: false };
+    }
+
+    case ActionTypes.GET_CURRENT_PATIENT_LABELS_FAILURE: {
+      return { ...state, labels: null, isFetchingLabels: false };
+    }
+
+    case ActionTypes.GET_CURRENT_PATIENT_ATTACHMENTS: {
+      return { ...state, isFetchingAttachments: true };
+    }
+
+    case ActionTypes.GET_CURRENT_PATIENT_ATTACHMENTS_SUCCESS: {
+      return {
+        ...state,
+        attachments: action.attachments,
+        isFetchingAttachments: false,
+      };
+    }
+
+    case ActionTypes.GET_CURRENT_PATIENT_ATTACHMENTS_FAILURE: {
+      return {
+        ...state,
+        attachments: null,
+        isFetchingAttachments: false,
+      };
+    }
+
+    case ActionTypes.TOGGLE_PATIENT_COMPLETE_TASKS_VISIBLE:
       return {
         ...state,
         completeTasksVisible: !state.completeTasksVisible,
       };
 
-    case INITIALIZE_PATIENT:
+    case ActionTypes.GET_CURRENT_PATIENT_TASKS:
       return {
         ...state,
-        patientIdentifier: payload?.patientIdentifier,
-      };
-
-    case GET_PATIENT_TASKS:
-      return {
-        ...state,
-        isFetching: action.withLoader,
+        isFetching: true,
         error: false,
       };
 
-    case GET_PATIENT_TASKS_SUCCESS:
+    case ActionTypes.GET_CURRENT_PATIENT_TASKS_SUCCESS:
       return {
         ...state,
         lists: action.lists,
         isFetching: false,
       };
 
-    case GET_PATIENT_TASKS_FAILURE:
+    case ActionTypes.GET_CURRENT_PATIENT_TASKS_FAILURE:
       return {
         ...state,
         isFetching: false,
         error: true,
       };
 
-    case GET_PATIENT_TASKS_STATS_SUCCESS:
+    case ActionTypes.GET_PATIENT_TASKS_STATS_SUCCESS:
       return {
         ...state,
         incompleteTasksCount: payload?.incompleteTasksCount,
         completeTasksCount: payload?.completeTasksCount,
       };
 
-    case GET_PATIENT_TASKS_STATS_FAILURE:
+    case ActionTypes.GET_PATIENT_TASKS_STATS_FAILURE:
       return {
         ...state,
         incompleteTasksCount: null,
         completeTasksCount: null,
       };
 
-    case UPDATE_PATIENT_TASK: {
+    case ActionTypes.UPDATE_PATIENT_TASK: {
       const { newTaskData, taskIdentifier } = payload;
       return {
         ...state,
@@ -169,13 +160,13 @@ export default function(state = INITIAL_STATE, action = {}) {
       };
     }
 
-    case SET_PATIENT_TASK_SEARCH_VALUE:
+    case ActionTypes.SET_PATIENT_TASK_SEARCH_VALUE:
       return {
         ...state,
         taskSearch: payload?.value,
       };
 
-    case SORT_PATIENT_TASKS: {
+    case ActionTypes.SORT_PATIENT_TASKS: {
       const { key, order } = action.payload || {};
 
       return {
@@ -187,8 +178,8 @@ export default function(state = INITIAL_STATE, action = {}) {
       };
     }
 
-    case UPDATE_TEMPLATE_BUNDLE_FAILURE:
-    case UPDATE_TEMPLATE_BUNDLE_SUCCESS: {
+    case ActionTypes.UPDATE_TEMPLATE_BUNDLE_FAILURE:
+    case ActionTypes.UPDATE_TEMPLATE_BUNDLE_SUCCESS: {
       const { bundleIdentifier, dataToUpdate } = action;
 
       return {
@@ -200,7 +191,7 @@ export default function(state = INITIAL_STATE, action = {}) {
       };
     }
 
-    case ADD_TASK_SUCCESS: {
+    case ActionTypes.ADD_TASK_SUCCESS: {
       const { task: addedTask } = action;
 
       const bundleIdentifier = addedTask.taskGroups?.find(
@@ -236,7 +227,7 @@ export default function(state = INITIAL_STATE, action = {}) {
       };
     }
 
-    case ADD_TEMPLATE_BUNDLE: {
+    case ActionTypes.ADD_TEMPLATE_BUNDLE: {
       const { bundle: addedBundle } = action;
 
       const { taskListIdentifier } = addedBundle;
@@ -254,9 +245,9 @@ export default function(state = INITIAL_STATE, action = {}) {
       };
     }
 
-    case MOVE_TEMPLATE_BUNDLE_SUCCESS:
-    case DELETE_TEMPLATE_BUNDLE:
-    case COMPLETE_TEMPLATE_BUNDLE: {
+    case ActionTypes.MOVE_TEMPLATE_BUNDLE_SUCCESS:
+    case ActionTypes.DELETE_TEMPLATE_BUNDLE:
+    case ActionTypes.COMPLETE_TEMPLATE_BUNDLE: {
       const { bundleIdentifier } = action;
 
       return {
@@ -270,7 +261,7 @@ export default function(state = INITIAL_STATE, action = {}) {
       };
     }
 
-    case UPDATE_PATIENT_NOTE: {
+    case ActionTypes.UPDATE_PATIENT_NOTE: {
       const { patientNoteIdentifier, note: noteToUpdate } = payload;
 
       return {
@@ -286,7 +277,7 @@ export default function(state = INITIAL_STATE, action = {}) {
       };
     }
 
-    case UPDATE_PATIENT_DETAILS: {
+    case ActionTypes.UPDATE_PATIENT_DETAILS: {
       const { details } = payload;
       return {
         ...state,
@@ -294,7 +285,7 @@ export default function(state = INITIAL_STATE, action = {}) {
       };
     }
 
-    case ADD_PATIENT_NOTE: {
+    case ActionTypes.ADD_PATIENT_NOTE: {
       const { note } = payload;
 
       return {
@@ -306,7 +297,7 @@ export default function(state = INITIAL_STATE, action = {}) {
       };
     }
 
-    case REMOVE_PATIENT_NOTE: {
+    case ActionTypes.REMOVE_PATIENT_NOTE: {
       const { patientNoteIdentifier } = payload;
 
       return {
@@ -320,7 +311,7 @@ export default function(state = INITIAL_STATE, action = {}) {
       };
     }
 
-    case PIN_PATIENT_NOTE: {
+    case ActionTypes.PIN_PATIENT_NOTE: {
       const { patientNoteIdentifier } = payload;
 
       return {
@@ -336,7 +327,7 @@ export default function(state = INITIAL_STATE, action = {}) {
       };
     }
 
-    case UNPIN_PATIENT_NOTE: {
+    case ActionTypes.UNPIN_PATIENT_NOTE: {
       const { patientNoteIdentifier } = payload;
 
       return {
@@ -352,7 +343,7 @@ export default function(state = INITIAL_STATE, action = {}) {
       };
     }
 
-    case INSERT_CREATED_TASK_SUCCESS: {
+    case ActionTypes.INSERT_CREATED_TASK_SUCCESS: {
       const { task } = action;
       const { parentTaskIdentifier, patient, taskList } = task;
       const currentPatientIdentifier = state.patientIdentifier;

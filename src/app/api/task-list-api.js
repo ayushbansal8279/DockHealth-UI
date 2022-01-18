@@ -2,10 +2,6 @@ import {
   onTaskListDeleted,
   onTaskListInvitationRejected,
 } from 'helpers/ga-event-helper';
-import {
-  mapFilterOptions,
-  mapSelectedOptionsToRequestPayload,
-} from 'helpers/filter-options-helpers';
 import axios from './axios-heydoc';
 
 export function getTaskListForUser() {
@@ -359,39 +355,4 @@ export function updateUserCustomFieldsOptionsListViewSetup(
       customFieldDisplayColumns: setup,
     })
     .then(({ data }) => data);
-}
-
-export function getTaskListFilterOptions(taskListIdentifier, status) {
-  return axios
-    .get(`task/filter/filterOptionsForTaskList/${taskListIdentifier}`, {
-      params: { status },
-    })
-    .then(({ data }) => mapFilterOptions(data));
-}
-
-export function getFilteredTasksForList(
-  taskListIdentifier,
-  status = 'INCOMPLETE',
-  sortBy,
-  selectedFilters,
-) {
-  return axios
-    .post(
-      `task/filter/filterSpecificTasksByCriteria/${taskListIdentifier}`,
-      mapSelectedOptionsToRequestPayload(selectedFilters),
-      {
-        params: {
-          status,
-          sortBy: sortBy?.key || undefined,
-          sortDirection: sortBy?.order || undefined,
-        },
-      },
-    )
-    .then(({ data }) => ({
-      ...data,
-      taskFilterOptions: mapFilterOptions(data.taskFilterOptions),
-    }))
-    .catch(error => {
-      throw error;
-    });
 }

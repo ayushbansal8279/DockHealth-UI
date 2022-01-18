@@ -12,6 +12,11 @@ export const dashboardSearchValueSelector = createSelector(
   ({ searchValue }) => searchValue,
 );
 
+export const dashboardLastCreatedTaskIdentifierSelector = createSelector(
+  dashboardTasksStateSelector,
+  ({ lastCreatedTaskIdentifier }) => lastCreatedTaskIdentifier,
+);
+
 export const dashboardTasksIsLoadingSelector = createSelector(
   dashboardTasksStateSelector,
   ({ isLoading }) => isLoading,
@@ -34,4 +39,19 @@ export const dashboardAllTaskItemsSelector = createSelector(
 export const dashboardTabNameSelector = createSelector(
   dashboardTasksStateSelector,
   ({ tabName }) => tabName,
+);
+
+export const dashboardSelectedFiltersSelector = createSelector(
+  dashboardTasksStateSelector,
+  ({ selectedFilters }) => selectedFilters,
+);
+
+export const dashboardFilterOptionsSelector = createSelector(
+  dashboardTasksStateSelector,
+  ({ filterOptions }) => filterOptions,
+);
+
+export const isFetchingDashboardFiltersSelector = createSelector(
+  dashboardTasksStateSelector,
+  ({ isFetchingFilters }) => isFetchingFilters,
 );

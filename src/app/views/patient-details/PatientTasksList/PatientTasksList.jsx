@@ -1,6 +1,6 @@
 /* eslint-disable sonarjs/cognitive-complexity */
 import React, { useCallback, useEffect, useMemo } from 'react';
-import { pluck } from 'ramda';
+import { compose, pluck } from 'ramda';
 import useActions from 'hooks/use-actions';
 import { useDispatch, useSelector } from 'react-redux';
 import { Box } from '@material-ui/core';
@@ -12,7 +12,7 @@ import TaskListHeader from 'views/patient-details/TaskListHeader/TaskListHeader'
 import EmptyTaskListBird from 'img/animals/bird';
 import {
   getPatientFilterOptions,
-  getPatientTasks,
+  getCurrentPatientTasks,
 } from 'actions/patient-details-actions';
 import { openModal, closeModal } from 'modal/actions';
 import { PatientTasksSagaActions } from 'sagas/patient-details-saga';
@@ -20,11 +20,11 @@ import { checkIfTaskMatchesFilters } from 'helpers/filters-helpers';
 import TasksHeader from 'components/tasklist/TasksHeader/TasksHeader';
 import TaskTemplateGroup from 'components/task-template/TaskTemplateGroup/TaskTemplateGroup';
 import {
+  currentPatientIdentifierSelector,
   patientTaskListsSelector,
   completeTasksVisibilitySelector,
   patientTaskSearchSelector,
   patientTasksSortSelector,
-  isFetchingPatientTaskListsSelector,
 } from 'selectors/patient-details-selectors';
 import {
   selectedTaskSelector,
@@ -85,12 +85,11 @@ const PATIENT_CONFIGURABLE_COLUMNS_CONFIG = {
 
 const PatientTasksListView = () => {
   const {
-    patientIdentifier,
     taskListIdentifier: taskListIdentifierParameter = ListViewType.ALL_TASKS,
   } = useParams();
+  const patientIdentifier = useSelector(currentPatientIdentifierSelector);
   const viewSetup = useSelector(userSetupClientViewSelector);
   const sort = useSelector(patientTasksSortSelector);
-  const isFetchingLists = useSelector(isFetchingPatientTaskListsSelector);
   const lists = useSelector(patientTaskListsSelector);
   const completeTasksVisible = useSelector(completeTasksVisibilitySelector);
   const currentUser = useSelector(userProfileSelector);
@@ -110,7 +109,6 @@ const PatientTasksListView = () => {
     togglePatientTaskStatus,
     updatePatientTaskInList,
     updatePatientTaskWorkflowStatus,
-    refreshPatientTasks,
     sortPatientTasks,
     initializeSavedFilters,
   } = useActions(PatientTasksSagaActions);
@@ -139,7 +137,7 @@ const PatientTasksListView = () => {
   useEffect(() => {
     if (patientIdentifier) {
       initializeSavedFilters(patientIdentifier);
-      dispatch(getPatientTasks(patientIdentifier));
+      dispatch(getCurrentPatientTasks(patientIdentifier));
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [patientIdentifier]);
@@ -178,10 +176,10 @@ const PatientTasksListView = () => {
     updatedTask => {
       dispatch(getPatientFilterOptions(patientIdentifier));
       if (!checkIfTaskMatchesFilters(updatedTask, selectedFilters)) {
-        refreshPatientTasks({ withLoader: false });
+        dispatch(getCurrentPatientTasks());
       }
     },
-    [dispatch, patientIdentifier, selectedFilters, refreshPatientTasks],
+    [dispatch, patientIdentifier, selectedFilters],
   );
 
   const quickAddTask = useCallback(
@@ -253,14 +251,14 @@ const PatientTasksListView = () => {
   const activeList = useMemo(
     () =>
       isAllTasksView
-        ? filteredLists.reduce(
+        ? filteredLists?.reduce(
             (accumulator, { tasks }) => ({
               ...accumulator,
               tasks: [...accumulator.tasks, ...tasks],
             }),
             { tasks: [] },
           )
-        : filteredLists.find(
+        : filteredLists?.find(
             l => l.taskListIdentifier === taskListIdentifierParameter,
           ),
     [filteredLists, isAllTasksView, taskListIdentifierParameter],
@@ -399,7 +397,7 @@ const PatientTasksListView = () => {
 
   return (
     <>
-      {!isFetchingLists ? (
+      {filteredLists ? (
         <>
           {filteredLists?.length > 0 ? (
             <>
@@ -421,7 +419,7 @@ const PatientTasksListView = () => {
                       <TaskListHeader
                         list={!isAllTasksView ? activeList : null}
                         viewSetup={viewSetup}
-                        refreshView={refreshPatientTasks}
+                        refreshView={compose(dispatch, getCurrentPatientTasks)}
                       />
                     </PatientToolbarStickyContainer>
 

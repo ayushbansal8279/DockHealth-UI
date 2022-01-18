@@ -6,10 +6,6 @@ import {
   tasksIsFetchingSelector,
   groupTasksSelector,
 } from 'selectors/list-details-selectors';
-import {
-  sortTasksInGroup,
-  reassignTasksToAnotherGroup as reassignTasksToAnotherGroupAction,
-} from 'sagas/list-details-saga';
 import { hasFiltersAppliedSelector } from 'selectors/mega-filter-selectors';
 import ListDetailsOpenedTasks from './ListDetailsOpenedTasks';
 
@@ -31,11 +27,6 @@ const mapStateToProps = (state, ownProps) => {
   };
 };
 
-const mapDispatchToProps = {
-  reorderTasksInGroup: sortTasksInGroup,
-  reassignTasksToAnotherGroup: reassignTasksToAnotherGroupAction,
-};
-
 const mergeProps = (stateProps, dispatchProps, ownProps) => {
   const { groupList } = stateProps;
   const { changeGroupsOrder, ...restOwnProps } = ownProps;
@@ -51,6 +42,6 @@ const mergeProps = (stateProps, dispatchProps, ownProps) => {
 
 export default connect(
   mapStateToProps,
-  mapDispatchToProps,
+  null,
   mergeProps,
 )(ListDetailsOpenedTasks);

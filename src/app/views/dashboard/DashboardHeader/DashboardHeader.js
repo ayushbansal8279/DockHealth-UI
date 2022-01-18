@@ -1,33 +1,36 @@
 import React, { useCallback, useMemo, useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { megaFilterSelector } from 'selectors/mega-filter-selectors';
 import {
-  dashboardTasksIsLoadingSelector,
   dashboardTasksSelector,
   dashboardTabNameSelector,
-} from 'selectors/dashboard-tasks-selectors';
+  dashboardFilterOptionsSelector,
+  isFetchingDashboardFiltersSelector,
+  dashboardSelectedFiltersSelector,
+} from 'selectors/dashboard-selectors';
 import {
   getDashboardFilters,
   initializeDashboardState,
   searchDashboardTasks,
+  selectDashboardFilters,
 } from 'actions/dashboard-actions';
+import { userProfileSelector } from 'selectors/user-selectors';
 import debounce from 'lodash.debounce';
 import { onSearchChanged } from 'helpers/ga-event-helper';
 import UserAvatar from 'components/user/UserAvatar/UserAvatar';
 import LayoutHeader from 'components/template/LayoutHeader/LayoutHeader';
 import MegaFilter from 'components/tasklist/MegaFilter/MegaFilter';
-import { selectFiltersForMegaFilter } from 'actions/mega-filter-actions';
-import { isEmpty } from 'ramda';
 import HeaderSearch from 'components/template/HeaderSearch/HeaderSearch';
+import { compose } from 'ramda';
 
-const DashboardHeader = ({ currentUser }) => {
+const DashboardHeader = () => {
   const [searchValue, setSearchValue] = useState('');
   const dispatch = useDispatch();
-  const isLoadingTasks = useSelector(dashboardTasksIsLoadingSelector);
+  const isFetchingFilters = useSelector(isFetchingDashboardFiltersSelector);
   const dashboardTasks = useSelector(dashboardTasksSelector);
+  const currentUser = useSelector(userProfileSelector);
   const tabName = useSelector(dashboardTabNameSelector);
-  const megaFilter = useSelector(megaFilterSelector);
-  const { filters, selectedFilters } = megaFilter || {};
+  const filterOptions = useSelector(dashboardFilterOptionsSelector);
+  const selectedFilters = useSelector(dashboardSelectedFiltersSelector);
 
   const filteredDashboardTasks = dashboardTasks?.filter(
     taskGroupInfo => taskGroupInfo?.metricValue !== 0,
@@ -44,9 +47,8 @@ const DashboardHeader = ({ currentUser }) => {
   );
 
   const handleMegaFilterOpen = useCallback(() => {
-    if (!selectedFilters || isEmpty(selectedFilters))
-      dispatch(getDashboardFilters());
-  }, [dispatch, selectedFilters]);
+    dispatch(getDashboardFilters());
+  }, [dispatch]);
 
   const searchTasksWithDebounce = useCallback(
     debounce(value => {
@@ -84,15 +86,13 @@ const DashboardHeader = ({ currentUser }) => {
       <HeaderSearch value={searchValue} onChange={handleSearchChange} />
       <LayoutHeader.Spacer />
       <MegaFilter
-        filters={filters}
+        filters={filterOptions}
         selectedFilters={selectedFilters}
-        onSelectFilters={sf =>
-          dispatch(selectFiltersForMegaFilter(sf, 'dashboard', tabName))
-        }
+        onSelectFilters={compose(dispatch, selectDashboardFilters)}
         taskStatus="INCOMPLETE"
         activeItemsAmount={activeTasksCount}
         onOpen={handleMegaFilterOpen}
-        isFetching={isLoadingTasks}
+        isFetching={isFetchingFilters}
       />
     </LayoutHeader>
   );

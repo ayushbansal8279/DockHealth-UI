@@ -1,8 +1,7 @@
 /* eslint-disable sonarjs/cognitive-complexity */
 import React, { useRef, useState, useEffect } from 'react';
 import { Box } from '@material-ui/core';
-import { useSelector } from 'react-redux';
-import { hasFiltersAppliedSelector } from 'selectors/mega-filter-selectors';
+import { isEmpty } from 'ramda';
 import FilterButton from 'components/filter/FilterButton/FilterButton';
 import FilterPopover from 'components/filter/FilterPopover/FilterPopover';
 import FilterHeader from 'components/filter/FilterHeader/FilterHeader';
@@ -23,7 +22,7 @@ const MegaFilter = ({
   const [searchedFilterQuery, setSearchedFilterQuery] = useState('');
   const megaFilterButtonReference = useRef(null);
 
-  const isFilterApplied = useSelector(hasFiltersAppliedSelector);
+  const isFilterApplied = selectedFilters && !isEmpty(selectedFilters);
 
   const clearFilters = () => {
     onSelectFilters(null);

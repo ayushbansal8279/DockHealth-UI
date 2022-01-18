@@ -50,12 +50,6 @@ import CustomFieldsView from 'views/custom-fields/CustomFieldsView';
 import AnalyticsView from 'views/analytics/AnalyticsView';
 import { DashboardTasksTab } from 'helpers/dashboard-helpers';
 import { onLeaveGlobalSearch } from './TemplateCoreSubscriptionPlan/GlobalSearch';
-
-import {
-  onEnterPatientDetailsView,
-  onLeavePatientDetailsView,
-} from './TemplateCoreSubscriptionPlan/PatientDetails';
-
 import {
   onEnterListDetailsView,
   onLeaveListDetailsView,
@@ -129,8 +123,6 @@ export const TEMPLATE_CORE_SUBSCRIPTION_PLAN_ROUTES = [
   {
     path: '/patient/:patientIdentifier',
     RouteComponent: PatientDetailsView,
-    onEnter: onEnterPatientDetailsView,
-    onLeave: onLeavePatientDetailsView,
   },
   {
     path: '/activityfeed',

@@ -28,12 +28,6 @@ export function getCurrentTaskList() {
   };
 }
 
-export function getCurrentTaskListFilterOptions() {
-  return {
-    type: ActionTypes.GET_CURRENT_TASK_LIST_FILTER_OPTIONS,
-  };
-}
-
 export const updateUserListViewSetup = (
   taskListIdentifier,
   setup,

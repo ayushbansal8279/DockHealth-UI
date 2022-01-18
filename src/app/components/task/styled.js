@@ -1,12 +1,30 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import React from 'react';
-import styled from 'styled-components';
+import styled, { keyframes, css } from 'styled-components';
 import { Link } from 'react-router-dom';
 import { Grid } from '@material-ui/core';
 import spacing from 'styles/spacing';
 import { fontWeights, fontSizes } from 'styles/font';
 import palette, { featurePalette } from 'styles/palette';
 import Select from 'components/common/Select/Select';
+
+export const highlight = keyframes`
+  0% {
+      background: ${palette.brightBlueWithAlpha};
+  }
+  100% {
+      background: ${palette.white};
+  }
+`;
+
+export const highlightDescription = keyframes`
+  0% {
+      background: #e0eff9;
+  }
+  100% {
+      background: ${palette.white};
+  }
+`;
 
 export const DecisionSelect = styled(Select)`
   & .MuiSelect-root {
@@ -111,6 +129,12 @@ export const StickyColumnContainer = styled.div`
     height: calc(100% - 2px);
     z-index: -1;
     transform: translateY(-50%);
+    animation: ${props =>
+      props.newlyCreated
+        ? css`
+            ${highlightDescription} 6s ease-out;
+          `
+        : ''};
   }
 `;
 
@@ -336,6 +360,12 @@ export const StandardTaskItemContainer = styled.div`
   border-top: none;
   border-left: none;
   transition: background-color 0.3s ease-out;
+  animation: ${props =>
+    props.newlyCreated
+      ? css`
+          ${highlight} 6s ease-out;
+        `
+      : ''};
 `;
 
 export const StatusBar = styled.div`

@@ -19,7 +19,6 @@ import OnboardingInviteConfirmationModal from './components/OnboardingInviteConf
 import ArchiveUserModal from './components/ArchiveUserModal/ArchiveUserModal';
 import SelectOwnerModal from './components/SelectOwnerModal/SelectOwnerModal';
 import MentionsTourModal from './components/NewFeaturesModals/MentionsTourModal/MentionsTourModal';
-import TrialExpirationModal from './components/TrialExpirationModal/TrialExpirationModal';
 import NotificationSettingsTourModal from './components/NewFeaturesModals/NotificationSettingsTourModal/NotificationSettingsTourModal';
 import AutoLogoutModal from './components/AutoLogoutModal/AutoLogoutModal';
 import TaskDensityTourModal from './components/NewFeaturesModals/TaskDensityTourModal/TaskDensityTourModal';
@@ -89,7 +88,6 @@ const MODAL_MAP = {
   PatientProfileTour: PatientProfileTourModal,
   PatientCustomFieldTour: PatientCustomFieldTourModal,
   MultiMentionAssignTour: MultiMentionAssignTourModal,
-  TrialExpiration: TrialExpirationModal,
   AutoLogout: AutoLogoutModal,
   ReferAColleague: ReferAColleagueModal,
   BulkCompleteTasks: BulkCompleteTasksModal,

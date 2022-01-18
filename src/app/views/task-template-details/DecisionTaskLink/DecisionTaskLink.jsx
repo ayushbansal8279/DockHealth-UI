@@ -69,7 +69,6 @@ const DecisionTaskLink = props => {
 
   useEffect(() => {
     if (!isFocused && outcome) {
-      setInputValue(outcome.name);
       unsetEdited();
     }
   }, [isFocused, outcome, unsetEdited]);
@@ -124,24 +123,28 @@ const DecisionTaskLink = props => {
     setInputValue();
   };
 
+  const saveTaskOutcome = () => {
+    if (inputValue.length > 1) {
+      if (outcome) {
+        dispatch(
+          updateTaskOutcome(
+            taskOutcomeIdentifier,
+            sourceTaskIdentifier,
+            inputValue,
+          ),
+        );
+      } else {
+        dispatch(addTaskOutcome(inputValue, sourceTaskIdentifier, link));
+      }
+    }
+  };
+
   const handleKeyPress = event => {
     const { key } = event;
 
     switch (key) {
       case 'Enter':
-        if (inputValue.length > 1) {
-          if (outcome) {
-            dispatch(
-              updateTaskOutcome(
-                taskOutcomeIdentifier,
-                sourceTaskIdentifier,
-                inputValue,
-              ),
-            );
-          } else {
-            dispatch(addTaskOutcome(inputValue, sourceTaskIdentifier, link));
-          }
-        }
+        saveTaskOutcome();
         break;
       case 'Escape':
         clearInput();
@@ -159,6 +162,11 @@ const DecisionTaskLink = props => {
       }),
     );
     closeDelayPopover();
+  };
+
+  const handleInputBlur = () => {
+    saveTaskOutcome();
+    unsetFocused();
   };
 
   return (
@@ -185,7 +193,7 @@ const DecisionTaskLink = props => {
               onChange={event => setInputValue(event.target?.value || '')}
               onKeyPress={handleKeyPress}
               onFocus={setFocused}
-              onBlur={unsetFocused}
+              onBlur={handleInputBlur}
               onClick={outcome && openOptions}
             />
           </EdgeLabel>

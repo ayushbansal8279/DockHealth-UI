@@ -11,12 +11,12 @@ import {
   taskListMembersSelector,
 } from 'selectors/task-list-selectors';
 import { openModal } from 'modal/actions';
+import { getMembersByTaskListId } from 'actions/task-list-actions';
+import { splitAt } from 'ramda';
 import {
+  filterListDetailsTasks,
   getCurrentTaskListFilterOptions,
-  getMembersByTaskListId,
-} from 'actions/task-list-actions';
-import { isEmpty, splitAt } from 'ramda';
-import { filterListDetailsTasks } from 'actions/list-details-actions';
+} from 'actions/list-details-actions';
 import AvatarFilterMember from 'components/user/AvatarFilterMember/AvatarFilterMember';
 import AdditionalMembersCounterPopover from 'components/user/AdditionalMembersCounterPopover/AdditionalMembersCounterPopover';
 import ListOptionsMenu from 'components/tasklist/ListOptionsMenu/ListOptionsMenu';
@@ -57,9 +57,7 @@ const ListDetailsHeader = props => {
   const [shownUsers, hiddenUsers] = splitAt(4, sortedUsers);
 
   const handleFilterOpen = () => {
-    if (!selectedFilters || isEmpty(selectedFilters)) {
-      dispatch(getCurrentTaskListFilterOptions());
-    }
+    dispatch(getCurrentTaskListFilterOptions());
   };
 
   const handleFilterSelect = newFilters => {

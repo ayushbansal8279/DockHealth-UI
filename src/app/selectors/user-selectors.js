@@ -14,12 +14,12 @@ export const userOrganizationsSelector = createSelector(
 );
 
 export const userProfileDashboardPrefsSelector = createSelector(
-  userProfileSelector,
+  userStateSelector,
   ({ userPreference }) => userPreference?.displayColumns,
 );
 
 export const userProfileCustomFieldsSelector = createSelector(
-  userProfileSelector,
+  userStateSelector,
   ({ userPreference }) => userPreference?.customFieldDisplayColumns,
 );
 

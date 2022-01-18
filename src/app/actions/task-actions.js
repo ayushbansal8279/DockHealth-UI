@@ -1,10 +1,8 @@
-/* eslint-disable sonarjs/no-duplicate-string */
 import moment from 'moment';
 import * as TaskApi from 'api/task-api';
+import * as ListDetailsApi from 'api/list-details-api';
 import * as AlertActions from 'alert/actions';
-// eslint-disable-next-line import/no-cycle
-import { getTasksGroupsList } from 'sagas/list-details-saga';
-// eslint-disable-next-line import/no-cycle
+import { getTasksGroupsList } from 'actions/list-details-actions';
 import { openDrawer } from 'actions/task-drawer-actions';
 import { TASK_DISAPPEAR_DELAY } from 'helpers/task-update-helper';
 import * as ActionTypes from './action-types';
@@ -68,7 +66,7 @@ export function getListTasksGroupedByTaskGroup(
       });
     }
 
-    return TaskApi.getListTasksGroupedByTaskGroup(
+    return ListDetailsApi.getListTasksGroupedByTaskGroup(
       taskListIdentifier,
       status,
       sortBy,
@@ -84,7 +82,7 @@ export function getListTasksGroupedByTaskGroup(
         );
 
         const allTasks = [];
-        groupedTasks.taskGroups.forEach(taskGroup => {
+        groupedTasks.forEach(taskGroup => {
           if (taskGroup.tasks) {
             allTasks.push(taskGroup.tasks);
           }
@@ -114,18 +112,6 @@ export function getListTasksGroupedByTaskGroup(
       .catch(error => {
         throw error;
       });
-  };
-}
-
-export function loading() {
-  return dispatch => {
-    dispatch({ type: ActionTypes.REQUEST_TASKS });
-  };
-}
-
-export function loadingCompletedTasks() {
-  return dispatch => {
-    dispatch({ type: ActionTypes.REQUEST_COMPLETED_TASKS });
   };
 }
 
@@ -174,11 +160,7 @@ export function saveTask(newTask, shouldReloadGroups = false) {
             addingNewTask: false,
           });
           if (shouldReloadGroups) {
-            dispatch(
-              getTasksGroupsList({
-                taskListIdentifier: newTask.taskListIdentifier,
-              }),
-            );
+            dispatch(getTasksGroupsList());
           }
         }
 
@@ -361,11 +343,7 @@ export function deleteTask(task) {
             },
           ),
         );
-        dispatch(
-          getTasksGroupsList({
-            taskListIdentifier: task?.taskList?.taskListIdentifier,
-          }),
-        );
+        dispatch(getTasksGroupsList());
         return task;
       })
       .catch(error => {
@@ -388,11 +366,7 @@ export function duplicateTask(task, includeAttachments = false) {
             task: duplicatedTask,
           });
         }
-        dispatch(
-          getTasksGroupsList({
-            taskListIdentifier: task?.taskList?.taskListIdentifier,
-          }),
-        );
+        dispatch(getTasksGroupsList());
         dispatch(AlertActions.showGlobalAlert(AlertMessages.TASK_DUPLICATED));
 
         return duplicatedTask;

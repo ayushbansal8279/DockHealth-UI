@@ -3,10 +3,10 @@ import {
   call,
   takeLatest,
   select,
-  all,
   takeEvery,
   delay,
 } from 'redux-saga/effects';
+import { isEmpty } from 'ramda';
 import * as ActionTypes from 'actions/action-types';
 import * as PatientTasksApi from 'api/patient-tasks-api';
 import * as TaskListApi from 'api/task-list-api';
@@ -22,7 +22,7 @@ import { userProfileSelector } from 'selectors/user-selectors';
 import {
   completeTasksVisibilitySelector,
   patientTasksSortSelector,
-  patientSelector,
+  currentPatientIdentifierSelector,
 } from 'selectors/patient-details-selectors';
 import { selectedFiltersInMegaFilterSelector } from 'selectors/mega-filter-selectors';
 import {
@@ -41,15 +41,12 @@ import { closeModal } from 'modal/actions';
 import { showGlobalAlert, showGlobalErrorAlert } from 'alert/actions';
 import { PATIENTS_LIST_ALL } from '../routing/helpers/paths';
 
-export const DO_REFRESH_PATIENT_TASKS = 'DO_REFRESH_PATIENT_TASKS';
 export const DO_TOGGLE_PATIENT_TASK_STATUS = 'DO_TOGGLE_PATIENT_TASK_STATUS';
 export const DO_REASSIGN_TASK = 'DO_REASSIGN_TASK';
 export const DO_UPDATE_DUE_DATE = 'DO_UPDATE_PATIENT_TASK_DUE_DATE';
 export const DO_UPDATE_PATIENT_WORKFLOW_STATUS =
   'DO_UPDATE_PATIENT_WORKFLOW_STATUS';
 export const DO_UPDATE_PATIENT_TASK = 'DO_UPDATE_PATIENT_TASK';
-export const DO_UPDATE_PATIENT_TASKS_FILTERS =
-  'DO_UPDATE_PATIENT_TASKS_FILTERS';
 export const DO_INITIALIZE_SAVED_FILTERS_FOR_PATIENT =
   'DO_INITIALIZE_SAVED_FILTERS_FOR_PATIENT';
 export const DO_SET_PATIENT_TASK_SEARCH_VALUE =
@@ -60,22 +57,14 @@ export const DO_CANCEL_USER_INVITE_TO_TASKLIST =
   'DO_CANCEL_USER_INVITE_TO_TASKLIST';
 export const DO_CHANGE_MEMBER_ROLE = 'DO_CHANGE_MEMBER_ROLE';
 export const DO_SORT_PATIENT_TASKS = 'DO_SORT_PATIENT_TASKS';
-export const DO_FETCH_PATIENT = 'DO_FETCH_PATIENT';
-export const DO_FETCH_PATIENT_LABELS = 'DO_FETCH_PATIENT_LABELS';
 export const DO_FETCH_PATIENT_ATTACHMENTS = 'DO_FETCH_PATIENT_ATTACHMENTS';
 export const DO_ADD_PATIENT_ATTACHMENT = 'DO_ADD_PATIENT_ATTACHMENT';
 export const DO_REMOVE_PATIENT_ATTACHMENT = 'DO_REMOVE_PATIENT_ATTACHMENT';
-export const DO_RELOAD_PATIENT = 'DO_RELOAD_PATIENT';
 export const DO_UPDATE_PATIENT_NOTE = 'DO_UPDATE_PATIENT_NOTE';
 export const DO_ADD_PATIENT_NOTE = 'DO_ADD_PATIENT_NOTE';
 export const DO_REMOVE_PATIENT_NOTE = 'DO_REMOVE_PATIENT_NOTE';
 export const DO_CHANGE_PATIENT_NOTE_PIN = 'DO_CHANGE_PATIENT_NOTE_PIN';
 export const DO_ARCHIVE_PATIENT = 'DO_ARCHIVE_PATIENT';
-
-export const refreshPatientTasks = ({ withLoader }) => ({
-  type: DO_REFRESH_PATIENT_TASKS,
-  withLoader,
-});
 
 export const togglePatientTaskStatus = task => ({
   type: DO_TOGGLE_PATIENT_TASK_STATUS,
@@ -105,13 +94,6 @@ export const updatePatientTaskInList = (taskIdentifier, dataToUpdate) => ({
   payload: {
     taskIdentifier,
     dataToUpdate,
-  },
-});
-
-export const patientTasksFilterChange = selectedFilters => ({
-  type: DO_UPDATE_PATIENT_TASKS_FILTERS,
-  payload: {
-    selectedFilters,
   },
 });
 
@@ -168,20 +150,6 @@ export const sortPatientTasks = (key, order) => ({
   },
 });
 
-export const fetchPatient = patientIdentifier => ({
-  type: DO_FETCH_PATIENT,
-  patientIdentifier,
-});
-
-export const fetchPatientLabels = () => ({
-  type: DO_FETCH_PATIENT_LABELS,
-});
-
-export const fetchPatientAttachments = patientIdentifier => ({
-  type: DO_FETCH_PATIENT_ATTACHMENTS,
-  patientIdentifier,
-});
-
 export const addPatientAttachment = (
   patientIdentifier,
   fileData,
@@ -206,10 +174,6 @@ export const removePatientAttachment = (
   type: DO_REMOVE_PATIENT_ATTACHMENT,
   patientIdentifier,
   attachmentIdentifier,
-});
-
-export const reloadPatient = () => ({
-  type: DO_RELOAD_PATIENT,
 });
 
 export const updatePatientNote = note => ({
@@ -240,11 +204,9 @@ export const archivePatient = (patientIdentifier, history) => ({
 });
 
 export const PatientTasksSagaActions = {
-  refreshPatientTasks,
   togglePatientTaskStatus,
   updateTaskData,
   updatePatientTaskWorkflowStatus,
-  patientTasksFilterChange,
   initializeSavedFilters,
   setPatientTaskSearch,
   inviteUserToTaskList,
@@ -255,53 +217,130 @@ export const PatientTasksSagaActions = {
   updatePatientTaskInList,
 };
 
-function* getPatientLists(patientIdentifier) {
-  const selectedFilters = yield select(selectedFiltersInMegaFilterSelector);
-  const completeTasksVisible = yield select(completeTasksVisibilitySelector);
-  const status = completeTasksVisible ? 'ALL' : 'INCOMPLETE';
-  const sort = yield select(patientTasksSortSelector);
-
-  let lists;
-
-  if (selectedFilters && Object.keys(selectedFilters).length > 0) {
-    lists = yield call(
-      PatientTasksApi.fetchPatientTasksByPatientIdentifierWithFilters,
-      patientIdentifier,
-      sort,
-      selectedFilters,
-      status,
-    );
-  } else {
-    lists = yield call(
-      PatientTasksApi.fetchPatientTasksByPatientIdentifier,
-      patientIdentifier,
-      sort,
-      status,
-    );
+function* initializePatientState() {
+  try {
+    yield put(PatientDetailsActions.getCurrentPatient());
+  } catch {
+    yield put(showGlobalErrorAlert());
   }
-  return lists;
 }
 
-function* getPatientTasks({ patientIdentifier }) {
+function* getCurrentPatient() {
+  const patientIdentifier = yield select(currentPatientIdentifierSelector);
+
   try {
-    const lists = yield getPatientLists(patientIdentifier);
+    const patient = yield call(PatientApi.getPatientById, patientIdentifier);
+    yield put({ type: ActionTypes.GET_CURRENT_PATIENT_SUCCESS, patient });
+  } catch {
     yield put({
-      type: ActionTypes.GET_PATIENT_TASKS_SUCCESS,
+      type: ActionTypes.GET_CURRENT_PATIENT_FAILURE,
+      patientIdentifier,
+    });
+    yield put(AlertActions.showGlobalErrorAlert());
+  }
+}
+
+function* getCurrentPatientLabels() {
+  const patientIdentifier = yield select(currentPatientIdentifierSelector);
+
+  try {
+    const labels = yield call(PatientLabelApi.getAllPatientLabels);
+    yield put({
+      type: ActionTypes.GET_CURRENT_PATIENT_LABELS_SUCCESS,
+      labels,
+    });
+  } catch {
+    yield put({
+      type: ActionTypes.GET_CURRENT_PATIENT_LABELS_FAILURE,
+      patientIdentifier,
+    });
+    yield put(AlertActions.showGlobalErrorAlert());
+  }
+}
+
+function* getCurrentPatientAttachments() {
+  const patientIdentifier = yield select(currentPatientIdentifierSelector);
+
+  try {
+    const attachments = yield call(
+      PatientAttachmentApi.getPatientAttachments,
+      patientIdentifier,
+    );
+    yield put({
+      type: ActionTypes.GET_CURRENT_PATIENT_ATTACHMENTS_SUCCESS,
+      attachments,
+    });
+  } catch {
+    yield put({
+      type: ActionTypes.GET_CURRENT_PATIENT_ATTACHMENTS_FAILURE,
+      patientIdentifier,
+    });
+    yield put(AlertActions.showGlobalErrorAlert());
+  }
+}
+
+function* getCurrentPatientTasks() {
+  try {
+    const selectedFilters = yield select(selectedFiltersInMegaFilterSelector);
+    const completeTasksVisible = yield select(completeTasksVisibilitySelector);
+    const status = completeTasksVisible ? 'ALL' : 'INCOMPLETE';
+    const sort = yield select(patientTasksSortSelector);
+    const patientIdentifier = yield select(currentPatientIdentifierSelector);
+
+    let lists;
+
+    if (selectedFilters && !isEmpty(selectedFilters)) {
+      lists = yield call(
+        PatientTasksApi.fetchPatientTasksByPatientIdentifierWithFilters,
+        patientIdentifier,
+        sort,
+        selectedFilters,
+        status,
+      );
+    } else {
+      lists = yield call(
+        PatientTasksApi.fetchPatientTasksByPatientIdentifier,
+        patientIdentifier,
+        sort,
+        status,
+      );
+    }
+
+    yield put({
+      type: ActionTypes.GET_CURRENT_PATIENT_TASKS_SUCCESS,
       lists,
     });
   } catch (error) {
     yield put({
-      type: ActionTypes.GET_PATIENT_TASKS_FAILURE,
+      type: ActionTypes.GET_CURRENT_PATIENT_TASKS_FAILURE,
     });
   }
 }
 
-function* doRefreshPatientTasks({ withLoader }) {
-  const { patientIdentifier } = yield select(locationParametersSelector);
-  yield put(
-    PatientDetailsActions.getPatientTasks(patientIdentifier, withLoader),
-  );
-  yield put(PatientDetailsActions.getPatientFilterOptions(patientIdentifier));
+function* getPatientFilterOptions() {
+  const patientIdentifier = yield select(currentPatientIdentifierSelector);
+
+  try {
+    const completeTasksVisible = yield select(completeTasksVisibilitySelector);
+    const status = completeTasksVisible ? 'ALL' : 'INCOMPLETE';
+    const selectedFilters = yield select(selectedFiltersInMegaFilterSelector);
+
+    const filters = yield call(
+      PatientTasksApi.getPatientFilters,
+      patientIdentifier,
+      status,
+      selectedFilters,
+    );
+    yield put({
+      type: ActionTypes.GET_PATIENT_FILTER_OPTIONS_SUCCESS,
+      filters,
+    });
+  } catch (error) {
+    yield put({
+      type: ActionTypes.GET_PATIENT_FILTER_OPTIONS_FAILURE,
+      patientIdentifier,
+    });
+  }
 }
 
 function* getPatientTasksStats() {
@@ -325,27 +364,6 @@ function* getPatientTasksStats() {
     });
   } catch (error) {
     yield put({ type: ActionTypes.GET_PATIENT_TASKS_STATS_FAILURE });
-  }
-}
-
-function* getPatientFilterOptions({ patientIdentifier }) {
-  const completeTasksVisible = yield select(completeTasksVisibilitySelector);
-  const status = completeTasksVisible ? 'ALL' : 'INCOMPLETE';
-
-  try {
-    const filters = yield call(
-      PatientTasksApi.getPatientFilters,
-      patientIdentifier,
-      status,
-    );
-    yield put({
-      type: ActionTypes.GET_PATIENT_FILTER_OPTIONS_SUCCESS,
-      filters,
-    });
-  } catch (error) {
-    yield put({
-      type: ActionTypes.GET_PATIENT_FILTER_OPTIONS_FAILURE,
-    });
   }
 }
 
@@ -374,14 +392,10 @@ function* doToggleTaskCompleteStatus({ payload }) {
 
     yield delay(TASK_DISAPPEAR_DELAY);
     if (!task.parentTaskIdentifier) {
-      yield put(refreshPatientTasks({ withLoader: false }));
+      yield put(PatientDetailsActions.getCurrentPatientTasks());
     }
-    yield put(PatientDetailsActions.getPatientTasksStats());
   } catch (error) {
-    yield all([
-      put(refreshPatientTasks({ withLoader: false })),
-      put(PatientDetailsActions.getPatientTasksStats()),
-    ]);
+    yield put(PatientDetailsActions.getCurrentPatientTasks());
   }
 }
 
@@ -397,15 +411,9 @@ function* doUpdatePatientTaskWorkflowStatus({ payload }) {
       workflowStatus?.identifier,
     );
     yield put(AlertActions.showGlobalAlert(AlertMessages.UPDATED));
-    yield all([
-      put(refreshPatientTasks({ withLoader: false })),
-      put(PatientDetailsActions.getPatientTasksStats()),
-    ]);
+    yield put(PatientDetailsActions.getCurrentPatientTasks());
   } catch (error) {
-    yield all([
-      put(refreshPatientTasks({ withLoader: false })),
-      put(PatientDetailsActions.getPatientTasksStats()),
-    ]);
+    yield put(PatientDetailsActions.getCurrentPatientTasks());
   }
 }
 
@@ -415,29 +423,17 @@ function* doUpdatePatientTaskInList({ payload }) {
   try {
     yield put(updateTaskData(taskIdentifier, dataToUpdate));
     yield call(TaskApi.partialUpdateTask, taskIdentifier, dataToUpdate);
-    yield all([
-      put(refreshPatientTasks({ withLoader: false })),
-      put(PatientDetailsActions.getPatientTasksStats()),
-    ]);
+    yield put(PatientDetailsActions.getCurrentPatientTasks());
   } catch (error) {
-    yield all([
-      put(refreshPatientTasks({ withLoader: false })),
-      put(PatientDetailsActions.getPatientTasksStats()),
-    ]);
+    yield put(PatientDetailsActions.getCurrentPatientTasks());
   }
 }
 
-function* addTaskSuccess() {
-  const { patientIdentifier } = yield select(locationParametersSelector);
-
-  if (patientIdentifier)
-    yield put(PatientDetailsActions.getPatientTasksStats());
-}
-
-function* doUpdatePatientTasksFilters({ payload }) {
+function* changePatientTasksFilters({ selectedFilters }) {
   try {
-    const { selectedFilters } = payload;
-    const { patientIdentifier } = yield select(locationParametersSelector);
+    const { patientIdentifier } = yield select(
+      currentPatientIdentifierSelector,
+    );
     const completeTasksVisible = yield select(completeTasksVisibilitySelector);
     const status = completeTasksVisible ? 'ALL' : 'INCOMPLETE';
 
@@ -448,7 +444,7 @@ function* doUpdatePatientTasksFilters({ payload }) {
         status,
       ),
     );
-    yield put(refreshPatientTasks({ withLoader: true }));
+    yield put(PatientDetailsActions.getCurrentPatientTasks());
   } catch (error) {
     console.log(error);
   }
@@ -489,9 +485,9 @@ function* doInviteUserToTaskList({ payload }) {
       userIdentifier,
     );
     yield put(AlertActions.showGlobalAlert(AlertMessages.UPDATED));
-    yield put(refreshPatientTasks({ withLoader: false }));
+    yield put(PatientDetailsActions.getCurrentPatientTasks());
   } catch (error) {
-    yield put(refreshPatientTasks({ withLoader: false }));
+    yield put(PatientDetailsActions.getCurrentPatientTasks());
   }
 }
 
@@ -500,9 +496,9 @@ function* doRemoveUserFromTaskList({ payload }) {
   try {
     yield call(TaskListApi.removeUserFromTaskList, taskListIdentifier, member);
     yield put(AlertActions.showGlobalAlert(AlertMessages.UPDATED));
-    yield put(refreshPatientTasks({ withLoader: false }));
+    yield put(PatientDetailsActions.getCurrentPatientTasks());
   } catch (error) {
-    yield put(refreshPatientTasks({ withLoader: false }));
+    yield put(PatientDetailsActions.getCurrentPatientTasks());
   }
 }
 
@@ -515,9 +511,9 @@ function* doCancelUserInviteToTaskList({ payload }) {
       userEmail,
     );
     yield put(AlertActions.showGlobalAlert(AlertMessages.UPDATED));
-    yield put(refreshPatientTasks({ withLoader: false }));
+    yield put(PatientDetailsActions.getCurrentPatientTasks());
   } catch (error) {
-    yield put(refreshPatientTasks({ withLoader: false }));
+    yield put(PatientDetailsActions.getCurrentPatientTasks());
   }
 }
 
@@ -531,9 +527,9 @@ function* doChangeMemberRole({ payload }) {
       role,
     );
     yield put(AlertActions.showGlobalAlert(AlertMessages.UPDATED));
-    yield put(refreshPatientTasks({ withLoader: false }));
+    yield put(PatientDetailsActions.getCurrentPatientTasks());
   } catch (error) {
-    yield put(refreshPatientTasks({ withLoader: false }));
+    yield put(PatientDetailsActions.getCurrentPatientTasks());
   }
 }
 
@@ -549,43 +545,9 @@ function* doSortPatientTasks({ payload }) {
         order,
       },
     });
-    yield put(refreshPatientTasks({ withLoader: true }));
+    yield put(PatientDetailsActions.getCurrentPatientTasks());
   } catch (error) {
     console.log(error);
-  }
-}
-
-function* doFetchPatient({ patientIdentifier }) {
-  try {
-    yield put(PatientDetailsActions.initializePatient(patientIdentifier));
-    yield put(PatientDetailsActions.setPatientFetching());
-    const patient = yield call(PatientApi.getPatientById, patientIdentifier);
-    yield put(PatientDetailsActions.setPatient(patient));
-  } catch {
-    yield put(AlertActions.showGlobalErrorAlert());
-  }
-}
-
-function* doFetchPatientLabels() {
-  try {
-    yield put(PatientDetailsActions.setPatientLabelsFetching());
-    const labels = yield call(PatientLabelApi.getAllPatientLabels);
-    yield put(PatientDetailsActions.setPatientLabels(labels));
-  } catch {
-    yield put(AlertActions.showGlobalErrorAlert());
-  }
-}
-
-function* doFetchPatientAttachments({ patientIdentifier }) {
-  try {
-    yield put(PatientDetailsActions.setPatientAttachmentsFetching());
-    const attachments = yield call(
-      PatientAttachmentApi.getPatientAttachments,
-      patientIdentifier,
-    );
-    yield put(PatientDetailsActions.setPatientAttachments(attachments));
-  } catch {
-    yield put(AlertActions.showGlobalErrorAlert());
   }
 }
 
@@ -606,11 +568,7 @@ function* doAddPatientAttachment({
     );
     setCurrentlyUploadedAttachment(null);
     onAttachmentFileInputChange(restAttachments);
-    const attachments = yield call(
-      PatientAttachmentApi.getPatientAttachments,
-      patientIdentifier,
-    );
-    yield put(PatientDetailsActions.setPatientAttachments(attachments));
+    yield put(PatientDetailsActions.getCurrentPatientAttachments());
   } catch (error) {
     setCurrentlyUploadedAttachment(null);
     onAttachmentFileInputChange(restAttachments);
@@ -627,35 +585,13 @@ function* doAddPatientAttachment({
   }
 }
 
-function* doRemovePatientAttachment({
-  patientIdentifier,
-  attachmentIdentifier,
-}) {
+function* doRemovePatientAttachment({ attachmentIdentifier }) {
   try {
     yield call(
       PatientAttachmentApi.removePatientAttachment,
       attachmentIdentifier,
     );
-    const attachments = yield call(
-      PatientAttachmentApi.getPatientAttachments,
-      patientIdentifier,
-    );
-    yield put(PatientDetailsActions.setPatientAttachments(attachments));
-  } catch {
-    yield put(AlertActions.showGlobalErrorAlert());
-  }
-}
-
-function* doReloadPatient() {
-  try {
-    const currentPatient = yield select(patientSelector);
-    if (currentPatient?.patientIdentifier) {
-      const patient = yield call(
-        PatientApi.getPatientById,
-        currentPatient.patientIdentifier,
-      );
-      yield put(PatientDetailsActions.setPatient(patient));
-    }
+    yield put(PatientDetailsActions.getCurrentPatientAttachments());
   } catch {
     yield put(AlertActions.showGlobalErrorAlert());
   }
@@ -677,7 +613,7 @@ function* doUpdatePatientNote({ note }) {
     yield put(AlertActions.showGlobalAlert(AlertMessages.UPDATED));
   } catch {
     yield put(AlertActions.showGlobalErrorAlert());
-    yield put(reloadPatient());
+    yield put(PatientDetailsActions.getCurrentPatient());
   }
 }
 
@@ -688,7 +624,7 @@ function* doUpdatePatientDetails({ payload: { details } }) {
     yield put(AlertActions.showGlobalAlert(AlertMessages.UPDATED));
   } catch (error) {
     yield put(AlertActions.showGlobalErrorAlert());
-    yield put(reloadPatient());
+    yield put(PatientDetailsActions.getCurrentPatient());
   }
 }
 
@@ -716,7 +652,7 @@ function* doAddPatientNote({ patientIdentifier, note }) {
     yield put(AlertActions.showGlobalAlert(AlertMessages.CREATED));
   } catch {
     yield put(AlertActions.showGlobalErrorAlert());
-    yield put(reloadPatient());
+    yield put(PatientDetailsActions.getCurrentPatient());
   }
 }
 
@@ -727,7 +663,7 @@ function* doRemovePatientNote({ patientNoteIdentifier }) {
     yield put(AlertActions.showGlobalAlert(AlertMessages.DELETED));
   } catch {
     yield put(AlertActions.showGlobalErrorAlert());
-    yield put(reloadPatient());
+    yield put(PatientDetailsActions.getCurrentPatient());
   }
 }
 
@@ -747,13 +683,13 @@ function* doChangePatientNotePin({ patientNoteIdentifier, pinned }) {
     yield put(AlertActions.showGlobalAlert(AlertMessages.UPDATED));
   } catch {
     yield put(AlertActions.showGlobalErrorAlert());
-    yield put(reloadPatient());
+    yield put(PatientDetailsActions.getCurrentPatient());
   }
 }
 
 function* doTogglePatientCompleteTasksVisible() {
   try {
-    yield put(refreshPatientTasks({ withLoader: true }));
+    yield put(PatientDetailsActions.getCurrentPatientTasks());
   } catch {
     yield put(AlertActions.showGlobalErrorAlert());
   }
@@ -763,18 +699,30 @@ function* applyTemplateSuccess() {
   const { patientIdentifier } = yield select(locationParametersSelector);
 
   if (patientIdentifier) {
-    yield all([
-      put(refreshPatientTasks({ withLoader: false })),
-      put(PatientDetailsActions.getPatientTasksStats()),
-    ]);
+    yield put(PatientDetailsActions.getCurrentPatientTasks());
   }
 }
 
 export default function* watchPatientDetails() {
+  yield takeLatest(
+    ActionTypes.INITIALIZE_PATIENT_STATE,
+    initializePatientState,
+  );
+  yield takeLatest(ActionTypes.GET_CURRENT_PATIENT, getCurrentPatient);
+  yield takeLatest(
+    ActionTypes.GET_CURRENT_PATIENT_LABELS,
+    getCurrentPatientLabels,
+  );
+  yield takeLatest(
+    ActionTypes.GET_CURRENT_PATIENT_ATTACHMENTS,
+    getCurrentPatientAttachments,
+  );
+  yield takeLatest(
+    ActionTypes.GET_CURRENT_PATIENT_TASKS,
+    getCurrentPatientTasks,
+  );
   yield takeLatest(ActionTypes.GET_PATIENT_TASKS_STATS, getPatientTasksStats);
-  yield takeLatest(ActionTypes.GET_PATIENT_TASKS, getPatientTasks);
   yield takeLatest(DO_TOGGLE_PATIENT_TASK_STATUS, doToggleTaskCompleteStatus);
-  yield takeLatest(DO_REFRESH_PATIENT_TASKS, doRefreshPatientTasks);
   yield takeLatest(
     DO_UPDATE_PATIENT_WORKFLOW_STATUS,
     doUpdatePatientTaskWorkflowStatus,
@@ -785,8 +733,8 @@ export default function* watchPatientDetails() {
     getPatientFilterOptions,
   );
   yield takeLatest(
-    DO_UPDATE_PATIENT_TASKS_FILTERS,
-    doUpdatePatientTasksFilters,
+    ActionTypes.CHANGE_PATIENT_TASKS_FILTERS,
+    changePatientTasksFilters,
   );
   yield takeLatest(
     DO_INITIALIZE_SAVED_FILTERS_FOR_PATIENT,
@@ -801,12 +749,8 @@ export default function* watchPatientDetails() {
   );
   yield takeEvery(DO_CHANGE_MEMBER_ROLE, doChangeMemberRole);
   yield takeEvery(DO_SORT_PATIENT_TASKS, doSortPatientTasks);
-  yield takeLatest(DO_FETCH_PATIENT, doFetchPatient);
-  yield takeLatest(DO_FETCH_PATIENT_LABELS, doFetchPatientLabels);
-  yield takeLatest(DO_FETCH_PATIENT_ATTACHMENTS, doFetchPatientAttachments);
   yield takeLatest(DO_ADD_PATIENT_ATTACHMENT, doAddPatientAttachment);
   yield takeLatest(DO_REMOVE_PATIENT_ATTACHMENT, doRemovePatientAttachment);
-  yield takeLatest(DO_RELOAD_PATIENT, doReloadPatient);
   yield takeLatest(
     ActionTypes.TOGGLE_PATIENT_COMPLETE_TASKS_VISIBLE,
     doTogglePatientCompleteTasksVisible,
@@ -818,5 +762,4 @@ export default function* watchPatientDetails() {
   yield takeEvery(DO_REMOVE_PATIENT_NOTE, doRemovePatientNote);
   yield takeEvery(DO_CHANGE_PATIENT_NOTE_PIN, doChangePatientNotePin);
   yield takeEvery(ActionTypes.APPLY_TEMPLATE_SUCCESS, applyTemplateSuccess);
-  yield takeEvery(ActionTypes.ADD_TASK_SUCCESS, addTaskSuccess);
 }

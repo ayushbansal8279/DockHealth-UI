@@ -77,15 +77,12 @@ const UserReducer = (state = initialState, action) => {
       const { preferences } = action;
       return {
         ...state,
-        userProfile: {
-          ...state.userProfile,
-          userPreference: {
-            ...state.userProfile?.userPreference,
-            ...preferences,
-            appFeaturesReviewed: state.userProfile?.userPreference?.appFeaturesReviewed.concat(
-              preferences.appFeaturesReviewed,
-            ),
-          },
+        userPreference: {
+          ...state.userPreference,
+          ...preferences,
+          appFeaturesReviewed: state.userPreference?.appFeaturesReviewed.concat(
+            preferences.appFeaturesReviewed,
+          ),
         },
       };
     }
@@ -104,6 +101,9 @@ const UserReducer = (state = initialState, action) => {
         mainSetup[key] = displayOptions?.includes(key);
       });
 
+      const { userPreference } = user;
+      delete user.userPreference;
+
       return {
         ...state,
         isFetchingProfile: false,
@@ -114,6 +114,7 @@ const UserReducer = (state = initialState, action) => {
           profileThumbnailPictureHash: user.profileThumbnailPictureHash,
           profilePictureHash: user.profilePictureHash,
         },
+        userPreference: userPreference || state.userPreference,
         userViewSetup: { ...state.userViewSetup, mainSetup },
       };
     }

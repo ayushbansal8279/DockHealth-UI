@@ -1,5 +1,7 @@
 import React from 'react';
+import { compose } from 'ramda';
 import { TaskListTabName } from 'helpers/tasklist-helpers';
+import * as ListDetailsActions from 'actions/list-details-actions';
 import TaskDrawer from 'components/task-drawer/TaskDrawer/TaskDrawer';
 import BulkEditSection from 'components/tasklist/BulkEditSection/BulkEditSection';
 import { ViewType } from 'helpers/view-type-helper';
@@ -17,11 +19,8 @@ const ListDetailsView = props => {
   const {
     bulkEditIsDisabled,
     bulkEditTasks,
-    changeGroupsOrder,
     changeSearchValue,
     completedTasks,
-    deleteGroup,
-    editGroupName,
     handleCreateGroup,
     handleTaskDelete,
     handleTaskUpdate,
@@ -29,7 +28,6 @@ const ListDetailsView = props => {
     isCompletedTasksFetching,
     isFetching,
     isTourOpen,
-    listDetailsActions,
     loadMoreTasksForList,
     loadTasksForTaskGroup,
     openedTasks,
@@ -47,6 +45,7 @@ const ListDetailsView = props => {
     setDisplayListPreferences,
     setDisplayColumnPreferences,
     viewType,
+    dispatch,
   } = initializeListDetailsViewHooks(match, history);
 
   const additionalToolbarOptions = [
@@ -117,7 +116,10 @@ const ListDetailsView = props => {
                   listUniqueKey={taskListIdentifier}
                   loadMoreTasksForList={loadMoreTasksForList}
                   sort={sort}
-                  onSortChange={listDetailsActions.sortListDetailsTasks}
+                  onSortChange={compose(
+                    dispatch,
+                    ListDetailsActions.sortListDetailsTasks,
+                  )}
                 />
               ) : (
                 <OpenedTasksView
@@ -125,15 +127,15 @@ const ListDetailsView = props => {
                   taskListIdentifier={taskListIdentifier}
                   quickAddTask={quickAddTask}
                   createTaskGroupList={handleCreateGroup}
-                  editGroupName={editGroupName}
                   toggleCompleteTask={toggleTaskCompletedStatus}
-                  deleteGroup={deleteGroup}
-                  changeGroupsOrder={changeGroupsOrder}
                   onTaskUpdate={handleTaskUpdate}
                   updateWorkflowStatus={handleUpdateWorkflowStatus}
                   searchValue={searchValue}
                   sort={sort}
-                  onSortChange={listDetailsActions.sortListDetailsTasks}
+                  onSortChange={compose(
+                    dispatch,
+                    ListDetailsActions.sortListDetailsTasks,
+                  )}
                   listUniqueKey={taskListIdentifier}
                   taskCounters={taskCounters}
                   loadTasksForTaskGroup={loadTasksForTaskGroup}

@@ -1,12 +1,12 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import moment from 'moment';
 // eslint-disable-next-line import/no-named-as-default
 import { useBoolean } from 'hooks/useBoolean';
 import Datepicker from 'components/common/Datepicker/Datepicker';
 import TimeDropdownInput from 'components/common/TimeDropdownInput/TimeDropdownInput';
 import PopoverBottomBar from 'components/task/PopoverBottomBar/PopoverBottomBar';
-import TimeIcon from 'img/time';
 import { TIME_12H_FORMAT } from 'helpers/task-drawer-helpers';
+import SecondaryDateInput from 'components/common/SecondaryDateInput/SecondaryDateInput';
 import {
   ContentWrapper,
   Divider,
@@ -14,10 +14,13 @@ import {
   QuickSelectButton,
   PlusButton,
   SectionWrapper,
+  Label,
+  AddSectionWrapper,
 } from './styled';
 import RecurringSection from './RecurringSection';
 
 const DATE_ISO_FORMAT = 'YYYY-MM-DD';
+export const DATE_MASK_FORMAT = 'MM/DD/YYYY';
 
 const DueDatePicker = ({
   taskIdentifier,
@@ -29,11 +32,28 @@ const DueDatePicker = ({
   disableClearDate,
 }) => {
   const [recurringSectionVisible, showRecurringSection] = useBoolean(recurring);
+  const [dateMaskValue, setDateMaskValue] = useState(
+    selectedDate ? moment(selectedDate).format(DATE_MASK_FORMAT) : null,
+  );
+  const [dateValue, setDateValue] = useState(selectedDate);
 
-  const momentSelectedDate = selectedDate ? moment(selectedDate) : null;
+  const momentSelectedDate = selectedDate
+    ? moment(dateValue, DATE_ISO_FORMAT)
+    : null;
   const selectedTime = momentSelectedDate?.format(TIME_12H_FORMAT) || null;
 
+  useEffect(() => {
+    if (selectedDate !== dateValue) {
+      setDateMaskValue(moment(selectedDate).format(DATE_MASK_FORMAT));
+      setDateValue(selectedDate);
+    }
+  }, [dateValue, selectedDate]);
+
   const handleDatePick = pickedDate => {
+    setDateValue(pickedDate);
+    const formattedToMask = moment(pickedDate).format(DATE_MASK_FORMAT);
+    setDateMaskValue(formattedToMask);
+
     onDateChange(
       moment(
         `${pickedDate} ${selectedTime}`,
@@ -58,10 +78,48 @@ const DueDatePicker = ({
     showRecurringSection();
   };
 
+  const handleInsertDateAsText = () => {
+    const noMissingParts = !dateMaskValue.includes('_');
+    if (noMissingParts) {
+      const momentDate = moment(dateMaskValue, DATE_MASK_FORMAT);
+      const validDate = momentDate.isValid();
+      if (validDate) {
+        const formattedDate = momentDate.format(DATE_ISO_FORMAT);
+        handleDatePick(formattedDate);
+        return;
+      }
+    }
+    setDateMaskValue(moment(selectedDate).format(DATE_MASK_FORMAT) || '');
+  };
+
   return (
     <ContentWrapper>
       <QuickAddSectionWrapper>
+        <AddSectionWrapper>
+          <Label>Date</Label>
+          <SecondaryDateInput
+            popoverDisabled
+            value={dateMaskValue}
+            onChange={setDateMaskValue}
+            onEnter={handleInsertDateAsText}
+            onBlur={handleInsertDateAsText}
+          />
+        </AddSectionWrapper>
+        <AddSectionWrapper>
+          <Label>Time</Label>
+          <TimeDropdownInput
+            type="secondary"
+            savedValue={selectedTime}
+            onSave={handleTimePick}
+            disabled={!selectedDate}
+            hideError
+          />
+        </AddSectionWrapper>
+      </QuickAddSectionWrapper>
+      <Divider />
+      <QuickAddSectionWrapper>
         <QuickSelectButton
+          fillWidth
           type="button"
           isSelected={momentSelectedDate?.isSame(moment(), 'd')}
           onClick={() => handleDatePick(moment().format(DATE_ISO_FORMAT))}
@@ -81,17 +139,9 @@ const DueDatePicker = ({
         >
           Tomorrow
         </QuickSelectButton>
-        <TimeDropdownInput
-          type="secondary"
-          savedValue={selectedTime}
-          onSave={handleTimePick}
-          disabled={!selectedDate}
-          endAdornment={<img src={TimeIcon} alt="Arrow" />}
-          hideError
-        />
       </QuickAddSectionWrapper>
       <Divider />
-      <Datepicker selectedDate={selectedDate} onDateChange={handleDatePick} />
+      <Datepicker selectedDate={dateValue} onDateChange={handleDatePick} />
       {!disableRecurring && (
         <>
           <Divider />

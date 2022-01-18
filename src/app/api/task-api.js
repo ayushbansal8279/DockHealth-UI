@@ -4,31 +4,6 @@ import moment from 'moment';
 import { noop, showAlert } from 'helpers/utility-functions';
 import axios from './axios-heydoc';
 
-export function getListTasksGroupedByTaskGroup(
-  taskListIdentifier,
-  status = 'INCOMPLETE',
-  sortBy,
-  startPosition = 0,
-  endPosition = 0,
-  viewMode,
-) {
-  return axios
-    .get(`task/findListTasksGroupedByTaskGroup/${taskListIdentifier}`, {
-      params: {
-        status,
-        startPosition,
-        endPosition,
-        sortBy: sortBy?.key || undefined,
-        sortDirection: sortBy?.order || undefined,
-        viewMode: viewMode || undefined,
-      },
-    })
-    .then(response => response?.data)
-    .catch(error => {
-      throw error;
-    });
-}
-
 export function searchTasks(
   searchTerm,
   status,
@@ -397,46 +372,6 @@ export const reassignTasksToAnotherGroup = (
     .catch(error => {
       throw error;
     });
-
-export function getTasksForTaskListByTaskGroup(
-  taskListIdentifier,
-  taskGroupIdentifier,
-  status,
-  startPosition = 0,
-  endPosition = 0,
-  sort,
-  viewMode,
-) {
-  return axios
-    .get(
-      `/task/findListTasksByTaskGroup/${taskListIdentifier}/${taskGroupIdentifier}`,
-      {
-        params: {
-          status,
-          startPosition,
-          endPosition,
-          sortBy: sort?.key || undefined,
-          sortDirection: sort?.order || undefined,
-          viewMode: viewMode || undefined,
-        },
-      },
-    )
-    .then(({ data }) => data)
-    .catch(error => {
-      throw error;
-    });
-}
-
-export function searchTasksByTaskList(taskListIdentifier, searchTerm, status) {
-  return axios
-    .get(
-      `/task/searchTasksByTaskList/${taskListIdentifier}?searchTerm=${searchTerm}&status=${status}`,
-    )
-    .then(response => response.data)
-    .catch(error => {
-      throw new Error(error?.response?.data?.errorMessage);
-    });
-}
 
 export const bulkEditTasks = bulkEditOption =>
   axios.put('/task/bulkEdit', bulkEditOption).then(({ data }) => data);

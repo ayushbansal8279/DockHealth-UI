@@ -22,7 +22,7 @@ export const EDUCATION_CENTER_CATEGORIES = [
         overview:
           'Tasks are the to-dos for you and your team. Add patient/client context, due dates, status, assignments and attachments to get the most from tasks',
         videoUrl: 'https://www.youtube.com/embed/lQgbbTqCK_8',
-        helpUrl: 'https://www.dock.health/101',
+        helpUrl: 'https://www.dock.health/quick-start',
       },
       {
         name: 'Invite Users to a List',

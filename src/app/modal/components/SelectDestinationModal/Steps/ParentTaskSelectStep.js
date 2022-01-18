@@ -5,7 +5,8 @@ import { Box } from '@material-ui/core';
 import ArrowBackIcon from '@material-ui/icons/ArrowBack';
 import { useBoolean } from 'hooks/useBoolean';
 import * as ActionTypes from 'actions/action-types';
-import { getTasksForTaskListByTaskGroup, addTask } from 'api/task-api';
+import { addTask } from 'api/task-api';
+import { getTasksForTaskListByTaskGroup } from 'api/list-details-api';
 import { TaskItemType } from 'helpers/task-helpers';
 import {
   TitleWithButtonWrapper,
