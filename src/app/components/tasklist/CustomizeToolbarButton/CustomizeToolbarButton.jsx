@@ -3,13 +3,24 @@ import { Box, List, ListItemText, MenuItem, Popover } from '@material-ui/core';
 import CustomizeIcon from 'img/customize-icon';
 import Checkbox from 'components/common/Checkbox/Checkbox';
 import { useColumnsConfig } from 'context-api/ColumnsConfigContext';
-import { userProfileSelector } from 'selectors/user-selectors';
+import {
+  userProfileSelector,
+  userHasTaskCustomFieldsFeatureSelector,
+} from 'selectors/user-selectors';
 import { useSelector } from 'react-redux';
 import { TaskItemColumn } from 'helpers/task-helpers';
 import { capitalize } from 'helpers/capitalize';
 import { getCustomerTypeLabel } from 'helpers/customer-type-helper';
 import { isEmpty } from 'ramda';
-import { PlusIcon, PopoverContainer, CustomizeImg, Spacer } from './styled';
+
+import UpgradePlan from 'components/common/UpgradePlan/UpgradePlan';
+import {
+  PlusIcon,
+  PopoverContainer,
+  CustomizeImg,
+  Spacer,
+  UpgradePlanContainer,
+} from './styled';
 import { limitToConfigurableKeys } from './helpers';
 import ToolbarButton from '../ToolbarButton/ToolbarButton';
 
@@ -22,6 +33,9 @@ const CustomizeToolbarButton = ({
   const [open, setOpen] = useState(false);
   const buttonReference = useRef(null);
   const userProfile = useSelector(userProfileSelector);
+  const userHasTaskCustomFieldsFeature = useSelector(
+    userHasTaskCustomFieldsFeatureSelector,
+  );
   const {
     columnsConfig,
     setColumnsConfig,
@@ -117,7 +131,7 @@ const CustomizeToolbarButton = ({
               );
             })}
           </List>
-          {!isEmpty(customColumnsConfig) && (
+          {userHasTaskCustomFieldsFeature && !isEmpty(customColumnsConfig) && (
             <>
               <Spacer />
               <Box display="flex" justifyContent="space-between" mt={1}>
@@ -188,6 +202,14 @@ const CustomizeToolbarButton = ({
                 })}
               </List>
             </>
+          )}
+          {!userHasTaskCustomFieldsFeature && (
+            <UpgradePlanContainer>
+              <UpgradePlan
+                title="Custom fields"
+                description="Lorem ipsum dolor sit amet, consectetur adipiscing elit."
+              />
+            </UpgradePlanContainer>
           )}
         </PopoverContainer>
       </Popover>
