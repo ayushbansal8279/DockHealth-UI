@@ -19,6 +19,11 @@ export const PlusIcon = styled.div`
   padding: 0 2px;
 `;
 
+export const UpgradePlanPopupHeader = styled.div`
+  display: flex;
+  font-family: Roboto Condensed;
+`;
+
 export const Spacer = styled.hr`
   margin: 0;
   width: 100%;

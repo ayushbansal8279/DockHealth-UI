@@ -1,8 +1,7 @@
 import styled from 'styled-components';
-import { fontSizes, fontWeights } from 'styles/font';
+import { fontSizes } from 'styles/font';
 import palette from 'styles/palette';
 import spacing from 'styles/spacing';
-import Button from 'components/common/Button/Button';
 
 export const UpgradePlanContainer = styled.div`
   font-family: Roboto Condensed;

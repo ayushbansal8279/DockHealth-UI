@@ -33,7 +33,7 @@ const UpgradePlan = ({ learnMoreLink, title, description }) => {
           Upgrade now
         </Button>
       </UpgradeButtonContainer>
-      {learnMoreLink && (
+      {!!learnMoreLink && (
         <>
           <Spacing vertical={3} />
           <LearnMoreButtonContainer>

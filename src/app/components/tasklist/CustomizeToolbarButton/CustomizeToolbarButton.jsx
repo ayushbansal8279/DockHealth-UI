@@ -14,12 +14,14 @@ import { getCustomerTypeLabel } from 'helpers/customer-type-helper';
 import { isEmpty } from 'ramda';
 
 import UpgradePlan from 'components/common/UpgradePlan/UpgradePlan';
+import UpgradePlanPopup from 'components/common/UpgradePlanPopup/UpgradePlanPopup';
 import {
   PlusIcon,
   PopoverContainer,
   CustomizeImg,
   Spacer,
   UpgradePlanContainer,
+  UpgradePlanPopupHeader,
 } from './styled';
 import { limitToConfigurableKeys } from './helpers';
 import ToolbarButton from '../ToolbarButton/ToolbarButton';
@@ -31,7 +33,9 @@ const CustomizeToolbarButton = ({
   showCustomColumnCreate = true,
 }) => {
   const [open, setOpen] = useState(false);
+  const [openUpgradePopup, setOpenUpgradePopup] = useState(false);
   const buttonReference = useRef(null);
+  const addColumnButtonReference = useRef(null);
   const userProfile = useSelector(userProfileSelector);
   const userHasTaskCustomFieldsFeature = useSelector(
     userHasTaskCustomFieldsFeatureSelector,
@@ -66,6 +70,14 @@ const CustomizeToolbarButton = ({
     },
     [columnsConfig, onChange, setColumnsConfig],
   );
+
+  const handleAddColumnClick = useCallback(() => {
+    if (userHasTaskCustomFieldsFeature) {
+      openCustomFieldModal();
+    } else {
+      setOpenUpgradePopup(true);
+    }
+  }, [openCustomFieldModal, userHasTaskCustomFieldsFeature]);
 
   const onClickCustomFieldsCheckbox = useCallback(
     column => {
@@ -131,7 +143,7 @@ const CustomizeToolbarButton = ({
               );
             })}
           </List>
-          {userHasTaskCustomFieldsFeature && !isEmpty(customColumnsConfig) && (
+          {!isEmpty(customColumnsConfig) && (
             <>
               <Spacer />
               <Box display="flex" justifyContent="space-between" mt={1}>
@@ -157,10 +169,13 @@ const CustomizeToolbarButton = ({
                   );
                 })}
                 {showCustomColumnCreate && (
-                  <MenuItem onClick={openCustomFieldModal}>
+                  <MenuItem
+                    onClick={handleAddColumnClick}
+                    ref={addColumnButtonReference}
+                  >
                     <PlusIcon>+</PlusIcon>
                     <Box mx={0.5} />
-                    <ListItemText>Edit Custom Columns</ListItemText>
+                    <ListItemText>Create Custom Column</ListItemText>
                   </MenuItem>
                 )}
               </List>
@@ -206,13 +221,35 @@ const CustomizeToolbarButton = ({
           {!userHasTaskCustomFieldsFeature && (
             <UpgradePlanContainer>
               <UpgradePlan
-                title="Custom fields"
+                title="Use custom fields"
                 description="Lorem ipsum dolor sit amet, consectetur adipiscing elit."
               />
             </UpgradePlanContainer>
           )}
         </PopoverContainer>
       </Popover>
+      <UpgradePlanPopup
+        header={
+          <UpgradePlanPopupHeader>
+            <PlusIcon>+</PlusIcon>
+            <Box mx={0.5} />
+            List columns
+          </UpgradePlanPopupHeader>
+        }
+        transformOrigin={{
+          vertical: -18,
+          horizontal: 155,
+        }}
+        anchorOrigin={{
+          vertical: 'middle',
+          horizontal: 'right',
+        }}
+        anchorEl={addColumnButtonReference.current}
+        open={openUpgradePopup}
+        onClose={() => setOpenUpgradePopup(false)}
+        title="Add custom fields"
+        description="Lorem ipsum dolor sit amet, consectetur adipiscing elit."
+      />
     </>
   );
 };
