@@ -250,6 +250,7 @@ const CustomizeToolbarButton = ({
         onClose={() => setOpenUpgradePopup(false)}
         title="Add custom fields"
         description="Lorem ipsum dolor sit amet, consectetur adipiscing elit."
+        learnMoreLink="url"
       />
     </>
   );
