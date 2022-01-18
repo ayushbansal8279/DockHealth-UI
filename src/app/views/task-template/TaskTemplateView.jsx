@@ -87,7 +87,8 @@ const TaskTemplateView = () => {
   const [isBannerOpen, setIsBannerOpen] = useState(
     !localStorageHelper.getItem(TASK_TEMPLATES_BANNER_CLOSED_STORAGE_KEY),
   );
-  const smartFlowAvailable = useSelector(userHasSmartFlowsSelector);
+  const smartFlowAvailable = false; // TODO!: TO DELETE
+  // const smartFlowAvailable = useSelector(userHasSmartFlowsSelector);
   const isFetchingTaskTemplates = useSelector(isFetchingTaskTemplatesSelector);
   const taskTemplates = useSelector(taskTemplatesSelector);
   const userProfile = useSelector(userProfileSelector);

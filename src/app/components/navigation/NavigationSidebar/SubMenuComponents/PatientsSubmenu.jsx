@@ -55,9 +55,10 @@ const PatientsSubmenu = () => {
   }));
   const customerTypeLabel = getCustomerTypeLabel(currentUser);
   const customerTypeLabelCapitalized = capitalize(customerTypeLabel);
-  const customListsAvailable = useSelector(
-    userHasPatientCustomListsFeatureSelector,
-  );
+  const customListsAvailable = false; // TODO!: TO DELETE
+  // const customListsAvailable = useSelector(
+  //   userHasPatientCustomListsFeatureSelector,
+  // );
 
   useEffect(() => {
     dispatch(PatientsActions.getPatientsLists());

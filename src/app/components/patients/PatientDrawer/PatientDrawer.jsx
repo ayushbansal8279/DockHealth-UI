@@ -16,7 +16,8 @@ import {
 } from './styled';
 
 const PatientDrawer = ({ children, title, options, isOpen, onClose }) => {
-  const userGroupsAvailable = useSelector(userHasUserGroupsFeatureSelector);
+  const userGroupsAvailable = false;
+  // const userGroupsAvailable = useSelector(userHasUserGroupsFeatureSelector); //TODO!: TO DELETE
 
   return (
     <DrawerWrapper open={isOpen} anchor="right" onClose={onClose}>

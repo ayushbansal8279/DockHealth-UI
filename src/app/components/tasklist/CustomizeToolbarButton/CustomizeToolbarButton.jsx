@@ -37,9 +37,10 @@ const CustomizeToolbarButton = ({
   const buttonReference = useRef(null);
   const addColumnButtonReference = useRef(null);
   const userProfile = useSelector(userProfileSelector);
-  const userHasTaskCustomFieldsFeature = useSelector(
-    userHasTaskCustomFieldsFeatureSelector,
-  );
+  const userHasTaskCustomFieldsFeature = false; // TODO!: TO DELETE
+  // const userHasTaskCustomFieldsFeature = useSelector(
+  //   userHasTaskCustomFieldsFeatureSelector,
+  // );
   const {
     columnsConfig,
     setColumnsConfig,
