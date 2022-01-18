@@ -13,7 +13,7 @@ import {
   CLOSE_QUICK_ADD_SUBTASK_INPUT,
   REQUEST_LOAD_SUBTASKS,
   LOAD_SUBTASKS_SUCCESS,
-  UPDATE_TASKS_SUCCESS,
+  UPDATE_TASKS,
   DELETE_TASKS_SUCCESS,
   COMPLETE_TASKS_SUCCESS,
   UNSELECT_ALL_TASKS,
@@ -359,7 +359,7 @@ const TaskBaseReducer = (state, action, updateStateCallback) => {
       return updateStateCallback(state, updateTaskFromAction);
     }
 
-    case UPDATE_TASKS_SUCCESS: {
+    case UPDATE_TASKS: {
       const {
         tasksToUpdate,
         fields: dataToUpdate,

@@ -206,7 +206,6 @@ const DashboardList = ({
       allTasks={allDashboardTasks}
       refreshTasks={handleRefreshForBulkEdit}
       searchValue={searchValue}
-      shouldRefreshTasksEveryTime
     >
       <StickyHeader>
         <DashboardToolbar

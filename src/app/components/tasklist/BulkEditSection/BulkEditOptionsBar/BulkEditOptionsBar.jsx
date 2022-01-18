@@ -20,6 +20,7 @@ import {
   bulkEditDueDate,
   bulkEditDelete,
   bulkEditComplete,
+  bulkEditDueDateSuccess,
 } from 'actions/task-actions';
 import * as ActionTypes from 'actions/action-types';
 import {
@@ -276,6 +277,9 @@ const BulkEditOptionsBar = ({
         dueDate,
       })
         .then(({ transactionIdentifier }) => {
+          dispatch(
+            bulkEditDueDateSuccess(allSelectedTasksIdentifiers, dueDate),
+          );
           dispatch(
             AlertActions.showGlobalAlertWithUndo(
               allSelectedTasksLength > 1

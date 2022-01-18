@@ -276,6 +276,12 @@ function* selectDashboardFilters() {
   }
 }
 
+function* updateTasksSuccess({ fields }) {
+  if (fields.dueDate !== undefined) {
+    yield put(DashboardActions.getDashboardTasks());
+  }
+}
+
 export default function* watchDashboard() {
   yield takeEvery(
     ActionTypes.INITIALIZE_DASHBOARD_STATE,
@@ -303,4 +309,5 @@ export default function* watchDashboard() {
     ActionTypes.UPDATE_TASK_DUE_DATE_SUCCESS,
     updateTaskDueDateSuccess,
   );
+  yield takeEvery(ActionTypes.UPDATE_TASKS_SUCCESS, updateTasksSuccess);
 }

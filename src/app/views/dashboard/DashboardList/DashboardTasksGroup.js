@@ -113,11 +113,13 @@ const DashboardTasksGroup = ({
 
   useEffect(() => {
     setNewTasks(dashboardTasks);
+  }, [dashboardTasks]);
 
-    if (dashboardTasks?.length === 0) {
+  useEffect(() => {
+    if (dashboardTasks?.length === 0 && !isLoading) {
       setGroupIsOpen(false);
     }
-  }, [dashboardTasks]);
+  }, [dashboardTasks, isLoading]);
 
   const groupHasMultipleAssignees = useMemo(
     () => tasks?.some(({ assignedToUsers }) => assignedToUsers?.length > 1),
