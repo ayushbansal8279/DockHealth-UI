@@ -17,7 +17,8 @@ import LinkPath from '../LinkPath/LinkPath';
 import TaskLinkOptions from '../TaskLinkOptions/TaskLinkOptions';
 import TaskLinkDelayForm from '../TaskLinkDelayForm/TaskLinkDelayForm';
 import DelayPeriodLabel from '../DelayPeriodLabel/DelayPeriodLabel';
-import { LabelsWrapper, EdgeLabel, OutcomeInput } from './styled';
+import { LabelsWrapper } from './styled';
+import OutcomeInputLabel from '../OutcomeInputLabel/OutcomeInputLabel';
 
 const DecisionTaskLink = props => {
   const {
@@ -126,13 +127,15 @@ const DecisionTaskLink = props => {
   const saveTaskOutcome = () => {
     if (inputValue.length > 1) {
       if (outcome) {
-        dispatch(
-          updateTaskOutcome(
-            taskOutcomeIdentifier,
-            sourceTaskIdentifier,
-            inputValue,
-          ),
-        );
+        if (outcome.name !== inputValue) {
+          dispatch(
+            updateTaskOutcome(
+              taskOutcomeIdentifier,
+              sourceTaskIdentifier,
+              inputValue,
+            ),
+          );
+        }
       } else {
         dispatch(addTaskOutcome(inputValue, sourceTaskIdentifier, link));
       }
@@ -184,19 +187,18 @@ const DecisionTaskLink = props => {
           {delayOptionsVisible && (
             <DelayPeriodLabel link={link} onClick={openDelayPopover} />
           )}
-          <EdgeLabel ref={edgeLabelReference} hasOutcome={!!outcome}>
-            <OutcomeInput
-              ref={inputReference}
-              readOnly={!isEdited}
-              placeholder="Type option"
-              value={inputValue}
-              onChange={event => setInputValue(event.target?.value || '')}
-              onKeyPress={handleKeyPress}
-              onFocus={setFocused}
-              onBlur={handleInputBlur}
-              onClick={outcome && openOptions}
-            />
-          </EdgeLabel>
+          <OutcomeInputLabel
+            ref={edgeLabelReference}
+            inputRef={inputReference}
+            readOnly={!isEdited}
+            value={inputValue}
+            onChange={event => setInputValue(event.target?.value || '')}
+            onKeyPress={handleKeyPress}
+            onFocus={setFocused}
+            onBlur={handleInputBlur}
+            onClick={outcome && openOptions}
+            hasOutcome={!!outcome}
+          />
         </LabelsWrapper>
         {isDelayPopoverOpen && (
           <Popper

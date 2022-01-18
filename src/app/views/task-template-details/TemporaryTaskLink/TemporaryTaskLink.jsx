@@ -1,11 +1,15 @@
-import React, { useEffect, useRef } from 'react';
+import React, { useState, useRef } from 'react';
 import { useDispatch } from 'react-redux';
-import { deleteTemporaryElement } from 'actions/task-template-actions';
+import {
+  deleteTemporaryElement,
+  editTemporaryElement,
+} from 'actions/task-template-actions';
 import { useBoolean } from 'hooks/useBoolean';
 import { getEdgeCenter } from 'react-flow-renderer';
 import DeleteOutlineIcon from '@material-ui/icons/DeleteOutline';
 import LinkPath from '../LinkPath/LinkPath';
 import TaskLinkOptions from '../TaskLinkOptions/TaskLinkOptions';
+import OutcomeInputLabel from '../OutcomeInputLabel/OutcomeInputLabel';
 
 const TemporaryTaskLink = props => {
   const {
@@ -16,9 +20,9 @@ const TemporaryTaskLink = props => {
     targetY,
     sourcePosition,
     targetPosition,
-    selected,
   } = props;
   const centerReference = useRef(null);
+  const [inputValue, setInputValue] = useState('');
   const [areOptionsOpen, openOptions, closeOptions] = useBoolean(false);
   const [edgeCenterX, edgeCenterY] = getEdgeCenter({
     sourceX,
@@ -29,12 +33,6 @@ const TemporaryTaskLink = props => {
     targetPosition,
   });
   const dispatch = useDispatch();
-
-  useEffect(() => {
-    if (selected) {
-      openOptions();
-    }
-  }, [openOptions, selected]);
 
   const menuOptions = [
     {
@@ -47,19 +45,31 @@ const TemporaryTaskLink = props => {
     },
   ];
 
+  const handleBlur = () => {
+    if (inputValue?.length > 0) {
+      dispatch(editTemporaryElement(id, { outcomeName: inputValue }));
+    }
+  };
+
   return (
     <>
-      <LinkPath {...props} />
+      <LinkPath {...props} onClick={openOptions} />
       <foreignObject
-        ref={centerReference}
-        width={0}
-        height={0}
-        x={edgeCenterX}
-        y={edgeCenterY}
+        width={200}
+        height={32}
+        x={edgeCenterX - 160 / 2}
+        y={edgeCenterY - 32 / 2}
         className="edgebutton-foreignobject"
         requiredExtensions="http://www.w3.org/1999/xhtml"
         style={{ overflow: 'visible' }}
       >
+        <OutcomeInputLabel
+          ref={centerReference}
+          value={inputValue}
+          onChange={event => setInputValue(event.target?.value || '')}
+          onClick={openOptions}
+          onBlur={handleBlur}
+        />
         {areOptionsOpen && (
           <TaskLinkOptions
             anchorEl={centerReference.current}

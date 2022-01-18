@@ -218,6 +218,14 @@ export function deleteTemporaryElement(elementId) {
   };
 }
 
+export function editTemporaryElement(elementId, data) {
+  return {
+    type: ActionTypes.EDIT_TEMPORARY_ELEMENT,
+    elementId,
+    data,
+  };
+}
+
 export function addTaskOutcome(outcomeName, taskIdentifier, link = null) {
   return {
     type: ActionTypes.ADD_TASK_OUTCOME,
@@ -240,11 +248,13 @@ export function updateTaskOutcome(
   };
 }
 
-export function linkTasks(source, target) {
+export function linkTasks(source, target, options, outcomeName) {
   return {
     type: ActionTypes.LINK_TASKS,
     source,
     target,
+    options,
+    outcomeName,
   };
 }
 
