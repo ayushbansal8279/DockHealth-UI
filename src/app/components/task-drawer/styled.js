@@ -32,3 +32,10 @@ export const HorizontalLabel = styled.span`
     margin-right: 5px;
   }
 `;
+
+export const FiledInListName = styled.span`
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  max-width: 250px;
+`;

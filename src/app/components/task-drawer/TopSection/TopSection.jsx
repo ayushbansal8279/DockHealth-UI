@@ -9,7 +9,7 @@ import palette from 'styles/palette';
 import Circle from 'img/circle.svg';
 import CircleCompleted from 'img/circle-completed.svg';
 import OptionsMenu from 'components/common/OptionsMenu/OptionsMenu';
-import { HorizontalLabel } from '../styled';
+import { HorizontalLabel, FiledInListName } from '../styled';
 import initializeTaskDrawerTopSectionHooks from './hooks';
 
 const TopSection = ({
@@ -94,6 +94,12 @@ const TopSection = ({
               isCompleted={selectedTask?.status === TaskStatus.COMPLETE}
               onClick={onCompleteToggle}
             />
+            <Spacing horizontal={3} />
+            <HorizontalLabel>Filed In: </HorizontalLabel>
+            <Spacing horizontal={3} />
+            <FiledInListName>
+              {selectedTask?.taskList?.listName}
+            </FiledInListName>
           </>
         )}
       </Box>
