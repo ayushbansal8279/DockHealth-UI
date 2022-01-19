@@ -113,11 +113,9 @@ const TasksHeader = ({
         .filter(f => f.isChecked)
         .map(f => (
           <ColumnSortHeader
+            truncateEnabled
             id={f.id}
-            label={trunc(
-              f.name,
-              CustomFieldWidthConfig[f.fieldType] / 12 || 10,
-            )}
+            label={f.name}
             width={CustomFieldWidthConfig[f.fieldType]}
           />
         ))}

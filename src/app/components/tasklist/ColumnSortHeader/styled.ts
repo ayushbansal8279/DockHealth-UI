@@ -1,14 +1,34 @@
 import styled from 'styled-components';
 import { fontSizes, fontWeights } from 'styles/font';
 import palette from 'styles/palette';
+import spacing from 'styles/spacing';
 
-export const SortButton = styled.button<{ width?: number }>`
+export const DescriptionTooltipWrapper = styled.div`
+  display: block;
+  width: 100%;
+  padding: ${spacing.small};
+  color: ${palette.white};
+  background: ${palette.mediumGrey};
+  font-size: ${fontSizes.smallPlus};
+  cursor: initial;
+`;
+
+export const LabelWrapper = styled.p`
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+`;
+
+export const SortButton = styled.button<{
+  width?: number;
+  truncateEnabled?: boolean;
+}>`
   position: relative;
   flex: ${({ width }) => (width ? `${width}px 0 0` : '1')};
+  overflow: ${({ truncateEnabled }) =>
+    truncateEnabled ? 'hidden' : 'visible'};
   padding: 8px 16px;
   height: 35px;
-  overflow: visible;
-
   text-align: left;
   font-family: 'Roboto Condensed', sans-serif;
   font-size: ${fontSizes.smallPlus};

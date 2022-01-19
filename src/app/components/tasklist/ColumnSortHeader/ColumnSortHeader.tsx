@@ -1,14 +1,22 @@
-import React, { useCallback, useState } from 'react';
+import React, { useCallback, useState, useRef } from 'react';
 import SortArrow from 'components/common/SortArrow/SortArrow';
 import { SortOrderType } from 'helpers/sorting-helper';
-import { SortArrowWrapper, SortButton } from './styled';
+import { checkIfShouldDisplayTooltip } from 'components/task/OverflowTooltip/OverflowTooltip';
+import { Fade, Popper, Tooltip } from '@material-ui/core';
+import {
+  SortArrowWrapper,
+  SortButton,
+  LabelWrapper,
+  DescriptionTooltipWrapper,
+} from './styled';
 
 interface ColumnSortHeaderProps {
   id: string;
-  label?: string;
+  label?: ReactChild;
   sort: { key: string | null; order: string | null };
   width?: number;
   onSortChange?: (key: string | null, order: string | null) => void;
+  truncateEnabled: boolean;
 }
 
 const ColumnSortHeader: React.FC<ColumnSortHeaderProps> = ({
@@ -17,9 +25,10 @@ const ColumnSortHeader: React.FC<ColumnSortHeaderProps> = ({
   width,
   sort,
   onSortChange,
+  truncateEnabled,
 }) => {
+  const descriptionTextReference = useRef();
   const [isHovered, setIsHovered] = useState<boolean>(false);
-
   const switchSort = useCallback(() => {
     if (typeof onSortChange !== 'function') return;
 
@@ -47,6 +56,7 @@ const ColumnSortHeader: React.FC<ColumnSortHeaderProps> = ({
 
   return (
     <SortButton
+      truncateEnabled={truncateEnabled}
       disabled={!label}
       type="button"
       width={width}
@@ -62,7 +72,26 @@ const ColumnSortHeader: React.FC<ColumnSortHeaderProps> = ({
           />
         </SortArrowWrapper>
       )}
-      {label}
+      <LabelWrapper ref={descriptionTextReference}>{label}</LabelWrapper>
+      <Popper
+        anchorEl={descriptionTextReference.current}
+        placement="bottom-start"
+        open={
+          checkIfShouldDisplayTooltip(descriptionTextReference.current) &&
+          isHovered
+        }
+        style={{
+          zIndex: 115,
+          maxWidth: descriptionTextReference?.current?.offsetWidth || '650px',
+        }}
+        transition
+      >
+        {({ TransitionProps }) => (
+          <Fade {...TransitionProps} timeout={250}>
+            <DescriptionTooltipWrapper>{label}</DescriptionTooltipWrapper>
+          </Fade>
+        )}
+      </Popper>
     </SortButton>
   );
 };
