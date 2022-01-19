@@ -1,3 +1,4 @@
+/* eslint-disable sonarjs/cognitive-complexity */
 /* eslint-disable sonarjs/max-switch-cases */
 import * as ActionTypes from 'actions/action-types';
 import { omit } from 'ramda';
@@ -477,6 +478,27 @@ const TaskTemplateReducer = (state = initialState, action) => {
                 id !== elementId &&
                 source !== elementId &&
                 target !== elementId,
+            ),
+          },
+        ),
+      };
+    }
+
+    case ActionTypes.EDIT_TEMPORARY_ELEMENT: {
+      const { currentTaskTemplateIdentifier } = state;
+      const { elementId, data } = action;
+      const { temporaryElements } = state.taskTemplateDetails[
+        currentTaskTemplateIdentifier
+      ];
+
+      return {
+        ...state,
+        taskTemplateDetails: updateTaskTemplateDetailsState(
+          currentTaskTemplateIdentifier,
+          state.taskTemplateDetails,
+          {
+            temporaryElements: temporaryElements.map(te =>
+              te.id === elementId ? { ...te, ...data } : te,
             ),
           },
         ),

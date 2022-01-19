@@ -392,7 +392,14 @@ function* addTaskToTemplate({ task, elementId, position }) {
             handle: link.targetHandle,
           };
 
-          return put(TaskTemplateActions.linkTasks(source, target));
+          return put(
+            TaskTemplateActions.linkTasks(
+              source,
+              target,
+              {},
+              link.outcomeName || null,
+            ),
+          );
         }),
       );
     }
@@ -516,7 +523,8 @@ function* updateTaskPositionInLayout({ taskIdentifier, position }) {
   }
 }
 
-function* linkTasks({ source, target }) {
+// eslint-disable-next-line sonarjs/cognitive-complexity
+function* linkTasks({ source, target, options, outcomeName }) {
   try {
     const taskTemplateIdentifier = yield select(
       currentTaskTemplateIdentifierSelector,
@@ -554,11 +562,30 @@ function* linkTasks({ source, target }) {
       );
 
       if (targetTask && sourceTask) {
-        const { sourceTaskIdentifier, targetTaskIdentifier } = yield call(
+        if (outcomeName) {
+          yield put(TaskTemplateActions.addTaskOutcome(outcomeName, source.id));
+
+          const { outcome } = yield take(
+            action =>
+              action.type === ActionTypes.ADD_TASK_OUTCOME_SUCCESS &&
+              action.taskIdentifier === source.id &&
+              action.outcome.name === outcomeName,
+          );
+          // eslint-disable-next-line no-param-reassign
+          options = {
+            ...(options || {}),
+            decisionOutcome: outcome.taskOutcomeIdentifier,
+          };
+        }
+
+        const link = yield call(
           TaskApi.createTasksLink,
           source.id,
           target.id,
+          options,
         );
+
+        const { sourceTaskIdentifier, targetTaskIdentifier } = link;
         const linkId = getUniqueLinkId(
           sourceTaskIdentifier,
           targetTaskIdentifier,
@@ -578,15 +605,10 @@ function* linkTasks({ source, target }) {
         }
 
         yield all([
-          put(TaskActions.refreshTask(sourceTaskIdentifier)),
+          put({ type: ActionTypes.LINK_TASKS_SUCCESS, link }),
           put(TaskActions.refreshTask(targetTaskIdentifier)),
+          put(TaskTemplateActions.deleteTemporaryElement(linkId)),
         ]);
-        yield take(
-          action =>
-            action.type === ActionTypes.REFRESH_TASK_SUCCESS &&
-            action.task?.identifier === sourceTaskIdentifier,
-        );
-        yield put(TaskTemplateActions.deleteTemporaryElement(linkId));
       }
     }
   } catch {
@@ -611,7 +633,12 @@ function* addTaskOutcome({ outcomeName, taskIdentifier, link }) {
 
     yield all([
       put(showGlobalAlert(AlertMessages.CREATED)),
-      put(TaskActions.refreshTask(taskIdentifier)),
+      put({
+        type: ActionTypes.ADD_TASK_OUTCOME_SUCCESS,
+        taskIdentifier,
+        outcome: createdOutcome,
+        link,
+      }),
     ]);
   } catch (error) {
     yield put(showGlobalErrorAlert());

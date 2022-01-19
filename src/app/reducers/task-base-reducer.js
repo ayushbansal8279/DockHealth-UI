@@ -1,34 +1,6 @@
 /* eslint-disable sonarjs/cognitive-complexity */
 import { isEmpty } from 'ramda';
-import {
-  ADD_TASK_COMMENT_SUCCESS,
-  DELETE_TASK_COMMENT_SUCCESS,
-  DELETE_TASK,
-  TASK_ATTACHMENT_ADDED,
-  TASK_ATTACHMENT_REMOVED,
-  UPDATE_TASK_SUCCESS,
-  SET_COMPLETE_STATUS,
-  UPDATE_TASK_COMMENT_SUCCESS,
-  OPEN_QUICK_ADD_SUBTASK_INPUT,
-  CLOSE_QUICK_ADD_SUBTASK_INPUT,
-  REQUEST_LOAD_SUBTASKS,
-  LOAD_SUBTASKS_SUCCESS,
-  UPDATE_TASKS,
-  DELETE_TASKS_SUCCESS,
-  COMPLETE_TASKS_SUCCESS,
-  UNSELECT_ALL_TASKS,
-  CHANGE_TASKS_SELECTED_STATE,
-  ADD_SUBTASK,
-  UPDATE_WORKFLOW_STATUS_FOR_TASKS,
-  CHANGE_TASK_INTENT_TYPE,
-  UPDATE_TASK_DUE_DATE,
-  UPDATE_TASK_DUE_DATE_FAILURE,
-  UPDATE_TASK_DESCRIPTION_SUCCESS,
-  UPDATE_TASK_DETAILS_SUCCESS,
-  CHANGE_TASK_PRIORITY,
-  CHANGE_TASK_PRIORITY_FAILURE,
-  REFRESH_TASK_SUCCESS,
-} from 'actions/action-types';
+import * as ActionTypes from 'actions/action-types';
 import { checkIfTaskMatchesFilters } from 'helpers/filters-helpers';
 import { checkIfTaskMatchesSearch } from 'helpers/search-helpers';
 import {
@@ -39,7 +11,7 @@ import {
 
 const TaskBaseReducer = (state, action, updateStateCallback) => {
   switch (action.type) {
-    case ADD_TASK_COMMENT_SUCCESS: {
+    case ActionTypes.ADD_TASK_COMMENT_SUCCESS: {
       const {
         task: { taskIdentifier },
         comment: { data: comment },
@@ -66,7 +38,7 @@ const TaskBaseReducer = (state, action, updateStateCallback) => {
       return updateStateCallback(state, updateTaskFromAction);
     }
 
-    case DELETE_TASK_COMMENT_SUCCESS: {
+    case ActionTypes.DELETE_TASK_COMMENT_SUCCESS: {
       const { taskIdentifier, commentIdentifier } = action;
 
       const updateTaskFromAction = task => {
@@ -94,7 +66,7 @@ const TaskBaseReducer = (state, action, updateStateCallback) => {
       return updateStateCallback(state, updateTaskFromAction);
     }
 
-    case DELETE_TASK: {
+    case ActionTypes.DELETE_TASK: {
       const { taskIdentifier } = action;
 
       const updateTaskFromAction = task => {
@@ -120,7 +92,7 @@ const TaskBaseReducer = (state, action, updateStateCallback) => {
       return updateStateCallback(state, updateTaskFromAction);
     }
 
-    case OPEN_QUICK_ADD_SUBTASK_INPUT: {
+    case ActionTypes.OPEN_QUICK_ADD_SUBTASK_INPUT: {
       const { taskIdentifier } = action;
 
       const updateTaskFromAction = task =>
@@ -131,7 +103,7 @@ const TaskBaseReducer = (state, action, updateStateCallback) => {
       return updateStateCallback(state, updateTaskFromAction);
     }
 
-    case CLOSE_QUICK_ADD_SUBTASK_INPUT: {
+    case ActionTypes.CLOSE_QUICK_ADD_SUBTASK_INPUT: {
       const { taskIdentifier } = action;
 
       const updateTaskFromAction = task =>
@@ -142,7 +114,7 @@ const TaskBaseReducer = (state, action, updateStateCallback) => {
       return updateStateCallback(state, updateTaskFromAction);
     }
 
-    case TASK_ATTACHMENT_ADDED: {
+    case ActionTypes.TASK_ATTACHMENT_ADDED: {
       const { taskAttachment, taskIdentifier } = action;
 
       const updateTaskFromAction = task => {
@@ -166,7 +138,7 @@ const TaskBaseReducer = (state, action, updateStateCallback) => {
       return updateStateCallback(state, updateTaskFromAction);
     }
 
-    case TASK_ATTACHMENT_REMOVED: {
+    case ActionTypes.TASK_ATTACHMENT_REMOVED: {
       const { taskAttachmentId, taskIdentifier } = action;
 
       const updateTaskFromAction = task => {
@@ -194,7 +166,7 @@ const TaskBaseReducer = (state, action, updateStateCallback) => {
       return updateStateCallback(state, updateTaskFromAction);
     }
 
-    case REQUEST_LOAD_SUBTASKS: {
+    case ActionTypes.REQUEST_LOAD_SUBTASKS: {
       const {
         task: { taskIdentifier },
       } = action;
@@ -210,7 +182,7 @@ const TaskBaseReducer = (state, action, updateStateCallback) => {
       return updateStateCallback(state, updateTaskFromAction);
     }
 
-    case LOAD_SUBTASKS_SUCCESS: {
+    case ActionTypes.LOAD_SUBTASKS_SUCCESS: {
       const { task } = action;
 
       const updateTaskFromAction = t =>
@@ -225,10 +197,10 @@ const TaskBaseReducer = (state, action, updateStateCallback) => {
       return updateStateCallback(state, updateTaskFromAction);
     }
 
-    case UPDATE_TASK_DESCRIPTION_SUCCESS:
-    case UPDATE_TASK_DETAILS_SUCCESS:
-    case UPDATE_TASK_SUCCESS:
-    case REFRESH_TASK_SUCCESS: {
+    case ActionTypes.UPDATE_TASK_DESCRIPTION_SUCCESS:
+    case ActionTypes.UPDATE_TASK_DETAILS_SUCCESS:
+    case ActionTypes.UPDATE_TASK_SUCCESS:
+    case ActionTypes.REFRESH_TASK_SUCCESS: {
       const { task } = action;
 
       const updateTaskFromAction = t => {
@@ -242,8 +214,8 @@ const TaskBaseReducer = (state, action, updateStateCallback) => {
       return updateStateCallback(state, updateTaskFromAction);
     }
 
-    case UPDATE_TASK_DUE_DATE:
-    case UPDATE_TASK_DUE_DATE_FAILURE: {
+    case ActionTypes.UPDATE_TASK_DUE_DATE:
+    case ActionTypes.UPDATE_TASK_DUE_DATE_FAILURE: {
       const { task, dueDate } = action;
 
       const updateTaskFromAction = t => {
@@ -257,8 +229,8 @@ const TaskBaseReducer = (state, action, updateStateCallback) => {
       return updateStateCallback(state, updateTaskFromAction);
     }
 
-    case CHANGE_TASK_PRIORITY:
-    case CHANGE_TASK_PRIORITY_FAILURE: {
+    case ActionTypes.CHANGE_TASK_PRIORITY:
+    case ActionTypes.CHANGE_TASK_PRIORITY_FAILURE: {
       const { task, priority } = action;
 
       const updateTaskFromAction = t => {
@@ -272,7 +244,7 @@ const TaskBaseReducer = (state, action, updateStateCallback) => {
       return updateStateCallback(state, updateTaskFromAction);
     }
 
-    case SET_COMPLETE_STATUS: {
+    case ActionTypes.SET_COMPLETE_STATUS: {
       const { taskIdentifier, dataToUpdate } = action;
 
       const updateTaskFromAction = t => {
@@ -318,7 +290,7 @@ const TaskBaseReducer = (state, action, updateStateCallback) => {
       return updateStateCallback(state, updateTaskFromAction);
     }
 
-    case UPDATE_TASK_COMMENT_SUCCESS: {
+    case ActionTypes.UPDATE_TASK_COMMENT_SUCCESS: {
       const {
         task: { taskIdentifier },
         comment,
@@ -359,7 +331,7 @@ const TaskBaseReducer = (state, action, updateStateCallback) => {
       return updateStateCallback(state, updateTaskFromAction);
     }
 
-    case UPDATE_TASKS: {
+    case ActionTypes.UPDATE_TASKS: {
       const {
         tasksToUpdate,
         fields: dataToUpdate,
@@ -427,7 +399,7 @@ const TaskBaseReducer = (state, action, updateStateCallback) => {
       return updateStateCallback(state, updateTasksFromAction);
     }
 
-    case DELETE_TASKS_SUCCESS: {
+    case ActionTypes.DELETE_TASKS_SUCCESS: {
       const { tasksToDelete } = action;
       const updateTasksFromAction = task => {
         if (tasksToDelete.includes(task.taskIdentifier)) {
@@ -452,7 +424,7 @@ const TaskBaseReducer = (state, action, updateStateCallback) => {
       return updateStateCallback(state, updateTasksFromAction);
     }
 
-    case COMPLETE_TASKS_SUCCESS: {
+    case ActionTypes.COMPLETE_TASKS_SUCCESS: {
       const { tasksToDelete } = action;
       const updateTasksFromAction = task => {
         if (tasksToDelete.includes(task.taskIdentifier)) {
@@ -465,7 +437,7 @@ const TaskBaseReducer = (state, action, updateStateCallback) => {
       return updateStateCallback(state, updateTasksFromAction);
     }
 
-    case UNSELECT_ALL_TASKS: {
+    case ActionTypes.UNSELECT_ALL_TASKS: {
       const updateStateFromAction = task => {
         return {
           ...task,
@@ -477,7 +449,7 @@ const TaskBaseReducer = (state, action, updateStateCallback) => {
       return updateStateCallback(state, updateStateFromAction);
     }
 
-    case CHANGE_TASKS_SELECTED_STATE: {
+    case ActionTypes.CHANGE_TASKS_SELECTED_STATE: {
       const { taskIdentifiers, newSelectedState } = action;
 
       const updateStateFromAction = task => {
@@ -498,7 +470,7 @@ const TaskBaseReducer = (state, action, updateStateCallback) => {
       return updateStateCallback(state, updateStateFromAction);
     }
 
-    case ADD_SUBTASK: {
+    case ActionTypes.ADD_SUBTASK: {
       const { subtask } = action;
       const { parentTaskIdentifier } = subtask;
 
@@ -520,7 +492,7 @@ const TaskBaseReducer = (state, action, updateStateCallback) => {
       return updateStateCallback(state, updateStateFromAction);
     }
 
-    case UPDATE_WORKFLOW_STATUS_FOR_TASKS: {
+    case ActionTypes.UPDATE_WORKFLOW_STATUS_FOR_TASKS: {
       const { statusIdentifier, dataToUpdate } = action;
 
       const updateStateFromAction = task => {
@@ -540,12 +512,71 @@ const TaskBaseReducer = (state, action, updateStateCallback) => {
       return updateStateCallback(state, updateStateFromAction);
     }
 
-    case CHANGE_TASK_INTENT_TYPE: {
+    case ActionTypes.CHANGE_TASK_INTENT_TYPE: {
       const { taskIdentifier, intentType } = action;
 
       const updateTaskFromAction = t => {
         if (t.taskIdentifier === taskIdentifier) {
           return { ...t, intentType };
+        }
+
+        return t;
+      };
+
+      return updateStateCallback(state, updateTaskFromAction);
+    }
+
+    case ActionTypes.ADD_TASK_OUTCOME_SUCCESS: {
+      const { taskIdentifier, outcome, link } = action;
+
+      const updateTaskFromAction = t => {
+        if (t.taskIdentifier === taskIdentifier) {
+          let { taskLinks } = t;
+
+          if (link) {
+            taskLinks = taskLinks.map(l =>
+              l.sourceTaskIdentifier === link.sourceTaskIdentifier &&
+              l.targetTaskIdentifier === link.targetTaskIdentifier
+                ? {
+                    ...l,
+                    decisionOutcome: outcome.taskOutcomeIdentifier,
+                  }
+                : l,
+            );
+          }
+
+          return {
+            ...t,
+            taskOutcomes: [...t.taskOutcomes, outcome],
+            taskLinks,
+          };
+        }
+
+        return t;
+      };
+
+      return updateStateCallback(state, updateTaskFromAction);
+    }
+
+    case ActionTypes.LINK_TASKS_SUCCESS: {
+      const { link } = action;
+      const { sourceTaskIdentifier } = link;
+
+      const updateTaskFromAction = t => {
+        if (t.taskIdentifier === sourceTaskIdentifier) {
+          return {
+            ...t,
+            taskLinks: [
+              ...t.taskLinks.filter(
+                l =>
+                  !(
+                    l.sourceTaskIdentifier === link.sourceTaskIdentifier &&
+                    l.targetTaskIdentifier === link.targetTaskIdentifier
+                  ),
+              ),
+              link,
+            ],
+          };
         }
 
         return t;
