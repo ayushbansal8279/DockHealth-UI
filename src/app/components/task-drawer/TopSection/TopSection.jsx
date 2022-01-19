@@ -78,26 +78,24 @@ const TopSection = ({
       alignItems="center"
     >
       <Box display="flex">
-        {selectedTask &&
-          !selectedTask.parentTaskIdentifier &&
-          !checkIfTemplateTask(selectedTask) && (
-            <>
-              <HorizontalLabel>Mark Complete : </HorizontalLabel>
-              <Spacing horizontal={3} />
-              <CircleIcon
-                src={
-                  selectedTask?.status === TaskStatus.COMPLETE
-                    ? CircleCompleted
-                    : Circle
-                }
-                isClickable={
-                  !isTaskStatusTogglingDisabled && isDependencyEmptyOrCompleted
-                }
-                isCompleted={selectedTask?.status === TaskStatus.COMPLETE}
-                onClick={onCompleteToggle}
-              />
-            </>
-          )}
+        {selectedTask && !checkIfTemplateTask(selectedTask) && (
+          <>
+            <HorizontalLabel>Mark Complete : </HorizontalLabel>
+            <Spacing horizontal={3} />
+            <CircleIcon
+              src={
+                selectedTask?.status === TaskStatus.COMPLETE
+                  ? CircleCompleted
+                  : Circle
+              }
+              isClickable={
+                !isTaskStatusTogglingDisabled && isDependencyEmptyOrCompleted
+              }
+              isCompleted={selectedTask?.status === TaskStatus.COMPLETE}
+              onClick={onCompleteToggle}
+            />
+          </>
+        )}
       </Box>
       <Box display="flex">
         <OptionsMenu options={options} customButtonComponent={IconButton}>
