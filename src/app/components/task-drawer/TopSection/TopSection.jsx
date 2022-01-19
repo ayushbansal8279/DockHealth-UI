@@ -9,7 +9,7 @@ import palette from 'styles/palette';
 import Circle from 'img/circle.svg';
 import CircleCompleted from 'img/circle-completed.svg';
 import OptionsMenu from 'components/common/OptionsMenu/OptionsMenu';
-import { HorizontalLabel } from '../styled';
+import { HorizontalLabel, FiledInListName } from '../styled';
 import initializeTaskDrawerTopSectionHooks from './hooks';
 
 const TopSection = ({
@@ -78,26 +78,30 @@ const TopSection = ({
       alignItems="center"
     >
       <Box display="flex">
-        {selectedTask &&
-          !selectedTask.parentTaskIdentifier &&
-          !checkIfTemplateTask(selectedTask) && (
-            <>
-              <HorizontalLabel>Mark Complete : </HorizontalLabel>
-              <Spacing horizontal={3} />
-              <CircleIcon
-                src={
-                  selectedTask?.status === TaskStatus.COMPLETE
-                    ? CircleCompleted
-                    : Circle
-                }
-                isClickable={
-                  !isTaskStatusTogglingDisabled && isDependencyEmptyOrCompleted
-                }
-                isCompleted={selectedTask?.status === TaskStatus.COMPLETE}
-                onClick={onCompleteToggle}
-              />
-            </>
-          )}
+        {selectedTask && !checkIfTemplateTask(selectedTask) && (
+          <>
+            <HorizontalLabel>Mark Complete : </HorizontalLabel>
+            <Spacing horizontal={3} />
+            <CircleIcon
+              src={
+                selectedTask?.status === TaskStatus.COMPLETE
+                  ? CircleCompleted
+                  : Circle
+              }
+              isClickable={
+                !isTaskStatusTogglingDisabled && isDependencyEmptyOrCompleted
+              }
+              isCompleted={selectedTask?.status === TaskStatus.COMPLETE}
+              onClick={onCompleteToggle}
+            />
+            <Spacing horizontal={3} />
+            <HorizontalLabel>Filed In: </HorizontalLabel>
+            <Spacing horizontal={3} />
+            <FiledInListName>
+              {selectedTask?.taskList?.listName}
+            </FiledInListName>
+          </>
+        )}
       </Box>
       <Box display="flex">
         <OptionsMenu options={options} customButtonComponent={IconButton}>

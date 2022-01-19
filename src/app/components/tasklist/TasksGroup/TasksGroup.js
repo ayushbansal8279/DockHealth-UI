@@ -140,8 +140,8 @@ const TasksGroup = ({
   }, [tasks, isOpen, groupTaskCounts, onSwitchOpen, showMoreTasks]);
 
   useEffect(() => {
-    if (tasks?.length === 0 && !isLoadingGroup) switchOpen(true);
-  }, [isLoadingGroup, switchOpen, tasks]);
+    if (groupTaskCounts === 0 && !isLoadingGroup) switchOpen(true);
+  }, [isLoadingGroup, switchOpen, tasks, groupTaskCounts]);
 
   const highlightTasksOfTheSameParent = useCallback(parentTaskIdentifier => {
     if (highlightTimeoutReference.current)
