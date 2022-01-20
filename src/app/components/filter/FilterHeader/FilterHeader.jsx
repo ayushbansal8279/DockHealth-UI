@@ -7,8 +7,8 @@ const FilterHeader = props => {
   const {
     title,
     filterActive,
-    filteredItemsCount,
-    allItemsCount,
+    // filteredItemsCount,
+    // allItemsCount,
     searchValue,
     onSearchValueChange,
     onClear,
@@ -18,18 +18,18 @@ const FilterHeader = props => {
       <Box display="flex" flex={1}>
         <Title>
           <b>{title}</b>{' '}
-          {Number.isInteger(filteredItemsCount) &&
+          {/* {Number.isInteger(filteredItemsCount) &&
             Number.isInteger(allItemsCount) &&
             filteredItemsCount < allItemsCount && (
               <>
                 showing {filteredItemsCount} of {allItemsCount} items
               </>
-            )}
-          {Number.isInteger(allItemsCount) &&
+            )} */}
+          {/* {Number.isInteger(allItemsCount) &&
             (filteredItemsCount === undefined ||
               filteredItemsCount === allItemsCount) && (
               <>showing {allItemsCount} items</>
-            )}
+            )} */}
         </Title>
         {filterActive && (
           <ClearButton type="button" onClick={onClear}>
