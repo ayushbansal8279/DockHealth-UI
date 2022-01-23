@@ -21,7 +21,10 @@ import {
 import Circle from 'img/circle.svg';
 import CircleCompleted from 'img/circle-completed.svg';
 import ThreeDotsIcon from 'img/three-dots.svg';
-import { userProfileSelector } from 'selectors/user-selectors';
+import {
+  userProfileSelector,
+  selectedUserOrganizationSelector,
+} from 'selectors/user-selectors';
 import { convertToEditorState } from 'components/common/TextEditor/helpers';
 import { useMentionsEditorState } from 'components/common/TextEditor/use-mentions-editor-state';
 import { createMentionEntities } from 'components/common/TextEditor/create-mention-entities';
@@ -191,6 +194,8 @@ const TaskItem = ({
   ] = useBooleanWithTimeout(false);
 
   const { bulkEditEnabled } = useContext(BulkEditContext);
+
+  const selectedOrganization = useSelector(selectedUserOrganizationSelector);
 
   const handleTaskItemRightClick = useCallback(
     event => {
@@ -533,6 +538,9 @@ const TaskItem = ({
               workflowStatus={workflowStatus}
               matchWorkflowStatus={matchWorkflowStatus}
               highlightedValue={highlightedValue}
+              showDefaultTaskStatusCompleted={
+                selectedOrganization?.showDefaultTaskStatusCompleted
+              }
             />
           )}
           {activityIsInConfig && (
