@@ -17,6 +17,7 @@ const TaskItemWorkflowStatus = ({
   workflowStatus,
   matchWorkflowStatus,
   highlightedValue,
+  showDefaultTaskStatusCompleted,
 }) => {
   const statusNameReference = useRef(null);
   const { name } = workflowStatus || {};
@@ -48,21 +49,33 @@ const TaskItemWorkflowStatus = ({
       >
         {workflowStatus ? (
           <StatusWrapper>
-            <StatusBar color={workflowStatus?.color} />
-            <Tooltip title={name} placement="top" hideTooltip={!tooltipVisible}>
-              <StatusName ref={statusNameReference}>
-                {matchWorkflowStatus ? (
-                  <Highlighter
-                    highlightClassName="list-highlight"
-                    searchWords={searchWords}
-                    autoEscape
-                    textToHighlight={name}
-                  />
-                ) : (
-                  name
-                )}
-              </StatusName>
-            </Tooltip>
+            {task.status === 'COMPLETE' && showDefaultTaskStatusCompleted && (
+              <StatusName ref={statusNameReference}>Completed</StatusName>
+            )}
+            {(task.status !== 'COMPLETE' ||
+              !showDefaultTaskStatusCompleted) && (
+              <>
+                <StatusBar color={workflowStatus?.color} />
+                <Tooltip
+                  title={name}
+                  placement="top"
+                  hideTooltip={!tooltipVisible}
+                >
+                  <StatusName ref={statusNameReference}>
+                    {matchWorkflowStatus ? (
+                      <Highlighter
+                        highlightClassName="list-highlight"
+                        searchWords={searchWords}
+                        autoEscape
+                        textToHighlight={name}
+                      />
+                    ) : (
+                      name
+                    )}
+                  </StatusName>
+                </Tooltip>
+              </>
+            )}
           </StatusWrapper>
         ) : (
           <AddPlaceholder>+ Add Status</AddPlaceholder>

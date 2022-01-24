@@ -57,3 +57,12 @@ export const userSetupClientViewSelector = createSelector(
   userViewSetupSelector,
   ({ mainSetup }) => mainSetup,
 );
+
+export const selectedUserOrganizationSelector = createSelector(
+  userProfileSelector,
+  ({ userOrganizations, organizationIdentifier: selectedOrgIdentifier }) =>
+    userOrganizations?.find(
+      ({ organizationIdentifier }) =>
+        organizationIdentifier === selectedOrgIdentifier,
+    ) || null,
+);
