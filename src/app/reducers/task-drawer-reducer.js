@@ -11,6 +11,7 @@ import {
   GET_TASK_CUSTOM_FIELDS_SUCCESS,
   GET_TASK_CUSTOM_FIELDS_FAILURE,
   OPEN_TASK_DRAWER_TO_ADD_TASK,
+  SHOW_GLOBAL_ALERT,
 } from 'actions/action-types';
 import TaskBaseReducer from './task-base-reducer';
 
@@ -140,6 +141,9 @@ const TaskReducer = (state = initialState, action) => {
         ...state,
         customFields: { ...state.customFields, isFetching: false },
       };
+    }
+    case SHOW_GLOBAL_ALERT: {
+      return state;
     }
 
     default:

@@ -501,9 +501,9 @@ export const updateWorkflowStatus = (task, workflowStatus) => dispatch => {
     taskIdentifier,
     workflowStatus?.identifier || null,
   )
-    .then(() => {
+    .then(modifiedTask => {
       dispatch(AlertActions.showGlobalAlert(AlertMessages.UPDATED));
-      return updatedTask;
+      return modifiedTask;
     })
     .catch(error => {
       dispatch({

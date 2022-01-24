@@ -50,7 +50,7 @@ const StatusSection = ({ onTaskUpdate }) => {
       }
     },
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    [taskIdentifier],
+    [taskIdentifier, selectedTask],
   );
 
   const handleClear = () => {
