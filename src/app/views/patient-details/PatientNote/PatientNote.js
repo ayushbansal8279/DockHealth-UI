@@ -39,8 +39,7 @@ const PatientNote = ({
 
   useEffect(() => {
     if (isEdited) {
-      // eslint-disable-next-line no-unused-expressions
-      editNoteInputReference.current?.focus();
+      setTimeout(() => editNoteInputReference.current?.focus(), 0);
     }
   }, [isEdited, editNoteInputReference]);
 
