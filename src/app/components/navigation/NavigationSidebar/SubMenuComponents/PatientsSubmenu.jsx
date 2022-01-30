@@ -26,6 +26,8 @@ import {
 import { locationParametersSelector } from 'location/selectors';
 import { getCustomerTypeLabel } from 'helpers/customer-type-helper';
 import { capitalize } from 'helpers/capitalize';
+import UpgradePlan from 'components/common/UpgradePlan/UpgradePlan';
+import PatientListsIcon from 'img/premium/patient-lists';
 import {
   DrawerMyListsLabel,
   DrawerListsItem,
@@ -33,6 +35,7 @@ import {
   DrawerListsList,
   DrawerItemOptions,
   DrawerListsItemLoader,
+  UpgradePlanContainer,
 } from './styled';
 
 const PatientsSubmenu = () => {
@@ -199,6 +202,15 @@ const PatientsSubmenu = () => {
             )}
           </DrawerListsList>
         </>
+      )}
+      {!customListsAvailable && (
+        <UpgradePlanContainer>
+          <UpgradePlan
+            title="Custom patients list"
+            description="Group and organize your patients with custom lists from Dock Premium."
+            iconImage={<img src={PatientListsIcon} alt="Custom User Groups" />}
+          />
+        </UpgradePlanContainer>
       )}
     </>
   );

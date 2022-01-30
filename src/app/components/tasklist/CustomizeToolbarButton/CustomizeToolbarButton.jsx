@@ -3,13 +3,27 @@ import { Box, List, ListItemText, MenuItem, Popover } from '@material-ui/core';
 import CustomizeIcon from 'img/customize-icon';
 import Checkbox from 'components/common/Checkbox/Checkbox';
 import { useColumnsConfig } from 'context-api/ColumnsConfigContext';
-import { userProfileSelector } from 'selectors/user-selectors';
+import {
+  userProfileSelector,
+  userHasTaskCustomFieldsFeatureSelector,
+} from 'selectors/user-selectors';
 import { useSelector } from 'react-redux';
 import { TaskItemColumn } from 'helpers/task-helpers';
 import { capitalize } from 'helpers/capitalize';
 import { getCustomerTypeLabel } from 'helpers/customer-type-helper';
 import { isEmpty } from 'ramda';
-import { PlusIcon, PopoverContainer, CustomizeImg, Spacer } from './styled';
+
+import UpgradePlan from 'components/common/UpgradePlan/UpgradePlan';
+import UpgradePlanPopup from 'components/common/UpgradePlanPopup/UpgradePlanPopup';
+import CustomFieldsIcon from 'img/premium/custom-fields';
+import {
+  PlusIcon,
+  PopoverContainer,
+  CustomizeImg,
+  Spacer,
+  UpgradePlanContainer,
+  UpgradePlanPopupHeader,
+} from './styled';
 import { limitToConfigurableKeys } from './helpers';
 import ToolbarButton from '../ToolbarButton/ToolbarButton';
 
@@ -20,8 +34,13 @@ const CustomizeToolbarButton = ({
   showCustomColumnCreate = true,
 }) => {
   const [open, setOpen] = useState(false);
+  const [openUpgradePopup, setOpenUpgradePopup] = useState(false);
   const buttonReference = useRef(null);
+  const addColumnButtonReference = useRef(null);
   const userProfile = useSelector(userProfileSelector);
+  const userHasTaskCustomFieldsFeature = useSelector(
+    userHasTaskCustomFieldsFeatureSelector,
+  );
   const {
     columnsConfig,
     setColumnsConfig,
@@ -52,6 +71,14 @@ const CustomizeToolbarButton = ({
     },
     [columnsConfig, onChange, setColumnsConfig],
   );
+
+  const handleAddColumnClick = useCallback(() => {
+    if (userHasTaskCustomFieldsFeature) {
+      openCustomFieldModal();
+    } else {
+      setOpenUpgradePopup(true);
+    }
+  }, [openCustomFieldModal, userHasTaskCustomFieldsFeature]);
 
   const onClickCustomFieldsCheckbox = useCallback(
     column => {
@@ -143,10 +170,13 @@ const CustomizeToolbarButton = ({
                   );
                 })}
                 {showCustomColumnCreate && (
-                  <MenuItem onClick={openCustomFieldModal}>
+                  <MenuItem
+                    onClick={handleAddColumnClick}
+                    ref={addColumnButtonReference}
+                  >
                     <PlusIcon>+</PlusIcon>
                     <Box mx={0.5} />
-                    <ListItemText>Edit Custom Columns</ListItemText>
+                    <ListItemText>Create Custom Column</ListItemText>
                   </MenuItem>
                 )}
               </List>
@@ -189,8 +219,43 @@ const CustomizeToolbarButton = ({
               </List>
             </>
           )}
+          {!userHasTaskCustomFieldsFeature && (
+            <UpgradePlanContainer>
+              <UpgradePlan
+                title="Custom Task Fields"
+                description="Available with Dock Premium, custom task fields provide greater context and discoverable content."
+                iconImage={
+                  <img src={CustomFieldsIcon} alt="Custom Task Fields" />
+                }
+              />
+            </UpgradePlanContainer>
+          )}
         </PopoverContainer>
       </Popover>
+      <UpgradePlanPopup
+        header={
+          <UpgradePlanPopupHeader>
+            <PlusIcon>+</PlusIcon>
+            <Box mx={0.5} />
+            List columns
+          </UpgradePlanPopupHeader>
+        }
+        transformOrigin={{
+          vertical: -18,
+          horizontal: 155,
+        }}
+        anchorOrigin={{
+          vertical: 'middle',
+          horizontal: 'right',
+        }}
+        anchorEl={addColumnButtonReference.current}
+        open={openUpgradePopup}
+        onClose={() => setOpenUpgradePopup(false)}
+        title="Add custom fields"
+        description="Available with Dock Premium, custom task fields provide greater context and discoverable content."
+        // learnMoreLink="url"
+        iconImage={<img src={CustomFieldsIcon} alt="Custom Task Fields" />}
+      />
     </>
   );
 };

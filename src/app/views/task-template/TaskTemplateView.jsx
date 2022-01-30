@@ -1,5 +1,11 @@
 /* eslint-disable sonarjs/cognitive-complexity */
-import React, { useCallback, useEffect, useState, useMemo } from 'react';
+import React, {
+  useCallback,
+  useEffect,
+  useState,
+  useMemo,
+  useRef,
+} from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
 import { Grid } from '@material-ui/core';
@@ -44,10 +50,14 @@ import BasicLayoutHeader from 'components/template/BasicLayoutHeader/BasicLayout
 import Search from 'components/task-view/Search/Search';
 import debounce from 'lodash.debounce';
 import usePrevious from 'hooks/use-previous';
+import UpgradePlanPopup from 'components/common/UpgradePlanPopup/UpgradePlanPopup';
+import SmartFlowsIcon from 'img/premium/smartflows';
 import {
   TaskTemplateViewContainer,
   SearchWrapper,
   SearchAndFilterContainer,
+  UpgradePlanPopupHeader,
+  // PremiumBadgeContainer,
 } from './styled';
 import TaskTemplate from './TaskTemplate/TaskTemplate';
 import TaskTemplatesLoader from './TaskTemplatesLoader/TaskTemplatesLoader';
@@ -67,7 +77,9 @@ const TASK_TEMPLATES_BANNER_CLOSED_STORAGE_KEY =
   'TASK_TEMPLATES_BANNER_CLOSED_STORAGE_KEY';
 
 const TaskTemplateView = () => {
+  const [openUpgradePopup, setOpenUpgradePopup] = useState(false);
   const dispatch = useDispatch();
+  const addSmartflowButtonReference = useRef(null);
   const history = useHistory();
   const [viewType, setViewType] = useState(ViewType.SLIM_VIEW);
   const [sort, setSort] = useState({});
@@ -119,8 +131,12 @@ const TaskTemplateView = () => {
   }, [dispatch]);
 
   const handleCreateSmartFlow = useCallback(() => {
-    dispatch(openModal('CreateSmartFlow'));
-  }, [dispatch]);
+    if (smartFlowAvailable) {
+      dispatch(openModal('CreateSmartFlow'));
+    } else {
+      setOpenUpgradePopup(true);
+    }
+  }, [dispatch, smartFlowAvailable]);
 
   const handleSortChange = (key, order) => {
     setSort({
@@ -240,11 +256,12 @@ const TaskTemplateView = () => {
             </SearchWrapper>
             <Grid container justify="flex-end" alignItems="center">
               <AddButton onClick={handleCreateTemplate}>Add Workflow</AddButton>
-              {smartFlowAvailable && (
-                <AddButton onClick={handleCreateSmartFlow}>
-                  Add SmartFlow
-                </AddButton>
-              )}
+              <AddButton
+                onClick={handleCreateSmartFlow}
+                buttonRef={addSmartflowButtonReference}
+              >
+                Add SmartFlow
+              </AddButton>
               <AddButton onClick={handleCreateTemplateFolder}>
                 Add Folder
               </AddButton>
@@ -303,6 +320,21 @@ const TaskTemplateView = () => {
           <TaskDrawer />
         </TaskTemplateViewContainer>
       </TaskTemplateBulkEditContainer>
+      <UpgradePlanPopup
+        header={
+          <UpgradePlanPopupHeader>
+            SmartFlows
+            {/* <Spacing horizontal={4} /> */}
+            {/* <PremiumBadgeContainer>Premium Feature</PremiumBadgeContainer> */}
+          </UpgradePlanPopupHeader>
+        }
+        anchorEl={addSmartflowButtonReference.current}
+        open={openUpgradePopup}
+        onClose={() => setOpenUpgradePopup(false)}
+        title="Add SmartFlows"
+        description="Automate your tedious, recurring tasks with Dock Premium SmartFlows."
+        iconImage={<img src={SmartFlowsIcon} alt="SmartFlows" />}
+      />
     </ViewLayout>
   );
 };
