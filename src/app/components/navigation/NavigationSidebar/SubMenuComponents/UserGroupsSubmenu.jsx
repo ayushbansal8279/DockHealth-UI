@@ -30,6 +30,7 @@ import {
   getUserGroupIdentifierByUrlParameter,
 } from 'helpers/user-groups-helper';
 import UpgradePlan from 'components/common/UpgradePlan/UpgradePlan';
+import UserGroupsIcon from 'img/premium/user-groups';
 import {
   DrawerMyListsLabel,
   DrawerListsItem,
@@ -48,8 +49,7 @@ const UserGroupsSubmenu = () => {
   const groups = useSelector(userGroupsSelector);
   const isFetching = useSelector(isFetchingUserGroupsSelector);
   const currentUser = useSelector(userProfileSelector);
-  const userGroupsAvailable = false; // TODO!: TO DELETE
-  // const userGroupsAvailable = useSelector(userHasUserGroupsFeatureSelector);
+  const userGroupsAvailable = useSelector(userHasUserGroupsFeatureSelector);
   const { groupIdentifier: groupIdentifierUrlParameter } = useSelector(
     locationParametersSelector,
   );
@@ -204,7 +204,8 @@ const UserGroupsSubmenu = () => {
         <UpgradePlanContainer>
           <UpgradePlan
             title="Custom user groups"
-            description="Lorem ipsum dolor sit amet, consectetur adipiscing elit."
+            description="Build custom teams for group assignments, communication, and collaboration across workflows and care settings."
+            iconImage={<img src={UserGroupsIcon} alt="Custom User Groups" />}
           />
         </UpgradePlanContainer>
       )}

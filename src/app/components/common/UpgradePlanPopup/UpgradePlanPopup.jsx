@@ -1,6 +1,5 @@
 import React from 'react';
 import { Popover } from '@material-ui/core';
-import Spacing from '../Spacing';
 import {
   UpgradePlanPopupContainer,
   Header,
@@ -13,6 +12,7 @@ const UpgradePlanPopup = ({
   learnMoreLink,
   title,
   description,
+  iconImage,
   ...restProps
 }) => {
   return (
@@ -34,6 +34,7 @@ const UpgradePlanPopup = ({
             learnMoreLink={learnMoreLink}
             title={title}
             description={description}
+            iconImage={iconImage}
           />
         </UpgradePlanContent>
       </UpgradePlanPopupContainer>

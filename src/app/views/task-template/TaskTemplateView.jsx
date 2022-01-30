@@ -51,12 +51,13 @@ import Search from 'components/task-view/Search/Search';
 import debounce from 'lodash.debounce';
 import usePrevious from 'hooks/use-previous';
 import UpgradePlanPopup from 'components/common/UpgradePlanPopup/UpgradePlanPopup';
+import SmartFlowsIcon from 'img/premium/smartflows';
 import {
   TaskTemplateViewContainer,
   SearchWrapper,
   SearchAndFilterContainer,
   UpgradePlanPopupHeader,
-  PremiumBadgeContainer,
+  // PremiumBadgeContainer,
 } from './styled';
 import TaskTemplate from './TaskTemplate/TaskTemplate';
 import TaskTemplatesLoader from './TaskTemplatesLoader/TaskTemplatesLoader';
@@ -87,8 +88,7 @@ const TaskTemplateView = () => {
   const [isBannerOpen, setIsBannerOpen] = useState(
     !localStorageHelper.getItem(TASK_TEMPLATES_BANNER_CLOSED_STORAGE_KEY),
   );
-  const smartFlowAvailable = false; // TODO!: TO DELETE
-  // const smartFlowAvailable = useSelector(userHasSmartFlowsSelector);
+  const smartFlowAvailable = useSelector(userHasSmartFlowsSelector);
   const isFetchingTaskTemplates = useSelector(isFetchingTaskTemplatesSelector);
   const taskTemplates = useSelector(taskTemplatesSelector);
   const userProfile = useSelector(userProfileSelector);
@@ -323,16 +323,17 @@ const TaskTemplateView = () => {
       <UpgradePlanPopup
         header={
           <UpgradePlanPopupHeader>
-            Smartflows
-            <Spacing horizontal={4} />
-            <PremiumBadgeContainer>Premium Feature</PremiumBadgeContainer>
+            SmartFlows
+            {/* <Spacing horizontal={4} /> */}
+            {/* <PremiumBadgeContainer>Premium Feature</PremiumBadgeContainer> */}
           </UpgradePlanPopupHeader>
         }
         anchorEl={addSmartflowButtonReference.current}
         open={openUpgradePopup}
         onClose={() => setOpenUpgradePopup(false)}
-        title="Add smartflows"
-        description="Lorem ipsum dolor sit amet, consectetur adipiscing elit."
+        title="Add SmartFlows"
+        description="Automate your tedious, recurring tasks with Dock Premium SmartFlows."
+        iconImage={<img src={SmartFlowsIcon} alt="SmartFlows" />}
       />
     </ViewLayout>
   );

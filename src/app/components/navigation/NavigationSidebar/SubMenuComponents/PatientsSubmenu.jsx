@@ -27,6 +27,7 @@ import { locationParametersSelector } from 'location/selectors';
 import { getCustomerTypeLabel } from 'helpers/customer-type-helper';
 import { capitalize } from 'helpers/capitalize';
 import UpgradePlan from 'components/common/UpgradePlan/UpgradePlan';
+import PatientListsIcon from 'img/premium/patient-lists';
 import {
   DrawerMyListsLabel,
   DrawerListsItem,
@@ -55,10 +56,9 @@ const PatientsSubmenu = () => {
   }));
   const customerTypeLabel = getCustomerTypeLabel(currentUser);
   const customerTypeLabelCapitalized = capitalize(customerTypeLabel);
-  const customListsAvailable = false; // TODO!: TO DELETE
-  // const customListsAvailable = useSelector(
-  //   userHasPatientCustomListsFeatureSelector,
-  // );
+  const customListsAvailable = useSelector(
+    userHasPatientCustomListsFeatureSelector,
+  );
 
   useEffect(() => {
     dispatch(PatientsActions.getPatientsLists());
@@ -207,7 +207,8 @@ const PatientsSubmenu = () => {
         <UpgradePlanContainer>
           <UpgradePlan
             title="Custom patients list"
-            description="Lorem ipsum dolor sit amet, consectetur adipiscing elit."
+            description="Group and organize your patients with custom lists from Dock Premium."
+            iconImage={<img src={PatientListsIcon} alt="Custom User Groups" />}
           />
         </UpgradePlanContainer>
       )}

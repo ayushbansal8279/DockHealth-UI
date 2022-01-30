@@ -14,7 +14,7 @@ export const UpgradePlanContainer = styled.div`
   border-radius: 2px;
   justify-content: center;
   flex-wrap: wrap;
-  padding: ${spacing.regular};
+  padding: ${spacing.small};
   align-items: center;
   flex-direction: column;
 `;
@@ -22,26 +22,27 @@ export const UpgradePlanContainer = styled.div`
 export const IconContainer = styled.div`
   position: relative;
   display: flex;
-  width: 58px;
-  height: 58px;
-  background: ${palette.white};
-  border: 1px solid ${palette.coolGrey3};
+  width: 62px;
+  height: 62px;
+  // background: ${palette.white};
+  // border: 1px solid ${palette.coolGrey3};
   box-sizing: border-box;
   justify-content: center;
   align-items: center;
-  border-radius: 50%;
+  // border-radius: 50%;
 `;
 
 export const Title = styled.p`
   max-width: 200px;
   font-family: inherit;
-  font-size: ${fontSizes.regular};
-  margin-bottom: 0;
+  font-size: ${fontSizes.regularPlus};
+  font-weight: 700;
+  margin-bottom: 10;
 `;
 
 export const Description = styled.p`
   font-family: inherit;
-  width: 200px;
+  width: 250px;
   white-space: break-spaces;
   text-align: center;
   font-size: ${fontSizes.smallPlus};

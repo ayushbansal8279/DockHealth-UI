@@ -21,6 +21,7 @@ export const SearchAndFilterContainer = styled.div`
 export const UpgradePlanPopupHeader = styled.div`
   display: flex;
   align-items: center;
+  font-weight: 700;
 `;
 
 export const PremiumBadgeContainer = styled.div`

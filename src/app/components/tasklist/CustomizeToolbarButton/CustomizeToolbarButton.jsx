@@ -15,6 +15,7 @@ import { isEmpty } from 'ramda';
 
 import UpgradePlan from 'components/common/UpgradePlan/UpgradePlan';
 import UpgradePlanPopup from 'components/common/UpgradePlanPopup/UpgradePlanPopup';
+import CustomFieldsIcon from 'img/premium/custom-fields';
 import {
   PlusIcon,
   PopoverContainer,
@@ -37,10 +38,9 @@ const CustomizeToolbarButton = ({
   const buttonReference = useRef(null);
   const addColumnButtonReference = useRef(null);
   const userProfile = useSelector(userProfileSelector);
-  const userHasTaskCustomFieldsFeature = false; // TODO!: TO DELETE
-  // const userHasTaskCustomFieldsFeature = useSelector(
-  //   userHasTaskCustomFieldsFeatureSelector,
-  // );
+  const userHasTaskCustomFieldsFeature = useSelector(
+    userHasTaskCustomFieldsFeatureSelector,
+  );
   const {
     columnsConfig,
     setColumnsConfig,
@@ -222,8 +222,11 @@ const CustomizeToolbarButton = ({
           {!userHasTaskCustomFieldsFeature && (
             <UpgradePlanContainer>
               <UpgradePlan
-                title="Use custom fields"
-                description="Lorem ipsum dolor sit amet, consectetur adipiscing elit."
+                title="Custom Task Fields"
+                description="Available with Dock Premium, custom task fields provide greater context and discoverable content."
+                iconImage={
+                  <img src={CustomFieldsIcon} alt="Custom Task Fields" />
+                }
               />
             </UpgradePlanContainer>
           )}
@@ -249,8 +252,9 @@ const CustomizeToolbarButton = ({
         open={openUpgradePopup}
         onClose={() => setOpenUpgradePopup(false)}
         title="Add custom fields"
-        description="Lorem ipsum dolor sit amet, consectetur adipiscing elit."
-        learnMoreLink="url"
+        description="Available with Dock Premium, custom task fields provide greater context and discoverable content."
+        // learnMoreLink="url"
+        iconImage={<img src={CustomFieldsIcon} alt="Custom Task Fields" />}
       />
     </>
   );

@@ -11,7 +11,7 @@ export const MoreActinsWrapper = styled.div`
 `;
 
 export const ContentWrapper = styled.div`
-  padding: 0px 20px 48px 20px;
+  padding: 0px 20px 48px 10px;
   box-sizing: border-box;
 `;
 

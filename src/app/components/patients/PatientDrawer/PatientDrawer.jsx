@@ -6,6 +6,7 @@ import OptionsMenu from 'components/common/OptionsMenu/OptionsMenu';
 import UpgradePlan from 'components/common/UpgradePlan/UpgradePlan';
 import { useSelector } from 'react-redux';
 import { userHasUserGroupsFeatureSelector } from 'selectors/user-selectors';
+import CustomFieldsIcon from 'img/premium/custom-fields';
 import {
   DrawerWrapper,
   ContentWrapper,
@@ -16,8 +17,7 @@ import {
 } from './styled';
 
 const PatientDrawer = ({ children, title, options, isOpen, onClose }) => {
-  const userGroupsAvailable = false;
-  // const userGroupsAvailable = useSelector(userHasUserGroupsFeatureSelector); //TODO!: TO DELETE
+  const userGroupsAvailable = useSelector(userHasUserGroupsFeatureSelector);
 
   return (
     <DrawerWrapper open={isOpen} anchor="right" onClose={onClose}>
@@ -38,8 +38,11 @@ const PatientDrawer = ({ children, title, options, isOpen, onClose }) => {
       {!userGroupsAvailable && (
         <UpgradePlanContainer>
           <UpgradePlan
-            title="Custom users groups"
-            description="Lorem ipsum dolor sit amet, consectetur adipiscing elit."
+            title="Custom Patient Fields"
+            description="Need to customize the patient profile? Create unlimited, personalized fields with Dock Premium."
+            iconImage={
+              <img src={CustomFieldsIcon} alt="Custom Patient Fields" />
+            }
           />
         </UpgradePlanContainer>
       )}

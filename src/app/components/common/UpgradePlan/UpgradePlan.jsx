@@ -13,7 +13,7 @@ import {
   LearnMoreButtonContainer,
 } from './styled';
 
-const UpgradePlan = ({ learnMoreLink, title, description }) => {
+const UpgradePlan = ({ learnMoreLink, title, description, iconImage }) => {
   const history = useHistory();
 
   const handleUpgradeClick = useCallback(() => {
@@ -22,7 +22,7 @@ const UpgradePlan = ({ learnMoreLink, title, description }) => {
 
   return (
     <UpgradePlanContainer>
-      <IconContainer>ICON</IconContainer>
+      <IconContainer>{iconImage}</IconContainer>
       <Spacing vertical={3} />
       <Title>{title}</Title>
       <Spacing vertical={1} />
