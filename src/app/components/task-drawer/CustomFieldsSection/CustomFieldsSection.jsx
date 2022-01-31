@@ -17,6 +17,7 @@ import {
   taskCustomFieldsSelector,
   taskDrawerFocusFieldSelector,
 } from 'selectors/task-drawer-selectors';
+import { FieldType } from 'helpers/field-type-helpers';
 import {
   CustomFieldsSectionContainer,
   HidableContainer,
@@ -70,6 +71,19 @@ const CustomFieldsSection = ({ taskCustomReference }) => {
     }
   }, [setValue, task, templates]);
 
+  const handleBlur = useCallback(
+    (data, wasChanged = false, fieldType) => {
+      if (wasChanged) {
+        if (fieldType === FieldType.DATE) {
+          const hasMissingParts = data.target?.value?.includes('_');
+          if (hasMissingParts) return;
+        }
+        handleSubmit(compose(updateCustomFields, formatMetaDataOutput))(data);
+      }
+    },
+    [handleSubmit, updateCustomFields],
+  );
+
   const renderCustomField = useCallback(
     field => {
       const isFocused = taskDrawerFocusField === field.identifier;
@@ -83,13 +97,9 @@ const CustomFieldsSection = ({ taskCustomReference }) => {
                 scrollToRef={taskCustomReference}
                 readOnly={false}
                 field={field}
-                onBlur={(data, wasChanged = false) => {
-                  if (wasChanged) {
-                    handleSubmit(
-                      compose(updateCustomFields, formatMetaDataOutput),
-                    )(data);
-                  }
-                }}
+                onBlur={(data, wasChanged) =>
+                  handleBlur(data, wasChanged, field.fieldType)
+                }
                 fieldsGroupKey="taskMetaData"
                 isFocused={isFocused}
                 taskIdentifier={task.identifier}
@@ -100,14 +110,13 @@ const CustomFieldsSection = ({ taskCustomReference }) => {
       );
     },
     [
+      taskDrawerFocusField,
+      getValues,
       emptyVisible,
       formMethods,
-      getValues,
-      handleSubmit,
-      updateCustomFields,
-      task,
       taskCustomReference,
-      taskDrawerFocusField,
+      task.identifier,
+      handleBlur,
     ],
   );
   if (templates.length === 0) return null;

@@ -1,3 +1,4 @@
+/* eslint-disable unicorn/consistent-function-scoping */
 import React, { useRef, useMemo, useCallback } from 'react';
 import moment from 'moment';
 import InputMask from 'react-input-mask';
@@ -19,28 +20,35 @@ const DateInput = ({
   error,
   name,
   maxDate,
+  inputRef: outerTextInputReference,
   ...otherProps
 }) => {
   const [open, setOpen, unsetOpen] = useBoolean(false);
   const textFieldReference = useRef(null);
-  const textInputReference = useRef(null);
+  const innerTextInputReference = useRef(null);
+  const textInputReference = outerTextInputReference || innerTextInputReference;
 
   const handleClose = useCallback(() => {
     unsetOpen();
-    textInputReference.current.focus();
-  }, [unsetOpen]);
+    if (textInputReference.current) textInputReference.current.focus();
+  }, [textInputReference, unsetOpen]);
 
   const momentDate = moment(value, 'MM/DD/YYYY');
 
-  const handleDatepickerChange = isoDate => {
-    const date = moment(isoDate).format('MM/DD/YYYY');
+  const handleChange = ({ target: { value: date } }) => {
     onChange({ target: { value: date } });
   };
 
+  const handleDatepickerChange = isoDate => {
+    const date = moment(isoDate).format('MM/DD/YYYY');
+    handleChange({ target: { value: date } });
+  };
+
   const showError = useMemo(() => {
-    return momentDate.isValid() || !value || value === '__/__/____'
-      ? error
-      : 'Invalid date format';
+    const noMissingParts = !value.includes('_');
+    const validDate = momentDate.isValid();
+    if (!value || value === '' || value === '__/__/____') return error;
+    return noMissingParts && validDate ? error : 'Invalid date format';
   }, [error, momentDate, value]);
 
   return (
@@ -49,7 +57,7 @@ const DateInput = ({
         ref={textFieldReference}
         inputRef={textInputReference}
         value={value}
-        onChange={onChange}
+        onChange={handleChange}
         readOnly={readOnly}
         disabled={disabled}
         shrink={!!value}
