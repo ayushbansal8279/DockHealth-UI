@@ -514,21 +514,6 @@ export const updateWorkflowStatus = (task, workflowStatus) => dispatch => {
     });
 };
 
-export function assignOrReassignTask(task, assignedToUserIdentifier) {
-  return dispatch =>
-    TaskApi.assignOrReassignTask(task, assignedToUserIdentifier)
-      .then(assignedTask => {
-        dispatch({
-          type: ActionTypes.UPDATE_TASK_SUCCESS,
-          task: assignedTask,
-        });
-        return assignedTask;
-      })
-      .catch(error => {
-        throw error;
-      });
-}
-
 export function getTaskHistory(task) {
   return dispatch => {
     dispatch({ type: ActionTypes.REQUEST_HISTORY });

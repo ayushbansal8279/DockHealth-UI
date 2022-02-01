@@ -92,11 +92,6 @@ export const BuilderHeader = styled.div`
   padding: 16px;
   align-items: center;
   z-index: 5;
-  pointer-events: none;
-
-  & a {
-    pointer-events: initial;
-  }
 `;
 
 export const BuilderHeaderText = styled.p`

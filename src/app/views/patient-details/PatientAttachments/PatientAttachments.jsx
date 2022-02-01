@@ -5,64 +5,15 @@ import Loader from 'components/common/Loader/Loader';
 import Spacing from 'components/common/Spacing';
 import { RobotoTypography } from 'styles/theme';
 
-import { Grid, IconButton } from '@material-ui/core';
-import { Close } from '@material-ui/icons';
-import Tooltip from 'components/common/Tooltip/Tooltip';
+import { Grid } from '@material-ui/core';
 import { isFetchingPatientAttachmentsSelector } from 'selectors/patient-details-selectors';
+import AttachmentPreview from 'components/attachments/AttachmentPreview/AttachmentPreview';
+import AttachmentButton from 'components/attachments/AttachmentButton/AttachmentButton';
+import AttachmentProgressBar from 'components/attachments/AttachmentProgressBar/AttachmentProgressBar';
+import AddAttachmentButton from 'components/attachments/AddAttachmentButton/AddAttachmentButton';
 import PatientAttachmentsLoader from '../PatientAttachmentsLoader/PatientAttachmentsLoader';
-import { PatientAttachmentsWrapper } from './styled';
-import AttachmentPreview from '../../../components/task-drawer/AttachmentPreview/AttachmentPreview';
+import { PatientAttachmentsWrapper, AttachmentFileInput } from './styled';
 import initializeAttachmentsSectionHooks from './hooks';
-import {
-  AttachmentButton,
-  RemoveAttachmentButtonContainer,
-  AttachmentFileInput,
-  AddAttachmentButton,
-  UploadBarContainer,
-  UploadBar,
-  UploadBarOuterContainer,
-} from '../../../components/task-drawer/AttachmentsSection/styled';
-import { getIconFromContentType } from '../../../components/task-drawer/AttachmentsSection/helpers';
-
-const renderAttachmentButton = ({
-  openAttachmentPreview,
-  removePatientAttachment,
-}) => attachment => {
-  const { attachmentIdentifier, fileName, contentType } = attachment;
-  const IconComponent = getIconFromContentType({ contentType });
-
-  return (
-    <Tooltip key={attachmentIdentifier} title={fileName}>
-      <AttachmentButton
-        download={fileName}
-        onClick={event => {
-          event.stopPropagation();
-          event.preventDefault();
-          openAttachmentPreview(attachment);
-        }}
-      >
-        <IconComponent color="inherit" fontSize="small" />
-        <Spacing horizontal={2} />
-        <RobotoTypography condensed variant="h4" weight="bold" noWrap>
-          {fileName}
-        </RobotoTypography>
-        <RemoveAttachmentButtonContainer>
-          <IconButton
-            onClick={event => {
-              event.preventDefault();
-              event.stopPropagation();
-              removePatientAttachment({ attachmentIdentifier });
-            }}
-            size="small"
-            color="inherit"
-          >
-            <Close fontSize="small" />
-          </IconButton>
-        </RemoveAttachmentButtonContainer>
-      </AttachmentButton>
-    </Tooltip>
-  );
-};
 
 const PatientAttachments = () => {
   const {
@@ -127,28 +78,21 @@ const PatientAttachments = () => {
                   <Spacing horizontal={3} />
                 </>
               ) : (
-                currentPatientAttachments.map(
-                  renderAttachmentButton({
-                    openAttachmentPreview,
-                    removePatientAttachment,
-                  }),
-                )
+                currentPatientAttachments.map(attachment => (
+                  <AttachmentButton
+                    attachment={attachment}
+                    onClick={openAttachmentPreview}
+                    onRemoveClick={removePatientAttachment}
+                  />
+                ))
               )}
               {currentlyUploadedAttachment && (
                 <>
-                  <UploadBarOuterContainer>
-                    <UploadBarContainer>
-                      <UploadBar progress={uploadProgress} />
-                    </UploadBarContainer>
-                  </UploadBarOuterContainer>
+                  <AttachmentProgressBar progress={uploadProgress} />
                   <Spacing horizontal={4} />
                 </>
               )}
-              <AddAttachmentButton>
-                <RobotoTypography condensed variant="h4" color="inherit">
-                  +
-                </RobotoTypography>
-              </AddAttachmentButton>
+              <AddAttachmentButton />
             </Grid>
           </Grid>
         </>

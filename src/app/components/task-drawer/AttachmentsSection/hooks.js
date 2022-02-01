@@ -147,7 +147,7 @@ const initializeAttachmentsSectionHooks = () => {
   }, [selectedTaskIdentifier, currentTaskAttachmentsDispatch]);
 
   const boundRemoveTaskAttachment = useCallback(
-    ({ attachmentIdentifier }) => {
+    attachmentIdentifier => {
       removeTaskAttachment(
         selectedTaskIdentifier,
         attachmentIdentifier,
@@ -190,7 +190,6 @@ const initializeAttachmentsSectionHooks = () => {
       getInputProps,
       isDragActive,
     },
-    selectedTask,
   };
 };
 

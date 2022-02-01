@@ -65,14 +65,6 @@ export const NameInput = styled.input`
   }
 `;
 
-export const Description = styled.p`
-  grid-column: 3;
-  grid-row: 2;
-  margin-bottom: 0;
-  color: ${palette.coolGrey1};
-  font-size: ${fontSizes.regular};
-`;
-
 export const MenuContainer = styled.div`
   grid-column: 5;
   grid-row: 1;

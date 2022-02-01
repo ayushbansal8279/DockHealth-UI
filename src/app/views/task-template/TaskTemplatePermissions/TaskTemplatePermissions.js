@@ -15,11 +15,7 @@ import {
 } from './styled';
 
 const TaskTemplatePermissions = ({ template }) => {
-  const {
-    members: transformedMembers,
-    taskTemplateIdentifier,
-    publicAccess,
-  } = template;
+  const { members: transformedMembers, identifier, publicAccess } = template;
   const dispatch = useDispatch();
   const members = transformedMembers.map(({ user, memberPermission }) => ({
     ...user,
@@ -29,20 +25,20 @@ const TaskTemplatePermissions = ({ template }) => {
     dispatch(
       openModal('ListPermissions', {
         list: {
-          taskTemplateIdentifier,
+          taskTemplateIdentifier: identifier,
           members,
           template,
         },
         onMembersRefresh: refreshedMembers => {
           dispatch(
-            updateTaskTemplateSuccess(taskTemplateIdentifier, {
+            updateTaskTemplateSuccess(identifier, {
               members: refreshedMembers,
             }),
           );
         },
       }),
     );
-  }, [dispatch, members, taskTemplateIdentifier, template]);
+  }, [dispatch, members, identifier, template]);
   const { userIdentifier } = useSelector(userProfileSelector);
   const currentUser = members.find(
     user => user.userIdentifier === userIdentifier,

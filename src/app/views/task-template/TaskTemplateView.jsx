@@ -41,7 +41,7 @@ import {
 import {
   TEMPLATE_TASK_ITEM_SORT_METHODS,
   TEMPLATE_TASK_ITEM_SORT_DESC_METHODS,
-} from 'helpers/template-helpers';
+} from 'helpers/workflow-helpers';
 import { compose, identity, differenceWith, eqBy, prop } from 'ramda';
 import { SortOrderType } from 'helpers/sorting-helper';
 import moment from 'moment';
@@ -108,11 +108,8 @@ const TaskTemplateView = () => {
     const current = [...folders, ...templates];
     const previous = [...(previousFolders || []), ...(previousTemplates || [])];
     if (Math.abs(previous.length - current.length) > 1) return false;
-    return differenceWith(
-      eqBy(prop('taskTemplateIdentifier')),
-      current,
-      previous,
-    )?.[0]?.taskTemplateIdentifier;
+    return differenceWith(eqBy(prop('identifier')), current, previous)?.[0]
+      ?.identifier;
   }, [folders, previousFolders, previousTemplates, templates]);
 
   useEffect(() => {
@@ -186,11 +183,9 @@ const TaskTemplateView = () => {
   );
 
   const handleGoToFolder = useCallback(
-    (taskTemplateIdentifier, name) => {
-      dispatch(goToTaskTemplateFolder(taskTemplateIdentifier));
-      dispatch(
-        TaskTemplateActions.pushToBreadcrumbs(name, taskTemplateIdentifier),
-      );
+    (identifier, name) => {
+      dispatch(goToTaskTemplateFolder(identifier));
+      dispatch(TaskTemplateActions.pushToBreadcrumbs(name, identifier));
       resetSort();
     },
     [dispatch],
@@ -274,16 +269,11 @@ const TaskTemplateView = () => {
             <>
               {currentSortMethodWithOrder(folders).map(template => (
                 <TaskTemplateFolder
-                  highlighted={
-                    newlyCreatedTemplateId === template.taskTemplateIdentifier
-                  }
-                  key={template.taskTemplateIdentifier}
+                  highlighted={newlyCreatedTemplateId === template.identifier}
+                  key={template.identifier}
                   template={template}
                   onClick={() =>
-                    handleGoToFolder(
-                      template.taskTemplateIdentifier,
-                      template.name,
-                    )
+                    handleGoToFolder(template.identifier, template.name)
                   }
                 >
                   <TaskTemplateHeader
@@ -297,10 +287,8 @@ const TaskTemplateView = () => {
               ))}
               {currentSortMethodWithOrder(templates).map(template => (
                 <TaskTemplate
-                  highlighted={
-                    newlyCreatedTemplateId === template.taskTemplateIdentifier
-                  }
-                  key={template.taskTemplateIdentifier}
+                  highlighted={newlyCreatedTemplateId === template.identifier}
+                  key={template.identifier}
                   template={template}
                   isFullView={viewType === ViewType.FULL_VIEW}
                 >

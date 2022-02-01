@@ -18,6 +18,13 @@ export const TaskTemplateItemColumn = {
   PERMISSIONS: 'PERMISSIONS',
 };
 
+export function checkIfTemplateWorkflow(workflow) {
+  return (
+    ['SMARTFLOW', 'WORKFLOW'].includes(workflow?.type) ||
+    ['SMARTFLOW', 'WORKFLOW'].includes(workflow?.templateType)
+  );
+}
+
 export const TASK_TEMPLATE_ITEM_BASE_COLUMN_CONFIG = {
   [TaskTemplateItemColumn.NAME]: true,
   [TaskTemplateItemColumn.CREATED_BY]: true,
@@ -56,3 +63,7 @@ export const TEMPLATE_TASK_ITEM_SORT_DESC_METHODS = {
     descend(pipe(path(['members', 0, 'userName']), defaultTo(' '), toLower)),
   ]),
 };
+
+export function checkIfWorkflowTemplate(workflow) {
+  return workflow?.type === 'WORKFLOW';
+}

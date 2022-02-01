@@ -1,7 +1,10 @@
-import { takeEvery, put, call } from 'redux-saga/effects';
+import { all, takeEvery, put, call, select } from 'redux-saga/effects';
 import { showGlobalErrorAlert } from 'alert/actions';
+import { taskDrawerOpenSelector } from 'selectors/task-drawer-selectors';
 import * as ActionTypes from 'actions/action-types';
 import * as CustomFieldsApi from 'api/custom-fields-api';
+import * as TaskDrawerActions from 'actions/task-drawer-actions';
+import { storeAsCurrentTask } from 'actions/task-actions';
 
 function* getTaskCustomFields({ taskIdentifier, taskListIdentifier }) {
   try {
@@ -20,6 +23,17 @@ function* getTaskCustomFields({ taskIdentifier, taskListIdentifier }) {
   }
 }
 
+function* openDrawer() {
+  const isTaskDrawerOpen = yield select(taskDrawerOpenSelector);
+  if (isTaskDrawerOpen) {
+    yield all([
+      put(TaskDrawerActions.closeDrawer()),
+      put(storeAsCurrentTask()),
+    ]);
+  }
+}
+
 export default function* watchTaskDrawer() {
   yield takeEvery(ActionTypes.GET_TASK_CUSTOM_FIELDS, getTaskCustomFields);
+  yield takeEvery(ActionTypes.OPEN_WORKFLOW_DRAWER, openDrawer);
 }

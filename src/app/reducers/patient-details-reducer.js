@@ -47,10 +47,32 @@ const updateTasksStateCallback = (state, updateTaskFromAction) => {
   };
 };
 
+function updateWorkflowInState(updateCallback, workflowIdentifier, state) {
+  return {
+    ...state,
+    lists: state?.lists?.map(list => {
+      return {
+        ...list,
+        tasks: list.tasks.map(t =>
+          t.identifier === workflowIdentifier ? updateCallback(t) : t,
+        ),
+      };
+    }),
+  };
+}
+
 // eslint-disable-next-line sonarjs/cognitive-complexity
 export default function(state = INITIAL_STATE, action = {}) {
   const { type, payload } = action;
   switch (type) {
+    case ActionTypes.UPDATE_PARTIAL_WORKFLOW: {
+      return updateWorkflowInState(
+        workflow => ({ ...workflow, ...action.dataToUpdate }),
+        action.taskWorkflowIdentifier,
+        state,
+      );
+    }
+
     case ActionTypes.INITIALIZE_PATIENT_STATE: {
       return {
         ...state,
@@ -245,8 +267,24 @@ export default function(state = INITIAL_STATE, action = {}) {
       };
     }
 
-    case ActionTypes.MOVE_TEMPLATE_BUNDLE_SUCCESS:
-    case ActionTypes.DELETE_TEMPLATE_BUNDLE:
+    case ActionTypes.DUPLICATE_WORKFLOW_SUCCESS: {
+      const { workflow } = action;
+
+      const { taskListIdentifier } = workflow;
+
+      return {
+        ...state,
+        lists: state.lists?.map(l =>
+          l.taskListIdentifier === taskListIdentifier
+            ? {
+                ...l,
+                tasks: [workflow, ...(l.tasks || [])],
+              }
+            : l,
+        ),
+      };
+    }
+
     case ActionTypes.COMPLETE_TEMPLATE_BUNDLE: {
       const { bundleIdentifier } = action;
 
@@ -257,6 +295,19 @@ export default function(state = INITIAL_STATE, action = {}) {
           tasks: l.tasks?.filter(
             ({ identifier }) => identifier !== bundleIdentifier,
           ),
+        })),
+      };
+    }
+
+    case ActionTypes.MOVE_WORKFLOW_TO_DIFFERENT_LIST_SUCCESS:
+    case ActionTypes.DELETE_WORKFLOW: {
+      const { identifier } = action;
+
+      return {
+        ...state,
+        lists: state.lists?.map(l => ({
+          ...l,
+          tasks: l.tasks?.filter(({ identifier: id }) => id !== identifier),
         })),
       };
     }

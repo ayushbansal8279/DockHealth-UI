@@ -195,7 +195,7 @@ const TasksGroup = ({
   const handleTemplateSelect = useCallback(
     template => {
       applyTemplate({
-        taskTemplateIdentifier: template?.taskTemplateIdentifier,
+        taskTemplateIdentifier: template?.identifier,
         taskGroupIdentifier,
       });
     },

@@ -17,7 +17,9 @@ import ThreeDotsIcon from 'img/three-dots';
 import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd';
 import { MoreHoriz } from '@material-ui/icons';
 import * as ModalActions from 'modal/actions';
+import * as WorkflowActions from 'actions/workflow-actions';
 import * as TaskActions from 'actions/task-actions';
+import { openDrawer } from 'actions/workflow-drawer-actions';
 import * as TemplateBundleActions from 'actions/template-bundle-actions';
 import { TaskStatus } from 'helpers/task-helpers';
 import Checkbox from 'components/common/Checkbox/Checkbox';
@@ -169,20 +171,10 @@ const TaskTemplateGroup = ({
           dispatch(
             ModalActions.openModal('AttachmentsDuplicate', {
               confirm: () => {
-                dispatch(
-                  TemplateBundleActions.duplicateTemplateBundle(
-                    identifier,
-                    true,
-                  ),
-                );
+                dispatch(WorkflowActions.duplicateWorkflow(identifier, true));
               },
               skip: () => {
-                dispatch(
-                  TemplateBundleActions.duplicateTemplateBundle(
-                    identifier,
-                    false,
-                  ),
-                );
+                dispatch(WorkflowActions.duplicateWorkflow(identifier, false));
               },
             }),
           ),
@@ -198,11 +190,11 @@ const TaskTemplateGroup = ({
                 taskGroupIdentifier,
               }) => {
                 dispatch(
-                  TemplateBundleActions.moveTemplateBundle({
-                    bundleIdentifier: identifier,
-                    taskListIdentifier: listIdentifier,
+                  TemplateBundleActions.moveWorkflowToList(
+                    identifier,
+                    listIdentifier,
                     taskGroupIdentifier,
-                  }),
+                  ),
                 );
               },
             }),
@@ -245,9 +237,7 @@ const TaskTemplateGroup = ({
               description:
                 'Are you sure you want to delete this workflow? This action cannot be undone.',
               confirm: () => {
-                dispatch(
-                  TemplateBundleActions.deleteTemplateBundle(identifier),
-                );
+                dispatch(WorkflowActions.deleteWorkflow(identifier));
                 dispatch(ModalActions.closeModal());
               },
             }),
@@ -398,9 +388,7 @@ const TaskTemplateGroup = ({
           >
             <NameContainer
               onClick={() => {
-                if (!isEditing) {
-                  setOpen(!isOpen);
-                }
+                dispatch(openDrawer(identifier, templateGroup));
               }}
             >
               <TaskTemplateNameInput

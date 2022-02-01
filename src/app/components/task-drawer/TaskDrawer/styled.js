@@ -81,10 +81,6 @@ export const styleFirstRow = {
   padding: '0rem 2rem 0.5rem 2rem',
 };
 
-export const styleLastRow = {
-  padding: '0rem 2rem 1rem 2rem',
-};
-
 export const styleEmailRow = {
   padding: '0 2rem',
   backgroundColor: palette.blueGrey,
@@ -146,7 +142,7 @@ export const CompletedByLabel = styled.p`
 export const TaskDrawerDivider = styled(Divider)`
   && {
     width: 100%;
-    background-color: ${palette.blueOcean};
+    background-color: ${palette.coolGrey2};
     opacity: 0.3;
   }
 `;

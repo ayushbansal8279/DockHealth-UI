@@ -51,7 +51,7 @@ function updateBundleInState(updateCallback, bundleIdentifier, state) {
       ...state.groupedTasks,
       taskGroups: state.groupedTasks?.taskGroups?.map(g => ({
         ...g,
-        tasks: g.tasks.map(t =>
+        tasks: g.tasks?.map(t =>
           t.identifier === bundleIdentifier ? updateCallback(t) : t,
         ),
       })),
@@ -383,6 +383,14 @@ const ListDetailsReducer = (state = initialState, action) => {
       };
     }
 
+    case ActionTypes.UPDATE_PARTIAL_WORKFLOW: {
+      return updateBundleInState(
+        workflow => ({ ...workflow, ...action.dataToUpdate }),
+        action.taskWorkflowIdentifier,
+        state,
+      );
+    }
+
     case ActionTypes.ADD_TASK_SUCCESS: {
       const { task: addedTask } = action;
 
@@ -443,8 +451,28 @@ const ListDetailsReducer = (state = initialState, action) => {
       );
     }
 
-    case ActionTypes.MOVE_TEMPLATE_BUNDLE_SUCCESS:
-    case ActionTypes.DELETE_TEMPLATE_BUNDLE:
+    case ActionTypes.DUPLICATE_WORKFLOW_SUCCESS: {
+      const { workflow } = action;
+
+      const {
+        taskListIdentifier,
+        parentTaskGroupIdentifier: taskGroupIdentifier,
+      } = workflow;
+
+      if (taskListIdentifier !== state.taskListIdentifier) {
+        return state;
+      }
+
+      return updateGroupInState(
+        group => ({
+          ...group,
+          tasks: [workflow, ...(group.tasks || [])],
+        }),
+        taskGroupIdentifier,
+        state,
+      );
+    }
+
     case ActionTypes.COMPLETE_TEMPLATE_BUNDLE: {
       const { bundleIdentifier } = action;
 
@@ -455,6 +483,22 @@ const ListDetailsReducer = (state = initialState, action) => {
           taskGroups: state.groupedTasks?.taskGroups?.map(g => ({
             ...g,
             tasks: g.tasks?.filter(t => t.identifier !== bundleIdentifier),
+          })),
+        },
+      };
+    }
+
+    case ActionTypes.MOVE_WORKFLOW_TO_DIFFERENT_LIST_SUCCESS:
+    case ActionTypes.DELETE_WORKFLOW: {
+      const { identifier } = action;
+
+      return {
+        ...state,
+        groupedTasks: {
+          ...state.groupedTasks,
+          taskGroups: state.groupedTasks?.taskGroups?.map(g => ({
+            ...g,
+            tasks: g.tasks?.filter(t => t.identifier !== identifier),
           })),
         },
       };

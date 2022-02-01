@@ -35,6 +35,7 @@ import {
   currentTaskTemplateSelector,
 } from 'selectors/task-template-selectors';
 import { userHasSmartFlowsSelector } from 'selectors/user-selectors';
+import { openDrawer } from 'actions/workflow-drawer-actions';
 import { Box, ClickAwayListener, Paper, Popper } from '@material-ui/core';
 import DecisionTaskElementIcon from 'img/template/decision-task-icon';
 import ReactFlow, {
@@ -108,8 +109,8 @@ const TaskTemplateDetailsView = () => {
   const history = useHistory();
   const { tasks, layout, temporaryElements } =
     useSelector(taskTemplateDetailsSelector(identifier)) || {};
-  const { name, type: templateType } =
-    useSelector(currentTaskTemplateSelector) || {};
+  const workflow = useSelector(currentTaskTemplateSelector);
+  const { name, type: templateType } = workflow || {};
   const smartFlowsAvailable = useSelector(userHasSmartFlowsSelector);
 
   useEffect(() => {
@@ -474,7 +475,14 @@ const TaskTemplateDetailsView = () => {
               <Box px={1}>
                 <NavigateNextIcon fontSize="small" />
               </Box>
-              <BuilderHeaderText>{name}</BuilderHeaderText>
+              <button
+                type="button"
+                onClick={() =>
+                  dispatch(openDrawer(workflow.identifier, workflow))
+                }
+              >
+                <BuilderHeaderText>{name}</BuilderHeaderText>
+              </button>
             </BuilderHeader>
             {mergedElementsWithActions && (
               <ReactFlow

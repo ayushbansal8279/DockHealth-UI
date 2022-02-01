@@ -1,15 +1,10 @@
 import * as ActionTypes from 'actions/action-types';
 
-export function moveTemplate({
-  parentTaskTemplateIdentifier,
-  taskTemplateIdentifier,
-}) {
+export function moveWorkflowToFolder(identifier, parentTaskTemplateIdentifier) {
   return {
-    type: ActionTypes.MOVE_TASK_TEMPLATE,
-    payload: {
-      parentTaskTemplateIdentifier,
-      taskTemplateIdentifier,
-    },
+    type: ActionTypes.MOVE_WORKFLOW_TO_FOLDER,
+    identifier,
+    parentTaskTemplateIdentifier,
   };
 }
 
@@ -77,13 +72,6 @@ export function goToTaskTemplateFolder(taskTemplateFolderIdentifier = null) {
   };
 }
 
-export function deleteTemplate(taskTemplateIdentifier) {
-  return {
-    type: ActionTypes.DELETE_TASK_TEMPLATE,
-    taskTemplateIdentifier,
-  };
-}
-
 export function switchTemplatePublic(taskTemplateIdentifier, flagPublic) {
   return {
     type: ActionTypes.SWITCH_TEMPLATE_PUBLIC,
@@ -92,18 +80,18 @@ export function switchTemplatePublic(taskTemplateIdentifier, flagPublic) {
   };
 }
 
-export function duplicateTemplate(taskTemplateIdentifier, includeAttachments) {
-  return {
-    type: ActionTypes.DUPLICATE_TASK_TEMPLATE,
-    taskTemplateIdentifier,
-    includeAttachments,
-  };
-}
-
 export function updateTemplate(taskTemplateIdentifier, dataToUpdate) {
   return {
     type: ActionTypes.UPDATE_TASK_TEMPLATE,
     taskTemplateIdentifier,
+    dataToUpdate,
+  };
+}
+
+export function updatePartialWorkflow(taskWorkflowIdentifier, dataToUpdate) {
+  return {
+    type: ActionTypes.UPDATE_PARTIAL_WORKFLOW,
+    taskWorkflowIdentifier,
     dataToUpdate,
   };
 }
@@ -163,10 +151,10 @@ export function reloadOpenedTemplateTasks() {
   return { type: ActionTypes.RELOAD_OPENED_TEMPLATE_TASKS };
 }
 
-export function selectTaskTemplate(taskTemplateIdentifier) {
+export function selectTaskTemplate(identifier) {
   return {
     type: ActionTypes.SELECT_TASK_TEMPLATE,
-    taskTemplateIdentifier,
+    identifier,
   };
 }
 
@@ -278,5 +266,43 @@ export function addTemporaryLink(
 export function getCurrentTaskTemplate() {
   return {
     type: ActionTypes.GET_CURRENT_TASK_TEMPLATE,
+  };
+}
+
+export function addLabel({ labelName, labelIdentifier, identifier }) {
+  return {
+    type: ActionTypes.ADD_WORKFLOW_LABEL,
+    labelName,
+    labelIdentifier,
+    identifier,
+  };
+}
+
+export function editLabel({ labelName, labelIdentifier, identifier }) {
+  return {
+    type: ActionTypes.UPDATE_WORKFLOW_LABEL,
+    labelName,
+    labelIdentifier,
+    identifier,
+  };
+}
+
+export function removeLabelFromTask({
+  labelName,
+  labelIdentifier,
+  identifier,
+}) {
+  return {
+    type: ActionTypes.REMOVE_WORKFLOW_LABEL_FROM_TASK,
+    labelName,
+    labelIdentifier,
+    identifier,
+  };
+}
+
+export function removeLabel({ labelIdentifier }) {
+  return {
+    type: ActionTypes.REMOVE_WORKFLOW_LABEL,
+    labelIdentifier,
   };
 }

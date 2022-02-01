@@ -4,7 +4,7 @@ import { SortHeaderRow } from 'components/tasklist/ColumnSortHeader/styled';
 import {
   TaskTemplateItemColumn,
   TASK_TEMPLATE_ITEM_BASE_COLUMN_CONFIG,
-} from 'helpers/template-helpers';
+} from 'helpers/workflow-helpers';
 
 const TasksTemplatesHeader = ({ sort, onSortChange, taskItemConfig = {} }) => {
   const mergedConfig = useMemo(

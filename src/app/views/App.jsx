@@ -15,6 +15,7 @@ import { initializePusherForPresence } from 'helpers/pusher-instance';
 
 import { openModal } from 'modal/actions';
 import * as UserAuthApi from 'api/user-auth-api';
+import WorkflowDrawer from 'components/workflow-drawer/WorkflowDrawer/WorkflowDrawer';
 import Notification from 'components/common/Notification/Notification';
 import ActivityAlertsToasts from 'components/activity-alerts/ActivityAlertsToasts';
 import { featurePalette } from 'styles/palette';
@@ -244,6 +245,7 @@ class App extends PureComponent {
           <>
             <div id="portal" />
             <Modal />
+            <WorkflowDrawer />
             <ActivityAlertsToasts />
             <div className="new-task" />
             {mountIdleTimer && (

@@ -22,6 +22,7 @@ import { AdornmentClear } from '../styled';
 const SelectDropdown = React.forwardRef(
   (
     {
+      inputRef,
       name,
       label,
       placeholder,

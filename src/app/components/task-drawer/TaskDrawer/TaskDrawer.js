@@ -26,7 +26,6 @@ import {
   styleFirstRow,
   styleLeftColumn,
   styleRightColumn,
-  styleLastRow,
   styleCommentRow,
   ParentTaskButton,
   ParentTaskDescriptionPlaceholder,
@@ -223,8 +222,7 @@ const TaskDrawer = ({
           )}
         </Grid>
         <TaskDrawerDivider />
-        <Grid container item xs={12} style={styleLastRow}>
-          <Spacing vertical={2} />
+        <Grid container item xs={12} style={styleFullRow}>
           <div>
             <Spacing horizontal={5} />
             <span ref={historySectionReference} />

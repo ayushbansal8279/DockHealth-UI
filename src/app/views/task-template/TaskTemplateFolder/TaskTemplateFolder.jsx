@@ -9,6 +9,7 @@ import React, {
 import { useDispatch } from 'react-redux';
 import palette from 'styles/palette';
 import { MoreHoriz } from '@material-ui/icons';
+import * as WorkflowActions from 'actions/workflow-actions';
 import * as TaskTemplateActions from 'actions/task-template-actions';
 import * as ModalActions from 'modal/actions';
 import OptionsMenu from 'components/common/OptionsMenu/OptionsMenu';
@@ -30,7 +31,7 @@ const TaskTemplateFolder = ({
   highlighted = false,
 }) => {
   const {
-    taskTemplateIdentifier,
+    identifier,
     name,
     // publicAccess = false
   } = template;
@@ -88,9 +89,7 @@ const TaskTemplateFolder = ({
               description:
                 'Are you sure you want to delete this folder? This action cannot be undone.',
               confirm: () => {
-                dispatch(
-                  TaskTemplateActions.deleteTemplate(taskTemplateIdentifier),
-                );
+                dispatch(WorkflowActions.deleteWorkflow(identifier));
                 dispatch(ModalActions.closeModal());
               },
             }),
@@ -98,7 +97,7 @@ const TaskTemplateFolder = ({
       },
     ],
     [
-      taskTemplateIdentifier,
+      identifier,
       dispatch,
       nameInputReference,
       // publicAccess
@@ -115,7 +114,7 @@ const TaskTemplateFolder = ({
         if (value?.length > 1) {
           setNameInputError(false);
           dispatch(
-            TaskTemplateActions.updateTemplate(taskTemplateIdentifier, {
+            TaskTemplateActions.updateTemplate(identifier, {
               name: value,
             }),
           );
@@ -127,7 +126,7 @@ const TaskTemplateFolder = ({
         nameInputReference.current?.blur();
       }
     },
-    [dispatch, taskTemplateIdentifier],
+    [dispatch, identifier],
   );
 
   const onChangeName = event => {

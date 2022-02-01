@@ -99,66 +99,32 @@ function* updateTemplateBundle({ bundle, dataToUpdate }) {
   }
 }
 
-function* duplicateTemplateBundle({ bundleIdentifier, includeAttachments }) {
-  try {
-    const duplicatedBundle = yield call(
-      TemplateBundleApi.duplicateTemplateBundle,
-      bundleIdentifier,
-      includeAttachments,
-    );
-    yield put({
-      type: ActionTypes.ADD_TEMPLATE_BUNDLE,
-      bundle: duplicatedBundle,
-    });
-    yield put(showGlobalAlert(AlertMessages.DUPLICATED));
-  } catch {
-    yield put(showGlobalErrorAlert());
-  }
-}
-
-function* deleteTemplateBundle({ bundleIdentifier }) {
-  try {
-    yield call(TemplateBundleApi.deleteTemplateBundle, bundleIdentifier);
-    yield put({
-      type: ActionTypes.DELETE_TEMPLATE_BUNDLE_SUCCESS,
-      bundleIdentifier,
-    });
-    yield put(showGlobalAlert(AlertMessages.DELETED));
-  } catch {
-    yield put({
-      type: ActionTypes.DELETE_TEMPLATE_BUNDLE_FAILURE,
-      bundleIdentifier,
-    });
-    yield put(showGlobalErrorAlert());
-  }
-}
-
-function* moveTemplateBundle({
-  bundleIdentifier,
+function* moveWorkflowToList({
+  identifier,
   taskListIdentifier,
   taskGroupIdentifier,
 }) {
   try {
-    const updatedBundle = yield call(
-      TemplateBundleApi.moveTemplateBundle,
-      bundleIdentifier,
+    const workflow = yield call(
+      TemplateBundleApi.moveWorkflowToList,
+      identifier,
       taskListIdentifier,
       taskGroupIdentifier,
     );
     yield put({
-      type: ActionTypes.MOVE_TEMPLATE_BUNDLE_SUCCESS,
-      bundleIdentifier,
+      type: ActionTypes.MOVE_WORKFLOW_TO_DIFFERENT_LIST_SUCCESS,
+      identifier,
     });
     yield put({
       type: ActionTypes.ADD_TEMPLATE_BUNDLE,
-      bundle: updatedBundle,
+      bundle: workflow,
     });
     yield put(showGlobalAlert(AlertMessages.MOVED));
   } catch {
     yield put(showGlobalErrorAlert());
     yield put({
-      type: ActionTypes.MOVE_TEMPLATE_BUNDLE_FAILURE,
-      bundleIdentifier,
+      type: ActionTypes.MOVE_WORKFLOW_TO_DIFFERENT_LIST_FAILURE,
+      identifier,
     });
   }
 }
@@ -256,11 +222,9 @@ export default function* watchTemplateBundle() {
     reorderTasksInTemplateBundle,
   );
   yield takeEvery(
-    ActionTypes.DUPLICATE_TEMPLATE_BUNDLE,
-    duplicateTemplateBundle,
+    ActionTypes.MOVE_WORKFLOW_TO_DIFFERENT_LIST,
+    moveWorkflowToList,
   );
-  yield takeEvery(ActionTypes.DELETE_TEMPLATE_BUNDLE, deleteTemplateBundle);
-  yield takeEvery(ActionTypes.MOVE_TEMPLATE_BUNDLE, moveTemplateBundle);
   yield takeEvery(
     ActionTypes.CHANGE_PATIENT_FOR_TEMPLATE_BUNDLE,
     changePatientForTemplateBundle,

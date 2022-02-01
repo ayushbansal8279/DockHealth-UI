@@ -25,29 +25,14 @@ export function reorderSubtasksInTemplateBundle({
   };
 }
 
-export function duplicateTemplateBundle(bundleIdentifier, includeAttachments) {
-  return {
-    type: ActionTypes.DUPLICATE_TEMPLATE_BUNDLE,
-    bundleIdentifier,
-    includeAttachments,
-  };
-}
-
-export function deleteTemplateBundle(bundleIdentifier) {
-  return {
-    type: ActionTypes.DELETE_TEMPLATE_BUNDLE,
-    bundleIdentifier,
-  };
-}
-
-export function moveTemplateBundle({
-  bundleIdentifier,
+export function moveWorkflowToList(
+  identifier,
   taskListIdentifier,
   taskGroupIdentifier,
-}) {
+) {
   return {
-    type: ActionTypes.MOVE_TEMPLATE_BUNDLE,
-    bundleIdentifier,
+    type: ActionTypes.MOVE_WORKFLOW_TO_DIFFERENT_LIST,
+    identifier,
     taskListIdentifier,
     taskGroupIdentifier,
   };
