@@ -142,14 +142,12 @@ const TextEditor = React.forwardRef(
     }, [currentState]);
 
     const handleFocus = event => {
-      console.log('handleFocus');
       onFocus(event);
       setIsFocused(true);
     };
 
     const handleClickAway = useCallback(() => {
       if (isFocused) {
-        console.log('handleClickAway');
         setIsFocused(false);
       }
     }, [isFocused]);
@@ -260,7 +258,6 @@ const TextEditor = React.forwardRef(
 
     const separaterClass = separatorStyles();
 
-    console.log('isFocused', isFocused);
     return (
       <ClickAwayListener onClickAway={handleClickAway}>
         <StyledEditorContainer

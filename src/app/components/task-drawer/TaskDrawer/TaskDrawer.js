@@ -92,8 +92,6 @@ const TaskDrawer = ({
     taskDrawerReference,
     hideTour,
   });
-  const taskCustomReference = useRef(null);
-
   const closeTaskDrawer = useCallback(() => {
     handleCloseTaskDrawer();
     clearFormStates();
@@ -220,7 +218,7 @@ const TaskDrawer = ({
           </Grid>
           {taskDrawerOpen && (
             <Grid item xs={12} style={styleNoPaddingRow}>
-              <CustomFieldsSection taskCustomRef={taskCustomReference} />
+              <CustomFieldsSection />
             </Grid>
           )}
         </Grid>

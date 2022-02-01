@@ -26,7 +26,7 @@ import {
 } from './styled';
 import { formatMetaDataOutput } from './helpers';
 
-const CustomFieldsSection = ({ taskCustomReference }) => {
+const CustomFieldsSection = () => {
   const dispatch = useDispatch();
   const task = useSelector(selectedTaskSelector) || {};
   const taskDrawerFocusField = useSelector(taskDrawerFocusFieldSelector);
@@ -94,7 +94,6 @@ const CustomFieldsSection = ({ taskCustomReference }) => {
           <HidableContainer key={field.identifier} visibility={!visible}>
             <Grid item xs={12} style={styleFullRow}>
               <CustomField
-                scrollToRef={taskCustomReference}
                 readOnly={false}
                 field={field}
                 onBlur={(data, wasChanged) =>
@@ -114,7 +113,6 @@ const CustomFieldsSection = ({ taskCustomReference }) => {
       getValues,
       emptyVisible,
       formMethods,
-      taskCustomReference,
       task.identifier,
       handleBlur,
     ],
