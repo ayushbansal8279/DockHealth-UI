@@ -76,6 +76,7 @@ import {
 } from './styled';
 import ConnectionLink from './ConnectionLink/ConnectionLink';
 import TaskLinkDelayForm from './TaskLinkDelayForm/TaskLinkDelayForm';
+import TemporaryDecisionTaskLink from './TemporaryDecisionTaskLink/TemporaryDecisionTaskLink';
 
 const nodeTypes = {
   [NodeType.NEW_STANDARD]: NewTaskNode,
@@ -88,6 +89,7 @@ const linkTypes = {
   [LinkType.STANDARD]: TaskLink,
   [LinkType.DECISION]: DecisionTaskLink,
   [LinkType.TEMPORARY]: TemporaryTaskLink,
+  [LinkType.TEMPORARY_DECISION]: TemporaryDecisionTaskLink,
 };
 
 const TaskTemplateDetailsView = () => {

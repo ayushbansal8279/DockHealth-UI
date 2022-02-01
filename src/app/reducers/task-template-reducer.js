@@ -7,6 +7,7 @@ import {
   createDecisionTaskNodes,
   createTemporaryTaskNode,
   createLinkElement,
+  LinkType,
 } from 'helpers/task-template-builder-helpers';
 import TaskBaseReducer from './task-base-reducer';
 
@@ -384,7 +385,11 @@ const TaskTemplateReducer = (state = initialState, action) => {
           {
             temporaryElements: [
               ...(temporaryElements || []),
-              createLinkElement(sourceTaskIdentifier, newNode.id),
+              createLinkElement(
+                LinkType.TEMPORARY_DECISION,
+                sourceTaskIdentifier,
+                newNode.id,
+              ),
               newNode,
             ],
           },
@@ -394,7 +399,13 @@ const TaskTemplateReducer = (state = initialState, action) => {
 
     case ActionTypes.ADD_TEMPORARY_LINK: {
       const { currentTaskTemplateIdentifier } = state;
-      const { sourceId, targetId, sourceHandle, targetHandle } = action;
+      const {
+        linkType,
+        sourceId,
+        targetId,
+        sourceHandle,
+        targetHandle,
+      } = action;
       const { temporaryElements } = state.taskTemplateDetails[
         currentTaskTemplateIdentifier
       ];
@@ -410,7 +421,13 @@ const TaskTemplateReducer = (state = initialState, action) => {
                 ({ source, target }) =>
                   !(source === sourceId && target === targetId),
               ),
-              createLinkElement(sourceId, targetId, sourceHandle, targetHandle),
+              createLinkElement(
+                linkType,
+                sourceId,
+                targetId,
+                sourceHandle,
+                targetHandle,
+              ),
             ],
           },
         ),

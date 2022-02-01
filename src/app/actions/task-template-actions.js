@@ -259,6 +259,7 @@ export function linkTasks(source, target, options, outcomeName) {
 }
 
 export function addTemporaryLink(
+  linkType,
   sourceId,
   targetId,
   sourceHandle,
@@ -266,6 +267,7 @@ export function addTemporaryLink(
 ) {
   return {
     type: ActionTypes.ADD_TEMPORARY_LINK,
+    linkType,
     sourceId,
     targetId,
     sourceHandle,

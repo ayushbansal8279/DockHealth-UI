@@ -11,6 +11,7 @@ export const LinkType = {
   STANDARD: 'STANDARD_LINK',
   DECISION: 'DECISION_LINK',
   TEMPORARY: 'TEMPORARY_LINK',
+  TEMPORARY_DECISION: 'TEMPORARY_DECISION_LINK',
 };
 
 export const NodeSourceHandle = {
@@ -31,6 +32,7 @@ export function getUniqueLinkId(sourceId, targetId) {
 }
 
 export function createLinkElement(
+  type,
   sourceId,
   targetId,
   sourceHandle,
@@ -42,7 +44,7 @@ export function createLinkElement(
     target: targetId,
     sourceHandle: sourceHandle || NodeSourceHandle.SOURCE_A,
     targetHandle: targetHandle || NodeTargetHandle.TARGET_A,
-    type: LinkType.TEMPORARY,
+    type,
     data: {},
   };
 }
@@ -87,8 +89,16 @@ export function createTemporaryOptionsForDecisionTask(
   return [
     firstTemporaryStandardTask,
     secondTemporaryStandardTask,
-    createLinkElement(decisionTaskId, firstTemporaryStandardTask.id),
-    createLinkElement(decisionTaskId, secondTemporaryStandardTask.id),
+    createLinkElement(
+      LinkType.TEMPORARY_DECISION,
+      decisionTaskId,
+      firstTemporaryStandardTask.id,
+    ),
+    createLinkElement(
+      LinkType.TEMPORARY_DECISION,
+      decisionTaskId,
+      secondTemporaryStandardTask.id,
+    ),
   ];
 }
 

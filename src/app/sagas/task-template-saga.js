@@ -25,6 +25,7 @@ import {
 import {
   createTemporaryOptionsForDecisionTask,
   getUniqueLinkId,
+  LinkType,
   NodeType,
 } from 'helpers/task-template-builder-helpers';
 
@@ -552,8 +553,18 @@ function* linkTasks({ source, target, options, outcomeName }) {
     };
 
     if (!checkIfTasksAreLinked()) {
+      const isSourceDecisionType = sourceTask
+        ? sourceTask.intentType === NodeType.DECISION
+        : templateDetails.temporaryElements.some(
+            ({ id, type }) =>
+              id === source.id && type === NodeType.NEW_DECISION,
+          );
+
       yield put(
         TaskTemplateActions.addTemporaryLink(
+          isSourceDecisionType
+            ? LinkType.TEMPORARY_DECISION
+            : LinkType.TEMPORARY,
           source.id,
           target.id,
           source.handle,
@@ -611,7 +622,8 @@ function* linkTasks({ source, target, options, outcomeName }) {
         ]);
       }
     }
-  } catch {
+  } catch (error) {
+    console.log('errorrr', error);
     yield put(showGlobalErrorAlert());
   }
 }
