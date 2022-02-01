@@ -53,7 +53,7 @@ const TemporaryDecisionTaskLink = props => {
 
   return (
     <>
-      <LinkPath {...props} onClick={openOptions} />
+      <LinkPath {...props} />
       <foreignObject
         width={200}
         height={32}
@@ -62,12 +62,13 @@ const TemporaryDecisionTaskLink = props => {
         className="edgebutton-foreignobject"
         requiredExtensions="http://www.w3.org/1999/xhtml"
         style={{ overflow: 'visible' }}
+        onMouseEnter={openOptions}
+        onMouseLeave={closeOptions}
       >
         <OutcomeInputLabel
           ref={centerReference}
           value={inputValue}
           onChange={event => setInputValue(event.target?.value || '')}
-          onClick={openOptions}
           onBlur={handleBlur}
         />
         {areOptionsOpen && (
