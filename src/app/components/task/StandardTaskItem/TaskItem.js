@@ -9,7 +9,6 @@ import React, {
 } from 'react';
 import { pluck } from 'ramda';
 import { useDispatch, useSelector } from 'react-redux';
-import { EditorState } from 'draft-js';
 import { isTaskSelectedSelector } from 'selectors/task-drawer-selectors';
 import { openTaskDrawerWithContent } from 'actions/task-drawer-actions';
 import {
@@ -25,9 +24,6 @@ import {
   userProfileSelector,
   selectedUserOrganizationSelector,
 } from 'selectors/user-selectors';
-import { convertToEditorState } from 'components/common/TextEditor/helpers';
-import { useMentionsEditorState } from 'components/common/TextEditor/use-mentions-editor-state';
-import { createMentionEntities } from 'components/common/TextEditor/create-mention-entities';
 import { BulkEditContext } from 'components/tasklist/BulkEditSection/BulkEditSection';
 import {
   onTaskAssigned,
@@ -174,17 +170,9 @@ const TaskItem = ({
   );
   const [isHovered, setIsHovered] = useState(false);
   const [taskDecisionError, setTaskDecisionError] = useState(false);
-  const [descriptionState, setDescriptionState] = useMentionsEditorState(
-    convertToEditorState({
-      rawText: description,
-      tokenizedText: tokenizedDescription,
-      mentions: taskMentions,
-      handleRichText: false,
-    }),
-  );
+
   const [contextMenu, setContextMenu] = useState(null);
   const dispatch = useDispatch();
-  const previousDescription = useRef(null);
   const dependencyIconReference = useRef(null);
 
   const [
@@ -205,20 +193,6 @@ const TaskItem = ({
     },
     [dispatch, task],
   );
-
-  useEffect(() => {
-    if (previousDescription.current !== null) {
-      const newContent = createMentionEntities(
-        tokenizedDescription,
-        description,
-        taskMentions,
-        false,
-      );
-      setDescriptionState(EditorState.push(descriptionState, newContent));
-    }
-    previousDescription.current = description;
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [description]);
 
   useEffect(() => {
     if (parentContainerReference?.current && newlyCreated) {
@@ -472,18 +446,17 @@ const TaskItem = ({
                 <TaskItemDescription
                   isCompletedGroup={isCompletedGroup}
                   isCompleted={isCompleted}
-                  descriptionState={descriptionState}
-                  setDescriptionState={setDescriptionState}
                   matchDescription={matchDescription}
                   highlightedValue={highlightedValue}
                   description={description}
+                  tokenizedDescription={tokenizedDescription}
+                  taskMentions={taskMentions}
                   edited={isEdited}
                   duplicated={isDuplicated}
                   hasParentTaskLabel={hasParentTaskLabel}
                   parentTask={parentTask}
                   completedByName={completedByName}
                   completedDt={completedDt}
-                  dispatch={dispatch}
                 />
               )}
             </MainStandardTaskItemCell>
