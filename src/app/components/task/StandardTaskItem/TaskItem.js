@@ -109,20 +109,12 @@ const TaskItem = ({
 }) => {
   const {
     taskIdentifier,
-    edited,
-    duplicated,
-    type,
     assignedToUsers,
     attachments,
     comments,
-    description,
-    tokenizedDescription,
-    taskMentions,
     labels,
     patient,
     workflowStatus,
-    completedDt,
-    completedBy,
     taskList = {},
     parentTaskIdentifier,
     searchMetaData = {},
@@ -157,7 +149,6 @@ const TaskItem = ({
     matchAssignedTo,
     matchAttachments,
     matchComments,
-    matchDescription,
     matchLabels,
     matchPatient,
     matchPatientMRN,
@@ -203,11 +194,6 @@ const TaskItem = ({
       });
     }
   }, [newlyCreated, parentContainerReference]);
-
-  const completedByName =
-    `${completedBy?.firstName.charAt(0)}. ${completedBy?.lastName}`
-      .trim()
-      .replace(/^\.$/, '') || 'Unknown';
 
   const onMouseEnter = () => setIsHovered(true);
   const onMouseLeave = () => setIsHovered(false);
@@ -311,9 +297,6 @@ const TaskItem = ({
     setContextMenu(null);
     dispatch(storeAsCurrentTask(null));
   };
-
-  const isEdited = type === 'TEMPLATE' ? false : edited;
-  const isDuplicated = type === 'TEMPLATE' ? false : duplicated;
 
   const {
     descriptionIsInConfig,
@@ -444,19 +427,10 @@ const TaskItem = ({
 
               {descriptionIsInConfig && (
                 <TaskItemDescription
+                  task={task}
                   isCompletedGroup={isCompletedGroup}
-                  isCompleted={isCompleted}
-                  matchDescription={matchDescription}
                   highlightedValue={highlightedValue}
-                  description={description}
-                  tokenizedDescription={tokenizedDescription}
-                  taskMentions={taskMentions}
-                  edited={isEdited}
-                  duplicated={isDuplicated}
                   hasParentTaskLabel={hasParentTaskLabel}
-                  parentTask={parentTask}
-                  completedByName={completedByName}
-                  completedDt={completedDt}
                 />
               )}
             </MainStandardTaskItemCell>

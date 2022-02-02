@@ -4,6 +4,7 @@ import React, { useCallback, useEffect, useRef } from 'react';
 import { useDispatch } from 'react-redux';
 import moment from 'moment';
 import { storeAsCurrentTask } from 'actions/task-actions';
+import { TaskStatus } from 'helpers/task-helpers';
 import { openDrawer } from 'actions/task-drawer-actions';
 import TextEditor from 'components/common/TextEditor/TextEditor';
 import Spacing from 'components/common/Spacing';
@@ -25,23 +26,29 @@ import {
 } from '../../styled';
 
 const TaskItemDescription = ({
+  task,
   isCompletedGroup,
-  isCompleted,
-  matchDescription,
   highlightedValue,
-  description,
-  tokenizedDescription,
-  taskMentions,
-  edited,
-  duplicated,
   hasParentTaskLabel,
-  parentTask,
-  completedByName,
-  completedDt,
 }) => {
+  const {
+    description,
+    tokenizedDescription,
+    taskMentions,
+    status,
+    edited,
+    duplicated,
+    type,
+    parentTask,
+    searchMetaData,
+    completedBy,
+    completedDt,
+  } = task;
+  const { matchDescription } = searchMetaData || {};
   const descriptionTextReference = useRef(null);
   const previousDescription = useRef(null);
   const dispatch = useDispatch();
+  const hasMentions = taskMentions?.length > 0;
   const [descriptionState, setDescriptionState] = useMentionsEditorState(
     convertToEditorState({
       rawText: description,
@@ -51,8 +58,17 @@ const TaskItemDescription = ({
     }),
   );
 
+  const isCompleted = status === TaskStatus.COMPLETE;
+  const isEdited = type === 'TEMPLATE' ? false : edited;
+  const isDuplicated = type === 'TEMPLATE' ? false : duplicated;
+
+  const completedByName =
+    `${completedBy?.firstName.charAt(0)}. ${completedBy?.lastName}`
+      .trim()
+      .replace(/^\.$/, '') || 'Unknown';
+
   useEffect(() => {
-    if (previousDescription.current !== null) {
+    if (previousDescription.current !== null && hasMentions) {
       const newContent = createMentionEntities(
         tokenizedDescription,
         description,
@@ -88,15 +104,14 @@ const TaskItemDescription = ({
           <Description
             ref={reference => {
               if (reference) {
-                descriptionTextReference.current =
-                  taskMentions?.length > 0
-                    ? reference.querySelector('.public-DraftStyleDefault-block')
-                    : reference.querySelector('p');
+                descriptionTextReference.current = hasMentions
+                  ? reference.querySelector('.public-DraftStyleDefault-block')
+                  : reference.querySelector('p');
               }
             }}
             isCrossedOut={!isCompletedGroup && isCompleted}
           >
-            {taskMentions?.length > 0 ? (
+            {hasMentions ? (
               <TextEditor
                 readOnly
                 oneline
@@ -111,10 +126,10 @@ const TaskItemDescription = ({
               <DescriptionText>{description}</DescriptionText>
             )}
           </Description>
-          {edited && !duplicated && (
+          {isEdited && !isDuplicated && (
             <DescriptionLabel>(edited)</DescriptionLabel>
           )}
-          {duplicated && <DescriptionLabel>(duplicated)</DescriptionLabel>}
+          {isDuplicated && <DescriptionLabel>(duplicated)</DescriptionLabel>}
         </DescriptionWrapper>
       </Tooltip>
       <TaskItemDescriptionIndicators>
