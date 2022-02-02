@@ -439,11 +439,15 @@ const TaskBaseReducer = (state, action, updateStateCallback) => {
 
     case ActionTypes.UNSELECT_ALL_TASKS: {
       const updateStateFromAction = task => {
-        return {
-          ...task,
-          selected: false,
-          subtasks: task.subtasks?.map(s => ({ ...s, selected: false })),
-        };
+        if (task.selected || task.subtasks?.some(({ selected }) => selected)) {
+          return {
+            ...task,
+            selected: false,
+            subtasks: task.subtasks?.map(s => ({ ...s, selected: false })),
+          };
+        }
+
+        return task;
       };
 
       return updateStateCallback(state, updateStateFromAction);
@@ -453,18 +457,27 @@ const TaskBaseReducer = (state, action, updateStateCallback) => {
       const { taskIdentifiers, newSelectedState } = action;
 
       const updateStateFromAction = task => {
-        return {
-          ...task,
-          selected: taskIdentifiers.includes(task.taskIdentifier)
-            ? newSelectedState
-            : task.selected,
+        if (
+          taskIdentifiers.includes(task.taskIdentifier) ||
+          task.subtasks?.some(({ taskIdentifier }) =>
+            taskIdentifiers.includes(taskIdentifier),
+          )
+        ) {
+          return {
+            ...task,
+            selected: taskIdentifiers.includes(task.taskIdentifier)
+              ? newSelectedState
+              : task.selected,
 
-          subtasks: task.subtasks?.map(s =>
-            taskIdentifiers.includes(s.taskIdentifier)
-              ? { ...s, selected: newSelectedState }
-              : s,
-          ),
-        };
+            subtasks: task.subtasks?.map(s =>
+              taskIdentifiers.includes(s.taskIdentifier)
+                ? { ...s, selected: newSelectedState }
+                : s,
+            ),
+          };
+        }
+
+        return task;
       };
 
       return updateStateCallback(state, updateStateFromAction);

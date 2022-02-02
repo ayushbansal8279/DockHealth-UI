@@ -233,4 +233,4 @@ const Task = React.memo(
   },
 );
 
-export default React.memo(Task);
+export default Task;
