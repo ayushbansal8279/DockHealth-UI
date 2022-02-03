@@ -52,15 +52,12 @@ import {
 const DashboardTasksGroup = ({
   dashboardTasksGroup,
   storeAsCurrentTask,
-  openDrawer,
   isTaskDrawerOpen,
-  selectedTaskIdentifier,
   currentSortMethod,
   currentSort,
   onSortChange,
   showClearSortFiltersModal,
   isSortApplied,
-  isAllTasksTab,
   currentUser,
   updateWorkflowStatus,
   isSearching,
@@ -294,7 +291,6 @@ const DashboardTasksGroup = ({
                                       )
                                     }
                                     isCompletedGroup={isCompletedGroup}
-                                    storeAsCurrentTask={storeAsCurrentTask}
                                     isDragging={isDragging}
                                     dragHandleProps={
                                       draggableProvided.dragHandleProps
@@ -302,13 +298,6 @@ const DashboardTasksGroup = ({
                                     isDraggable={
                                       !isTaskDrawerOpen && tasks?.length > 1
                                     }
-                                    openDrawer={openDrawer}
-                                    isSelected={
-                                      selectedTaskIdentifier ===
-                                      task?.taskIdentifier
-                                    }
-                                    showAssignedPerson={isAllTasksTab}
-                                    currentUser={currentUser}
                                     onTaskUpdate={handleUpdateTask}
                                     updateWorkflowStatus={updateWorkflowStatus}
                                     multipleAssigneesContext={

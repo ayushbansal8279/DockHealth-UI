@@ -56,7 +56,6 @@ import {
 
 const TaskTemplateGroup = ({
   templateGroup = {},
-  taskItemConfig,
   groupHasMultipleAssignees,
   isFullView,
   isStartedDnD,
@@ -513,7 +512,6 @@ const TaskTemplateGroup = ({
                           isDragging={draggableSnapshot.isDragging}
                           draggableProvided={templateTaskDraggableProvided}
                           task={task}
-                          taskItemConfig={taskItemConfig}
                           isFullView={isFullView}
                           multipleAssigneesContext={groupHasMultipleAssignees}
                           dragAndDropDisabled={tasksDragAndDropDisabled}

@@ -97,7 +97,6 @@ const StandardTaskItemContainer = ({
       updateWorkflowStatus={handleUpdateWorkflowStatus}
       toggleCompleteTask={handleToggleTaskCompletedStatus}
       onTaskUpdate={handleTaskUpdate}
-      isBundleTask={isBundleTask}
       {...restProps}
     />
   );

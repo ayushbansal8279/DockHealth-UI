@@ -25,7 +25,6 @@ import { onSortChanged } from 'helpers/ga-event-helper';
 import EmptyTaskListFox from 'img/animals/fox.png';
 import { getSharedTaskListsWithCurrentUser } from 'api/task-list-api';
 import { filterTasksBySearchValue } from 'helpers/task-search-helper';
-import { TASKGROUP_DEFAULT_TYPE } from 'api/task-group-list-api';
 import NoSearchResultsView from 'components/tasklist/EmptyListView/NoSearchResultsView';
 import EmptyListViewWithQuickAddTask from 'components/tasklist/EmptyListView/EmptyListViewWithQuickAddTask';
 import EmptyListView from 'components/tasklist/EmptyListView/EmptyListView';
@@ -176,7 +175,6 @@ const PersonDetailsOpenedTasks = ({
                     bulkEditEnabled
                     sort={sort}
                     onSortChange={handleSortChange}
-                    taskItemConfig={taskItemConfig}
                     groupHasMultipleAssignees
                     isGroupSelected={isGroupSelected}
                     onGroupSelect={handleGroupSelect}
@@ -186,7 +184,6 @@ const PersonDetailsOpenedTasks = ({
                       key={task.identifier}
                       isFullView={isFullView}
                       task={task}
-                      taskGroupIdentifier={TASKGROUP_DEFAULT_TYPE}
                       isCompletedGroup={false}
                       toggleCompleteTask={toggleCompleteTask}
                       onTaskUpdate={onTaskUpdate}
@@ -197,7 +194,6 @@ const PersonDetailsOpenedTasks = ({
                       areFiltersApplied={areFiltersApplied}
                       isSearchApplied={searchValue}
                       multipleAssigneesContext
-                      taskItemConfig={taskItemConfig}
                       dragAndDropDisabled
                     />
                   ))}

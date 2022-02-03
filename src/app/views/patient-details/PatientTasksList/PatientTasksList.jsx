@@ -26,10 +26,7 @@ import {
   patientTaskSearchSelector,
   patientTasksSortSelector,
 } from 'selectors/patient-details-selectors';
-import {
-  selectedTaskSelector,
-  addingNewSubtaskParentIdSelector,
-} from 'selectors/task-drawer-selectors';
+import { addingNewSubtaskParentIdSelector } from 'selectors/task-drawer-selectors';
 import {
   hasFiltersAppliedSelector,
   selectedFiltersInMegaFilterSelector,
@@ -93,7 +90,6 @@ const PatientTasksListView = () => {
   const lists = useSelector(patientTaskListsSelector);
   const completeTasksVisible = useSelector(completeTasksVisibilitySelector);
   const currentUser = useSelector(userProfileSelector);
-  const selectedTask = useSelector(selectedTaskSelector);
   const taskSearch = useSelector(patientTaskSearchSelector);
   const areFiltersApplied = useSelector(hasFiltersAppliedSelector);
   const selectedFilters = useSelector(selectedFiltersInMegaFilterSelector);
@@ -166,11 +162,6 @@ const PatientTasksListView = () => {
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [taskListIdentifierParameter, filteredLists]);
-
-  const isListFlattened =
-    areFiltersApplied ||
-    !!taskSearch ||
-    (!!sort?.key && !['PATIENT', 'SUBTASK_COUNT'].includes(sort.key));
 
   const handleTaskUpdate = useCallback(
     updatedTask => {
@@ -270,10 +261,6 @@ const PatientTasksListView = () => {
     return groupTasks(activeList?.tasks);
   }, [activeList, isAllTasksView]);
 
-  const taskItemConfig = isAllTasksView
-    ? PATIENT_ALL_TASKS_VIEW_COLUMNS_CONFIG
-    : PATIENT_VIEW_COLUMNS_CONFIG;
-
   const groupHasMultipleAssignees = useMemo(
     () =>
       activeList?.tasks
@@ -333,7 +320,6 @@ const PatientTasksListView = () => {
               bulkEditEnabled
               sort={sort}
               onSortChange={sortPatientTasks}
-              taskItemConfig={taskItemConfig}
               groupHasMultipleAssignees={groupHasMultipleAssignees}
               isGroupSelected={isGroupSelected(tasks)}
               onGroupSelect={() => handleGroupSelect(tasks)}
@@ -343,7 +329,6 @@ const PatientTasksListView = () => {
             task.itemType === TaskItemType.TASK ? (
               <StandardTaskItem
                 key={task.identifier}
-                currentUser={currentUser}
                 isFullView={isFullView}
                 task={task}
                 isCompletedGroup={completeTasksVisible}
@@ -351,19 +336,14 @@ const PatientTasksListView = () => {
                 onTaskUpdate={updatePatientTaskInList}
                 updateWorkflowStatus={updatePatientTaskWorkflowStatus}
                 dragAndDropDisabled
-                selectedTask={selectedTask}
-                patientVisible={false}
                 addingNewSubtask={addingNewSubtaskParentId === task.identifier}
-                hideSubtasks={isListFlattened}
                 multipleAssigneesContext={groupHasMultipleAssignees}
-                taskItemConfig={taskItemConfig}
               />
             ) : (
               <TaskTemplateGroup
                 viewSetup={viewSetup}
                 key={task.identifier}
                 templateGroup={task}
-                taskItemConfig={taskItemConfig}
                 groupHasMultipleAssignees={groupHasMultipleAssignees}
                 isFullView={isFullView}
                 groupDragAndDropDisabled
@@ -381,15 +361,11 @@ const PatientTasksListView = () => {
       sortPatientTasks,
       groupHasMultipleAssignees,
       quickAddTask,
-      taskItemConfig,
       isGroupSelected,
       handleGroupSelect,
       addingNewSubtaskParentId,
       completeTasksVisible,
-      currentUser,
       handleToggleTaskStatus,
-      isListFlattened,
-      selectedTask,
       updatePatientTaskInList,
       updatePatientTaskWorkflowStatus,
     ],
