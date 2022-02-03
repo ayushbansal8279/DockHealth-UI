@@ -13,8 +13,8 @@ import usePrevious from 'hooks/use-previous';
 import {
   workflowSelector,
   workflowAutofocusFieldSelector,
+  workflowLabelsSelector,
 } from 'selectors/workflow-drawer-selectors';
-import { getLabels } from 'api/task-template-api';
 import {
   addLabel,
   editLabel,
@@ -22,7 +22,7 @@ import {
   removeLabel,
 } from 'actions/task-template-actions';
 import { WorkflowDrawerFieldNames } from 'helpers/workflow-drawer-helpers';
-import R, { eqProps } from 'ramda';
+import { getLabels } from 'actions/workflow-drawer-actions';
 import {
   OptionContainer,
   OptionButtonsContainer,
@@ -40,63 +40,74 @@ const renderOption = ({
   onBlur,
   onSaveEdit,
   onDelete,
-}) => (
-  <OptionContainer key={option?.labelIdentifier} isEditable={isEditable}>
-    <OptionButtonsInput
-      ref={registerOption}
-      defaultValue={option?.labelName}
-      onBlur={event => {
-        event.stopPropagation();
-        onBlur();
-      }}
-      onKeyDown={event => {
-        if (event.key === 'Enter') {
-          event?.target?.blur();
-          if (
-            event?.target.value !== option?.labelName &&
-            event?.target.value !== ''
-          ) {
-            onSaveEdit(event?.target.value);
+  disabled,
+}) => {
+  return (
+    <OptionContainer
+      key={option?.labelIdentifier}
+      isEditable={isEditable}
+      disabled={disabled}
+    >
+      <OptionButtonsInput
+        greyed={disabled}
+        ref={registerOption}
+        defaultValue={option?.labelName}
+        onBlur={event => {
+          event.stopPropagation();
+          onBlur();
+        }}
+        onKeyDown={event => {
+          if (event.key === 'Enter') {
+            event?.target?.blur();
+            if (
+              event?.target.value !== option?.labelName &&
+              event?.target.value !== ''
+            ) {
+              onSaveEdit(event?.target.value);
+            }
           }
-        }
 
-        if (event.key === 'Escape') {
-          event?.target?.blur();
-          // eslint-disable-next-line no-param-reassign
-          event.target.value = option?.labelName;
-        }
-      }}
-    />
-    <OptionButtonsContainer>
-      <OptionButton
-        type="button"
-        onClick={event => {
-          event.stopPropagation();
-          event.preventDefault();
-          onEdit();
+          if (event.key === 'Escape') {
+            event?.target?.blur();
+            // eslint-disable-next-line no-param-reassign
+            event.target.value = option?.labelName;
+          }
         }}
-      >
-        Edit
-      </OptionButton>
-      <OptionButton
-        type="button"
-        onClick={event => {
-          event.stopPropagation();
-          event.preventDefault();
-          onDelete();
-        }}
-      >
-        Delete
-      </OptionButton>
-    </OptionButtonsContainer>
-  </OptionContainer>
-);
+      />
+      <OptionButtonsContainer>
+        <OptionButton
+          type="button"
+          onClick={event => {
+            event.stopPropagation();
+            event.preventDefault();
+            onEdit();
+          }}
+        >
+          Edit
+        </OptionButton>
+        <OptionButton
+          type="button"
+          onClick={event => {
+            event.stopPropagation();
+            event.preventDefault();
+            onDelete();
+          }}
+        >
+          Delete
+        </OptionButton>
+      </OptionButtonsContainer>
+    </OptionContainer>
+  );
+};
 
 const LabelsSection = () => {
+  const labels = useSelector(workflowLabelsSelector);
   const selectedWorkflow = useSelector(workflowSelector);
-  const { identifier, labels: selectedLabelsFromStore = [] } =
-    selectedWorkflow || {};
-  const [isLoadingLabels, setIsLoadingLabels] = useState(false);
+  const {
+    identifier,
+    labels: selectedLabelsFromStore = [],
+    taskListIdentifier,
+  } = selectedWorkflow || {};
   const [inputState, setInputState] = useState();
   const [currentEditableOption, setCurrentEditableOption] = useState(null);
   const [selectedLabels, setSelectedLabels] = useState([]);
@@ -111,17 +122,12 @@ const LabelsSection = () => {
   );
 
   const getAllLabels = useCallback(async () => {
-    setIsLoadingLabels(true);
-    const allLabelsList = await getLabels();
-    setLabelsList(allLabelsList);
-    setIsLoadingLabels(false);
-  }, []);
+    dispatch(getLabels(taskListIdentifier));
+  }, [dispatch, taskListIdentifier]);
 
-  const labelsListWithoutSelected = useMemo(
-    () =>
-      R.differenceWith(eqProps('labelIdentifier'), labelsList, selectedLabels),
-    [labelsList, selectedLabels],
-  );
+  useEffect(() => {
+    setLabelsList(labels);
+  }, [labels]);
 
   useEffect(() => {
     if (selectedLabelsFromStoreLength > previousSelectedLabelsFromStoreLength) {
@@ -141,7 +147,10 @@ const LabelsSection = () => {
 
   const handleAddLabel = useCallback(
     ({ labelIdentifier, labelName }) => {
-      if (labelName || labelName !== '') {
+      const alreadySelected = selectedLabels.find(
+        label => label.labelName === labelName,
+      );
+      if (!alreadySelected && (labelName || labelName !== '')) {
         setSelectedLabels(state => [
           ...state,
           { labelIdentifier, labelName, identifier },
@@ -149,18 +158,19 @@ const LabelsSection = () => {
         dispatch(addLabel({ labelIdentifier, labelName, identifier }));
       }
     },
-    [dispatch, identifier],
+    [dispatch, identifier, selectedLabels],
   );
 
   const handleEditLabel = useCallback(
     ({ labelIdentifier, labelName }) => {
-      setLabelsList(state =>
+      const findAndUpdate = state =>
         state.map(label =>
           label.labelIdentifier === labelIdentifier
             ? { ...label, labelName }
             : label,
-        ),
-      );
+        );
+      setLabelsList(findAndUpdate);
+      setSelectedLabels(findAndUpdate);
       dispatch(editLabel({ labelIdentifier, labelName, identifier }));
     },
     [dispatch, identifier],
@@ -168,12 +178,10 @@ const LabelsSection = () => {
 
   const handleRemoveLabel = useCallback(
     ({ labelIdentifier, labelName }) => {
-      setSelectedLabels(state =>
-        state.filter(label => label.labelIdentifier !== labelIdentifier),
-      );
-      setLabelsList(state =>
-        state.filter(label => label.labelIdentifier !== labelIdentifier),
-      );
+      const findAndRemove = state =>
+        state.filter(label => label.labelIdentifier !== labelIdentifier);
+      setSelectedLabels(findAndRemove);
+      setLabelsList(findAndRemove);
       dispatch(removeLabel({ labelIdentifier, labelName, identifier }));
     },
     [dispatch, identifier],
@@ -185,8 +193,12 @@ const LabelsSection = () => {
 
   const renderOptionCallback = useCallback(
     option => {
+      const disabled = !!selectedLabels.find(
+        label => label.labelIdentifier === option.labelIdentifier,
+      );
       return renderOption({
         option,
+        disabled,
         registerOption: element => {
           if (element) {
             optionReferences.current[option?.labelIdentifier] = element;
@@ -206,7 +218,7 @@ const LabelsSection = () => {
         onDelete: () => handleRemoveLabel(option),
       });
     },
-    [handleEditLabel, handleRemoveLabel],
+    [handleEditLabel, handleRemoveLabel, selectedLabels],
   );
 
   const renderTagsCallback = useCallback(
@@ -290,7 +302,6 @@ const LabelsSection = () => {
       }}
       noOptionsText={noOptionText}
       onOpen={getAllLabels}
-      isLoading={isLoadingLabels}
       onChange={values => {
         const valuesLength = values.length;
         const value = values[valuesLength - 1];

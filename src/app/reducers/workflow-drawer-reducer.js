@@ -10,6 +10,7 @@ const initialState = {
   history: null,
   isFetchingHistory: false,
   autoFocusFieldName: null,
+  labels: [],
 };
 
 const WorkflowDrawerReducer = (state = initialState, action) => {
@@ -168,6 +169,14 @@ const WorkflowDrawerReducer = (state = initialState, action) => {
               a => a.attachmentIdentifier !== attachmentIdentifier,
             ) || null,
         },
+      };
+    }
+
+    case ActionTypes.GET_WORKFLOW_DRAWER_LABELS_SUCCESS: {
+      const { labels } = action;
+      return {
+        ...state,
+        labels,
       };
     }
 

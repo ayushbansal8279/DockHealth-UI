@@ -34,6 +34,7 @@ import {
   removeLabelForTask,
   removeLabelFromDatabase,
 } from 'api/task-label-api';
+import { getLabels } from 'actions/workflow-drawer-actions';
 
 function* moveWorkflowToFolder({ parentTaskTemplateIdentifier, identifier }) {
   try {
@@ -711,6 +712,7 @@ function* addWorkflowLabel({ labelName, labelIdentifier, identifier }) {
   try {
     const newLabel = yield call(addLabel, payload);
     yield put({ type: ActionTypes.ADD_WORKFLOW_LABEL_SUCCESS, newLabel });
+    yield put(getLabels());
     yield put(showGlobalAlert(AlertMessages.UPDATED));
   } catch (error) {
     yield put({ type: ActionTypes.ADD_WORKFLOW_LABEL_FAILURE, payload });
