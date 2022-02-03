@@ -115,7 +115,6 @@ const PersonDetailsCompletedTasks = ({
                 listUniqueKey={listUniqueKey}
                 sort={sort}
                 onSortChange={handleSortChange}
-                taskItemConfig={taskItemConfig}
                 disableBulkEdit
               >
                 {({
@@ -149,7 +148,6 @@ const PersonDetailsCompletedTasks = ({
                         highlightTasksOfTheSameParent={
                           highlightTasksOfTheSameParent
                         }
-                        taskItemConfig={taskItemConfig}
                         dragAndDropDisabled
                       />
                     ))}

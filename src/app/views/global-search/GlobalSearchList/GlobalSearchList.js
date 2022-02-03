@@ -22,7 +22,6 @@ const GlobalSearchList = ({
   list,
   currentUser,
   selectedTask,
-  openDrawer,
   storeAsCurrentTask,
   toggleTaskStatus,
   onTaskUpdate,
@@ -86,7 +85,6 @@ const GlobalSearchList = ({
             pageBackground={palette.blueGrey}
             key={task.taskIdentifier}
             currentUser={currentUser}
-            openDrawer={openDrawer}
             storeAsCurrentTask={storeAsCurrentTask}
             task={task}
             isCompletedGroup={isCompletedList}

@@ -169,19 +169,6 @@ export const CircleIcon = styled.img`
   ${({ isCompleted }) => !isCompleted && `margin-left: 2px;`}
   opacity: ${({ isClickable }) => (isClickable ? '1' : '0.5')};
 `;
-export const DescriptionTooltip = styled.div`
-  display: ${({ isVisible }) => (isVisible ? 'block' : 'none')};
-  position: absolute;
-  top: 30px;
-  left: 60px;
-  max-width: 650px;
-  padding: ${spacing.small};
-  color: ${palette.white};
-  background: ${palette.mediumGrey};
-  z-index: 99;
-  font-size: ${fontSizes.smallPlus};
-  cursor: initial;
-`;
 
 export const Description = styled.div`
   display: flex;
@@ -210,12 +197,6 @@ export const Description = styled.div`
 
   @media screen and (min-width: 2500px) {
     max-width: 1100px;
-  }
-
-  &:hover {
-    ${DescriptionTooltip} {
-      display: block;
-    }
   }
 `;
 
@@ -590,4 +571,11 @@ export const DisabledPatientLabel = styled(PatientLabel)`
 
 export const DateText = styled.p`
   margin-bottom: 0;
+`;
+
+export const DescriptionText = styled.p`
+  margin: 0;
+  text-overflow: ellipsis;
+  overflow: hidden;
+  white-space: nowrap;
 `;

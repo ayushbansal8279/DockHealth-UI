@@ -16,10 +16,7 @@ import {
   dashboardTabNameSelector,
   dashboardSearchValueSelector,
 } from 'selectors/dashboard-selectors';
-import {
-  selectedTaskIdentifierSelector,
-  taskDrawerOpenSelector,
-} from 'selectors/task-drawer-selectors';
+import { taskDrawerOpenSelector } from 'selectors/task-drawer-selectors';
 import DashboardNewUserInfo from 'views/dashboard/DashboardNewUserInfo/DashboardNewUserInfo';
 import NoSearchResultsView from 'components/tasklist/EmptyListView/NoSearchResultsView';
 import EmptyListView from 'components/tasklist/EmptyListView/EmptyListView';
@@ -62,7 +59,6 @@ const DashboardList = ({
   taskDrawerActions,
   taskActions,
   isTaskDrawerOpen,
-  selectedTaskIdentifier,
   areFiltersApplied,
   tourModalIsOpen,
   openTourModal,
@@ -231,16 +227,13 @@ const DashboardList = ({
                         key={item?.groupType}
                         dashboardTasksGroup={item}
                         storeAsCurrentTask={taskActions.storeAsCurrentTask}
-                        openDrawer={taskDrawerActions.openDrawer}
                         isTaskDrawerOpen={isTaskDrawerOpen}
-                        selectedTaskIdentifier={selectedTaskIdentifier}
                         currentSortMethod={currentSortMethodWithOrder}
                         currentSort={currentSort}
                         onSortChange={handleSortChange}
                         showClearSortFiltersModal={showClearSortFiltersModal}
                         isSortApplied={isSortApplied}
                         areFiltersApplied={areFiltersApplied}
-                        isAllTasksTab={tabName === DashboardTasksTab.ALL_TASKS}
                         currentUser={currentUser}
                         updateWorkflowStatus={taskActions.updateWorkflowStatus}
                         isSearching={!!searchValue}
@@ -269,7 +262,6 @@ const mapStateToProps = state => ({
   allDashboardTasks: dashboardAllTaskItemsSelector(state),
   dashboardTasks: dashboardTasksSelector(state),
   dashboardTasksIsLoading: dashboardTasksIsLoadingSelector(state),
-  selectedTaskIdentifier: selectedTaskIdentifierSelector(state),
   areFiltersApplied: hasFiltersAppliedSelector(state),
   isTaskDrawerOpen: taskDrawerOpenSelector(state),
 });

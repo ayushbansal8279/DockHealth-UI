@@ -15,7 +15,6 @@ import { selectedTaskSelector } from 'selectors/task-drawer-selectors';
 import EmptyGlobalSearch from 'img/empty-global-search.png';
 import EmptyGlobalSearchResults from 'img/empty-global-search-results';
 import { userProfileSelector } from 'selectors/user-selectors';
-import * as TaskDrawerActions from 'actions/task-drawer-actions';
 import * as TaskActions from 'actions/task-actions';
 import { GlobalSearchSagaActions } from 'sagas/global-search-saga';
 import BasicLayoutHeader from 'components/template/BasicLayoutHeader/BasicLayoutHeader';
@@ -43,11 +42,9 @@ const GlobalSearchView = ({
   searchValue,
   currentUser,
   selectedTask,
-  taskDrawerActions,
   taskActions,
   globalSearchSagaActions,
 }) => {
-  const { openDrawer } = taskDrawerActions;
   const { storeAsCurrentTask } = taskActions;
   const {
     toggleTaskStatus,
@@ -107,7 +104,6 @@ const GlobalSearchView = ({
                           list={list}
                           currentUser={currentUser}
                           selectedTask={selectedTask}
-                          openDrawer={openDrawer}
                           storeAsCurrentTask={storeAsCurrentTask}
                           toggleTaskStatus={toggleTaskStatus}
                           onTaskUpdate={updateTask}
@@ -131,7 +127,6 @@ const GlobalSearchView = ({
 };
 
 const mapDispatchToProps = dispatch => ({
-  taskDrawerActions: bindActionCreators(TaskDrawerActions, dispatch),
   taskActions: bindActionCreators(TaskActions, dispatch),
   globalSearchSagaActions: bindActionCreators(
     GlobalSearchSagaActions,

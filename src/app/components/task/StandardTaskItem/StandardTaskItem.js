@@ -24,18 +24,14 @@ const Task = React.memo(
     isStartedDnD,
     isDragging,
     draggableProvided = {},
-    taskGroupIdentifier,
     isDraggable,
     addingNewSubtask,
     subtasksDisabled,
     areFiltersApplied,
     isSearchApplied,
-    listNameVisible,
-    patientVisible = true,
     shouldShowBlockModalOnDrag,
     showClearSortFiltersModal,
     highlightedTasksParentIdentifier,
-    taskItemConfig,
     noMargin,
     ...restProps
   }) => {
@@ -54,7 +50,7 @@ const Task = React.memo(
     } = task || {};
 
     const { innerRef, draggableProps, dragHandleProps } = draggableProvided;
-    const { highlightedValue, multipleAssigneesContext } = restProps;
+    const { highlightedValue } = restProps;
     const { matchingCommentIdentifiers = [] } = searchMetaData;
 
     const renderedSubtasks = addingNewSubtask ? [...subtasks, {}] : subtasks;
@@ -150,14 +146,6 @@ const Task = React.memo(
       dispatch(storeAsCurrentTask(task));
     }, [dispatch, task]);
 
-    const handleDrawerOpen = useCallback(
-      field => {
-        dispatch(openDrawer(field.identifier));
-        dispatch(storeAsCurrentTask(task));
-      },
-      [dispatch, task],
-    );
-
     return (
       <ParentTaskContainer
         ref={parentTaskReference}
@@ -168,22 +156,16 @@ const Task = React.memo(
           <TaskItem
             task={task}
             isOpen={areSubtasksOpen}
-            listNameVisible={listNameVisible}
-            patientVisible={patientVisible}
             switchOpen={handleSetSubtasksOpen}
             dragHandleProps={dragHandleProps}
             isDragging={isDragging}
-            subtasks={renderedSubtasks}
             isDraggable={isDraggable}
             subtasksDisabled={subtasksDisabled}
-            isFullView={isFullView}
-            taskItemConfig={taskItemConfig}
-            isSelected={
+            isSelectedByHighlighted={
               highlightedTasksParentIdentifier &&
               (highlightedTasksParentIdentifier === task.taskIdentifier ||
                 highlightedTasksParentIdentifier === task.parentTaskIdentifier)
             }
-            openDrawer={handleDrawerOpen}
             {...restProps}
           />
         </div>
@@ -204,25 +186,18 @@ const Task = React.memo(
               subTasksCount={subTasksCount}
               isOpen={areSubtasksOpen}
               isFullView={isFullView}
-              taskGroupIdentifier={taskGroupIdentifier}
               parentHasPatient={!!patient}
               taskList={taskList}
               isDraggable={isDraggable}
-              listNameVisible={listNameVisible}
-              patientVisible={patientVisible}
               showClearSortFiltersModal={showClearSortFiltersModal}
               shouldShowBlockModalOnDrag={shouldShowBlockModalOnDrag}
-              taskItemConfig={taskItemConfig}
               {...restProps}
             />
             {subtaskQuickAddOpen &&
               (renderedSubtasks?.length > 0 || subTasksCount === 0) && (
                 <QuickAddSubtask
-                  patientVisible={patientVisible}
-                  listNameVisible={listNameVisible}
                   taskListIdentifier={taskList?.taskListIdentifier}
                   parentTaskIdentifier={taskIdentifier}
-                  multipleAssigneesContext={multipleAssigneesContext}
                   onFocus={handleQuickAddOnFocus}
                 />
               )}
@@ -233,4 +208,4 @@ const Task = React.memo(
   },
 );
 
-export default React.memo(Task);
+export default Task;

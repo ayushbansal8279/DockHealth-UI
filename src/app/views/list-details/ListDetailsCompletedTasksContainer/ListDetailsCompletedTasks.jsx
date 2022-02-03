@@ -110,7 +110,6 @@ const ListDetailsCompletedTasks = ({
                           dragAndDropDisabled={
                             isCompletedGroup || dragAndDropDisabled
                           }
-                          selectedTask={selectedTask}
                           addingNewSubtask={
                             addingNewSubtaskParentId === task.identifier
                           }

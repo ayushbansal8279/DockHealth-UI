@@ -9,7 +9,6 @@ import React, {
 } from 'react';
 import { pluck } from 'ramda';
 import { useDispatch, useSelector } from 'react-redux';
-import { EditorState } from 'draft-js';
 import { isTaskSelectedSelector } from 'selectors/task-drawer-selectors';
 import { openTaskDrawerWithContent } from 'actions/task-drawer-actions';
 import {
@@ -25,9 +24,6 @@ import {
   userProfileSelector,
   selectedUserOrganizationSelector,
 } from 'selectors/user-selectors';
-import { convertToEditorState } from 'components/common/TextEditor/helpers';
-import { useMentionsEditorState } from 'components/common/TextEditor/use-mentions-editor-state';
-import { createMentionEntities } from 'components/common/TextEditor/create-mention-entities';
 import { BulkEditContext } from 'components/tasklist/BulkEditSection/BulkEditSection';
 import {
   onTaskAssigned,
@@ -113,20 +109,12 @@ const TaskItem = ({
 }) => {
   const {
     taskIdentifier,
-    edited,
-    duplicated,
-    type,
     assignedToUsers,
     attachments,
     comments,
-    description,
-    tokenizedDescription,
-    taskMentions,
     labels,
     patient,
     workflowStatus,
-    completedDt,
-    completedBy,
     taskList = {},
     parentTaskIdentifier,
     searchMetaData = {},
@@ -161,7 +149,6 @@ const TaskItem = ({
     matchAssignedTo,
     matchAttachments,
     matchComments,
-    matchDescription,
     matchLabels,
     matchPatient,
     matchPatientMRN,
@@ -174,17 +161,9 @@ const TaskItem = ({
   );
   const [isHovered, setIsHovered] = useState(false);
   const [taskDecisionError, setTaskDecisionError] = useState(false);
-  const [descriptionState, setDescriptionState] = useMentionsEditorState(
-    convertToEditorState({
-      rawText: description,
-      tokenizedText: tokenizedDescription,
-      mentions: taskMentions,
-      handleRichText: false,
-    }),
-  );
+
   const [contextMenu, setContextMenu] = useState(null);
   const dispatch = useDispatch();
-  const previousDescription = useRef(null);
   const dependencyIconReference = useRef(null);
 
   const [
@@ -207,20 +186,6 @@ const TaskItem = ({
   );
 
   useEffect(() => {
-    if (previousDescription.current !== null) {
-      const newContent = createMentionEntities(
-        tokenizedDescription,
-        description,
-        taskMentions,
-        false,
-      );
-      setDescriptionState(EditorState.push(descriptionState, newContent));
-    }
-    previousDescription.current = description;
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [description]);
-
-  useEffect(() => {
     if (parentContainerReference?.current && newlyCreated) {
       parentContainerReference.current.scrollIntoView({
         behavior: 'smooth',
@@ -229,11 +194,6 @@ const TaskItem = ({
       });
     }
   }, [newlyCreated, parentContainerReference]);
-
-  const completedByName =
-    `${completedBy?.firstName.charAt(0)}. ${completedBy?.lastName}`
-      .trim()
-      .replace(/^\.$/, '') || 'Unknown';
 
   const onMouseEnter = () => setIsHovered(true);
   const onMouseLeave = () => setIsHovered(false);
@@ -337,9 +297,6 @@ const TaskItem = ({
     setContextMenu(null);
     dispatch(storeAsCurrentTask(null));
   };
-
-  const isEdited = type === 'TEMPLATE' ? false : edited;
-  const isDuplicated = type === 'TEMPLATE' ? false : duplicated;
 
   const {
     descriptionIsInConfig,
@@ -470,20 +427,10 @@ const TaskItem = ({
 
               {descriptionIsInConfig && (
                 <TaskItemDescription
+                  task={task}
                   isCompletedGroup={isCompletedGroup}
-                  isCompleted={isCompleted}
-                  descriptionState={descriptionState}
-                  setDescriptionState={setDescriptionState}
-                  matchDescription={matchDescription}
                   highlightedValue={highlightedValue}
-                  description={description}
-                  edited={isEdited}
-                  duplicated={isDuplicated}
                   hasParentTaskLabel={hasParentTaskLabel}
-                  parentTask={parentTask}
-                  completedByName={completedByName}
-                  completedDt={completedDt}
-                  dispatch={dispatch}
                 />
               )}
             </MainStandardTaskItemCell>

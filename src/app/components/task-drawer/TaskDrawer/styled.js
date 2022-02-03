@@ -1,31 +1,31 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import styled from 'styled-components';
 import React from 'react';
-
+import { motion } from 'framer-motion/dist/framer-motion';
 import palette, { opacify } from 'styles/palette';
 import { Divider, InputLabel } from '@material-ui/core';
 import { fontSizes, fontWeights } from 'styles/font';
 import spacing from 'styles/spacing';
 
-export const TaskDrawerContainer = styled.div`
-  background-color: ${palette.white};
-  box-shadow: 0 0 ${({ open }) => (open ? 0.5 : 0)}rem
-    ${opacify(palette.black, 0.2)};
+export const AnimatedContainer = styled(motion.div)`
+  position: fixed;
+  top: 0;
+  right: 0;
   bottom: 0;
+  height: 100vh;
+  width: 756px;
+  z-index: 1101;
+`;
+
+export const TaskDrawerContainer = styled.div`
+  position: relative;
+  height: 100%;
+  width: 100%;
+  padding: 0;
+  box-shadow: 0px 0px 11px rgba(0, 0, 0, 0.15);
+  background-color: ${palette.white};
   overflow-y: auto;
   overflow-x: hidden;
-  padding: 0rem;
-  position: fixed;
-  right: 0;
-  top: 0;
-  -webkit-transform: translateX(${({ open }) => (open ? 0 : 100)}%);
-  transform: translateX(${({ open }) => (open ? 0 : 100)}%);
-  -webkit-transition: -webkit-transform 100ms ease;
-  transition: transform 100ms ease;
-  will-change: transform;
-  width: 756px;
-  text-align: left;
-  z-index: 1101;
 `;
 
 export const TextEditorInputLabel = styled(

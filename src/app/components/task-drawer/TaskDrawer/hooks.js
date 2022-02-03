@@ -216,11 +216,6 @@ const initializeTaskDrawerHooks = ({
     [dispatch, onTaskUpdate, selectedTaskIdentifier, setAutoSaveVisible],
   );
 
-  const isAddingSubtask = useMemo(
-    () => selectedTask && selectedTaskIdentifier === null && isSubtask,
-    [isSubtask, selectedTask, selectedTaskIdentifier],
-  );
-
   const taskDueTime = useMemo(() => {
     const momentDueTime = moment(selectedTaskDueDate || null);
     if (momentDueTime.isValid()) {
@@ -241,7 +236,6 @@ const initializeTaskDrawerHooks = ({
     closeTaskDrawer,
     handleUpdateTask,
     isSubtask,
-    isAddingSubtask,
     isTemplateTask,
     onClickParentTask,
     onDelete,
