@@ -30,7 +30,7 @@ import QuickAddTaskInput from 'components/tasklist/QuickAddTaskInput/QuickAddTas
 import LoadMoreButton, {
   LoadMoreSection,
 } from 'components/common/LoadMoreButton/LoadMoreButton';
-import StandardTaskItem from 'components/task/StandardTaskItem/TaskItem';
+import TaskItem from 'components/task/StandardTaskItem/TaskItem';
 import TasksSkeletonLoader from 'components/task/TasksSkeletonLoader/TasksSkeletonLoader';
 import TasksHeader from 'components/tasklist/TasksHeader/TasksHeader';
 import { extractTasksAndSubtasks } from 'helpers/tasklist-helpers';
@@ -171,6 +171,15 @@ const DashboardTasksGroup = ({
     [dispatch],
   );
 
+  const handleToggleCompletedTask = useCallback(
+    task => {
+      dispatch(TaskActions.toggleCompleteTask(task));
+    },
+    [dispatch],
+  );
+
+  const isDragAndDropDisabled = !tasks || tasks.length < 2;
+
   return (
     <DashboardTasksGroupContainer ref={parentContainerReference}>
       <StickyElement>
@@ -266,9 +275,7 @@ const DashboardTasksGroup = ({
                             key={task.taskIdentifier}
                             draggableId={String(task.taskIdentifier)}
                             index={index}
-                            isDragDisabled={
-                              isTaskDrawerOpen || tasks?.length < 2
-                            }
+                            isDragDisabled={isDragAndDropDisabled}
                           >
                             {(draggableProvided, { isDragging }) => (
                               <div
@@ -276,7 +283,7 @@ const DashboardTasksGroup = ({
                                 {...draggableProvided.draggableProps}
                               >
                                 <DashboardTaskItemContainer>
-                                  <StandardTaskItem
+                                  <TaskItem
                                     parentContainerReference={
                                       parentContainerReference
                                     }
@@ -285,19 +292,15 @@ const DashboardTasksGroup = ({
                                     }
                                     pageBackground={palette.white}
                                     task={task}
-                                    toggleCompleteTask={() =>
-                                      dispatch(
-                                        TaskActions.toggleCompleteTask(task),
-                                      )
+                                    toggleCompleteTask={
+                                      handleToggleCompletedTask
                                     }
                                     isCompletedGroup={isCompletedGroup}
                                     isDragging={isDragging}
                                     dragHandleProps={
                                       draggableProvided.dragHandleProps
                                     }
-                                    isDraggable={
-                                      !isTaskDrawerOpen && tasks?.length > 1
-                                    }
+                                    isDraggable={!isDragAndDropDisabled}
                                     onTaskUpdate={handleUpdateTask}
                                     updateWorkflowStatus={updateWorkflowStatus}
                                     multipleAssigneesContext={
