@@ -1,7 +1,7 @@
 import React from 'react';
 import { Box } from '@material-ui/core';
 import FilterSearch from 'components/filter/FilterSearch/FilterSearch';
-import { Container, Title, ClearButton } from './styled';
+import { Container, Title, HeaderButton } from './styled';
 
 const FilterHeader = props => {
   const {
@@ -12,10 +12,15 @@ const FilterHeader = props => {
     searchValue,
     onSearchValueChange,
     onClear,
+    onSave,
+    onSaveAsNew,
+    editModeEnabled,
+    selectedQuickFilter,
   } = props;
+
   return (
     <Container>
-      <Box display="flex" flex={1}>
+      <Box display="flex" flex={1} alignItems="center">
         <Title>
           <b>{title}</b>{' '}
           {/* {Number.isInteger(filteredItemsCount) &&
@@ -32,9 +37,19 @@ const FilterHeader = props => {
             )} */}
         </Title>
         {filterActive && (
-          <ClearButton type="button" onClick={onClear}>
+          <HeaderButton type="button" onClick={onClear}>
             Clear
-          </ClearButton>
+          </HeaderButton>
+        )}
+        {onSave && (
+          <HeaderButton type="button" onClick={onSave}>
+            Save
+          </HeaderButton>
+        )}
+        {onSaveAsNew && (
+          <HeaderButton type="button" onClick={onSaveAsNew}>
+            Save as new Quick Filter
+          </HeaderButton>
         )}
       </Box>
       <FilterSearch value={searchValue} onValueChange={onSearchValueChange} />

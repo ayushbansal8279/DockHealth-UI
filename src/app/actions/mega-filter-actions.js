@@ -36,3 +36,28 @@ export function selectFiltersForMegaFilter(selectedFilters, id, status) {
     });
   };
 }
+
+export const createQuickFilter = data => ({
+  type: ActionTypes.CREATE_QUICK_FILTER,
+  data,
+});
+
+export const updateQuickFilter = (identifier, dataToUpdate) => ({
+  type: ActionTypes.UPDATE_QUICK_FILTER,
+  dataToUpdate,
+  identifier,
+});
+
+export const deleteQuickFilter = identifier => ({
+  type: ActionTypes.DELETE_QUICK_FILTER,
+  identifier,
+});
+
+export const selectQuickFilter = identifier => ({
+  type: ActionTypes.SELECT_QUICK_FILTER,
+  identifier,
+});
+
+export const showAddQuickFilterOption = () => ({
+  type: ActionTypes.SHOW_ADD_QUICK_FILTER_OPTION,
+});

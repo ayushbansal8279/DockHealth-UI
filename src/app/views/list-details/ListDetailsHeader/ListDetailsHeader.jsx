@@ -1,9 +1,14 @@
-import React, { useMemo } from 'react';
+import React, { useCallback, useMemo } from 'react';
 import MoreVert from '@material-ui/icons/MoreVert';
 import MegaFilter from 'components/tasklist/MegaFilter/MegaFilter';
 import LayoutHeader from 'components/template/LayoutHeader/LayoutHeader';
 import { useDispatch, useSelector } from 'react-redux';
-import { megaFilterSelector } from 'selectors/mega-filter-selectors';
+import {
+  megaFilterSelector,
+  quickFiltersSelector,
+  addQuickFilterOptionSelector,
+  selectedQuickFilterSelector,
+} from 'selectors/mega-filter-selectors';
 import { userProfileSelector } from 'selectors/user-selectors';
 import {
   currentTaskListSelector,
@@ -12,7 +17,7 @@ import {
 } from 'selectors/task-list-selectors';
 import { openModal } from 'modal/actions';
 import { getMembersByTaskListId } from 'actions/task-list-actions';
-import { splitAt } from 'ramda';
+import { splitAt, equals } from 'ramda';
 import {
   filterListDetailsTasks,
   getCurrentTaskListFilterOptions,
@@ -24,6 +29,11 @@ import HeaderSearch from 'components/template/HeaderSearch/HeaderSearch';
 import { Box } from '@material-ui/core';
 import InviteMemberButton from 'components/user/InviteMemberButton/InviteMemberButton';
 import { isUserGuest } from 'helpers/user-helper';
+import {
+  selectQuickFilter,
+  showAddQuickFilterOption,
+  updateQuickFilter,
+} from 'actions/mega-filter-actions';
 import { determineTaskCounts } from './helpers';
 
 const ListDetailsHeader = props => {
@@ -43,7 +53,9 @@ const ListDetailsHeader = props => {
   const { filters, selectedFilters } = megaFilter || {};
   const currentUser = useSelector(userProfileSelector);
   const { userIdentifier } = currentUser || {};
-
+  const quickFiltersList = useSelector(quickFiltersSelector);
+  const addQuickFilterOption = useSelector(addQuickFilterOptionSelector);
+  const selectedQuickFilter = useSelector(selectedQuickFilterSelector);
   const sortedUsers = useMemo(
     () =>
       listUsers?.length > 0
@@ -72,6 +84,37 @@ const ListDetailsHeader = props => {
     status: currentTasksStatus,
   });
 
+  const wasChangedFilters = useMemo(
+    () =>
+      !equals(
+        selectedFilters,
+        quickFiltersList.find(f => f.key === selectedQuickFilter)?.filters,
+      ),
+    [quickFiltersList, selectedFilters, selectedQuickFilter],
+  );
+
+  const handleSaveAsQuickFilter = useMemo(() => {
+    if (selectedFilters) {
+      return () => dispatch(showAddQuickFilterOption());
+    }
+    return null;
+  }, [dispatch, selectedFilters]);
+
+  const handleSaveQuickFilter = useMemo(() => {
+    if (selectedFilters && selectedQuickFilter && wasChangedFilters) {
+      return () => dispatch(updateQuickFilter(selectedQuickFilter));
+    }
+    return null;
+  }, [dispatch, selectedFilters, selectedQuickFilter, wasChangedFilters]);
+
+  const handleSelectQuickFilter = useCallback(
+    (id, filtersSetup) => {
+      dispatch(selectQuickFilter(id));
+      dispatch(filterListDetailsTasks(filtersSetup));
+    },
+    [dispatch],
+  );
+
   return (
     <LayoutHeader horizontalSticky>
       {taskList && !['INBOX', 'PUBLIC'].includes(listType) && (
@@ -93,6 +136,13 @@ const ListDetailsHeader = props => {
         activeItemsAmount={totalTasksAmount}
         isFetching={isFetchingTasks}
         onOpen={handleFilterOpen}
+        quickFiltersList={quickFiltersList}
+        addQuickFilterOption={addQuickFilterOption}
+        selectedQuickFilter={selectedQuickFilter}
+        selectQuickFilter={handleSelectQuickFilter}
+        onSaveClick={handleSaveQuickFilter}
+        onSaveAsNewClick={handleSaveAsQuickFilter}
+        wasChangedFilters={wasChangedFilters}
       />
       <LayoutHeader.Spacer />
       {shownUsers && listType !== 'PUBLIC' && (
