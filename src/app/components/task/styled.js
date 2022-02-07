@@ -102,6 +102,8 @@ export const StickyColumnContainer = styled.div`
   border-left: 1px solid ${palette.coolGrey3};
   min-width: 500px;
 
+  ${({ isEditingDescription }) => isEditingDescription && `z-index: 12;`}
+
   &::before {
     content: '';
     display: block;
@@ -174,13 +176,17 @@ export const Description = styled.div`
   display: flex;
   flex-direction: row;
   width: 100%;
-  padding-right: ${spacing.smallPlus};
+  margin-right: 4px;
   overflow-wrap: anywhere;
   ${props => props.isCrossedOut && 'text-decoration: line-through;'}
   cursor: pointer;
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: initial;
+  padding: 0 2px;
+  border-radius: 4px;
+  border: 1px solid;
+  border-color: transparent;
   max-width: 480px;
 
   @media screen and (max-width: 1300px) {
@@ -198,6 +204,12 @@ export const Description = styled.div`
   @media screen and (min-width: 2500px) {
     max-width: 1100px;
   }
+
+  &:hover {
+    border-color: ${palette.coolGrey2};
+  }
+
+  ${({ isEditing }) => isEditing && `border-color: ${palette.coolGrey2};`}
 `;
 
 export const MemberGroupContainer = styled.div`
@@ -309,7 +321,6 @@ export const StandardTaskItemCell = styled.div`
     props.paddingLeft ? spacing[props.paddingRight] : spacing.regular};
   width: ${props => (!props.width ? '100%' : '')};
   justify-content: ${props => props.justify || 'flex-start'};
-  overflow: hidden;
   position: relative;
 
   &:last-of-type {
@@ -578,4 +589,13 @@ export const DescriptionText = styled.p`
   text-overflow: ellipsis;
   overflow: hidden;
   white-space: nowrap;
+`;
+
+export const DetailsButton = styled.button`
+  margin-left: 8px;
+  ${({ visible }) => !visible && 'visibility: hidden;'}
+  font-family: 'Montserrat', sans-serif;
+  font-size: ${fontSizes.smallPlus};
+  font-weight: ${fontWeights.regularPlus};
+  color: ${palette.brightBlue};
 `;

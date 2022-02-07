@@ -55,6 +55,7 @@ import {
   PriorityIndicator,
   DependencyIconContainer,
   StickyColumnContainer,
+  DetailsButton,
 } from '../styled';
 import TaskItemContextMenu from '../TaskItemContextMenu/TaskItemContextMenu';
 
@@ -165,7 +166,7 @@ const TaskItem = ({
   const [contextMenu, setContextMenu] = useState(null);
   const dispatch = useDispatch();
   const dependencyIconReference = useRef(null);
-
+  const [isEditingDescription, setEditingDescription] = useState(false);
   const [
     dependencyPopoverOpen,
     openDependencyPopover,
@@ -372,6 +373,7 @@ const TaskItem = ({
             newlyCreated={newlyCreated}
             backgroundColor={pageBackground}
             isSelected={isSelected || selected}
+            isEditingDescription={isEditingDescription}
           >
             <DotsContainer
               showDraggableDots={showDraggableDots}
@@ -426,12 +428,17 @@ const TaskItem = ({
               )}
 
               {descriptionIsInConfig && (
-                <TaskItemDescription
-                  task={task}
-                  isCompletedGroup={isCompletedGroup}
-                  highlightedValue={highlightedValue}
-                  hasParentTaskLabel={hasParentTaskLabel}
-                />
+                <>
+                  <TaskItemDescription
+                    task={task}
+                    isCompletedGroup={isCompletedGroup}
+                    highlightedValue={highlightedValue}
+                    hasParentTaskLabel={hasParentTaskLabel}
+                    isEditing={isEditingDescription}
+                    setEditing={setEditingDescription}
+                  />
+                  <DetailsButton visible={isHovered}>Details</DetailsButton>
+                </>
               )}
             </MainStandardTaskItemCell>
             {decisionInConfig && showDecisionRow && (
