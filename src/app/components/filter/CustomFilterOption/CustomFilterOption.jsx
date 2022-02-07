@@ -22,6 +22,10 @@ const CustomFilterOption = props => {
   const inputReference = useRef(null);
 
   useEffect(() => {
+    setValue(label);
+  }, [label, identifier]);
+
+  useEffect(() => {
     if (autofocus && inputReference?.current) {
       inputReference.current.focus();
     }

@@ -37,15 +37,29 @@ export function selectFiltersForMegaFilter(selectedFilters, id, status) {
   };
 }
 
-export const createQuickFilter = data => ({
-  type: ActionTypes.CREATE_QUICK_FILTER,
-  data,
+export const getQuickFilters = viewSpecificData => ({
+  type: ActionTypes.GET_QUICK_FILTERS,
+  viewSpecificData,
 });
 
-export const updateQuickFilter = (identifier, dataToUpdate) => ({
+export const createQuickFilter = (name, viewSpecificData, selectedFilters) => {
+  return {
+    type: ActionTypes.CREATE_QUICK_FILTER,
+    name,
+    viewSpecificData,
+    selectedFilters,
+  };
+};
+
+export const updateQuickFilter = (
+  identifier,
+  dataToUpdate,
+  viewSpecificData,
+) => ({
   type: ActionTypes.UPDATE_QUICK_FILTER,
   dataToUpdate,
   identifier,
+  viewSpecificData,
 });
 
 export const deleteQuickFilter = identifier => ({
@@ -60,4 +74,8 @@ export const selectQuickFilter = identifier => ({
 
 export const showAddQuickFilterOption = () => ({
   type: ActionTypes.SHOW_ADD_QUICK_FILTER_OPTION,
+});
+
+export const cleanClickFilter = () => ({
+  type: ActionTypes.CLEAN_QUICK_FILTER,
 });

@@ -18,7 +18,7 @@ import watchPatients from './sagas/patients-saga';
 import watchAnalytics from './sagas/analytics-saga';
 import watchWorkflowDrawer from './sagas/workflow-drawer-saga';
 import watchWorkflow from './sagas/workflow-saga';
-import watchMegaFilters from './sagas/workflow-saga';
+import watchMegaFilters from './sagas/mega-filter-saga';
 
 function* rootSaga() {
   yield all([

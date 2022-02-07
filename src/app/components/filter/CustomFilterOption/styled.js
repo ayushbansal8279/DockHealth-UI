@@ -28,6 +28,7 @@ export const CustomFilterOptionWrapper = styled.div`
   padding-left: 8px;
   overflow: hidden;
   justify-content: space-between;
+  cursor: ${({ disabled }) => (disabled ? 'initial' : 'pointer')};
 
   & .MuiSvgIcon-root {
     color: ${({ selected }) => (selected ? palette.white : palette.black)};
@@ -41,6 +42,9 @@ export const CustomFilterOptionWrapper = styled.div`
 
   & .MuiFilledInput-root {
     background-color: transparent !important;
+  }
+  & .MuiInputBase-input {
+    cursor: pointer !important;
   }
 
   & .MuiFilledInput-input {

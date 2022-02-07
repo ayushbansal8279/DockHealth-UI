@@ -1,17 +1,31 @@
 /* eslint-disable import/prefer-default-export */
 import axios from './axios-heydoc';
 
-export function deleteQuickFilter(data) {
+export function getQuickFilters(data) {
   return axios
-    .delete(`placeholder-url`, {
-      data,
+    .get(`placeholder-url`, {
+      ...data,
+    })
+    .then(({ d }) => d);
+}
+export function createQuickFilter(data) {
+  return axios
+    .post(`placeholder-url`, {
+      ...data,
+    })
+    .then(({ d }) => d);
+}
+export function updateQuickFilter(data) {
+  return axios
+    .put(`placeholder-url`, {
+      ...data,
     })
     .then(({ d }) => d);
 }
 
-export function updateQuickFilter(data) {
+export function deleteQuickFilter(data) {
   return axios
-    .put(`placeholder-url`, {
+    .delete(`placeholder-url`, {
       data,
     })
     .then(({ d }) => d);

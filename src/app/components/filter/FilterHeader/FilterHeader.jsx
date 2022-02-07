@@ -1,6 +1,7 @@
 import React from 'react';
 import { Box } from '@material-ui/core';
 import FilterSearch from 'components/filter/FilterSearch/FilterSearch';
+import { isEmpty } from 'ramda';
 import { Container, Title, HeaderButton } from './styled';
 
 const FilterHeader = props => {
@@ -16,7 +17,10 @@ const FilterHeader = props => {
     onSaveAsNew,
     editModeEnabled,
     selectedQuickFilter,
+    selectedFilters,
   } = props;
+
+  console.log('selectedFilters', selectedFilters);
 
   return (
     <Container>
@@ -41,14 +45,20 @@ const FilterHeader = props => {
             Clear
           </HeaderButton>
         )}
-        {onSave && (
-          <HeaderButton type="button" onClick={onSave}>
-            Save
-          </HeaderButton>
-        )}
-        {onSaveAsNew && (
+        {onSave &&
+          selectedFilters &&
+          !isEmpty(selectedFilters) &&
+          selectedQuickFilter &&
+          editModeEnabled && (
+            <HeaderButton type="button" onClick={onSave}>
+              Save
+            </HeaderButton>
+          )}
+        {onSaveAsNew && selectedFilters && !isEmpty(selectedFilters) && (
           <HeaderButton type="button" onClick={onSaveAsNew}>
-            Save as new Quick Filter
+            {selectedQuickFilter
+              ? 'Save as new Quick Filter'
+              : 'Add to saved filters'}
           </HeaderButton>
         )}
       </Box>

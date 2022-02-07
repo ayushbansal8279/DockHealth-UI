@@ -2,14 +2,12 @@
 import styled from 'styled-components';
 import { fontSizes, fontWeights } from 'styles/font';
 import palette from 'styles/palette';
-import spacing from 'styles/spacing';
 
 export const CustomFiltersContainer = styled.div`
   display: flex;
   flex-direction: column;
   flex: 180px 0 0;
   overflow: hidden;
-  margin-right: ${spacing.large};
 `;
 
 export const Label = styled.p`

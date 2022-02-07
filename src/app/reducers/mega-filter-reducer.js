@@ -5,52 +5,55 @@ const INITIAL_STATE = {
   filters: null,
   selectedFilters: null,
   error: null,
-  quickFilters: [
-    {
-      displayValue: 'My private filter',
-      key: 'test-identifier-00001',
-      filters: {
-        assignedTo: {
-          options: ['UNASSIGNED'],
-        },
-        patients: {
-          options: ['421d0711-e564-4381-8243-b624a6a25b8c'],
-        },
-        priorityOptions: {
-          options: ['LOW'],
-        },
-      },
-    },
-    {
-      displayValue: 'Custom Filter 1',
-      key: 'test-identifier-00002',
-      filters: {
-        assignedTo: {
-          options: ['UNASSIGNED'],
-        },
-        patients: {
-          options: ['421d0711-e564-4381-8243-b624a6a25b8c'],
-        },
-      },
-    },
-    {
-      displayValue: 'My handy filter',
-      key: 'test-identifier-00003',
-      filters: {
-        assignedTo: {
-          options: ['UNASSIGNED'],
-        },
-      },
-    },
-  ],
+  quickFilters: [],
   addQuickFilterOption: false,
   selectedQuickFilter: null,
 };
 
 export default function(state = INITIAL_STATE, action = {}) {
   const { type, error, selectedFilters } = action;
-
+  console.log(type);
   switch (type) {
+    case ActionTypes.CLEAN_QUICK_FILTER:
+      console.log('CLEAN_QUICK_FILTER');
+      return {
+        ...state,
+        quickFilters: INITIAL_STATE.quickFilters,
+        addQuickFilterOption: INITIAL_STATE.addQuickFilterOption,
+        selectedQuickFilter: INITIAL_STATE.selectedQuickFilter,
+      };
+    case ActionTypes.GET_QUICK_FILTERS_SUCCESS:
+      return {
+        ...state,
+        quickFilters: action.quickFilters,
+      };
+    case ActionTypes.CREATE_QUICK_FILTER_SUCCESS:
+      return {
+        ...state,
+        quickFilters: [action.filter, ...state.quickFilters],
+        addQuickFilterOption: false,
+        selectedQuickFilter: action.filter.key,
+      };
+    case ActionTypes.UPDATE_QUICK_FILTER:
+      return {
+        ...state,
+        quickFilters: state.quickFilters.map(filter =>
+          filter.key === action.identifier
+            ? { ...filter, ...action.dataToUpdate }
+            : filter,
+        ),
+      };
+    case ActionTypes.DELETE_QUICK_FILTER:
+      return {
+        ...state,
+        quickFilters: state.quickFilters.filter(
+          filter => filter.key !== action.identifier,
+        ),
+        selectedQuickFilter:
+          state.selectedQuickFilter === action.identifier
+            ? null
+            : state.selectedQuickFilter,
+      };
     case ActionTypes.HIDE_ADD_QUICK_FILTER_OPTION:
       return {
         ...state,

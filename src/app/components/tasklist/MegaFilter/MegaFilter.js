@@ -24,8 +24,10 @@ const MegaFilter = ({
   selectQuickFilter,
   onSaveClick,
   onSaveAsNewClick,
-  onUpdate,
+  onQuickFilterUpdate,
   wasChangedFilters,
+  onQuickFilterCreate,
+  onQuickFilterDelete,
 }) => {
   const [isOpen, openPopover] = useState(false);
   const [searchedFilterQuery, setSearchedFilterQuery] = useState('');
@@ -34,6 +36,7 @@ const MegaFilter = ({
 
   const clearFilters = () => {
     onSelectFilters(null);
+    selectQuickFilter(null);
   };
 
   useEffect(() => {
@@ -70,6 +73,7 @@ const MegaFilter = ({
             onSaveAsNew={onSaveAsNewClick}
             selectedQuickFilter={selectedQuickFilter}
             editModeEnabled={wasChangedFilters}
+            selectedFilters={selectedFilters}
           />
           {isFilterApplied && tasksAndSubTasksCount === 0 && !isFetching && (
             <MegaFilterNoResultsLabel>
@@ -89,8 +93,10 @@ const MegaFilter = ({
               addQuickFilterOption={addQuickFilterOption}
               selectedQuickFilter={selectedQuickFilter}
               selectQuickFilter={selectQuickFilter}
-              onUpdate={onUpdate}
+              onUpdate={onQuickFilterUpdate}
               editModeEnabled={wasChangedFilters}
+              onCreate={onQuickFilterCreate}
+              onDelete={onQuickFilterDelete}
             />
           </FilterTable>
         </>
