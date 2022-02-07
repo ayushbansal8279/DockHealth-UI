@@ -85,6 +85,12 @@ const TaskItemDescription = ({
   const stateHasMentions = convertedDescriptionState.mentions?.length > 0;
 
   useEffect(() => {
+    if (isEditing && descriptionReference.current) {
+      descriptionReference.current.focus();
+    }
+  }, [isEditing, descriptionReference]);
+
+  useEffect(() => {
     if (previousDescription.current !== null) {
       const newContent = createMentionEntities(
         tokenizedDescription,
@@ -122,15 +128,17 @@ const TaskItemDescription = ({
       descriptionState,
       false,
     );
-    dispatch(
-      updateTaskDescription(task, {
-        tokenizedDescription: tokenizedText,
-        description: rawText,
-        taskMentions: [...(task.taskMentions || []), ...(mentions || [])],
-      }),
-    );
+    if (rawText !== description) {
+      dispatch(
+        updateTaskDescription(task, {
+          tokenizedDescription: tokenizedText,
+          description: rawText,
+          taskMentions: [...(task.taskMentions || []), ...(mentions || [])],
+        }),
+      );
+    }
     setEditing(false);
-  }, [descriptionState, dispatch, setEditing, task]);
+  }, [description, descriptionState, dispatch, setEditing, task]);
 
   const handleKeyCommand = useCallback(
     command => {
