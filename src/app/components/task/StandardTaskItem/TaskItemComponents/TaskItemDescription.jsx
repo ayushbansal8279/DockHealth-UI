@@ -86,7 +86,7 @@ const TaskItemDescription = ({
 
   useEffect(() => {
     if (isEditing && descriptionReference.current) {
-      descriptionReference.current.focus();
+      setTimeout(descriptionReference.current.focus, 0);
     }
   }, [isEditing, descriptionReference]);
 
@@ -158,7 +158,8 @@ const TaskItemDescription = ({
       <Tooltip
         title={convertedDescriptionState.rawText}
         hideTooltip={
-          !checkIfShouldDisplayTooltip(descriptionTextReference.current)
+          !checkIfShouldDisplayTooltip(descriptionTextReference.current) ||
+          isEditing
         }
       >
         <DescriptionWrapper>
