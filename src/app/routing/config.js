@@ -93,7 +93,7 @@ export const SETTINGS_ROUTES = [
     RouteComponent: SubscriptionPaymentFinishedView,
   },
   {
-    path: '/custom-fields',
+    path: '/custom-fields/:tabName?',
     RouteComponent: CustomFieldsView,
   },
 ];

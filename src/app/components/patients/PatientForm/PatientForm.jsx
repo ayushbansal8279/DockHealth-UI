@@ -100,7 +100,7 @@ const PatientForm = forwardRef(
     );
 
     const handleAddButtonClick = () =>
-      history.push(CUSTOM_FIELDS_SETTINGS_PATH);
+      history.push(`${CUSTOM_FIELDS_SETTINGS_PATH}/patient`);
 
     return (
       <form
