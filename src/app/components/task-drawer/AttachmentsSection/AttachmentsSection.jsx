@@ -76,6 +76,7 @@ const AttachmentsSection = () => {
           ) : (
             currentTaskAttachments.map(attachment => (
               <AttachmentButton
+                key={attachment.attachmentIdentifier}
                 attachment={attachment}
                 onClick={openAttachmentPreview}
                 onRemoveClick={removeTaskAttachment}
