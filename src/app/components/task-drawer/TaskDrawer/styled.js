@@ -22,6 +22,7 @@ export const TaskDrawerContainer = styled.div`
   height: 100%;
   width: 100%;
   padding: 0;
+  text-align: left;
   box-shadow: 0px 0px 11px rgba(0, 0, 0, 0.15);
   background-color: ${palette.white};
   overflow-y: auto;
