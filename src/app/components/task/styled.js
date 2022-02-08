@@ -183,10 +183,6 @@ export const Description = styled.div`
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: initial;
-  padding: 0 2px;
-  border-radius: 4px;
-  border: 1px solid;
-  border-color: transparent;
   max-width: 480px;
 
   @media screen and (max-width: 1300px) {
@@ -204,12 +200,6 @@ export const Description = styled.div`
   @media screen and (min-width: 2500px) {
     max-width: 1100px;
   }
-
-  &:hover {
-    border-color: ${palette.coolGrey2};
-  }
-
-  ${({ isEditing }) => isEditing && `border-color: ${palette.coolGrey2};`}
 `;
 
 export const MemberGroupContainer = styled.div`
@@ -528,12 +518,6 @@ export const SubtasksCellText = styled.p`
   color: inherit;
 `;
 
-export const DescriptionWrapper = styled.div`
-  display: flex;
-  width: 100%;
-  overflow: hidden;
-`;
-
 export const DescriptionLabel = styled.div`
   font-size: ${fontSizes.small};
   font-weight: ${fontWeights.regular};
@@ -584,13 +568,6 @@ export const DateText = styled.p`
   margin-bottom: 0;
 `;
 
-export const DescriptionText = styled.p`
-  margin: 0;
-  text-overflow: ellipsis;
-  overflow: hidden;
-  white-space: nowrap;
-`;
-
 export const DetailsButton = styled.button`
   margin-left: 8px;
   ${({ visible }) => !visible && 'visibility: hidden;'}
@@ -598,4 +575,19 @@ export const DetailsButton = styled.button`
   font-size: ${fontSizes.smallPlus};
   font-weight: ${fontWeights.regularPlus};
   color: ${palette.brightBlue};
+`;
+
+export const DescriptionBorder = styled.div`
+  padding: 0 2px;
+  overflow: hidden;
+  border-radius: 4px;
+  border-width: 1px;
+  border-style: solid;
+  border-color: transparent;
+
+  &:hover {
+    border-color: ${palette.coolGrey2};
+  }
+
+  ${({ isEdited }) => isEdited && `border-color: ${palette.coolGrey2};`}
 `;

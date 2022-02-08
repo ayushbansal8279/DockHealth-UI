@@ -1,6 +1,7 @@
 /* eslint-disable sonarjs/cognitive-complexity */
 /* eslint-disable import/extensions */
 import React, { useCallback, useEffect, useMemo, useRef } from 'react';
+import { Box } from '@material-ui/core';
 import { useDispatch } from 'react-redux';
 import moment from 'moment';
 import {
@@ -11,12 +12,12 @@ import { TaskStatus } from 'helpers/task-helpers';
 import { openDrawer } from 'actions/task-drawer-actions';
 import TextEditor from 'components/common/TextEditor/TextEditor';
 import Spacing from 'components/common/Spacing';
-import { checkIfShouldDisplayTooltip } from 'components/task/OverflowTooltip/OverflowTooltip';
-import Tooltip from 'components/common/Tooltip/Tooltip';
 import {
   convertToEditorState,
   convertFromEditorStateToOutput,
 } from 'components/common/TextEditor/helpers';
+import Tooltip from 'components/common/Tooltip/Tooltip';
+import { checkIfShouldDisplayTooltip } from 'components/task/OverflowTooltip/OverflowTooltip';
 import { useMentionsEditorState } from 'components/common/TextEditor/use-mentions-editor-state';
 import { EditorState } from 'draft-js';
 import { createMentionEntities } from 'components/common/TextEditor/create-mention-entities';
@@ -26,9 +27,8 @@ import {
   CompletedBy,
   TaskItemParentTaskLabel,
   DescriptionLabel,
-  DescriptionWrapper,
   TaskItemDescriptionIndicators,
-  DescriptionText,
+  DescriptionBorder,
 } from '../../styled';
 
 const TaskItemDescription = ({
@@ -55,10 +55,9 @@ const TaskItemDescription = ({
   } = task;
   const { taskListIdentifier } = taskList || {};
   const { matchDescription } = searchMetaData || {};
-  const descriptionTextReference = useRef(null);
   const previousDescription = useRef(null);
+  const descriptionTextReference = useRef(null);
   const dispatch = useDispatch();
-  const hasMentions = taskMentions?.length > 0;
   const [descriptionState, setDescriptionState] = useMentionsEditorState(
     convertToEditorState({
       rawText: description,
@@ -81,8 +80,6 @@ const TaskItemDescription = ({
     () => convertFromEditorStateToOutput(descriptionState, false),
     [descriptionState],
   );
-
-  const stateHasMentions = convertedDescriptionState.mentions?.length > 0;
 
   useEffect(() => {
     if (isEditing && descriptionReference.current) {
@@ -155,31 +152,32 @@ const TaskItemDescription = ({
 
   return (
     <DescriptionBox>
-      <Tooltip
-        title={convertedDescriptionState.rawText}
-        hideTooltip={
-          !checkIfShouldDisplayTooltip(descriptionTextReference.current) ||
-          isEditing
-        }
-      >
-        <DescriptionWrapper>
-          <Description
-            ref={reference => {
-              if (reference) {
-                descriptionTextReference.current = hasMentions
-                  ? reference.querySelector('.public-DraftStyleDefault-block')
-                  : reference.querySelector('p');
-              }
-            }}
-            isCrossedOut={!isCompletedGroup && isCompleted}
-            isEditing={isEditing}
-            onClick={event => {
-              event.stopPropagation();
-              event.preventDefault();
-              setEditing(true);
-            }}
+      <Box display="flex" flex={1} overflow="hidden">
+        <Description
+          ref={reference => {
+            if (reference) {
+              descriptionTextReference.current = reference.querySelector(
+                '.public-DraftStyleDefault-block',
+              );
+            }
+          }}
+          isCrossedOut={!isCompletedGroup && isCompleted}
+        >
+          <Tooltip
+            title={convertedDescriptionState.rawText}
+            hideTooltip={
+              !checkIfShouldDisplayTooltip(descriptionTextReference.current) ||
+              isEditing
+            }
           >
-            {stateHasMentions || isEditing ? (
+            <DescriptionBorder
+              isEdited={isEditing}
+              onClick={event => {
+                event.stopPropagation();
+                event.preventDefault();
+                setEditing(true);
+              }}
+            >
               <TextEditor
                 ref={descriptionReference}
                 readOnly={!isEditing}
@@ -195,18 +193,14 @@ const TaskItemDescription = ({
                 handleKeyCommand={handleKeyCommand}
                 onBlur={handleBlur}
               />
-            ) : (
-              <DescriptionText>
-                {convertedDescriptionState.rawText}
-              </DescriptionText>
-            )}
-          </Description>
-          {descriptionEdited && !isDuplicated && (
-            <DescriptionLabel>(edited)</DescriptionLabel>
-          )}
-          {isDuplicated && <DescriptionLabel>(duplicated)</DescriptionLabel>}
-        </DescriptionWrapper>
-      </Tooltip>
+            </DescriptionBorder>
+          </Tooltip>
+        </Description>
+        {descriptionEdited && !isDuplicated && (
+          <DescriptionLabel>(edited)</DescriptionLabel>
+        )}
+        {isDuplicated && <DescriptionLabel>(duplicated)</DescriptionLabel>}
+      </Box>
       <TaskItemDescriptionIndicators>
         {isCompletedGroup && (
           <CompletedBy isCompleted={isCompleted}>
