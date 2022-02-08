@@ -1,3 +1,4 @@
+/* eslint-disable sonarjs/cognitive-complexity */
 import React, { useCallback } from 'react';
 import { AnimatePresence } from 'framer-motion/dist/framer-motion';
 import { Grid } from '@material-ui/core';
@@ -29,12 +30,12 @@ import {
   styleLeftColumn,
   styleRightColumn,
   styleCommentRow,
-  ParentTaskButton,
-  ParentTaskDescriptionPlaceholder,
+  ReferenceParentNamePlaceholder,
   TaskDrawerDivider,
-  ParentTaskDescription,
   styleFullRowThin,
   styleNoPaddingRow,
+  ReferenceParentButton,
+  ReferenceParentName,
 } from './styled';
 import AssignedToSection from '../AssignedToSection/AssignedToSection';
 import DueDateSection from '../DueDateSection/DueDateSection';
@@ -68,6 +69,8 @@ const TaskDrawer = ({
     taskDrawerOpen,
     taskDrawerReference,
     taskListIdentifier,
+    parentBundle,
+    handleWorkflowReferenceClick,
     clearFormStates,
   } = initializeTaskDrawerHooks({
     isInbox,
@@ -135,8 +138,11 @@ const TaskDrawer = ({
                   <Grid item xs={12} style={styleFullRowThin}>
                     <Spacing vertical={4} />
                     {selectedParentTask ? (
-                      <ParentTaskButton onClick={onClickParentTask}>
-                        <ParentTaskDescription>
+                      <ReferenceParentButton
+                        type="button"
+                        onClick={onClickParentTask}
+                      >
+                        <ReferenceParentName>
                           <TextEditor
                             readOnly
                             withEditedLabel={selectedParentTask.edited}
@@ -145,11 +151,24 @@ const TaskDrawer = ({
                             taskListIdentifier={taskListIdentifier}
                             disableMentions={isTemplateTask}
                           />
-                        </ParentTaskDescription>
-                      </ParentTaskButton>
+                        </ReferenceParentName>
+                      </ReferenceParentButton>
                     ) : (
-                      <ParentTaskDescriptionPlaceholder />
+                      <ReferenceParentNamePlaceholder />
                     )}
+                  </Grid>
+                )}
+                {parentBundle && (
+                  <Grid item xs={12} style={styleFullRowThin}>
+                    <Spacing vertical={4} />
+                    <ReferenceParentButton
+                      type="button"
+                      onClick={handleWorkflowReferenceClick}
+                    >
+                      <ReferenceParentName>
+                        {parentBundle.groupName}
+                      </ReferenceParentName>
+                    </ReferenceParentButton>
                   </Grid>
                 )}
                 <Grid item xs={12} style={styleFullRow}>

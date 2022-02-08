@@ -115,18 +115,19 @@ export const DescriptionLabel = styled.label`
   }
 `;
 
-export const ParentTaskButton = styled.button`
+export const ReferenceParentButton = styled.button`
   cursor: pointer;
 `;
 
-export const ParentTaskDescription = styled.p`
+export const ReferenceParentName = styled.p`
+  margin-bottom: 0;
+  text-align: left;
   color: ${palette.brightBlue};
   font-weight: ${fontWeights.bold};
   font-size: ${fontSizes.regular};
-  margin-bottom: 0;
 `;
 
-export const ParentTaskDescriptionPlaceholder = styled.div`
+export const ReferenceParentNamePlaceholder = styled.div`
   width: 50%;
   height: 20px;
   margin: 2px 0;
