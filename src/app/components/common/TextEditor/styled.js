@@ -51,7 +51,7 @@ export const StyledEditorContainer = styled.div`
     font-weight: bold;
   }
 
-  ${({ isOneline }) =>
+  ${({ isOneline, isReadOnly }) =>
     isOneline &&
     `
       height: 1.3em;
@@ -59,8 +59,12 @@ export const StyledEditorContainer = styled.div`
 
       & .public-DraftStyleDefault-block {
         white-space: nowrap;
-        overflow: hidden;
-        text-overflow: ellipsis;
+
+        ${isReadOnly &&
+          `
+          overflow: hidden;
+          text-overflow: ellipsis;
+        `}
       }
     `}
 

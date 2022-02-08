@@ -102,6 +102,8 @@ export const StickyColumnContainer = styled.div`
   border-left: 1px solid ${palette.coolGrey3};
   min-width: 500px;
 
+  ${({ isEditingDescription }) => isEditingDescription && `z-index: 12;`}
+
   &::before {
     content: '';
     display: block;
@@ -174,7 +176,7 @@ export const Description = styled.div`
   display: flex;
   flex-direction: row;
   width: 100%;
-  padding-right: ${spacing.smallPlus};
+  margin-right: 4px;
   overflow-wrap: anywhere;
   ${props => props.isCrossedOut && 'text-decoration: line-through;'}
   cursor: pointer;
@@ -309,7 +311,6 @@ export const StandardTaskItemCell = styled.div`
     props.paddingLeft ? spacing[props.paddingRight] : spacing.regular};
   width: ${props => (!props.width ? '100%' : '')};
   justify-content: ${props => props.justify || 'flex-start'};
-  overflow: hidden;
   position: relative;
 
   &:last-of-type {
@@ -517,12 +518,6 @@ export const SubtasksCellText = styled.p`
   color: inherit;
 `;
 
-export const DescriptionWrapper = styled.div`
-  display: flex;
-  width: 100%;
-  overflow: hidden;
-`;
-
 export const DescriptionLabel = styled.div`
   font-size: ${fontSizes.small};
   font-weight: ${fontWeights.regular};
@@ -573,9 +568,26 @@ export const DateText = styled.p`
   margin-bottom: 0;
 `;
 
-export const DescriptionText = styled.p`
-  margin: 0;
-  text-overflow: ellipsis;
+export const DetailsButton = styled.button`
+  margin-left: 8px;
+  ${({ visible }) => !visible && 'visibility: hidden;'}
+  font-family: 'Montserrat', sans-serif;
+  font-size: ${fontSizes.smallPlus};
+  font-weight: ${fontWeights.regularPlus};
+  color: ${palette.brightBlue};
+`;
+
+export const DescriptionBorder = styled.div`
+  padding: 0 2px;
   overflow: hidden;
-  white-space: nowrap;
+  border-radius: 4px;
+  border-width: 1px;
+  border-style: solid;
+  border-color: transparent;
+
+  &:hover {
+    border-color: ${palette.coolGrey2};
+  }
+
+  ${({ isEdited }) => isEdited && `border-color: ${palette.coolGrey2};`}
 `;
