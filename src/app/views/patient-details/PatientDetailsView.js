@@ -206,7 +206,7 @@ const PatientDetailsView = () => {
         updateQuickFilter(
           selectedQuickFilter,
           {
-            filters: selectedFilters,
+            selectedOptions: selectedFilters,
           },
           { patientIdentifier },
         ),
@@ -223,7 +223,9 @@ const PatientDetailsView = () => {
     () =>
       !equals(
         selectedFilters,
-        quickFiltersList.find(f => f.key === selectedQuickFilter)?.filters,
+        quickFiltersList?.find(
+          f => f.quickFilterIdentifier === selectedQuickFilter,
+        )?.selectedOptions,
       ),
     [quickFiltersList, selectedFilters, selectedQuickFilter],
   );
@@ -235,15 +237,19 @@ const PatientDetailsView = () => {
   );
 
   const handleQuickFilterUpdate = useCallback(
-    (key, name) =>
+    (quickFilterIdentifier, name) =>
       dispatch(
-        updateQuickFilter(key, { displayValue: name }, { patientIdentifier }),
+        updateQuickFilter(
+          quickFilterIdentifier,
+          { name },
+          { patientIdentifier },
+        ),
       ),
     [dispatch, patientIdentifier],
   );
 
   const handleQuickFilterDelete = useCallback(
-    key => dispatch(deleteQuickFilter(key)),
+    quickFilterIdentifier => dispatch(deleteQuickFilter(quickFilterIdentifier)),
     [dispatch],
   );
 

@@ -51,7 +51,8 @@ const ListDetailsHeader = props => {
   const currentTasksStatus = useSelector(currentTaskListTasksStatusSelector);
   const listUsers = useSelector(taskListMembersSelector);
   const taskList = useSelector(currentTaskListSelector);
-  const { listName, listDescription, listType } = taskList || {};
+  const { listName, listDescription, listType, taskListIdentifier } =
+    taskList || {};
   const megaFilter = useSelector(megaFilterSelector);
   const { filters, selectedFilters } = megaFilter || {};
   const currentUser = useSelector(userProfileSelector);
@@ -73,7 +74,7 @@ const ListDetailsHeader = props => {
 
   const handleFilterOpen = () => {
     dispatch(getCurrentTaskListFilterOptions());
-    dispatch(getQuickFilters({ taskListIdentifier: taskList.identifier }));
+    dispatch(getQuickFilters({ taskListIdentifier }));
   };
 
   const handleFilterSelect = newFilters => {
@@ -92,7 +93,9 @@ const ListDetailsHeader = props => {
     () =>
       !equals(
         selectedFilters,
-        quickFiltersList.find(f => f.key === selectedQuickFilter)?.filters,
+        quickFiltersList?.find(
+          f => f.quickFilterIdentifier === selectedQuickFilter,
+        )?.selectedOptions,
       ),
     [quickFiltersList, selectedFilters, selectedQuickFilter],
   );
@@ -108,12 +111,12 @@ const ListDetailsHeader = props => {
         updateQuickFilter(
           selectedQuickFilter,
           {
-            filters: selectedFilters,
+            selectedOptions: selectedFilters,
           },
-          { taskListIdentifier: taskList?.identifier },
+          { taskListIdentifier },
         ),
       ),
-    [dispatch, selectedFilters, selectedQuickFilter, taskList],
+    [dispatch, selectedFilters, selectedQuickFilter, taskListIdentifier],
   );
 
   const handleSelectQuickFilter = useCallback(
@@ -127,29 +130,25 @@ const ListDetailsHeader = props => {
   const handleQuickFilterCreate = useCallback(
     name =>
       dispatch(
-        createQuickFilter(
-          name,
-          { taskListIdentifier: taskList?.identifier },
-          selectedFilters,
-        ),
+        createQuickFilter(name, { taskListIdentifier }, selectedFilters),
       ),
-    [dispatch, selectedFilters, taskList],
+    [dispatch, selectedFilters, taskListIdentifier],
   );
 
   const handleQuickFilterUpdate = useCallback(
-    (key, name) =>
+    (quickFilterIdentifier, name) =>
       dispatch(
         updateQuickFilter(
-          key,
-          { displayValue: name },
-          { taskListIdentifier: taskList?.identifier },
+          quickFilterIdentifier,
+          { name },
+          { taskListIdentifier },
         ),
       ),
-    [dispatch, taskList],
+    [dispatch, taskListIdentifier],
   );
 
   const handleQuickFilterDelete = useCallback(
-    key => dispatch(deleteQuickFilter(key)),
+    quickFilterIdentifier => dispatch(deleteQuickFilter(quickFilterIdentifier)),
     [dispatch],
   );
 

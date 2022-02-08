@@ -72,14 +72,16 @@ const UserDetailsFilters = () => {
 
   const handleFilterOpen = () => {
     dispatch(getUserTaskFilterOptions());
-    dispatch(getQuickFilters({ userIdentifier }));
+    dispatch(getQuickFilters({ personIdentifier: userIdentifier }));
   };
 
   const wasChangedFilters = useMemo(
     () =>
       !equals(
         selectedFilters,
-        quickFiltersList.find(f => f.key === selectedQuickFilter)?.filters,
+        quickFiltersList?.find(
+          f => f.quickFilterIdentifier === selectedQuickFilter,
+        )?.selectedOptions,
       ),
     [quickFiltersList, selectedFilters, selectedQuickFilter],
   );
@@ -95,9 +97,9 @@ const UserDetailsFilters = () => {
         updateQuickFilter(
           selectedQuickFilter,
           {
-            filters: selectedFilters,
+            selectedOptions: selectedFilters,
           },
-          { userIdentifier },
+          { personIdentifier: userIdentifier },
         ),
       ),
     [dispatch, selectedFilters, selectedQuickFilter, userIdentifier],
@@ -115,20 +117,30 @@ const UserDetailsFilters = () => {
 
   const handleQuickFilterCreate = useCallback(
     name =>
-      dispatch(createQuickFilter(name, { userIdentifier }, selectedFilters)),
+      dispatch(
+        createQuickFilter(
+          name,
+          { personIdentifier: userIdentifier },
+          selectedFilters,
+        ),
+      ),
     [dispatch, selectedFilters, userIdentifier],
   );
 
   const handleQuickFilterUpdate = useCallback(
-    (key, name) =>
+    (quickFilterIdentifier, name) =>
       dispatch(
-        updateQuickFilter(key, { displayValue: name }, { userIdentifier }),
+        updateQuickFilter(
+          quickFilterIdentifier,
+          { name },
+          { personIdentifier: userIdentifier },
+        ),
       ),
     [dispatch, userIdentifier],
   );
 
   const handleQuickFilterDelete = useCallback(
-    key => dispatch(deleteQuickFilter(key)),
+    quickFilterIdentifier => dispatch(deleteQuickFilter(quickFilterIdentifier)),
     [dispatch],
   );
 

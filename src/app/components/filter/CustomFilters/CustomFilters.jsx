@@ -34,17 +34,17 @@ const CustomFilters = ({
   }, []);
 
   const handleSelect = useCallback(
-    (_, identifier, { filters }) => {
+    (_, identifier, { selectedOptions }) => {
       if (editModeEnabled && selected === identifier) {
         const originalFiltersList = quickFiltersList.find(
-          f => f.key === identifier,
-        )?.filters;
+          f => f.quickFilterIdentifier === identifier,
+        )?.selectedOptions;
 
         setSelected(identifier, originalFiltersList);
       } else if (selected === identifier) {
         setSelected(null);
       } else {
-        setSelected(identifier, filters);
+        setSelected(identifier, selectedOptions);
       }
     },
     [editModeEnabled, quickFiltersList, selected, setSelected],
@@ -87,12 +87,15 @@ const CustomFilters = ({
         )}
         {quickFiltersList.map(filter => (
           <CustomFilterOption
-            label={filter.displayValue}
-            identifier={filter.key}
-            selected={selected === filter.key}
-            onOptionClick={event => handleSelect(event, filter.key, filter)}
+            label={filter.name}
+            key={filter.quickFilterIdentifier}
+            identifier={filter.quickFilterIdentifier}
+            selected={selected === filter.quickFilterIdentifier}
+            onOptionClick={event =>
+              handleSelect(event, filter.quickFilterIdentifier, filter)
+            }
             onEditMode={identifier => setEditModeFilterIdentifier(identifier)}
-            disabled={filter.key !== editModeFilterIdentifier}
+            disabled={filter.quickFilterIdentifier !== editModeFilterIdentifier}
             onBlur={handleUpdate}
             editModeEnabled={editModeEnabled}
             onDelete={onDelete}

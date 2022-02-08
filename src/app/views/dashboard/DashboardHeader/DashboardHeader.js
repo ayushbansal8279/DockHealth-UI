@@ -34,6 +34,7 @@ import {
   quickFiltersSelector,
   selectedQuickFilterSelector,
 } from 'selectors/mega-filter-selectors';
+import { DashboardTasksTab } from 'helpers/dashboard-helpers';
 
 const DashboardHeader = () => {
   const [searchValue, setSearchValue] = useState('');
@@ -44,14 +45,17 @@ const DashboardHeader = () => {
   const tabName = useSelector(dashboardTabNameSelector);
   const filterOptions = useSelector(dashboardFilterOptionsSelector);
   const selectedFilters = useSelector(dashboardSelectedFiltersSelector);
-
   const quickFiltersList = useSelector(quickFiltersSelector);
   const addQuickFilterOption = useSelector(addQuickFilterOptionSelector);
   const selectedQuickFilter = useSelector(selectedQuickFilterSelector);
-
   const filteredDashboardTasks = dashboardTasks?.filter(
     taskGroupInfo => taskGroupInfo?.metricValue !== 0,
   );
+  const currentCommonTabName = Object.entries(DashboardTasksTab || {})?.filter(
+    ([, value]) => value === tabName,
+  )?.[0];
+
+  const contextType = currentCommonTabName ? currentCommonTabName[0] : null;
 
   const activeTasksCount = useMemo(
     () =>
@@ -65,8 +69,8 @@ const DashboardHeader = () => {
 
   const handleMegaFilterOpen = useCallback(() => {
     dispatch(getDashboardFilters());
-    dispatch(getQuickFilters({ tabName }));
-  }, [dispatch, tabName]);
+    dispatch(getQuickFilters({ contextType }));
+  }, [contextType, dispatch]);
 
   const searchTasksWithDebounce = useCallback(
     debounce(value => {
@@ -104,12 +108,12 @@ const DashboardHeader = () => {
         updateQuickFilter(
           selectedQuickFilter,
           {
-            filters: selectedFilters,
+            selectedOptions: selectedFilters,
           },
-          { tabName },
+          { contextType },
         ),
       ),
-    [dispatch, selectedFilters, selectedQuickFilter, tabName],
+    [contextType, dispatch, selectedFilters, selectedQuickFilter],
   );
 
   const handleSaveAsQuickFilter = useCallback(
@@ -121,32 +125,28 @@ const DashboardHeader = () => {
     () =>
       !equals(
         selectedFilters,
-        quickFiltersList.find(f => f.key === selectedQuickFilter)?.filters,
+        quickFiltersList?.find(
+          f => f.quickFilterIdentifier === selectedQuickFilter,
+        )?.selectedOptions,
       ),
     [quickFiltersList, selectedFilters, selectedQuickFilter],
   );
 
-  console.log('wasChangedFilters', wasChangedFilters);
-  console.log('1', selectedFilters);
-  console.log('2', quickFiltersList);
-  console.log(
-    '3',
-    quickFiltersList.find(f => f.key === selectedQuickFilter)?.filters,
-  );
-
   const handleQuickFilterCreate = useCallback(
-    name => dispatch(createQuickFilter(name, { tabName }, selectedFilters)),
-    [dispatch, selectedFilters, tabName],
+    name => dispatch(createQuickFilter(name, { contextType }, selectedFilters)),
+    [contextType, dispatch, selectedFilters],
   );
 
   const handleQuickFilterUpdate = useCallback(
-    (key, name) =>
-      dispatch(updateQuickFilter(key, { displayValue: name }, { tabName })),
-    [dispatch, tabName],
+    (quickFilterIdentifier, name) =>
+      dispatch(
+        updateQuickFilter(quickFilterIdentifier, { name }, { contextType }),
+      ),
+    [contextType, dispatch],
   );
 
   const handleQuickFilterDelete = useCallback(
-    key => dispatch(deleteQuickFilter(key)),
+    quickFilterIdentifier => dispatch(deleteQuickFilter(quickFilterIdentifier)),
     [dispatch],
   );
 

@@ -20,8 +20,6 @@ const FilterHeader = props => {
     selectedFilters,
   } = props;
 
-  console.log('selectedFilters', selectedFilters);
-
   return (
     <Container>
       <Box display="flex" flex={1} alignItems="center">

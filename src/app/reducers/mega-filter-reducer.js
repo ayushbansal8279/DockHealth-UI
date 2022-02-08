@@ -12,10 +12,8 @@ const INITIAL_STATE = {
 
 export default function(state = INITIAL_STATE, action = {}) {
   const { type, error, selectedFilters } = action;
-  console.log(type);
   switch (type) {
     case ActionTypes.CLEAN_QUICK_FILTER:
-      console.log('CLEAN_QUICK_FILTER');
       return {
         ...state,
         quickFilters: INITIAL_STATE.quickFilters,
@@ -32,13 +30,13 @@ export default function(state = INITIAL_STATE, action = {}) {
         ...state,
         quickFilters: [action.filter, ...state.quickFilters],
         addQuickFilterOption: false,
-        selectedQuickFilter: action.filter.key,
+        selectedQuickFilter: action.filter.quickFilterIdentifier,
       };
     case ActionTypes.UPDATE_QUICK_FILTER:
       return {
         ...state,
         quickFilters: state.quickFilters.map(filter =>
-          filter.key === action.identifier
+          filter.quickFilterIdentifier === action.quickFilterIdentifier
             ? { ...filter, ...action.dataToUpdate }
             : filter,
         ),
@@ -47,10 +45,11 @@ export default function(state = INITIAL_STATE, action = {}) {
       return {
         ...state,
         quickFilters: state.quickFilters.filter(
-          filter => filter.key !== action.identifier,
+          filter =>
+            filter.quickFilterIdentifier !== action.quickFilterIdentifier,
         ),
         selectedQuickFilter:
-          state.selectedQuickFilter === action.identifier
+          state.selectedQuickFilter === action.quickFilterIdentifier
             ? null
             : state.selectedQuickFilter,
       };
@@ -67,7 +66,7 @@ export default function(state = INITIAL_STATE, action = {}) {
     case ActionTypes.SELECT_QUICK_FILTER:
       return {
         ...state,
-        selectedQuickFilter: action.identifier,
+        selectedQuickFilter: action.quickFilterIdentifier,
       };
 
     case ActionTypes.GET_USER_TASK_FILTER_OPTIONS:

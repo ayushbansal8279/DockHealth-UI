@@ -42,34 +42,34 @@ export const getQuickFilters = viewSpecificData => ({
   viewSpecificData,
 });
 
-export const createQuickFilter = (name, viewSpecificData, selectedFilters) => {
+export const createQuickFilter = (name, viewSpecificData, selectedOptions) => {
   return {
     type: ActionTypes.CREATE_QUICK_FILTER,
     name,
     viewSpecificData,
-    selectedFilters,
+    selectedOptions,
   };
 };
 
 export const updateQuickFilter = (
-  identifier,
+  quickFilterIdentifier,
   dataToUpdate,
   viewSpecificData,
 ) => ({
   type: ActionTypes.UPDATE_QUICK_FILTER,
   dataToUpdate,
-  identifier,
+  quickFilterIdentifier,
   viewSpecificData,
 });
 
-export const deleteQuickFilter = identifier => ({
+export const deleteQuickFilter = quickFilterIdentifier => ({
   type: ActionTypes.DELETE_QUICK_FILTER,
-  identifier,
+  quickFilterIdentifier,
 });
 
-export const selectQuickFilter = identifier => ({
+export const selectQuickFilter = quickFilterIdentifier => ({
   type: ActionTypes.SELECT_QUICK_FILTER,
-  identifier,
+  quickFilterIdentifier,
 });
 
 export const showAddQuickFilterOption = () => ({

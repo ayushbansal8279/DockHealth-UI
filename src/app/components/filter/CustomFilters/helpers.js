@@ -7,7 +7,7 @@ export const getUniqueQuickFilterLabelName = (
   const name = `${prefix} ${startCounter}`;
   let isExistingSameName = false;
   list.forEach(element => {
-    if (element.displayValue === name) {
+    if (element.name === name) {
       isExistingSameName = true;
     }
   });
