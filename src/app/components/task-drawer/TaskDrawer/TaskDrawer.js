@@ -158,7 +158,7 @@ const TaskDrawer = ({
                     )}
                   </Grid>
                 )}
-                {parentBundle && (
+                {!isSubtask && parentBundle && (
                   <Grid item xs={12} style={styleFullRowThin}>
                     <Spacing vertical={4} />
                     <ReferenceParentButton
