@@ -58,7 +58,7 @@ export const StyledEditorContainer = styled.div`
       overflow: hidden;
 
       & .public-DraftStyleDefault-block {
-        white-space: nowrap;
+        white-space: pre;
 
         ${isReadOnly &&
           `
