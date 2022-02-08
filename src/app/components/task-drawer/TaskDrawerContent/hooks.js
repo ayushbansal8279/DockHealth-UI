@@ -91,6 +91,8 @@ const initializeTaskDrawerHooks = ({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
+  console.log('selectedDrawer');
+
   useEffect(() => {
     if (parentTask && taskIdentifier !== previousTaskIdentifierValue.current) {
       setSelectedParentTask(parentTask);
