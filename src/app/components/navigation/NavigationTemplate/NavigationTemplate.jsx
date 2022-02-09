@@ -39,10 +39,8 @@ const NavigationTemplate = ({ children }) => {
         <NavigationSidebar />
       </MaterialDrawer>
       <MainContainer>
-        <div style={{ width: 'fit-content' }}>
-          <GlobalAlertChip />
-          {children}
-        </div>
+        <GlobalAlertChip />
+        {children}
         {intercomUser && intercomUser.name && (
           <Intercom appID={INTERCOM_APP_CODE} {...intercomUser} />
         )}

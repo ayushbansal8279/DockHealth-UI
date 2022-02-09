@@ -24,7 +24,4 @@ export const Header = styled.span`
 export const ButtonWrapper = styled.button`
   max-width: 100%;
   text-align: left;
-  width: calc(100vw - 130px);
-  position: sticky;
-  left: 24px;
 `;

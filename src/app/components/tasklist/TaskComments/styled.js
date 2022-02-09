@@ -6,12 +6,6 @@ import spacing from 'styles/spacing';
 import palette from 'styles/palette';
 import { fontSizes, fontWeights } from 'styles/font';
 
-export const TaskCommentsContainer = styled(Collapse)`
-  width: calc(100vw - 130px) !important;
-  position: sticky;
-  left: 24px;
-`;
-
 export const TaskCommentsPadding = styled.div`
   position: relative;
   display: flex;

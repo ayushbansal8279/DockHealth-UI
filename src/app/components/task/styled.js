@@ -172,6 +172,16 @@ export const CircleIcon = styled.img`
   opacity: ${({ isClickable }) => (isClickable ? '1' : '0.5')};
 `;
 
+export const DescriptionTooltipWrapper = styled.div`
+  display: block;
+  width: 100%;
+  padding: ${spacing.small};
+  color: ${palette.white};
+  background: ${palette.mediumGrey};
+  font-size: ${fontSizes.smallPlus};
+  cursor: initial;
+`;
+
 export const Description = styled.div`
   display: flex;
   flex-direction: row;

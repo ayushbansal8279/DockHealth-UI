@@ -39,7 +39,8 @@ import { checkIfAllTasksSelected } from 'helpers/bulk-edit-helpers';
 import { extractTasksAndSubtasks } from 'helpers/tasklist-helpers';
 import { changeTasksSelectedState } from 'actions/task-actions';
 import { useColumnsConfig } from 'context-api/ColumnsConfigContext';
-import { TaskGroupsContainer, StickyContainer } from '../styled';
+import StickyContainer from 'components/common/HorizontalScroll/StickyContainer';
+import { TaskGroupsContainer } from '../styled';
 
 const PersonDetailsOpenedTasks = ({
   taskItemConfig,
@@ -160,7 +161,7 @@ const PersonDetailsOpenedTasks = ({
             >
               {({ isFullView }) => (
                 <>
-                  <StickyContainer>
+                  <StickyContainer left={24} decreaseWidth={2 * 24} zIndex={13}>
                     <QuickAddTaskInput
                       ref={quickAddTaskInputReference}
                       quickAddTask={task => {

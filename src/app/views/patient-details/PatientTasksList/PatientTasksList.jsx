@@ -51,6 +51,7 @@ import { checkIfAllTasksSelected } from 'helpers/bulk-edit-helpers';
 import { extractTasksAndSubtasks } from 'helpers/tasklist-helpers';
 import { useColumnsConfig } from 'context-api/ColumnsConfigContext';
 import { ListDetailsContainer } from 'components/tasklist/DropdownListSection/styled';
+import StickyContainer from 'components/common/HorizontalScroll/StickyContainer';
 import { ListViewType } from '../helpers';
 import {
   checkIfSelectedListIsPresent,
@@ -60,7 +61,6 @@ import {
 import TaskListToolbar from '../TaskListToolbar/TaskListToolbar';
 import TaskListGroupCollapse from '../TaskListGroupCollapse/TaskListGroupCollapse';
 import TasksToolbar from '../TasksToolbar/TasksToolbar';
-import { PatientToolbarStickyContainer } from '../styled';
 
 const PATIENT_VIEW_COLUMNS_CONFIG = {
   [TaskItemColumn.PATIENT]: false,
@@ -306,13 +306,13 @@ const PatientTasksListView = () => {
     (tasks, { isFullView, taskGroupIdentifier }) => (
       <>
         {!completeTasksVisible && (
-          <PatientToolbarStickyContainer>
+          <StickyContainer left={24} decreaseWidth={2 * 24} zIndex={13}>
             <TasksToolbar
               taskListIdentifier={activeList?.taskListIdentifier}
               taskGroupIdentifier={taskGroupIdentifier}
               onQuickAddTask={quickAddTask}
             />
-          </PatientToolbarStickyContainer>
+          </StickyContainer>
         )}
         <div className="IN" style={{ width: 'fit-content' }}>
           {tasks && tasks.length > 0 && (
@@ -377,12 +377,12 @@ const PatientTasksListView = () => {
         <>
           {filteredLists?.length > 0 ? (
             <>
-              <PatientToolbarStickyContainer>
+              <StickyContainer left={24} decreaseWidth={2 * 24} zIndex={13}>
                 <TaskListToolbar
                   lists={filteredLists}
                   currentList={activeList}
                 />
-              </PatientToolbarStickyContainer>
+              </StickyContainer>
               <Box py={0.5} />
               {activeList ? (
                 <ListDetailsContainer>
@@ -391,13 +391,17 @@ const PatientTasksListView = () => {
                     refreshTasks={handleTaskUpdate}
                     searchValue={taskSearch}
                   >
-                    <PatientToolbarStickyContainer>
+                    <StickyContainer
+                      left={24}
+                      decreaseWidth={2 * 24}
+                      zIndex={13}
+                    >
                       <TaskListHeader
                         list={!isAllTasksView ? activeList : null}
                         viewSetup={viewSetup}
                         refreshView={compose(dispatch, getCurrentPatientTasks)}
                       />
-                    </PatientToolbarStickyContainer>
+                    </StickyContainer>
 
                     {isAllTasksView ? (
                       renderTasks(activeList.tasks, { isFullView: false })

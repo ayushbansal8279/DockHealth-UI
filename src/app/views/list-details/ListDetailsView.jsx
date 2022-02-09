@@ -6,7 +6,8 @@ import TaskDrawer from 'components/task-drawer/TaskDrawer/TaskDrawer';
 import BulkEditSection from 'components/tasklist/BulkEditSection/BulkEditSection';
 import { ViewType } from 'helpers/view-type-helper';
 import Calendar from 'components/common/Calendar/Calendar';
-import ViewLayout from 'components/template/ViewLayout/ViewLayout';
+import HorizontallyScrolledViewLayout from 'components/template/HorizontallyScrolledViewLayout/HorizontallyScrolledViewLayout';
+import StickyContainer from 'components/common/HorizontalScroll/StickyContainer';
 import OpenedTasksView from './ListDetailsOpenedTasksContainer/ListDetailsOpenedTasksContainer';
 import CompletedTasksView from './ListDetailsCompletedTasksContainer/ListDetailsCompletedTasksContainer';
 import initializeListDetailsViewHooks from './hooks';
@@ -70,7 +71,7 @@ const ListDetailsView = props => {
   ];
 
   return (
-    <ViewLayout
+    <HorizontallyScrolledViewLayout
       header={
         <ListDetailsHeader
           isFetchingTasks={isFetching || isCompletedTasksFetching}
@@ -95,10 +96,12 @@ const ListDetailsView = props => {
       >
         <div>
           <TaskViewContainer>
-            <ListDetailsToolbar
-              onColumnSetupChange={setDisplayColumnPreferences}
-              additionalOptions={additionalToolbarOptions}
-            />
+            <StickyContainer>
+              <ListDetailsToolbar
+                onColumnSetupChange={setDisplayColumnPreferences}
+                additionalOptions={additionalToolbarOptions}
+              />
+            </StickyContainer>
             {viewType === ViewType.CALENDAR_VIEW && (
               <Calendar
                 taskList={[...openedTasks, ...completedTasks]}
@@ -152,7 +155,7 @@ const ListDetailsView = props => {
           />
         </div>
       </BulkEditSection>
-    </ViewLayout>
+    </HorizontallyScrolledViewLayout>
   );
 };
 

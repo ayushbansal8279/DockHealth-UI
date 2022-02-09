@@ -41,14 +41,15 @@ import { DashboardTasksTab } from 'helpers/dashboard-helpers';
 import Calendar from 'components/common/Calendar/Calendar';
 import { ViewType, getViewTypeFromQueryString } from 'helpers/view-type-helper';
 import GroupedListSkeletonLoader from 'components/tasklist/GroupedListSkeletonLoader/GroupedListSkeletonLoader';
+import StickyContainer from 'components/common/HorizontalScroll/StickyContainer';
 import DashboardTasksGroup from './DashboardTasksGroup';
+import DashboardToolbar from '../DashboardToolbar/DashboardToolbar';
 import {
   StickyHeader,
   EmptyStateContainer,
   VerticalScrollContainer,
   DashboardTaskGroupsWrapper,
 } from './styled';
-import DashboardToolbar from '../DashboardToolbar/DashboardToolbar';
 
 const DashboardList = ({
   allDashboardTasks,
@@ -203,12 +204,14 @@ const DashboardList = ({
       refreshTasks={handleRefreshForBulkEdit}
       searchValue={searchValue}
     >
-      <StickyHeader>
-        <DashboardToolbar
-          tourModalIsOpen={tourModalIsOpen}
-          openTourModal={openTourModal}
-        />
-      </StickyHeader>
+      <StickyContainer stickyTop zIndex={101}>
+        <StickyHeader>
+          <DashboardToolbar
+            tourModalIsOpen={tourModalIsOpen}
+            openTourModal={openTourModal}
+          />
+        </StickyHeader>
+      </StickyContainer>
       <Spacing vertical={1} />
       {viewType === ViewType.CALENDAR_VIEW && (
         <Calendar taskList={tasks} showInCompleteTasksOnly />

@@ -16,12 +16,6 @@ export const VerticalScrollContainer = styled.div`
   position: relative;
 `;
 
-export const GlobalSearchToolbarStickyContainer = styled.div`
-  position: sticky;
-  left: 24px;
-  width: calc(100vw - 130px);
-`;
-
 export const GlobalSearchWrapper = styled.div`
   position: relative;
   padding: 30px 0; // per design
@@ -43,10 +37,6 @@ export const CheckboxDescription = styled.label`
 `;
 
 export const GlobalSearchStickyHeader = styled.div`
-  position: sticky;
-  top: 0;
-  left: 0;
-  width: calc(100vw - 82px);
   z-index: 13;
   background: ${palette.blueGrey};
 `;

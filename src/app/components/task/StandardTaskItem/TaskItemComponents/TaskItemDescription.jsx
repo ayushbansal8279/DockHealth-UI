@@ -1,7 +1,13 @@
 /* eslint-disable sonarjs/cognitive-complexity */
 /* eslint-disable import/extensions */
-import React, { useCallback, useEffect, useMemo, useRef } from 'react';
-import { Box } from '@material-ui/core';
+import React, {
+  useCallback,
+  useRef,
+  useState,
+  useEffect,
+  useMemo,
+} from 'react';
+import { Box, Fade, Popper } from '@material-ui/core';
 import { useDispatch } from 'react-redux';
 import moment from 'moment';
 import {
@@ -12,12 +18,11 @@ import { TaskStatus } from 'helpers/task-helpers';
 import { openDrawer } from 'actions/task-drawer-actions';
 import TextEditor from 'components/common/TextEditor/TextEditor';
 import Spacing from 'components/common/Spacing';
+import { checkIfShouldDisplayTooltip } from 'components/task/OverflowTooltip/OverflowTooltip';
 import {
   convertToEditorState,
   convertFromEditorStateToOutput,
 } from 'components/common/TextEditor/helpers';
-import Tooltip from 'components/common/Tooltip/Tooltip';
-import { checkIfShouldDisplayTooltip } from 'components/task/OverflowTooltip/OverflowTooltip';
 import { useMentionsEditorState } from 'components/common/TextEditor/use-mentions-editor-state';
 import { EditorState } from 'draft-js';
 import { createMentionEntities } from 'components/common/TextEditor/create-mention-entities';
@@ -28,6 +33,7 @@ import {
   TaskItemParentTaskLabel,
   DescriptionLabel,
   TaskItemDescriptionIndicators,
+  DescriptionTooltipWrapper,
   DescriptionBorder,
 } from '../../styled';
 
@@ -57,6 +63,7 @@ const TaskItemDescription = ({
   const { matchDescription } = searchMetaData || {};
   const previousDescription = useRef(null);
   const descriptionTextReference = useRef(null);
+  const [isHovered, setIsHovered] = useState(false);
   const dispatch = useDispatch();
   const [descriptionState, setDescriptionState] = useMentionsEditorState(
     convertToEditorState({
@@ -154,6 +161,8 @@ const TaskItemDescription = ({
     <DescriptionBox>
       <Box display="flex" flex={1} overflow="hidden">
         <Description
+          onMouseEnter={() => setIsHovered(true)}
+          onMouseLeave={() => setIsHovered(false)}
           ref={reference => {
             if (reference) {
               descriptionTextReference.current = reference.querySelector(
@@ -163,38 +172,52 @@ const TaskItemDescription = ({
           }}
           isCrossedOut={!isCompletedGroup && isCompleted}
         >
-          <Tooltip
-            title={convertedDescriptionState.rawText}
-            hideTooltip={
-              !checkIfShouldDisplayTooltip(descriptionTextReference.current) ||
-              isEditing
-            }
+          <DescriptionBorder
+            isEdited={isEditing}
+            onClick={event => {
+              event.stopPropagation();
+              event.preventDefault();
+              setEditing(true);
+            }}
           >
-            <DescriptionBorder
-              isEdited={isEditing}
-              onClick={event => {
-                event.stopPropagation();
-                event.preventDefault();
-                setEditing(true);
+            <TextEditor
+              ref={descriptionReference}
+              readOnly={!isEditing}
+              oneline
+              state={descriptionState}
+              onChange={setDescriptionState}
+              taskListIdentifier={taskListIdentifier}
+              highlightedValues={
+                matchDescription && highlightedValue?.toLowerCase().split(/\s+/)
+              }
+              keyBindingFn={handleKeyBindingFn}
+              handleKeyCommand={handleKeyCommand}
+              onBlur={handleBlur}
+            />
+            <Popper
+              anchorEl={descriptionTextReference.current}
+              placement="bottom-start"
+              open={
+                checkIfShouldDisplayTooltip(descriptionTextReference.current) &&
+                isHovered &&
+                !isEditing
+              }
+              style={{
+                zIndex: 115,
+                maxWidth:
+                  descriptionTextReference?.current?.offsetWidth || '650px',
               }}
+              transition
             >
-              <TextEditor
-                ref={descriptionReference}
-                readOnly={!isEditing}
-                oneline
-                state={descriptionState}
-                onChange={setDescriptionState}
-                taskListIdentifier={taskListIdentifier}
-                highlightedValues={
-                  matchDescription &&
-                  highlightedValue?.toLowerCase().split(/\s+/)
-                }
-                keyBindingFn={handleKeyBindingFn}
-                handleKeyCommand={handleKeyCommand}
-                onBlur={handleBlur}
-              />
-            </DescriptionBorder>
-          </Tooltip>
+              {({ TransitionProps }) => (
+                <Fade {...TransitionProps} timeout={250}>
+                  <DescriptionTooltipWrapper>
+                    {convertedDescriptionState?.rawText}
+                  </DescriptionTooltipWrapper>
+                </Fade>
+              )}
+            </Popper>
+          </DescriptionBorder>
         </Description>
         {descriptionEdited && !isDuplicated && (
           <DescriptionLabel>(edited)</DescriptionLabel>

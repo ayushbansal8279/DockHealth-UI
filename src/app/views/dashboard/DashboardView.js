@@ -17,6 +17,8 @@ import Spacing from 'components/common/Spacing';
 import { openModal } from 'modal/actions';
 import { onNewUserTourEnter } from 'helpers/ga-event-helper';
 import { ColumnsConfigProvider } from 'context-api/ColumnsConfigContext';
+import HorizontallyScrolledViewLayout from 'components/template/HorizontallyScrolledViewLayout/HorizontallyScrolledViewLayout';
+import StickyContainer from 'components/common/HorizontalScroll/StickyContainer';
 import DashboardList from './DashboardList/DashboardList';
 import DashboardFirstVisitView from './DashboardFirstVisitView/DashboardFirstVisitView';
 import {
@@ -24,7 +26,6 @@ import {
   DashboardContentWrapper,
   DashboardFirstVisitViewWrapper,
   DashboardScrollableList,
-  DashboardListWrapper,
   StyledConfetti,
 } from './styled';
 import DashboardHeader from './DashboardHeader/DashboardHeader';
@@ -166,39 +167,41 @@ const DashboardView = ({ tabName }) => {
           <DashboardContentWrapper>
             {openConfetti && <StyledConfetti recycle={false} />}
             <DashboardScrollableList>
-              <div>
-                <DashboardHeader />
-                <Spacing vertical={3} />
-              </div>
-              {createListViewVisible ? (
-                <DashboardFirstVisitViewWrapper>
-                  <DashboardFirstVisitView
-                    hasInvitedLists={hasOnlyInvitedLists}
-                    onCreateList={handleCreateFirstList}
-                    onTakeATour={() => {
-                      onNewUserTourEnter('Video tutorial');
-                      dispatch(
-                        openModal('Video', {
-                          title: 'Emailing a Task to Dock Health',
-                          url: 'https://www.youtube.com/embed/FlScR9Rjq1E',
-                        }),
-                      );
-                    }}
-                    acceptInvitation={list =>
-                      dispatch(TaskListActions.acceptInviteToTaskList(list))
-                    }
-                  />
-                </DashboardFirstVisitViewWrapper>
-              ) : (
-                <DashboardListWrapper fullWidth={createListViewVisible}>
+              <HorizontallyScrolledViewLayout>
+                <StickyContainer>
+                  <DashboardHeader currentUser={currentUser} />
+                  <Spacing vertical={3} />
+                </StickyContainer>
+                {createListViewVisible ? (
+                  <StickyContainer>
+                    <DashboardFirstVisitViewWrapper>
+                      <DashboardFirstVisitView
+                        hasInvitedLists={hasOnlyInvitedLists}
+                        onCreateList={handleCreateFirstList}
+                        onTakeATour={() => {
+                          onNewUserTourEnter('Video tutorial');
+                          dispatch(
+                            openModal('Video', {
+                              title: 'Emailing a Task to Dock Health',
+                              url: 'https://www.youtube.com/embed/FlScR9Rjq1E',
+                            }),
+                          );
+                        }}
+                        acceptInvitation={list =>
+                          dispatch(TaskListActions.acceptInviteToTaskList(list))
+                        }
+                      />
+                    </DashboardFirstVisitViewWrapper>
+                  </StickyContainer>
+                ) : (
                   <DashboardList
                     currentUser={currentUser}
                     tourModalIsOpen={tourModalIsOpen}
                     openTourModal={forceOpenTourModal}
                     customerTypeLabel={customerTypeLabel}
                   />
-                </DashboardListWrapper>
-              )}
+                )}
+              </HorizontallyScrolledViewLayout>
             </DashboardScrollableList>
           </DashboardContentWrapper>
         )}

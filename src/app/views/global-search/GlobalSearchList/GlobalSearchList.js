@@ -16,7 +16,7 @@ import LoadMoreButton, {
 import TasksSkeletonLoader from 'components/task/TasksSkeletonLoader/TasksSkeletonLoader';
 import { addingNewSubtaskParentIdSelector } from 'selectors/task-drawer-selectors';
 import palette from 'styles/palette';
-import { GlobalSearchToolbarStickyContainer } from '../styled';
+import StickyContainer from 'components/common/HorizontalScroll/StickyContainer';
 
 const GlobalSearchList = ({
   list,
@@ -59,7 +59,7 @@ const GlobalSearchList = ({
 
   return (
     <ListDetailsContainer>
-      <GlobalSearchToolbarStickyContainer>
+      <StickyContainer left={24} decreaseWidth={2 * 24}>
         <ListDetailsHeader>
           <ListNameContainer
             container
@@ -78,7 +78,7 @@ const GlobalSearchList = ({
             </ListNameSection>
           </ListNameContainer>
         </ListDetailsHeader>
-      </GlobalSearchToolbarStickyContainer>
+      </StickyContainer>
       <Tasks timeout={150} in={isOpen}>
         {tasks?.map(task => (
           <StandardTaskItem

@@ -19,8 +19,9 @@ import * as TaskActions from 'actions/task-actions';
 import { GlobalSearchSagaActions } from 'sagas/global-search-saga';
 import BasicLayoutHeader from 'components/template/BasicLayoutHeader/BasicLayoutHeader';
 import GroupedListSkeletonLoader from 'components/tasklist/GroupedListSkeletonLoader/GroupedListSkeletonLoader';
-import ViewLayout from 'components/template/ViewLayout/ViewLayout';
 import TaskDrawer from 'components/task-drawer/TaskDrawer/TaskDrawer';
+import HorizontallyScrolledViewLayout from 'components/template/HorizontallyScrolledViewLayout/HorizontallyScrolledViewLayout';
+import StickyContainer from 'components/common/HorizontalScroll/StickyContainer';
 import {
   GlobalSearchWrapper,
   GlobalSearchStickyHeader,
@@ -86,11 +87,15 @@ const GlobalSearchView = ({
 
   return (
     <>
-      <ViewLayout header={<BasicLayoutHeader title="Search" />}>
+      <HorizontallyScrolledViewLayout
+        header={<BasicLayoutHeader title="Search" />}
+      >
         <GlobalSearchWrapper>
-          <GlobalSearchStickyHeader>
-            <GlobalSearchHeader />
-          </GlobalSearchStickyHeader>
+          <StickyContainer stickyTop zIndex={13}>
+            <GlobalSearchStickyHeader>
+              <GlobalSearchHeader />
+            </GlobalSearchStickyHeader>
+          </StickyContainer>
           <ViewSidePadding>
             {isLoadingView ? (
               <GroupedListSkeletonLoader />
@@ -121,7 +126,7 @@ const GlobalSearchView = ({
           </ViewSidePadding>
           <TaskDrawer />
         </GlobalSearchWrapper>
-      </ViewLayout>
+      </HorizontallyScrolledViewLayout>
     </>
   );
 };

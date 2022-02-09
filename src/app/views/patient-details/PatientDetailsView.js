@@ -33,18 +33,18 @@ import MegaFilter from 'components/tasklist/MegaFilter/MegaFilter';
 import * as TaskActions from 'actions/task-actions';
 import LayoutHeader from 'components/template/LayoutHeader/LayoutHeader';
 import HeaderSearch from 'components/template/HeaderSearch/HeaderSearch';
-import ViewLayout from 'components/template/ViewLayout/ViewLayout';
 import { getPatientFilterOptions } from 'actions/patient-details-actions';
 import { getCustomerTypeLabel } from 'helpers/customer-type-helper';
 import { capitalize } from 'helpers/capitalize';
 import { ColumnsConfigProvider } from 'context-api/ColumnsConfigContext';
 import { getPatientWidgets } from 'api/patient-api';
+import HorizontallyScrolledViewLayout from 'components/template/HorizontallyScrolledViewLayout/HorizontallyScrolledViewLayout';
+import StickyContainer from 'components/common/HorizontalScroll/StickyContainer';
 import PatientDetailsHeader from './PatientDetailsHeader/PatientDetailsHeader';
 import {
   PatientDetailsContainer,
   PatientDetailsTabsContainer,
   MainTab,
-  PatientStickyContainer,
 } from './styled';
 import PatientTasksList from './PatientTasksList/PatientTasksList';
 import PatientNotes from './PatientNotes/PatientNotes';
@@ -179,7 +179,7 @@ const PatientDetailsView = () => {
   );
 
   return (
-    <ViewLayout
+    <HorizontallyScrolledViewLayout
       header={
         <LayoutHeader>
           <LayoutHeader.Title title={capitalize(customerTypeLabel)} />
@@ -200,7 +200,7 @@ const PatientDetailsView = () => {
       }
     >
       <ColumnsConfigProvider>
-        <PatientStickyContainer>
+        <StickyContainer>
           <PatientDetailsHeader />
           <PatientDetailsTabsContainer>
             <Grid container>
@@ -215,7 +215,7 @@ const PatientDetailsView = () => {
               </Tabs>
             </Grid>
           </PatientDetailsTabsContainer>
-        </PatientStickyContainer>
+        </StickyContainer>
         <PatientDetailsContainer>
           <Switch>
             {TABS_CONFIG?.map(route => (
@@ -244,7 +244,7 @@ const PatientDetailsView = () => {
           </Switch>
         </PatientDetailsContainer>
       </ColumnsConfigProvider>
-    </ViewLayout>
+    </HorizontallyScrolledViewLayout>
   );
 };
 
