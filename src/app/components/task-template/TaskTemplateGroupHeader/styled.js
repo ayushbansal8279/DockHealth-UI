@@ -54,8 +54,8 @@ export const AddPlaceholder = styled(Placeholder)`
 
 export const TaskTemplateGroupHeaderContainer = styled.div`
   display: flex;
-  align-items: center;
-  justify-content: space-between;
+  /* align-items: center; */
+  /* justify-content: space-between; */
   padding: 0;
   border-top: 1px solid ${palette.coolGrey3};
   background-color: ${palette.white};
@@ -86,8 +86,9 @@ export const TaskTemplateOptionsContainer = styled.div`
   align-items: center;
   justify-content: flex-end;
   padding-right: ${spacing.smallPlus};
-  width: ${({ groupHasMultipleAssignees }) =>
-    groupHasMultipleAssignees ? '438px' : '408px'};
+  width: 164px;
+  position: relative;
+  overflow: hidden;
 `;
 
 export const TaskTemplateNameInput = styled.input`
@@ -153,7 +154,7 @@ export const DescriptionStickyColumnContainer = styled.div`
   border-left: 1px solid ${palette.coolGrey3};
   min-width: 500px;
   align-items: center;
-  flex: 1;
+  flex: 0; //TODO: temporary, to correct!
   padding-left: ${spacing.smallPlus};
 
   ${({ isEditingDescription }) => isEditingDescription && `z-index: 12;`}
@@ -168,7 +169,7 @@ export const DescriptionStickyColumnContainer = styled.div`
     top: 50%;
     transform: translateY(-50%);
     width: 100px;
-    height: calc(100% + 4px);
+    height: calc(100% + 6px);
     z-index: -1;
   }
 
@@ -191,5 +192,24 @@ export const DescriptionStickyColumnContainer = styled.div`
             ${highlightDescription} 6s ease-out;
           `
         : ''};
+  }
+`;
+
+export const StandardWorkflowHeaderItemCell = styled.div`
+  align-items: ${({ alignItems }) => alignItems || 'center'};
+  border-right: 1px solid ${palette.coolGrey3};
+  font-size: ${fontSizes.smallPlus};
+  font-weight: ${fontWeights.light};
+  color: ${palette.mediumGrey};
+  min-width: ${props => props.width};
+  max-width: ${props => props.width};
+  background-color: ${props => props.color};
+  width: ${props => (!props.width ? '100%' : '')};
+  justify-content: ${props => props.justify || 'flex-start'};
+  display: flex;
+  position: relative;
+
+  &:last-of-type {
+    border-right: 0;
   }
 `;

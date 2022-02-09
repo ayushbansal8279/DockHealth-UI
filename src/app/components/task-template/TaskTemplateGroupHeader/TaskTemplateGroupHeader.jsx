@@ -7,18 +7,17 @@ import React, {
   useCallback,
   useEffect,
 } from 'react';
-import { Box, Fade, Popper } from '@material-ui/core';
+import { Box } from '@material-ui/core';
 import { checkIfAllTasksSelected } from 'helpers/bulk-edit-helpers';
 import { pluck } from 'ramda';
 import { extractTasksAndSubtasks } from 'helpers/tasklist-helpers';
 import { useDispatch, useSelector } from 'react-redux';
 import { Link } from 'react-router-dom';
 import ThreeDotsIcon from 'img/three-dots';
-import { MoreHoriz } from '@material-ui/icons';
+import { MoreVert } from '@material-ui/icons';
 import * as ModalActions from 'modal/actions';
 import * as WorkflowActions from 'actions/workflow-actions';
 import * as TaskActions from 'actions/task-actions';
-import { openDrawer } from 'actions/workflow-drawer-actions';
 import * as TemplateBundleActions from 'actions/template-bundle-actions';
 import { TaskStatus } from 'helpers/task-helpers';
 import Checkbox from 'components/common/Checkbox/Checkbox';
@@ -27,27 +26,25 @@ import RotatableChevron from 'components/common/RotatableChevron/RotatableChevro
 import { BulkEditContext } from 'components/tasklist/BulkEditSection/BulkEditSection';
 import OptionsMenu from 'components/common/OptionsMenu/OptionsMenu';
 import PatientCard from 'components/patients/PatientCard/PatientCard';
-import { checkIfShouldDisplayTooltip } from 'components/task/OverflowTooltip/OverflowTooltip';
 import TaskItemPopover from 'components/task/TaskItemPopover/TaskItemPopover';
 import PatientList from 'components/patients/PatientDropdown/PatientList';
 import { getCustomerTypeLabel } from 'helpers/customer-type-helper';
 import { capitalize } from 'helpers/capitalize';
+import Spacing from 'components/common/Spacing';
+import TemplateHeaderName from './headerItems/TemplateHeaderName';
 import {
-  // TaskTemplateGroupHeaderWrapper,
   DescriptionStickyColumnContainer,
   TaskTemplateGroupHeaderContainer,
   TaskTemplateProgressCircle,
   TemplateHandle,
   TaskTemplateOptionsContainer,
-  TaskTemplateNameInput,
   TaskTemplatePatientHeader,
   AddPlaceholder,
   Placeholder,
   TaskTemplateRight,
-  NameContainer,
-  NameTooltip,
+  MainStandardWorkflowHeaderItemCell,
+  StandardWorkflowHeaderItemCell,
 } from './styled';
-import TemplateHeaderDescription from './headerItems/TemplateHeaderDescription';
 
 const TaskTemplateGroupHeader = ({
   templateGroup = {},
@@ -59,7 +56,6 @@ const TaskTemplateGroupHeader = ({
   viewSetup,
   setIsAddingTask,
   pageBackground, // TODO: pass through props from the container (another color from home view, another from list, etc)
-  highlightedValue, // TODO: pass through props from the parent component
   // eslint-disable-next-line sonarjs/cognitive-complexity
 }) => {
   const { name, tasks, identifier, patient } = templateGroup;
@@ -81,7 +77,6 @@ const TaskTemplateGroupHeader = ({
   }));
   const customerTypeLabel = getCustomerTypeLabel(currentUser);
   const customerTypeLabelCapitalized = capitalize(customerTypeLabel);
-  const [isHoverVisible, setIsHoverVisible] = useState(false);
   const dispatch = useDispatch();
   const [isEditingDescription, setEditingDescription] = useState(false);
 
@@ -343,115 +338,41 @@ const TaskTemplateGroupHeader = ({
         <Checkbox isChecked={isBundleSelected} onClick={handleBundleSelect} />
         <Box m={1} />
         <RotatableChevron rotated={isOpen} onClick={() => setOpen(!isOpen)} />
-        <NameContainer
-          onMouseEnter={() => setIsHoverVisible(true)}
-          onMouseLeave={() => setIsHoverVisible(false)}
-          onClick={() => {
-            dispatch(openDrawer(identifier, templateGroup));
-          }}
-        >
-          <TaskTemplateNameInput
-            ref={nameInputReference}
-            readOnly={!isEditing}
-            error={nameInputError}
-            onChange={event => {
-              setNameInputValue(event.target?.value);
-              setNameInputError(false);
-            }}
-            onBlur={() => {
-              setIsEditing(false);
-              setNameInputValue(name);
-            }}
-            onKeyDown={handleNameInputKeyDown}
-            value={nameInputValue}
-          />
-        </NameContainer>
-        <Popper
-          anchorEl={nameInputReference.current}
-          placement="bottom-start"
-          open={
-            checkIfShouldDisplayTooltip(nameInputReference.current) &&
-            isHoverVisible
-          }
-          style={{
-            zIndex: 115,
-            maxWidth: nameInputReference?.current?.offsetWidth || '650px',
-          }}
-          transition
-        >
-          {({ TransitionProps }) => (
-            <Fade {...TransitionProps} timeout={250}>
-              <NameTooltip>{name}</NameTooltip>
-            </Fade>
-          )}
-        </Popper>
-        {/* <TemplateHeaderDescription
+        <Spacing horizontal={2} />
+        <OptionsMenu options={menuOptions}>
+          <MoreVert color="primary" />
+        </OptionsMenu>
+        <TemplateHeaderName
           templateGroup={templateGroup}
-          highlightedValue={highlightedValue}
-          isEditing={isEditingDescription}
-          setEditing={setEditingDescription}
-        /> */}
-      </DescriptionStickyColumnContainer>
-      <TaskTemplateRight>
-        {!disablePatientAssignment && (
-          <TaskTemplatePatientHeader>
-            <TaskItemPopover
-              ref={patientReference}
-              fullWidth
-              contentWidth={330}
-              content={({ closePopover }) => (
-                <PatientList
-                  onSelect={newPatient => {
-                    handlePatientSelect(newPatient);
-                    closePopover();
-                  }}
-                  selectedPatientIdentifier={
-                    patient ? patient.patientIdentifier : null
-                  }
-                  isMultipleChange
-                  closePopover={closePopover}
-                />
-              )}
-            >
-              {({ isPopoverOpen }) => (
-                <>
-                  {patient ? (
-                    <PatientCard
-                      patientIdentifier={patient.patientIdentifier}
-                      disabled={isPopoverOpen}
-                    >
-                      <Link to={`/core/patient/${patient?.patientIdentifier}`}>
-                        <Placeholder>
-                          {patient?.lastName
-                            ? `${patient?.lastName}, ${patient?.firstName}`
-                            : patient?.firstName}
-                        </Placeholder>
-                      </Link>
-                    </PatientCard>
-                  ) : (
-                    <AddPlaceholder>
-                      + Add {customerTypeLabelCapitalized}
-                    </AddPlaceholder>
-                  )}
-                </>
-              )}
-            </TaskItemPopover>
-          </TaskTemplatePatientHeader>
-        )}
+          isEditing={isEditing}
+          nameInputError={nameInputError}
+          setNameInputValue={setNameInputValue}
+          setNameInputError={setNameInputError}
+          setIsEditing={setIsEditing}
+          handleNameInputKeyDown={handleNameInputKeyDown}
+          nameInputValue={nameInputValue}
+        />
         <TaskTemplateOptionsContainer
           groupHasMultipleAssignees={groupHasMultipleAssignees}
         >
           <TaskTemplateProgressCircle>
             <ProgressBar
+              width={80}
               progress={(completedTasksAmount / allTasksAmount) * 100}
               label={`${completedTasksAmount}/${allTasksAmount}`}
             />
           </TaskTemplateProgressCircle>
-          <OptionsMenu options={menuOptions}>
-            <MoreHoriz fontSize="large" color="primary" />
-          </OptionsMenu>
         </TaskTemplateOptionsContainer>
-      </TaskTemplateRight>
+      </DescriptionStickyColumnContainer>
+      <StandardWorkflowHeaderItemCell width={60} color="red">
+        okok
+      </StandardWorkflowHeaderItemCell>
+      <StandardWorkflowHeaderItemCell width={60} color="green">
+        okok
+      </StandardWorkflowHeaderItemCell>
+      <StandardWorkflowHeaderItemCell width={60} color="blue">
+        okok
+      </StandardWorkflowHeaderItemCell>
     </TaskTemplateGroupHeaderContainer>
   );
 };
