@@ -122,6 +122,18 @@ const TaskTemplateReducer = (state = initialState, action) => {
         isError: true,
       };
 
+    case ActionTypes.GET_FOLDER_BREADCRUMBS:
+      return {
+        ...state,
+        breadcrumbs: null,
+      };
+
+    case ActionTypes.GET_FOLDER_BREADCRUMBS_SUCCESS:
+      return {
+        ...state,
+        breadcrumbs: action.breadcrumbs,
+      };
+
     case ActionTypes.GET_TASK_TEMPLATE_TASKS: {
       const { taskTemplateIdentifier, withLoader } = action;
 

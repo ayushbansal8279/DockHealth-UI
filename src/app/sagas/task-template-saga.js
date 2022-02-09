@@ -7,7 +7,7 @@ import {
   takeEvery,
   takeLatest,
 } from 'redux-saga/effects';
-import { move, omit, pluck } from 'ramda';
+import { move, omit, pluck, reverse } from 'ramda';
 import * as ActionTypes from 'actions/action-types';
 import { showGlobalAlert, showGlobalErrorAlert } from 'alert/actions';
 import * as TaskTemplateActions from 'actions/task-template-actions';
@@ -37,8 +37,11 @@ import {
 } from 'api/task-label-api';
 import { getLabels } from 'actions/workflow-drawer-actions';
 
-function* initializeWorkflowLibraryState() {
-  yield put(TaskTemplateActions.getWorkflowFolder());
+function* initializeWorkflowLibraryState({ folderIdentifier }) {
+  yield all([
+    folderIdentifier && put(TaskTemplateActions.getFolderBreadcrumbs()),
+    put(TaskTemplateActions.getWorkflowFolder()),
+  ]);
 }
 
 function* moveWorkflowToFolder({ parentTaskTemplateIdentifier, identifier }) {
@@ -95,9 +98,42 @@ function* getWorkflowFolder({ searchPhrase }) {
       );
     }
   } catch {
-    yield put({
-      type: ActionTypes.GET_WORKFLOW_FOLDER_FAILURE,
-    });
+    yield all([
+      put({
+        type: ActionTypes.GET_WORKFLOW_FOLDER_FAILURE,
+      }),
+      put(showGlobalErrorAlert()),
+    ]);
+  }
+}
+
+function* getFolderBreadcrumbs() {
+  try {
+    const folderIdentifier = yield select(currentFolderIdentifierSelector);
+    if (folderIdentifier) {
+      const breadcrumbs = [];
+      let nextFolderIdentifier = folderIdentifier;
+      do {
+        const workflowFolder = yield call(
+          TaskTemplateApi.getTemplate,
+          folderIdentifier,
+        );
+        breadcrumbs.push({
+          id: workflowFolder.identifier,
+          name: workflowFolder.name,
+        });
+        nextFolderIdentifier = workflowFolder.parentTaskTemplateIdentifier;
+      } while (nextFolderIdentifier);
+      yield put({
+        type: ActionTypes.GET_FOLDER_BREADCRUMBS_SUCCESS,
+        breadcrumbs: reverse(breadcrumbs),
+      });
+    }
+  } catch {
+    yield all([
+      put(showGlobalErrorAlert()),
+      put({ type: ActionTypes.GET_FOLDER_BREADCRUMBS_FAILURE }),
+    ]);
   }
 }
 
@@ -735,6 +771,7 @@ export default function* watchTaskTemplate() {
   yield takeEvery(ActionTypes.ADD_TASK_TEMPLATE, addTemplate);
   yield takeEvery(ActionTypes.ADD_TASK_TEMPLATE_FOLDER, addTemplate);
   yield takeLatest(ActionTypes.GET_WORKFLOW_FOLDER, getWorkflowFolder);
+  yield takeLatest(ActionTypes.GET_FOLDER_BREADCRUMBS, getFolderBreadcrumbs);
   yield takeEvery(ActionTypes.TOGGLE_TASK_TEMPLATE_OPEN, toggleTemplateOpen);
   yield takeEvery(ActionTypes.UPDATE_TASK_TEMPLATE, updateTemplate);
   yield takeEvery(ActionTypes.UPDATE_PARTIAL_WORKFLOW, updatePartialWorkflow);

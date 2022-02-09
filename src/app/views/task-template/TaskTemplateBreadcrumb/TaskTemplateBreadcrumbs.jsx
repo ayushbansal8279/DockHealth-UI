@@ -1,5 +1,6 @@
+/* eslint-disable jsx-a11y/anchor-is-valid */
 import React from 'react';
-import { useHistory } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 import {
   WORKFLOW_LIBRARY_PATH,
@@ -8,17 +9,11 @@ import {
 import { taskTemplateBreadcrumbsSelector } from 'selectors/task-template-selectors';
 import Breadcrumbs from '@material-ui/core/Breadcrumbs';
 import Typography from '@material-ui/core/Typography';
-import Link from '@material-ui/core/Link';
 import NavigateNextIcon from '@material-ui/icons/NavigateNext';
 import { Box } from '@material-ui/core';
 
 const TemplateBreadcrumbs = () => {
   const breadcrumbs = useSelector(taskTemplateBreadcrumbsSelector);
-  const history = useHistory();
-
-  const handleRootClick = () => {
-    history.push(WORKFLOW_LIBRARY_PATH);
-  };
 
   return breadcrumbs?.length ? (
     <Box textAlign="left">
@@ -26,15 +21,9 @@ const TemplateBreadcrumbs = () => {
         separator={<NavigateNextIcon fontSize="small" />}
         aria-label="breadcrumb"
       >
-        <Link key="root" href="/" onClick={handleRootClick}>
-          Workflows
-        </Link>
+        <Link to={WORKFLOW_LIBRARY_PATH}>Workflows</Link>
         {breadcrumbs.slice(0, -1).map(({ id, name }) => (
-          <Link
-            key={id}
-            href="/"
-            onClick={() => history.push(createWorkflowFolderPath(id))}
-          >
+          <Link key={id} to={createWorkflowFolderPath(id)}>
             {name}
           </Link>
         ))}

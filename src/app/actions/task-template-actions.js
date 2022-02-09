@@ -85,6 +85,12 @@ export function getWorkflowFolder(searchPhrase = null) {
   };
 }
 
+export function getFolderBreadcrumbs() {
+  return {
+    type: ActionTypes.GET_FOLDER_BREADCRUMBS,
+  };
+}
+
 export function getTemplateTasks(taskTemplateIdentifier, withLoader = true) {
   return {
     type: ActionTypes.GET_TASK_TEMPLATE_TASKS,
