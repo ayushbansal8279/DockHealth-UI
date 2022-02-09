@@ -218,17 +218,19 @@ const TaskTemplateView = () => {
           <Spacing vertical={4} />
           <SearchAndFilterContainer>
             <SearchWrapper fullWidth={isSearchFocused}>
-              <Search
-                fullWidth
-                noBackground
-                value={searchPhrase}
-                onFocus={() => setSearchFocused(true)}
-                onBlur={() => setSearchFocused(false)}
-                onChange={onSearchHandle}
-                placeholder={
-                  isSearchFocused ? 'Search Workflows and Folders' : 'Search'
-                }
-              />
+              {!folderIdentifier && (
+                <Search
+                  fullWidth
+                  noBackground
+                  value={searchPhrase}
+                  onFocus={() => setSearchFocused(true)}
+                  onBlur={() => setSearchFocused(false)}
+                  onChange={onSearchHandle}
+                  placeholder={
+                    isSearchFocused ? 'Search Workflows and Folders' : 'Search'
+                  }
+                />
+              )}
             </SearchWrapper>
             <Grid container justify="flex-end" alignItems="center">
               <AddButton onClick={handleCreateTemplate}>Add Workflow</AddButton>
