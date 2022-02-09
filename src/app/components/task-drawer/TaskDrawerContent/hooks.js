@@ -36,7 +36,7 @@ import {
   onTaskDrawerTaskDuplicated,
 } from 'helpers/ga-event-helper';
 import { noop } from 'helpers/utility-functions';
-import { checkIfTemplateTask } from 'helpers/task-helpers';
+import { checkIfTemplateTask, TaskGroupType } from 'helpers/task-helpers';
 import { TIME_12H_FORMAT } from 'helpers/task-drawer-helpers';
 import * as AlertActions from 'alert/actions';
 import AlertMessages from 'alert/AlertMessages';
@@ -70,7 +70,10 @@ const initializeTaskDrawerHooks = ({
   };
 
   const parentBundle = useMemo(
-    () => selectedTask?.taskGroups?.find(tg => tg.groupType === 'TASK_BUNDLE'),
+    () =>
+      selectedTask?.taskGroups?.find(
+        tg => tg.groupType === TaskGroupType.BUNDLE,
+      ),
     [selectedTask],
   );
 
@@ -90,8 +93,6 @@ const initializeTaskDrawerHooks = ({
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
-
-  console.log('selectedDrawer');
 
   useEffect(() => {
     if (parentTask && taskIdentifier !== previousTaskIdentifierValue.current) {
