@@ -25,6 +25,7 @@ import {
 } from 'actions/task-actions';
 import { UPDATE_TASK_SUCCESS } from 'actions/action-types';
 import { openDrawer, closeDrawer } from 'actions/task-drawer-actions';
+import * as WorkflowDrawerActions from 'actions/workflow-drawer-actions';
 import {
   selectedTaskSelector,
   taskDrawerOpenSelector,
@@ -35,7 +36,7 @@ import {
   onTaskDrawerTaskDuplicated,
 } from 'helpers/ga-event-helper';
 import { noop } from 'helpers/utility-functions';
-import { checkIfTemplateTask } from 'helpers/task-helpers';
+import { checkIfTemplateTask, TaskGroupType } from 'helpers/task-helpers';
 import { TIME_12H_FORMAT } from 'helpers/task-drawer-helpers';
 import * as AlertActions from 'alert/actions';
 import AlertMessages from 'alert/AlertMessages';
@@ -67,6 +68,14 @@ const initializeTaskDrawerHooks = ({
   const clearFormStates = () => {
     setSelectedParentTask(null);
   };
+
+  const parentBundle = useMemo(
+    () =>
+      selectedTask?.taskGroups?.find(
+        tg => tg.groupType === TaskGroupType.BUNDLE,
+      ),
+    [selectedTask],
+  );
 
   const [
     parentDescriptionState,
@@ -232,9 +241,16 @@ const initializeTaskDrawerHooks = ({
     [dispatch, selectedParentTask],
   );
 
+  const handleWorkflowReferenceClick = useCallback(() => {
+    dispatch(
+      WorkflowDrawerActions.openDrawer(parentBundle.taskGroupIdentifier),
+    );
+  }, [dispatch, parentBundle]);
+
   return {
     closeTaskDrawer,
     handleUpdateTask,
+    parentBundle,
     isSubtask,
     isTemplateTask,
     onClickParentTask,
@@ -250,6 +266,7 @@ const initializeTaskDrawerHooks = ({
     taskDrawerReference,
     taskDueTime,
     taskListIdentifier,
+    handleWorkflowReferenceClick,
     clearFormStates,
   };
 };
