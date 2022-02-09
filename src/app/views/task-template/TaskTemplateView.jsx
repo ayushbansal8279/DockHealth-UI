@@ -7,7 +7,7 @@ import React, {
   useRef,
 } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { useHistory } from 'react-router-dom';
+import { useHistory, useParams } from 'react-router-dom';
 import { Grid } from '@material-ui/core';
 import { openModal } from 'modal/actions';
 import * as TaskTemplateActions from 'actions/task-template-actions';
@@ -33,18 +33,13 @@ import {
 import localStorageHelper from 'helpers/local-storage-helper';
 import TasksTemplatesHeader from 'components/tasklist/TasksTemplatesHeader/TasksTemplatesHeader';
 import {
-  goToTaskTemplateFolder,
-  getTemplates,
-  cleanAndPushToBreadcrumbs,
-  cleanBreadcrumbs,
-} from 'actions/task-template-actions';
-import {
   TEMPLATE_TASK_ITEM_SORT_METHODS,
   TEMPLATE_TASK_ITEM_SORT_DESC_METHODS,
 } from 'helpers/workflow-helpers';
 import { compose, identity, differenceWith, eqBy, prop } from 'ramda';
 import { SortOrderType } from 'helpers/sorting-helper';
 import moment from 'moment';
+import { createWorkflowFolderPath } from 'routing/helpers/paths';
 import ViewLayout from 'components/template/ViewLayout/ViewLayout';
 import BasicLayoutHeader from 'components/template/BasicLayoutHeader/BasicLayoutHeader';
 import Search from 'components/task-view/Search/Search';
@@ -65,7 +60,7 @@ import TaskTemplateBanner from './TaskTemplateBanner/TaskTemplateBanner';
 import TaskTemplateBulkEditContainer from './TaskTemplateBulkEditContainer/TaskTemplateBulkEditContainer';
 import TaskTemplateHeader from './TaskTemplateHeader/TaskTemplateHeader';
 import TaskTemplateFolder from './TaskTemplateFolder/TaskTemplateFolder';
-import TemplateBreadcrumbs from './TaskTemplateBreadcrumbs';
+import TemplateBreadcrumbs from './TaskTemplateBreadcrumb/TaskTemplateBreadcrumbs';
 
 const BULK_EDIT_OPTIONS_CONFIG = {
   [BULK_EDIT_MOVE_OPTION]: false,
@@ -77,6 +72,7 @@ const TASK_TEMPLATES_BANNER_CLOSED_STORAGE_KEY =
   'TASK_TEMPLATES_BANNER_CLOSED_STORAGE_KEY';
 
 const TaskTemplateView = () => {
+  const { identifier: folderIdentifier } = useParams();
   const [openUpgradePopup, setOpenUpgradePopup] = useState(false);
   const dispatch = useDispatch();
   const addSmartflowButtonReference = useRef(null);
@@ -93,11 +89,11 @@ const TaskTemplateView = () => {
   const taskTemplates = useSelector(taskTemplatesSelector);
   const userProfile = useSelector(userProfileSelector);
   const folders = useMemo(
-    () => taskTemplates.filter(template => template.type === 'FOLDER'),
+    () => taskTemplates?.filter(template => template.type === 'FOLDER') || [],
     [taskTemplates],
   );
   const templates = useMemo(
-    () => taskTemplates.filter(template => template.type !== 'FOLDER'),
+    () => taskTemplates?.filter(template => template.type !== 'FOLDER') || [],
     [taskTemplates],
   );
 
@@ -135,6 +131,20 @@ const TaskTemplateView = () => {
     }
   }, [dispatch, smartFlowAvailable]);
 
+  useEffect(() => {
+    dispatch(
+      TaskTemplateActions.initializeWorkflowLibraryState(folderIdentifier),
+    );
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [folderIdentifier]);
+
+  useEffect(() => {
+    return () => {
+      dispatch(TaskTemplateActions.clearWorkflowLibraryState());
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
   const handleSortChange = (key, order) => {
     setSort({
       key: order ? key : null,
@@ -159,40 +169,15 @@ const TaskTemplateView = () => {
     return currentSortMethod;
   }, [sort.order, currentSortMethod, currentSortDescMethod]);
 
-  function resetSort() {
-    setSort({
-      key: null,
-      order: null,
-    });
-  }
-
-  const handleBreadcrumbsRootClick = useCallback(() => {
-    resetSort();
-    dispatch(getTemplates())();
-  }, [dispatch]);
-
-  const handleBreadcrumbsChildClick = useCallback(
-    (listBeforeClicked, clickedBreadcrumb) => {
-      resetSort();
-      dispatch(cleanAndPushToBreadcrumbs(listBeforeClicked));
-      dispatch(
-        goToTaskTemplateFolder(clickedBreadcrumb.taskTemplateFolderIdentifier),
-      );
-    },
-    [dispatch],
-  );
-
   const handleGoToFolder = useCallback(
-    (identifier, name) => {
-      dispatch(goToTaskTemplateFolder(identifier));
-      dispatch(TaskTemplateActions.pushToBreadcrumbs(name, identifier));
-      resetSort();
+    id => {
+      history.push(createWorkflowFolderPath(id));
     },
-    [dispatch],
+    [history],
   );
 
   const debouncedGetTemplate = useCallback(
-    debounce(compose(dispatch, getTemplates), 500),
+    debounce(compose(dispatch, TaskTemplateActions.getWorkflowFolder), 500),
     [],
   );
 
@@ -201,7 +186,6 @@ const TaskTemplateView = () => {
     setSearchPhrase(searchPhraseValue);
     if (searchPhraseValue.length !== 1) {
       debouncedGetTemplate(searchPhraseValue);
-      dispatch(cleanBreadcrumbs());
     }
   };
 
@@ -230,10 +214,7 @@ const TaskTemplateView = () => {
               <Spacing vertical={4} />
             </>
           )}
-          <TemplateBreadcrumbs
-            onRootClick={handleBreadcrumbsRootClick}
-            onChildClick={handleBreadcrumbsChildClick}
-          />
+          <TemplateBreadcrumbs />
           <Spacing vertical={4} />
           <SearchAndFilterContainer>
             <SearchWrapper fullWidth={isSearchFocused}>
@@ -272,9 +253,7 @@ const TaskTemplateView = () => {
                   highlighted={newlyCreatedTemplateId === template.identifier}
                   key={template.identifier}
                   template={template}
-                  onClick={() =>
-                    handleGoToFolder(template.identifier, template.name)
-                  }
+                  onClick={() => handleGoToFolder(template.identifier)}
                 >
                   <TaskTemplateHeader
                     createdBy={template.creator.userName}

@@ -112,6 +112,7 @@ const Routes = () => {
           path="/auth"
           render={() => <TemplateAuthBase childRoutes={AUTH_ROUTES} />}
         />
+        <Redirect exact from="/core/workflows" to="/core/workflows/library" />
         <Redirect
           exact
           from="/core/patients/list"

@@ -12,7 +12,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import NavigateNextIcon from '@material-ui/icons/NavigateNext';
 import HardDependencyIcon from 'img/template/hard-dependency';
 import CalendarIcon from 'img/template/calendar-icon';
-import { TASK_TEMPLATES_PATH } from 'routing/helpers/paths';
+import { WORKFLOW_LIBRARY_PATH } from 'routing/helpers/paths';
 import {
   deleteTasksLink,
   changeTaskIntentType,
@@ -467,7 +467,7 @@ const TaskTemplateDetailsView = () => {
           </ElementsSidebar>
           <Box ref={builderWrapperReference} position="relative" flex={1}>
             <BuilderHeader>
-              <Link to={TASK_TEMPLATES_PATH}>
+              <Link to={WORKFLOW_LIBRARY_PATH}>
                 <BuilderHeaderText color={palette.brightBlue}>
                   Workflows
                 </BuilderHeaderText>
