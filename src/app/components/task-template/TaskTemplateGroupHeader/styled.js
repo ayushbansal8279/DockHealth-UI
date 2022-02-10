@@ -1,5 +1,4 @@
-import styled, { keyframes, css } from 'styled-components';
-import { Collapse } from '@material-ui/core';
+import styled from 'styled-components';
 import spacing from 'styles/spacing';
 import palette from 'styles/palette';
 import { fontSizes, fontWeights } from 'styles/font';
@@ -12,18 +11,10 @@ export const TemplateHandle = styled.img`
   background-color: transparent;
   padding: ${spacing.regular} ${spacing.tiny} ${spacing.regular} 0;
   opacity: 0;
+  z-index: 12;
 
   &:active {
     opacity: 1;
-  }
-`;
-
-export const highlightDescription = keyframes`
-  0% {
-      background: #e0eff9;
-  }
-  100% {
-      background: ${palette.white};
   }
 `;
 
@@ -53,15 +44,17 @@ export const AddPlaceholder = styled(Placeholder)`
 `;
 
 export const TaskTemplateGroupHeaderContainer = styled.div`
+  position: relative;
   display: flex;
   /* align-items: center; */
   /* justify-content: space-between; */
   padding: 0;
-  border-top: 1px solid ${palette.coolGrey3};
-  background-color: ${palette.white};
   font-family: 'Roboto', sans-serif;
   font-size: ${fontSizes.smallPlus};
-  flex: 1;
+  width: 100%;
+  border-top: 1px solid ${palette.coolGrey3};
+  border-bottom: 1px solid ${palette.coolGrey3};
+  background-color: ${palette.white};
 
   &:hover {
     & ${TemplateHandle}, ${AddPlaceholder} {
@@ -142,74 +135,4 @@ export const NameTooltip = styled.div`
 export const NameContainer = styled.div`
   display: flex;
   flex: 1;
-`;
-
-export const DescriptionStickyColumnContainer = styled.div`
-  display: flex;
-  width: 100%;
-  position: sticky;
-  left: 24px;
-  z-index: 11;
-  border-right: 1px solid ${palette.coolGrey3};
-  border-left: 1px solid ${palette.coolGrey3};
-  min-width: 500px;
-  align-items: center;
-  flex: 0; //TODO: temporary, to correct!
-  padding-left: ${spacing.smallPlus};
-
-  ${({ isEditingDescription }) => isEditingDescription && `z-index: 12;`}
-
-  &::before {
-    content: '';
-    display: block;
-    background: ${({ backgroundColor }) =>
-      backgroundColor || palette.coolGrey4};
-    position: absolute;
-    left: -101px;
-    top: 50%;
-    transform: translateY(-50%);
-    width: 100px;
-    height: calc(100% + 6px);
-    z-index: -1;
-  }
-
-  &::after {
-    content: '';
-    display: block;
-    background-color: ${props =>
-      props.isSelected ? '#e0eff9' : palette.white};
-    transition: background-color 0.3s ease-out;
-    position: absolute;
-    left: 0px;
-    top: 50%;
-    width: 100%;
-    height: calc(100% - 2px);
-    z-index: -1;
-    transform: translateY(-50%);
-    animation: ${props =>
-      props.newlyCreated
-        ? css`
-            ${highlightDescription} 6s ease-out;
-          `
-        : ''};
-  }
-`;
-
-export const StandardWorkflowHeaderItemCell = styled.div`
-  align-items: ${({ alignItems }) => alignItems || 'center'};
-  border-right: 1px solid ${palette.coolGrey3};
-  font-size: ${fontSizes.smallPlus};
-  font-weight: ${fontWeights.light};
-  color: ${palette.mediumGrey};
-  min-width: ${props => props.width};
-  max-width: ${props => props.width};
-  background-color: ${props => props.color};
-  width: ${props => (!props.width ? '100%' : '')};
-  justify-content: ${props => props.justify || 'flex-start'};
-  display: flex;
-  position: relative;
-
-  &:last-of-type {
-    border-right: 0;
-  }
 `;

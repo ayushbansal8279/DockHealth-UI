@@ -45,6 +45,9 @@ import DependencyListPopover from 'components/common/DependencyListPopover/Depen
 import useBooleanWithTimeout from 'hooks/use-boolean-with-timeout';
 import { useColumnsConfig } from 'context-api/ColumnsConfigContext';
 import TaskItemCustomField from 'components/common/CustomField/TaskItemCustomField';
+import StickyMainTaskItemCell from 'components/task/StickyMainTaskItemCell/StickyMainTaskItemCell';
+import TaskItemCell from 'components/task/TaskItemCell/TaskItemCell';
+import { CustomFieldWidthConfig } from 'helpers/field-type-helpers';
 import { getSubtaskStylingLink } from './helpers';
 import {
   CircleIcon,
@@ -54,8 +57,8 @@ import {
   StandardTaskThreeDots,
   PriorityIndicator,
   DependencyIconContainer,
-  StickyColumnContainer,
   DetailsButton,
+  DecisionCellContainer,
 } from '../styled';
 import TaskItemContextMenu from '../TaskItemContextMenu/TaskItemContextMenu';
 
@@ -370,7 +373,7 @@ const TaskItem = React.memo(
             }
             isAddingTask={false}
           >
-            <StickyColumnContainer
+            <StickyMainTaskItemCell
               isSubtask={showSubtaskStylingLink}
               newlyCreated={newlyCreated}
               backgroundColor={pageBackground}
@@ -445,104 +448,153 @@ const TaskItem = React.memo(
                 )}
               </MainStandardTaskItemCell>
               {decisionInConfig && showDecisionRow && (
-                <TaskItemDecision
-                  outcomes={task.taskOutcomes}
-                  dispatch={dispatch}
-                  onSelect={chooseTaskDecisionOutcome}
-                  task={task}
-                  templateBundleIdentifier={templateBundleIdentifier}
-                  disabled={isCompleted}
-                  error={taskDecisionError}
-                  clearError={() => setTaskDecisionError(false)}
-                />
+                <DecisionCellContainer>
+                  <TaskItemDecision
+                    outcomes={task.taskOutcomes}
+                    dispatch={dispatch}
+                    onSelect={chooseTaskDecisionOutcome}
+                    task={task}
+                    templateBundleIdentifier={templateBundleIdentifier}
+                    disabled={isCompleted}
+                    error={taskDecisionError}
+                    clearError={() => setTaskDecisionError(false)}
+                  />
+                </DecisionCellContainer>
               )}
-            </StickyColumnContainer>
+            </StickyMainTaskItemCell>
             {subtasksIsInConfig && (
-              <TaskItemSubtasks
-                isSubtask={isSubtask}
-                subtaskQuickAddOpen={subtaskQuickAddOpen}
-                subtasksDisabled={subtasksDisabled}
-                subTasksCount={subTasksCount}
-                isHovered={isHovered}
-                isOpen={isOpen}
-                isNestedTask={isNestedTask}
-                onSubtaskLabelClick={onSubtaskLabelClick}
-                taskIdentifier={taskIdentifier}
-                openQuickAddSubtask={openQuickAddSubtask}
-                dispatch={dispatch}
-              />
+              <TaskItemCell
+                width="60px"
+                justify="center"
+                paddingLeft="tiny"
+                paddingRight="tiny"
+              >
+                <TaskItemSubtasks
+                  isSubtask={isSubtask}
+                  subtaskQuickAddOpen={subtaskQuickAddOpen}
+                  subtasksDisabled={subtasksDisabled}
+                  subTasksCount={subTasksCount}
+                  isHovered={isHovered}
+                  isOpen={isOpen}
+                  isNestedTask={isNestedTask}
+                  onSubtaskLabelClick={onSubtaskLabelClick}
+                  taskIdentifier={taskIdentifier}
+                  openQuickAddSubtask={openQuickAddSubtask}
+                  dispatch={dispatch}
+                />
+              </TaskItemCell>
             )}
             {patientIsInConfig && (
-              <TaskItemPatient
-                highlightedValue={highlightedValue}
-                taskStatus={task?.status}
-                isSubtask={isSubtask}
-                parentHasPatient={parentHasPatient}
-                hasParentTaskLabel={hasParentTaskLabel}
-                matchPatientMRN={matchPatientMRN}
-                patient={patient || parentTask?.patient}
-                matchPatient={matchPatient}
-                task={task}
-                openPatientPopover={openPatientPopover}
-                onTaskUpdate={onTaskUpdate}
-                currentUser={currentUser}
-              />
+              <TaskItemCell width="164px">
+                <TaskItemPatient
+                  highlightedValue={highlightedValue}
+                  taskStatus={task?.status}
+                  isSubtask={isSubtask}
+                  parentHasPatient={parentHasPatient}
+                  hasParentTaskLabel={hasParentTaskLabel}
+                  matchPatientMRN={matchPatientMRN}
+                  patient={patient || parentTask?.patient}
+                  matchPatient={matchPatient}
+                  task={task}
+                  openPatientPopover={openPatientPopover}
+                  onTaskUpdate={onTaskUpdate}
+                  currentUser={currentUser}
+                />
+              </TaskItemCell>
             )}
             {workflowStatusIsInConfig && (
-              <TaskItemWorkflowStatus
-                task={task}
-                updateWorkflowStatus={handleUpdateWorkflowStatus}
-                workflowStatus={workflowStatus}
-                matchWorkflowStatus={matchWorkflowStatus}
-                highlightedValue={highlightedValue}
-                showDefaultTaskStatusCompleted={
-                  selectedOrganization?.showDefaultTaskStatusCompleted
-                }
-              />
+              <TaskItemCell
+                width="120px"
+                paddingLeft="smallPlus"
+                paddingRight="tiny"
+                onContextMenu={event => {
+                  event.stopPropagation();
+                }}
+              >
+                <TaskItemWorkflowStatus
+                  task={task}
+                  updateWorkflowStatus={handleUpdateWorkflowStatus}
+                  workflowStatus={workflowStatus}
+                  matchWorkflowStatus={matchWorkflowStatus}
+                  highlightedValue={highlightedValue}
+                  showDefaultTaskStatusCompleted={
+                    selectedOrganization?.showDefaultTaskStatusCompleted
+                  }
+                />
+              </TaskItemCell>
             )}
             {activityIsInConfig && (
-              <TaskItemIcons
-                matchComments={matchComments}
-                comments={comments}
-                isHovered={isHovered}
-                task={task}
-                matchLabels={matchLabels}
-                labels={labels}
-                matchAttachments={matchAttachments}
-                attachments={attachments}
-                dispatch={dispatch}
-              />
+              <TaskItemCell width="150px">
+                <TaskItemIcons
+                  matchComments={matchComments}
+                  comments={comments}
+                  isHovered={isHovered}
+                  task={task}
+                  matchLabels={matchLabels}
+                  labels={labels}
+                  matchAttachments={matchAttachments}
+                  attachments={attachments}
+                  dispatch={dispatch}
+                />
+              </TaskItemCell>
             )}
             {dueDateIsInConfig && (
-              <TaskItemDueDate task={task} isHovered={isHovered} />
+              <TaskItemCell
+                paddingLeft="tiny"
+                paddingRight="tiny"
+                width="78px"
+                justify="center"
+                onContextMenu={event => {
+                  event.stopPropagation();
+                }}
+              >
+                <TaskItemDueDate task={task} isHovered={isHovered} />
+              </TaskItemCell>
             )}
             {assignedIsInConfig && (
-              <TaskItemMembers
-                multipleAssigneesContext={multipleAssigneesContext}
-                task={task}
-                assignedToUsers={assignedToUsers}
-                handleReasignTask={handleReasignTask}
-                matchAssignedTo={matchAssignedTo}
-              />
+              <TaskItemCell
+                width={`${multipleAssigneesContext ? 90 : 60}px`}
+                justify={multipleAssigneesContext ? 'flex-start' : 'center'}
+                paddingLeft="small"
+                paddingRight="small"
+                onContextMenu={event => {
+                  event.stopPropagation();
+                }}
+              >
+                <TaskItemMembers
+                  multipleAssigneesContext={multipleAssigneesContext}
+                  task={task}
+                  assignedToUsers={assignedToUsers}
+                  handleReasignTask={handleReasignTask}
+                  matchAssignedTo={matchAssignedTo}
+                />
+              </TaskItemCell>
             )}
             {listNameIsInConfig && (
-              <TaskItemList
-                listName={listName}
-                taskListIdentifier={taskListIdentifier}
-                taskStatus={task.status}
-              />
+              <TaskItemCell width="168px">
+                <TaskItemList
+                  listName={listName}
+                  taskListIdentifier={taskListIdentifier}
+                  taskStatus={task.status}
+                />
+              </TaskItemCell>
             )}
             {customColumnsConfig
               .filter(f => f.isChecked)
               .map(field => (
-                <TaskItemCustomField
-                  field={field}
-                  readOnly
-                  customFieldValue={task?.taskMetaData?.find(
-                    f => f.customFieldIdentifier === field.identifier,
-                  )}
-                  task={task}
-                />
+                <TaskItemCell
+                  padding="4px"
+                  width={CustomFieldWidthConfig[field.fieldType]}
+                >
+                  <TaskItemCustomField
+                    field={field}
+                    readOnly
+                    customFieldValue={task?.taskMetaData?.find(
+                      f => f.customFieldIdentifier === field.identifier,
+                    )}
+                    task={task}
+                  />
+                </TaskItemCell>
               ))}
           </StandardTaskItemContainer>
         </StandardTaskItemPanel>

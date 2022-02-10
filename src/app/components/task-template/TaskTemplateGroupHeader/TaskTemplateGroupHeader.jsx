@@ -19,7 +19,7 @@ import * as ModalActions from 'modal/actions';
 import * as WorkflowActions from 'actions/workflow-actions';
 import * as TaskActions from 'actions/task-actions';
 import * as TemplateBundleActions from 'actions/template-bundle-actions';
-import { TaskStatus } from 'helpers/task-helpers';
+import { TaskItemColumn, TaskStatus } from 'helpers/task-helpers';
 import Checkbox from 'components/common/Checkbox/Checkbox';
 import ProgressBar from 'components/common/ProgressBar/ProgressBar';
 import RotatableChevron from 'components/common/RotatableChevron/RotatableChevron';
@@ -31,7 +31,10 @@ import PatientList from 'components/patients/PatientDropdown/PatientList';
 import { getCustomerTypeLabel } from 'helpers/customer-type-helper';
 import { capitalize } from 'helpers/capitalize';
 import Spacing from 'components/common/Spacing';
+import { useColumnsConfig } from 'context-api/ColumnsConfigContext';
 import TemplateHeaderName from './headerItems/TemplateHeaderName';
+import StickyMainTaskItemCell from 'components/task/StickyMainTaskItemCell/StickyMainTaskItemCell';
+import TaskItemCell from 'components/task/TaskItemCell/TaskItemCell';
 import {
   DescriptionStickyColumnContainer,
   TaskTemplateGroupHeaderContainer,
@@ -42,9 +45,8 @@ import {
   AddPlaceholder,
   Placeholder,
   TaskTemplateRight,
-  MainStandardWorkflowHeaderItemCell,
-  StandardWorkflowHeaderItemCell,
 } from './styled';
+import { CustomFieldWidthConfig } from 'helpers/field-type-helpers';
 
 const TaskTemplateGroupHeader = ({
   templateGroup = {},
@@ -79,6 +81,7 @@ const TaskTemplateGroupHeader = ({
   const customerTypeLabelCapitalized = capitalize(customerTypeLabel);
   const dispatch = useDispatch();
   const [isEditingDescription, setEditingDescription] = useState(false);
+  const { columnsConfig, customColumnsConfig } = useColumnsConfig();
 
   useEffect(() => {
     setOpen(SHOW_WORKFLOW_DETAILS);
@@ -330,49 +333,60 @@ const TaskTemplateGroupHeader = ({
       {!groupDragAndDropDisabled && !bulkEditIsActive && (
         <TemplateHandle src={ThreeDotsIcon} alt="Handle" {...dragHandleProps} />
       )}
-      <DescriptionStickyColumnContainer
-        backgroundColor={pageBackground}
-        isSelected={isBundleSelected}
-        isEditingDescription={isEditingDescription}
-      >
-        <Checkbox isChecked={isBundleSelected} onClick={handleBundleSelect} />
-        <Box m={1} />
-        <RotatableChevron rotated={isOpen} onClick={() => setOpen(!isOpen)} />
-        <Spacing horizontal={2} />
-        <OptionsMenu options={menuOptions}>
-          <MoreVert color="primary" />
-        </OptionsMenu>
-        <TemplateHeaderName
-          templateGroup={templateGroup}
-          isEditing={isEditing}
-          nameInputError={nameInputError}
-          setNameInputValue={setNameInputValue}
-          setNameInputError={setNameInputError}
-          setIsEditing={setIsEditing}
-          handleNameInputKeyDown={handleNameInputKeyDown}
-          nameInputValue={nameInputValue}
-        />
-        <TaskTemplateOptionsContainer
-          groupHasMultipleAssignees={groupHasMultipleAssignees}
+      {columnsConfig[TaskItemColumn.DESCRIPTION] && (
+        <StickyMainTaskItemCell
+          backgroundColor={pageBackground}
+          isSelected={isBundleSelected}
+          isEditingDescription={isEditingDescription}
         >
-          <TaskTemplateProgressCircle>
-            <ProgressBar
-              width={80}
-              progress={(completedTasksAmount / allTasksAmount) * 100}
-              label={`${completedTasksAmount}/${allTasksAmount}`}
-            />
-          </TaskTemplateProgressCircle>
-        </TaskTemplateOptionsContainer>
-      </DescriptionStickyColumnContainer>
-      <StandardWorkflowHeaderItemCell width={60} color="red">
-        okok
-      </StandardWorkflowHeaderItemCell>
-      <StandardWorkflowHeaderItemCell width={60} color="green">
-        okok
-      </StandardWorkflowHeaderItemCell>
-      <StandardWorkflowHeaderItemCell width={60} color="blue">
-        okok
-      </StandardWorkflowHeaderItemCell>
+          <Checkbox isChecked={isBundleSelected} onClick={handleBundleSelect} />
+          <Box m={1} />
+          <RotatableChevron rotated={isOpen} onClick={() => setOpen(!isOpen)} />
+          <Spacing horizontal={2} />
+          <OptionsMenu options={menuOptions}>
+            <MoreVert color="primary" />
+          </OptionsMenu>
+          <TemplateHeaderName
+            templateGroup={templateGroup}
+            isEditing={isEditing}
+            nameInputError={nameInputError}
+            setNameInputValue={setNameInputValue}
+            setNameInputError={setNameInputError}
+            setIsEditing={setIsEditing}
+            handleNameInputKeyDown={handleNameInputKeyDown}
+            nameInputValue={nameInputValue}
+          />
+          <TaskTemplateOptionsContainer
+            groupHasMultipleAssignees={groupHasMultipleAssignees}
+          >
+            <TaskTemplateProgressCircle>
+              <ProgressBar
+                width={80}
+                progress={(completedTasksAmount / allTasksAmount) * 100}
+                label={`${completedTasksAmount}/${allTasksAmount}`}
+              />
+            </TaskTemplateProgressCircle>
+          </TaskTemplateOptionsContainer>
+        </StickyMainTaskItemCell>
+      )}
+      {columnsConfig[TaskItemColumn.SUBTASKS_COUNT] && (
+        <TaskItemCell width={60} />
+      )}
+      {columnsConfig[TaskItemColumn.PATIENT] && <TaskItemCell width={164} />}
+      {columnsConfig[TaskItemColumn.WORKFLOW_STATUS] && (
+        <TaskItemCell width={120} />
+      )}
+      {columnsConfig[TaskItemColumn.ACTIVITY] && <TaskItemCell width={150} />}
+      {columnsConfig[TaskItemColumn.DUE_DATE] && <TaskItemCell width={78} />}
+      {columnsConfig[TaskItemColumn.ASSIGNED] && (
+        <TaskItemCell width={groupHasMultipleAssignees ? 90 : 60} />
+      )}
+      {columnsConfig[TaskItemColumn.LIST_NAME] && <TaskItemCell width={168} />}
+      {customColumnsConfig
+        .filter(f => f.isChecked)
+        .map(field => (
+          <TaskItemCell width={CustomFieldWidthConfig[field.fieldType]} />
+        ))}
     </TaskTemplateGroupHeaderContainer>
   );
 };

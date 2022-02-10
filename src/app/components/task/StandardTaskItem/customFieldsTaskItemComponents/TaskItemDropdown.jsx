@@ -1,14 +1,8 @@
 /* eslint-disable import/extensions */
 import React, { useMemo } from 'react';
-import { CustomFieldWidthConfig, FieldType } from 'helpers/field-type-helpers';
 import { Typography } from '@material-ui/core';
-import { StandardTaskItemCell } from './styled';
 
-const TaskItemDropdown = ({
-  value,
-  field: { options: initialOptions },
-  onClick,
-}) => {
+const TaskItemDropdown = ({ value, field: { options: initialOptions } }) => {
   const options = useMemo(
     () =>
       initialOptions?.map(({ identifier, name }) => ({
@@ -23,13 +17,6 @@ const TaskItemDropdown = ({
     return chosenOption?.label || '';
   }, [options, value]);
 
-  return (
-    <StandardTaskItemCell
-      width={CustomFieldWidthConfig[FieldType.DROPDOWN]}
-      onClick={onClick}
-    >
-      <Typography>{chosenOptionName}</Typography>
-    </StandardTaskItemCell>
-  );
+  return <Typography>{chosenOptionName}</Typography>;
 };
 export default TaskItemDropdown;

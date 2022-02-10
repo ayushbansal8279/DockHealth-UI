@@ -10,7 +10,7 @@ import {
 import { DrawerFieldEnum } from 'helpers/task-drawer-helpers';
 import Tooltip from 'components/common/Tooltip/Tooltip';
 import TaskIcon from 'components/task/TaskIcon/TaskIcon';
-import { GridImg, StandardTaskItemCell } from '../../styled';
+import { GridImg } from '../../styled';
 
 const TaskItemIcons = ({
   matchComments,
@@ -41,67 +41,63 @@ const TaskItemIcons = ({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [task]);
   return (
-    <StandardTaskItemCell width="150px">
-      <Grid container>
-        <GridImg item xs={4} matched={matchComments}>
-          <Tooltip
-            placement="top"
-            title={
-              comments?.length > 0
-                ? getCommentsIconTooltipTitle(comments)
-                : 'Add a new comment'
-            }
-          >
-            <button type="button" onClick={onCommentClick}>
-              <TaskIcon
-                type="comments"
-                isHovered={isHovered}
-                isActive={comments?.length > 0}
-                isNew={task.updatedComment}
-              />
-            </button>
-          </Tooltip>
-        </GridImg>
-        <GridImg item xs={4} matched={matchLabels}>
-          <Tooltip
-            placement="top"
-            title={
-              labels?.length > 0
-                ? getLabelsIconTooltipTitle(labels)
-                : 'Add label'
-            }
-          >
-            <button type="button" onClick={onLabelClick}>
-              <TaskIcon
-                type="labels"
-                isHovered={isHovered}
-                isActive={labels?.length > 0}
-                isNew={task.updatedLabel}
-              />
-            </button>
-          </Tooltip>
-        </GridImg>
-        <GridImg item xs={4} matched={matchAttachments}>
-          <Tooltip
-            placement="top"
-            title={
-              attachments?.length > 0
-                ? getAttachmentsIconTooltipTitle(attachments)
-                : 'Add file'
-            }
-          >
-            <button type="button" onClick={onAttachmentsClick}>
-              <TaskIcon
-                type="attachments"
-                isHovered={isHovered}
-                isActive={attachments?.length > 0}
-                isNew={task.updatedAttachment}
-              />
-            </button>
-          </Tooltip>
-        </GridImg>
-      </Grid>
-    </StandardTaskItemCell>
+    <Grid container>
+      <GridImg item xs={4} matched={matchComments}>
+        <Tooltip
+          placement="top"
+          title={
+            comments?.length > 0
+              ? getCommentsIconTooltipTitle(comments)
+              : 'Add a new comment'
+          }
+        >
+          <button type="button" onClick={onCommentClick}>
+            <TaskIcon
+              type="comments"
+              isHovered={isHovered}
+              isActive={comments?.length > 0}
+              isNew={task.updatedComment}
+            />
+          </button>
+        </Tooltip>
+      </GridImg>
+      <GridImg item xs={4} matched={matchLabels}>
+        <Tooltip
+          placement="top"
+          title={
+            labels?.length > 0 ? getLabelsIconTooltipTitle(labels) : 'Add label'
+          }
+        >
+          <button type="button" onClick={onLabelClick}>
+            <TaskIcon
+              type="labels"
+              isHovered={isHovered}
+              isActive={labels?.length > 0}
+              isNew={task.updatedLabel}
+            />
+          </button>
+        </Tooltip>
+      </GridImg>
+      <GridImg item xs={4} matched={matchAttachments}>
+        <Tooltip
+          placement="top"
+          title={
+            attachments?.length > 0
+              ? getAttachmentsIconTooltipTitle(attachments)
+              : 'Add file'
+          }
+        >
+          <button type="button" onClick={onAttachmentsClick}>
+            <TaskIcon
+              type="attachments"
+              isHovered={isHovered}
+              isActive={attachments?.length > 0}
+              isNew={task.updatedAttachment}
+            />
+          </button>
+        </Tooltip>
+      </GridImg>
+    </Grid>
   );
 };
 

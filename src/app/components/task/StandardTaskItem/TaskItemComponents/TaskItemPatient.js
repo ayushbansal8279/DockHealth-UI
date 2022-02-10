@@ -9,7 +9,6 @@ import Highlighter from 'react-highlight-words';
 import {
   AddPlaceholder,
   ClickablePatient,
-  StandardTaskItemCell,
   PatientLabel,
   DisabledPatientLabel,
 } from '../../styled';
@@ -68,78 +67,76 @@ const TaskItemPatient = ({
   const customerTypeLabelCapitalized = capitalize(customerTypeLabel);
 
   return (
-    <StandardTaskItemCell width="164px">
-      <ClickablePatient onClick={properOnPatientClick}>
-        {!isCompleted &&
-          !patient &&
-          !isSubtask &&
-          !openPatientPopover &&
-          !isTemplateTask && (
-            <PatientDropdown
-              selectedPatientIdentifier={
-                patient ? patient.patientIdentifier : null
-              }
-              isPopoverOpen={isPopoverOpen}
-              onChangePatient={handleUpdateRegularTaskPatient}
-              openPopover={() => openPopoverWhenNotCompleted(true)}
-              closePopover={() => setPopoverOpen(false)}
-              isSubtask={isSubtask}
-              hasSubtasks={hasSubtasks}
-            >
-              <AddPlaceholder>
-                + Add {customerTypeLabelCapitalized}
-              </AddPlaceholder>
-            </PatientDropdown>
-          )}
-        {!isCompleted && !patient && !isSubtask && openPatientPopover && (
-          <AddPlaceholder>+ Add {customerTypeLabelCapitalized}</AddPlaceholder>
+    <ClickablePatient onClick={properOnPatientClick}>
+      {!isCompleted &&
+        !patient &&
+        !isSubtask &&
+        !openPatientPopover &&
+        !isTemplateTask && (
+          <PatientDropdown
+            selectedPatientIdentifier={
+              patient ? patient.patientIdentifier : null
+            }
+            isPopoverOpen={isPopoverOpen}
+            onChangePatient={handleUpdateRegularTaskPatient}
+            openPopover={() => openPopoverWhenNotCompleted(true)}
+            closePopover={() => setPopoverOpen(false)}
+            isSubtask={isSubtask}
+            hasSubtasks={hasSubtasks}
+          >
+            <AddPlaceholder>
+              + Add {customerTypeLabelCapitalized}
+            </AddPlaceholder>
+          </PatientDropdown>
         )}
-        {patient && (openPatientPopover || hasParentTaskLabel) && (
-          <PatientCard patientIdentifier={patient.patientIdentifier}>
-            <Link to={`/core/patient/${patient.patientIdentifier}`}>
-              <PatientLabelComponent>
-                {(matchPatient || matchPatientMRN) && highlightedValue ? (
-                  <Highlighter
-                    highlightClassName="list-highlight"
-                    searchWords={
-                      matchPatient
-                        ? highlightedValue?.toLowerCase().split(/\s+/)
-                        : `${patientName}`.toLowerCase().split(/\s+/)
-                    }
-                    autoEscape
-                    textToHighlight={`${patient.patientName}`}
-                  />
-                ) : (
-                  `${patientName}`
-                )}
-              </PatientLabelComponent>
-            </Link>
-          </PatientCard>
-        )}
-        {patient && !isSubtask && !openPatientPopover && (
-          <PatientCard patientIdentifier={patient.patientIdentifier}>
-            <Link to={`/core/patient/${patient.patientIdentifier}`}>
-              <PatientLabelComponent>
-                {(matchPatient || matchPatientMRN) && highlightedValue ? (
-                  <Highlighter
-                    highlightClassName="list-highlight"
-                    searchWords={
-                      matchPatient
-                        ? highlightedValue?.toLowerCase().split(/\s+/)
-                        : `${patientName}`.toLowerCase().split(/\s+/)
-                    }
-                    autoEscape
-                    textToHighlight={`${patient.patientName}`}
-                  />
-                ) : (
-                  `${patientName}`
-                )}
-              </PatientLabelComponent>
-            </Link>
-          </PatientCard>
-        )}
-      </ClickablePatient>
-    </StandardTaskItemCell>
+      {!isCompleted && !patient && !isSubtask && openPatientPopover && (
+        <AddPlaceholder>+ Add {customerTypeLabelCapitalized}</AddPlaceholder>
+      )}
+      {patient && (openPatientPopover || hasParentTaskLabel) && (
+        <PatientCard patientIdentifier={patient.patientIdentifier}>
+          <Link to={`/core/patient/${patient.patientIdentifier}`}>
+            <PatientLabelComponent>
+              {(matchPatient || matchPatientMRN) && highlightedValue ? (
+                <Highlighter
+                  highlightClassName="list-highlight"
+                  searchWords={
+                    matchPatient
+                      ? highlightedValue?.toLowerCase().split(/\s+/)
+                      : `${patientName}`.toLowerCase().split(/\s+/)
+                  }
+                  autoEscape
+                  textToHighlight={`${patient.patientName}`}
+                />
+              ) : (
+                `${patientName}`
+              )}
+            </PatientLabelComponent>
+          </Link>
+        </PatientCard>
+      )}
+      {patient && !isSubtask && !openPatientPopover && (
+        <PatientCard patientIdentifier={patient.patientIdentifier}>
+          <Link to={`/core/patient/${patient.patientIdentifier}`}>
+            <PatientLabelComponent>
+              {(matchPatient || matchPatientMRN) && highlightedValue ? (
+                <Highlighter
+                  highlightClassName="list-highlight"
+                  searchWords={
+                    matchPatient
+                      ? highlightedValue?.toLowerCase().split(/\s+/)
+                      : `${patientName}`.toLowerCase().split(/\s+/)
+                  }
+                  autoEscape
+                  textToHighlight={`${patient.patientName}`}
+                />
+              ) : (
+                `${patientName}`
+              )}
+            </PatientLabelComponent>
+          </Link>
+        </PatientCard>
+      )}
+    </ClickablePatient>
   );
 };
 
