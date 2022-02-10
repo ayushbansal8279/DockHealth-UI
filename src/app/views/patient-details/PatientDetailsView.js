@@ -51,12 +51,12 @@ import {
   getQuickFilters,
   selectQuickFilter,
 } from 'actions/mega-filter-actions';
-import PatientDetailsHeader from './PatientDetailsHeader/PatientDetailsHeader';
 import {
   PatientDetailsContainer,
   PatientDetailsTabsContainer,
   MainTab,
 } from './styled';
+import PatientDetailsHeader from './PatientDetailsHeader/PatientDetailsHeader';
 import PatientTasksList from './PatientTasksList/PatientTasksList';
 import PatientNotes from './PatientNotes/PatientNotes';
 import PatientAttachments from './PatientAttachments/PatientAttachments';
