@@ -99,6 +99,43 @@ export function mapSelectedOptionsToRequestPayload(selectedFilters) {
   }, {});
 }
 
+export function mapRequestSelectedOptionsToStore(selectedOptions) {
+  if (!selectedOptions) return null;
+
+  return Object.entries(selectedOptions).reduce((accumulator, [k, v]) => {
+    if (!v) return accumulator;
+    if (DATE_FILTER_OPTIONS.includes(k)) {
+      return {
+        ...accumulator,
+        [k]: {
+          dateEnd: v.dateEnd || null,
+          dateStart: v.dateStart || null,
+          options: v.dateOptions,
+        },
+      };
+    }
+
+    if (Object.values(FilterOptionsCategory).includes(k)) {
+      if (v?.length === 0 || v === '') return accumulator;
+      return {
+        ...accumulator,
+        [k]: { options: v },
+      };
+    }
+
+    return {
+      ...accumulator,
+      ...v.reduce(
+        (a, c) => ({
+          ...a,
+          [c.customFieldIdentifier]: { options: c.selectedOptionIdentifiers },
+        }),
+        {},
+      ),
+    };
+  }, {});
+}
+
 function clearEmptyFilterOptions(selectedFilters) {
   return Object.entries(selectedFilters).reduce(
     (accumulator, [optionCategoryId, value]) => {

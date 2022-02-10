@@ -35,7 +35,6 @@ import TaskItemPopover from 'components/task/TaskItemPopover/TaskItemPopover';
 import PatientList from 'components/patients/PatientDropdown/PatientList';
 import { getCustomerTypeLabel } from 'helpers/customer-type-helper';
 import { capitalize } from 'helpers/capitalize';
-import Tooltip from 'components/common/Tooltip/Tooltip';
 
 import StickyContainer from 'components/common/HorizontalScroll/StickyContainer';
 import {

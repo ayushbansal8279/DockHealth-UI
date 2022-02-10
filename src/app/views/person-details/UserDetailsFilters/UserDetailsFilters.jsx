@@ -1,8 +1,21 @@
-import React from 'react';
+import React, { useCallback, useMemo } from 'react';
 import MegaFilter from 'components/tasklist/MegaFilter/MegaFilter';
 import { useDispatch, useSelector } from 'react-redux';
-import { megaFilterSelector } from 'selectors/mega-filter-selectors';
-import { selectFiltersForMegaFilter } from 'actions/mega-filter-actions';
+import {
+  megaFilterSelector,
+  quickFiltersSelector,
+  addQuickFilterOptionSelector,
+  selectedQuickFilterSelector,
+} from 'selectors/mega-filter-selectors';
+import {
+  getQuickFilters,
+  selectFiltersForMegaFilter,
+  selectQuickFilter,
+  showAddQuickFilterOption,
+  createQuickFilter,
+  updateQuickFilter,
+  deleteQuickFilter,
+} from 'actions/mega-filter-actions';
 import { getUserTaskFilterOptions } from 'actions/person-details-actions';
 import {
   taskCountersSelector,
@@ -14,6 +27,7 @@ import {
   userIdentifierSelector,
 } from 'selectors/person-details-selectors';
 import { TaskStatus } from 'helpers/task-helpers';
+import { equals } from 'ramda';
 import { determineTaskCounts } from './helpers';
 
 const UserDetailsFilters = () => {
@@ -28,7 +42,9 @@ const UserDetailsFilters = () => {
   const tasks = useSelector(tasksSelector);
   const completedTasks = useSelector(completedTasksSelector);
   const taskCounters = useSelector(taskCountersSelector);
-
+  const quickFiltersList = useSelector(quickFiltersSelector);
+  const addQuickFilterOption = useSelector(addQuickFilterOptionSelector);
+  const selectedQuickFilter = useSelector(selectedQuickFilterSelector);
   const { filters, selectedFilters } = megaFilter || {};
 
   const tasksAndSubTasksCount =
@@ -56,7 +72,77 @@ const UserDetailsFilters = () => {
 
   const handleFilterOpen = () => {
     dispatch(getUserTaskFilterOptions());
+    dispatch(getQuickFilters({ personIdentifier: userIdentifier }));
   };
+
+  const wasChangedFilters = useMemo(
+    () =>
+      !equals(
+        selectedFilters,
+        quickFiltersList?.find(
+          f => f.quickFilterIdentifier === selectedQuickFilter,
+        )?.selectedOptions,
+      ),
+    [quickFiltersList, selectedFilters, selectedQuickFilter],
+  );
+
+  const handleSaveAsQuickFilter = useCallback(
+    () => dispatch(showAddQuickFilterOption()),
+    [dispatch],
+  );
+
+  const handleSaveQuickFilter = useCallback(
+    () =>
+      dispatch(
+        updateQuickFilter(
+          selectedQuickFilter,
+          {
+            selectedOptions: selectedFilters,
+          },
+          { personIdentifier: userIdentifier },
+        ),
+      ),
+    [dispatch, selectedFilters, selectedQuickFilter, userIdentifier],
+  );
+
+  const handleSelectQuickFilter = useCallback(
+    (id, filtersSetup) => {
+      dispatch(selectQuickFilter(id));
+      dispatch(
+        selectFiltersForMegaFilter(filtersSetup, userIdentifier, selectedTab),
+      );
+    },
+    [dispatch, selectedTab, userIdentifier],
+  );
+
+  const handleQuickFilterCreate = useCallback(
+    name =>
+      dispatch(
+        createQuickFilter(
+          name,
+          { personIdentifier: userIdentifier },
+          selectedFilters,
+        ),
+      ),
+    [dispatch, selectedFilters, userIdentifier],
+  );
+
+  const handleQuickFilterUpdate = useCallback(
+    (quickFilterIdentifier, name) =>
+      dispatch(
+        updateQuickFilter(
+          quickFilterIdentifier,
+          { name },
+          { personIdentifier: userIdentifier },
+        ),
+      ),
+    [dispatch, userIdentifier],
+  );
+
+  const handleQuickFilterDelete = useCallback(
+    quickFilterIdentifier => dispatch(deleteQuickFilter(quickFilterIdentifier)),
+    [dispatch],
+  );
 
   return (
     <>
@@ -72,6 +158,16 @@ const UserDetailsFilters = () => {
         }
         isFetching={isFetching || isCompletedTasksFetching}
         onOpen={handleFilterOpen}
+        quickFiltersList={quickFiltersList}
+        addQuickFilterOption={addQuickFilterOption}
+        selectedQuickFilter={selectedQuickFilter}
+        selectQuickFilter={handleSelectQuickFilter}
+        onSaveClick={handleSaveQuickFilter}
+        onSaveAsNewClick={handleSaveAsQuickFilter}
+        wasChangedFilters={wasChangedFilters}
+        onQuickFilterCreate={handleQuickFilterCreate}
+        onQuickFilterUpdate={handleQuickFilterUpdate}
+        onQuickFilterDelete={handleQuickFilterDelete}
       />
     </>
   );

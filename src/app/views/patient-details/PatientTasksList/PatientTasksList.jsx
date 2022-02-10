@@ -435,9 +435,9 @@ const PatientTasksListView = () => {
       <TaskDrawer
         onTaskUpdate={handleTaskUpdate}
         onTaskCreation={handleTaskUpdate}
-        onTaskDelete={() =>
-          dispatch(getPatientFilterOptions(patientIdentifier))
-        }
+        onTaskDelete={() => {
+          dispatch(getPatientFilterOptions(patientIdentifier));
+        }}
         disabledFields={[DrawerFieldEnum.PATIENT]}
       />
     </>

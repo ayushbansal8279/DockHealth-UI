@@ -50,6 +50,8 @@ function* getDashboardFilters() {
   const tabName = yield select(dashboardTabNameSelector);
   const selectedFilters = yield select(dashboardSelectedFiltersSelector);
 
+  console.log('selectedFilters in saga', selectedFilters);
+
   try {
     const filters =
       tabName === DashboardTasksTab.ALL_TASKS
@@ -61,6 +63,7 @@ function* getDashboardFilters() {
       filters,
     });
   } catch (error) {
+    console.log('error', error);
     yield put({
       type: ActionTypes.GET_DASHBOARD_FILTERS_FAILURE,
     });

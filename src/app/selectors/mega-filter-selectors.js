@@ -27,3 +27,18 @@ export const isFetchingFiltersSelector = createSelector(
   megaFilterSelector,
   ({ isLoading }) => isLoading,
 );
+
+export const quickFiltersSelector = createSelector(
+  megaFilterSelector,
+  ({ quickFilters }) => quickFilters,
+);
+
+export const addQuickFilterOptionSelector = createSelector(
+  megaFilterSelector,
+  ({ addQuickFilterOption }) => addQuickFilterOption,
+);
+
+export const selectedQuickFilterSelector = createSelector(
+  megaFilterSelector,
+  ({ selectedQuickFilter }) => selectedQuickFilter,
+);
