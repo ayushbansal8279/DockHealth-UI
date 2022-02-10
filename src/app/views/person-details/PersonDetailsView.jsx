@@ -10,16 +10,18 @@ import { userProfileSelector } from 'selectors/user-selectors';
 import { onSearchChanged } from 'helpers/ga-event-helper';
 import { TaskListTabName } from 'helpers/tasklist-helpers';
 import { TaskItemColumn, TaskStatus } from 'helpers/task-helpers';
-import ViewLayout from 'components/template/ViewLayout/ViewLayout';
+// import ViewLayout from 'components/template/ViewLayout/ViewLayout';
 import TaskDrawer from 'components/task-drawer/TaskDrawer/TaskDrawer';
 import LayoutHeader from 'components/template/LayoutHeader/LayoutHeader';
 import HeaderSearch from 'components/template/HeaderSearch/HeaderSearch';
 import { TASK_DISAPPEAR_DELAY } from 'helpers/task-update-helper';
 import { ColumnsConfigProvider } from 'context-api/ColumnsConfigContext';
+import HorizontallyScrolledViewLayout from 'components/template/HorizontallyScrolledViewLayout/HorizontallyScrolledViewLayout';
+import StickyContainer from 'components/common/HorizontalScroll/StickyContainer';
 import OpenedTasksView from './PersonDetailsOpenedTasksContainer/PersonDetailsOpenedTasks';
 import CompletedTasksView from './PersonDetailsCompletedTasksContainer/PersonDetailsCompletedTasks';
 import PersonInfoPanel from './PersonInfoPanel/PersonInfoPanel';
-import { TaskViewContainer, PersonalInfoStickyContainer } from './styled';
+import { TaskViewContainer } from './styled';
 import UserTasksToolbar from './UserTasksToolbar/UserTasksToolbar';
 import UserDetailsFilters from './UserDetailsFilters/UserDetailsFilters';
 
@@ -113,7 +115,7 @@ const PersonDetailsView = () => {
 
   return (
     <ColumnsConfigProvider>
-      <ViewLayout
+      <HorizontallyScrolledViewLayout
         header={
           <LayoutHeader>
             <LayoutHeader.Title title="People" />
@@ -127,11 +129,13 @@ const PersonDetailsView = () => {
           </LayoutHeader>
         }
       >
-        <PersonalInfoStickyContainer>
+        <StickyContainer>
           <PersonInfoPanel />
-        </PersonalInfoStickyContainer>
+        </StickyContainer>
         <TaskViewContainer>
-          <UserTasksToolbar />
+          <StickyContainer>
+            <UserTasksToolbar />
+          </StickyContainer>
           {selectedTab === TaskListTabName.COMPLETE ? (
             <CompletedTasksView
               taskItemConfig={PERSON_VIEW_COLUMNS_CONFIG}
@@ -151,7 +155,7 @@ const PersonDetailsView = () => {
             />
           )}
         </TaskViewContainer>
-      </ViewLayout>
+      </HorizontallyScrolledViewLayout>
       <TaskDrawer
         onTaskUpdate={refreshTabAfterTaskUpdate}
         onTaskDelete={handleTaskDelete}

@@ -1,11 +1,11 @@
 import React from 'react';
 import Spacing from 'components/common/Spacing';
+import { getCompletedByLabel } from './helpers';
 import {
   TextEditorFormStyleContainer,
   TextEditorInputLabel,
   DescriptionLabel,
-} from '../TaskDrawer/styled';
-import { getCompletedByLabel } from '../TaskDrawer/helpers';
+} from './styled';
 
 const CustomTextEditor = ({
   required,

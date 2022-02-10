@@ -231,17 +231,24 @@ export const TASK_ITEM_SORT_DESC_METHODS = {
 };
 
 export function updateNestedTask(dataToUpdate, taskIdentifier, task) {
-  return {
-    ...task,
-    subtasks: task?.subtasks?.map(subtask =>
-      taskIdentifier === subtask.taskIdentifier
-        ? { ...subtask, ...dataToUpdate }
-        : subtask,
-    ),
-    taskDependencies: task?.taskDependencies?.map(t =>
-      taskIdentifier === t.taskIdentifier ? { ...t, ...dataToUpdate } : t,
-    ),
-  };
+  if (
+    task.subtasks?.some(s => s.taskIdentifier === taskIdentifier) ||
+    task.taskDependencies?.some(s => s.taskIdentifier === taskIdentifier)
+  ) {
+    return {
+      ...task,
+      subtasks: task?.subtasks?.map(subtask =>
+        taskIdentifier === subtask.taskIdentifier
+          ? { ...subtask, ...dataToUpdate }
+          : subtask,
+      ),
+      taskDependencies: task?.taskDependencies?.map(t =>
+        taskIdentifier === t.taskIdentifier ? { ...t, ...dataToUpdate } : t,
+      ),
+    };
+  }
+
+  return task;
 }
 
 export function updateSubtasksInTaskWithCallback(
@@ -249,15 +256,22 @@ export function updateSubtasksInTaskWithCallback(
   taskIdentifier,
   task,
 ) {
-  return {
-    ...task,
-    subtasks: task?.subtasks?.map(subtask =>
-      taskIdentifier === subtask.taskIdentifier
-        ? updateCallback(subtask)
-        : subtask,
-    ),
-    taskDependencies: task?.taskDependencies?.map(t =>
-      taskIdentifier === t.taskIdentifier ? updateCallback(t) : t,
-    ),
-  };
+  if (
+    task.subtasks?.some(s => s.taskIdentifier === taskIdentifier) ||
+    task.taskDependencies?.some(s => s.taskIdentifier === taskIdentifier)
+  ) {
+    return {
+      ...task,
+      subtasks: task?.subtasks?.map(subtask =>
+        taskIdentifier === subtask.taskIdentifier
+          ? updateCallback(subtask)
+          : subtask,
+      ),
+      taskDependencies: task?.taskDependencies?.map(t =>
+        taskIdentifier === t.taskIdentifier ? updateCallback(t) : t,
+      ),
+    };
+  }
+
+  return task;
 }

@@ -53,3 +53,8 @@ export const isWorkflowTemplateSelector = createSelector(
   workflowDrawerStateSelector,
   compose(checkIfTemplateWorkflow, prop('workflow')),
 );
+
+export const workflowLabelsSelector = createSelector(
+  workflowDrawerStateSelector,
+  prop('labels'),
+);

@@ -25,7 +25,6 @@ const Subtasks = ({
   isFetchingSubTasks,
   shouldShowBlockModalOnDrag,
   showClearSortFiltersModal,
-  taskItemConfig,
   ...restProps
 }) => {
   const dispatch = useDispatch();
@@ -111,7 +110,6 @@ const Subtasks = ({
                               isLast={isLast}
                               showSubtaskStylingLink={!draggedId}
                               isNestedTask
-                              taskItemConfig={taskItemConfig}
                               {...restProps}
                             />
                             {shouldRenderComments &&

@@ -4,26 +4,19 @@ import palette from 'styles/palette';
 import { fontWeights, fontSizes } from 'styles/font';
 
 export const StickyHeader = styled.div`
-  position: sticky;
-  top: 0;
+  position: 'relative';
   z-index: 102;
   background-color: ${palette.white};
   padding: 0 55px 0 55px;
-  width: calc(100vw - 67px);
-  left: 0px;
-  margin-bottom: ${spacing.regular};
 `;
 
 export const StickyElement = styled.div`
-  position: sticky;
-  left: 24px;
-  z-index: ${({ zIndex }) => zIndex || 100};
+  z-index: ${({ zIndex }) => zIndex || 10};
   background-color: ${palette.white};
-  width: calc(100vw - 115px);
 `;
 
 export const VerticalScrollContainer = styled.div`
-  padding: 0 ${spacing.large};
+  padding: ${spacing.small} ${spacing.large};
   box-sizing: border-box;
   width: 100%;
   position: relative;

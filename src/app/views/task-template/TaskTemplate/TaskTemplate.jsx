@@ -34,7 +34,6 @@ import StandardTaskItemContainer from 'components/task/StandardTaskItemContainer
 import TasksSkeletonLoader from 'components/task/TasksSkeletonLoader/TasksSkeletonLoader';
 import OptionsMenu from 'components/common/OptionsMenu/OptionsMenu';
 import QuickAddTaskInput from 'components/tasklist/QuickAddTaskInput/QuickAddTaskInput';
-import { TaskItemColumn } from 'helpers/task-helpers';
 import { moveWorkflowToFolder } from 'actions/task-template-actions';
 import * as ActionTypes from 'actions/action-types';
 import SmartFlowIcon from 'img/template/smartflow.svg';
@@ -52,11 +51,6 @@ import {
   CheckboxPlaceholder,
   Spacer,
 } from './styled';
-
-const TEMPLATES_VIEW_COLUMNS_CONFIG = {
-  [TaskItemColumn.PATIENT]: false,
-  [TaskItemColumn.DUE_DATE]: false,
-};
 
 const TaskTemplate = ({
   template,
@@ -381,7 +375,6 @@ const TaskTemplate = ({
                                 draggableProvided={draggableProvided}
                                 isDraggable
                                 task={task}
-                                taskItemConfig={TEMPLATES_VIEW_COLUMNS_CONFIG}
                                 isFullView={isFullView}
                                 multipleAssigneesContext={
                                   containsMultipleAssignees

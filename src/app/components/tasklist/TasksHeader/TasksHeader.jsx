@@ -8,7 +8,6 @@ import { getCustomerTypeLabel } from 'helpers/customer-type-helper';
 import { capitalize } from 'helpers/capitalize';
 import { useColumnsConfig } from 'context-api/ColumnsConfigContext';
 import { CustomFieldWidthConfig } from 'helpers/field-type-helpers';
-import { trunc } from 'helpers/utility-functions';
 import { BulkContainer, StickyColumnContainer } from './styled';
 
 const TasksHeader = ({

@@ -1,12 +1,11 @@
 import React, { useCallback } from 'react';
 import { bindActionCreators } from 'redux';
-import { connect, useSelector } from 'react-redux';
+import { connect } from 'react-redux';
 import * as TaskActions from 'actions/task-actions';
 import * as ModalActions from 'modal/actions';
 import * as AlertActions from 'alert/actions';
 import AlertMessages from 'alert/AlertMessages';
 import { userProfileSelector } from 'selectors/user-selectors';
-import { selectedTaskSelector } from 'selectors/task-drawer-selectors';
 
 import StandardTaskItem from '../StandardTaskItem/StandardTaskItem';
 
@@ -20,8 +19,6 @@ const StandardTaskItemContainer = ({
   isBundleTask,
   ...restProps
 }) => {
-  const selectedTask = useSelector(selectedTaskSelector);
-
   const handleTaskUpdate = useCallback(
     (taskIdentifier, dataToUpdate) => {
       taskActions
@@ -100,8 +97,6 @@ const StandardTaskItemContainer = ({
       updateWorkflowStatus={handleUpdateWorkflowStatus}
       toggleCompleteTask={handleToggleTaskCompletedStatus}
       onTaskUpdate={handleTaskUpdate}
-      selectedTask={selectedTask}
-      isBundleTask={isBundleTask}
       {...restProps}
     />
   );

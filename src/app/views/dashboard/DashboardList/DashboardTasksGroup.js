@@ -30,11 +30,12 @@ import QuickAddTaskInput from 'components/tasklist/QuickAddTaskInput/QuickAddTas
 import LoadMoreButton, {
   LoadMoreSection,
 } from 'components/common/LoadMoreButton/LoadMoreButton';
-import StandardTaskItem from 'components/task/StandardTaskItem/TaskItem';
+import TaskItem from 'components/task/StandardTaskItem/TaskItem';
 import TasksSkeletonLoader from 'components/task/TasksSkeletonLoader/TasksSkeletonLoader';
 import TasksHeader from 'components/tasklist/TasksHeader/TasksHeader';
 import { extractTasksAndSubtasks } from 'helpers/tasklist-helpers';
 import palette from 'styles/palette';
+import StickyContainer from 'components/common/HorizontalScroll/StickyContainer';
 import { dashboardLastCreatedTaskIdentifierSelector } from 'selectors/dashboard-selectors';
 
 import {
@@ -52,15 +53,12 @@ import {
 const DashboardTasksGroup = ({
   dashboardTasksGroup,
   storeAsCurrentTask,
-  openDrawer,
   isTaskDrawerOpen,
-  selectedTaskIdentifier,
   currentSortMethod,
   currentSort,
   onSortChange,
   showClearSortFiltersModal,
   isSortApplied,
-  isAllTasksTab,
   currentUser,
   updateWorkflowStatus,
   isSearching,
@@ -174,26 +172,37 @@ const DashboardTasksGroup = ({
     [dispatch],
   );
 
+  const handleToggleCompletedTask = useCallback(
+    task => {
+      dispatch(TaskActions.toggleCompleteTask(task));
+    },
+    [dispatch],
+  );
+
+  const isDragAndDropDisabled = !tasks || tasks.length < 2;
+
   return (
     <DashboardTasksGroupContainer ref={parentContainerReference}>
-      <StickyElement>
-        <DashboardTasksGroupHeader>
-          <Arrow
-            alt="arrow"
-            isOpen={groupIsOpen}
-            onClick={onSwitchGroup}
-            src={ArrowIcon}
-          />
-          <GroupNameSectionWrapper>
-            <DashboardTasksGroupLabel>
-              <DashboardTasksGroupLabelName>
-                {groupName}
-              </DashboardTasksGroupLabelName>
-              ({metricValue})
-            </DashboardTasksGroupLabel>
-          </GroupNameSectionWrapper>
-        </DashboardTasksGroupHeader>
-      </StickyElement>
+      <StickyContainer left={24} decreaseWidth={2 * 24}>
+        <StickyElement>
+          <DashboardTasksGroupHeader>
+            <Arrow
+              alt="arrow"
+              isOpen={groupIsOpen}
+              onClick={onSwitchGroup}
+              src={ArrowIcon}
+            />
+            <GroupNameSectionWrapper>
+              <DashboardTasksGroupLabel>
+                <DashboardTasksGroupLabelName>
+                  {groupName}
+                </DashboardTasksGroupLabelName>
+                ({metricValue})
+              </DashboardTasksGroupLabel>
+            </GroupNameSectionWrapper>
+          </DashboardTasksGroupHeader>
+        </StickyElement>
+      </StickyContainer>
       {isLoading && !tasks ? (
         <DashboardTasksGroupList>
           <TasksSkeletonLoader rows={4} />
@@ -202,24 +211,26 @@ const DashboardTasksGroup = ({
         <Collapse timeout={500} in={groupIsOpen}>
           <DashboardTasksGroupList>
             {GROUPS_WITH_QUICK_ADD_TASK_INPUT.includes(groupType) && (
-              <StickyElement zIndex={101}>
-                <QuickAddTaskInput
-                  ref={quickAddTaskInputReference}
-                  quickAddTask={handleQuickAddTask}
-                  onFocus={() => {
-                    if (isTaskDrawerOpen) {
-                      closeDrawer();
-                      storeAsCurrentTask(null);
-                    }
-                  }}
-                  validator={value => {
-                    if ([...value]?.filter(char => char !== ' ').length < 2)
-                      return 'The task description is too short (min. 2 characters)';
+              <StickyContainer left={24} decreaseWidth={2 * 24}>
+                <StickyElement zIndex={101}>
+                  <QuickAddTaskInput
+                    ref={quickAddTaskInputReference}
+                    quickAddTask={handleQuickAddTask}
+                    onFocus={() => {
+                      if (isTaskDrawerOpen) {
+                        closeDrawer();
+                        storeAsCurrentTask(null);
+                      }
+                    }}
+                    validator={value => {
+                      if ([...value]?.filter(char => char !== ' ').length < 2)
+                        return 'The task description is too short (min. 2 characters)';
 
-                    return null;
-                  }}
-                />
-              </StickyElement>
+                      return null;
+                    }}
+                  />
+                </StickyElement>
+              </StickyContainer>
             )}
             <TasksHeader
               pageBackground={palette.white}
@@ -269,9 +280,7 @@ const DashboardTasksGroup = ({
                             key={task.taskIdentifier}
                             draggableId={String(task.taskIdentifier)}
                             index={index}
-                            isDragDisabled={
-                              isTaskDrawerOpen || tasks?.length < 2
-                            }
+                            isDragDisabled={isDragAndDropDisabled}
                           >
                             {(draggableProvided, { isDragging }) => (
                               <div
@@ -279,7 +288,7 @@ const DashboardTasksGroup = ({
                                 {...draggableProvided.draggableProps}
                               >
                                 <DashboardTaskItemContainer>
-                                  <StandardTaskItem
+                                  <TaskItem
                                     parentContainerReference={
                                       parentContainerReference
                                     }
@@ -288,27 +297,15 @@ const DashboardTasksGroup = ({
                                     }
                                     pageBackground={palette.white}
                                     task={task}
-                                    toggleCompleteTask={() =>
-                                      dispatch(
-                                        TaskActions.toggleCompleteTask(task),
-                                      )
+                                    toggleCompleteTask={
+                                      handleToggleCompletedTask
                                     }
                                     isCompletedGroup={isCompletedGroup}
-                                    storeAsCurrentTask={storeAsCurrentTask}
                                     isDragging={isDragging}
                                     dragHandleProps={
                                       draggableProvided.dragHandleProps
                                     }
-                                    isDraggable={
-                                      !isTaskDrawerOpen && tasks?.length > 1
-                                    }
-                                    openDrawer={openDrawer}
-                                    isSelected={
-                                      selectedTaskIdentifier ===
-                                      task?.taskIdentifier
-                                    }
-                                    showAssignedPerson={isAllTasksTab}
-                                    currentUser={currentUser}
+                                    isDraggable={!isDragAndDropDisabled}
                                     onTaskUpdate={handleUpdateTask}
                                     updateWorkflowStatus={updateWorkflowStatus}
                                     multipleAssigneesContext={
@@ -329,13 +326,15 @@ const DashboardTasksGroup = ({
               </Droppable>
             </DragDropContext>
             {!isLoadingMore && dashboardTasksGroup?.hasMore && (
-              <LoadMoreSection>
-                <LoadMoreButton
-                  onClick={() =>
-                    dispatch(loadMoreDashboardTasksForGroup(groupType))
-                  }
-                />
-              </LoadMoreSection>
+              <StickyContainer left={24} decreaseWidth={2 * 24}>
+                <LoadMoreSection>
+                  <LoadMoreButton
+                    onClick={() =>
+                      dispatch(loadMoreDashboardTasksForGroup(groupType))
+                    }
+                  />
+                </LoadMoreSection>
+              </StickyContainer>
             )}
             {isLoadingMore && <TasksSkeletonLoader rows={3} />}
           </DashboardTasksGroupList>

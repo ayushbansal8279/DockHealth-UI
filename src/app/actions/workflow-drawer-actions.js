@@ -63,3 +63,23 @@ export function getHistoryFailure() {
     type: ActionTypes.GET_WORKFLOW_DRAWER_HISTORY_FAILURE,
   };
 }
+
+export function getLabels(taskListIdentifier) {
+  return {
+    type: ActionTypes.GET_WORKFLOW_DRAWER_LABELS,
+    taskListIdentifier,
+  };
+}
+
+export function getLabelsSuccess(labels) {
+  return {
+    type: ActionTypes.GET_WORKFLOW_DRAWER_LABELS_SUCCESS,
+    labels,
+  };
+}
+
+export function getLabelsFailure() {
+  return {
+    type: ActionTypes.GET_WORKFLOW_DRAWER_LABELS_FAILURE,
+  };
+}

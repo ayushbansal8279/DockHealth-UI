@@ -64,6 +64,20 @@ function* closeDrawerIfOpen() {
   }
 }
 
+function* getLabels({ taskListIdentifier }) {
+  try {
+    const labels = yield call(TaskTemplateApi.getLabels, {
+      taskListIdentifier,
+    });
+    yield put(WorkflowDrawerActions.getLabelsSuccess(labels));
+  } catch {
+    yield all([
+      put(showGlobalErrorAlert()),
+      put(WorkflowDrawerActions.getLabelsFailure()),
+    ]);
+  }
+}
+
 export default function* watchWorkflowDrawer() {
   yield takeLatest(ActionTypes.OPEN_WORKFLOW_DRAWER, openDrawer);
   yield takeLatest(
@@ -82,4 +96,5 @@ export default function* watchWorkflowDrawer() {
     ],
     closeDrawerIfOpen,
   );
+  yield takeLatest(ActionTypes.GET_WORKFLOW_DRAWER_LABELS, getLabels);
 }

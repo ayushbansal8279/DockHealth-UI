@@ -28,6 +28,8 @@ export const OptionContainer = styled.div`
   justify-content: space-between;
   width: 100%;
   padding: ${spacing.small};
+  background-color: ${({ disabled }) =>
+    disabled ? palette.coolGrey4 : 'transparent'};
 
   &:hover {
     ${OptionButton} {
@@ -43,7 +45,7 @@ export const OptionButtonsInput = styled.input`
   width: 550px;
   background-color: transparent;
   cursor: pointer;
-  color: ${palette.mediumGrey};
+  color: ${({ greyed }) => (greyed ? palette.coolGrey2 : palette.mediumGrey)};
   border: none;
   outline: none;
   box-shadow: none;
