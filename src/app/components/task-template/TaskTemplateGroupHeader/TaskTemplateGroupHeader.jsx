@@ -334,15 +334,19 @@ const TaskTemplateGroupHeader = ({
 
   return (
     <TaskTemplateGroupHeaderContainer>
-      {!groupDragAndDropDisabled && !bulkEditIsActive && (
-        <TemplateHandle src={ThreeDotsIcon} alt="Handle" {...dragHandleProps} />
-      )}
       {columnsConfig[TaskItemColumn.DESCRIPTION] && (
         <StickyMainTaskItemCell
           backgroundColor={pageBackground}
           isSelected={isBundleSelected}
           isEditingDescription={isEditingDescription}
         >
+          {!groupDragAndDropDisabled && !bulkEditIsActive && (
+            <TemplateHandle
+              src={ThreeDotsIcon}
+              alt="Handle"
+              {...dragHandleProps}
+            />
+          )}
           <Checkbox isChecked={isBundleSelected} onClick={handleBundleSelect} />
           <Box m={1} />
           <RotatableChevron rotated={isOpen} onClick={() => setOpen(!isOpen)} />
