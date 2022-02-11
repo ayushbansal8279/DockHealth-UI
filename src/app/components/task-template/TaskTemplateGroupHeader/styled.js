@@ -18,6 +18,23 @@ export const TemplateHandle = styled.img`
   }
 `;
 
+export const ClickablePatient = styled.span`
+  align-self: center;
+  cursor: pointer;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  overflow: hidden;
+`;
+
+export const PatientLabel = styled.span`
+  color: ${palette.mediumGrey};
+
+  &:hover {
+    color: ${palette.brightBlue};
+    text-decoration: underline;
+  }
+`;
+
 export const Placeholder = styled.div`
   width: 100%;
   color: ${palette.mediumGrey};

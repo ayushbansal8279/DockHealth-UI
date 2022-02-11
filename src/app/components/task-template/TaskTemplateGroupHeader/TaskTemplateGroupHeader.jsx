@@ -39,6 +39,8 @@ import { useColumnsConfig } from 'context-api/ColumnsConfigContext';
 import StickyMainTaskItemCell from 'components/task/StickyMainTaskItemCell/StickyMainTaskItemCell';
 import TaskItemCell from 'components/task/TaskItemCell/TaskItemCell';
 import { CustomFieldWidthConfig } from 'helpers/field-type-helpers';
+import { updatePartialWorkflow } from 'actions/task-template-actions';
+import { compose } from 'redux';
 import {
   DescriptionStickyColumnContainer,
   TaskTemplateGroupHeaderContainer,
@@ -51,6 +53,7 @@ import {
   TaskTemplateRight,
 } from './styled';
 import TemplateHeaderName from './headerItems/TemplateHeaderName';
+import TaskHeaderPatient from './headerItems/TaskHeaderPatient';
 
 const TaskTemplateGroupHeader = ({
   templateGroup = {},
@@ -61,6 +64,7 @@ const TaskTemplateGroupHeader = ({
   isCompletedTab = false,
   viewSetup,
   setIsAddingTask,
+  highlightedValue,
   pageBackground, // TODO: pass through props from the container (another color from home view, another from list, etc)
   // eslint-disable-next-line sonarjs/cognitive-complexity
 }) => {
@@ -297,41 +301,6 @@ const TaskTemplateGroupHeader = ({
     );
   }, [dispatch, isBundleSelected, filteredTasks]);
 
-  const handlePatientSelect = useCallback(
-    newPatient => {
-      const patientName = newPatient?.lastName
-        ? `${newPatient?.lastName}, ${newPatient?.firstName}`
-        : newPatient?.firstName;
-      if (patient) {
-        dispatch(
-          ModalActions.openModal(
-            newPatient ? 'AssignPatient' : 'UnassignPatient',
-            {
-              isWorkflowModal: true,
-              confirm: () => {
-                dispatch(
-                  TemplateBundleActions.changePatientForTemplateBundle(
-                    identifier,
-                    newPatient,
-                  ),
-                );
-              },
-              patientName,
-            },
-          ),
-        );
-      } else {
-        dispatch(
-          TemplateBundleActions.changePatientForTemplateBundle(
-            identifier,
-            newPatient,
-          ),
-        );
-      }
-    },
-    [dispatch, identifier, patient],
-  );
-
   return (
     <TaskTemplateGroupHeaderContainer>
       {columnsConfig[TaskItemColumn.DESCRIPTION] && (
@@ -383,7 +352,15 @@ const TaskTemplateGroupHeader = ({
         />
       )}
       {columnsConfig[TaskItemColumn.PATIENT] && (
-        <TaskItemCell width={TaskItemColumnWidth[TaskItemColumn.PATIENT]} />
+        <TaskItemCell width={TaskItemColumnWidth[TaskItemColumn.PATIENT]}>
+          <TaskHeaderPatient
+            highlightedValue={highlightedValue}
+            patient={patient}
+            workflow={templateGroup}
+            onWorkflowUpdate={compose(dispatch, updatePartialWorkflow)}
+            currentUser={currentUser}
+          />
+        </TaskItemCell>
       )}
       {columnsConfig[TaskItemColumn.WORKFLOW_STATUS] && (
         <TaskItemCell
