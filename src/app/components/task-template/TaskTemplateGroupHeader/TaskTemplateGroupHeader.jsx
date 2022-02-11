@@ -19,6 +19,7 @@ import * as ModalActions from 'modal/actions';
 import * as WorkflowActions from 'actions/workflow-actions';
 import * as TaskActions from 'actions/task-actions';
 import * as TemplateBundleActions from 'actions/template-bundle-actions';
+import { useBoolean } from 'hooks/useBoolean';
 import {
   TaskItemColumn,
   TaskItemColumnWidth,
@@ -38,6 +39,7 @@ import Spacing from 'components/common/Spacing';
 import { useColumnsConfig } from 'context-api/ColumnsConfigContext';
 import StickyMainTaskItemCell from 'components/task/StickyMainTaskItemCell/StickyMainTaskItemCell';
 import TaskItemCell from 'components/task/TaskItemCell/TaskItemCell';
+import TaskTemplateDueDate from 'components/task-template/TaskTemplateDueDate/TaskTemplateDueDate';
 import { CustomFieldWidthConfig } from 'helpers/field-type-helpers';
 import { updatePartialWorkflow } from 'actions/task-template-actions';
 import { compose } from 'redux';
@@ -71,6 +73,7 @@ const TaskTemplateGroupHeader = ({
   const { name, tasks, identifier, patient } = templateGroup;
   const { SHOW_WORKFLOW_DETAILS, SHOW_WORKFLOW_COMPLETED_TASKS } = viewSetup;
   const { dragHandleProps } = draggableProvided;
+  const [isHovered, setIsHovered, unsetIsHovered] = useBoolean(false);
   const [isOpen, setOpen] = useState(true);
   const { bulkEditIsActive } = useContext(BulkEditContext);
   const [isEditing, setIsEditing] = useState(false);
@@ -302,7 +305,10 @@ const TaskTemplateGroupHeader = ({
   }, [dispatch, isBundleSelected, filteredTasks]);
 
   return (
-    <TaskTemplateGroupHeaderContainer>
+    <TaskTemplateGroupHeaderContainer
+      onMouseEnter={setIsHovered}
+      onMouseLeave={unsetIsHovered}
+    >
       {columnsConfig[TaskItemColumn.DESCRIPTION] && (
         <StickyMainTaskItemCell
           backgroundColor={pageBackground}
@@ -352,7 +358,10 @@ const TaskTemplateGroupHeader = ({
         />
       )}
       {columnsConfig[TaskItemColumn.PATIENT] && (
-        <TaskItemCell width={TaskItemColumnWidth[TaskItemColumn.PATIENT]}>
+        <TaskItemCell
+          width={TaskItemColumnWidth[TaskItemColumn.PATIENT]}
+          alignItems="flex-start"
+        >
           <TaskHeaderPatient
             highlightedValue={highlightedValue}
             patient={patient}
@@ -371,7 +380,12 @@ const TaskTemplateGroupHeader = ({
         <TaskItemCell width={TaskItemColumnWidth[TaskItemColumn.ACTIVITY]} />
       )}
       {columnsConfig[TaskItemColumn.DUE_DATE] && (
-        <TaskItemCell width={TaskItemColumnWidth[TaskItemColumn.DUE_DATE]} />
+        <TaskItemCell
+          width={TaskItemColumnWidth[TaskItemColumn.DUE_DATE]}
+          justify="center"
+        >
+          <TaskTemplateDueDate workflow={templateGroup} isHovered={isHovered} />
+        </TaskItemCell>
       )}
       {columnsConfig[TaskItemColumn.ASSIGNED] && (
         <TaskItemCell

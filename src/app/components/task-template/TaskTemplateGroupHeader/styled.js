@@ -38,7 +38,6 @@ export const PatientLabel = styled.span`
 export const Placeholder = styled.div`
   width: 100%;
   color: ${palette.mediumGrey};
-  padding: 0 ${spacing.regular};
   cursor: pointer;
   overflow: hidden;
   white-space: nowrap;

@@ -489,7 +489,7 @@ const TaskItem = React.memo(
                 />
               </TaskItemCell>
             )}
-            {columnsConfig[TaskItemColumn.DUE_DATE] && (
+            {columnsConfig[TaskItemColumn.DUE_DATE] && !isTemplateTask && (
               <TaskItemCell
                 width={TaskItemColumnWidth[TaskItemColumn.DUE_DATE]}
                 paddingLeft="tiny"

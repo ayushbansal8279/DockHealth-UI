@@ -1,49 +1,51 @@
 import React, { useCallback } from 'react';
-import { useDispatch } from 'react-redux';
-import { updateTaskDueDate } from 'actions/task-actions';
+import Tooltip from 'components/common/Tooltip/Tooltip';
 import DueDatePicker from 'components/task/DueDatePicker/DueDatePicker';
 import TaskItemPopover from 'components/task/TaskItemPopover/TaskItemPopover';
 import TaskIcon from 'components/task/TaskIcon/TaskIcon';
-import Tooltip from 'components/common/Tooltip/Tooltip';
 import DateLabel from 'components/common/DateLabel/DateLabel';
-import { isDueDateOverdue, ReminderType } from 'helpers/task-helpers';
-import { onTaskDueDateChanged } from 'helpers/ga-event-helper';
+import { updatePartialWorkflow } from 'actions/task-template-actions';
+import { ReminderType } from 'helpers/task-helpers';
+import { isWorkflowDueDateOverdue } from 'helpers/workflow-helpers';
+import { useDispatch } from 'react-redux';
 
-const TaskItemDueDate = ({ task, isHovered }) => {
+const TaskTemplateDueDate = props => {
+  const { workflow, isHovered } = props;
+  const { identifier, dueDateTime, reminderType } = workflow || {};
   const dispatch = useDispatch();
-  const { taskIdentifier, dueDate, hasRecurringSchedule, reminderType } =
-    task || {};
 
   const handleDueDateChange = useCallback(
-    newDueDate => {
-      dispatch(updateTaskDueDate(task, newDueDate));
-      onTaskDueDateChanged();
+    updatedDueDateTime => {
+      dispatch(
+        updatePartialWorkflow(identifier, {
+          dueDateTime: updatedDueDateTime,
+        }),
+      );
     },
-    [dispatch, task],
+    [dispatch, identifier],
   );
 
   return (
     <TaskItemPopover
       content={({ closePopover }) => (
         <DueDatePicker
-          taskIdentifier={taskIdentifier}
-          selectedDate={dueDate}
+          taskIdentifier={identifier}
+          selectedDate={dueDateTime}
+          disableRecurring
           onDateChange={handleDueDateChange}
-          recurring={hasRecurringSchedule}
           onCloseClick={closePopover}
         />
       )}
     >
       <Tooltip
         placement="top"
-        title={dueDate ? 'Edit due date' : 'Add due date'}
+        title={dueDateTime ? 'Edit due date' : 'Add due date'}
       >
-        {dueDate ? (
+        {dueDateTime ? (
           <DateLabel
-            date={dueDate}
-            isOverdue={isDueDateOverdue(task)}
+            date={dueDateTime}
+            isOverdue={isWorkflowDueDateOverdue(workflow)}
             hasReminder={reminderType && reminderType !== ReminderType.NONE}
-            hasRecurringSchedule={hasRecurringSchedule}
           />
         ) : (
           <div>
@@ -55,4 +57,4 @@ const TaskItemDueDate = ({ task, isHovered }) => {
   );
 };
 
-export default TaskItemDueDate;
+export default TaskTemplateDueDate;

@@ -2,7 +2,7 @@ import React, { useCallback, useEffect, useRef } from 'react';
 import moment from 'moment';
 import { Box } from '@material-ui/core';
 import RecurringIcon from 'img/recurring-arrows';
-import { isDueDateOverdue } from 'helpers/task-helpers';
+import { isWorkflowDueDateOverdue } from 'helpers/workflow-helpers';
 import DueDatePicker from 'components/task/DueDatePicker/DueDatePicker';
 import Spacing from 'components/common/Spacing';
 import Tooltip from 'components/common/Tooltip/Tooltip';
@@ -76,7 +76,9 @@ const DueDateSection = ({ disabled }) => {
           >
             <DueDateContentWrapper>
               {momentDueDate ? (
-                <DueDateContent error={isDueDateOverdue(selectedWorkflow)}>
+                <DueDateContent
+                  error={isWorkflowDueDateOverdue(selectedWorkflow)}
+                >
                   <DueDateText>
                     {momentDueDate.format('MM/DD/YY')}
                     {hasRecurringSchedule && (

@@ -17,7 +17,7 @@ const TaskItemCell = styled.div`
   color: ${palette.mediumGrey};
   min-width: ${props => props.width}px;
   max-width: ${props => props.width}px;
-  padding: ${props => props.padding || `${spacing.small} 0`};
+  padding: ${props => props.padding || `${spacing.tiny} 0`};
   padding-left: ${props =>
     props.paddingLeft ? spacing[props.paddingLeft] : spacing.regular};
   padding-right: ${props =>

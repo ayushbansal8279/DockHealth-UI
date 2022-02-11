@@ -1,3 +1,4 @@
+import moment from 'moment';
 import {
   pipe,
   prop,
@@ -64,4 +65,15 @@ export const TEMPLATE_TASK_ITEM_SORT_DESC_METHODS = {
 
 export function checkIfWorkflowTemplate(workflow) {
   return workflow?.type === 'WORKFLOW';
+}
+
+export function isWorkflowDueDateOverdue(workflow) {
+  if (!workflow) {
+    return false;
+  }
+  const { dueDateTime } = workflow;
+
+  return moment(dueDateTime).format('HH:mm') !== '00:00'
+    ? moment(dueDateTime).isBefore(moment())
+    : dueDateTime && moment(dueDateTime).isBefore(moment().startOf('day'));
 }
