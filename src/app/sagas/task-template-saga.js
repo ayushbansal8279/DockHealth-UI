@@ -214,13 +214,15 @@ function* updateTemplate({ taskTemplateIdentifier, dataToUpdate }) {
 
 function* updatePartialWorkflow({ taskWorkflowIdentifier, dataToUpdate }) {
   try {
-    yield call(
+    const newData = yield call(
       TaskTemplateApi.updatePartialWorkflow,
       taskWorkflowIdentifier,
       dataToUpdate,
     );
     yield put({
       type: ActionTypes.UPDATE_PARTIAL_WORKFLOW_SUCCESS,
+      newData,
+      taskWorkflowIdentifier,
     });
     yield put(showGlobalAlert(AlertMessages.UPDATED));
   } catch {

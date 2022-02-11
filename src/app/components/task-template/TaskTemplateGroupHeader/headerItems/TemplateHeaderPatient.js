@@ -7,9 +7,8 @@ import { Link } from 'react-router-dom';
 import Highlighter from 'react-highlight-words';
 import { AddPlaceholder, ClickablePatient, PatientLabel } from '../styled';
 
-const TaskHeaderPatient = ({
+const TemplateHeaderPatient = ({
   highlightedValue,
-  patient,
   workflow,
   openPatientPopover,
   onWorkflowUpdate,
@@ -19,6 +18,7 @@ const TaskHeaderPatient = ({
   const [isPopoverOpen, setPopoverOpen] = useState(false);
   const matchPatientMRN = workflow?.searchMetaData?.matchPatientMRN;
   const matchPatient = workflow?.searchMetaData?.matchPatient;
+  const { patient } = workflow;
 
   const handleUpdateRegularTaskPatient = useCallback(
     (patientIdentifier, patientToSave) => {
@@ -104,4 +104,4 @@ const TaskHeaderPatient = ({
   );
 };
 
-export default TaskHeaderPatient;
+export default TemplateHeaderPatient;

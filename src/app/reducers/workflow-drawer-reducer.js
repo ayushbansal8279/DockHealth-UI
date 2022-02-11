@@ -70,13 +70,13 @@ const WorkflowDrawerReducer = (state = initialState, action) => {
         isFetchingHistory: false,
       };
 
-    case ActionTypes.UPDATE_PARTIAL_WORKFLOW: {
+    case ActionTypes.UPDATE_PARTIAL_WORKFLOW_SUCCESS: {
       if (action.taskWorkflowIdentifier === state.workflowIdentifier) {
         return {
           ...state,
           workflow: {
             ...state.workflow,
-            ...action.dataToUpdate,
+            ...action.newData,
           },
         };
       }

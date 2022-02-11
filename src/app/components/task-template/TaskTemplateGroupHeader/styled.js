@@ -18,6 +18,31 @@ export const TemplateHandle = styled.img`
   }
 `;
 
+export const StatusWrapper = styled.div`
+  display: flex;
+`;
+
+export const StatusBar = styled.div`
+  background-color: ${props => props.color};
+  height: calc(100% - 2px);
+  top: 0;
+  left: 0;
+  position: absolute;
+  width: 6px;
+  top: 50%;
+  transform: translateY(-50%);
+`;
+
+export const StatusName = styled.p`
+  display: block;
+  width: 100%;
+  text-overflow: ellipsis;
+  overflow: hidden;
+  white-space: nowrap;
+  margin-bottom: 0;
+  text-align: left;
+`;
+
 export const ClickablePatient = styled.span`
   align-self: center;
   cursor: pointer;

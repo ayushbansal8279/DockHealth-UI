@@ -51,9 +51,12 @@ function updateBundleInState(updateCallback, bundleIdentifier, state) {
       ...state.groupedTasks,
       taskGroups: state.groupedTasks?.taskGroups?.map(g => ({
         ...g,
-        tasks: g.tasks?.map(t =>
-          t.identifier === bundleIdentifier ? updateCallback(t) : t,
-        ),
+        tasks: g.tasks?.map(t => {
+          // console.log('updateCallback(t)', updateCallback(t));
+          console.log('bundleIdentifier', bundleIdentifier);
+          if (t.identifier === bundleIdentifier) console.log('t', t);
+          return t.identifier === bundleIdentifier ? updateCallback(t) : t;
+        }),
       })),
     },
   };
@@ -383,9 +386,9 @@ const ListDetailsReducer = (state = initialState, action) => {
       };
     }
 
-    case ActionTypes.UPDATE_PARTIAL_WORKFLOW: {
+    case ActionTypes.UPDATE_PARTIAL_WORKFLOW_SUCCESS: {
       return updateBundleInState(
-        workflow => ({ ...workflow, ...action.dataToUpdate }),
+        () => ({ ...action.newData }),
         action.taskWorkflowIdentifier,
         state,
       );
