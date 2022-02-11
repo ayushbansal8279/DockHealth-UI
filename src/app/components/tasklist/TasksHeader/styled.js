@@ -12,7 +12,7 @@ export const BulkContainer = styled.div`
 
 export const StickyColumnContainer = styled.div`
   display: flex;
-  width: 100%;
+  flex: 1 0 500px;
   position: sticky;
   left: 24px;
   z-index: 11;

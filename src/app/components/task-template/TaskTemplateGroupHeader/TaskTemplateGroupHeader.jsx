@@ -36,9 +36,9 @@ import { getCustomerTypeLabel } from 'helpers/customer-type-helper';
 import { capitalize } from 'helpers/capitalize';
 import Spacing from 'components/common/Spacing';
 import { useColumnsConfig } from 'context-api/ColumnsConfigContext';
-import TemplateHeaderName from './headerItems/TemplateHeaderName';
 import StickyMainTaskItemCell from 'components/task/StickyMainTaskItemCell/StickyMainTaskItemCell';
 import TaskItemCell from 'components/task/TaskItemCell/TaskItemCell';
+import { CustomFieldWidthConfig } from 'helpers/field-type-helpers';
 import {
   DescriptionStickyColumnContainer,
   TaskTemplateGroupHeaderContainer,
@@ -50,7 +50,7 @@ import {
   Placeholder,
   TaskTemplateRight,
 } from './styled';
-import { CustomFieldWidthConfig } from 'helpers/field-type-helpers';
+import TemplateHeaderName from './headerItems/TemplateHeaderName';
 
 const TaskTemplateGroupHeader = ({
   templateGroup = {},
