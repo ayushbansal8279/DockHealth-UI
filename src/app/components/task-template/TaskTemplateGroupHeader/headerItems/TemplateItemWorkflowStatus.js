@@ -25,8 +25,6 @@ const TemplateItemWorkflowStatus = ({
     statusNameReference.current.offsetWidth <
       statusNameReference.current.scrollWidth;
 
-  console.log('identifier', identifier);
-
   const handleWorkflowUpdate = useCallback(
     status => {
       onWorkflowUpdate(identifier, {
