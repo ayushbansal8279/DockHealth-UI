@@ -43,6 +43,7 @@ import TaskTemplateDueDate from 'components/task-template/TaskTemplateDueDate/Ta
 import { CustomFieldWidthConfig } from 'helpers/field-type-helpers';
 import { updatePartialWorkflow } from 'actions/task-template-actions';
 import { compose } from 'redux';
+import { selectedUserOrganizationSelector } from 'selectors/user-selectors';
 import {
   DescriptionStickyColumnContainer,
   TaskTemplateGroupHeaderContainer,
@@ -55,7 +56,8 @@ import {
   TaskTemplateRight,
 } from './styled';
 import TemplateHeaderName from './headerItems/TemplateHeaderName';
-import TaskHeaderPatient from './headerItems/TaskHeaderPatient';
+import TaskHeaderPatient from './headerItems/TemplateHeaderPatient';
+import TemplateItemWorkflowStatus from './headerItems/TemplateItemWorkflowStatus';
 
 const TaskTemplateGroupHeader = ({
   templateGroup = {},
@@ -364,7 +366,6 @@ const TaskTemplateGroupHeader = ({
         >
           <TaskHeaderPatient
             highlightedValue={highlightedValue}
-            patient={patient}
             workflow={templateGroup}
             onWorkflowUpdate={compose(dispatch, updatePartialWorkflow)}
             currentUser={currentUser}
@@ -374,7 +375,18 @@ const TaskTemplateGroupHeader = ({
       {columnsConfig[TaskItemColumn.WORKFLOW_STATUS] && (
         <TaskItemCell
           width={TaskItemColumnWidth[TaskItemColumn.WORKFLOW_STATUS]}
-        />
+          paddingLeft="smallPlus"
+          paddingRight="tiny"
+          onContextMenu={event => {
+            event.stopPropagation();
+          }}
+        >
+          <TemplateItemWorkflowStatus
+            workflow={templateGroup}
+            onWorkflowUpdate={compose(dispatch, updatePartialWorkflow)}
+            highlightedValue={highlightedValue}
+          />
+        </TaskItemCell>
       )}
       {columnsConfig[TaskItemColumn.ACTIVITY] && (
         <TaskItemCell width={TaskItemColumnWidth[TaskItemColumn.ACTIVITY]} />

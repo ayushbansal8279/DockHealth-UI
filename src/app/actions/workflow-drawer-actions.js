@@ -38,13 +38,6 @@ export function getDrawerWorkflowDetailsFailure() {
   };
 }
 
-export function updateDrawerWorkflowPatient(patient) {
-  return {
-    type: ActionTypes.UPDATE_WORKFLOW_DRAWER_PATIENT,
-    patient,
-  };
-}
-
 export function getHistory() {
   return {
     type: ActionTypes.GET_WORKFLOW_DRAWER_HISTORY,

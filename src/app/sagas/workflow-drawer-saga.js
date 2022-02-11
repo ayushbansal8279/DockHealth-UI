@@ -25,24 +25,6 @@ function* getWorkflowDrawerDetails() {
   }
 }
 
-function* updateWorkflowDrawerPatient({ patient }) {
-  try {
-    const identifier = yield select(workflowIdentifierSelector);
-    yield call(TaskTemplateApi.updatePartialWorkflow, identifier, {
-      patientIdentifier: patient?.patientIdentifier,
-    });
-    yield put({
-      type: ActionTypes.UPDATE_WORKFLOW_DRAWER_PATIENT_SUCCESS,
-    });
-    yield put(showGlobalAlert(AlertMessages.UPDATED));
-  } catch {
-    yield put(showGlobalErrorAlert());
-    yield put({
-      type: ActionTypes.UPDATE_WORKFLOW_DRAWER_PATIENT_FAILURE,
-    });
-  }
-}
-
 function* getHistory() {
   try {
     const identifier = yield select(workflowIdentifierSelector);
@@ -80,10 +62,6 @@ function* getLabels({ taskListIdentifier }) {
 
 export default function* watchWorkflowDrawer() {
   yield takeLatest(ActionTypes.OPEN_WORKFLOW_DRAWER, openDrawer);
-  yield takeLatest(
-    ActionTypes.UPDATE_WORKFLOW_DRAWER_PATIENT,
-    updateWorkflowDrawerPatient,
-  );
   yield takeLatest(
     ActionTypes.GET_WORKFLOW_DRAWER_DETAILS,
     getWorkflowDrawerDetails,

@@ -15,8 +15,8 @@ import {
   workflowSelector,
   workflowAutofocusFieldSelector,
 } from 'selectors/workflow-drawer-selectors';
-import { updateDrawerWorkflowPatient } from 'actions/workflow-drawer-actions';
 import { WorkflowDrawerFieldNames } from 'helpers/workflow-drawer-helpers';
+import { updatePartialWorkflow } from 'actions/task-template-actions';
 import { getFormattedPatient, getFormattedPatients } from './helpers';
 
 const PATIENT_IDENTIFIER_FIELD_NAME = 'patientIdentifier';
@@ -69,9 +69,16 @@ const PatientSection = ({
 
   const savePatient = useCallback(
     async patientToSave => {
-      dispatch(updateDrawerWorkflowPatient(patientToSave));
+      const patientIdentifier = patientToSave?.patientIdentifier
+        ? patientToSave?.patientIdentifier
+        : 'UNASSIGNED';
+      dispatch(
+        updatePartialWorkflow(selectedWorkflow?.identifier, {
+          patientIdentifier,
+        }),
+      );
     },
-    [dispatch],
+    [dispatch, selectedWorkflow],
   );
 
   const fetchPatients = useCallback(
