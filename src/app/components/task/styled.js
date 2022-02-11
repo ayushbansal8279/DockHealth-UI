@@ -100,7 +100,6 @@ export const BulkContainer = styled.div`
   display: flex;
   align-items: center;
   justify-content: center;
-  margin-left: ${spacing.smallPlus};
 `;
 
 export const AddPlaceholder = styled.div`
