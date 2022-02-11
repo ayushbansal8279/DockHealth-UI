@@ -4,7 +4,6 @@ import React, {
   useEffect,
   useRef,
   useCallback,
-  useMemo,
   useContext,
 } from 'react';
 import { pluck } from 'ramda';
@@ -35,10 +34,10 @@ import {
 } from 'helpers/ga-event-helper';
 import {
   checkIfTemplateTask,
-  checkColumnIsInConfig,
   TaskItemColumn,
   TaskPriority,
   getPriorityColor,
+  TaskItemColumnWidth,
 } from 'helpers/task-helpers';
 import DependencyIcon from 'img/dependency-icon.svg';
 import DependencyListPopover from 'components/common/DependencyListPopover/DependencyListPopover';
@@ -304,57 +303,6 @@ const TaskItem = React.memo(
       dispatch(storeAsCurrentTask(null));
     };
 
-    const {
-      descriptionIsInConfig,
-      subtasksIsInConfig,
-      patientIsInConfig,
-      workflowStatusIsInConfig,
-      activityIsInConfig,
-      dueDateIsInConfig,
-      assignedIsInConfig,
-      listNameIsInConfig,
-      decisionInConfig,
-    } = useMemo(() => {
-      return {
-        descriptionIsInConfig: checkColumnIsInConfig(
-          TaskItemColumn.DESCRIPTION,
-          columnsConfig,
-        ),
-        subtasksIsInConfig: checkColumnIsInConfig(
-          TaskItemColumn.SUBTASKS_COUNT,
-          columnsConfig,
-        ),
-        patientIsInConfig: checkColumnIsInConfig(
-          TaskItemColumn.PATIENT,
-          columnsConfig,
-        ),
-        workflowStatusIsInConfig: checkColumnIsInConfig(
-          TaskItemColumn.WORKFLOW_STATUS,
-          columnsConfig,
-        ),
-        activityIsInConfig: checkColumnIsInConfig(
-          TaskItemColumn.ACTIVITY,
-          columnsConfig,
-        ),
-        dueDateIsInConfig: checkColumnIsInConfig(
-          TaskItemColumn.DUE_DATE,
-          columnsConfig,
-        ),
-        assignedIsInConfig: checkColumnIsInConfig(
-          TaskItemColumn.ASSIGNED,
-          columnsConfig,
-        ),
-        listNameIsInConfig: checkColumnIsInConfig(
-          TaskItemColumn.LIST_NAME,
-          columnsConfig,
-        ),
-        decisionInConfig: checkColumnIsInConfig(
-          TaskItemColumn.DECISION_SELECT,
-          columnsConfig,
-        ),
-      };
-    }, [columnsConfig]);
-
     return (
       <>
         <StandardTaskItemPanel
@@ -433,7 +381,7 @@ const TaskItem = React.memo(
                   </>
                 )}
 
-                {descriptionIsInConfig && (
+                {columnsConfig[TaskItemColumn.DESCRIPTION] && (
                   <>
                     <TaskItemDescription
                       task={task}
@@ -447,24 +395,25 @@ const TaskItem = React.memo(
                   </>
                 )}
               </MainStandardTaskItemCell>
-              {decisionInConfig && showDecisionRow && (
-                <DecisionCellContainer>
-                  <TaskItemDecision
-                    outcomes={task.taskOutcomes}
-                    dispatch={dispatch}
-                    onSelect={chooseTaskDecisionOutcome}
-                    task={task}
-                    templateBundleIdentifier={templateBundleIdentifier}
-                    disabled={isCompleted}
-                    error={taskDecisionError}
-                    clearError={() => setTaskDecisionError(false)}
-                  />
-                </DecisionCellContainer>
-              )}
+              {columnsConfig[TaskItemColumn.DECISION_SELECT] &&
+                showDecisionRow && (
+                  <DecisionCellContainer>
+                    <TaskItemDecision
+                      outcomes={task.taskOutcomes}
+                      dispatch={dispatch}
+                      onSelect={chooseTaskDecisionOutcome}
+                      task={task}
+                      templateBundleIdentifier={templateBundleIdentifier}
+                      disabled={isCompleted}
+                      error={taskDecisionError}
+                      clearError={() => setTaskDecisionError(false)}
+                    />
+                  </DecisionCellContainer>
+                )}
             </StickyMainTaskItemCell>
-            {subtasksIsInConfig && (
+            {columnsConfig[TaskItemColumn.SUBTASKS_COUNT] && (
               <TaskItemCell
-                width="60px"
+                width={TaskItemColumnWidth[TaskItemColumn.SUBTASKS_COUNT]}
                 justify="center"
                 paddingLeft="tiny"
                 paddingRight="tiny"
@@ -484,8 +433,8 @@ const TaskItem = React.memo(
                 />
               </TaskItemCell>
             )}
-            {patientIsInConfig && (
-              <TaskItemCell width="164px">
+            {columnsConfig[TaskItemColumn.PATIENT] && (
+              <TaskItemCell width={TaskItemColumnWidth[TaskItemColumn.PATIENT]}>
                 <TaskItemPatient
                   highlightedValue={highlightedValue}
                   taskStatus={task?.status}
@@ -502,9 +451,9 @@ const TaskItem = React.memo(
                 />
               </TaskItemCell>
             )}
-            {workflowStatusIsInConfig && (
+            {columnsConfig[TaskItemColumn.WORKFLOW_STATUS] && (
               <TaskItemCell
-                width="120px"
+                width={TaskItemColumnWidth[TaskItemColumn.WORKFLOW_STATUS]}
                 paddingLeft="smallPlus"
                 paddingRight="tiny"
                 onContextMenu={event => {
@@ -523,8 +472,10 @@ const TaskItem = React.memo(
                 />
               </TaskItemCell>
             )}
-            {activityIsInConfig && (
-              <TaskItemCell width="150px">
+            {columnsConfig[TaskItemColumn.ACTIVITY] && (
+              <TaskItemCell
+                width={TaskItemColumnWidth[TaskItemColumn.ACTIVITY]}
+              >
                 <TaskItemIcons
                   matchComments={matchComments}
                   comments={comments}
@@ -538,11 +489,11 @@ const TaskItem = React.memo(
                 />
               </TaskItemCell>
             )}
-            {dueDateIsInConfig && (
+            {columnsConfig[TaskItemColumn.DUE_DATE] && (
               <TaskItemCell
+                width={TaskItemColumnWidth[TaskItemColumn.DUE_DATE]}
                 paddingLeft="tiny"
                 paddingRight="tiny"
-                width="78px"
                 justify="center"
                 onContextMenu={event => {
                   event.stopPropagation();
@@ -551,9 +502,13 @@ const TaskItem = React.memo(
                 <TaskItemDueDate task={task} isHovered={isHovered} />
               </TaskItemCell>
             )}
-            {assignedIsInConfig && (
+            {columnsConfig[TaskItemColumn.ASSIGNED] && (
               <TaskItemCell
-                width={`${multipleAssigneesContext ? 90 : 60}px`}
+                width={
+                  multipleAssigneesContext
+                    ? TaskItemColumnWidth[TaskItemColumn.ASSIGNED].WIDE
+                    : TaskItemColumnWidth[TaskItemColumn.ASSIGNED].NARROW
+                }
                 justify={multipleAssigneesContext ? 'flex-start' : 'center'}
                 paddingLeft="small"
                 paddingRight="small"
@@ -570,8 +525,10 @@ const TaskItem = React.memo(
                 />
               </TaskItemCell>
             )}
-            {listNameIsInConfig && (
-              <TaskItemCell width="168px">
+            {columnsConfig[TaskItemColumn.LIST_NAME] && (
+              <TaskItemCell
+                width={TaskItemColumnWidth[TaskItemColumn.LIST_NAME]}
+              >
                 <TaskItemList
                   listName={listName}
                   taskListIdentifier={taskListIdentifier}

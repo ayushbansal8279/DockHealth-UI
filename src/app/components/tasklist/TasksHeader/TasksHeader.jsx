@@ -3,7 +3,7 @@ import { useSelector } from 'react-redux';
 import Checkbox from 'components/common/Checkbox/Checkbox';
 import ColumnSortHeader from 'components/tasklist/ColumnSortHeader/ColumnSortHeader';
 import { SortHeaderRow } from 'components/tasklist/ColumnSortHeader/styled';
-import { TaskItemColumn } from 'helpers/task-helpers';
+import { TaskItemColumn, TaskItemColumnWidth } from 'helpers/task-helpers';
 import { getCustomerTypeLabel } from 'helpers/customer-type-helper';
 import { capitalize } from 'helpers/capitalize';
 import { useColumnsConfig } from 'context-api/ColumnsConfigContext';
@@ -55,7 +55,7 @@ const TasksHeader = ({
         <ColumnSortHeader
           id={TaskItemColumn.SUBTASKS_COUNT}
           label="Sub"
-          width={60}
+          width={TaskItemColumnWidth[TaskItemColumn.SUBTASKS_COUNT]}
           sort={sort}
           onSortChange={onSortChange}
         />
@@ -64,7 +64,7 @@ const TasksHeader = ({
         <ColumnSortHeader
           id={TaskItemColumn.PATIENT}
           label={customerTypeLabelCapitalized}
-          width={164}
+          width={TaskItemColumnWidth[TaskItemColumn.PATIENT]}
           sort={sort}
           onSortChange={onSortChange}
         />
@@ -73,19 +73,21 @@ const TasksHeader = ({
         <ColumnSortHeader
           id={TaskItemColumn.WORKFLOW_STATUS}
           label="Status"
-          width={120}
+          width={TaskItemColumnWidth[TaskItemColumn.WORKFLOW_STATUS]}
           sort={sort}
           onSortChange={onSortChange}
         />
       )}
       {mergedConfig[TaskItemColumn.ACTIVITY] && (
-        <ColumnSortHeader width={150} />
+        <ColumnSortHeader
+          width={TaskItemColumnWidth[TaskItemColumn.ACTIVITY]}
+        />
       )}
       {mergedConfig[TaskItemColumn.DUE_DATE] && (
         <ColumnSortHeader
           id={TaskItemColumn.DUE_DATE}
           label="Date"
-          width={78}
+          width={TaskItemColumnWidth[TaskItemColumn.DUE_DATE]}
           sort={sort}
           onSortChange={onSortChange}
         />
@@ -94,7 +96,11 @@ const TasksHeader = ({
         <ColumnSortHeader
           id={TaskItemColumn.ASSIGNED}
           label={groupHasMultipleAssignees ? 'Assign' : 'Asgn'}
-          width={groupHasMultipleAssignees ? 90 : 60}
+          width={
+            groupHasMultipleAssignees
+              ? TaskItemColumnWidth[TaskItemColumn.ASSIGNED].WIDE
+              : TaskItemColumnWidth[TaskItemColumn.ASSIGNED].NARROW
+          }
           sort={sort}
           onSortChange={onSortChange}
         />
@@ -103,7 +109,7 @@ const TasksHeader = ({
         <ColumnSortHeader
           id={TaskItemColumn.LIST_NAME}
           label="List"
-          width={168}
+          width={TaskItemColumnWidth[TaskItemColumn.LIST_NAME]}
           sort={sort}
           onSortChange={onSortChange}
         />

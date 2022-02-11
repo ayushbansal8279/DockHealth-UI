@@ -19,7 +19,11 @@ import * as ModalActions from 'modal/actions';
 import * as WorkflowActions from 'actions/workflow-actions';
 import * as TaskActions from 'actions/task-actions';
 import * as TemplateBundleActions from 'actions/template-bundle-actions';
-import { TaskItemColumn, TaskStatus } from 'helpers/task-helpers';
+import {
+  TaskItemColumn,
+  TaskItemColumnWidth,
+  TaskStatus,
+} from 'helpers/task-helpers';
 import Checkbox from 'components/common/Checkbox/Checkbox';
 import ProgressBar from 'components/common/ProgressBar/ProgressBar';
 import RotatableChevron from 'components/common/RotatableChevron/RotatableChevron';
@@ -370,18 +374,36 @@ const TaskTemplateGroupHeader = ({
         </StickyMainTaskItemCell>
       )}
       {columnsConfig[TaskItemColumn.SUBTASKS_COUNT] && (
-        <TaskItemCell width={60} />
+        <TaskItemCell
+          width={TaskItemColumnWidth[TaskItemColumn.SUBTASKS_COUNT]}
+        />
       )}
-      {columnsConfig[TaskItemColumn.PATIENT] && <TaskItemCell width={164} />}
+      {columnsConfig[TaskItemColumn.PATIENT] && (
+        <TaskItemCell width={TaskItemColumnWidth[TaskItemColumn.PATIENT]} />
+      )}
       {columnsConfig[TaskItemColumn.WORKFLOW_STATUS] && (
-        <TaskItemCell width={120} />
+        <TaskItemCell
+          width={TaskItemColumnWidth[TaskItemColumn.WORKFLOW_STATUS]}
+        />
       )}
-      {columnsConfig[TaskItemColumn.ACTIVITY] && <TaskItemCell width={150} />}
-      {columnsConfig[TaskItemColumn.DUE_DATE] && <TaskItemCell width={78} />}
+      {columnsConfig[TaskItemColumn.ACTIVITY] && (
+        <TaskItemCell width={TaskItemColumnWidth[TaskItemColumn.ACTIVITY]} />
+      )}
+      {columnsConfig[TaskItemColumn.DUE_DATE] && (
+        <TaskItemCell width={TaskItemColumnWidth[TaskItemColumn.DUE_DATE]} />
+      )}
       {columnsConfig[TaskItemColumn.ASSIGNED] && (
-        <TaskItemCell width={groupHasMultipleAssignees ? 90 : 60} />
+        <TaskItemCell
+          width={
+            groupHasMultipleAssignees
+              ? TaskItemColumnWidth[TaskItemColumn.ASSIGNED].WIDE
+              : TaskItemColumnWidth[TaskItemColumn.ASSIGNED].NARROW
+          }
+        />
       )}
-      {columnsConfig[TaskItemColumn.LIST_NAME] && <TaskItemCell width={168} />}
+      {columnsConfig[TaskItemColumn.LIST_NAME] && (
+        <TaskItemCell width={TaskItemColumnWidth[TaskItemColumn.LIST_NAME]} />
+      )}
       {customColumnsConfig
         .filter(f => f.isChecked)
         .map(field => (

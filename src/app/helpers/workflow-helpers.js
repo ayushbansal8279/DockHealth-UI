@@ -32,8 +32,6 @@ export const TASK_TEMPLATE_ITEM_BASE_COLUMN_CONFIG = {
   [TaskTemplateItemColumn.PERMISSIONS]: false,
 };
 
-export const checkColumnIsInConfig = (column, taskConfig) => taskConfig[column];
-
 export const TEMPLATE_TASK_ITEM_SORT_METHODS = {
   [TaskTemplateItemColumn.NAME]: sortWith([
     ascend(pipe(prop('name'), defaultTo('~'), toLower)),
