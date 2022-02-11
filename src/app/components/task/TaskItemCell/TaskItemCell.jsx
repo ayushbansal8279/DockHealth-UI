@@ -15,8 +15,8 @@ const TaskItemCell = styled.div`
   font-weight: ${props =>
     props.bolded ? fontWeights.regular : fontWeights.light};
   color: ${palette.mediumGrey};
-  min-width: ${props => props.width};
-  max-width: ${props => props.width};
+  min-width: ${props => props.width}px;
+  max-width: ${props => props.width}px;
   padding: ${props => props.padding || `${spacing.small} 0`};
   padding-left: ${props =>
     props.paddingLeft ? spacing[props.paddingLeft] : spacing.regular};
