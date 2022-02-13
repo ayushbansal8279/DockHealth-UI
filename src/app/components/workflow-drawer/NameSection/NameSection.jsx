@@ -62,7 +62,7 @@ const NameSection = () => {
       <div>
         <DescriptionTextContainer>
           <DescriptionLabelContainer>
-            <DescriptionLabel>Workflow name</DescriptionLabel>
+            <DescriptionLabel>Name</DescriptionLabel>
           </DescriptionLabelContainer>
           <Input
             fullWidth
