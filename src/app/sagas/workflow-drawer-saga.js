@@ -8,6 +8,7 @@ import {
 } from 'selectors/workflow-drawer-selectors';
 import * as WorkflowApi from 'api/workflow-api';
 import * as TaskTemplateApi from 'api/task-template-api';
+import { getTaskListLabels, getTemplateLabels } from 'api/task-label-api';
 import AlertMessages from '../alert/AlertMessages';
 
 function* openDrawer() {
@@ -64,11 +65,13 @@ function* closeDrawerIfOpen() {
   }
 }
 
-function* getLabels({ taskListIdentifier }) {
+function* getLabels({ isTemplateWorkflow, taskListIdentifier }) {
   try {
-    const labels = yield call(TaskTemplateApi.getLabels, {
-      taskListIdentifier,
-    });
+    const labels = isTemplateWorkflow
+      ? yield call(getTemplateLabels)
+      : yield call(getTaskListLabels, {
+          taskListIdentifier,
+        });
     yield put(WorkflowDrawerActions.getLabelsSuccess(labels));
   } catch {
     yield all([

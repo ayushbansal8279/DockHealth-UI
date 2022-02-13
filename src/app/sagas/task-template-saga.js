@@ -692,16 +692,24 @@ function* changeTaskIntentType({ taskIdentifier, intentType }) {
   }
 }
 
-function* addWorkflowLabel({ labelName, labelIdentifier, identifier }) {
+function* addWorkflowLabel({
+  labelName,
+  labelIdentifier,
+  identifier,
+  isTemplateWorkflow,
+  taskListIdentifier,
+}) {
   const payload = {
     labelName,
     taskWorkflowIdentifier: identifier,
     labelIdentifier,
+    isTemplateWorkflow,
+    taskListIdentifier,
   };
   try {
     const newLabel = yield call(addLabel, payload);
     yield put({ type: ActionTypes.ADD_WORKFLOW_LABEL_SUCCESS, newLabel });
-    yield put(getLabels());
+    yield put(getLabels({ isTemplateWorkflow, taskListIdentifier }));
     yield put(showGlobalAlert(AlertMessages.UPDATED));
   } catch (error) {
     yield put({ type: ActionTypes.ADD_WORKFLOW_LABEL_FAILURE, payload });

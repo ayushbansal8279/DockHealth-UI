@@ -64,9 +64,10 @@ export function getHistoryFailure() {
   };
 }
 
-export function getLabels(taskListIdentifier) {
+export function getLabels(isTemplateWorkflow, taskListIdentifier) {
   return {
     type: ActionTypes.GET_WORKFLOW_DRAWER_LABELS,
+    isTemplateWorkflow,
     taskListIdentifier,
   };
 }
