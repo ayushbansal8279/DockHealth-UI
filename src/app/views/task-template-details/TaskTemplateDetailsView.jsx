@@ -12,7 +12,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import NavigateNextIcon from '@material-ui/icons/NavigateNext';
 import HardDependencyIcon from 'img/template/hard-dependency';
 import CalendarIcon from 'img/template/calendar-icon';
-import { TASK_TEMPLATES_PATH } from 'routing/helpers/paths';
+import { createWorkflowFolderPath } from 'routing/helpers/paths';
 import {
   deleteTasksLink,
   changeTaskIntentType,
@@ -110,7 +110,8 @@ const TaskTemplateDetailsView = () => {
   const { tasks, layout, temporaryElements } =
     useSelector(taskTemplateDetailsSelector(identifier)) || {};
   const workflow = useSelector(currentTaskTemplateSelector);
-  const { name, type: templateType } = workflow || {};
+  const { name, type: templateType, parentTaskWorkflowIdentifier } =
+    workflow || {};
   const smartFlowsAvailable = useSelector(userHasSmartFlowsSelector);
 
   useEffect(() => {
@@ -467,7 +468,7 @@ const TaskTemplateDetailsView = () => {
           </ElementsSidebar>
           <Box ref={builderWrapperReference} position="relative" flex={1}>
             <BuilderHeader>
-              <Link to={TASK_TEMPLATES_PATH}>
+              <Link to={createWorkflowFolderPath(parentTaskWorkflowIdentifier)}>
                 <BuilderHeaderText color={palette.brightBlue}>
                   Workflows
                 </BuilderHeaderText>

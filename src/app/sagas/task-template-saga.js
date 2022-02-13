@@ -7,7 +7,7 @@ import {
   takeEvery,
   takeLatest,
 } from 'redux-saga/effects';
-import { move, omit, pluck } from 'ramda';
+import { move, omit, pluck, reverse } from 'ramda';
 import * as ActionTypes from 'actions/action-types';
 import { showGlobalAlert, showGlobalErrorAlert } from 'alert/actions';
 import * as TaskTemplateActions from 'actions/task-template-actions';
@@ -16,6 +16,7 @@ import AlertMessages from 'alert/AlertMessages';
 import * as TaskTemplateApi from 'api/task-template-api';
 import * as TaskApi from 'api/task-api';
 import {
+  currentFolderIdentifierSelector,
   taskTemplateDetailsSelector,
   taskTemplateSelector,
   allTemplateDetailsSelector,
@@ -35,6 +36,13 @@ import {
   removeLabelFromDatabase,
 } from 'api/task-label-api';
 import { getLabels } from 'actions/workflow-drawer-actions';
+
+function* initializeWorkflowLibraryState({ folderIdentifier }) {
+  yield all([
+    folderIdentifier && put(TaskTemplateActions.getFolderBreadcrumbs()),
+    put(TaskTemplateActions.getWorkflowFolder()),
+  ]);
+}
 
 function* moveWorkflowToFolder({ parentTaskTemplateIdentifier, identifier }) {
   try {
@@ -60,91 +68,72 @@ function* moveWorkflowToFolder({ parentTaskTemplateIdentifier, identifier }) {
   }
 }
 
-function* getTemplates({ searchPhrase }) {
+function* getWorkflowFolder({ searchPhrase }) {
   try {
-    yield put({
-      type: ActionTypes.TASK_TEMPLATES_FETCHING,
-    });
-    const searchPhraseExist =
-      searchPhrase && searchPhrase !== '' && searchPhrase !== ' ';
-    const api = searchPhraseExist
-      ? TaskTemplateApi.searchTemplates.bind(null, searchPhrase)
-      : TaskTemplateApi.getTemplates;
-    const templates = yield call(api, searchPhrase);
-    yield put({
-      type: ActionTypes.LOAD_TASK_TEMPLATES,
-      templates,
-    });
-    yield put(TaskTemplateActions.cleanBreadcrumbs());
+    const folderIdentifier = yield select(currentFolderIdentifierSelector);
+    let workflows;
 
-    if (templates?.length > 0 && templates[0]?.type === 'WORKFLOW') {
+    if (folderIdentifier) {
+      workflows = yield call(
+        TaskTemplateApi.getTemplatesForSpecificFolder,
+        folderIdentifier,
+      );
+    } else {
+      const searchPhraseExist =
+        searchPhrase && searchPhrase !== '' && searchPhrase !== ' ';
+      const api = searchPhraseExist
+        ? TaskTemplateApi.searchTemplates.bind(null, searchPhrase)
+        : TaskTemplateApi.getTemplates;
+      workflows = yield call(api, searchPhrase);
+    }
+
+    yield put({
+      type: ActionTypes.GET_WORKFLOW_FOLDER_SUCCESS,
+      workflows,
+    });
+
+    if (workflows?.length > 0 && workflows[0]?.type === 'WORKFLOW') {
       yield put(
-        TaskTemplateActions.toggleTemplateOpen(templates[0]?.identifier),
+        TaskTemplateActions.toggleTemplateOpen(workflows[0]?.identifier),
       );
     }
   } catch {
-    yield put({
-      type: ActionTypes.TASK_TEMPLATES_ERROR,
-    });
+    yield all([
+      put({
+        type: ActionTypes.GET_WORKFLOW_FOLDER_FAILURE,
+      }),
+      put(showGlobalErrorAlert()),
+    ]);
   }
 }
 
-function* getAllTemplatesForOrganization({ searchPhrase }) {
+function* getFolderBreadcrumbs() {
   try {
-    yield put({
-      type: ActionTypes.TASK_TEMPLATES_FETCHING,
-    });
-    const searchPhraseExist =
-      searchPhrase && searchPhrase !== '' && searchPhrase !== ' ';
-    const api = searchPhraseExist
-      ? TaskTemplateApi.searchTemplates.bind(null, searchPhrase)
-      : TaskTemplateApi.getAllTemplatesForOrganization;
-    const templates = yield call(api, searchPhrase);
-    yield put({
-      type: ActionTypes.LOAD_TASK_TEMPLATES,
-      templates,
-    });
-    yield put(TaskTemplateActions.cleanBreadcrumbs());
-
-    if (templates?.length > 0 && templates[0]?.type === 'WORKFLOW') {
-      yield put(
-        TaskTemplateActions.toggleTemplateOpen(templates[0]?.identifier),
-      );
+    const folderIdentifier = yield select(currentFolderIdentifierSelector);
+    if (folderIdentifier) {
+      const breadcrumbs = [];
+      let nextFolderIdentifier = folderIdentifier;
+      do {
+        const workflowFolder = yield call(
+          TaskTemplateApi.getTemplate,
+          folderIdentifier,
+        );
+        breadcrumbs.push({
+          id: workflowFolder.identifier,
+          name: workflowFolder.name,
+        });
+        nextFolderIdentifier = workflowFolder.parentTaskTemplateIdentifier;
+      } while (nextFolderIdentifier);
+      yield put({
+        type: ActionTypes.GET_FOLDER_BREADCRUMBS_SUCCESS,
+        breadcrumbs: reverse(breadcrumbs),
+      });
     }
   } catch {
-    yield put({
-      type: ActionTypes.TASK_TEMPLATES_ERROR,
-    });
-  }
-}
-
-function* getTaskTemplatesFolder({
-  payload: { taskTemplateFolderIdentifier },
-}) {
-  try {
-    yield put({
-      type: ActionTypes.TASK_TEMPLATES_FETCHING,
-    });
-    const templates = yield call(
-      TaskTemplateApi.getTemplatesForSpecificFolder,
-      taskTemplateFolderIdentifier,
-    );
-    yield put({
-      type: ActionTypes.LOAD_TASK_TEMPLATES_FOLDER,
-      templates,
-      taskTemplateFolderIdentifier,
-    });
-
-    if (templates?.length > 0 && templates[0]?.type === 'WORKFLOW') {
-      yield put(
-        TaskTemplateActions.toggleTemplateOpen(templates[0]?.identifier),
-      );
-    }
-  } catch (error) {
-    console.log(error);
-    yield put({
-      type: ActionTypes.TASK_TEMPLATES_ERROR,
-    });
+    yield all([
+      put(showGlobalErrorAlert()),
+      put({ type: ActionTypes.GET_FOLDER_BREADCRUMBS_FAILURE }),
+    ]);
   }
 }
 
@@ -774,18 +763,15 @@ function* removeLabel({ labelIdentifier }) {
 }
 
 export default function* watchTaskTemplate() {
+  yield takeLatest(
+    ActionTypes.INITIALIZE_WORKFLOW_LIBRARY_STATE,
+    initializeWorkflowLibraryState,
+  );
   yield takeEvery(ActionTypes.MOVE_WORKFLOW_TO_FOLDER, moveWorkflowToFolder);
   yield takeEvery(ActionTypes.ADD_TASK_TEMPLATE, addTemplate);
   yield takeEvery(ActionTypes.ADD_TASK_TEMPLATE_FOLDER, addTemplate);
-  yield takeEvery(
-    ActionTypes.GO_TO_TASK_TEMPLATE_FOLDER,
-    getTaskTemplatesFolder,
-  );
-  yield takeLatest(
-    ActionTypes.GET_ALL_TASK_TEMPLATES,
-    getAllTemplatesForOrganization,
-  );
-  yield takeLatest(ActionTypes.GET_TASK_TEMPLATES, getTemplates);
+  yield takeLatest(ActionTypes.GET_WORKFLOW_FOLDER, getWorkflowFolder);
+  yield takeLatest(ActionTypes.GET_FOLDER_BREADCRUMBS, getFolderBreadcrumbs);
   yield takeEvery(ActionTypes.TOGGLE_TASK_TEMPLATE_OPEN, toggleTemplateOpen);
   yield takeEvery(ActionTypes.UPDATE_TASK_TEMPLATE, updateTemplate);
   yield takeEvery(ActionTypes.UPDATE_PARTIAL_WORKFLOW, updatePartialWorkflow);
