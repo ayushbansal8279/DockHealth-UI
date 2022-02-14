@@ -1,3 +1,4 @@
+/* eslint-disable sonarjs/cognitive-complexity */
 import React, { useCallback } from 'react';
 import { Grid } from '@material-ui/core';
 import { checkIfBundleTask } from 'helpers/task-helpers';
@@ -68,6 +69,7 @@ const TaskDrawerContent = props => {
     taskDrawerReference,
     taskListIdentifier,
     parentBundle,
+    taskTemplate,
     handleWorkflowReferenceClick,
     clearFormStates,
   } = initializeTaskDrawerHooks({
@@ -145,7 +147,7 @@ const TaskDrawerContent = props => {
             )}
           </Grid>
         )}
-        {!isSubtask && parentBundle && (
+        {!isSubtask && (parentBundle || taskTemplate) && (
           <Grid item xs={12} style={styleFullRowThin}>
             <Spacing vertical={4} />
             <ReferenceParentButton
@@ -153,7 +155,7 @@ const TaskDrawerContent = props => {
               onClick={handleWorkflowReferenceClick}
             >
               <ReferenceParentName>
-                {parentBundle.groupName}
+                {isTemplateTask ? taskTemplate.name : parentBundle.groupName}
               </ReferenceParentName>
             </ReferenceParentButton>
           </Grid>
