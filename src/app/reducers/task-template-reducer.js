@@ -1,20 +1,28 @@
+/* eslint-disable sonarjs/cognitive-complexity */
+/* eslint-disable sonarjs/max-switch-cases */
 import * as ActionTypes from 'actions/action-types';
 import { omit } from 'ramda';
 import { mapWithRemove } from 'helpers/utility-functions';
 import {
   createDecisionTaskNodes,
-  createTaskNode,
+  createTemporaryTaskNode,
   createLinkElement,
+  LinkType,
 } from 'helpers/task-template-builder-helpers';
 import TaskBaseReducer from './task-base-reducer';
 
-const initialState = {
-  taskTemplates: [],
+const initialWorkflowLibraryState = {
+  folderIdentifier: null,
+  taskTemplates: null,
   isFetching: false,
   isError: false,
-  taskTemplateDetails: {},
+  breadcrumbs: null,
   parent: null,
-  breadcrumbs: [],
+};
+
+const initialState = {
+  ...initialWorkflowLibraryState,
+  taskTemplateDetails: {},
   currentTaskTemplateIdentifier: null,
   currentTaskTemplate: null,
 };
@@ -42,15 +50,11 @@ function updateTasksStateCallback(state, updateTaskFromAction) {
   };
 }
 
-function updateTaskTemplateDetailsState(
-  taskTemplateIdentifier,
-  currentState,
-  newState,
-) {
+function updateTaskTemplateDetailsState(identifier, currentState, newState) {
   return {
     ...currentState,
-    [taskTemplateIdentifier]: {
-      ...(currentState[taskTemplateIdentifier] || {}),
+    [identifier]: {
+      ...(currentState[identifier] || {}),
       ...newState,
     },
   };
@@ -58,54 +62,76 @@ function updateTaskTemplateDetailsState(
 
 const TaskTemplateReducer = (state = initialState, action) => {
   switch (action.type) {
-    case ActionTypes.PUSH_TO_TEMPLATES_BREADCRUMBS:
+    case ActionTypes.INITIALIZE_WORKFLOW_LIBRARY_STATE: {
       return {
         ...state,
-        breadcrumbs: [...state.breadcrumbs, action.payload.breadcrumb],
+        ...initialWorkflowLibraryState,
+        folderIdentifier: action.folderIdentifier,
       };
-    case ActionTypes.CLEAN_AND_PUSH_TEMPLATES_BREADCRUMBS:
+    }
+
+    case ActionTypes.CLEAR_WORKFLOW_LIBRARY_STATE: {
       return {
         ...state,
-        breadcrumbs: [...action.payload.breadcrumbs],
+        ...initialWorkflowLibraryState,
       };
-    case ActionTypes.CLEAN_TEMPLATES_BREADCRUMBS:
+    }
+
+    case ActionTypes.UPDATE_PARTIAL_WORKFLOW: {
       return {
         ...state,
-        breadcrumbs: [],
+        taskTemplates: state.taskTemplates.map(taskTemplate =>
+          taskTemplate.identifier === action.taskWorkflowIdentifier
+            ? { ...taskTemplate, ...action.dataToUpdate }
+            : taskTemplate,
+        ),
       };
-    case ActionTypes.ADD_TASK_TEMPLATE:
+    }
+
+    case ActionTypes.ADD_TASK_TEMPLATE_SUCCESS:
       return {
         ...state,
         taskTemplates: [action.template, ...state.taskTemplates],
       };
 
-    case ActionTypes.TASK_TEMPLATES_FETCHING:
+    case ActionTypes.DUPLICATE_WORKFLOW_SUCCESS:
+      return {
+        ...state,
+        taskTemplates: [action.workflow, ...state.taskTemplates],
+      };
+
+    case ActionTypes.GET_WORKFLOW_FOLDER:
       return {
         ...state,
         isFetching: true,
         isError: false,
       };
 
-    case ActionTypes.LOAD_TASK_TEMPLATES:
+    case ActionTypes.GET_WORKFLOW_FOLDER_SUCCESS:
       return {
         ...state,
-        taskTemplates: action.templates || [],
+        taskTemplates: action.workflows || [],
         parent: null,
         isFetching: false,
       };
-    case ActionTypes.LOAD_TASK_TEMPLATES_FOLDER:
-      return {
-        ...state,
-        taskTemplates: action.templates || [],
-        parent: action.taskTemplateFolderIdentifier,
-        isFetching: false,
-      };
 
-    case ActionTypes.TASK_TEMPLATES_ERROR:
+    case ActionTypes.GET_WORKFLOW_FOLDER_FAILURE:
       return {
         ...state,
         isFetching: false,
         isError: true,
+      };
+
+    case ActionTypes.GET_FOLDER_BREADCRUMBS:
+      return {
+        ...state,
+        breadcrumbs: null,
+      };
+
+    case ActionTypes.GET_FOLDER_BREADCRUMBS_SUCCESS:
+      return {
+        ...state,
+        breadcrumbs: action.breadcrumbs,
       };
 
     case ActionTypes.GET_TASK_TEMPLATE_TASKS: {
@@ -172,23 +198,21 @@ const TaskTemplateReducer = (state = initialState, action) => {
       };
     }
 
-    case ActionTypes.DELETE_TASK_TEMPLATE: {
-      const { taskTemplateIdentifier: identifierToDelete } = action;
+    case ActionTypes.MOVE_WORKFLOW_TO_FOLDER_SUCCESS:
+    case ActionTypes.DELETE_WORKFLOW: {
+      const { identifier } = action;
 
       return {
         ...state,
         taskTemplates: state.taskTemplates.filter(
-          ({ taskTemplateIdentifier }) =>
-            taskTemplateIdentifier !== identifierToDelete,
+          t => t.identifier !== identifier,
         ),
-        taskTemplateDetails: omit(
-          [identifierToDelete],
-          state.taskTemplateDetails,
-        ),
+        taskTemplateDetails: omit([identifier], state.taskTemplateDetails),
       };
     }
 
-    case ActionTypes.UPDATE_TASK_TEMPLATE: {
+    case ActionTypes.UPDATE_TASK_TEMPLATE_FAILURE:
+    case ActionTypes.UPDATE_TASK_TEMPLATE_SUCCESS: {
       const { taskTemplateIdentifier, dataToUpdate } = action;
 
       return {
@@ -259,11 +283,11 @@ const TaskTemplateReducer = (state = initialState, action) => {
     }
 
     case ActionTypes.SELECT_TASK_TEMPLATE: {
-      const { taskTemplateIdentifier } = action;
+      const { identifier } = action;
 
       return {
         ...state,
-        currentTaskTemplateIdentifier: taskTemplateIdentifier,
+        currentTaskTemplateIdentifier: identifier,
       };
     }
 
@@ -276,12 +300,12 @@ const TaskTemplateReducer = (state = initialState, action) => {
     }
 
     case ActionTypes.GET_TASK_TEMPLATE_LAYOUT: {
-      const { taskTemplateIdentifier } = action;
+      const { identifier } = action;
 
       return {
         ...state,
         taskTemplateDetails: updateTaskTemplateDetailsState(
-          taskTemplateIdentifier,
+          identifier,
           state.taskTemplateDetails,
           {
             isFetchingLayout: true,
@@ -291,12 +315,12 @@ const TaskTemplateReducer = (state = initialState, action) => {
     }
 
     case ActionTypes.GET_TASK_TEMPLATE_LAYOUT_SUCCESS: {
-      const { taskTemplateIdentifier, layout } = action;
+      const { identifier, layout } = action;
 
       return {
         ...state,
         taskTemplateDetails: updateTaskTemplateDetailsState(
-          taskTemplateIdentifier,
+          identifier,
           state.taskTemplateDetails,
           {
             isFetchingLayout: false,
@@ -351,7 +375,41 @@ const TaskTemplateReducer = (state = initialState, action) => {
           {
             temporaryElements: [
               ...(temporaryElements || []),
-              createTaskNode(temporaryElements, position),
+              createTemporaryTaskNode(temporaryElements, position),
+            ],
+          },
+        ),
+      };
+    }
+
+    case ActionTypes.ADD_DECISION_BRANCH: {
+      const { currentTaskTemplateIdentifier } = state;
+      const { sourceTaskIdentifier } = action;
+
+      const { temporaryElements, layout } = state.taskTemplateDetails[
+        currentTaskTemplateIdentifier
+      ];
+
+      const { position } =
+        layout?.find(({ id }) => id === sourceTaskIdentifier) || {};
+
+      const newPosition = { ...position, y: position.y + 300 };
+      const newNode = createTemporaryTaskNode(temporaryElements, newPosition);
+
+      return {
+        ...state,
+        taskTemplateDetails: updateTaskTemplateDetailsState(
+          currentTaskTemplateIdentifier,
+          state.taskTemplateDetails,
+          {
+            temporaryElements: [
+              ...(temporaryElements || []),
+              createLinkElement(
+                LinkType.TEMPORARY_DECISION,
+                sourceTaskIdentifier,
+                newNode.id,
+              ),
+              newNode,
             ],
           },
         ),
@@ -360,7 +418,13 @@ const TaskTemplateReducer = (state = initialState, action) => {
 
     case ActionTypes.ADD_TEMPORARY_LINK: {
       const { currentTaskTemplateIdentifier } = state;
-      const { sourceId, targetId, sourceHandle, targetHandle } = action;
+      const {
+        linkType,
+        sourceId,
+        targetId,
+        sourceHandle,
+        targetHandle,
+      } = action;
       const { temporaryElements } = state.taskTemplateDetails[
         currentTaskTemplateIdentifier
       ];
@@ -376,7 +440,13 @@ const TaskTemplateReducer = (state = initialState, action) => {
                 ({ source, target }) =>
                   !(source === sourceId && target === targetId),
               ),
-              createLinkElement(sourceId, targetId, sourceHandle, targetHandle),
+              createLinkElement(
+                linkType,
+                sourceId,
+                targetId,
+                sourceHandle,
+                targetHandle,
+              ),
             ],
           },
         ),
@@ -444,6 +514,27 @@ const TaskTemplateReducer = (state = initialState, action) => {
                 id !== elementId &&
                 source !== elementId &&
                 target !== elementId,
+            ),
+          },
+        ),
+      };
+    }
+
+    case ActionTypes.EDIT_TEMPORARY_ELEMENT: {
+      const { currentTaskTemplateIdentifier } = state;
+      const { elementId, data } = action;
+      const { temporaryElements } = state.taskTemplateDetails[
+        currentTaskTemplateIdentifier
+      ];
+
+      return {
+        ...state,
+        taskTemplateDetails: updateTaskTemplateDetailsState(
+          currentTaskTemplateIdentifier,
+          state.taskTemplateDetails,
+          {
+            temporaryElements: temporaryElements.map(te =>
+              te.id === elementId ? { ...te, ...data } : te,
             ),
           },
         ),

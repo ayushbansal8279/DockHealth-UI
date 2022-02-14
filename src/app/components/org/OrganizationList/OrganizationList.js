@@ -1,5 +1,5 @@
 import React from 'react';
-import useBoolean from 'hooks/useBoolean';
+import { useBoolean } from 'hooks/useBoolean';
 import palette from 'styles/palette';
 import OrganizationIdentifier from '../OrganizationIdentifier/OrganizationIdentifier';
 

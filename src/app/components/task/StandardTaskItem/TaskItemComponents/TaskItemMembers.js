@@ -37,6 +37,10 @@ const TaskItemMembers = ({
             selectedMembers={assignedToUsers}
             onSelect={handleReasignTask}
             onError={closePopover}
+            enableLazyLoading={
+              task?.taskList?.listType === 'PUBLIC' ||
+              task?.taskList?.listType === 'TEMPLATE'
+            }
           />
         )}
         fullWidth={multipleAssigneesContext}

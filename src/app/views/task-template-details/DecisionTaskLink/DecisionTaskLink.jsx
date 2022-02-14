@@ -1,17 +1,24 @@
+/* eslint-disable sonarjs/cognitive-complexity */
 import React, { useState, useEffect, useRef } from 'react';
-import { deleteTasksLink } from 'actions/task-actions';
+import { ClickAwayListener, Paper, Popper } from '@material-ui/core';
+import { isNil } from 'ramda';
+import CalendarIcon from 'img/template/calendar-icon';
+import { deleteTasksLink, updateTasksLink } from 'actions/task-actions';
 import {
   addTaskOutcome,
   updateTaskOutcome,
 } from 'actions/task-template-actions';
-import useBoolean from 'hooks/useBoolean';
-import { IconButton } from '@material-ui/core';
+import { useBoolean } from 'hooks/useBoolean';
 import EditIcon from '@material-ui/icons/Edit';
-import DeleteIcon from '@material-ui/icons/Delete';
-import { getEdgeCenter } from 'react-flow-renderer';
+import DeleteOutlineIcon from '@material-ui/icons/DeleteOutline';
+import { getEdgeCenter, useStoreState } from 'react-flow-renderer';
 import { useDispatch } from 'react-redux';
-import { EdgeLabel, OutcomeInput, ButtonsContainer } from './styled';
 import LinkPath from '../LinkPath/LinkPath';
+import TaskLinkOptions from '../TaskLinkOptions/TaskLinkOptions';
+import TaskLinkDelayForm from '../TaskLinkDelayForm/TaskLinkDelayForm';
+import DelayPeriodLabel from '../DelayPeriodLabel/DelayPeriodLabel';
+import { LabelsWrapper } from './styled';
+import OutcomeInputLabel from '../OutcomeInputLabel/OutcomeInputLabel';
 
 const DecisionTaskLink = props => {
   const {
@@ -27,6 +34,7 @@ const DecisionTaskLink = props => {
   } = props;
   const { outcome, link } = data;
   const { taskOutcomeIdentifier, name: outcomeName } = outcome || {};
+  const { delayPeriod, delayPeriodUnit } = link || {};
   const [edgeCenterX, edgeCenterY] = getEdgeCenter({
     sourceX,
     sourceY,
@@ -36,10 +44,18 @@ const DecisionTaskLink = props => {
     targetPosition,
   });
   const inputReference = useRef(null);
+  const edgeLabelReference = useRef(null);
+  const [areOptionsOpen, openOptions, closeOptions] = useBoolean(false);
+  const [isDelayPopoverOpen, openDelayPopover, closeDelayPopover] = useBoolean(
+    false,
+  );
   const [inputValue, setInputValue] = useState('');
   const [isEdited, setEdited, unsetEdited] = useBoolean(!outcome);
   const [isFocused, setFocused, unsetFocused] = useBoolean(false);
   const dispatch = useDispatch();
+  const { 2: zoom } = useStoreState(store => store.transform);
+
+  const delayOptionsVisible = !isNil(delayPeriod) && delayPeriodUnit;
 
   useEffect(() => {
     if (outcomeName) {
@@ -54,13 +70,76 @@ const DecisionTaskLink = props => {
 
   useEffect(() => {
     if (!isFocused && outcome) {
-      setInputValue(outcome.name);
       unsetEdited();
     }
   }, [isFocused, outcome, unsetEdited]);
 
+  const deleteLink = () => {
+    dispatch(deleteTasksLink(sourceTaskIdentifier, targetTaskIdentifier));
+  };
+
+  const removeDelayPeriod = () => {
+    dispatch(
+      updateTasksLink({
+        ...link,
+        delayPeriod: null,
+        delayPeriodUnit: null,
+        delayIsBusinessDays: null,
+      }),
+    );
+  };
+
+  const togglePeriodDelay = () => {
+    if (delayOptionsVisible) {
+      removeDelayPeriod();
+    } else {
+      openDelayPopover();
+    }
+  };
+
+  const menuOptions = [
+    {
+      key: 'edit',
+      icon: <EditIcon style={{ height: 13 }} />,
+      label: `Edit outcome`,
+      onClick: setEdited,
+    },
+    {
+      key: 'delay',
+      icon: <CalendarIcon size={11} />,
+      label: `${
+        delayPeriod && delayPeriodUnit ? 'Remove' : 'Add'
+      } time until task`,
+      onClick: togglePeriodDelay,
+    },
+    {
+      key: 'delete',
+      icon: <DeleteOutlineIcon style={{ height: 13 }} />,
+      label: `Delete link`,
+      onClick: deleteLink,
+    },
+  ];
+
   const clearInput = () => {
     setInputValue();
+  };
+
+  const saveTaskOutcome = () => {
+    if (inputValue.length > 1) {
+      if (outcome) {
+        if (outcome.name !== inputValue) {
+          dispatch(
+            updateTaskOutcome(
+              taskOutcomeIdentifier,
+              sourceTaskIdentifier,
+              inputValue,
+            ),
+          );
+        }
+      } else {
+        dispatch(addTaskOutcome(inputValue, sourceTaskIdentifier, link));
+      }
+    }
   };
 
   const handleKeyPress = event => {
@@ -68,19 +147,7 @@ const DecisionTaskLink = props => {
 
     switch (key) {
       case 'Enter':
-        if (inputValue.length > 1) {
-          if (outcome) {
-            dispatch(
-              updateTaskOutcome(
-                taskOutcomeIdentifier,
-                sourceTaskIdentifier,
-                inputValue,
-              ),
-            );
-          } else {
-            dispatch(addTaskOutcome(inputValue, sourceTaskIdentifier, link));
-          }
-        }
+        saveTaskOutcome();
         break;
       case 'Escape':
         clearInput();
@@ -90,45 +157,83 @@ const DecisionTaskLink = props => {
     }
   };
 
+  const handleDelayPeriodSubmit = delayPeriodData => {
+    dispatch(
+      updateTasksLink({
+        ...link,
+        ...delayPeriodData,
+      }),
+    );
+    closeDelayPopover();
+  };
+
+  const handleInputBlur = () => {
+    saveTaskOutcome();
+    unsetFocused();
+  };
+
   return (
     <>
       <LinkPath {...props} />
       <foreignObject
-        width={160}
-        height={27}
+        width={200}
+        height={32}
         x={edgeCenterX - 160 / 2}
-        y={edgeCenterY - 27 / 2}
+        y={edgeCenterY - 32 / 2}
         className="edgebutton-foreignobject"
         requiredExtensions="http://www.w3.org/1999/xhtml"
       >
-        <EdgeLabel hasOutcome={!!outcome}>
-          <OutcomeInput
-            ref={inputReference}
-            readOnly={!isEdited}
-            placeholder="Type option"
-            value={inputValue}
-            onChange={event => setInputValue(event.target?.value || '')}
-            onKeyPress={handleKeyPress}
-            onFocus={setFocused}
-            onBlur={unsetFocused}
-          />
-          {!!outcome && (
-            <ButtonsContainer>
-              <IconButton onClick={setEdited}>
-                <EditIcon fontSize="small" color="inherit" />
-              </IconButton>
-              <IconButton
-                onClick={() =>
-                  dispatch(
-                    deleteTasksLink(sourceTaskIdentifier, targetTaskIdentifier),
-                  )
-                }
-              >
-                <DeleteIcon fontSize="small" color="inherit" />
-              </IconButton>
-            </ButtonsContainer>
+        <LabelsWrapper>
+          {delayOptionsVisible && (
+            <DelayPeriodLabel link={link} onClick={openDelayPopover} />
           )}
-        </EdgeLabel>
+          <div
+            onMouseEnter={outcome && openOptions}
+            onMouseLeave={closeOptions}
+          >
+            <OutcomeInputLabel
+              ref={edgeLabelReference}
+              inputRef={inputReference}
+              readOnly={!isEdited}
+              value={inputValue}
+              onChange={event => setInputValue(event.target?.value || '')}
+              onKeyPress={handleKeyPress}
+              onFocus={setFocused}
+              onBlur={handleInputBlur}
+              hasOutcome={!!outcome}
+            />
+            {areOptionsOpen && (
+              <TaskLinkOptions
+                anchorEl={edgeLabelReference.current}
+                options={menuOptions}
+                onClose={closeOptions}
+              />
+            )}
+          </div>
+        </LabelsWrapper>
+        {isDelayPopoverOpen && (
+          <Popper
+            anchorEl={edgeLabelReference.current}
+            placement="bottom-end"
+            open
+            style={{ zIndex: 10 }}
+          >
+            <ClickAwayListener onClickAway={closeDelayPopover}>
+              <Paper
+                style={{
+                  transform: `scale(${zoom})`,
+                  transformOrigin: 'top right',
+                }}
+              >
+                <TaskLinkDelayForm
+                  link={link}
+                  onSubmit={handleDelayPeriodSubmit}
+                  onClose={closeDelayPopover}
+                />
+              </Paper>
+            </ClickAwayListener>
+          </Popper>
+        )}
       </foreignObject>
     </>
   );

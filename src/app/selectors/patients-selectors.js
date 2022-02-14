@@ -17,13 +17,48 @@ export const isFetchingPatientsListsSelector = createSelector(
   ({ isFetching }) => isFetching,
 );
 
-export const patientsListDetailsSelector = createSelector(
-  defaultPatientsListsSelector,
-  customPatientsListsSelector,
-  (defaultPatientsLists, customPatientsLists) => (listType, listIdentifier) => {
-    const lists =
-      listType === 'DEFAULT' ? defaultPatientsLists : customPatientsLists;
+export const currentPatientsListIdentifierSelector = createSelector(
+  patientsStateSelector,
+  ({ currentPatientsListIdentifier }) => currentPatientsListIdentifier,
+);
 
-    return lists.find(pl => pl.patientListIdentifier === listIdentifier) || {};
-  },
+export const isFetchingPatientsListDetailsSelector = createSelector(
+  patientsStateSelector,
+  ({ currentPatientsList }) =>
+    currentPatientsList?.isFetchingListDetails || false,
+);
+
+export const patientsListDetailsSelector = createSelector(
+  patientsStateSelector,
+  ({ currentPatientsList }) => currentPatientsList?.listDetails || null,
+);
+
+export const patientsSelector = createSelector(
+  patientsStateSelector,
+  ({ currentPatientsList }) => currentPatientsList?.patients || null,
+);
+
+export const isFetchingPatientsSelector = createSelector(
+  patientsStateSelector,
+  ({ currentPatientsList }) => currentPatientsList?.isFetchingPatients || false,
+);
+
+export const filterOptionsSelector = createSelector(
+  patientsStateSelector,
+  ({ currentPatientsList }) => currentPatientsList?.filterOptions || null,
+);
+
+export const patientsListSearchTermSelector = createSelector(
+  patientsStateSelector,
+  ({ currentPatientsList }) => currentPatientsList?.searchTerm,
+);
+
+export const patientsSelectedFiltersSelector = createSelector(
+  patientsStateSelector,
+  ({ currentPatientsList }) => currentPatientsList?.selectedFilters,
+);
+
+export const filtersActiveSelector = createSelector(
+  patientsStateSelector,
+  ({ currentPatientsList }) => !!currentPatientsList?.selectedFilters,
 );

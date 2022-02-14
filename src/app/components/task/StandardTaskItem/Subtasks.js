@@ -1,16 +1,17 @@
 /* eslint-disable sonarjs/cognitive-complexity */
 import React, { useState, useCallback, useMemo } from 'react';
+import { Box } from '@material-ui/core';
 import { useDispatch } from 'react-redux';
 import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd';
 import { isEmpty } from 'ramda';
 import * as TaskActions from 'actions/task-actions';
 import { onSubtaskOrderChanged } from 'helpers/ga-event-helper';
+import TasksSkeletonLoader from 'components/task/TasksSkeletonLoader/TasksSkeletonLoader';
 import TaskComments from 'components/tasklist/TaskComments/TaskComments';
 import { Tasks as SubtasksContainer } from 'components/tasklist/TasksGroup/styled';
 import TaskItem from './TaskItem';
 import { getMatchedComments } from './helpers';
 import { SubtaskItemWrapper } from '../styled';
-import SubtasksSkeletonLoader from '../SubtasksSkeletonLoader/SubtasksSkeletonLoader';
 
 const Subtasks = ({
   subtasks,
@@ -24,7 +25,6 @@ const Subtasks = ({
   isFetchingSubTasks,
   shouldShowBlockModalOnDrag,
   showClearSortFiltersModal,
-  taskItemConfig,
   ...restProps
 }) => {
   const dispatch = useDispatch();
@@ -110,7 +110,6 @@ const Subtasks = ({
                               isLast={isLast}
                               showSubtaskStylingLink={!draggedId}
                               isNestedTask
-                              taskItemConfig={taskItemConfig}
                               {...restProps}
                             />
                             {shouldRenderComments &&
@@ -138,7 +137,9 @@ const Subtasks = ({
           </Droppable>
         </DragDropContext>
       ) : (
-        <SubtasksSkeletonLoader rows={subTasksCount} />
+        <Box pl={2}>
+          <TasksSkeletonLoader rows={subTasksCount} />
+        </Box>
       )}
     </SubtasksContainer>
   );

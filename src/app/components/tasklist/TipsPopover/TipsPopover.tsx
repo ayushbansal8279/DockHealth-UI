@@ -1,7 +1,9 @@
+/* eslint-disable react/require-default-props */
+/* eslint-disable react/no-unused-prop-types */
 import React, { useCallback, useEffect, useState } from 'react';
 import { useUnmount } from 'react-use';
 import styled from 'styled-components';
-import useBoolean from 'hooks/useBoolean';
+import { useBoolean } from 'hooks/useBoolean';
 import TipsDotsBackground from 'img/tips-dots-background.svg';
 import palette from 'styles/palette';
 

@@ -3,15 +3,16 @@ import { useDispatch, useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
 import { Elements } from 'react-stripe-elements';
 import { useMount } from 'react-use';
-import { setHeader } from 'actions/template-actions';
+import { SUBS_SETTINGS_PATH } from 'routing/helpers/paths';
 import {
   getBillingDetails,
   getInvoiceDetails,
 } from 'actions/organization-actions';
 import { saveBillingDetails } from 'api/organization-api';
-import GenericHeader from 'components/template/GenericHeader/GenericHeader';
+import ViewLayout from 'components/template/ViewLayout/ViewLayout';
+import BasicLayoutHeader from 'components/template/BasicLayoutHeader/BasicLayoutHeader';
 import Spacing from 'components/common/Spacing';
-import useBoolean from 'hooks/useBoolean';
+import { useBoolean } from 'hooks/useBoolean';
 import { MontserratTypography } from 'styles/theme-montserrat';
 import * as AlertActions from 'alert/actions';
 import BillingData from './BillingData/BillingData';
@@ -107,58 +108,52 @@ const BillingsView = () => {
     unsetUpdatingBilling();
 
     if (history.location === '/settings/subscription-payment') {
-      history.push('/settings/subscriptions');
+      history.push(SUBS_SETTINGS_PATH);
     }
   };
 
   useMount(() => {
-    dispatch(
-      setHeader({
-        layout: [
-          {
-            key: 'title',
-            component: <GenericHeader>Billing & Invoices</GenericHeader>,
-            alignItems: 'center',
-          },
-        ],
-      }),
-    );
-
     getBillingDetails({ organizationIdentifier })(dispatch);
     getInvoiceDetails({ organizationIdentifier })(dispatch);
   });
 
   return (
-    <BillingsViewContainer>
-      <BillingsViewInnerContainer>
-        <StyledCollapse in={Boolean(error)} timeout={250}>
-          <ErrorContainer>
-            <MontserratTypography weight="600" variant="h4">
-              {error}
-            </MontserratTypography>
-          </ErrorContainer>
-          <Spacing vertical={4} />
-        </StyledCollapse>
-        <Elements
-          locale="en-US"
-          fonts={[
-            {
-              cssSrc:
-                'https://fonts.googleapis.com/css?family=Montserrat&display=swap',
-            },
-          ]}
-        >
-          <BillingData
-            isUpdatingBilling={isUpdatingBilling}
-            setUpdatingBilling={setUpdatingBilling}
-            unsetUpdatingBilling={unsetUpdatingBilling}
-            cancelUpdateBilling={cancelUpdateBilling}
-            onSubmit={onSubmit({ setError, dispatch, organizationIdentifier })}
-          />
-        </Elements>
-        <InvoicesList />
-      </BillingsViewInnerContainer>
-    </BillingsViewContainer>
+    <ViewLayout header={<BasicLayoutHeader title="Billing &amp; Invoices" />}>
+      <BillingsViewContainer>
+        <BillingsViewInnerContainer>
+          <StyledCollapse in={Boolean(error)} timeout={250}>
+            <ErrorContainer>
+              <MontserratTypography weight="600" variant="h4">
+                {error}
+              </MontserratTypography>
+            </ErrorContainer>
+            <Spacing vertical={4} />
+          </StyledCollapse>
+          <Elements
+            locale="en-US"
+            fonts={[
+              {
+                cssSrc:
+                  'https://fonts.googleapis.com/css?family=Montserrat&display=swap',
+              },
+            ]}
+          >
+            <BillingData
+              isUpdatingBilling={isUpdatingBilling}
+              setUpdatingBilling={setUpdatingBilling}
+              unsetUpdatingBilling={unsetUpdatingBilling}
+              cancelUpdateBilling={cancelUpdateBilling}
+              onSubmit={onSubmit({
+                setError,
+                dispatch,
+                organizationIdentifier,
+              })}
+            />
+          </Elements>
+          <InvoicesList />
+        </BillingsViewInnerContainer>
+      </BillingsViewContainer>
+    </ViewLayout>
   );
 };
 

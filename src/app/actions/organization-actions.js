@@ -53,6 +53,13 @@ export const saveBillingDetails = (billingData, cardToken) => dispatch => {
     });
 };
 
+export function updateSubscriptionDetails(newPlan) {
+  return {
+    type: ActionTypes.UPDATE_SUBSCRIPTION_PLAN,
+    newPlan,
+  };
+}
+
 export const getBillingEstimate = ({
   subscriptionPlan,
   billingFrequency,
@@ -147,12 +154,6 @@ export const updateOrganization = ({
     });
   });
 
-export const selectUsersForPlan = ({ users }) => dispatch =>
-  dispatch({
-    type: ActionTypes.SELECT_USERS_FOR_PLAN,
-    payload: users,
-  });
-
 // eslint-disable-next-line unicorn/consistent-function-scoping
 export const checkBAASignedStatus = organizationIdentifier => dispatch => {
   dispatch({
@@ -230,5 +231,17 @@ export function changeUserOrganizationRole(userIdentifier, role) {
     type: ActionTypes.CHANGE_USER_ORGANIZATION_ROLE,
     userIdentifier,
     role,
+  };
+}
+
+export function getOrganizationCustomFields() {
+  return {
+    type: ActionTypes.GET_ORGANIZATION_CUSTOM_FIELDS,
+  };
+}
+export function updateOrganizationCustomFields(setup) {
+  return {
+    type: ActionTypes.UPDATE_CUSTOM_LIST_FIELDS_SETUP,
+    setup,
   };
 }

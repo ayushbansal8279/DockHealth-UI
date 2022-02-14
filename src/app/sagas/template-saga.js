@@ -14,10 +14,7 @@ export const removeHiddenNavbarTemplate = () => ({
 
 function* doInitializeHiddenNavbarTemplate() {
   try {
-    yield all([
-      put(TemplateActions.hideHeader()),
-      put(TemplateActions.hideNavbar()),
-    ]);
+    yield all([put(TemplateActions.hideNavbar())]);
   } catch (error) {
     console.log(error);
   }
@@ -25,10 +22,7 @@ function* doInitializeHiddenNavbarTemplate() {
 
 function* doRemoveHiddenNavbarTemplate() {
   try {
-    yield all([
-      put(TemplateActions.showHeader()),
-      put(TemplateActions.showNavbar()),
-    ]);
+    yield all([put(TemplateActions.showNavbar())]);
   } catch (error) {
     console.log(error);
   }

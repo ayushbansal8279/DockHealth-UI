@@ -1,56 +1,31 @@
-import { Button, Grid } from '@material-ui/core';
 import React from 'react';
+import { Box, Grid } from '@material-ui/core';
+import { useHistory } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { useMount } from 'react-use';
-import { setHeader } from 'actions/template-actions';
+import { SUBS_SETTINGS_PATH } from 'routing/helpers/paths';
+import Button from 'components/common/Button/Button';
 import {
   getBillingDetails,
   getBillingEstimate,
   getOrganizationById,
 } from 'actions/organization-actions';
-import GenericHeader from 'components/template/GenericHeader/GenericHeader';
+import ViewLayout from 'components/template/ViewLayout/ViewLayout';
+import LayoutHeader from 'components/template/LayoutHeader/LayoutHeader';
 import {
   H2,
-  Spacing2,
   SubscriptionPaymentViewContainer,
-  SubscriptionPaymentViewOuterContainer,
 } from './SubscriptionPaymentView.Components';
-
-const goToMainPage = () => {
-  window.location.href = '/#/settings/subscriptions';
-};
-
-const SaveBillingElement = () => {
-  return (
-    <>
-      <Spacing2 />
-      <Grid item sm={12} container justify="flex-end">
-        <Button onClick={() => goToMainPage()}>Continue</Button>
-      </Grid>
-    </>
-  );
-};
 
 const SubscriptionPaymentFinishedView = () => {
   const dispatch = useDispatch();
+  const history = useHistory();
 
   const organizationIdentifier = useSelector(
     store => store.userState?.userProfile?.organizationIdentifier,
   );
 
   useMount(() => {
-    dispatch(
-      setHeader({
-        layout: [
-          {
-            key: 'title',
-            component: <GenericHeader />,
-            alignItems: 'center',
-          },
-        ],
-      }),
-    );
-
     getOrganizationById({ organizationIdentifier })(dispatch);
     getBillingDetails({ organizationIdentifier })(dispatch);
     getBillingEstimate()(dispatch);
@@ -58,18 +33,26 @@ const SubscriptionPaymentFinishedView = () => {
   });
 
   return (
-    <SubscriptionPaymentViewOuterContainer>
+    <ViewLayout header={<LayoutHeader />}>
       <SubscriptionPaymentViewContainer>
         <Grid container spacing={4}>
           <Grid item sm={12}>
             <H2>Your purchase is complete</H2>
           </Grid>
           <Grid item sm={12} container justify="flex-end">
-            <SaveBillingElement />
+            <Box m={2} />
+            <Grid item sm={12} container>
+              <Button
+                width={200}
+                onClick={() => history.push(SUBS_SETTINGS_PATH)}
+              >
+                Continue
+              </Button>
+            </Grid>
           </Grid>
         </Grid>
       </SubscriptionPaymentViewContainer>
-    </SubscriptionPaymentViewOuterContainer>
+    </ViewLayout>
   );
 };
 

@@ -1,7 +1,7 @@
 import React, { useEffect, useRef, useState, useCallback } from 'react';
 import { Box, IconButton } from '@material-ui/core';
 import ArrowBackIcon from '@material-ui/icons/ArrowBack';
-import useBoolean from 'hooks/useBoolean';
+import { useBoolean } from 'hooks/useBoolean';
 import {
   getTemplates,
   getTemplatesForSpecificFolder,
@@ -92,11 +92,11 @@ const SelectStep = ({
   useEffect(getRootList, [getRootList]);
 
   const fetchChildList = useCallback(
-    taskTemplateIdentifier => {
+    identifier => {
       setIsFetchingFolders(true);
-      setListId(taskTemplateIdentifier);
-      pushToBreadcrumbsList(taskTemplateIdentifier);
-      getTemplatesForSpecificFolder(taskTemplateIdentifier)
+      setListId(identifier);
+      pushToBreadcrumbsList(identifier);
+      getTemplatesForSpecificFolder(identifier)
         .then(folders => {
           setFoldersList(folders.filter(({ type }) => type === 'FOLDER'));
           setIsFetchingFolders(false);
@@ -124,8 +124,8 @@ const SelectStep = ({
   ]);
 
   const handleGoToFolder = useCallback(
-    taskTemplateIdentifier => {
-      fetchChildList(taskTemplateIdentifier);
+    identifier => {
+      fetchChildList(identifier);
     },
     [fetchChildList],
   );
@@ -148,24 +148,18 @@ const SelectStep = ({
               {foldersList?.length > 0 ? (
                 foldersList.map(folder => (
                   <ListItem
-                    key={folder.taskTemplateIdentifier}
-                    isSelected={
-                      selectedFolder === folder.taskTemplateIdentifier
-                    }
+                    key={folder.identifier}
+                    isSelected={selectedFolder === folder.identifier}
                   >
                     <ListItemTextButton
-                      onClick={() =>
-                        setSelectedFolder(folder.taskTemplateIdentifier)
-                      }
+                      onClick={() => setSelectedFolder(folder.identifier)}
                       type="button"
                       isSelected
                     >
                       {folder.name}
                     </ListItemTextButton>
                     <IconButton
-                      onClick={() =>
-                        handleGoToFolder(folder.taskTemplateIdentifier)
-                      }
+                      onClick={() => handleGoToFolder(folder.identifier)}
                     >
                       <NextArrow />
                     </IconButton>

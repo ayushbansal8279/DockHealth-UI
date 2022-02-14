@@ -225,7 +225,7 @@ Button.propTypes = {
   disabled: PropTypes.bool,
   width: PropTypes.string,
   startIcon: PropTypes.string,
-  endIcon: PropTypes.string,
+  endIcon: PropTypes.node,
 };
 
 Button.defaultProps = {

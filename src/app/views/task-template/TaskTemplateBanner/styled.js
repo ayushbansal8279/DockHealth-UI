@@ -6,7 +6,7 @@ import spacing from 'styles/spacing';
 export const TemplateBannerContainer = styled.div`
   position: relative;
   display: grid;
-  grid-template-columns: auto 1fr 246px;
+  grid-template-columns: auto 1fr;
   align-items: center;
   column-gap: 24px;
   width: 100%;
@@ -36,7 +36,6 @@ export const CloseButton = styled.button`
 
 export const TextContainer = styled.div`
   width: 100%;
-  max-width: 790px;
   font-family: 'Montserrat', sans-serif;
 `;
 
@@ -51,4 +50,9 @@ export const Description = styled.p`
   font-family: 'Roboto Condensed', sans-serif;
   font-size: ${fontSizes.smallPlus};
   font-weight: ${fontWeights.light};
+`;
+
+export const SmartFlowIndicatorIcon = styled.img`
+  cursor: default;
+  height: 48px;
 `;

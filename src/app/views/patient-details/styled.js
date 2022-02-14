@@ -11,13 +11,8 @@ export const PatientDetailsTabsContainer = styled.div`
 `;
 
 export const PatientDetailsContainer = styled.div`
-  padding: ${spacing.large} ${spacing.huge};
+  padding: ${spacing.huge} ${spacing.large};
   background-color: ${palette.coolGrey4};
-`;
-
-export const SearchWrapper = styled.div`
-  width: ${({ fullWidth }) => (fullWidth ? 374 : 115)}px;
-  transition: width 0.25s ease-out;
 `;
 
 export const MainTab = styled(Tab)`

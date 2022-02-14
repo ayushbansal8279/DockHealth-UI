@@ -25,11 +25,16 @@ export const checkIfUserIsOrganizationAdmin = user =>
     user.orgUserRole,
   );
 
+export function isUserGuest(user) {
+  return user?.orgUserRole === UserOrganizationRole.GUEST;
+}
+
 export const UserStatus = {
   INVITED: 'INVITED',
   PENDING: 'PENDING',
   INACTIVE: 'INACTIVE',
   ACTIVE: 'ACTIVE',
+  CANCELLED: 'CANCELLED',
 };
 
 export const ActivityStatus = {
@@ -44,7 +49,7 @@ export const UserListItemType = {
 };
 
 export function isUserGroup(item) {
-  return item.itemType === UserListItemType.GROUP;
+  return item?.itemType === UserListItemType.GROUP;
 }
 
 export function getUserActivityStatus(user, activeUsers) {

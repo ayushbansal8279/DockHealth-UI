@@ -15,16 +15,16 @@ import LoadMoreButton, {
 } from 'components/common/LoadMoreButton/LoadMoreButton';
 import TasksSkeletonLoader from 'components/task/TasksSkeletonLoader/TasksSkeletonLoader';
 import { addingNewSubtaskParentIdSelector } from 'selectors/task-drawer-selectors';
+import palette from 'styles/palette';
+import StickyContainer from 'components/common/HorizontalScroll/StickyContainer';
 
 const GlobalSearchList = ({
   list,
   currentUser,
   selectedTask,
-  openDrawer,
   storeAsCurrentTask,
   toggleTaskStatus,
   onTaskUpdate,
-  updateDueDate,
   updateWorkflowStatus,
   highlightedValue,
   isCompletedList,
@@ -59,36 +59,37 @@ const GlobalSearchList = ({
 
   return (
     <ListDetailsContainer>
-      <ListDetailsHeader>
-        <ListNameContainer
-          container
-          direction="row"
-          justify="flex-start"
-          alignItems="center"
-        >
-          <Arrow
-            alt="arrow"
-            isOpen={isOpen}
-            onClick={() => switchOpen(!isOpen)}
-            src={ArrowIcon}
-          />
-          <ListNameSection>
-            {listName} ({tasks?.length || 0})
-          </ListNameSection>
-        </ListNameContainer>
-      </ListDetailsHeader>
+      <StickyContainer left={24} decreaseWidth={2 * 24}>
+        <ListDetailsHeader>
+          <ListNameContainer
+            container
+            direction="row"
+            justify="flex-start"
+            alignItems="center"
+          >
+            <Arrow
+              alt="arrow"
+              isOpen={isOpen}
+              onClick={() => switchOpen(!isOpen)}
+              src={ArrowIcon}
+            />
+            <ListNameSection>
+              {listName} ({tasks?.length || 0})
+            </ListNameSection>
+          </ListNameContainer>
+        </ListDetailsHeader>
+      </StickyContainer>
       <Tasks timeout={150} in={isOpen}>
         {tasks?.map(task => (
           <StandardTaskItem
+            pageBackground={palette.blueGrey}
             key={task.taskIdentifier}
             currentUser={currentUser}
-            openDrawer={openDrawer}
             storeAsCurrentTask={storeAsCurrentTask}
             task={task}
             isCompletedGroup={isCompletedList}
             toggleCompleteTask={toggleTaskStatus}
             onTaskUpdate={onTaskUpdate}
-            updateDueDate={updateDueDate}
             updateWorkflowStatus={updateWorkflowStatus}
             dragAndDropDisabled
             selectedTask={selectedTask}

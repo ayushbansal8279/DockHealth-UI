@@ -40,7 +40,7 @@ const TaskLinkDelayForm = props => {
     <FormContext {...formMethods}>
       <DelayPeriodForm onSubmit={handleSubmit(onSubmit)}>
         <Box py={1} px={2}>
-          <Title>Time till next task</Title>
+          <Title>Time until next task</Title>
           <Box p={1} />
           <Box width="100%" display="flex" justifyContent="space-between">
             <SecondaryNumberInput
@@ -61,6 +61,7 @@ const TaskLinkDelayForm = props => {
             <SecondaryDropdownInput
               name="delayPeriodUnit"
               placeholder="Select unit"
+              value={watch('delayPeriodUnit')}
               onSelect={newValue => setValue('delayPeriodUnit', newValue)}
               width={207}
               options={DELAY_PERIOD_UNIT_OPTIONS}

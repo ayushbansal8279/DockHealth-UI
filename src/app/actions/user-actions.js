@@ -26,6 +26,12 @@ export const approveOrDenyInvitation = ({
   });
 };
 
+export const sendUserOnboardingAnswers = ({ answers }) => {
+  return UserApi.sendUserOnboardingAnswers({
+    answers,
+  });
+};
+
 export function getCurrentUserNotificationPreferences() {
   return {
     type: ActionTypes.GET_CURRENT_USER_NOTIFICATION_PREFERENCES,

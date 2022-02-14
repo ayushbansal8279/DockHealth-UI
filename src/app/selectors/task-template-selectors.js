@@ -58,3 +58,8 @@ export const currentTaskTemplateSelector = createSelector(
   taskTemplateStateSelector,
   prop('currentTaskTemplate'),
 );
+
+export const currentFolderIdentifierSelector = createSelector(
+  taskTemplateStateSelector,
+  prop('folderIdentifier'),
+);

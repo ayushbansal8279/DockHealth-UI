@@ -76,7 +76,7 @@ const renderInvoiceRow = ({
         )}
       </td>
       <td>
-        ${chargeAmount} {currency.toUpperCase()}
+        ${chargeAmount} {currency?.toUpperCase()}
       </td>
     </tr>
   );

@@ -15,7 +15,6 @@ import TemplateAuthBase from '../views/TemplateAuthBase/TemplateAuthBase';
 import TemplateCore from '../views/TemplateCore/TemplateCore';
 import TemplateCoreSubscriptionPlan from '../views/TemplateCore/TemplateCoreSubscriptionPlan';
 import OnboardingTemplate from '../views/onboarding/OnboardingTemplate';
-import onEnterTemplateCoreSubscriptionPlan from './TemplateCoreSubscriptionPlan/TemplateCoreSubscriptionPlan';
 
 const transformPathname = pathname =>
   decodeURIComponent(pathname).replace(/^\/+/, '/');
@@ -113,6 +112,7 @@ const Routes = () => {
           path="/auth"
           render={() => <TemplateAuthBase childRoutes={AUTH_ROUTES} />}
         />
+        <Redirect exact from="/core/workflows" to="/core/workflows/library" />
         <Redirect
           exact
           from="/core/patients/list"
@@ -123,7 +123,6 @@ const Routes = () => {
           render={() => (
             <TemplateCoreSubscriptionPlan
               childRoutes={TEMPLATE_CORE_SUBSCRIPTION_PLAN_ROUTES}
-              onEnter={onEnterTemplateCoreSubscriptionPlan}
               setRedirection={setRedirection}
             />
           )}

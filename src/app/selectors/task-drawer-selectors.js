@@ -12,6 +12,11 @@ export const taskIsSelectedSelector = createSelector(
   ({ selectedTask }) => !!selectedTask,
 );
 
+export const taskCustomFieldsSelector = createSelector(
+  taskDrawerSelector,
+  ({ customFields }) => customFields,
+);
+
 export const selectedTaskIdentifierSelector = createSelector(
   taskDrawerSelector,
   ({ selectedTask }) => selectedTask?.taskIdentifier,
@@ -30,12 +35,15 @@ export const isTaskSelectedSelector = (
 
 export const addingNewSubtaskSelector = createSelector(
   taskDrawerSelector,
-  ({ addingNewSubtaskParentId }) => !!addingNewSubtaskParentId,
+  ({ selectedTask }) =>
+    selectedTask &&
+    selectedTask.parentTaskIdentifier &&
+    !selectedTask.taskIdentifier,
 );
 
 export const addingNewSubtaskParentIdSelector = createSelector(
   taskDrawerSelector,
-  ({ addingNewSubtaskParentId }) => addingNewSubtaskParentId,
+  ({ selectedTask }) => selectedTask?.parentTaskIdentifier || null,
 );
 
 export const taskDrawerOpenSelector = createSelector(

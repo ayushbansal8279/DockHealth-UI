@@ -11,16 +11,12 @@ import { addSubtask, closeQuickAddSubtask } from 'actions/task-actions';
 import {
   StandardTaskItemContainer,
   MainStandardTaskItemCell,
-  StandardTaskItemCell,
   CircleIcon,
 } from '../styled';
 
 const QuickAddSubatask = ({
-  patientVisible,
-  listNameVisible,
   parentTaskIdentifier,
   taskListIdentifier = null,
-  multipleAssigneesContext,
   onFocus,
   // eslint-disable-next-line sonarjs/cognitive-complexity
 }) => {
@@ -108,7 +104,7 @@ const QuickAddSubatask = ({
   };
 
   return (
-    <StandardTaskItemContainer>
+    <StandardTaskItemContainer isAddingTask>
       <MainStandardTaskItemCell
         bolded
         position="static"
@@ -129,13 +125,6 @@ const QuickAddSubatask = ({
           handleKeyCommand={handleKeyMentionsEditor}
         />
       </MainStandardTaskItemCell>
-      <StandardTaskItemCell width="60px" />
-      {patientVisible && <StandardTaskItemCell width="164px" />}
-      <StandardTaskItemCell width="120px" />
-      <StandardTaskItemCell width="150px" />
-      <StandardTaskItemCell width="78px" />
-      <StandardTaskItemCell width={`${multipleAssigneesContext ? 90 : 60}px`} />
-      {listNameVisible && <StandardTaskItemCell width="168px" />}
     </StandardTaskItemContainer>
   );
 };

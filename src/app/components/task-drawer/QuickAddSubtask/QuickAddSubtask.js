@@ -1,17 +1,21 @@
 /* eslint-disable import/extensions */
 import { Box } from '@material-ui/core';
 import React, { useRef, useState } from 'react';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { addSubtask } from 'actions/task-actions';
-import useBoolean from 'hooks/useBoolean';
+import { useBoolean } from 'hooks/useBoolean';
 import { convertFromEditorStateToOutput } from 'components/common/TextEditor/helpers';
 import TextEditor from 'components/common/TextEditor/TextEditor';
 import { useMentionsEditorState } from 'components/common/TextEditor/use-mentions-editor-state';
 import { validateNewSubtask } from 'helpers/validation-helper';
 import { onTaskDrawerSubtaskAdd } from 'helpers/ga-event-helper';
+import { selectedTaskSelector } from 'selectors/task-drawer-selectors';
 import QuickAddTaskInputWrapper from '../QuickAddTaskInputWrapper/QuickAddTaskInputWrapper';
 
-const QuickAddSubtask = ({ taskIdentifier, taskListIdentifier = null }) => {
+const QuickAddSubtask = () => {
+  const selectedTask = useSelector(selectedTaskSelector) || {};
+  const { taskIdentifier, taskList } = selectedTask;
+  const taskListIdentifier = taskList?.taskListIdentifier;
   const editorReference = useRef(null);
   const [newTaskDescription, setNewTaskDescription] = useMentionsEditorState();
   const [hasInputValue, setHasInputValue] = useState(false);

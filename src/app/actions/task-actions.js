@@ -1,47 +1,32 @@
-/* eslint-disable sonarjs/no-duplicate-string */
 import moment from 'moment';
-import { curry } from 'ramda';
 import * as TaskApi from 'api/task-api';
+import * as ListDetailsApi from 'api/list-details-api';
 import * as AlertActions from 'alert/actions';
-// eslint-disable-next-line import/no-cycle
-import { getTasksGroupsList } from 'sagas/list-details-saga';
-// eslint-disable-next-line import/no-cycle
-import { reloadDashboardTasks } from 'sagas/dashboard-saga';
+import { getTasksGroupsList } from 'actions/list-details-actions';
 import { openDrawer } from 'actions/task-drawer-actions';
 import { TASK_DISAPPEAR_DELAY } from 'helpers/task-update-helper';
 import * as ActionTypes from './action-types';
-import * as ActionTypesSaga from './action-types-saga';
 import AlertMessages from '../alert/AlertMessages';
 
 export function refreshTaskBundle(templateBundleIdentifier) {
   return {
-    type: ActionTypesSaga.REFRESH_TASK_BUNDLE,
+    type: ActionTypes.REFRESH_TASK_BUNDLE,
     templateBundleIdentifier,
   };
 }
 
-export const clearPreparedSubtask = curry(dispatch =>
-  dispatch({
-    type: ActionTypes.CHANGE_ADDING_NEW_SUBTASK,
-    addingNewSubtaskParentId: null,
-    subtaskShape: {},
-  }),
-);
 export const chooseTaskDecisionOutcome = (
   taskOutcomeIdentifier,
   task,
   templateBundleIdentifier,
 ) => ({
-  type: ActionTypesSaga.CHOOSE_DECISION_TASK_OPTION,
+  type: ActionTypes.CHOOSE_DECISION_TASK_OPTION,
   payload: { taskOutcomeIdentifier, task, templateBundleIdentifier },
 });
 
 export function storeAsCurrentTask(task) {
   return dispatch => {
     dispatch({ type: ActionTypes.SET_AS_CURRENT_TASK, task });
-    if ((task && task.taskIdentifier !== null) || task == null) {
-      clearPreparedSubtask(dispatch);
-    }
   };
 }
 
@@ -81,7 +66,7 @@ export function getListTasksGroupedByTaskGroup(
       });
     }
 
-    return TaskApi.getListTasksGroupedByTaskGroup(
+    return ListDetailsApi.getListTasksGroupedByTaskGroup(
       taskListIdentifier,
       status,
       sortBy,
@@ -97,7 +82,7 @@ export function getListTasksGroupedByTaskGroup(
         );
 
         const allTasks = [];
-        groupedTasks.taskGroups.forEach(taskGroup => {
+        groupedTasks.forEach(taskGroup => {
           if (taskGroup.tasks) {
             allTasks.push(taskGroup.tasks);
           }
@@ -130,18 +115,7 @@ export function getListTasksGroupedByTaskGroup(
   };
 }
 
-export function loading() {
-  return dispatch => {
-    dispatch({ type: ActionTypes.REQUEST_TASKS });
-  };
-}
-
-export function loadingCompletedTasks() {
-  return dispatch => {
-    dispatch({ type: ActionTypes.REQUEST_COMPLETED_TASKS });
-  };
-}
-
+// eslint-disable-next-line sonarjs/cognitive-complexity
 export function saveTask(newTask, shouldReloadGroups = false) {
   if (newTask.taskIdentifier) {
     return dispatch =>
@@ -169,7 +143,7 @@ export function saveTask(newTask, shouldReloadGroups = false) {
       .then(task => {
         if (!task.taskList) {
           dispatch({
-            type: ActionTypes.ADD_TASK,
+            type: ActionTypes.ADD_TASK_SUCCESS,
             task: {
               ...task,
               taskList: { listName: 'Inbox', taskListIdentifier: '' },
@@ -180,22 +154,17 @@ export function saveTask(newTask, shouldReloadGroups = false) {
             addingNewTask: false,
           });
         } else {
-          dispatch({ type: ActionTypes.ADD_TASK, task });
+          dispatch({ type: ActionTypes.ADD_TASK_SUCCESS, task });
           dispatch({
             type: ActionTypes.CHANGE_ADDING_NEW_TASK,
             addingNewTask: false,
           });
           if (shouldReloadGroups) {
-            dispatch(
-              getTasksGroupsList({
-                taskListIdentifier: newTask.taskListIdentifier,
-              }),
-            );
+            dispatch(getTasksGroupsList());
           }
         }
 
         dispatch(AlertActions.showGlobalAlert(AlertMessages.TASK_CREATED));
-        clearPreparedSubtask(dispatch);
 
         return task;
       })
@@ -232,7 +201,6 @@ export const moveTask = (
   taskList,
   taskGroupIdentifier = null,
   parentTaskIdentifier = null,
-  isDashboardTask,
 ) => dispatch => {
   const taskToUpdate = {
     refiled: true,
@@ -264,13 +232,9 @@ export const moveTask = (
         });
       } else {
         dispatch({
-          type: ActionTypes.ADD_TASK,
+          type: ActionTypes.ADD_TASK_SUCCESS,
           task: updatedTask,
         });
-      }
-
-      if (isDashboardTask) {
-        dispatch(reloadDashboardTasks());
       }
 
       dispatch(
@@ -289,7 +253,7 @@ export const moveTask = (
               });
             } else {
               dispatch({
-                type: ActionTypes.ADD_TASK,
+                type: ActionTypes.ADD_TASK_SUCCESS,
                 task,
               });
             }
@@ -373,17 +337,13 @@ export function deleteTask(task) {
             response?.headers?.['x-transaction-id'],
             () => {
               dispatch({
-                type: ActionTypes.ADD_TASK,
+                type: ActionTypes.ADD_TASK_SUCCESS,
                 task,
               });
             },
           ),
         );
-        dispatch(
-          getTasksGroupsList({
-            taskListIdentifier: task?.taskList?.taskListIdentifier,
-          }),
-        );
+        dispatch(getTasksGroupsList());
         return task;
       })
       .catch(error => {
@@ -391,34 +351,22 @@ export function deleteTask(task) {
       });
 }
 
-export function duplicateTask(
-  task,
-  includeAttachments = false,
-  isDashboardTask,
-) {
+export function duplicateTask(task, includeAttachments = false) {
   return dispatch =>
     TaskApi.duplicateTask(task.taskIdentifier, includeAttachments)
       .then(duplicatedTask => {
-        if (isDashboardTask) {
-          dispatch(reloadDashboardTasks());
+        if (duplicatedTask.parentTaskIdentifier) {
+          dispatch({
+            type: ActionTypes.ADD_SUBTASK,
+            subtask: duplicatedTask,
+          });
         } else {
-          if (duplicatedTask.parentTaskIdentifier) {
-            dispatch({
-              type: ActionTypes.ADD_SUBTASK,
-              subtask: duplicatedTask,
-            });
-          } else {
-            dispatch({
-              type: ActionTypes.ADD_TASK,
-              task: duplicatedTask,
-            });
-          }
-          dispatch(
-            getTasksGroupsList({
-              taskListIdentifier: task?.taskList?.taskListIdentifier,
-            }),
-          );
+          dispatch({
+            type: ActionTypes.ADD_TASK_SUCCESS,
+            task: duplicatedTask,
+          });
         }
+        dispatch(getTasksGroupsList());
         dispatch(AlertActions.showGlobalAlert(AlertMessages.TASK_DUPLICATED));
 
         return duplicatedTask;
@@ -486,70 +434,29 @@ export function toggleCompleteTask(
   };
 }
 
-export const updateTaskDescription = (task, description) => dispatch =>
-  TaskApi.updateTaskDescription(shapeTask(task), description)
-    .then(
-      ({
-        description: updatedDescription,
-        tokenizedDescription,
-        taskMentions,
-      }) => {
-        const newTask = task;
-        newTask.description = updatedDescription;
-        newTask.tokenizedDescription = tokenizedDescription;
-        newTask.taskMentions = taskMentions;
+export function updateTaskDescription(task, descriptionState) {
+  return {
+    type: ActionTypes.UPDATE_TASK_DESCRIPTION,
+    task,
+    descriptionState,
+  };
+}
 
-        dispatch({
-          type: ActionTypes.UPDATE_TASK_SUCCESS,
-          task: newTask,
-        });
-        return newTask;
-      },
-    )
-    .catch(error => {
-      throw error;
-    });
+export function updateTaskDetails(task, detailsState) {
+  return {
+    type: ActionTypes.UPDATE_TASK_DETAILS,
+    task,
+    detailsState,
+  };
+}
 
-export const updateTaskDetails = (task, details) => dispatch =>
-  TaskApi.updateTaskDetails(shapeTask(task), details)
-    .then(({ details: updatedDetails, tokenizedDetails, taskMentions }) => {
-      const newTask = task;
-      newTask.details = updatedDetails;
-      newTask.tokenizedDetails = tokenizedDetails;
-      newTask.taskMentions = taskMentions;
-      dispatch({
-        type: ActionTypes.UPDATE_TASK_SUCCESS,
-        task: newTask,
-      });
-      return newTask;
-    })
-    .catch(error => {
-      throw error;
-    });
-
-export const updateDueDate = (
-  task,
-  dueDate,
-  showGlobalConfirmation,
-) => dispatch => {
-  dispatch({
-    type: ActionTypes.UPDATE_TASK_SUCCESS,
-    task: { ...task, dueDate: dueDate?.toISOString() },
-  });
-  return TaskApi.updateDueDate(task?.taskIdentifier, dueDate)
-    .then(updatedTask => {
-      if (showGlobalConfirmation) {
-        dispatch(AlertActions.showGlobalAlert(AlertMessages.UPDATED));
-      }
-      return updatedTask;
-    })
-    .catch(() => {
-      dispatch({
-        type: ActionTypes.UPDATE_TASK_SUCCESS,
-        task,
-      });
-    });
-};
+export function updateTaskDueDate(task, dueDate) {
+  return {
+    type: ActionTypes.UPDATE_TASK_DUE_DATE,
+    task,
+    dueDate,
+  };
+}
 
 export const updatePatient = (task, patient) => dispatch =>
   TaskApi.updateTask(shapeTask({ ...task, patient }))
@@ -594,9 +501,9 @@ export const updateWorkflowStatus = (task, workflowStatus) => dispatch => {
     taskIdentifier,
     workflowStatus?.identifier || null,
   )
-    .then(() => {
+    .then(modifiedTask => {
       dispatch(AlertActions.showGlobalAlert(AlertMessages.UPDATED));
-      return updatedTask;
+      return modifiedTask;
     })
     .catch(error => {
       dispatch({
@@ -605,72 +512,6 @@ export const updateWorkflowStatus = (task, workflowStatus) => dispatch => {
       });
       throw error;
     });
-};
-
-export function toggleTaskPriority(task, priority) {
-  return dispatch => {
-    const { newPriority, apiEndpoint } =
-      !priority ||
-      priority === 'NONE' ||
-      priority === 'LOW' ||
-      priority === null
-        ? { newPriority: 'LOW', apiEndpoint: 'markLowPriority' }
-        : { newPriority: 'HIGH', apiEndpoint: 'markHighPriority' };
-
-    return TaskApi[apiEndpoint](task.taskIdentifier, priority)
-      .then(() => {
-        const newTask = task;
-        newTask.priority = newPriority;
-        dispatch({
-          type: ActionTypes.UPDATE_TASK_SUCCESS,
-          task: newTask,
-        });
-
-        dispatch(AlertActions.showGlobalAlert(AlertMessages.UPDATED));
-
-        return task;
-      })
-      .catch(error => {
-        throw error;
-      });
-  };
-}
-
-export function assignOrReassignTask(task, assignedToUserIdentifier) {
-  return dispatch =>
-    TaskApi.assignOrReassignTask(task, assignedToUserIdentifier)
-      .then(assignedTask => {
-        dispatch({
-          type: ActionTypes.UPDATE_TASK_SUCCESS,
-          task: assignedTask,
-        });
-        return assignedTask;
-      })
-      .catch(error => {
-        throw error;
-      });
-}
-
-export const prepareSubtask = (
-  parentTaskIdentifier,
-  assignedTo,
-  parentTask,
-) => dispatch => {
-  const subtaskShape = {
-    taskIdentifier: null,
-    parentTaskIdentifier,
-    parentTask,
-    description: '',
-    subtasks: [],
-    assignedTo,
-  };
-
-  dispatch({
-    type: ActionTypes.CHANGE_ADDING_NEW_SUBTASK,
-    addingNewSubtaskParentId: parentTaskIdentifier,
-    subtaskShape,
-  });
-  storeAsCurrentTask(subtaskShape)(dispatch);
 };
 
 export function getTaskHistory(task) {
@@ -726,20 +567,19 @@ export const removeTaskAttachment = (
       throw error;
     });
 
-export const refreshTask = taskIdentifier => dispatch =>
-  TaskApi.getTaskDetails(taskIdentifier)
-    .then(task => {
-      // explicitly mark task as updated so we can show the flag
-      task.updated = true; // eslint-disable-line no-param-reassign
-      dispatch({
-        type: ActionTypes.UPDATE_TASK_SUCCESS,
-        task,
-      });
-      return task;
-    })
-    .catch(error => {
-      throw error;
-    });
+export function refreshTask(taskIdentifier) {
+  return {
+    type: ActionTypes.REFRESH_TASK,
+    taskIdentifier,
+  };
+}
+
+export function insertCreatedTask(taskIdentifier) {
+  return {
+    type: ActionTypes.INSERT_CREATED_TASK,
+    taskIdentifier,
+  };
+}
 
 export const refreshAndOpenAsCurrentTask = selectedTask => dispatch =>
   TaskApi.getTaskDetails(selectedTask.taskIdentifier)
@@ -821,7 +661,7 @@ export const bulkEditAssignUser = (
   searchValue,
 ) => dispatch => {
   dispatch({
-    type: ActionTypes.UPDATE_TASKS_SUCCESS,
+    type: ActionTypes.UPDATE_TASKS,
     tasksToUpdate,
     fields: {
       assignedToUsers,
@@ -838,7 +678,7 @@ export const bulkEditWorkflowStatus = (
   searchValue,
 ) => dispatch => {
   dispatch({
-    type: ActionTypes.UPDATE_TASKS_SUCCESS,
+    type: ActionTypes.UPDATE_TASKS,
     tasksToUpdate,
     fields: { workflowStatus },
     filters,
@@ -852,12 +692,20 @@ export const bulkEditDueDate = (
   filters,
 ) => dispatch => {
   dispatch({
-    type: ActionTypes.UPDATE_TASKS_SUCCESS,
+    type: ActionTypes.UPDATE_TASKS,
     tasksToUpdate,
     fields: { dueDate },
     filters,
   });
 };
+
+export function bulkEditDueDateSuccess(tasksToUpdate, dueDate) {
+  return {
+    type: ActionTypes.UPDATE_TASKS_SUCCESS,
+    tasksToUpdate,
+    fields: { dueDate },
+  };
+}
 
 export const bulkEditDelete = tasksToDelete => dispatch => {
   dispatch({
@@ -875,7 +723,7 @@ export function bulkEditComplete(taskToComplete, currentUser = null) {
     };
 
     dispatch({
-      type: ActionTypes.UPDATE_TASKS_SUCCESS,
+      type: ActionTypes.UPDATE_TASKS,
       tasksToUpdate: taskToComplete,
       fields: newTaskData,
     });
@@ -893,7 +741,7 @@ export function bulkEditComplete(taskToComplete, currentUser = null) {
 
 export function reorderSubtasks({ parentTask, source, destination }) {
   return {
-    type: ActionTypesSaga.REORDER_SUBTASKS,
+    type: ActionTypes.REORDER_SUBTASKS,
     parentTask,
     source,
     destination,
@@ -943,11 +791,9 @@ export function addSubtask(parentTaskIdentifier, subtask) {
           subtask: newSubtask,
         });
         dispatch(AlertActions.showGlobalAlert(AlertMessages.TASK_CREATED));
-        clearPreparedSubtask(dispatch);
         return newSubtask;
       })
       .catch(error => {
-        clearPreparedSubtask(dispatch);
         dispatch(AlertActions.showGlobalErrorAlert());
         throw error;
       });
@@ -990,5 +836,20 @@ export function changeTaskIntentType(taskIdentifier, intentType) {
     type: ActionTypes.CHANGE_TASK_INTENT_TYPE,
     taskIdentifier,
     intentType,
+  };
+}
+
+export function addTask(task) {
+  return {
+    type: ActionTypes.ADD_TASK,
+    task,
+  };
+}
+
+export function changeTaskPriority(task, priority) {
+  return {
+    type: ActionTypes.CHANGE_TASK_PRIORITY,
+    task,
+    priority,
   };
 }

@@ -1,4 +1,3 @@
-/* eslint-disable import/extensions */
 /* eslint-disable sonarjs/cognitive-complexity */
 import React, {
   useState,
@@ -10,7 +9,6 @@ import React, {
 } from 'react';
 import { pluck } from 'ramda';
 import { useDispatch, useSelector } from 'react-redux';
-import { EditorState } from 'draft-js';
 import { isTaskSelectedSelector } from 'selectors/task-drawer-selectors';
 import { openTaskDrawerWithContent } from 'actions/task-drawer-actions';
 import {
@@ -22,10 +20,10 @@ import {
 import Circle from 'img/circle.svg';
 import CircleCompleted from 'img/circle-completed.svg';
 import ThreeDotsIcon from 'img/three-dots.svg';
-import { userProfileSelector } from 'selectors/user-selectors';
-import { convertToEditorState } from 'components/common/TextEditor/helpers';
-import { useMentionsEditorState } from 'components/common/TextEditor/use-mentions-editor-state';
-import { createMentionEntities } from 'components/common/TextEditor/create-mention-entities';
+import {
+  userProfileSelector,
+  selectedUserOrganizationSelector,
+} from 'selectors/user-selectors';
 import { BulkEditContext } from 'components/tasklist/BulkEditSection/BulkEditSection';
 import {
   onTaskAssigned,
@@ -39,11 +37,14 @@ import {
   checkIfTemplateTask,
   checkColumnIsInConfig,
   TaskItemColumn,
-  TASK_ITEM_BASE_COLUMN_CONFIG,
+  TaskPriority,
+  getPriorityColor,
 } from 'helpers/task-helpers';
-import dependencyIcon from 'img/dependency-icon.svg';
+import DependencyIcon from 'img/dependency-icon.svg';
 import DependencyListPopover from 'components/common/DependencyListPopover/DependencyListPopover';
 import useBooleanWithTimeout from 'hooks/use-boolean-with-timeout';
+import { useColumnsConfig } from 'context-api/ColumnsConfigContext';
+import TaskItemCustomField from 'components/common/CustomField/TaskItemCustomField';
 import { getSubtaskStylingLink } from './helpers';
 import {
   CircleIcon,
@@ -53,6 +54,8 @@ import {
   StandardTaskThreeDots,
   PriorityIndicator,
   DependencyIconContainer,
+  StickyColumnContainer,
+  DetailsButton,
 } from '../styled';
 import TaskItemContextMenu from '../TaskItemContextMenu/TaskItemContextMenu';
 
@@ -76,490 +79,485 @@ const DotsContainer = ({ showDraggableDots, dragHandleProps }) => {
 
   return null;
 };
-const TaskItem = ({
-  isOpen,
-  switchOpen,
-  toggleCompleteTask,
-  task,
-  dragHandleProps,
-  isDragging,
-  isCompletedGroup,
-  onTaskUpdate,
-  updateDueDate,
-  updateWorkflowStatus,
-  dragAndDropDisabled,
-  parentHasPatient,
-  highlightedValue,
-  isDraggable,
-  isLast,
-  showSubtaskStylingLink,
-  isNestedTask = false,
-  subtasksDisabled,
-  multipleAssigneesContext,
-  highlightTasksOfTheSameParent,
-  taskItemConfig = {},
-  isDashboardTask,
-  openPatientPopover,
-  templateBundleIdentifier,
-  parentTaskGroupIdentifier,
-  isSelectedByHighlighted,
-}) => {
-  const {
-    taskIdentifier,
-    edited,
-    duplicated,
-    type,
-    assignedToUsers,
-    attachments,
-    comments,
-    description,
-    tokenizedDescription,
-    taskMentions,
-    labels,
-    patient,
-    workflowStatus,
-    completedDt,
-    completedBy,
-    taskList = {},
-    parentTaskIdentifier,
-    searchMetaData = {},
-    parentTask,
-    subtaskQuickAddOpen,
-    selected,
-    subTasksCount,
-    dependencyTasksCompletedCount,
-    dependencyTasksCount,
-  } = task;
+const TaskItem = React.memo(
+  ({
+    isOpen,
+    switchOpen,
+    toggleCompleteTask,
+    task,
+    dragHandleProps,
+    isDragging,
+    isCompletedGroup,
+    onTaskUpdate,
+    updateWorkflowStatus,
+    dragAndDropDisabled,
+    parentHasPatient,
+    highlightedValue,
+    isDraggable,
+    isLast,
+    showSubtaskStylingLink,
+    isNestedTask = false,
+    subtasksDisabled,
+    multipleAssigneesContext,
+    highlightTasksOfTheSameParent,
+    isDashboardTask,
+    openPatientPopover,
+    templateBundleIdentifier,
+    parentTaskGroupIdentifier,
+    isSelectedByHighlighted,
+    pageBackground,
+    newlyCreated,
+    parentContainerReference,
+  }) => {
+    const {
+      taskIdentifier,
+      assignedToUsers,
+      attachments,
+      comments,
+      labels,
+      patient,
+      workflowStatus,
+      taskList = {},
+      parentTaskIdentifier,
+      searchMetaData = {},
+      parentTask,
+      subtaskQuickAddOpen,
+      selected,
+      subTasksCount,
+      dependencyTasksCompletedCount,
+      dependencyTasksCount,
+    } = task;
 
-  const { listName, taskListIdentifier } = taskList || {};
-  const isCompleted = task.status === 'COMPLETE';
-  const isTemplateTask = checkIfTemplateTask(task);
-  const isSubtask = !!parentTaskIdentifier;
-  const isDecisionTask = task.intentType === 'DECISION';
-  const isDecisionSelected = task.taskOutcomes?.reduce(
-    (accumulator, currentValue) => accumulator || currentValue.isSelected,
-    false,
-  );
-  const isTaskStatusTogglingDisabled =
-    isTemplateTask ||
-    (isSubtask && isCompletedGroup) ||
-    (isDecisionTask && !isDecisionSelected);
+    const { columnsConfig, customColumnsConfig } = useColumnsConfig();
 
-  const isDependencyEmptyOrCompleted =
-    dependencyTasksCount === dependencyTasksCompletedCount;
+    const { listName, taskListIdentifier } = taskList || {};
+    const isCompleted = task.status === 'COMPLETE';
+    const isTemplateTask = checkIfTemplateTask(task);
+    const isSubtask = !!parentTaskIdentifier;
+    const isDecisionTask = task.intentType === 'DECISION';
+    const isDecisionSelected = task.taskOutcomes?.reduce(
+      (accumulator, currentValue) => accumulator || currentValue.isSelected,
+      false,
+    );
+    const isTaskStatusTogglingDisabled =
+      isTemplateTask ||
+      (isSubtask && isCompletedGroup) ||
+      (isDecisionTask && !isDecisionSelected);
 
-  const {
-    matchAssignedTo,
-    matchAttachments,
-    matchComments,
-    matchDescription,
-    matchLabels,
-    matchPatient,
-    matchPatientMRN,
-    matchWorkflowStatus,
-  } = searchMetaData;
+    const isDependencyEmptyOrCompleted =
+      dependencyTasksCount === dependencyTasksCompletedCount;
 
-  const currentUser = useSelector(userProfileSelector);
-  const isSelected = useSelector(
-    isTaskSelectedSelector(taskIdentifier, isSelectedByHighlighted),
-  );
-  const [isHovered, setIsHovered] = useState(false);
-  const [taskDecisionError, setTaskDecisionError] = useState(false);
-  const [descriptionState, setDescriptionState] = useMentionsEditorState(
-    convertToEditorState({
-      rawText: description,
-      tokenizedText: tokenizedDescription,
-      mentions: taskMentions,
-      handleRichText: false,
-    }),
-  );
-  const [contextMenu, setContextMenu] = useState(null);
-  const dispatch = useDispatch();
-  const previousDescription = useRef(null);
-  const dependencyIconReference = useRef(null);
+    const {
+      matchAssignedTo,
+      matchAttachments,
+      matchComments,
+      matchLabels,
+      matchPatient,
+      matchPatientMRN,
+      matchWorkflowStatus,
+    } = searchMetaData;
 
-  const [
-    dependencyPopoverOpen,
-    openDependencyPopover,
-    closeDependencyPopover,
-  ] = useBooleanWithTimeout();
+    const currentUser = useSelector(userProfileSelector);
+    const isSelected = useSelector(
+      isTaskSelectedSelector(taskIdentifier, isSelectedByHighlighted),
+    );
+    const [isHovered, setIsHovered] = useState(false);
+    const [taskDecisionError, setTaskDecisionError] = useState(false);
 
-  const { bulkEditEnabled } = useContext(BulkEditContext);
+    const [contextMenu, setContextMenu] = useState(null);
+    const dispatch = useDispatch();
+    const dependencyIconReference = useRef(null);
+    const [isEditingDescription, setEditingDescription] = useState(false);
+    const [
+      dependencyPopoverOpen,
+      openDependencyPopover,
+      closeDependencyPopover,
+    ] = useBooleanWithTimeout(false);
 
-  const handleTaskItemRightClick = useCallback(
-    event => {
-      event.preventDefault();
-      setContextMenu({ x: event.pageX, y: event.pageY });
-      dispatch(storeAsCurrentTask(task));
-    },
-    [dispatch, task],
-  );
+    const { bulkEditEnabled } = useContext(BulkEditContext);
 
-  useEffect(() => {
-    if (previousDescription.current !== null) {
-      const newContent = createMentionEntities(
-        tokenizedDescription,
-        description,
-        taskMentions,
-        false,
-      );
-      setDescriptionState(EditorState.push(descriptionState, newContent));
-    }
-    previousDescription.current = description;
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [description]);
+    const selectedOrganization = useSelector(selectedUserOrganizationSelector);
 
-  const completedByName =
-    `${completedBy?.firstName.charAt(0)}. ${completedBy?.lastName}`
-      .trim()
-      .replace(/^\.$/, '') || 'Unknown';
+    const handleTaskItemRightClick = useCallback(
+      event => {
+        event.preventDefault();
+        setContextMenu({ x: event.pageX, y: event.pageY });
+        dispatch(storeAsCurrentTask(task));
+      },
+      [dispatch, task],
+    );
 
-  const onMouseEnter = () => setIsHovered(true);
-  const onMouseLeave = () => setIsHovered(false);
+    useEffect(() => {
+      if (parentContainerReference?.current && newlyCreated) {
+        parentContainerReference.current.scrollIntoView({
+          behavior: 'smooth',
+          block: 'start',
+          inline: 'start',
+        });
+      }
+    }, [newlyCreated, parentContainerReference]);
 
-  const onClickTaskItem = useCallback(
-    () =>
-      dispatch(
-        openTaskDrawerWithContent(
-          templateBundleIdentifier
-            ? {
-                ...task,
-                taskGroupIdentifier: parentTaskGroupIdentifier,
-                templateBundleIdentifier,
-              }
-            : task,
+    const onMouseEnter = () => setIsHovered(true);
+    const onMouseLeave = () => setIsHovered(false);
+
+    const onClickTaskItem = useCallback(
+      () =>
+        dispatch(
+          openTaskDrawerWithContent(
+            templateBundleIdentifier
+              ? {
+                  ...task,
+                  taskGroupIdentifier: parentTaskGroupIdentifier,
+                  templateBundleIdentifier,
+                }
+              : task,
+          ),
         ),
-      ),
-    [dispatch, parentTaskGroupIdentifier, task, templateBundleIdentifier],
-  );
+      [dispatch, parentTaskGroupIdentifier, task, templateBundleIdentifier],
+    );
 
-  const onCircleClick = useCallback(
-    event => {
-      if (!isTaskStatusTogglingDisabled && isDependencyEmptyOrCompleted) {
-        setTaskDecisionError(false);
-        toggleCompleteTask({ ...task, templateBundleIdentifier });
-        if (!isSubtask) {
-          (isCompleted ? onTaskReActivated : onTaskCompleted)();
-        } else {
-          (isCompleted ? onSubtaskReActivated : onSubtaskCompleted)();
-        }
-      } else if (!isDecisionSelected) {
-        setTaskDecisionError(true);
-      }
-
-      event.stopPropagation();
-    },
-    [
-      templateBundleIdentifier,
-      isTaskStatusTogglingDisabled,
-      isSubtask,
-      isCompleted,
-      toggleCompleteTask,
-      task,
-      isDependencyEmptyOrCompleted,
-      isDecisionSelected,
-    ],
-  );
-
-  const onSubtaskLabelClick = useCallback(
-    event => {
-      event.stopPropagation();
-      if (!subtasksDisabled) {
-        if (!isOpen) {
-          switchOpen(true);
-        } else {
-          switchOpen(!isOpen);
-        }
-      } else {
-        highlightTasksOfTheSameParent(
-          task.parentTaskIdentifier || task.taskIdentifier,
-        );
-      }
-    },
-    [
-      subtasksDisabled,
-      isOpen,
-      switchOpen,
-      highlightTasksOfTheSameParent,
-      task.parentTaskIdentifier,
-      task.taskIdentifier,
-    ],
-  );
-
-  const handleReasignTask = useCallback(
-    selectedMembers => {
-      onTaskUpdate(taskIdentifier, {
-        assignedToUsers: selectedMembers,
-        assignedToIdentifiers: pluck('userIdentifier', selectedMembers),
-        assignedBy: selectedMembers?.length ? currentUser : null,
-      });
-      onTaskAssigned();
-    },
-    [currentUser, onTaskUpdate, taskIdentifier],
-  );
-
-  const handleUpdateWorkflowStatus = useCallback(
-    value => {
-      updateWorkflowStatus(task, value);
-      onTaskStatusChanged(value);
-    },
-    [updateWorkflowStatus, task],
-  );
-
-  const showDraggableDots = !dragAndDropDisabled && isDraggable;
-  const showPriority = task.priority === 'HIGH';
-  const showDecisionRow = task.intentType === 'DECISION' && !isTemplateTask;
-
-  const hasParentTaskLabel = isSubtask && !isNestedTask && parentTask;
-
-  const mergedTaskItemConfig = useMemo(
-    () => ({
-      ...TASK_ITEM_BASE_COLUMN_CONFIG,
-      ...taskItemConfig,
-    }),
-    [taskItemConfig],
-  );
-
-  const onClickBulkEdit = () => dispatch(selectTask(taskIdentifier, !selected));
-  const onCloseContextMenu = () => {
-    setContextMenu(null);
-    dispatch(storeAsCurrentTask(null));
-  };
-
-  const isEdited = type === 'TEMPLATE' ? false : edited;
-  const isDuplicated = type === 'TEMPLATE' ? false : duplicated;
-
-  const {
-    descriptionIsInCofnig,
-    subtasksIsInConfig,
-    patientIsInConfig,
-    workflowStatusIsInConfig,
-    activityIsInConfig,
-    dueDateIsInConfig,
-    assignedIsInConfig,
-    listNameIsInConfig,
-    decisionInConfig,
-  } = useMemo(() => {
-    return {
-      descriptionIsInCofnig: checkColumnIsInConfig(
-        TaskItemColumn.DESCRIPTION,
-        mergedTaskItemConfig,
-      ),
-      subtasksIsInConfig: checkColumnIsInConfig(
-        TaskItemColumn.SUBTASKS_COUNT,
-        mergedTaskItemConfig,
-      ),
-      patientIsInConfig: checkColumnIsInConfig(
-        TaskItemColumn.PATIENT,
-        mergedTaskItemConfig,
-      ),
-      workflowStatusIsInConfig: checkColumnIsInConfig(
-        TaskItemColumn.WORKFLOW_STATUS,
-        mergedTaskItemConfig,
-      ),
-      activityIsInConfig: checkColumnIsInConfig(
-        TaskItemColumn.ACTIVITY,
-        mergedTaskItemConfig,
-      ),
-      dueDateIsInConfig: checkColumnIsInConfig(
-        TaskItemColumn.DUE_DATE,
-        mergedTaskItemConfig,
-      ),
-      assignedIsInConfig: checkColumnIsInConfig(
-        TaskItemColumn.ASSIGNED,
-        mergedTaskItemConfig,
-      ),
-      listNameIsInConfig: checkColumnIsInConfig(
-        TaskItemColumn.LIST_NAME,
-        mergedTaskItemConfig,
-      ),
-      decisionInConfig: checkColumnIsInConfig(
-        TaskItemColumn.DECISION_SELECT,
-        mergedTaskItemConfig,
-      ),
-    };
-  }, [mergedTaskItemConfig]);
-
-  return (
-    <>
-      <StandardTaskItemPanel
-        onContextMenu={handleTaskItemRightClick}
-        isDragging={isDragging}
-        onMouseEnter={onMouseEnter}
-        onMouseLeave={onMouseLeave}
-      >
-        <DotsContainer
-          showDraggableDots={showDraggableDots}
-          dragHandleProps={dragHandleProps}
-        />
-        <StandardTaskItemContainer
-          isSelected={isSelected || selected}
-          height={
-            hasParentTaskLabel || isCompletedGroup
-              ? EXTENDED_TASK_HEIGHT
-              : STANDARD_TASK_HEIGHT
+    const onCircleClick = useCallback(
+      event => {
+        if (!isTaskStatusTogglingDisabled && isDependencyEmptyOrCompleted) {
+          setTaskDecisionError(false);
+          toggleCompleteTask({ ...task, templateBundleIdentifier });
+          if (!isSubtask) {
+            (isCompleted ? onTaskReActivated : onTaskCompleted)();
+          } else {
+            (isCompleted ? onSubtaskReActivated : onSubtaskCompleted)();
           }
+        } else if (!isDecisionSelected) {
+          setTaskDecisionError(true);
+        }
+
+        event.stopPropagation();
+      },
+      [
+        templateBundleIdentifier,
+        isTaskStatusTogglingDisabled,
+        isSubtask,
+        isCompleted,
+        toggleCompleteTask,
+        task,
+        isDependencyEmptyOrCompleted,
+        isDecisionSelected,
+      ],
+    );
+
+    const onSubtaskLabelClick = useCallback(
+      event => {
+        event.stopPropagation();
+        if (!subtasksDisabled) {
+          if (!isOpen) {
+            switchOpen(true);
+          } else {
+            switchOpen(!isOpen);
+          }
+        } else {
+          highlightTasksOfTheSameParent(
+            task.parentTaskIdentifier || task.taskIdentifier,
+          );
+        }
+      },
+      [
+        subtasksDisabled,
+        isOpen,
+        switchOpen,
+        highlightTasksOfTheSameParent,
+        task.parentTaskIdentifier,
+        task.taskIdentifier,
+      ],
+    );
+
+    const handleReasignTask = useCallback(
+      selectedMembers => {
+        onTaskUpdate(taskIdentifier, {
+          assignedToUsers: selectedMembers,
+          assignedToIdentifiers: pluck('userIdentifier', selectedMembers),
+          assignedBy: selectedMembers?.length ? currentUser : null,
+        });
+        onTaskAssigned();
+      },
+      [currentUser, onTaskUpdate, taskIdentifier],
+    );
+
+    const handleUpdateWorkflowStatus = useCallback(
+      value => {
+        updateWorkflowStatus(task, value);
+        onTaskStatusChanged(value);
+      },
+      [updateWorkflowStatus, task],
+    );
+
+    const showDraggableDots = !dragAndDropDisabled && isDraggable;
+    const showPriority = task.priority && task.priority !== TaskPriority.NONE;
+    const showDecisionRow = task.intentType === 'DECISION' && !isTemplateTask;
+    const hasParentTaskLabel = isSubtask && !isNestedTask && parentTask;
+
+    const onClickBulkEdit = () =>
+      dispatch(selectTask(taskIdentifier, !selected));
+    const onCloseContextMenu = () => {
+      setContextMenu(null);
+      dispatch(storeAsCurrentTask(null));
+    };
+
+    const {
+      descriptionIsInConfig,
+      subtasksIsInConfig,
+      patientIsInConfig,
+      workflowStatusIsInConfig,
+      activityIsInConfig,
+      dueDateIsInConfig,
+      assignedIsInConfig,
+      listNameIsInConfig,
+      decisionInConfig,
+    } = useMemo(() => {
+      return {
+        descriptionIsInConfig: checkColumnIsInConfig(
+          TaskItemColumn.DESCRIPTION,
+          columnsConfig,
+        ),
+        subtasksIsInConfig: checkColumnIsInConfig(
+          TaskItemColumn.SUBTASKS_COUNT,
+          columnsConfig,
+        ),
+        patientIsInConfig: checkColumnIsInConfig(
+          TaskItemColumn.PATIENT,
+          columnsConfig,
+        ),
+        workflowStatusIsInConfig: checkColumnIsInConfig(
+          TaskItemColumn.WORKFLOW_STATUS,
+          columnsConfig,
+        ),
+        activityIsInConfig: checkColumnIsInConfig(
+          TaskItemColumn.ACTIVITY,
+          columnsConfig,
+        ),
+        dueDateIsInConfig: checkColumnIsInConfig(
+          TaskItemColumn.DUE_DATE,
+          columnsConfig,
+        ),
+        assignedIsInConfig: checkColumnIsInConfig(
+          TaskItemColumn.ASSIGNED,
+          columnsConfig,
+        ),
+        listNameIsInConfig: checkColumnIsInConfig(
+          TaskItemColumn.LIST_NAME,
+          columnsConfig,
+        ),
+        decisionInConfig: checkColumnIsInConfig(
+          TaskItemColumn.DECISION_SELECT,
+          columnsConfig,
+        ),
+      };
+    }, [columnsConfig]);
+
+    return (
+      <>
+        <StandardTaskItemPanel
+          onContextMenu={handleTaskItemRightClick}
+          isDragging={isDragging}
+          onMouseEnter={onMouseEnter}
+          onMouseLeave={onMouseLeave}
         >
-          {showPriority && <PriorityIndicator />}
-          {showSubtaskStylingLink && getSubtaskStylingLink(isLast)}
-          {bulkEditEnabled && (
-            <TaskItemBulkEdit isChecked={selected} onClick={onClickBulkEdit} />
-          )}
-          <MainStandardTaskItemCell
-            bolded
-            paddingLeft="smallPlus"
-            paddingRight="small"
-            onClick={onClickTaskItem}
-            position="static"
+          <StandardTaskItemContainer
+            newlyCreated={newlyCreated}
+            isSelected={isSelected || selected}
+            height={
+              hasParentTaskLabel || isCompletedGroup
+                ? EXTENDED_TASK_HEIGHT
+                : STANDARD_TASK_HEIGHT
+            }
+            isAddingTask={false}
           >
-            <CircleIcon
-              src={isCompleted ? CircleCompleted : Circle}
-              isClickable={
-                !isTaskStatusTogglingDisabled && isDependencyEmptyOrCompleted
-              }
-              isCompleted={isCompleted}
-              onClick={onCircleClick}
-            />
+            <StickyColumnContainer
+              isSubtask={showSubtaskStylingLink}
+              newlyCreated={newlyCreated}
+              backgroundColor={pageBackground}
+              isSelected={isSelected || selected}
+              isEditingDescription={isEditingDescription}
+            >
+              <DotsContainer
+                showDraggableDots={showDraggableDots}
+                dragHandleProps={dragHandleProps}
+              />
+              {showPriority && (
+                <PriorityIndicator color={getPriorityColor(task.priority)} />
+              )}
+              {showSubtaskStylingLink && getSubtaskStylingLink(isLast)}
+              {bulkEditEnabled && (
+                <TaskItemBulkEdit
+                  isChecked={selected}
+                  onClick={onClickBulkEdit}
+                />
+              )}
+              <MainStandardTaskItemCell
+                bolded
+                paddingLeft="smallPlus"
+                paddingRight="small"
+                onClick={onClickTaskItem}
+                position="static"
+                isSubtask={showSubtaskStylingLink}
+                isSticky
+              >
+                <CircleIcon
+                  src={isCompleted ? CircleCompleted : Circle}
+                  isClickable={
+                    !isTaskStatusTogglingDisabled &&
+                    isDependencyEmptyOrCompleted
+                  }
+                  isCompleted={isCompleted}
+                  onClick={onCircleClick}
+                />
 
-            {!isDependencyEmptyOrCompleted && !isTemplateTask && (
-              <>
-                <DependencyIconContainer
-                  onMouseEnter={openDependencyPopover}
-                  onMouseLeave={closeDependencyPopover}
-                  ref={dependencyIconReference}
-                >
-                  <img src={dependencyIcon} alt="search" />
-                  <DependencyListPopover
-                    anchorElement={dependencyIconReference.current}
-                    open={dependencyPopoverOpen}
-                    dependencyTasksCount={dependencyTasksCount}
-                    task={task}
-                  />
-                </DependencyIconContainer>
-              </>
-            )}
+                {!isDependencyEmptyOrCompleted && (
+                  <>
+                    <DependencyIconContainer
+                      onMouseEnter={openDependencyPopover}
+                      onMouseLeave={closeDependencyPopover}
+                      ref={dependencyIconReference}
+                    >
+                      <img src={DependencyIcon} alt="search" />
+                      {dependencyIconReference.current && (
+                        <DependencyListPopover
+                          anchorEl={dependencyIconReference.current}
+                          open={dependencyPopoverOpen}
+                          dependencyTasksCount={dependencyTasksCount}
+                          task={task}
+                        />
+                      )}
+                    </DependencyIconContainer>
+                  </>
+                )}
 
-            {descriptionIsInCofnig && (
-              <TaskItemDescription
-                isCompletedGroup={isCompletedGroup}
-                isCompleted={isCompleted}
-                descriptionState={descriptionState}
-                setDescriptionState={setDescriptionState}
-                matchDescription={matchDescription}
-                highlightedValue={highlightedValue}
-                description={description}
-                edited={isEdited}
-                duplicated={isDuplicated}
-                hasParentTaskLabel={hasParentTaskLabel}
-                parentTask={parentTask}
-                completedByName={completedByName}
-                completedDt={completedDt}
+                {descriptionIsInConfig && (
+                  <>
+                    <TaskItemDescription
+                      task={task}
+                      isCompletedGroup={isCompletedGroup}
+                      highlightedValue={highlightedValue}
+                      hasParentTaskLabel={hasParentTaskLabel}
+                      isEditing={isEditingDescription}
+                      setEditing={setEditingDescription}
+                    />
+                    <DetailsButton visible={isHovered}>Details</DetailsButton>
+                  </>
+                )}
+              </MainStandardTaskItemCell>
+              {decisionInConfig && showDecisionRow && (
+                <TaskItemDecision
+                  outcomes={task.taskOutcomes}
+                  dispatch={dispatch}
+                  onSelect={chooseTaskDecisionOutcome}
+                  task={task}
+                  templateBundleIdentifier={templateBundleIdentifier}
+                  disabled={isCompleted}
+                  error={taskDecisionError}
+                  clearError={() => setTaskDecisionError(false)}
+                />
+              )}
+            </StickyColumnContainer>
+            {subtasksIsInConfig && (
+              <TaskItemSubtasks
+                isSubtask={isSubtask}
+                subtaskQuickAddOpen={subtaskQuickAddOpen}
+                subtasksDisabled={subtasksDisabled}
+                subTasksCount={subTasksCount}
+                isHovered={isHovered}
+                isOpen={isOpen}
+                isNestedTask={isNestedTask}
+                onSubtaskLabelClick={onSubtaskLabelClick}
+                taskIdentifier={taskIdentifier}
+                openQuickAddSubtask={openQuickAddSubtask}
                 dispatch={dispatch}
               />
             )}
-          </MainStandardTaskItemCell>
-          {decisionInConfig && showDecisionRow && (
-            <TaskItemDecision
-              outcomes={task.taskOutcomes}
-              dispatch={dispatch}
-              onSelect={chooseTaskDecisionOutcome}
-              task={task}
-              templateBundleIdentifier={templateBundleIdentifier}
-              disabled={isCompleted}
-              error={taskDecisionError}
-              clearError={() => setTaskDecisionError(false)}
-            />
-          )}
-          {subtasksIsInConfig && (
-            <TaskItemSubtasks
-              isSubtask={isSubtask}
-              subtaskQuickAddOpen={subtaskQuickAddOpen}
-              subtasksDisabled={subtasksDisabled}
-              subTasksCount={subTasksCount}
-              isHovered={isHovered}
-              isOpen={isOpen}
-              isNestedTask={isNestedTask}
-              onSubtaskLabelClick={onSubtaskLabelClick}
-              taskIdentifier={taskIdentifier}
-              openQuickAddSubtask={openQuickAddSubtask}
-              dispatch={dispatch}
-            />
-          )}
-          {patientIsInConfig && (
-            <TaskItemPatient
-              highlightedValue={highlightedValue}
-              taskStatus={task?.status}
-              isSubtask={isSubtask}
-              parentHasPatient={parentHasPatient}
-              hasParentTaskLabel={hasParentTaskLabel}
-              matchPatientMRN={matchPatientMRN}
-              patient={patient || parentTask?.patient}
-              matchPatient={matchPatient}
-              task={task}
-              openPatientPopover={openPatientPopover}
-              onTaskUpdate={onTaskUpdate}
-              currentUser={currentUser}
-            />
-          )}
-          {workflowStatusIsInConfig && (
-            <TaskItemWorkflowStatus
-              task={task}
-              isCompletedGroup={isCompletedGroup}
-              updateWorkflowStatus={handleUpdateWorkflowStatus}
-              workflowStatus={workflowStatus}
-              matchWorkflowStatus={matchWorkflowStatus}
-              highlightedValue={highlightedValue}
-            />
-          )}
-          {activityIsInConfig && (
-            <TaskItemIcons
-              matchComments={matchComments}
-              comments={comments}
-              isHovered={isHovered}
-              task={task}
-              matchLabels={matchLabels}
-              labels={labels}
-              matchAttachments={matchAttachments}
-              attachments={attachments}
-              dispatch={dispatch}
-            />
-          )}
-          {dueDateIsInConfig && (
-            <TaskItemDueDate
-              task={task}
-              isHovered={isHovered}
-              updateDueDate={updateDueDate}
-            />
-          )}
-          {assignedIsInConfig && (
-            <TaskItemMembers
-              multipleAssigneesContext={multipleAssigneesContext}
-              task={task}
-              assignedToUsers={assignedToUsers}
-              handleReasignTask={handleReasignTask}
-              matchAssignedTo={matchAssignedTo}
-            />
-          )}
-          {listNameIsInConfig && (
-            <TaskItemList
-              listName={listName}
-              taskListIdentifier={taskListIdentifier}
-              taskStatus={task.status}
-            />
-          )}
-        </StandardTaskItemContainer>
-      </StandardTaskItemPanel>
-      {contextMenu && (
-        <TaskItemContextMenu
-          position={contextMenu}
-          task={task}
-          onClose={onCloseContextMenu}
-          subtasksDisabled={subtasksDisabled}
-          isDashboardTask={isDashboardTask}
-        />
-      )}
-    </>
-  );
-};
+            {patientIsInConfig && (
+              <TaskItemPatient
+                highlightedValue={highlightedValue}
+                taskStatus={task?.status}
+                isSubtask={isSubtask}
+                parentHasPatient={parentHasPatient}
+                hasParentTaskLabel={hasParentTaskLabel}
+                matchPatientMRN={matchPatientMRN}
+                patient={patient || parentTask?.patient}
+                matchPatient={matchPatient}
+                task={task}
+                openPatientPopover={openPatientPopover}
+                onTaskUpdate={onTaskUpdate}
+                currentUser={currentUser}
+              />
+            )}
+            {workflowStatusIsInConfig && (
+              <TaskItemWorkflowStatus
+                task={task}
+                updateWorkflowStatus={handleUpdateWorkflowStatus}
+                workflowStatus={workflowStatus}
+                matchWorkflowStatus={matchWorkflowStatus}
+                highlightedValue={highlightedValue}
+                showDefaultTaskStatusCompleted={
+                  selectedOrganization?.showDefaultTaskStatusCompleted
+                }
+              />
+            )}
+            {activityIsInConfig && (
+              <TaskItemIcons
+                matchComments={matchComments}
+                comments={comments}
+                isHovered={isHovered}
+                task={task}
+                matchLabels={matchLabels}
+                labels={labels}
+                matchAttachments={matchAttachments}
+                attachments={attachments}
+                dispatch={dispatch}
+              />
+            )}
+            {dueDateIsInConfig && (
+              <TaskItemDueDate task={task} isHovered={isHovered} />
+            )}
+            {assignedIsInConfig && (
+              <TaskItemMembers
+                multipleAssigneesContext={multipleAssigneesContext}
+                task={task}
+                assignedToUsers={assignedToUsers}
+                handleReasignTask={handleReasignTask}
+                matchAssignedTo={matchAssignedTo}
+              />
+            )}
+            {listNameIsInConfig && (
+              <TaskItemList
+                listName={listName}
+                taskListIdentifier={taskListIdentifier}
+                taskStatus={task.status}
+              />
+            )}
+            {customColumnsConfig
+              .filter(f => f.isChecked)
+              .map(field => (
+                <TaskItemCustomField
+                  field={field}
+                  readOnly
+                  customFieldValue={task?.taskMetaData?.find(
+                    f => f.customFieldIdentifier === field.identifier,
+                  )}
+                  task={task}
+                />
+              ))}
+          </StandardTaskItemContainer>
+        </StandardTaskItemPanel>
+        {contextMenu && (
+          <TaskItemContextMenu
+            position={contextMenu}
+            task={task}
+            onClose={onCloseContextMenu}
+            subtasksDisabled={subtasksDisabled}
+            isDashboardTask={isDashboardTask}
+          />
+        )}
+      </>
+    );
+  },
+);
 
-export default React.memo(TaskItem);
+export default TaskItem;

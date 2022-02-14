@@ -4,6 +4,13 @@ import spacing from 'styles/spacing';
 import { fontWeights, fontSizes } from 'styles/font';
 import palette from 'styles/palette';
 
+export const GroupOptionsContainer = styled.div`
+  position: absolute;
+  left: -20px;
+  top: 50%;
+  transform: translateY(-80%);
+`;
+
 export const TasksGroupActionButtonsContainer = styled.div`
   display: flex;
   justify-content: flex-end;
@@ -46,6 +53,8 @@ export const TasksGroupHeader = styled.div`
   display: flex;
   justify-content: space-between;
   padding-bottom: ${spacing.regular};
+  position: sticky;
+  left: 24px;
 
   .action-buttons {
     visibility: hidden;

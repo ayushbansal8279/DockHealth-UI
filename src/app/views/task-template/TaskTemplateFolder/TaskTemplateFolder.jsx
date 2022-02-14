@@ -9,6 +9,7 @@ import React, {
 import { useDispatch } from 'react-redux';
 import palette from 'styles/palette';
 import { MoreHoriz } from '@material-ui/icons';
+import * as WorkflowActions from 'actions/workflow-actions';
 import * as TaskTemplateActions from 'actions/task-template-actions';
 import * as ModalActions from 'modal/actions';
 import OptionsMenu from 'components/common/OptionsMenu/OptionsMenu';
@@ -23,8 +24,13 @@ import {
   FolderIconContainer,
 } from './styled';
 
-const TaskTemplateFolder = ({ template, children, onClick }) => {
-  const { taskTemplateIdentifier, name, publicAccess = false } = template;
+const TaskTemplateFolder = ({
+  template,
+  children,
+  onClick,
+  highlighted = false,
+}) => {
+  const { identifier, name, publicAccess = false } = template;
 
   const [isEditing, setIsEditing] = useState(false);
   const [nameInputValue, setNameInputValue] = useState(name);
@@ -38,6 +44,15 @@ const TaskTemplateFolder = ({ template, children, onClick }) => {
     // eslint-disable-next-line no-unused-expressions
     nameInputReference.current?.blur();
   }, [name]);
+
+  useEffect(() => {
+    if (nameInputReference?.current && highlighted) {
+      nameInputReference.current.scrollIntoView({
+        block: 'end',
+        behavior: 'smooth',
+      });
+    }
+  }, [highlighted, nameInputReference]);
 
   const menuOptions = useMemo(
     () => [
@@ -53,10 +68,7 @@ const TaskTemplateFolder = ({ template, children, onClick }) => {
         name: publicAccess ? 'Make Private' : 'Make Public',
         onClick: () => {
           dispatch(
-            TaskTemplateActions.switchTemplatePublic(
-              taskTemplateIdentifier,
-              !publicAccess,
-            ),
+            TaskTemplateActions.switchTemplatePublic(identifier, !publicAccess),
           );
         },
       },
@@ -69,15 +81,15 @@ const TaskTemplateFolder = ({ template, children, onClick }) => {
               title: 'Delete folder',
               description:
                 'Are you sure you want to delete this folder? This action cannot be undone.',
-              confirm: () =>
-                dispatch(
-                  TaskTemplateActions.deleteTemplate(taskTemplateIdentifier),
-                ),
+              confirm: () => {
+                dispatch(WorkflowActions.deleteWorkflow(identifier));
+                dispatch(ModalActions.closeModal());
+              },
             }),
           ),
       },
     ],
-    [taskTemplateIdentifier, dispatch, nameInputReference, publicAccess],
+    [identifier, dispatch, nameInputReference, publicAccess],
   );
 
   const handleNameInputKeyDown = useCallback(
@@ -90,7 +102,7 @@ const TaskTemplateFolder = ({ template, children, onClick }) => {
         if (value?.length > 1) {
           setNameInputError(false);
           dispatch(
-            TaskTemplateActions.updateTemplate(taskTemplateIdentifier, {
+            TaskTemplateActions.updateTemplate(identifier, {
               name: value,
             }),
           );
@@ -102,7 +114,7 @@ const TaskTemplateFolder = ({ template, children, onClick }) => {
         nameInputReference.current?.blur();
       }
     },
-    [dispatch, taskTemplateIdentifier],
+    [dispatch, identifier],
   );
 
   const onChangeName = event => {
@@ -116,7 +128,7 @@ const TaskTemplateFolder = ({ template, children, onClick }) => {
   };
 
   return (
-    <TaskTemplateContainer>
+    <TaskTemplateContainer highlighted={highlighted}>
       <TaskTemplateHeader>
         <FolderIconContainer>
           <FolderIcon src={Folder} alt="folder icon" />

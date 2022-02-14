@@ -8,6 +8,21 @@ export const organizationSelector = createSelector(
   ({ organization }) => organization,
 );
 
+export const isFetchingOrganizationSelector = createSelector(
+  organizationStateSelector,
+  ({ isFetching }) => isFetching,
+);
+
+export const currentSubscriptionPlanSelector = createSelector(
+  organizationStateSelector,
+  ({ billingData }) => billingData,
+);
+
+export const isSavingNewPlanSelector = createSelector(
+  organizationStateSelector,
+  ({ isSavingNewPlan }) => isSavingNewPlan,
+);
+
 export const billingDetailsSelector = createSelector(
   organizationStateSelector,
   ({ billingDetails }) => billingDetails,
@@ -41,4 +56,9 @@ export const organizationUsersSelector = createSelector(
 export const isFetchingOrganizationUsersSelector = createSelector(
   organizationStateSelector,
   prop('isFetchingOrganizationUsers'),
+);
+
+export const organizationCustomFieldsSelector = createSelector(
+  organizationStateSelector,
+  prop('organizationCustomFields'),
 );

@@ -1,4 +1,6 @@
 import styled from 'styled-components';
+import { withStyles } from '@material-ui/core/styles';
+import MuiBarChartIcon from '@material-ui/icons/BarChart';
 import { fontSizes, fontWeights } from 'styles/font';
 import palette from 'styles/palette';
 
@@ -82,3 +84,10 @@ export const NavigationIconNewLabel = styled.div`
 export const DockcoinIcon = styled.img`
   width: 48px;
 `;
+
+export const BarChartIcon = withStyles({
+  root: {
+    width: 32,
+    height: 32,
+  },
+})(MuiBarChartIcon);

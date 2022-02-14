@@ -11,6 +11,7 @@ export const LinkType = {
   STANDARD: 'STANDARD_LINK',
   DECISION: 'DECISION_LINK',
   TEMPORARY: 'TEMPORARY_LINK',
+  TEMPORARY_DECISION: 'TEMPORARY_DECISION_LINK',
 };
 
 export const NodeSourceHandle = {
@@ -31,6 +32,7 @@ export function getUniqueLinkId(sourceId, targetId) {
 }
 
 export function createLinkElement(
+  type,
   sourceId,
   targetId,
   sourceHandle,
@@ -42,20 +44,23 @@ export function createLinkElement(
     target: targetId,
     sourceHandle: sourceHandle || NodeSourceHandle.SOURCE_A,
     targetHandle: targetHandle || NodeTargetHandle.TARGET_A,
-    type: LinkType.TEMPORARY,
+    type,
     data: {},
   };
 }
 
-export function createTaskNode(currentTemporaryElements, elementPosition) {
+export function createTemporaryTaskNode(
+  currentTemporaryElements,
+  elementPosition,
+  type = NodeType.NEW_STANDARD,
+) {
   const numberOfNewTasks =
-    currentTemporaryElements?.filter(
-      element => element.type === NodeType.NEW_STANDARD,
-    ).length || 0;
+    currentTemporaryElements?.filter(element => element.type === type).length ||
+    0;
 
   return {
-    id: `${NodeType.NEW_STANDARD}-${numberOfNewTasks}`,
-    type: NodeType.NEW_STANDARD,
+    id: `${type}-${numberOfNewTasks}`,
+    type,
     position: elementPosition,
   };
 }
@@ -65,12 +70,15 @@ export function createTemporaryOptionsForDecisionTask(
   decisionTaskId,
   decisionTaskPosition,
 ) {
-  const firstTemporaryStandardTask = createTaskNode(currentTemporaryElements, {
-    x: decisionTaskPosition.x - 200,
-    y: decisionTaskPosition.y + 300,
-  });
+  const firstTemporaryStandardTask = createTemporaryTaskNode(
+    currentTemporaryElements,
+    {
+      x: decisionTaskPosition.x - 200,
+      y: decisionTaskPosition.y + 300,
+    },
+  );
 
-  const secondTemporaryStandardTask = createTaskNode(
+  const secondTemporaryStandardTask = createTemporaryTaskNode(
     [firstTemporaryStandardTask, ...(currentTemporaryElements || [])],
     {
       x: decisionTaskPosition.x + 200,
@@ -81,8 +89,16 @@ export function createTemporaryOptionsForDecisionTask(
   return [
     firstTemporaryStandardTask,
     secondTemporaryStandardTask,
-    createLinkElement(decisionTaskId, firstTemporaryStandardTask.id),
-    createLinkElement(decisionTaskId, secondTemporaryStandardTask.id),
+    createLinkElement(
+      LinkType.TEMPORARY_DECISION,
+      decisionTaskId,
+      firstTemporaryStandardTask.id,
+    ),
+    createLinkElement(
+      LinkType.TEMPORARY_DECISION,
+      decisionTaskId,
+      secondTemporaryStandardTask.id,
+    ),
   ];
 }
 

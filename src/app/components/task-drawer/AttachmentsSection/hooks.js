@@ -5,7 +5,7 @@ import { useDropzone } from 'react-dropzone';
 import { isEmpty } from 'ramda';
 import { selectedTaskSelector } from 'selectors/task-drawer-selectors';
 import { removeTaskAttachment, addTaskAttachment } from 'actions/task-actions';
-import useBoolean from 'hooks/useBoolean';
+import { useBoolean } from 'hooks/useBoolean';
 
 import { getMemoTaskAttachment } from './helpers';
 
@@ -87,7 +87,7 @@ const initializeAttachmentsSectionHooks = () => {
     [selectedTaskIdentifier, dispatch, currentTaskAttachmentsDispatch],
   );
 
-  const { getRootProps, getInputProps } = useDropzone({
+  const { getRootProps, getInputProps, isDragActive } = useDropzone({
     onDrop: onAttachmentFileInputChange,
   });
 
@@ -147,7 +147,7 @@ const initializeAttachmentsSectionHooks = () => {
   }, [selectedTaskIdentifier, currentTaskAttachmentsDispatch]);
 
   const boundRemoveTaskAttachment = useCallback(
-    ({ attachmentIdentifier }) => {
+    attachmentIdentifier => {
       removeTaskAttachment(
         selectedTaskIdentifier,
         attachmentIdentifier,
@@ -188,6 +188,7 @@ const initializeAttachmentsSectionHooks = () => {
     dropzone: {
       getRootProps,
       getInputProps,
+      isDragActive,
     },
   };
 };

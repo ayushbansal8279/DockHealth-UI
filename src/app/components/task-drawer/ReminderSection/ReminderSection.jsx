@@ -1,6 +1,6 @@
 import React, { useCallback, useEffect, useRef, useState } from 'react';
 import moment from 'moment';
-import { useFormContext } from 'react-hook-form';
+import { useForm, FormContext } from 'react-hook-form';
 import { isDueDateOverdue, ReminderType } from 'helpers/task-helpers';
 import Checkbox from 'components/common/Checkbox/Checkbox';
 import Spacing from 'components/common/Spacing';
@@ -8,6 +8,8 @@ import TimeDropdownInput from 'components/common/TimeDropdownInput/TimeDropdownI
 import SecondaryDropdownInput from 'components/common/DropdownInput/SecondaryDropdownInput';
 import ArrowIcon from 'img/arrow';
 import { TIME_12H_FORMAT } from 'helpers/task-drawer-helpers';
+import { useSelector } from 'react-redux';
+import { selectedTaskSelector } from 'selectors/task-drawer-selectors';
 import { ReminderContainer, Description, SelectArrowImg } from './styled';
 import {
   REMINDER_TYPE_FIELD_NAME,
@@ -16,11 +18,15 @@ import {
 } from './helpers';
 
 // eslint-disable-next-line sonarjs/cognitive-complexity
-const ReminderSection = ({ selectedTask, isDisabled, onSave }) => {
+const ReminderSection = ({ onSave }) => {
+  const selectedTask = useSelector(selectedTaskSelector) || {};
   const { reminderType, reminderTime = null, dueDate } = selectedTask || {};
+  const isDisabled = !dueDate;
 
   const reminderTypeDropdownReference = useRef(null);
-  const { register, unregister, setValue, watch } = useFormContext();
+  const formMethods = useForm();
+  const { register, unregister, setValue, watch } = formMethods;
+
   const [reminderTypeValue, setReminderTypeValue] = useState(reminderType);
 
   useEffect(() => {
@@ -118,44 +124,47 @@ const ReminderSection = ({ selectedTask, isDisabled, onSave }) => {
   );
 
   return (
-    <ReminderContainer>
-      <Checkbox
-        isDisabled={isCheckboxDisabled}
-        isChecked={reminderChecked ?? false}
-        onClick={handleToggleReminder}
-      />
-      <Spacing horizontal={3} />
-      <Description isDisabled={sectionDisabled}>Reminder</Description>
-      <Spacing horizontal={3} />
-      {!sectionDisabled && (
-        <>
-          <SecondaryDropdownInput
-            ref={reminderTypeDropdownReference}
-            name={REMINDER_TYPE_FIELD_NAME}
-            placeholder="--"
-            onSelect={handleSelectReminderType}
-            disabled={sectionDisabled}
-            width={130}
-            options={REMINDER_TYPE_OPTIONS}
-          />
-          <Spacing horizontal={2} />
-          <Description>at</Description>
-          <Spacing horizontal={2} />
-          <TimeDropdownInput
-            type="secondary"
-            savedValue={reminderTime}
-            value={watch(REMINDER_TIME_FIELD_NAME)}
-            onValueChange={newValue =>
-              setValue(REMINDER_TIME_FIELD_NAME, newValue)
-            }
-            onSave={handleSelectReminderTime}
-            disabled={sectionDisabled}
-            endAdornment={<SelectArrowImg src={ArrowIcon} alt="arrow" />}
-            validate={validateReminderTime}
-          />
-        </>
-      )}
-    </ReminderContainer>
+    <FormContext {...formMethods}>
+      <ReminderContainer>
+        <Checkbox
+          isDisabled={isCheckboxDisabled}
+          isChecked={reminderChecked ?? false}
+          onClick={handleToggleReminder}
+        />
+        <Spacing horizontal={3} />
+        <Description isDisabled={sectionDisabled}>Reminder</Description>
+        <Spacing horizontal={3} />
+        {!sectionDisabled && (
+          <>
+            <SecondaryDropdownInput
+              ref={reminderTypeDropdownReference}
+              name={REMINDER_TYPE_FIELD_NAME}
+              value={watch(REMINDER_TYPE_FIELD_NAME)}
+              placeholder="--"
+              onSelect={handleSelectReminderType}
+              disabled={sectionDisabled}
+              width={130}
+              options={REMINDER_TYPE_OPTIONS}
+            />
+            <Spacing horizontal={2} />
+            <Description>at</Description>
+            <Spacing horizontal={2} />
+            <TimeDropdownInput
+              type="secondary"
+              savedValue={reminderTime}
+              value={watch(REMINDER_TIME_FIELD_NAME)}
+              onValueChange={newValue =>
+                setValue(REMINDER_TIME_FIELD_NAME, newValue)
+              }
+              onSave={handleSelectReminderTime}
+              disabled={sectionDisabled}
+              endAdornment={<SelectArrowImg src={ArrowIcon} alt="arrow" />}
+              validate={validateReminderTime}
+            />
+          </>
+        )}
+      </ReminderContainer>
+    </FormContext>
   );
 };
 

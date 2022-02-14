@@ -1,17 +1,16 @@
 /* eslint-disable sonarjs/cognitive-complexity */
-import React from 'react';
+import React, { useMemo } from 'react';
 import ClipIcon from 'img/clip.png';
 import Circle from 'img/pdf/pdf-circle.png';
 import CircleCompleted from 'img/pdf/pdf-circle-completed.png';
 import PriorityIcon from 'img/pdf/priority-icon.png';
-import ProfileIcon from 'img/profile.png';
 import palette from 'styles/palette';
 import ArrowIcon from 'img/arrow.png';
-
+import { trunc } from 'helpers/utility-functions';
 import getPdfTaskData from './PdfTask.Data';
 import {
-  Avatar,
-  AvatarContainer,
+  AssignToText,
+  AssignedToContainer,
   CheckboxContainer,
   ArrowContainer,
   ArrowIconWrapper,
@@ -27,7 +26,6 @@ import {
   ListNameContainer,
   StatusContainer,
   StyledClipIcon,
-  StyledProfileIcon,
   TaskContainer,
   TaskDescription,
   TaskSubLabel,
@@ -57,7 +55,7 @@ const PdfTask = props => {
   const {
     subtasks,
     description: descriptionName,
-    assignedTo,
+    assignedToUsers,
     taskListMembers,
     taskListMembersAvatars,
     columnsWidth,
@@ -67,11 +65,21 @@ const PdfTask = props => {
 
   const description = descriptionName || name || '';
 
-  const avatarContent = assignedTo?.userIdentifier ? (
-    taskListMembersAvatars.get(assignedTo?.userIdentifier)
-  ) : (
-    <StyledProfileIcon src={ProfileIcon} />
-  );
+  const usersList = useMemo(() => {
+    const maxLength = 20;
+    const usersVisible = 2;
+    const usersString =
+      assignedToUsers?.reduce((accumulator, { userName }, index) => {
+        if (index + 1 > usersVisible) return accumulator;
+        return `${accumulator}${index > 0 ? ', ' : ''}${trunc(
+          userName,
+          maxLength,
+        )} `;
+      }, '') || '';
+    const extraCounter =
+      assignedToUsers?.length > 2 ? `+${assignedToUsers.length - 3}` : '';
+    return `${usersString}${extraCounter}`;
+  }, [assignedToUsers]);
 
   const {
     isSubtask,
@@ -80,7 +88,6 @@ const PdfTask = props => {
     isEdited,
     hasAttachments,
     mainContainerWidth,
-    assignedMemberColor,
     bottomLabel,
     patientName,
     dueDateLabel,
@@ -151,11 +158,9 @@ const PdfTask = props => {
               {isComplete ? 'Completed' : workflowStatusLabel}
             </TextLabel>
           </StatusContainer>
-          <InnerContainer>
-            <AvatarContainer color={assignedMemberColor}>
-              <Avatar color={assignedMemberColor}>{avatarContent}</Avatar>
-            </AvatarContainer>
-          </InnerContainer>
+          <AssignedToContainer>
+            <AssignToText>{usersList}</AssignToText>
+          </AssignedToContainer>
           <DueDateContainer>
             <TextLabel isRed={isOverdue}>{dueDateLabel}</TextLabel>
           </DueDateContainer>

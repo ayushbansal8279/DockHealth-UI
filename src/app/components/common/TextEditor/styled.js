@@ -51,16 +51,20 @@ export const StyledEditorContainer = styled.div`
     font-weight: bold;
   }
 
-  ${({ isOneline }) =>
+  ${({ isOneline, isReadOnly }) =>
     isOneline &&
     `
       height: 1.3em;
       overflow: hidden;
 
       & .public-DraftStyleDefault-block {
-        white-space: nowrap;
-        overflow: hidden;
-        text-overflow: ellipsis;
+        white-space: pre;
+
+        ${isReadOnly &&
+          `
+          overflow: hidden;
+          text-overflow: ellipsis;
+        `}
       }
     `}
 
@@ -123,8 +127,15 @@ export const EmojiContainer = styled.div`
     position: fixed;
   }
 `;
+
 export const ToolbarContainer = styled.div`
   box-sizing: border-box;
   margin-top: 0px;
   padding-bottom: 5px;
+`;
+
+export const LinkIconContainer = styled.div`
+  & button {
+    padding-top: 0px;
+  }
 `;

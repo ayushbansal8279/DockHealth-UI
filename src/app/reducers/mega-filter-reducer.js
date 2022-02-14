@@ -1,115 +1,102 @@
-import { clone } from 'ramda';
-import * as types from 'actions/action-types';
-
-const PEOPLE_FILTERS = ['assignedBy', 'assignedTo'];
-const PRIORITY_FILTERS = ['priorityOptions'];
-const STATUS_FILTERS = ['workflowStatusOptions'];
-const DATE_FILTERS = ['dueDateOptions'];
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
-const STANDARD_FILTERS = ['labels', 'dueDateOptions', 'patients'];
-
-const getLabel = label =>
-  label
-    .replace(/([A-Z])/g, ' $1')
-    .replace(/^./, string => string.toUpperCase())
-    .replace(' Options', '');
-
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
-const assignTypesToFilters = ({ optionsOrder, ...filters }) => {
-  const assignedFilters = clone(filters);
-  Object.keys(filters).forEach(key => {
-    if (PEOPLE_FILTERS.includes(key)) {
-      assignedFilters[key] = {
-        label: getLabel(key),
-        list: assignedFilters[key],
-        type: 'PEOPLE',
-        filterKey: key,
-        hasAvatars: true,
-      };
-    } else if (PRIORITY_FILTERS.includes(key)) {
-      assignedFilters[key] = {
-        label: getLabel(key),
-        list: assignedFilters[key],
-        type: 'PRIORITY',
-        filterKey: key,
-      };
-    } else if (STATUS_FILTERS.includes(key)) {
-      assignedFilters[key] = {
-        label: getLabel(key),
-        list: assignedFilters[key],
-        type: 'STATUS',
-        filterKey: key,
-      };
-    } else if (DATE_FILTERS.includes(key)) {
-      assignedFilters[key] = {
-        label: getLabel(key),
-        list: assignedFilters[key],
-        type: 'DATE',
-        filterKey: key,
-      };
-    } else {
-      assignedFilters[key] = {
-        label: getLabel(key),
-        list: assignedFilters[key],
-        type: 'STANDARD',
-        filterKey: key,
-      };
-    }
-  });
-
-  return optionsOrder?.map(option => assignedFilters[option]);
-};
+import * as ActionTypes from 'actions/action-types';
 
 const INITIAL_STATE = {
   isLoading: false,
-  filters: {},
-  selectedFilters: {},
+  filters: null,
+  selectedFilters: null,
   error: null,
+  quickFilters: [],
+  addQuickFilterOption: false,
+  selectedQuickFilter: null,
 };
 
 export default function(state = INITIAL_STATE, action = {}) {
-  const { type, filters, error, selectedFilters } = action;
-
+  const { type, error, selectedFilters } = action;
   switch (type) {
-    case types.FETCH_MEGA_FILTERS_REQUEST:
+    case ActionTypes.CLEAN_QUICK_FILTER:
+      return {
+        ...state,
+        quickFilters: INITIAL_STATE.quickFilters,
+        addQuickFilterOption: INITIAL_STATE.addQuickFilterOption,
+        selectedQuickFilter: INITIAL_STATE.selectedQuickFilter,
+      };
+    case ActionTypes.GET_QUICK_FILTERS_SUCCESS:
+      return {
+        ...state,
+        quickFilters: action.quickFilters,
+      };
+    case ActionTypes.CREATE_QUICK_FILTER_SUCCESS:
+      return {
+        ...state,
+        quickFilters: [action.filter, ...state.quickFilters],
+        addQuickFilterOption: false,
+        selectedQuickFilter: action.filter.quickFilterIdentifier,
+      };
+    case ActionTypes.UPDATE_QUICK_FILTER:
+      return {
+        ...state,
+        quickFilters: state.quickFilters.map(filter =>
+          filter.quickFilterIdentifier === action.quickFilterIdentifier
+            ? { ...filter, ...action.dataToUpdate }
+            : filter,
+        ),
+      };
+    case ActionTypes.DELETE_QUICK_FILTER:
+      return {
+        ...state,
+        quickFilters: state.quickFilters.filter(
+          filter =>
+            filter.quickFilterIdentifier !== action.quickFilterIdentifier,
+        ),
+        selectedQuickFilter:
+          state.selectedQuickFilter === action.quickFilterIdentifier
+            ? null
+            : state.selectedQuickFilter,
+      };
+    case ActionTypes.HIDE_ADD_QUICK_FILTER_OPTION:
+      return {
+        ...state,
+        addQuickFilterOption: false,
+      };
+    case ActionTypes.SHOW_ADD_QUICK_FILTER_OPTION:
+      return {
+        ...state,
+        addQuickFilterOption: true,
+      };
+    case ActionTypes.SELECT_QUICK_FILTER:
+      return {
+        ...state,
+        selectedQuickFilter: action.quickFilterIdentifier,
+      };
+
+    case ActionTypes.GET_USER_TASK_FILTER_OPTIONS:
+    case ActionTypes.GET_PATIENT_FILTER_OPTIONS:
+    case ActionTypes.GET_CURRENT_TASK_LIST_FILTER_OPTIONS:
       return {
         ...state,
         isLoading: true,
       };
-    case types.FETCH_MEGA_FILTERS_SUCCESS:
+
+    case ActionTypes.GET_PATIENT_FILTER_OPTIONS_SUCCESS:
+    case ActionTypes.GET_CURRENT_TASK_LIST_FILTER_OPTIONS_SUCCESS:
+    case ActionTypes.GET_USER_TASK_FILTER_OPTIONS_SUCCESS:
       return {
         ...state,
-        filters: assignTypesToFilters(filters),
+        filters: action.filters,
         isLoading: false,
       };
-    case types.FETCH_MEGA_FILTERS_UPDATE_SUCCESS:
-      if (Object.keys(filters).length > 0) {
-        return {
-          ...state,
-          filters: state.filters?.map(filterGroup => {
-            return {
-              ...filterGroup,
-              list: filterGroup.list?.map(item => {
-                const filterItem = filters[filterGroup.filterKey]?.find(
-                  f => f.key === item.key,
-                );
-                return {
-                  ...item,
-                  taskCount: filterItem ? filterItem.taskCount : '',
-                };
-              }),
-            };
-          }),
-          isLoading: false,
-        };
-      }
-      return state;
-    case types.FETCH_MEGA_FILTERS_FAILURE:
+
+    case ActionTypes.GET_USER_TASK_FILTER_OPTIONS_FAILURE:
+    case ActionTypes.GET_PATIENT_FILTER_OPTIONS_FAILURE:
+    case ActionTypes.GET_CURRENT_TASK_LIST_FILTER_OPTIONS_FAILURE:
       return { ...state, error, isLoading: false };
-    case types.SELECT_FILTERS_FROM_MEGA_FILTER:
+
+    case ActionTypes.SELECT_FILTERS_FROM_MEGA_FILTER:
       return { ...state, selectedFilters };
-    case types.CLEAR_MEGA_FILTERS:
+
+    case ActionTypes.CLEAR_MEGA_FILTERS:
       return INITIAL_STATE;
+
     default:
       return state;
   }

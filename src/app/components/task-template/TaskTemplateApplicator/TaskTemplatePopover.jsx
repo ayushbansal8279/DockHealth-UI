@@ -1,4 +1,4 @@
-import React, { useMemo, useCallback } from 'react';
+import React, { useMemo, useCallback, useEffect } from 'react';
 import { Popover } from '@material-ui/core';
 import Search from 'components/task-view/Search/Search';
 import Folder from 'img/folder';
@@ -27,7 +27,7 @@ const TaskTemplatePopover = ({
   taskTemplatesIsLoading,
   open,
   onClose,
-  searchPhrase,
+  searchPhrase = '',
   onSearchChange,
   onFolderClick,
   onTemplateSelect,
@@ -43,6 +43,10 @@ const TaskTemplatePopover = ({
     () => taskTemplatesList?.filter(({ type }) => type !== 'FOLDER'),
     [taskTemplatesList],
   );
+
+  useEffect(() => {
+    if (!open && searchPhrase !== '') onSearchChange('');
+  }, [onSearchChange, open, searchPhrase]);
 
   const renderTemplate = useCallback(
     folder => {

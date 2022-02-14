@@ -1,10 +1,8 @@
-/* eslint-disable import/prefer-default-export */
-import * as ActionTypesSaga from 'actions/action-types-saga';
 import * as ActionTypes from 'actions/action-types';
 
 export function updateTemplateBundle({ bundle, dataToUpdate }) {
   return {
-    type: ActionTypesSaga.UPDATE_TEMPLATE_BUNDLE,
+    type: ActionTypes.UPDATE_TEMPLATE_BUNDLE,
     bundle,
     dataToUpdate,
   };
@@ -18,7 +16,7 @@ export function reorderSubtasksInTemplateBundle({
   incompleteTasksShown = true,
 }) {
   return {
-    type: ActionTypesSaga.REORDER_TASKS_IN_TEMPLATE_BUNDLE,
+    type: ActionTypes.REORDER_TASKS_IN_TEMPLATE_BUNDLE,
     source,
     destination,
     bundle,
@@ -27,29 +25,14 @@ export function reorderSubtasksInTemplateBundle({
   };
 }
 
-export function duplicateTemplateBundle(bundleIdentifier, includeAttachments) {
-  return {
-    type: ActionTypesSaga.DUPLICATE_TEMPLATE_BUNDLE,
-    bundleIdentifier,
-    includeAttachments,
-  };
-}
-
-export function deleteTemplateBundle(bundleIdentifier) {
-  return {
-    type: ActionTypesSaga.DELETE_TEMPLATE_BUNDLE,
-    bundleIdentifier,
-  };
-}
-
-export function moveTemplateBundle({
-  bundleIdentifier,
+export function moveWorkflowToList(
+  identifier,
   taskListIdentifier,
   taskGroupIdentifier,
-}) {
+) {
   return {
-    type: ActionTypesSaga.MOVE_TEMPLATE_BUNDLE,
-    bundleIdentifier,
+    type: ActionTypes.MOVE_WORKFLOW_TO_DIFFERENT_LIST,
+    identifier,
     taskListIdentifier,
     taskGroupIdentifier,
   };
@@ -60,7 +43,7 @@ export function changePatientForTemplateBundle(
   patient,
 ) {
   return {
-    type: ActionTypesSaga.CHANGE_PATIENT_FOR_TEMPLATE_BUNDLE,
+    type: ActionTypes.CHANGE_PATIENT_FOR_TEMPLATE_BUNDLE,
     taskTemplateIdentifier,
     patient,
   };
@@ -70,5 +53,24 @@ export function completeTemplateBundle(bundleIdentifier) {
   return {
     type: ActionTypes.COMPLETE_TEMPLATE_BUNDLE,
     bundleIdentifier,
+  };
+}
+
+export function applyTemplate({
+  taskTemplateIdentifier,
+  taskListIdentifier,
+  taskGroupIdentifier,
+  patientIdentifier,
+  unassign = false,
+}) {
+  return {
+    type: ActionTypes.APPLY_TEMPLATE,
+    taskTemplateIdentifier,
+    taskListIdentifier,
+    taskGroupIdentifier,
+    patientIdentifier,
+    options: {
+      unassign,
+    },
   };
 }

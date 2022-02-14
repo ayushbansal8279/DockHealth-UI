@@ -1,10 +1,8 @@
 import { Grid } from '@material-ui/core';
 import { withStyles } from '@material-ui/core/styles';
 import React from 'react';
-import { useDispatch } from 'react-redux';
-import { useMount } from 'react-use';
-import { setHeader } from 'actions/template-actions';
-import GenericHeader from 'components/template/GenericHeader/GenericHeader';
+import ViewLayout from 'components/template/ViewLayout/ViewLayout';
+import BasicLayoutHeader from 'components/template/BasicLayoutHeader/BasicLayoutHeader';
 import Spacing from 'components/common/Spacing';
 import SupportSectionViewFaq from './SupportView.Faq';
 import SupportSectionViewVideos from './SupportView.Videos';
@@ -18,29 +16,16 @@ const SupportViewContainer = withStyles({
 })(Grid);
 
 const SupportSectionView = () => {
-  const dispatch = useDispatch();
-
-  useMount(() => {
-    dispatch(
-      setHeader({
-        layout: [
-          {
-            key: 'generic-header',
-            component: <GenericHeader>Support</GenericHeader>,
-          },
-        ],
-      }),
-    );
-  });
-
   return (
-    <SupportViewContainer container>
-      <SupportSectionViewVideos />
-      <Grid item xs={12}>
-        <Spacing vertical={6} />
-      </Grid>
-      <SupportSectionViewFaq />
-    </SupportViewContainer>
+    <ViewLayout header={<BasicLayoutHeader title="Support" />}>
+      <SupportViewContainer container>
+        <SupportSectionViewVideos />
+        <Grid item xs={12}>
+          <Spacing vertical={6} />
+        </Grid>
+        <SupportSectionViewFaq />
+      </SupportViewContainer>
+    </ViewLayout>
   );
 };
 

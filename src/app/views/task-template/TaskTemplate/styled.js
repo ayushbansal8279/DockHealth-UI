@@ -1,7 +1,12 @@
-import styled from 'styled-components';
+import styled, { keyframes } from 'styled-components';
 import { fontSizes, fontWeights } from 'styles/font';
 import palette from 'styles/palette';
 import spacing from 'styles/spacing';
+
+const LightenedTaskContainer = keyframes`
+0% { background-color: ${palette.brightBlueWithAlpha}; }
+100% { background-color: ${palette.white}; }
+`;
 
 export const TaskTemplateContainer = styled.div`
   width: 100%;
@@ -21,6 +26,10 @@ export const TaskTemplateHeader = styled.div`
   background-color: ${palette.white};
   font-family: 'Roboto', sans-serif;
   font-size: ${fontSizes.smallPlus};
+  animation: ${({ highlighted }) =>
+    highlighted ? LightenedTaskContainer : 'none'};
+  animation-duration: 3.5s;
+  animation-timing-function: ease-in-out;
 `;
 
 export const ArrowButton = styled.button`
@@ -54,14 +63,6 @@ export const NameInput = styled.input`
   &:focus {
     outline: none;
   }
-`;
-
-export const Description = styled.p`
-  grid-column: 3;
-  grid-row: 2;
-  margin-bottom: 0;
-  color: ${palette.coolGrey1};
-  font-size: ${fontSizes.regular};
 `;
 
 export const MenuContainer = styled.div`

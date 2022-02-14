@@ -12,7 +12,7 @@ export const SuggestionItemContainer = styled.div`
   height: 40px;
   width: 100%;
   padding: ${spacing.small};
-  ${({ isFocused }) => isFocused && `background-color: ${palette.coolGrey6};`}
+  ${({ isFocused }) => isFocused && `background-color: ${palette.coolGrey4};`}
   cursor: pointer;
 
   > * {

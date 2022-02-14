@@ -8,8 +8,12 @@ import EmptyTaskListAlpaca from 'img/animals/alpaca';
 import EmptyTaskListBear from 'img/animals/bear';
 import { openModal as openModalAction } from 'modal/actions';
 import { onTaskOrderChanged } from 'helpers/ga-event-helper';
-import { applyTaskTemplate } from 'actions/list-details-actions';
-
+import {
+  applyTaskTemplate,
+  reorderTaskListGroups,
+  reorderTasksInGroup,
+  reassignTasksToAnotherGroup,
+} from 'actions/list-details-actions';
 import NoSearchResultsView from 'components/tasklist/EmptyListView/NoSearchResultsView';
 import EmptyListView from 'components/tasklist/EmptyListView/EmptyListView';
 import NoFilterResultsView from 'components/tasklist/EmptyListView/NoFilterResultsView';
@@ -27,6 +31,7 @@ import { TaskItemType } from 'helpers/task-helpers';
 import StandardTaskItem from 'components/task/StandardTaskItem/StandardTaskItem';
 import TaskTemplateGroup from 'components/task-template/TaskTemplateGroup/TaskTemplateGroup';
 import TasksSkeletonLoader from 'components/task/TasksSkeletonLoader/TasksSkeletonLoader';
+import StickyContainer from 'components/common/HorizontalScroll/StickyContainer';
 import { TaskGroupsContainer, DroppablePlaceholder } from '../styled';
 
 const ListDetailsOpenedTasks = ({
@@ -34,15 +39,9 @@ const ListDetailsOpenedTasks = ({
   toggleCompleteTask,
   groupedTasks,
   groupList,
-  editGroupName,
   quickAddTask,
-  deleteGroup,
-  changeGroupsOrder,
-  reorderTasksInGroup,
-  reassignTasksToAnotherGroup,
   onTaskUpdate,
   isFetchingData,
-  updateDueDate,
   updateWorkflowStatus,
   isSearchApplied,
   areFiltersApplied,
@@ -53,6 +52,7 @@ const ListDetailsOpenedTasks = ({
   sort,
   onSortChange,
   resetSort,
+  viewSetup,
 }) => {
   const [draggedId, setDraggableId] = useState(null);
   const dispatch = useDispatch();
@@ -102,12 +102,12 @@ const ListDetailsOpenedTasks = ({
       if (!destination) return;
 
       if (source?.droppableId === destination?.droppableId) {
-        reorderTasksInGroup({ destination, source });
+        dispatch(reorderTasksInGroup({ destination, source }));
       } else {
-        reassignTasksToAnotherGroup({ destination, source });
+        dispatch(reassignTasksToAnotherGroup({ destination, source }));
       }
     },
-    [reassignTasksToAnotherGroup, reorderTasksInGroup],
+    [dispatch],
   );
 
   const onBeforeCapture = useCallback(({ draggableId }) => {
@@ -169,12 +169,9 @@ const ListDetailsOpenedTasks = ({
             isDefaultGroup={groupName === 'DEFAULT'}
             groupName={groupName === 'DEFAULT' ? 'New tasks' : groupName}
             groupTaskCounts={metricValue}
-            editGroupName={editGroupName}
             quickAddTask={quickAddTask}
-            deleteGroup={deleteGroup}
-            moveGroupUp={() => changeGroupsOrder(i, i - 1)}
-            moveGroupDown={() => changeGroupsOrder(i, i + 1)}
-            changingGroupOrderDisabled={!changeGroupsOrder}
+            moveGroupUp={() => dispatch(reorderTaskListGroups(i, i - 1))}
+            moveGroupDown={() => dispatch(reorderTaskListGroups(i, i + 1))}
             isFirstGroup={i === 0}
             isLastGroup={i === groupList?.length - 1}
             tasks={groupedTasks[taskGroupIdentifier]?.tasks || []}
@@ -188,7 +185,6 @@ const ListDetailsOpenedTasks = ({
             onTaskUpdate={onTaskUpdate}
             draggedId={draggedId}
             toggleCompleteTask={toggleCompleteTask}
-            updateDueDate={updateDueDate}
             updateWorkflowStatus={updateWorkflowStatus}
             isSearchApplied={isSearchApplied}
             listUniqueKey={listUniqueKey}
@@ -199,7 +195,7 @@ const ListDetailsOpenedTasks = ({
               loadTasksForTaskGroup({
                 taskGroupIdentifier,
                 startPosition:
-                  groupedTasks[taskGroupIdentifier]?.tasks?.length || 0,
+                  groupedTasks[taskGroupIdentifier]?.moreTasksIndex || 0,
                 refresh: false,
               });
             }}
@@ -264,12 +260,10 @@ const ListDetailsOpenedTasks = ({
                                         draggedId === task.taskIdentifier
                                       }
                                       task={task}
-                                      taskGroupIdentifier={taskGroupIdentifier}
                                       draggableProvided={draggableProvided}
                                       isCompletedGroup={isCompletedGroup}
                                       toggleCompleteTask={toggleCompleteTask}
                                       onTaskUpdate={onTaskUpdate}
-                                      updateDueDate={updateDueDate}
                                       updateWorkflowStatus={
                                         updateWorkflowStatus
                                       }
@@ -300,6 +294,7 @@ const ListDetailsOpenedTasks = ({
                                     />
                                   ) : (
                                     <TaskTemplateGroup
+                                      viewSetup={viewSetup}
                                       isStartedDnD={
                                         draggedId === task.identifier
                                       }
@@ -328,11 +323,13 @@ const ListDetailsOpenedTasks = ({
                   <TasksSkeletonLoader rows={4} />
                 )}
                 {groupPagination && hasMoreTasks && !areFiltersApplied && (
-                  <LoadMoreSection>
-                    {!isLoadingGroup && (
-                      <LoadMoreButton onClick={showMoreTasks} />
-                    )}
-                  </LoadMoreSection>
+                  <StickyContainer left={24} decreaseWidth={2 * 24}>
+                    <LoadMoreSection>
+                      {!isLoadingGroup && (
+                        <LoadMoreButton onClick={showMoreTasks} />
+                      )}
+                    </LoadMoreSection>
+                  </StickyContainer>
                 )}
               </>
             )}
@@ -343,24 +340,22 @@ const ListDetailsOpenedTasks = ({
       isSearchApplied,
       areFiltersApplied,
       groupedTasks,
-      dragAndDropDisabled,
-      editGroupName,
       quickAddTask,
-      deleteGroup,
-      changeGroupsOrder,
       onTaskUpdate,
       draggedId,
       toggleCompleteTask,
-      updateDueDate,
       updateWorkflowStatus,
       listUniqueKey,
       taskListIdentifier,
       sort,
       onSortChange,
-      isSortApplied,
-      showClearSortFiltersModal,
       applyTemplate,
       loadTasksForTaskGroup,
+      isSortApplied,
+      dragAndDropDisabled,
+      showClearSortFiltersModal,
+      viewSetup,
+      dispatch,
     ],
   );
 
@@ -378,16 +373,16 @@ const ListDetailsOpenedTasks = ({
             onDragEnd={!isSortApplied ? onDragEnd : () => {}}
           >
             {renderTasks()}
+            {!!createTaskGroupList && !isSearchApplied && !areFiltersApplied && (
+              <GroupNameSection
+                onEnterClick={onGroupNameClick}
+                placeholder={messages.placeholder}
+                closeOnEnter
+              >
+                <AddGroupNameButton />
+              </GroupNameSection>
+            )}
           </DragDropContext>
-          {!!createTaskGroupList && !isSearchApplied && !areFiltersApplied && (
-            <GroupNameSection
-              onEnterClick={onGroupNameClick}
-              placeholder={messages.placeholder}
-              closeOnEnter
-            >
-              <AddGroupNameButton />
-            </GroupNameSection>
-          )}
         </>
       )}
     </TaskGroupsContainer>

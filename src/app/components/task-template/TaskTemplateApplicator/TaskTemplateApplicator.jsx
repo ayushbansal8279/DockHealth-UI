@@ -1,6 +1,6 @@
 /* eslint-disable react-hooks/rules-of-hooks */
 import React, { useRef, useState, useCallback } from 'react';
-import useBoolean from 'hooks/useBoolean';
+import { useBoolean } from 'hooks/useBoolean';
 import palette from 'styles/palette';
 import Spacing from 'components/common/Spacing';
 import { RotatableHeaderChevron } from 'components/common/RotatableChevron/RotatableChevron';
@@ -25,9 +25,9 @@ const TaskTemplateApplicator = ({ onTemplateSelect }) => {
   const [taskTemplatesIsLoading, setTaskTemplatesIsLoading] = useState(null);
 
   const getNestedTemplatesList = useCallback(
-    taskTemplateIdentifier => {
+    identifier => {
       setTaskTemplatesIsLoading(true);
-      getTemplatesForSpecificFolder(taskTemplateIdentifier)
+      getTemplatesForSpecificFolder(identifier)
         .then(templatesList => {
           setTaskTemplatesList(templatesList);
           setTaskTemplatesIsLoading(false);
@@ -69,7 +69,7 @@ const TaskTemplateApplicator = ({ onTemplateSelect }) => {
   const handleFolderClick = useCallback(
     folder => {
       setParentList([...(parentList || []), folder]);
-      getNestedTemplatesList(folder.taskTemplateIdentifier);
+      getNestedTemplatesList(folder.identifier);
     },
     [getNestedTemplatesList, parentList],
   );
@@ -80,7 +80,7 @@ const TaskTemplateApplicator = ({ onTemplateSelect }) => {
 
     if (slicedPatientList.length > 0) {
       getNestedTemplatesList(
-        slicedPatientList[slicedPatientList.length - 1].taskTemplateIdentifier,
+        slicedPatientList[slicedPatientList.length - 1].identifier,
       );
     } else {
       getRootTemplatesList();

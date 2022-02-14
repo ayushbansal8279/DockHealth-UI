@@ -31,3 +31,15 @@ export const NoteInput = styled.input`
     outline: none;
   }
 `;
+
+export const AttachmentFileInput = styled.input.attrs({
+  type: 'file',
+})`
+  height: 1px;
+  left: -100vw;
+  opacity: 0.01;
+  position: absolute;
+  top: -100vh;
+  visibility: hidden;
+  width: 1px;
+`;

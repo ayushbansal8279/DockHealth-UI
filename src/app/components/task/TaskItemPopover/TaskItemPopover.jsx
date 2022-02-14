@@ -1,6 +1,6 @@
 import React, { useRef } from 'react';
 import { useUpdate } from 'react-use';
-import useBoolean from 'hooks/useBoolean';
+import { useBoolean } from 'hooks/useBoolean';
 import zIndex from 'styles/z-index';
 import PopoverCard from 'components/common/PopoverCard/PopoverCard';
 import { Box, ClickAwayListener, Popper } from '@material-ui/core';

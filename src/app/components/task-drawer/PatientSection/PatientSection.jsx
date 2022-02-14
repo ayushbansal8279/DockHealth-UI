@@ -6,14 +6,16 @@ import {
   onTaskDrawerTaskPatientChanged,
 } from 'helpers/ga-event-helper';
 import * as AlertActions from 'alert/actions';
-import { useFormContext } from 'react-hook-form';
+// import { useForm, FormContext } from 'react-hook-form';
 import debounce from 'lodash.debounce';
 import { openModal } from 'modal/actions';
-import { getPatientsByCriteria, addPatient } from 'api/patient-api';
+import { getPatientsByCriteria } from 'api/patients-api';
+import { addPatient } from 'api/patient-api';
 import { changePatientForTemplateBundle } from 'actions/template-bundle-actions';
 import { noop } from 'helpers/utility-functions';
 import { getCustomerTypeLabel } from 'helpers/customer-type-helper';
 import { capitalize } from 'helpers/capitalize';
+import { selectedTaskSelector } from 'selectors/task-drawer-selectors';
 import SelectDropdown from '../SelectDropdown/SelectDropdown';
 import { getFormattedPatient, getFormattedPatients } from './helpers';
 
@@ -25,15 +27,25 @@ const PatientSection = ({
   disabled,
   placeholder,
   onSave,
-  templateBundleIdentifier,
   isSubtask,
   // eslint-disable-next-line sonarjs/cognitive-complexity
 }) => {
   const dispatch = useDispatch();
   const patientInputReference = useRef(null);
   const [patients, setPatients] = useState([]);
+  const [assignedPatient, setAssignedPatient] = useState(null);
+
+  useEffect(() => {
+    if (selectedPatient) {
+      setPatients([selectedPatient]);
+      setAssignedPatient(getFormattedPatient(selectedPatient));
+    } else {
+      setAssignedPatient(null);
+    }
+  }, [selectedPatient]);
   const [isLoadingPatients, setIsLoadingPatients] = useState(true);
   const currentUser = useSelector(userProfileSelector);
+  const { templateBundleIdentifier } = useSelector(selectedTaskSelector) || {};
 
   const currentOrganizationIdentifier = sessionStorage.getItem(
     'currentOrganizationIdentifier',
@@ -45,30 +57,8 @@ const PatientSection = ({
     ) || {};
 
   const formattedPatients = getFormattedPatients({ patients });
-
-  const { register, unregister, setValue } = useFormContext();
-
   const customerTypeLabel = getCustomerTypeLabel(currentUser);
   const customerTypeLabelCapitalized = capitalize(customerTypeLabel);
-
-  useEffect(() => {
-    register(PATIENT_IDENTIFIER_FIELD_NAME);
-    return () => {
-      unregister(PATIENT_IDENTIFIER_FIELD_NAME);
-      setPatients([]);
-    };
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
-
-  useEffect(() => {
-    if (selectedPatient?.patientIdentifier) {
-      setPatients([selectedPatient]);
-      setValue(
-        PATIENT_IDENTIFIER_FIELD_NAME,
-        selectedPatient.patientIdentifier,
-      );
-    }
-  }, [selectedPatient, setValue]);
 
   useEffect(() => {
     if (patientInputReference?.current && autofocus)
@@ -230,7 +220,7 @@ const PatientSection = ({
                   'UNASSIGNED',
                 ),
               );
-              setValue(PATIENT_IDENTIFIER_FIELD_NAME, null);
+              setAssignedPatient(null);
               setPatients([]);
               await savePatient(null);
               clearInput();
@@ -238,20 +228,15 @@ const PatientSection = ({
           }),
         );
       } else {
-        setValue(PATIENT_IDENTIFIER_FIELD_NAME, null);
+        setAssignedPatient(null);
+
         setPatients([]);
         await savePatient(null);
       }
       // eslint-disable-next-line no-unused-expressions
       patientInputReference.current?.querySelector('input')?.focus();
     },
-    [
-      dispatch,
-      savePatient,
-      selectedPatient,
-      setValue,
-      templateBundleIdentifier,
-    ],
+    [dispatch, savePatient, selectedPatient, templateBundleIdentifier],
   );
 
   const handlePatientSelect = useCallback(
@@ -265,12 +250,12 @@ const PatientSection = ({
         firstName,
         middleName: middleName || '',
       };
-      setValue(PATIENT_IDENTIFIER_FIELD_NAME, patient?.patientIdentifier);
+      setAssignedPatient(patient);
       savePatient(patient);
       // eslint-disable-next-line no-unused-expressions
       patientInputReference.current?.querySelector('input')?.blur();
     },
-    [savePatient, setValue],
+    [savePatient],
   );
 
   const handleAddPatient = useCallback(
@@ -293,7 +278,6 @@ const PatientSection = ({
       addPatient(data)
         .then(async ({ patientIdentifier, firstName, lastName }) => {
           await fetchPatients(patient);
-
           await handlePatientSelect({
             value: patientIdentifier,
             displayLabel: `${lastName}, ${firstName} `,
@@ -315,7 +299,7 @@ const PatientSection = ({
       label={customerTypeLabelCapitalized}
       placeholder={placeholder || `Who is the ${customerTypeLabel}?`}
       disabled={disabled}
-      selectedOption={getFormattedPatient(selectedPatient)}
+      selectedOption={assignedPatient}
       options={formattedPatients}
       isLoadingOptions={isLoadingPatients}
       onInputChange={onPatientInputChange}

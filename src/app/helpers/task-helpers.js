@@ -13,6 +13,7 @@ import {
   isNil,
   unless,
 } from 'ramda';
+import palette from 'styles/palette';
 
 /* eslint-disable import/prefer-default-export */
 export const TaskStatus = {
@@ -25,7 +26,30 @@ export const TaskItemType = {
   TASK: 'TASK',
 };
 
+export const TaskPriority = {
+  NONE: 'NONE',
+  LOW: 'LOW',
+  MEDIUM: 'MEDIUM',
+  HIGH: 'HIGH',
+};
+
+export function getPriorityColor(priority) {
+  switch (priority) {
+    case TaskPriority.HIGH:
+      return palette.tomatoInYoFace;
+    // case TaskPriority.MEDIUM:
+    //   return palette.orangeJulius;
+    // case TaskPriority.LOW:
+    //   return palette.bananaHammock;
+    // case TaskPriority.NONE:
+    case TaskPriority.LOW:
+    default:
+      return 'transparent';
+  }
+}
+
 export const TaskGroupType = {
+  TASKLIST_DEFAULT: 'TASKLIST_DEFAULT',
   TASKLIST: 'TASKLIST',
   BUNDLE: 'TASK_BUNDLE',
 };
@@ -207,17 +231,24 @@ export const TASK_ITEM_SORT_DESC_METHODS = {
 };
 
 export function updateNestedTask(dataToUpdate, taskIdentifier, task) {
-  return {
-    ...task,
-    subtasks: task?.subtasks?.map(subtask =>
-      taskIdentifier === subtask.taskIdentifier
-        ? { ...subtask, ...dataToUpdate }
-        : subtask,
-    ),
-    taskDependencies: task?.taskDependencies?.map(t =>
-      taskIdentifier === t.taskIdentifier ? { ...t, ...dataToUpdate } : t,
-    ),
-  };
+  if (
+    task.subtasks?.some(s => s.taskIdentifier === taskIdentifier) ||
+    task.taskDependencies?.some(s => s.taskIdentifier === taskIdentifier)
+  ) {
+    return {
+      ...task,
+      subtasks: task?.subtasks?.map(subtask =>
+        taskIdentifier === subtask.taskIdentifier
+          ? { ...subtask, ...dataToUpdate }
+          : subtask,
+      ),
+      taskDependencies: task?.taskDependencies?.map(t =>
+        taskIdentifier === t.taskIdentifier ? { ...t, ...dataToUpdate } : t,
+      ),
+    };
+  }
+
+  return task;
 }
 
 export function updateSubtasksInTaskWithCallback(
@@ -225,15 +256,22 @@ export function updateSubtasksInTaskWithCallback(
   taskIdentifier,
   task,
 ) {
-  return {
-    ...task,
-    subtasks: task?.subtasks?.map(subtask =>
-      taskIdentifier === subtask.taskIdentifier
-        ? updateCallback(subtask)
-        : subtask,
-    ),
-    taskDependencies: task?.taskDependencies?.map(t =>
-      taskIdentifier === t.taskIdentifier ? updateCallback(t) : t,
-    ),
-  };
+  if (
+    task.subtasks?.some(s => s.taskIdentifier === taskIdentifier) ||
+    task.taskDependencies?.some(s => s.taskIdentifier === taskIdentifier)
+  ) {
+    return {
+      ...task,
+      subtasks: task?.subtasks?.map(subtask =>
+        taskIdentifier === subtask.taskIdentifier
+          ? updateCallback(subtask)
+          : subtask,
+      ),
+      taskDependencies: task?.taskDependencies?.map(t =>
+        taskIdentifier === t.taskIdentifier ? updateCallback(t) : t,
+      ),
+    };
+  }
+
+  return task;
 }

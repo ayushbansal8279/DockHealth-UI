@@ -1,19 +1,18 @@
 /* eslint-disable react/no-array-index-key */
+import { Box } from '@material-ui/core';
+import { Skeleton } from '@material-ui/lab';
 import Spacing from 'components/common/Spacing';
 import React from 'react';
-import {
-  LoaderElement,
-  LoaderFillElement,
-  LoaderRow,
-  CircleLoaderElement,
-} from './styled';
+import { LoaderElement, LoaderRow } from './styled';
 
 const TasksSkeletonLoader = ({ rows = 1 }) => {
   return (
     <>
       {new Array(rows).fill().map((_, rowIndex) => (
         <LoaderRow key={rowIndex}>
-          <LoaderFillElement />
+          <Box flex={1}>
+            <LoaderElement />
+          </Box>
           <Spacing horizontal={4} />
           <LoaderElement width={134} />
           <Spacing horizontal={4} />
@@ -21,7 +20,7 @@ const TasksSkeletonLoader = ({ rows = 1 }) => {
           <Spacing horizontal={4} />
           <LoaderElement width={191} />
           <Spacing horizontal={4} />
-          <CircleLoaderElement />
+          <Skeleton variant="circle" width={28} height={28} />
         </LoaderRow>
       ))}
     </>

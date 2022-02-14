@@ -12,22 +12,23 @@ const Tooltip = ({
 }) => {
   const classes = useTooltipStyles({ hideTooltip: hideTooltip || !title });
 
-  return (
+  return title ? (
     <MuiTooltip
       title={title}
       placement={placement}
       arrow={arrow}
       classes={classes}
-      disablePortal
     >
       {children}
     </MuiTooltip>
+  ) : (
+    children
   );
 };
 
 Tooltip.propTypes = {
   children: node.isRequired,
-  title: oneOfType([string, node]).isRequired,
+  title: oneOfType([string, node]),
   placement: oneOf([
     'bottom-end',
     'bottom-start',
@@ -47,6 +48,7 @@ Tooltip.propTypes = {
 };
 
 Tooltip.defaultProps = {
+  title: null,
   placement: 'bottom',
   arrow: true,
   hideTooltip: false,

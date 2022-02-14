@@ -13,6 +13,7 @@ const LinkPath = props => {
     targetY,
     targetPosition,
     markerEndId,
+    onClick,
   } = props;
   let sourcePos = sourcePosition;
   let targetPos = targetPosition;
@@ -43,6 +44,7 @@ const LinkPath = props => {
       className="react-flow__edge-path"
       d={edgePath}
       markerEnd={markerEnd}
+      onClick={onClick}
     />
   );
 };

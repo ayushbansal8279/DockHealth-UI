@@ -21,7 +21,6 @@ const ListDetailsCompletedTasks = ({
   hasMoreTasks,
   isFetchingMoreTasks,
   isFetchingData,
-  updateDueDate,
   dragAndDropDisabled,
   isSearchApplied,
   areFiltersApplied,
@@ -31,6 +30,7 @@ const ListDetailsCompletedTasks = ({
   loadMoreTasksForList,
   sort,
   onSortChange,
+  viewSetup,
   // eslint-disable-next-line sonarjs/cognitive-complexity
 }) => {
   const renderEmptyState = () => {
@@ -40,8 +40,8 @@ const ListDetailsCompletedTasks = ({
 
     return (
       <EmptyListView
-        title="This list has no tasks"
-        description="Be the first to add a task to this list!"
+        title="There are no completed tasks"
+        description=""
         image={EmptyTaskListBear}
       />
     );
@@ -63,7 +63,6 @@ const ListDetailsCompletedTasks = ({
                 groupPagination
                 hasMoreTasks={hasMoreTasks}
                 isFetchingMoreTasks={isFetchingMoreTasks}
-                updateDueDate={updateDueDate}
                 quickAddTaskVisible={false}
                 onTaskUpdate={onTaskUpdate}
                 areFiltersApplied={areFiltersApplied}
@@ -108,11 +107,9 @@ const ListDetailsCompletedTasks = ({
                           isCompletedGroup={isCompletedGroup}
                           toggleCompleteTask={toggleCompleteTask}
                           onTaskUpdate={onTaskUpdate}
-                          updateDueDate={updateDueDate}
                           dragAndDropDisabled={
                             isCompletedGroup || dragAndDropDisabled
                           }
-                          selectedTask={selectedTask}
                           addingNewSubtask={
                             addingNewSubtaskParentId === task.identifier
                           }
@@ -129,6 +126,8 @@ const ListDetailsCompletedTasks = ({
                         />
                       ) : (
                         <TaskTemplateGroup
+                          key={task.identifier}
+                          viewSetup={viewSetup}
                           templateGroup={task}
                           groupHasMultipleAssignees={groupHasMultipleAssignees}
                           isFullView={isFullView}

@@ -115,14 +115,10 @@ export function updateUsersInGroupSuccess(userGroupIdentifier, users) {
   };
 }
 
-export function updateUsersInGroupFailure(
-  userGroupIdentifier,
-  usersIdentifiers,
-) {
+export function updateUsersInGroupFailure(userGroupIdentifier) {
   return {
-    type: ActionTypes.UPDATE_USERS_IN_GROUP,
+    type: ActionTypes.UPDATE_USERS_IN_GROUP_FAILURE,
     userGroupIdentifier,
-    usersIdentifiers,
   };
 }
 

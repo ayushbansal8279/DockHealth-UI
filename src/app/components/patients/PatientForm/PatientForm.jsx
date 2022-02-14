@@ -3,7 +3,10 @@ import { useSelector } from 'react-redux';
 import { Box } from '@material-ui/core';
 import { useHistory } from 'react-router-dom';
 import { CUSTOM_FIELDS_SETTINGS_PATH } from 'routing/helpers/paths';
-import { userProfileSelector } from 'selectors/user-selectors';
+import {
+  userProfileSelector,
+  userHasPatientCustomFieldsFeatureSelector,
+} from 'selectors/user-selectors';
 import { groupBy, prop, compose, sortBy } from 'ramda';
 import { useFormContext } from 'react-hook-form';
 import { capitalize } from 'helpers/capitalize';
@@ -13,16 +16,16 @@ import FormInput from 'components/common/Input/FormInput';
 import FormPhoneNumberInput from 'components/common/PhoneNumberInput/FormPhoneNumberInput';
 import FormSelect from 'components/common/Select/FormSelect';
 import DateInput from 'components/common/DateInput/DateInput';
-import CustomField from 'components/patients/CustomField/CustomField';
+import CustomField from 'components/common/CustomField/CustomField';
 import Button from 'components/common/Button/Button';
 import Spacing from 'components/common/Spacing';
 import AddButton from 'components/common/AddButton/AddButton';
 import { Category, CategoryLabel } from 'helpers/patient-details-helpers';
 import moment from 'moment';
 import { useBoolean } from 'hooks/useBoolean';
-import { HideableContainer } from './styled';
+import CategoryOptions from 'components/common/CategoryOptions/CategoryOptions';
+import { HidableContainer } from './styled';
 import { formatMetaDataOutput, GENDER_OPTIONS } from './helpers';
-import CategoryOptions from './CategoryOptions';
 
 const groupByCategory = groupBy(prop('fieldCategoryType'));
 
@@ -55,6 +58,10 @@ const PatientForm = forwardRef(
 
     const isAdmin = orgUserRole === 'ADMIN' || orgUserRole === 'OWNER';
 
+    const patientCustomFieldsAvailable = useSelector(
+      userHasPatientCustomFieldsFeatureSelector,
+    );
+
     useEffect(() => {
       CustomFieldsApi.getAllPatientCustomFields(
         true,
@@ -75,7 +82,7 @@ const PatientForm = forwardRef(
             field.identifier === customFieldIdentifier,
         );
         return (
-          <HideableContainer
+          <HidableContainer
             key={field.identifier}
             visibility={!showEmpty && !initialFieldValue?.value}
           >
@@ -84,12 +91,16 @@ const PatientForm = forwardRef(
               readOnly={readOnly}
               field={field}
               initialValue={initialFieldValue}
+              fieldsGroupKey="patientMetaData"
             />
-          </HideableContainer>
+          </HidableContainer>
         );
       },
       [patient, readOnly],
     );
+
+    const handleAddButtonClick = () =>
+      history.push(`${CUSTOM_FIELDS_SETTINGS_PATH}/patient`);
 
     return (
       <form
@@ -157,7 +168,8 @@ const PatientForm = forwardRef(
           <CategoryOptions
             visibility={emptyPersonalVisible}
             onToggle={toggleEmptyPersonal}
-            isAdmin={isAdmin}
+            showAddButton={isAdmin && patientCustomFieldsAvailable}
+            onAddButtonClick={handleAddButtonClick}
           />
         </LabeledCollapse>
         <LabeledCollapse
@@ -193,7 +205,8 @@ const PatientForm = forwardRef(
           <CategoryOptions
             visibility={emptyContactsVisible}
             onToggle={toggleEmptyContacts}
-            isAdmin={isAdmin}
+            showAddButton={isAdmin && patientCustomFieldsAvailable}
+            onAddButtonClick={handleAddButtonClick}
           />
         </LabeledCollapse>
         {customFields?.[Category.OTHER_INFO]?.length > 0 && (
@@ -215,16 +228,15 @@ const PatientForm = forwardRef(
             <CategoryOptions
               visibility={emptyOtherVisible}
               onToggle={toggleEmptyOther}
-              isAdmin={isAdmin}
+              showAddButton={isAdmin && patientCustomFieldsAvailable}
+              onAddButtonClick={handleAddButtonClick}
             />
           </LabeledCollapse>
         )}
         <Box display="flex" justifyContent="space-between">
           <div>
-            {isAdmin && (
-              <AddButton
-                onClick={() => history.push(CUSTOM_FIELDS_SETTINGS_PATH)}
-              >
+            {isAdmin && patientCustomFieldsAvailable && (
+              <AddButton onClick={handleAddButtonClick}>
                 Add or edit fields
               </AddButton>
             )}

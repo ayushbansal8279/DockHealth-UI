@@ -10,9 +10,15 @@ import React, {
 import { useSelector, useDispatch } from 'react-redux';
 import { isNil, pluck } from 'ramda';
 import { Grid } from '@material-ui/core';
+import MoreVert from '@material-ui/icons/MoreVert';
 import ArrowIcon from 'img/arrow';
 import * as TaskActions from 'actions/task-actions';
 import { checkIfAllTasksSelected } from 'helpers/bulk-edit-helpers';
+import { closeModal, openModal } from 'modal/actions';
+import {
+  changeTaskListGroupName,
+  deleteTaskListGroup,
+} from 'actions/list-details-actions';
 import {
   onSlimViewChanged,
   onTaskGroupCollapsed,
@@ -27,9 +33,12 @@ import GroupNameSection from 'components/tasklist/GroupNameSection/GroupNameSect
 import ViewTypeSwitch, {
   ViewType,
 } from 'components/tasklist/ViewTypeSwitch/ViewTypeSwitch';
+import OptionsMenu from 'components/common/OptionsMenu/OptionsMenu';
+import palette from 'styles/palette';
 import TaskTemplateApplicator from 'components/task-template/TaskTemplateApplicator/TaskTemplateApplicator';
 import { addingNewSubtaskParentIdSelector } from 'selectors/task-drawer-selectors';
-import TasksGroupHeaderActionButtons from './TasksGroupHeaderActionButtons';
+
+import StickyContainer from 'components/common/HorizontalScroll/StickyContainer';
 import {
   TasksGroupContainer,
   TasksGroupHeader,
@@ -38,6 +47,7 @@ import {
   GroupNameSectionWrapper,
   TasksGroupLabelName,
   TasksGroupLabelCounter,
+  GroupOptionsContainer,
 } from './styled';
 import TasksHeader from '../TasksHeader/TasksHeader';
 
@@ -47,9 +57,7 @@ const TasksGroup = ({
   isLastGroup,
   groupName,
   groupTaskCounts,
-  editGroupName,
   quickAddTask,
-  deleteGroup,
   moveGroupUp,
   moveGroupDown,
   tasks,
@@ -65,7 +73,6 @@ const TasksGroup = ({
   sort,
   onSortChange,
   onTaskGroupViewModeChange,
-  taskItemConfig,
   applyTemplate,
   groupPagination,
   isFetchingMoreTasks,
@@ -106,25 +113,14 @@ const TasksGroup = ({
     areFiltersApplied ||
     (!!sort?.key && !['PATIENT', 'SUBTASK_COUNT'].includes(sort.key));
 
-  const onGroupNameSectionClick = useCallback(
-    newGroupName => editGroupName(newGroupName, taskGroupIdentifier),
-    [editGroupName, taskGroupIdentifier],
-  );
-
-  const onDeleteGroup = useCallback(() => deleteGroup(taskGroupIdentifier), [
-    deleteGroup,
-    taskGroupIdentifier,
-  ]);
-
   useEffect(() => {
-    // default close if lazy loaded and open if tasks
-    if (groupTaskCounts > 0 && tasks?.length === 0) {
-      switchOpen(false);
-    }
-    if (groupTaskCounts > 0 && tasks?.length > 0) {
+    if (
+      isDefaultGroup ||
+      ((groupTaskCounts > 0 || isCompletedGroup) && tasks?.length > 0)
+    ) {
       switchOpen(true);
     }
-  }, [groupTaskCounts, tasks, switchOpen]);
+  }, [groupTaskCounts, tasks, isCompletedGroup, isDefaultGroup, switchOpen]);
 
   const onQuickAddTask = useCallback(
     task => {
@@ -141,7 +137,11 @@ const TasksGroup = ({
       showMoreTasks();
     }
     onSwitchOpen();
-  }, [isOpen, groupTaskCounts, tasks, onSwitchOpen, showMoreTasks]);
+  }, [tasks, isOpen, groupTaskCounts, onSwitchOpen, showMoreTasks]);
+
+  useEffect(() => {
+    if (groupTaskCounts === 0 && !isLoadingGroup) switchOpen(true);
+  }, [isLoadingGroup, switchOpen, tasks, groupTaskCounts]);
 
   const highlightTasksOfTheSameParent = useCallback(parentTaskIdentifier => {
     if (highlightTimeoutReference.current)
@@ -195,7 +195,7 @@ const TasksGroup = ({
   const handleTemplateSelect = useCallback(
     template => {
       applyTemplate({
-        taskTemplateIdentifier: template?.taskTemplateIdentifier,
+        taskTemplateIdentifier: template?.identifier,
         taskGroupIdentifier,
       });
     },
@@ -221,69 +221,120 @@ const TasksGroup = ({
     return null;
   };
 
+  const handleDeleteGroup = useCallback(() => {
+    const modalProps = {
+      title: 'Delete group',
+      description:
+        'Are you sure you want to delete this group? If you delete this group and there are tasks within the group, the tasks will not be deleted',
+      confirm: () => {
+        dispatch(closeModal());
+        dispatch(deleteTaskListGroup(taskGroupIdentifier));
+      },
+    };
+    dispatch(openModal('DeleteConfirmation', modalProps));
+  }, [dispatch, taskGroupIdentifier]);
+
+  const handleEditGroupName = useCallback(
+    newGroupName => {
+      if (newGroupName) {
+        dispatch(changeTaskListGroupName(taskGroupIdentifier, newGroupName));
+      }
+    },
+    [dispatch, taskGroupIdentifier],
+  );
+
+  const options = useMemo(
+    () => [
+      !isFirstGroup && {
+        name: 'Move up',
+        onClick: moveGroupUp,
+      },
+      !isLastGroup && {
+        name: 'Move down',
+        onClick: moveGroupDown,
+      },
+      !isDefaultGroup && {
+        name: 'Delete',
+        color: palette.red,
+        onClick: handleDeleteGroup,
+      },
+    ],
+    [
+      isDefaultGroup,
+      isFirstGroup,
+      isLastGroup,
+      moveGroupDown,
+      moveGroupUp,
+      handleDeleteGroup,
+    ],
+  );
+
   return (
     <TasksGroupContainer>
-      <TasksGroupHeader>
-        <Arrow
-          alt="arrow"
-          isOpen={isOpen}
-          onClick={onToggleGroupOpen}
-          src={ArrowIcon}
-        />
-        <GroupNameSectionWrapper>
-          <GroupNameSection
-            initialValue={groupName}
-            onEnterClick={onGroupNameSectionClick}
-            closeOnEnter
-            disabled={isDefaultGroup || isCompletedGroup || !editGroupName}
-          >
-            <TasksGroupLabel>
-              <TasksGroupLabelName>{groupName}</TasksGroupLabelName>
-              {!isSearchApplied &&
-                !areFiltersApplied &&
-                !isNil(groupTaskCounts) && (
-                  <TasksGroupLabelCounter>
-                    ({groupTaskCounts})
-                  </TasksGroupLabelCounter>
-                )}
-            </TasksGroupLabel>
-          </GroupNameSection>
-        </GroupNameSectionWrapper>
-        {!isCompletedGroup && (
-          <TasksGroupHeaderActionButtons
-            isDefaultGroup={isDefaultGroup}
-            isFirstGroup={isFirstGroup}
-            isLastGroup={isLastGroup}
-            moveGroupUp={moveGroupUp}
-            moveGroupDown={moveGroupDown}
-            deleteGroup={onDeleteGroup}
+      <StickyContainer left={24} decreaseWidth={2 * 24}>
+        <TasksGroupHeader>
+          {!isCompletedGroup && (
+            <GroupOptionsContainer>
+              <OptionsMenu options={options} placement="bottom-start">
+                <MoreVert color="primary" />
+              </OptionsMenu>
+            </GroupOptionsContainer>
+          )}
+          <Arrow
+            alt="arrow"
+            isOpen={isOpen}
+            onClick={onToggleGroupOpen}
+            src={ArrowIcon}
           />
-        )}
-        {!changingGroupOrderDisabled && (
-          <ViewTypeSwitch value={viewType} onChange={changeViewType} />
-        )}
-      </TasksGroupHeader>
+          <GroupNameSectionWrapper>
+            <GroupNameSection
+              initialValue={groupName}
+              onEnterClick={handleEditGroupName}
+              closeOnEnter
+              disabled={isDefaultGroup || isCompletedGroup}
+            >
+              <TasksGroupLabel>
+                <TasksGroupLabelName>{groupName}</TasksGroupLabelName>
+                {!isSearchApplied &&
+                  !areFiltersApplied &&
+                  !isNil(groupTaskCounts) && (
+                    <TasksGroupLabelCounter>
+                      ({groupTaskCounts})
+                    </TasksGroupLabelCounter>
+                  )}
+              </TasksGroupLabel>
+            </GroupNameSection>
+          </GroupNameSectionWrapper>
+          {!changingGroupOrderDisabled && (
+            <ViewTypeSwitch value={viewType} onChange={changeViewType} />
+          )}
+        </TasksGroupHeader>
+      </StickyContainer>
+
       <Tasks timeout={150} in={isOpen}>
         {!!quickAddTask && !isSearchApplied && (
-          <Grid container>
-            <Grid item xs>
-              <QuickAddTaskInput
-                taskListIdentifier={taskListIdentifier}
-                quickAddTask={onQuickAddTask}
-                validator={quickTaskInputValidator}
-              />
+          <StickyContainer left={24} decreaseWidth={2 * 24}>
+            <Grid container>
+              <Grid item xs>
+                <QuickAddTaskInput
+                  taskListIdentifier={taskListIdentifier}
+                  quickAddTask={onQuickAddTask}
+                  validator={quickTaskInputValidator}
+                />
+              </Grid>
+              {applyTemplate && (
+                <TaskTemplateApplicator
+                  onTemplateSelect={handleTemplateSelect}
+                />
+              )}
             </Grid>
-            {applyTemplate && (
-              <TaskTemplateApplicator onTemplateSelect={handleTemplateSelect} />
-            )}
-          </Grid>
+          </StickyContainer>
         )}
         {(tasks?.length > 0 || isLoadingGroup) && (
           <TasksHeader
             bulkEditEnabled={bulkEditEnabled}
             sort={sort}
             onSortChange={onSortChange}
-            taskItemConfig={taskItemConfig}
             groupHasMultipleAssignees={groupHasMultipleAssignees}
             isGroupSelected={isGroupSelected}
             onGroupSelect={handleGroupSelect}

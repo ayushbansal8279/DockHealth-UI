@@ -6,6 +6,7 @@ import { Link } from 'react-router-dom';
 import { MontserratTypography } from 'styles/theme-montserrat';
 import { approveOrDenyInvitation } from 'actions/user-actions';
 import Spacing from 'components/common/Spacing';
+import { USERS_SETTINGS_PATH } from 'routing/helpers/paths';
 
 const TitleContent = styled(MontserratTypography)`
   font-size: 36px !important;
@@ -83,7 +84,7 @@ const ApproveDisapproveUser = ({ match }) => {
       <TitleContent>{title}</TitleContent>
       <Spacing vertical={4} />
       <MontserratTypography>
-        {description} <Link to="/settings/subscriptions">{actionText}</Link>
+        {description} <Link to={USERS_SETTINGS_PATH}>{actionText}</Link>
       </MontserratTypography>
     </Container>
   );

@@ -1,57 +1,8 @@
 /* eslint-disable eqeqeq */
 /* eslint-disable sonarjs/no-identical-functions */
+import moment from 'moment';
 import { noop, showAlert } from 'helpers/utility-functions';
 import axios from './axios-heydoc';
-import URLS from '../urls';
-
-export function getTaskStatsForUser(userIdentifier) {
-  return axios
-    .get(`/task/stats/getTaskStatsForUser/${userIdentifier}`)
-    .then(({ data }) => data)
-    .catch(error => {
-      throw error;
-    });
-}
-
-export function getListTasksGroupedByTaskGroup(
-  taskListIdentifier,
-  status = 'INCOMPLETE',
-  sortBy,
-  startPosition = 0,
-  endPosition = 0,
-  viewMode,
-) {
-  return axios
-    .get(`task/findListTasksGroupedByTaskGroup/${taskListIdentifier}`, {
-      params: {
-        status,
-        startPosition,
-        endPosition,
-        sortBy: sortBy?.key || undefined,
-        sortDirection: sortBy?.order || undefined,
-        viewMode: viewMode || undefined,
-      },
-    })
-    .then(response => response?.data)
-    .catch(error => {
-      throw error;
-    });
-}
-
-export function getTasksAssignedToSpecificUser(userIdentifier, sortBy, status) {
-  return axios
-    .get(`task/findTasksAssignedToSpecificUser?userId=${userIdentifier}`, {
-      params: {
-        status,
-        sortBy: sortBy?.key || undefined,
-        sortDirection: sortBy?.order || undefined,
-      },
-    })
-    .then(response => response.data)
-    .catch(error => {
-      throw error;
-    });
-}
 
 export function searchTasks(
   searchTerm,
@@ -203,21 +154,6 @@ export function updateTaskDescription(task, description) {
     });
 }
 
-export function updateTaskDetails(task, details) {
-  return axios
-    .put(`task/${task.taskIdentifier}`, {
-      ...task,
-      patientIdentifier: task?.patient?.patientIdentifier,
-      details,
-    })
-    .then(response => {
-      return response.data;
-    })
-    .catch(error => {
-      throw new Error(error?.response?.data?.errorMessage);
-    });
-}
-
 export const updateDueDate = (taskIdentifier, dueDate) => {
   return axios
     .put(
@@ -225,7 +161,9 @@ export const updateDueDate = (taskIdentifier, dueDate) => {
       {},
       {
         params: {
-          dueDate: dueDate ? dueDate.format('MM/DD/YYYY HH:mm:ss ZZ') : null,
+          dueDate: dueDate
+            ? moment(dueDate).format('MM/DD/YYYY HH:mm:ss ZZ')
+            : null,
         },
       },
     )
@@ -249,28 +187,6 @@ export const updateWorkflowStatus = (taskIdentifier, workflowStatus) =>
       `task/updateTaskWorkflowStatus/${taskIdentifier}?workflowStatus=${workflowStatus}`,
     )
     .catch(error => error?.response?.data);
-
-export function markHighPriority(taskIdentifier) {
-  return axios
-    .put(`task/changePriority/${taskIdentifier}?priorityLevel=HIGH`)
-    .then(response => {
-      return response;
-    })
-    .catch(error => {
-      throw error;
-    });
-}
-
-export function markLowPriority(taskIdentifier) {
-  return axios
-    .put(`task/changePriority/${taskIdentifier}?priorityLevel=LOW`)
-    .then(response => {
-      return response;
-    })
-    .catch(error => {
-      throw error;
-    });
-}
 
 export function assignOrReassignTask(task, assignedToUserIdentifier) {
   const { taskIdentifier } = task;
@@ -300,9 +216,6 @@ export function addComment(taskIdentifier, taskComment) {
     .post(`task/comment/${taskIdentifier}`, taskComment)
     .then(response => {
       return response;
-    })
-    .catch(error => {
-      throw error;
     });
 }
 
@@ -449,101 +362,13 @@ export const reassignTasksToAnotherGroup = (
   taskIdentifiers,
 ) =>
   axios
-    .put(URLS.tasks.reassignTasks(taskGroupIdentifier), {
+    .put(`task/group/assignTasksToTaskGroup/${taskGroupIdentifier}`, {
       taskIdentifiers,
     })
     .then(({ data }) => data)
     .catch(error => {
       throw error;
     });
-
-export function getFilteredTasksForList(
-  taskListIdentifier,
-  status = 'INCOMPLETE',
-  sortBy,
-  selectedFilters,
-) {
-  return axios
-    .post(
-      `task/filter/filterSpecificTasksByCriteria/${taskListIdentifier}`,
-      selectedFilters,
-      {
-        params: {
-          status,
-          sortBy: sortBy?.key || undefined,
-          sortDirection: sortBy?.order || undefined,
-        },
-      },
-    )
-    .then(({ data }) => data)
-    .catch(error => {
-      throw error;
-    });
-}
-
-export function getFilteredTasksForPersonList(
-  userIdentifier,
-  sortBy,
-  selectedFilters,
-  status = 'INCOMPLETE',
-) {
-  return axios
-    .post(
-      `/task/filter/filterTasksByCriteriaForAssignedToUser/${userIdentifier}`,
-      selectedFilters,
-      {
-        params: {
-          status,
-          sortBy: sortBy?.key || undefined,
-          sortDirection: sortBy?.order || undefined,
-        },
-      },
-    )
-    .then(({ data }) => data)
-    .catch(error => {
-      throw error;
-    });
-}
-
-export function getTasksForTaskListByTaskGroup(
-  taskListIdentifier,
-  taskGroupIdentifier,
-  status,
-  startPosition = 0,
-  endPosition = 0,
-  sort,
-  viewMode,
-) {
-  return axios
-    .get(
-      `/task/findListTasksByTaskGroup/${taskListIdentifier}/${taskGroupIdentifier}`,
-      {
-        params: {
-          status,
-          startPosition,
-          endPosition,
-          sortBy: sort?.key || undefined,
-          sortDirection: sort?.order || undefined,
-          viewMode: viewMode || undefined,
-        },
-      },
-    )
-    .then(({ data }) => data)
-    .catch(error => {
-      throw error;
-    });
-}
-
-export function searchTasksByTaskList(taskListIdentifier, searchTerm, status) {
-  return axios
-    .get(
-      `/task/searchTasksByTaskList/${taskListIdentifier}?searchTerm=${searchTerm}&status=${status}`,
-    )
-    .then(response => response.data)
-    .catch(error => {
-      throw new Error(error?.response?.data?.errorMessage);
-    });
-}
 
 export const bulkEditTasks = bulkEditOption =>
   axios.put('/task/bulkEdit', bulkEditOption).then(({ data }) => data);

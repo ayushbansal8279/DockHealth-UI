@@ -1,5 +1,5 @@
 /* eslint-disable react-hooks/rules-of-hooks */
-import { useState } from 'react';
+import { useState, useCallback } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { prop } from 'ramda';
 import { checkIfTemplateTask } from 'helpers/task-helpers';
@@ -13,6 +13,8 @@ import {
 } from 'api/task-label-api';
 import { selectedTaskSelector } from 'selectors/task-drawer-selectors';
 import { refreshTask } from 'actions/task-actions';
+import AlertMessages from 'alert/AlertMessages';
+import * as AlertActions from 'alert/actions';
 import { getFormattedLabels } from './helpers';
 
 const labelAddOrRemovePromise = ({
@@ -54,18 +56,18 @@ const labelAddOrRemovePromise = ({
 };
 
 const initializeLabelsSectionHooks = ({
-  setAutoSaveVisible,
-  setSelectedLabelsValue,
   onTaskUpdate,
-  parentFormSubmit,
+  formMethods: { setValue, clearError },
 }) => {
   const dispatch = useDispatch();
   const selectedTask = useSelector(selectedTaskSelector);
-
   const isTemplateTask = checkIfTemplateTask(selectedTask);
-
   const [availableLabels, setAvailableLabels] = useState([]);
   const [isLoadingLabels, setIsLoadingLabels] = useState(false);
+
+  const setAutoSaveVisible = useCallback(() => {
+    dispatch(AlertActions.showSideBarAlert(AlertMessages.SAVED));
+  }, [dispatch]);
 
   const refreshLabels = async () => {
     setIsLoadingLabels(true);
@@ -77,13 +79,14 @@ const initializeLabelsSectionHooks = ({
 
     setAvailableLabels(freshLabels);
     setIsLoadingLabels(false);
+    clearError();
+    setValue(
+      'labels',
+      getFormattedLabels({ labels: selectedTask?.labels ?? [] }),
+    );
 
     const refreshedTask = await refreshTask(selectedTask.identifier)(dispatch);
 
-    setSelectedLabelsValue(
-      'labels',
-      getFormattedLabels({ labels: refreshedTask?.labels ?? [] }),
-    );
     onTaskUpdate(refreshedTask);
   };
 
@@ -199,12 +202,6 @@ const initializeLabelsSectionHooks = ({
     refreshLabels();
   };
 
-  const saveTaskOnFocus = async () => {
-    if (!selectedTask || !selectedTask.taskIdentifier) {
-      parentFormSubmit();
-    }
-  };
-
   return {
     labels: availableLabels,
     isLoadingLabels,
@@ -215,7 +212,6 @@ const initializeLabelsSectionHooks = ({
     removeLabelFromTask,
     refreshLabels,
     deleteLabel,
-    saveTaskOnFocus,
   };
 };
 

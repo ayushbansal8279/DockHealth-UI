@@ -1,7 +1,4 @@
-/* eslint-disable import/prefer-default-export */
-import { isEmpty } from 'ramda';
 import { getFiltersFromLocalStorage } from 'helpers/mega-filter-helper';
-import * as MegaFilterApi from 'api/mega-filter-api';
 import * as ActionTypes from './action-types';
 
 export function clearFiltersForMegaFilter() {
@@ -16,50 +13,14 @@ export function selectFiltersFromLocalStorage(id, status) {
 
     dispatch({
       type: ActionTypes.SELECT_FILTERS_FROM_MEGA_FILTER,
-      selectedFilters: initialFilters || [],
+      selectedFilters: initialFilters || {},
     });
-  };
-}
-
-export function getFiltersForMegaFilter(listId, status) {
-  return dispatch => {
-    dispatch({ type: ActionTypes.FETCH_MEGA_FILTERS_REQUEST });
-
-    MegaFilterApi.getFiltersForTaskListMegaFilter(listId, status)
-      .then(data => {
-        dispatch(selectFiltersFromLocalStorage(listId, status));
-        dispatch({
-          type: ActionTypes.FETCH_MEGA_FILTERS_SUCCESS,
-          filters: data,
-        });
-      })
-      .catch(error => {
-        dispatch({ type: ActionTypes.FETCH_MEGA_FILTERS_FAILURE, error });
-      });
-  };
-}
-
-export function getFiltersForPeopleListMegaFilter(userId, status) {
-  return dispatch => {
-    dispatch({ type: ActionTypes.FETCH_MEGA_FILTERS_REQUEST });
-
-    MegaFilterApi.getFiltersForPeopleListMegaFilter(userId, status)
-      .then(data => {
-        dispatch(selectFiltersFromLocalStorage(userId, status));
-        dispatch({
-          type: ActionTypes.FETCH_MEGA_FILTERS_SUCCESS,
-          filters: data,
-        });
-      })
-      .catch(error => {
-        dispatch({ type: ActionTypes.FETCH_MEGA_FILTERS_FAILURE, error });
-      });
   };
 }
 
 export function selectFiltersForMegaFilter(selectedFilters, id, status) {
   return dispatch => {
-    if (isEmpty(selectedFilters)) {
+    if (!selectedFilters) {
       sessionStorage.removeItem(`filter-${id}-${status}`);
     } else {
       sessionStorage[`filter-${id}-${status}`] = JSON.stringify(
@@ -70,6 +31,51 @@ export function selectFiltersForMegaFilter(selectedFilters, id, status) {
     dispatch({
       type: ActionTypes.SELECT_FILTERS_FROM_MEGA_FILTER,
       selectedFilters,
+      id,
+      status,
     });
   };
 }
+
+export const getQuickFilters = viewSpecificData => ({
+  type: ActionTypes.GET_QUICK_FILTERS,
+  viewSpecificData,
+});
+
+export const createQuickFilter = (name, viewSpecificData, selectedOptions) => {
+  return {
+    type: ActionTypes.CREATE_QUICK_FILTER,
+    name,
+    viewSpecificData,
+    selectedOptions,
+  };
+};
+
+export const updateQuickFilter = (
+  quickFilterIdentifier,
+  dataToUpdate,
+  viewSpecificData,
+) => ({
+  type: ActionTypes.UPDATE_QUICK_FILTER,
+  dataToUpdate,
+  quickFilterIdentifier,
+  viewSpecificData,
+});
+
+export const deleteQuickFilter = quickFilterIdentifier => ({
+  type: ActionTypes.DELETE_QUICK_FILTER,
+  quickFilterIdentifier,
+});
+
+export const selectQuickFilter = quickFilterIdentifier => ({
+  type: ActionTypes.SELECT_QUICK_FILTER,
+  quickFilterIdentifier,
+});
+
+export const showAddQuickFilterOption = () => ({
+  type: ActionTypes.SHOW_ADD_QUICK_FILTER_OPTION,
+});
+
+export const cleanClickFilter = () => ({
+  type: ActionTypes.CLEAN_QUICK_FILTER,
+});

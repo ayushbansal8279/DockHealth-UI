@@ -19,7 +19,6 @@ import OnboardingInviteConfirmationModal from './components/OnboardingInviteConf
 import ArchiveUserModal from './components/ArchiveUserModal/ArchiveUserModal';
 import SelectOwnerModal from './components/SelectOwnerModal/SelectOwnerModal';
 import MentionsTourModal from './components/NewFeaturesModals/MentionsTourModal/MentionsTourModal';
-import TrialExpirationModal from './components/TrialExpirationModal/TrialExpirationModal';
 import NotificationSettingsTourModal from './components/NewFeaturesModals/NotificationSettingsTourModal/NotificationSettingsTourModal';
 import AutoLogoutModal from './components/AutoLogoutModal/AutoLogoutModal';
 import TaskDensityTourModal from './components/NewFeaturesModals/TaskDensityTourModal/TaskDensityTourModal';
@@ -37,6 +36,7 @@ import BulkCompleteTasksModal from './components/BulkCompleteTasksModal/BulkComp
 import MoveTasksWithSubtasksModal from './components/MoveTasksWithSubtasksModal/MoveTasksWithSubtasksModal';
 import SendingInviteModal from './components/SendingInviteModal/SendingInviteModal';
 import CreateTemplateModal from './components/CreateTemplateModal/CreateTemplateModal';
+import CreateSmartFlowModal from './components/CreateSmartFlowModal/CreateSmartFlowModal';
 import CreateTemplateFolderModal from './components/CreateTemplateFolderModal/CreateTemplateFolderModal';
 import HomeScreenDragDropModal from './components/HomeScreenDragDropModal/HomeScreenDragDropModal';
 import SelectTaskDestinationModal from './components/SelectDestinationModal/SelectTaskDestinationModal';
@@ -47,12 +47,13 @@ import UnassignPatientModal from './components/UnassignPatientModal/UnassignPati
 import EditPatientListModal from './components/EditPatientListModal/EditPatientListModal';
 import AddPatientToListModal from './components/AddPatientToListModal/AddPatientToListModal';
 import InterruptEditModal from './components/InterruptEditModal/InterruptEditModal';
-import EditCustomPatientFieldModal from './components/EditCustomPatientFieldModal/EditCustomPatientFieldModal';
+import EditCustomFieldModal from './components/EditCustomFieldModal/EditCustomFieldModal';
 import DeleteConfirmationModal from './components/DeleteConfirmationModal/DeleteConfirmationModal';
 import EditUserGroupModal from './components/EditUserGroupModal/EditUserGroupModal';
 import AddUserToGroupModal from './components/AddUserToGroupModal/AddUserToGroupModal';
 import DeleteTaskConfirmationModal from './components/DeleteTaskConfirmationModal/DeleteTaskConfirmationModal';
 import InformationModal from './components/InformationModal/InformationModal';
+import UnassignTaskTemplateModal from './components/UnassignTaskTemplateModal/UnassignTaskTemplateModal';
 
 const MODAL_MAP = {
   CompleteAllTasks: CompleteAllTasksModal,
@@ -87,13 +88,13 @@ const MODAL_MAP = {
   PatientProfileTour: PatientProfileTourModal,
   PatientCustomFieldTour: PatientCustomFieldTourModal,
   MultiMentionAssignTour: MultiMentionAssignTourModal,
-  TrialExpiration: TrialExpirationModal,
   AutoLogout: AutoLogoutModal,
   ReferAColleague: ReferAColleagueModal,
   BulkCompleteTasks: BulkCompleteTasksModal,
   MoveTasksWithSubtasks: MoveTasksWithSubtasksModal,
   SendingInvite: SendingInviteModal,
   CreateTemplate: CreateTemplateModal,
+  CreateSmartFlow: CreateSmartFlowModal,
   CreateTemplateFolder: CreateTemplateFolderModal,
   HomeScreenDragDrop: HomeScreenDragDropModal,
   SelectTaskDestination: SelectTaskDestinationModal,
@@ -104,12 +105,13 @@ const MODAL_MAP = {
   EditPatientList: EditPatientListModal,
   AddPatientToList: AddPatientToListModal,
   InterruptEdit: InterruptEditModal,
-  EditCustomPatientField: EditCustomPatientFieldModal,
+  EditCustomField: EditCustomFieldModal,
   DeleteConfirmation: DeleteConfirmationModal,
   DeleteTaskConfirmation: DeleteTaskConfirmationModal,
   EditUserGroup: EditUserGroupModal,
   AddUserToGroup: AddUserToGroupModal,
   Information: InformationModal,
+  UnassignTaskTemplate: UnassignTaskTemplateModal,
 };
 
 export default MODAL_MAP;

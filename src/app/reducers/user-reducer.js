@@ -1,6 +1,16 @@
 import * as ActionTypes from '../actions/action-types';
 
+const defaultViewSetup = {
+  SHOW_WORKFLOW_DETAILS: true,
+  SHOW_WORKFLOW_COMPLETED_TASKS: false,
+};
+
 const initialState = {
+  userViewSetup: {
+    customLists: {},
+    mainSetup: { ...defaultViewSetup },
+    defaultViewSetup,
+  },
   userAuth: false,
   userProfile: {},
   userNotificationPreferences: '',
@@ -23,6 +33,20 @@ export const dummyAccess = {
 
 const UserReducer = (state = initialState, action) => {
   switch (action.type) {
+    case ActionTypes.UPDATE_USER_VIEW_SETUP: {
+      const { setup } = action.payload;
+      return {
+        ...state,
+        userViewSetup: {
+          ...state.userViewSetup,
+          mainSetup: {
+            ...defaultViewSetup,
+            ...state.userViewSetup.mainSetup,
+            ...setup,
+          },
+        },
+      };
+    }
     case ActionTypes.GET_USER_AUTH_DATA_SUCCESS: {
       const { userAuth } = action;
       return { ...state, userAuth };
@@ -53,15 +77,12 @@ const UserReducer = (state = initialState, action) => {
       const { preferences } = action;
       return {
         ...state,
-        userProfile: {
-          ...state.userProfile,
-          userPreference: {
-            ...state.userProfile?.userPreference,
-            ...preferences,
-            appFeaturesReviewed: state.userProfile?.userPreference?.appFeaturesReviewed.concat(
-              preferences.appFeaturesReviewed,
-            ),
-          },
+        userPreference: {
+          ...state.userPreference,
+          ...preferences,
+          appFeaturesReviewed: state.userPreference?.appFeaturesReviewed.concat(
+            preferences.appFeaturesReviewed,
+          ),
         },
       };
     }
@@ -74,6 +95,14 @@ const UserReducer = (state = initialState, action) => {
 
     case ActionTypes.GET_CURRENT_USER_SUCCESS: {
       const { user } = action;
+      const { displayOptions } = user.userPreference || {};
+      const mainSetup = {};
+      Object.entries(state.userViewSetup.mainSetup).forEach(([key]) => {
+        mainSetup[key] = displayOptions?.includes(key);
+      });
+
+      const { userPreference } = user;
+      delete user.userPreference;
 
       return {
         ...state,
@@ -85,6 +114,8 @@ const UserReducer = (state = initialState, action) => {
           profileThumbnailPictureHash: user.profileThumbnailPictureHash,
           profilePictureHash: user.profilePictureHash,
         },
+        userPreference: userPreference || state.userPreference,
+        userViewSetup: { ...state.userViewSetup, mainSetup },
       };
     }
 

@@ -49,11 +49,9 @@ export const AddPlaceholder = styled(Placeholder)`
 `;
 
 export const TaskTemplateGroupHeaderContainer = styled.div`
-  position: relative;
   display: flex;
   align-items: center;
   justify-content: space-between;
-  width: 100%;
   padding: 0 0 0 ${spacing.smallPlus};
   border: 1px solid ${palette.coolGrey3};
   background-color: ${palette.white};
@@ -128,15 +126,11 @@ export const TaskTemplateRight = styled.div`
 `;
 
 export const NameTooltip = styled.div`
-  display: none;
-  position: absolute;
-  top: 30px;
-  left: 60px;
-  max-width: 650px;
+  display: block;
+  width: 100%;
   padding: ${spacing.small};
   color: ${palette.white};
   background: ${palette.mediumGrey};
-  z-index: 10;
   font-size: ${fontSizes.smallPlus};
   font-weight: ${fontWeights.regular};
   cursor: initial;
@@ -145,12 +139,6 @@ export const NameTooltip = styled.div`
 export const NameContainer = styled.div`
   display: flex;
   flex: 1;
-
-  &:hover {
-    ${NameTooltip} {
-      display: block;
-    }
-  }
 `;
 
 export const QuickAddInputWrapper = styled.div`

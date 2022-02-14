@@ -4,6 +4,7 @@ import palette from 'styles/palette';
 import spacing from 'styles/spacing';
 
 export const ContentWrapper = styled.div`
+  padding-top: ${spacing.tiny};
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -27,7 +28,13 @@ export const QuickAddSectionWrapper = styled.div`
   padding: ${spacing.small};
 `;
 
+export const AddSectionWrapper = styled.div`
+  align-items: center;
+  display: flex;
+`;
+
 export const QuickSelectButton = styled.button`
+  width: 100%;
   padding: ${spacing.tiny} ${spacing.regular};
   background: ${palette.coolGrey4};
   border-radius: 13px;
@@ -41,6 +48,13 @@ export const QuickSelectButton = styled.button`
     background: ${palette.brightBlue};
     color: ${palette.white};
   `}
+`;
+
+export const Label = styled.div`
+  padding: 0 ${spacing.small};
+  font-size: ${fontSizes.regular};
+  font-weight: ${fontWeights.light};
+  color: ${palette.coolGrey1};
 `;
 
 export const BottomBar = styled.div`

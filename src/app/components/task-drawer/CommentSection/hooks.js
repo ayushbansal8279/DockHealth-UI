@@ -1,18 +1,25 @@
 /* eslint-disable react-hooks/rules-of-hooks */
+import { useEffect, useState, useCallback, useMemo } from 'react';
 import { isEmpty } from 'ramda';
-import { useEffect, useState, useCallback } from 'react';
 import { openModal, closeModal } from 'modal/actions';
 import CommentIcon from 'img/modals/comment';
 import { useSelector, useDispatch } from 'react-redux';
-import { selectedTaskSelector } from 'selectors/task-drawer-selectors';
+import {
+  selectedTaskSelector,
+  taskDrawerFocusFieldSelector,
+} from 'selectors/task-drawer-selectors';
 import { userProfileSelector } from 'selectors/user-selectors';
-
+import { checkIfTemplateTask } from 'helpers/task-helpers';
 import { deleteComment, updateComment, addComment } from 'actions/task-actions';
 
 const initializeCommentSectionHooks = () => {
   const currentUser = useSelector(userProfileSelector);
   const selectedTask = useSelector(selectedTaskSelector);
-
+  const taskListIdentifier = selectedTask?.taskList?.taskListIdentifier;
+  const taskDrawerFocusField = useSelector(taskDrawerFocusFieldSelector);
+  const isTemplateTask = useMemo(() => checkIfTemplateTask(selectedTask), [
+    selectedTask,
+  ]);
   const [commentsList, setCommentsList] = useState([]);
 
   const { comments = [], taskIdentifier: selectedTaskIdentifier } =
@@ -93,6 +100,9 @@ const initializeCommentSectionHooks = () => {
     removeComment: openDeleteCommentConfirmationModal,
     updateComment: boundUpdateComment,
     addComment: boundAddComment,
+    taskListIdentifier,
+    isTemplateTask,
+    taskDrawerFocusField,
   };
 };
 

@@ -11,6 +11,7 @@ const IconWrapper = styled.div`
   right: 12px;
   top: 50%;
   transform: translateY(-50%);
+  pointer-events: none;
 `;
 
 export const ArrowIcon = () => (
@@ -56,6 +57,9 @@ const themeCommonOverrides = () => ({
     MuiIconButton: {
       size: 'small',
     },
+    MuiSkeleton: {
+      variant: 'rect',
+    },
   },
   overrides: {
     MuiListItem: {
@@ -69,6 +73,13 @@ const themeCommonOverrides = () => ({
         '&$selected:focus': {
           backgroundColor: palette.softCyan,
         },
+      },
+    },
+    MuiListItemText: {
+      root: {
+        fontFamily: 'inherit',
+        marginTop: 0,
+        marginBottom: 0,
       },
     },
     MuiBackdrop: {

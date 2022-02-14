@@ -25,6 +25,9 @@ if (process.env.NODE_ENV === 'development') {
   whyDidYouRender(React);
 }
 
+// disable all react-beautiful-dnd development warnings
+window['__react-beautiful-dnd-disable-dev-warnings'] = true;
+
 // change 'a minute' to '1 minute', etc.
 moment.updateLocale('en', {
   relativeTime: {

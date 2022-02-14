@@ -1,55 +1,44 @@
-/* eslint-disable import/prefer-default-export */
 import * as ActionTypes from 'actions/action-types';
-import * as ActionTypesSaga from './action-types-saga';
 
-export function moveTemplate({
-  parentTaskTemplateIdentifier,
-  taskTemplateIdentifier,
-}) {
+export function initializeWorkflowLibraryState(folderIdentifier) {
   return {
-    type: ActionTypesSaga.MOVE_TASK_TEMPLATE,
-    payload: {
-      parentTaskTemplateIdentifier,
-      taskTemplateIdentifier,
-    },
+    type: ActionTypes.INITIALIZE_WORKFLOW_LIBRARY_STATE,
+    folderIdentifier,
+  };
+}
+
+export function clearWorkflowLibraryState() {
+  return {
+    type: ActionTypes.CLEAR_WORKFLOW_LIBRARY_STATE,
+  };
+}
+
+export function moveWorkflowToFolder(identifier, parentTaskTemplateIdentifier) {
+  return {
+    type: ActionTypes.MOVE_WORKFLOW_TO_FOLDER,
+    identifier,
+    parentTaskTemplateIdentifier,
   };
 }
 
 export function addTemplate(template) {
   return {
-    type: ActionTypesSaga.ADD_TASK_TEMPLATE,
+    type: ActionTypes.ADD_TASK_TEMPLATE,
     template: { ...template, type: 'WORKFLOW' },
   };
 }
 
-export function pushToBreadcrumbs(
-  taskTemplateFolder,
-  taskTemplateFolderIdentifier,
-) {
+export function addSmartFlow(template, history) {
   return {
-    type: ActionTypes.PUSH_TO_TEMPLATES_BREADCRUMBS,
-    payload: {
-      breadcrumb: { name: taskTemplateFolder, taskTemplateFolderIdentifier },
-    },
-  };
-}
-
-export function cleanAndPushToBreadcrumbs(breadcrumbs) {
-  return {
-    type: ActionTypes.CLEAN_AND_PUSH_TEMPLATES_BREADCRUMBS,
-    payload: { breadcrumbs },
-  };
-}
-
-export function cleanBreadcrumbs() {
-  return {
-    type: ActionTypes.CLEAN_TEMPLATES_BREADCRUMBS,
+    type: ActionTypes.ADD_TASK_TEMPLATE,
+    template: { ...template, type: 'SMARTFLOW' },
+    history,
   };
 }
 
 export function addTemplateFolder(template, parentIdentifier = null) {
   return {
-    type: ActionTypesSaga.ADD_TASK_TEMPLATE_FOLDER,
+    type: ActionTypes.ADD_TASK_TEMPLATE_FOLDER,
     template: { ...template, parentIdentifier, type: 'FOLDER' },
   };
 }
@@ -65,55 +54,32 @@ export function updateTaskTemplateSuccess(
   };
 }
 
-export function goToTaskTemplateFolder(taskTemplateFolderIdentifier = null) {
-  return {
-    type: ActionTypesSaga.GO_TO_TASK_TEMPLATE_FOLDER,
-    payload: { taskTemplateFolderIdentifier },
-  };
-}
-
-export function deleteTemplate(taskTemplateIdentifier) {
-  return {
-    type: ActionTypesSaga.DELETE_TASK_TEMPLATE,
-    taskTemplateIdentifier,
-  };
-}
-
 export function switchTemplatePublic(taskTemplateIdentifier, flagPublic) {
   return {
-    type: ActionTypesSaga.SWITCH_TEMPLATE_PUBLIC,
+    type: ActionTypes.SWITCH_TEMPLATE_PUBLIC,
     taskTemplateIdentifier,
     flagPublic,
   };
 }
 
-export function duplicateTemplate(taskTemplateIdentifier, includeAttachments) {
+export function updatePartialWorkflow(taskWorkflowIdentifier, dataToUpdate) {
   return {
-    type: ActionTypesSaga.DUPLICATE_TASK_TEMPLATE,
-    taskTemplateIdentifier,
-    includeAttachments,
-  };
-}
-
-export function updateTemplate(taskTemplateIdentifier, dataToUpdate) {
-  return {
-    type: ActionTypesSaga.UPDATE_TASK_TEMPLATE,
-    taskTemplateIdentifier,
+    type: ActionTypes.UPDATE_PARTIAL_WORKFLOW,
+    taskWorkflowIdentifier,
     dataToUpdate,
   };
 }
 
-export function getAllTemplatesForOrganization(searchPhrase = null) {
+export function getWorkflowFolder(searchPhrase = null) {
   return {
-    type: ActionTypesSaga.GET_ALL_TASK_TEMPLATES,
+    type: ActionTypes.GET_WORKFLOW_FOLDER,
     searchPhrase,
   };
 }
 
-export function getTemplates(searchPhrase = null) {
+export function getFolderBreadcrumbs() {
   return {
-    type: ActionTypesSaga.GET_TASK_TEMPLATES,
-    searchPhrase,
+    type: ActionTypes.GET_FOLDER_BREADCRUMBS,
   };
 }
 
@@ -127,7 +93,7 @@ export function getTemplateTasks(taskTemplateIdentifier, withLoader = true) {
 
 export function toggleTemplateOpen(taskTemplateIdentifier) {
   return {
-    type: ActionTypesSaga.TOGGLE_TASK_TEMPLATE_OPEN,
+    type: ActionTypes.TOGGLE_TASK_TEMPLATE_OPEN,
     taskTemplateIdentifier,
   };
 }
@@ -138,7 +104,7 @@ export function reorderTasksForTemplate({
   destination,
 }) {
   return {
-    type: ActionTypesSaga.REORDER_TASKS_FOR_TEMPLATE,
+    type: ActionTypes.REORDER_TASKS_FOR_TEMPLATE,
     taskTemplateIdentifier,
     source,
     destination,
@@ -155,13 +121,13 @@ export function addTaskToTemplate(task, elementId, position) {
 }
 
 export function reloadOpenedTemplateTasks() {
-  return { type: ActionTypesSaga.RELOAD_OPENED_TEMPLATE_TASKS };
+  return { type: ActionTypes.RELOAD_OPENED_TEMPLATE_TASKS };
 }
 
-export function selectTaskTemplate(taskTemplateIdentifier) {
+export function selectTaskTemplate(identifier) {
   return {
     type: ActionTypes.SELECT_TASK_TEMPLATE,
-    taskTemplateIdentifier,
+    identifier,
   };
 }
 
@@ -199,10 +165,25 @@ export function addTemporaryElements(elements) {
   };
 }
 
+export function addDecisionBranch(sourceTaskIdentifier) {
+  return {
+    type: ActionTypes.ADD_DECISION_BRANCH,
+    sourceTaskIdentifier,
+  };
+}
+
 export function deleteTemporaryElement(elementId) {
   return {
     type: ActionTypes.DELETE_TEMPORARY_ELEMENT,
     elementId,
+  };
+}
+
+export function editTemporaryElement(elementId, data) {
+  return {
+    type: ActionTypes.EDIT_TEMPORARY_ELEMENT,
+    elementId,
+    data,
   };
 }
 
@@ -228,15 +209,18 @@ export function updateTaskOutcome(
   };
 }
 
-export function linkTasks(source, target) {
+export function linkTasks(source, target, options, outcomeName) {
   return {
     type: ActionTypes.LINK_TASKS,
     source,
     target,
+    options,
+    outcomeName,
   };
 }
 
 export function addTemporaryLink(
+  linkType,
   sourceId,
   targetId,
   sourceHandle,
@@ -244,6 +228,7 @@ export function addTemporaryLink(
 ) {
   return {
     type: ActionTypes.ADD_TEMPORARY_LINK,
+    linkType,
     sourceId,
     targetId,
     sourceHandle,
@@ -254,5 +239,43 @@ export function addTemporaryLink(
 export function getCurrentTaskTemplate() {
   return {
     type: ActionTypes.GET_CURRENT_TASK_TEMPLATE,
+  };
+}
+
+export function addLabel({ labelName, labelIdentifier, identifier }) {
+  return {
+    type: ActionTypes.ADD_WORKFLOW_LABEL,
+    labelName,
+    labelIdentifier,
+    identifier,
+  };
+}
+
+export function editLabel({ labelName, labelIdentifier, identifier }) {
+  return {
+    type: ActionTypes.UPDATE_WORKFLOW_LABEL,
+    labelName,
+    labelIdentifier,
+    identifier,
+  };
+}
+
+export function removeLabelFromTask({
+  labelName,
+  labelIdentifier,
+  identifier,
+}) {
+  return {
+    type: ActionTypes.REMOVE_WORKFLOW_LABEL_FROM_TASK,
+    labelName,
+    labelIdentifier,
+    identifier,
+  };
+}
+
+export function removeLabel({ labelIdentifier }) {
+  return {
+    type: ActionTypes.REMOVE_WORKFLOW_LABEL,
+    labelIdentifier,
   };
 }

@@ -3,8 +3,7 @@
   "description": "",
   "main": "index.js",
   "authors": [
-    "Nitin Gujral <nitin.gujral@childrens.harvard.edu>",
-    "Lisa Jeon <lisa.jeon@childrens.harvard.edu>"
+    "Nitin Gujral <nitin.gujral@childrens.harvard.edu>"
   ],
   "homepage": "",
   "private": true,

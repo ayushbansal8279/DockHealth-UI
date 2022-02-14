@@ -1,7 +1,11 @@
 /* eslint-disable unicorn/filename-case */
-import { getConfigurationForReferral } from 'actions/organization-actions';
+import {
+  getConfigurationForReferral,
+  getOrganizationCustomFields,
+} from 'actions/organization-actions';
 import { getCurrentUserNotificationPreferences } from 'actions/user-actions';
 import { getUserByEmail } from 'api/user-auth-api';
+import { captureLocalTimezone } from 'api/user-api';
 import { useMobile as checkIsMobile } from 'helpers/utility-functions';
 import { openModal } from 'modal/actions';
 import {
@@ -26,6 +30,8 @@ const checkUserAccountState = async ({
     const { pathname } = location;
 
     const data = await getUserByEmail(user.username, user);
+
+    captureLocalTimezone();
 
     const isMobile = checkIsMobile();
 
@@ -63,8 +69,7 @@ const checkUserAccountState = async ({
       pathname !== SUBS_SETTINGS_PATH &&
       isRequiredSubscription
     ) {
-      dispatch(openModal('TrialExpiration', { closeOnClickBackground: false }));
-      return HOME_PATH;
+      return SUBS_SETTINGS_PATH;
     }
 
     if (isMobile) {
@@ -76,6 +81,7 @@ const checkUserAccountState = async ({
     }
 
     dispatch(getCurrentUserNotificationPreferences());
+    dispatch(getOrganizationCustomFields());
 
     return await handleHomeRedirection({
       data,

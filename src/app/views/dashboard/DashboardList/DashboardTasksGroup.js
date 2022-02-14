@@ -1,5 +1,4 @@
 /* eslint-disable sonarjs/cognitive-complexity */
-/* eslint-disable sonarjs/no-duplicated-branches */
 import React, {
   useState,
   useEffect,
@@ -7,23 +6,38 @@ import React, {
   useMemo,
   useRef,
 } from 'react';
-import { pluck } from 'ramda';
+import { compose, pluck } from 'ramda';
 import moment from 'moment';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import * as TaskActions from 'actions/task-actions';
 import { Collapse } from '@material-ui/core';
 import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd';
 import ArrowIcon from 'img/arrow';
+import { getSharedTaskListsWithCurrentUser } from 'api/task-list-api';
+import {
+  DashboardGroup,
+  GROUPS_WITH_COMPLETED_TASKS,
+  GROUPS_WITH_QUICK_ADD_TASK_INPUT,
+} from 'helpers/dashboard-helpers';
+import {
+  getDashboardTasksForGroup,
+  loadMoreDashboardTasksForGroup,
+  reorderDashboardTasks,
+} from 'actions/dashboard-actions';
 import { checkIfAllTasksSelected } from 'helpers/bulk-edit-helpers';
 import { Arrow } from 'components/tasklist/DropdownListSection/styled';
 import QuickAddTaskInput from 'components/tasklist/QuickAddTaskInput/QuickAddTaskInput';
 import LoadMoreButton, {
   LoadMoreSection,
 } from 'components/common/LoadMoreButton/LoadMoreButton';
-import StandardTaskItem from 'components/task/StandardTaskItem/TaskItem';
+import TaskItem from 'components/task/StandardTaskItem/TaskItem';
+import TasksSkeletonLoader from 'components/task/TasksSkeletonLoader/TasksSkeletonLoader';
 import TasksHeader from 'components/tasklist/TasksHeader/TasksHeader';
 import { extractTasksAndSubtasks } from 'helpers/tasklist-helpers';
-import DashboardSingleSkeletonLoader from '../DashboardSkeletonLoader/DashboardSingleSkeletonLoader';
+import palette from 'styles/palette';
+import StickyContainer from 'components/common/HorizontalScroll/StickyContainer';
+import { dashboardLastCreatedTaskIdentifierSelector } from 'selectors/dashboard-selectors';
+
 import {
   DashboardTasksGroupContainer,
   DashboardTasksGroupLabel,
@@ -33,51 +47,22 @@ import {
   DashboardTasksGroupHeader,
   GroupNameSectionWrapper,
   DashboardTaskItemContainer,
+  StickyElement,
 } from './styled';
-
-const TODAY_GROUP = 'TODAY';
-const NEXT_7_DAYS_GROUP = 'NEXT_7_DAYS';
-const NO_DUE_DATE_GROUP = 'NO_DUE_DATE';
-const GROUPS_WITH_QUICK_ADD_TASK_INPUT = [
-  TODAY_GROUP,
-  NEXT_7_DAYS_GROUP,
-  NO_DUE_DATE_GROUP,
-];
-const COMPLETED_TODAY = 'COMPLETED_TODAY';
-const COMPLETED_7_DAYS = 'COMPLETED_7_DAYS';
-const ORG_COMPLETED_TODAY = 'ORG_COMPLETED_TODAY';
-const ORG_COMPLETED_7_DAYS = 'ORG_COMPLETED_7_DAYS';
-const GROUPS_WITH_COMPLETED_TASKS = [
-  COMPLETED_TODAY,
-  COMPLETED_7_DAYS,
-  ORG_COMPLETED_TODAY,
-  ORG_COMPLETED_7_DAYS,
-];
 
 const DashboardTasksGroup = ({
   dashboardTasksGroup,
-  toggleDashboardTaskComplete,
-  redirectToParentTask,
   storeAsCurrentTask,
-  sortDashboardTasks,
-  openDrawer,
   isTaskDrawerOpen,
-  selectedTaskIdentifier,
   currentSortMethod,
   currentSort,
   onSortChange,
   showClearSortFiltersModal,
   isSortApplied,
-  isAllTasksTab,
-  columnsConfig,
-  updateDueDate,
   currentUser,
-  onTaskUpdate,
   updateWorkflowStatus,
-  fetchImplicitGroup,
   isSearching,
   closeDrawer,
-  handleQuickAddTask,
   openModal,
 }) => {
   const {
@@ -85,14 +70,20 @@ const DashboardTasksGroup = ({
     groupType,
     metricValue,
     defaultOpen,
-    isLoadingGroup,
+    isLoading,
     isLoadingMore,
     tasks: dashboardTasks,
   } = dashboardTasksGroup;
+  const { userIdentifier } = currentUser;
+
+  const lastCreatedTaskId = useSelector(
+    dashboardLastCreatedTaskIdentifierSelector,
+  );
 
   const [tasks, setNewTasks] = useState(dashboardTasks);
   const [groupIsOpen, setGroupIsOpen] = useState(defaultOpen);
   const quickAddTaskInputReference = useRef(null);
+  const parentContainerReference = useRef(null);
   const dispatch = useDispatch();
 
   const isGroupSelected = useMemo(() => checkIfAllTasksSelected(tasks), [
@@ -111,34 +102,35 @@ const DashboardTasksGroup = ({
   }, [dispatch, isGroupSelected, tasks]);
 
   const onSwitchGroup = useCallback(() => {
-    if (!groupIsOpen && dashboardTasks?.length === 0 && !isSearching) {
-      fetchImplicitGroup(dashboardTasksGroup);
+    if (!groupIsOpen && !isSearching) {
+      dispatch(getDashboardTasksForGroup(groupType));
     }
     setGroupIsOpen(!groupIsOpen);
-
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [dashboardTasksGroup, fetchImplicitGroup, groupIsOpen, isSearching]);
+  }, [dashboardTasksGroup, groupIsOpen, isSearching]);
 
   useEffect(() => {
     setNewTasks(dashboardTasks);
-
-    if (dashboardTasks?.length === 0) {
-      setGroupIsOpen(false);
-    }
   }, [dashboardTasks]);
 
+  useEffect(() => {
+    if (dashboardTasks?.length === 0 && !isLoading) {
+      setGroupIsOpen(false);
+    }
+  }, [dashboardTasks, isLoading]);
+
   const groupHasMultipleAssignees = useMemo(
-    () => tasks.some(({ assignedToUsers }) => assignedToUsers?.length > 1),
+    () => tasks?.some(({ assignedToUsers }) => assignedToUsers?.length > 1),
     [tasks],
   );
 
   const dueDateForQuickAdd = useMemo(() => {
-    if (groupType === TODAY_GROUP)
+    if (groupType === DashboardGroup.TODAY)
       return moment()
         .startOf('day')
         .toISOString();
 
-    if (groupType === NEXT_7_DAYS_GROUP)
+    if (groupType === DashboardGroup.NEXT_7_DAYS)
       return moment()
         .add(7, 'days')
         .startOf('day')
@@ -147,57 +139,102 @@ const DashboardTasksGroup = ({
     return null;
   }, [groupType]);
 
+  const handleQuickAddTask = ({ description, patientIdentifier }) => {
+    dispatch(
+      openModal('ListPicker', {
+        fetchMethod: () => getSharedTaskListsWithCurrentUser(userIdentifier),
+        listCreationPayload: {
+          adminIdentifiers:
+            currentUser.userIdentifier !== userIdentifier
+              ? [userIdentifier]
+              : [],
+        },
+        confirm: taskListIdentifier => {
+          dispatch(
+            TaskActions.saveTask({
+              description,
+              taskListIdentifier,
+              assignedToIdentifier: userIdentifier,
+              patientIdentifier,
+              dueDate: dueDateForQuickAdd,
+            }),
+          );
+          quickAddTaskInputReference.current.focus();
+        },
+      }),
+    );
+  };
+
   const isCompletedGroup = !!GROUPS_WITH_COMPLETED_TASKS.includes(groupType);
 
+  const handleUpdateTask = useCallback(
+    compose(dispatch, TaskActions.partialUpdateTask),
+    [dispatch],
+  );
+
+  const handleToggleCompletedTask = useCallback(
+    task => {
+      dispatch(TaskActions.toggleCompleteTask(task));
+    },
+    [dispatch],
+  );
+
+  const isDragAndDropDisabled = !tasks || tasks.length < 2;
+
   return (
-    <DashboardTasksGroupContainer>
-      <DashboardTasksGroupHeader>
-        <Arrow
-          alt="arrow"
-          isOpen={groupIsOpen}
-          onClick={onSwitchGroup}
-          src={ArrowIcon}
-        />
-        <GroupNameSectionWrapper>
-          <DashboardTasksGroupLabel>
-            <DashboardTasksGroupLabelName>
-              {groupName}
-            </DashboardTasksGroupLabelName>
-            ({metricValue})
-          </DashboardTasksGroupLabel>
-        </GroupNameSectionWrapper>
-      </DashboardTasksGroupHeader>
-      {isLoadingGroup && <DashboardSingleSkeletonLoader rows={4} />}
-      {!isLoadingGroup && (
+    <DashboardTasksGroupContainer ref={parentContainerReference}>
+      <StickyContainer left={24} decreaseWidth={2 * 24}>
+        <StickyElement>
+          <DashboardTasksGroupHeader>
+            <Arrow
+              alt="arrow"
+              isOpen={groupIsOpen}
+              onClick={onSwitchGroup}
+              src={ArrowIcon}
+            />
+            <GroupNameSectionWrapper>
+              <DashboardTasksGroupLabel>
+                <DashboardTasksGroupLabelName>
+                  {groupName}
+                </DashboardTasksGroupLabelName>
+                ({metricValue})
+              </DashboardTasksGroupLabel>
+            </GroupNameSectionWrapper>
+          </DashboardTasksGroupHeader>
+        </StickyElement>
+      </StickyContainer>
+      {isLoading && !tasks ? (
+        <DashboardTasksGroupList>
+          <TasksSkeletonLoader rows={4} />
+        </DashboardTasksGroupList>
+      ) : (
         <Collapse timeout={500} in={groupIsOpen}>
           <DashboardTasksGroupList>
             {GROUPS_WITH_QUICK_ADD_TASK_INPUT.includes(groupType) && (
-              <QuickAddTaskInput
-                ref={quickAddTaskInputReference}
-                quickAddTask={payload =>
-                  handleQuickAddTask(
-                    quickAddTaskInputReference,
-                    payload,
-                    dueDateForQuickAdd,
-                  )
-                }
-                onFocus={() => {
-                  if (isTaskDrawerOpen) {
-                    closeDrawer();
-                    storeAsCurrentTask(null);
-                  }
-                }}
-                validator={value => {
-                  if ([...value]?.filter(char => char !== ' ').length < 2)
-                    return 'The task description is too short (min. 2 characters)';
+              <StickyContainer left={24} decreaseWidth={2 * 24}>
+                <StickyElement zIndex={101}>
+                  <QuickAddTaskInput
+                    ref={quickAddTaskInputReference}
+                    quickAddTask={handleQuickAddTask}
+                    onFocus={() => {
+                      if (isTaskDrawerOpen) {
+                        closeDrawer();
+                        storeAsCurrentTask(null);
+                      }
+                    }}
+                    validator={value => {
+                      if ([...value]?.filter(char => char !== ' ').length < 2)
+                        return 'The task description is too short (min. 2 characters)';
 
-                  return null;
-                }}
-              />
+                      return null;
+                    }}
+                  />
+                </StickyElement>
+              </StickyContainer>
             )}
             <TasksHeader
+              pageBackground={palette.white}
               bulkEditEnabled
-              taskItemConfig={columnsConfig}
               isGroupSelected={isGroupSelected}
               onGroupSelect={handleGroupSelect}
               sort={currentSort}
@@ -225,7 +262,7 @@ const DashboardTasksGroup = ({
                     const newTasksOrder = newTasks.map(
                       ({ taskIdentifier }) => taskIdentifier,
                     );
-                    sortDashboardTasks(groupType, newTasksOrder);
+                    dispatch(reorderDashboardTasks(groupType, newTasksOrder));
                   }
                 }
               }}
@@ -237,56 +274,51 @@ const DashboardTasksGroup = ({
                       ref={providedDroppable.innerRef}
                       {...providedDroppable.droppableProps}
                     >
-                      {currentSortMethod(tasks)?.map((task, index) => (
-                        <Draggable
-                          key={task.taskIdentifier}
-                          draggableId={String(task.taskIdentifier)}
-                          index={index}
-                          isDragDisabled={isTaskDrawerOpen || tasks?.length < 2}
-                        >
-                          {(draggableProvided, { isDragging }) => (
-                            <div
-                              ref={draggableProvided.innerRef}
-                              {...draggableProvided.draggableProps}
-                            >
-                              <DashboardTaskItemContainer>
-                                <StandardTaskItem
-                                  task={task}
-                                  toggleCompleteTask={() =>
-                                    toggleDashboardTaskComplete(task)
-                                  }
-                                  isCompletedGroup={isCompletedGroup}
-                                  redirectToParentTask={redirectToParentTask}
-                                  storeAsCurrentTask={storeAsCurrentTask}
-                                  isDragging={isDragging}
-                                  dragHandleProps={
-                                    draggableProvided.dragHandleProps
-                                  }
-                                  isDraggable={
-                                    !isTaskDrawerOpen && tasks?.length > 1
-                                  }
-                                  openDrawer={openDrawer}
-                                  isSelected={
-                                    selectedTaskIdentifier ===
-                                    task?.taskIdentifier
-                                  }
-                                  showAssignedPerson={isAllTasksTab}
-                                  updateDueDate={updateDueDate}
-                                  currentUser={currentUser}
-                                  onTaskUpdate={onTaskUpdate}
-                                  updateWorkflowStatus={updateWorkflowStatus}
-                                  taskItemConfig={columnsConfig}
-                                  multipleAssigneesContext={
-                                    groupHasMultipleAssignees
-                                  }
-                                  subtasksDisabled
-                                  isDashboardTask
-                                />
-                              </DashboardTaskItemContainer>
-                            </div>
-                          )}
-                        </Draggable>
-                      ))}
+                      {tasks &&
+                        currentSortMethod(tasks)?.map((task, index) => (
+                          <Draggable
+                            key={task.taskIdentifier}
+                            draggableId={String(task.taskIdentifier)}
+                            index={index}
+                            isDragDisabled={isDragAndDropDisabled}
+                          >
+                            {(draggableProvided, { isDragging }) => (
+                              <div
+                                ref={draggableProvided.innerRef}
+                                {...draggableProvided.draggableProps}
+                              >
+                                <DashboardTaskItemContainer>
+                                  <TaskItem
+                                    parentContainerReference={
+                                      parentContainerReference
+                                    }
+                                    newlyCreated={
+                                      task.identifier === lastCreatedTaskId
+                                    }
+                                    pageBackground={palette.white}
+                                    task={task}
+                                    toggleCompleteTask={
+                                      handleToggleCompletedTask
+                                    }
+                                    isCompletedGroup={isCompletedGroup}
+                                    isDragging={isDragging}
+                                    dragHandleProps={
+                                      draggableProvided.dragHandleProps
+                                    }
+                                    isDraggable={!isDragAndDropDisabled}
+                                    onTaskUpdate={handleUpdateTask}
+                                    updateWorkflowStatus={updateWorkflowStatus}
+                                    multipleAssigneesContext={
+                                      groupHasMultipleAssignees
+                                    }
+                                    subtasksDisabled
+                                    isDashboardTask
+                                  />
+                                </DashboardTaskItemContainer>
+                              </div>
+                            )}
+                          </Draggable>
+                        ))}
                       {providedDroppable.placeholder}
                     </DroppableBox>
                   );
@@ -294,13 +326,17 @@ const DashboardTasksGroup = ({
               </Droppable>
             </DragDropContext>
             {!isLoadingMore && dashboardTasksGroup?.hasMore && (
-              <LoadMoreSection>
-                <LoadMoreButton
-                  onClick={() => fetchImplicitGroup(dashboardTasksGroup, true)}
-                />
-              </LoadMoreSection>
+              <StickyContainer left={24} decreaseWidth={2 * 24}>
+                <LoadMoreSection>
+                  <LoadMoreButton
+                    onClick={() =>
+                      dispatch(loadMoreDashboardTasksForGroup(groupType))
+                    }
+                  />
+                </LoadMoreSection>
+              </StickyContainer>
             )}
-            {isLoadingMore && <DashboardSingleSkeletonLoader rows={3} />}
+            {isLoadingMore && <TasksSkeletonLoader rows={3} />}
           </DashboardTasksGroupList>
         </Collapse>
       )}

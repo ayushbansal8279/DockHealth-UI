@@ -1,11 +1,8 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
-import React from 'react';
 import styled from 'styled-components';
-import InputMask from 'react-input-mask';
 import { fontWeights, fontSizes } from 'styles/font';
 import palette from 'styles/palette';
 import spacing from 'styles/spacing';
-import { makeStyles } from '@material-ui/core/styles';
 import Drawer from '@material-ui/core/Drawer';
 
 export const MoreActinsWrapper = styled.div`
@@ -14,7 +11,7 @@ export const MoreActinsWrapper = styled.div`
 `;
 
 export const ContentWrapper = styled.div`
-  padding: 0px 20px 48px 20px;
+  padding: 0px 20px 48px 10px;
   box-sizing: border-box;
 `;
 
@@ -41,4 +38,10 @@ export const DrawerWrapper = styled(Drawer)`
   .MuiDrawer-paper {
     width: 500px;
   }
+`;
+
+export const UpgradePlanContainer = styled.div`
+  display: flex;
+  padding: ${spacing.regular} ${spacing.smallPlus};
+  justify-content: center;
 `;

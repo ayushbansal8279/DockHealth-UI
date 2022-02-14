@@ -1,3 +1,7 @@
+import {
+  mapFilterOptions,
+  mapSelectedOptionsToRequestPayload,
+} from 'helpers/filter-options-helpers';
 import axios from './axios-heydoc';
 
 export function getDashboardMyTasks(status = 'INCOMPLETE') {
@@ -33,60 +37,53 @@ export function reorderTasksInGroup({
     });
 }
 
-export function getDashboardMyTasksFilters(status = 'INCOMPLETE') {
-  return axios
-    .get(`task/filter/filterOptionsForCurrentUser?status=${status}`)
-    .then(({ data }) => data)
-    .catch(error => {
-      throw error;
-    });
+export function getDashboardMyTasksFilters(selectedFilters) {
+  const request = !selectedFilters
+    ? axios
+        .get(`task/filter/filterOptionsForCurrentUser?status=INCOMPLETE`)
+        .then(({ data }) => data)
+    : axios
+        .post(
+          `task/filter/filterTasksByCriteriaForCurrentUser?status=INCOMPLETE&includeOptions=true`,
+          mapSelectedOptionsToRequestPayload(selectedFilters),
+        )
+        .then(({ data }) => data.taskFilterOptions);
+
+  return request.then(options => mapFilterOptions(options));
 }
 
-export function getDashboardAllTasksFilters(status = 'INCOMPLETE') {
-  return axios
-    .get(`task/filter/filterOptionsForTasksInOrganization?status=${status}`)
-    .then(({ data }) => data)
-    .catch(error => {
-      throw error;
-    });
+export function getDashboardAllTasksFilters(selectedFilters) {
+  const request = !selectedFilters
+    ? axios
+        .get(
+          `task/filter/filterOptionsForTasksInOrganization?status=INCOMPLETE`,
+        )
+        .then(({ data }) => data)
+    : axios
+        .post(
+          `task/filter/filterTasksByCriteriaForOrganization?status=INCOMPLETE&includeOptions=true`,
+          mapSelectedOptionsToRequestPayload(selectedFilters),
+        )
+        .then(({ data }) => data.taskFilterOptions);
+
+  return request.then(options => mapFilterOptions(options));
 }
 
-export const getDashboardMyTasksByCriteria = (
-  selectedFilters,
-  status = 'INCOMPLETE',
-) =>
+export const getDashboardMyTasksByCriteria = selectedFilters =>
   axios
     .post(
-      `task/filter/filterTasksByCriteriaForCurrentUser?status=${status}`,
-      selectedFilters,
+      `task/filter/filterTasksByCriteriaForCurrentUser?status=INCOMPLETE`,
+      mapSelectedOptionsToRequestPayload(selectedFilters),
     )
-    .then(({ data }) => data)
-    .catch(error => {
-      throw error;
-    });
+    .then(({ data }) => data.taskGroups);
 
-export const getDashboardAllTasksByCriteria = (
-  selectedFilters,
-  status = 'INCOMPLETE',
-) =>
+export const getDashboardAllTasksByCriteria = selectedFilters =>
   axios
     .post(
-      `task/filter/filterTasksByCriteriaForOrganization?status=${status}`,
-      selectedFilters,
+      `task/filter/filterTasksByCriteriaForOrganization?status=INCOMPLETE`,
+      mapSelectedOptionsToRequestPayload(selectedFilters),
     )
-    .then(({ data }) => data)
-    .catch(error => {
-      throw error;
-    });
-
-export function getDashboardStatistics(tab) {
-  return axios
-    .get(`task/stats/getTaskStatsForCurrentUser?viewName=${tab}`)
-    .then(({ data }) => data)
-    .catch(error => {
-      throw error;
-    });
-}
+    .then(({ data }) => data.taskGroups);
 
 export function getTasksAssignedToUserByImplicitGroup(
   groupType,

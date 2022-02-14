@@ -11,14 +11,18 @@ import {
   MemberName,
 } from 'components/task/MultiAssignPopover/styled';
 import {
+  FilterOptionsCategory,
+  isOptionSelected,
+  selectFilterOption,
+  unselectFilterOption,
+} from 'helpers/filter-options-helpers';
+import {
   ListContainer,
   ListContentSection,
   Arrow,
   StyledPopper,
   UserStatusLabel,
 } from './styled';
-
-const filterName = 'assignedTo';
 
 const AdditionalMembersPopover = ({
   members,
@@ -32,18 +36,21 @@ const AdditionalMembersPopover = ({
   const toggleSelect = useCallback(
     (isSelected, { identifier }) => {
       if (isSelected) {
-        const filteredWithoutTheSelectedOne = selectedFilters?.[
-          filterName
-        ]?.filter(userId => userId !== identifier);
-        onSelectFilters({
-          ...selectedFilters,
-          [filterName]: [...filteredWithoutTheSelectedOne],
-        });
+        onSelectFilters(
+          unselectFilterOption(
+            FilterOptionsCategory.ASSIGNED_TO,
+            identifier,
+            selectedFilters,
+          ),
+        );
       } else {
-        onSelectFilters({
-          ...selectedFilters,
-          [filterName]: [...selectedFilters[filterName], identifier],
-        });
+        onSelectFilters(
+          selectFilterOption(
+            FilterOptionsCategory.ASSIGNED_TO,
+            identifier,
+            selectedFilters,
+          ),
+        );
       }
     },
     [onSelectFilters, selectedFilters],
@@ -68,9 +75,12 @@ const AdditionalMembersPopover = ({
                 <ListContainer>
                   <ListContentSection>
                     {members?.map(member => {
-                      const isSelected = selectedFilters?.assignedTo?.includes(
+                      const isSelected = isOptionSelected(
+                        FilterOptionsCategory.ASSIGNED_TO,
                         member?.identifier,
+                        selectedFilters,
                       );
+
                       return (
                         <MemberRow
                           key={member?.identifier}

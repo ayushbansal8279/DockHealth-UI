@@ -4,7 +4,6 @@ import { useDispatch, useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
 import { isEmpty } from 'ramda';
 import MobileDevices from 'img/devices';
-import { setHeader } from 'actions/template-actions';
 import * as UserAuthApi from 'api/user-auth-api';
 import * as OrganizationApi from 'api/organization-api';
 import OrganizationAvatar from 'components/org/OrganizationAvatar/OrganizationAvatar';
@@ -18,7 +17,8 @@ import {
   getCurrentUserOrganizations,
   getCurrentUserNotificationPreferences,
 } from 'actions/user-actions';
-import GenericHeader from 'components/template/GenericHeader/GenericHeader';
+import ViewLayout from 'components/template/ViewLayout/ViewLayout';
+import BasicLayoutHeader from 'components/template/BasicLayoutHeader/BasicLayoutHeader';
 import Spacing from 'components/common/Spacing';
 import { getOrgRole } from 'helpers/user-helper';
 import {
@@ -63,17 +63,6 @@ const UserProfileView = () => {
   useEffect(
     () => {
       dispatch(getCurrentUserNotificationPreferences());
-
-      dispatch(
-        setHeader({
-          layout: [
-            {
-              key: 'title',
-              component: <GenericHeader>Profile & Settings</GenericHeader>,
-            },
-          ],
-        }),
-      );
     },
     // eslint-disable-next-line react-hooks/exhaustive-deps
     [],
@@ -136,77 +125,79 @@ const UserProfileView = () => {
   };
 
   return (
-    <ViewContainer>
-      {!isEmpty(userProfile) && (
-        <ProfileSettingsWrapper>
-          <SettingsSection noMarginTop>
-            <ViewHeader>Manage Your Profile</ViewHeader>
-            <ViewDescription>
-              This is where you can make changes to your profile information.
-              View our{' '}
-              <a
-                href="https://www.dock.health/privacy-statement"
-                target="_blank"
-                rel="noopener noreferrer"
-              >
-                Privacy Statement
-              </a>
-              .
-            </ViewDescription>
-          </SettingsSection>
-          <Divider />
-          <SettingsSection>
-            <SectionHeader>My Organization</SectionHeader>
-            <Spacing vertical={5} />
-            <Grid
-              container
-              direction="row"
-              justify="flex-start"
-              alignItems="center"
-            >
-              <OrganizationAvatar
-                initials={currentOrganization.organizationInitials}
-                backgroundColor={currentOrganization.organizationProfileColor}
-              />
-              <Spacing horizontal={4} />
-              <OrganizationDetails>
-                <DetailsText>
-                  {currentOrganization.organizationName}
-                </DetailsText>
-                <DetailsText>{userOrgRole}</DetailsText>
-              </OrganizationDetails>
-              <Spacing horizontal={5} />
-              {renderOrganizationActionButton()}
-            </Grid>
-          </SettingsSection>
-          <Divider />
-          <UserProfileForm userProfile={userProfile} />
-          <Spacing vertical={8} />
-          <Divider />
-          <Spacing vertical={2} />
-          <AppVersionInfoWrapper>
-            <AppVersionInfoIcon src={MobileDevices} alt="Mobile app" />
-            <AppVersionInfoTextWrapper>
-              <AppVersionInfoHeader>
-                Desktop and Mobile versions
-              </AppVersionInfoHeader>
-              <AppVersionInfoText>
-                Dock is there where you need us. Access through your desktop or
-                take the{' '}
+    <ViewLayout header={<BasicLayoutHeader title="Profile &amp; Settings" />}>
+      <ViewContainer>
+        {!isEmpty(userProfile) && (
+          <ProfileSettingsWrapper>
+            <SettingsSection noMarginTop>
+              <ViewHeader>Manage Your Profile</ViewHeader>
+              <ViewDescription>
+                This is where you can make changes to your profile information.
+                View our{' '}
                 <a
-                  href="https://apps.apple.com/us/app/dock-health/id1277060287"
+                  href="https://www.dock.health/privacy-statement"
                   target="_blank"
                   rel="noopener noreferrer"
                 >
-                  mobile app
-                </a>{' '}
-                on your rounds.
-              </AppVersionInfoText>
-            </AppVersionInfoTextWrapper>
-          </AppVersionInfoWrapper>
-        </ProfileSettingsWrapper>
-      )}
-    </ViewContainer>
+                  Privacy Statement
+                </a>
+                .
+              </ViewDescription>
+            </SettingsSection>
+            <Divider />
+            <SettingsSection>
+              <SectionHeader>My Organization</SectionHeader>
+              <Spacing vertical={5} />
+              <Grid
+                container
+                direction="row"
+                justify="flex-start"
+                alignItems="center"
+              >
+                <OrganizationAvatar
+                  initials={currentOrganization.organizationInitials}
+                  backgroundColor={currentOrganization.organizationProfileColor}
+                />
+                <Spacing horizontal={4} />
+                <OrganizationDetails>
+                  <DetailsText>
+                    {currentOrganization.organizationName}
+                  </DetailsText>
+                  <DetailsText>{userOrgRole}</DetailsText>
+                </OrganizationDetails>
+                <Spacing horizontal={5} />
+                {renderOrganizationActionButton()}
+              </Grid>
+            </SettingsSection>
+            <Divider />
+            <UserProfileForm userProfile={userProfile} />
+            <Spacing vertical={8} />
+            <Divider />
+            <Spacing vertical={2} />
+            <AppVersionInfoWrapper>
+              <AppVersionInfoIcon src={MobileDevices} alt="Mobile app" />
+              <AppVersionInfoTextWrapper>
+                <AppVersionInfoHeader>
+                  Desktop and Mobile versions
+                </AppVersionInfoHeader>
+                <AppVersionInfoText>
+                  Dock is there where you need us. Access through your desktop
+                  or take the{' '}
+                  <a
+                    href="https://apps.apple.com/us/app/dock-health/id1277060287"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
+                    mobile app
+                  </a>{' '}
+                  on your rounds.
+                </AppVersionInfoText>
+              </AppVersionInfoTextWrapper>
+            </AppVersionInfoWrapper>
+          </ProfileSettingsWrapper>
+        )}
+      </ViewContainer>
+    </ViewLayout>
   );
 };
 

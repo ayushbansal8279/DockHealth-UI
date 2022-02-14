@@ -1,54 +1,37 @@
 import React from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import { selectedTaskSelector } from 'selectors/task-drawer-selectors';
+import Select from 'components/common/Select/Select';
 import PriorityFlag from 'img/priority-flag';
+import { changeTaskPriority } from 'actions/task-actions';
 import { onTaskDrawerTaskPriorityChanged } from 'helpers/ga-event-helper';
-import FormSelect from 'components/common/Select/FormSelect';
-import { Box } from '@material-ui/core';
-import initializePrioritySectionHooks, { PRIORITIES } from './hooks';
+import { getPriorityColor, TaskPriority } from 'helpers/task-helpers';
 import { PriorityFieldContainer, PriorityFlagContainer } from './styled';
+import { PRIORITY_OPTIONS } from './helpers';
 
-const priorityOptions = PRIORITIES.map(({ value, label, color }) => ({
-  key: value,
-  value,
-  label,
-  OptionIcon: (
-    <Box pr="10px">
-      <PriorityFlag color={color} />
-    </Box>
-  ),
-}));
+const PrioritySection = () => {
+  const dispatch = useDispatch();
+  const selectedTask = useSelector(selectedTaskSelector);
+  const { priority } = selectedTask || {};
 
-const PRIORITY_FIELD_NAME = 'priority';
-
-const PrioritySection = ({ setAutoSaveVisible, onTaskUpdate }) => {
-  const {
-    currentPriorityFlagColor,
-    saveTaskPriority,
-    setValue,
-  } = initializePrioritySectionHooks({ setAutoSaveVisible, onTaskUpdate });
-
-  const selectOption = value => {
-    if (value === 'NONE') {
-      setValue(PRIORITY_FIELD_NAME, null); // default to null since we just clear the selection
-    } else {
-      setValue(PRIORITY_FIELD_NAME, value);
-    }
+  const handleOptionChange = event => {
+    const { value } = event.target;
 
     onTaskDrawerTaskPriorityChanged(value);
-    saveTaskPriority({ newTaskPriority: value });
+    dispatch(changeTaskPriority(selectedTask, value));
   };
 
   return (
     <PriorityFieldContainer>
       <PriorityFlagContainer>
-        <PriorityFlag color={currentPriorityFlagColor} />
+        <PriorityFlag color={getPriorityColor(priority)} />
       </PriorityFlagContainer>
-      <FormSelect
+      <Select
         label="Priority"
-        options={priorityOptions}
-        name={PRIORITY_FIELD_NAME}
-        required={false}
-        onChange={selectOption}
-        // placeholder="Is there a priority?"
+        name="priority"
+        value={priority || TaskPriority.NONE}
+        onChange={handleOptionChange}
+        options={PRIORITY_OPTIONS}
       />
     </PriorityFieldContainer>
   );

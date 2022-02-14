@@ -81,8 +81,8 @@ const Avatar = React.forwardRef(
 );
 
 Avatar.propTypes = {
-  initials: string.isRequired,
-  name: string.isRequired,
+  initials: string,
+  name: string,
   pictureSrc: string,
   activityStatus: oneOf(Object.values(ActivityStatus)),
   size: number,
@@ -93,6 +93,8 @@ Avatar.propTypes = {
 };
 
 Avatar.defaultProps = {
+  initials: undefined,
+  name: undefined,
   pictureSrc: null,
   activityStatus: null,
   size: 30,

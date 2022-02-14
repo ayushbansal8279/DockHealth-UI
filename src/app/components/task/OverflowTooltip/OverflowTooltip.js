@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import debounce from 'lodash.debounce';
 
-function checkIfShouldDisplayTooltip(textReference) {
+export function checkIfShouldDisplayTooltip(textReference) {
   return !!(
     textReference && textReference.scrollWidth > textReference.offsetWidth
   );

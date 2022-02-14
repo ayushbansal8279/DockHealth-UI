@@ -1,10 +1,16 @@
 import { createSelector } from 'reselect';
+import { prop } from 'ramda';
 
 export const listTasksSelector = state => state.listDetails;
 
 export const tasksIsFetchingSelector = createSelector(
   listTasksSelector,
   ({ isFetching }) => isFetching,
+);
+
+export const currentTaskListSelector = createSelector(
+  listTasksSelector,
+  ({ currentTaskList }) => currentTaskList,
 );
 
 export const completedTasksSelector = createSelector(
@@ -21,6 +27,11 @@ export const completedTasksIsFetchingMoreSelector = createSelector(
   ({ isFetchingMoreTasks }) => isFetchingMoreTasks,
 );
 
+export const searchTermSelector = createSelector(
+  listTasksSelector,
+  ({ searchTerm }) => searchTerm,
+);
+
 export const groupTasksSelector = createSelector(
   listTasksSelector,
   ({ groupedTasks }) => {
@@ -34,6 +45,7 @@ export const groupTasksSelector = createSelector(
       groupedTasksMap[taskGroup.groupIdentifier] = {
         tasks: taskGroup.tasks,
         hasMore: taskGroup.hasMore,
+        moreTasksIndex: taskGroup.moreTasksIndex,
         isLoadingGroup: taskGroup.isLoadingGroup,
         isFetchingMoreTasks: taskGroup.isFetchingMoreTasks,
       };
@@ -71,4 +83,9 @@ export const taskDetailsSortSelector = createSelector(
 export const taskCountersSelector = createSelector(
   listTasksSelector,
   ({ taskCounters }) => taskCounters,
+);
+
+export const listCustomFieldsSelector = createSelector(
+  listTasksSelector,
+  prop('listCustomFields'),
 );

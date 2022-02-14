@@ -1,11 +1,20 @@
+/* eslint-disable sonarjs/cognitive-complexity */
 import React, { useCallback, useEffect } from 'react';
 import { ClickAwayListener, Grid } from '@material-ui/core';
 import { useDispatch, useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
-import { TASK_TEMPLATES_PATH, USERS_PATH } from 'routing/helpers/paths';
+import {
+  WORKFLOW_LIBRARY_PATH,
+  USERS_PATH,
+  SUBS_SETTINGS_PATH,
+  USERS_SETTINGS_PATH,
+} from 'routing/helpers/paths';
 import Spacing from 'components/common/Spacing.tsx';
+import { userProfileSelector } from 'selectors/user-selectors';
+import { UserOrganizationRole } from 'helpers/user-helper';
 import { getCustomerTypeLabel } from 'helpers/customer-type-helper';
 import { capitalize } from 'helpers/capitalize';
+import { selectCurrentOrganization } from 'api/organization-api';
 import { subMenuKeySelector } from 'selectors/template-selectors';
 import * as TemplateActions from 'actions/template-actions';
 import SearchIcon from 'img/navigation/SearchIcon';
@@ -33,6 +42,7 @@ import {
   MainMenuContainer,
   SubMenuContainer,
   DockcoinIcon,
+  BarChartIcon,
 } from './styled';
 import IconNavigationItem from './IconNavigationItem';
 import NavigationItem from './NavigationItem';
@@ -58,18 +68,24 @@ const SubmenuComponents = {
   [SubmenuKey.EDUCATION_CENTER]: EducationCenterSubmenu,
 };
 
-const NavigationSidebar = ({
-  currentUser,
-  currentOrganization,
-  selectCurrentOrganization,
-}) => {
+const NavigationSidebar = () => {
   const history = useHistory();
   const dispatch = useDispatch();
+  const currentUser = useSelector(userProfileSelector);
   const openedSubMenuKey = useSelector(subMenuKeySelector);
 
   const { orgUserRole } = currentUser || {};
   const isUserAdmin = ['ADMIN', 'OWNER'].includes(orgUserRole);
-  const isGuest = orgUserRole === 'GUEST';
+  const isGuest = orgUserRole === UserOrganizationRole.GUEST;
+
+  const currentOrganizationIdentifier = sessionStorage.getItem(
+    'currentOrganizationIdentifier',
+  );
+  const { organizationProfileColor, organizationInitials } =
+    currentUser?.userOrganizations?.find(
+      ({ organizationIdentifier }) =>
+        organizationIdentifier === currentOrganizationIdentifier,
+    ) || {};
 
   const {
     orgMenuReference,
@@ -85,9 +101,6 @@ const NavigationSidebar = ({
   const SubMenuComponent = openedSubMenuKey
     ? SubmenuComponents[openedSubMenuKey]
     : null;
-
-  const { organizationProfileColor, organizationInitials } =
-    currentOrganization || {};
 
   const customerTypeLabel = getCustomerTypeLabel(currentUser);
   const customerTypeLabelCapitalized = capitalize(customerTypeLabel);
@@ -190,7 +203,7 @@ const NavigationSidebar = ({
               <IconNavigationItem
                 name="Workflow Library"
                 icon={TemplatesIcon}
-                path={TASK_TEMPLATES_PATH}
+                path={WORKFLOW_LIBRARY_PATH}
                 onItemClick={handleNavigationItemClick}
               />
             )}
@@ -200,18 +213,30 @@ const NavigationSidebar = ({
               subMenuKey={SubmenuKey.EDUCATION_CENTER}
               subMenuOpen={openedSubMenuKey === SubmenuKey.EDUCATION_CENTER}
               onItemClick={handleNavigationItemClick}
-              isNew
             />
+            {isUserAdmin && (
+              <IconNavigationItem
+                name="Analytics"
+                icon={BarChartIcon}
+                path="/core/analytics"
+                onItemClick={handleNavigationItemClick}
+                isNew
+              />
+            )}
           </Grid>
           <Grid container direction="column">
             {isUserAdmin && (
               <div ref={settingsMenuReference}>
                 <IconNavigationItem
-                  name="Admin"
+                  name="Settings"
                   subMenuKey={SubmenuKey.SETTINGS}
                   icon={SettingsIcon}
                   subMenuOpen={openedSubMenuKey === SubmenuKey.SETTINGS}
-                  path={['/settings/billing', '/settings/subscriptions']}
+                  path={[
+                    '/settings/billing',
+                    SUBS_SETTINGS_PATH,
+                    USERS_SETTINGS_PATH,
+                  ]}
                   onItemClick={handleNavigationItemClick}
                 />
               </div>

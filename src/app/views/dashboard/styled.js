@@ -15,8 +15,6 @@ export const DashboardScrollableList = styled.div`
   width: 100%;
   height: calc(100% - 24px);
   margin-top: ${spacing.regular};
-  overflow-x: hidden;
-  overflow-y: auto;
 `;
 
 export const DashboardContentWrapper = styled.div`
@@ -44,13 +42,6 @@ export const DashboardTourWrapper = styled.div`
   z-index: 201;
 `;
 
-export const DashboardHeaderContainer = styled.div`
-  display: flex;
-  align-items: center;
-  flex-direction: row;
-  padding: 0 55px;
-`;
-
 export const DashboardFirstVisitViewWrapper = styled.div`
   display: flex;
   flex: 1;
@@ -58,10 +49,6 @@ export const DashboardFirstVisitViewWrapper = styled.div`
   align-items: center;
   margin-top: ${spacing.regularPlus};
   border-top: 1px solid ${palette.coolGrey2};
-`;
-
-export const DashboardListWrapper = styled.div`
-  ${'' /* ${({ fullWidth }) => !fullWidth && 'max-width: 1440px;'} */}
 `;
 
 export const StyledConfetti = styled(Confetti)`

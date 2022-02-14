@@ -1,12 +1,30 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import React from 'react';
-import styled from 'styled-components';
+import styled, { keyframes, css } from 'styled-components';
 import { Link } from 'react-router-dom';
 import { Grid } from '@material-ui/core';
 import spacing from 'styles/spacing';
 import { fontWeights, fontSizes } from 'styles/font';
 import palette, { featurePalette } from 'styles/palette';
 import Select from 'components/common/Select/Select';
+
+export const highlight = keyframes`
+  0% {
+      background: ${palette.brightBlueWithAlpha};
+  }
+  100% {
+      background: ${palette.white};
+  }
+`;
+
+export const highlightDescription = keyframes`
+  0% {
+      background: #e0eff9;
+  }
+  100% {
+      background: ${palette.white};
+  }
+`;
 
 export const DecisionSelect = styled(Select)`
   & .MuiSelect-root {
@@ -69,9 +87,57 @@ export const PrioritySwitch = styled.button`
 export const PriorityIndicator = styled.div`
   width: 2px;
   height: 100%;
-  background-color: red;
+  background-color: ${({ color }) => color};
   position: absolute;
   left: 0;
+`;
+
+export const StickyColumnContainer = styled.div`
+  display: flex;
+  width: 100%;
+  position: sticky;
+  left: ${({ isSubtask }) => (isSubtask ? '61px' : '24px')};
+  z-index: 11;
+  border-right: 1px solid ${palette.coolGrey3};
+  border-left: 1px solid ${palette.coolGrey3};
+  min-width: 500px;
+
+  ${({ isEditingDescription }) => isEditingDescription && `z-index: 12;`}
+
+  &::before {
+    content: '';
+    display: block;
+    background: ${({ backgroundColor }) =>
+      backgroundColor || palette.coolGrey4};
+    position: absolute;
+    left: -101px;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 100px;
+    height: calc(100% + 4px);
+    z-index: -1;
+  }
+
+  &::after {
+    content: '';
+    display: block;
+    background-color: ${props =>
+      props.isSelected ? '#e0eff9' : palette.white};
+    transition: background-color 0.3s ease-out;
+    position: absolute;
+    left: 0px;
+    top: 50%;
+    width: 100%;
+    height: calc(100% - 2px);
+    z-index: -1;
+    transform: translateY(-50%);
+    animation: ${props =>
+      props.newlyCreated
+        ? css`
+            ${highlightDescription} 6s ease-out;
+          `
+        : ''};
+  }
 `;
 
 export const DependencyIconContainer = styled.div`
@@ -105,16 +171,13 @@ export const CircleIcon = styled.img`
   ${({ isCompleted }) => !isCompleted && `margin-left: 2px;`}
   opacity: ${({ isClickable }) => (isClickable ? '1' : '0.5')};
 `;
-export const DescriptionTooltip = styled.div`
-  display: ${({ isVisible }) => (isVisible ? 'block' : 'none')};
-  position: absolute;
-  top: 30px;
-  left: 60px;
-  max-width: 650px;
+
+export const DescriptionTooltipWrapper = styled.div`
+  display: block;
+  width: 100%;
   padding: ${spacing.small};
   color: ${palette.white};
   background: ${palette.mediumGrey};
-  z-index: 10;
   font-size: ${fontSizes.smallPlus};
   cursor: initial;
 `;
@@ -123,19 +186,38 @@ export const Description = styled.div`
   display: flex;
   flex-direction: row;
   width: 100%;
-  padding-right: ${spacing.smallPlus};
+  margin-right: 4px;
   overflow-wrap: anywhere;
   ${props => props.isCrossedOut && 'text-decoration: line-through;'}
   cursor: pointer;
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: initial;
+  max-width: 480px;
 
-  &:hover {
-    ${DescriptionTooltip} {
-      display: block;
-    }
+  @media screen and (max-width: 1300px) {
+    max-width: 300px;
   }
+
+  @media screen and (min-width: 1680px) {
+    max-width: 600px;
+  }
+
+  @media screen and (min-width: 2100px) {
+    max-width: 900px;
+  }
+
+  @media screen and (min-width: 2500px) {
+    max-width: 1100px;
+  }
+`;
+
+export const MemberGroupContainer = styled.div`
+  margin-right: ${spacing.small};
+`;
+
+export const AssignMemberIconContainer = styled.div`
+  cursor: pointer;
 `;
 
 export const MemberGroupContainer = styled.div`
@@ -229,7 +311,6 @@ export const SubtasksGroupLabel = styled.span`
 `;
 
 export const StandardTaskItemCell = styled.div`
-  position: ${({ position }) => position || 'relative'};
   align-items: ${({ alignItems }) => alignItems || 'center'};
   border-right: 1px solid ${palette.coolGrey3};
   color: ${props => props.color || palette.mediumGrey};
@@ -248,7 +329,7 @@ export const StandardTaskItemCell = styled.div`
     props.paddingLeft ? spacing[props.paddingRight] : spacing.regular};
   width: ${props => (!props.width ? '100%' : '')};
   justify-content: ${props => props.justify || 'flex-start'};
-  overflow: hidden;
+  position: relative;
 
   &:last-of-type {
     border-right: 0;
@@ -273,20 +354,29 @@ export const StandardTaskItemContainer = styled.div`
     props.isSelected ? palette.brightBlueWithAlpha : palette.white};
   border: 1px solid ${palette.coolGrey3};
   display: flex;
-  justify-content: flex-end;
+  justify-content: ${props => (props.isAddingTask ? 'flex-end' : 'flex-start')};
   width: 100%;
   height: ${({ height }) => height || 35}px;
   border-top: none;
+  border-left: none;
   transition: background-color 0.3s ease-out;
+  animation: ${props =>
+    props.newlyCreated
+      ? css`
+          ${highlight} 6s ease-out;
+        `
+      : ''};
 `;
 
 export const StatusBar = styled.div`
   background-color: ${props => props.color};
-  height: 100%;
+  height: calc(100% - 2px);
   top: 0;
   left: 0;
   position: absolute;
   width: 6px;
+  top: 50%;
+  transform: translateY(-50%);
 `;
 
 export const TaskIconsBox = styled.div`
@@ -313,6 +403,7 @@ export const StandardTaskThreeDots = styled(ThreeDots)`
   left: -12px;
   background-color: ${palette.coolGrey4};
   padding: 2px 1px 2px 2px;
+  z-index: 12;
 `;
 
 export const StandardTaskItemPanel = styled.div`
@@ -445,12 +536,6 @@ export const SubtasksCellText = styled.p`
   color: inherit;
 `;
 
-export const DescriptionWrapper = styled.div`
-  display: flex;
-  width: 100%;
-  overflow: hidden;
-`;
-
 export const DescriptionLabel = styled.div`
   font-size: ${fontSizes.small};
   font-weight: ${fontWeights.regular};
@@ -499,4 +584,28 @@ export const DisabledPatientLabel = styled(PatientLabel)`
 
 export const DateText = styled.p`
   margin-bottom: 0;
+`;
+
+export const DetailsButton = styled.button`
+  margin-left: 8px;
+  ${({ visible }) => !visible && 'visibility: hidden;'}
+  font-family: 'Montserrat', sans-serif;
+  font-size: ${fontSizes.smallPlus};
+  font-weight: ${fontWeights.regularPlus};
+  color: ${palette.brightBlue};
+`;
+
+export const DescriptionBorder = styled.div`
+  padding: 0 2px;
+  overflow: hidden;
+  border-radius: 4px;
+  border-width: 1px;
+  border-style: solid;
+  border-color: transparent;
+
+  &:hover {
+    border-color: ${palette.coolGrey2};
+  }
+
+  ${({ isEdited }) => isEdited && `border-color: ${palette.coolGrey2};`}
 `;

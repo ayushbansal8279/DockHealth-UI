@@ -6,7 +6,7 @@ import { bulkEditTasks as bulkEditTasksApi } from 'api/task-api';
 import { checkIfTemplateTask } from 'helpers/task-helpers';
 import palette from 'styles/palette';
 import { useDispatch, useSelector } from 'react-redux';
-import { openModal } from 'modal/actions';
+import { openModal, closeModal } from 'modal/actions';
 import DuplicateIcon from 'img/bulk-edit/DuplicateIcon';
 import CompleteIcon from 'img/bulk-edit/CompleteIcon';
 import MoveIcon from 'img/bulk-edit/MoveIcon';
@@ -20,10 +20,13 @@ import {
   bulkEditDueDate,
   bulkEditDelete,
   bulkEditComplete,
+  bulkEditDueDateSuccess,
 } from 'actions/task-actions';
 import * as ActionTypes from 'actions/action-types';
-import { getListDetailsTaskCounters } from 'actions/list-details-actions';
-import { getTasksGroupsList } from 'sagas/list-details-saga';
+import {
+  getListDetailsTaskCounters,
+  getTasksGroupsList,
+} from 'actions/list-details-actions';
 import { selectedFiltersInMegaFilterSelector } from 'selectors/mega-filter-selectors';
 
 import BulkEditAssignToOption from './BulkEditAssignToOption';
@@ -179,7 +182,7 @@ const BulkEditOptionsBar = ({
     tasks => {
       tasks.reverse().forEach(task =>
         dispatch({
-          type: ActionTypes.ADD_TASK,
+          type: ActionTypes.ADD_TASK_SUCCESS,
           task,
         }),
       );
@@ -274,6 +277,9 @@ const BulkEditOptionsBar = ({
         dueDate,
       })
         .then(({ transactionIdentifier }) => {
+          dispatch(
+            bulkEditDueDateSuccess(allSelectedTasksIdentifiers, dueDate),
+          );
           dispatch(
             AlertActions.showGlobalAlertWithUndo(
               allSelectedTasksLength > 1
@@ -553,7 +559,7 @@ const BulkEditOptionsBar = ({
         taskIdentifiers: allSelectedTasksIdentifiers,
       })
         .then(({ transactionIdentifier }) => {
-          dispatch(getTasksGroupsList({ shouldSetRequestState: false }));
+          dispatch(getTasksGroupsList());
           dispatch(getListDetailsTaskCounters(taskListIdentifier));
 
           dispatch(
@@ -643,7 +649,7 @@ const BulkEditOptionsBar = ({
             taskIdentifiers: allSelectedTasksIdentifiers,
           })
             .then(({ transactionIdentifier }) => {
-              dispatch(getTasksGroupsList({ shouldSetRequestState: false }));
+              dispatch(getTasksGroupsList());
               dispatch(getListDetailsTaskCounters(taskListIdentifier));
               dispatch(
                 AlertActions.showGlobalAlertWithUndo(
@@ -673,6 +679,7 @@ const BulkEditOptionsBar = ({
                 refreshTasks();
               }
 
+              dispatch(closeModal());
               if (onClose && typeof onClose === 'function') {
                 onClose();
               }

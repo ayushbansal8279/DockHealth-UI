@@ -2,8 +2,9 @@ import styled from 'styled-components';
 import spacing from 'styles/spacing';
 import { fontSizes, fontWeights } from 'styles/font';
 import palette from 'styles/palette';
-import { LoaderFillElement } from 'components/task/TasksSkeletonLoader/styled';
 import ChevronRightIcon from '@material-ui/icons/ChevronRight';
+import { withStyles } from '@material-ui/core/styles';
+import { Skeleton } from '@material-ui/lab';
 
 export const FolderIconContainer = styled.div`
   display: flex;
@@ -102,9 +103,11 @@ export const EmptyLabel = styled.div`
   color: ${palette.mediumGrey};
 `;
 
-export const LoaderItem = styled(LoaderFillElement)`
-  margin: ${spacing.regular} ${spacing.large};
-`;
+export const LoaderItem = withStyles({
+  root: {
+    margin: `${spacing.regular} ${spacing.large}`,
+  },
+})(Skeleton);
 
 export const LoaderContainer = styled.div`
   padding: ${spacing.smallPlus} 0;

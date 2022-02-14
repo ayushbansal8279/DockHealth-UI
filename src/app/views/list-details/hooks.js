@@ -1,32 +1,25 @@
 /* eslint-disable unicorn/prevent-abbreviations */
 /* eslint-disable react-hooks/rules-of-hooks */
-import React, {
-  useEffect,
-  useCallback,
-  useState,
-  useMemo,
-  useRef,
-} from 'react';
+import { useEffect, useCallback, useState, useMemo, useRef } from 'react';
+import { useLocation } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
-import { isEmpty, isNil, move } from 'ramda';
+import { isEmpty, isNil } from 'ramda';
 import { initializePusher } from 'helpers/pusher-instance';
 import useActions from 'hooks/use-actions';
 import usePrevious from 'hooks/use-previous';
 import { TaskListTabName } from 'helpers/tasklist-helpers';
 import localStorageHelper from 'helpers/local-storage-helper';
-import { TaskStatus } from 'helpers/task-helpers';
+import { TaskItemColumn, TaskStatus } from 'helpers/task-helpers';
+import {
+  initializeTaskListState,
+  updateUserListViewSetup,
+  updateColumnOnListPreferences,
+  clearTaskListState,
+} from 'actions/task-list-actions';
+import { updateOrganizationCustomFields } from 'actions/organization-actions';
+
 import { checkIfTaskMatchesFilters } from 'helpers/filters-helpers';
 import { TASK_DISAPPEAR_DELAY } from 'helpers/task-update-helper';
-
-import { updateCurrentUserPreferences } from 'actions/user-actions';
-import {
-  taskListsSelector,
-  pendingTaskListsSelector,
-  taskListMembersSelector,
-  archivedTaskListsSelector,
-} from 'selectors/task-list-selectors';
-import { userProfileSelector } from 'selectors/user-selectors';
-import { selectedFiltersInMegaFilterSelector } from 'selectors/mega-filter-selectors';
 import {
   completedTasksIsFetchingSelector,
   tasksIsFetchingSelector,
@@ -34,23 +27,33 @@ import {
   groupTasksSelector,
   taskDetailsSortSelector,
   taskCountersSelector,
+  searchTermSelector,
 } from 'selectors/list-details-selectors';
+import {
+  currentTaskListSelector,
+  pendingTaskListsSelector,
+  taskListMembersSelector,
+  archivedTaskListsSelector,
+} from 'selectors/task-list-selectors';
+import { userProfileSelector } from 'selectors/user-selectors';
+import { selectedFiltersInMegaFilterSelector } from 'selectors/mega-filter-selectors';
 
-import * as TemplateActions from 'actions/template-actions';
-import * as MegaFilterActions from 'actions/mega-filter-actions';
+import { useColumnsConfig } from 'context-api/ColumnsConfigContext';
 import * as TaskActions from 'actions/task-actions';
 import * as ListDetailsActions from 'actions/list-details-actions';
-import { ListDetailsSagaActions } from 'sagas/list-details-saga';
+import { createTask } from 'sagas/list-details-saga';
 import * as ModalActions from 'modal/actions';
 import * as UserAuthApi from 'api/user-auth-api';
-
-import ListSelectHeader from 'components/task-view/ListSelectHeader/ListSelectHeader';
+import { getViewTypeFromQueryString } from 'helpers/view-type-helper';
 
 const LIST_DETAILS_FIRST_TIME_KEY = 'LIST_DETAILS_FIRST_TIME_KEY';
 
 const initializeListDetailsViewHooks = (match, history) => {
+  const { search } = useLocation();
+  const viewType = getViewTypeFromQueryString(search);
   const sort = useSelector(taskDetailsSortSelector);
-  const taskLists = useSelector(taskListsSelector);
+  const taskList = useSelector(currentTaskListSelector);
+  const { columnsConfig, setColumnsConfig } = useColumnsConfig();
   const currentUser = useSelector(userProfileSelector);
   const { userIdentifier: currentUserIdentifier } = currentUser || {};
   const members = useSelector(taskListMembersSelector);
@@ -66,17 +69,13 @@ const initializeListDetailsViewHooks = (match, history) => {
   const selectedFilters = useSelector(selectedFiltersInMegaFilterSelector);
 
   const actions = useActions(TaskActions);
-  const listDetailsSagaActions = useActions(ListDetailsSagaActions);
-  const templateActions = useActions(TemplateActions);
   const modalActions = useActions(ModalActions);
-  const megaFilterActions = useActions(MegaFilterActions);
-  const listDetailsActions = useActions(ListDetailsActions);
 
   const [isTourOpen, setIsTourOpen] = useState(false);
   const [tourConditionChecked, setTourConditionChecked] = useState(false);
-  const [searchValue, setSearchValue] = useState(null);
+  // const [searchValue, setSearchValue] = useState('');
+  const searchValue = useSelector(searchTermSelector);
 
-  const prevTaskLists = usePrevious(taskLists);
   const prevCurrentUser = usePrevious(currentUser);
   const prevTaskCounters = usePrevious(taskCounters);
   const prevMatch = usePrevious(match);
@@ -85,61 +84,41 @@ const initializeListDetailsViewHooks = (match, history) => {
   const [channel, setChannel] = useState(null);
 
   const dispatch = useDispatch();
+  const {
+    params: { taskListIdentifier: taskListIdentifierParam, tabName },
+  } = match;
 
-  const searchTasks = useCallback(
-    searchQuery => {
-      const tabName = match?.params?.tabName;
+  useEffect(() => {
+    dispatch(
+      initializeTaskListState(
+        taskListIdentifierParam,
+        tabName?.toUpperCase() || TaskStatus.INCOMPLETE,
+      ),
+    );
+  }, [dispatch, tabName, taskListIdentifierParam]);
 
-      const taskStatus =
-        tabName === TaskListTabName.COMPLETE ? 'COMPLETE' : 'INCOMPLETE';
+  useEffect(() => {
+    return () => {
+      dispatch(clearTaskListState());
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
-      listDetailsSagaActions.fetchTasksBySearchedTerm({
-        status: taskStatus,
-        searchedTerm: searchQuery,
-      });
-    },
-    [listDetailsSagaActions, match],
-  );
+  useEffect(() => {
+    if (taskListIdentifierParam) {
+      dispatch(ListDetailsActions.getListCustomFields(taskListIdentifierParam));
+    }
+  }, [dispatch, taskListIdentifierParam]);
 
   const refreshTab = useCallback(
     (withLoader = false) => {
-      const { params } = match || {};
-      const { taskListIdentifier, tabName } = params || {};
-
-      const status =
-        tabName === TaskListTabName.COMPLETE
-          ? TaskStatus.COMPLETE
-          : TaskStatus.INCOMPLETE;
-
-      megaFilterActions.getFiltersForMegaFilter(taskListIdentifier, status);
-      listDetailsActions.getListDetailsTaskCounters(params.taskListIdentifier);
-      listDetailsActions.refreshListDetailsGroupedTasks(withLoader);
+      dispatch(ListDetailsActions.getCurrentTaskListFilterOptions());
+      dispatch(
+        ListDetailsActions.getListDetailsTaskCounters(taskListIdentifierParam),
+      );
+      dispatch(ListDetailsActions.refreshListDetailsGroupedTasks(withLoader));
     },
-    [listDetailsActions, match, megaFilterActions],
-  );
-
-  const setViewHeader = useCallback(
-    (taskListIdentifier, lists) => {
-      const loadedTasklist =
-        lists?.length > 0
-          ? lists.find(t => t.taskListIdentifier === taskListIdentifier)
-          : {};
-
-      if (loadedTasklist?.listName) {
-        const headerComponent = <ListSelectHeader taskList={loadedTasklist} />;
-
-        templateActions.setHeader({
-          layout: [
-            {
-              key: 'header',
-              component: headerComponent,
-              xs: 12,
-            },
-          ],
-        });
-      }
-    },
-    [templateActions],
+    [dispatch, taskListIdentifierParam],
   );
 
   const openTourModal = useCallback(() => {
@@ -152,16 +131,8 @@ const initializeListDetailsViewHooks = (match, history) => {
   }, []);
 
   const refreshFilters = useCallback(() => {
-    const { params } = match;
-    const { taskListIdentifier, tabName } = params;
-
-    const status =
-      tabName === TaskListTabName.COMPLETE
-        ? TaskStatus.COMPLETE
-        : TaskStatus.INCOMPLETE;
-
-    megaFilterActions.getFiltersForMegaFilter(taskListIdentifier, status);
-  }, [match, megaFilterActions]);
+    dispatch(ListDetailsActions.getCurrentTaskListFilterOptions());
+  }, [dispatch]);
 
   const refreshAccessToken = useCallback(user => {
     const systemTimeout = parseInt(process.env.HEALTHCHECK_INTERVAL, 10);
@@ -183,17 +154,14 @@ const initializeListDetailsViewHooks = (match, history) => {
   }, []);
 
   const navigateToTab = useCallback(
-    tabName => {
-      const { params } = match;
-      const { taskListIdentifier } = params;
-
+    tab => {
       history.push(
-        `/core/tasks/${taskListIdentifier}${
-          tabName === TaskListTabName.OPEN ? '' : `/${TaskListTabName.COMPLETE}`
+        `/core/tasks/${taskListIdentifierParam}${
+          tab === TaskListTabName.OPEN ? '' : `/${TaskListTabName.COMPLETE}`
         }`,
       );
     },
-    [history, match],
+    [history, taskListIdentifierParam],
   );
 
   const quickAddTask = useCallback(
@@ -204,66 +172,10 @@ const initializeListDetailsViewHooks = (match, history) => {
           autoOpenDrawer: taskCounters?.incomplete === 0,
         };
 
-        listDetailsSagaActions.createTask(payload);
+        dispatch(createTask(payload));
       }
     },
-    [listDetailsSagaActions, taskCounters],
-  );
-
-  const deleteGroup = useCallback(
-    groupId => {
-      const { params } = match;
-      const { taskListIdentifier } = params;
-
-      const modalProps = {
-        title: 'Delete group',
-        description:
-          'Are you sure you want to delete this group? If you delete this group and there are tasks within the group, the tasks will not be deleted',
-        confirm: () => {
-          modalActions.closeModal();
-          listDetailsSagaActions.deleteTasksGroup({
-            groupId,
-            taskListIdentifier,
-          });
-        },
-      };
-      modalActions.openModal('DeleteConfirmation', modalProps);
-    },
-    [listDetailsSagaActions, match, modalActions],
-  );
-
-  const editGroupName = useCallback(
-    (newGroupName, groupId) => {
-      const { params } = match;
-      const { taskListIdentifier } = params;
-
-      if (newGroupName) {
-        listDetailsSagaActions.editTasksGroupName({
-          taskListIdentifier,
-          groupId,
-          newGroupName,
-        });
-      }
-    },
-    [listDetailsSagaActions, match],
-  );
-
-  const changeGroupsOrder = useCallback(
-    (oldTaskIndex, newTaskIndex, groupList) => {
-      const { params } = match;
-      const { taskListIdentifier } = params;
-
-      if (newTaskIndex < 0 || newTaskIndex >= groupList.length) {
-        return;
-      }
-      const groupIdsList = groupList.map(group => group.taskGroupIdentifier);
-      const newGroupList = move(oldTaskIndex, newTaskIndex, groupIdsList);
-      listDetailsSagaActions.sortTasksGroups({
-        taskGroupIdentifiers: newGroupList,
-        taskListIdentifier,
-      });
-    },
-    [listDetailsSagaActions, match],
+    [dispatch, taskCounters],
   );
 
   const refreshTabAfterTaskUpdate = useCallback(
@@ -284,38 +196,23 @@ const initializeListDetailsViewHooks = (match, history) => {
     const { params } = match;
     const { taskListIdentifier } = params;
 
-    listDetailsSagaActions.getTasksGroupsList({
-      taskListIdentifier,
-      shouldSetRequestState: false,
-    });
+    dispatch(ListDetailsActions.getListDetailsTaskCounters(taskListIdentifier));
+    dispatch(ListDetailsActions.getTasksGroupsList());
     refreshFilters();
     if (selectedFilters && !isEmpty(selectedFilters)) {
       refreshTab();
     }
-  }, [
-    listDetailsSagaActions,
-    match,
-    refreshFilters,
-    refreshTab,
-    selectedFilters,
-  ]);
+  }, [dispatch, match, refreshFilters, refreshTab, selectedFilters]);
 
   const changeSearchValue = useCallback(
-    searchQuery => {
-      setSearchValue(searchQuery);
-
-      if (searchQuery) {
-        searchTasks(searchQuery);
-      } else {
-        refreshTab(true);
-      }
-    },
-    [refreshTab, searchTasks],
+    searchQuery =>
+      dispatch(ListDetailsActions.searchCurrentListTasks(searchQuery)),
+    [dispatch],
   );
 
   const resetSort = useCallback(() => {
-    listDetailsActions.sortListDetailsTasks(null, null);
-  }, [listDetailsActions]);
+    dispatch(ListDetailsActions.sortListDetailsTasks(null, null));
+  }, [dispatch]);
 
   const invokeToggleCompleteAction = useCallback(
     task => {
@@ -326,38 +223,21 @@ const initializeListDetailsViewHooks = (match, history) => {
         .toggleCompleteTask(task, currentUser)
         .then(() => {
           setTimeout(() => {
-            listDetailsActions.getListDetailsTaskCounters(taskListIdentifier);
-            listDetailsSagaActions.getTasksGroupsList({
-              shouldSetRequestState: false,
-            });
+            dispatch(
+              ListDetailsActions.getListDetailsTaskCounters(taskListIdentifier),
+            );
+            dispatch(ListDetailsActions.getTasksGroupsList());
           }, TASK_DISAPPEAR_DELAY);
         })
         .catch(() => refreshTab());
     },
-    [
-      actions,
-      currentUser,
-      listDetailsActions,
-      listDetailsSagaActions,
-      match,
-      refreshTab,
-    ],
+    [actions, currentUser, dispatch, match, refreshTab],
   );
 
   const handleTaskUpdate = useCallback(
     (taskIdentifier, dataToUpdate) => {
       actions
         .partialUpdateTask(taskIdentifier, dataToUpdate)
-        .then(refreshTabAfterTaskUpdate)
-        .catch(() => refreshTab());
-    },
-    [actions, refreshTab, refreshTabAfterTaskUpdate],
-  );
-
-  const handleUpdateDueDate = useCallback(
-    (task, dueDate) => {
-      actions
-        .updateDueDate(task, dueDate, true)
         .then(refreshTabAfterTaskUpdate)
         .catch(() => refreshTab());
     },
@@ -376,9 +256,9 @@ const initializeListDetailsViewHooks = (match, history) => {
 
   const handleCreateGroup = useCallback(
     groupName => {
-      listDetailsSagaActions.createTaskGroupList({ groupName });
+      dispatch(ListDetailsActions.createTaskListGroup(groupName));
     },
-    [listDetailsSagaActions],
+    [dispatch],
   );
 
   const loadTasksForTaskGroup = useCallback(
@@ -391,9 +271,9 @@ const initializeListDetailsViewHooks = (match, history) => {
         viewMode,
         refresh,
       };
-      listDetailsSagaActions.getTasksForTaskGroups(payload);
+      dispatch(ListDetailsActions.getTasksForTaskGroups(payload));
     },
-    [listDetailsSagaActions, sort],
+    [dispatch, sort],
   );
 
   const loadMoreTasksForList = useCallback(
@@ -436,36 +316,8 @@ const initializeListDetailsViewHooks = (match, history) => {
     [invokeToggleCompleteAction, modalActions],
   );
 
-  const launchNewFeaturesModal = useCallback(() => {
-    const isNewUser = currentUser?.usageState?.loginCount <= 5;
-
-    if (currentUser && !isEmpty(currentUser) && !isNewUser) {
-      const { userPreference: { appFeaturesReviewed } = {} } = currentUser;
-
-      if (!appFeaturesReviewed?.includes('MULTI_MENTION_ASSIGN')) {
-        modalActions.openModal('MultiMentionAssignTour', {
-          onClose: () => {
-            dispatch(
-              updateCurrentUserPreferences({
-                appFeaturesReviewed: ['MULTI_MENTION_ASSIGN'],
-              }),
-            );
-          },
-        });
-      }
-    }
-  }, [currentUser, dispatch, modalActions]);
-
   useEffect(() => {
-    const { params } = match;
-
-    setViewHeader(params.taskListIdentifier, [
-      ...taskLists,
-      ...pendingTaskLists,
-    ]);
-
     refreshAccessToken(currentUser);
-    launchNewFeaturesModal();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
@@ -477,17 +329,6 @@ const initializeListDetailsViewHooks = (match, history) => {
       match.params.tabName === TaskListTabName.COMPLETE
     ) {
       navigateToTab(TaskListTabName.OPEN);
-    }
-
-    if (
-      prevMatch?.params?.taskListIdentifier &&
-      match.params.taskListIdentifier &&
-      match.params.taskListIdentifier !== prevMatch?.params?.taskListIdentifier
-    ) {
-      setViewHeader(match.params.taskListIdentifier, [
-        ...taskLists,
-        ...pendingTaskLists,
-      ]);
     }
 
     if (
@@ -514,23 +355,9 @@ const initializeListDetailsViewHooks = (match, history) => {
     prevCurrentUser,
     prevMatch,
     prevTaskCounters,
-    prevTaskLists,
-    setViewHeader,
     taskCounters,
-    taskLists,
     tourConditionChecked,
   ]);
-
-  const { params } = match;
-  const { taskListIdentifier, tabName } = params;
-
-  const loadedTasklist = useMemo(
-    () =>
-      taskLists
-        ? taskLists.find(t => t.taskListIdentifier === taskListIdentifier)
-        : {},
-    [taskListIdentifier, taskLists],
-  );
 
   const selectedTab = tabName || TaskListTabName.OPEN;
 
@@ -564,7 +391,7 @@ const initializeListDetailsViewHooks = (match, history) => {
     const callback = data => {
       if (
         data.task?.taskList &&
-        data.task?.taskList.taskListIdentifier === taskListIdentifier
+        data.task?.taskList.taskListIdentifier === taskListIdentifierParam
       ) {
         if (
           (data.eventType?.startsWith('CREATE_TASK') ||
@@ -572,25 +399,28 @@ const initializeListDetailsViewHooks = (match, history) => {
           data.task?.creator.userIdentifier !== currentUserIdentifier
         ) {
           refreshTab();
-        } else if (
-          data.eventType === 'UPDATE_TASK' &&
-          data.task.taskIdentifier
-        ) {
+        } else if (data.task.taskIdentifier) {
           actions.refreshTask(data.task.identifier);
         }
       }
     };
 
-    if (channel && taskListIdentifier) {
+    if (channel && taskListIdentifierParam) {
       channel.bind('task-update', callback);
     }
 
     return () => {
-      if (channel && taskListIdentifier) {
+      if (channel && taskListIdentifierParam) {
         channel.unbind('task-update', callback);
       }
     };
-  }, [channel, refreshTab, taskListIdentifier, currentUserIdentifier, actions]);
+  }, [
+    channel,
+    refreshTab,
+    taskListIdentifierParam,
+    currentUserIdentifier,
+    actions,
+  ]);
 
   useEffect(() => {
     if (currentUserIdentifier) {
@@ -606,28 +436,114 @@ const initializeListDetailsViewHooks = (match, history) => {
     return () => {};
   }, [currentUserIdentifier]);
 
+  const VIEW_LIST_OPTIONS_CONFIG = {
+    SHOW_WORKFLOW_DETAILS: false,
+    SHOW_WORKFLOW_COMPLETED_TASKS: false,
+  };
+
+  const displayListPreferences = useMemo(() => {
+    const { displayOptions = [] } =
+      taskList?.listUsers?.find(
+        user => user.identifier === currentUserIdentifier,
+      ) || {};
+
+    return displayOptions.reduce(
+      (accumulator, value) => ({ ...accumulator, [value]: true }),
+      VIEW_LIST_OPTIONS_CONFIG,
+    );
+  }, [VIEW_LIST_OPTIONS_CONFIG, currentUserIdentifier, taskList]);
+
+  const setDisplayColumnPreferences = useCallback(
+    (newConfig, options) => {
+      if (options?.isCustomColumn) {
+        dispatch(
+          updateOrganizationCustomFields(
+            newConfig.filter(f => f.isChecked).map(f => f.identifier),
+          ),
+        );
+      } else {
+        const parsedConfig = Object.entries(newConfig).reduce(
+          (accumulator, [key, value]) =>
+            value ? [...accumulator, key] : accumulator,
+          [],
+        );
+        dispatch(
+          updateColumnOnListPreferences(
+            parsedConfig,
+            taskList.taskListIdentifier,
+            currentUserIdentifier,
+          ),
+        );
+      }
+    },
+    [currentUserIdentifier, dispatch, taskList],
+  );
+
+  const CONFIGURABLE_COLUMNS_CONFIG = {
+    [TaskItemColumn.WORKFLOW_STATUS]: false,
+    [TaskItemColumn.ASSIGNED]: false,
+    [TaskItemColumn.ACTIVITY]: false,
+    [TaskItemColumn.DUE_DATE]: false,
+    [TaskItemColumn.PATIENT]: false,
+  };
+
+  useEffect(() => {
+    const { displayColumns = [] } =
+      taskList?.listUsers?.find(
+        user => user.identifier === currentUserIdentifier,
+      ) || {};
+
+    const transformedColumnsPreference = displayColumns.reduce(
+      (accumulator, value) => ({ ...accumulator, [value]: true }),
+      { ...columnsConfig, ...CONFIGURABLE_COLUMNS_CONFIG },
+    );
+    setColumnsConfig(transformedColumnsPreference);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [currentUserIdentifier, setColumnsConfig, taskList]);
+
+  const setDisplayListPreferences = useCallback(
+    columnKey => {
+      const newConfig = {
+        ...displayListPreferences,
+        [columnKey]: !displayListPreferences[columnKey],
+      };
+      const parsedConfig = Object.entries(newConfig).reduce(
+        (accumulator, [key, value]) =>
+          value ? [...accumulator, key] : accumulator,
+        [],
+      );
+      dispatch(
+        updateUserListViewSetup(
+          taskListIdentifierParam,
+          parsedConfig,
+          currentUserIdentifier,
+        ),
+      );
+    },
+    [
+      displayListPreferences,
+      dispatch,
+      taskListIdentifierParam,
+      currentUserIdentifier,
+    ],
+  );
+
   return {
+    taskList,
     bulkEditIsDisabled,
     bulkEditTasks,
-    changeGroupsOrder,
     changeSearchValue,
     completedTasks,
-    deleteGroup,
-    editGroupName,
     handleCreateGroup,
     handleTaskDelete,
     handleTaskUpdate,
-    handleUpdateDueDate,
     handleUpdateWorkflowStatus,
     isCompletedTasksFetching,
     isFetching,
     isTourOpen,
-    listDetailsActions,
-    loadedTasklist,
     loadMoreTasksForList,
     loadTasksForTaskGroup,
     members,
-    navigateToTab,
     openedTasks,
     quickAddTask,
     refreshTab,
@@ -638,8 +554,14 @@ const initializeListDetailsViewHooks = (match, history) => {
     selectedTab,
     sort,
     taskCounters,
-    taskListIdentifier,
+    taskListIdentifier: taskListIdentifierParam,
     toggleTaskCompletedStatus,
+    displayListPreferences,
+    setDisplayListPreferences,
+    setDisplayColumnPreferences,
+    viewType,
+    refreshFilters,
+    dispatch,
   };
 };
 

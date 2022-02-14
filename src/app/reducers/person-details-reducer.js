@@ -1,22 +1,14 @@
-import {
-  GET_PERSON_TASKS_SUCCESS,
-  GET_PERSON_COMPLETED_TASKS_SUCCESS,
-  REQUEST_PERSON_TASKS,
-  REQUEST_PERSON_COMPLETED_TASKS,
-  RESET_PERSON_TASK_COUNTERS,
-  GET_PERSON_TASK_COUNTERS_SUCCESS,
-  GET_PERSON_DETAILS_SUCCESS,
-  GET_PERSON_DETAILS_FAILURE,
-  SORT_PERSON_TASKS,
-  ADD_TASK,
-} from 'actions/action-types';
+import * as ActionTypes from 'actions/action-types';
 import { mapWithRemove } from 'helpers/utility-functions';
 import TaskBaseReducer from './task-base-reducer';
 
 const initialState = {
-  personData: null,
-  completedTasks: [],
-  tasks: [],
+  userIdentifier: null,
+  currentTasksStatus: null,
+  userDetails: null,
+  isFetchingUserDetails: false,
+  completedTasks: null,
+  tasks: null,
   isFetching: false,
   isCompletedTasksFetching: false,
   taskCounters: {},
@@ -42,29 +34,72 @@ const updateTasksStateCallback = (state, updateTaskFromAction) => {
   };
 };
 
-// eslint-disable-next-line sonarjs/cognitive-complexity
 const PersonDetailsReducer = (state = initialState, action) => {
-  // eslint-disable-next-line sonarjs/max-switch-cases
   switch (action.type) {
-    case GET_PERSON_DETAILS_SUCCESS:
+    case ActionTypes.INITIALIZE_USER_DETAILS_STATE: {
+      const { userIdentifier, currentTasksStatus } = action;
+
       return {
-        ...state,
-        personData: action.user,
+        ...initialState,
+        userIdentifier,
+        currentTasksStatus,
+      };
+    }
+
+    case ActionTypes.CLEAR_USER_DETAILS_STATE:
+      return {
+        ...initialState,
       };
 
-    case GET_PERSON_DETAILS_FAILURE:
+    case ActionTypes.CHANGE_CURRENT_TASKS_STATUS: {
+      const { status } = action;
+
       return {
         ...state,
-        personData: null,
+        currentTasksStatus: status,
+      };
+    }
+
+    case ActionTypes.GET_USER_DETAILS:
+      return {
+        ...state,
+        isFetchingUserDetails: true,
       };
 
-    case GET_PERSON_TASKS_SUCCESS: {
+    case ActionTypes.GET_USER_DETAILS_SUCCESS:
+      return {
+        ...state,
+        userIdentifier: action.user.userIdentifier,
+        userDetails: action.user,
+        isFetchingUserDetails: false,
+      };
+
+    case ActionTypes.GET_USER_DETAILS_FAILURE:
+      return {
+        ...state,
+        userDetails: null,
+        isFetchingUserDetails: false,
+      };
+
+    case ActionTypes.GET_USER_TASKS:
+      return {
+        ...state,
+        isFetching: true,
+      };
+
+    case ActionTypes.GET_USER_TASKS_SUCCESS: {
       const { tasks } = action;
 
       return { ...state, tasks: tasks.map(mapTasksSuccess), isFetching: false };
     }
 
-    case GET_PERSON_COMPLETED_TASKS_SUCCESS: {
+    case ActionTypes.GET_USER_COMPLETED_TASKS:
+      return {
+        ...state,
+        isCompletedTasksFetching: true,
+      };
+
+    case ActionTypes.GET_USER_COMPLETED_TASKS_SUCCESS: {
       const { tasks } = action;
 
       return {
@@ -75,34 +110,13 @@ const PersonDetailsReducer = (state = initialState, action) => {
       };
     }
 
-    case REQUEST_PERSON_TASKS:
+    case ActionTypes.GET_USER_TASK_COUNTERS_SUCCESS:
       return {
         ...state,
-        isFetching: true,
-        tasks: [],
-        completedTasks: [],
+        taskCounters: action.taskCounters,
       };
 
-    case REQUEST_PERSON_COMPLETED_TASKS:
-      return {
-        ...state,
-        completedTasks: [],
-        isCompletedTasksFetching: true,
-      };
-
-    case RESET_PERSON_TASK_COUNTERS:
-      return {
-        ...state,
-        taskCounters: {},
-      };
-
-    case GET_PERSON_TASK_COUNTERS_SUCCESS:
-      return {
-        ...state,
-        taskCounters: action.payload,
-      };
-
-    case SORT_PERSON_TASKS: {
+    case ActionTypes.SORT_USER_TASKS: {
       const { key, order } = action.payload || {};
 
       return {
@@ -111,10 +125,12 @@ const PersonDetailsReducer = (state = initialState, action) => {
           key,
           order,
         },
+        completedTasks: null,
+        tasks: null,
       };
     }
 
-    case ADD_TASK: {
+    case ActionTypes.ADD_TASK_SUCCESS: {
       const { task: addedTask } = action;
 
       return {

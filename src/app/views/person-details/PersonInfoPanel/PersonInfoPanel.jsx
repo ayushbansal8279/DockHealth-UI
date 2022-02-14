@@ -1,11 +1,14 @@
-import PropTypes from 'prop-types';
 import React from 'react';
-import { useSelector } from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
 import { Link, useHistory } from 'react-router-dom';
 import { removeUserFromOrganization } from 'api/organization-api';
+import { openModal } from 'modal/actions';
+import { showGlobalErrorAlert } from 'alert/actions';
 import UserAvatar from 'components/user/UserAvatar/UserAvatar';
-import { formatPhoneNumber, showAlert } from 'helpers/utility-functions';
+import { formatPhoneNumber } from 'helpers/utility-functions';
 import ArrowLeftIcon from 'img/arrow-left';
+import { userProfileSelector } from 'selectors/user-selectors';
+import { userDetailsSelector } from 'selectors/person-details-selectors';
 import Spacing from 'components/common/Spacing';
 import {
   ArchivePersonButton,
@@ -16,7 +19,9 @@ import {
 } from './styled';
 import PersonInfoLoader from './PersonInfoLoader';
 
-const PersonInfoPanel = ({ personData, archivePerson }) => {
+const PersonInfoPanel = () => {
+  const dispatch = useDispatch();
+  const userDetails = useSelector(userDetailsSelector);
   const {
     accountPhoneNumber,
     email,
@@ -24,29 +29,33 @@ const PersonInfoPanel = ({ personData, archivePerson }) => {
     lastName,
     userIdentifier,
     workPhoneNumber,
-  } = personData || {};
+  } = userDetails || {};
   const history = useHistory();
 
-  const orgUserRole = useSelector(
-    store => store.userState.userProfile.orgUserRole,
-  );
+  const { orgUserRole } = useSelector(userProfileSelector);
 
   const isAdminOrOwner = orgUserRole === 'ADMIN' || orgUserRole === 'OWNER';
 
-  const onConfirmArchive = () =>
-    removeUserFromOrganization(userIdentifier)
-      .then(() => {
-        history.push('/people');
-      })
-      .catch(error => {
-        showAlert({
-          status: 'error',
-          title: 'Error',
-          text:
-            error?.errorMessage ??
-            'Could not archive this person, please try again later',
-        });
-      });
+  const handleArchiveUser = () => {
+    dispatch(
+      openModal('ArchivePerson', {
+        confirm: () => {
+          removeUserFromOrganization(userIdentifier)
+            .then(() => {
+              history.push('/people');
+            })
+            .catch(error => {
+              dispatch(
+                showGlobalErrorAlert(
+                  error?.errorMessage ??
+                    'Could not archive this person, please try again later',
+                ),
+              );
+            });
+        },
+      }),
+    );
+  };
 
   return (
     <InfoPanelContainer>
@@ -58,10 +67,10 @@ const PersonInfoPanel = ({ personData, archivePerson }) => {
         />
       </Link>
       <Spacing horizontal={3} />
-      {personData ? (
+      {userDetails ? (
         <>
           <UserAvatar
-            user={personData}
+            user={userDetails}
             size={50}
             hideTooltip
             showOnlineIndicator={false}
@@ -82,9 +91,7 @@ const PersonInfoPanel = ({ personData, archivePerson }) => {
           </ContactInfoContainer>
           {isAdminOrOwner && userIdentifier && (
             <>
-              <ArchivePersonButton
-                onClick={() => archivePerson({ confirm: onConfirmArchive })}
-              >
+              <ArchivePersonButton onClick={handleArchiveUser}>
                 Archive this person
               </ArchivePersonButton>
             </>
@@ -95,13 +102,6 @@ const PersonInfoPanel = ({ personData, archivePerson }) => {
       )}
     </InfoPanelContainer>
   );
-};
-
-PersonInfoPanel.propTypes = {
-  personData: PropTypes.shape({
-    firstName: PropTypes.string,
-    lastName: PropTypes.string,
-  }).isRequired,
 };
 
 export default PersonInfoPanel;

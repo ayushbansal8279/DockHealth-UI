@@ -15,13 +15,14 @@ import UserReducer from './user-reducer';
 import ListDetailsReducer from './list-details-reducer';
 import PatientDetailsReducer from './patient-details-reducer';
 import TemplateReducer from './template-reducer';
-import DashboardTasksReducer from './dashboard-tasks-reducer';
-import DashboardStatisticsReducer from './dashboard-statistics-reducer';
+import DashboardReducer from './dashboard-reducer';
 import GlobalSearchReducer from './global-search-reducer';
 import ActiveUsersReducer from './active-users-reducer';
 import PersonDetailsReducer from './person-details-reducer';
 import TaskTemplateReducer from './task-template-reducer';
 import PatientsReducer from './patients-reducer';
+import AnalyticsReducer from './analytics-reducer';
+import WorkflowDrawerReducer from './workflow-drawer-reducer';
 
 const appReducer = combineReducers({
   templateState: TemplateReducer,
@@ -39,13 +40,14 @@ const appReducer = combineReducers({
   location: LocationReducer,
   listDetails: ListDetailsReducer,
   patientDetails: PatientDetailsReducer,
-  dashboardTasks: DashboardTasksReducer,
-  dashboardStatistics: DashboardStatisticsReducer,
+  dashboardTasks: DashboardReducer,
   globalSearch: GlobalSearchReducer,
   activeUsers: ActiveUsersReducer,
   personDetails: PersonDetailsReducer,
   taskTemplate: TaskTemplateReducer,
   patients: PatientsReducer,
+  analytics: AnalyticsReducer,
+  workflowDrawer: WorkflowDrawerReducer,
 });
 
 export default function rootReducer(state, action) {

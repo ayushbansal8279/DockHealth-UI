@@ -1,237 +1,120 @@
 /* eslint-disable sonarjs/cognitive-complexity */
-import React, { useEffect, useRef } from 'react';
-import { openModal } from 'modal/actions';
-import { IconButton, ListItem } from '@material-ui/core';
+import React, { useMemo } from 'react';
+import { CircleIcon } from 'components/task/styled';
+import { Box, IconButton } from '@material-ui/core';
 import { Close, MoreHoriz } from '@material-ui/icons';
-import { checkIfTemplateTask } from 'helpers/task-helpers';
+import { checkIfTemplateTask, TaskStatus } from 'helpers/task-helpers';
 import Spacing from 'components/common/Spacing';
 import palette from 'styles/palette';
-import { RobotoTypography } from 'styles/theme';
-import SmallSwitchChevronDown from 'img/small-switch-chevron-down';
-import InputPopover from 'components/common/InputPopover/InputPopover';
-import { HorizontalLabel } from '../styled';
-import {
-  FiledInSelect,
-  StyledList,
-  ActionButtonsContainer,
-  ListNameContainer,
-  ListNameSelectContainer,
-} from './styled';
-
+import Circle from 'img/circle.svg';
+import CircleCompleted from 'img/circle-completed.svg';
+import OptionsMenu from 'components/common/OptionsMenu/OptionsMenu';
+import { HorizontalLabel, FiledInListName } from '../styled';
 import initializeTaskDrawerTopSectionHooks from './hooks';
 
-function useOutsideAction(reference, onClickOutside) {
-  useEffect(() => {
-    // eslint-disable-next-line unicorn/consistent-function-scoping
-    function handleClickOutside(event) {
-      if (reference.current && !reference.current.contains(event.target)) {
-        onClickOutside();
-      }
-    }
-
-    // Bind the event listener
-    document.addEventListener('mousedown', handleClickOutside);
-
-    return () => {
-      // Unbind the event listener on clean up
-      document.removeEventListener('mousedown', handleClickOutside);
-    };
-  }, [reference, onClickOutside]);
-}
-
-const renderTaskList = ({
-  closePopover,
-  onFiledInInputChange,
-  setValue,
-  reFileTask,
-  closeTaskDrawer,
-  selectedTaskIdentifier,
-  selectedTaskListName,
-  hasSubtasks,
-  dispatch,
-}) => taskList => {
-  const { taskListIdentifier, listName } = taskList;
-
-  const changeFiledInList = () => {
-    setValue('newTaskListId', taskListIdentifier);
-    onFiledInInputChange(listName);
-
-    if (!hasSubtasks) closePopover();
-
-    if (selectedTaskIdentifier) {
-      reFileTask({ newTaskList: taskList });
-      closeTaskDrawer();
-    }
-  };
-
-  const openMoveModal = () => {
-    closePopover();
-    dispatch(
-      openModal('MoveTasksWithSubtasks', {
-        confirm: changeFiledInList,
-      }),
-    );
-  };
-
-  return (
-    <ListItem
-      key={taskListIdentifier}
-      onClick={hasSubtasks ? openMoveModal : changeFiledInList}
-      button
-    >
-      <RobotoTypography
-        condensed
-        variant="h4"
-        style={{
-          color: selectedTaskListName === listName ? palette.blueOcean : '',
-        }}
-      >
-        {listName}
-      </RobotoTypography>
-    </ListItem>
-  );
-};
-
 const TopSection = ({
-  formMethods,
-  selectedTask,
-  reFileTask,
   onDelete,
   onDuplicate,
-  onAddSubTask,
-  isInbox,
   closeTaskDrawer,
   setTourTaskMenuReference,
-  assignToSelf,
 }) => {
-  const { setValue, register } = formMethods;
-  const selectedTaskIdentifier = selectedTask?.taskIdentifier;
-  const selectedTaskStatus = selectedTask?.status;
-  const taskList = selectedTask?.taskList;
-  const isCompleted = selectedTaskStatus === 'COMPLETE';
-  const hasSubtasks = selectedTask?.subTasksCount !== 0;
-
   const {
-    filedInInputReference,
-    isFiledInPopoverOpen,
-    openFiledInPopover,
-    closeFiledInPopover,
-    filedInInputValue,
-    onFiledInInputChange,
-    taskMenuReference,
-    isTaskMenuPopoverOpen,
-    openTaskMenuPopover,
-    closeTaskMenuPopover,
+    selectedTask,
+    handleMoveTask,
     openDeleteConfirmationModal,
     openDuplicateConfirmationModal,
     duplicateTaskWithoutConfirmation,
-    dispatch,
-    taskLists,
+    onCompleteToggle,
+    isDependencyEmptyOrCompleted,
+    isTaskStatusTogglingDisabled,
   } = initializeTaskDrawerTopSectionHooks({
     onDelete,
     onDuplicate,
     closeTaskDrawer,
-    selectedTask,
   });
 
-  const moreTaskListsAvailable = !!(taskLists && taskLists.length > 1);
+  const options = useMemo(
+    () => [
+      {
+        name: 'Move',
+        onClick: handleMoveTask,
+      },
+      {
+        name: 'Duplicate',
+        onClick: () => {
+          const hasAttachments = !!(
+            selectedTask &&
+            selectedTask.attachments &&
+            selectedTask.attachments.length > 0
+          );
 
-  const hasAttachments = !!(
-    selectedTask &&
-    selectedTask.attachments &&
-    selectedTask.attachments.length > 0
+          if (hasAttachments) {
+            openDuplicateConfirmationModal();
+          } else {
+            duplicateTaskWithoutConfirmation();
+          }
+        },
+      },
+      {
+        name: 'Delete',
+        color: palette.error,
+        onClick: openDeleteConfirmationModal,
+      },
+    ],
+    [
+      duplicateTaskWithoutConfirmation,
+      handleMoveTask,
+      openDeleteConfirmationModal,
+      openDuplicateConfirmationModal,
+      selectedTask,
+    ],
   );
 
-  const taskListsContainerReference = useRef(null);
-  useOutsideAction(taskListsContainerReference, closeFiledInPopover);
-
-  const optionsContainerReference = useRef(null);
-  useOutsideAction(optionsContainerReference, closeTaskMenuPopover);
-
   return (
-    <>
-      <ListNameContainer>
-        {selectedTask &&
-          !selectedTask.parentTaskIdentifier &&
-          !checkIfTemplateTask(selectedTask) && (
-            <>
-              <input type="hidden" name="newTaskListId" ref={register} />
-              <HorizontalLabel>FILED IN: </HorizontalLabel>
-              <Spacing horizontal={3} />
-              <ListNameSelectContainer
-                ref={filedInInputReference}
-                onClick={
-                  moreTaskListsAvailable ? openFiledInPopover : undefined
-                }
-              >
-                <FiledInSelect enableDropDown={moreTaskListsAvailable}>
-                  {selectedTask ? (
-                    <RobotoTypography condensed color="inherit">
-                      {isInbox
-                        ? 'Inbox'
-                        : filedInInputValue || taskList?.listName}
-                    </RobotoTypography>
-                  ) : (
-                    <RobotoTypography condensed color="inherit">
-                      {isInbox ? 'Inbox' : taskList?.listName}
-                    </RobotoTypography>
-                  )}
-                </FiledInSelect>
-                {moreTaskListsAvailable && (
-                  <>
-                    <Spacing horizontal={3} />
-                    <SmallSwitchChevronDown color={palette.orangeJulius} />
-                  </>
-                )}
-              </ListNameSelectContainer>
-              <InputPopover
-                anchorElement={filedInInputReference}
-                isPopoverOpen={isFiledInPopoverOpen}
-                closePopover={closeFiledInPopover}
-                popupStyle={{
-                  width: '550px',
-                }}
-              >
-                <StyledList ref={taskListsContainerReference}>
-                  {(taskLists ?? []).map(
-                    renderTaskList({
-                      closePopover: closeFiledInPopover,
-                      onFiledInInputChange,
-                      setValue,
-                      reFileTask,
-                      closeTaskDrawer,
-                      selectedTaskIdentifier,
-                      selectedTaskListName: taskList?.listName,
-                      hasSubtasks,
-                      dispatch,
-                    }),
-                  )}
-                </StyledList>
-              </InputPopover>
-            </>
-          )}
-      </ListNameContainer>
-      <Spacing horizontal={5} />
-      <ActionButtonsContainer>
-        {selectedTask && (
-          <IconButton
-            ref={element => {
-              taskMenuReference.current = element;
-              setTourTaskMenuReference(element);
-            }}
-            onClick={() => {
-              openTaskMenuPopover();
-            }}
-            size="small"
-            color="secondary"
-          >
-            <MoreHoriz />
-          </IconButton>
+    <Box
+      width="100%"
+      display="flex"
+      justifyContent="space-between"
+      alignItems="center"
+    >
+      <Box display="flex">
+        {selectedTask && !checkIfTemplateTask(selectedTask) && (
+          <>
+            <HorizontalLabel>Mark Complete : </HorizontalLabel>
+            <Spacing horizontal={3} />
+            <CircleIcon
+              src={
+                selectedTask?.status === TaskStatus.COMPLETE
+                  ? CircleCompleted
+                  : Circle
+              }
+              isClickable={
+                !isTaskStatusTogglingDisabled && isDependencyEmptyOrCompleted
+              }
+              isCompleted={selectedTask?.status === TaskStatus.COMPLETE}
+              onClick={onCompleteToggle}
+            />
+            <Spacing horizontal={3} />
+            <HorizontalLabel>Filed In: </HorizontalLabel>
+            <Spacing horizontal={3} />
+            <FiledInListName>
+              {selectedTask?.taskList?.listName}
+            </FiledInListName>
+          </>
         )}
-        <Spacing horizontal={4} />
+      </Box>
+      <Box display="flex">
+        <OptionsMenu options={options} customButtonComponent={IconButton}>
+          <MoreHoriz
+            ref={element => {
+              if (element) setTourTaskMenuReference(element);
+            }}
+            color="primary"
+          />
+        </OptionsMenu>
+        <Box mx={0.5} />
         <IconButton
           onClick={() => {
-            // storeAsCurrentTask(null);
             closeTaskDrawer();
           }}
           size="small"
@@ -239,87 +122,8 @@ const TopSection = ({
         >
           <Close />
         </IconButton>
-        <InputPopover
-          anchorElement={taskMenuReference}
-          isPopoverOpen={isTaskMenuPopoverOpen}
-          closePopover={closeTaskMenuPopover}
-          popupStyle={{
-            width: '200px',
-            marginLeft: '-60px',
-            marginTop: '-20px',
-          }}
-        >
-          <StyledList
-            style={{
-              paddingTop: '0',
-              paddingBottom: '0',
-            }}
-            ref={optionsContainerReference}
-          >
-            {!isCompleted &&
-              selectedTask &&
-              !selectedTask.parentTaskIdentifier && (
-                <ListItem
-                  key="action_add_subtask"
-                  onClick={onAddSubTask({
-                    afterAddSubTask: () => {
-                      closeTaskMenuPopover();
-                    },
-                    selectedTask,
-                    assignToSelf,
-                  })}
-                  button
-                  style={{
-                    borderBottom: `1px solid ${palette.coolGrey3}`,
-                  }}
-                >
-                  <RobotoTypography condensed variant="h4">
-                    Add Subtask
-                  </RobotoTypography>
-                </ListItem>
-              )}
-            <ListItem
-              key="action_duplicate"
-              onClick={event => {
-                closeTaskMenuPopover();
-                if (hasAttachments) {
-                  openDuplicateConfirmationModal();
-                } else {
-                  duplicateTaskWithoutConfirmation(event);
-                }
-              }}
-              button
-              style={{
-                borderBottom: `1px solid ${palette.coolGrey3}`,
-              }}
-            >
-              <RobotoTypography condensed variant="h4">
-                Duplicate
-              </RobotoTypography>
-            </ListItem>
-            {selectedTask &&
-              selectedTask.taskIdentifier != null &&
-              selectedTask.status !== 'COMPLETE' && (
-                <ListItem
-                  key="action_delete"
-                  onClick={() => {
-                    closeTaskMenuPopover();
-                    openDeleteConfirmationModal();
-                  }}
-                  button
-                  style={{
-                    borderBottom: `none`,
-                  }}
-                >
-                  <RobotoTypography condensed variant="h4">
-                    Delete
-                  </RobotoTypography>
-                </ListItem>
-              )}
-          </StyledList>
-        </InputPopover>
-      </ActionButtonsContainer>
-    </>
+      </Box>
+    </Box>
   );
 };
 

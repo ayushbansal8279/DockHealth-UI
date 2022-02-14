@@ -1,5 +1,4 @@
-/* eslint-disable sonarjs/cognitive-complexity */
-import React, { useRef, useEffect } from 'react';
+import React, { useRef } from 'react';
 import { isNil } from 'ramda';
 import { useBoolean } from 'hooks/useBoolean';
 import { useDispatch } from 'react-redux';
@@ -10,9 +9,10 @@ import CalendarIcon from 'img/template/calendar-icon';
 import DeleteOutlineIcon from '@material-ui/icons/DeleteOutline';
 import { getEdgeCenter, useStoreState } from 'react-flow-renderer';
 import LinkPath from '../LinkPath/LinkPath';
-import { LabelsWrapper, HardDependencyLabel, DelayPeriodLabel } from './styled';
+import { LabelsWrapper, HardDependencyLabel } from './styled';
 import TaskLinkDelayForm from '../TaskLinkDelayForm/TaskLinkDelayForm';
 import TaskLinkOptions from '../TaskLinkOptions/TaskLinkOptions';
+import DelayPeriodLabel from '../DelayPeriodLabel/DelayPeriodLabel';
 
 const TaskLink = props => {
   const {
@@ -24,7 +24,6 @@ const TaskLink = props => {
     target: targetTaskIdentifier,
     sourcePosition,
     targetPosition,
-    selected,
     data: { link },
   } = props;
   const { isDependent, delayPeriod, delayPeriodUnit } = link || {};
@@ -44,12 +43,6 @@ const TaskLink = props => {
   const [areOptionsOpen, openOptions, closeOptions] = useBoolean(false);
   const dispatch = useDispatch();
   const delayOptionsVisible = !isNil(delayPeriod) && delayPeriodUnit;
-
-  useEffect(() => {
-    if (!isDependent && selected) {
-      openOptions();
-    }
-  }, [isDependent, openOptions, selected]);
 
   const toggleDependent = () => {
     dispatch(
@@ -98,7 +91,7 @@ const TaskLink = props => {
       icon: <CalendarIcon size={11} />,
       label: `${
         delayPeriod && delayPeriodUnit ? 'Remove' : 'Add'
-      } time till task`,
+      } time until task`,
       onClick: togglePeriodDelay,
     },
     {
@@ -122,7 +115,7 @@ const TaskLink = props => {
 
   return (
     <>
-      <LinkPath {...props} />
+      <LinkPath {...props} onClick={!isDependent && openOptions} />
       <foreignObject
         width={160}
         height={32}
@@ -131,16 +124,15 @@ const TaskLink = props => {
         className="edgebutton-foreignobject"
         requiredExtensions="http://www.w3.org/1999/xhtml"
         style={{ overflow: 'visible' }}
+        onMouseEnter={!isDependent && openOptions}
+        onMouseLeave={closeOptions}
       >
         <LabelsWrapper ref={labelWrapperReference}>
           {delayOptionsVisible && (
-            <DelayPeriodLabel onClick={openDelayPopover}>
-              {delayPeriod} {delayPeriodUnit.toLowerCase()}
-              {delayPeriod > 1 ? 's' : ''}
-            </DelayPeriodLabel>
+            <DelayPeriodLabel link={link} onClick={openDelayPopover} />
           )}
           {isDependent && (
-            <HardDependencyLabel onClick={openOptions}>
+            <HardDependencyLabel onMouseEnter={openOptions}>
               <HardDependencyIcon />
             </HardDependencyLabel>
           )}

@@ -1,41 +1,70 @@
 /* eslint-disable react-hooks/rules-of-hooks */
-import { useCallback, useRef, useState } from 'react';
+import { useCallback } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { openModal, closeModal } from 'modal/actions';
-// eslint-disable-next-line import/no-named-as-default
-import useBoolean from 'hooks/useBoolean';
-import { taskListsSelector } from 'selectors/task-list-selectors';
+import { checkIfTemplateTask } from 'helpers/task-helpers';
+import { userProfileSelector } from 'selectors/user-selectors';
+import { selectedTaskSelector } from 'selectors/task-drawer-selectors';
+import { toggleCompleteTask, moveTask } from 'actions/task-actions';
 
 const initializeTaskDrawerTopSectionHooks = ({
   onDelete,
   onDuplicate,
   closeTaskDrawer,
-  selectedTask,
 }) => {
-  const filedInInputReference = useRef(null);
   const dispatch = useDispatch();
-  const taskLists = useSelector(taskListsSelector);
+  const selectedTask = useSelector(selectedTaskSelector);
+  const templateBundleIdentifier = selectedTask?.templateBundleIdentifier;
+  const currentUser = useSelector(userProfileSelector);
+  const isTemplateTask = checkIfTemplateTask(selectedTask);
+  const isDecisionTask = selectedTask?.intentType === 'DECISION';
+  const isDecisionSelected = selectedTask?.taskOutcomes?.reduce(
+    (accumulator, currentValue) => accumulator || currentValue.isSelected,
+    false,
+  );
+  const isTaskStatusTogglingDisabled =
+    isTemplateTask || (isDecisionTask && !isDecisionSelected);
+  const dependencyTasksCount = selectedTask?.dependencyTasksCount;
+  const dependencyTasksCompletedCount =
+    selectedTask?.dependencyTasksCompletedCount;
+  const isDependencyEmptyOrCompleted =
+    dependencyTasksCount === dependencyTasksCompletedCount;
 
-  const [
-    isFiledInPopoverOpen,
-    openFiledInPopover,
-    closeFiledInPopover,
-  ] = useBoolean(false);
+  const handleMoveTask = () => {
+    const hasSubtasks = selectedTask.subTasksCount !== 0;
 
-  const [filedInInputValue, setFiledInInputValue] = useState('');
+    const confirmAction = ({
+      taskListIdentifier,
+      taskGroupIdentifier,
+      parentTaskIdentifier,
+    }) => {
+      dispatch(
+        moveTask(
+          selectedTask,
+          { taskListIdentifier },
+          taskGroupIdentifier || null,
+          parentTaskIdentifier || null,
+        ),
+      );
+      closeTaskDrawer();
+    };
 
-  const onFiledInInputChange = useCallback((_event, value, reason) => {
-    if (reason === 'input') {
-      setFiledInInputValue(value);
-    }
-  }, []);
+    const openMoveTasksWithSubtasksModal = destination =>
+      dispatch(
+        openModal('MoveTasksWithSubtasks', {
+          confirm: () => confirmAction(destination),
+        }),
+      );
 
-  const taskMenuReference = useRef(null);
-  const [
-    isTaskMenuPopoverOpen,
-    openTaskMenuPopover,
-    closeTaskMenuPopover,
-  ] = useBoolean(false);
+    dispatch(
+      openModal('SelectTaskDestination', {
+        tasksToMove: [selectedTask],
+        confirmText: 'Move',
+        confirm: hasSubtasks ? openMoveTasksWithSubtasksModal : confirmAction,
+        preventClosingModal: hasSubtasks,
+      }),
+    );
+  };
 
   const deleteTask = async () => {
     await onDelete({
@@ -95,22 +124,71 @@ const initializeTaskDrawerTopSectionHooks = ({
     })(event);
   };
 
+  const onCompleteToggle = useCallback(
+    event => {
+      if (!isTaskStatusTogglingDisabled && isDependencyEmptyOrCompleted) {
+        const hasIncompletedSubtasks =
+          selectedTask.subtasks?.length > 0
+            ? selectedTask.subtasks.find(
+                subtask => subtask.status === 'INCOMPLETE',
+              )
+            : selectedTask.subTasksCount - selectedTask.subTasksCompletedCount >
+              0;
+
+        let isBundleTask = false;
+        if (templateBundleIdentifier !== '') {
+          isBundleTask = true;
+        }
+
+        if (selectedTask.status === 'INCOMPLETE' && hasIncompletedSubtasks) {
+          const modalProps = {
+            confirm: () => {
+              dispatch(closeModal());
+              toggleCompleteTask(
+                { ...selectedTask, templateBundleIdentifier },
+                currentUser,
+                isBundleTask,
+              )(dispatch);
+              setTimeout(() => {
+                closeTaskDrawer();
+              }, 1000);
+            },
+          };
+          dispatch(openModal('CompleteAllTasks', modalProps));
+        } else {
+          toggleCompleteTask(
+            { ...selectedTask, templateBundleIdentifier },
+            currentUser,
+            isBundleTask,
+          )(dispatch);
+          setTimeout(() => {
+            closeTaskDrawer();
+          }, 1000);
+        }
+      }
+      event.stopPropagation();
+    },
+    [
+      isTaskStatusTogglingDisabled,
+      isDependencyEmptyOrCompleted,
+      selectedTask,
+      templateBundleIdentifier,
+      dispatch,
+      currentUser,
+      closeTaskDrawer,
+    ],
+  );
+
   return {
-    filedInInputReference,
-    isFiledInPopoverOpen,
-    openFiledInPopover,
-    closeFiledInPopover,
-    filedInInputValue,
-    onFiledInInputChange,
-    taskMenuReference,
-    isTaskMenuPopoverOpen,
-    openTaskMenuPopover,
-    closeTaskMenuPopover,
+    selectedTask,
+    handleMoveTask,
     openDeleteConfirmationModal,
     openDuplicateConfirmationModal,
     duplicateTaskWithoutConfirmation,
-    taskLists,
+    onCompleteToggle,
     dispatch,
+    isDependencyEmptyOrCompleted,
+    isTaskStatusTogglingDisabled,
   };
 };
 

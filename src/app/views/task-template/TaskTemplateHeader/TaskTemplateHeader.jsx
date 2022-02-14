@@ -5,6 +5,7 @@ import { HeaderContainer, StandardTaskItemCell, CreatedText } from './styled';
 
 const TaskTemplateHeader = template => {
   const { createdBy, createdDate, taskTemplate } = template;
+
   return (
     <HeaderContainer>
       <StandardTaskItemCell width={150}>

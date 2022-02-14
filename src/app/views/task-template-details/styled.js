@@ -16,9 +16,12 @@ export const ContextMenu = styled.div`
 `;
 
 export const ElementsSidebar = styled.div`
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
   width: 190px;
   height: 100%;
-  padding: 32px 0;
+  padding: 32px 16px;
   box-shadow: 0px 2.13948px 6.41845px rgba(0, 0, 0, 0.25);
   background: ${palette.white};
   font-family: 'Montserrat', sans-serif;
@@ -28,10 +31,9 @@ export const ElementsSidebar = styled.div`
 `;
 
 export const SidebarTitle = styled.p`
-  padding: 0 16px;
   margin-bottom: 0;
   font-size: inherit;
-  font-weight: ${fontWeights.regular};
+  font-weight: ${fontWeights.bold};
   text-transform: uppercase;
 `;
 
@@ -39,8 +41,9 @@ export const ElementButton = styled.button`
   display: flex;
   justify-content: center;
   align-items: center;
-  width: 100%;
+  width: calc(100% + 32px);
   padding: 16px;
+  margin: 0 -16px;
   transition: background-color 0.3s linear;
 
   &:hover {
@@ -104,4 +107,27 @@ export const BuilderHeaderText = styled.p`
     text-overflow: ellipsis;
     white-space: nowrap;
   }
+`;
+
+export const HotkeysElements = styled.div`
+  width: 100%;
+  display: grid;
+  grid-template-columns: auto 1fr;
+  grid-gap: 10px;
+`;
+
+export const HotkeyDescription = styled.p`
+  display: inline-block;
+  margin-bottom: 0;
+  font-size: ${fontSizes.small};
+  font-weight: ${fontWeights.regular};
+`;
+
+export const Hotkey = styled.p`
+  display: inline-block;
+  margin-bottom: 4px;
+  padding: 0 4px;
+  color: ${palette.white};
+  background: ${palette.mediumGrey};
+  border-radius: 4px;
 `;

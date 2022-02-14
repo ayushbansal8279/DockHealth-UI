@@ -53,7 +53,7 @@ export const createMentionEntitiesFromRawText = (
         },
         remarkableOptions: {
           enable: {
-            inline: 'ins',
+            inline: ['ins', 'links'],
           },
         },
       })
@@ -68,26 +68,32 @@ export const createMentionEntitiesFromRawText = (
     };
   });
 
-  rawContent.entityMap = [...rawState];
-
-  rawContent.blocks = rawContent.blocks.map(block => {
-    const ranges = [];
-
-    tags.forEach(({ mentionType, name }, index) => {
-      const entityRanges = getEntityRanges(
-        block.text,
-        `${mentionType}${name}`,
-        index,
-      );
-      if (entityRanges) {
-        ranges.push(...entityRanges);
-      }
-    });
-
-    return { ...block, entityRanges: ranges };
+  rawState.forEach(element => {
+    rawContent.entityMap[element?.data?.mention?.identifier] = element;
   });
 
-  return convertFromRaw(rawContent);
+  const newBlocks = rawContent.blocks
+    .filter(block => !!block)
+    .map(block => {
+      const ranges = [];
+
+      tags.forEach(({ mentionType, name, identifier }) => {
+        const entityRanges = getEntityRanges(
+          block?.text || '',
+          `${mentionType}${name}`,
+          identifier,
+        );
+        if (entityRanges) {
+          ranges.push(...entityRanges);
+        }
+      });
+      return {
+        ...block,
+        entityRanges: [...(block.entityRanges || []), ...ranges],
+      };
+    });
+
+  return convertFromRaw({ ...rawContent, blocks: newBlocks });
 };
 
 export const createMentionEntities = (

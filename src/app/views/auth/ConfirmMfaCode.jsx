@@ -8,9 +8,7 @@ import {
   error as errorNotification,
   success,
 } from 'actions/notification-actions';
-import { mobileAnalyticsClient } from 'api/analytics-api';
 import * as UserAuthApi from 'api/user-auth-api';
-import * as UserApi from 'api/user-api';
 import ConfirmMFACodeForm from 'components/auth/ConfirmMfaCodeForm';
 import { AUTH_BASE_STATES } from 'reducers/auth-base-reducer';
 
@@ -39,23 +37,14 @@ const ConfirmMFACode = props => {
         mfaCode: form.mfaCode,
       })
         .then(() => {
-          mobileAnalyticsClient.recordEvent('AUTH_EVENTS', {
-            CONFIRM_MFACODE_SUCCESS: 'YES',
-          });
           UserAuthApi.rememberDevice().then(result => {
             console.log(`added device to be remembered: ${result}`);
           });
           history.push('/core/home/my-tasks');
           success('Logged in.');
-          UserApi.captureLocalTimezone();
         })
         .catch(error => {
           setCustomError('Invalid authentication code.');
-
-          mobileAnalyticsClient.recordEvent('AUTH_EVENTS', {
-            CONFIRM_MFACODE_SUCCESS: 'NO',
-          });
-
           errorNotification(error.message || 'An error occurred.');
         });
     },

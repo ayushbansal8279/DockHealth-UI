@@ -3,17 +3,17 @@ import { useState, useCallback, useRef, useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { useDropzone } from 'react-dropzone';
 import { memoizeWith, identity, isEmpty } from 'ramda';
+import * as PatientDetailsActions from 'actions/patient-details-actions';
 import {
   patientSelector,
   patientDocumentsSelector,
 } from 'selectors/patient-details-selectors';
 import {
-  fetchPatientAttachments,
   addPatientAttachment,
   removePatientAttachment,
 } from 'sagas/patient-details-saga';
 import { getPatientAttachment } from 'api/patient-attachment-api';
-import useBoolean from 'hooks/useBoolean';
+import { useBoolean } from 'hooks/useBoolean';
 
 export const getMemoPatientAttachment = memoizeWith(
   identity,
@@ -26,12 +26,11 @@ export const getMemoPatientAttachment = memoizeWith(
 const initializeAttachmentsSectionHooks = () => {
   const dispatch = useDispatch();
   const patient = useSelector(patientSelector);
-  //  dispatch(fetchPatientAttachments(patient?.patientIdentifier));
   const patientIdentifier = patient?.patientIdentifier;
 
   useEffect(() => {
     if (patientIdentifier) {
-      dispatch(fetchPatientAttachments(patientIdentifier));
+      dispatch(PatientDetailsActions.getCurrentPatientAttachments());
     }
   }, [dispatch, patientIdentifier]);
 
@@ -135,7 +134,7 @@ const initializeAttachmentsSectionHooks = () => {
   );
 
   const boundRemovePatientAttachment = useCallback(
-    ({ attachmentIdentifier }) => {
+    attachmentIdentifier => {
       dispatch(
         removePatientAttachment(patientIdentifier, attachmentIdentifier),
       );

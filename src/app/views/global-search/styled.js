@@ -9,6 +9,13 @@ export const EmptyGlobalSearchImage = styled.img`
   height: 270px;
 `;
 
+export const VerticalScrollContainer = styled.div`
+  padding: 0 ${spacing.large};
+  box-sizing: border-box;
+  width: 100%;
+  position: relative;
+`;
+
 export const GlobalSearchWrapper = styled.div`
   position: relative;
   padding: 30px 0; // per design
@@ -30,17 +37,11 @@ export const CheckboxDescription = styled.label`
 `;
 
 export const GlobalSearchStickyHeader = styled.div`
-  position: sticky;
-  top: 0;
-  left: 0;
-  width: 100%;
-  z-index: 10;
+  z-index: 13;
   background: ${palette.blueGrey};
 `;
 
-export const ViewSidePadding = styled.div`
-  padding: 0 43px;
-`;
+export const ViewSidePadding = styled.div``;
 
 export const EmptyGlobaSearchWrapper = styled.div`
   width: 100%;

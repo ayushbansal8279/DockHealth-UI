@@ -1,52 +1,34 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
-import React from 'react';
 import styled from 'styled-components';
 import spacing from 'styles/spacing';
 import palette from 'styles/palette';
 import { fontWeights, fontSizes } from 'styles/font';
-import { Grid } from '@material-ui/core';
-
-export const ToolbarContainer = styled(Grid)`
-  position: relative;
-  height: 42px;
-  border-bottom: 2px solid ${palette.blueGrey};
-  margin-bottom: ${spacing.regular};
-  flex-direction: column-reverse !important;
-  align-items: flex-start !important;
-  flex-wrap: inherit !important;
-
-  @media screen and (min-width: 960px) {
-    flex-direction: row !important;
-    align-items: initial !important;
-    flex-wrap: wrap;
-  }
-`;
-
-export const ActionsContainer = styled(Grid)`
-  display: flex;
-  justify-content: flex-end;
-`;
-
-export const SearchGrid = styled(({ isFocused, ...otherProps }) => (
-  <Grid {...otherProps} />
-))`
-  display: flex;
-  width: ${({ isFocused }) => (isFocused ? 300 : 115)}px;
-  transition: width 0.2s ease-out;
-  justify-content: flex-end;
-`;
 
 export const StickyHeader = styled.div`
-  position: sticky;
-  top: 0;
-  z-index: 100;
+  position: 'relative';
+  z-index: 102;
   background-color: ${palette.white};
-  padding: 0 55px ${spacing.small} 55px;
+  padding: 0 55px 0 55px;
+`;
+
+export const StickyElement = styled.div`
+  z-index: ${({ zIndex }) => zIndex || 10};
+  background-color: ${palette.white};
+`;
+
+export const VerticalScrollContainer = styled.div`
+  padding: ${spacing.small} ${spacing.large};
+  box-sizing: border-box;
+  width: 100%;
+  position: relative;
+  background: ${palette.white};
+`;
+
+export const DashboardTaskGroupsWrapper = styled.div`
+  width: fit-content;
 `;
 
 export const DashboardTasksGroupContainer = styled.div`
   padding-bottom: 30px;
-
   &:last-child {
     padding-bottom: 0;
   }
@@ -56,54 +38,14 @@ export const DashboardTasksGroupList = styled.div`
   display: flex;
   flex-direction: column;
   margin-top: ${spacing.small};
-  margin-left: 55px;
-  margin-right: 55px;
 `;
 
 export const DroppableBox = styled.div`
   border-radius: 4px;
 `;
 
-export const DasboardTabsContainer = styled.div`
-  height: 100%;
-  display: flex;
-`;
-
-export const DashboardTab = styled.button`
-  cursor: pointer;
-  font-size: 1.125rem;
-  font-weight: ${fontWeights.bold};
-  color: ${props => props.isSelected && palette.brightBlue};
-
-  &:not(:last-of-type) {
-    margin-right: ${spacing.giga};
-  }
-
-  &:focus {
-    outline: none;
-  }
-`;
-
-export const DashboardTabHighlight = styled.div`
-  background-color: ${palette.brightBlue};
-  height: 4px;
-  position: absolute;
-  bottom: -3px;
-  width: ${props => props.width};
-  left: ${props => props.left};
-  transition: left 0.2s ease-out;
-`;
-
 export const EmptyStateContainer = styled.div`
   padding: 0 55px;
-`;
-
-export const TipsSwitchLabel = styled.label`
-  font-family: 'Montserrat', sans-serif;
-  color: ${palette.coolGrey1};
-  font-weight: ${fontWeights.regular};
-  vertical-align: middle;
-  text-transform: uppercase;
 `;
 
 export const ShowMoreButton = styled.button`
@@ -119,7 +61,6 @@ export const ShowMoreButton = styled.button`
 export const DashboardTasksGroupHeader = styled.div`
   align-items: center;
   display: flex;
-  margin-left: 55px;
 `;
 
 export const GroupNameSectionWrapper = styled.div`

@@ -48,30 +48,15 @@ export const Spacing1 = styled(Spacing)`
   height: 1rem;
 `;
 
-export const Spacing2 = styled(Spacing)`
-  height: 2rem;
-`;
-
-export const SubscriptionPaymentViewOuterContainer = styled.div`
-  background-color: ${palette.white};
-  display: flex;
-  justify-content: center;
-  left: 0;
-  min-height: 100%;
-  position: absolute;
-  top: 0;
-  width: 100%;
+export const SubscriptionPaymentViewContainer = styled.div`
+  margin: 0 auto;
+  max-width: 1200px;
+  padding: 3rem;
+  width: 1200px;
 
   && * {
     font-family: 'Montserrat', sans-serif;
   }
-`;
-
-export const SubscriptionPaymentViewContainer = styled.div`
-  background-color: ${palette.white};
-  max-width: 1200px;
-  padding: 3rem;
-  width: 1200px;
 `;
 
 export const BillingButton = withStyles({
@@ -121,7 +106,7 @@ export const PricingItemDivider = styled.div`
 
 export const PricingItemVerticallyExpanded = styled.div`
   grid-row-start: 1;
-  grid-row-end: 3;
+  grid-row-end: 4;
 `;
 
 export const Anchor = styled.a`

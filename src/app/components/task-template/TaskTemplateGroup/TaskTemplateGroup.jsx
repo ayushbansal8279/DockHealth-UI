@@ -7,16 +7,19 @@ import React, {
   useCallback,
   useEffect,
 } from 'react';
-import { Box } from '@material-ui/core';
+import { Box, Fade, Popper } from '@material-ui/core';
 import { checkIfAllTasksSelected } from 'helpers/bulk-edit-helpers';
 import { pluck } from 'ramda';
 import { extractTasksAndSubtasks } from 'helpers/tasklist-helpers';
 import { useDispatch, useSelector } from 'react-redux';
+import { Link } from 'react-router-dom';
 import ThreeDotsIcon from 'img/three-dots';
 import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd';
 import { MoreHoriz } from '@material-ui/icons';
 import * as ModalActions from 'modal/actions';
+import * as WorkflowActions from 'actions/workflow-actions';
 import * as TaskActions from 'actions/task-actions';
+import { openDrawer } from 'actions/workflow-drawer-actions';
 import * as TemplateBundleActions from 'actions/template-bundle-actions';
 import { TaskStatus } from 'helpers/task-helpers';
 import Checkbox from 'components/common/Checkbox/Checkbox';
@@ -27,11 +30,13 @@ import StandardTaskItemContainer from 'components/task/StandardTaskItemContainer
 import OptionsMenu from 'components/common/OptionsMenu/OptionsMenu';
 import QuickAddTaskInput from 'components/tasklist/QuickAddTaskInput/QuickAddTaskInput';
 import PatientCard from 'components/patients/PatientCard/PatientCard';
-import OverflowTooltip from 'components/task/OverflowTooltip/OverflowTooltip';
+import { checkIfShouldDisplayTooltip } from 'components/task/OverflowTooltip/OverflowTooltip';
 import TaskItemPopover from 'components/task/TaskItemPopover/TaskItemPopover';
 import PatientList from 'components/patients/PatientDropdown/PatientList';
 import { getCustomerTypeLabel } from 'helpers/customer-type-helper';
 import { capitalize } from 'helpers/capitalize';
+
+import StickyContainer from 'components/common/HorizontalScroll/StickyContainer';
 import {
   TaskTemplateGroupContainer,
   TaskTemplateGroupHeader,
@@ -46,13 +51,12 @@ import {
   Placeholder,
   TaskTemplateRight,
   NameContainer,
-  NameTooltip,
   QuickAddInputWrapper,
+  NameTooltip,
 } from './styled';
 
 const TaskTemplateGroup = ({
   templateGroup = {},
-  taskItemConfig,
   groupHasMultipleAssignees,
   isFullView,
   isStartedDnD,
@@ -61,6 +65,7 @@ const TaskTemplateGroup = ({
   tasksDragAndDropDisabled,
   disablePatientAssignment,
   isCompletedTab = false,
+  viewSetup,
   // eslint-disable-next-line sonarjs/cognitive-complexity
 }) => {
   const {
@@ -71,6 +76,7 @@ const TaskTemplateGroup = ({
     parentTaskGroupIdentifier,
     taskListIdentifier,
   } = templateGroup;
+  const { SHOW_WORKFLOW_DETAILS, SHOW_WORKFLOW_COMPLETED_TASKS } = viewSetup;
   const { innerRef, draggableProps, dragHandleProps } = draggableProvided;
   const [isOpen, setOpen] = useState(true);
   const { bulkEditIsActive } = useContext(BulkEditContext);
@@ -91,8 +97,20 @@ const TaskTemplateGroup = ({
   }));
   const customerTypeLabel = getCustomerTypeLabel(currentUser);
   const customerTypeLabelCapitalized = capitalize(customerTypeLabel);
+  const [isHoverVisible, setIsHoverVisible] = useState(false);
 
   const dispatch = useDispatch();
+
+  useEffect(() => {
+    setOpen(SHOW_WORKFLOW_DETAILS);
+    if (isCompletedTab) {
+      setShowIncompleteTasks(SHOW_WORKFLOW_COMPLETED_TASKS);
+      setShowCompletedTasks(true);
+    } else {
+      setShowIncompleteTasks(true);
+      setShowCompletedTasks(SHOW_WORKFLOW_COMPLETED_TASKS);
+    }
+  }, [SHOW_WORKFLOW_DETAILS, SHOW_WORKFLOW_COMPLETED_TASKS, isCompletedTab]);
 
   useEffect(() => {
     setNameInputValue(name);
@@ -154,20 +172,10 @@ const TaskTemplateGroup = ({
           dispatch(
             ModalActions.openModal('AttachmentsDuplicate', {
               confirm: () => {
-                dispatch(
-                  TemplateBundleActions.duplicateTemplateBundle(
-                    identifier,
-                    true,
-                  ),
-                );
+                dispatch(WorkflowActions.duplicateWorkflow(identifier, true));
               },
               skip: () => {
-                dispatch(
-                  TemplateBundleActions.duplicateTemplateBundle(
-                    identifier,
-                    false,
-                  ),
-                );
+                dispatch(WorkflowActions.duplicateWorkflow(identifier, false));
               },
             }),
           ),
@@ -183,11 +191,11 @@ const TaskTemplateGroup = ({
                 taskGroupIdentifier,
               }) => {
                 dispatch(
-                  TemplateBundleActions.moveTemplateBundle({
-                    bundleIdentifier: identifier,
-                    taskListIdentifier: listIdentifier,
+                  TemplateBundleActions.moveWorkflowToList(
+                    identifier,
+                    listIdentifier,
                     taskGroupIdentifier,
-                  }),
+                  ),
                 );
               },
             }),
@@ -229,10 +237,10 @@ const TaskTemplateGroup = ({
               title: 'Delete workflow',
               description:
                 'Are you sure you want to delete this workflow? This action cannot be undone.',
-              confirm: () =>
-                dispatch(
-                  TemplateBundleActions.deleteTemplateBundle(identifier),
-                ),
+              confirm: () => {
+                dispatch(WorkflowActions.deleteWorkflow(identifier));
+                dispatch(ModalActions.closeModal());
+              },
             }),
           ),
       },
@@ -361,104 +369,132 @@ const TaskTemplateGroup = ({
 
   return (
     <TaskTemplateGroupContainer ref={innerRef} {...draggableProps}>
-      <TaskTemplateGroupHeaderContainer>
-        {!groupDragAndDropDisabled && !bulkEditIsActive && (
-          <TemplateHandle
-            src={ThreeDotsIcon}
-            alt="Handle"
-            {...dragHandleProps}
-          />
-        )}
-        <TaskTemplateGroupHeader>
-          <Checkbox isChecked={isBundleSelected} onClick={handleBundleSelect} />
-          <Box m={1} />
-          <RotatableChevron rotated={isOpen} onClick={() => setOpen(!isOpen)} />
-          <NameContainer
-            onClick={() => {
-              if (!isEditing) {
-                setOpen(!isOpen);
-              }
-            }}
-          >
-            <TaskTemplateNameInput
-              ref={nameInputReference}
-              readOnly={!isEditing}
-              error={nameInputError}
-              onChange={event => {
-                setNameInputValue(event.target?.value);
-                setNameInputError(false);
-              }}
-              onBlur={() => {
-                setIsEditing(false);
-                setNameInputValue(name);
-              }}
-              onKeyDown={handleNameInputKeyDown}
-              value={nameInputValue}
+      <StickyContainer left={24} decreaseWidth={2 * 24}>
+        <TaskTemplateGroupHeaderContainer>
+          {!groupDragAndDropDisabled && !bulkEditIsActive && (
+            <TemplateHandle
+              src={ThreeDotsIcon}
+              alt="Handle"
+              {...dragHandleProps}
             />
-            <OverflowTooltip textReference={nameInputReference.current}>
-              <NameTooltip>{name}</NameTooltip>
-            </OverflowTooltip>
-          </NameContainer>
-        </TaskTemplateGroupHeader>
-        <TaskTemplateRight>
-          {!disablePatientAssignment && (
-            <TaskTemplatePatientHeader>
-              <TaskItemPopover
-                ref={patientReference}
-                fullWidth
-                contentWidth={330}
-                content={({ closePopover }) => (
-                  <PatientList
-                    onSelect={newPatient => {
-                      handlePatientSelect(newPatient);
-                      closePopover();
-                    }}
-                    selectedPatientIdentifier={
-                      patient ? patient.patientIdentifier : null
-                    }
-                    isMultipleChange
-                    closePopover={closePopover}
-                  />
-                )}
-              >
-                {({ isPopoverOpen }) => (
-                  <>
-                    {patient ? (
-                      <PatientCard
-                        patientIdentifier={patient.patientIdentifier}
-                        disabled={isPopoverOpen}
-                      >
-                        <Placeholder>
-                          {patient?.lastName
-                            ? `${patient?.lastName}, ${patient?.firstName}`
-                            : patient?.firstName}
-                        </Placeholder>
-                      </PatientCard>
-                    ) : (
-                      <AddPlaceholder>
-                        + Add {customerTypeLabelCapitalized}
-                      </AddPlaceholder>
-                    )}
-                  </>
-                )}
-              </TaskItemPopover>
-            </TaskTemplatePatientHeader>
           )}
-          <TaskTemplateOptionsContainer
-            groupHasMultipleAssignees={groupHasMultipleAssignees}
-          >
-            <TaskTemplateProgressCircle>
-              <ProgressBar
-                progress={(completedTasksAmount / allTasksAmount) * 100}
-                label={`${completedTasksAmount}/${allTasksAmount}`}
+          <TaskTemplateGroupHeader>
+            <Checkbox
+              isChecked={isBundleSelected}
+              onClick={handleBundleSelect}
+            />
+            <Box m={1} />
+            <RotatableChevron
+              rotated={isOpen}
+              onClick={() => setOpen(!isOpen)}
+            />
+            <NameContainer
+              onMouseEnter={() => setIsHoverVisible(true)}
+              onMouseLeave={() => setIsHoverVisible(false)}
+              onClick={() => {
+                dispatch(openDrawer(identifier, templateGroup));
+              }}
+            >
+              <TaskTemplateNameInput
+                ref={nameInputReference}
+                readOnly={!isEditing}
+                error={nameInputError}
+                onChange={event => {
+                  setNameInputValue(event.target?.value);
+                  setNameInputError(false);
+                }}
+                onBlur={() => {
+                  setIsEditing(false);
+                  setNameInputValue(name);
+                }}
+                onKeyDown={handleNameInputKeyDown}
+                value={nameInputValue}
               />
-            </TaskTemplateProgressCircle>
-            <OptionsMenu options={menuOptions}>
-              <MoreHoriz fontSize="large" color="primary" />
-            </OptionsMenu>
-          </TaskTemplateOptionsContainer>
-        </TaskTemplateRight>
-      </TaskTemplateGroupHeaderContainer>
+            </NameContainer>
+            <Popper
+              anchorEl={nameInputReference.current}
+              placement="bottom-start"
+              open={
+                checkIfShouldDisplayTooltip(nameInputReference.current) &&
+                isHoverVisible
+              }
+              style={{
+                zIndex: 115,
+                maxWidth: nameInputReference?.current?.offsetWidth || '650px',
+              }}
+              transition
+            >
+              {({ TransitionProps }) => (
+                <Fade {...TransitionProps} timeout={250}>
+                  <NameTooltip>{name}</NameTooltip>
+                </Fade>
+              )}
+            </Popper>
+          </TaskTemplateGroupHeader>
+          <TaskTemplateRight>
+            {!disablePatientAssignment && (
+              <TaskTemplatePatientHeader>
+                <TaskItemPopover
+                  ref={patientReference}
+                  fullWidth
+                  contentWidth={330}
+                  content={({ closePopover }) => (
+                    <PatientList
+                      onSelect={newPatient => {
+                        handlePatientSelect(newPatient);
+                        closePopover();
+                      }}
+                      selectedPatientIdentifier={
+                        patient ? patient.patientIdentifier : null
+                      }
+                      isMultipleChange
+                      closePopover={closePopover}
+                    />
+                  )}
+                >
+                  {({ isPopoverOpen }) => (
+                    <>
+                      {patient ? (
+                        <PatientCard
+                          patientIdentifier={patient.patientIdentifier}
+                          disabled={isPopoverOpen}
+                        >
+                          <Link
+                            to={`/core/patient/${patient?.patientIdentifier}`}
+                          >
+                            <Placeholder>
+                              {patient?.lastName
+                                ? `${patient?.lastName}, ${patient?.firstName}`
+                                : patient?.firstName}
+                            </Placeholder>
+                          </Link>
+                        </PatientCard>
+                      ) : (
+                        <AddPlaceholder>
+                          + Add {customerTypeLabelCapitalized}
+                        </AddPlaceholder>
+                      )}
+                    </>
+                  )}
+                </TaskItemPopover>
+              </TaskTemplatePatientHeader>
+            )}
+            <TaskTemplateOptionsContainer
+              groupHasMultipleAssignees={groupHasMultipleAssignees}
+            >
+              <TaskTemplateProgressCircle>
+                <ProgressBar
+                  progress={(completedTasksAmount / allTasksAmount) * 100}
+                  label={`${completedTasksAmount}/${allTasksAmount}`}
+                />
+              </TaskTemplateProgressCircle>
+              <OptionsMenu options={menuOptions}>
+                <MoreHoriz fontSize="large" color="primary" />
+              </OptionsMenu>
+            </TaskTemplateOptionsContainer>
+          </TaskTemplateRight>
+        </TaskTemplateGroupHeaderContainer>
+      </StickyContainer>
       {!isStartedDnD && (
         <TaskTemplateGroupList timeout={150} in={isOpen && !isStartedDnD}>
           <DragDropContext
@@ -500,7 +536,6 @@ const TaskTemplateGroup = ({
                           isDragging={draggableSnapshot.isDragging}
                           draggableProvided={templateTaskDraggableProvided}
                           task={task}
-                          taskItemConfig={taskItemConfig}
                           isFullView={isFullView}
                           multipleAssigneesContext={groupHasMultipleAssignees}
                           dragAndDropDisabled={tasksDragAndDropDisabled}

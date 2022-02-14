@@ -21,7 +21,7 @@ import SelfEnrolledUser from 'views/auth/SelfEnrolledUser';
 import UnEnrolledUser from 'views/auth/UnEnrolledUser';
 import ApproveDisapproveUser from 'views/auth/ApproveDisapproveUser';
 import ErrorPage from 'views/ErrorPage';
-import ListDetailsView from 'views/list-details/ListDetailsView';
+import ListDetailsView from 'views/list-details/ListDetailsViewContainer';
 import OnboardingBaaCheckView from 'views/onboarding/OnboardingBaaCheckView/OnboardingBaaCheckView';
 import OnboardingBaaInvitationSentView from 'views/onboarding/OnboardingBaaInvitationSentView/OnboardingBaaInvitationSentView';
 import OnboardingBaaOverviewView from 'views/onboarding/OnboardingBaaOverviewView/OnboardingBaaOverviewView';
@@ -42,40 +42,18 @@ import DocumentsView from 'views/self-serve/documents/DocumentsView';
 import SubscriptionPaymentFinishedView from 'views/self-serve/subscription-payment/SubscriptionPaymentFinishedView';
 import SubscriptionPaymentView from 'views/self-serve/subscription-payment/SubscriptionPaymentView';
 import SubscriptionsView from 'views/self-serve/subscriptions/SubscriptionsView';
+import UsersView from 'views/self-serve/users/UsersView';
 import SupportView from 'views/Support/SupportView';
 import TaskListActivityFeedView from 'views/ActivityFeed/TaskListActivityFeedView';
 import UserProfileView from 'views/UserProfile/UserProfileView';
 import CustomFieldsView from 'views/custom-fields/CustomFieldsView';
-import {
-  onEnterDashboard,
-  onUpdateDashboard,
-  onLeaveDashboard,
-} from './TemplateCoreSubscriptionPlan/Dashboard';
-
-import {
-  onEnterGlobalSearch,
-  onLeaveGlobalSearch,
-} from './TemplateCoreSubscriptionPlan/GlobalSearch';
-
-import {
-  onEnterPatientDetailsView,
-  onLeavePatientDetailsView,
-} from './TemplateCoreSubscriptionPlan/PatientDetails';
-
-import {
-  onEnterPersonDetails,
-  onLeavePersonDetails,
-} from './TemplateCoreSubscriptionPlan/PersonDetails';
-
+import AnalyticsView from 'views/analytics/AnalyticsView';
+import { DashboardTasksTab } from 'helpers/dashboard-helpers';
+import { onLeaveGlobalSearch } from './TemplateCoreSubscriptionPlan/GlobalSearch';
 import {
   onEnterListDetailsView,
   onLeaveListDetailsView,
 } from './TemplateCoreSubscriptionPlan/ListDetails';
-import {
-  onEnterTemplatesView,
-  onLeaveTemplatesView,
-} from './TemplateCoreSubscriptionPlan/TaskTemplateView';
-import { onEnterTemplateDetailsView } from './TemplateCoreSubscriptionPlan/TaskTemplateDetailsView';
 
 export const SETTINGS_ROUTES = [
   {
@@ -89,6 +67,10 @@ export const SETTINGS_ROUTES = [
   {
     path: '/subscriptions',
     RouteComponent: SubscriptionsView,
+  },
+  {
+    path: '/users',
+    RouteComponent: UsersView,
   },
   {
     path: '/billing',
@@ -107,23 +89,27 @@ export const SETTINGS_ROUTES = [
     RouteComponent: SubscriptionPaymentFinishedView,
   },
   {
-    path: '/custom-fields',
+    path: '/custom-fields/:tabName?',
     RouteComponent: CustomFieldsView,
   },
 ];
 
 export const TEMPLATE_CORE_SUBSCRIPTION_PLAN_ROUTES = [
   {
-    path: '/home/:tabName',
-    RouteComponent: DashboardView,
-    onEnter: onEnterDashboard,
-    onUpdate: onUpdateDashboard,
-    onLeave: onLeaveDashboard,
+    path: '/home/my-tasks',
+    RouteComponent: props => (
+      <DashboardView tabName={DashboardTasksTab.MY_TASKS} {...props} />
+    ),
+  },
+  {
+    path: '/home/all-tasks',
+    RouteComponent: props => (
+      <DashboardView tabName={DashboardTasksTab.ALL_TASKS} {...props} />
+    ),
   },
   {
     path: '/search',
     RouteComponent: GlobalSearchView,
-    onEnter: onEnterGlobalSearch,
     onLeave: onLeaveGlobalSearch,
   },
   {
@@ -133,8 +119,6 @@ export const TEMPLATE_CORE_SUBSCRIPTION_PLAN_ROUTES = [
   {
     path: '/patient/:patientIdentifier',
     RouteComponent: PatientDetailsView,
-    onEnter: onEnterPatientDetailsView,
-    onLeave: onLeavePatientDetailsView,
   },
   {
     path: '/activityfeed',
@@ -143,8 +127,6 @@ export const TEMPLATE_CORE_SUBSCRIPTION_PLAN_ROUTES = [
   {
     path: '/assignedToPerson/:userIdentifier/:tabName?',
     RouteComponent: PersonDetailsView,
-    onEnter: onEnterPersonDetails,
-    onLeave: onLeavePersonDetails,
   },
   {
     path: '/people/:groupIdentifier?',
@@ -161,19 +143,20 @@ export const TEMPLATE_CORE_SUBSCRIPTION_PLAN_ROUTES = [
     onLeave: onLeaveListDetailsView,
   },
   {
-    path: '/workflows/:identifier',
-    RouteComponent: React.lazy(() =>
-      import('views/task-template-details/TaskTemplateDetailsView'),
-    ),
-    onEnter: onEnterTemplateDetailsView,
-  },
-  {
-    path: '/workflows',
+    path: '/workflows/library/:identifier?',
     RouteComponent: React.lazy(() =>
       import('views/task-template/TaskTemplateView'),
     ),
-    onEnter: onEnterTemplatesView,
-    onLeave: onLeaveTemplatesView,
+  },
+  {
+    path: '/workflows/builder/:identifier',
+    RouteComponent: React.lazy(() =>
+      import('views/task-template-details/TaskTemplateDetailsView'),
+    ),
+  },
+  {
+    path: '/analytics',
+    RouteComponent: AnalyticsView,
   },
 ];
 

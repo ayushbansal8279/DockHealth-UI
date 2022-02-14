@@ -8,11 +8,14 @@ export const TEAM_SETUP_PATH = '/onboarding/team-setup';
 export const QUESTIONS_PATH = '/onboarding/eula';
 export const TRIAL_EXPIRATION_PATH = '/settings/trial-check';
 export const HOME_PATH = '/core/home/my-tasks';
+export const HOME_ALL_TASKS_PATH = '/core/home/all-tasks';
 export const UNENROLLED_USER = '/auth/unEnrolledUser';
 export const DEFAULT_REDIRECT_PATH = '/auth/login';
 export const SUBS_SETTINGS_PATH = '/settings/subscriptions';
+export const USERS_SETTINGS_PATH = '/settings/users';
 export const CUSTOM_FIELDS_SETTINGS_PATH = '/settings/custom-fields';
-export const TASK_TEMPLATES_PATH = '/core/workflows';
+export const WORKFLOW_LIBRARY_PATH = '/core/workflows/library';
+export const WORKFLOW_BUILDER_PATH = '/core/workflows/builder';
 export const USERS_PATH = '/core/people';
 
 export const TASK_LIST_PATH = '/core/tasks';
@@ -33,8 +36,11 @@ export const createPatientDetailsListPath = (
   taskListIdentifier,
 ) => `/core/patient/${patientIdentifier}/tasks/${taskListIdentifier}`;
 
-export const createTaskTemplateDetailsPath = taskTemplateIdentifier =>
-  `${TASK_TEMPLATES_PATH}/${taskTemplateIdentifier}`;
+export const createWorkflowBuilderPath = workflowIdentifier =>
+  `${WORKFLOW_BUILDER_PATH}/${workflowIdentifier}`;
+
+export const createWorkflowFolderPath = folderIdentifier =>
+  `${WORKFLOW_LIBRARY_PATH}/${folderIdentifier}`;
 
 export const createUserGroupPath = groupIdentifier =>
   USERS_PATH + (groupIdentifier ? `/${groupIdentifier}` : '');

@@ -15,11 +15,13 @@ import { selectedTaskSelector } from 'selectors/task-drawer-selectors';
 import EmptyGlobalSearch from 'img/empty-global-search.png';
 import EmptyGlobalSearchResults from 'img/empty-global-search-results';
 import { userProfileSelector } from 'selectors/user-selectors';
-import * as TaskDrawerActions from 'actions/task-drawer-actions';
 import * as TaskActions from 'actions/task-actions';
 import { GlobalSearchSagaActions } from 'sagas/global-search-saga';
+import BasicLayoutHeader from 'components/template/BasicLayoutHeader/BasicLayoutHeader';
 import GroupedListSkeletonLoader from 'components/tasklist/GroupedListSkeletonLoader/GroupedListSkeletonLoader';
 import TaskDrawer from 'components/task-drawer/TaskDrawer/TaskDrawer';
+import HorizontallyScrolledViewLayout from 'components/template/HorizontallyScrolledViewLayout/HorizontallyScrolledViewLayout';
+import StickyContainer from 'components/common/HorizontalScroll/StickyContainer';
 import {
   GlobalSearchWrapper,
   GlobalSearchStickyHeader,
@@ -28,6 +30,7 @@ import {
   EmptyGlobaSearchWrapper,
   EmptySearchText,
   EmptyResultsText,
+  VerticalScrollContainer,
 } from './styled';
 import GlobalSearchHeader from './GlobalSearchHeader/GlobalSearchHeader';
 import GlobalSearchList from './GlobalSearchList/GlobalSearchList';
@@ -40,15 +43,12 @@ const GlobalSearchView = ({
   searchValue,
   currentUser,
   selectedTask,
-  taskDrawerActions,
   taskActions,
   globalSearchSagaActions,
 }) => {
-  const { openDrawer } = taskDrawerActions;
   const { storeAsCurrentTask } = taskActions;
   const {
     toggleTaskStatus,
-    setDueDate,
     setWorkflowStatus,
     updateTask,
     getMoreTasksForTaskList,
@@ -86,47 +86,52 @@ const GlobalSearchView = ({
   };
 
   return (
-    <GlobalSearchWrapper>
-      <GlobalSearchStickyHeader>
-        <GlobalSearchHeader />
-      </GlobalSearchStickyHeader>
-      <ViewSidePadding>
-        {isLoadingView ? (
-          <GroupedListSkeletonLoader />
-        ) : (
-          <>
-            <Spacing vertical={5} />
-            {!isEmpty(lists)
-              ? lists?.map(list =>
-                  list.tasks?.length > 0 ? (
-                    <GlobalSearchList
-                      list={list}
-                      currentUser={currentUser}
-                      selectedTask={selectedTask}
-                      openDrawer={openDrawer}
-                      storeAsCurrentTask={storeAsCurrentTask}
-                      toggleTaskStatus={toggleTaskStatus}
-                      onTaskUpdate={updateTask}
-                      updateDueDate={setDueDate}
-                      updateWorkflowStatus={setWorkflowStatus}
-                      highlightedValue={searchValue}
-                      isCompletedList={isSearchingCompletedTasks}
-                      getMoreTasksForTaskList={getMoreTasksForTaskList}
-                      isLoadingMore={isLoadingMore}
-                    />
-                  ) : null,
-                )
-              : renderEmptyState()}
-          </>
-        )}
-      </ViewSidePadding>
-      <TaskDrawer />
-    </GlobalSearchWrapper>
+    <>
+      <HorizontallyScrolledViewLayout
+        header={<BasicLayoutHeader title="Search" />}
+      >
+        <GlobalSearchWrapper>
+          <StickyContainer stickyTop zIndex={13}>
+            <GlobalSearchStickyHeader>
+              <GlobalSearchHeader />
+            </GlobalSearchStickyHeader>
+          </StickyContainer>
+          <ViewSidePadding>
+            {isLoadingView ? (
+              <GroupedListSkeletonLoader />
+            ) : (
+              <VerticalScrollContainer>
+                <Spacing vertical={5} />
+                {!isEmpty(lists)
+                  ? lists?.map(list =>
+                      list.tasks?.length > 0 ? (
+                        <GlobalSearchList
+                          list={list}
+                          currentUser={currentUser}
+                          selectedTask={selectedTask}
+                          storeAsCurrentTask={storeAsCurrentTask}
+                          toggleTaskStatus={toggleTaskStatus}
+                          onTaskUpdate={updateTask}
+                          updateWorkflowStatus={setWorkflowStatus}
+                          highlightedValue={searchValue}
+                          isCompletedList={isSearchingCompletedTasks}
+                          getMoreTasksForTaskList={getMoreTasksForTaskList}
+                          isLoadingMore={isLoadingMore}
+                        />
+                      ) : null,
+                    )
+                  : renderEmptyState()}
+              </VerticalScrollContainer>
+            )}
+          </ViewSidePadding>
+          <TaskDrawer />
+        </GlobalSearchWrapper>
+      </HorizontallyScrolledViewLayout>
+    </>
   );
 };
 
 const mapDispatchToProps = dispatch => ({
-  taskDrawerActions: bindActionCreators(TaskDrawerActions, dispatch),
   taskActions: bindActionCreators(TaskActions, dispatch),
   globalSearchSagaActions: bindActionCreators(
     GlobalSearchSagaActions,

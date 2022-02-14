@@ -1,3 +1,7 @@
+import {
+  mapFilterOptions,
+  mapSelectedOptionsToRequestPayload,
+} from 'helpers/filter-options-helpers';
 import axios from './axios-heydoc';
 
 export function getUserAvatarBuffer(userIdentifier) {
@@ -91,7 +95,16 @@ export function saveCurrentUserAvatar(avatarData) {
 }
 
 export function updateCurrentUser(formProps) {
-  return axios.put(`user`, formProps).then(({ data }) => {
+  const userProps = formProps;
+  if (formProps.title) {
+    userProps.titles = [
+      {
+        name: formProps.title,
+      },
+    ];
+  }
+
+  return axios.put(`user`, userProps).then(({ data }) => {
     return data;
   });
 }
@@ -110,4 +123,85 @@ export function updateCurrentUserPreferences(preferences) {
 
 export function acknowledgeEula() {
   return axios.put('/user/acknowledgeEULA').then(({ data }) => data);
+}
+
+export function updateUserViewSetup(setup) {
+  return axios
+    .put('user/updateUserPreferences', setup)
+    .then(({ data }) => data);
+}
+
+export function getUserTaskStats(userIdentifier) {
+  return axios
+    .get(`task/stats/getTaskStatsForUser/${userIdentifier}`)
+    .then(({ data }) => data);
+}
+
+export function getUserTasks(userIdentifier, sortBy, status) {
+  return axios
+    .get(`task/findTasksAssignedToSpecificUser?userId=${userIdentifier}`, {
+      params: {
+        status,
+        sortBy: sortBy?.key || undefined,
+        sortDirection: sortBy?.order || undefined,
+      },
+    })
+    .then(response => response.data);
+}
+
+// here
+export function getUserFilteredTasks(
+  userIdentifier,
+  sortBy,
+  selectedFilters,
+  status,
+) {
+  return axios
+    .post(
+      `task/filter/filterTasksByCriteriaForAssignedToUser/${userIdentifier}`,
+      mapSelectedOptionsToRequestPayload(selectedFilters),
+      {
+        params: {
+          status,
+          sortBy: sortBy?.key || undefined,
+          sortDirection: sortBy?.order || undefined,
+        },
+      },
+    )
+    .then(({ data }) => data.tasks);
+}
+
+export function getUserTaskFilterOptions(
+  userIdentifier,
+  status,
+  selectedFilters,
+) {
+  const request = selectedFilters
+    ? axios
+        .post(
+          `task/filter/filterTasksByCriteriaForAssignedToUser/${userIdentifier}?includeOptions=true`,
+          mapSelectedOptionsToRequestPayload(selectedFilters),
+          {
+            params: {
+              status,
+            },
+          },
+        )
+        .then(({ data }) => data.taskFilterOptions)
+    : axios
+        .get(`task/filter/filterOptionsForAssignedToUser/${userIdentifier}`, {
+          params: {
+            status,
+          },
+        })
+        .then(({ data }) => data);
+
+  return request.then(options => mapFilterOptions(options));
+}
+
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+export function getUsersByName(name, limit = 100) {
+  return axios
+    .get(`user/findUserByName?name=${name}&limit=${limit}`)
+    .then(({ data }) => data);
 }

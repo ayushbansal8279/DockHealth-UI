@@ -1,42 +1,42 @@
 import React from 'react';
-import AddComment from '../AddComment/AddComment';
+import { DrawerFieldEnum } from 'helpers/task-drawer-helpers';
+import Comment from 'components/drawer-common/Comment/Comment';
+import AddComment from 'components/drawer-common/AddComment/AddComment';
 import { CommentSectionContainer, CommentsListContainer } from './styled';
 import initializeCommentSectionHooks from './hooks';
-import { renderComment } from './helpers';
 
-const CommentSection = ({
-  parentFormSubmit,
-  taskDrawerFocusField,
-  taskListIdentifier,
-  isTemplateTask,
-}) => {
+const CommentSection = () => {
   const {
     comments,
     currentUser,
     removeComment,
     updateComment,
     addComment,
+    taskListIdentifier,
+    isTemplateTask,
+    taskDrawerFocusField,
   } = initializeCommentSectionHooks();
 
   return (
     <CommentSectionContainer>
       <AddComment
-        addComment={addComment}
-        parentFormSubmit={parentFormSubmit}
-        taskDrawerFocusField={taskDrawerFocusField}
+        autoFocus={taskDrawerFocusField === DrawerFieldEnum.COMMENT}
+        disableMentions={isTemplateTask}
         taskListIdentifier={taskListIdentifier}
-        isTemplateTask={isTemplateTask}
+        onAdd={addComment}
       />
       <CommentsListContainer>
-        {comments?.map(
-          renderComment({
-            currentUser,
-            removeComment,
-            updateComment,
-            taskListIdentifier,
-            isTemplateTask,
-          }),
-        )}
+        {comments?.map(comment => (
+          <Comment
+            key={comment.commentIdentifier}
+            comment={comment}
+            currentUser={currentUser}
+            onDelete={removeComment}
+            onUpdate={updateComment}
+            taskListIdentifier={taskListIdentifier}
+            disableMentions={isTemplateTask}
+          />
+        ))}
       </CommentsListContainer>
     </CommentSectionContainer>
   );

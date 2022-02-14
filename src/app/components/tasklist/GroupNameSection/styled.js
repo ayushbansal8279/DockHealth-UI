@@ -22,7 +22,6 @@ export const Header = styled.span`
 `;
 
 export const ButtonWrapper = styled.button`
-  width: 100%;
   max-width: 100%;
   text-align: left;
 `;

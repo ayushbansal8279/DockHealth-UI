@@ -1,4 +1,4 @@
-export default {
+const AlertMessages = {
   SAVED: 'Saved',
   CREATED: 'Created',
   UPDATED: 'Updated',
@@ -17,3 +17,5 @@ export default {
   TASK_DUPLICATED: 'Task duplicted',
   PATIENT_ARCHIVED: 'Archived',
 };
+
+export default AlertMessages;

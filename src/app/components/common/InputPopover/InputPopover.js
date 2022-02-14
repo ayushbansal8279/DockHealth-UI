@@ -8,6 +8,7 @@ const InputPopover = ({
   isPopoverOpen,
   children,
   popupStyle,
+  ...restProps
 }) => {
   const widthValue =
     popupStyle?.width || `${anchorElement.current?.offsetWidth}px`;
@@ -19,6 +20,7 @@ const InputPopover = ({
       placement="bottom-start"
       open={isPopoverOpen}
       style={{ zIndex: 100000 }}
+      {...restProps}
     >
       <StyledPopper width={widthValue}>{children}</StyledPopper>
     </Popper>
@@ -27,7 +29,7 @@ const InputPopover = ({
 
 InputPopover.propTypes = {
   anchorElement: shape({
-    current: object,
+    current: object || null,
   }).isRequired,
   isPopoverOpen: bool.isRequired,
   children: node,

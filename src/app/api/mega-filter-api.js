@@ -1,21 +1,58 @@
+/* eslint-disable sonarjs/no-identical-functions */
 /* eslint-disable import/prefer-default-export */
+import {
+  mapSelectedOptionsToRequestPayload,
+  mapRequestSelectedOptionsToStore,
+} from 'helpers/filter-options-helpers';
 import axios from './axios-heydoc';
-import URLS from '../urls';
 
-export function getFiltersForTaskListMegaFilter(taskListIdentifier, status) {
+export function getQuickFilters(quickFilters) {
   return axios
-    .get(URLS.megaFilter.getFiltersForTaskList(taskListIdentifier, status))
-    .then(response => response.data)
-    .catch(error => {
-      throw error;
+    .get(`task/quickFilter/search`, {
+      params: { ...quickFilters },
+    })
+    .then(({ data }) => {
+      return data.map(f => ({
+        ...f,
+        selectedOptions: mapRequestSelectedOptionsToStore(f.selectedOptions),
+      }));
+    });
+}
+export function createQuickFilter(quickFilters, viewSpecificData) {
+  return axios
+    .post(`task/quickFilter`, {
+      ...quickFilters,
+      ...viewSpecificData,
+      selectedOptions: mapSelectedOptionsToRequestPayload(
+        quickFilters.selectedOptions,
+      ),
+    })
+    .then(({ data }) => {
+      return {
+        ...data,
+        selectedOptions: mapRequestSelectedOptionsToStore(data.selectedOptions),
+      };
+    });
+}
+export function updateQuickFilter(quickFilterIdentifier, quickFilters) {
+  return axios
+    .put(`task/quickFilter`, {
+      ...quickFilters,
+      quickFilterIdentifier,
+      selectedOptions: mapSelectedOptionsToRequestPayload(
+        quickFilters.selectedOptions,
+      ),
+    })
+    .then(({ data }) => {
+      return {
+        ...data,
+        selectedOptions: mapRequestSelectedOptionsToStore(data.selectedOptions),
+      };
     });
 }
 
-export function getFiltersForPeopleListMegaFilter(userId, status) {
+export function deleteQuickFilter(identifier) {
   return axios
-    .get(URLS.megaFilter.getFiltersForPeopleList(userId, status))
-    .then(response => response.data)
-    .catch(error => {
-      throw error;
-    });
+    .delete(`task/quickFilter/${identifier}`)
+    .then(({ data }) => data);
 }

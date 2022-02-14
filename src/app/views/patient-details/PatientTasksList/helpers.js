@@ -1,20 +1,5 @@
+import { TaskGroupType, TaskItemType } from 'helpers/task-helpers';
 import { filterTasksBySearchValue } from 'helpers/task-search-helper';
-
-export const ListViewType = {
-  LIST_VIEW: 'list-view',
-  ALL_TASKS: 'all',
-};
-
-export const LIST_TYPE_OPTIONS = [
-  {
-    label: 'List View',
-    value: ListViewType.LIST_VIEW,
-  },
-  {
-    label: 'All Tasks',
-    value: ListViewType.ALL_TASKS,
-  },
-];
 
 export const checkIfSelectedListIsPresent = (lists, selectedListIdentifier) =>
   selectedListIdentifier &&
@@ -23,7 +8,7 @@ export const checkIfSelectedListIsPresent = (lists, selectedListIdentifier) =>
   );
 
 export const searchTaskInPatientLists = (patientLists, searchValue) =>
-  patientLists.reduce((accumulator, currentValue) => {
+  patientLists?.reduce((accumulator, currentValue) => {
     const filteredTasks = filterTasksBySearchValue(
       currentValue.tasks,
       searchValue,
@@ -32,4 +17,38 @@ export const searchTaskInPatientLists = (patientLists, searchValue) =>
     if (filteredTasks.length === 0) return accumulator;
 
     return [...accumulator, { ...currentValue, tasks: filteredTasks }];
-  }, []);
+  }, []) || null;
+
+export function groupTasks(tasks) {
+  const groupedTasks = tasks?.reduce(
+    (accumulator, item) => {
+      const group = (item.itemType === TaskItemType.BUNDLE
+        ? item.tasks?.[0]
+        : item
+      )?.taskGroups?.find(({ groupType }) =>
+        [TaskGroupType.TASKLIST, TaskGroupType.TASKLIST_DEFAULT].includes(
+          groupType,
+        ),
+      );
+
+      const groupId =
+        group?.groupType === TaskGroupType.TASKLIST
+          ? group.taskGroupIdentifier
+          : TaskGroupType.TASKLIST_DEFAULT;
+
+      return {
+        ...accumulator,
+        [groupId]: {
+          ...(accumulator[groupId] ?? {}),
+          ...(group ?? {}),
+          tasks: [...(accumulator[groupId]?.tasks ?? []), item],
+        },
+      };
+    },
+    {
+      [TaskGroupType.TASKLIST_DEFAULT]: {},
+    },
+  );
+
+  return !groupedTasks ? tasks : Object.values(groupedTasks);
+}

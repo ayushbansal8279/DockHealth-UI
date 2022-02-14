@@ -5,7 +5,7 @@ import { useHistory } from 'react-router-dom';
 import { pluck } from 'ramda';
 import { showGlobalAlert, showGlobalErrorAlert } from 'alert/actions';
 import AlertMessages from 'alert/AlertMessages';
-import { updatePatientsList, getPatientsList } from 'api/patients-api';
+import { updatePatientsList, getPatientsByListId } from 'api/patients-api';
 import { openModal } from 'modal/actions';
 import { Grid } from '@material-ui/core';
 import Spacing from 'components/common/Spacing';
@@ -56,9 +56,9 @@ const AddPatientToListModal = ({
 
   useEffect(() => {
     setFetchingPatients(true);
-    getPatientsList(patientListIdentifier)
-      .then(fetchedList => {
-        setSelectedPatients(fetchedList.patients);
+    getPatientsByListId(patientListIdentifier)
+      .then(patients => {
+        setSelectedPatients(patients);
         setFetchingPatients(false);
       })
       .catch(() => {

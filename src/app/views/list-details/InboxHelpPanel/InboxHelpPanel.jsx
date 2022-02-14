@@ -6,6 +6,7 @@ import TipsPencilIcon from 'img/tip-pencil-icon.svg';
 import InboxTip from 'img/tips/inbox/inbox-1.svg';
 import palette from 'styles/palette';
 import { MontserratTypography } from 'styles/theme-montserrat';
+import TipsDotsBackground from 'img/tips-dots-background';
 import { RobotoTypography } from 'styles/theme';
 
 const MainInboxContainer = styled.div`
@@ -13,6 +14,10 @@ const MainInboxContainer = styled.div`
   max-width: 842px;
   min-width: 574px;
   padding: 1rem;
+  background: url(${TipsDotsBackground}),
+    linear-gradient(to right, ${palette.brightBlue}, ${palette.darkBlue});
+  background-repeat: repeat-x;
+  border-radius: 0.5rem;
 `;
 
 const SmallRobotoTypography = styled(RobotoTypography)`

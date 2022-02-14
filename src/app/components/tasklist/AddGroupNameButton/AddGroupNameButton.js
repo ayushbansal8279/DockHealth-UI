@@ -4,7 +4,7 @@ import { Cross, Description, Header } from '../GroupNameSection/styled';
 import messages from './messages';
 
 const AddGroupNameButton = () => (
-  <>
+  <div>
     <MontserratTypography>
       <Cross>+</Cross>
       <Header>{messages.label}</Header>
@@ -12,7 +12,7 @@ const AddGroupNameButton = () => (
     <Description>
       <MontserratTypography>{messages.description}</MontserratTypography>
     </Description>
-  </>
+  </div>
 );
 
 export default AddGroupNameButton;

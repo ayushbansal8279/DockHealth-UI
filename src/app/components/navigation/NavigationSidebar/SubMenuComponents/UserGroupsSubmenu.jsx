@@ -16,7 +16,10 @@ import {
   defaultUserGroupsSelector,
   userGroupsSelector,
 } from 'selectors/user-groups-selectors';
-import { userProfileSelector } from 'selectors/user-selectors';
+import {
+  userProfileSelector,
+  userHasUserGroupsFeatureSelector,
+} from 'selectors/user-selectors';
 import { locationParametersSelector } from 'location/selectors';
 import {
   checkIfUserIsOrganizationAdmin,
@@ -26,6 +29,8 @@ import {
   DefaultUserGroupUrl,
   getUserGroupIdentifierByUrlParameter,
 } from 'helpers/user-groups-helper';
+import UpgradePlan from 'components/common/UpgradePlan/UpgradePlan';
+import UserGroupsIcon from 'img/premium/user-groups';
 import {
   DrawerMyListsLabel,
   DrawerListsItem,
@@ -33,6 +38,7 @@ import {
   DrawerListsList,
   DrawerItemOptions,
   DrawerListsItemLoader,
+  UpgradePlanContainer,
 } from './styled';
 
 // eslint-disable-next-line sonarjs/cognitive-complexity
@@ -43,6 +49,7 @@ const UserGroupsSubmenu = () => {
   const groups = useSelector(userGroupsSelector);
   const isFetching = useSelector(isFetchingUserGroupsSelector);
   const currentUser = useSelector(userProfileSelector);
+  const userGroupsAvailable = useSelector(userHasUserGroupsFeatureSelector);
   const { groupIdentifier: groupIdentifierUrlParameter } = useSelector(
     locationParametersSelector,
   );
@@ -126,7 +133,7 @@ const UserGroupsSubmenu = () => {
           </>
         )}
       </DrawerListsList>
-      {!isGuest && (
+      {!isGuest && userGroupsAvailable && (
         <>
           <Box m={6} flexShrink={0} />
           <DrawerMyListsLabel>
@@ -192,6 +199,15 @@ const UserGroupsSubmenu = () => {
             )}
           </DrawerListsList>
         </>
+      )}
+      {!userGroupsAvailable && (
+        <UpgradePlanContainer>
+          <UpgradePlan
+            title="Custom user groups"
+            description="Build custom teams for group assignments, communication, and collaboration across workflows and care settings."
+            iconImage={<img src={UserGroupsIcon} alt="Custom User Groups" />}
+          />
+        </UpgradePlanContainer>
       )}
     </>
   );

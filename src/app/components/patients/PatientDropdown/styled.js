@@ -1,10 +1,10 @@
 import styled from 'styled-components';
+import { Skeleton } from '@material-ui/lab';
 import { Popover } from '@material-ui/core';
 import { withStyles } from '@material-ui/core/styles';
 import palette from 'styles/palette';
 import spacing from 'styles/spacing';
 import { fontSizes, fontWeights } from 'styles/font';
-import { LoaderFillElement } from 'components/task/TasksSkeletonLoader/styled';
 
 export const StyledPopover = withStyles({
   paper: {
@@ -77,9 +77,11 @@ export const UnassignRowContainer = styled.div`
     withBorder ? `1px solid ${palette.coolGrey2}` : '0px'};
 `;
 
-export const LoaderItem = styled(LoaderFillElement)`
-  margin: ${spacing.regular} ${spacing.large};
-`;
+export const LoaderItem = withStyles({
+  root: {
+    margin: `${spacing.regular} ${spacing.large}`,
+  },
+})(Skeleton);
 
 export const LoaderContainer = styled.div`
   padding: ${spacing.smallPlus} 0;

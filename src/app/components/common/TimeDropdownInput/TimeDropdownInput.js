@@ -7,7 +7,7 @@ import React, {
   useMemo,
 } from 'react';
 import { bool, func, node, oneOf, string } from 'prop-types';
-import useBoolean from 'hooks/useBoolean';
+import { useBoolean } from 'hooks/useBoolean';
 import { isOutsideScrollView } from 'helpers/scroll-helper';
 import InputPopover from 'components/common/InputPopover/InputPopover';
 import {

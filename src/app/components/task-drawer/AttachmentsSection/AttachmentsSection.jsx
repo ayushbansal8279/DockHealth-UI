@@ -4,64 +4,15 @@ import Loader from 'components/common/Loader/Loader';
 import Spacing from 'components/common/Spacing';
 import { RobotoTypography } from 'styles/theme';
 
-import { Grid, IconButton } from '@material-ui/core';
-import { Close } from '@material-ui/icons';
-import Tooltip from 'components/common/Tooltip/Tooltip';
-import AttachmentPreview from '../AttachmentPreview/AttachmentPreview';
+import { Grid } from '@material-ui/core';
+import AttachmentPreview from 'components/attachments/AttachmentPreview/AttachmentPreview';
+import AttachmentButton from 'components/attachments/AttachmentButton/AttachmentButton';
+import AttachmentProgressBar from 'components/attachments/AttachmentProgressBar/AttachmentProgressBar';
+import AddAttachmentButton from 'components/attachments/AddAttachmentButton/AddAttachmentButton';
 import initializeAttachmentsSectionHooks from './hooks';
-import {
-  AttachmentButton,
-  AttachmentsContainer,
-  RemoveAttachmentButtonContainer,
-  AttachmentFileInput,
-  AddAttachmentButton,
-  UploadBarContainer,
-  UploadBar,
-  UploadBarOuterContainer,
-} from './styled';
-import { getIconFromContentType } from './helpers';
+import { AttachmentsContainer, AttachmentFileInput } from './styled';
 
-const renderAttachmentButton = ({
-  openAttachmentPreview,
-  removeTaskAttachment,
-}) => attachment => {
-  const { attachmentIdentifier, fileName, contentType } = attachment;
-  const IconComponent = getIconFromContentType({ contentType });
-
-  return (
-    <Tooltip key={attachmentIdentifier} title={fileName}>
-      <AttachmentButton
-        download={fileName}
-        onClick={event => {
-          event.stopPropagation();
-          event.preventDefault();
-          openAttachmentPreview(attachment);
-        }}
-      >
-        <IconComponent color="inherit" fontSize="small" />
-        <Spacing horizontal={2} />
-        <RobotoTypography condensed variant="h4" weight="bold" noWrap>
-          {fileName}
-        </RobotoTypography>
-        <RemoveAttachmentButtonContainer>
-          <IconButton
-            onClick={event => {
-              event.preventDefault();
-              event.stopPropagation();
-              removeTaskAttachment({ attachmentIdentifier });
-            }}
-            size="small"
-            color="inherit"
-          >
-            <Close fontSize="small" />
-          </IconButton>
-        </RemoveAttachmentButtonContainer>
-      </AttachmentButton>
-    </Tooltip>
-  );
-};
-
-const AttachmentsSection = ({ selectedTask }) => {
+const AttachmentsSection = () => {
   const {
     attachmentsSources,
     currentTaskAttachments,
@@ -74,18 +25,17 @@ const AttachmentsSection = ({ selectedTask }) => {
     isAttachmentPreviewOpen,
     hideAttachmentPreview,
     previewedAttachment,
-    dropzone: { getRootProps, getInputProps },
+    dropzone: { getRootProps, getInputProps, isDragActive },
   } = initializeAttachmentsSectionHooks();
 
   return (
-    <AttachmentsContainer>
+    <AttachmentsContainer isDragActive={isDragActive}>
       <AttachmentPreview
         attachment={previewedAttachment}
         attachmentsSources={attachmentsSources}
         hideAttachmentPreview={hideAttachmentPreview}
         isAttachmentPreviewOpen={isAttachmentPreviewOpen}
         attachmentsLoading={attachmentsLoading}
-        selectedTask={selectedTask}
       />
       <AttachmentFileInput
         ref={attachmentFileInputReference}
@@ -93,10 +43,21 @@ const AttachmentsSection = ({ selectedTask }) => {
       />
       <Grid container>
         <Grid item xs={12}>
+          <Spacing vertical={3} />
           <RobotoTypography condensed variant="h5" color="inherit">
             ATTACHMENTS
           </RobotoTypography>
         </Grid>
+        <RobotoTypography condensed variant="h4" color="inherit">
+          <Spacing vertical={2} />
+          {isDragActive ? (
+            <span>Drop the files here ...</span>
+          ) : (
+            <span>
+              Drag and drop files or documents here, or click + to select files
+            </span>
+          )}
+        </RobotoTypography>
         <Grid item xs={12}>
           <Spacing vertical={3} />
         </Grid>
@@ -113,28 +74,22 @@ const AttachmentsSection = ({ selectedTask }) => {
               <Spacing horizontal={3} />
             </>
           ) : (
-            currentTaskAttachments.map(
-              renderAttachmentButton({
-                openAttachmentPreview,
-                removeTaskAttachment,
-              }),
-            )
+            currentTaskAttachments.map(attachment => (
+              <AttachmentButton
+                key={attachment.attachmentIdentifier}
+                attachment={attachment}
+                onClick={openAttachmentPreview}
+                onRemoveClick={removeTaskAttachment}
+              />
+            ))
           )}
           {currentlyUploadedAttachment && (
             <>
-              <UploadBarOuterContainer>
-                <UploadBarContainer>
-                  <UploadBar progress={uploadProgress} />
-                </UploadBarContainer>
-              </UploadBarOuterContainer>
+              <AttachmentProgressBar progress={uploadProgress} />
               <Spacing horizontal={4} />
             </>
           )}
-          <AddAttachmentButton>
-            <RobotoTypography condensed variant="h4" color="inherit">
-              +
-            </RobotoTypography>
-          </AddAttachmentButton>
+          <AddAttachmentButton />
         </Grid>
       </Grid>
     </AttachmentsContainer>

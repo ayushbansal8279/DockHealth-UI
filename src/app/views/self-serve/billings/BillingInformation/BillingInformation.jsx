@@ -14,7 +14,7 @@ import CardMastercardIcon from 'img/cards/mastercard.png';
 import CardVisaIcon from 'img/cards/visa.png';
 import palette from 'styles/palette';
 import { MontserratTypography } from 'styles/theme-montserrat';
-import { BILLING_FREQUENCY } from '../../subscriptions/helpers';
+import { BillingFrequency } from 'helpers/subscription-helper';
 
 const CARD_EXPIRATION_WARNING_DAYS = 15;
 
@@ -55,8 +55,8 @@ const ExpirationLabel = styled.span`
     props.futureExpirationWarning ? palette.oPlusRed : palette.lightGrey};
 `;
 
-const goToSubscriptions = history => {
-  history.push('/subscriptions');
+const goToUsersView = history => {
+  history.push('/users');
 };
 
 const getCardBrandIconSource = ({ cardBrand }) => {
@@ -119,7 +119,7 @@ const BillingInformation = ({ setUpdatingBilling }) => {
 
   const billingEstimateLabel =
     billingData?.subscriptionDetails?.billingFrequency ===
-    BILLING_FREQUENCY.ANNUAL
+    BillingFrequency.ANNUAL
       ? `$${billingData?.annualEstimate ?? 0}/yr`
       : `$${billingData?.monthlyEstimate ?? 0}/mo`;
 
@@ -174,7 +174,7 @@ const BillingInformation = ({ setUpdatingBilling }) => {
           <span>{billingEstimateLabel}</span>
           <span> | </span>
           <span>{billingData?.activeUserCount ?? 0} users </span>
-          <LinkContainer onClick={() => goToSubscriptions(history)}>
+          <LinkContainer onClick={() => goToUsersView(history)}>
             view users
           </LinkContainer>
         </MontserratTypography>

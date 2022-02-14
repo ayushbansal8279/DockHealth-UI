@@ -101,10 +101,20 @@ export const saveBillingDetails = ({ billingData, token }) =>
       subscriptionDetails: {
         subscriptionPlan: billingData.subscriptionDetails?.subscriptionPlan,
         billingFrequency: billingData.subscriptionDetails?.billingFrequency,
+        professionalServicesIncluded:
+          billingData.subscriptionDetails?.professionalServicesIncluded,
       },
       cardTokenIdentifier: token.token.id,
     },
   }).then(response => response.data);
+
+export function updateSubscriptionPlan(newPlan) {
+  return axios
+    .put(`/organization/saveBillingDetails`, {
+      subscriptionDetails: newPlan,
+    })
+    .then(({ data }) => data);
+}
 
 export const getBillingEstimate = ({ subscriptionPlan, billingFrequency }) =>
   axios({
@@ -122,6 +132,7 @@ export const getBillingDetails = () => {
     url: `/organization/getBillingDetails`,
   }).then(response => response.data);
 };
+
 export const getInvoiceDetails = () =>
   axios({
     method: 'get',
