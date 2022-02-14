@@ -5,16 +5,14 @@ import Tooltip from 'components/common/Tooltip/Tooltip';
 import TaskItemPopover from 'components/task/TaskItemPopover/TaskItemPopover';
 import MultiAssignMembersList from 'components/task/MultiAssignPopover/MultiAssignMembersList';
 import { pluck } from 'ramda';
-import { useSelector } from 'react-redux';
-import { userProfileSelector } from 'selectors/user-selectors';
 import { AssigneeMatchingWrapper } from './styled';
 
 const TaskTemplateMembers = ({
   multipleAssigneesContext,
   workflow = {},
   onWorkflowUpdate,
+  currentUser,
 }) => {
-  const currentUser = useSelector(userProfileSelector);
   const {
     assignedToUsers = [],
     searchMetaData,

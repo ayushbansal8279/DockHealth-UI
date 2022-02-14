@@ -28,6 +28,7 @@ export const Placeholder = styled.div`
   font-weight: 400;
 
   &:hover {
+    opacity: 1;
     color: ${palette.brightBlue};
   }
 `;

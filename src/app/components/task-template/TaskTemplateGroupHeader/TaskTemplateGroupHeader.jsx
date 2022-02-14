@@ -12,7 +12,6 @@ import { checkIfAllTasksSelected } from 'helpers/bulk-edit-helpers';
 import { pluck } from 'ramda';
 import { extractTasksAndSubtasks } from 'helpers/tasklist-helpers';
 import { useDispatch, useSelector } from 'react-redux';
-import { Link } from 'react-router-dom';
 import ThreeDotsIcon from 'img/three-dots';
 import { MoreVert } from '@material-ui/icons';
 import * as ModalActions from 'modal/actions';
@@ -30,11 +29,6 @@ import ProgressBar from 'components/common/ProgressBar/ProgressBar';
 import RotatableChevron from 'components/common/RotatableChevron/RotatableChevron';
 import { BulkEditContext } from 'components/tasklist/BulkEditSection/BulkEditSection';
 import OptionsMenu from 'components/common/OptionsMenu/OptionsMenu';
-import PatientCard from 'components/patients/PatientCard/PatientCard';
-import TaskItemPopover from 'components/task/TaskItemPopover/TaskItemPopover';
-import PatientList from 'components/patients/PatientDropdown/PatientList';
-import { getCustomerTypeLabel } from 'helpers/customer-type-helper';
-import { capitalize } from 'helpers/capitalize';
 import Spacing from 'components/common/Spacing';
 import { useColumnsConfig } from 'context-api/ColumnsConfigContext';
 import StickyMainTaskItemCell from 'components/task/StickyMainTaskItemCell/StickyMainTaskItemCell';
@@ -43,22 +37,16 @@ import TaskTemplateDueDate from 'components/task-template/TaskTemplateDueDate/Ta
 import { CustomFieldWidthConfig } from 'helpers/field-type-helpers';
 import { updatePartialWorkflow } from 'actions/task-template-actions';
 import { compose } from 'redux';
-import { selectedUserOrganizationSelector } from 'selectors/user-selectors';
-import {
-  DescriptionStickyColumnContainer,
-  TaskTemplateGroupHeaderContainer,
-  TaskTemplateProgressCircle,
-  TemplateHandle,
-  TaskTemplateOptionsContainer,
-  TaskTemplatePatientHeader,
-  AddPlaceholder,
-  Placeholder,
-  TaskTemplateRight,
-} from './styled';
 import TemplateHeaderName from '../TaskTemplateName/TaskTemplateName';
 import TaskHeaderPatient from '../TaskTemplatePatient/TaskTemplatePatient';
 import TemplateItemWorkflowStatus from '../TaskTemplateWorkflowStatus/TaskTemplateWorkflowStatus';
 import TaskTemplateMembers from '../TaskTemplateMembers/TaskTemplateMembers';
+import {
+  TaskTemplateGroupHeaderContainer,
+  TaskTemplateProgressCircle,
+  TemplateHandle,
+  TaskTemplateOptionsContainer,
+} from './styled';
 
 const TaskTemplateGroupHeader = ({
   templateGroup = {},
@@ -70,10 +58,10 @@ const TaskTemplateGroupHeader = ({
   viewSetup,
   setIsAddingTask,
   highlightedValue,
-  pageBackground, // TODO: pass through props from the container (another color from home view, another from list, etc)
+  pageBackground,
   // eslint-disable-next-line sonarjs/cognitive-complexity
 }) => {
-  const { name, tasks, identifier, patient } = templateGroup;
+  const { name, tasks, identifier } = templateGroup;
   const { SHOW_WORKFLOW_DETAILS, SHOW_WORKFLOW_COMPLETED_TASKS } = viewSetup;
   const { dragHandleProps } = draggableProvided;
   const [isHovered, setIsHovered, unsetIsHovered] = useBoolean(false);
@@ -87,14 +75,10 @@ const TaskTemplateGroupHeader = ({
   const [showIncompleteTasks, setShowIncompleteTasks] = useState(
     !isCompletedTab,
   );
-  const patientReference = useRef(null);
   const { currentUser } = useSelector(store => ({
     currentUser: store.userState.userProfile,
   }));
-  const customerTypeLabel = getCustomerTypeLabel(currentUser);
-  const customerTypeLabelCapitalized = capitalize(customerTypeLabel);
   const dispatch = useDispatch();
-  const [isEditingDescription, setEditingDescription] = useState(false);
   const { columnsConfig, customColumnsConfig } = useColumnsConfig();
 
   useEffect(() => {
@@ -255,6 +239,7 @@ const TaskTemplateGroupHeader = ({
     event => {
       const { key } = event;
       if (key === 'Enter') {
+        setIsEditing(false);
         const { value } = event.target;
         if (value?.length > 1) {
           setNameInputError(false);
@@ -316,7 +301,7 @@ const TaskTemplateGroupHeader = ({
         <StickyMainTaskItemCell
           backgroundColor={pageBackground}
           isSelected={isBundleSelected}
-          isEditingDescription={isEditingDescription}
+          isEditingDescription={isEditing}
         >
           {!groupDragAndDropDisabled && !bulkEditIsActive && (
             <TemplateHandle
@@ -365,12 +350,14 @@ const TaskTemplateGroupHeader = ({
           width={TaskItemColumnWidth[TaskItemColumn.PATIENT]}
           alignItems="flex-start"
         >
-          <TaskHeaderPatient
-            highlightedValue={highlightedValue}
-            workflow={templateGroup}
-            onWorkflowUpdate={compose(dispatch, updatePartialWorkflow)}
-            currentUser={currentUser}
-          />
+          {!disablePatientAssignment && (
+            <TaskHeaderPatient
+              highlightedValue={highlightedValue}
+              workflow={templateGroup}
+              onWorkflowUpdate={compose(dispatch, updatePartialWorkflow)}
+              currentUser={currentUser}
+            />
+          )}
         </TaskItemCell>
       )}
       {columnsConfig[TaskItemColumn.WORKFLOW_STATUS] && (
@@ -415,6 +402,7 @@ const TaskTemplateGroupHeader = ({
           }}
         >
           <TaskTemplateMembers
+            currentUser={currentUser}
             multipleAssigneesContext={groupHasMultipleAssignees}
             workflow={templateGroup}
             onWorkflowUpdate={compose(dispatch, updatePartialWorkflow)}

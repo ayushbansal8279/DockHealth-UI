@@ -44,6 +44,11 @@ const TaskTemplateName = ({
           }}
           onKeyDown={handleNameInputKeyDown}
           value={nameInputValue}
+          onClick={event => {
+            if (isEditing) {
+              event.stopPropagation();
+            }
+          }}
         />
       </NameContainer>
       <Popper
