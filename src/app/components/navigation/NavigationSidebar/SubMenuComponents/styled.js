@@ -298,6 +298,7 @@ export const ListNameText = styled.div`
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
+  cursor: pointer;
   ${({ color }) => color && `color: ${color}`}
   ${({ isActive }) =>
     isActive
@@ -306,7 +307,6 @@ export const ListNameText = styled.div`
           &:hover {
             color: ${palette.brightBlue};
             text-decoration: underline;
-            cursor: pointer;
           }
         `}
 `;
