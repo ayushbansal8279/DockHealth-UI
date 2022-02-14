@@ -1,13 +1,13 @@
 import React, { useCallback } from 'react';
+import { Box } from '@material-ui/core';
 import moment from 'moment';
 import DatePicker from 'components/task/DatePicker/DatePicker';
 import TaskItemPopover from 'components/task/TaskItemPopover/TaskItemPopover';
 // import TaskIcon from 'components/task/TaskIcon/TaskIcon';
 import Tooltip from 'components/common/Tooltip/Tooltip';
-import { CustomFieldWidthConfig, FieldType } from 'helpers/field-type-helpers';
-import { DateBasicLabel, StandardTaskItemCell, DateText } from './styled';
+import { DateBasicLabel, DateText } from './styled';
 
-const TaskItemDate = ({ value, onChange, onClick, readOnly }) => {
+const TaskItemDate = ({ value, onChange, readOnly }) => {
   const handleDateChange = useCallback(
     newDate => {
       onChange(newDate);
@@ -16,16 +16,7 @@ const TaskItemDate = ({ value, onChange, onClick, readOnly }) => {
   );
 
   return (
-    <StandardTaskItemCell
-      paddingLeft="tiny"
-      paddingRight="tiny"
-      width={CustomFieldWidthConfig[FieldType.DATE]}
-      justify="center"
-      onContextMenu={event => {
-        event.stopPropagation();
-      }}
-      onClick={onClick}
-    >
+    <Box marginLeft="auto" marginRight="auto">
       <TaskItemPopover
         disabled={readOnly}
         content={({ closePopover }) => (
@@ -50,7 +41,7 @@ const TaskItemDate = ({ value, onChange, onClick, readOnly }) => {
           )}
         </Tooltip>
       </TaskItemPopover>
-    </StandardTaskItemCell>
+    </Box>
   );
 };
 

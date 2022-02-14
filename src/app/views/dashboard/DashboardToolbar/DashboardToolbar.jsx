@@ -51,7 +51,10 @@ const DashboardToolbar = props => {
   useEffect(() => {
     const config =
       userPreferColumns?.reduce(
-        (accumulator, value) => ({ ...accumulator, [value]: true }),
+        (accumulator, value) =>
+          Object.keys(DASHBOARD_CONFIGURABLE_COLUMNS_CONFIG).includes(value)
+            ? { ...accumulator, [value]: true }
+            : accumulator,
         DASHBOARD_CONFIGURABLE_COLUMNS_CONFIG,
       ) || {};
     const customizedDashboardConfig = {

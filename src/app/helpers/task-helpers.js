@@ -119,6 +119,7 @@ export function checkIfBundleTask(task) {
 export const TaskItemColumn = {
   DESCRIPTION: 'TASK_DESCRIPTION',
   DUE_DATE: 'DUE_DT',
+  START_DATE: 'START_DT',
   ACTIVITY: 'ACTIVITY',
   LIST_NAME: 'LIST_NAME',
   ASSIGNED: 'ASSIGNED_TO',
@@ -126,6 +127,20 @@ export const TaskItemColumn = {
   SUBTASKS_COUNT: 'SUBTASKS_COUNT',
   WORKFLOW_STATUS: 'WORKFLOW_STATUS',
   DECISION_SELECT: 'DECISION_SELECT',
+};
+
+export const TaskItemColumnWidth = {
+  [TaskItemColumn.DUE_DATE]: 78,
+  [TaskItemColumn.START_DATE]: 78,
+  [TaskItemColumn.ACTIVITY]: 150,
+  [TaskItemColumn.LIST_NAME]: 168,
+  [TaskItemColumn.ASSIGNED]: {
+    WIDE: 90,
+    NARROW: 60,
+  },
+  [TaskItemColumn.PATIENT]: 164,
+  [TaskItemColumn.SUBTASKS_COUNT]: 60,
+  [TaskItemColumn.WORKFLOW_STATUS]: 120,
 };
 
 export const TASK_ITEM_BASE_COLUMN_CONFIG = {
@@ -139,8 +154,6 @@ export const TASK_ITEM_BASE_COLUMN_CONFIG = {
   [TaskItemColumn.LIST_NAME]: false,
   [TaskItemColumn.DECISION_SELECT]: true,
 };
-
-export const checkColumnIsInConfig = (column, taskConfig) => taskConfig[column];
 
 export const TASK_ITEM_SORT_METHODS = {
   [TaskItemColumn.DESCRIPTION]: sortWith([

@@ -1,0 +1,86 @@
+import styled from 'styled-components';
+import spacing from 'styles/spacing';
+import palette from 'styles/palette';
+import { fontSizes } from 'styles/font';
+
+export const TemplateHandle = styled.img`
+  position: absolute;
+  top: 50%;
+  left: -12px;
+  transform: translateY(-50%);
+  background-color: transparent;
+  padding: ${spacing.regular} ${spacing.tiny} ${spacing.regular} 0;
+  opacity: 0;
+  z-index: 12;
+
+  &:active {
+    opacity: 1;
+  }
+`;
+
+export const Placeholder = styled.div`
+  width: 100%;
+  color: ${palette.mediumGrey};
+  cursor: pointer;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  font-weight: 400;
+
+  &:hover {
+    color: ${palette.brightBlue};
+  }
+`;
+
+export const AddPlaceholder = styled(Placeholder)`
+  color: ${palette.lightGrey};
+  opacity: 0;
+
+  &::first-letter {
+    color: ${palette.orange};
+    font-size: 16px;
+  }
+`;
+
+export const TaskTemplateGroupHeaderContainer = styled.div`
+  position: relative;
+  display: flex;
+  /* align-items: center; */
+  /* justify-content: space-between; */
+  padding: 0;
+  font-family: 'Roboto', sans-serif;
+  font-size: ${fontSizes.smallPlus};
+  width: 100%;
+  border-top: 1px solid ${palette.coolGrey3};
+  border-bottom: 1px solid ${palette.coolGrey3};
+  background-color: ${palette.white};
+
+  &:hover {
+    & ${TemplateHandle}, ${AddPlaceholder} {
+      opacity: 1;
+    }
+  }
+`;
+
+export const TaskTemplateProgressCircle = styled.div`
+  margin-right: ${spacing.small};
+`;
+
+export const TaskTemplateOptionsContainer = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  padding-right: ${spacing.smallPlus};
+  width: 164px;
+  position: relative;
+  overflow: hidden;
+`;
+
+export const TaskTemplatePatientHeader = styled.div`
+  width: 164px;
+`;
+
+export const TaskTemplateRight = styled.div`
+  display: flex;
+  align-items: center;
+`;

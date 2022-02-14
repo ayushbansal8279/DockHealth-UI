@@ -6,6 +6,7 @@ const SHOW_COLUMNS_CONFIG = {
   [TaskItemColumn.ASSIGNED]: true,
   [TaskItemColumn.ACTIVITY]: true,
   [TaskItemColumn.DUE_DATE]: true,
+  [TaskItemColumn.START_DATE]: true,
   [TaskItemColumn.PATIENT]: true,
 };
 

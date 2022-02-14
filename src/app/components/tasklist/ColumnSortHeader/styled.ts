@@ -25,7 +25,7 @@ export const SortButton = styled.button<{
   truncateEnabled?: boolean;
 }>`
   position: relative;
-  flex: ${({ width }) => (width ? `${width}px 0 0` : '1')};
+  flex: ${({ width }) => (width ? `0 0 ${width}px` : '1')};
   overflow: ${({ truncateEnabled }) =>
     truncateEnabled ? 'hidden' : 'visible'};
   padding: 8px 16px;

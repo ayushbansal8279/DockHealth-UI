@@ -62,6 +62,17 @@ function updateTaskTemplateDetailsState(identifier, currentState, newState) {
 
 const TaskTemplateReducer = (state = initialState, action) => {
   switch (action.type) {
+    case ActionTypes.UPDATE_PARTIAL_WORKFLOW_SUCCESS: {
+      return {
+        ...state,
+        taskTemplates: state.taskTemplates.map(taskTemplate =>
+          taskTemplate.identifier === action.taskWorkflowIdentifier
+            ? { ...taskTemplate, ...action.newData }
+            : taskTemplate,
+        ),
+      };
+    }
+
     case ActionTypes.INITIALIZE_WORKFLOW_LIBRARY_STATE: {
       return {
         ...state,

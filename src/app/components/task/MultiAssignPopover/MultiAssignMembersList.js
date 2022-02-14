@@ -177,7 +177,9 @@ const MultiAssignMembersList = ({
     (event, selectedOption) => {
       event.stopPropagation();
       let membersToReturn;
-      if (selectedOption === UNASSIGNED_KEY) {
+      if (selectedOption === ASSIGN_ALL_KEY) {
+        membersToReturn = [...membersOptions];
+      } else if (selectedOption === UNASSIGNED_KEY) {
         membersToReturn = [];
       } else if (
         selectedMembers.find(
@@ -193,7 +195,7 @@ const MultiAssignMembersList = ({
       selectMembersWithDebounce(membersToReturn);
       setSelectedMembers(membersToReturn);
     },
-    [selectMembersWithDebounce, selectedMembers],
+    [membersOptions, selectMembersWithDebounce, selectedMembers],
   );
 
   const displayUnassignedOption = 'unassigned'.includes(
@@ -284,7 +286,7 @@ const MultiAssignMembersList = ({
                 </MemberName>
               </MemberRow>
             )}
-            {displayAssignAllOption && (
+            {displayAssignAllOption && membersOptions?.length > 0 && (
               <>
                 {!isFetchingMembers ? (
                   <MemberRow

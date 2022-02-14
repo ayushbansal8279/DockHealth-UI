@@ -383,9 +383,9 @@ const ListDetailsReducer = (state = initialState, action) => {
       };
     }
 
-    case ActionTypes.UPDATE_PARTIAL_WORKFLOW: {
+    case ActionTypes.UPDATE_PARTIAL_WORKFLOW_SUCCESS: {
       return updateBundleInState(
-        workflow => ({ ...workflow, ...action.dataToUpdate }),
+        () => ({ ...action.newData }),
         action.taskWorkflowIdentifier,
         state,
       );

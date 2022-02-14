@@ -77,6 +77,7 @@ const PATIENT_CONFIGURABLE_COLUMNS_CONFIG = {
   [TaskItemColumn.ASSIGNED]: false,
   [TaskItemColumn.ACTIVITY]: false,
   [TaskItemColumn.DUE_DATE]: false,
+  [TaskItemColumn.START_DATE]: false,
   [TaskItemColumn.PATIENT]: false,
 };
 

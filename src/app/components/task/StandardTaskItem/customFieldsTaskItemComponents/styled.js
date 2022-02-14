@@ -154,14 +154,6 @@ export const DescriptionBox = styled.div`
   cursor: pointer;
 `;
 
-export const DecisionBox = styled.div`
-  display: flex;
-  flex-direction: column;
-  flex: 1;
-  overflow: hidden;
-  cursor: pointer;
-`;
-
 export const DateAddLabel = styled.p`
   display: none;
   position: absolute;
@@ -249,10 +241,6 @@ export const StandardTaskItemCell = styled.div`
   width: ${props => (!props.width ? '100%' : '')};
   justify-content: ${props => props.justify || 'flex-start'};
   overflow: hidden;
-
-  &:last-of-type {
-    border-right: 0;
-  }
 `;
 
 export const MainStandardTaskItemCell = styled(StandardTaskItemCell)`

@@ -30,6 +30,7 @@ const DueDatePicker = ({
   disableRecurring,
   onCloseClick,
   disableClearDate,
+  // eslint-disable-next-line sonarjs/cognitive-complexity
 }) => {
   const [recurringSectionVisible, showRecurringSection] = useBoolean(recurring);
   const [dateMaskValue, setDateMaskValue] = useState(
