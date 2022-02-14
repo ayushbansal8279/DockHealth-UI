@@ -15,6 +15,7 @@ import * as TaskActions from 'actions/task-actions';
 import AlertMessages from 'alert/AlertMessages';
 import * as TaskTemplateApi from 'api/task-template-api';
 import * as TaskApi from 'api/task-api';
+import { createWorkflowBuilderPath } from 'routing/helpers/paths';
 import {
   currentFolderIdentifierSelector,
   taskTemplateDetailsSelector,
@@ -164,7 +165,7 @@ function* addTemplate({ template, parentIdentifier = null, history }) {
       if (history) {
         yield call(
           history.push,
-          `/core/workflows/${createdTemplate.taskTemplateIdentifier}`,
+          createWorkflowBuilderPath(createdTemplate.identifier),
         );
       }
     } catch (error) {
