@@ -14,6 +14,7 @@ export const DescriptionTooltipWrapper = styled.div`
 `;
 
 export const LabelWrapper = styled.p`
+  margin-bottom: 0;
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;

@@ -1,5 +1,18 @@
 import * as ActionTypes from 'actions/action-types';
 
+export function initializeWorkflowLibraryState(folderIdentifier) {
+  return {
+    type: ActionTypes.INITIALIZE_WORKFLOW_LIBRARY_STATE,
+    folderIdentifier,
+  };
+}
+
+export function clearWorkflowLibraryState() {
+  return {
+    type: ActionTypes.CLEAR_WORKFLOW_LIBRARY_STATE,
+  };
+}
+
 export function moveWorkflowToFolder(identifier, parentTaskTemplateIdentifier) {
   return {
     type: ActionTypes.MOVE_WORKFLOW_TO_FOLDER,
@@ -22,30 +35,6 @@ export function addSmartFlow(template, history) {
     history,
   };
 }
-export function pushToBreadcrumbs(
-  taskTemplateFolder,
-  taskTemplateFolderIdentifier,
-) {
-  return {
-    type: ActionTypes.PUSH_TO_TEMPLATES_BREADCRUMBS,
-    payload: {
-      breadcrumb: { name: taskTemplateFolder, taskTemplateFolderIdentifier },
-    },
-  };
-}
-
-export function cleanAndPushToBreadcrumbs(breadcrumbs) {
-  return {
-    type: ActionTypes.CLEAN_AND_PUSH_TEMPLATES_BREADCRUMBS,
-    payload: { breadcrumbs },
-  };
-}
-
-export function cleanBreadcrumbs() {
-  return {
-    type: ActionTypes.CLEAN_TEMPLATES_BREADCRUMBS,
-  };
-}
 
 export function addTemplateFolder(template, parentIdentifier = null) {
   return {
@@ -62,13 +51,6 @@ export function updateTaskTemplateSuccess(
     type: ActionTypes.UPDATE_TASK_TEMPLATE_SUCCESS,
     taskTemplateIdentifier,
     dataToUpdate,
-  };
-}
-
-export function goToTaskTemplateFolder(taskTemplateFolderIdentifier = null) {
-  return {
-    type: ActionTypes.GO_TO_TASK_TEMPLATE_FOLDER,
-    payload: { taskTemplateFolderIdentifier },
   };
 }
 
@@ -96,17 +78,16 @@ export function updatePartialWorkflow(taskWorkflowIdentifier, dataToUpdate) {
   };
 }
 
-export function getAllTemplatesForOrganization(searchPhrase = null) {
+export function getWorkflowFolder(searchPhrase = null) {
   return {
-    type: ActionTypes.GET_ALL_TASK_TEMPLATES,
+    type: ActionTypes.GET_WORKFLOW_FOLDER,
     searchPhrase,
   };
 }
 
-export function getTemplates(searchPhrase = null) {
+export function getFolderBreadcrumbs() {
   return {
-    type: ActionTypes.GET_TASK_TEMPLATES,
-    searchPhrase,
+    type: ActionTypes.GET_FOLDER_BREADCRUMBS,
   };
 }
 

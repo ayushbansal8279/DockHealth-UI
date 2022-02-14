@@ -12,7 +12,7 @@ import { useHistory } from 'react-router-dom';
 import palette from 'styles/palette';
 import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd';
 import Checkbox from 'components/common/Checkbox/Checkbox';
-import { createTaskTemplateDetailsPath } from 'routing/helpers/paths';
+import { createWorkflowBuilderPath } from 'routing/helpers/paths';
 import { Collapse } from '@material-ui/core';
 import { MoreHoriz } from '@material-ui/icons';
 import { onTaskOrderChanged } from 'helpers/ga-event-helper';
@@ -97,7 +97,7 @@ const TaskTemplate = ({
     () => [
       (smartFlowsAvailable || type === 'SMARTFLOW_SAMPLE') && {
         name: 'Open in SmartFlow Builder',
-        onClick: () => history.push(createTaskTemplateDetailsPath(identifier)),
+        onClick: () => history.push(createWorkflowBuilderPath(identifier)),
       },
       (smartFlowsAvailable || type !== 'SMARTFLOW_SAMPLE') && {
         name: 'Edit Workflow Name',
@@ -279,7 +279,7 @@ const TaskTemplate = ({
   };
 
   const onSmartFlowClick = () => {
-    history.push(createTaskTemplateDetailsPath(identifier));
+    history.push(createWorkflowBuilderPath(identifier));
   };
 
   const onChangeName = event => {

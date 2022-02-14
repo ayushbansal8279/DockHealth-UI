@@ -175,12 +175,3 @@ export function deleteSingleUserToPermissionList(
     })
     .then(({ data }) => data);
 }
-
-export function getLabels({ taskListIdentifier }) {
-  return axios
-    .get(`/task/label/getLabelsForTaskList/${taskListIdentifier}`)
-    .then(response => response.data)
-    .catch(error => {
-      throw error;
-    });
-}

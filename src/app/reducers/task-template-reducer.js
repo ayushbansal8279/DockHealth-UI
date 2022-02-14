@@ -11,13 +11,18 @@ import {
 } from 'helpers/task-template-builder-helpers';
 import TaskBaseReducer from './task-base-reducer';
 
-const initialState = {
-  taskTemplates: [],
+const initialWorkflowLibraryState = {
+  folderIdentifier: null,
+  taskTemplates: null,
   isFetching: false,
   isError: false,
-  taskTemplateDetails: {},
+  breadcrumbs: null,
   parent: null,
-  breadcrumbs: [],
+};
+
+const initialState = {
+  ...initialWorkflowLibraryState,
+  taskTemplateDetails: {},
   currentTaskTemplateIdentifier: null,
   currentTaskTemplate: null,
 };
@@ -67,23 +72,32 @@ const TaskTemplateReducer = (state = initialState, action) => {
         ),
       };
     }
-    case ActionTypes.PUSH_TO_TEMPLATES_BREADCRUMBS:
-      return {
-        ...state,
-        breadcrumbs: [...state.breadcrumbs, action.payload.breadcrumb],
-      };
 
-    case ActionTypes.CLEAN_AND_PUSH_TEMPLATES_BREADCRUMBS:
+    case ActionTypes.INITIALIZE_WORKFLOW_LIBRARY_STATE: {
       return {
         ...state,
-        breadcrumbs: [...action.payload.breadcrumbs],
+        ...initialWorkflowLibraryState,
+        folderIdentifier: action.folderIdentifier,
       };
+    }
 
-    case ActionTypes.CLEAN_TEMPLATES_BREADCRUMBS:
+    case ActionTypes.CLEAR_WORKFLOW_LIBRARY_STATE: {
       return {
         ...state,
-        breadcrumbs: [],
+        ...initialWorkflowLibraryState,
       };
+    }
+
+    case ActionTypes.UPDATE_PARTIAL_WORKFLOW: {
+      return {
+        ...state,
+        taskTemplates: state.taskTemplates?.map(taskTemplate =>
+          taskTemplate.identifier === action.taskWorkflowIdentifier
+            ? { ...taskTemplate, ...action.dataToUpdate }
+            : taskTemplate,
+        ),
+      };
+    }
 
     case ActionTypes.ADD_TASK_TEMPLATE_SUCCESS:
       return {
@@ -97,33 +111,38 @@ const TaskTemplateReducer = (state = initialState, action) => {
         taskTemplates: [action.workflow, ...state.taskTemplates],
       };
 
-    case ActionTypes.TASK_TEMPLATES_FETCHING:
+    case ActionTypes.GET_WORKFLOW_FOLDER:
       return {
         ...state,
         isFetching: true,
         isError: false,
       };
 
-    case ActionTypes.LOAD_TASK_TEMPLATES:
+    case ActionTypes.GET_WORKFLOW_FOLDER_SUCCESS:
       return {
         ...state,
-        taskTemplates: action.templates || [],
+        taskTemplates: action.workflows || [],
         parent: null,
         isFetching: false,
       };
-    case ActionTypes.LOAD_TASK_TEMPLATES_FOLDER:
-      return {
-        ...state,
-        taskTemplates: action.templates || [],
-        parent: action.taskTemplateFolderIdentifier,
-        isFetching: false,
-      };
 
-    case ActionTypes.TASK_TEMPLATES_ERROR:
+    case ActionTypes.GET_WORKFLOW_FOLDER_FAILURE:
       return {
         ...state,
         isFetching: false,
         isError: true,
+      };
+
+    case ActionTypes.GET_FOLDER_BREADCRUMBS:
+      return {
+        ...state,
+        breadcrumbs: null,
+      };
+
+    case ActionTypes.GET_FOLDER_BREADCRUMBS_SUCCESS:
+      return {
+        ...state,
+        breadcrumbs: action.breadcrumbs,
       };
 
     case ActionTypes.GET_TASK_TEMPLATE_TASKS: {

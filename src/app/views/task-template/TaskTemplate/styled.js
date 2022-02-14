@@ -15,13 +15,10 @@ export const TaskTemplateContainer = styled.div`
 `;
 
 export const TaskTemplateHeader = styled.div`
-  display: grid;
-  grid-template-columns: auto auto 1fr auto auto auto;
-  grid-template-rows: 30px auto;
-  grid-column-gap: ${spacing.tiny};
+  display: flex;
   align-items: center;
   width: 100%;
-  padding: 2px ${spacing.smallPlus};
+  padding-left: ${spacing.smallPlus};
   border: 1px solid ${palette.coolGrey3};
   background-color: ${palette.white};
   font-family: 'Roboto', sans-serif;
@@ -32,14 +29,10 @@ export const TaskTemplateHeader = styled.div`
   animation-timing-function: ease-in-out;
 `;
 
-export const ArrowButton = styled.button`
-  grid-column: 2;
-  grid-row: 1;
-`;
+export const ArrowButton = styled.button``;
 
 export const NameInput = styled.input`
-  grid-row: 1;
-  grid-column: 3;
+  flex: 1;
   margin-bottom: 0;
   padding: ${spacing.small};
   color: ${({ error }) => (error ? palette.error : palette.mediumGrey)};
@@ -66,8 +59,7 @@ export const NameInput = styled.input`
 `;
 
 export const MenuContainer = styled.div`
-  grid-column: 5;
-  grid-row: 1;
+  padding: 0 ${spacing.small};
   overflow: hidden;
   color: ${palette.coolGrey2};
 `;
@@ -90,22 +82,14 @@ export const SmartFlowIndicatorContainer = styled.div`
   margin-left: ${spacing.small};
 `;
 
-export const SmartFlowButton = styled.button`
-  grid-column: 2;
-  grid-row: 1;
-`;
+export const SmartFlowButton = styled.button``;
 
 export const SmartFlowIndicatorIcon = styled.img`
   cursor: default;
 `;
 
 export const CheckboxPlaceholder = styled.div`
-  grid-column: 1;
-  grid-row: 1;
   width: 16px;
 `;
 
-export const Spacer = styled.div`
-  grid-column: 4;
-  grid-row: 1;
-`;
+export const Spacer = styled.div``;

@@ -1,7 +1,8 @@
 import React from 'react';
 import { Box } from '@material-ui/core';
 import FilterSearch from 'components/filter/FilterSearch/FilterSearch';
-import { Container, Title, ClearButton } from './styled';
+import { isEmpty } from 'ramda';
+import { Container, Title, HeaderButton } from './styled';
 
 const FilterHeader = props => {
   const {
@@ -12,10 +13,16 @@ const FilterHeader = props => {
     searchValue,
     onSearchValueChange,
     onClear,
+    onSave,
+    onSaveAsNew,
+    editModeEnabled,
+    selectedQuickFilter,
+    selectedFilters,
   } = props;
+
   return (
     <Container>
-      <Box display="flex" flex={1}>
+      <Box display="flex" flex={1} alignItems="center">
         <Title>
           <b>{title}</b>{' '}
           {/* {Number.isInteger(filteredItemsCount) &&
@@ -32,9 +39,25 @@ const FilterHeader = props => {
             )} */}
         </Title>
         {filterActive && (
-          <ClearButton type="button" onClick={onClear}>
+          <HeaderButton type="button" onClick={onClear}>
             Clear
-          </ClearButton>
+          </HeaderButton>
+        )}
+        {onSave &&
+          selectedFilters &&
+          !isEmpty(selectedFilters) &&
+          selectedQuickFilter &&
+          editModeEnabled && (
+            <HeaderButton type="button" onClick={onSave}>
+              Save
+            </HeaderButton>
+          )}
+        {onSaveAsNew && selectedFilters && !isEmpty(selectedFilters) && (
+          <HeaderButton type="button" onClick={onSaveAsNew}>
+            {selectedQuickFilter
+              ? 'Save as new Quick Filter'
+              : 'Add to saved filters'}
+          </HeaderButton>
         )}
       </Box>
       <FilterSearch value={searchValue} onValueChange={onSearchValueChange} />

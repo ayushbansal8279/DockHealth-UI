@@ -21,6 +21,7 @@ import {
   removeLabelFromTask,
   removeLabel,
 } from 'actions/task-template-actions';
+import { checkIfTemplateWorkflow } from 'helpers/workflow-helpers';
 import { WorkflowDrawerFieldNames } from 'helpers/workflow-drawer-helpers';
 import { getLabels } from 'actions/workflow-drawer-actions';
 import {
@@ -120,10 +121,11 @@ const LabelsSection = () => {
   const previousSelectedLabelsFromStoreLength = usePrevious(
     selectedLabelsFromStoreLength,
   );
+  const isTemplateWorkflow = checkIfTemplateWorkflow(selectedWorkflow);
 
   const getAllLabels = useCallback(async () => {
-    dispatch(getLabels(taskListIdentifier));
-  }, [dispatch, taskListIdentifier]);
+    dispatch(getLabels(isTemplateWorkflow, taskListIdentifier));
+  }, [dispatch, isTemplateWorkflow, taskListIdentifier]);
 
   useEffect(() => {
     setLabelsList(labels);
@@ -155,10 +157,24 @@ const LabelsSection = () => {
           ...state,
           { labelIdentifier, labelName, identifier },
         ]);
-        dispatch(addLabel({ labelIdentifier, labelName, identifier }));
+        dispatch(
+          addLabel({
+            labelIdentifier,
+            labelName,
+            identifier,
+            isTemplateWorkflow,
+            taskListIdentifier,
+          }),
+        );
       }
     },
-    [dispatch, identifier, selectedLabels],
+    [
+      dispatch,
+      identifier,
+      selectedLabels,
+      isTemplateWorkflow,
+      taskListIdentifier,
+    ],
   );
 
   const handleEditLabel = useCallback(
