@@ -5,9 +5,9 @@ import { getCustomerTypeLabel } from 'helpers/customer-type-helper';
 import { capitalize } from 'helpers/capitalize';
 import { Link } from 'react-router-dom';
 import Highlighter from 'react-highlight-words';
-import { AddPlaceholder, ClickablePatient, PatientLabel } from '../styled';
+import { AddPlaceholder, ClickablePatient, PatientLabel } from './styled';
 
-const TemplateHeaderPatient = ({
+const TaskTemplatePatient = ({
   highlightedValue,
   workflow,
   openPatientPopover,
@@ -104,4 +104,4 @@ const TemplateHeaderPatient = ({
   );
 };
 
-export default TemplateHeaderPatient;
+export default TaskTemplatePatient;

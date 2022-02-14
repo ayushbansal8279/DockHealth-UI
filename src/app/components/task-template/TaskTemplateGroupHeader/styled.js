@@ -1,7 +1,7 @@
 import styled from 'styled-components';
 import spacing from 'styles/spacing';
 import palette from 'styles/palette';
-import { fontSizes, fontWeights } from 'styles/font';
+import { fontSizes } from 'styles/font';
 
 export const TemplateHandle = styled.img`
   position: absolute;
@@ -15,48 +15,6 @@ export const TemplateHandle = styled.img`
 
   &:active {
     opacity: 1;
-  }
-`;
-
-export const StatusWrapper = styled.div`
-  display: flex;
-`;
-
-export const StatusBar = styled.div`
-  background-color: ${props => props.color};
-  height: calc(100% - 2px);
-  top: 0;
-  left: 0;
-  position: absolute;
-  width: 6px;
-  top: 50%;
-  transform: translateY(-50%);
-`;
-
-export const StatusName = styled.p`
-  display: block;
-  width: 100%;
-  text-overflow: ellipsis;
-  overflow: hidden;
-  white-space: nowrap;
-  margin-bottom: 0;
-  text-align: left;
-`;
-
-export const ClickablePatient = styled.span`
-  align-self: center;
-  cursor: pointer;
-  white-space: nowrap;
-  text-overflow: ellipsis;
-  overflow: hidden;
-`;
-
-export const PatientLabel = styled.span`
-  color: ${palette.mediumGrey};
-
-  &:hover {
-    color: ${palette.brightBlue};
-    text-decoration: underline;
   }
 `;
 
@@ -108,13 +66,6 @@ export const TaskTemplateProgressCircle = styled.div`
   margin-right: ${spacing.small};
 `;
 
-export const TaskTemplateGroupHeaderWrapper = styled.div`
-  display: flex;
-  align-items: center;
-  flex: 1;
-  padding-right: 60px;
-`;
-
 export const TaskTemplateOptionsContainer = styled.div`
   display: flex;
   align-items: center;
@@ -125,34 +76,6 @@ export const TaskTemplateOptionsContainer = styled.div`
   overflow: hidden;
 `;
 
-export const TaskTemplateNameInput = styled.input`
-  width: 100%;
-  margin-bottom: 0;
-  padding: ${spacing.small};
-  color: ${({ error }) => (error ? palette.error : palette.mediumGrey)};
-  font-weight: ${fontWeights.regular};
-  overflow: hidden;
-  white-space: nowrap;
-  text-overflow: ellipsis;
-  background-color: transparent;
-  border: 1px solid
-    ${({ error }) => (error ? palette.error : palette.coolGrey2)};
-  border-radius: 5px;
-  background: ${palette.coolGrey4};
-  margin-left: ${spacing.small};
-
-  &[readonly] {
-    background-color: transparent;
-    cursor: initial;
-    outline: none;
-    border: none;
-  }
-
-  &:focus {
-    outline: none;
-  }
-`;
-
 export const TaskTemplatePatientHeader = styled.div`
   width: 164px;
 `;
@@ -160,20 +83,4 @@ export const TaskTemplatePatientHeader = styled.div`
 export const TaskTemplateRight = styled.div`
   display: flex;
   align-items: center;
-`;
-
-export const NameTooltip = styled.div`
-  display: block;
-  width: 100%;
-  padding: ${spacing.small};
-  color: ${palette.white};
-  background: ${palette.mediumGrey};
-  font-size: ${fontSizes.smallPlus};
-  font-weight: ${fontWeights.regular};
-  cursor: initial;
-`;
-
-export const NameContainer = styled.div`
-  display: flex;
-  flex: 1;
 `;

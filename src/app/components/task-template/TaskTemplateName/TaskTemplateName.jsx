@@ -4,9 +4,9 @@ import { Fade, Popper } from '@material-ui/core';
 import { openDrawer } from 'actions/workflow-drawer-actions';
 import { checkIfShouldDisplayTooltip } from 'components/task/OverflowTooltip/OverflowTooltip';
 import { useDispatch } from 'react-redux';
-import { TaskTemplateNameInput, NameContainer, NameTooltip } from '../styled';
+import { TaskTemplateNameInput, NameContainer, NameTooltip } from './styled';
 
-const TemplateHeaderName = ({
+const TaskTemplateName = ({
   nameInputReference,
   templateGroup,
   isEditing,
@@ -68,4 +68,4 @@ const TemplateHeaderName = ({
     </>
   );
 };
-export default TemplateHeaderName;
+export default TaskTemplateName;

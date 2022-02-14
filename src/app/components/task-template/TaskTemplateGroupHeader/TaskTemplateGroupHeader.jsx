@@ -55,9 +55,9 @@ import {
   Placeholder,
   TaskTemplateRight,
 } from './styled';
-import TemplateHeaderName from './headerItems/TemplateHeaderName';
-import TaskHeaderPatient from './headerItems/TemplateHeaderPatient';
-import TemplateItemWorkflowStatus from './headerItems/TemplateItemWorkflowStatus';
+import TemplateHeaderName from '../TaskTemplateName/TaskTemplateName';
+import TaskHeaderPatient from '../TaskTemplatePatient/TaskTemplatePatient';
+import TemplateItemWorkflowStatus from '../TaskTemplateWorkflowStatus/TaskTemplateWorkflowStatus';
 
 const TaskTemplateGroupHeader = ({
   templateGroup = {},

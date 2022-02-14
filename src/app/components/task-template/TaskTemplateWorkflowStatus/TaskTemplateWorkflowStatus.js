@@ -3,14 +3,9 @@ import TaskItemPopover from 'components/task/TaskItemPopover/TaskItemPopover';
 import TaskWorkflowStatus from 'components/task/TaskWorkflowStatus/TaskWorkflowStatus';
 import Tooltip from 'components/common/Tooltip/Tooltip';
 import Highlighter from 'react-highlight-words';
-import {
-  AddPlaceholder,
-  StatusName,
-  StatusWrapper,
-  StatusBar,
-} from '../styled';
+import { AddPlaceholder, StatusName, StatusWrapper, StatusBar } from './styled';
 
-const TemplateItemWorkflowStatus = ({
+const TaskTemplateWorkflowStatus = ({
   workflow,
   onWorkflowUpdate,
   highlightedValue,
@@ -73,4 +68,4 @@ const TemplateItemWorkflowStatus = ({
   );
 };
 
-export default TemplateItemWorkflowStatus;
+export default TaskTemplateWorkflowStatus;
