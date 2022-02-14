@@ -1,10 +1,12 @@
 import { takeEvery, put, call, all, delay, select } from 'redux-saga/effects';
 import * as ActionTypes from 'actions/action-types';
 import * as MegaFilterApi from 'api/mega-filter-api';
-import { selectedFiltersInMegaFilterSelector } from 'selectors/mega-filter-selectors';
+import {
+  selectedFiltersInMegaFilterSelector,
+  quickFiltersSelector,
+} from 'selectors/mega-filter-selectors';
 import { currentTaskListSelector } from 'selectors/task-list-selectors';
 import { currentPatientIdentifierSelector } from 'selectors/patient-details-selectors';
-import { quickFiltersSelector } from '../selectors/mega-filter-selectors';
 
 function* getQuickFilters({ viewSpecificData }) {
   try {

@@ -5,7 +5,7 @@ import Tooltip from 'components/common/Tooltip/Tooltip';
 import { useDispatch, useSelector } from 'react-redux';
 import { openModal } from 'modal/actions';
 import { userProfileSelector } from 'selectors/user-selectors';
-import { updateTaskTemplateSuccess } from 'actions/task-template-actions';
+import { updateTemplate } from 'actions/task-template-actions';
 
 import {
   StandardTaskItemCell,
@@ -31,7 +31,7 @@ const TaskTemplatePermissions = ({ template }) => {
         },
         onMembersRefresh: refreshedMembers => {
           dispatch(
-            updateTaskTemplateSuccess(identifier, {
+            updateTemplate(identifier, {
               members: refreshedMembers,
             }),
           );

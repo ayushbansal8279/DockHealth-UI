@@ -43,10 +43,7 @@ export function addTemplateFolder(template, parentIdentifier = null) {
   };
 }
 
-export function updateTaskTemplateSuccess(
-  taskTemplateIdentifier,
-  dataToUpdate,
-) {
+export function updateTemplate(taskTemplateIdentifier, dataToUpdate) {
   return {
     type: ActionTypes.UPDATE_TASK_TEMPLATE,
     taskTemplateIdentifier,

@@ -220,14 +220,6 @@ export const AssignMemberIconContainer = styled.div`
   cursor: pointer;
 `;
 
-export const MemberGroupContainer = styled.div`
-  margin-right: ${spacing.small};
-`;
-
-export const AssignMemberIconContainer = styled.div`
-  cursor: pointer;
-`;
-
 export const DescriptionBox = styled.div`
   display: flex;
   flex-direction: column;
