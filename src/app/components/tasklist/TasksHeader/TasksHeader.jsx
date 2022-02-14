@@ -88,8 +88,6 @@ const TasksHeader = ({
           id={TaskItemColumn.START_DATE}
           label="Start"
           width={TaskItemColumnWidth[TaskItemColumn.START_DATE]}
-          sort={sort}
-          onSortChange={onSortChange}
         />
       )}
       {mergedConfig[TaskItemColumn.DUE_DATE] && (
