@@ -58,6 +58,7 @@ import {
 import TemplateHeaderName from '../TaskTemplateName/TaskTemplateName';
 import TaskHeaderPatient from '../TaskTemplatePatient/TaskTemplatePatient';
 import TemplateItemWorkflowStatus from '../TaskTemplateWorkflowStatus/TaskTemplateWorkflowStatus';
+import TaskTemplateMembers from '../TaskTemplateMembers/TaskTemplateMembers';
 
 const TaskTemplateGroupHeader = ({
   templateGroup = {},
@@ -406,7 +407,19 @@ const TaskTemplateGroupHeader = ({
               ? TaskItemColumnWidth[TaskItemColumn.ASSIGNED].WIDE
               : TaskItemColumnWidth[TaskItemColumn.ASSIGNED].NARROW
           }
-        />
+          justify={groupHasMultipleAssignees ? 'flex-start' : 'center'}
+          paddingLeft="small"
+          paddingRight="small"
+          onContextMenu={event => {
+            event.stopPropagation();
+          }}
+        >
+          <TaskTemplateMembers
+            multipleAssigneesContext={groupHasMultipleAssignees}
+            workflow={templateGroup}
+            onWorkflowUpdate={compose(dispatch, updatePartialWorkflow)}
+          />
+        </TaskItemCell>
       )}
       {columnsConfig[TaskItemColumn.LIST_NAME] && (
         <TaskItemCell width={TaskItemColumnWidth[TaskItemColumn.LIST_NAME]} />
