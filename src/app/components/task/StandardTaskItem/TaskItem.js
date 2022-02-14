@@ -489,6 +489,14 @@ const TaskItem = React.memo(
                 />
               </TaskItemCell>
             )}
+            {columnsConfig[TaskItemColumn.START_DATE] && (
+              <TaskItemCell
+                width={TaskItemColumnWidth[TaskItemColumn.START_DATE]}
+                onContextMenu={event => {
+                  event.stopPropagation();
+                }}
+              />
+            )}
             {columnsConfig[TaskItemColumn.DUE_DATE] && !isTemplateTask && (
               <TaskItemCell
                 width={TaskItemColumnWidth[TaskItemColumn.DUE_DATE]}

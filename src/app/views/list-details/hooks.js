@@ -483,6 +483,7 @@ const initializeListDetailsViewHooks = (match, history) => {
     [TaskItemColumn.WORKFLOW_STATUS]: false,
     [TaskItemColumn.ASSIGNED]: false,
     [TaskItemColumn.ACTIVITY]: false,
+    [TaskItemColumn.START_DATE]: true,
     [TaskItemColumn.DUE_DATE]: false,
     [TaskItemColumn.PATIENT]: false,
   };

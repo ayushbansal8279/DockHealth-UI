@@ -119,6 +119,7 @@ export function checkIfBundleTask(task) {
 export const TaskItemColumn = {
   DESCRIPTION: 'TASK_DESCRIPTION',
   DUE_DATE: 'DUE_DT',
+  START_DATE: 'START_DT',
   ACTIVITY: 'ACTIVITY',
   LIST_NAME: 'LIST_NAME',
   ASSIGNED: 'ASSIGNED_TO',
@@ -130,6 +131,7 @@ export const TaskItemColumn = {
 
 export const TaskItemColumnWidth = {
   [TaskItemColumn.DUE_DATE]: 78,
+  [TaskItemColumn.START_DATE]: 78,
   [TaskItemColumn.ACTIVITY]: 150,
   [TaskItemColumn.LIST_NAME]: 168,
   [TaskItemColumn.ASSIGNED]: {

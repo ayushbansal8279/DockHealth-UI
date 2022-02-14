@@ -47,6 +47,7 @@ import {
   TemplateHandle,
   TaskTemplateOptionsContainer,
 } from './styled';
+import TaskTemplateStartDate from '../TaskTemplateStartDate/TaskTemplateStartDate';
 
 const TaskTemplateGroupHeader = ({
   templateGroup = {},
@@ -378,6 +379,17 @@ const TaskTemplateGroupHeader = ({
       )}
       {columnsConfig[TaskItemColumn.ACTIVITY] && (
         <TaskItemCell width={TaskItemColumnWidth[TaskItemColumn.ACTIVITY]} />
+      )}
+      {columnsConfig[TaskItemColumn.START_DATE] && (
+        <TaskItemCell
+          width={TaskItemColumnWidth[TaskItemColumn.START_DATE]}
+          justify="center"
+        >
+          <TaskTemplateStartDate
+            workflow={templateGroup}
+            isHovered={isHovered}
+          />
+        </TaskItemCell>
       )}
       {columnsConfig[TaskItemColumn.DUE_DATE] && (
         <TaskItemCell
