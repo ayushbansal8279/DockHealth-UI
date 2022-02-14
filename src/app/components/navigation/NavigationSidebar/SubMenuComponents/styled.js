@@ -298,12 +298,14 @@ export const ListNameText = styled.div`
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
-  cursor: pointer;
   ${({ color }) => color && `color: ${color}`}
   ${({ isActive }) =>
     isActive
-      ? `color: ${palette.brightBlue};`
+      ? `
+        color: ${palette.brightBlue};
+      `
       : `
+          cursor: pointer;
           &:hover {
             color: ${palette.brightBlue};
             text-decoration: underline;
