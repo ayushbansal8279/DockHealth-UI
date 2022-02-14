@@ -80,7 +80,7 @@ const TaskTemplateReducer = (state = initialState, action) => {
     case ActionTypes.UPDATE_PARTIAL_WORKFLOW: {
       return {
         ...state,
-        taskTemplates: state.taskTemplates.map(taskTemplate =>
+        taskTemplates: state.taskTemplates?.map(taskTemplate =>
           taskTemplate.identifier === action.taskWorkflowIdentifier
             ? { ...taskTemplate, ...action.dataToUpdate }
             : taskTemplate,
