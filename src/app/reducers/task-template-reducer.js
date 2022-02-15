@@ -92,14 +92,17 @@ const TaskTemplateReducer = (state = initialState, action) => {
     }
 
     case ActionTypes.UPDATE_PARTIAL_WORKFLOW: {
-      return {
-        ...state,
-        taskTemplates: state.taskTemplates?.map(taskTemplate =>
-          taskTemplate.identifier === action.taskWorkflowIdentifier
-            ? { ...taskTemplate, ...action.dataToUpdate }
-            : taskTemplate,
-        ),
-      };
+      if (state.taskTemplates) {
+        return {
+          ...state,
+          taskTemplates: state.taskTemplates?.map(taskTemplate =>
+            taskTemplate.identifier === action.taskWorkflowIdentifier
+              ? { ...taskTemplate, ...action.dataToUpdate }
+              : taskTemplate,
+          ),
+        };
+      }
+      return state;
     }
 
     case ActionTypes.ADD_TASK_TEMPLATE_SUCCESS:
@@ -215,31 +218,35 @@ const TaskTemplateReducer = (state = initialState, action) => {
     case ActionTypes.MOVE_WORKFLOW_TO_FOLDER_SUCCESS:
     case ActionTypes.DELETE_WORKFLOW: {
       const { identifier } = action;
-
-      return {
-        ...state,
-        taskTemplates: state.taskTemplates.filter(
-          t => t.identifier !== identifier,
-        ),
-        taskTemplateDetails: omit([identifier], state.taskTemplateDetails),
-      };
+      if (state.taskTemplates) {
+        return {
+          ...state,
+          taskTemplates: state.taskTemplates.filter(
+            t => t.identifier !== identifier,
+          ),
+          taskTemplateDetails: omit([identifier], state.taskTemplateDetails),
+        };
+      }
+      return state;
     }
 
     case ActionTypes.UPDATE_TASK_TEMPLATE_FAILURE:
     case ActionTypes.UPDATE_TASK_TEMPLATE_SUCCESS: {
       const { taskTemplateIdentifier, dataToUpdate } = action;
-
-      return {
-        ...state,
-        taskTemplates: state.taskTemplates.map(template =>
-          template.taskTemplateIdentifier === taskTemplateIdentifier
-            ? {
-                ...template,
-                ...omit(['taskTemplateIdentifier'], dataToUpdate),
-              }
-            : template,
-        ),
-      };
+      if (state.taskTemplates) {
+        return {
+          ...state,
+          taskTemplates: state.taskTemplates.map(template =>
+            template.taskTemplateIdentifier === taskTemplateIdentifier
+              ? {
+                  ...template,
+                  ...omit(['taskTemplateIdentifier'], dataToUpdate),
+                }
+              : template,
+          ),
+        };
+      }
+      return state;
     }
 
     case ActionTypes.ADD_TASK_TO_TEMPLATE_SUCCESS: {
