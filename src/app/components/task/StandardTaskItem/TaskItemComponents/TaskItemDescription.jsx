@@ -219,7 +219,6 @@ const TaskItemDescription = ({
             </Popper>
           </DescriptionBorder>
         </Description>
-        {isDuplicated && <DescriptionLabel>(duplicated)</DescriptionLabel>}
       </Box>
       <TaskItemDescriptionIndicators>
         {isCompletedGroup && (
