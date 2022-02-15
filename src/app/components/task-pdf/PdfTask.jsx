@@ -128,7 +128,6 @@ const PdfTask = props => {
               >
                 {description}
               </TaskDescription>
-              {isEdited ? <EditedLabel>(edited)</EditedLabel> : undefined}
             </InlineContainer>
             {completedByLabel ? (
               <TaskSubLabel color={palette.brightBlue}>

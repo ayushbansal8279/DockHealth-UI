@@ -219,9 +219,6 @@ const TaskItemDescription = ({
             </Popper>
           </DescriptionBorder>
         </Description>
-        {descriptionEdited && !isDuplicated && (
-          <DescriptionLabel>(edited)</DescriptionLabel>
-        )}
         {isDuplicated && <DescriptionLabel>(duplicated)</DescriptionLabel>}
       </Box>
       <TaskItemDescriptionIndicators>
