@@ -5,8 +5,8 @@ const SHOW_COLUMNS_CONFIG = {
   [TaskItemColumn.WORKFLOW_STATUS]: true,
   [TaskItemColumn.ASSIGNED]: true,
   [TaskItemColumn.ACTIVITY]: true,
-  [TaskItemColumn.DUE_DATE]: true,
   [TaskItemColumn.START_DATE]: true,
+  [TaskItemColumn.DUE_DATE]: true,
   [TaskItemColumn.PATIENT]: true,
 };
 

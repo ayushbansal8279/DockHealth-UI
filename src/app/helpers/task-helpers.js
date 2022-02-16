@@ -149,6 +149,7 @@ export const TASK_ITEM_BASE_COLUMN_CONFIG = {
   [TaskItemColumn.PATIENT]: true,
   [TaskItemColumn.WORKFLOW_STATUS]: true,
   [TaskItemColumn.ACTIVITY]: true,
+  [TaskItemColumn.START_DATE]: true,
   [TaskItemColumn.DUE_DATE]: true,
   [TaskItemColumn.ASSIGNED]: true,
   [TaskItemColumn.LIST_NAME]: false,
