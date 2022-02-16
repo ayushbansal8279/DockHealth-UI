@@ -76,6 +76,7 @@ const PATIENT_CONFIGURABLE_COLUMNS_CONFIG = {
   [TaskItemColumn.WORKFLOW_STATUS]: false,
   [TaskItemColumn.ASSIGNED]: false,
   [TaskItemColumn.ACTIVITY]: false,
+  [TaskItemColumn.START_DATE]: false,
   [TaskItemColumn.DUE_DATE]: false,
   [TaskItemColumn.PATIENT]: false,
 };

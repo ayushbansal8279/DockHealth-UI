@@ -15,12 +15,12 @@ import * as TaskActions from 'actions/task-actions';
 import AlertMessages from 'alert/AlertMessages';
 import * as TaskTemplateApi from 'api/task-template-api';
 import * as TaskApi from 'api/task-api';
+import { createWorkflowBuilderPath } from 'routing/helpers/paths';
 import {
   currentFolderIdentifierSelector,
   taskTemplateDetailsSelector,
   taskTemplateSelector,
   allTemplateDetailsSelector,
-  parentFolderIdSelector,
   currentTaskTemplateIdentifierSelector,
 } from 'selectors/task-template-selectors';
 import {
@@ -44,14 +44,14 @@ function* initializeWorkflowLibraryState({ folderIdentifier }) {
   ]);
 }
 
-function* moveWorkflowToFolder({ parentTaskTemplateIdentifier, identifier }) {
+function* moveWorkflowToFolder({ parentTaskWorkflowIdentifier, identifier }) {
   try {
-    const parentId = yield select(parentFolderIdSelector);
-    if (parentTaskTemplateIdentifier !== parentId) {
+    const folderIdentifier = yield select(currentFolderIdentifierSelector);
+    if (parentTaskWorkflowIdentifier !== folderIdentifier) {
       yield call(
         TaskTemplateApi.moveTemplateToFolder,
         identifier,
-        parentTaskTemplateIdentifier,
+        parentTaskWorkflowIdentifier,
       );
       yield put({
         type: ActionTypes.MOVE_WORKFLOW_TO_FOLDER_SUCCESS,
@@ -63,7 +63,7 @@ function* moveWorkflowToFolder({ parentTaskTemplateIdentifier, identifier }) {
     yield put({
       type: ActionTypes.MOVE_WORKFLOW_TO_FOLDER_FAILURE,
       identifier,
-      parentTaskTemplateIdentifier,
+      parentTaskWorkflowIdentifier,
     });
   }
 }
@@ -122,7 +122,7 @@ function* getFolderBreadcrumbs() {
           id: workflowFolder.identifier,
           name: workflowFolder.name,
         });
-        nextFolderIdentifier = workflowFolder.parentTaskTemplateIdentifier;
+        nextFolderIdentifier = workflowFolder.parentTaskWorkflowIdentifier;
       } while (nextFolderIdentifier);
       yield put({
         type: ActionTypes.GET_FOLDER_BREADCRUMBS_SUCCESS,
@@ -139,11 +139,11 @@ function* getFolderBreadcrumbs() {
 
 function* addTemplate({ template, parentIdentifier = null, history }) {
   try {
-    const parentId = yield select(parentFolderIdSelector);
+    const folderIdentifier = yield select(currentFolderIdentifierSelector);
     const createdTemplate = yield call(
       TaskTemplateApi.addTemplate,
       template,
-      parentIdentifier || parentId,
+      parentIdentifier || folderIdentifier,
     );
     yield put({
       type: ActionTypes.ADD_TASK_TEMPLATE_SUCCESS,
@@ -164,7 +164,7 @@ function* addTemplate({ template, parentIdentifier = null, history }) {
       if (history) {
         yield call(
           history.push,
-          `/core/workflows/${createdTemplate.taskTemplateIdentifier}`,
+          createWorkflowBuilderPath(createdTemplate.identifier),
         );
       }
     } catch (error) {
@@ -203,13 +203,15 @@ function* updateTemplate({ taskTemplateIdentifier, dataToUpdate }) {
 
 function* updatePartialWorkflow({ taskWorkflowIdentifier, dataToUpdate }) {
   try {
-    yield call(
+    const newData = yield call(
       TaskTemplateApi.updatePartialWorkflow,
       taskWorkflowIdentifier,
       dataToUpdate,
     );
     yield put({
       type: ActionTypes.UPDATE_PARTIAL_WORKFLOW_SUCCESS,
+      newData,
+      taskWorkflowIdentifier,
     });
     yield put(showGlobalAlert(AlertMessages.UPDATED));
   } catch {

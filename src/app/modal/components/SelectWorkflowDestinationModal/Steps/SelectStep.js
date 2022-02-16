@@ -41,13 +41,13 @@ const SelectStep = ({
   const handleAddNewFolder = name => {
     if (!isAddingFolder) {
       setIsAddingFolder(true);
-      TaskTemplateApi.addTemplate({ name, type: 'FOLDER' }, listId)
+      TaskTemplateApi.addTemplate({ name, templateType: 'FOLDER' }, listId)
         .then(createdFolder => {
           setFoldersList([...foldersList, createdFolder]);
           onAddFolderCallback(
-            createdFolder.parentTaskTemplateIdentifier
+            createdFolder.parentTaskWorkflowIdentifier
               ? createdFolder
-              : { ...createdFolder, parentTaskTemplateIdentifier: null },
+              : { ...createdFolder, parentTaskWorkflowIdentifier: null },
           );
           setIsAddingFolder(false);
           addFolderReference.current.value = '';
@@ -81,7 +81,9 @@ const SelectStep = ({
     setListId(null);
     getTemplates()
       .then(folders => {
-        setFoldersList(folders.filter(({ type }) => type === 'FOLDER'));
+        setFoldersList(
+          folders.filter(({ templateType }) => templateType === 'FOLDER'),
+        );
         setIsFetchingFolders(false);
       })
       .catch(() => {
@@ -98,7 +100,9 @@ const SelectStep = ({
       pushToBreadcrumbsList(identifier);
       getTemplatesForSpecificFolder(identifier)
         .then(folders => {
-          setFoldersList(folders.filter(({ type }) => type === 'FOLDER'));
+          setFoldersList(
+            folders.filter(({ templateType }) => templateType === 'FOLDER'),
+          );
           setIsFetchingFolders(false);
         })
         .catch(() => {

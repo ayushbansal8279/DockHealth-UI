@@ -65,9 +65,9 @@ function updateWorkflowInState(updateCallback, workflowIdentifier, state) {
 export default function(state = INITIAL_STATE, action = {}) {
   const { type, payload } = action;
   switch (type) {
-    case ActionTypes.UPDATE_PARTIAL_WORKFLOW: {
+    case ActionTypes.UPDATE_PARTIAL_WORKFLOW_SUCCESS: {
       return updateWorkflowInState(
-        workflow => ({ ...workflow, ...action.dataToUpdate }),
+        workflow => ({ ...workflow, ...action.newData }),
         action.taskWorkflowIdentifier,
         state,
       );

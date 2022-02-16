@@ -33,11 +33,11 @@ const DrawerHeader = () => {
             dispatch(
               ModalActions.openModal('SelectWorkflowDestination', {
                 confirmText: 'Move',
-                confirm: parentTaskTemplateIdentifier => {
+                confirm: parentTaskWorkflowIdentifier => {
                   dispatch(
                     TaskTemplateActions.moveWorkflowToFolder(
                       identifier,
-                      parentTaskTemplateIdentifier,
+                      parentTaskWorkflowIdentifier,
                     ),
                   );
                 },

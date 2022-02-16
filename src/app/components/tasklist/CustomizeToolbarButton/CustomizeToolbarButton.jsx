@@ -52,7 +52,8 @@ const CustomizeToolbarButton = ({
     [TaskItemColumn.ACTIVITY]: 'Details',
     [TaskItemColumn.ASSIGNED]: 'Assigned',
     [TaskItemColumn.WORKFLOW_STATUS]: 'Status',
-    [TaskItemColumn.DUE_DATE]: 'Date',
+    [TaskItemColumn.START_DATE]: 'Start date',
+    [TaskItemColumn.DUE_DATE]: 'Due date',
     [TaskItemColumn.PATIENT]: capitalize(getCustomerTypeLabel(userProfile)),
   };
 

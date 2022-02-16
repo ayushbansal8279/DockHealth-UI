@@ -77,6 +77,8 @@ const initializeTaskDrawerHooks = ({
     [selectedTask],
   );
 
+  const taskTemplate = selectedTask?.taskTemplate;
+
   const [
     parentDescriptionState,
     setParentDescriptionState,
@@ -243,14 +245,19 @@ const initializeTaskDrawerHooks = ({
 
   const handleWorkflowReferenceClick = useCallback(() => {
     dispatch(
-      WorkflowDrawerActions.openDrawer(parentBundle.taskGroupIdentifier),
+      WorkflowDrawerActions.openDrawer(
+        isTemplateTask
+          ? taskTemplate.identifier
+          : parentBundle.taskGroupIdentifier,
+      ),
     );
-  }, [dispatch, parentBundle]);
+  }, [dispatch, isTemplateTask, parentBundle, taskTemplate]);
 
   return {
     closeTaskDrawer,
     handleUpdateTask,
     parentBundle,
+    taskTemplate,
     isSubtask,
     isTemplateTask,
     onClickParentTask,

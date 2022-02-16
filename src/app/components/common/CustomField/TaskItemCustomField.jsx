@@ -1,4 +1,5 @@
 import React, { useCallback } from 'react';
+import { Box } from '@material-ui/core';
 import { FieldType } from 'helpers/field-type-helpers';
 import TaskItemBoolean from 'components/task/StandardTaskItem/customFieldsTaskItemComponents/TaskItemBoolean';
 import TaskItemDate from 'components/task/StandardTaskItem/customFieldsTaskItemComponents/TaskItemDate';
@@ -25,71 +26,80 @@ const TaskItemCustomField = ({
     dispatch(storeAsCurrentTask(task));
   }, [dispatch, field.identifier, task]);
 
-  switch (field.fieldType) {
-    case FieldType.BOOL:
-      return (
-        <TaskItemBoolean
-          readOnly={readOnly}
-          value={value}
-          onChange={onChange}
-          onClick={handleClick}
-          field={field}
-        />
-      );
-    case FieldType.DATE:
-      return (
-        <TaskItemDate
-          readOnly={readOnly}
-          value={value}
-          onChange={onChange}
-          onClick={handleClick}
-          field={field}
-        />
-      );
-    case FieldType.DROPDOWN: {
-      return (
-        <TaskItemDropdown
-          readOnly={readOnly}
-          value={value}
-          onChange={onChange}
-          onClick={handleClick}
-          field={field}
-        />
-      );
+  const renderField = () => {
+    switch (field.fieldType) {
+      case FieldType.BOOL:
+        return (
+          <TaskItemBoolean
+            readOnly={readOnly}
+            value={value}
+            onChange={onChange}
+            field={field}
+          />
+        );
+      case FieldType.DATE:
+        return (
+          <TaskItemDate
+            readOnly={readOnly}
+            value={value}
+            onChange={onChange}
+            field={field}
+          />
+        );
+      case FieldType.DROPDOWN: {
+        return (
+          <TaskItemDropdown
+            readOnly={readOnly}
+            value={value}
+            onChange={onChange}
+            field={field}
+          />
+        );
+      }
+      case FieldType.TEXT:
+        return (
+          <TaskItemText
+            readOnly={readOnly}
+            value={value}
+            onChange={onChange}
+            field={field}
+          />
+        );
+      case FieldType.LONG_TEXT:
+        return (
+          <TaskItemLongText
+            readOnly={readOnly}
+            value={value}
+            onChange={onChange}
+            field={field}
+          />
+        );
+      case FieldType.NUMBER:
+        return (
+          <TaskItemNumber
+            readOnly={readOnly}
+            value={value}
+            onChange={onChange}
+            field={field}
+          />
+        );
+      default:
+        return <div>{field.name}</div>;
     }
-    case FieldType.TEXT:
-      return (
-        <TaskItemText
-          readOnly={readOnly}
-          value={value}
-          onChange={onChange}
-          onClick={handleClick}
-          field={field}
-        />
-      );
-    case FieldType.LONG_TEXT:
-      return (
-        <TaskItemLongText
-          readOnly={readOnly}
-          value={value}
-          onChange={onChange}
-          onClick={handleClick}
-          field={field}
-        />
-      );
-    case FieldType.NUMBER:
-      return (
-        <TaskItemNumber
-          readOnly={readOnly}
-          value={value}
-          onChange={onChange}
-          onClick={handleClick}
-          field={field}
-        />
-      );
-    default:
-      return <div>{field.name}</div>;
-  }
+  };
+
+  return (
+    <Box
+      width="100%"
+      height="100%"
+      display="flex"
+      alignItems="center"
+      overflow="hidden"
+      onClick={handleClick}
+    >
+      {renderField()}
+    </Box>
+  );
 };
 
 export default TaskItemCustomField;

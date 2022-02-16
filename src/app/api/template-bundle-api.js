@@ -1,8 +1,8 @@
 import axios from './axios-heydoc';
 
-export function getTemplateBundle(taskBundleIdentifier) {
+export function getTemplateBundle(identifier) {
   return axios
-    .get(`task/taskBundle/${taskBundleIdentifier}`)
+    .get(`task/workflow/${identifier}`)
     .then(response => {
       return response.data;
     })

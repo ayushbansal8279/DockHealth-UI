@@ -14,6 +14,7 @@ export const DescriptionTooltipWrapper = styled.div`
 `;
 
 export const LabelWrapper = styled.p`
+  margin-bottom: 0;
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
@@ -24,7 +25,7 @@ export const SortButton = styled.button<{
   truncateEnabled?: boolean;
 }>`
   position: relative;
-  flex: ${({ width }) => (width ? `${width}px 0 0` : '1')};
+  flex: ${({ width }) => (width ? `0 0 ${width}px` : '1')};
   overflow: ${({ truncateEnabled }) =>
     truncateEnabled ? 'hidden' : 'visible'};
   padding: 8px 16px;

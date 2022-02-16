@@ -1,3 +1,4 @@
+import moment from 'moment';
 import {
   pipe,
   prop,
@@ -19,10 +20,7 @@ export const TaskTemplateItemColumn = {
 };
 
 export function checkIfTemplateWorkflow(workflow) {
-  return (
-    ['SMARTFLOW', 'WORKFLOW'].includes(workflow?.type) ||
-    ['SMARTFLOW', 'WORKFLOW'].includes(workflow?.templateType)
-  );
+  return ['SMARTFLOW', 'WORKFLOW'].includes(workflow?.templateType);
 }
 
 export const TASK_TEMPLATE_ITEM_BASE_COLUMN_CONFIG = {
@@ -31,8 +29,6 @@ export const TASK_TEMPLATE_ITEM_BASE_COLUMN_CONFIG = {
   [TaskTemplateItemColumn.CREATED]: true,
   [TaskTemplateItemColumn.PERMISSIONS]: true,
 };
-
-export const checkColumnIsInConfig = (column, taskConfig) => taskConfig[column];
 
 export const TEMPLATE_TASK_ITEM_SORT_METHODS = {
   [TaskTemplateItemColumn.NAME]: sortWith([
@@ -66,4 +62,15 @@ export const TEMPLATE_TASK_ITEM_SORT_DESC_METHODS = {
 
 export function checkIfWorkflowTemplate(workflow) {
   return workflow?.type === 'WORKFLOW';
+}
+
+export function isWorkflowDueDateOverdue(workflow) {
+  if (!workflow) {
+    return false;
+  }
+  const { dueDateTime } = workflow;
+
+  return moment(dueDateTime).format('HH:mm') !== '00:00'
+    ? moment(dueDateTime).isBefore(moment())
+    : dueDateTime && moment(dueDateTime).isBefore(moment().startOf('day'));
 }

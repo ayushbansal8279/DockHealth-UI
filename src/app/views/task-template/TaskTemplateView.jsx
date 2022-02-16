@@ -89,11 +89,15 @@ const TaskTemplateView = () => {
   const taskTemplates = useSelector(taskTemplatesSelector);
   const userProfile = useSelector(userProfileSelector);
   const folders = useMemo(
-    () => taskTemplates?.filter(template => template.type === 'FOLDER') || [],
+    () =>
+      taskTemplates?.filter(template => template.templateType === 'FOLDER') ||
+      [],
     [taskTemplates],
   );
   const templates = useMemo(
-    () => taskTemplates?.filter(template => template.type !== 'FOLDER') || [],
+    () =>
+      taskTemplates?.filter(template => template.templateType !== 'FOLDER') ||
+      [],
     [taskTemplates],
   );
 

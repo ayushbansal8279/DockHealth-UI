@@ -1,9 +1,9 @@
 import axios from './axios-heydoc';
 
-export function moveTemplateToFolder(identifier, parentTaskTemplateIdentifier) {
+export function moveTemplateToFolder(identifier, parentTaskWorkflowIdentifier) {
   return axios
     .patch(`task/template/move`, {
-      parentTaskTemplateIdentifier,
+      parentTaskWorkflowIdentifier,
       identifier,
     })
     .then(response => {
@@ -57,9 +57,9 @@ export function getTemplate(identifier) {
   });
 }
 
-export function addTemplate(newTemplate, parentTaskTemplateIdentifier) {
+export function addTemplate(newTemplate, parentTaskWorkflowIdentifier) {
   return axios
-    .post(`task/workflow`, { ...newTemplate, parentTaskTemplateIdentifier })
+    .post(`task/workflow`, { ...newTemplate, parentTaskWorkflowIdentifier })
     .then(response => {
       return response.data;
     });
