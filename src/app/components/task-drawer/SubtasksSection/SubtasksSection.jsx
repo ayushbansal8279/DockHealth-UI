@@ -2,8 +2,8 @@ import React from 'react';
 import { useSelector } from 'react-redux';
 import { userProfileSelector } from 'selectors/user-selectors';
 import { selectedTaskSelector } from 'selectors/task-drawer-selectors';
-import DrawerTask from '../DrawerTask/DrawerTask';
-import DrawerTaskLoader from '../DrawerTaskLoader/DrawerTaskLoader';
+import DrawerTask from 'components/drawer-common/DrawerTask/DrawerTask';
+import DrawerTaskLoader from 'components/drawer-common/DrawerTaskLoader/DrawerTaskLoader';
 import { Container, Title } from './styled';
 import QuickAddSubtask from '../QuickAddSubtask/QuickAddSubtask';
 
@@ -22,7 +22,7 @@ const SubtasksSection = () => {
           {tasks?.map(task => (
             <DrawerTask
               key={task.taskIdentifier}
-              subtask={task}
+              task={task}
               currentUser={currentUser}
             />
           ))}

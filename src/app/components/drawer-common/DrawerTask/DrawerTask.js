@@ -51,11 +51,11 @@ import {
   GoToParentIconContainer,
   DueDateContainer,
   IconContainer,
-  DescriptionLabel,
   DueDateText,
 } from './styled';
 
-const DrawerTask = ({ subtask, currentUser }) => {
+const DrawerTask = props => {
+  const { task, currentUser } = props;
   const dispatch = useDispatch();
   const [isHovered, setIsHovered] = useState(false);
 
@@ -63,8 +63,6 @@ const DrawerTask = ({ subtask, currentUser }) => {
     taskIdentifier,
     status,
     description,
-    edited,
-    duplicated,
     tokenizedDescription,
     taskMentions,
     assignedToUsers,
@@ -78,10 +76,10 @@ const DrawerTask = ({ subtask, currentUser }) => {
     taskList,
     hasRecurringSchedule,
     reminderType,
-  } = subtask;
+  } = task;
 
   const isCompleted = status === 'COMPLETE';
-  const isTemplateTask = checkIfTemplateTask(subtask);
+  const isTemplateTask = checkIfTemplateTask(task);
 
   const [descriptionState, setDescriptionState] = useMentionsEditorState(
     convertToEditorState({
@@ -96,14 +94,14 @@ const DrawerTask = ({ subtask, currentUser }) => {
     selectedMembers => {
       onTaskDrawerSubtaskAssigned();
       dispatch(
-        partialUpdateTask(subtask.taskIdentifier, {
+        partialUpdateTask(task.taskIdentifier, {
           assignedToUsers: selectedMembers,
           assignedToIdentifiers: pluck('userIdentifier', selectedMembers),
           assignedBy: selectedMembers?.length ? currentUser : null,
         }),
       );
     },
-    [currentUser, dispatch, subtask.taskIdentifier],
+    [currentUser, dispatch, task.taskIdentifier],
   );
 
   const handleCommentIconClick = () => {
@@ -120,9 +118,9 @@ const DrawerTask = ({ subtask, currentUser }) => {
 
   const handleDueDateChange = useCallback(
     newDueDate => {
-      dispatch(updateTaskDueDate(subtask, newDueDate));
+      dispatch(updateTaskDueDate(task, newDueDate));
     },
-    [dispatch, subtask],
+    [dispatch, task],
   );
 
   return (
@@ -139,12 +137,12 @@ const DrawerTask = ({ subtask, currentUser }) => {
           (isCompleted
             ? onTaskDrawerSubtaskReActivated
             : onTaskDrawerSubtaskCompleted)();
-          dispatch(toggleCompleteTask(subtask, currentUser));
+          dispatch(toggleCompleteTask(task, currentUser));
         }}
       />
       <DescriptionContainer
         onClick={() => {
-          storeAsCurrentTask(subtask)(dispatch);
+          storeAsCurrentTask(task)(dispatch);
         }}
       >
         <Description isCrossedOut={isCompleted}>
@@ -154,8 +152,6 @@ const DrawerTask = ({ subtask, currentUser }) => {
             state={descriptionState}
             onChange={setDescriptionState}
           />
-          {edited && <DescriptionLabel>(edited)</DescriptionLabel>}
-          {duplicated && <DescriptionLabel>(duplicated)</DescriptionLabel>}
         </Description>
       </DescriptionContainer>
       <IconsSection>
@@ -231,7 +227,7 @@ const DrawerTask = ({ subtask, currentUser }) => {
         >
           {dueDate ? (
             <Tooltip placement="top" title="Edit due date">
-              <DueDateBasicLabel isOverdue={isDueDateOverdue(subtask)}>
+              <DueDateBasicLabel isOverdue={isDueDateOverdue(task)}>
                 <DueDateText>{moment(dueDate).format('MM/DD')}</DueDateText>
                 {reminderType && reminderType !== ReminderType.NONE && (
                   <>
@@ -287,7 +283,8 @@ const DrawerTask = ({ subtask, currentUser }) => {
       </AssigneeContainer>
       <GoToParentIconContainer
         onClick={() => {
-          storeAsCurrentTask(subtask)(dispatch);
+          dispatch(storeAsCurrentTask(task));
+          dispatch(openDrawer());
         }}
       >
         <img src={SimpleArrowRight} alt="Go to parent task" />

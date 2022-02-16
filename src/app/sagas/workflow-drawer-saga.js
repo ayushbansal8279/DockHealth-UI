@@ -1,5 +1,12 @@
-import { put, takeLatest, select, call, all } from 'redux-saga/effects';
-import { showGlobalErrorAlert, showGlobalAlert } from 'alert/actions';
+import {
+  put,
+  takeLatest,
+  select,
+  call,
+  all,
+  takeEvery,
+} from 'redux-saga/effects';
+import { showGlobalErrorAlert } from 'alert/actions';
 import * as ActionTypes from 'actions/action-types';
 import * as WorkflowDrawerActions from 'actions/workflow-drawer-actions';
 import {
@@ -9,7 +16,6 @@ import {
 import * as WorkflowApi from 'api/workflow-api';
 import * as TaskTemplateApi from 'api/task-template-api';
 import { getTaskListLabels, getTemplateLabels } from 'api/task-label-api';
-import AlertMessages from '../alert/AlertMessages';
 
 function* openDrawer() {
   yield put(WorkflowDrawerActions.getDrawerWorkflowDetails());
@@ -63,6 +69,14 @@ function* getLabels({ isTemplateWorkflow, taskListIdentifier }) {
   }
 }
 
+function* setTaskDrawerState({ open }) {
+  const isWorkflowDrawerOpen = yield select(isWorkflowDrawerOpenSelector);
+
+  if (open && isWorkflowDrawerOpen) {
+    yield put(WorkflowDrawerActions.closeDrawer());
+  }
+}
+
 export default function* watchWorkflowDrawer() {
   yield takeLatest(ActionTypes.OPEN_WORKFLOW_DRAWER, openDrawer);
   yield takeLatest(
@@ -78,4 +92,5 @@ export default function* watchWorkflowDrawer() {
     closeDrawerIfOpen,
   );
   yield takeLatest(ActionTypes.GET_WORKFLOW_DRAWER_LABELS, getLabels);
+  yield takeEvery(ActionTypes.SET_TASK_DRAWER_STATE, setTaskDrawerState);
 }
