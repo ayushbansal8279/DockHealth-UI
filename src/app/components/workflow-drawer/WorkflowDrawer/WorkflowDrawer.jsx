@@ -24,6 +24,7 @@ import StatusSection from '../StatusSection/StatusSection';
 import LabelsSection from '../LabelsSection/LabelsSection';
 import CommentSection from '../CommentSection/CommentSection';
 import AttachmentSection from '../AttachmentSection/AttachmentSection';
+import TasksSection from '../TasksSection/TasksSection';
 import {
   Backdrop,
   AnimatedContainer,
@@ -109,6 +110,9 @@ const WorkflowDrawer = () => {
                 <AttachmentSection />
               </SectionContainer>
               <SectionSpacer />
+              <SectionContainer>
+                <TasksSection />
+              </SectionContainer>
               <SectionContainer withBackground>
                 <CommentSection />
               </SectionContainer>

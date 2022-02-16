@@ -4,8 +4,8 @@ import CloseIcon from '@material-ui/icons/Close';
 import { userProfileSelector } from 'selectors/user-selectors';
 import { updateTasksLink } from 'actions/task-actions';
 import { selectedTaskSelector } from 'selectors/task-drawer-selectors';
-import DrawerTask from '../DrawerTask/DrawerTask';
-import DrawerTaskLoader from '../DrawerTaskLoader/DrawerTaskLoader';
+import DrawerTask from 'components/drawer-common/DrawerTask/DrawerTask';
+import DrawerTaskLoader from 'components/drawer-common/DrawerTaskLoader/DrawerTaskLoader';
 import { Container, Title, TaskContainer, DeleteButton } from './styled';
 import DependenciesAutocomplete from '../DependenciesAutocomplete/DependenciesAutocomplete';
 
@@ -41,7 +41,7 @@ const DependenciesSection = () => {
               >
                 <CloseIcon />
               </DeleteButton>
-              <DrawerTask subtask={task} currentUser={currentUser} />
+              <DrawerTask task={task} currentUser={currentUser} />
             </TaskContainer>
           ))}
         </>
