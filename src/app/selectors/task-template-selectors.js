@@ -8,11 +8,6 @@ export const taskTemplatesSelector = createSelector(
   ({ taskTemplates }) => taskTemplates,
 );
 
-export const parentFolderIdSelector = createSelector(
-  taskTemplateStateSelector,
-  ({ parent }) => parent,
-);
-
 export const taskTemplateBreadcrumbsSelector = createSelector(
   taskTemplateStateSelector,
   ({ breadcrumbs }) => breadcrumbs,

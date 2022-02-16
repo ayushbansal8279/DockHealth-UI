@@ -20,10 +20,7 @@ export const TaskTemplateItemColumn = {
 };
 
 export function checkIfTemplateWorkflow(workflow) {
-  return (
-    ['SMARTFLOW', 'WORKFLOW'].includes(workflow?.type) ||
-    ['SMARTFLOW', 'WORKFLOW'].includes(workflow?.templateType)
-  );
+  return ['SMARTFLOW', 'WORKFLOW'].includes(workflow?.templateType);
 }
 
 export const TASK_TEMPLATE_ITEM_BASE_COLUMN_CONFIG = {

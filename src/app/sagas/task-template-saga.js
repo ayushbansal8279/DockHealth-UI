@@ -21,7 +21,6 @@ import {
   taskTemplateDetailsSelector,
   taskTemplateSelector,
   allTemplateDetailsSelector,
-  parentFolderIdSelector,
   currentTaskTemplateIdentifierSelector,
 } from 'selectors/task-template-selectors';
 import {
@@ -45,14 +44,14 @@ function* initializeWorkflowLibraryState({ folderIdentifier }) {
   ]);
 }
 
-function* moveWorkflowToFolder({ parentTaskTemplateIdentifier, identifier }) {
+function* moveWorkflowToFolder({ parentTaskWorkflowIdentifier, identifier }) {
   try {
-    const parentId = yield select(parentFolderIdSelector);
-    if (parentTaskTemplateIdentifier !== parentId) {
+    const folderIdentifier = yield select(currentFolderIdentifierSelector);
+    if (parentTaskWorkflowIdentifier !== folderIdentifier) {
       yield call(
         TaskTemplateApi.moveTemplateToFolder,
         identifier,
-        parentTaskTemplateIdentifier,
+        parentTaskWorkflowIdentifier,
       );
       yield put({
         type: ActionTypes.MOVE_WORKFLOW_TO_FOLDER_SUCCESS,
@@ -64,7 +63,7 @@ function* moveWorkflowToFolder({ parentTaskTemplateIdentifier, identifier }) {
     yield put({
       type: ActionTypes.MOVE_WORKFLOW_TO_FOLDER_FAILURE,
       identifier,
-      parentTaskTemplateIdentifier,
+      parentTaskWorkflowIdentifier,
     });
   }
 }
@@ -123,7 +122,7 @@ function* getFolderBreadcrumbs() {
           id: workflowFolder.identifier,
           name: workflowFolder.name,
         });
-        nextFolderIdentifier = workflowFolder.parentTaskTemplateIdentifier;
+        nextFolderIdentifier = workflowFolder.parentTaskWorkflowIdentifier;
       } while (nextFolderIdentifier);
       yield put({
         type: ActionTypes.GET_FOLDER_BREADCRUMBS_SUCCESS,
@@ -140,11 +139,11 @@ function* getFolderBreadcrumbs() {
 
 function* addTemplate({ template, parentIdentifier = null, history }) {
   try {
-    const parentId = yield select(parentFolderIdSelector);
+    const folderIdentifier = yield select(currentFolderIdentifierSelector);
     const createdTemplate = yield call(
       TaskTemplateApi.addTemplate,
       template,
-      parentIdentifier || parentId,
+      parentIdentifier || folderIdentifier,
     );
     yield put({
       type: ActionTypes.ADD_TASK_TEMPLATE_SUCCESS,

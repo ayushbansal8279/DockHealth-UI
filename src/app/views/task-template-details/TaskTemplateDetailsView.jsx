@@ -114,8 +114,7 @@ const TaskTemplateDetailsView = () => {
   const { tasks, layout, temporaryElements } =
     useSelector(taskTemplateDetailsSelector(identifier)) || {};
   const workflow = useSelector(currentTaskTemplateSelector);
-  const { name, type: templateType, parentTaskWorkflowIdentifier } =
-    workflow || {};
+  const { name, templateType, parentTaskWorkflowIdentifier } = workflow || {};
   const smartFlowsAvailable = useSelector(userHasSmartFlowsSelector);
 
   useEffect(() => {

@@ -13,25 +13,25 @@ export function clearWorkflowLibraryState() {
   };
 }
 
-export function moveWorkflowToFolder(identifier, parentTaskTemplateIdentifier) {
+export function moveWorkflowToFolder(identifier, parentTaskWorkflowIdentifier) {
   return {
     type: ActionTypes.MOVE_WORKFLOW_TO_FOLDER,
     identifier,
-    parentTaskTemplateIdentifier,
+    parentTaskWorkflowIdentifier,
   };
 }
 
 export function addTemplate(template) {
   return {
     type: ActionTypes.ADD_TASK_TEMPLATE,
-    template: { ...template, type: 'WORKFLOW' },
+    template: { ...template, templateType: 'WORKFLOW' },
   };
 }
 
 export function addSmartFlow(template, history) {
   return {
     type: ActionTypes.ADD_TASK_TEMPLATE,
-    template: { ...template, type: 'SMARTFLOW' },
+    template: { ...template, templateType: 'SMARTFLOW' },
     history,
   };
 }
@@ -39,7 +39,7 @@ export function addSmartFlow(template, history) {
 export function addTemplateFolder(template, parentIdentifier = null) {
   return {
     type: ActionTypes.ADD_TASK_TEMPLATE_FOLDER,
-    template: { ...template, parentIdentifier, type: 'FOLDER' },
+    template: { ...template, parentIdentifier, templateType: 'FOLDER' },
   };
 }
 

@@ -19,7 +19,7 @@ import { onTaskOrderChanged } from 'helpers/ga-event-helper';
 import { checkIfAllTasksSelected } from 'helpers/bulk-edit-helpers';
 import {
   taskTemplateDetailsSelector,
-  parentFolderIdSelector,
+  currentFolderIdentifierSelector,
 } from 'selectors/task-template-selectors';
 import { userHasSmartFlowsSelector } from 'selectors/user-selectors';
 import * as WorkflowActions from 'actions/workflow-actions';
@@ -61,7 +61,7 @@ const TaskTemplate = ({
   const {
     identifier,
     name,
-    type,
+    templateType,
     // publicAccess = false,
   } = template;
   const smartFlowsAvailable = useSelector(userHasSmartFlowsSelector);
@@ -85,7 +85,7 @@ const TaskTemplate = ({
   const dispatch = useDispatch();
   const { isOpen, isFetching, tasks } =
     useSelector(taskTemplateDetailsSelector(identifier)) || {};
-  const mainListId = useSelector(parentFolderIdSelector);
+  const folderIdentifier = useSelector(currentFolderIdentifierSelector);
 
   useEffect(() => {
     setNameInputValue(name);
@@ -95,11 +95,11 @@ const TaskTemplate = ({
 
   const menuOptions = useMemo(
     () => [
-      (smartFlowsAvailable || type === 'SMARTFLOW_SAMPLE') && {
+      (smartFlowsAvailable || templateType === 'SMARTFLOW_SAMPLE') && {
         name: 'Open in SmartFlow Builder',
         onClick: () => history.push(createWorkflowBuilderPath(identifier)),
       },
-      (smartFlowsAvailable || type !== 'SMARTFLOW_SAMPLE') && {
+      (smartFlowsAvailable || templateType !== 'SMARTFLOW_SAMPLE') && {
         name: 'Edit Workflow Name',
         onClick: () => {
           setIsEditing(true);
@@ -107,22 +107,25 @@ const TaskTemplate = ({
           nameInputReference.current?.focus();
         },
       },
-      (smartFlowsAvailable || type !== 'SMARTFLOW_SAMPLE') && {
+      (smartFlowsAvailable || templateType !== 'SMARTFLOW_SAMPLE') && {
         name: 'Move to folder',
         onClick: () =>
           dispatch(
             ModalActions.openModal('SelectWorkflowDestination', {
               confirmText: 'Move',
-              confirm: parentTaskTemplateIdentifier => {
+              confirm: parentTaskWorkflowIdentifier => {
                 dispatch(
                   moveWorkflowToFolder(
                     identifier,
-                    parentTaskTemplateIdentifier,
+                    parentTaskWorkflowIdentifier,
                   ),
                 );
               },
               onAddFolderCallback: createdFolder => {
-                if (mainListId === createdFolder.parentTaskTemplateIdentifier) {
+                if (
+                  folderIdentifier ===
+                  createdFolder.parentTaskWorkflowIdentifier
+                ) {
                   dispatch({
                     type: ActionTypes.ADD_TASK_TEMPLATE_SUCCESS,
                     template: createdFolder,
@@ -132,7 +135,7 @@ const TaskTemplate = ({
             }),
           ),
       },
-      (smartFlowsAvailable || type !== 'SMARTFLOW_SAMPLE') && {
+      (smartFlowsAvailable || templateType !== 'SMARTFLOW_SAMPLE') && {
         name: 'Duplicate Workflow',
         onClick: () =>
           dispatch(
@@ -174,11 +177,11 @@ const TaskTemplate = ({
     ],
     [
       smartFlowsAvailable,
-      type,
+      templateType,
       history,
       identifier,
       dispatch,
-      mainListId,
+      folderIdentifier,
       // publicAccess,
     ],
   );
@@ -301,24 +304,24 @@ const TaskTemplate = ({
   return (
     <TaskTemplateContainer>
       <TaskTemplateHeader highlighted={highlighted}>
-        {type === 'WORKFLOW' && (
+        {templateType === 'WORKFLOW' && (
           <Checkbox
             isDisabled={!isOpen}
             isChecked={isTemplateSelected}
             onClick={handleTemplateSelect}
           />
         )}
-        {(type === 'SMARTFLOW' || type === 'SMARTFLOW_SAMPLE') && (
-          <CheckboxPlaceholder />
-        )}
-        {type === 'WORKFLOW' && (
+        {(templateType === 'SMARTFLOW' ||
+          templateType === 'SMARTFLOW_SAMPLE') && <CheckboxPlaceholder />}
+        {templateType === 'WORKFLOW' && (
           <ArrowButtonContainer>
             <ArrowButton onClick={onArrowClick}>
               <RotatableChevron rotated={isOpen} />
             </ArrowButton>
           </ArrowButtonContainer>
         )}
-        {(type === 'SMARTFLOW' || type === 'SMARTFLOW_SAMPLE') && (
+        {(templateType === 'SMARTFLOW' ||
+          templateType === 'SMARTFLOW_SAMPLE') && (
           <Tooltip placement="top" title="A SmartFlow">
             <SmartFlowIndicatorContainer>
               <SmartFlowButton onClick={onSmartFlowClick}>
