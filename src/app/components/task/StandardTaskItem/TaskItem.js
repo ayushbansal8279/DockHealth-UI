@@ -558,6 +558,7 @@ const TaskItem = React.memo(
                       f => f.customFieldIdentifier === field.identifier,
                     )}
                     task={task}
+                    isHovered={isHovered}
                   />
                 </TaskItemCell>
               ))}

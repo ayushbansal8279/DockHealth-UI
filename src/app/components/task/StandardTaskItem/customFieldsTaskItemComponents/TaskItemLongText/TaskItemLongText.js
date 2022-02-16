@@ -1,12 +1,12 @@
 import React from 'react';
 import Tooltip from 'components/common/Tooltip/Tooltip';
 import { trunc } from 'helpers/utility-functions';
-import { Typography } from '@material-ui/core';
+import { Text } from './styled';
 
 const TaskItemLongText = ({ value = '' }) => {
   return (
     <Tooltip placement="top" title={value}>
-      <Typography>{trunc(value, 15)}</Typography>
+      <Text>{trunc(value, 15)}</Text>
     </Tooltip>
   );
 };

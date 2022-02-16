@@ -31,7 +31,6 @@ import {
   DescriptionBox,
   CompletedBy,
   TaskItemParentTaskLabel,
-  DescriptionLabel,
   TaskItemDescriptionIndicators,
   DescriptionTooltipWrapper,
   DescriptionBorder,
@@ -50,9 +49,6 @@ const TaskItemDescription = ({
     tokenizedDescription,
     taskMentions,
     status,
-    edited,
-    duplicated,
-    type,
     parentTask,
     searchMetaData,
     completedBy,
@@ -75,8 +71,6 @@ const TaskItemDescription = ({
   );
   const descriptionReference = useRef(null);
   const isCompleted = status === TaskStatus.COMPLETE;
-  const descriptionEdited = type === 'TEMPLATE' ? false : edited;
-  const isDuplicated = type === 'TEMPLATE' ? false : duplicated;
 
   const completedByName =
     `${completedBy?.firstName.charAt(0)}. ${completedBy?.lastName}`

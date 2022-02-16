@@ -477,14 +477,6 @@ export const SubtasksCellText = styled.p`
   color: inherit;
 `;
 
-export const DescriptionLabel = styled.div`
-  font-size: ${fontSizes.small};
-  font-weight: ${fontWeights.regular};
-  color: rgb(193, 204, 218);
-  text-decoration: none;
-  margin-top: 1px;
-`;
-
 export const ParentTaskContainer = styled.div`
   &:not(:last-child) {
     margin-bottom: ${({ noMargin }) => (noMargin ? -1 : 3)}px;

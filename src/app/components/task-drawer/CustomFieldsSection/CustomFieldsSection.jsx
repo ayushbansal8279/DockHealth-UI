@@ -10,8 +10,6 @@ import { useForm, FormContext } from 'react-hook-form';
 import { compose } from 'ramda';
 import CategoryOptions from 'components/common/CategoryOptions/CategoryOptions';
 import { partialUpdateTask } from 'actions/task-actions';
-import { showGlobalAlert } from 'alert/actions';
-import AlertMessages from 'alert/AlertMessages';
 import {
   selectedTaskSelector,
   taskCustomFieldsSelector,
@@ -45,7 +43,6 @@ const CustomFieldsSection = () => {
     ({ taskMetaData }) => {
       if (taskMetaData.length > 0) {
         dispatch(partialUpdateTask(task?.identifier, { taskMetaData }));
-        dispatch(showGlobalAlert(AlertMessages.UPDATED));
       }
     },
     [dispatch, task],

@@ -6,10 +6,16 @@ import ReminderIcon from 'img/reminder';
 import { DueDateBasicLabel, DateText } from './styled';
 
 const DateLabel = props => {
-  const { date, isOverdue, hasReminder, hasRecurringSchedule } = props;
+  const {
+    date,
+    isOverdue,
+    hasReminder,
+    hasRecurringSchedule,
+    format = 'MM/DD',
+  } = props;
   return (
     <DueDateBasicLabel isOverdue={isOverdue}>
-      <DateText>{moment(date).format('MM/DD')}</DateText>
+      <DateText>{moment(date).format(format)}</DateText>
       {hasReminder && (
         <>
           <Spacing horizontal={2} />

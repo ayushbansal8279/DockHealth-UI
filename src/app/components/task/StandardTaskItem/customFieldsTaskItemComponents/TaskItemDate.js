@@ -1,16 +1,15 @@
 import React, { useCallback } from 'react';
 import { Box } from '@material-ui/core';
-import moment from 'moment';
 import DatePicker from 'components/task/DatePicker/DatePicker';
 import TaskItemPopover from 'components/task/TaskItemPopover/TaskItemPopover';
-// import TaskIcon from 'components/task/TaskIcon/TaskIcon';
+import TaskIcon from 'components/task/TaskIcon/TaskIcon';
 import Tooltip from 'components/common/Tooltip/Tooltip';
-import { DateBasicLabel, DateText } from './styled';
+import DateLabel from 'components/common/DateLabel/DateLabel';
 
-const TaskItemDate = ({ value, onChange, readOnly }) => {
+const TaskItemDate = ({ value, onChange, isHovered }) => {
   const handleDateChange = useCallback(
     newDate => {
-      onChange(newDate);
+      onChange(newDate ? newDate.toISOString() : null);
     },
     [onChange],
   );
@@ -18,7 +17,6 @@ const TaskItemDate = ({ value, onChange, readOnly }) => {
   return (
     <Box marginLeft="auto" marginRight="auto">
       <TaskItemPopover
-        disabled={readOnly}
         content={({ closePopover }) => (
           <DatePicker
             selectedDate={value}
@@ -27,17 +25,13 @@ const TaskItemDate = ({ value, onChange, readOnly }) => {
           />
         )}
       >
-        <Tooltip
-          hideTooltip={readOnly}
-          placement="top"
-          title={value ? 'Edit date' : 'Add date'}
-        >
+        <Tooltip placement="top" title={value ? 'Edit date' : 'Add date'}>
           {value ? (
-            <DateBasicLabel>
-              <DateText>{moment(value).format('MM/DD/YY')}</DateText>
-            </DateBasicLabel>
+            <DateLabel date={value} format="MM/DD/YYYY" />
           ) : (
-            <div>{/* <TaskIcon type="calendar" /> */}</div>
+            <div>
+              <TaskIcon type="calendar" isHovered={isHovered} />
+            </div>
           )}
         </Tooltip>
       </TaskItemPopover>

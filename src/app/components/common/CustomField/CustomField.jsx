@@ -67,7 +67,8 @@ const CustomField = ({
 
   useLayoutEffect(() => {
     if (taskDrawerFocusField === identifier && inputReference.current) {
-      inputReference.current.focus();
+      if (typeof inputReference?.current?.focus === 'function')
+        inputReference.current.focus();
       setTimeout(
         () =>
           containerReference.current?.scrollIntoView({

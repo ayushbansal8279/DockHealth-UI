@@ -174,17 +174,6 @@ export const Date = styled.span`
   line-height: initial;
 `;
 
-export const DateBasicLabel = styled.div`
-  display: flex;
-  flex-direction: row;
-  align-items: center;
-  padding: 2px ${spacing.tiny};
-  border-radius: 6px;
-  background: ${({ isOverdue }) => (isOverdue ? '#e84739' : '#949aa4')};
-  color: ${palette.white};
-  font-size: ${fontSizes.small};
-`;
-
 export const DateContainer = styled.div`
   position: relative;
   display: flex;
@@ -483,8 +472,4 @@ export const PatientLabel = styled.span`
 export const DisabledPatientLabel = styled(PatientLabel)`
   opacity: 0.5;
   cursor: not-allowed;
-`;
-
-export const DateText = styled.p`
-  margin-bottom: 0;
 `;
