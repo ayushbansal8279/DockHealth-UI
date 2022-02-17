@@ -340,6 +340,7 @@ const TaskItem = React.memo(
                 <TaskItemBulkEdit
                   isChecked={selected}
                   onClick={onClickBulkEdit}
+                  isHovered={isHovered}
                 />
               )}
               <MainStandardTaskItemCell
