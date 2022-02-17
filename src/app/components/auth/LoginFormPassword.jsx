@@ -43,7 +43,8 @@ const LoginFormPassword = ({
 
   const [isPasswordShown, togglePasswordShown] = useToggle(false);
 
-  const { handleSubmit, setError, setValue } = formMethods;
+  const { watch, handleSubmit, setError, setValue } = formMethods;
+  const usernameValue = watch('username');
 
   useMount(() => {
     setValue('username', sessionStorage.getItem('username') ?? '');
@@ -52,6 +53,11 @@ const LoginFormPassword = ({
   const titleContent = window.sessionStorage.getItem('confirmStatus')
     ? 'Your email is confirmed'
     : 'Welcome back!';
+
+  const handleUsernameChange = event => {
+    setValue('username', event.target?.value?.trim() || '');
+    onChange(event);
+  };
 
   return (
     <StyledForm
@@ -70,7 +76,8 @@ const LoginFormPassword = ({
           name="username"
           type="text"
           label="Email"
-          onChange={onChange}
+          value={usernameValue}
+          onChange={handleUsernameChange}
         />
         <Spacing vertical={4} />
         <FormInput
