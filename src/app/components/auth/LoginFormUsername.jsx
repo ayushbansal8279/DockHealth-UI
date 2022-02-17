@@ -28,7 +28,8 @@ const LoginFormUsername = props => {
     reValidateMode: 'onSubmit',
   });
 
-  const { handleSubmit } = formMethods;
+  const { watch, setValue, handleSubmit } = formMethods;
+  const usernameValue = watch('username');
 
   useMount(() => {
     if (window.location.href) {
@@ -83,7 +84,16 @@ const LoginFormUsername = props => {
               Please sign in
             </MontserratTypography>
             <Spacing vertical={4} />
-            <FormInput name="username" type="text" label="Email" autoFocus />
+            <FormInput
+              name="username"
+              type="text"
+              label="Email"
+              autoFocus
+              value={usernameValue}
+              onChange={event =>
+                setValue('username', event.target?.value?.trim() || '')
+              }
+            />
             <Spacing vertical={5} />
             <Button id="loginButton" fullWidth size="large" type="submit">
               Continue
