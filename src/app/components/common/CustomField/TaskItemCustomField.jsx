@@ -74,11 +74,18 @@ const TaskItemCustomField = ({
           value={value}
           onChange={handleChange}
           field={field}
+          isHovered={isHovered}
         />
       );
     case FieldType.LONG_TEXT:
       return (
-        <Box width="100%" height="100%" onClick={handleClick}>
+        <Box
+          width="100%"
+          height="100%"
+          display="flex"
+          alignItems="center"
+          onClick={handleClick}
+        >
           <TaskItemLongText
             readOnly={readOnly}
             value={value}
