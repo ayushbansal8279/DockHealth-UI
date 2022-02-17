@@ -8,6 +8,18 @@ import palette from 'styles/palette';
 export const ListContainer = styled.div`
   background-color: ${palette.white};
   padding: 1rem;
+  }
+`;
+
+export const UsersListContainer = styled.div`
+  && {
+    .MuiDataGrid-sortIcon {
+      background: ${palette.brightBlue};
+      color: ${palette.white};
+      padding: 1px;
+      border-radius: 50%;
+    }
+  }
 `;
 
 export const ListEntryContainer = styled.div`
@@ -47,6 +59,9 @@ export const StyledDataGrid = styled(DataGrid)`
   .MuiDataGrid-columnHeader {
     &:focus {
       outline: none !important;
+    }
+    &--sorted {
+      color: ${palette.brightBlue};
     }
   }
 

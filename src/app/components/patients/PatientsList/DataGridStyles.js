@@ -10,7 +10,14 @@ export const StyledDataGrid = styled(DataGrid)`
   &.MuiDataGrid-root {
     max-width: 1179px;
   }
-
+  && {
+    .MuiDataGrid-sortIcon {
+      background: ${palette.brightBlue};
+      color: ${palette.white};
+      padding: 1px;
+      border-radius: 50%;
+    }
+  }
   .MuiDataGrid-columnHeaderTitleContainer {
     display: flex;
     align-items: center;
@@ -18,6 +25,9 @@ export const StyledDataGrid = styled(DataGrid)`
   }
 
   .MuiDataGrid-columnHeader {
+    &--sorted {
+      color: ${palette.brightBlue};
+    }
     &:focus {
       outline: none !important;
     }
