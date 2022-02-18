@@ -6,6 +6,7 @@ export const DropdownBox = styled.div`
   flex-direction: column;
   flex: 1;
   overflow: hidden;
+  position: relative;
   cursor: pointer;
 `;
 
@@ -17,4 +18,12 @@ export const DropdownSelect = styled(Select)`
   & .MuiSelect-root:before {
     display: none;
   }
+`;
+
+export const PlaceholderContainer = styled.div`
+  top: -3px;
+  position: absolute;
+  left: 0px;
+  z-index: 9;
+  pointer-events: none;
 `;

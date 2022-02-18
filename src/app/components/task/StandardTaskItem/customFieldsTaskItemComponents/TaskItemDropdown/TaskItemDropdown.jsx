@@ -1,6 +1,7 @@
 /* eslint-disable import/extensions */
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
-import { DropdownBox, DropdownSelect } from './styled';
+import { AddPlaceholder } from 'components/task/styled';
+import { DropdownBox, DropdownSelect, PlaceholderContainer } from './styled';
 
 const TaskItemDropdown = ({
   value: initialValue,
@@ -31,11 +32,18 @@ const TaskItemDropdown = ({
 
   return (
     <DropdownBox>
+      {!value && (
+        <PlaceholderContainer>
+          <AddPlaceholder>+ Add</AddPlaceholder>
+        </PlaceholderContainer>
+      )}
       <DropdownSelect
         name="dropdownCustomField"
         value={value}
         onChange={handleChange}
         options={options}
+        disableUnderline
+        IconComponent={() => <></>}
       />
     </DropdownBox>
   );

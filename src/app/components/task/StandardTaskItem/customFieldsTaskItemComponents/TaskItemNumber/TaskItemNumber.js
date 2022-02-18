@@ -13,6 +13,7 @@ const TaskItemNumber = ({ value: initialValue = '', onChange }) => {
         name="numberCustomField"
         onBlur={() => onChange(value)}
         onChange={event => setValue(event.target.value)}
+        InputProps={{ disableUnderline: true }}
       />
     </NumberInputContainer>
   );
