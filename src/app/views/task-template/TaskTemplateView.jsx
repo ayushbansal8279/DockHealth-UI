@@ -10,6 +10,8 @@ import { useDispatch, useSelector } from 'react-redux';
 import { useHistory, useParams } from 'react-router-dom';
 import { Grid } from '@material-ui/core';
 import { openModal } from 'modal/actions';
+import { ColumnsConfigProvider } from 'context-api/ColumnsConfigContext';
+import { TaskItemColumn } from 'helpers/task-helpers';
 import * as TaskTemplateActions from 'actions/task-template-actions';
 import {
   taskTemplatesSelector,
@@ -100,7 +102,6 @@ const TaskTemplateView = () => {
       [],
     [taskTemplates],
   );
-
   const previousFolders = usePrevious(folders);
   const previousTemplates = usePrevious(templates);
 
@@ -194,121 +195,136 @@ const TaskTemplateView = () => {
   };
 
   return (
-    <ViewLayout header={<BasicLayoutHeader title="Workflow Library" />}>
-      <TaskTemplateBulkEditContainer
-        optionsConfig={BULK_EDIT_OPTIONS_CONFIG}
-        refreshTasks={() =>
-          dispatch(TaskTemplateActions.reloadOpenedTemplateTasks())
-        }
-      >
-        <TaskTemplateViewContainer>
-          {isBannerOpen && (
-            <>
-              <TaskTemplateBanner
-                firstTemplate={taskTemplates?.length <= 2}
-                onCreateTemplate={handleCreateTemplate}
-                onClose={() => {
-                  setIsBannerOpen(false);
-                  localStorageHelper.setItem(
-                    TASK_TEMPLATES_BANNER_CLOSED_STORAGE_KEY,
-                    true,
-                  );
-                }}
-              />
-              <Spacing vertical={4} />
-            </>
-          )}
-          <TemplateBreadcrumbs />
-          <Spacing vertical={4} />
-          <SearchAndFilterContainer>
-            <SearchWrapper fullWidth={isSearchFocused}>
-              {!folderIdentifier && (
-                <Search
-                  fullWidth
-                  noBackground
-                  value={searchPhrase}
-                  onFocus={() => setSearchFocused(true)}
-                  onBlur={() => setSearchFocused(false)}
-                  onChange={onSearchHandle}
-                  placeholder={
-                    isSearchFocused ? 'Search Workflows and Folders' : 'Search'
-                  }
+    <ColumnsConfigProvider
+      initialColumns={{
+        [TaskItemColumn.DESCRIPTION]: true,
+        [TaskItemColumn.SUBTASKS_COUNT]: true,
+        [TaskItemColumn.WORKFLOW_STATUS]: true,
+        [TaskItemColumn.ACTIVITY]: true,
+        [TaskItemColumn.ASSIGNED]: true,
+      }}
+      hideCustomColumns
+    >
+      <ViewLayout header={<BasicLayoutHeader title="Workflow Library" />}>
+        <TaskTemplateBulkEditContainer
+          optionsConfig={BULK_EDIT_OPTIONS_CONFIG}
+          refreshTasks={() =>
+            dispatch(TaskTemplateActions.reloadOpenedTemplateTasks())
+          }
+        >
+          <TaskTemplateViewContainer>
+            {isBannerOpen && (
+              <>
+                <TaskTemplateBanner
+                  firstTemplate={taskTemplates?.length <= 2}
+                  onCreateTemplate={handleCreateTemplate}
+                  onClose={() => {
+                    setIsBannerOpen(false);
+                    localStorageHelper.setItem(
+                      TASK_TEMPLATES_BANNER_CLOSED_STORAGE_KEY,
+                      true,
+                    );
+                  }}
                 />
-              )}
-            </SearchWrapper>
-            <Grid container justify="flex-end" alignItems="center">
-              <AddButton onClick={handleCreateTemplate}>Add Workflow</AddButton>
-              <AddButton
-                onClick={handleCreateSmartFlow}
-                buttonRef={addSmartflowButtonReference}
-              >
-                Add SmartFlow
-              </AddButton>
-              <AddButton onClick={handleCreateTemplateFolder}>
-                Add Folder
-              </AddButton>
-              <ViewTypeSwitch value={viewType} onChange={setViewType} />
-            </Grid>
-          </SearchAndFilterContainer>
-          <Spacing vertical={4} />
-          <TasksTemplatesHeader sort={sort} onSortChange={handleSortChange} />
-          {!isFetchingTaskTemplates ? (
-            <>
-              {currentSortMethodWithOrder(folders).map(template => (
-                <TaskTemplateFolder
-                  highlighted={newlyCreatedTemplateId === template.identifier}
-                  key={template.identifier}
-                  template={template}
-                  onClick={() => handleGoToFolder(template.identifier)}
-                >
-                  <TaskTemplateHeader
-                    createdBy={template.creator.userName}
-                    createdDate={moment(template.createdDateTime).format(
-                      'MM/DD/YYYY',
-                    )}
-                    taskTemplate={template}
+                <Spacing vertical={4} />
+              </>
+            )}
+            <TemplateBreadcrumbs />
+            <Spacing vertical={4} />
+            <SearchAndFilterContainer>
+              <SearchWrapper fullWidth={isSearchFocused}>
+                {!folderIdentifier && (
+                  <Search
+                    fullWidth
+                    noBackground
+                    value={searchPhrase}
+                    onFocus={() => setSearchFocused(true)}
+                    onBlur={() => setSearchFocused(false)}
+                    onChange={onSearchHandle}
+                    placeholder={
+                      isSearchFocused
+                        ? 'Search Workflows and Folders'
+                        : 'Search'
+                    }
                   />
-                </TaskTemplateFolder>
-              ))}
-              {currentSortMethodWithOrder(templates).map(template => (
-                <TaskTemplate
-                  highlighted={newlyCreatedTemplateId === template.identifier}
-                  key={template.identifier}
-                  template={template}
-                  isFullView={viewType === ViewType.FULL_VIEW}
+                )}
+              </SearchWrapper>
+              <Grid container justify="flex-end" alignItems="center">
+                <AddButton onClick={handleCreateTemplate}>
+                  Add Workflow
+                </AddButton>
+                <AddButton
+                  onClick={handleCreateSmartFlow}
+                  buttonRef={addSmartflowButtonReference}
                 >
-                  <TaskTemplateHeader
-                    createdBy={template.creator.userName}
-                    createdDate={moment(template.createdDateTime).format(
-                      'MM/DD/YYYY',
-                    )}
-                    taskTemplate={template}
-                  />
-                </TaskTemplate>
-              ))}
-            </>
-          ) : (
-            <TaskTemplatesLoader />
-          )}
-          <TaskDrawer />
-        </TaskTemplateViewContainer>
-      </TaskTemplateBulkEditContainer>
-      <UpgradePlanPopup
-        header={
-          <UpgradePlanPopupHeader>
-            SmartFlows
-            {/* <Spacing horizontal={4} /> */}
-            {/* <PremiumBadgeContainer>Premium Feature</PremiumBadgeContainer> */}
-          </UpgradePlanPopupHeader>
-        }
-        anchorEl={addSmartflowButtonReference.current}
-        open={openUpgradePopup}
-        onClose={() => setOpenUpgradePopup(false)}
-        title="Add SmartFlows"
-        description="Automate your tedious, recurring tasks with Dock Premium SmartFlows."
-        iconImage={<img src={SmartFlowsIcon} alt="SmartFlows" />}
-      />
-    </ViewLayout>
+                  Add SmartFlow
+                </AddButton>
+                <AddButton onClick={handleCreateTemplateFolder}>
+                  Add Folder
+                </AddButton>
+                <ViewTypeSwitch value={viewType} onChange={setViewType} />
+              </Grid>
+            </SearchAndFilterContainer>
+            <Spacing vertical={4} />
+            <TasksTemplatesHeader sort={sort} onSortChange={handleSortChange} />
+            {!isFetchingTaskTemplates ? (
+              <>
+                {currentSortMethodWithOrder(folders).map(template => (
+                  <TaskTemplateFolder
+                    highlighted={newlyCreatedTemplateId === template.identifier}
+                    key={template.identifier}
+                    template={template}
+                    onClick={() => handleGoToFolder(template.identifier)}
+                  >
+                    <TaskTemplateHeader
+                      createdBy={template.creator.userName}
+                      createdDate={moment(template.createdDateTime).format(
+                        'MM/DD/YYYY',
+                      )}
+                      taskTemplate={template}
+                    />
+                  </TaskTemplateFolder>
+                ))}
+                {currentSortMethodWithOrder(templates).map(template => (
+                  <TaskTemplate
+                    highlighted={newlyCreatedTemplateId === template.identifier}
+                    key={template.identifier}
+                    template={template}
+                    isFullView={viewType === ViewType.FULL_VIEW}
+                  >
+                    <TaskTemplateHeader
+                      createdBy={template.creator.userName}
+                      createdDate={moment(template.createdDateTime).format(
+                        'MM/DD/YYYY',
+                      )}
+                      taskTemplate={template}
+                    />
+                  </TaskTemplate>
+                ))}
+              </>
+            ) : (
+              <TaskTemplatesLoader />
+            )}
+            <TaskDrawer />
+          </TaskTemplateViewContainer>
+        </TaskTemplateBulkEditContainer>
+        <UpgradePlanPopup
+          header={
+            <UpgradePlanPopupHeader>
+              SmartFlows
+              {/* <Spacing horizontal={4} /> */}
+              {/* <PremiumBadgeContainer>Premium Feature</PremiumBadgeContainer> */}
+            </UpgradePlanPopupHeader>
+          }
+          anchorEl={addSmartflowButtonReference.current}
+          open={openUpgradePopup}
+          onClose={() => setOpenUpgradePopup(false)}
+          title="Add SmartFlows"
+          description="Automate your tedious, recurring tasks with Dock Premium SmartFlows."
+          iconImage={<img src={SmartFlowsIcon} alt="SmartFlows" />}
+        />
+      </ViewLayout>
+    </ColumnsConfigProvider>
   );
 };
 
