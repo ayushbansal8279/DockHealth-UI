@@ -51,24 +51,6 @@ const TaskDetails = () => {
 
   const previousIsFocused = usePrevious(isFocused);
 
-  useEffect(() => {
-    if (selectedTask) {
-      if (selectedTask.details) {
-        const newContent = createMentionEntities(
-          selectedTask.tokenizedDetails,
-          selectedTask.details,
-          selectedTask.taskMentions,
-          true,
-        );
-        setDetailsState(EditorState.push(detailsState, newContent));
-        setRawTextState(selectedTask.tokenizedDetails);
-      } else {
-        setDetailsState();
-      }
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [selectedTask?.taskIdentifier]);
-
   const updateDetails = useCallback(
     state => {
       if (selectedTask) {
@@ -123,6 +105,7 @@ const TaskDetails = () => {
   return (
     <DetailsContainer>
       <CustomTextEditor
+        key={selectedTask?.identifier}
         empty={isEmptyDetailsState}
         focused={isFocused}
         label="details"

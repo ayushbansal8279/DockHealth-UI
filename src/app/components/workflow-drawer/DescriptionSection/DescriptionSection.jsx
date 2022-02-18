@@ -29,27 +29,26 @@ const DescriptionSection = () => {
   const detailsReference = useRef(null);
   const [isFocused, setFocused, unsetFocused] = useBoolean();
   const autoFocusFieldName = useSelector(workflowAutofocusFieldSelector);
-
   const [detailsState, setDetailsState] = useMentionsEditorState();
   const isDescriptionInitialized = useRef(false);
+  const isDescriptionInitializationUpdated = useRef(false);
 
   useEffect(() => {
-    if (selectedWorkflow?.tokenizedDescription) {
-      // setRawTextState(selectedWorkflow.description);
+    if (
+      isDescriptionInitialized.current &&
+      selectedWorkflow?.tokenizedDescription
+    ) {
       const newContent = createMentionEntities(
         selectedWorkflow.tokenizedDescription,
         selectedWorkflow.description,
         selectedWorkflow.taskMentions || [],
         true,
       );
-      isDescriptionInitialized.current = true;
       setDetailsState(EditorState.push(detailsState, newContent));
-    } else {
-      isDescriptionInitialized.current = true;
-      setDetailsState();
     }
+    isDescriptionInitialized.current = true;
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [selectedWorkflow?.tokenizedDescription]);
+  }, [selectedWorkflow]);
 
   const isTemplateWorkflow = checkIfTemplateTask(selectedWorkflow);
 
@@ -71,8 +70,7 @@ const DescriptionSection = () => {
   const updateDetails = useCallback(
     state => {
       const { tokenizedText } = convertFromEditorStateToOutput(state, true);
-
-      if (!isDescriptionInitialized.current) {
+      if (isDescriptionInitializationUpdated.current) {
         dispatch(
           updatePartialWorkflow(selectedWorkflow?.identifier, {
             description: tokenizedText || '',
@@ -80,7 +78,7 @@ const DescriptionSection = () => {
           }),
         );
       } else {
-        isDescriptionInitialized.current = false;
+        isDescriptionInitializationUpdated.current = true;
       }
     },
     [dispatch, selectedWorkflow],

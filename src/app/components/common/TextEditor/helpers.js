@@ -178,7 +178,8 @@ export const convertToEditorState = state => {
 };
 
 export const isEditorStateEmpty = state => {
-  const rawState = convertToRaw(state.getCurrentContent());
+  if (!state) return true;
+  const rawState = convertToRaw(state?.getCurrentContent());
   const firstBlock = rawState?.blocks?.[0];
   if (firstBlock && firstBlock.text === '') {
     return true;
