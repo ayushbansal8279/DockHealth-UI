@@ -65,12 +65,6 @@ export function addTemplate(newTemplate, parentTaskWorkflowIdentifier) {
     });
 }
 
-export function updateTemplate(newTemplate) {
-  return axios.put(`task/workflow`, newTemplate).then(response => {
-    return response.data;
-  });
-}
-
 export function updatePartialWorkflow(taskWorkflowIdentifier, dataToUpdate) {
   return axios
     .patch(`task/workflow/${taskWorkflowIdentifier}`, dataToUpdate)
@@ -170,17 +164,6 @@ export function addUsersToPermissionList(
   return axios
     .post(`task/template/${taskTemplateIdentifier}/member`, {
       invitedUsersIdentifier,
-    })
-    .then(({ data }) => data);
-}
-
-export function deleteSingleUserToPermissionList(
-  taskTemplateIdentifier,
-  userIdentifier,
-) {
-  return axios
-    .delete(`task/template/${taskTemplateIdentifier}/member `, {
-      userIdentifier,
     })
     .then(({ data }) => data);
 }

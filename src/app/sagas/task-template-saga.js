@@ -176,31 +176,6 @@ function* addTemplate({ template, parentIdentifier = null, history }) {
   }
 }
 
-function* updateTemplate({ taskTemplateIdentifier, dataToUpdate }) {
-  const template = yield select(taskTemplateSelector(taskTemplateIdentifier));
-
-  try {
-    const updatedTemplate = {
-      ...template,
-      ...omit(['taskTemplateIdentifier'], dataToUpdate),
-    };
-    yield put({
-      type: ActionTypes.UPDATE_TASK_TEMPLATE_SUCCESS,
-      taskTemplateIdentifier,
-      dataToUpdate,
-    });
-    yield call(TaskTemplateApi.updateTemplate, updatedTemplate);
-    yield put(showGlobalAlert(AlertMessages.UPDATED));
-  } catch {
-    yield put(showGlobalErrorAlert());
-    yield put({
-      type: ActionTypes.UPDATE_TASK_TEMPLATE_FAILURE,
-      taskTemplateIdentifier,
-      dataToUpdate: template,
-    });
-  }
-}
-
 function* updatePartialWorkflow({ taskWorkflowIdentifier, dataToUpdate }) {
   try {
     const newData = yield call(
@@ -783,7 +758,6 @@ export default function* watchTaskTemplate() {
   yield takeLatest(ActionTypes.GET_WORKFLOW_FOLDER, getWorkflowFolder);
   yield takeLatest(ActionTypes.GET_FOLDER_BREADCRUMBS, getFolderBreadcrumbs);
   yield takeEvery(ActionTypes.TOGGLE_TASK_TEMPLATE_OPEN, toggleTemplateOpen);
-  yield takeEvery(ActionTypes.UPDATE_TASK_TEMPLATE, updateTemplate);
   yield takeEvery(ActionTypes.UPDATE_PARTIAL_WORKFLOW, updatePartialWorkflow);
 
   yield takeEvery(

@@ -36,7 +36,7 @@ import QuickAddTaskInput from 'components/tasklist/QuickAddTaskInput/QuickAddTas
 import {
   moveWorkflowToFolder,
   switchTemplatePublic,
-  updateTemplate,
+  updatePartialWorkflow,
   addTaskToTemplate,
   reorderTasksForTemplate,
   toggleTemplateOpen,
@@ -192,7 +192,7 @@ const TaskTemplate = ({
         if (value?.length > 1) {
           setNameInputError(false);
           dispatch(
-            updateTemplate(identifier, {
+            updatePartialWorkflow(identifier, {
               name: value,
             }),
           );

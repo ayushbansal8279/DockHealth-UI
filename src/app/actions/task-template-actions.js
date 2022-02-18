@@ -43,14 +43,6 @@ export function addTemplateFolder(template, parentIdentifier = null) {
   };
 }
 
-export function updateTemplate(taskTemplateIdentifier, dataToUpdate) {
-  return {
-    type: ActionTypes.UPDATE_TASK_TEMPLATE,
-    taskTemplateIdentifier,
-    dataToUpdate,
-  };
-}
-
 export function switchTemplatePublic(taskTemplateIdentifier, flagPublic) {
   return {
     type: ActionTypes.SWITCH_TEMPLATE_PUBLIC,

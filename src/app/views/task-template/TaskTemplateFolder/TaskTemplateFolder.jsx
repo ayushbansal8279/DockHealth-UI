@@ -102,7 +102,7 @@ const TaskTemplateFolder = ({
         if (value?.length > 1) {
           setNameInputError(false);
           dispatch(
-            TaskTemplateActions.updateTemplate(identifier, {
+            TaskTemplateActions.updatePartialWorkflow(identifier, {
               name: value,
             }),
           );
