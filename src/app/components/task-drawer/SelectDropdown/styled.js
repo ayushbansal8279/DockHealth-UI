@@ -26,3 +26,12 @@ export const ListItemButton = styled.button`
 
   ${({ isHovered }) => isHovered && `background: ${palette.blueGrey};`}
 `;
+
+export const ListItemRefineButton = styled.button`
+  width: 100%;
+  font-family: 'Roboto Condensed', sans-serif;
+  color: ${palette.oPlusRed};
+  height: 42px;
+
+  ${({ isHovered }) => isHovered && `background: ${palette.blueGrey};`}
+`;

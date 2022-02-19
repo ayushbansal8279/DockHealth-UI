@@ -72,6 +72,11 @@ export const UnassignRow = styled(Row)`
   padding: ${spacing.small};
 `;
 
+export const RefineSearchRow = styled(Row)`
+  padding: ${spacing.small};
+  color: ${palette.oPlusRed};
+`;
+
 export const UnassignRowContainer = styled.div`
   border-bottom: ${({ withBorder }) =>
     withBorder ? `1px solid ${palette.coolGrey2}` : '0px'};

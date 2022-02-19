@@ -16,7 +16,12 @@ import {
   string,
 } from 'prop-types';
 import AddRecordOption from 'components/common/AddRecordOption/AddRecordOption';
-import { ListContainer, ListItem, ListItemButton } from './styled';
+import {
+  ListContainer,
+  ListItem,
+  ListItemButton,
+  ListItemRefineButton,
+} from './styled';
 import { AdornmentClear } from '../styled';
 
 const SelectDropdown = React.forwardRef(
@@ -36,6 +41,7 @@ const SelectDropdown = React.forwardRef(
       onAddItemClick,
       clearOnSuccess,
       addItemEnabled,
+      refineResultsCount = 0,
     },
     reference,
     // eslint-disable-next-line sonarjs/cognitive-complexity
@@ -219,7 +225,13 @@ const SelectDropdown = React.forwardRef(
           >
             {!isLoadingOptions ? (
               <>
-                {' '}
+                {options?.length >= refineResultsCount && (
+                  <ListItem>
+                    <ListItemRefineButton>
+                      Please further refine search, too many results!
+                    </ListItemRefineButton>
+                  </ListItem>
+                )}{' '}
                 {options?.length > 0
                   ? options.map((option, index) => (
                       <ListItem key={option.key}>

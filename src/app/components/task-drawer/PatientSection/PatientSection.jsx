@@ -20,6 +20,7 @@ import SelectDropdown from '../SelectDropdown/SelectDropdown';
 import { getFormattedPatient, getFormattedPatients } from './helpers';
 
 const PATIENT_IDENTIFIER_FIELD_NAME = 'patientIdentifier';
+const MAX_PATIENT_RESULTS = 200;
 
 const PatientSection = ({
   selectedPatient,
@@ -297,7 +298,10 @@ const PatientSection = ({
       ref={patientInputReference}
       name={PATIENT_IDENTIFIER_FIELD_NAME}
       label={customerTypeLabelCapitalized}
-      placeholder={placeholder || `Who is the ${customerTypeLabel}?`}
+      placeholder={
+        placeholder ||
+        `Who is the ${customerTypeLabel}? (first last or last, first)`
+      }
       disabled={disabled}
       selectedOption={assignedPatient}
       options={formattedPatients}
@@ -310,6 +314,7 @@ const PatientSection = ({
       }
       addItemEnabled={!currentOrganization?.emrIntegrationEnabled}
       clearOnSuccess
+      refineResultsCount={MAX_PATIENT_RESULTS}
     />
   );
 };

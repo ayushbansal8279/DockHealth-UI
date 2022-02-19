@@ -3,7 +3,10 @@ import React, { useCallback, useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { Grid } from '@material-ui/core';
-import { getPatientListIdentifierByUrlParameter } from 'helpers/patient-list-helpers';
+import {
+  getPatientListIdentifierByUrlParameter,
+  DefaultPatientsListType,
+} from 'helpers/patient-list-helpers';
 import { useBoolean } from 'hooks/useBoolean';
 import * as PatientsActions from 'actions/patients-actions';
 import * as PatientApi from 'api/patient-api';
@@ -17,7 +20,13 @@ import {
 } from 'selectors/patients-selectors';
 import PatientsList from './PatientsList/PatientsList';
 import PatientsToolbar from './PatientsToolbar/PatientsToolbar';
-import { PatientsViewContainer, PatientsListContainer } from './styled';
+import {
+  PatientsViewContainer,
+  PatientsListContainer,
+  RefineSearchText,
+} from './styled';
+
+const MAX_PATIENT_ALL_RESULTS = 1000;
 
 const PatientsView = () => {
   const dispatch = useDispatch();
@@ -91,6 +100,12 @@ const PatientsView = () => {
         />
         <PatientsListContainer>
           <Grid container>
+            {listIdentifier === DefaultPatientsListType.ALL_PATIENTS &&
+              patients?.length >= MAX_PATIENT_ALL_RESULTS && (
+                <RefineSearchText>
+                  Please further refine search, too many results!
+                </RefineSearchText>
+              )}
             <PatientsList
               isFiltered={searchValue}
               patients={patients}

@@ -25,7 +25,10 @@ import {
   LoaderContainer,
   UnassignRowContainer,
   UnassignRow,
+  RefineSearchRow,
 } from './styled';
+
+const MAX_PATIENT_RESULTS = 200;
 
 const PatientList = ({
   onSelect,
@@ -248,7 +251,7 @@ const PatientList = ({
         <img src={MagnifierIcon} alt="magnifier" />
         <Input
           ref={inputReference}
-          placeholder={`Search ${customerTypeLabel}`}
+          placeholder={`Search ${customerTypeLabel} (first last or last, first)`}
           value={searchValue}
           onChange={onPatientInputChange}
           onKeyDown={handleInputKeyDown}
@@ -271,6 +274,11 @@ const PatientList = ({
       )}
       {!isLoadingPatients && (
         <ListContainer withBorder={patients.length !== 0} ref={listReference}>
+          {!isLoadingPatients && patients.length >= MAX_PATIENT_RESULTS && (
+            <RefineSearchRow>
+              Please further refine search, too many results!
+            </RefineSearchRow>
+          )}
           {!isLoadingPatients &&
             patients.length !== 0 &&
             patients?.map((option, index) =>
