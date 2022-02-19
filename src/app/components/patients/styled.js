@@ -1,4 +1,5 @@
 import styled from 'styled-components';
+import palette from 'styles/palette';
 
 export const PatientsViewContainer = styled.div`
   display: flex;
@@ -25,4 +26,13 @@ export const SidebarInnerContainer = styled.div`
   &::-webkit-scrollbar {
     display: none;
   }
+`;
+
+export const RefineSearchText = styled.p`
+  max-width: 700px;
+  margin: 0 auto;
+  padding-top: 10px;
+  text-align: center;
+  font-family: 'Montserrat', sans-serif;
+  color: ${palette.oPlusRed};
 `;
