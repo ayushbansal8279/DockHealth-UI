@@ -30,11 +30,7 @@ const TaskTemplateFolder = ({
   onClick,
   highlighted = false,
 }) => {
-  const {
-    identifier,
-    name,
-    // publicAccess = false
-  } = template;
+  const { identifier, name, publicAccess = false } = template;
 
   const [isEditing, setIsEditing] = useState(false);
   const [nameInputValue, setNameInputValue] = useState(name);
@@ -68,17 +64,14 @@ const TaskTemplateFolder = ({
           nameInputReference.current?.focus();
         },
       },
-      // {
-      //   name: publicAccess ? 'Make Private' : 'Make Public',
-      //   onClick: () => {
-      //     dispatch(
-      //       TaskTemplateActions.switchTemplatePublic(
-      //         taskTemplateIdentifier,
-      //         !publicAccess,
-      //       ),
-      //     );
-      //   },
-      // },
+      {
+        name: publicAccess ? 'Make Private' : 'Make Public',
+        onClick: () => {
+          dispatch(
+            TaskTemplateActions.switchTemplatePublic(identifier, !publicAccess),
+          );
+        },
+      },
       {
         name: 'Delete Folder',
         color: palette.oPlusRed,
@@ -96,12 +89,7 @@ const TaskTemplateFolder = ({
           ),
       },
     ],
-    [
-      identifier,
-      dispatch,
-      nameInputReference,
-      // publicAccess
-    ],
+    [identifier, dispatch, nameInputReference, publicAccess],
   );
 
   const handleNameInputKeyDown = useCallback(
@@ -114,7 +102,7 @@ const TaskTemplateFolder = ({
         if (value?.length > 1) {
           setNameInputError(false);
           dispatch(
-            TaskTemplateActions.updateTemplate(identifier, {
+            TaskTemplateActions.updatePartialWorkflow(identifier, {
               name: value,
             }),
           );

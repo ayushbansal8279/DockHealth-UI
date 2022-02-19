@@ -23,7 +23,6 @@ import {
 } from 'selectors/task-template-selectors';
 import { userHasSmartFlowsSelector } from 'selectors/user-selectors';
 import * as WorkflowActions from 'actions/workflow-actions';
-import * as TaskTemplateActions from 'actions/task-template-actions';
 import * as ModalActions from 'modal/actions';
 import * as TaskActions from 'actions/task-actions';
 import { openDrawer } from 'actions/workflow-drawer-actions';
@@ -34,7 +33,14 @@ import StandardTaskItemContainer from 'components/task/StandardTaskItemContainer
 import TasksSkeletonLoader from 'components/task/TasksSkeletonLoader/TasksSkeletonLoader';
 import OptionsMenu from 'components/common/OptionsMenu/OptionsMenu';
 import QuickAddTaskInput from 'components/tasklist/QuickAddTaskInput/QuickAddTaskInput';
-import { moveWorkflowToFolder } from 'actions/task-template-actions';
+import {
+  moveWorkflowToFolder,
+  switchTemplatePublic,
+  updatePartialWorkflow,
+  addTaskToTemplate,
+  reorderTasksForTemplate,
+  toggleTemplateOpen,
+} from 'actions/task-template-actions';
 import * as ActionTypes from 'actions/action-types';
 import SmartFlowIcon from 'img/template/smartflow.svg';
 import {
@@ -58,12 +64,7 @@ const TaskTemplate = ({
   children,
   highlighted = false,
 }) => {
-  const {
-    identifier,
-    name,
-    templateType,
-    // publicAccess = false,
-  } = template;
+  const { identifier, name, templateType, publicAccess = false } = template;
   const smartFlowsAvailable = useSelector(userHasSmartFlowsSelector);
 
   const [draggableId, setDraggableId] = useState(null);
@@ -147,17 +148,12 @@ const TaskTemplate = ({
             }),
           ),
       },
-      // {
-      //   name: publicAccess ? 'Make Private' : 'Make Public',
-      //   onClick: () => {
-      //     dispatch(
-      //       TaskTemplateActions.switchTemplatePublic(
-      //         taskTemplateIdentifier,
-      //         !publicAccess,
-      //       ),
-      //     );
-      //   },
-      // },
+      {
+        name: publicAccess ? 'Make Private' : 'Make Public',
+        onClick: () => {
+          dispatch(switchTemplatePublic(identifier, !publicAccess));
+        },
+      },
       {
         name: 'Delete Workflow',
         color: palette.oPlusRed,
@@ -182,7 +178,7 @@ const TaskTemplate = ({
       identifier,
       dispatch,
       folderIdentifier,
-      // publicAccess,
+      publicAccess,
     ],
   );
 
@@ -196,7 +192,7 @@ const TaskTemplate = ({
         if (value?.length > 1) {
           setNameInputError(false);
           dispatch(
-            TaskTemplateActions.updateTemplate(identifier, {
+            updatePartialWorkflow(identifier, {
               name: value,
             }),
           );
@@ -214,7 +210,7 @@ const TaskTemplate = ({
   const handleAddTaskToTemplate = useCallback(
     task => {
       dispatch(
-        TaskTemplateActions.addTaskToTemplate({
+        addTaskToTemplate({
           ...task,
           taskTemplateIdentifier: identifier,
         }),
@@ -233,7 +229,7 @@ const TaskTemplate = ({
       onTaskOrderChanged();
 
       dispatch(
-        TaskTemplateActions.reorderTasksForTemplate({
+        reorderTasksForTemplate({
           taskTemplateIdentifier: identifier,
           source,
           destination,
@@ -278,7 +274,7 @@ const TaskTemplate = ({
     if (isOpen) {
       dispatch(TaskActions.unselectAllTasks());
     }
-    dispatch(TaskTemplateActions.toggleTemplateOpen(identifier));
+    dispatch(toggleTemplateOpen(identifier));
   };
 
   const onSmartFlowClick = () => {

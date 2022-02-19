@@ -1,14 +1,11 @@
 /* eslint-disable sonarjs/cognitive-complexity */
 import React from 'react';
-// import TaskTemplatePermissions from 'views/task-template/TaskTemplatePermissions/TaskTemplatePermissions';
+import TaskTemplatePermissions from 'views/task-template/TaskTemplatePermissions/TaskTemplatePermissions';
 import { HeaderContainer, StandardTaskItemCell, CreatedText } from './styled';
 
 const TaskTemplateHeader = template => {
-  const {
-    createdBy,
-    createdDate,
-    // taskTemplate
-  } = template;
+  const { createdBy, createdDate, taskTemplate } = template;
+
   return (
     <HeaderContainer>
       <StandardTaskItemCell width={150}>
@@ -17,7 +14,7 @@ const TaskTemplateHeader = template => {
       <StandardTaskItemCell width={150}>
         <CreatedText>{createdDate}</CreatedText>
       </StandardTaskItemCell>
-      {/* <TaskTemplatePermissions template={taskTemplate} /> */}
+      <TaskTemplatePermissions template={taskTemplate} />
     </HeaderContainer>
   );
 };
