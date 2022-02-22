@@ -33,6 +33,7 @@ const exposed = [
   'HELLOSIGN_DOMAIN_VERIFICATION_ENABLED',
   'INTERCOM_APP_CODE',
   'PHONE_COUNTRY_CODES',
+  'DYNATRACE_SCRIPT',
 ];
 const exposedEnvironment = {};
 exposed.forEach(i => {
@@ -77,6 +78,7 @@ const config = (environment, options) => {
         filename: 'index.html',
         inject: 'body',
         hash: true,
+        monitoringScript: exposedEnvironment.DYNATRACE_SCRIPT,
       }),
       new MomentLocalesPlugin(),
       // isDevelopment && new UnusedFilesWebpackPlugin(),
