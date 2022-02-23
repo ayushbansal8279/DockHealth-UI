@@ -5,7 +5,7 @@ import { SuggestionItemContainer, SuggestionText } from './styled';
 
 const PatientSelectItem = React.forwardRef(
   ({ patient, searchValue, isFocused, ...restProps }, reference) => {
-    const { name, age, mrn } = patient;
+    const { name, dob, mrn } = patient;
     return (
       <SuggestionItemContainer
         ref={reference}
@@ -20,7 +20,7 @@ const PatientSelectItem = React.forwardRef(
             textToHighlight={name}
           />
         </SuggestionText>
-        <SuggestionText>{age}</SuggestionText>
+        <SuggestionText>{dob}</SuggestionText>
         <SuggestionText>
           <Highlighter
             highlightStyle={{ fontWeight: 'bold', background: 'none' }}
