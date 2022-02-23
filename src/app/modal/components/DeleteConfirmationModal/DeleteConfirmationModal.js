@@ -21,6 +21,7 @@ const DeleteConfirmationModal = ({
   description,
   closeModal,
   confirm,
+  confirmButtonText = 'Delete permanently',
 }) => {
   return (
     <MuiThemeProvider theme={redTheme}>
@@ -53,7 +54,7 @@ const DeleteConfirmationModal = ({
               size="small"
               onClick={confirm}
             >
-              Delete permanently
+              {confirmButtonText}
             </Button>
           </FixedWidthButtonWrapper>
         </ButtonsContainer>
