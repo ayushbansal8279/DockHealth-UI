@@ -4,7 +4,7 @@ import spacing from 'styles/spacing';
 
 export const PopoverContainer = styled.div`
   position: absolute;
-  width: 252px;
+  width: 300px;
   background-color: ${palette.white};
   box-shadow: 0px 6px 9px rgba(0, 0, 0, 0.17);
   font-family: 'Roboto Condensed', sans-serif;
