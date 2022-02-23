@@ -20,7 +20,7 @@ export default object().shape({
       if (!value || value.length <= 3) {
         return '';
       }
-      return this.isType(value) && matchEmptyNumber(value);
+      return matchEmptyNumber(value);
     })
     .matches(PHONE_MASK, MASK_MESSAGE)
     .notRequired(),

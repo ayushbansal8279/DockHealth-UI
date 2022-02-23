@@ -6,7 +6,7 @@ import spacing from 'styles/spacing';
 export const SuggestionItemContainer = styled.div`
   display: grid;
   grid-gap: 0.5rem;
-  grid-template-columns: 1fr 4rem 6rem;
+  grid-template-columns: 1fr 5rem 5rem;
   align-items: center;
   width: 100%;
   height: 40px;
