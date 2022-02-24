@@ -8,7 +8,7 @@ import {
 
 const AdditionalOptions = ({ options }) => {
   return options.map(({ label, value = false, onChange, key }) => (
-    <Grid container onClick={() => onChange(true)} key={key}>
+    <Grid container onClick={() => onChange(!value)} key={key}>
       <Grid item>
         <CheckboxContainer>
           <BlueCheckbox checked={value} color="secondary" />
