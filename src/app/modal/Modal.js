@@ -19,9 +19,9 @@ const Modal = ({ modal, ...restProps }) => {
     if (typeof modalProps?.onClose === 'function') modalProps.onClose();
   };
 
-  const handleCloseModal = () => {
-    closeModal();
-    if (typeof modalProps?.onClose === 'function') modalProps.onClose();
+  const handleCloseModal = e => {
+    closeModal(e);
+    if (typeof modalProps?.onClose === 'function') modalProps.onClose(e);
   };
 
   const ModalComponent = MODAL_MAP[modalName];

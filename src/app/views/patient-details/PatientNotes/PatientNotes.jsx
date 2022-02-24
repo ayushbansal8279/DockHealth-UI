@@ -20,6 +20,7 @@ import { convertFromEditorStateToOutput } from 'components/common/TextEditor/hel
 import { useMentionsEditorState } from 'components/common/TextEditor/use-mentions-editor-state';
 import Button from 'components/common/Button/Button';
 import Spacing from 'components/common/Spacing';
+import { ClickAwayListener } from '@material-ui/core';
 import PatientNote from '../PatientNote/PatientNote';
 import PatientNotesLoader from '../PatientNotesLoader/PatientNotesLoader';
 import {
@@ -38,6 +39,7 @@ const PatientNotes = () => {
   const currentUser = useSelector(userProfileSelector);
   const { patientIdentifier, allNotes: notes } = patient || {};
   const [editMode, setEditMode] = useState(false);
+  const [modalIsOpened, setModalIsOpened] = useState(false);
 
   const handleRemoveNote = useCallback(
     patientNoteIdentifier => {
@@ -96,20 +98,34 @@ const PatientNotes = () => {
         'Are you sure you want reject changes? This action cannot be undone.',
       confirmButtonText: 'Quit without saving',
       confirm: () => {
+        setModalIsOpened(false);
         handleCancel();
         dispatch(closeModal());
       },
-      closeModal: () => {
-        if (typeof addNoteInputReference.current.focus === 'function')
-          addNoteInputReference.current.focus();
+      onClose: () => {
+        setTimeout(() => setModalIsOpened(false), 0);
+        dispatch(closeModal());
       },
     };
     dispatch(openModal('DeleteConfirmation', modalProps));
   }, [dispatch, handleCancel]);
 
-  const handleBlur = useCallback(() => {
-    if (!isEmpty) openDeleteConfirmationModal();
-  }, [isEmpty, openDeleteConfirmationModal]);
+  const handleClickAway = useCallback(() => {
+    if (editMode && !modalIsOpened) {
+      if (isEmpty) {
+        handleCancel();
+      } else {
+        setModalIsOpened(true);
+        openDeleteConfirmationModal();
+      }
+    }
+  }, [
+    editMode,
+    modalIsOpened,
+    isEmpty,
+    handleCancel,
+    openDeleteConfirmationModal,
+  ]);
 
   const handleFocus = useCallback(() => {
     setEditMode(true);
@@ -161,42 +177,43 @@ const PatientNotes = () => {
           {unpinnedNotes
             ?.sort(descend(prop('dateUpdated')))
             ?.map(renderPatient)}
-          <RichTextInputContainer>
-            <TextEditor
-              showToolbar
-              ref={addNoteInputReference}
-              taskListIdentifier={patientIdentifier}
-              disableMentions
-              placeholder="Leave a note and press enter on your keyboard to save"
-              state={noteState}
-              onChange={onNoteChange}
-              onFocus={handleFocus}
-              onBlur={handleBlur}
-            />
-            {editMode && (
-              <ButtonContainer>
-                <ButtonWrapper>
-                  <Button
-                    color="secondary"
-                    variant="secondary"
-                    onClick={handleCancel}
-                    size="small"
-                  >
-                    Cancel
-                  </Button>
-                  <Spacing horizontal={4} />
-                  <Button
-                    color="primary"
-                    disabled={isEmpty}
-                    size="small"
-                    onClick={saveNote}
-                  >
-                    Save
-                  </Button>
-                </ButtonWrapper>
-              </ButtonContainer>
-            )}
-          </RichTextInputContainer>
+          <ClickAwayListener onClickAway={handleClickAway}>
+            <RichTextInputContainer>
+              <TextEditor
+                showToolbar
+                ref={addNoteInputReference}
+                taskListIdentifier={patientIdentifier}
+                disableMentions
+                placeholder="Leave a note and press enter on your keyboard to save"
+                state={noteState}
+                onChange={onNoteChange}
+                onFocus={handleFocus}
+              />
+              {editMode && (
+                <ButtonContainer>
+                  <ButtonWrapper>
+                    <Button
+                      color="secondary"
+                      variant="secondary"
+                      onClick={handleCancel}
+                      size="small"
+                    >
+                      Cancel
+                    </Button>
+                    <Spacing horizontal={4} />
+                    <Button
+                      color="primary"
+                      disabled={isEmpty}
+                      size="small"
+                      onClick={saveNote}
+                    >
+                      Save
+                    </Button>
+                  </ButtonWrapper>
+                </ButtonContainer>
+              )}
+            </RichTextInputContainer>
+          </ClickAwayListener>
         </>
       ) : (
         <PatientNotesLoader />

@@ -7,7 +7,7 @@ import React, {
 } from 'react';
 import palette from 'styles/palette';
 import OptionsMenu from 'components/common/OptionsMenu/OptionsMenu';
-import { Box } from '@material-ui/core';
+import { Box, ClickAwayListener } from '@material-ui/core';
 import { MoreVert } from '@material-ui/icons';
 import moment from 'moment';
 import UserAvatar from 'components/user/UserAvatar/UserAvatar';
@@ -16,7 +16,6 @@ import {
   convertFromEditorStateToOutput,
   convertToEditorState,
 } from 'components/common/TextEditor/helpers';
-
 import { useDispatch } from 'react-redux';
 import Button from 'components/common/Button/Button';
 import Spacing from 'components/common/Spacing';
@@ -39,16 +38,20 @@ const PatientNote = ({
   description,
 }) => {
   const dispatch = useDispatch();
-
+  const [modalIsOpened, setModalIsOpened] = useState(false);
   const [isEdited, setIsEdited] = useState(false);
   const { patientNoteIdentifier, dateUpdated, creator, pinned } = note;
-  const state = convertToEditorState({
-    tokenizedText: description,
-    rawText: description,
-    mentions,
-    handleRichText: true,
-  });
-  const [noteState, setNoteState] = useState(state);
+  const initialState = useMemo(
+    () =>
+      convertToEditorState({
+        tokenizedText: description,
+        rawText: description,
+        mentions,
+        handleRichText: true,
+      }),
+    [description, mentions],
+  );
+  const [noteState, setNoteState] = useState(initialState);
   const editNoteInputReference = useRef(null);
 
   const isEmpty = useMemo(() => {
@@ -86,7 +89,8 @@ const PatientNote = ({
 
   const handleCancel = useCallback(() => {
     setIsEdited(false);
-  }, []);
+    setNoteState(initialState);
+  }, [initialState]);
 
   const openDeleteConfirmationModal = useCallback(() => {
     const modalProps = {
@@ -95,20 +99,34 @@ const PatientNote = ({
         'Are you sure you want reject changes? This action cannot be undone.',
       confirmButtonText: 'Quit without saving',
       confirm: () => {
+        setModalIsOpened(false);
         handleCancel();
         dispatch(closeModal());
       },
-      closeModal: () => {
-        if (typeof editNoteInputReference.current.focus === 'function')
-          editNoteInputReference.current.focus();
+      onClose: () => {
+        setTimeout(() => setModalIsOpened(false), 0);
+        // dispatch(closeModal());
       },
     };
     dispatch(openModal('DeleteConfirmation', modalProps));
   }, [dispatch, handleCancel]);
 
-  const handleBlur = useCallback(() => {
-    if (!isEmpty) openDeleteConfirmationModal();
-  }, [isEmpty, openDeleteConfirmationModal]);
+  const handleClickAway = useCallback(() => {
+    if (isEdited && !modalIsOpened) {
+      if (isEmpty) {
+        handleCancel();
+      } else {
+        setModalIsOpened(true);
+        openDeleteConfirmationModal();
+      }
+    }
+  }, [
+    handleCancel,
+    isEdited,
+    isEmpty,
+    modalIsOpened,
+    openDeleteConfirmationModal,
+  ]);
 
   const handleFocus = useCallback(() => {
     setIsEdited(true);
@@ -124,62 +142,63 @@ const PatientNote = ({
   }, [note, noteState, onSave]);
 
   return (
-    <div>
-      <NoteContainer>
-        <UserAvatar user={creator} />
-        <Box m={2} />
-        <PatientNoteInformation>
-          <TextEditor
-            readOnly={!isEdited}
-            showToolbar
-            taskListIdentifier={patientNoteIdentifier}
-            disableMentions
-            ref={editNoteInputReference}
-            placeholder="Leave a note and press enter on your keyboard to save"
-            isDrawerEditor
-            onBlur={handleBlur}
-            onFocus={handleFocus}
-            state={noteState}
-            onChange={newState => setNoteState(newState)}
-          />
-          <PatientNoteAuthor>
-            {creator.firstName} {creator.lastName}{' '}
-            {moment(dateUpdated).format('h:mma M/DD/YY')}
-          </PatientNoteAuthor>
-        </PatientNoteInformation>
-        {menuOptions.length > 0 && (
-          <>
-            <Box m={2} />
-            <OptionsMenu options={menuOptions}>
-              <MoreVert />
-            </OptionsMenu>
-          </>
+    <ClickAwayListener onClickAway={handleClickAway}>
+      <div>
+        <NoteContainer>
+          <UserAvatar user={creator} />
+          <Box m={2} />
+          <PatientNoteInformation>
+            <TextEditor
+              readOnly={!isEdited}
+              showToolbar
+              taskListIdentifier={patientNoteIdentifier}
+              disableMentions
+              ref={editNoteInputReference}
+              placeholder="Leave a note and press enter on your keyboard to save"
+              isDrawerEditor
+              onFocus={handleFocus}
+              state={noteState}
+              onChange={newState => setNoteState(newState)}
+            />
+            <PatientNoteAuthor>
+              {creator.firstName} {creator.lastName}{' '}
+              {moment(dateUpdated).format('h:mma M/DD/YY')}
+            </PatientNoteAuthor>
+          </PatientNoteInformation>
+          {menuOptions.length > 0 && (
+            <>
+              <Box m={2} />
+              <OptionsMenu options={menuOptions}>
+                <MoreVert />
+              </OptionsMenu>
+            </>
+          )}
+        </NoteContainer>
+        {isEdited && (
+          <ButtonContainer>
+            <ButtonWrapper>
+              <Button
+                color="secondary"
+                variant="secondary"
+                onClick={handleCancel}
+                size="small"
+              >
+                Cancel
+              </Button>
+              <Spacing horizontal={4} />
+              <Button
+                color="primary"
+                disabled={isEmpty}
+                size="small"
+                onClick={updateNote}
+              >
+                Save
+              </Button>
+            </ButtonWrapper>
+          </ButtonContainer>
         )}
-      </NoteContainer>
-      {isEdited && (
-        <ButtonContainer>
-          <ButtonWrapper>
-            <Button
-              color="secondary"
-              variant="secondary"
-              onClick={handleCancel}
-              size="small"
-            >
-              Cancel
-            </Button>
-            <Spacing horizontal={4} />
-            <Button
-              color="primary"
-              disabled={isEmpty}
-              size="small"
-              onClick={updateNote}
-            >
-              Save
-            </Button>
-          </ButtonWrapper>
-        </ButtonContainer>
-      )}
-    </div>
+      </div>
+    </ClickAwayListener>
   );
 };
 
