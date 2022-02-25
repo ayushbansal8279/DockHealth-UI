@@ -38,3 +38,13 @@ export const RichTextInputContainer = styled.div`
   min-height: 60px;
   overflow-y: auto;
 `;
+
+export const ButtonContainer = styled.div`
+  display: flex;
+  justify-content: flex-end;
+`;
+
+export const ButtonWrapper = styled.div`
+  display: flex;
+  width: 200px;
+`;
