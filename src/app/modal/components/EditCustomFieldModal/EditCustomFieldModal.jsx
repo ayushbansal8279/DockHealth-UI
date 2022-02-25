@@ -46,7 +46,7 @@ const EditCustomFieldModal = ({
 
   const ADDITIONAL_OPTIONS = [
     {
-      label: 'Display on patient header',
+      label: 'Include on Patient Header',
       key: 'PATIENT_HEADER',
       value: additionalOptionsState?.PATIENT_HEADER,
       onChange: value =>
@@ -56,23 +56,23 @@ const EditCustomFieldModal = ({
         })),
     },
     {
-      label: 'Display on patient list header',
-      key: 'LIST_HEADER',
-      value: additionalOptionsState?.LIST_HEADER,
-      onChange: value =>
-        setAdditionalOptionsState(s => ({
-          ...s,
-          LIST_HEADER: value || false,
-        })),
-    },
-    {
-      label: 'Take into account while searching',
+      label: 'Include on Patient Search',
       key: 'SEARCHING',
       value: additionalOptionsState?.SEARCHING,
       onChange: value =>
         setAdditionalOptionsState(s => ({
           ...s,
           SEARCHING: value || false,
+        })),
+    },
+    {
+      label: 'Include on Patient List',
+      key: 'LIST_HEADER',
+      value: additionalOptionsState?.LIST_HEADER,
+      onChange: value =>
+        setAdditionalOptionsState(s => ({
+          ...s,
+          LIST_HEADER: value || false,
         })),
     },
   ];
