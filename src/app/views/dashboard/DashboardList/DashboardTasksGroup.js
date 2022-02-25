@@ -38,6 +38,7 @@ import palette from 'styles/palette';
 import StickyContainer from 'components/common/HorizontalScroll/StickyContainer';
 import { dashboardLastCreatedTaskIdentifierSelector } from 'selectors/dashboard-selectors';
 
+import { usePrevious } from 'react-use';
 import {
   DashboardTasksGroupContainer,
   DashboardTasksGroupLabel,
@@ -85,6 +86,13 @@ const DashboardTasksGroup = ({
   const quickAddTaskInputReference = useRef(null);
   const parentContainerReference = useRef(null);
   const dispatch = useDispatch();
+
+  const currentTaskLength = dashboardTasks?.length || 0;
+  const previousTaskLength = usePrevious(currentTaskLength);
+
+  useEffect(() => {
+    if (currentTaskLength > 0 && previousTaskLength === 0) setGroupIsOpen(true);
+  }, [currentTaskLength, previousTaskLength]);
 
   const isGroupSelected = useMemo(() => checkIfAllTasksSelected(tasks), [
     tasks,
