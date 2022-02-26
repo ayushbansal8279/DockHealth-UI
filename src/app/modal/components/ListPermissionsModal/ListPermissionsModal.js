@@ -24,9 +24,9 @@ const ListPermissionsModal = ({
         <Header>
           <Title>WORKFLOW PERMISSIONS</Title>
           <Description>
-            Invite people you’d like to share it with. The people you invite to
-            will be able to view and use the workflow. In addition, you can
-            assign some of those people editor privileges.
+            Invite people you’d like to share this with. The people you invite
+            will be able to view and use the workflow. In addition, you can give
+            editor privileges to invited users.
           </Description>
         </Header>
         <GrantMemberPermissionsListForm
