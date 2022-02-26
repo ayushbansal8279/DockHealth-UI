@@ -27,7 +27,7 @@ export const taskTemplateDetailsSelector = taskTemplateIdentifier =>
 export const taskTemplateSelector = taskTemplateIdentifier =>
   createSelector(taskTemplateStateSelector, ({ taskTemplates }) =>
     taskTemplates.find(
-      template => template.taskTemplateIdentifier === taskTemplateIdentifier,
+      template => template.identifier === taskTemplateIdentifier,
     ),
   );
 
