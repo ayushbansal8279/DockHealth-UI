@@ -17,7 +17,7 @@ const TaskDrawer = props => {
             initial={{ translateX: '100%' }}
             animate={{ translateX: 0 }}
             exit={{ translateX: '100%' }}
-            transition={{ duration: 0.3, bounce: 0 }}
+            transition={{ duration: 0.1, bounce: 0 }}
           >
             <TaskDrawerContent {...props} />
           </AnimatedContainer>
