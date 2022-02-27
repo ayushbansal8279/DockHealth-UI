@@ -7,7 +7,7 @@ import {
   takeEvery,
   takeLatest,
 } from 'redux-saga/effects';
-import { move, omit, pluck, reverse } from 'ramda';
+import { move, pluck, reverse } from 'ramda';
 import * as ActionTypes from 'actions/action-types';
 import { showGlobalAlert, showGlobalErrorAlert } from 'alert/actions';
 import * as TaskTemplateActions from 'actions/task-template-actions';
