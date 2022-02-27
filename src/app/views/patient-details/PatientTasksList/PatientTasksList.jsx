@@ -134,7 +134,7 @@ const PatientTasksListView = () => {
   useEffect(() => {
     if (patientIdentifier) {
       initializeSavedFilters(patientIdentifier);
-      dispatch(getCurrentPatientTasks(patientIdentifier));
+      dispatch(getCurrentPatientTasks());
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [patientIdentifier]);

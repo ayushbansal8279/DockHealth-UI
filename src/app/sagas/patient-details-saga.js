@@ -23,6 +23,7 @@ import {
   completeTasksVisibilitySelector,
   patientTasksSortSelector,
   currentPatientIdentifierSelector,
+  currentListTasksStatusSelector,
 } from 'selectors/patient-details-selectors';
 import { selectedFiltersInMegaFilterSelector } from 'selectors/mega-filter-selectors';
 import {
@@ -39,6 +40,7 @@ import {
 } from 'helpers/ga-event-helper';
 import { closeModal } from 'modal/actions';
 import { showGlobalAlert, showGlobalErrorAlert } from 'alert/actions';
+import { TaskStatus } from 'helpers/task-helpers';
 import { PATIENTS_LIST_ALL } from '../routing/helpers/paths';
 
 export const DO_TOGGLE_PATIENT_TASK_STATUS = 'DO_TOGGLE_PATIENT_TASK_STATUS';
@@ -279,11 +281,14 @@ function* getCurrentPatientAttachments() {
   }
 }
 
-function* getCurrentPatientTasks() {
+function* getCurrentPatientTasks({ payload }) {
+  const { taskStatus } = payload;
   try {
     const selectedFilters = yield select(selectedFiltersInMegaFilterSelector);
-    const completeTasksVisible = yield select(completeTasksVisibilitySelector);
-    const status = completeTasksVisible ? 'ALL' : 'INCOMPLETE';
+    // const completeTasksVisible = yield select(completeTasksVisibilitySelector);
+    // const status = completeTasksVisible ? 'ALL' : 'INCOMPLETE';
+    const selectedTaskStatus = yield select(currentListTasksStatusSelector);
+    const status = taskStatus || selectedTaskStatus || TaskStatus.INCOMPLETE;
     const sort = yield select(patientTasksSortSelector);
     const patientIdentifier = yield select(currentPatientIdentifierSelector);
 
