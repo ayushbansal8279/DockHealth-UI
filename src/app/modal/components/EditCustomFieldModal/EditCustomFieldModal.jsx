@@ -14,6 +14,7 @@ import FormInput from 'components/common/Input/FormInput';
 import Input from 'components/common/Input/Input';
 import Button from 'components/common/Button/Button';
 import FormSelect from 'components/common/Select/FormSelect';
+import Checkbox from 'components/common/Checkbox/Checkbox';
 import FiledTypeStep from './FieldTypeStep';
 import { CloseIconButton, CloseIcon } from '../styled';
 import {
@@ -23,6 +24,7 @@ import {
   FormScrollingContainer,
   InfoText,
 } from './styled';
+import AdditionalOptions from './AdditionalOptions';
 
 const REQUIRED_MESSAGE = 'This field is required';
 
@@ -34,10 +36,53 @@ const EditCustomFieldModal = ({
   options: { type },
   taskListIdentifier,
 }) => {
+  const [additionalOptionsState, setAdditionalOptionsState] = useState({
+    PATIENT_HEADER: false,
+    LIST_HEADER: false,
+    SEARCHING: false,
+  });
+
+  // TODO: Add apply initial data when will be available
+
+  const ADDITIONAL_OPTIONS = [
+    {
+      label: 'Include on Patient Header',
+      key: 'PATIENT_HEADER',
+      value: additionalOptionsState?.PATIENT_HEADER,
+      onChange: value =>
+        setAdditionalOptionsState(s => ({
+          ...s,
+          PATIENT_HEADER: value || false,
+        })),
+    },
+    {
+      label: 'Include on Patient Search',
+      key: 'SEARCHING',
+      value: additionalOptionsState?.SEARCHING,
+      onChange: value =>
+        setAdditionalOptionsState(s => ({
+          ...s,
+          SEARCHING: value || false,
+        })),
+    },
+    {
+      label: 'Include on Patient List',
+      key: 'LIST_HEADER',
+      value: additionalOptionsState?.LIST_HEADER,
+      onChange: value =>
+        setAdditionalOptionsState(s => ({
+          ...s,
+          LIST_HEADER: value || false,
+        })),
+    },
+  ];
+
   const addOptionButtonReference = useRef(null);
   const isCreatingNewField = !customField;
   const [isSaving, setIsSaving] = useState(false);
   const dispatch = useDispatch();
+
+  const additionalOptionsEnabled = type === 'PATIENT';
 
   const validationSchema = useMemo(() => {
     return object().shape({
@@ -135,7 +180,7 @@ const EditCustomFieldModal = ({
 
   const handleEditSubmit = data => {
     setIsSaving(true);
-    const updatedField = { ...customField, ...data };
+    const updatedField = { ...customField, ...data, ...additionalOptionsState };
     CustomFieldsApi.updateCustomField(updatedField, type, taskListIdentifier)
       .then(() => {
         onUpdated(updatedField);
@@ -150,7 +195,11 @@ const EditCustomFieldModal = ({
 
   const handleAddSubmit = data => {
     setIsSaving(true);
-    CustomFieldsApi.addCustomField(data, type, taskListIdentifier)
+    CustomFieldsApi.addCustomField(
+      { ...data, ...additionalOptionsState },
+      type,
+      taskListIdentifier,
+    )
       .then(addedField => {
         onAdded(addedField);
         setIsSaving(false);
@@ -217,6 +266,7 @@ const EditCustomFieldModal = ({
                         />
                       </Grid>
                     )}
+
                     {optionsValue?.length > 0 && (
                       <>
                         <Box m={2} />
@@ -260,6 +310,11 @@ const EditCustomFieldModal = ({
                       </>
                     )}
                   </Grid>
+                  {additionalOptionsEnabled && (
+                    <Box m={2}>
+                      <AdditionalOptions options={ADDITIONAL_OPTIONS} />
+                    </Box>
+                  )}
                 </Box>
               </FormScrollingContainer>
               <Box m={2} />
