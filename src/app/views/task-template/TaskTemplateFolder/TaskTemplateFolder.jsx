@@ -6,9 +6,10 @@ import React, {
   useRef,
   useState,
 } from 'react';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import palette from 'styles/palette';
 import { MoreHoriz } from '@material-ui/icons';
+import { userProfileSelector } from 'selectors/user-selectors';
 import * as WorkflowActions from 'actions/workflow-actions';
 import * as TaskTemplateActions from 'actions/task-template-actions';
 import * as ModalActions from 'modal/actions';
@@ -30,12 +31,17 @@ const TaskTemplateFolder = ({
   onClick,
   highlighted = false,
 }) => {
-  const { identifier, name, publicAccess = false } = template;
+  const { identifier, name, publicAccess = false, members } = template;
+  const currentUser = useSelector(userProfileSelector);
 
   const [isEditing, setIsEditing] = useState(false);
   const [nameInputValue, setNameInputValue] = useState(name);
   const [nameInputError, setNameInputError] = useState(false);
   const nameInputReference = useRef(null);
+
+  const isCurrentUserEditor =
+    members?.find(({ user }) => user.identifier === currentUser.identifier)
+      ?.memberPermission === 'EDITOR';
 
   const dispatch = useDispatch();
 
@@ -64,7 +70,7 @@ const TaskTemplateFolder = ({
           nameInputReference.current?.focus();
         },
       },
-      {
+      isCurrentUserEditor && {
         name: publicAccess ? 'Make Private' : 'Make Public',
         onClick: () => {
           dispatch(
@@ -89,7 +95,13 @@ const TaskTemplateFolder = ({
           ),
       },
     ],
-    [identifier, dispatch, nameInputReference, publicAccess],
+    [
+      identifier,
+      dispatch,
+      nameInputReference,
+      publicAccess,
+      isCurrentUserEditor,
+    ],
   );
 
   const handleNameInputKeyDown = useCallback(
