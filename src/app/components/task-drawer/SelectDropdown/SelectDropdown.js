@@ -42,6 +42,7 @@ const SelectDropdown = React.forwardRef(
       clearOnSuccess,
       addItemEnabled,
       refineResultsCount = 0,
+      width,
     },
     reference,
     // eslint-disable-next-line sonarjs/cognitive-complexity
@@ -239,7 +240,9 @@ const SelectDropdown = React.forwardRef(
         {isFocused && inputValue && (
           <ListContainer
             ref={listReference}
-            width={inputContainerReference?.current?.clientWidth || 300}
+            width={
+              width || inputContainerReference?.current?.clientWidth || 300
+            }
           >
             {!isLoadingOptions ? (
               <>
@@ -253,7 +256,11 @@ const SelectDropdown = React.forwardRef(
                 {options?.length > 0 && (
                   <List
                     scrollToIndex={hoveredItemIndex}
-                    width={inputContainerReference?.current?.clientWidth || 300}
+                    width={
+                      width ||
+                      inputContainerReference?.current?.clientWidth ||
+                      300
+                    }
                     height={options.length > 5 ? 208 : options.length * 40}
                     rowHeight={40}
                     rowRenderer={renderOptionRow}

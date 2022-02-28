@@ -304,7 +304,7 @@ const PatientList = ({
           {!isLoadingPatients && patients?.length !== 0 && (
             <List
               scrollToIndex={hoveredItemIndex}
-              width={330}
+              width={600}
               height={patients.length > 5 ? 208 : patients.length * 40}
               rowHeight={40}
               rowRenderer={renderRow}
