@@ -6,6 +6,15 @@ import palette from 'styles/palette';
 export const UsersTableContainer = styled.div`
   margin-top: 1rem;
   width: 100%;
+
+  && {
+    .MuiDataGrid-sortIcon {
+      background: ${palette.brightBlue};
+      color: ${palette.white};
+      padding: 1px;
+      border-radius: 50%;
+    }
+  }
 `;
 
 export const StyledUsersTable = styled.div`
@@ -38,6 +47,9 @@ export const StyledDataGrid = styled(DataGrid)`
   .MuiDataGrid-columnHeader {
     &:focus {
       outline: none !important;
+    }
+    &--sorted {
+      color: ${palette.brightBlue};
     }
   }
 

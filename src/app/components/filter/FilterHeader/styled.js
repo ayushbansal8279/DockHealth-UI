@@ -1,6 +1,7 @@
 import styled from 'styled-components';
 import { fontSizes } from 'styles/font';
 import palette from 'styles/palette';
+import spacing from 'styles/spacing';
 
 export const Container = styled.div`
   width: 100%;
@@ -15,12 +16,16 @@ export const Title = styled.label`
   font-family: 'Roboto', sans-serif;
 `;
 
-export const ClearButton = styled.button`
+export const HeaderButton = styled.button`
   display: flex;
   align-items: center;
-  margin-left: 8px;
+  padding: 0 ${spacing.regular};
   color: ${palette.brightBlue};
   font-size: ${fontSizes.smallPlus};
   cursor: ${props => (props.disabled ? 'initial' : 'pointer')};
   text-transform: uppercase;
+  height: fit-content;
+  :not(:first-of-type) {
+    border-left: 1px solid ${palette.coolGrey3};
+  }
 `;

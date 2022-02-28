@@ -1,41 +1,106 @@
+/* eslint-disable sonarjs/cognitive-complexity */
 /* eslint-disable import/extensions */
-import React, { useCallback, useRef } from 'react';
+import React, {
+  useCallback,
+  useRef,
+  useState,
+  useEffect,
+  useMemo,
+} from 'react';
+import { Box, Fade, Popper } from '@material-ui/core';
+import { useDispatch } from 'react-redux';
 import moment from 'moment';
-import { storeAsCurrentTask } from 'actions/task-actions';
+import {
+  storeAsCurrentTask,
+  updateTaskDescription,
+} from 'actions/task-actions';
+import { TaskStatus } from 'helpers/task-helpers';
 import { openDrawer } from 'actions/task-drawer-actions';
 import TextEditor from 'components/common/TextEditor/TextEditor';
 import Spacing from 'components/common/Spacing';
 import { checkIfShouldDisplayTooltip } from 'components/task/OverflowTooltip/OverflowTooltip';
-import Tooltip from 'components/common/Tooltip/Tooltip';
-
+import {
+  convertToEditorState,
+  convertFromEditorStateToOutput,
+} from 'components/common/TextEditor/helpers';
+import { useMentionsEditorState } from 'components/common/TextEditor/use-mentions-editor-state';
+import { EditorState } from 'draft-js';
+import { createMentionEntities } from 'components/common/TextEditor/create-mention-entities';
 import {
   Description,
   DescriptionBox,
   CompletedBy,
   TaskItemParentTaskLabel,
-  DescriptionTooltip,
-  DescriptionLabel,
-  DescriptionWrapper,
   TaskItemDescriptionIndicators,
+  DescriptionTooltipWrapper,
+  DescriptionBorder,
 } from '../../styled';
 
 const TaskItemDescription = ({
+  task,
   isCompletedGroup,
-  isCompleted,
-  descriptionState,
-  setDescriptionState,
-  matchDescription,
   highlightedValue,
-  description,
-  edited,
-  duplicated,
   hasParentTaskLabel,
-  parentTask,
-  completedByName,
-  completedDt,
-  dispatch,
+  isEditing,
+  setEditing,
 }) => {
+  const {
+    description,
+    tokenizedDescription,
+    taskMentions,
+    status,
+    parentTask,
+    searchMetaData,
+    completedBy,
+    completedDt,
+    taskList,
+  } = task;
+  const { taskListIdentifier } = taskList || {};
+  const { matchDescription } = searchMetaData || {};
+  const previousDescription = useRef(null);
   const descriptionTextReference = useRef(null);
+  const [isHovered, setIsHovered] = useState(false);
+  const dispatch = useDispatch();
+  const [descriptionState, setDescriptionState] = useMentionsEditorState(
+    convertToEditorState({
+      rawText: description,
+      tokenizedText: tokenizedDescription,
+      mentions: taskMentions,
+      handleRichText: false,
+    }),
+  );
+  const descriptionReference = useRef(null);
+  const isCompleted = status === TaskStatus.COMPLETE;
+
+  const completedByName =
+    `${completedBy?.firstName.charAt(0)}. ${completedBy?.lastName}`
+      .trim()
+      .replace(/^\.$/, '') || 'Unknown';
+
+  const convertedDescriptionState = useMemo(
+    () => convertFromEditorStateToOutput(descriptionState, false),
+    [descriptionState],
+  );
+
+  useEffect(() => {
+    if (isEditing && descriptionReference.current) {
+      setTimeout(descriptionReference.current.focus, 0);
+    }
+  }, [isEditing, descriptionReference]);
+
+  useEffect(() => {
+    if (previousDescription.current !== null) {
+      const newContent = createMentionEntities(
+        tokenizedDescription,
+        description,
+        taskMentions,
+        false,
+      );
+      setDescriptionState(EditorState.push(descriptionState, newContent));
+    }
+    previousDescription.current = description;
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [description]);
 
   const onParentLabelClick = useCallback(
     event => {
@@ -48,41 +113,107 @@ const TaskItemDescription = ({
     [parentTask],
   );
 
+  const handleKeyBindingFn = useCallback(event => {
+    if (event.key === 'Enter') {
+      return 'enter-command';
+    }
+
+    return undefined;
+  }, []);
+
+  const handleBlur = useCallback(() => {
+    const { tokenizedText, rawText, mentions } = convertFromEditorStateToOutput(
+      descriptionState,
+      false,
+    );
+    if (rawText !== description) {
+      dispatch(
+        updateTaskDescription(task, {
+          tokenizedDescription: tokenizedText,
+          description: rawText,
+          taskMentions: [...(task.taskMentions || []), ...(mentions || [])],
+        }),
+      );
+    }
+    setEditing(false);
+  }, [description, descriptionState, dispatch, setEditing, task]);
+
+  const handleKeyCommand = useCallback(
+    command => {
+      if (command === 'enter-command') {
+        // eslint-disable-next-line no-unused-expressions
+        descriptionReference.current?.blur();
+        return 'handled';
+      }
+
+      return 'not-handled';
+    },
+    [descriptionReference],
+  );
+
   return (
     <DescriptionBox>
-      <Tooltip
-        title={description}
-        hideTooltip={
-          !checkIfShouldDisplayTooltip(descriptionTextReference.current)
-        }
-      >
-        <DescriptionWrapper>
-          <Description
-            ref={reference => {
-              if (reference) {
-                descriptionTextReference.current = reference.querySelector(
-                  '.public-DraftStyleDefault-block',
-                );
-              }
+      <Box display="flex" flex={1} overflow="hidden">
+        <Description
+          onMouseEnter={() => setIsHovered(true)}
+          onMouseLeave={() => setIsHovered(false)}
+          ref={reference => {
+            if (reference) {
+              descriptionTextReference.current = reference.querySelector(
+                '.public-DraftStyleDefault-block',
+              );
+            }
+          }}
+          isCrossedOut={!isCompletedGroup && isCompleted}
+        >
+          <DescriptionBorder
+            isEdited={isEditing}
+            onClick={event => {
+              event.stopPropagation();
+              event.preventDefault();
+              setEditing(true);
             }}
-            isCrossedOut={!isCompletedGroup && isCompleted}
           >
             <TextEditor
-              readOnly
+              ref={descriptionReference}
+              readOnly={!isEditing}
               oneline
               state={descriptionState}
               onChange={setDescriptionState}
+              taskListIdentifier={taskListIdentifier}
               highlightedValues={
                 matchDescription && highlightedValue?.toLowerCase().split(/\s+/)
               }
+              keyBindingFn={handleKeyBindingFn}
+              handleKeyCommand={handleKeyCommand}
+              onBlur={handleBlur}
             />
-          </Description>
-          {edited && !duplicated && (
-            <DescriptionLabel>(edited)</DescriptionLabel>
-          )}
-          {duplicated && <DescriptionLabel>(duplicated)</DescriptionLabel>}
-        </DescriptionWrapper>
-      </Tooltip>
+            <Popper
+              anchorEl={descriptionTextReference.current}
+              placement="bottom-start"
+              open={
+                checkIfShouldDisplayTooltip(descriptionTextReference.current) &&
+                isHovered &&
+                !isEditing
+              }
+              style={{
+                zIndex: 115,
+                maxWidth:
+                  descriptionTextReference?.current?.offsetWidth || '650px',
+              }}
+              transition
+            >
+              {({ TransitionProps }) => (
+                <Fade {...TransitionProps} timeout={250}>
+                  <DescriptionTooltipWrapper>
+                    {convertedDescriptionState?.rawText}
+                  </DescriptionTooltipWrapper>
+                </Fade>
+              )}
+            </Popper>
+          </DescriptionBorder>
+        </Description>
+      </Box>
       <TaskItemDescriptionIndicators>
         {isCompletedGroup && (
           <CompletedBy isCompleted={isCompleted}>

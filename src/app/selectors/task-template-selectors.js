@@ -8,11 +8,6 @@ export const taskTemplatesSelector = createSelector(
   ({ taskTemplates }) => taskTemplates,
 );
 
-export const parentFolderIdSelector = createSelector(
-  taskTemplateStateSelector,
-  ({ parent }) => parent,
-);
-
 export const taskTemplateBreadcrumbsSelector = createSelector(
   taskTemplateStateSelector,
   ({ breadcrumbs }) => breadcrumbs,
@@ -32,7 +27,7 @@ export const taskTemplateDetailsSelector = taskTemplateIdentifier =>
 export const taskTemplateSelector = taskTemplateIdentifier =>
   createSelector(taskTemplateStateSelector, ({ taskTemplates }) =>
     taskTemplates.find(
-      template => template.taskTemplateIdentifier === taskTemplateIdentifier,
+      template => template.identifier === taskTemplateIdentifier,
     ),
   );
 
@@ -57,4 +52,9 @@ export const currentTaskTemplateIdentifierSelector = createSelector(
 export const currentTaskTemplateSelector = createSelector(
   taskTemplateStateSelector,
   prop('currentTaskTemplate'),
+);
+
+export const currentFolderIdentifierSelector = createSelector(
+  taskTemplateStateSelector,
+  prop('folderIdentifier'),
 );

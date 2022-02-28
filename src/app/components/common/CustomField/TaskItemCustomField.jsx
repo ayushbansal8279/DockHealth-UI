@@ -1,21 +1,23 @@
 import React, { useCallback } from 'react';
+import { Box } from '@material-ui/core';
 import { FieldType } from 'helpers/field-type-helpers';
-import TaskItemBoolean from 'components/task/StandardTaskItem/customFieldsTaskItemComponents/TaskItemBoolean';
+import TaskItemBoolean from 'components/task/StandardTaskItem/customFieldsTaskItemComponents/TaskItemBoolean/TaskItemBoolean';
 import TaskItemDate from 'components/task/StandardTaskItem/customFieldsTaskItemComponents/TaskItemDate';
-import TaskItemDropdown from 'components/task/StandardTaskItem/customFieldsTaskItemComponents/TaskItemDropdown';
-import TaskItemText from 'components/task/StandardTaskItem/customFieldsTaskItemComponents/TaskItemText';
-import TaskItemLongText from 'components/task/StandardTaskItem/customFieldsTaskItemComponents/TaskItemLongText';
-import TaskItemNumber from 'components/task/StandardTaskItem/customFieldsTaskItemComponents/TaskItemNumber';
-import { useDispatch } from 'react-redux';
+import TaskItemDropdown from 'components/task/StandardTaskItem/customFieldsTaskItemComponents/TaskItemDropdown/TaskItemDropdown';
+import TaskItemText from 'components/task/StandardTaskItem/customFieldsTaskItemComponents/TaskItemText/TaskItemText';
+import TaskItemLongText from 'components/task/StandardTaskItem/customFieldsTaskItemComponents/TaskItemLongText/TaskItemLongText';
+import TaskItemNumber from 'components/task/StandardTaskItem/customFieldsTaskItemComponents/TaskItemNumber/TaskItemNumber';
+import { partialUpdateTask, storeAsCurrentTask } from 'actions/task-actions';
 import { openDrawer } from 'actions/task-drawer-actions';
-import { storeAsCurrentTask } from 'actions/task-actions';
+import { useDispatch } from 'react-redux';
+import { pick } from 'ramda';
 
 const TaskItemCustomField = ({
   readOnly,
   field,
   customFieldValue,
-  onChange,
   task,
+  isHovered,
 }) => {
   const { value } = customFieldValue || {};
   const dispatch = useDispatch();
@@ -25,25 +27,34 @@ const TaskItemCustomField = ({
     dispatch(storeAsCurrentTask(task));
   }, [dispatch, field.identifier, task]);
 
+  const handleChange = newValue => {
+    const taskMetaData = task.taskMetaData
+      .filter(tmd => tmd.customFieldIdentifier !== field.identifier)
+      .map(pick(['customFieldIdentifier', 'value']));
+    taskMetaData.push({
+      customFieldIdentifier: field.identifier,
+      value: newValue,
+    });
+    dispatch(partialUpdateTask(task.identifier, { taskMetaData }));
+  };
+
   switch (field.fieldType) {
     case FieldType.BOOL:
       return (
         <TaskItemBoolean
           readOnly={readOnly}
           value={value}
-          onChange={onChange}
-          onClick={handleClick}
+          onChange={handleChange}
           field={field}
         />
       );
     case FieldType.DATE:
       return (
         <TaskItemDate
-          readOnly={readOnly}
           value={value}
-          onChange={onChange}
-          onClick={handleClick}
+          onChange={handleChange}
           field={field}
+          isHovered={isHovered}
         />
       );
     case FieldType.DROPDOWN: {
@@ -51,8 +62,7 @@ const TaskItemCustomField = ({
         <TaskItemDropdown
           readOnly={readOnly}
           value={value}
-          onChange={onChange}
-          onClick={handleClick}
+          onChange={handleChange}
           field={field}
         />
       );
@@ -62,28 +72,34 @@ const TaskItemCustomField = ({
         <TaskItemText
           readOnly={readOnly}
           value={value}
-          onChange={onChange}
-          onClick={handleClick}
+          onChange={handleChange}
           field={field}
+          isHovered={isHovered}
         />
       );
     case FieldType.LONG_TEXT:
       return (
-        <TaskItemLongText
-          readOnly={readOnly}
-          value={value}
-          onChange={onChange}
+        <Box
+          width="100%"
+          height="100%"
+          display="flex"
+          alignItems="center"
           onClick={handleClick}
-          field={field}
-        />
+        >
+          <TaskItemLongText
+            readOnly={readOnly}
+            value={value}
+            onChange={handleChange}
+            field={field}
+          />
+        </Box>
       );
     case FieldType.NUMBER:
       return (
         <TaskItemNumber
           readOnly={readOnly}
           value={value}
-          onChange={onChange}
-          onClick={handleClick}
+          onChange={handleChange}
           field={field}
         />
       );

@@ -301,12 +301,14 @@ export const ListNameText = styled.div`
   ${({ color }) => color && `color: ${color}`}
   ${({ isActive }) =>
     isActive
-      ? `color: ${palette.brightBlue};`
+      ? `
+        color: ${palette.brightBlue};
+      `
       : `
+          cursor: pointer;
           &:hover {
             color: ${palette.brightBlue};
             text-decoration: underline;
-            cursor: pointer;
           }
         `}
 `;

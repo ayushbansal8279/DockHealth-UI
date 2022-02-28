@@ -1,6 +1,11 @@
 import axios from 'api/axios-heydoc';
 
-export const addLabel = ({ labelIdentifier, labelName, taskIdentifier }) =>
+export const addLabel = ({
+  labelIdentifier,
+  labelName,
+  taskIdentifier,
+  taskWorkflowIdentifier,
+}) =>
   axios({
     method: 'post',
     url: '/task/label',
@@ -8,12 +13,18 @@ export const addLabel = ({ labelIdentifier, labelName, taskIdentifier }) =>
       labelIdentifier,
       labelName,
       taskIdentifier,
+      taskWorkflowIdentifier,
     },
   }).then(({ data }) => {
     return data;
   });
 
-export const editLabel = ({ labelIdentifier, labelName, taskIdentifier }) =>
+export const editLabel = ({
+  labelIdentifier,
+  labelName,
+  taskIdentifier,
+  taskWorkflowIdentifier,
+}) =>
   axios({
     method: 'put',
     url: '/task/label',
@@ -21,6 +32,7 @@ export const editLabel = ({ labelIdentifier, labelName, taskIdentifier }) =>
       labelIdentifier,
       labelName,
       taskIdentifier,
+      taskWorkflowIdentifier,
     },
   }).then(({ data }) => {
     return data;
@@ -28,16 +40,16 @@ export const editLabel = ({ labelIdentifier, labelName, taskIdentifier }) =>
 
 export const removeLabelForTask = ({
   labelIdentifier,
-  labelName,
   taskIdentifier,
+  taskWorkflowIdentifier,
 }) =>
   axios({
     method: 'put',
     url: '/task/label/remove',
     data: {
       labelIdentifier,
-      labelName,
       taskIdentifier,
+      taskWorkflowIdentifier,
     },
   }).then(({ data }) => {
     return data;

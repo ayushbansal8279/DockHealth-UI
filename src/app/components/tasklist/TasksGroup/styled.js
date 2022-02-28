@@ -11,13 +11,6 @@ export const GroupOptionsContainer = styled.div`
   transform: translateY(-80%);
 `;
 
-export const StickyContainer = styled.div`
-  width: calc(100vw - 130px);
-  position: sticky;
-  left: 24px;
-  z-index: 13;
-`;
-
 export const TasksGroupActionButtonsContainer = styled.div`
   display: flex;
   justify-content: flex-end;
@@ -60,7 +53,6 @@ export const TasksGroupHeader = styled.div`
   display: flex;
   justify-content: space-between;
   padding-bottom: ${spacing.regular};
-  width: calc(100vw - 130px);
   position: sticky;
   left: 24px;
 

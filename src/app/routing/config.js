@@ -54,10 +54,6 @@ import {
   onEnterListDetailsView,
   onLeaveListDetailsView,
 } from './TemplateCoreSubscriptionPlan/ListDetails';
-import {
-  onEnterTemplatesView,
-  onLeaveTemplatesView,
-} from './TemplateCoreSubscriptionPlan/TaskTemplateView';
 
 export const SETTINGS_ROUTES = [
   {
@@ -93,7 +89,7 @@ export const SETTINGS_ROUTES = [
     RouteComponent: SubscriptionPaymentFinishedView,
   },
   {
-    path: '/custom-fields',
+    path: '/custom-fields/:tabName?',
     RouteComponent: CustomFieldsView,
   },
 ];
@@ -147,18 +143,16 @@ export const TEMPLATE_CORE_SUBSCRIPTION_PLAN_ROUTES = [
     onLeave: onLeaveListDetailsView,
   },
   {
-    path: '/workflows/:identifier',
-    RouteComponent: React.lazy(() =>
-      import('views/task-template-details/TaskTemplateDetailsView'),
-    ),
-  },
-  {
-    path: '/workflows',
+    path: '/workflows/library/:identifier?',
     RouteComponent: React.lazy(() =>
       import('views/task-template/TaskTemplateView'),
     ),
-    onEnter: onEnterTemplatesView,
-    onLeave: onLeaveTemplatesView,
+  },
+  {
+    path: '/workflows/builder/:identifier',
+    RouteComponent: React.lazy(() =>
+      import('views/task-template-details/TaskTemplateDetailsView'),
+    ),
   },
   {
     path: '/analytics',

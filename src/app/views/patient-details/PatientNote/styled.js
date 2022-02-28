@@ -83,3 +83,13 @@ export const PatientNoteTextarea = styled.textarea`
     outline: none;
   }
 `;
+
+export const ButtonContainer = styled.div`
+  display: flex;
+  justify-content: flex-end;
+`;
+
+export const ButtonWrapper = styled.div`
+  display: flex;
+  width: 200px;
+`;

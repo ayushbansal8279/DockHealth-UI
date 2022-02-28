@@ -9,6 +9,7 @@ import React, {
 import { useDispatch } from 'react-redux';
 import palette from 'styles/palette';
 import { MoreHoriz } from '@material-ui/icons';
+import * as WorkflowActions from 'actions/workflow-actions';
 import * as TaskTemplateActions from 'actions/task-template-actions';
 import * as ModalActions from 'modal/actions';
 import OptionsMenu from 'components/common/OptionsMenu/OptionsMenu';
@@ -29,11 +30,7 @@ const TaskTemplateFolder = ({
   onClick,
   highlighted = false,
 }) => {
-  const {
-    taskTemplateIdentifier,
-    name,
-    // publicAccess = false
-  } = template;
+  const { identifier, name, publicAccess = false } = template;
 
   const [isEditing, setIsEditing] = useState(false);
   const [nameInputValue, setNameInputValue] = useState(name);
@@ -67,17 +64,14 @@ const TaskTemplateFolder = ({
           nameInputReference.current?.focus();
         },
       },
-      // {
-      //   name: publicAccess ? 'Make Private' : 'Make Public',
-      //   onClick: () => {
-      //     dispatch(
-      //       TaskTemplateActions.switchTemplatePublic(
-      //         taskTemplateIdentifier,
-      //         !publicAccess,
-      //       ),
-      //     );
-      //   },
-      // },
+      {
+        name: publicAccess ? 'Make Private' : 'Make Public',
+        onClick: () => {
+          dispatch(
+            TaskTemplateActions.switchTemplatePublic(identifier, !publicAccess),
+          );
+        },
+      },
       {
         name: 'Delete Folder',
         color: palette.oPlusRed,
@@ -88,21 +82,14 @@ const TaskTemplateFolder = ({
               description:
                 'Are you sure you want to delete this folder? This action cannot be undone.',
               confirm: () => {
-                dispatch(
-                  TaskTemplateActions.deleteTemplate(taskTemplateIdentifier),
-                );
+                dispatch(WorkflowActions.deleteWorkflow(identifier));
                 dispatch(ModalActions.closeModal());
               },
             }),
           ),
       },
     ],
-    [
-      taskTemplateIdentifier,
-      dispatch,
-      nameInputReference,
-      // publicAccess
-    ],
+    [identifier, dispatch, nameInputReference, publicAccess],
   );
 
   const handleNameInputKeyDown = useCallback(
@@ -115,7 +102,7 @@ const TaskTemplateFolder = ({
         if (value?.length > 1) {
           setNameInputError(false);
           dispatch(
-            TaskTemplateActions.updateTemplate(taskTemplateIdentifier, {
+            TaskTemplateActions.updatePartialWorkflow(identifier, {
               name: value,
             }),
           );
@@ -127,7 +114,7 @@ const TaskTemplateFolder = ({
         nameInputReference.current?.blur();
       }
     },
-    [dispatch, taskTemplateIdentifier],
+    [dispatch, identifier],
   );
 
   const onChangeName = event => {

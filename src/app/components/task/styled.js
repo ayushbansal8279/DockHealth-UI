@@ -92,52 +92,6 @@ export const PriorityIndicator = styled.div`
   left: 0;
 `;
 
-export const StickyColumnContainer = styled.div`
-  display: flex;
-  width: 100%;
-  position: sticky;
-  left: ${({ isSubtask }) => (isSubtask ? '61px' : '24px')};
-  z-index: 11;
-  border-right: 1px solid ${palette.coolGrey3};
-  border-left: 1px solid ${palette.coolGrey3};
-  min-width: 500px;
-
-  &::before {
-    content: '';
-    display: block;
-    background: ${({ backgroundColor }) =>
-      backgroundColor || palette.coolGrey4};
-    position: absolute;
-    left: -101px;
-    top: 50%;
-    transform: translateY(-50%);
-    width: 100px;
-    height: calc(100% + 4px);
-    z-index: -1;
-  }
-
-  &::after {
-    content: '';
-    display: block;
-    background-color: ${props =>
-      props.isSelected ? '#e0eff9' : palette.white};
-    transition: background-color 0.3s ease-out;
-    position: absolute;
-    left: 0px;
-    top: 50%;
-    width: 100%;
-    height: calc(100% - 2px);
-    z-index: -1;
-    transform: translateY(-50%);
-    animation: ${props =>
-      props.newlyCreated
-        ? css`
-            ${highlightDescription} 6s ease-out;
-          `
-        : ''};
-  }
-`;
-
 export const DependencyIconContainer = styled.div`
   margin-right: ${spacing.small};
 `;
@@ -146,7 +100,7 @@ export const BulkContainer = styled.div`
   display: flex;
   align-items: center;
   justify-content: center;
-  margin-left: ${spacing.smallPlus};
+  opacity: ${({ visible }) => (visible ? '1' : '0')};
 `;
 
 export const AddPlaceholder = styled.div`
@@ -169,16 +123,13 @@ export const CircleIcon = styled.img`
   ${({ isCompleted }) => !isCompleted && `margin-left: 2px;`}
   opacity: ${({ isClickable }) => (isClickable ? '1' : '0.5')};
 `;
-export const DescriptionTooltip = styled.div`
-  display: ${({ isVisible }) => (isVisible ? 'block' : 'none')};
-  position: absolute;
-  top: 30px;
-  left: 60px;
-  max-width: 650px;
+
+export const DescriptionTooltipWrapper = styled.div`
+  display: block;
+  width: 100%;
   padding: ${spacing.small};
   color: ${palette.white};
   background: ${palette.mediumGrey};
-  z-index: 99;
   font-size: ${fontSizes.smallPlus};
   cursor: initial;
 `;
@@ -187,7 +138,7 @@ export const Description = styled.div`
   display: flex;
   flex-direction: row;
   width: 100%;
-  padding-right: ${spacing.smallPlus};
+  margin-right: 4px;
   overflow-wrap: anywhere;
   ${props => props.isCrossedOut && 'text-decoration: line-through;'}
   cursor: pointer;
@@ -210,12 +161,6 @@ export const Description = styled.div`
 
   @media screen and (min-width: 2500px) {
     max-width: 1100px;
-  }
-
-  &:hover {
-    ${DescriptionTooltip} {
-      display: block;
-    }
   }
 `;
 
@@ -328,16 +273,12 @@ export const StandardTaskItemCell = styled.div`
     props.paddingLeft ? spacing[props.paddingRight] : spacing.regular};
   width: ${props => (!props.width ? '100%' : '')};
   justify-content: ${props => props.justify || 'flex-start'};
-  overflow: hidden;
   position: relative;
-
-  &:last-of-type {
-    border-right: 0;
-  }
 `;
 
 export const MainStandardTaskItemCell = styled(StandardTaskItemCell)`
   flex: 1;
+  border-right: 0;
 `;
 
 export const ClickablePatient = styled.span`
@@ -353,6 +294,7 @@ export const StandardTaskItemContainer = styled.div`
   background-color: ${props =>
     props.isSelected ? palette.brightBlueWithAlpha : palette.white};
   border: 1px solid ${palette.coolGrey3};
+  border-right: none;
   display: flex;
   justify-content: ${props => (props.isAddingTask ? 'flex-end' : 'flex-start')};
   width: 100%;
@@ -536,20 +478,6 @@ export const SubtasksCellText = styled.p`
   color: inherit;
 `;
 
-export const DescriptionWrapper = styled.div`
-  display: flex;
-  width: 100%;
-  overflow: hidden;
-`;
-
-export const DescriptionLabel = styled.div`
-  font-size: ${fontSizes.small};
-  font-weight: ${fontWeights.regular};
-  color: rgb(193, 204, 218);
-  text-decoration: none;
-  margin-top: 1px;
-`;
-
 export const ParentTaskContainer = styled.div`
   &:not(:last-child) {
     margin-bottom: ${({ noMargin }) => (noMargin ? -1 : 3)}px;
@@ -590,4 +518,35 @@ export const DisabledPatientLabel = styled(PatientLabel)`
 
 export const DateText = styled.p`
   margin-bottom: 0;
+`;
+
+export const DetailsButton = styled.button`
+  margin-left: 8px;
+  ${({ visible }) => !visible && 'visibility: hidden;'}
+  font-family: 'Montserrat', sans-serif;
+  font-size: ${fontSizes.smallPlus};
+  font-weight: ${fontWeights.regularPlus};
+  color: ${palette.brightBlue};
+`;
+
+export const DescriptionBorder = styled.div`
+  padding: 0 2px;
+  overflow: hidden;
+  border-radius: 4px;
+  border-width: 1px;
+  border-style: solid;
+  border-color: transparent;
+
+  &:hover {
+    border-color: ${palette.coolGrey2};
+  }
+
+  ${({ isEdited }) => isEdited && `border-color: ${palette.coolGrey2};`}
+`;
+
+export const DecisionCellContainer = styled.div`
+  height: 100%;
+  width: 168px;
+  padding: ${spacing.small} ${spacing.regular};
+  border-left: 1px solid ${palette.coolGrey3};
 `;

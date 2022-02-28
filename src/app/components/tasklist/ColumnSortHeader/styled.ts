@@ -13,10 +13,12 @@ export const DescriptionTooltipWrapper = styled.div`
   cursor: initial;
 `;
 
-export const LabelWrapper = styled.p`
+export const LabelWrapper = styled.p<{ ordered: boolean }>`
+  margin-bottom: 0;
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
+  color: ${({ ordered }) => (ordered ? palette.brightBlue : palette.coolGrey1)};
 `;
 
 export const SortButton = styled.button<{
@@ -24,7 +26,7 @@ export const SortButton = styled.button<{
   truncateEnabled?: boolean;
 }>`
   position: relative;
-  flex: ${({ width }) => (width ? `${width}px 0 0` : '1')};
+  flex: ${({ width }) => (width ? `0 0 ${width}px` : '1')};
   overflow: ${({ truncateEnabled }) =>
     truncateEnabled ? 'hidden' : 'visible'};
   padding: 8px 16px;

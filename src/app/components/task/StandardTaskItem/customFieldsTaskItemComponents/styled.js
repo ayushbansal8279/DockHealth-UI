@@ -154,14 +154,6 @@ export const DescriptionBox = styled.div`
   cursor: pointer;
 `;
 
-export const DecisionBox = styled.div`
-  display: flex;
-  flex-direction: column;
-  flex: 1;
-  overflow: hidden;
-  cursor: pointer;
-`;
-
 export const DateAddLabel = styled.p`
   display: none;
   position: absolute;
@@ -180,17 +172,6 @@ export const Date = styled.span`
   position: absolute;
   text-align: center;
   line-height: initial;
-`;
-
-export const DateBasicLabel = styled.div`
-  display: flex;
-  flex-direction: row;
-  align-items: center;
-  padding: 2px ${spacing.tiny};
-  border-radius: 6px;
-  background: ${({ isOverdue }) => (isOverdue ? '#e84739' : '#949aa4')};
-  color: ${palette.white};
-  font-size: ${fontSizes.small};
 `;
 
 export const DateContainer = styled.div`
@@ -249,10 +230,6 @@ export const StandardTaskItemCell = styled.div`
   width: ${props => (!props.width ? '100%' : '')};
   justify-content: ${props => props.justify || 'flex-start'};
   overflow: hidden;
-
-  &:last-of-type {
-    border-right: 0;
-  }
 `;
 
 export const MainStandardTaskItemCell = styled(StandardTaskItemCell)`
@@ -495,8 +472,4 @@ export const PatientLabel = styled.span`
 export const DisabledPatientLabel = styled(PatientLabel)`
   opacity: 0.5;
   cursor: not-allowed;
-`;
-
-export const DateText = styled.p`
-  margin-bottom: 0;
 `;

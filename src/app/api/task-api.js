@@ -216,9 +216,6 @@ export function addComment(taskIdentifier, taskComment) {
     .post(`task/comment/${taskIdentifier}`, taskComment)
     .then(response => {
       return response;
-    })
-    .catch(error => {
-      throw error;
     });
 }
 

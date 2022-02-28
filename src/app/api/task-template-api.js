@@ -1,19 +1,13 @@
 import axios from './axios-heydoc';
 
-export function moveTemplate({
-  parentTaskTemplateIdentifier,
-  taskTemplateIdentifier,
-}) {
+export function moveTemplateToFolder(identifier, parentTaskWorkflowIdentifier) {
   return axios
     .patch(`task/template/move`, {
-      parentTaskTemplateIdentifier,
-      taskTemplateIdentifier,
+      parentTaskWorkflowIdentifier,
+      identifier,
     })
     .then(response => {
       return response.data;
-    })
-    .catch(error => {
-      throw error;
     });
 }
 
@@ -22,9 +16,6 @@ export function getAllTemplatesForOrganization() {
     .get(`task/template/getTemplatesForOrganization`)
     .then(response => {
       return response.data;
-    })
-    .catch(error => {
-      throw error;
     });
 }
 
@@ -33,9 +24,6 @@ export function getTemplates() {
     .get(`task/template/getRootTemplatesForOrganization`)
     .then(response => {
       return response.data;
-    })
-    .catch(error => {
-      throw error;
     });
 }
 
@@ -44,9 +32,6 @@ export function searchTemplates(searchPhrase) {
     .get(`task/template/searchTemplatesByName?searchTerm=${searchPhrase}`)
     .then(response => {
       return response.data;
-    })
-    .catch(error => {
-      throw error;
     });
 }
 
@@ -55,9 +40,6 @@ export function getTemplatesForSpecificFolder(taskTemplateIdentifier) {
     .get(`task/template/findChildTemplates/${taskTemplateIdentifier}`)
     .then(response => {
       return response.data;
-    })
-    .catch(error => {
-      throw error;
     });
 }
 
@@ -66,32 +48,26 @@ export function getTasksForTemplate(taskTemplateIdentifier) {
     .get(`task/template/findTasks/${taskTemplateIdentifier}`)
     .then(response => {
       return response.data;
-    })
-    .catch(error => {
-      throw error;
     });
 }
 
 export function getTemplate(identifier) {
-  return axios.get(`task/template/${identifier}`).then(({ data }) => {
+  return axios.get(`task/workflow/${identifier}`).then(({ data }) => {
     return data;
   });
 }
 
-export function addTemplate(newTemplate, parentTaskTemplateIdentifier) {
+export function addTemplate(newTemplate, parentTaskWorkflowIdentifier) {
   return axios
-    .post(`task/template`, { ...newTemplate, parentTaskTemplateIdentifier })
+    .post(`task/workflow`, { ...newTemplate, parentTaskWorkflowIdentifier })
     .then(response => {
       return response.data;
-    })
-    .catch(error => {
-      throw error;
     });
 }
 
-export function updateTemplate(newTemplate) {
+export function updatePartialWorkflow(taskWorkflowIdentifier, dataToUpdate) {
   return axios
-    .put(`task/template`, newTemplate)
+    .patch(`task/workflow/${taskWorkflowIdentifier}`, dataToUpdate)
     .then(response => {
       return response.data;
     })
@@ -143,39 +119,6 @@ export function updateUserInWorkflowPermissions(
     });
 }
 
-export function deleteTemplate(templateIdentifier) {
-  return axios
-    .delete(`task/template/${templateIdentifier}`)
-    .then(response => {
-      return response.data;
-    })
-    .catch(error => {
-      throw error;
-    });
-}
-
-export function duplicateTemplate(
-  templateIdentifier,
-  includeAttachments = false,
-) {
-  return axios
-    .put(
-      `task/template/duplicate/${templateIdentifier}`,
-      {},
-      {
-        params: {
-          includeAttachments,
-        },
-      },
-    )
-    .then(response => {
-      return response.data;
-    })
-    .catch(error => {
-      throw error;
-    });
-}
-
 export function reorderTasksForTemplate(
   taskTemplateIdentifier,
   orderedTaskIdentifiers,
@@ -185,19 +128,13 @@ export function reorderTasksForTemplate(
       taskTemplateIdentifier,
       taskIdentifiers: orderedTaskIdentifiers,
     })
-    .then(response => response.data)
-    .catch(error => {
-      throw error;
-    });
+    .then(response => response.data);
 }
 
 export function getTemplateLayout(taskTemplateIdentifier) {
   return axios
     .get(`task/template/layout/${taskTemplateIdentifier}`)
-    .then(response => response.data)
-    .catch(error => {
-      throw error;
-    });
+    .then(response => response.data);
 }
 
 export function saveTemplateLayout(taskTemplateIdentifier, layout) {
@@ -227,17 +164,6 @@ export function addUsersToPermissionList(
   return axios
     .post(`task/template/${taskTemplateIdentifier}/member`, {
       invitedUsersIdentifier,
-    })
-    .then(({ data }) => data);
-}
-
-export function deleteSingleUserToPermissionList(
-  taskTemplateIdentifier,
-  userIdentifier,
-) {
-  return axios
-    .delete(`task/template/${taskTemplateIdentifier}/member `, {
-      userIdentifier,
     })
     .then(({ data }) => data);
 }

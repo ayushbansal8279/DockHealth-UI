@@ -15,7 +15,7 @@ import {
   AttachmentPreviewHeaderSection,
   StyledPdfDocument,
   StyledPdfPage,
-} from 'components/task-drawer/AttachmentPreview/styled';
+} from 'components/attachments/AttachmentPreview/styled';
 import DownloadIcon from 'img/download.svg';
 
 const memoizedDownloadSignedDocument = memoizeWith(identity, () =>

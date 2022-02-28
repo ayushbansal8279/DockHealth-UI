@@ -12,19 +12,20 @@ import { useHistory } from 'react-router-dom';
 import palette from 'styles/palette';
 import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd';
 import Checkbox from 'components/common/Checkbox/Checkbox';
-import { createTaskTemplateDetailsPath } from 'routing/helpers/paths';
+import { createWorkflowBuilderPath } from 'routing/helpers/paths';
 import { Collapse } from '@material-ui/core';
 import { MoreHoriz } from '@material-ui/icons';
 import { onTaskOrderChanged } from 'helpers/ga-event-helper';
 import { checkIfAllTasksSelected } from 'helpers/bulk-edit-helpers';
 import {
   taskTemplateDetailsSelector,
-  parentFolderIdSelector,
+  currentFolderIdentifierSelector,
 } from 'selectors/task-template-selectors';
 import { userHasSmartFlowsSelector } from 'selectors/user-selectors';
-import * as TaskTemplateActions from 'actions/task-template-actions';
+import * as WorkflowActions from 'actions/workflow-actions';
 import * as ModalActions from 'modal/actions';
 import * as TaskActions from 'actions/task-actions';
+import { openDrawer } from 'actions/workflow-drawer-actions';
 import { extractTasksAndSubtasks } from 'helpers/tasklist-helpers';
 import Tooltip from 'components/common/Tooltip/Tooltip';
 import RotatableChevron from 'components/common/RotatableChevron/RotatableChevron';
@@ -32,15 +33,20 @@ import StandardTaskItemContainer from 'components/task/StandardTaskItemContainer
 import TasksSkeletonLoader from 'components/task/TasksSkeletonLoader/TasksSkeletonLoader';
 import OptionsMenu from 'components/common/OptionsMenu/OptionsMenu';
 import QuickAddTaskInput from 'components/tasklist/QuickAddTaskInput/QuickAddTaskInput';
-import { TaskItemColumn } from 'helpers/task-helpers';
-import { moveTemplate } from 'actions/task-template-actions';
+import {
+  moveWorkflowToFolder,
+  switchTemplatePublic,
+  updatePartialWorkflow,
+  addTaskToTemplate,
+  reorderTasksForTemplate,
+  toggleTemplateOpen,
+} from 'actions/task-template-actions';
 import * as ActionTypes from 'actions/action-types';
 import SmartFlowIcon from 'img/template/smartflow.svg';
 import {
   TaskTemplateContainer,
   TaskTemplateHeader,
   NameInput,
-  Description,
   ArrowButton,
   MenuContainer,
   QuickAddInputWrapper,
@@ -52,24 +58,13 @@ import {
   Spacer,
 } from './styled';
 
-const TEMPLATES_VIEW_COLUMNS_CONFIG = {
-  [TaskItemColumn.PATIENT]: false,
-  [TaskItemColumn.DUE_DATE]: false,
-};
-
 const TaskTemplate = ({
   template,
   isFullView,
   children,
   highlighted = false,
 }) => {
-  const {
-    taskTemplateIdentifier,
-    name,
-    description,
-    type,
-    // publicAccess = false,
-  } = template;
+  const { identifier, name, templateType, publicAccess = false } = template;
   const smartFlowsAvailable = useSelector(userHasSmartFlowsSelector);
 
   const [draggableId, setDraggableId] = useState(null);
@@ -90,8 +85,8 @@ const TaskTemplate = ({
 
   const dispatch = useDispatch();
   const { isOpen, isFetching, tasks } =
-    useSelector(taskTemplateDetailsSelector(taskTemplateIdentifier)) || {};
-  const mainListId = useSelector(parentFolderIdSelector);
+    useSelector(taskTemplateDetailsSelector(identifier)) || {};
+  const folderIdentifier = useSelector(currentFolderIdentifierSelector);
 
   useEffect(() => {
     setNameInputValue(name);
@@ -101,12 +96,11 @@ const TaskTemplate = ({
 
   const menuOptions = useMemo(
     () => [
-      (smartFlowsAvailable || type === 'SMARTFLOW_SAMPLE') && {
+      (smartFlowsAvailable || templateType === 'SMARTFLOW_SAMPLE') && {
         name: 'Open in SmartFlow Builder',
-        onClick: () =>
-          history.push(createTaskTemplateDetailsPath(taskTemplateIdentifier)),
+        onClick: () => history.push(createWorkflowBuilderPath(identifier)),
       },
-      (smartFlowsAvailable || type !== 'SMARTFLOW_SAMPLE') && {
+      (smartFlowsAvailable || templateType !== 'SMARTFLOW_SAMPLE') && {
         name: 'Edit Workflow Name',
         onClick: () => {
           setIsEditing(true);
@@ -114,22 +108,25 @@ const TaskTemplate = ({
           nameInputReference.current?.focus();
         },
       },
-      (smartFlowsAvailable || type !== 'SMARTFLOW_SAMPLE') && {
+      (smartFlowsAvailable || templateType !== 'SMARTFLOW_SAMPLE') && {
         name: 'Move to folder',
         onClick: () =>
           dispatch(
             ModalActions.openModal('SelectWorkflowDestination', {
               confirmText: 'Move',
-              confirm: parentTaskTemplateIdentifier => {
+              confirm: parentTaskWorkflowIdentifier => {
                 dispatch(
-                  moveTemplate({
-                    parentTaskTemplateIdentifier,
-                    taskTemplateIdentifier,
-                  }),
+                  moveWorkflowToFolder(
+                    identifier,
+                    parentTaskWorkflowIdentifier,
+                  ),
                 );
               },
               onAddFolderCallback: createdFolder => {
-                if (mainListId === createdFolder.parentTaskTemplateIdentifier) {
+                if (
+                  folderIdentifier ===
+                  createdFolder.parentTaskWorkflowIdentifier
+                ) {
                   dispatch({
                     type: ActionTypes.ADD_TASK_TEMPLATE_SUCCESS,
                     template: createdFolder,
@@ -139,39 +136,24 @@ const TaskTemplate = ({
             }),
           ),
       },
-      (smartFlowsAvailable || type !== 'SMARTFLOW_SAMPLE') && {
+      (smartFlowsAvailable || templateType !== 'SMARTFLOW_SAMPLE') && {
         name: 'Duplicate Workflow',
         onClick: () =>
           dispatch(
             ModalActions.openModal('AttachmentsDuplicate', {
               confirm: () =>
-                dispatch(
-                  TaskTemplateActions.duplicateTemplate(
-                    taskTemplateIdentifier,
-                    true,
-                  ),
-                ),
+                dispatch(WorkflowActions.duplicateWorkflow(identifier, true)),
               skip: () =>
-                dispatch(
-                  TaskTemplateActions.duplicateTemplate(
-                    taskTemplateIdentifier,
-                    false,
-                  ),
-                ),
+                dispatch(WorkflowActions.duplicateWorkflow(identifier, false)),
             }),
           ),
       },
-      // {
-      //   name: publicAccess ? 'Make Private' : 'Make Public',
-      //   onClick: () => {
-      //     dispatch(
-      //       TaskTemplateActions.switchTemplatePublic(
-      //         taskTemplateIdentifier,
-      //         !publicAccess,
-      //       ),
-      //     );
-      //   },
-      // },
+      {
+        name: publicAccess ? 'Make Private' : 'Make Public',
+        onClick: () => {
+          dispatch(switchTemplatePublic(identifier, !publicAccess));
+        },
+      },
       {
         name: 'Delete Workflow',
         color: palette.oPlusRed,
@@ -182,9 +164,7 @@ const TaskTemplate = ({
               description:
                 'Are you sure you want to delete this workflow? This action cannot be undone.',
               confirm: () => {
-                dispatch(
-                  TaskTemplateActions.deleteTemplate(taskTemplateIdentifier),
-                );
+                dispatch(WorkflowActions.deleteWorkflow(identifier));
                 dispatch(ModalActions.closeModal());
               },
             }),
@@ -193,12 +173,12 @@ const TaskTemplate = ({
     ],
     [
       smartFlowsAvailable,
-      type,
+      templateType,
       history,
-      taskTemplateIdentifier,
+      identifier,
       dispatch,
-      mainListId,
-      // publicAccess,
+      folderIdentifier,
+      publicAccess,
     ],
   );
 
@@ -212,7 +192,7 @@ const TaskTemplate = ({
         if (value?.length > 1) {
           setNameInputError(false);
           dispatch(
-            TaskTemplateActions.updateTemplate(taskTemplateIdentifier, {
+            updatePartialWorkflow(identifier, {
               name: value,
             }),
           );
@@ -224,19 +204,19 @@ const TaskTemplate = ({
         nameInputReference.current?.blur();
       }
     },
-    [dispatch, taskTemplateIdentifier],
+    [dispatch, identifier],
   );
 
   const handleAddTaskToTemplate = useCallback(
     task => {
       dispatch(
-        TaskTemplateActions.addTaskToTemplate({
+        addTaskToTemplate({
           ...task,
-          taskTemplateIdentifier,
+          taskTemplateIdentifier: identifier,
         }),
       );
     },
-    [dispatch, taskTemplateIdentifier],
+    [dispatch, identifier],
   );
 
   const onBeforeCapture = useCallback(({ draggableId: id }) => {
@@ -249,14 +229,14 @@ const TaskTemplate = ({
       onTaskOrderChanged();
 
       dispatch(
-        TaskTemplateActions.reorderTasksForTemplate({
-          taskTemplateIdentifier,
+        reorderTasksForTemplate({
+          taskTemplateIdentifier: identifier,
           source,
           destination,
         }),
       );
     },
-    [dispatch, taskTemplateIdentifier],
+    [dispatch, identifier],
   );
 
   const containsMultipleAssignees = useMemo(
@@ -294,11 +274,11 @@ const TaskTemplate = ({
     if (isOpen) {
       dispatch(TaskActions.unselectAllTasks());
     }
-    dispatch(TaskTemplateActions.toggleTemplateOpen(taskTemplateIdentifier));
+    dispatch(toggleTemplateOpen(identifier));
   };
 
   const onSmartFlowClick = () => {
-    history.push(createTaskTemplateDetailsPath(taskTemplateIdentifier));
+    history.push(createWorkflowBuilderPath(identifier));
   };
 
   const onChangeName = event => {
@@ -311,27 +291,33 @@ const TaskTemplate = ({
     setNameInputValue(name);
   };
 
+  const handleNameClick = () => {
+    if (isEditing) return;
+
+    dispatch(openDrawer(identifier, template));
+  };
+
   return (
     <TaskTemplateContainer>
       <TaskTemplateHeader highlighted={highlighted}>
-        {type === 'WORKFLOW' && (
+        {templateType === 'WORKFLOW' && (
           <Checkbox
             isDisabled={!isOpen}
             isChecked={isTemplateSelected}
             onClick={handleTemplateSelect}
           />
         )}
-        {(type === 'SMARTFLOW' || type === 'SMARTFLOW_SAMPLE') && (
-          <CheckboxPlaceholder />
-        )}
-        {type === 'WORKFLOW' && (
+        {(templateType === 'SMARTFLOW' ||
+          templateType === 'SMARTFLOW_SAMPLE') && <CheckboxPlaceholder />}
+        {templateType === 'WORKFLOW' && (
           <ArrowButtonContainer>
             <ArrowButton onClick={onArrowClick}>
               <RotatableChevron rotated={isOpen} />
             </ArrowButton>
           </ArrowButtonContainer>
         )}
-        {(type === 'SMARTFLOW' || type === 'SMARTFLOW_SAMPLE') && (
+        {(templateType === 'SMARTFLOW' ||
+          templateType === 'SMARTFLOW_SAMPLE') && (
           <Tooltip placement="top" title="A SmartFlow">
             <SmartFlowIndicatorContainer>
               <SmartFlowButton onClick={onSmartFlowClick}>
@@ -347,12 +333,7 @@ const TaskTemplate = ({
           onChange={onChangeName}
           onBlur={onBlurName}
           onKeyDown={handleNameInputKeyDown}
-          onClick={
-            !isEditing &&
-            (type === 'SMARTFLOW' || type === 'SMARTFLOW_SAMPLE'
-              ? onSmartFlowClick
-              : onArrowClick)
-          }
+          onClick={handleNameClick}
           value={nameInputValue}
         />
         {children}
@@ -362,7 +343,6 @@ const TaskTemplate = ({
             <MoreHoriz fontSize="large" color="inherit" />
           </MenuContainer>
         </OptionsMenu>
-        {description && <Description>{description}</Description>}
       </TaskTemplateHeader>
       <Collapse in={isOpen}>
         <>
@@ -394,7 +374,6 @@ const TaskTemplate = ({
                                 draggableProvided={draggableProvided}
                                 isDraggable
                                 task={task}
-                                taskItemConfig={TEMPLATES_VIEW_COLUMNS_CONFIG}
                                 isFullView={isFullView}
                                 multipleAssigneesContext={
                                   containsMultipleAssignees

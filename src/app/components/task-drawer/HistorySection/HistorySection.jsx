@@ -1,196 +1,83 @@
-import React from 'react';
-import { Grid } from '@material-ui/core';
-import Spacing from 'components/common/Spacing';
-import Loader, { LoaderSizes } from 'components/common/Loader/Loader';
-import { RobotoTypography } from 'styles/theme';
-import moment from 'moment';
-import palette from 'styles/palette';
-import SmallSwitchChevronUp from 'img/small-switch-chevron-up';
-import SmallSwitchChevronDown from 'img/small-switch-chevron-down';
-import { HorizontalLabel } from '../styled';
-import {
-  PersonNameLabelContainer,
-  AuditDetailsLabelContainer,
-  AuditTypeLabelContainer,
-  DateTimeLabelContainer,
-  SectionRow,
-  HistoryLabel,
-} from './styled';
-import initializeTaskDrawerHistorySectionHooks from './hooks';
-
-const renderHistoryItem = ({
-  auditId,
-  taskHistoryDetails,
-  taskHistoryType,
-  createdDateTime,
-  user,
-}) => {
-  const userName = user?.userName ?? '';
-  const createdMoment = moment(createdDateTime);
-
-  // This is where the History Event timeDate is formatted.
-  const formattedDate = createdMoment.isValid()
-    ? createdMoment.format('MMM D, YYYY @ h:mma')
-    : '';
-
-  return (
-    <Grid
-      container
-      item
-      xs={12}
-      alignItems="center"
-      justify="space-between"
-      key={auditId}
-      style={{ margin: '10px 0' }}
-    >
-      <Grid container item xs={9} alignItems="flex-start" justify="flex-start">
-        <Grid container item xs={12}>
-          <PersonNameLabelContainer>
-            <RobotoTypography condensed variant="h4" color="inherit">
-              {userName}
-            </RobotoTypography>
-          </PersonNameLabelContainer>
-          <Spacing horizontal={2} />
-          <AuditDetailsLabelContainer>
-            <RobotoTypography condensed variant="h4" color="inherit">
-              {taskHistoryDetails}
-            </RobotoTypography>
-          </AuditDetailsLabelContainer>
-        </Grid>
-        <DateTimeLabelContainer>
-          <RobotoTypography condensed variant="h4" color="inherit">
-            {formattedDate}
-          </RobotoTypography>
-        </DateTimeLabelContainer>
-      </Grid>
-      <Grid container item xs={3} alignItems="flex-end" justify="flex-end">
-        <AuditTypeLabelContainer>
-          <RobotoTypography condensed variant="h4" color="inherit">
-            {taskHistoryType}
-          </RobotoTypography>
-        </AuditTypeLabelContainer>
-      </Grid>
-    </Grid>
-  );
-};
-
-const renderEmptyHistory = () => (
-  <HistoryLabel>No history available</HistoryLabel>
-);
-
-const renderHistory = history => {
-  if (history?.length === 0) {
-    return renderEmptyHistory();
-  }
-  return history?.map(renderHistoryItem);
-};
+import React, { useEffect, useState } from 'react';
+import { useSelector } from 'react-redux';
+import DrawerSection from 'components/drawer-common/DrawerSection/DrawerSection';
+import HistoryItem from 'components/drawer-common/HistoryItem/HistoryItem';
+import HistoryItemLoader from 'components/drawer-common/HistoryItemLoader/HistoryItemLoader';
+import { useBoolean } from 'hooks/useBoolean';
+import * as TaskApi from 'api/task-api';
+import { selectedTaskSelector } from 'selectors/task-drawer-selectors';
+import EmptyHistoryLabel from 'components/drawer-common/EmptyHistoryLabel/EmptyHistoryLabel';
 
 const HistorySection = () => {
-  const {
-    currentUser,
-    isHistoryShown,
-    isHistoryLoading,
-    history,
-    onToggleHistoryButtonClicked,
-    getFormattedEventDate,
-    selectedTask,
-  } = initializeTaskDrawerHistorySectionHooks();
+  const [isHistoryLoading, setHistoryLoading, unsetHistoryLoading] = useBoolean(
+    false,
+  );
+  const [history, setHistory] = useState(null);
+  const selectedTask = useSelector(selectedTaskSelector);
+  const selectedTaskIdentifier = selectedTask?.taskIdentifier;
+  const currentUser = useSelector(store => store.userState.userProfile);
 
-  const isNewTask = !(selectedTask && selectedTask.taskIdentifier !== null);
+  useEffect(() => {
+    setHistory(null);
+  }, [selectedTaskIdentifier]);
 
-  const todaysDateString = getFormattedEventDate(new Date());
-
-  const createdByUser = !isNewTask ? selectedTask?.creator : currentUser;
-  const createdDateTime = !isNewTask
-    ? getFormattedEventDate(new Date(selectedTask.createdDateTime))
-    : todaysDateString;
+  const handleHistoryOpen = () => {
+    setHistoryLoading();
+    TaskApi.getTaskHistory(selectedTaskIdentifier)
+      .then(historyDetails => {
+        setHistory(historyDetails);
+        unsetHistoryLoading();
+      })
+      .catch(() => {
+        unsetHistoryLoading();
+      });
+  };
 
   return (
-    <>
-      <Spacing vertical={2} />
-      <Grid container item xs={12} alignItems="center" justify="space-between">
-        <Grid
-          container
-          item
-          xs={6}
-          alignItems="flex-start"
-          justify="flex-start"
-        >
-          <div
-            onClick={
-              isHistoryLoading ? undefined : onToggleHistoryButtonClicked
-            }
-            style={{ cursor: 'pointer' }}
-          >
-            <HorizontalLabel>HISTORY</HorizontalLabel>
-            {!isNewTask && (
-              <>
-                <Spacing horizontal={4} />
-                {isHistoryShown ? (
-                  <SmallSwitchChevronUp color={palette.orangeJulius} />
-                ) : (
-                  <SmallSwitchChevronDown color={palette.orangeJulius} />
-                )}
-              </>
+    <DrawerSection title="History" collapsable onOpen={handleHistoryOpen}>
+      {!selectedTaskIdentifier && (
+        <HistoryItem
+          description={`${currentUser?.firstName} ${currentUser?.lastName} created the task`}
+          date={selectedTask?.createdDateTime}
+          type="Task created"
+        />
+      )}
+      <>
+        {isHistoryLoading ? (
+          <>
+            <HistoryItemLoader />
+            <HistoryItemLoader />
+            <HistoryItemLoader />
+            <HistoryItemLoader />
+            <HistoryItemLoader />
+          </>
+        ) : (
+          <>
+            {history?.length > 0 ? (
+              history.map(
+                ({
+                  auditId,
+                  taskHistoryDetails,
+                  taskHistoryType,
+                  createdDateTime,
+                  user,
+                }) => (
+                  <HistoryItem
+                    key={auditId}
+                    description={`${user?.userName ??
+                      ''} ${taskHistoryDetails}`}
+                    date={createdDateTime}
+                    type={taskHistoryType}
+                  />
+                ),
+              )
+            ) : (
+              <EmptyHistoryLabel>No history available</EmptyHistoryLabel>
             )}
-          </div>
-        </Grid>
-        <Grid container item xs={6} alignItems="flex-end" justify="flex-end" />
-      </Grid>
-      <Spacing vertical={2} />
-      {isNewTask && (
-        <Grid
-          container
-          item
-          xs={12}
-          alignItems="center"
-          justify="space-between"
-        >
-          <Grid
-            container
-            item
-            xs={9}
-            alignItems="flex-start"
-            justify="flex-start"
-          >
-            <Grid container item xs={12}>
-              <PersonNameLabelContainer>
-                <RobotoTypography condensed variant="h4" color="inherit">
-                  {createdByUser?.firstName} {createdByUser?.lastName}
-                </RobotoTypography>
-              </PersonNameLabelContainer>
-              <Spacing horizontal={2} />
-              <AuditDetailsLabelContainer>
-                <RobotoTypography condensed variant="h4" color="inherit">
-                  created the task
-                </RobotoTypography>
-              </AuditDetailsLabelContainer>
-            </Grid>
-            <DateTimeLabelContainer>
-              <RobotoTypography condensed variant="h4" color="inherit">
-                {createdDateTime}
-              </RobotoTypography>
-            </DateTimeLabelContainer>
-          </Grid>
-          <Grid container item xs={3} alignItems="flex-end" justify="flex-end">
-            <AuditTypeLabelContainer>
-              <RobotoTypography condensed variant="h4" color="inherit">
-                TASK CREATED
-              </RobotoTypography>
-            </AuditTypeLabelContainer>
-          </Grid>
-        </Grid>
-      )}
-      {isHistoryShown && (
-        <SectionRow>
-          {isHistoryLoading ? (
-            <Loader size={LoaderSizes.small} />
-          ) : (
-            renderHistory(history)
-          )}
-        </SectionRow>
-      )}
-    </>
+          </>
+        )}
+      </>
+    </DrawerSection>
   );
 };
 

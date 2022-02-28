@@ -1,6 +1,7 @@
 /* eslint-disable react/jsx-no-duplicate-props */
 import React, { useEffect, useRef, useState } from 'react';
 import { Grid } from '@material-ui/core';
+import { List } from 'react-virtualized';
 import Loader, { LoaderSizes } from 'components/common/Loader/Loader';
 import Spacing from 'components/common/Spacing';
 import { useBoolean } from 'hooks/useBoolean';
@@ -41,6 +42,7 @@ const SelectDropdown = React.forwardRef(
       clearOnSuccess,
       addItemEnabled,
       refineResultsCount = 0,
+      width,
     },
     reference,
     // eslint-disable-next-line sonarjs/cognitive-complexity
@@ -177,6 +179,24 @@ const SelectDropdown = React.forwardRef(
       (!options || options.length === 0) &&
       currentSelectedOption?.displayLabel !== inputValue;
 
+    const renderOptionRow = ({ key, index, style }) => {
+      const option = options[index];
+      return (
+        <ListItem key={key} style={style}>
+          <ListItemButton
+            type="button"
+            isHovered={hoveredItemIndex === index}
+            onMouseDown={() => handleOptionSelect(option)}
+            onMouseEnter={() => setHoveredItemIndex(index)}
+          >
+            {typeof option.label === 'function'
+              ? option.label({ searchValue: inputValue })
+              : option.label}
+          </ListItemButton>
+        </ListItem>
+      );
+    };
+
     return (
       <>
         <div ref={inputContainerReference}>
@@ -220,7 +240,9 @@ const SelectDropdown = React.forwardRef(
         {isFocused && inputValue && (
           <ListContainer
             ref={listReference}
-            width={inputContainerReference?.current?.clientWidth || 300}
+            width={
+              width || inputContainerReference?.current?.clientWidth || 300
+            }
           >
             {!isLoadingOptions ? (
               <>
@@ -230,23 +252,21 @@ const SelectDropdown = React.forwardRef(
                       Please further refine search, too many results!
                     </ListItemRefineButton>
                   </ListItem>
-                )}{' '}
-                {options?.length > 0
-                  ? options.map((option, index) => (
-                      <ListItem key={option.key}>
-                        <ListItemButton
-                          type="button"
-                          isHovered={hoveredItemIndex === index}
-                          onMouseDown={() => handleOptionSelect(option)}
-                          onMouseEnter={() => setHoveredItemIndex(index)}
-                        >
-                          {typeof option.label === 'function'
-                            ? option.label({ searchValue: inputValue })
-                            : option.label}
-                        </ListItemButton>
-                      </ListItem>
-                    ))
-                  : null}
+                )}
+                {options?.length > 0 && (
+                  <List
+                    scrollToIndex={hoveredItemIndex}
+                    width={
+                      width ||
+                      inputContainerReference?.current?.clientWidth ||
+                      300
+                    }
+                    height={options.length > 5 ? 208 : options.length * 40}
+                    rowHeight={40}
+                    rowRenderer={renderOptionRow}
+                    rowCount={options.length}
+                  />
+                )}
                 {showAddRecordOption && (
                   <ListItem key="addRecordButton">
                     <AddRecordOption

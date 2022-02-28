@@ -1,3 +1,4 @@
+/* eslint-disable sonarjs/cognitive-complexity */
 /* eslint-disable unicorn/prevent-abbreviations */
 import React, {
   useState,
@@ -12,7 +13,10 @@ import { useDispatch, useSelector } from 'react-redux';
 import NavigateNextIcon from '@material-ui/icons/NavigateNext';
 import HardDependencyIcon from 'img/template/hard-dependency';
 import CalendarIcon from 'img/template/calendar-icon';
-import { TASK_TEMPLATES_PATH } from 'routing/helpers/paths';
+import {
+  createWorkflowFolderPath,
+  WORKFLOW_LIBRARY_PATH,
+} from 'routing/helpers/paths';
 import {
   deleteTasksLink,
   changeTaskIntentType,
@@ -35,6 +39,7 @@ import {
   currentTaskTemplateSelector,
 } from 'selectors/task-template-selectors';
 import { userHasSmartFlowsSelector } from 'selectors/user-selectors';
+import { openDrawer } from 'actions/workflow-drawer-actions';
 import { Box, ClickAwayListener, Paper, Popper } from '@material-ui/core';
 import DecisionTaskElementIcon from 'img/template/decision-task-icon';
 import ReactFlow, {
@@ -76,6 +81,7 @@ import {
 } from './styled';
 import ConnectionLink from './ConnectionLink/ConnectionLink';
 import TaskLinkDelayForm from './TaskLinkDelayForm/TaskLinkDelayForm';
+import TemporaryDecisionTaskLink from './TemporaryDecisionTaskLink/TemporaryDecisionTaskLink';
 
 const nodeTypes = {
   [NodeType.NEW_STANDARD]: NewTaskNode,
@@ -88,6 +94,7 @@ const linkTypes = {
   [LinkType.STANDARD]: TaskLink,
   [LinkType.DECISION]: DecisionTaskLink,
   [LinkType.TEMPORARY]: TemporaryTaskLink,
+  [LinkType.TEMPORARY_DECISION]: TemporaryDecisionTaskLink,
 };
 
 const TaskTemplateDetailsView = () => {
@@ -106,8 +113,8 @@ const TaskTemplateDetailsView = () => {
   const history = useHistory();
   const { tasks, layout, temporaryElements } =
     useSelector(taskTemplateDetailsSelector(identifier)) || {};
-  const { name, type: templateType } =
-    useSelector(currentTaskTemplateSelector) || {};
+  const workflow = useSelector(currentTaskTemplateSelector);
+  const { name, templateType, parentTaskWorkflowIdentifier } = workflow || {};
   const smartFlowsAvailable = useSelector(userHasSmartFlowsSelector);
 
   useEffect(() => {
@@ -464,7 +471,13 @@ const TaskTemplateDetailsView = () => {
           </ElementsSidebar>
           <Box ref={builderWrapperReference} position="relative" flex={1}>
             <BuilderHeader>
-              <Link to={TASK_TEMPLATES_PATH}>
+              <Link
+                to={
+                  parentTaskWorkflowIdentifier
+                    ? createWorkflowFolderPath(parentTaskWorkflowIdentifier)
+                    : WORKFLOW_LIBRARY_PATH
+                }
+              >
                 <BuilderHeaderText color={palette.brightBlue}>
                   Workflows
                 </BuilderHeaderText>
@@ -472,7 +485,14 @@ const TaskTemplateDetailsView = () => {
               <Box px={1}>
                 <NavigateNextIcon fontSize="small" />
               </Box>
-              <BuilderHeaderText>{name}</BuilderHeaderText>
+              <button
+                type="button"
+                onClick={() =>
+                  dispatch(openDrawer(workflow.identifier, workflow))
+                }
+              >
+                <BuilderHeaderText>{name}</BuilderHeaderText>
+              </button>
             </BuilderHeader>
             {mergedElementsWithActions && (
               <ReactFlow

@@ -31,16 +31,3 @@ export const TaskViewContainer = styled.div`
   height: 100%;
   background-color: ${palette.coolGrey4};
 `;
-
-export const StickyContainer = styled.div`
-  position: sticky;
-  left: 24px;
-  width: calc(100vw - 115px);
-  z-index: 13;
-`;
-
-export const PersonalInfoStickyContainer = styled.div`
-  position: sticky;
-  left: 0px;
-  width: calc(100vw - 67px);
-`;

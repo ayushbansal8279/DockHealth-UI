@@ -36,11 +36,17 @@ const TaskTemplatePopover = ({
   onBack,
 }) => {
   const folders = useMemo(
-    () => taskTemplatesList?.filter(({ type }) => type === 'FOLDER'),
+    () =>
+      taskTemplatesList?.filter(
+        ({ templateType }) => templateType === 'FOLDER',
+      ),
     [taskTemplatesList],
   );
   const templates = useMemo(
-    () => taskTemplatesList?.filter(({ type }) => type !== 'FOLDER'),
+    () =>
+      taskTemplatesList?.filter(
+        ({ templateType }) => templateType !== 'FOLDER',
+      ),
     [taskTemplatesList],
   );
 

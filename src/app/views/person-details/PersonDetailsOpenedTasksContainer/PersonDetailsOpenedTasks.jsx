@@ -25,7 +25,6 @@ import { onSortChanged } from 'helpers/ga-event-helper';
 import EmptyTaskListFox from 'img/animals/fox.png';
 import { getSharedTaskListsWithCurrentUser } from 'api/task-list-api';
 import { filterTasksBySearchValue } from 'helpers/task-search-helper';
-import { TASKGROUP_DEFAULT_TYPE } from 'api/task-group-list-api';
 import NoSearchResultsView from 'components/tasklist/EmptyListView/NoSearchResultsView';
 import EmptyListViewWithQuickAddTask from 'components/tasklist/EmptyListView/EmptyListViewWithQuickAddTask';
 import EmptyListView from 'components/tasklist/EmptyListView/EmptyListView';
@@ -40,7 +39,8 @@ import { checkIfAllTasksSelected } from 'helpers/bulk-edit-helpers';
 import { extractTasksAndSubtasks } from 'helpers/tasklist-helpers';
 import { changeTasksSelectedState } from 'actions/task-actions';
 import { useColumnsConfig } from 'context-api/ColumnsConfigContext';
-import { TaskGroupsContainer, StickyContainer } from '../styled';
+import StickyContainer from 'components/common/HorizontalScroll/StickyContainer';
+import { TaskGroupsContainer } from '../styled';
 
 const PersonDetailsOpenedTasks = ({
   taskItemConfig,
@@ -161,7 +161,7 @@ const PersonDetailsOpenedTasks = ({
             >
               {({ isFullView }) => (
                 <>
-                  <StickyContainer>
+                  <StickyContainer left={24} decreaseWidth={2 * 24} zIndex={13}>
                     <QuickAddTaskInput
                       ref={quickAddTaskInputReference}
                       quickAddTask={task => {
@@ -176,7 +176,6 @@ const PersonDetailsOpenedTasks = ({
                     bulkEditEnabled
                     sort={sort}
                     onSortChange={handleSortChange}
-                    taskItemConfig={taskItemConfig}
                     groupHasMultipleAssignees
                     isGroupSelected={isGroupSelected}
                     onGroupSelect={handleGroupSelect}
@@ -186,7 +185,6 @@ const PersonDetailsOpenedTasks = ({
                       key={task.identifier}
                       isFullView={isFullView}
                       task={task}
-                      taskGroupIdentifier={TASKGROUP_DEFAULT_TYPE}
                       isCompletedGroup={false}
                       toggleCompleteTask={toggleCompleteTask}
                       onTaskUpdate={onTaskUpdate}
@@ -197,7 +195,6 @@ const PersonDetailsOpenedTasks = ({
                       areFiltersApplied={areFiltersApplied}
                       isSearchApplied={searchValue}
                       multipleAssigneesContext
-                      taskItemConfig={taskItemConfig}
                       dragAndDropDisabled
                     />
                   ))}

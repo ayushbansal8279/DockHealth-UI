@@ -6,6 +6,7 @@ import FilterButton from 'components/filter/FilterButton/FilterButton';
 import FilterPopover from 'components/filter/FilterPopover/FilterPopover';
 import FilterHeader from 'components/filter/FilterHeader/FilterHeader';
 import FilterTable from 'components/filter/FilterTable/FilterTable';
+import CustomFilters from 'components/filter/CustomFilters/CustomFilters';
 import { MegaFilterNoResultsLabel } from './styled';
 
 const MegaFilter = ({
@@ -17,15 +18,25 @@ const MegaFilter = ({
   tasksAndSubTasksCount,
   isFetching,
   onOpen,
+  quickFiltersList,
+  addQuickFilterOption,
+  selectedQuickFilter,
+  selectQuickFilter,
+  onSaveClick,
+  onSaveAsNewClick,
+  onQuickFilterUpdate,
+  wasChangedFilters,
+  onQuickFilterCreate,
+  onQuickFilterDelete,
 }) => {
   const [isOpen, openPopover] = useState(false);
   const [searchedFilterQuery, setSearchedFilterQuery] = useState('');
   const megaFilterButtonReference = useRef(null);
-
   const isFilterApplied = selectedFilters && !isEmpty(selectedFilters);
 
   const clearFilters = () => {
     onSelectFilters(null);
+    selectQuickFilter(null);
   };
 
   useEffect(() => {
@@ -58,6 +69,11 @@ const MegaFilter = ({
             searchValue={searchedFilterQuery}
             onSearchValueChange={setSearchedFilterQuery}
             onClear={clearFilters}
+            onSave={onSaveClick}
+            onSaveAsNew={onSaveAsNewClick}
+            selectedQuickFilter={selectedQuickFilter}
+            editModeEnabled={wasChangedFilters}
+            selectedFilters={selectedFilters}
           />
           {isFilterApplied && tasksAndSubTasksCount === 0 && !isFetching && (
             <MegaFilterNoResultsLabel>
@@ -71,7 +87,18 @@ const MegaFilter = ({
             filters={filters}
             selectedFilters={selectedFilters}
             onSelectedFiltersChange={onSelectFilters}
-          />
+          >
+            <CustomFilters
+              quickFiltersList={quickFiltersList}
+              addQuickFilterOption={addQuickFilterOption}
+              selectedQuickFilter={selectedQuickFilter}
+              selectQuickFilter={selectQuickFilter}
+              onUpdate={onQuickFilterUpdate}
+              editModeEnabled={wasChangedFilters}
+              onCreate={onQuickFilterCreate}
+              onDelete={onQuickFilterDelete}
+            />
+          </FilterTable>
         </>
       </FilterPopover>
     </>

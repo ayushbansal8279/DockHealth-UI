@@ -30,9 +30,12 @@ export function getCurrentPatientAttachments() {
   };
 }
 
-export function getCurrentPatientTasks() {
+export function getCurrentPatientTasks(taskStatus) {
   return {
     type: ActionTypes.GET_CURRENT_PATIENT_TASKS,
+    payload: {
+      taskStatus,
+    },
   };
 }
 
@@ -90,3 +93,8 @@ export function getPatientTasksStats() {
     type: ActionTypes.GET_PATIENT_TASKS_STATS,
   };
 }
+
+export const setCurrentListTasksStatus = taskStatus => ({
+  type: ActionTypes.SELECT_PATIENT_LIST_TASK_STATUS,
+  taskStatus,
+});

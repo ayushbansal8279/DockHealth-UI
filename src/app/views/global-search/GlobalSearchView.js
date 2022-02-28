@@ -15,13 +15,13 @@ import { selectedTaskSelector } from 'selectors/task-drawer-selectors';
 import EmptyGlobalSearch from 'img/empty-global-search.png';
 import EmptyGlobalSearchResults from 'img/empty-global-search-results';
 import { userProfileSelector } from 'selectors/user-selectors';
-import * as TaskDrawerActions from 'actions/task-drawer-actions';
 import * as TaskActions from 'actions/task-actions';
 import { GlobalSearchSagaActions } from 'sagas/global-search-saga';
 import BasicLayoutHeader from 'components/template/BasicLayoutHeader/BasicLayoutHeader';
 import GroupedListSkeletonLoader from 'components/tasklist/GroupedListSkeletonLoader/GroupedListSkeletonLoader';
-import ViewLayout from 'components/template/ViewLayout/ViewLayout';
 import TaskDrawer from 'components/task-drawer/TaskDrawer/TaskDrawer';
+import HorizontallyScrolledViewLayout from 'components/template/HorizontallyScrolledViewLayout/HorizontallyScrolledViewLayout';
+import StickyContainer from 'components/common/HorizontalScroll/StickyContainer';
 import {
   GlobalSearchWrapper,
   GlobalSearchStickyHeader,
@@ -43,11 +43,9 @@ const GlobalSearchView = ({
   searchValue,
   currentUser,
   selectedTask,
-  taskDrawerActions,
   taskActions,
   globalSearchSagaActions,
 }) => {
-  const { openDrawer } = taskDrawerActions;
   const { storeAsCurrentTask } = taskActions;
   const {
     toggleTaskStatus,
@@ -89,11 +87,15 @@ const GlobalSearchView = ({
 
   return (
     <>
-      <ViewLayout header={<BasicLayoutHeader title="Search" />}>
+      <HorizontallyScrolledViewLayout
+        header={<BasicLayoutHeader title="Search" />}
+      >
         <GlobalSearchWrapper>
-          <GlobalSearchStickyHeader>
-            <GlobalSearchHeader />
-          </GlobalSearchStickyHeader>
+          <StickyContainer stickyTop zIndex={13}>
+            <GlobalSearchStickyHeader>
+              <GlobalSearchHeader />
+            </GlobalSearchStickyHeader>
+          </StickyContainer>
           <ViewSidePadding>
             {isLoadingView ? (
               <GroupedListSkeletonLoader />
@@ -107,7 +109,6 @@ const GlobalSearchView = ({
                           list={list}
                           currentUser={currentUser}
                           selectedTask={selectedTask}
-                          openDrawer={openDrawer}
                           storeAsCurrentTask={storeAsCurrentTask}
                           toggleTaskStatus={toggleTaskStatus}
                           onTaskUpdate={updateTask}
@@ -125,13 +126,12 @@ const GlobalSearchView = ({
           </ViewSidePadding>
           <TaskDrawer />
         </GlobalSearchWrapper>
-      </ViewLayout>
+      </HorizontallyScrolledViewLayout>
     </>
   );
 };
 
 const mapDispatchToProps = dispatch => ({
-  taskDrawerActions: bindActionCreators(TaskDrawerActions, dispatch),
   taskActions: bindActionCreators(TaskActions, dispatch),
   globalSearchSagaActions: bindActionCreators(
     GlobalSearchSagaActions,

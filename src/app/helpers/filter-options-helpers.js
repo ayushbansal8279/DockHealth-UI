@@ -11,6 +11,7 @@ export const FilterOptionsCategory = {
   PRIORITY: 'priorityOptions',
   COMPLETE_DATE: 'taskCompletedDateOptions',
   CREATED_DATE: 'taskCreatedDateOptions',
+  TASK_STATUS: 'taskStatusOptions',
 };
 
 const FilterOptionsLabel = {
@@ -24,6 +25,7 @@ const FilterOptionsLabel = {
   [FilterOptionsCategory.PRIORITY]: 'Priority',
   [FilterOptionsCategory.COMPLETE_DATE]: 'Task completed date',
   [FilterOptionsCategory.CREATED_DATE]: 'Task created date',
+  [FilterOptionsCategory.TASK_STATUS]: 'Status',
 };
 
 const DATE_FILTER_OPTIONS = [
@@ -95,6 +97,43 @@ export function mapSelectedOptionsToRequestPayload(selectedFilters) {
           selectedOptionIdentifiers: v.options,
         },
       ],
+    };
+  }, {});
+}
+
+export function mapRequestSelectedOptionsToStore(selectedOptions) {
+  if (!selectedOptions) return null;
+
+  return Object.entries(selectedOptions).reduce((accumulator, [k, v]) => {
+    if (!v) return accumulator;
+    if (DATE_FILTER_OPTIONS.includes(k)) {
+      return {
+        ...accumulator,
+        [k]: {
+          dateEnd: v.dateEnd || null,
+          dateStart: v.dateStart || null,
+          options: v.dateOptions,
+        },
+      };
+    }
+
+    if (Object.values(FilterOptionsCategory).includes(k)) {
+      if (v?.length === 0 || v === '') return accumulator;
+      return {
+        ...accumulator,
+        [k]: { options: v },
+      };
+    }
+
+    return {
+      ...accumulator,
+      ...v.reduce(
+        (a, c) => ({
+          ...a,
+          [c.customFieldIdentifier]: { options: c.selectedOptionIdentifiers },
+        }),
+        {},
+      ),
     };
   }, {});
 }

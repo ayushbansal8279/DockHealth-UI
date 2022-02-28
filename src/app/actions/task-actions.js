@@ -187,6 +187,7 @@ export function partialUpdateTask(taskIdentifier, dataToUpdate) {
       TaskApi.partialUpdateTask(taskIdentifier, dataToUpdate)
         // eslint-disable-next-line sonarjs/no-identical-functions
         .then(task => {
+          dispatch(AlertActions.showGlobalAlert(AlertMessages.UPDATED));
           return task;
         })
         .catch(error => {
@@ -513,21 +514,6 @@ export const updateWorkflowStatus = (task, workflowStatus) => dispatch => {
       throw error;
     });
 };
-
-export function assignOrReassignTask(task, assignedToUserIdentifier) {
-  return dispatch =>
-    TaskApi.assignOrReassignTask(task, assignedToUserIdentifier)
-      .then(assignedTask => {
-        dispatch({
-          type: ActionTypes.UPDATE_TASK_SUCCESS,
-          task: assignedTask,
-        });
-        return assignedTask;
-      })
-      .catch(error => {
-        throw error;
-      });
-}
 
 export function getTaskHistory(task) {
   return dispatch => {

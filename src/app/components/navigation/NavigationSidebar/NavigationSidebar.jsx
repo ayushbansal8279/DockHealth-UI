@@ -4,7 +4,7 @@ import { ClickAwayListener, Grid } from '@material-ui/core';
 import { useDispatch, useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
 import {
-  TASK_TEMPLATES_PATH,
+  WORKFLOW_LIBRARY_PATH,
   USERS_PATH,
   SUBS_SETTINGS_PATH,
   USERS_SETTINGS_PATH,
@@ -203,7 +203,7 @@ const NavigationSidebar = () => {
               <IconNavigationItem
                 name="Workflow Library"
                 icon={TemplatesIcon}
-                path={TASK_TEMPLATES_PATH}
+                path={WORKFLOW_LIBRARY_PATH}
                 onItemClick={handleNavigationItemClick}
               />
             )}

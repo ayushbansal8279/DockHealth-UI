@@ -72,7 +72,12 @@ const ColumnSortHeader: React.FC<ColumnSortHeaderProps> = ({
           />
         </SortArrowWrapper>
       )}
-      <LabelWrapper ref={descriptionTextReference}>{label}</LabelWrapper>
+      <LabelWrapper
+        ordered={!!(id === sort?.key && sort?.order)}
+        ref={descriptionTextReference}
+      >
+        {label}
+      </LabelWrapper>
       <Popper
         anchorEl={descriptionTextReference.current}
         placement="bottom-start"

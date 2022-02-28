@@ -5,7 +5,7 @@ import Tooltip from 'components/common/Tooltip/Tooltip';
 import { useDispatch, useSelector } from 'react-redux';
 import { openModal } from 'modal/actions';
 import { userProfileSelector } from 'selectors/user-selectors';
-import { updateTaskTemplateSuccess } from 'actions/task-template-actions';
+import { getWorkflowDetails } from 'actions/task-template-actions';
 
 import {
   StandardTaskItemCell,
@@ -15,11 +15,7 @@ import {
 } from './styled';
 
 const TaskTemplatePermissions = ({ template }) => {
-  const {
-    members: transformedMembers,
-    taskTemplateIdentifier,
-    publicAccess,
-  } = template;
+  const { members: transformedMembers, identifier, publicAccess } = template;
   const dispatch = useDispatch();
   const members = transformedMembers.map(({ user, memberPermission }) => ({
     ...user,
@@ -29,20 +25,16 @@ const TaskTemplatePermissions = ({ template }) => {
     dispatch(
       openModal('ListPermissions', {
         list: {
-          taskTemplateIdentifier,
+          taskTemplateIdentifier: identifier,
           members,
           template,
         },
-        onMembersRefresh: refreshedMembers => {
-          dispatch(
-            updateTaskTemplateSuccess(taskTemplateIdentifier, {
-              members: refreshedMembers,
-            }),
-          );
+        onMembersRefresh: () => {
+          dispatch(getWorkflowDetails(identifier));
         },
       }),
     );
-  }, [dispatch, members, taskTemplateIdentifier, template]);
+  }, [dispatch, members, identifier, template]);
   const { userIdentifier } = useSelector(userProfileSelector);
   const currentUser = members.find(
     user => user.userIdentifier === userIdentifier,

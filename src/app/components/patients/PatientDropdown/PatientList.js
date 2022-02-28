@@ -7,7 +7,6 @@ import React, {
 } from 'react';
 import { useSelector } from 'react-redux';
 import debounce from 'lodash.debounce';
-import { isOutsideScrollView } from 'helpers/scroll-helper';
 import MagnifierIcon from 'img/magnifier.svg';
 import { getPatientsByCriteria } from 'api/patients-api';
 import { addPatient } from 'api/patient-api';
@@ -16,6 +15,8 @@ import { getCustomerTypeLabel } from 'helpers/customer-type-helper';
 import { onTaskDrawerPatientAdded } from 'helpers/ga-event-helper';
 import { noop } from 'helpers/utility-functions';
 import AddRecordOption from 'components/common/AddRecordOption/AddRecordOption';
+import { List } from 'react-virtualized';
+
 import {
   Input,
   InputBox,
@@ -38,7 +39,6 @@ const PatientList = ({
   const [searchValue, setSearchValue] = useState('');
   const [patients, setPatients] = useState([]);
   const [isLoadingPatients, setIsLoadingPatients] = useState(false);
-  const listReference = useRef(null);
   const inputReference = useRef(null);
   const [hoveredItemIndex, setHoveredItemIndex] = useState(0);
   const { currentUser } = useSelector(store => ({
@@ -200,9 +200,6 @@ const PatientList = ({
               newIndex = previousIndex + 1;
             }
 
-            if (listReference.current?.children?.[newIndex])
-              listReference.current.children[newIndex].scrollIntoView(false);
-
             return newIndex;
           });
         }
@@ -223,17 +220,6 @@ const PatientList = ({
               newIndex = previousIndex - 1;
             }
 
-            if (
-              listReference.current?.children?.[newIndex] &&
-              isOutsideScrollView(
-                listReference.current,
-                listReference.current?.children?.[newIndex],
-              )
-            ) {
-              listReference.current.scrollTop =
-                listReference.current?.children?.[newIndex].offsetTop;
-            }
-
             return newIndex;
           });
         }
@@ -243,6 +229,42 @@ const PatientList = ({
         // do nothing
         break;
     }
+  };
+
+  const renderRow = ({ index, key, style }) => {
+    const option = patients[index];
+    return option.unassignOption ? (
+      <UnassignRowContainer
+        key={key}
+        style={style}
+        withBorder={displayUnassignedOption}
+      >
+        <UnassignRow
+          key="UNASSIGNED"
+          type="button"
+          onClick={() => {
+            clearInput();
+            onSelect(null);
+          }}
+          isHovered={hoveredItemIndex === index}
+        >
+          Unassign
+        </UnassignRow>
+      </UnassignRowContainer>
+    ) : (
+      <Row
+        key={key}
+        style={style}
+        type="button"
+        isHovered={hoveredItemIndex === index}
+        onClick={() => {
+          clearInput();
+          onSelect(option.patient);
+        }}
+      >
+        {option.label({ searchValue })}
+      </Row>
+    );
   };
 
   return (
@@ -273,43 +295,22 @@ const PatientList = ({
         />
       )}
       {!isLoadingPatients && (
-        <ListContainer withBorder={patients.length !== 0} ref={listReference}>
+        <ListContainer withBorder={patients.length !== 0}>
           {!isLoadingPatients && patients.length >= MAX_PATIENT_RESULTS && (
             <RefineSearchRow>
               Please further refine search, too many results!
             </RefineSearchRow>
           )}
-          {!isLoadingPatients &&
-            patients.length !== 0 &&
-            patients?.map((option, index) =>
-              option.unassignOption ? (
-                <UnassignRowContainer withBorder={displayUnassignedOption}>
-                  <UnassignRow
-                    key="UNASSIGNED"
-                    type="button"
-                    onClick={() => {
-                      clearInput();
-                      onSelect(null);
-                    }}
-                    isHovered={hoveredItemIndex === index}
-                  >
-                    Unassign
-                  </UnassignRow>
-                </UnassignRowContainer>
-              ) : (
-                <Row
-                  key={option.patient.patientIdentifier}
-                  type="button"
-                  isHovered={hoveredItemIndex === index}
-                  onClick={() => {
-                    clearInput();
-                    onSelect(option.patient);
-                  }}
-                >
-                  {option.label({ searchValue })}
-                </Row>
-              ),
-            )}
+          {!isLoadingPatients && patients?.length !== 0 && (
+            <List
+              scrollToIndex={hoveredItemIndex}
+              width={600}
+              height={patients.length > 5 ? 208 : patients.length * 40}
+              rowHeight={40}
+              rowRenderer={renderRow}
+              rowCount={patients.length}
+            />
+          )}
         </ListContainer>
       )}
     </>

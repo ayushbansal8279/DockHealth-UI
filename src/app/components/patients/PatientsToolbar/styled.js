@@ -24,7 +24,7 @@ export const InputWrapper = styled.div`
 `;
 
 export const SearchHelperText = styled.p`
-  max-width: 700px;
+  /* max-width: 700px; */
   margin: 0 auto;
   padding-top: ${spacing.huge};
   text-align: center;

@@ -16,10 +16,7 @@ import {
   dashboardTabNameSelector,
   dashboardSearchValueSelector,
 } from 'selectors/dashboard-selectors';
-import {
-  selectedTaskIdentifierSelector,
-  taskDrawerOpenSelector,
-} from 'selectors/task-drawer-selectors';
+import { taskDrawerOpenSelector } from 'selectors/task-drawer-selectors';
 import DashboardNewUserInfo from 'views/dashboard/DashboardNewUserInfo/DashboardNewUserInfo';
 import NoSearchResultsView from 'components/tasklist/EmptyListView/NoSearchResultsView';
 import EmptyListView from 'components/tasklist/EmptyListView/EmptyListView';
@@ -44,14 +41,15 @@ import { DashboardTasksTab } from 'helpers/dashboard-helpers';
 import Calendar from 'components/common/Calendar/Calendar';
 import { ViewType, getViewTypeFromQueryString } from 'helpers/view-type-helper';
 import GroupedListSkeletonLoader from 'components/tasklist/GroupedListSkeletonLoader/GroupedListSkeletonLoader';
+import StickyContainer from 'components/common/HorizontalScroll/StickyContainer';
 import DashboardTasksGroup from './DashboardTasksGroup';
+import DashboardToolbar from '../DashboardToolbar/DashboardToolbar';
 import {
   StickyHeader,
   EmptyStateContainer,
   VerticalScrollContainer,
   DashboardTaskGroupsWrapper,
 } from './styled';
-import DashboardToolbar from '../DashboardToolbar/DashboardToolbar';
 
 const DashboardList = ({
   allDashboardTasks,
@@ -62,7 +60,6 @@ const DashboardList = ({
   taskDrawerActions,
   taskActions,
   isTaskDrawerOpen,
-  selectedTaskIdentifier,
   areFiltersApplied,
   tourModalIsOpen,
   openTourModal,
@@ -207,12 +204,14 @@ const DashboardList = ({
       refreshTasks={handleRefreshForBulkEdit}
       searchValue={searchValue}
     >
-      <StickyHeader>
-        <DashboardToolbar
-          tourModalIsOpen={tourModalIsOpen}
-          openTourModal={openTourModal}
-        />
-      </StickyHeader>
+      <StickyContainer stickyTop zIndex={101}>
+        <StickyHeader>
+          <DashboardToolbar
+            tourModalIsOpen={tourModalIsOpen}
+            openTourModal={openTourModal}
+          />
+        </StickyHeader>
+      </StickyContainer>
       <Spacing vertical={1} />
       {viewType === ViewType.CALENDAR_VIEW && (
         <Calendar taskList={tasks} showInCompleteTasksOnly />
@@ -231,16 +230,13 @@ const DashboardList = ({
                         key={item?.groupType}
                         dashboardTasksGroup={item}
                         storeAsCurrentTask={taskActions.storeAsCurrentTask}
-                        openDrawer={taskDrawerActions.openDrawer}
                         isTaskDrawerOpen={isTaskDrawerOpen}
-                        selectedTaskIdentifier={selectedTaskIdentifier}
                         currentSortMethod={currentSortMethodWithOrder}
                         currentSort={currentSort}
                         onSortChange={handleSortChange}
                         showClearSortFiltersModal={showClearSortFiltersModal}
                         isSortApplied={isSortApplied}
                         areFiltersApplied={areFiltersApplied}
-                        isAllTasksTab={tabName === DashboardTasksTab.ALL_TASKS}
                         currentUser={currentUser}
                         updateWorkflowStatus={taskActions.updateWorkflowStatus}
                         isSearching={!!searchValue}
@@ -269,7 +265,6 @@ const mapStateToProps = state => ({
   allDashboardTasks: dashboardAllTaskItemsSelector(state),
   dashboardTasks: dashboardTasksSelector(state),
   dashboardTasksIsLoading: dashboardTasksIsLoadingSelector(state),
-  selectedTaskIdentifier: selectedTaskIdentifierSelector(state),
   areFiltersApplied: hasFiltersAppliedSelector(state),
   isTaskDrawerOpen: taskDrawerOpenSelector(state),
 });

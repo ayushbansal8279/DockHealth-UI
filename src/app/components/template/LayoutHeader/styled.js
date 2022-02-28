@@ -6,9 +6,6 @@ import { fontSizes, fontWeights } from 'styles/font';
 export const HeaderContainer = styled.div`
   height: auto;
   background-color: ${palette.white};
-  width: calc(100vw - 67px);
-  position: sticky;
-  left: 0px;
   ${({ horizontalSticky }) => (horizontalSticky ? 'top: 0px;' : '')}
   z-index: 19;
 `;

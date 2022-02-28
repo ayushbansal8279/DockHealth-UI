@@ -31,6 +31,7 @@ import { TaskItemType } from 'helpers/task-helpers';
 import StandardTaskItem from 'components/task/StandardTaskItem/StandardTaskItem';
 import TaskTemplateGroup from 'components/task-template/TaskTemplateGroup/TaskTemplateGroup';
 import TasksSkeletonLoader from 'components/task/TasksSkeletonLoader/TasksSkeletonLoader';
+import StickyContainer from 'components/common/HorizontalScroll/StickyContainer';
 import { TaskGroupsContainer, DroppablePlaceholder } from '../styled';
 
 const ListDetailsOpenedTasks = ({
@@ -259,7 +260,6 @@ const ListDetailsOpenedTasks = ({
                                         draggedId === task.taskIdentifier
                                       }
                                       task={task}
-                                      taskGroupIdentifier={taskGroupIdentifier}
                                       draggableProvided={draggableProvided}
                                       isCompletedGroup={isCompletedGroup}
                                       toggleCompleteTask={toggleCompleteTask}
@@ -323,11 +323,13 @@ const ListDetailsOpenedTasks = ({
                   <TasksSkeletonLoader rows={4} />
                 )}
                 {groupPagination && hasMoreTasks && !areFiltersApplied && (
-                  <LoadMoreSection>
-                    {!isLoadingGroup && (
-                      <LoadMoreButton onClick={showMoreTasks} />
-                    )}
-                  </LoadMoreSection>
+                  <StickyContainer left={24} decreaseWidth={2 * 24}>
+                    <LoadMoreSection>
+                      {!isLoadingGroup && (
+                        <LoadMoreButton onClick={showMoreTasks} />
+                      )}
+                    </LoadMoreSection>
+                  </StickyContainer>
                 )}
               </>
             )}
@@ -370,18 +372,16 @@ const ListDetailsOpenedTasks = ({
             onBeforeDragStart={showClearSortFiltersModal}
             onDragEnd={!isSortApplied ? onDragEnd : () => {}}
           >
-            <div style={{ width: 'fit-content' }}>
-              {renderTasks()}
-              {!!createTaskGroupList && !isSearchApplied && !areFiltersApplied && (
-                <GroupNameSection
-                  onEnterClick={onGroupNameClick}
-                  placeholder={messages.placeholder}
-                  closeOnEnter
-                >
-                  <AddGroupNameButton />
-                </GroupNameSection>
-              )}
-            </div>
+            {renderTasks()}
+            {!!createTaskGroupList && !isSearchApplied && !areFiltersApplied && (
+              <GroupNameSection
+                onEnterClick={onGroupNameClick}
+                placeholder={messages.placeholder}
+                closeOnEnter
+              >
+                <AddGroupNameButton />
+              </GroupNameSection>
+            )}
           </DragDropContext>
         </>
       )}

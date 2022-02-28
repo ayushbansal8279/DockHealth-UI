@@ -1,10 +1,6 @@
 /* eslint-disable import/extensions */
 import React, { useState, useCallback, useMemo } from 'react';
-import {
-  DecisionBox,
-  StandardTaskItemCell,
-  DecisionSelect,
-} from '../../styled';
+import { DecisionBox, DecisionSelect } from '../../styled';
 
 const TaskItemDecision = ({
   outcomes,
@@ -43,18 +39,16 @@ const TaskItemDecision = ({
   );
 
   return (
-    <StandardTaskItemCell width="164px">
-      <DecisionBox>
-        <DecisionSelect
-          name="decision"
-          value={value}
-          onChange={handleChange}
-          error={error}
-          options={options}
-          disabled={disabled}
-        />
-      </DecisionBox>
-    </StandardTaskItemCell>
+    <DecisionBox>
+      <DecisionSelect
+        name="decision"
+        value={value}
+        onChange={handleChange}
+        error={error}
+        options={options}
+        disabled={disabled}
+      />
+    </DecisionBox>
   );
 };
 export default TaskItemDecision;

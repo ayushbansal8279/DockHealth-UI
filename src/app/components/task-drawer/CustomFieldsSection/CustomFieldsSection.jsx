@@ -10,8 +10,6 @@ import { useForm, FormContext } from 'react-hook-form';
 import { compose } from 'ramda';
 import CategoryOptions from 'components/common/CategoryOptions/CategoryOptions';
 import { partialUpdateTask } from 'actions/task-actions';
-import { showGlobalAlert } from 'alert/actions';
-import AlertMessages from 'alert/AlertMessages';
 import {
   selectedTaskSelector,
   taskCustomFieldsSelector,
@@ -26,7 +24,7 @@ import {
 } from './styled';
 import { formatMetaDataOutput } from './helpers';
 
-const CustomFieldsSection = ({ taskCustomReference }) => {
+const CustomFieldsSection = () => {
   const dispatch = useDispatch();
   const task = useSelector(selectedTaskSelector) || {};
   const taskDrawerFocusField = useSelector(taskDrawerFocusFieldSelector);
@@ -45,7 +43,6 @@ const CustomFieldsSection = ({ taskCustomReference }) => {
     ({ taskMetaData }) => {
       if (taskMetaData.length > 0) {
         dispatch(partialUpdateTask(task?.identifier, { taskMetaData }));
-        dispatch(showGlobalAlert(AlertMessages.UPDATED));
       }
     },
     [dispatch, task],
@@ -94,7 +91,6 @@ const CustomFieldsSection = ({ taskCustomReference }) => {
           <HidableContainer key={field.identifier} visibility={!visible}>
             <Grid item xs={12} style={styleFullRow}>
               <CustomField
-                scrollToRef={taskCustomReference}
                 readOnly={false}
                 field={field}
                 onBlur={(data, wasChanged) =>
@@ -114,7 +110,6 @@ const CustomFieldsSection = ({ taskCustomReference }) => {
       getValues,
       emptyVisible,
       formMethods,
-      taskCustomReference,
       task.identifier,
       handleBlur,
     ],

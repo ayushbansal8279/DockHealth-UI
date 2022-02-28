@@ -2,9 +2,9 @@ import React from 'react';
 import Checkbox from 'components/common/Checkbox/Checkbox';
 import { BulkContainer } from '../../styled';
 
-const TaskItemBulkEdit = ({ isChecked, onClick }) => {
+const TaskItemBulkEdit = ({ isChecked, onClick, isHovered }) => {
   return (
-    <BulkContainer>
+    <BulkContainer visible={isHovered || isChecked}>
       <Checkbox isChecked={isChecked} onClick={onClick} />
     </BulkContainer>
   );

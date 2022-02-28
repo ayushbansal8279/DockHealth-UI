@@ -1,0 +1,48 @@
+import React from 'react';
+import Spacing from 'components/common/Spacing';
+import { RobotoTypography } from 'styles/theme';
+
+import { IconButton } from '@material-ui/core';
+import { Close } from '@material-ui/icons';
+import Tooltip from 'components/common/Tooltip/Tooltip';
+import { Container, RemoveAttachmentButtonContainer } from './styled';
+import { getIconFromContentType } from './helpers';
+
+const AttachmentButton = ({ attachment, onClick, onRemoveClick }) => {
+  const { attachmentIdentifier, fileName, contentType } = attachment;
+  const IconComponent = getIconFromContentType({ contentType });
+
+  return (
+    <Tooltip key={attachmentIdentifier} title={fileName}>
+      <Container
+        download={fileName}
+        onClick={event => {
+          event.stopPropagation();
+          event.preventDefault();
+          onClick(attachment);
+        }}
+      >
+        <IconComponent color="inherit" fontSize="small" />
+        <Spacing horizontal={2} />
+        <RobotoTypography condensed variant="h4" weight="bold" noWrap>
+          {fileName}
+        </RobotoTypography>
+        <RemoveAttachmentButtonContainer>
+          <IconButton
+            onClick={event => {
+              event.preventDefault();
+              event.stopPropagation();
+              onRemoveClick(attachmentIdentifier);
+            }}
+            size="small"
+            color="inherit"
+          >
+            <Close fontSize="small" />
+          </IconButton>
+        </RemoveAttachmentButtonContainer>
+      </Container>
+    </Tooltip>
+  );
+};
+
+export default AttachmentButton;

@@ -134,7 +134,7 @@ const initializeAttachmentsSectionHooks = () => {
   );
 
   const boundRemovePatientAttachment = useCallback(
-    ({ attachmentIdentifier }) => {
+    attachmentIdentifier => {
       dispatch(
         removePatientAttachment(patientIdentifier, attachmentIdentifier),
       );

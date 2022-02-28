@@ -187,18 +187,29 @@ const DecisionTaskLink = props => {
           {delayOptionsVisible && (
             <DelayPeriodLabel link={link} onClick={openDelayPopover} />
           )}
-          <OutcomeInputLabel
-            ref={edgeLabelReference}
-            inputRef={inputReference}
-            readOnly={!isEdited}
-            value={inputValue}
-            onChange={event => setInputValue(event.target?.value || '')}
-            onKeyPress={handleKeyPress}
-            onFocus={setFocused}
-            onBlur={handleInputBlur}
-            onClick={outcome && openOptions}
-            hasOutcome={!!outcome}
-          />
+          <div
+            onMouseEnter={outcome && openOptions}
+            onMouseLeave={closeOptions}
+          >
+            <OutcomeInputLabel
+              ref={edgeLabelReference}
+              inputRef={inputReference}
+              readOnly={!isEdited}
+              value={inputValue}
+              onChange={event => setInputValue(event.target?.value || '')}
+              onKeyPress={handleKeyPress}
+              onFocus={setFocused}
+              onBlur={handleInputBlur}
+              hasOutcome={!!outcome}
+            />
+            {areOptionsOpen && (
+              <TaskLinkOptions
+                anchorEl={edgeLabelReference.current}
+                options={menuOptions}
+                onClose={closeOptions}
+              />
+            )}
+          </div>
         </LabelsWrapper>
         {isDelayPopoverOpen && (
           <Popper
@@ -222,13 +233,6 @@ const DecisionTaskLink = props => {
               </Paper>
             </ClickAwayListener>
           </Popper>
-        )}
-        {areOptionsOpen && (
-          <TaskLinkOptions
-            anchorEl={edgeLabelReference.current}
-            options={menuOptions}
-            onClose={closeOptions}
-          />
         )}
       </foreignObject>
     </>

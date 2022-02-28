@@ -41,13 +41,13 @@ const SelectStep = ({
   const handleAddNewFolder = name => {
     if (!isAddingFolder) {
       setIsAddingFolder(true);
-      TaskTemplateApi.addTemplate({ name, type: 'FOLDER' }, listId)
+      TaskTemplateApi.addTemplate({ name, templateType: 'FOLDER' }, listId)
         .then(createdFolder => {
           setFoldersList([...foldersList, createdFolder]);
           onAddFolderCallback(
-            createdFolder.parentTaskTemplateIdentifier
+            createdFolder.parentTaskWorkflowIdentifier
               ? createdFolder
-              : { ...createdFolder, parentTaskTemplateIdentifier: null },
+              : { ...createdFolder, parentTaskWorkflowIdentifier: null },
           );
           setIsAddingFolder(false);
           addFolderReference.current.value = '';
@@ -81,7 +81,9 @@ const SelectStep = ({
     setListId(null);
     getTemplates()
       .then(folders => {
-        setFoldersList(folders.filter(({ type }) => type === 'FOLDER'));
+        setFoldersList(
+          folders.filter(({ templateType }) => templateType === 'FOLDER'),
+        );
         setIsFetchingFolders(false);
       })
       .catch(() => {
@@ -92,13 +94,15 @@ const SelectStep = ({
   useEffect(getRootList, [getRootList]);
 
   const fetchChildList = useCallback(
-    taskTemplateIdentifier => {
+    identifier => {
       setIsFetchingFolders(true);
-      setListId(taskTemplateIdentifier);
-      pushToBreadcrumbsList(taskTemplateIdentifier);
-      getTemplatesForSpecificFolder(taskTemplateIdentifier)
+      setListId(identifier);
+      pushToBreadcrumbsList(identifier);
+      getTemplatesForSpecificFolder(identifier)
         .then(folders => {
-          setFoldersList(folders.filter(({ type }) => type === 'FOLDER'));
+          setFoldersList(
+            folders.filter(({ templateType }) => templateType === 'FOLDER'),
+          );
           setIsFetchingFolders(false);
         })
         .catch(() => {
@@ -124,8 +128,8 @@ const SelectStep = ({
   ]);
 
   const handleGoToFolder = useCallback(
-    taskTemplateIdentifier => {
-      fetchChildList(taskTemplateIdentifier);
+    identifier => {
+      fetchChildList(identifier);
     },
     [fetchChildList],
   );
@@ -148,24 +152,18 @@ const SelectStep = ({
               {foldersList?.length > 0 ? (
                 foldersList.map(folder => (
                   <ListItem
-                    key={folder.taskTemplateIdentifier}
-                    isSelected={
-                      selectedFolder === folder.taskTemplateIdentifier
-                    }
+                    key={folder.identifier}
+                    isSelected={selectedFolder === folder.identifier}
                   >
                     <ListItemTextButton
-                      onClick={() =>
-                        setSelectedFolder(folder.taskTemplateIdentifier)
-                      }
+                      onClick={() => setSelectedFolder(folder.identifier)}
                       type="button"
                       isSelected
                     >
                       {folder.name}
                     </ListItemTextButton>
                     <IconButton
-                      onClick={() =>
-                        handleGoToFolder(folder.taskTemplateIdentifier)
-                      }
+                      onClick={() => handleGoToFolder(folder.identifier)}
                     >
                       <NextArrow />
                     </IconButton>

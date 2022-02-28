@@ -1,11 +1,19 @@
 import { bool, shape, string } from 'prop-types';
 import React from 'react';
 import Highlighter from 'react-highlight-words';
+import { prop, sortBy, compose, toLower } from 'ramda';
 import { SuggestionItemContainer, SuggestionText } from './styled';
 
 const PatientSelectItem = React.forwardRef(
   ({ patient, searchValue, isFocused, ...restProps }, reference) => {
     const { name, dob, mrn } = patient;
+    const sortedPatientMetaData = patient?.patientMetaData
+      ? sortBy(
+          compose(toLower, prop('customFieldName')),
+          patient?.patientMetaData,
+        )
+      : [];
+
     return (
       <SuggestionItemContainer
         ref={reference}
@@ -29,6 +37,15 @@ const PatientSelectItem = React.forwardRef(
             textToHighlight={mrn ?? ''}
           />
         </SuggestionText>
+        {sortedPatientMetaData?.map(
+          ({ displayName, value, displayOptions }) => (
+            <>
+              {displayOptions?.includes('PATIENT_SEARCH') && value && (
+                <SuggestionText>{displayName || value}</SuggestionText>
+              )}
+            </>
+          ),
+        )}
       </SuggestionItemContainer>
     );
   },

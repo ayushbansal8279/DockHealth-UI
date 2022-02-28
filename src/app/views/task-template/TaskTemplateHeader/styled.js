@@ -5,9 +5,10 @@ import palette from 'styles/palette';
 import spacing from 'styles/spacing';
 
 export const HeaderContainer = styled.div`
+  display: flex;
+  align-self: stretch;
   border-left: 1px solid ${palette.coolGrey3};
   border-right: 1px solid ${palette.coolGrey3};
-  display: flex;
 `;
 
 export const StandardTaskItemCell = styled.div`

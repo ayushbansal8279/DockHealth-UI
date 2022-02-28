@@ -8,7 +8,7 @@ import { Close } from '@material-ui/icons';
 
 export const TourContainer = styled.div`
   width: 648px;
-  max-width: calc(100vw - 100px);
+  /* max-width: calc(100vw - 100px); */
   padding: 25px 55px 35px 25px;
   background: ${({ darkTheme }) =>
     darkTheme

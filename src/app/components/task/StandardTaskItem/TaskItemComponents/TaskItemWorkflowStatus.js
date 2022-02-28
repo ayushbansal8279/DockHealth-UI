@@ -5,7 +5,6 @@ import Tooltip from 'components/common/Tooltip/Tooltip';
 import Highlighter from 'react-highlight-words';
 import {
   AddPlaceholder,
-  StandardTaskItemCell,
   StatusName,
   StatusWrapper,
   StatusBar,
@@ -28,60 +27,55 @@ const TaskItemWorkflowStatus = ({
       statusNameReference.current.scrollWidth;
 
   return (
-    <StandardTaskItemCell
-      width="120px"
-      paddingLeft="smallPlus"
-      paddingRight="tiny"
-      onContextMenu={event => {
-        event.stopPropagation();
-      }}
-    >
-      <TaskItemPopover
-        fullWidth
-        content={({ closePopover, resetPosition }) => (
-          <TaskWorkflowStatus
-            selectedStatusIdentifier={task.workflowStatus?.identifier}
-            updateWorkflowStatus={updateWorkflowStatus}
-            onClose={closePopover}
-            onWidthChange={resetPosition}
-          />
-        )}
-      >
-        {workflowStatus ? (
-          <StatusWrapper>
-            {task.status === 'COMPLETE' && showDefaultTaskStatusCompleted && (
-              <StatusName ref={statusNameReference}>Completed</StatusName>
-            )}
-            {(task.status !== 'COMPLETE' ||
-              !showDefaultTaskStatusCompleted) && (
-              <>
-                <StatusBar color={workflowStatus?.color} />
-                <Tooltip
-                  title={name}
-                  placement="top"
-                  hideTooltip={!tooltipVisible}
-                >
-                  <StatusName ref={statusNameReference}>
-                    {matchWorkflowStatus ? (
-                      <Highlighter
-                        highlightClassName="list-highlight"
-                        searchWords={searchWords}
-                        autoEscape
-                        textToHighlight={name}
-                      />
-                    ) : (
-                      name
-                    )}
-                  </StatusName>
-                </Tooltip>
-              </>
-            )}
-          </StatusWrapper>
-        ) : (
-          <AddPlaceholder>+ Add Status</AddPlaceholder>
-        )}
-      </TaskItemPopover>
-    </StandardTaskItemCell>
+    <>
+      {task.status === 'COMPLETE' && showDefaultTaskStatusCompleted && (
+        <StatusName ref={statusNameReference}>Completed</StatusName>
+      )}
+      {(task.status !== 'COMPLETE' || !showDefaultTaskStatusCompleted) && (
+        <TaskItemPopover
+          fullWidth
+          content={({ closePopover, resetPosition }) => (
+            <TaskWorkflowStatus
+              selectedStatusIdentifier={task.workflowStatus?.identifier}
+              updateWorkflowStatus={updateWorkflowStatus}
+              onClose={closePopover}
+              onWidthChange={resetPosition}
+            />
+          )}
+        >
+          {workflowStatus ? (
+            <StatusWrapper>
+              {(task.status !== 'COMPLETE' ||
+                !showDefaultTaskStatusCompleted) && (
+                <>
+                  <StatusBar color={workflowStatus?.color} />
+                  <Tooltip
+                    title={name}
+                    placement="top"
+                    hideTooltip={!tooltipVisible}
+                  >
+                    <StatusName ref={statusNameReference}>
+                      {matchWorkflowStatus ? (
+                        <Highlighter
+                          highlightClassName="list-highlight"
+                          searchWords={searchWords}
+                          autoEscape
+                          textToHighlight={name}
+                        />
+                      ) : (
+                        name
+                      )}
+                    </StatusName>
+                  </Tooltip>
+                </>
+              )}
+            </StatusWrapper>
+          ) : (
+            <AddPlaceholder>+ Add Status</AddPlaceholder>
+          )}
+        </TaskItemPopover>
+      )}
+    </>
   );
 };
 

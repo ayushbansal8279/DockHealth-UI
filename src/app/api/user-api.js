@@ -201,7 +201,6 @@ export function getUserTaskFilterOptions(
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 export function getUsersByName(name, limit = 100) {
-  // todo: add limit attribute to request after API update
   return axios
     .get(`user/findUserByName?name=${name}&limit=${limit}`)
     .then(({ data }) => data);

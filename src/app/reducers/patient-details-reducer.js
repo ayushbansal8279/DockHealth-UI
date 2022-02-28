@@ -1,6 +1,6 @@
 /* eslint-disable sonarjs/max-switch-cases */
 import * as ActionTypes from 'actions/action-types';
-import { TaskGroupType, TaskItemType } from 'helpers/task-helpers';
+import { TaskGroupType, TaskItemType, TaskStatus } from 'helpers/task-helpers';
 import { mapWithRemove } from 'helpers/utility-functions';
 import { updateTaskOrSubtaskInListsArray } from 'helpers/task-update-helper';
 import { updateBundleInList } from 'helpers/tasklist-helpers';
@@ -13,6 +13,7 @@ const INITIAL_STATE = {
   labels: null,
   isFetchingLabels: false,
   completeTasksVisible: false,
+  currentTasksStatus: TaskStatus.INCOMPLETE,
   lists: null,
   taskSearch: null,
   incompleteTasksCount: null,
@@ -47,10 +48,32 @@ const updateTasksStateCallback = (state, updateTaskFromAction) => {
   };
 };
 
+function updateWorkflowInState(updateCallback, workflowIdentifier, state) {
+  return {
+    ...state,
+    lists: state?.lists?.map(list => {
+      return {
+        ...list,
+        tasks: list.tasks.map(t =>
+          t.identifier === workflowIdentifier ? updateCallback(t) : t,
+        ),
+      };
+    }),
+  };
+}
+
 // eslint-disable-next-line sonarjs/cognitive-complexity
 export default function(state = INITIAL_STATE, action = {}) {
   const { type, payload } = action;
   switch (type) {
+    case ActionTypes.UPDATE_PARTIAL_WORKFLOW_SUCCESS: {
+      return updateWorkflowInState(
+        workflow => ({ ...workflow, ...action.newData }),
+        action.taskWorkflowIdentifier,
+        state,
+      );
+    }
+
     case ActionTypes.INITIALIZE_PATIENT_STATE: {
       return {
         ...state,
@@ -111,6 +134,12 @@ export default function(state = INITIAL_STATE, action = {}) {
       return {
         ...state,
         completeTasksVisible: !state.completeTasksVisible,
+      };
+
+    case ActionTypes.SELECT_PATIENT_LIST_TASK_STATUS:
+      return {
+        ...state,
+        currentTasksStatus: action.taskStatus,
       };
 
     case ActionTypes.GET_CURRENT_PATIENT_TASKS:
@@ -245,8 +274,24 @@ export default function(state = INITIAL_STATE, action = {}) {
       };
     }
 
-    case ActionTypes.MOVE_TEMPLATE_BUNDLE_SUCCESS:
-    case ActionTypes.DELETE_TEMPLATE_BUNDLE:
+    case ActionTypes.DUPLICATE_WORKFLOW_SUCCESS: {
+      const { workflow } = action;
+
+      const { taskListIdentifier } = workflow;
+
+      return {
+        ...state,
+        lists: state.lists?.map(l =>
+          l.taskListIdentifier === taskListIdentifier
+            ? {
+                ...l,
+                tasks: [workflow, ...(l.tasks || [])],
+              }
+            : l,
+        ),
+      };
+    }
+
     case ActionTypes.COMPLETE_TEMPLATE_BUNDLE: {
       const { bundleIdentifier } = action;
 
@@ -257,6 +302,19 @@ export default function(state = INITIAL_STATE, action = {}) {
           tasks: l.tasks?.filter(
             ({ identifier }) => identifier !== bundleIdentifier,
           ),
+        })),
+      };
+    }
+
+    case ActionTypes.MOVE_WORKFLOW_TO_DIFFERENT_LIST_SUCCESS:
+    case ActionTypes.DELETE_WORKFLOW: {
+      const { identifier } = action;
+
+      return {
+        ...state,
+        lists: state.lists?.map(l => ({
+          ...l,
+          tasks: l.tasks?.filter(({ identifier: id }) => id !== identifier),
         })),
       };
     }

@@ -7,7 +7,12 @@ import { capitalize } from 'helpers/capitalize';
 import Spacing from 'components/common/Spacing.tsx';
 import { RobotoTypography } from 'styles/theme';
 import UserAvatar from 'components/user/UserAvatar/UserAvatar';
-import { StyledDataGrid, ListContainer, ListEntryContainer } from './styled';
+import {
+  StyledDataGrid,
+  ListContainer,
+  ListEntryContainer,
+  UsersListContainer,
+} from './styled';
 
 const renderColumnHeader = props => {
   const { colDef } = props;
@@ -84,7 +89,7 @@ const UsersList = props => {
     : usersWithId;
 
   return (
-    <>
+    <UsersListContainer>
       {isEmpty(filteredUsers) ? (
         <ListContainer>
           <ListEntryContainer>
@@ -107,7 +112,7 @@ const UsersList = props => {
           disableColumnMenu
         />
       )}
-    </>
+    </UsersListContainer>
   );
 };
 

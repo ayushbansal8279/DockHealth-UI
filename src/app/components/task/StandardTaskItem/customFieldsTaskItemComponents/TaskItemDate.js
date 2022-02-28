@@ -1,33 +1,22 @@
 import React, { useCallback } from 'react';
-import moment from 'moment';
+import { Box } from '@material-ui/core';
 import DatePicker from 'components/task/DatePicker/DatePicker';
 import TaskItemPopover from 'components/task/TaskItemPopover/TaskItemPopover';
-// import TaskIcon from 'components/task/TaskIcon/TaskIcon';
+import TaskIcon from 'components/task/TaskIcon/TaskIcon';
 import Tooltip from 'components/common/Tooltip/Tooltip';
-import { CustomFieldWidthConfig, FieldType } from 'helpers/field-type-helpers';
-import { DateBasicLabel, StandardTaskItemCell, DateText } from './styled';
+import DateLabel from 'components/common/DateLabel/DateLabel';
 
-const TaskItemDate = ({ value, onChange, onClick, readOnly }) => {
+const TaskItemDate = ({ value, onChange, isHovered }) => {
   const handleDateChange = useCallback(
     newDate => {
-      onChange(newDate);
+      onChange(newDate ? newDate.toISOString() : null);
     },
     [onChange],
   );
 
   return (
-    <StandardTaskItemCell
-      paddingLeft="tiny"
-      paddingRight="tiny"
-      width={CustomFieldWidthConfig[FieldType.DATE]}
-      justify="center"
-      onContextMenu={event => {
-        event.stopPropagation();
-      }}
-      onClick={onClick}
-    >
+    <Box marginLeft="auto" marginRight="auto">
       <TaskItemPopover
-        disabled={readOnly}
         content={({ closePopover }) => (
           <DatePicker
             selectedDate={value}
@@ -36,21 +25,17 @@ const TaskItemDate = ({ value, onChange, onClick, readOnly }) => {
           />
         )}
       >
-        <Tooltip
-          hideTooltip={readOnly}
-          placement="top"
-          title={value ? 'Edit date' : 'Add date'}
-        >
+        <Tooltip placement="top" title={value ? 'Edit date' : 'Add date'}>
           {value ? (
-            <DateBasicLabel>
-              <DateText>{moment(value).format('MM/DD/YY')}</DateText>
-            </DateBasicLabel>
+            <DateLabel date={value} format="MM/DD/YYYY" />
           ) : (
-            <div>{/* <TaskIcon type="calendar" /> */}</div>
+            <div>
+              <TaskIcon type="calendar" isHovered={isHovered} />
+            </div>
           )}
         </Tooltip>
       </TaskItemPopover>
-    </StandardTaskItemCell>
+    </Box>
   );
 };
 

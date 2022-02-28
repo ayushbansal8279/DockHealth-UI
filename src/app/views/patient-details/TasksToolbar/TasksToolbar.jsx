@@ -18,11 +18,11 @@ const TasksToolbar = props => {
   const { patientIdentifier } = useParams();
 
   const handleApplyTemplate = useCallback(
-    ({ taskTemplateIdentifier }) => {
+    ({ identifier }) => {
       if (taskListIdentifier) {
         dispatch(
           applyTemplate({
-            taskTemplateIdentifier,
+            taskTemplateIdentifier: identifier,
             taskListIdentifier,
             taskGroupIdentifier,
             patientIdentifier,
@@ -35,7 +35,7 @@ const TasksToolbar = props => {
             confirm: listId =>
               dispatch(
                 applyTemplate({
-                  taskTemplateIdentifier,
+                  taskTemplateIdentifier: identifier,
                   taskListIdentifier: listId,
                   patientIdentifier,
                 }),

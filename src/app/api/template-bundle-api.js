@@ -1,8 +1,8 @@
 import axios from './axios-heydoc';
 
-export function deleteTemplateBundle(templateIdentifier) {
+export function getTemplateBundle(identifier) {
   return axios
-    .delete(`task/deleteTaskBundle/${templateIdentifier}`)
+    .get(`task/workflow/${identifier}`)
     .then(response => {
       return response.data;
     })
@@ -11,42 +11,9 @@ export function deleteTemplateBundle(templateIdentifier) {
     });
 }
 
-export function getTemplateBundle(taskBundleIdentifier) {
+export function updateTemplateBundle(identifier, templateBundle) {
   return axios
-    .get(`task/taskBundle/${taskBundleIdentifier}`)
-    .then(response => {
-      return response.data;
-    })
-    .catch(error => {
-      throw error;
-    });
-}
-
-export function duplicateTemplateBundle(
-  templateIdentifier,
-  includeAttachments = false,
-) {
-  return axios
-    .put(
-      `task/duplicateTaskBundle/${templateIdentifier}`,
-      {},
-      {
-        params: {
-          includeAttachments,
-        },
-      },
-    )
-    .then(response => {
-      return response.data;
-    })
-    .catch(error => {
-      throw error;
-    });
-}
-
-export function updateTemplateBundle(templateIdentifier, templateBundle) {
-  return axios
-    .put(`task/updateTaskBundle/${templateIdentifier}`, {
+    .patch(`task/workflow/${identifier}`, {
       ...templateBundle,
     })
     .then(response => {
@@ -57,21 +24,18 @@ export function updateTemplateBundle(templateIdentifier, templateBundle) {
     });
 }
 
-export function moveTemplateBundle(
-  templateIdentifier,
+export function moveWorkflowToList(
+  identifier,
   taskListIdentifier,
   taskGroupIdentifier,
 ) {
   return axios
-    .put(`task/updateTaskBundle/${templateIdentifier}`, {
+    .patch(`task/workflow/${identifier}`, {
       taskListIdentifier,
       parentTaskGroupIdentifier: taskGroupIdentifier,
     })
-    .then(response => {
-      return response.data;
-    })
-    .catch(error => {
-      throw error;
+    .then(({ data }) => {
+      return data;
     });
 }
 
@@ -83,7 +47,7 @@ export function applyTemplate({
   unassign = false,
 }) {
   return axios
-    .post(`task/useTemplate`, {
+    .post(`task/workflow/useTemplate`, {
       taskTemplateIdentifier,
       taskGroupIdentifier,
       taskListIdentifier,

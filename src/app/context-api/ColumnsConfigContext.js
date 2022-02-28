@@ -12,10 +12,12 @@ import { currentTaskListCustomFieldsPreferencesSelector } from '../selectors/tas
 
 export const ColumnsConfigContext = React.createContext();
 
-export function ColumnsConfigProvider({ children }) {
-  const [columnsConfig, setColumnsConfig] = React.useState(
-    TASK_ITEM_BASE_COLUMN_CONFIG,
-  );
+export function ColumnsConfigProvider({
+  children,
+  initialColumns = TASK_ITEM_BASE_COLUMN_CONFIG,
+  hideCustomColumns,
+}) {
+  const [columnsConfig, setColumnsConfig] = React.useState(initialColumns);
   const [customColumnsConfig, setCustomColumnsConfig] = React.useState([]);
   const value = {
     columnsConfig,
@@ -39,24 +41,26 @@ export function ColumnsConfigProvider({ children }) {
   const { taskListIdentifier } = useSelector(locationParametersSelector);
 
   React.useEffect(() => {
-    const currentCustomFieldsPreferences = taskListIdentifier
-      ? ListCustomFieldsPreferences
-      : OrganizationCustomFieldsPreferences;
+    if (!hideCustomColumns) {
+      const currentCustomFieldsPreferences = taskListIdentifier
+        ? ListCustomFieldsPreferences
+        : OrganizationCustomFieldsPreferences;
 
-    const currentCustomFields = taskListIdentifier
-      ? [...organizationCustomFields, ...specificListCustomFields]
-      : organizationCustomFields;
+      const currentCustomFields = taskListIdentifier
+        ? [...organizationCustomFields, ...specificListCustomFields]
+        : organizationCustomFields;
 
-    if (currentCustomFields && currentCustomFieldsPreferences) {
-      const mergedPreferencesAndFields = currentCustomFields.map(field => {
-        if (
-          currentCustomFieldsPreferences.find(id => id === field.identifier)
-        ) {
-          return { ...field, isChecked: true };
-        }
-        return { ...field, isChecked: false };
-      });
-      setCustomColumnsConfig(mergedPreferencesAndFields);
+      if (currentCustomFields && currentCustomFieldsPreferences) {
+        const mergedPreferencesAndFields = currentCustomFields.map(field => {
+          if (
+            currentCustomFieldsPreferences.find(id => id === field.identifier)
+          ) {
+            return { ...field, isChecked: true };
+          }
+          return { ...field, isChecked: false };
+        });
+        setCustomColumnsConfig(mergedPreferencesAndFields);
+      }
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [
@@ -65,6 +69,7 @@ export function ColumnsConfigProvider({ children }) {
     organizationCustomFields,
     specificListCustomFields,
     taskListIdentifier,
+    hideCustomColumns,
   ]);
 
   return (

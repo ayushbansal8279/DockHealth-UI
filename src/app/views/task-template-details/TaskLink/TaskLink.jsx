@@ -124,13 +124,15 @@ const TaskLink = props => {
         className="edgebutton-foreignobject"
         requiredExtensions="http://www.w3.org/1999/xhtml"
         style={{ overflow: 'visible' }}
+        onMouseEnter={!isDependent && openOptions}
+        onMouseLeave={closeOptions}
       >
         <LabelsWrapper ref={labelWrapperReference}>
           {delayOptionsVisible && (
             <DelayPeriodLabel link={link} onClick={openDelayPopover} />
           )}
           {isDependent && (
-            <HardDependencyLabel onClick={openOptions}>
+            <HardDependencyLabel onMouseEnter={openOptions}>
               <HardDependencyIcon />
             </HardDependencyLabel>
           )}

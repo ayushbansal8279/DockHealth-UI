@@ -26,10 +26,7 @@ import {
   patientTaskSearchSelector,
   patientTasksSortSelector,
 } from 'selectors/patient-details-selectors';
-import {
-  selectedTaskSelector,
-  addingNewSubtaskParentIdSelector,
-} from 'selectors/task-drawer-selectors';
+import { addingNewSubtaskParentIdSelector } from 'selectors/task-drawer-selectors';
 import {
   hasFiltersAppliedSelector,
   selectedFiltersInMegaFilterSelector,
@@ -54,6 +51,7 @@ import { checkIfAllTasksSelected } from 'helpers/bulk-edit-helpers';
 import { extractTasksAndSubtasks } from 'helpers/tasklist-helpers';
 import { useColumnsConfig } from 'context-api/ColumnsConfigContext';
 import { ListDetailsContainer } from 'components/tasklist/DropdownListSection/styled';
+import StickyContainer from 'components/common/HorizontalScroll/StickyContainer';
 import { ListViewType } from '../helpers';
 import {
   checkIfSelectedListIsPresent,
@@ -63,7 +61,6 @@ import {
 import TaskListToolbar from '../TaskListToolbar/TaskListToolbar';
 import TaskListGroupCollapse from '../TaskListGroupCollapse/TaskListGroupCollapse';
 import TasksToolbar from '../TasksToolbar/TasksToolbar';
-import { PatientToolbarStickyContainer } from '../styled';
 
 const PATIENT_VIEW_COLUMNS_CONFIG = {
   [TaskItemColumn.PATIENT]: false,
@@ -79,6 +76,7 @@ const PATIENT_CONFIGURABLE_COLUMNS_CONFIG = {
   [TaskItemColumn.WORKFLOW_STATUS]: false,
   [TaskItemColumn.ASSIGNED]: false,
   [TaskItemColumn.ACTIVITY]: false,
+  [TaskItemColumn.START_DATE]: false,
   [TaskItemColumn.DUE_DATE]: false,
   [TaskItemColumn.PATIENT]: false,
 };
@@ -93,7 +91,6 @@ const PatientTasksListView = () => {
   const lists = useSelector(patientTaskListsSelector);
   const completeTasksVisible = useSelector(completeTasksVisibilitySelector);
   const currentUser = useSelector(userProfileSelector);
-  const selectedTask = useSelector(selectedTaskSelector);
   const taskSearch = useSelector(patientTaskSearchSelector);
   const areFiltersApplied = useSelector(hasFiltersAppliedSelector);
   const selectedFilters = useSelector(selectedFiltersInMegaFilterSelector);
@@ -137,7 +134,7 @@ const PatientTasksListView = () => {
   useEffect(() => {
     if (patientIdentifier) {
       initializeSavedFilters(patientIdentifier);
-      dispatch(getCurrentPatientTasks(patientIdentifier));
+      dispatch(getCurrentPatientTasks());
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [patientIdentifier]);
@@ -166,11 +163,6 @@ const PatientTasksListView = () => {
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [taskListIdentifierParameter, filteredLists]);
-
-  const isListFlattened =
-    areFiltersApplied ||
-    !!taskSearch ||
-    (!!sort?.key && !['PATIENT', 'SUBTASK_COUNT'].includes(sort.key));
 
   const handleTaskUpdate = useCallback(
     updatedTask => {
@@ -270,10 +262,6 @@ const PatientTasksListView = () => {
     return groupTasks(activeList?.tasks);
   }, [activeList, isAllTasksView]);
 
-  const taskItemConfig = isAllTasksView
-    ? PATIENT_ALL_TASKS_VIEW_COLUMNS_CONFIG
-    : PATIENT_VIEW_COLUMNS_CONFIG;
-
   const groupHasMultipleAssignees = useMemo(
     () =>
       activeList?.tasks
@@ -319,13 +307,13 @@ const PatientTasksListView = () => {
     (tasks, { isFullView, taskGroupIdentifier }) => (
       <>
         {!completeTasksVisible && (
-          <PatientToolbarStickyContainer>
+          <StickyContainer left={24} decreaseWidth={2 * 24} zIndex={13}>
             <TasksToolbar
               taskListIdentifier={activeList?.taskListIdentifier}
               taskGroupIdentifier={taskGroupIdentifier}
               onQuickAddTask={quickAddTask}
             />
-          </PatientToolbarStickyContainer>
+          </StickyContainer>
         )}
         <div className="IN" style={{ width: 'fit-content' }}>
           {tasks && tasks.length > 0 && (
@@ -333,7 +321,6 @@ const PatientTasksListView = () => {
               bulkEditEnabled
               sort={sort}
               onSortChange={sortPatientTasks}
-              taskItemConfig={taskItemConfig}
               groupHasMultipleAssignees={groupHasMultipleAssignees}
               isGroupSelected={isGroupSelected(tasks)}
               onGroupSelect={() => handleGroupSelect(tasks)}
@@ -343,7 +330,6 @@ const PatientTasksListView = () => {
             task.itemType === TaskItemType.TASK ? (
               <StandardTaskItem
                 key={task.identifier}
-                currentUser={currentUser}
                 isFullView={isFullView}
                 task={task}
                 isCompletedGroup={completeTasksVisible}
@@ -351,19 +337,14 @@ const PatientTasksListView = () => {
                 onTaskUpdate={updatePatientTaskInList}
                 updateWorkflowStatus={updatePatientTaskWorkflowStatus}
                 dragAndDropDisabled
-                selectedTask={selectedTask}
-                patientVisible={false}
                 addingNewSubtask={addingNewSubtaskParentId === task.identifier}
-                hideSubtasks={isListFlattened}
                 multipleAssigneesContext={groupHasMultipleAssignees}
-                taskItemConfig={taskItemConfig}
               />
             ) : (
               <TaskTemplateGroup
                 viewSetup={viewSetup}
                 key={task.identifier}
                 templateGroup={task}
-                taskItemConfig={taskItemConfig}
                 groupHasMultipleAssignees={groupHasMultipleAssignees}
                 isFullView={isFullView}
                 groupDragAndDropDisabled
@@ -381,15 +362,11 @@ const PatientTasksListView = () => {
       sortPatientTasks,
       groupHasMultipleAssignees,
       quickAddTask,
-      taskItemConfig,
       isGroupSelected,
       handleGroupSelect,
       addingNewSubtaskParentId,
       completeTasksVisible,
-      currentUser,
       handleToggleTaskStatus,
-      isListFlattened,
-      selectedTask,
       updatePatientTaskInList,
       updatePatientTaskWorkflowStatus,
     ],
@@ -401,12 +378,12 @@ const PatientTasksListView = () => {
         <>
           {filteredLists?.length > 0 ? (
             <>
-              <PatientToolbarStickyContainer>
+              <StickyContainer left={24} decreaseWidth={2 * 24} zIndex={13}>
                 <TaskListToolbar
                   lists={filteredLists}
                   currentList={activeList}
                 />
-              </PatientToolbarStickyContainer>
+              </StickyContainer>
               <Box py={0.5} />
               {activeList ? (
                 <ListDetailsContainer>
@@ -415,13 +392,17 @@ const PatientTasksListView = () => {
                     refreshTasks={handleTaskUpdate}
                     searchValue={taskSearch}
                   >
-                    <PatientToolbarStickyContainer>
+                    <StickyContainer
+                      left={24}
+                      decreaseWidth={2 * 24}
+                      zIndex={13}
+                    >
                       <TaskListHeader
                         list={!isAllTasksView ? activeList : null}
                         viewSetup={viewSetup}
                         refreshView={compose(dispatch, getCurrentPatientTasks)}
                       />
-                    </PatientToolbarStickyContainer>
+                    </StickyContainer>
 
                     {isAllTasksView ? (
                       renderTasks(activeList.tasks, { isFullView: false })
@@ -455,9 +436,9 @@ const PatientTasksListView = () => {
       <TaskDrawer
         onTaskUpdate={handleTaskUpdate}
         onTaskCreation={handleTaskUpdate}
-        onTaskDelete={() =>
-          dispatch(getPatientFilterOptions(patientIdentifier))
-        }
+        onTaskDelete={() => {
+          dispatch(getPatientFilterOptions(patientIdentifier));
+        }}
         disabledFields={[DrawerFieldEnum.PATIENT]}
       />
     </>

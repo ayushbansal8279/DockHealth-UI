@@ -26,6 +26,7 @@ const FilterTable = props => {
     filters,
     selectedFilters,
     onSelectedFiltersChange,
+    children,
   } = props;
   const currentUser = useSelector(userProfileSelector);
   const customerTypeLabel = getCustomerTypeLabel(currentUser);
@@ -56,6 +57,7 @@ const FilterTable = props => {
 
   return !isLoading && filters ? (
     <FilterScrollableRow>
+      {children}
       {filters
         .filter(({ options }) => options?.length > 0)
         .map(({ id, label, options }) => (

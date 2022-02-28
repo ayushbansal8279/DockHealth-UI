@@ -12,26 +12,27 @@ export const PopoverContainer = styled.div`
 `;
 
 export const SuggestionsContainer = styled.div`
-  max-height: 200px;
-  overflow-y: auto;
+  height: fit-content;
 
-  &::-webkit-scrollbar {
-    -webkit-appearance: none;
-  }
+  * {
+    &::-webkit-scrollbar {
+      -webkit-appearance: none;
+    }
 
-  &::-webkit-scrollbar:vertical {
-    width: 11px;
-  }
+    &::-webkit-scrollbar:vertical {
+      width: 11px;
+    }
 
-  &::-webkit-scrollbar-thumb {
-    border-radius: 8px;
-    border: 2px solid white;
-    background-color: rgba(0, 0, 0, 0.5);
-  }
+    &::-webkit-scrollbar-thumb {
+      border-radius: 8px;
+      border: 2px solid white;
+      background-color: rgba(0, 0, 0, 0.5);
+    }
 
-  &::-webkit-scrollbar-track {
-    background-color: #fff;
-    border-radius: 8px;
+    &::-webkit-scrollbar-track {
+      background-color: #fff;
+      border-radius: 8px;
+    }
   }
 `;
 

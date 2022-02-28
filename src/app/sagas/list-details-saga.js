@@ -474,7 +474,7 @@ function* initializeTaskListState() {
       yield put(openDrawer());
     }
   } catch (error) {
-    console.log('errror', error);
+    console.log('error', error);
     yield put(showGlobalErrorAlert());
   }
 }

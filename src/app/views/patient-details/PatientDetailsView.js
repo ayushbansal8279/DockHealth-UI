@@ -7,7 +7,7 @@ import React, {
   useState,
 } from 'react';
 import { Tabs, Grid } from '@material-ui/core';
-import { compose } from 'ramda';
+import { compose, equals } from 'ramda';
 import { useDispatch, useSelector } from 'react-redux';
 import debounce from 'lodash.debounce';
 import {
@@ -24,6 +24,9 @@ import { isFetchingPatientsListsSelector } from 'selectors/patients-selectors';
 import {
   availableFiltersInInMegaFilterSelector,
   selectedFiltersInMegaFilterSelector,
+  addQuickFilterOptionSelector,
+  quickFiltersSelector,
+  selectedQuickFilterSelector,
 } from 'selectors/mega-filter-selectors';
 import { userProfileSelector } from 'selectors/user-selectors';
 import { setPatientTaskSearch } from 'sagas/patient-details-saga';
@@ -33,19 +36,27 @@ import MegaFilter from 'components/tasklist/MegaFilter/MegaFilter';
 import * as TaskActions from 'actions/task-actions';
 import LayoutHeader from 'components/template/LayoutHeader/LayoutHeader';
 import HeaderSearch from 'components/template/HeaderSearch/HeaderSearch';
-import ViewLayout from 'components/template/ViewLayout/ViewLayout';
 import { getPatientFilterOptions } from 'actions/patient-details-actions';
 import { getCustomerTypeLabel } from 'helpers/customer-type-helper';
 import { capitalize } from 'helpers/capitalize';
 import { ColumnsConfigProvider } from 'context-api/ColumnsConfigContext';
 import { getPatientWidgets } from 'api/patient-api';
-import PatientDetailsHeader from './PatientDetailsHeader/PatientDetailsHeader';
+import HorizontallyScrolledViewLayout from 'components/template/HorizontallyScrolledViewLayout/HorizontallyScrolledViewLayout';
+import StickyContainer from 'components/common/HorizontalScroll/StickyContainer';
+import {
+  showAddQuickFilterOption,
+  createQuickFilter,
+  updateQuickFilter,
+  deleteQuickFilter,
+  getQuickFilters,
+  selectQuickFilter,
+} from 'actions/mega-filter-actions';
 import {
   PatientDetailsContainer,
   PatientDetailsTabsContainer,
   MainTab,
-  PatientStickyContainer,
 } from './styled';
+import PatientDetailsHeader from './PatientDetailsHeader/PatientDetailsHeader';
 import PatientTasksList from './PatientTasksList/PatientTasksList';
 import PatientNotes from './PatientNotes/PatientNotes';
 import PatientAttachments from './PatientAttachments/PatientAttachments';
@@ -87,6 +98,9 @@ const PatientDetailsView = () => {
   const selectedFilters = useSelector(selectedFiltersInMegaFilterSelector);
   const pusher = useRef(initializePusher());
   const customerTypeLabel = getCustomerTypeLabel(currentUser);
+  const quickFiltersList = useSelector(quickFiltersSelector);
+  const addQuickFilterOption = useSelector(addQuickFilterOptionSelector);
+  const selectedQuickFilter = useSelector(selectedQuickFilterSelector);
 
   useEffect(() => {
     dispatch(PatientDetailsActions.initializePatientState(patientIdentifier));
@@ -178,8 +192,69 @@ const PatientDetailsView = () => {
     PatientDetailsActions.changePatientTasksFilters,
   );
 
+  const handleSelectQuickFilter = useCallback(
+    (id, filtersSetup) => {
+      dispatch(selectQuickFilter(id));
+      dispatch(PatientDetailsActions.changePatientTasksFilters(filtersSetup));
+    },
+    [dispatch],
+  );
+
+  const handleSaveQuickFilter = useCallback(
+    () =>
+      dispatch(
+        updateQuickFilter(
+          selectedQuickFilter,
+          {
+            selectedOptions: selectedFilters,
+          },
+          { patientIdentifier },
+        ),
+      ),
+    [dispatch, patientIdentifier, selectedFilters, selectedQuickFilter],
+  );
+
+  const handleSaveAsQuickFilter = useCallback(
+    () => dispatch(showAddQuickFilterOption()),
+    [dispatch],
+  );
+
+  const wasChangedFilters = useMemo(
+    () =>
+      !equals(
+        selectedFilters,
+        quickFiltersList?.find(
+          f => f.quickFilterIdentifier === selectedQuickFilter,
+        )?.selectedOptions,
+      ),
+    [quickFiltersList, selectedFilters, selectedQuickFilter],
+  );
+
+  const handleQuickFilterCreate = useCallback(
+    name =>
+      dispatch(createQuickFilter(name, { patientIdentifier }, selectedFilters)),
+    [dispatch, patientIdentifier, selectedFilters],
+  );
+
+  const handleQuickFilterUpdate = useCallback(
+    (quickFilterIdentifier, name) =>
+      dispatch(
+        updateQuickFilter(
+          quickFilterIdentifier,
+          { name },
+          { patientIdentifier },
+        ),
+      ),
+    [dispatch, patientIdentifier],
+  );
+
+  const handleQuickFilterDelete = useCallback(
+    quickFilterIdentifier => dispatch(deleteQuickFilter(quickFilterIdentifier)),
+    [dispatch],
+  );
+
   return (
-    <ViewLayout
+    <HorizontallyScrolledViewLayout
       header={
         <LayoutHeader>
           <LayoutHeader.Title title={capitalize(customerTypeLabel)} />
@@ -194,13 +269,26 @@ const PatientDetailsView = () => {
             selectedFilters={selectedFilters}
             onSelectFilters={handleFilterChange}
             isFetching={isFetchingLists}
-            onOpen={() => dispatch(getPatientFilterOptions(patientIdentifier))}
+            onOpen={() => {
+              dispatch(getQuickFilters({ patientIdentifier }));
+              dispatch(getPatientFilterOptions(patientIdentifier));
+            }}
+            quickFiltersList={quickFiltersList}
+            addQuickFilterOption={addQuickFilterOption}
+            selectedQuickFilter={selectedQuickFilter}
+            selectQuickFilter={handleSelectQuickFilter}
+            onSaveClick={handleSaveQuickFilter}
+            onSaveAsNewClick={handleSaveAsQuickFilter}
+            wasChangedFilters={wasChangedFilters}
+            onQuickFilterCreate={handleQuickFilterCreate}
+            onQuickFilterUpdate={handleQuickFilterUpdate}
+            onQuickFilterDelete={handleQuickFilterDelete}
           />
         </LayoutHeader>
       }
     >
       <ColumnsConfigProvider>
-        <PatientStickyContainer>
+        <StickyContainer>
           <PatientDetailsHeader />
           <PatientDetailsTabsContainer>
             <Grid container>
@@ -215,7 +303,7 @@ const PatientDetailsView = () => {
               </Tabs>
             </Grid>
           </PatientDetailsTabsContainer>
-        </PatientStickyContainer>
+        </StickyContainer>
         <PatientDetailsContainer>
           <Switch>
             {TABS_CONFIG?.map(route => (
@@ -244,7 +332,7 @@ const PatientDetailsView = () => {
           </Switch>
         </PatientDetailsContainer>
       </ColumnsConfigProvider>
-    </ViewLayout>
+    </HorizontallyScrolledViewLayout>
   );
 };
 

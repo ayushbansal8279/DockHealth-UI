@@ -38,6 +38,7 @@ import palette from 'styles/palette';
 import TaskTemplateApplicator from 'components/task-template/TaskTemplateApplicator/TaskTemplateApplicator';
 import { addingNewSubtaskParentIdSelector } from 'selectors/task-drawer-selectors';
 
+import StickyContainer from 'components/common/HorizontalScroll/StickyContainer';
 import {
   TasksGroupContainer,
   TasksGroupHeader,
@@ -46,7 +47,6 @@ import {
   GroupNameSectionWrapper,
   TasksGroupLabelName,
   TasksGroupLabelCounter,
-  StickyContainer,
   GroupOptionsContainer,
 } from './styled';
 import TasksHeader from '../TasksHeader/TasksHeader';
@@ -195,7 +195,7 @@ const TasksGroup = ({
   const handleTemplateSelect = useCallback(
     template => {
       applyTemplate({
-        taskTemplateIdentifier: template?.taskTemplateIdentifier,
+        taskTemplateIdentifier: template?.identifier,
         taskGroupIdentifier,
       });
     },
@@ -271,46 +271,49 @@ const TasksGroup = ({
 
   return (
     <TasksGroupContainer>
-      <TasksGroupHeader>
-        {!isCompletedGroup && (
-          <GroupOptionsContainer>
-            <OptionsMenu options={options} placement="bottom-start">
-              <MoreVert color="primary" />
-            </OptionsMenu>
-          </GroupOptionsContainer>
-        )}
-        <Arrow
-          alt="arrow"
-          isOpen={isOpen}
-          onClick={onToggleGroupOpen}
-          src={ArrowIcon}
-        />
-        <GroupNameSectionWrapper>
-          <GroupNameSection
-            initialValue={groupName}
-            onEnterClick={handleEditGroupName}
-            closeOnEnter
-            disabled={isDefaultGroup || isCompletedGroup}
-          >
-            <TasksGroupLabel>
-              <TasksGroupLabelName>{groupName}</TasksGroupLabelName>
-              {!isSearchApplied &&
-                !areFiltersApplied &&
-                !isNil(groupTaskCounts) && (
-                  <TasksGroupLabelCounter>
-                    ({groupTaskCounts})
-                  </TasksGroupLabelCounter>
-                )}
-            </TasksGroupLabel>
-          </GroupNameSection>
-        </GroupNameSectionWrapper>
-        {!changingGroupOrderDisabled && (
-          <ViewTypeSwitch value={viewType} onChange={changeViewType} />
-        )}
-      </TasksGroupHeader>
+      <StickyContainer left={24} decreaseWidth={2 * 24}>
+        <TasksGroupHeader>
+          {!isCompletedGroup && (
+            <GroupOptionsContainer>
+              <OptionsMenu options={options} placement="bottom-start">
+                <MoreVert color="primary" />
+              </OptionsMenu>
+            </GroupOptionsContainer>
+          )}
+          <Arrow
+            alt="arrow"
+            isOpen={isOpen}
+            onClick={onToggleGroupOpen}
+            src={ArrowIcon}
+          />
+          <GroupNameSectionWrapper>
+            <GroupNameSection
+              initialValue={groupName}
+              onEnterClick={handleEditGroupName}
+              closeOnEnter
+              disabled={isDefaultGroup || isCompletedGroup}
+            >
+              <TasksGroupLabel>
+                <TasksGroupLabelName>{groupName}</TasksGroupLabelName>
+                {!isSearchApplied &&
+                  !areFiltersApplied &&
+                  !isNil(groupTaskCounts) && (
+                    <TasksGroupLabelCounter>
+                      ({groupTaskCounts})
+                    </TasksGroupLabelCounter>
+                  )}
+              </TasksGroupLabel>
+            </GroupNameSection>
+          </GroupNameSectionWrapper>
+          {!changingGroupOrderDisabled && (
+            <ViewTypeSwitch value={viewType} onChange={changeViewType} />
+          )}
+        </TasksGroupHeader>
+      </StickyContainer>
+
       <Tasks timeout={150} in={isOpen}>
         {!!quickAddTask && !isSearchApplied && (
-          <StickyContainer>
+          <StickyContainer left={24} decreaseWidth={2 * 24} zIndex={100}>
             <Grid container>
               <Grid item xs>
                 <QuickAddTaskInput
