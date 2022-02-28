@@ -45,15 +45,13 @@ export const AddPlaceholder = styled(Placeholder)`
 export const TaskTemplateGroupHeaderContainer = styled.div`
   position: relative;
   display: flex;
-  /* align-items: center; */
-  /* justify-content: space-between; */
   padding: 0;
   font-family: 'Roboto', sans-serif;
   font-size: ${fontSizes.smallPlus};
   width: 100%;
   border-top: 1px solid ${palette.coolGrey3};
   border-bottom: 1px solid ${palette.coolGrey3};
-  background-color: ${palette.white};
+  background-color: ${props => (props.isSelected ? '#e0eff9' : palette.white)};
 
   &:hover {
     & ${TemplateHandle}, ${AddPlaceholder} {

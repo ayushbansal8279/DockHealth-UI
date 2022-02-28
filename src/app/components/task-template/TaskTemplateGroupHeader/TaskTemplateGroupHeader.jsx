@@ -284,6 +284,7 @@ const TaskTemplateGroupHeader = ({
   return (
     <TaskTemplateGroupHeaderContainer
       onMouseEnter={setIsHovered}
+      isSelected={isBundleSelected}
       onMouseLeave={unsetIsHovered}
     >
       {columnsConfig[TaskItemColumn.DESCRIPTION] && (
