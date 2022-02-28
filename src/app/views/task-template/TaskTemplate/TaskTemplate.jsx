@@ -21,7 +21,10 @@ import {
   taskTemplateDetailsSelector,
   currentFolderIdentifierSelector,
 } from 'selectors/task-template-selectors';
-import { userHasSmartFlowsSelector } from 'selectors/user-selectors';
+import {
+  userHasSmartFlowsSelector,
+  userProfileSelector,
+} from 'selectors/user-selectors';
 import * as WorkflowActions from 'actions/workflow-actions';
 import * as ModalActions from 'modal/actions';
 import * as TaskActions from 'actions/task-actions';
@@ -64,8 +67,15 @@ const TaskTemplate = ({
   children,
   highlighted = false,
 }) => {
-  const { identifier, name, templateType, publicAccess = false } = template;
+  const {
+    identifier,
+    name,
+    templateType,
+    publicAccess = false,
+    members,
+  } = template;
   const smartFlowsAvailable = useSelector(userHasSmartFlowsSelector);
+  const currentUser = useSelector(userProfileSelector);
 
   const [draggableId, setDraggableId] = useState(null);
   const [isEditing, setIsEditing] = useState(false);
@@ -73,6 +83,10 @@ const TaskTemplate = ({
   const [nameInputError, setNameInputError] = useState(false);
   const nameInputReference = useRef(null);
   const history = useHistory();
+
+  const isCurrentUserEditor =
+    members?.find(({ user }) => user.identifier === currentUser.identifier)
+      ?.memberPermission === 'EDITOR';
 
   useEffect(() => {
     if (nameInputReference?.current && highlighted) {
@@ -148,7 +162,7 @@ const TaskTemplate = ({
             }),
           ),
       },
-      {
+      isCurrentUserEditor && {
         name: publicAccess ? 'Make Private' : 'Make Public',
         onClick: () => {
           dispatch(switchTemplatePublic(identifier, !publicAccess));
@@ -179,6 +193,7 @@ const TaskTemplate = ({
       dispatch,
       folderIdentifier,
       publicAccess,
+      isCurrentUserEditor,
     ],
   );
 
