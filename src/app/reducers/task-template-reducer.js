@@ -126,16 +126,22 @@ const TaskTemplateReducer = (state = initialState, action) => {
     }
 
     case ActionTypes.ADD_TASK_TEMPLATE_SUCCESS:
-      return {
-        ...state,
-        taskTemplates: [action.template, ...state.taskTemplates],
-      };
+      if (state.taskTemplates) {
+        return {
+          ...state,
+          taskTemplates: [action.template, ...state.taskTemplates],
+        };
+      }
+      return state;
 
     case ActionTypes.DUPLICATE_WORKFLOW_SUCCESS:
-      return {
-        ...state,
-        taskTemplates: [action.workflow, ...state.taskTemplates],
-      };
+      if (state.taskTemplates) {
+        return {
+          ...state,
+          taskTemplates: [action.workflow, ...state.taskTemplates],
+        };
+      }
+      return state;
 
     case ActionTypes.GET_WORKFLOW_FOLDER:
       return {
