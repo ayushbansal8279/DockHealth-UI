@@ -151,9 +151,41 @@ const PatientDetailsHeader = () => {
                     <PatientInfoDivider />
                   </>
                 )}
+                {patient?.patientMetaData?.map(
+                  ({ customFieldName, displayName, value, displayOptions }) => (
+                    <>
+                      {displayOptions?.includes('PATIENT_HEADER') && value && (
+                        <>
+                          <PatientInfo>
+                            {customFieldName}: {displayName || value}
+                          </PatientInfo>
+                          <PatientInfoDivider />
+                        </>
+                      )}
+                    </>
+                  ),
+                )}
               </PatientDetailsInformation>
             </PatientDetails>
           )}
+          <PatientDetails>
+            <PatientDetailsInformation>
+              {patient?.patientMetaData?.map(
+                ({ customFieldName, displayName, value, contextType }) => (
+                  <>
+                    {contextType === 'PREDEFINED' && value && (
+                      <>
+                        <PatientInfo>
+                          {customFieldName}: {displayName || value}
+                        </PatientInfo>
+                        <PatientInfoDivider />
+                      </>
+                    )}
+                  </>
+                ),
+              )}
+            </PatientDetailsInformation>
+          </PatientDetails>
           <PatientDetailsDrawer
             patient={patient}
             isOpenedDetails={isDrawerOpen}

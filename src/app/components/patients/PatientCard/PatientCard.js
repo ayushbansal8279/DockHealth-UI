@@ -174,6 +174,17 @@ const PatientCard = ({ children, patientIdentifier, disabled }) => {
                     </PatientInfo>
                   </>
                 )}
+                {patientData?.patientMetaData?.map(
+                  ({ customFieldName, displayName, value, displayOptions }) => (
+                    <>
+                      {displayOptions?.includes('PATIENT_HEADER') && value && (
+                        <InfoItem>
+                          {customFieldName}: {displayName || value}
+                        </InfoItem>
+                      )}
+                    </>
+                  ),
+                )}
               </>
             ) : (
               <PatientCardDetailsLoader />
