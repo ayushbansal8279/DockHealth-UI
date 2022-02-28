@@ -315,7 +315,7 @@ const PatientTasksListView = () => {
             />
           </StickyContainer>
         )}
-        <div className="IN" style={{ width: 'fit-content' }}>
+        <div className="IN" style={{ width: 'fit-content', minWidth: '100%' }}>
           {tasks && tasks.length > 0 && (
             <TasksHeader
               bulkEditEnabled
