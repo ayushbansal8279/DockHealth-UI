@@ -315,6 +315,7 @@ const PatientSection = ({
       addItemEnabled={!currentOrganization?.emrIntegrationEnabled}
       clearOnSuccess
       refineResultsCount={MAX_PATIENT_RESULTS}
+      width={600}
     />
   );
 };

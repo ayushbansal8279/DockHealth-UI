@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 /* eslint-disable sonarjs/cognitive-complexity */
-import React, { useRef, useCallback } from 'react';
+import React, { useRef, useCallback, useState } from 'react';
 import { Box } from '@material-ui/core';
 import { useSelector, useDispatch } from 'react-redux';
 import { useParams, useHistory } from 'react-router-dom';
@@ -8,8 +8,15 @@ import { useBoolean } from 'hooks/useBoolean';
 import { onPrint } from 'helpers/ga-event-helper';
 import { createPatientDetailsListPath } from 'routing/helpers/paths';
 import OutlinedSelect from 'components/common/OutlinedSelect/OutlinedSelect';
-import { completeTasksVisibilitySelector } from 'selectors/patient-details-selectors';
-import { togglePatientCompleteTasksVisible } from 'actions/patient-details-actions';
+import {
+  completeTasksVisibilitySelector,
+  currentListTasksStatusSelector,
+} from 'selectors/patient-details-selectors';
+import {
+  togglePatientCompleteTasksVisible,
+  getCurrentPatientTasks,
+  setCurrentListTasksStatus,
+} from 'actions/patient-details-actions';
 import { updateUserPageViewSetup } from 'actions/task-list-actions';
 import { userSetupClientViewSelector } from 'selectors/user-selectors';
 import { updateCurrentUserPreferences } from 'actions/user-actions';
@@ -34,7 +41,8 @@ import { ListViewType, LIST_TYPE_OPTIONS } from '../helpers';
 
 const TaskListToolbar = props => {
   const { lists, currentList } = props;
-  const { tasks: tasksToPrint = [], listUsers = [] } = currentList;
+  const tasksToPrint = currentList?.tasks ? currentList?.tasks : [];
+  const listUsers = currentList?.listUsers ? currentList?.listUsers : [];
   const {
     patientIdentifier,
     taskListIdentifier: taskListIdentifierParameter = ListViewType.ALL_TASKS,
@@ -46,6 +54,8 @@ const TaskListToolbar = props => {
   );
   const dispatch = useDispatch();
   const completeTasksVisible = useSelector(completeTasksVisibilitySelector);
+  const tasksStatus =
+    useSelector(currentListTasksStatusSelector) || TaskStatus.INCOMPLETE;
   const viewSetup = useSelector(userSetupClientViewSelector);
   const moreButtonReference = useRef(null);
   const [
@@ -54,6 +64,8 @@ const TaskListToolbar = props => {
     closeMorePopover,
     toggleMorePopoverOpen,
   ] = useBoolean(false);
+  const [taskStatus, setTaskStatus] = useState();
+
   const listOptions = lists?.map(
     ({ taskListIdentifier, listName, tasks = [] }) => {
       const tasksCount =
@@ -162,6 +174,18 @@ const TaskListToolbar = props => {
     [dispatch],
   );
 
+  const handleChangeTasksStatus = useCallback(
+    event => {
+      const selectedTaskStatus =
+        event.target.value === TaskStatus.INCOMPLETE
+          ? TaskStatus.INCOMPLETE
+          : TaskStatus.COMPLETE;
+      dispatch(setCurrentListTasksStatus(selectedTaskStatus));
+      dispatch(getCurrentPatientTasks(selectedTaskStatus));
+    },
+    [dispatch],
+  );
+
   const onPrintClick = useCallback(() => {
     closeMorePopover();
     onPrint();
@@ -217,8 +241,8 @@ const TaskListToolbar = props => {
       </ListsTabsContainer>
       <Spacing horizontal={4} />
       <TaskStatusToolbarSelect
-        value={TaskStatus.INCOMPLETE}
-        // onChange={handleChangeTasksStatus}
+        value={tasksStatus}
+        onChange={handleChangeTasksStatus}
       />
       <Spacing horizontal={4} />
       <CustomizeToolbarButton

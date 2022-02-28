@@ -106,6 +106,12 @@ const TaskTemplateGroup = ({
         isCompletedTab={isCompletedTab}
         viewSetup={viewSetup}
         setIsAddingTask={setIsAddingTask}
+        isOpen={isOpen}
+        setOpen={setOpen}
+        showCompletedTasks={showCompletedTasks}
+        setShowCompletedTasks={setShowCompletedTasks}
+        showIncompleteTasks={showIncompleteTasks}
+        setShowIncompleteTasks={setShowIncompleteTasks}
       />
       {!isStartedDnD && (
         <TaskTemplateGroupList timeout={150} in={isOpen && !isStartedDnD}>

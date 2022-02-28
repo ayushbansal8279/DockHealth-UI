@@ -7,7 +7,7 @@ import {
   takeEvery,
   takeLatest,
 } from 'redux-saga/effects';
-import { move, omit, pluck, reverse } from 'ramda';
+import { move, pluck, reverse } from 'ramda';
 import * as ActionTypes from 'actions/action-types';
 import { showGlobalAlert, showGlobalErrorAlert } from 'alert/actions';
 import * as TaskTemplateActions from 'actions/task-template-actions';
@@ -137,6 +137,27 @@ function* getFolderBreadcrumbs() {
   }
 }
 
+function* getWorkflowDetails({ taskWorkflowIdentifier }) {
+  try {
+    const workflow = yield call(
+      TaskTemplateApi.getTemplate,
+      taskWorkflowIdentifier,
+    );
+
+    yield put({
+      type: ActionTypes.GET_WORKFLOW_DETAILS_SUCCESS,
+      workflow,
+    });
+  } catch {
+    yield all([
+      put({
+        type: ActionTypes.GET_WORKFLOW_DETAILS_FAILURE,
+      }),
+      put(showGlobalErrorAlert()),
+    ]);
+  }
+}
+
 function* addTemplate({ template, parentIdentifier = null, history }) {
   try {
     const folderIdentifier = yield select(currentFolderIdentifierSelector);
@@ -151,7 +172,7 @@ function* addTemplate({ template, parentIdentifier = null, history }) {
     });
     yield put({
       type: ActionTypes.INITIALIZE_TASK_TEMPLATE_DETAILS,
-      taskTemplateIdentifier: createdTemplate.taskTemplateIdentifier,
+      taskTemplateIdentifier: createdTemplate.identifier,
     });
 
     yield put(
@@ -757,6 +778,7 @@ export default function* watchTaskTemplate() {
   yield takeEvery(ActionTypes.ADD_TASK_TEMPLATE_FOLDER, addTemplate);
   yield takeLatest(ActionTypes.GET_WORKFLOW_FOLDER, getWorkflowFolder);
   yield takeLatest(ActionTypes.GET_FOLDER_BREADCRUMBS, getFolderBreadcrumbs);
+  yield takeLatest(ActionTypes.GET_WORKFLOW_DETAILS, getWorkflowDetails);
   yield takeEvery(ActionTypes.TOGGLE_TASK_TEMPLATE_OPEN, toggleTemplateOpen);
   yield takeEvery(ActionTypes.UPDATE_PARTIAL_WORKFLOW, updatePartialWorkflow);
 

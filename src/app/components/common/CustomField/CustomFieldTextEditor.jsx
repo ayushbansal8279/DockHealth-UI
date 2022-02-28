@@ -30,7 +30,7 @@ const CustomFieldTextEditor = ({
   inputRef,
 }) => {
   const dispatch = useDispatch();
-  const { getValues, watch, register, unregister } = useFormContext();
+  const { getValues, watch, register, unregister, setValue } = useFormContext();
   const initialValue = getValues();
   const value = watch(name);
   const [isFocused, setIsFocused] = useState(false);
@@ -68,22 +68,33 @@ const CustomFieldTextEditor = ({
       if (!text && !previousValue) return;
       if (previousValue !== text) {
         values[name] = text;
-        const formattedValue = formatMetaDataOutput({
-          taskMetaData: values,
-        });
-        const adjustedValues = formattedValue.taskMetaData.map(object => ({
-          ...object,
-          customFieldIdentifier: object.customFieldIdentifier.slice(
-            fieldsGroupKey.length + 1,
-          ),
-        }));
-        dispatch(
-          partialUpdateTask(taskIdentifier, { taskMetaData: adjustedValues }),
-        );
-        dispatch(showGlobalAlert(AlertMessages.UPDATED));
+        if (taskIdentifier) {
+          const formattedValue = formatMetaDataOutput({
+            taskMetaData: values,
+          });
+          const adjustedValues = formattedValue.taskMetaData.map(object => ({
+            ...object,
+            customFieldIdentifier: object.customFieldIdentifier.slice(
+              fieldsGroupKey.length + 1,
+            ),
+          }));
+          dispatch(
+            partialUpdateTask(taskIdentifier, { taskMetaData: adjustedValues }),
+          );
+          dispatch(showGlobalAlert(AlertMessages.UPDATED));
+        } else {
+          setValue(name, text);
+        }
       }
     },
-    [dispatch, fieldsGroupKey.length, getValues, name, taskIdentifier],
+    [
+      dispatch,
+      fieldsGroupKey.length,
+      getValues,
+      name,
+      setValue,
+      taskIdentifier,
+    ],
   );
 
   const handleBlur = useCallback(() => {

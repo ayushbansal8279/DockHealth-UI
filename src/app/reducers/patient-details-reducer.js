@@ -1,6 +1,6 @@
 /* eslint-disable sonarjs/max-switch-cases */
 import * as ActionTypes from 'actions/action-types';
-import { TaskGroupType, TaskItemType } from 'helpers/task-helpers';
+import { TaskGroupType, TaskItemType, TaskStatus } from 'helpers/task-helpers';
 import { mapWithRemove } from 'helpers/utility-functions';
 import { updateTaskOrSubtaskInListsArray } from 'helpers/task-update-helper';
 import { updateBundleInList } from 'helpers/tasklist-helpers';
@@ -13,6 +13,7 @@ const INITIAL_STATE = {
   labels: null,
   isFetchingLabels: false,
   completeTasksVisible: false,
+  currentTasksStatus: TaskStatus.INCOMPLETE,
   lists: null,
   taskSearch: null,
   incompleteTasksCount: null,
@@ -133,6 +134,12 @@ export default function(state = INITIAL_STATE, action = {}) {
       return {
         ...state,
         completeTasksVisible: !state.completeTasksVisible,
+      };
+
+    case ActionTypes.SELECT_PATIENT_LIST_TASK_STATUS:
+      return {
+        ...state,
+        currentTasksStatus: action.taskStatus,
       };
 
     case ActionTypes.GET_CURRENT_PATIENT_TASKS:

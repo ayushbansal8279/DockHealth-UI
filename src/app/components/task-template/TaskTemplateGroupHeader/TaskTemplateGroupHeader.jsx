@@ -56,42 +56,30 @@ const TaskTemplateGroupHeader = ({
   groupDragAndDropDisabled,
   disablePatientAssignment,
   isCompletedTab = false,
-  viewSetup,
   setIsAddingTask,
   highlightedValue,
   pageBackground,
+  isOpen,
+  setOpen,
+  showCompletedTasks,
+  setShowCompletedTasks,
+  showIncompleteTasks,
+  setShowIncompleteTasks,
   // eslint-disable-next-line sonarjs/cognitive-complexity
 }) => {
   const { name, tasks, identifier } = templateGroup;
-  const { SHOW_WORKFLOW_DETAILS, SHOW_WORKFLOW_COMPLETED_TASKS } = viewSetup;
   const { dragHandleProps } = draggableProvided;
   const [isHovered, setIsHovered, unsetIsHovered] = useBoolean(false);
-  const [isOpen, setOpen] = useState(true);
   const { bulkEditIsActive } = useContext(BulkEditContext);
   const [isEditing, setIsEditing] = useState(false);
   const [nameInputValue, setNameInputValue] = useState(name);
   const [nameInputError, setNameInputError] = useState(false);
   const nameInputReference = useRef(null);
-  const [showCompletedTasks, setShowCompletedTasks] = useState(true);
-  const [showIncompleteTasks, setShowIncompleteTasks] = useState(
-    !isCompletedTab,
-  );
   const { currentUser } = useSelector(store => ({
     currentUser: store.userState.userProfile,
   }));
   const dispatch = useDispatch();
   const { columnsConfig, customColumnsConfig } = useColumnsConfig();
-
-  useEffect(() => {
-    setOpen(SHOW_WORKFLOW_DETAILS);
-    if (isCompletedTab) {
-      setShowIncompleteTasks(SHOW_WORKFLOW_COMPLETED_TASKS);
-      setShowCompletedTasks(true);
-    } else {
-      setShowIncompleteTasks(true);
-      setShowCompletedTasks(SHOW_WORKFLOW_COMPLETED_TASKS);
-    }
-  }, [SHOW_WORKFLOW_DETAILS, SHOW_WORKFLOW_COMPLETED_TASKS, isCompletedTab]);
 
   useEffect(() => {
     setNameInputValue(name);

@@ -91,6 +91,26 @@ const TaskTemplateReducer = (state = initialState, action) => {
       };
     }
 
+    case ActionTypes.GET_WORKFLOW_DETAILS_SUCCESS: {
+      if (state.taskTemplates) {
+        return {
+          ...state,
+          taskTemplates: state.taskTemplates.map(taskTemplate =>
+            taskTemplate.identifier === action.workflow.identifier
+              ? { ...taskTemplate, ...action.workflow }
+              : taskTemplate,
+          ),
+        };
+      }
+      return state;
+    }
+
+    case ActionTypes.GET_WORKFLOW_DETAILS_FAILURE:
+      return {
+        ...state,
+        isError: true,
+      };
+
     case ActionTypes.UPDATE_PARTIAL_WORKFLOW: {
       if (state.taskTemplates) {
         return {
@@ -106,16 +126,22 @@ const TaskTemplateReducer = (state = initialState, action) => {
     }
 
     case ActionTypes.ADD_TASK_TEMPLATE_SUCCESS:
-      return {
-        ...state,
-        taskTemplates: [action.template, ...state.taskTemplates],
-      };
+      if (state.taskTemplates) {
+        return {
+          ...state,
+          taskTemplates: [action.template, ...state.taskTemplates],
+        };
+      }
+      return state;
 
     case ActionTypes.DUPLICATE_WORKFLOW_SUCCESS:
-      return {
-        ...state,
-        taskTemplates: [action.workflow, ...state.taskTemplates],
-      };
+      if (state.taskTemplates) {
+        return {
+          ...state,
+          taskTemplates: [action.workflow, ...state.taskTemplates],
+        };
+      }
+      return state;
 
     case ActionTypes.GET_WORKFLOW_FOLDER:
       return {
@@ -237,7 +263,7 @@ const TaskTemplateReducer = (state = initialState, action) => {
         return {
           ...state,
           taskTemplates: state.taskTemplates.map(template =>
-            template.taskTemplateIdentifier === taskTemplateIdentifier
+            template.identifier === taskTemplateIdentifier
               ? {
                   ...template,
                   ...omit(['taskTemplateIdentifier'], dataToUpdate),

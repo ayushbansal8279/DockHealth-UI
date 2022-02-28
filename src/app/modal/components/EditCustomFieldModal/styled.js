@@ -1,8 +1,14 @@
+import { Checkbox } from '@material-ui/core';
 import styled from 'styled-components';
 import { fontSizes, fontWeights } from 'styles/font';
 import palette from 'styles/palette';
 import spacing from 'styles/spacing';
+import { withStyles } from '@material-ui/core/styles';
 import { ModalWrapper } from '../styled';
+
+export const AdditionalOptionLabel = styled.span`
+  cursor: pointer;
+`;
 
 export const AddPatientFieldModalWrapper = styled(ModalWrapper)`
   display: flex;
@@ -75,4 +81,22 @@ export const InfoText = styled.p`
   font-weight: ${fontWeights.regular};
   color: ${palette.coolGrey6};
   text-transform: uppercase;
+`;
+
+export const BlueCheckbox = withStyles({
+  root: {
+    color: palette.brightBlue,
+    '&$checked': {
+      color: palette.brightBlue,
+    },
+  },
+  checked: {},
+})(Checkbox);
+
+export const CheckboxContainer = styled.div`
+  display: flex;
+  flex: 1;
+  height: 100%;
+  justify-content: center;
+  align-items: center;
 `;

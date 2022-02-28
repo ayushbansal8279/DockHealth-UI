@@ -20,6 +20,7 @@ import { updatePartialWorkflow } from 'actions/task-template-actions';
 import { getFormattedPatient, getFormattedPatients } from './helpers';
 
 const PATIENT_IDENTIFIER_FIELD_NAME = 'patientIdentifier';
+const MAX_PATIENT_RESULTS = 200;
 
 const PatientSection = ({
   disabled,
@@ -213,6 +214,8 @@ const PatientSection = ({
       }
       addItemEnabled={!currentOrganization?.emrIntegrationEnabled}
       clearOnSuccess
+      refineResultsCount={MAX_PATIENT_RESULTS}
+      width={600}
     />
   );
 };

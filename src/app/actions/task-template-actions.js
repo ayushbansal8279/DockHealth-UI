@@ -66,6 +66,13 @@ export function getWorkflowFolder(searchPhrase = null) {
   };
 }
 
+export function getWorkflowDetails(taskWorkflowIdentifier) {
+  return {
+    type: ActionTypes.GET_WORKFLOW_DETAILS,
+    taskWorkflowIdentifier,
+  };
+}
+
 export function getFolderBreadcrumbs() {
   return {
     type: ActionTypes.GET_FOLDER_BREADCRUMBS,

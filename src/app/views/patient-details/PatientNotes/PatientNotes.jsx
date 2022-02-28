@@ -1,5 +1,5 @@
 /* eslint-disable sonarjs/cognitive-complexity */
-import React, { useCallback, useMemo, useRef } from 'react';
+import React, { useCallback, useMemo, useRef, useState } from 'react';
 import { compose, descend, prop } from 'ramda';
 import { useDispatch, useSelector } from 'react-redux';
 import {
@@ -16,15 +16,19 @@ import {
 import { openModal, closeModal } from 'modal/actions';
 import TextEditor from 'components/common/TextEditor/TextEditor';
 import { EditorState } from 'draft-js';
-
 import { convertFromEditorStateToOutput } from 'components/common/TextEditor/helpers';
 import { useMentionsEditorState } from 'components/common/TextEditor/use-mentions-editor-state';
+import Button from 'components/common/Button/Button';
+import Spacing from 'components/common/Spacing';
+import { ClickAwayListener } from '@material-ui/core';
 import PatientNote from '../PatientNote/PatientNote';
 import PatientNotesLoader from '../PatientNotesLoader/PatientNotesLoader';
 import {
   PatientNotesWrapper,
   PinnedNotesWrapper,
   RichTextInputContainer,
+  ButtonContainer,
+  ButtonWrapper,
 } from './styled';
 
 const PatientNotes = () => {
@@ -34,6 +38,8 @@ const PatientNotes = () => {
   const isFetching = useSelector(isFetchingNotesSelector);
   const currentUser = useSelector(userProfileSelector);
   const { patientIdentifier, allNotes: notes } = patient || {};
+  const [editMode, setEditMode] = useState(false);
+  const [modalIsOpened, setModalIsOpened] = useState(false);
 
   const handleRemoveNote = useCallback(
     patientNoteIdentifier => {
@@ -60,16 +66,70 @@ const PatientNotes = () => {
 
   const [noteState, setNoteState] = useMentionsEditorState();
   const onNoteChange = state => setNoteState(state);
-  const clearNote = () => setNoteState(EditorState.createEmpty());
+  const clearNote = useCallback(() => setNoteState(EditorState.createEmpty()), [
+    setNoteState,
+  ]);
 
-  const saveNote = () => {
+  const isEmpty = useMemo(() => {
     const { tokenizedText } = convertFromEditorStateToOutput(noteState, true);
-    if ([...tokenizedText]?.filter(char => char !== ' ').length > 0) {
+    return !tokenizedText.trim().length;
+  }, [noteState]);
+
+  const saveNote = useCallback(() => {
+    const { tokenizedText } = convertFromEditorStateToOutput(noteState, true);
+    if (tokenizedText.trim().length > 0) {
       dispatch(addPatientNote(patientIdentifier, tokenizedText));
       clearNote();
-      addNoteInputReference.current.clear();
+      if (typeof addNoteInputReference.current.clear === 'function')
+        addNoteInputReference.current.clear();
+      setEditMode(false);
     }
-  };
+  }, [clearNote, dispatch, noteState, patientIdentifier]);
+
+  const handleCancel = useCallback(() => {
+    clearNote();
+    setEditMode(false);
+  }, [clearNote]);
+
+  const openDeleteConfirmationModal = useCallback(() => {
+    const modalProps = {
+      title: 'You are editing note',
+      description:
+        'Are you sure you want reject changes? This action cannot be undone.',
+      confirmButtonText: 'Quit without saving',
+      confirm: () => {
+        setModalIsOpened(false);
+        handleCancel();
+        dispatch(closeModal());
+      },
+      onClose: () => {
+        setTimeout(() => setModalIsOpened(false), 0);
+        dispatch(closeModal());
+      },
+    };
+    dispatch(openModal('DeleteConfirmation', modalProps));
+  }, [dispatch, handleCancel]);
+
+  const handleClickAway = useCallback(() => {
+    if (editMode && !modalIsOpened) {
+      if (isEmpty) {
+        handleCancel();
+      } else {
+        setModalIsOpened(true);
+        openDeleteConfirmationModal();
+      }
+    }
+  }, [
+    editMode,
+    modalIsOpened,
+    isEmpty,
+    handleCancel,
+    openDeleteConfirmationModal,
+  ]);
+
+  const handleFocus = useCallback(() => {
+    setEditMode(true);
+  }, []);
 
   const [pinnedNotes, unpinnedNotes] = useMemo(
     () =>
@@ -117,32 +177,43 @@ const PatientNotes = () => {
           {unpinnedNotes
             ?.sort(descend(prop('dateUpdated')))
             ?.map(renderPatient)}
-          <RichTextInputContainer>
-            <TextEditor
-              showToolbar
-              ref={addNoteInputReference}
-              taskListIdentifier={patientIdentifier}
-              disableMentions
-              placeholder="Leave a note and press enter on your keyboard to save"
-              isDrawerEditor
-              onBlur={saveNote}
-              state={noteState}
-              onChange={onNoteChange}
-              keyBindingFn={event => {
-                if (event.key === 'Enter' && !event.shiftKey) {
-                  return 'enter-command';
-                }
-                return undefined;
-              }}
-              handleKeyCommand={command => {
-                if (command === 'enter-command') {
-                  addNoteInputReference.current.blur();
-                  return 'handled';
-                }
-                return 'not-handled';
-              }}
-            />
-          </RichTextInputContainer>
+          <ClickAwayListener onClickAway={handleClickAway}>
+            <RichTextInputContainer>
+              <TextEditor
+                showToolbar
+                ref={addNoteInputReference}
+                taskListIdentifier={patientIdentifier}
+                disableMentions
+                placeholder="Leave a note and press enter on your keyboard to save"
+                state={noteState}
+                onChange={onNoteChange}
+                onFocus={handleFocus}
+              />
+              {editMode && (
+                <ButtonContainer>
+                  <ButtonWrapper>
+                    <Button
+                      color="secondary"
+                      variant="secondary"
+                      onClick={handleCancel}
+                      size="small"
+                    >
+                      Cancel
+                    </Button>
+                    <Spacing horizontal={4} />
+                    <Button
+                      color="primary"
+                      disabled={isEmpty}
+                      size="small"
+                      onClick={saveNote}
+                    >
+                      Save
+                    </Button>
+                  </ButtonWrapper>
+                </ButtonContainer>
+              )}
+            </RichTextInputContainer>
+          </ClickAwayListener>
         </>
       ) : (
         <PatientNotesLoader />

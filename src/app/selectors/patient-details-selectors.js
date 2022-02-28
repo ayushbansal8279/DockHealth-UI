@@ -17,6 +17,11 @@ export const completeTasksVisibilitySelector = createSelector(
   ({ completeTasksVisible }) => completeTasksVisible,
 );
 
+export const currentListTasksStatusSelector = createSelector(
+  patientDetailsStateSelector,
+  ({ currentTasksStatus }) => currentTasksStatus,
+);
+
 export const patientListHasTasksSelector = createSelector(
   patientDetailsStateSelector,
   ({ lists }) => lists?.length > 0,

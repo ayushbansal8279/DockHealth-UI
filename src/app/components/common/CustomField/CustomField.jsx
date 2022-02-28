@@ -53,7 +53,9 @@ const CustomField = ({
 
   const handleBlur = useCallback(
     data => {
-      onBlur(data, wasChanged);
+      if (onBlur) {
+        onBlur(data, wasChanged);
+      }
     },
     [onBlur, wasChanged],
   );

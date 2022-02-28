@@ -11,6 +11,7 @@ export const FilterOptionsCategory = {
   PRIORITY: 'priorityOptions',
   COMPLETE_DATE: 'taskCompletedDateOptions',
   CREATED_DATE: 'taskCreatedDateOptions',
+  TASK_STATUS: 'taskStatusOptions',
 };
 
 const FilterOptionsLabel = {
@@ -24,6 +25,7 @@ const FilterOptionsLabel = {
   [FilterOptionsCategory.PRIORITY]: 'Priority',
   [FilterOptionsCategory.COMPLETE_DATE]: 'Task completed date',
   [FilterOptionsCategory.CREATED_DATE]: 'Task created date',
+  [FilterOptionsCategory.TASK_STATUS]: 'Status',
 };
 
 const DATE_FILTER_OPTIONS = [

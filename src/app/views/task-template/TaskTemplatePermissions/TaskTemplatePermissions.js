@@ -5,7 +5,7 @@ import Tooltip from 'components/common/Tooltip/Tooltip';
 import { useDispatch, useSelector } from 'react-redux';
 import { openModal } from 'modal/actions';
 import { userProfileSelector } from 'selectors/user-selectors';
-import { updatePartialWorkflow } from 'actions/task-template-actions';
+import { getWorkflowDetails } from 'actions/task-template-actions';
 
 import {
   StandardTaskItemCell,
@@ -29,12 +29,8 @@ const TaskTemplatePermissions = ({ template }) => {
           members,
           template,
         },
-        onMembersRefresh: refreshedMembers => {
-          // dispatch(
-          //   updatePartialWorkflow(identifier, {
-          //     members: refreshedMembers,
-          //   }),
-          // );
+        onMembersRefresh: () => {
+          dispatch(getWorkflowDetails(identifier));
         },
       }),
     );

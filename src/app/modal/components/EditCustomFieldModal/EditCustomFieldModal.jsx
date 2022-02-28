@@ -23,6 +23,7 @@ import {
   FormScrollingContainer,
   InfoText,
 } from './styled';
+import AdditionalOptions from './AdditionalOptions';
 
 const REQUIRED_MESSAGE = 'This field is required';
 
@@ -34,10 +35,62 @@ const EditCustomFieldModal = ({
   options: { type },
   taskListIdentifier,
 }) => {
+  const [displayOptionsState, setDisplayOptionsState] = useState({
+    displayOptions: customField?.displayOptions || [],
+  });
+
+  const handleDisplayOptionChange = (value, displayOption) => {
+    let updatedOptions = displayOptionsState?.displayOptions;
+    if (value) {
+      if (
+        !displayOptionsState?.displayOptions?.find(
+          option => option === displayOption,
+        )
+      ) {
+        updatedOptions.push(displayOption);
+      }
+    } else {
+      updatedOptions = updatedOptions.filter(item => item !== displayOption);
+    }
+    setDisplayOptionsState(s => ({
+      ...s,
+      displayOptions: updatedOptions,
+    }));
+  };
+
+  const ADDITIONAL_OPTIONS = [
+    {
+      label: 'Include on Patient Header',
+      key: 'PATIENT_HEADER',
+      value: !!displayOptionsState?.displayOptions?.find(
+        option => option === 'PATIENT_HEADER',
+      ),
+      onChange: value => handleDisplayOptionChange(value, 'PATIENT_HEADER'),
+    },
+    {
+      label: 'Include on Patient Search',
+      key: 'PATIENT_SEARCH',
+      value: !!displayOptionsState?.displayOptions?.find(
+        option => option === 'PATIENT_SEARCH',
+      ),
+      onChange: value => handleDisplayOptionChange(value, 'PATIENT_SEARCH'),
+    },
+    {
+      label: 'Include on Patient List',
+      key: 'PATIENT_LIST',
+      value: !!displayOptionsState?.displayOptions?.find(
+        option => option === 'PATIENT_LIST',
+      ),
+      onChange: value => handleDisplayOptionChange(value, 'PATIENT_LIST'),
+    },
+  ];
+
   const addOptionButtonReference = useRef(null);
   const isCreatingNewField = !customField;
   const [isSaving, setIsSaving] = useState(false);
   const dispatch = useDispatch();
+
+  const additionalOptionsEnabled = type === 'PATIENT';
 
   const validationSchema = useMemo(() => {
     return object().shape({
@@ -135,7 +188,11 @@ const EditCustomFieldModal = ({
 
   const handleEditSubmit = data => {
     setIsSaving(true);
-    const updatedField = { ...customField, ...data };
+    const updatedField = {
+      ...customField,
+      ...data,
+      ...displayOptionsState,
+    };
     CustomFieldsApi.updateCustomField(updatedField, type, taskListIdentifier)
       .then(() => {
         onUpdated(updatedField);
@@ -150,7 +207,11 @@ const EditCustomFieldModal = ({
 
   const handleAddSubmit = data => {
     setIsSaving(true);
-    CustomFieldsApi.addCustomField(data, type, taskListIdentifier)
+    CustomFieldsApi.addCustomField(
+      { ...data, ...displayOptionsState },
+      type,
+      taskListIdentifier,
+    )
       .then(addedField => {
         onAdded(addedField);
         setIsSaving(false);
@@ -217,6 +278,7 @@ const EditCustomFieldModal = ({
                         />
                       </Grid>
                     )}
+
                     {optionsValue?.length > 0 && (
                       <>
                         <Box m={2} />
@@ -260,6 +322,11 @@ const EditCustomFieldModal = ({
                       </>
                     )}
                   </Grid>
+                  {additionalOptionsEnabled && (
+                    <Box m={2}>
+                      <AdditionalOptions options={ADDITIONAL_OPTIONS} />
+                    </Box>
+                  )}
                 </Box>
               </FormScrollingContainer>
               <Box m={2} />
