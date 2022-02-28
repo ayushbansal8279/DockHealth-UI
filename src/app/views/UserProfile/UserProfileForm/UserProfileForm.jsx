@@ -132,7 +132,7 @@ const UserProfileForm = ({ userProfile }) => {
               </OuterAvatarContainer>
             </Grid>
             <Spacing vertical={4} />
-            <SectionTitle>Select initials for your group</SectionTitle>
+            <SectionTitle>Select Initials for your profile</SectionTitle>
             <InitialsInput
               name="initials"
               placeholder="ab"
@@ -143,7 +143,7 @@ const UserProfileForm = ({ userProfile }) => {
               maxChar={2}
             />
             <Spacing vertical={4} />
-            <SectionTitle>Choose a color for the group</SectionTitle>
+            <SectionTitle>Choose a color for your profile</SectionTitle>
             <ColorPicker
               name="bubbleColor"
               value={avatarColorValue}
