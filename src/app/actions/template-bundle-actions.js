@@ -74,3 +74,10 @@ export function applyTemplate({
     },
   };
 }
+
+export function getTasksForWorkflow(workflowIdentifier) {
+  return {
+    type: ActionTypes.GET_TASKS_FOR_WORKFLOW,
+    workflowIdentifier,
+  };
+}

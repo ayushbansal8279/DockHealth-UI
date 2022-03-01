@@ -1,6 +1,12 @@
 /* eslint-disable import/prefer-default-export */
 import axios from './axios-heydoc';
 
+export function getWorkflow(identifier) {
+  return axios.get(`task/workflow/${identifier}`).then(({ data }) => {
+    return data;
+  });
+}
+
 export function duplicateWorkflow(identifier, includeAttachments = false) {
   return axios
     .put(
