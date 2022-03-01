@@ -614,15 +614,16 @@ function* applyTaskTemplate({
   options: { unassign = false },
 }) {
   try {
-    const { statusCode, assignmentsMismatchCount } = yield call(
-      TemplateBundleApi.applyTemplate,
-      {
-        taskTemplateIdentifier,
-        taskGroupIdentifier,
-        taskListIdentifier,
-        unassign,
-      },
-    );
+    const {
+      statusCode,
+      assignmentsMismatchCount,
+      taskWorkflowDto,
+    } = yield call(TemplateBundleApi.applyTemplate, {
+      taskTemplateIdentifier,
+      taskGroupIdentifier,
+      taskListIdentifier,
+      unassign,
+    });
     const isWarning = statusCode === 'WARNING';
 
     if (isWarning) {
@@ -636,13 +637,12 @@ function* applyTaskTemplate({
         },
       });
     } else {
-      yield put(
-        ListDetailsActions.getTasksForTaskGroups({
-          taskGroupIdentifier,
-          status: 'INCOMPLETE',
-          refresh: true,
-        }),
-      );
+      yield put({
+        type: ActionTypes.APPLY_TASK_TEMPLATE_SUCCESS,
+        template: taskWorkflowDto,
+        taskListIdentifier,
+        taskGroupIdentifier,
+      });
     }
   } catch {
     yield put(showGlobalErrorAlert());
