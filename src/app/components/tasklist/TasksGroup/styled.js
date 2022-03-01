@@ -76,7 +76,7 @@ export const TasksGroupLabel = styled.p`
 
 export const TasksGroupLabelName = styled.span`
   display: inline-block;
-  max-width: calc(100% - 40px);
+  max-width: 400px;
   padding-right: ${spacing.tiny};
   overflow: hidden;
   white-space: nowrap;
