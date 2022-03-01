@@ -225,6 +225,8 @@ const PatientSection = ({
               setPatients([]);
               await savePatient(null);
               clearInput();
+              // eslint-disable-next-line no-unused-expressions
+              patientInputReference.current?.querySelector('input')?.focus();
             },
           }),
         );
@@ -234,8 +236,6 @@ const PatientSection = ({
         setPatients([]);
         await savePatient(null);
       }
-      // eslint-disable-next-line no-unused-expressions
-      patientInputReference.current?.querySelector('input')?.focus();
     },
     [dispatch, savePatient, selectedPatient, templateBundleIdentifier],
   );
