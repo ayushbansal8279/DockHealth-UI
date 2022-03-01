@@ -1,6 +1,7 @@
 /* eslint-disable react-hooks/rules-of-hooks */
 import React, { useState, useMemo, useCallback, useEffect } from 'react';
 import { useDispatch } from 'react-redux';
+import usePrevious from 'hooks/use-previous';
 import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd';
 import * as TaskActions from 'actions/task-actions';
 import * as TemplateBundleActions from 'actions/template-bundle-actions';
@@ -46,6 +47,7 @@ const TaskTemplateGroup = ({
   );
   const [isAddingTask, setIsAddingTask] = useState(false);
   const dispatch = useDispatch();
+  const previousIsOpen = usePrevious(isOpen);
 
   useEffect(() => {
     setOpen(SHOW_WORKFLOW_DETAILS);
@@ -59,7 +61,7 @@ const TaskTemplateGroup = ({
   }, [SHOW_WORKFLOW_DETAILS, SHOW_WORKFLOW_COMPLETED_TASKS, isCompletedTab]);
 
   useEffect(() => {
-    if (isOpen && (!tasks || tasks.length === 0)) {
+    if (isOpen && !previousIsOpen && (!tasks || tasks.length === 0)) {
       dispatch(TemplateBundleActions.getTasksForWorkflow(identifier));
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
