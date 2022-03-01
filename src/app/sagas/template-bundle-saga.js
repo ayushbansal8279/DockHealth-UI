@@ -2,6 +2,7 @@ import { pluck, move } from 'ramda';
 import * as ActionTypes from 'actions/action-types';
 import AlertMessages from 'alert/AlertMessages';
 import * as TemplateBundleApi from 'api/template-bundle-api';
+import * as WorkflowApi from 'api/workflow-api';
 import { call, put, takeEvery } from 'redux-saga/effects';
 import { showGlobalAlert, showGlobalErrorAlert } from 'alert/actions';
 import { TaskStatus } from 'helpers/task-helpers';
@@ -216,6 +217,22 @@ function* applyTemplate({
   }
 }
 
+function* getTasksForWorkflow({ workflowIdentifier }) {
+  try {
+    const { tasks } = yield call(WorkflowApi.getWorkflow, workflowIdentifier);
+    yield put({
+      type: ActionTypes.GET_TASKS_FOR_WORKFLOW_SUCCESS,
+      workflowIdentifier,
+      tasks,
+    });
+  } catch {
+    yield put({
+      type: ActionTypes.GET_TASKS_FOR_WORKFLOW_FAILURE,
+      workflowIdentifier,
+    });
+  }
+}
+
 export default function* watchTemplateBundle() {
   yield takeEvery(ActionTypes.UPDATE_TEMPLATE_BUNDLE, updateTemplateBundle);
   yield takeEvery(
@@ -231,4 +248,5 @@ export default function* watchTemplateBundle() {
     changePatientForTemplateBundle,
   );
   yield takeEvery(ActionTypes.APPLY_TEMPLATE, applyTemplate);
+  yield takeEvery(ActionTypes.GET_TASKS_FOR_WORKFLOW, getTasksForWorkflow);
 }

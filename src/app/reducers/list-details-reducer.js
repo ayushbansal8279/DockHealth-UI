@@ -383,6 +383,44 @@ const ListDetailsReducer = (state = initialState, action) => {
       };
     }
 
+    case ActionTypes.GET_TASKS_FOR_WORKFLOW: {
+      const { workflowIdentifier } = action;
+
+      return {
+        ...state,
+        groupedTasks: {
+          ...state.groupedTasks,
+          taskGroups: state.groupedTasks?.taskGroups?.map(g => ({
+            ...g,
+            tasks: updateBundleInList(
+              { isFetchingTasks: true },
+              workflowIdentifier,
+              g.tasks,
+            ),
+          })),
+        },
+      };
+    }
+
+    case ActionTypes.GET_TASKS_FOR_WORKFLOW_SUCCESS: {
+      const { workflowIdentifier, tasks } = action;
+
+      return {
+        ...state,
+        groupedTasks: {
+          ...state.groupedTasks,
+          taskGroups: state.groupedTasks?.taskGroups?.map(g => ({
+            ...g,
+            tasks: updateBundleInList(
+              { isFetchingTasks: false, tasks },
+              workflowIdentifier,
+              g.tasks,
+            ),
+          })),
+        },
+      };
+    }
+
     case ActionTypes.UPDATE_PARTIAL_WORKFLOW_SUCCESS: {
       return updateBundleInState(
         () => ({ ...action.newData }),
