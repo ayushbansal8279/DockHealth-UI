@@ -700,14 +700,6 @@ function* doTogglePatientCompleteTasksVisible() {
   }
 }
 
-function* applyTemplateSuccess() {
-  const { patientIdentifier } = yield select(locationParametersSelector);
-
-  if (patientIdentifier) {
-    yield put(PatientDetailsActions.getCurrentPatientTasks());
-  }
-}
-
 export default function* watchPatientDetails() {
   yield takeLatest(
     ActionTypes.INITIALIZE_PATIENT_STATE,
@@ -766,5 +758,4 @@ export default function* watchPatientDetails() {
   yield takeEvery(DO_ADD_PATIENT_NOTE, doAddPatientNote);
   yield takeEvery(DO_REMOVE_PATIENT_NOTE, doRemovePatientNote);
   yield takeEvery(DO_CHANGE_PATIENT_NOTE_PIN, doChangePatientNotePin);
-  yield takeEvery(ActionTypes.APPLY_TEMPLATE_SUCCESS, applyTemplateSuccess);
 }
