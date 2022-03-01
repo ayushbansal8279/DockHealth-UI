@@ -90,11 +90,6 @@ const TaskTemplateGroup = ({
     [showCompletedTasks, showIncompleteTasks, tasks, isCompletedTab],
   );
 
-  const openPatientPopover = useCallback(() => {
-    if (!disablePatientAssignment && patientReference.current)
-      patientReference.current.click();
-  }, [disablePatientAssignment]);
-
   return (
     <TaskTemplateGroupContainer ref={innerRef} {...draggableProps}>
       <TaskTemplateGroupHeader
@@ -161,7 +156,6 @@ const TaskTemplateGroup = ({
                           isBundleTask
                           templateBundleIdentifier={identifier}
                           parentTaskGroupIdentifier={parentTaskGroupIdentifier}
-                          openPatientPopover={openPatientPopover}
                           noMargin
                         />
                       )}
