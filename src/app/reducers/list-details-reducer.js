@@ -161,7 +161,7 @@ const ListDetailsReducer = (state = initialState, action) => {
 
     case ActionTypes.GET_COMPLETED_TASKS_BY_GROUPS_SUCCESS: {
       const { groupedTasks, loadingMore, taskListIdentifier } = action;
-      const group = groupedTasks.taskGroups[0];
+      const group = groupedTasks[0];
 
       const groupToUpdate = state.completedGroupedTasks.taskGroups?.find(
         ({ groupIdentifier }) => groupIdentifier === group?.groupIdentifier,
