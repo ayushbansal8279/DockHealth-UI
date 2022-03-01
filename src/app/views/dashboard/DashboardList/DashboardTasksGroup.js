@@ -88,11 +88,21 @@ const DashboardTasksGroup = ({
   const dispatch = useDispatch();
 
   const currentTaskLength = dashboardTasks?.length || 0;
-  const previousTaskLength = usePrevious(currentTaskLength);
+  const previousTaskLength = usePrevious(currentTaskLength) || 0;
+
+  // console.log('currentTaskLength', currentTaskLength, groupType);
 
   useEffect(() => {
-    if (currentTaskLength > 0 && previousTaskLength === 0) setGroupIsOpen(true);
+    if (currentTaskLength > 0 && previousTaskLength === 0) {
+      setGroupIsOpen(true);
+    }
   }, [currentTaskLength, previousTaskLength]);
+
+  useEffect(() => {
+    if (dashboardTasks?.length === 0 && metricValue === 0 && !isLoading) {
+      setGroupIsOpen(false);
+    }
+  }, [dashboardTasks, isLoading, metricValue]);
 
   const isGroupSelected = useMemo(() => checkIfAllTasksSelected(tasks), [
     tasks,
@@ -120,12 +130,6 @@ const DashboardTasksGroup = ({
   useEffect(() => {
     setNewTasks(dashboardTasks);
   }, [dashboardTasks]);
-
-  useEffect(() => {
-    if (dashboardTasks?.length === 0 && !isLoading) {
-      setGroupIsOpen(false);
-    }
-  }, [dashboardTasks, isLoading]);
 
   const groupHasMultipleAssignees = useMemo(
     () => tasks?.some(({ assignedToUsers }) => assignedToUsers?.length > 1),

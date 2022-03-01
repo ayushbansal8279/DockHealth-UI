@@ -50,8 +50,6 @@ function* getDashboardFilters() {
   const tabName = yield select(dashboardTabNameSelector);
   const selectedFilters = yield select(dashboardSelectedFiltersSelector);
 
-  console.log('selectedFilters in saga', selectedFilters);
-
   try {
     const filters =
       tabName === DashboardTasksTab.ALL_TASKS
@@ -74,9 +72,7 @@ function* getDashboardTasksForGroup({ groupType }) {
   try {
     const tabName = yield select(dashboardTabNameSelector);
     const isAllTasks = tabName === DashboardTasksTab.ALL_TASKS;
-
     const { tasks } = yield select(dashboardGroupTasksCountSelector, groupType);
-
     const { taskGroups } = yield call(
       isAllTasks
         ? getTasksForOrganizationByImplicitGroup
@@ -85,7 +81,6 @@ function* getDashboardTasksForGroup({ groupType }) {
       0,
       tasks?.length || 0,
     );
-
     const group = taskGroups.find(g => g.groupType === groupType);
 
     yield put({
