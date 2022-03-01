@@ -97,7 +97,7 @@ const PatientList = ({
       fetchPatients(value).then(() => {
         setIsLoadingPatients(false);
       });
-    }, 500),
+    }, 750),
     [],
   );
 
