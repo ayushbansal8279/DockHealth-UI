@@ -518,6 +518,25 @@ const ListDetailsReducer = (state = initialState, action) => {
       return { ...state, listGroups: oldListGroupsOrder };
     }
 
+    case ActionTypes.APPLY_TASK_TEMPLATE_SUCCESS: {
+      const { template, taskGroupIdentifier } = action;
+
+      return {
+        ...state,
+        groupedTasks: {
+          ...state.groupedTasks,
+          taskGroups: state.groupedTasks?.taskGroups?.map(g =>
+            g.groupIdentifier === taskGroupIdentifier
+              ? {
+                  ...g,
+                  tasks: [template, ...g.tasks],
+                }
+              : g,
+          ),
+        },
+      };
+    }
+
     default:
       return TaskBaseReducer(state, action, updateTasksStateCallback);
   }

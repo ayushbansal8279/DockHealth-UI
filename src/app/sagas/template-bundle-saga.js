@@ -206,7 +206,8 @@ function* applyTemplate({
       yield put(showGlobalAlert(AlertMessages.CREATED));
       yield put({
         type: ActionTypes.APPLY_TEMPLATE_SUCCESS,
-        bundle: addedBundle,
+        taskListIdentifier,
+        template: addedBundle.taskWorkflowDto,
       });
     }
   } catch {
