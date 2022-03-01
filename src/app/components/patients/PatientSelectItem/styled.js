@@ -8,7 +8,7 @@ export const SuggestionItemContainer = styled.div`
   grid-gap: 0.5rem;
   grid-template-columns:
     minmax(100px, 120px) 80px minmax(60px, 100px)
-    minmax(60px, 120px) minmax(60px, 100px) minmax(60px, 80px);
+    minmax(60px, 150px) minmax(60px, 150px);
   align-items: center;
   width: 100%;
   height: 40px;
