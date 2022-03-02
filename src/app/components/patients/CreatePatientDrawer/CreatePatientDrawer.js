@@ -42,12 +42,7 @@ const onSubmit = ({
     });
 };
 
-const CreatePatientDrawer = ({
-  isSidebarOpen,
-  editingDisabled,
-  onPatientCreated,
-  onClose,
-}) => {
+const CreatePatientDrawer = ({ isSidebarOpen, onPatientCreated, onClose }) => {
   const { currentUser } = useSelector(store => ({
     currentUser: store.userState.userProfile,
   }));
@@ -103,7 +98,6 @@ const CreatePatientDrawer = ({
           formMethods={formMethods}
           onSubmit={handleFormSubmit}
           uniqueIdentifierLabel={uniqueIdentifierLabel}
-          readOnly={editingDisabled}
           customerTypeLabel={customerTypeLabel}
           ref={formReference}
           buttonLabel={`SAVE ${customerTypeLabel}`}

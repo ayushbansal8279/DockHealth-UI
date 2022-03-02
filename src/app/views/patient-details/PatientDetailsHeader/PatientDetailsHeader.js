@@ -9,7 +9,6 @@ import ArrowLeftIcon from 'img/arrow-left.svg';
 import { Box, Chip, Grid } from '@material-ui/core';
 import { getCustomerUniqueIDShortLabel } from 'helpers/customer-type-helper';
 import Tooltip from 'components/common/Tooltip/Tooltip';
-import { organizationSelector } from 'selectors/organization-selectors';
 import { userProfileSelector } from 'selectors/user-selectors';
 import {
   patientSelector,
@@ -34,7 +33,6 @@ import {
 const PatientDetailsHeader = () => {
   const history = useHistory();
   const [isDrawerOpen, setIsDrawerOpen, unsetIsDrawerOpen] = useBoolean(false);
-  const organization = useSelector(organizationSelector);
   const patient = useSelector(patientSelector);
   const {
     firstName,
@@ -51,8 +49,6 @@ const PatientDetailsHeader = () => {
   const isFetchingPatient = useSelector(isFetchingPatientSelector);
   const currentUser = useSelector(userProfileSelector);
   const uniqueIdentifierLabel = getCustomerUniqueIDShortLabel(currentUser);
-
-  const { emrIntegrationEnabled } = organization || {};
 
   const isLoadingDetails = isFetchingPatient || !patient;
 
@@ -189,7 +185,6 @@ const PatientDetailsHeader = () => {
           <PatientDetailsDrawer
             patient={patient}
             isOpenedDetails={isDrawerOpen}
-            editingDisabled={emrIntegrationEnabled}
             closeDetails={unsetIsDrawerOpen}
           />
         </>

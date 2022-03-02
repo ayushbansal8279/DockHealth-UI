@@ -1,3 +1,4 @@
+/* eslint-disable sonarjs/cognitive-complexity */
 import React, { useState, forwardRef, useEffect, useCallback } from 'react';
 import { useSelector } from 'react-redux';
 import { Box } from '@material-ui/core';
@@ -36,7 +37,8 @@ const PatientForm = forwardRef(
       uniqueIdentifierLabel,
       customerTypeLabel = '',
       onSubmit,
-      readOnly = false,
+      emrIntegrationEnabled,
+      edited = true,
       buttonLabel,
     },
     reference,
@@ -88,7 +90,7 @@ const PatientForm = forwardRef(
           >
             {index !== 0 && <Spacing vertical={3} />}
             <CustomField
-              readOnly={readOnly}
+              readOnly={!edited}
               field={field}
               initialValue={initialFieldValue}
               fieldsGroupKey="patientMetaData"
@@ -96,7 +98,7 @@ const PatientForm = forwardRef(
           </HidableContainer>
         );
       },
-      [patient, readOnly],
+      [patient, edited],
     );
 
     const handleAddButtonClick = () =>
@@ -115,34 +117,34 @@ const PatientForm = forwardRef(
           onClick={() => setIsOpenedPersonal(!isOpenedPersonal)}
         >
           <FormInput
-            readOnly={readOnly}
+            readOnly={!edited || emrIntegrationEnabled}
             label="First Name"
             name="firstName"
             required
           />
           <Spacing vertical={3} />
           <FormInput
-            readOnly={readOnly}
+            readOnly={!edited || emrIntegrationEnabled}
             label="Middle Name"
             name="middleName"
           />
           <Spacing vertical={3} />
           <FormInput
-            readOnly={readOnly}
+            readOnly={!edited || emrIntegrationEnabled}
             label="Last Name"
             name="lastName"
             required
           />
           <Spacing vertical={3} />
           <FormSelect
-            readOnly={readOnly}
+            readOnly={!edited || emrIntegrationEnabled}
             label="Gender"
             options={GENDER_OPTIONS}
             name="gender"
           />
           <Spacing vertical={3} />
           <FormInput
-            readOnly={readOnly}
+            readOnly={!edited || emrIntegrationEnabled}
             label="Date of Birth"
             placeholder="MM/DD/YYYY"
             inputComponent={DateInput}
@@ -151,7 +153,7 @@ const PatientForm = forwardRef(
           />
           <Spacing vertical={3} />
           <FormInput
-            readOnly={readOnly}
+            readOnly={!edited || emrIntegrationEnabled}
             label={uniqueIdentifierLabel}
             placeholder="- -"
             name="mrn"
@@ -161,7 +163,7 @@ const PatientForm = forwardRef(
             return renderCustomField(
               field,
               index,
-              emptyPersonalVisible || !readOnly,
+              emptyPersonalVisible || edited,
             );
           })}
           <Spacing vertical={3} />
@@ -180,25 +182,29 @@ const PatientForm = forwardRef(
           onClick={() => setIsOpenedContact(!isOpenedContact)}
         >
           <FormPhoneNumberInput
-            readOnly={readOnly}
+            readOnly={!edited || emrIntegrationEnabled}
             label="Mobile Phone"
             name="phoneMobile"
           />
           <Spacing vertical={3} />
           <FormPhoneNumberInput
-            readOnly={readOnly}
+            readOnly={!edited || emrIntegrationEnabled}
             label="Home Phone"
             name="phoneHome"
             type="tel"
           />
           <Spacing vertical={3} />
-          <FormInput readOnly={readOnly} label="email" name="email" />
+          <FormInput
+            readOnly={!edited || emrIntegrationEnabled}
+            label="email"
+            name="email"
+          />
           <Spacing vertical={3} />
           {customFields?.[Category.CONTACT_INFO]?.map((field, index) => {
             return renderCustomField(
               field,
               index,
-              emptyContactsVisible || !readOnly,
+              emptyContactsVisible || edited,
             );
           })}
           <Spacing vertical={3} />
@@ -221,7 +227,7 @@ const PatientForm = forwardRef(
               return renderCustomField(
                 field,
                 index,
-                emptyOtherVisible || !readOnly,
+                emptyOtherVisible || edited,
               );
             })}
             <Spacing vertical={3} />
@@ -241,7 +247,7 @@ const PatientForm = forwardRef(
               </AddButton>
             )}
           </div>
-          {!readOnly && (
+          {edited && (
             <Button width="auto" type="submit">
               {buttonLabel || `SAVE ${customerTypeLabel}`}
             </Button>

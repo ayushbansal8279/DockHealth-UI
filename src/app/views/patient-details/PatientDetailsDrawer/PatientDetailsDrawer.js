@@ -5,6 +5,7 @@ import { useBoolean } from 'hooks/useBoolean';
 import { mergeDeepRight } from 'ramda';
 import moment from 'moment';
 import { useDispatch, useSelector } from 'react-redux';
+import { organizationSelector } from 'selectors/organization-selectors';
 import { userProfileSelector } from 'selectors/user-selectors';
 import { FormContext, useForm } from 'react-hook-form';
 import { openModal, closeModal } from 'modal/actions';
@@ -19,12 +20,7 @@ import {
 } from 'helpers/customer-type-helper';
 import PatientLabels from '../PatientLabels/PatientLabels';
 
-const PatientDetailsDrawer = ({
-  patient,
-  isOpenedDetails,
-  editingDisabled,
-  closeDetails,
-}) => {
+const PatientDetailsDrawer = ({ patient, isOpenedDetails, closeDetails }) => {
   const history = useHistory();
   const { patientIdentifier } = patient;
   const formattedDob = patient?.dob
@@ -46,6 +42,8 @@ const PatientDetailsDrawer = ({
   const customerTypeLabel = getCustomerTypeLabel(currentUser);
   const { clearError, reset } = formMethods;
   const formReference = useRef(null);
+  const organization = useSelector(organizationSelector);
+  const { emrIntegrationEnabled } = organization || {};
 
   const close = () => {
     unsetActive();
@@ -100,12 +98,12 @@ const PatientDetailsDrawer = ({
         name: 'Edit',
         onClick: setActive,
       },
-      {
+      !emrIntegrationEnabled && {
         name: 'Archive',
         onClick: archivePatient,
       },
     ],
-    [archivePatient, setActive],
+    [archivePatient, setActive, emrIntegrationEnabled],
   );
 
   return (
@@ -115,7 +113,7 @@ const PatientDetailsDrawer = ({
         title={`${patient.lastName}, ${patient.firstName} ${
           patient.middleName ? patient.middleName : ''
         }`}
-        options={!editingDisabled ? contextMenuOptions : null}
+        options={contextMenuOptions}
         onClose={handleClose}
       >
         <PatientLabels />
@@ -125,7 +123,8 @@ const PatientDetailsDrawer = ({
           patient={patient}
           onSubmit={handleFormSubmit}
           uniqueIdentifierLabel={uniqueIdentifierLabel}
-          readOnly={!isActive || editingDisabled}
+          emrIntegrationEnabled={emrIntegrationEnabled}
+          edited={isActive}
           customerTypeLabel={customerTypeLabel}
           buttonLabel="SAVE EDITS"
         />
@@ -133,4 +132,5 @@ const PatientDetailsDrawer = ({
     </FormContext>
   );
 };
+
 export default PatientDetailsDrawer;
