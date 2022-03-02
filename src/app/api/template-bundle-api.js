@@ -32,7 +32,7 @@ export function moveWorkflowToList(
   return axios
     .patch(`task/workflow/${identifier}`, {
       taskListIdentifier,
-      parentTaskGroupIdentifier: taskGroupIdentifier,
+      parentTaskWorkflowIdentifier: taskGroupIdentifier,
     })
     .then(({ data }) => {
       return data;

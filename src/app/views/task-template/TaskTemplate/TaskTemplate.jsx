@@ -110,46 +110,49 @@ const TaskTemplate = ({
 
   const menuOptions = useMemo(
     () => [
-      (smartFlowsAvailable || templateType === 'SMARTFLOW_SAMPLE') && {
-        name: 'Open in SmartFlow Builder',
-        onClick: () => history.push(createWorkflowBuilderPath(identifier)),
-      },
-      (smartFlowsAvailable || templateType !== 'SMARTFLOW_SAMPLE') && {
-        name: 'Edit Workflow Name',
-        onClick: () => {
-          setIsEditing(true);
-          // eslint-disable-next-line no-unused-expressions
-          nameInputReference.current?.focus();
+      isCurrentUserEditor &&
+        (smartFlowsAvailable || templateType === 'SMARTFLOW_SAMPLE') && {
+          name: 'Open in SmartFlow Builder',
+          onClick: () => history.push(createWorkflowBuilderPath(identifier)),
         },
-      },
-      (smartFlowsAvailable || templateType !== 'SMARTFLOW_SAMPLE') && {
-        name: 'Move to folder',
-        onClick: () =>
-          dispatch(
-            ModalActions.openModal('SelectWorkflowDestination', {
-              confirmText: 'Move',
-              confirm: parentTaskWorkflowIdentifier => {
-                dispatch(
-                  moveWorkflowToFolder(
-                    identifier,
-                    parentTaskWorkflowIdentifier,
-                  ),
-                );
-              },
-              onAddFolderCallback: createdFolder => {
-                if (
-                  folderIdentifier ===
-                  createdFolder.parentTaskWorkflowIdentifier
-                ) {
-                  dispatch({
-                    type: ActionTypes.ADD_TASK_TEMPLATE_SUCCESS,
-                    template: createdFolder,
-                  });
-                }
-              },
-            }),
-          ),
-      },
+      isCurrentUserEditor &&
+        (smartFlowsAvailable || templateType !== 'SMARTFLOW_SAMPLE') && {
+          name: 'Edit Workflow Name',
+          onClick: () => {
+            setIsEditing(true);
+            // eslint-disable-next-line no-unused-expressions
+            nameInputReference.current?.focus();
+          },
+        },
+      isCurrentUserEditor &&
+        (smartFlowsAvailable || templateType !== 'SMARTFLOW_SAMPLE') && {
+          name: 'Move to folder',
+          onClick: () =>
+            dispatch(
+              ModalActions.openModal('SelectWorkflowDestination', {
+                confirmText: 'Move',
+                confirm: parentTaskWorkflowIdentifier => {
+                  dispatch(
+                    moveWorkflowToFolder(
+                      identifier,
+                      parentTaskWorkflowIdentifier,
+                    ),
+                  );
+                },
+                onAddFolderCallback: createdFolder => {
+                  if (
+                    folderIdentifier ===
+                    createdFolder.parentTaskWorkflowIdentifier
+                  ) {
+                    dispatch({
+                      type: ActionTypes.ADD_TASK_TEMPLATE_SUCCESS,
+                      template: createdFolder,
+                    });
+                  }
+                },
+              }),
+            ),
+        },
       (smartFlowsAvailable || templateType !== 'SMARTFLOW_SAMPLE') && {
         name: 'Duplicate Workflow',
         onClick: () =>
@@ -168,7 +171,7 @@ const TaskTemplate = ({
           dispatch(switchTemplatePublic(identifier, !publicAccess));
         },
       },
-      {
+      isCurrentUserEditor && {
         name: 'Delete Workflow',
         color: palette.oPlusRed,
         onClick: () =>
