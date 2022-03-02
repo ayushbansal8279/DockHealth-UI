@@ -434,7 +434,7 @@ const ListDetailsReducer = (state = initialState, action) => {
 
       const {
         taskListIdentifier,
-        parentTaskGroupIdentifier: taskGroupIdentifier,
+        parentTaskWorkflowIdentifier: taskGroupIdentifier,
       } = addedBundle;
 
       if (taskListIdentifier !== state.taskListIdentifier) {
@@ -456,7 +456,7 @@ const ListDetailsReducer = (state = initialState, action) => {
 
       const {
         taskListIdentifier,
-        parentTaskGroupIdentifier: taskGroupIdentifier,
+        parentTaskWorkflowIdentifier: taskGroupIdentifier,
       } = workflow;
 
       if (taskListIdentifier !== state.taskListIdentifier) {
