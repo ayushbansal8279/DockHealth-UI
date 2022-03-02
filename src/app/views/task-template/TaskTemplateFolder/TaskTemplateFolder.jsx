@@ -62,7 +62,7 @@ const TaskTemplateFolder = ({
 
   const menuOptions = useMemo(
     () => [
-      {
+      isCurrentUserEditor && {
         name: 'Edit Folder Name',
         onClick: () => {
           setIsEditing(true);
@@ -78,7 +78,7 @@ const TaskTemplateFolder = ({
           );
         },
       },
-      {
+      isCurrentUserEditor && {
         name: 'Delete Folder',
         color: palette.oPlusRed,
         onClick: () =>
