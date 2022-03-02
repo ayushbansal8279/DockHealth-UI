@@ -65,11 +65,15 @@ const AddComment = ({
 
   useEffect(() => {
     if (autoFocus && addCommentReference?.current) {
-      addCommentReference.current.editor.focus();
+      if (addCommentReference.current?.editor?.focus) {
+        setTimeout(() => addCommentReference.current.editor.focus(), 0);
+      }
       // eslint-disable-next-line no-unused-expressions
-      // addCommentReference?.current?.scrollIntoView(true);
       if (addCommentContainerReference?.current) {
-        addCommentContainerReference.current.scrollIntoView(true);
+        setTimeout(
+          () => addCommentContainerReference.current.scrollIntoView(true),
+          0,
+        );
       }
     }
   }, [autoFocus]);
