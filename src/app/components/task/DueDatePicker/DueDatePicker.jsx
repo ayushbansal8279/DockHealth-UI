@@ -160,25 +160,25 @@ const DueDatePicker = ({
                   Repeat
                 </PlusButton>
               </SectionWrapper>
-              <PopoverBottomBar align="spread">
-                {!disableClearDate && (
-                  <PopoverBottomBar.Button
-                    type="button"
-                    onClick={() => {
-                      onDateChange(null);
-                    }}
-                  >
-                    Clear Date
-                  </PopoverBottomBar.Button>
-                )}
-                <PopoverBottomBar.Button type="button" onClick={onCloseClick}>
-                  Close
-                </PopoverBottomBar.Button>
-              </PopoverBottomBar>
             </>
           )}
         </>
       )}
+      <PopoverBottomBar align="spread">
+        {!disableClearDate && (
+          <PopoverBottomBar.Button
+            type="button"
+            onClick={() => {
+              onDateChange(null);
+            }}
+          >
+            Clear Date
+          </PopoverBottomBar.Button>
+        )}
+        <PopoverBottomBar.Button type="button" onClick={onCloseClick}>
+          Close
+        </PopoverBottomBar.Button>
+      </PopoverBottomBar>
     </ContentWrapper>
   );
 };
