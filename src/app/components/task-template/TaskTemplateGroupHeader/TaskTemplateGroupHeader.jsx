@@ -67,7 +67,13 @@ const TaskTemplateGroupHeader = ({
   setShowIncompleteTasks,
   // eslint-disable-next-line sonarjs/cognitive-complexity
 }) => {
-  const { name, tasks, identifier } = templateGroup;
+  const {
+    name,
+    tasks,
+    identifier,
+    tasksCount,
+    tasksCompletedCount,
+  } = templateGroup;
   const { dragHandleProps } = draggableProvided;
   const [isHovered, setIsHovered, unsetIsHovered] = useBoolean(false);
   const { bulkEditIsActive } = useContext(BulkEditContext);
@@ -103,6 +109,9 @@ const TaskTemplateGroupHeader = ({
       ),
     [tasks],
   );
+
+  const completedTasksAmountFinal = tasksCompletedCount || completedTasksAmount;
+  const allTasksAmountFinal = tasksCount || allTasksAmount;
 
   const toggleTasksVisibility = useCallback(() => {
     return isCompletedTab
@@ -323,8 +332,10 @@ const TaskTemplateGroupHeader = ({
             <TaskTemplateProgressCircle>
               <ProgressBar
                 width={80}
-                progress={(completedTasksAmount / allTasksAmount) * 100}
-                label={`${completedTasksAmount}/${allTasksAmount}`}
+                progress={
+                  (completedTasksAmountFinal / allTasksAmountFinal) * 100
+                }
+                label={`${completedTasksAmountFinal}/${allTasksAmountFinal}`}
               />
             </TaskTemplateProgressCircle>
           </TaskTemplateOptionsContainer>
