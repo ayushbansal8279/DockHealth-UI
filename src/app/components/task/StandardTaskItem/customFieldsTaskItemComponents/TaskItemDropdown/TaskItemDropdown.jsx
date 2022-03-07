@@ -9,14 +9,17 @@ const TaskItemDropdown = ({
   field: { options: initialOptions },
 }) => {
   const [value, setValue] = useState(initialValue);
-  const options = useMemo(
-    () =>
+  const options = useMemo(() => {
+    const o =
       initialOptions?.map(({ identifier, name }) => ({
         label: name,
         value: identifier,
-      })),
-    [initialOptions],
-  );
+      })) || [];
+
+    if (o.length > 0) o.unshift({ label: 'None', value: null });
+
+    return o;
+  }, [initialOptions]);
 
   useEffect(() => {
     setValue(initialValue);

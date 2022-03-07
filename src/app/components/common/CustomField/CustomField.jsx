@@ -7,6 +7,7 @@ import React, {
   useState,
 } from 'react';
 import { FieldType } from 'helpers/field-type-helpers';
+import { BOOL_SELECT_OPTIONS } from 'helpers/custom-fields-helpers';
 import FormInput from 'components/common/Input/FormInput';
 import FormSelect from 'components/common/Select/FormSelect';
 import DateInput from 'components/common/DateInput/DateInput';
@@ -14,17 +15,6 @@ import { useFormContext } from 'react-hook-form';
 import { taskDrawerFocusFieldSelector } from 'selectors/task-drawer-selectors';
 import { useSelector } from 'react-redux';
 import CustomFieldTextEditor from './CustomFieldTextEditor';
-
-const BOOL_SELECT_OPTIONS = [
-  {
-    value: 'no',
-    label: 'No',
-  },
-  {
-    value: 'yes',
-    label: 'Yes',
-  },
-];
 
 const CustomField = ({
   readOnly,
@@ -42,14 +32,17 @@ const CustomField = ({
   const [wasChanged, setWasChanged] = useState(false);
   const taskDrawerFocusField = useSelector(taskDrawerFocusFieldSelector);
 
-  const dropdownOptions = useMemo(
-    () =>
+  const dropdownOptions = useMemo(() => {
+    const o =
       options?.map(option => ({
         label: option.name,
         value: option.identifier,
-      })) || [],
-    [options],
-  );
+      })) || [];
+
+    if (o.length > 0) o.unshift({ label: 'None', value: null });
+
+    return o;
+  }, [options]);
 
   const handleBlur = useCallback(
     data => {
