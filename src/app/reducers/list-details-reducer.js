@@ -1,8 +1,9 @@
 import * as ActionTypes from 'actions/action-types';
+import { pipe, prop, uniqBy, move } from 'ramda';
 import { mapWithRemove } from 'helpers/utility-functions';
+import { reorderTasksForWorkflow } from 'helpers/workflow-helpers';
 import { TaskGroupType, TaskItemType } from 'helpers/task-helpers';
 import { updateBundleInList } from 'helpers/tasklist-helpers';
-import { pipe, prop, uniqBy, move } from 'ramda';
 import TaskBaseReducer from './task-base-reducer';
 
 const dedupe = pipe(uniqBy(prop('identifier')));
@@ -378,6 +379,58 @@ const ListDetailsReducer = (state = initialState, action) => {
           taskGroups: state.groupedTasks?.taskGroups?.map(g => ({
             ...g,
             tasks: updateBundleInList(dataToUpdate, bundleIdentifier, g.tasks),
+          })),
+        },
+      };
+    }
+
+    case ActionTypes.REORDER_WORKFLOW_TASKS: {
+      const {
+        source: { index: sourceIndex },
+        destination: { index: destinationIndex },
+        workflow,
+        completedTasksShown,
+        incompleteTasksShown,
+      } = action;
+
+      const reorderedTasks = reorderTasksForWorkflow(
+        sourceIndex,
+        destinationIndex,
+        incompleteTasksShown,
+        completedTasksShown,
+        workflow.tasks,
+      );
+
+      return {
+        ...state,
+        groupedTasks: {
+          ...state.groupedTasks,
+          taskGroups: state.groupedTasks?.taskGroups?.map(g => ({
+            ...g,
+            tasks: updateBundleInList(
+              { tasks: reorderedTasks },
+              workflow.identifier,
+              g.tasks,
+            ),
+          })),
+        },
+      };
+    }
+
+    case ActionTypes.REORDER_WORKFLOW_TASKS_FAILURE: {
+      const { workflow } = action;
+
+      return {
+        ...state,
+        groupedTasks: {
+          ...state.groupedTasks,
+          taskGroups: state.groupedTasks?.taskGroups?.map(g => ({
+            ...g,
+            tasks: updateBundleInList(
+              { tasks: workflow.tasks },
+              workflow.identifier,
+              g.tasks,
+            ),
           })),
         },
       };

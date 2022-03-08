@@ -1,4 +1,7 @@
 import { all, call, put, select, takeEvery } from 'redux-saga/effects';
+import { pluck } from 'ramda';
+import * as TemplateBundleApi from 'api/template-bundle-api';
+import { reorderTasksForWorkflow } from 'helpers/workflow-helpers';
 import * as WorkflowApi from 'api/workflow-api';
 import { userProfileSelector } from 'selectors/user-selectors';
 import * as ActionTypes from 'actions/action-types';
@@ -161,6 +164,46 @@ function* deleteWorkflowAttachment({
   }
 }
 
+function* reorderWorkflowTasks(payload) {
+  const {
+    source: { index: sourceIndex },
+    destination: { index: destinationIndex },
+    workflow,
+    completedTasksShown,
+    incompleteTasksShown,
+  } = payload;
+
+  try {
+    const reorderedTasks = reorderTasksForWorkflow(
+      sourceIndex,
+      destinationIndex,
+      incompleteTasksShown,
+      completedTasksShown,
+      workflow.tasks,
+    );
+
+    yield call(
+      TemplateBundleApi.reorderTasksInBundle,
+      workflow.identifier,
+      pluck('identifier', reorderedTasks),
+    );
+    yield all([
+      put({
+        type: ActionTypes.REORDER_WORKFLOW_TASKS_SUCCESS,
+      }),
+      put(showGlobalAlert(AlertMessages.UPDATED)),
+    ]);
+  } catch {
+    yield all([
+      put(showGlobalErrorAlert()),
+      put({
+        type: ActionTypes.REORDER_WORKFLOW_TASKS_FAILURE,
+        workflow,
+      }),
+    ]);
+  }
+}
+
 export default function* watchWorkflow() {
   yield takeEvery(ActionTypes.DUPLICATE_WORKFLOW, duplicateWorkflow);
   yield takeEvery(ActionTypes.DELETE_WORKFLOW, deleteWorkflow);
@@ -171,4 +214,5 @@ export default function* watchWorkflow() {
     ActionTypes.DELETE_WORKFLOW_ATTACHMENT,
     deleteWorkflowAttachment,
   );
+  yield takeEvery(ActionTypes.REORDER_WORKFLOW_TASKS, reorderWorkflowTasks);
 }

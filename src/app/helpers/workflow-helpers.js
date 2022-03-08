@@ -8,7 +8,9 @@ import {
   descend,
   defaultTo,
   toLower,
+  move,
 } from 'ramda';
+import { TaskStatus } from 'helpers/task-helpers';
 
 /* eslint-disable import/prefer-default-export */
 
@@ -73,4 +75,40 @@ export function isWorkflowDueDateOverdue(workflow) {
   return moment(dueDateTime).format('HH:mm') !== '00:00'
     ? moment(dueDateTime).isBefore(moment())
     : dueDateTime && moment(dueDateTime).isBefore(moment().startOf('day'));
+}
+
+export function reorderTasksForWorkflow(
+  sourceIndex,
+  destinationIndex,
+  incompleteTasksShown,
+  completedTasksShown,
+  tasks,
+) {
+  let reorderedTasks;
+
+  if (completedTasksShown && incompleteTasksShown) {
+    reorderedTasks = move(sourceIndex, destinationIndex, tasks);
+  } else {
+    const [openedTasks, completedTasks] = tasks.reduce(
+      (accumulator, task) =>
+        task.status === TaskStatus.INCOMPLETE
+          ? [[...accumulator[0], task], [...accumulator[1]]]
+          : [[...accumulator[0]], [...accumulator[1], task]],
+      [[], []],
+    );
+
+    if ((!completedTasksShown, incompleteTasksShown)) {
+      reorderedTasks = move(sourceIndex, destinationIndex, openedTasks).concat(
+        completedTasks,
+      );
+    } else if ((completedTasksShown, !incompleteTasksShown)) {
+      reorderedTasks = move(
+        sourceIndex,
+        destinationIndex,
+        completedTasks,
+      ).concat(openedTasks);
+    }
+  }
+
+  return reorderedTasks;
 }

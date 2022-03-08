@@ -146,3 +146,20 @@ export function deleteWorkflowAttachmentFailure(
     attachmentIdentifier,
   };
 }
+
+export function reorderWorkflowTasks({
+  source,
+  destination,
+  workflow,
+  completedTasksShown = true,
+  incompleteTasksShown = true,
+}) {
+  return {
+    type: ActionTypes.REORDER_WORKFLOW_TASKS,
+    source,
+    destination,
+    workflow,
+    completedTasksShown,
+    incompleteTasksShown,
+  };
+}

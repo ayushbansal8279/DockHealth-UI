@@ -32,6 +32,7 @@ import TaskIcon from 'components/task/TaskIcon/TaskIcon';
 import AssignMemberIcon from 'components/user/AssignMemberIcon/AssingMemberIcon';
 import { DueDateBasicLabel } from 'components/task/styled';
 import DueDatePicker from 'components/task/DueDatePicker/DueDatePicker';
+import TaskDragHandle from 'components/task/TaskDragHandle/TaskDragHandle';
 import {
   checkIfTemplateTask,
   getAttachmentsIconTooltipTitle,
@@ -52,10 +53,11 @@ import {
   DueDateContainer,
   IconContainer,
   DueDateText,
+  DragHandleContainer,
 } from './styled';
 
 const DrawerTask = props => {
-  const { task, currentUser } = props;
+  const { task, currentUser, dragHandleProps } = props;
   const dispatch = useDispatch();
   const [isHovered, setIsHovered] = useState(false);
 
@@ -128,6 +130,11 @@ const DrawerTask = props => {
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
     >
+      {dragHandleProps && (
+        <DragHandleContainer>
+          {isHovered && <TaskDragHandle {...dragHandleProps} />}
+        </DragHandleContainer>
+      )}
       <CircleIcon
         src={isCompleted ? CircleCompleted : Circle}
         isCompleted={isCompleted}

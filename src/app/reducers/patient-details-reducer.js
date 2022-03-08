@@ -1,6 +1,7 @@
 /* eslint-disable sonarjs/max-switch-cases */
 import * as ActionTypes from 'actions/action-types';
 import { TaskGroupType, TaskItemType, TaskStatus } from 'helpers/task-helpers';
+import { reorderTasksForWorkflow } from 'helpers/workflow-helpers';
 import { mapWithRemove } from 'helpers/utility-functions';
 import { updateTaskOrSubtaskInListsArray } from 'helpers/task-update-helper';
 import { updateBundleInList } from 'helpers/tasklist-helpers';
@@ -216,6 +217,52 @@ export default function(state = INITIAL_STATE, action = {}) {
         lists: state.lists?.map(l => ({
           ...l,
           tasks: updateBundleInList(dataToUpdate, bundleIdentifier, l.tasks),
+        })),
+      };
+    }
+
+    case ActionTypes.REORDER_WORKFLOW_TASKS: {
+      const {
+        source: { index: sourceIndex },
+        destination: { index: destinationIndex },
+        workflow,
+        completedTasksShown,
+        incompleteTasksShown,
+      } = action;
+
+      const reorderedTasks = reorderTasksForWorkflow(
+        sourceIndex,
+        destinationIndex,
+        incompleteTasksShown,
+        completedTasksShown,
+        workflow.tasks,
+      );
+
+      return {
+        ...state,
+        lists: state.lists?.map(l => ({
+          ...l,
+          tasks: updateBundleInList(
+            { tasks: reorderedTasks },
+            workflow.identifier,
+            l.tasks,
+          ),
+        })),
+      };
+    }
+
+    case ActionTypes.REORDER_WORKFLOW_TASKS_FAILURE: {
+      const { workflow } = action;
+
+      return {
+        ...state,
+        lists: state.lists?.map(l => ({
+          ...l,
+          tasks: updateBundleInList(
+            { tasks: workflow.tasks },
+            workflow.identifier,
+            l.tasks,
+          ),
         })),
       };
     }

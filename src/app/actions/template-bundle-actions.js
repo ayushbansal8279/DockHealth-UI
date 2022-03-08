@@ -8,23 +8,6 @@ export function updateTemplateBundle({ bundle, dataToUpdate }) {
   };
 }
 
-export function reorderSubtasksInTemplateBundle({
-  source,
-  destination,
-  bundle,
-  completedTasksShown = true,
-  incompleteTasksShown = true,
-}) {
-  return {
-    type: ActionTypes.REORDER_TASKS_IN_TEMPLATE_BUNDLE,
-    source,
-    destination,
-    bundle,
-    completedTasksShown,
-    incompleteTasksShown,
-  };
-}
-
 export function moveWorkflowToList(
   identifier,
   taskListIdentifier,

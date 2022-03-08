@@ -1,5 +1,6 @@
 /* eslint-disable sonarjs/cognitive-complexity */
 import * as ActionTypes from 'actions/action-types';
+import { reorderTasksForWorkflow } from 'helpers/workflow-helpers';
 
 const initialState = {
   open: false,
@@ -177,6 +178,48 @@ const WorkflowDrawerReducer = (state = initialState, action) => {
       return {
         ...state,
         labels,
+      };
+    }
+
+    case ActionTypes.REORDER_WORKFLOW_TASKS: {
+      const {
+        source: { index: sourceIndex },
+        destination: { index: destinationIndex },
+        workflow,
+        completedTasksShown,
+        incompleteTasksShown,
+      } = action;
+
+      if (workflow.identifier !== state.workflowIdentifier) return state;
+
+      const reorderedTasks = reorderTasksForWorkflow(
+        sourceIndex,
+        destinationIndex,
+        incompleteTasksShown,
+        completedTasksShown,
+        workflow.tasks,
+      );
+
+      return {
+        ...state,
+        workflow: {
+          ...state.workflow,
+          tasks: reorderedTasks,
+        },
+      };
+    }
+
+    case ActionTypes.REORDER_WORKFLOW_TASKS_FAILURE: {
+      const { workflow } = action;
+
+      if (workflow.identifier !== state.workflowIdentifier) return state;
+
+      return {
+        ...state,
+        workflow: {
+          ...state.workflow,
+          tasks: workflow.tasks,
+        },
       };
     }
 

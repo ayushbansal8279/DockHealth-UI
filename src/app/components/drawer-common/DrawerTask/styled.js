@@ -4,6 +4,7 @@ import palette from 'styles/palette';
 import spacing from 'styles/spacing';
 
 export const Container = styled.div`
+  position: relative;
   height: 37px;
   display: flex;
   align-items: center;
@@ -11,6 +12,7 @@ export const Container = styled.div`
   padding: 0 ${spacing.regular};
   cursor: pointer;
   border: 1px solid ${palette.coolGrey3};
+  background: ${palette.white};
 
   &:last-child {
     margin-bottom: 0;
@@ -89,4 +91,14 @@ export const DueDateContainer = styled.div`
 
 export const DueDateText = styled.p`
   margin-bottom: 0;
+`;
+
+export const DragHandleContainer = styled.div`
+  position: absolute;
+  left: -12px;
+  top: 50%;
+  height: 21px;
+  width: 12px;
+  transform: translateY(-50%);
+  padding-right: 6px;
 `;

@@ -1,11 +1,9 @@
-import { pluck, move } from 'ramda';
 import * as ActionTypes from 'actions/action-types';
 import AlertMessages from 'alert/AlertMessages';
 import * as TemplateBundleApi from 'api/template-bundle-api';
 import * as WorkflowApi from 'api/workflow-api';
 import { call, put, takeEvery } from 'redux-saga/effects';
 import { showGlobalAlert, showGlobalErrorAlert } from 'alert/actions';
-import { TaskStatus } from 'helpers/task-helpers';
 import { applyTemplate as applyTemplateAction } from 'actions/template-bundle-actions';
 import { openModal } from 'modal/actions';
 import store from '../store';
@@ -14,66 +12,6 @@ const ERROR_TYPES = {
   ASSIGNED_USERS_ARE_NOT_IN_THE_TASK_LIST:
     'TASK_TEMPLATE/ASSIGNED_USERS_ARE_NOT_IN_THE_TASK_LIST',
 };
-
-function* reorderTasksInTemplateBundle(payload) {
-  const {
-    source: { index: sourceIndex },
-    destination: { index: destinationIndex },
-    bundle,
-    completedTasksShown,
-    incompleteTasksShown,
-  } = payload;
-
-  try {
-    let reorderedTasks;
-
-    if (completedTasksShown && incompleteTasksShown) {
-      reorderedTasks = move(sourceIndex, destinationIndex, bundle.tasks);
-    } else {
-      const [openedTasks, completedTasks] = bundle.tasks.reduce(
-        (accumulator, task) =>
-          task.status === TaskStatus.INCOMPLETE
-            ? [[...accumulator[0], task], [...accumulator[1]]]
-            : [[...accumulator[0]], [...accumulator[1], task]],
-        [[], []],
-      );
-
-      if ((!completedTasksShown, incompleteTasksShown)) {
-        reorderedTasks = move(
-          sourceIndex,
-          destinationIndex,
-          openedTasks,
-        ).concat(completedTasks);
-      } else if ((completedTasksShown, !incompleteTasksShown)) {
-        reorderedTasks = move(
-          sourceIndex,
-          destinationIndex,
-          completedTasks,
-        ).concat(openedTasks);
-      }
-    }
-
-    yield put({
-      type: ActionTypes.UPDATE_TEMPLATE_BUNDLE_SUCCESS,
-      dataToUpdate: { tasks: reorderedTasks },
-      bundleIdentifier: bundle.identifier,
-    });
-
-    yield call(
-      TemplateBundleApi.reorderTasksInBundle,
-      bundle.identifier,
-      pluck('identifier', reorderedTasks),
-    );
-    yield put(showGlobalAlert(AlertMessages.UPDATED));
-  } catch {
-    yield put(showGlobalErrorAlert());
-    yield put({
-      type: ActionTypes.UPDATE_TEMPLATE_BUNDLE_FAILURE,
-      dataToUpdate: { tasks: bundle.tasks },
-      bundleIdentifier: bundle.identifier,
-    });
-  }
-}
 
 function* updateTemplateBundle({ bundle, dataToUpdate }) {
   try {
@@ -235,10 +173,6 @@ function* getTasksForWorkflow({ workflowIdentifier }) {
 
 export default function* watchTemplateBundle() {
   yield takeEvery(ActionTypes.UPDATE_TEMPLATE_BUNDLE, updateTemplateBundle);
-  yield takeEvery(
-    ActionTypes.REORDER_TASKS_IN_TEMPLATE_BUNDLE,
-    reorderTasksInTemplateBundle,
-  );
   yield takeEvery(
     ActionTypes.MOVE_WORKFLOW_TO_DIFFERENT_LIST,
     moveWorkflowToList,

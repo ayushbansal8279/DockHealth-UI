@@ -5,6 +5,7 @@ import usePrevious from 'hooks/use-previous';
 import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd';
 import * as TaskActions from 'actions/task-actions';
 import * as TemplateBundleActions from 'actions/template-bundle-actions';
+import * as WorkflowActions from 'actions/workflow-actions';
 import { TaskStatus } from 'helpers/task-helpers';
 import TasksSkeletonLoader from 'components/task/TasksSkeletonLoader/TasksSkeletonLoader';
 import StandardTaskItemContainer from 'components/task/StandardTaskItemContainer/StandardTaskItemContainer';
@@ -122,14 +123,15 @@ const TaskTemplateGroup = ({
                 onBeforeCapture={({ draggableId: id }) =>
                   setDraggedTaskIdentifier(id)
                 }
-                onDragEnd={dragEndData => {
+                onDragEnd={({ source, destination }) => {
                   setDraggedTaskIdentifier(null);
 
-                  if (dragEndData.destination) {
+                  if (destination) {
                     dispatch(
-                      TemplateBundleActions.reorderSubtasksInTemplateBundle({
-                        ...dragEndData,
-                        bundle: templateGroup,
+                      WorkflowActions.reorderWorkflowTasks({
+                        source,
+                        destination,
+                        workflow: templateGroup,
                         completedTasksShown: showCompletedTasks,
                         incompleteTasksShown: showIncompleteTasks,
                       }),
