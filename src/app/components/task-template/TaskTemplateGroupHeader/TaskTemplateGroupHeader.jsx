@@ -114,6 +114,9 @@ const TaskTemplateGroupHeader = ({
   const allTasksAmountFinal = tasksCount || allTasksAmount;
 
   const toggleTasksVisibility = useCallback(() => {
+    if (!showCompletedTasks && completedTasksAmount === 0) {
+      dispatch(TemplateBundleActions.getTasksForWorkflow(identifier));
+    }
     return isCompletedTab
       ? setShowIncompleteTasks(!showIncompleteTasks)
       : setShowCompletedTasks(!showCompletedTasks);
@@ -123,6 +126,9 @@ const TaskTemplateGroupHeader = ({
     setShowCompletedTasks,
     showCompletedTasks,
     showIncompleteTasks,
+    completedTasksAmount,
+    dispatch,
+    identifier,
   ]);
 
   const menuOptions = useMemo(() => {

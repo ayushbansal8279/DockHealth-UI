@@ -114,7 +114,7 @@ const TaskTemplateGroup = ({
       />
       {!isStartedDnD && (
         <TaskTemplateGroupList timeout={150} in={isOpen && !isStartedDnD}>
-          {isFetchingTasks && (!tasks || tasks.length === 0) ? (
+          {isFetchingTasks ? (
             <TasksSkeletonLoader rows={3} />
           ) : (
             <>
