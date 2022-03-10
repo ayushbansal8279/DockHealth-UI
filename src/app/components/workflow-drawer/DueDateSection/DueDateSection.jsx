@@ -34,6 +34,8 @@ const DueDateSection = ({ disabled }) => {
     selectedWorkflow || {};
   const momentDueDate = dueDateTime ? moment(dueDateTime) : null;
 
+  console.log('momentDueDate', selectedWorkflow);
+
   useEffect(() => {
     if (
       inputReference.current &&
@@ -46,11 +48,13 @@ const DueDateSection = ({ disabled }) => {
 
   const handleDueDateSave = useCallback(
     updatedDueDateTime => {
-      dispatch(
-        updatePartialWorkflow(selectedWorkflow?.identifier, {
-          dueDateTime: updatedDueDateTime,
-        }),
-      );
+      const payload = {
+        dueDateTime: updatedDueDateTime,
+      };
+
+      if (!updatedDueDateTime) payload.dueDateTimeCleared = true;
+
+      dispatch(updatePartialWorkflow(selectedWorkflow?.identifier, payload));
     },
     [dispatch, selectedWorkflow],
   );

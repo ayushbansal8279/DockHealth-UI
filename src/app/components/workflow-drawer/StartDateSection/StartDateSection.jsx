@@ -36,11 +36,13 @@ const StartDateSection = ({ disabled }) => {
 
   const handleStartDateSave = useCallback(
     date => {
-      dispatch(
-        updatePartialWorkflow(selectedWorkflow?.identifier, {
-          startDateTime: date,
-        }),
-      );
+      const payload = {
+        startDateTime: date,
+      };
+
+      if (!date) payload.startDateTimeCleared = true;
+
+      dispatch(updatePartialWorkflow(selectedWorkflow?.identifier, payload));
     },
     [dispatch, selectedWorkflow],
   );

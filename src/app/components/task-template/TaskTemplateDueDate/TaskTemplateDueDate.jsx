@@ -16,11 +16,11 @@ const TaskTemplateDueDate = props => {
 
   const handleDueDateChange = useCallback(
     updatedDueDateTime => {
-      dispatch(
-        updatePartialWorkflow(identifier, {
-          dueDateTime: updatedDueDateTime,
-        }),
-      );
+      const payload = { dueDateTime: updatedDueDateTime };
+
+      if (!updatedDueDateTime) payload.dueDateTimeCleared = true;
+
+      dispatch(updatePartialWorkflow(identifier, payload));
     },
     [dispatch, identifier],
   );

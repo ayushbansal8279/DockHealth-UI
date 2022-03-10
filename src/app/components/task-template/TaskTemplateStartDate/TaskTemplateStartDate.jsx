@@ -14,11 +14,13 @@ const TaskTemplateStartDate = props => {
 
   const handleStartDateChange = useCallback(
     updatedDate => {
-      dispatch(
-        updatePartialWorkflow(identifier, {
-          startDateTime: updatedDate,
-        }),
-      );
+      const payload = {
+        startDateTime: updatedDate,
+      };
+
+      if (!updatedDate) payload.startDateTimeCleared = true;
+
+      dispatch(updatePartialWorkflow(identifier, payload));
     },
     [dispatch, identifier],
   );
