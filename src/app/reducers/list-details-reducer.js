@@ -628,6 +628,24 @@ const ListDetailsReducer = (state = initialState, action) => {
       };
     }
 
+    case ActionTypes.CREATE_TASK_LIST_GROUP_SUCCESS: {
+      const { group } = action;
+
+      return {
+        ...state,
+        groupedTasks: {
+          ...state.groupedTasks,
+          taskGroups: state.groupedTasks?.taskGroups?.concat([
+            {
+              groupIdentifier: group.taskGroupIdentifier,
+              groupName: group.groupName,
+              tasks: [],
+            },
+          ]),
+        },
+      };
+    }
+
     default:
       return TaskBaseReducer(state, action, updateTasksStateCallback);
   }

@@ -255,9 +255,18 @@ function* refreshGroupedTasks({ payload }) {
 function* createTaskListGroup({ groupName }) {
   try {
     const { taskListIdentifier } = yield select(locationParametersSelector);
-    yield call(createGroupAssignedToList, { taskListIdentifier, groupName });
-    yield put(ListDetailsActions.getTasksGroupsList());
-    yield put(showGlobalAlert(AlertMessages.CREATED));
+    const createdGroup = yield call(createGroupAssignedToList, {
+      taskListIdentifier,
+      groupName,
+    });
+    yield all([
+      put(ListDetailsActions.getTasksGroupsList()),
+      put(showGlobalAlert(AlertMessages.CREATED)),
+      put({
+        type: ActionTypes.CREATE_TASK_LIST_GROUP_SUCCESS,
+        group: createdGroup,
+      }),
+    ]);
   } catch (error) {
     yield put(showGlobalErrorAlert());
   }
