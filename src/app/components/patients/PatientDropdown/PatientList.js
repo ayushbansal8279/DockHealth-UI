@@ -32,8 +32,10 @@ import {
 const MAX_PATIENT_RESULTS = 200;
 
 const PatientList = ({
-  onSelect,
   selectedPatientIdentifier,
+  patientIdentifiersToExclude = [],
+  disableAdding,
+  onSelect,
   // eslint-disable-next-line sonarjs/cognitive-complexity
 }) => {
   const [searchValue, setSearchValue] = useState('');
@@ -77,19 +79,23 @@ const PatientList = ({
   const fetchPatients = useCallback(
     value =>
       getPatientsByCriteria(value).then(fetchedPatients => {
+        const p = fetchedPatients.filter(
+          ({ patientIdentifier }) =>
+            !patientIdentifiersToExclude.includes(patientIdentifier),
+        );
         if (
           'unassigned'.includes(value.toLowerCase()) &&
           selectedPatientIdentifier
         ) {
           setPatients([
             { unassignOption: true, patientIdentifier: 'UNASSIGNED' },
-            ...getFormattedPatients({ patients: fetchedPatients }),
+            ...getFormattedPatients({ patients: p }),
           ]);
         } else {
-          setPatients(getFormattedPatients({ patients: fetchedPatients }));
+          setPatients(getFormattedPatients({ patients: p }));
         }
       }),
-    [selectedPatientIdentifier],
+    [patientIdentifiersToExclude, selectedPatientIdentifier],
   );
 
   const fetchPatientsWithDebounce = useCallback(
@@ -286,14 +292,17 @@ const PatientList = ({
           <LoaderItem />
         </LoaderContainer>
       )}
-      {!isLoadingPatients && patients.length === 0 && searchValue !== '' && (
-        <AddRecordOption
-          showAddOption={!currentOrganization?.emrIntegrationEnabled}
-          customerTypeLabel={customerTypeLabel}
-          handleAddRecord={handleAddPatient}
-          searchValue={searchValue}
-        />
-      )}
+      {!disableAdding &&
+        !isLoadingPatients &&
+        patients.length === 0 &&
+        searchValue !== '' && (
+          <AddRecordOption
+            showAddOption={!currentOrganization?.emrIntegrationEnabled}
+            customerTypeLabel={customerTypeLabel}
+            handleAddRecord={handleAddPatient}
+            searchValue={searchValue}
+          />
+        )}
       {!isLoadingPatients && (
         <ListContainer withBorder={patients.length !== 0}>
           {!isLoadingPatients && patients.length >= MAX_PATIENT_RESULTS && (
@@ -305,7 +314,7 @@ const PatientList = ({
             <List
               scrollToIndex={hoveredItemIndex}
               width={600}
-              height={patients.length > 5 ? 208 : patients.length * 40}
+              height={patients.length > 6 ? 248 : patients.length * 40}
               rowHeight={40}
               rowRenderer={renderRow}
               rowCount={patients.length}

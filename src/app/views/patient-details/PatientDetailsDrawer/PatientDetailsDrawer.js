@@ -9,8 +9,12 @@ import { organizationSelector } from 'selectors/organization-selectors';
 import { userProfileSelector } from 'selectors/user-selectors';
 import { FormContext, useForm } from 'react-hook-form';
 import { openModal, closeModal } from 'modal/actions';
+import { createPatientDetailsPath } from 'routing/helpers/paths';
 import { archivePatient as archivePatientAction } from 'sagas/patient-details-saga';
-import { updatePatientDetails } from 'actions/patient-details-actions';
+import {
+  mergePatient,
+  updatePatientDetails,
+} from 'actions/patient-details-actions';
 import PatientForm from 'components/patients/PatientForm/PatientForm';
 import PatientDrawer from 'components/patients/PatientDrawer/PatientDrawer';
 import { validationSchema } from 'components/patients/PatientForm/helpers';
@@ -98,12 +102,53 @@ const PatientDetailsDrawer = ({ patient, isOpenedDetails, closeDetails }) => {
         name: 'Edit',
         onClick: setActive,
       },
+      !emrIntegrationEnabled &&
+        !isActive && {
+          name: 'Merge',
+          onClick: () => {
+            dispatch(
+              openModal('PatientPicker', {
+                patientIdentifiersToExclude: [patient.patientIdentifier],
+                onSelect: selectedPatient => {
+                  dispatch(
+                    openModal('MergePatients', {
+                      toPatient: selectedPatient,
+                      fromPatient: patient,
+                      confirm: () => {
+                        dispatch(closeModal());
+                        dispatch(
+                          mergePatient(patient, selectedPatient, () => {
+                            history.push(
+                              createPatientDetailsPath(
+                                selectedPatient.patientIdentifier,
+                              ),
+                            );
+                          }),
+                        );
+                      },
+                    }),
+                  );
+                },
+              }),
+            );
+            closeDetails();
+          },
+        },
       !emrIntegrationEnabled && {
         name: 'Archive',
         onClick: archivePatient,
       },
     ],
-    [archivePatient, setActive, emrIntegrationEnabled],
+    [
+      setActive,
+      emrIntegrationEnabled,
+      isActive,
+      archivePatient,
+      dispatch,
+      closeDetails,
+      patient,
+      history,
+    ],
   );
 
   return (

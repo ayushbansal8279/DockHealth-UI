@@ -6,6 +6,7 @@ const AlertMessages = {
   INVITED: 'Invited',
   DUPLICATED: 'Duplicated',
   MOVED: 'Moved',
+  MERGED: 'Merged',
   TASK_CREATED: 'Task created',
   TASK_COMPLETED: 'Task complete. great job!',
   TASK_REACTIVATED: 'Re-activated task',

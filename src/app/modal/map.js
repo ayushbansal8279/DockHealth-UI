@@ -54,6 +54,8 @@ import AddUserToGroupModal from './components/AddUserToGroupModal/AddUserToGroup
 import DeleteTaskConfirmationModal from './components/DeleteTaskConfirmationModal/DeleteTaskConfirmationModal';
 import InformationModal from './components/InformationModal/InformationModal';
 import UnassignTaskTemplateModal from './components/UnassignTaskTemplateModal/UnassignTaskTemplateModal';
+import PatientPickerModal from './components/PatientPickerModal/PatientPickerModal';
+import MergePatientsModal from './components/MergePatientsModal/MergePatientsModal';
 
 const MODAL_MAP = {
   CompleteAllTasks: CompleteAllTasksModal,
@@ -112,6 +114,8 @@ const MODAL_MAP = {
   AddUserToGroup: AddUserToGroupModal,
   Information: InformationModal,
   UnassignTaskTemplate: UnassignTaskTemplateModal,
+  PatientPicker: PatientPickerModal,
+  MergePatients: MergePatientsModal,
 };
 
 export default MODAL_MAP;

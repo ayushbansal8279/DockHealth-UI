@@ -4,13 +4,14 @@ import spacing from 'styles/spacing';
 import palette from 'styles/palette';
 import { withStyles } from '@material-ui/core/styles';
 import { Close } from '@material-ui/icons';
+import { fontSizes, fontWeights } from 'styles/font';
 
 export const ModalWrapper = styled.div`
   position: relative;
   display: flex;
   flex-direction: column;
   align-items: center;
-  width: 450px;
+  width: ${({ width }) => width || '450px'};
   max-width: 100vw;
   font-family: 'Roboto Condensed', sans-serif;
   background-color: white;
@@ -74,3 +75,19 @@ export const CloseIcon = withStyles({
     height: 16,
   },
 })(Close);
+
+export const ModalHeader = styled.p`
+  margin-bottom: 0;
+  font-size: ${fontSizes.regularPlus};
+  color: ${palette.brightBlue};
+  text-transform: uppercase;
+  text-align: center;
+`;
+
+export const ModalDescription = styled.p`
+  margin-bottom: 0;
+  font-size: ${fontSizes.regular};
+  font-weight: ${fontWeights.light};
+  color: ${palette.mediumGrey};
+  text-align: center;
+`;

@@ -314,3 +314,11 @@ export function getPatientWidgets() {
       throw new Error(error?.response?.data?.errorMessage);
     });
 }
+
+export function mergePatient(patientFromIdentifier, patientToIdentifier) {
+  return axios
+    .patch(`patient/mergePatient/${patientFromIdentifier}`, {
+      mergeToPatientIdentifier: patientToIdentifier,
+    })
+    .then(({ data }) => data);
+}

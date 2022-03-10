@@ -98,3 +98,12 @@ export const setCurrentListTasksStatus = taskStatus => ({
   type: ActionTypes.SELECT_PATIENT_LIST_TASK_STATUS,
   taskStatus,
 });
+
+export function mergePatient(fromPatient, toPatient, onSuccess) {
+  return {
+    type: ActionTypes.MERGE_PATIENT,
+    fromPatient,
+    toPatient,
+    onSuccess,
+  };
+}

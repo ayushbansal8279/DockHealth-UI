@@ -29,6 +29,7 @@ export const Input = styled.input`
 
 export const InputBox = styled.div`
   display: flex;
+  width: 100%;
   padding: ${spacing.smallPlus} ${spacing.smallPlus};
   color: ${palette.mediumGrey};
   font-size: ${fontSizes.smallPlus};

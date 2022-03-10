@@ -1,4 +1,5 @@
 import {
+  all,
   put,
   call,
   takeLatest,
@@ -700,6 +701,31 @@ function* doTogglePatientCompleteTasksVisible() {
   }
 }
 
+function* mergePatient({ fromPatient, toPatient, onSuccess }) {
+  try {
+    yield call(
+      PatientApi.mergePatient,
+      fromPatient.patientIdentifier,
+      toPatient.patientIdentifier,
+    );
+    yield all([
+      put({
+        type: ActionTypes.MERGE_PATIENT_SUCCESS,
+        fromPatient,
+        toPatient,
+      }),
+      put(showGlobalAlert(AlertMessages.MERGED)),
+    ]);
+    // eslint-disable-next-line no-unused-expressions
+    onSuccess?.();
+  } catch {
+    yield all([
+      put(AlertActions.showGlobalErrorAlert()),
+      put({ type: ActionTypes.MERGE_PATIENT_FAILURE }),
+    ]);
+  }
+}
+
 export default function* watchPatientDetails() {
   yield takeLatest(
     ActionTypes.INITIALIZE_PATIENT_STATE,
@@ -758,4 +784,5 @@ export default function* watchPatientDetails() {
   yield takeEvery(DO_ADD_PATIENT_NOTE, doAddPatientNote);
   yield takeEvery(DO_REMOVE_PATIENT_NOTE, doRemovePatientNote);
   yield takeEvery(DO_CHANGE_PATIENT_NOTE_PIN, doChangePatientNotePin);
+  yield takeEvery(ActionTypes.MERGE_PATIENT, mergePatient);
 }
