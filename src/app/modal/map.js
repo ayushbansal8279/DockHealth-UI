@@ -56,6 +56,7 @@ import InformationModal from './components/InformationModal/InformationModal';
 import UnassignTaskTemplateModal from './components/UnassignTaskTemplateModal/UnassignTaskTemplateModal';
 import PatientPickerModal from './components/PatientPickerModal/PatientPickerModal';
 import MergePatientsModal from './components/MergePatientsModal/MergePatientsModal';
+import SelectDestinationGroupModal from './components/SelectDestinationGroupModal/SelectDestinationGroupModal';
 
 const MODAL_MAP = {
   CompleteAllTasks: CompleteAllTasksModal,
@@ -100,6 +101,7 @@ const MODAL_MAP = {
   CreateTemplateFolder: CreateTemplateFolderModal,
   HomeScreenDragDrop: HomeScreenDragDropModal,
   SelectTaskDestination: SelectTaskDestinationModal,
+  SelectDestinationGroup: SelectDestinationGroupModal,
   SelectDestination: SelectDestinationModal,
   SelectWorkflowDestination: SelectWorkflowDestinationModal,
   AssignPatient: AssignPatientModal,

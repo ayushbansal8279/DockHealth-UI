@@ -2,11 +2,13 @@ import * as ActionTypes from 'actions/action-types';
 import AlertMessages from 'alert/AlertMessages';
 import * as TemplateBundleApi from 'api/template-bundle-api';
 import * as WorkflowApi from 'api/workflow-api';
-import { call, put, takeEvery } from 'redux-saga/effects';
+import { call, put, select, takeEvery } from 'redux-saga/effects';
 import { showGlobalAlert, showGlobalErrorAlert } from 'alert/actions';
 import { applyTemplate as applyTemplateAction } from 'actions/template-bundle-actions';
 import { openModal } from 'modal/actions';
+import { getTasksForTaskGroups } from 'actions/list-details-actions';
 import store from '../store';
+import { locationParametersSelector } from '../location/selectors';
 
 const ERROR_TYPES = {
   ASSIGNED_USERS_ARE_NOT_IN_THE_TASK_LIST:
@@ -63,6 +65,44 @@ function* moveWorkflowToList({
     yield put(showGlobalErrorAlert());
     yield put({
       type: ActionTypes.MOVE_WORKFLOW_TO_DIFFERENT_LIST_FAILURE,
+      identifier,
+    });
+  }
+}
+
+function* moveWorkflowToGroup({
+  identifier,
+  taskGroupIdentifier,
+  templateGroup,
+}) {
+  try {
+    yield call(
+      TemplateBundleApi.moveWorkflowToGroup,
+      identifier,
+      taskGroupIdentifier,
+    );
+    yield put({
+      type: ActionTypes.MOVE_WORKFLOW_TO_DIFFERENT_GROUP_SUCCESS,
+      identifier,
+      taskGroupIdentifier,
+      templateGroup,
+    });
+    const { taskListIdentifier } = yield select(locationParametersSelector);
+    if (taskListIdentifier) {
+      yield put(
+        getTasksForTaskGroups({
+          taskGroupIdentifier,
+          status: 'INCOMPLETE',
+          refresh: true,
+        }),
+      );
+    }
+
+    yield put(showGlobalAlert(AlertMessages.MOVED));
+  } catch {
+    yield put(showGlobalErrorAlert());
+    yield put({
+      type: ActionTypes.MOVE_WORKFLOW_TO_DIFFERENT_GROUP_FAILURE,
       identifier,
     });
   }
@@ -183,4 +223,8 @@ export default function* watchTemplateBundle() {
   );
   yield takeEvery(ActionTypes.APPLY_TEMPLATE, applyTemplate);
   yield takeEvery(ActionTypes.GET_TASKS_FOR_WORKFLOW, getTasksForWorkflow);
+  yield takeEvery(
+    ActionTypes.MOVE_WORKFLOW_TO_DIFFERENT_GROUP,
+    moveWorkflowToGroup,
+  );
 }

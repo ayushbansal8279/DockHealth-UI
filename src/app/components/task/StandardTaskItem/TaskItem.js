@@ -572,6 +572,7 @@ const TaskItem = React.memo(
             onClose={onCloseContextMenu}
             subtasksDisabled={subtasksDisabled}
             isDashboardTask={isDashboardTask}
+            currentList={taskList}
           />
         )}
       </>

@@ -15,6 +15,7 @@ import {
   moveTask,
 } from 'actions/task-actions';
 import { openModal, closeModal } from 'modal/actions';
+import { getTasksGroupsList } from 'actions/list-details-actions';
 import { Backdrop, MenuContainer, MenuItemButtom, Divider } from './styled';
 
 const TaskItemContextMenu = ({
@@ -23,6 +24,7 @@ const TaskItemContextMenu = ({
   onClose,
   subtasksDisabled,
   isDashboardTask,
+  currentList,
 }) => {
   const menuReference = useRef(null);
   const dispatch = useDispatch();
@@ -212,6 +214,31 @@ const TaskItemContextMenu = ({
     );
   }, [task]);
 
+  const handleMoveGroupTask = useCallback(() => {
+    const handleAddGroupTask = () => {
+      dispatch(getTasksGroupsList());
+    };
+
+    dispatch(
+      openModal('SelectDestinationGroup', {
+        confirm: group => {
+          dispatch(
+            moveTask(
+              task,
+              { taskListIdentifier: currentList.identifier },
+              group.taskGroupIdentifier || null,
+              null,
+              isDashboardTask,
+            ),
+          );
+          onRightClickAction('Move task');
+        },
+        selectedList: currentList,
+        onCreateGroup: handleAddGroupTask,
+      }),
+    );
+  }, []);
+
   useEffect(() => {
     checkMenuPosition();
     const focusedElementBeforeOpen = document.activeElement;
@@ -241,8 +268,15 @@ const TaskItemContextMenu = ({
       >
         {!isTemplateTask && (
           <li>
-            <MenuItemButtom tabindex="0" type="button" onClick={handleMoveTask}>
+            <MenuItemButtom tabIndex="0" type="button" onClick={handleMoveTask}>
               Move to list
+            </MenuItemButtom>
+          </li>
+        )}
+        {!isTemplateTask && (
+          <li>
+            <MenuItemButtom type="button" onClick={handleMoveGroupTask}>
+              Move to group
             </MenuItemButtom>
           </li>
         )}

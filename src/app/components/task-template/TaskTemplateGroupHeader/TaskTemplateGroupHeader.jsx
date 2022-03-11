@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 /* eslint-disable react-hooks/rules-of-hooks */
 import React, {
   useState,
@@ -37,17 +38,23 @@ import TaskTemplateDueDate from 'components/task-template/TaskTemplateDueDate/Ta
 import { CustomFieldWidthConfig } from 'helpers/field-type-helpers';
 import { updatePartialWorkflow } from 'actions/task-template-actions';
 import { compose } from 'redux';
+import { openModal } from 'modal/actions';
+import {
+  getTasksGroupsList,
+  moveWorkflowToGroup,
+} from 'actions/list-details-actions';
+import { currentTaskListSelector } from 'selectors/task-list-selectors';
 import TemplateHeaderName from '../TaskTemplateName/TaskTemplateName';
 import TaskHeaderPatient from '../TaskTemplatePatient/TaskTemplatePatient';
 import TemplateItemWorkflowStatus from '../TaskTemplateWorkflowStatus/TaskTemplateWorkflowStatus';
 import TaskTemplateMembers from '../TaskTemplateMembers/TaskTemplateMembers';
+import TaskTemplateStartDate from '../TaskTemplateStartDate/TaskTemplateStartDate';
 import {
   TaskTemplateGroupHeaderContainer,
   TaskTemplateProgressCircle,
   TemplateHandle,
   TaskTemplateOptionsContainer,
 } from './styled';
-import TaskTemplateStartDate from '../TaskTemplateStartDate/TaskTemplateStartDate';
 
 const TaskTemplateGroupHeader = ({
   templateGroup = {},
@@ -73,6 +80,7 @@ const TaskTemplateGroupHeader = ({
     identifier,
     tasksCount,
     tasksCompletedCount,
+    taskListIdentifier,
   } = templateGroup;
   const { dragHandleProps } = draggableProvided;
   const [isHovered, setIsHovered, unsetIsHovered] = useBoolean(false);
@@ -84,6 +92,7 @@ const TaskTemplateGroupHeader = ({
   const { currentUser } = useSelector(store => ({
     currentUser: store.userState.userProfile,
   }));
+  const currentList = useSelector(currentTaskListSelector);
   const dispatch = useDispatch();
   const { columnsConfig, customColumnsConfig } = useColumnsConfig();
 
@@ -130,6 +139,28 @@ const TaskTemplateGroupHeader = ({
     dispatch,
     identifier,
   ]);
+
+  const handleMoveGroupTask = useCallback(() => {
+    const handleAddGroupTask = () => {
+      dispatch(getTasksGroupsList());
+    };
+
+    dispatch(
+      openModal('SelectDestinationGroup', {
+        confirm: group => {
+          dispatch(
+            moveWorkflowToGroup(
+              templateGroup.identifier,
+              group.taskGroupIdentifier,
+              templateGroup,
+            ),
+          );
+        },
+        selectedList: currentList,
+        onCreateGroup: handleAddGroupTask,
+      }),
+    );
+  }, [currentList, dispatch, templateGroup]);
 
   const menuOptions = useMemo(() => {
     // eslint-disable-next-line unicorn/prevent-abbreviations
@@ -185,6 +216,10 @@ const TaskTemplateGroupHeader = ({
             }),
           ),
       },
+      {
+        name: 'Move to group',
+        onClick: handleMoveGroupTask,
+      },
     ];
 
     if (isCompletedTab ? !showIncompleteTasks : !showCompletedTasks) {
@@ -236,6 +271,7 @@ const TaskTemplateGroupHeader = ({
     setIsAddingTask,
     dispatch,
     identifier,
+    handleMoveGroupTask,
     toggleTasksVisibility,
   ]);
 

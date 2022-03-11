@@ -290,6 +290,26 @@ const ListDetailsReducer = (state = initialState, action) => {
           ...state.groupedTasks,
           taskGroups: updatedTaskGroups,
         },
+        listGroups: state.listGroups.map(g => {
+          if (
+            g.taskGroupIdentifier ===
+            groupOfTasks.taskGroups?.[0]?.groupIdentifier
+          ) {
+            const taskCount = groupOfTasks.taskGroups?.[0]?.tasks.filter(
+              t => t.itemType === 'TASK',
+            ).length;
+            const taskInWorkflowsCount = groupOfTasks.taskGroups?.[0]?.tasks
+              .filter(t => t.itemType === 'BUNDLE')
+              .reduce((accumulator, current) => {
+                return accumulator + current.tasksCount || 0;
+              }, 0);
+            return {
+              ...g,
+              metricValue: taskCount + taskInWorkflowsCount,
+            };
+          }
+          return g;
+        }),
       };
     }
 
@@ -506,15 +526,18 @@ const ListDetailsReducer = (state = initialState, action) => {
         );
       }
 
-      const taskGroupIdentifier = addedTask.taskGroups?.find(
-        ({ groupType }) => groupType === TaskGroupType.TASKLIST,
-      )?.taskGroupIdentifier;
+      const { taskGroupIdentifier } =
+        addedTask.taskGroups?.find(
+          ({ groupType }) => groupType === TaskGroupType.TASKLIST,
+        ) || {};
 
       return updateGroupInState(
-        group => ({
-          ...group,
-          tasks: [addedTask, ...(group.tasks || [])],
-        }),
+        group => {
+          return {
+            ...group,
+            tasks: [addedTask, ...(group.tasks || [])],
+          };
+        },
         taskGroupIdentifier,
         state,
       );
@@ -591,6 +614,29 @@ const ListDetailsReducer = (state = initialState, action) => {
             ...g,
             tasks: g.tasks?.filter(t => t.identifier !== identifier),
           })),
+        },
+      };
+    }
+
+    case ActionTypes.MOVE_WORKFLOW_TO_DIFFERENT_GROUP_SUCCESS: {
+      const { identifier, taskGroupIdentifier } = action;
+
+      const newTaskGroups = state.groupedTasks?.taskGroups?.map(g => {
+        const workflow = g.tasks?.filter(t => t.identifier === identifier);
+        const tasks = g.tasks?.filter(t => t.identifier !== identifier);
+        if (g.taskGroupIdentifier === taskGroupIdentifier) {
+          tasks.push(workflow);
+        }
+        return {
+          ...g,
+          tasks,
+        };
+      });
+      return {
+        ...state,
+        groupedTasks: {
+          ...state.groupedTasks,
+          taskGroups: newTaskGroups,
         },
       };
     }

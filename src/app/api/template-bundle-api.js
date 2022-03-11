@@ -39,6 +39,16 @@ export function moveWorkflowToList(
     });
 }
 
+export function moveWorkflowToGroup(identifier, taskGroupIdentifier) {
+  return axios
+    .patch(`task/workflow/${identifier}`, {
+      parentTaskWorkflowIdentifier: taskGroupIdentifier,
+    })
+    .then(({ data }) => {
+      return data;
+    });
+}
+
 export function applyTemplate({
   taskTemplateIdentifier,
   taskGroupIdentifier,

@@ -157,3 +157,19 @@ export const createTaskListGroup = groupName => ({
   type: ActionTypes.CREATE_TASK_LIST_GROUP,
   groupName,
 });
+
+export const createTaskListGroupSuccess = group => ({
+  type: ActionTypes.CREATE_TASK_LIST_GROUP_SUCCESS,
+  group,
+});
+
+export const moveWorkflowToGroup = (
+  identifier,
+  taskGroupIdentifier,
+  templateGroup,
+) => ({
+  type: ActionTypes.MOVE_WORKFLOW_TO_DIFFERENT_GROUP,
+  identifier,
+  taskGroupIdentifier,
+  templateGroup,
+});
