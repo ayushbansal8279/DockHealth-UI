@@ -37,10 +37,10 @@ export const archivedTaskListsSelector = createSelector(
 );
 
 export const currentTaskListCustomFieldsPreferencesSelector = identifier => {
-  return createSelector(
-    taskListStateSelector,
-    ({ currentTaskList }) =>
-      currentTaskList?.listUsers.find(u => u.identifier === identifier)
-        ?.customFieldDisplayColumns,
+  return createSelector(taskListStateSelector, ({ currentTaskList }) =>
+    currentTaskList?.listType === 'PUBLIC'
+      ? currentTaskList?.customFieldDisplayColumns
+      : currentTaskList?.listUsers.find(u => u.identifier === identifier)
+          ?.customFieldDisplayColumns,
   );
 };

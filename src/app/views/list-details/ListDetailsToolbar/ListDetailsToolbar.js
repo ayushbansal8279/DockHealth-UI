@@ -51,9 +51,11 @@ const ListDetailsToolbar = ({ onColumnSetupChange, additionalOptions }) => {
 
   const { displayOptions = [] } = useMemo(
     () =>
-      taskList?.listUsers?.find(
-        user => user.identifier === currentUser.identifier,
-      ) || {},
+      taskList?.listType === 'PUBLIC'
+        ? taskList
+        : taskList?.listUsers?.find(
+            user => user.identifier === currentUser.identifier,
+          ) || {},
     [taskList, currentUser],
   );
 

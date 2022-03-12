@@ -443,9 +443,11 @@ const initializeListDetailsViewHooks = (match, history) => {
 
   const displayListPreferences = useMemo(() => {
     const { displayOptions = [] } =
-      taskList?.listUsers?.find(
-        user => user.identifier === currentUserIdentifier,
-      ) || {};
+      taskList?.listType === 'PUBLIC'
+        ? taskList
+        : taskList?.listUsers?.find(
+            user => user.identifier === currentUserIdentifier,
+          ) || {};
 
     return displayOptions.reduce(
       (accumulator, value) => ({ ...accumulator, [value]: true }),
@@ -490,9 +492,11 @@ const initializeListDetailsViewHooks = (match, history) => {
 
   useEffect(() => {
     const { displayColumns = [] } =
-      taskList?.listUsers?.find(
-        user => user.identifier === currentUserIdentifier,
-      ) || {};
+      taskList?.listType === 'PUBLIC'
+        ? taskList
+        : taskList?.listUsers?.find(
+            user => user.identifier === currentUserIdentifier,
+          ) || {};
 
     const transformedColumnsPreference = displayColumns.reduce(
       (accumulator, value) => ({ ...accumulator, [value]: true }),

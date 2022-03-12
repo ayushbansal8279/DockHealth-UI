@@ -138,28 +138,40 @@ const TaskListReducer = (state = initialState, action) => {
       const { setup, currentUserIdentifier } = action.payload;
       return {
         ...state,
-        currentTaskList: {
-          ...state.currentTaskList,
-          listUsers: state.currentTaskList.listUsers.map(user =>
-            user.identifier === currentUserIdentifier
-              ? { ...user, displayOptions: setup }
-              : user,
-          ),
-        },
+        currentTaskList:
+          state.currentTaskList.listType === 'PUBLIC'
+            ? {
+                ...state.currentTaskList,
+                displayOptions: setup,
+              }
+            : {
+                ...state.currentTaskList,
+                listUsers: state.currentTaskList.listUsers.map(user =>
+                  user.identifier === currentUserIdentifier
+                    ? { ...user, displayOptions: setup }
+                    : user,
+                ),
+              },
       };
     }
     case UPDATE_LIST_COLUMNS_DISPLAY_SETUP: {
       const { setup, currentUserIdentifier } = action.payload;
       return {
         ...state,
-        currentTaskList: {
-          ...state.currentTaskList,
-          listUsers: state.currentTaskList.listUsers.map(user =>
-            user.identifier === currentUserIdentifier
-              ? { ...user, displayColumns: setup }
-              : user,
-          ),
-        },
+        currentTaskList:
+          state.currentTaskList.listType === 'PUBLIC'
+            ? {
+                ...state.currentTaskList,
+                displayColumns: setup,
+              }
+            : {
+                ...state.currentTaskList,
+                listUsers: state.currentTaskList.listUsers.map(user =>
+                  user.identifier === currentUserIdentifier
+                    ? { ...user, displayColumns: setup }
+                    : user,
+                ),
+              },
       };
     }
     case INVITE_USER_TO_TASKLIST_SUCCESS:
