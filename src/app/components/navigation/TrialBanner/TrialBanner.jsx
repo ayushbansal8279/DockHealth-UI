@@ -1,6 +1,7 @@
 /* eslint-disable sonarjs/cognitive-complexity */
 import React, { useEffect, useState, useMemo } from 'react';
 import { useSelector } from 'react-redux';
+import { userProfileSelector } from 'selectors/user-selectors';
 import {
   organizationSelector,
   billingDetailsSelector,
@@ -23,6 +24,10 @@ const TrialBanner = () => {
   const subscription = organization?.subscriptionDetails;
 
   const isTrialSubscriptionPlan = isPlanTrial(subscription);
+  const currentUser = useSelector(userProfileSelector);
+  const isOrganizationAdmin = ['ADMIN', 'OWNER'].includes(
+    currentUser?.orgUserRole,
+  );
 
   const creditCardExpirationMessage = useMemo(
     () => getCreditCardExpirationMessage(cardExpiration),
@@ -66,11 +71,13 @@ const TrialBanner = () => {
       <span>
         {creditCardExpirationMessage || messageBannerBar || trialEndLabel}
       </span>
-      {bannerMessageLinkFlag && !creditCardExpirationMessage && (
-        <TrialBannerLink to={SUBS_SETTINGS_PATH}>
-          {trialEndLabel ? 'Subscribe Now' : 'Learn more'}
-        </TrialBannerLink>
-      )}
+      {bannerMessageLinkFlag &&
+        !creditCardExpirationMessage &&
+        isOrganizationAdmin && (
+          <TrialBannerLink to={SUBS_SETTINGS_PATH}>
+            {trialEndLabel ? 'Subscribe Now' : 'Learn more'}
+          </TrialBannerLink>
+        )}
     </TrialBannerContainer>
   );
 };

@@ -42,6 +42,7 @@ import DocumentsView from 'views/self-serve/documents/DocumentsView';
 import SubscriptionPaymentFinishedView from 'views/self-serve/subscription-payment/SubscriptionPaymentFinishedView';
 import SubscriptionPaymentView from 'views/self-serve/subscription-payment/SubscriptionPaymentView';
 import SubscriptionsView from 'views/self-serve/subscriptions/SubscriptionsView';
+import SubscriptionExpiredView from 'views/self-serve/subscriptions/SubscriptionExpiredView';
 import UsersView from 'views/self-serve/users/UsersView';
 import SupportView from 'views/Support/SupportView';
 import TaskListActivityFeedView from 'views/ActivityFeed/TaskListActivityFeedView';
@@ -87,6 +88,10 @@ export const SETTINGS_ROUTES = [
   {
     path: '/subscription-payment-finished',
     RouteComponent: SubscriptionPaymentFinishedView,
+  },
+  {
+    path: '/subscription-expired',
+    RouteComponent: SubscriptionExpiredView,
   },
   {
     path: '/custom-fields/:tabName?',

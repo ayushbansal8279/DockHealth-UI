@@ -14,6 +14,7 @@ import {
   HOME_PATH,
   DEFAULT_REDIRECT_PATH,
   SUBS_SETTINGS_PATH,
+  SUBS_EXPIRED_PATH,
 } from './paths';
 import handleMobileRedirection from './handle-mobile-redirection';
 import handleHomeRedirection from './handle-home-redirection';
@@ -30,6 +31,8 @@ const checkUserAccountState = async ({
     const { pathname } = location;
 
     const data = await getUserByEmail(user.username, user);
+
+    const isOrganizationAdmin = ['ADMIN', 'OWNER'].includes(data.orgUserRole);
 
     captureLocalTimezone();
 
@@ -64,12 +67,16 @@ const checkUserAccountState = async ({
       return EULA_PATH;
     }
 
+    const subscriptionPath = isOrganizationAdmin
+      ? SUBS_SETTINGS_PATH
+      : SUBS_EXPIRED_PATH;
+
     if (
       orgData?.subscriptionDetails?.trialEnded &&
-      pathname !== SUBS_SETTINGS_PATH &&
+      pathname !== subscriptionPath &&
       isRequiredSubscription
     ) {
-      return SUBS_SETTINGS_PATH;
+      return subscriptionPath;
     }
 
     if (isMobile) {
