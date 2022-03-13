@@ -6,7 +6,7 @@ import axios from './axios-heydoc';
 
 export function getTaskListForUser() {
   return axios({
-    url: 'list/findTaskListsForUser',
+    url: 'list/findTaskListsForUser?basicDetails=true',
     method: 'get',
   })
     .then(response => response?.data)
@@ -17,7 +17,7 @@ export function getTaskListForUser() {
 
 export function getArchivedTaskListForUser() {
   return axios
-    .get('list/findArchivedTaskListsForUser')
+    .get('list/findArchivedTaskListsForUser?basicDetails=true')
     .then(response => response?.data)
     .catch(error => {
       throw new Error(error?.response?.data?.errorMessage);
@@ -26,7 +26,7 @@ export function getArchivedTaskListForUser() {
 
 export function getSharedTaskListsWithCurrentUser(userIdentifier) {
   return axios({
-    url: `list/findSharedTaskListsWithCurrentUser/${userIdentifier}`,
+    url: `list/findSharedTaskListsWithCurrentUser/${userIdentifier}?basicDetails=true`,
     method: 'get',
   })
     .then(response => response?.data)
@@ -37,7 +37,7 @@ export function getSharedTaskListsWithCurrentUser(userIdentifier) {
 
 export function getPendingTaskListsForUser() {
   return axios
-    .get('list/findPendingTaskListsForUser')
+    .get('list/findPendingTaskListsForUser?basicDetails=true')
     .then(response => response?.data)
     .catch(error => {
       throw new Error(error?.response?.data?.errorMessage);
