@@ -46,8 +46,9 @@ export const SUBSCRIPTION_PLANS = [
       'Custom patient profiles',
       'Unlimited file storage',
       'Multi-user groups',
+      'Analytics dashboard',
     ],
-    comingSoonFeatures: ['Analytics dashboard'],
+    comingSoonFeatures: [],
   },
   {
     key: SubscriptionPlan.ENTERPRISE,
