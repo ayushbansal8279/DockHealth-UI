@@ -57,6 +57,10 @@ export const PatientInfoDivider = styled.div`
   }
 `;
 
+export const PatientMRNAnchor = styled.a`
+  color: ${palette.brightBlue};
+`;
+
 export const PatientDetailsInformation = styled.div`
   display: flex;
   align-items: center;

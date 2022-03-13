@@ -94,6 +94,10 @@ export const InfoItem = styled.p`
   }
 `;
 
+export const PatientMRNAnchor = styled.a`
+  color: ${palette.brightBlue} !important;
+`;
+
 export const NotesTitle = styled.p`
   margin-bottom: 0;
   font-size: ${fontSizes.regular};

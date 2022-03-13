@@ -12,6 +12,7 @@ import {
   getCustomerTypeLabel,
   getCustomerUniqueIDShortLabel,
 } from 'helpers/customer-type-helper';
+import { organizationSelector } from 'selectors/organization-selectors';
 import {
   PatientCardContainer,
   PatientInfoSection,
@@ -28,6 +29,7 @@ import {
   NoteDescription,
   NoteInfo,
   PatientCellWrapper,
+  PatientMRNAnchor,
 } from './styled';
 import PatientCardDetailsLoader from './PatientCardDetailsLoader';
 import PatientCardNotesLoader from './PatientCardNotesLoader';
@@ -75,6 +77,9 @@ const PatientCard = ({ children, patientIdentifier, disabled }) => {
 
   const customerTypeLabel = getCustomerTypeLabel(currentUser);
   const uniqueIdentifierLabel = getCustomerUniqueIDShortLabel(currentUser);
+
+  const organization = useSelector(organizationSelector);
+  const emrPatientLink = organization?.emrPatientLink;
 
   useEffect(() => {
     if (cardOpen && patientIdentifier !== patientData?.patientIdentifier) {
@@ -155,9 +160,21 @@ const PatientCard = ({ children, patientIdentifier, disabled }) => {
                           {gender && ` ${gender?.charAt(0)?.toUpperCase()}`}
                         </InfoItem>
                       )}
-                      {mrn && (
+                      {mrn && !emrPatientLink && (
                         <InfoItem>
                           {uniqueIdentifierLabel}# {mrn}
+                        </InfoItem>
+                      )}
+                      {mrn && emrPatientLink && (
+                        <InfoItem>
+                          {uniqueIdentifierLabel}#{' '}
+                          <PatientMRNAnchor
+                            href={emrPatientLink.replace('{mrn}', mrn)}
+                            target="_blank"
+                            rel="noreferrer"
+                          >
+                            {mrn}
+                          </PatientMRNAnchor>
                         </InfoItem>
                       )}
                       {(dob || gender || mrn) && <br />}

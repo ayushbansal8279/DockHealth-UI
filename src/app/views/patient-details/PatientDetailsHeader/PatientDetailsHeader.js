@@ -10,6 +10,7 @@ import { Box, Chip, Grid } from '@material-ui/core';
 import { getCustomerUniqueIDShortLabel } from 'helpers/customer-type-helper';
 import Tooltip from 'components/common/Tooltip/Tooltip';
 import { userProfileSelector } from 'selectors/user-selectors';
+import { organizationSelector } from 'selectors/organization-selectors';
 import {
   patientSelector,
   isFetchingPatientSelector,
@@ -27,6 +28,7 @@ import {
   ButtonContainer,
   IconWrapper,
   ContactContainer,
+  PatientMRNAnchor,
 } from './styled';
 
 // eslint-disable-next-line sonarjs/cognitive-complexity
@@ -49,6 +51,8 @@ const PatientDetailsHeader = () => {
   const isFetchingPatient = useSelector(isFetchingPatientSelector);
   const currentUser = useSelector(userProfileSelector);
   const uniqueIdentifierLabel = getCustomerUniqueIDShortLabel(currentUser);
+  const organization = useSelector(organizationSelector);
+  const emrPatientLink = organization?.emrPatientLink;
 
   const isLoadingDetails = isFetchingPatient || !patient;
 
@@ -141,9 +145,23 @@ const PatientDetailsHeader = () => {
                 )}
                 {mrn && (
                   <>
-                    <PatientInfo>
-                      {uniqueIdentifierLabel}# {mrn}
-                    </PatientInfo>
+                    {!emrPatientLink && (
+                      <PatientInfo>
+                        {uniqueIdentifierLabel}# {mrn}
+                      </PatientInfo>
+                    )}
+                    {emrPatientLink && (
+                      <PatientInfo>
+                        {uniqueIdentifierLabel}#{' '}
+                        <PatientMRNAnchor
+                          href={emrPatientLink.replace('{mrn}', mrn)}
+                          target="_blank"
+                          rel="noreferrer"
+                        >
+                          {mrn}
+                        </PatientMRNAnchor>
+                      </PatientInfo>
+                    )}
                     <PatientInfoDivider />
                   </>
                 )}
