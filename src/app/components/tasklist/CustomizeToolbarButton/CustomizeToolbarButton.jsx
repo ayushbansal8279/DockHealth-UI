@@ -145,7 +145,7 @@ const CustomizeToolbarButton = ({
               );
             })}
           </List>
-          {!isEmpty(customColumnsConfig) && (
+          {userHasTaskCustomFieldsFeature && (
             <>
               <Spacer />
               <Box display="flex" justifyContent="space-between" mt={1}>
