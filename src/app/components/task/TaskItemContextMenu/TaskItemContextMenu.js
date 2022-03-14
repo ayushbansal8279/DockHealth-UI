@@ -6,7 +6,7 @@ import { useDispatch } from 'react-redux';
 import palette from 'styles/palette';
 import * as TaskApi from 'api/task-api';
 import { onRightClickAction } from 'helpers/ga-event-helper';
-import { checkIfTemplateTask } from 'helpers/task-helpers';
+import { checkIfTemplateTask, checkIfBundleTask } from 'helpers/task-helpers';
 import * as ActionTypes from 'actions/action-types';
 import {
   deleteTask,
@@ -31,6 +31,7 @@ const TaskItemContextMenu = ({
 
   const isSubtask = !!task.parentTaskIdentifier;
   const isTemplateTask = checkIfTemplateTask(task);
+  const isBundleTask = checkIfBundleTask(task);
 
   const handleKeyDown = useCallback(event => {
     function handleBackward() {
@@ -266,14 +267,14 @@ const TaskItemContextMenu = ({
         positionTop={position.y}
         positionLeft={position.x}
       >
-        {!isTemplateTask && (
+        {!isTemplateTask && !isBundleTask && (
           <li>
             <MenuItemButtom tabIndex="0" type="button" onClick={handleMoveTask}>
               Move to list
             </MenuItemButtom>
           </li>
         )}
-        {!isTemplateTask && (
+        {!isTemplateTask && !isBundleTask && (
           <li>
             <MenuItemButtom type="button" onClick={handleMoveGroupTask}>
               Move to group
