@@ -3,8 +3,9 @@ import React, { useRef, useMemo, useCallback } from 'react';
 import moment from 'moment';
 import InputMask from 'react-input-mask';
 import Input from 'components/common/Input/Input';
-import { IconButton, Popover } from '@material-ui/core';
+import { Box, IconButton, Popover } from '@material-ui/core';
 import CalendarTodayIcon from '@material-ui/icons/CalendarToday';
+import CloseIcon from '@material-ui/icons/Close';
 import Datepicker from 'components/common/Datepicker/Datepicker';
 import { useBoolean } from 'hooks/useBoolean';
 
@@ -39,9 +40,19 @@ const DateInput = ({
     onChange({ target: { value: date } });
   };
 
+  const handleClear = () => {
+    onChange({ target: { value: null } });
+    setTimeout(() => {
+      textInputReference.current.focus();
+    }, 0);
+  };
+
   const handleDatepickerChange = isoDate => {
     const date = moment(isoDate).format('MM/DD/YYYY');
     handleChange({ target: { value: date } });
+    setTimeout(() => {
+      textInputReference.current.focus();
+    }, 0);
   };
 
   const showError = useMemo(() => {
@@ -64,9 +75,15 @@ const DateInput = ({
         name={name}
         error={showError}
         endAdornment={
-          <IconButton disabled={readOnly || disabled} onClick={setOpen}>
-            <CalendarTodayIcon />
-          </IconButton>
+          <Box display="flex">
+            <IconButton disabled={readOnly || disabled} onClick={setOpen}>
+              <CalendarTodayIcon />
+            </IconButton>
+            <Box mx={0.5} />
+            <IconButton disabled={readOnly || disabled} onClick={handleClear}>
+              <CloseIcon />
+            </IconButton>
+          </Box>
         }
         {...otherProps}
         customInputComponent={CustomDateInput}
