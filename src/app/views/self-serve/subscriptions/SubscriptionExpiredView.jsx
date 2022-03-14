@@ -19,7 +19,8 @@ const SubscriptionExpiredView = () => {
         <Grid item sm={8}>
           <OnboardingSpacing3 />
           <OnboardingH2Bold>
-            Please notify the Owner / Admin who registered for the account.
+            Please notify the Owner / Admin of your organization to subscribe
+            and continue to use Dock.
           </OnboardingH2Bold>
           <OnboardingSpacing3 />
           <OnboardingSpacing3 />
