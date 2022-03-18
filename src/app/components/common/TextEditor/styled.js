@@ -7,6 +7,7 @@ export const StyledEditorContainer = styled.div`
   box-sizing: border-box;
   cursor: ${({ isReadOnly }) => (isReadOnly ? 'inherit' : 'text')};
   background: transparent;
+  height: ${({ fullHeight }) => (fullHeight ? '100%' : 'auto')};
 
   .DraftEditor-root {
     height: auto;
