@@ -97,9 +97,7 @@ const PatientAttachments = () => {
           </Grid>
         </>
       ) : (
-        <>
-          <PatientAttachmentsLoader />
-        </>
+        <PatientAttachmentsLoader />
       )}
     </PatientAttachmentsWrapper>
   );
