@@ -772,7 +772,7 @@ export default function* watchPatientDetails() {
   );
   yield takeEvery(DO_CHANGE_MEMBER_ROLE, doChangeMemberRole);
   yield takeEvery(DO_SORT_PATIENT_TASKS, doSortPatientTasks);
-  yield takeLatest(DO_ADD_PATIENT_ATTACHMENT, doAddPatientAttachment);
+  yield takeEvery(DO_ADD_PATIENT_ATTACHMENT, doAddPatientAttachment);
   yield takeLatest(DO_REMOVE_PATIENT_ATTACHMENT, doRemovePatientAttachment);
   yield takeLatest(
     ActionTypes.TOGGLE_PATIENT_COMPLETE_TASKS_VISIBLE,
