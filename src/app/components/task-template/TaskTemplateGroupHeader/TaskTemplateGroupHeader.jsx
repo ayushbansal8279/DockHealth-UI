@@ -443,11 +443,7 @@ const TaskTemplateGroupHeader = ({
       )}
       {columnsConfig[TaskItemColumn.ASSIGNED] && (
         <TaskItemCell
-          width={
-            groupHasMultipleAssignees
-              ? TaskItemColumnWidth[TaskItemColumn.ASSIGNED].WIDE
-              : TaskItemColumnWidth[TaskItemColumn.ASSIGNED].NARROW
-          }
+          width={TaskItemColumnWidth[TaskItemColumn.ASSIGNED].WIDE}
           justify={groupHasMultipleAssignees ? 'flex-start' : 'center'}
           paddingLeft="small"
           paddingRight="small"

@@ -103,11 +103,7 @@ const TasksHeader = ({
         <ColumnSortHeader
           id={TaskItemColumn.ASSIGNED}
           label={groupHasMultipleAssignees ? 'Assign' : 'Asgn'}
-          width={
-            groupHasMultipleAssignees
-              ? TaskItemColumnWidth[TaskItemColumn.ASSIGNED].WIDE
-              : TaskItemColumnWidth[TaskItemColumn.ASSIGNED].NARROW
-          }
+          width={TaskItemColumnWidth[TaskItemColumn.ASSIGNED].WIDE}
           sort={sort}
           onSortChange={onSortChange}
         />

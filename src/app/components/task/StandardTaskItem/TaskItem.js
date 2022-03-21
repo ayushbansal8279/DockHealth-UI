@@ -513,11 +513,7 @@ const TaskItem = React.memo(
             )}
             {columnsConfig[TaskItemColumn.ASSIGNED] && (
               <TaskItemCell
-                width={
-                  multipleAssigneesContext
-                    ? TaskItemColumnWidth[TaskItemColumn.ASSIGNED].WIDE
-                    : TaskItemColumnWidth[TaskItemColumn.ASSIGNED].NARROW
-                }
+                width={TaskItemColumnWidth[TaskItemColumn.ASSIGNED].WIDE}
                 justify={multipleAssigneesContext ? 'flex-start' : 'center'}
                 paddingLeft="small"
                 paddingRight="small"
