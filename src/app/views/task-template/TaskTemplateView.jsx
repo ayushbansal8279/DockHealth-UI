@@ -27,11 +27,7 @@ import TaskDrawer from 'components/task-drawer/TaskDrawer/TaskDrawer';
 import ViewTypeSwitch, {
   ViewType,
 } from 'components/tasklist/ViewTypeSwitch/ViewTypeSwitch';
-import {
-  BULK_EDIT_COMPLETE_OPTION,
-  BULK_EDIT_DUE_DATE_OPTION,
-  BULK_EDIT_MOVE_OPTION,
-} from 'components/tasklist/BulkEditSection/helpers';
+import { BulkEditOptionsConfig } from 'helpers/bulk-edit-helpers';
 import localStorageHelper from 'helpers/local-storage-helper';
 import TasksTemplatesHeader from 'components/tasklist/TasksTemplatesHeader/TasksTemplatesHeader';
 import {
@@ -65,9 +61,9 @@ import TaskTemplateFolder from './TaskTemplateFolder/TaskTemplateFolder';
 import TemplateBreadcrumbs from './TaskTemplateBreadcrumb/TaskTemplateBreadcrumbs';
 
 const BULK_EDIT_OPTIONS_CONFIG = {
-  [BULK_EDIT_MOVE_OPTION]: false,
-  [BULK_EDIT_COMPLETE_OPTION]: false,
-  [BULK_EDIT_DUE_DATE_OPTION]: false,
+  [BulkEditOptionsConfig.MOVE_OPTION]: false,
+  [BulkEditOptionsConfig.COMPLETE_OPTION]: false,
+  [BulkEditOptionsConfig.DUE_DATE_OPTION]: false,
 };
 
 const TASK_TEMPLATES_BANNER_CLOSED_STORAGE_KEY =

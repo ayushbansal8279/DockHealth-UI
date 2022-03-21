@@ -27,3 +27,13 @@ export function checkIfAllTasksSelected(tasks) {
     return checkIfTaskAndSubtasksSelected(task);
   });
 }
+
+export const BulkEditOptionsConfig = {
+  DUPLICATE_OPTION: 'BulkEditDuplicateOption',
+  MOVE_OPTION: 'BulkEditMoveOption',
+  COMPLETE_OPTION: 'BulkEditCompleteOption',
+  STATUS_OPTION: 'BulkEditStatusOption',
+  DUE_DATE_OPTION: 'BulkEditDueDateOption',
+  ASSIGN_OPTION: 'BulkEditAssignOption',
+  DELETE_OPTION: 'BulkEditDeleteOption',
+};

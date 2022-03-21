@@ -2,7 +2,8 @@ import React, { useMemo } from 'react';
 import { innerJoin } from 'ramda';
 import MultiAssignMembersList from 'components/task/MultiAssignPopover/MultiAssignMembersList';
 import TaskItemPopover from 'components/task/TaskItemPopover/TaskItemPopover';
-import { WrapperContainer, IconBox, AssigneeIcon } from './styled';
+import BulkEditOption from 'components/bulk-edit/BulkEditOption/BulkEditOption';
+import { AssigneeIcon } from './styled';
 
 const BulkEditAssignToOption = ({
   selectedTasks,
@@ -54,12 +55,11 @@ const BulkEditAssignToOption = ({
         />
       )}
     >
-      <WrapperContainer disabled={isDisabled}>
-        <IconBox>
-          <AssigneeIcon />
-        </IconBox>
-        <p>Assignee</p>
-      </WrapperContainer>
+      <BulkEditOption
+        iconComponent={AssigneeIcon}
+        title="Assignee"
+        isDisabled={isDisabled}
+      />
     </TaskItemPopover>
   );
 };

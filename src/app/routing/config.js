@@ -156,7 +156,7 @@ export const TEMPLATE_CORE_SUBSCRIPTION_PLAN_ROUTES = [
   {
     path: '/workflows/builder/:identifier',
     RouteComponent: React.lazy(() =>
-      import('views/task-template-details/TaskTemplateDetailsView'),
+      import('views/smart-flow-builder/SmartFlowBuilderView'),
     ),
   },
   {
