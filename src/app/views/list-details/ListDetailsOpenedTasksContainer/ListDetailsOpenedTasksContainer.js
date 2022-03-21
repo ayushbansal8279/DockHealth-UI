@@ -3,7 +3,6 @@ import {
   isFetchingGroupsSelector,
   areGroupsInitialized,
   listDetailsGroupsSelector,
-  tasksIsFetchingSelector,
   groupTasksSelector,
 } from 'selectors/list-details-selectors';
 import { hasFiltersAppliedSelector } from 'selectors/mega-filter-selectors';
@@ -20,8 +19,7 @@ const mapStateToProps = (state, ownProps) => {
     groupList: groups,
     areFiltersApplied,
     isFetchingData:
-      (isFetchingGroupsSelector(state) && !areGroupsInitialized(state)) ||
-      tasksIsFetchingSelector(state),
+      isFetchingGroupsSelector(state) && !areGroupsInitialized(state),
     isSearchApplied: !!searchValue,
     ...restOwnProps,
   };

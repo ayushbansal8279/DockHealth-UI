@@ -1,6 +1,5 @@
 import moment from 'moment';
 import * as TaskApi from 'api/task-api';
-import * as ListDetailsApi from 'api/list-details-api';
 import * as AlertActions from 'alert/actions';
 import { getTasksGroupsList } from 'actions/list-details-actions';
 import { openDrawer } from 'actions/task-drawer-actions';
@@ -39,81 +38,6 @@ const shapeTask = task => {
     patientIdentifier: patient ? patient.patientIdentifier : null,
   };
 };
-
-const getListWithGroupsAction = ({ status }) => {
-  if (status === 'INCOMPLETE') {
-    return ActionTypes.GET_TASKS_BY_GROUPS_SUCCESS;
-  }
-
-  return ActionTypes.GET_COMPLETED_TASKS_BY_GROUPS_SUCCESS;
-};
-
-export function getListTasksGroupedByTaskGroup(
-  taskListIdentifier,
-  sortBy,
-  status,
-  startPosition = 0,
-  endPosition = 0,
-  loadingMore = false,
-  viewMode,
-) {
-  const action = getListWithGroupsAction({ status });
-
-  return dispatch => {
-    if (loadingMore && status === 'COMPLETE') {
-      dispatch({
-        type: ActionTypes.GET_MORE_TASKS_REQUEST,
-      });
-    }
-
-    return ListDetailsApi.getListTasksGroupedByTaskGroup(
-      taskListIdentifier,
-      status,
-      sortBy,
-      startPosition,
-      endPosition,
-      viewMode,
-    )
-      .then(groupedTasks => {
-        dispatch({ type: action, groupedTasks, loadingMore });
-
-        const selectedTaskIdentifier = sessionStorage.getItem(
-          'selectedTaskIdentifier',
-        );
-
-        const allTasks = [];
-        groupedTasks.forEach(taskGroup => {
-          if (taskGroup.tasks) {
-            allTasks.push(taskGroup.tasks);
-          }
-        });
-        const selectedTask = allTasks
-          .reduce((allTasksArray, tasksArray) => [
-            ...allTasksArray,
-            ...tasksArray,
-          ])
-          .find(
-            ({ taskIdentifier }) => taskIdentifier === selectedTaskIdentifier,
-          );
-
-        if (selectedTask) {
-          dispatch(storeAsCurrentTask(selectedTask));
-          dispatch(openDrawer());
-          sessionStorage.removeItem('selectedTaskIdentifier');
-        } else if (selectedTaskIdentifier) {
-          TaskApi.getTaskDetails(selectedTaskIdentifier).then(data => {
-            dispatch(storeAsCurrentTask(data));
-            dispatch(openDrawer());
-          });
-        }
-
-        return groupedTasks;
-      })
-      .catch(error => {
-        throw error;
-      });
-  };
-}
 
 // eslint-disable-next-line sonarjs/cognitive-complexity
 export function saveTask(newTask, shouldReloadGroups = false) {
