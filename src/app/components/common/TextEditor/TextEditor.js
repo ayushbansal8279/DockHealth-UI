@@ -76,6 +76,7 @@ const TextEditor = React.forwardRef(
   (
     {
       showToolbar = false,
+      fullHeight,
       readOnly,
       withEditedLabel,
       keyBindingFn,
@@ -128,7 +129,6 @@ const TextEditor = React.forwardRef(
     const currentState = state || editorState;
 
     const customerTypeLabel = getCustomerTypeLabel(currentUser);
-
     const showPlaceholder = useMemo(() => {
       const rawState = convertToRaw(currentState.getCurrentContent());
       const firstBlock = rawState?.blocks?.[0];
@@ -266,6 +266,7 @@ const TextEditor = React.forwardRef(
           isOneline={oneline}
           onClick={focus}
           minHeight={minHeight}
+          fullHeight={fullHeight}
           ref={StyledEditorContainerReference}
         >
           {showToolbar && isFocused && (

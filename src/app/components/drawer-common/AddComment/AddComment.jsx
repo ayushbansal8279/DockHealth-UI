@@ -88,6 +88,7 @@ const AddComment = ({
           taskListIdentifier={taskListIdentifier}
           disableMentions={disableMentions}
           placeholder="Leave a comment and press enter on your keyboard to save"
+          fullHeight
           onFocus={() => {
             setIsFocused(true);
           }}
