@@ -28,6 +28,17 @@ const checkUserAuthentication = async ({ history, isRequiredLogin }) => {
 
       await getEnterpriseAccessTokensByAuthCode(authCode, issValue)
         .then(() => {
+          const patientIdentifier = sessionStorage.getItem('PatientIdentifier');
+          if (
+            patientIdentifier &&
+            patientIdentifier !== '' &&
+            patientIdentifier !== 'null'
+          ) {
+            return {
+              redirectPath: `/#/core/patient/${patientIdentifier}`,
+              user: null,
+            };
+          }
           return { redirectPath: '/core/home', user: null };
         })
         .catch(error => {
