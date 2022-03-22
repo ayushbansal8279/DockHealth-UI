@@ -42,6 +42,7 @@ import Calendar from 'components/common/Calendar/Calendar';
 import { ViewType, getViewTypeFromQueryString } from 'helpers/view-type-helper';
 import GroupedListSkeletonLoader from 'components/tasklist/GroupedListSkeletonLoader/GroupedListSkeletonLoader';
 import StickyContainer from 'components/common/HorizontalScroll/StickyContainer';
+import { dashboardGroupsPreferencesSelector } from 'selectors/user-selectors';
 import DashboardTasksGroup from './DashboardTasksGroup';
 import DashboardToolbar from '../DashboardToolbar/DashboardToolbar';
 import {
@@ -70,21 +71,23 @@ const DashboardList = ({
   const viewType = getViewTypeFromQueryString(search);
   const { openModal } = modalActions;
   const tabName = useSelector(dashboardTabNameSelector);
-
+  const dashboardGroupsPreferences = useSelector(
+    dashboardGroupsPreferencesSelector,
+  );
   const [currentSort, setCurrentSort] = useState({
     key: null,
     order: null,
   });
   const [completeTaskCount, setCompleteTaskCount] = useState(undefined);
-
-  const filteredDashboardTasks = dashboardTasks?.filter(
-    taskGroupInfo => taskGroupInfo?.metricValue !== 0,
-  );
   const { usageState } = currentUser;
-
   const isSortApplied = !!currentSort?.key;
-
   const { key: sortKey, order: sortOrder } = currentSort;
+
+  const filteredDashboardTasks = useMemo(() => {
+    return dashboardTasks?.filter(taskGroupInfo =>
+      dashboardGroupsPreferences?.includes(taskGroupInfo?.groupType),
+    );
+  }, [dashboardGroupsPreferences, dashboardTasks]);
 
   const currentSortMethod = useMemo(() => {
     if (!sortKey) return identity;
