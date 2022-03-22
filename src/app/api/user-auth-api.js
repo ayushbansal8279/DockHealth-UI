@@ -468,13 +468,21 @@ export function getEnterpriseAccessTokensByAuthCode(authCode, iss) {
         if (patientIdentifier && patientIdentifier !== '') {
           sessionStorage.setItem('PatientIdentifier', patientIdentifier);
         }
-        sendEvent({
-          eventAction: 'LOGIN_SUCCESS',
-          eventCategory: 'AUTH',
-          usageEventType: 'USAGE_ACTION',
-        });
+        try {
+          sendEvent({
+            eventAction: 'LOGIN_SUCCESS',
+            eventCategory: 'AUTH',
+            usageEventType: 'USAGE_ACTION',
+          });
+        } catch (error) {
+          // do nothing
+        }
       });
-      await UserApi.captureLocalTimezone();
+      try {
+        await UserApi.captureLocalTimezone();
+      } catch (error) {
+        console.log(error);
+      }
       resolve('success');
     } catch (error) {
       reject(error);

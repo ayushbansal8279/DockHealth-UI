@@ -33,8 +33,11 @@ const checkUserAccountState = async ({
     const data = await getUserByEmail(user.username, user);
 
     const isOrganizationAdmin = ['ADMIN', 'OWNER'].includes(data.orgUserRole);
-
-    captureLocalTimezone();
+    try {
+      captureLocalTimezone();
+    } catch (error) {
+      // do nothing
+    }
 
     const isMobile = checkIsMobile();
 
