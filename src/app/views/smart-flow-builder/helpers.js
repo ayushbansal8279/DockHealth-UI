@@ -5,6 +5,7 @@ import {
   NodeTargetHandle,
   getUniqueLinkId,
 } from 'helpers/task-template-builder-helpers';
+import ELK from 'elkjs/lib/elk.bundled';
 import { isNil, pick, prop } from 'ramda';
 
 // eslint-disable-next-line sonarjs/cognitive-complexity
@@ -135,4 +136,52 @@ export function isTargetOfStandardNode(node, tasks) {
         ({ targetTaskIdentifier }) => targetTaskIdentifier === node.id,
       ),
   );
+}
+
+export async function getAutoLayout(tasks, startX = 0, startY = 0) {
+  const elk = new ELK();
+
+  const nodes = [];
+  const edges = [];
+
+  tasks.forEach(({ identifier, taskLinks }) => {
+    nodes.push({ id: identifier, width: 230, height: 130 });
+
+    // eslint-disable-next-line no-unused-expressions
+    taskLinks?.forEach(({ sourceTaskIdentifier, targetTaskIdentifier }) => {
+      if (
+        tasks.find(({ identifier: id }) => sourceTaskIdentifier === id) &&
+        tasks.find(({ identifier: id }) => targetTaskIdentifier === id)
+      ) {
+        edges.push({
+          id: getUniqueLinkId(sourceTaskIdentifier, targetTaskIdentifier),
+          sources: [sourceTaskIdentifier],
+          targets: [targetTaskIdentifier],
+        });
+      }
+    });
+  });
+
+  const graph = {
+    id: 'root',
+    layoutOptions: {
+      'elk.direction': 'DOWN',
+      'elk.algorithm': 'mrtree',
+      separateConnectedComponents: false,
+      'spacing.nodeNode': 200,
+      'spacing.nodeNodeBetweenLayers': 200,
+    },
+    children: nodes,
+    edges,
+  };
+
+  const { children } = await elk.layout(graph);
+
+  return children.map(({ id, x, y }) => ({
+    id,
+    position: {
+      x: x + startX,
+      y: y + startY,
+    },
+  }));
 }
