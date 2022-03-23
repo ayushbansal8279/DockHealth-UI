@@ -52,6 +52,7 @@ import {
   NodeType,
   LinkType,
   TASK_NODE_WIDTH,
+  getAutoLayout,
 } from 'helpers/task-template-builder-helpers';
 import { useBoolean } from 'hooks/useBoolean';
 import palette from 'styles/palette';
@@ -65,7 +66,6 @@ import {
   mapElementsToLayout,
   updateNodePosition,
   calculateNewElementPosition,
-  getAutoLayout,
 } from './helpers';
 import {
   ElementsSidebar,
@@ -129,7 +129,7 @@ const SmartFlowBuilderView = () => {
     dispatch(selectTaskTemplate(identifier));
 
     return () => {
-      dispatch(unselectTaskTemplate);
+      dispatch(unselectTaskTemplate());
     };
   }, [dispatch, identifier]);
 

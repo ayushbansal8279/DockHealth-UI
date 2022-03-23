@@ -778,3 +778,10 @@ export function changeTaskPriority(task, priority) {
     priority,
   };
 }
+
+export function bulkEditDuplicateTasksSuccess(duplicatedTasks) {
+  return {
+    type: ActionTypes.BULK_EDIT_DUPLICATE_TASKS_SUCCESS,
+    duplicatedTasks,
+  };
+}

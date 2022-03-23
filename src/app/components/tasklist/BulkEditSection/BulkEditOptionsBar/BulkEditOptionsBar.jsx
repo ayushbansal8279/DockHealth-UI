@@ -23,6 +23,7 @@ import {
   bulkEditDelete,
   bulkEditComplete,
   bulkEditDueDateSuccess,
+  bulkEditDuplicateTasksSuccess,
 } from 'actions/task-actions';
 import * as ActionTypes from 'actions/action-types';
 import {
@@ -382,7 +383,9 @@ const BulkEditOptionsBar = ({
         bulkEditType: 'DUPLICATE',
         taskIdentifiers: allSelectedTasksIdentifiers,
         includeAttachmentsForDuplication,
-      }).then(({ transactionIdentifier }) => {
+      }).then(({ transactionIdentifier, tasks: duplicatedTasks }) => {
+        dispatch(bulkEditDuplicateTasksSuccess(duplicatedTasks));
+
         if (refreshTasks && typeof refreshTasks === 'function') {
           refreshTasks();
         }
