@@ -1,8 +1,5 @@
 /* eslint-disable import/prefer-default-export */
-import {
-  NodeType,
-  TASK_NODE_WIDTH,
-} from 'helpers/task-template-builder-helpers';
+import { NodeType, TASK_NODE_WIDTH } from 'helpers/smart-flow-builder-helpers';
 import styled from 'styled-components';
 import palette from 'styles/palette';
 
@@ -19,6 +16,5 @@ export const TaskNodeContainer = styled.div`
   border: 2px solid ${palette.brightBlue};
   `}
 
-  ${({ selected }) =>
-    selected && `background-color: ${palette.brightBlueWithAlpha};`}
+  ${({ selected }) => selected && `background-color: #ddedf8;`}
 `;

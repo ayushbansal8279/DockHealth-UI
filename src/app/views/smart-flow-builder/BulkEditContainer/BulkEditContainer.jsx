@@ -8,7 +8,7 @@ import BulkEditOptionsBar from 'components/tasklist/BulkEditSection/BulkEditOpti
 import { AnimatedContainer } from './styled';
 
 const SMARTFLOW_BULK_EDIT_CONFIG = {
-  [BulkEditOptionsConfig.DUPLICATE_OPTION]: false,
+  [BulkEditOptionsConfig.DUPLICATE_OPTION]: true,
   [BulkEditOptionsConfig.MOVE_OPTION]: false,
   [BulkEditOptionsConfig.COMPLETE_OPTION]: false,
   [BulkEditOptionsConfig.STATUS_OPTION]: true,

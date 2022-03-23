@@ -52,7 +52,7 @@ import {
   NodeType,
   LinkType,
   TASK_NODE_WIDTH,
-} from 'helpers/task-template-builder-helpers';
+} from 'helpers/smart-flow-builder-helpers';
 import { useBoolean } from 'hooks/useBoolean';
 import palette from 'styles/palette';
 import NewTaskNode from './NewTaskNode/NewTaskNode';
@@ -128,7 +128,7 @@ const SmartFlowBuilderView = () => {
     dispatch(selectTaskTemplate(identifier));
 
     return () => {
-      dispatch(unselectTaskTemplate);
+      dispatch(unselectTaskTemplate());
     };
   }, [dispatch, identifier]);
 
@@ -307,11 +307,11 @@ const SmartFlowBuilderView = () => {
 
     return actions;
   }, [
-    dispatch,
+    selectedElements,
     layout,
+    dispatch,
     handleMakeSelectionDependent,
     openDelayPopover,
-    selectedElements,
   ]);
 
   const updateSelectedElementsPosition = selectedNodes => {

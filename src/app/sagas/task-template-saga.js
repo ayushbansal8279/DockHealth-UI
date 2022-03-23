@@ -28,7 +28,8 @@ import {
   getUniqueLinkId,
   LinkType,
   NodeType,
-} from 'helpers/task-template-builder-helpers';
+  getAutoLayout,
+} from 'helpers/smart-flow-builder-helpers';
 import {
   addLabel,
   editLabel,
@@ -768,6 +769,45 @@ function* removeLabel({ labelIdentifier }) {
   }
 }
 
+function* bulkEditDuplicateTasksSuccess({ duplicatedTasks }) {
+  try {
+    const currentTaskTemplateIdentifier = yield select(
+      currentTaskTemplateIdentifierSelector,
+    );
+
+    if (currentTaskTemplateIdentifier) {
+      const { layout } = yield select(
+        taskTemplateDetailsSelector(currentTaskTemplateIdentifier),
+      );
+
+      let xStart = null;
+      let yStart = null;
+
+      layout.forEach(({ position }) => {
+        if (position) {
+          if (xStart === null || position.x > xStart) {
+            xStart = position.x;
+          }
+          if (yStart === null || position.y < yStart) {
+            yStart = position.y;
+          }
+        }
+      });
+
+      const autoLayout = yield getAutoLayout(
+        duplicatedTasks,
+        xStart + 430,
+        yStart,
+      );
+      yield put(
+        TaskTemplateActions.saveTaskTemplateLayout([...layout, ...autoLayout]),
+      );
+    }
+  } catch {
+    yield put(showGlobalErrorAlert());
+  }
+}
+
 export default function* watchTaskTemplate() {
   yield takeLatest(
     ActionTypes.INITIALIZE_WORKFLOW_LIBRARY_STATE,
@@ -819,4 +859,8 @@ export default function* watchTaskTemplate() {
     removeLabelFromWorkflow,
   );
   yield takeEvery(ActionTypes.REMOVE_WORKFLOW_LABEL, removeLabel);
+  yield takeEvery(
+    ActionTypes.BULK_EDIT_DUPLICATE_TASKS_SUCCESS,
+    bulkEditDuplicateTasksSuccess,
+  );
 }
