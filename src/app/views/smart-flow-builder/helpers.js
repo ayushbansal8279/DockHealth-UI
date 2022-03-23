@@ -4,7 +4,7 @@ import {
   NodeSourceHandle,
   NodeTargetHandle,
   getUniqueLinkId,
-} from 'helpers/task-template-builder-helpers';
+} from 'helpers/smart-flow-builder-helpers';
 import { isNil, pick, prop } from 'ramda';
 
 // eslint-disable-next-line sonarjs/cognitive-complexity

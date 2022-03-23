@@ -53,7 +53,7 @@ import {
   LinkType,
   TASK_NODE_WIDTH,
   getAutoLayout,
-} from 'helpers/task-template-builder-helpers';
+} from 'helpers/smart-flow-builder-helpers';
 import { useBoolean } from 'hooks/useBoolean';
 import palette from 'styles/palette';
 import NewTaskNode from './NewTaskNode/NewTaskNode';

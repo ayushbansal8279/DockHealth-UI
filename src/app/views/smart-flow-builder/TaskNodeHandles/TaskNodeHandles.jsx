@@ -6,7 +6,7 @@ import palette from 'styles/palette';
 import {
   NodeSourceHandle,
   NodeTargetHandle,
-} from 'helpers/task-template-builder-helpers';
+} from 'helpers/smart-flow-builder-helpers';
 import { AddIcon, targetHandleStyles, TargetHandlesWrapper } from './styled';
 
 function validateConnection({ source, target }) {

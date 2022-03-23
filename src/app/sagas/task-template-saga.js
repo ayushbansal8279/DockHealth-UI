@@ -29,7 +29,7 @@ import {
   LinkType,
   NodeType,
   getAutoLayout,
-} from 'helpers/task-template-builder-helpers';
+} from 'helpers/smart-flow-builder-helpers';
 import {
   addLabel,
   editLabel,
