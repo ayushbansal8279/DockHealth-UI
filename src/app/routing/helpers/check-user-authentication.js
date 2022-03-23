@@ -14,7 +14,11 @@ import { CREATE_ACCOUNT_PATH, DEFAULT_REDIRECT_PATH } from './paths';
 const checkUserAuthentication = async ({ history, isRequiredLogin }) => {
   try {
     const { location } = history;
-    const { pathname, search } = location;
+    const { pathname } = location;
+    let search = location?.search;
+    if (search === '') {
+      search = window.location.search;
+    }
 
     const queryValues = queryString.parse(search);
 
@@ -24,7 +28,16 @@ const checkUserAuthentication = async ({ history, isRequiredLogin }) => {
 
       await getEnterpriseAccessTokensByAuthCode(authCode, issValue)
         .then(() => {
-          return { redirectPath: '/core/home', user: null };
+          const patientIdentifier = sessionStorage.getItem('PatientIdentifier');
+          if (
+            patientIdentifier &&
+            patientIdentifier !== '' &&
+            patientIdentifier !== 'null'
+          ) {
+            window.location.href = `/#/core/patient/${patientIdentifier}`;
+          } else {
+            window.location.href = `/#/core/home`;
+          }
         })
         .catch(error => {
           showAlert({ status: 'error', title: 'Error', text: error.message });

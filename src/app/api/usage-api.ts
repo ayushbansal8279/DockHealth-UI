@@ -36,11 +36,15 @@ const sendEvent = async (data: SendEventProps) => {
     captureEvent = false;
   }
   if (captureEvent) {
-    await axios({
-      method: 'post',
-      url: '/usage/event',
-      data,
-    });
+    try {
+      await axios({
+        method: 'post',
+        url: '/usage/event',
+        data,
+      });
+    } catch (error) {
+      // do nothing
+    }
   }
 
   ReactGA.event(
