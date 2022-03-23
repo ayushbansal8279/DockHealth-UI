@@ -52,7 +52,6 @@ import {
   NodeType,
   LinkType,
   TASK_NODE_WIDTH,
-  getAutoLayout,
 } from 'helpers/smart-flow-builder-helpers';
 import { useBoolean } from 'hooks/useBoolean';
 import palette from 'styles/palette';
@@ -259,17 +258,6 @@ const SmartFlowBuilderView = () => {
           }
         },
       },
-      // TODO: change placement of auto align button
-      {
-        id: 'test',
-        label: 'Auto align',
-        icon: TaskElementIcon,
-        onClick: async () => {
-          const autoLayout = await getAutoLayout(tasks);
-          dispatch(saveTaskTemplateLayout(autoLayout));
-          setTimeout(reactFlowInstance.current.fitView, 0);
-        },
-      },
     ];
 
     let actions = [...baseActions];
@@ -320,7 +308,6 @@ const SmartFlowBuilderView = () => {
     return actions;
   }, [
     selectedElements,
-    tasks,
     layout,
     dispatch,
     handleMakeSelectionDependent,
