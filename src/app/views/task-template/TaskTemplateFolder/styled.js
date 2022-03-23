@@ -22,7 +22,7 @@ export const TaskTemplateContainer = styled.div`
 export const TaskTemplateHeader = styled.div`
   display: grid;
   grid-template-columns: auto 1fr auto auto auto;
-  grid-template-rows: 30px;
+  grid-template-rows: auto;
   grid-column-gap: ${spacing.tiny};
   align-items: center;
   width: 100%;
@@ -67,6 +67,7 @@ export const MenuContainer = styled.div`
   grid-column: 4;
   overflow: hidden;
   color: ${palette.coolGrey2};
+  opacity: ${({ disabled }) => (disabled ? '0.5' : '1')};
 `;
 
 export const Spacer = styled.div`

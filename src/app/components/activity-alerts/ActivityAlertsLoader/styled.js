@@ -6,7 +6,7 @@ import spacing from 'styles/spacing';
 export const AlertLoader = styled.div`
   position: relative;
   width: 100%;
-  height: 160px;
+  max-height: 200px;
   margin-bottom: ${spacing.regular};
   border-radius: ${spacing.small};
   background-color: ${palette.white};

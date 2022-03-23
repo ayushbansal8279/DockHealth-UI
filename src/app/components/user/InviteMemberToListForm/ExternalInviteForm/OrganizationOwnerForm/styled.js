@@ -56,6 +56,7 @@ export const RoleFormWrapper = styled(Grid)`
   padding: ${spacing.regular} 0 ${spacing.regularPlus} 0;
   font-family: 'Roboto', sans-serif;
   color: ${palette.mediumGrey};
+  flex-wrap: nowrap !important;
 `;
 
 export const RoleSelectionHeader = styled.h3`

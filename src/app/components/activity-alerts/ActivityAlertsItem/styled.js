@@ -7,7 +7,7 @@ export const ActivityAlertsItemContainer = styled.div`
   font-family: Montserrat;
   display: flex;
   flex-direction: column;
-  height: 160px;
+  max-height: 200px;
   background: linear-gradient(180deg, #ffffff 0%, rgba(255, 255, 255, 0) 100%),
     #ffffff; // per design
   box-shadow: 0px 0px 11px rgba(0, 0, 0, 0.15); // per design

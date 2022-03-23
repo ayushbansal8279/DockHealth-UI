@@ -12,7 +12,7 @@ const mdBreakpoint = 960;
 export const MainContainer = styled.div`
   display: flex;
   flex-direction: row;
-  height: 700px;
+  height: 750px;
   width: 100%;
 
   @media screen and (max-width: ${mdBreakpoint}px) {

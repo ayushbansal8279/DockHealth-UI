@@ -1,4 +1,4 @@
-import { Grid } from '@material-ui/core';
+import { Box, Grid } from '@material-ui/core';
 import Button from 'components/common/Button/Button';
 import Spacing from 'components/common/Spacing';
 import React from 'react';
@@ -25,9 +25,11 @@ const OnboardingNewOrganizationInfoView = () => {
       </Description>
       <Spacing vertical={7} />
       <Grid container justify="flex-end">
-        <Button onClick={history.goBack} variant="text">
-          Cancel
-        </Button>
+        <Box flex="1">
+          <Button onClick={history.goBack} variant="text" fullWidth>
+            Cancel
+          </Button>
+        </Box>
         <ContinueButtonContainer>
           <Button
             fullWidth

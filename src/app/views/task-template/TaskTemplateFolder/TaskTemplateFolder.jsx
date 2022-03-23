@@ -15,6 +15,7 @@ import * as TaskTemplateActions from 'actions/task-template-actions';
 import * as ModalActions from 'modal/actions';
 import OptionsMenu from 'components/common/OptionsMenu/OptionsMenu';
 import Folder from 'img/folder';
+import { Box } from '@material-ui/core';
 import {
   TaskTemplateContainer,
   TaskTemplateHeader,
@@ -156,11 +157,16 @@ const TaskTemplateFolder = ({
           onClick={onClick}
         />
         <HeaderChildrenContainer>{children}</HeaderChildrenContainer>
-        <OptionsMenu options={menuOptions}>
-          <MenuContainer size="small">
-            <MoreHoriz fontSize="large" color="inherit" />
-          </MenuContainer>
-        </OptionsMenu>
+        <Box>
+          <OptionsMenu
+            isDisabled={menuOptions?.length > 0}
+            options={menuOptions}
+          >
+            <MenuContainer disabled={menuOptions?.length > 0} size="small">
+              <MoreHoriz fontSize="large" color="inherit" />
+            </MenuContainer>
+          </OptionsMenu>
+        </Box>
       </TaskTemplateHeader>
     </TaskTemplateContainer>
   );

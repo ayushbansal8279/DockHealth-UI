@@ -4,7 +4,7 @@ import palette from 'styles/palette';
 
 export const InvitePeoplePopoverContainer = styled.div`
   background-color: ${palette.white};
-  width: 500px;
+  width: min-content;
 `;
 
 export const InvitePeoplePopoverSection = styled.div`
