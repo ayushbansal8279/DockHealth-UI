@@ -89,3 +89,10 @@ export const DashboardTasksGroupLabel = styled.p`
 export const DashboardTaskItemContainer = styled.div`
   margin-bottom: 3px;
 `;
+
+export const GroupOptionsContainer = styled.div`
+  position: absolute;
+  left: -20px;
+  top: 50%;
+  transform: translateY(-50%);
+`;

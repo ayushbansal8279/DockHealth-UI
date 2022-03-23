@@ -74,6 +74,7 @@ const UserReducer = (state = initialState, action) => {
     }
 
     case ActionTypes.UPDATE_CURRENT_USER_PREFERENCES: {
+      console.log('UPDATE_CURRENT_USER_PREFERENCES', action);
       const { preferences } = action;
       return {
         ...state,

@@ -23,6 +23,11 @@ export const userProfileCustomFieldsSelector = createSelector(
   ({ userPreference }) => userPreference?.customFieldDisplayColumns,
 );
 
+export const dashboardGroupsOrderPreferencesSelector = createSelector(
+  userStateSelector,
+  ({ userPreference }) => userPreference?.displayGroupsOrder,
+);
+
 export const dashboardGroupsPreferencesSelector = createSelector(
   userStateSelector,
   ({ userPreference }) => userPreference?.displayGroups,
