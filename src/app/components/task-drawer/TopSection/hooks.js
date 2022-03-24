@@ -179,6 +179,12 @@ const initializeTaskDrawerTopSectionHooks = ({
     ],
   );
 
+  const handleShareTask = () => {
+    dispatch(
+      openModal('ShareTask', { taskIdentifiers: [selectedTask.identifier] }),
+    );
+  };
+
   return {
     selectedTask,
     handleMoveTask,
@@ -189,6 +195,8 @@ const initializeTaskDrawerTopSectionHooks = ({
     dispatch,
     isDependencyEmptyOrCompleted,
     isTaskStatusTogglingDisabled,
+    isTemplateTask,
+    handleShareTask,
   };
 };
 

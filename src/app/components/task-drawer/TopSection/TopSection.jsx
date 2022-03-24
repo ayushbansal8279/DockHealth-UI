@@ -27,6 +27,8 @@ const TopSection = ({
     onCompleteToggle,
     isDependencyEmptyOrCompleted,
     isTaskStatusTogglingDisabled,
+    isTemplateTask,
+    handleShareTask,
   } = initializeTaskDrawerTopSectionHooks({
     onDelete,
     onDuplicate,
@@ -55,6 +57,10 @@ const TopSection = ({
           }
         },
       },
+      !isTemplateTask && {
+        name: 'Share Task',
+        onClick: handleShareTask,
+      },
       {
         name: 'Delete',
         color: palette.error,
@@ -62,11 +68,13 @@ const TopSection = ({
       },
     ],
     [
+      isTemplateTask,
       duplicateTaskWithoutConfirmation,
       handleMoveTask,
       openDeleteConfirmationModal,
       openDuplicateConfirmationModal,
       selectedTask,
+      handleShareTask,
     ],
   );
 

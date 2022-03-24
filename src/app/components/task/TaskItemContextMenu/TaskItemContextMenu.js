@@ -16,7 +16,7 @@ import {
 } from 'actions/task-actions';
 import { openModal, closeModal } from 'modal/actions';
 import { getTasksGroupsList } from 'actions/list-details-actions';
-import { Backdrop, MenuContainer, MenuItemButtom, Divider } from './styled';
+import { Backdrop, MenuContainer, MenuItemButton, Divider } from './styled';
 
 const TaskItemContextMenu = ({
   position,
@@ -251,6 +251,10 @@ const TaskItemContextMenu = ({
     };
   }, []);
 
+  const handleShareTask = () => {
+    dispatch(openModal('ShareTask', { taskIdentifiers: [task.identifier] }));
+  };
+
   if (!position || !position.x || !position.y) return null;
 
   return (
@@ -269,26 +273,26 @@ const TaskItemContextMenu = ({
       >
         {!isTemplateTask && !isBundleTask && (
           <li>
-            <MenuItemButtom tabIndex="0" type="button" onClick={handleMoveTask}>
+            <MenuItemButton tabIndex="0" type="button" onClick={handleMoveTask}>
               Move to list
-            </MenuItemButtom>
+            </MenuItemButton>
           </li>
         )}
         {!isTemplateTask && !isBundleTask && (
           <li>
-            <MenuItemButtom type="button" onClick={handleMoveGroupTask}>
+            <MenuItemButton type="button" onClick={handleMoveGroupTask}>
               Move to group
-            </MenuItemButtom>
+            </MenuItemButton>
           </li>
         )}
         <li>
-          <MenuItemButtom type="button" onClick={handleDuplicateTask}>
+          <MenuItemButton type="button" onClick={handleDuplicateTask}>
             Duplicate {isSubtask ? 'Subtask' : 'Task'}
-          </MenuItemButtom>
+          </MenuItemButton>
         </li>
         {!isSubtask && !subtasksDisabled && (
           <li>
-            <MenuItemButtom
+            <MenuItemButton
               type="button"
               onClick={() => {
                 dispatch(openQuickAddSubtask(task.taskIdentifier));
@@ -296,18 +300,25 @@ const TaskItemContextMenu = ({
               }}
             >
               Create Subtask
-            </MenuItemButtom>
+            </MenuItemButton>
+          </li>
+        )}
+        {!isTemplateTask && (
+          <li>
+            <MenuItemButton type="button" onClick={handleShareTask}>
+              Share Task
+            </MenuItemButton>
           </li>
         )}
         <Divider />
         <li>
-          <MenuItemButtom
+          <MenuItemButton
             type="button"
             color={palette.oPlusRed}
             onClick={handleDeleteTask}
           >
             Delete {isSubtask ? 'Subtask' : 'Task'}
-          </MenuItemButtom>
+          </MenuItemButton>
         </li>
       </MenuContainer>
     </Backdrop>
