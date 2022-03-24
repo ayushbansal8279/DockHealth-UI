@@ -5,21 +5,6 @@ import { mixed, string, object } from 'yup';
 const DATE_FORMAT = 'MM/DD/YYYY';
 const REQUIRED_MESSAGE = 'This field is required';
 
-export const GENDER_OPTIONS = [
-  {
-    value: 'male',
-    label: 'Male',
-  },
-  {
-    value: 'female',
-    label: 'Female',
-  },
-  {
-    value: 'decline',
-    label: 'Decline to state',
-  },
-];
-
 export const GENDER_OPTIONS_BIRTH = [
   {
     value: 'male',
@@ -53,7 +38,7 @@ export const GENDER_OPTIONS_IDENTITY = [
     label: 'Transgender woman / Transwoman',
   },
   {
-    value: '',
+    value: 'gendergueer',
     label: 'Genderqueer / Gender nonconforming',
   },
   {

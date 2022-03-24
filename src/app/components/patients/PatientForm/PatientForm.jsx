@@ -142,13 +142,13 @@ const PatientForm = forwardRef(
           <Spacing vertical={3} />
           <FormSelect
             readOnly={!edited || emrIntegrationEnabled}
-            label="What is your gender identity?"
+            label="Gender identity"
             options={GENDER_OPTIONS_IDENTITY}
             name="genderIdentify"
           />
           <FormSelect
             readOnly={!edited || emrIntegrationEnabled}
-            label="What sex were you assigned at birth"
+            label="Sex assigned at birth"
             options={GENDER_OPTIONS_BIRTH}
             name="genderAtBirth"
           />
