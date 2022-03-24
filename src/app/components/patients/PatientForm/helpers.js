@@ -4,18 +4,61 @@ import { mixed, string, object } from 'yup';
 
 const DATE_FORMAT = 'MM/DD/YYYY';
 const REQUIRED_MESSAGE = 'This field is required';
+
 export const GENDER_OPTIONS = [
-  {
-    value: 'female',
-    label: 'Female',
-  },
   {
     value: 'male',
     label: 'Male',
   },
   {
-    value: 'other',
-    label: 'Other',
+    value: 'female',
+    label: 'Female',
+  },
+  {
+    value: 'decline',
+    label: 'Decline to state',
+  },
+];
+
+export const GENDER_OPTIONS_BIRTH = [
+  {
+    value: 'male',
+    label: 'Male',
+  },
+  {
+    value: 'female',
+    label: 'Female',
+  },
+  {
+    value: 'decline',
+    label: 'Decline to state',
+  },
+];
+
+export const GENDER_OPTIONS_IDENTITY = [
+  {
+    value: 'male',
+    label: 'Male',
+  },
+  {
+    value: 'female',
+    label: 'Female',
+  },
+  {
+    value: 'transgender-man',
+    label: 'Transgender man / Transman',
+  },
+  {
+    value: 'transgender-woman',
+    label: 'Transgender woman / Transwoman',
+  },
+  {
+    value: '',
+    label: 'Genderqueer / Gender nonconforming',
+  },
+  {
+    value: 'decline',
+    label: 'Decline to state',
   },
 ];
 

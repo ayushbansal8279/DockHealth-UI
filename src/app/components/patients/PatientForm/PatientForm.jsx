@@ -26,7 +26,11 @@ import moment from 'moment';
 import { useBoolean } from 'hooks/useBoolean';
 import CategoryOptions from 'components/common/CategoryOptions/CategoryOptions';
 import { HidableContainer } from './styled';
-import { formatMetaDataOutput, GENDER_OPTIONS } from './helpers';
+import {
+  formatMetaDataOutput,
+  GENDER_OPTIONS_BIRTH,
+  GENDER_OPTIONS_IDENTITY,
+} from './helpers';
 
 const groupByCategory = groupBy(prop('fieldCategoryType'));
 
@@ -138,9 +142,15 @@ const PatientForm = forwardRef(
           <Spacing vertical={3} />
           <FormSelect
             readOnly={!edited || emrIntegrationEnabled}
-            label="Gender"
-            options={GENDER_OPTIONS}
-            name="gender"
+            label="What is your gender identity?"
+            options={GENDER_OPTIONS_IDENTITY}
+            name="genderIdentify"
+          />
+          <FormSelect
+            readOnly={!edited || emrIntegrationEnabled}
+            label="What sex were you assigned at birth"
+            options={GENDER_OPTIONS_BIRTH}
+            name="genderAtBirth"
           />
           <Spacing vertical={3} />
           <FormInput
