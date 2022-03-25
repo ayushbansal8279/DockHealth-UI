@@ -6,7 +6,6 @@ import React, {
   useState,
 } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { EditorState } from 'draft-js';
 import { useBoolean } from 'hooks/useBoolean';
 import usePrevious from 'hooks/use-previous';
 import { updateTaskDetails } from 'actions/task-actions';
@@ -14,7 +13,6 @@ import { checkIfTemplateTask } from 'helpers/task-helpers';
 import CustomTextEditor from 'components/task-drawer/CustomTextEditor/CustomTextEditor';
 import TextEditor from 'components/common/TextEditor/TextEditor';
 import { useMentionsEditorState } from 'components/common/TextEditor/use-mentions-editor-state';
-import { createMentionEntities } from 'components/common/TextEditor/create-mention-entities';
 import {
   convertFromEditorStateToOutput,
   convertToEditorState,
