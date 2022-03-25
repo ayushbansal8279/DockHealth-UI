@@ -255,7 +255,7 @@ const ListMembersSelect = ({
                         'List is empty'
                       ) : (
                         <AddRecordOption
-                          handleAddRecord={handleEmptyResultActionClick}
+                          onClick={handleEmptyResultActionClick}
                           searchValue={searchInputValue}
                         />
                       )}
