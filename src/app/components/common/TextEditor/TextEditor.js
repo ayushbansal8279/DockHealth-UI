@@ -1,5 +1,11 @@
 /* eslint-disable sonarjs/cognitive-complexity */
-import React, { useState, useRef, useCallback, useMemo } from 'react';
+import React, {
+  useState,
+  useRef,
+  useCallback,
+  useMemo,
+  useEffect,
+} from 'react';
 import { useSelector } from 'react-redux';
 import { convertToRaw, Entity, SelectionState, EditorState } from 'draft-js';
 import { makeStyles } from '@material-ui/core/styles';
@@ -96,6 +102,7 @@ const TextEditor = React.forwardRef(
       disableNativeLinks = false,
       disableMentions = false,
       minHeight,
+      getFocusFromParent,
     },
     outerReference,
   ) => {
@@ -129,6 +136,10 @@ const TextEditor = React.forwardRef(
     const { currentUser } = useSelector(store => ({
       currentUser: store.userState.userProfile,
     }));
+
+    useEffect(() => {
+      setIsFocused(getFocusFromParent);
+    }, [getFocusFromParent]);
 
     const currentState = state || editorState;
 
