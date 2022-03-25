@@ -42,6 +42,7 @@ import { userHasSmartFlowsSelector } from 'selectors/user-selectors';
 import { openDrawer } from 'actions/workflow-drawer-actions';
 import { Box, ClickAwayListener, Paper, Popper } from '@material-ui/core';
 import DecisionTaskElementIcon from 'img/template/decision-task-icon';
+import Tooltip from 'components/common/Tooltip/Tooltip';
 import ReactFlow, {
   Controls,
   Position,
@@ -52,6 +53,7 @@ import {
   NodeType,
   LinkType,
   TASK_NODE_WIDTH,
+  getAutoLayout,
 } from 'helpers/smart-flow-builder-helpers';
 import { useBoolean } from 'hooks/useBoolean';
 import palette from 'styles/palette';
@@ -78,6 +80,8 @@ import {
   HotkeysElements,
   Hotkey,
   HotkeyDescription,
+  SidebarDivider,
+  AutoAlignButton,
 } from './styled';
 import ConnectionLink from './ConnectionLink/ConnectionLink';
 import TaskLinkDelayForm from './TaskLinkDelayForm/TaskLinkDelayForm';
@@ -461,6 +465,19 @@ const SmartFlowBuilderView = () => {
                   <ElementDescription>{label}</ElementDescription>
                 </ElementButton>
               ))}
+              <SidebarDivider />
+              <Tooltip title="Auto Align will organize  your layout ">
+                <AutoAlignButton
+                  type="button"
+                  onClick={async () => {
+                    const autoLayout = await getAutoLayout(tasks);
+                    dispatch(saveTaskTemplateLayout(autoLayout));
+                    setTimeout(reactFlowInstance.current.fitView, 0);
+                  }}
+                >
+                  Auto Align Layout
+                </AutoAlignButton>
+              </Tooltip>
               {isDelayPopoverOpen && (
                 <Popper
                   anchorEl={delayPeriodOptionReference.current}

@@ -131,3 +131,19 @@ export const Hotkey = styled.p`
   background: ${palette.mediumGrey};
   border-radius: 4px;
 `;
+
+export const SidebarDivider = styled.hr`
+  border-color: ${palette.coolGrey3};
+  margin: 24px 0;
+`;
+
+export const AutoAlignButton = styled.button`
+  display: block;
+  margin: 0 auto;
+  padding: 6px 12px;
+  border-radius: 14px;
+  color: ${palette.white};
+  font-size: ${fontSizes.smallPlus};
+  font-weight: ${fontWeights.regular};
+  background: ${palette.darkBlue};
+`;
