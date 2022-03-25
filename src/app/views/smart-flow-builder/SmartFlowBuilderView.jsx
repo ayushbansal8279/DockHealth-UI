@@ -431,6 +431,12 @@ const SmartFlowBuilderView = () => {
     el?.click();
   };
 
+  const handleAutoAlignClick = async () => {
+    const autoLayout = await getAutoLayout(tasks);
+    dispatch(saveTaskTemplateLayout(autoLayout));
+    setTimeout(reactFlowInstance.current.fitView, 0);
+  };
+
   const selectedTasks = useMemo(
     () =>
       selectedElements
@@ -467,14 +473,7 @@ const SmartFlowBuilderView = () => {
               ))}
               <SidebarDivider />
               <Tooltip title="Auto Align will organize  your layout ">
-                <AutoAlignButton
-                  type="button"
-                  onClick={async () => {
-                    const autoLayout = await getAutoLayout(tasks);
-                    dispatch(saveTaskTemplateLayout(autoLayout));
-                    setTimeout(reactFlowInstance.current.fitView, 0);
-                  }}
-                >
+                <AutoAlignButton type="button" onClick={handleAutoAlignClick}>
                   Auto Align Layout
                 </AutoAlignButton>
               </Tooltip>
