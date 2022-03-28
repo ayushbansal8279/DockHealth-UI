@@ -270,6 +270,7 @@ function* changeTaskPriority({ task, priority }) {
 }
 
 function* refreshTask({ taskIdentifier }) {
+  console.log('refreshTask');
   try {
     const task = yield call(TaskApi.getTaskDetails, taskIdentifier);
 

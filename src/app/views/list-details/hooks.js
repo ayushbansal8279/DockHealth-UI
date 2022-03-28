@@ -389,6 +389,7 @@ const initializeListDetailsViewHooks = (match, history) => {
 
   useEffect(() => {
     const callback = data => {
+      console.log('USEEFFECT', data);
       if (
         data.task?.taskList &&
         data.task?.taskList.taskListIdentifier === taskListIdentifierParam

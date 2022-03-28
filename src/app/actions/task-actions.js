@@ -1,5 +1,6 @@
 import moment from 'moment';
 import * as TaskApi from 'api/task-api';
+import * as TaskTemplateApi from 'api/task-template-api';
 import * as AlertActions from 'alert/actions';
 import { getTasksGroupsList } from 'actions/list-details-actions';
 import { openDrawer } from 'actions/task-drawer-actions';

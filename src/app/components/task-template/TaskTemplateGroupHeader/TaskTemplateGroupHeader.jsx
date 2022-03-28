@@ -19,16 +19,21 @@ import * as ModalActions from 'modal/actions';
 import * as WorkflowActions from 'actions/workflow-actions';
 import * as TaskActions from 'actions/task-actions';
 import * as TemplateBundleActions from 'actions/template-bundle-actions';
+import * as TaskTemplateApi from 'api/task-template-api';
 import { useBoolean } from 'hooks/useBoolean';
 import {
   TaskItemColumn,
   TaskItemColumnWidth,
   TaskStatus,
 } from 'helpers/task-helpers';
+import {
+  workflowSelector,
+} from 'selectors/workflow-drawer-selectors';
 import Checkbox from 'components/common/Checkbox/Checkbox';
 import ProgressBar from 'components/common/ProgressBar/ProgressBar';
 import RotatableChevron from 'components/common/RotatableChevron/RotatableChevron';
 import { BulkEditContext } from 'components/tasklist/BulkEditSection/BulkEditSection';
+import TaskItemCustomField from 'components/common/CustomField/TaskItemCustomField';
 import OptionsMenu from 'components/common/OptionsMenu/OptionsMenu';
 import Spacing from 'components/common/Spacing';
 import { useColumnsConfig } from 'context-api/ColumnsConfigContext';
@@ -95,10 +100,11 @@ const TaskTemplateGroupHeader = ({
   const currentList = useSelector(currentTaskListSelector);
   const dispatch = useDispatch();
   const { columnsConfig, customColumnsConfig } = useColumnsConfig();
-
   useEffect(() => {
     setNameInputValue(name);
   }, [name]);
+  const [workFlowData, setWorkFlowData] = useState(undefined);
+  const selectedWorkflow = useSelector(workflowSelector);
 
   const [completedTasksAmount, allTasksAmount] = useMemo(
     () =>
@@ -332,6 +338,15 @@ const TaskTemplateGroupHeader = ({
     );
   }, [dispatch, isBundleSelected, filteredTasks]);
 
+  const getWorkflowData = useCallback(async id => {
+    setWorkFlowData(await TaskTemplateApi.getTemplate(id));
+  }, []);
+
+  useEffect(() => {
+    !selectedWorkflow ? getWorkflowData(identifier) : setWorkFlowData(null);
+  }, [identifier, selectedWorkflow]);
+
+  // console.log('Aaaaaaaaaaaaa', identifier);
   return (
     <TaskTemplateGroupHeaderContainer
       onMouseEnter={setIsHovered}
@@ -462,11 +477,23 @@ const TaskTemplateGroupHeader = ({
       {columnsConfig[TaskItemColumn.LIST_NAME] && (
         <TaskItemCell width={TaskItemColumnWidth[TaskItemColumn.LIST_NAME]} />
       )}
-      {customColumnsConfig
-        .filter(f => f.isChecked)
-        .map(field => (
-          <TaskItemCell width={CustomFieldWidthConfig[field.fieldType]} />
-        ))}
+      {customColumnsConfig &&
+        workFlowData &&
+        customColumnsConfig
+          .filter(f => f.isChecked)
+          .map(field => (
+            <TaskItemCell width={CustomFieldWidthConfig[field.fieldType]}>
+              <TaskItemCustomField
+                field={field}
+                readOnly
+                customFieldValue={workFlowData?.taskMetaData?.find(
+                  f => f.customFieldIdentifier === field.identifier,
+                )}
+                task={workFlowData}
+                isHovered={isHovered}
+              />
+            </TaskItemCell>
+          ))}
     </TaskTemplateGroupHeaderContainer>
   );
 };
