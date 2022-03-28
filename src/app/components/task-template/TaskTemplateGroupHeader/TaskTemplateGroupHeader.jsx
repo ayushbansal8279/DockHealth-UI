@@ -26,9 +26,7 @@ import {
   TaskItemColumnWidth,
   TaskStatus,
 } from 'helpers/task-helpers';
-import {
-  workflowSelector,
-} from 'selectors/workflow-drawer-selectors';
+import { workflowSelector } from 'selectors/workflow-drawer-selectors';
 import Checkbox from 'components/common/Checkbox/Checkbox';
 import ProgressBar from 'components/common/ProgressBar/ProgressBar';
 import RotatableChevron from 'components/common/RotatableChevron/RotatableChevron';
@@ -346,7 +344,6 @@ const TaskTemplateGroupHeader = ({
     !selectedWorkflow ? getWorkflowData(identifier) : setWorkFlowData(null);
   }, [identifier, selectedWorkflow]);
 
-  // console.log('Aaaaaaaaaaaaa', identifier);
   return (
     <TaskTemplateGroupHeaderContainer
       onMouseEnter={setIsHovered}

@@ -17,9 +17,7 @@ import {
   taskCustomFieldsSelector,
   taskDrawerFocusFieldSelector,
 } from 'selectors/task-drawer-selectors';
-import {
-  workflowSelector,
-} from 'selectors/workflow-drawer-selectors';
+import { workflowSelector } from 'selectors/workflow-drawer-selectors';
 import { FieldType } from 'helpers/field-type-helpers';
 import {
   CustomFieldsSectionContainer,
