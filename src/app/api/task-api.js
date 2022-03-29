@@ -480,6 +480,7 @@ export function shareTask(
   externalUsers,
   message,
 ) {
+  // TODO: add sharing task endpoint
   console.log('taskIdentifier', taskIdentifier);
   console.log('usersIdentifier', usersIdentifier);
   console.log('externalUsers', externalUsers);

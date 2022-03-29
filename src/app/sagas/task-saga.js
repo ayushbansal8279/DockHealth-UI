@@ -2,6 +2,7 @@ import { takeEvery, put, call, all, delay } from 'redux-saga/effects';
 import { pluck, move } from 'ramda';
 import { showGlobalAlert, showGlobalErrorAlert } from 'alert/actions';
 import AlertMessages from 'alert/AlertMessages';
+import { closeModal } from 'modal/actions';
 import * as ActionTypes from 'actions/action-types';
 import * as TaskApi from 'api/task-api';
 import * as TaskActions from 'actions/task-actions';
@@ -289,6 +290,34 @@ function* insertCreatedTask({ taskIdentifier }) {
   }
 }
 
+function* shareTask({
+  taskIdentifier,
+  usersIdentifier,
+  externalUsers,
+  message,
+}) {
+  try {
+    yield call(
+      TaskApi.shareTask,
+      taskIdentifier,
+      usersIdentifier,
+      externalUsers,
+      message,
+    );
+
+    yield all([
+      put({ type: ActionTypes.SHARE_TASK_SUCCESS, taskIdentifier }),
+      put(showGlobalAlert(AlertMessages.SHARED)),
+      put(closeModal()),
+    ]);
+  } catch {
+    yield all([
+      put({ type: ActionTypes.SHARE_TASK_FAILURE, taskIdentifier }),
+      put(showGlobalErrorAlert()),
+    ]);
+  }
+}
+
 export default function* watchTask() {
   yield takeEvery(ActionTypes.REORDER_SUBTASKS, reorderSubtasks);
   yield takeEvery(ActionTypes.ADD_TASK_DEPENDENCY_LINK, addTaskDependencyLink);
@@ -304,4 +333,5 @@ export default function* watchTask() {
   yield takeEvery(ActionTypes.CHANGE_TASK_PRIORITY, changeTaskPriority);
   yield takeEvery(ActionTypes.REFRESH_TASK, refreshTask);
   yield takeEvery(ActionTypes.INSERT_CREATED_TASK, insertCreatedTask);
+  yield takeEvery(ActionTypes.SHARE_TASK, shareTask);
 }

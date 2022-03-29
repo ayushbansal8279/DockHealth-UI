@@ -1,10 +1,8 @@
 import React, { useState } from 'react';
 import { Box } from '@material-ui/core';
 import { useDispatch } from 'react-redux';
-import { showGlobalAlert, showGlobalErrorAlert } from 'alert/actions';
-import AlertMessages from 'alert/AlertMessages';
 import Button from 'components/common/Button/Button';
-import * as TaskApi from 'api/task-api';
+import * as TaskActions from 'actions/task-actions';
 import { string } from 'yup';
 import {
   ModalWrapperWithPadding,
@@ -17,9 +15,8 @@ import { MessageTextarea } from './styled';
 import AddExternalUser from './AddExternalUser/AddExternalUser';
 import UsersSelect from './UsersSelect/UsersSelect';
 
-// eslint-disable-next-line sonarjs/cognitive-complexity
 const ShareTaskModal = props => {
-  const { closeModal, taskIdentifier } = props;
+  const { taskIdentifier, closeModal } = props;
   const dispatch = useDispatch();
   const [externalUserInitialValues, setExternalUserInitialValues] = useState(
     null,
@@ -76,19 +73,14 @@ const ShareTaskModal = props => {
       [[], []],
     );
 
-    TaskApi.shareTask(
-      taskIdentifier,
-      usersIdentifier,
-      externalUsers,
-      messageValue,
-    )
-      .then(() => {
-        dispatch(showGlobalAlert(AlertMessages.SHARED));
-        closeModal();
-      })
-      .catch(() => {
-        dispatch(showGlobalErrorAlert());
-      });
+    dispatch(
+      TaskActions.shareTask(
+        taskIdentifier,
+        usersIdentifier,
+        externalUsers,
+        messageValue,
+      ),
+    );
   };
 
   return (
