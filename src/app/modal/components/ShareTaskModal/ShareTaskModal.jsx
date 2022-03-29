@@ -35,7 +35,8 @@ const ShareTaskModal = props => {
   };
 
   const handleAddExternalUser = user => {
-    addSelectedUser(user);
+    // TODO: use backend external flag
+    addSelectedUser({ ...user, external: true });
     setExternalUserInitialValues(null);
   };
 
@@ -90,7 +91,9 @@ const ShareTaskModal = props => {
       </CloseIconButton>
       <ModalHeader>Share tasks</ModalHeader>
       <ModalDescription>
-        Copy here about what happens when you share the task
+        {externalUserInitialValues
+          ? 'Enter the details of the outside collaborator'
+          : 'Copy here about what happens when you share the task'}
       </ModalDescription>
       <Box m={2} />
       {externalUserInitialValues ? (

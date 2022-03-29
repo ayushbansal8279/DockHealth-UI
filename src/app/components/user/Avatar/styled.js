@@ -121,7 +121,9 @@ export const TooltipName = styled.p`
 `;
 
 export const MemberImage = styled.img`
-  min-width: 100%;
-  min-height: 100%;
+  width: ${({ pictureSize }) =>
+    Number.isInteger(pictureSize) ? `${pictureSize}px` : pictureSize};
+  height: ${({ pictureSize }) =>
+    Number.isInteger(pictureSize) ? `${pictureSize}px` : pictureSize};
   pointer-events: none;
 `;

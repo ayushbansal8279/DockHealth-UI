@@ -1,6 +1,7 @@
 import { bool, number, string, shape, func, oneOf } from 'prop-types';
 import React, { useMemo } from 'react';
 import { useSelector } from 'react-redux';
+import ExternalUserIcon from 'img/external-user-icon';
 import { activeUsersListSelector } from 'selectors/active-users-selector';
 import Tooltip from 'components/common/Tooltip/Tooltip';
 import {
@@ -33,13 +34,17 @@ const UserAvatar = React.forwardRef(
       return getUserActivityStatus(user, activeUsersList);
     }, [activeUsersList, isInactive, user]);
 
-    const pictureSource = useMemo(
-      () =>
-        !!size && size > 100
-          ? getUserAvatarUrl(user)
-          : getUserAvatarThumbnailUrl(user),
-      [size, user],
-    );
+    const { source: pictureSource, size: pictureSize } = useMemo(() => {
+      // TODO: use backend external flag
+      if (user.external) return { source: ExternalUserIcon, size: 0.5 * size };
+
+      return {
+        source:
+          !!size && size > 100
+            ? getUserAvatarUrl(user)
+            : getUserAvatarThumbnailUrl(user),
+      };
+    }, [size, user]);
 
     return (
       <>
@@ -65,6 +70,7 @@ const UserAvatar = React.forwardRef(
             initials={initials}
             isSelected={isSelected}
             pictureSrc={pictureSource}
+            pictureSize={pictureSize}
             name={name}
             activityStatus={activityStatus}
             isBlurred={isInactive}

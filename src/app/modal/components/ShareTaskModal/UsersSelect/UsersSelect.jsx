@@ -86,6 +86,7 @@ const UsersSelect = props => {
           >
             <ListItemText>
               {option.userName}
+              {/* TODO: use backend external flag */}
               {option.external && (
                 <ExternalUserLabel> (External)</ExternalUserLabel>
               )}
@@ -148,7 +149,8 @@ const UsersSelect = props => {
                 {renderUserOptionAvatar(u)}
                 <SelectedUserText>
                   {u.userName || `${u.firstName} ${u.lastName} (${u.email})`}
-                  {(u.external || !u.identifier) && (
+                  {/* TODO: use backend external flag */}
+                  {u.external && (
                     <ExternalUserLabel> (External)</ExternalUserLabel>
                   )}
                 </SelectedUserText>

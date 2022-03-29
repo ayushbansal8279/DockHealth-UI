@@ -19,6 +19,7 @@ const Avatar = React.forwardRef(
     {
       initials,
       pictureSrc,
+      pictureSize = '100%',
       name,
       color,
       size,
@@ -44,10 +45,12 @@ const Avatar = React.forwardRef(
           </div>
         );
 
-        return <MemberImage src={pictureSrc} alt={alt} />;
+        return (
+          <MemberImage src={pictureSrc} pictureSize={pictureSize} alt={alt} />
+        );
       }
       return initials?.toLowerCase();
-    }, [pictureSrc, initials, name]);
+    }, [pictureSrc, pictureSize, initials, name]);
 
     return (
       <BackgroundContainer
