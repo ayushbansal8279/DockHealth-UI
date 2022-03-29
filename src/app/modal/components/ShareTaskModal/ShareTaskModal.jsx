@@ -1,19 +1,11 @@
-import React, { useCallback, useEffect, useState } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
-import MoreVertIcon from '@material-ui/icons/MoreVert';
-import * as AlertActions from 'alert/actions';
-import { Autocomplete } from '@material-ui/lab';
-import debounce from 'lodash.debounce';
-import { userProfileSelector } from 'selectors/user-selectors';
-import OptionsMenu from 'components/common/OptionsMenu/OptionsMenu';
-import AddRecordOption from 'components/common/AddRecordOption/AddRecordOption';
+import React, { useState } from 'react';
+import { Box } from '@material-ui/core';
+import { useDispatch } from 'react-redux';
+import { showGlobalAlert, showGlobalErrorAlert } from 'alert/actions';
+import AlertMessages from 'alert/AlertMessages';
 import Button from 'components/common/Button/Button';
-import { getUsersByName } from 'api/user-api';
-import { filter, prop } from 'ramda';
-import { Box, IconButton, ListItemText } from '@material-ui/core';
-import { isUserGroup } from 'helpers/user-helper';
-import GroupAvatar from 'components/user/GroupAvatar/GroupAvatar';
-import UserAvatar from 'components/user/UserAvatar/UserAvatar';
+import * as TaskApi from 'api/task-api';
+import { string } from 'yup';
 import {
   ModalWrapperWithPadding,
   CloseIconButton,
@@ -21,68 +13,19 @@ import {
   ModalHeader,
   ModalDescription,
 } from '../styled';
-import {
-  useAutocompleteStyles,
-  SelectedUsersContainer,
-  SelectedUserItem,
-  SelectedUserText,
-  ExternalUserLabel,
-  MessageTextarea,
-} from './styled';
+import { MessageTextarea } from './styled';
 import AddExternalUser from './AddExternalUser/AddExternalUser';
+import UsersSelect from './UsersSelect/UsersSelect';
 
 // eslint-disable-next-line sonarjs/cognitive-complexity
 const ShareTaskModal = props => {
+  const { closeModal, taskIdentifier } = props;
   const dispatch = useDispatch();
-  const currentUser = useSelector(userProfileSelector);
-  const { closeModal, taskIdentifiers } = props;
-  const [isAddingExternalUser, setAddingExternalUser] = useState(false);
-  const [inputValue, setInputValue] = useState('');
-  const [options, setOptions] = useState([]);
-  const [isLoadingOptions, setLoadingOptions] = useState(false);
+  const [externalUserInitialValues, setExternalUserInitialValues] = useState(
+    null,
+  );
   const [selectedUsers, setSelectedUsers] = useState([]);
   const [messageValue, setMessageValue] = useState('');
-
-  console.log('taskIdentifiers', taskIdentifiers);
-
-  const getUsersWithDebounce = useCallback(
-    debounce(searchValue => {
-      // TODO: change endpoint for the one with external users
-      getUsersByName(searchValue)
-        .then(users => {
-          setOptions(users);
-          setLoadingOptions(false);
-        })
-        .catch(() => {
-          setLoadingOptions(false);
-          dispatch(AlertActions.showGlobalErrorAlert());
-        });
-    }, 300),
-    [getUsersByName, setOptions],
-  );
-
-  useEffect(() => {
-    if (inputValue) {
-      setLoadingOptions(true);
-      getUsersWithDebounce(inputValue);
-    } else {
-      setOptions([]);
-    }
-  }, [inputValue, getUsersWithDebounce, setOptions]);
-
-  const handleInputChange = event => {
-    setInputValue(event?.target?.value || '');
-  };
-
-  const classes = useAutocompleteStyles();
-
-  const renderUserOptionAvatar = user => {
-    if (isUserGroup(user)) {
-      return <GroupAvatar group={user} size={38} />;
-    }
-
-    return <UserAvatar user={user} size={38} />;
-  };
 
   const addSelectedUser = user => {
     setSelectedUsers(u => [...u, user]);
@@ -96,7 +39,56 @@ const ShareTaskModal = props => {
 
   const handleAddExternalUser = user => {
     addSelectedUser(user);
-    setAddingExternalUser(false);
+    setExternalUserInitialValues(null);
+  };
+
+  const handleMoveToExternalForm = userSearchText => {
+    const text = userSearchText.trim();
+    const formValues = {
+      firstName: '',
+      lastName: '',
+      email: '',
+    };
+    if (
+      string()
+        .email()
+        .isValidSync(text)
+    ) {
+      formValues.email = text;
+    } else {
+      const names = text.split(' ');
+      formValues.firstName = names.slice(0, -1).join(' ');
+      formValues.lastName = names.slice(-1).join(' ');
+    }
+
+    setExternalUserInitialValues(formValues);
+  };
+
+  const handleInvite = () => {
+    const [usersIdentifier, externalUsers] = selectedUsers.reduce(
+      (accumulator, selectedUser) => {
+        if (selectedUser.identifier) {
+          return [[...accumulator[0], selectedUser.identifier], accumulator[1]];
+        }
+
+        return [accumulator[0], [...accumulator[1], selectedUser]];
+      },
+      [[], []],
+    );
+
+    TaskApi.shareTask(
+      taskIdentifier,
+      usersIdentifier,
+      externalUsers,
+      messageValue,
+    )
+      .then(() => {
+        dispatch(showGlobalAlert(AlertMessages.SHARED));
+        closeModal();
+      })
+      .catch(() => {
+        dispatch(showGlobalErrorAlert());
+      });
   };
 
   return (
@@ -109,109 +101,34 @@ const ShareTaskModal = props => {
         Copy here about what happens when you share the task
       </ModalDescription>
       <Box m={2} />
-      {isAddingExternalUser ? (
+      {externalUserInitialValues ? (
         <AddExternalUser
+          initialValues={externalUserInitialValues}
           selectedUsers={selectedUsers}
           onAdd={handleAddExternalUser}
-          onCancel={() => setAddingExternalUser(false)}
+          onCancel={() => setExternalUserInitialValues(null)}
         />
       ) : (
         <>
-          <Autocomplete
-            autoHighlight
-            inputValue={inputValue}
-            getOptionLabel={prop('userName')}
-            renderOption={option => (
-              <Box
-                width="100%"
-                display="flex"
-                justifyContent="space-between"
-                alignItems="center"
-              >
-                <ListItemText>
-                  {option.userName}
-                  {option.external && (
-                    <ExternalUserLabel> (External)</ExternalUserLabel>
-                  )}
-                </ListItemText>
-                {renderUserOptionAvatar(option)}
-              </Box>
-            )}
-            filterOptions={filter(
-              option =>
-                option.identifier !== currentUser.identifier &&
-                !selectedUsers.find(
-                  su =>
-                    su.identifier === option.identifier ||
-                    su.email === option.email,
-                ),
-            )}
-            loading={isLoadingOptions}
-            options={options}
-            classes={classes}
-            onInputChange={handleInputChange}
-            onChange={(_, selectedOption) => {
-              addSelectedUser(selectedOption);
-              // setOptions([]);
-            }}
-            renderInput={({ inputProps, InputProps: rootProps }) => (
-              <div {...rootProps}>
-                <input
-                  placeholder="Type the name of the person or group  to invite"
-                  {...inputProps}
-                />
-              </div>
-            )}
-            noOptionsText={
-              inputValue ? (
-                <AddRecordOption
-                  searchValue={inputValue}
-                  onClick={() => setAddingExternalUser(true)}
-                />
-              ) : (
-                'Type to search...'
-              )
-            }
+          <UsersSelect
+            selectedUsers={selectedUsers}
+            onAdd={addSelectedUser}
+            onDelete={deleteSelectedUser}
+            onMoveToExternalUserForm={handleMoveToExternalForm}
           />
-          {selectedUsers.length > 0 && (
-            <>
-              <SelectedUsersContainer>
-                {selectedUsers.map(u => (
-                  <SelectedUserItem key={u.identifier}>
-                    {renderUserOptionAvatar(u)}
-                    <SelectedUserText>
-                      {u.userName ||
-                        `${u.firstName} ${u.lastName} (${u.email})`}
-                      {(u.external || !u.identifier) && (
-                        <ExternalUserLabel> (External)</ExternalUserLabel>
-                      )}
-                    </SelectedUserText>
-                    <OptionsMenu
-                      customButtonComponent={IconButton}
-                      options={[
-                        {
-                          name: 'Remove',
-                          onClick: () => deleteSelectedUser(u.identifier),
-                        },
-                      ]}
-                    >
-                      <MoreVertIcon />
-                    </OptionsMenu>
-                  </SelectedUserItem>
-                ))}
-              </SelectedUsersContainer>
-              <MessageTextarea
-                placeholder="Add a message to your invitation and copy instructions here"
-                value={messageValue}
-                onChange={event => setMessageValue(event?.target?.value || '')}
-              />
-            </>
+          {selectedUsers?.length > 0 && (
+            <MessageTextarea
+              placeholder="Add a message to your invitation and copy instructions here"
+              value={messageValue}
+              onChange={event => setMessageValue(event?.target?.value || '')}
+            />
           )}
           <Box display="flex" width="100%" justifyContent="flex-end" mt="16px">
             <Button
               type="button"
               width="auto"
               disabled={!selectedUsers || selectedUsers?.length === 0}
+              onClick={handleInvite}
             >
               Invite
             </Button>

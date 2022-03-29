@@ -18,9 +18,13 @@ const AddExternalUser = props => {
         email: string()
           .required(REQUIRED_FIELD)
           .email('Please enter a valid email address')
-          .test('uniqueEmail', 'Email already exists', function(value) {
-            return !selectedUsers?.find(({ email }) => email === value);
-          }),
+          .test(
+            'uniqueEmail',
+            'Email already exists',
+            function validateUniqueEmail(value) {
+              return !selectedUsers?.find(({ email }) => email === value);
+            },
+          ),
       }),
     [selectedUsers],
   );
@@ -37,15 +41,39 @@ const AddExternalUser = props => {
       <FormContext {...formContext}>
         <Grid container spacing={2}>
           <Grid item xs={6}>
-            <FormInput required label="First" name="firstName" />
+            <FormInput
+              required
+              label="First"
+              name="firstName"
+              autoFocus={!initialValues.firstName}
+            />
           </Grid>
           <Grid item xs={6}>
-            <FormInput required label="Last" name="lastName" />
+            <FormInput
+              required
+              label="Last"
+              name="lastName"
+              autoFocus={!initialValues.lastName && initialValues.firstName}
+            />
           </Grid>
           <Grid item xs={12}>
-            <FormInput required label="Email Address" name="email" />
+            <FormInput
+              required
+              label="Email Address"
+              name="email"
+              autoFocus={
+                !initialValues.email &&
+                initialValues.firstName &&
+                initialValues.lastName
+              }
+            />
           </Grid>
-          <Box width="100%" display="flex" justifyContent="space-between">
+          <Box
+            width="100%"
+            display="flex"
+            justifyContent="space-between"
+            mt="16px"
+          >
             <Button width="auto" variant="secondary" onClick={onCancel}>
               Cancel
             </Button>

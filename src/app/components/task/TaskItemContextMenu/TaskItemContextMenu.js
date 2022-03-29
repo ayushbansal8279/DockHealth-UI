@@ -252,7 +252,7 @@ const TaskItemContextMenu = ({
   }, []);
 
   const handleShareTask = () => {
-    dispatch(openModal('ShareTask', { taskIdentifiers: [task.identifier] }));
+    dispatch(openModal('ShareTask', { taskIdentifier: task.identifier }));
   };
 
   if (!position || !position.x || !position.y) return null;

@@ -473,3 +473,16 @@ export function deleteTasksLink(sourceTaskIdentifier, targetTaskIdentifier) {
 export function updateTasksLink(link) {
   return axios.put(`task/link`, link).then(({ data }) => data);
 }
+
+export function shareTask(
+  taskIdentifier,
+  usersIdentifier,
+  externalUsers,
+  message,
+) {
+  console.log('taskIdentifier', taskIdentifier);
+  console.log('usersIdentifier', usersIdentifier);
+  console.log('externalUsers', externalUsers);
+  console.log('message', message);
+  return Promise.resolve();
+}
