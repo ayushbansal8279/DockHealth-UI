@@ -221,12 +221,6 @@ const PatientDetailsHeader = () => {
                   ({ customFieldName, displayName, value, displayOptions }) => (
                     <>
                       {displayOptions?.includes('PATIENT_HEADER') && value && (
-                        // <>
-                        //   <PatientInfo>
-                        //     {customFieldName}: {displayName || value}
-                        //   </PatientInfo>
-                        //   <PatientInfoDivider />
-                        // </>
                         <CreatePatientInfoElement
                           customFieldName={customFieldName}
                           displayName={displayName}
@@ -245,12 +239,6 @@ const PatientDetailsHeader = () => {
                 ({ customFieldName, displayName, value, contextType }) => (
                   <>
                     {contextType === 'PREDEFINED' && value && (
-                      // <>
-                      //   <PatientInfo>
-                      //     {customFieldName}: {displayName || value}
-                      //   </PatientInfo>
-                      //   <PatientInfoDivider />
-                      // </>
                       <CreatePatientInfoElement
                         customFieldName={customFieldName}
                         displayName={displayName}
