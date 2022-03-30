@@ -15,6 +15,7 @@ import {
   patientSelector,
   isFetchingPatientSelector,
 } from 'selectors/patient-details-selectors';
+import { concat } from 'ramda';
 import PatientDetailsDrawer from '../PatientDetailsDrawer/PatientDetailsDrawer';
 import PatientDetailsLoader from '../PatientDetailsLoader/PatientDetailsLoader';
 import EditorLink from '../../../components/common/TextEditor/EditorLink/EditorLink';
@@ -31,7 +32,6 @@ import {
   ContactContainer,
   PatientMRNAnchor,
 } from './styled';
-import { concat } from 'ramda';
 
 // eslint-disable-next-line sonarjs/cognitive-complexity
 const PatientDetailsHeader = () => {
@@ -75,11 +75,11 @@ const PatientDetailsHeader = () => {
   const validLinkGenerator = value => {
     if (value.includes('https')) {
       return value;
-    else if (value.includes('http')) {
-      return value;
-    } else {
-      return concat('https://', value);
     }
+    if (value.includes('http')) {
+      return value;
+    }
+    return concat('https://', value);
   };
 
   const CreatePatientInfoElement = ({
