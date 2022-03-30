@@ -17,6 +17,7 @@ import {
 } from 'selectors/patient-details-selectors';
 import PatientDetailsDrawer from '../PatientDetailsDrawer/PatientDetailsDrawer';
 import PatientDetailsLoader from '../PatientDetailsLoader/PatientDetailsLoader';
+import EditorLink from '../../../components/common/TextEditor/EditorLink/EditorLink';
 import {
   PatientDetailsContainer,
   PatientName,
@@ -30,6 +31,7 @@ import {
   ContactContainer,
   PatientMRNAnchor,
 } from './styled';
+import { concat } from 'ramda';
 
 // eslint-disable-next-line sonarjs/cognitive-complexity
 const PatientDetailsHeader = () => {
@@ -55,6 +57,56 @@ const PatientDetailsHeader = () => {
   const emrPatientLink = organization?.emrPatientLink;
 
   const isLoadingDetails = isFetchingPatient || !patient;
+
+  // eslint-disable-next-line unicorn/consistent-function-scoping
+  function validURL(string) {
+    const pattern = new RegExp(
+      '^(https?:\\/\\/)?' + // protocol
+      '((([a-z\\d]([a-z\\d-]*[a-z\\d])*)\\.)+[a-z]{2,}|' + // domain name
+      '((\\d{1,3}\\.){3}\\d{1,3}))' + // OR ip (v4) address
+      '(\\:\\d+)?(\\/[-a-z\\d%_.~+]*)*' + // port and path
+      '(\\?[;&a-z\\d%_.~+=-]*)?' + // query string
+        '(\\#[-a-z\\d_]*)?$',
+      'i',
+    ); // fragment locator
+    return !!pattern.test(string);
+  }
+
+  const validLinkGenerator = value => {
+    if (value.includes('https')) {
+      return value;
+    else if (value.includes('http')) {
+      return value;
+    } else {
+      return concat('https://', value);
+    }
+  };
+
+  const CreatePatientInfoElement = ({
+    customFieldName,
+    displayName,
+    value,
+  }) => {
+    const displayedValue = displayName || value;
+    return (
+      <>
+        <PatientInfo>
+          {customFieldName}:{' '}
+          {validURL(displayedValue) ? (
+            <EditorLink
+              href={validLinkGenerator(displayedValue)}
+              target="_blank"
+            >
+              {displayedValue}
+            </EditorLink>
+          ) : (
+            displayedValue
+          )}
+        </PatientInfo>
+        <PatientInfoDivider />
+      </>
+    );
+  };
 
   return (
     <PatientDetailsContainer>
@@ -169,12 +221,17 @@ const PatientDetailsHeader = () => {
                   ({ customFieldName, displayName, value, displayOptions }) => (
                     <>
                       {displayOptions?.includes('PATIENT_HEADER') && value && (
-                        <>
-                          <PatientInfo>
-                            {customFieldName}: {displayName || value}
-                          </PatientInfo>
-                          <PatientInfoDivider />
-                        </>
+                        // <>
+                        //   <PatientInfo>
+                        //     {customFieldName}: {displayName || value}
+                        //   </PatientInfo>
+                        //   <PatientInfoDivider />
+                        // </>
+                        <CreatePatientInfoElement
+                          customFieldName={customFieldName}
+                          displayName={displayName}
+                          value={value}
+                        />
                       )}
                     </>
                   ),
@@ -188,12 +245,17 @@ const PatientDetailsHeader = () => {
                 ({ customFieldName, displayName, value, contextType }) => (
                   <>
                     {contextType === 'PREDEFINED' && value && (
-                      <>
-                        <PatientInfo>
-                          {customFieldName}: {displayName || value}
-                        </PatientInfo>
-                        <PatientInfoDivider />
-                      </>
+                      // <>
+                      //   <PatientInfo>
+                      //     {customFieldName}: {displayName || value}
+                      //   </PatientInfo>
+                      //   <PatientInfoDivider />
+                      // </>
+                      <CreatePatientInfoElement
+                        customFieldName={customFieldName}
+                        displayName={displayName}
+                        value={value}
+                      />
                     )}
                   </>
                 ),
