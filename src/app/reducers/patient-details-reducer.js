@@ -385,18 +385,12 @@ export default function(state = INITIAL_STATE, action = {}) {
     case ActionTypes.UPDATE_PATIENT_DETAILS: {
       const { details } = payload;
 
-      const patientMetaData = details.patientMetaData.map(newData => {
-        return Object.assign(
-          newData,
-          state.patient.patientMetaData.find(() => {
-            return newData.value;
-          }),
-        );
-      });
-
       return {
         ...state,
-        patient: { ...state.patient, ...details, patientMetaData },
+        patient: {
+          ...state.patient,
+          ...details,
+        },
       };
     }
 
