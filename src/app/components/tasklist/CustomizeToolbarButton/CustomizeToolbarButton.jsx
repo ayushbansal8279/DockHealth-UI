@@ -11,8 +11,6 @@ import { useSelector } from 'react-redux';
 import { TaskItemColumn } from 'helpers/task-helpers';
 import { capitalize } from 'helpers/capitalize';
 import { getCustomerTypeLabel } from 'helpers/customer-type-helper';
-import { isEmpty } from 'ramda';
-
 import UpgradePlan from 'components/common/UpgradePlan/UpgradePlan';
 import UpgradePlanPopup from 'components/common/UpgradePlanPopup/UpgradePlanPopup';
 import CustomFieldsIcon from 'img/premium/custom-fields';
@@ -32,6 +30,7 @@ const CustomizeToolbarButton = ({
   openCustomFieldModal,
   additionalOptions,
   showCustomColumnCreate = true,
+  additionalOptionsTitle = 'Display Options',
 }) => {
   const [open, setOpen] = useState(false);
   const [openUpgradePopup, setOpenUpgradePopup] = useState(false);
@@ -189,7 +188,7 @@ const CustomizeToolbarButton = ({
               <Box display="flex" justifyContent="space-between" mt={1}>
                 <Box mx={0.5} />
                 <ListItemText>
-                  <b>Display Options</b>
+                  <b>{additionalOptionsTitle}</b>
                 </ListItemText>
               </Box>
               <List>

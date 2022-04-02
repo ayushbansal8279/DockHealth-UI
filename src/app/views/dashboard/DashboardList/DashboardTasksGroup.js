@@ -39,6 +39,8 @@ import StickyContainer from 'components/common/HorizontalScroll/StickyContainer'
 import { dashboardLastCreatedTaskIdentifierSelector } from 'selectors/dashboard-selectors';
 
 import { usePrevious } from 'react-use';
+import OptionsMenu from 'components/common/OptionsMenu/OptionsMenu';
+import { MoreVert } from '@material-ui/icons';
 import {
   DashboardTasksGroupContainer,
   DashboardTasksGroupLabel,
@@ -49,6 +51,7 @@ import {
   GroupNameSectionWrapper,
   DashboardTaskItemContainer,
   StickyElement,
+  GroupOptionsContainer,
 } from './styled';
 
 const DashboardTasksGroup = ({
@@ -65,6 +68,10 @@ const DashboardTasksGroup = ({
   isSearching,
   closeDrawer,
   openModal,
+  isFirstGroup,
+  isLastGroup,
+  moveGroupUp,
+  moveGroupDown,
 }) => {
   const {
     groupName,
@@ -193,11 +200,30 @@ const DashboardTasksGroup = ({
 
   const isDragAndDropDisabled = !tasks || tasks.length < 2;
 
+  const options = useMemo(
+    () => [
+      !isFirstGroup && {
+        name: 'Move up',
+        onClick: moveGroupUp,
+      },
+      !isLastGroup && {
+        name: 'Move down',
+        onClick: moveGroupDown,
+      },
+    ],
+    [isFirstGroup, isLastGroup, moveGroupDown, moveGroupUp],
+  );
+
   return (
     <DashboardTasksGroupContainer ref={parentContainerReference}>
       <StickyContainer left={24} decreaseWidth={2 * 24}>
         <StickyElement>
           <DashboardTasksGroupHeader>
+            <GroupOptionsContainer>
+              <OptionsMenu options={options} placement="bottom-start">
+                <MoreVert color="primary" />
+              </OptionsMenu>
+            </GroupOptionsContainer>
             <Arrow
               alt="arrow"
               isOpen={groupIsOpen}
