@@ -25,7 +25,7 @@ export const userProfileCustomFieldsSelector = createSelector(
 
 export const dashboardGroupsOrderPreferencesSelector = createSelector(
   userStateSelector,
-  ({ userPreference }) => userPreference?.displayGroupsOrder,
+  ({ userPreference }) => userPreference?.displayGroups,
 );
 
 export const dashboardGroupsPreferencesSelector = createSelector(
