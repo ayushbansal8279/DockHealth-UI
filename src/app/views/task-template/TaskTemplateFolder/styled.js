@@ -23,10 +23,9 @@ export const TaskTemplateHeader = styled.div`
   display: grid;
   grid-template-columns: auto 1fr auto auto auto;
   grid-template-rows: auto;
-  grid-column-gap: ${spacing.tiny};
   align-items: center;
   width: 100%;
-  padding: 2px ${spacing.smallPlus};
+  padding: 2px 0px 2px ${spacing.smallPlus};
   border: 1px solid ${palette.coolGrey3};
   font-family: 'Roboto', sans-serif;
   font-size: ${fontSizes.smallPlus};
@@ -83,5 +82,6 @@ export const FolderIconContainer = styled.div`
   width: 26px;
   justify-content: center;
   margin-left: ${spacing.small};
+  margin-right: ${spacing.small};
   grid-column: 1;
 `;
