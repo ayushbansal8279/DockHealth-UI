@@ -200,7 +200,7 @@ const TaskTemplateGroupHeader = ({
           ),
       },
       {
-        name: 'Move',
+        name: 'Move to list',
         onClick: () =>
           dispatch(
             ModalActions.openModal('SelectDestination', {
@@ -397,11 +397,13 @@ const TaskTemplateGroupHeader = ({
       )}
       {columnsConfig[TaskItemColumn.SUBTASKS_COUNT] && (
         <TaskItemCell
+          key={`subtask_count_${identifier}`}
           width={TaskItemColumnWidth[TaskItemColumn.SUBTASKS_COUNT]}
         />
       )}
       {columnsConfig[TaskItemColumn.PATIENT] && (
         <TaskItemCell
+          key={`patient_${identifier}`}
           width={TaskItemColumnWidth[TaskItemColumn.PATIENT]}
           alignItems="flex-start"
         >
@@ -417,6 +419,7 @@ const TaskTemplateGroupHeader = ({
       )}
       {columnsConfig[TaskItemColumn.WORKFLOW_STATUS] && (
         <TaskItemCell
+          key={`task_status_${identifier}`}
           width={TaskItemColumnWidth[TaskItemColumn.WORKFLOW_STATUS]}
           paddingLeft="smallPlus"
           paddingRight="tiny"
@@ -432,10 +435,14 @@ const TaskTemplateGroupHeader = ({
         </TaskItemCell>
       )}
       {columnsConfig[TaskItemColumn.ACTIVITY] && (
-        <TaskItemCell width={TaskItemColumnWidth[TaskItemColumn.ACTIVITY]} />
+        <TaskItemCell
+          key={`activity_${identifier}`}
+          width={TaskItemColumnWidth[TaskItemColumn.ACTIVITY]}
+        />
       )}
       {columnsConfig[TaskItemColumn.START_DATE] && (
         <TaskItemCell
+          key={`start_date_${identifier}`}
           width={TaskItemColumnWidth[TaskItemColumn.START_DATE]}
           justify="center"
         >
@@ -447,6 +454,7 @@ const TaskTemplateGroupHeader = ({
       )}
       {columnsConfig[TaskItemColumn.DUE_DATE] && (
         <TaskItemCell
+          key={`due_date_${identifier}`}
           width={TaskItemColumnWidth[TaskItemColumn.DUE_DATE]}
           justify="center"
         >
@@ -455,6 +463,7 @@ const TaskTemplateGroupHeader = ({
       )}
       {columnsConfig[TaskItemColumn.ASSIGNED] && (
         <TaskItemCell
+          key={`assigned_${identifier}`}
           width={TaskItemColumnWidth[TaskItemColumn.ASSIGNED].WIDE}
           justify={groupHasMultipleAssignees ? 'flex-start' : 'center'}
           paddingLeft="small"
@@ -472,14 +481,20 @@ const TaskTemplateGroupHeader = ({
         </TaskItemCell>
       )}
       {columnsConfig[TaskItemColumn.LIST_NAME] && (
-        <TaskItemCell width={TaskItemColumnWidth[TaskItemColumn.LIST_NAME]} />
+        <TaskItemCell
+          key={`list_${identifier}`}
+          width={TaskItemColumnWidth[TaskItemColumn.LIST_NAME]}
+        />
       )}
       {customColumnsConfig &&
         workFlowData &&
         customColumnsConfig
           .filter(f => f.isChecked)
           .map(field => (
-            <TaskItemCell width={CustomFieldWidthConfig[field.fieldType]}>
+            <TaskItemCell
+              key={`custom_${identifier}_${field.identifier}`}
+              width={CustomFieldWidthConfig[field.fieldType]}
+            >
               <TaskItemCustomField
                 field={field}
                 readOnly
