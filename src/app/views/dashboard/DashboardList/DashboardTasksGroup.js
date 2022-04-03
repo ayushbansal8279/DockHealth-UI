@@ -106,7 +106,7 @@ const DashboardTasksGroup = ({
   }, [currentTaskLength, previousTaskLength]);
 
   useEffect(() => {
-    if (dashboardTasks?.length === 0 && metricValue === 0 && !isLoading) {
+    if (dashboardTasks?.length === 0 && metricValue > 0 && !isLoading) {
       setGroupIsOpen(false);
     }
   }, [dashboardTasks, isLoading, metricValue]);
