@@ -23,6 +23,7 @@ const CustomField = ({
   onBlur,
   fieldsGroupKey,
   taskIdentifier,
+  task,
 }) => {
   const containerReference = useRef(null);
   const { identifier, name, placeholder, fieldType, options } = field;
@@ -84,6 +85,7 @@ const CustomField = ({
             name={fieldName}
             placeholder={placeholder}
             taskIdentifier={taskIdentifier}
+            task={task}
             fieldsGroupKey={fieldsGroupKey}
             inputRef={inputReference}
             onChange={() => setWasChanged(true)}

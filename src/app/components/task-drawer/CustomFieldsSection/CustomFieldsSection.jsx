@@ -10,7 +10,7 @@ import { useForm, FormContext } from 'react-hook-form';
 import { compose } from 'ramda';
 import CategoryOptions from 'components/common/CategoryOptions/CategoryOptions';
 import { partialUpdateTask } from 'actions/task-actions';
-import { updatePartialWorkflow } from 'api/task-template-api';
+import { updatePartialWorkflow } from 'actions/task-template-actions';
 import { TaskItemType } from 'helpers/task-helpers';
 import {
   selectedTaskSelector,
@@ -47,12 +47,13 @@ const CustomFieldsSection = () => {
   const updateCustomFields = useCallback(
     ({ taskMetaData }) => {
       if (taskMetaData.length > 0) {
-        task.itemType === TaskItemType.BUNDLE
+        task.itemType === TaskItemType.BUNDLE ||
+        task.itemType === TaskItemType.TEMPLATE
           ? dispatch(updatePartialWorkflow(task?.identifier, { taskMetaData }))
           : dispatch(partialUpdateTask(task?.identifier, { taskMetaData }));
       }
     },
-    [dispatch, selectedWorkflow, task],
+    [dispatch, task],
   );
 
   const formMethods = useForm();
@@ -106,6 +107,7 @@ const CustomFieldsSection = () => {
                 fieldsGroupKey="taskMetaData"
                 isFocused={isFocused}
                 taskIdentifier={task.identifier}
+                task={task}
               />
             </Grid>
           </HidableContainer>
