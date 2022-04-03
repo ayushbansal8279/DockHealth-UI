@@ -414,6 +414,7 @@ const TaskItem = React.memo(
             </StickyMainTaskItemCell>
             {columnsConfig[TaskItemColumn.SUBTASKS_COUNT] && (
               <TaskItemCell
+                key={`subtask_count_${taskIdentifier}`}
                 width={TaskItemColumnWidth[TaskItemColumn.SUBTASKS_COUNT]}
                 justify="center"
                 paddingLeft="tiny"
@@ -435,7 +436,10 @@ const TaskItem = React.memo(
               </TaskItemCell>
             )}
             {columnsConfig[TaskItemColumn.PATIENT] && (
-              <TaskItemCell width={TaskItemColumnWidth[TaskItemColumn.PATIENT]}>
+              <TaskItemCell
+                key={`patient_${taskIdentifier}`}
+                width={TaskItemColumnWidth[TaskItemColumn.PATIENT]}
+              >
                 <TaskItemPatient
                   highlightedValue={highlightedValue}
                   taskStatus={task?.status}
@@ -454,6 +458,7 @@ const TaskItem = React.memo(
             )}
             {columnsConfig[TaskItemColumn.WORKFLOW_STATUS] && (
               <TaskItemCell
+                key={`task_status_${taskIdentifier}`}
                 width={TaskItemColumnWidth[TaskItemColumn.WORKFLOW_STATUS]}
                 paddingLeft="smallPlus"
                 paddingRight="tiny"
@@ -475,6 +480,7 @@ const TaskItem = React.memo(
             )}
             {columnsConfig[TaskItemColumn.ACTIVITY] && (
               <TaskItemCell
+                key={`activity_${taskIdentifier}`}
                 width={TaskItemColumnWidth[TaskItemColumn.ACTIVITY]}
               >
                 <TaskItemIcons
@@ -492,6 +498,7 @@ const TaskItem = React.memo(
             )}
             {columnsConfig[TaskItemColumn.START_DATE] && (
               <TaskItemCell
+                key={`start_date_${taskIdentifier}`}
                 width={TaskItemColumnWidth[TaskItemColumn.START_DATE]}
                 onContextMenu={event => {
                   event.stopPropagation();
@@ -500,6 +507,7 @@ const TaskItem = React.memo(
             )}
             {columnsConfig[TaskItemColumn.DUE_DATE] && !isTemplateTask && (
               <TaskItemCell
+                key={`due_date_${taskIdentifier}`}
                 width={TaskItemColumnWidth[TaskItemColumn.DUE_DATE]}
                 paddingLeft="tiny"
                 paddingRight="tiny"
@@ -513,6 +521,7 @@ const TaskItem = React.memo(
             )}
             {columnsConfig[TaskItemColumn.ASSIGNED] && (
               <TaskItemCell
+                key={`assigned_${taskIdentifier}`}
                 width={TaskItemColumnWidth[TaskItemColumn.ASSIGNED].WIDE}
                 justify={multipleAssigneesContext ? 'flex-start' : 'center'}
                 paddingLeft="small"
@@ -532,6 +541,7 @@ const TaskItem = React.memo(
             )}
             {columnsConfig[TaskItemColumn.LIST_NAME] && (
               <TaskItemCell
+                key={`list_${taskIdentifier}`}
                 width={TaskItemColumnWidth[TaskItemColumn.LIST_NAME]}
               >
                 <TaskItemList
@@ -545,6 +555,7 @@ const TaskItem = React.memo(
               .filter(f => f.isChecked)
               .map(field => (
                 <TaskItemCell
+                  key={`custom_${taskIdentifier}_${field.identifier}`}
                   padding="4px"
                   width={CustomFieldWidthConfig[field.fieldType]}
                 >
