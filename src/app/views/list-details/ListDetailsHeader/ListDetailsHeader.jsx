@@ -171,7 +171,7 @@ const ListDetailsHeader = props => {
         onSelectFilters={handleFilterSelect}
         tasksAndSubTasksCount={tasksAndSubTasksCount}
         activeItemsAmount={totalTasksAmount}
-        isFetching={isFetchingTasks}
+        isFetching={false}
         onOpen={handleFilterOpen}
         quickFiltersList={quickFiltersList}
         addQuickFilterOption={addQuickFilterOption}
