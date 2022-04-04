@@ -19,3 +19,9 @@ export const CurrentUserLabel = styled.div`
   display: flex;
   justify-content: flex-start;
 `;
+
+export const TextLabel = styled.div`
+  text-overflow: ellipsis;
+  overflow: hidden;
+  width: 90px;
+`;

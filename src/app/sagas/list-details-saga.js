@@ -1,4 +1,12 @@
-import { isEmpty, move, remove, insert, pluck } from 'ramda';
+import R, {
+  isEmpty,
+  move,
+  remove,
+  insert,
+  pluck,
+  filter,
+  compose,
+} from 'ramda';
 import {
   put,
   call,
@@ -7,6 +15,7 @@ import {
   takeLatest,
   select,
   debounce,
+  take,
 } from 'redux-saga/effects';
 import {
   getGroupsByListId,
@@ -136,38 +145,58 @@ function* getCurrentListTasks() {
     const sort = yield select(taskDetailsSortSelector);
     const searchTerm = yield select(searchTermSelector);
 
-    let groupedTasks;
-
     if (searchTerm) {
-      groupedTasks = yield call(
+      const groupedTasks = yield call(
         ListDetailsApi.searchTasksByTaskList,
         taskListIdentifier,
         searchTerm,
         TaskStatus.INCOMPLETE,
       );
+      yield put({
+        type: ActionTypes.GET_CURRENT_LIST_TASKS_SUCCESS,
+        groupedTasks,
+      });
     } else if (!selectedFilters || isEmpty(selectedFilters)) {
-      groupedTasks = yield call(
-        ListDetailsApi.getListTasksGroupedByTaskGroup,
-        taskListIdentifier,
-        TaskStatus.INCOMPLETE,
-        sort,
-        0,
-      );
+      let groups = yield select(listDetailsGroupsSelector);
+
+      if (!groups || isEmpty(groups)) {
+        const action = yield take(
+          a => a.type === ActionTypes.GET_TASKS_GROUPS_LIST_SUCCESS,
+        );
+        groups = action.groups;
+      }
+      const groupsToGet = compose(
+        filter(g => g.metricValue > 0),
+        R.take(5),
+      )(groups);
+
+      yield all([
+        ...groupsToGet.map(({ taskGroupIdentifier }) =>
+          put(
+            ListDetailsActions.getTasksForTaskGroups({
+              taskGroupIdentifier,
+              status: TaskStatus.INCOMPLETE,
+              startPosition: 0,
+              sort,
+              refresh: true,
+            }),
+          ),
+        ),
+      ]);
     } else {
-      groupedTasks = yield call(
+      const groupedTasks = yield call(
         ListDetailsApi.getFilteredTasksForList,
         taskListIdentifier,
         TaskStatus.INCOMPLETE,
         sort,
         selectedFilters,
       );
+      yield put({
+        type: ActionTypes.GET_CURRENT_LIST_TASKS_SUCCESS,
+        groupedTasks,
+      });
     }
-
-    yield put({
-      type: ActionTypes.GET_CURRENT_LIST_TASKS_SUCCESS,
-      groupedTasks,
-    });
-  } catch (error) {
+  } catch {
     yield put(showGlobalErrorAlert());
     yield put({ type: ActionTypes.GET_CURRENT_LIST_TASKS_FAILURE });
   }

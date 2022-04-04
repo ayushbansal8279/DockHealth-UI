@@ -5,6 +5,7 @@ import {
   takeLatest,
   select,
   takeEvery,
+  takeLeading,
   delay,
 } from 'redux-saga/effects';
 import { isEmpty } from 'ramda';
@@ -626,7 +627,11 @@ function* doUpdatePatientNote({ note }) {
 function* doUpdatePatientDetails({ payload: { details } }) {
   try {
     onPatientDetailsEdited();
-    yield call(PatientApi.updatePatient, details);
+    const updatedPatientDetails = yield call(PatientApi.updatePatient, details);
+    yield put({
+      type: ActionTypes.UPDATE_PATIENT_DETAILS,
+      payload: { details: { ...updatedPatientDetails } },
+    });
     yield put(AlertActions.showGlobalAlert(AlertMessages.UPDATED));
   } catch (error) {
     yield put(AlertActions.showGlobalErrorAlert());
@@ -772,14 +777,14 @@ export default function* watchPatientDetails() {
   );
   yield takeEvery(DO_CHANGE_MEMBER_ROLE, doChangeMemberRole);
   yield takeEvery(DO_SORT_PATIENT_TASKS, doSortPatientTasks);
-  yield takeLatest(DO_ADD_PATIENT_ATTACHMENT, doAddPatientAttachment);
+  yield takeEvery(DO_ADD_PATIENT_ATTACHMENT, doAddPatientAttachment);
   yield takeLatest(DO_REMOVE_PATIENT_ATTACHMENT, doRemovePatientAttachment);
   yield takeLatest(
     ActionTypes.TOGGLE_PATIENT_COMPLETE_TASKS_VISIBLE,
     doTogglePatientCompleteTasksVisible,
   );
   yield takeEvery(DO_UPDATE_PATIENT_NOTE, doUpdatePatientNote);
-  yield takeEvery(ActionTypes.UPDATE_PATIENT_DETAILS, doUpdatePatientDetails);
+  yield takeLeading(ActionTypes.UPDATE_PATIENT_DETAILS, doUpdatePatientDetails);
   yield takeEvery(DO_ARCHIVE_PATIENT, doArchivePatient);
   yield takeEvery(DO_ADD_PATIENT_NOTE, doAddPatientNote);
   yield takeEvery(DO_REMOVE_PATIENT_NOTE, doRemovePatientNote);

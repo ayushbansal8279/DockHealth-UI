@@ -8,7 +8,7 @@ import React, {
   useCallback,
 } from 'react';
 import { useParams, Link, useHistory } from 'react-router-dom';
-import { isNil } from 'ramda';
+import { compose, isNil, not, path } from 'ramda';
 import { useDispatch, useSelector } from 'react-redux';
 import NavigateNextIcon from '@material-ui/icons/NavigateNext';
 import HardDependencyIcon from 'img/template/hard-dependency';
@@ -42,6 +42,7 @@ import { userHasSmartFlowsSelector } from 'selectors/user-selectors';
 import { openDrawer } from 'actions/workflow-drawer-actions';
 import { Box, ClickAwayListener, Paper, Popper } from '@material-ui/core';
 import DecisionTaskElementIcon from 'img/template/decision-task-icon';
+import Tooltip from 'components/common/Tooltip/Tooltip';
 import ReactFlow, {
   Controls,
   Position,
@@ -52,7 +53,8 @@ import {
   NodeType,
   LinkType,
   TASK_NODE_WIDTH,
-} from 'helpers/task-template-builder-helpers';
+  getAutoLayout,
+} from 'helpers/smart-flow-builder-helpers';
 import { useBoolean } from 'hooks/useBoolean';
 import palette from 'styles/palette';
 import NewTaskNode from './NewTaskNode/NewTaskNode';
@@ -78,10 +80,13 @@ import {
   HotkeysElements,
   Hotkey,
   HotkeyDescription,
+  SidebarDivider,
+  AutoAlignButton,
 } from './styled';
 import ConnectionLink from './ConnectionLink/ConnectionLink';
 import TaskLinkDelayForm from './TaskLinkDelayForm/TaskLinkDelayForm';
 import TemporaryDecisionTaskLink from './TemporaryDecisionTaskLink/TemporaryDecisionTaskLink';
+import BulkEditContainer from './BulkEditContainer/BulkEditContainer';
 
 const nodeTypes = {
   [NodeType.NEW_STANDARD]: NewTaskNode,
@@ -97,7 +102,7 @@ const linkTypes = {
   [LinkType.TEMPORARY_DECISION]: TemporaryDecisionTaskLink,
 };
 
-const TaskTemplateDetailsView = () => {
+const SmartFlowBuilderView = () => {
   const delayPeriodOptionReference = useRef(null);
   const builderWrapperReference = useRef(null);
   const reactFlowInstance = useRef(null);
@@ -127,7 +132,7 @@ const TaskTemplateDetailsView = () => {
     dispatch(selectTaskTemplate(identifier));
 
     return () => {
-      dispatch(unselectTaskTemplate);
+      dispatch(unselectTaskTemplate());
     };
   }, [dispatch, identifier]);
 
@@ -306,25 +311,43 @@ const TaskTemplateDetailsView = () => {
 
     return actions;
   }, [
-    dispatch,
+    selectedElements,
     layout,
+    dispatch,
     handleMakeSelectionDependent,
     openDelayPopover,
-    selectedElements,
   ]);
 
-  const handleNodeDragStop = (_, node) => {
-    const isExistingTask = !!node.data.task;
+  const updateSelectedElementsPosition = selectedNodes => {
+    let updatedElements = elements;
+    let shouldUpdate = false;
 
-    if (isExistingTask) {
-      const updatedElements = updateNodePosition(
-        node.id,
-        node.position,
-        elements,
-      );
+    selectedNodes.forEach(e => {
+      const isExistingTask = !!e.data.task;
+
+      if (isExistingTask) {
+        if (!shouldUpdate) shouldUpdate = true;
+
+        updatedElements = updateNodePosition(e.id, e.position, updatedElements);
+      }
+    });
+
+    if (shouldUpdate) {
       const newLayout = mapElementsToLayout(updatedElements);
       dispatch(saveTaskTemplateLayout(newLayout));
     }
+  };
+
+  const handleNodeDragStop = () => {
+    const selectedNodes = reactFlowInstance.current
+      .getElements()
+      .filter(e => selectedElements.find(se => se.id === e.id));
+
+    updateSelectedElementsPosition(selectedNodes);
+  };
+
+  const handleSelectionDragStop = (_, nodes) => {
+    updateSelectedElementsPosition(nodes);
   };
 
   const mergedElementsWithActions = useMemo(
@@ -401,6 +424,27 @@ const TaskTemplateDetailsView = () => {
     setTimeout(_reactFlowInstance.fitView, 0);
   };
 
+  const resetSelection = () => {
+    // resetting selection by creating click event on react flow panel
+    const el = document.querySelector('.react-flow__pane');
+    // eslint-disable-next-line no-unused-expressions
+    el?.click();
+  };
+
+  const handleAutoAlignClick = async () => {
+    const autoLayout = await getAutoLayout(tasks);
+    dispatch(saveTaskTemplateLayout(autoLayout));
+    setTimeout(reactFlowInstance.current.fitView, 0);
+  };
+
+  const selectedTasks = useMemo(
+    () =>
+      selectedElements
+        ?.filter(compose(not, isNil, path(['data', 'task'])))
+        ?.map(path(['data', 'task'])),
+    [selectedElements],
+  );
+
   return (
     <div style={{ display: 'flex', width: '100vw', height: '100vh' }}>
       <ReactFlowProvider>
@@ -427,6 +471,12 @@ const TaskTemplateDetailsView = () => {
                   <ElementDescription>{label}</ElementDescription>
                 </ElementButton>
               ))}
+              <SidebarDivider />
+              <Tooltip title="Auto Align will organize  your layout ">
+                <AutoAlignButton type="button" onClick={handleAutoAlignClick}>
+                  Auto Align Layout
+                </AutoAlignButton>
+              </Tooltip>
               {isDelayPopoverOpen && (
                 <Popper
                   anchorEl={delayPeriodOptionReference.current}
@@ -515,13 +565,19 @@ const TaskTemplateDetailsView = () => {
                   setDraggedEdgeSourceId(null);
                   setHoveredTargetHandle(Position.Top);
                 }}
+                onSelectionDragStop={handleSelectionDragStop}
                 onNodeDragStop={handleNodeDragStop}
                 onLoad={handleLoad}
                 onSelectionChange={setSelectedElements}
+                multiSelectionKeyCode={91}
               >
                 <Controls />
               </ReactFlow>
             )}
+            <BulkEditContainer
+              selectedTasks={selectedTasks}
+              onClose={resetSelection}
+            />
           </Box>
         </Box>
       </ReactFlowProvider>
@@ -529,4 +585,4 @@ const TaskTemplateDetailsView = () => {
     </div>
   );
 };
-export default TaskTemplateDetailsView;
+export default SmartFlowBuilderView;

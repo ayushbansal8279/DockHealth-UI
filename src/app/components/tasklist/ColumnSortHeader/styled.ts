@@ -29,7 +29,7 @@ export const SortButton = styled.button<{
   flex: ${({ width }) => (width ? `0 0 ${width}px` : '1')};
   overflow: ${({ truncateEnabled }) =>
     truncateEnabled ? 'hidden' : 'visible'};
-  padding: 8px 16px;
+  padding: 0px 16px;
   height: 35px;
   text-align: left;
   font-family: 'Roboto Condensed', sans-serif;

@@ -1,10 +1,16 @@
-import { IconButton } from '@material-ui/core';
+import { Button, IconButton } from '@material-ui/core';
 import styled from 'styled-components';
 import spacing from 'styles/spacing';
 import palette from 'styles/palette';
 import { withStyles } from '@material-ui/core/styles';
 import { Close } from '@material-ui/icons';
 import { fontSizes, fontWeights } from 'styles/font';
+
+export const ActionButton = withStyles(() => ({
+  root: {
+    fontSize: '16px',
+  },
+}));
 
 export const ModalWrapper = styled.div`
   position: relative;
@@ -54,10 +60,16 @@ export const ButtonsContainer = styled.div`
 
 export const FlexButtonWrapper = styled.div`
   flex: 1;
+  button {
+    font-size: 14px !important;
+  }
 `;
 
 export const FixedWidthButtonWrapper = styled.div`
   width: ${({ width }) => width || 'auto'}px;
+  button {
+    font-size: 14px !important;
+  }
 `;
 
 export const CloseIconButton = withStyles({

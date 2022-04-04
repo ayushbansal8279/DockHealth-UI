@@ -4,6 +4,7 @@ import { useParams } from 'react-router-dom';
 import { isEmpty, pluck } from 'ramda';
 import { bulkEditTasks as bulkEditTasksApi } from 'api/task-api';
 import { checkIfTemplateTask } from 'helpers/task-helpers';
+import { BulkEditOptionsConfig } from 'helpers/bulk-edit-helpers';
 import palette from 'styles/palette';
 import { useDispatch, useSelector } from 'react-redux';
 import { openModal, closeModal } from 'modal/actions';
@@ -14,6 +15,7 @@ import DeleteIcon from 'img/bulk-edit/DeleteIcon';
 import { onMultiSelectAction } from 'helpers/ga-event-helper';
 import Tooltip from 'components/common/Tooltip/Tooltip';
 import * as AlertActions from 'alert/actions';
+import { userProfileSelector } from 'selectors/user-selectors';
 import {
   bulkEditAssignUser,
   bulkEditWorkflowStatus,
@@ -21,57 +23,30 @@ import {
   bulkEditDelete,
   bulkEditComplete,
   bulkEditDueDateSuccess,
+  bulkEditDuplicateTasksSuccess,
 } from 'actions/task-actions';
 import * as ActionTypes from 'actions/action-types';
 import {
   getListDetailsTaskCounters,
   getTasksGroupsList,
 } from 'actions/list-details-actions';
+import BulkEditOption from 'components/bulk-edit/BulkEditOption/BulkEditOption';
 import { selectedFiltersInMegaFilterSelector } from 'selectors/mega-filter-selectors';
-
+import BulkEditBar from 'components/bulk-edit/BulkEditBar/BulkEditBar';
 import BulkEditAssignToOption from './BulkEditAssignToOption';
 import BulkEditDueDateOption from './BulkEditDueDateOption';
 import BulkEditWorkflowStatusOption from './BulkEditWorkflowStatusOption';
-import {
-  BULK_EDIT_DUPLICATE_OPTION,
-  BULK_EDIT_MOVE_OPTION,
-  BULK_EDIT_COMPLETE_OPTION,
-  BULK_EDIT_STATUS_OPTION,
-  BULK_EDIT_DUE_DATE_OPTION,
-  BULK_EDIT_ASSIGN_OPTION,
-  BULK_EDIT_DELETE_OPTION,
-} from '../helpers';
 
-import {
-  WrapperContainer,
-  IconBox,
-  CloseButton,
-  CloseIcon,
-  ButtonsWrapper,
-  Container,
-  TasksText,
-  Button,
-} from './styled';
+import { Button } from './styled';
 
 const BULK_EDIT_BASE_CONFIG = {
-  [BULK_EDIT_DUPLICATE_OPTION]: true,
-  [BULK_EDIT_MOVE_OPTION]: true,
-  [BULK_EDIT_COMPLETE_OPTION]: true,
-  [BULK_EDIT_STATUS_OPTION]: true,
-  [BULK_EDIT_DUE_DATE_OPTION]: true,
-  [BULK_EDIT_ASSIGN_OPTION]: true,
-  [BULK_EDIT_DELETE_OPTION]: true,
-};
-
-const IconWithTooltip = ({ text, children }) => {
-  if (text)
-    return (
-      <Tooltip placement="top" title={text}>
-        <div>{children}</div>
-      </Tooltip>
-    );
-
-  return children;
+  [BulkEditOptionsConfig.DUPLICATE_OPTION]: true,
+  [BulkEditOptionsConfig.MOVE_OPTION]: true,
+  [BulkEditOptionsConfig.COMPLETE_OPTION]: true,
+  [BulkEditOptionsConfig.STATUS_OPTION]: true,
+  [BulkEditOptionsConfig.DUE_DATE_OPTION]: true,
+  [BulkEditOptionsConfig.ASSIGN_OPTION]: true,
+  [BulkEditOptionsConfig.DELETE_OPTION]: true,
 };
 
 const BulkEditOptionsBar = ({
@@ -79,12 +54,12 @@ const BulkEditOptionsBar = ({
   onClose,
   isDisabled,
   refreshTasks,
-  currentUser,
   searchValue,
   shouldRefreshTasksEveryTime,
   optionsConfig,
   // eslint-disable-next-line sonarjs/cognitive-complexity
 }) => {
+  const currentUser = useSelector(userProfileSelector);
   const dispatch = useDispatch();
   const { taskListIdentifier } = useParams();
   const filters = useSelector(selectedFiltersInMegaFilterSelector);
@@ -146,8 +121,8 @@ const BulkEditOptionsBar = ({
 
   const allSelectedTasksIdentifiers = useMemo(
     () => [
-      ...parentTasks?.map(({ taskIdentifier }) => taskIdentifier),
-      ...subtasks?.map(({ taskIdentifier }) => taskIdentifier),
+      ...parentTasks?.map(({ identifier }) => identifier),
+      ...subtasks?.map(({ identifier }) => identifier),
     ],
     [parentTasks, subtasks],
   );
@@ -408,7 +383,9 @@ const BulkEditOptionsBar = ({
         bulkEditType: 'DUPLICATE',
         taskIdentifiers: allSelectedTasksIdentifiers,
         includeAttachmentsForDuplication,
-      }).then(({ transactionIdentifier }) => {
+      }).then(({ transactionIdentifier, tasks: duplicatedTasks }) => {
+        dispatch(bulkEditDuplicateTasksSuccess(duplicatedTasks));
+
         if (refreshTasks && typeof refreshTasks === 'function') {
           refreshTasks();
         }
@@ -714,30 +691,29 @@ const BulkEditOptionsBar = ({
   );
 
   return (
-    <Container isDisabled={isDisabled}>
-      <TasksText>
-        {`${allSelectedTasksLength} Task${
-          allSelectedTasksLength > 1 ? 's' : ''
-        } Selected`}
-      </TasksText>
-      <ButtonsWrapper>
-        {mergedConfig[BULK_EDIT_DUPLICATE_OPTION] && (
+    <BulkEditBar
+      numberOfSelectedTasks={allSelectedTasksLength}
+      isDisabled={isDisabled}
+      onClose={onClose}
+    >
+      <>
+        {mergedConfig[BulkEditOptionsConfig.DUPLICATE_OPTION] && (
           <Button
             type="button"
             onClick={handleDuplicateTasks}
             disabled={isDisabled}
           >
-            <WrapperContainer disabled={isDisabled}>
-              <IconBox>
-                <DuplicateIcon />
-              </IconBox>
-              <p>Duplicate</p>
-            </WrapperContainer>
+            <BulkEditOption
+              iconComponent={DuplicateIcon}
+              title="Duplicate"
+              isDisabled={isDisabled}
+            />
           </Button>
         )}
-        {mergedConfig[BULK_EDIT_MOVE_OPTION] && (
-          <IconWithTooltip
-            text={
+        {mergedConfig[BulkEditOptionsConfig.MOVE_OPTION] && (
+          <Tooltip
+            placement="top"
+            title={
               disabledMoveAction
                 ? 'Cannot move subtasks without main tasks'
                 : null
@@ -748,42 +724,40 @@ const BulkEditOptionsBar = ({
               disabled={disabledMoveAction || isDisabled}
               onClick={handleMoveTasks}
             >
-              <WrapperContainer disabled={disabledMoveAction || isDisabled}>
-                <IconBox>
-                  <MoveIcon />
-                </IconBox>
-                <p>Move</p>
-              </WrapperContainer>
+              <BulkEditOption
+                iconComponent={MoveIcon}
+                title="Move"
+                isDisabled={disabledMoveAction || isDisabled}
+              />
             </Button>
-          </IconWithTooltip>
+          </Tooltip>
         )}
-        {mergedConfig[BULK_EDIT_COMPLETE_OPTION] && (
+        {mergedConfig[BulkEditOptionsConfig.COMPLETE_OPTION] && (
           <Button
             type="button"
             onClick={handleCompleteTasks}
             disabled={isDisabled}
           >
-            <WrapperContainer disabled={isDisabled}>
-              <IconBox>
-                <CompleteIcon />
-              </IconBox>
-              <p>Complete</p>
-            </WrapperContainer>
+            <BulkEditOption
+              iconComponent={CompleteIcon}
+              title="Delete"
+              isDisabled={isDisabled}
+            />
           </Button>
         )}
-        {mergedConfig[BULK_EDIT_STATUS_OPTION] && (
+        {mergedConfig[BulkEditOptionsConfig.STATUS_OPTION] && (
           <BulkEditWorkflowStatusOption
             handleChangeWorkflowStatusTasks={handleChangeWorkflowStatusTasks}
             isDisabled={isDisabled}
           />
         )}
-        {mergedConfig[BULK_EDIT_DUE_DATE_OPTION] && (
+        {mergedConfig[BulkEditOptionsConfig.DUE_DATE_OPTION] && (
           <BulkEditDueDateOption
             handleChangeDateTasks={handleChangeDateTasks}
             isDisabled={isDisabled}
           />
         )}
-        {mergedConfig[BULK_EDIT_ASSIGN_OPTION] && (
+        {mergedConfig[BulkEditOptionsConfig.ASSIGN_OPTION] && (
           <BulkEditAssignToOption
             selectedTaskListIdentifiers={allSelectedTaskListIdentifiers}
             handleChangeAssigneTasks={handleChangeAssigneeTasks}
@@ -791,25 +765,22 @@ const BulkEditOptionsBar = ({
             selectedTasks={selectedTasks}
           />
         )}
-        {mergedConfig[BULK_EDIT_DELETE_OPTION] && (
+        {mergedConfig[BulkEditOptionsConfig.DELETE_OPTION] && (
           <Button
             type="button"
             onClick={handleDeleteTasks}
             disabled={isDisabled}
           >
-            <WrapperContainer color={palette.oPlusRed} disabled={isDisabled}>
-              <IconBox>
-                <DeleteIcon />
-              </IconBox>
-              <p>Delete</p>
-            </WrapperContainer>
+            <BulkEditOption
+              iconComponent={DeleteIcon}
+              title="Delete"
+              color={palette.oPlusRed}
+              isDisabled={isDisabled}
+            />
           </Button>
         )}
-        <CloseButton type="button" onClick={onClose} disabled={isDisabled}>
-          <CloseIcon />
-        </CloseButton>
-      </ButtonsWrapper>
-    </Container>
+      </>
+    </BulkEditBar>
   );
 };
 

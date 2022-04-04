@@ -35,23 +35,7 @@ export const searchTermSelector = createSelector(
 export const groupTasksSelector = createSelector(
   listTasksSelector,
   ({ groupedTasks }) => {
-    if (!groupedTasks) {
-      return {};
-    }
-    const groupedTasksMap = {};
-
-    // eslint-disable-next-line no-unused-expressions
-    groupedTasks?.taskGroups?.forEach(taskGroup => {
-      groupedTasksMap[taskGroup.groupIdentifier] = {
-        tasks: taskGroup.tasks,
-        hasMore: taskGroup.hasMore,
-        moreTasksIndex: taskGroup.moreTasksIndex,
-        isLoadingGroup: taskGroup.isLoadingGroup,
-        isFetchingMoreTasks: taskGroup.isFetchingMoreTasks,
-      };
-    });
-
-    return groupedTasksMap;
+    return groupedTasks?.taskGroups;
   },
 );
 

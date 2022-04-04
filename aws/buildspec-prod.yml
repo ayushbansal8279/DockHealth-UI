@@ -24,11 +24,12 @@ env:
 phases:
   install:
     runtime-versions:
-      nodejs: 8
+      nodejs: 12
   pre_build:
       commands: 
       - echo Installing source NPM dependencies...
       - npm install
+      - npm audit fix
   build:
       commands:
       - echo Build started on `date`

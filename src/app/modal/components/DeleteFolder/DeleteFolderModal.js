@@ -1,6 +1,5 @@
 import React from 'react';
-import { Typography } from '@material-ui/core';
-import Button from 'components/common/Button/Button';
+import { Button, Typography } from '@material-ui/core';
 import { MuiThemeProvider } from '@material-ui/core/styles';
 import Spacing from 'components/common/Spacing';
 import TrashCan from 'img/modals/trash-can';
@@ -14,6 +13,7 @@ import {
   ButtonsContainer,
   FlexButtonWrapper,
   FixedWidthButtonWrapper,
+  DeleteButton,
 } from '../styled';
 
 const DeleteFolder = ({ closeModal, confirm }) => {
@@ -45,7 +45,7 @@ const DeleteFolder = ({ closeModal, confirm }) => {
           </FlexButtonWrapper>
           <Spacing horizontal={4} />
           <FixedWidthButtonWrapper width={231}>
-            <Button
+            <DeleteButton
               fullWidth
               variant="primary-red"
               size="small"
@@ -54,8 +54,8 @@ const DeleteFolder = ({ closeModal, confirm }) => {
                 closeModal();
               }}
             >
-              Delete Permanently
-            </Button>
+              Delete Permanently22
+            </DeleteButton>
           </FixedWidthButtonWrapper>
         </ButtonsContainer>
       </ModalWrapper>

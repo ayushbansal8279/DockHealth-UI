@@ -101,6 +101,7 @@ const ListDetailsReducer = (state = initialState, action) => {
     case ActionTypes.INITIALIZE_TASK_LIST_STATE: {
       return {
         ...state,
+        ...initialState,
         taskListIdentifier: action.taskListIdentifier,
       };
     }
@@ -160,47 +161,6 @@ const ListDetailsReducer = (state = initialState, action) => {
       };
     }
 
-    case ActionTypes.GET_COMPLETED_TASKS_BY_GROUPS_SUCCESS: {
-      const { groupedTasks, loadingMore, taskListIdentifier } = action;
-      const group = groupedTasks[0];
-
-      const groupToUpdate = state.completedGroupedTasks.taskGroups?.find(
-        ({ groupIdentifier }) => groupIdentifier === group?.groupIdentifier,
-      );
-      const groupToUpdateIndex =
-        state.completedGroupedTasks?.taskGroups?.indexOf(groupToUpdate) || -1;
-      const updatedTaskGroups =
-        state.completedGroupedTasks?.taskGroups?.map(taskGroup =>
-          taskGroup.groupIdentifier === group?.groupIdentifier
-            ? {
-                ...taskGroup,
-                tasks: loadingMore
-                  ? taskGroup.tasks.concat(group.tasks)
-                  : group.tasks,
-                hasMore: group.hasMore,
-                moreTasksIndex: group.moreTasksIndex,
-              }
-            : taskGroup,
-        ) || [];
-      if (groupToUpdateIndex === -1) {
-        updatedTaskGroups.push(group);
-      }
-      const updatedGroupedTasks = {
-        ...state.completedGroupedTasks,
-        taskGroups: updatedTaskGroups,
-      };
-
-      return {
-        ...state,
-        taskListIdentifier,
-        completedGroupedTasks: updatedGroupedTasks,
-        isCompletedTasksFetching: false,
-        isFetchingMoreTasks: false,
-        showingCompletedTasks: true,
-        isFetching: false,
-      };
-    }
-
     case ActionTypes.REQUEST_ALL_LIST_DETAILS_GROUPS: {
       return {
         ...state,
@@ -220,19 +180,19 @@ const ListDetailsReducer = (state = initialState, action) => {
       const groupToUpdate = state.groupedTasks?.taskGroups?.find(
         ({ groupIdentifier }) => groupIdentifier === fetchedGroupIdentifier,
       );
-      const groupToUpdateIndex = state.groupedTasks?.taskGroups?.indexOf(
-        groupToUpdate,
-      );
-      const updatedTaskGroups = state.groupedTasks?.taskGroups?.map(taskGroup =>
-        taskGroup.groupIdentifier === fetchedGroupIdentifier
-          ? {
-              ...taskGroup,
-              isLoadingGroup: !!refresh,
-              isFetchingMoreTasks: !refresh,
-            }
-          : taskGroup,
-      );
-      if (groupToUpdateIndex === -1) {
+      const updatedTaskGroups =
+        state.groupedTasks?.taskGroups?.map(taskGroup =>
+          taskGroup.groupIdentifier === fetchedGroupIdentifier
+            ? {
+                ...taskGroup,
+                isLoadingGroup: !!refresh,
+                isFetchingMoreTasks: !refresh,
+                tasks: refresh ? [] : taskGroup.tasks,
+              }
+            : taskGroup,
+        ) || [];
+
+      if (!groupToUpdate) {
         updatedTaskGroups.push({
           groupIdentifier: fetchedGroupIdentifier,
           tasks: [],
@@ -280,7 +240,7 @@ const ListDetailsReducer = (state = initialState, action) => {
         if (!groupExists) {
           const groupToAdd = { ...group };
           groupToAdd.isLoadingGroup = false;
-          updatedTaskGroups.push(groupToAdd);
+          updatedTaskGroups = [...(updatedTaskGroups || []), groupToAdd];
         }
       });
 

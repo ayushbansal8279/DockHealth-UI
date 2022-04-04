@@ -8,7 +8,7 @@ import {
   createTemporaryTaskNode,
   createLinkElement,
   LinkType,
-} from 'helpers/task-template-builder-helpers';
+} from 'helpers/smart-flow-builder-helpers';
 import TaskBaseReducer from './task-base-reducer';
 
 const initialWorkflowLibraryState = {

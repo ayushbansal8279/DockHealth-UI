@@ -341,7 +341,6 @@ const TasksGroup = ({
           />
         )}
         {children({
-          isLoadingGroup,
           isFetchingMoreTasks,
           isCompletedGroup,
           isFullView,

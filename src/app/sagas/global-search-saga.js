@@ -74,10 +74,11 @@ const setWorkflowStatus = (task, workflowStatus) => ({
   },
 });
 
-const updateTask = updatedTask => ({
+const updateTask = (taskIdentifier, dataToUpdate) => ({
   type: DO_UPDATE_GLOBAL_SEARCH_TASK,
   payload: {
-    updatedTask,
+    taskIdentifier,
+    dataToUpdate,
   },
 });
 
@@ -257,11 +258,14 @@ function* doSetWorkflowStatus({ payload }) {
 }
 
 function* doUpdateTask({ payload }) {
-  const { updatedTask } = payload;
-
+  const { taskIdentifier, dataToUpdate } = payload;
   try {
+    const updatedTask = yield call(
+      TaskApi.partialUpdateTask,
+      taskIdentifier,
+      dataToUpdate,
+    );
     yield put(GlobalSearchActions.updateGlobalSearchTask(updatedTask));
-    yield call(TaskApi.updateTask, updatedTask);
     yield put(AlertActions.showGlobalAlert(AlertMessages.UPDATED));
   } catch (error) {
     yield put(refreshTasks());

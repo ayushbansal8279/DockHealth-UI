@@ -192,6 +192,7 @@ const EditUserGroupModal = ({ userGroup, closeModal }) => {
               />
             </Grid>
             <Grid container direction="row" justify="center">
+              <Spacing vertical={3} />
               <ButtonWrapper>
                 <Button
                   fullWidth

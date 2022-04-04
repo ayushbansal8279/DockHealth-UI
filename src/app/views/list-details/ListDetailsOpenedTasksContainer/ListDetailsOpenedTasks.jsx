@@ -120,7 +120,7 @@ const ListDetailsOpenedTasks = ({
   );
 
   const hasAnyTask = useMemo(() => {
-    return Object.values(groupedTasks).some(({ tasks }) => tasks?.length > 0);
+    return groupedTasks?.some(({ tasks }) => tasks?.length > 0) || false;
   }, [groupedTasks]);
 
   const { bulkEditIsActive } = useContext(BulkEditContext);
@@ -161,180 +161,186 @@ const ListDetailsOpenedTasks = ({
         ?.filter(
           ({ taskGroupIdentifier }) =>
             (!isSearchApplied && !areFiltersApplied) ||
-            groupedTasks[taskGroupIdentifier]?.tasks?.length > 0,
+            groupedTasks?.find(g => g.groupIdentifier === taskGroupIdentifier)
+              ?.tasks?.length > 0,
         )
-        .map(({ groupName, taskGroupIdentifier, metricValue }, i) => (
-          <TasksGroup
-            key={taskGroupIdentifier}
-            isDefaultGroup={groupName === 'DEFAULT'}
-            groupName={groupName === 'DEFAULT' ? 'New tasks' : groupName}
-            groupTaskCounts={metricValue}
-            quickAddTask={quickAddTask}
-            moveGroupUp={() => dispatch(reorderTaskListGroups(i, i - 1))}
-            moveGroupDown={() => dispatch(reorderTaskListGroups(i, i + 1))}
-            isFirstGroup={i === 0}
-            isLastGroup={i === groupList?.length - 1}
-            tasks={groupedTasks[taskGroupIdentifier]?.tasks || []}
-            isLoadingGroup={
-              groupedTasks[taskGroupIdentifier]?.isLoadingGroup || false
-            }
-            isFetchingMoreTasks={
-              groupedTasks[taskGroupIdentifier]?.isFetchingMoreTasks || false
-            }
-            taskGroupIdentifier={taskGroupIdentifier}
-            onTaskUpdate={onTaskUpdate}
-            draggedId={draggedId}
-            toggleCompleteTask={toggleCompleteTask}
-            updateWorkflowStatus={updateWorkflowStatus}
-            isSearchApplied={isSearchApplied}
-            listUniqueKey={listUniqueKey}
-            areFiltersApplied={areFiltersApplied}
-            groupPagination
-            hasMoreTasks={groupedTasks[taskGroupIdentifier]?.hasMore || false}
-            showMoreTasks={() => {
-              loadTasksForTaskGroup({
-                taskGroupIdentifier,
-                startPosition:
-                  groupedTasks[taskGroupIdentifier]?.moreTasksIndex || 0,
-                refresh: false,
-              });
-            }}
-            onTaskGroupViewModeChange={viewMode => {
-              loadTasksForTaskGroup({
-                taskGroupIdentifier,
-                startPosition: 0,
-                viewMode,
-                refresh: true,
-              });
-            }}
-            taskListIdentifier={taskListIdentifier}
-            sort={sort}
-            onSortChange={onSortChange}
-            applyTemplate={applyTemplate}
-          >
-            {({
-              isLoadingGroup,
-              isFetchingMoreTasks,
-              isCompletedGroup,
-              isFullView,
-              tasks,
-              addingNewSubtaskParentId,
-              groupHasMultipleAssignees,
-              isListFlattened,
-              highlightedTasksParentIdentifier,
-              highlightTasksOfTheSameParent,
-              groupPagination,
-              hasMoreTasks,
-              showMoreTasks,
-            }) => (
-              <>
-                {(!isLoadingGroup || isFetchingMoreTasks) && (
-                  <Droppable
-                    droppableId={taskGroupIdentifier}
-                    isDropDisabled={isCompletedGroup || isSortApplied}
-                  >
-                    {(providedDroppable, snapshot) => {
-                      return (
-                        <DroppablePlaceholder
-                          isDraggingOverGroup={snapshot?.isDraggingOver}
-                          ref={providedDroppable.innerRef}
-                          {...providedDroppable.droppableProps}
-                        >
-                          {tasks?.map((task, index) => (
-                            <Draggable
-                              key={task.identifier}
-                              draggableId={String(task.identifier)}
-                              index={index}
-                              isDragDisabled={
-                                isCompletedGroup || dragAndDropDisabled
-                              }
-                            >
-                              {(draggableProvided, { isDragging }) => (
-                                <>
-                                  {task?.itemType === TaskItemType.TASK ? (
-                                    <StandardTaskItem
-                                      key={task.identifier}
-                                      isFullView={isFullView}
-                                      isDragging={isDragging}
-                                      isStartedDnD={
-                                        draggedId === task.taskIdentifier
-                                      }
-                                      task={task}
-                                      draggableProvided={draggableProvided}
-                                      isCompletedGroup={isCompletedGroup}
-                                      toggleCompleteTask={toggleCompleteTask}
-                                      onTaskUpdate={onTaskUpdate}
-                                      updateWorkflowStatus={
-                                        updateWorkflowStatus
-                                      }
-                                      dragAndDropDisabled={
-                                        isCompletedGroup || dragAndDropDisabled
-                                      }
-                                      isDraggable
-                                      addingNewSubtask={
-                                        addingNewSubtaskParentId ===
-                                        task.identifier
-                                      }
-                                      subtasksDisabled={isListFlattened}
-                                      areFiltersApplied={areFiltersApplied}
-                                      isSearchApplied={isSearchApplied}
-                                      shouldShowBlockModalOnDrag={isSortApplied}
-                                      showClearSortFiltersModal={
-                                        showClearSortFiltersModal
-                                      }
-                                      multipleAssigneesContext={
-                                        groupHasMultipleAssignees
-                                      }
-                                      highlightedTasksParentIdentifier={
-                                        highlightedTasksParentIdentifier
-                                      }
-                                      highlightTasksOfTheSameParent={
-                                        highlightTasksOfTheSameParent
-                                      }
-                                    />
-                                  ) : (
-                                    <TaskTemplateGroup
-                                      viewSetup={viewSetup}
-                                      isStartedDnD={
-                                        draggedId === task.identifier
-                                      }
-                                      draggableProvided={draggableProvided}
-                                      templateGroup={task}
-                                      groupHasMultipleAssignees={
-                                        groupHasMultipleAssignees
-                                      }
-                                      isFullView={isFullView}
-                                      dragAndDropDisabled={
-                                        isCompletedGroup || dragAndDropDisabled
-                                      }
-                                    />
-                                  )}
-                                </>
-                              )}
-                            </Draggable>
-                          ))}
-                          {providedDroppable.placeholder}
-                        </DroppablePlaceholder>
-                      );
-                    }}
-                  </Droppable>
-                )}
-                {(isLoadingGroup || isFetchingMoreTasks) && (
-                  <TasksSkeletonLoader rows={4} />
-                )}
-                {groupPagination && hasMoreTasks && !areFiltersApplied && (
-                  <StickyContainer left={24} decreaseWidth={2 * 24}>
-                    <LoadMoreSection>
-                      {!isLoadingGroup && (
-                        <LoadMoreButton onClick={showMoreTasks} />
-                      )}
-                    </LoadMoreSection>
-                  </StickyContainer>
-                )}
-              </>
-            )}
-          </TasksGroup>
-        )),
+        .map(({ groupName, taskGroupIdentifier, metricValue }, i) => {
+          const group = groupedTasks?.find(
+            g => g.groupIdentifier === taskGroupIdentifier,
+          );
+          const isLoadingGroup = group?.isLoadingGroup;
+
+          return (
+            <TasksGroup
+              key={taskGroupIdentifier}
+              isDefaultGroup={groupName === 'DEFAULT'}
+              groupName={groupName === 'DEFAULT' ? 'New tasks' : groupName}
+              groupTaskCounts={metricValue}
+              quickAddTask={quickAddTask}
+              moveGroupUp={() => dispatch(reorderTaskListGroups(i, i - 1))}
+              moveGroupDown={() => dispatch(reorderTaskListGroups(i, i + 1))}
+              isFirstGroup={i === 0}
+              isLastGroup={i === groupList?.length - 1}
+              tasks={group?.tasks || []}
+              isLoadingGroup={isLoadingGroup}
+              isFetchingMoreTasks={group?.isFetchingMoreTasks || false}
+              taskGroupIdentifier={taskGroupIdentifier}
+              onTaskUpdate={onTaskUpdate}
+              draggedId={draggedId}
+              toggleCompleteTask={toggleCompleteTask}
+              updateWorkflowStatus={updateWorkflowStatus}
+              isSearchApplied={isSearchApplied}
+              listUniqueKey={listUniqueKey}
+              areFiltersApplied={areFiltersApplied}
+              groupPagination
+              hasMoreTasks={group?.hasMore || false}
+              showMoreTasks={() => {
+                loadTasksForTaskGroup({
+                  taskGroupIdentifier,
+                  startPosition: group?.moreTasksIndex || 0,
+                  refresh: false,
+                });
+              }}
+              onTaskGroupViewModeChange={viewMode => {
+                loadTasksForTaskGroup({
+                  taskGroupIdentifier,
+                  startPosition: 0,
+                  viewMode,
+                  refresh: true,
+                });
+              }}
+              taskListIdentifier={taskListIdentifier}
+              sort={sort}
+              onSortChange={onSortChange}
+              applyTemplate={applyTemplate}
+            >
+              {({
+                isFetchingMoreTasks,
+                isCompletedGroup,
+                isFullView,
+                tasks,
+                addingNewSubtaskParentId,
+                groupHasMultipleAssignees,
+                isListFlattened,
+                highlightedTasksParentIdentifier,
+                highlightTasksOfTheSameParent,
+                groupPagination,
+                hasMoreTasks,
+                showMoreTasks,
+              }) => (
+                <>
+                  {(!isLoadingGroup || isFetchingMoreTasks) && (
+                    <Droppable
+                      droppableId={taskGroupIdentifier}
+                      isDropDisabled={isCompletedGroup || isSortApplied}
+                    >
+                      {(providedDroppable, snapshot) => {
+                        return (
+                          <DroppablePlaceholder
+                            isDraggingOverGroup={snapshot?.isDraggingOver}
+                            ref={providedDroppable.innerRef}
+                            {...providedDroppable.droppableProps}
+                          >
+                            {tasks?.map((task, index) => (
+                              <Draggable
+                                key={task.identifier}
+                                draggableId={String(task.identifier)}
+                                index={index}
+                                isDragDisabled={
+                                  isCompletedGroup || dragAndDropDisabled
+                                }
+                              >
+                                {(draggableProvided, { isDragging }) => (
+                                  <>
+                                    {task?.itemType === TaskItemType.TASK ? (
+                                      <StandardTaskItem
+                                        key={task.identifier}
+                                        isFullView={isFullView}
+                                        isDragging={isDragging}
+                                        isStartedDnD={
+                                          draggedId === task.taskIdentifier
+                                        }
+                                        task={task}
+                                        draggableProvided={draggableProvided}
+                                        isCompletedGroup={isCompletedGroup}
+                                        toggleCompleteTask={toggleCompleteTask}
+                                        onTaskUpdate={onTaskUpdate}
+                                        updateWorkflowStatus={
+                                          updateWorkflowStatus
+                                        }
+                                        dragAndDropDisabled={
+                                          isCompletedGroup ||
+                                          dragAndDropDisabled
+                                        }
+                                        isDraggable
+                                        addingNewSubtask={
+                                          addingNewSubtaskParentId ===
+                                          task.identifier
+                                        }
+                                        subtasksDisabled={isListFlattened}
+                                        areFiltersApplied={areFiltersApplied}
+                                        isSearchApplied={isSearchApplied}
+                                        shouldShowBlockModalOnDrag={
+                                          isSortApplied
+                                        }
+                                        showClearSortFiltersModal={
+                                          showClearSortFiltersModal
+                                        }
+                                        multipleAssigneesContext={
+                                          groupHasMultipleAssignees
+                                        }
+                                        highlightedTasksParentIdentifier={
+                                          highlightedTasksParentIdentifier
+                                        }
+                                        highlightTasksOfTheSameParent={
+                                          highlightTasksOfTheSameParent
+                                        }
+                                      />
+                                    ) : (
+                                      <TaskTemplateGroup
+                                        viewSetup={viewSetup}
+                                        isStartedDnD={
+                                          draggedId === task.identifier
+                                        }
+                                        draggableProvided={draggableProvided}
+                                        templateGroup={task}
+                                        groupHasMultipleAssignees={
+                                          groupHasMultipleAssignees
+                                        }
+                                        isFullView={isFullView}
+                                        dragAndDropDisabled={
+                                          isCompletedGroup ||
+                                          dragAndDropDisabled
+                                        }
+                                      />
+                                    )}
+                                  </>
+                                )}
+                              </Draggable>
+                            ))}
+                            {providedDroppable.placeholder}
+                          </DroppablePlaceholder>
+                        );
+                      }}
+                    </Droppable>
+                  )}
+                  {(isLoadingGroup || isFetchingMoreTasks) && (
+                    <TasksSkeletonLoader rows={4} />
+                  )}
+                  {groupPagination && hasMoreTasks && !areFiltersApplied && (
+                    <StickyContainer left={24} decreaseWidth={2 * 24}>
+                      <LoadMoreSection>
+                        {!isLoadingGroup && (
+                          <LoadMoreButton onClick={showMoreTasks} />
+                        )}
+                      </LoadMoreSection>
+                    </StickyContainer>
+                  )}
+                </>
+              )}
+            </TasksGroup>
+          );
+        }),
     [
       groupList,
       isSearchApplied,
@@ -359,11 +365,12 @@ const ListDetailsOpenedTasks = ({
     ],
   );
 
-  if (isFetchingData) return <GroupedListSkeletonLoader />;
+  if (isFetchingData || isEmpty(groupList))
+    return <GroupedListSkeletonLoader />;
 
   return (
     <TaskGroupsContainer>
-      {isEmpty(groupedTasks) || (isSearchApplied && !hasAnyTask) ? (
+      {isSearchApplied && !hasAnyTask ? (
         renderEmptyState()
       ) : (
         <>

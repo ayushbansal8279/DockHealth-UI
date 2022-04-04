@@ -1,6 +1,15 @@
-import React, { useCallback, useEffect, useState } from 'react';
+import React, {
+  useCallback,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from 'react';
 import { useSelector, useDispatch } from 'react-redux';
-import { dashboardTabNameSelector } from 'selectors/dashboard-selectors';
+import {
+  dashboardTabNameSelector,
+  dashboardTasksSelector,
+} from 'selectors/dashboard-selectors';
 import { useHistory, useLocation } from 'react-router-dom';
 import { updateCurrentUserPreferences } from 'actions/user-actions';
 import { Grid } from '@material-ui/core';
@@ -10,7 +19,10 @@ import Switch from 'components/common/Switch/Switch';
 import { HOME_ALL_TASKS_PATH, HOME_PATH } from 'routing/helpers/paths';
 import { DashboardTasksTab } from 'helpers/dashboard-helpers';
 import { ViewType, getViewTypeFromQueryString } from 'helpers/view-type-helper';
-import { userProfileDashboardPrefsSelector } from 'selectors/user-selectors';
+import {
+  userProfileDashboardPrefsSelector,
+  dashboardGroupsPreferencesSelector,
+} from 'selectors/user-selectors';
 import TaskViewTypeToolbarSelect from 'components/tasklist/TaskViewTypeToolbarSelect/TaskViewTypeToolbarSelect';
 import CustomizeToolbarButton from 'components/tasklist/CustomizeToolbarButton/CustomizeToolbarButton';
 import { useColumnsConfig } from 'context-api/ColumnsConfigContext';
@@ -47,6 +59,58 @@ const DashboardToolbar = props => {
   const tabName = useSelector(dashboardTabNameSelector);
   const userPreferColumns = useSelector(userProfileDashboardPrefsSelector);
   const { columnsConfig, setColumnsConfig } = useColumnsConfig();
+  const dashboardGroupsPreferences = useSelector(
+    dashboardGroupsPreferencesSelector,
+  );
+  const groupList = useSelector(dashboardTasksSelector);
+  const [groupsPreferences, setGroupsPreferences] = useState(
+    dashboardGroupsPreferences || [],
+  );
+  const sentInitialSetup = useRef(false);
+
+  useEffect(() => {
+    if (
+      !dashboardGroupsPreferences &&
+      groupList &&
+      groupList.length > 0 &&
+      !sentInitialSetup.current
+    ) {
+      const initialPreferences = groupList
+        .filter(g => g.defaultOpen)
+        .flatMap(g => g.groupType);
+      if (initialPreferences) {
+        sentInitialSetup.current = true;
+        setGroupsPreferences(initialPreferences);
+        dispatch(
+          updateCurrentUserPreferences({
+            displayGroups: initialPreferences,
+          }),
+        );
+      }
+    }
+  }, [groupList, dashboardGroupsPreferences, dispatch]);
+
+  const updateGroupsPreferences = useCallback(
+    groupType => {
+      const newSetup = groupsPreferences?.includes(groupType)
+        ? groupsPreferences.filter(option => option !== groupType)
+        : [...groupsPreferences, groupType];
+
+      setGroupsPreferences(newSetup);
+      dispatch(updateCurrentUserPreferences({ displayGroups: newSetup }));
+    },
+    [dispatch, groupsPreferences],
+  );
+  const additionalOptions = useMemo(() => {
+    return groupList?.map(group => ({
+      name: group.groupName,
+      onClick: () => updateGroupsPreferences(group.groupType),
+      key: group.key,
+      checked: groupsPreferences
+        ? groupsPreferences?.includes(group.groupType)
+        : group.defaultOpen,
+    }));
+  }, [groupList, groupsPreferences, updateGroupsPreferences]);
 
   useEffect(() => {
     const config =
@@ -138,6 +202,8 @@ const DashboardToolbar = props => {
         <CustomizeToolbarButton
           onChange={onColumnSetupChange}
           showCustomColumnCreate={false}
+          additionalOptionsTitle="Groups"
+          additionalOptions={additionalOptions}
         />
         <Spacing horizontal={4} />
         <div>

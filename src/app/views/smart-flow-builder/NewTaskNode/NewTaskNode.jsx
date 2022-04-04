@@ -6,7 +6,7 @@ import {
   addTaskToTemplate,
   deleteTemporaryElement,
 } from 'actions/task-template-actions';
-import { getTargetNodeType } from 'helpers/task-template-builder-helpers';
+import { getTargetNodeType } from 'helpers/smart-flow-builder-helpers';
 import TaskNodeWrapper from '../TaskNodeWrapper/TaskNodeWrapper';
 import { NewTaskInput, NewTaskWrapper } from './styled';
 import TaskNodeHandles from '../TaskNodeHandles/TaskNodeHandles';

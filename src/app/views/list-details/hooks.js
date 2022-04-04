@@ -364,7 +364,7 @@ const initializeListDetailsViewHooks = (match, history) => {
   const openedTasks = useMemo(
     () =>
       selectedTab === TaskListTabName.OPEN
-        ? Object.values(groupedTasks)?.flatMap(({ tasks }) => tasks) || []
+        ? groupedTasks?.flatMap(({ tasks }) => tasks) || []
         : [],
     [groupedTasks, selectedTab],
   );

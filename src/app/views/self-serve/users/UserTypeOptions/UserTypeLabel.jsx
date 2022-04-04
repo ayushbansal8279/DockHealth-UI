@@ -6,7 +6,7 @@ import InvitationPopover from '../SubscriptionUserPopover/InvitationPopover';
 import RoleSelectionPopover from '../SubscriptionUserPopover/RoleSelectionPopover';
 import PendingApprovalPopover from '../SubscriptionUserPopover/PendingApprovalPopover';
 import InactiveRoleSelectionPopover from '../SubscriptionUserPopover/InactiveRoleSelectionPopover';
-import { UserTypeButton, CurrentUserLabel } from './styled';
+import { UserTypeButton, CurrentUserLabel, TextLabel } from './styled';
 
 const DropdownIndicator = ({ isOpen, setOpen, label }) => (
   <Arrow
@@ -15,7 +15,7 @@ const DropdownIndicator = ({ isOpen, setOpen, label }) => (
     paddingLeft="0"
     justifyContent="space-between"
   >
-    <div>{label}</div>
+    <TextLabel>{label}</TextLabel>
   </Arrow>
 );
 

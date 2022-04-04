@@ -3,7 +3,6 @@ import React, { useCallback, useMemo, createContext } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import * as TaskActions from 'actions/task-actions';
 import { taskDrawerOpenSelector } from 'selectors/task-drawer-selectors';
-import { userProfileSelector } from 'selectors/user-selectors';
 import BulkEditOptionsBar from './BulkEditOptionsBar/BulkEditOptionsBar';
 import { BulkEditOptionsBarContainer } from './styled';
 
@@ -32,7 +31,6 @@ const BulkEditSection = ({
     };
   }, [allTasks, disabled]);
 
-  const currentUser = useSelector(userProfileSelector);
   const isTaskDrawerOpen = useSelector(taskDrawerOpenSelector);
   const dispatch = useDispatch();
 
@@ -66,7 +64,6 @@ const BulkEditSection = ({
               onClose={onClearBulkEditTasks}
               isDisabled={isTaskDrawerOpen}
               refreshTasks={refreshTasks}
-              currentUser={currentUser}
               searchValue={searchValue}
               shouldRefreshTasksEveryTime={shouldRefreshTasksEveryTime}
               optionsConfig={optionsConfig}

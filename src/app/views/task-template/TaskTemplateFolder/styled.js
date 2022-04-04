@@ -22,11 +22,10 @@ export const TaskTemplateContainer = styled.div`
 export const TaskTemplateHeader = styled.div`
   display: grid;
   grid-template-columns: auto 1fr auto auto auto;
-  grid-template-rows: 30px;
-  grid-column-gap: ${spacing.tiny};
+  grid-template-rows: auto;
   align-items: center;
   width: 100%;
-  padding: 2px ${spacing.smallPlus};
+  padding: 2px 0px 2px ${spacing.smallPlus};
   border: 1px solid ${palette.coolGrey3};
   font-family: 'Roboto', sans-serif;
   font-size: ${fontSizes.smallPlus};
@@ -67,6 +66,7 @@ export const MenuContainer = styled.div`
   grid-column: 4;
   overflow: hidden;
   color: ${palette.coolGrey2};
+  opacity: ${({ disabled }) => (disabled ? '0.5' : '1')};
 `;
 
 export const Spacer = styled.div`
@@ -82,5 +82,6 @@ export const FolderIconContainer = styled.div`
   width: 26px;
   justify-content: center;
   margin-left: ${spacing.small};
+  margin-right: ${spacing.small};
   grid-column: 1;
 `;

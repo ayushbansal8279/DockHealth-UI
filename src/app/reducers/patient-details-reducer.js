@@ -384,9 +384,13 @@ export default function(state = INITIAL_STATE, action = {}) {
 
     case ActionTypes.UPDATE_PATIENT_DETAILS: {
       const { details } = payload;
+
       return {
         ...state,
-        patient: { ...state.patient, ...details },
+        patient: {
+          ...state.patient,
+          ...details,
+        },
       };
     }
 

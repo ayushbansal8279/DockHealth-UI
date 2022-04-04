@@ -355,7 +355,6 @@ export const FooterInfoText = styled.p`
   grid-column: 3;
   margin: 0;
   text-align: center;
-  line-height: 16px;
 `;
 
 export const FooterLink = styled.a`

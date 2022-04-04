@@ -20,7 +20,7 @@ import UserAvatar from 'components/user/UserAvatar/UserAvatar';
 import AdditionalMembersCounter from 'components/user/AdditionalMembersCounter/AdditionalMembersCounter';
 import TaskIcon from 'components/task/TaskIcon/TaskIcon';
 import DecisionTaskElementIcon from 'img/template/decision-task-icon';
-import { NodeType } from 'helpers/task-template-builder-helpers';
+import { NodeType } from 'helpers/smart-flow-builder-helpers';
 import TaskNodeWrapper from '../TaskNodeWrapper/TaskNodeWrapper';
 import TaskNodeHandles from '../TaskNodeHandles/TaskNodeHandles';
 import {

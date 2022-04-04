@@ -21,6 +21,9 @@ export const Description = styled.p`
   font-family: inherit;
 `;
 
+export const CancelButtonContainer = styled.div`
+  width: 265px;
+`;
 export const ContinueButtonContainer = styled.div`
   width: 265px;
 `;

@@ -29,6 +29,7 @@ const checkUserAuthentication = async ({ history, isRequiredLogin }) => {
       await getEnterpriseAccessTokensByAuthCode(authCode, issValue)
         .then(() => {
           const patientIdentifier = sessionStorage.getItem('PatientIdentifier');
+          console.log(patientIdentifier);
           if (
             patientIdentifier &&
             patientIdentifier !== '' &&

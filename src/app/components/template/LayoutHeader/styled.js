@@ -7,7 +7,7 @@ export const HeaderContainer = styled.div`
   height: auto;
   background-color: ${palette.white};
   ${({ horizontalSticky }) => (horizontalSticky ? 'top: 0px;' : '')}
-  z-index: 19;
+  z-index: 101;
 `;
 
 export const MainHeader = styled.div`

@@ -5,7 +5,6 @@ import { MuiThemeProvider } from '@material-ui/core/styles';
 import Spacing from 'components/common/Spacing';
 import TrashCan from 'img/modals/trash-can';
 import { redTheme } from '../../themes/red-theme';
-
 import {
   ModalWrapper,
   ModalMainIcon,

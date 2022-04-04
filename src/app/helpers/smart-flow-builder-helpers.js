@@ -1,3 +1,5 @@
+import ELK from 'elkjs/lib/elk.bundled';
+
 export const TASK_NODE_WIDTH = 230;
 
 export const NodeType = {
@@ -132,4 +134,53 @@ export function getTargetNodeType(sourceElementType) {
   if (sourceElementType === NodeType.NEW_DECISION) return NodeType.DECISION;
 
   return NodeType.STANDARD;
+}
+
+export async function getAutoLayout(tasks, startX = 0, startY = 0) {
+  const elk = new ELK();
+
+  const nodes = [];
+  const edges = [];
+
+  tasks.forEach(({ identifier, taskLinks }) => {
+    nodes.push({ id: identifier, width: 230, height: 130 });
+
+    // eslint-disable-next-line no-unused-expressions
+    taskLinks?.forEach(({ sourceTaskIdentifier, targetTaskIdentifier }) => {
+      if (
+        tasks.find(({ identifier: id }) => sourceTaskIdentifier === id) &&
+        tasks.find(({ identifier: id }) => targetTaskIdentifier === id)
+      ) {
+        edges.push({
+          id: getUniqueLinkId(sourceTaskIdentifier, targetTaskIdentifier),
+          sources: [sourceTaskIdentifier],
+          targets: [targetTaskIdentifier],
+        });
+      }
+    });
+  });
+
+  const graph = {
+    id: 'root',
+    layoutOptions: {
+      'elk.direction': 'DOWN',
+      'elk.algorithm': 'mrtree',
+      separateConnectedComponents: false,
+      'elk.padding': '[left=0, top=0, right=0, bottom=0]',
+      'spacing.nodeNode': 200,
+      'spacing.nodeNodeBetweenLayers': 200,
+    },
+    children: nodes,
+    edges,
+  };
+
+  const { children } = await elk.layout(graph);
+
+  return children.map(({ id, x, y }) => ({
+    id,
+    position: {
+      x: x + startX,
+      y: y + startY,
+    },
+  }));
 }
