@@ -488,7 +488,9 @@ const ListDetailsReducer = (state = initialState, action) => {
 
       const { taskGroupIdentifier } =
         addedTask.taskGroups?.find(
-          ({ groupType }) => groupType === TaskGroupType.TASKLIST,
+          ({ groupType }) =>
+            groupType === TaskGroupType.TASKLIST ||
+            groupType === TaskGroupType.TASKLIST_DEFAULT,
         ) || {};
 
       return updateGroupInState(
