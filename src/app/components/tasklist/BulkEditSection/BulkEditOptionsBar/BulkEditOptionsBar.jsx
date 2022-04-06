@@ -78,10 +78,10 @@ const BulkEditOptionsBar = ({
         parentTask =>
           parentTask?.subTasksCount === parentTask?.subTasksCompletedCount ||
           parentTask?.subTasksCount ===
-          subtasks?.filter(
-            subtask =>
-              subtask?.parentTaskIdentifier === parentTask?.taskIdentifier,
-          )?.length,
+            subtasks?.filter(
+              subtask =>
+                subtask?.parentTaskIdentifier === parentTask?.taskIdentifier,
+            )?.length,
       ),
     [parentTasks, subtasks],
   );
@@ -468,7 +468,7 @@ const BulkEditOptionsBar = ({
     };
 
     // eslint-disable-next-line func-names
-    const moveTaskConfig = await (function () {
+    const moveTaskConfig = await (function() {
       if (
         parentTasks.length > 0 &&
         subtasks.length === 0 &&
@@ -496,11 +496,11 @@ const BulkEditOptionsBar = ({
         tasks: formattedSelectedTasks,
         confirmAction: anyTaskIsIncomplete
           ? selectedDestination =>
-            dispatch(
-              openModal('MoveTasksWithSubtasks', {
-                confirm: () => standardConfirmAction(selectedDestination),
-              }),
-            )
+              dispatch(
+                openModal('MoveTasksWithSubtasks', {
+                  confirm: () => standardConfirmAction(selectedDestination),
+                }),
+              )
           : standardConfirmAction,
         preventClosingModal: anyTaskIsIncomplete,
       };
@@ -555,8 +555,8 @@ const BulkEditOptionsBar = ({
                 } else {
                   tasks.forEach(task =>
                     task.parentTaskIdentifier &&
-                      (isEmpty(filters) || !filters) &&
-                      !searchValue
+                    (isEmpty(filters) || !filters) &&
+                    !searchValue
                       ? updateTasks([task])
                       : addTasks([task]),
                   );

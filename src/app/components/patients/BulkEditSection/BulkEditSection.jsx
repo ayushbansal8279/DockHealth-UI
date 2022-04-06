@@ -1,10 +1,8 @@
 import React, { useCallback, useMemo, createContext } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import * as ActionTypes from 'actions/action-types';
+import { selectedPatientsSelector } from 'selectors/patients-selectors';
 import BulkEditOptionsBar from './BulkEditOptionsBar';
-import {
-  selectedPatientsSelector
-} from 'selectors/patients-selectors';
 import { BulkEditOptionsBarContainer } from './styled';
 
 export const BulkEditContext = createContext({});

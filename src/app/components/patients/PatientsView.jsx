@@ -19,8 +19,8 @@ import {
   isFetchingPatientsSelector,
   patientsListSearchTermSelector,
 } from 'selectors/patients-selectors';
-import PatientsList from './PatientsList/PatientsList';
 import BulkEditSection from 'components/patients/BulkEditSection/BulkEditSection';
+import PatientsList from './PatientsList/PatientsList';
 import PatientsToolbar from './PatientsToolbar/PatientsToolbar';
 import {
   PatientsViewContainer,

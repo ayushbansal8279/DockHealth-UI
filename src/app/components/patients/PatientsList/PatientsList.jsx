@@ -10,9 +10,7 @@ import {
   getCustomerTypeLabel,
   getCustomerUniqueIDLabel,
 } from 'helpers/customer-type-helper';
-import {
-  selectedPatientsSelector
-} from 'selectors/patients-selectors';
+import { selectedPatientsSelector } from 'selectors/patients-selectors';
 import PatientImportPopover from '../PatientImportPopover/PatientImportPopover';
 import TaskItemBulkEdit from '../../task/StandardTaskItem/TaskItemComponents/TaskItemBulkEdit';
 import EmptyFilteredPatientsList from '../EmptyFilteredPatientsList/EmptyFilteredPatientsList';

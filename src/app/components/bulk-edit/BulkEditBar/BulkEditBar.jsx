@@ -8,6 +8,7 @@ const BulkEditBar = props => {
     onClose,
     children,
     patientView,
+    isDisabled,
   } = props;
   return (
     <Container>
@@ -17,7 +18,7 @@ const BulkEditBar = props => {
       </TasksText>
       <Box display="flex" height="100%">
         {children}
-        <CloseButton type="button" onClick={onClose} >
+        <CloseButton type="button" onClick={onClose} isDisabled={isDisabled}>
           <CloseIcon />
         </CloseButton>
       </Box>
