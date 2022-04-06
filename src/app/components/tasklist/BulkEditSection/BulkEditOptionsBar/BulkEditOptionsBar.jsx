@@ -740,7 +740,7 @@ const BulkEditOptionsBar = ({
           >
             <BulkEditOption
               iconComponent={CompleteIcon}
-              title="Delete"
+              title="Complete"
               isDisabled={isDisabled}
             />
           </Button>
