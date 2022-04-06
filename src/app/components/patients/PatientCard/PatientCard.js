@@ -107,6 +107,7 @@ const PatientCard = ({ children, patientIdentifier, disabled }) => {
     dob,
     age,
     gender,
+    genderIdentify,
     mrn,
     email,
     phoneMobile,
@@ -147,6 +148,7 @@ const PatientCard = ({ children, patientIdentifier, disabled }) => {
                 {(dob ||
                   age ||
                   gender ||
+                  genderIdentify ||
                   mrn ||
                   email ||
                   phoneMobile ||
@@ -158,6 +160,8 @@ const PatientCard = ({ children, patientIdentifier, disabled }) => {
                         <InfoItem>
                           {age && `${age} `}
                           {gender && ` ${gender?.charAt(0)?.toUpperCase()}`}
+                          {genderIdentify &&
+                            ` ${genderIdentify?.charAt(0)?.toUpperCase()}`}
                         </InfoItem>
                       )}
                       {mrn && !emrPatientLink && (

@@ -47,6 +47,7 @@ const PatientDetailsHeader = () => {
     age,
     mrn,
     gender,
+    genderIdentify,
   } = patient || {};
   const isFetchingPatient = useSelector(isFetchingPatientSelector);
   const currentUser = useSelector(userProfileSelector);
@@ -139,6 +140,8 @@ const PatientDetailsHeader = () => {
                     <PatientInfo>
                       {age && `${age} `}
                       {gender && gender?.charAt(0)?.toUpperCase()}
+                      {genderIdentify &&
+                        genderIdentify?.charAt(0)?.toUpperCase()}
                     </PatientInfo>
                     <PatientInfoDivider />
                   </>

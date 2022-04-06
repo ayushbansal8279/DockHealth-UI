@@ -20,33 +20,6 @@ export const GENDER_OPTIONS_BIRTH = [
   },
 ];
 
-export const GENDER_OPTIONS_IDENTITY = [
-  {
-    value: 'male',
-    label: 'Male',
-  },
-  {
-    value: 'female',
-    label: 'Female',
-  },
-  {
-    value: 'transgender-man',
-    label: 'Transgender man / Transman',
-  },
-  {
-    value: 'transgender-woman',
-    label: 'Transgender woman / Transwoman',
-  },
-  {
-    value: 'gendergueer',
-    label: 'Genderqueer / Gender nonconforming',
-  },
-  {
-    value: 'decline',
-    label: 'Decline to state',
-  },
-];
-
 export function formatMetaDataOutput(outputData) {
   const metadata = outputData.patientMetaData;
 
