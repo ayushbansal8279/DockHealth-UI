@@ -98,6 +98,46 @@ const updateTasksStateCallback = (state, updateTaskFromAction) => {
 const ListDetailsReducer = (state = initialState, action) => {
   // eslint-disable-next-line sonarjs/max-switch-cases
   switch (action.type) {
+    case ActionTypes.GET_COMPLETED_TASKS_BY_GROUPS_SUCCESS: {
+      const { groupedTasks, loadingMore, taskListIdentifier } = action;
+      const group = groupedTasks[0];
+
+      const groupToUpdate = state.completedGroupedTasks.taskGroups?.find(
+        ({ groupIdentifier }) => groupIdentifier === group?.groupIdentifier,
+      );
+      const groupToUpdateIndex =
+        state.completedGroupedTasks?.taskGroups?.indexOf(groupToUpdate) || -1;
+      const updatedTaskGroups =
+        state.completedGroupedTasks?.taskGroups?.map(taskGroup =>
+          taskGroup.groupIdentifier === group?.groupIdentifier
+            ? {
+                ...taskGroup,
+                tasks: loadingMore
+                  ? taskGroup.tasks.concat(group.tasks)
+                  : group.tasks,
+                hasMore: group.hasMore,
+                moreTasksIndex: group.moreTasksIndex,
+              }
+            : taskGroup,
+        ) || [];
+      if (groupToUpdateIndex === -1) {
+        updatedTaskGroups.push(group);
+      }
+      const updatedGroupedTasks = {
+        ...state.completedGroupedTasks,
+        taskGroups: updatedTaskGroups,
+      };
+
+      return {
+        ...state,
+        taskListIdentifier,
+        completedGroupedTasks: updatedGroupedTasks,
+        isCompletedTasksFetching: false,
+        isFetchingMoreTasks: false,
+        showingCompletedTasks: true,
+        isFetching: false,
+      };
+    }
     case ActionTypes.INITIALIZE_TASK_LIST_STATE: {
       return {
         ...state,
