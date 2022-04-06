@@ -114,6 +114,7 @@ export const HotkeysElements = styled.div`
   display: grid;
   grid-template-columns: auto 1fr;
   grid-gap: 10px;
+  align-items: center;
 `;
 
 export const HotkeyDescription = styled.p`
@@ -125,7 +126,7 @@ export const HotkeyDescription = styled.p`
 
 export const Hotkey = styled.p`
   display: inline-block;
-  margin-bottom: 4px;
+  margin-bottom: 0;
   padding: 0 4px;
   color: ${palette.white};
   background: ${palette.mediumGrey};
@@ -146,4 +147,33 @@ export const AutoAlignButton = styled.button`
   font-size: ${fontSizes.smallPlus};
   font-weight: ${fontWeights.regular};
   background: ${palette.darkBlue};
+`;
+
+export const HotkeysPopover = styled.div`
+  width: 230px;
+  display: none;
+  position: absolute;
+  bottom: 100%;
+  left: 10px;
+  cursor: initial;
+  z-index: 1000;
+`;
+
+export const HotkeysContainer = styled.div`
+  position: relative;
+  display: flex;
+  align-items: center;
+  color: ${palette.coolGrey2};
+  cursor: help;
+
+  &:hover ${HotkeysPopover} {
+    display: block;
+  }
+`;
+
+export const HotkeysText = styled.p`
+  margin-left: 4px;
+  margin-bottom: 0;
+  font-size: inherit;
+  cursor: inherit;
 `;
