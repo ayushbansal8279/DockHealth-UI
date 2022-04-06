@@ -3,6 +3,7 @@ import React, { useCallback, useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { Grid } from '@material-ui/core';
+import * as ActionTypes from 'actions/action-types';
 import {
   getPatientListIdentifierByUrlParameter,
   DefaultPatientsListType,
@@ -19,6 +20,7 @@ import {
   patientsListSearchTermSelector,
 } from 'selectors/patients-selectors';
 import PatientsList from './PatientsList/PatientsList';
+import BulkEditSection from 'components/patients/BulkEditSection/BulkEditSection';
 import PatientsToolbar from './PatientsToolbar/PatientsToolbar';
 import {
   PatientsViewContainer,
@@ -88,37 +90,40 @@ const PatientsView = () => {
   );
 
   return (
-    <ViewLayout
-      header={
-        <BasicLayoutHeader title={listName} description={listDescription} />
-      }
-    >
-      <PatientsViewContainer>
-        <PatientsToolbar
-          refreshPatientList={refreshPatientList}
-          setImportPopoverOpen={setImportPopoverOpen}
-        />
-        <PatientsListContainer>
-          <Grid container>
-            {listIdentifier === DefaultPatientsListType.ALL_PATIENTS &&
-              patients?.length >= MAX_PATIENT_ALL_RESULTS && (
-                <RefineSearchText>
-                  Please further refine search, too many results!
-                </RefineSearchText>
-              )}
-            <PatientsList
-              isFiltered={searchValue}
-              patients={patients}
-              patientImportDetails={patientImportDetails}
-              importPopoverOpen={importPopoverOpen}
-              setImportPopoverOpen={setImportPopoverOpen}
-              hasImportErrors={hasImportErrors}
-              isFetching={isFetchingPatients && !patients}
-            />
-          </Grid>
-        </PatientsListContainer>
-      </PatientsViewContainer>
-    </ViewLayout>
+    <>
+      <ViewLayout
+        header={
+          <BasicLayoutHeader title={listName} description={listDescription} />
+        }
+      >
+        <PatientsViewContainer>
+          <PatientsToolbar
+            refreshPatientList={refreshPatientList}
+            setImportPopoverOpen={setImportPopoverOpen}
+          />
+          <PatientsListContainer>
+            <Grid container>
+              {listIdentifier === DefaultPatientsListType.ALL_PATIENTS &&
+                patients?.length >= MAX_PATIENT_ALL_RESULTS && (
+                  <RefineSearchText>
+                    Please further refine search, too many results!
+                  </RefineSearchText>
+                )}
+              <PatientsList
+                isFiltered={searchValue}
+                patients={patients}
+                patientImportDetails={patientImportDetails}
+                importPopoverOpen={importPopoverOpen}
+                setImportPopoverOpen={setImportPopoverOpen}
+                hasImportErrors={hasImportErrors}
+                isFetching={isFetchingPatients && !patients}
+              />
+            </Grid>
+          </PatientsListContainer>
+        </PatientsViewContainer>
+      </ViewLayout>
+      <BulkEditSection />
+    </>
   );
 };
 

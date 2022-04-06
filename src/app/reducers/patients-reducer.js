@@ -6,6 +6,7 @@ import { getPatientsListFiltersStorageKey } from 'helpers/patient-list-helpers';
 const initialState = {
   defaultPatientsLists: null,
   customPatientsLists: null,
+  selectedPatientsList: null,
   isFetching: false,
   currentPatientsListIdentifier: null,
   currentPatientsList: null,
@@ -229,6 +230,33 @@ const PatientsReducer = (state = initialState, action) => {
           patientsList.patientListIdentifier === identifier
             ? { ...patientsList, isUpdating: false, error: true }
             : patientsList,
+        ),
+      };
+    }
+
+    case ActionTypes.SET_SELECTED_PATIENT: {
+      const { identifier, isSelected } = action;
+      return {
+        ...state,
+        selectedPatientsList: (
+          state?.selectedPatientsList || state.currentPatientsList.patients
+        )?.map(patient =>
+          patient.patientIdentifier === identifier
+            ? { ...patient, isSelected }
+            : patient,
+        ),
+      };
+    }
+
+    case ActionTypes.UNSELECT_ALL_PATIENTS: {
+      return {
+        ...state,
+        selectedPatientsList: (
+          state?.selectedPatientsList || state.currentPatientsList.patients
+        )?.map(patient =>
+          patient?.isSelected === true
+            ? { ...patient, isSelected: false }
+            : patient,
         ),
       };
     }
