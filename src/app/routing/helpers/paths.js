@@ -18,10 +18,14 @@ export const CUSTOM_FIELDS_SETTINGS_PATH = '/settings/custom-fields';
 export const WORKFLOW_LIBRARY_PATH = '/core/workflows/library';
 export const WORKFLOW_BUILDER_PATH = '/core/workflows/builder';
 export const USERS_PATH = '/core/people';
+export const SINGLE_TASK_PATH = '/core/task';
 
 export const TASK_LIST_PATH = '/core/tasks';
 export const PATIENTS_LIST_ALL = '/core/patients/list/all';
 export const PATIENTS_LIST = '/core/patients/list';
+
+export const createSingleTaskPath = taskIdentifier =>
+  `${SINGLE_TASK_PATH}/${taskIdentifier}`;
 
 export const createTaskListPath = taskListIdentifier =>
   `${TASK_LIST_PATH}/${taskListIdentifier}`;

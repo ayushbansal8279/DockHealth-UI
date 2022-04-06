@@ -50,6 +50,7 @@ import UserProfileView from 'views/UserProfile/UserProfileView';
 import CustomFieldsView from 'views/custom-fields/CustomFieldsView';
 import AnalyticsView from 'views/analytics/AnalyticsView';
 import { DashboardTasksTab } from 'helpers/dashboard-helpers';
+import SingleTaskView from 'views/single-task/SingleTaskView';
 import { onLeaveGlobalSearch } from './TemplateCoreSubscriptionPlan/GlobalSearch';
 import {
   onEnterListDetailsView,
@@ -136,6 +137,10 @@ export const TEMPLATE_CORE_SUBSCRIPTION_PLAN_ROUTES = [
   {
     path: '/people/:groupIdentifier?',
     RouteComponent: UserGroupView,
+  },
+  {
+    path: '/task/:identifier',
+    RouteComponent: SingleTaskView,
   },
   {
     path: '/task-tour/:taskListIdentifier',

@@ -230,11 +230,9 @@ const TaskDrawerContent = props => {
             <CommentSection />
           </div>
         </Grid>
-        {taskDrawerOpen && (
-          <Grid item xs={12} style={styleNoPaddingRow}>
-            <CustomFieldsSection />
-          </Grid>
-        )}
+        <Grid item xs={12} style={styleNoPaddingRow}>
+          <CustomFieldsSection />
+        </Grid>
       </Grid>
       <TaskDrawerDivider />
       <Grid container item xs={12} style={styleFullRow}>
