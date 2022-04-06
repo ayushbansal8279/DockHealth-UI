@@ -1,4 +1,3 @@
-/* eslint-disable import/prefer-default-export */
 import styled from 'styled-components';
 import { fontSizes, fontWeights } from 'styles/font';
 import palette from 'styles/palette';
@@ -109,30 +108,6 @@ export const BuilderHeaderText = styled.p`
   }
 `;
 
-export const HotkeysElements = styled.div`
-  width: 100%;
-  display: grid;
-  grid-template-columns: auto 1fr;
-  grid-gap: 10px;
-  align-items: center;
-`;
-
-export const HotkeyDescription = styled.p`
-  display: inline-block;
-  margin-bottom: 0;
-  font-size: ${fontSizes.small};
-  font-weight: ${fontWeights.regular};
-`;
-
-export const Hotkey = styled.p`
-  display: inline-block;
-  margin-bottom: 0;
-  padding: 0 4px;
-  color: ${palette.white};
-  background: ${palette.mediumGrey};
-  border-radius: 4px;
-`;
-
 export const SidebarDivider = styled.hr`
   border-color: ${palette.coolGrey3};
   margin: 24px 0;
@@ -147,33 +122,4 @@ export const AutoAlignButton = styled.button`
   font-size: ${fontSizes.smallPlus};
   font-weight: ${fontWeights.regular};
   background: ${palette.darkBlue};
-`;
-
-export const HotkeysPopover = styled.div`
-  width: 230px;
-  display: none;
-  position: absolute;
-  bottom: 100%;
-  left: 10px;
-  cursor: initial;
-  z-index: 1000;
-`;
-
-export const HotkeysContainer = styled.div`
-  position: relative;
-  display: flex;
-  align-items: center;
-  color: ${palette.coolGrey2};
-  cursor: help;
-
-  &:hover ${HotkeysPopover} {
-    display: block;
-  }
-`;
-
-export const HotkeysText = styled.p`
-  margin-left: 4px;
-  margin-bottom: 0;
-  font-size: inherit;
-  cursor: inherit;
 `;

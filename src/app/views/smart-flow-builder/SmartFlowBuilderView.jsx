@@ -11,7 +11,6 @@ import { useParams, Link, useHistory } from 'react-router-dom';
 import { compose, isNil, not, path } from 'ramda';
 import { useDispatch, useSelector } from 'react-redux';
 import NavigateNextIcon from '@material-ui/icons/NavigateNext';
-import HelpOutlineIcon from '@material-ui/icons/HelpOutline';
 import HardDependencyIcon from 'img/template/hard-dependency';
 import CalendarIcon from 'img/template/calendar-icon';
 import {
@@ -78,12 +77,6 @@ import {
   TaskElementIcon,
   BuilderHeader,
   BuilderHeaderText,
-  HotkeysContainer,
-  HotkeysText,
-  HotkeysPopover,
-  HotkeysElements,
-  Hotkey,
-  HotkeyDescription,
   SidebarDivider,
   AutoAlignButton,
 } from './styled';
@@ -91,6 +84,7 @@ import ConnectionLink from './ConnectionLink/ConnectionLink';
 import TaskLinkDelayForm from './TaskLinkDelayForm/TaskLinkDelayForm';
 import TemporaryDecisionTaskLink from './TemporaryDecisionTaskLink/TemporaryDecisionTaskLink';
 import BulkEditContainer from './BulkEditContainer/BulkEditContainer';
+import Hotkeys from './Hotkeys/Hotkeys';
 
 const nodeTypes = {
   [NodeType.NEW_STANDARD]: NewTaskNode,
@@ -500,36 +494,7 @@ const SmartFlowBuilderView = () => {
               )}
             </Box>
             <Box>
-              <HotkeysContainer>
-                <HelpOutlineIcon />
-                <HotkeysText>Hotkeys</HotkeysText>
-                <HotkeysPopover>
-                  <Paper square={false}>
-                    <Box p={2}>
-                      <SidebarTitle>Hotkeys</SidebarTitle>
-                      <Box m={1} />
-                      <HotkeysElements>
-                        <div>
-                          <Hotkey>Delete</Hotkey>
-                        </div>
-                        <div>
-                          <HotkeyDescription>
-                            Remove task or link
-                          </HotkeyDescription>
-                        </div>
-                        <div>
-                          <Hotkey>Shift</Hotkey>
-                        </div>
-                        <div>
-                          <HotkeyDescription>
-                            Multi-Select cards
-                          </HotkeyDescription>
-                        </div>
-                      </HotkeysElements>
-                    </Box>
-                  </Paper>
-                </HotkeysPopover>
-              </HotkeysContainer>
+              <Hotkeys />
             </Box>
           </ElementsSidebar>
           <Box ref={builderWrapperReference} position="relative" flex={1}>
