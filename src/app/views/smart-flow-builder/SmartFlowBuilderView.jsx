@@ -120,6 +120,21 @@ const SmartFlowBuilderView = () => {
   const { name, templateType, parentTaskWorkflowIdentifier } = workflow || {};
   const smartFlowsAvailable = useSelector(userHasSmartFlowsSelector);
 
+  const numberOfTasks = tasks?.length || 0;
+  const previousNumberOfTasks = useRef(null);
+
+  useEffect(() => {
+    if (
+      reactFlowInstance.current &&
+      previousNumberOfTasks.current > 0 &&
+      numberOfTasks - previousNumberOfTasks.current > 1
+    ) {
+      setTimeout(reactFlowInstance.current.fitView, 0);
+    }
+
+    previousNumberOfTasks.current = numberOfTasks;
+  }, [numberOfTasks]);
+
   useEffect(() => {
     if (smartFlowsAvailable === false && templateType === 'SMARTFLOW') {
       history.push('/');
