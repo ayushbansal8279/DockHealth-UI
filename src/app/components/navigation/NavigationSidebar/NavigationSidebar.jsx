@@ -29,6 +29,7 @@ import DockcoinIconImage from 'img/navigation/dock-coin-icon.svg';
 import UserAvatar from 'components/user/UserAvatar/UserAvatar';
 import OrganizationTile from 'components/org/OrganizationTile/OrganizationTile';
 import { openModal } from 'modal/actions';
+import AccessRestrictor from 'components/access/AccessRestrictor/AccessRestrictor';
 import OrganizationSubmenu from './SubMenuComponents/OrganizationSubmenu';
 import ProfileSubmenu from './SubMenuComponents/ProfileSubmenu';
 import EducationCenterSubmenu from './SubMenuComponents/EducationCenterSubmenu';
@@ -57,6 +58,8 @@ export const SubmenuKey = {
   EDUCATION_CENTER: 'EDUCATION_CENTER',
   DOCKCOIN: 'DOCKCOIN',
 };
+
+const { ADMIN, OWNER, MEMBER, GUEST } = UserOrganizationRole;
 
 const SubmenuComponents = {
   [SubmenuKey.ORGANIZATION]: OrganizationSubmenu,
@@ -175,38 +178,45 @@ const NavigationSidebar = () => {
               path="/core/home"
               onItemClick={handleNavigationItemClick}
             />
-            <IconNavigationItem
-              name="Lists"
-              subMenuKey={SubmenuKey.LISTS}
-              icon={ListsIcon}
-              subMenuOpen={openedSubMenuKey === SubmenuKey.LISTS}
-              path="/core/tasks"
-              onItemClick={handleNavigationItemClick}
-            />
-            <IconNavigationItem
-              name="People"
-              icon={PeopleIcon}
-              subMenuKey={SubmenuKey.USER_GROUPS}
-              subMenuOpen={openedSubMenuKey === SubmenuKey.PEOPLE}
-              path={USERS_PATH}
-              onItemClick={handleNavigationItemClick}
-            />
-            <IconNavigationItem
-              name={`${customerTypeLabelCapitalized}s`}
-              icon={PatientsIcon}
-              subMenuKey={SubmenuKey.PATIENTS}
-              subMenuOpen={openedSubMenuKey === SubmenuKey.PATIENTS}
-              path="/core/patients"
-              onItemClick={handleNavigationItemClick}
-            />
-            {!isGuest && (
+            <AccessRestrictor allowedToRoles={[ADMIN, OWNER, MEMBER, GUEST]}>
+              <IconNavigationItem
+                name="Lists"
+                subMenuKey={SubmenuKey.LISTS}
+                icon={ListsIcon}
+                subMenuOpen={openedSubMenuKey === SubmenuKey.LISTS}
+                path="/core/tasks"
+                onItemClick={handleNavigationItemClick}
+              />
+            </AccessRestrictor>
+            <AccessRestrictor allowedToRoles={[ADMIN, OWNER, MEMBER, GUEST]}>
+              <IconNavigationItem
+                name="People"
+                icon={PeopleIcon}
+                subMenuKey={SubmenuKey.USER_GROUPS}
+                subMenuOpen={openedSubMenuKey === SubmenuKey.PEOPLE}
+                path={USERS_PATH}
+                onItemClick={handleNavigationItemClick}
+              />
+            </AccessRestrictor>
+            <AccessRestrictor allowedToRoles={[ADMIN, OWNER, MEMBER, GUEST]}>
+              <IconNavigationItem
+                name={`${customerTypeLabelCapitalized}s`}
+                icon={PatientsIcon}
+                subMenuKey={SubmenuKey.PATIENTS}
+                subMenuOpen={openedSubMenuKey === SubmenuKey.PATIENTS}
+                path="/core/patients"
+                onItemClick={handleNavigationItemClick}
+              />
+            </AccessRestrictor>
+
+            <AccessRestrictor allowedToRoles={[ADMIN, OWNER, MEMBER]}>
               <IconNavigationItem
                 name="Workflow Library"
                 icon={TemplatesIcon}
                 path={WORKFLOW_LIBRARY_PATH}
                 onItemClick={handleNavigationItemClick}
               />
-            )}
+            </AccessRestrictor>
             <IconNavigationItem
               name="Education Center"
               icon={EducationCenterIcon}
@@ -214,7 +224,7 @@ const NavigationSidebar = () => {
               subMenuOpen={openedSubMenuKey === SubmenuKey.EDUCATION_CENTER}
               onItemClick={handleNavigationItemClick}
             />
-            {isUserAdmin && (
+            <AccessRestrictor allowedToRoles={[ADMIN]}>
               <IconNavigationItem
                 name="Analytics"
                 icon={BarChartIcon}
@@ -222,7 +232,7 @@ const NavigationSidebar = () => {
                 onItemClick={handleNavigationItemClick}
                 isNew
               />
-            )}
+            </AccessRestrictor>
           </Grid>
           <Grid container direction="column">
             {isUserAdmin && (

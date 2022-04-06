@@ -536,6 +536,7 @@ export const DescriptionBorder = styled.div`
   border-width: 1px;
   border-style: solid;
   border-color: transparent;
+  ${({ disabled }) => (disabled ? 'border: 0px;' : '')}
 
   &:hover {
     border-color: ${palette.coolGrey2};
@@ -550,3 +551,5 @@ export const DecisionCellContainer = styled.div`
   padding: ${spacing.small} ${spacing.regular};
   border-left: 1px solid ${palette.coolGrey3};
 `;
+
+export const DisabledLink = styled.span``;

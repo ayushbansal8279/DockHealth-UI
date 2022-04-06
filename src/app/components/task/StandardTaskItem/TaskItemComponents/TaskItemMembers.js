@@ -14,9 +14,11 @@ const TaskItemMembers = ({
   assignedToUsers,
   handleReasignTask,
   matchAssignedTo,
+  readOnly,
 }) => {
   return (
     <TaskItemPopover
+      disabled={readOnly}
       contentWidth={230}
       content={({ closePopover }) => (
         <MultiAssignMembersList

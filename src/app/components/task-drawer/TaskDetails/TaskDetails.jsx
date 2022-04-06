@@ -22,7 +22,7 @@ import { selectedTaskSelector } from 'selectors/task-drawer-selectors';
 import debounce from 'lodash.debounce';
 import { DetailsContainer } from './styled';
 
-const TaskDetails = () => {
+const TaskDetails = ({ readOnly, disableMentions }) => {
   const DEBOUNCE_TIME = 3000;
   const selectedTask = useSelector(selectedTaskSelector);
   const { taskList } = selectedTask || {};
@@ -110,10 +110,11 @@ const TaskDetails = () => {
         richTextEnabled
       >
         <TextEditor
+          readOnly={readOnly}
           minHeight={100}
           ref={detailsReference}
           taskListIdentifier={taskListIdentifier}
-          disableMentions={isTemplateTask}
+          disableMentions={disableMentions || isTemplateTask}
           showToolbar
           onFocus={setFocused}
           onBlur={unsetFocused}

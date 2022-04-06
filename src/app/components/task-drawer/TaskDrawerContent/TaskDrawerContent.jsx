@@ -6,6 +6,12 @@ import Spacing from 'components/common/Spacing';
 import TextEditor from 'components/common/TextEditor/TextEditor';
 import TaskDescription from 'components/task-drawer/TaskDescription/TaskDescription';
 import { DrawerFieldEnum } from 'helpers/task-drawer-helpers';
+import { useSelector } from 'react-redux';
+import { userProfileSelector } from 'selectors/user-selectors';
+import {
+  SINGLE_TASK_RESTRICTIONS_PROFILES,
+  SINGLE_TASK_RESTRICTIONS_OPTIONS,
+} from 'restrictions/task-restrictions';
 import AttachmentsSection from '../AttachmentsSection/AttachmentsSection';
 import CommentSection from '../CommentSection/CommentSection';
 import LabelsSection from '../LabelsSection/LabelsSection';
@@ -18,6 +24,12 @@ import ReminderSection from '../ReminderSection/ReminderSection';
 import PatientSection from '../PatientSection/PatientSection';
 import initializeTaskDrawerHooks from './hooks';
 import existingUserTaskDrawerTourHooks from './existing-user-tour-hooks';
+import AssignedToSection from '../AssignedToSection/AssignedToSection';
+import DueDateSection from '../DueDateSection/DueDateSection';
+import CustomFieldsSection from '../CustomFieldsSection/CustomFieldsSection';
+import DependenciesSection from '../DependenciesSection/DependenciesSection';
+import SubtasksSection from '../SubtasksSection/SubtasksSection';
+import TaskDetails from '../TaskDetails/TaskDetails';
 import {
   TaskDrawerContainer,
   TaskDrawerBackground,
@@ -35,12 +47,8 @@ import {
   ReferenceParentButton,
   ReferenceParentName,
 } from './styled';
-import AssignedToSection from '../AssignedToSection/AssignedToSection';
-import DueDateSection from '../DueDateSection/DueDateSection';
-import CustomFieldsSection from '../CustomFieldsSection/CustomFieldsSection';
-import DependenciesSection from '../DependenciesSection/DependenciesSection';
-import SubtasksSection from '../SubtasksSection/SubtasksSection';
-import TaskDetails from '../TaskDetails/TaskDetails';
+
+const { DISABLED, READ_ONLY } = SINGLE_TASK_RESTRICTIONS_OPTIONS;
 
 const TaskDrawerContent = props => {
   const {
@@ -101,6 +109,11 @@ const TaskDrawerContent = props => {
     clearFormStates();
   }, [clearFormStates, handleCloseTaskDrawer]);
 
+  const { orgUserRole } = useSelector(userProfileSelector);
+  const restrictions = SINGLE_TASK_RESTRICTIONS_PROFILES[orgUserRole];
+
+  const restrictMentions = restrictions?.mentions === DISABLED;
+
   return (
     <TaskDrawerContainer
       key={selectedTask?.identifier}
@@ -116,6 +129,7 @@ const TaskDrawerContent = props => {
           style={styleFirstRow}
         >
           <TopSection
+            restrictions={restrictions}
             onDelete={onDelete}
             onDuplicate={onDuplicate}
             closeTaskDrawer={closeTaskDrawer}
@@ -161,7 +175,10 @@ const TaskDrawerContent = props => {
           </Grid>
         )}
         <Grid item xs={12} style={styleFullRow}>
-          <TaskDescription />
+          <TaskDescription
+            readOnly={restrictions?.description === READ_ONLY}
+            disableMentions={restrictMentions}
+          />
         </Grid>
         {selectedTask?.sourceMessage && (
           <Grid item xs={12} style={styleEmailRow}>
@@ -169,7 +186,10 @@ const TaskDrawerContent = props => {
           </Grid>
         )}
         <Grid item xs={12}>
-          <TaskDetails />
+          <TaskDetails
+            readOnly={restrictions?.details === READ_ONLY}
+            disableMentions={restrictMentions}
+          />
         </Grid>
         <Grid item xs={6} style={styleLeftColumn}>
           <PatientSection
@@ -177,7 +197,9 @@ const TaskDrawerContent = props => {
               selectedTask?.patient || selectedParentTask?.patient || null
             }
             disabled={
-              disabledFields.includes(DrawerFieldEnum.PATIENT) || isTemplateTask
+              restrictions?.patient === READ_ONLY ||
+              disabledFields.includes(DrawerFieldEnum.PATIENT) ||
+              isTemplateTask
             }
             placeholder={
               isTemplateTask && 'Not available when creating a template'
@@ -187,16 +209,23 @@ const TaskDrawerContent = props => {
           />
         </Grid>
         <Grid item xs={6} style={styleRightColumn}>
-          <AssignedToSection onSave={handleUpdateTask} />
+          <AssignedToSection
+            onSave={handleUpdateTask}
+            disabled={restrictions?.assigment === READ_ONLY}
+          />
         </Grid>
-        <Grid item xs={6} style={styleLeftColumn}>
-          <div ref={dueDateSectionReference}>
-            <DueDateSection />
-          </div>
-        </Grid>
-        <Grid item xs={6} style={styleRightColumn}>
-          {!isTemplateTask && <ReminderSection onSave={handleUpdateTask} />}
-        </Grid>
+        {restrictions?.dueDate !== DISABLED && (
+          <Grid item xs={6} style={styleLeftColumn}>
+            <div ref={dueDateSectionReference}>
+              <DueDateSection />
+            </div>
+          </Grid>
+        )}
+        {restrictions?.reminder !== DISABLED && (
+          <Grid item xs={6} style={styleRightColumn}>
+            {!isTemplateTask && <ReminderSection onSave={handleUpdateTask} />}
+          </Grid>
+        )}
         <Grid item xs={6} style={styleLeftColumn}>
           <PrioritySection onTaskUpdate={onTaskUpdate} />
         </Grid>
@@ -205,20 +234,23 @@ const TaskDrawerContent = props => {
             <StatusSection onTaskUpdate={onTaskUpdate} />
           </div>
         </Grid>
+        {restrictions?.labels !== DISABLED && (
+          <Grid item xs={12} style={styleFullRow}>
+            <div ref={labelsSectionReference}>
+              <LabelsSection onTaskUpdate={onTaskUpdate} />
+            </div>
+          </Grid>
+        )}
         <Grid item xs={12} style={styleFullRow}>
-          <div ref={labelsSectionReference}>
-            <LabelsSection onTaskUpdate={onTaskUpdate} />
-          </div>
-        </Grid>
-        <Grid item xs={12} style={styleFullRow}>
-          <AttachmentsSection />
+          <AttachmentsSection restrictions={restrictions?.attachments} />
         </Grid>
         {selectedTask && !isSubtask && (
           <Grid item xs={12}>
-            <SubtasksSection />
+            <SubtasksSection restrictions={restrictions?.subtasks} />
           </Grid>
         )}
-        {selectedTask &&
+        {restrictions?.dependencies !== DISABLED &&
+          selectedTask &&
           !isSubtask &&
           (isTemplateTask || checkIfBundleTask(selectedTask)) && (
             <Grid item xs={12}>
@@ -230,18 +262,22 @@ const TaskDrawerContent = props => {
             <CommentSection />
           </div>
         </Grid>
-        <Grid item xs={12} style={styleNoPaddingRow}>
-          <CustomFieldsSection />
-        </Grid>
+        {restrictions?.customFields !== DISABLED && (
+          <Grid item xs={12} style={styleNoPaddingRow}>
+            <CustomFieldsSection />
+          </Grid>
+        )}
       </Grid>
       <TaskDrawerDivider />
-      <Grid container item xs={12} style={styleFullRow}>
-        <div>
-          <Spacing horizontal={5} />
-          <span ref={historySectionReference} />
-        </div>
-        <HistorySection />
-      </Grid>
+      {restrictions?.history !== DISABLED && (
+        <Grid container item xs={12} style={styleFullRow}>
+          <div>
+            <Spacing horizontal={5} />
+            <span ref={historySectionReference} />
+          </div>
+          <HistorySection />
+        </Grid>
+      )}
       {renderExistingUserTourPopover()}
       <TaskDrawerBackground onClick={closeTaskDrawer} />
     </TaskDrawerContainer>

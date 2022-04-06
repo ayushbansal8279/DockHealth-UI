@@ -8,7 +8,13 @@ import { getCustomerTypeLabel } from 'helpers/customer-type-helper';
 import { capitalize } from 'helpers/capitalize';
 import { useColumnsConfig } from 'context-api/ColumnsConfigContext';
 import { CustomFieldWidthConfig } from 'helpers/field-type-helpers';
+import {
+  SINGLE_TASK_RESTRICTIONS_OPTIONS,
+  SINGLE_TASK_RESTRICTIONS_PROFILES,
+} from 'restrictions/task-restrictions';
 import { BulkContainer, StickyColumnContainer } from './styled';
+
+const { DISABLED } = SINGLE_TASK_RESTRICTIONS_OPTIONS;
 
 const TasksHeader = ({
   bulkEditEnabled,
@@ -32,6 +38,10 @@ const TasksHeader = ({
     }),
     [columnsConfig],
   );
+
+  const restrictions = SINGLE_TASK_RESTRICTIONS_PROFILES.EXTERNAL;
+  // const restrictions =
+  //   SINGLE_TASK_RESTRICTIONS_PROFILES[currentUser?.orgUserRole];
 
   return (
     <SortHeaderRow>
@@ -83,21 +93,26 @@ const TasksHeader = ({
           width={TaskItemColumnWidth[TaskItemColumn.ACTIVITY]}
         />
       )}
-      {mergedConfig[TaskItemColumn.START_DATE] && (
-        <ColumnSortHeader
-          id={TaskItemColumn.START_DATE}
-          label="Start"
-          width={TaskItemColumnWidth[TaskItemColumn.START_DATE]}
-        />
-      )}
-      {mergedConfig[TaskItemColumn.DUE_DATE] && (
-        <ColumnSortHeader
-          id={TaskItemColumn.DUE_DATE}
-          label="Due"
-          width={TaskItemColumnWidth[TaskItemColumn.DUE_DATE]}
-          sort={sort}
-          onSortChange={onSortChange}
-        />
+
+      {restrictions?.dueDate !== DISABLED && (
+        <>
+          {mergedConfig[TaskItemColumn.START_DATE] && (
+            <ColumnSortHeader
+              id={TaskItemColumn.START_DATE}
+              label="Start"
+              width={TaskItemColumnWidth[TaskItemColumn.START_DATE]}
+            />
+          )}
+          {mergedConfig[TaskItemColumn.DUE_DATE] && (
+            <ColumnSortHeader
+              id={TaskItemColumn.DUE_DATE}
+              label="Due"
+              width={TaskItemColumnWidth[TaskItemColumn.DUE_DATE]}
+              sort={sort}
+              onSortChange={onSortChange}
+            />
+          )}
+        </>
       )}
       {mergedConfig[TaskItemColumn.ASSIGNED] && (
         <ColumnSortHeader
@@ -108,25 +123,30 @@ const TasksHeader = ({
           onSortChange={onSortChange}
         />
       )}
-      {mergedConfig[TaskItemColumn.LIST_NAME] && (
-        <ColumnSortHeader
-          id={TaskItemColumn.LIST_NAME}
-          label="List"
-          width={TaskItemColumnWidth[TaskItemColumn.LIST_NAME]}
-          sort={sort}
-          onSortChange={onSortChange}
-        />
-      )}
-      {customColumnsConfig
-        .filter(f => f.isChecked)
-        .map(f => (
+      {restrictions?.listName !== DISABLED &&
+        mergedConfig[TaskItemColumn.LIST_NAME] && (
           <ColumnSortHeader
-            truncateEnabled
-            id={f.id}
-            label={f.name}
-            width={CustomFieldWidthConfig[f.fieldType]}
+            id={TaskItemColumn.LIST_NAME}
+            label="List"
+            width={TaskItemColumnWidth[TaskItemColumn.LIST_NAME]}
+            sort={sort}
+            onSortChange={onSortChange}
           />
-        ))}
+        )}
+      {restrictions?.customFields !== DISABLED && (
+        <>
+          {customColumnsConfig
+            .filter(f => f.isChecked)
+            .map(f => (
+              <ColumnSortHeader
+                truncateEnabled
+                id={f.id}
+                label={f.name}
+                width={CustomFieldWidthConfig[f.fieldType]}
+              />
+            ))}
+        </>
+      )}
     </SortHeaderRow>
   );
 };

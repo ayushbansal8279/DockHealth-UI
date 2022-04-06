@@ -1,7 +1,8 @@
+/* eslint-disable sonarjs/cognitive-complexity */
 /* eslint-disable import/extensions */
 import moment from 'moment';
 import React, { useState, useCallback } from 'react';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { pluck } from 'ramda';
 import Circle from 'img/circle';
 import CircleCompleted from 'img/circle-completed';
@@ -42,8 +43,13 @@ import {
   isDueDateOverdue,
   ReminderType,
 } from 'helpers/task-helpers';
+import { userProfileSelector } from 'selectors/user-selectors';
 import { DrawerFieldEnum } from 'helpers/task-drawer-helpers';
 import { useParams, useHistory } from 'react-router-dom';
+import {
+  SINGLE_TASK_RESTRICTIONS_OPTIONS,
+  SINGLE_TASK_RESTRICTIONS_PROFILES,
+} from 'restrictions/task-restrictions';
 import {
   Container,
   IconsSection,
@@ -58,10 +64,14 @@ import {
   DragHandleContainer,
 } from './styled';
 
+const { DISABLED, READ_ONLY } = SINGLE_TASK_RESTRICTIONS_OPTIONS;
+
 const DrawerTask = props => {
   const { task, currentUser, dragHandleProps } = props;
   const dispatch = useDispatch();
   const [isHovered, setIsHovered] = useState(false);
+  const { orgUserRole } = useSelector(userProfileSelector);
+  const restrictions = SINGLE_TASK_RESTRICTIONS_PROFILES[orgUserRole];
 
   const {
     taskIdentifier,
@@ -231,49 +241,52 @@ const DrawerTask = props => {
           </Tooltip>
         </IconContainer>
       </IconsSection>
-      <DueDateContainer>
-        <TaskItemPopover
-          disabled={isTemplateTask}
-          placement="top-end"
-          content={({ closePopover }) => (
-            <DueDatePicker
-              taskIdentifier={taskIdentifier}
-              selectedDate={dueDate}
-              onDateChange={handleDueDateChange}
-              recurring={hasRecurringSchedule}
-              onCloseClick={closePopover}
-            />
-          )}
-        >
-          {dueDate ? (
-            <Tooltip placement="top" title="Edit due date">
-              <DueDateBasicLabel isOverdue={isDueDateOverdue(task)}>
-                <DueDateText>{moment(dueDate).format('MM/DD')}</DueDateText>
-                {reminderType && reminderType !== ReminderType.NONE && (
-                  <>
-                    <Spacing horizontal={2} />
-                    <ReminderIcon />
-                  </>
-                )}
-                {hasRecurringSchedule && (
-                  <>
-                    <Spacing horizontal={2} />
-                    <RecurringIcon />
-                  </>
-                )}
-              </DueDateBasicLabel>
-            </Tooltip>
-          ) : (
-            <Tooltip placement="top" title="Add due date">
-              <div>
-                <TaskIcon type="calendar" isHovered={isHovered} />
-              </div>
-            </Tooltip>
-          )}
-        </TaskItemPopover>
-      </DueDateContainer>
+      {restrictions?.dueDate !== DISABLED && (
+        <DueDateContainer>
+          <TaskItemPopover
+            disabled={isTemplateTask}
+            placement="top-end"
+            content={({ closePopover }) => (
+              <DueDatePicker
+                taskIdentifier={taskIdentifier}
+                selectedDate={dueDate}
+                onDateChange={handleDueDateChange}
+                recurring={hasRecurringSchedule}
+                onCloseClick={closePopover}
+              />
+            )}
+          >
+            {dueDate ? (
+              <Tooltip placement="top" title="Edit due date">
+                <DueDateBasicLabel isOverdue={isDueDateOverdue(task)}>
+                  <DueDateText>{moment(dueDate).format('MM/DD')}</DueDateText>
+                  {reminderType && reminderType !== ReminderType.NONE && (
+                    <>
+                      <Spacing horizontal={2} />
+                      <ReminderIcon />
+                    </>
+                  )}
+                  {hasRecurringSchedule && (
+                    <>
+                      <Spacing horizontal={2} />
+                      <RecurringIcon />
+                    </>
+                  )}
+                </DueDateBasicLabel>
+              </Tooltip>
+            ) : (
+              <Tooltip placement="top" title="Add due date">
+                <div>
+                  <TaskIcon type="calendar" isHovered={isHovered} />
+                </div>
+              </Tooltip>
+            )}
+          </TaskItemPopover>
+        </DueDateContainer>
+      )}
       <AssigneeContainer>
         <TaskItemPopover
+          disabled={restrictions?.assigment === READ_ONLY}
           placement="top-end"
           fullWidth
           content={({ closePopover }) => (
@@ -293,11 +306,13 @@ const DrawerTask = props => {
           {assignedToUsers?.length ? (
             <MemberGroup members={assignedToUsers} />
           ) : (
-            <Tooltip placement="top" title="Assign to">
-              <div>
-                <AssignMemberIcon />
-              </div>
-            </Tooltip>
+            restrictions?.assigment !== READ_ONLY && (
+              <Tooltip placement="top" title="Assign to">
+                <div>
+                  <AssignMemberIcon />
+                </div>
+              </Tooltip>
+            )
           )}
         </TaskItemPopover>
       </AssigneeContainer>

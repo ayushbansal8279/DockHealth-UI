@@ -64,7 +64,12 @@ const renderPatientNotes = (notes, { firstName, middleName, lastName }) => {
   ) : null;
 };
 
-const PatientCard = ({ children, patientIdentifier, disabled }) => {
+const PatientCard = ({
+  children,
+  patientIdentifier,
+  disabled,
+  disableLink,
+}) => {
   const reference = useRef(null);
 
   const [patientData, setPatientData] = useState(null);
@@ -140,9 +145,13 @@ const PatientCard = ({ children, patientIdentifier, disabled }) => {
                       .join(' ')
                       .toUpperCase()}
                   </PatientName>
-                  <Link to={`/core/patient/${patientIdentifier}`}>
-                    <PatientLinkText>view {customerTypeLabel}</PatientLinkText>
-                  </Link>
+                  {!disableLink && (
+                    <Link to={`/core/patient/${patientIdentifier}`}>
+                      <PatientLinkText>
+                        view {customerTypeLabel}
+                      </PatientLinkText>
+                    </Link>
+                  )}
                 </TopSection>
                 {(dob ||
                   age ||

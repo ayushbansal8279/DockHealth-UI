@@ -4,12 +4,13 @@ import PatientDropdown from 'components/patients/PatientDropdown/PatientDropdown
 import { getCustomerTypeLabel } from 'helpers/customer-type-helper';
 import { checkIfTemplateTask } from 'helpers/task-helpers';
 import { capitalize } from 'helpers/capitalize';
-import { Link } from 'react-router-dom';
+import { Link as RouterLink } from 'react-router-dom';
 import Highlighter from 'react-highlight-words';
 import {
   AddPlaceholder,
   ClickablePatient,
   PatientLabel,
+  DisabledLink,
   DisabledPatientLabel,
 } from '../../styled';
 
@@ -25,6 +26,7 @@ const TaskItemPatient = ({
   openPatientPopover,
   onTaskUpdate,
   currentUser,
+  readOnly,
   // eslint-disable-next-line sonarjs/cognitive-complexity
 }) => {
   const [isPopoverOpen, setPopoverOpen] = useState(false);
@@ -36,6 +38,8 @@ const TaskItemPatient = ({
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [patient, task]);
+
+  const Link = readOnly ? DisabledLink : RouterLink;
 
   const handleUpdateRegularTaskPatient = useCallback(
     (patientIdentifier, patientToSave) => {
@@ -65,10 +69,10 @@ const TaskItemPatient = ({
 
   const customerTypeLabel = getCustomerTypeLabel(currentUser);
   const customerTypeLabelCapitalized = capitalize(customerTypeLabel);
-
   return (
     <ClickablePatient onClick={properOnPatientClick}>
-      {!isCompleted &&
+      {!readOnly &&
+        !isCompleted &&
         !patient &&
         !isSubtask &&
         !openPatientPopover &&
@@ -89,11 +93,18 @@ const TaskItemPatient = ({
             </AddPlaceholder>
           </PatientDropdown>
         )}
-      {!isCompleted && !patient && !isSubtask && openPatientPopover && (
-        <AddPlaceholder>+ Add {customerTypeLabelCapitalized}</AddPlaceholder>
-      )}
+      {!readOnly &&
+        !isCompleted &&
+        !patient &&
+        !isSubtask &&
+        openPatientPopover && (
+          <AddPlaceholder>+ Add {customerTypeLabelCapitalized}</AddPlaceholder>
+        )}
       {patient && (openPatientPopover || hasParentTaskLabel) && (
-        <PatientCard patientIdentifier={patient.patientIdentifier}>
+        <PatientCard
+          disableLink={readOnly}
+          patientIdentifier={patient.patientIdentifier}
+        >
           <Link to={`/core/patient/${patient.patientIdentifier}`}>
             <PatientLabelComponent>
               {(matchPatient || matchPatientMRN) && highlightedValue ? (
@@ -115,7 +126,10 @@ const TaskItemPatient = ({
         </PatientCard>
       )}
       {patient && !isSubtask && !openPatientPopover && (
-        <PatientCard patientIdentifier={patient.patientIdentifier}>
+        <PatientCard
+          disableLink={readOnly}
+          patientIdentifier={patient.patientIdentifier}
+        >
           <Link to={`/core/patient/${patient.patientIdentifier}`}>
             <PatientLabelComponent>
               {(matchPatient || matchPatientMRN) && highlightedValue ? (

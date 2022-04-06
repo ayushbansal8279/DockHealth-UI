@@ -36,10 +36,10 @@ import { showGlobalErrorAlert } from 'alert/actions';
 function* initializeDashboardView() {
   try {
     const selectedFilters = yield select(dashboardSelectedFiltersSelector);
-    if (!selectedFilters) {
-      yield put(DashboardActions.getDashboardGroups());
-    } else {
+    if (selectedFilters) {
       yield put(DashboardActions.getDashboardTasks());
+    } else {
+      yield put(DashboardActions.getDashboardGroups());
     }
   } catch (error) {
     console.log(error);
@@ -132,15 +132,27 @@ function* getDashboardGroups() {
   try {
     const tabName = yield select(dashboardTabNameSelector);
 
-    const dashboardGroups = yield call(
-      getDashboardTaskStasForImplicitGroups,
-      tabName,
-    );
+    if (tabName === DashboardTasksTab.SHARED_TASKS) {
+      const data = yield call(
+        getTasksForOrganizationByImplicitGroup,
+        'SHARED_TASKS',
+      );
+      // TODO: need to test when api will be available
+      yield put({
+        type: ActionTypes.GET_DASHBOARD_GROUPS_SUCCESS,
+        tasksList: data,
+      });
+    } else {
+      const dashboardGroups = yield call(
+        getDashboardTaskStasForImplicitGroups,
+        tabName,
+      );
 
-    yield put({
-      type: ActionTypes.GET_DASHBOARD_GROUPS_SUCCESS,
-      tasksList: dashboardGroups,
-    });
+      yield put({
+        type: ActionTypes.GET_DASHBOARD_GROUPS_SUCCESS,
+        tasksList: dashboardGroups,
+      });
+    }
   } catch {
     yield put(showGlobalErrorAlert());
     yield put({ type: ActionTypes.GET_DASHBOARD_GROUPS_FAILURE });

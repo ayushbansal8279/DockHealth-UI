@@ -51,11 +51,14 @@ import CustomFieldsView from 'views/custom-fields/CustomFieldsView';
 import AnalyticsView from 'views/analytics/AnalyticsView';
 import { DashboardTasksTab } from 'helpers/dashboard-helpers';
 import SingleTaskView from 'views/single-task/SingleTaskView';
+import { UserOrganizationRole } from 'helpers/user-helper';
 import { onLeaveGlobalSearch } from './TemplateCoreSubscriptionPlan/GlobalSearch';
 import {
   onEnterListDetailsView,
   onLeaveListDetailsView,
 } from './TemplateCoreSubscriptionPlan/ListDetails';
+
+const { ADMIN, OWNER, MEMBER, GUEST } = UserOrganizationRole;
 
 export const SETTINGS_ROUTES = [
   {
@@ -108,6 +111,12 @@ export const TEMPLATE_CORE_SUBSCRIPTION_PLAN_ROUTES = [
     ),
   },
   {
+    path: '/home/shared-with-me-tasks',
+    RouteComponent: props => (
+      <DashboardView tabName={DashboardTasksTab.SHARED_TASKS} {...props} />
+    ),
+  },
+  {
     path: '/home/all-tasks',
     RouteComponent: props => (
       <DashboardView tabName={DashboardTasksTab.ALL_TASKS} {...props} />
@@ -121,10 +130,12 @@ export const TEMPLATE_CORE_SUBSCRIPTION_PLAN_ROUTES = [
   {
     path: '/patients/list/:listIdentifier?',
     RouteComponent: PatientsView,
+    allowedToRoles: [ADMIN, OWNER, MEMBER, GUEST],
   },
   {
     path: '/patient/:patientIdentifier',
     RouteComponent: PatientDetailsView,
+    allowedToRoles: [ADMIN, OWNER, MEMBER, GUEST],
   },
   {
     path: '/activityfeed',
@@ -151,6 +162,7 @@ export const TEMPLATE_CORE_SUBSCRIPTION_PLAN_ROUTES = [
     RouteComponent: ListDetailsView,
     onEnter: onEnterListDetailsView,
     onLeave: onLeaveListDetailsView,
+    allowedToRoles: [ADMIN, OWNER, MEMBER, GUEST],
   },
   {
     path: '/workflows/library/:identifier?',

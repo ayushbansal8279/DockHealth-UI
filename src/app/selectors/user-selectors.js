@@ -8,6 +8,11 @@ export const userProfileSelector = createSelector(
   ({ userProfile }) => userProfile || {},
 );
 
+export const isFetchingProfileSelector = createSelector(
+  userStateSelector,
+  ({ isFetchingProfile }) => isFetchingProfile || {},
+);
+
 export const userOrganizationsSelector = createSelector(
   userProfileSelector,
   ({ userOrganizations }) => userOrganizations,

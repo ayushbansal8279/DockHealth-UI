@@ -8,6 +8,7 @@ export const TEAM_SETUP_PATH = '/onboarding/team-setup';
 export const QUESTIONS_PATH = '/onboarding/eula';
 export const TRIAL_EXPIRATION_PATH = '/settings/trial-check';
 export const HOME_PATH = '/core/home/my-tasks';
+export const HOME_SHARED_PATH = '/core/home/shared-with-me-tasks';
 export const HOME_ALL_TASKS_PATH = '/core/home/all-tasks';
 export const UNENROLLED_USER = '/auth/unEnrolledUser';
 export const DEFAULT_REDIRECT_PATH = '/auth/login';
