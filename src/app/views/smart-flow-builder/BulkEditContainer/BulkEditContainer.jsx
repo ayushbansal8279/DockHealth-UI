@@ -14,7 +14,7 @@ const SMARTFLOW_BULK_EDIT_CONFIG = {
   [BulkEditOptionsConfig.STATUS_OPTION]: true,
   [BulkEditOptionsConfig.DUE_DATE_OPTION]: false,
   [BulkEditOptionsConfig.ASSIGN_OPTION]: true,
-  [BulkEditOptionsConfig.DELETE_OPTION]: false,
+  [BulkEditOptionsConfig.DELETE_OPTION]: true,
 };
 
 const BulkEditContainer = props => {

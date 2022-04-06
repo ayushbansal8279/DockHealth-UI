@@ -7,8 +7,9 @@ import React, {
   useRef,
   useCallback,
 } from 'react';
+import { bulkEditTasks } from 'api/task-api';
 import { useParams, Link, useHistory } from 'react-router-dom';
-import { compose, isNil, not, path } from 'ramda';
+import { compose, isNil, not, path, pluck } from 'ramda';
 import { useDispatch, useSelector } from 'react-redux';
 import NavigateNextIcon from '@material-ui/icons/NavigateNext';
 import HardDependencyIcon from 'img/template/hard-dependency';
@@ -21,9 +22,9 @@ import {
   deleteTasksLink,
   changeTaskIntentType,
   updateTasksLink,
-  deleteTask,
+  bulkEditDelete,
 } from 'actions/task-actions';
-import { openModal } from 'modal/actions';
+import { openModal, closeModal } from 'modal/actions';
 import {
   addDecisionBranch,
   addNewDecisionTaskElement,
@@ -55,6 +56,8 @@ import {
   TASK_NODE_WIDTH,
   getAutoLayout,
 } from 'helpers/smart-flow-builder-helpers';
+import { showGlobalAlert } from 'alert/actions';
+import AlertMessages from 'alert/AlertMessages';
 import { useBoolean } from 'hooks/useBoolean';
 import palette from 'styles/palette';
 import NewTaskNode from './NewTaskNode/NewTaskNode';
@@ -132,6 +135,7 @@ const SmartFlowBuilderView = () => {
       setTimeout(reactFlowInstance.current.fitView, 0);
     }
 
+    setSelectedElements(null);
     previousNumberOfTasks.current = numberOfTasks;
   }, [numberOfTasks]);
 
@@ -383,27 +387,78 @@ const SmartFlowBuilderView = () => {
   );
 
   const handleRemoveElement = elementsToDelete => {
-    elementsToDelete.forEach(element => {
-      if ([LinkType.DECISION, LinkType.STANDARD].includes(element.type)) {
-        const {
-          source: sourceTaskIdentifier,
-          target: targetTaskIdentifier,
-        } = element;
-        dispatch(deleteTasksLink(sourceTaskIdentifier, targetTaskIdentifier));
-      } else if (
-        [
-          NodeType.NEW_DECISION,
-          NodeType.NEW_STANDARD,
-          LinkType.TEMPORARY,
-        ].includes(element.type)
-      ) {
-        dispatch(deleteTemporaryElement(element.id));
-      } else if (
-        [NodeType.DECISION, NodeType.STANDARD].includes(element.type)
-      ) {
-        dispatch(deleteTask(element.data.task));
+    const tasksToDelete = elementsToDelete
+      .filter(path(['data', 'task']))
+      .map(path(['data', 'task']));
+    const temporaryElementsToDelete = elementsToDelete.filter(({ type }) =>
+      [
+        NodeType.NEW_DECISION,
+        NodeType.NEW_STANDARD,
+        LinkType.TEMPORARY,
+        LinkType.TEMPORARY_DECISION,
+      ].includes(type),
+    );
+    const linksToDelete = elementsToDelete.filter(e => {
+      const { source, target, type } = e;
+
+      if (![LinkType.DECISION, LinkType.STANDARD].includes(type)) {
+        return false;
       }
+
+      return !tasksToDelete.some(
+        ({ identifier: taskId }) => taskId === source || taskId === target,
+      );
     });
+
+    if (
+      tasksToDelete.length > 0 ||
+      temporaryElementsToDelete.length > 0 ||
+      linksToDelete.length > 0
+    ) {
+      dispatch(
+        openModal('DeleteConfirmation', {
+          title: 'Delete elements',
+          description:
+            'Are you sure you want to delete these elements? This action cannot be undone.',
+          confirm: () => {
+            dispatch(closeModal());
+
+            if (tasksToDelete.length > 0) {
+              const taskIdentifiersToDelete = pluck(
+                'identifier',
+                tasksToDelete,
+              );
+
+              bulkEditTasks({
+                bulkEditType: 'DELETE',
+                taskIdentifiers: taskIdentifiersToDelete,
+              }).then(() => {
+                dispatch(bulkEditDelete(taskIdentifiersToDelete));
+                dispatch(showGlobalAlert(AlertMessages.DELETED));
+              });
+            }
+
+            if (temporaryElementsToDelete.length > 0) {
+              temporaryElementsToDelete.forEach(e => {
+                dispatch(deleteTemporaryElement(e.id));
+              });
+            }
+
+            if (linksToDelete.length > 0) {
+              linksToDelete.forEach(e => {
+                const {
+                  source: sourceTaskIdentifier,
+                  target: targetTaskIdentifier,
+                } = e;
+                dispatch(
+                  deleteTasksLink(sourceTaskIdentifier, targetTaskIdentifier),
+                );
+              });
+            }
+          },
+        }),
+      );
+    }
   };
 
   const ConnectionLineComponent = useCallback(
