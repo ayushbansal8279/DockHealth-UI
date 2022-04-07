@@ -39,9 +39,8 @@ const TasksHeader = ({
     [columnsConfig],
   );
 
-  const restrictions = SINGLE_TASK_RESTRICTIONS_PROFILES.EXTERNAL;
-  // const restrictions =
-  //   SINGLE_TASK_RESTRICTIONS_PROFILES[currentUser?.orgUserRole];
+  const restrictions =
+    SINGLE_TASK_RESTRICTIONS_PROFILES[currentUser?.orgUserRole];
 
   return (
     <SortHeaderRow>
