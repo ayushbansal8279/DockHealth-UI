@@ -15,13 +15,14 @@ import { getSharedTaskListsWithCurrentUser } from 'api/task-list-api';
 import { userProfileSelector } from 'selectors/user-selectors';
 import Tooltip from 'components/common/Tooltip/Tooltip';
 import Spacing from 'components/common/Spacing';
-import { trunc } from 'helpers/utility-functions';
+import { Typography } from '@material-ui/core';
 import { transformTaskToEvent } from './helpers';
 import {
   CalendarContainer,
   AddEventInputContainer,
   TextEventContainer,
 } from './styled';
+import MultiAssignCalendar from './MultiAssignCalendar';
 
 const temporaryTaskId = 'temporaryTaskId';
 
@@ -53,7 +54,7 @@ const Calendar = ({
     [allTasks, showInCompleteTasksOnly],
   );
 
-  const uniqueTasks = dedupe(tasks);
+  const uniqueTasks = useMemo(() => dedupe(tasks), [tasks]);
 
   const handleEventClick = useCallback(
     data => {
@@ -163,6 +164,11 @@ const Calendar = ({
         </AddEventInputContainer>
       );
     }
+
+    const task = taskList?.find(
+      ({ identifier }) => identifier === eventInfo?.event?.id,
+    );
+
     return (
       <Tooltip
         key={eventInfo?.event?.id}
@@ -170,9 +176,12 @@ const Calendar = ({
         hideTooltip={eventInfo?.event?.title.length < 17}
       >
         <TextEventContainer>
+          {task && (
+            <MultiAssignCalendar assignedToUsers={task.assignedToUsers} />
+          )}
           <b>{eventInfo.timeText}</b>
           <Spacing horizontal={2} />
-          <span>{trunc(eventInfo.event.title, 17)}</span>
+          <Typography noWrap>{eventInfo?.event?.title}</Typography>
         </TextEventContainer>
       </Tooltip>
     );
@@ -191,6 +200,7 @@ const Calendar = ({
   return (
     <CalendarContainer>
       <FullCalendar
+        expandRows
         selectable
         editable
         events={uniqueTasks}

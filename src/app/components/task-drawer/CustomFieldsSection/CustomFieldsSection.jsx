@@ -10,11 +10,14 @@ import { useForm, FormContext } from 'react-hook-form';
 import { compose } from 'ramda';
 import CategoryOptions from 'components/common/CategoryOptions/CategoryOptions';
 import { partialUpdateTask } from 'actions/task-actions';
+import { updatePartialWorkflow } from 'actions/task-template-actions';
+import { TaskItemType } from 'helpers/task-helpers';
 import {
   selectedTaskSelector,
   taskCustomFieldsSelector,
   taskDrawerFocusFieldSelector,
 } from 'selectors/task-drawer-selectors';
+import { workflowSelector } from 'selectors/workflow-drawer-selectors';
 import { FieldType } from 'helpers/field-type-helpers';
 import {
   CustomFieldsSectionContainer,
@@ -26,7 +29,9 @@ import { formatMetaDataOutput } from './helpers';
 
 const CustomFieldsSection = () => {
   const dispatch = useDispatch();
-  const task = useSelector(selectedTaskSelector) || {};
+  const selectedTask = useSelector(selectedTaskSelector);
+  const selectedWorkflow = useSelector(workflowSelector);
+  const task = selectedTask || selectedWorkflow || {};
   const taskDrawerFocusField = useSelector(taskDrawerFocusFieldSelector);
   const { templates } = useSelector(taskCustomFieldsSelector);
   const { 0: emptyVisible, 3: toggleEmptyVisible } = useBoolean(false);
@@ -42,7 +47,10 @@ const CustomFieldsSection = () => {
   const updateCustomFields = useCallback(
     ({ taskMetaData }) => {
       if (taskMetaData.length > 0) {
-        dispatch(partialUpdateTask(task?.identifier, { taskMetaData }));
+        task.itemType === TaskItemType.BUNDLE ||
+        task.itemType === TaskItemType.TEMPLATE
+          ? dispatch(updatePartialWorkflow(task?.identifier, { taskMetaData }))
+          : dispatch(partialUpdateTask(task?.identifier, { taskMetaData }));
       }
     },
     [dispatch, task],
@@ -99,6 +107,7 @@ const CustomFieldsSection = () => {
                 fieldsGroupKey="taskMetaData"
                 isFocused={isFocused}
                 taskIdentifier={task.identifier}
+                task={task}
               />
             </Grid>
           </HidableContainer>

@@ -1,5 +1,11 @@
 /* eslint-disable sonarjs/cognitive-complexity */
-import React, { useState, useMemo, useEffect, useCallback } from 'react';
+import React, {
+  useState,
+  useMemo,
+  useEffect,
+  useCallback,
+  useContext,
+} from 'react';
 import { connect, useDispatch, useSelector } from 'react-redux';
 import { useLocation } from 'react-router-dom';
 import { identity, isEmpty } from 'ramda';
@@ -42,6 +48,12 @@ import Calendar from 'components/common/Calendar/Calendar';
 import { ViewType, getViewTypeFromQueryString } from 'helpers/view-type-helper';
 import GroupedListSkeletonLoader from 'components/tasklist/GroupedListSkeletonLoader/GroupedListSkeletonLoader';
 import StickyContainer from 'components/common/HorizontalScroll/StickyContainer';
+import {
+  dashboardGroupsPreferencesSelector,
+  dashboardGroupsOrderPreferencesSelector,
+} from 'selectors/user-selectors';
+import { updateCurrentUserPreferences } from 'actions/user-actions';
+import { Context } from 'components/common/HorizontalScroll/HorizontalScrollContainer';
 import DashboardTasksGroup from './DashboardTasksGroup';
 import DashboardToolbar from '../DashboardToolbar/DashboardToolbar';
 import {
@@ -70,21 +82,46 @@ const DashboardList = ({
   const viewType = getViewTypeFromQueryString(search);
   const { openModal } = modalActions;
   const tabName = useSelector(dashboardTabNameSelector);
-
+  const dashboardGroupsPreferences = useSelector(
+    dashboardGroupsPreferencesSelector,
+  );
   const [currentSort, setCurrentSort] = useState({
     key: null,
     order: null,
   });
   const [completeTaskCount, setCompleteTaskCount] = useState(undefined);
-
-  const filteredDashboardTasks = dashboardTasks?.filter(
-    taskGroupInfo => taskGroupInfo?.metricValue !== 0,
-  );
   const { usageState } = currentUser;
-
   const isSortApplied = !!currentSort?.key;
-
   const { key: sortKey, order: sortOrder } = currentSort;
+
+  const dashboardGroupsOrderPreferences = useSelector(
+    dashboardGroupsOrderPreferencesSelector,
+  );
+
+  const filteredDashboardTasks = useMemo(() => {
+    return dashboardTasks?.filter(taskGroupInfo =>
+      dashboardGroupsPreferences?.includes(taskGroupInfo?.groupType),
+    );
+  }, [dashboardGroupsPreferences, dashboardTasks]);
+
+  // console.log(
+  //   'dashboardGroupsOrderPreferences',
+  //   dashboardGroupsOrderPreferences,
+  // );
+
+  const orderedDashboardTasks = useMemo(() => {
+    const sorted = () => {
+      return dashboardGroupsOrderPreferences
+        .map(groupType =>
+          filteredDashboardTasks.find(g => g.groupType === groupType),
+        )
+        .filter(element => element);
+    };
+    return dashboardGroupsOrderPreferences ? sorted() : filteredDashboardTasks;
+  }, [dashboardGroupsOrderPreferences, filteredDashboardTasks]);
+
+  // console.log('filteredDashboardTasks', filteredDashboardTasks);
+  // console.log('orderedDashboardTasks', orderedDashboardTasks);
 
   const currentSortMethod = useMemo(() => {
     if (!sortKey) return identity;
@@ -198,6 +235,96 @@ const DashboardList = ({
     [filteredDashboardTasks],
   );
 
+  const groupOrder = useMemo(() => {
+    const defaultGroupOrder = dashboardTasks.map(g => g.groupType);
+    return dashboardGroupsOrderPreferences || defaultGroupOrder;
+  }, [dashboardGroupsOrderPreferences, dashboardTasks]);
+
+  const flattedOrderedDashboardTasks = useMemo(
+    () => orderedDashboardTasks.map(g => g.groupType),
+    [orderedDashboardTasks],
+  );
+
+  const moveGroupUp = useCallback(
+    groupToMove => {
+      const elementToMove = groupToMove.groupType;
+      const elementToMoveWholeListIndex = groupOrder.indexOf(elementToMove);
+      const elementToMoveLimitedListIndex = flattedOrderedDashboardTasks.indexOf(
+        elementToMove,
+      );
+      const elementAbove =
+        flattedOrderedDashboardTasks[elementToMoveLimitedListIndex - 1];
+      const elementAboveWholeListIndex = groupOrder.indexOf(elementAbove);
+      const partBeforeUpperElement = groupOrder.slice(
+        0,
+        elementAboveWholeListIndex,
+      );
+      const partAfterUpperElement = [
+        ...groupOrder.slice(
+          elementAboveWholeListIndex + 1,
+          elementToMoveWholeListIndex,
+        ),
+        ...groupOrder.slice(elementToMoveWholeListIndex + 1),
+      ];
+      const newOrder = [
+        ...partBeforeUpperElement,
+        elementToMove,
+        elementAbove,
+        ...partAfterUpperElement,
+      ];
+      dispatch(
+        updateCurrentUserPreferences({
+          displayGroups: newOrder,
+        }),
+      );
+    },
+    [dispatch, flattedOrderedDashboardTasks, groupOrder],
+  );
+
+  const moveGroupDown = useCallback(
+    groupToMove => {
+      const elementToMove = groupToMove.groupType;
+      const elementToMoveWholeListIndex = groupOrder.indexOf(elementToMove);
+      const elementToMoveLimitedListIndex = flattedOrderedDashboardTasks.indexOf(
+        elementToMove,
+      );
+
+      const elementBelow =
+        flattedOrderedDashboardTasks[elementToMoveLimitedListIndex + 1];
+      const elementBelowWholeListIndex = groupOrder.indexOf(elementBelow);
+
+      const partBeforeFirstElement = groupOrder.slice(
+        0,
+        elementToMoveWholeListIndex,
+      );
+      const partBetweenFirstAndSecondElement = groupOrder.slice(
+        elementToMoveWholeListIndex + 1,
+        elementBelowWholeListIndex,
+      );
+
+      const partAfterUpperElement = groupOrder.slice(
+        elementBelowWholeListIndex + 1,
+      );
+
+      const newOrder = [
+        ...partBeforeFirstElement,
+        ...partBetweenFirstAndSecondElement,
+        elementBelow,
+        elementToMove,
+        ...partAfterUpperElement,
+      ];
+
+      dispatch(
+        updateCurrentUserPreferences({
+          displayGroups: newOrder,
+        }),
+      );
+    },
+    [dispatch, flattedOrderedDashboardTasks, groupOrder],
+  );
+
+  const parentContainerWidth = useContext(Context);
+
   return (
     <BulkEditSection
       allTasks={allDashboardTasks}
@@ -206,10 +333,12 @@ const DashboardList = ({
     >
       <StickyContainer stickyTop zIndex={101}>
         <StickyHeader>
-          <DashboardToolbar
-            tourModalIsOpen={tourModalIsOpen}
-            openTourModal={openTourModal}
-          />
+          {parentContainerWidth !== 0 && (
+            <DashboardToolbar
+              tourModalIsOpen={tourModalIsOpen}
+              openTourModal={openTourModal}
+            />
+          )}
         </StickyHeader>
       </StickyContainer>
       <Spacing vertical={1} />
@@ -222,9 +351,9 @@ const DashboardList = ({
             <GroupedListSkeletonLoader numberOfGroups={3} />
           ) : (
             <DashboardTaskGroupsWrapper>
-              {!isEmpty(filteredDashboardTasks) ? (
-                filteredDashboardTasks?.map(
-                  item =>
+              {!isEmpty(orderedDashboardTasks) ? (
+                orderedDashboardTasks?.map(
+                  (item, index) =>
                     item && (
                       <DashboardTasksGroup
                         key={item?.groupType}
@@ -242,6 +371,10 @@ const DashboardList = ({
                         isSearching={!!searchValue}
                         closeDrawer={taskDrawerActions.closeDrawer}
                         openModal={openModal}
+                        isFirstGroup={index === 0}
+                        isLastGroup={index === orderedDashboardTasks.length - 1}
+                        moveGroupUp={() => moveGroupUp(item)}
+                        moveGroupDown={() => moveGroupDown(item)}
                       />
                     ),
                 )

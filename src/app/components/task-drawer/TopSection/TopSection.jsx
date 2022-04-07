@@ -9,10 +9,14 @@ import palette from 'styles/palette';
 import Circle from 'img/circle.svg';
 import CircleCompleted from 'img/circle-completed.svg';
 import OptionsMenu from 'components/common/OptionsMenu/OptionsMenu';
+import { SINGLE_TASK_RESTRICTIONS_OPTIONS } from 'restrictions/task-restrictions';
 import { HorizontalLabel, FiledInListName } from '../styled';
 import initializeTaskDrawerTopSectionHooks from './hooks';
 
+const { DISABLED } = SINGLE_TASK_RESTRICTIONS_OPTIONS;
+
 const TopSection = ({
+  restrictions,
   onDelete,
   onDuplicate,
   closeTaskDrawer,
@@ -38,6 +42,7 @@ const TopSection = ({
       {
         name: 'Move',
         onClick: handleMoveTask,
+        restriction: restrictions?.move === DISABLED,
       },
       {
         name: 'Duplicate',
@@ -54,11 +59,13 @@ const TopSection = ({
             duplicateTaskWithoutConfirmation();
           }
         },
+        restriction: restrictions?.duplicate === DISABLED,
       },
       {
         name: 'Delete',
         color: palette.error,
         onClick: openDeleteConfirmationModal,
+        restriction: restrictions?.delete === DISABLED,
       },
     ],
     [
@@ -66,8 +73,17 @@ const TopSection = ({
       handleMoveTask,
       openDeleteConfirmationModal,
       openDuplicateConfirmationModal,
+      restrictions,
       selectedTask,
     ],
+  );
+
+  const allowedOptions = useMemo(
+    () =>
+      options.filter(
+        o => o.restriction !== SINGLE_TASK_RESTRICTIONS_OPTIONS.DISABLED,
+      ),
+    [options],
   );
 
   return (
@@ -104,14 +120,19 @@ const TopSection = ({
         )}
       </Box>
       <Box display="flex">
-        <OptionsMenu options={options} customButtonComponent={IconButton}>
-          <MoreHoriz
-            ref={element => {
-              if (element) setTourTaskMenuReference(element);
-            }}
-            color="primary"
-          />
-        </OptionsMenu>
+        {allowedOptions.length !== 0 && (
+          <OptionsMenu
+            options={allowedOptions}
+            customButtonComponent={IconButton}
+          >
+            <MoreHoriz
+              ref={element => {
+                if (element) setTourTaskMenuReference(element);
+              }}
+              color="primary"
+            />
+          </OptionsMenu>
+        )}
         <Box mx={0.5} />
         <IconButton
           onClick={() => {

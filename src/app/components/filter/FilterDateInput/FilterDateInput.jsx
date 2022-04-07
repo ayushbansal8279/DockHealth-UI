@@ -52,7 +52,9 @@ const FilterDateInput = ({ date, onDateChange, minDate, maxDate }) => {
   const handleClickOutside = useCallback(() => {
     if (isCalendarOpen) {
       closeCalendar();
-      if (!hasError && date !== inputValueIso) onDateChange(inputValueIso);
+      if (hasError || date === inputValueIso || (!date && !inputValueIso))
+        return;
+      onDateChange(inputValueIso);
     }
   }, [
     closeCalendar,

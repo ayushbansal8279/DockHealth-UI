@@ -10,6 +10,7 @@ import {
 import { DrawerFieldEnum } from 'helpers/task-drawer-helpers';
 import Tooltip from 'components/common/Tooltip/Tooltip';
 import TaskIcon from 'components/task/TaskIcon/TaskIcon';
+import { SINGLE_TASK_RESTRICTIONS_OPTIONS } from 'restrictions/task-restrictions';
 import { GridImg } from '../../styled';
 
 const TaskItemIcons = ({
@@ -22,6 +23,7 @@ const TaskItemIcons = ({
   matchAttachments,
   attachments,
   dispatch,
+  restrictions,
 }) => {
   const onCommentClick = useCallback(() => {
     dispatch(openDrawer(DrawerFieldEnum.COMMENT));
@@ -63,12 +65,21 @@ const TaskItemIcons = ({
       </GridImg>
       <GridImg item xs={4} matched={matchLabels}>
         <Tooltip
+          hideTooltip={
+            restrictions?.labels === SINGLE_TASK_RESTRICTIONS_OPTIONS.DISABLED
+          }
           placement="top"
           title={
             labels?.length > 0 ? getLabelsIconTooltipTitle(labels) : 'Add label'
           }
         >
-          <button type="button" onClick={onLabelClick}>
+          <button
+            disabled={
+              restrictions?.labels === SINGLE_TASK_RESTRICTIONS_OPTIONS.DISABLED
+            }
+            type="button"
+            onClick={onLabelClick}
+          >
             <TaskIcon
               type="labels"
               isHovered={isHovered}

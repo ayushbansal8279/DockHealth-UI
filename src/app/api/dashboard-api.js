@@ -91,9 +91,9 @@ export function getTasksAssignedToUserByImplicitGroup(
   endPosition = 0,
 ) {
   return axios
-    .get(
-      `/task/findTasksAssignedToUserByImplicitGroup?groupType=${groupType}&startPosition=${startPosition}&endPosition=${endPosition}&status=INCOMPLETE`,
-    )
+    .get(`/task/findTasksAssignedToUserByImplicitGroup`, {
+      params: { groupType, startPosition, endPosition, status: 'INCOMPLETE' },
+    })
     .then(({ data }) => data)
     .catch(error => {
       throw error;

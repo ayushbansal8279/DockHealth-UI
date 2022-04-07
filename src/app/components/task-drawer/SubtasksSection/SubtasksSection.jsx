@@ -8,15 +8,19 @@ import { userProfileSelector } from 'selectors/user-selectors';
 import { selectedTaskSelector } from 'selectors/task-drawer-selectors';
 import DrawerTask from 'components/drawer-common/DrawerTask/DrawerTask';
 import DrawerTaskLoader from 'components/drawer-common/DrawerTaskLoader/DrawerTaskLoader';
+import { SINGLE_TASK_RESTRICTIONS_OPTIONS } from 'restrictions/task-restrictions';
 import { Container, Title } from './styled';
 import QuickAddSubtask from '../QuickAddSubtask/QuickAddSubtask';
 
-const SubtasksSection = () => {
+const { READ_ONLY } = SINGLE_TASK_RESTRICTIONS_OPTIONS;
+
+const SubtasksSection = ({ restrictions }) => {
   const dispatch = useDispatch();
   const currentUser = useSelector(userProfileSelector);
   const selectedTask = useSelector(selectedTaskSelector) || {};
   const tasks = selectedTask.subtasks;
   const tasksCount = selectedTask.subTasksCount;
+  const readOnly = restrictions === READ_ONLY;
 
   const handleDragEnd = useCallback(
     ({ destination, source }) => {
@@ -102,7 +106,7 @@ const SubtasksSection = () => {
           </DragDropContext>
         </>
       )}
-      <QuickAddSubtask />
+      {!readOnly && <QuickAddSubtask />}
     </Container>
   );
 };

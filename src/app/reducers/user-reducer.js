@@ -80,7 +80,7 @@ const UserReducer = (state = initialState, action) => {
         userPreference: {
           ...state.userPreference,
           ...preferences,
-          appFeaturesReviewed: state.userPreference?.appFeaturesReviewed.concat(
+          appFeaturesReviewed: state.userPreference?.appFeaturesReviewed?.concat(
             preferences.appFeaturesReviewed,
           ),
         },

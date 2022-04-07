@@ -24,7 +24,7 @@ import { useMentionsEditorState } from 'components/common/TextEditor/use-mention
 import { selectedTaskSelector } from 'selectors/task-drawer-selectors';
 import { DescriptionTextContainer, DescriptionError } from './styled';
 
-const TaskDescription = () => {
+const TaskDescription = ({ readOnly, disableMentions }) => {
   const selectedTask = useSelector(selectedTaskSelector);
   const {
     description,
@@ -156,9 +156,10 @@ const TaskDescription = () => {
           selectedTask={selectedTask}
         >
           <TextEditor
+            readOnly={readOnly}
             ref={descriptionReference}
             taskListIdentifier={taskListIdentifier}
-            disableMentions={isTemplateTask}
+            disableMentions={disableMentions || isTemplateTask}
             placeholder={
               isSubtask ? 'What is the subtask?' : 'What is the task?'
             }

@@ -14,7 +14,7 @@ import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd';
 import Checkbox from 'components/common/Checkbox/Checkbox';
 import { createWorkflowBuilderPath } from 'routing/helpers/paths';
 import { Collapse } from '@material-ui/core';
-import { MoreHoriz } from '@material-ui/icons';
+import { MoreVert } from '@material-ui/icons';
 import { onTaskOrderChanged } from 'helpers/ga-event-helper';
 import { checkIfAllTasksSelected } from 'helpers/bulk-edit-helpers';
 import {
@@ -344,6 +344,9 @@ const TaskTemplate = ({
             </SmartFlowIndicatorContainer>
           </Tooltip>
         )}
+        <OptionsMenu options={menuOptions}>
+          <MoreVert color="primary" />
+        </OptionsMenu>
         <NameInput
           ref={nameInputReference}
           readOnly={!isEditing}
@@ -356,11 +359,6 @@ const TaskTemplate = ({
         />
         {children}
         <Spacer />
-        <OptionsMenu options={menuOptions}>
-          <MenuContainer size="small">
-            <MoreHoriz fontSize="large" color="inherit" />
-          </MenuContainer>
-        </OptionsMenu>
       </TaskTemplateHeader>
       <Collapse in={isOpen}>
         <>

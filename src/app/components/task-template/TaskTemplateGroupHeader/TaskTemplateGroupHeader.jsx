@@ -19,16 +19,19 @@ import * as ModalActions from 'modal/actions';
 import * as WorkflowActions from 'actions/workflow-actions';
 import * as TaskActions from 'actions/task-actions';
 import * as TemplateBundleActions from 'actions/template-bundle-actions';
+import * as TaskTemplateApi from 'api/task-template-api';
 import { useBoolean } from 'hooks/useBoolean';
 import {
   TaskItemColumn,
   TaskItemColumnWidth,
   TaskStatus,
 } from 'helpers/task-helpers';
+import { workflowSelector } from 'selectors/workflow-drawer-selectors';
 import Checkbox from 'components/common/Checkbox/Checkbox';
 import ProgressBar from 'components/common/ProgressBar/ProgressBar';
 import RotatableChevron from 'components/common/RotatableChevron/RotatableChevron';
 import { BulkEditContext } from 'components/tasklist/BulkEditSection/BulkEditSection';
+import TaskItemCustomField from 'components/common/CustomField/TaskItemCustomField';
 import OptionsMenu from 'components/common/OptionsMenu/OptionsMenu';
 import Spacing from 'components/common/Spacing';
 import { useColumnsConfig } from 'context-api/ColumnsConfigContext';
@@ -95,10 +98,11 @@ const TaskTemplateGroupHeader = ({
   const currentList = useSelector(currentTaskListSelector);
   const dispatch = useDispatch();
   const { columnsConfig, customColumnsConfig } = useColumnsConfig();
-
   useEffect(() => {
     setNameInputValue(name);
   }, [name]);
+  const [workFlowData, setWorkFlowData] = useState(undefined);
+  const selectedWorkflow = useSelector(workflowSelector);
 
   const [completedTasksAmount, allTasksAmount] = useMemo(
     () =>
@@ -196,7 +200,7 @@ const TaskTemplateGroupHeader = ({
           ),
       },
       {
-        name: 'Move',
+        name: 'Move to list',
         onClick: () =>
           dispatch(
             ModalActions.openModal('SelectDestination', {
@@ -332,6 +336,14 @@ const TaskTemplateGroupHeader = ({
     );
   }, [dispatch, isBundleSelected, filteredTasks]);
 
+  const getWorkflowData = useCallback(async id => {
+    setWorkFlowData(await TaskTemplateApi.getTemplate(id));
+  }, []);
+
+  useEffect(() => {
+    !selectedWorkflow ? getWorkflowData(identifier) : setWorkFlowData(null);
+  }, [identifier, selectedWorkflow]);
+
   return (
     <TaskTemplateGroupHeaderContainer
       onMouseEnter={setIsHovered}
@@ -385,11 +397,13 @@ const TaskTemplateGroupHeader = ({
       )}
       {columnsConfig[TaskItemColumn.SUBTASKS_COUNT] && (
         <TaskItemCell
+          key={`subtask_count_${identifier}`}
           width={TaskItemColumnWidth[TaskItemColumn.SUBTASKS_COUNT]}
         />
       )}
       {columnsConfig[TaskItemColumn.PATIENT] && (
         <TaskItemCell
+          key={`patient_${identifier}`}
           width={TaskItemColumnWidth[TaskItemColumn.PATIENT]}
           alignItems="flex-start"
         >
@@ -405,6 +419,7 @@ const TaskTemplateGroupHeader = ({
       )}
       {columnsConfig[TaskItemColumn.WORKFLOW_STATUS] && (
         <TaskItemCell
+          key={`task_status_${identifier}`}
           width={TaskItemColumnWidth[TaskItemColumn.WORKFLOW_STATUS]}
           paddingLeft="smallPlus"
           paddingRight="tiny"
@@ -420,10 +435,14 @@ const TaskTemplateGroupHeader = ({
         </TaskItemCell>
       )}
       {columnsConfig[TaskItemColumn.ACTIVITY] && (
-        <TaskItemCell width={TaskItemColumnWidth[TaskItemColumn.ACTIVITY]} />
+        <TaskItemCell
+          key={`activity_${identifier}`}
+          width={TaskItemColumnWidth[TaskItemColumn.ACTIVITY]}
+        />
       )}
       {columnsConfig[TaskItemColumn.START_DATE] && (
         <TaskItemCell
+          key={`start_date_${identifier}`}
           width={TaskItemColumnWidth[TaskItemColumn.START_DATE]}
           justify="center"
         >
@@ -435,6 +454,7 @@ const TaskTemplateGroupHeader = ({
       )}
       {columnsConfig[TaskItemColumn.DUE_DATE] && (
         <TaskItemCell
+          key={`due_date_${identifier}`}
           width={TaskItemColumnWidth[TaskItemColumn.DUE_DATE]}
           justify="center"
         >
@@ -443,6 +463,7 @@ const TaskTemplateGroupHeader = ({
       )}
       {columnsConfig[TaskItemColumn.ASSIGNED] && (
         <TaskItemCell
+          key={`assigned_${identifier}`}
           width={TaskItemColumnWidth[TaskItemColumn.ASSIGNED].WIDE}
           justify={groupHasMultipleAssignees ? 'flex-start' : 'center'}
           paddingLeft="small"
@@ -460,13 +481,31 @@ const TaskTemplateGroupHeader = ({
         </TaskItemCell>
       )}
       {columnsConfig[TaskItemColumn.LIST_NAME] && (
-        <TaskItemCell width={TaskItemColumnWidth[TaskItemColumn.LIST_NAME]} />
+        <TaskItemCell
+          key={`list_${identifier}`}
+          width={TaskItemColumnWidth[TaskItemColumn.LIST_NAME]}
+        />
       )}
-      {customColumnsConfig
-        .filter(f => f.isChecked)
-        .map(field => (
-          <TaskItemCell width={CustomFieldWidthConfig[field.fieldType]} />
-        ))}
+      {customColumnsConfig &&
+        workFlowData &&
+        customColumnsConfig
+          .filter(f => f.isChecked)
+          .map(field => (
+            <TaskItemCell
+              key={`custom_${identifier}_${field.identifier}`}
+              width={CustomFieldWidthConfig[field.fieldType]}
+            >
+              <TaskItemCustomField
+                field={field}
+                readOnly
+                customFieldValue={workFlowData?.taskMetaData?.find(
+                  f => f.customFieldIdentifier === field.identifier,
+                )}
+                task={workFlowData}
+                isHovered={isHovered}
+              />
+            </TaskItemCell>
+          ))}
     </TaskTemplateGroupHeaderContainer>
   );
 };

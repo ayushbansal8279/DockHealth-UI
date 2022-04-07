@@ -357,7 +357,10 @@ function* sortTasksInGroup(payload) {
 
   if (destinationIndex === sourceIndex) return;
 
-  const { [taskGroupIdentifier]: group } = yield select(groupTasksSelector);
+  const taskGroups = yield select(groupTasksSelector);
+  const group = taskGroups.find(
+    ({ groupIdentifier }) => groupIdentifier === taskGroupIdentifier,
+  );
 
   try {
     const reorderedTasks = move(sourceIndex, destinationIndex, group.tasks);
@@ -408,10 +411,13 @@ function* reassignTasksToAnotherGroup(payload) {
     source: { index: sourceIndex, droppableId: sourceGroupIdentifier },
   } = payload;
 
-  const {
-    [sourceGroupIdentifier]: sourceGroup,
-    [destinationGroupIdentifier]: destinationGroup,
-  } = yield select(groupTasksSelector);
+  const taskGroups = yield select(groupTasksSelector);
+  const sourceGroup = taskGroups.find(
+    ({ groupIdentifier }) => groupIdentifier === sourceGroupIdentifier,
+  );
+  const destinationGroup = taskGroups.find(
+    ({ groupIdentifier }) => groupIdentifier === destinationGroupIdentifier,
+  );
 
   const sourceTask = sourceGroup.tasks[sourceIndex];
 
@@ -550,10 +556,13 @@ function* doCreateTask(payload) {
         }
       } else {
         const fetchedTasksGroups = yield select(groupTasksSelector);
+        const taskGroup = fetchedTasksGroups.find(
+          ({ groupIdentifier }) => groupIdentifier === taskGroupIdentifier,
+        );
 
         if (!taskGroupIdentifier) {
           yield put(ListDetailsActions.refreshListDetailsGroupedTasks(true));
-        } else if (!fetchedTasksGroups[taskGroupIdentifier]) {
+        } else if (!taskGroup) {
           yield call(getTasksForTaskGroups, {
             taskGroupIdentifier,
             status: 'INCOMPLETE',
@@ -846,7 +855,7 @@ export default function* watchTasksGroupsList() {
     ActionTypes.FILTER_LIST_DETAILS_TASKS,
     filterListDetailsTasks,
   );
-  yield takeLatest([ActionTypes.ADD_TASK_SUCCESS], refreshGroup);
+  // yield takeLatest([ActionTypes.ADD_TASK_SUCCESS], refreshGroup);
   yield takeLatest([ActionTypes.ADD_TASK_SUCCESS], taskCounterIncreaseWatcher);
   yield takeLatest([ActionTypes.DELETE_TASK], taskCounterDecreaseWatcher);
   yield takeLatest(ActionTypes.GET_LIST_CUSTOM_FIELDS, getListCustomFields);

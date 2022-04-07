@@ -1,7 +1,13 @@
 /* eslint-disable sonarjs/cognitive-complexity */
-import React, { useState, useRef, useCallback, useMemo } from 'react';
+import React, {
+  useState,
+  useRef,
+  useCallback,
+  useMemo,
+  useEffect,
+} from 'react';
 import { useSelector } from 'react-redux';
-import { convertToRaw } from 'draft-js';
+import { convertToRaw, Entity, SelectionState, EditorState } from 'draft-js';
 import { makeStyles } from '@material-ui/core/styles';
 import Editor from 'draft-js-plugins-editor';
 import debounce from 'lodash.debounce';
@@ -45,6 +51,8 @@ import {
 } from './helpers';
 import { StyledEditorContainer, ToolbarContainer } from './styled';
 import LinkButton from './Link/LinkButton';
+import LinkPopover from './Link/LinkPopover';
+import { createLinkAtSelection, hasEntity } from './Link/helpers';
 
 const fetchPatientsWithDebounce = debounce(
   (value, setPatientSuggestions, areSuggestionsOpened) => {
@@ -94,9 +102,12 @@ const TextEditor = React.forwardRef(
       disableNativeLinks = false,
       disableMentions = false,
       minHeight,
+      getFocusFromParent,
     },
     outerReference,
   ) => {
+    const [linkPopoverOpen, setLinkPopoverOpen] = useState(false);
+    const linkButtonReference = useRef();
     const innerReference = useRef();
     const StyledEditorContainerReference = useRef();
     const reference = outerReference || innerReference;
@@ -125,6 +136,10 @@ const TextEditor = React.forwardRef(
     const { currentUser } = useSelector(store => ({
       currentUser: store.userState.userProfile,
     }));
+
+    useEffect(() => {
+      setIsFocused(getFocusFromParent);
+    }, [getFocusFromParent]);
 
     const currentState = state || editorState;
 
@@ -258,120 +273,207 @@ const TextEditor = React.forwardRef(
 
     const separaterClass = separatorStyles();
 
+    const initText = useMemo(() => {
+      const selection = currentState.getSelection();
+      const anchorKey = selection.getAnchorKey();
+      const currentContent = currentState.getCurrentContent();
+      const currentBlock = currentContent.getBlockForKey(anchorKey);
+      const start = selection.getStartOffset();
+      const end = selection.getEndOffset();
+      return currentBlock.getText().slice(start, end);
+    }, [currentState]);
+
+    const initLink = useMemo(() => {
+      try {
+        const selection = currentState.getSelection();
+        const content = currentState.getCurrentContent();
+        const startKey = selection.getStartKey();
+        const startOffset = selection.getStartOffset();
+        const block = content.getBlockForKey(startKey);
+        const linkKey = block.getEntityAt(startOffset);
+        const linkInstance = Entity.get(linkKey);
+        const { url } = linkInstance.getData();
+
+        return url || '';
+      } catch {
+        return '';
+      }
+    }, [currentState]);
+
+    const handleLinkPopoverConfirm = useCallback(
+      ({ text = '', link = '' }) => {
+        handleChange(createLinkAtSelection(currentState, { text, link }));
+      },
+      [currentState, handleChange],
+    );
+
+    const handleLinkPopoverOpen = useCallback(
+      flag => {
+        if (hasEntity(currentState, 'LINK')) {
+          const selection = currentState?.getSelection();
+          if (selection.isCollapsed()) {
+            const content = currentState.getCurrentContent();
+            const startKey = selection.getStartKey();
+            const startOffset = selection.getStartOffset();
+            const block = content.getBlockForKey(startKey);
+            const entity = block.getEntityAt(startOffset);
+
+            block.findEntityRanges(
+              character => character.getEntity() === entity,
+              (start, end) => {
+                const newSelection = selection.merge({
+                  anchorOffset: start,
+                  focusOffset: end,
+                });
+                const newEditorState = EditorState.acceptSelection(
+                  currentState,
+                  newSelection,
+                );
+                const newState = EditorState.forceSelection(
+                  newEditorState,
+                  newEditorState.getSelection(),
+                );
+                handleChange(newState);
+              },
+            );
+          }
+          setLinkPopoverOpen(flag);
+        } else {
+          setLinkPopoverOpen(flag);
+        }
+      },
+      [currentState, handleChange],
+    );
+
     return (
       <ClickAwayListener onClickAway={handleClickAway}>
-        <StyledEditorContainer
-          withEditedLabel={withEditedLabel && readOnly}
-          isReadOnly={readOnly}
-          isOneline={oneline}
-          onClick={focus}
-          minHeight={minHeight}
-          fullHeight={fullHeight}
-          ref={StyledEditorContainerReference}
-        >
-          {showToolbar && isFocused && (
-            <ToolbarContainer>
-              <Toolbar>
-                {externalProps => {
-                  const currentProps = {
-                    ...externalProps,
-                    getEditorState: () => currentState,
-                  };
-                  return (
-                    <div>
-                      <BoldButton {...currentProps} />
-                      <ItalicButton {...currentProps} />
-                      <UnderlineButton {...currentProps} />
-                      <ThroughLineButton {...currentProps} />
-                      <Separator
-                        {...currentProps}
-                        className={separaterClass.root}
-                      />
-                      <UnorderedListButton {...currentProps} />
-                      <OrderedListButton {...currentProps} />
-                      <Separator
-                        {...currentProps}
-                        className={separaterClass.root}
-                      />
-                      <HeadlineOneButton {...currentProps} />
-                      <HeadlineTwoButton {...currentProps} />
-                      <HeadlineThreeButton {...currentProps} />
-                      <Separator
-                        {...currentProps}
-                        className={separaterClass.root}
-                      />
-                      <LinkButton {...currentProps} />
-                    </div>
-                  );
+        <>
+          <StyledEditorContainer
+            withEditedLabel={withEditedLabel && readOnly}
+            isReadOnly={readOnly}
+            isOneline={oneline}
+            onClick={focus}
+            minHeight={minHeight}
+            fullHeight={fullHeight}
+            ref={StyledEditorContainerReference}
+          >
+            {showToolbar && isFocused && (
+              <ToolbarContainer>
+                <Toolbar>
+                  {externalProps => {
+                    const currentProps = {
+                      ...externalProps,
+                      getEditorState: () => currentState,
+                    };
+                    return (
+                      <div>
+                        <BoldButton {...currentProps} />
+                        <ItalicButton {...currentProps} />
+                        <UnderlineButton {...currentProps} />
+                        <ThroughLineButton {...currentProps} />
+                        <Separator
+                          {...currentProps}
+                          className={separaterClass.root}
+                        />
+                        <UnorderedListButton {...currentProps} />
+                        <OrderedListButton {...currentProps} />
+                        <Separator
+                          {...currentProps}
+                          className={separaterClass.root}
+                        />
+                        <HeadlineOneButton {...currentProps} />
+                        <HeadlineTwoButton {...currentProps} />
+                        <HeadlineThreeButton {...currentProps} />
+                        <Separator
+                          {...currentProps}
+                          className={separaterClass.root}
+                        />
+                        <LinkButton
+                          buttonReference={linkButtonReference}
+                          popoverOpen={linkPopoverOpen}
+                          handleOpen={handleLinkPopoverOpen}
+                          {...currentProps}
+                        />
+                      </div>
+                    );
+                  }}
+                </Toolbar>
+              </ToolbarContainer>
+            )}
+            <Editor
+              customStyleMap={styleMap}
+              ref={reference}
+              plugins={plugins}
+              editorState={currentState}
+              readOnly={readOnly}
+              placeholder={showPlaceholder ? placeholder : ''}
+              onFocus={handleFocus}
+              onBlur={linkPopoverOpen ? () => {} : onBlur}
+              onChange={handleChange}
+              keyBindingFn={keyBindingFn}
+              handleKeyCommand={handleKeyCommand}
+              decorators={[
+                ...(highlightedValues?.length > 0
+                  ? [createHighlightDecorator(highlightedValues)]
+                  : []),
+                createLinkDecorator,
+              ]}
+            />
+            <Spacing horizontal={4} />
+            {!disableMentions && taskListIdentifier && (
+              <UsersMentionSuggestions
+                onSearchChange={onUsersSearchChange}
+                suggestions={usersSuggestions}
+                onAddMention={onAddMention}
+                entryComponent={UserSuggestionItem}
+                popoverComponent={
+                  <UsersSuggestionsPopover
+                    searchValue={usersSearchValue}
+                    isFetching={isFetchingUsersSuggestions}
+                  />
+                }
+                onOpen={() => {
+                  areUsersSuggestionsOpened.current = true;
+                  setUsersSearchValue('');
                 }}
-              </Toolbar>
-            </ToolbarContainer>
-          )}
-          <Editor
-            customStyleMap={styleMap}
-            ref={reference}
-            plugins={plugins}
-            editorState={currentState}
-            readOnly={readOnly}
-            placeholder={showPlaceholder ? placeholder : ''}
-            onFocus={handleFocus}
-            onBlur={onBlur}
-            onChange={handleChange}
-            keyBindingFn={keyBindingFn}
-            handleKeyCommand={handleKeyCommand}
-            decorators={[
-              ...(highlightedValues?.length > 0
-                ? [createHighlightDecorator(highlightedValues)]
-                : []),
-              createLinkDecorator,
-            ]}
+                onClose={() => {
+                  areUsersSuggestionsOpened.current = false;
+                  setUsersSearchValue(null);
+                }}
+              />
+            )}
+            {!disableMentions && (
+              <PatientsMentionSuggestions
+                onSearchChange={onPatientSearchChange}
+                suggestions={patientSuggestions}
+                onAddMention={onAddMention}
+                entryComponent={PatientSuggestionItem}
+                popoverComponent={
+                  <PatientsSuggestionsPopover
+                    searchValue={patientSearchValue}
+                    customerTypeLabel={customerTypeLabel}
+                  />
+                }
+                onOpen={() => {
+                  arePatientSuggestionsOpened.current = true;
+                  setPatientSearchValue('');
+                }}
+                onClose={() => {
+                  arePatientSuggestionsOpened.current = false;
+                  setPatientSearchValue(null);
+                }}
+              />
+            )}
+          </StyledEditorContainer>
+          <LinkPopover
+            initText={initText}
+            initLink={initLink}
+            anchorElement={linkButtonReference}
+            isPopoverOpen={linkPopoverOpen}
+            close={() => handleLinkPopoverOpen(false)}
+            onSave={handleLinkPopoverConfirm}
           />
-          <Spacing horizontal={4} />
-          {!disableMentions && taskListIdentifier && (
-            <UsersMentionSuggestions
-              onSearchChange={onUsersSearchChange}
-              suggestions={usersSuggestions}
-              onAddMention={onAddMention}
-              entryComponent={UserSuggestionItem}
-              popoverComponent={
-                <UsersSuggestionsPopover
-                  searchValue={usersSearchValue}
-                  isFetching={isFetchingUsersSuggestions}
-                />
-              }
-              onOpen={() => {
-                areUsersSuggestionsOpened.current = true;
-                setUsersSearchValue('');
-              }}
-              onClose={() => {
-                areUsersSuggestionsOpened.current = false;
-                setUsersSearchValue(null);
-              }}
-            />
-          )}
-          {!disableMentions && (
-            <PatientsMentionSuggestions
-              onSearchChange={onPatientSearchChange}
-              suggestions={patientSuggestions}
-              onAddMention={onAddMention}
-              entryComponent={PatientSuggestionItem}
-              popoverComponent={
-                <PatientsSuggestionsPopover
-                  searchValue={patientSearchValue}
-                  customerTypeLabel={customerTypeLabel}
-                />
-              }
-              onOpen={() => {
-                arePatientSuggestionsOpened.current = true;
-                setPatientSearchValue('');
-              }}
-              onClose={() => {
-                arePatientSuggestionsOpened.current = false;
-                setPatientSearchValue(null);
-              }}
-            />
-          )}
-        </StyledEditorContainer>
+        </>
       </ClickAwayListener>
     );
   },
