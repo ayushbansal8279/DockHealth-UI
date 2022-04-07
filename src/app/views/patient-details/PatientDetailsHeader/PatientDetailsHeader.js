@@ -139,9 +139,9 @@ const PatientDetailsHeader = () => {
                   <>
                     <PatientInfo>
                       {age && `${age} `}
-                      {gender && gender?.charAt(0)?.toUpperCase()}
+                      {gender && `${gender?.charAt(0)?.toUpperCase()}`}
                       {genderIdentity &&
-                        genderIdentity?.charAt(0)?.toUpperCase()}
+                        `, ${genderIdentity?.charAt(0)?.toUpperCase()} `}
                     </PatientInfo>
                     <PatientInfoDivider />
                   </>
