@@ -65,25 +65,25 @@ const PatientForm = forwardRef(
     );
     const { 0: emptyOtherVisible, 3: toggleEmptyOther } = useBoolean(false);
     const isAdmin = orgUserRole === 'ADMIN' || orgUserRole === 'OWNER';
-    const [genderIdentifyOptions, setGenderIdentifyOptions] = useState([]);
+    const [genderIdentityOptions, setGenderIdentityOptions] = useState([]);
 
     const GENDER_OPTIONS_IDENTITY = useMemo(
       () =>
-        genderIdentifyOptions.map(o => ({
+        genderIdentityOptions.map(o => ({
           value: o.genderIdentityType,
           label: o.description,
         })),
-      [genderIdentifyOptions],
+      [genderIdentityOptions],
     );
 
-    const getGenderIdentifyOptions = useCallback(async () => {
-      const options = await patientsApi.getGenderIdentifyOptions();
-      setGenderIdentifyOptions(options);
+    const getGenderIdentityOptions = useCallback(async () => {
+      const options = await patientsApi.getGenderIdentityOptions();
+      setGenderIdentityOptions(options);
     }, []);
 
     useEffect(() => {
-      getGenderIdentifyOptions();
-    }, [getGenderIdentifyOptions]);
+      getGenderIdentityOptions();
+    }, [getGenderIdentityOptions]);
 
     const patientCustomFieldsAvailable = useSelector(
       userHasPatientCustomFieldsFeatureSelector,
@@ -163,16 +163,16 @@ const PatientForm = forwardRef(
           <Spacing vertical={3} />
           <FormSelect
             readOnly={!edited || emrIntegrationEnabled}
-            label="Gender identity"
-            options={GENDER_OPTIONS_IDENTITY}
-            name="genderIdentify"
+            label="Gender at birth"
+            options={GENDER_OPTIONS_BIRTH}
+            name="gender"
           />
           <Spacing vertical={3} />
           <FormSelect
             readOnly={!edited || emrIntegrationEnabled}
-            label="Gender at birth"
-            options={GENDER_OPTIONS_BIRTH}
-            name="gender"
+            label="Gender identity"
+            options={GENDER_OPTIONS_IDENTITY}
+            name="genderIdentity"
           />
           <Spacing vertical={3} />
           <FormInput

@@ -4,7 +4,7 @@ import {
 } from 'helpers/filter-options-helpers';
 import axios from './axios-heydoc';
 
-export function getGenderIdentifyOptions() {
+export function getGenderIdentityOptions() {
   return axios
     .get(`reference/genderIdentities`)
     .then(response => response.data);

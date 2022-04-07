@@ -136,7 +136,7 @@ const PatientsList = ({
       flex: 0.5,
     },
     {
-      field: 'genderIdentify',
+      field: 'genderIdentity',
       headerName: 'GENDER IDENTIFY',
       renderHeader: renderColumnHeader,
       flex: 0.5,
