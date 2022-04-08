@@ -169,9 +169,10 @@ const PatientCard = ({
                         <InfoItem>
                           {age && `${age} `}
                           {gender && `${gender?.charAt(0)?.toUpperCase()}`}
-                          {genderIdentity &&
-                            ` ${genderIdentity?.charAt(0)?.toUpperCase()} `}
                         </InfoItem>
+                      )}
+                      {genderIdentity && (
+                        <InfoItem>gender identity: {genderIdentity}</InfoItem>
                       )}
                       {mrn && !emrPatientLink && (
                         <InfoItem>

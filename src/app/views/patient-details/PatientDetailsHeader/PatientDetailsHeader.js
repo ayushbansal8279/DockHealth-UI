@@ -140,9 +140,15 @@ const PatientDetailsHeader = () => {
                     <PatientInfo>
                       {age && `${age} `}
                       {gender && `${gender?.charAt(0)?.toUpperCase()}`}
-                      {genderIdentity &&
-                        ` ${genderIdentity?.charAt(0)?.toUpperCase()} `}
                     </PatientInfo>
+                    {genderIdentity && (
+                      <>
+                        <PatientInfoDivider />
+                        <PatientInfo>
+                          gender identity: {genderIdentity}
+                        </PatientInfo>
+                      </>
+                    )}
                     <PatientInfoDivider />
                   </>
                 )}
