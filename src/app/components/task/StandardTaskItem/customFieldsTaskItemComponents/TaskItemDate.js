@@ -22,6 +22,7 @@ const TaskItemDate = ({ value, onChange, isHovered }) => {
             selectedDate={value}
             onDateChange={handleDateChange}
             onCloseClick={closePopover}
+            hideDateTime
           />
         )}
       >

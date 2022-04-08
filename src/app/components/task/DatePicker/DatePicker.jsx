@@ -14,7 +14,12 @@ import {
 
 const DATE_ISO_FORMAT = 'YYYY-MM-DD';
 
-const DatePicker = ({ selectedDate, onDateChange, onCloseClick }) => {
+const DatePicker = ({
+  selectedDate,
+  onDateChange,
+  onCloseClick,
+  hideDateTime = false,
+}) => {
   const momentSelectedDate = selectedDate ? moment(selectedDate) : null;
   const selectedTime = momentSelectedDate?.format(TIME_12H_FORMAT) || null;
 
@@ -59,14 +64,16 @@ const DatePicker = ({ selectedDate, onDateChange, onCloseClick }) => {
         >
           Tomorrow
         </QuickSelectButton>
-        <TimeDropdownInput
-          type="secondary"
-          savedValue={selectedTime}
-          onSave={handleTimePick}
-          disabled={!selectedDate}
-          endAdornment={<img src={TimeIcon} alt="Arrow" />}
-          hideError
-        />
+        {!hideDateTime && (
+          <TimeDropdownInput
+            type="secondary"
+            savedValue={selectedTime}
+            onSave={handleTimePick}
+            disabled={!selectedDate}
+            endAdornment={<img src={TimeIcon} alt="Arrow" />}
+            hideError
+          />
+        )}
       </QuickAddSectionWrapper>
       <Divider />
       <Datepicker selectedDate={selectedDate} onDateChange={handleDatePick} />
