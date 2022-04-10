@@ -59,7 +59,6 @@ const ListDetailsView = props => {
       checked: displayListPreferences.SHOW_WORKFLOW_DETAILS,
     },
     {
-      disabled: !displayListPreferences.SHOW_WORKFLOW_DETAILS,
       name:
         selectedTab === TaskListTabName.COMPLETE
           ? 'Show Workflow Uncompleted Tasks'

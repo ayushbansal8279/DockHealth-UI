@@ -553,7 +553,7 @@ function* doCreateTask(payload) {
         }
       } else {
         const fetchedTasksGroups = yield select(groupTasksSelector);
-        const taskGroup = fetchedTasksGroups.find(
+        const taskGroup = fetchedTasksGroups?.find(
           ({ groupIdentifier }) => groupIdentifier === taskGroupIdentifier,
         );
 
