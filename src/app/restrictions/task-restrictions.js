@@ -1,0 +1,56 @@
+import { UserOrganizationRole } from 'helpers/user-helper';
+
+export const SINGLE_TASK_RESTRICTIONS_OPTIONS = {
+  EDITOR: 'EDITOR',
+  EDITOR_IF_CREATOR: 'EDITOR_IF_CREATOR',
+  READ_ONLY: 'READ_ONLY',
+  DISABLED: 'DISABLED',
+};
+
+export const SINGLE_TASK_FEATURES = {
+  mentions: 'mentions',
+  move: 'move',
+  duplicate: 'duplicate',
+  delete: 'delete',
+  description: 'description',
+  details: 'details',
+  patient: 'patient',
+  assigment: 'assigment',
+  dueDate: 'dueDate',
+  reminder: 'reminder',
+  priotity: 'priotity',
+  status: 'status',
+  labels: 'labels',
+  listName: 'listName',
+  attachments: 'attachments',
+  dependencies: 'dependencies',
+  subtasks: 'subtasks',
+  comments: 'comments',
+  customFields: 'customFields',
+  history: 'history',
+};
+
+export const SINGLE_TASK_RESTRICTIONS_PROFILES = {
+  [UserOrganizationRole.EXTERNAL]: {
+    mentions: SINGLE_TASK_RESTRICTIONS_OPTIONS.DISABLED,
+    move: SINGLE_TASK_RESTRICTIONS_OPTIONS.DISABLED,
+    duplicate: SINGLE_TASK_RESTRICTIONS_OPTIONS.DISABLED,
+    delete: SINGLE_TASK_RESTRICTIONS_OPTIONS.DISABLED,
+    description: SINGLE_TASK_RESTRICTIONS_OPTIONS.READ_ONLY,
+    details: SINGLE_TASK_RESTRICTIONS_OPTIONS.READ_ONLY,
+    patient: SINGLE_TASK_RESTRICTIONS_OPTIONS.READ_ONLY,
+    assigment: SINGLE_TASK_RESTRICTIONS_OPTIONS.READ_ONLY,
+    dueDate: SINGLE_TASK_RESTRICTIONS_OPTIONS.DISABLED,
+    reminder: SINGLE_TASK_RESTRICTIONS_OPTIONS.DISABLED,
+    priotity: SINGLE_TASK_RESTRICTIONS_OPTIONS.EDITOR,
+    status: SINGLE_TASK_RESTRICTIONS_OPTIONS.EDITOR,
+    labels: SINGLE_TASK_RESTRICTIONS_OPTIONS.DISABLED,
+    listName: SINGLE_TASK_RESTRICTIONS_OPTIONS.DISABLED,
+    subtasks: SINGLE_TASK_RESTRICTIONS_OPTIONS.READ_ONLY,
+    dependencies: SINGLE_TASK_RESTRICTIONS_OPTIONS.DISABLED,
+    attachments: SINGLE_TASK_RESTRICTIONS_OPTIONS.EDITOR_IF_CREATOR,
+    comments: SINGLE_TASK_RESTRICTIONS_OPTIONS.EDITOR_IF_CREATOR,
+    customFields: SINGLE_TASK_RESTRICTIONS_OPTIONS.DISABLED,
+    history: SINGLE_TASK_RESTRICTIONS_OPTIONS.DISABLED,
+  },
+};

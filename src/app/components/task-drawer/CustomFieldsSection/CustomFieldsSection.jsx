@@ -119,7 +119,7 @@ const CustomFieldsSection = () => {
       getValues,
       emptyVisible,
       formMethods,
-      task.identifier,
+      task,
       handleBlur,
     ],
   );

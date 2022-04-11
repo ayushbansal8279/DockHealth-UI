@@ -1,5 +1,11 @@
 /* eslint-disable sonarjs/cognitive-complexity */
-import React, { useState, useMemo, useEffect, useCallback } from 'react';
+import React, {
+  useState,
+  useMemo,
+  useEffect,
+  useCallback,
+  useContext,
+} from 'react';
 import { connect, useDispatch, useSelector } from 'react-redux';
 import { useLocation } from 'react-router-dom';
 import { identity, isEmpty } from 'ramda';
@@ -47,6 +53,7 @@ import {
   dashboardGroupsOrderPreferencesSelector,
 } from 'selectors/user-selectors';
 import { updateCurrentUserPreferences } from 'actions/user-actions';
+import { Context } from 'components/common/HorizontalScroll/HorizontalScrollContainer';
 import DashboardTasksGroup from './DashboardTasksGroup';
 import DashboardToolbar from '../DashboardToolbar/DashboardToolbar';
 import {
@@ -316,6 +323,8 @@ const DashboardList = ({
     [dispatch, flattedOrderedDashboardTasks, groupOrder],
   );
 
+  const parentContainerWidth = useContext(Context);
+
   return (
     <BulkEditSection
       allTasks={allDashboardTasks}
@@ -324,10 +333,12 @@ const DashboardList = ({
     >
       <StickyContainer stickyTop zIndex={101}>
         <StickyHeader>
-          <DashboardToolbar
-            tourModalIsOpen={tourModalIsOpen}
-            openTourModal={openTourModal}
-          />
+          {parentContainerWidth !== 0 && (
+            <DashboardToolbar
+              tourModalIsOpen={tourModalIsOpen}
+              openTourModal={openTourModal}
+            />
+          )}
         </StickyHeader>
       </StickyContainer>
       <Spacing vertical={1} />

@@ -16,7 +16,10 @@ import {
 } from 'actions/task-actions';
 import { openModal, closeModal } from 'modal/actions';
 import { getTasksGroupsList } from 'actions/list-details-actions';
+import { SINGLE_TASK_RESTRICTIONS_OPTIONS } from 'restrictions/task-restrictions';
 import { Backdrop, MenuContainer, MenuItemButtom, Divider } from './styled';
+
+const { DISABLED, READ_ONLY } = SINGLE_TASK_RESTRICTIONS_OPTIONS;
 
 const TaskItemContextMenu = ({
   position,
@@ -25,6 +28,7 @@ const TaskItemContextMenu = ({
   subtasksDisabled,
   isDashboardTask,
   currentList,
+  restrictions,
 }) => {
   const menuReference = useRef(null);
   const dispatch = useDispatch();
@@ -267,48 +271,56 @@ const TaskItemContextMenu = ({
         positionTop={position.y}
         positionLeft={position.x}
       >
-        {!isTemplateTask && !isBundleTask && (
+        {restrictions?.move !== DISABLED && !isTemplateTask && !isBundleTask && (
           <li>
             <MenuItemButtom tabIndex="0" type="button" onClick={handleMoveTask}>
               Move to list
             </MenuItemButtom>
           </li>
         )}
-        {!isTemplateTask && !isBundleTask && (
+        {restrictions?.move !== DISABLED && !isTemplateTask && !isBundleTask && (
           <li>
             <MenuItemButtom type="button" onClick={handleMoveGroupTask}>
               Move to group
             </MenuItemButtom>
           </li>
         )}
-        <li>
-          <MenuItemButtom type="button" onClick={handleDuplicateTask}>
-            Duplicate {isSubtask ? 'Subtask' : 'Task'}
-          </MenuItemButtom>
-        </li>
-        {!isSubtask && !subtasksDisabled && (
+        {restrictions?.duplicate !== DISABLED && (
           <li>
-            <MenuItemButtom
-              type="button"
-              onClick={() => {
-                dispatch(openQuickAddSubtask(task.taskIdentifier));
-                onRightClickAction('Create subtask');
-              }}
-            >
-              Create Subtask
+            <MenuItemButtom type="button" onClick={handleDuplicateTask}>
+              Duplicate {isSubtask ? 'Subtask' : 'Task'}
             </MenuItemButtom>
           </li>
         )}
-        <Divider />
-        <li>
-          <MenuItemButtom
-            type="button"
-            color={palette.oPlusRed}
-            onClick={handleDeleteTask}
-          >
-            Delete {isSubtask ? 'Subtask' : 'Task'}
-          </MenuItemButtom>
-        </li>
+        {restrictions?.subtasks !== READ_ONLY &&
+          !isSubtask &&
+          !subtasksDisabled && (
+            <li>
+              <MenuItemButtom
+                type="button"
+                onClick={() => {
+                  dispatch(openQuickAddSubtask(task.taskIdentifier));
+                  onRightClickAction('Create subtask');
+                }}
+              >
+                Create Subtask
+              </MenuItemButtom>
+            </li>
+          )}
+        {restrictions?.delete !== DISABLED && (
+          <>
+            <Divider />
+            <li>
+              <MenuItemButtom
+                type="button"
+                color={palette.oPlusRed}
+                onClick={handleDeleteTask}
+              >
+                Delete {isSubtask ? 'Subtask' : 'Task'}
+              </MenuItemButtom>
+            </li>
+          </>
+        )}
       </MenuContainer>
     </Backdrop>
   );

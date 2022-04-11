@@ -12,10 +12,12 @@ import {
   GET_TASK_CUSTOM_FIELDS_FAILURE,
   OPEN_TASK_DRAWER_TO_ADD_TASK,
   SHOW_GLOBAL_ALERT,
+  SET_AS_CURRENT_TASK_ERROR,
 } from 'actions/action-types';
 import TaskBaseReducer from './task-base-reducer';
 
 const initialState = {
+  error: false,
   task: {},
   isHistoryFetching: false,
   historyError: null,
@@ -75,6 +77,13 @@ const TaskReducer = (state = initialState, action) => {
         ...state,
         selectedTask: action.task,
         selectedTaskId: action.task != null ? action.task.taskIdentifier : null,
+        error: false,
+      };
+
+    case SET_AS_CURRENT_TASK_ERROR:
+      return {
+        ...state,
+        error: true,
       };
 
     case OPEN_TASK_DRAWER_TO_ADD_TASK:
@@ -114,6 +123,7 @@ const TaskReducer = (state = initialState, action) => {
 
       return {
         ...state,
+        error: false,
         open,
         focusField,
         selectedTask: task,

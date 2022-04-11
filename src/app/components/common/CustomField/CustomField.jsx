@@ -173,6 +173,7 @@ const CustomField = ({
     name,
     placeholder,
     readOnly,
+    task,
     taskIdentifier,
   ]);
 

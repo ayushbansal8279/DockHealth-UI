@@ -3,6 +3,7 @@ export const UserOrganizationRole = {
   OWNER: 'OWNER',
   MEMBER: 'MEMBER',
   GUEST: 'GUEST',
+  EXTERNAL: 'EXTERNAL',
 };
 
 export const getOrgRole = roleKey => {

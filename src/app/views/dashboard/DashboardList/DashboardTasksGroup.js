@@ -97,8 +97,6 @@ const DashboardTasksGroup = ({
   const currentTaskLength = dashboardTasks?.length || 0;
   const previousTaskLength = usePrevious(currentTaskLength) || 0;
 
-  // console.log('currentTaskLength', currentTaskLength, groupType);
-
   useEffect(() => {
     if (currentTaskLength > 0 && previousTaskLength === 0) {
       setGroupIsOpen(true);

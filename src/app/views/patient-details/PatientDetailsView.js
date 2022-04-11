@@ -308,6 +308,7 @@ const PatientDetailsView = () => {
           <Switch>
             {TABS_CONFIG?.map(route => (
               <RouteWrapper
+                allowedToRoles={route.allowedToRoles}
                 key={route.mainPath}
                 path={`${path}/${route.mainPath}${
                   route.additionalPath ? `/${route.additionalPath}` : ''

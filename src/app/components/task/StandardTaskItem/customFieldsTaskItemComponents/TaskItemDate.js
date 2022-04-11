@@ -9,7 +9,7 @@ import DateLabel from 'components/common/DateLabel/DateLabel';
 const TaskItemDate = ({ value, onChange, isHovered }) => {
   const handleDateChange = useCallback(
     newDate => {
-      onChange(newDate ? newDate.toISOString() : null);
+      onChange(newDate ? newDate.format('MM/DD/YYYY') : null);
     },
     [onChange],
   );
@@ -22,6 +22,7 @@ const TaskItemDate = ({ value, onChange, isHovered }) => {
             selectedDate={value}
             onDateChange={handleDateChange}
             onCloseClick={closePopover}
+            hideDateTime
           />
         )}
       >

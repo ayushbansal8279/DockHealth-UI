@@ -9,6 +9,8 @@ import CloseIcon from '@material-ui/icons/Close';
 import Datepicker from 'components/common/Datepicker/Datepicker';
 import { useBoolean } from 'hooks/useBoolean';
 
+const DEFAULT_DATE_FORMAT = 'MM/DD/YYYY';
+
 const CustomDateInput = ({ inputRef, ...otherProps }) => (
   <InputMask inputRef={inputRef} mask="99/99/9999" {...otherProps} />
 );
@@ -34,7 +36,12 @@ const DateInput = ({
     if (textInputReference.current) textInputReference.current.focus();
   }, [textInputReference, unsetOpen]);
 
-  const momentDate = moment(value, 'MM/DD/YYYY');
+  const momentDate =
+    value != null && value.includes('T')
+      ? moment(value, 'YYYY-MM-DDTHH:mm:ss.SSSZ')
+      : moment(value, DEFAULT_DATE_FORMAT);
+
+  const dateValue = momentDate.format(DEFAULT_DATE_FORMAT);
 
   const handleChange = ({ target: { value: date } }) => {
     onChange({ target: { value: date } });
@@ -48,7 +55,7 @@ const DateInput = ({
   };
 
   const handleDatepickerChange = isoDate => {
-    const date = moment(isoDate).format('MM/DD/YYYY');
+    const date = moment(isoDate).format(DEFAULT_DATE_FORMAT);
     handleChange({ target: { value: date } });
     setTimeout(() => {
       textInputReference.current.focus();
@@ -67,11 +74,11 @@ const DateInput = ({
       <Input
         ref={textFieldReference}
         inputRef={textInputReference}
-        value={value}
+        value={dateValue}
         onChange={handleChange}
         readOnly={readOnly}
         disabled={disabled}
-        shrink={!!value}
+        shrink={!!dateValue}
         name={name}
         error={showError}
         endAdornment={
