@@ -8,7 +8,13 @@ import { BulkEditOptionsBarContainer } from './styled';
 const BulkEditSection = ({ children }) => {
   const PatientContext = useContext(PatientEditContext);
 
-  const { bulkEditIsActive, selectedPatients } = PatientContext;
+  const {
+    bulkEditIsActive,
+    selectedPatients,
+    selectedOptionsHandler,
+  } = PatientContext;
+
+  const { turnOffAllOptions } = selectedOptionsHandler;
 
   const dispatch = useDispatch();
 
@@ -16,7 +22,8 @@ const BulkEditSection = ({ children }) => {
     dispatch({
       type: ActionTypes.UNSELECT_ALL_PATIENTS,
     });
-  }, [dispatch]);
+    turnOffAllOptions();
+  }, [dispatch, turnOffAllOptions]);
 
   return (
     <>
