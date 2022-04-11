@@ -2,7 +2,6 @@ import React, { useContext, useCallback } from 'react';
 
 import BulkEditBar from 'components/bulk-edit/BulkEditBar/BulkEditBar';
 import BulkEditOption from 'components/bulk-edit/BulkEditOption/BulkEditOption';
-import { PatientEditContext } from '../../PatientsView';
 
 import DuplicateIcon from 'img/bulk-edit/DuplicateIcon';
 import CompleteIcon from 'img/bulk-edit/CompleteIcon';
@@ -10,6 +9,7 @@ import StatusIcon from 'img/bulk-edit/StatusIcon';
 import DeleteIcon from 'img/bulk-edit/DeleteIcon';
 
 import palette from 'styles/palette';
+import { PatientEditContext } from '../../PatientsView';
 import { Button } from './styled';
 
 const BulkEditOptionsBar = ({ selectedPatients = {}, onClose }) => {
@@ -21,28 +21,23 @@ const BulkEditOptionsBar = ({ selectedPatients = {}, onClose }) => {
     toggleCreateWorkflowOption,
     toggleAddLabelOption,
     toggleDeleteOption,
-    turnOffAllOptions,
   } = selectedOptionsHandler;
 
   const createTaskHandler = useCallback(() => {
-    turnOffAllOptions();
     toggleCreateTaskOption();
-  }, [toggleCreateTaskOption, turnOffAllOptions]);
+  }, [toggleCreateTaskOption]);
 
   const createWorkflowHandler = useCallback(() => {
-    turnOffAllOptions();
     toggleCreateWorkflowOption();
-  }, [toggleCreateWorkflowOption, turnOffAllOptions]);
+  }, [toggleCreateWorkflowOption]);
 
   const addLabelHandler = useCallback(() => {
-    turnOffAllOptions();
     toggleAddLabelOption();
-  }, [toggleAddLabelOption, turnOffAllOptions]);
+  }, [toggleAddLabelOption]);
 
   const deleteHandler = useCallback(() => {
-    turnOffAllOptions();
     toggleDeleteOption();
-  }, [toggleDeleteOption, turnOffAllOptions]);
+  }, [toggleDeleteOption]);
 
   return (
     <BulkEditBar

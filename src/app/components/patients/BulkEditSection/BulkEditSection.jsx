@@ -2,7 +2,7 @@ import React, { useCallback, useContext } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import * as ActionTypes from 'actions/action-types';
 import BulkEditOptionsBar from './BulkEditOptionsBar/BulkEditOptionsBar';
-import { PatientEditContext } from '../PatientsView'
+import { PatientEditContext } from '../PatientsView';
 import { BulkEditOptionsBarContainer } from './styled';
 
 const BulkEditSection = ({ children }) => {

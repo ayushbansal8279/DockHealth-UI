@@ -14,17 +14,17 @@ import {
   DefaultPatientsListType,
 } from 'helpers/patient-list-helpers';
 import { useBoolean } from 'hooks/useBoolean';
-import { selectedPatientsSelector } from 'selectors/patients-selectors';
-import * as PatientsActions from 'actions/patients-actions';
-import * as PatientApi from 'api/patient-api';
-import ViewLayout from 'components/template/ViewLayout/ViewLayout';
-import BasicLayoutHeader from 'components/template/BasicLayoutHeader/BasicLayoutHeader';
 import {
+  selectedPatientsSelector,
   patientsListDetailsSelector,
   patientsSelector,
   isFetchingPatientsSelector,
   patientsListSearchTermSelector,
 } from 'selectors/patients-selectors';
+import * as PatientsActions from 'actions/patients-actions';
+import * as PatientApi from 'api/patient-api';
+import ViewLayout from 'components/template/ViewLayout/ViewLayout';
+import BasicLayoutHeader from 'components/template/BasicLayoutHeader/BasicLayoutHeader';
 import BulkEditSection from 'components/patients/BulkEditSection/BulkEditSection';
 import PatientsList from './PatientsList/PatientsList';
 import PatientsToolbar from './PatientsToolbar/PatientsToolbar';
@@ -116,25 +116,29 @@ const PatientsView = () => {
     return selectedPatients?.length > 0;
   }, [selectedPatients]);
 
-  const toggleCreateTaskOption = useCallback(() => {
-    setCreateTaskOption(previous => !previous);
-  }, []);
-  const toggleCreateWorkflowOption = useCallback(() => {
-    setCreateWorkflowOption(previous => !previous);
-  }, []);
-  const toggleAddLabelOption = useCallback(() => {
-    setAddLabelOption(previous => !previous);
-  }, []);
-  const toggleDeleteOption = useCallback(() => {
-    setDeleteOption(previous => !previous);
-  }, []);
-
   const turnOffAllOptions = useCallback(() => {
     setCreateTaskOption(false);
     setCreateWorkflowOption(false);
     setAddLabelOption(false);
     setDeleteOption(false);
   }, []);
+
+  const toggleCreateTaskOption = useCallback(() => {
+    turnOffAllOptions();
+    setCreateTaskOption(previous => !previous);
+  }, [turnOffAllOptions]);
+  const toggleCreateWorkflowOption = useCallback(() => {
+    turnOffAllOptions();
+    setCreateWorkflowOption(previous => !previous);
+  }, [turnOffAllOptions]);
+  const toggleAddLabelOption = useCallback(() => {
+    turnOffAllOptions();
+    setAddLabelOption(previous => !previous);
+  }, [turnOffAllOptions]);
+  const toggleDeleteOption = useCallback(() => {
+    turnOffAllOptions();
+    setDeleteOption(previous => !previous);
+  }, [turnOffAllOptions]);
 
   const providerValue = useMemo(
     () => ({
