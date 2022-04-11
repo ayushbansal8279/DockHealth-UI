@@ -36,3 +36,9 @@ export const RefineSearchText = styled.p`
   font-family: 'Montserrat', sans-serif;
   color: ${palette.oPlusRed};
 `;
+
+export const BulkEditSectionContainer = styled.div`
+  width: 90%;
+  margin-left: auto;
+  margin-right: auto;
+`;

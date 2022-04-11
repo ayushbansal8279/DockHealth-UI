@@ -1,14 +1,20 @@
 /* eslint-disable sonarjs/cognitive-complexity */
-import React, { useCallback, useEffect, useState } from 'react';
+import React, {
+  useCallback,
+  useEffect,
+  useState,
+  useMemo,
+  createContext,
+} from 'react';
 import { useParams } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { Grid } from '@material-ui/core';
-import * as ActionTypes from 'actions/action-types';
 import {
   getPatientListIdentifierByUrlParameter,
   DefaultPatientsListType,
 } from 'helpers/patient-list-helpers';
 import { useBoolean } from 'hooks/useBoolean';
+import { selectedPatientsSelector } from 'selectors/patients-selectors';
 import * as PatientsActions from 'actions/patients-actions';
 import * as PatientApi from 'api/patient-api';
 import ViewLayout from 'components/template/ViewLayout/ViewLayout';
@@ -22,17 +28,23 @@ import {
 import BulkEditSection from 'components/patients/BulkEditSection/BulkEditSection';
 import PatientsList from './PatientsList/PatientsList';
 import PatientsToolbar from './PatientsToolbar/PatientsToolbar';
+import EmptyListViewWithQuickAddTask from './BulkEditSection/BulkEditOptionsBar/BulkEditCreateTask';
 import {
   PatientsViewContainer,
   PatientsListContainer,
   RefineSearchText,
+  BulkEditSectionContainer,
 } from './styled';
+
+export const PatientEditContext = createContext({});
 
 const MAX_PATIENT_ALL_RESULTS = 1000;
 
 const PatientsView = () => {
   const dispatch = useDispatch();
   const { listIdentifier: listIdentifierParameter } = useParams();
+
+  const allPatients = useSelector(selectedPatientsSelector);
 
   const listIdentifier = getPatientListIdentifierByUrlParameter(
     listIdentifierParameter,
@@ -42,6 +54,11 @@ const PatientsView = () => {
   const isFetchingPatients = useSelector(isFetchingPatientsSelector);
   const patients = useSelector(patientsSelector);
   const { listName, listDescription } = listDetails || {};
+
+  const [createTaskOption, setCreateTaskOption] = useState(false);
+  const [createWorkflowOption, setCreateWorkflowOption] = useState(false);
+  const [addLabelOption, setAddLabelOption] = useState(false);
+  const [deleteOption, setDeleteOption] = useState(false);
 
   const [patientImportDetails, setPatientImportDetails] = useState(null);
   const [importPopoverOpen, setImportPopoverOpen] = useState(false);
@@ -89,40 +106,109 @@ const PatientsView = () => {
     [refreshPatients, setHasImportErrors, unsetHasImportErrors],
   );
 
+  const selectedPatients = useMemo(() => {
+    return allPatients?.filter(
+      patient => patient?.isSelected === true && patient,
+    );
+  }, [allPatients]);
+
+  const bulkEditIsActive = useMemo(() => {
+    return selectedPatients?.length > 0;
+  }, [selectedPatients]);
+
+  const toggleCreateTaskOption = useCallback(() => {
+    setCreateTaskOption(previous => !previous);
+  }, []);
+  const toggleCreateWorkflowOption = useCallback(() => {
+    setCreateWorkflowOption(previous => !previous);
+  }, []);
+  const toggleAddLabelOption = useCallback(() => {
+    setAddLabelOption(previous => !previous);
+  }, []);
+  const toggleDeleteOption = useCallback(() => {
+    setDeleteOption(previous => !previous);
+  }, []);
+
+  const turnOffAllOptions = useCallback(() => {
+    setCreateTaskOption(false);
+    setCreateWorkflowOption(false);
+    setAddLabelOption(false);
+    setDeleteOption(false);
+  }, []);
+
+  const providerValue = useMemo(
+    () => ({
+      bulkEditIsActive,
+      selectedPatients,
+      selectedOptions: {
+        createTaskOption,
+        createWorkflowOption,
+        addLabelOption,
+        deleteOption,
+      },
+      selectedOptionsHandler: {
+        toggleCreateTaskOption,
+        toggleCreateWorkflowOption,
+        toggleAddLabelOption,
+        toggleDeleteOption,
+        turnOffAllOptions,
+      },
+    }),
+    [
+      addLabelOption,
+      bulkEditIsActive,
+      createTaskOption,
+      createWorkflowOption,
+      deleteOption,
+      selectedPatients,
+      toggleAddLabelOption,
+      toggleCreateTaskOption,
+      toggleCreateWorkflowOption,
+      toggleDeleteOption,
+      turnOffAllOptions,
+    ],
+  );
+
   return (
     <>
-      <ViewLayout
-        header={
-          <BasicLayoutHeader title={listName} description={listDescription} />
-        }
-      >
-        <PatientsViewContainer>
-          <PatientsToolbar
-            refreshPatientList={refreshPatientList}
-            setImportPopoverOpen={setImportPopoverOpen}
-          />
-          <PatientsListContainer>
-            <Grid container>
-              {listIdentifier === DefaultPatientsListType.ALL_PATIENTS &&
-                patients?.length >= MAX_PATIENT_ALL_RESULTS && (
-                  <RefineSearchText>
-                    Please further refine search, too many results!
-                  </RefineSearchText>
-                )}
-              <PatientsList
-                isFiltered={searchValue}
-                patients={patients}
-                patientImportDetails={patientImportDetails}
-                importPopoverOpen={importPopoverOpen}
-                setImportPopoverOpen={setImportPopoverOpen}
-                hasImportErrors={hasImportErrors}
-                isFetching={isFetchingPatients && !patients}
-              />
-            </Grid>
-          </PatientsListContainer>
-        </PatientsViewContainer>
-      </ViewLayout>
-      <BulkEditSection />
+      <PatientEditContext.Provider value={providerValue}>
+        <ViewLayout
+          header={
+            <BasicLayoutHeader title={listName} description={listDescription} />
+          }
+        >
+          <PatientsViewContainer>
+            <PatientsToolbar
+              refreshPatientList={refreshPatientList}
+              setImportPopoverOpen={setImportPopoverOpen}
+            />
+            <PatientsListContainer>
+              <Grid container>
+                {listIdentifier === DefaultPatientsListType.ALL_PATIENTS &&
+                  patients?.length >= MAX_PATIENT_ALL_RESULTS && (
+                    <RefineSearchText>
+                      Please further refine search, too many results!
+                    </RefineSearchText>
+                  )}
+                <PatientsList
+                  isFiltered={searchValue}
+                  patients={patients}
+                  patientImportDetails={patientImportDetails}
+                  importPopoverOpen={importPopoverOpen}
+                  setImportPopoverOpen={setImportPopoverOpen}
+                  hasImportErrors={hasImportErrors}
+                  isFetching={isFetchingPatients && !patients}
+                />
+              </Grid>
+            </PatientsListContainer>
+          </PatientsViewContainer>
+        </ViewLayout>
+        <BulkEditSection>
+          <BulkEditSectionContainer>
+            <EmptyListViewWithQuickAddTask />
+          </BulkEditSectionContainer>
+        </BulkEditSection>
+      </PatientEditContext.Provider>
     </>
   );
 };
