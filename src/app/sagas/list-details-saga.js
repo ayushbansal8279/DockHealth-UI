@@ -58,10 +58,7 @@ import { TaskStatus } from 'helpers/task-helpers';
 import sessionStorageHelper from 'helpers/session-storage-helper';
 import { onSortChanged, onSearchChanged } from 'helpers/ga-event-helper';
 import { openModal } from 'modal/actions';
-import {
-  applyTaskTemplate as applyTaskTemplateAction,
-  getTasksForTaskGroups as getTasksForTaskGroupsAction,
-} from 'actions/list-details-actions';
+import { applyTaskTemplate as applyTaskTemplateAction } from 'actions/list-details-actions';
 import * as CustomFieldsApi from 'api/custom-fields-api';
 import * as TaskListApi from 'api/task-list-api';
 import store from '../store';
@@ -556,7 +553,7 @@ function* doCreateTask(payload) {
         }
       } else {
         const fetchedTasksGroups = yield select(groupTasksSelector);
-        const taskGroup = fetchedTasksGroups.find(
+        const taskGroup = fetchedTasksGroups?.find(
           ({ groupIdentifier }) => groupIdentifier === taskGroupIdentifier,
         );
 
@@ -732,25 +729,6 @@ function* updateListCustomFieldsSetup({ setup }) {
   }
 }
 
-function* refreshGroup({ task }) {
-  const currentTaskList = yield select(currentTaskListSelector);
-  const { taskListIdentifier } = yield select(locationParametersSelector);
-  const { taskGroupIdentifier } = task?.taskGroups?.[0];
-
-  if (
-    taskListIdentifier &&
-    currentTaskList.taskListIdentifier === taskListIdentifier
-  ) {
-    yield put(
-      getTasksForTaskGroupsAction({
-        taskGroupIdentifier,
-        status: 'INCOMPLETE',
-        refresh: true,
-      }),
-    );
-  }
-}
-
 function* taskCounterIncreaseWatcher({ task }) {
   const currentTaskList = yield select(currentTaskListSelector);
   if (currentTaskList) {
@@ -855,7 +833,6 @@ export default function* watchTasksGroupsList() {
     ActionTypes.FILTER_LIST_DETAILS_TASKS,
     filterListDetailsTasks,
   );
-  // yield takeLatest([ActionTypes.ADD_TASK_SUCCESS], refreshGroup);
   yield takeLatest([ActionTypes.ADD_TASK_SUCCESS], taskCounterIncreaseWatcher);
   yield takeLatest([ActionTypes.DELETE_TASK], taskCounterDecreaseWatcher);
   yield takeLatest(ActionTypes.GET_LIST_CUSTOM_FIELDS, getListCustomFields);
