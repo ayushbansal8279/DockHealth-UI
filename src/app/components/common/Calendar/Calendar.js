@@ -29,33 +29,30 @@ const temporaryTaskId = 'temporaryTaskId';
 
 const dedupe = pipe(uniqBy(prop('id')));
 
-const Calendar = ({
-  taskList,
-  taskListIdentifier,
-  showInCompleteTasksOnly,
-  onAddEvent,
-}) => {
+const Calendar = ({ tasks, taskListIdentifier, onAddEvent }) => {
   const { userIdentifier } = useSelector(userProfileSelector);
   const [isAddingTaskEnabled, setIsAddingTaskEnabled] = useState(true);
   const addTaskInputReference = useRef();
   const dispatch = useDispatch();
-  const { parentTasks, subtasks } = extractTasksAndSubtasks(taskList);
+  const { parentTasks, subtasks } = extractTasksAndSubtasks(tasks);
   const allTasks = [...parentTasks, ...subtasks];
 
-  const tasks = useMemo(
+  const transformedTasks = useMemo(
     () =>
       allTasks
-        .filter(
-          ({ dueDate, completedDt }) =>
-            !!dueDate &&
-            ((showInCompleteTasksOnly && !completedDt) ||
-              !showInCompleteTasksOnly),
-        )
+        // .filter(
+        //   ({ dueDate, completedDt }) =>
+        //     !!dueDate &&
+        //     ((showInCompleteTasksOnly && !completedDt) ||
+        //       !showInCompleteTasksOnly),
+        // )
         .map(transformTaskToEvent),
-    [allTasks, showInCompleteTasksOnly],
+    [allTasks],
   );
 
-  const uniqueTasks = useMemo(() => dedupe(tasks), [tasks]);
+  const uniqueTasks = useMemo(() => dedupe(transformedTasks), [
+    transformedTasks,
+  ]);
 
   const handleEventClick = useCallback(
     data => {
@@ -166,7 +163,7 @@ const Calendar = ({
       );
     }
 
-    const task = taskList?.find(
+    const task = tasks?.find(
       ({ identifier }) => identifier === eventInfo?.event?.id,
     );
 
@@ -199,7 +196,7 @@ const Calendar = ({
   );
 
   const handleDateChange = ({ startStr, endStr }) => {
-    dispatch(CalendarTasksActions.changeCalendarDateRange(startStr, endStr));
+    dispatch(CalendarTasksActions.getCalendarTasks(startStr, endStr));
   };
 
   return (

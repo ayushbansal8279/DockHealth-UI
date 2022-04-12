@@ -477,7 +477,7 @@ function* reassignTasksToAnotherGroup(payload) {
   }
 }
 
-function* initializeTaskListState() {
+function* initializeListDetailsTableState() {
   try {
     const { taskIdentifier } = yield select(locationParametersSelector);
     const taskListIdentifier = yield select(currentTaskListIdentifierSelector);
@@ -839,8 +839,8 @@ export default function* watchTasksGroupsList() {
   yield takeLatest(ActionTypes.SORT_LIST_DETAILS_TASKS, sortListDetailsTasks);
   yield takeEvery(ActionTypes.GET_TASKS_GROUPS_LIST, getTasksGroupsList);
   yield takeLatest(
-    ActionTypes.INITIALIZE_TASK_LIST_STATE,
-    initializeTaskListState,
+    ActionTypes.INITIALIZE_LIST_DETAILS_TABLE_STATE,
+    initializeListDetailsTableState,
   );
   yield takeEvery(ActionTypes.CREATE_TASK_LIST_GROUP, createTaskListGroup);
   yield takeEvery(ActionTypes.REORDER_TASKS_IN_GROUP, sortTasksInGroup);

@@ -1,7 +1,7 @@
 /* eslint-disable unicorn/prevent-abbreviations */
 /* eslint-disable react-hooks/rules-of-hooks */
 import { useEffect, useCallback, useState, useMemo, useRef } from 'react';
-import { useLocation, useHistory, useParams } from 'react-router-dom';
+import { useHistory, useParams } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { isEmpty, isNil } from 'ramda';
 import { initializePusher } from 'helpers/pusher-instance';
@@ -28,6 +28,8 @@ import {
   searchTermSelector,
 } from 'selectors/list-details-selectors';
 import {
+  currentTaskListIdentifierSelector,
+  currentTaskListTasksStatusSelector,
   currentTaskListSelector,
   pendingTaskListsSelector,
   taskListMembersSelector,
@@ -42,17 +44,18 @@ import * as ListDetailsActions from 'actions/list-details-actions';
 import { createTask } from 'sagas/list-details-saga';
 import * as ModalActions from 'modal/actions';
 import * as UserAuthApi from 'api/user-auth-api';
-import { getViewTypeFromQueryString } from 'helpers/view-type-helper';
 
 const LIST_DETAILS_FIRST_TIME_KEY = 'LIST_DETAILS_FIRST_TIME_KEY';
 
 const initializeListDetailsViewHooks = () => {
   const history = useHistory();
-  const { search } = useLocation();
   const params = useParams();
-  const viewType = getViewTypeFromQueryString(search);
   const sort = useSelector(taskDetailsSortSelector);
+  const currentTaskListIdentifier = useSelector(
+    currentTaskListIdentifierSelector,
+  );
   const taskList = useSelector(currentTaskListSelector);
+  const currentStatus = useSelector(currentTaskListTasksStatusSelector);
   const { columnsConfig, setColumnsConfig } = useColumnsConfig();
   const currentUser = useSelector(userProfileSelector);
   const { userIdentifier: currentUserIdentifier } = currentUser || {};
@@ -87,8 +90,9 @@ const initializeListDetailsViewHooks = () => {
   const { taskListIdentifier: taskListIdentifierParam, tabName } = params;
 
   useEffect(() => {
-    dispatch(ListDetailsActions.initializeListDetailsTableState());
-  }, [dispatch]);
+    if (currentTaskListIdentifier)
+      dispatch(ListDetailsActions.initializeListDetailsTableState());
+  }, [dispatch, currentTaskListIdentifier, currentStatus]);
 
   useEffect(() => {
     if (taskListIdentifierParam) {
@@ -546,7 +550,6 @@ const initializeListDetailsViewHooks = () => {
     displayListPreferences,
     setDisplayListPreferences,
     setDisplayColumnPreferences,
-    viewType,
     refreshFilters,
     dispatch,
   };
