@@ -7,7 +7,6 @@ import NewBlueBellIcon from 'img/notifications/new-blue-bell';
 import WhiteBellIcon from 'img/notifications/white-bell';
 import NewWhiteBellIcon from 'img/notifications/new-white-bell';
 import CrossedBellIcon from 'img/notifications/crossed-bell';
-// import SettingsIcon from 'img/settings-icon';
 import SettingsIcon from 'img/navigation/SettingsIcon';
 import { onActivityAlertOpened } from 'helpers/ga-event-helper';
 import * as ActivityAlertsApi from 'api/activity-alerts-api';
