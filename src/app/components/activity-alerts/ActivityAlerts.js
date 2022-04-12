@@ -17,6 +17,7 @@ import { initializePusher } from 'helpers/pusher-instance';
 import ActivityAlertsItem from './ActivityAlertsItem/ActivityAlertsItem';
 import ActivityAlertsSettings from './ActivityAlertsSettings/ActivityAlertsSettings';
 import ActivityAlertsLoader from './ActivityAlertsLoader/ActivityAlertsLoader';
+import palette from 'styles/palette';
 import {
   ActivityAlertsImg,
   ActivityAlertsPopover,
@@ -242,7 +243,10 @@ const ActivityAlerts = ({ variant = 'blue' }) => {
                   </ActivityAlertsClearAllLabel>
                 )}
                 <SettingsButton onClick={() => setSelectedScreen('SETTINGS')}>
-                  <SettingsIcon strokeColor="#8492A4" fillColor="none" />
+                  <SettingsIcon
+                    strokeColor={palette.coolGrey1}
+                    fillColor="none"
+                  />
                 </SettingsButton>
               </ActivityAlertsOptions>
             </ActivityAlertsHeader>
