@@ -23,6 +23,7 @@ import TaskTemplateReducer from './task-template-reducer';
 import PatientsReducer from './patients-reducer';
 import AnalyticsReducer from './analytics-reducer';
 import WorkflowDrawerReducer from './workflow-drawer-reducer';
+import CalendarTasksReducer from './calendar-tasks-reducer';
 
 const appReducer = combineReducers({
   templateState: TemplateReducer,
@@ -48,6 +49,7 @@ const appReducer = combineReducers({
   patients: PatientsReducer,
   analytics: AnalyticsReducer,
   workflowDrawer: WorkflowDrawerReducer,
+  calendarTasks: CalendarTasksReducer,
 });
 
 export default function rootReducer(state, action) {

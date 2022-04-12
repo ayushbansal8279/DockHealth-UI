@@ -1,5 +1,11 @@
 import * as ActionTypes from './action-types';
 
+export function initializeListDetailsTableState() {
+  return {
+    type: ActionTypes.INITIALIZE_LIST_DETAILS_TABLE_STATE,
+  };
+}
+
 export function getListDetailsTaskCounters(taskListIdentifier) {
   return {
     type: ActionTypes.GET_LIST_DETAILS_TASK_COUNTERS,

@@ -4,6 +4,7 @@ import dayGridPlugin from '@fullcalendar/daygrid';
 import timeGridPlugin from '@fullcalendar/timegrid';
 import { useSelector, useDispatch } from 'react-redux';
 import { extractTasksAndSubtasks } from 'helpers/tasklist-helpers';
+import * as CalendarTasksActions from 'actions/calendar-tasks-actions';
 import { openDrawer } from 'actions/task-drawer-actions';
 import * as TaskActions from 'actions/task-actions';
 import { storeAsCurrentTask, updateTaskDueDate } from 'actions/task-actions';
@@ -197,6 +198,10 @@ const Calendar = ({
     [dispatch, allTasks],
   );
 
+  const handleDateChange = ({ startStr, endStr }) => {
+    dispatch(CalendarTasksActions.changeCalendarDateRange(startStr, endStr));
+  };
+
   return (
     <CalendarContainer>
       <FullCalendar
@@ -217,6 +222,7 @@ const Calendar = ({
         dayMaxEvents
         eventChange={handleDropDown}
         eventContent={renderEventContent}
+        datesSet={handleDateChange}
       />
     </CalendarContainer>
   );

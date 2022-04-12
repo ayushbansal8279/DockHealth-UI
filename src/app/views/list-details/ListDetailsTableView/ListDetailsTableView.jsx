@@ -8,15 +8,14 @@ import { ViewType } from 'helpers/view-type-helper';
 import Calendar from 'components/common/Calendar/Calendar';
 import HorizontallyScrolledViewLayout from 'components/template/HorizontallyScrolledViewLayout/HorizontallyScrolledViewLayout';
 import StickyContainer from 'components/common/HorizontalScroll/StickyContainer';
-import OpenedTasksView from './ListDetailsOpenedTasksContainer/ListDetailsOpenedTasksContainer';
-import CompletedTasksView from './ListDetailsCompletedTasksContainer/ListDetailsCompletedTasksContainer';
+import OpenedTasksView from '../ListDetailsOpenedTasksContainer/ListDetailsOpenedTasksContainer';
+import CompletedTasksView from '../ListDetailsCompletedTasksContainer/ListDetailsCompletedTasksContainer';
+import ListDetailsHeader from '../ListDetailsHeader/ListDetailsHeader';
+import ListDetailsToolbar from '../ListDetailsToolbar/ListDetailsToolbar';
 import initializeListDetailsViewHooks from './hooks';
 import { TaskViewContainer } from './styled';
-import ListDetailsHeader from './ListDetailsHeader/ListDetailsHeader';
-import ListDetailsToolbar from './ListDetailsToolbar/ListDetailsToolbar';
 
-const ListDetailsView = props => {
-  const { match, history } = props;
+const ListDetailsTableView = () => {
   const {
     bulkEditIsDisabled,
     bulkEditTasks,
@@ -47,7 +46,7 @@ const ListDetailsView = props => {
     setDisplayColumnPreferences,
     viewType,
     dispatch,
-  } = initializeListDetailsViewHooks(match, history);
+  } = initializeListDetailsViewHooks();
 
   const additionalToolbarOptions = [
     {
@@ -159,4 +158,4 @@ const ListDetailsView = props => {
   );
 };
 
-export default ListDetailsView;
+export default ListDetailsTableView;
