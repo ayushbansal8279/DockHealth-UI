@@ -1,5 +1,6 @@
 /* eslint-disable sonarjs/no-small-switch */
 import * as ActionTypes from 'actions/action-types';
+import TaskBaseReducer from './task-base-reducer';
 
 const initialState = {
   tasks: null,
@@ -44,7 +45,14 @@ const CalendarTasksReducer = (state = initialState, action) => {
     }
 
     default:
-      return state;
+      return TaskBaseReducer(
+        state,
+        action,
+        (currentState, updateTaskCallback) => ({
+          ...currentState,
+          tasks: currentState.tasks?.map(t => updateTaskCallback(t)),
+        }),
+      );
   }
 };
 

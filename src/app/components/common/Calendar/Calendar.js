@@ -181,7 +181,12 @@ const Calendar = ({ taskListIdentifier }) => {
   );
 
   const handleDateChange = ({ startStr, endStr }) => {
-    dispatch(CalendarTasksActions.changeCalendarDateRange(startStr, endStr));
+    dispatch(
+      CalendarTasksActions.changeCalendarDateRange(
+        startStr.slice(0, 10),
+        endStr.slice(0, 10),
+      ),
+    );
   };
 
   return (

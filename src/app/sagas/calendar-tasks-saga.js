@@ -18,8 +18,8 @@ function* getCalendarTasks() {
       ListDetailsApi.getTasksForListByDateRange,
       taskListIdentifier,
       status,
-      startDate.slice(0, 10),
-      endDate.slice(0, 10),
+      startDate,
+      endDate,
     );
     yield put(CalendarTasksActions.getCalendarTasksSuccess(tasks));
   } catch {
