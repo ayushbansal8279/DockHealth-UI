@@ -23,8 +23,7 @@ const BulkEditCreateTask = () => {
   const patientContext = useContext(PatientEditContext);
   const dispatch = useDispatch();
 
-  const { selectedOptions, selectedPatients } = patientContext;
-  const { createTaskOption } = selectedOptions;
+  const { selectedPatients } = patientContext;
 
   const quickAddTask = useCallback(
     ({ description }) => {
@@ -46,26 +45,21 @@ const BulkEditCreateTask = () => {
         }),
       );
     },
-    [selectedPatients],
+    [dispatch, selectedPatients],
   );
 
   return (
-    <>
-      {createTaskOption && (
-        <EmptyListContainer>
-          <QuickAddTaskInput
-            quickAddTask={quickAddTask}
-            validator={value => {
-              if ([...value]?.filter(char => char !== ' ').length < 2)
-                return 'The task description is too short (min. 2 characters)';
-
-              return null;
-            }}
-          />
-          <Spacing vertical={5} />
-        </EmptyListContainer>
-      )}
-    </>
+    <EmptyListContainer>
+      <QuickAddTaskInput
+        quickAddTask={quickAddTask}
+        validator={value => {
+          if ([...value]?.filter(char => char !== ' ').length < 2)
+            return 'The task description is too short (min. 2 characters)';
+          return null;
+        }}
+      />
+      <Spacing vertical={5} />
+    </EmptyListContainer>
   );
 };
 

@@ -42,3 +42,10 @@ export const BulkEditSectionContainer = styled.div`
   margin-left: auto;
   margin-right: auto;
 `;
+
+export const TaskTemplateApplicatorContainer = styled.div`
+  margin-bottom: 60px;
+  justify-content: center;
+  display: flex;
+  padding-top: 10px;
+`;

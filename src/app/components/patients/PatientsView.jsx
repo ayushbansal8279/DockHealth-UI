@@ -26,6 +26,8 @@ import * as PatientApi from 'api/patient-api';
 import ViewLayout from 'components/template/ViewLayout/ViewLayout';
 import BasicLayoutHeader from 'components/template/BasicLayoutHeader/BasicLayoutHeader';
 import BulkEditSection from 'components/patients/BulkEditSection/BulkEditSection';
+import { applyTaskTemplate } from 'actions/list-details-actions';
+import TaskTemplateApplicator from 'components/task-template/TaskTemplateApplicator/TaskTemplateApplicator';
 import PatientsList from './PatientsList/PatientsList';
 import PatientsToolbar from './PatientsToolbar/PatientsToolbar';
 import EmptyListViewWithQuickAddTask from './BulkEditSection/BulkEditOptionsBar/BulkEditCreateTask';
@@ -34,6 +36,7 @@ import {
   PatientsListContainer,
   RefineSearchText,
   BulkEditSectionContainer,
+  TaskTemplateApplicatorContainer,
 } from './styled';
 
 export const PatientEditContext = createContext({});
@@ -173,6 +176,32 @@ const PatientsView = () => {
     ],
   );
 
+  // const applyTemplate = useCallback(
+  //   ({ taskTemplateIdentifier, taskGroupIdentifier }) =>
+  //     dispatch(
+  //       applyTaskTemplate({
+  //         taskTemplateIdentifier,
+  //         taskListIdentifier,
+  //         taskGroupIdentifier,
+  //       }),
+  //     ),
+  //   [dispatch, taskListIdentifier],
+  // );
+
+  // const handleTemplateSelect = useCallback(
+  //   template => {
+  //     applyTemplate({
+  //       taskTemplateIdentifier: template?.identifier,
+  //       taskGroupIdentifier,
+  //     });
+  //   },
+  //   [applyTemplate, taskGroupIdentifier],
+  // );
+
+  const handleTemplateSelect = useCallback(() => {
+    console.log('handleTemplateSelect');
+  }, []);
+
   return (
     <>
       <PatientEditContext.Provider value={providerValue}>
@@ -209,7 +238,14 @@ const PatientsView = () => {
         </ViewLayout>
         <BulkEditSection>
           <BulkEditSectionContainer>
-            <EmptyListViewWithQuickAddTask />
+            {createTaskOption && <EmptyListViewWithQuickAddTask />}
+            {createWorkflowOption && (
+              <TaskTemplateApplicatorContainer>
+                <TaskTemplateApplicator
+                  onTemplateSelect={handleTemplateSelect}
+                />
+              </TaskTemplateApplicatorContainer>
+            )}
           </BulkEditSectionContainer>
         </BulkEditSection>
       </PatientEditContext.Provider>
