@@ -120,9 +120,6 @@ const DashboardList = ({
     return dashboardGroupsOrderPreferences ? sorted() : filteredDashboardTasks;
   }, [dashboardGroupsOrderPreferences, filteredDashboardTasks]);
 
-  // console.log('filteredDashboardTasks', filteredDashboardTasks);
-  // console.log('orderedDashboardTasks', orderedDashboardTasks);
-
   const currentSortMethod = useMemo(() => {
     if (!sortKey) return identity;
     return TASK_ITEM_SORT_METHODS[sortKey];

@@ -4,7 +4,9 @@ import { HOME_PATH } from 'routing/helpers/paths';
 import { Link } from 'react-router-dom';
 import { Box } from '@material-ui/core';
 import ActivityAlerts from 'components/activity-alerts/ActivityAlerts';
+import { UserOrganizationRole } from 'helpers/user-helper';
 import TrialBanner from 'components/navigation/TrialBanner/TrialBanner';
+import AccessRestrictor from 'components/access/AccessRestrictor/AccessRestrictor';
 import {
   HeaderContainer,
   MainHeader,
@@ -12,6 +14,8 @@ import {
   Title,
   Description,
 } from './styled';
+
+const { ADMIN, OWNER, MEMBER, GUEST, EXTERNAL } = UserOrganizationRole;
 
 const LayoutHeader = props => {
   const { children, horizontalSticky } = props;
@@ -29,7 +33,11 @@ const LayoutHeader = props => {
           {children}
         </Box>
         <Box mx={1} />
-        <ActivityAlerts />
+        <AccessRestrictor
+          allowedToRoles={[ADMIN, OWNER, MEMBER, GUEST, EXTERNAL]}
+        >
+          <ActivityAlerts />
+        </AccessRestrictor>
         <Box mx={1} />
         <Link to={HOME_PATH}>
           <DockHeaderImage />
