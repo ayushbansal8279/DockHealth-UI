@@ -1,5 +1,5 @@
-/* eslint-disable sonarjs/no-small-switch */
 import * as ActionTypes from 'actions/action-types';
+import { mapWithRemove } from 'helpers/utility-functions';
 import TaskBaseReducer from './task-base-reducer';
 
 const initialState = {
@@ -44,13 +44,24 @@ const CalendarTasksReducer = (state = initialState, action) => {
       };
     }
 
+    case ActionTypes.ADD_TASK_SUCCESS: {
+      const { task } = action;
+
+      return {
+        ...state,
+        tasks: state.tasks ? [...state.tasks, task] : null,
+      };
+    }
+
     default:
       return TaskBaseReducer(
         state,
         action,
         (currentState, updateTaskCallback) => ({
           ...currentState,
-          tasks: currentState.tasks?.map(t => updateTaskCallback(t)),
+          tasks: currentState.tasks
+            ? mapWithRemove(updateTaskCallback, currentState.tasks)
+            : null,
         }),
       );
   }
