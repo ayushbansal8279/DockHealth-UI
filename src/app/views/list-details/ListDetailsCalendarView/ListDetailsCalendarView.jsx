@@ -3,11 +3,13 @@ import { useDispatch, useSelector } from 'react-redux';
 import MoreVert from '@material-ui/icons/MoreVert';
 import { Box } from '@material-ui/core';
 import ViewLayout from 'components/template/ViewLayout/ViewLayout';
+import TaskDrawer from 'components/task-drawer/TaskDrawer/TaskDrawer';
 import {
   currentTaskListIdentifierSelector,
   currentTaskListTasksStatusSelector,
   currentTaskListSelector,
 } from 'selectors/task-list-selectors';
+import { calendarDateRangeSelector } from 'selectors/calendar-tasks-selectors';
 import * as CalendarTasksActions from 'actions/calendar-tasks-actions';
 import ListOptionsMenu from 'components/tasklist/ListOptionsMenu/ListOptionsMenu';
 import LayoutHeader from 'components/template/LayoutHeader/LayoutHeader';
@@ -23,10 +25,13 @@ const ListDetailsCalendarView = () => {
   const taskList = useSelector(currentTaskListSelector);
   const { taskListIdentifier, listName, listDescription, listType } =
     taskList || {};
+  const { startDate, endDate } = useSelector(calendarDateRangeSelector);
 
   useEffect(() => {
-    dispatch(CalendarTasksActions.getCalendarTasks());
-  }, [dispatch, currentTaskListIdentifier, status]);
+    if (currentTaskListIdentifier && status && startDate && endDate) {
+      dispatch(CalendarTasksActions.getCalendarTasks());
+    }
+  }, [dispatch, currentTaskListIdentifier, status, startDate, endDate]);
 
   return (
     <ViewLayout
@@ -44,11 +49,8 @@ const ListDetailsCalendarView = () => {
       }
     >
       <ListDetailsToolbar />
-      <Calendar
-        taskList={[]}
-        taskListIdentifier={taskListIdentifier}
-        // showInCompleteTasksOnly={selectedTab === TaskListTabName.OPEN}
-      />
+      <Calendar taskListIdentifier={taskListIdentifier} />
+      <TaskDrawer />
     </ViewLayout>
   );
 };

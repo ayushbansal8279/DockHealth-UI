@@ -10,6 +10,29 @@ const initialState = {
 
 const CalendarTasksReducer = (state = initialState, action) => {
   switch (action.type) {
+    case ActionTypes.GET_CALENDAR_TASKS: {
+      return {
+        ...state,
+        isFetchingTasks: true,
+        tasks: null,
+      };
+    }
+
+    case ActionTypes.GET_CALENDAR_TASKS_SUCCESS: {
+      return {
+        ...state,
+        isFetchingTasks: false,
+        tasks: action.tasks,
+      };
+    }
+
+    case ActionTypes.GET_CALENDAR_TASKS_FAILURE: {
+      return {
+        ...state,
+        isFetchingTasks: false,
+      };
+    }
+
     case ActionTypes.CHANGE_CALENDAR_DATE_RANGE: {
       const { startDate, endDate } = action;
 

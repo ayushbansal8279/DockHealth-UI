@@ -1,18 +1,19 @@
-import { call, select, takeLatest } from 'redux-saga/effects';
+import { all, call, put, select, takeLatest } from 'redux-saga/effects';
 import * as ActionTypes from 'actions/action-types';
 import * as ListDetailsApi from 'api/list-details-api';
 import {
   currentTaskListIdentifierSelector,
   currentTaskListTasksStatusSelector,
 } from 'selectors/task-list-selectors';
-// import * as CalendarTasksActions from 'actions/calendar-tasks-actions';
+import { calendarDateRangeSelector } from 'selectors/calendar-tasks-selectors';
+import { showGlobalErrorAlert } from 'alert/actions';
+import * as CalendarTasksActions from 'actions/calendar-tasks-actions';
 
-function* getCalendarTasks({ startDate, endDate }) {
+function* getCalendarTasks() {
   try {
-    console.log('startDate', startDate);
-    console.log('endDate', endDate);
     const taskListIdentifier = yield select(currentTaskListIdentifierSelector);
     const status = yield select(currentTaskListTasksStatusSelector);
+    const { startDate, endDate } = yield select(calendarDateRangeSelector);
     const tasks = yield call(
       ListDetailsApi.getTasksForListByDateRange,
       taskListIdentifier,
@@ -20,9 +21,12 @@ function* getCalendarTasks({ startDate, endDate }) {
       startDate.slice(0, 10),
       endDate.slice(0, 10),
     );
-    console.log('tasks', tasks);
+    yield put(CalendarTasksActions.getCalendarTasksSuccess(tasks));
   } catch {
-    console.log('error');
+    yield all([
+      put(CalendarTasksActions.getCalendarTasksFailure()),
+      put(showGlobalErrorAlert()),
+    ]);
   }
 }
 

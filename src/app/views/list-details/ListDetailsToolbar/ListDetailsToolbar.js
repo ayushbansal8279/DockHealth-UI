@@ -67,10 +67,10 @@ const ListDetailsToolbar = ({ onColumnSetupChange, additionalOptions }) => {
           event.target.value === TaskStatus.INCOMPLETE
             ? ''
             : `/${TaskStatus.COMPLETE}`
-        }`,
+        }${search}`,
       );
     },
-    [history, taskListIdentifier],
+    [history, taskListIdentifier, search],
   );
 
   const handleTasksVisibilityChange = visible => {

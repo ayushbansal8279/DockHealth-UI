@@ -4,13 +4,13 @@ import dayGridPlugin from '@fullcalendar/daygrid';
 import timeGridPlugin from '@fullcalendar/timegrid';
 import { useSelector, useDispatch } from 'react-redux';
 import { extractTasksAndSubtasks } from 'helpers/tasklist-helpers';
+import { calendarTasksSelector } from 'selectors/calendar-tasks-selectors';
 import * as CalendarTasksActions from 'actions/calendar-tasks-actions';
 import { openDrawer } from 'actions/task-drawer-actions';
 import * as TaskActions from 'actions/task-actions';
 import { storeAsCurrentTask, updateTaskDueDate } from 'actions/task-actions';
 import interactionPlugin from '@fullcalendar/interaction';
 import moment from 'moment';
-import { pipe, prop, uniqBy } from 'ramda';
 import { openModal } from 'modal/actions';
 import { getSharedTaskListsWithCurrentUser } from 'api/task-list-api';
 import { userProfileSelector } from 'selectors/user-selectors';
@@ -27,31 +27,17 @@ import MultiAssignCalendar from './MultiAssignCalendar';
 
 const temporaryTaskId = 'temporaryTaskId';
 
-const dedupe = pipe(uniqBy(prop('id')));
-
-const Calendar = ({ tasks, taskListIdentifier, onAddEvent }) => {
+const Calendar = ({ taskListIdentifier }) => {
   const { userIdentifier } = useSelector(userProfileSelector);
   const [isAddingTaskEnabled, setIsAddingTaskEnabled] = useState(true);
   const addTaskInputReference = useRef();
   const dispatch = useDispatch();
+  const tasks = useSelector(calendarTasksSelector);
   const { parentTasks, subtasks } = extractTasksAndSubtasks(tasks);
   const allTasks = [...parentTasks, ...subtasks];
 
-  const transformedTasks = useMemo(
-    () =>
-      allTasks
-        // .filter(
-        //   ({ dueDate, completedDt }) =>
-        //     !!dueDate &&
-        //     ((showInCompleteTasksOnly && !completedDt) ||
-        //       !showInCompleteTasksOnly),
-        // )
-        .map(transformTaskToEvent),
-    [allTasks],
-  );
-
-  const uniqueTasks = useMemo(() => dedupe(transformedTasks), [
-    transformedTasks,
+  const transformedTasks = useMemo(() => allTasks.map(transformTaskToEvent), [
+    allTasks,
   ]);
 
   const handleEventClick = useCallback(
@@ -128,7 +114,6 @@ const Calendar = ({ tasks, taskListIdentifier, onAddEvent }) => {
                 dueDate,
               };
               dispatch(TaskActions.addTask(taskDetails));
-              if (typeof onAddEvent === 'function') onAddEvent(taskDetails);
             },
           }),
         );
@@ -136,7 +121,7 @@ const Calendar = ({ tasks, taskListIdentifier, onAddEvent }) => {
         setIsAddingTaskEnabled(true);
       }
     },
-    [dispatch, onAddEvent, taskListIdentifier, userIdentifier],
+    [dispatch, taskListIdentifier, userIdentifier],
   );
 
   const renderEventContent = eventInfo => {
@@ -196,7 +181,7 @@ const Calendar = ({ tasks, taskListIdentifier, onAddEvent }) => {
   );
 
   const handleDateChange = ({ startStr, endStr }) => {
-    dispatch(CalendarTasksActions.getCalendarTasks(startStr, endStr));
+    dispatch(CalendarTasksActions.changeCalendarDateRange(startStr, endStr));
   };
 
   return (
@@ -205,7 +190,7 @@ const Calendar = ({ tasks, taskListIdentifier, onAddEvent }) => {
         expandRows
         selectable
         editable
-        events={uniqueTasks}
+        events={transformedTasks}
         plugins={[dayGridPlugin, timeGridPlugin, interactionPlugin]}
         initialView="dayGridMonth"
         headerToolbar={{
