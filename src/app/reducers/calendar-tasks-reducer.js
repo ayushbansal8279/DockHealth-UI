@@ -11,7 +11,8 @@ const initialState = {
 
 const CalendarTasksReducer = (state = initialState, action) => {
   switch (action.type) {
-    case ActionTypes.GET_CALENDAR_TASKS: {
+    case ActionTypes.GET_DASHBOARD_CALENDAR_TASKS:
+    case ActionTypes.GET_LIST_CALENDAR_TASKS: {
       return {
         ...state,
         isFetchingTasks: true,
@@ -19,7 +20,8 @@ const CalendarTasksReducer = (state = initialState, action) => {
       };
     }
 
-    case ActionTypes.GET_CALENDAR_TASKS_SUCCESS: {
+    case ActionTypes.GET_DASHBOARD_CALENDAR_TASKS_SUCCESS:
+    case ActionTypes.GET_LIST_CALENDAR_TASKS_SUCCESS: {
       return {
         ...state,
         isFetchingTasks: false,
@@ -27,7 +29,8 @@ const CalendarTasksReducer = (state = initialState, action) => {
       };
     }
 
-    case ActionTypes.GET_CALENDAR_TASKS_FAILURE: {
+    case ActionTypes.GET_DASHBOARD_CALENDAR_TASKS_FAILURE:
+    case ActionTypes.GET_LIST_CALENDAR_TASKS_FAILURE: {
       return {
         ...state,
         isFetchingTasks: false,

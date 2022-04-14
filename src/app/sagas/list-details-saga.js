@@ -49,6 +49,7 @@ import {
   currentTaskListSelector,
   currentTaskListIdentifierSelector,
 } from 'selectors/task-list-selectors';
+import { calendarDateRangeSelector } from 'selectors/calendar-tasks-selectors';
 import { showGlobalAlert, showGlobalErrorAlert } from 'alert/actions';
 import AlertMessages from 'alert/AlertMessages';
 import { openDrawer } from 'actions/task-drawer-actions';
@@ -814,6 +815,27 @@ function* reorderTaskListGroups({ newIndex, oldIndex }) {
   }
 }
 
+function* getListCalendarTasks() {
+  try {
+    const taskListIdentifier = yield select(currentTaskListIdentifierSelector);
+    const status = yield select(currentTaskListTasksStatusSelector);
+    const { startDate, endDate } = yield select(calendarDateRangeSelector);
+    const tasks = yield call(
+      ListDetailsApi.getTasksForListByDateRange,
+      taskListIdentifier,
+      status,
+      startDate,
+      endDate,
+    );
+    yield put(ListDetailsActions.getListCalendarTasksSuccess(tasks));
+  } catch {
+    yield all([
+      put(ListDetailsActions.getListCalendarTasksFailure()),
+      put(showGlobalErrorAlert()),
+    ]);
+  }
+}
+
 export default function* watchTasksGroupsList() {
   yield takeEvery(ActionTypes.APPLY_TASK_TEMPLATE, applyTaskTemplate);
   yield takeLatest(
@@ -869,4 +891,5 @@ export default function* watchTasksGroupsList() {
     ActionTypes.GET_CURRENT_TASK_LIST_FILTER_OPTIONS,
     getCurrentTaskListFilterOptions,
   );
+  yield takeLatest(ActionTypes.GET_LIST_CALENDAR_TASKS, getListCalendarTasks);
 }

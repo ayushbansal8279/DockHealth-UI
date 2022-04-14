@@ -8,21 +8,8 @@ export function changeCalendarDateRange(startDate, endDate) {
   };
 }
 
-export function getCalendarTasks() {
+export function clearCalendarTasksState() {
   return {
-    type: ActionTypes.GET_CALENDAR_TASKS,
-  };
-}
-
-export function getCalendarTasksSuccess(tasks) {
-  return {
-    type: ActionTypes.GET_CALENDAR_TASKS_SUCCESS,
-    tasks,
-  };
-}
-
-export function getCalendarTasksFailure() {
-  return {
-    type: ActionTypes.GET_CALENDAR_TASKS_FAILURE,
+    type: ActionTypes.CLEAR_CALENDAR_TASKS_STATE,
   };
 }

@@ -59,6 +59,7 @@ const DashboardToolbar = props => {
   const { tourModalIsOpen, openTourModal } = props;
   const history = useHistory();
   const { search } = useLocation();
+  const viewType = getViewTypeFromQueryString(search);
   const dispatch = useDispatch();
   const [highlightPosition, setHighlightPosition] = useState({
     width: 0,
@@ -187,7 +188,7 @@ const DashboardToolbar = props => {
               label="My Tasks"
               setHighlightPosition={setHighlightPosition}
               onClick={() => {
-                history.push(HOME_PATH);
+                history.push(`${HOME_PATH}${search}`);
               }}
               isSelected={tabName === DashboardTasksTab.MY_TASKS}
             />
@@ -197,7 +198,7 @@ const DashboardToolbar = props => {
               label="Shared with me"
               setHighlightPosition={setHighlightPosition}
               onClick={() => {
-                history.push(HOME_SHARED_PATH);
+                history.push(`${HOME_SHARED_PATH}`);
               }}
               isSelected={tabName === DashboardTasksTab.SHARED_TASKS}
             />
@@ -207,7 +208,7 @@ const DashboardToolbar = props => {
               label="All Tasks"
               setHighlightPosition={setHighlightPosition}
               onClick={() => {
-                history.push(HOME_ALL_TASKS_PATH);
+                history.push(`${HOME_ALL_TASKS_PATH}${search}`);
               }}
               isSelected={tabName === DashboardTasksTab.ALL_TASKS}
             />
@@ -217,24 +218,30 @@ const DashboardToolbar = props => {
         </DashboardTabsContainer>
       </Grid>
       <ActionsContainer item md={8}>
-        <TaskViewTypeToolbarSelect
-          value={getViewTypeFromQueryString(search)}
-          onChange={handleChangeViewType}
-        />
-        <Spacing horizontal={4} />
-        <AccessRestrictor allowedToRoles={[ADMIN, OWNER, MEMBER, GUEST]}>
-          <CustomizeToolbarButton
-            onChange={onColumnSetupChange}
-            showCustomColumnCreate={false}
-            additionalOptionsTitle="Groups"
-            additionalOptions={additionalOptions}
+        {tabName !== DashboardTasksTab.SHARED_TASKS && (
+          <TaskViewTypeToolbarSelect
+            value={viewType}
+            onChange={handleChangeViewType}
           />
-        </AccessRestrictor>
-        <Spacing horizontal={4} />
-        <div>
-          <TipsSwitchLabel>Tips</TipsSwitchLabel>
-          <Switch checked={tourModalIsOpen} onChange={openTourModal} />
-        </div>
+        )}
+        {viewType !== ViewType.CALENDAR_VIEW && (
+          <>
+            <Spacing horizontal={4} />
+            <AccessRestrictor allowedToRoles={[ADMIN, OWNER, MEMBER, GUEST]}>
+              <CustomizeToolbarButton
+                onChange={onColumnSetupChange}
+                showCustomColumnCreate={false}
+                additionalOptionsTitle="Groups"
+                additionalOptions={additionalOptions}
+              />
+            </AccessRestrictor>
+            <Spacing horizontal={4} />
+            <div>
+              <TipsSwitchLabel>Tips</TipsSwitchLabel>
+              <Switch checked={tourModalIsOpen} onChange={openTourModal} />
+            </div>
+          </>
+        )}
       </ActionsContainer>
     </ToolbarContainer>
   );

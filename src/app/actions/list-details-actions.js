@@ -179,3 +179,22 @@ export const moveWorkflowToGroup = (
   taskGroupIdentifier,
   templateGroup,
 });
+
+export function getListCalendarTasks() {
+  return {
+    type: ActionTypes.GET_LIST_CALENDAR_TASKS,
+  };
+}
+
+export function getListCalendarTasksSuccess(tasks) {
+  return {
+    type: ActionTypes.GET_LIST_CALENDAR_TASKS_SUCCESS,
+    tasks,
+  };
+}
+
+export function getListCalendarTasksFailure() {
+  return {
+    type: ActionTypes.GET_LIST_CALENDAR_TASKS_FAILURE,
+  };
+}
