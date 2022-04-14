@@ -25,6 +25,7 @@ import {
 } from './styled';
 
 const ADMIN_USER_ROLE = 'ADMIN';
+const OWNER_USER_ROLE = 'OWNER';
 
 const Comment = ({
   comment,
@@ -78,8 +79,6 @@ const Comment = ({
   const commentDetails = `${creator.firstName} ${
     creator.lastName
   }, ${dateLabel} @ ${moment(dateUpdated).format('h:mma')}`;
-
-  const isAdmin = currentUser?.taskListUserRole === ADMIN_USER_ROLE;
 
   const onCommentEdited = useCallback(() => {
     unsetEditing();
@@ -195,7 +194,7 @@ const Comment = ({
                   </EditCommentButton>
                 </>
               )}
-              {(isCommentAuthor || isAdmin) && (
+              {isCommentAuthor && (
                 <>
                   <Spacing horizontal={3} />
                   <RobotoTypography condensed variant="h5" color="inherit">
