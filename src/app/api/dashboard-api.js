@@ -147,3 +147,9 @@ export function searchTasksForOrganizationGroupedByImplicitGroups(searchTerm) {
       throw new Error(error?.response?.data?.errorMessage);
     });
 }
+
+export function getCalendarTasks(tabName, startDate, endDate) {
+  console.log(tabName, startDate, endDate);
+  // TODO: fetch tasks in range for home view
+  return Promise.resolve([]);
+}

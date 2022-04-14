@@ -20,6 +20,7 @@ import {
   getTasksForOrganizationByImplicitGroup,
   searchTasksByAssignedToUserGroupedByImplicitGroups,
   searchTasksForOrganizationGroupedByImplicitGroups,
+  getCalendarTasks,
 } from 'api/dashboard-api';
 import {
   DashboardTasksTab,
@@ -298,10 +299,9 @@ function* getDashboardCalendarTasks() {
     const tabName = yield select(dashboardTabNameSelector);
     const { startDate, endDate } = yield select(calendarDateRangeSelector);
     if (!tabName) return;
-    // TODO: fetch tasks in range for home view
-    console.log('startDate', startDate);
-    console.log('endDate', endDate);
-    const tasks = [];
+
+    const tasks = yield call(getCalendarTasks, tabName, startDate, endDate);
+
     yield put(DashboardActions.getDashboardCalendarTasksSuccess(tasks));
   } catch {
     yield all([
