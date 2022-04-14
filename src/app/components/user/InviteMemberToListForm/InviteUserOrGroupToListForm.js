@@ -263,7 +263,8 @@ const InviteUserOrGroupToListForm = ({
                   {userOrGroup.itemType === 'GROUP' && (
                     <ItemStatusLabel>Group</ItemStatusLabel>
                   )}
-                  {currentUserListRole === 'ADMIN' && (
+                  {(currentUserListRole === 'ADMIN' ||
+                    currentUserListRole === 'OWNER') && (
                     <OptionsMenu
                       placement="left-start"
                       options={getMenuOptionsForMember(userOrGroup, {

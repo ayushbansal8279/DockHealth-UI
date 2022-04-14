@@ -5,7 +5,8 @@ export const getMemberStatus = member => {
     case 'ACTIVE':
       if (orgUserRole === 'GUEST') return 'Guest';
 
-      if (taskListUserRole === 'ADMIN') return 'List Admin';
+      if (taskListUserRole === 'ADMIN' || taskListUserRole === 'OWNER')
+        return 'List Admin';
 
       return null;
 
