@@ -16,9 +16,7 @@ const SecuredRoute = ({
   const { orgUserRole } = useSelector(userProfileSelector);
   const isFetchingRole = useSelector(isFetchingProfileSelector);
 
-  const renderRoute = useCallback(() => <ComponentToRender {...restProps} />, [
-    restProps,
-  ]);
+  const renderRoute = () => <ComponentToRender {...restProps} />;
 
   if (!isFetchingRole && allowedToRoles && !orgUserRole) return null;
   if (!allowedToRoles) return renderRoute();
@@ -30,6 +28,7 @@ const SecuredRoute = ({
     );
   }
   if (Array.isArray(allowedToRoles)) {
+    if (!orgUserRole) return null;
     const matched = allowedToRoles.find(r => r === orgUserRole);
     return matched ? renderRoute() : <Redirect to={HOME_PATH} />;
   }

@@ -1,10 +1,9 @@
 import React, { useState, useEffect, Suspense } from 'react';
-import { Route, Redirect, Switch, useHistory } from 'react-router-dom';
+import { Redirect, Switch, useHistory } from 'react-router-dom';
 import { useEffectOnce } from 'react-use';
 import { parse } from 'query-string';
 import ReactGA from 'react-ga';
 import sendEvent from 'api/usage-api';
-import { UserOrganizationRole } from 'helpers/user-helper';
 import {
   AUTH_ROUTES,
   ONBOARDING_ROUTES,
@@ -67,8 +66,6 @@ const Routes = () => {
       setRedirection(null);
     }
   }, [history, redirection]);
-
-  const { ADMIN, OWNER, MEMBER, GUEST } = UserOrganizationRole;
 
   return (
     <Suspense fallback={<div />}>
@@ -141,7 +138,6 @@ const Routes = () => {
           )}
         />
         <SecuredRoute
-          allowedToRoles={[ADMIN, OWNER, MEMBER, GUEST]}
           path="/settings"
           render={() => (
             <TemplateCore

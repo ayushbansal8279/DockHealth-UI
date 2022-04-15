@@ -4,6 +4,7 @@ export const UserOrganizationRole = {
   MEMBER: 'MEMBER',
   GUEST: 'GUEST',
   EXTERNAL: 'EXTERNAL',
+  DOCK_PRO: 'DOCK_PRO',
 };
 
 export const getOrgRole = roleKey => {
@@ -16,6 +17,8 @@ export const getOrgRole = roleKey => {
       return 'Member';
     case UserOrganizationRole.GUEST:
       return 'Guest';
+    case UserOrganizationRole.DOCK_PRO:
+      return 'Dock Pro';
     default:
       return '';
   }
