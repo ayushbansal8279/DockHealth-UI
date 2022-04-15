@@ -56,6 +56,10 @@ const CalendarTasksReducer = (state = initialState, action) => {
       };
     }
 
+    case ActionTypes.CLEAR_CALENDAR_TASKS_STATE: {
+      return initialState;
+    }
+
     default:
       return TaskBaseReducer(
         state,
