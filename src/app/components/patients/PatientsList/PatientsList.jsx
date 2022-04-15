@@ -50,13 +50,16 @@ const PatientsList = ({
   const customPatientsList = useSelector(selectedPatientsSelector);
   const currentPatients = customPatientsList || patients;
 
-  const setSelectedPatient = useCallback(data => {
-    dispatch({
-      type: ActionTypes.SET_SELECTED_PATIENT,
-      identifier: data.patientIdentifier || data.id,
-      isSelected: !data.isSelected,
-    });
-  }, []);
+  const setSelectedPatient = useCallback(
+    data => {
+      dispatch({
+        type: ActionTypes.SET_SELECTED_PATIENT,
+        identifier: data.patientIdentifier || data.id,
+        isSelected: !data.isSelected,
+      });
+    },
+    [dispatch],
+  );
 
   useEffect(() => {
     return () => {
@@ -64,7 +67,7 @@ const PatientsList = ({
         type: ActionTypes.UNSELECT_ALL_PATIENTS,
       });
     };
-  }, []);
+  }, [dispatch]);
 
   const columns = [
     {

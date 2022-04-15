@@ -18,7 +18,6 @@ const PatientsReducer = (state = initialState, action) => {
       const selectedFilters = sessionStorageHelper.getItem(
         getPatientsListFiltersStorageKey(action.patientsListIdentifier),
       );
-
       return {
         ...state,
         currentPatientsListIdentifier: action.patientsListIdentifier,
@@ -187,6 +186,13 @@ const PatientsReducer = (state = initialState, action) => {
         customPatientsLists: state.customPatientsLists?.filter(
           ({ patientListIdentifier }) => patientListIdentifier !== identifier,
         ),
+      };
+    }
+
+    case ActionTypes.CLEAR_SELECTED_PATIENTS_LIST: {
+      return {
+        ...state,
+        selectedPatientsList: null,
       };
     }
 

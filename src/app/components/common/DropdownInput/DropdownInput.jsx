@@ -106,7 +106,7 @@ const DropdownInput = React.forwardRef(
           name={name}
           label={label}
           placeholder={placeholder}
-          disabled={disabled}
+          // disabled={disabled}
           InputLabelProps={{
             shrink: true,
             ...InputLabelProps,
@@ -142,6 +142,7 @@ const DropdownInput = React.forwardRef(
           isPopoverOpen={isPopoverOpen}
           closePopover={closePopover}
         >
+          {console.log(children, 'children')}
           {children?.map((child, index) => (
             <StyledButton
               type="button"

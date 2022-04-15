@@ -244,7 +244,7 @@ const PatientLabels = () => {
         </ReadOnlyLabelContainer>
       ))}
       <ReadOnlyLabelContainer>
-        <Tooltip title="Add a label" placement="bottom">
+        <Tooltip title="Add a label" placement="top">
           <Chip
             key="add"
             clickable

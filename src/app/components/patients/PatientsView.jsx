@@ -22,15 +22,19 @@ import {
   patientsListSearchTermSelector,
 } from 'selectors/patients-selectors';
 import * as PatientsActions from 'actions/patients-actions';
+import * as PatientBulkActions from 'actions/patient-bulk-actions';
 import * as PatientApi from 'api/patient-api';
 import ViewLayout from 'components/template/ViewLayout/ViewLayout';
 import BasicLayoutHeader from 'components/template/BasicLayoutHeader/BasicLayoutHeader';
 import BulkEditSection from 'components/patients/BulkEditSection/BulkEditSection';
-import { applyTaskTemplate } from 'actions/list-details-actions';
 import TaskTemplateApplicator from 'components/task-template/TaskTemplateApplicator/TaskTemplateApplicator';
+import { getTaskListForUser } from 'api/task-list-api';
+import { openModal, closeModal } from 'modal/actions';
 import PatientsList from './PatientsList/PatientsList';
 import PatientsToolbar from './PatientsToolbar/PatientsToolbar';
 import EmptyListViewWithQuickAddTask from './BulkEditSection/BulkEditOptionsBar/BulkEditCreateTask';
+import BulkEditAddLabel from './BulkEditSection/BulkEditOptionsBar/BulkEditAddLabel/BulkEditAddLabel';
+import PatientLabels from '../../views/patient-details/PatientLabels/PatientLabels';
 import {
   PatientsViewContainer,
   PatientsListContainer,
@@ -119,6 +123,39 @@ const PatientsView = () => {
     return selectedPatients?.length > 0;
   }, [selectedPatients]);
 
+  const handleConfirm = useCallback(() => {
+    const assignedPatients = selectedPatients?.map(patient => {
+      return patient.patientIdentifier;
+    });
+    dispatch(
+      PatientBulkActions.patientBulkDeletePatient({
+        assignedPatients,
+        listIdentifier,
+      }),
+    );
+  }, [dispatch, listIdentifier, selectedPatients]);
+
+  const openDeleteConfirmationModal = useCallback(() => {
+    const selectedPatientsCount = selectedPatients?.length;
+
+    const modalProps = {
+      title: `You want to delete ${selectedPatientsCount} patient${selectedPatientsCount >
+        1 && 's'}`,
+      description: `Are you sure you want to delete ${selectedPatientsCount} patient${selectedPatientsCount >
+        1 && 's'} ? This action cannot be undone.`,
+      confirmButtonText: 'Delete',
+      confirm: () => {
+        handleConfirm();
+        dispatch(closeModal());
+      },
+      onClose: () => {
+        dispatch(closeModal());
+        setDeleteOption(false);
+      },
+    };
+    dispatch(openModal('DeleteConfirmation', modalProps));
+  }, [dispatch, handleConfirm, selectedPatients]);
+
   const turnOffAllOptions = useCallback(() => {
     setCreateTaskOption(false);
     setCreateWorkflowOption(false);
@@ -140,8 +177,9 @@ const PatientsView = () => {
   }, [turnOffAllOptions]);
   const toggleDeleteOption = useCallback(() => {
     turnOffAllOptions();
+    openDeleteConfirmationModal();
     setDeleteOption(previous => !previous);
-  }, [turnOffAllOptions]);
+  }, [turnOffAllOptions, openDeleteConfirmationModal]);
 
   const providerValue = useMemo(
     () => ({
@@ -176,31 +214,28 @@ const PatientsView = () => {
     ],
   );
 
-  // const applyTemplate = useCallback(
-  //   ({ taskTemplateIdentifier, taskGroupIdentifier }) =>
-  //     dispatch(
-  //       applyTaskTemplate({
-  //         taskTemplateIdentifier,
-  //         taskListIdentifier,
-  //         taskGroupIdentifier,
-  //       }),
-  //     ),
-  //   [dispatch, taskListIdentifier],
-  // );
+  const handleTemplateSelect = useCallback(
+    template => {
+      const assignedPatients = selectedPatients?.map(patient => {
+        return patient.patientIdentifier;
+      });
 
-  // const handleTemplateSelect = useCallback(
-  //   template => {
-  //     applyTemplate({
-  //       taskTemplateIdentifier: template?.identifier,
-  //       taskGroupIdentifier,
-  //     });
-  //   },
-  //   [applyTemplate, taskGroupIdentifier],
-  // );
-
-  const handleTemplateSelect = useCallback(() => {
-    console.log('handleTemplateSelect');
-  }, []);
+      dispatch(
+        openModal('ListPicker', {
+          fetchMethod: getTaskListForUser,
+          confirm: listId =>
+            dispatch(
+              PatientBulkActions.patientBulkCreateWorkflow({
+                workflowIdentifier: template.identifier,
+                taskListIdentifier: listId,
+                assignedToUsers: assignedPatients,
+              }),
+            ),
+        }),
+      );
+    },
+    [dispatch, selectedPatients],
+  );
 
   return (
     <>
@@ -244,6 +279,12 @@ const PatientsView = () => {
                 <TaskTemplateApplicator
                   onTemplateSelect={handleTemplateSelect}
                 />
+              </TaskTemplateApplicatorContainer>
+            )}
+            {addLabelOption && (
+              <TaskTemplateApplicatorContainer>
+                {/* <BulkEditAddLabel /> */}
+                <PatientLabels />
               </TaskTemplateApplicatorContainer>
             )}
           </BulkEditSectionContainer>

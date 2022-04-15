@@ -5,7 +5,7 @@ import QuickAddTaskInput from 'components/tasklist/QuickAddTaskInput/QuickAddTas
 import Spacing from 'components/common/Spacing';
 import { openModal } from 'modal/actions';
 import { getTaskListForUser } from 'api/task-list-api';
-import { addTask } from 'actions/task-actions';
+import { patientBulkCreateTask } from 'actions/patient-bulk-actions';
 
 import styled from 'styled-components';
 import { fontSizes, fontWeights } from 'styles/font';
@@ -28,7 +28,7 @@ const BulkEditCreateTask = () => {
   const quickAddTask = useCallback(
     ({ description }) => {
       const assignedPatients = selectedPatients?.map(patient => {
-        return { identifier: patient.patientIdentifier };
+        return patient.patientIdentifier;
       });
 
       dispatch(
@@ -36,7 +36,7 @@ const BulkEditCreateTask = () => {
           fetchMethod: getTaskListForUser,
           confirm: listId =>
             dispatch(
-              addTask({
+              patientBulkCreateTask({
                 description,
                 taskListIdentifier: listId,
                 assignedToUsers: assignedPatients,

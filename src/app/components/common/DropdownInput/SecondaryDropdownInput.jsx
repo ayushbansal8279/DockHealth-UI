@@ -6,27 +6,39 @@ import {
   useSecondaryTypeInputStyles,
   useSecondaryTypeTextFieldStyles,
 } from './styled';
-import { generateSelectOptions } from './helpers';
+import { generateSelectOptions, generateAddOption } from './helpers';
 
 const SecondaryDropdownInput = React.forwardRef(
-  ({ options, width, ...restProps }, reference) => {
+  ({ options, width, showCreateOption, ...restProps }, reference) => {
     const secondaryTypeInputClasses = useSecondaryTypeInputStyles();
     const secondaryTypeTextFieldClasses = useSecondaryTypeTextFieldStyles({
       width,
     });
-
+    console.log(showCreateOption, 'showCreateOption');
+    const optionsData = showCreateOption
+      ? [
+        ...options,
+        {
+          value: 'Add new',
+          label: 'Add new',
+        },
+      ]
+      : options;
     return (
-      <DropdownInput
-        ref={reference}
-        InputProps={{
-          endAdornment: <SelectArrowImg src={ArrowIcon} alt="arrow" />,
-          classes: secondaryTypeInputClasses,
-        }}
-        textFieldClasses={secondaryTypeTextFieldClasses}
-        {...restProps}
-      >
-        {generateSelectOptions(options)}
-      </DropdownInput>
+      <>
+        <DropdownInput
+          ref={reference}
+          InputProps={{
+            endAdornment: <SelectArrowImg src={ArrowIcon} alt="arrow" />,
+            classes: secondaryTypeInputClasses,
+          }}
+          textFieldClasses={secondaryTypeTextFieldClasses}
+          {...restProps}
+        >
+          {generateSelectOptions(optionsData)}
+        </DropdownInput>
+        <span>XDXDXD</span>
+      </>
     );
   },
 );
