@@ -9,21 +9,11 @@ import {
 import { generateSelectOptions, generateAddOption } from './helpers';
 
 const SecondaryDropdownInput = React.forwardRef(
-  ({ options, width, showCreateOption, ...restProps }, reference) => {
+  ({ options, width, ...restProps }, reference) => {
     const secondaryTypeInputClasses = useSecondaryTypeInputStyles();
     const secondaryTypeTextFieldClasses = useSecondaryTypeTextFieldStyles({
       width,
     });
-    console.log(showCreateOption, 'showCreateOption');
-    const optionsData = showCreateOption
-      ? [
-        ...options,
-        {
-          value: 'Add new',
-          label: 'Add new',
-        },
-      ]
-      : options;
     return (
       <>
         <DropdownInput
@@ -35,9 +25,8 @@ const SecondaryDropdownInput = React.forwardRef(
           textFieldClasses={secondaryTypeTextFieldClasses}
           {...restProps}
         >
-          {generateSelectOptions(optionsData)}
+          {generateSelectOptions(options)}
         </DropdownInput>
-        <span>XDXDXD</span>
       </>
     );
   },

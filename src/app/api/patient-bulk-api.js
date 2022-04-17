@@ -1,7 +1,6 @@
 import axios from './axios-heydoc';
-import * as AlertActions from 'alert/actions';
 import AlertMessages from 'alert/AlertMessages';
-import * as ActionTypes from 'actions/action-types';
+import { showGlobalAlert, showGlobalErrorAlert } from 'alert/actions';
 
 const CREATE_TASK = 'CREATE_TASK';
 const CREATE_WORKFLOW = 'CREATE_WORKFLOW';
@@ -47,4 +46,24 @@ export const patientBulkDeletePatient = payload => {
   axios.put(`patient/bulk`, body).catch(error => {
     throw new Error(error?.response?.data?.errorMessage);
   });
+};
+
+export const patientBulkAddLabel = data => {
+  const { labelIdentifier, labelName, assignedToUsers } = data;
+  const body = {
+    bulkOperationType: ADD_LABEL,
+    labelIdentifier: labelIdentifier || null,
+    labelName: labelName || null,
+    patientIdentifiers: assignedToUsers,
+  };
+
+  axios
+    .put(`patient/bulk`, body)
+    .then(() => {
+      showGlobalAlert(AlertMessages.Saved);
+    })
+    .catch(error => {
+      showGlobalErrorAlert();
+      throw new Error(error?.response?.data?.errorMessage);
+    });
 };

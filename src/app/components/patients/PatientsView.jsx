@@ -33,7 +33,6 @@ import { openModal, closeModal } from 'modal/actions';
 import PatientsList from './PatientsList/PatientsList';
 import PatientsToolbar from './PatientsToolbar/PatientsToolbar';
 import EmptyListViewWithQuickAddTask from './BulkEditSection/BulkEditOptionsBar/BulkEditCreateTask';
-import BulkEditAddLabel from './BulkEditSection/BulkEditOptionsBar/BulkEditAddLabel/BulkEditAddLabel';
 import PatientLabels from '../../views/patient-details/PatientLabels/PatientLabels';
 import {
   PatientsViewContainer,
@@ -41,6 +40,7 @@ import {
   RefineSearchText,
   BulkEditSectionContainer,
   TaskTemplateApplicatorContainer,
+  ContentWrapper,
 } from './styled';
 
 export const PatientEditContext = createContext({});
@@ -283,8 +283,9 @@ const PatientsView = () => {
             )}
             {addLabelOption && (
               <TaskTemplateApplicatorContainer>
-                {/* <BulkEditAddLabel /> */}
-                <PatientLabels />
+                <ContentWrapper>
+                  <PatientLabels isPatientBulk />
+                </ContentWrapper>
               </TaskTemplateApplicatorContainer>
             )}
           </BulkEditSectionContainer>

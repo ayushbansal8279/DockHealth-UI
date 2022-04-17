@@ -3,7 +3,6 @@ import * as patientBulkApi from 'api/patient-bulk-api';
 import * as ActionTypes from 'actions/action-types';
 import { showGlobalAlert, showGlobalErrorAlert } from 'alert/actions';
 import AlertMessages from 'alert/AlertMessages';
-import * as PatientsActions from 'actions/patients-actions';
 
 function* addBulkTask({ payload }) {
   try {

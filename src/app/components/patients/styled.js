@@ -49,3 +49,10 @@ export const TaskTemplateApplicatorContainer = styled.div`
   display: flex;
   padding-top: 10px;
 `;
+
+export const ContentWrapper = styled.div`
+  padding: 0px 20px 0 0;
+  max-width: 360px;
+  width: 100%;
+  box-sizing: border-box;
+`;
