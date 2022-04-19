@@ -267,6 +267,18 @@ const PatientsReducer = (state = initialState, action) => {
       };
     }
 
+    case ActionTypes.PATIENT_BULK_DELETE_PATIENTS_SUCCESS: {
+      const { patientIdentifiers } = action;
+
+      return {
+        ...state,
+        selectedPatientsList: state.selectedPatientsList.filter(
+          ({ patientIdentifier }) =>
+            !patientIdentifiers.includes(patientIdentifier),
+        ),
+      };
+    }
+
     default:
       return state;
   }

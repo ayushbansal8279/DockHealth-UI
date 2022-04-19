@@ -113,10 +113,10 @@ export const patientBulkCreateWorkflow = payload => {
   axios.put(`patient/bulk`, body).then(({ data }) => data);
 };
 
-export const patientBulkDeletePatient = payload => {
+export const patientBulkDeletePatient = patientIdentifiers => {
   const body = {
     bulkOperationType: PatientBulkActions.DELETE_PATIENT,
-    patientIdentifiers: payload,
+    patientIdentifiers,
   };
 
   axios.put(`patient/bulk`, body).then(({ data }) => data);

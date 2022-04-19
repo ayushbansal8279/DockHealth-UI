@@ -204,19 +204,21 @@ function* addBulkWorkflow({ payload }) {
 }
 
 function* deleteBulkPatient({ payload }) {
-  const { assignedPatients, listIdentifier } = payload;
+  const { assignedPatients } = payload;
   try {
     yield call(PatientsApi.patientBulkDeletePatient, assignedPatients);
-    yield put({
-      type: ActionTypes.CLEAR_SELECTED_PATIENTS_LIST,
-    });
-    yield put({
-      type: ActionTypes.INITIALIZE_PATIENTS_LIST_STATE,
-      patientsListIdentifier: listIdentifier,
-    });
-    yield put(showGlobalAlert(AlertMessages.DELETED));
+    yield all([
+      put({
+        type: ActionTypes.PATIENT_BULK_DELETE_PATIENTS_SUCCESS,
+        patientIdentifiers: assignedPatients,
+      }),
+      put(showGlobalAlert(AlertMessages.DELETED)),
+    ]);
   } catch {
-    yield put(showGlobalErrorAlert());
+    yield all([
+      put({ type: ActionTypes.PATIENT_BULK_DELETE_PATIENTS_FAILURE }),
+      put(showGlobalErrorAlert()),
+    ]);
   }
 }
 
