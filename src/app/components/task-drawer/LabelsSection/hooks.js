@@ -57,7 +57,8 @@ const labelAddOrRemovePromise = ({
 
 const initializeLabelsSectionHooks = ({
   onTaskUpdate,
-  formMethods: { setValue, clearError },
+  clearErrors,
+  formMethods: { setValue },
 }) => {
   const dispatch = useDispatch();
   const selectedTask = useSelector(selectedTaskSelector);
@@ -79,7 +80,7 @@ const initializeLabelsSectionHooks = ({
 
     setAvailableLabels(freshLabels);
     setIsLoadingLabels(false);
-    clearError();
+    clearErrors();
     setValue(
       'labels',
       getFormattedLabels({ labels: selectedTask?.labels ?? [] }),

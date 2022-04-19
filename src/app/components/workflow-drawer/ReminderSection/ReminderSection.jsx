@@ -1,6 +1,6 @@
 import React, { useCallback, useEffect, useRef, useState } from 'react';
 import moment from 'moment';
-import { useForm, FormContext } from 'react-hook-form';
+import { useForm, FormProvider } from 'react-hook-form';
 import { isDueDateOverdue, ReminderType } from 'helpers/task-helpers';
 import Checkbox from 'components/common/Checkbox/Checkbox';
 import Spacing from 'components/common/Spacing';
@@ -142,7 +142,7 @@ const ReminderSection = ({ disabled }) => {
   );
 
   return (
-    <FormContext {...formMethods}>
+    <FormProvider {...formMethods}>
       <ReminderContainer>
         <Checkbox
           isDisabled={isCheckboxDisabled}
@@ -187,7 +187,7 @@ const ReminderSection = ({ disabled }) => {
           </>
         )}
       </ReminderContainer>
-    </FormContext>
+    </FormProvider>
   );
 };
 

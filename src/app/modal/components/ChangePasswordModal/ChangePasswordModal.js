@@ -1,5 +1,5 @@
 import React from 'react';
-import { useForm, FormContext } from 'react-hook-form';
+import { useForm, FormProvider } from 'react-hook-form';
 import { useDispatch } from 'react-redux';
 import { object, string, ref } from 'yup';
 import { Grid } from '@material-ui/core';
@@ -70,7 +70,7 @@ const ChangePasswordModal = ({ closeModal }) => {
         <CloseIcon />
       </CloseIconButton>
       <Title>Change your password</Title>
-      <FormContext {...formMethods}>
+      <FormProvider {...formMethods}>
         <StyledForm onSubmit={handleSubmit(onSubmit({ setError, dispatch }))}>
           <FormInput
             autoFocus
@@ -103,7 +103,7 @@ const ChangePasswordModal = ({ closeModal }) => {
             </Grid>
           </Grid>
         </StyledForm>
-      </FormContext>
+      </FormProvider>
     </ChangePasswordModalContainer>
   );
 };

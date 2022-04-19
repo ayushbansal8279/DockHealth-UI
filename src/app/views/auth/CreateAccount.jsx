@@ -3,7 +3,7 @@
 import { Grid, Typography } from '@material-ui/core';
 import queryString from 'query-string';
 import React, { useState } from 'react';
-import { FormContext, useForm } from 'react-hook-form';
+import { FormProvider, useForm } from 'react-hook-form';
 import { useDispatch } from 'react-redux';
 import { useHistory } from 'react-router-dom';
 import { useMount } from 'react-use';
@@ -249,7 +249,7 @@ const CreateAccount = props => {
           }),
         )}
       >
-        <FormContext {...formMethods}>
+        <FormProvider {...formMethods}>
           {(hasTrialReferral || hasCustomPageTitle) && (
             <>
               <MontserratTypography variant="h2">
@@ -304,7 +304,7 @@ const CreateAccount = props => {
             </span>
             <StyledLink to="/auth/login">SIGN IN</StyledLink>
           </MontserratTypography>
-        </FormContext>
+        </FormProvider>
       </StyledForm>
       <OnboardingDialog open={isDialogShown} fullWidth maxWidth="sm">
         <OnboardingHeader>

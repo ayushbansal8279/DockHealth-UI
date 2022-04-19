@@ -1,6 +1,6 @@
 import { Grid } from '@material-ui/core';
 import React, { useEffect, useState } from 'react';
-import { FormContext, useForm } from 'react-hook-form';
+import { FormProvider, useForm } from 'react-hook-form';
 import { useSelector } from 'react-redux';
 import {
   CardCVCElement,
@@ -361,12 +361,12 @@ const BillingData = ({
     register,
     setValue,
     unregister,
-    clearError,
+    clearErrors,
   } = formMethods;
 
   useEffectOnce(() => {
     formFields.forEach(({ key }) => {
-      register({ name: key });
+      register(key);
     });
 
     return () => {
@@ -402,7 +402,7 @@ const BillingData = ({
     setValue('zip', billingAddressPostalCode);
     setValue('state', billingAddressState);
 
-    clearError();
+    clearErrors();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [billingDetails, isUpdatingBilling]);
 
@@ -425,7 +425,7 @@ const BillingData = ({
       autoComplete="off"
       autoCorrect="off"
     >
-      <FormContext {...formMethods}>
+      <FormProvider {...formMethods}>
         <CreditPaymentForm
           isUpdatingBilling={isUpdatingBilling}
           cancelUpdateBilling={cancelUpdateBilling}
@@ -440,7 +440,7 @@ const BillingData = ({
             Update billing
           </BillingInformation>
         )}
-      </FormContext>
+      </FormProvider>
     </form>
   );
 };

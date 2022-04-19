@@ -256,7 +256,10 @@ export const OnboardingInput = ({
   shrink,
   InputBaseProps = {},
 }) => {
-  const { register, errors } = useFormContext();
+  const {
+    register,
+    formState: { errors },
+  } = useFormContext();
   const error = errors?.[name]?.message;
 
   return (

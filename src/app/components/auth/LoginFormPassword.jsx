@@ -1,5 +1,5 @@
 import React from 'react';
-import { FormContext, useForm } from 'react-hook-form';
+import { FormProvider, useForm } from 'react-hook-form';
 import { useMount, useToggle } from 'react-use';
 import styled from 'styled-components';
 import { object, string } from 'yup';
@@ -67,7 +67,7 @@ const LoginFormPassword = ({
           : onSubmit({ setError }),
       )}
     >
-      <FormContext {...formMethods}>
+      <FormProvider {...formMethods}>
         <MontserratTypography variant="h2">{titleContent}</MontserratTypography>
         <Spacing vertical={4} />
         <MontserratTypography variant="h3">Please sign in</MontserratTypography>
@@ -103,7 +103,7 @@ const LoginFormPassword = ({
         <MontserratTypography variant="h4">
           <StyledLink to="/auth/forgotPassword">FORGOT PASSWORD?</StyledLink>
         </MontserratTypography>
-      </FormContext>
+      </FormProvider>
     </StyledForm>
   );
 };

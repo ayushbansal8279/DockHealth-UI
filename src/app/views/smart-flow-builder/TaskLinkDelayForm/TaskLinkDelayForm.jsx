@@ -4,7 +4,7 @@ import Checkbox from 'components/common/Checkbox/Checkbox';
 import SecondaryDropdownInput from 'components/common/DropdownInput/SecondaryDropdownInput';
 import SecondaryNumberInput from 'components/common/NumberInput/SecondaryNumberInput';
 import PopoverBottomBar from 'components/task/PopoverBottomBar/PopoverBottomBar';
-import { FormContext, useForm } from 'react-hook-form';
+import { FormProvider, useForm } from 'react-hook-form';
 import { DELAY_PERIOD_UNIT_OPTIONS, DelayPeriodUnit } from './helpers';
 import { DelayPeriodForm, Title, CheckboxLabel } from './styled';
 
@@ -37,7 +37,7 @@ const TaskLinkDelayForm = props => {
   const delayIsBusinessDaysValue = watch('delayIsBusinessDays');
 
   return (
-    <FormContext {...formMethods}>
+    <FormProvider {...formMethods}>
       <DelayPeriodForm onSubmit={handleSubmit(onSubmit)}>
         <Box py={1} px={2}>
           <Title>Time until next task</Title>
@@ -90,7 +90,7 @@ const TaskLinkDelayForm = props => {
           <PopoverBottomBar.Button type="submit">Ok</PopoverBottomBar.Button>
         </PopoverBottomBar>
       </DelayPeriodForm>
-    </FormContext>
+    </FormProvider>
   );
 };
 

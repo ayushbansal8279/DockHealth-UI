@@ -83,6 +83,7 @@ const CustomField = ({
       case FieldType.TEXT:
         return (
           <CustomFieldTextEditor
+            identifier={identifier}
             readOnly={readOnly}
             label={name}
             name={fieldName}
@@ -181,6 +182,7 @@ const CustomField = ({
     fieldType,
     fieldsGroupKey,
     handleBlur,
+    identifier,
     name,
     placeholder,
     readOnly,

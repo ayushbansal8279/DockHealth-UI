@@ -1,6 +1,6 @@
 /* eslint-disable sonarjs/cognitive-complexity */
 import React, { useEffect, useState, useRef, useMemo } from 'react';
-import { FormContext, useForm } from 'react-hook-form';
+import { FormProvider, useForm } from 'react-hook-form';
 import { string, object, array } from 'yup';
 import { partial } from 'ramda';
 import { Box, Grid, IconButton } from '@material-ui/core';
@@ -244,7 +244,7 @@ const EditCustomFieldModal = ({
         {!fieldTypeValue ? (
           <FiledTypeStep onSelect={partial(setValue, ['fieldType'])} />
         ) : (
-          <FormContext {...formMethods}>
+          <FormProvider {...formMethods}>
             <FieldForm
               onSubmit={handleSubmit(
                 customField?.identifier ? handleEditSubmit : handleAddSubmit,
@@ -361,7 +361,7 @@ const EditCustomFieldModal = ({
                 </Button>
               </Grid>
             </FieldForm>
-          </FormContext>
+          </FormProvider>
         )}
       </Box>
     </AddPatientFieldModalWrapper>
