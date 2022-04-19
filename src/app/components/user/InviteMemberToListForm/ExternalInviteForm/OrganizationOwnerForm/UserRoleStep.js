@@ -2,6 +2,7 @@ import React from 'react';
 import { useFormContext } from 'react-hook-form';
 import { Grid } from '@material-ui/core';
 import Button from 'components/common/Button/Button';
+import { UserOrganizationRole } from 'helpers/user-helper';
 import {
   RoleFormWrapper,
   RoleSelectionHeader,
@@ -13,6 +14,8 @@ import {
   RoleOptionDescription,
   RoleOptionHeaderAdditionalInfo,
 } from './styled';
+
+const { DOCK_PRO } = UserOrganizationRole;
 
 const UserRoleStep = ({ navigateToPreviousStep, disabled }) => {
   const { watch, setValue } = useFormContext();
@@ -66,6 +69,28 @@ const UserRoleStep = ({ navigateToPreviousStep, disabled }) => {
             An outside collaborator you can invite into selected lists, who will
             only have access to the tasks, patients/clients and people who are
             part of those lists.
+          </RoleOptionDescription>
+        </RoleOptionLabel>
+        <Divider />
+        <input
+          id="DockPro"
+          type="radio"
+          name="dockPro"
+          value={DOCK_PRO}
+          checked={roleValue === DOCK_PRO}
+          onChange={event => setValue(event.target.name, event.target.value)}
+        />
+        <RoleOptionLabel isSelected={roleValue === DOCK_PRO} htmlFor="Dock Pro">
+          <RoleOptionHeaderWrapper>
+            <RoleOptionHeader>Dock Pro</RoleOptionHeader>
+            <RoleOptionHeaderAdditionalInfo>
+              *Limited Access
+            </RoleOptionHeaderAdditionalInfo>
+          </RoleOptionHeaderWrapper>
+          <RoleOptionDescription>
+            A Dock Pro user you invite will only have access to the workflow
+            library and can help your team with building out Workflows for your
+            team.
           </RoleOptionDescription>
         </RoleOptionLabel>
       </RoleSelectionWrapper>

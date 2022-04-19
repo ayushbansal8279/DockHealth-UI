@@ -38,6 +38,8 @@ import ListsSubmenu from './SubMenuComponents/ListsSubmenu';
 import PatientsSubmenu from './SubMenuComponents/PatientsSubmenu';
 import UserGroupsSubmenu from './SubMenuComponents/UserGroupsSubmenu';
 import menuTourHooks from './menu-tour-hooks';
+import IconNavigationItem from './IconNavigationItem';
+import NavigationItem from './NavigationItem';
 import {
   DrawerContentContainer,
   MainMenuContainer,
@@ -45,8 +47,6 @@ import {
   DockcoinIcon,
   BarChartIcon,
 } from './styled';
-import IconNavigationItem from './IconNavigationItem';
-import NavigationItem from './NavigationItem';
 
 export const SubmenuKey = {
   ORGANIZATION: 'ORGANIZATION',
@@ -59,7 +59,14 @@ export const SubmenuKey = {
   DOCKCOIN: 'DOCKCOIN',
 };
 
-const { ADMIN, OWNER, MEMBER, GUEST } = UserOrganizationRole;
+const {
+  ADMIN,
+  OWNER,
+  MEMBER,
+  GUEST,
+  EXTERNAL,
+  DOCK_PRO,
+} = UserOrganizationRole;
 
 const SubmenuComponents = {
   [SubmenuKey.ORGANIZATION]: OrganizationSubmenu,
@@ -79,7 +86,6 @@ const NavigationSidebar = () => {
 
   const { orgUserRole } = currentUser || {};
   const isUserAdmin = ['ADMIN', 'OWNER'].includes(orgUserRole);
-  const isGuest = orgUserRole === UserOrganizationRole.GUEST;
 
   const currentOrganizationIdentifier = sessionStorage.getItem(
     'currentOrganizationIdentifier',
@@ -166,18 +172,28 @@ const NavigationSidebar = () => {
                 </>
               </NavigationItem>
             </div>
-            <IconNavigationItem
-              name="Search"
-              icon={SearchIcon}
-              path="/core/search"
-              onItemClick={handleNavigationItemClick}
-            />
-            <IconNavigationItem
-              name="Home"
-              icon={HomeIcon}
-              path="/core/home"
-              onItemClick={handleNavigationItemClick}
-            />
+            <AccessRestrictor
+              allowedToRoles={[ADMIN, OWNER, MEMBER, GUEST, EXTERNAL]}
+            >
+              <IconNavigationItem
+                name="Search"
+                icon={SearchIcon}
+                path="/core/search"
+                onItemClick={handleNavigationItemClick}
+              />
+            </AccessRestrictor>
+
+            <AccessRestrictor
+              allowedToRoles={[ADMIN, OWNER, MEMBER, GUEST, EXTERNAL]}
+            >
+              <IconNavigationItem
+                name="Home"
+                icon={HomeIcon}
+                path="/core/home"
+                onItemClick={handleNavigationItemClick}
+              />
+            </AccessRestrictor>
+
             <AccessRestrictor allowedToRoles={[ADMIN, OWNER, MEMBER, GUEST]}>
               <IconNavigationItem
                 name="Lists"
@@ -208,8 +224,7 @@ const NavigationSidebar = () => {
                 onItemClick={handleNavigationItemClick}
               />
             </AccessRestrictor>
-
-            <AccessRestrictor allowedToRoles={[ADMIN, OWNER, MEMBER]}>
+            <AccessRestrictor allowedToRoles={[ADMIN, OWNER, MEMBER, DOCK_PRO]}>
               <IconNavigationItem
                 name="Workflow Library"
                 icon={TemplatesIcon}
@@ -217,14 +232,16 @@ const NavigationSidebar = () => {
                 onItemClick={handleNavigationItemClick}
               />
             </AccessRestrictor>
-            <IconNavigationItem
-              name="Education Center"
-              icon={EducationCenterIcon}
-              subMenuKey={SubmenuKey.EDUCATION_CENTER}
-              subMenuOpen={openedSubMenuKey === SubmenuKey.EDUCATION_CENTER}
-              onItemClick={handleNavigationItemClick}
-            />
-            <AccessRestrictor allowedToRoles={[ADMIN]}>
+            <AccessRestrictor allowedToRoles={[ADMIN, OWNER, MEMBER, GUEST]}>
+              <IconNavigationItem
+                name="Education Center"
+                icon={EducationCenterIcon}
+                subMenuKey={SubmenuKey.EDUCATION_CENTER}
+                subMenuOpen={openedSubMenuKey === SubmenuKey.EDUCATION_CENTER}
+                onItemClick={handleNavigationItemClick}
+              />
+            </AccessRestrictor>
+            <AccessRestrictor allowedToRoles={[ADMIN, OWNER]}>
               <IconNavigationItem
                 name="Analytics"
                 icon={BarChartIcon}
@@ -235,7 +252,7 @@ const NavigationSidebar = () => {
             </AccessRestrictor>
           </Grid>
           <Grid container direction="column">
-            {isUserAdmin && (
+            <AccessRestrictor allowedToRoles={[ADMIN]}>
               <div ref={settingsMenuReference}>
                 <IconNavigationItem
                   name="Settings"
@@ -250,16 +267,21 @@ const NavigationSidebar = () => {
                   onItemClick={handleNavigationItemClick}
                 />
               </div>
-            )}
-            <NavigationItem
-              name="Dockcoin"
-              subMenuKey={SubmenuKey.DOCKCOIN}
-              onItemClick={handleReferClick}
+            </AccessRestrictor>
+
+            <AccessRestrictor
+              allowedToRoles={[ADMIN, OWNER, MEMBER, GUEST, EXTERNAL]}
             >
-              <>
-                <DockcoinIcon src={DockcoinIconImage} />
-              </>
-            </NavigationItem>
+              <NavigationItem
+                name="Dockcoin"
+                subMenuKey={SubmenuKey.DOCKCOIN}
+                onItemClick={handleReferClick}
+              >
+                <>
+                  <DockcoinIcon src={DockcoinIconImage} />
+                </>
+              </NavigationItem>
+            </AccessRestrictor>
             <div ref={profileMenuReference}>
               <NavigationItem
                 name="Account"

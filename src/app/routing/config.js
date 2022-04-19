@@ -58,48 +58,65 @@ import {
   onLeaveListDetailsView,
 } from './TemplateCoreSubscriptionPlan/ListDetails';
 
-const { ADMIN, OWNER, MEMBER, GUEST } = UserOrganizationRole;
+const {
+  ADMIN,
+  OWNER,
+  MEMBER,
+  GUEST,
+  EXTERNAL,
+  DOCK_PRO,
+} = UserOrganizationRole;
 
 export const SETTINGS_ROUTES = [
   {
     path: '/userprofile',
     RouteComponent: UserProfileView,
+    allowedToRoles: [ADMIN, OWNER, MEMBER, GUEST, DOCK_PRO],
   },
   {
     path: '/support',
     RouteComponent: SupportView,
+    allowedToRoles: [ADMIN, OWNER, MEMBER, GUEST],
   },
   {
     path: '/subscriptions',
     RouteComponent: SubscriptionsView,
+    allowedToRoles: [ADMIN, OWNER, MEMBER, GUEST],
   },
   {
     path: '/users',
     RouteComponent: UsersView,
+    allowedToRoles: [ADMIN, OWNER, MEMBER, GUEST],
   },
   {
     path: '/billing',
     RouteComponent: BillingsView,
+    allowedToRoles: [ADMIN, OWNER, MEMBER, GUEST],
   },
   {
     path: '/documents',
     RouteComponent: DocumentsView,
+    allowedToRoles: [ADMIN, OWNER, MEMBER, GUEST, DOCK_PRO],
   },
   {
     path: '/subscription-payment',
     RouteComponent: SubscriptionPaymentView,
+    allowedToRoles: [ADMIN, OWNER, MEMBER, GUEST],
   },
   {
     path: '/subscription-payment-finished',
     RouteComponent: SubscriptionPaymentFinishedView,
+    allowedToRoles: [ADMIN, OWNER, MEMBER, GUEST],
   },
   {
     path: '/subscription-expired',
     RouteComponent: SubscriptionExpiredView,
+    allowedToRoles: [ADMIN, OWNER, MEMBER, GUEST],
   },
   {
     path: '/custom-fields/:tabName?',
     RouteComponent: CustomFieldsView,
+    allowedToRoles: [ADMIN, OWNER, MEMBER, GUEST],
   },
 ];
 
@@ -109,6 +126,14 @@ export const TEMPLATE_CORE_SUBSCRIPTION_PLAN_ROUTES = [
     RouteComponent: props => (
       <DashboardView tabName={DashboardTasksTab.MY_TASKS} {...props} />
     ),
+    allowedToRoles: [ADMIN, OWNER, MEMBER, GUEST, EXTERNAL],
+  },
+  {
+    path: '/home/shared-with-me-tasks',
+    RouteComponent: props => (
+      <DashboardView tabName={DashboardTasksTab.SHARED_TASKS} {...props} />
+    ),
+    allowedToRoles: [ADMIN, OWNER, MEMBER, GUEST, EXTERNAL],
   },
   {
     path: '/home/shared-with-me-tasks',
@@ -121,11 +146,13 @@ export const TEMPLATE_CORE_SUBSCRIPTION_PLAN_ROUTES = [
     RouteComponent: props => (
       <DashboardView tabName={DashboardTasksTab.ALL_TASKS} {...props} />
     ),
+    allowedToRoles: [ADMIN, OWNER, MEMBER, GUEST, EXTERNAL],
   },
   {
     path: '/search',
     RouteComponent: GlobalSearchView,
     onLeave: onLeaveGlobalSearch,
+    allowedToRoles: [ADMIN, OWNER, MEMBER, GUEST],
   },
   {
     path: '/patients/list/:listIdentifier?',
@@ -140,10 +167,12 @@ export const TEMPLATE_CORE_SUBSCRIPTION_PLAN_ROUTES = [
   {
     path: '/activityfeed',
     RouteComponent: TaskListActivityFeedView,
+    allowedToRoles: [ADMIN, OWNER, MEMBER, GUEST],
   },
   {
     path: '/assignedToPerson/:userIdentifier/:tabName?',
     RouteComponent: PersonDetailsView,
+    allowedToRoles: [ADMIN, OWNER, MEMBER, GUEST],
   },
   {
     path: '/people/:groupIdentifier?',
@@ -152,10 +181,12 @@ export const TEMPLATE_CORE_SUBSCRIPTION_PLAN_ROUTES = [
   {
     path: '/task/:identifier',
     RouteComponent: SingleTaskView,
+    allowedToRoles: [ADMIN, OWNER, MEMBER, GUEST],
   },
   {
     path: '/task-tour/:taskListIdentifier',
     RouteComponent: TaskTourView,
+    allowedToRoles: [ADMIN, OWNER, MEMBER, GUEST],
   },
   {
     path: '/tasks/:taskListIdentifier/:tabName?/:taskIdentifier?',
@@ -169,16 +200,19 @@ export const TEMPLATE_CORE_SUBSCRIPTION_PLAN_ROUTES = [
     RouteComponent: React.lazy(() =>
       import('views/task-template/TaskTemplateView'),
     ),
+    allowedToRoles: [ADMIN, OWNER, MEMBER, GUEST, DOCK_PRO],
   },
   {
     path: '/workflows/builder/:identifier',
     RouteComponent: React.lazy(() =>
       import('views/smart-flow-builder/SmartFlowBuilderView'),
     ),
+    allowedToRoles: [ADMIN, OWNER, MEMBER, GUEST, DOCK_PRO],
   },
   {
     path: '/analytics',
     RouteComponent: AnalyticsView,
+    allowedToRoles: [ADMIN, OWNER],
   },
 ];
 
@@ -311,5 +345,6 @@ export const SIMPLE_ROUTES = [
   {
     path: '/selfEnrolledUser',
     RouteComponent: SelfEnrolledUser,
+    allowedToRoles: [ADMIN, OWNER, MEMBER, GUEST, EXTERNAL],
   },
 ];

@@ -36,7 +36,7 @@ export const getMenuOptionsForMember = (
 
   switch (userStatus) {
     case 'ACTIVE':
-      if (taskListUserRole === 'ADMIN') {
+      if (taskListUserRole === 'ADMIN' || taskListUserRole === 'OWNER') {
         return [
           {
             name: 'Remove as List Admin',
