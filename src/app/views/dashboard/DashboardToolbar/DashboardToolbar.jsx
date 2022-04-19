@@ -29,7 +29,7 @@ import {
 } from 'selectors/user-selectors';
 import TaskViewTypeToolbarSelect from 'components/tasklist/TaskViewTypeToolbarSelect/TaskViewTypeToolbarSelect';
 import CustomizeToolbarButton from 'components/tasklist/CustomizeToolbarButton/CustomizeToolbarButton';
-import { useColumnsConfig } from 'context-api/ColumnsConfigContext';
+import { useColumnsConfig } from 'context-api/columns-config-context';
 import { TaskItemColumn } from 'helpers/task-helpers';
 import { UserOrganizationRole } from 'helpers/user-helper';
 import AccessRestrictor from 'components/access/AccessRestrictor/AccessRestrictor';

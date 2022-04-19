@@ -16,7 +16,7 @@ import { getCustomerTypeLabel } from 'helpers/customer-type-helper';
 import Spacing from 'components/common/Spacing';
 import { openModal } from 'modal/actions';
 import { onNewUserTourEnter } from 'helpers/ga-event-helper';
-import { ColumnsConfigProvider } from 'context-api/ColumnsConfigContext';
+import { ColumnsConfigProvider } from 'context-api/columns-config-context';
 import HorizontallyScrolledViewLayout from 'components/template/HorizontallyScrolledViewLayout/HorizontallyScrolledViewLayout';
 import StickyContainer from 'components/common/HorizontalScroll/StickyContainer';
 import { DashboardTasksTab } from 'helpers/dashboard-helpers';

@@ -9,7 +9,7 @@ import {
 } from 'selectors/user-selectors';
 import BasicLayoutHeader from 'components/template/BasicLayoutHeader/BasicLayoutHeader';
 import ViewLayout from 'components/template/ViewLayout/ViewLayout';
-import { ColumnsConfigProvider } from 'context-api/ColumnsConfigContext';
+import { ColumnsConfigProvider } from 'context-api/columns-config-context';
 import { CUSTOM_FIELDS_SETTINGS_PATH } from 'routing/helpers/paths';
 import TaskCustomFieldsView from './TaskCustomFieldsView';
 import PatientCustomFieldsView from './PatientCustomFieldsView';
