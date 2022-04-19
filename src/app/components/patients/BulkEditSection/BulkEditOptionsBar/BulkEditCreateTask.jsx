@@ -10,7 +10,7 @@ import { patientBulkCreateTask } from 'actions/patients-actions';
 import styled from 'styled-components';
 import { fontSizes, fontWeights } from 'styles/font';
 import spacing from 'styles/spacing';
-import { PatientEditContext } from '../../PatientsView';
+import { PatientEditContext } from 'context-api/PatientEditContext';
 
 const EmptyListContainer = styled.div`
   margin: ${spacing.huge} 0;

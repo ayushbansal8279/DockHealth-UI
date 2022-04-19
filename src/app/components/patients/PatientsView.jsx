@@ -1,11 +1,4 @@
-/* eslint-disable sonarjs/cognitive-complexity */
-import React, {
-  useCallback,
-  useEffect,
-  useState,
-  useMemo,
-  createContext,
-} from 'react';
+import React, { useCallback, useEffect, useState, useMemo } from 'react';
 import { useParams } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { Grid } from '@material-ui/core';
@@ -21,10 +14,12 @@ import {
   isFetchingPatientsSelector,
   patientsListSearchTermSelector,
 } from 'selectors/patients-selectors';
+import { PatientEditContext } from 'context-api/PatientEditContext';
 import * as PatientsActions from 'actions/patients-actions';
 import * as PatientApi from 'api/patient-api';
 import ViewLayout from 'components/template/ViewLayout/ViewLayout';
 import BasicLayoutHeader from 'components/template/BasicLayoutHeader/BasicLayoutHeader';
+import PatientLabels from 'views/patient-details/PatientLabels/PatientLabels';
 import BulkEditSection from 'components/patients/BulkEditSection/BulkEditSection';
 import TaskTemplateApplicator from 'components/task-template/TaskTemplateApplicator/TaskTemplateApplicator';
 import { getTaskListForUser } from 'api/task-list-api';
@@ -32,7 +27,6 @@ import { openModal, closeModal } from 'modal/actions';
 import PatientsList from './PatientsList/PatientsList';
 import PatientsToolbar from './PatientsToolbar/PatientsToolbar';
 import EmptyListViewWithQuickAddTask from './BulkEditSection/BulkEditOptionsBar/BulkEditCreateTask';
-import PatientLabels from '../../views/patient-details/PatientLabels/PatientLabels';
 import {
   PatientsViewContainer,
   PatientsListContainer,
@@ -41,8 +35,6 @@ import {
   TaskTemplateApplicatorContainer,
   ContentWrapper,
 } from './styled';
-
-export const PatientEditContext = createContext({});
 
 const MAX_PATIENT_ALL_RESULTS = 1000;
 

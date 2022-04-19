@@ -9,7 +9,7 @@ import StatusIcon from 'img/bulk-edit/StatusIcon';
 import DeleteIcon from 'img/bulk-edit/DeleteIcon';
 
 import palette from 'styles/palette';
-import { PatientEditContext } from '../../PatientsView';
+import { PatientEditContext } from 'context-api/PatientEditContext';
 import { Button } from './styled';
 
 const BulkEditOptionsBar = ({ selectedPatients = {}, onClose }) => {
