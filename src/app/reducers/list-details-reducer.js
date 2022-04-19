@@ -472,6 +472,18 @@ const ListDetailsReducer = (state = initialState, action) => {
             ),
           })),
         },
+        completedGroupedTasks: {
+          ...state.completedGroupedTasks,
+          // eslint-disable-next-line sonarjs/no-identical-functions
+          taskGroups: state.completedGroupedTasks?.taskGroups?.map(g => ({
+            ...g,
+            tasks: updateBundleInList(
+              { isFetchingTasks: true },
+              workflowIdentifier,
+              g.tasks,
+            ),
+          })),
+        },
       };
     }
 
@@ -483,6 +495,18 @@ const ListDetailsReducer = (state = initialState, action) => {
         groupedTasks: {
           ...state.groupedTasks,
           taskGroups: state.groupedTasks?.taskGroups?.map(g => ({
+            ...g,
+            tasks: updateBundleInList(
+              { isFetchingTasks: false, tasks },
+              workflowIdentifier,
+              g.tasks,
+            ),
+          })),
+        },
+        completedGroupedTasks: {
+          ...state.completedGroupedTasks,
+          // eslint-disable-next-line sonarjs/no-identical-functions
+          taskGroups: state.completedGroupedTasks?.taskGroups?.map(g => ({
             ...g,
             tasks: updateBundleInList(
               { isFetchingTasks: false, tasks },
