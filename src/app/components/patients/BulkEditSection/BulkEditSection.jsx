@@ -1,7 +1,7 @@
 import React, { useCallback, useContext } from 'react';
 import { useDispatch } from 'react-redux';
 import * as ActionTypes from 'actions/action-types';
-import { PatientEditContext } from 'context-api/PatientEditContext';
+import { PatientEditContext } from 'context-api/patient-edit-context';
 import BulkEditOptionsBar from './BulkEditOptionsBar/BulkEditOptionsBar';
 import { BulkEditOptionsBarContainer } from './styled';
 

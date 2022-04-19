@@ -18,7 +18,7 @@ import {
 } from 'selectors/patient-details-selectors';
 import Tooltip from 'components/common/Tooltip/Tooltip';
 import { patientBulkAddLabel } from 'api/patients-api';
-import { PatientEditContext } from 'context-api/PatientEditContext';
+import { PatientEditContext } from 'context-api/patient-edit-context';
 import initializeLabelsSectionHooks from './hooks';
 import {
   OptionContainer,
