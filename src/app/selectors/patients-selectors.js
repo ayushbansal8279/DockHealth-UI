@@ -50,7 +50,7 @@ export const filterOptionsSelector = createSelector(
 
 export const patientsListSearchTermSelector = createSelector(
   patientsStateSelector,
-  ({ currentPatientsList }) => currentPatientsList?.searchTerm,
+  ({ currentPatientsList }) => currentPatientsList?.searchTerm || '',
 );
 
 export const patientsSelectedFiltersSelector = createSelector(
