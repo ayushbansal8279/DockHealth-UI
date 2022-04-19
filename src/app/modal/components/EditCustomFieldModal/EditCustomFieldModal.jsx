@@ -14,6 +14,7 @@ import FormInput from 'components/common/Input/FormInput';
 import Input from 'components/common/Input/Input';
 import Button from 'components/common/Button/Button';
 import FormSelect from 'components/common/Select/FormSelect';
+import ColorPicker from 'components/common/ColorPicker/ColorPicker';
 import FiledTypeStep from './FieldTypeStep';
 import { CloseIconButton, CloseIcon } from '../styled';
 import {
@@ -172,6 +173,15 @@ const EditCustomFieldModal = ({
     );
   };
 
+  const handleOptionColorChange = (optionId, event) => {
+    setValue(
+      'options',
+      optionsValue.map(o =>
+        o.identifier === optionId ? { ...o, color: event.target.value } : o,
+      ),
+    );
+  };
+
   const handleAddOption = () => {
     setValue('options', [
       ...optionsValue,
@@ -285,32 +295,43 @@ const EditCustomFieldModal = ({
                         <Grid item xs={12}>
                           <InfoText>Dropdown options</InfoText>
                         </Grid>
-                        {optionsValue.map(({ identifier, name }, index) => (
-                          <Grid key={identifier} item xs={12}>
-                            <Input
-                              required
-                              label={`Option ${index + 1}`}
-                              name={`options[${identifier}]`}
-                              value={name}
-                              onChange={partial(handleOptionValueChange, [
-                                identifier,
-                              ])}
-                              error={errors?.options?.[index]?.name?.message}
-                              endAdornment={
-                                optionsValue.length > 1 ? (
-                                  <IconButton
-                                    size="small"
-                                    onClick={() =>
-                                      handleRemoveOption(identifier)
-                                    }
-                                  >
-                                    <DeleteIcon />
-                                  </IconButton>
-                                ) : null
-                              }
-                            />
-                          </Grid>
-                        ))}
+                        {optionsValue.map((option, index) => {
+                          const { identifier, name, color } = option;
+                          return (
+                            <Grid key={identifier} item xs={12}>
+                              <Input
+                                required
+                                label={`Option ${index + 1}`}
+                                name={`options[${identifier}]`}
+                                value={name}
+                                onChange={partial(handleOptionValueChange, [
+                                  identifier,
+                                ])}
+                                error={errors?.options?.[index]?.name?.message}
+                                endAdornment={
+                                  optionsValue.length > 1 ? (
+                                    <IconButton
+                                      size="small"
+                                      onClick={() =>
+                                        handleRemoveOption(identifier)
+                                      }
+                                    >
+                                      <DeleteIcon />
+                                    </IconButton>
+                                  ) : null
+                                }
+                              />
+                              <Box m={2} />
+                              <ColorPicker
+                                name={`selectOptionColor[${identifier}]`}
+                                value={color}
+                                onChange={partial(handleOptionColorChange, [
+                                  identifier,
+                                ])}
+                              />
+                            </Grid>
+                          );
+                        })}
                         <Button
                           reference={addOptionButtonReference}
                           variant="text"
