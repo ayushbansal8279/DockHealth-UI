@@ -8,6 +8,11 @@ const ToolbarSelect = ({ options, name, value, icon, ...restProps }) => {
 
   return (
     <Select
+      onClose={() => {
+        setTimeout(() => {
+          document.activeElement.blur();
+        }, 0);
+      }}
       className={classes.select}
       MenuProps={{
         anchorOrigin: {

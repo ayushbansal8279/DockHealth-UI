@@ -230,11 +230,6 @@ const DashboardToolbar = props => {
             additionalOptions={additionalOptions}
           />
         </AccessRestrictor>
-        <Spacing horizontal={4} />
-        <div>
-          <TipsSwitchLabel>Tips</TipsSwitchLabel>
-          <Switch checked={tourModalIsOpen} onChange={openTourModal} />
-        </div>
       </ActionsContainer>
     </ToolbarContainer>
   );
