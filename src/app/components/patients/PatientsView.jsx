@@ -22,7 +22,6 @@ import {
   patientsListSearchTermSelector,
 } from 'selectors/patients-selectors';
 import * as PatientsActions from 'actions/patients-actions';
-import * as PatientBulkActions from 'actions/patient-bulk-actions';
 import * as PatientApi from 'api/patient-api';
 import ViewLayout from 'components/template/ViewLayout/ViewLayout';
 import BasicLayoutHeader from 'components/template/BasicLayoutHeader/BasicLayoutHeader';
@@ -128,7 +127,7 @@ const PatientsView = () => {
       return patient.patientIdentifier;
     });
     dispatch(
-      PatientBulkActions.patientBulkDeletePatient({
+      PatientsActions.patientBulkDeletePatient({
         assignedPatients,
         listIdentifier,
       }),
@@ -225,7 +224,7 @@ const PatientsView = () => {
           fetchMethod: getTaskListForUser,
           confirm: listId =>
             dispatch(
-              PatientBulkActions.patientBulkCreateWorkflow({
+              PatientsActions.patientBulkCreateWorkflow({
                 workflowIdentifier: template.identifier,
                 taskListIdentifier: listId,
                 assignedToUsers: assignedPatients,

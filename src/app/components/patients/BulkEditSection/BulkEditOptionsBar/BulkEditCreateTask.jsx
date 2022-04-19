@@ -5,7 +5,7 @@ import QuickAddTaskInput from 'components/tasklist/QuickAddTaskInput/QuickAddTas
 import Spacing from 'components/common/Spacing';
 import { openModal } from 'modal/actions';
 import { getTaskListForUser } from 'api/task-list-api';
-import { patientBulkCreateTask } from 'actions/patient-bulk-actions';
+import { patientBulkCreateTask } from 'actions/patients-actions';
 
 import styled from 'styled-components';
 import { fontSizes, fontWeights } from 'styles/font';
