@@ -475,7 +475,9 @@ const TaskTemplateGroupHeader = ({
           <TaskTemplateMembers
             currentUser={currentUser}
             multipleAssigneesContext={groupHasMultipleAssignees}
-            workflow={workFlowData || templateGroup}
+            workflow={
+              templateGroup.assignedToUsers ? templateGroup : workFlowData
+            }
             onWorkflowUpdate={compose(dispatch, updatePartialWorkflow)}
           />
         </TaskItemCell>
