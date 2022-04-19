@@ -10,7 +10,6 @@ import {
   getCustomerTypeLabel,
   getCustomerUniqueIDLabel,
 } from 'helpers/customer-type-helper';
-import { selectedPatientsSelector } from 'selectors/patients-selectors';
 import PatientImportPopover from '../PatientImportPopover/PatientImportPopover';
 import TaskItemBulkEdit from '../../task/StandardTaskItem/TaskItemComponents/TaskItemBulkEdit';
 import EmptyFilteredPatientsList from '../EmptyFilteredPatientsList/EmptyFilteredPatientsList';
@@ -47,8 +46,6 @@ const PatientsList = ({
 
   const customerTypeLabel = getCustomerTypeLabel(currentUser);
   const uniqueIdentifierLabel = getCustomerUniqueIDLabel(currentUser);
-  const customPatientsList = useSelector(selectedPatientsSelector);
-  const currentPatients = customPatientsList || patients;
 
   const setSelectedPatient = useCallback(
     data => {
@@ -177,7 +174,7 @@ const PatientsList = ({
       flex: 0.5,
     },
   ];
-  const formattedPatients = currentPatients?.map(patient => ({
+  const formattedPatients = patients?.map(patient => ({
     id: patient?.patientIdentifier || patient?.id,
     ...patient,
   }));
@@ -189,10 +186,10 @@ const PatientsList = ({
         </ListLoaderContainer>
       ) : (
         <>
-          {currentPatients?.length > 0 && formattedPatients ? (
+          {patients?.length > 0 && formattedPatients ? (
             <Grid container xs={12} item justify="center">
               <Grid item xs={12} xl={10} md={10} lg={10}>
-                <NonEmptyListTable listLength={currentPatients?.length ?? 0}>
+                <NonEmptyListTable listLength={patients?.length ?? 0}>
                   <StyledDataGrid
                     columns={columns}
                     rows={formattedPatients}

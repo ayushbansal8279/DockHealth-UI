@@ -244,26 +244,27 @@ const PatientsReducer = (state = initialState, action) => {
       const { identifier, isSelected } = action;
       return {
         ...state,
-        selectedPatientsList: (
-          state?.selectedPatientsList || state.currentPatientsList.patients
-        )?.map(patient =>
-          patient.patientIdentifier === identifier
-            ? { ...patient, isSelected }
-            : patient,
-        ),
+        currentPatientsList: {
+          ...state.currentPatientsList,
+          patients: state.currentPatientsList.patients?.map(patient =>
+            patient.patientIdentifier === identifier
+              ? { ...patient, isSelected }
+              : patient,
+          ),
+        },
       };
     }
 
     case ActionTypes.UNSELECT_ALL_PATIENTS: {
       return {
         ...state,
-        selectedPatientsList: (
-          state?.selectedPatientsList || state.currentPatientsList.patients
-        )?.map(patient =>
-          patient?.isSelected === true
-            ? { ...patient, isSelected: false }
-            : patient,
-        ),
+        currentPatientsList: {
+          ...state.currentPatientsList,
+          patients: state.currentPatientsList.patients?.map(patient => ({
+            ...patient,
+            isSelected: false,
+          })),
+        },
       };
     }
 
@@ -272,10 +273,13 @@ const PatientsReducer = (state = initialState, action) => {
 
       return {
         ...state,
-        selectedPatientsList: state.selectedPatientsList.filter(
-          ({ patientIdentifier }) =>
-            !patientIdentifiers.includes(patientIdentifier),
-        ),
+        currentPatientsList: {
+          ...state.currentPatientsList,
+          patients: state.currentPatientsList.patients?.filter(
+            ({ patientIdentifier }) =>
+              !patientIdentifiers.includes(patientIdentifier),
+          ),
+        },
       };
     }
 

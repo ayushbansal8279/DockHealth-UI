@@ -8,7 +8,6 @@ import {
 } from 'helpers/patient-list-helpers';
 import { useBoolean } from 'hooks/useBoolean';
 import {
-  selectedPatientsSelector,
   patientsListDetailsSelector,
   patientsSelector,
   isFetchingPatientsSelector,
@@ -41,8 +40,6 @@ const MAX_PATIENT_ALL_RESULTS = 1000;
 const PatientsView = () => {
   const dispatch = useDispatch();
   const { listIdentifier: listIdentifierParameter } = useParams();
-
-  const allPatients = useSelector(selectedPatientsSelector);
 
   const listIdentifier = getPatientListIdentifierByUrlParameter(
     listIdentifierParameter,
@@ -105,10 +102,8 @@ const PatientsView = () => {
   );
 
   const selectedPatients = useMemo(() => {
-    return allPatients?.filter(
-      patient => patient?.isSelected === true && patient,
-    );
-  }, [allPatients]);
+    return patients?.filter(patient => patient?.isSelected);
+  }, [patients]);
 
   const bulkEditIsActive = useMemo(() => {
     return selectedPatients?.length > 0;
