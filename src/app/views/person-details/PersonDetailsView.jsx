@@ -15,7 +15,7 @@ import TaskDrawer from 'components/task-drawer/TaskDrawer/TaskDrawer';
 import LayoutHeader from 'components/template/LayoutHeader/LayoutHeader';
 import HeaderSearch from 'components/template/HeaderSearch/HeaderSearch';
 import { TASK_DISAPPEAR_DELAY } from 'helpers/task-update-helper';
-import { ColumnsConfigProvider } from 'context-api/ColumnsConfigContext';
+import { ColumnsConfigProvider } from 'context-api/columns-config-context';
 import HorizontallyScrolledViewLayout from 'components/template/HorizontallyScrolledViewLayout/HorizontallyScrolledViewLayout';
 import StickyContainer from 'components/common/HorizontalScroll/StickyContainer';
 import OpenedTasksView from './PersonDetailsOpenedTasksContainer/PersonDetailsOpenedTasks';

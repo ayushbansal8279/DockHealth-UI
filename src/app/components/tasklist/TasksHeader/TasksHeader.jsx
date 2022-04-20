@@ -6,7 +6,7 @@ import { SortHeaderRow } from 'components/tasklist/ColumnSortHeader/styled';
 import { TaskItemColumn, TaskItemColumnWidth } from 'helpers/task-helpers';
 import { getCustomerTypeLabel } from 'helpers/customer-type-helper';
 import { capitalize } from 'helpers/capitalize';
-import { useColumnsConfig } from 'context-api/ColumnsConfigContext';
+import { useColumnsConfig } from 'context-api/columns-config-context';
 import { CustomFieldWidthConfig } from 'helpers/field-type-helpers';
 import {
   SINGLE_TASK_RESTRICTIONS_OPTIONS,

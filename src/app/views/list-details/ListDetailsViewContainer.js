@@ -1,5 +1,5 @@
 /* eslint-disable unicorn/no-nested-ternary */
-import { ColumnsConfigProvider } from 'context-api/ColumnsConfigContext';
+import { ColumnsConfigProvider } from 'context-api/columns-config-context';
 import React from 'react';
 import ListDetailsView from './ListDetailsView';
 
