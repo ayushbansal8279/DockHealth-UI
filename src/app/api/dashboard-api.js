@@ -2,6 +2,7 @@ import {
   mapFilterOptions,
   mapSelectedOptionsToRequestPayload,
 } from 'helpers/filter-options-helpers';
+import { TaskStatus } from 'helpers/task-helpers';
 import axios from './axios-heydoc';
 
 export function getDashboardMyTasks(status = 'INCOMPLETE') {
@@ -146,4 +147,12 @@ export function searchTasksForOrganizationGroupedByImplicitGroups(searchTerm) {
     .catch(error => {
       throw new Error(error?.response?.data?.errorMessage);
     });
+}
+
+export function getCalendarTasks(viewName, startDate, endDate) {
+  return axios
+    .get(`/task/findTasksForViewByDueDateRange`, {
+      params: { viewName, status: TaskStatus.INCOMPLETE, startDate, endDate },
+    })
+    .then(({ data }) => data);
 }

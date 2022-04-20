@@ -34,6 +34,7 @@ const ListDetailsToolbar = ({ onColumnSetupChange, additionalOptions }) => {
   const { taskListIdentifier } = taskList || {};
   const isListCreator =
     taskList?.creator?.identifier === currentUser.identifier;
+  const viewType = getViewTypeFromQueryString(search);
 
   const handleChangeViewType = useCallback(
     event => {
@@ -66,10 +67,10 @@ const ListDetailsToolbar = ({ onColumnSetupChange, additionalOptions }) => {
           event.target.value === TaskStatus.INCOMPLETE
             ? ''
             : `/${TaskStatus.COMPLETE}`
-        }`,
+        }${search}`,
       );
     },
-    [history, taskListIdentifier],
+    [history, taskListIdentifier, search],
   );
 
   const handleTasksVisibilityChange = visible => {
@@ -95,38 +96,44 @@ const ListDetailsToolbar = ({ onColumnSetupChange, additionalOptions }) => {
         />
         <Box mx={0.5} />
         <TaskViewTypeToolbarSelect
-          value={getViewTypeFromQueryString(search)}
+          value={viewType}
           onChange={handleChangeViewType}
         />
-        <Box mx={0.5} />
-        <CustomizeToolbarButton
-          onChange={onColumnSetupChange}
-          openCustomFieldModal={() => setCustomFieldsModalOpened(true)}
-          additionalOptions={additionalOptions}
-        />
-        <Box mx={0.5} />
-        <TaskCustomFieldsModal
-          opened={customFieldsModalOpened}
-          handleClose={() => setCustomFieldsModalOpened(false)}
-          taskListIdentifier={taskList?.taskListIdentifier}
-          isOrganizationAdmin={isOrganizationAdmin}
-          isListCreator={isListCreator}
-        />
-        {taskList?.listType === 'INBOX' && (
+        {viewType === ViewType.LIST_VIEW && (
           <>
-            <InboxTips />
+            <Box mx={0.5} />
+            <CustomizeToolbarButton
+              onChange={onColumnSetupChange}
+              openCustomFieldModal={() => setCustomFieldsModalOpened(true)}
+              additionalOptions={additionalOptions}
+            />
+            <Box mx={0.5} />
+            <TaskCustomFieldsModal
+              opened={customFieldsModalOpened}
+              handleClose={() => setCustomFieldsModalOpened(false)}
+              taskListIdentifier={taskList?.taskListIdentifier}
+              isOrganizationAdmin={isOrganizationAdmin}
+              isListCreator={isListCreator}
+            />
+            {taskList?.listType === 'INBOX' && (
+              <>
+                <InboxTips />
+              </>
+            )}
           </>
         )}
       </Box>
-      <Box display="flex" flex={1} justifyContent="flex-end">
-        {tasksStatus === TaskStatus.INCOMPLETE && (
-          <CompleteTasksVisibilitySwitch
-            visible={displayOptions.includes(TASKS_VISIBILITY_KEY)}
-            onChange={handleTasksVisibilityChange}
-          />
-        )}
-        <Box mx={0.5} />
-      </Box>
+      {viewType === ViewType.LIST_VIEW && (
+        <Box display="flex" flex={1} justifyContent="flex-end">
+          {tasksStatus === TaskStatus.INCOMPLETE && (
+            <CompleteTasksVisibilitySwitch
+              visible={displayOptions.includes(TASKS_VISIBILITY_KEY)}
+              onChange={handleTasksVisibilityChange}
+            />
+          )}
+          <Box mx={0.5} />
+        </Box>
+      )}
     </ToolbarContainer>
   );
 };

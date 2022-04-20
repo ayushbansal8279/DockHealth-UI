@@ -20,11 +20,13 @@ import {
   getTasksForOrganizationByImplicitGroup,
   searchTasksByAssignedToUserGroupedByImplicitGroups,
   searchTasksForOrganizationGroupedByImplicitGroups,
+  getCalendarTasks,
 } from 'api/dashboard-api';
 import {
   DashboardTasksTab,
   getGroupByDueDate,
 } from 'helpers/dashboard-helpers';
+import { calendarDateRangeSelector } from 'selectors/calendar-tasks-selectors';
 import {
   dashboardGroupTasksCountSelector,
   dashboardTabNameSelector,
@@ -292,6 +294,23 @@ function* updateTasksSuccess({ fields }) {
   }
 }
 
+function* getDashboardCalendarTasks() {
+  try {
+    const tabName = yield select(dashboardTabNameSelector);
+    const { startDate, endDate } = yield select(calendarDateRangeSelector);
+    if (!tabName) return;
+
+    const tasks = yield call(getCalendarTasks, tabName, startDate, endDate);
+
+    yield put(DashboardActions.getDashboardCalendarTasksSuccess(tasks));
+  } catch {
+    yield all([
+      put(DashboardActions.getDashboardCalendarTasksFailure()),
+      put(showGlobalErrorAlert()),
+    ]);
+  }
+}
+
 export default function* watchDashboard() {
   yield takeEvery(
     ActionTypes.INITIALIZE_DASHBOARD_STATE,
@@ -320,4 +339,8 @@ export default function* watchDashboard() {
     updateTaskDueDateSuccess,
   );
   yield takeEvery(ActionTypes.UPDATE_TASKS_SUCCESS, updateTasksSuccess);
+  yield takeLatest(
+    ActionTypes.GET_DASHBOARD_CALENDAR_TASKS,
+    getDashboardCalendarTasks,
+  );
 }

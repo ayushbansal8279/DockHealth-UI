@@ -120,3 +120,16 @@ export function getTaskListFilterOptions(
 
   return request.then(responseFilters => mapFilterOptions(responseFilters));
 }
+
+export function getTasksForListByDateRange(
+  taskListIdentifier,
+  status,
+  startDate,
+  endDate,
+) {
+  return axios
+    .get(`task/findListTasksByDueDateRange/taskList/${taskListIdentifier}`, {
+      params: { status, startDate, endDate },
+    })
+    .then(({ data }) => data);
+}
