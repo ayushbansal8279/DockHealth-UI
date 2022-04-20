@@ -13,8 +13,9 @@ const BulkEditBar = props => {
   return (
     <Container>
       <TasksText>
-        {`${numberOfSelectedItems} ${patientView ? `Patient` : `Task`}${numberOfSelectedItems > 1 ? 's' : ''
-          } Selected`}
+        {`${numberOfSelectedItems} ${patientView ? `Patient` : `Task`}${
+          numberOfSelectedItems > 1 ? 's' : ''
+        } Selected`}
       </TasksText>
       <Box display="flex" height="100%">
         {children}
