@@ -1,5 +1,5 @@
 import React from 'react';
-import { FormContext, useForm } from 'react-hook-form';
+import { FormProvider, useForm } from 'react-hook-form';
 import { object, string } from 'yup';
 import { MontserratTypography } from 'styles/theme-montserrat';
 import Button from 'components/common/Button/Button';
@@ -30,7 +30,7 @@ const ResetPasswordForm = ({ authTokenReceived, onSubmit }) => {
 
   return (
     <form style={{ width: '100%' }} onSubmit={handleSubmit(onSubmit)}>
-      <FormContext {...formMethods}>
+      <FormProvider {...formMethods}>
         <MontserratTypography variant="h2">
           Let’s set a new password
         </MontserratTypography>
@@ -65,7 +65,7 @@ const ResetPasswordForm = ({ authTokenReceived, onSubmit }) => {
         <Button active id="loginButton" size="large" type="submit">
           Continue
         </Button>
-      </FormContext>
+      </FormProvider>
     </form>
   );
 };

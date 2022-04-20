@@ -16,7 +16,7 @@ import { getSharedTaskListsWithCurrentUser } from 'api/task-list-api';
 import { userProfileSelector } from 'selectors/user-selectors';
 import Tooltip from 'components/common/Tooltip/Tooltip';
 import Spacing from 'components/common/Spacing';
-import { Typography } from '@material-ui/core';
+import { ClickAwayListener, Typography } from '@material-ui/core';
 import { transformTaskToEvent } from './helpers';
 import {
   CalendarContainer,
@@ -127,24 +127,31 @@ const Calendar = ({ taskListIdentifier }) => {
   const renderEventContent = eventInfo => {
     if (eventInfo.event.id === temporaryTaskId) {
       return (
-        <AddEventInputContainer>
-          <input
-            name="addTaskViaCalendar"
-            onBlur={event => onAddTaskInputBlur(event, eventInfo)}
-            ref={addTaskInputReference}
-            onClick={onAddTaskClick}
-            placeholder="Add a task..."
-            onKeyDown={event => {
-              event.stopPropagation();
-              if (event.key === 'Enter') {
-                onAddTaskInputBlur(event, eventInfo);
-              } else if (event.key === 'Escape') {
-                eventInfo.event.remove();
-                setIsAddingTaskEnabled(true);
-              }
-            }}
-          />
-        </AddEventInputContainer>
+        <ClickAwayListener
+          onClickAway={() => {
+            eventInfo.event.remove();
+            setIsAddingTaskEnabled(true);
+          }}
+        >
+          <AddEventInputContainer>
+            <input
+              name="addTaskViaCalendar"
+              onBlur={event => onAddTaskInputBlur(event, eventInfo)}
+              ref={addTaskInputReference}
+              onClick={onAddTaskClick}
+              placeholder="Add a task..."
+              onKeyDown={event => {
+                event.stopPropagation();
+                if (event.key === 'Enter') {
+                  onAddTaskInputBlur(event, eventInfo);
+                } else if (event.key === 'Escape') {
+                  eventInfo.event.remove();
+                  setIsAddingTaskEnabled(true);
+                }
+              }}
+            />
+          </AddEventInputContainer>
+        </ClickAwayListener>
       );
     }
 

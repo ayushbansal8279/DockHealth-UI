@@ -1,7 +1,8 @@
 /* eslint-disable sonarjs/cognitive-complexity */
-import React from 'react';
-import { useSelector } from 'react-redux';
+import React, { useCallback, useEffect } from 'react';
+import { useSelector, useDispatch } from 'react-redux';
 import { useHistory } from 'react-router-dom';
+import * as ActionTypes from 'actions/action-types';
 import { Grid } from '@material-ui/core';
 import { lookupEMRPatient } from 'api/patient-api';
 import ListSkeletonLoader from 'components/common/ListSkeletonLoader/ListSkeletonLoader';
@@ -10,6 +11,7 @@ import {
   getCustomerUniqueIDLabel,
 } from 'helpers/customer-type-helper';
 import PatientImportPopover from '../PatientImportPopover/PatientImportPopover';
+import TaskItemBulkEdit from '../../task/StandardTaskItem/TaskItemComponents/TaskItemBulkEdit';
 import EmptyFilteredPatientsList from '../EmptyFilteredPatientsList/EmptyFilteredPatientsList';
 import { NonEmptyListTable, ListLoaderContainer } from './styled';
 import { StyledDataGrid } from './DataGridStyles';
@@ -37,13 +39,49 @@ const PatientsList = ({
   isFetching,
 }) => {
   const history = useHistory();
+  const dispatch = useDispatch();
   const { currentUser } = useSelector(store => ({
     currentUser: store.userState.userProfile,
   }));
+
   const customerTypeLabel = getCustomerTypeLabel(currentUser);
   const uniqueIdentifierLabel = getCustomerUniqueIDLabel(currentUser);
 
+  const setSelectedPatient = useCallback(
+    data => {
+      dispatch({
+        type: ActionTypes.SET_SELECTED_PATIENT,
+        identifier: data.patientIdentifier || data.id,
+        isSelected: !data.isSelected,
+      });
+    },
+    [dispatch],
+  );
+
+  useEffect(() => {
+    return () => {
+      dispatch({
+        type: ActionTypes.UNSELECT_ALL_PATIENTS,
+      });
+    };
+  }, [dispatch]);
+
   const columns = [
+    {
+      field: 'isSelected',
+      headerName: '',
+      renderHeader: renderColumnHeader,
+      renderCell: ({ row }) => (
+        <span>
+          <TaskItemBulkEdit
+            isChecked={row?.isSelected}
+            onClick={() => setSelectedPatient(row)}
+            isHovered
+          />
+        </span>
+      ),
+      width: 40,
+    },
     {
       field: 'patient',
       headerName: customerTypeLabel.toUpperCase(),
@@ -136,9 +174,8 @@ const PatientsList = ({
       flex: 0.5,
     },
   ];
-
   const formattedPatients = patients?.map(patient => ({
-    id: patient?.patientIdentifier,
+    id: patient?.patientIdentifier || patient?.id,
     ...patient,
   }));
   return (
@@ -149,7 +186,7 @@ const PatientsList = ({
         </ListLoaderContainer>
       ) : (
         <>
-          {patients?.length > 0 ? (
+          {patients?.length > 0 && formattedPatients ? (
             <Grid container xs={12} item justify="center">
               <Grid item xs={12} xl={10} md={10} lg={10}>
                 <NonEmptyListTable listLength={patients?.length ?? 0}>

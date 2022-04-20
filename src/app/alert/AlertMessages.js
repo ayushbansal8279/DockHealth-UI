@@ -17,6 +17,7 @@ const AlertMessages = {
   ATTACHMENT_REMOVED: 'Attachment removed',
   TASK_DUPLICATED: 'Task duplicted',
   PATIENT_ARCHIVED: 'Archived',
+  WORKFLOW_CREATED: 'Workflow created',
 };
 
 export default AlertMessages;

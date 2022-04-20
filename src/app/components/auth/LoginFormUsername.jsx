@@ -1,6 +1,6 @@
 import queryString from 'query-string';
 import React, { useState } from 'react';
-import { FormContext, useForm } from 'react-hook-form';
+import { FormProvider, useForm } from 'react-hook-form';
 import { useMount } from 'react-use';
 import { object, string } from 'yup';
 import * as UserAuthApi from 'api/user-auth-api';
@@ -73,7 +73,7 @@ const LoginFormUsername = props => {
 
   return (
     <StyledForm onSubmit={handleSubmit(onSubmit)}>
-      <FormContext {...formMethods}>
+      <FormProvider {...formMethods}>
         {!showLoginMessage && (
           <>
             <MontserratTypography variant="h2">
@@ -116,7 +116,7 @@ const LoginFormUsername = props => {
             </MontserratTypography>
           </div>
         )}
-      </FormContext>
+      </FormProvider>
     </StyledForm>
   );
 };

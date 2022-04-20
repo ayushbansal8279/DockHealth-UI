@@ -695,7 +695,7 @@ const BulkEditOptionsBar = ({
 
   return (
     <BulkEditBar
-      numberOfSelectedTasks={allSelectedTasksLength}
+      numberOfSelectedItems={allSelectedTasksLength}
       isDisabled={isDisabled}
       onClose={onClose}
     >

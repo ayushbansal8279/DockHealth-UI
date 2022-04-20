@@ -1,7 +1,7 @@
 import React from 'react';
 import { Grid } from '@material-ui/core';
 import MobilePhoneIcon from 'img/modals/mobile-phone';
-import { FormContext, useForm } from 'react-hook-form';
+import { FormProvider, useForm } from 'react-hook-form';
 import { useDispatch } from 'react-redux';
 import { object, string } from 'yup';
 import { openModal } from 'modal/actions';
@@ -69,7 +69,7 @@ const ConfirmNumberStep = ({
   const { handleSubmit, setError } = formMethods;
 
   return (
-    <FormContext {...formMethods}>
+    <FormProvider {...formMethods}>
       <StyledForm
         onSubmit={handleSubmit(
           onSubmit({ dispatch, onUpdateSuccess, setError, newPhoneNumber }),
@@ -102,7 +102,7 @@ const ConfirmNumberStep = ({
           </Grid>
         </GridMaxHeight>
       </StyledForm>
-    </FormContext>
+    </FormProvider>
   );
 };
 

@@ -34,7 +34,7 @@ import { BulkEditContext } from 'components/tasklist/BulkEditSection/BulkEditSec
 import TaskItemCustomField from 'components/common/CustomField/TaskItemCustomField';
 import OptionsMenu from 'components/common/OptionsMenu/OptionsMenu';
 import Spacing from 'components/common/Spacing';
-import { useColumnsConfig } from 'context-api/ColumnsConfigContext';
+import { useColumnsConfig } from 'context-api/columns-config-context';
 import StickyMainTaskItemCell from 'components/task/StickyMainTaskItemCell/StickyMainTaskItemCell';
 import TaskItemCell from 'components/task/TaskItemCell/TaskItemCell';
 import TaskTemplateDueDate from 'components/task-template/TaskTemplateDueDate/TaskTemplateDueDate';
@@ -475,7 +475,11 @@ const TaskTemplateGroupHeader = ({
           <TaskTemplateMembers
             currentUser={currentUser}
             multipleAssigneesContext={groupHasMultipleAssignees}
-            workflow={workFlowData || templateGroup}
+            workflow={
+              templateGroup.assignedToUsers || !workFlowData
+                ? templateGroup
+                : workFlowData
+            }
             onWorkflowUpdate={compose(dispatch, updatePartialWorkflow)}
           />
         </TaskItemCell>

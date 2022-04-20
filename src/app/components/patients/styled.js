@@ -36,3 +36,23 @@ export const RefineSearchText = styled.p`
   font-family: 'Montserrat', sans-serif;
   color: ${palette.oPlusRed};
 `;
+
+export const BulkEditSectionContainer = styled.div`
+  width: 90%;
+  margin-left: auto;
+  margin-right: auto;
+`;
+
+export const TaskTemplateApplicatorContainer = styled.div`
+  margin-bottom: 60px;
+  justify-content: center;
+  display: flex;
+  padding-top: 10px;
+`;
+
+export const ContentWrapper = styled.div`
+  padding: 0px 20px 0 0;
+  max-width: 360px;
+  width: 100%;
+  box-sizing: border-box;
+`;

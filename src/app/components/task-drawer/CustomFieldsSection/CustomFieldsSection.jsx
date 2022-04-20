@@ -6,7 +6,7 @@ import { Grid } from '@material-ui/core';
 import { getTaskCustomFields } from 'actions/task-drawer-actions';
 import CustomField from 'components/common/CustomField/CustomField';
 import { useBoolean } from 'hooks/useBoolean';
-import { useForm, FormContext } from 'react-hook-form';
+import { useForm, FormProvider } from 'react-hook-form';
 import { compose } from 'ramda';
 import CategoryOptions from 'components/common/CategoryOptions/CategoryOptions';
 import { partialUpdateTask } from 'actions/task-actions';
@@ -19,13 +19,13 @@ import {
 } from 'selectors/task-drawer-selectors';
 import { workflowSelector } from 'selectors/workflow-drawer-selectors';
 import { FieldType } from 'helpers/field-type-helpers';
+import { formatMetaDataOutput } from './helpers';
 import {
   CustomFieldsSectionContainer,
   HidableContainer,
   Title,
   styleFullRow,
 } from './styled';
-import { formatMetaDataOutput } from './helpers';
 
 const CustomFieldsSection = () => {
   const dispatch = useDispatch();
@@ -92,40 +92,31 @@ const CustomFieldsSection = () => {
   const renderCustomField = useCallback(
     field => {
       const isFocused = taskDrawerFocusField === field.identifier;
-      const hasValue = !!getValues()[`taskMetaData.${field.identifier}`];
+      const hasValue = !!getValues('taskMetaData')?.[field.identifier];
       const visible = isFocused || emptyVisible || hasValue;
       return (
-        <FormContext {...formMethods}>
-          <HidableContainer key={field.identifier} visibility={!visible}>
-            <Grid item xs={12} style={styleFullRow}>
-              <CustomField
-                readOnly={false}
-                field={field}
-                onBlur={(data, wasChanged) =>
-                  handleBlur(data, wasChanged, field.fieldType)
-                }
-                fieldsGroupKey="taskMetaData"
-                isFocused={isFocused}
-                taskIdentifier={task.identifier}
-                task={task}
-              />
-            </Grid>
-          </HidableContainer>
-        </FormContext>
+        <HidableContainer key={field.identifier} visibility={!visible}>
+          <Grid item xs={12} style={styleFullRow}>
+            <CustomField
+              readOnly={false}
+              field={field}
+              onBlur={(data, wasChanged) =>
+                handleBlur(data, wasChanged, field.fieldType)
+              }
+              fieldsGroupKey="taskMetaData"
+              isFocused={isFocused}
+              taskIdentifier={task.identifier}
+              task={task}
+            />
+          </Grid>
+        </HidableContainer>
       );
     },
-    [
-      taskDrawerFocusField,
-      getValues,
-      emptyVisible,
-      formMethods,
-      task,
-      handleBlur,
-    ],
+    [taskDrawerFocusField, getValues, emptyVisible, task, handleBlur],
   );
   if (templates.length === 0) return null;
   return (
-    <FormContext {...formMethods}>
+    <FormProvider {...formMethods}>
       <CustomFieldsSectionContainer>
         <Title>Custom fields</Title>
         {templates?.map((field, index) => {
@@ -136,7 +127,7 @@ const CustomFieldsSection = () => {
           onToggle={toggleEmptyVisible}
         />
       </CustomFieldsSectionContainer>
-    </FormContext>
+    </FormProvider>
   );
 };
 

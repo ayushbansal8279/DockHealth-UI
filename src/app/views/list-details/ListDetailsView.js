@@ -3,7 +3,7 @@ import React, { useEffect } from 'react';
 import { useLocation, useParams } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
 import { TaskStatus } from 'helpers/task-helpers';
-import { ColumnsConfigProvider } from 'context-api/ColumnsConfigContext';
+import { ColumnsConfigProvider } from 'context-api/columns-config-context';
 import {
   clearTaskListState,
   initializeTaskListState,

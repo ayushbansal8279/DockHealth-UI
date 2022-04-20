@@ -9,7 +9,7 @@ import InitialsInput from 'components/common/InitialsInput/InitialsInput';
 import ColorPicker from 'components/common/ColorPicker/ColorPicker';
 import Spacing from 'components/common/Spacing';
 import FormInput from 'components/common/Input/FormInput';
-import { FormContext, useForm } from 'react-hook-form';
+import { FormProvider, useForm } from 'react-hook-form';
 import {
   EditOrganizationModalWrapper,
   Header,
@@ -69,27 +69,21 @@ const EditOrganizationModal = ({ closeModal, userProfile, onSuccess }) => {
     unregister,
     setValue,
     watch,
-    errors,
     handleSubmit,
-    formState: { isSubmitting },
+    formState: { isSubmitting, errors },
   } = formMethods;
 
   const organizationInitialsValue = watch('organizationInitials');
   const organizationProfileColorValue = watch('organizationProfileColor');
 
   useEffect(() => {
-    register(
-      { name: 'organizationInitials' },
-      {
-        minLength: {
-          value: 2,
-          message: 'Your initials must contain at least 2 letters',
-        },
+    register('organizationInitials', {
+      minLength: {
+        value: 2,
+        message: 'Your initials must contain at least 2 letters',
       },
-    );
-    register({
-      name: 'organizationProfileColor',
     });
+    register('organizationProfileColor');
 
     return () => {
       unregister('organizationName');
@@ -115,7 +109,7 @@ const EditOrganizationModal = ({ closeModal, userProfile, onSuccess }) => {
           }),
         )}
       >
-        <FormContext {...formMethods}>
+        <FormProvider {...formMethods}>
           <FormInput
             autoFocus
             label="Organization name"
@@ -172,7 +166,7 @@ const EditOrganizationModal = ({ closeModal, userProfile, onSuccess }) => {
               </Button>
             </SaveButtonWrapper>
           </Grid>
-        </FormContext>
+        </FormProvider>
       </OrganizationForm>
     </EditOrganizationModalWrapper>
   );

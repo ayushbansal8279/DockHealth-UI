@@ -83,6 +83,7 @@ export const ReadOnlyLabelsContainer = styled.div`
   width: 100%;
   flex-wrap: wrap;
   align-items: center;
+  ${({ isPatientBulk }) => isPatientBulk && `justify-content: center;`}
 `;
 
 export const ReadOnlyLabelContainer = styled.div`

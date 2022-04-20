@@ -28,8 +28,8 @@ const CustomFieldTextEditor = ({
   label,
   placeholder,
   taskIdentifier,
+  identifier,
   task,
-  fieldsGroupKey,
   inputRef,
 }) => {
   const dispatch = useDispatch();
@@ -48,7 +48,7 @@ const CustomFieldTextEditor = ({
   );
 
   useEffect(() => {
-    register({ name });
+    register(name);
     return () => {
       unregister(name);
     };
@@ -66,20 +66,18 @@ const CustomFieldTextEditor = ({
 
   const updateCustomFields = useCallback(
     text => {
-      const values = getValues();
+      const values = getValues('taskMetaData');
       const previousValue = values[name];
       if (!text && !previousValue) return;
       if (previousValue !== text) {
-        values[name] = text;
+        values[identifier] = text;
         if (taskIdentifier) {
           const formattedValue = formatMetaDataOutput({
             taskMetaData: values,
           });
           const adjustedValues = formattedValue.taskMetaData.map(object => ({
             ...object,
-            customFieldIdentifier: object.customFieldIdentifier.slice(
-              fieldsGroupKey.length + 1,
-            ),
+            customFieldIdentifier: object.customFieldIdentifier,
           }));
           if (adjustedValues.length > 0) {
             // eslint-disable-next-line no-unused-expressions
@@ -102,15 +100,7 @@ const CustomFieldTextEditor = ({
         }
       }
     },
-    [
-      dispatch,
-      fieldsGroupKey.length,
-      getValues,
-      name,
-      setValue,
-      taskIdentifier,
-      task,
-    ],
+    [getValues, name, identifier, taskIdentifier, task, dispatch, setValue],
   );
 
   const handleBlur = useCallback(() => {

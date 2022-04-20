@@ -1,6 +1,6 @@
 import React from 'react';
 import { Grid } from '@material-ui/core';
-import { FormContext, useForm } from 'react-hook-form';
+import { FormProvider, useForm } from 'react-hook-form';
 import { useDispatch } from 'react-redux';
 import { useHistory } from 'react-router-dom';
 import * as TaskTemplateActions from 'actions/task-template-actions';
@@ -64,7 +64,7 @@ const CreateSmartFlowModal = ({ closeModal, onCreateSuccess }) => {
           )(event)
         }
       >
-        <FormContext {...formMethods}>
+        <FormProvider {...formMethods}>
           <FormInput
             autoFocus
             required
@@ -87,7 +87,7 @@ const CreateSmartFlowModal = ({ closeModal, onCreateSuccess }) => {
               Save
             </Button>
           </Grid>
-        </FormContext>
+        </FormProvider>
       </StyledForm>
     </ListFormModalWrapper>
   );

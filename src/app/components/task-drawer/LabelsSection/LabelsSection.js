@@ -14,7 +14,7 @@ import {
   selectedTaskSelector,
   taskDrawerFocusFieldSelector,
 } from 'selectors/task-drawer-selectors';
-import { useForm, FormContext } from 'react-hook-form';
+import { useForm, FormProvider } from 'react-hook-form';
 import usePrevious from 'hooks/use-previous';
 import initializeLabelsSectionHooks from './hooks';
 import {
@@ -214,7 +214,7 @@ const LabelsSection = ({ onTaskUpdate }) => {
   );
 
   return (
-    <FormContext {...formMethods}>
+    <FormProvider {...formMethods}>
       <Autocomplete
         autoFocus={taskDrawerFocusField === DrawerFieldEnum.LABEL}
         options={labels}
@@ -254,7 +254,7 @@ const LabelsSection = ({ onTaskUpdate }) => {
         multiple
         disableClearable
       />
-    </FormContext>
+    </FormProvider>
   );
 };
 

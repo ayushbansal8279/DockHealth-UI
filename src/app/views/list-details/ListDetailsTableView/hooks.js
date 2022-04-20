@@ -38,7 +38,7 @@ import {
 import { userProfileSelector } from 'selectors/user-selectors';
 import { selectedFiltersInMegaFilterSelector } from 'selectors/mega-filter-selectors';
 
-import { useColumnsConfig } from 'context-api/ColumnsConfigContext';
+import { useColumnsConfig } from 'context-api/columns-config-context';
 import * as TaskActions from 'actions/task-actions';
 import * as ListDetailsActions from 'actions/list-details-actions';
 import { createTask } from 'sagas/list-details-saga';

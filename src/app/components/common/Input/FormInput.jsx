@@ -16,8 +16,8 @@ const FormInput = React.forwardRef(
   ) => {
     const {
       register,
-      errors,
-      clearError,
+      clearErrors,
+      formState: { errors },
       watch,
       setValue,
       unregister,
@@ -27,7 +27,7 @@ const FormInput = React.forwardRef(
     const value = watch(name);
 
     useMount(() => {
-      register({ name }, { validate });
+      register(name, { validate });
     });
 
     useUnmount(() => {
@@ -46,7 +46,7 @@ const FormInput = React.forwardRef(
         value={value ?? ''}
         onChange={handleChange}
         error={error}
-        onKeyUp={() => clearError(name)}
+        onKeyUp={() => clearErrors(name)}
         {...restProps}
       />
     );

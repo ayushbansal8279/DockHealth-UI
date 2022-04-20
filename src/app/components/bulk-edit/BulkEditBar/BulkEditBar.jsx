@@ -3,17 +3,22 @@ import { Box } from '@material-ui/core';
 import { Container, TasksText, CloseButton, CloseIcon } from './styled';
 
 const BulkEditBar = props => {
-  const { numberOfSelectedTasks, isDisabled, onClose, children } = props;
+  const {
+    numberOfSelectedItems,
+    onClose,
+    children,
+    patientView,
+    isDisabled,
+  } = props;
   return (
     <Container>
       <TasksText>
-        {`${numberOfSelectedTasks} Task${
-          numberOfSelectedTasks > 1 ? 's' : ''
-        } Selected`}
+        {`${numberOfSelectedItems} ${patientView ? `Patient` : `Task`}${numberOfSelectedItems > 1 ? 's' : ''
+          } Selected`}
       </TasksText>
       <Box display="flex" height="100%">
         {children}
-        <CloseButton type="button" onClick={onClose} disabled={isDisabled}>
+        <CloseButton type="button" onClick={onClose} isDisabled={isDisabled}>
           <CloseIcon />
         </CloseButton>
       </Box>

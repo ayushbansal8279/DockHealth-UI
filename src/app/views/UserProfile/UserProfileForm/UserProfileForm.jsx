@@ -2,7 +2,7 @@
 import { Grid } from '@material-ui/core';
 import palette from 'styles/palette';
 import React, { useMemo, useEffect } from 'react';
-import { FormContext, useForm } from 'react-hook-form';
+import { FormProvider, useForm } from 'react-hook-form';
 import { useDispatch } from 'react-redux';
 import Button from 'components/common/Button/Button';
 import { head } from 'ramda';
@@ -91,7 +91,7 @@ const UserProfileForm = ({ userProfile }) => {
   };
 
   return (
-    <FormContext {...formMethods}>
+    <FormProvider {...formMethods}>
       <StyledForm
         onSubmit={handleSubmit(data => dispatch(updateCurrentUser(data)))}
         autoComplete="off"
@@ -238,7 +238,7 @@ const UserProfileForm = ({ userProfile }) => {
           </Grid>
         </Grid>
       </StyledForm>
-    </FormContext>
+    </FormProvider>
   );
 };
 

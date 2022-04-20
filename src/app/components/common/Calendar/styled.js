@@ -50,6 +50,9 @@ export const CalendarContainer = styled.div`
     color: ${palette.white} !important;
     background-color: ${palette.darkBlue} !important;
     border-color: ${palette.darkBlue} !important;
+    &:disabled {
+      opacity: 1 !important;
+    }
   }
   .fc-daygrid-day.fc-day-today {
     background-color: ${palette.brightBlueWithAlpha} !important;

@@ -1,6 +1,6 @@
 import React from 'react';
 import { Grid } from '@material-ui/core';
-import { FormContext, useForm } from 'react-hook-form';
+import { FormProvider, useForm } from 'react-hook-form';
 import { useDispatch } from 'react-redux';
 import * as TaskTemplateActions from 'actions/task-template-actions';
 import FormInput from 'components/common/Input/FormInput';
@@ -50,7 +50,7 @@ const CreateTemplateFolderModal = ({ closeModal, onCreateSuccess }) => {
           )(event)
         }
       >
-        <FormContext {...formMethods}>
+        <FormProvider {...formMethods}>
           <FormInput
             autoFocus
             required
@@ -73,7 +73,7 @@ const CreateTemplateFolderModal = ({ closeModal, onCreateSuccess }) => {
               Save
             </Button>
           </Grid>
-        </FormContext>
+        </FormProvider>
       </StyledForm>
     </ListFormModalWrapper>
   );

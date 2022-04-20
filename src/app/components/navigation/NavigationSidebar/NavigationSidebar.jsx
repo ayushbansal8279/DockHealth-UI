@@ -252,7 +252,7 @@ const NavigationSidebar = () => {
             </AccessRestrictor>
           </Grid>
           <Grid container direction="column">
-            <AccessRestrictor allowedToRoles={[ADMIN]}>
+            <AccessRestrictor allowedToRoles={[ADMIN, OWNER, MEMBER, GUEST]}>
               <div ref={settingsMenuReference}>
                 <IconNavigationItem
                   name="Settings"

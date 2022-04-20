@@ -1,6 +1,6 @@
 import React from 'react';
 import { Grid } from '@material-ui/core';
-import { FormContext, useForm } from 'react-hook-form';
+import { FormProvider, useForm } from 'react-hook-form';
 import Spacing from 'components/common/Spacing';
 import Button from 'components/common/Button/Button';
 import FormInput from 'components/common/Input/FormInput';
@@ -27,7 +27,7 @@ const MemberForm = ({ initialValues, closeInviteForm, onSubmit, disabled }) => {
 
   return (
     <FormWrapper onSubmit={handleSubmit(onSubmit)}>
-      <FormContext {...formContext}>
+      <FormProvider {...formContext}>
         <Grid container direction="column" spacing={2}>
           <Grid
             container
@@ -96,7 +96,7 @@ const MemberForm = ({ initialValues, closeInviteForm, onSubmit, disabled }) => {
             </Grid>
           </Grid>
         </Grid>
-      </FormContext>
+      </FormProvider>
     </FormWrapper>
   );
 };

@@ -39,7 +39,7 @@ import HeaderSearch from 'components/template/HeaderSearch/HeaderSearch';
 import { getPatientFilterOptions } from 'actions/patient-details-actions';
 import { getCustomerTypeLabel } from 'helpers/customer-type-helper';
 import { capitalize } from 'helpers/capitalize';
-import { ColumnsConfigProvider } from 'context-api/ColumnsConfigContext';
+import { ColumnsConfigProvider } from 'context-api/columns-config-context';
 import { getPatientWidgets } from 'api/patient-api';
 import HorizontallyScrolledViewLayout from 'components/template/HorizontallyScrolledViewLayout/HorizontallyScrolledViewLayout';
 import StickyContainer from 'components/common/HorizontalScroll/StickyContainer';

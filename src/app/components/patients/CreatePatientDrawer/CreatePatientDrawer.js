@@ -1,5 +1,5 @@
 import React, { useRef } from 'react';
-import { FormContext, useForm } from 'react-hook-form';
+import { FormProvider, useForm } from 'react-hook-form';
 import {
   getCustomerTypeLabel,
   getCustomerUniqueIDLabel,
@@ -54,11 +54,11 @@ const CreatePatientDrawer = ({ isSidebarOpen, onPatientCreated, onClose }) => {
     validationSchema,
   });
 
-  const { clearError, getValues } = formMethods;
+  const { clearErrors, getValues } = formMethods;
   const formReference = useRef(null);
 
   const close = () => {
-    clearError();
+    clearErrors();
     onClose();
   };
 
@@ -93,7 +93,7 @@ const CreatePatientDrawer = ({ isSidebarOpen, onPatientCreated, onClose }) => {
       title={`Add a ${customerTypeLabel}`}
       onClose={handleClose}
     >
-      <FormContext {...formMethods}>
+      <FormProvider {...formMethods}>
         <PatientForm
           formMethods={formMethods}
           onSubmit={handleFormSubmit}
@@ -102,7 +102,7 @@ const CreatePatientDrawer = ({ isSidebarOpen, onPatientCreated, onClose }) => {
           ref={formReference}
           buttonLabel={`SAVE ${customerTypeLabel}`}
         />
-      </FormContext>
+      </FormProvider>
     </PatientDrawer>
   );
 };

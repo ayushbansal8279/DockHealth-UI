@@ -7,18 +7,16 @@ const FormPhoneNumberInput = ({ name, ...restProps }) => {
   const {
     register,
     unregister,
-    errors,
+    clearErrors,
+    formState: { errors },
     watch,
     setValue,
-    clearError,
   } = useFormContext();
   const error = errors?.[name]?.message;
   const value = watch(name);
 
   useMount(() => {
-    register({
-      name,
-    });
+    register(name);
   });
 
   useUnmount(() => {
@@ -29,7 +27,7 @@ const FormPhoneNumberInput = ({ name, ...restProps }) => {
     <PhoneNumberInput
       value={value}
       error={error}
-      onKeyUp={() => clearError(name)}
+      onKeyUp={() => clearErrors(name)}
       onChange={phone => {
         setValue(name, phone);
       }}
