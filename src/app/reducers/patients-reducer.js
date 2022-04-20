@@ -6,7 +6,6 @@ import { getPatientsListFiltersStorageKey } from 'helpers/patient-list-helpers';
 const initialState = {
   defaultPatientsLists: null,
   customPatientsLists: null,
-  selectedPatientsList: null,
   isFetching: false,
   currentPatientsListIdentifier: null,
   currentPatientsList: null,
@@ -186,13 +185,6 @@ const PatientsReducer = (state = initialState, action) => {
         customPatientsLists: state.customPatientsLists?.filter(
           ({ patientListIdentifier }) => patientListIdentifier !== identifier,
         ),
-      };
-    }
-
-    case ActionTypes.CLEAR_SELECTED_PATIENTS_LIST: {
-      return {
-        ...state,
-        selectedPatientsList: null,
       };
     }
 
