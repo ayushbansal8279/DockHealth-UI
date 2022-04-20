@@ -14,6 +14,8 @@ import DateInput from 'components/common/DateInput/DateInput';
 import { useFormContext } from 'react-hook-form';
 import { taskDrawerFocusFieldSelector } from 'selectors/task-drawer-selectors';
 import { useSelector } from 'react-redux';
+import { TaskItemType } from 'helpers/task-helpers';
+import { workflowAutofocusFieldSelector } from 'selectors/workflow-drawer-selectors';
 import CustomFieldTextEditor from './CustomFieldTextEditor';
 
 const CustomField = ({
@@ -24,6 +26,7 @@ const CustomField = ({
   fieldsGroupKey,
   taskIdentifier,
   task,
+  // eslint-disable-next-line sonarjs/cognitive-complexity
 }) => {
   const containerReference = useRef(null);
   const { identifier, name, placeholder, fieldType, options } = field;
@@ -31,8 +34,12 @@ const CustomField = ({
   const componentReference = useRef(null);
   const { setValue } = useFormContext();
   const [wasChanged, setWasChanged] = useState(false);
-  const taskDrawerFocusField = useSelector(taskDrawerFocusFieldSelector);
-
+  const isWorkflow =
+    task.itemType === TaskItemType.BUNDLE ||
+    task.itemType === TaskItemType.TEMPLATE;
+  const taskDrawerFocusField = useSelector(
+    isWorkflow ? workflowAutofocusFieldSelector : taskDrawerFocusFieldSelector,
+  );
   const dropdownOptions = useMemo(() => {
     const o =
       options?.map(option => ({
@@ -173,6 +180,7 @@ const CustomField = ({
     name,
     placeholder,
     readOnly,
+    task,
     taskIdentifier,
   ]);
 

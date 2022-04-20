@@ -17,22 +17,30 @@ import {
   taskCustomFieldsSelector,
   taskDrawerFocusFieldSelector,
 } from 'selectors/task-drawer-selectors';
-import { workflowSelector } from 'selectors/workflow-drawer-selectors';
+import {
+  workflowSelector,
+  workflowAutofocusFieldSelector,
+} from 'selectors/workflow-drawer-selectors';
 import { FieldType } from 'helpers/field-type-helpers';
+import { formatMetaDataOutput } from './helpers';
 import {
   CustomFieldsSectionContainer,
   HidableContainer,
   Title,
   styleFullRow,
 } from './styled';
-import { formatMetaDataOutput } from './helpers';
 
 const CustomFieldsSection = () => {
   const dispatch = useDispatch();
   const selectedTask = useSelector(selectedTaskSelector);
   const selectedWorkflow = useSelector(workflowSelector);
   const task = selectedTask || selectedWorkflow || {};
-  const taskDrawerFocusField = useSelector(taskDrawerFocusFieldSelector);
+  const isWorkflow =
+    task.itemType === TaskItemType.BUNDLE ||
+    task.itemType === TaskItemType.TEMPLATE;
+  const taskDrawerFocusField = useSelector(
+    isWorkflow ? workflowAutofocusFieldSelector : taskDrawerFocusFieldSelector,
+  );
   const { templates } = useSelector(taskCustomFieldsSelector);
   const { 0: emptyVisible, 3: toggleEmptyVisible } = useBoolean(false);
   useEffect(() => {
@@ -47,13 +55,12 @@ const CustomFieldsSection = () => {
   const updateCustomFields = useCallback(
     ({ taskMetaData }) => {
       if (taskMetaData.length > 0) {
-        task.itemType === TaskItemType.BUNDLE ||
-        task.itemType === TaskItemType.TEMPLATE
+        isWorkflow
           ? dispatch(updatePartialWorkflow(task?.identifier, { taskMetaData }))
           : dispatch(partialUpdateTask(task?.identifier, { taskMetaData }));
       }
     },
-    [dispatch, task],
+    [dispatch, isWorkflow, task],
   );
 
   const formMethods = useForm();
@@ -119,7 +126,7 @@ const CustomFieldsSection = () => {
       getValues,
       emptyVisible,
       formMethods,
-      task.identifier,
+      task,
       handleBlur,
     ],
   );

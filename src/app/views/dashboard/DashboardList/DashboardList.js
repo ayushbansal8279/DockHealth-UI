@@ -97,11 +97,6 @@ const DashboardList = ({
     );
   }, [dashboardGroupsPreferences, dashboardTasks]);
 
-  // console.log(
-  //   'dashboardGroupsOrderPreferences',
-  //   dashboardGroupsOrderPreferences,
-  // );
-
   const orderedDashboardTasks = useMemo(() => {
     const sorted = () => {
       return dashboardGroupsOrderPreferences
@@ -112,9 +107,6 @@ const DashboardList = ({
     };
     return dashboardGroupsOrderPreferences ? sorted() : filteredDashboardTasks;
   }, [dashboardGroupsOrderPreferences, filteredDashboardTasks]);
-
-  // console.log('filteredDashboardTasks', filteredDashboardTasks);
-  // console.log('orderedDashboardTasks', orderedDashboardTasks);
 
   const currentSortMethod = useMemo(() => {
     if (!sortKey) return identity;
