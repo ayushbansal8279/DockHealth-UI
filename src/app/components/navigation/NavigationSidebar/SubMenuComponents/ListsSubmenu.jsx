@@ -40,6 +40,7 @@ import {
   UpdatesForMemberIndicator,
   DrawerMyListsLabel,
   DrawerListsItemLoader,
+  ColorIndicator,
 } from './styled';
 
 // eslint-disable-next-line sonarjs/cognitive-complexity
@@ -114,6 +115,11 @@ const ListsSubmenu = () => {
               }
             >
               {list.hasUpdatesForMember && <UpdatesForMemberIndicator />}
+              {list.color && (
+                <Box mr={1}>
+                  <ColorIndicator color={list.color} />
+                </Box>
+              )}
               <ListNameText
                 color={archived && palette.coolGrey2}
                 isActive={activeTaskListIdentifier === list?.taskListIdentifier}

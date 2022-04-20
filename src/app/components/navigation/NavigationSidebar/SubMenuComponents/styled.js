@@ -7,6 +7,15 @@ import spacing from 'styles/spacing';
 import palette from 'styles/palette';
 import { fontWeights, fontSizes } from 'styles/font';
 import { Skeleton } from '@material-ui/lab';
+import { prop } from 'ramda';
+
+export const ColorIndicator = styled.span`
+  display: block;
+  background-color: ${prop('color')};
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+`;
 
 export const SubmenuDivider = styled.hr`
   width: 100%;

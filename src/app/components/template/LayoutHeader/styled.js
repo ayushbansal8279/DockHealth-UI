@@ -2,12 +2,21 @@ import styled from 'styled-components';
 import palette from 'styles/palette';
 import DockLogoSrc from 'img/dock-header-logo';
 import { fontSizes, fontWeights } from 'styles/font';
+import { prop } from 'ramda';
 
 export const HeaderContainer = styled.div`
   height: auto;
   background-color: ${palette.white};
   ${({ horizontalSticky }) => (horizontalSticky ? 'top: 0px;' : '')}
   z-index: 101;
+`;
+
+export const ColorIndicator = styled.span`
+  display: block;
+  background-color: ${prop('color')};
+  width: 20px;
+  height: 20px;
+  border-radius: 12px;
 `;
 
 export const MainHeader = styled.div`

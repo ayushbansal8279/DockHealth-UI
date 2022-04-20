@@ -13,6 +13,7 @@ import {
   DockHeaderImage,
   Title,
   Description,
+  ColorIndicator,
 } from './styled';
 
 const { ADMIN, OWNER, MEMBER, GUEST, EXTERNAL } = UserOrganizationRole;
@@ -49,11 +50,20 @@ const LayoutHeader = props => {
 };
 
 LayoutHeader.Title = props => {
-  const { title, description } = props;
+  const { title, description, colorIndicator } = props;
 
   return (
     <Box flex={1} overflow="hidden">
-      <Title>{title}</Title>
+      <Title>
+        <Box display="flex" alignItems="center">
+          {colorIndicator && (
+            <Box ml="10px" mr="16px">
+              <ColorIndicator color={colorIndicator} />
+            </Box>
+          )}
+          {title}
+        </Box>
+      </Title>
       <Description>{description}</Description>
     </Box>
   );
