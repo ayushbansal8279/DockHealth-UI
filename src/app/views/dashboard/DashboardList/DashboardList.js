@@ -105,11 +105,6 @@ const DashboardList = ({
     );
   }, [dashboardGroupsPreferences, dashboardTasks]);
 
-  // console.log(
-  //   'dashboardGroupsOrderPreferences',
-  //   dashboardGroupsOrderPreferences,
-  // );
-
   const orderedDashboardTasks = useMemo(() => {
     const sorted = () => {
       return dashboardGroupsOrderPreferences

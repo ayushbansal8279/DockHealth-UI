@@ -20,15 +20,20 @@ const TaskItemCustomField = ({
   customFieldValue,
   task,
   isHovered,
+  onClick,
 }) => {
   const { value } = customFieldValue || {};
 
   const dispatch = useDispatch();
 
   const handleClick = useCallback(() => {
-    dispatch(openDrawer(field.identifier));
-    dispatch(storeAsCurrentTask(task));
-  }, [dispatch, field.identifier, task]);
+    if (typeof onClick === 'function') {
+      onClick(field.identifier, task);
+    } else {
+      dispatch(openDrawer(field.identifier));
+      dispatch(storeAsCurrentTask(task));
+    }
+  }, [dispatch, field.identifier, onClick, task]);
 
   const handleChange = newValue => {
     const taskMetaData = task.taskMetaData
