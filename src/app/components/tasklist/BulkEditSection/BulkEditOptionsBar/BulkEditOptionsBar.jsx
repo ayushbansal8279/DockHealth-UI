@@ -351,7 +351,6 @@ const BulkEditOptionsBar = ({
           ) {
             refreshTasks();
           }
-          onClose();
         })
         .catch(() => {
           if (refreshTasks && typeof refreshTasks === 'function') {
@@ -368,7 +367,6 @@ const BulkEditOptionsBar = ({
       allSelectedTasksLength,
       shouldRefreshTasksEveryTime,
       refreshTasks,
-      onClose,
       updateTasks,
     ],
   );
