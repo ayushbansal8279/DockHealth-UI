@@ -12,9 +12,8 @@ import { prop } from 'ramda';
 export const ColorIndicator = styled.span`
   display: block;
   background-color: ${prop('color')};
-  width: 8px;
-  height: 8px;
-  border-radius: 50%;
+  width: 11.5px;
+  height: 11.5px;
 `;
 
 export const SubmenuDivider = styled.hr`
@@ -253,7 +252,7 @@ export const DrawerMyListsLabel = styled(DrawerSubmenuLabel)`
 `;
 
 export const DrawerListsList = styled.div`
-  padding: ${spacing.largePlus} 0 ${spacing.largePlus} ${spacing.smallPlus};
+  padding: ${spacing.largePlus} 0;
   border-bottom: 1px solid ${palette.coolGrey2};
   overflow-y: auto;
 
@@ -284,7 +283,7 @@ export const DrawerListsItemLoader = withStyles({
 export const DrawerListsItemNewLabel = styled.div`
   position: absolute;
   top: -8px;
-  left: 0;
+  left: 24;
   color: ${palette.brightBlue};
   font-size: 10px;
   font-weight: 400;
@@ -323,13 +322,9 @@ export const ListNameText = styled.div`
 `;
 
 export const UpdatesForMemberIndicator = styled.div`
-  position: absolute;
-  left: -10px;
-  top: 50%;
-  transform: translateY(-50%);
-  width: 6px;
-  height: 6px;
-  border-radius: 3px;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
   background: ${palette.brightBlue};
 `;
 
