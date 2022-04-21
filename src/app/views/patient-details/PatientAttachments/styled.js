@@ -8,7 +8,7 @@ export const PatientAttachmentsWrapper = styled.div`
   min-height: 300px;
   padding: ${spacing.regular} ${spacing.huge};
   background-color: ${props =>
-    props.isDragActive ? palette.coolGrey3 : palette.white};
+    props.isDragActive ? palette.coolGrey3 : 'transparent'};
   border: ${props =>
     props.isDragActive ? `solid 1px ${palette.coolGrey2}` : `none`};
 `;

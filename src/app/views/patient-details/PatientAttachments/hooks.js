@@ -1,5 +1,5 @@
 /* eslint-disable react-hooks/rules-of-hooks */
-import { useState, useCallback, useRef, useEffect } from 'react';
+import { useState, useCallback, useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { useDropzone } from 'react-dropzone';
 import { memoizeWith, identity, isEmpty } from 'ramda';
@@ -34,7 +34,6 @@ const initializeAttachmentsSectionHooks = () => {
     }
   }, [dispatch, patientIdentifier]);
 
-  const attachmentFileInputReference = useRef(null);
   const attachments = useSelector(patientDocumentsSelector) || [];
 
   const [attachmentsSources, setAttachmentSources] = useState([]);
@@ -84,7 +83,7 @@ const initializeAttachmentsSectionHooks = () => {
     [dispatch, patient],
   );
 
-  const { getRootProps, getInputProps, isDragActive } = useDropzone({
+  const { getRootProps, getInputProps, isDragActive, inputRef } = useDropzone({
     onDrop: onAttachmentFileInputChange,
   });
 
@@ -158,7 +157,7 @@ const initializeAttachmentsSectionHooks = () => {
     currentPatientAttachments: attachments,
     attachmentsLoading,
     removePatientAttachment: boundRemovePatientAttachment,
-    attachmentFileInputReference,
+    attachmentFileInputReference: inputRef,
     uploadProgress,
     currentlyUploadedAttachment,
     openAttachmentPreview,

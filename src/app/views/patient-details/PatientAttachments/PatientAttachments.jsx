@@ -1,29 +1,45 @@
-/* eslint-disable sonarjs/cognitive-complexity */
-import React from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
+import palette from 'styles/palette';
 import { useSelector } from 'react-redux';
-import Loader from 'components/common/Loader/Loader';
-import Spacing from 'components/common/Spacing';
-import { RobotoTypography } from 'styles/theme';
-
-import { Grid } from '@material-ui/core';
+import localStorageHelper from 'helpers/local-storage-helper';
+import { Box, IconButton } from '@material-ui/core';
+import ViewModuleIcon from '@material-ui/icons/ViewModule';
+import ViewHeadlineIcon from '@material-ui/icons/ViewHeadline';
 import { isFetchingPatientAttachmentsSelector } from 'selectors/patient-details-selectors';
+import AddButton from 'components/common/AddButton/AddButton';
 import AttachmentPreview from 'components/attachments/AttachmentPreview/AttachmentPreview';
-import AttachmentButton from 'components/attachments/AttachmentButton/AttachmentButton';
-import AttachmentProgressBar from 'components/attachments/AttachmentProgressBar/AttachmentProgressBar';
-import AddAttachmentButton from 'components/attachments/AddAttachmentButton/AddAttachmentButton';
-import PatientAttachmentsLoader from '../PatientAttachmentsLoader/PatientAttachmentsLoader';
+// import AttachmentButton from 'components/attachments/AttachmentButton/AttachmentButton';
+// import AttachmentProgressBar from 'components/attachments/AttachmentProgressBar/AttachmentProgressBar';
+// import AddAttachmentButton from 'components/attachments/AddAttachmentButton/AddAttachmentButton';
+import FileGridItem from 'components/attachments/FileGridItem/FileGridItem';
+import FileListItem from 'components/attachments/FileListItem/FileListItem';
+import FileListHeader from 'components/attachments/FileListItem/FileListHeader';
+// import PatientAttachmentsLoader from '../PatientAttachmentsLoader/PatientAttachmentsLoader';
 import { PatientAttachmentsWrapper, AttachmentFileInput } from './styled';
 import initializeAttachmentsSectionHooks from './hooks';
+import { FilesViewType, PATIENT_FILES_VIEW_TYPE } from './helpers';
 
 const PatientAttachments = () => {
+  const [activeViewType, setActiveViewType] = useState(
+    localStorageHelper.getItem(PATIENT_FILES_VIEW_TYPE) || FilesViewType.GRID,
+  );
+
+  useEffect(() => {
+    if (activeViewType === FilesViewType.GRID) {
+      localStorageHelper.removeItem(PATIENT_FILES_VIEW_TYPE);
+    } else {
+      localStorageHelper.setItem(PATIENT_FILES_VIEW_TYPE, activeViewType);
+    }
+  }, [activeViewType]);
+
   const {
     attachmentsSources,
     currentPatientAttachments,
     attachmentsLoading,
     removePatientAttachment,
     attachmentFileInputReference,
-    uploadProgress,
-    currentlyUploadedAttachment,
+    // uploadProgress,
+    // currentlyUploadedAttachment,
     openAttachmentPreview,
     isAttachmentPreviewOpen,
     hideAttachmentPreview,
@@ -33,10 +49,64 @@ const PatientAttachments = () => {
 
   const isFetching = useSelector(isFetchingPatientAttachmentsSelector);
 
+  const FileItemComponent =
+    activeViewType === FilesViewType.GRID ? FileGridItem : FileListItem;
+
+  const getFileOptions = useCallback(
+    file => [
+      { name: 'Preview', onClick: () => openAttachmentPreview(file) },
+      {
+        name: 'Delete',
+        onClick: () => removePatientAttachment(file.attachmentIdentifier),
+        color: palette.oPlusRed,
+      },
+    ],
+    [openAttachmentPreview, removePatientAttachment],
+  );
+
   return (
     <PatientAttachmentsWrapper isDragActive={isDragActive}>
+      <Box display="flex" width="100%" justifyContent="flex-end" mb={2}>
+        {/* <AddButton onClick={() => {}}>Add Folder</AddButton>
+        <Box m={0.5} /> */}
+        <AddButton onClick={() => attachmentFileInputReference.current.click()}>
+          Add File
+        </AddButton>
+        <Box m={0.5} />
+        <IconButton onClick={() => setActiveViewType(FilesViewType.GRID)}>
+          <ViewModuleIcon
+            color={
+              activeViewType === FilesViewType.GRID ? 'secondary' : 'primary'
+            }
+          />
+        </IconButton>
+        <Box m={0.5} />
+        <IconButton onClick={() => setActiveViewType(FilesViewType.LIST)}>
+          <ViewHeadlineIcon
+            color={
+              activeViewType === FilesViewType.LIST ? 'secondary' : 'primary'
+            }
+          />
+        </IconButton>
+      </Box>
       {!isFetching ? (
         <>
+          <AttachmentFileInput
+            ref={attachmentFileInputReference}
+            {...getInputProps()}
+          />
+          {activeViewType === FilesViewType.LIST && <FileListHeader />}
+          <Box
+            width="100%"
+            minHeight="250px"
+            {...getRootProps({ style: { outline: 'none' } })}
+          >
+            <div onClick={event => event.stopPropagation()}>
+              {currentPatientAttachments.map(file => (
+                <FileItemComponent file={file} options={getFileOptions(file)} />
+              ))}
+            </div>
+          </Box>
           <AttachmentPreview
             attachment={previewedAttachment}
             attachmentsSources={attachmentsSources}
@@ -44,60 +114,9 @@ const PatientAttachments = () => {
             isAttachmentPreviewOpen={isAttachmentPreviewOpen}
             attachmentsLoading={attachmentsLoading}
           />
-          <AttachmentFileInput
-            ref={attachmentFileInputReference}
-            {...getInputProps()}
-          />
-          <Grid container>
-            <Grid item xs={12}>
-              <RobotoTypography condensed variant="h4" color="inherit">
-                {isDragActive ? (
-                  <span>Drop the files here ...</span>
-                ) : (
-                  <span>
-                    Drag and drop files or documents here, or click + to select
-                    files
-                  </span>
-                )}
-              </RobotoTypography>
-            </Grid>
-            <Grid item xs={12}>
-              <Spacing vertical={3} />
-            </Grid>
-            <Grid
-              item
-              xs={12}
-              container
-              alignContent="center"
-              {...getRootProps({ style: { outline: 'none' } })}
-              style={{ minHeight: '250px', alignContent: 'flex-start' }}
-            >
-              {attachmentsLoading ? (
-                <>
-                  <Loader />
-                  <Spacing horizontal={3} />
-                </>
-              ) : (
-                currentPatientAttachments.map(attachment => (
-                  <AttachmentButton
-                    attachment={attachment}
-                    onClick={openAttachmentPreview}
-                    onRemoveClick={removePatientAttachment}
-                  />
-                ))
-              )}
-              {currentlyUploadedAttachment && (
-                <>
-                  <AttachmentProgressBar progress={uploadProgress} />
-                  <Spacing horizontal={4} />
-                </>
-              )}
-              <AddAttachmentButton />
-            </Grid>
-          </Grid>
         </>
       ) : (
-        <PatientAttachmentsLoader />
+        <div>Loading ...</div>
       )}
     </PatientAttachmentsWrapper>
   );
