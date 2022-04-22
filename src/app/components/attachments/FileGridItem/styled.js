@@ -13,8 +13,8 @@ export const Container = styled.div`
   font-family: 'Roboto Condensed', sans-serif;
   color: ${palette.mediumGrey};
 
-  &:not(:first-of-type) {
-    margin-left: 28px;
+  &:not(:last-of-type) {
+    margin-right: 28px;
   }
 `;
 

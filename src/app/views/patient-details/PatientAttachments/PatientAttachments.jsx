@@ -14,6 +14,10 @@ import AttachmentPreview from 'components/attachments/AttachmentPreview/Attachme
 import FileGridItem from 'components/attachments/FileGridItem/FileGridItem';
 import FileListItem from 'components/attachments/FileListItem/FileListItem';
 import FileListHeader from 'components/attachments/FileListItem/FileListHeader';
+import FileListItemProgressBar from 'components/attachments/FileListItemProgressBar/FileListItemProgressBar';
+import FileGridItemProgressBar from 'components/attachments/FileGridItemProgressBar/FileGridItemProgressBar';
+import FileGridItemLoader from 'components/attachments/FileGridItemLoader/FileGridItemLoader';
+import FileListItemLoader from 'components/attachments/FileListItemLoader/FileListItemLoader';
 // import PatientAttachmentsLoader from '../PatientAttachmentsLoader/PatientAttachmentsLoader';
 import { PatientAttachmentsWrapper, AttachmentFileInput } from './styled';
 import initializeAttachmentsSectionHooks from './hooks';
@@ -38,8 +42,8 @@ const PatientAttachments = () => {
     attachmentsLoading,
     removePatientAttachment,
     attachmentFileInputReference,
-    // uploadProgress,
-    // currentlyUploadedAttachment,
+    uploadProgress,
+    currentlyUploadedAttachment,
     openAttachmentPreview,
     isAttachmentPreviewOpen,
     hideAttachmentPreview,
@@ -67,8 +71,6 @@ const PatientAttachments = () => {
   return (
     <PatientAttachmentsWrapper isDragActive={isDragActive}>
       <Box display="flex" width="100%" justifyContent="flex-end" mb={2}>
-        {/* <AddButton onClick={() => {}}>Add Folder</AddButton>
-        <Box m={0.5} /> */}
         <AddButton onClick={() => attachmentFileInputReference.current.click()}>
           Add File
         </AddButton>
@@ -105,6 +107,15 @@ const PatientAttachments = () => {
               {currentPatientAttachments.map(file => (
                 <FileItemComponent file={file} options={getFileOptions(file)} />
               ))}
+              {currentlyUploadedAttachment && (
+                <>
+                  {activeViewType === FilesViewType.LIST ? (
+                    <FileListItemProgressBar value={uploadProgress} />
+                  ) : (
+                    <FileGridItemProgressBar value={uploadProgress} />
+                  )}
+                </>
+              )}
             </div>
           </Box>
           <AttachmentPreview
@@ -116,7 +127,25 @@ const PatientAttachments = () => {
           />
         </>
       ) : (
-        <div>Loading ...</div>
+        <>
+          {activeViewType === FilesViewType.LIST ? (
+            <>
+              <FileListItemLoader />
+              <FileListItemLoader />
+              <FileListItemLoader />
+              <FileListItemLoader />
+              <FileListItemLoader />
+            </>
+          ) : (
+            <>
+              <FileGridItemLoader />
+              <FileGridItemLoader />
+              <FileGridItemLoader />
+              <FileGridItemLoader />
+              <FileGridItemLoader />
+            </>
+          )}
+        </>
       )}
     </PatientAttachmentsWrapper>
   );
