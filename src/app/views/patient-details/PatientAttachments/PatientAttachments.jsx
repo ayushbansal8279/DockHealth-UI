@@ -1,3 +1,4 @@
+/* eslint-disable sonarjs/cognitive-complexity */
 import React, { useCallback, useEffect, useState } from 'react';
 import palette from 'styles/palette';
 import { useSelector } from 'react-redux';
@@ -15,7 +16,11 @@ import FileListItemProgressBar from 'components/attachments/FileListItemProgress
 import FileGridItemProgressBar from 'components/attachments/FileGridItemProgressBar/FileGridItemProgressBar';
 import FileGridItemLoader from 'components/attachments/FileGridItemLoader/FileGridItemLoader';
 import FileListItemLoader from 'components/attachments/FileListItemLoader/FileListItemLoader';
-import { PatientAttachmentsWrapper, AttachmentFileInput } from './styled';
+import {
+  PatientAttachmentsWrapper,
+  AttachmentFileInput,
+  DropzoneInfoText,
+} from './styled';
 import initializeAttachmentsSectionHooks from './hooks';
 import { FilesViewType, PATIENT_FILES_VIEW_TYPE } from './helpers';
 
@@ -93,12 +98,17 @@ const PatientAttachments = () => {
             ref={attachmentFileInputReference}
             {...getInputProps()}
           />
-          {activeViewType === FilesViewType.LIST && <FileListHeader />}
           <Box
             width="100%"
             minHeight="250px"
             {...getRootProps({ style: { outline: 'none' } })}
           >
+            <DropzoneInfoText>
+              {isDragActive
+                ? 'Drop the files here ...'
+                : 'Drag and drop files or documents here, or click + to select files'}
+            </DropzoneInfoText>
+            {activeViewType === FilesViewType.LIST && <FileListHeader />}
             <div onClick={event => event.stopPropagation()}>
               {currentPatientAttachments.map(file => (
                 <FileItemComponent file={file} options={getFileOptions(file)} />
