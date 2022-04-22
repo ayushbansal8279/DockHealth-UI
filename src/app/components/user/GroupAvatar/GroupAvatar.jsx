@@ -50,6 +50,7 @@ const GroupAvatar = React.forwardRef(
           hideTooltip={hideTooltip}
         >
           <Avatar
+            isGroup
             ref={reference}
             pictureSrc={pictureSource}
             initials={initials}
