@@ -8,9 +8,6 @@ import ViewHeadlineIcon from '@material-ui/icons/ViewHeadline';
 import { isFetchingPatientAttachmentsSelector } from 'selectors/patient-details-selectors';
 import AddButton from 'components/common/AddButton/AddButton';
 import AttachmentPreview from 'components/attachments/AttachmentPreview/AttachmentPreview';
-// import AttachmentButton from 'components/attachments/AttachmentButton/AttachmentButton';
-// import AttachmentProgressBar from 'components/attachments/AttachmentProgressBar/AttachmentProgressBar';
-// import AddAttachmentButton from 'components/attachments/AddAttachmentButton/AddAttachmentButton';
 import FileGridItem from 'components/attachments/FileGridItem/FileGridItem';
 import FileListItem from 'components/attachments/FileListItem/FileListItem';
 import FileListHeader from 'components/attachments/FileListItem/FileListHeader';
@@ -18,7 +15,6 @@ import FileListItemProgressBar from 'components/attachments/FileListItemProgress
 import FileGridItemProgressBar from 'components/attachments/FileGridItemProgressBar/FileGridItemProgressBar';
 import FileGridItemLoader from 'components/attachments/FileGridItemLoader/FileGridItemLoader';
 import FileListItemLoader from 'components/attachments/FileListItemLoader/FileListItemLoader';
-// import PatientAttachmentsLoader from '../PatientAttachmentsLoader/PatientAttachmentsLoader';
 import { PatientAttachmentsWrapper, AttachmentFileInput } from './styled';
 import initializeAttachmentsSectionHooks from './hooks';
 import { FilesViewType, PATIENT_FILES_VIEW_TYPE } from './helpers';
