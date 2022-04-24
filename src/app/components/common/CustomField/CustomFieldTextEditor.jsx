@@ -30,6 +30,7 @@ const CustomFieldTextEditor = ({
   taskIdentifier,
   identifier,
   task,
+  fieldsGroupKey,
   inputRef,
 }) => {
   const dispatch = useDispatch();
@@ -66,7 +67,7 @@ const CustomFieldTextEditor = ({
 
   const updateCustomFields = useCallback(
     text => {
-      const values = getValues('taskMetaData');
+      const values = getValues(fieldsGroupKey);
       const previousValue = values[name];
       if (!text && !previousValue) return;
       if (previousValue !== text) {
@@ -81,8 +82,8 @@ const CustomFieldTextEditor = ({
           }));
           if (adjustedValues.length > 0) {
             // eslint-disable-next-line no-unused-expressions
-            task.itemType === TaskItemType.BUNDLE ||
-            task.itemType === TaskItemType.TEMPLATE
+            task?.itemType === TaskItemType.BUNDLE ||
+            task?.itemType === TaskItemType.TEMPLATE
               ? dispatch(
                   updatePartialWorkflow(task?.identifier, {
                     taskMetaData: adjustedValues,
@@ -100,7 +101,16 @@ const CustomFieldTextEditor = ({
         }
       }
     },
-    [getValues, name, identifier, taskIdentifier, task, dispatch, setValue],
+    [
+      getValues,
+      name,
+      identifier,
+      taskIdentifier,
+      task,
+      dispatch,
+      setValue,
+      fieldsGroupKey,
+    ],
   );
 
   const handleBlur = useCallback(() => {

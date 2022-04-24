@@ -25,7 +25,12 @@ export function formatMetaDataOutput(outputData) {
 
   if (!metadata || isEmpty(metadata)) return outputData;
 
-  const formattedMetadata = Object.keys(metadata).map(key => {
+  // remove metadata with no values - only keep UUID keys
+  const filteredMetaDataKeys = Object.keys(metadata).filter(
+    key => key.length === 36,
+  );
+
+  const formattedMetadata = filteredMetaDataKeys.map(key => {
     return {
       customFieldIdentifier: key,
       value: metadata[key],

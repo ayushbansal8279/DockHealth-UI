@@ -93,7 +93,12 @@ const PatientDetailsDrawer = ({ patient, isOpenedDetails, closeDetails }) => {
 
   const handleFormSubmit = data => {
     unsetActive();
-    dispatch(updatePatientDetails(mergeDeepRight(patient, data)));
+    const updateData = mergeDeepRight(patient, data);
+    updateData.allNotes = undefined;
+    updateData.patientLabels = undefined;
+    updateData.createdDateTime = undefined;
+    updateData.updatedDateTime = undefined;
+    dispatch(updatePatientDetails(updateData));
   };
 
   const contextMenuOptions = useMemo(
