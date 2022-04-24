@@ -181,6 +181,7 @@ const EditUserGroupModal = ({ userGroup, closeModal }) => {
               <SectionTitle>OR Select a picture</SectionTitle>
               <AvatarInput
                 initials={initialsValue}
+                isGroup
                 name={groupNameValue}
                 color={avatarColorValue}
                 pictureSrc={
