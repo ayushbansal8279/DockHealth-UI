@@ -22,8 +22,11 @@ const TaskTemplateWorkflowStatus = ({
 
   const handleWorkflowUpdate = useCallback(
     status => {
+      const clearStatus = true;
+      const donotClearStatus = false;
       onWorkflowUpdate(identifier, {
-        workflowStatusIdentifier: status.identifier,
+        workflowStatusIdentifier: status?.identifier,
+        workflowStatusCleared: status ? donotClearStatus : clearStatus,
       });
     },
     [identifier, onWorkflowUpdate],
