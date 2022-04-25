@@ -1,5 +1,11 @@
 /* eslint-disable sonarjs/cognitive-complexity */
-import React, { useState, forwardRef, useEffect, useCallback } from 'react';
+import React, {
+  useState,
+  forwardRef,
+  useEffect,
+  useCallback,
+  useMemo,
+} from 'react';
 import { useSelector } from 'react-redux';
 import { Box } from '@material-ui/core';
 import { useHistory } from 'react-router-dom';
@@ -25,8 +31,9 @@ import { Category, CategoryLabel } from 'helpers/patient-details-helpers';
 import moment from 'moment';
 import { useBoolean } from 'hooks/useBoolean';
 import CategoryOptions from 'components/common/CategoryOptions/CategoryOptions';
+import * as patientsApi from 'api/patients-api';
+import { formatMetaDataOutput, GENDER_OPTIONS_BIRTH } from './helpers';
 import { HidableContainer } from './styled';
-import { formatMetaDataOutput, GENDER_OPTIONS } from './helpers';
 
 const groupByCategory = groupBy(prop('fieldCategoryType'));
 
@@ -57,8 +64,26 @@ const PatientForm = forwardRef(
       false,
     );
     const { 0: emptyOtherVisible, 3: toggleEmptyOther } = useBoolean(false);
-
     const isAdmin = orgUserRole === 'ADMIN' || orgUserRole === 'OWNER';
+    const [genderIdentityOptions, setGenderIdentityOptions] = useState([]);
+
+    const GENDER_OPTIONS_IDENTITY = useMemo(
+      () =>
+        genderIdentityOptions.map(o => ({
+          value: o.genderIdentityType,
+          label: o.description,
+        })),
+      [genderIdentityOptions],
+    );
+
+    const getGenderIdentityOptions = useCallback(async () => {
+      const options = await patientsApi.getGenderIdentityOptions();
+      setGenderIdentityOptions(options);
+    }, []);
+
+    useEffect(() => {
+      getGenderIdentityOptions();
+    }, [getGenderIdentityOptions]);
 
     const patientCustomFieldsAvailable = useSelector(
       userHasPatientCustomFieldsFeatureSelector,
@@ -138,9 +163,16 @@ const PatientForm = forwardRef(
           <Spacing vertical={3} />
           <FormSelect
             readOnly={!edited || emrIntegrationEnabled}
-            label="Gender"
-            options={GENDER_OPTIONS}
+            label="Gender at birth"
+            options={GENDER_OPTIONS_BIRTH}
             name="gender"
+          />
+          <Spacing vertical={3} />
+          <FormSelect
+            readOnly={!edited || emrIntegrationEnabled}
+            label="Gender identity"
+            options={GENDER_OPTIONS_IDENTITY}
+            name="genderIdentity"
           />
           <Spacing vertical={3} />
           <FormInput

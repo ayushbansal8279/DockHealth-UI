@@ -43,6 +43,8 @@ const TaskItemDescription = ({
   hasParentTaskLabel,
   isEditing,
   setEditing,
+  disabled,
+  disableMentions,
 }) => {
   const {
     description,
@@ -167,16 +169,19 @@ const TaskItemDescription = ({
           isCrossedOut={!isCompletedGroup && isCompleted}
         >
           <DescriptionBorder
+            disabled={disabled}
             isEdited={isEditing}
             onClick={event => {
-              event.stopPropagation();
-              event.preventDefault();
-              setEditing(true);
+              if (!disabled) {
+                event.stopPropagation();
+                event.preventDefault();
+                setEditing(true);
+              }
             }}
           >
             <TextEditor
               ref={descriptionReference}
-              readOnly={!isEditing}
+              readOnly={disabled || !isEditing}
               oneline
               state={descriptionState}
               onChange={setDescriptionState}
@@ -187,6 +192,7 @@ const TaskItemDescription = ({
               keyBindingFn={handleKeyBindingFn}
               handleKeyCommand={handleKeyCommand}
               onBlur={handleBlur}
+              disableMentions={disableMentions}
             />
             <Popper
               anchorEl={descriptionTextReference.current}

@@ -21,7 +21,7 @@ import SelfEnrolledUser from 'views/auth/SelfEnrolledUser';
 import UnEnrolledUser from 'views/auth/UnEnrolledUser';
 import ApproveDisapproveUser from 'views/auth/ApproveDisapproveUser';
 import ErrorPage from 'views/ErrorPage';
-import ListDetailsView from 'views/list-details/ListDetailsViewContainer';
+import ListDetailsView from 'views/list-details/ListDetailsView';
 import OnboardingBaaCheckView from 'views/onboarding/OnboardingBaaCheckView/OnboardingBaaCheckView';
 import OnboardingBaaInvitationSentView from 'views/onboarding/OnboardingBaaInvitationSentView/OnboardingBaaInvitationSentView';
 import OnboardingBaaOverviewView from 'views/onboarding/OnboardingBaaOverviewView/OnboardingBaaOverviewView';
@@ -50,52 +50,73 @@ import UserProfileView from 'views/UserProfile/UserProfileView';
 import CustomFieldsView from 'views/custom-fields/CustomFieldsView';
 import AnalyticsView from 'views/analytics/AnalyticsView';
 import { DashboardTasksTab } from 'helpers/dashboard-helpers';
+import SingleTaskView from 'views/single-task/SingleTaskView';
+import { UserOrganizationRole } from 'helpers/user-helper';
 import { onLeaveGlobalSearch } from './TemplateCoreSubscriptionPlan/GlobalSearch';
 import {
   onEnterListDetailsView,
   onLeaveListDetailsView,
 } from './TemplateCoreSubscriptionPlan/ListDetails';
 
+const {
+  ADMIN,
+  OWNER,
+  MEMBER,
+  GUEST,
+  EXTERNAL,
+  DOCK_PRO,
+} = UserOrganizationRole;
+
 export const SETTINGS_ROUTES = [
   {
     path: '/userprofile',
     RouteComponent: UserProfileView,
+    allowedToRoles: [ADMIN, OWNER, MEMBER, GUEST, DOCK_PRO],
   },
   {
     path: '/support',
     RouteComponent: SupportView,
+    allowedToRoles: [ADMIN, OWNER, MEMBER, GUEST],
   },
   {
     path: '/subscriptions',
     RouteComponent: SubscriptionsView,
+    allowedToRoles: [ADMIN, OWNER, MEMBER, GUEST],
   },
   {
     path: '/users',
     RouteComponent: UsersView,
+    allowedToRoles: [ADMIN, OWNER, MEMBER, GUEST],
   },
   {
     path: '/billing',
     RouteComponent: BillingsView,
+    allowedToRoles: [ADMIN, OWNER, MEMBER, GUEST],
   },
   {
     path: '/documents',
     RouteComponent: DocumentsView,
+    allowedToRoles: [ADMIN, OWNER, MEMBER, GUEST, DOCK_PRO],
   },
   {
     path: '/subscription-payment',
     RouteComponent: SubscriptionPaymentView,
+    allowedToRoles: [ADMIN, OWNER, MEMBER, GUEST],
   },
   {
     path: '/subscription-payment-finished',
     RouteComponent: SubscriptionPaymentFinishedView,
+    allowedToRoles: [ADMIN, OWNER, MEMBER, GUEST],
   },
   {
     path: '/subscription-expired',
     RouteComponent: SubscriptionExpiredView,
+    allowedToRoles: [ADMIN, OWNER, MEMBER, GUEST],
   },
   {
     path: '/custom-fields/:tabName?',
     RouteComponent: CustomFieldsView,
+    allowedToRoles: [ADMIN, OWNER, MEMBER, GUEST],
   },
 ];
 
@@ -105,63 +126,93 @@ export const TEMPLATE_CORE_SUBSCRIPTION_PLAN_ROUTES = [
     RouteComponent: props => (
       <DashboardView tabName={DashboardTasksTab.MY_TASKS} {...props} />
     ),
+    allowedToRoles: [ADMIN, OWNER, MEMBER, GUEST, EXTERNAL],
+  },
+  {
+    path: '/home/shared-with-me-tasks',
+    RouteComponent: props => (
+      <DashboardView tabName={DashboardTasksTab.SHARED_TASKS} {...props} />
+    ),
+    allowedToRoles: [ADMIN, OWNER, MEMBER, GUEST, EXTERNAL],
+  },
+  {
+    path: '/home/shared-with-me-tasks',
+    RouteComponent: props => (
+      <DashboardView tabName={DashboardTasksTab.SHARED_TASKS} {...props} />
+    ),
   },
   {
     path: '/home/all-tasks',
     RouteComponent: props => (
       <DashboardView tabName={DashboardTasksTab.ALL_TASKS} {...props} />
     ),
+    allowedToRoles: [ADMIN, OWNER, MEMBER, GUEST, EXTERNAL],
   },
   {
     path: '/search',
     RouteComponent: GlobalSearchView,
     onLeave: onLeaveGlobalSearch,
+    allowedToRoles: [ADMIN, OWNER, MEMBER, GUEST],
   },
   {
     path: '/patients/list/:listIdentifier?',
     RouteComponent: PatientsView,
+    allowedToRoles: [ADMIN, OWNER, MEMBER, GUEST],
   },
   {
     path: '/patient/:patientIdentifier',
     RouteComponent: PatientDetailsView,
+    allowedToRoles: [ADMIN, OWNER, MEMBER, GUEST],
   },
   {
     path: '/activityfeed',
     RouteComponent: TaskListActivityFeedView,
+    allowedToRoles: [ADMIN, OWNER, MEMBER, GUEST],
   },
   {
     path: '/assignedToPerson/:userIdentifier/:tabName?',
     RouteComponent: PersonDetailsView,
+    allowedToRoles: [ADMIN, OWNER, MEMBER, GUEST],
   },
   {
     path: '/people/:groupIdentifier?',
     RouteComponent: UserGroupView,
   },
   {
+    path: '/task/:identifier',
+    RouteComponent: SingleTaskView,
+    allowedToRoles: [ADMIN, OWNER, MEMBER, GUEST],
+  },
+  {
     path: '/task-tour/:taskListIdentifier',
     RouteComponent: TaskTourView,
+    allowedToRoles: [ADMIN, OWNER, MEMBER, GUEST],
   },
   {
     path: '/tasks/:taskListIdentifier/:tabName?/:taskIdentifier?',
     RouteComponent: ListDetailsView,
     onEnter: onEnterListDetailsView,
     onLeave: onLeaveListDetailsView,
+    allowedToRoles: [ADMIN, OWNER, MEMBER, GUEST],
   },
   {
     path: '/workflows/library/:identifier?',
     RouteComponent: React.lazy(() =>
       import('views/task-template/TaskTemplateView'),
     ),
+    allowedToRoles: [ADMIN, OWNER, MEMBER, GUEST, DOCK_PRO],
   },
   {
     path: '/workflows/builder/:identifier',
     RouteComponent: React.lazy(() =>
       import('views/smart-flow-builder/SmartFlowBuilderView'),
     ),
+    allowedToRoles: [ADMIN, OWNER, MEMBER, GUEST, DOCK_PRO],
   },
   {
     path: '/analytics',
     RouteComponent: AnalyticsView,
+    allowedToRoles: [ADMIN, OWNER],
   },
 ];
 
@@ -294,5 +345,6 @@ export const SIMPLE_ROUTES = [
   {
     path: '/selfEnrolledUser',
     RouteComponent: SelfEnrolledUser,
+    allowedToRoles: [ADMIN, OWNER, MEMBER, GUEST, EXTERNAL],
   },
 ];

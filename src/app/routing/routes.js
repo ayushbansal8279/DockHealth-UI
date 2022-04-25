@@ -1,5 +1,5 @@
 import React, { useState, useEffect, Suspense } from 'react';
-import { Route, Redirect, Switch, useHistory } from 'react-router-dom';
+import { Redirect, Switch, useHistory } from 'react-router-dom';
 import { useEffectOnce } from 'react-use';
 import { parse } from 'query-string';
 import ReactGA from 'react-ga';
@@ -15,6 +15,7 @@ import TemplateAuthBase from '../views/TemplateAuthBase/TemplateAuthBase';
 import TemplateCore from '../views/TemplateCore/TemplateCore';
 import TemplateCoreSubscriptionPlan from '../views/TemplateCore/TemplateCoreSubscriptionPlan';
 import OnboardingTemplate from '../views/onboarding/OnboardingTemplate';
+import SecuredRoute from './SecuredRoute';
 
 const transformPathname = pathname =>
   decodeURIComponent(pathname).replace(/^\/+/, '/');
@@ -102,13 +103,13 @@ const Routes = () => {
           />
         ))}
         {SIMPLE_ROUTES?.map(route => (
-          <Route
+          <SecuredRoute
             key={route.path}
             path={route.path}
             component={route.RouteComponent}
           />
         ))}
-        <Route
+        <SecuredRoute
           path="/auth"
           render={() => <TemplateAuthBase childRoutes={AUTH_ROUTES} />}
         />
@@ -118,7 +119,7 @@ const Routes = () => {
           from="/core/patients/list"
           to="/core/patients/list/all"
         />
-        <Route
+        <SecuredRoute
           path="/core"
           render={() => (
             <TemplateCoreSubscriptionPlan
@@ -127,7 +128,7 @@ const Routes = () => {
             />
           )}
         />
-        <Route
+        <SecuredRoute
           path="/onboarding"
           render={() => (
             <OnboardingTemplate
@@ -136,7 +137,7 @@ const Routes = () => {
             />
           )}
         />
-        <Route
+        <SecuredRoute
           path="/settings"
           render={() => (
             <TemplateCore

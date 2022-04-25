@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { Grid } from '@material-ui/core';
-import { FormContext, useForm } from 'react-hook-form';
+import { FormProvider, useForm } from 'react-hook-form';
 import { object, string } from 'yup';
 import Spacing from 'components/common/Spacing';
 import UserDetailsStep from './UserDetailsStep';
@@ -28,7 +28,7 @@ const OrganizationOwnerForm = ({
   onSubmit,
   closeInviteForm,
 }) => {
-  const [currentFormStep, setCurrentFormStep] = useState(FormStep.USER_DETAILS);
+  const [currentFormStep, setCurrentFormStep] = useState(FormStep.USER_ROLE);
 
   const formContext = useForm({
     validationSchema,
@@ -38,10 +38,10 @@ const OrganizationOwnerForm = ({
   const { handleSubmit, register, unregister } = formContext;
 
   useEffect(() => {
-    register({ name: 'firstName' });
-    register({ name: 'lastName' });
-    register({ name: 'email' });
-    register({ name: 'userRole' });
+    register('firstName');
+    register('lastName');
+    register('email');
+    register('userRole');
 
     return () => {
       unregister('firstName');
@@ -62,7 +62,7 @@ const OrganizationOwnerForm = ({
 
   return (
     <FormWrapper onSubmit={handleSubmit(ownerFormSubmit)}>
-      <FormContext {...formContext}>
+      <FormProvider {...formContext}>
         {currentFormStep === FormStep.USER_DETAILS ? (
           <UserDetailsStep
             closeInviteForm={closeInviteForm}
@@ -87,7 +87,7 @@ const OrganizationOwnerForm = ({
           ))}
         </Grid>
         <Spacing vertical={4} />
-      </FormContext>
+      </FormProvider>
     </FormWrapper>
   );
 };

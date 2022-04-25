@@ -5,6 +5,7 @@ import React, {
   useRef,
   useCallback,
   useMemo,
+  useContext,
 } from 'react';
 import { Chip } from '@material-ui/core';
 import { useBoolean } from 'hooks/useBoolean';
@@ -16,6 +17,8 @@ import {
   patientLabelsSelector,
 } from 'selectors/patient-details-selectors';
 import Tooltip from 'components/common/Tooltip/Tooltip';
+import { patientBulkAddLabel } from 'api/patients-api';
+import { PatientEditContext } from 'context-api/patient-edit-context';
 import initializeLabelsSectionHooks from './hooks';
 import {
   OptionContainer,
@@ -90,7 +93,7 @@ const renderOption = ({
 );
 
 // eslint-disable-next-line sonarjs/cognitive-complexity
-const PatientLabels = () => {
+const PatientLabels = ({ isPatientBulk }) => {
   const {
     saveAddLabel,
     saveEditLabel,
@@ -107,6 +110,10 @@ const PatientLabels = () => {
   const [currentEditableOption, setCurrentEditableOption] = useState(null);
   const optionReferences = useRef({});
   const inputReference = useRef(null);
+
+  const patientContext = useContext(PatientEditContext);
+
+  const { selectedPatients } = patientContext;
 
   const selectedLabels = useMemo(() => patient?.patientLabels || [], [patient]);
 
@@ -157,6 +164,28 @@ const PatientLabels = () => {
     [removeLabelFromPatient, selectedLabels],
   );
 
+  const saveHandler = useCallback(
+    value => {
+      const assignedPatients = selectedPatients?.map(singlePatient => {
+        return singlePatient.patientIdentifier;
+      });
+
+      const newValue = {
+        labelIdentifier: value.labelIdentifier || null,
+        labelName: value.labelName || null,
+        patientIdentifier: value.patientIdentifier || null,
+      };
+
+      isPatientBulk
+        ? patientBulkAddLabel({
+            ...newValue,
+            assignedToUsers: assignedPatients,
+          })
+        : saveAddLabel(newValue);
+    },
+    [isPatientBulk, saveAddLabel, selectedPatients],
+  );
+
   const noOptionText = useMemo(
     () => (
       <div
@@ -169,7 +198,7 @@ const PatientLabels = () => {
             if (inputValue) {
               event.stopPropagation();
               event.preventDefault();
-              saveAddLabel({ labelName: inputValue });
+              saveHandler({ labelName: inputValue });
             }
           }}
         >
@@ -184,7 +213,7 @@ const PatientLabels = () => {
         </NoOptionContainer>
       </div>
     ),
-    [inputValue, saveAddLabel],
+    [inputValue, saveHandler],
   );
 
   return isEditing ? (
@@ -195,6 +224,7 @@ const PatientLabels = () => {
         labels && labels.length > 0 ? '' : "Are there labels you'd like to add?"
       }
       classes={classes}
+      disablePortal={!isPatientBulk}
       value={selectedLabels}
       disableCloseOnSelect={!!currentEditableOption}
       getInputReference={getInputReference}
@@ -209,7 +239,7 @@ const PatientLabels = () => {
             event.stopPropagation();
             event.preventDefault();
             event?.target?.blur();
-            saveAddLabel({ labelName: inputValue });
+            saveHandler({ inputValue });
           }
           if (event.key === 'Escape') {
             unsetIsEditing();
@@ -222,7 +252,7 @@ const PatientLabels = () => {
       onChange={values => {
         const valuesLength = values.length;
         const value = values[valuesLength - 1];
-        saveAddLabel(value);
+        saveHandler(value);
 
         if (currentEditableOption) {
           setCurrentEditableOption(null);
@@ -232,7 +262,7 @@ const PatientLabels = () => {
       disableClearable
     />
   ) : (
-    <ReadOnlyLabelsContainer>
+    <ReadOnlyLabelsContainer isPatientBulk={isPatientBulk}>
       {selectedLabels.map(label => (
         <ReadOnlyLabelContainer key={label.labelIdentifier}>
           <Chip

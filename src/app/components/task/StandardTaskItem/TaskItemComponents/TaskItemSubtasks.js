@@ -20,6 +20,7 @@ const TaskItemSubtasks = ({
   taskIdentifier,
   openQuickAddSubtask,
   dispatch,
+  readOnly,
 }) => {
   const onClickAddSubtask = useCallback(
     () => dispatch(openQuickAddSubtask(taskIdentifier)),
@@ -29,9 +30,13 @@ const TaskItemSubtasks = ({
     !subtaskQuickAddOpen &&
     !subtasksDisabled &&
     !subTasksCount ? (
-    <AddSubtaskButton type="button" onClick={onClickAddSubtask}>
-      {isHovered && <AddPlaceholder>+ Add</AddPlaceholder>}
-    </AddSubtaskButton>
+    <>
+      {!readOnly && (
+        <AddSubtaskButton type="button" onClick={onClickAddSubtask}>
+          {isHovered && <AddPlaceholder>+ Add</AddPlaceholder>}
+        </AddSubtaskButton>
+      )}
+    </>
   ) : (
     <>
       {(subTasksCount || isSubtask) && (

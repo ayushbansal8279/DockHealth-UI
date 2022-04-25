@@ -185,6 +185,43 @@ function* filtersChange() {
   yield put(PatientsActions.getCurrentPatientsListFilterOptions());
 }
 
+function* addBulkTask({ payload }) {
+  try {
+    yield call(PatientsApi.patientBulkCreateTask, payload);
+    yield put(showGlobalAlert(AlertMessages.TASK_CREATED));
+  } catch {
+    yield put(showGlobalErrorAlert());
+  }
+}
+
+function* addBulkWorkflow({ payload }) {
+  try {
+    yield call(PatientsApi.patientBulkCreateWorkflow, payload);
+    yield put(showGlobalAlert(AlertMessages.WORKFLOW_CREATED));
+  } catch {
+    yield put(showGlobalErrorAlert());
+  }
+}
+
+function* deleteBulkPatient({ payload }) {
+  const { assignedPatients } = payload;
+  try {
+    yield call(PatientsApi.patientBulkDeletePatient, assignedPatients);
+    yield all([
+      put({
+        type: ActionTypes.PATIENT_BULK_DELETE_PATIENTS_SUCCESS,
+        patientIdentifiers: assignedPatients,
+      }),
+      put(showGlobalAlert(AlertMessages.DELETED)),
+    ]);
+  } catch {
+    yield all([
+      put({ type: ActionTypes.PATIENT_BULK_DELETE_PATIENTS_FAILURE }),
+      put(showGlobalErrorAlert()),
+    ]);
+  }
+}
+
 export default function* watchPatients() {
   yield takeLatest(ActionTypes.GET_PATIENTS_LISTS, getPatientsLists);
   yield takeEvery(ActionTypes.DELETE_PATIENTS_LIST, deletePatientsList);
@@ -210,4 +247,7 @@ export default function* watchPatients() {
     ],
     filtersChange,
   );
+  yield takeEvery(ActionTypes.PATIENT_BULK_CREATE_TASK, addBulkTask);
+  yield takeEvery(ActionTypes.PATIENT_BULK_CREATE_WORKFLOW, addBulkWorkflow);
+  yield takeEvery(ActionTypes.PATIENT_BULK_DELETE_PATIENTS, deleteBulkPatient);
 }

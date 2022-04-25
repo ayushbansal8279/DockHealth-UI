@@ -582,8 +582,11 @@ export function insertCreatedTask(taskIdentifier) {
   };
 }
 
-export const refreshAndOpenAsCurrentTask = selectedTask => dispatch =>
-  TaskApi.getTaskDetails(selectedTask.taskIdentifier)
+export const refreshAndOpenAsCurrentTask = (
+  selectedTask,
+  shouldOpenDrawer = true,
+) => dispatch => {
+  return TaskApi.getTaskDetails(selectedTask.taskIdentifier)
     .then(task => {
       // explicitly mark task as updated so we can show the flag
       task.updated = true; // eslint-disable-line no-param-reassign
@@ -591,12 +594,16 @@ export const refreshAndOpenAsCurrentTask = selectedTask => dispatch =>
         type: ActionTypes.SET_AS_CURRENT_TASK,
         task,
       });
-      dispatch(openDrawer());
+      if (shouldOpenDrawer) dispatch(openDrawer());
       return task;
     })
     .catch(error => {
+      dispatch({
+        type: ActionTypes.SET_AS_CURRENT_TASK_ERROR,
+      });
       throw error;
     });
+};
 
 export function reassignTask(taskIdentifier, userId) {
   return dispatch =>

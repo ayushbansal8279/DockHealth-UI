@@ -3,7 +3,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { showGlobalAlert, showGlobalErrorAlert } from 'alert/actions';
 import AlertMessages from 'alert/AlertMessages';
 import * as PatientsApi from 'api/patients-api';
-import { FormContext, useForm } from 'react-hook-form';
+import { FormProvider, useForm } from 'react-hook-form';
 import { Grid } from '@material-ui/core';
 import { openModal } from 'modal/actions';
 import FormInput from 'components/common/Input/FormInput';
@@ -104,7 +104,7 @@ const EditPatientListModal = ({ closeModal, patientsList }) => {
           )(event)
         }
       >
-        <FormContext {...formMethods}>
+        <FormProvider {...formMethods}>
           <Grid container direction="column" justify="space-between">
             <Grid item>
               <Header>
@@ -154,7 +154,7 @@ const EditPatientListModal = ({ closeModal, patientsList }) => {
               </ButtonWrapper>
             </Grid>
           </Grid>
-        </FormContext>
+        </FormProvider>
       </StyledForm>
     </EditPatientListModalWrapper>
   );

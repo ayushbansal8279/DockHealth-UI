@@ -1,4 +1,3 @@
-/* eslint-disable import/prefer-default-export */
 import styled from 'styled-components';
 import { fontSizes, fontWeights } from 'styles/font';
 import palette from 'styles/palette';
@@ -107,29 +106,6 @@ export const BuilderHeaderText = styled.p`
     text-overflow: ellipsis;
     white-space: nowrap;
   }
-`;
-
-export const HotkeysElements = styled.div`
-  width: 100%;
-  display: grid;
-  grid-template-columns: auto 1fr;
-  grid-gap: 10px;
-`;
-
-export const HotkeyDescription = styled.p`
-  display: inline-block;
-  margin-bottom: 0;
-  font-size: ${fontSizes.small};
-  font-weight: ${fontWeights.regular};
-`;
-
-export const Hotkey = styled.p`
-  display: inline-block;
-  margin-bottom: 4px;
-  padding: 0 4px;
-  color: ${palette.white};
-  background: ${palette.mediumGrey};
-  border-radius: 4px;
 `;
 
 export const SidebarDivider = styled.hr`

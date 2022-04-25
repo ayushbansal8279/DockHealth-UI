@@ -17,9 +17,11 @@ import {
   MenuList,
   MenuItem,
   ListItemText,
+  Box,
 } from '@material-ui/core';
 import zIndex from 'styles/z-index';
 import Tooltip from 'components/common/Tooltip/Tooltip';
+import palette from 'styles/palette';
 import { StyledButton, useMenuStyles } from './styled';
 
 const OptionsMenu = ({
@@ -27,6 +29,7 @@ const OptionsMenu = ({
   disablePortal,
   placement,
   children,
+  footer: Footer,
   options,
   customButtonComponent: CustomButtonComponent,
 }) => {
@@ -102,6 +105,10 @@ const OptionsMenu = ({
                       </Tooltip>
                     ),
                   )}
+                {Footer && (
+                  <Box borderBottom={`1px solid ${palette.coolGrey3}`} mb={1} />
+                )}
+                {Footer}
               </MenuList>
             </Paper>
           </ClickAwayListener>

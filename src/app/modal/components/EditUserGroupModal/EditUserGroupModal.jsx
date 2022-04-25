@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react';
-import { FormContext, useForm } from 'react-hook-form';
+import { FormProvider, useForm } from 'react-hook-form';
 import { usePrevious } from 'react-use';
 import { useDispatch, useSelector } from 'react-redux';
 import { compose, pluck, join, split, take } from 'ramda';
@@ -135,7 +135,7 @@ const EditUserGroupModal = ({ userGroup, closeModal }) => {
         <CloseIcon />
       </CloseIconButton>
       <StyledForm onSubmit={event => handleSubmit(onSubmit)(event)}>
-        <FormContext {...formMethods}>
+        <FormProvider {...formMethods}>
           <Grid container direction="column" justify="space-between">
             <Grid item>
               <Header>
@@ -181,6 +181,7 @@ const EditUserGroupModal = ({ userGroup, closeModal }) => {
               <SectionTitle>OR Select a picture</SectionTitle>
               <AvatarInput
                 initials={initialsValue}
+                isGroup
                 name={groupNameValue}
                 color={avatarColorValue}
                 pictureSrc={
@@ -216,7 +217,7 @@ const EditUserGroupModal = ({ userGroup, closeModal }) => {
               </ButtonWrapper>
             </Grid>
           </Grid>
-        </FormContext>
+        </FormProvider>
       </StyledForm>
     </EditPatientListModalWrapper>
   );

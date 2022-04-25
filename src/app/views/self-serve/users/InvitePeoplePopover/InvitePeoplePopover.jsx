@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/camelcase */
 import { Grid, Popover } from '@material-ui/core';
 import React, { useCallback, useState } from 'react';
-import { FormContext, useForm } from 'react-hook-form';
+import { FormProvider, useForm } from 'react-hook-form';
 import { useDispatch, useSelector } from 'react-redux';
 import { object, string } from 'yup';
 import { invitePersonToOrganization } from 'api/organization-api';
@@ -109,13 +109,13 @@ const InvitePeoplePopover = ({
         </InvitePeoplePopoverSection>
         <InvitePopoverDivider />
         {isOwnerOrAdmin && (
-          <FormContext {...formMethods}>
+          <FormProvider {...formMethods}>
             <OrganizationOwnerForm
               onSubmit={onSubmit}
               closeInviteForm={closePopover}
               disabled={isInviting}
             />
-          </FormContext>
+          </FormProvider>
         )}
         {!isOwnerOrAdmin && (
           <InvitePeoplePopoverSection>

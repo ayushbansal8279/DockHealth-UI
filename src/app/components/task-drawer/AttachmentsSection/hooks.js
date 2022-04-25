@@ -6,7 +6,7 @@ import { isEmpty } from 'ramda';
 import { selectedTaskSelector } from 'selectors/task-drawer-selectors';
 import { removeTaskAttachment, addTaskAttachment } from 'actions/task-actions';
 import { useBoolean } from 'hooks/useBoolean';
-
+import { userProfileSelector } from 'selectors/user-selectors';
 import { getMemoTaskAttachment } from './helpers';
 
 const initializeAttachmentsSectionHooks = () => {
@@ -14,6 +14,7 @@ const initializeAttachmentsSectionHooks = () => {
   const selectedTask = useSelector(selectedTaskSelector);
   const { attachments = [], taskIdentifier: selectedTaskIdentifier } =
     selectedTask || {};
+  const currentUser = useSelector(userProfileSelector);
 
   const [currentTaskAttachments, currentTaskAttachmentsDispatch] = useReducer(
     (state, action) => {
@@ -185,6 +186,7 @@ const initializeAttachmentsSectionHooks = () => {
     isAttachmentPreviewOpen,
     hideAttachmentPreview,
     previewedAttachment,
+    currentUser,
     dropzone: {
       getRootProps,
       getInputProps,

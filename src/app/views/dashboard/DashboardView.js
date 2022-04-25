@@ -1,5 +1,5 @@
 /* eslint-disable sonarjs/cognitive-complexity */
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { initializePusher } from 'helpers/pusher-instance';
 import { useDispatch, useSelector } from 'react-redux';
 import { useMount } from 'react-use';
@@ -16,9 +16,18 @@ import { getCustomerTypeLabel } from 'helpers/customer-type-helper';
 import Spacing from 'components/common/Spacing';
 import { openModal } from 'modal/actions';
 import { onNewUserTourEnter } from 'helpers/ga-event-helper';
-import { ColumnsConfigProvider } from 'context-api/ColumnsConfigContext';
+import { ColumnsConfigProvider } from 'context-api/columns-config-context';
 import HorizontallyScrolledViewLayout from 'components/template/HorizontallyScrolledViewLayout/HorizontallyScrolledViewLayout';
 import StickyContainer from 'components/common/HorizontalScroll/StickyContainer';
+import { DashboardTasksTab } from 'helpers/dashboard-helpers';
+import { UserOrganizationRole } from 'helpers/user-helper';
+import { hasAccessToElement } from 'helpers/access-helpers';
+import {
+  HOME_ALL_TASKS_PATH,
+  HOME_PATH,
+  HOME_SHARED_PATH,
+} from 'routing/helpers/paths';
+import { useHistory } from 'react-router-dom';
 import DashboardList from './DashboardList/DashboardList';
 import DashboardFirstVisitView from './DashboardFirstVisitView/DashboardFirstVisitView';
 import {
@@ -31,8 +40,11 @@ import {
 import DashboardHeader from './DashboardHeader/DashboardHeader';
 import newUserTourHooks from './new-user-tour-hooks';
 
+const { ADMIN, OWNER, MEMBER, GUEST, EXTERNAL } = UserOrganizationRole;
+
 const DashboardView = ({ tabName }) => {
   const pusher = useRef(initializePusher());
+  const history = useHistory();
   const dispatch = useDispatch();
   const currentUser = useSelector(userProfileSelector);
   const { userIdentifier: currentUserIdentifier } = currentUser || {};
@@ -41,19 +53,49 @@ const DashboardView = ({ tabName }) => {
     setFirstCreatedUserListIdentifier,
   ] = useState(null);
   const [openConfetti, setOpenConfetti] = useState(false);
-
-  const { usageState } = currentUser ?? {};
+  const { usageState, orgUserRole } = currentUser ?? {};
   const { hasExistingLists, hasOnlyInvitedLists } = usageState ?? {};
-
   const createListViewVisible = !hasExistingLists || hasOnlyInvitedLists;
 
+  const TAB_RESTRICTIONS = {
+    [DashboardTasksTab.MY_TASKS]: {
+      allowedToRoles: [ADMIN, OWNER, MEMBER, GUEST],
+      path: HOME_PATH,
+    },
+    [DashboardTasksTab.SHARED_TASKS]: {
+      allowedToRoles: [ADMIN, OWNER, MEMBER, GUEST, EXTERNAL],
+      path: HOME_SHARED_PATH,
+    },
+    [DashboardTasksTab.ALL_TASKS]: {
+      allowedToRoles: [ADMIN, OWNER, MEMBER, GUEST],
+      path: HOME_ALL_TASKS_PATH,
+    },
+  };
+
+  const hasAccessToCurrentTab = hasAccessToElement(
+    orgUserRole,
+    TAB_RESTRICTIONS[tabName].allowedToRoles,
+  );
+
   useEffect(() => {
-    dispatch(initializeDashboardState(tabName));
+    if (hasAccessToCurrentTab) {
+      dispatch(initializeDashboardState(tabName));
+    } else {
+      // const nextAllowedTab = Object.values(DashboardTasksTab).find(value => {
+      //   return hasAccessToElement(
+      //     orgUserRole,
+      //     TAB_RESTRICTIONS[value].allowedToRoles,
+      //   );
+      // });
+      // if (nextAllowedTab) {
+      //   history.push(TAB_RESTRICTIONS[nextAllowedTab].path);
+      // }
+    }
 
     return () => {
       dispatch(clearFiltersForMegaFilter());
     };
-  }, [dispatch, tabName]);
+  }, [dispatch, history, tabName, hasAccessToCurrentTab]);
 
   useEffect(() => {
     return () => {

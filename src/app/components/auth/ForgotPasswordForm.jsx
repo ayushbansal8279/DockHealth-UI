@@ -1,5 +1,5 @@
 import React from 'react';
-import { FormContext, useForm } from 'react-hook-form';
+import { FormProvider, useForm } from 'react-hook-form';
 import { useMount } from 'react-use';
 import { object, string } from 'yup';
 import Spacing from 'components/common/Spacing';
@@ -40,7 +40,7 @@ const ForgotPasswordForm = ({
         width: '100%',
       }}
     >
-      <FormContext {...formMethods}>
+      <FormProvider {...formMethods}>
         <MontserratTypography variant="h2">
           Forgot your password?
         </MontserratTypography>
@@ -58,7 +58,7 @@ const ForgotPasswordForm = ({
             : 'Send me a recovery code'}
         </Button>
         <Spacing vertical={6} />
-      </FormContext>
+      </FormProvider>
     </form>
   );
 };

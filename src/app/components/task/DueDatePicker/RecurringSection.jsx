@@ -1,7 +1,7 @@
 import React, { useCallback, useEffect, useState } from 'react';
 import { clone } from 'ramda';
 import moment from 'moment';
-import { FormContext, useForm } from 'react-hook-form';
+import { FormProvider, useForm } from 'react-hook-form';
 import { useDispatch } from 'react-redux';
 import { Box, IconButton } from '@material-ui/core';
 import CloseIcon from '@material-ui/icons/Close';
@@ -262,7 +262,7 @@ const RecurringSection = ({
 
   return (
     <RecurringForm onSubmit={handleSubmit(recurringFormSubmit)}>
-      <FormContext {...formContext}>
+      <FormProvider {...formContext}>
         <SectionWrapper>
           <FormRow>
             <RowLabel>Repeats</RowLabel>
@@ -404,7 +404,7 @@ const RecurringSection = ({
             Save
           </PopoverBottomBar.Button>
         </PopoverBottomBar>
-      </FormContext>
+      </FormProvider>
     </RecurringForm>
   );
 };

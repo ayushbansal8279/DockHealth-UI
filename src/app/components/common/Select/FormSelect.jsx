@@ -6,8 +6,8 @@ import Select from './Select';
 const FormSelect = ({ name, onChange, ...restProps }) => {
   const {
     register,
-    errors,
-    clearError,
+    clearErrors,
+    formState: { errors },
     watch,
     setValue,
     unregister,
@@ -17,9 +17,7 @@ const FormSelect = ({ name, onChange, ...restProps }) => {
   const value = watch(name) || '';
 
   useMount(() => {
-    register({
-      name,
-    });
+    register(name);
   });
 
   useUnmount(() => {
@@ -27,7 +25,7 @@ const FormSelect = ({ name, onChange, ...restProps }) => {
   });
 
   const handleChange = event => {
-    if (error) clearError(name);
+    if (error) clearErrors(name);
 
     setValue(name, event.target.value);
     if (typeof onChange === 'function') onChange(event.target.value);

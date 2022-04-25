@@ -28,7 +28,10 @@ const TextInput = React.forwardRef(
     },
     reference,
   ) => {
-    const { errors, register } = useFormContext();
+    const {
+      formState: { errors },
+      register,
+    } = useFormContext();
     const { classes } = props;
 
     const error = (errors[name] || {}).message;

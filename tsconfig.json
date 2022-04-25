@@ -16,6 +16,7 @@
       "actions/*": ["src/app/actions/*"],
       "context-api/*": ["src/app/context-api/*"],
       "api/*": ["src/app/api"],
+      "restrictions/*": ["src/app/restrictions/*"],
       "components/*": ["src/app/components/*"],
       "helpers/*": ["src/app/helpers/*"],
       "hooks/*": ["src/app/hooks/*"],
@@ -31,6 +32,6 @@
     "src/app/**/*.js",
     "src/app/**/*.jsx",
     "src/app/**/*.png",
-    "src/app/**/*.svg" 
+    "src/app/**/*.svg"
   ]
 }

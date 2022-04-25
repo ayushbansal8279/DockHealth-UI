@@ -1,6 +1,6 @@
 import React, { useCallback, useEffect, useRef, useState } from 'react';
 import moment from 'moment';
-import { useForm, FormContext } from 'react-hook-form';
+import { useForm, FormProvider } from 'react-hook-form';
 import { isDueDateOverdue, ReminderType } from 'helpers/task-helpers';
 import Checkbox from 'components/common/Checkbox/Checkbox';
 import Spacing from 'components/common/Spacing';
@@ -22,23 +22,10 @@ const ReminderSection = ({ onSave }) => {
   const selectedTask = useSelector(selectedTaskSelector) || {};
   const { reminderType, reminderTime = null, dueDate } = selectedTask || {};
   const isDisabled = !dueDate;
-
   const reminderTypeDropdownReference = useRef(null);
   const formMethods = useForm();
-  const { register, unregister, setValue, watch } = formMethods;
-
+  const { register, setValue, watch } = formMethods;
   const [reminderTypeValue, setReminderTypeValue] = useState(reminderType);
-
-  useEffect(() => {
-    register(REMINDER_TYPE_FIELD_NAME);
-    register(REMINDER_TIME_FIELD_NAME);
-
-    return () => {
-      unregister(REMINDER_TYPE_FIELD_NAME);
-      unregister(REMINDER_TIME_FIELD_NAME);
-    };
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
 
   useEffect(() => {
     setValue(REMINDER_TYPE_FIELD_NAME, reminderType);
@@ -124,7 +111,7 @@ const ReminderSection = ({ onSave }) => {
   );
 
   return (
-    <FormContext {...formMethods}>
+    <FormProvider {...formMethods}>
       <ReminderContainer>
         <Checkbox
           isDisabled={isCheckboxDisabled}
@@ -145,6 +132,7 @@ const ReminderSection = ({ onSave }) => {
               disabled={sectionDisabled}
               width={130}
               options={REMINDER_TYPE_OPTIONS}
+              {...register(REMINDER_TYPE_FIELD_NAME)}
             />
             <Spacing horizontal={2} />
             <Description>at</Description>
@@ -164,7 +152,7 @@ const ReminderSection = ({ onSave }) => {
           </>
         )}
       </ReminderContainer>
-    </FormContext>
+    </FormProvider>
   );
 };
 

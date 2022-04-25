@@ -51,7 +51,7 @@ const ListDetailsHeader = props => {
   const currentTasksStatus = useSelector(currentTaskListTasksStatusSelector);
   const listUsers = useSelector(taskListMembersSelector);
   const taskList = useSelector(currentTaskListSelector);
-  const { listName, listDescription, listType, taskListIdentifier } =
+  const { listName, listDescription, listType, taskListIdentifier, color } =
     taskList || {};
   const megaFilter = useSelector(megaFilterSelector);
   const { filters, selectedFilters } = megaFilter || {};
@@ -161,7 +161,11 @@ const ListDetailsHeader = props => {
           </ListOptionsMenu>
         </Box>
       )}
-      <LayoutHeader.Title title={listName} description={listDescription} />
+      <LayoutHeader.Title
+        title={listName}
+        description={listDescription}
+        colorIndicator={color}
+      />
       <LayoutHeader.Spacer />
       <HeaderSearch value={searchValue} onChange={onSearchChange} />
       <LayoutHeader.Spacer />

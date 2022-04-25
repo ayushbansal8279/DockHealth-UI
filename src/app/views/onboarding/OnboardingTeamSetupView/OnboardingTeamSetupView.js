@@ -5,7 +5,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { userProfileSelector } from 'selectors/user-selectors';
 import Spacing from 'components/common/Spacing';
 import OnboardingIndicator from 'components/common/OnboardingIndicator/OnboardingIndicator';
-import { FormContext, useForm, useFieldArray } from 'react-hook-form';
+import { FormProvider, useForm, useFieldArray } from 'react-hook-form';
 import { object, string, array } from 'yup';
 import { Grid } from '@material-ui/core';
 import { checkBAASignedStatus } from 'actions/organization-actions';
@@ -212,7 +212,7 @@ const OnboardingTeamSetupView = () => {
         add as many as you want.
       </Description>
       <Spacing vertical={5} />
-      <FormContext {...formMethods}>
+      <FormProvider {...formMethods}>
         <StyledForm
           onSubmit={handleSubmit(
             onSubmit({
@@ -347,7 +347,7 @@ const OnboardingTeamSetupView = () => {
             </Grid>
           </Grid>
         </StyledForm>
-      </FormContext>
+      </FormProvider>
     </ViewContainer>
   );
 };

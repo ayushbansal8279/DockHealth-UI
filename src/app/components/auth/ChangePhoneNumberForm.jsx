@@ -1,6 +1,6 @@
 import { Grid } from '@material-ui/core';
 import React, { useState } from 'react';
-import { FormContext, useForm } from 'react-hook-form';
+import { FormProvider, useForm } from 'react-hook-form';
 import { object, string } from 'yup';
 import { useSmallScreen } from 'helpers/utility-functions';
 import { useBoolean } from 'hooks/useBoolean';
@@ -66,14 +66,14 @@ const ChangePhoneNumberForm = () => {
         Please enter your correct mobile phone number.
       </MontserratTypography>
       <Spacing vertical={4} />
-      <FormContext {...formMethods}>
+      <FormProvider {...formMethods}>
         <FormPhoneNumberInput
           label="Your Mobile Phone Number"
           customShrinkCondition
           name="mobilePhoneNumber"
           autoComplete="none"
         />
-      </FormContext>
+      </FormProvider>
       <Spacing vertical={5} />
       <Button type="submit" size="large">
         Continue

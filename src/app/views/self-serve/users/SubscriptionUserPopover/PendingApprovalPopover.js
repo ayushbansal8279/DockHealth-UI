@@ -47,6 +47,14 @@ const USER_TYPES = new Proxy(
       description:
         'An outside collaborator you can invite into selected lists, who will only have access to the tasks, patients/clients and people who are part of those lists.',
     },
+    DOCK_PRO: {
+      label: 'Dock Pro',
+      selectable: true,
+      changeable: true,
+      isLimitedAccess: true,
+      description:
+        'A Dock Pro user you invite will only have access to the workflow library and can help your team with building out Workflows for your team.',
+    },
   },
   {
     get: (object, path) => object[path?.toUpperCase()] || object.DEFAULT,

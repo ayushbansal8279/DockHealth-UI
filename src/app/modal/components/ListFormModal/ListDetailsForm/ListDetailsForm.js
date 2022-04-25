@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { FormContext, useForm } from 'react-hook-form';
+import { FormProvider, useForm } from 'react-hook-form';
 import { useDispatch } from 'react-redux';
 import { showAlert } from 'helpers/utility-functions';
 import { onTaskListAdded, onTaskListEdited } from 'helpers/ga-event-helper';
@@ -107,7 +107,7 @@ const ListDetailsForm = ({
         )(event)
       }
     >
-      <FormContext {...formMethods}>
+      <FormProvider {...formMethods}>
         <Grid container direction="column" justify="space-between">
           <Grid item>
             <Header>
@@ -155,7 +155,7 @@ const ListDetailsForm = ({
             </ButtonWrapper>
           </Grid>
         </Grid>
-      </FormContext>
+      </FormProvider>
     </StyledForm>
   );
 };
