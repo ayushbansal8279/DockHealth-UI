@@ -210,7 +210,7 @@ const Button = ({
 };
 
 Button.propTypes = {
-  children: PropTypes.element.isRequired,
+  children: PropTypes.node.isRequired,
   variant: PropTypes.oneOf([
     PRIMARY,
     PRIMARY_RED,

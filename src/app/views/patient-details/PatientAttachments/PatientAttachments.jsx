@@ -9,6 +9,7 @@ import ViewHeadlineIcon from '@material-ui/icons/ViewHeadline';
 import { isFetchingPatientAttachmentsSelector } from 'selectors/patient-details-selectors';
 import AddButton from 'components/common/AddButton/AddButton';
 import AttachmentPreview from 'components/attachments/AttachmentPreview/AttachmentPreview';
+import NamedCollapse from 'components/common/NamedCollapse/NamedCollapse';
 import FileGridItem from 'components/attachments/FileGridItem/FileGridItem';
 import FileListItem from 'components/attachments/FileListItem/FileListItem';
 import FileListHeader from 'components/attachments/FileListItem/FileListHeader';
@@ -38,6 +39,7 @@ const PatientAttachments = () => {
   }, [activeViewType]);
 
   const {
+    handleCreateFolderClick,
     attachmentsSources,
     currentPatientAttachments,
     attachmentsLoading,
@@ -72,6 +74,7 @@ const PatientAttachments = () => {
   return (
     <PatientAttachmentsWrapper isDragActive={isDragActive}>
       <Box display="flex" width="100%" justifyContent="flex-end" mb={2}>
+        <AddButton onClick={handleCreateFolderClick}>Create Folder</AddButton>
         <AddButton onClick={() => attachmentFileInputReference.current.click()}>
           Add File
         </AddButton>
@@ -98,32 +101,38 @@ const PatientAttachments = () => {
             ref={attachmentFileInputReference}
             {...getInputProps()}
           />
-          <Box
-            width="100%"
-            minHeight="250px"
-            {...getRootProps({ style: { outline: 'none' } })}
-          >
-            <DropzoneInfoText>
-              {isDragActive
-                ? 'Drop the files here ...'
-                : 'Drag and drop files or documents here, or click + to select files'}
-            </DropzoneInfoText>
-            {activeViewType === FilesViewType.LIST && <FileListHeader />}
-            <div onClick={event => event.stopPropagation()}>
-              {currentPatientAttachments.map(file => (
-                <FileItemComponent file={file} options={getFileOptions(file)} />
-              ))}
-              {currentlyUploadedAttachment && (
-                <>
-                  {activeViewType === FilesViewType.LIST ? (
-                    <FileListItemProgressBar value={uploadProgress} />
-                  ) : (
-                    <FileGridItemProgressBar value={uploadProgress} />
-                  )}
-                </>
-              )}
-            </div>
-          </Box>
+          <NamedCollapse name="Folders">F</NamedCollapse>
+          <NamedCollapse name="Files">
+            <Box
+              width="100%"
+              minHeight="250px"
+              {...getRootProps({ style: { outline: 'none' } })}
+            >
+              <DropzoneInfoText>
+                {isDragActive
+                  ? 'Drop the files here ...'
+                  : 'Drag and drop files or documents here, or click + to select files'}
+              </DropzoneInfoText>
+              {activeViewType === FilesViewType.LIST && <FileListHeader />}
+              <div onClick={event => event.stopPropagation()}>
+                {currentPatientAttachments.map(file => (
+                  <FileItemComponent
+                    file={file}
+                    options={getFileOptions(file)}
+                  />
+                ))}
+                {currentlyUploadedAttachment && (
+                  <>
+                    {activeViewType === FilesViewType.LIST ? (
+                      <FileListItemProgressBar value={uploadProgress} />
+                    ) : (
+                      <FileGridItemProgressBar value={uploadProgress} />
+                    )}
+                  </>
+                )}
+              </div>
+            </Box>
+          </NamedCollapse>
           <AttachmentPreview
             attachment={previewedAttachment}
             attachmentsSources={attachmentsSources}

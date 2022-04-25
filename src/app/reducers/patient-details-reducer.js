@@ -131,6 +131,13 @@ export default function(state = INITIAL_STATE, action = {}) {
       };
     }
 
+    case ActionTypes.ADD_PATIENT_ATTACHMENT_FOLDER_SUCCESS: {
+      return {
+        ...state,
+        attachments: [...(state.attachments || []), action.folder],
+      };
+    }
+
     case ActionTypes.TOGGLE_PATIENT_COMPLETE_TASKS_VISIBLE:
       return {
         ...state,

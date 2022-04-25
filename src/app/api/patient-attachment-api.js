@@ -46,3 +46,13 @@ export function getPatientAttachments(patientIdentifier) {
     .get(`/patient/attachment/getPatientAttachments/${patientIdentifier}`)
     .then(({ data }) => data);
 }
+
+export function createAttachmentFolder(patientIdentifier, name) {
+  return axios
+    .post(`patient/attachment/other`, {
+      patientIdentifier,
+      fileName: name,
+      type: 'FOLDER',
+    })
+    .then(({ data }) => data);
+}

@@ -107,3 +107,11 @@ export function mergePatient(fromPatient, toPatient, onSuccess) {
     onSuccess,
   };
 }
+
+export function createPatientAttachmentFolder(patientIdentifier, name) {
+  return {
+    type: ActionTypes.ADD_PATIENT_ATTACHMENT_FOLDER,
+    patientIdentifier,
+    name,
+  };
+}

@@ -1,12 +1,12 @@
 import React from 'react';
 import { HeaderCell, HeaderRow } from './styled';
 
-const FileListHeader = () => {
+const FileListHeader = ({ isFolder = false }) => {
   return (
     <HeaderRow>
-      <HeaderCell>File name</HeaderCell>
-      <HeaderCell>Created by</HeaderCell>
-      <HeaderCell>Created on</HeaderCell>
+      <HeaderCell>{isFolder ? 'Folder name' : 'File name'}</HeaderCell>
+      <HeaderCell>{isFolder ? 'Created by' : 'Uploaded by'}</HeaderCell>
+      <HeaderCell>{isFolder ? 'Created on' : 'Upload date'}</HeaderCell>
     </HeaderRow>
   );
 };

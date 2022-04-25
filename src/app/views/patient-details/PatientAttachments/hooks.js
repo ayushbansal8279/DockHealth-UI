@@ -14,6 +14,7 @@ import {
 } from 'sagas/patient-details-saga';
 import { getPatientAttachment } from 'api/patient-attachment-api';
 import { useBoolean } from 'hooks/useBoolean';
+import { openModal } from 'modal/actions';
 
 export const getMemoPatientAttachment = memoizeWith(
   identity,
@@ -152,7 +153,23 @@ const initializeAttachmentsSectionHooks = () => {
     [loadAttachmentsContent, showAttachmentPreview],
   );
 
+  const handleCreateFolderClick = () => {
+    dispatch(
+      openModal('PatientFolder', {
+        onChange: name => {
+          dispatch(
+            PatientDetailsActions.createPatientAttachmentFolder(
+              patientIdentifier,
+              name,
+            ),
+          );
+        },
+      }),
+    );
+  };
+
   return {
+    handleCreateFolderClick,
     attachmentsSources,
     currentPatientAttachments: attachments,
     attachmentsLoading,

@@ -731,6 +731,33 @@ function* mergePatient({ fromPatient, toPatient, onSuccess }) {
   }
 }
 
+export function* addPatientAttachmentFolder({ patientIdentifier, name }) {
+  try {
+    const folder = yield call(
+      PatientAttachmentApi.createAttachmentFolder,
+      patientIdentifier,
+      name,
+    );
+    yield all([
+      put(showGlobalAlert(AlertMessages.CREATED)),
+      put({
+        type: ActionTypes.ADD_PATIENT_ATTACHMENT_FOLDER_SUCCESS,
+        folder,
+      }),
+      put(closeModal()),
+    ]);
+  } catch {
+    yield all([
+      put(showGlobalErrorAlert()),
+      put({
+        type: ActionTypes.ADD_PATIENT_ATTACHMENT_FOLDER_FAILURE,
+        patientIdentifier,
+        name,
+      }),
+    ]);
+  }
+}
+
 export default function* watchPatientDetails() {
   yield takeLatest(
     ActionTypes.INITIALIZE_PATIENT_STATE,
@@ -790,4 +817,8 @@ export default function* watchPatientDetails() {
   yield takeEvery(DO_REMOVE_PATIENT_NOTE, doRemovePatientNote);
   yield takeEvery(DO_CHANGE_PATIENT_NOTE_PIN, doChangePatientNotePin);
   yield takeEvery(ActionTypes.MERGE_PATIENT, mergePatient);
+  yield takeEvery(
+    ActionTypes.ADD_PATIENT_ATTACHMENT_FOLDER,
+    addPatientAttachmentFolder,
+  );
 }
