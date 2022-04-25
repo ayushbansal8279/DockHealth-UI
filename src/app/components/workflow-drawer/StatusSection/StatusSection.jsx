@@ -38,9 +38,14 @@ const StatusSection = () => {
   }, [autoFocusFieldName]);
 
   const updateWorkflowStatus = newWorkflowStatus => {
+    const clearStatus = true;
+    const donotClearStatus = false;
     dispatch(
       updatePartialWorkflow(selectedWorkflow?.identifier, {
-        workflowStatusIdentifier: newWorkflowStatus.identifier,
+        workflowStatusIdentifier: newWorkflowStatus?.identifier,
+        workflowStatusCleared: newWorkflowStatus
+          ? donotClearStatus
+          : clearStatus,
       }),
     );
   };
