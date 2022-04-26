@@ -21,12 +21,10 @@ export function addPatientAttachment(
     });
 }
 
-export function removePatientAttachment(attachmentIdentifier) {
-  return axios
-    .delete(`patient/attachment/${attachmentIdentifier}`)
-    .then(response => {
-      return response;
-    });
+export function deletePatientAttachment(identifier) {
+  return axios.delete(`patient/attachment/${identifier}`).then(response => {
+    return response;
+  });
 }
 
 export function getPatientAttachment(attachmentIdentifier) {

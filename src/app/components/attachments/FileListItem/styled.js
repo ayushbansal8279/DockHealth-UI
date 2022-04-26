@@ -11,6 +11,10 @@ export const Row = styled.div`
   align-items: center;
   border: 1px solid ${palette.coolGrey2};
   background-color: ${palette.white};
+
+  &:hover {
+    cursor: pointer;
+  }
 `;
 
 export const HeaderRow = styled(Row)`

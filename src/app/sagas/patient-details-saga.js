@@ -63,7 +63,6 @@ export const DO_CHANGE_MEMBER_ROLE = 'DO_CHANGE_MEMBER_ROLE';
 export const DO_SORT_PATIENT_TASKS = 'DO_SORT_PATIENT_TASKS';
 export const DO_FETCH_PATIENT_ATTACHMENTS = 'DO_FETCH_PATIENT_ATTACHMENTS';
 export const DO_ADD_PATIENT_ATTACHMENT = 'DO_ADD_PATIENT_ATTACHMENT';
-export const DO_REMOVE_PATIENT_ATTACHMENT = 'DO_REMOVE_PATIENT_ATTACHMENT';
 export const DO_UPDATE_PATIENT_NOTE = 'DO_UPDATE_PATIENT_NOTE';
 export const DO_ADD_PATIENT_NOTE = 'DO_ADD_PATIENT_NOTE';
 export const DO_REMOVE_PATIENT_NOTE = 'DO_REMOVE_PATIENT_NOTE';
@@ -169,15 +168,6 @@ export const addPatientAttachment = (
   setCurrentlyUploadedAttachment,
   onAttachmentFileInputChange,
   restAttachments,
-});
-
-export const removePatientAttachment = (
-  patientIdentifier,
-  attachmentIdentifier,
-) => ({
-  type: DO_REMOVE_PATIENT_ATTACHMENT,
-  patientIdentifier,
-  attachmentIdentifier,
 });
 
 export const updatePatientNote = note => ({
@@ -592,15 +582,27 @@ function* doAddPatientAttachment({
   }
 }
 
-function* doRemovePatientAttachment({ attachmentIdentifier }) {
+function* deletePatientAttachment({ patientIdentifier, identifier }) {
   try {
-    yield call(
-      PatientAttachmentApi.removePatientAttachment,
-      attachmentIdentifier,
-    );
-    yield put(PatientDetailsActions.getCurrentPatientAttachments());
+    yield call(PatientAttachmentApi.deletePatientAttachment, identifier);
+    yield all([
+      put(showGlobalAlert(AlertMessages.DELETED)),
+      put({
+        type: ActionTypes.DELETE_PATIENT_ATTACHMENT_SUCCESS,
+        patientIdentifier,
+        identifier,
+      }),
+    ]);
   } catch {
-    yield put(AlertActions.showGlobalErrorAlert());
+    yield all([
+      put({
+        type: ActionTypes.DELETE_PATIENT_ATTACHMENT_FAILURE,
+        patientIdentifier,
+        identifier,
+      }),
+      put(PatientDetailsActions.getCurrentPatient()),
+      put(AlertActions.showGlobalErrorAlert()),
+    ]);
   }
 }
 
@@ -805,7 +807,6 @@ export default function* watchPatientDetails() {
   yield takeEvery(DO_CHANGE_MEMBER_ROLE, doChangeMemberRole);
   yield takeEvery(DO_SORT_PATIENT_TASKS, doSortPatientTasks);
   yield takeEvery(DO_ADD_PATIENT_ATTACHMENT, doAddPatientAttachment);
-  yield takeLatest(DO_REMOVE_PATIENT_ATTACHMENT, doRemovePatientAttachment);
   yield takeLatest(
     ActionTypes.TOGGLE_PATIENT_COMPLETE_TASKS_VISIBLE,
     doTogglePatientCompleteTasksVisible,
@@ -817,6 +818,10 @@ export default function* watchPatientDetails() {
   yield takeEvery(DO_REMOVE_PATIENT_NOTE, doRemovePatientNote);
   yield takeEvery(DO_CHANGE_PATIENT_NOTE_PIN, doChangePatientNotePin);
   yield takeEvery(ActionTypes.MERGE_PATIENT, mergePatient);
+  yield takeEvery(
+    ActionTypes.DELETE_PATIENT_ATTACHMENT,
+    deletePatientAttachment,
+  );
   yield takeEvery(
     ActionTypes.ADD_PATIENT_ATTACHMENT_FOLDER,
     addPatientAttachmentFolder,

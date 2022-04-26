@@ -1,6 +1,7 @@
 /* eslint-disable react-hooks/rules-of-hooks */
 import { useState, useCallback, useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
+import { useHistory } from 'react-router-dom';
 import { useDropzone } from 'react-dropzone';
 import { memoizeWith, identity, isEmpty } from 'ramda';
 import * as PatientDetailsActions from 'actions/patient-details-actions';
@@ -9,13 +10,11 @@ import {
   patientFoldersSelector,
   patientAttachmentsSelector,
 } from 'selectors/patient-details-selectors';
-import {
-  addPatientAttachment,
-  removePatientAttachment,
-} from 'sagas/patient-details-saga';
+import { addPatientAttachment } from 'sagas/patient-details-saga';
 import { getPatientAttachment } from 'api/patient-attachment-api';
 import { useBoolean } from 'hooks/useBoolean';
 import { openModal } from 'modal/actions';
+import { createPatientAttachmentsPath } from 'routing/helpers/paths';
 
 export const getMemoPatientAttachment = memoizeWith(
   identity,
@@ -27,6 +26,7 @@ export const getMemoPatientAttachment = memoizeWith(
 
 const initializeAttachmentsSectionHooks = () => {
   const dispatch = useDispatch();
+  const history = useHistory();
   const patient = useSelector(patientSelector);
   const patientIdentifier = patient?.patientIdentifier;
 
@@ -135,10 +135,13 @@ const initializeAttachmentsSectionHooks = () => {
     [setAttachmentsLoading, unsetAttachmentsLoading],
   );
 
-  const boundRemovePatientAttachment = useCallback(
-    attachmentIdentifier => {
+  const deleteAttachment = useCallback(
+    identifier => {
       dispatch(
-        removePatientAttachment(patientIdentifier, attachmentIdentifier),
+        PatientDetailsActions.deletePatientAttachment(
+          patientIdentifier,
+          identifier,
+        ),
       );
     },
     [dispatch, patientIdentifier],
@@ -170,13 +173,34 @@ const initializeAttachmentsSectionHooks = () => {
     );
   };
 
+  const navigateToFolder = useCallback(
+    folder => {
+      history.push(
+        createPatientAttachmentsPath(
+          patientIdentifier,
+          folder.attachmentIdentifier,
+        ),
+      );
+    },
+    [history, patientIdentifier],
+  );
+
+  const openFolderInNewTab = folder => {
+    window.open(
+      `#${createPatientAttachmentsPath(
+        patientIdentifier,
+        folder.attachmentIdentifier,
+      )}`,
+    );
+  };
+
   return {
     handleCreateFolderClick,
     attachmentsSources,
     currentPatientAttachments: attachments,
     folders,
     attachmentsLoading,
-    removePatientAttachment: boundRemovePatientAttachment,
+    deleteAttachment,
     attachmentFileInputReference: inputRef,
     uploadProgress,
     currentlyUploadedAttachment,
@@ -184,6 +208,8 @@ const initializeAttachmentsSectionHooks = () => {
     isAttachmentPreviewOpen,
     hideAttachmentPreview,
     previewedAttachment,
+    navigateToFolder,
+    openFolderInNewTab,
     dropzone: {
       getRootProps,
       getInputProps,

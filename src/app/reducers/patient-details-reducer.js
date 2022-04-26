@@ -138,6 +138,17 @@ export default function(state = INITIAL_STATE, action = {}) {
       };
     }
 
+    case ActionTypes.DELETE_PATIENT_ATTACHMENT: {
+      const { identifier } = action;
+      return {
+        ...state,
+        attachments:
+          state.attachments?.filter(
+            ({ attachmentIdentifier }) => attachmentIdentifier !== identifier,
+          ) || null,
+      };
+    }
+
     case ActionTypes.TOGGLE_PATIENT_COMPLETE_TASKS_VISIBLE:
       return {
         ...state,

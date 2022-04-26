@@ -8,11 +8,11 @@ import MoreVertIcon from '@material-ui/icons/MoreVert';
 import { Cell, Row } from './styled';
 
 const FileListItem = props => {
-  const { fileOrFolder, options } = props;
+  const { fileOrFolder, options, onClick } = props;
   const { fileName, dateCreated, creator, type } = fileOrFolder;
 
   return (
-    <Row>
+    <Row onClick={onClick}>
       <Cell bold>
         {type === PatientAttachmentType.FOLDER && (
           <>
@@ -24,7 +24,7 @@ const FileListItem = props => {
       </Cell>
       <Cell>{creator?.name || ''}</Cell>
       <Cell>{moment(dateCreated).fromNow()}</Cell>
-      <Cell>
+      <Cell onClick={event => event.stopPropagation()}>
         <OptionsMenu customButtonComponent={IconButton} options={options}>
           <MoreVertIcon />
         </OptionsMenu>

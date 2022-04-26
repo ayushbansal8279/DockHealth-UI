@@ -37,6 +37,14 @@ export const createPatientListPath = patientListIdentifier =>
 export const createPatientDetailsPath = patientIdentifier =>
   `/core/patient/${patientIdentifier}`;
 
+export const createPatientAttachmentsPath = (
+  patientIdentifier,
+  folderIdentifier = null,
+) =>
+  `/core/patient/${patientIdentifier}/files${
+    folderIdentifier ? `/${folderIdentifier}` : ``
+  }`;
+
 export const createPatientDetailsListPath = (
   patientIdentifier,
   taskListIdentifier,

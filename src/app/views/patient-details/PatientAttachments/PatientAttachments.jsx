@@ -44,7 +44,7 @@ const PatientAttachments = () => {
     currentPatientAttachments,
     folders,
     attachmentsLoading,
-    removePatientAttachment,
+    deleteAttachment,
     attachmentFileInputReference,
     uploadProgress,
     currentlyUploadedAttachment,
@@ -52,6 +52,8 @@ const PatientAttachments = () => {
     isAttachmentPreviewOpen,
     hideAttachmentPreview,
     previewedAttachment,
+    navigateToFolder,
+    openFolderInNewTab,
     dropzone: { getRootProps, getInputProps, isDragActive },
   } = initializeAttachmentsSectionHooks();
 
@@ -65,11 +67,26 @@ const PatientAttachments = () => {
       { name: 'Preview', onClick: () => openAttachmentPreview(file) },
       {
         name: 'Delete',
-        onClick: () => removePatientAttachment(file.attachmentIdentifier),
+        onClick: () => deleteAttachment(file.attachmentIdentifier),
         color: palette.oPlusRed,
       },
     ],
-    [openAttachmentPreview, removePatientAttachment],
+    [openAttachmentPreview, deleteAttachment],
+  );
+
+  const getFolderOptions = useCallback(
+    folder => [
+      {
+        name: 'Open in new tab',
+        onClick: () => openFolderInNewTab(folder),
+      },
+      {
+        name: 'Delete',
+        onClick: () => deleteAttachment(folder.attachmentIdentifier),
+        color: palette.oPlusRed,
+      },
+    ],
+    [deleteAttachment, openFolderInNewTab],
   );
 
   return (
@@ -104,7 +121,13 @@ const PatientAttachments = () => {
           />
           <NamedCollapse name="Folders">
             {folders.map(folder => (
-              <FileItemComponent fileOrFolder={folder} options={[]} />
+              <FileItemComponent
+                fileOrFolder={folder}
+                options={getFolderOptions(folder)}
+                onClick={() => {
+                  navigateToFolder(folder);
+                }}
+              />
             ))}
           </NamedCollapse>
           <NamedCollapse name="Files">
@@ -122,6 +145,9 @@ const PatientAttachments = () => {
               <div onClick={event => event.stopPropagation()}>
                 {currentPatientAttachments.map(file => (
                   <FileItemComponent
+                    onClick={() => {
+                      openAttachmentPreview(file);
+                    }}
                     fileOrFolder={file}
                     options={getFileOptions(file)}
                   />
