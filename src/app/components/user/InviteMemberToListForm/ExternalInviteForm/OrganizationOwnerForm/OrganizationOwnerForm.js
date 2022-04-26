@@ -29,7 +29,7 @@ const OrganizationOwnerForm = ({
   onSubmit,
   closeInviteForm,
 }) => {
-  const [currentFormStep, setCurrentFormStep] = useState(FormStep.USER_ROLE);
+  const [currentFormStep, setCurrentFormStep] = useState(FormStep.USER_DETAILS);
 
   const formContext = useForm({
     resolver: yupResolver(validationSchema),
