@@ -2,6 +2,7 @@
 import React, { useEffect } from 'react';
 import { FormProvider, useForm } from 'react-hook-form';
 import { object, string } from 'yup';
+import { yupResolver } from "@hookform/resolvers/yup";
 import { MontserratTypography } from 'styles/theme-montserrat';
 import FormInput from 'components/common/Input/FormInput';
 import Spacing from 'components/common/Spacing';
@@ -15,13 +16,13 @@ const ConfirmMFACodeForm = props => {
   const { onSubmit, customError } = props;
 
   const formMethods = useForm({
-    validationSchema,
+    resolver: yupResolver(validationSchema),
     reValidateMode: 'onSubmit',
   });
 
   useEffect(() => {
     if (customError) {
-      formMethods.setError('mfaCode', customError);
+      formMethods.setError('mfaCode', { type: 'custom', message: customError });
     }
   }, [customError, formMethods]);
 
