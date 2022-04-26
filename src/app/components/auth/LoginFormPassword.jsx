@@ -3,6 +3,7 @@ import { FormProvider, useForm } from 'react-hook-form';
 import { useMount, useToggle } from 'react-use';
 import styled from 'styled-components';
 import { object, string } from 'yup';
+import { yupResolver } from "@hookform/resolvers/yup";
 import EyeClose from 'img/auth/eye-close.svg';
 import EyeOpen from 'img/auth/eye-open.svg';
 import { MontserratTypography } from 'styles/theme-montserrat';
@@ -37,7 +38,7 @@ const LoginFormPassword = ({
   unconfirmedUserFlag,
 }) => {
   const formMethods = useForm({
-    validationSchema,
+    resolver: yupResolver(validationSchema),
     reValidateMode: 'onSubmit',
   });
 
