@@ -19,6 +19,8 @@ export const HeaderRow = styled(Row)`
 `;
 
 export const Cell = styled.div`
+  display: flex;
+  align-items: center;
   padding: 0 10px;
   font-family: 'Roboto Condensed', sans-serif;
   font-weight: ${({ bold }) => (bold ? fontWeights.bold : fontWeights.regular)};

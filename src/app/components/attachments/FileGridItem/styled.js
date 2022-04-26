@@ -31,7 +31,7 @@ export const IconContainer = styled.div`
 export const DetailsContainer = styled.div`
   position: relative;
   display: flex;
-  flex-direction: column;
+  // flex-direction: row;
   justify-content: space-between;
   min-height: 78px;
   padding: 8px 12px;

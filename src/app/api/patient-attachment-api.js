@@ -1,4 +1,5 @@
 import axios from 'api/axios-heydoc';
+import { PatientAttachmentType } from 'helpers/patient-details-helpers';
 
 export function addPatientAttachment(
   patientIdentifier,
@@ -52,7 +53,7 @@ export function createAttachmentFolder(patientIdentifier, name) {
     .post(`patient/attachment/other`, {
       patientIdentifier,
       fileName: name,
-      type: 'FOLDER',
+      type: PatientAttachmentType.FOLDER,
     })
     .then(({ data }) => data);
 }

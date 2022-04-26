@@ -6,7 +6,8 @@ import { memoizeWith, identity, isEmpty } from 'ramda';
 import * as PatientDetailsActions from 'actions/patient-details-actions';
 import {
   patientSelector,
-  patientDocumentsSelector,
+  patientFoldersSelector,
+  patientAttachmentsSelector,
 } from 'selectors/patient-details-selectors';
 import {
   addPatientAttachment,
@@ -35,7 +36,8 @@ const initializeAttachmentsSectionHooks = () => {
     }
   }, [dispatch, patientIdentifier]);
 
-  const attachments = useSelector(patientDocumentsSelector) || [];
+  const attachments = useSelector(patientAttachmentsSelector) || [];
+  const folders = useSelector(patientFoldersSelector) || [];
 
   const [attachmentsSources, setAttachmentSources] = useState([]);
   const [
@@ -172,6 +174,7 @@ const initializeAttachmentsSectionHooks = () => {
     handleCreateFolderClick,
     attachmentsSources,
     currentPatientAttachments: attachments,
+    folders,
     attachmentsLoading,
     removePatientAttachment: boundRemovePatientAttachment,
     attachmentFileInputReference: inputRef,

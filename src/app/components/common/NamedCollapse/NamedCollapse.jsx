@@ -11,10 +11,20 @@ const NamedCollapse = props => {
 
   return (
     <Box mb={2}>
-      <ToggleButton type="button" onClick={toggleOpen}>
-        <RotatableChevron /> <Text>{name}</Text>
+      <ToggleButton
+        type="button"
+        onClick={toggleOpen}
+        onDragOver={() => {
+          if (!isOpen) toggleOpen();
+        }}
+      >
+        <RotatableChevron rotated={isOpen} /> <Text>{name}</Text>
       </ToggleButton>
-      <MuiCollapse in={isOpen}>{children}</MuiCollapse>
+      <MuiCollapse in={isOpen}>
+        <Box width="100%" pt={1}>
+          {children}
+        </Box>
+      </MuiCollapse>
     </Box>
   );
 };

@@ -2,6 +2,8 @@
 import { Image, Movie, Description, Audiotrack } from '@material-ui/icons';
 
 export const getIconFromContentType = contentType => {
+  if (!contentType) return null;
+
   if (contentType.startsWith('image/')) {
     return Image;
   }

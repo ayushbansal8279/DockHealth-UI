@@ -42,6 +42,7 @@ const PatientAttachments = () => {
     handleCreateFolderClick,
     attachmentsSources,
     currentPatientAttachments,
+    folders,
     attachmentsLoading,
     removePatientAttachment,
     attachmentFileInputReference,
@@ -101,7 +102,11 @@ const PatientAttachments = () => {
             ref={attachmentFileInputReference}
             {...getInputProps()}
           />
-          <NamedCollapse name="Folders">F</NamedCollapse>
+          <NamedCollapse name="Folders">
+            {folders.map(folder => (
+              <FileItemComponent fileOrFolder={folder} options={[]} />
+            ))}
+          </NamedCollapse>
           <NamedCollapse name="Files">
             <Box
               width="100%"
@@ -117,7 +122,7 @@ const PatientAttachments = () => {
               <div onClick={event => event.stopPropagation()}>
                 {currentPatientAttachments.map(file => (
                   <FileItemComponent
-                    file={file}
+                    fileOrFolder={file}
                     options={getFileOptions(file)}
                   />
                 ))}
