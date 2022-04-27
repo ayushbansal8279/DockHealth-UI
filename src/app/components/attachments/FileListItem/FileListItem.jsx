@@ -12,7 +12,7 @@ const FileListItem = props => {
   const { fileName, dateCreated, creator, type } = fileOrFolder;
 
   return (
-    <Row onClick={onClick}>
+    <Row onClick={onClick} clickable>
       <Cell bold>
         {type === PatientAttachmentType.FOLDER && (
           <>

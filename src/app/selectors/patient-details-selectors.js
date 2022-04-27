@@ -33,6 +33,11 @@ export const currentPatientIdentifierSelector = createSelector(
   ({ patientIdentifier }) => patientIdentifier,
 );
 
+export const currentFolderIdentifierSelector = createSelector(
+  patientDetailsStateSelector,
+  ({ currentFolderIdentifier }) => currentFolderIdentifier,
+);
+
 export const patientTaskSearchSelector = createSelector(
   patientDetailsStateSelector,
   ({ taskSearch }) => taskSearch,

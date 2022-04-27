@@ -123,3 +123,10 @@ export function createPatientAttachmentFolder(patientIdentifier, name) {
     name,
   };
 }
+
+export function initializePatientAttachmentsFolder(folderIdentifier) {
+  return {
+    type: ActionTypes.INITIALIZE_PATIENT_ATTACHMENTS_FOLDER,
+    folderIdentifier,
+  };
+}

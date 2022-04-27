@@ -10,6 +10,7 @@ import TaskBaseReducer from './task-base-reducer';
 const INITIAL_STATE = {
   patientIdentifier: null,
   patient: null,
+  currentFolderIdentifier: null,
   isFetchingPatient: false,
   labels: null,
   isFetchingLabels: false,
@@ -86,6 +87,20 @@ export default function(state = INITIAL_STATE, action = {}) {
       return {
         ...INITIAL_STATE,
       };
+
+    case ActionTypes.INITIALIZE_PATIENT_ATTACHMENTS_FOLDER: {
+      return {
+        ...state,
+        currentFolderIdentifier: action.folderIdentifier,
+      };
+    }
+
+    case ActionTypes.CLEAR_PATIENT_ATTACHMENTS_FOLDER: {
+      return {
+        ...state,
+        currentFolderIdentifier: null,
+      };
+    }
 
     case ActionTypes.GET_CURRENT_PATIENT: {
       return { ...state, isFetchingPatient: true };

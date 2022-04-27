@@ -17,13 +17,13 @@ import {
 } from './styled';
 
 const FileGridItem = props => {
-  const { fileOrFolder, options } = props;
+  const { fileOrFolder, options, onClick } = props;
   const { fileName, contentType, dateCreated, type } = fileOrFolder;
 
   const IconComponent = getIconFromContentType(contentType);
 
   return (
-    <Container>
+    <Container onClick={onClick}>
       {IconComponent && (
         <IconContainer>
           <IconComponent fontSize="inherit" />
@@ -45,9 +45,11 @@ const FileGridItem = props => {
           <CreatedText>{moment(dateCreated).fromNow()}</CreatedText>
         </Box>
         <OptionsContainer>
-          <OptionsMenu customButtonComponent={IconButton} options={options}>
-            <MoreVertIcon />
-          </OptionsMenu>
+          <div onClick={event => event.stopPropagation()}>
+            <OptionsMenu customButtonComponent={IconButton} options={options}>
+              <MoreVertIcon />
+            </OptionsMenu>
+          </div>
         </OptionsContainer>
       </DetailsContainer>
     </Container>

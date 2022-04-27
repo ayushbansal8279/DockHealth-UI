@@ -16,6 +16,10 @@ export const Container = styled.div`
   &:not(:last-of-type) {
     margin-right: 28px;
   }
+
+  &:hover {
+    cursor: pointer;
+  }
 `;
 
 export const IconContainer = styled.div`

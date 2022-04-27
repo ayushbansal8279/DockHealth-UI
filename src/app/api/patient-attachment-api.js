@@ -40,9 +40,14 @@ export function getPatientAttachment(attachmentIdentifier) {
   });
 }
 
-export function getPatientAttachments(patientIdentifier) {
+export function getPatientAttachments(patientIdentifier, folderIdentifier) {
   return axios
-    .get(`/patient/attachment/getPatientAttachments/${patientIdentifier}`)
+    .get(
+      `patient/attachment/getPatientAttachmentsInFolder/${patientIdentifier}`,
+      {
+        params: { parentAttachmentIdentifier: folderIdentifier ?? undefined },
+      },
+    )
     .then(({ data }) => data);
 }
 

@@ -25,6 +25,7 @@ import {
   completeTasksVisibilitySelector,
   patientTasksSortSelector,
   currentPatientIdentifierSelector,
+  currentFolderIdentifierSelector,
   currentListTasksStatusSelector,
 } from 'selectors/patient-details-selectors';
 import { selectedFiltersInMegaFilterSelector } from 'selectors/mega-filter-selectors';
@@ -219,6 +220,10 @@ function* initializePatientState() {
   }
 }
 
+function* initializePatientAttachmentFolder() {
+  yield put(PatientDetailsActions.getCurrentPatientAttachments());
+}
+
 function* getCurrentPatient() {
   const patientIdentifier = yield select(currentPatientIdentifierSelector);
 
@@ -254,11 +259,13 @@ function* getCurrentPatientLabels() {
 
 function* getCurrentPatientAttachments() {
   const patientIdentifier = yield select(currentPatientIdentifierSelector);
+  const folderIdentifier = yield select(currentFolderIdentifierSelector);
 
   try {
     const attachments = yield call(
       PatientAttachmentApi.getPatientAttachments,
       patientIdentifier,
+      folderIdentifier,
     );
     yield put({
       type: ActionTypes.GET_CURRENT_PATIENT_ATTACHMENTS_SUCCESS,
@@ -764,6 +771,10 @@ export default function* watchPatientDetails() {
   yield takeLatest(
     ActionTypes.INITIALIZE_PATIENT_STATE,
     initializePatientState,
+  );
+  yield takeLatest(
+    ActionTypes.INITIALIZE_PATIENT_ATTACHMENTS_FOLDER,
+    initializePatientAttachmentFolder,
   );
   yield takeLatest(ActionTypes.GET_CURRENT_PATIENT, getCurrentPatient);
   yield takeLatest(

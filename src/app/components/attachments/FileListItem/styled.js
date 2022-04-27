@@ -12,9 +12,13 @@ export const Row = styled.div`
   border: 1px solid ${palette.coolGrey2};
   background-color: ${palette.white};
 
-  &:hover {
-    cursor: pointer;
-  }
+  ${({ clickable }) =>
+    clickable &&
+    `
+      &:hover {
+        cursor: pointer;
+      }
+  `}
 `;
 
 export const HeaderRow = styled(Row)`

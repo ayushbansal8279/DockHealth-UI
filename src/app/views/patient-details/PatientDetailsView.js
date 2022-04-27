@@ -78,6 +78,7 @@ const TABS_CONFIG = [
   {
     label: 'Files',
     mainPath: 'files',
+    additionalPath: ':folderIdentifier?',
     RouteComponent: PatientAttachments,
   },
 ];

@@ -1,7 +1,7 @@
 /* eslint-disable react-hooks/rules-of-hooks */
 import { useState, useCallback, useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
-import { useHistory } from 'react-router-dom';
+import { useHistory, useParams } from 'react-router-dom';
 import { useDropzone } from 'react-dropzone';
 import { memoizeWith, identity, isEmpty } from 'ramda';
 import * as PatientDetailsActions from 'actions/patient-details-actions';
@@ -25,6 +25,7 @@ export const getMemoPatientAttachment = memoizeWith(
 );
 
 const initializeAttachmentsSectionHooks = () => {
+  const { folderIdentifier } = useParams();
   const dispatch = useDispatch();
   const history = useHistory();
   const patient = useSelector(patientSelector);
@@ -32,9 +33,13 @@ const initializeAttachmentsSectionHooks = () => {
 
   useEffect(() => {
     if (patientIdentifier) {
-      dispatch(PatientDetailsActions.getCurrentPatientAttachments());
+      dispatch(
+        PatientDetailsActions.initializePatientAttachmentsFolder(
+          folderIdentifier ?? null,
+        ),
+      );
     }
-  }, [dispatch, patientIdentifier]);
+  }, [dispatch, patientIdentifier, folderIdentifier]);
 
   const attachments = useSelector(patientAttachmentsSelector) || [];
   const folders = useSelector(patientFoldersSelector) || [];
