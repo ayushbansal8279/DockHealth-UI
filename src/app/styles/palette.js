@@ -64,6 +64,7 @@ const palette = {
   red: '#e94739',
   lightBlue: '#5ccced',
   skeletonLoader: '#e5e9f2',
+  selectedBlue: '#05ADEC',
 };
 
 export const featurePalette = {

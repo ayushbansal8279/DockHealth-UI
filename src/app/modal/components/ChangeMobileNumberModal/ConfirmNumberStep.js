@@ -4,6 +4,7 @@ import MobilePhoneIcon from 'img/modals/mobile-phone';
 import { FormProvider, useForm } from 'react-hook-form';
 import { useDispatch } from 'react-redux';
 import { object, string } from 'yup';
+import { yupResolver } from "@hookform/resolvers/yup";
 import { openModal } from 'modal/actions';
 import * as UserAuthApi from 'api/user-auth-api';
 import FormInput from 'components/common/Input/FormInput';
@@ -46,11 +47,11 @@ const onSubmit = ({ onUpdateSuccess, setError, dispatch, newPhoneNumber }) => ({
       );
     })
     .catch(error => {
-      setError(
-        'authorizationCode',
-        'manual',
-        error?.message || 'Something went wrong. Please try again later.',
-      );
+      setError('authorizationCode', {
+        type: 'custom',
+        message:
+          error?.message || 'Something went wrong. Please try again later.',
+      });
     });
 };
 
@@ -62,7 +63,7 @@ const ConfirmNumberStep = ({
   const dispatch = useDispatch();
 
   const formMethods = useForm({
-    validationSchema,
+    resolver: yupResolver(validationSchema),
     reValidateMode: 'onSubmit',
   });
 

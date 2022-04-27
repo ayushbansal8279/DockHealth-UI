@@ -1,5 +1,5 @@
 /* eslint-disable sonarjs/cognitive-complexity */
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { initializePusher } from 'helpers/pusher-instance';
 import { useDispatch, useSelector } from 'react-redux';
 import { useMount } from 'react-use';
@@ -72,31 +72,30 @@ const DashboardView = ({ tabName }) => {
     },
   };
 
-  useEffect(() => {
-    const hasAccessToCurrentTab = hasAccessToElement(
-      orgUserRole,
-      TAB_RESTRICTIONS[tabName].allowedToRoles,
-    );
+  const hasAccessToCurrentTab = hasAccessToElement(
+    orgUserRole,
+    TAB_RESTRICTIONS[tabName].allowedToRoles,
+  );
 
+  useEffect(() => {
     if (hasAccessToCurrentTab) {
       dispatch(initializeDashboardState(tabName));
     } else {
-      const nextAllowedTab = Object.values(DashboardTasksTab).find(value => {
-        return hasAccessToElement(
-          orgUserRole,
-          TAB_RESTRICTIONS[value].allowedToRoles,
-        );
-      });
-
-      if (nextAllowedTab) {
-        history.push(TAB_RESTRICTIONS[nextAllowedTab].path);
-      }
+      // const nextAllowedTab = Object.values(DashboardTasksTab).find(value => {
+      //   return hasAccessToElement(
+      //     orgUserRole,
+      //     TAB_RESTRICTIONS[value].allowedToRoles,
+      //   );
+      // });
+      // if (nextAllowedTab) {
+      //   history.push(TAB_RESTRICTIONS[nextAllowedTab].path);
+      // }
     }
 
     return () => {
       dispatch(clearFiltersForMegaFilter());
     };
-  }, [TAB_RESTRICTIONS, dispatch, history, orgUserRole, tabName]);
+  }, [dispatch, history, tabName, hasAccessToCurrentTab]);
 
   useEffect(() => {
     return () => {

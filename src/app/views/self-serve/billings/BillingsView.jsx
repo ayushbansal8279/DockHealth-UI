@@ -57,18 +57,22 @@ const onSubmit = ({ setError, dispatch, organizationIdentifier }) => ({
         })
         .catch(error => {
           unsetProcessingUpdate();
-          setError(
-            error?.response?.data?.errorMessage ??
+          setError('cardNumber', {
+            type: 'custom',
+            message:
+              error?.response?.data?.errorMessage ??
               'Could not update billing information, please try again later',
-          );
+          });
         });
     })
     .catch(error => {
       unsetProcessingUpdate();
-      setError(
-        error?.message ??
+      setError('cardNumber', {
+        type: 'custom',
+        message:
+          error?.message ??
           'Could not update billing information, please try again later',
-      );
+      });
     });
 };
 

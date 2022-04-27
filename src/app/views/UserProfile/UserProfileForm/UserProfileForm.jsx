@@ -4,6 +4,7 @@ import palette from 'styles/palette';
 import React, { useMemo, useEffect } from 'react';
 import { FormProvider, useForm } from 'react-hook-form';
 import { useDispatch } from 'react-redux';
+import { yupResolver } from "@hookform/resolvers/yup";
 import Button from 'components/common/Button/Button';
 import { head } from 'ramda';
 import { getCurrentUser, updateCurrentUser } from 'actions/user-actions';
@@ -44,7 +45,7 @@ const UserProfileForm = ({ userProfile }) => {
 
   const formMethods = useForm({
     defaultValues,
-    validationSchema,
+    resolver: yupResolver(validationSchema),
     reValidateMode: 'onSubmit',
   });
 

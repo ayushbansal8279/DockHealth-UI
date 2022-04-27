@@ -1,9 +1,19 @@
 import React from 'react';
 import { ORGANIZATION_TILE_COLORS } from 'styles/organization-tile-colors';
-import { ColorPickerLabel, ColorPickerWrapper } from './styled';
+import { ColorPickerLabel, Wrapper } from './styled';
 
-const ColorPicker = ({ name, onChange, value }) => (
-  <ColorPickerWrapper>
+export const Variants = {
+  STANDARD: 'standard',
+  CIRCLE: 'circle',
+};
+
+const ColorPicker = ({
+  name,
+  onChange,
+  value,
+  variant = Variants.STANDARD,
+}) => (
+  <Wrapper variant={variant}>
     {ORGANIZATION_TILE_COLORS.map(({ uniqueName, hex }) => (
       <span key={uniqueName}>
         <input
@@ -14,10 +24,14 @@ const ColorPicker = ({ name, onChange, value }) => (
           checked={value?.toLowerCase() === hex?.toLowerCase()}
           onChange={event => typeof onChange === 'function' && onChange(event)}
         />
-        <ColorPickerLabel color={hex} htmlFor={`${uniqueName}-${name}`} />
+        <ColorPickerLabel
+          variant={variant}
+          color={hex}
+          htmlFor={`${uniqueName}-${name}`}
+        />
       </span>
     ))}
-  </ColorPickerWrapper>
+  </Wrapper>
 );
 
 export default ColorPicker;

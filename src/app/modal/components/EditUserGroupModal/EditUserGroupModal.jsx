@@ -4,6 +4,7 @@ import { usePrevious } from 'react-use';
 import { useDispatch, useSelector } from 'react-redux';
 import { compose, pluck, join, split, take } from 'ramda';
 import { object, string } from 'yup';
+import { yupResolver } from "@hookform/resolvers/yup";
 import { getUserGroupAvatarThumbnailUrl } from 'helpers/user-groups-helper';
 import { createUserGroup, updateUserGroup } from 'actions/user-groups-actions';
 import { Grid } from '@material-ui/core';
@@ -68,7 +69,7 @@ const EditUserGroupModal = ({ userGroup, closeModal }) => {
           bubbleColor: getRandomTileColor().hex,
         },
     reValidateMode: 'onSubmit',
-    validationSchema,
+    resolver: yupResolver(validationSchema),
   });
 
   const { register, unregister, watch, setValue, handleSubmit } = formMethods;
@@ -181,6 +182,7 @@ const EditUserGroupModal = ({ userGroup, closeModal }) => {
               <SectionTitle>OR Select a picture</SectionTitle>
               <AvatarInput
                 initials={initialsValue}
+                isGroup
                 name={groupNameValue}
                 color={avatarColorValue}
                 pictureSrc={

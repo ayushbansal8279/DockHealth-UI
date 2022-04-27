@@ -15,10 +15,8 @@ import {
   patientSelector,
   isFetchingPatientSelector,
 } from 'selectors/patient-details-selectors';
-import { concat } from 'ramda';
 import PatientDetailsDrawer from '../PatientDetailsDrawer/PatientDetailsDrawer';
 import PatientDetailsLoader from '../PatientDetailsLoader/PatientDetailsLoader';
-import EditorLink from '../../../components/common/TextEditor/EditorLink/EditorLink';
 import {
   PatientDetailsContainer,
   PatientName,
@@ -49,6 +47,7 @@ const PatientDetailsHeader = () => {
     age,
     mrn,
     gender,
+    genderIdentity,
   } = patient || {};
   const isFetchingPatient = useSelector(isFetchingPatientSelector);
   const currentUser = useSelector(userProfileSelector);
@@ -57,56 +56,6 @@ const PatientDetailsHeader = () => {
   const emrPatientLink = organization?.emrPatientLink;
 
   const isLoadingDetails = isFetchingPatient || !patient;
-
-  // eslint-disable-next-line unicorn/consistent-function-scoping
-  function validURL(string) {
-    const pattern = new RegExp(
-      '^(https?:\\/\\/)?' + // protocol
-      '((([a-z\\d]([a-z\\d-]*[a-z\\d])*)\\.)+[a-z]{2,}|' + // domain name
-      '((\\d{1,3}\\.){3}\\d{1,3}))' + // OR ip (v4) address
-      '(\\:\\d+)?(\\/[-a-z\\d%_.~+]*)*' + // port and path
-      '(\\?[;&a-z\\d%_.~+=-]*)?' + // query string
-        '(\\#[-a-z\\d_]*)?$',
-      'i',
-    ); // fragment locator
-    return !!pattern.test(string);
-  }
-
-  const validLinkGenerator = value => {
-    if (value.includes('https')) {
-      return value;
-    }
-    if (value.includes('http')) {
-      return value;
-    }
-    return concat('https://', value);
-  };
-
-  const CreatePatientInfoElement = ({
-    customFieldName,
-    displayName,
-    value,
-  }) => {
-    const displayedValue = displayName || value;
-    return (
-      <>
-        <PatientInfo>
-          {customFieldName}:{' '}
-          {validURL(displayedValue) ? (
-            <EditorLink
-              href={validLinkGenerator(displayedValue)}
-              target="_blank"
-            >
-              {displayedValue}
-            </EditorLink>
-          ) : (
-            displayedValue
-          )}
-        </PatientInfo>
-        <PatientInfoDivider />
-      </>
-    );
-  };
 
   return (
     <PatientDetailsContainer>
@@ -190,8 +139,16 @@ const PatientDetailsHeader = () => {
                   <>
                     <PatientInfo>
                       {age && `${age} `}
-                      {gender && gender?.charAt(0)?.toUpperCase()}
+                      {gender && `${gender?.charAt(0)?.toUpperCase()}`}
                     </PatientInfo>
+                    {genderIdentity && (
+                      <>
+                        <PatientInfoDivider />
+                        <PatientInfo>
+                          gender identity: {genderIdentity}
+                        </PatientInfo>
+                      </>
+                    )}
                     <PatientInfoDivider />
                   </>
                 )}
@@ -221,11 +178,12 @@ const PatientDetailsHeader = () => {
                   ({ customFieldName, displayName, value, displayOptions }) => (
                     <>
                       {displayOptions?.includes('PATIENT_HEADER') && value && (
-                        <CreatePatientInfoElement
-                          customFieldName={customFieldName}
-                          displayName={displayName}
-                          value={value}
-                        />
+                        <>
+                          <PatientInfo>
+                            {customFieldName}: {displayName || value}
+                          </PatientInfo>
+                          <PatientInfoDivider />
+                        </>
                       )}
                     </>
                   ),
@@ -239,11 +197,12 @@ const PatientDetailsHeader = () => {
                 ({ customFieldName, displayName, value, contextType }) => (
                   <>
                     {contextType === 'PREDEFINED' && value && (
-                      <CreatePatientInfoElement
-                        customFieldName={customFieldName}
-                        displayName={displayName}
-                        value={value}
-                      />
+                      <>
+                        <PatientInfo>
+                          {customFieldName}: {displayName || value}
+                        </PatientInfo>
+                        <PatientInfoDivider />
+                      </>
                     )}
                   </>
                 ),

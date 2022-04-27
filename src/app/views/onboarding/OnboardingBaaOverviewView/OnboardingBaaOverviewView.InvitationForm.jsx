@@ -5,6 +5,7 @@ import { FormProvider, useForm } from 'react-hook-form';
 import { useHistory } from 'react-router-dom';
 import { v4 as uuid } from 'uuid';
 import { object, string } from 'yup';
+import { yupResolver } from "@hookform/resolvers/yup";
 import { inviteAuthorizedSigner } from 'api/organization-api';
 import Spacing from 'components/common/Spacing';
 import Button from 'components/common/Button/Button';
@@ -71,7 +72,7 @@ const onInvitationSubmit = history => async ({
 const InvitationForm = ({ hideInvitationForm }) => {
   const history = useHistory();
   const formMethods = useForm({
-    validationSchema,
+    resolver: yupResolver(validationSchema),
     revalidationMode: 'onChange',
   });
 

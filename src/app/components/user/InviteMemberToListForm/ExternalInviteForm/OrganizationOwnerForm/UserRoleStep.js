@@ -75,12 +75,15 @@ const UserRoleStep = ({ navigateToPreviousStep, disabled }) => {
         <input
           id="DockPro"
           type="radio"
-          name="dockPro"
+          name="userRole"
           value={DOCK_PRO}
           checked={roleValue === DOCK_PRO}
           onChange={event => setValue(event.target.name, event.target.value)}
         />
-        <RoleOptionLabel isSelected={roleValue === DOCK_PRO} htmlFor="Dock Pro">
+        <RoleOptionLabel
+          isSelected={roleValue === 'DOCK_PRO'}
+          htmlFor="DockPro"
+        >
           <RoleOptionHeaderWrapper>
             <RoleOptionHeader>Dock Pro</RoleOptionHeader>
             <RoleOptionHeaderAdditionalInfo>
@@ -88,11 +91,11 @@ const UserRoleStep = ({ navigateToPreviousStep, disabled }) => {
             </RoleOptionHeaderAdditionalInfo>
           </RoleOptionHeaderWrapper>
           <RoleOptionDescription>
-            A Dock Pro user you invite will only have access to the workflow
-            library and can help your team with building out Workflows for your
-            team.
+            A Dock Pro user will only have access to the workflow library and
+            can help with building out Workflows and Smartflows for your team.
           </RoleOptionDescription>
         </RoleOptionLabel>
+        <Divider />
       </RoleSelectionWrapper>
       <Grid container item direction="row" justify="center" spacing={2}>
         <Grid item xs={3}>

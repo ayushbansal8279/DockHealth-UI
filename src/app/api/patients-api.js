@@ -4,6 +4,12 @@ import {
 } from 'helpers/filter-options-helpers';
 import axios from './axios-heydoc';
 
+export function getGenderIdentityOptions() {
+  return axios
+    .get(`reference/genderIdentities`)
+    .then(response => response.data);
+}
+
 export const getPatientsLists = () =>
   axios.get('patient/list/getAll').then(response => response.data);
 
