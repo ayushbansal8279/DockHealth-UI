@@ -165,7 +165,12 @@ const Calendar = ({ taskListIdentifier }) => {
         title={eventInfo?.event?.title}
         hideTooltip={eventInfo?.event?.title.length < 17}
       >
-        <TextEventContainer>
+        <TextEventContainer
+          style={{
+            backgroundColor: task.taskList?.color || 'white',
+            opacity: 0.8,
+          }}
+        >
           {task && (
             <MultiAssignCalendar assignedToUsers={task.assignedToUsers} />
           )}

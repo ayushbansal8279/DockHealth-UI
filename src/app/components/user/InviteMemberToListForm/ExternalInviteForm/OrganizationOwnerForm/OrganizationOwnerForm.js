@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { Grid } from '@material-ui/core';
 import { FormProvider, useForm } from 'react-hook-form';
 import { object, string } from 'yup';
+import { yupResolver } from "@hookform/resolvers/yup";
 import Spacing from 'components/common/Spacing';
 import UserDetailsStep from './UserDetailsStep';
 import UserRoleStep from './UserRoleStep';
@@ -28,10 +29,10 @@ const OrganizationOwnerForm = ({
   onSubmit,
   closeInviteForm,
 }) => {
-  const [currentFormStep, setCurrentFormStep] = useState(FormStep.USER_ROLE);
+  const [currentFormStep, setCurrentFormStep] = useState(FormStep.USER_DETAILS);
 
   const formContext = useForm({
-    validationSchema,
+    resolver: yupResolver(validationSchema),
     defaultValues: { ...initialValues, userRole: 'MEMBER' },
   });
 

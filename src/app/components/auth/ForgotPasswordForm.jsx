@@ -2,6 +2,7 @@ import React from 'react';
 import { FormProvider, useForm } from 'react-hook-form';
 import { useMount } from 'react-use';
 import { object, string } from 'yup';
+import { yupResolver } from "@hookform/resolvers/yup";
 import Spacing from 'components/common/Spacing';
 import FormInput from 'components/common/Input/FormInput';
 import { MontserratTypography } from 'styles/theme-montserrat';
@@ -19,8 +20,8 @@ const ForgotPasswordForm = ({
   unconfirmedUserFlag,
 }) => {
   const formMethods = useForm({
+    resolver: yupResolver(validationSchema),
     reValidateMode: 'onSubmit',
-    validationSchema,
   });
 
   const { handleSubmit, setValue, setError } = formMethods;

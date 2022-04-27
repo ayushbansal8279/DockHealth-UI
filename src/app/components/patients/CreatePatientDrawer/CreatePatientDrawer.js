@@ -6,6 +6,7 @@ import {
 } from 'helpers/customer-type-helper';
 import { openModal, closeModal } from 'modal/actions';
 import { useDispatch, useSelector } from 'react-redux';
+import { yupResolver } from "@hookform/resolvers/yup";
 import * as PatientApi from 'api/patient-api';
 import { onPatientAdded as onPatientAddedEvent } from 'helpers/ga-event-helper';
 import { showAlert } from 'helpers/utility-functions';
@@ -50,8 +51,8 @@ const CreatePatientDrawer = ({ isSidebarOpen, onPatientCreated, onClose }) => {
   const uniqueIdentifierLabel = getCustomerUniqueIDLabel(currentUser);
   const dispatch = useDispatch();
   const formMethods = useForm({
+    resolver: yupResolver(validationSchema),
     reValidateMode: 'onSubmit',
-    validationSchema,
   });
 
   const { clearErrors, getValues } = formMethods;

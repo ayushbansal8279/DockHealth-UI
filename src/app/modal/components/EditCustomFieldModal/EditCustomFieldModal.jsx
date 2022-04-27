@@ -2,6 +2,7 @@
 import React, { useEffect, useState, useRef, useMemo } from 'react';
 import { FormProvider, useForm } from 'react-hook-form';
 import { string, object, array } from 'yup';
+import { yupResolver } from "@hookform/resolvers/yup";
 import { partial } from 'ramda';
 import { Box, Grid, IconButton } from '@material-ui/core';
 import DeleteIcon from '@material-ui/icons/Delete';
@@ -112,7 +113,7 @@ const EditCustomFieldModal = ({
   }, [type]);
 
   const formMethods = useForm({
-    validationSchema,
+    resolver: yupResolver(validationSchema),
     mode: 'onSubmit',
     defaultValues: isCreatingNewField
       ? { fieldCategoryType: Category.OTHER_INFO }

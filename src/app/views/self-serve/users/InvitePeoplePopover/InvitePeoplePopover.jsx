@@ -4,6 +4,7 @@ import React, { useCallback, useState } from 'react';
 import { FormProvider, useForm } from 'react-hook-form';
 import { useDispatch, useSelector } from 'react-redux';
 import { object, string } from 'yup';
+import { yupResolver } from "@hookform/resolvers/yup";
 import { invitePersonToOrganization } from 'api/organization-api';
 import { showAlert } from 'helpers/utility-functions';
 import * as AlertActions from 'alert/actions';
@@ -33,7 +34,7 @@ const InvitePeoplePopover = ({
   getAllUsers = () => {},
 }) => {
   const formMethods = useForm({
-    validationSchema,
+    resolver: yupResolver(validationSchema),
     reValidateMode: 'onSubmit',
   });
   const dispatch = useDispatch();

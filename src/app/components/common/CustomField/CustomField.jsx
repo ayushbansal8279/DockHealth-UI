@@ -37,8 +37,9 @@ const CustomField = ({
   const { setValue, watch } = useFormContext();
   const [wasChanged, setWasChanged] = useState(false);
   const isWorkflow =
-    task.itemType === TaskItemType.BUNDLE ||
-    task.itemType === TaskItemType.TEMPLATE;
+    task &&
+    (task.itemType === TaskItemType.BUNDLE ||
+      task.itemType === TaskItemType.TEMPLATE);
   const taskDrawerFocusField = useSelector(
     isWorkflow ? workflowAutofocusFieldSelector : taskDrawerFocusFieldSelector,
   );

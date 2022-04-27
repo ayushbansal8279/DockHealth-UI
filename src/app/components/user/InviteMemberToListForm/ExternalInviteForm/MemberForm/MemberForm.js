@@ -5,6 +5,7 @@ import Spacing from 'components/common/Spacing';
 import Button from 'components/common/Button/Button';
 import FormInput from 'components/common/Input/FormInput';
 import { object, string } from 'yup';
+import { yupResolver } from "@hookform/resolvers/yup";
 import { FormWrapper, InfoContainer, InfoHeader, InfoText } from './styled';
 
 const REQUIRED_FIELD = 'This field is required';
@@ -19,7 +20,7 @@ const validationSchema = object().shape({
 
 const MemberForm = ({ initialValues, closeInviteForm, onSubmit, disabled }) => {
   const formContext = useForm({
-    validationSchema,
+    resolver: yupResolver(validationSchema),
     defaultValues: initialValues,
   });
 

@@ -5,6 +5,7 @@ import { useBoolean } from 'hooks/useBoolean';
 import { mergeDeepRight } from 'ramda';
 import moment from 'moment';
 import { useDispatch, useSelector } from 'react-redux';
+import { yupResolver } from "@hookform/resolvers/yup";
 import { organizationSelector } from 'selectors/organization-selectors';
 import { userProfileSelector } from 'selectors/user-selectors';
 import { FormProvider, useForm } from 'react-hook-form';
@@ -41,7 +42,7 @@ const PatientDetailsDrawer = ({ patient, isOpenedDetails, closeDetails }) => {
   const formMethods = useForm({
     defaultValues: patientValues,
     reValidateMode: 'onSubmit',
-    validationSchema,
+    resolver: yupResolver(validationSchema),
   });
   const customerTypeLabel = getCustomerTypeLabel(currentUser);
   const { reset, clearErrors } = formMethods;
@@ -93,7 +94,12 @@ const PatientDetailsDrawer = ({ patient, isOpenedDetails, closeDetails }) => {
 
   const handleFormSubmit = data => {
     unsetActive();
-    dispatch(updatePatientDetails(mergeDeepRight(patient, data)));
+    const updateData = mergeDeepRight(patient, data);
+    updateData.allNotes = undefined;
+    updateData.patientLabels = undefined;
+    updateData.createdDateTime = undefined;
+    updateData.updatedDateTime = undefined;
+    dispatch(updatePatientDetails(updateData));
   };
 
   const contextMenuOptions = useMemo(

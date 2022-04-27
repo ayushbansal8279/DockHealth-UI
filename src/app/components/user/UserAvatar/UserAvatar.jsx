@@ -9,14 +9,18 @@ import {
   getUserActivityStatus,
   getUserAvatarThumbnailUrl,
   getUserAvatarUrl,
+  UserOrganizationRole,
 } from 'helpers/user-helper';
+import ExternalIcon from 'img/external.svg';
 import Avatar from '../Avatar/Avatar';
 import { TooltipContent } from './styled';
 
 const UserAvatar = React.forwardRef(
   ({ user, color, size, isSelected, hideTooltip, onClick }, reference) => {
     const activeUsersList = useSelector(activeUsersListSelector);
-    const { name, initials, bubbleColor, userStatus } = user;
+    const { name, initials, bubbleColor, userStatus, orgUserRole } = user;
+    const isExternal = orgUserRole === UserOrganizationRole.EXTERNAL;
+    const isGuest = orgUserRole === UserOrganizationRole.GUEST;
 
     const isInactive = useMemo(
       () =>
@@ -33,13 +37,12 @@ const UserAvatar = React.forwardRef(
       return getUserActivityStatus(user, activeUsersList);
     }, [activeUsersList, isInactive, user]);
 
-    const pictureSource = useMemo(
-      () =>
-        !!size && size > 100
-          ? getUserAvatarUrl(user)
-          : getUserAvatarThumbnailUrl(user),
-      [size, user],
-    );
+    const pictureSource = useMemo(() => {
+      if (isExternal || isGuest) return ExternalIcon;
+      return !!size && size > 100
+        ? getUserAvatarUrl(user)
+        : getUserAvatarThumbnailUrl(user);
+    }, [isExternal, isGuest, size, user]);
 
     return (
       <>
