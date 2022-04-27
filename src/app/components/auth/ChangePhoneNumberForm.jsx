@@ -2,7 +2,7 @@ import { Grid } from '@material-ui/core';
 import React, { useState } from 'react';
 import { FormProvider, useForm } from 'react-hook-form';
 import { object, string } from 'yup';
-import { yupResolver } from "@hookform/resolvers/yup";
+import { yupResolver } from '@hookform/resolvers/yup';
 import { useSmallScreen } from 'helpers/utility-functions';
 import { useBoolean } from 'hooks/useBoolean';
 import Spacing from 'components/common/Spacing';

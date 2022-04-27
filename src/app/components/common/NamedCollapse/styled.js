@@ -9,7 +9,7 @@ export const ToggleButton = styled.button`
 
 export const Text = styled.p`
   margin-bottom: 0;
-  margin-left: 10px;
+  margin: 0 10px;
   font-size: ${fontSizes.regular};
   font-weight: ${fontWeights.bold};
   color: ${palette.mediumGrey};

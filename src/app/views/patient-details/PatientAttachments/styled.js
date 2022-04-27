@@ -5,11 +5,16 @@ import spacing from 'styles/spacing';
 export const PatientAttachmentsWrapper = styled.div`
   width: 100%;
   min-height: 300px;
-  padding: ${spacing.regular} ${spacing.huge};
+  padding: 0 ${spacing.huge};
   background-color: ${props =>
     props.isDragActive ? palette.coolGrey3 : 'transparent'};
   border: 1px solid
     ${props => (props.isDragActive ? palette.coolGrey2 : `transparent`)};
+`;
+
+export const DropzoneContainer = styled.div`
+  width: 100%;
+  min-height: 400px;
 `;
 
 export const AttachmentFileInput = styled.input.attrs({

@@ -21,6 +21,7 @@ import {
   PatientAttachmentsWrapper,
   AttachmentFileInput,
   DropzoneInfoText,
+  DropzoneContainer,
 } from './styled';
 import initializeAttachmentsSectionHooks from './hooks';
 import { FilesViewType, PATIENT_FILES_VIEW_TYPE } from './helpers';
@@ -115,32 +116,30 @@ const PatientAttachments = () => {
       </Box>
       {!isFetching ? (
         <>
-          <AttachmentFileInput
-            ref={attachmentFileInputReference}
-            {...getInputProps()}
-          />
-          <NamedCollapse name="Folders">
-            {folders.map(folder => (
-              <FileItemComponent
-                fileOrFolder={folder}
-                options={getFolderOptions(folder)}
-                onClick={() => {
-                  navigateToFolder(folder);
-                }}
-              />
-            ))}
-          </NamedCollapse>
-          <NamedCollapse name="Files">
-            <Box
-              width="100%"
-              minHeight="250px"
-              {...getRootProps({ style: { outline: 'none' } })}
-            >
-              <DropzoneInfoText>
-                {isDragActive
-                  ? 'Drop the files here ...'
-                  : 'Drag and drop files or documents here, or click + to select files'}
-              </DropzoneInfoText>
+          <DropzoneContainer {...getRootProps({ style: { outline: 'none' } })}>
+            <DropzoneInfoText>
+              {isDragActive
+                ? 'Drop the files here ...'
+                : 'Drag and drop files or documents here, or click + to select files'}
+            </DropzoneInfoText>
+            <AttachmentFileInput
+              ref={attachmentFileInputReference}
+              {...getInputProps()}
+            />
+            {folders.length > 0 && (
+              <NamedCollapse name="Folders">
+                {folders.map(folder => (
+                  <FileItemComponent
+                    fileOrFolder={folder}
+                    options={getFolderOptions(folder)}
+                    onClick={() => {
+                      navigateToFolder(folder);
+                    }}
+                  />
+                ))}
+              </NamedCollapse>
+            )}
+            <NamedCollapse name="Files">
               {activeViewType === FilesViewType.LIST && <FileListHeader />}
               <div onClick={event => event.stopPropagation()}>
                 {currentPatientAttachments.map(file => (
@@ -162,15 +161,15 @@ const PatientAttachments = () => {
                   </>
                 )}
               </div>
-            </Box>
-          </NamedCollapse>
-          <AttachmentPreview
-            attachment={previewedAttachment}
-            attachmentsSources={attachmentsSources}
-            hideAttachmentPreview={hideAttachmentPreview}
-            isAttachmentPreviewOpen={isAttachmentPreviewOpen}
-            attachmentsLoading={attachmentsLoading}
-          />
+            </NamedCollapse>
+            <AttachmentPreview
+              attachment={previewedAttachment}
+              attachmentsSources={attachmentsSources}
+              hideAttachmentPreview={hideAttachmentPreview}
+              isAttachmentPreviewOpen={isAttachmentPreviewOpen}
+              attachmentsLoading={attachmentsLoading}
+            />
+          </DropzoneContainer>
         </>
       ) : (
         <>
