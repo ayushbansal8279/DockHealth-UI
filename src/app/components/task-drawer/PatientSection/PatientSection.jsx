@@ -6,7 +6,6 @@ import {
   onTaskDrawerTaskPatientChanged,
 } from 'helpers/ga-event-helper';
 import * as AlertActions from 'alert/actions';
-// import { useForm, FormContext } from 'react-hook-form';
 import debounce from 'lodash.debounce';
 import { openModal } from 'modal/actions';
 import { getPatientsByCriteria } from 'api/patients-api';

@@ -118,6 +118,7 @@ const config = (environment, options) => {
         '.ttf',
       ],
       alias: {
+        restrictions: path.resolve(__dirname, 'src/app/restrictions'),
         actions: path.resolve(__dirname, 'src/app/actions'),
         api: path.resolve(__dirname, 'src/app/api'),
         components: path.resolve(__dirname, 'src/app/components'),

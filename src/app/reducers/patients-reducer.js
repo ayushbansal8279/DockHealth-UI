@@ -17,7 +17,6 @@ const PatientsReducer = (state = initialState, action) => {
       const selectedFilters = sessionStorageHelper.getItem(
         getPatientsListFiltersStorageKey(action.patientsListIdentifier),
       );
-
       return {
         ...state,
         currentPatientsListIdentifier: action.patientsListIdentifier,
@@ -230,6 +229,49 @@ const PatientsReducer = (state = initialState, action) => {
             ? { ...patientsList, isUpdating: false, error: true }
             : patientsList,
         ),
+      };
+    }
+
+    case ActionTypes.SET_SELECTED_PATIENT: {
+      const { identifier, isSelected } = action;
+      return {
+        ...state,
+        currentPatientsList: {
+          ...state.currentPatientsList,
+          patients: state.currentPatientsList.patients?.map(patient =>
+            patient.patientIdentifier === identifier
+              ? { ...patient, isSelected }
+              : patient,
+          ),
+        },
+      };
+    }
+
+    case ActionTypes.UNSELECT_ALL_PATIENTS: {
+      return {
+        ...state,
+        currentPatientsList: {
+          ...state.currentPatientsList,
+          patients: state.currentPatientsList.patients?.map(patient => ({
+            ...patient,
+            isSelected: false,
+          })),
+        },
+      };
+    }
+
+    case ActionTypes.PATIENT_BULK_DELETE_PATIENTS_SUCCESS: {
+      const { patientIdentifiers } = action;
+
+      return {
+        ...state,
+        currentPatientsList: {
+          ...state.currentPatientsList,
+          patients: state.currentPatientsList.patients?.filter(
+            ({ patientIdentifier }) =>
+              !patientIdentifiers.includes(patientIdentifier),
+          ),
+        },
       };
     }
 

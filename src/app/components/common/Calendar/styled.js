@@ -6,6 +6,10 @@ import palette from 'styles/palette';
 export const TextEventContainer = styled.div`
   color: black;
   overflow: hidden;
+  height: 30px;
+  padding-left: 3px;
+  display: flex;
+  align-items: center;
 `;
 
 export const AddEventInputContainer = styled.div`
@@ -25,6 +29,7 @@ export const AddEventInputContainer = styled.div`
 export const CalendarContainer = styled.div`
   padding: ${spacing.large};
   width: 100%;
+
   .fc-button-primary {
     color: ${palette.darkBlue} !important;
     background-color: ${palette.white} !important;
@@ -45,6 +50,9 @@ export const CalendarContainer = styled.div`
     color: ${palette.white} !important;
     background-color: ${palette.darkBlue} !important;
     border-color: ${palette.darkBlue} !important;
+    &:disabled {
+      opacity: 1 !important;
+    }
   }
   .fc-daygrid-day.fc-day-today {
     background-color: ${palette.brightBlueWithAlpha} !important;

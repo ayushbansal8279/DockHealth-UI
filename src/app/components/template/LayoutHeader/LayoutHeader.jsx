@@ -4,14 +4,19 @@ import { HOME_PATH } from 'routing/helpers/paths';
 import { Link } from 'react-router-dom';
 import { Box } from '@material-ui/core';
 import ActivityAlerts from 'components/activity-alerts/ActivityAlerts';
+import { UserOrganizationRole } from 'helpers/user-helper';
 import TrialBanner from 'components/navigation/TrialBanner/TrialBanner';
+import AccessRestrictor from 'components/access/AccessRestrictor/AccessRestrictor';
 import {
   HeaderContainer,
   MainHeader,
   DockHeaderImage,
   Title,
   Description,
+  ColorIndicator,
 } from './styled';
+
+const { ADMIN, OWNER, MEMBER, GUEST, EXTERNAL } = UserOrganizationRole;
 
 const LayoutHeader = props => {
   const { children, horizontalSticky } = props;
@@ -29,7 +34,11 @@ const LayoutHeader = props => {
           {children}
         </Box>
         <Box mx={1} />
-        <ActivityAlerts />
+        <AccessRestrictor
+          allowedToRoles={[ADMIN, OWNER, MEMBER, GUEST, EXTERNAL]}
+        >
+          <ActivityAlerts />
+        </AccessRestrictor>
         <Box mx={1} />
         <Link to={HOME_PATH}>
           <DockHeaderImage />
@@ -41,11 +50,20 @@ const LayoutHeader = props => {
 };
 
 LayoutHeader.Title = props => {
-  const { title, description } = props;
+  const { title, description, colorIndicator } = props;
 
   return (
     <Box flex={1} overflow="hidden">
-      <Title>{title}</Title>
+      <Title>
+        <Box display="flex" alignItems="center">
+          {colorIndicator && (
+            <Box ml="10px" mr="16px">
+              <ColorIndicator color={colorIndicator} />
+            </Box>
+          )}
+          {title}
+        </Box>
+      </Title>
       <Description>{description}</Description>
     </Box>
   );

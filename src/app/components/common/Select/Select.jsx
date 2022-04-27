@@ -19,6 +19,7 @@ import {
 } from 'prop-types';
 import zIndex from 'styles/z-index';
 import Input from '../Input/Input';
+import { ColorIndicator } from './styled';
 
 const Select = ({
   options,
@@ -73,6 +74,7 @@ const Select = ({
           const { OptionIcon } = option;
           return (
             <MenuItem key={option.value} value={option.value}>
+              {option.color && <ColorIndicator color={option.color} />}
               {OptionIcon || null}
               <ListItemText>{option.label}</ListItemText>
             </MenuItem>

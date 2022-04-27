@@ -8,6 +8,7 @@ import {
 } from 'selectors/user-selectors';
 import { locationParametersSelector } from 'location/selectors';
 import { listCustomFieldsSelector } from 'selectors/list-details-selectors';
+import { sort } from 'ramda';
 import { currentTaskListCustomFieldsPreferencesSelector } from '../selectors/task-list-selectors';
 
 export const ColumnsConfigContext = React.createContext();
@@ -40,6 +41,22 @@ export function ColumnsConfigProvider({
   );
   const { taskListIdentifier } = useSelector(locationParametersSelector);
 
+  const sortAlphabetical = React.useCallback(
+    array => sort((a, b) => a?.name.localeCompare(b), array),
+    [],
+  );
+
+  const sortedAlphabeticalAllCustomFields = React.useMemo(() => {
+    return sortAlphabetical([
+      ...organizationCustomFields,
+      ...specificListCustomFields,
+    ]);
+  }, [organizationCustomFields, sortAlphabetical, specificListCustomFields]);
+
+  const sortedAlphabeticalOrganizationCustomFields = React.useMemo(() => {
+    return sortAlphabetical([...organizationCustomFields]);
+  }, [organizationCustomFields, sortAlphabetical]);
+
   React.useEffect(() => {
     if (!hideCustomColumns) {
       const currentCustomFieldsPreferences = taskListIdentifier
@@ -47,8 +64,8 @@ export function ColumnsConfigProvider({
         : OrganizationCustomFieldsPreferences;
 
       const currentCustomFields = taskListIdentifier
-        ? [...organizationCustomFields, ...specificListCustomFields]
-        : organizationCustomFields;
+        ? sortedAlphabeticalAllCustomFields
+        : sortedAlphabeticalOrganizationCustomFields;
 
       if (currentCustomFields && currentCustomFieldsPreferences) {
         const mergedPreferencesAndFields = currentCustomFields.map(field => {

@@ -58,11 +58,10 @@ const ForgotPassword = () => {
               'Email is not confirmed. Please check your email or click below to resend.'; // User is not confirmed.
             setUnconfirmedUserFlag(true);
           }
-          setError(
-            'username',
-            'invalid',
-            message ?? 'Unknown Error. Please try again.',
-          );
+          setError('username', {
+            type: 'custom',
+            message: message ?? 'Unknown Error. Please try again.',
+          });
         });
     },
     [history],

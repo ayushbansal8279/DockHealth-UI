@@ -40,6 +40,7 @@ import {
   UpdatesForMemberIndicator,
   DrawerMyListsLabel,
   DrawerListsItemLoader,
+  ColorIndicator,
 } from './styled';
 
 // eslint-disable-next-line sonarjs/cognitive-complexity
@@ -113,7 +114,18 @@ const ListsSubmenu = () => {
                   : `drawer-menu-list-item`
               }
             >
-              {list.hasUpdatesForMember && <UpdatesForMemberIndicator />}
+              {!['INBOX', 'PUBLIC'].includes(list?.listType) ? (
+                <ListOptionsMenu list={list}>
+                  <MoreVert color="primary" />
+                </ListOptionsMenu>
+              ) : (
+                <Box m={2} />
+              )}
+              {list.color && (
+                <Box mr={1}>
+                  <ColorIndicator color={list.color} />
+                </Box>
+              )}
               <ListNameText
                 color={archived && palette.coolGrey2}
                 isActive={activeTaskListIdentifier === list?.taskListIdentifier}
@@ -137,12 +149,12 @@ const ListsSubmenu = () => {
               )}
               <DrawerItemOptions>
                 <div>{list?.numberOfTasks ? list?.numberOfTasks : 0}</div>
-                {!['INBOX', 'PUBLIC'].includes(list?.listType) ? (
-                  <ListOptionsMenu list={list}>
-                    <MoreVert color="primary" />
-                  </ListOptionsMenu>
+                {list.hasUpdatesForMember ? (
+                  <Box m=" 0 5px">
+                    <UpdatesForMemberIndicator />
+                  </Box>
                 ) : (
-                  <Box m={2} />
+                  <Box m={1} />
                 )}
               </DrawerItemOptions>
             </DrawerListsItem>

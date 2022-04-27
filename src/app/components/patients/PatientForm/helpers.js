@@ -4,18 +4,19 @@ import { mixed, string, object } from 'yup';
 
 const DATE_FORMAT = 'MM/DD/YYYY';
 const REQUIRED_MESSAGE = 'This field is required';
-export const GENDER_OPTIONS = [
-  {
-    value: 'female',
-    label: 'Female',
-  },
+
+export const GENDER_OPTIONS_BIRTH = [
   {
     value: 'male',
     label: 'Male',
   },
   {
-    value: 'other',
-    label: 'Other',
+    value: 'female',
+    label: 'Female',
+  },
+  {
+    value: 'decline',
+    label: 'Decline to state',
   },
 ];
 
@@ -24,7 +25,12 @@ export function formatMetaDataOutput(outputData) {
 
   if (!metadata || isEmpty(metadata)) return outputData;
 
-  const formattedMetadata = Object.keys(metadata).map(key => {
+  // remove metadata with no values - only keep UUID keys
+  const filteredMetaDataKeys = Object.keys(metadata).filter(
+    key => key.length === 36,
+  );
+
+  const formattedMetadata = filteredMetaDataKeys.map(key => {
     return {
       customFieldIdentifier: key,
       value: metadata[key],

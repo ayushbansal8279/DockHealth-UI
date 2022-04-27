@@ -49,6 +49,7 @@ import {
   currentTaskListSelector,
   currentTaskListIdentifierSelector,
 } from 'selectors/task-list-selectors';
+import { calendarDateRangeSelector } from 'selectors/calendar-tasks-selectors';
 import { showGlobalAlert, showGlobalErrorAlert } from 'alert/actions';
 import AlertMessages from 'alert/AlertMessages';
 import { openDrawer } from 'actions/task-drawer-actions';
@@ -58,10 +59,7 @@ import { TaskStatus } from 'helpers/task-helpers';
 import sessionStorageHelper from 'helpers/session-storage-helper';
 import { onSortChanged, onSearchChanged } from 'helpers/ga-event-helper';
 import { openModal } from 'modal/actions';
-import {
-  applyTaskTemplate as applyTaskTemplateAction,
-  getTasksForTaskGroups as getTasksForTaskGroupsAction,
-} from 'actions/list-details-actions';
+import { applyTaskTemplate as applyTaskTemplateAction } from 'actions/list-details-actions';
 import * as CustomFieldsApi from 'api/custom-fields-api';
 import * as TaskListApi from 'api/task-list-api';
 import store from '../store';
@@ -480,7 +478,7 @@ function* reassignTasksToAnotherGroup(payload) {
   }
 }
 
-function* initializeTaskListState() {
+function* initializeListDetailsTableState() {
   try {
     const { taskIdentifier } = yield select(locationParametersSelector);
     const taskListIdentifier = yield select(currentTaskListIdentifierSelector);
@@ -732,25 +730,6 @@ function* updateListCustomFieldsSetup({ setup }) {
   }
 }
 
-function* refreshGroup({ task }) {
-  const currentTaskList = yield select(currentTaskListSelector);
-  const { taskListIdentifier } = yield select(locationParametersSelector);
-  const { taskGroupIdentifier } = task?.taskGroups?.[0];
-
-  if (
-    taskListIdentifier &&
-    currentTaskList.taskListIdentifier === taskListIdentifier
-  ) {
-    yield put(
-      getTasksForTaskGroupsAction({
-        taskGroupIdentifier,
-        status: 'INCOMPLETE',
-        refresh: true,
-      }),
-    );
-  }
-}
-
 function* taskCounterIncreaseWatcher({ task }) {
   const currentTaskList = yield select(currentTaskListSelector);
   if (currentTaskList) {
@@ -836,6 +815,27 @@ function* reorderTaskListGroups({ newIndex, oldIndex }) {
   }
 }
 
+function* getListCalendarTasks() {
+  try {
+    const taskListIdentifier = yield select(currentTaskListIdentifierSelector);
+    const status = yield select(currentTaskListTasksStatusSelector);
+    const { startDate, endDate } = yield select(calendarDateRangeSelector);
+    const tasks = yield call(
+      ListDetailsApi.getTasksForListByDateRange,
+      taskListIdentifier,
+      status,
+      startDate,
+      endDate,
+    );
+    yield put(ListDetailsActions.getListCalendarTasksSuccess(tasks));
+  } catch {
+    yield all([
+      put(ListDetailsActions.getListCalendarTasksFailure()),
+      put(showGlobalErrorAlert()),
+    ]);
+  }
+}
+
 export default function* watchTasksGroupsList() {
   yield takeEvery(ActionTypes.APPLY_TASK_TEMPLATE, applyTaskTemplate);
   yield takeLatest(
@@ -855,15 +855,14 @@ export default function* watchTasksGroupsList() {
     ActionTypes.FILTER_LIST_DETAILS_TASKS,
     filterListDetailsTasks,
   );
-  // yield takeLatest([ActionTypes.ADD_TASK_SUCCESS], refreshGroup);
   yield takeLatest([ActionTypes.ADD_TASK_SUCCESS], taskCounterIncreaseWatcher);
   yield takeLatest([ActionTypes.DELETE_TASK], taskCounterDecreaseWatcher);
   yield takeLatest(ActionTypes.GET_LIST_CUSTOM_FIELDS, getListCustomFields);
   yield takeLatest(ActionTypes.SORT_LIST_DETAILS_TASKS, sortListDetailsTasks);
   yield takeEvery(ActionTypes.GET_TASKS_GROUPS_LIST, getTasksGroupsList);
   yield takeLatest(
-    ActionTypes.INITIALIZE_TASK_LIST_STATE,
-    initializeTaskListState,
+    ActionTypes.INITIALIZE_LIST_DETAILS_TABLE_STATE,
+    initializeListDetailsTableState,
   );
   yield takeEvery(ActionTypes.CREATE_TASK_LIST_GROUP, createTaskListGroup);
   yield takeEvery(ActionTypes.REORDER_TASKS_IN_GROUP, sortTasksInGroup);
@@ -892,4 +891,5 @@ export default function* watchTasksGroupsList() {
     ActionTypes.GET_CURRENT_TASK_LIST_FILTER_OPTIONS,
     getCurrentTaskListFilterOptions,
   );
+  yield takeLatest(ActionTypes.GET_LIST_CALENDAR_TASKS, getListCalendarTasks);
 }

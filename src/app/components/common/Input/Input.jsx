@@ -28,6 +28,7 @@ const Input = React.forwardRef(
     reference,
   ) => (
     <TextField
+      sx={{ input: { color: 'red' } }}
       ref={reference}
       inputRef={inputRef}
       id={id}

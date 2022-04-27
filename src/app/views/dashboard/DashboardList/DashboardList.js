@@ -1,5 +1,11 @@
 /* eslint-disable sonarjs/cognitive-complexity */
-import React, { useState, useMemo, useEffect, useCallback } from 'react';
+import React, {
+  useState,
+  useMemo,
+  useEffect,
+  useCallback,
+  useContext,
+} from 'react';
 import { connect, useDispatch, useSelector } from 'react-redux';
 import { useLocation } from 'react-router-dom';
 import { identity, isEmpty } from 'ramda';
@@ -38,7 +44,7 @@ import { onSortChanged } from 'helpers/ga-event-helper';
 import { SortOrderType } from 'helpers/sorting-helper';
 import BulkEditSection from 'components/tasklist/BulkEditSection/BulkEditSection';
 import { DashboardTasksTab } from 'helpers/dashboard-helpers';
-import Calendar from 'components/common/Calendar/Calendar';
+
 import { ViewType, getViewTypeFromQueryString } from 'helpers/view-type-helper';
 import GroupedListSkeletonLoader from 'components/tasklist/GroupedListSkeletonLoader/GroupedListSkeletonLoader';
 import StickyContainer from 'components/common/HorizontalScroll/StickyContainer';
@@ -47,6 +53,7 @@ import {
   dashboardGroupsOrderPreferencesSelector,
 } from 'selectors/user-selectors';
 import { updateCurrentUserPreferences } from 'actions/user-actions';
+import { Context } from 'components/common/HorizontalScroll/HorizontalScrollContainer';
 import DashboardTasksGroup from './DashboardTasksGroup';
 import DashboardToolbar from '../DashboardToolbar/DashboardToolbar';
 import {
@@ -55,6 +62,7 @@ import {
   VerticalScrollContainer,
   DashboardTaskGroupsWrapper,
 } from './styled';
+import DashboardCalendar from '../DashboardCalendar/DashboardCalendar';
 
 const DashboardList = ({
   allDashboardTasks,
@@ -97,11 +105,6 @@ const DashboardList = ({
     );
   }, [dashboardGroupsPreferences, dashboardTasks]);
 
-  // console.log(
-  //   'dashboardGroupsOrderPreferences',
-  //   dashboardGroupsOrderPreferences,
-  // );
-
   const orderedDashboardTasks = useMemo(() => {
     const sorted = () => {
       return dashboardGroupsOrderPreferences
@@ -112,9 +115,6 @@ const DashboardList = ({
     };
     return dashboardGroupsOrderPreferences ? sorted() : filteredDashboardTasks;
   }, [dashboardGroupsOrderPreferences, filteredDashboardTasks]);
-
-  // console.log('filteredDashboardTasks', filteredDashboardTasks);
-  // console.log('orderedDashboardTasks', orderedDashboardTasks);
 
   const currentSortMethod = useMemo(() => {
     if (!sortKey) return identity;
@@ -220,14 +220,6 @@ const DashboardList = ({
     dispatch(getDashboardTasks());
   }, [dispatch]);
 
-  const tasks = useMemo(
-    () =>
-      filteredDashboardTasks.reduce((accumulator, value) => {
-        return value?.tasks ? [...accumulator, ...value.tasks] : accumulator;
-      }, []),
-    [filteredDashboardTasks],
-  );
-
   const groupOrder = useMemo(() => {
     const defaultGroupOrder = dashboardTasks.map(g => g.groupType);
     return dashboardGroupsOrderPreferences || defaultGroupOrder;
@@ -316,6 +308,8 @@ const DashboardList = ({
     [dispatch, flattedOrderedDashboardTasks, groupOrder],
   );
 
+  const parentContainerWidth = useContext(Context);
+
   return (
     <BulkEditSection
       allTasks={allDashboardTasks}
@@ -324,16 +318,16 @@ const DashboardList = ({
     >
       <StickyContainer stickyTop zIndex={101}>
         <StickyHeader>
-          <DashboardToolbar
-            tourModalIsOpen={tourModalIsOpen}
-            openTourModal={openTourModal}
-          />
+          {parentContainerWidth !== 0 && (
+            <DashboardToolbar
+              tourModalIsOpen={tourModalIsOpen}
+              openTourModal={openTourModal}
+            />
+          )}
         </StickyHeader>
       </StickyContainer>
       <Spacing vertical={1} />
-      {viewType === ViewType.CALENDAR_VIEW && (
-        <Calendar taskList={tasks} showInCompleteTasksOnly />
-      )}
+      {viewType === ViewType.CALENDAR_VIEW && <DashboardCalendar />}
       {viewType === ViewType.LIST_VIEW && (
         <VerticalScrollContainer>
           {dashboardTasksIsLoading || completeTaskCount === undefined ? (

@@ -34,7 +34,7 @@ import { BulkEditContext } from 'components/tasklist/BulkEditSection/BulkEditSec
 import TaskItemCustomField from 'components/common/CustomField/TaskItemCustomField';
 import OptionsMenu from 'components/common/OptionsMenu/OptionsMenu';
 import Spacing from 'components/common/Spacing';
-import { useColumnsConfig } from 'context-api/ColumnsConfigContext';
+import { useColumnsConfig } from 'context-api/columns-config-context';
 import StickyMainTaskItemCell from 'components/task/StickyMainTaskItemCell/StickyMainTaskItemCell';
 import TaskItemCell from 'components/task/TaskItemCell/TaskItemCell';
 import TaskTemplateDueDate from 'components/task-template/TaskTemplateDueDate/TaskTemplateDueDate';
@@ -47,6 +47,7 @@ import {
   moveWorkflowToGroup,
 } from 'actions/list-details-actions';
 import { currentTaskListSelector } from 'selectors/task-list-selectors';
+import { openDrawer } from 'actions/workflow-drawer-actions';
 import TemplateHeaderName from '../TaskTemplateName/TaskTemplateName';
 import TaskHeaderPatient from '../TaskTemplatePatient/TaskTemplatePatient';
 import TemplateItemWorkflowStatus from '../TaskTemplateWorkflowStatus/TaskTemplateWorkflowStatus';
@@ -341,8 +342,9 @@ const TaskTemplateGroupHeader = ({
   }, []);
 
   useEffect(() => {
+    // eslint-disable-next-line no-unused-expressions
     !selectedWorkflow ? getWorkflowData(identifier) : setWorkFlowData(null);
-  }, [identifier, selectedWorkflow]);
+  }, [getWorkflowData, identifier, selectedWorkflow]);
 
   return (
     <TaskTemplateGroupHeaderContainer
@@ -500,6 +502,11 @@ const TaskTemplateGroupHeader = ({
               width={CustomFieldWidthConfig[field.fieldType]}
             >
               <TaskItemCustomField
+                onClick={(fieldIdentifier, workflow) => {
+                  dispatch(
+                    openDrawer(workflow.identifier, workflow, fieldIdentifier),
+                  );
+                }}
                 field={field}
                 readOnly
                 customFieldValue={workFlowData?.taskMetaData?.find(

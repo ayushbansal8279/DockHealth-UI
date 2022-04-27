@@ -12,7 +12,11 @@ import {
 } from './styled';
 
 const UserDetailsStep = ({ closeInviteForm, disabled }) => {
-  const { errors, watch, setValue } = useFormContext();
+  const {
+    watch,
+    setValue,
+    formState: { errors },
+  } = useFormContext();
 
   const firstNameValue = watch('firstName');
   const lastNameInputValue = watch('lastName');

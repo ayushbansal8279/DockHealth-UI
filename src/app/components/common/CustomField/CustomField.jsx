@@ -14,7 +14,11 @@ import DateInput from 'components/common/DateInput/DateInput';
 import { useFormContext } from 'react-hook-form';
 import { taskDrawerFocusFieldSelector } from 'selectors/task-drawer-selectors';
 import { useSelector } from 'react-redux';
+import { TaskItemType } from 'helpers/task-helpers';
+import { workflowAutofocusFieldSelector } from 'selectors/workflow-drawer-selectors';
+import { Box } from '@material-ui/core';
 import CustomFieldTextEditor from './CustomFieldTextEditor';
+import { ColorIndicator } from './styled';
 
 const CustomField = ({
   readOnly,
@@ -24,20 +28,27 @@ const CustomField = ({
   fieldsGroupKey,
   taskIdentifier,
   task,
+  // eslint-disable-next-line sonarjs/cognitive-complexity
 }) => {
   const containerReference = useRef(null);
   const { identifier, name, placeholder, fieldType, options } = field;
   const inputReference = useRef(null);
   const componentReference = useRef(null);
-  const { setValue } = useFormContext();
+  const { setValue, watch } = useFormContext();
   const [wasChanged, setWasChanged] = useState(false);
-  const taskDrawerFocusField = useSelector(taskDrawerFocusFieldSelector);
-
+  const isWorkflow =
+    task &&
+    (task.itemType === TaskItemType.BUNDLE ||
+      task.itemType === TaskItemType.TEMPLATE);
+  const taskDrawerFocusField = useSelector(
+    isWorkflow ? workflowAutofocusFieldSelector : taskDrawerFocusFieldSelector,
+  );
   const dropdownOptions = useMemo(() => {
     const o =
       options?.map(option => ({
         label: option.name,
         value: option.identifier,
+        color: option.color,
       })) || [];
 
     if (o.length > 0) o.unshift({ label: 'None', value: null });
@@ -80,6 +91,7 @@ const CustomField = ({
       case FieldType.TEXT:
         return (
           <CustomFieldTextEditor
+            identifier={identifier}
             readOnly={readOnly}
             label={name}
             name={fieldName}
@@ -147,19 +159,27 @@ const CustomField = ({
             onChange={() => setWasChanged(true)}
           />
         );
-      case FieldType.DROPDOWN:
+      case FieldType.DROPDOWN: {
+        const value = watch(fieldName) || '';
+        const colorIndicator = dropdownOptions?.find(o => o.value === value)
+          ?.color;
+
         return (
-          <FormSelect
-            readOnly={readOnly}
-            label={name}
-            options={dropdownOptions}
-            name={fieldName}
-            onBlur={handleBlur}
-            inputRef={inputReference}
-            ref={componentReference}
-            onChange={() => setWasChanged(true)}
-          />
+          <Box position="relative">
+            {colorIndicator && <ColorIndicator color={colorIndicator} />}
+            <FormSelect
+              readOnly={readOnly}
+              label={name}
+              options={dropdownOptions}
+              name={fieldName}
+              onBlur={handleBlur}
+              inputRef={inputReference}
+              ref={componentReference}
+              onChange={() => setWasChanged(true)}
+            />
+          </Box>
         );
+      }
       default:
         return <div>{field.name}</div>;
     }
@@ -170,10 +190,13 @@ const CustomField = ({
     fieldType,
     fieldsGroupKey,
     handleBlur,
+    identifier,
     name,
     placeholder,
     readOnly,
+    task,
     taskIdentifier,
+    watch,
   ]);
 
   return <div ref={containerReference}>{renderCustomField()}</div>;

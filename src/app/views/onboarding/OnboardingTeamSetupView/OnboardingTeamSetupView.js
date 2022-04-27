@@ -5,8 +5,9 @@ import { useDispatch, useSelector } from 'react-redux';
 import { userProfileSelector } from 'selectors/user-selectors';
 import Spacing from 'components/common/Spacing';
 import OnboardingIndicator from 'components/common/OnboardingIndicator/OnboardingIndicator';
-import { FormContext, useForm, useFieldArray } from 'react-hook-form';
+import { FormProvider, useForm, useFieldArray } from 'react-hook-form';
 import { object, string, array } from 'yup';
+import { yupResolver } from "@hookform/resolvers/yup";
 import { Grid } from '@material-ui/core';
 import { checkBAASignedStatus } from 'actions/organization-actions';
 import { openModal } from 'modal/actions';
@@ -73,11 +74,10 @@ const onSubmit = ({
   );
 
   if (filledFields.length === 0) {
-    setError(
-      'organizationMembers',
-      'manual',
-      'You have to invite at least one person',
-    );
+    setError('organizationMembers', {
+      type: 'custom',
+      message: 'You have to invite at least one person',
+    });
     return;
   }
 
@@ -105,11 +105,11 @@ const onSubmit = ({
             disabled: false,
             success: false,
           });
-          setError(
-            `organizationMembers[${person.index}].email`,
-            'manual',
-            error?.message || 'Something went wrong. Please try again later.',
-          );
+          setError(`organizationMembers[${person.index}].email`, {
+            type: 'custom',
+            message:
+              error?.message || 'Something went wrong. Please try again later.',
+          });
           throw new Error(error.message);
         }),
     );
@@ -167,7 +167,7 @@ const OnboardingTeamSetupView = () => {
   }, [firstFirstNameFieldReference]);
 
   const formMethods = useForm({
-    validationSchema: fieldsSchema,
+    resolver: yupResolver(fieldsSchema),
     mode: 'onSubmit',
     defaultValues: {
       organizationMembers: [
@@ -212,7 +212,7 @@ const OnboardingTeamSetupView = () => {
         add as many as you want.
       </Description>
       <Spacing vertical={5} />
-      <FormContext {...formMethods}>
+      <FormProvider {...formMethods}>
         <StyledForm
           onSubmit={handleSubmit(
             onSubmit({
@@ -347,7 +347,7 @@ const OnboardingTeamSetupView = () => {
             </Grid>
           </Grid>
         </StyledForm>
-      </FormContext>
+      </FormProvider>
     </ViewContainer>
   );
 };

@@ -32,7 +32,7 @@ export const IconBox = styled.div`
   display: flex;
   justify-content: center;
   align-items: center;
-  width: 20px;
+  width: ${({ wideView }) => (wideView ? 100 : 20)}px;
   height: 20px;
   margin-bottom: ${spacing.tiny};
 `;

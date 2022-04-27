@@ -1,7 +1,8 @@
 import React from 'react';
 import { Grid } from '@material-ui/core';
-import { FormContext, useForm } from 'react-hook-form';
+import { FormProvider, useForm } from 'react-hook-form';
 import { object, string } from 'yup';
+import { yupResolver } from "@hookform/resolvers/yup";
 import * as UserAuthApi from 'api/user-auth-api';
 import FormPhoneNumberInput from 'components/common/PhoneNumberInput/FormPhoneNumberInput';
 import Spacing from 'components/common/Spacing';
@@ -45,24 +46,23 @@ const onSubmit = ({
       setNewPhoneNumber(`+${phoneNumber}`);
     })
     .catch(() => {
-      setError(
-        'phoneNumber',
-        'manual',
-        'Something went wrong. Please try again later.',
-      );
+      setError('phoneNumber', {
+        type: 'custom',
+        message: 'Something went wrong. Please try again later.',
+      });
     });
 };
 
 const ChangeNumberStep = ({ goToNextStep, setNewPhoneNumber, userProfile }) => {
   const formMethods = useForm({
-    validationSchema,
+    resolver: yupResolver(validationSchema),
     reValidateMode: 'onSubmit',
   });
 
   const { handleSubmit, setError } = formMethods;
 
   return (
-    <FormContext {...formMethods}>
+    <FormProvider {...formMethods}>
       <StyledForm
         onSubmit={handleSubmit(
           onSubmit({ goToNextStep, setNewPhoneNumber, setError, userProfile }),
@@ -89,7 +89,7 @@ const ChangeNumberStep = ({ goToNextStep, setNewPhoneNumber, userProfile }) => {
           </Grid>
         </GridMaxHeight>
       </StyledForm>
-    </FormContext>
+    </FormProvider>
   );
 };
 

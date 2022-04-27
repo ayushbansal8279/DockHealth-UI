@@ -2,6 +2,7 @@ import moment from 'moment';
 
 export const DashboardTasksTab = {
   MY_TASKS: 'MyTasks',
+  SHARED_TASKS: 'SharedTasks',
   ALL_TASKS: 'AllTasks',
 };
 

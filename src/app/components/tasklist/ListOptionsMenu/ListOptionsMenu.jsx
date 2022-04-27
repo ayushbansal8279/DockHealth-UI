@@ -20,6 +20,7 @@ import { hideSubMenu } from 'actions/template-actions';
 import * as TaskListActions from 'actions/task-list-actions';
 import palette from 'styles/palette';
 import { printTaskPdf } from 'components/task-pdf/TaskPdfDocument';
+import ColorPicker from 'components/common/ColorPicker/ColorPicker';
 
 const ListOptionsMenu = props => {
   const { list, children, tasks, moreOptions } = props;
@@ -31,7 +32,6 @@ const ListOptionsMenu = props => {
   const activeTaskListIdentifier = useSelector(
     currentTaskListIdentifierSelector,
   );
-
   const MASTER_ROLES = ['ADMIN', 'OWNER'];
   const PRIVILEGE_ROLES = [...MASTER_ROLES, 'MEMBER'];
 
@@ -258,7 +258,26 @@ const ListOptionsMenu = props => {
   );
 
   return (
-    <OptionsMenu disablePortal options={getMenuItems(list)}>
+    <OptionsMenu
+      disablePortal
+      options={getMenuItems(list)}
+      footer={
+        MASTER_ROLES.includes(list?.role) ? (
+          <ColorPicker
+            onChange={event =>
+              dispatch(
+                TaskListActions.saveTaskList({
+                  taskListIdentifier: list.taskListIdentifier,
+                  color: event.target.value,
+                }),
+              )
+            }
+            value={list.color}
+            variant="circle"
+          />
+        ) : null
+      }
+    >
       {children}
     </OptionsMenu>
   );

@@ -1,6 +1,6 @@
 import { Grid } from '@material-ui/core';
 import React, { useEffect, useState } from 'react';
-import { FormContext, useForm } from 'react-hook-form';
+import { FormProvider, useForm } from 'react-hook-form';
 import { useSelector } from 'react-redux';
 import {
   CardCVCElement,
@@ -10,6 +10,7 @@ import {
 } from 'react-stripe-elements';
 import { useEffectOnce, useToggle } from 'react-use';
 import { object, string } from 'yup';
+import { yupResolver } from "@hookform/resolvers/yup";
 import Spacing from 'components/common/Spacing';
 import Input from 'components/common/Input/Input';
 import FormInput from 'components/common/Input/FormInput';
@@ -352,7 +353,7 @@ const BillingData = ({
   }));
 
   const formMethods = useForm({
-    validationSchema,
+    resolver: yupResolver(validationSchema),
     reValidateMode: 'onSubmit',
   });
 
@@ -361,12 +362,12 @@ const BillingData = ({
     register,
     setValue,
     unregister,
-    clearError,
+    clearErrors,
   } = formMethods;
 
   useEffectOnce(() => {
     formFields.forEach(({ key }) => {
-      register({ name: key });
+      register(key);
     });
 
     return () => {
@@ -402,7 +403,7 @@ const BillingData = ({
     setValue('zip', billingAddressPostalCode);
     setValue('state', billingAddressState);
 
-    clearError();
+    clearErrors();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [billingDetails, isUpdatingBilling]);
 
@@ -425,7 +426,7 @@ const BillingData = ({
       autoComplete="off"
       autoCorrect="off"
     >
-      <FormContext {...formMethods}>
+      <FormProvider {...formMethods}>
         <CreditPaymentForm
           isUpdatingBilling={isUpdatingBilling}
           cancelUpdateBilling={cancelUpdateBilling}
@@ -440,7 +441,7 @@ const BillingData = ({
             Update billing
           </BillingInformation>
         )}
-      </FormContext>
+      </FormProvider>
     </form>
   );
 };

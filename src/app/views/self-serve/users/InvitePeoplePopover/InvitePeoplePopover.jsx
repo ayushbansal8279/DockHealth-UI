@@ -1,9 +1,10 @@
 /* eslint-disable @typescript-eslint/camelcase */
 import { Grid, Popover } from '@material-ui/core';
 import React, { useCallback, useState } from 'react';
-import { FormContext, useForm } from 'react-hook-form';
+import { FormProvider, useForm } from 'react-hook-form';
 import { useDispatch, useSelector } from 'react-redux';
 import { object, string } from 'yup';
+import { yupResolver } from "@hookform/resolvers/yup";
 import { invitePersonToOrganization } from 'api/organization-api';
 import { showAlert } from 'helpers/utility-functions';
 import * as AlertActions from 'alert/actions';
@@ -33,7 +34,7 @@ const InvitePeoplePopover = ({
   getAllUsers = () => {},
 }) => {
   const formMethods = useForm({
-    validationSchema,
+    resolver: yupResolver(validationSchema),
     reValidateMode: 'onSubmit',
   });
   const dispatch = useDispatch();
@@ -109,13 +110,13 @@ const InvitePeoplePopover = ({
         </InvitePeoplePopoverSection>
         <InvitePopoverDivider />
         {isOwnerOrAdmin && (
-          <FormContext {...formMethods}>
+          <FormProvider {...formMethods}>
             <OrganizationOwnerForm
               onSubmit={onSubmit}
               closeInviteForm={closePopover}
               disabled={isInviting}
             />
-          </FormContext>
+          </FormProvider>
         )}
         {!isOwnerOrAdmin && (
           <InvitePeoplePopoverSection>

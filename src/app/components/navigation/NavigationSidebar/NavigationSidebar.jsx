@@ -29,6 +29,7 @@ import DockcoinIconImage from 'img/navigation/dock-coin-icon.svg';
 import UserAvatar from 'components/user/UserAvatar/UserAvatar';
 import OrganizationTile from 'components/org/OrganizationTile/OrganizationTile';
 import { openModal } from 'modal/actions';
+import AccessRestrictor from 'components/access/AccessRestrictor/AccessRestrictor';
 import OrganizationSubmenu from './SubMenuComponents/OrganizationSubmenu';
 import ProfileSubmenu from './SubMenuComponents/ProfileSubmenu';
 import EducationCenterSubmenu from './SubMenuComponents/EducationCenterSubmenu';
@@ -37,6 +38,8 @@ import ListsSubmenu from './SubMenuComponents/ListsSubmenu';
 import PatientsSubmenu from './SubMenuComponents/PatientsSubmenu';
 import UserGroupsSubmenu from './SubMenuComponents/UserGroupsSubmenu';
 import menuTourHooks from './menu-tour-hooks';
+import IconNavigationItem from './IconNavigationItem';
+import NavigationItem from './NavigationItem';
 import {
   DrawerContentContainer,
   MainMenuContainer,
@@ -44,8 +47,6 @@ import {
   DockcoinIcon,
   BarChartIcon,
 } from './styled';
-import IconNavigationItem from './IconNavigationItem';
-import NavigationItem from './NavigationItem';
 
 export const SubmenuKey = {
   ORGANIZATION: 'ORGANIZATION',
@@ -57,6 +58,15 @@ export const SubmenuKey = {
   EDUCATION_CENTER: 'EDUCATION_CENTER',
   DOCKCOIN: 'DOCKCOIN',
 };
+
+const {
+  ADMIN,
+  OWNER,
+  MEMBER,
+  GUEST,
+  EXTERNAL,
+  DOCK_PRO,
+} = UserOrganizationRole;
 
 const SubmenuComponents = {
   [SubmenuKey.ORGANIZATION]: OrganizationSubmenu,
@@ -76,7 +86,6 @@ const NavigationSidebar = () => {
 
   const { orgUserRole } = currentUser || {};
   const isUserAdmin = ['ADMIN', 'OWNER'].includes(orgUserRole);
-  const isGuest = orgUserRole === UserOrganizationRole.GUEST;
 
   const currentOrganizationIdentifier = sessionStorage.getItem(
     'currentOrganizationIdentifier',
@@ -163,58 +172,76 @@ const NavigationSidebar = () => {
                 </>
               </NavigationItem>
             </div>
-            <IconNavigationItem
-              name="Search"
-              icon={SearchIcon}
-              path="/core/search"
-              onItemClick={handleNavigationItemClick}
-            />
-            <IconNavigationItem
-              name="Home"
-              icon={HomeIcon}
-              path="/core/home"
-              onItemClick={handleNavigationItemClick}
-            />
-            <IconNavigationItem
-              name="Lists"
-              subMenuKey={SubmenuKey.LISTS}
-              icon={ListsIcon}
-              subMenuOpen={openedSubMenuKey === SubmenuKey.LISTS}
-              path="/core/tasks"
-              onItemClick={handleNavigationItemClick}
-            />
-            <IconNavigationItem
-              name="People"
-              icon={PeopleIcon}
-              subMenuKey={SubmenuKey.USER_GROUPS}
-              subMenuOpen={openedSubMenuKey === SubmenuKey.PEOPLE}
-              path={USERS_PATH}
-              onItemClick={handleNavigationItemClick}
-            />
-            <IconNavigationItem
-              name={`${customerTypeLabelCapitalized}s`}
-              icon={PatientsIcon}
-              subMenuKey={SubmenuKey.PATIENTS}
-              subMenuOpen={openedSubMenuKey === SubmenuKey.PATIENTS}
-              path="/core/patients"
-              onItemClick={handleNavigationItemClick}
-            />
-            {!isGuest && (
+            <AccessRestrictor
+              allowedToRoles={[ADMIN, OWNER, MEMBER, GUEST, EXTERNAL]}
+            >
+              <IconNavigationItem
+                name="Search"
+                icon={SearchIcon}
+                path="/core/search"
+                onItemClick={handleNavigationItemClick}
+              />
+            </AccessRestrictor>
+
+            <AccessRestrictor
+              allowedToRoles={[ADMIN, OWNER, MEMBER, GUEST, EXTERNAL]}
+            >
+              <IconNavigationItem
+                name="Home"
+                icon={HomeIcon}
+                path="/core/home"
+                onItemClick={handleNavigationItemClick}
+              />
+            </AccessRestrictor>
+
+            <AccessRestrictor allowedToRoles={[ADMIN, OWNER, MEMBER, GUEST]}>
+              <IconNavigationItem
+                name="Lists"
+                subMenuKey={SubmenuKey.LISTS}
+                icon={ListsIcon}
+                subMenuOpen={openedSubMenuKey === SubmenuKey.LISTS}
+                path="/core/tasks"
+                onItemClick={handleNavigationItemClick}
+              />
+            </AccessRestrictor>
+            <AccessRestrictor allowedToRoles={[ADMIN, OWNER, MEMBER, GUEST]}>
+              <IconNavigationItem
+                name="People"
+                icon={PeopleIcon}
+                subMenuKey={SubmenuKey.USER_GROUPS}
+                subMenuOpen={openedSubMenuKey === SubmenuKey.PEOPLE}
+                path={USERS_PATH}
+                onItemClick={handleNavigationItemClick}
+              />
+            </AccessRestrictor>
+            <AccessRestrictor allowedToRoles={[ADMIN, OWNER, MEMBER, GUEST]}>
+              <IconNavigationItem
+                name={`${customerTypeLabelCapitalized}s`}
+                icon={PatientsIcon}
+                subMenuKey={SubmenuKey.PATIENTS}
+                subMenuOpen={openedSubMenuKey === SubmenuKey.PATIENTS}
+                path="/core/patients"
+                onItemClick={handleNavigationItemClick}
+              />
+            </AccessRestrictor>
+            <AccessRestrictor allowedToRoles={[ADMIN, OWNER, MEMBER, DOCK_PRO]}>
               <IconNavigationItem
                 name="Workflow Library"
                 icon={TemplatesIcon}
                 path={WORKFLOW_LIBRARY_PATH}
                 onItemClick={handleNavigationItemClick}
               />
-            )}
-            <IconNavigationItem
-              name="Education Center"
-              icon={EducationCenterIcon}
-              subMenuKey={SubmenuKey.EDUCATION_CENTER}
-              subMenuOpen={openedSubMenuKey === SubmenuKey.EDUCATION_CENTER}
-              onItemClick={handleNavigationItemClick}
-            />
-            {isUserAdmin && (
+            </AccessRestrictor>
+            <AccessRestrictor allowedToRoles={[ADMIN, OWNER, MEMBER, GUEST]}>
+              <IconNavigationItem
+                name="Education Center"
+                icon={EducationCenterIcon}
+                subMenuKey={SubmenuKey.EDUCATION_CENTER}
+                subMenuOpen={openedSubMenuKey === SubmenuKey.EDUCATION_CENTER}
+                onItemClick={handleNavigationItemClick}
+              />
+            </AccessRestrictor>
+            <AccessRestrictor allowedToRoles={[ADMIN, OWNER]}>
               <IconNavigationItem
                 name="Analytics"
                 icon={BarChartIcon}
@@ -222,10 +249,10 @@ const NavigationSidebar = () => {
                 onItemClick={handleNavigationItemClick}
                 isNew
               />
-            )}
+            </AccessRestrictor>
           </Grid>
           <Grid container direction="column">
-            {isUserAdmin && (
+            <AccessRestrictor allowedToRoles={[ADMIN, OWNER, MEMBER, GUEST]}>
               <div ref={settingsMenuReference}>
                 <IconNavigationItem
                   name="Settings"
@@ -240,16 +267,21 @@ const NavigationSidebar = () => {
                   onItemClick={handleNavigationItemClick}
                 />
               </div>
-            )}
-            <NavigationItem
-              name="Dockcoin"
-              subMenuKey={SubmenuKey.DOCKCOIN}
-              onItemClick={handleReferClick}
+            </AccessRestrictor>
+
+            <AccessRestrictor
+              allowedToRoles={[ADMIN, OWNER, MEMBER, GUEST, EXTERNAL]}
             >
-              <>
-                <DockcoinIcon src={DockcoinIconImage} />
-              </>
-            </NavigationItem>
+              <NavigationItem
+                name="Dockcoin"
+                subMenuKey={SubmenuKey.DOCKCOIN}
+                onItemClick={handleReferClick}
+              >
+                <>
+                  <DockcoinIcon src={DockcoinIconImage} />
+                </>
+              </NavigationItem>
+            </AccessRestrictor>
             <div ref={profileMenuReference}>
               <NavigationItem
                 name="Account"

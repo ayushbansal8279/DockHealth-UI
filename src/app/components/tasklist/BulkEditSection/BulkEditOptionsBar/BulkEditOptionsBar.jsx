@@ -33,11 +33,14 @@ import {
 import BulkEditOption from 'components/bulk-edit/BulkEditOption/BulkEditOption';
 import { selectedFiltersInMegaFilterSelector } from 'selectors/mega-filter-selectors';
 import BulkEditBar from 'components/bulk-edit/BulkEditBar/BulkEditBar';
+import { UserOrganizationRole } from 'helpers/user-helper';
+import AccessRestrictor from 'components/access/AccessRestrictor/AccessRestrictor';
 import BulkEditAssignToOption from './BulkEditAssignToOption';
 import BulkEditDueDateOption from './BulkEditDueDateOption';
 import BulkEditWorkflowStatusOption from './BulkEditWorkflowStatusOption';
-
 import { Button } from './styled';
+
+const { ADMIN, OWNER, MEMBER, GUEST } = UserOrganizationRole;
 
 const BULK_EDIT_BASE_CONFIG = {
   [BulkEditOptionsConfig.DUPLICATE_OPTION]: true,
@@ -348,7 +351,6 @@ const BulkEditOptionsBar = ({
           ) {
             refreshTasks();
           }
-          onClose();
         })
         .catch(() => {
           if (refreshTasks && typeof refreshTasks === 'function') {
@@ -365,7 +367,6 @@ const BulkEditOptionsBar = ({
       allSelectedTasksLength,
       shouldRefreshTasksEveryTime,
       refreshTasks,
-      onClose,
       updateTasks,
     ],
   );
@@ -692,45 +693,49 @@ const BulkEditOptionsBar = ({
 
   return (
     <BulkEditBar
-      numberOfSelectedTasks={allSelectedTasksLength}
+      numberOfSelectedItems={allSelectedTasksLength}
       isDisabled={isDisabled}
       onClose={onClose}
     >
       <>
         {mergedConfig[BulkEditOptionsConfig.DUPLICATE_OPTION] && (
-          <Button
-            type="button"
-            onClick={handleDuplicateTasks}
-            disabled={isDisabled}
-          >
-            <BulkEditOption
-              iconComponent={DuplicateIcon}
-              title="Duplicate"
-              isDisabled={isDisabled}
-            />
-          </Button>
-        )}
-        {mergedConfig[BulkEditOptionsConfig.MOVE_OPTION] && (
-          <Tooltip
-            placement="top"
-            title={
-              disabledMoveAction
-                ? 'Cannot move subtasks without main tasks'
-                : null
-            }
-          >
+          <AccessRestrictor allowedToRoles={[ADMIN, OWNER, MEMBER, GUEST]}>
             <Button
               type="button"
-              disabled={disabledMoveAction || isDisabled}
-              onClick={handleMoveTasks}
+              onClick={handleDuplicateTasks}
+              disabled={isDisabled}
             >
               <BulkEditOption
-                iconComponent={MoveIcon}
-                title="Move"
-                isDisabled={disabledMoveAction || isDisabled}
+                iconComponent={DuplicateIcon}
+                title="Duplicate"
+                isDisabled={isDisabled}
               />
             </Button>
-          </Tooltip>
+          </AccessRestrictor>
+        )}
+        {mergedConfig[BulkEditOptionsConfig.MOVE_OPTION] && (
+          <AccessRestrictor allowedToRoles={[ADMIN, OWNER, MEMBER, GUEST]}>
+            <Tooltip
+              placement="top"
+              title={
+                disabledMoveAction
+                  ? 'Cannot move subtasks without main tasks'
+                  : null
+              }
+            >
+              <Button
+                type="button"
+                disabled={disabledMoveAction || isDisabled}
+                onClick={handleMoveTasks}
+              >
+                <BulkEditOption
+                  iconComponent={MoveIcon}
+                  title="Move"
+                  isDisabled={disabledMoveAction || isDisabled}
+                />
+              </Button>
+            </Tooltip>
+          </AccessRestrictor>
         )}
         {mergedConfig[BulkEditOptionsConfig.COMPLETE_OPTION] && (
           <Button
@@ -752,32 +757,38 @@ const BulkEditOptionsBar = ({
           />
         )}
         {mergedConfig[BulkEditOptionsConfig.DUE_DATE_OPTION] && (
-          <BulkEditDueDateOption
-            handleChangeDateTasks={handleChangeDateTasks}
-            isDisabled={isDisabled}
-          />
-        )}
-        {mergedConfig[BulkEditOptionsConfig.ASSIGN_OPTION] && (
-          <BulkEditAssignToOption
-            selectedTaskListIdentifiers={allSelectedTaskListIdentifiers}
-            handleChangeAssigneTasks={handleChangeAssigneeTasks}
-            isDisabled={isDisabled}
-            selectedTasks={selectedTasks}
-          />
-        )}
-        {mergedConfig[BulkEditOptionsConfig.DELETE_OPTION] && (
-          <Button
-            type="button"
-            onClick={handleDeleteTasks}
-            disabled={isDisabled}
-          >
-            <BulkEditOption
-              iconComponent={DeleteIcon}
-              title="Delete"
-              color={palette.oPlusRed}
+          <AccessRestrictor allowedToRoles={[ADMIN, OWNER, MEMBER, GUEST]}>
+            <BulkEditDueDateOption
+              handleChangeDateTasks={handleChangeDateTasks}
               isDisabled={isDisabled}
             />
-          </Button>
+          </AccessRestrictor>
+        )}
+        {mergedConfig[BulkEditOptionsConfig.ASSIGN_OPTION] && (
+          <AccessRestrictor allowedToRoles={[ADMIN, OWNER, MEMBER, GUEST]}>
+            <BulkEditAssignToOption
+              selectedTaskListIdentifiers={allSelectedTaskListIdentifiers}
+              handleChangeAssigneTasks={handleChangeAssigneeTasks}
+              isDisabled={isDisabled}
+              selectedTasks={selectedTasks}
+            />
+          </AccessRestrictor>
+        )}
+        {mergedConfig[BulkEditOptionsConfig.DELETE_OPTION] && (
+          <AccessRestrictor allowedToRoles={[ADMIN, OWNER, MEMBER, GUEST]}>
+            <Button
+              type="button"
+              onClick={handleDeleteTasks}
+              disabled={isDisabled}
+            >
+              <BulkEditOption
+                iconComponent={DeleteIcon}
+                title="Delete"
+                color={palette.oPlusRed}
+                isDisabled={isDisabled}
+              />
+            </Button>
+          </AccessRestrictor>
         )}
       </>
     </BulkEditBar>

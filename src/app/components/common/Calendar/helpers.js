@@ -17,4 +17,5 @@ export const transformTaskToEvent = task => ({
   id: task.identifier,
   title: task.description,
   start: escapeDueTime(task.dueDate),
+  display: 'block',
 });

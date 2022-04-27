@@ -1,7 +1,8 @@
 import React from 'react';
-import { FormContext, useForm } from 'react-hook-form';
+import { FormProvider, useForm } from 'react-hook-form';
 import { useMount } from 'react-use';
 import { object, string } from 'yup';
+import { yupResolver } from "@hookform/resolvers/yup";
 import Spacing from 'components/common/Spacing';
 import FormInput from 'components/common/Input/FormInput';
 import { MontserratTypography } from 'styles/theme-montserrat';
@@ -19,8 +20,8 @@ const ForgotPasswordForm = ({
   unconfirmedUserFlag,
 }) => {
   const formMethods = useForm({
+    resolver: yupResolver(validationSchema),
     reValidateMode: 'onSubmit',
-    validationSchema,
   });
 
   const { handleSubmit, setValue, setError } = formMethods;
@@ -40,7 +41,7 @@ const ForgotPasswordForm = ({
         width: '100%',
       }}
     >
-      <FormContext {...formMethods}>
+      <FormProvider {...formMethods}>
         <MontserratTypography variant="h2">
           Forgot your password?
         </MontserratTypography>
@@ -58,7 +59,7 @@ const ForgotPasswordForm = ({
             : 'Send me a recovery code'}
         </Button>
         <Spacing vertical={6} />
-      </FormContext>
+      </FormProvider>
     </form>
   );
 };

@@ -6,8 +6,9 @@ import DialogContentText from '@material-ui/core/DialogContentText';
 import palette from 'styles/palette';
 import { MontserratTypography } from 'styles/theme-montserrat';
 import { RobotoTypography } from 'styles/theme';
-import { FormContext, useForm } from 'react-hook-form';
+import { FormProvider, useForm } from 'react-hook-form';
 import { object, string } from 'yup';
+import { yupResolver } from "@hookform/resolvers/yup";
 import Spacing from 'components/common/Spacing.tsx';
 import { showAlert } from 'helpers/utility-functions';
 import { referAColleague } from 'api/organization-api';
@@ -64,7 +65,7 @@ const onSubmit = ({ handleReferralSuccess }) => async ({
 
 export default function ReferAColleagueModal({ closeModal, openModal }) {
   const formMethods = useForm({
-    validationSchema,
+    resolver: yupResolver(validationSchema),
     reValidateMode: 'onSubmit',
   });
 
@@ -91,7 +92,7 @@ export default function ReferAColleagueModal({ closeModal, openModal }) {
               }),
             )}
           >
-            <FormContext {...formMethods}>
+            <FormProvider {...formMethods}>
               <Title>
                 <RobotoTypography
                   weight="normal"
@@ -143,7 +144,7 @@ export default function ReferAColleagueModal({ closeModal, openModal }) {
                   </Button>
                 </ButtonWrapper>
               </DialogActions>
-            </FormContext>
+            </FormProvider>
           </StyledForm>
         </LeftSideContentContainer>
       </LeftSideMainContainer>

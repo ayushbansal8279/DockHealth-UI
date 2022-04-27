@@ -38,7 +38,7 @@ import QuickAddTaskInput from 'components/tasklist/QuickAddTaskInput/QuickAddTas
 import { checkIfAllTasksSelected } from 'helpers/bulk-edit-helpers';
 import { extractTasksAndSubtasks } from 'helpers/tasklist-helpers';
 import { changeTasksSelectedState } from 'actions/task-actions';
-import { useColumnsConfig } from 'context-api/ColumnsConfigContext';
+import { useColumnsConfig } from 'context-api/columns-config-context';
 import StickyContainer from 'components/common/HorizontalScroll/StickyContainer';
 import { TaskGroupsContainer } from '../styled';
 

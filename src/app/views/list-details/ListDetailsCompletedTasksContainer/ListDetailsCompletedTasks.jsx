@@ -12,7 +12,7 @@ import { TaskItemType } from 'helpers/task-helpers';
 import StandardTaskItem from 'components/task/StandardTaskItem/StandardTaskItem';
 import TaskTemplateGroup from 'components/task-template/TaskTemplateGroup/TaskTemplateGroup';
 import TasksSkeletonLoader from 'components/task/TasksSkeletonLoader/TasksSkeletonLoader';
-import { TaskGroupsContainer } from '../styled';
+import { TaskGroupsContainer } from '../ListDetailsTableView/styled';
 
 const ListDetailsCompletedTasks = ({
   tasks,
