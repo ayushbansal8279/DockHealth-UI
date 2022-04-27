@@ -1,30 +1,20 @@
 import React from 'react';
 import moment from 'moment';
-import { Box, IconButton } from '@material-ui/core';
-import { PatientAttachmentType } from 'helpers/patient-details-helpers';
+import { IconButton } from '@material-ui/core';
 import OptionsMenu from 'components/common/OptionsMenu/OptionsMenu';
-import FolderOpenIcon from '@material-ui/icons/FolderOpen';
 import MoreVertIcon from '@material-ui/icons/MoreVert';
 import { Cell, Row } from './styled';
 
 const FileListItem = props => {
-  const { fileOrFolder, options, onClick } = props;
-  const { fileName, dateCreated, creator, type } = fileOrFolder;
+  const { file, options, onClick } = props;
+  const { fileName, dateCreated, creator } = file;
 
   return (
     <Row onClick={onClick} clickable>
-      <Cell bold>
-        {type === PatientAttachmentType.FOLDER && (
-          <>
-            <FolderOpenIcon />
-            <Box mx={1} />
-          </>
-        )}
-        {fileName}
-      </Cell>
+      <Cell bold>{fileName}</Cell>
       <Cell>{creator?.name || ''}</Cell>
       <Cell>{moment(dateCreated).fromNow()}</Cell>
-      <Cell onClick={event => event.stopPropagation()}>
+      <Cell>
         <OptionsMenu customButtonComponent={IconButton} options={options}>
           <MoreVertIcon />
         </OptionsMenu>

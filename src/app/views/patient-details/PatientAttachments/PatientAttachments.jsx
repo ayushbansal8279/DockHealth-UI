@@ -10,9 +10,11 @@ import { isFetchingPatientAttachmentsSelector } from 'selectors/patient-details-
 import AddButton from 'components/common/AddButton/AddButton';
 import AttachmentPreview from 'components/attachments/AttachmentPreview/AttachmentPreview';
 import NamedCollapse from 'components/common/NamedCollapse/NamedCollapse';
-import FileGridItem from 'components/attachments/FileGridItem/FileGridItem';
-import FileListItem from 'components/attachments/FileListItem/FileListItem';
-import FileListHeader from 'components/attachments/FileListItem/FileListHeader';
+import FileGridItem from 'components/attachments/GridItem/FileGridItem';
+import FolderGridItem from 'components/attachments/GridItem/FolderGridItem';
+import FileListItem from 'components/attachments/ListItem/FileListItem';
+import FolderListItem from 'components/attachments/ListItem/FolderListItem';
+import FileListHeader from 'components/attachments/ListItem/FileListHeader';
 import FileListItemProgressBar from 'components/attachments/FileListItemProgressBar/FileListItemProgressBar';
 import FileGridItemProgressBar from 'components/attachments/FileGridItemProgressBar/FileGridItemProgressBar';
 import FileGridItemLoader from 'components/attachments/FileGridItemLoader/FileGridItemLoader';
@@ -63,6 +65,9 @@ const PatientAttachments = () => {
 
   const FileItemComponent =
     activeViewType === FilesViewType.GRID ? FileGridItem : FileListItem;
+
+  const FolderItemComponent =
+    activeViewType === FilesViewType.GRID ? FolderGridItem : FolderListItem;
 
   const getFileOptions = useCallback(
     file => [
@@ -136,10 +141,11 @@ const PatientAttachments = () => {
             />
             {folders.length > 0 && (
               <NamedCollapse name="Folders">
+                {activeViewType === FilesViewType.LIST && <FileListHeader />}
                 {folders.map(folder => (
-                  <FileItemComponent
+                  <FolderItemComponent
                     key={folder.attachmentIdentifier}
-                    fileOrFolder={folder}
+                    folder={folder}
                     options={getFolderOptions(folder)}
                     onClick={() => {
                       navigateToFolder(folder);
@@ -157,7 +163,7 @@ const PatientAttachments = () => {
                     onClick={() => {
                       openAttachmentPreview(file);
                     }}
-                    fileOrFolder={file}
+                    file={file}
                     options={getFileOptions(file)}
                   />
                 ))
