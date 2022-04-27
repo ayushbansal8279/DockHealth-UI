@@ -1,13 +1,15 @@
 import axios from 'api/axios-heydoc';
 import { PatientAttachmentType } from 'helpers/patient-details-helpers';
 
-export function addPatientAttachment(
+export function createPatientAttachment(
   patientIdentifier,
+  folderIdentifier,
   fileData,
   additionalConfig = {},
 ) {
   const formData = new FormData();
   formData.append('file', fileData);
+  formData.append('parentAttachmentIdentifier', folderIdentifier ?? undefined);
 
   return axios
     .post(`patient/attachment/${patientIdentifier}`, formData, {
@@ -16,9 +18,7 @@ export function addPatientAttachment(
       },
       ...additionalConfig,
     })
-    .then(response => {
-      return response;
-    });
+    .then(({ data }) => data);
 }
 
 export function deletePatientAttachment(identifier) {
@@ -51,12 +51,17 @@ export function getPatientAttachments(patientIdentifier, folderIdentifier) {
     .then(({ data }) => data);
 }
 
-export function createAttachmentFolder(patientIdentifier, name) {
+export function createAttachmentFolder(
+  patientIdentifier,
+  name,
+  folderIdentifier,
+) {
   return axios
     .post(`patient/attachment/other`, {
       patientIdentifier,
       fileName: name,
       type: PatientAttachmentType.FOLDER,
+      parentAttachmentIdentifier: folderIdentifier ?? undefined,
     })
     .then(({ data }) => data);
 }

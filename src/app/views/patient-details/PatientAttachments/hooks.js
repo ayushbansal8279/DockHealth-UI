@@ -10,7 +10,6 @@ import {
   patientFoldersSelector,
   patientAttachmentsSelector,
 } from 'selectors/patient-details-selectors';
-import { addPatientAttachment } from 'sagas/patient-details-saga';
 import { getPatientAttachment } from 'api/patient-attachment-api';
 import { useBoolean } from 'hooks/useBoolean';
 import { openModal } from 'modal/actions';
@@ -73,8 +72,9 @@ const initializeAttachmentsSectionHooks = () => {
         setUploadProgress(0);
 
         dispatch(
-          addPatientAttachment(
+          PatientDetailsActions.createPatientAttachment(
             patient?.patientIdentifier,
+            folderIdentifier,
             newAttachment,
             {
               onUploadProgress: ({ loaded, total }) => {
@@ -88,7 +88,7 @@ const initializeAttachmentsSectionHooks = () => {
         );
       }
     },
-    [dispatch, patient],
+    [dispatch, patient, folderIdentifier],
   );
 
   const { getRootProps, getInputProps, isDragActive, inputRef } = useDropzone({
@@ -171,6 +171,7 @@ const initializeAttachmentsSectionHooks = () => {
             PatientDetailsActions.createPatientAttachmentFolder(
               patientIdentifier,
               name,
+              folderIdentifier,
             ),
           );
         },

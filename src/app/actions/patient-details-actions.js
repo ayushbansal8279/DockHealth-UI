@@ -116,13 +116,37 @@ export function deletePatientAttachment(patientIdentifier, identifier) {
   };
 }
 
-export function createPatientAttachmentFolder(patientIdentifier, name) {
+export function createPatientAttachmentFolder(
+  patientIdentifier,
+  name,
+  folderIdentifier = null,
+) {
   return {
     type: ActionTypes.ADD_PATIENT_ATTACHMENT_FOLDER,
     patientIdentifier,
     name,
+    folderIdentifier,
   };
 }
+
+export const createPatientAttachment = (
+  patientIdentifier,
+  folderIdentifier,
+  fileData,
+  additionalConfig,
+  setCurrentlyUploadedAttachment,
+  onAttachmentFileInputChange,
+  restAttachments,
+) => ({
+  type: ActionTypes.ADD_PATIENT_ATTACHMENT,
+  patientIdentifier,
+  folderIdentifier,
+  fileData,
+  additionalConfig,
+  setCurrentlyUploadedAttachment,
+  onAttachmentFileInputChange,
+  restAttachments,
+});
 
 export function initializePatientAttachmentsFolder(folderIdentifier) {
   return {

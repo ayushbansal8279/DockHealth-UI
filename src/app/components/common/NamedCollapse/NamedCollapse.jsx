@@ -13,10 +13,7 @@ const NamedCollapse = props => {
     <Box mb={2}>
       <ToggleButton
         type="button"
-        onClick={event => {
-          event.stopPropagation();
-          toggleOpen();
-        }}
+        onClick={toggleOpen}
         onDragOver={() => {
           if (!isOpen) toggleOpen();
         }}

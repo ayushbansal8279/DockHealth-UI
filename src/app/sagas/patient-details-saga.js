@@ -63,7 +63,6 @@ export const DO_CANCEL_USER_INVITE_TO_TASKLIST =
 export const DO_CHANGE_MEMBER_ROLE = 'DO_CHANGE_MEMBER_ROLE';
 export const DO_SORT_PATIENT_TASKS = 'DO_SORT_PATIENT_TASKS';
 export const DO_FETCH_PATIENT_ATTACHMENTS = 'DO_FETCH_PATIENT_ATTACHMENTS';
-export const DO_ADD_PATIENT_ATTACHMENT = 'DO_ADD_PATIENT_ATTACHMENT';
 export const DO_UPDATE_PATIENT_NOTE = 'DO_UPDATE_PATIENT_NOTE';
 export const DO_ADD_PATIENT_NOTE = 'DO_ADD_PATIENT_NOTE';
 export const DO_REMOVE_PATIENT_NOTE = 'DO_REMOVE_PATIENT_NOTE';
@@ -152,23 +151,6 @@ export const sortPatientTasks = (key, order) => ({
     key,
     order,
   },
-});
-
-export const addPatientAttachment = (
-  patientIdentifier,
-  fileData,
-  additionalConfig,
-  setCurrentlyUploadedAttachment,
-  onAttachmentFileInputChange,
-  restAttachments,
-) => ({
-  type: DO_ADD_PATIENT_ATTACHMENT,
-  patientIdentifier,
-  fileData,
-  additionalConfig,
-  setCurrentlyUploadedAttachment,
-  onAttachmentFileInputChange,
-  restAttachments,
 });
 
 export const updatePatientNote = note => ({
@@ -555,8 +537,9 @@ function* doSortPatientTasks({ payload }) {
   }
 }
 
-function* doAddPatientAttachment({
+function* createPatientAttachment({
   patientIdentifier,
+  folderIdentifier,
   fileData,
   additionalConfig,
   setCurrentlyUploadedAttachment,
@@ -564,18 +547,25 @@ function* doAddPatientAttachment({
   restAttachments,
 }) {
   try {
-    yield call(
-      PatientAttachmentApi.addPatientAttachment,
+    const attachment = yield call(
+      PatientAttachmentApi.createPatientAttachment,
       patientIdentifier,
+      folderIdentifier,
       fileData,
       additionalConfig,
     );
     setCurrentlyUploadedAttachment(null);
     onAttachmentFileInputChange(restAttachments);
-    yield put(PatientDetailsActions.getCurrentPatientAttachments());
+    yield put({ type: ActionTypes.ADD_PATIENT_ATTACHMENT_SUCCESS, attachment });
   } catch (error) {
     setCurrentlyUploadedAttachment(null);
     onAttachmentFileInputChange(restAttachments);
+
+    yield put({
+      type: ActionTypes.ADD_PATIENT_ATTACHMENT_FAILURE,
+      patientIdentifier,
+      folderIdentifier,
+    });
 
     if (error.response && error.response.status === 413) {
       yield put(
@@ -740,12 +730,17 @@ function* mergePatient({ fromPatient, toPatient, onSuccess }) {
   }
 }
 
-export function* addPatientAttachmentFolder({ patientIdentifier, name }) {
+export function* createPatientAttachmentFolder({
+  patientIdentifier,
+  name,
+  folderIdentifier,
+}) {
   try {
     const folder = yield call(
       PatientAttachmentApi.createAttachmentFolder,
       patientIdentifier,
       name,
+      folderIdentifier,
     );
     yield all([
       put(showGlobalAlert(AlertMessages.CREATED)),
@@ -817,7 +812,6 @@ export default function* watchPatientDetails() {
   );
   yield takeEvery(DO_CHANGE_MEMBER_ROLE, doChangeMemberRole);
   yield takeEvery(DO_SORT_PATIENT_TASKS, doSortPatientTasks);
-  yield takeEvery(DO_ADD_PATIENT_ATTACHMENT, doAddPatientAttachment);
   yield takeLatest(
     ActionTypes.TOGGLE_PATIENT_COMPLETE_TASKS_VISIBLE,
     doTogglePatientCompleteTasksVisible,
@@ -835,6 +829,7 @@ export default function* watchPatientDetails() {
   );
   yield takeEvery(
     ActionTypes.ADD_PATIENT_ATTACHMENT_FOLDER,
-    addPatientAttachmentFolder,
+    createPatientAttachmentFolder,
   );
+  yield takeEvery(ActionTypes.ADD_PATIENT_ATTACHMENT, createPatientAttachment);
 }

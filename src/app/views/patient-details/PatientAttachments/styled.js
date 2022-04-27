@@ -33,3 +33,8 @@ export const DropzoneInfoText = styled.p`
   margin-bottom: 12px;
   color: ${palette.coolGrey2};
 `;
+
+export const EmptyListText = styled.p`
+  margin-bottom: 0;
+  color: ${palette.coolGrey2};
+`;

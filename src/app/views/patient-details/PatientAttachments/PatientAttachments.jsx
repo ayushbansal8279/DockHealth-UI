@@ -22,6 +22,7 @@ import {
   AttachmentFileInput,
   DropzoneInfoText,
   DropzoneContainer,
+  EmptyListText,
 } from './styled';
 import initializeAttachmentsSectionHooks from './hooks';
 import { FilesViewType, PATIENT_FILES_VIEW_TYPE } from './helpers';
@@ -116,11 +117,18 @@ const PatientAttachments = () => {
       </Box>
       {!isFetching ? (
         <>
-          <DropzoneContainer {...getRootProps({ style: { outline: 'none' } })}>
+          <DropzoneContainer
+            {...getRootProps({
+              onClick: event => event.stopPropagation(),
+              style: {
+                outline: 'none',
+              },
+            })}
+          >
             <DropzoneInfoText>
               {isDragActive
                 ? 'Drop the files here ...'
-                : 'Drag and drop files or documents here, or click + to select files'}
+                : 'Drag and drop files or documents here'}
             </DropzoneInfoText>
             <AttachmentFileInput
               ref={attachmentFileInputReference}
@@ -130,6 +138,7 @@ const PatientAttachments = () => {
               <NamedCollapse name="Folders">
                 {folders.map(folder => (
                   <FileItemComponent
+                    key={folder.attachmentIdentifier}
                     fileOrFolder={folder}
                     options={getFolderOptions(folder)}
                     onClick={() => {
@@ -141,26 +150,33 @@ const PatientAttachments = () => {
             )}
             <NamedCollapse name="Files">
               {activeViewType === FilesViewType.LIST && <FileListHeader />}
-              <div onClick={event => event.stopPropagation()}>
-                {currentPatientAttachments.map(file => (
+              {currentPatientAttachments.length > 0 ? (
+                currentPatientAttachments.map(file => (
                   <FileItemComponent
+                    key={file.attachmentIdentifier}
                     onClick={() => {
                       openAttachmentPreview(file);
                     }}
                     fileOrFolder={file}
                     options={getFileOptions(file)}
                   />
-                ))}
-                {currentlyUploadedAttachment && (
-                  <>
-                    {activeViewType === FilesViewType.LIST ? (
-                      <FileListItemProgressBar value={uploadProgress} />
-                    ) : (
-                      <FileGridItemProgressBar value={uploadProgress} />
-                    )}
-                  </>
-                )}
-              </div>
+                ))
+              ) : (
+                <>
+                  {!currentlyUploadedAttachment && (
+                    <EmptyListText>List of files is empty</EmptyListText>
+                  )}
+                </>
+              )}
+              {currentlyUploadedAttachment && (
+                <>
+                  {activeViewType === FilesViewType.LIST ? (
+                    <FileListItemProgressBar value={uploadProgress} />
+                  ) : (
+                    <FileGridItemProgressBar value={uploadProgress} />
+                  )}
+                </>
+              )}
             </NamedCollapse>
             <AttachmentPreview
               attachment={previewedAttachment}
