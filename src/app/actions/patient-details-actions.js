@@ -108,6 +108,14 @@ export function mergePatient(fromPatient, toPatient, onSuccess) {
   };
 }
 
+export function updatePatientAttachment(attachment, dataToUpdate) {
+  return {
+    type: ActionTypes.UPDATE_PATIENT_ATTACHMENT,
+    attachment,
+    dataToUpdate,
+  };
+}
+
 export function deletePatientAttachment(patientIdentifier, identifier) {
   return {
     type: ActionTypes.DELETE_PATIENT_ATTACHMENT,

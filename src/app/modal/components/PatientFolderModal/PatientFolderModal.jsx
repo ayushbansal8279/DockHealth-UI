@@ -14,10 +14,16 @@ const validateTemplateName = value => {
   return true;
 };
 
-const PatientFolderModal = ({ currentName, closeModal, onChange }) => {
+const PatientFolderModal = ({
+  title,
+  inputLabel,
+  currentName,
+  closeModal,
+  onChange,
+}) => {
   const formMethods = useForm({
     mode: 'onSubmit',
-    initialValues: {
+    defaultValues: {
       name: currentName,
     },
   });
@@ -25,7 +31,11 @@ const PatientFolderModal = ({ currentName, closeModal, onChange }) => {
   const { handleSubmit } = formMethods;
 
   function submit(data) {
-    onChange(data.name);
+    if (data.name !== currentName) {
+      onChange(data.name);
+    } else {
+      closeModal();
+    }
   }
 
   return (
@@ -33,14 +43,14 @@ const PatientFolderModal = ({ currentName, closeModal, onChange }) => {
       <CloseIconButton onClick={closeModal} size="small" color="secondary">
         <CloseIcon />
       </CloseIconButton>
-      <Title>{currentName ? 'Rename folder' : 'Create folder'}</Title>
+      <Title>{title}</Title>
       <Box m={3} />
       <StyledForm onSubmit={handleSubmit(submit)}>
         <FormProvider {...formMethods}>
           <FormInput
             autoFocus
             required
-            label="Folder name"
+            label={inputLabel}
             name="name"
             validate={validateTemplateName}
           />

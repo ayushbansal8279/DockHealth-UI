@@ -15,9 +15,11 @@ const FileListItem = props => {
       <Cell>{creator?.name || ''}</Cell>
       <Cell>{moment(dateCreated).fromNow()}</Cell>
       <Cell>
-        <OptionsMenu customButtonComponent={IconButton} options={options}>
-          <MoreVertIcon />
-        </OptionsMenu>
+        <div onClick={event => event.stopPropagation()}>
+          <OptionsMenu customButtonComponent={IconButton} options={options}>
+            <MoreVertIcon />
+          </OptionsMenu>
+        </div>
       </Cell>
     </Row>
   );

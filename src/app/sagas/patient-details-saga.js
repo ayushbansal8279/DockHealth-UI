@@ -762,6 +762,34 @@ export function* createPatientAttachmentFolder({
   }
 }
 
+function* updatePatientAttachment({ attachment, dataToUpdate }) {
+  try {
+    const updatedAttachment = yield call(
+      PatientAttachmentApi.updatePatientAttachment,
+      {
+        ...attachment,
+        ...dataToUpdate,
+      },
+    );
+    yield all([
+      put({
+        type: ActionTypes.UPDATE_PATIENT_ATTACHMENT_SUCCESS,
+        attachment: updatedAttachment,
+      }),
+      put(showGlobalAlert(AlertMessages.UPDATED)),
+      put(closeModal()),
+    ]);
+  } catch {
+    yield all([
+      put({
+        type: ActionTypes.UPDATE_PATIENT_ATTACHMENT_SUCCESS,
+        attachment,
+      }),
+      put(showGlobalErrorAlert()),
+    ]);
+  }
+}
+
 export default function* watchPatientDetails() {
   yield takeLatest(
     ActionTypes.INITIALIZE_PATIENT_STATE,
@@ -830,6 +858,10 @@ export default function* watchPatientDetails() {
   yield takeEvery(
     ActionTypes.ADD_PATIENT_ATTACHMENT_FOLDER,
     createPatientAttachmentFolder,
+  );
+  yield takeEvery(
+    ActionTypes.UPDATE_PATIENT_ATTACHMENT,
+    updatePatientAttachment,
   );
   yield takeEvery(ActionTypes.ADD_PATIENT_ATTACHMENT, createPatientAttachment);
 }

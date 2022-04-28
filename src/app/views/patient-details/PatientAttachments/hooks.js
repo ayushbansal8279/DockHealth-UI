@@ -14,6 +14,7 @@ import { getPatientAttachment } from 'api/patient-attachment-api';
 import { useBoolean } from 'hooks/useBoolean';
 import { openModal } from 'modal/actions';
 import { createPatientAttachmentsPath } from 'routing/helpers/paths';
+import { PatientAttachmentType } from 'helpers/patient-details-helpers';
 
 export const getMemoPatientAttachment = memoizeWith(
   identity,
@@ -166,6 +167,8 @@ const initializeAttachmentsSectionHooks = () => {
   const handleCreateFolderClick = () => {
     dispatch(
       openModal('PatientFolder', {
+        title: 'Create folder',
+        inputLabel: 'Folder name',
         onChange: name => {
           dispatch(
             PatientDetailsActions.createPatientAttachmentFolder(
@@ -173,6 +176,27 @@ const initializeAttachmentsSectionHooks = () => {
               name,
               folderIdentifier,
             ),
+          );
+        },
+      }),
+    );
+  };
+
+  const renameAttachment = fileOrFolder => {
+    dispatch(
+      openModal('PatientFolder', {
+        title: `Rename ${
+          fileOrFolder.type === PatientAttachmentType.FOLDER ? 'folder' : 'file'
+        }`,
+        inputLabel: `${
+          fileOrFolder.type === PatientAttachmentType.FOLDER ? 'Folder' : 'File'
+        } name`,
+        currentName: fileOrFolder.fileName,
+        onChange: name => {
+          dispatch(
+            PatientDetailsActions.updatePatientAttachment(fileOrFolder, {
+              fileName: name,
+            }),
           );
         },
       }),
@@ -216,6 +240,7 @@ const initializeAttachmentsSectionHooks = () => {
     previewedAttachment,
     navigateToFolder,
     openFolderInNewTab,
+    renameAttachment,
     dropzone: {
       getRootProps,
       getInputProps,

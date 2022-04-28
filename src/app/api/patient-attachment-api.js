@@ -65,3 +65,7 @@ export function createAttachmentFolder(
     })
     .then(({ data }) => data);
 }
+
+export function updatePatientAttachment(attachment) {
+  return axios.put(`patient/attachment`, attachment).then(({ data }) => data);
+}

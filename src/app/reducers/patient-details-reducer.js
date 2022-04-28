@@ -153,6 +153,19 @@ export default function(state = INITIAL_STATE, action = {}) {
       };
     }
 
+    case ActionTypes.UPDATE_PATIENT_ATTACHMENT_SUCCESS: {
+      const { attachment: updatedAttachment } = action;
+
+      return {
+        ...state,
+        attachments: state.attachments?.map(a =>
+          a.attachmentIdentifier === updatedAttachment.attachmentIdentifier
+            ? { ...a, ...updatedAttachment }
+            : a,
+        ),
+      };
+    }
+
     case ActionTypes.ADD_PATIENT_ATTACHMENT_SUCCESS: {
       return {
         ...state,

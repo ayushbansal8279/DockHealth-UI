@@ -58,6 +58,7 @@ const PatientAttachments = () => {
     previewedAttachment,
     navigateToFolder,
     openFolderInNewTab,
+    renameAttachment,
     dropzone: { getRootProps, getInputProps, isDragActive },
   } = initializeAttachmentsSectionHooks();
 
@@ -72,13 +73,14 @@ const PatientAttachments = () => {
   const getFileOptions = useCallback(
     file => [
       { name: 'Preview', onClick: () => openAttachmentPreview(file) },
+      { name: 'Rename', onClick: () => renameAttachment(file) },
       {
         name: 'Delete',
         onClick: () => deleteAttachment(file.attachmentIdentifier),
         color: palette.oPlusRed,
       },
     ],
-    [openAttachmentPreview, deleteAttachment],
+    [openAttachmentPreview, renameAttachment, deleteAttachment],
   );
 
   const getFolderOptions = useCallback(
@@ -87,13 +89,14 @@ const PatientAttachments = () => {
         name: 'Open in new tab',
         onClick: () => openFolderInNewTab(folder),
       },
+      { name: 'Rename', onClick: () => renameAttachment(folder) },
       {
         name: 'Delete',
         onClick: () => deleteAttachment(folder.attachmentIdentifier),
         color: palette.oPlusRed,
       },
     ],
-    [deleteAttachment, openFolderInNewTab],
+    [deleteAttachment, openFolderInNewTab, renameAttachment],
   );
 
   return (

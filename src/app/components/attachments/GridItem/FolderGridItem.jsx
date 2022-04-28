@@ -33,9 +33,11 @@ const FolderGridItem = props => {
           <CreatedText>{moment(dateCreated).fromNow()}</CreatedText>
         </Box>
         <OptionsContainer>
-          <OptionsMenu customButtonComponent={IconButton} options={options}>
-            <MoreVertIcon />
-          </OptionsMenu>
+          <div onClick={event => event.stopPropagation()}>
+            <OptionsMenu customButtonComponent={IconButton} options={options}>
+              <MoreVertIcon />
+            </OptionsMenu>
+          </div>
         </OptionsContainer>
       </DetailsContainer>
     </Container>
