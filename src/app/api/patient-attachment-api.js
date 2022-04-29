@@ -69,3 +69,11 @@ export function createAttachmentFolder(
 export function updatePatientAttachment(attachment) {
   return axios.put(`patient/attachment`, attachment).then(({ data }) => data);
 }
+
+export function getPatientFolderStructureHierarchy(identifier) {
+  return axios
+    .get(`patient/attachment/${identifier}`, {
+      params: { parentDetails: true },
+    })
+    .then(({ data }) => data);
+}

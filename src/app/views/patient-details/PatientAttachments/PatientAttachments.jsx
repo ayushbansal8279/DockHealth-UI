@@ -7,6 +7,7 @@ import { Box, IconButton } from '@material-ui/core';
 import ViewModuleIcon from '@material-ui/icons/ViewModule';
 import ViewHeadlineIcon from '@material-ui/icons/ViewHeadline';
 import { isFetchingPatientAttachmentsSelector } from 'selectors/patient-details-selectors';
+import AttachmentsBreadcrumbs from 'views/patient-details/AttachmentsBreadcrumbs/AttachmentsBreadcrumbs';
 import AddButton from 'components/common/AddButton/AddButton';
 import AttachmentPreview from 'components/attachments/AttachmentPreview/AttachmentPreview';
 import NamedCollapse from 'components/common/NamedCollapse/NamedCollapse';
@@ -101,27 +102,39 @@ const PatientAttachments = () => {
 
   return (
     <PatientAttachmentsWrapper isDragActive={isDragActive}>
-      <Box display="flex" width="100%" justifyContent="flex-end" mb={2}>
-        <AddButton onClick={handleCreateFolderClick}>Create Folder</AddButton>
-        <AddButton onClick={() => attachmentFileInputReference.current.click()}>
-          Add File
-        </AddButton>
-        <Box m={0.5} />
-        <IconButton onClick={() => setActiveViewType(FilesViewType.GRID)}>
-          <ViewModuleIcon
-            color={
-              activeViewType === FilesViewType.GRID ? 'secondary' : 'primary'
-            }
-          />
-        </IconButton>
-        <Box m={0.5} />
-        <IconButton onClick={() => setActiveViewType(FilesViewType.LIST)}>
-          <ViewHeadlineIcon
-            color={
-              activeViewType === FilesViewType.LIST ? 'secondary' : 'primary'
-            }
-          />
-        </IconButton>
+      <Box display="flex" width="100%" mb={2}>
+        <Box
+          display="flex"
+          flex="1 1 auto"
+          alignItems="center"
+          overflow="hidden"
+        >
+          <AttachmentsBreadcrumbs />
+        </Box>
+        <Box display="flex" alignItems="center" flex="0 0 auto">
+          <AddButton onClick={handleCreateFolderClick}>Create Folder</AddButton>
+          <AddButton
+            onClick={() => attachmentFileInputReference.current.click()}
+          >
+            Add File
+          </AddButton>
+          <Box m={0.5} />
+          <IconButton onClick={() => setActiveViewType(FilesViewType.GRID)}>
+            <ViewModuleIcon
+              color={
+                activeViewType === FilesViewType.GRID ? 'secondary' : 'primary'
+              }
+            />
+          </IconButton>
+          <Box m={0.5} />
+          <IconButton onClick={() => setActiveViewType(FilesViewType.LIST)}>
+            <ViewHeadlineIcon
+              color={
+                activeViewType === FilesViewType.LIST ? 'secondary' : 'primary'
+              }
+            />
+          </IconButton>
+        </Box>
       </Box>
       {!isFetching ? (
         <>
@@ -197,7 +210,7 @@ const PatientAttachments = () => {
           </DropzoneContainer>
         </>
       ) : (
-        <>
+        <Box width="100%" mt="80px">
           {activeViewType === FilesViewType.LIST ? (
             <>
               <FileListItemLoader />
@@ -215,7 +228,7 @@ const PatientAttachments = () => {
               <FileGridItemLoader />
             </>
           )}
-        </>
+        </Box>
       )}
     </PatientAttachmentsWrapper>
   );
