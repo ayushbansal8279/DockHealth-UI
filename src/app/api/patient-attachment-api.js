@@ -27,7 +27,7 @@ export function deletePatientAttachment(identifier) {
   });
 }
 
-export function getPatientAttachment(attachmentIdentifier) {
+export function downloadPatientAttachment(attachmentIdentifier) {
   return axios({
     url: `patient/attachment/download/${attachmentIdentifier}`,
     method: 'GET',
@@ -76,4 +76,8 @@ export function getPatientFolderStructureHierarchy(identifier) {
       params: { parentDetails: true },
     })
     .then(({ data }) => data);
+}
+
+export function getPatientFolder(identifier) {
+  return axios.get(`patient/attachment/${identifier}`).then(({ data }) => data);
 }

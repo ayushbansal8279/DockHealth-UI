@@ -3,6 +3,7 @@ import React, { useCallback, useEffect, useState } from 'react';
 import palette from 'styles/palette';
 import { useSelector } from 'react-redux';
 import localStorageHelper from 'helpers/local-storage-helper';
+import { openModal } from 'modal/actions';
 import { Box, IconButton } from '@material-ui/core';
 import ViewModuleIcon from '@material-ui/icons/ViewModule';
 import ViewHeadlineIcon from '@material-ui/icons/ViewHeadline';
@@ -44,6 +45,7 @@ const PatientAttachments = () => {
   }, [activeViewType]);
 
   const {
+    dispatch,
     handleCreateFolderClick,
     attachmentsSources,
     currentPatientAttachments,
@@ -71,17 +73,34 @@ const PatientAttachments = () => {
   const FolderItemComponent =
     activeViewType === FilesViewType.GRID ? FolderGridItem : FolderListItem;
 
+  const moveFileOrFolder = useCallback(() => {
+    dispatch(
+      openModal('SelectPatientFolder', {
+        onMove: () => {},
+      }),
+    );
+  }, [dispatch]);
+
   const getFileOptions = useCallback(
     file => [
       { name: 'Preview', onClick: () => openAttachmentPreview(file) },
       { name: 'Rename', onClick: () => renameAttachment(file) },
+      {
+        name: 'Move',
+        onClick: () => moveFileOrFolder(file.attachmentIdentifier),
+      },
       {
         name: 'Delete',
         onClick: () => deleteAttachment(file.attachmentIdentifier),
         color: palette.oPlusRed,
       },
     ],
-    [openAttachmentPreview, renameAttachment, deleteAttachment],
+    [
+      openAttachmentPreview,
+      renameAttachment,
+      moveFileOrFolder,
+      deleteAttachment,
+    ],
   );
 
   const getFolderOptions = useCallback(
@@ -92,12 +111,16 @@ const PatientAttachments = () => {
       },
       { name: 'Rename', onClick: () => renameAttachment(folder) },
       {
+        name: 'Move',
+        onClick: () => moveFileOrFolder(folder.attachmentIdentifier),
+      },
+      {
         name: 'Delete',
         onClick: () => deleteAttachment(folder.attachmentIdentifier),
         color: palette.oPlusRed,
       },
     ],
-    [deleteAttachment, openFolderInNewTab, renameAttachment],
+    [deleteAttachment, moveFileOrFolder, openFolderInNewTab, renameAttachment],
   );
 
   return (

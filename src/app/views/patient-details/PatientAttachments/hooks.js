@@ -10,7 +10,7 @@ import {
   patientFoldersSelector,
   patientAttachmentsSelector,
 } from 'selectors/patient-details-selectors';
-import { getPatientAttachment } from 'api/patient-attachment-api';
+import { downloadPatientAttachment } from 'api/patient-attachment-api';
 import { useBoolean } from 'hooks/useBoolean';
 import { openModal } from 'modal/actions';
 import { createPatientAttachmentsPath } from 'routing/helpers/paths';
@@ -20,7 +20,7 @@ export const getMemoPatientAttachment = memoizeWith(
   identity,
   attachmentIdentifier =>
     attachmentIdentifier
-      ? getPatientAttachment(attachmentIdentifier)
+      ? downloadPatientAttachment(attachmentIdentifier)
       : Promise.reject(),
 );
 
@@ -225,6 +225,7 @@ const initializeAttachmentsSectionHooks = () => {
   };
 
   return {
+    dispatch,
     handleCreateFolderClick,
     attachmentsSources,
     currentPatientAttachments: attachments,
