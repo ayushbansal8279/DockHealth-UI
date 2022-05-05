@@ -59,6 +59,7 @@ const TaskDrawerContent = props => {
     disabledFields = [],
     fromFirstAddTask = false,
     hideTour = false,
+    hideCloseIcon,
   } = props;
   const {
     closeTaskDrawer: handleCloseTaskDrawer,
@@ -80,6 +81,7 @@ const TaskDrawerContent = props => {
     taskTemplate,
     handleWorkflowReferenceClick,
     clearFormStates,
+    handleCopyLink,
   } = initializeTaskDrawerHooks({
     isInbox,
     onTaskUpdate,
@@ -129,6 +131,8 @@ const TaskDrawerContent = props => {
           style={styleFirstRow}
         >
           <TopSection
+            handleCopyLink={handleCopyLink}
+            hideCloseIcon={hideCloseIcon}
             restrictions={restrictions}
             onDelete={onDelete}
             onDuplicate={onDuplicate}
