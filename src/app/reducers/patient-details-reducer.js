@@ -11,6 +11,7 @@ const INITIAL_STATE = {
   patientIdentifier: null,
   patient: null,
   currentFolderIdentifier: null,
+  attachments: null,
   isFetchingPatient: false,
   labels: null,
   isFetchingLabels: false,
@@ -158,11 +159,25 @@ export default function(state = INITIAL_STATE, action = {}) {
 
       return {
         ...state,
-        attachments: state.attachments?.map(a =>
-          a.attachmentIdentifier === updatedAttachment.attachmentIdentifier
-            ? { ...a, ...updatedAttachment }
-            : a,
-        ),
+        attachments:
+          state.attachments?.map(a =>
+            a.attachmentIdentifier === updatedAttachment.attachmentIdentifier
+              ? { ...a, ...updatedAttachment }
+              : a,
+          ) ?? null,
+      };
+    }
+
+    case ActionTypes.MOVE_PATIENT_ATTACHMENT_SUCCESS: {
+      const { attachment: movedAttachment } = action;
+
+      return {
+        ...state,
+        attachments:
+          state.attachments?.filter(
+            ({ attachmentIdentifier }) =>
+              attachmentIdentifier !== movedAttachment.attachmentIdentifier,
+          ) ?? null,
       };
     }
 

@@ -790,6 +790,35 @@ function* updatePatientAttachment({ attachment, dataToUpdate }) {
   }
 }
 
+function* movePatientAttachment({ attachment, destinationFolderIdentifier }) {
+  try {
+    const updatedAttachment = yield call(
+      PatientAttachmentApi.updatePatientAttachment,
+      {
+        ...attachment,
+        parentAttachmentIdentifier: destinationFolderIdentifier,
+      },
+    );
+    yield all([
+      put({
+        type: ActionTypes.MOVE_PATIENT_ATTACHMENT_SUCCESS,
+        attachment: updatedAttachment,
+        destinationFolderIdentifier,
+      }),
+      put(showGlobalAlert(AlertMessages.MOVED)),
+      put(closeModal()),
+    ]);
+  } catch {
+    yield all([
+      put({
+        type: ActionTypes.MOVE_PATIENT_ATTACHMENT_SUCCESS,
+        attachment,
+      }),
+      put(showGlobalErrorAlert()),
+    ]);
+  }
+}
+
 export default function* watchPatientDetails() {
   yield takeLatest(
     ActionTypes.INITIALIZE_PATIENT_STATE,
@@ -863,5 +892,6 @@ export default function* watchPatientDetails() {
     ActionTypes.UPDATE_PATIENT_ATTACHMENT,
     updatePatientAttachment,
   );
+  yield takeEvery(ActionTypes.MOVE_PATIENT_ATTACHMENT, movePatientAttachment);
   yield takeEvery(ActionTypes.ADD_PATIENT_ATTACHMENT, createPatientAttachment);
 }

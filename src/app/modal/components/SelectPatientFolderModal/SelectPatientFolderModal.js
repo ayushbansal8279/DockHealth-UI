@@ -17,7 +17,9 @@ import {
 const SelectPatientFolderModal = ({ closeModal, onMove }) => {
   const patientIdentifier = useSelector(currentPatientIdentifierSelector);
   const [nestedFoldersHierarchy, setNestedFoldersHierarchy] = useState([]);
-  const [selectedFolder, setSelectedFolder] = useState(null);
+  const [selectedFolderIdentifier, setSelectedFolderIdentifier] = useState(
+    null,
+  );
   const [foldersList, setFoldersList] = useState(null);
 
   const currentFolder =
@@ -36,11 +38,11 @@ const SelectPatientFolderModal = ({ closeModal, onMove }) => {
   }, [currentFolder, patientIdentifier]);
 
   const handleMoveClick = () => {
-    onMove(selectedFolder.attachmentIdentifier);
+    onMove(selectedFolderIdentifier);
   };
 
   const handleFolderChange = folderId => {
-    setSelectedFolder(null);
+    setSelectedFolderIdentifier(null);
     const nextFolder = foldersList.find(
       ({ attachmentIdentifier }) => attachmentIdentifier === folderId,
     );
@@ -70,9 +72,9 @@ const SelectPatientFolderModal = ({ closeModal, onMove }) => {
       </ModalHeader>
       <Box width="384px" height="384px" overflow="hidden">
         <SelectionList
-          selectedId={selectedFolder}
+          selectedId={selectedFolderIdentifier}
           list={formattedFoldersList}
-          onSelect={setSelectedFolder}
+          onSelect={setSelectedFolderIdentifier}
           onParentChange={handleFolderChange}
         />
       </Box>
@@ -92,7 +94,7 @@ const SelectPatientFolderModal = ({ closeModal, onMove }) => {
         <FlexButtonWrapper>
           <Button
             fullWidth
-            disabled={!selectedFolder}
+            disabled={!selectedFolderIdentifier}
             onClick={handleMoveClick}
             size="small"
           >

@@ -224,8 +224,25 @@ const initializeAttachmentsSectionHooks = () => {
     );
   };
 
+  const moveFileOrFolder = useCallback(
+    attachment => {
+      dispatch(
+        openModal('SelectPatientFolder', {
+          onMove: destinationFolderId => {
+            dispatch(
+              PatientDetailsActions.movePatientAttachment(
+                attachment,
+                destinationFolderId,
+              ),
+            );
+          },
+        }),
+      );
+    },
+    [dispatch],
+  );
+
   return {
-    dispatch,
     handleCreateFolderClick,
     attachmentsSources,
     currentPatientAttachments: attachments,
@@ -242,6 +259,7 @@ const initializeAttachmentsSectionHooks = () => {
     navigateToFolder,
     openFolderInNewTab,
     renameAttachment,
+    moveFileOrFolder,
     dropzone: {
       getRootProps,
       getInputProps,

@@ -116,6 +116,14 @@ export function updatePatientAttachment(attachment, dataToUpdate) {
   };
 }
 
+export function movePatientAttachment(attachment, destinationFolderIdentifier) {
+  return {
+    type: ActionTypes.MOVE_PATIENT_ATTACHMENT,
+    attachment,
+    destinationFolderIdentifier,
+  };
+}
+
 export function deletePatientAttachment(patientIdentifier, identifier) {
   return {
     type: ActionTypes.DELETE_PATIENT_ATTACHMENT,

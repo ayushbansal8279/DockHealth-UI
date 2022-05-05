@@ -3,7 +3,6 @@ import React, { useCallback, useEffect, useState } from 'react';
 import palette from 'styles/palette';
 import { useSelector } from 'react-redux';
 import localStorageHelper from 'helpers/local-storage-helper';
-import { openModal } from 'modal/actions';
 import { Box, IconButton } from '@material-ui/core';
 import ViewModuleIcon from '@material-ui/icons/ViewModule';
 import ViewHeadlineIcon from '@material-ui/icons/ViewHeadline';
@@ -45,7 +44,6 @@ const PatientAttachments = () => {
   }, [activeViewType]);
 
   const {
-    dispatch,
     handleCreateFolderClick,
     attachmentsSources,
     currentPatientAttachments,
@@ -62,6 +60,7 @@ const PatientAttachments = () => {
     navigateToFolder,
     openFolderInNewTab,
     renameAttachment,
+    moveFileOrFolder,
     dropzone: { getRootProps, getInputProps, isDragActive },
   } = initializeAttachmentsSectionHooks();
 
@@ -73,21 +72,13 @@ const PatientAttachments = () => {
   const FolderItemComponent =
     activeViewType === FilesViewType.GRID ? FolderGridItem : FolderListItem;
 
-  const moveFileOrFolder = useCallback(() => {
-    dispatch(
-      openModal('SelectPatientFolder', {
-        onMove: () => {},
-      }),
-    );
-  }, [dispatch]);
-
   const getFileOptions = useCallback(
     file => [
       { name: 'Preview', onClick: () => openAttachmentPreview(file) },
       { name: 'Rename', onClick: () => renameAttachment(file) },
       {
         name: 'Move',
-        onClick: () => moveFileOrFolder(file.attachmentIdentifier),
+        onClick: () => moveFileOrFolder(file),
       },
       {
         name: 'Delete',
@@ -112,7 +103,7 @@ const PatientAttachments = () => {
       { name: 'Rename', onClick: () => renameAttachment(folder) },
       {
         name: 'Move',
-        onClick: () => moveFileOrFolder(folder.attachmentIdentifier),
+        onClick: () => moveFileOrFolder(folder),
       },
       {
         name: 'Delete',
