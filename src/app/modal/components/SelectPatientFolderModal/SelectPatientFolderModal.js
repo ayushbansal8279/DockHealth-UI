@@ -16,18 +16,15 @@ import {
 
 const SelectPatientFolderModal = ({ closeModal, onMove }) => {
   const patientIdentifier = useSelector(currentPatientIdentifierSelector);
-  const [currentFolder, setCurrentFolder] = useState(null);
+  const [nestedFoldersHierarchy, setNestedFoldersHierarchy] = useState([]);
+  const [selectedFolder, setSelectedFolder] = useState(null);
   const [foldersList, setFoldersList] = useState(null);
 
-  useEffect(() => {
-    if (currentFolder) {
-      PatientAttachmentApi.getPatientFolder(
-        currentFolder.attachmentIdentifier,
-      ).then(responseFolder => {
-        setCurrentFolder(responseFolder);
-      });
-    }
+  const currentFolder =
+    nestedFoldersHierarchy[nestedFoldersHierarchy.length - 1];
 
+  useEffect(() => {
+    setFoldersList(null);
     PatientAttachmentApi.getPatientAttachments(
       patientIdentifier,
       currentFolder?.attachmentIdentifier ?? null,
@@ -36,10 +33,18 @@ const SelectPatientFolderModal = ({ closeModal, onMove }) => {
         a.filter(({ type }) => type === PatientAttachmentType.FOLDER),
       );
     });
-  }, [patientIdentifier, currentFolder]);
+  }, [currentFolder, patientIdentifier]);
 
   const handleMoveClick = () => {
-    onMove();
+    onMove(selectedFolder.attachmentIdentifier);
+  };
+
+  const handleFolderChange = folderId => {
+    setSelectedFolder(null);
+    const nextFolder = foldersList.find(
+      ({ attachmentIdentifier }) => attachmentIdentifier === folderId,
+    );
+    setNestedFoldersHierarchy([...nestedFoldersHierarchy, nextFolder]);
   };
 
   const formattedFoldersList = useMemo(
@@ -56,9 +61,20 @@ const SelectPatientFolderModal = ({ closeModal, onMove }) => {
       <CloseIconButton onClick={closeModal} size="small" color="secondary">
         <CloseIcon />
       </CloseIconButton>
-      <ModalHeader>Folders</ModalHeader>
+      <ModalHeader
+        onClick={() =>
+          setNestedFoldersHierarchy(nestedFoldersHierarchy.slice(0, -1))
+        }
+      >
+        {currentFolder ? currentFolder.fileName : 'Folders'}
+      </ModalHeader>
       <Box width="384px" height="384px" overflow="hidden">
-        <SelectionList list={formattedFoldersList} />
+        <SelectionList
+          selectedId={selectedFolder}
+          list={formattedFoldersList}
+          onSelect={setSelectedFolder}
+          onParentChange={handleFolderChange}
+        />
       </Box>
       <Box m={2} />
       <Grid container direction="row">
@@ -76,7 +92,7 @@ const SelectPatientFolderModal = ({ closeModal, onMove }) => {
         <FlexButtonWrapper>
           <Button
             fullWidth
-            // disabled={!selectedGroup}
+            disabled={!selectedFolder}
             onClick={handleMoveClick}
             size="small"
           >

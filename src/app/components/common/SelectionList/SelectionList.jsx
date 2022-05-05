@@ -1,19 +1,33 @@
 import { arrayOf, func, shape, string } from 'prop-types';
 import React from 'react';
+import palette from 'styles/palette';
 import { ListWrapper } from './styled';
 
 const SelectionList = props => {
-  const { selectedListId, list, onSelect, onFolderChange } = props;
-  console.log('selectedListId', selectedListId);
-  console.log('list', list);
-  console.log('onSelect', onSelect);
-  console.log('onFolderChange', onFolderChange);
+  const { selectedId, list, onSelect, onParentChange } = props;
 
-  return <ListWrapper>Selection list</ListWrapper>;
+  return (
+    <ListWrapper>
+      {list?.map(({ id, name }) => (
+        <p>
+          <span
+            style={{
+              color:
+                selectedId === id ? palette.brightBlue : palette.mediumGrey,
+            }}
+            onClick={() => onSelect(id)}
+          >
+            {name}
+          </span>
+          <span onClick={() => onParentChange(id)}>Go</span>
+        </p>
+      )) ?? 'List is empty'}
+    </ListWrapper>
+  );
 };
 
 SelectionList.propTypes = {
-  selectedListId: string,
+  selectedId: string,
   list: arrayOf(
     shape({
       id: string.isRequired,
@@ -21,11 +35,11 @@ SelectionList.propTypes = {
     }),
   ),
   onSelect: func.isRequired,
-  onFolderChange: func.isRequired,
+  onParentChange: func.isRequired,
 };
 
 SelectionList.defaultProps = {
-  selectedListId: null,
+  selectedId: null,
   list: null,
 };
 
