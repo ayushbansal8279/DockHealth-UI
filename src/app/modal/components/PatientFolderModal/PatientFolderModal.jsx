@@ -6,7 +6,7 @@ import Button from 'components/common/Button/Button';
 import { CloseIconButton, CloseIcon } from '../styled';
 import { ListFormModalWrapper, Title, StyledForm } from './styled';
 
-const validateTemplateName = value => {
+const validateFolderName = value => {
   if (!value || ![...value]?.filter(char => char !== ' ').length > 0) {
     return 'This field is required';
   }
@@ -52,7 +52,7 @@ const PatientFolderModal = ({
             required
             label={inputLabel}
             name="name"
-            validate={validateTemplateName}
+            validate={validateFolderName}
           />
           <Grid container direction="row" justify="flex-end">
             <Button

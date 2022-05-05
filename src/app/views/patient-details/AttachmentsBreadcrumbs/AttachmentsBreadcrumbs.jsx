@@ -23,18 +23,20 @@ const AttachmentsBreadcrumbs = () => {
     setBreadcrumbs(null);
 
     if (currentFolderIdentifier) {
-      getPatientFolderStructureHierarchy(currentFolderIdentifier).then(h => {
-        const formattedFoldersHierarchy = [];
-        let currentFolder = h;
-        while (currentFolder) {
-          formattedFoldersHierarchy.unshift({
-            id: currentFolder.attachmentIdentifier,
-            name: currentFolder.fileName,
-          });
-          currentFolder = currentFolder.parentAttachment;
-        }
-        setBreadcrumbs(formattedFoldersHierarchy);
-      });
+      getPatientFolderStructureHierarchy(currentFolderIdentifier).then(
+        folder => {
+          const formattedFoldersHierarchy = [];
+          let currentFolder = folder;
+          while (currentFolder) {
+            formattedFoldersHierarchy.unshift({
+              id: currentFolder.attachmentIdentifier,
+              name: currentFolder.fileName,
+            });
+            currentFolder = currentFolder.parentAttachment;
+          }
+          setBreadcrumbs(formattedFoldersHierarchy);
+        },
+      );
     }
   }, [currentFolderIdentifier]);
 
