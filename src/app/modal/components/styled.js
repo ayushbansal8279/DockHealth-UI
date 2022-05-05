@@ -1,4 +1,4 @@
-import { Button, IconButton } from '@material-ui/core';
+import { IconButton } from '@material-ui/core';
 import styled from 'styled-components';
 import spacing from 'styles/spacing';
 import palette from 'styles/palette';
@@ -93,7 +93,7 @@ export const ModalHeader = styled.p`
   font-size: ${fontSizes.regularPlus};
   color: ${palette.brightBlue};
   text-transform: uppercase;
-  text-align: center;
+  text-align: ${({ textAlign }) => textAlign ?? 'center'};
 `;
 
 export const ModalDescription = styled.p`

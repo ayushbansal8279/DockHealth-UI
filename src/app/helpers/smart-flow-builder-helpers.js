@@ -7,6 +7,7 @@ export const NodeType = {
   NEW_DECISION: 'NEW_DECISION',
   STANDARD: 'STANDARD',
   DECISION: 'DECISION',
+  WORKFLOW_LINK: 'WORKFLOW_LINK',
 };
 
 export const LinkType = {

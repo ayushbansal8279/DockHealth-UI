@@ -28,6 +28,7 @@ import { openModal, closeModal } from 'modal/actions';
 import {
   addDecisionBranch,
   addNewDecisionTaskElement,
+  addNewNestedFlowElement,
   addNewTaskElement,
   deleteTemporaryElement,
   linkTasks,
@@ -88,12 +89,14 @@ import TaskLinkDelayForm from './TaskLinkDelayForm/TaskLinkDelayForm';
 import TemporaryDecisionTaskLink from './TemporaryDecisionTaskLink/TemporaryDecisionTaskLink';
 import BulkEditContainer from './BulkEditContainer/BulkEditContainer';
 import Hotkeys from './Hotkeys/Hotkeys';
+import NestedFlowNode from './NestedFlowNode/NestedFlowNode';
 
 const nodeTypes = {
   [NodeType.NEW_STANDARD]: NewTaskNode,
   [NodeType.NEW_DECISION]: NewTaskNode,
   [NodeType.STANDARD]: TaskNode,
   [NodeType.DECISION]: TaskNode,
+  [NodeType.WORKFLOW_LINK]: NestedFlowNode,
 };
 
 const linkTypes = {
@@ -277,6 +280,16 @@ const SmartFlowBuilderView = () => {
             dispatch(addNewDecisionTaskElement(position));
             centerViewToElement(position);
           }
+        },
+      },
+      {
+        id: NodeType.WORKFLOW_LINK,
+        label: 'Smartflow',
+        icon: DecisionTaskElementIcon,
+        onClick: () => {
+          const position = calculateNewElementPosition(layout);
+          dispatch(addNewNestedFlowElement(position));
+          centerViewToElement(position);
         },
       },
     ];
