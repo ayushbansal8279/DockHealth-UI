@@ -224,6 +224,9 @@ const themeCommonOverrides = () => ({
       colorPrimary: {
         color: palette.coolGrey1,
       },
+      colorSecondary: {
+        color: palette.brightBlue,
+      },
     },
     MuiSkeleton: {
       root: {

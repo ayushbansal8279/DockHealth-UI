@@ -1,4 +1,4 @@
-import React, { useState, useCallback, useRef } from 'react';
+import React, { useState, useCallback } from 'react';
 import { Box, Grid } from '@material-ui/core';
 import Button from 'components/common/Button/Button';
 import { Container } from './styled';

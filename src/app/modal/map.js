@@ -57,6 +57,8 @@ import UnassignTaskTemplateModal from './components/UnassignTaskTemplateModal/Un
 import PatientPickerModal from './components/PatientPickerModal/PatientPickerModal';
 import MergePatientsModal from './components/MergePatientsModal/MergePatientsModal';
 import SelectDestinationGroupModal from './components/SelectDestinationGroupModal/SelectDestinationGroupModal';
+import PatientFolderModal from './components/PatientFolderModal/PatientFolderModal';
+import SelectPatientFolderModal from './components/SelectPatientFolderModal/SelectPatientFolderModal';
 
 const MODAL_MAP = {
   CompleteAllTasks: CompleteAllTasksModal,
@@ -118,6 +120,8 @@ const MODAL_MAP = {
   UnassignTaskTemplate: UnassignTaskTemplateModal,
   PatientPicker: PatientPickerModal,
   MergePatients: MergePatientsModal,
+  PatientFolder: PatientFolderModal,
+  SelectPatientFolder: SelectPatientFolderModal,
 };
 
 export default MODAL_MAP;
