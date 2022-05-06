@@ -3,7 +3,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useSelector } from 'react-redux';
 import moment from 'moment';
-import { Popper } from '@material-ui/core';
+import { Box, Popper, Typography } from '@material-ui/core';
 import { Link } from 'react-router-dom';
 import * as PatientApi from 'api/patient-api';
 import useBooleanWithTimeout from 'hooks/use-boolean-with-timeout';
@@ -13,6 +13,7 @@ import {
   getCustomerUniqueIDShortLabel,
 } from 'helpers/customer-type-helper';
 import { organizationSelector } from 'selectors/organization-selectors';
+import TextTypeHeader from 'components/common/TextTypeHeader/TextTypeHeader';
 import {
   PatientCardContainer,
   PatientInfoSection,
@@ -30,6 +31,7 @@ import {
   NoteInfo,
   PatientCellWrapper,
   PatientMRNAnchor,
+  CustomFieldPatientInfo,
 } from './styled';
 import PatientCardDetailsLoader from './PatientCardDetailsLoader';
 import PatientCardNotesLoader from './PatientCardNotesLoader';
@@ -71,9 +73,7 @@ const PatientCard = ({
   disableLink,
 }) => {
   const reference = useRef(null);
-
   const [patientData, setPatientData] = useState(null);
-
   const [cardOpen, openCard, closeCard] = useBooleanWithTimeout();
 
   const { currentUser } = useSelector(store => ({
@@ -205,17 +205,26 @@ const PatientCard = ({
                     </PatientInfo>
                   </>
                 )}
-                {patientData?.patientMetaData?.map(
-                  ({ customFieldName, displayName, value, displayOptions }) => (
-                    <>
-                      {displayOptions?.includes('PATIENT_HEADER') && value && (
-                        <InfoItem>
-                          {customFieldName}: {displayName || value}
-                        </InfoItem>
-                      )}
-                    </>
-                  ),
-                )}
+                <Box display="flex" flexWrap="wrap">
+                  {patientData?.patientMetaData?.map(
+                    ({
+                      customFieldName,
+                      displayName,
+                      value,
+                      displayOptions,
+                    }) => (
+                      <>
+                        {displayOptions?.includes('PATIENT_HEADER') && value && (
+                          <CustomFieldPatientInfo>
+                            <Typography>{customFieldName}: </Typography>
+                            <Box ml={1} />
+                            <TextTypeHeader text={displayName || value} />
+                          </CustomFieldPatientInfo>
+                        )}
+                      </>
+                    ),
+                  )}
+                </Box>
               </>
             ) : (
               <PatientCardDetailsLoader />

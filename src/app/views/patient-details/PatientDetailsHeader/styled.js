@@ -41,6 +41,7 @@ export const PatientName = styled.div`
 export const PatientInfo = styled.div`
   padding: 0 ${spacing.large};
   color: ${palette.mediumGrey};
+  display: flex;
 
   &:first-child {
     padding-left: 0;
