@@ -59,6 +59,7 @@ const SingleTaskView = () => {
               <SingleTaskSkeleton />
             ) : (
               <TaskContent
+                hideCloseIcon
                 onTaskCreation={goToDashboard}
                 onTaskDelete={goToDashboard}
               />

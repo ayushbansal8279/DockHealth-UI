@@ -41,6 +41,7 @@ import { TIME_12H_FORMAT } from 'helpers/task-drawer-helpers';
 import * as AlertActions from 'alert/actions';
 import AlertMessages from 'alert/AlertMessages';
 import { createSingleTaskPath } from 'routing/helpers/paths';
+import copy from 'copy-to-clipboard';
 
 const initializeTaskDrawerHooks = ({
   onTaskUpdate,
@@ -257,6 +258,15 @@ const initializeTaskDrawerHooks = ({
     );
   }, [dispatch, isTemplateTask, parentBundle, taskTemplate]);
 
+  const handleCopyLink = useCallback(() => {
+    copy(
+      `${window.location.origin}/#${createSingleTaskPath(
+        selectedTaskIdentifier,
+      )}`,
+    );
+    dispatch(AlertActions.showGlobalAlert('Url copied to clipboard'));
+  }, [dispatch, selectedTaskIdentifier]);
+
   return {
     closeTaskDrawer,
     handleUpdateTask,
@@ -279,6 +289,7 @@ const initializeTaskDrawerHooks = ({
     taskListIdentifier,
     handleWorkflowReferenceClick,
     clearFormStates,
+    handleCopyLink,
   };
 };
 
