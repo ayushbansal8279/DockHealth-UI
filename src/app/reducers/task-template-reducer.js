@@ -449,7 +449,7 @@ const TaskTemplateReducer = (state = initialState, action) => {
               createTemporaryTaskNode(
                 temporaryElements,
                 position,
-                NodeType.WORKFLOW_LINK,
+                NodeType.NEW_WORKFLOW_LINK,
               ),
             ],
           },

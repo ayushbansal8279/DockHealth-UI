@@ -89,13 +89,15 @@ import TaskLinkDelayForm from './TaskLinkDelayForm/TaskLinkDelayForm';
 import TemporaryDecisionTaskLink from './TemporaryDecisionTaskLink/TemporaryDecisionTaskLink';
 import BulkEditContainer from './BulkEditContainer/BulkEditContainer';
 import Hotkeys from './Hotkeys/Hotkeys';
-import NestedFlowNode from './NestedFlowNode/NestedFlowNode';
+import NestedFlowNode from './NestedFlow/NestedFlowNode/NestedFlowNode';
+import NewNestedFlowNode from './NestedFlow/NewNestedFlowNode/NewNestedFlowNode';
 
 const nodeTypes = {
   [NodeType.NEW_STANDARD]: NewTaskNode,
   [NodeType.NEW_DECISION]: NewTaskNode,
   [NodeType.STANDARD]: TaskNode,
   [NodeType.DECISION]: TaskNode,
+  [NodeType.NEW_WORKFLOW_LINK]: NewNestedFlowNode,
   [NodeType.WORKFLOW_LINK]: NestedFlowNode,
 };
 
@@ -283,7 +285,7 @@ const SmartFlowBuilderView = () => {
         },
       },
       {
-        id: NodeType.WORKFLOW_LINK,
+        id: NodeType.NEW_WORKFLOW_LINK,
         label: 'Smartflow',
         icon: DecisionTaskElementIcon,
         onClick: () => {

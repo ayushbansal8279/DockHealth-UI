@@ -5,9 +5,13 @@ import { useSelector } from 'react-redux';
 import { currentTaskTemplateIdentifierSelector } from 'selectors/task-template-selectors';
 import Folder from 'img/folder';
 import ArrowLeftIcon from 'img/arrow-left';
-
+import debounce from 'lodash.debounce';
 import { TaskTemplateType } from 'helpers/task-helpers';
-import { getTemplatesForSpecificFolder } from 'api/task-template-api';
+import {
+  getTemplatesForSpecificFolder,
+  searchTemplates,
+} from 'api/task-template-api';
+import Search from 'components/task-view/Search/Search';
 import {
   ModalWrapper,
   ModalDescriptionContainer,
@@ -19,6 +23,8 @@ import {
   FolderIconContainer,
   ModalFooter,
   ModalHeaderContainer,
+  ModalHeaderStyled,
+  SearchStyled,
   StripedDataGrid,
 } from './styled';
 
@@ -51,6 +57,7 @@ const SmartFlowListModal = ({ fetchMethod, closeModal, setWorkflow }) => {
   const [smartFlows, setSmartFlows] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const [history, setHistory] = useState(['/']);
+  const [searchTerm, setSearchTerm] = useState('');
   const [selectedSmartFlow, setsSelectedSmartFlow] = useState({});
   const currentWorkflowIdentifier = useSelector(
     currentTaskTemplateIdentifierSelector,
@@ -73,20 +80,45 @@ const SmartFlowListModal = ({ fetchMethod, closeModal, setWorkflow }) => {
     [currentWorkflowIdentifier],
   );
 
-  // useEffect(() => {
-  //   fetchMethod()
-  //     .then(data => {
-  //       const flows = mapDataToGrid(data);
-  //       setIsLoading(false);
-  //       setSmartFlows(flows);
-  //     })
-  //     .catch(() => {
-  //       closeModal();
-  //     });
-  // }, [fetchMethod, closeModal, currentWorkflowIdentifier, mapDataToGrid]);
+  const debouncedSearch = useCallback(
+    debounce((searchPhrase = '') => {
+      if (searchPhrase !== '' && searchPhrase.trim() === '') {
+        return;
+      }
+      setIsLoading(true);
+      if (searchPhrase.length > 1) {
+        searchTemplates(searchPhrase).then(templatesList => {
+          const data = mapDataToGrid(templatesList);
+          setSmartFlows(data);
+        });
+      } else if (searchPhrase === '') {
+        fetchMethod().then(data => {
+          const flows = mapDataToGrid(data);
+          setSmartFlows(flows);
+        });
+      }
+      setIsLoading(false);
+    }, 300),
+    [],
+  );
+
+  const handleSearch = useCallback(
+    searchPhrase => {
+      setSearchTerm(searchPhrase);
+      debouncedSearch(searchPhrase);
+    },
+    [debouncedSearch],
+  );
 
   const removeItem = index => {
     setHistory([...history.slice(0, index), ...history.slice(index + 1)]);
+  };
+
+  const handleBack = () => {
+    if (searchTerm !== '') {
+      setSearchTerm('');
+    }
+    removeItem(history.length - 1);
   };
 
   const handleRowClick = ({ row }) => {
@@ -104,40 +136,49 @@ const SmartFlowListModal = ({ fetchMethod, closeModal, setWorkflow }) => {
       setHistory(['/']);
     }
   };
+
   useEffect(() => {
+    setIsLoading(true);
     if (history.length === 1) {
-      fetchMethod()
-        .then(data => {
-          const flows = mapDataToGrid(data);
-          setIsLoading(false);
-          setSmartFlows(flows);
-        })
-        .catch(() => {
-          closeModal();
-        });
+      fetchMethod().then(data => {
+        const flows = mapDataToGrid(data);
+        setIsLoading(false);
+        setSmartFlows(flows);
+      });
     } else {
-      setIsLoading(true);
       getTemplatesForSpecificFolder(history.slice(-1)[0]).then(data => {
         const flow2s = mapDataToGrid(data);
-        setIsLoading(false);
         setSmartFlows(flow2s);
       });
+      setIsLoading(false);
     }
   }, [closeModal, fetchMethod, history, mapDataToGrid]);
 
   return (
     <ModalWrapper width="700px">
       <ModalHeaderContainer>
-        {history.length > 1 && (
-          <ArrowButton onClick={() => removeItem(history.length - 1)}>
-            <img src={ArrowLeftIcon} alt="back-navigation" />
-          </ArrowButton>
-        )}
-        <ModalHeader textAlign="left">Choose Smartflow</ModalHeader>
+        <ModalHeaderStyled>
+          {history.length > 1 && (
+            <ArrowButton onClick={handleBack}>
+              <img src={ArrowLeftIcon} alt="back-navigation" />
+            </ArrowButton>
+          )}
+          <ModalHeader textAlign="left">Choose Smartflow</ModalHeader>
+        </ModalHeaderStyled>
+        <SearchStyled>
+          <Search
+            fullWidth
+            noBackground
+            value={searchTerm}
+            onChange={event => handleSearch(event?.target?.value)}
+            placeholder="Search Workflows"
+          />
+        </SearchStyled>
       </ModalHeaderContainer>
       <ModalDescriptionContainer>
         <DataGridWrapper>
           <StripedDataGrid
+            sortingOrder={['desc', 'asc']}
             loading={isLoading}
             rows={smartFlows}
             columns={columns}

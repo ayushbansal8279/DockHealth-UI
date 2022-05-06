@@ -11,7 +11,7 @@ export const DataGridWrapper = styled.div`
 export const ModalHeaderContainer = styled.div`
   display: flex;
   width: 100%;
-  gap: 10px;
+  justify-content: space-between;
   padding-top: 10px;
   padding-left: 25px;
 `;
@@ -22,10 +22,22 @@ export const ArrowButton = styled.button`
   margin-right: ${spacing.smallPlus};
 `;
 
+export const ModalHeaderStyled = styled.div`
+  flex-grow: 2;
+  display: flex;
+  align-items: center;
+  gap: 2px;
+`;
+
+export const SearchStyled = styled.div`
+  flex-grow: 1;
+  padding-right: 30px;
+`;
+
 export const FolderIconContainer = styled.div`
   width: 100%;
   display: flex;
-  grid-gap: 5px;
+  gap: 5px;
 `;
 
 export const ModalFooter = styled.div`
