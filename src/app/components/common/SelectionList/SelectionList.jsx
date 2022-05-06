@@ -1,45 +1,57 @@
-import { arrayOf, func, shape, string } from 'prop-types';
+import { MenuItem } from '@material-ui/core';
+import ArrowForwardIcon from '@material-ui/icons/ArrowForwardIos';
+import { arrayOf, bool, func, shape, string } from 'prop-types';
 import React from 'react';
-import palette from 'styles/palette';
-import { ListWrapper } from './styled';
+import {
+  ListWrapper,
+  useMenuItemStyles,
+  IconWrapper,
+  EmptyListText,
+} from './styled';
 
 const SelectionList = props => {
-  const { selectedId, list, onSelect, onParentChange } = props;
+  const { isLoading, list, onParentChange } = props;
+
+  const menuItemClasses = useMenuItemStyles();
 
   return (
     <ListWrapper>
-      {list?.map(({ id, name }) => (
-        <p>
-          <span
-            style={{
-              color:
-                selectedId === id ? palette.brightBlue : palette.mediumGrey,
-            }}
-            onClick={() => onSelect(id)}
-          >
-            {name}
-          </span>
-          <span onClick={() => onParentChange(id)}>Go</span>
-        </p>
-      )) ?? 'List is empty'}
+      {!isLoading && list ? (
+        <>
+          {list.length > 0 ? (
+            list.map(({ id, name }) => (
+              <MenuItem
+                classes={menuItemClasses}
+                onClick={() => onParentChange(id)}
+              >
+                {name}
+                <IconWrapper>
+                  <ArrowForwardIcon />
+                </IconWrapper>
+              </MenuItem>
+            ))
+          ) : (
+            <EmptyListText>List is empty</EmptyListText>
+          )}
+        </>
+      ) : null}
     </ListWrapper>
   );
 };
 
 SelectionList.propTypes = {
-  selectedId: string,
+  isLoading: bool,
   list: arrayOf(
     shape({
       id: string.isRequired,
       name: string.isRequired,
     }),
   ),
-  onSelect: func.isRequired,
   onParentChange: func.isRequired,
 };
 
 SelectionList.defaultProps = {
-  selectedId: null,
+  isLoading: false,
   list: null,
 };
 

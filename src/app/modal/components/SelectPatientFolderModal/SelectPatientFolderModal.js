@@ -1,6 +1,8 @@
 import React, { useEffect, useMemo, useState } from 'react';
+import palette from 'styles/palette';
 import { useSelector } from 'react-redux';
-import { Box, Grid } from '@material-ui/core';
+import { Box, Grid, IconButton } from '@material-ui/core';
+import ArrowBackIcon from '@material-ui/icons/ArrowBack';
 import { PatientAttachmentType } from 'helpers/patient-details-helpers';
 import Button from 'components/common/Button/Button';
 import SelectionList from 'components/common/SelectionList/SelectionList';
@@ -17,9 +19,6 @@ import {
 const SelectPatientFolderModal = ({ closeModal, onMove }) => {
   const patientIdentifier = useSelector(currentPatientIdentifierSelector);
   const [nestedFoldersHierarchy, setNestedFoldersHierarchy] = useState([]);
-  const [selectedFolderIdentifier, setSelectedFolderIdentifier] = useState(
-    null,
-  );
   const [foldersList, setFoldersList] = useState(null);
 
   const currentFolder =
@@ -38,11 +37,10 @@ const SelectPatientFolderModal = ({ closeModal, onMove }) => {
   }, [currentFolder, patientIdentifier]);
 
   const handleMoveClick = () => {
-    onMove(selectedFolderIdentifier);
+    onMove(currentFolder?.attachmentIdentifier ?? null);
   };
 
   const handleFolderChange = folderId => {
-    setSelectedFolderIdentifier(null);
     const nextFolder = foldersList.find(
       ({ attachmentIdentifier }) => attachmentIdentifier === folderId,
     );
@@ -63,18 +61,24 @@ const SelectPatientFolderModal = ({ closeModal, onMove }) => {
       <CloseIconButton onClick={closeModal} size="small" color="secondary">
         <CloseIcon />
       </CloseIconButton>
-      <ModalHeader
-        onClick={() =>
-          setNestedFoldersHierarchy(nestedFoldersHierarchy.slice(0, -1))
-        }
-      >
-        {currentFolder ? currentFolder.fileName : 'Folders'}
-      </ModalHeader>
+      <Box display="flex" width="100%" alignItems="center" mb={1}>
+        {currentFolder && (
+          <IconButton
+            style={{ color: palette.brightBlue }}
+            onClick={() =>
+              setNestedFoldersHierarchy(nestedFoldersHierarchy.slice(0, -1))
+            }
+          >
+            <ArrowBackIcon />
+          </IconButton>
+        )}
+        <ModalHeader>
+          {currentFolder ? currentFolder.fileName : 'Folders'}
+        </ModalHeader>
+      </Box>
       <Box width="384px" height="384px" overflow="hidden">
         <SelectionList
-          selectedId={selectedFolderIdentifier}
           list={formattedFoldersList}
-          onSelect={setSelectedFolderIdentifier}
           onParentChange={handleFolderChange}
         />
       </Box>
@@ -92,12 +96,7 @@ const SelectPatientFolderModal = ({ closeModal, onMove }) => {
         </FlexButtonWrapper>
         <Box m={1} />
         <FlexButtonWrapper>
-          <Button
-            fullWidth
-            disabled={!selectedFolderIdentifier}
-            onClick={handleMoveClick}
-            size="small"
-          >
+          <Button fullWidth onClick={handleMoveClick} size="small">
             Move
           </Button>
         </FlexButtonWrapper>
