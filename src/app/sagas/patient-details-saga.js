@@ -628,7 +628,7 @@ function* doUpdatePatientDetails({ payload: { details } }) {
     onPatientDetailsEdited();
     const updatedPatientDetails = yield call(PatientApi.updatePatient, details);
     yield put({
-      type: ActionTypes.UPDATE_PATIENT_DETAILS,
+      type: ActionTypes.UPDATE_PATIENT_DETAILS_SUCCESS,
       payload: { details: { ...updatedPatientDetails } },
     });
     yield put(AlertActions.showGlobalAlert(AlertMessages.UPDATED));

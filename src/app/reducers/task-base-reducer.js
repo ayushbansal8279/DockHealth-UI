@@ -6,11 +6,28 @@ import { checkIfTaskMatchesSearch } from 'helpers/search-helpers';
 import {
   TaskStatus,
   updateNestedTask,
+  updateSubtasksInTaskBasingOnPatientWithCallback,
   updateSubtasksInTaskWithCallback,
 } from 'helpers/task-helpers';
 
 const TaskBaseReducer = (state, action, updateStateCallback) => {
   switch (action.type) {
+    case ActionTypes.UPDATE_PATIENT_DETAILS: {
+      const {
+        payload: { details },
+      } = action;
+      const updateTaskFromAction = task => {
+        if (task.patient?.patientIdentifier === details.patientIdentifier) {
+          return {
+            ...task,
+            patient: { ...task.patient, ...details },
+          };
+        }
+        return task;
+      };
+
+      return updateStateCallback(state, updateTaskFromAction);
+    }
     case ActionTypes.ADD_TASK_COMMENT_SUCCESS: {
       const {
         task: { taskIdentifier },

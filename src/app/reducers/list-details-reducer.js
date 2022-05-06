@@ -518,6 +518,31 @@ const ListDetailsReducer = (state = initialState, action) => {
       };
     }
 
+    case ActionTypes.UPDATE_PATIENT_DETAILS: {
+      const {
+        payload: { details },
+      } = action;
+
+      // eslint-disable-next-line sonarjs/prefer-immediate-return
+      const updatedState = {
+        ...state,
+        groupedTasks: {
+          ...state.groupedTasks,
+          taskGroups: state.groupedTasks?.taskGroups?.map(g => ({
+            ...g,
+            tasks: g.tasks.map(t =>
+              t?.itemType === 'BUNDLE' &&
+              t?.patient?.patientIdentifier === details.patientIdentifier
+                ? { ...t, patient: { ...t.patient, ...details } }
+                : t,
+            ),
+          })),
+        },
+      };
+
+      return TaskBaseReducer(updatedState, action, updateTasksStateCallback);
+    }
+
     case ActionTypes.UPDATE_PARTIAL_WORKFLOW_SUCCESS: {
       return updateBundleInState(
         () => ({ ...action.newData }),

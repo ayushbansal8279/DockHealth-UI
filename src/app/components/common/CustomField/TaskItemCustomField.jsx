@@ -13,6 +13,14 @@ import { TaskItemType } from 'helpers/task-helpers';
 import { openDrawer } from 'actions/task-drawer-actions';
 import { useDispatch } from 'react-redux';
 import { pick } from 'ramda';
+import { updatePatient } from 'api/patient-api';
+import {
+  UPDATE_PARTIAL_WORKFLOW_SUCCESS,
+  UPDATE_TASK_SUCCESS,
+} from 'actions/action-types';
+import { showGlobalAlert } from 'alert/actions';
+import AlertMessages from 'alert/AlertMessages';
+import { updatePatientDetails } from 'actions/patient-details-actions';
 
 const TaskItemCustomField = ({
   readOnly,
@@ -23,31 +31,50 @@ const TaskItemCustomField = ({
   onClick,
 }) => {
   const { value } = customFieldValue || {};
+  const patientType = field.targetType === 'PATIENT';
+  const isWorkflow =
+    task.itemType === TaskItemType.BUNDLE ||
+    task.itemType === TaskItemType.TEMPLATE;
 
   const dispatch = useDispatch();
 
   const handleClick = useCallback(() => {
-    if (typeof onClick === 'function') {
-      onClick(field.identifier, task);
-    } else {
-      dispatch(openDrawer(field.identifier));
-      dispatch(storeAsCurrentTask(task));
+    if (!patientType) {
+      if (typeof onClick === 'function') {
+        onClick(field.identifier, task);
+      } else {
+        dispatch(openDrawer(field.identifier));
+        dispatch(storeAsCurrentTask(task));
+      }
     }
-  }, [dispatch, field.identifier, onClick, task]);
+  }, [dispatch, field.identifier, onClick, patientType, task]);
 
-  const handleChange = newValue => {
-    const taskMetaData = task.taskMetaData
-      ?.filter(tmd => tmd.customFieldIdentifier !== field.identifier)
-      ?.map(pick(['customFieldIdentifier', 'value']));
-    taskMetaData.push({
-      customFieldIdentifier: field.identifier,
-      value: newValue,
-    });
-    // eslint-disable-next-line no-unused-expressions
-    task.itemType === TaskItemType.BUNDLE ||
-    task.itemType === TaskItemType.TEMPLATE
-      ? dispatch(updatePartialWorkflow(task?.identifier, { taskMetaData }))
-      : dispatch(partialUpdateTask(task?.identifier, { taskMetaData }));
+  const handleChange = async newValue => {
+    if (patientType) {
+      if (task?.patient) {
+        const patientMetaData = (task?.patient?.patientMetaData || [])
+          ?.filter(tmd => tmd.customFieldIdentifier !== field.identifier)
+          ?.map(pick(['customFieldIdentifier', 'value']));
+        patientMetaData.push({
+          customFieldIdentifier: field.identifier,
+          value: newValue,
+        });
+        dispatch(updatePatientDetails({ ...task?.patient, patientMetaData }));
+      }
+    } else {
+      const taskMetaData = task.taskMetaData
+        ?.filter(tmd => tmd.customFieldIdentifier !== field.identifier)
+        ?.map(pick(['customFieldIdentifier', 'value']));
+      taskMetaData.push({
+        customFieldIdentifier: field.identifier,
+        value: newValue,
+      });
+      if (isWorkflow) {
+        dispatch(updatePartialWorkflow(task?.identifier, { taskMetaData }));
+      } else {
+        dispatch(partialUpdateTask(task?.identifier, { taskMetaData }));
+      }
+    }
   };
   switch (field.fieldType) {
     case FieldType.BOOL:

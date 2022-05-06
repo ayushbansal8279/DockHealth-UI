@@ -12,6 +12,7 @@ import {
 
 interface ColumnSortHeaderProps {
   id: string;
+  disabled?: boolean;
   label?: ReactChild;
   sort: { key: string | null; order: string | null };
   width?: number;
@@ -26,6 +27,7 @@ const ColumnSortHeader: React.FC<ColumnSortHeaderProps> = ({
   sort,
   onSortChange,
   truncateEnabled,
+  disabled,
 }) => {
   const descriptionTextReference = useRef();
   const [isHovered, setIsHovered] = useState<boolean>(false);
@@ -57,7 +59,7 @@ const ColumnSortHeader: React.FC<ColumnSortHeaderProps> = ({
   return (
     <SortButton
       truncateEnabled={truncateEnabled}
-      disabled={!label}
+      disabled={!label || disabled}
       type="button"
       width={width}
       onClick={switchSort}

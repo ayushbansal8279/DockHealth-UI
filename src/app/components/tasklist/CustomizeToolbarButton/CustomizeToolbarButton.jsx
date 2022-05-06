@@ -45,6 +45,8 @@ const CustomizeToolbarButton = ({
     setColumnsConfig,
     customColumnsConfig,
     setCustomColumnsConfig,
+    patientCustomColumnsConfig,
+    setPatientCustomColumnsConfig,
   } = useColumnsConfig();
 
   const ColumnOptionNames = {
@@ -91,9 +93,40 @@ const CustomizeToolbarButton = ({
       });
       setCustomColumnsConfig(newSetup);
       if (typeof onChange === 'function')
-        onChange(newSetup, { isCustomColumn: true });
+        onChange([...newSetup, ...patientCustomColumnsConfig], {
+          isCustomColumn: true,
+        });
     },
-    [customColumnsConfig, onChange, setCustomColumnsConfig],
+    [
+      customColumnsConfig,
+      onChange,
+      patientCustomColumnsConfig,
+      setCustomColumnsConfig,
+    ],
+  );
+
+  const onClickPatientCustomFieldsCheckbox = useCallback(
+    column => {
+      const { identifier } = column;
+      // eslint-disable-next-line sonarjs/no-identical-functions
+      const newSetup = patientCustomColumnsConfig.map(f => {
+        if (f.identifier === identifier) {
+          return { ...f, isChecked: !f.isChecked };
+        }
+        return f;
+      });
+      setPatientCustomColumnsConfig(newSetup);
+      if (typeof onChange === 'function')
+        onChange([...newSetup, ...customColumnsConfig], {
+          isCustomColumn: true,
+        });
+    },
+    [
+      patientCustomColumnsConfig,
+      setPatientCustomColumnsConfig,
+      onChange,
+      customColumnsConfig,
+    ],
   );
 
   const columnsConfigToDisplay = useMemo(() => {
@@ -144,6 +177,35 @@ const CustomizeToolbarButton = ({
               );
             })}
           </List>
+          {patientCustomColumnsConfig?.length > 0 && (
+            <>
+              <Box display="flex" justifyContent="space-between" mt={1}>
+                <Box mx={0.5} />
+                <ListItemText>
+                  <b>Patient Custom Columns</b>
+                </ListItemText>
+              </Box>
+              <List>
+                {patientCustomColumnsConfig.map(column => {
+                  const { name, isChecked = false } = column;
+                  return (
+                    name && (
+                      <MenuItem
+                        key={column.identifier}
+                        onClick={() =>
+                          onClickPatientCustomFieldsCheckbox(column)
+                        }
+                      >
+                        <Checkbox isChecked={isChecked} />
+                        <Box mx={0.5} />
+                        <ListItemText>{name}</ListItemText>
+                      </MenuItem>
+                    )
+                  );
+                })}
+              </List>
+            </>
+          )}
           {userHasTaskCustomFieldsFeature && (
             <>
               <Spacer />
