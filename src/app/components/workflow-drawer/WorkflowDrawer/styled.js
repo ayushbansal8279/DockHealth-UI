@@ -33,7 +33,7 @@ export const Backdrop = styled.div`
 `;
 
 export const SectionContainer = styled.div`
-  padding: 32px;
+  padding: 16px 32px 16px 32px;
 
   ${({ withBackground }) =>
     withBackground && `background: ${palette.coolGrey4};`}

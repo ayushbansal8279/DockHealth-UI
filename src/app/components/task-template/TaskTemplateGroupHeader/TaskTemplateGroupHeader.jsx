@@ -14,7 +14,7 @@ import { pluck } from 'ramda';
 import { extractTasksAndSubtasks } from 'helpers/tasklist-helpers';
 import { useDispatch, useSelector } from 'react-redux';
 import ThreeDotsIcon from 'img/three-dots';
-import { MoreVert } from '@material-ui/icons';
+import { FormatColorResetOutlined, MoreVert } from '@material-ui/icons';
 import * as ModalActions from 'modal/actions';
 import * as WorkflowActions from 'actions/workflow-actions';
 import * as TaskActions from 'actions/task-actions';
@@ -53,6 +53,7 @@ import TaskHeaderPatient from '../TaskTemplatePatient/TaskTemplatePatient';
 import TemplateItemWorkflowStatus from '../TaskTemplateWorkflowStatus/TaskTemplateWorkflowStatus';
 import TaskTemplateMembers from '../TaskTemplateMembers/TaskTemplateMembers';
 import TaskTemplateStartDate from '../TaskTemplateStartDate/TaskTemplateStartDate';
+import TaskTemplateIcons from '../TaskTemplateIcons/TaskTemplateIcons';
 import {
   TaskTemplateGroupHeaderContainer,
   TaskTemplateProgressCircle,
@@ -85,7 +86,11 @@ const TaskTemplateGroupHeader = ({
     tasksCount,
     tasksCompletedCount,
     taskListIdentifier,
+    comments,
+    labels,
+    attachments,
   } = templateGroup;
+
   const { dragHandleProps } = draggableProvided;
   const [isHovered, setIsHovered, unsetIsHovered] = useBoolean(false);
   const { bulkEditIsActive } = useContext(BulkEditContext);
@@ -440,7 +445,19 @@ const TaskTemplateGroupHeader = ({
         <TaskItemCell
           key={`activity_${identifier}`}
           width={TaskItemColumnWidth[TaskItemColumn.ACTIVITY]}
-        />
+        >
+          <TaskTemplateIcons
+            matchComments={false}
+            comments={comments}
+            isHovered={isHovered}
+            workflow={templateGroup}
+            matchLabels={false}
+            labels={labels}
+            matchAttachments={false}
+            attachments={attachments}
+            dispatch={dispatch}
+          />
+        </TaskItemCell>
       )}
       {columnsConfig[TaskItemColumn.START_DATE] && (
         <TaskItemCell

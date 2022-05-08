@@ -1,11 +1,13 @@
-import React, { useState, useRef, useCallback } from 'react';
+import React, { useState, useRef, useCallback, useEffect } from 'react';
 import { isEmpty } from 'ramda';
 import { useDropzone } from 'react-dropzone';
 import * as WorkflowApi from 'api/workflow-api';
 import {
   workflowIdentifierSelector,
   workflowAttachmentsSelector,
+  workflowAutofocusFieldSelector,
 } from 'selectors/workflow-drawer-selectors';
+import { WorkflowDrawerFieldNames } from 'helpers/workflow-drawer-helpers';
 import { showGlobalAlert, showGlobalErrorAlert } from 'alert/actions';
 import * as WorkflowActions from 'actions/workflow-actions';
 import Loader from 'components/common/Loader/Loader';
@@ -45,6 +47,18 @@ const AttachmentSection = () => {
     unsetUploadingAttachments,
   ] = useBoolean(false);
   const [uploadProgress, setUploadProgress] = useState(0);
+
+  const attachmentReference = useRef(null);
+  const autoFocusFieldName = useSelector(workflowAutofocusFieldSelector);
+
+  useEffect(() => {
+    if (
+      attachmentReference.current &&
+      autoFocusFieldName === WorkflowDrawerFieldNames.ATTACHMENT
+    ) {
+      attachmentReference.current.scrollIntoView(true);
+    }
+  }, [autoFocusFieldName]);
 
   const addAttachment = useCallback(
     files => {
@@ -149,6 +163,7 @@ const AttachmentSection = () => {
 
   return (
     <DrawerSection title="Attachments">
+      <div ref={attachmentReference} />
       <AttachmentPreview
         attachment={previewedAttachment}
         attachmentsSources={attachmentSource ? [attachmentSource] : []}
