@@ -6,6 +6,7 @@ import { currentTaskTemplateIdentifierSelector } from 'selectors/task-template-s
 import Folder from 'img/folder';
 import ArrowLeftIcon from 'img/arrow-left';
 import debounce from 'lodash.debounce';
+
 import { TaskTemplateType } from 'helpers/task-helpers';
 import {
   getTemplatesForSpecificFolder,
@@ -28,31 +29,6 @@ import {
   StripedDataGrid,
 } from './styled';
 
-const columns = [
-  {
-    field: 'workflowName',
-    headerName: 'WORKFLOW NAME',
-    width: 300,
-    renderCell: props => {
-      return props?.row?.type === TaskTemplateType.FOLDER ? (
-        <FolderIconContainer>
-          <img src={Folder} alt="folder icon" />
-          <span>{props?.value}</span>
-        </FolderIconContainer>
-      ) : (
-        <div>{props?.value ?? ''}</div>
-      );
-    },
-  },
-  { field: 'creator', headerName: 'CREATOR', width: 150 },
-  {
-    field: 'dateCreated',
-    headerName: 'DATE CREATED',
-    width: 170,
-  },
-  { field: 'type', hide: true },
-];
-
 const SmartFlowListModal = ({ fetchMethod, closeModal, setWorkflow }) => {
   const [smartFlows, setSmartFlows] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
@@ -63,17 +39,56 @@ const SmartFlowListModal = ({ fetchMethod, closeModal, setWorkflow }) => {
     currentTaskTemplateIdentifierSelector,
   );
 
+  const columns = [
+    {
+      field: 'workflowName',
+      headerName: 'WORKFLOW NAME',
+      width: 300,
+      renderCell: props => {
+        return props?.row?.type === TaskTemplateType.FOLDER ? (
+          <FolderIconContainer>
+            <img src={Folder} alt="folder icon" />
+            <span>{props?.value}</span>
+          </FolderIconContainer>
+        ) : (
+          <div>{props?.value ?? ''}</div>
+        );
+      },
+      sortComparator: (v1, v2, parameter1, parameter2) =>
+        parameter1.api
+          .getCellValue(parameter1.id, 'type')
+          .localeCompare(parameter2.api.getCellValue(parameter2.id, 'type')),
+    },
+    { field: 'creator', headerName: 'CREATOR', width: 150 },
+    {
+      field: 'dateCreated',
+      headerName: 'DATE CREATED',
+      width: 170,
+      sortComparator: (v1, v2) => {
+        return Date.parse(v2) - Date.parse(v1);
+      },
+    },
+    { field: 'type', hide: true },
+  ];
+
+  const sortModel = [
+    {
+      field: 'workflowName',
+      sort: 'asc',
+    },
+  ];
+
   const mapDataToGrid = useCallback(
     data => {
       return data
         .filter(flow => flow.identifier !== currentWorkflowIdentifier)
         .map(flow => {
           return {
-            id: flow?.identifier,
-            workflowName: flow?.name,
-            creator: flow?.creator.name,
-            dateCreated: moment(flow?.createdDateTime).format('MM/DD/YYYY'),
-            type: flow?.templateType,
+            id: flow.identifier,
+            workflowName: flow.name,
+            creator: flow.creator.name,
+            dateCreated: moment(flow.createdDateTime).format('MM/DD/YYYY'),
+            type: flow.templateType,
           };
         });
     },
@@ -180,6 +195,7 @@ const SmartFlowListModal = ({ fetchMethod, closeModal, setWorkflow }) => {
           <StripedDataGrid
             sortingOrder={['desc', 'asc']}
             loading={isLoading}
+            sortModel={sortModel}
             rows={smartFlows}
             columns={columns}
             hideFooterSelectedRowCount
