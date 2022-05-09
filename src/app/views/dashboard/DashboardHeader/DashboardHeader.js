@@ -1,5 +1,6 @@
 import React, { useCallback, useMemo, useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
+import { useLocation } from 'react-router-dom';
 import {
   dashboardTasksSelector,
   dashboardTabNameSelector,
@@ -35,8 +36,11 @@ import {
   selectedQuickFilterSelector,
 } from 'selectors/mega-filter-selectors';
 import { DashboardTasksTab } from 'helpers/dashboard-helpers';
+import { getViewTypeFromQueryString, ViewType } from 'helpers/view-type-helper';
 
 const DashboardHeader = () => {
+  const { search } = useLocation();
+  const viewType = getViewTypeFromQueryString(search);
   const [searchValue, setSearchValue] = useState('');
   const dispatch = useDispatch();
   const isFetchingFilters = useSelector(isFetchingDashboardFiltersSelector);
@@ -160,28 +164,32 @@ const DashboardHeader = () => {
       />
       <LayoutHeader.Spacer />
       <LayoutHeader.Title title={`Hello ${currentUser.firstName}`} />
-      <LayoutHeader.Spacer />
-      <HeaderSearch value={searchValue} onChange={handleSearchChange} />
-      <LayoutHeader.Spacer />
-      <MegaFilter
-        filters={filterOptions}
-        selectedFilters={selectedFilters}
-        onSelectFilters={compose(dispatch, selectDashboardFilters)}
-        taskStatus="INCOMPLETE"
-        activeItemsAmount={activeTasksCount}
-        onOpen={handleMegaFilterOpen}
-        isFetching={isFetchingFilters}
-        quickFiltersList={quickFiltersList}
-        addQuickFilterOption={addQuickFilterOption}
-        selectedQuickFilter={selectedQuickFilter}
-        selectQuickFilter={handleSelectQuickFilter}
-        onSaveClick={handleSaveQuickFilter}
-        onSaveAsNewClick={handleSaveAsQuickFilter}
-        wasChangedFilters={wasChangedFilters}
-        onQuickFilterCreate={handleQuickFilterCreate}
-        onQuickFilterUpdate={handleQuickFilterUpdate}
-        onQuickFilterDelete={handleQuickFilterDelete}
-      />
+      {viewType !== ViewType.CALENDAR_VIEW && (
+        <>
+          <LayoutHeader.Spacer />
+          <HeaderSearch value={searchValue} onChange={handleSearchChange} />
+          <LayoutHeader.Spacer />
+          <MegaFilter
+            filters={filterOptions}
+            selectedFilters={selectedFilters}
+            onSelectFilters={compose(dispatch, selectDashboardFilters)}
+            taskStatus="INCOMPLETE"
+            activeItemsAmount={activeTasksCount}
+            onOpen={handleMegaFilterOpen}
+            isFetching={isFetchingFilters}
+            quickFiltersList={quickFiltersList}
+            addQuickFilterOption={addQuickFilterOption}
+            selectedQuickFilter={selectedQuickFilter}
+            selectQuickFilter={handleSelectQuickFilter}
+            onSaveClick={handleSaveQuickFilter}
+            onSaveAsNewClick={handleSaveAsQuickFilter}
+            wasChangedFilters={wasChangedFilters}
+            onQuickFilterCreate={handleQuickFilterCreate}
+            onQuickFilterUpdate={handleQuickFilterUpdate}
+            onQuickFilterDelete={handleQuickFilterDelete}
+          />
+        </>
+      )}
     </LayoutHeader>
   );
 };

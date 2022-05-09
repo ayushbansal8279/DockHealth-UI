@@ -1,5 +1,5 @@
 import React from 'react';
-import { FormContext, useForm } from 'react-hook-form';
+import { FormProvider, useForm } from 'react-hook-form';
 import { userProfileSelector } from 'selectors/user-selectors';
 import { useSelector } from 'react-redux';
 import OnboardingIndicator from 'components/common/OnboardingIndicator/OnboardingIndicator';
@@ -46,7 +46,7 @@ const OrganizationForm = ({ onSubmit, onCancel }) => {
         </>
       )}
       <FormWrapper onSubmit={handleSubmit(onSubmit)}>
-        <FormContext {...formMethods}>
+        <FormProvider {...formMethods}>
           <Title>Name your organization</Title>
           <Spacing vertical={5} />
           <Description>
@@ -75,7 +75,7 @@ const OrganizationForm = ({ onSubmit, onCancel }) => {
               </Button>
             </ButtonWrapper>
           </ButtonsContainer>
-        </FormContext>
+        </FormProvider>
       </FormWrapper>
     </>
   );

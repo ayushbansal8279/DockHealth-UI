@@ -34,8 +34,6 @@ const DueDateSection = ({ disabled }) => {
     selectedWorkflow || {};
   const momentDueDate = dueDateTime ? moment(dueDateTime) : null;
 
-  console.log('momentDueDate', selectedWorkflow);
-
   useEffect(() => {
     if (
       inputReference.current &&

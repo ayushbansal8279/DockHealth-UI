@@ -9,7 +9,7 @@ import {
   useEffect,
   useMemo,
 } from 'react';
-import { useHistory } from 'react-router-dom';
+import { useHistory, useParams } from 'react-router-dom';
 import { useDispatch, useSelector, batch } from 'react-redux';
 import moment from 'moment';
 import { EditorState } from 'draft-js';
@@ -40,6 +40,8 @@ import { checkIfTemplateTask, TaskGroupType } from 'helpers/task-helpers';
 import { TIME_12H_FORMAT } from 'helpers/task-drawer-helpers';
 import * as AlertActions from 'alert/actions';
 import AlertMessages from 'alert/AlertMessages';
+import { createSingleTaskPath } from 'routing/helpers/paths';
+import copy from 'copy-to-clipboard';
 
 const initializeTaskDrawerHooks = ({
   onTaskUpdate,
@@ -47,6 +49,8 @@ const initializeTaskDrawerHooks = ({
   onTaskDelete,
 }) => {
   const history = useHistory();
+  const { identifier } = useParams();
+
   const dispatch = useDispatch();
   const taskDrawerOpen = useSelector(taskDrawerOpenSelector);
   const taskDrawerFocusField = useSelector(taskDrawerFocusFieldSelector);
@@ -238,10 +242,11 @@ const initializeTaskDrawerHooks = ({
   const isTemplateTask = useMemo(() => checkIfTemplateTask(selectedTask), [
     selectedTask,
   ]);
-  const onClickParentTask = useCallback(
-    () => storeAsCurrentTask(selectedParentTask)(dispatch),
-    [dispatch, selectedParentTask],
-  );
+  const onClickParentTask = useCallback(() => {
+    return identifier
+      ? history.push(createSingleTaskPath(selectedParentTask.identifier))
+      : dispatch(storeAsCurrentTask(selectedParentTask));
+  }, [dispatch, history, identifier, selectedParentTask]);
 
   const handleWorkflowReferenceClick = useCallback(() => {
     dispatch(
@@ -252,6 +257,15 @@ const initializeTaskDrawerHooks = ({
       ),
     );
   }, [dispatch, isTemplateTask, parentBundle, taskTemplate]);
+
+  const handleCopyLink = useCallback(() => {
+    copy(
+      `${window.location.origin}/#${createSingleTaskPath(
+        selectedTaskIdentifier,
+      )}`,
+    );
+    dispatch(AlertActions.showGlobalAlert('Url copied to clipboard'));
+  }, [dispatch, selectedTaskIdentifier]);
 
   return {
     closeTaskDrawer,
@@ -275,6 +289,7 @@ const initializeTaskDrawerHooks = ({
     taskListIdentifier,
     handleWorkflowReferenceClick,
     clearFormStates,
+    handleCopyLink,
   };
 };
 

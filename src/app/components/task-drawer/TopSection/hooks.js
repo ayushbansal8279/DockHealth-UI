@@ -6,12 +6,16 @@ import { checkIfTemplateTask } from 'helpers/task-helpers';
 import { userProfileSelector } from 'selectors/user-selectors';
 import { selectedTaskSelector } from 'selectors/task-drawer-selectors';
 import { toggleCompleteTask, moveTask } from 'actions/task-actions';
+import { useParams, useHistory } from 'react-router-dom';
+import { HOME_PATH } from 'routing/helpers/paths';
 
 const initializeTaskDrawerTopSectionHooks = ({
   onDelete,
   onDuplicate,
   closeTaskDrawer,
 }) => {
+  const { identifier } = useParams();
+  const history = useHistory();
   const dispatch = useDispatch();
   const selectedTask = useSelector(selectedTaskSelector);
   const templateBundleIdentifier = selectedTask?.templateBundleIdentifier;
@@ -46,7 +50,11 @@ const initializeTaskDrawerTopSectionHooks = ({
           parentTaskIdentifier || null,
         ),
       );
-      closeTaskDrawer();
+      if (!identifier) {
+        closeTaskDrawer();
+      } else {
+        history.push(HOME_PATH);
+      }
     };
 
     const openMoveTasksWithSubtasksModal = destination =>
@@ -125,6 +133,7 @@ const initializeTaskDrawerTopSectionHooks = ({
   };
 
   const onCompleteToggle = useCallback(
+    // eslint-disable-next-line sonarjs/cognitive-complexity
     event => {
       if (!isTaskStatusTogglingDisabled && isDependencyEmptyOrCompleted) {
         const hasIncompletedSubtasks =
@@ -149,9 +158,11 @@ const initializeTaskDrawerTopSectionHooks = ({
                 currentUser,
                 isBundleTask,
               )(dispatch);
-              setTimeout(() => {
-                closeTaskDrawer();
-              }, 1000);
+              if (!identifier) {
+                setTimeout(() => {
+                  closeTaskDrawer();
+                }, 1000);
+              }
             },
           };
           dispatch(openModal('CompleteAllTasks', modalProps));
@@ -161,9 +172,11 @@ const initializeTaskDrawerTopSectionHooks = ({
             currentUser,
             isBundleTask,
           )(dispatch);
-          setTimeout(() => {
-            closeTaskDrawer();
-          }, 1000);
+          if (!identifier) {
+            setTimeout(() => {
+              closeTaskDrawer();
+            }, 1000);
+          }
         }
       }
       event.stopPropagation();
@@ -175,6 +188,7 @@ const initializeTaskDrawerTopSectionHooks = ({
       templateBundleIdentifier,
       dispatch,
       currentUser,
+      identifier,
       closeTaskDrawer,
     ],
   );

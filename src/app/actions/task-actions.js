@@ -4,8 +4,90 @@ import * as AlertActions from 'alert/actions';
 import { getTasksGroupsList } from 'actions/list-details-actions';
 import { openDrawer } from 'actions/task-drawer-actions';
 import { TASK_DISAPPEAR_DELAY } from 'helpers/task-update-helper';
+import * as ListDetailsApi from 'api/list-details-api';
 import * as ActionTypes from './action-types';
 import AlertMessages from '../alert/AlertMessages';
+
+export function storeAsCurrentTask(task) {
+  return dispatch => {
+    dispatch({ type: ActionTypes.SET_AS_CURRENT_TASK, task });
+  };
+}
+
+const getListWithGroupsAction = ({ status }) => {
+  if (status === 'INCOMPLETE') {
+    return ActionTypes.GET_TASKS_BY_GROUPS_SUCCESS;
+  }
+
+  return ActionTypes.GET_COMPLETED_TASKS_BY_GROUPS_SUCCESS;
+};
+
+export function getListTasksGroupedByTaskGroup(
+  taskListIdentifier,
+  sortBy,
+  status,
+  startPosition = 0,
+  endPosition = 0,
+  loadingMore = false,
+  viewMode,
+) {
+  const action = getListWithGroupsAction({ status });
+
+  return dispatch => {
+    if (loadingMore && status === 'COMPLETE') {
+      dispatch({
+        type: ActionTypes.GET_MORE_TASKS_REQUEST,
+      });
+    }
+
+    return ListDetailsApi.getListTasksGroupedByTaskGroup(
+      taskListIdentifier,
+      status,
+      sortBy,
+      startPosition,
+      endPosition,
+      viewMode,
+    )
+      .then(groupedTasks => {
+        dispatch({ type: action, groupedTasks, loadingMore });
+
+        const selectedTaskIdentifier = sessionStorage.getItem(
+          'selectedTaskIdentifier',
+        );
+
+        const allTasks = [];
+        groupedTasks.forEach(taskGroup => {
+          if (taskGroup.tasks) {
+            allTasks.push(taskGroup.tasks);
+          }
+        });
+        const selectedTask = allTasks
+          .reduce((allTasksArray, tasksArray) => [
+            ...allTasksArray,
+            ...tasksArray,
+          ])
+          .find(
+            ({ taskIdentifier }) => taskIdentifier === selectedTaskIdentifier,
+          );
+
+        if (selectedTask) {
+          dispatch(storeAsCurrentTask(selectedTask));
+          dispatch(openDrawer());
+          sessionStorage.removeItem('selectedTaskIdentifier');
+        } else if (selectedTaskIdentifier) {
+          TaskApi.getTaskDetails(selectedTaskIdentifier).then(data => {
+            dispatch(storeAsCurrentTask(data));
+            dispatch(openDrawer());
+          });
+        }
+
+        return groupedTasks;
+      })
+      .catch(error => {
+        throw error;
+      });
+  };
+}
 
 export function refreshTaskBundle(templateBundleIdentifier) {
   return {
@@ -22,12 +104,6 @@ export const chooseTaskDecisionOutcome = (
   type: ActionTypes.CHOOSE_DECISION_TASK_OPTION,
   payload: { taskOutcomeIdentifier, task, templateBundleIdentifier },
 });
-
-export function storeAsCurrentTask(task) {
-  return dispatch => {
-    dispatch({ type: ActionTypes.SET_AS_CURRENT_TASK, task });
-  };
-}
 
 const shapeTask = task => {
   const { assignedTo, patient } = task;
@@ -506,8 +582,11 @@ export function insertCreatedTask(taskIdentifier) {
   };
 }
 
-export const refreshAndOpenAsCurrentTask = selectedTask => dispatch =>
-  TaskApi.getTaskDetails(selectedTask.taskIdentifier)
+export const refreshAndOpenAsCurrentTask = (
+  selectedTask,
+  shouldOpenDrawer = true,
+) => dispatch => {
+  return TaskApi.getTaskDetails(selectedTask.taskIdentifier)
     .then(task => {
       // explicitly mark task as updated so we can show the flag
       task.updated = true; // eslint-disable-line no-param-reassign
@@ -515,12 +594,16 @@ export const refreshAndOpenAsCurrentTask = selectedTask => dispatch =>
         type: ActionTypes.SET_AS_CURRENT_TASK,
         task,
       });
-      dispatch(openDrawer());
+      if (shouldOpenDrawer) dispatch(openDrawer());
       return task;
     })
     .catch(error => {
+      dispatch({
+        type: ActionTypes.SET_AS_CURRENT_TASK_ERROR,
+      });
       throw error;
     });
+};
 
 export function reassignTask(taskIdentifier, userId) {
   return dispatch =>

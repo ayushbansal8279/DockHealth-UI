@@ -8,6 +8,7 @@ export const TEAM_SETUP_PATH = '/onboarding/team-setup';
 export const QUESTIONS_PATH = '/onboarding/eula';
 export const TRIAL_EXPIRATION_PATH = '/settings/trial-check';
 export const HOME_PATH = '/core/home/my-tasks';
+export const HOME_SHARED_PATH = '/core/home/shared-with-me-tasks';
 export const HOME_ALL_TASKS_PATH = '/core/home/all-tasks';
 export const UNENROLLED_USER = '/auth/unEnrolledUser';
 export const DEFAULT_REDIRECT_PATH = '/auth/login';
@@ -18,10 +19,14 @@ export const CUSTOM_FIELDS_SETTINGS_PATH = '/settings/custom-fields';
 export const WORKFLOW_LIBRARY_PATH = '/core/workflows/library';
 export const WORKFLOW_BUILDER_PATH = '/core/workflows/builder';
 export const USERS_PATH = '/core/people';
+export const SINGLE_TASK_PATH = '/core/task';
 
 export const TASK_LIST_PATH = '/core/tasks';
 export const PATIENTS_LIST_ALL = '/core/patients/list/all';
 export const PATIENTS_LIST = '/core/patients/list';
+
+export const createSingleTaskPath = taskIdentifier =>
+  `${SINGLE_TASK_PATH}/${taskIdentifier}`;
 
 export const createTaskListPath = taskListIdentifier =>
   `${TASK_LIST_PATH}/${taskListIdentifier}`;
@@ -31,6 +36,14 @@ export const createPatientListPath = patientListIdentifier =>
 
 export const createPatientDetailsPath = patientIdentifier =>
   `/core/patient/${patientIdentifier}`;
+
+export const createPatientAttachmentsPath = (
+  patientIdentifier,
+  folderIdentifier = null,
+) =>
+  `/core/patient/${patientIdentifier}/files${
+    folderIdentifier ? `/${folderIdentifier}` : ``
+  }`;
 
 export const createPatientDetailsListPath = (
   patientIdentifier,

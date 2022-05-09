@@ -25,6 +25,7 @@ import LabelsSection from '../LabelsSection/LabelsSection';
 import CommentSection from '../CommentSection/CommentSection';
 import AttachmentSection from '../AttachmentSection/AttachmentSection';
 import TasksSection from '../TasksSection/TasksSection';
+import CustomFieldsSection from '../../task-drawer/CustomFieldsSection/CustomFieldsSection';
 import {
   Backdrop,
   AnimatedContainer,
@@ -38,7 +39,6 @@ const WorkflowDrawer = () => {
   const history = useHistory();
   const open = useSelector(isWorkflowDrawerOpenSelector);
   const selectedWorkflow = useSelector(workflowSelector);
-
   const isTemplateTask = useMemo(
     () => checkIfTemplateWorkflow(selectedWorkflow),
     [selectedWorkflow],
@@ -117,6 +117,9 @@ const WorkflowDrawer = () => {
                 <CommentSection />
               </SectionContainer>
               <SectionSpacer />
+              <>
+                <CustomFieldsSection />
+              </>
               <SectionContainer>
                 <HistorySection />
               </SectionContainer>

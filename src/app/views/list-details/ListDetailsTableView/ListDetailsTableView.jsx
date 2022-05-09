@@ -4,19 +4,16 @@ import { TaskListTabName } from 'helpers/tasklist-helpers';
 import * as ListDetailsActions from 'actions/list-details-actions';
 import TaskDrawer from 'components/task-drawer/TaskDrawer/TaskDrawer';
 import BulkEditSection from 'components/tasklist/BulkEditSection/BulkEditSection';
-import { ViewType } from 'helpers/view-type-helper';
-import Calendar from 'components/common/Calendar/Calendar';
 import HorizontallyScrolledViewLayout from 'components/template/HorizontallyScrolledViewLayout/HorizontallyScrolledViewLayout';
 import StickyContainer from 'components/common/HorizontalScroll/StickyContainer';
-import OpenedTasksView from './ListDetailsOpenedTasksContainer/ListDetailsOpenedTasksContainer';
-import CompletedTasksView from './ListDetailsCompletedTasksContainer/ListDetailsCompletedTasksContainer';
+import OpenedTasksView from '../ListDetailsOpenedTasksContainer/ListDetailsOpenedTasksContainer';
+import CompletedTasksView from '../ListDetailsCompletedTasksContainer/ListDetailsCompletedTasksContainer';
+import ListDetailsHeader from '../ListDetailsHeader/ListDetailsHeader';
+import ListDetailsToolbar from '../ListDetailsToolbar/ListDetailsToolbar';
 import initializeListDetailsViewHooks from './hooks';
 import { TaskViewContainer } from './styled';
-import ListDetailsHeader from './ListDetailsHeader/ListDetailsHeader';
-import ListDetailsToolbar from './ListDetailsToolbar/ListDetailsToolbar';
 
-const ListDetailsView = props => {
-  const { match, history } = props;
+const ListDetailsTableView = () => {
   const {
     bulkEditIsDisabled,
     bulkEditTasks,
@@ -45,9 +42,8 @@ const ListDetailsView = props => {
     displayListPreferences,
     setDisplayListPreferences,
     setDisplayColumnPreferences,
-    viewType,
     dispatch,
-  } = initializeListDetailsViewHooks(match, history);
+  } = initializeListDetailsViewHooks();
 
   const additionalToolbarOptions = [
     {
@@ -59,7 +55,6 @@ const ListDetailsView = props => {
       checked: displayListPreferences.SHOW_WORKFLOW_DETAILS,
     },
     {
-      disabled: !displayListPreferences.SHOW_WORKFLOW_DETAILS,
       name:
         selectedTab === TaskListTabName.COMPLETE
           ? 'Show Workflow Uncompleted Tasks'
@@ -102,49 +97,41 @@ const ListDetailsView = props => {
                 additionalOptions={additionalToolbarOptions}
               />
             </StickyContainer>
-            {viewType === ViewType.CALENDAR_VIEW && (
-              <Calendar
-                taskList={[...openedTasks, ...completedTasks]}
+            {selectedTab === TaskListTabName.COMPLETE ? (
+              <CompletedTasksView
+                viewSetup={displayListPreferences}
+                toggleCompleteTask={toggleTaskCompletedStatus}
+                onTaskUpdate={handleTaskUpdate}
+                searchValue={searchValue}
+                listUniqueKey={taskListIdentifier}
+                loadMoreTasksForList={loadMoreTasksForList}
+                sort={sort}
+                onSortChange={compose(
+                  dispatch,
+                  ListDetailsActions.sortListDetailsTasks,
+                )}
+              />
+            ) : (
+              <OpenedTasksView
+                viewSetup={displayListPreferences}
                 taskListIdentifier={taskListIdentifier}
-                showInCompleteTasksOnly={selectedTab === TaskListTabName.OPEN}
+                quickAddTask={quickAddTask}
+                createTaskGroupList={handleCreateGroup}
+                toggleCompleteTask={toggleTaskCompletedStatus}
+                onTaskUpdate={handleTaskUpdate}
+                updateWorkflowStatus={handleUpdateWorkflowStatus}
+                searchValue={searchValue}
+                sort={sort}
+                onSortChange={compose(
+                  dispatch,
+                  ListDetailsActions.sortListDetailsTasks,
+                )}
+                listUniqueKey={taskListIdentifier}
+                taskCounters={taskCounters}
+                loadTasksForTaskGroup={loadTasksForTaskGroup}
+                resetSort={resetSort}
               />
             )}
-            {viewType === ViewType.LIST_VIEW &&
-              (selectedTab === TaskListTabName.COMPLETE ? (
-                <CompletedTasksView
-                  viewSetup={displayListPreferences}
-                  toggleCompleteTask={toggleTaskCompletedStatus}
-                  onTaskUpdate={handleTaskUpdate}
-                  searchValue={searchValue}
-                  listUniqueKey={taskListIdentifier}
-                  loadMoreTasksForList={loadMoreTasksForList}
-                  sort={sort}
-                  onSortChange={compose(
-                    dispatch,
-                    ListDetailsActions.sortListDetailsTasks,
-                  )}
-                />
-              ) : (
-                <OpenedTasksView
-                  viewSetup={displayListPreferences}
-                  taskListIdentifier={taskListIdentifier}
-                  quickAddTask={quickAddTask}
-                  createTaskGroupList={handleCreateGroup}
-                  toggleCompleteTask={toggleTaskCompletedStatus}
-                  onTaskUpdate={handleTaskUpdate}
-                  updateWorkflowStatus={handleUpdateWorkflowStatus}
-                  searchValue={searchValue}
-                  sort={sort}
-                  onSortChange={compose(
-                    dispatch,
-                    ListDetailsActions.sortListDetailsTasks,
-                  )}
-                  listUniqueKey={taskListIdentifier}
-                  taskCounters={taskCounters}
-                  loadTasksForTaskGroup={loadTasksForTaskGroup}
-                  resetSort={resetSort}
-                />
-              ))}
           </TaskViewContainer>
           <TaskDrawer
             fromFirstAddTask={taskCounters?.incomplete === 0}
@@ -159,4 +146,4 @@ const ListDetailsView = props => {
   );
 };
 
-export default ListDetailsView;
+export default ListDetailsTableView;

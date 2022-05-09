@@ -32,7 +32,10 @@ import StandardTaskItem from 'components/task/StandardTaskItem/StandardTaskItem'
 import TaskTemplateGroup from 'components/task-template/TaskTemplateGroup/TaskTemplateGroup';
 import TasksSkeletonLoader from 'components/task/TasksSkeletonLoader/TasksSkeletonLoader';
 import StickyContainer from 'components/common/HorizontalScroll/StickyContainer';
-import { TaskGroupsContainer, DroppablePlaceholder } from '../styled';
+import {
+  TaskGroupsContainer,
+  DroppablePlaceholder,
+} from '../ListDetailsTableView/styled';
 
 const ListDetailsOpenedTasks = ({
   createTaskGroupList,

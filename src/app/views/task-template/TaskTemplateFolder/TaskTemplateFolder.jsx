@@ -8,7 +8,7 @@ import React, {
 } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import palette from 'styles/palette';
-import { MoreHoriz } from '@material-ui/icons';
+import { MoreVert } from '@material-ui/icons';
 import { userProfileSelector } from 'selectors/user-selectors';
 import * as WorkflowActions from 'actions/workflow-actions';
 import * as TaskTemplateActions from 'actions/task-template-actions';
@@ -144,6 +144,12 @@ const TaskTemplateFolder = ({
     <TaskTemplateContainer highlighted={highlighted}>
       <TaskTemplateHeader>
         <FolderIconContainer>
+          <OptionsMenu
+            isDisabled={menuOptions?.length === 0}
+            options={menuOptions}
+          >
+            <MoreVert color="primary" />
+          </OptionsMenu>
           <FolderIcon src={Folder} alt="folder icon" />
         </FolderIconContainer>
         <NameInput
@@ -157,16 +163,6 @@ const TaskTemplateFolder = ({
           onClick={onClick}
         />
         <HeaderChildrenContainer>{children}</HeaderChildrenContainer>
-        <Box>
-          <OptionsMenu
-            isDisabled={menuOptions?.length > 0}
-            options={menuOptions}
-          >
-            <MenuContainer disabled={menuOptions?.length > 0} size="small">
-              <MoreHoriz fontSize="large" color="inherit" />
-            </MenuContainer>
-          </OptionsMenu>
-        </Box>
       </TaskTemplateHeader>
     </TaskTemplateContainer>
   );

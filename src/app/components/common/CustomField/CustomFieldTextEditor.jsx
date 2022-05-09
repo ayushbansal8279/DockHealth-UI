@@ -13,6 +13,8 @@ import {
 import { useMentionsEditorState } from 'components/common/TextEditor/use-mentions-editor-state';
 import { useDispatch } from 'react-redux';
 import { partialUpdateTask } from 'actions/task-actions';
+import { updatePartialWorkflow } from 'actions/task-template-actions';
+import { TaskItemType } from 'helpers/task-helpers';
 import { showGlobalAlert } from 'alert/actions';
 import AlertMessages from 'alert/AlertMessages';
 import { formatMetaDataOutput } from 'components/task-drawer/CustomFieldsSection/helpers';
@@ -26,6 +28,8 @@ const CustomFieldTextEditor = ({
   label,
   placeholder,
   taskIdentifier,
+  identifier,
+  task,
   fieldsGroupKey,
   inputRef,
 }) => {
@@ -45,7 +49,7 @@ const CustomFieldTextEditor = ({
   );
 
   useEffect(() => {
-    register({ name });
+    register(name);
     return () => {
       unregister(name);
     };
@@ -63,37 +67,49 @@ const CustomFieldTextEditor = ({
 
   const updateCustomFields = useCallback(
     text => {
-      const values = getValues();
+      const values = getValues(fieldsGroupKey);
       const previousValue = values[name];
       if (!text && !previousValue) return;
       if (previousValue !== text) {
-        values[name] = text;
+        values[identifier] = text;
         if (taskIdentifier) {
           const formattedValue = formatMetaDataOutput({
             taskMetaData: values,
           });
           const adjustedValues = formattedValue.taskMetaData.map(object => ({
             ...object,
-            customFieldIdentifier: object.customFieldIdentifier.slice(
-              fieldsGroupKey.length + 1,
-            ),
+            customFieldIdentifier: object.customFieldIdentifier,
           }));
-          dispatch(
-            partialUpdateTask(taskIdentifier, { taskMetaData: adjustedValues }),
-          );
-          dispatch(showGlobalAlert(AlertMessages.UPDATED));
+          if (adjustedValues.length > 0) {
+            // eslint-disable-next-line no-unused-expressions
+            task?.itemType === TaskItemType.BUNDLE ||
+            task?.itemType === TaskItemType.TEMPLATE
+              ? dispatch(
+                  updatePartialWorkflow(task?.identifier, {
+                    taskMetaData: adjustedValues,
+                  }),
+                )
+              : dispatch(
+                  partialUpdateTask(task?.identifier, {
+                    taskMetaData: adjustedValues,
+                  }),
+                );
+            dispatch(showGlobalAlert(AlertMessages.UPDATED));
+          }
         } else {
           setValue(name, text);
         }
       }
     },
     [
-      dispatch,
-      fieldsGroupKey.length,
       getValues,
       name,
-      setValue,
+      identifier,
       taskIdentifier,
+      task,
+      dispatch,
+      setValue,
+      fieldsGroupKey,
     ],
   );
 

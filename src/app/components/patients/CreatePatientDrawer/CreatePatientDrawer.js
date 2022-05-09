@@ -1,11 +1,12 @@
 import React, { useRef } from 'react';
-import { FormContext, useForm } from 'react-hook-form';
+import { FormProvider, useForm } from 'react-hook-form';
 import {
   getCustomerTypeLabel,
   getCustomerUniqueIDLabel,
 } from 'helpers/customer-type-helper';
 import { openModal, closeModal } from 'modal/actions';
 import { useDispatch, useSelector } from 'react-redux';
+import { yupResolver } from "@hookform/resolvers/yup";
 import * as PatientApi from 'api/patient-api';
 import { onPatientAdded as onPatientAddedEvent } from 'helpers/ga-event-helper';
 import { showAlert } from 'helpers/utility-functions';
@@ -50,15 +51,15 @@ const CreatePatientDrawer = ({ isSidebarOpen, onPatientCreated, onClose }) => {
   const uniqueIdentifierLabel = getCustomerUniqueIDLabel(currentUser);
   const dispatch = useDispatch();
   const formMethods = useForm({
+    resolver: yupResolver(validationSchema),
     reValidateMode: 'onSubmit',
-    validationSchema,
   });
 
-  const { clearError, getValues } = formMethods;
+  const { clearErrors, getValues } = formMethods;
   const formReference = useRef(null);
 
   const close = () => {
-    clearError();
+    clearErrors();
     onClose();
   };
 
@@ -93,7 +94,7 @@ const CreatePatientDrawer = ({ isSidebarOpen, onPatientCreated, onClose }) => {
       title={`Add a ${customerTypeLabel}`}
       onClose={handleClose}
     >
-      <FormContext {...formMethods}>
+      <FormProvider {...formMethods}>
         <PatientForm
           formMethods={formMethods}
           onSubmit={handleFormSubmit}
@@ -102,7 +103,7 @@ const CreatePatientDrawer = ({ isSidebarOpen, onPatientCreated, onClose }) => {
           ref={formReference}
           buttonLabel={`SAVE ${customerTypeLabel}`}
         />
-      </FormContext>
+      </FormProvider>
     </PatientDrawer>
   );
 };

@@ -2,7 +2,7 @@ import React, { useState, useRef, useMemo, useCallback } from 'react';
 import { Box, List, ListItemText, MenuItem, Popover } from '@material-ui/core';
 import CustomizeIcon from 'img/customize-icon';
 import Checkbox from 'components/common/Checkbox/Checkbox';
-import { useColumnsConfig } from 'context-api/ColumnsConfigContext';
+import { useColumnsConfig } from 'context-api/columns-config-context';
 import {
   userProfileSelector,
   userHasTaskCustomFieldsFeatureSelector,
@@ -11,8 +11,6 @@ import { useSelector } from 'react-redux';
 import { TaskItemColumn } from 'helpers/task-helpers';
 import { capitalize } from 'helpers/capitalize';
 import { getCustomerTypeLabel } from 'helpers/customer-type-helper';
-import { isEmpty } from 'ramda';
-
 import UpgradePlan from 'components/common/UpgradePlan/UpgradePlan';
 import UpgradePlanPopup from 'components/common/UpgradePlanPopup/UpgradePlanPopup';
 import CustomFieldsIcon from 'img/premium/custom-fields';
@@ -32,6 +30,7 @@ const CustomizeToolbarButton = ({
   openCustomFieldModal,
   additionalOptions,
   showCustomColumnCreate = true,
+  additionalOptionsTitle = 'Display Options',
 }) => {
   const [open, setOpen] = useState(false);
   const [openUpgradePopup, setOpenUpgradePopup] = useState(false);
@@ -46,6 +45,8 @@ const CustomizeToolbarButton = ({
     setColumnsConfig,
     customColumnsConfig,
     setCustomColumnsConfig,
+    patientCustomColumnsConfig,
+    setPatientCustomColumnsConfig,
   } = useColumnsConfig();
 
   const ColumnOptionNames = {
@@ -92,9 +93,40 @@ const CustomizeToolbarButton = ({
       });
       setCustomColumnsConfig(newSetup);
       if (typeof onChange === 'function')
-        onChange(newSetup, { isCustomColumn: true });
+        onChange([...newSetup, ...patientCustomColumnsConfig], {
+          isCustomColumn: true,
+        });
     },
-    [customColumnsConfig, onChange, setCustomColumnsConfig],
+    [
+      customColumnsConfig,
+      onChange,
+      patientCustomColumnsConfig,
+      setCustomColumnsConfig,
+    ],
+  );
+
+  const onClickPatientCustomFieldsCheckbox = useCallback(
+    column => {
+      const { identifier } = column;
+      // eslint-disable-next-line sonarjs/no-identical-functions
+      const newSetup = patientCustomColumnsConfig.map(f => {
+        if (f.identifier === identifier) {
+          return { ...f, isChecked: !f.isChecked };
+        }
+        return f;
+      });
+      setPatientCustomColumnsConfig(newSetup);
+      if (typeof onChange === 'function')
+        onChange([...newSetup, ...customColumnsConfig], {
+          isCustomColumn: true,
+        });
+    },
+    [
+      patientCustomColumnsConfig,
+      setPatientCustomColumnsConfig,
+      onChange,
+      customColumnsConfig,
+    ],
   );
 
   const columnsConfigToDisplay = useMemo(() => {
@@ -145,6 +177,35 @@ const CustomizeToolbarButton = ({
               );
             })}
           </List>
+          {patientCustomColumnsConfig?.length > 0 && (
+            <>
+              <Box display="flex" justifyContent="space-between" mt={1}>
+                <Box mx={0.5} />
+                <ListItemText>
+                  <b>Patient Custom Columns</b>
+                </ListItemText>
+              </Box>
+              <List>
+                {patientCustomColumnsConfig.map(column => {
+                  const { name, isChecked = false } = column;
+                  return (
+                    name && (
+                      <MenuItem
+                        key={column.identifier}
+                        onClick={() =>
+                          onClickPatientCustomFieldsCheckbox(column)
+                        }
+                      >
+                        <Checkbox isChecked={isChecked} />
+                        <Box mx={0.5} />
+                        <ListItemText>{name}</ListItemText>
+                      </MenuItem>
+                    )
+                  );
+                })}
+              </List>
+            </>
+          )}
           {userHasTaskCustomFieldsFeature && (
             <>
               <Spacer />
@@ -189,7 +250,7 @@ const CustomizeToolbarButton = ({
               <Box display="flex" justifyContent="space-between" mt={1}>
                 <Box mx={0.5} />
                 <ListItemText>
-                  <b>Display Options</b>
+                  <b>{additionalOptionsTitle}</b>
                 </ListItemText>
               </Box>
               <List>

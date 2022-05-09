@@ -1,7 +1,8 @@
 /* eslint-disable unicorn/prefer-string-slice */
 import React, { useEffect } from 'react';
-import { FormContext, useForm } from 'react-hook-form';
+import { FormProvider, useForm } from 'react-hook-form';
 import { object, string } from 'yup';
+import { yupResolver } from "@hookform/resolvers/yup";
 import { MontserratTypography } from 'styles/theme-montserrat';
 import FormInput from 'components/common/Input/FormInput';
 import Spacing from 'components/common/Spacing';
@@ -15,13 +16,13 @@ const ConfirmMFACodeForm = props => {
   const { onSubmit, customError } = props;
 
   const formMethods = useForm({
-    validationSchema,
+    resolver: yupResolver(validationSchema),
     reValidateMode: 'onSubmit',
   });
 
   useEffect(() => {
     if (customError) {
-      formMethods.setError('mfaCode', customError);
+      formMethods.setError('mfaCode', { type: 'custom', message: customError });
     }
   }, [customError, formMethods]);
 
@@ -32,7 +33,7 @@ const ConfirmMFACodeForm = props => {
       style={{ width: '100%' }}
       onSubmit={formMethods.handleSubmit(onSubmit)}
     >
-      <FormContext {...formMethods}>
+      <FormProvider {...formMethods}>
         <MontserratTypography variant="h2">
           Please enter the 6-digit code that was sent to
         </MontserratTypography>
@@ -43,7 +44,7 @@ const ConfirmMFACodeForm = props => {
         <Button type="submit" size="large">
           CONTINUE
         </Button>
-      </FormContext>
+      </FormProvider>
     </form>
   );
 };

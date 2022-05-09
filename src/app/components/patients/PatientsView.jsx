@@ -1,5 +1,4 @@
-/* eslint-disable sonarjs/cognitive-complexity */
-import React, { useCallback, useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useState, useMemo } from 'react';
 import { useParams } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { Grid } from '@material-ui/core';
@@ -8,22 +7,32 @@ import {
   DefaultPatientsListType,
 } from 'helpers/patient-list-helpers';
 import { useBoolean } from 'hooks/useBoolean';
-import * as PatientsActions from 'actions/patients-actions';
-import * as PatientApi from 'api/patient-api';
-import ViewLayout from 'components/template/ViewLayout/ViewLayout';
-import BasicLayoutHeader from 'components/template/BasicLayoutHeader/BasicLayoutHeader';
 import {
   patientsListDetailsSelector,
   patientsSelector,
   isFetchingPatientsSelector,
   patientsListSearchTermSelector,
 } from 'selectors/patients-selectors';
+import { PatientEditContext } from 'context-api/patient-edit-context';
+import * as PatientsActions from 'actions/patients-actions';
+import * as PatientApi from 'api/patient-api';
+import ViewLayout from 'components/template/ViewLayout/ViewLayout';
+import BasicLayoutHeader from 'components/template/BasicLayoutHeader/BasicLayoutHeader';
+import PatientLabels from 'views/patient-details/PatientLabels/PatientLabels';
+import BulkEditSection from 'components/patients/BulkEditSection/BulkEditSection';
+import TaskTemplateApplicator from 'components/task-template/TaskTemplateApplicator/TaskTemplateApplicator';
+import { getTaskListForUser } from 'api/task-list-api';
+import { openModal, closeModal } from 'modal/actions';
 import PatientsList from './PatientsList/PatientsList';
 import PatientsToolbar from './PatientsToolbar/PatientsToolbar';
+import EmptyListViewWithQuickAddTask from './BulkEditSection/BulkEditOptionsBar/BulkEditCreateTask';
 import {
   PatientsViewContainer,
   PatientsListContainer,
   RefineSearchText,
+  BulkEditSectionContainer,
+  TaskTemplateApplicatorContainer,
+  ContentWrapper,
 } from './styled';
 
 const MAX_PATIENT_ALL_RESULTS = 1000;
@@ -40,6 +49,11 @@ const PatientsView = () => {
   const isFetchingPatients = useSelector(isFetchingPatientsSelector);
   const patients = useSelector(patientsSelector);
   const { listName, listDescription } = listDetails || {};
+
+  const [createTaskOption, setCreateTaskOption] = useState(false);
+  const [createWorkflowOption, setCreateWorkflowOption] = useState(false);
+  const [addLabelOption, setAddLabelOption] = useState(false);
+  const [deleteOption, setDeleteOption] = useState(false);
 
   const [patientImportDetails, setPatientImportDetails] = useState(null);
   const [importPopoverOpen, setImportPopoverOpen] = useState(false);
@@ -87,38 +101,183 @@ const PatientsView = () => {
     [refreshPatients, setHasImportErrors, unsetHasImportErrors],
   );
 
+  const selectedPatients = useMemo(() => {
+    return patients?.filter(patient => patient?.isSelected);
+  }, [patients]);
+
+  const bulkEditIsActive = useMemo(() => {
+    return selectedPatients?.length > 0;
+  }, [selectedPatients]);
+
+  const handleConfirm = useCallback(() => {
+    const assignedPatients = selectedPatients?.map(patient => {
+      return patient.patientIdentifier;
+    });
+    dispatch(
+      PatientsActions.patientBulkDeletePatient({
+        assignedPatients,
+        listIdentifier,
+      }),
+    );
+  }, [dispatch, listIdentifier, selectedPatients]);
+
+  const openDeleteConfirmationModal = useCallback(() => {
+    const selectedPatientsCount = selectedPatients?.length;
+
+    const modalProps = {
+      title: `You want to delete ${selectedPatientsCount} patient${selectedPatientsCount >
+        1 && 's'}`,
+      description: `Are you sure you want to delete ${selectedPatientsCount} patient${selectedPatientsCount >
+        1 && 's'} ? This action cannot be undone.`,
+      confirmButtonText: 'Delete',
+      confirm: () => {
+        handleConfirm();
+        dispatch(closeModal());
+      },
+      onClose: () => {
+        dispatch(closeModal());
+        setDeleteOption(false);
+      },
+    };
+    dispatch(openModal('DeleteConfirmation', modalProps));
+  }, [dispatch, handleConfirm, selectedPatients]);
+
+  const turnOffAllOptions = useCallback(() => {
+    setCreateTaskOption(false);
+    setCreateWorkflowOption(false);
+    setAddLabelOption(false);
+    setDeleteOption(false);
+  }, []);
+
+  const toggleCreateTaskOption = useCallback(() => {
+    turnOffAllOptions();
+    setCreateTaskOption(previous => !previous);
+  }, [turnOffAllOptions]);
+  const toggleCreateWorkflowOption = useCallback(() => {
+    turnOffAllOptions();
+    setCreateWorkflowOption(previous => !previous);
+  }, [turnOffAllOptions]);
+  const toggleAddLabelOption = useCallback(() => {
+    turnOffAllOptions();
+    setAddLabelOption(previous => !previous);
+  }, [turnOffAllOptions]);
+  const toggleDeleteOption = useCallback(() => {
+    turnOffAllOptions();
+    openDeleteConfirmationModal();
+    setDeleteOption(previous => !previous);
+  }, [turnOffAllOptions, openDeleteConfirmationModal]);
+
+  const providerValue = useMemo(
+    () => ({
+      bulkEditIsActive,
+      selectedPatients,
+      selectedOptions: {
+        createTaskOption,
+        createWorkflowOption,
+        addLabelOption,
+        deleteOption,
+      },
+      selectedOptionsHandler: {
+        toggleCreateTaskOption,
+        toggleCreateWorkflowOption,
+        toggleAddLabelOption,
+        toggleDeleteOption,
+        turnOffAllOptions,
+      },
+    }),
+    [
+      addLabelOption,
+      bulkEditIsActive,
+      createTaskOption,
+      createWorkflowOption,
+      deleteOption,
+      selectedPatients,
+      toggleAddLabelOption,
+      toggleCreateTaskOption,
+      toggleCreateWorkflowOption,
+      toggleDeleteOption,
+      turnOffAllOptions,
+    ],
+  );
+
+  const handleTemplateSelect = useCallback(
+    template => {
+      const assignedPatients = selectedPatients?.map(patient => {
+        return patient.patientIdentifier;
+      });
+
+      dispatch(
+        openModal('ListPicker', {
+          fetchMethod: getTaskListForUser,
+          confirm: listId =>
+            dispatch(
+              PatientsActions.patientBulkCreateWorkflow({
+                workflowIdentifier: template.identifier,
+                taskListIdentifier: listId,
+                assignedToUsers: assignedPatients,
+              }),
+            ),
+        }),
+      );
+    },
+    [dispatch, selectedPatients],
+  );
+
   return (
-    <ViewLayout
-      header={
-        <BasicLayoutHeader title={listName} description={listDescription} />
-      }
-    >
-      <PatientsViewContainer>
-        <PatientsToolbar
-          refreshPatientList={refreshPatientList}
-          setImportPopoverOpen={setImportPopoverOpen}
-        />
-        <PatientsListContainer>
-          <Grid container>
-            {listIdentifier === DefaultPatientsListType.ALL_PATIENTS &&
-              patients?.length >= MAX_PATIENT_ALL_RESULTS && (
-                <RefineSearchText>
-                  Please further refine search, too many results!
-                </RefineSearchText>
-              )}
-            <PatientsList
-              isFiltered={searchValue}
-              patients={patients}
-              patientImportDetails={patientImportDetails}
-              importPopoverOpen={importPopoverOpen}
+    <>
+      <PatientEditContext.Provider value={providerValue}>
+        <ViewLayout
+          header={
+            <BasicLayoutHeader title={listName} description={listDescription} />
+          }
+        >
+          <PatientsViewContainer>
+            <PatientsToolbar
+              refreshPatientList={refreshPatientList}
               setImportPopoverOpen={setImportPopoverOpen}
-              hasImportErrors={hasImportErrors}
-              isFetching={isFetchingPatients && !patients}
             />
-          </Grid>
-        </PatientsListContainer>
-      </PatientsViewContainer>
-    </ViewLayout>
+            <PatientsListContainer>
+              <Grid container>
+                {listIdentifier === DefaultPatientsListType.ALL_PATIENTS &&
+                  patients?.length >= MAX_PATIENT_ALL_RESULTS && (
+                    <RefineSearchText>
+                      Please further refine search, too many results!
+                    </RefineSearchText>
+                  )}
+                <PatientsList
+                  isFiltered={searchValue}
+                  patients={patients}
+                  patientImportDetails={patientImportDetails}
+                  importPopoverOpen={importPopoverOpen}
+                  setImportPopoverOpen={setImportPopoverOpen}
+                  hasImportErrors={hasImportErrors}
+                  isFetching={isFetchingPatients && !patients}
+                />
+              </Grid>
+            </PatientsListContainer>
+          </PatientsViewContainer>
+        </ViewLayout>
+        <BulkEditSection>
+          <BulkEditSectionContainer>
+            {createTaskOption && <EmptyListViewWithQuickAddTask />}
+            {createWorkflowOption && (
+              <TaskTemplateApplicatorContainer>
+                <TaskTemplateApplicator
+                  onTemplateSelect={handleTemplateSelect}
+                />
+              </TaskTemplateApplicatorContainer>
+            )}
+            {addLabelOption && (
+              <TaskTemplateApplicatorContainer>
+                <ContentWrapper>
+                  <PatientLabels isPatientBulk />
+                </ContentWrapper>
+              </TaskTemplateApplicatorContainer>
+            )}
+          </BulkEditSectionContainer>
+        </BulkEditSection>
+      </PatientEditContext.Provider>
+    </>
   );
 };
 

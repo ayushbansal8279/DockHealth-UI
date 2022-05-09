@@ -1,7 +1,8 @@
 /* eslint-disable sonarjs/cognitive-complexity */
 import React, { useEffect, useState, useRef, useMemo } from 'react';
-import { FormContext, useForm } from 'react-hook-form';
+import { FormProvider, useForm } from 'react-hook-form';
 import { string, object, array } from 'yup';
+import { yupResolver } from "@hookform/resolvers/yup";
 import { partial } from 'ramda';
 import { Box, Grid, IconButton } from '@material-ui/core';
 import DeleteIcon from '@material-ui/icons/Delete';
@@ -14,6 +15,7 @@ import FormInput from 'components/common/Input/FormInput';
 import Input from 'components/common/Input/Input';
 import Button from 'components/common/Button/Button';
 import FormSelect from 'components/common/Select/FormSelect';
+import ColorPicker from 'components/common/ColorPicker/ColorPicker';
 import FiledTypeStep from './FieldTypeStep';
 import { CloseIconButton, CloseIcon } from '../styled';
 import {
@@ -111,7 +113,7 @@ const EditCustomFieldModal = ({
   }, [type]);
 
   const formMethods = useForm({
-    validationSchema,
+    resolver: yupResolver(validationSchema),
     mode: 'onSubmit',
     defaultValues: isCreatingNewField
       ? { fieldCategoryType: Category.OTHER_INFO }
@@ -168,6 +170,15 @@ const EditCustomFieldModal = ({
       'options',
       optionsValue.map(o =>
         o.identifier === optionId ? { ...o, name: event.target.value } : o,
+      ),
+    );
+  };
+
+  const handleOptionColorChange = (optionId, event) => {
+    setValue(
+      'options',
+      optionsValue.map(o =>
+        o.identifier === optionId ? { ...o, color: event.target.value } : o,
       ),
     );
   };
@@ -234,7 +245,7 @@ const EditCustomFieldModal = ({
         {!fieldTypeValue ? (
           <FiledTypeStep onSelect={partial(setValue, ['fieldType'])} />
         ) : (
-          <FormContext {...formMethods}>
+          <FormProvider {...formMethods}>
             <FieldForm
               onSubmit={handleSubmit(
                 customField?.identifier ? handleEditSubmit : handleAddSubmit,
@@ -285,32 +296,43 @@ const EditCustomFieldModal = ({
                         <Grid item xs={12}>
                           <InfoText>Dropdown options</InfoText>
                         </Grid>
-                        {optionsValue.map(({ identifier, name }, index) => (
-                          <Grid key={identifier} item xs={12}>
-                            <Input
-                              required
-                              label={`Option ${index + 1}`}
-                              name={`options[${identifier}]`}
-                              value={name}
-                              onChange={partial(handleOptionValueChange, [
-                                identifier,
-                              ])}
-                              error={errors?.options?.[index]?.name?.message}
-                              endAdornment={
-                                optionsValue.length > 1 ? (
-                                  <IconButton
-                                    size="small"
-                                    onClick={() =>
-                                      handleRemoveOption(identifier)
-                                    }
-                                  >
-                                    <DeleteIcon />
-                                  </IconButton>
-                                ) : null
-                              }
-                            />
-                          </Grid>
-                        ))}
+                        {optionsValue.map((option, index) => {
+                          const { identifier, name, color } = option;
+                          return (
+                            <Grid key={identifier} item xs={12}>
+                              <Input
+                                required
+                                label={`Option ${index + 1}`}
+                                name={`options[${identifier}]`}
+                                value={name}
+                                onChange={partial(handleOptionValueChange, [
+                                  identifier,
+                                ])}
+                                error={errors?.options?.[index]?.name?.message}
+                                endAdornment={
+                                  optionsValue.length > 1 ? (
+                                    <IconButton
+                                      size="small"
+                                      onClick={() =>
+                                        handleRemoveOption(identifier)
+                                      }
+                                    >
+                                      <DeleteIcon />
+                                    </IconButton>
+                                  ) : null
+                                }
+                              />
+                              <Box m={2} />
+                              <ColorPicker
+                                name={`selectOptionColor[${identifier}]`}
+                                value={color}
+                                onChange={partial(handleOptionColorChange, [
+                                  identifier,
+                                ])}
+                              />
+                            </Grid>
+                          );
+                        })}
                         <Button
                           reference={addOptionButtonReference}
                           variant="text"
@@ -340,7 +362,7 @@ const EditCustomFieldModal = ({
                 </Button>
               </Grid>
             </FieldForm>
-          </FormContext>
+          </FormProvider>
         )}
       </Box>
     </AddPatientFieldModalWrapper>

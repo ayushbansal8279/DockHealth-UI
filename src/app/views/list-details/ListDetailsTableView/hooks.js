@@ -1,7 +1,7 @@
 /* eslint-disable unicorn/prevent-abbreviations */
 /* eslint-disable react-hooks/rules-of-hooks */
 import { useEffect, useCallback, useState, useMemo, useRef } from 'react';
-import { useLocation } from 'react-router-dom';
+import { useHistory, useParams } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { isEmpty, isNil } from 'ramda';
 import { initializePusher } from 'helpers/pusher-instance';
@@ -9,12 +9,10 @@ import useActions from 'hooks/use-actions';
 import usePrevious from 'hooks/use-previous';
 import { TaskListTabName } from 'helpers/tasklist-helpers';
 import localStorageHelper from 'helpers/local-storage-helper';
-import { TaskItemColumn, TaskStatus } from 'helpers/task-helpers';
+import { TaskItemColumn } from 'helpers/task-helpers';
 import {
-  initializeTaskListState,
   updateUserListViewSetup,
   updateColumnOnListPreferences,
-  clearTaskListState,
 } from 'actions/task-list-actions';
 import { updateOrganizationCustomFields } from 'actions/organization-actions';
 
@@ -30,6 +28,8 @@ import {
   searchTermSelector,
 } from 'selectors/list-details-selectors';
 import {
+  currentTaskListIdentifierSelector,
+  currentTaskListTasksStatusSelector,
   currentTaskListSelector,
   pendingTaskListsSelector,
   taskListMembersSelector,
@@ -38,21 +38,24 @@ import {
 import { userProfileSelector } from 'selectors/user-selectors';
 import { selectedFiltersInMegaFilterSelector } from 'selectors/mega-filter-selectors';
 
-import { useColumnsConfig } from 'context-api/ColumnsConfigContext';
+import { useColumnsConfig } from 'context-api/columns-config-context';
 import * as TaskActions from 'actions/task-actions';
 import * as ListDetailsActions from 'actions/list-details-actions';
 import { createTask } from 'sagas/list-details-saga';
 import * as ModalActions from 'modal/actions';
 import * as UserAuthApi from 'api/user-auth-api';
-import { getViewTypeFromQueryString } from 'helpers/view-type-helper';
 
 const LIST_DETAILS_FIRST_TIME_KEY = 'LIST_DETAILS_FIRST_TIME_KEY';
 
-const initializeListDetailsViewHooks = (match, history) => {
-  const { search } = useLocation();
-  const viewType = getViewTypeFromQueryString(search);
+const initializeListDetailsViewHooks = () => {
+  const history = useHistory();
+  const params = useParams();
   const sort = useSelector(taskDetailsSortSelector);
+  const currentTaskListIdentifier = useSelector(
+    currentTaskListIdentifierSelector,
+  );
   const taskList = useSelector(currentTaskListSelector);
+  const currentStatus = useSelector(currentTaskListTasksStatusSelector);
   const { columnsConfig, setColumnsConfig } = useColumnsConfig();
   const currentUser = useSelector(userProfileSelector);
   const { userIdentifier: currentUserIdentifier } = currentUser || {};
@@ -78,31 +81,18 @@ const initializeListDetailsViewHooks = (match, history) => {
 
   const prevCurrentUser = usePrevious(currentUser);
   const prevTaskCounters = usePrevious(taskCounters);
-  const prevMatch = usePrevious(match);
+  const prevParams = usePrevious(params);
 
   const pusher = useRef(initializePusher());
   const [channel, setChannel] = useState(null);
 
   const dispatch = useDispatch();
-  const {
-    params: { taskListIdentifier: taskListIdentifierParam, tabName },
-  } = match;
+  const { taskListIdentifier: taskListIdentifierParam, tabName } = params;
 
   useEffect(() => {
-    dispatch(
-      initializeTaskListState(
-        taskListIdentifierParam,
-        tabName?.toUpperCase() || TaskStatus.INCOMPLETE,
-      ),
-    );
-  }, [dispatch, tabName, taskListIdentifierParam]);
-
-  useEffect(() => {
-    return () => {
-      dispatch(clearTaskListState());
-    };
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+    if (currentTaskListIdentifier)
+      dispatch(ListDetailsActions.initializeListDetailsTableState());
+  }, [dispatch, currentTaskListIdentifier, currentStatus]);
 
   useEffect(() => {
     if (taskListIdentifierParam) {
@@ -193,7 +183,6 @@ const initializeListDetailsViewHooks = (match, history) => {
   );
 
   const handleTaskDelete = useCallback(() => {
-    const { params } = match;
     const { taskListIdentifier } = params;
 
     dispatch(ListDetailsActions.getListDetailsTaskCounters(taskListIdentifier));
@@ -202,7 +191,7 @@ const initializeListDetailsViewHooks = (match, history) => {
     if (selectedFilters && !isEmpty(selectedFilters)) {
       refreshTab();
     }
-  }, [dispatch, match, refreshFilters, refreshTab, selectedFilters]);
+  }, [dispatch, params, refreshFilters, refreshTab, selectedFilters]);
 
   const changeSearchValue = useCallback(
     searchQuery =>
@@ -216,7 +205,6 @@ const initializeListDetailsViewHooks = (match, history) => {
 
   const invokeToggleCompleteAction = useCallback(
     task => {
-      const { params } = match;
       const { taskListIdentifier } = params;
 
       actions
@@ -231,7 +219,7 @@ const initializeListDetailsViewHooks = (match, history) => {
         })
         .catch(() => refreshTab());
     },
-    [actions, currentUser, dispatch, match, refreshTab],
+    [actions, currentUser, dispatch, params, refreshTab],
   );
 
   const handleTaskUpdate = useCallback(
@@ -278,7 +266,6 @@ const initializeListDetailsViewHooks = (match, history) => {
 
   const loadMoreTasksForList = useCallback(
     ({ status, startPosition, viewMode }) => {
-      const { params } = match;
       const { taskListIdentifier } = params;
 
       actions.getListTasksGroupedByTaskGroup(
@@ -291,7 +278,7 @@ const initializeListDetailsViewHooks = (match, history) => {
         viewMode,
       );
     },
-    [actions, match, sort],
+    [actions, params, sort],
   );
 
   const toggleTaskCompletedStatus = useCallback(
@@ -324,9 +311,8 @@ const initializeListDetailsViewHooks = (match, history) => {
   useEffect(() => {
     if (
       taskCounters?.complete === 0 &&
-      match.params.taskListIdentifier ===
-        prevMatch?.params?.taskListIdentifier &&
-      match.params.tabName === TaskListTabName.COMPLETE
+      params.taskListIdentifier === prevParams?.taskListIdentifier &&
+      params.tabName === TaskListTabName.COMPLETE
     ) {
       navigateToTab(TaskListTabName.OPEN);
     }
@@ -347,13 +333,13 @@ const initializeListDetailsViewHooks = (match, history) => {
   }, [
     archivedTaskLists,
     currentUser,
-    match.params.tabName,
-    match.params.taskListIdentifier,
+    params.tabName,
+    params.taskListIdentifier,
     navigateToTab,
     openTourModal,
     pendingTaskLists,
     prevCurrentUser,
-    prevMatch,
+    prevParams,
     prevTaskCounters,
     taskCounters,
     tourConditionChecked,
@@ -564,7 +550,6 @@ const initializeListDetailsViewHooks = (match, history) => {
     displayListPreferences,
     setDisplayListPreferences,
     setDisplayColumnPreferences,
-    viewType,
     refreshFilters,
     dispatch,
   };

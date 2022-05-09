@@ -320,7 +320,7 @@ const TaskListReducer = (state = initialState, action) => {
           state.currentTaskListIdentifier ===
           action.updatedTasklist.taskListIdentifier
             ? { ...state.currentTaskList, ...action.updatedTasklist }
-            : state.currentTasklist,
+            : state.currentTaskList,
       };
 
     case DELETE_TASKLIST_SUCCESS:

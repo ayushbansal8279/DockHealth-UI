@@ -98,6 +98,46 @@ const updateTasksStateCallback = (state, updateTaskFromAction) => {
 const ListDetailsReducer = (state = initialState, action) => {
   // eslint-disable-next-line sonarjs/max-switch-cases
   switch (action.type) {
+    case ActionTypes.GET_COMPLETED_TASKS_BY_GROUPS_SUCCESS: {
+      const { groupedTasks, loadingMore, taskListIdentifier } = action;
+      const group = groupedTasks[0];
+
+      const groupToUpdate = state.completedGroupedTasks.taskGroups?.find(
+        ({ groupIdentifier }) => groupIdentifier === group?.groupIdentifier,
+      );
+      const groupToUpdateIndex =
+        state.completedGroupedTasks?.taskGroups?.indexOf(groupToUpdate) || -1;
+      const updatedTaskGroups =
+        state.completedGroupedTasks?.taskGroups?.map(taskGroup =>
+          taskGroup.groupIdentifier === group?.groupIdentifier
+            ? {
+                ...taskGroup,
+                tasks: loadingMore
+                  ? taskGroup.tasks.concat(group.tasks)
+                  : group.tasks,
+                hasMore: group.hasMore,
+                moreTasksIndex: group.moreTasksIndex,
+              }
+            : taskGroup,
+        ) || [];
+      if (groupToUpdateIndex === -1) {
+        updatedTaskGroups.push(group);
+      }
+      const updatedGroupedTasks = {
+        ...state.completedGroupedTasks,
+        taskGroups: updatedTaskGroups,
+      };
+
+      return {
+        ...state,
+        taskListIdentifier,
+        completedGroupedTasks: updatedGroupedTasks,
+        isCompletedTasksFetching: false,
+        isFetchingMoreTasks: false,
+        showingCompletedTasks: true,
+        isFetching: false,
+      };
+    }
     case ActionTypes.INITIALIZE_TASK_LIST_STATE: {
       return {
         ...state,
@@ -432,6 +472,18 @@ const ListDetailsReducer = (state = initialState, action) => {
             ),
           })),
         },
+        completedGroupedTasks: {
+          ...state.completedGroupedTasks,
+          // eslint-disable-next-line sonarjs/no-identical-functions
+          taskGroups: state.completedGroupedTasks?.taskGroups?.map(g => ({
+            ...g,
+            tasks: updateBundleInList(
+              { isFetchingTasks: true },
+              workflowIdentifier,
+              g.tasks,
+            ),
+          })),
+        },
       };
     }
 
@@ -451,7 +503,44 @@ const ListDetailsReducer = (state = initialState, action) => {
             ),
           })),
         },
+        completedGroupedTasks: {
+          ...state.completedGroupedTasks,
+          // eslint-disable-next-line sonarjs/no-identical-functions
+          taskGroups: state.completedGroupedTasks?.taskGroups?.map(g => ({
+            ...g,
+            tasks: updateBundleInList(
+              { isFetchingTasks: false, tasks },
+              workflowIdentifier,
+              g.tasks,
+            ),
+          })),
+        },
       };
+    }
+
+    case ActionTypes.UPDATE_PATIENT_DETAILS: {
+      const {
+        payload: { details },
+      } = action;
+
+      // eslint-disable-next-line sonarjs/prefer-immediate-return
+      const updatedState = {
+        ...state,
+        groupedTasks: {
+          ...state.groupedTasks,
+          taskGroups: state.groupedTasks?.taskGroups?.map(g => ({
+            ...g,
+            tasks: g.tasks.map(t =>
+              t?.itemType === 'BUNDLE' &&
+              t?.patient?.patientIdentifier === details.patientIdentifier
+                ? { ...t, patient: { ...t.patient, ...details } }
+                : t,
+            ),
+          })),
+        },
+      };
+
+      return TaskBaseReducer(updatedState, action, updateTasksStateCallback);
     }
 
     case ActionTypes.UPDATE_PARTIAL_WORKFLOW_SUCCESS: {
@@ -488,7 +577,9 @@ const ListDetailsReducer = (state = initialState, action) => {
 
       const { taskGroupIdentifier } =
         addedTask.taskGroups?.find(
-          ({ groupType }) => groupType === TaskGroupType.TASKLIST,
+          ({ groupType }) =>
+            groupType === TaskGroupType.TASKLIST ||
+            groupType === TaskGroupType.TASKLIST_DEFAULT,
         ) || {};
 
       return updateGroupInState(

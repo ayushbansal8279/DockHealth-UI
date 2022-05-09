@@ -11,7 +11,7 @@ import { selectedTaskSelector } from 'selectors/task-drawer-selectors';
 import { checkIfTemplateTask } from 'helpers/task-helpers';
 import { AdornmentClear } from '../styled';
 
-const AssignedToSection = ({ onSave }) => {
+const AssignedToSection = ({ onSave, disabled }) => {
   const currentUser = useSelector(userProfileSelector);
   const selectedTask = useSelector(selectedTaskSelector) || {};
   const { assignedToUsers, taskList } = selectedTask;
@@ -62,6 +62,7 @@ const AssignedToSection = ({ onSave }) => {
 
   return (
     <TaskDrawerPopover
+      disabled={disabled}
       content={() => (
         <MultiAssignMembersList
           taskListIdentifiers={taskListIdentifier}
@@ -74,6 +75,7 @@ const AssignedToSection = ({ onSave }) => {
       )}
     >
       <Input
+        disabled={disabled}
         name="assignTo"
         type="text"
         label="Assigned to"
@@ -81,9 +83,10 @@ const AssignedToSection = ({ onSave }) => {
         multiple
         value={displayValue}
         endAdornment={
-          assignedToUsers?.length > 0 && (
+          assignedToUsers?.length > 0 &&
+          (disabled ? null : (
             <AdornmentClear onClick={handleClearAssignedToUsers} />
-          )
+          ))
         }
       />
     </TaskDrawerPopover>

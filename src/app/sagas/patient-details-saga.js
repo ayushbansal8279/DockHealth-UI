@@ -5,6 +5,7 @@ import {
   takeLatest,
   select,
   takeEvery,
+  takeLeading,
   delay,
 } from 'redux-saga/effects';
 import { isEmpty } from 'ramda';
@@ -24,6 +25,7 @@ import {
   completeTasksVisibilitySelector,
   patientTasksSortSelector,
   currentPatientIdentifierSelector,
+  currentFolderIdentifierSelector,
   currentListTasksStatusSelector,
 } from 'selectors/patient-details-selectors';
 import { selectedFiltersInMegaFilterSelector } from 'selectors/mega-filter-selectors';
@@ -61,8 +63,6 @@ export const DO_CANCEL_USER_INVITE_TO_TASKLIST =
 export const DO_CHANGE_MEMBER_ROLE = 'DO_CHANGE_MEMBER_ROLE';
 export const DO_SORT_PATIENT_TASKS = 'DO_SORT_PATIENT_TASKS';
 export const DO_FETCH_PATIENT_ATTACHMENTS = 'DO_FETCH_PATIENT_ATTACHMENTS';
-export const DO_ADD_PATIENT_ATTACHMENT = 'DO_ADD_PATIENT_ATTACHMENT';
-export const DO_REMOVE_PATIENT_ATTACHMENT = 'DO_REMOVE_PATIENT_ATTACHMENT';
 export const DO_UPDATE_PATIENT_NOTE = 'DO_UPDATE_PATIENT_NOTE';
 export const DO_ADD_PATIENT_NOTE = 'DO_ADD_PATIENT_NOTE';
 export const DO_REMOVE_PATIENT_NOTE = 'DO_REMOVE_PATIENT_NOTE';
@@ -153,32 +153,6 @@ export const sortPatientTasks = (key, order) => ({
   },
 });
 
-export const addPatientAttachment = (
-  patientIdentifier,
-  fileData,
-  additionalConfig,
-  setCurrentlyUploadedAttachment,
-  onAttachmentFileInputChange,
-  restAttachments,
-) => ({
-  type: DO_ADD_PATIENT_ATTACHMENT,
-  patientIdentifier,
-  fileData,
-  additionalConfig,
-  setCurrentlyUploadedAttachment,
-  onAttachmentFileInputChange,
-  restAttachments,
-});
-
-export const removePatientAttachment = (
-  patientIdentifier,
-  attachmentIdentifier,
-) => ({
-  type: DO_REMOVE_PATIENT_ATTACHMENT,
-  patientIdentifier,
-  attachmentIdentifier,
-});
-
 export const updatePatientNote = note => ({
   type: DO_UPDATE_PATIENT_NOTE,
   note,
@@ -228,6 +202,10 @@ function* initializePatientState() {
   }
 }
 
+function* initializePatientAttachmentFolder() {
+  yield put(PatientDetailsActions.getCurrentPatientAttachments());
+}
+
 function* getCurrentPatient() {
   const patientIdentifier = yield select(currentPatientIdentifierSelector);
 
@@ -263,11 +241,13 @@ function* getCurrentPatientLabels() {
 
 function* getCurrentPatientAttachments() {
   const patientIdentifier = yield select(currentPatientIdentifierSelector);
+  const folderIdentifier = yield select(currentFolderIdentifierSelector);
 
   try {
     const attachments = yield call(
       PatientAttachmentApi.getPatientAttachments,
       patientIdentifier,
+      folderIdentifier,
     );
     yield put({
       type: ActionTypes.GET_CURRENT_PATIENT_ATTACHMENTS_SUCCESS,
@@ -557,8 +537,9 @@ function* doSortPatientTasks({ payload }) {
   }
 }
 
-function* doAddPatientAttachment({
+function* createPatientAttachment({
   patientIdentifier,
+  folderIdentifier,
   fileData,
   additionalConfig,
   setCurrentlyUploadedAttachment,
@@ -566,18 +547,25 @@ function* doAddPatientAttachment({
   restAttachments,
 }) {
   try {
-    yield call(
-      PatientAttachmentApi.addPatientAttachment,
+    const attachment = yield call(
+      PatientAttachmentApi.createPatientAttachment,
       patientIdentifier,
+      folderIdentifier,
       fileData,
       additionalConfig,
     );
     setCurrentlyUploadedAttachment(null);
     onAttachmentFileInputChange(restAttachments);
-    yield put(PatientDetailsActions.getCurrentPatientAttachments());
+    yield put({ type: ActionTypes.ADD_PATIENT_ATTACHMENT_SUCCESS, attachment });
   } catch (error) {
     setCurrentlyUploadedAttachment(null);
     onAttachmentFileInputChange(restAttachments);
+
+    yield put({
+      type: ActionTypes.ADD_PATIENT_ATTACHMENT_FAILURE,
+      patientIdentifier,
+      folderIdentifier,
+    });
 
     if (error.response && error.response.status === 413) {
       yield put(
@@ -591,15 +579,27 @@ function* doAddPatientAttachment({
   }
 }
 
-function* doRemovePatientAttachment({ attachmentIdentifier }) {
+function* deletePatientAttachment({ patientIdentifier, identifier }) {
   try {
-    yield call(
-      PatientAttachmentApi.removePatientAttachment,
-      attachmentIdentifier,
-    );
-    yield put(PatientDetailsActions.getCurrentPatientAttachments());
+    yield call(PatientAttachmentApi.deletePatientAttachment, identifier);
+    yield all([
+      put(showGlobalAlert(AlertMessages.DELETED)),
+      put({
+        type: ActionTypes.DELETE_PATIENT_ATTACHMENT_SUCCESS,
+        patientIdentifier,
+        identifier,
+      }),
+    ]);
   } catch {
-    yield put(AlertActions.showGlobalErrorAlert());
+    yield all([
+      put({
+        type: ActionTypes.DELETE_PATIENT_ATTACHMENT_FAILURE,
+        patientIdentifier,
+        identifier,
+      }),
+      put(PatientDetailsActions.getCurrentPatient()),
+      put(AlertActions.showGlobalErrorAlert()),
+    ]);
   }
 }
 
@@ -626,7 +626,11 @@ function* doUpdatePatientNote({ note }) {
 function* doUpdatePatientDetails({ payload: { details } }) {
   try {
     onPatientDetailsEdited();
-    yield call(PatientApi.updatePatient, details);
+    const updatedPatientDetails = yield call(PatientApi.updatePatient, details);
+    yield put({
+      type: ActionTypes.UPDATE_PATIENT_DETAILS_SUCCESS,
+      payload: { details: { ...updatedPatientDetails } },
+    });
     yield put(AlertActions.showGlobalAlert(AlertMessages.UPDATED));
   } catch (error) {
     yield put(AlertActions.showGlobalErrorAlert());
@@ -726,10 +730,103 @@ function* mergePatient({ fromPatient, toPatient, onSuccess }) {
   }
 }
 
+export function* createPatientAttachmentFolder({
+  patientIdentifier,
+  name,
+  folderIdentifier,
+}) {
+  try {
+    const folder = yield call(
+      PatientAttachmentApi.createAttachmentFolder,
+      patientIdentifier,
+      name,
+      folderIdentifier,
+    );
+    yield all([
+      put(showGlobalAlert(AlertMessages.CREATED)),
+      put({
+        type: ActionTypes.ADD_PATIENT_ATTACHMENT_FOLDER_SUCCESS,
+        folder,
+      }),
+      put(closeModal()),
+    ]);
+  } catch {
+    yield all([
+      put(showGlobalErrorAlert()),
+      put({
+        type: ActionTypes.ADD_PATIENT_ATTACHMENT_FOLDER_FAILURE,
+        patientIdentifier,
+        name,
+      }),
+    ]);
+  }
+}
+
+function* updatePatientAttachment({ attachment, dataToUpdate }) {
+  try {
+    const updatedAttachment = yield call(
+      PatientAttachmentApi.updatePatientAttachment,
+      {
+        ...attachment,
+        ...dataToUpdate,
+      },
+    );
+    yield all([
+      put({
+        type: ActionTypes.UPDATE_PATIENT_ATTACHMENT_SUCCESS,
+        attachment: updatedAttachment,
+      }),
+      put(showGlobalAlert(AlertMessages.UPDATED)),
+      put(closeModal()),
+    ]);
+  } catch {
+    yield all([
+      put({
+        type: ActionTypes.UPDATE_PATIENT_ATTACHMENT_SUCCESS,
+        attachment,
+      }),
+      put(showGlobalErrorAlert()),
+    ]);
+  }
+}
+
+function* movePatientAttachment({ attachment, destinationFolderIdentifier }) {
+  try {
+    const updatedAttachment = yield call(
+      PatientAttachmentApi.updatePatientAttachment,
+      {
+        ...attachment,
+        parentAttachmentIdentifier: destinationFolderIdentifier,
+      },
+    );
+    yield all([
+      put({
+        type: ActionTypes.MOVE_PATIENT_ATTACHMENT_SUCCESS,
+        attachment: updatedAttachment,
+        destinationFolderIdentifier,
+      }),
+      put(showGlobalAlert(AlertMessages.MOVED)),
+      put(closeModal()),
+    ]);
+  } catch {
+    yield all([
+      put({
+        type: ActionTypes.MOVE_PATIENT_ATTACHMENT_SUCCESS,
+        attachment,
+      }),
+      put(showGlobalErrorAlert()),
+    ]);
+  }
+}
+
 export default function* watchPatientDetails() {
   yield takeLatest(
     ActionTypes.INITIALIZE_PATIENT_STATE,
     initializePatientState,
+  );
+  yield takeLatest(
+    ActionTypes.INITIALIZE_PATIENT_ATTACHMENTS_FOLDER,
+    initializePatientAttachmentFolder,
   );
   yield takeLatest(ActionTypes.GET_CURRENT_PATIENT, getCurrentPatient);
   yield takeLatest(
@@ -772,17 +869,29 @@ export default function* watchPatientDetails() {
   );
   yield takeEvery(DO_CHANGE_MEMBER_ROLE, doChangeMemberRole);
   yield takeEvery(DO_SORT_PATIENT_TASKS, doSortPatientTasks);
-  yield takeEvery(DO_ADD_PATIENT_ATTACHMENT, doAddPatientAttachment);
-  yield takeLatest(DO_REMOVE_PATIENT_ATTACHMENT, doRemovePatientAttachment);
   yield takeLatest(
     ActionTypes.TOGGLE_PATIENT_COMPLETE_TASKS_VISIBLE,
     doTogglePatientCompleteTasksVisible,
   );
   yield takeEvery(DO_UPDATE_PATIENT_NOTE, doUpdatePatientNote);
-  yield takeEvery(ActionTypes.UPDATE_PATIENT_DETAILS, doUpdatePatientDetails);
+  yield takeLeading(ActionTypes.UPDATE_PATIENT_DETAILS, doUpdatePatientDetails);
   yield takeEvery(DO_ARCHIVE_PATIENT, doArchivePatient);
   yield takeEvery(DO_ADD_PATIENT_NOTE, doAddPatientNote);
   yield takeEvery(DO_REMOVE_PATIENT_NOTE, doRemovePatientNote);
   yield takeEvery(DO_CHANGE_PATIENT_NOTE_PIN, doChangePatientNotePin);
   yield takeEvery(ActionTypes.MERGE_PATIENT, mergePatient);
+  yield takeEvery(
+    ActionTypes.DELETE_PATIENT_ATTACHMENT,
+    deletePatientAttachment,
+  );
+  yield takeEvery(
+    ActionTypes.ADD_PATIENT_ATTACHMENT_FOLDER,
+    createPatientAttachmentFolder,
+  );
+  yield takeEvery(
+    ActionTypes.UPDATE_PATIENT_ATTACHMENT,
+    updatePatientAttachment,
+  );
+  yield takeEvery(ActionTypes.MOVE_PATIENT_ATTACHMENT, movePatientAttachment);
+  yield takeEvery(ActionTypes.ADD_PATIENT_ATTACHMENT, createPatientAttachment);
 }

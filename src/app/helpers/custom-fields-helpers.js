@@ -1,3 +1,5 @@
+import { sort } from 'ramda';
+
 /* eslint-disable import/prefer-default-export */
 export const BOOL_SELECT_OPTIONS = [
   {
@@ -13,3 +15,6 @@ export const BOOL_SELECT_OPTIONS = [
     label: 'Yes',
   },
 ];
+
+export const sortAlphabetical = array =>
+  sort((a, b) => a?.name.localeCompare(b), array);

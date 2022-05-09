@@ -4,56 +4,41 @@ import dayGridPlugin from '@fullcalendar/daygrid';
 import timeGridPlugin from '@fullcalendar/timegrid';
 import { useSelector, useDispatch } from 'react-redux';
 import { extractTasksAndSubtasks } from 'helpers/tasklist-helpers';
+import { calendarTasksSelector } from 'selectors/calendar-tasks-selectors';
+import * as CalendarTasksActions from 'actions/calendar-tasks-actions';
 import { openDrawer } from 'actions/task-drawer-actions';
 import * as TaskActions from 'actions/task-actions';
 import { storeAsCurrentTask, updateTaskDueDate } from 'actions/task-actions';
 import interactionPlugin from '@fullcalendar/interaction';
 import moment from 'moment';
-import { pipe, prop, uniqBy } from 'ramda';
 import { openModal } from 'modal/actions';
 import { getSharedTaskListsWithCurrentUser } from 'api/task-list-api';
 import { userProfileSelector } from 'selectors/user-selectors';
 import Tooltip from 'components/common/Tooltip/Tooltip';
 import Spacing from 'components/common/Spacing';
-import { trunc } from 'helpers/utility-functions';
+import { ClickAwayListener, Typography } from '@material-ui/core';
 import { transformTaskToEvent } from './helpers';
 import {
   CalendarContainer,
   AddEventInputContainer,
   TextEventContainer,
 } from './styled';
+import MultiAssignCalendar from './MultiAssignCalendar';
 
 const temporaryTaskId = 'temporaryTaskId';
 
-const dedupe = pipe(uniqBy(prop('id')));
-
-const Calendar = ({
-  taskList,
-  taskListIdentifier,
-  showInCompleteTasksOnly,
-  onAddEvent,
-}) => {
+const Calendar = ({ taskListIdentifier }) => {
   const { userIdentifier } = useSelector(userProfileSelector);
   const [isAddingTaskEnabled, setIsAddingTaskEnabled] = useState(true);
   const addTaskInputReference = useRef();
   const dispatch = useDispatch();
-  const { parentTasks, subtasks } = extractTasksAndSubtasks(taskList);
+  const tasks = useSelector(calendarTasksSelector);
+  const { parentTasks, subtasks } = extractTasksAndSubtasks(tasks);
   const allTasks = [...parentTasks, ...subtasks];
 
-  const tasks = useMemo(
-    () =>
-      allTasks
-        .filter(
-          ({ dueDate, completedDt }) =>
-            !!dueDate &&
-            ((showInCompleteTasksOnly && !completedDt) ||
-              !showInCompleteTasksOnly),
-        )
-        .map(transformTaskToEvent),
-    [allTasks, showInCompleteTasksOnly],
-  );
-
-  const uniqueTasks = dedupe(tasks);
+  const transformedTasks = useMemo(() => allTasks.map(transformTaskToEvent), [
+    allTasks,
+  ]);
 
   const handleEventClick = useCallback(
     data => {
@@ -129,7 +114,6 @@ const Calendar = ({
                 dueDate,
               };
               dispatch(TaskActions.addTask(taskDetails));
-              if (typeof onAddEvent === 'function') onAddEvent(taskDetails);
             },
           }),
         );
@@ -137,42 +121,62 @@ const Calendar = ({
         setIsAddingTaskEnabled(true);
       }
     },
-    [dispatch, onAddEvent, taskListIdentifier, userIdentifier],
+    [dispatch, taskListIdentifier, userIdentifier],
   );
 
   const renderEventContent = eventInfo => {
     if (eventInfo.event.id === temporaryTaskId) {
       return (
-        <AddEventInputContainer>
-          <input
-            name="addTaskViaCalendar"
-            onBlur={event => onAddTaskInputBlur(event, eventInfo)}
-            ref={addTaskInputReference}
-            onClick={onAddTaskClick}
-            placeholder="Add a task..."
-            onKeyDown={event => {
-              event.stopPropagation();
-              if (event.key === 'Enter') {
-                onAddTaskInputBlur(event, eventInfo);
-              } else if (event.key === 'Escape') {
-                eventInfo.event.remove();
-                setIsAddingTaskEnabled(true);
-              }
-            }}
-          />
-        </AddEventInputContainer>
+        <ClickAwayListener
+          onClickAway={() => {
+            eventInfo.event.remove();
+            setIsAddingTaskEnabled(true);
+          }}
+        >
+          <AddEventInputContainer>
+            <input
+              name="addTaskViaCalendar"
+              onBlur={event => onAddTaskInputBlur(event, eventInfo)}
+              ref={addTaskInputReference}
+              onClick={onAddTaskClick}
+              placeholder="Add a task..."
+              onKeyDown={event => {
+                event.stopPropagation();
+                if (event.key === 'Enter') {
+                  onAddTaskInputBlur(event, eventInfo);
+                } else if (event.key === 'Escape') {
+                  eventInfo.event.remove();
+                  setIsAddingTaskEnabled(true);
+                }
+              }}
+            />
+          </AddEventInputContainer>
+        </ClickAwayListener>
       );
     }
+
+    const task = tasks?.find(
+      ({ identifier }) => identifier === eventInfo?.event?.id,
+    );
+
     return (
       <Tooltip
         key={eventInfo?.event?.id}
         title={eventInfo?.event?.title}
         hideTooltip={eventInfo?.event?.title.length < 17}
       >
-        <TextEventContainer>
+        <TextEventContainer
+          style={{
+            backgroundColor: task.taskList?.color || 'white',
+            opacity: 0.8,
+          }}
+        >
+          {task && (
+            <MultiAssignCalendar assignedToUsers={task.assignedToUsers} />
+          )}
           <b>{eventInfo.timeText}</b>
           <Spacing horizontal={2} />
-          <span>{trunc(eventInfo.event.title, 17)}</span>
+          <Typography noWrap>{eventInfo?.event?.title}</Typography>
         </TextEventContainer>
       </Tooltip>
     );
@@ -188,12 +192,26 @@ const Calendar = ({
     [dispatch, allTasks],
   );
 
+  const handleDateChange = ({ startStr, endStr }) => {
+    const startDate = moment(startStr)
+      .subtract(1, 'days')
+      .toISOString(true);
+
+    dispatch(
+      CalendarTasksActions.changeCalendarDateRange(
+        startDate.slice(0, 10),
+        endStr.slice(0, 10),
+      ),
+    );
+  };
+
   return (
     <CalendarContainer>
       <FullCalendar
+        expandRows
         selectable
         editable
-        events={uniqueTasks}
+        events={transformedTasks}
         plugins={[dayGridPlugin, timeGridPlugin, interactionPlugin]}
         initialView="dayGridMonth"
         headerToolbar={{
@@ -207,6 +225,7 @@ const Calendar = ({
         dayMaxEvents
         eventChange={handleDropDown}
         eventContent={renderEventContent}
+        datesSet={handleDateChange}
       />
     </CalendarContainer>
   );

@@ -3,12 +3,13 @@
 import { Grid, Typography } from '@material-ui/core';
 import queryString from 'query-string';
 import React, { useState } from 'react';
-import { FormContext, useForm } from 'react-hook-form';
+import { FormProvider, useForm } from 'react-hook-form';
 import { useDispatch } from 'react-redux';
 import { useHistory } from 'react-router-dom';
 import { useMount } from 'react-use';
 import styled from 'styled-components';
 import { object, string } from 'yup';
+import { yupResolver } from "@hookform/resolvers/yup";
 import { validPasswordSchema } from 'helpers/validation-helper';
 import { setAuthBaseState } from 'actions/auth-base-actions';
 import * as organizationApi from 'api/organization-api';
@@ -63,6 +64,20 @@ const validationSchema = object().shape({
     .matches(/\d{10}/, 'Please enter a valid phone number'),
 });
 
+const externalUserValidationSchema = object().shape({
+  firstName: string().required(REQUIRED_MESSAGE),
+  lastName: string().required(REQUIRED_MESSAGE),
+  email: string()
+    .required(REQUIRED_MESSAGE)
+    .email('Please enter a valid email address'),
+  password: string()
+    .required(REQUIRED_MESSAGE)
+    .concat(validPasswordSchema),
+  mobilePhoneNumber: string()
+    .transform(value => value?.replace(/\D/g, ''))
+    .matches(/\d{10}/, 'Please enter a valid phone number'),
+});
+
 const onSubmit = ({
   showDialog,
   showUserExistsDialog,
@@ -78,7 +93,9 @@ const onSubmit = ({
       username: email,
       password,
       email,
-      phone_number: `+${mobilePhoneNumber.replace(/\D/g, '')}`,
+      phone_number: mobilePhoneNumber
+        ? `+${mobilePhoneNumber.replace(/\D/g, '')}`
+        : null,
       family_name: lastName,
       given_name: firstName,
       'custom:referral': referral,
@@ -155,6 +172,7 @@ const CreateAccount = props => {
     showUserExistsDialog,
     hideUserExistsDialog,
   ] = useBoolean(false);
+  const [externalUserMode, setExternalUserMode] = useState(false);
   const [dialogTitle, setDialogTitle] = useState('');
   const [dialogMessage, setDialogMessage] = useState('');
   const [customPageTitle, setCustomPageTitle] = useState('');
@@ -162,12 +180,13 @@ const CreateAccount = props => {
   const dispatch = useDispatch();
 
   const formMethods = useForm({
-    validationSchema,
+    resolver: externalUserMode
+      ? yupResolver(externalUserValidationSchema)
+      : yupResolver(validationSchema),
     reValidateMode: 'onSubmit',
   });
 
   const email = formMethods.watch('email');
-
   const { setValue } = formMethods;
 
   const locationParameters = queryString.parse(history?.location?.search);
@@ -176,11 +195,12 @@ const CreateAccount = props => {
   useMount(() => {
     const { location } = props;
     const queryValues = queryString.parse(location.search);
-    const { uname } = queryValues;
+    const { uname, external, firstName: fname, lastName: lname } = queryValues;
 
-    if (uname) {
-      setValue('email', uname);
-    }
+    if (uname) setValue('email', uname);
+    if (fname) setValue('firstName', fname);
+    if (lname) setValue('lastName', lname);
+    if (external === 'true') setExternalUserMode(true);
 
     setAuthBaseState({
       authBaseState: AUTH_BASE_STATES.DEFAULT,
@@ -194,7 +214,6 @@ const CreateAccount = props => {
   });
 
   const hasCustomPageTitle = customPageTitle !== '';
-
   const fontFamily = 'roboto condensed';
 
   const onboardingDialogStyle = {
@@ -231,7 +250,7 @@ const CreateAccount = props => {
           }),
         )}
       >
-        <FormContext {...formMethods}>
+        <FormProvider {...formMethods}>
           {(hasTrialReferral || hasCustomPageTitle) && (
             <>
               <MontserratTypography variant="h2">
@@ -257,7 +276,7 @@ const CreateAccount = props => {
           <Spacing vertical={3} />
           <FormInput name="lastName" label="Last Name" />
           <Spacing vertical={3} />
-          <FormInput name="email" label="Email" />
+          <FormInput disabled={externalUserMode} name="email" label="Email" />
           <Spacing vertical={3} />
           <FormInput name="password" label="Password" type="password" />
           <Spacing vertical={3} />
@@ -286,7 +305,7 @@ const CreateAccount = props => {
             </span>
             <StyledLink to="/auth/login">SIGN IN</StyledLink>
           </MontserratTypography>
-        </FormContext>
+        </FormProvider>
       </StyledForm>
       <OnboardingDialog open={isDialogShown} fullWidth maxWidth="sm">
         <OnboardingHeader>

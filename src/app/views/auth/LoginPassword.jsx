@@ -72,13 +72,11 @@ const LoginPassword = () => {
             setUnconfirmedUserFlag(true);
           }
 
-          setError(
-            'password',
-            'invalid',
-            message ?? 'Incorrect email or password. Please try again.',
-
-            // (error?.message!='User is not confirmed.') ?? 'Incorrect email or password. Please try again.',
-          );
+          setError('password', {
+            type: 'custom',
+            message:
+              message ?? 'Incorrect email or password. Please try again.',
+          });
         });
     },
     [history],

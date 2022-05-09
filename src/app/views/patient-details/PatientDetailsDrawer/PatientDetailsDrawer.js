@@ -5,9 +5,10 @@ import { useBoolean } from 'hooks/useBoolean';
 import { mergeDeepRight } from 'ramda';
 import moment from 'moment';
 import { useDispatch, useSelector } from 'react-redux';
+import { yupResolver } from "@hookform/resolvers/yup";
 import { organizationSelector } from 'selectors/organization-selectors';
 import { userProfileSelector } from 'selectors/user-selectors';
-import { FormContext, useForm } from 'react-hook-form';
+import { FormProvider, useForm } from 'react-hook-form';
 import { openModal, closeModal } from 'modal/actions';
 import { createPatientDetailsPath } from 'routing/helpers/paths';
 import { archivePatient as archivePatientAction } from 'sagas/patient-details-saga';
@@ -41,10 +42,10 @@ const PatientDetailsDrawer = ({ patient, isOpenedDetails, closeDetails }) => {
   const formMethods = useForm({
     defaultValues: patientValues,
     reValidateMode: 'onSubmit',
-    validationSchema,
+    resolver: yupResolver(validationSchema),
   });
   const customerTypeLabel = getCustomerTypeLabel(currentUser);
-  const { clearError, reset } = formMethods;
+  const { reset, clearErrors } = formMethods;
   const formReference = useRef(null);
   const organization = useSelector(organizationSelector);
   const { emrIntegrationEnabled } = organization || {};
@@ -52,7 +53,7 @@ const PatientDetailsDrawer = ({ patient, isOpenedDetails, closeDetails }) => {
   const close = () => {
     unsetActive();
     closeDetails();
-    clearError(Object.keys(patientValues));
+    clearErrors(Object.keys(patientValues));
   };
 
   const handleClose = () => {
@@ -77,7 +78,7 @@ const PatientDetailsDrawer = ({ patient, isOpenedDetails, closeDetails }) => {
       unsetActive();
     } else {
       reset({ ...patientValues });
-      clearError(Object.keys(patientValues));
+      clearErrors(Object.keys(patientValues));
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isOpenedDetails]);
@@ -93,7 +94,12 @@ const PatientDetailsDrawer = ({ patient, isOpenedDetails, closeDetails }) => {
 
   const handleFormSubmit = data => {
     unsetActive();
-    dispatch(updatePatientDetails(mergeDeepRight(patient, data)));
+    const updateData = mergeDeepRight(patient, data);
+    updateData.allNotes = undefined;
+    updateData.patientLabels = undefined;
+    updateData.createdDateTime = undefined;
+    updateData.updatedDateTime = undefined;
+    dispatch(updatePatientDetails(updateData));
   };
 
   const contextMenuOptions = useMemo(
@@ -152,7 +158,7 @@ const PatientDetailsDrawer = ({ patient, isOpenedDetails, closeDetails }) => {
   );
 
   return (
-    <FormContext {...formMethods}>
+    <FormProvider {...formMethods}>
       <PatientDrawer
         isOpen={isOpenedDetails}
         title={`${patient.lastName}, ${patient.firstName} ${
@@ -174,7 +180,7 @@ const PatientDetailsDrawer = ({ patient, isOpenedDetails, closeDetails }) => {
           buttonLabel="SAVE EDITS"
         />
       </PatientDrawer>
-    </FormContext>
+    </FormProvider>
   );
 };
 

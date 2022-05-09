@@ -27,19 +27,21 @@ const AttachmentButton = ({ attachment, onClick, onRemoveClick }) => {
         <RobotoTypography condensed variant="h4" weight="bold" noWrap>
           {fileName}
         </RobotoTypography>
-        <RemoveAttachmentButtonContainer>
-          <IconButton
-            onClick={event => {
-              event.preventDefault();
-              event.stopPropagation();
-              onRemoveClick(attachmentIdentifier);
-            }}
-            size="small"
-            color="inherit"
-          >
-            <Close fontSize="small" />
-          </IconButton>
-        </RemoveAttachmentButtonContainer>
+        {typeof onRemoveClick === 'function' && (
+          <RemoveAttachmentButtonContainer>
+            <IconButton
+              onClick={event => {
+                event.preventDefault();
+                event.stopPropagation();
+                onRemoveClick(attachmentIdentifier);
+              }}
+              size="small"
+              color="inherit"
+            >
+              <Close fontSize="small" />
+            </IconButton>
+          </RemoveAttachmentButtonContainer>
+        )}
       </Container>
     </Tooltip>
   );

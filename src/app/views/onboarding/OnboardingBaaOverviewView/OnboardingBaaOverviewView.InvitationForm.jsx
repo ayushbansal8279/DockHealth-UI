@@ -1,10 +1,11 @@
 import { Grid, IconButton } from '@material-ui/core';
 import { Close } from '@material-ui/icons';
 import React from 'react';
-import { FormContext, useForm } from 'react-hook-form';
+import { FormProvider, useForm } from 'react-hook-form';
 import { useHistory } from 'react-router-dom';
 import { v4 as uuid } from 'uuid';
 import { object, string } from 'yup';
+import { yupResolver } from "@hookform/resolvers/yup";
 import { inviteAuthorizedSigner } from 'api/organization-api';
 import Spacing from 'components/common/Spacing';
 import Button from 'components/common/Button/Button';
@@ -71,7 +72,7 @@ const onInvitationSubmit = history => async ({
 const InvitationForm = ({ hideInvitationForm }) => {
   const history = useHistory();
   const formMethods = useForm({
-    validationSchema,
+    resolver: yupResolver(validationSchema),
     revalidationMode: 'onChange',
   });
 
@@ -83,7 +84,7 @@ const InvitationForm = ({ hideInvitationForm }) => {
       autoComplete="off"
       autoCorrect="off"
     >
-      <FormContext {...formMethods}>
+      <FormProvider {...formMethods}>
         <Grid container alignItems="center" justify="space-between">
           <MontserratTypography variant="h3">
             Invite the authorized signer of your organization
@@ -144,7 +145,7 @@ const InvitationForm = ({ hideInvitationForm }) => {
             </Button>
           </Grid>
         </Grid>
-      </FormContext>
+      </FormProvider>
     </form>
   );
 };

@@ -8,9 +8,9 @@ export const InvitePeoplePopoverContainer = styled.div`
 `;
 
 export const InvitePeoplePopoverSection = styled.div`
-  max-width: 29rem;
+  max-width: 32rem;
   padding: 1rem;
-  width: 29rem;
+  width: 32rem;
 `;
 
 export const InvitePopoverCloseButton = styled.button`

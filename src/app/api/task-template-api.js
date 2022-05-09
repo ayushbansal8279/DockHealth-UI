@@ -66,6 +66,14 @@ export function addTemplate(newTemplate, parentTaskWorkflowIdentifier) {
 }
 
 export function updatePartialWorkflow(taskWorkflowIdentifier, dataToUpdate) {
+  // const arrayUniqueByKey = [
+  //   ...new Map(
+  //     dataToUpdate?.taskMetaData.map(item => [
+  //       item.customFieldIdentifier,
+  //       item,
+  //     ]),
+  //   ).values(),
+  // ];
   return axios
     .patch(`task/workflow/${taskWorkflowIdentifier}`, dataToUpdate)
     .then(response => {

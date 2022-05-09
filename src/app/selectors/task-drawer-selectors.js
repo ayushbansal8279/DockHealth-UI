@@ -7,6 +7,11 @@ export const selectedTaskSelector = createSelector(
   ({ selectedTask }) => selectedTask,
 );
 
+export const isErrorInTaskDrawerSelector = createSelector(
+  taskDrawerSelector,
+  ({ error }) => error,
+);
+
 export const taskIsSelectedSelector = createSelector(
   taskDrawerSelector,
   ({ selectedTask }) => !!selectedTask,

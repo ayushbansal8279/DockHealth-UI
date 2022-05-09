@@ -27,6 +27,7 @@ const Avatar = React.forwardRef(
       onClick,
       activityStatus,
       isSelected,
+      isGroup,
       ...props
     },
     reference,
@@ -49,8 +50,8 @@ const Avatar = React.forwardRef(
           <MemberImage src={pictureSrc} pictureSize={pictureSize} alt={alt} />
         );
       }
-      return initials?.toLowerCase();
-    }, [pictureSrc, pictureSize, initials, name]);
+      return isGroup ? initials?.[0]?.toUpperCase() : initials?.toLowerCase();
+    }, [pictureSrc, isGroup, initials, name]);
 
     return (
       <BackgroundContainer
@@ -64,10 +65,16 @@ const Avatar = React.forwardRef(
           isSelected={isSelected}
           size={size}
           color={color}
+          isGroup={isGroup}
           isBlurred={isBlurred}
           {...omit(['ref'], props)}
         >
-          <InnerAvatarContainer color={color} size={size}>
+          <InnerAvatarContainer
+            color={color}
+            size={size}
+            isGroup={isGroup}
+            isSelected={isSelected}
+          >
             {avatarContent}
           </InnerAvatarContainer>
           {activityStatus && (

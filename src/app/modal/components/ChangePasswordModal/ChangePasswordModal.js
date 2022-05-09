@@ -1,7 +1,8 @@
 import React from 'react';
-import { useForm, FormContext } from 'react-hook-form';
+import { useForm, FormProvider } from 'react-hook-form';
 import { useDispatch } from 'react-redux';
 import { object, string, ref } from 'yup';
+import { yupResolver } from "@hookform/resolvers/yup";
 import { Grid } from '@material-ui/core';
 import LockIcon from 'img/modals/lock';
 import * as UserAuthApi from 'api/user-auth-api';
@@ -47,9 +48,15 @@ const onSubmit = ({ setError, dispatch }) => ({
     })
     .catch(error => {
       if (error.code === 'NotAuthorizedException') {
-        setError('currentPassword', 'manual', 'Incorrect password');
+        setError('currentPassword', {
+          type: 'custom',
+          message: 'Incorrect password',
+        });
       } else {
-        setError('currentPassword', 'manual', error.message);
+        setError('regicurrentPasswordsterInput', {
+          type: 'custom',
+          message: error.message,
+        });
       }
     });
 };
@@ -58,7 +65,7 @@ const ChangePasswordModal = ({ closeModal }) => {
   const dispatch = useDispatch();
 
   const formMethods = useForm({
-    validationSchema,
+    resolver: yupResolver(validationSchema),
     reValidateMode: 'onSubmit',
   });
 
@@ -70,7 +77,7 @@ const ChangePasswordModal = ({ closeModal }) => {
         <CloseIcon />
       </CloseIconButton>
       <Title>Change your password</Title>
-      <FormContext {...formMethods}>
+      <FormProvider {...formMethods}>
         <StyledForm onSubmit={handleSubmit(onSubmit({ setError, dispatch }))}>
           <FormInput
             autoFocus
@@ -103,7 +110,7 @@ const ChangePasswordModal = ({ closeModal }) => {
             </Grid>
           </Grid>
         </StyledForm>
-      </FormContext>
+      </FormProvider>
     </ChangePasswordModalContainer>
   );
 };

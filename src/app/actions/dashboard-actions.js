@@ -64,3 +64,22 @@ export const searchDashboardTasks = searchTerm => ({
   type: ActionTypes.SEARCH_DASHBOARD_TASKS,
   searchTerm,
 });
+
+export function getDashboardCalendarTasks() {
+  return {
+    type: ActionTypes.GET_DASHBOARD_CALENDAR_TASKS,
+  };
+}
+
+export function getDashboardCalendarTasksSuccess(tasks) {
+  return {
+    type: ActionTypes.GET_DASHBOARD_CALENDAR_TASKS_SUCCESS,
+    tasks,
+  };
+}
+
+export function getDashboardCalendarTasksFailure() {
+  return {
+    type: ActionTypes.GET_DASHBOARD_CALENDAR_TASKS_FAILURE,
+  };
+}

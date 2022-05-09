@@ -24,6 +24,7 @@ export const TaskStatus = {
 export const TaskItemType = {
   BUNDLE: 'BUNDLE',
   TASK: 'TASK',
+  TEMPLATE: 'TEMPLATE',
 };
 
 export const TaskPriority = {

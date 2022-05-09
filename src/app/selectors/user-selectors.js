@@ -8,6 +8,11 @@ export const userProfileSelector = createSelector(
   ({ userProfile }) => userProfile || {},
 );
 
+export const isFetchingProfileSelector = createSelector(
+  userStateSelector,
+  ({ isFetchingProfile }) => isFetchingProfile || {},
+);
+
 export const userOrganizationsSelector = createSelector(
   userProfileSelector,
   ({ userOrganizations }) => userOrganizations,
@@ -21,6 +26,16 @@ export const userProfileDashboardPrefsSelector = createSelector(
 export const userProfileCustomFieldsSelector = createSelector(
   userStateSelector,
   ({ userPreference }) => userPreference?.customFieldDisplayColumns,
+);
+
+export const dashboardGroupsOrderPreferencesSelector = createSelector(
+  userStateSelector,
+  ({ userPreference }) => userPreference?.displayGroups,
+);
+
+export const dashboardGroupsPreferencesSelector = createSelector(
+  userStateSelector,
+  ({ userPreference }) => userPreference?.displayGroups,
 );
 
 export const userHasSmartFlowsSelector = createSelector(

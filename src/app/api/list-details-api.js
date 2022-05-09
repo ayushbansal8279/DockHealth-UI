@@ -4,6 +4,26 @@ import {
 } from 'helpers/filter-options-helpers';
 import axios from './axios-heydoc';
 
+const includeCustomFieldsPatientsToEachTask = data => {
+  const { taskGroups } = data;
+  const updatedTaskGroups = taskGroups.map(g => ({
+    ...g,
+    tasks: (g?.tasks || []).map(t => {
+      const patient = (g.patients || []).find(p => {
+        return p?.patientIdentifier === t?.patient?.patientIdentifier;
+      });
+      const task = {
+        ...t,
+      };
+      if (t?.patient) {
+        task.patient.patientMetaData = patient?.patientMetaData || [];
+      }
+      return task;
+    }),
+  }));
+  return { ...data, taskGroups: updatedTaskGroups };
+};
+
 export function getTaskStatsForList(taskListIdentifier) {
   return axios
     .get(`/task/stats/getTaskStatsForList/${taskListIdentifier}`)
@@ -34,7 +54,9 @@ export function getListTasksGroupedByTaskGroup(
         viewMode: viewMode || undefined,
       },
     })
-    .then(({ data }) => data.taskGroups);
+    .then(
+      ({ data }) => includeCustomFieldsPatientsToEachTask(data)?.taskGroups,
+    );
 }
 
 export function getTasksForTaskListByTaskGroup(
@@ -60,7 +82,7 @@ export function getTasksForTaskListByTaskGroup(
         },
       },
     )
-    .then(({ data }) => data);
+    .then(({ data }) => includeCustomFieldsPatientsToEachTask(data));
 }
 
 export function searchTasksByTaskList(taskListIdentifier, searchTerm, status) {
@@ -68,7 +90,9 @@ export function searchTasksByTaskList(taskListIdentifier, searchTerm, status) {
     .get(
       `/task/searchTasksByTaskList/${taskListIdentifier}?searchTerm=${searchTerm}&status=${status}`,
     )
-    .then(({ data }) => data.taskGroups);
+    .then(
+      ({ data }) => includeCustomFieldsPatientsToEachTask(data)?.taskGroups,
+    );
 }
 
 export function getFilteredTasksForList(
@@ -89,7 +113,9 @@ export function getFilteredTasksForList(
         },
       },
     )
-    .then(({ data }) => data.taskGroups);
+    .then(({ data }) => {
+      return includeCustomFieldsPatientsToEachTask(data)?.taskGroups;
+    });
 }
 
 export function getTaskListFilterOptions(
@@ -119,4 +145,17 @@ export function getTaskListFilterOptions(
   }
 
   return request.then(responseFilters => mapFilterOptions(responseFilters));
+}
+
+export function getTasksForListByDateRange(
+  taskListIdentifier,
+  status,
+  startDate,
+  endDate,
+) {
+  return axios
+    .get(`task/findListTasksByDueDateRange/taskList/${taskListIdentifier}`, {
+      params: { status, startDate, endDate },
+    })
+    .then(({ data }) => data);
 }

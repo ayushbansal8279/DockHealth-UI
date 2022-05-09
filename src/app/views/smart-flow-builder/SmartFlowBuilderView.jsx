@@ -7,8 +7,9 @@ import React, {
   useRef,
   useCallback,
 } from 'react';
+import { bulkEditTasks } from 'api/task-api';
 import { useParams, Link, useHistory } from 'react-router-dom';
-import { compose, isNil, not, path } from 'ramda';
+import { compose, isNil, not, path, pluck } from 'ramda';
 import { useDispatch, useSelector } from 'react-redux';
 import NavigateNextIcon from '@material-ui/icons/NavigateNext';
 import HardDependencyIcon from 'img/template/hard-dependency';
@@ -21,9 +22,9 @@ import {
   deleteTasksLink,
   changeTaskIntentType,
   updateTasksLink,
-  deleteTask,
+  bulkEditDelete,
 } from 'actions/task-actions';
-import { openModal } from 'modal/actions';
+import { openModal, closeModal } from 'modal/actions';
 import {
   addDecisionBranch,
   addNewDecisionTaskElement,
@@ -42,6 +43,7 @@ import { userHasSmartFlowsSelector } from 'selectors/user-selectors';
 import { openDrawer } from 'actions/workflow-drawer-actions';
 import { Box, ClickAwayListener, Paper, Popper } from '@material-ui/core';
 import DecisionTaskElementIcon from 'img/template/decision-task-icon';
+import Tooltip from 'components/common/Tooltip/Tooltip';
 import ReactFlow, {
   Controls,
   Position,
@@ -52,7 +54,10 @@ import {
   NodeType,
   LinkType,
   TASK_NODE_WIDTH,
+  getAutoLayout,
 } from 'helpers/smart-flow-builder-helpers';
+import { showGlobalAlert } from 'alert/actions';
+import AlertMessages from 'alert/AlertMessages';
 import { useBoolean } from 'hooks/useBoolean';
 import palette from 'styles/palette';
 import NewTaskNode from './NewTaskNode/NewTaskNode';
@@ -75,14 +80,14 @@ import {
   TaskElementIcon,
   BuilderHeader,
   BuilderHeaderText,
-  HotkeysElements,
-  Hotkey,
-  HotkeyDescription,
+  SidebarDivider,
+  AutoAlignButton,
 } from './styled';
 import ConnectionLink from './ConnectionLink/ConnectionLink';
 import TaskLinkDelayForm from './TaskLinkDelayForm/TaskLinkDelayForm';
 import TemporaryDecisionTaskLink from './TemporaryDecisionTaskLink/TemporaryDecisionTaskLink';
 import BulkEditContainer from './BulkEditContainer/BulkEditContainer';
+import Hotkeys from './Hotkeys/Hotkeys';
 
 const nodeTypes = {
   [NodeType.NEW_STANDARD]: NewTaskNode,
@@ -117,6 +122,22 @@ const SmartFlowBuilderView = () => {
   const workflow = useSelector(currentTaskTemplateSelector);
   const { name, templateType, parentTaskWorkflowIdentifier } = workflow || {};
   const smartFlowsAvailable = useSelector(userHasSmartFlowsSelector);
+
+  const numberOfTasks = tasks?.length || 0;
+  const previousNumberOfTasks = useRef(null);
+
+  useEffect(() => {
+    if (
+      reactFlowInstance.current &&
+      previousNumberOfTasks.current > 0 &&
+      numberOfTasks - previousNumberOfTasks.current > 1
+    ) {
+      setTimeout(reactFlowInstance.current.fitView, 0);
+    }
+
+    setSelectedElements(null);
+    previousNumberOfTasks.current = numberOfTasks;
+  }, [numberOfTasks]);
 
   useEffect(() => {
     if (smartFlowsAvailable === false && templateType === 'SMARTFLOW') {
@@ -366,27 +387,78 @@ const SmartFlowBuilderView = () => {
   );
 
   const handleRemoveElement = elementsToDelete => {
-    elementsToDelete.forEach(element => {
-      if ([LinkType.DECISION, LinkType.STANDARD].includes(element.type)) {
-        const {
-          source: sourceTaskIdentifier,
-          target: targetTaskIdentifier,
-        } = element;
-        dispatch(deleteTasksLink(sourceTaskIdentifier, targetTaskIdentifier));
-      } else if (
-        [
-          NodeType.NEW_DECISION,
-          NodeType.NEW_STANDARD,
-          LinkType.TEMPORARY,
-        ].includes(element.type)
-      ) {
-        dispatch(deleteTemporaryElement(element.id));
-      } else if (
-        [NodeType.DECISION, NodeType.STANDARD].includes(element.type)
-      ) {
-        dispatch(deleteTask(element.data.task));
+    const tasksToDelete = elementsToDelete
+      .filter(path(['data', 'task']))
+      .map(path(['data', 'task']));
+    const temporaryElementsToDelete = elementsToDelete.filter(({ type }) =>
+      [
+        NodeType.NEW_DECISION,
+        NodeType.NEW_STANDARD,
+        LinkType.TEMPORARY,
+        LinkType.TEMPORARY_DECISION,
+      ].includes(type),
+    );
+    const linksToDelete = elementsToDelete.filter(e => {
+      const { source, target, type } = e;
+
+      if (![LinkType.DECISION, LinkType.STANDARD].includes(type)) {
+        return false;
       }
+
+      return !tasksToDelete.some(
+        ({ identifier: taskId }) => taskId === source || taskId === target,
+      );
     });
+
+    if (
+      tasksToDelete.length > 0 ||
+      temporaryElementsToDelete.length > 0 ||
+      linksToDelete.length > 0
+    ) {
+      dispatch(
+        openModal('DeleteConfirmation', {
+          title: 'Delete elements',
+          description:
+            'Are you sure you want to delete these elements? This action cannot be undone.',
+          confirm: () => {
+            dispatch(closeModal());
+
+            if (tasksToDelete.length > 0) {
+              const taskIdentifiersToDelete = pluck(
+                'identifier',
+                tasksToDelete,
+              );
+
+              bulkEditTasks({
+                bulkEditType: 'DELETE',
+                taskIdentifiers: taskIdentifiersToDelete,
+              }).then(() => {
+                dispatch(bulkEditDelete(taskIdentifiersToDelete));
+                dispatch(showGlobalAlert(AlertMessages.DELETED));
+              });
+            }
+
+            if (temporaryElementsToDelete.length > 0) {
+              temporaryElementsToDelete.forEach(e => {
+                dispatch(deleteTemporaryElement(e.id));
+              });
+            }
+
+            if (linksToDelete.length > 0) {
+              linksToDelete.forEach(e => {
+                const {
+                  source: sourceTaskIdentifier,
+                  target: targetTaskIdentifier,
+                } = e;
+                dispatch(
+                  deleteTasksLink(sourceTaskIdentifier, targetTaskIdentifier),
+                );
+              });
+            }
+          },
+        }),
+      );
+    }
   };
 
   const ConnectionLineComponent = useCallback(
@@ -427,6 +499,12 @@ const SmartFlowBuilderView = () => {
     el?.click();
   };
 
+  const handleAutoAlignClick = async () => {
+    const autoLayout = await getAutoLayout(tasks);
+    dispatch(saveTaskTemplateLayout(autoLayout));
+    setTimeout(reactFlowInstance.current.fitView, 0);
+  };
+
   const selectedTasks = useMemo(
     () =>
       selectedElements
@@ -461,6 +539,12 @@ const SmartFlowBuilderView = () => {
                   <ElementDescription>{label}</ElementDescription>
                 </ElementButton>
               ))}
+              <SidebarDivider />
+              <Tooltip title="Auto Align will organize  your layout ">
+                <AutoAlignButton type="button" onClick={handleAutoAlignClick}>
+                  Auto Align Layout
+                </AutoAlignButton>
+              </Tooltip>
               {isDelayPopoverOpen && (
                 <Popper
                   anchorEl={delayPeriodOptionReference.current}
@@ -480,27 +564,7 @@ const SmartFlowBuilderView = () => {
               )}
             </Box>
             <Box>
-              <SidebarTitle>Hotkeys</SidebarTitle>
-              <Box p={0.5} />
-              <HotkeysElements>
-                <div>
-                  <HotkeyDescription>
-                    Remove Task
-                    <br />
-                    Or Link
-                  </HotkeyDescription>
-                </div>
-                <div>
-                  <Hotkey>Delete</Hotkey>
-                </div>
-                <div>
-                  <HotkeyDescription>Multi-Select</HotkeyDescription>
-                </div>
-                <div>
-                  <Hotkey>Shift</Hotkey>
-                  <HotkeyDescription>then Drag</HotkeyDescription>
-                </div>
-              </HotkeysElements>
+              <Hotkeys />
             </Box>
           </ElementsSidebar>
           <Box ref={builderWrapperReference} position="relative" flex={1}>

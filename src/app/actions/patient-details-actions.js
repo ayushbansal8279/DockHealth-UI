@@ -107,3 +107,66 @@ export function mergePatient(fromPatient, toPatient, onSuccess) {
     onSuccess,
   };
 }
+
+export function updatePatientAttachment(attachment, dataToUpdate) {
+  return {
+    type: ActionTypes.UPDATE_PATIENT_ATTACHMENT,
+    attachment,
+    dataToUpdate,
+  };
+}
+
+export function movePatientAttachment(attachment, destinationFolderIdentifier) {
+  return {
+    type: ActionTypes.MOVE_PATIENT_ATTACHMENT,
+    attachment,
+    destinationFolderIdentifier,
+  };
+}
+
+export function deletePatientAttachment(patientIdentifier, identifier) {
+  return {
+    type: ActionTypes.DELETE_PATIENT_ATTACHMENT,
+    patientIdentifier,
+    identifier,
+  };
+}
+
+export function createPatientAttachmentFolder(
+  patientIdentifier,
+  name,
+  folderIdentifier = null,
+) {
+  return {
+    type: ActionTypes.ADD_PATIENT_ATTACHMENT_FOLDER,
+    patientIdentifier,
+    name,
+    folderIdentifier,
+  };
+}
+
+export const createPatientAttachment = (
+  patientIdentifier,
+  folderIdentifier,
+  fileData,
+  additionalConfig,
+  setCurrentlyUploadedAttachment,
+  onAttachmentFileInputChange,
+  restAttachments,
+) => ({
+  type: ActionTypes.ADD_PATIENT_ATTACHMENT,
+  patientIdentifier,
+  folderIdentifier,
+  fileData,
+  additionalConfig,
+  setCurrentlyUploadedAttachment,
+  onAttachmentFileInputChange,
+  restAttachments,
+});
+
+export function initializePatientAttachmentsFolder(folderIdentifier) {
+  return {
+    type: ActionTypes.INITIALIZE_PATIENT_ATTACHMENTS_FOLDER,
+    folderIdentifier,
+  };
+}

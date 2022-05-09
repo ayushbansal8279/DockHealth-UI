@@ -2,8 +2,9 @@
 import { Grid } from '@material-ui/core';
 import palette from 'styles/palette';
 import React, { useMemo, useEffect } from 'react';
-import { FormContext, useForm } from 'react-hook-form';
+import { FormProvider, useForm } from 'react-hook-form';
 import { useDispatch } from 'react-redux';
+import { yupResolver } from "@hookform/resolvers/yup";
 import Button from 'components/common/Button/Button';
 import { head } from 'ramda';
 import { getCurrentUser, updateCurrentUser } from 'actions/user-actions';
@@ -44,7 +45,7 @@ const UserProfileForm = ({ userProfile }) => {
 
   const formMethods = useForm({
     defaultValues,
-    validationSchema,
+    resolver: yupResolver(validationSchema),
     reValidateMode: 'onSubmit',
   });
 
@@ -91,7 +92,7 @@ const UserProfileForm = ({ userProfile }) => {
   };
 
   return (
-    <FormContext {...formMethods}>
+    <FormProvider {...formMethods}>
       <StyledForm
         onSubmit={handleSubmit(data => dispatch(updateCurrentUser(data)))}
         autoComplete="off"
@@ -238,7 +239,7 @@ const UserProfileForm = ({ userProfile }) => {
           </Grid>
         </Grid>
       </StyledForm>
-    </FormContext>
+    </FormProvider>
   );
 };
 

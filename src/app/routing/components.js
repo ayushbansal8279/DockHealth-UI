@@ -2,9 +2,10 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 /* eslint-disable func-names */
 import React, { useEffect } from 'react';
-import { Route, useRouteMatch, useHistory } from 'react-router-dom';
+import { useRouteMatch, useHistory } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
 import { setLocationAndParameters } from 'location/actions';
+import SecuredRoute from './SecuredRoute';
 
 export const RouteWrapper = ({
   path,
@@ -12,6 +13,7 @@ export const RouteWrapper = ({
   onEnter,
   onLeave,
   exact,
+  allowedToRoles,
 }) => {
   const dispatch = useDispatch();
   const history = useHistory();
@@ -38,5 +40,12 @@ export const RouteWrapper = ({
     };
   }, [url]);
 
-  return <Route path={path} component={RouteComponent} exact={exact} />;
+  return (
+    <SecuredRoute
+      allowedToRoles={allowedToRoles}
+      path={path}
+      component={RouteComponent}
+      exact={exact}
+    />
+  );
 };

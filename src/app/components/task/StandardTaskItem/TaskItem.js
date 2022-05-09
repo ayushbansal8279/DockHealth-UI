@@ -5,6 +5,7 @@ import React, {
   useRef,
   useCallback,
   useContext,
+  useMemo,
 } from 'react';
 import { pluck } from 'ramda';
 import { useDispatch, useSelector } from 'react-redux';
@@ -42,12 +43,29 @@ import {
 import DependencyIcon from 'img/dependency-icon.svg';
 import DependencyListPopover from 'components/common/DependencyListPopover/DependencyListPopover';
 import useBooleanWithTimeout from 'hooks/use-boolean-with-timeout';
-import { useColumnsConfig } from 'context-api/ColumnsConfigContext';
+import { useColumnsConfig } from 'context-api/columns-config-context';
 import TaskItemCustomField from 'components/common/CustomField/TaskItemCustomField';
 import StickyMainTaskItemCell from 'components/task/StickyMainTaskItemCell/StickyMainTaskItemCell';
 import TaskItemCell from 'components/task/TaskItemCell/TaskItemCell';
 import { CustomFieldWidthConfig } from 'helpers/field-type-helpers';
+import {
+  SINGLE_TASK_RESTRICTIONS_PROFILES,
+  SINGLE_TASK_FEATURES,
+  SINGLE_TASK_RESTRICTIONS_OPTIONS,
+} from 'restrictions/task-restrictions';
+import { sortAlphabetical } from 'helpers/custom-fields-helpers';
 import { getSubtaskStylingLink } from './helpers';
+import TaskItemContextMenu from '../TaskItemContextMenu/TaskItemContextMenu';
+import TaskItemBulkEdit from './TaskItemComponents/TaskItemBulkEdit';
+import TaskItemDescription from './TaskItemComponents/TaskItemDescription';
+import TaskItemPatient from './TaskItemComponents/TaskItemPatient';
+import TaskItemDueDate from './TaskItemComponents/TaskItemDueDate';
+import TaskItemSubtasks from './TaskItemComponents/TaskItemSubtasks';
+import TaskItemIcons from './TaskItemComponents/TaskItemIcons';
+import TaskItemMembers from './TaskItemComponents/TaskItemMembers';
+import TaskItemList from './TaskItemComponents/TaskItemList';
+import TaskItemWorkflowStatus from './TaskItemComponents/TaskItemWorkflowStatus';
+import TaskItemDecision from './TaskItemComponents/TaskItemDecision';
 import {
   CircleIcon,
   MainStandardTaskItemCell,
@@ -59,18 +77,8 @@ import {
   DetailsButton,
   DecisionCellContainer,
 } from '../styled';
-import TaskItemContextMenu from '../TaskItemContextMenu/TaskItemContextMenu';
 
-import TaskItemBulkEdit from './TaskItemComponents/TaskItemBulkEdit';
-import TaskItemDescription from './TaskItemComponents/TaskItemDescription';
-import TaskItemPatient from './TaskItemComponents/TaskItemPatient';
-import TaskItemDueDate from './TaskItemComponents/TaskItemDueDate';
-import TaskItemSubtasks from './TaskItemComponents/TaskItemSubtasks';
-import TaskItemIcons from './TaskItemComponents/TaskItemIcons';
-import TaskItemMembers from './TaskItemComponents/TaskItemMembers';
-import TaskItemList from './TaskItemComponents/TaskItemList';
-import TaskItemWorkflowStatus from './TaskItemComponents/TaskItemWorkflowStatus';
-import TaskItemDecision from './TaskItemComponents/TaskItemDecision';
+const { DISABLED, READ_ONLY } = SINGLE_TASK_RESTRICTIONS_OPTIONS;
 
 const STANDARD_TASK_HEIGHT = 35;
 const EXTENDED_TASK_HEIGHT = 50;
@@ -130,8 +138,11 @@ const TaskItem = React.memo(
       dependencyTasksCount,
     } = task;
 
-    const { columnsConfig, customColumnsConfig } = useColumnsConfig();
-
+    const {
+      columnsConfig,
+      customColumnsConfig,
+      patientCustomColumnsConfig,
+    } = useColumnsConfig();
     const { listName, taskListIdentifier } = taskList || {};
     const isCompleted = task.status === 'COMPLETE';
     const isTemplateTask = checkIfTemplateTask(task);
@@ -141,6 +152,18 @@ const TaskItem = React.memo(
       (accumulator, currentValue) => accumulator || currentValue.isSelected,
       false,
     );
+
+    const alphabeticalSortedAllTypeCustomFields = useMemo(
+      () =>
+        sortAlphabetical([
+          ...customColumnsConfig,
+          ...patientCustomColumnsConfig.map(c => ({
+            ...c,
+          })),
+        ]),
+      [customColumnsConfig, patientCustomColumnsConfig],
+    );
+
     const isTaskStatusTogglingDisabled =
       isTemplateTask ||
       (isSubtask && isCompletedGroup) ||
@@ -160,12 +183,13 @@ const TaskItem = React.memo(
     } = searchMetaData;
 
     const currentUser = useSelector(userProfileSelector);
+    const restrictions =
+      SINGLE_TASK_RESTRICTIONS_PROFILES[currentUser?.orgUserRole];
     const isSelected = useSelector(
       isTaskSelectedSelector(taskIdentifier, isSelectedByHighlighted),
     );
     const [isHovered, setIsHovered] = useState(false);
     const [taskDecisionError, setTaskDecisionError] = useState(false);
-
     const [contextMenu, setContextMenu] = useState(null);
     const dispatch = useDispatch();
     const dependencyIconReference = useRef(null);
@@ -175,6 +199,20 @@ const TaskItem = React.memo(
       openDependencyPopover,
       closeDependencyPopover,
     ] = useBooleanWithTimeout(false);
+    const { move, duplicate, subtasks, delete: del } = SINGLE_TASK_FEATURES;
+
+    const showContextMenu = [move, duplicate, subtasks, del].reduce(
+      (accumulator, element) => {
+        if (accumulator) return accumulator;
+        if (
+          restrictions?.[element] === DISABLED ||
+          restrictions?.[element] === READ_ONLY
+        )
+          return false;
+        return true;
+      },
+      false,
+    );
 
     const { bulkEditEnabled } = useContext(BulkEditContext);
 
@@ -183,10 +221,12 @@ const TaskItem = React.memo(
     const handleTaskItemRightClick = useCallback(
       event => {
         event.preventDefault();
-        setContextMenu({ x: event.pageX, y: event.pageY });
-        dispatch(storeAsCurrentTask(task));
+        if (showContextMenu) {
+          setContextMenu({ x: event.pageX, y: event.pageY });
+          dispatch(storeAsCurrentTask(task));
+        }
       },
-      [dispatch, task],
+      [dispatch, showContextMenu, task],
     );
 
     useEffect(() => {
@@ -381,10 +421,11 @@ const TaskItem = React.memo(
                     </DependencyIconContainer>
                   </>
                 )}
-
                 {columnsConfig[TaskItemColumn.DESCRIPTION] && (
                   <>
                     <TaskItemDescription
+                      disableMentions={restrictions?.mentions === DISABLED}
+                      disabled={restrictions?.description === READ_ONLY}
                       task={task}
                       isCompletedGroup={isCompletedGroup}
                       highlightedValue={highlightedValue}
@@ -414,6 +455,7 @@ const TaskItem = React.memo(
             </StickyMainTaskItemCell>
             {columnsConfig[TaskItemColumn.SUBTASKS_COUNT] && (
               <TaskItemCell
+                key={`subtask_count_${taskIdentifier}`}
                 width={TaskItemColumnWidth[TaskItemColumn.SUBTASKS_COUNT]}
                 justify="center"
                 paddingLeft="tiny"
@@ -431,11 +473,15 @@ const TaskItem = React.memo(
                   taskIdentifier={taskIdentifier}
                   openQuickAddSubtask={openQuickAddSubtask}
                   dispatch={dispatch}
+                  readOnly={restrictions?.subtasks === READ_ONLY}
                 />
               </TaskItemCell>
             )}
             {columnsConfig[TaskItemColumn.PATIENT] && (
-              <TaskItemCell width={TaskItemColumnWidth[TaskItemColumn.PATIENT]}>
+              <TaskItemCell
+                key={`patient_${taskIdentifier}`}
+                width={TaskItemColumnWidth[TaskItemColumn.PATIENT]}
+              >
                 <TaskItemPatient
                   highlightedValue={highlightedValue}
                   taskStatus={task?.status}
@@ -449,11 +495,13 @@ const TaskItem = React.memo(
                   openPatientPopover={openPatientPopover}
                   onTaskUpdate={onTaskUpdate}
                   currentUser={currentUser}
+                  readOnly={restrictions?.patient === READ_ONLY}
                 />
               </TaskItemCell>
             )}
             {columnsConfig[TaskItemColumn.WORKFLOW_STATUS] && (
               <TaskItemCell
+                key={`task_status_${taskIdentifier}`}
                 width={TaskItemColumnWidth[TaskItemColumn.WORKFLOW_STATUS]}
                 paddingLeft="smallPlus"
                 paddingRight="tiny"
@@ -475,9 +523,11 @@ const TaskItem = React.memo(
             )}
             {columnsConfig[TaskItemColumn.ACTIVITY] && (
               <TaskItemCell
+                key={`activity_${taskIdentifier}`}
                 width={TaskItemColumnWidth[TaskItemColumn.ACTIVITY]}
               >
                 <TaskItemIcons
+                  restrictions={restrictions}
                   matchComments={matchComments}
                   comments={comments}
                   isHovered={isHovered}
@@ -490,29 +540,35 @@ const TaskItem = React.memo(
                 />
               </TaskItemCell>
             )}
-            {columnsConfig[TaskItemColumn.START_DATE] && (
-              <TaskItemCell
-                width={TaskItemColumnWidth[TaskItemColumn.START_DATE]}
-                onContextMenu={event => {
-                  event.stopPropagation();
-                }}
-              />
-            )}
-            {columnsConfig[TaskItemColumn.DUE_DATE] && !isTemplateTask && (
-              <TaskItemCell
-                width={TaskItemColumnWidth[TaskItemColumn.DUE_DATE]}
-                paddingLeft="tiny"
-                paddingRight="tiny"
-                justify="center"
-                onContextMenu={event => {
-                  event.stopPropagation();
-                }}
-              >
-                <TaskItemDueDate task={task} isHovered={isHovered} />
-              </TaskItemCell>
+            {restrictions?.dueDate !== DISABLED && (
+              <>
+                {columnsConfig[TaskItemColumn.START_DATE] && (
+                  <TaskItemCell
+                    width={TaskItemColumnWidth[TaskItemColumn.START_DATE]}
+                    onContextMenu={event => {
+                      event.stopPropagation();
+                    }}
+                  />
+                )}
+                {columnsConfig[TaskItemColumn.DUE_DATE] && !isTemplateTask && (
+                  <TaskItemCell
+                    key={`due_date_${taskIdentifier}`}
+                    width={TaskItemColumnWidth[TaskItemColumn.DUE_DATE]}
+                    paddingLeft="tiny"
+                    paddingRight="tiny"
+                    justify="center"
+                    onContextMenu={event => {
+                      event.stopPropagation();
+                    }}
+                  >
+                    <TaskItemDueDate task={task} isHovered={isHovered} />
+                  </TaskItemCell>
+                )}
+              </>
             )}
             {columnsConfig[TaskItemColumn.ASSIGNED] && (
               <TaskItemCell
+                key={`assigned_${taskIdentifier}`}
                 width={TaskItemColumnWidth[TaskItemColumn.ASSIGNED].WIDE}
                 justify={multipleAssigneesContext ? 'flex-start' : 'center'}
                 paddingLeft="small"
@@ -522,6 +578,7 @@ const TaskItem = React.memo(
                 }}
               >
                 <TaskItemMembers
+                  readOnly={restrictions?.assigment === READ_ONLY}
                   multipleAssigneesContext={multipleAssigneesContext}
                   task={task}
                   assignedToUsers={assignedToUsers}
@@ -530,39 +587,62 @@ const TaskItem = React.memo(
                 />
               </TaskItemCell>
             )}
-            {columnsConfig[TaskItemColumn.LIST_NAME] && (
-              <TaskItemCell
-                width={TaskItemColumnWidth[TaskItemColumn.LIST_NAME]}
-              >
-                <TaskItemList
-                  listName={listName}
-                  taskListIdentifier={taskListIdentifier}
-                  taskStatus={task.status}
-                />
-              </TaskItemCell>
-            )}
-            {customColumnsConfig
-              .filter(f => f.isChecked)
-              .map(field => (
+            {restrictions?.listName !== DISABLED &&
+              columnsConfig[TaskItemColumn.LIST_NAME] && (
                 <TaskItemCell
-                  padding="4px"
-                  width={CustomFieldWidthConfig[field.fieldType]}
+                  key={`list_${taskIdentifier}`}
+                  width={TaskItemColumnWidth[TaskItemColumn.LIST_NAME]}
                 >
-                  <TaskItemCustomField
-                    field={field}
-                    readOnly
-                    customFieldValue={task?.taskMetaData?.find(
-                      f => f.customFieldIdentifier === field.identifier,
-                    )}
-                    task={task}
-                    isHovered={isHovered}
+                  <TaskItemList
+                    listName={listName}
+                    taskListIdentifier={taskListIdentifier}
+                    taskStatus={task.status}
                   />
                 </TaskItemCell>
-              ))}
+              )}
+            {restrictions?.customFields !== DISABLED && (
+              <>
+                {alphabeticalSortedAllTypeCustomFields
+                  .filter(f => f.isChecked)
+                  .map(field => {
+                    const taskCustomFieldValue = task?.taskMetaData?.find(
+                      f => f.customFieldIdentifier === field.identifier,
+                    );
+                    const patientCustomFieldValue = task?.patient?.patientMetaData?.find(
+                      f => f.customFieldIdentifier === field.identifier,
+                    );
+                    const customFieldValue =
+                      field.targetType === 'PATIENT'
+                        ? patientCustomFieldValue
+                        : taskCustomFieldValue;
+
+                    const hidePatientCustomFields =
+                      field.targetType === 'PATIENT' &&
+                      !task?.patient?.patientIdentifier;
+                    return (
+                      <TaskItemCell
+                        key={`custom_${taskIdentifier}_${field.identifier}`}
+                        padding="4px"
+                        width={CustomFieldWidthConfig[field.fieldType]}
+                      >
+                        {!hidePatientCustomFields && (
+                          <TaskItemCustomField
+                            field={field}
+                            customFieldValue={customFieldValue}
+                            task={task}
+                            isHovered={isHovered}
+                          />
+                        )}
+                      </TaskItemCell>
+                    );
+                  })}
+              </>
+            )}
           </StandardTaskItemContainer>
         </StandardTaskItemPanel>
-        {contextMenu && (
+        {showContextMenu && contextMenu && (
           <TaskItemContextMenu
+            restrictions={restrictions}
             position={contextMenu}
             task={task}
             onClose={onCloseContextMenu}

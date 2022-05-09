@@ -128,7 +128,6 @@ const TaskListToolbar = props => {
       checked: viewSetup.SHOW_WORKFLOW_DETAILS,
     },
     {
-      disabled: !viewSetup.SHOW_WORKFLOW_DETAILS,
       name: 'Show Workflow Completed Tasks',
       onClick: () =>
         dispatch(

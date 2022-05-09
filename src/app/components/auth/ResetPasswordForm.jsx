@@ -1,6 +1,7 @@
 import React from 'react';
-import { FormContext, useForm } from 'react-hook-form';
+import { FormProvider, useForm } from 'react-hook-form';
 import { object, string } from 'yup';
+import { yupResolver } from "@hookform/resolvers/yup";
 import { MontserratTypography } from 'styles/theme-montserrat';
 import Button from 'components/common/Button/Button';
 import FormInput from 'components/common/Input/FormInput';
@@ -22,15 +23,15 @@ const validationSchema = object().shape({
 
 const ResetPasswordForm = ({ authTokenReceived, onSubmit }) => {
   const formMethods = useForm({
+    resolver: yupResolver(validationSchema),
     reValidateMode: 'onSubmit',
-    validationSchema,
   });
 
   const { handleSubmit } = formMethods;
 
   return (
     <form style={{ width: '100%' }} onSubmit={handleSubmit(onSubmit)}>
-      <FormContext {...formMethods}>
+      <FormProvider {...formMethods}>
         <MontserratTypography variant="h2">
           Let’s set a new password
         </MontserratTypography>
@@ -65,7 +66,7 @@ const ResetPasswordForm = ({ authTokenReceived, onSubmit }) => {
         <Button active id="loginButton" size="large" type="submit">
           Continue
         </Button>
-      </FormContext>
+      </FormProvider>
     </form>
   );
 };

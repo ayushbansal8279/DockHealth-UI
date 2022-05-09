@@ -1,3 +1,4 @@
+import { PatientAttachmentType } from 'helpers/patient-details-helpers';
 import { createSelector } from 'reselect';
 
 export const patientDetailsStateSelector = state => state.patientDetails;
@@ -30,6 +31,11 @@ export const patientListHasTasksSelector = createSelector(
 export const currentPatientIdentifierSelector = createSelector(
   patientDetailsStateSelector,
   ({ patientIdentifier }) => patientIdentifier,
+);
+
+export const currentFolderIdentifierSelector = createSelector(
+  patientDetailsStateSelector,
+  ({ currentFolderIdentifier }) => currentFolderIdentifier,
 );
 
 export const patientTaskSearchSelector = createSelector(
@@ -82,7 +88,16 @@ export const isFetchingPatientAttachmentsSelector = createSelector(
   ({ isFetchingAttachments }) => isFetchingAttachments,
 );
 
-export const patientDocumentsSelector = createSelector(
+export const patientAttachmentsSelector = createSelector(
   patientDetailsStateSelector,
-  ({ attachments }) => attachments,
+  ({ attachments }) =>
+    attachments?.filter(({ type }) => type !== PatientAttachmentType.FOLDER) ??
+    null,
+);
+
+export const patientFoldersSelector = createSelector(
+  patientDetailsStateSelector,
+  ({ attachments }) =>
+    attachments?.filter(({ type }) => type === PatientAttachmentType.FOLDER) ??
+    null,
 );

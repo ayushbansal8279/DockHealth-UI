@@ -2,6 +2,7 @@ import React from 'react';
 import { useFormContext } from 'react-hook-form';
 import { Grid } from '@material-ui/core';
 import Button from 'components/common/Button/Button';
+import { UserOrganizationRole } from 'helpers/user-helper';
 import {
   RoleFormWrapper,
   RoleSelectionHeader,
@@ -13,6 +14,8 @@ import {
   RoleOptionDescription,
   RoleOptionHeaderAdditionalInfo,
 } from './styled';
+
+const { DOCK_PRO } = UserOrganizationRole;
 
 const UserRoleStep = ({ navigateToPreviousStep, disabled }) => {
   const { watch, setValue } = useFormContext();
@@ -68,6 +71,31 @@ const UserRoleStep = ({ navigateToPreviousStep, disabled }) => {
             part of those lists.
           </RoleOptionDescription>
         </RoleOptionLabel>
+        <Divider />
+        <input
+          id="DockPro"
+          type="radio"
+          name="userRole"
+          value={DOCK_PRO}
+          checked={roleValue === DOCK_PRO}
+          onChange={event => setValue(event.target.name, event.target.value)}
+        />
+        <RoleOptionLabel
+          isSelected={roleValue === 'DOCK_PRO'}
+          htmlFor="DockPro"
+        >
+          <RoleOptionHeaderWrapper>
+            <RoleOptionHeader>Dock Pro</RoleOptionHeader>
+            <RoleOptionHeaderAdditionalInfo>
+              *Limited Access
+            </RoleOptionHeaderAdditionalInfo>
+          </RoleOptionHeaderWrapper>
+          <RoleOptionDescription>
+            A Dock Pro user will only have access to the workflow library and
+            can help with building out Workflows and Smartflows for your team.
+          </RoleOptionDescription>
+        </RoleOptionLabel>
+        <Divider />
       </RoleSelectionWrapper>
       <Grid container item direction="row" justify="center" spacing={2}>
         <Grid item xs={3}>

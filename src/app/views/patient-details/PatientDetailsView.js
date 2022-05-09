@@ -39,7 +39,7 @@ import HeaderSearch from 'components/template/HeaderSearch/HeaderSearch';
 import { getPatientFilterOptions } from 'actions/patient-details-actions';
 import { getCustomerTypeLabel } from 'helpers/customer-type-helper';
 import { capitalize } from 'helpers/capitalize';
-import { ColumnsConfigProvider } from 'context-api/ColumnsConfigContext';
+import { ColumnsConfigProvider } from 'context-api/columns-config-context';
 import { getPatientWidgets } from 'api/patient-api';
 import HorizontallyScrolledViewLayout from 'components/template/HorizontallyScrolledViewLayout/HorizontallyScrolledViewLayout';
 import StickyContainer from 'components/common/HorizontalScroll/StickyContainer';
@@ -78,6 +78,7 @@ const TABS_CONFIG = [
   {
     label: 'Files',
     mainPath: 'files',
+    additionalPath: ':folderIdentifier?',
     RouteComponent: PatientAttachments,
   },
 ];
@@ -287,7 +288,7 @@ const PatientDetailsView = () => {
         </LayoutHeader>
       }
     >
-      <ColumnsConfigProvider>
+      <ColumnsConfigProvider hidePatientCustomColumns>
         <StickyContainer>
           <PatientDetailsHeader />
           <PatientDetailsTabsContainer>
@@ -308,6 +309,7 @@ const PatientDetailsView = () => {
           <Switch>
             {TABS_CONFIG?.map(route => (
               <RouteWrapper
+                allowedToRoles={route.allowedToRoles}
                 key={route.mainPath}
                 path={`${path}/${route.mainPath}${
                   route.additionalPath ? `/${route.additionalPath}` : ''

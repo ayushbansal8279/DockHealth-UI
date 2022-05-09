@@ -4,6 +4,12 @@ import {
 } from 'helpers/filter-options-helpers';
 import axios from './axios-heydoc';
 
+export function getGenderIdentityOptions() {
+  return axios
+    .get(`reference/genderIdentities`)
+    .then(response => response.data);
+}
+
 export const getPatientsLists = () =>
   axios.get('patient/list/getAll').then(response => response.data);
 
@@ -79,3 +85,57 @@ export function getPatientsListFilterOptions(
 
   return request.then(options => mapFilterOptions(options));
 }
+
+const PatientBulkActions = {
+  CREATE_TASK: 'CREATE_TASK',
+  CREATE_WORKFLOW: 'CREATE_WORKFLOW',
+  ADD_LABEL: 'ADD_LABEL',
+  DELETE_PATIENT: 'DELETE_PATIENT',
+};
+
+export const patientBulkCreateTask = payload => {
+  const { assignedToUsers, taskListIdentifier, description } = payload;
+
+  const body = {
+    bulkOperationType: PatientBulkActions.CREATE_TASK,
+    taskDescription: description,
+    taskListIdentifier,
+    patientIdentifiers: assignedToUsers,
+  };
+
+  axios.put(`patient/bulk`, body).then(({ data }) => data);
+};
+
+export const patientBulkCreateWorkflow = payload => {
+  const { assignedToUsers, taskListIdentifier, workflowIdentifier } = payload;
+
+  const body = {
+    bulkOperationType: PatientBulkActions.CREATE_WORKFLOW,
+    workflowIdentifier,
+    taskListIdentifier,
+    patientIdentifiers: assignedToUsers,
+  };
+
+  axios.put(`patient/bulk`, body).then(({ data }) => data);
+};
+
+export const patientBulkDeletePatient = patientIdentifiers => {
+  const body = {
+    bulkOperationType: PatientBulkActions.DELETE_PATIENT,
+    patientIdentifiers,
+  };
+
+  axios.put(`patient/bulk`, body).then(({ data }) => data);
+};
+
+export const patientBulkAddLabel = payload => {
+  const { labelIdentifier, labelName, assignedToUsers } = payload;
+  const body = {
+    bulkOperationType: PatientBulkActions.ADD_LABEL,
+    labelIdentifier: labelIdentifier || null,
+    labelName: labelName || null,
+    patientIdentifiers: assignedToUsers,
+  };
+
+  axios.put(`patient/bulk`, body).then(({ data }) => data);
+};

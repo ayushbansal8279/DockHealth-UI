@@ -15,14 +15,15 @@ export const BackgroundContainer = styled.div`
 
 export const AvatarContainer = styled.div`
   align-items: center;
-  border: 2px solid ${({ color }) => color};
-  border: ${({ color, isSelected, size }) =>
-    isSelected
-      ? `${getScaledSize({
-          normalSize: 6,
-          propSize: size,
-        }) + 2}px solid ${palette.cyanBlue}`
-      : `2px solid ${color}`};
+  border: ${({ color, isSelected, size, isGroup }) => {
+    if (!isGroup && !isSelected) return 'none';
+    if (isSelected)
+      return `${getScaledSize({
+        normalSize: 3,
+        propSize: size,
+      }) + 2}px solid ${palette.selectedBlue}`;
+    return `1.5px solid ${color}`;
+  }};
   border-radius: 50%;
   display: inline-flex;
   min-height: ${props => props.size ?? 110}px;
@@ -40,12 +41,14 @@ export const AvatarContainer = styled.div`
 export const InnerAvatarContainer = styled.div`
   align-items: center;
   background-color: ${({ color }) => color};
-  border: ${({ size, isSelected }) => {
+  border: ${({ size, isSelected, isGroup }) => {
     const scaledSize = getScaledSize({
-      normalSize: 6,
+      normalSize: 4,
       propSize: size,
     });
-    return isSelected ? 'none' : `${scaledSize}px solid #ffffff`;
+    if (isSelected) return `${scaledSize}px solid #ffffff`;
+    if (!isSelected && isGroup) return `${scaledSize * 2}px solid #ffffff`;
+    return 'none';
   }};
 
   border-radius: 50%;
@@ -61,7 +64,6 @@ export const InnerAvatarContainer = styled.div`
   height: 100%;
   object-fit: cover;
   overflow: hidden;
-  text-transform: lowercase;
   width: 100%;
 
   & > p {

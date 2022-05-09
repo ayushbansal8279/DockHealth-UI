@@ -1,5 +1,11 @@
 import * as ActionTypes from './action-types';
 
+export function initializeListDetailsTableState() {
+  return {
+    type: ActionTypes.INITIALIZE_LIST_DETAILS_TABLE_STATE,
+  };
+}
+
 export function getListDetailsTaskCounters(taskListIdentifier) {
   return {
     type: ActionTypes.GET_LIST_DETAILS_TASK_COUNTERS,
@@ -173,3 +179,22 @@ export const moveWorkflowToGroup = (
   taskGroupIdentifier,
   templateGroup,
 });
+
+export function getListCalendarTasks() {
+  return {
+    type: ActionTypes.GET_LIST_CALENDAR_TASKS,
+  };
+}
+
+export function getListCalendarTasksSuccess(tasks) {
+  return {
+    type: ActionTypes.GET_LIST_CALENDAR_TASKS_SUCCESS,
+    tasks,
+  };
+}
+
+export function getListCalendarTasksFailure() {
+  return {
+    type: ActionTypes.GET_LIST_CALENDAR_TASKS_FAILURE,
+  };
+}

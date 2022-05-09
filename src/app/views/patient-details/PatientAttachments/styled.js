@@ -1,4 +1,3 @@
-/* eslint-disable import/prefer-default-export */
 import styled from 'styled-components';
 import palette from 'styles/palette';
 import spacing from 'styles/spacing';
@@ -6,30 +5,16 @@ import spacing from 'styles/spacing';
 export const PatientAttachmentsWrapper = styled.div`
   width: 100%;
   min-height: 300px;
-  padding: ${spacing.regular} ${spacing.huge};
+  padding: 0 ${spacing.huge};
   background-color: ${props =>
-    props.isDragActive ? palette.coolGrey3 : palette.white};
-  border: ${props =>
-    props.isDragActive ? `solid 1px ${palette.coolGrey2}` : `none`};
+    props.isDragActive ? palette.coolGrey3 : 'transparent'};
+  border: 1px solid
+    ${props => (props.isDragActive ? palette.coolGrey2 : `transparent`)};
 `;
 
-export const NoteInput = styled.input`
-  height: 52px;
+export const DropzoneContainer = styled.div`
   width: 100%;
-  margin: ${spacing.regular} 0;
-  background-color: ${palette.coolGrey4};
-  border: 1px solid ${palette.coolGrey3};
-  box-shadow: none;
-  color: ${palette.mediumGrey};
-  padding: ${spacing.regular};
-
-  &:focus,
-  &:active {
-    background-color: ${palette.coolGrey4};
-    border: 1px solid ${palette.coolGrey3};
-    box-shadow: none;
-    outline: none;
-  }
+  min-height: 400px;
 `;
 
 export const AttachmentFileInput = styled.input.attrs({
@@ -42,4 +27,14 @@ export const AttachmentFileInput = styled.input.attrs({
   top: -100vh;
   visibility: hidden;
   width: 1px;
+`;
+
+export const DropzoneInfoText = styled.p`
+  margin-bottom: 12px;
+  color: ${palette.coolGrey2};
+`;
+
+export const EmptyListText = styled.p`
+  margin-bottom: 0;
+  color: ${palette.coolGrey2};
 `;
