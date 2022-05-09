@@ -59,7 +59,7 @@ const NewNestedFlowNode = React.memo(props => {
           <Typography component="p">
             {workflow?.workflowName
               ? workflow.workflowName
-              : 'Connect to Smartflow'}
+              : 'Connect to Workflow'}
           </Typography>
           <IconButton onClick={() => dispatch(deleteTemporaryElement(id))}>
             <Delete htmlColor={palette.white} />
