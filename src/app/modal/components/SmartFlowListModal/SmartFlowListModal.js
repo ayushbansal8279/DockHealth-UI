@@ -54,10 +54,23 @@ const SmartFlowListModal = ({ fetchMethod, closeModal, setWorkflow }) => {
           <div>{props?.value ?? ''}</div>
         );
       },
-      sortComparator: (v1, v2, parameter1, parameter2) =>
-        parameter1.api
-          .getCellValue(parameter1.id, 'type')
-          .localeCompare(parameter2.api.getCellValue(parameter2.id, 'type')),
+      sortComparator: (v1, v2, parameter1, parameter2) => {
+        const isFolder1 =
+          parameter1.api.getCellValue(parameter1.id, 'type') ===
+          TaskTemplateType.FOLDER
+            ? 'true'
+            : 'false';
+        const isFolder2 =
+          parameter2.api.getCellValue(parameter2.id, 'type') ===
+          TaskTemplateType.FOLDER
+            ? 'true'
+            : 'false';
+        const typeCompare = isFolder2.localeCompare(isFolder1);
+        if (typeCompare === 0) {
+          return parameter1.value.localeCompare(parameter2.value);
+        }
+        return typeCompare;
+      },
     },
     { field: 'creator', headerName: 'CREATOR', width: 150 },
     {
