@@ -12,6 +12,7 @@ import {
   SINGLE_TASK_RESTRICTIONS_OPTIONS,
   SINGLE_TASK_RESTRICTIONS_PROFILES,
 } from 'restrictions/task-restrictions';
+import { sortAlphabetical } from 'helpers/custom-fields-helpers';
 import { BulkContainer, StickyColumnContainer } from './styled';
 
 const { DISABLED } = SINGLE_TASK_RESTRICTIONS_OPTIONS;
@@ -28,9 +29,19 @@ const TasksHeader = ({
   const { currentUser } = useSelector(store => ({
     currentUser: store.userState.userProfile,
   }));
-  const { columnsConfig, customColumnsConfig } = useColumnsConfig();
+  const {
+    columnsConfig,
+    customColumnsConfig,
+    patientCustomColumnsConfig,
+  } = useColumnsConfig();
   const customerTypeLabel = getCustomerTypeLabel(currentUser);
   const customerTypeLabelCapitalized = capitalize(customerTypeLabel);
+
+  const alphabeticalSortedAllTypeCustomFields = useMemo(
+    () =>
+      sortAlphabetical([...customColumnsConfig, ...patientCustomColumnsConfig]),
+    [customColumnsConfig, patientCustomColumnsConfig],
+  );
 
   const mergedConfig = useMemo(
     () => ({
@@ -134,10 +145,11 @@ const TasksHeader = ({
         )}
       {restrictions?.customFields !== DISABLED && (
         <>
-          {customColumnsConfig
+          {alphabeticalSortedAllTypeCustomFields
             .filter(f => f.isChecked)
             .map(f => (
               <ColumnSortHeader
+                disabled={f.targetType === 'PATIENT'}
                 truncateEnabled
                 id={f.id}
                 label={f.name}

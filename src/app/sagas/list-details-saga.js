@@ -343,6 +343,7 @@ function* getTasksForTaskGroups(payload) {
 
     return groupOfTasks;
   } catch (error) {
+    console.log(error);
     yield put(showGlobalErrorAlert());
   }
 }

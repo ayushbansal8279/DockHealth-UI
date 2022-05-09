@@ -6,7 +6,7 @@ import EmailIcon from 'img/email-icon.svg';
 import PhoneIcon from 'img/phone-icon.svg';
 import MobileIcon from 'img/mobile-icon.svg';
 import ArrowLeftIcon from 'img/arrow-left.svg';
-import { Box, Chip, Grid } from '@material-ui/core';
+import { Box, Chip, Grid, Typography } from '@material-ui/core';
 import { getCustomerUniqueIDShortLabel } from 'helpers/customer-type-helper';
 import Tooltip from 'components/common/Tooltip/Tooltip';
 import { userProfileSelector } from 'selectors/user-selectors';
@@ -15,6 +15,7 @@ import {
   patientSelector,
   isFetchingPatientSelector,
 } from 'selectors/patient-details-selectors';
+import TextTypeHeader from 'components/common/TextTypeHeader/TextTypeHeader';
 import PatientDetailsDrawer from '../PatientDetailsDrawer/PatientDetailsDrawer';
 import PatientDetailsLoader from '../PatientDetailsLoader/PatientDetailsLoader';
 import {
@@ -43,7 +44,6 @@ const PatientDetailsHeader = () => {
     email,
     phoneMobile,
     phoneHome,
-    dob,
     age,
     mrn,
     gender,
@@ -54,7 +54,6 @@ const PatientDetailsHeader = () => {
   const uniqueIdentifierLabel = getCustomerUniqueIDShortLabel(currentUser);
   const organization = useSelector(organizationSelector);
   const emrPatientLink = organization?.emrPatientLink;
-
   const isLoadingDetails = isFetchingPatient || !patient;
 
   return (
@@ -132,65 +131,65 @@ const PatientDetailsHeader = () => {
               )}
             </ContactContainer>
           </Box>
-          {(dob || age || gender || mrn) && (
-            <PatientDetails>
-              <PatientDetailsInformation>
-                {(age || gender) && (
-                  <>
+          <PatientDetails>
+            <PatientDetailsInformation>
+              {(age || gender) && (
+                <>
+                  <PatientInfo>
+                    {age && `${age} `}
+                    {gender && `${gender?.charAt(0)?.toUpperCase()}`}
+                  </PatientInfo>
+                  {genderIdentity && (
+                    <>
+                      <PatientInfoDivider />
+                      <PatientInfo>
+                        gender identity: {genderIdentity}
+                      </PatientInfo>
+                    </>
+                  )}
+                  <PatientInfoDivider />
+                </>
+              )}
+              {mrn && (
+                <>
+                  {!emrPatientLink && (
                     <PatientInfo>
-                      {age && `${age} `}
-                      {gender && `${gender?.charAt(0)?.toUpperCase()}`}
+                      {uniqueIdentifierLabel}# {mrn}
                     </PatientInfo>
-                    {genderIdentity && (
+                  )}
+                  {emrPatientLink && (
+                    <PatientInfo>
+                      {uniqueIdentifierLabel}#{' '}
+                      <PatientMRNAnchor
+                        href={emrPatientLink.replace('{mrn}', mrn)}
+                        target="_blank"
+                        rel="noreferrer"
+                      >
+                        {mrn}
+                      </PatientMRNAnchor>
+                    </PatientInfo>
+                  )}
+                  <PatientInfoDivider />
+                </>
+              )}
+              {patient?.patientMetaData?.map(
+                ({ customFieldName, displayName, value, displayOptions }) => (
+                  <>
+                    {displayOptions?.includes('PATIENT_HEADER') && value && (
                       <>
-                        <PatientInfoDivider />
                         <PatientInfo>
-                          gender identity: {genderIdentity}
+                          <Typography>{customFieldName}: </Typography>
+                          <Box ml={1} />
+                          <TextTypeHeader text={displayName || value} />
                         </PatientInfo>
+                        <PatientInfoDivider />
                       </>
                     )}
-                    <PatientInfoDivider />
                   </>
-                )}
-                {mrn && (
-                  <>
-                    {!emrPatientLink && (
-                      <PatientInfo>
-                        {uniqueIdentifierLabel}# {mrn}
-                      </PatientInfo>
-                    )}
-                    {emrPatientLink && (
-                      <PatientInfo>
-                        {uniqueIdentifierLabel}#{' '}
-                        <PatientMRNAnchor
-                          href={emrPatientLink.replace('{mrn}', mrn)}
-                          target="_blank"
-                          rel="noreferrer"
-                        >
-                          {mrn}
-                        </PatientMRNAnchor>
-                      </PatientInfo>
-                    )}
-                    <PatientInfoDivider />
-                  </>
-                )}
-                {patient?.patientMetaData?.map(
-                  ({ customFieldName, displayName, value, displayOptions }) => (
-                    <>
-                      {displayOptions?.includes('PATIENT_HEADER') && value && (
-                        <>
-                          <PatientInfo>
-                            {customFieldName}: {displayName || value}
-                          </PatientInfo>
-                          <PatientInfoDivider />
-                        </>
-                      )}
-                    </>
-                  ),
-                )}
-              </PatientDetailsInformation>
-            </PatientDetails>
-          )}
+                ),
+              )}
+            </PatientDetailsInformation>
+          </PatientDetails>
           <PatientDetails>
             <PatientDetailsInformation>
               {patient?.patientMetaData?.map(

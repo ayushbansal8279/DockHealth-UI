@@ -5,6 +5,7 @@ import React, {
   useRef,
   useCallback,
   useContext,
+  useMemo,
 } from 'react';
 import { pluck } from 'ramda';
 import { useDispatch, useSelector } from 'react-redux';
@@ -52,6 +53,7 @@ import {
   SINGLE_TASK_FEATURES,
   SINGLE_TASK_RESTRICTIONS_OPTIONS,
 } from 'restrictions/task-restrictions';
+import { sortAlphabetical } from 'helpers/custom-fields-helpers';
 import { getSubtaskStylingLink } from './helpers';
 import TaskItemContextMenu from '../TaskItemContextMenu/TaskItemContextMenu';
 import TaskItemBulkEdit from './TaskItemComponents/TaskItemBulkEdit';
@@ -136,7 +138,11 @@ const TaskItem = React.memo(
       dependencyTasksCount,
     } = task;
 
-    const { columnsConfig, customColumnsConfig } = useColumnsConfig();
+    const {
+      columnsConfig,
+      customColumnsConfig,
+      patientCustomColumnsConfig,
+    } = useColumnsConfig();
     const { listName, taskListIdentifier } = taskList || {};
     const isCompleted = task.status === 'COMPLETE';
     const isTemplateTask = checkIfTemplateTask(task);
@@ -145,6 +151,17 @@ const TaskItem = React.memo(
     const isDecisionSelected = task.taskOutcomes?.reduce(
       (accumulator, currentValue) => accumulator || currentValue.isSelected,
       false,
+    );
+
+    const alphabeticalSortedAllTypeCustomFields = useMemo(
+      () =>
+        sortAlphabetical([
+          ...customColumnsConfig,
+          ...patientCustomColumnsConfig.map(c => ({
+            ...c,
+          })),
+        ]),
+      [customColumnsConfig, patientCustomColumnsConfig],
     );
 
     const isTaskStatusTogglingDisabled =
@@ -585,25 +602,40 @@ const TaskItem = React.memo(
               )}
             {restrictions?.customFields !== DISABLED && (
               <>
-                {customColumnsConfig
+                {alphabeticalSortedAllTypeCustomFields
                   .filter(f => f.isChecked)
-                  .map(field => (
-                    <TaskItemCell
-                      key={`custom_${taskIdentifier}_${field.identifier}`}
-                      padding="4px"
-                      width={CustomFieldWidthConfig[field.fieldType]}
-                    >
-                      <TaskItemCustomField
-                        field={field}
-                        readOnly
-                        customFieldValue={task?.taskMetaData?.find(
-                          f => f.customFieldIdentifier === field.identifier,
+                  .map(field => {
+                    const taskCustomFieldValue = task?.taskMetaData?.find(
+                      f => f.customFieldIdentifier === field.identifier,
+                    );
+                    const patientCustomFieldValue = task?.patient?.patientMetaData?.find(
+                      f => f.customFieldIdentifier === field.identifier,
+                    );
+                    const customFieldValue =
+                      field.targetType === 'PATIENT'
+                        ? patientCustomFieldValue
+                        : taskCustomFieldValue;
+
+                    const hidePatientCustomFields =
+                      field.targetType === 'PATIENT' &&
+                      !task?.patient?.patientIdentifier;
+                    return (
+                      <TaskItemCell
+                        key={`custom_${taskIdentifier}_${field.identifier}`}
+                        padding="4px"
+                        width={CustomFieldWidthConfig[field.fieldType]}
+                      >
+                        {!hidePatientCustomFields && (
+                          <TaskItemCustomField
+                            field={field}
+                            customFieldValue={customFieldValue}
+                            task={task}
+                            isHovered={isHovered}
+                          />
                         )}
-                        task={task}
-                        isHovered={isHovered}
-                      />
-                    </TaskItemCell>
-                  ))}
+                      </TaskItemCell>
+                    );
+                  })}
               </>
             )}
           </StandardTaskItemContainer>

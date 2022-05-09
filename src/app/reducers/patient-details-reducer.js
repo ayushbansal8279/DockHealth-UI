@@ -10,6 +10,8 @@ import TaskBaseReducer from './task-base-reducer';
 const INITIAL_STATE = {
   patientIdentifier: null,
   patient: null,
+  currentFolderIdentifier: null,
+  attachments: null,
   isFetchingPatient: false,
   labels: null,
   isFetchingLabels: false,
@@ -87,6 +89,20 @@ export default function(state = INITIAL_STATE, action = {}) {
         ...INITIAL_STATE,
       };
 
+    case ActionTypes.INITIALIZE_PATIENT_ATTACHMENTS_FOLDER: {
+      return {
+        ...state,
+        currentFolderIdentifier: action.folderIdentifier,
+      };
+    }
+
+    case ActionTypes.CLEAR_PATIENT_ATTACHMENTS_FOLDER: {
+      return {
+        ...state,
+        currentFolderIdentifier: null,
+      };
+    }
+
     case ActionTypes.GET_CURRENT_PATIENT: {
       return { ...state, isFetchingPatient: true };
     }
@@ -128,6 +144,58 @@ export default function(state = INITIAL_STATE, action = {}) {
         ...state,
         attachments: null,
         isFetchingAttachments: false,
+      };
+    }
+
+    case ActionTypes.ADD_PATIENT_ATTACHMENT_FOLDER_SUCCESS: {
+      return {
+        ...state,
+        attachments: [...(state.attachments || []), action.folder],
+      };
+    }
+
+    case ActionTypes.UPDATE_PATIENT_ATTACHMENT_SUCCESS: {
+      const { attachment: updatedAttachment } = action;
+
+      return {
+        ...state,
+        attachments:
+          state.attachments?.map(a =>
+            a.attachmentIdentifier === updatedAttachment.attachmentIdentifier
+              ? { ...a, ...updatedAttachment }
+              : a,
+          ) ?? null,
+      };
+    }
+
+    case ActionTypes.MOVE_PATIENT_ATTACHMENT_SUCCESS: {
+      const { attachment: movedAttachment } = action;
+
+      return {
+        ...state,
+        attachments:
+          state.attachments?.filter(
+            ({ attachmentIdentifier }) =>
+              attachmentIdentifier !== movedAttachment.attachmentIdentifier,
+          ) ?? null,
+      };
+    }
+
+    case ActionTypes.ADD_PATIENT_ATTACHMENT_SUCCESS: {
+      return {
+        ...state,
+        attachments: [...(state.attachments || []), action.attachment],
+      };
+    }
+
+    case ActionTypes.DELETE_PATIENT_ATTACHMENT: {
+      const { identifier } = action;
+      return {
+        ...state,
+        attachments:
+          state.attachments?.filter(
+            ({ attachmentIdentifier }) => attachmentIdentifier !== identifier,
+          ) || null,
       };
     }
 
@@ -382,7 +450,7 @@ export default function(state = INITIAL_STATE, action = {}) {
       };
     }
 
-    case ActionTypes.UPDATE_PATIENT_DETAILS: {
+    case ActionTypes.UPDATE_PATIENT_DETAILS_SUCCESS: {
       const { details } = payload;
 
       return {

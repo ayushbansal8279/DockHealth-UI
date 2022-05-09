@@ -1,41 +1,48 @@
 /* eslint-disable react-hooks/rules-of-hooks */
-import { useState, useCallback, useRef, useEffect } from 'react';
+import { useState, useCallback, useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
+import { useHistory, useParams } from 'react-router-dom';
 import { useDropzone } from 'react-dropzone';
 import { memoizeWith, identity, isEmpty } from 'ramda';
 import * as PatientDetailsActions from 'actions/patient-details-actions';
 import {
   patientSelector,
-  patientDocumentsSelector,
+  patientFoldersSelector,
+  patientAttachmentsSelector,
 } from 'selectors/patient-details-selectors';
-import {
-  addPatientAttachment,
-  removePatientAttachment,
-} from 'sagas/patient-details-saga';
-import { getPatientAttachment } from 'api/patient-attachment-api';
+import { downloadPatientAttachment } from 'api/patient-attachment-api';
 import { useBoolean } from 'hooks/useBoolean';
+import { openModal } from 'modal/actions';
+import { createPatientAttachmentsPath } from 'routing/helpers/paths';
+import { PatientAttachmentType } from 'helpers/patient-details-helpers';
 
 export const getMemoPatientAttachment = memoizeWith(
   identity,
   attachmentIdentifier =>
     attachmentIdentifier
-      ? getPatientAttachment(attachmentIdentifier)
+      ? downloadPatientAttachment(attachmentIdentifier)
       : Promise.reject(),
 );
 
 const initializeAttachmentsSectionHooks = () => {
+  const { folderIdentifier } = useParams();
   const dispatch = useDispatch();
+  const history = useHistory();
   const patient = useSelector(patientSelector);
   const patientIdentifier = patient?.patientIdentifier;
 
   useEffect(() => {
     if (patientIdentifier) {
-      dispatch(PatientDetailsActions.getCurrentPatientAttachments());
+      dispatch(
+        PatientDetailsActions.initializePatientAttachmentsFolder(
+          folderIdentifier ?? null,
+        ),
+      );
     }
-  }, [dispatch, patientIdentifier]);
+  }, [dispatch, patientIdentifier, folderIdentifier]);
 
-  const attachmentFileInputReference = useRef(null);
-  const attachments = useSelector(patientDocumentsSelector) || [];
+  const attachments = useSelector(patientAttachmentsSelector) || [];
+  const folders = useSelector(patientFoldersSelector) || [];
 
   const [attachmentsSources, setAttachmentSources] = useState([]);
   const [
@@ -66,8 +73,9 @@ const initializeAttachmentsSectionHooks = () => {
         setUploadProgress(0);
 
         dispatch(
-          addPatientAttachment(
+          PatientDetailsActions.createPatientAttachment(
             patient?.patientIdentifier,
+            folderIdentifier,
             newAttachment,
             {
               onUploadProgress: ({ loaded, total }) => {
@@ -81,10 +89,10 @@ const initializeAttachmentsSectionHooks = () => {
         );
       }
     },
-    [dispatch, patient],
+    [dispatch, patient, folderIdentifier],
   );
 
-  const { getRootProps, getInputProps, isDragActive } = useDropzone({
+  const { getRootProps, getInputProps, isDragActive, inputRef } = useDropzone({
     onDrop: onAttachmentFileInputChange,
   });
 
@@ -133,10 +141,13 @@ const initializeAttachmentsSectionHooks = () => {
     [setAttachmentsLoading, unsetAttachmentsLoading],
   );
 
-  const boundRemovePatientAttachment = useCallback(
-    attachmentIdentifier => {
+  const deleteAttachment = useCallback(
+    identifier => {
       dispatch(
-        removePatientAttachment(patientIdentifier, attachmentIdentifier),
+        PatientDetailsActions.deletePatientAttachment(
+          patientIdentifier,
+          identifier,
+        ),
       );
     },
     [dispatch, patientIdentifier],
@@ -153,18 +164,102 @@ const initializeAttachmentsSectionHooks = () => {
     [loadAttachmentsContent, showAttachmentPreview],
   );
 
+  const handleCreateFolderClick = () => {
+    dispatch(
+      openModal('PatientFolder', {
+        title: 'Create folder',
+        inputLabel: 'Folder name',
+        onChange: name => {
+          dispatch(
+            PatientDetailsActions.createPatientAttachmentFolder(
+              patientIdentifier,
+              name,
+              folderIdentifier,
+            ),
+          );
+        },
+      }),
+    );
+  };
+
+  const renameAttachment = fileOrFolder => {
+    dispatch(
+      openModal('PatientFolder', {
+        title: `Rename ${
+          fileOrFolder.type === PatientAttachmentType.FOLDER ? 'folder' : 'file'
+        }`,
+        inputLabel: `${
+          fileOrFolder.type === PatientAttachmentType.FOLDER ? 'Folder' : 'File'
+        } name`,
+        currentName: fileOrFolder.fileName,
+        onChange: name => {
+          dispatch(
+            PatientDetailsActions.updatePatientAttachment(fileOrFolder, {
+              fileName: name,
+            }),
+          );
+        },
+      }),
+    );
+  };
+
+  const navigateToFolder = useCallback(
+    folder => {
+      history.push(
+        createPatientAttachmentsPath(
+          patientIdentifier,
+          folder.attachmentIdentifier,
+        ),
+      );
+    },
+    [history, patientIdentifier],
+  );
+
+  const openFolderInNewTab = folder => {
+    window.open(
+      `#${createPatientAttachmentsPath(
+        patientIdentifier,
+        folder.attachmentIdentifier,
+      )}`,
+    );
+  };
+
+  const moveFileOrFolder = useCallback(
+    attachment => {
+      dispatch(
+        openModal('SelectPatientFolder', {
+          onMove: destinationFolderId => {
+            dispatch(
+              PatientDetailsActions.movePatientAttachment(
+                attachment,
+                destinationFolderId,
+              ),
+            );
+          },
+        }),
+      );
+    },
+    [dispatch],
+  );
+
   return {
+    handleCreateFolderClick,
     attachmentsSources,
     currentPatientAttachments: attachments,
+    folders,
     attachmentsLoading,
-    removePatientAttachment: boundRemovePatientAttachment,
-    attachmentFileInputReference,
+    deleteAttachment,
+    attachmentFileInputReference: inputRef,
     uploadProgress,
     currentlyUploadedAttachment,
     openAttachmentPreview,
     isAttachmentPreviewOpen,
     hideAttachmentPreview,
     previewedAttachment,
+    navigateToFolder,
+    openFolderInNewTab,
+    renameAttachment,
+    moveFileOrFolder,
     dropzone: {
       getRootProps,
       getInputProps,

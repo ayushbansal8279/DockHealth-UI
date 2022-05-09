@@ -1,4 +1,4 @@
-import * as React from 'react';
+import React, { createContext, useContext, useEffect, useState } from 'react';
 import { TASK_ITEM_BASE_COLUMN_CONFIG } from 'helpers/task-helpers';
 import { useSelector } from 'react-redux';
 import { organizationCustomFieldsSelector } from 'selectors/organization-selectors';
@@ -8,23 +8,30 @@ import {
 } from 'selectors/user-selectors';
 import { locationParametersSelector } from 'location/selectors';
 import { listCustomFieldsSelector } from 'selectors/list-details-selectors';
-import { sort } from 'ramda';
+import { sortAlphabetical } from 'helpers/custom-fields-helpers';
 import { currentTaskListCustomFieldsPreferencesSelector } from '../selectors/task-list-selectors';
+import { getAllPatientCustomFields } from '../api/custom-fields-api';
 
-export const ColumnsConfigContext = React.createContext();
+export const ColumnsConfigContext = createContext();
 
 export function ColumnsConfigProvider({
   children,
   initialColumns = TASK_ITEM_BASE_COLUMN_CONFIG,
   hideCustomColumns,
+  hidePatientCustomColumns,
 }) {
-  const [columnsConfig, setColumnsConfig] = React.useState(initialColumns);
-  const [customColumnsConfig, setCustomColumnsConfig] = React.useState([]);
+  const [columnsConfig, setColumnsConfig] = useState(initialColumns);
+  const [customColumnsConfig, setCustomColumnsConfig] = useState([]);
+  const [patientCustomColumnsConfig, setPatientCustomColumnsConfig] = useState(
+    [],
+  );
   const value = {
     columnsConfig,
     setColumnsConfig,
     customColumnsConfig,
     setCustomColumnsConfig,
+    patientCustomColumnsConfig,
+    setPatientCustomColumnsConfig,
   };
   const { userIdentifier } = useSelector(userProfileSelector);
 
@@ -41,21 +48,51 @@ export function ColumnsConfigProvider({
   );
   const { taskListIdentifier } = useSelector(locationParametersSelector);
 
-  const sortAlphabetical = React.useCallback(
-    array => sort((a, b) => a?.name.localeCompare(b), array),
-    [],
-  );
-
   const sortedAlphabeticalAllCustomFields = React.useMemo(() => {
     return sortAlphabetical([
       ...organizationCustomFields,
       ...specificListCustomFields,
     ]);
-  }, [organizationCustomFields, sortAlphabetical, specificListCustomFields]);
+  }, [organizationCustomFields, specificListCustomFields]);
 
   const sortedAlphabeticalOrganizationCustomFields = React.useMemo(() => {
     return sortAlphabetical([...organizationCustomFields]);
-  }, [organizationCustomFields, sortAlphabetical]);
+  }, [organizationCustomFields]);
+
+  useEffect(() => {
+    if (!hideCustomColumns && !hidePatientCustomColumns) {
+      const currentCustomFieldsPreferences = taskListIdentifier
+        ? ListCustomFieldsPreferences
+        : OrganizationCustomFieldsPreferences;
+
+      getAllPatientCustomFields().then(data => {
+        const currentPatientCustomFields = sortAlphabetical(
+          data.filter(c => c.contextType === 'CUSTOM'),
+        );
+        if (currentPatientCustomFields && currentCustomFieldsPreferences) {
+          const mergedPreferencesAndFields = currentPatientCustomFields.map(
+            field => {
+              if (
+                currentCustomFieldsPreferences.find(
+                  id => id === field.identifier,
+                )
+              ) {
+                return { ...field, isChecked: true };
+              }
+              return { ...field, isChecked: false };
+            },
+          );
+          setPatientCustomColumnsConfig(mergedPreferencesAndFields);
+        }
+      });
+    }
+  }, [
+    ListCustomFieldsPreferences,
+    OrganizationCustomFieldsPreferences,
+    hideCustomColumns,
+    hidePatientCustomColumns,
+    taskListIdentifier,
+  ]);
 
   React.useEffect(() => {
     if (!hideCustomColumns) {
@@ -97,9 +134,10 @@ export function ColumnsConfigProvider({
 }
 
 export function useColumnsConfig() {
-  const context = React.useContext(ColumnsConfigContext);
+  const context = useContext(ColumnsConfigContext);
   if (context === undefined) {
     return {
+      patientCustomColumnsConfig: [],
       columnsConfig: TASK_ITEM_BASE_COLUMN_CONFIG,
       customColumnsConfig: [],
       setColumnsConfig: () => {
@@ -110,6 +148,11 @@ export function useColumnsConfig() {
       setCustomColumnsConfig: () => {
         throw new Error(
           'if you want to use setCustomColumnsConfig, useColumnsConfig must be used within a ColumnsConfigProvider',
+        );
+      },
+      setPatientCustomColumnsConfig: () => {
+        throw new Error(
+          'if you want to use setPatientCustomColumnsConfig, useColumnsConfig must be used within a ColumnsConfigProvider',
         );
       },
     };

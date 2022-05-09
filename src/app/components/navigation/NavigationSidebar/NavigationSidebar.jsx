@@ -204,7 +204,7 @@ const NavigationSidebar = () => {
                 onItemClick={handleNavigationItemClick}
               />
             </AccessRestrictor>
-            <AccessRestrictor allowedToRoles={[ADMIN, OWNER, MEMBER, GUEST]}>
+            <AccessRestrictor allowedToRoles={[ADMIN, OWNER, MEMBER]}>
               <IconNavigationItem
                 name="People"
                 icon={PeopleIcon}
@@ -252,7 +252,7 @@ const NavigationSidebar = () => {
             </AccessRestrictor>
           </Grid>
           <Grid container direction="column">
-            <AccessRestrictor allowedToRoles={[ADMIN, OWNER, MEMBER, GUEST]}>
+            <AccessRestrictor allowedToRoles={[ADMIN, OWNER]}>
               <div ref={settingsMenuReference}>
                 <IconNavigationItem
                   name="Settings"

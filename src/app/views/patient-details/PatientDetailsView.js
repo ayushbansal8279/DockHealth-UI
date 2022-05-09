@@ -78,6 +78,7 @@ const TABS_CONFIG = [
   {
     label: 'Files',
     mainPath: 'files',
+    additionalPath: ':folderIdentifier?',
     RouteComponent: PatientAttachments,
   },
 ];
@@ -287,7 +288,7 @@ const PatientDetailsView = () => {
         </LayoutHeader>
       }
     >
-      <ColumnsConfigProvider>
+      <ColumnsConfigProvider hidePatientCustomColumns>
         <StickyContainer>
           <PatientDetailsHeader />
           <PatientDetailsTabsContainer>

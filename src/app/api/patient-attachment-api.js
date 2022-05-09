@@ -1,12 +1,15 @@
 import axios from 'api/axios-heydoc';
+import { PatientAttachmentType } from 'helpers/patient-details-helpers';
 
-export function addPatientAttachment(
+export function createPatientAttachment(
   patientIdentifier,
+  folderIdentifier,
   fileData,
   additionalConfig = {},
 ) {
   const formData = new FormData();
   formData.append('file', fileData);
+  formData.append('parentAttachmentIdentifier', folderIdentifier ?? undefined);
 
   return axios
     .post(`patient/attachment/${patientIdentifier}`, formData, {
@@ -15,20 +18,16 @@ export function addPatientAttachment(
       },
       ...additionalConfig,
     })
-    .then(response => {
-      return response;
-    });
+    .then(({ data }) => data);
 }
 
-export function removePatientAttachment(attachmentIdentifier) {
-  return axios
-    .delete(`patient/attachment/${attachmentIdentifier}`)
-    .then(response => {
-      return response;
-    });
+export function deletePatientAttachment(identifier) {
+  return axios.delete(`patient/attachment/${identifier}`).then(response => {
+    return response;
+  });
 }
 
-export function getPatientAttachment(attachmentIdentifier) {
+export function downloadPatientAttachment(attachmentIdentifier) {
   return axios({
     url: `patient/attachment/download/${attachmentIdentifier}`,
     method: 'GET',
@@ -41,8 +40,44 @@ export function getPatientAttachment(attachmentIdentifier) {
   });
 }
 
-export function getPatientAttachments(patientIdentifier) {
+export function getPatientAttachments(patientIdentifier, folderIdentifier) {
   return axios
-    .get(`/patient/attachment/getPatientAttachments/${patientIdentifier}`)
+    .get(
+      `patient/attachment/getPatientAttachmentsInFolder/${patientIdentifier}`,
+      {
+        params: { parentAttachmentIdentifier: folderIdentifier ?? undefined },
+      },
+    )
     .then(({ data }) => data);
+}
+
+export function createAttachmentFolder(
+  patientIdentifier,
+  name,
+  folderIdentifier,
+) {
+  return axios
+    .post(`patient/attachment/other`, {
+      patientIdentifier,
+      fileName: name,
+      type: PatientAttachmentType.FOLDER,
+      parentAttachmentIdentifier: folderIdentifier ?? undefined,
+    })
+    .then(({ data }) => data);
+}
+
+export function updatePatientAttachment(attachment) {
+  return axios.put(`patient/attachment`, attachment).then(({ data }) => data);
+}
+
+export function getPatientFolderStructureHierarchy(identifier) {
+  return axios
+    .get(`patient/attachment/${identifier}`, {
+      params: { parentDetails: true },
+    })
+    .then(({ data }) => data);
+}
+
+export function getPatientFolder(identifier) {
+  return axios.get(`patient/attachment/${identifier}`).then(({ data }) => data);
 }

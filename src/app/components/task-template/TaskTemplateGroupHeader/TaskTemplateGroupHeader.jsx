@@ -14,19 +14,17 @@ import { pluck } from 'ramda';
 import { extractTasksAndSubtasks } from 'helpers/tasklist-helpers';
 import { useDispatch, useSelector } from 'react-redux';
 import ThreeDotsIcon from 'img/three-dots';
-import { MoreVert } from '@material-ui/icons';
+import { FormatColorResetOutlined, MoreVert } from '@material-ui/icons';
 import * as ModalActions from 'modal/actions';
 import * as WorkflowActions from 'actions/workflow-actions';
 import * as TaskActions from 'actions/task-actions';
 import * as TemplateBundleActions from 'actions/template-bundle-actions';
-import * as TaskTemplateApi from 'api/task-template-api';
 import { useBoolean } from 'hooks/useBoolean';
 import {
   TaskItemColumn,
   TaskItemColumnWidth,
   TaskStatus,
 } from 'helpers/task-helpers';
-import { workflowSelector } from 'selectors/workflow-drawer-selectors';
 import Checkbox from 'components/common/Checkbox/Checkbox';
 import ProgressBar from 'components/common/ProgressBar/ProgressBar';
 import RotatableChevron from 'components/common/RotatableChevron/RotatableChevron';
@@ -48,11 +46,13 @@ import {
 } from 'actions/list-details-actions';
 import { currentTaskListSelector } from 'selectors/task-list-selectors';
 import { openDrawer } from 'actions/workflow-drawer-actions';
+import { sortAlphabetical } from 'helpers/custom-fields-helpers';
 import TemplateHeaderName from '../TaskTemplateName/TaskTemplateName';
 import TaskHeaderPatient from '../TaskTemplatePatient/TaskTemplatePatient';
 import TemplateItemWorkflowStatus from '../TaskTemplateWorkflowStatus/TaskTemplateWorkflowStatus';
 import TaskTemplateMembers from '../TaskTemplateMembers/TaskTemplateMembers';
 import TaskTemplateStartDate from '../TaskTemplateStartDate/TaskTemplateStartDate';
+import TaskTemplateIcons from '../TaskTemplateIcons/TaskTemplateIcons';
 import {
   TaskTemplateGroupHeaderContainer,
   TaskTemplateProgressCircle,
@@ -85,7 +85,11 @@ const TaskTemplateGroupHeader = ({
     tasksCount,
     tasksCompletedCount,
     taskListIdentifier,
+    comments,
+    labels,
+    attachments,
   } = templateGroup;
+
   const { dragHandleProps } = draggableProvided;
   const [isHovered, setIsHovered, unsetIsHovered] = useBoolean(false);
   const { bulkEditIsActive } = useContext(BulkEditContext);
@@ -98,13 +102,21 @@ const TaskTemplateGroupHeader = ({
   }));
   const currentList = useSelector(currentTaskListSelector);
   const dispatch = useDispatch();
-  const { columnsConfig, customColumnsConfig } = useColumnsConfig();
+  const {
+    columnsConfig,
+    customColumnsConfig,
+    patientCustomColumnsConfig,
+  } = useColumnsConfig();
   useEffect(() => {
     setNameInputValue(name);
   }, [name]);
-  const [workFlowData, setWorkFlowData] = useState(undefined);
-  const selectedWorkflow = useSelector(workflowSelector);
+  const workFlowData = templateGroup;
 
+  const alphabeticalSortedAllTypeCustomFields = useMemo(
+    () =>
+      sortAlphabetical([...customColumnsConfig, ...patientCustomColumnsConfig]),
+    [customColumnsConfig, patientCustomColumnsConfig],
+  );
   const [completedTasksAmount, allTasksAmount] = useMemo(
     () =>
       tasks.reduce(
@@ -337,15 +349,6 @@ const TaskTemplateGroupHeader = ({
     );
   }, [dispatch, isBundleSelected, filteredTasks]);
 
-  const getWorkflowData = useCallback(async id => {
-    setWorkFlowData(await TaskTemplateApi.getTemplate(id));
-  }, []);
-
-  useEffect(() => {
-    // eslint-disable-next-line no-unused-expressions
-    !selectedWorkflow ? getWorkflowData(identifier) : setWorkFlowData(null);
-  }, [getWorkflowData, identifier, selectedWorkflow]);
-
   return (
     <TaskTemplateGroupHeaderContainer
       onMouseEnter={setIsHovered}
@@ -440,7 +443,19 @@ const TaskTemplateGroupHeader = ({
         <TaskItemCell
           key={`activity_${identifier}`}
           width={TaskItemColumnWidth[TaskItemColumn.ACTIVITY]}
-        />
+        >
+          <TaskTemplateIcons
+            matchComments={false}
+            comments={comments}
+            isHovered={isHovered}
+            workflow={templateGroup}
+            matchLabels={false}
+            labels={labels}
+            matchAttachments={false}
+            attachments={attachments}
+            dispatch={dispatch}
+          />
+        </TaskItemCell>
       )}
       {columnsConfig[TaskItemColumn.START_DATE] && (
         <TaskItemCell
@@ -492,31 +507,53 @@ const TaskTemplateGroupHeader = ({
           width={TaskItemColumnWidth[TaskItemColumn.LIST_NAME]}
         />
       )}
-      {customColumnsConfig &&
+      {alphabeticalSortedAllTypeCustomFields &&
         workFlowData &&
-        customColumnsConfig
+        alphabeticalSortedAllTypeCustomFields
           .filter(f => f.isChecked)
-          .map(field => (
-            <TaskItemCell
-              key={`custom_${identifier}_${field.identifier}`}
-              width={CustomFieldWidthConfig[field.fieldType]}
-            >
-              <TaskItemCustomField
-                onClick={(fieldIdentifier, workflow) => {
-                  dispatch(
-                    openDrawer(workflow.identifier, workflow, fieldIdentifier),
-                  );
-                }}
-                field={field}
-                readOnly
-                customFieldValue={workFlowData?.taskMetaData?.find(
-                  f => f.customFieldIdentifier === field.identifier,
+          .map(field => {
+            const taskCustomFieldValue = workFlowData?.taskMetaData?.find(
+              f => f.customFieldIdentifier === field.identifier,
+            );
+            const patientCustomFieldValue = workFlowData?.patient?.patientMetaData?.find(
+              f => f.customFieldIdentifier === field.identifier,
+            );
+            const customFieldValue =
+              field.targetType === 'PATIENT'
+                ? patientCustomFieldValue
+                : taskCustomFieldValue;
+
+            const hidePatientCustomFields =
+              field.targetType === 'PATIENT' &&
+              !workFlowData?.patient?.patientIdentifier;
+
+            return (
+              <TaskItemCell
+                key={`custom_${identifier}_${field.identifier}`}
+                width={CustomFieldWidthConfig[field.fieldType]}
+              >
+                {!hidePatientCustomFields && (
+                  <TaskItemCustomField
+                    customFieldValue={customFieldValue}
+                    onClick={(fieldIdentifier, workflow) => {
+                      if (field.targetType === 'PATIENT') return;
+                      dispatch(
+                        openDrawer(
+                          workflow.identifier,
+                          workflow,
+                          fieldIdentifier,
+                        ),
+                      );
+                    }}
+                    field={field}
+                    readOnly
+                    task={workFlowData}
+                    isHovered={isHovered}
+                  />
                 )}
-                task={workFlowData}
-                isHovered={isHovered}
-              />
-            </TaskItemCell>
-          ))}
+              </TaskItemCell>
+            );
+          })}
     </TaskTemplateGroupHeaderContainer>
   );
 };

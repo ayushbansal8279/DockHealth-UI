@@ -78,6 +78,15 @@ export const Divider = styled.hr`
 
 export const PatientInfo = styled.div``;
 
+export const CustomFieldPatientInfo = styled.div`
+  display: flex;
+  &:not(:last-child):after {
+    content: '|';
+    margin: 0 ${spacing.smallPlus};
+    color: ${palette.coolGrey2};
+  }
+`;
+
 export const InfoItem = styled.p`
   display: inline-block;
   margin-bottom: 0;
