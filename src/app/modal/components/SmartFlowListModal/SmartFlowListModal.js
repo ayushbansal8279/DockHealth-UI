@@ -26,6 +26,7 @@ import {
   ModalHeaderStyled,
   SearchStyled,
   DataGridStyled,
+  ModalHeaderContainerStyled,
 } from './styled';
 
 const SmartFlowListModal = ({ fetchMethod, closeModal, setWorkflow }) => {
@@ -183,7 +184,7 @@ const SmartFlowListModal = ({ fetchMethod, closeModal, setWorkflow }) => {
 
   return (
     <ModalWrapper width="700px">
-      <ModalHeaderStyled>
+      <ModalHeaderContainerStyled>
         <ModalHeaderStyled>
           {history.length > 1 && (
             <ArrowButtonStyled onClick={handleBack}>
@@ -201,7 +202,7 @@ const SmartFlowListModal = ({ fetchMethod, closeModal, setWorkflow }) => {
             placeholder="Search Workflows"
           />
         </SearchStyled>
-      </ModalHeaderStyled>
+      </ModalHeaderContainerStyled>
       <ModalDescriptionContainer>
         <DataGridWrapperStyled>
           <DataGridStyled
