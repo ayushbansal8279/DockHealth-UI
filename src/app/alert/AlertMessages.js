@@ -18,6 +18,7 @@ const AlertMessages = {
   TASK_DUPLICATED: 'Task duplicted',
   PATIENT_ARCHIVED: 'Archived',
   WORKFLOW_CREATED: 'Workflow created',
+  LABEL_CREATED: 'Label created',
 };
 
 export default AlertMessages;

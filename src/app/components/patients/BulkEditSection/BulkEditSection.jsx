@@ -1,4 +1,4 @@
-import React, { useCallback, useContext } from 'react';
+import React, { useCallback, useContext, useEffect } from 'react';
 import { useDispatch } from 'react-redux';
 import * as ActionTypes from 'actions/action-types';
 import { PatientEditContext } from 'context-api/patient-edit-context';
@@ -15,8 +15,13 @@ const BulkEditSection = ({ children }) => {
   } = PatientContext;
 
   const { turnOffAllOptions } = selectedOptionsHandler;
-
   const dispatch = useDispatch();
+
+  useEffect(() => {
+    if (!bulkEditIsActive) {
+      turnOffAllOptions();
+    }
+  }, [bulkEditIsActive, turnOffAllOptions]);
 
   const onClose = useCallback(() => {
     dispatch({
@@ -26,17 +31,19 @@ const BulkEditSection = ({ children }) => {
   }, [dispatch, turnOffAllOptions]);
 
   return (
-    <>
-      {children}
-      <BulkEditOptionsBarContainer isOpen={bulkEditIsActive}>
-        {bulkEditIsActive && (
-          <BulkEditOptionsBar
-            selectedPatients={selectedPatients}
-            onClose={onClose}
-          />
-        )}
-      </BulkEditOptionsBarContainer>
-    </>
+    bulkEditIsActive && (
+      <>
+        {children}
+        <BulkEditOptionsBarContainer isOpen={bulkEditIsActive}>
+          {bulkEditIsActive && (
+            <BulkEditOptionsBar
+              selectedPatients={selectedPatients}
+              onClose={onClose}
+            />
+          )}
+        </BulkEditOptionsBarContainer>
+      </>
+    )
   );
 };
 

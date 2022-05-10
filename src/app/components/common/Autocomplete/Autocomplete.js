@@ -83,6 +83,8 @@ const Autocomplete = ({
   value,
   InputProps,
   disableClearable,
+  getOptionSelected,
+  limitTags,
 }) => {
   const textFieldReference = useRef(null);
 
@@ -161,7 +163,9 @@ const Autocomplete = ({
       renderOption={renderOption}
       renderTags={renderTags}
       value={value}
+      getOptionSelected={getOptionSelected}
       disableClearable={disableClearable}
+      limitTags={limitTags}
     />
   );
 };

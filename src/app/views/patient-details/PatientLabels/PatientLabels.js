@@ -10,15 +10,12 @@ import React, {
 import { Chip } from '@material-ui/core';
 import { useBoolean } from 'hooks/useBoolean';
 import palette from 'styles/palette';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import Autocomplete from 'components/common/Autocomplete/Autocomplete';
-import {
-  patientSelector,
-  patientLabelsSelector,
-} from 'selectors/patient-details-selectors';
+import { patientLabelsSelector } from 'selectors/patient-details-selectors';
 import Tooltip from 'components/common/Tooltip/Tooltip';
-import { patientBulkAddLabel } from 'api/patients-api';
 import { PatientEditContext } from 'context-api/patient-edit-context';
+import { patientBulkAddLabel } from 'actions/patients-actions';
 import initializeLabelsSectionHooks from './hooks';
 import {
   OptionContainer,
@@ -95,7 +92,6 @@ const renderOption = ({
 // eslint-disable-next-line sonarjs/cognitive-complexity
 const PatientLabels = ({ isPatientBulk }) => {
   const {
-    saveAddLabel,
     saveEditLabel,
     removeLabelFromPatient,
     deleteLabel,
@@ -103,7 +99,6 @@ const PatientLabels = ({ isPatientBulk }) => {
     isFetchingLabels,
   } = initializeLabelsSectionHooks({});
 
-  const patient = useSelector(patientSelector);
   const labels = useSelector(patientLabelsSelector) || [];
   const [inputValue, setInputValue] = useState('');
   const [isEditing, setIsEditing, unsetIsEditing] = useBoolean(false);
@@ -114,10 +109,15 @@ const PatientLabels = ({ isPatientBulk }) => {
   const patientContext = useContext(PatientEditContext);
 
   const { selectedPatients } = patientContext;
+  const dispatch = useDispatch();
 
-  const selectedLabels = useMemo(() => patient?.patientLabels || [], [patient]);
+  const [selectedLabels, setSelectedLabels] = useState([]);
 
   const classes = useAutocompleteStyles();
+
+  useEffect(() => {
+    setSelectedLabels([]);
+  }, [selectedPatients]);
 
   useEffect(() => {
     if (currentEditableOption) {
@@ -170,20 +170,15 @@ const PatientLabels = ({ isPatientBulk }) => {
         return singlePatient.patientIdentifier;
       });
 
-      const newValue = {
+      const labelToAdd = {
         labelIdentifier: value.labelIdentifier || null,
         labelName: value.labelName || null,
-        patientIdentifier: value.patientIdentifier || null,
+        assignedToUsers: assignedPatients,
       };
 
-      isPatientBulk
-        ? patientBulkAddLabel({
-            ...newValue,
-            assignedToUsers: assignedPatients,
-          })
-        : saveAddLabel(newValue);
+      dispatch(patientBulkAddLabel(labelToAdd));
     },
-    [isPatientBulk, saveAddLabel, selectedPatients],
+    [selectedPatients, dispatch],
   );
 
   const noOptionText = useMemo(
@@ -219,13 +214,16 @@ const PatientLabels = ({ isPatientBulk }) => {
   return isEditing ? (
     <Autocomplete
       autoFocus
+      limitTags={2}
       options={labels}
       placeholder={
-        labels && labels.length > 0 ? '' : "Are there labels you'd like to add?"
+        selectedLabels.length > 0 ? '' : "Are there labels you'd like to add?"
       }
+      getOptionSelected={(option, value) => {
+        return option.labelIdentifier === value.labelIdentifier;
+      }}
       classes={classes}
       disablePortal={!isPatientBulk}
-      value={selectedLabels}
       disableCloseOnSelect={!!currentEditableOption}
       getInputReference={getInputReference}
       getOptionLabel={option => option?.labelName}
@@ -250,13 +248,16 @@ const PatientLabels = ({ isPatientBulk }) => {
       onOpen={refreshLabels}
       isLoading={isFetchingLabels}
       onChange={values => {
-        const valuesLength = values.length;
-        const value = values[valuesLength - 1];
-        saveHandler(value);
+        const selectedLabel = values.length - 1;
+        const label = values[selectedLabel];
+        saveHandler(label);
 
         if (currentEditableOption) {
           setCurrentEditableOption(null);
         }
+        setSelectedLabels(previousProps => {
+          return [...previousProps, label];
+        });
       }}
       multiple
       disableClearable
