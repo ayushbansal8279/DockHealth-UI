@@ -9,6 +9,7 @@ import {
 import { getTemplates } from 'api/task-template-api';
 import { Add, Delete } from '@material-ui/icons';
 import palette from 'styles/palette';
+import { NodeType } from 'helpers/smart-flow-builder-helpers';
 import TaskNodeWrapper from '../../TaskNodeWrapper/TaskNodeWrapper';
 import TaskNodeHandles from '../../TaskNodeHandles/TaskNodeHandles';
 import NestedFlowNodeStyled from '../styled';
@@ -36,7 +37,7 @@ const NewNestedFlowNode = React.memo(props => {
             description: workflow.workflowName,
             taskTemplateIdentifier,
             linkedTemplateIdentifier: workflow.identifier,
-            intentType: 'WORKFLOW_LINK',
+            intentType: NodeType.WORKFLOW_LINK,
           },
           id,
           { x: xPos, y: yPos },

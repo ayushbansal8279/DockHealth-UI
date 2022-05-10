@@ -19,14 +19,13 @@ import {
   ModalHeader,
 } from '../styled';
 import {
-  ArrowButton,
-  DataGridWrapper,
-  FolderIconContainer,
-  ModalFooter,
-  ModalHeaderContainer,
+  ArrowButtonStyled,
+  DataGridWrapperStyled,
+  FolderIconContainerStyled,
+  ModalFooterStyled,
   ModalHeaderStyled,
   SearchStyled,
-  StripedDataGrid,
+  DataGridStyled,
 } from './styled';
 
 const SmartFlowListModal = ({ fetchMethod, closeModal, setWorkflow }) => {
@@ -46,10 +45,10 @@ const SmartFlowListModal = ({ fetchMethod, closeModal, setWorkflow }) => {
       width: 300,
       renderCell: props => {
         return props?.row?.type === TaskTemplateType.FOLDER ? (
-          <FolderIconContainer>
+          <FolderIconContainerStyled>
             <img src={Folder} alt="folder icon" />
             <span>{props?.value}</span>
-          </FolderIconContainer>
+          </FolderIconContainerStyled>
         ) : (
           <div>{props?.value ?? ''}</div>
         );
@@ -184,12 +183,12 @@ const SmartFlowListModal = ({ fetchMethod, closeModal, setWorkflow }) => {
 
   return (
     <ModalWrapper width="700px">
-      <ModalHeaderContainer>
+      <ModalHeaderStyled>
         <ModalHeaderStyled>
           {history.length > 1 && (
-            <ArrowButton onClick={handleBack}>
+            <ArrowButtonStyled onClick={handleBack}>
               <img src={ArrowLeftIcon} alt="back-navigation" />
-            </ArrowButton>
+            </ArrowButtonStyled>
           )}
           <ModalHeader textAlign="left">Choose Smartflow</ModalHeader>
         </ModalHeaderStyled>
@@ -202,10 +201,10 @@ const SmartFlowListModal = ({ fetchMethod, closeModal, setWorkflow }) => {
             placeholder="Search Workflows"
           />
         </SearchStyled>
-      </ModalHeaderContainer>
+      </ModalHeaderStyled>
       <ModalDescriptionContainer>
-        <DataGridWrapper>
-          <StripedDataGrid
+        <DataGridWrapperStyled>
+          <DataGridStyled
             sortingOrder={['desc', 'asc']}
             loading={isLoading}
             sortModel={sortModel}
@@ -219,9 +218,9 @@ const SmartFlowListModal = ({ fetchMethod, closeModal, setWorkflow }) => {
             hideFooter
             onRowClick={handleRowClick}
           />
-        </DataGridWrapper>
+        </DataGridWrapperStyled>
       </ModalDescriptionContainer>
-      <ModalFooter>
+      <ModalFooterStyled>
         <Button
           uppercase
           width="150px"
@@ -241,7 +240,7 @@ const SmartFlowListModal = ({ fetchMethod, closeModal, setWorkflow }) => {
         >
           connect
         </Button>
-      </ModalFooter>
+      </ModalFooterStyled>
     </ModalWrapper>
   );
 };

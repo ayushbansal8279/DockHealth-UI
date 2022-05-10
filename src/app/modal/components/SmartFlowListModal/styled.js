@@ -2,13 +2,13 @@ import { DataGrid } from '@material-ui/data-grid';
 import styled from 'styled-components';
 import spacing from 'styles/spacing';
 
-export const DataGridWrapper = styled.div`
+export const DataGridWrapperStyled = styled.div`
   width: 100%;
   height: 300px;
   display: flex;
 `;
 
-export const ModalHeaderContainer = styled.div`
+export const ModalHeaderContainerStyled = styled.div`
   display: flex;
   width: 100%;
   justify-content: space-between;
@@ -16,7 +16,7 @@ export const ModalHeaderContainer = styled.div`
   padding-left: 25px;
 `;
 
-export const ArrowButton = styled.button`
+export const ArrowButtonStyled = styled.button`
   cursor: pointer;
   width: 12px;
   margin-right: ${spacing.smallPlus};
@@ -34,13 +34,13 @@ export const SearchStyled = styled.div`
   padding-right: 30px;
 `;
 
-export const FolderIconContainer = styled.div`
+export const FolderIconContainerStyled = styled.div`
   width: 100%;
   display: flex;
   gap: 5px;
 `;
 
-export const ModalFooter = styled.div`
+export const ModalFooterStyled = styled.div`
   width: 100%;
   display: flex;
   justify-content: right;
@@ -48,7 +48,7 @@ export const ModalFooter = styled.div`
   padding: 0px 25px 15px 25px;
 `;
 
-export const StripedDataGrid = styled(DataGrid)`
+export const DataGridStyled = styled(DataGrid)`
   &.MuiDataGrid-root .MuiDataGrid-columnHeader:focus-within,
   &.MuiDataGrid-root .MuiDataGrid-cell:focus-within,
   &.MuiDataGrid-root .MuiDataGrid-columnHeader:focus,

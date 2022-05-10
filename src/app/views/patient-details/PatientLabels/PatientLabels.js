@@ -46,10 +46,12 @@ const renderOption = ({
       ref={registerOption}
       defaultValue={option?.labelName}
       onBlur={event => {
+        console.log('blur');
         event.stopPropagation();
         onBlur();
       }}
       onKeyDown={event => {
+        console.log('key');
         if (event.key === 'Enter') {
           event?.target?.blur();
           if (
@@ -130,7 +132,7 @@ const PatientLabels = ({ isPatientBulk }) => {
   const getInputReference = element => {
     inputReference.current = element;
   };
-
+  console.log(labels);
   const renderOptionCallback = useCallback(
     option =>
       renderOption({
@@ -220,9 +222,7 @@ const PatientLabels = ({ isPatientBulk }) => {
     <Autocomplete
       autoFocus
       options={labels}
-      placeholder={
-        labels && labels.length > 0 ? '' : "Are there labels you'd like to add?"
-      }
+      placeholder={"Are there labels you'd like to add?"}
       classes={classes}
       disablePortal={!isPatientBulk}
       value={selectedLabels}
