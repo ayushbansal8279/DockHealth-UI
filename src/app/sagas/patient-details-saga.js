@@ -762,6 +762,44 @@ export function* createPatientAttachmentFolder({
   }
 }
 
+export function* createPatientAttachmentReference({
+  patientIdentifier,
+  name,
+  url,
+  mimeType,
+  referenceType,
+  folderIdentifier,
+}) {
+  try {
+    const attachment = yield call(
+      PatientAttachmentApi.createAttachmentReference,
+      patientIdentifier,
+      name,
+      url,
+      mimeType,
+      referenceType,
+      folderIdentifier,
+    );
+    yield all([
+      put(showGlobalAlert(AlertMessages.CREATED)),
+      put({
+        type: ActionTypes.ADD_PATIENT_ATTACHMENT_REFERENCE_SUCCESS,
+        attachment,
+      }),
+      put(closeModal()),
+    ]);
+  } catch {
+    yield all([
+      put(showGlobalErrorAlert()),
+      put({
+        type: ActionTypes.ADD_PATIENT_ATTACHMENT_REFERENCE_FAILURE,
+        patientIdentifier,
+        name,
+      }),
+    ]);
+  }
+}
+
 function* updatePatientAttachment({ attachment, dataToUpdate }) {
   try {
     const updatedAttachment = yield call(
@@ -894,4 +932,8 @@ export default function* watchPatientDetails() {
   );
   yield takeEvery(ActionTypes.MOVE_PATIENT_ATTACHMENT, movePatientAttachment);
   yield takeEvery(ActionTypes.ADD_PATIENT_ATTACHMENT, createPatientAttachment);
+  yield takeEvery(
+    ActionTypes.ADD_PATIENT_ATTACHMENT_REFERENCE,
+    createPatientAttachmentReference,
+  );
 }
