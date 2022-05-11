@@ -69,7 +69,6 @@ const UserAvatar = React.forwardRef(
             initials={initials}
             isSelected={isSelected}
             pictureSrc={pictureSource}
-            pictureSize={pictureSize}
             name={name}
             activityStatus={activityStatus}
             isBlurred={isInactive}
