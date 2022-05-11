@@ -265,8 +265,10 @@ const PatientLabels = ({ isPatientBulk }) => {
       noOptionsText={noOptionText}
       onOpen={refreshLabels}
       isLoading={isFetchingLabels}
-      onChange={values => {
-        console.log('onchange');
+      onChange={(values, reason) => {
+        if (reason !== 'select-option') {
+          return;
+        }
         const selectedLabel = values.length - 1;
         const labelToAdd = values[selectedLabel];
         saveHandler(labelToAdd);

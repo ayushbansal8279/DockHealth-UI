@@ -152,7 +152,7 @@ const Autocomplete = ({
       loading={isLoading}
       multiple={multiple}
       noOptionsText={noOptionsText}
-      onChange={(_, value_) => onChange(value_)}
+      onChange={(_, value_, reason) => onChange(value_, reason)}
       onClose={onClose}
       onInputChange={(_, value_) => onInputChange(value_)}
       onOpen={onOpen}
