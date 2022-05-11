@@ -26,17 +26,19 @@ const BulkEditSection = ({ children }) => {
   }, [dispatch, turnOffAllOptions]);
 
   return (
-    <>
-      {children}
-      <BulkEditOptionsBarContainer isOpen={bulkEditIsActive}>
-        {bulkEditIsActive && (
-          <BulkEditOptionsBar
-            selectedPatients={selectedPatients}
-            onClose={onClose}
-          />
-        )}
-      </BulkEditOptionsBarContainer>
-    </>
+    bulkEditIsActive && (
+      <>
+        {children}
+        <BulkEditOptionsBarContainer isOpen={bulkEditIsActive}>
+          {bulkEditIsActive && (
+            <BulkEditOptionsBar
+              selectedPatients={selectedPatients}
+              onClose={onClose}
+            />
+          )}
+        </BulkEditOptionsBarContainer>
+      </>
+    )
   );
 };
 
