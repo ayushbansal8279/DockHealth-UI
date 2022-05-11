@@ -80,6 +80,13 @@ export function patientBulkAddLabel(payload) {
   };
 }
 
+export function patientBulkRemoveLabel(payload) {
+  return {
+    type: ActionTypes.PATIENT_BULK_REMOVE_LABEL,
+    payload,
+  };
+}
+
 export function patientBulkCreateWorkflow(payload) {
   return {
     type: ActionTypes.PATIENT_BULK_CREATE_WORKFLOW,

@@ -91,6 +91,7 @@ const PatientBulkActions = {
   CREATE_WORKFLOW: 'CREATE_WORKFLOW',
   ADD_LABEL: 'ADD_LABEL',
   DELETE_PATIENT: 'DELETE_PATIENT',
+  REMOVE_LABEL: 'REMOVE_LABEL',
 };
 
 export const patientBulkCreateTask = payload => {
@@ -138,4 +139,16 @@ export const patientBulkAddLabel = payload => {
   };
 
   axios.put(`patient/bulk`, body).then(({ data }) => data);
+};
+
+export const patientBulkRemoveLabel = payload => {
+  const { labelIdentifier, labelName, assignedToUsers } = payload;
+  const body = {
+    bulkOperationType: PatientBulkActions.REMOVE_LABEL,
+    labelIdentifier: labelIdentifier || null,
+    labelName: labelName || null,
+    patientIdentifiers: assignedToUsers,
+  };
+
+  axios.delete(`patient/bulk`, body).then(({ data }) => data);
 };

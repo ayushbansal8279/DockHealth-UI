@@ -8,14 +8,14 @@ import React, {
   useContext,
 } from 'react';
 import { Chip } from '@material-ui/core';
-import { useBoolean } from 'hooks/useBoolean';
-import palette from 'styles/palette';
 import { useDispatch, useSelector } from 'react-redux';
 import Autocomplete from 'components/common/Autocomplete/Autocomplete';
 import { patientLabelsSelector } from 'selectors/patient-details-selectors';
-import Tooltip from 'components/common/Tooltip/Tooltip';
 import { PatientEditContext } from 'context-api/patient-edit-context';
-import { patientBulkAddLabel } from 'actions/patients-actions';
+import {
+  patientBulkAddLabel,
+  patientBulkRemoveLabel,
+} from 'actions/patients-actions';
 import initializeLabelsSectionHooks from './hooks';
 import {
   OptionContainer,
@@ -24,8 +24,6 @@ import {
   OptionButtonsInput,
   NoOptionTextLabel,
   NoOptionContainer,
-  ReadOnlyLabelsContainer,
-  ReadOnlyLabelContainer,
   useAutocompleteStyles,
 } from './styled';
 
@@ -93,7 +91,6 @@ const renderOption = ({
 const PatientLabels = ({ isPatientBulk }) => {
   const {
     saveEditLabel,
-    removeLabelFromPatient,
     deleteLabel,
     refreshLabels,
     isFetchingLabels,
@@ -101,7 +98,6 @@ const PatientLabels = ({ isPatientBulk }) => {
 
   const labels = useSelector(patientLabelsSelector) || [];
   const [inputValue, setInputValue] = useState('');
-  const [isEditing, setIsEditing, unsetIsEditing] = useBoolean(false);
   const [currentEditableOption, setCurrentEditableOption] = useState(null);
   const optionReferences = useRef({});
   const inputReference = useRef(null);
@@ -152,16 +148,28 @@ const PatientLabels = ({ isPatientBulk }) => {
     [deleteLabel, saveEditLabel],
   );
 
-  const renderTagsCallback = useCallback(
-    () =>
-      selectedLabels.map(option => (
-        <Chip
-          key={option.labelIdentifier}
-          onDelete={() => removeLabelFromPatient(option)}
-          label={option.labelName}
-        />
-      )),
-    [removeLabelFromPatient, selectedLabels],
+  const removeHandler = useCallback(
+    value => {
+      const assignedPatients = selectedPatients?.map(singlePatient => {
+        return singlePatient.patientIdentifier;
+      });
+
+      const labelToRemove = {
+        labelIdentifier: value.labelIdentifier || null,
+        labelName: value.labelName || null,
+        assignedToUsers: assignedPatients,
+      };
+
+      dispatch(patientBulkRemoveLabel(labelToRemove));
+      setSelectedLabels(previousState => {
+        return (
+          previousState.filter(
+            label => label.labelIdentifier !== value.labelIdentifier,
+          ) ?? []
+        );
+      });
+    },
+    [dispatch, selectedPatients],
   );
 
   const saveHandler = useCallback(
@@ -179,6 +187,18 @@ const PatientLabels = ({ isPatientBulk }) => {
       dispatch(patientBulkAddLabel(labelToAdd));
     },
     [selectedPatients, dispatch],
+  );
+
+  const renderTagsCallback = useCallback(
+    () =>
+      selectedLabels.map(option => (
+        <Chip
+          key={option.labelIdentifier}
+          onDelete={() => removeHandler(option)}
+          label={option.labelName}
+        />
+      )),
+    [removeHandler, selectedLabels],
   );
 
   const noOptionText = useMemo(
@@ -211,11 +231,12 @@ const PatientLabels = ({ isPatientBulk }) => {
     [inputValue, saveHandler],
   );
 
-  return isEditing ? (
+  return (
     <Autocomplete
       autoFocus
       limitTags={2}
       options={labels}
+      value={selectedLabels}
       placeholder={
         selectedLabels.length > 0 ? '' : "Are there labels you'd like to add?"
       }
@@ -239,53 +260,27 @@ const PatientLabels = ({ isPatientBulk }) => {
             event?.target?.blur();
             saveHandler({ inputValue });
           }
-          if (event.key === 'Escape') {
-            unsetIsEditing();
-          }
         },
       }}
       noOptionsText={noOptionText}
       onOpen={refreshLabels}
       isLoading={isFetchingLabels}
       onChange={values => {
+        console.log('onchange');
         const selectedLabel = values.length - 1;
-        const label = values[selectedLabel];
-        saveHandler(label);
+        const labelToAdd = values[selectedLabel];
+        saveHandler(labelToAdd);
 
         if (currentEditableOption) {
           setCurrentEditableOption(null);
         }
         setSelectedLabels(previousProps => {
-          return [...previousProps, label];
+          return [...previousProps, labelToAdd];
         });
       }}
       multiple
       disableClearable
     />
-  ) : (
-    <ReadOnlyLabelsContainer isPatientBulk={isPatientBulk}>
-      {selectedLabels.map(label => (
-        <ReadOnlyLabelContainer key={label.labelIdentifier}>
-          <Chip
-            key={label.labelIdentifier}
-            clickable
-            label={label.labelName}
-            onClick={setIsEditing}
-          />
-        </ReadOnlyLabelContainer>
-      ))}
-      <ReadOnlyLabelContainer>
-        <Tooltip title="Add a label" placement="bottom">
-          <Chip
-            key="add"
-            clickable
-            textcolor={palette.orange}
-            label="+"
-            onClick={setIsEditing}
-          />
-        </Tooltip>
-      </ReadOnlyLabelContainer>
-    </ReadOnlyLabelsContainer>
   );
 };
 

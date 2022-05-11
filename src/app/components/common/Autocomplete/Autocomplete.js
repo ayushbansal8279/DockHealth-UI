@@ -202,6 +202,7 @@ Autocomplete.propTypes = {
   value: propTypes.oneOfType([
     propTypes.string,
     propTypes.arrayOf(propTypes.string),
+    propTypes.arrayOf(propTypes.object),
   ]),
 };
 
