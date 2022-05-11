@@ -40,6 +40,14 @@ const PatientAttachments = () => {
     localStorageHelper.getItem(PATIENT_FILES_VIEW_TYPE) || FilesViewType.GRID,
   );
 
+  if (process.env.GOOGLE_DRIVE_API_KEY) {
+    console.error('Missing GOOGLE_DRIVE_API_KEY environment variable');
+  }
+
+  if (process.env.GOOGLE_DRIVE_API_CLIENT_ID) {
+    console.error('Missing GOOGLE_DRIVE_API_CLIENT_ID environment variable');
+  }
+
   useEffect(() => {
     if (activeViewType === FilesViewType.GRID) {
       localStorageHelper.removeItem(PATIENT_FILES_VIEW_TYPE);
@@ -134,19 +142,22 @@ const PatientAttachments = () => {
           <AttachmentsBreadcrumbs />
         </Box>
         <Box display="flex" alignItems="center" flex="0 0 auto">
-          <GooglePicker
-            clientId={process.env.GOOGLE_DRIVE_API_CLIENT_ID}
-            developerKey={process.env.GOOGLE_DRIVE_API_KEY}
-            scope={['https://www.googleapis.com/auth/drive.readonly']}
-            onChange={handleGooglePickerChange}
-            onAuthFailed={compose(dispatch, showGlobalErrorAlert)}
-            multiselect
-            viewId="DOCS"
-          >
-            <IconButton>
-              <DriveIcon src={GoogleDriveIcon} alt="Google Drive" />
-            </IconButton>
-          </GooglePicker>
+          {process.env.GOOGLE_DRIVE_API_CLIENT_ID &&
+            process.env.GOOGLE_DRIVE_API_KEY && (
+              <GooglePicker
+                clientId={process.env.GOOGLE_DRIVE_API_CLIENT_ID}
+                developerKey={process.env.GOOGLE_DRIVE_API_KEY}
+                scope={['https://www.googleapis.com/auth/drive.readonly']}
+                onChange={handleGooglePickerChange}
+                onAuthFailed={compose(dispatch, showGlobalErrorAlert)}
+                multiselect
+                viewId="DOCS"
+              >
+                <IconButton>
+                  <DriveIcon src={GoogleDriveIcon} alt="Google Drive" />
+                </IconButton>
+              </GooglePicker>
+            )}
           <AddButton onClick={handleCreateFolderClick}>Create Folder</AddButton>
           <AddButton
             onClick={() => attachmentFileInputReference.current.click()}
