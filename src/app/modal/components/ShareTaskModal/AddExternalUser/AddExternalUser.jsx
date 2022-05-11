@@ -1,6 +1,6 @@
 import React, { useMemo } from 'react';
 import { Box, Grid } from '@material-ui/core';
-import { FormContext, useForm } from 'react-hook-form';
+import { FormProvider, useForm } from 'react-hook-form';
 import { object, string } from 'yup';
 import FormInput from 'components/common/Input/FormInput';
 import Button from 'components/common/Button/Button';
@@ -38,7 +38,7 @@ const AddExternalUser = props => {
 
   return (
     <form onSubmit={handleSubmit(onAdd)}>
-      <FormContext {...formContext}>
+      <FormProvider {...formContext}>
         <Grid container spacing={2}>
           <Grid item xs={6}>
             <FormInput
@@ -82,7 +82,7 @@ const AddExternalUser = props => {
             </Button>
           </Box>
         </Grid>
-      </FormContext>
+      </FormProvider>
     </form>
   );
 };
