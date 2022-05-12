@@ -59,6 +59,7 @@ import MergePatientsModal from './components/MergePatientsModal/MergePatientsMod
 import SelectDestinationGroupModal from './components/SelectDestinationGroupModal/SelectDestinationGroupModal';
 import PatientFolderModal from './components/PatientFolderModal/PatientFolderModal';
 import SelectPatientFolderModal from './components/SelectPatientFolderModal/SelectPatientFolderModal';
+import SmartFlowListModal from './components/SmartFlowListModal/SmartFlowListModal';
 
 const MODAL_MAP = {
   CompleteAllTasks: CompleteAllTasksModal,
@@ -122,6 +123,7 @@ const MODAL_MAP = {
   MergePatients: MergePatientsModal,
   PatientFolder: PatientFolderModal,
   SelectPatientFolder: SelectPatientFolderModal,
+  SmartFlowList: SmartFlowListModal,
 };
 
 export default MODAL_MAP;

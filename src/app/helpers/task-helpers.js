@@ -34,6 +34,12 @@ export const TaskPriority = {
   HIGH: 'HIGH',
 };
 
+export const TaskTemplateType = {
+  WORKFLOW: 'WORKFLOW',
+  SMARTFLOW: 'SMARTFLOW',
+  FOLDER: 'FOLDER',
+};
+
 export function getPriorityColor(priority) {
   switch (priority) {
     case TaskPriority.HIGH:

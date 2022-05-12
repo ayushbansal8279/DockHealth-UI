@@ -28,6 +28,7 @@ import { openModal, closeModal } from 'modal/actions';
 import {
   addDecisionBranch,
   addNewDecisionTaskElement,
+  addNewNestedFlowElement,
   addNewTaskElement,
   deleteTemporaryElement,
   linkTasks,
@@ -43,6 +44,7 @@ import { userHasSmartFlowsSelector } from 'selectors/user-selectors';
 import { openDrawer } from 'actions/workflow-drawer-actions';
 import { Box, ClickAwayListener, Paper, Popper } from '@material-ui/core';
 import DecisionTaskElementIcon from 'img/template/decision-task-icon';
+import WorkflowLinkIcon from 'img/template/workflow-icon';
 import Tooltip from 'components/common/Tooltip/Tooltip';
 import ReactFlow, {
   Controls,
@@ -88,12 +90,16 @@ import TaskLinkDelayForm from './TaskLinkDelayForm/TaskLinkDelayForm';
 import TemporaryDecisionTaskLink from './TemporaryDecisionTaskLink/TemporaryDecisionTaskLink';
 import BulkEditContainer from './BulkEditContainer/BulkEditContainer';
 import Hotkeys from './Hotkeys/Hotkeys';
+import NestedFlowNode from './NestedFlow/NestedFlowNode/NestedFlowNode';
+import NewNestedFlowNode from './NestedFlow/NewNestedFlowNode/NewNestedFlowNode';
 
 const nodeTypes = {
   [NodeType.NEW_STANDARD]: NewTaskNode,
   [NodeType.NEW_DECISION]: NewTaskNode,
   [NodeType.STANDARD]: TaskNode,
   [NodeType.DECISION]: TaskNode,
+  [NodeType.NEW_WORKFLOW_LINK]: NewNestedFlowNode,
+  [NodeType.WORKFLOW_LINK]: NestedFlowNode,
 };
 
 const linkTypes = {
@@ -277,6 +283,16 @@ const SmartFlowBuilderView = () => {
             dispatch(addNewDecisionTaskElement(position));
             centerViewToElement(position);
           }
+        },
+      },
+      {
+        id: NodeType.NEW_WORKFLOW_LINK,
+        label: 'Workflow',
+        icon: WorkflowLinkIcon,
+        onClick: () => {
+          const position = calculateNewElementPosition(layout);
+          dispatch(addNewNestedFlowElement(position));
+          centerViewToElement(position);
         },
       },
     ];

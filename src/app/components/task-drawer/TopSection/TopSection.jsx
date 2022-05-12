@@ -1,5 +1,5 @@
 /* eslint-disable sonarjs/cognitive-complexity */
-import React, { useCallback, useMemo } from 'react';
+import React, { useMemo } from 'react';
 import { CircleIcon } from 'components/task/styled';
 import { Box, IconButton } from '@material-ui/core';
 import { Close, MoreHoriz, FileCopy } from '@material-ui/icons';

@@ -130,7 +130,6 @@ const PatientLabels = ({ isPatientBulk }) => {
   const getInputReference = element => {
     inputReference.current = element;
   };
-
   const renderOptionCallback = useCallback(
     option =>
       renderOption({
@@ -220,9 +219,7 @@ const PatientLabels = ({ isPatientBulk }) => {
     <Autocomplete
       autoFocus
       options={labels}
-      placeholder={
-        labels && labels.length > 0 ? '' : "Are there labels you'd like to add?"
-      }
+      placeholder={"Are there labels you'd like to add?"}
       classes={classes}
       disablePortal={!isPatientBulk}
       value={selectedLabels}
