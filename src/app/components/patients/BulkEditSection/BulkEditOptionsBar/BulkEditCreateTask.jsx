@@ -32,13 +32,14 @@ const BulkEditCreateTask = () => {
       });
 
       dispatch(
-        openModal('ListPicker', {
+        openModal('SelectDestination', {
           fetchMethod: getTaskListForUser,
-          confirm: listId =>
+          confirm: ({ taskListIdentifier, taskGroupIdentifier }) =>
             dispatch(
               patientBulkCreateTask({
                 description,
-                taskListIdentifier: listId,
+                taskListIdentifier,
+                taskGroupIdentifier,
                 assignedToUsers: assignedPatients,
               }),
             ),
