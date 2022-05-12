@@ -138,32 +138,38 @@ const SmartFlowListModal = ({ fetchMethod, closeModal, setWorkflow }) => {
     [debouncedSearch],
   );
 
-  const removeItem = index => {
-    setHistory([...history.slice(0, index), ...history.slice(index + 1)]);
-  };
+  const removeItem = useCallback(
+    index => {
+      setHistory([...history.slice(0, index), ...history.slice(index + 1)]);
+    },
+    [history],
+  );
 
-  const handleBack = () => {
+  const handleBack = useCallback(() => {
     if (searchTerm !== '') {
       setSearchTerm('');
     }
     removeItem(history.length - 1);
-  };
+  }, [history.length, removeItem, searchTerm]);
 
-  const handleRowClick = ({ row }) => {
-    if (row.type !== TaskTemplateType.FOLDER) {
-      setsSelectedSmartFlow({
-        identifier: row.id,
-        workflowName: row.workflowName,
-      });
-      return;
-    }
+  const handleRowClick = useCallback(
+    ({ row }) => {
+      if (row.type !== TaskTemplateType.FOLDER) {
+        setsSelectedSmartFlow({
+          identifier: row.id,
+          workflowName: row.workflowName,
+        });
+        return;
+      }
 
-    if (history?.length >= 1) {
-      setHistory([...history, row.id]);
-    } else {
-      setHistory(['/']);
-    }
-  };
+      if (history?.length >= 1) {
+        setHistory([...history, row.id]);
+      } else {
+        setHistory(['/']);
+      }
+    },
+    [history],
+  );
 
   useEffect(() => {
     setIsLoading(true);
