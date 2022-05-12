@@ -244,13 +244,15 @@ const initializeAttachmentsSectionHooks = () => {
   );
 
   const handleAttachmentClick = attachment => {
-    if (attachment.type === PatientAttachmentType.FILE_LOCAL) {
-      openAttachmentPreview(attachment);
+    if (attachment.type === PatientAttachmentType.FILE_GDRIVE) {
       // TODO: check property name for file url when backend will be done
-    } else if (attachment.fileUrl) {
-      window.open(attachment.fileUrl, '_blank', 'noopener,noreferrer');
+      if (attachment.fileUrl) {
+        window.open(attachment.fileUrl, '_blank', 'noopener,noreferrer');
+      } else {
+        dispatch(showGlobalErrorAlert());
+      }
     } else {
-      dispatch(showGlobalErrorAlert());
+      openAttachmentPreview(attachment);
     }
   };
 
