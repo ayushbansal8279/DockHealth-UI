@@ -4,7 +4,6 @@ import moment from 'moment';
 import { useSelector } from 'react-redux';
 import { currentTaskTemplateIdentifierSelector } from 'selectors/task-template-selectors';
 import Folder from 'img/folder';
-import ArrowLeftIcon from 'img/arrow-left';
 import debounce from 'lodash.debounce';
 
 import { TaskTemplateType } from 'helpers/task-helpers';
@@ -13,13 +12,10 @@ import {
   searchTemplates,
 } from 'api/task-template-api';
 import Search from 'components/task-view/Search/Search';
+import { IconButton } from '@material-ui/core';
+import { ArrowBack } from '@material-ui/icons';
+import palette from 'styles/palette';
 import {
-  ModalWrapper,
-  ModalDescriptionContainer,
-  ModalHeader,
-} from '../styled';
-import {
-  ArrowButtonStyled,
   DataGridWrapperStyled,
   FolderIconContainerStyled,
   ModalFooterStyled,
@@ -28,6 +24,11 @@ import {
   DataGridStyled,
   ModalHeaderContainerStyled,
 } from './styled';
+import {
+  ModalWrapper,
+  ModalDescriptionContainer,
+  ModalHeader,
+} from '../styled';
 
 const SmartFlowListModal = ({ fetchMethod, closeModal, setWorkflow }) => {
   const [smartFlows, setSmartFlows] = useState([]);
@@ -193,9 +194,9 @@ const SmartFlowListModal = ({ fetchMethod, closeModal, setWorkflow }) => {
       <ModalHeaderContainerStyled>
         <ModalHeaderStyled>
           {history.length > 1 && (
-            <ArrowButtonStyled onClick={handleBack}>
-              <img src={ArrowLeftIcon} alt="back-navigation" />
-            </ArrowButtonStyled>
+            <IconButton onClick={handleBack}>
+              <ArrowBack htmlColor={palette.blueOcean} />
+            </IconButton>
           )}
           <ModalHeader textAlign="left">Choose Smartflow</ModalHeader>
         </ModalHeaderStyled>
