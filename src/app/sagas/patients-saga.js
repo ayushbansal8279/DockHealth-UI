@@ -205,8 +205,8 @@ function* addBulkLabel({ payload }) {
 
 function* deleteBulkLabel({ payload }) {
   try {
-    yield call(PatientsApi.patientBulkRemoveLabel, payload);
-    yield put(showGlobalAlert(AlertMessages.LABEL_REMOVED));
+    yield call(PatientsApi.patientBulkDeleteLabel, payload);
+    yield put(showGlobalAlert(AlertMessages.LABEL_DELETED));
   } catch {
     yield put(showGlobalErrorAlert());
   }
@@ -267,7 +267,7 @@ export default function* watchPatients() {
   );
   yield takeEvery(ActionTypes.PATIENT_BULK_CREATE_TASK, addBulkTask);
   yield takeEvery(ActionTypes.PATIENT_BULK_ADD_LABEL, addBulkLabel);
-  yield takeEvery(ActionTypes.PATIENT_BULK_REMOVE_LABEL, deleteBulkLabel);
+  yield takeEvery(ActionTypes.PATIENT_BULK_DELETE_LABEL, deleteBulkLabel);
 
   yield takeEvery(ActionTypes.PATIENT_BULK_CREATE_WORKFLOW, addBulkWorkflow);
   yield takeEvery(ActionTypes.PATIENT_BULK_DELETE_PATIENTS, deleteBulkPatient);

@@ -14,7 +14,7 @@ import { patientLabelsSelector } from 'selectors/patient-details-selectors';
 import { PatientEditContext } from 'context-api/patient-edit-context';
 import {
   patientBulkAddLabel,
-  patientBulkRemoveLabel,
+  patientBulkDeleteLabel,
 } from 'actions/patients-actions';
 import initializeLabelsSectionHooks from './hooks';
 import {
@@ -160,7 +160,7 @@ const PatientLabels = ({ isPatientBulk }) => {
         assignedToUsers: assignedPatients,
       };
 
-      dispatch(patientBulkRemoveLabel(labelToRemove));
+      dispatch(patientBulkDeleteLabel(labelToRemove));
       setSelectedLabels(previousState => {
         return (
           previousState.filter(

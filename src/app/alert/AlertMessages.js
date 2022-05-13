@@ -19,6 +19,7 @@ const AlertMessages = {
   PATIENT_ARCHIVED: 'Archived',
   WORKFLOW_CREATED: 'Workflow created',
   LABEL_CREATED: 'Label created',
+  LABEL_DELETED: 'Label deleted',
 };
 
 export default AlertMessages;

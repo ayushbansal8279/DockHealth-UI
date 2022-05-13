@@ -80,9 +80,9 @@ export function patientBulkAddLabel(payload) {
   };
 }
 
-export function patientBulkRemoveLabel(payload) {
+export function patientBulkDeleteLabel(payload) {
   return {
-    type: ActionTypes.PATIENT_BULK_REMOVE_LABEL,
+    type: ActionTypes.PATIENT_BULK_DELETE_LABEL,
     payload,
   };
 }
