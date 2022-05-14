@@ -288,7 +288,7 @@ const TaskItemContextMenu = ({
         {restrictions?.duplicate !== DISABLED && (
           <li>
             <MenuItemButtom type="button" onClick={handleDuplicateTask}>
-              Duplicate {isSubtask ? 'Subtask' : 'Task'}
+              Duplicate {isSubtask ? 'subtask' : 'task'}
             </MenuItemButtom>
           </li>
         )}
@@ -303,7 +303,7 @@ const TaskItemContextMenu = ({
                   onRightClickAction('Create subtask');
                 }}
               >
-                Create Subtask
+                Create subtask
               </MenuItemButtom>
             </li>
           )}
@@ -316,7 +316,7 @@ const TaskItemContextMenu = ({
                 color={palette.oPlusRed}
                 onClick={handleDeleteTask}
               >
-                Delete {isSubtask ? 'Subtask' : 'Task'}
+                Delete {isSubtask ? 'subtask' : 'task'}
               </MenuItemButtom>
             </li>
           </>
