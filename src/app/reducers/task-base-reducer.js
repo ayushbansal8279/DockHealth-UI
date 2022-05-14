@@ -6,7 +6,6 @@ import { checkIfTaskMatchesSearch } from 'helpers/search-helpers';
 import {
   TaskStatus,
   updateNestedTask,
-  updateSubtasksInTaskBasingOnPatientWithCallback,
   updateSubtasksInTaskWithCallback,
 } from 'helpers/task-helpers';
 
@@ -14,10 +13,10 @@ const TaskBaseReducer = (state, action, updateStateCallback) => {
   switch (action.type) {
     case ActionTypes.UPDATE_PATIENT_DETAILS: {
       const {
-        payload: { details },
+        payload: { patientIdentifier, details },
       } = action;
       const updateTaskFromAction = task => {
-        if (task.patient?.patientIdentifier === details.patientIdentifier) {
+        if (task.patient?.patientIdentifier === patientIdentifier) {
           return {
             ...task,
             patient: { ...task.patient, ...details },

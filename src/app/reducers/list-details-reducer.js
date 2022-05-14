@@ -520,7 +520,7 @@ const ListDetailsReducer = (state = initialState, action) => {
 
     case ActionTypes.UPDATE_PATIENT_DETAILS: {
       const {
-        payload: { details },
+        payload: { patientIdentifier, details },
       } = action;
 
       // eslint-disable-next-line sonarjs/prefer-immediate-return
@@ -532,7 +532,7 @@ const ListDetailsReducer = (state = initialState, action) => {
             ...g,
             tasks: g.tasks.map(t =>
               t?.itemType === 'BUNDLE' &&
-              t?.patient?.patientIdentifier === details.patientIdentifier
+              t?.patient?.patientIdentifier === patientIdentifier
                 ? { ...t, patient: { ...t.patient, ...details } }
                 : t,
             ),

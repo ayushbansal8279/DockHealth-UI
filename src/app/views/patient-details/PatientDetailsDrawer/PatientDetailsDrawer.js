@@ -99,7 +99,7 @@ const PatientDetailsDrawer = ({ patient, isOpenedDetails, closeDetails }) => {
     updateData.patientLabels = undefined;
     updateData.createdDateTime = undefined;
     updateData.updatedDateTime = undefined;
-    dispatch(updatePatientDetails(updateData));
+    dispatch(updatePatientDetails(patientIdentifier, updateData));
   };
 
   const contextMenuOptions = useMemo(

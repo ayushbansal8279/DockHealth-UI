@@ -13,7 +13,6 @@ import { TaskItemType } from 'helpers/task-helpers';
 import { openDrawer } from 'actions/task-drawer-actions';
 import { useDispatch } from 'react-redux';
 import { pick } from 'ramda';
-import { updatePatient } from 'api/patient-api';
 import {
   UPDATE_PARTIAL_WORKFLOW_SUCCESS,
   UPDATE_TASK_SUCCESS,
@@ -59,7 +58,8 @@ const TaskItemCustomField = ({
           customFieldIdentifier: field.identifier,
           value: newValue,
         });
-        dispatch(updatePatientDetails({ ...task?.patient, patientMetaData }));
+        const patientIdentifier = task?.patient?.patientIdentifier;
+        dispatch(updatePatientDetails(patientIdentifier, { patientMetaData }));
       }
     } else {
       const taskMetaData = task.taskMetaData
