@@ -64,6 +64,10 @@ const TopSection = ({
         restriction: restrictions?.duplicate === DISABLED,
       },
       {
+        name: 'Copy task link',
+        onClick: handleCopyLink,
+      },
+      {
         name: 'Delete',
         color: palette.error,
         onClick: openDeleteConfirmationModal,
@@ -73,6 +77,7 @@ const TopSection = ({
     [
       duplicateTaskWithoutConfirmation,
       handleMoveTask,
+      handleCopyLink,
       openDeleteConfirmationModal,
       openDuplicateConfirmationModal,
       restrictions,
@@ -136,7 +141,7 @@ const TopSection = ({
           </OptionsMenu>
         )}
         <Box mx={0.5} />
-        {handleCopyLink && (
+        {/* {handleCopyLink && (
           <Box
             display="flex"
             alignItems="center"
@@ -145,7 +150,7 @@ const TopSection = ({
           >
             <FileCopy fontSize="small" color="primary" />
           </Box>
-        )}
+        )} */}
         {!hideCloseIcon && (
           <IconButton
             onClick={() => {
