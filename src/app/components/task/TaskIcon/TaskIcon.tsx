@@ -10,7 +10,6 @@ type IconType = 'comments' | 'attachments' | 'labels' | 'calendar';
 interface TaskIconProps {
   type: IconType;
   height?: number;
-  isHovered?: boolean;
   isActive?: boolean;
   isNew?: boolean;
 }
@@ -18,11 +17,10 @@ interface TaskIconProps {
 const TaskIcon: React.FC<TaskIconProps> = ({
   type,
   height = 22,
-  isHovered,
   isActive,
   isNew,
 }) => (
-  <Wrapper isHovered={isHovered} isActive={isActive}>
+  <Wrapper isActive={isActive}>
     {
       {
         comments: <CommentIcon height={height || 22} />,

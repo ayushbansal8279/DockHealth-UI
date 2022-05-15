@@ -76,7 +76,6 @@ const PatientsList = ({
           <TaskItemBulkEdit
             isChecked={row?.isSelected}
             onClick={() => setSelectedPatient(row)}
-            isHovered
           />
         </span>
       ),

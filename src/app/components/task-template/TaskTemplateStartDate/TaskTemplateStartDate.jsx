@@ -8,7 +8,7 @@ import { updatePartialWorkflow } from 'actions/task-template-actions';
 import { useDispatch } from 'react-redux';
 
 const TaskTemplateStartDate = props => {
-  const { workflow, isHovered } = props;
+  const { workflow } = props;
   const { identifier, startDateTime } = workflow || {};
   const dispatch = useDispatch();
 
@@ -45,7 +45,7 @@ const TaskTemplateStartDate = props => {
           <DateLabel date={startDateTime} />
         ) : (
           <div>
-            <TaskIcon type="calendar" isHovered={isHovered} />
+            <TaskIcon type="calendar" />
           </div>
         )}
       </Tooltip>

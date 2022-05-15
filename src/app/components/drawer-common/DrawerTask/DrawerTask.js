@@ -69,7 +69,6 @@ const { DISABLED, READ_ONLY } = SINGLE_TASK_RESTRICTIONS_OPTIONS;
 const DrawerTask = props => {
   const { task, currentUser, dragHandleProps } = props;
   const dispatch = useDispatch();
-  const [isHovered, setIsHovered] = useState(false);
   const { orgUserRole } = useSelector(userProfileSelector);
   const restrictions = SINGLE_TASK_RESTRICTIONS_PROFILES[orgUserRole];
 
@@ -149,13 +148,10 @@ const DrawerTask = props => {
   );
 
   return (
-    <Container
-      onMouseEnter={() => setIsHovered(true)}
-      onMouseLeave={() => setIsHovered(false)}
-    >
+    <Container>
       {dragHandleProps && (
         <DragHandleContainer>
-          {isHovered && <TaskDragHandle {...dragHandleProps} />}
+          <TaskDragHandle {...dragHandleProps} />
         </DragHandleContainer>
       )}
       <CircleIcon
@@ -199,7 +195,6 @@ const DrawerTask = props => {
                 type="comments"
                 isActive={comments?.length > 0}
                 isNew={updatedComment}
-                isHovered={isHovered}
               />
             </button>
           </Tooltip>
@@ -216,7 +211,6 @@ const DrawerTask = props => {
                 type="labels"
                 isActive={labels?.length > 0}
                 isNew={updatedLabel}
-                isHovered={isHovered}
               />
             </button>
           </Tooltip>
@@ -235,7 +229,6 @@ const DrawerTask = props => {
                 type="attachments"
                 isActive={attachments?.length > 0}
                 isNew={updatedAttachment}
-                isHovered={isHovered}
               />
             </button>
           </Tooltip>
@@ -277,7 +270,7 @@ const DrawerTask = props => {
             ) : (
               <Tooltip placement="top" title="Add due date">
                 <div>
-                  <TaskIcon type="calendar" isHovered={isHovered} />
+                  <TaskIcon type="calendar" />
                 </div>
               </Tooltip>
             )}

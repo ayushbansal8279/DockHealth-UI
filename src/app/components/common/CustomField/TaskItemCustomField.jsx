@@ -26,7 +26,6 @@ const TaskItemCustomField = ({
   field,
   customFieldValue,
   task,
-  isHovered,
   onClick,
 }) => {
   const { value } = customFieldValue || {};
@@ -88,12 +87,7 @@ const TaskItemCustomField = ({
       );
     case FieldType.DATE:
       return (
-        <TaskItemDate
-          value={value}
-          onChange={handleChange}
-          field={field}
-          isHovered={isHovered}
-        />
+        <TaskItemDate value={value} onChange={handleChange} field={field} />
       );
     case FieldType.DROPDOWN: {
       return (
@@ -112,7 +106,6 @@ const TaskItemCustomField = ({
           value={value}
           onChange={handleChange}
           field={field}
-          isHovered={isHovered}
         />
       );
     case FieldType.LONG_TEXT:
