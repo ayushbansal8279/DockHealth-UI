@@ -182,13 +182,13 @@ const TaskTemplateGroupHeader = ({
     // eslint-disable-next-line unicorn/prevent-abbreviations
     let opts = [
       {
-        name: 'Add Task',
+        name: 'Add task',
         onClick: () => {
           setIsAddingTask(true);
         },
       },
       {
-        name: 'Edit Name',
+        name: 'Edit name',
         onClick: () => {
           setIsEditing(true);
           setTimeout(() => {
