@@ -374,7 +374,7 @@ const initializeListDetailsViewHooks = () => {
   );
 
   useEffect(() => {
-    const callback = data => {
+    const taskCallback = data => {
       if (
         data.task?.taskList &&
         data.task?.taskList.taskListIdentifier === taskListIdentifierParam
@@ -390,14 +390,30 @@ const initializeListDetailsViewHooks = () => {
         }
       }
     };
+    const taskBundleCallback = data => {
+      if (
+        data.taskListIdentifier &&
+        data.taskListIdentifier === taskListIdentifierParam
+      ) {
+        if (
+          (data.eventType?.startsWith('CREATE_TASK_BUNDLE') ||
+            data.eventType?.startsWith('DUPLICATE_TASK_BUNDLE')) &&
+          data.taskBundle.identifier
+        ) {
+          actions.refreshTaskBundle(data.taskBundle.identifier);
+        }
+      }
+    };
 
     if (channel && taskListIdentifierParam) {
-      channel.bind('task-update', callback);
+      channel.bind('task-update', taskCallback);
+      channel.bind('task-bundle-update', taskBundleCallback);
     }
 
     return () => {
       if (channel && taskListIdentifierParam) {
-        channel.unbind('task-update', callback);
+        channel.unbind('task-update', taskCallback);
+        channel.unbind('task-bundle-update', taskBundleCallback);
       }
     };
   }, [
