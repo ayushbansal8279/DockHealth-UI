@@ -498,9 +498,20 @@ const SmartFlowBuilderView = () => {
       y: event.clientY - reactFlowBounds.top,
     });
 
-    if (type === NodeType.NEW_STANDARD) dispatch(addNewTaskElement(position));
-    else if (type === NodeType.NEW_DECISION)
-      dispatch(addNewDecisionTaskElement(position));
+    switch (type) {
+      case NodeType.NEW_STANDARD:
+        dispatch(addNewTaskElement(position));
+        break;
+      case NodeType.NEW_DECISION:
+        dispatch(addNewDecisionTaskElement(position));
+        break;
+      case NodeType.NEW_WORKFLOW_LINK:
+        dispatch(addNewNestedFlowElement(position));
+        break;
+      default:
+        console.error('UNHANDLED NODE TYPE');
+        break;
+    }
   };
 
   const handleLoad = _reactFlowInstance => {
