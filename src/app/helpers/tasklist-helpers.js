@@ -56,11 +56,20 @@ export function updateBundleInList(
   bundleIdentifier,
   listOfTasks,
 ) {
-  return listOfTasks?.map(t =>
-    t.itemType === TaskItemType.BUNDLE && t.identifier === bundleIdentifier
-      ? { ...t, ...dataToUpdate }
-      : t,
+  const existingBundle = listOfTasks?.find(
+    ({ identifier }) => identifier === bundleIdentifier,
   );
+  if (existingBundle) {
+    return listOfTasks?.map(t =>
+      t.itemType === TaskItemType.BUNDLE && t.identifier === bundleIdentifier
+        ? { ...t, ...dataToUpdate }
+        : t,
+    );
+  }
+  if (dataToUpdate.identifier) {
+    return [dataToUpdate, ...listOfTasks];
+  }
+  return listOfTasks;
 }
 
 export function checkIfHasIncompleteTasks(tasks) {

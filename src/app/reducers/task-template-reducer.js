@@ -8,6 +8,7 @@ import {
   createTemporaryTaskNode,
   createLinkElement,
   LinkType,
+  NodeType,
 } from 'helpers/smart-flow-builder-helpers';
 import TaskBaseReducer from './task-base-reducer';
 
@@ -423,6 +424,33 @@ const TaskTemplateReducer = (state = initialState, action) => {
             temporaryElements: [
               ...(temporaryElements || []),
               createTemporaryTaskNode(temporaryElements, position),
+            ],
+          },
+        ),
+      };
+    }
+
+    case ActionTypes.ADD_NEW_WORKFLOW_LINK_ELEMENT: {
+      const { currentTaskTemplateIdentifier } = state;
+      const { position } = action;
+
+      const { temporaryElements } = state.taskTemplateDetails[
+        currentTaskTemplateIdentifier
+      ];
+
+      return {
+        ...state,
+        taskTemplateDetails: updateTaskTemplateDetailsState(
+          currentTaskTemplateIdentifier,
+          state.taskTemplateDetails,
+          {
+            temporaryElements: [
+              ...(temporaryElements || []),
+              createTemporaryTaskNode(
+                temporaryElements,
+                position,
+                NodeType.NEW_WORKFLOW_LINK,
+              ),
             ],
           },
         ),

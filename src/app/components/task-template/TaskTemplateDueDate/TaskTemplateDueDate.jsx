@@ -10,7 +10,7 @@ import { isWorkflowDueDateOverdue } from 'helpers/workflow-helpers';
 import { useDispatch } from 'react-redux';
 
 const TaskTemplateDueDate = props => {
-  const { workflow, isHovered } = props;
+  const { workflow } = props;
   const { identifier, dueDateTime, reminderType } = workflow || {};
   const dispatch = useDispatch();
 
@@ -49,7 +49,7 @@ const TaskTemplateDueDate = props => {
           />
         ) : (
           <div>
-            <TaskIcon type="calendar" isHovered={isHovered} />
+            <TaskIcon type="calendar" />
           </div>
         )}
       </Tooltip>

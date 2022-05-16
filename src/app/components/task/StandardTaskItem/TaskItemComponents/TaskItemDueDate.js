@@ -9,7 +9,7 @@ import DateLabel from 'components/common/DateLabel/DateLabel';
 import { isDueDateOverdue, ReminderType } from 'helpers/task-helpers';
 import { onTaskDueDateChanged } from 'helpers/ga-event-helper';
 
-const TaskItemDueDate = ({ task, isHovered }) => {
+const TaskItemDueDate = ({ task }) => {
   const dispatch = useDispatch();
   const { taskIdentifier, dueDate, hasRecurringSchedule, reminderType } =
     task || {};
@@ -47,7 +47,7 @@ const TaskItemDueDate = ({ task, isHovered }) => {
           />
         ) : (
           <div>
-            <TaskIcon type="calendar" isHovered={isHovered} />
+            <TaskIcon type="calendar" />
           </div>
         )}
       </Tooltip>

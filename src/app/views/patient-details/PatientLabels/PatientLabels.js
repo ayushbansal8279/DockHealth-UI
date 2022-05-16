@@ -126,7 +126,6 @@ const PatientLabels = ({ isPatientBulk }) => {
   const getInputReference = element => {
     inputReference.current = element;
   };
-
   const renderOptionCallback = useCallback(
     option =>
       renderOption({

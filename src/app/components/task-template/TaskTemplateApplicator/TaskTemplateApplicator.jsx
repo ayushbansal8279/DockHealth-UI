@@ -10,6 +10,8 @@ import {
   getTemplatesForSpecificFolder,
   searchTemplates,
 } from 'api/task-template-api';
+import { useDispatch } from 'react-redux';
+import * as ActionTypes from 'actions/action-types';
 import TaskTemplatePopover from './TaskTemplatePopover';
 import {
   TaskTemplateApplicatorContainer,
@@ -23,7 +25,7 @@ const TaskTemplateApplicator = ({ onTemplateSelect }) => {
   const [parentList, setParentList] = useState([]);
   const [taskTemplatesList, setTaskTemplatesList] = useState(null);
   const [taskTemplatesIsLoading, setTaskTemplatesIsLoading] = useState(null);
-
+  const dispatch = useDispatch();
   const getNestedTemplatesList = useCallback(
     identifier => {
       setTaskTemplatesIsLoading(true);
@@ -56,8 +58,11 @@ const TaskTemplateApplicator = ({ onTemplateSelect }) => {
     template => {
       onTemplateSelect(template);
       closePopover();
+      dispatch({
+        type: ActionTypes.UNSELECT_ALL_PATIENTS,
+      });
     },
-    [closePopover, onTemplateSelect],
+    [closePopover, onTemplateSelect, dispatch],
   );
 
   const handleClose = useCallback(() => {

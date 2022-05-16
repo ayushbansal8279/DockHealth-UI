@@ -1,8 +1,7 @@
 /* eslint-disable import/prefer-default-export */
 import styled from 'styled-components';
 
-export const DragHandleImg = styled.img`
-  height: 21px;
-  width: 6px;
-  visibility: hidden;
+export const IconContainerStyled = styled.div`
+  display: flex;
+  gap: 5px;
 `;

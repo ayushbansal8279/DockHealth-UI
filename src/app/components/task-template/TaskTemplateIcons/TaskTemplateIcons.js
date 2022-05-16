@@ -15,7 +15,6 @@ import { GridImg } from './styled';
 const TaskTemplateIcons = ({
   matchComments,
   comments,
-  isHovered,
   workflow,
   matchLabels,
   labels,
@@ -67,7 +66,6 @@ const TaskTemplateIcons = ({
           <button type="button" onClick={onCommentClick}>
             <TaskIcon
               type="comments"
-              isHovered={isHovered}
               isActive={comments?.length > 0}
               // isNew={workflow?.updatedComment}
             />
@@ -93,7 +91,6 @@ const TaskTemplateIcons = ({
           >
             <TaskIcon
               type="labels"
-              isHovered={isHovered}
               isActive={labels?.length > 0}
               // isNew={workflow?.updatedLabel}
             />
@@ -112,7 +109,6 @@ const TaskTemplateIcons = ({
           <button type="button" onClick={onAttachmentsClick}>
             <TaskIcon
               type="attachments"
-              isHovered={isHovered}
               isActive={attachments?.length > 0}
               // isNew={workflow?.updatedAttachment}
             />

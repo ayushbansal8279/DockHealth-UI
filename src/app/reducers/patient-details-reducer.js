@@ -284,7 +284,10 @@ export default function(state = INITIAL_STATE, action = {}) {
         ...state,
         lists: state.lists?.map(l => ({
           ...l,
-          tasks: updateBundleInList(dataToUpdate, bundleIdentifier, l.tasks),
+          tasks:
+            dataToUpdate.taskListIdentifier === l.taskListIdentifier
+              ? updateBundleInList(dataToUpdate, bundleIdentifier, l.tasks)
+              : l.tasks,
         })),
       };
     }

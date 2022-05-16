@@ -623,10 +623,14 @@ function* doUpdatePatientNote({ note }) {
   }
 }
 
-function* doUpdatePatientDetails({ payload: { details } }) {
+function* doUpdatePatientDetails({ payload: { patientIdentifier, details } }) {
   try {
     onPatientDetailsEdited();
-    const updatedPatientDetails = yield call(PatientApi.updatePatient, details);
+    const updatedPatientDetails = yield call(
+      PatientApi.updatePatient,
+      patientIdentifier,
+      details,
+    );
     yield put({
       type: ActionTypes.UPDATE_PATIENT_DETAILS_SUCCESS,
       payload: { details: { ...updatedPatientDetails } },

@@ -133,7 +133,7 @@ const PatientDetailsView = () => {
 
   useEffect(() => {
     // eslint-disable-next-line unicorn/consistent-function-scoping
-    const callback = ({ eventType, task }) => {
+    const taskCallback = ({ eventType, task }) => {
       if (
         eventType?.startsWith('CREATE_TASK') ||
         eventType?.startsWith('DUPLICATE_TASK')
@@ -144,17 +144,30 @@ const PatientDetailsView = () => {
       }
     };
 
+    // eslint-disable-next-line unicorn/consistent-function-scoping
+    const taskBundleCallback = ({ eventType, taskBundle }) => {
+      if (
+        (eventType?.startsWith('CREATE_TASK_BUNDLE') ||
+          eventType?.startsWith('DUPLICATE_TASK_BUNDLE')) &&
+        taskBundle.identifier
+      ) {
+        dispatch(TaskActions.refreshTaskBundle(taskBundle.identifier));
+      }
+    };
+
     const channelName = `private-dock-user-channel-${currentUserIdentifier}`;
     let ch;
 
     if (currentUserIdentifier) {
       ch = pusher.current.subscribe(channelName);
-      ch.bind('task-update', callback);
+      ch.bind('task-update', taskCallback);
+      ch.bind('task-bundle-update', taskBundleCallback);
     }
 
     return () => {
       if (ch) {
-        ch.unbind('task-update', callback);
+        ch.unbind('task-update', taskCallback);
+        ch.unbind('task-bundle-update', taskBundleCallback);
         ch.unsubscribe(channelName);
       }
     };

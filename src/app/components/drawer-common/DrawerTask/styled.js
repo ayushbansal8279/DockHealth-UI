@@ -17,6 +17,9 @@ export const Container = styled.div`
   &:last-child {
     margin-bottom: 0;
   }
+  &:hover div img {
+    visibility: visible;
+  }
 `;
 
 export const IconsSection = styled.div`
