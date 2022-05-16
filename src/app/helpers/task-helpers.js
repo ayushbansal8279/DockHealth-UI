@@ -105,11 +105,13 @@ export function isDueDateOverdue(task) {
   }
   const { dueDate, status } = task;
 
+  const dueDateObject = moment(dueDate);
+
   return (
     status === TaskStatus.INCOMPLETE &&
-    (moment(dueDate).format('HH:mm') !== '00:00'
-      ? moment(dueDate).isBefore(moment())
-      : dueDate && moment(dueDate).isBefore(moment().startOf('day')))
+    (dueDateObject.format('HH:mm') !== '00:00' && dueDateObject.hours() > 4
+      ? dueDateObject.isBefore(moment())
+      : dueDateObject.isBefore(moment().startOf('day')))
   );
 }
 
