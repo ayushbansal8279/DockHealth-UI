@@ -95,12 +95,17 @@ const PatientBulkActions = {
 };
 
 export const patientBulkCreateTask = payload => {
-  const { assignedToUsers, taskListIdentifier, description } = payload;
-
+  const {
+    assignedToUsers,
+    taskListIdentifier,
+    taskGroupIdentifier,
+    description,
+  } = payload;
   const body = {
     bulkOperationType: PatientBulkActions.CREATE_TASK,
     taskDescription: description,
     taskListIdentifier,
+    taskGroupIdentifier,
     patientIdentifiers: assignedToUsers,
   };
 
