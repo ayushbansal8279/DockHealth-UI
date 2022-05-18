@@ -4,14 +4,14 @@ import palette from 'styles/palette';
 const ICON_HOVERED_COLOR = palette.coolGrey2;
 
 export const Wrapper = styled.div<{
-  isHovered?: boolean;
   isActive?: boolean;
 }>`
   position: relative;
   color: ${palette.coolGrey3};
   transition: color 0.3s ease-out;
-
-  ${({ isHovered }) => isHovered && `color: ${ICON_HOVERED_COLOR};`}
+  &:hover {
+    color: ${ICON_HOVERED_COLOR};
+  }
 
   ${({ isActive }) =>
     isActive

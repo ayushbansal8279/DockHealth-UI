@@ -36,16 +36,18 @@ const DueDatePicker = ({
   const [dateMaskValue, setDateMaskValue] = useState(
     selectedDate ? moment(selectedDate).format(DATE_MASK_FORMAT) : null,
   );
+  const [timeMaskValue, setTimeMaskValue] = useState(
+    selectedDate ? moment(selectedDate).format(TIME_12H_FORMAT) : null,
+  );
   const [dateValue, setDateValue] = useState(selectedDate);
-
   const momentSelectedDate = selectedDate
     ? moment(dateValue, DATE_ISO_FORMAT)
     : null;
-  const selectedTime = momentSelectedDate?.format(TIME_12H_FORMAT) || null;
 
   useEffect(() => {
     if (selectedDate !== dateValue) {
       setDateMaskValue(moment(selectedDate).format(DATE_MASK_FORMAT));
+      setTimeMaskValue(moment(selectedDate).format(TIME_12H_FORMAT));
       setDateValue(selectedDate);
     }
   }, [dateValue, selectedDate]);
@@ -57,7 +59,7 @@ const DueDatePicker = ({
 
     onDateChange(
       moment(
-        `${pickedDate} ${selectedTime}`,
+        `${pickedDate} ${timeMaskValue}`,
         `${DATE_ISO_FORMAT} ${TIME_12H_FORMAT}`,
       ).toISOString(),
     );
@@ -110,7 +112,7 @@ const DueDatePicker = ({
           <Label>Time</Label>
           <TimeDropdownInput
             type="secondary"
-            savedValue={selectedTime}
+            savedValue={timeMaskValue}
             onSave={handleTimePick}
             disabled={!selectedDate}
             hideError

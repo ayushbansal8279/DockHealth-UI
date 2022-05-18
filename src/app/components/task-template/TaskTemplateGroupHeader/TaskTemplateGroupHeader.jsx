@@ -91,7 +91,6 @@ const TaskTemplateGroupHeader = ({
   } = templateGroup;
 
   const { dragHandleProps } = draggableProvided;
-  const [isHovered, setIsHovered, unsetIsHovered] = useBoolean(false);
   const { bulkEditIsActive } = useContext(BulkEditContext);
   const [isEditing, setIsEditing] = useState(false);
   const [nameInputValue, setNameInputValue] = useState(name);
@@ -183,13 +182,13 @@ const TaskTemplateGroupHeader = ({
     // eslint-disable-next-line unicorn/prevent-abbreviations
     let opts = [
       {
-        name: 'Add Task',
+        name: 'Add task',
         onClick: () => {
           setIsAddingTask(true);
         },
       },
       {
-        name: 'Edit Name',
+        name: 'Edit name',
         onClick: () => {
           setIsEditing(true);
           setTimeout(() => {
@@ -350,11 +349,7 @@ const TaskTemplateGroupHeader = ({
   }, [dispatch, isBundleSelected, filteredTasks]);
 
   return (
-    <TaskTemplateGroupHeaderContainer
-      onMouseEnter={setIsHovered}
-      isSelected={isBundleSelected}
-      onMouseLeave={unsetIsHovered}
-    >
+    <TaskTemplateGroupHeaderContainer isSelected={isBundleSelected}>
       {columnsConfig[TaskItemColumn.DESCRIPTION] && (
         <StickyMainTaskItemCell
           backgroundColor={pageBackground}
@@ -447,7 +442,6 @@ const TaskTemplateGroupHeader = ({
           <TaskTemplateIcons
             matchComments={false}
             comments={comments}
-            isHovered={isHovered}
             workflow={templateGroup}
             matchLabels={false}
             labels={labels}
@@ -463,10 +457,7 @@ const TaskTemplateGroupHeader = ({
           width={TaskItemColumnWidth[TaskItemColumn.START_DATE]}
           justify="center"
         >
-          <TaskTemplateStartDate
-            workflow={templateGroup}
-            isHovered={isHovered}
-          />
+          <TaskTemplateStartDate workflow={templateGroup} />
         </TaskItemCell>
       )}
       {columnsConfig[TaskItemColumn.DUE_DATE] && (
@@ -475,7 +466,7 @@ const TaskTemplateGroupHeader = ({
           width={TaskItemColumnWidth[TaskItemColumn.DUE_DATE]}
           justify="center"
         >
-          <TaskTemplateDueDate workflow={templateGroup} isHovered={isHovered} />
+          <TaskTemplateDueDate workflow={templateGroup} />
         </TaskItemCell>
       )}
       {columnsConfig[TaskItemColumn.ASSIGNED] && (
@@ -548,7 +539,6 @@ const TaskTemplateGroupHeader = ({
                     field={field}
                     readOnly
                     task={workFlowData}
-                    isHovered={isHovered}
                   />
                 )}
               </TaskItemCell>

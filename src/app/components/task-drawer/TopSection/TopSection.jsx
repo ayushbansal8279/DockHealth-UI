@@ -2,7 +2,7 @@
 import React, { useMemo } from 'react';
 import { CircleIcon } from 'components/task/styled';
 import { Box, IconButton } from '@material-ui/core';
-import { Close, MoreHoriz, FileCopy } from '@material-ui/icons';
+import { Close, MoreHoriz } from '@material-ui/icons';
 import { checkIfTemplateTask, TaskStatus } from 'helpers/task-helpers';
 import Spacing from 'components/common/Spacing';
 import palette from 'styles/palette';
@@ -64,6 +64,10 @@ const TopSection = ({
         restriction: restrictions?.duplicate === DISABLED,
       },
       {
+        name: 'Copy task link',
+        onClick: handleCopyLink,
+      },
+      {
         name: 'Delete',
         color: palette.error,
         onClick: openDeleteConfirmationModal,
@@ -73,6 +77,7 @@ const TopSection = ({
     [
       duplicateTaskWithoutConfirmation,
       handleMoveTask,
+      handleCopyLink,
       openDeleteConfirmationModal,
       openDuplicateConfirmationModal,
       restrictions,
@@ -136,7 +141,7 @@ const TopSection = ({
           </OptionsMenu>
         )}
         <Box mx={0.5} />
-        {handleCopyLink && (
+        {/* {handleCopyLink && (
           <Box
             display="flex"
             alignItems="center"
@@ -145,7 +150,7 @@ const TopSection = ({
           >
             <FileCopy fontSize="small" color="primary" />
           </Box>
-        )}
+        )} */}
         {!hideCloseIcon && (
           <IconButton
             onClick={() => {

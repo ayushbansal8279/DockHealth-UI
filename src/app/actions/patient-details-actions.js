@@ -57,9 +57,9 @@ export const updatePatientNote = (patientNoteIdentifier, note) => ({
   payload: { patientNoteIdentifier, note },
 });
 
-export const updatePatientDetails = details => ({
+export const updatePatientDetails = (patientIdentifier, details) => ({
   type: ActionTypes.UPDATE_PATIENT_DETAILS,
-  payload: { details },
+  payload: { patientIdentifier, details },
 });
 
 export const addPatientNote = note => ({

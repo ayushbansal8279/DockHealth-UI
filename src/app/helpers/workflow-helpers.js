@@ -72,9 +72,11 @@ export function isWorkflowDueDateOverdue(workflow) {
   }
   const { dueDateTime } = workflow;
 
-  return moment(dueDateTime).format('HH:mm') !== '00:00'
-    ? moment(dueDateTime).isBefore(moment())
-    : dueDateTime && moment(dueDateTime).isBefore(moment().startOf('day'));
+  const dueDateObject = moment(dueDateTime);
+
+  return dueDateObject.format('HH:mm') !== '00:00' && dueDateObject.hours() > 4
+    ? dueDateObject.isBefore(moment())
+    : dueDateObject.isBefore(moment().startOf('day'));
 }
 
 export function reorderTasksForWorkflow(

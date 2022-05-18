@@ -104,6 +104,7 @@ export const BulkContainer = styled.div`
 `;
 
 export const AddPlaceholder = styled.div`
+  visibility: hidden;
   color: ${palette.lightGrey};
   opacity: 0;
   &::first-letter {
@@ -279,6 +280,9 @@ export const StandardTaskItemCell = styled.div`
 export const MainStandardTaskItemCell = styled(StandardTaskItemCell)`
   flex: 1;
   border-right: 0;
+  &:hover button {
+    visibility: visible;
+  }
 `;
 
 export const ClickablePatient = styled.span`
@@ -495,6 +499,9 @@ export const SubtaskItemWrapper = styled.div`
 
 export const AddSubtaskButton = styled.button`
   cursor: pointer;
+  &:hover div {
+    visibility: visible;
+  }
 `;
 
 export const TaskItemDescriptionIndicators = styled.div`
@@ -522,7 +529,7 @@ export const DateText = styled.p`
 
 export const DetailsButton = styled.button`
   margin-left: 8px;
-  ${({ visible }) => !visible && 'visibility: hidden;'}
+  visibility: hidden;
   font-family: 'Montserrat', sans-serif;
   font-size: ${fontSizes.smallPlus};
   font-weight: ${fontWeights.regularPlus};

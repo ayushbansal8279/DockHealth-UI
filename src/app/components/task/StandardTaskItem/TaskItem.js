@@ -188,7 +188,6 @@ const TaskItem = React.memo(
     const isSelected = useSelector(
       isTaskSelectedSelector(taskIdentifier, isSelectedByHighlighted),
     );
-    const [isHovered, setIsHovered] = useState(false);
     const [taskDecisionError, setTaskDecisionError] = useState(false);
     const [contextMenu, setContextMenu] = useState(null);
     const dispatch = useDispatch();
@@ -238,9 +237,6 @@ const TaskItem = React.memo(
         });
       }
     }, [newlyCreated, parentContainerReference]);
-
-    const onMouseEnter = () => setIsHovered(true);
-    const onMouseLeave = () => setIsHovered(false);
 
     const onClickTaskItem = useCallback(
       () =>
@@ -348,8 +344,6 @@ const TaskItem = React.memo(
         <StandardTaskItemPanel
           onContextMenu={handleTaskItemRightClick}
           isDragging={isDragging}
-          onMouseEnter={onMouseEnter}
-          onMouseLeave={onMouseLeave}
         >
           <StandardTaskItemContainer
             newlyCreated={newlyCreated}
@@ -380,7 +374,6 @@ const TaskItem = React.memo(
                 <TaskItemBulkEdit
                   isChecked={selected}
                   onClick={onClickBulkEdit}
-                  isHovered={isHovered}
                 />
               )}
               <MainStandardTaskItemCell
@@ -433,7 +426,7 @@ const TaskItem = React.memo(
                       isEditing={isEditingDescription}
                       setEditing={setEditingDescription}
                     />
-                    <DetailsButton visible={isHovered}>Details</DetailsButton>
+                    <DetailsButton>Details</DetailsButton>
                   </>
                 )}
               </MainStandardTaskItemCell>
@@ -466,7 +459,6 @@ const TaskItem = React.memo(
                   subtaskQuickAddOpen={subtaskQuickAddOpen}
                   subtasksDisabled={subtasksDisabled}
                   subTasksCount={subTasksCount}
-                  isHovered={isHovered}
                   isOpen={isOpen}
                   isNestedTask={isNestedTask}
                   onSubtaskLabelClick={onSubtaskLabelClick}
@@ -530,7 +522,6 @@ const TaskItem = React.memo(
                   restrictions={restrictions}
                   matchComments={matchComments}
                   comments={comments}
-                  isHovered={isHovered}
                   task={task}
                   matchLabels={matchLabels}
                   labels={labels}
@@ -561,7 +552,7 @@ const TaskItem = React.memo(
                       event.stopPropagation();
                     }}
                   >
-                    <TaskItemDueDate task={task} isHovered={isHovered} />
+                    <TaskItemDueDate task={task} />
                   </TaskItemCell>
                 )}
               </>
@@ -630,7 +621,6 @@ const TaskItem = React.memo(
                             field={field}
                             customFieldValue={customFieldValue}
                             task={task}
-                            isHovered={isHovered}
                           />
                         )}
                       </TaskItemCell>

@@ -6,7 +6,7 @@ import TaskIcon from 'components/task/TaskIcon/TaskIcon';
 import Tooltip from 'components/common/Tooltip/Tooltip';
 import DateLabel from 'components/common/DateLabel/DateLabel';
 
-const TaskItemDate = ({ value, onChange, isHovered }) => {
+const TaskItemDate = ({ value, onChange }) => {
   const handleDateChange = useCallback(
     newDate => {
       onChange(newDate ? newDate.format('MM/DD/YYYY') : null);
@@ -31,7 +31,7 @@ const TaskItemDate = ({ value, onChange, isHovered }) => {
             <DateLabel date={value} format="MM/DD/YYYY" />
           ) : (
             <div>
-              <TaskIcon type="calendar" isHovered={isHovered} />
+              <TaskIcon type="calendar" />
             </div>
           )}
         </Tooltip>
