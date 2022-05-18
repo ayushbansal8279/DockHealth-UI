@@ -5,7 +5,7 @@ import { useBoolean } from 'hooks/useBoolean';
 import { mergeDeepRight } from 'ramda';
 import moment from 'moment';
 import { useDispatch, useSelector } from 'react-redux';
-import { yupResolver } from "@hookform/resolvers/yup";
+import { yupResolver } from '@hookform/resolvers/yup';
 import { organizationSelector } from 'selectors/organization-selectors';
 import { userProfileSelector } from 'selectors/user-selectors';
 import { FormProvider, useForm } from 'react-hook-form';
