@@ -104,8 +104,8 @@ const PatientsList = ({
       ),
       flex: 1,
       valueGetter: parameters => {
-        return `${parameters.getValue(parameters.id, 'lastName') ||
-          ''}, ${parameters.getValue(parameters.id, 'firstName') || ''}`;
+        return `${parameters.row.lastName || ''}, ${parameters.row.firstName ||
+          ''}`;
       },
     },
     {

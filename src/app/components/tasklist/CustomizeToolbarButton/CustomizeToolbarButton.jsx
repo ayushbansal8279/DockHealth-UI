@@ -245,7 +245,7 @@ const CustomizeToolbarButton = ({
                   })}
                 </List>
               </>
-          )}
+            )}
           {additionalOptions && additionalOptions.length > 0 && (
             <>
               <Spacer />
