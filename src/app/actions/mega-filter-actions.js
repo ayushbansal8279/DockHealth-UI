@@ -1,6 +1,12 @@
 import { getFiltersFromLocalStorage } from 'helpers/mega-filter-helper';
 import * as ActionTypes from './action-types';
 
+export const quickContextTypes = {
+  MY_TASKS: 'MY_TASKS',
+  ALL_TASKS: 'ALL_TASKS',
+  ANALYTICS: 'ANALYTICS',
+};
+
 export function clearFiltersForMegaFilter() {
   return dispatch => {
     dispatch({ type: ActionTypes.CLEAR_MEGA_FILTERS });
@@ -40,6 +46,30 @@ export function selectFiltersForMegaFilter(selectedFilters, id, status) {
 export const getQuickFilters = viewSpecificData => ({
   type: ActionTypes.GET_QUICK_FILTERS,
   viewSpecificData,
+});
+
+export const getAnalyticsQuickFilters = () => ({
+  type: ActionTypes.GET_QUICK_FILTERS,
+  viewSpecificData: { contextType: quickContextTypes.ANALYTICS },
+});
+
+export const createQuickAnalyticsFilter = (name, selectedOptions) => {
+  return {
+    type: ActionTypes.CREATE_QUICK_FILTER,
+    name,
+    viewSpecificData: { contextType: quickContextTypes.ANALYTICS },
+    selectedOptions,
+  };
+};
+
+export const updateQuickAnalyticsFilter = (
+  quickFilterIdentifier,
+  dataToUpdate,
+) => ({
+  type: ActionTypes.UPDATE_QUICK_FILTER,
+  dataToUpdate,
+  quickFilterIdentifier,
+  viewSpecificData: { contextType: quickContextTypes.ANALYTICS },
 });
 
 export const createQuickFilter = (name, viewSpecificData, selectedOptions) => {
