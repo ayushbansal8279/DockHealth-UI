@@ -20,6 +20,7 @@ import QuickAddSubtask from './QuickAddSubtask';
 const Task = React.memo(
   ({
     task,
+    isCompletedGroup,
     isFullView,
     isStartedDnD,
     isDragging,
@@ -160,6 +161,7 @@ const Task = React.memo(
             dragHandleProps={dragHandleProps}
             isDragging={isDragging}
             isDraggable={isDraggable}
+            isCompletedGroup={isCompletedGroup}
             subtasksDisabled={subtasksDisabled}
             isSelectedByHighlighted={
               highlightedTasksParentIdentifier &&
