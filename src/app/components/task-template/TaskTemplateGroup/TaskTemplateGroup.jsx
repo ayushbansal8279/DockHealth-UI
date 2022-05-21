@@ -21,6 +21,7 @@ const TaskTemplateGroup = ({
   templateGroup = {},
   groupHasMultipleAssignees,
   isFullView,
+  isCompletedGroup,
   isStartedDnD,
   draggableProvided = {},
   groupDragAndDropDisabled,
@@ -163,6 +164,7 @@ const TaskTemplateGroup = ({
                               draggableProvided={templateTaskDraggableProvided}
                               task={task}
                               isFullView={isFullView}
+                              isCompletedGroup={isCompletedGroup}
                               multipleAssigneesContext={
                                 groupHasMultipleAssignees
                               }

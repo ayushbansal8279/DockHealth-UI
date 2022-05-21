@@ -285,16 +285,16 @@ const SmartFlowBuilderView = () => {
           }
         },
       },
-      {
-        id: NodeType.NEW_WORKFLOW_LINK,
-        label: 'Workflow',
-        icon: WorkflowLinkIcon,
-        onClick: () => {
-          const position = calculateNewElementPosition(layout);
-          dispatch(addNewNestedFlowElement(position));
-          centerViewToElement(position);
-        },
-      },
+      // {
+      //   id: NodeType.NEW_WORKFLOW_LINK,
+      //   label: 'Workflow',
+      //   icon: WorkflowLinkIcon,
+      //   onClick: () => {
+      //     const position = calculateNewElementPosition(layout);
+      //     dispatch(addNewNestedFlowElement(position));
+      //     centerViewToElement(position);
+      //   },
+      // },
     ];
 
     let actions = [...baseActions];
