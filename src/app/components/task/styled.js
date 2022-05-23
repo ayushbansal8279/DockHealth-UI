@@ -100,7 +100,10 @@ export const BulkContainer = styled.div`
   display: flex;
   align-items: center;
   justify-content: center;
-  opacity: ${({ visible }) => (visible ? '1' : '0')};
+  opacity: ${({ visible }) => (visible ? '1' : '0.5')};
+  &:hover {
+    opacity: 1;
+  }
 `;
 
 export const AddPlaceholder = styled.div`
