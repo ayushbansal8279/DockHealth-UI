@@ -363,7 +363,12 @@ const TaskTemplateGroupHeader = ({
               {...dragHandleProps}
             />
           )}
-          <Checkbox isChecked={isBundleSelected} onClick={handleBundleSelect} />
+          {isOpen && (
+            <Checkbox
+              isChecked={isBundleSelected}
+              onClick={handleBundleSelect}
+            />
+          )}
           <Box m={1} />
           <RotatableChevron rotated={isOpen} onClick={() => setOpen(!isOpen)} />
           <Spacing horizontal={2} />
