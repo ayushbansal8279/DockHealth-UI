@@ -35,6 +35,7 @@ import {
   userProfileSelector,
   userSetupClientViewSelector,
   userProfileDashboardPrefsSelector,
+  userProfileColumnOrderSelector,
 } from 'selectors/user-selectors';
 import TaskDrawer from 'components/task-drawer/TaskDrawer/TaskDrawer';
 import BulkEditSection from 'components/tasklist/BulkEditSection/BulkEditSection';
@@ -53,6 +54,8 @@ import { useColumnsConfig } from 'context-api/columns-config-context';
 import { ListDetailsContainer } from 'components/tasklist/DropdownListSection/styled';
 import StickyContainer from 'components/common/HorizontalScroll/StickyContainer';
 import { ListViewType } from '../helpers';
+import { updateUserCustomFieldsOptionsListViewSetup } from 'api/task-list-api';
+import { updateCurrentUserPreferences } from 'actions/user-actions';
 import {
   checkIfSelectedListIsPresent,
   groupTasks,
@@ -98,8 +101,13 @@ const PatientTasksListView = () => {
     addingNewSubtaskParentIdSelector,
   );
   const customerTypeLabel = getCustomerTypeLabel(currentUser);
-  const { columnsConfig, setColumnsConfig } = useColumnsConfig();
+  const {
+    columnsConfig,
+    setColumnsConfig,
+    setColumnsOrder,
+  } = useColumnsConfig();
   const userPreferColumns = useSelector(userProfileDashboardPrefsSelector);
+  const userOrderColumns = useSelector(userProfileColumnOrderSelector);
   const dispatch = useDispatch();
   const history = useHistory();
   const {
@@ -111,6 +119,33 @@ const PatientTasksListView = () => {
   } = useActions(PatientTasksSagaActions);
 
   const isAllTasksView = taskListIdentifierParameter === ListViewType.ALL_TASKS;
+
+  useEffect(() => {
+    if (userOrderColumns) {
+      if (isAllTasksView) setColumnsOrder(userOrderColumns);
+    } else {
+      // TODO: initialize list data when API will be retining it
+    }
+  }, [isAllTasksView, setColumnsOrder, userOrderColumns]);
+
+  const handleOrderChange = useCallback(
+    customFieldDisplayColumns => {
+      if (isAllTasksView) {
+        dispatch(
+          updateCurrentUserPreferences({
+            customFieldDisplayColumns,
+          }),
+        );
+      } else {
+        // TODO: update also data in redux - important to have fresh data, when someone switch the list
+        updateUserCustomFieldsOptionsListViewSetup(
+          customFieldDisplayColumns,
+          taskListIdentifierParameter,
+        );
+      }
+    },
+    [dispatch, isAllTasksView, taskListIdentifierParameter],
+  );
 
   useEffect(() => {
     const taskItemConfig = isAllTasksView
@@ -324,6 +359,7 @@ const PatientTasksListView = () => {
               groupHasMultipleAssignees={groupHasMultipleAssignees}
               isGroupSelected={isGroupSelected(tasks)}
               onGroupSelect={() => handleGroupSelect(tasks)}
+              onOrderChange={handleOrderChange}
             />
           )}
           {tasks?.map(task =>
@@ -356,19 +392,20 @@ const PatientTasksListView = () => {
       </>
     ),
     [
-      viewSetup,
+      completeTasksVisible,
       activeList,
+      quickAddTask,
       sort,
       sortPatientTasks,
       groupHasMultipleAssignees,
-      quickAddTask,
       isGroupSelected,
+      handleOrderChange,
       handleGroupSelect,
-      addingNewSubtaskParentId,
-      completeTasksVisible,
       handleToggleTaskStatus,
       updatePatientTaskInList,
       updatePatientTaskWorkflowStatus,
+      addingNewSubtaskParentId,
+      viewSetup,
     ],
   );
 
@@ -398,6 +435,7 @@ const PatientTasksListView = () => {
                       zIndex={13}
                     >
                       <TaskListHeader
+                        onOrderChange={handleOrderChange}
                         list={!isAllTasksView ? activeList : null}
                         viewSetup={viewSetup}
                         refreshView={compose(dispatch, getCurrentPatientTasks)}

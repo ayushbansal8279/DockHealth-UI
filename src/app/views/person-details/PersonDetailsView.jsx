@@ -1,5 +1,5 @@
 /* eslint-disable react/no-did-update-set-state */
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useParams } from 'react-router-dom';
 import * as PersonDetailsActions from 'actions/person-details-actions';
@@ -10,9 +10,9 @@ import { userProfileSelector } from 'selectors/user-selectors';
 import { onSearchChanged } from 'helpers/ga-event-helper';
 import { TaskListTabName } from 'helpers/tasklist-helpers';
 import { TaskItemColumn, TaskStatus } from 'helpers/task-helpers';
-// import ViewLayout from 'components/template/ViewLayout/ViewLayout';
 import TaskDrawer from 'components/task-drawer/TaskDrawer/TaskDrawer';
 import LayoutHeader from 'components/template/LayoutHeader/LayoutHeader';
+import { updateCurrentUserPreferences } from 'actions/user-actions';
 import HeaderSearch from 'components/template/HeaderSearch/HeaderSearch';
 import { TASK_DISAPPEAR_DELAY } from 'helpers/task-update-helper';
 import { ColumnsConfigProvider } from 'context-api/columns-config-context';
@@ -21,9 +21,9 @@ import StickyContainer from 'components/common/HorizontalScroll/StickyContainer'
 import OpenedTasksView from './PersonDetailsOpenedTasksContainer/PersonDetailsOpenedTasks';
 import CompletedTasksView from './PersonDetailsCompletedTasksContainer/PersonDetailsCompletedTasks';
 import PersonInfoPanel from './PersonInfoPanel/PersonInfoPanel';
-import { TaskViewContainer } from './styled';
 import UserTasksToolbar from './UserTasksToolbar/UserTasksToolbar';
 import UserDetailsFilters from './UserDetailsFilters/UserDetailsFilters';
+import { TaskViewContainer } from './styled';
 
 const PERSON_VIEW_COLUMNS_CONFIG = {
   [TaskItemColumn.LIST_NAME]: true,
@@ -34,7 +34,6 @@ const PersonDetailsView = () => {
   const { userIdentifier, tabName } = useParams();
   const [searchValue, setSearchValue] = useState('');
   const dispatch = useDispatch();
-
   const currentUser = useSelector(userProfileSelector);
 
   useEffect(() => {
@@ -111,6 +110,17 @@ const PersonDetailsView = () => {
       .catch(() => refreshTab());
   };
 
+  const handleOrderChange = useCallback(
+    customFieldDisplayColumns => {
+      dispatch(
+        updateCurrentUserPreferences({
+          customFieldDisplayColumns,
+        }),
+      );
+    },
+    [dispatch],
+  );
+
   const selectedTab = tabName || TaskListTabName.OPEN;
 
   return (
@@ -143,6 +153,7 @@ const PersonDetailsView = () => {
               searchValue={searchValue}
               toggleCompleteTask={toggleTaskCompletedStatus}
               onTaskUpdate={handleTaskUpdate}
+              onOrderChange={handleOrderChange}
             />
           ) : (
             <OpenedTasksView
@@ -152,6 +163,7 @@ const PersonDetailsView = () => {
               toggleCompleteTask={toggleTaskCompletedStatus}
               onTaskUpdate={handleTaskUpdate}
               updateWorkflowStatus={handleUpdateWorkflowStatus}
+              onOrderChange={handleOrderChange}
             />
           )}
         </TaskViewContainer>

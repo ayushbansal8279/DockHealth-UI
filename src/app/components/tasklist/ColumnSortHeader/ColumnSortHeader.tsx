@@ -1,13 +1,16 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import React, { useCallback, useState, useRef } from 'react';
 import SortArrow from 'components/common/SortArrow/SortArrow';
 import { SortOrderType } from 'helpers/sorting-helper';
 import { checkIfShouldDisplayTooltip } from 'components/task/OverflowTooltip/OverflowTooltip';
-import { Fade, Popper, Tooltip } from '@material-ui/core';
+import { Box, Fade, Popper } from '@material-ui/core';
+import { Draggable } from 'react-beautiful-dnd';
+import ThreeDotsIcon from 'img/three-dots.svg';
 import {
-  SortArrowWrapper,
   SortButton,
   LabelWrapper,
   DescriptionTooltipWrapper,
+  ThreeDots,
 } from './styled';
 
 interface ColumnSortHeaderProps {
@@ -18,6 +21,10 @@ interface ColumnSortHeaderProps {
   width?: number;
   onSortChange?: (key: string | null, order: string | null) => void;
   truncateEnabled: boolean;
+  isDraggingOver?: boolean;
+  draggable?: boolean;
+  index?: number;
+  snapshot?: any;
 }
 
 const ColumnSortHeader: React.FC<ColumnSortHeaderProps> = ({
@@ -28,11 +35,17 @@ const ColumnSortHeader: React.FC<ColumnSortHeaderProps> = ({
   onSortChange,
   truncateEnabled,
   disabled,
+  isDraggingOver,
+  draggable = false,
+  index,
+  snapshot,
+  // eslint-disable-next-line sonarjs/cognitive-complexity
 }) => {
   const descriptionTextReference = useRef();
   const [isHovered, setIsHovered] = useState<boolean>(false);
   const switchSort = useCallback(() => {
-    if (typeof onSortChange !== 'function') return;
+    if (disabled || typeof onSortChange !== 'function' || isDraggingOver)
+      return;
 
     const { key, order } = sort || {};
 
@@ -54,51 +67,98 @@ const ColumnSortHeader: React.FC<ColumnSortHeaderProps> = ({
           break;
       }
     }
-  }, [id, sort, onSortChange]);
+  }, [disabled, onSortChange, isDraggingOver, sort, id]);
+
+  const randerContent = useCallback(() => {
+    return (
+      <>
+        <LabelWrapper
+          ordered={!!(id === sort?.key && sort?.order)}
+          ref={descriptionTextReference}
+        >
+          <Box display="flex">
+            {draggable && (
+              <Box p="0 5px 0 0">
+                <Box>
+                  <ThreeDots hideIcon={!isHovered} src={ThreeDotsIcon} />
+                </Box>
+              </Box>
+            )}
+            {id === sort?.key &&
+              sort?.order &&
+              id &&
+              label &&
+              typeof onSortChange === 'function' && (
+                <Box p="0 5px 0 0">
+                  <SortArrow
+                    isParentHovered={false}
+                    orderType={id === sort?.key && sort?.order}
+                  />
+                </Box>
+              )}
+
+            <Box>{label}</Box>
+          </Box>
+        </LabelWrapper>
+        <Popper
+          anchorEl={descriptionTextReference.current}
+          placement="bottom-start"
+          open={
+            checkIfShouldDisplayTooltip(descriptionTextReference.current) &&
+            isHovered
+          }
+          style={{
+            zIndex: 115,
+            maxWidth: descriptionTextReference?.current?.offsetWidth || '650px',
+          }}
+          transition
+        >
+          {({ TransitionProps }) => (
+            <Fade {...TransitionProps} timeout={250}>
+              <DescriptionTooltipWrapper>{label}</DescriptionTooltipWrapper>
+            </Fade>
+          )}
+        </Popper>
+      </>
+    );
+  }, [draggable, id, isHovered, label, onSortChange, sort]);
+
+  if (!draggable)
+    return (
+      <SortButton
+        truncateEnabled={truncateEnabled}
+        disabled={!label || disabled}
+        type="button"
+        width={width}
+        onClick={switchSort}
+        onMouseEnter={() => setIsHovered(true)}
+        onMouseLeave={() => setIsHovered(false)}
+      >
+        {randerContent()}
+      </SortButton>
+    );
 
   return (
     <SortButton
-      truncateEnabled={truncateEnabled}
-      disabled={!label || disabled}
+      truncateEnabled={truncateEnabled && !isDraggingOver}
       type="button"
-      width={width}
+      width={snapshot?.draggingOverWith === id ? 0 : width}
       onClick={switchSort}
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
     >
-      {id && label && typeof onSortChange === 'function' && (
-        <SortArrowWrapper>
-          <SortArrow
-            isParentHovered={isHovered}
-            orderType={id === sort?.key && sort?.order}
-          />
-        </SortArrowWrapper>
-      )}
-      <LabelWrapper
-        ordered={!!(id === sort?.key && sort?.order)}
-        ref={descriptionTextReference}
-      >
-        {label}
-      </LabelWrapper>
-      <Popper
-        anchorEl={descriptionTextReference.current}
-        placement="bottom-start"
-        open={
-          checkIfShouldDisplayTooltip(descriptionTextReference.current) &&
-          isHovered
-        }
-        style={{
-          zIndex: 115,
-          maxWidth: descriptionTextReference?.current?.offsetWidth || '650px',
-        }}
-        transition
-      >
-        {({ TransitionProps }) => (
-          <Fade {...TransitionProps} timeout={250}>
-            <DescriptionTooltipWrapper>{label}</DescriptionTooltipWrapper>
-          </Fade>
+      <Draggable key={id} draggableId={id} index={index}>
+        {(provided: any) => (
+          <div
+            ref={provided.innerRef}
+            {...provided.draggableProps}
+            {...provided.dragHandleProps}
+            style={provided.draggableProps.style}
+          >
+            {randerContent()}
+          </div>
         )}
-      </Popper>
+      </Draggable>
     </SortButton>
   );
 };

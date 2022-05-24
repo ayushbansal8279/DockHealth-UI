@@ -39,6 +39,8 @@ import {
 } from './styled';
 import { ListViewType, LIST_TYPE_OPTIONS } from '../helpers';
 
+// to clean up
+
 const TaskListToolbar = props => {
   const { lists, currentList } = props;
   const tasksToPrint = currentList?.tasks ? currentList?.tasks : [];

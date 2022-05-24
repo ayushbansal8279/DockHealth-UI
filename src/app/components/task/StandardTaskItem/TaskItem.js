@@ -142,6 +142,7 @@ const TaskItem = React.memo(
       columnsConfig,
       customColumnsConfig,
       patientCustomColumnsConfig,
+      columnsOrder,
     } = useColumnsConfig();
     const { listName, taskListIdentifier } = taskList || {};
     const isCompleted = task.status === 'COMPLETE';
@@ -356,6 +357,7 @@ const TaskItem = React.memo(
             isAddingTask={false}
           >
             <StickyMainTaskItemCell
+              order={columnsOrder?.indexOf(TaskItemColumn.DESCRIPTION)}
               isSubtask={showSubtaskStylingLink}
               newlyCreated={newlyCreated}
               backgroundColor={pageBackground}
@@ -453,6 +455,7 @@ const TaskItem = React.memo(
                 justify="center"
                 paddingLeft="tiny"
                 paddingRight="tiny"
+                order={columnsOrder?.indexOf(TaskItemColumn.SUBTASKS_COUNT)}
               >
                 <TaskItemSubtasks
                   isSubtask={isSubtask}
@@ -473,6 +476,7 @@ const TaskItem = React.memo(
               <TaskItemCell
                 key={`patient_${taskIdentifier}`}
                 width={TaskItemColumnWidth[TaskItemColumn.PATIENT]}
+                order={columnsOrder?.indexOf(TaskItemColumn.PATIENT)}
               >
                 <TaskItemPatient
                   highlightedValue={highlightedValue}
@@ -500,6 +504,7 @@ const TaskItem = React.memo(
                 onContextMenu={event => {
                   event.stopPropagation();
                 }}
+                order={columnsOrder?.indexOf(TaskItemColumn.WORKFLOW_STATUS)}
               >
                 <TaskItemWorkflowStatus
                   task={task}
@@ -517,6 +522,7 @@ const TaskItem = React.memo(
               <TaskItemCell
                 key={`activity_${taskIdentifier}`}
                 width={TaskItemColumnWidth[TaskItemColumn.ACTIVITY]}
+                order={columnsOrder?.indexOf(TaskItemColumn.ACTIVITY)}
               >
                 <TaskItemIcons
                   restrictions={restrictions}
@@ -539,6 +545,7 @@ const TaskItem = React.memo(
                     onContextMenu={event => {
                       event.stopPropagation();
                     }}
+                    order={columnsOrder?.indexOf(TaskItemColumn.START_DATE)}
                   />
                 )}
                 {columnsConfig[TaskItemColumn.DUE_DATE] && !isTemplateTask && (
@@ -551,6 +558,7 @@ const TaskItem = React.memo(
                     onContextMenu={event => {
                       event.stopPropagation();
                     }}
+                    order={columnsOrder?.indexOf(TaskItemColumn.DUE_DATE)}
                   >
                     <TaskItemDueDate task={task} />
                   </TaskItemCell>
@@ -567,6 +575,7 @@ const TaskItem = React.memo(
                 onContextMenu={event => {
                   event.stopPropagation();
                 }}
+                order={columnsOrder?.indexOf(TaskItemColumn.ASSIGNED)}
               >
                 <TaskItemMembers
                   readOnly={restrictions?.assigment === READ_ONLY}
@@ -583,6 +592,7 @@ const TaskItem = React.memo(
                 <TaskItemCell
                   key={`list_${taskIdentifier}`}
                   width={TaskItemColumnWidth[TaskItemColumn.LIST_NAME]}
+                  order={columnsOrder?.indexOf(TaskItemColumn.LIST_NAME)}
                 >
                   <TaskItemList
                     listName={listName}
@@ -615,6 +625,7 @@ const TaskItem = React.memo(
                         key={`custom_${taskIdentifier}_${field.identifier}`}
                         padding="4px"
                         width={CustomFieldWidthConfig[field.fieldType]}
+                        order={columnsOrder?.indexOf(field.identifier)}
                       >
                         {!hidePatientCustomFields && (
                           <TaskItemCustomField
