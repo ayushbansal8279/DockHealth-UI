@@ -1,11 +1,19 @@
+/* eslint-disable @typescript-eslint/camelcase */
 import Button from 'components/common/Button/Button';
 import Checkbox from 'components/common/Checkbox/Checkbox';
 import Input from 'components/common/Input/Input';
 import TextEditor from 'components/common/TextEditor/TextEditor';
 import React, { useCallback, useState } from 'react';
-import { EditorState, SelectionState, Modifier } from 'draft-js';
+import { EditorState, Modifier } from 'draft-js';
 import moment from 'moment';
 
+import { useDispatch, useSelector } from 'react-redux';
+import { convertFromEditorStateToOutput } from 'components/common/TextEditor/helpers';
+import { selectedTaskSelector } from 'selectors/task-drawer-selectors';
+import { sendEmailForTask } from 'actions/task-actions';
+import { IconButton } from '@material-ui/core';
+import { Replay } from '@material-ui/icons';
+import palette from 'styles/palette';
 import {
   CloseIcon,
   CloseIconButton,
@@ -20,11 +28,13 @@ import {
   AttachmentContainerStyled,
   AttachmentsContainerStyled,
   CheckboxContainerStyled,
+  IncludeContainerStyled,
   InfoHeaderTextStyled,
   InputContainerStyled,
   TextEditorContainerStyled,
   TextWaringStyled,
 } from './styled';
+import { closeModal } from '../../actions';
 
 const validateEmail = email => {
   return String(email)
@@ -46,13 +56,16 @@ const calculateDate = date => {
   return `${dateLabel} @ ${moment(date).format('h:mma')}`;
 };
 
-const SendEmailFromTaskModal = ({
-  closeModalHandler,
-  taskDescription,
-  taskDetails,
-  taskComments,
-  taskAttachments,
-}) => {
+const SendEmailFromTaskModal = () => {
+  const selectedTask = useSelector(selectedTaskSelector);
+  const {
+    details,
+    comments,
+    attachments,
+    identifier,
+    description,
+  } = selectedTask;
+  const dispatch = useDispatch();
   const [email, setEmail] = useState('');
   const [subject, setSubject] = useState('');
   const [error, setError] = useState(false);
@@ -66,42 +79,48 @@ const SendEmailFromTaskModal = ({
   const [detailsState, setDetailsState] = useState(() =>
     EditorState.createEmpty(),
   );
-  const newLocal = 'insert-characters';
+
+  const [attachmentsToSend, setAttachmentsToSend] = useState([]);
+
+  const insertPlaceholder = useCallback(
+    (label, meta) => {
+      const currentContent = detailsState.getCurrentContent();
+      const selection = detailsState.getSelection();
+      currentContent.createEntity('PLACEHOLDER', 'IMMUTABLE', meta);
+      const textWithEntity = Modifier.insertText(
+        currentContent,
+        selection,
+        label,
+        null,
+        currentContent.getLastCreatedEntityKey(),
+      );
+
+      const editorWithInsert = EditorState.push(
+        detailsState,
+        textWithEntity,
+        'insert-characters',
+      );
+      const newEditorState = EditorState.moveSelectionToEnd(
+        editorWithInsert,
+        textWithEntity.getSelectionAfter(),
+      );
+      setDetailsState(newEditorState);
+    },
+    [detailsState],
+  );
+
   const includeCheckBoxes = [
     {
       label: 'Task Description',
       value: isTaskDescriptionIncluded,
       onClick: () => {
         const flag = !isTaskDescriptionIncluded;
-        setIsTaskDescriptionIncluded(flag);
         if (flag) {
-          const currentContent = detailsState.getCurrentContent();
-          const blockMap = currentContent.getBlockMap();
-          const key = blockMap.last().getKey();
-          const length = blockMap.last().getLength();
-          const selection = new SelectionState({
-            anchorKey: key,
-            anchorOffset: length,
-            focusKey: key,
-            focusOffset: length,
+          setIsTaskDescriptionIncluded(flag);
+          insertPlaceholder('_DESCRIPTION_', {
+            meta: description,
+            name: '_DESCRIPTION_',
           });
-          const textWithInsert = Modifier.insertText(
-            currentContent,
-            selection,
-            `${taskDescription}\n`,
-            null,
-          );
-
-          const editorWithInsert = EditorState.push(
-            detailsState,
-            textWithInsert,
-            newLocal,
-          );
-          const newEditorState = EditorState.moveSelectionToEnd(
-            editorWithInsert,
-            textWithInsert.getSelectionAfter(),
-          );
-          setDetailsState(newEditorState);
         }
       },
     },
@@ -110,34 +129,12 @@ const SendEmailFromTaskModal = ({
       value: isTaskDetailsIncluded,
       onClick: () => {
         const flag = !isTaskDetailsIncluded;
-        setIsTaskDetailsIncluded(flag);
         if (flag) {
-          const currentContent = detailsState.getCurrentContent();
-          const blockMap = currentContent.getBlockMap();
-          const key = blockMap.last().getKey();
-          const length = blockMap.last().getLength();
-          const selection = new SelectionState({
-            anchorKey: key,
-            anchorOffset: length,
-            focusKey: key,
-            focusOffset: length,
+          setIsTaskDetailsIncluded(flag);
+          insertPlaceholder('_DETAILS_', {
+            meta: details,
+            name: '_DETAILS_',
           });
-          const textWithInsert = Modifier.insertText(
-            currentContent,
-            selection,
-            `${taskDetails}\n`,
-            null,
-          );
-          const editorWithInsert = EditorState.push(
-            detailsState,
-            textWithInsert,
-            newLocal,
-          );
-          const newEditorState = EditorState.moveSelectionToEnd(
-            editorWithInsert,
-            textWithInsert.getSelectionAfter(),
-          );
-          setDetailsState(newEditorState);
         }
       },
     },
@@ -146,46 +143,23 @@ const SendEmailFromTaskModal = ({
       value: isTaskCommentsIncluded,
       onClick: () => {
         const flag = !isTaskCommentsIncluded;
-        setIsTaskCommentsIncluded(flag);
         if (flag) {
-          const currentContent = detailsState.getCurrentContent();
-          const blockMap = currentContent.getBlockMap();
-          const key = blockMap.last().getKey();
-          const length = blockMap.last().getLength();
-          const selection = new SelectionState({
-            anchorKey: key,
-            anchorOffset: length,
-            focusKey: key,
-            focusOffset: length,
+          setIsTaskCommentsIncluded(flag);
+          const commentsContent = comments
+            .map(comment => {
+              return `Comment by ${comment.creator.name} at ${calculateDate(
+                comment.dateCreated,
+              )} \n ${comment.tokenizedComment}`;
+            })
+            .join('\n');
+          insertPlaceholder('_COMMENTS_', {
+            meta: commentsContent,
+            name: '_COMMENTS_',
           });
-          const textWithInsert = Modifier.insertText(
-            currentContent,
-            selection,
-            taskComments
-              .map(comment => {
-                return `Comment by ${comment.creator.name} at ${calculateDate(
-                  comment.dateCreated,
-                )}`;
-              })
-              .join('\n'),
-            null,
-          );
-          const editorWithInsert = EditorState.push(
-            detailsState,
-            textWithInsert,
-            newLocal,
-          );
-          const newEditorState = EditorState.moveSelectionToEnd(
-            editorWithInsert,
-            textWithInsert.getSelectionAfter(),
-          );
-          setDetailsState(newEditorState);
         }
       },
     },
   ];
-
-  const [attachments, setAttachments] = useState([]);
 
   const handleBlur = event => {
     const emailValue = event.target.value;
@@ -196,24 +170,24 @@ const SendEmailFromTaskModal = ({
     }
   };
 
+  const handleReset = () => {
+    setIsTaskCommentsIncluded(false);
+    setIsTaskDescriptionIncluded(false);
+    setIsTaskDetailsIncluded(false);
+    setDetailsState(EditorState.createEmpty());
+  };
+
   const addAttachmentHandler = id => {
-    if (attachments.includes(id)) {
-      setAttachments(attachments.filter(attachment => attachment !== id));
+    if (attachmentsToSend.includes(id)) {
+      setAttachmentsToSend(attachments.filter(attachment => attachment !== id));
     } else {
-      setAttachments([...attachments, id]);
+      setAttachmentsToSend([...attachments, id]);
     }
   };
 
-  const onChangeDetailsEditor = useCallback(
-    state => {
-      setDetailsState(state);
-    },
-    [setDetailsState],
-  );
-
   return (
     <ModalWrapper width="600px">
-      <CloseIconButton size="small" onClick={closeModalHandler}>
+      <CloseIconButton size="small" onClick={() => dispatch(closeModal())}>
         <CloseIcon htmlColor="#C1CCDA" />
       </CloseIconButton>
       <ModalHeaderContainerStyled>
@@ -249,7 +223,12 @@ const SendEmailFromTaskModal = ({
             value={subject}
           />
         </InputContainerStyled>
-        <InfoHeaderTextStyled>Include the following</InfoHeaderTextStyled>
+        <IncludeContainerStyled>
+          <InfoHeaderTextStyled>Include the following</InfoHeaderTextStyled>
+          <IconButton onClick={handleReset}>
+            <Replay htmlColor={palette.coolGrey9} />
+          </IconButton>
+        </IncludeContainerStyled>
         {includeCheckBoxes.map(checkbox => {
           return (
             <CheckboxContainerStyled key={checkbox.label}>
@@ -257,6 +236,7 @@ const SendEmailFromTaskModal = ({
                 size={18}
                 onClick={checkbox.onClick}
                 isChecked={checkbox.value}
+                isDisabled={checkbox.value}
               />
               <span>{checkbox.label}</span>
             </CheckboxContainerStyled>
@@ -268,18 +248,18 @@ const SendEmailFromTaskModal = ({
             minHeight={100}
             disableMentions
             showToolbar
-            placeholder="Add a message to your invitation add copy instructions here."
             state={detailsState}
-            onChange={onChangeDetailsEditor}
+            onChange={setDetailsState}
+            placeholder="email body"
           />
         </TextEditorContainerStyled>
-        {taskAttachments && (
+        {attachments?.length > 0 && (
           <>
             <InfoHeaderTextStyled>
               Select attachments to include
             </InfoHeaderTextStyled>
             <AttachmentsContainerStyled>
-              {taskAttachments?.map(attachment => {
+              {attachments.map(attachment => {
                 return (
                   <AttachmentContainerStyled key={attachment.attachmentId}>
                     <Checkbox
@@ -306,8 +286,20 @@ const SendEmailFromTaskModal = ({
           uppercase
           width="150px"
           variant="primary"
+          disabled={
+            !validateEmail(email) || !detailsState.getCurrentContent().hasText()
+          }
           onClick={() => {
-            closeModalHandler();
+            dispatch(
+              sendEmailForTask({
+                message: convertFromEditorStateToOutput(detailsState)
+                  .tokenizedText,
+                recipientContact: email,
+                taskAttachmentIdentifiers: attachments,
+                identifier,
+              }),
+            );
+            dispatch(closeModal());
           }}
         >
           send

@@ -8,12 +8,10 @@ export const TextEditorContainerStyled = styled.div`
 `;
 
 export const InfoHeaderTextStyled = styled.p`
-  width: 100%;
   color: ${palette.coolGrey9};
   font-family: 'Montserrat';
   font-weight: 600;
   margin: 0;
-  padding-top: 1.5rem;
 `;
 
 export const TextWaringStyled = styled.p`
@@ -54,4 +52,12 @@ export const InputContainerStyled = styled.div`
   display: flex;
   gap: 0.5rem;
   flex-direction: column;
+`;
+
+export const IncludeContainerStyled = styled.div`
+  padding-top: 1.5rem;
+  display: flex;
+  justify-content: space-between;
+  width: 100%;
+  align-items: center;
 `;
