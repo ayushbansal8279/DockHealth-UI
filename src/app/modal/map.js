@@ -60,6 +60,7 @@ import SelectDestinationGroupModal from './components/SelectDestinationGroupModa
 import PatientFolderModal from './components/PatientFolderModal/PatientFolderModal';
 import SelectPatientFolderModal from './components/SelectPatientFolderModal/SelectPatientFolderModal';
 import SmartFlowListModal from './components/SmartFlowListModal/SmartFlowListModal';
+import SendFaxFromTaskModal from './components/SendFaxFromTaskModal/SendFaxFromTaskModal';
 
 const MODAL_MAP = {
   CompleteAllTasks: CompleteAllTasksModal,
@@ -124,6 +125,7 @@ const MODAL_MAP = {
   PatientFolder: PatientFolderModal,
   SelectPatientFolder: SelectPatientFolderModal,
   SmartFlowList: SmartFlowListModal,
+  SendFaxFromTask: SendFaxFromTaskModal,
 };
 
 export default MODAL_MAP;

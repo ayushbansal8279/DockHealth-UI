@@ -143,6 +143,15 @@ function* refreshTemplateBundle({ templateBundleIdentifier }) {
   }
 }
 
+function* sendFaxForTask(task) {
+  try {
+    yield call(TaskApi.sendFaxForTask, task);
+    yield put(showGlobalAlert(AlertMessages.FAX_SENT));
+  } catch {
+    yield put(showGlobalErrorAlert());
+  }
+}
+
 function* chooseTaskOutcome({
   payload: { taskOutcomeIdentifier, templateBundleIdentifier },
 }) {
@@ -294,6 +303,7 @@ export default function* watchTask() {
   yield takeEvery(ActionTypes.ADD_TASK_DEPENDENCY_LINK, addTaskDependencyLink);
   yield takeEvery(ActionTypes.DELETE_TASKS_LINK, deleteTasksLink);
   yield takeEvery(ActionTypes.UPDATE_TASKS_LINK, updateTasksLink);
+  yield takeEvery(ActionTypes.SEND_FAX_FOR_TASK, sendFaxForTask);
   yield takeEvery(ActionTypes.CHOOSE_DECISION_TASK_OPTION, chooseTaskOutcome);
   yield takeEvery(ActionTypes.REFRESH_TASK_BUNDLE, refreshTemplateBundle);
   yield takeEvery(ActionTypes.CHANGE_TASK_INTENT_TYPE, changeTaskIntentType);
