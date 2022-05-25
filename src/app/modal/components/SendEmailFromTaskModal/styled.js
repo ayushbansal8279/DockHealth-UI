@@ -19,6 +19,8 @@ export const TextWaringStyled = styled.p`
   color: #ff0000;
   width: 100%;
   margin-bottom: 0.5rem;
+  font-size: 16px;
+  font-weight: 700;
 `;
 
 export const CheckboxContainerStyled = styled.div`
@@ -38,6 +40,7 @@ export const AttachmentContainerStyled = styled.div`
   gap: 0.5rem;
   border: 1px solid ${palette.coolGrey3};
   padding: 0.5rem;
+  font-size: 14px;
 `;
 
 export const AttachmentsContainerStyled = styled.div`
@@ -45,6 +48,7 @@ export const AttachmentsContainerStyled = styled.div`
   gap: 0.2rem;
   width: 100%;
   justify-content: flex-start;
+  flex-direction: column;
 `;
 
 export const InputContainerStyled = styled.div`
@@ -60,4 +64,12 @@ export const IncludeContainerStyled = styled.div`
   justify-content: space-between;
   width: 100%;
   align-items: center;
+`;
+
+export const InfoHeaderAttachmentsTextStyled = styled.p`
+  color: ${palette.coolGrey1};
+  width: 100%;
+  margin-top: 20px;
+  margin-bottom: 5px;
+  font-weight: 400;
 `;

@@ -30,6 +30,7 @@ import {
   AttachmentsContainerStyled,
   CheckboxContainerStyled,
   IncludeContainerStyled,
+  InfoHeaderAttachmentsTextStyled,
   InfoHeaderTextStyled,
   InputContainerStyled,
   TextEditorContainerStyled,
@@ -160,9 +161,12 @@ const SendEmailFromTaskModal = () => {
 
   const addAttachmentHandler = id => {
     if (attachmentsToSend.includes(id)) {
-      setAttachmentsToSend(attachments.filter(attachment => attachment !== id));
+      const newAttachments = attachmentsToSend.filter(
+        attachment => attachment !== id,
+      );
+      setAttachmentsToSend(newAttachments);
     } else {
-      setAttachmentsToSend([...attachments, id]);
+      setAttachmentsToSend([...attachmentsToSend, id]);
     }
   };
 
@@ -236,9 +240,9 @@ const SendEmailFromTaskModal = () => {
         </TextEditorContainerStyled>
         {attachments?.length > 0 && (
           <>
-            <InfoHeaderTextStyled>
+            <InfoHeaderAttachmentsTextStyled>
               Select attachments to include
-            </InfoHeaderTextStyled>
+            </InfoHeaderAttachmentsTextStyled>
             <AttachmentsContainerStyled>
               {attachments.map(attachment => {
                 return (
@@ -248,7 +252,9 @@ const SendEmailFromTaskModal = () => {
                       onClick={() =>
                         addAttachmentHandler(attachment.attachmentId)
                       }
-                      isChecked={attachments.includes(attachment.attachmentId)}
+                      isChecked={attachmentsToSend.includes(
+                        attachment.attachmentId,
+                      )}
                     />
                     <span>{attachment.fileName}</span>
                   </AttachmentContainerStyled>
@@ -276,7 +282,7 @@ const SendEmailFromTaskModal = () => {
                 message: convertFromEditorStateToOutput(detailsState)
                   .tokenizedText,
                 recipientContact: email,
-                taskAttachmentIdentifiers: attachments,
+                taskAttachmentIdentifiers: attachmentsToSend,
                 identifier,
               }),
             );
