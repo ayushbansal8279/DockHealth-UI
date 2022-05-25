@@ -5,7 +5,6 @@ import Input from 'components/common/Input/Input';
 import TextEditor from 'components/common/TextEditor/TextEditor';
 import React, { useCallback, useState } from 'react';
 import { EditorState, Modifier } from 'draft-js';
-import moment from 'moment';
 
 import { useDispatch, useSelector } from 'react-redux';
 import { convertFromEditorStateToOutput } from 'components/common/TextEditor/helpers';
@@ -14,6 +13,8 @@ import { sendEmailForTask } from 'actions/task-actions';
 import { IconButton } from '@material-ui/core';
 import { Replay } from '@material-ui/icons';
 import palette from 'styles/palette';
+import { validateEmail } from 'helpers/validation-helper';
+import { formatDate } from 'helpers/formatters';
 import {
   CloseIcon,
   CloseIconButton,
@@ -35,26 +36,6 @@ import {
   TextWaringStyled,
 } from './styled';
 import { closeModal } from '../../actions';
-
-const validateEmail = email => {
-  return String(email)
-    .toLowerCase()
-    .match(/^\S+@\S+$/i);
-};
-
-const calculateDate = date => {
-  let dateLabel = '';
-
-  if (moment(date).isSame(new Date(), 'd')) {
-    dateLabel = 'Today';
-  } else if (moment(date).isSame(moment().subtract(1, 'days'), 'd')) {
-    dateLabel = 'Yesterday';
-  } else {
-    dateLabel = moment(date).format('MM/DD/YYYY');
-  }
-
-  return `${dateLabel} @ ${moment(date).format('h:mma')}`;
-};
 
 const SendEmailFromTaskModal = () => {
   const selectedTask = useSelector(selectedTaskSelector);
@@ -147,7 +128,7 @@ const SendEmailFromTaskModal = () => {
           setIsTaskCommentsIncluded(flag);
           const commentsContent = comments
             .map(comment => {
-              return `Comment by ${comment.creator.name} at ${calculateDate(
+              return `Comment by ${comment.creator.name} at ${formatDate(
                 comment.dateCreated,
               )} \n ${comment.tokenizedComment}`;
             })
