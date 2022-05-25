@@ -25,7 +25,7 @@ export const userProfileDashboardPrefsSelector = createSelector(
 
 export const userProfileColumnOrderSelector = createSelector(
   userStateSelector,
-  ({ userPreference }) => userPreference?.customFieldDisplayColumns, // TODO: key to change
+  ({ userPreference }) => userPreference?.listDisplayColumns,
 );
 
 export const userProfileCustomFieldsSelector = createSelector(

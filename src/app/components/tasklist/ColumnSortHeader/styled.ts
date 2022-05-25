@@ -23,12 +23,12 @@ export const LabelWrapper = styled.p<{ ordered: boolean }>`
 
 export const SortButton = styled.button<{
   width?: number;
-  truncateEnabled?: boolean;
+  // truncateEnabled?: boolean;
 }>`
   position: relative;
   flex: ${({ width }) => (width ? `0 0 ${width}px` : '1')};
-  overflow: ${({ truncateEnabled }) =>
-    truncateEnabled ? 'hidden' : 'visible'};
+  /* overflow: ${({ truncateEnabled }) =>
+    truncateEnabled ? 'hidden' : 'visible'}; */
   height: 35px;
   text-align: left;
   font-family: 'Roboto Condensed', sans-serif;

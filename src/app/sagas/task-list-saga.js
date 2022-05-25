@@ -44,7 +44,7 @@ function* updateListColumnsOrderSetup({ payload }) {
   try {
     const { setup, taskListIdentifier } = payload;
     yield call(
-      TaskListApi.updateUserCustomFieldsOptionsListViewSetup,
+      TaskListApi.updateUserAllFieldsOrderSetup,
       setup,
       taskListIdentifier,
     );

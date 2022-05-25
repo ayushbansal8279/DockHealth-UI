@@ -177,20 +177,19 @@ const TaskListReducer = (state = initialState, action) => {
     }
     case UPDATE_ORDER_COLUMNS_SETUP: {
       const { setup, currentUserIdentifier } = action.payload;
-      console.log('setup2', setup);
       return {
         ...state,
         currentTaskList:
           state.currentTaskList.listType === 'PUBLIC'
             ? {
                 ...state.currentTaskList,
-                customFieldDisplayColumns: setup, // TODO: key to change
+                listDisplayColumns: setup,
               }
             : {
                 ...state.currentTaskList,
                 listUsers: state.currentTaskList.listUsers.map(user =>
                   user.identifier === currentUserIdentifier
-                    ? { ...user, customFieldDisplayColumns: setup } // TODO: key to change
+                    ? { ...user, listDisplayColumns: setup }
                     : user,
                 ),
               },

@@ -111,10 +111,10 @@ const PersonDetailsView = () => {
   };
 
   const handleOrderChange = useCallback(
-    customFieldDisplayColumns => {
+    listDisplayColumns => {
       dispatch(
         updateCurrentUserPreferences({
-          customFieldDisplayColumns,
+          listDisplayColumns,
         }),
       );
     },

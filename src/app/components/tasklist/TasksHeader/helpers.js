@@ -86,16 +86,9 @@ export const getTaskHeaderOptions = (
   },
 ];
 
-export const reorderColumns = (
-  currentColumnsOrder,
-  { column, currentVisibleOrder },
-) => {
-  const { destination, source, draggableId } = column;
-  const destinationElement = currentVisibleOrder[destination.index + +1];
-  const fullListDestinationIndex = currentColumnsOrder.indexOf(
-    destinationElement,
-  );
-  const newOrder = currentColumnsOrder.filter(c => c !== draggableId);
-  newOrder.splice(fullListDestinationIndex, 0, draggableId);
-  return newOrder;
+export const reorderColumns = (list, startIndex, endIndex) => {
+  const result = [...list];
+  const [removed] = result.splice(startIndex + 1, 1);
+  result.splice(endIndex + 1, 0, removed);
+  return result;
 };

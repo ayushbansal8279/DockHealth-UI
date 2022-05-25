@@ -54,7 +54,7 @@ import { useColumnsConfig } from 'context-api/columns-config-context';
 import { ListDetailsContainer } from 'components/tasklist/DropdownListSection/styled';
 import StickyContainer from 'components/common/HorizontalScroll/StickyContainer';
 import { ListViewType } from '../helpers';
-import { updateUserCustomFieldsOptionsListViewSetup } from 'api/task-list-api';
+import { updateUserAllFieldsOrderSetup } from 'api/task-list-api';
 import { updateCurrentUserPreferences } from 'actions/user-actions';
 import {
   checkIfSelectedListIsPresent,
@@ -129,17 +129,17 @@ const PatientTasksListView = () => {
   }, [isAllTasksView, setColumnsOrder, userOrderColumns]);
 
   const handleOrderChange = useCallback(
-    customFieldDisplayColumns => {
+    listDisplayColumns => {
       if (isAllTasksView) {
         dispatch(
           updateCurrentUserPreferences({
-            customFieldDisplayColumns,
+            listDisplayColumns,
           }),
         );
       } else {
         // TODO: update also data in redux - important to have fresh data, when someone switch the list
-        updateUserCustomFieldsOptionsListViewSetup(
-          customFieldDisplayColumns,
+        updateUserAllFieldsOrderSetup(
+          listDisplayColumns,
           taskListIdentifierParameter,
         );
       }

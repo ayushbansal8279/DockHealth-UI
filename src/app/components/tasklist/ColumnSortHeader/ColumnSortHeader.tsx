@@ -97,7 +97,14 @@ const ColumnSortHeader: React.FC<ColumnSortHeaderProps> = ({
                 </Box>
               )}
 
-            <Box>{label}</Box>
+            <Box
+              textOverflow="ellipsis"
+              overflow={truncateEnabled ? 'hidden' : 'initial'}
+              width="100%"
+              whiteSpace="nowrap"
+            >
+              {label}
+            </Box>
           </Box>
         </LabelWrapper>
         <Popper
@@ -121,12 +128,11 @@ const ColumnSortHeader: React.FC<ColumnSortHeaderProps> = ({
         </Popper>
       </>
     );
-  }, [draggable, id, isHovered, label, onSortChange, sort]);
+  }, [draggable, id, isHovered, label, onSortChange, sort, truncateEnabled]);
 
   if (!draggable)
     return (
       <SortButton
-        truncateEnabled={truncateEnabled}
         disabled={!label || disabled}
         type="button"
         width={width}
@@ -140,7 +146,6 @@ const ColumnSortHeader: React.FC<ColumnSortHeaderProps> = ({
 
   return (
     <SortButton
-      truncateEnabled={truncateEnabled && !isDraggingOver}
       type="button"
       width={snapshot?.draggingOverWith === id ? 0 : width}
       onClick={switchSort}

@@ -3,7 +3,7 @@ import { useSelector } from 'react-redux';
 import Checkbox from 'components/common/Checkbox/Checkbox';
 import ColumnSortHeader from 'components/tasklist/ColumnSortHeader/ColumnSortHeader';
 import { SortHeaderRow } from 'components/tasklist/ColumnSortHeader/styled';
-import { TaskItemColumn, TaskItemColumnWidth } from 'helpers/task-helpers';
+import { TaskItemColumn } from 'helpers/task-helpers';
 import { getCustomerTypeLabel } from 'helpers/customer-type-helper';
 import { capitalize } from 'helpers/capitalize';
 import { useColumnsConfig } from 'context-api/columns-config-context';
@@ -16,7 +16,6 @@ import {
 import { sortAlphabetical } from 'helpers/custom-fields-helpers';
 import { BulkContainer, StickyColumnContainer } from './styled';
 import { getTaskHeaderOptions, reorderColumns } from './helpers';
-import { all } from 'redux-saga/effects';
 
 const { DISABLED } = SINGLE_TASK_RESTRICTIONS_OPTIONS;
 
@@ -70,20 +69,27 @@ const TasksHeader = ({
 
   const mergedFields = useMemo(() => {
     const allFields = [
-      ...regularFieldsList,
+      ...regularFieldsList.filter(f => f.shouldBeDisplayed),
       ...(restrictions?.customFields !== DISABLED
-        ? alphabeticalSortedAllTypeCustomFields
+        ? alphabeticalSortedAllTypeCustomFields.filter(f => f.isChecked)
         : []),
     ];
 
     if (columnsOrder?.length > 0) {
-      return allFields.sort((a, b) => {
-        return (
-          columnsOrder?.indexOf(a.identifier || a.id) -
-          columnsOrder?.indexOf(b.identifier || b.id)
-        );
-      });
+      const fieldsWithOrder = allFields
+        .filter(f => columnsOrder?.indexOf(f.identifier || f.id) >= 0)
+        .sort((a, b) => {
+          return (
+            columnsOrder?.indexOf(a.identifier || a.id) -
+            columnsOrder?.indexOf(b.identifier || b.id)
+          );
+        });
+      const fieldsWithoutOrder = allFields.filter(
+        f => columnsOrder?.indexOf(f.identifier || f.id) < 0,
+      );
+      return [...fieldsWithOrder, ...fieldsWithoutOrder];
     }
+
     return allFields;
   }, [
     alphabeticalSortedAllTypeCustomFields,
@@ -92,37 +98,35 @@ const TasksHeader = ({
     restrictions,
   ]);
 
-  const getCurrentOrder = useCallback(
-    (visibleOnly = false) => {
-      return [
-        ...regularFieldsList
-          .filter(c => (visibleOnly ? c.shouldBeDisplayed : c))
-          .map(f => f.id),
-        ...alphabeticalSortedAllTypeCustomFields
-          .filter(c => (visibleOnly ? c.isChecked : c))
-          .map(f => f.identifier),
-      ];
-    },
-    [alphabeticalSortedAllTypeCustomFields, regularFieldsList],
-  );
-
   const onDragEnd = useCallback(
     column => {
       if (!column.destination) {
         return;
       }
-      const currentOrder = getCurrentOrder();
-      const currentVisibleOrder = getCurrentOrder(true);
-      const newOrder = reorderColumns(currentOrder, {
-        column,
-        currentVisibleOrder,
-      });
+      const newOrder = reorderColumns(
+        mergedFields.map(f => f.id || f.identifier),
+        column.source.index,
+        column.destination.index,
+      );
+
       if (newOrder) {
-        // onOrderChange(newOrder);
+        onOrderChange(newOrder);
         setColumnsOrder(newOrder);
       }
     },
-    [getCurrentOrder, setColumnsOrder],
+    [mergedFields, onOrderChange, setColumnsOrder],
+  );
+
+  const getColumnOrder = useCallback(
+    TaskItemColumnType => {
+      if (Array.isArray(columnsOrder) && columnsOrder.length > 0) {
+        const existingOrder = columnsOrder?.indexOf(TaskItemColumnType);
+        if (existingOrder >= 0) return existingOrder;
+        return 999;
+      }
+      return 'initial';
+    },
+    [columnsOrder],
   );
 
   const renderColumn = useCallback(
@@ -164,14 +168,14 @@ const TasksHeader = ({
   );
 
   return (
-    <DragDropContext
-      onDragEnd={onDragEnd}
-      onDragStart={x => console.log('start', x)}
-    >
+    <DragDropContext onDragEnd={onDragEnd}>
       <Droppable droppableId="droppableHeader" direction="horizontal">
         {(provided, snapshot) => (
           <SortHeaderRow ref={provided.innerRef} {...provided.droppableProps}>
-            <StickyColumnContainer backgroundColor={pageBackground}>
+            <StickyColumnContainer
+              backgroundColor={pageBackground}
+              order={getColumnOrder(TaskItemColumn.DESCRIPTION)}
+            >
               {bulkEditEnabled && (
                 <BulkContainer>
                   <Checkbox
@@ -192,7 +196,6 @@ const TasksHeader = ({
             </StickyColumnContainer>
             {mergedFields
               .filter(f => f.id !== 'TASK_DESCRIPTION')
-              .filter(f => f.shouldBeDisplayed || f.isChecked)
               .map((c, index) => renderColumn(c, index, snapshot))}
             {provided.placeholder}
           </SortHeaderRow>

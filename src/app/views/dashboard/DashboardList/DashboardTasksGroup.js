@@ -214,10 +214,10 @@ const DashboardTasksGroup = ({
   );
 
   const handleOrderChange = useCallback(
-    customFieldDisplayColumns => {
+    listDisplayColumns => {
       dispatch(
         updateCurrentUserPreferences({
-          customFieldDisplayColumns,
+          listDisplayColumns,
         }),
       );
     },

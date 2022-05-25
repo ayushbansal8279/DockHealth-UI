@@ -83,7 +83,6 @@ const TaskTemplateGroupHeader = ({
     identifier,
     tasksCount,
     tasksCompletedCount,
-    taskListIdentifier,
     comments,
     labels,
     attachments,
@@ -348,6 +347,18 @@ const TaskTemplateGroupHeader = ({
     );
   }, [dispatch, isBundleSelected, filteredTasks]);
 
+  const getColumnOrder = useCallback(
+    TaskItemColumnType => {
+      if (Array.isArray(columnsOrder) && columnsOrder.length > 0) {
+        const existingOrder = columnsOrder?.indexOf(TaskItemColumnType);
+        if (existingOrder >= 0) return existingOrder;
+        return 999;
+      }
+      return 'initial';
+    },
+    [columnsOrder],
+  );
+
   return (
     <TaskTemplateGroupHeaderContainer isSelected={isBundleSelected}>
       {columnsConfig[TaskItemColumn.DESCRIPTION] && (
@@ -355,7 +366,7 @@ const TaskTemplateGroupHeader = ({
           backgroundColor={pageBackground}
           isSelected={isBundleSelected}
           isEditingDescription={isEditing}
-          order={columnsOrder?.indexOf(TaskItemColumn.DESCRIPTION)}
+          order={getColumnOrder(TaskItemColumn.DESCRIPTION)}
         >
           {!groupDragAndDropDisabled && !bulkEditIsActive && (
             <TemplateHandle
@@ -400,7 +411,7 @@ const TaskTemplateGroupHeader = ({
         <TaskItemCell
           key={`subtask_count_${identifier}`}
           width={TaskItemColumnWidth[TaskItemColumn.SUBTASKS_COUNT]}
-          order={columnsOrder?.indexOf(TaskItemColumn.SUBTASKS_COUNT)}
+          order={getColumnOrder(TaskItemColumn.SUBTASKS_COUNT)}
         />
       )}
       {columnsConfig[TaskItemColumn.PATIENT] && (
@@ -408,7 +419,7 @@ const TaskTemplateGroupHeader = ({
           key={`patient_${identifier}`}
           width={TaskItemColumnWidth[TaskItemColumn.PATIENT]}
           alignItems="flex-start"
-          order={columnsOrder?.indexOf(TaskItemColumn.PATIENT)}
+          order={getColumnOrder(TaskItemColumn.PATIENT)}
         >
           {!disablePatientAssignment && (
             <TaskHeaderPatient
@@ -429,7 +440,7 @@ const TaskTemplateGroupHeader = ({
           onContextMenu={event => {
             event.stopPropagation();
           }}
-          order={columnsOrder?.indexOf(TaskItemColumn.PATIENT)}
+          order={getColumnOrder(TaskItemColumn.WORKFLOW_STATUS)}
         >
           <TemplateItemWorkflowStatus
             workflow={templateGroup}
@@ -442,7 +453,7 @@ const TaskTemplateGroupHeader = ({
         <TaskItemCell
           key={`activity_${identifier}`}
           width={TaskItemColumnWidth[TaskItemColumn.ACTIVITY]}
-          order={columnsOrder?.indexOf(TaskItemColumn.ACTIVITY)}
+          order={getColumnOrder(TaskItemColumn.ACTIVITY)}
         >
           <TaskTemplateIcons
             matchComments={false}
@@ -461,7 +472,7 @@ const TaskTemplateGroupHeader = ({
           key={`start_date_${identifier}`}
           width={TaskItemColumnWidth[TaskItemColumn.START_DATE]}
           justify="center"
-          order={columnsOrder?.indexOf(TaskItemColumn.START_DATE)}
+          order={getColumnOrder(TaskItemColumn.START_DATE)}
         >
           <TaskTemplateStartDate workflow={templateGroup} />
         </TaskItemCell>
@@ -471,7 +482,7 @@ const TaskTemplateGroupHeader = ({
           key={`due_date_${identifier}`}
           width={TaskItemColumnWidth[TaskItemColumn.DUE_DATE]}
           justify="center"
-          order={columnsOrder?.indexOf(TaskItemColumn.DUE_DATE)}
+          order={getColumnOrder(TaskItemColumn.DUE_DATE)}
         >
           <TaskTemplateDueDate workflow={templateGroup} />
         </TaskItemCell>
@@ -486,7 +497,7 @@ const TaskTemplateGroupHeader = ({
           onContextMenu={event => {
             event.stopPropagation();
           }}
-          order={columnsOrder?.indexOf(TaskItemColumn.ASSIGNED)}
+          order={getColumnOrder(TaskItemColumn.ASSIGNED)}
         >
           <TaskTemplateMembers
             currentUser={currentUser}
@@ -504,7 +515,7 @@ const TaskTemplateGroupHeader = ({
         <TaskItemCell
           key={`list_${identifier}`}
           width={TaskItemColumnWidth[TaskItemColumn.LIST_NAME]}
-          order={columnsOrder?.indexOf(TaskItemColumn.LIST_NAME)}
+          order={getColumnOrder(TaskItemColumn.LIST_NAME)}
         />
       )}
       {alphabeticalSortedAllTypeCustomFields &&

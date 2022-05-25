@@ -529,14 +529,14 @@ const initializeListDetailsViewHooks = () => {
   }, [currentUserIdentifier, setColumnsConfig, taskList]);
 
   useEffect(() => {
-    const { customFieldDisplayColumns } =
+    const { listDisplayColumns } =
       taskList?.listType === 'PUBLIC'
         ? taskList
         : taskList?.listUsers?.find(
             user => user.identifier === currentUserIdentifier,
           ) || {};
 
-    if (customFieldDisplayColumns) setColumnsOrder(customFieldDisplayColumns);
+    if (listDisplayColumns) setColumnsOrder(listDisplayColumns);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [currentUserIdentifier, setColumnsOrder, taskList]);
 
