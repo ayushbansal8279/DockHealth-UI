@@ -44,7 +44,6 @@ import { userHasSmartFlowsSelector } from 'selectors/user-selectors';
 import { openDrawer } from 'actions/workflow-drawer-actions';
 import { Box, ClickAwayListener, Paper, Popper } from '@material-ui/core';
 import DecisionTaskElementIcon from 'img/template/decision-task-icon';
-import WorkflowLinkIcon from 'img/template/workflow-icon';
 import Tooltip from 'components/common/Tooltip/Tooltip';
 import ReactFlow, {
   Controls,
@@ -285,16 +284,16 @@ const SmartFlowBuilderView = () => {
           }
         },
       },
-      {
-        id: NodeType.NEW_WORKFLOW_LINK,
-        label: 'Workflow',
-        icon: WorkflowLinkIcon,
-        onClick: () => {
-          const position = calculateNewElementPosition(layout);
-          dispatch(addNewNestedFlowElement(position));
-          centerViewToElement(position);
-        },
-      },
+      // {
+      //   id: NodeType.NEW_WORKFLOW_LINK,
+      //   label: 'Workflow',
+      //   icon: WorkflowLinkIcon,
+      //   onClick: () => {
+      //     const position = calculateNewElementPosition(layout);
+      //     dispatch(addNewNestedFlowElement(position));
+      //     centerViewToElement(position);
+      //   },
+      // },
     ];
 
     let actions = [...baseActions];

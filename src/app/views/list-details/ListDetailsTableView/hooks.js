@@ -373,6 +373,7 @@ const initializeListDetailsViewHooks = () => {
     [selectedTab],
   );
 
+  // eslint-disable-next-line sonarjs/cognitive-complexity
   useEffect(() => {
     const taskCallback = data => {
       if (
@@ -391,6 +392,7 @@ const initializeListDetailsViewHooks = () => {
       }
     };
     const taskBundleCallback = data => {
+      // eslint-disable-next-line sonarjs/no-collapsible-if
       if (
         data.taskListIdentifier &&
         data.taskListIdentifier === taskListIdentifierParam

@@ -83,6 +83,8 @@ const Autocomplete = ({
   value,
   InputProps,
   disableClearable,
+  getOptionSelected,
+  limitTags,
 }) => {
   const textFieldReference = useRef(null);
 
@@ -150,7 +152,7 @@ const Autocomplete = ({
       loading={isLoading}
       multiple={multiple}
       noOptionsText={noOptionsText}
-      onChange={(_, value_) => onChange(value_)}
+      onChange={(_, value_, reason) => onChange(value_, reason)}
       onClose={onClose}
       onInputChange={(_, value_) => onInputChange(value_)}
       onOpen={onOpen}
@@ -161,7 +163,9 @@ const Autocomplete = ({
       renderOption={renderOption}
       renderTags={renderTags}
       value={value}
+      getOptionSelected={getOptionSelected}
       disableClearable={disableClearable}
+      limitTags={limitTags}
     />
   );
 };
@@ -198,6 +202,7 @@ Autocomplete.propTypes = {
   value: propTypes.oneOfType([
     propTypes.string,
     propTypes.arrayOf(propTypes.string),
+    propTypes.arrayOf(propTypes.object),
   ]),
 };
 

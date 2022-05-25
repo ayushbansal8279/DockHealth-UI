@@ -13,12 +13,6 @@ import { TaskItemType } from 'helpers/task-helpers';
 import { openDrawer } from 'actions/task-drawer-actions';
 import { useDispatch } from 'react-redux';
 import { pick } from 'ramda';
-import {
-  UPDATE_PARTIAL_WORKFLOW_SUCCESS,
-  UPDATE_TASK_SUCCESS,
-} from 'actions/action-types';
-import { showGlobalAlert } from 'alert/actions';
-import AlertMessages from 'alert/AlertMessages';
 import { updatePatientDetails } from 'actions/patient-details-actions';
 
 const TaskItemCustomField = ({
@@ -27,6 +21,7 @@ const TaskItemCustomField = ({
   customFieldValue,
   task,
   onClick,
+  // eslint-disable-next-line sonarjs/cognitive-complexity
 }) => {
   const { value } = customFieldValue || {};
   const patientType = field.targetType === 'PATIENT';

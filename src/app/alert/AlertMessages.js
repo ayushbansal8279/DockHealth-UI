@@ -18,6 +18,8 @@ const AlertMessages = {
   TASK_DUPLICATED: 'Task duplicted',
   PATIENT_ARCHIVED: 'Archived',
   WORKFLOW_CREATED: 'Workflow created',
+  LABEL_CREATED: 'Label created',
+  LABEL_DELETED: 'Label deleted',
   MAIL_SENT: 'Mail Sent',
 };
 

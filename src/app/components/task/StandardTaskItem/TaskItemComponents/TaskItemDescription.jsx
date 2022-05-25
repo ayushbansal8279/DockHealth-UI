@@ -56,6 +56,7 @@ const TaskItemDescription = ({
     completedBy,
     completedDt,
     taskList,
+    linkedTaskTemplate,
   } = task;
   const { taskListIdentifier } = taskList || {};
   const { matchDescription } = searchMetaData || {};
@@ -225,11 +226,11 @@ const TaskItemDescription = ({
           <CompletedBy isCompleted={isCompleted}>
             <span>{`Completed by ${completedByName} ${completedDt &&
               ` on ${
-                completedDt
-                  ? `on ${moment(completedDt).format('MM/DD/YYYY')}`
-                  : ''
-              }`}
-  `}</span>
+                completedDt ? `${moment(completedDt).format('MM/DD/YYYY')}` : ''
+              }`} ${
+              linkedTaskTemplate ? `, launched ${linkedTaskTemplate.name}` : ''
+            }
+            `}</span>
           </CompletedBy>
         )}
         {hasParentTaskLabel && (
