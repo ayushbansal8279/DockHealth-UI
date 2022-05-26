@@ -143,32 +143,35 @@ const SendEmailFromTaskModal = () => {
     },
   ];
 
-  const handleBlur = event => {
+  const handleBlur = useCallback(event => {
     const emailValue = event.target.value;
     if (!validateEmail(emailValue)) {
       setError(true);
     } else {
       setError(false);
     }
-  };
+  }, []);
 
-  const handleReset = () => {
+  const handleReset = useCallback(() => {
     setIsTaskCommentsIncluded(false);
     setIsTaskDescriptionIncluded(false);
     setIsTaskDetailsIncluded(false);
     setDetailsState(EditorState.createEmpty());
-  };
+  }, []);
 
-  const addAttachmentHandler = id => {
-    if (attachmentsToSend.includes(id)) {
-      const newAttachments = attachmentsToSend.filter(
-        attachment => attachment !== id,
-      );
-      setAttachmentsToSend(newAttachments);
-    } else {
-      setAttachmentsToSend([...attachmentsToSend, id]);
-    }
-  };
+  const addAttachmentHandler = useCallback(
+    id => {
+      if (attachmentsToSend.includes(id)) {
+        const newAttachments = attachmentsToSend.filter(
+          attachment => attachment !== id,
+        );
+        setAttachmentsToSend(newAttachments);
+      } else {
+        setAttachmentsToSend([...attachmentsToSend, id]);
+      }
+    },
+    [attachmentsToSend],
+  );
 
   return (
     <ModalWrapper width="600px">
