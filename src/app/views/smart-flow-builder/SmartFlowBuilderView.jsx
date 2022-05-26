@@ -44,7 +44,6 @@ import { userHasSmartFlowsSelector } from 'selectors/user-selectors';
 import { openDrawer } from 'actions/workflow-drawer-actions';
 import { Box, ClickAwayListener, Paper, Popper } from '@material-ui/core';
 import DecisionTaskElementIcon from 'img/template/decision-task-icon';
-import WorkflowLinkIcon from 'img/template/workflow-icon';
 import Tooltip from 'components/common/Tooltip/Tooltip';
 import ReactFlow, {
   Controls,

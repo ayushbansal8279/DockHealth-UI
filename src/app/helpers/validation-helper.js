@@ -1,4 +1,3 @@
-/* eslint-disable import/prefer-default-export */
 import { string } from 'yup';
 
 export const validPasswordSchema = string()
@@ -15,4 +14,12 @@ export const validateNewSubtask = value => {
     return 'The subtask description is too short (min. 2 characters)';
 
   return null;
+};
+
+export const validateEmail = email => {
+  return String(email)
+    .toLowerCase()
+    .match(
+      /^[\w!#$%&'*+./=?^`{|}~-]+@[\dA-Za-z](?:[\dA-Za-z-]{0,61}[\dA-Za-z])?(?:\.[\dA-Za-z](?:[\dA-Za-z-]{0,61}[\dA-Za-z])?)*$/,
+    );
 };

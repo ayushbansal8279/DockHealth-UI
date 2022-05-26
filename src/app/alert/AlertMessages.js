@@ -20,6 +20,7 @@ const AlertMessages = {
   WORKFLOW_CREATED: 'Workflow created',
   LABEL_CREATED: 'Label created',
   LABEL_DELETED: 'Label deleted',
+  MAIL_SENT: 'Mail Sent',
 };
 
 export default AlertMessages;

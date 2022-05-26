@@ -473,3 +473,7 @@ export function deleteTasksLink(sourceTaskIdentifier, targetTaskIdentifier) {
 export function updateTasksLink(link) {
   return axios.put(`task/link`, link).then(({ data }) => data);
 }
+
+export function sendEmailForTask(task) {
+  return axios.post('task/communication/send', task).then(({ data }) => data);
+}
