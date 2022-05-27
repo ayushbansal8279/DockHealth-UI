@@ -3,6 +3,8 @@ import palette from 'styles/palette';
 
 export const LabelsWrapper = styled.div`
   display: flex;
+  flex-direction: column;
+  gap: 5px;
   align-items: center;
   height: 100%;
   width: fit-content;
