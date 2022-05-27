@@ -101,7 +101,7 @@ function* updateTasksLink({ link }) {
 
 function* sendEmailForTask(task) {
   try {
-    yield call(TaskApi.sendEmailForTask, task);
+    yield call(TaskApi.sendMessageForTask, task);
     yield put(showGlobalAlert(AlertMessages.MAIL_SENT));
   } catch {
     yield put(showGlobalErrorAlert());
@@ -155,7 +155,7 @@ function* refreshTemplateBundle({ templateBundleIdentifier }) {
 
 function* sendFaxForTask(task) {
   try {
-    yield call(TaskApi.sendFaxForTask, task);
+    yield call(TaskApi.sendMessageForTask, task);
     yield put(showGlobalAlert(AlertMessages.FAX_SENT));
   } catch {
     yield put(showGlobalErrorAlert());
