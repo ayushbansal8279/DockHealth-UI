@@ -832,6 +832,13 @@ export function updateTasksLink(link) {
   };
 }
 
+export function sendEmailForTask(task) {
+  return {
+    type: ActionTypes.SEND_EMAIL_FOR_TASK,
+    task: { ...task, communicationType: CommunicationType.EMAIL },
+  };
+}
+
 export function deleteTasksLink(sourceTaskIdentifier, targetTaskIdentifier) {
   return {
     type: ActionTypes.DELETE_TASKS_LINK,

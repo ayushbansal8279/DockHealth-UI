@@ -30,14 +30,14 @@ const ToolbarSelect = ({ options, name, value, icon, ...restProps }) => {
       inputProps={{ name }}
       value={value}
       renderValue={selectedValue => {
-        const { label } = options.find(
+        const foundOption = options?.find(
           option => option.value === selectedValue,
         );
         return (
           <>
             {icon}
             <Box component="span" mx={0.5} />
-            {label}
+            {foundOption?.label || ''}
           </>
         );
       }}

@@ -1,12 +1,12 @@
 import Input from 'components/common/Input/Input';
 import InputMask from 'react-input-mask';
-import React, { useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { sendFaxForTask } from 'actions/task-actions';
 import Button from 'components/common/Button/Button';
 import { selectedTaskSelector } from 'selectors/task-drawer-selectors';
 import Checkbox from 'components/common/Checkbox/Checkbox';
-import { closeModal } from '../../actions';
+import { closeModal } from '../../../actions';
 import {
   CloseIcon,
   CloseIconButton,
@@ -16,14 +16,14 @@ import {
   ModalHeader,
   ModalHeaderContainerStyled,
   ModalWrapper,
-} from '../styled';
+  TextWaringStyled,
+} from '../../styled';
 import {
   AttachmentContainerStyled,
   AttachmentsContainerStyled,
   InfoHeaderAttachmentsTextStyled,
   InputContainerStyled,
-  TextWaringStyled,
-} from './styled';
+} from '../styled';
 
 const SendFaxFromTaskModal = () => {
   const dispatch = useDispatch();
@@ -42,16 +42,19 @@ const SendFaxFromTaskModal = () => {
     );
   });
 
-  const addAttachmentHandler = id => {
-    if (attachmentsToSend.includes(id)) {
-      const newAttachments = attachmentsToSend.filter(
-        attachment => attachment !== id,
-      );
-      setAttachmentsToSend(newAttachments);
-    } else {
-      setAttachmentsToSend([...attachmentsToSend, id]);
-    }
-  };
+  const addAttachmentHandler = useCallback(
+    id => {
+      if (attachmentsToSend.includes(id)) {
+        const newAttachments = attachmentsToSend.filter(
+          attachment => attachment !== id,
+        );
+        setAttachmentsToSend(newAttachments);
+      } else {
+        setAttachmentsToSend([...attachmentsToSend, id]);
+      }
+    },
+    [attachmentsToSend],
+  );
 
   const handleFaxBlur = () => {
     return faxNumber.includes('_') ? setFaxError(true) : setFaxError(false);

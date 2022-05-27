@@ -474,6 +474,6 @@ export function updateTasksLink(link) {
   return axios.put(`task/link`, link).then(({ data }) => data);
 }
 
-export function sendFaxForTask(task) {
+export function sendMessageForTask(task) {
   return axios.post('task/communication/send', task).then(({ data }) => data);
 }

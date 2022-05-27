@@ -1,6 +1,14 @@
 import styled from 'styled-components';
 import palette from 'styles/palette';
 
+export const InfoHeaderAttachmentsTextStyled = styled.p`
+  color: ${palette.coolGrey1};
+  width: 100%;
+  margin-top: 20px;
+  margin-bottom: 5px;
+  font-weight: 400;
+`;
+
 export const AttachmentContainerStyled = styled.div`
   display: flex;
   align-content: center;
@@ -18,19 +26,6 @@ export const AttachmentsContainerStyled = styled.div`
   gap: 0.5rem;
   width: 100%;
   justify-content: flex-start;
-`;
-export const TextWaringStyled = styled.p`
-  padding-top: 1.5rem;
-  color: #ff0000;
-  font-size: 16px;
-  width: 100%;
-  font-weight: 700;
-  margin-bottom: 0.5rem;
-`;
-export const InfoHeaderAttachmentsTextStyled = styled.p`
-  color: ${palette.coolGrey1};
-  font-weight: 400;
-  margin: 0;
 `;
 
 export const InputContainerStyled = styled.div`
