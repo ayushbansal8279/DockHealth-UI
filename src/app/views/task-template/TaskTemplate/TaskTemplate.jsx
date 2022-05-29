@@ -51,7 +51,6 @@ import {
   TaskTemplateHeader,
   NameInput,
   ArrowButton,
-  MenuContainer,
   QuickAddInputWrapper,
   ArrowButtonContainer,
   SmartFlowIndicatorContainer,

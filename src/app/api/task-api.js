@@ -46,7 +46,9 @@ export function addTask(task) {
       showAlert({
         status: 'error',
         title: 'Error',
-        text: 'Error in creating task. Please try again.',
+        text:
+          error?.response?.data?.errorMessage ??
+          'Error in creating task. Please try again.',
       });
       throw error;
     });
@@ -60,6 +62,14 @@ export function updateTask(task) {
     })
     .then(response => {
       return response;
+    })
+    .catch(error => {
+      showAlert({
+        status: 'error',
+        title: 'Error',
+        text: error?.response?.data?.errorMessage ?? 'Error in updating task.',
+      });
+      throw error;
     });
 }
 
@@ -68,6 +78,14 @@ export function partialUpdateTask(taskIdentifier, dataToUpdate) {
     .patch(`task/${taskIdentifier}`, dataToUpdate)
     .then(({ data }) => {
       return data;
+    })
+    .catch(error => {
+      showAlert({
+        status: 'error',
+        title: 'Error',
+        text: error?.response?.data?.errorMessage ?? 'Error in updating task.',
+      });
+      throw error;
     });
 }
 
@@ -78,6 +96,14 @@ export function deleteTask(taskIdentifier) {
       return response;
     })
     .catch(error => {
+      throw error;
+    })
+    .catch(error => {
+      showAlert({
+        status: 'error',
+        title: 'Error',
+        text: error?.response?.data?.errorMessage ?? 'Error in deleting task.',
+      });
       throw error;
     });
 }
@@ -94,7 +120,7 @@ export function duplicateTask(taskIdentifier, includeAttachments) {
       showAlert({
         status: 'error',
         title: 'Error',
-        text: 'Error in duplicating task. Please try again.',
+        text: error?.response?.data?.errorMessage ?? 'Error in duplicating task.',
       });
       throw error;
     });
@@ -110,7 +136,9 @@ export function sortSubTask(taskIdentifier, direction) {
       showAlert({
         status: 'error',
         title: 'Error',
-        text: 'Error in changing sub task order. Please try again.',
+        text:
+          error?.response?.data?.errorMessage ??
+          'Error in changing sub task order. Please try again.',
       });
       throw error;
     });
@@ -123,6 +151,12 @@ export function markComplete(task) {
       return response;
     })
     .catch(error => {
+      showAlert({
+        status: 'error',
+        title: 'Error',
+        text:
+          error?.response?.data?.errorMessage ?? 'Error in completing task.',
+      });
       throw error;
     });
 }
@@ -134,6 +168,12 @@ export function markIncomplete(task) {
       return response;
     })
     .catch(error => {
+      showAlert({
+        status: 'error',
+        title: 'Error',
+        text:
+          error?.response?.data?.errorMessage ?? 'Error in uncompleting task.',
+      });
       throw error;
     });
 }
@@ -171,6 +211,11 @@ export const updateDueDate = (taskIdentifier, dueDate) => {
       return response.data;
     })
     .catch(error => {
+      showAlert({
+        status: 'error',
+        title: 'Error',
+        text: error?.response?.data?.errorMessage ?? 'Error updating due date.',
+      });
       throw error;
     });
 };
@@ -205,7 +250,9 @@ export function assignOrReassignTask(task, assignedToUserIdentifier) {
       showAlert({
         status: 'error',
         title: 'Error',
-        text: 'Error in task assignment. Please try again.',
+        text:
+          error?.response?.data?.errorMessage ??
+          'Error in task assignment. Please try again.',
       });
       throw error;
     });
@@ -229,7 +276,9 @@ export function deleteComment(commentIdentifier) {
       showAlert({
         status: 'error',
         title: 'Error',
-        text: 'Error in deleting comment. Please try again.',
+        text:
+          error?.response?.data?.errorMessage ??
+          'Error in deleting comment. Please try again.',
       });
       throw error;
     });
@@ -245,7 +294,9 @@ export function updateComment(comment) {
       showAlert({
         status: 'error',
         title: 'Error',
-        text: 'Error in updating comment. Please try again.',
+        text:
+          error?.response?.data?.errorMessage ??
+          'Error in updating comment. Please try again.',
       });
       throw error;
     });
@@ -292,13 +343,17 @@ export function addTaskAttachment(
         showAlert({
           status: 'error',
           title: 'Error',
-          text: 'File exceeded the allowed size of 100 MB',
+          text:
+            error?.response?.data?.errorMessage ??
+            'File exceeded the allowed size of 100 MB',
         });
       } else {
         showAlert({
           status: 'error',
           title: 'Error',
-          text: 'Error in saving attachment. Please try again.',
+          text:
+            error?.response?.data?.errorMessage ??
+            'Error in saving attachment. Please try again.',
         });
       }
       throw error;
@@ -315,7 +370,9 @@ export function removeTaskAttachment(taskAttachmentId) {
       showAlert({
         status: 'error',
         title: 'Error',
-        text: 'Error in removing attachment. Please try again.',
+        text:
+          error?.response?.data?.errorMessage ??
+          'Error in removing attachment. Please try again.',
       });
       throw error;
     });
