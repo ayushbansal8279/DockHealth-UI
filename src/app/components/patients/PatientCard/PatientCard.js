@@ -34,6 +34,7 @@ import {
   PatientCellWrapper,
   PatientMRNAnchor,
   CustomFieldPatientInfo,
+  PatientNotesWrapper,
   PinnedNotesWrapper,
 } from './styled';
 import PatientCardDetailsLoader from './PatientCardDetailsLoader';
@@ -52,23 +53,42 @@ const renderPatientNotes = (
   const unpinnedSorted = unpinnedNotes?.sort(descend(prop('dateUpdated')));
   const notes = [...(pinnedSorted ?? []), ...(unpinnedSorted ?? [])];
 
-  const renderNote = ({ description, dateUpdated }, index) => {
+  const renderNoteDescription = (description, dateUpdated) => {
     return (
-      <PatientNote>
-        {index !== 0 && (
-          <>
-            <Spacing vertical={4} />
-            <NoteDivider />
-            <Spacing vertical={3} />
-          </>
-        )}
+      <>
         <NoteDescription>{description || <br />}</NoteDescription>
         <NoteInfo>
           {patientName} {moment(dateUpdated).format('h:mma M/DD/YY')}
         </NoteInfo>
+      </>
+    );
+  };
+
+  const renderNote = ({ description, dateUpdated, pinned }, index) => {
+    return (
+      <PatientNote>
+        {index !== 0 && (
+          <>
+            <Spacing vertical={2} />
+            <NoteDivider />
+            <Spacing vertical={1} />
+          </>
+        )}
+        {pinned && (
+          <PinnedNotesWrapper>
+            {renderNoteDescription(description, dateUpdated)}
+          </PinnedNotesWrapper>
+        )}
+        {!pinned && (
+          <PatientNotesWrapper>
+            {renderNoteDescription(description, dateUpdated)}
+          </PatientNotesWrapper>
+        )}
       </PatientNote>
     );
   };
+
+
 
   return notes?.length > 0 ? (
     <>
@@ -76,11 +96,7 @@ const renderPatientNotes = (
       <PatientNotesSection>
         <NotesTitle>Notes</NotesTitle>
         {notes.map(note => {
-          return note.pinned ? (
-            <PinnedNotesWrapper>{renderNote(note)}</PinnedNotesWrapper>
-          ) : (
-            renderNote(note)
-          );
+          return renderNote(note);
         })}
       </PatientNotesSection>
     </>
