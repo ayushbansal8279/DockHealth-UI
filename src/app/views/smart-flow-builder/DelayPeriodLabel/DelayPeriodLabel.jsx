@@ -8,8 +8,8 @@ const DelayPeriodLabel = props => {
   return (
     <Label onClick={onClick}>
       {delayPeriod} {delayPeriodUnit.toLowerCase()}
-      {delayPeriod > 1 ? 's' : ''} {timeRelative.toLowerCase()}{' '}
-      {TIME_REFERENCE[timeReference].toLowerCase()}
+      {delayPeriod > 1 ? 's' : ''} {timeRelative?.toLowerCase()}{' '}
+      {TIME_REFERENCE[timeReference]?.toLowerCase()}
     </Label>
   );
 };
