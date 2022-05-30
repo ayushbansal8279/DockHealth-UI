@@ -185,7 +185,7 @@ const PatientDetailsDrawer = ({ patient, isOpenedDetails, closeDetails }) => {
         options={contextMenuOptions}
         onClose={handleClose}
       >
-        <PatientLabels />
+        <PatientLabels disableFocusOnRender />
         <Box py={1.5} />
         <PatientForm
           ref={formReference}
