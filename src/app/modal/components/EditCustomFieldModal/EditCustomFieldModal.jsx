@@ -2,7 +2,7 @@
 import React, { useEffect, useState, useRef, useMemo } from 'react';
 import { FormProvider, useForm } from 'react-hook-form';
 import { string, object, array } from 'yup';
-import { yupResolver } from "@hookform/resolvers/yup";
+import { yupResolver } from '@hookform/resolvers/yup';
 import { partial } from 'ramda';
 import { Box, Grid, IconButton } from '@material-ui/core';
 import DeleteIcon from '@material-ui/icons/Delete';
@@ -262,14 +262,15 @@ const EditCustomFieldModal = ({
                         label="Field label name"
                       />
                     </Grid>
-                    {fieldTypeValue !== FieldType.DATE && (
-                      <Grid item xs={12}>
-                        <FormInput
-                          name="placeholder"
-                          label="Field label placeholder"
-                        />
-                      </Grid>
-                    )}
+                    {fieldTypeValue !== FieldType.DATE &&
+                      fieldTypeValue !== FieldType.HYPERLINK && (
+                        <Grid item xs={12}>
+                          <FormInput
+                            name="placeholder"
+                            label="Field label placeholder"
+                          />
+                        </Grid>
+                      )}
                     <Grid item xs={6}>
                       <FormSelect
                         readOnly={!!customField}

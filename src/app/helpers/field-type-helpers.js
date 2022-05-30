@@ -3,6 +3,7 @@ import FieldTypeNumberImg from 'img/patient/field-type-number';
 import FieldTypeDateImg from 'img/patient/field-type-date';
 import FieldTypeTextImg from 'img/patient/field-type-text';
 import FieldTypeDropdownImg from 'img/patient/field-type-dropdown';
+import FieldTypeLink from 'img/patient/field-type-link';
 
 export const FieldType = {
   DATE: 'DATE',
@@ -11,6 +12,7 @@ export const FieldType = {
   LONG_TEXT: 'LONG_TEXT',
   BOOL: 'BOOLEAN',
   NUMBER: 'NUMBER',
+  HYPERLINK: 'HYPERLINK',
 };
 
 export const CustomFieldWidthConfig = {
@@ -20,6 +22,7 @@ export const CustomFieldWidthConfig = {
   [FieldType.LONG_TEXT]: '164',
   [FieldType.BOOL]: '164',
   [FieldType.NUMBER]: '164',
+  [FieldType.HYPERLINK]: '164',
 };
 
 export const FieldTypeLabel = {
@@ -29,6 +32,7 @@ export const FieldTypeLabel = {
   [FieldType.LONG_TEXT]: 'Long Text Field',
   [FieldType.BOOL]: 'Yes/No',
   [FieldType.NUMBER]: 'Number',
+  [FieldType.HYPERLINK]: 'Link',
 };
 
 export const FIELD_TYPE_OPTIONS = [
@@ -55,6 +59,10 @@ export const FIELD_TYPE_OPTIONS = [
   {
     value: FieldType.BOOL,
     label: FieldTypeLabel[FieldType.BOOL],
+  },
+  {
+    value: FieldType.HYPERLINK,
+    label: FieldTypeLabel[FieldType.HYPERLINK],
   },
 ];
 
@@ -94,5 +102,11 @@ export const FIELD_TYPES = [
     image: FieldTypeToggleImg,
     title: FieldTypeLabel[FieldType.BOOL],
     description: 'Choose from two options yes or no',
+  },
+  {
+    key: FieldType.HYPERLINK,
+    image: FieldTypeLink,
+    title: FieldTypeLabel[FieldType.HYPERLINK],
+    description: 'Add a named link for a website',
   },
 ];
