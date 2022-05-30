@@ -18,7 +18,7 @@ import {
   FlexButtonWrapper,
 } from '../styled';
 
-const ArchivePatientModal = ({ closeModal, confirm }) => {
+const UnarchivePatientModal = ({ closeModal, confirm }) => {
   const { currentUser } = useSelector(store => ({
     currentUser: store.userState.userProfile,
   }));
@@ -31,12 +31,12 @@ const ArchivePatientModal = ({ closeModal, confirm }) => {
         <ModalIconContainer>
           <ModalMainIcon src={RedFolder} alt="red-folder" />
           <Typography color="textPrimary" variant="h2">
-            Archive {customerTypeLabelCapitalized}
+            Restore {customerTypeLabelCapitalized}
           </Typography>
         </ModalIconContainer>
         <ModalDescriptionContainer>
           <Typography variant="body1">
-            Are you sure you want to archive this {customerTypeLabel}?
+            Are you sure you want to restore this {customerTypeLabel}?
           </Typography>
         </ModalDescriptionContainer>
         <ButtonsContainer>
@@ -47,7 +47,7 @@ const ArchivePatientModal = ({ closeModal, confirm }) => {
               size="small"
               onClick={closeModal}
             >
-              Do not archive
+              Do not restore
             </Button>
           </FlexButtonWrapper>
           <Spacing horizontal={4} />
@@ -58,7 +58,7 @@ const ArchivePatientModal = ({ closeModal, confirm }) => {
               size="small"
               onClick={confirm}
             >
-              Archive
+              Restore
             </Button>
           </FlexButtonWrapper>
         </ButtonsContainer>
@@ -67,4 +67,4 @@ const ArchivePatientModal = ({ closeModal, confirm }) => {
   );
 };
 
-export default ArchivePatientModal;
+export default UnarchivePatientModal;

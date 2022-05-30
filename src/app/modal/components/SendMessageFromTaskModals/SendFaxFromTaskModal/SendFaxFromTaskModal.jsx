@@ -6,7 +6,8 @@ import { sendFaxForTask } from 'actions/task-actions';
 import Button from 'components/common/Button/Button';
 import { selectedTaskSelector } from 'selectors/task-drawer-selectors';
 import Checkbox from 'components/common/Checkbox/Checkbox';
-import { closeModal } from '../../../actions';
+
+import { closeModal } from 'modal/actions';
 import {
   CloseIcon,
   CloseIconButton,
@@ -93,7 +94,7 @@ const SendFaxFromTaskModal = () => {
               <Input
                 type="tel"
                 label="fax"
-                name="email"
+                name="fax"
                 placeholder="type the fax number"
                 autoFocus
                 helperText={faxError ? 'Incorrect fax' : null}

@@ -40,7 +40,10 @@ import {
   taskTemplateDetailsSelector,
   currentTaskTemplateSelector,
 } from 'selectors/task-template-selectors';
-import { userHasSmartFlowsSelector } from 'selectors/user-selectors';
+import {
+  userHasSmartFlowsSelector,
+  userProfileSelector,
+} from 'selectors/user-selectors';
 import { openDrawer } from 'actions/workflow-drawer-actions';
 import { Box, ClickAwayListener, Paper, Popper } from '@material-ui/core';
 import DecisionTaskElementIcon from 'img/template/decision-task-icon';
@@ -125,11 +128,17 @@ const SmartFlowBuilderView = () => {
   const { tasks, layout, temporaryElements } =
     useSelector(taskTemplateDetailsSelector(identifier)) || {};
   const workflow = useSelector(currentTaskTemplateSelector);
-  const { name, templateType, parentTaskWorkflowIdentifier } = workflow || {};
+  const { name, templateType, parentTaskWorkflowIdentifier, members } =
+    workflow || {};
   const smartFlowsAvailable = useSelector(userHasSmartFlowsSelector);
 
   const numberOfTasks = tasks?.length || 0;
   const previousNumberOfTasks = useRef(null);
+
+  const currentUser = useSelector(userProfileSelector);
+  const isCurrentUserEditor =
+    members?.find(({ user }) => user.identifier === currentUser.identifier)
+      ?.memberPermission === 'EDITOR';
 
   useEffect(() => {
     if (
@@ -546,31 +555,36 @@ const SmartFlowBuilderView = () => {
           <ElementsSidebar>
             <Box>
               <SidebarTitle>SmartFlow Toolkit</SidebarTitle>
-              {toolkitActions.map(({ id, label, icon: Icon, ref, onClick }) => (
-                <ElementButton
-                  key={id}
-                  type="button"
-                  ref={ref}
-                  onClick={onClick}
-                  onDragStart={event => {
-                    event.dataTransfer.setData('application/reactflow', id);
-                    // eslint-disable-next-line no-param-reassign
-                    event.dataTransfer.effectAllowed = 'move';
-                  }}
-                  draggable
-                >
-                  <ElementIconBackground>
-                    <Icon />
-                  </ElementIconBackground>
-                  <ElementDescription>{label}</ElementDescription>
-                </ElementButton>
-              ))}
+              {isCurrentUserEditor &&
+                toolkitActions.map(
+                  ({ id, label, icon: Icon, ref, onClick }) => (
+                    <ElementButton
+                      key={id}
+                      type="button"
+                      ref={ref}
+                      onClick={onClick}
+                      onDragStart={event => {
+                        event.dataTransfer.setData('application/reactflow', id);
+                        // eslint-disable-next-line no-param-reassign
+                        event.dataTransfer.effectAllowed = 'move';
+                      }}
+                      draggable
+                    >
+                      <ElementIconBackground>
+                        <Icon />
+                      </ElementIconBackground>
+                      <ElementDescription>{label}</ElementDescription>
+                    </ElementButton>
+                  ),
+                )}
               <SidebarDivider />
-              <Tooltip title="Auto Align will organize  your layout ">
-                <AutoAlignButton type="button" onClick={handleAutoAlignClick}>
-                  Auto Align Layout
-                </AutoAlignButton>
-              </Tooltip>
+              {isCurrentUserEditor && (
+                <Tooltip title="Auto Align will organize  your layout ">
+                  <AutoAlignButton type="button" onClick={handleAutoAlignClick}>
+                    Auto Align Layout
+                  </AutoAlignButton>
+                </Tooltip>
+              )}
               {isDelayPopoverOpen && (
                 <Popper
                   anchorEl={delayPeriodOptionReference.current}
@@ -644,8 +658,11 @@ const SmartFlowBuilderView = () => {
                 onLoad={handleLoad}
                 onSelectionChange={setSelectedElements}
                 multiSelectionKeyCode={91}
+                nodesDraggable={isCurrentUserEditor}
+                nodesConnectable={isCurrentUserEditor}
+                elementsSelectable={isCurrentUserEditor}
               >
-                <Controls />
+                <Controls showInteractive={isCurrentUserEditor} />
               </ReactFlow>
             )}
             <BulkEditContainer
