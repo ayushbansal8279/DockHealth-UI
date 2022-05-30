@@ -17,6 +17,7 @@ const AlertMessages = {
   ATTACHMENT_REMOVED: 'Attachment removed',
   TASK_DUPLICATED: 'Task duplicted',
   PATIENT_ARCHIVED: 'Archived',
+  PATIENT_UNARCHIVED: 'Restored',
   WORKFLOW_CREATED: 'Workflow created',
   LABEL_CREATED: 'Label created',
   LABEL_DELETED: 'Label deleted',

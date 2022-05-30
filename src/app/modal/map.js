@@ -60,12 +60,14 @@ import SelectDestinationGroupModal from './components/SelectDestinationGroupModa
 import PatientFolderModal from './components/PatientFolderModal/PatientFolderModal';
 import SelectPatientFolderModal from './components/SelectPatientFolderModal/SelectPatientFolderModal';
 import SmartFlowListModal from './components/SmartFlowListModal/SmartFlowListModal';
+import UnarchivePatientModal from './components/UnarchivePatientModal/UnarchivePatientModal';
 import SendEmailFromTaskModal from './components/SendEmailFromTaskModal/SendEmailFromTaskModal';
 
 const MODAL_MAP = {
   CompleteAllTasks: CompleteAllTasksModal,
   AttachmentsDuplicate: AttachmentsDuplicateModal,
   ListPicker: ListPickerModal,
+  UnarchivePatient: UnarchivePatientModal,
   ArchivePatient: ArchivePatientModal,
   RemoveActiveUser: RemoveActiveUserModal,
   ArchivePerson: ArchivePersonModal,
