@@ -34,7 +34,9 @@ export const SortButton = styled.button<{
   font-weight: ${fontWeights.regularPlus};
   text-transform: uppercase;
   color: ${palette.mediumGrey};
-
+  &:hover {
+    background-color: ${palette.coolGrey3};
+  }
   @media print {
     ${({ printWidth }) =>
       printWidth &&

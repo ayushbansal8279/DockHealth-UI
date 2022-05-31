@@ -80,9 +80,12 @@ const ColumnSortHeader: React.FC<ColumnSortHeaderProps> = ({
         >
           <Box display="flex">
             {draggable && (
-              <Box p="0 5px 0 0">
+              <Box p="0 5px 0 5px">
                 <Box>
-                  <ThreeDots hideIcon={!isHovered} src={ThreeDotsIcon} />
+                  <ThreeDots
+                    hideIcon={!isHovered || isDraggingOver}
+                    src={ThreeDotsIcon}
+                  />
                 </Box>
               </Box>
             )}
@@ -91,7 +94,7 @@ const ColumnSortHeader: React.FC<ColumnSortHeaderProps> = ({
               id &&
               label &&
               typeof onSortChange === 'function' && (
-                <Box p="0 5px 0 0">
+                <Box p="0 5px 0 5px">
                   <SortArrow
                     isParentHovered={false}
                     orderType={id === sort?.key && sort?.order}
