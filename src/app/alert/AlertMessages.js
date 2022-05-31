@@ -21,6 +21,7 @@ const AlertMessages = {
   WORKFLOW_CREATED: 'Workflow created',
   LABEL_CREATED: 'Label created',
   LABEL_DELETED: 'Label deleted',
+  FAX_SENT: 'Fax Sent',
   MAIL_SENT: 'Mail Sent',
 };
 

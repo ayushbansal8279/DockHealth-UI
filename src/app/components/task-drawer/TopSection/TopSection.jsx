@@ -74,6 +74,10 @@ const TopSection = ({
         onClick: () => dispatch(openModal('SendEmailFromTask')),
       },
       {
+        name: 'Send FAX',
+        onClick: () => dispatch(openModal('SendFaxFromTask')),
+      },
+      {
         name: 'Delete',
         color: palette.error,
         onClick: openDeleteConfirmationModal,
@@ -81,13 +85,13 @@ const TopSection = ({
       },
     ],
     [
-      duplicateTaskWithoutConfirmation,
       handleMoveTask,
+      restrictions,
       handleCopyLink,
       openDeleteConfirmationModal,
-      openDuplicateConfirmationModal,
-      restrictions,
       selectedTask,
+      openDuplicateConfirmationModal,
+      duplicateTaskWithoutConfirmation,
       dispatch,
     ],
   );
