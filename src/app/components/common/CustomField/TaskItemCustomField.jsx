@@ -1,5 +1,4 @@
-import React, { useCallback } from 'react';
-import { Box } from '@material-ui/core';
+import React from 'react';
 import { FieldType } from 'helpers/field-type-helpers';
 import TaskItemBoolean from 'components/task/StandardTaskItem/customFieldsTaskItemComponents/TaskItemBoolean/TaskItemBoolean';
 import TaskItemDate from 'components/task/StandardTaskItem/customFieldsTaskItemComponents/TaskItemDate';
@@ -8,9 +7,9 @@ import TaskItemText from 'components/task/StandardTaskItem/customFieldsTaskItemC
 import TaskItemLongText from 'components/task/StandardTaskItem/customFieldsTaskItemComponents/TaskItemLongText/TaskItemLongText';
 import TaskItemNumber from 'components/task/StandardTaskItem/customFieldsTaskItemComponents/TaskItemNumber/TaskItemNumber';
 import { updatePartialWorkflow } from 'actions/task-template-actions';
-import { partialUpdateTask, storeAsCurrentTask } from 'actions/task-actions';
+import { partialUpdateTask } from 'actions/task-actions';
 import { TaskItemType } from 'helpers/task-helpers';
-import { openDrawer } from 'actions/task-drawer-actions';
+// import { openDrawer } from 'actions/task-drawer-actions';
 import { useDispatch } from 'react-redux';
 import { pick } from 'ramda';
 import { updatePatientDetails } from 'actions/patient-details-actions';
@@ -20,7 +19,7 @@ const TaskItemCustomField = ({
   field,
   customFieldValue,
   task,
-  onClick,
+  // onClick,
   // eslint-disable-next-line sonarjs/cognitive-complexity
 }) => {
   const { value } = customFieldValue || {};
@@ -31,16 +30,16 @@ const TaskItemCustomField = ({
 
   const dispatch = useDispatch();
 
-  const handleClick = useCallback(() => {
-    if (!patientType) {
-      if (typeof onClick === 'function') {
-        onClick(field.identifier, task);
-      } else {
-        dispatch(openDrawer(field.identifier));
-        dispatch(storeAsCurrentTask(task));
-      }
-    }
-  }, [dispatch, field.identifier, onClick, patientType, task]);
+  // const handleClick = useCallback(() => {
+  //   if (!patientType) {
+  //     if (typeof onClick === 'function') {
+  //       onClick(field.identifier, task);
+  //     } else {
+  //       dispatch(openDrawer(field.identifier));
+  //       dispatch(storeAsCurrentTask(task));
+  //     }
+  //   }
+  // }, [dispatch, field.identifier, onClick, patientType, task]);
 
   const handleChange = async newValue => {
     if (patientType) {
@@ -105,20 +104,12 @@ const TaskItemCustomField = ({
       );
     case FieldType.LONG_TEXT:
       return (
-        <Box
-          width="100%"
-          height="100%"
-          display="flex"
-          alignItems="center"
-          onClick={handleClick}
-        >
-          <TaskItemLongText
-            readOnly={readOnly}
-            value={value}
-            onChange={handleChange}
-            field={field}
-          />
-        </Box>
+        <TaskItemLongText
+          readOnly={readOnly}
+          value={value}
+          onChange={handleChange}
+          field={field}
+        />
       );
     case FieldType.NUMBER:
       return (

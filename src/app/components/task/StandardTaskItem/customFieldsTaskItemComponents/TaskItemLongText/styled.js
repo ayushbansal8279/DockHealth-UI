@@ -15,3 +15,11 @@ export const Text = styled.p`
     white-space: wrap;
   }
 `;
+
+export const LongTextBox = styled.div`
+  width: 100%;
+  height: 28px;
+  margin-bottom: 0;
+  color: ${palette.mediumGrey};
+  cursor: pointer;
+`;
