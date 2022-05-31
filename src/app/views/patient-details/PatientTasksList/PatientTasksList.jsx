@@ -120,14 +120,6 @@ const PatientTasksListView = () => {
 
   const isAllTasksView = taskListIdentifierParameter === ListViewType.ALL_TASKS;
 
-  useEffect(() => {
-    if (userOrderColumns) {
-      if (isAllTasksView) setColumnsOrder(userOrderColumns);
-    } else {
-      // TODO: initialize list data when API will be retining it
-    }
-  }, [isAllTasksView, setColumnsOrder, userOrderColumns]);
-
   const handleOrderChange = useCallback(
     listDisplayColumns => {
       if (isAllTasksView) {
@@ -290,6 +282,15 @@ const PatientTasksListView = () => {
           ),
     [filteredLists, isAllTasksView, taskListIdentifierParameter],
   );
+
+  useEffect(() => {
+    if (isAllTasksView && userOrderColumns) {
+      setColumnsOrder(userOrderColumns);
+    } else {
+      // TODO: initialize list data when API will be retining it
+      console.log('activeList', activeList);
+    }
+  }, [activeList, isAllTasksView, setColumnsOrder, userOrderColumns]);
 
   const groupedTasks = useMemo(() => {
     if (isAllTasksView) return undefined;

@@ -542,7 +542,7 @@ const TaskTemplateGroupHeader = ({
               <TaskItemCell
                 key={`custom_${identifier}_${field.identifier}`}
                 width={CustomFieldWidthConfig[field.fieldType]}
-                order={columnsOrder?.indexOf(field.identifier)}
+                order={getColumnOrder(field.identifier)}
               >
                 {!hidePatientCustomFields && (
                   <TaskItemCustomField
