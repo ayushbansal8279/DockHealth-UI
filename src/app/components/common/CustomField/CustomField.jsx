@@ -19,7 +19,6 @@ import { workflowAutofocusFieldSelector } from 'selectors/workflow-drawer-select
 import { Box } from '@material-ui/core';
 import CustomFieldTextEditor from './CustomFieldTextEditor';
 import { ColorIndicator } from './styled';
-import HyperLinkInput from '../HyperLinkInput/HyperLinkInput';
 
 const CustomField = ({
   readOnly,
@@ -183,19 +182,21 @@ const CustomField = ({
       }
       case FieldType.HYPERLINK:
         return (
-          <FormInput
+          <CustomFieldTextEditor
+            identifier={identifier}
             readOnly={readOnly}
             label={name}
-            placeholder="www.."
             name={fieldName}
             onBlur={handleBlur}
             inputRef={inputReference}
-            inputComponent={HyperLinkInput}
+            taskIdentifier={taskIdentifier}
+            task={task}
+            fieldsGroupKey={fieldsGroupKey}
             ref={componentReference}
-            error
             onChange={() => setWasChanged(true)}
           />
         );
+
       default:
         return <div>{field.name}</div>;
     }

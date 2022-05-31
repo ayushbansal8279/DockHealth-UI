@@ -7,6 +7,7 @@ import TaskItemDropdown from 'components/task/StandardTaskItem/customFieldsTaskI
 import TaskItemText from 'components/task/StandardTaskItem/customFieldsTaskItemComponents/TaskItemText/TaskItemText';
 import TaskItemLongText from 'components/task/StandardTaskItem/customFieldsTaskItemComponents/TaskItemLongText/TaskItemLongText';
 import TaskItemNumber from 'components/task/StandardTaskItem/customFieldsTaskItemComponents/TaskItemNumber/TaskItemNumber';
+
 import { updatePartialWorkflow } from 'actions/task-template-actions';
 import { partialUpdateTask, storeAsCurrentTask } from 'actions/task-actions';
 import { TaskItemType } from 'helpers/task-helpers';
@@ -14,6 +15,8 @@ import { openDrawer } from 'actions/task-drawer-actions';
 import { useDispatch } from 'react-redux';
 import { pick } from 'ramda';
 import { updatePatientDetails } from 'actions/patient-details-actions';
+import { StyledHyperLink } from 'components/auth/AuthComponents.styled';
+import { trunc } from 'helpers/utility-functions';
 
 const TaskItemCustomField = ({
   readOnly,
@@ -128,6 +131,15 @@ const TaskItemCustomField = ({
           onChange={handleChange}
           field={field}
         />
+      );
+    case FieldType.HYPERLINK:
+      return (
+        <StyledHyperLink
+          href={value?.startsWith('http') ? value : `//${value}`}
+          target="_blank"
+        >
+          {trunc(value, 15)}
+        </StyledHyperLink>
       );
     default:
       return <div>{field.name}</div>;
