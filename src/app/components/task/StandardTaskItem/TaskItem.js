@@ -142,6 +142,7 @@ const TaskItem = React.memo(
       columnsConfig,
       customColumnsConfig,
       patientCustomColumnsConfig,
+      columnsOrder,
     } = useColumnsConfig();
     const { listName, taskListIdentifier } = taskList || {};
     const isCompleted = task.status === 'COMPLETE';
@@ -157,9 +158,7 @@ const TaskItem = React.memo(
       () =>
         sortAlphabetical([
           ...customColumnsConfig,
-          ...patientCustomColumnsConfig.map(c => ({
-            ...c,
-          })),
+          ...patientCustomColumnsConfig,
         ]),
       [customColumnsConfig, patientCustomColumnsConfig],
     );
@@ -339,6 +338,18 @@ const TaskItem = React.memo(
       dispatch(storeAsCurrentTask(null));
     };
 
+    const getColumnOrder = useCallback(
+      TaskItemColumnType => {
+        if (Array.isArray(columnsOrder) && columnsOrder.length > 0) {
+          const existingOrder = columnsOrder?.indexOf(TaskItemColumnType);
+          if (existingOrder >= 0) return existingOrder;
+          return 999;
+        }
+        return 'initial';
+      },
+      [columnsOrder],
+    );
+
     return (
       <>
         <StandardTaskItemPanel
@@ -356,6 +367,7 @@ const TaskItem = React.memo(
             isAddingTask={false}
           >
             <StickyMainTaskItemCell
+              order={getColumnOrder(TaskItemColumn.DESCRIPTION)}
               isSubtask={showSubtaskStylingLink}
               newlyCreated={newlyCreated}
               backgroundColor={pageBackground}
@@ -453,6 +465,7 @@ const TaskItem = React.memo(
                 justify="center"
                 paddingLeft="tiny"
                 paddingRight="tiny"
+                order={getColumnOrder(TaskItemColumn.SUBTASKS_COUNT)}
               >
                 <TaskItemSubtasks
                   isSubtask={isSubtask}
@@ -473,6 +486,7 @@ const TaskItem = React.memo(
               <TaskItemCell
                 key={`patient_${taskIdentifier}`}
                 width={TaskItemColumnWidth[TaskItemColumn.PATIENT]}
+                order={getColumnOrder(TaskItemColumn.PATIENT)}
               >
                 <TaskItemPatient
                   highlightedValue={highlightedValue}
@@ -500,6 +514,7 @@ const TaskItem = React.memo(
                 onContextMenu={event => {
                   event.stopPropagation();
                 }}
+                order={getColumnOrder(TaskItemColumn.WORKFLOW_STATUS)}
               >
                 <TaskItemWorkflowStatus
                   task={task}
@@ -517,6 +532,7 @@ const TaskItem = React.memo(
               <TaskItemCell
                 key={`activity_${taskIdentifier}`}
                 width={TaskItemColumnWidth[TaskItemColumn.ACTIVITY]}
+                order={getColumnOrder(TaskItemColumn.ACTIVITY)}
               >
                 <TaskItemIcons
                   restrictions={restrictions}
@@ -539,6 +555,7 @@ const TaskItem = React.memo(
                     onContextMenu={event => {
                       event.stopPropagation();
                     }}
+                    order={getColumnOrder(TaskItemColumn.START_DATE)}
                   />
                 )}
                 {columnsConfig[TaskItemColumn.DUE_DATE] && !isTemplateTask && (
@@ -551,6 +568,7 @@ const TaskItem = React.memo(
                     onContextMenu={event => {
                       event.stopPropagation();
                     }}
+                    order={getColumnOrder(TaskItemColumn.DUE_DATE)}
                   >
                     <TaskItemDueDate task={task} />
                   </TaskItemCell>
@@ -567,6 +585,7 @@ const TaskItem = React.memo(
                 onContextMenu={event => {
                   event.stopPropagation();
                 }}
+                order={getColumnOrder(TaskItemColumn.ASSIGNED)}
                 printWidth={TaskItemColumnWidth[TaskItemColumn.ASSIGNED].PRINT}
               >
                 <TaskItemMembers
@@ -584,6 +603,7 @@ const TaskItem = React.memo(
                 <TaskItemCell
                   key={`list_${taskIdentifier}`}
                   width={TaskItemColumnWidth[TaskItemColumn.LIST_NAME]}
+                  order={getColumnOrder(TaskItemColumn.LIST_NAME)}
                 >
                   <TaskItemList
                     listName={listName}
@@ -616,6 +636,7 @@ const TaskItem = React.memo(
                         key={`custom_${taskIdentifier}_${field.identifier}`}
                         padding="4px"
                         width={CustomFieldWidthConfig[field.fieldType]}
+                        order={getColumnOrder(field.identifier)}
                       >
                         {!hidePatientCustomFields && (
                           <TaskItemCustomField

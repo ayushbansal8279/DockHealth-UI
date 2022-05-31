@@ -41,6 +41,7 @@ import { dashboardLastCreatedTaskIdentifierSelector } from 'selectors/dashboard-
 import { usePrevious } from 'react-use';
 import OptionsMenu from 'components/common/OptionsMenu/OptionsMenu';
 import { MoreVert } from '@material-ui/icons';
+import { updateCurrentUserPreferences } from 'actions/user-actions';
 import {
   DashboardTasksGroupContainer,
   DashboardTasksGroupLabel,
@@ -212,6 +213,17 @@ const DashboardTasksGroup = ({
     [isFirstGroup, isLastGroup, moveGroupDown, moveGroupUp],
   );
 
+  const handleOrderChange = useCallback(
+    listDisplayColumns => {
+      dispatch(
+        updateCurrentUserPreferences({
+          listDisplayColumns,
+        }),
+      );
+    },
+    [dispatch],
+  );
+
   return (
     <DashboardTasksGroupContainer ref={parentContainerReference}>
       <StickyContainer left={24} decreaseWidth={2 * 24}>
@@ -269,6 +281,7 @@ const DashboardTasksGroup = ({
               </StickyContainer>
             )}
             <TasksHeader
+              onOrderChange={handleOrderChange}
               pageBackground={palette.white}
               bulkEditEnabled
               isGroupSelected={isGroupSelected}

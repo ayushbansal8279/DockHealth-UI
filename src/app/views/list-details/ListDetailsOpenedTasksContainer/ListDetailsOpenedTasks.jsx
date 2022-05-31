@@ -56,6 +56,7 @@ const ListDetailsOpenedTasks = ({
   onSortChange,
   resetSort,
   viewSetup,
+  onOrderChange,
 }) => {
   const [draggedId, setDraggableId] = useState(null);
   const dispatch = useDispatch();
@@ -175,6 +176,7 @@ const ListDetailsOpenedTasks = ({
 
           return (
             <TasksGroup
+              onOrderChange={onOrderChange}
               key={taskGroupIdentifier}
               isDefaultGroup={groupName === 'DEFAULT'}
               groupName={groupName === 'DEFAULT' ? 'New tasks' : groupName}

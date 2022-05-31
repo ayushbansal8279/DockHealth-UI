@@ -356,3 +356,14 @@ export function updateUserCustomFieldsOptionsListViewSetup(
     })
     .then(({ data }) => data);
 }
+
+export function updateUserAllFieldsOrderSetup(
+  listDisplayColumns,
+  taskListIdentifier,
+) {
+  return axios
+    .put(`list/updateUserPreferences/${taskListIdentifier}`, {
+      listDisplayColumns,
+    })
+    .then(({ data }) => data);
+}

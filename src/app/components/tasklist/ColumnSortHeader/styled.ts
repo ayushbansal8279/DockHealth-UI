@@ -24,13 +24,9 @@ export const LabelWrapper = styled.p<{ ordered: boolean }>`
 export const SortButton = styled.button<{
   printWidth?: number;
   width?: number;
-  truncateEnabled?: boolean;
 }>`
   position: relative;
   flex: ${({ width }) => (width ? `0 0 ${width}px` : '1')};
-  overflow: ${({ truncateEnabled }) =>
-    truncateEnabled ? 'hidden' : 'visible'};
-  padding: 0px 16px;
   height: 35px;
   text-align: left;
   font-family: 'Roboto Condensed', sans-serif;
@@ -50,11 +46,15 @@ export const SortButton = styled.button<{
   }
 `;
 
-export const SortArrowWrapper = styled.div`
-  position: absolute;
-  top: 50%;
-  left: 3px;
-  transform: translateY(-50%);
+export const ThreeDots = styled.img<{ hideIcon: boolean }>`
+  z-index: 2;
+  cursor: pointer;
+  transition: all 0.3s ease-in-out;
+  ${({ hideIcon }) => `opacity: ${hideIcon ? 0 : 1};`}
+
+  &:active {
+    opacity: 1;
+  }
 `;
 
 export const SortHeaderRow = styled.div`
