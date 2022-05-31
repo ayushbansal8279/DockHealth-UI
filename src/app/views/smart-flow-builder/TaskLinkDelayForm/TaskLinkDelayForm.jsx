@@ -24,12 +24,10 @@ const TaskLinkDelayForm = props => {
       delayPeriodUnit: link?.delayPeriodUnit || DelayPeriodUnit.DAY,
       delayIsBusinessDays: link?.delayIsBusinessDays || false,
       timeRelative: link?.timeRelative || TIME_TYPE.AFTER,
-      timeReference:
-        link?.timeReference || TIME_REFERENCE.PREV_TASK_DUE_DATE_TIME,
+      timeReference: link?.timeReference || Object.keys(TIME_REFERENCE)[0],
     },
   });
   const { watch, setValue, register, unregister, handleSubmit } = formMethods;
-
   useEffect(() => {
     register('delayPeriod');
     register('delayPeriodUnit');
@@ -46,7 +44,6 @@ const TaskLinkDelayForm = props => {
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
-
   const delayPeriodValue = watch('delayPeriod');
   const delayIsBusinessDaysValue = watch('delayIsBusinessDays');
   return (

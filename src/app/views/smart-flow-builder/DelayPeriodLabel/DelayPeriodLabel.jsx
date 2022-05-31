@@ -5,8 +5,9 @@ import { Label } from './styled';
 const DelayPeriodLabel = props => {
   const { link, onClick } = props;
   const { delayPeriod, delayPeriodUnit, timeRelative, timeReference } = link;
+  const fixedWidth = timeRelative != null;
   return (
-    <Label onClick={onClick}>
+    <Label fixedWidth={fixedWidth} onClick={onClick}>
       {delayPeriod} {delayPeriodUnit.toLowerCase()}
       {delayPeriod > 1 ? 's' : ''} {timeRelative?.toLowerCase()}{' '}
       {TIME_REFERENCE[timeReference]?.toLowerCase()}
