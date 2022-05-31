@@ -11,15 +11,11 @@ import { useMentionsEditorState } from 'components/common/TextEditor/use-mention
 import {
   convertFromEditorStateToOutput,
   convertToEditorState,
-  // isEditorStateEmpty,
 } from 'components/common/TextEditor/helpers';
-import { Text } from './styled';
+import { Text, LongTextBox } from './styled';
 
 const TaskItemLongText = ({ value = '', onChange, field }) => {
   const detailsReference = useRef(null);
-  // const dispatch = useDispatch();
-
-  // const [detailsState, setDetailsState] = useState(value);
   const [detailsState, setDetailsState] = useMentionsEditorState(
     convertToEditorState({
       rawText: value,
@@ -27,6 +23,11 @@ const TaskItemLongText = ({ value = '', onChange, field }) => {
       mentions: [],
       handleRichText: true,
     }),
+  );
+
+  const { rawText: rawTextUnFormatted } = convertFromEditorStateToOutput(
+    detailsState,
+    false,
   );
 
   const [isFocused, setFocused, unsetFocused] = useBoolean();
@@ -64,6 +65,7 @@ const TaskItemLongText = ({ value = '', onChange, field }) => {
   return (
     <Box width="100%" height="100%" display="flex" alignItems="center">
       <TaskItemPopover
+        fullWidth
         content={() => (
           <Box
             width="450px"
@@ -93,9 +95,24 @@ const TaskItemLongText = ({ value = '', onChange, field }) => {
           </Box>
         )}
       >
-        <Tooltip placement="top" title={value}>
-          <Text>{trunc(value, 15)}</Text>
-        </Tooltip>
+        <LongTextBox>
+          <Tooltip
+            placement="top"
+            title={
+              <pre
+                style={{
+                  fontFamily: "'Roboto', sans-serif",
+                  whiteSpace: 'pre-wrap',
+                  wordBreak: 'keep-all',
+                }}
+              >
+                {rawTextUnFormatted}
+              </pre>
+            }
+          >
+            <Text>{trunc(rawTextUnFormatted, 15)}</Text>
+          </Tooltip>
+        </LongTextBox>
       </TaskItemPopover>
     </Box>
   );
