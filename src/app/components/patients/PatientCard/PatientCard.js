@@ -87,9 +87,6 @@ const renderPatientNotes = (
       </PatientNote>
     );
   };
-
-
-
   return notes?.length > 0 ? (
     <>
       <Divider />
@@ -219,9 +216,10 @@ const PatientCard = ({
                   <>
                     <Spacing vertical={2} />
                     <PatientInfo>
-                      {(age || gender) && (
+                      {(age || gender || dob) && (
                         <InfoItem>
-                          {age && `${age} `}
+                          {dob && `${moment(dob).format('MMM D, YYYY')} | `}
+                          {age && `${age} | `}
                           {gender && `${gender?.charAt(0)?.toUpperCase()}`}
                         </InfoItem>
                       )}
