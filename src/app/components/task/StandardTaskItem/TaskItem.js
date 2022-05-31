@@ -586,6 +586,7 @@ const TaskItem = React.memo(
                   event.stopPropagation();
                 }}
                 order={getColumnOrder(TaskItemColumn.ASSIGNED)}
+                printWidth={TaskItemColumnWidth[TaskItemColumn.ASSIGNED].PRINT}
               >
                 <TaskItemMembers
                   readOnly={restrictions?.assigment === READ_ONLY}

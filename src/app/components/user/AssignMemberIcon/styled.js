@@ -19,4 +19,8 @@ export const StyledAssignMemberIcon = styled.div`
     transform: translate(-50%, -50%);
     color: ${palette.brightBlue};
   }
+
+  @media print {
+    display: none;
+  }
 `;

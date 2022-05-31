@@ -13,4 +13,7 @@ export const CustomizeButton = styled.button`
   &:hover {
     background: ${palette.coolGrey3};
   }
+  @media print {
+    display: none;
+  }
 `;

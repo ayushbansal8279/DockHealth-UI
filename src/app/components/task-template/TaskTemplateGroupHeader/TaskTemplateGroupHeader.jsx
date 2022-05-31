@@ -24,6 +24,8 @@ import {
   TaskItemColumnWidth,
   TaskStatus,
 } from 'helpers/task-helpers';
+import * as TaskTemplateApi from 'api/task-template-api';
+import { workflowSelector } from 'selectors/workflow-drawer-selectors';
 import Checkbox from 'components/common/Checkbox/Checkbox';
 import ProgressBar from 'components/common/ProgressBar/ProgressBar';
 import RotatableChevron from 'components/common/RotatableChevron/RotatableChevron';
@@ -108,7 +110,10 @@ const TaskTemplateGroupHeader = ({
   useEffect(() => {
     setNameInputValue(name);
   }, [name]);
-  const workFlowData = templateGroup;
+
+  // const workFlowData = templateGroup;
+  const [workFlowData, setWorkFlowData] = useState(undefined);
+  const selectedWorkflow = useSelector(workflowSelector);
 
   const alphabeticalSortedAllTypeCustomFields = useMemo(
     () =>
@@ -358,6 +363,14 @@ const TaskTemplateGroupHeader = ({
     },
     [columnsOrder],
   );
+  const getWorkflowData = useCallback(async id => {
+    setWorkFlowData(await TaskTemplateApi.getTemplateBasicDetails(id));
+  }, []);
+
+  useEffect(() => {
+    // eslint-disable-next-line no-unused-expressions
+    !selectedWorkflow ? getWorkflowData(identifier) : setWorkFlowData(null);
+  }, [getWorkflowData, identifier, selectedWorkflow]);
 
   return (
     <TaskTemplateGroupHeaderContainer isSelected={isBundleSelected}>
@@ -375,7 +388,12 @@ const TaskTemplateGroupHeader = ({
               {...dragHandleProps}
             />
           )}
-          <Checkbox isChecked={isBundleSelected} onClick={handleBundleSelect} />
+          {isOpen && (
+            <Checkbox
+              isChecked={isBundleSelected}
+              onClick={handleBundleSelect}
+            />
+          )}
           <Box m={1} />
           <RotatableChevron rotated={isOpen} onClick={() => setOpen(!isOpen)} />
           <Spacing horizontal={2} />
@@ -456,13 +474,11 @@ const TaskTemplateGroupHeader = ({
           order={getColumnOrder(TaskItemColumn.ACTIVITY)}
         >
           <TaskTemplateIcons
-            matchComments={false}
-            comments={comments}
-            workflow={templateGroup}
-            matchLabels={false}
-            labels={labels}
-            matchAttachments={false}
-            attachments={attachments}
+            workflow={
+              templateGroup.comments || !workFlowData
+                ? templateGroup
+                : workFlowData
+            }
             dispatch={dispatch}
           />
         </TaskItemCell>
@@ -498,6 +514,7 @@ const TaskTemplateGroupHeader = ({
             event.stopPropagation();
           }}
           order={getColumnOrder(TaskItemColumn.ASSIGNED)}
+          printWidth={TaskItemColumnWidth[TaskItemColumn.ASSIGNED].PRINT}
         >
           <TaskTemplateMembers
             currentUser={currentUser}

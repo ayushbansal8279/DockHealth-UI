@@ -37,6 +37,7 @@ import {
 } from 'selectors/mega-filter-selectors';
 import { DashboardTasksTab } from 'helpers/dashboard-helpers';
 import { getViewTypeFromQueryString, ViewType } from 'helpers/view-type-helper';
+import { DashboardHeaderContainer } from './styled';
 
 const DashboardHeader = () => {
   const { search } = useLocation();
@@ -155,42 +156,44 @@ const DashboardHeader = () => {
   );
 
   return (
-    <LayoutHeader>
-      <UserAvatar
-        user={currentUser}
-        showOnlineIndicator={false}
-        size={55}
-        hideTooltip
-      />
-      <LayoutHeader.Spacer />
-      <LayoutHeader.Title title={`Hello ${currentUser.firstName}`} />
-      {viewType !== ViewType.CALENDAR_VIEW && (
-        <>
-          <LayoutHeader.Spacer />
-          <HeaderSearch value={searchValue} onChange={handleSearchChange} />
-          <LayoutHeader.Spacer />
-          <MegaFilter
-            filters={filterOptions}
-            selectedFilters={selectedFilters}
-            onSelectFilters={compose(dispatch, selectDashboardFilters)}
-            taskStatus="INCOMPLETE"
-            activeItemsAmount={activeTasksCount}
-            onOpen={handleMegaFilterOpen}
-            isFetching={isFetchingFilters}
-            quickFiltersList={quickFiltersList}
-            addQuickFilterOption={addQuickFilterOption}
-            selectedQuickFilter={selectedQuickFilter}
-            selectQuickFilter={handleSelectQuickFilter}
-            onSaveClick={handleSaveQuickFilter}
-            onSaveAsNewClick={handleSaveAsQuickFilter}
-            wasChangedFilters={wasChangedFilters}
-            onQuickFilterCreate={handleQuickFilterCreate}
-            onQuickFilterUpdate={handleQuickFilterUpdate}
-            onQuickFilterDelete={handleQuickFilterDelete}
-          />
-        </>
-      )}
-    </LayoutHeader>
+    <DashboardHeaderContainer>
+      <LayoutHeader>
+        <UserAvatar
+          user={currentUser}
+          showOnlineIndicator={false}
+          size={55}
+          hideTooltip
+        />
+        <LayoutHeader.Spacer />
+        <LayoutHeader.Title title={`Hello ${currentUser.firstName}`} />
+        {viewType !== ViewType.CALENDAR_VIEW && (
+          <>
+            <LayoutHeader.Spacer />
+            <HeaderSearch value={searchValue} onChange={handleSearchChange} />
+            <LayoutHeader.Spacer />
+            <MegaFilter
+              filters={filterOptions}
+              selectedFilters={selectedFilters}
+              onSelectFilters={compose(dispatch, selectDashboardFilters)}
+              taskStatus="INCOMPLETE"
+              activeItemsAmount={activeTasksCount}
+              onOpen={handleMegaFilterOpen}
+              isFetching={isFetchingFilters}
+              quickFiltersList={quickFiltersList}
+              addQuickFilterOption={addQuickFilterOption}
+              selectedQuickFilter={selectedQuickFilter}
+              selectQuickFilter={handleSelectQuickFilter}
+              onSaveClick={handleSaveQuickFilter}
+              onSaveAsNewClick={handleSaveAsQuickFilter}
+              wasChangedFilters={wasChangedFilters}
+              onQuickFilterCreate={handleQuickFilterCreate}
+              onQuickFilterUpdate={handleQuickFilterUpdate}
+              onQuickFilterDelete={handleQuickFilterDelete}
+            />
+          </>
+        )}
+      </LayoutHeader>
+    </DashboardHeaderContainer>
   );
 };
 

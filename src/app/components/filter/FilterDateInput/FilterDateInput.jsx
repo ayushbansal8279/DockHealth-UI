@@ -80,7 +80,7 @@ const FilterDateInput = ({ date, onDateChange, minDate, maxDate }) => {
           mask="99/99/9999"
           value={inputValue}
           placeholder="00/00/0000"
-          maskPlaceholder="00/00/0000"
+          maskplaceholder="00/00/0000"
           hasError={hasError}
         />
         <Popper

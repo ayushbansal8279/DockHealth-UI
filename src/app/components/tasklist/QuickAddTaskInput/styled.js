@@ -32,6 +32,10 @@ export const AddTaskInputWrapper = styled.div`
   &:focus-within:before {
     visibility: hidden;
   }
+
+  @media print {
+    display: none;
+  }
 `;
 
 export const QuickAddHint = styled.p`

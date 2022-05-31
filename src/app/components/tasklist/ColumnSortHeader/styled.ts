@@ -22,6 +22,7 @@ export const LabelWrapper = styled.p<{ ordered: boolean }>`
 `;
 
 export const SortButton = styled.button<{
+  printWidth?: number;
   width?: number;
 }>`
   position: relative;
@@ -33,6 +34,16 @@ export const SortButton = styled.button<{
   font-weight: ${fontWeights.regularPlus};
   text-transform: uppercase;
   color: ${palette.mediumGrey};
+
+  @media print {
+    ${({ printWidth }) =>
+      printWidth &&
+      `
+      width: ${printWidth}px;
+      min-width: ${printWidth}px;
+      max-width: ${printWidth}px;
+  `};
+  }
 `;
 
 export const ThreeDots = styled.img<{ hideIcon: boolean }>`

@@ -12,17 +12,16 @@ import TaskIcon from 'components/task/TaskIcon/TaskIcon';
 import { SINGLE_TASK_RESTRICTIONS_OPTIONS } from 'restrictions/task-restrictions';
 import { GridImg } from './styled';
 
-const TaskTemplateIcons = ({
-  matchComments,
-  comments,
-  workflow,
-  matchLabels,
-  labels,
-  matchAttachments,
-  attachments,
-  dispatch,
-  restrictions,
-}) => {
+const TaskTemplateIcons = ({ workflow, dispatch }) => {
+  const {
+    matchComments,
+    comments,
+    matchLabels,
+    labels,
+    matchAttachments,
+    attachments,
+    restrictions,
+  } = workflow;
   const onCommentClick = useCallback(() => {
     dispatch(
       openDrawer(

@@ -24,6 +24,7 @@ interface ColumnSortHeaderProps {
   isDraggingOver?: boolean;
   draggable?: boolean;
   index?: number;
+  printWidth?: number;
   snapshot?: any;
 }
 
@@ -39,6 +40,7 @@ const ColumnSortHeader: React.FC<ColumnSortHeaderProps> = ({
   draggable = false,
   index,
   snapshot,
+  printWidth,
   // eslint-disable-next-line sonarjs/cognitive-complexity
 }) => {
   const descriptionTextReference = useRef();
@@ -151,6 +153,7 @@ const ColumnSortHeader: React.FC<ColumnSortHeaderProps> = ({
       onClick={switchSort}
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
+      printWidth={printWidth}
     >
       <Draggable key={id} draggableId={id} index={index}>
         {(provided: any) => (

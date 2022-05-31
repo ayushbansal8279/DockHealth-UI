@@ -2,6 +2,7 @@ import styled from 'styled-components';
 import { fontSizes, fontWeights } from 'styles/font';
 import palette from 'styles/palette';
 import spacing from 'styles/spacing';
+import PinIcon from 'img/pin';
 
 export const PatientCellWrapper = styled.span``;
 
@@ -51,6 +52,25 @@ export const PatientNotesSection = styled.div`
 
 export const PatientNote = styled.div`
   width: 100%;
+`;
+export const PatientNotesWrapper = styled.div`
+  width: 100%;
+  background: ${palette.white};
+  padding: 2px;
+`;
+
+export const PinnedNotesWrapper = styled.div`
+  position: relative;
+  background-color: ${palette.coolGrey4};
+  border: 1px solid ${palette.coolGrey3};
+  padding: 5px;
+
+  &:before {
+    content: url(${PinIcon});
+    position: absolute;
+    top: 9px;
+    right: 6px;
+  }
 `;
 
 export const NoteDescription = styled.p`

@@ -1,18 +1,34 @@
-import React, { useEffect, useRef } from 'react';
+import React, { useCallback, useEffect, useMemo } from 'react';
 import { Box } from '@material-ui/core';
-import { useBoolean } from 'hooks/useBoolean';
 import { useHistory } from 'react-router-dom';
 import { checkIfUserIsOrganizationAdmin } from 'helpers/user-helper';
-import FilterButton from 'components/filter/FilterButton/FilterButton';
 import { userProfileSelector } from 'selectors/user-selectors';
-import { analyticsFiltersActiveSelector } from 'selectors/analytics-selectors';
-import { clearAnalyticsFilter } from 'actions/analytics-actions';
-import FilterPopover from 'components/filter/FilterPopover/FilterPopover';
+import {
+  analyticsFiltersSelector,
+  analyticsSelectedFiltersSelector,
+} from 'selectors/analytics-selectors';
 import ViewLayout from 'components/template/ViewLayout/ViewLayout';
 import BasicLayoutHeader from 'components/template/BasicLayoutHeader/BasicLayoutHeader';
 import { useDispatch, useSelector } from 'react-redux';
+import { compose, equals } from 'ramda';
+import * as AnalyticsActions from 'actions/analytics-actions';
+
+import MegaFilter from 'components/tasklist/MegaFilter/MegaFilter';
+import {
+  showAddQuickFilterOption,
+  deleteQuickFilter,
+  selectQuickFilter,
+  getAnalyticsQuickFilters,
+  createQuickAnalyticsFilter,
+  updateQuickAnalyticsFilter,
+} from 'actions/mega-filter-actions';
+import {
+  addQuickFilterOptionSelector,
+  quickFiltersSelector,
+  selectedQuickFilterSelector,
+  isFetchingFiltersSelector,
+} from 'selectors/mega-filter-selectors';
 import ChartTail from './ChartTail/ChartTail';
-import AnalyticsFilters from './AnalyticsFilters/AnalyticsFilters';
 import { Container, ChartsContainer } from './styled';
 import WorkflowStatusStatisticsChart from './WorkflowStatusStatisticsChart/WorkflowStatusStatisticsChart';
 import AssignedToStatisticsChart from './AssignedToStatisticsChart/AssignedToStatisticsChart';
@@ -25,9 +41,28 @@ const AnalyticsView = () => {
   const dispatch = useDispatch();
   const history = useHistory();
   const userProfile = useSelector(userProfileSelector);
-  const analyticsFiltersActive = useSelector(analyticsFiltersActiveSelector);
-  const filterButtonReference = useRef(null);
-  const { 0: filterOpen, 2: closeFilter, 3: toggleFilter } = useBoolean(false);
+
+  const isFetchingFilters = useSelector(isFetchingFiltersSelector);
+  const quickFiltersList = useSelector(quickFiltersSelector);
+  const addQuickFilterOption = useSelector(addQuickFilterOptionSelector);
+  const selectedQuickFilter = useSelector(selectedQuickFilterSelector);
+
+  const filters = useSelector(analyticsFiltersSelector);
+  const selectedFilters = useSelector(analyticsSelectedFiltersSelector);
+
+  useEffect(() => {
+    dispatch(AnalyticsActions.getAnalyticsFilterOptions());
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  const handleSelectedFiltersChange = newSelectedFilters => {
+    dispatch(AnalyticsActions.setAnalyticsSelectedFilters(newSelectedFilters));
+  };
+
+  const handleSaveAsQuickFilter = useCallback(
+    () => dispatch(showAddQuickFilterOption()),
+    [dispatch],
+  );
 
   useEffect(() => {
     if (!checkIfUserIsOrganizationAdmin(userProfile)) {
@@ -36,14 +71,79 @@ const AnalyticsView = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [userProfile]);
 
+  const handleMegaFilterOpen = useCallback(() => {
+    dispatch(getAnalyticsQuickFilters());
+  }, [dispatch]);
+
+  const handleSelectQuickFilter = useCallback(
+    (id, filtersSetup) => {
+      dispatch(selectQuickFilter(id));
+      dispatch(AnalyticsActions.setAnalyticsSelectedFilters(filtersSetup));
+    },
+    [dispatch],
+  );
+
+  const handleSaveQuickFilter = useCallback(
+    () =>
+      dispatch(
+        updateQuickAnalyticsFilter(selectedQuickFilter, {
+          selectedOptions: selectedFilters,
+        }),
+      ),
+    [dispatch, selectedFilters, selectedQuickFilter],
+  );
+
+  const wasChangedFilters = useMemo(
+    () =>
+      !equals(
+        selectedFilters,
+        quickFiltersList?.find(
+          f => f.quickFilterIdentifier === selectedQuickFilter,
+        )?.selectedOptions,
+      ),
+    [quickFiltersList, selectedFilters, selectedQuickFilter],
+  );
+
+  const handleQuickFilterCreate = useCallback(
+    name => dispatch(createQuickAnalyticsFilter(name, selectedFilters)),
+    [dispatch, selectedFilters],
+  );
+
+  const handleQuickFilterUpdate = useCallback(
+    (quickFilterIdentifier, name) =>
+      dispatch(updateQuickAnalyticsFilter(quickFilterIdentifier, { name })),
+    [dispatch],
+  );
+
+  const handleQuickFilterDelete = useCallback(
+    quickFilterIdentifier => dispatch(deleteQuickFilter(quickFilterIdentifier)),
+    [dispatch],
+  );
+
   return (
     <ViewLayout header={<BasicLayoutHeader title="Analytics" />}>
       <Container>
-        <FilterButton
-          ref={filterButtonReference}
-          active={analyticsFiltersActive}
-          onClick={toggleFilter}
-          onClear={() => dispatch(clearAnalyticsFilter())}
+        <MegaFilter
+          filters={filters}
+          selectedFilters={selectedFilters}
+          onSelectFilters={compose(
+            dispatch,
+            AnalyticsActions.setAnalyticsSelectedFilters,
+          )}
+          onOpen={handleMegaFilterOpen}
+          isFetching={isFetchingFilters}
+          quickFiltersList={quickFiltersList}
+          addQuickFilterOption={addQuickFilterOption}
+          selectedQuickFilter={selectedQuickFilter}
+          selectQuickFilter={handleSelectQuickFilter}
+          onSaveClick={handleSaveQuickFilter}
+          onSaveAsNewClick={handleSaveAsQuickFilter}
+          wasChangedFilters={wasChangedFilters}
+          onQuickFilterCreate={handleQuickFilterCreate}
+          onQuickFilterUpdate={handleQuickFilterUpdate}
+          onQuickFilterDelete={handleQuickFilterDelete}
+          onSelectedFiltersChange={handleSelectedFiltersChange}
+          onClear={() => dispatch(AnalyticsActions.clearAnalyticsFilter())}
         />
         <Box p={1} />
         <ChartsContainer>
@@ -67,13 +167,6 @@ const AnalyticsView = () => {
           </ChartTail>
         </ChartsContainer>
       </Container>
-      <FilterPopover
-        anchorEl={filterButtonReference.current}
-        open={filterOpen}
-        onClose={closeFilter}
-      >
-        <AnalyticsFilters />
-      </FilterPopover>
     </ViewLayout>
   );
 };

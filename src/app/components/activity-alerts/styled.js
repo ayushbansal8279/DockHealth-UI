@@ -55,6 +55,9 @@ export const ActivityAlertsImg = styled.img`
           ${rotateImg} 0.55s ease-in-out 0.25s
         `
       : ''};
+  @media print {
+    opacity: 0;
+  }
 `;
 
 export const ActivityAlertsPopover = withStyles({
