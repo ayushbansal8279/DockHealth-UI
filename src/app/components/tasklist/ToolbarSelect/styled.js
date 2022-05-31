@@ -1,5 +1,6 @@
 /* eslint-disable import/prefer-default-export */
 import { makeStyles } from '@material-ui/core/styles';
+import styled from 'styled-components';
 import palette from 'styles/palette';
 
 export const useStyles = makeStyles({
@@ -21,3 +22,9 @@ export const useStyles = makeStyles({
     },
   },
 });
+
+export const SelectWrapper = styled.div`
+  @media print {
+    display: none;
+  }
+`;

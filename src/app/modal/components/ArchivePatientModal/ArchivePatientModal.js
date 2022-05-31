@@ -36,8 +36,7 @@ const ArchivePatientModal = ({ closeModal, confirm }) => {
         </ModalIconContainer>
         <ModalDescriptionContainer>
           <Typography variant="body1">
-            Are you sure you want to archive this {customerTypeLabel}? This
-            action cannot be undone.
+            Are you sure you want to archive this {customerTypeLabel}?
           </Typography>
         </ModalDescriptionContainer>
         <ButtonsContainer>

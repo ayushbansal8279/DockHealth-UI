@@ -55,21 +55,21 @@ export const PatientNote = styled.div`
 `;
 export const PatientNotesWrapper = styled.div`
   width: 100%;
-  max-width: 800px;
   background: ${palette.white};
-  padding: 12px;
+  padding: 2px;
 `;
 
 export const PinnedNotesWrapper = styled.div`
-  // position: relative;
+  position: relative;
   background-color: ${palette.coolGrey4};
   border: 1px solid ${palette.coolGrey3};
+  padding: 5px;
 
   &:before {
     content: url(${PinIcon});
     position: absolute;
     top: 9px;
-    left: 6px;
+    right: 6px;
   }
 `;
 

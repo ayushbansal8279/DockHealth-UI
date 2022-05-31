@@ -38,7 +38,7 @@ import {
   ActionsContainer,
   DashboardTabsContainer,
   DashboardTabHighlight,
-  TipsSwitchLabel,
+  TaskViewSelectWrapper,
 } from './styled';
 
 const DASHBOARD_BASE_COLUMNS_CONFIG = {
@@ -219,10 +219,12 @@ const DashboardToolbar = props => {
       </Grid>
       <ActionsContainer item md={8}>
         {tabName !== DashboardTasksTab.SHARED_TASKS && (
-          <TaskViewTypeToolbarSelect
-            value={viewType}
-            onChange={handleChangeViewType}
-          />
+          <TaskViewSelectWrapper>
+            <TaskViewTypeToolbarSelect
+              value={viewType}
+              onChange={handleChangeViewType}
+            />
+          </TaskViewSelectWrapper>
         )}
         {viewType !== ViewType.CALENDAR_VIEW && (
           <>

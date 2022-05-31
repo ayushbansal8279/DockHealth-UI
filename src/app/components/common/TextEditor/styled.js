@@ -58,8 +58,16 @@ export const StyledEditorContainer = styled.div`
       height: 1.3em;
       overflow: hidden;
 
+      @media print {
+        height: auto;
+      }
+
       & .public-DraftStyleDefault-block {
         white-space: pre;
+
+        @media print {
+          white-space: initial;
+        }
 
         ${isReadOnly &&
           `

@@ -40,6 +40,12 @@ export const TaskTemplateType = {
   FOLDER: 'FOLDER',
 };
 
+export const CommunicationType = {
+  EMAIL: 'EMAIL',
+  FAX: 'FAX',
+  SMS: 'SMS',
+};
+
 export function getPriorityColor(priority) {
   switch (priority) {
     case TaskPriority.HIGH:
@@ -146,6 +152,7 @@ export const TaskItemColumnWidth = {
   [TaskItemColumn.ASSIGNED]: {
     WIDE: 90,
     NARROW: 60,
+    PRINT: 170,
   },
   [TaskItemColumn.PATIENT]: 164,
   [TaskItemColumn.SUBTASKS_COUNT]: 60,

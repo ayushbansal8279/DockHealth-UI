@@ -10,6 +10,8 @@ import Circle from 'img/circle.svg';
 import CircleCompleted from 'img/circle-completed.svg';
 import OptionsMenu from 'components/common/OptionsMenu/OptionsMenu';
 import { SINGLE_TASK_RESTRICTIONS_OPTIONS } from 'restrictions/task-restrictions';
+import { useDispatch } from 'react-redux';
+import { openModal } from 'modal/actions';
 import { HorizontalLabel, FiledInListName } from '../styled';
 import initializeTaskDrawerTopSectionHooks from './hooks';
 
@@ -38,7 +40,7 @@ const TopSection = ({
     onDuplicate,
     closeTaskDrawer,
   });
-
+  const dispatch = useDispatch();
   const options = useMemo(
     () => [
       {
@@ -68,6 +70,14 @@ const TopSection = ({
         onClick: handleCopyLink,
       },
       {
+        name: 'Send Email',
+        onClick: () => dispatch(openModal('SendEmailFromTask')),
+      },
+      {
+        name: 'Send FAX',
+        onClick: () => dispatch(openModal('SendFaxFromTask')),
+      },
+      {
         name: 'Delete',
         color: palette.error,
         onClick: openDeleteConfirmationModal,
@@ -75,13 +85,14 @@ const TopSection = ({
       },
     ],
     [
-      duplicateTaskWithoutConfirmation,
       handleMoveTask,
+      restrictions,
       handleCopyLink,
       openDeleteConfirmationModal,
-      openDuplicateConfirmationModal,
-      restrictions,
       selectedTask,
+      openDuplicateConfirmationModal,
+      duplicateTaskWithoutConfirmation,
+      dispatch,
     ],
   );
 

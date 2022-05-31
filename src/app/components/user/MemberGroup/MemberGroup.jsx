@@ -5,7 +5,7 @@ import { arrayOf, number, shape, string } from 'prop-types';
 import { userProfileSelector } from 'selectors/user-selectors';
 import GroupAvatar from 'components/user/GroupAvatar/GroupAvatar';
 import { isUserGroup } from 'helpers/user-helper';
-import { GroupContainer, GroupItem } from './styled';
+import { GroupContainer, GroupItem, NameWrapper } from './styled';
 import AdditionalMembersCounter from '../AdditionalMembersCounter/AdditionalMembersCounter';
 
 const MemberGroup = ({ members, max, size }) => {
@@ -37,17 +37,26 @@ const MemberGroup = ({ members, max, size }) => {
 
   return (
     <GroupContainer>
+      <>
+        {members?.map((member, index) => (
+          <NameWrapper>{`
+        ${member.name}${index !== shownMembers.length - 1 ? ', ' : ''}
+        `}</NameWrapper>
+        ))}
+      </>
       {shownMembers?.map((member, index) => (
-        <GroupItem
-          key={member?.identifier}
-          zIndex={shownMembers.length - index}
-        >
-          {isUserGroup(member) ? (
-            <GroupAvatar size={size} group={member} />
-          ) : (
-            <UserAvatar user={member} size={size} />
-          )}
-        </GroupItem>
+        <>
+          <GroupItem
+            key={member?.identifier}
+            zIndex={shownMembers.length - index}
+          >
+            {isUserGroup(member) ? (
+              <GroupAvatar size={size} group={member} />
+            ) : (
+              <UserAvatar user={member} size={size} />
+            )}
+          </GroupItem>
+        </>
       ))}
       {hiddenMembers && (
         <GroupItem zIndex={0}>

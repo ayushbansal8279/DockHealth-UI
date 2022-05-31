@@ -46,3 +46,9 @@ export const TipsSwitchLabel = styled.label`
   vertical-align: middle;
   text-transform: uppercase;
 `;
+
+export const TaskViewSelectWrapper = styled.div`
+  @media print {
+    display: none;
+  }
+`;

@@ -7,7 +7,7 @@ import React, {
   useEffect,
 } from 'react';
 import { useSelector } from 'react-redux';
-import { convertToRaw, Entity, SelectionState, EditorState } from 'draft-js';
+import { convertToRaw, Entity, EditorState } from 'draft-js';
 import { makeStyles } from '@material-ui/core/styles';
 import Editor from 'draft-js-plugins-editor';
 import debounce from 'lodash.debounce';
@@ -48,6 +48,7 @@ import {
   mapUsersToSuggestions,
   createHighlightDecorator,
   createLinkDecorator,
+  createPlaceholderDecorator,
 } from './helpers';
 import { StyledEditorContainer, ToolbarContainer } from './styled';
 import LinkButton from './Link/LinkButton';
@@ -417,6 +418,7 @@ const TextEditor = React.forwardRef(
                   ? [createHighlightDecorator(highlightedValues)]
                   : []),
                 createLinkDecorator,
+                createPlaceholderDecorator,
               ]}
             />
             <Spacing horizontal={4} />

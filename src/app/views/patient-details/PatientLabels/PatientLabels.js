@@ -10,11 +10,16 @@ import React, {
 import { Chip } from '@material-ui/core';
 import { useDispatch, useSelector } from 'react-redux';
 import Autocomplete from 'components/common/Autocomplete/Autocomplete';
-import { patientLabelsSelector } from 'selectors/patient-details-selectors';
+import {
+  patientLabelsSelector,
+  patientSelector,
+} from 'selectors/patient-details-selectors';
 import { PatientEditContext } from 'context-api/patient-edit-context';
 import {
+  patientAddLabel,
   patientBulkAddLabel,
   patientBulkDeleteLabel,
+  patientDeleteLabel,
 } from 'actions/patients-actions';
 import initializeLabelsSectionHooks from './hooks';
 import {
@@ -26,6 +31,22 @@ import {
   NoOptionContainer,
   useAutocompleteStyles,
 } from './styled';
+
+function makeBulkLabelToSend(value, assignedPatients) {
+  return {
+    labelIdentifier: value.labelIdentifier,
+    labelName: value.labelName,
+    assignedToUsers: assignedPatients,
+  };
+}
+
+function makeLabelToSend(value, patientId) {
+  return {
+    labelIdentifier: value.labelIdentifier,
+    labelName: value.labelName,
+    patientIdentifier: patientId,
+  };
+}
 
 const renderOption = ({
   isEditable,
@@ -88,7 +109,7 @@ const renderOption = ({
 );
 
 // eslint-disable-next-line sonarjs/cognitive-complexity
-const PatientLabels = ({ isPatientBulk }) => {
+const PatientLabels = ({ isPatientBulk, disableFocusOnRender = false }) => {
   const {
     saveEditLabel,
     deleteLabel,
@@ -103,7 +124,7 @@ const PatientLabels = ({ isPatientBulk }) => {
   const inputReference = useRef(null);
 
   const patientContext = useContext(PatientEditContext);
-
+  const patient = useSelector(patientSelector);
   const { selectedPatients } = patientContext;
   const dispatch = useDispatch();
 
@@ -112,16 +133,23 @@ const PatientLabels = ({ isPatientBulk }) => {
   const classes = useAutocompleteStyles();
 
   useEffect(() => {
-    setSelectedLabels([]);
-  }, [selectedPatients]);
+    if (selectedPatients) {
+      setSelectedLabels([]);
+    }
+    if (patient) {
+      setSelectedLabels(patient.patientLabels ?? []);
+    }
+  }, [selectedPatients, patient]);
 
   useEffect(() => {
-    if (currentEditableOption) {
-      optionReferences?.current[currentEditableOption]?.focus();
-    } else {
-      inputReference.current?.focus();
+    if (!disableFocusOnRender) {
+      if (currentEditableOption) {
+        optionReferences?.current[currentEditableOption]?.focus();
+      } else {
+        inputReference.current?.focus();
+      }
     }
-  }, [currentEditableOption, inputReference]);
+  }, [currentEditableOption, inputReference, disableFocusOnRender]);
 
   const getInputReference = element => {
     inputReference.current = element;
@@ -152,14 +180,13 @@ const PatientLabels = ({ isPatientBulk }) => {
       const assignedPatients = selectedPatients?.map(singlePatient => {
         return singlePatient.patientIdentifier;
       });
-
-      const labelToRemove = {
-        labelIdentifier: value.labelIdentifier || null,
-        labelName: value.labelName || null,
-        assignedToUsers: assignedPatients,
-      };
-
-      dispatch(patientBulkDeleteLabel(labelToRemove));
+      if (assignedPatients) {
+        const labelToRemove = makeBulkLabelToSend(value, assignedPatients);
+        dispatch(patientBulkDeleteLabel(labelToRemove));
+      } else {
+        const labelToRemove = makeLabelToSend(value, patient.patientIdentifier);
+        dispatch(patientDeleteLabel(labelToRemove));
+      }
       setSelectedLabels(previousState => {
         return (
           previousState.filter(
@@ -168,7 +195,7 @@ const PatientLabels = ({ isPatientBulk }) => {
         );
       });
     },
-    [dispatch, selectedPatients],
+    [dispatch, selectedPatients, patient],
   );
 
   const saveHandler = useCallback(
@@ -177,15 +204,15 @@ const PatientLabels = ({ isPatientBulk }) => {
         return singlePatient.patientIdentifier;
       });
 
-      const labelToAdd = {
-        labelIdentifier: value.labelIdentifier || null,
-        labelName: value.labelName || null,
-        assignedToUsers: assignedPatients,
-      };
-
-      dispatch(patientBulkAddLabel(labelToAdd));
+      if (assignedPatients) {
+        const labelToAdd = makeBulkLabelToSend(value, assignedPatients);
+        dispatch(patientBulkAddLabel(labelToAdd));
+      } else {
+        const labelToAdd = makeLabelToSend(value, patient.patientIdentifier);
+        dispatch(patientAddLabel(labelToAdd));
+      }
     },
-    [selectedPatients, dispatch],
+    [selectedPatients, dispatch, patient],
   );
 
   const renderTagsCallback = useCallback(
@@ -232,7 +259,7 @@ const PatientLabels = ({ isPatientBulk }) => {
 
   return (
     <Autocomplete
-      autoFocus
+      autoFocus={!disableFocusOnRender}
       limitTags={2}
       options={labels}
       value={selectedLabels}

@@ -110,7 +110,7 @@ const TaskItemLongText = ({ value = '', onChange, field }) => {
               </pre>
             }
           >
-            <Text>{trunc(rawTextUnFormatted, 15)}</Text>
+            <Text>{rawTextUnFormatted}</Text>
           </Tooltip>
         </LongTextBox>
       </TaskItemPopover>

@@ -23,6 +23,7 @@ export const SINGLE_TASK_PATH = '/core/task';
 
 export const TASK_LIST_PATH = '/core/tasks';
 export const PATIENTS_LIST_ALL = '/core/patients/list/all';
+export const PATIENTS_LIST_ARCHIVED = '/core/patients/list/archived';
 export const PATIENTS_LIST = '/core/patients/list';
 
 export const createSingleTaskPath = taskIdentifier =>
