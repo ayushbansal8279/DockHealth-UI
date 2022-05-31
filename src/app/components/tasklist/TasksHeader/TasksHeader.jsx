@@ -131,6 +131,7 @@ const TasksHeader = ({
           width={TaskItemColumnWidth[TaskItemColumn.ASSIGNED].WIDE}
           sort={sort}
           onSortChange={onSortChange}
+          printWidth={TaskItemColumnWidth[TaskItemColumn.ASSIGNED].PRINT}
         />
       )}
       {restrictions?.listName !== DISABLED &&

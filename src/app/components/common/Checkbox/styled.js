@@ -33,4 +33,7 @@ export const CheckboxInput = styled.div`
   ${Icon} {
     visibility: ${props => (props.isChecked ? 'visible' : 'hidden')};
   }
+  @media print {
+    opacity: 0;
+  }
 `;

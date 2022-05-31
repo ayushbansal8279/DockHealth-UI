@@ -22,7 +22,7 @@ import {
 import zIndex from 'styles/z-index';
 import Tooltip from 'components/common/Tooltip/Tooltip';
 import palette from 'styles/palette';
-import { StyledButton, useMenuStyles } from './styled';
+import { StyledButton, useMenuStyles, OptionsMenuContainer } from './styled';
 
 const OptionsMenu = ({
   isDisabled,
@@ -39,7 +39,7 @@ const OptionsMenu = ({
   const menuClasses = useMenuStyles();
 
   return (
-    <>
+    <OptionsMenuContainer>
       <Button
         type="button"
         ref={assignMemberButtonReference}
@@ -114,7 +114,7 @@ const OptionsMenu = ({
           </ClickAwayListener>
         )}
       </Popper>
-    </>
+    </OptionsMenuContainer>
   );
 };
 

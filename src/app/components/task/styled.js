@@ -315,6 +315,10 @@ export const StandardTaskItemContainer = styled.div`
           ${highlight} 6s ease-out;
         `
       : ''};
+
+  @media print {
+    height: auto;
+  }
 `;
 
 export const StatusBar = styled.div`

@@ -39,7 +39,7 @@ const TasksTemplatesHeader = ({ sort, onSortChange, taskItemConfig = {} }) => {
         <ColumnSortHeader
           id={TaskTemplateItemColumn.CREATED}
           label="Created"
-          width={200}
+          width={150}
           sort={sort}
           onSortChange={onSortChange}
         />

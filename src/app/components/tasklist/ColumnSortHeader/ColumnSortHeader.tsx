@@ -28,6 +28,7 @@ const ColumnSortHeader: React.FC<ColumnSortHeaderProps> = ({
   onSortChange,
   truncateEnabled,
   disabled,
+  printWidth,
 }) => {
   const descriptionTextReference = useRef();
   const [isHovered, setIsHovered] = useState<boolean>(false);
@@ -65,6 +66,7 @@ const ColumnSortHeader: React.FC<ColumnSortHeaderProps> = ({
       onClick={switchSort}
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
+      printWidth={printWidth}
     >
       {id && label && typeof onSortChange === 'function' && (
         <SortArrowWrapper>

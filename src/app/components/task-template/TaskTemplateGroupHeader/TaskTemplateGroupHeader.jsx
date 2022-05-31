@@ -496,6 +496,7 @@ const TaskTemplateGroupHeader = ({
           onContextMenu={event => {
             event.stopPropagation();
           }}
+          printWidth={TaskItemColumnWidth[TaskItemColumn.ASSIGNED].PRINT}
         >
           <TaskTemplateMembers
             currentUser={currentUser}

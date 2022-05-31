@@ -28,6 +28,9 @@ const AppContainer = styled.div`
   font-family: 'Roboto', sans-serif;
   overflow-x: hidden;
   position: relative;
+  @media print {
+    overflow-x: initial;
+  }
 `;
 
 const MainContainer = styled.main`
