@@ -12,9 +12,10 @@ import {
   convertFromEditorStateToOutput,
   convertToEditorState,
 } from 'components/common/TextEditor/helpers';
-import { Text, LongTextBox } from './styled';
+import PopoverBottomBar from 'components/task/PopoverBottomBar/PopoverBottomBar';
+import { Text, LongTextBox, Divider } from './styled';
 
-const TaskItemLongText = ({ value = '', onChange, field }) => {
+const TaskItemLongText = ({ value = '', onChange, openDrawer, field }) => {
   const detailsReference = useRef(null);
   const [detailsState, setDetailsState] = useMentionsEditorState(
     convertToEditorState({
@@ -66,7 +67,7 @@ const TaskItemLongText = ({ value = '', onChange, field }) => {
     <Box width="100%" height="100%" display="flex" alignItems="center">
       <TaskItemPopover
         fullWidth
-        content={() => (
+        content={({ closePopover }) => (
           <Box
             width="450px"
             height="100%"
@@ -92,6 +93,23 @@ const TaskItemLongText = ({ value = '', onChange, field }) => {
                 onChange={onChangeDetailsEditor}
               />
             </CustomTextEditor>
+            <Divider />
+            <PopoverBottomBar align="spread">
+              <PopoverBottomBar.Button type="button" onClick={closePopover}>
+                Close
+              </PopoverBottomBar.Button>
+              {openDrawer && (
+                <PopoverBottomBar.Button
+                  type="button"
+                  onClick={() => {
+                    openDrawer();
+                    closePopover();
+                  }}
+                >
+                  Open Drawer
+                </PopoverBottomBar.Button>
+              )}
+            </PopoverBottomBar>
           </Box>
         )}
       >

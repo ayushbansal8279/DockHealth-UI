@@ -23,3 +23,9 @@ export const LongTextBox = styled.div`
   color: ${palette.mediumGrey};
   cursor: pointer;
 `;
+
+export const Divider = styled.hr`
+  width: 100%;
+  margin: 0;
+  border-color: ${palette.coolGrey3};
+`;
