@@ -13,6 +13,7 @@ import EmptyTaskListBird from 'img/animals/bird';
 import {
   getPatientFilterOptions,
   getCurrentPatientTasks,
+  updateOrderPreferencesInPatientList,
 } from 'actions/patient-details-actions';
 import { openModal, closeModal } from 'modal/actions';
 import { PatientTasksSagaActions } from 'sagas/patient-details-saga';
@@ -129,14 +130,25 @@ const PatientTasksListView = () => {
           }),
         );
       } else {
-        // TODO: update also data in redux - important to have fresh data, when someone switch the list
+        dispatch(
+          updateOrderPreferencesInPatientList(
+            taskListIdentifierParameter,
+            listDisplayColumns,
+            currentUser.identifier,
+          ),
+        );
         updateUserAllFieldsOrderSetup(
           listDisplayColumns,
           taskListIdentifierParameter,
         );
       }
     },
-    [dispatch, isAllTasksView, taskListIdentifierParameter],
+    [
+      currentUser.identifier,
+      dispatch,
+      isAllTasksView,
+      taskListIdentifierParameter,
+    ],
   );
 
   useEffect(() => {
@@ -287,10 +299,18 @@ const PatientTasksListView = () => {
     if (isAllTasksView && userOrderColumns) {
       setColumnsOrder(userOrderColumns);
     } else {
-      // TODO: initialize list data when API will be retining it
-      console.log('activeList', activeList);
+      const taskListOrder = activeList?.listUsers?.find(
+        u => u.identifier === currentUser.identifier,
+      )?.listDisplayColumns;
+      if (taskListOrder) setColumnsOrder(taskListOrder);
     }
-  }, [activeList, isAllTasksView, setColumnsOrder, userOrderColumns]);
+  }, [
+    activeList,
+    currentUser.identifier,
+    isAllTasksView,
+    setColumnsOrder,
+    userOrderColumns,
+  ]);
 
   const groupedTasks = useMemo(() => {
     if (isAllTasksView) return undefined;
