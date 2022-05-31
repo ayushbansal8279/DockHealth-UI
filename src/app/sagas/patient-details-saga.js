@@ -68,6 +68,7 @@ export const DO_ADD_PATIENT_NOTE = 'DO_ADD_PATIENT_NOTE';
 export const DO_REMOVE_PATIENT_NOTE = 'DO_REMOVE_PATIENT_NOTE';
 export const DO_CHANGE_PATIENT_NOTE_PIN = 'DO_CHANGE_PATIENT_NOTE_PIN';
 export const DO_ARCHIVE_PATIENT = 'DO_ARCHIVE_PATIENT';
+export const DO_UNARCHIVE_PATIENT = 'DO_UNARCHIVE_PATIENT';
 
 export const togglePatientTaskStatus = task => ({
   type: DO_TOGGLE_PATIENT_TASK_STATUS,
@@ -177,6 +178,11 @@ export const changePatientNotePin = (patientNoteIdentifier, pinned) => ({
 
 export const archivePatient = (patientIdentifier, history) => ({
   type: DO_ARCHIVE_PATIENT,
+  payload: { patientIdentifier, history },
+});
+
+export const unarchivePatient = (patientIdentifier, history) => ({
+  type: DO_UNARCHIVE_PATIENT,
   payload: { patientIdentifier, history },
 });
 
@@ -654,6 +660,18 @@ function* doArchivePatient({ payload: { patientIdentifier, history } }) {
   }
 }
 
+function* doUnarchivePatient({ payload: { patientIdentifier, history } }) {
+  try {
+    yield call(PatientApi.unarchivePatient, patientIdentifier);
+    yield put(closeModal());
+    yield put(showGlobalAlert(AlertMessages.PATIENT_UNARCHIVED));
+    history.push(PATIENTS_LIST_ALL);
+  } catch (error) {
+    yield put(showGlobalErrorAlert());
+    yield put(closeModal());
+  }
+}
+
 function* doAddPatientNote({ patientIdentifier, note }) {
   try {
     onPatientNoteAdded();
@@ -879,6 +897,7 @@ export default function* watchPatientDetails() {
   );
   yield takeEvery(DO_UPDATE_PATIENT_NOTE, doUpdatePatientNote);
   yield takeLeading(ActionTypes.UPDATE_PATIENT_DETAILS, doUpdatePatientDetails);
+  yield takeEvery(DO_UNARCHIVE_PATIENT, doUnarchivePatient);
   yield takeEvery(DO_ARCHIVE_PATIENT, doArchivePatient);
   yield takeEvery(DO_ADD_PATIENT_NOTE, doAddPatientNote);
   yield takeEvery(DO_REMOVE_PATIENT_NOTE, doRemovePatientNote);

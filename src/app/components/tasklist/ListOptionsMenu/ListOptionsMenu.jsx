@@ -259,7 +259,7 @@ const ListOptionsMenu = props => {
 
   return (
     <OptionsMenu
-      disablePortal
+      placement="bottom-start"
       options={getMenuItems(list)}
       footer={
         MASTER_ROLES.includes(list?.role) ? (

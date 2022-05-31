@@ -95,22 +95,6 @@ import Hotkeys from './Hotkeys/Hotkeys';
 import NestedFlowNode from './NestedFlow/NestedFlowNode/NestedFlowNode';
 import NewNestedFlowNode from './NestedFlow/NewNestedFlowNode/NewNestedFlowNode';
 
-// const isOwner = false;
-
-// const refreshData = useCallback(
-//   newMembersList => {
-//     if (typeof onMembersRefresh === 'function') {
-//       onMembersRefresh(
-//         newMembersList.map(({ memberPermission, ...user }) => ({
-//           memberPermission,
-//           user,
-//         })),
-//       );
-//     }
-//   },
-//   [onMembersRefresh],
-// );
-
 const nodeTypes = {
   [NodeType.NEW_STANDARD]: NewTaskNode,
   [NodeType.NEW_DECISION]: NewTaskNode,

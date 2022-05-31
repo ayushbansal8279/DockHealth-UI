@@ -1,12 +1,22 @@
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, useCallback, useMemo } from 'react';
 import { Dialog, Box } from '@material-ui/core';
 import { Add as AddIcon } from '@material-ui/icons';
 import { useBoolean } from 'hooks/useBoolean';
-import { useHistory } from 'react-router-dom';
+import { useHistory, useParams } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import * as PatientsActions from 'actions/patients-actions';
 import { downloadPatientImportTemplate } from 'api/patient-api';
-import { DefaultPatientsListType } from 'helpers/patient-list-helpers';
+import ToolbarSelect from 'components/tasklist/ToolbarSelect/ToolbarSelect';
+import TasksStatusSwitchIcon from 'img/tasks-status-switch-icon';
+import {
+  PATIENTS_LIST_ALL,
+  PATIENTS_LIST_ARCHIVED,
+  createPatientDetailsPath,
+} from 'routing/helpers/paths';
+import {
+  DefaultPatientListUrl,
+  DefaultPatientsListType,
+} from 'helpers/patient-list-helpers';
 import { organizationSelector } from 'selectors/organization-selectors';
 import { userProfileSelector } from 'selectors/user-selectors';
 import {
@@ -14,7 +24,7 @@ import {
   patientsListSearchTermSelector,
   filtersActiveSelector,
 } from 'selectors/patients-selectors';
-import { createPatientDetailsPath } from 'routing/helpers/paths';
+
 import ImportPatientsModal from 'modal/components/ImportPatientsModal/ImportPatientsModal';
 import FilterButton from 'components/filter/FilterButton/FilterButton';
 import AdornedButton from 'components/common/AdornedButton/AdornedButton';
@@ -22,8 +32,21 @@ import SearchInput from 'components/common/SearchInput/SearchInput';
 import FilterPopover from 'components/filter/FilterPopover/FilterPopover';
 import { getCustomerTypeLabel } from 'helpers/customer-type-helper';
 import CreatePatientDrawer from '../CreatePatientDrawer/CreatePatientDrawer';
-import { ImportButton, InputWrapper, SearchHelperText } from './styled';
 import PatientsFilter from '../PatientsFilter/PatientsFilter';
+import { ImportButton, InputWrapper, SearchHelperText } from './styled';
+
+const OPTIONS = [
+  {
+    label: 'All Patients',
+    value: DefaultPatientsListType.ALL_PATIENTS,
+    url: PATIENTS_LIST_ALL,
+  },
+  {
+    label: 'Archived Patients',
+    value: DefaultPatientsListType.ARCHIVED_PATIENTS,
+    url: PATIENTS_LIST_ARCHIVED,
+  },
+];
 
 const PatientsToolbar = ({ refreshPatientList, setImportPopoverOpen }) => {
   const [isSidebarOpen, setIsSidebarOpen, unsetIsSidebarOpen] = useBoolean(
@@ -40,6 +63,7 @@ const PatientsToolbar = ({ refreshPatientList, setImportPopoverOpen }) => {
   const currentUser = useSelector(userProfileSelector);
   const { orgUserRole } = currentUser || {};
   const customerTypeLabel = getCustomerTypeLabel(currentUser).toUpperCase();
+  const { listIdentifier: listIdentifierParameter } = useParams();
 
   const isGuest = orgUserRole === 'GUEST';
 
@@ -48,6 +72,23 @@ const PatientsToolbar = ({ refreshPatientList, setImportPopoverOpen }) => {
   const handleSearchChange = searchTerm => {
     dispatch(PatientsActions.changePatientsSearchTerm(searchTerm));
   };
+
+  const optionBasedUrl = useMemo(
+    () =>
+      Object.keys(DefaultPatientListUrl).find(
+        key => DefaultPatientListUrl[key] === listIdentifierParameter,
+      ),
+    [listIdentifierParameter],
+  );
+
+  const onListTypeChange = useCallback(
+    e => {
+      const { value } = e.target;
+      const { url } = OPTIONS.find(o => o.value === value);
+      if (url) history.push(url);
+    },
+    [history],
+  );
 
   return listIdentifier === DefaultPatientsListType.ALL_PATIENTS &&
     emrIntegrationEnabled ? (
@@ -71,6 +112,16 @@ const PatientsToolbar = ({ refreshPatientList, setImportPopoverOpen }) => {
               <SearchInput
                 value={searchValue}
                 onValueChange={handleSearchChange}
+              />
+            </Box>
+            <Box m={1} />
+            <Box>
+              <ToolbarSelect
+                options={OPTIONS}
+                value={optionBasedUrl}
+                name="patient-list-type"
+                onChange={onListTypeChange}
+                icon={<img src={TasksStatusSwitchIcon} alt="view type icon" />}
               />
             </Box>
             <Box m={1} />

@@ -322,3 +322,9 @@ export function mergePatient(patientFromIdentifier, patientToIdentifier) {
     })
     .then(({ data }) => data);
 }
+
+export function unarchivePatient(identifier) {
+  return axios
+    .patch(`patient/unarchivePatient/${identifier}`)
+    .then(({ data }) => data);
+}

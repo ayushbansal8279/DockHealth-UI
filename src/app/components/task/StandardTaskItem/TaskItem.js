@@ -567,6 +567,7 @@ const TaskItem = React.memo(
                 onContextMenu={event => {
                   event.stopPropagation();
                 }}
+                printWidth={TaskItemColumnWidth[TaskItemColumn.ASSIGNED].PRINT}
               >
                 <TaskItemMembers
                   readOnly={restrictions?.assigment === READ_ONLY}

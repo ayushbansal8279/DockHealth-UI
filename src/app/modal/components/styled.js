@@ -103,3 +103,25 @@ export const ModalDescription = styled.p`
   color: ${palette.mediumGrey};
   text-align: center;
 `;
+
+export const ModalHeaderContainerStyled = styled.div`
+  width: 100%;
+  padding: 5px;
+`;
+
+export const ModalFooterStyled = styled.div`
+  width: 100%;
+  display: flex;
+  justify-content: right;
+  gap: 10px;
+  padding: 0px 25px 15px 25px;
+`;
+
+export const TextWaringStyled = styled.p`
+  padding-top: 1.5rem;
+  color: #ff0000;
+  font-size: 16px;
+  width: 100%;
+  font-weight: 700;
+  margin-bottom: 0.5rem;
+`;
