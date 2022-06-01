@@ -50,6 +50,7 @@ export const getTaskHeaderOptions = (
   },
   {
     id: TaskHeaderColumn.ACTIVITY,
+    label: 'Details',
     draggable: true,
     width: TaskItemColumnWidth[TaskHeaderColumn.ACTIVITY],
     shouldBeDisplayed: config[TaskHeaderColumn.ACTIVITY],
