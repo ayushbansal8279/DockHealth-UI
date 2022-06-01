@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
 /* eslint-disable react-hooks/rules-of-hooks */
 import React, {
   useState,
@@ -14,12 +13,11 @@ import { pluck } from 'ramda';
 import { extractTasksAndSubtasks } from 'helpers/tasklist-helpers';
 import { useDispatch, useSelector } from 'react-redux';
 import ThreeDotsIcon from 'img/three-dots';
-import { FormatColorResetOutlined, MoreVert } from '@material-ui/icons';
+import { MoreVert } from '@material-ui/icons';
 import * as ModalActions from 'modal/actions';
 import * as WorkflowActions from 'actions/workflow-actions';
 import * as TaskActions from 'actions/task-actions';
 import * as TemplateBundleActions from 'actions/template-bundle-actions';
-import { useBoolean } from 'hooks/useBoolean';
 import {
   TaskItemColumn,
   TaskItemColumnWidth,
@@ -61,6 +59,7 @@ import {
   TemplateHandle,
   TaskTemplateOptionsContainer,
 } from './styled';
+import { isNotEmptyArray } from 'helpers/utils-helpers';
 
 const TaskTemplateGroupHeader = ({
   templateGroup = {},
@@ -86,7 +85,6 @@ const TaskTemplateGroupHeader = ({
     identifier,
     tasksCount,
     tasksCompletedCount,
-    taskListIdentifier,
     comments,
     labels,
     attachments,
@@ -107,6 +105,7 @@ const TaskTemplateGroupHeader = ({
     columnsConfig,
     customColumnsConfig,
     patientCustomColumnsConfig,
+    columnsOrder,
   } = useColumnsConfig();
   useEffect(() => {
     setNameInputValue(name);
@@ -353,6 +352,17 @@ const TaskTemplateGroupHeader = ({
     );
   }, [dispatch, isBundleSelected, filteredTasks]);
 
+  const getColumnOrder = useCallback(
+    TaskItemColumnType => {
+      if (isNotEmptyArray(columnsOrder)) {
+        const existingOrder = columnsOrder?.indexOf(TaskItemColumnType);
+        if (existingOrder >= 0) return existingOrder;
+        return 999;
+      }
+      return 'initial';
+    },
+    [columnsOrder],
+  );
   const getWorkflowData = useCallback(async id => {
     setWorkFlowData(await TaskTemplateApi.getTemplateBasicDetails(id));
   }, []);
@@ -369,6 +379,7 @@ const TaskTemplateGroupHeader = ({
           backgroundColor={pageBackground}
           isSelected={isBundleSelected}
           isEditingDescription={isEditing}
+          order={getColumnOrder(TaskItemColumn.DESCRIPTION)}
         >
           {!groupDragAndDropDisabled && !bulkEditIsActive && (
             <TemplateHandle
@@ -418,6 +429,7 @@ const TaskTemplateGroupHeader = ({
         <TaskItemCell
           key={`subtask_count_${identifier}`}
           width={TaskItemColumnWidth[TaskItemColumn.SUBTASKS_COUNT]}
+          order={getColumnOrder(TaskItemColumn.SUBTASKS_COUNT)}
         />
       )}
       {columnsConfig[TaskItemColumn.PATIENT] && (
@@ -425,6 +437,7 @@ const TaskTemplateGroupHeader = ({
           key={`patient_${identifier}`}
           width={TaskItemColumnWidth[TaskItemColumn.PATIENT]}
           alignItems="flex-start"
+          order={getColumnOrder(TaskItemColumn.PATIENT)}
         >
           {!disablePatientAssignment && (
             <TaskHeaderPatient
@@ -445,6 +458,7 @@ const TaskTemplateGroupHeader = ({
           onContextMenu={event => {
             event.stopPropagation();
           }}
+          order={getColumnOrder(TaskItemColumn.WORKFLOW_STATUS)}
         >
           <TemplateItemWorkflowStatus
             workflow={templateGroup}
@@ -457,6 +471,7 @@ const TaskTemplateGroupHeader = ({
         <TaskItemCell
           key={`activity_${identifier}`}
           width={TaskItemColumnWidth[TaskItemColumn.ACTIVITY]}
+          order={getColumnOrder(TaskItemColumn.ACTIVITY)}
         >
           <TaskTemplateIcons
             workflow={
@@ -473,6 +488,7 @@ const TaskTemplateGroupHeader = ({
           key={`start_date_${identifier}`}
           width={TaskItemColumnWidth[TaskItemColumn.START_DATE]}
           justify="center"
+          order={getColumnOrder(TaskItemColumn.START_DATE)}
         >
           <TaskTemplateStartDate workflow={templateGroup} />
         </TaskItemCell>
@@ -482,6 +498,7 @@ const TaskTemplateGroupHeader = ({
           key={`due_date_${identifier}`}
           width={TaskItemColumnWidth[TaskItemColumn.DUE_DATE]}
           justify="center"
+          order={getColumnOrder(TaskItemColumn.DUE_DATE)}
         >
           <TaskTemplateDueDate workflow={templateGroup} />
         </TaskItemCell>
@@ -496,6 +513,7 @@ const TaskTemplateGroupHeader = ({
           onContextMenu={event => {
             event.stopPropagation();
           }}
+          order={getColumnOrder(TaskItemColumn.ASSIGNED)}
           printWidth={TaskItemColumnWidth[TaskItemColumn.ASSIGNED].PRINT}
         >
           <TaskTemplateMembers
@@ -514,6 +532,7 @@ const TaskTemplateGroupHeader = ({
         <TaskItemCell
           key={`list_${identifier}`}
           width={TaskItemColumnWidth[TaskItemColumn.LIST_NAME]}
+          order={getColumnOrder(TaskItemColumn.LIST_NAME)}
         />
       )}
       {alphabeticalSortedAllTypeCustomFields &&
@@ -540,6 +559,7 @@ const TaskTemplateGroupHeader = ({
               <TaskItemCell
                 key={`custom_${identifier}_${field.identifier}`}
                 width={CustomFieldWidthConfig[field.fieldType]}
+                order={getColumnOrder(field.identifier)}
               >
                 {!hidePatientCustomFields && (
                   <TaskItemCustomField

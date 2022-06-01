@@ -4,6 +4,7 @@ import { fontSizes, fontWeights } from 'styles/font';
 import palette from 'styles/palette';
 
 const TaskItemCell = styled.div`
+  ${({ order }) => (order ? `order: ${order};` : '')}
   position: relative;
   width: ${props => (!props.width ? '100%' : '')};
   justify-content: ${props => props.justify || 'flex-start'};

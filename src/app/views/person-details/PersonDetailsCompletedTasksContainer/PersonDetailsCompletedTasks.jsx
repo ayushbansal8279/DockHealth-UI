@@ -29,6 +29,7 @@ const PersonDetailsCompletedTasks = ({
   onTaskUpdate,
   listUniqueKey,
   taskItemConfig,
+  onOrderChange,
   // eslint-disable-next-line sonarjs/cognitive-complexity
 }) => {
   const isFetchingTasks = useSelector(completedTasksIsFetchingSelector);
@@ -100,6 +101,7 @@ const PersonDetailsCompletedTasks = ({
           {filteredTasks?.length > 0 ? (
             <TaskGroupsContainer>
               <TasksGroup
+                onOrderChange={onOrderChange}
                 groupName="Completed"
                 storeAsCurrentTask={storeAsCurrentTask}
                 toggleCompleteTask={toggleCompleteTask}

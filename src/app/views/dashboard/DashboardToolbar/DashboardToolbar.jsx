@@ -15,7 +15,6 @@ import { updateCurrentUserPreferences } from 'actions/user-actions';
 import { Grid } from '@material-ui/core';
 import DashboardTab from 'views/dashboard/DashboardTab/DashboardTab';
 import Spacing from 'components/common/Spacing';
-import Switch from 'components/common/Switch/Switch';
 import {
   HOME_ALL_TASKS_PATH,
   HOME_PATH,
@@ -26,6 +25,7 @@ import { ViewType, getViewTypeFromQueryString } from 'helpers/view-type-helper';
 import {
   userProfileDashboardPrefsSelector,
   dashboardGroupsPreferencesSelector,
+  userProfileColumnOrderSelector,
 } from 'selectors/user-selectors';
 import TaskViewTypeToolbarSelect from 'components/tasklist/TaskViewTypeToolbarSelect/TaskViewTypeToolbarSelect';
 import CustomizeToolbarButton from 'components/tasklist/CustomizeToolbarButton/CustomizeToolbarButton';
@@ -52,11 +52,11 @@ const DASHBOARD_CONFIGURABLE_COLUMNS_CONFIG = {
   [TaskItemColumn.ASSIGNED]: false,
   [TaskItemColumn.ACTIVITY]: false,
   [TaskItemColumn.DUE_DATE]: false,
+  [TaskItemColumn.START_DATE]: false,
   [TaskItemColumn.PATIENT]: false,
 };
 
-const DashboardToolbar = props => {
-  const { tourModalIsOpen, openTourModal } = props;
+const DashboardToolbar = () => {
   const history = useHistory();
   const { search } = useLocation();
   const viewType = getViewTypeFromQueryString(search);
@@ -67,7 +67,12 @@ const DashboardToolbar = props => {
   });
   const tabName = useSelector(dashboardTabNameSelector);
   const userPreferColumns = useSelector(userProfileDashboardPrefsSelector);
-  const { columnsConfig, setColumnsConfig } = useColumnsConfig();
+  const userOrderColumns = useSelector(userProfileColumnOrderSelector);
+  const {
+    columnsConfig,
+    setColumnsConfig,
+    setColumnsOrder,
+  } = useColumnsConfig();
   const dashboardGroupsPreferences = useSelector(
     dashboardGroupsPreferencesSelector,
   );
@@ -139,6 +144,10 @@ const DashboardToolbar = props => {
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [setColumnsConfig, userPreferColumns]);
+
+  useEffect(() => {
+    if (userOrderColumns) setColumnsOrder(userOrderColumns);
+  }, [setColumnsOrder, userOrderColumns]);
 
   const onColumnSetupChange = useCallback(
     (newConfig, options) => {

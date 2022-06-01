@@ -23,6 +23,11 @@ export const userProfileDashboardPrefsSelector = createSelector(
   ({ userPreference }) => userPreference?.displayColumns,
 );
 
+export const userProfileColumnOrderSelector = createSelector(
+  userStateSelector,
+  ({ userPreference }) => userPreference?.listDisplayColumns,
+);
+
 export const userProfileCustomFieldsSelector = createSelector(
   userStateSelector,
   ({ userPreference }) => userPreference?.customFieldDisplayColumns,

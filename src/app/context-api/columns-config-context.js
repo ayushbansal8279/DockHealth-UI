@@ -25,7 +25,10 @@ export function ColumnsConfigProvider({
   const [patientCustomColumnsConfig, setPatientCustomColumnsConfig] = useState(
     [],
   );
+  const [columnsOrder, setColumnsOrder] = useState();
   const value = {
+    columnsOrder,
+    setColumnsOrder,
     columnsConfig,
     setColumnsConfig,
     customColumnsConfig,
@@ -94,7 +97,7 @@ export function ColumnsConfigProvider({
     taskListIdentifier,
   ]);
 
-  React.useEffect(() => {
+  useEffect(() => {
     if (!hideCustomColumns) {
       const currentCustomFieldsPreferences = taskListIdentifier
         ? ListCustomFieldsPreferences
@@ -140,6 +143,12 @@ export function useColumnsConfig() {
       patientCustomColumnsConfig: [],
       columnsConfig: TASK_ITEM_BASE_COLUMN_CONFIG,
       customColumnsConfig: [],
+      columnsOrder: {},
+      setColumnsOrder: () => {
+        throw new Error(
+          'if you want to use setColumnsOrder, useColumnsConfig must be used within a ColumnsConfigProvider',
+        );
+      },
       setColumnsConfig: () => {
         throw new Error(
           'if you want to use setColumnsConfig, useColumnsConfig must be used within a ColumnsConfigProvider',

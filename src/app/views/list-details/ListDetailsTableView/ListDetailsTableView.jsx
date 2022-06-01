@@ -43,6 +43,7 @@ const ListDetailsTableView = () => {
     setDisplayListPreferences,
     setDisplayColumnPreferences,
     dispatch,
+    handleOrderChange,
   } = initializeListDetailsViewHooks();
 
   const additionalToolbarOptions = [
@@ -99,6 +100,7 @@ const ListDetailsTableView = () => {
             </StickyContainer>
             {selectedTab === TaskListTabName.COMPLETE ? (
               <CompletedTasksView
+                onOrderChange={handleOrderChange}
                 viewSetup={displayListPreferences}
                 toggleCompleteTask={toggleTaskCompletedStatus}
                 onTaskUpdate={handleTaskUpdate}
@@ -113,6 +115,7 @@ const ListDetailsTableView = () => {
               />
             ) : (
               <OpenedTasksView
+                onOrderChange={handleOrderChange}
                 viewSetup={displayListPreferences}
                 taskListIdentifier={taskListIdentifier}
                 quickAddTask={quickAddTask}
