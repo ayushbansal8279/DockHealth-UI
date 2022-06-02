@@ -8,6 +8,7 @@ import {
   USERS_PATH,
   SUBS_SETTINGS_PATH,
   USERS_SETTINGS_PATH,
+  MESSENGER_PATH,
 } from 'routing/helpers/paths';
 import Spacing from 'components/common/Spacing.tsx';
 import { userProfileSelector } from 'selectors/user-selectors';
@@ -248,6 +249,14 @@ const NavigationSidebar = () => {
                 path="/core/analytics"
                 onItemClick={handleNavigationItemClick}
                 isNew
+              />
+            </AccessRestrictor>
+            <AccessRestrictor allowedToRoles={[ADMIN, OWNER, MEMBER]}>
+              <IconNavigationItem
+                name="Messenger"
+                icon={PeopleIcon}
+                path={MESSENGER_PATH}
+                onItemClick={handleNavigationItemClick}
               />
             </AccessRestrictor>
           </Grid>
