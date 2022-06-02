@@ -54,6 +54,7 @@ import {
   SINGLE_TASK_RESTRICTIONS_OPTIONS,
 } from 'restrictions/task-restrictions';
 import { sortAlphabetical } from 'helpers/custom-fields-helpers';
+import { isNotEmptyArray } from 'helpers/utils-helpers';
 import { getSubtaskStylingLink } from './helpers';
 import TaskItemContextMenu from '../TaskItemContextMenu/TaskItemContextMenu';
 import TaskItemBulkEdit from './TaskItemComponents/TaskItemBulkEdit';
@@ -340,7 +341,7 @@ const TaskItem = React.memo(
 
     const getColumnOrder = useCallback(
       TaskItemColumnType => {
-        if (Array.isArray(columnsOrder) && columnsOrder.length > 0) {
+        if (isNotEmptyArray(columnsOrder)) {
           const existingOrder = columnsOrder?.indexOf(TaskItemColumnType);
           if (existingOrder >= 0) return existingOrder;
           return 999;

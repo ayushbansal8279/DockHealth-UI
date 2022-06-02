@@ -13,12 +13,11 @@ import { pluck } from 'ramda';
 import { extractTasksAndSubtasks } from 'helpers/tasklist-helpers';
 import { useDispatch, useSelector } from 'react-redux';
 import ThreeDotsIcon from 'img/three-dots';
-import { FormatColorResetOutlined, MoreVert } from '@material-ui/icons';
+import { MoreVert } from '@material-ui/icons';
 import * as ModalActions from 'modal/actions';
 import * as WorkflowActions from 'actions/workflow-actions';
 import * as TaskActions from 'actions/task-actions';
 import * as TemplateBundleActions from 'actions/template-bundle-actions';
-import { useBoolean } from 'hooks/useBoolean';
 import {
   TaskItemColumn,
   TaskItemColumnWidth,
@@ -48,6 +47,7 @@ import {
 import { currentTaskListSelector } from 'selectors/task-list-selectors';
 import { openDrawer } from 'actions/workflow-drawer-actions';
 import { sortAlphabetical } from 'helpers/custom-fields-helpers';
+import { isNotEmptyArray } from 'helpers/utils-helpers';
 import TemplateHeaderName from '../TaskTemplateName/TaskTemplateName';
 import TaskHeaderPatient from '../TaskTemplatePatient/TaskTemplatePatient';
 import TemplateItemWorkflowStatus from '../TaskTemplateWorkflowStatus/TaskTemplateWorkflowStatus';
@@ -85,9 +85,6 @@ const TaskTemplateGroupHeader = ({
     identifier,
     tasksCount,
     tasksCompletedCount,
-    comments,
-    labels,
-    attachments,
   } = templateGroup;
 
   const { dragHandleProps } = draggableProvided;
@@ -354,7 +351,7 @@ const TaskTemplateGroupHeader = ({
 
   const getColumnOrder = useCallback(
     TaskItemColumnType => {
-      if (Array.isArray(columnsOrder) && columnsOrder.length > 0) {
+      if (isNotEmptyArray(columnsOrder)) {
         const existingOrder = columnsOrder?.indexOf(TaskItemColumnType);
         if (existingOrder >= 0) return existingOrder;
         return 999;
