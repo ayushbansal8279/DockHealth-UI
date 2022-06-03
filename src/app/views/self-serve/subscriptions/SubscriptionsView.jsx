@@ -60,7 +60,7 @@ const SubscriptionsView = () => {
   const [
     selectedProfessionalServices,
     setSelectedProfessionalServices,
-  ] = useState(BillingFrequency.ANNUAL);
+  ] = useState(false);
   const [selectedPlan, setSelectedPlan] = useState(null);
   const currentUser = useSelector(userProfileSelector);
   const isSavingNewPlan = useSelector(isSavingNewPlanSelector);
@@ -240,23 +240,16 @@ const SubscriptionsView = () => {
                   <ProfessionalServicesTitle>
                     Include Professional Services:
                   </ProfessionalServicesTitle>
-                  <SwitchContainer>
-                    <SwitchLabel active={!selectedProfessionalServices}>
-                      No
-                    </SwitchLabel>
-                    <Switch
-                      checked={selectedProfessionalServices}
-                      disabled={!selectedPlan || selectedPlan.includes('TRIAL')}
-                      onChange={event =>
-                        setSelectedProfessionalServices(event.target.checked)
-                      }
-                    />
-                    <SwitchLabel active={selectedProfessionalServices}>
-                      Yes
-                    </SwitchLabel>
-                  </SwitchContainer>
                 </Box>
-                <ProfessionalServicesTail />
+                <ProfessionalServicesTail
+                  active={selectedProfessionalServices}
+                  selectedProfessionalServices={selectedProfessionalServices}
+                  checked={selectedProfessionalServices}
+                  disabled={!selectedPlan || selectedPlan.includes('TRIAL')}
+                  setSelectedProfessionalServices={
+                    setSelectedProfessionalServices
+                  }
+                />
               </>
             )}
             <Box p={1} />
