@@ -224,3 +224,8 @@ export const moveSelectionToEnd = editorState => {
   });
   return EditorState.forceSelection(editorState, selection);
 };
+
+export const countCharakters = state => {
+  const { tokenizedText } = convertFromEditorStateToOutput(state, true);
+  return tokenizedText.length || 0;
+};

@@ -74,11 +74,7 @@ const CustomFieldsSection = () => {
             customFieldIdentifier === template.identifier,
         );
         const fieldName = `taskMetaData.${template.identifier}`;
-        if (cf?.value) {
-          setValue(fieldName, cf.value);
-        } else {
-          setValue(fieldName, null);
-        }
+        setValue(fieldName, cf?.value);
       });
     }
   }, [setValue, task, templates]);

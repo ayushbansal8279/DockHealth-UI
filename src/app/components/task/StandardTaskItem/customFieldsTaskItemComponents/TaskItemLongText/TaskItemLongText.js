@@ -1,12 +1,13 @@
 import React, { useCallback, useEffect, useRef } from 'react';
 import { Box } from '@material-ui/core';
+import { EditorState } from 'draft-js';
 import { useBoolean } from 'hooks/useBoolean';
 import usePrevious from 'hooks/use-previous';
 import Tooltip from 'components/common/Tooltip/Tooltip';
 import TaskItemPopover from 'components/task/TaskItemPopover/TaskItemPopover';
 import CustomTextEditor from 'components/task-drawer/CustomTextEditor/CustomTextEditor';
 import TextEditor from 'components/common/TextEditor/TextEditor';
-import { trunc } from 'helpers/utility-functions';
+import { createMentionEntities } from 'components/common/TextEditor/create-mention-entities';
 import { useMentionsEditorState } from 'components/common/TextEditor/use-mentions-editor-state';
 import {
   convertFromEditorStateToOutput,
@@ -14,6 +15,7 @@ import {
 } from 'components/common/TextEditor/helpers';
 import PopoverBottomBar from 'components/task/PopoverBottomBar/PopoverBottomBar';
 import { Text, LongTextBox, Divider } from './styled';
+import { FieldCharakterLimit } from 'helpers/field-type-helpers';
 
 const TaskItemLongText = ({ value = '', onChange, openDrawer, field }) => {
   const detailsReference = useRef(null);
@@ -26,6 +28,18 @@ const TaskItemLongText = ({ value = '', onChange, openDrawer, field }) => {
     }),
   );
 
+  useEffect(() => {
+    const { tokenizedText } = convertFromEditorStateToOutput(
+      detailsState,
+      true,
+    );
+    if (value !== tokenizedText) {
+      const newContent = createMentionEntities(value, value, [], true);
+      setDetailsState(EditorState.push(detailsState, newContent));
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [value]);
+
   const { rawText: rawTextUnFormatted } = convertFromEditorStateToOutput(
     detailsState,
     false,
@@ -37,13 +51,7 @@ const TaskItemLongText = ({ value = '', onChange, openDrawer, field }) => {
 
   const updateDetails = useCallback(
     state => {
-      const {
-        tokenizedText,
-        rawText,
-        // mentions,
-      } = convertFromEditorStateToOutput(state, true);
-      console.log(tokenizedText);
-      console.log(rawText);
+      const { tokenizedText } = convertFromEditorStateToOutput(state, true);
       onChange(tokenizedText);
     },
     [onChange],
@@ -82,6 +90,7 @@ const TaskItemLongText = ({ value = '', onChange, openDrawer, field }) => {
               richTextEnabled
             >
               <TextEditor
+                characterLimit={FieldCharakterLimit.LONG_TEXT}
                 readOnly={false}
                 minHeight={100}
                 ref={detailsReference}
