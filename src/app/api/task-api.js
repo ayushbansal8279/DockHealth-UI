@@ -544,8 +544,8 @@ export function shareTask(
   console.log('externalUsers', externalUsers);
   console.log('message', message);
   return Promise.resolve();
-  
+}
+
 export function sendMessageForTask(task) {
   return axios.post('task/communication/send', task).then(({ data }) => data);
-
 }
