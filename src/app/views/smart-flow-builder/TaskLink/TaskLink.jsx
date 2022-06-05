@@ -117,9 +117,9 @@ const TaskLink = props => {
     <>
       <LinkPath {...props} onClick={!isDependent && openOptions} />
       <foreignObject
-        width={160}
+        width={180}
         height={32}
-        x={edgeCenterX - 160 / 2}
+        x={edgeCenterX - 180 / 2}
         y={edgeCenterY - 32 / 2}
         className="edgebutton-foreignobject"
         requiredExtensions="http://www.w3.org/1999/xhtml"

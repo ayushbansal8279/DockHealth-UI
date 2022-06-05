@@ -10,7 +10,11 @@ import Circle from 'img/circle.svg';
 import CircleCompleted from 'img/circle-completed.svg';
 import OptionsMenu from 'components/common/OptionsMenu/OptionsMenu';
 import { SINGLE_TASK_RESTRICTIONS_OPTIONS } from 'restrictions/task-restrictions';
-import { useDispatch } from 'react-redux';
+import {
+  userHasSendEmailFeatureSelector,
+  userHasSendFaxFeatureSelector,
+} from 'selectors/user-selectors';
+import { useDispatch, useSelector } from 'react-redux';
 import { openModal } from 'modal/actions';
 import { HorizontalLabel, FiledInListName } from '../styled';
 import initializeTaskDrawerTopSectionHooks from './hooks';
@@ -41,6 +45,10 @@ const TopSection = ({
     closeTaskDrawer,
   });
   const dispatch = useDispatch();
+
+  const sendEmailAvailable = useSelector(userHasSendEmailFeatureSelector);
+  const sendFaxAvailable = useSelector(userHasSendFaxFeatureSelector);
+
   const options = useMemo(
     () => [
       {
@@ -69,9 +77,13 @@ const TopSection = ({
         name: 'Copy task link',
         onClick: handleCopyLink,
       },
-      {
+      sendEmailAvailable && {
         name: 'Send Email',
         onClick: () => dispatch(openModal('SendEmailFromTask')),
+      },
+      sendFaxAvailable && {
+        name: 'Send FAX',
+        onClick: () => dispatch(openModal('SendFaxFromTask')),
       },
       {
         name: 'Delete',
@@ -81,13 +93,15 @@ const TopSection = ({
       },
     ],
     [
-      duplicateTaskWithoutConfirmation,
       handleMoveTask,
-      handleCopyLink,
-      openDeleteConfirmationModal,
-      openDuplicateConfirmationModal,
       restrictions,
+      handleCopyLink,
+      sendEmailAvailable,
+      sendFaxAvailable,
+      openDeleteConfirmationModal,
       selectedTask,
+      openDuplicateConfirmationModal,
+      duplicateTaskWithoutConfirmation,
       dispatch,
     ],
   );

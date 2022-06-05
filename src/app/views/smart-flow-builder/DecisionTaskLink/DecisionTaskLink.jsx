@@ -176,17 +176,15 @@ const DecisionTaskLink = props => {
     <>
       <LinkPath {...props} />
       <foreignObject
-        width={200}
+        width={300}
         height={32}
-        x={edgeCenterX - 160 / 2}
+        x={edgeCenterX - 300 / 2}
         y={edgeCenterY - 32 / 2}
         className="edgebutton-foreignobject"
         requiredExtensions="http://www.w3.org/1999/xhtml"
+        style={{ overflow: 'visible' }}
       >
         <LabelsWrapper>
-          {delayOptionsVisible && (
-            <DelayPeriodLabel link={link} onClick={openDelayPopover} />
-          )}
           <div
             onMouseEnter={outcome && openOptions}
             onMouseLeave={closeOptions}
@@ -208,6 +206,11 @@ const DecisionTaskLink = props => {
                 options={menuOptions}
                 onClose={closeOptions}
               />
+            )}
+          </div>
+          <div style={{ paddingTop: '5px' }}>
+            {delayOptionsVisible && (
+              <DelayPeriodLabel link={link} onClick={openDelayPopover} />
             )}
           </div>
         </LabelsWrapper>

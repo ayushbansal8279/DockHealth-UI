@@ -6,7 +6,7 @@ import React, {
   useCallback,
   useState,
 } from 'react';
-import { FieldType } from 'helpers/field-type-helpers';
+import { FieldCharakterLimit, FieldType } from 'helpers/field-type-helpers';
 import { BOOL_SELECT_OPTIONS } from 'helpers/custom-fields-helpers';
 import FormInput from 'components/common/Input/FormInput';
 import FormSelect from 'components/common/Select/FormSelect';
@@ -66,7 +66,6 @@ const CustomField = ({
   );
 
   const fieldName = `${fieldsGroupKey}.${identifier}`;
-
   useEffect(() => {
     if (initialValue) setValue(fieldName, initialValue.value);
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -91,6 +90,8 @@ const CustomField = ({
       case FieldType.TEXT:
         return (
           <CustomFieldTextEditor
+            oneline
+            characterLimit={FieldCharakterLimit.TEXT}
             identifier={identifier}
             readOnly={readOnly}
             label={name}
@@ -105,16 +106,19 @@ const CustomField = ({
         );
       case FieldType.LONG_TEXT:
         return (
-          <FormInput
+          <CustomFieldTextEditor
+            characterLimit={FieldCharakterLimit.LONG_TEXT}
+            identifier={identifier}
             readOnly={readOnly}
             label={name}
             name={fieldName}
             placeholder={placeholder}
-            multiline
-            onBlur={handleBlur}
+            taskIdentifier={taskIdentifier}
+            task={task}
+            fieldsGroupKey={fieldsGroupKey}
             inputRef={inputReference}
-            ref={componentReference}
             onChange={() => setWasChanged(true)}
+            enableRichText
           />
         );
       case FieldType.NUMBER:

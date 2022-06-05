@@ -87,6 +87,7 @@ const renderPatientNotes = (
       </PatientNote>
     );
   };
+
   return notes?.length > 0 ? (
     <>
       <Divider />

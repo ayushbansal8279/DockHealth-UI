@@ -1,8 +1,14 @@
 /* eslint-disable sonarjs/cognitive-complexity */
-import React, { useEffect, useState, useRef, useMemo } from 'react';
+import React, {
+  useEffect,
+  useState,
+  useRef,
+  useMemo,
+  useCallback,
+} from 'react';
 import { FormProvider, useForm } from 'react-hook-form';
 import { string, object, array } from 'yup';
-import { yupResolver } from "@hookform/resolvers/yup";
+import { yupResolver } from '@hookform/resolvers/yup';
 import { partial } from 'ramda';
 import { Box, Grid, IconButton } from '@material-ui/core';
 import DeleteIcon from '@material-ui/icons/Delete';
@@ -26,6 +32,7 @@ import {
   InfoText,
 } from './styled';
 import AdditionalOptions from './AdditionalOptions';
+import { getAdditionalOptions } from './helpers';
 
 const REQUIRED_MESSAGE = 'This field is required';
 
@@ -41,58 +48,38 @@ const EditCustomFieldModal = ({
     displayOptions: customField?.displayOptions || [],
   });
 
-  const handleDisplayOptionChange = (value, displayOption) => {
-    let updatedOptions = displayOptionsState?.displayOptions;
-    if (value) {
-      if (
-        !displayOptionsState?.displayOptions?.find(
-          option => option === displayOption,
-        )
-      ) {
-        updatedOptions.push(displayOption);
+  const handleDisplayOptionChange = useCallback(
+    (value, displayOption) => {
+      let updatedOptions = displayOptionsState?.displayOptions;
+      if (value) {
+        if (!updatedOptions?.includes(displayOption)) {
+          updatedOptions.push(displayOption);
+        }
+      } else {
+        updatedOptions = updatedOptions.filter(item => item !== displayOption);
       }
-    } else {
-      updatedOptions = updatedOptions.filter(item => item !== displayOption);
-    }
-    setDisplayOptionsState(s => ({
-      ...s,
-      displayOptions: updatedOptions,
-    }));
-  };
+      setDisplayOptionsState(s => ({
+        ...s,
+        displayOptions: updatedOptions,
+      }));
+    },
+    [displayOptionsState],
+  );
 
-  const ADDITIONAL_OPTIONS = [
-    {
-      label: 'Include on Patient Header',
-      key: 'PATIENT_HEADER',
-      value: !!displayOptionsState?.displayOptions?.find(
-        option => option === 'PATIENT_HEADER',
-      ),
-      onChange: value => handleDisplayOptionChange(value, 'PATIENT_HEADER'),
-    },
-    {
-      label: 'Include on Patient Search',
-      key: 'PATIENT_SEARCH',
-      value: !!displayOptionsState?.displayOptions?.find(
-        option => option === 'PATIENT_SEARCH',
-      ),
-      onChange: value => handleDisplayOptionChange(value, 'PATIENT_SEARCH'),
-    },
-    {
-      label: 'Include on Patient List',
-      key: 'PATIENT_LIST',
-      value: !!displayOptionsState?.displayOptions?.find(
-        option => option === 'PATIENT_LIST',
-      ),
-      onChange: value => handleDisplayOptionChange(value, 'PATIENT_LIST'),
-    },
-  ];
+  const ADDITIONAL_OPTIONS = useMemo(
+    () =>
+      getAdditionalOptions({
+        type,
+        displayOptionsState,
+        handleDisplayOptionChange,
+      }),
+    [displayOptionsState, handleDisplayOptionChange, type],
+  );
 
   const addOptionButtonReference = useRef(null);
   const isCreatingNewField = !customField;
   const [isSaving, setIsSaving] = useState(false);
   const dispatch = useDispatch();
-
-  const additionalOptionsEnabled = type === 'PATIENT';
 
   const validationSchema = useMemo(() => {
     return object().shape({
@@ -279,7 +266,7 @@ const EditCustomFieldModal = ({
                         options={FIELD_TYPE_OPTIONS}
                       />
                     </Grid>
-                    {type !== 'TASK' && (
+                    {type !== 'TASK' && type !== 'PROVIDER' && (
                       <Grid item xs={6}>
                         <FormSelect
                           required
@@ -344,11 +331,12 @@ const EditCustomFieldModal = ({
                       </>
                     )}
                   </Grid>
-                  {additionalOptionsEnabled && (
-                    <Box m={2}>
-                      <AdditionalOptions options={ADDITIONAL_OPTIONS} />
-                    </Box>
-                  )}
+                  {customField.fieldType !== 'LONG_TEXT' &&
+                    ADDITIONAL_OPTIONS?.length > 0 && (
+                      <Box m={2}>
+                        <AdditionalOptions options={ADDITIONAL_OPTIONS} />
+                      </Box>
+                    )}
                 </Box>
               </FormScrollingContainer>
               <Box m={2} />

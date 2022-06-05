@@ -9,6 +9,9 @@ export const Container = styled.div`
 
 export const ViewTypeButtonsWrapper = styled.div`
   display: flex;
+  @media print {
+    display: none;
+  }
 `;
 
 export const ViewTypeButton = styled.button`

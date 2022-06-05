@@ -38,6 +38,7 @@ import {
   getQuickFilters,
 } from 'actions/mega-filter-actions';
 import { determineTaskCounts } from './helpers';
+import { HeaderMembersContainer } from './styled';
 
 const ListDetailsHeader = props => {
   const {
@@ -190,7 +191,7 @@ const ListDetailsHeader = props => {
       />
       <LayoutHeader.Spacer />
       {shownUsers && listType !== 'PUBLIC' && (
-        <>
+        <HeaderMembersContainer>
           {shownUsers.map((user, index) => {
             return (
               <Box key={user.identifier} pl={index !== 0 ? 0.5 : 0}>
@@ -234,7 +235,7 @@ const ListDetailsHeader = props => {
               />
             </Box>
           )}
-        </>
+        </HeaderMembersContainer>
       )}
     </LayoutHeader>
   );

@@ -68,9 +68,6 @@ const NestedFlowNode = React.memo(({ data, isConnectable, selected, type }) => {
     >
       <TaskNodeWrapper selected={selected} type={type}>
         <NestedFlowNodeStyled>
-          <IconButton onClick={handleOpenModal}>
-            <FindReplace htmlColor={palette.white} />
-          </IconButton>
           <Typography component="p">{task.description}</Typography>
           <IconContainerStyled>
             <IconButton onClick={handleDelete}>

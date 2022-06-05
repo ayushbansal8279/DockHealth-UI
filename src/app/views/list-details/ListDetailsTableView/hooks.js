@@ -13,6 +13,7 @@ import { TaskItemColumn } from 'helpers/task-helpers';
 import {
   updateUserListViewSetup,
   updateColumnOnListPreferences,
+  updateOrderColumnOnListPreferences,
 } from 'actions/task-list-actions';
 import { updateOrganizationCustomFields } from 'actions/organization-actions';
 
@@ -56,7 +57,11 @@ const initializeListDetailsViewHooks = () => {
   );
   const taskList = useSelector(currentTaskListSelector);
   const currentStatus = useSelector(currentTaskListTasksStatusSelector);
-  const { columnsConfig, setColumnsConfig } = useColumnsConfig();
+  const {
+    columnsConfig,
+    setColumnsConfig,
+    setColumnsOrder,
+  } = useColumnsConfig();
   const currentUser = useSelector(userProfileSelector);
   const { userIdentifier: currentUserIdentifier } = currentUser || {};
   const members = useSelector(taskListMembersSelector);
@@ -485,6 +490,19 @@ const initializeListDetailsViewHooks = () => {
     [currentUserIdentifier, dispatch, taskList],
   );
 
+  const handleOrderChange = useCallback(
+    newConfig => {
+      dispatch(
+        updateOrderColumnOnListPreferences(
+          newConfig,
+          taskList.taskListIdentifier,
+          currentUserIdentifier,
+        ),
+      );
+    },
+    [currentUserIdentifier, dispatch, taskList],
+  );
+
   const CONFIGURABLE_COLUMNS_CONFIG = {
     [TaskItemColumn.WORKFLOW_STATUS]: false,
     [TaskItemColumn.ASSIGNED]: false,
@@ -509,6 +527,18 @@ const initializeListDetailsViewHooks = () => {
     setColumnsConfig(transformedColumnsPreference);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [currentUserIdentifier, setColumnsConfig, taskList]);
+
+  useEffect(() => {
+    const { listDisplayColumns } =
+      taskList?.listType === 'PUBLIC'
+        ? taskList
+        : taskList?.listUsers?.find(
+            user => user.identifier === currentUserIdentifier,
+          ) || {};
+
+    if (listDisplayColumns) setColumnsOrder(listDisplayColumns);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [currentUserIdentifier, setColumnsOrder, taskList]);
 
   const setDisplayListPreferences = useCallback(
     columnKey => {
@@ -538,6 +568,7 @@ const initializeListDetailsViewHooks = () => {
   );
 
   return {
+    handleOrderChange,
     taskList,
     bulkEditIsDisabled,
     bulkEditTasks,

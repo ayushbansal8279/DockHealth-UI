@@ -18,4 +18,8 @@ export const ToolbarContainer = styled.div`
   align-items: center;
   z-index: 13;
   padding: ${spacing.small} ${spacing.large};
+
+  @media print {
+    display: none;
+  }
 `;

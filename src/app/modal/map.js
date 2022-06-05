@@ -61,7 +61,8 @@ import PatientFolderModal from './components/PatientFolderModal/PatientFolderMod
 import SelectPatientFolderModal from './components/SelectPatientFolderModal/SelectPatientFolderModal';
 import SmartFlowListModal from './components/SmartFlowListModal/SmartFlowListModal';
 import UnarchivePatientModal from './components/UnarchivePatientModal/UnarchivePatientModal';
-import SendEmailFromTaskModal from './components/SendEmailFromTaskModal/SendEmailFromTaskModal';
+import SendEmailFromTaskModal from './components/SendMessageFromTaskModals/SendEmailFromTaskModal/SendEmailFromTaskModal';
+import SendFaxFromTaskModal from './components/SendMessageFromTaskModals/SendFaxFromTaskModal/SendFaxFromTaskModal';
 
 const MODAL_MAP = {
   CompleteAllTasks: CompleteAllTasksModal,
@@ -127,6 +128,7 @@ const MODAL_MAP = {
   PatientFolder: PatientFolderModal,
   SelectPatientFolder: SelectPatientFolderModal,
   SmartFlowList: SmartFlowListModal,
+  SendFaxFromTask: SendFaxFromTaskModal,
   SendEmailFromTask: SendEmailFromTaskModal,
 };
 

@@ -48,6 +48,7 @@ const PersonDetailsOpenedTasks = ({
   toggleCompleteTask,
   onTaskUpdate,
   updateWorkflowStatus,
+  onOrderChange,
 }) => {
   const dispatch = useDispatch();
 
@@ -173,6 +174,7 @@ const PersonDetailsOpenedTasks = ({
                     />
                   </StickyContainer>
                   <TasksHeader
+                    onOrderChange={onOrderChange}
                     bulkEditEnabled
                     sort={sort}
                     onSortChange={handleSortChange}

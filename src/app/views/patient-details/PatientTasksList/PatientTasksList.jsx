@@ -13,6 +13,7 @@ import EmptyTaskListBird from 'img/animals/bird';
 import {
   getPatientFilterOptions,
   getCurrentPatientTasks,
+  updateOrderPreferencesInPatientList,
 } from 'actions/patient-details-actions';
 import { openModal, closeModal } from 'modal/actions';
 import { PatientTasksSagaActions } from 'sagas/patient-details-saga';
@@ -35,6 +36,7 @@ import {
   userProfileSelector,
   userSetupClientViewSelector,
   userProfileDashboardPrefsSelector,
+  userProfileColumnOrderSelector,
 } from 'selectors/user-selectors';
 import TaskDrawer from 'components/task-drawer/TaskDrawer/TaskDrawer';
 import BulkEditSection from 'components/tasklist/BulkEditSection/BulkEditSection';
@@ -53,6 +55,8 @@ import { useColumnsConfig } from 'context-api/columns-config-context';
 import { ListDetailsContainer } from 'components/tasklist/DropdownListSection/styled';
 import StickyContainer from 'components/common/HorizontalScroll/StickyContainer';
 import { ListViewType } from '../helpers';
+import { updateUserAllFieldsOrderSetup } from 'api/task-list-api';
+import { updateCurrentUserPreferences } from 'actions/user-actions';
 import {
   checkIfSelectedListIsPresent,
   groupTasks,
@@ -98,8 +102,13 @@ const PatientTasksListView = () => {
     addingNewSubtaskParentIdSelector,
   );
   const customerTypeLabel = getCustomerTypeLabel(currentUser);
-  const { columnsConfig, setColumnsConfig } = useColumnsConfig();
+  const {
+    columnsConfig,
+    setColumnsConfig,
+    setColumnsOrder,
+  } = useColumnsConfig();
   const userPreferColumns = useSelector(userProfileDashboardPrefsSelector);
+  const userOrderColumns = useSelector(userProfileColumnOrderSelector);
   const dispatch = useDispatch();
   const history = useHistory();
   const {
@@ -111,6 +120,36 @@ const PatientTasksListView = () => {
   } = useActions(PatientTasksSagaActions);
 
   const isAllTasksView = taskListIdentifierParameter === ListViewType.ALL_TASKS;
+
+  const handleOrderChange = useCallback(
+    listDisplayColumns => {
+      if (isAllTasksView) {
+        dispatch(
+          updateCurrentUserPreferences({
+            listDisplayColumns,
+          }),
+        );
+      } else {
+        dispatch(
+          updateOrderPreferencesInPatientList(
+            taskListIdentifierParameter,
+            listDisplayColumns,
+            currentUser.identifier,
+          ),
+        );
+        updateUserAllFieldsOrderSetup(
+          listDisplayColumns,
+          taskListIdentifierParameter,
+        );
+      }
+    },
+    [
+      currentUser.identifier,
+      dispatch,
+      isAllTasksView,
+      taskListIdentifierParameter,
+    ],
+  );
 
   useEffect(() => {
     const taskItemConfig = isAllTasksView
@@ -256,6 +295,23 @@ const PatientTasksListView = () => {
     [filteredLists, isAllTasksView, taskListIdentifierParameter],
   );
 
+  useEffect(() => {
+    if (isAllTasksView && userOrderColumns) {
+      setColumnsOrder(userOrderColumns);
+    } else {
+      const taskListOrder = activeList?.listUsers?.find(
+        u => u.identifier === currentUser.identifier,
+      )?.listDisplayColumns;
+      if (taskListOrder) setColumnsOrder(taskListOrder);
+    }
+  }, [
+    activeList,
+    currentUser.identifier,
+    isAllTasksView,
+    setColumnsOrder,
+    userOrderColumns,
+  ]);
+
   const groupedTasks = useMemo(() => {
     if (isAllTasksView) return undefined;
 
@@ -324,6 +380,7 @@ const PatientTasksListView = () => {
               groupHasMultipleAssignees={groupHasMultipleAssignees}
               isGroupSelected={isGroupSelected(tasks)}
               onGroupSelect={() => handleGroupSelect(tasks)}
+              onOrderChange={handleOrderChange}
             />
           )}
           {tasks?.map(task =>
@@ -356,19 +413,20 @@ const PatientTasksListView = () => {
       </>
     ),
     [
-      viewSetup,
+      completeTasksVisible,
       activeList,
+      quickAddTask,
       sort,
       sortPatientTasks,
       groupHasMultipleAssignees,
-      quickAddTask,
       isGroupSelected,
+      handleOrderChange,
       handleGroupSelect,
-      addingNewSubtaskParentId,
-      completeTasksVisible,
       handleToggleTaskStatus,
       updatePatientTaskInList,
       updatePatientTaskWorkflowStatus,
+      addingNewSubtaskParentId,
+      viewSetup,
     ],
   );
 
@@ -398,6 +456,7 @@ const PatientTasksListView = () => {
                       zIndex={13}
                     >
                       <TaskListHeader
+                        onOrderChange={handleOrderChange}
                         list={!isAllTasksView ? activeList : null}
                         viewSetup={viewSetup}
                         refreshView={compose(dispatch, getCurrentPatientTasks)}

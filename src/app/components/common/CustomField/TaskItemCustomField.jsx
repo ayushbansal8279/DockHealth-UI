@@ -1,5 +1,4 @@
 import React, { useCallback } from 'react';
-import { Box } from '@material-ui/core';
 import { FieldType } from 'helpers/field-type-helpers';
 import TaskItemBoolean from 'components/task/StandardTaskItem/customFieldsTaskItemComponents/TaskItemBoolean/TaskItemBoolean';
 import TaskItemDate from 'components/task/StandardTaskItem/customFieldsTaskItemComponents/TaskItemDate';
@@ -105,20 +104,13 @@ const TaskItemCustomField = ({
       );
     case FieldType.LONG_TEXT:
       return (
-        <Box
-          width="100%"
-          height="100%"
-          display="flex"
-          alignItems="center"
-          onClick={handleClick}
-        >
-          <TaskItemLongText
-            readOnly={readOnly}
-            value={value}
-            onChange={handleChange}
-            field={field}
-          />
-        </Box>
+        <TaskItemLongText
+          readOnly={readOnly}
+          value={value}
+          onChange={handleChange}
+          openDrawer={!patientType ? handleClick : undefined}
+          field={field}
+        />
       );
     case FieldType.NUMBER:
       return (
