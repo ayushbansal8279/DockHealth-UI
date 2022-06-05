@@ -100,10 +100,14 @@ export const BulkContainer = styled.div`
   display: flex;
   align-items: center;
   justify-content: center;
-  opacity: ${({ visible }) => (visible ? '1' : '0')};
+  opacity: ${({ visible }) => (visible ? '1' : '0.5')};
+  &:hover {
+    opacity: 1;
+  }
 `;
 
 export const AddPlaceholder = styled.div`
+  visibility: hidden;
   color: ${palette.lightGrey};
   opacity: 0;
   &::first-letter {
@@ -279,6 +283,9 @@ export const StandardTaskItemCell = styled.div`
 export const MainStandardTaskItemCell = styled(StandardTaskItemCell)`
   flex: 1;
   border-right: 0;
+  &:hover button {
+    visibility: visible;
+  }
 `;
 
 export const ClickablePatient = styled.span`
@@ -308,6 +315,10 @@ export const StandardTaskItemContainer = styled.div`
           ${highlight} 6s ease-out;
         `
       : ''};
+
+  @media print {
+    height: auto;
+  }
 `;
 
 export const StatusBar = styled.div`
@@ -495,6 +506,9 @@ export const SubtaskItemWrapper = styled.div`
 
 export const AddSubtaskButton = styled.button`
   cursor: pointer;
+  &:hover div {
+    visibility: visible;
+  }
 `;
 
 export const TaskItemDescriptionIndicators = styled.div`
@@ -522,7 +536,7 @@ export const DateText = styled.p`
 
 export const DetailsButton = styled.button`
   margin-left: 8px;
-  ${({ visible }) => !visible && 'visibility: hidden;'}
+  visibility: hidden;
   font-family: 'Montserrat', sans-serif;
   font-size: ${fontSizes.smallPlus};
   font-weight: ${fontWeights.regularPlus};

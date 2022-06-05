@@ -51,39 +51,15 @@ import {
   getQuickFilters,
   selectQuickFilter,
 } from 'actions/mega-filter-actions';
+import { updateCurrentUserPreferences } from 'actions/user-actions';
+import PatientDetailsHeader from './PatientDetailsHeader/PatientDetailsHeader';
+import PatientWidget from './PatientWidget/PatientWidget';
+import { DEFAULT_TAB, TABS_CONFIG } from './helpers';
 import {
   PatientDetailsContainer,
   PatientDetailsTabsContainer,
   MainTab,
 } from './styled';
-import PatientDetailsHeader from './PatientDetailsHeader/PatientDetailsHeader';
-import PatientTasksList from './PatientTasksList/PatientTasksList';
-import PatientNotes from './PatientNotes/PatientNotes';
-import PatientAttachments from './PatientAttachments/PatientAttachments';
-import PatientWidget from './PatientWidget/PatientWidget';
-
-const TABS_CONFIG = [
-  {
-    label: 'All tasks',
-    mainPath: 'tasks',
-    additionalPath: ':taskListIdentifier?',
-    RouteComponent: PatientTasksList,
-    exact: true,
-  },
-  {
-    label: 'Notes',
-    mainPath: 'notes',
-    RouteComponent: PatientNotes,
-  },
-  {
-    label: 'Files',
-    mainPath: 'files',
-    additionalPath: ':folderIdentifier?',
-    RouteComponent: PatientAttachments,
-  },
-];
-
-const DEFAULT_TAB = TABS_CONFIG[0];
 
 const PatientDetailsView = () => {
   const { patientIdentifier } = useParams();
@@ -133,7 +109,7 @@ const PatientDetailsView = () => {
 
   useEffect(() => {
     // eslint-disable-next-line unicorn/consistent-function-scoping
-    const callback = ({ eventType, task }) => {
+    const taskCallback = ({ eventType, task }) => {
       if (
         eventType?.startsWith('CREATE_TASK') ||
         eventType?.startsWith('DUPLICATE_TASK')
@@ -144,17 +120,30 @@ const PatientDetailsView = () => {
       }
     };
 
+    // eslint-disable-next-line unicorn/consistent-function-scoping
+    const taskBundleCallback = ({ eventType, taskBundle }) => {
+      if (
+        (eventType?.startsWith('CREATE_TASK_BUNDLE') ||
+          eventType?.startsWith('DUPLICATE_TASK_BUNDLE')) &&
+        taskBundle.identifier
+      ) {
+        dispatch(TaskActions.refreshTaskBundle(taskBundle.identifier));
+      }
+    };
+
     const channelName = `private-dock-user-channel-${currentUserIdentifier}`;
     let ch;
 
     if (currentUserIdentifier) {
       ch = pusher.current.subscribe(channelName);
-      ch.bind('task-update', callback);
+      ch.bind('task-update', taskCallback);
+      ch.bind('task-bundle-update', taskBundleCallback);
     }
 
     return () => {
       if (ch) {
-        ch.unbind('task-update', callback);
+        ch.unbind('task-update', taskCallback);
+        ch.unbind('task-bundle-update', taskBundleCallback);
         ch.unsubscribe(channelName);
       }
     };

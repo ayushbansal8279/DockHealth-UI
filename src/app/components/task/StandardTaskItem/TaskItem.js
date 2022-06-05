@@ -54,6 +54,7 @@ import {
   SINGLE_TASK_RESTRICTIONS_OPTIONS,
 } from 'restrictions/task-restrictions';
 import { sortAlphabetical } from 'helpers/custom-fields-helpers';
+import { isNotEmptyArray } from 'helpers/utils-helpers';
 import { getSubtaskStylingLink } from './helpers';
 import TaskItemContextMenu from '../TaskItemContextMenu/TaskItemContextMenu';
 import TaskItemBulkEdit from './TaskItemComponents/TaskItemBulkEdit';
@@ -142,6 +143,7 @@ const TaskItem = React.memo(
       columnsConfig,
       customColumnsConfig,
       patientCustomColumnsConfig,
+      columnsOrder,
     } = useColumnsConfig();
     const { listName, taskListIdentifier } = taskList || {};
     const isCompleted = task.status === 'COMPLETE';
@@ -157,9 +159,7 @@ const TaskItem = React.memo(
       () =>
         sortAlphabetical([
           ...customColumnsConfig,
-          ...patientCustomColumnsConfig.map(c => ({
-            ...c,
-          })),
+          ...patientCustomColumnsConfig,
         ]),
       [customColumnsConfig, patientCustomColumnsConfig],
     );
@@ -188,7 +188,6 @@ const TaskItem = React.memo(
     const isSelected = useSelector(
       isTaskSelectedSelector(taskIdentifier, isSelectedByHighlighted),
     );
-    const [isHovered, setIsHovered] = useState(false);
     const [taskDecisionError, setTaskDecisionError] = useState(false);
     const [contextMenu, setContextMenu] = useState(null);
     const dispatch = useDispatch();
@@ -238,9 +237,6 @@ const TaskItem = React.memo(
         });
       }
     }, [newlyCreated, parentContainerReference]);
-
-    const onMouseEnter = () => setIsHovered(true);
-    const onMouseLeave = () => setIsHovered(false);
 
     const onClickTaskItem = useCallback(
       () =>
@@ -343,13 +339,23 @@ const TaskItem = React.memo(
       dispatch(storeAsCurrentTask(null));
     };
 
+    const getColumnOrder = useCallback(
+      TaskItemColumnType => {
+        if (isNotEmptyArray(columnsOrder)) {
+          const existingOrder = columnsOrder?.indexOf(TaskItemColumnType);
+          if (existingOrder >= 0) return existingOrder;
+          return 999;
+        }
+        return 'initial';
+      },
+      [columnsOrder],
+    );
+
     return (
       <>
         <StandardTaskItemPanel
           onContextMenu={handleTaskItemRightClick}
           isDragging={isDragging}
-          onMouseEnter={onMouseEnter}
-          onMouseLeave={onMouseLeave}
         >
           <StandardTaskItemContainer
             newlyCreated={newlyCreated}
@@ -362,6 +368,7 @@ const TaskItem = React.memo(
             isAddingTask={false}
           >
             <StickyMainTaskItemCell
+              order={getColumnOrder(TaskItemColumn.DESCRIPTION)}
               isSubtask={showSubtaskStylingLink}
               newlyCreated={newlyCreated}
               backgroundColor={pageBackground}
@@ -380,7 +387,6 @@ const TaskItem = React.memo(
                 <TaskItemBulkEdit
                   isChecked={selected}
                   onClick={onClickBulkEdit}
-                  isHovered={isHovered}
                 />
               )}
               <MainStandardTaskItemCell
@@ -433,7 +439,7 @@ const TaskItem = React.memo(
                       isEditing={isEditingDescription}
                       setEditing={setEditingDescription}
                     />
-                    <DetailsButton visible={isHovered}>Details</DetailsButton>
+                    <DetailsButton>Details</DetailsButton>
                   </>
                 )}
               </MainStandardTaskItemCell>
@@ -460,13 +466,13 @@ const TaskItem = React.memo(
                 justify="center"
                 paddingLeft="tiny"
                 paddingRight="tiny"
+                order={getColumnOrder(TaskItemColumn.SUBTASKS_COUNT)}
               >
                 <TaskItemSubtasks
                   isSubtask={isSubtask}
                   subtaskQuickAddOpen={subtaskQuickAddOpen}
                   subtasksDisabled={subtasksDisabled}
                   subTasksCount={subTasksCount}
-                  isHovered={isHovered}
                   isOpen={isOpen}
                   isNestedTask={isNestedTask}
                   onSubtaskLabelClick={onSubtaskLabelClick}
@@ -481,6 +487,7 @@ const TaskItem = React.memo(
               <TaskItemCell
                 key={`patient_${taskIdentifier}`}
                 width={TaskItemColumnWidth[TaskItemColumn.PATIENT]}
+                order={getColumnOrder(TaskItemColumn.PATIENT)}
               >
                 <TaskItemPatient
                   highlightedValue={highlightedValue}
@@ -508,6 +515,7 @@ const TaskItem = React.memo(
                 onContextMenu={event => {
                   event.stopPropagation();
                 }}
+                order={getColumnOrder(TaskItemColumn.WORKFLOW_STATUS)}
               >
                 <TaskItemWorkflowStatus
                   task={task}
@@ -525,12 +533,12 @@ const TaskItem = React.memo(
               <TaskItemCell
                 key={`activity_${taskIdentifier}`}
                 width={TaskItemColumnWidth[TaskItemColumn.ACTIVITY]}
+                order={getColumnOrder(TaskItemColumn.ACTIVITY)}
               >
                 <TaskItemIcons
                   restrictions={restrictions}
                   matchComments={matchComments}
                   comments={comments}
-                  isHovered={isHovered}
                   task={task}
                   matchLabels={matchLabels}
                   labels={labels}
@@ -548,6 +556,7 @@ const TaskItem = React.memo(
                     onContextMenu={event => {
                       event.stopPropagation();
                     }}
+                    order={getColumnOrder(TaskItemColumn.START_DATE)}
                   />
                 )}
                 {columnsConfig[TaskItemColumn.DUE_DATE] && !isTemplateTask && (
@@ -560,8 +569,9 @@ const TaskItem = React.memo(
                     onContextMenu={event => {
                       event.stopPropagation();
                     }}
+                    order={getColumnOrder(TaskItemColumn.DUE_DATE)}
                   >
-                    <TaskItemDueDate task={task} isHovered={isHovered} />
+                    <TaskItemDueDate task={task} />
                   </TaskItemCell>
                 )}
               </>
@@ -576,6 +586,8 @@ const TaskItem = React.memo(
                 onContextMenu={event => {
                   event.stopPropagation();
                 }}
+                order={getColumnOrder(TaskItemColumn.ASSIGNED)}
+                printWidth={TaskItemColumnWidth[TaskItemColumn.ASSIGNED].PRINT}
               >
                 <TaskItemMembers
                   readOnly={restrictions?.assigment === READ_ONLY}
@@ -592,6 +604,7 @@ const TaskItem = React.memo(
                 <TaskItemCell
                   key={`list_${taskIdentifier}`}
                   width={TaskItemColumnWidth[TaskItemColumn.LIST_NAME]}
+                  order={getColumnOrder(TaskItemColumn.LIST_NAME)}
                 >
                   <TaskItemList
                     listName={listName}
@@ -624,13 +637,13 @@ const TaskItem = React.memo(
                         key={`custom_${taskIdentifier}_${field.identifier}`}
                         padding="4px"
                         width={CustomFieldWidthConfig[field.fieldType]}
+                        order={getColumnOrder(field.identifier)}
                       >
                         {!hidePatientCustomFields && (
                           <TaskItemCustomField
                             field={field}
                             customFieldValue={customFieldValue}
                             task={task}
-                            isHovered={isHovered}
                           />
                         )}
                       </TaskItemCell>

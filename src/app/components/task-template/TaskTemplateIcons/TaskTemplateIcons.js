@@ -12,18 +12,16 @@ import TaskIcon from 'components/task/TaskIcon/TaskIcon';
 import { SINGLE_TASK_RESTRICTIONS_OPTIONS } from 'restrictions/task-restrictions';
 import { GridImg } from './styled';
 
-const TaskTemplateIcons = ({
-  matchComments,
-  comments,
-  isHovered,
-  workflow,
-  matchLabels,
-  labels,
-  matchAttachments,
-  attachments,
-  dispatch,
-  restrictions,
-}) => {
+const TaskTemplateIcons = ({ workflow, dispatch }) => {
+  const {
+    matchComments,
+    comments,
+    matchLabels,
+    labels,
+    matchAttachments,
+    attachments,
+    restrictions,
+  } = workflow;
   const onCommentClick = useCallback(() => {
     dispatch(
       openDrawer(
@@ -67,7 +65,6 @@ const TaskTemplateIcons = ({
           <button type="button" onClick={onCommentClick}>
             <TaskIcon
               type="comments"
-              isHovered={isHovered}
               isActive={comments?.length > 0}
               // isNew={workflow?.updatedComment}
             />
@@ -93,7 +90,6 @@ const TaskTemplateIcons = ({
           >
             <TaskIcon
               type="labels"
-              isHovered={isHovered}
               isActive={labels?.length > 0}
               // isNew={workflow?.updatedLabel}
             />
@@ -112,7 +108,6 @@ const TaskTemplateIcons = ({
           <button type="button" onClick={onAttachmentsClick}>
             <TaskIcon
               type="attachments"
-              isHovered={isHovered}
               isActive={attachments?.length > 0}
               // isNew={workflow?.updatedAttachment}
             />

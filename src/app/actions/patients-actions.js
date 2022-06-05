@@ -73,6 +73,34 @@ export function patientBulkCreateTask(payload) {
   };
 }
 
+export function patientAddLabel(payload) {
+  return {
+    type: ActionTypes.PATIENT_ADD_LABEL,
+    payload,
+  };
+}
+
+export function patientBulkAddLabel(payload) {
+  return {
+    type: ActionTypes.PATIENT_BULK_ADD_LABEL,
+    payload,
+  };
+}
+
+export function patientBulkDeleteLabel(payload) {
+  return {
+    type: ActionTypes.PATIENT_BULK_DELETE_LABEL,
+    payload,
+  };
+}
+
+export function patientDeleteLabel(payload) {
+  return {
+    type: ActionTypes.PATIENT_DELETE_LABEL,
+    payload,
+  };
+}
+
 export function patientBulkCreateWorkflow(payload) {
   return {
     type: ActionTypes.PATIENT_BULK_CREATE_WORKFLOW,

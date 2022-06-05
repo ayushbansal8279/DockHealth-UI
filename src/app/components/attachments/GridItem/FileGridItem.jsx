@@ -3,6 +3,8 @@ import moment from 'moment';
 import { Box, IconButton } from '@material-ui/core';
 import OptionsMenu from 'components/common/OptionsMenu/OptionsMenu';
 import MoreVertIcon from '@material-ui/icons/MoreVert';
+import { PatientAttachmentType } from 'helpers/patient-details-helpers';
+import GoogleDriveIcon from 'img/google-drive-icon';
 import { trunc } from 'helpers/utility-functions';
 import { getIconFromContentType } from './helpers';
 import {
@@ -16,7 +18,7 @@ import {
 
 const FileGridItem = props => {
   const { file, options, onClick } = props;
-  const { fileName, contentType, dateCreated } = file;
+  const { fileName, contentType, dateCreated, type } = file;
 
   const IconComponent = getIconFromContentType(contentType);
 
@@ -25,6 +27,15 @@ const FileGridItem = props => {
       <IconContainer>
         <IconComponent fontSize="inherit" />
       </IconContainer>
+      {type === PatientAttachmentType.FILE_GDRIVE && (
+        <Box position="absolute" top="10px" right="10px">
+          <img
+            src={GoogleDriveIcon}
+            alt="Google Drive"
+            style={{ width: 16, height: 16 }}
+          />
+        </Box>
+      )}
       <DetailsContainer>
         <Box
           display="flex"

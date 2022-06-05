@@ -13,7 +13,6 @@ const TaskItemSubtasks = ({
   subtaskQuickAddOpen,
   subtasksDisabled,
   subTasksCount,
-  isHovered,
   isOpen,
   isNestedTask,
   onSubtaskLabelClick,
@@ -33,7 +32,7 @@ const TaskItemSubtasks = ({
     <>
       {!readOnly && (
         <AddSubtaskButton type="button" onClick={onClickAddSubtask}>
-          {isHovered && <AddPlaceholder>+ Add</AddPlaceholder>}
+          <AddPlaceholder>+ Add</AddPlaceholder>
         </AddSubtaskButton>
       )}
     </>

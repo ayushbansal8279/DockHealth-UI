@@ -4,6 +4,7 @@ import { fontSizes, fontWeights } from 'styles/font';
 import palette from 'styles/palette';
 
 const TaskItemCell = styled.div`
+  ${({ order }) => (order ? `order: ${order};` : '')}
   position: relative;
   width: ${props => (!props.width ? '100%' : '')};
   justify-content: ${props => props.justify || 'flex-start'};
@@ -22,6 +23,16 @@ const TaskItemCell = styled.div`
     props.paddingLeft ? spacing[props.paddingLeft] : spacing.regular};
   padding-right: ${props =>
     props.paddingLeft ? spacing[props.paddingRight] : spacing.regular};
+
+  @media print {
+    ${({ printWidth }) =>
+      printWidth &&
+      `
+      width: ${printWidth}px;
+      min-width: ${printWidth}px;
+      max-width: ${printWidth}px;
+  `};
+  }
 `;
 
 export default TaskItemCell;

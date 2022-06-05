@@ -63,6 +63,10 @@ export const ArchivePersonButton = styled.button`
   &:hover {
     filter: brightness(1.25);
   }
+
+  @media print {
+    display: none;
+  }
 `;
 
 // loader

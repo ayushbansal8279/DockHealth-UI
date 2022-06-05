@@ -154,6 +154,13 @@ export function addNewDecisionTaskElement(position) {
   };
 }
 
+export function addNewNestedFlowElement(position) {
+  return {
+    type: ActionTypes.ADD_NEW_WORKFLOW_LINK_ELEMENT,
+    position,
+  };
+}
+
 export function addTemporaryElements(elements) {
   return {
     type: ActionTypes.ADD_TEMPORARY_ELEMENTS,

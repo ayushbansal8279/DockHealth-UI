@@ -1,8 +1,8 @@
 /* eslint-disable sonarjs/cognitive-complexity */
-import React, { useCallback, useMemo } from 'react';
+import React, { useMemo } from 'react';
 import { CircleIcon } from 'components/task/styled';
 import { Box, IconButton } from '@material-ui/core';
-import { Close, MoreHoriz, FileCopy } from '@material-ui/icons';
+import { Close, MoreHoriz } from '@material-ui/icons';
 import { checkIfTemplateTask, TaskStatus } from 'helpers/task-helpers';
 import Spacing from 'components/common/Spacing';
 import palette from 'styles/palette';
@@ -10,6 +10,12 @@ import Circle from 'img/circle.svg';
 import CircleCompleted from 'img/circle-completed.svg';
 import OptionsMenu from 'components/common/OptionsMenu/OptionsMenu';
 import { SINGLE_TASK_RESTRICTIONS_OPTIONS } from 'restrictions/task-restrictions';
+import {
+  userHasSendEmailFeatureSelector,
+  userHasSendFaxFeatureSelector,
+} from 'selectors/user-selectors';
+import { useDispatch, useSelector } from 'react-redux';
+import { openModal } from 'modal/actions';
 import { HorizontalLabel, FiledInListName } from '../styled';
 import initializeTaskDrawerTopSectionHooks from './hooks';
 
@@ -40,6 +46,10 @@ const TopSection = ({
     onDuplicate,
     closeTaskDrawer,
   });
+  const dispatch = useDispatch();
+
+  const sendEmailAvailable = useSelector(userHasSendEmailFeatureSelector);
+  const sendFaxAvailable = useSelector(userHasSendFaxFeatureSelector);
 
   const options = useMemo(
     () => [
@@ -70,6 +80,18 @@ const TopSection = ({
         onClick: handleShareTask,
       },
       {
+        name: 'Copy task link',
+        onClick: handleCopyLink,
+      },
+      sendEmailAvailable && {
+        name: 'Send Email',
+        onClick: () => dispatch(openModal('SendEmailFromTask')),
+      },
+      sendFaxAvailable && {
+        name: 'Send FAX',
+        onClick: () => dispatch(openModal('SendFaxFromTask')),
+      },
+      {
         name: 'Delete',
         color: palette.error,
         onClick: openDeleteConfirmationModal,
@@ -80,11 +102,16 @@ const TopSection = ({
       isTemplateTask,
       duplicateTaskWithoutConfirmation,
       handleMoveTask,
-      openDeleteConfirmationModal,
-      openDuplicateConfirmationModal,
       restrictions,
+      handleCopyLink,
+      sendEmailAvailable,
+      sendFaxAvailable,
+      openDeleteConfirmationModal,
       selectedTask,
       handleShareTask,
+      openDuplicateConfirmationModal,
+      duplicateTaskWithoutConfirmation,
+      dispatch,
     ],
   );
 
@@ -144,7 +171,7 @@ const TopSection = ({
           </OptionsMenu>
         )}
         <Box mx={0.5} />
-        {handleCopyLink && (
+        {/* {handleCopyLink && (
           <Box
             display="flex"
             alignItems="center"
@@ -153,7 +180,7 @@ const TopSection = ({
           >
             <FileCopy fontSize="small" color="primary" />
           </Box>
-        )}
+        )} */}
         {!hideCloseIcon && (
           <IconButton
             onClick={() => {

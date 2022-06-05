@@ -291,9 +291,9 @@ const TaskItemContextMenu = ({
         )}
         {restrictions?.duplicate !== DISABLED && (
           <li>
-            <MenuItemButton type="button" onClick={handleDuplicateTask}>
-              Duplicate {isSubtask ? 'Subtask' : 'Task'}
-            </MenuItemButton>
+            <MenuItemButtom type="button" onClick={handleDuplicateTask}>
+              Duplicate {isSubtask ? 'subtask' : 'task'}
+            </MenuItemButtom>
           </li>
         )}
         {restrictions?.subtasks !== READ_ONLY &&
@@ -307,8 +307,8 @@ const TaskItemContextMenu = ({
                   onRightClickAction('Create subtask');
                 }}
               >
-                Create Subtask
-              </MenuItemButton>
+                Create subtask
+              </MenuItemButtom>
             </li>
           )}
         {!isTemplateTask && (
@@ -327,8 +327,8 @@ const TaskItemContextMenu = ({
                 color={palette.oPlusRed}
                 onClick={handleDeleteTask}
               >
-                Delete {isSubtask ? 'Subtask' : 'Task'}
-              </MenuItemButton>
+                Delete {isSubtask ? 'subtask' : 'task'}
+              </MenuItemButtom>
             </li>
           </>
         )}

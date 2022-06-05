@@ -5,6 +5,7 @@ import { getTasksGroupsList } from 'actions/list-details-actions';
 import { openDrawer } from 'actions/task-drawer-actions';
 import { TASK_DISAPPEAR_DELAY } from 'helpers/task-update-helper';
 import * as ListDetailsApi from 'api/list-details-api';
+import { CommunicationType } from 'helpers/task-helpers';
 import * as ActionTypes from './action-types';
 import AlertMessages from '../alert/AlertMessages';
 
@@ -831,11 +832,25 @@ export function updateTasksLink(link) {
   };
 }
 
+export function sendEmailForTask(task) {
+  return {
+    type: ActionTypes.SEND_EMAIL_FOR_TASK,
+    task: { ...task, communicationType: CommunicationType.EMAIL },
+  };
+}
+
 export function deleteTasksLink(sourceTaskIdentifier, targetTaskIdentifier) {
   return {
     type: ActionTypes.DELETE_TASKS_LINK,
     sourceTaskIdentifier,
     targetTaskIdentifier,
+  };
+}
+
+export function sendFaxForTask(task) {
+  return {
+    type: ActionTypes.SEND_FAX_FOR_TASK,
+    task: { ...task, communicationType: CommunicationType.FAX },
   };
 }
 

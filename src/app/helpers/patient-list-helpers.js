@@ -4,12 +4,14 @@ export const PatientsListType = {
 };
 
 export const DefaultPatientsListType = {
+  ARCHIVED_PATIENTS: 'ARCHIVED_PATIENTS',
   ALL_PATIENTS: 'ALL_PATIENTS',
   ACTIVE_PATIENTS: 'ACTIVE_PATIENTS',
 };
 
 export const DefaultPatientListUrl = {
   [DefaultPatientsListType.ALL_PATIENTS]: 'all',
+  [DefaultPatientsListType.ARCHIVED_PATIENTS]: 'archived',
   [DefaultPatientsListType.ACTIVE_PATIENTS]: 'active',
 };
 

@@ -1,5 +1,4 @@
 import React, { useCallback } from 'react';
-import { Box } from '@material-ui/core';
 import { FieldType } from 'helpers/field-type-helpers';
 import TaskItemBoolean from 'components/task/StandardTaskItem/customFieldsTaskItemComponents/TaskItemBoolean/TaskItemBoolean';
 import TaskItemDate from 'components/task/StandardTaskItem/customFieldsTaskItemComponents/TaskItemDate';
@@ -13,13 +12,6 @@ import { TaskItemType } from 'helpers/task-helpers';
 import { openDrawer } from 'actions/task-drawer-actions';
 import { useDispatch } from 'react-redux';
 import { pick } from 'ramda';
-import { updatePatient } from 'api/patient-api';
-import {
-  UPDATE_PARTIAL_WORKFLOW_SUCCESS,
-  UPDATE_TASK_SUCCESS,
-} from 'actions/action-types';
-import { showGlobalAlert } from 'alert/actions';
-import AlertMessages from 'alert/AlertMessages';
 import { updatePatientDetails } from 'actions/patient-details-actions';
 
 const TaskItemCustomField = ({
@@ -27,8 +19,8 @@ const TaskItemCustomField = ({
   field,
   customFieldValue,
   task,
-  isHovered,
   onClick,
+  // eslint-disable-next-line sonarjs/cognitive-complexity
 }) => {
   const { value } = customFieldValue || {};
   const patientType = field.targetType === 'PATIENT';
@@ -59,7 +51,8 @@ const TaskItemCustomField = ({
           customFieldIdentifier: field.identifier,
           value: newValue,
         });
-        dispatch(updatePatientDetails({ ...task?.patient, patientMetaData }));
+        const patientIdentifier = task?.patient?.patientIdentifier;
+        dispatch(updatePatientDetails(patientIdentifier, { patientMetaData }));
       }
     } else {
       const taskMetaData = task.taskMetaData
@@ -88,12 +81,7 @@ const TaskItemCustomField = ({
       );
     case FieldType.DATE:
       return (
-        <TaskItemDate
-          value={value}
-          onChange={handleChange}
-          field={field}
-          isHovered={isHovered}
-        />
+        <TaskItemDate value={value} onChange={handleChange} field={field} />
       );
     case FieldType.DROPDOWN: {
       return (
@@ -112,25 +100,17 @@ const TaskItemCustomField = ({
           value={value}
           onChange={handleChange}
           field={field}
-          isHovered={isHovered}
         />
       );
     case FieldType.LONG_TEXT:
       return (
-        <Box
-          width="100%"
-          height="100%"
-          display="flex"
-          alignItems="center"
-          onClick={handleClick}
-        >
-          <TaskItemLongText
-            readOnly={readOnly}
-            value={value}
-            onChange={handleChange}
-            field={field}
-          />
-        </Box>
+        <TaskItemLongText
+          readOnly={readOnly}
+          value={value}
+          onChange={handleChange}
+          openDrawer={!patientType ? handleClick : undefined}
+          field={field}
+        />
       );
     case FieldType.NUMBER:
       return (

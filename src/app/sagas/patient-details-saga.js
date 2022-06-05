@@ -68,6 +68,7 @@ export const DO_ADD_PATIENT_NOTE = 'DO_ADD_PATIENT_NOTE';
 export const DO_REMOVE_PATIENT_NOTE = 'DO_REMOVE_PATIENT_NOTE';
 export const DO_CHANGE_PATIENT_NOTE_PIN = 'DO_CHANGE_PATIENT_NOTE_PIN';
 export const DO_ARCHIVE_PATIENT = 'DO_ARCHIVE_PATIENT';
+export const DO_UNARCHIVE_PATIENT = 'DO_UNARCHIVE_PATIENT';
 
 export const togglePatientTaskStatus = task => ({
   type: DO_TOGGLE_PATIENT_TASK_STATUS,
@@ -177,6 +178,11 @@ export const changePatientNotePin = (patientNoteIdentifier, pinned) => ({
 
 export const archivePatient = (patientIdentifier, history) => ({
   type: DO_ARCHIVE_PATIENT,
+  payload: { patientIdentifier, history },
+});
+
+export const unarchivePatient = (patientIdentifier, history) => ({
+  type: DO_UNARCHIVE_PATIENT,
   payload: { patientIdentifier, history },
 });
 
@@ -623,10 +629,14 @@ function* doUpdatePatientNote({ note }) {
   }
 }
 
-function* doUpdatePatientDetails({ payload: { details } }) {
+function* doUpdatePatientDetails({ payload: { patientIdentifier, details } }) {
   try {
     onPatientDetailsEdited();
-    const updatedPatientDetails = yield call(PatientApi.updatePatient, details);
+    const updatedPatientDetails = yield call(
+      PatientApi.updatePatient,
+      patientIdentifier,
+      details,
+    );
     yield put({
       type: ActionTypes.UPDATE_PATIENT_DETAILS_SUCCESS,
       payload: { details: { ...updatedPatientDetails } },
@@ -643,6 +653,18 @@ function* doArchivePatient({ payload: { patientIdentifier, history } }) {
     yield call(PatientApi.archivePatient, patientIdentifier);
     yield put(closeModal());
     yield put(showGlobalAlert(AlertMessages.PATIENT_ARCHIVED));
+    history.push(PATIENTS_LIST_ALL);
+  } catch (error) {
+    yield put(showGlobalErrorAlert());
+    yield put(closeModal());
+  }
+}
+
+function* doUnarchivePatient({ payload: { patientIdentifier, history } }) {
+  try {
+    yield call(PatientApi.unarchivePatient, patientIdentifier);
+    yield put(closeModal());
+    yield put(showGlobalAlert(AlertMessages.PATIENT_UNARCHIVED));
     history.push(PATIENTS_LIST_ALL);
   } catch (error) {
     yield put(showGlobalErrorAlert());
@@ -755,6 +777,44 @@ export function* createPatientAttachmentFolder({
       put(showGlobalErrorAlert()),
       put({
         type: ActionTypes.ADD_PATIENT_ATTACHMENT_FOLDER_FAILURE,
+        patientIdentifier,
+        name,
+      }),
+    ]);
+  }
+}
+
+export function* createPatientAttachmentReference({
+  patientIdentifier,
+  name,
+  url,
+  mimeType,
+  referenceType,
+  folderIdentifier,
+}) {
+  try {
+    const attachment = yield call(
+      PatientAttachmentApi.createAttachmentReference,
+      patientIdentifier,
+      name,
+      url,
+      mimeType,
+      referenceType,
+      folderIdentifier,
+    );
+    yield all([
+      put(showGlobalAlert(AlertMessages.CREATED)),
+      put({
+        type: ActionTypes.ADD_PATIENT_ATTACHMENT_REFERENCE_SUCCESS,
+        attachment,
+      }),
+      put(closeModal()),
+    ]);
+  } catch {
+    yield all([
+      put(showGlobalErrorAlert()),
+      put({
+        type: ActionTypes.ADD_PATIENT_ATTACHMENT_REFERENCE_FAILURE,
         patientIdentifier,
         name,
       }),
@@ -875,6 +935,7 @@ export default function* watchPatientDetails() {
   );
   yield takeEvery(DO_UPDATE_PATIENT_NOTE, doUpdatePatientNote);
   yield takeLeading(ActionTypes.UPDATE_PATIENT_DETAILS, doUpdatePatientDetails);
+  yield takeEvery(DO_UNARCHIVE_PATIENT, doUnarchivePatient);
   yield takeEvery(DO_ARCHIVE_PATIENT, doArchivePatient);
   yield takeEvery(DO_ADD_PATIENT_NOTE, doAddPatientNote);
   yield takeEvery(DO_REMOVE_PATIENT_NOTE, doRemovePatientNote);
@@ -894,4 +955,8 @@ export default function* watchPatientDetails() {
   );
   yield takeEvery(ActionTypes.MOVE_PATIENT_ATTACHMENT, movePatientAttachment);
   yield takeEvery(ActionTypes.ADD_PATIENT_ATTACHMENT, createPatientAttachment);
+  yield takeEvery(
+    ActionTypes.ADD_PATIENT_ATTACHMENT_REFERENCE,
+    createPatientAttachmentReference,
+  );
 }

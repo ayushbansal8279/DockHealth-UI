@@ -3,21 +3,31 @@ import React, { useMemo } from 'react';
 import { useSelector } from 'react-redux';
 import { activeUsersListSelector } from 'selectors/active-users-selector';
 import Tooltip from 'components/common/Tooltip/Tooltip';
+import { Box } from '@material-ui/core';
+import { isNotEmptyArray } from 'helpers/utils-helpers';
 import { ActivityStatus } from 'helpers/user-helper';
 import {
   getGroupActivityStatus,
   getUserGroupAvatarThumbnailUrl,
 } from 'helpers/user-groups-helper';
 import Avatar from '../Avatar/Avatar';
-import { TooltipContent } from './styled';
+import { TooltipContent, UserName, MoreText } from './styled';
 
 const GroupAvatar = React.forwardRef(
   (
-    { group, size, isSelected, hideTooltip, hideStatus, onClick },
+    {
+      group,
+      size,
+      isSelected,
+      hideTooltip,
+      hideStatus,
+      onClick,
+      displayUsersCount = 30,
+    },
     reference,
   ) => {
     const activeUsersList = useSelector(activeUsersListSelector);
-    const { name, initials, bubbleColor } = group || {};
+    const { name, initials, bubbleColor, users } = group || {};
 
     const activityStatus = useMemo(
       () =>
@@ -38,11 +48,22 @@ const GroupAvatar = React.forwardRef(
             <TooltipContent>
               <b>{name}</b>
               {activityStatus && (
-                <div>
+                <Box>
                   {activityStatus === ActivityStatus.ONLINE && 'online'}
                   {activityStatus === ActivityStatus.IDLE && 'idle'}
                   {activityStatus === ActivityStatus.OFFLINE && 'offline'}
-                </div>
+                </Box>
+              )}
+              {isNotEmptyArray(users) && (
+                <Box mt={2}>
+                  {[...users]?.splice(0, displayUsersCount).map(u => (
+                    <UserName key={u.identifier}>{u?.name}</UserName>
+                  ))}
+                  {users?.length > displayUsersCount && (
+                    <MoreText>{`${users?.length -
+                      displayUsersCount} more...`}</MoreText>
+                  )}
+                </Box>
               )}
             </TooltipContent>
           }

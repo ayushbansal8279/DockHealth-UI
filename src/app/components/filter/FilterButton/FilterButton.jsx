@@ -22,9 +22,10 @@ const FilterButton = React.forwardRef(
         variant="text"
         onClick={onClick}
         size="small"
-        active={active}
+        active={+active}
       >
-        <FilterButtonLabel variant="body1" component="span" active={active}>
+        {/* https://maximeblanc.fr/blog/how-to-fix-the-received-true-for-a-non-boolean-attribute-error */}
+        <FilterButtonLabel variant="body1" component="span" active={+active}>
           FILTER
         </FilterButtonLabel>
         <RotatableChevron

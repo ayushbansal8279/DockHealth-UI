@@ -1,6 +1,6 @@
 import React, { useCallback, useContext } from 'react';
 import { useDispatch } from 'react-redux';
-
+import * as ActionTypes from 'actions/action-types';
 import QuickAddTaskInput from 'components/tasklist/QuickAddTaskInput/QuickAddTaskInput';
 import Spacing from 'components/common/Spacing';
 import { openModal } from 'modal/actions';
@@ -32,18 +32,22 @@ const BulkEditCreateTask = () => {
       });
 
       dispatch(
-        openModal('ListPicker', {
+        openModal('SelectDestination', {
           fetchMethod: getTaskListForUser,
-          confirm: listId =>
+          confirm: ({ taskListIdentifier, taskGroupIdentifier }) =>
             dispatch(
               patientBulkCreateTask({
                 description,
-                taskListIdentifier: listId,
+                taskListIdentifier,
+                taskGroupIdentifier,
                 assignedToUsers: assignedPatients,
               }),
             ),
         }),
       );
+      dispatch({
+        type: ActionTypes.UNSELECT_ALL_PATIENTS,
+      });
     },
     [dispatch, selectedPatients],
   );

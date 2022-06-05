@@ -13,6 +13,7 @@ import { TaskItemColumn } from 'helpers/task-helpers';
 import {
   updateUserListViewSetup,
   updateColumnOnListPreferences,
+  updateOrderColumnOnListPreferences,
 } from 'actions/task-list-actions';
 import { updateOrganizationCustomFields } from 'actions/organization-actions';
 
@@ -56,7 +57,11 @@ const initializeListDetailsViewHooks = () => {
   );
   const taskList = useSelector(currentTaskListSelector);
   const currentStatus = useSelector(currentTaskListTasksStatusSelector);
-  const { columnsConfig, setColumnsConfig } = useColumnsConfig();
+  const {
+    columnsConfig,
+    setColumnsConfig,
+    setColumnsOrder,
+  } = useColumnsConfig();
   const currentUser = useSelector(userProfileSelector);
   const { userIdentifier: currentUserIdentifier } = currentUser || {};
   const members = useSelector(taskListMembersSelector);
@@ -373,8 +378,9 @@ const initializeListDetailsViewHooks = () => {
     [selectedTab],
   );
 
+  // eslint-disable-next-line sonarjs/cognitive-complexity
   useEffect(() => {
-    const callback = data => {
+    const taskCallback = data => {
       if (
         data.task?.taskList &&
         data.task?.taskList.taskListIdentifier === taskListIdentifierParam
@@ -390,14 +396,31 @@ const initializeListDetailsViewHooks = () => {
         }
       }
     };
+    const taskBundleCallback = data => {
+      // eslint-disable-next-line sonarjs/no-collapsible-if
+      if (
+        data.taskListIdentifier &&
+        data.taskListIdentifier === taskListIdentifierParam
+      ) {
+        if (
+          (data.eventType?.startsWith('CREATE_TASK_BUNDLE') ||
+            data.eventType?.startsWith('DUPLICATE_TASK_BUNDLE')) &&
+          data.taskBundle.identifier
+        ) {
+          actions.refreshTaskBundle(data.taskBundle.identifier);
+        }
+      }
+    };
 
     if (channel && taskListIdentifierParam) {
-      channel.bind('task-update', callback);
+      channel.bind('task-update', taskCallback);
+      channel.bind('task-bundle-update', taskBundleCallback);
     }
 
     return () => {
       if (channel && taskListIdentifierParam) {
-        channel.unbind('task-update', callback);
+        channel.unbind('task-update', taskCallback);
+        channel.unbind('task-bundle-update', taskBundleCallback);
       }
     };
   }, [
@@ -467,6 +490,19 @@ const initializeListDetailsViewHooks = () => {
     [currentUserIdentifier, dispatch, taskList],
   );
 
+  const handleOrderChange = useCallback(
+    newConfig => {
+      dispatch(
+        updateOrderColumnOnListPreferences(
+          newConfig,
+          taskList.taskListIdentifier,
+          currentUserIdentifier,
+        ),
+      );
+    },
+    [currentUserIdentifier, dispatch, taskList],
+  );
+
   const CONFIGURABLE_COLUMNS_CONFIG = {
     [TaskItemColumn.WORKFLOW_STATUS]: false,
     [TaskItemColumn.ASSIGNED]: false,
@@ -491,6 +527,18 @@ const initializeListDetailsViewHooks = () => {
     setColumnsConfig(transformedColumnsPreference);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [currentUserIdentifier, setColumnsConfig, taskList]);
+
+  useEffect(() => {
+    const { listDisplayColumns } =
+      taskList?.listType === 'PUBLIC'
+        ? taskList
+        : taskList?.listUsers?.find(
+            user => user.identifier === currentUserIdentifier,
+          ) || {};
+
+    if (listDisplayColumns) setColumnsOrder(listDisplayColumns);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [currentUserIdentifier, setColumnsOrder, taskList]);
 
   const setDisplayListPreferences = useCallback(
     columnKey => {
@@ -520,6 +568,7 @@ const initializeListDetailsViewHooks = () => {
   );
 
   return {
+    handleOrderChange,
     taskList,
     bulkEditIsDisabled,
     bulkEditTasks,

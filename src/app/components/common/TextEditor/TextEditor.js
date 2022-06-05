@@ -7,7 +7,7 @@ import React, {
   useEffect,
 } from 'react';
 import { useSelector } from 'react-redux';
-import { convertToRaw, Entity, SelectionState, EditorState } from 'draft-js';
+import { convertToRaw, Entity, EditorState } from 'draft-js';
 import { makeStyles } from '@material-ui/core/styles';
 import Editor from 'draft-js-plugins-editor';
 import debounce from 'lodash.debounce';
@@ -48,11 +48,14 @@ import {
   mapUsersToSuggestions,
   createHighlightDecorator,
   createLinkDecorator,
+  createPlaceholderDecorator,
+  countCharakters,
 } from './helpers';
-import { StyledEditorContainer, ToolbarContainer } from './styled';
+import { Counter, StyledEditorContainer, ToolbarContainer } from './styled';
 import LinkButton from './Link/LinkButton';
 import LinkPopover from './Link/LinkPopover';
 import { createLinkAtSelection, hasEntity } from './Link/helpers';
+import { FieldCharakterLimit } from 'helpers/field-type-helpers';
 
 const fetchPatientsWithDebounce = debounce(
   (value, setPatientSuggestions, areSuggestionsOpened) => {
@@ -103,9 +106,11 @@ const TextEditor = React.forwardRef(
       disableMentions = false,
       minHeight,
       getFocusFromParent,
+      characterLimit = showToolbar ? FieldCharakterLimit.RICH_TEXT : false,
     },
     outerReference,
   ) => {
+    const [showCounter, setShowCounter] = useState(false);
     const [linkPopoverOpen, setLinkPopoverOpen] = useState(false);
     const linkButtonReference = useRef();
     const innerReference = useRef();
@@ -121,6 +126,7 @@ const TextEditor = React.forwardRef(
     const [usersSuggestions, setUsersSuggestions] = useState([
       [SUGGESTIONS_PLACEHOLDER],
     ]);
+
     const [
       isFetchingUsersSuggestions,
       setIsFetchingUsersSuggestions,
@@ -138,10 +144,18 @@ const TextEditor = React.forwardRef(
     }));
 
     useEffect(() => {
-      setIsFocused(getFocusFromParent);
-    }, [getFocusFromParent]);
+      if (
+        typeof getFocusFromParent === 'boolean' &&
+        getFocusFromParent !== isFocused
+      )
+        setIsFocused(getFocusFromParent);
+    }, [getFocusFromParent, isFocused]);
 
-    const currentState = state || editorState;
+    const currentState = state ?? editorState;
+
+    const counter = useMemo(() => countCharakters(currentState), [
+      currentState,
+    ]);
 
     const customerTypeLabel = getCustomerTypeLabel(currentUser);
     const showPlaceholder = useMemo(() => {
@@ -159,6 +173,7 @@ const TextEditor = React.forwardRef(
     const handleFocus = event => {
       onFocus(event);
       setIsFocused(true);
+      setShowCounter(true);
     };
 
     const handleClickAway = useCallback(() => {
@@ -345,9 +360,36 @@ const TextEditor = React.forwardRef(
       [currentState, handleChange],
     );
 
+    const handleAllowType = useCallback(
+      (_, newState) => {
+        if (!characterLimit) return;
+        const newCount = countCharakters(newState);
+        // eslint-disable-next-line consistent-return
+        if (newCount >= characterLimit) return 'handled';
+      },
+      [characterLimit],
+    );
+
+    const handleAllowPaste = useCallback(
+      (text, _, newState) => {
+        if (!characterLimit) return;
+        const newCount = countCharakters(newState);
+        // eslint-disable-next-line consistent-return
+        if (newCount + text.length - 1 >= characterLimit) return 'handled';
+      },
+      [characterLimit],
+    );
+    const handleEditorBlur = useCallback(
+      event => {
+        setShowCounter(false);
+        if (!linkPopoverOpen) onBlur(event);
+      },
+      [linkPopoverOpen, onBlur],
+    );
+
     return (
       <ClickAwayListener onClickAway={handleClickAway}>
-        <>
+        <div>
           <StyledEditorContainer
             withEditedLabel={withEditedLabel && readOnly}
             isReadOnly={readOnly}
@@ -401,6 +443,8 @@ const TextEditor = React.forwardRef(
               </ToolbarContainer>
             )}
             <Editor
+              handleBeforeInput={handleAllowType}
+              handlePastedText={handleAllowPaste}
               customStyleMap={styleMap}
               ref={reference}
               plugins={plugins}
@@ -408,7 +452,7 @@ const TextEditor = React.forwardRef(
               readOnly={readOnly}
               placeholder={showPlaceholder ? placeholder : ''}
               onFocus={handleFocus}
-              onBlur={linkPopoverOpen ? () => {} : onBlur}
+              onBlur={handleEditorBlur}
               onChange={handleChange}
               keyBindingFn={keyBindingFn}
               handleKeyCommand={handleKeyCommand}
@@ -417,6 +461,7 @@ const TextEditor = React.forwardRef(
                   ? [createHighlightDecorator(highlightedValues)]
                   : []),
                 createLinkDecorator,
+                createPlaceholderDecorator,
               ]}
             />
             <Spacing horizontal={4} />
@@ -465,6 +510,11 @@ const TextEditor = React.forwardRef(
               />
             )}
           </StyledEditorContainer>
+          {!!characterLimit && showCounter && (
+            <Counter alert={counter >= characterLimit}>
+              {`${counter}/${characterLimit}`}
+            </Counter>
+          )}
           <LinkPopover
             initText={initText}
             initLink={initLink}
@@ -473,7 +523,7 @@ const TextEditor = React.forwardRef(
             close={() => handleLinkPopoverOpen(false)}
             onSave={handleLinkPopoverConfirm}
           />
-        </>
+        </div>
       </ClickAwayListener>
     );
   },

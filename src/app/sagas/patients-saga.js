@@ -8,6 +8,7 @@ import {
   debounce,
 } from 'redux-saga/effects';
 import * as PatientsApi from 'api/patients-api';
+import { addLabel, removeLabelForPatient } from 'api/patient-label-api';
 import * as PatientsActions from 'actions/patients-actions';
 import {
   currentPatientsListIdentifierSelector,
@@ -194,6 +195,42 @@ function* addBulkTask({ payload }) {
   }
 }
 
+function* addBulkLabel({ payload }) {
+  try {
+    yield call(PatientsApi.patientBulkAddLabel, payload);
+    yield put(showGlobalAlert(AlertMessages.LABEL_CREATED));
+  } catch {
+    yield put(showGlobalErrorAlert());
+  }
+}
+
+function* addPatientLabel({ payload }) {
+  try {
+    yield call(addLabel, payload);
+    yield put(showGlobalAlert(AlertMessages.LABEL_CREATED));
+  } catch {
+    yield put(showGlobalErrorAlert());
+  }
+}
+
+function* deleteBulkLabel({ payload }) {
+  try {
+    yield call(PatientsApi.patientBulkDeleteLabel, payload);
+    yield put(showGlobalAlert(AlertMessages.LABEL_DELETED));
+  } catch {
+    yield put(showGlobalErrorAlert());
+  }
+}
+
+function* deletePatientLabel({ payload }) {
+  try {
+    yield call(removeLabelForPatient, payload);
+    yield put(showGlobalAlert(AlertMessages.LABEL_DELETED));
+  } catch {
+    yield put(showGlobalErrorAlert());
+  }
+}
+
 function* addBulkWorkflow({ payload }) {
   try {
     yield call(PatientsApi.patientBulkCreateWorkflow, payload);
@@ -248,6 +285,10 @@ export default function* watchPatients() {
     filtersChange,
   );
   yield takeEvery(ActionTypes.PATIENT_BULK_CREATE_TASK, addBulkTask);
+  yield takeEvery(ActionTypes.PATIENT_BULK_ADD_LABEL, addBulkLabel);
+  yield takeEvery(ActionTypes.PATIENT_BULK_DELETE_LABEL, deleteBulkLabel);
+  yield takeEvery(ActionTypes.PATIENT_ADD_LABEL, addPatientLabel);
+  yield takeEvery(ActionTypes.PATIENT_DELETE_LABEL, deletePatientLabel);
   yield takeEvery(ActionTypes.PATIENT_BULK_CREATE_WORKFLOW, addBulkWorkflow);
   yield takeEvery(ActionTypes.PATIENT_BULK_DELETE_PATIENTS, deleteBulkPatient);
 }

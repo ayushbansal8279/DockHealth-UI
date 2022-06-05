@@ -9,7 +9,7 @@ import { useMentionsEditorState } from 'components/common/TextEditor/use-mention
 import { useBoolean } from 'hooks/useBoolean';
 import { TextContainer } from './styled';
 
-const TaskItemText = ({ value = '', onChange, isHovered }) => {
+const TaskItemText = ({ value = '', onChange }) => {
   const editorReference = useRef(null);
   const [textValue, setTextValue] = useState(value);
   const [isEditing, setEditing, unsetEditing] = useBoolean(false);
@@ -75,7 +75,7 @@ const TaskItemText = ({ value = '', onChange, isHovered }) => {
 
   return (
     <Tooltip placement="top" title={value} hideTooltip={isEditing}>
-      <TextContainer withBorder={isHovered || isEditing} onClick={handleClick}>
+      <TextContainer onClick={handleClick}>
         <TextEditor
           ref={editorReference}
           readOnly={!isEditing}

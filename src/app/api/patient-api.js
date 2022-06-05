@@ -110,13 +110,13 @@ export function addPatient(patient) {
     });
 }
 
-export function updatePatient(patient) {
-  if (patient.dob === '') {
+export function updatePatient(patientIdentifier, details) {
+  if (details.dob === '') {
     // eslint-disable-next-line no-param-reassign
-    patient.dob = null;
+    details.dob = null;
   }
   return axios
-    .put('patient', patient)
+    .patch(`patient/${patientIdentifier}`, details)
     .then(response => {
       return response.data;
     })
@@ -320,5 +320,11 @@ export function mergePatient(patientFromIdentifier, patientToIdentifier) {
     .patch(`patient/mergePatient/${patientFromIdentifier}`, {
       mergeToPatientIdentifier: patientToIdentifier,
     })
+    .then(({ data }) => data);
+}
+
+export function unarchivePatient(identifier) {
+  return axios
+    .patch(`patient/unarchivePatient/${identifier}`)
     .then(({ data }) => data);
 }

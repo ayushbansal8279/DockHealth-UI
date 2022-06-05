@@ -40,6 +40,23 @@ function* updateListColumnsDisplaySetup({ payload }) {
   }
 }
 
+function* updateListColumnsOrderSetup({ payload }) {
+  try {
+    const { setup, taskListIdentifier } = payload;
+    yield call(
+      TaskListApi.updateUserAllFieldsOrderSetup,
+      setup,
+      taskListIdentifier,
+    );
+    yield put({
+      type: ActionTypes.UPDATE_ORDER_COLUMNS_SETUP_SUCCESS,
+    });
+  } catch {
+    yield put(showGlobalErrorAlert());
+    yield put({ type: ActionTypes.UPDATE_ORDER_COLUMNS_SETUP_FAILURE });
+  }
+}
+
 function* updateListViewDisplaySetup({ payload }) {
   try {
     const { setup, taskListIdentifier } = payload;
@@ -66,6 +83,10 @@ export default function* watchTasklist() {
   yield takeEvery(
     ActionTypes.UPDATE_LIST_COLUMNS_DISPLAY_SETUP,
     updateListColumnsDisplaySetup,
+  );
+  yield takeEvery(
+    ActionTypes.UPDATE_ORDER_COLUMNS_SETUP,
+    updateListColumnsOrderSetup,
   );
   yield takeEvery(
     ActionTypes.UPDATE_LIST_VIEW_SETUP,

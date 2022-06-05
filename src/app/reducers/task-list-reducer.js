@@ -37,6 +37,7 @@ import {
   GET_CURRENT_TASK_LIST_FAILURE,
   GET_CURRENT_TASK_LIST,
   GET_CURRENT_TASK_LIST_SUCCESS,
+  UPDATE_ORDER_COLUMNS_SETUP,
 } from 'actions/action-types';
 
 const initialState = {
@@ -169,6 +170,26 @@ const TaskListReducer = (state = initialState, action) => {
                 listUsers: state.currentTaskList.listUsers.map(user =>
                   user.identifier === currentUserIdentifier
                     ? { ...user, displayColumns: setup }
+                    : user,
+                ),
+              },
+      };
+    }
+    case UPDATE_ORDER_COLUMNS_SETUP: {
+      const { setup, currentUserIdentifier } = action.payload;
+      return {
+        ...state,
+        currentTaskList:
+          state.currentTaskList.listType === 'PUBLIC'
+            ? {
+                ...state.currentTaskList,
+                listDisplayColumns: setup,
+              }
+            : {
+                ...state.currentTaskList,
+                listUsers: state.currentTaskList.listUsers.map(user =>
+                  user.identifier === currentUserIdentifier
+                    ? { ...user, listDisplayColumns: setup }
                     : user,
                 ),
               },

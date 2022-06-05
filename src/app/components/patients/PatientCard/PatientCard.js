@@ -1,7 +1,8 @@
 /* eslint-disable import/extensions */
 /* eslint-disable sonarjs/cognitive-complexity */
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useMemo, useState, useEffect, useRef } from 'react';
 import { useSelector } from 'react-redux';
+import { descend, prop } from 'ramda';
 import moment from 'moment';
 import { Box, Popper, Typography } from '@material-ui/core';
 import { Link } from 'react-router-dom';
@@ -13,6 +14,7 @@ import {
   getCustomerUniqueIDShortLabel,
 } from 'helpers/customer-type-helper';
 import { organizationSelector } from 'selectors/organization-selectors';
+// eslint-disable-next-line import/no-cycle
 import TextTypeHeader from 'components/common/TextTypeHeader/TextTypeHeader';
 import {
   PatientCardContainer,
@@ -32,35 +34,68 @@ import {
   PatientCellWrapper,
   PatientMRNAnchor,
   CustomFieldPatientInfo,
+  PatientNotesWrapper,
+  PinnedNotesWrapper,
 } from './styled';
 import PatientCardDetailsLoader from './PatientCardDetailsLoader';
 import PatientCardNotesLoader from './PatientCardNotesLoader';
 
-const renderPatientNotes = (notes, { firstName, middleName, lastName }) => {
+const renderPatientNotes = (
+  unpinnedNotes,
+  pinnedNotes,
+  { firstName, middleName, lastName },
+) => {
   const patientName = middleName
     ? `${lastName}, ${firstName} ${middleName?.slice(0, 1)}`
     : `${lastName}, ${firstName}`;
+
+  const pinnedSorted = pinnedNotes?.sort(descend(prop('dateUpdated')));
+  const unpinnedSorted = unpinnedNotes?.sort(descend(prop('dateUpdated')));
+  const notes = [...(pinnedSorted ?? []), ...(unpinnedSorted ?? [])];
+
+  const renderNoteDescription = (description, dateUpdated) => {
+    return (
+      <>
+        <NoteDescription>{description || <br />}</NoteDescription>
+        <NoteInfo>
+          {patientName} {moment(dateUpdated).format('h:mma M/DD/YY')}
+        </NoteInfo>
+      </>
+    );
+  };
+
+  const renderNote = ({ description, dateUpdated, pinned }, index) => {
+    return (
+      <PatientNote>
+        {index !== 0 && (
+          <>
+            <Spacing vertical={2} />
+            <NoteDivider />
+            <Spacing vertical={1} />
+          </>
+        )}
+        {pinned && (
+          <PinnedNotesWrapper>
+            {renderNoteDescription(description, dateUpdated)}
+          </PinnedNotesWrapper>
+        )}
+        {!pinned && (
+          <PatientNotesWrapper>
+            {renderNoteDescription(description, dateUpdated)}
+          </PatientNotesWrapper>
+        )}
+      </PatientNote>
+    );
+  };
 
   return notes?.length > 0 ? (
     <>
       <Divider />
       <PatientNotesSection>
         <NotesTitle>Notes</NotesTitle>
-        {notes.map(({ description, dateUpdated }, index) => (
-          <PatientNote>
-            {index !== 0 && (
-              <>
-                <Spacing vertical={4} />
-                <NoteDivider />
-                <Spacing vertical={3} />
-              </>
-            )}
-            <NoteDescription>{description || <br />}</NoteDescription>
-            <NoteInfo>
-              {patientName} {moment(dateUpdated).format('h:mma M/DD/YY')}
-            </NoteInfo>
-          </PatientNote>
-        ))}
+        {notes.map(note => {
+          return renderNote(note);
+        })}
       </PatientNotesSection>
     </>
   ) : null;
@@ -75,6 +110,23 @@ const PatientCard = ({
   const reference = useRef(null);
   const [patientData, setPatientData] = useState(null);
   const [cardOpen, openCard, closeCard] = useBooleanWithTimeout();
+  const [patientNotes, setPatientNotes] = useState(null);
+
+  const [pinnedNotes, unpinnedNotes] = useMemo(
+    () =>
+      patientNotes?.reduce(
+        (accumulator, note) => {
+          if (note.pinned) {
+            accumulator[0].push(note);
+          } else {
+            accumulator[1].push(note);
+          }
+          return accumulator;
+        },
+        [[], []],
+      ) || [null, null],
+    [patientNotes],
+  );
 
   const { currentUser } = useSelector(store => ({
     currentUser: store.userState.userProfile,
@@ -92,6 +144,7 @@ const PatientCard = ({
       PatientApi.getPatientById(patientIdentifier)
         .then(fetchedPatient => {
           setPatientData(fetchedPatient);
+          setPatientNotes(fetchedPatient.allNotes);
         })
         .catch(() => {});
     }
@@ -117,7 +170,6 @@ const PatientCard = ({
     email,
     phoneMobile,
     phoneHome,
-    allNotes,
   } = patientData || {};
   return (
     <PatientCellWrapper
@@ -165,9 +217,10 @@ const PatientCard = ({
                   <>
                     <Spacing vertical={2} />
                     <PatientInfo>
-                      {(age || gender) && (
+                      {(age || gender || dob) && (
                         <InfoItem>
-                          {age && `${age} `}
+                          {dob && `${moment(dob).format('MMM D, YYYY')} | `}
+                          {age && `${age} | `}
                           {gender && `${gender?.charAt(0)?.toUpperCase()}`}
                         </InfoItem>
                       )}
@@ -231,7 +284,7 @@ const PatientCard = ({
             )}
           </PatientInfoSection>
           {patientData ? (
-            renderPatientNotes(allNotes, patientData)
+            renderPatientNotes(unpinnedNotes, pinnedNotes, patientData)
           ) : (
             <PatientCardNotesLoader />
           )}

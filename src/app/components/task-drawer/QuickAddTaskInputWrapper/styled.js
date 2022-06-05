@@ -17,6 +17,10 @@ export const AddSubtaskInputWrapper = styled.div`
   border: 1px solid;
   border-color: transparent;
 
+  @media print {
+    display: none;
+  }
+
   &:before {
     position: absolute;
     top: 50%;

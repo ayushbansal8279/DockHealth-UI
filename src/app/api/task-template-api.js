@@ -57,6 +57,14 @@ export function getTemplate(identifier) {
   });
 }
 
+export function getTemplateBasicDetails(identifier) {
+  return axios
+    .get(`task/workflow/${identifier}?basicDetails=true`)
+    .then(({ data }) => {
+      return data;
+    });
+}
+
 export function addTemplate(newTemplate, parentTaskWorkflowIdentifier) {
   return axios
     .post(`task/workflow`, { ...newTemplate, parentTaskWorkflowIdentifier })

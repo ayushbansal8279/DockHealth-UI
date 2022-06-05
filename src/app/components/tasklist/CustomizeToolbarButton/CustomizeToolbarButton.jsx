@@ -6,6 +6,7 @@ import { useColumnsConfig } from 'context-api/columns-config-context';
 import {
   userProfileSelector,
   userHasTaskCustomFieldsFeatureSelector,
+  userHasPatientCustomFieldsFeatureSelector,
 } from 'selectors/user-selectors';
 import { useSelector } from 'react-redux';
 import { TaskItemColumn } from 'helpers/task-helpers';
@@ -177,42 +178,13 @@ const CustomizeToolbarButton = ({
               );
             })}
           </List>
-          {patientCustomColumnsConfig?.length > 0 && (
-            <>
-              <Box display="flex" justifyContent="space-between" mt={1}>
-                <Box mx={0.5} />
-                <ListItemText>
-                  <b>Patient Custom Columns</b>
-                </ListItemText>
-              </Box>
-              <List>
-                {patientCustomColumnsConfig.map(column => {
-                  const { name, isChecked = false } = column;
-                  return (
-                    name && (
-                      <MenuItem
-                        key={column.identifier}
-                        onClick={() =>
-                          onClickPatientCustomFieldsCheckbox(column)
-                        }
-                      >
-                        <Checkbox isChecked={isChecked} />
-                        <Box mx={0.5} />
-                        <ListItemText>{name}</ListItemText>
-                      </MenuItem>
-                    )
-                  );
-                })}
-              </List>
-            </>
-          )}
           {userHasTaskCustomFieldsFeature && (
             <>
               <Spacer />
               <Box display="flex" justifyContent="space-between" mt={1}>
                 <Box mx={0.5} />
                 <ListItemText>
-                  <b>Custom Columns</b>
+                  <b>Task Custom Columns</b>
                 </ListItemText>
               </Box>
               <List>
@@ -244,6 +216,36 @@ const CustomizeToolbarButton = ({
               </List>
             </>
           )}
+          {userHasPatientCustomFieldsFeatureSelector &&
+            patientCustomColumnsConfig?.length > 0 && (
+              <>
+                <Box display="flex" justifyContent="space-between" mt={1}>
+                  <Box mx={0.5} />
+                  <ListItemText>
+                    <b>Patient Custom Columns</b>
+                  </ListItemText>
+                </Box>
+                <List>
+                  {patientCustomColumnsConfig.map(column => {
+                    const { name, isChecked = false } = column;
+                    return (
+                      name && (
+                        <MenuItem
+                          key={column.identifier}
+                          onClick={() =>
+                            onClickPatientCustomFieldsCheckbox(column)
+                          }
+                        >
+                          <Checkbox isChecked={isChecked} />
+                          <Box mx={0.5} />
+                          <ListItemText>{name}</ListItemText>
+                        </MenuItem>
+                      )
+                    );
+                  })}
+                </List>
+              </>
+            )}
           {additionalOptions && additionalOptions.length > 0 && (
             <>
               <Spacer />

@@ -10,6 +10,7 @@ import {
 import { draftToMarkdown } from 'markdown-draft-js';
 import { createMentionEntities } from './create-mention-entities';
 import { HighlightedElement } from './styled';
+import Placeholder from './AddOns/Placeholder/Placeholder';
 
 export const SUGGESTIONS_PLACEHOLDER = {
   name: '',
@@ -38,7 +39,7 @@ export const mapUsersToSuggestions = users =>
 
 const substituteNameForIdInText = (rawText, mentions) => {
   let textWithIds = rawText;
-  mentions.forEach(({ type, name, identifier }) => {
+  mentions.forEach(({ type, name, identifier, meta }) => {
     if (type === '#mention') {
       textWithIds = textWithIds.replace(
         new RegExp(`#${name}`, 'g'),
@@ -50,17 +51,23 @@ const substituteNameForIdInText = (rawText, mentions) => {
         `@{${identifier}}`,
       );
     }
+    if (type === 'PLACEHOLDER') {
+      textWithIds = textWithIds.replace(
+        new RegExp(`${name}`, 'g'),
+        `${meta}\n`,
+      );
+    }
   });
   return textWithIds;
 };
 
 export const convertFromEditorStateToOutput = (editorState, handleRichText) => {
   const stateContent = convertToRaw(editorState.getCurrentContent());
-
   const textBlocks = stateContent.blocks.map(block => block.text);
   const rawText = textBlocks.join('\n');
   const mentions = Object.values(stateContent.entityMap)?.map(entity => ({
     ...entity.data.mention,
+    ...entity.data,
     type: entity.type,
   }));
 
@@ -135,6 +142,16 @@ function findLinkEntities(contentBlock, callback, contentState) {
   }, callback);
 }
 
+function findPlaceholders(contentBlock, callback, contentState) {
+  contentBlock.findEntityRanges(character => {
+    const entityKey = character.getEntity();
+    return (
+      entityKey !== null &&
+      contentState.getEntity(entityKey).getType() === 'PLACEHOLDER'
+    );
+  }, callback);
+}
+
 const Link = ({ contentState, entityKey, children }) => {
   const { url } = contentState.getEntity(entityKey).getData();
   return (
@@ -159,6 +176,13 @@ export const createLinkDecorator = new CompositeDecorator([
   {
     strategy: findLinkEntities,
     component: Link,
+  },
+]);
+
+export const createPlaceholderDecorator = new CompositeDecorator([
+  {
+    strategy: findPlaceholders,
+    component: Placeholder,
   },
 ]);
 
@@ -199,4 +223,9 @@ export const moveSelectionToEnd = editorState => {
     focusOffset: length,
   });
   return EditorState.forceSelection(editorState, selection);
+};
+
+export const countCharakters = state => {
+  const { tokenizedText } = convertFromEditorStateToOutput(state, true);
+  return tokenizedText.length || 0;
 };

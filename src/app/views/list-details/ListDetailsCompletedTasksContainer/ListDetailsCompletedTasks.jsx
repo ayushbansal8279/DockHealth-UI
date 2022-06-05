@@ -31,6 +31,7 @@ const ListDetailsCompletedTasks = ({
   sort,
   onSortChange,
   viewSetup,
+  onOrderChange,
   // eslint-disable-next-line sonarjs/cognitive-complexity
 }) => {
   const renderEmptyState = () => {
@@ -84,6 +85,7 @@ const ListDetailsCompletedTasks = ({
                 }}
                 sort={sort}
                 onSortChange={onSortChange}
+                onOrderChange={onOrderChange}
               >
                 {({
                   isLoadingGroup,
@@ -103,8 +105,8 @@ const ListDetailsCompletedTasks = ({
                         <StandardTaskItem
                           key={task.identifier}
                           isFullView={isFullView}
-                          task={task}
                           isCompletedGroup={isCompletedGroup}
+                          task={task}
                           toggleCompleteTask={toggleCompleteTask}
                           onTaskUpdate={onTaskUpdate}
                           dragAndDropDisabled={
@@ -131,6 +133,7 @@ const ListDetailsCompletedTasks = ({
                           templateGroup={task}
                           groupHasMultipleAssignees={groupHasMultipleAssignees}
                           isFullView={isFullView}
+                          isCompletedGroup={isCompletedGroup}
                           dragAndDropDisabled={
                             isCompletedGroup || dragAndDropDisabled
                           }

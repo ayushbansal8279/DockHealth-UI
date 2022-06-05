@@ -7,9 +7,11 @@ export const TextContainer = styled.div`
   overflow: hidden;
   cursor: text;
   padding: 0 2px;
-  border-radius: 4px;
-  border-width: 1px;
-  border-style: solid;
-  border-color: ${({ withBorder }) =>
-    withBorder ? palette.coolGrey2 : 'transparent'};
+  border-color: transparent;
+  &:hover {
+    border-radius: 2px;
+    border-width: 1px;
+    border-style: solid;
+    border-color: ${palette.coolGrey2};
+  }
 `;

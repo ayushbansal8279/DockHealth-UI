@@ -5,13 +5,17 @@ import { useBoolean } from 'hooks/useBoolean';
 import { mergeDeepRight } from 'ramda';
 import moment from 'moment';
 import { useDispatch, useSelector } from 'react-redux';
-import { yupResolver } from "@hookform/resolvers/yup";
+import { yupResolver } from '@hookform/resolvers/yup';
 import { organizationSelector } from 'selectors/organization-selectors';
 import { userProfileSelector } from 'selectors/user-selectors';
 import { FormProvider, useForm } from 'react-hook-form';
 import { openModal, closeModal } from 'modal/actions';
 import { createPatientDetailsPath } from 'routing/helpers/paths';
-import { archivePatient as archivePatientAction } from 'sagas/patient-details-saga';
+import {
+  archivePatient as archivePatientAction,
+  unarchivePatient as unarchivePatientAction,
+} from 'sagas/patient-details-saga';
+
 import {
   mergePatient,
   updatePatientDetails,
@@ -92,6 +96,14 @@ const PatientDetailsDrawer = ({ patient, isOpenedDetails, closeDetails }) => {
     dispatch(openModal('ArchivePatient', modalProps));
   }, [dispatch, patientIdentifier, history]);
 
+  const unarchivePatient = useCallback(() => {
+    const modalProps = {
+      confirm: () =>
+        dispatch(unarchivePatientAction(patientIdentifier, history)),
+    };
+    dispatch(openModal('UnarchivePatient', modalProps));
+  }, [dispatch, history, patientIdentifier]);
+
   const handleFormSubmit = data => {
     unsetActive();
     const updateData = mergeDeepRight(patient, data);
@@ -99,7 +111,7 @@ const PatientDetailsDrawer = ({ patient, isOpenedDetails, closeDetails }) => {
     updateData.patientLabels = undefined;
     updateData.createdDateTime = undefined;
     updateData.updatedDateTime = undefined;
-    dispatch(updatePatientDetails(updateData));
+    dispatch(updatePatientDetails(patientIdentifier, updateData));
   };
 
   const contextMenuOptions = useMemo(
@@ -140,9 +152,14 @@ const PatientDetailsDrawer = ({ patient, isOpenedDetails, closeDetails }) => {
             closeDetails();
           },
         },
-      !emrIntegrationEnabled && {
-        name: 'Archive',
-        onClick: archivePatient,
+      !emrIntegrationEnabled &&
+        !patient.archived && {
+          name: 'Archive',
+          onClick: archivePatient,
+        },
+      patient.archived && {
+        name: 'Restore',
+        onClick: unarchivePatient,
       },
     ],
     [
@@ -150,9 +167,10 @@ const PatientDetailsDrawer = ({ patient, isOpenedDetails, closeDetails }) => {
       emrIntegrationEnabled,
       isActive,
       archivePatient,
+      patient,
+      unarchivePatient,
       dispatch,
       closeDetails,
-      patient,
       history,
     ],
   );
@@ -167,7 +185,7 @@ const PatientDetailsDrawer = ({ patient, isOpenedDetails, closeDetails }) => {
         options={contextMenuOptions}
         onClose={handleClose}
       >
-        <PatientLabels />
+        <PatientLabels disableFocusOnRender />
         <Box py={1.5} />
         <PatientForm
           ref={formReference}

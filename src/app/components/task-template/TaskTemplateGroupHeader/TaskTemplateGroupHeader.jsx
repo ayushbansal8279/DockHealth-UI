@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
 /* eslint-disable react-hooks/rules-of-hooks */
 import React, {
   useState,
@@ -14,17 +13,18 @@ import { pluck } from 'ramda';
 import { extractTasksAndSubtasks } from 'helpers/tasklist-helpers';
 import { useDispatch, useSelector } from 'react-redux';
 import ThreeDotsIcon from 'img/three-dots';
-import { FormatColorResetOutlined, MoreVert } from '@material-ui/icons';
+import { MoreVert } from '@material-ui/icons';
 import * as ModalActions from 'modal/actions';
 import * as WorkflowActions from 'actions/workflow-actions';
 import * as TaskActions from 'actions/task-actions';
 import * as TemplateBundleActions from 'actions/template-bundle-actions';
-import { useBoolean } from 'hooks/useBoolean';
 import {
   TaskItemColumn,
   TaskItemColumnWidth,
   TaskStatus,
 } from 'helpers/task-helpers';
+import * as TaskTemplateApi from 'api/task-template-api';
+import { workflowSelector } from 'selectors/workflow-drawer-selectors';
 import Checkbox from 'components/common/Checkbox/Checkbox';
 import ProgressBar from 'components/common/ProgressBar/ProgressBar';
 import RotatableChevron from 'components/common/RotatableChevron/RotatableChevron';
@@ -47,6 +47,7 @@ import {
 import { currentTaskListSelector } from 'selectors/task-list-selectors';
 import { openDrawer } from 'actions/workflow-drawer-actions';
 import { sortAlphabetical } from 'helpers/custom-fields-helpers';
+import { isNotEmptyArray } from 'helpers/utils-helpers';
 import TemplateHeaderName from '../TaskTemplateName/TaskTemplateName';
 import TaskHeaderPatient from '../TaskTemplatePatient/TaskTemplatePatient';
 import TemplateItemWorkflowStatus from '../TaskTemplateWorkflowStatus/TaskTemplateWorkflowStatus';
@@ -84,14 +85,9 @@ const TaskTemplateGroupHeader = ({
     identifier,
     tasksCount,
     tasksCompletedCount,
-    taskListIdentifier,
-    comments,
-    labels,
-    attachments,
   } = templateGroup;
 
   const { dragHandleProps } = draggableProvided;
-  const [isHovered, setIsHovered, unsetIsHovered] = useBoolean(false);
   const { bulkEditIsActive } = useContext(BulkEditContext);
   const [isEditing, setIsEditing] = useState(false);
   const [nameInputValue, setNameInputValue] = useState(name);
@@ -106,11 +102,15 @@ const TaskTemplateGroupHeader = ({
     columnsConfig,
     customColumnsConfig,
     patientCustomColumnsConfig,
+    columnsOrder,
   } = useColumnsConfig();
   useEffect(() => {
     setNameInputValue(name);
   }, [name]);
-  const workFlowData = templateGroup;
+
+  // const workFlowData = templateGroup;
+  const [workFlowData, setWorkFlowData] = useState(undefined);
+  const selectedWorkflow = useSelector(workflowSelector);
 
   const alphabeticalSortedAllTypeCustomFields = useMemo(
     () =>
@@ -183,13 +183,13 @@ const TaskTemplateGroupHeader = ({
     // eslint-disable-next-line unicorn/prevent-abbreviations
     let opts = [
       {
-        name: 'Add Task',
+        name: 'Add task',
         onClick: () => {
           setIsAddingTask(true);
         },
       },
       {
-        name: 'Edit Name',
+        name: 'Edit name',
         onClick: () => {
           setIsEditing(true);
           setTimeout(() => {
@@ -349,17 +349,34 @@ const TaskTemplateGroupHeader = ({
     );
   }, [dispatch, isBundleSelected, filteredTasks]);
 
+  const getColumnOrder = useCallback(
+    TaskItemColumnType => {
+      if (isNotEmptyArray(columnsOrder)) {
+        const existingOrder = columnsOrder?.indexOf(TaskItemColumnType);
+        if (existingOrder >= 0) return existingOrder;
+        return 999;
+      }
+      return 'initial';
+    },
+    [columnsOrder],
+  );
+  const getWorkflowData = useCallback(async id => {
+    setWorkFlowData(await TaskTemplateApi.getTemplateBasicDetails(id));
+  }, []);
+
+  useEffect(() => {
+    // eslint-disable-next-line no-unused-expressions
+    !selectedWorkflow ? getWorkflowData(identifier) : setWorkFlowData(null);
+  }, [getWorkflowData, identifier, selectedWorkflow]);
+
   return (
-    <TaskTemplateGroupHeaderContainer
-      onMouseEnter={setIsHovered}
-      isSelected={isBundleSelected}
-      onMouseLeave={unsetIsHovered}
-    >
+    <TaskTemplateGroupHeaderContainer isSelected={isBundleSelected}>
       {columnsConfig[TaskItemColumn.DESCRIPTION] && (
         <StickyMainTaskItemCell
           backgroundColor={pageBackground}
           isSelected={isBundleSelected}
           isEditingDescription={isEditing}
+          order={getColumnOrder(TaskItemColumn.DESCRIPTION)}
         >
           {!groupDragAndDropDisabled && !bulkEditIsActive && (
             <TemplateHandle
@@ -368,7 +385,12 @@ const TaskTemplateGroupHeader = ({
               {...dragHandleProps}
             />
           )}
-          <Checkbox isChecked={isBundleSelected} onClick={handleBundleSelect} />
+          {isOpen && (
+            <Checkbox
+              isChecked={isBundleSelected}
+              onClick={handleBundleSelect}
+            />
+          )}
           <Box m={1} />
           <RotatableChevron rotated={isOpen} onClick={() => setOpen(!isOpen)} />
           <Spacing horizontal={2} />
@@ -404,6 +426,7 @@ const TaskTemplateGroupHeader = ({
         <TaskItemCell
           key={`subtask_count_${identifier}`}
           width={TaskItemColumnWidth[TaskItemColumn.SUBTASKS_COUNT]}
+          order={getColumnOrder(TaskItemColumn.SUBTASKS_COUNT)}
         />
       )}
       {columnsConfig[TaskItemColumn.PATIENT] && (
@@ -411,6 +434,7 @@ const TaskTemplateGroupHeader = ({
           key={`patient_${identifier}`}
           width={TaskItemColumnWidth[TaskItemColumn.PATIENT]}
           alignItems="flex-start"
+          order={getColumnOrder(TaskItemColumn.PATIENT)}
         >
           {!disablePatientAssignment && (
             <TaskHeaderPatient
@@ -431,6 +455,7 @@ const TaskTemplateGroupHeader = ({
           onContextMenu={event => {
             event.stopPropagation();
           }}
+          order={getColumnOrder(TaskItemColumn.WORKFLOW_STATUS)}
         >
           <TemplateItemWorkflowStatus
             workflow={templateGroup}
@@ -443,16 +468,14 @@ const TaskTemplateGroupHeader = ({
         <TaskItemCell
           key={`activity_${identifier}`}
           width={TaskItemColumnWidth[TaskItemColumn.ACTIVITY]}
+          order={getColumnOrder(TaskItemColumn.ACTIVITY)}
         >
           <TaskTemplateIcons
-            matchComments={false}
-            comments={comments}
-            isHovered={isHovered}
-            workflow={templateGroup}
-            matchLabels={false}
-            labels={labels}
-            matchAttachments={false}
-            attachments={attachments}
+            workflow={
+              templateGroup.comments || !workFlowData
+                ? templateGroup
+                : workFlowData
+            }
             dispatch={dispatch}
           />
         </TaskItemCell>
@@ -462,11 +485,9 @@ const TaskTemplateGroupHeader = ({
           key={`start_date_${identifier}`}
           width={TaskItemColumnWidth[TaskItemColumn.START_DATE]}
           justify="center"
+          order={getColumnOrder(TaskItemColumn.START_DATE)}
         >
-          <TaskTemplateStartDate
-            workflow={templateGroup}
-            isHovered={isHovered}
-          />
+          <TaskTemplateStartDate workflow={templateGroup} />
         </TaskItemCell>
       )}
       {columnsConfig[TaskItemColumn.DUE_DATE] && (
@@ -474,8 +495,9 @@ const TaskTemplateGroupHeader = ({
           key={`due_date_${identifier}`}
           width={TaskItemColumnWidth[TaskItemColumn.DUE_DATE]}
           justify="center"
+          order={getColumnOrder(TaskItemColumn.DUE_DATE)}
         >
-          <TaskTemplateDueDate workflow={templateGroup} isHovered={isHovered} />
+          <TaskTemplateDueDate workflow={templateGroup} />
         </TaskItemCell>
       )}
       {columnsConfig[TaskItemColumn.ASSIGNED] && (
@@ -488,6 +510,8 @@ const TaskTemplateGroupHeader = ({
           onContextMenu={event => {
             event.stopPropagation();
           }}
+          order={getColumnOrder(TaskItemColumn.ASSIGNED)}
+          printWidth={TaskItemColumnWidth[TaskItemColumn.ASSIGNED].PRINT}
         >
           <TaskTemplateMembers
             currentUser={currentUser}
@@ -505,6 +529,7 @@ const TaskTemplateGroupHeader = ({
         <TaskItemCell
           key={`list_${identifier}`}
           width={TaskItemColumnWidth[TaskItemColumn.LIST_NAME]}
+          order={getColumnOrder(TaskItemColumn.LIST_NAME)}
         />
       )}
       {alphabeticalSortedAllTypeCustomFields &&
@@ -531,6 +556,7 @@ const TaskTemplateGroupHeader = ({
               <TaskItemCell
                 key={`custom_${identifier}_${field.identifier}`}
                 width={CustomFieldWidthConfig[field.fieldType]}
+                order={getColumnOrder(field.identifier)}
               >
                 {!hidePatientCustomFields && (
                   <TaskItemCustomField
@@ -548,7 +574,6 @@ const TaskTemplateGroupHeader = ({
                     field={field}
                     readOnly
                     task={workFlowData}
-                    isHovered={isHovered}
                   />
                 )}
               </TaskItemCell>

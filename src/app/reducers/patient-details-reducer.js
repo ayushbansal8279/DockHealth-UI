@@ -84,6 +84,24 @@ export default function(state = INITIAL_STATE, action = {}) {
       };
     }
 
+    case ActionTypes.UPDATE_ORDER_PREFERENCES_IN_PATIENT_LIST: {
+      return {
+        ...state,
+        lists: state.lists?.map(l =>
+          l.taskListIdentifier === action.listIdentifier
+            ? {
+                ...l,
+                listUsers: l.listUsers.map(u =>
+                  u.identifier === action.currentUserIdentifier
+                    ? { ...u, listDisplayColumns: action.listDisplayColumns }
+                    : u,
+                ),
+              }
+            : l,
+        ),
+      };
+    }
+
     case ActionTypes.CLEAR_PATIENT_STATE:
       return {
         ...INITIAL_STATE,
@@ -181,7 +199,8 @@ export default function(state = INITIAL_STATE, action = {}) {
       };
     }
 
-    case ActionTypes.ADD_PATIENT_ATTACHMENT_SUCCESS: {
+    case ActionTypes.ADD_PATIENT_ATTACHMENT_SUCCESS:
+    case ActionTypes.ADD_PATIENT_ATTACHMENT_REFERENCE_SUCCESS: {
       return {
         ...state,
         attachments: [...(state.attachments || []), action.attachment],
@@ -284,7 +303,10 @@ export default function(state = INITIAL_STATE, action = {}) {
         ...state,
         lists: state.lists?.map(l => ({
           ...l,
-          tasks: updateBundleInList(dataToUpdate, bundleIdentifier, l.tasks),
+          tasks:
+            dataToUpdate.taskListIdentifier === l.taskListIdentifier
+              ? updateBundleInList(dataToUpdate, bundleIdentifier, l.tasks)
+              : l.tasks,
         })),
       };
     }
