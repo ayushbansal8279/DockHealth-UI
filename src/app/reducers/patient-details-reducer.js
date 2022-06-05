@@ -199,7 +199,8 @@ export default function(state = INITIAL_STATE, action = {}) {
       };
     }
 
-    case ActionTypes.ADD_PATIENT_ATTACHMENT_SUCCESS: {
+    case ActionTypes.ADD_PATIENT_ATTACHMENT_SUCCESS:
+    case ActionTypes.ADD_PATIENT_ATTACHMENT_REFERENCE_SUCCESS: {
       return {
         ...state,
         attachments: [...(state.attachments || []), action.attachment],

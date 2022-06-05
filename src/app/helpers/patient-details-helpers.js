@@ -28,4 +28,5 @@ export const CATEGORY_OPTIONS = [
 export const PatientAttachmentType = {
   FOLDER: 'FOLDER',
   FILE_LOCAL: 'FILE_LOCAL',
+  FILE_GDRIVE: 'FILE_GDRIVE',
 };
