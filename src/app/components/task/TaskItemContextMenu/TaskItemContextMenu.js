@@ -17,7 +17,7 @@ import {
 import { openModal, closeModal } from 'modal/actions';
 import { getTasksGroupsList } from 'actions/list-details-actions';
 import { SINGLE_TASK_RESTRICTIONS_OPTIONS } from 'restrictions/task-restrictions';
-import { Backdrop, MenuContainer, MenuItemButtom, Divider } from './styled';
+import { Backdrop, MenuContainer, MenuItemButton, Divider } from './styled';
 
 const { DISABLED, READ_ONLY } = SINGLE_TASK_RESTRICTIONS_OPTIONS;
 
@@ -255,6 +255,10 @@ const TaskItemContextMenu = ({
     };
   }, []);
 
+  const handleShareTask = () => {
+    dispatch(openModal('ShareTask', { taskIdentifier: task.identifier }));
+  };
+
   if (!position || !position.x || !position.y) return null;
 
   return (
@@ -273,16 +277,16 @@ const TaskItemContextMenu = ({
       >
         {restrictions?.move !== DISABLED && !isTemplateTask && !isBundleTask && (
           <li>
-            <MenuItemButtom tabIndex="0" type="button" onClick={handleMoveTask}>
+            <MenuItemButton tabIndex="0" type="button" onClick={handleMoveTask}>
               Move to list
-            </MenuItemButtom>
+            </MenuItemButton>
           </li>
         )}
         {restrictions?.move !== DISABLED && !isTemplateTask && !isBundleTask && (
           <li>
-            <MenuItemButtom type="button" onClick={handleMoveGroupTask}>
+            <MenuItemButton type="button" onClick={handleMoveGroupTask}>
               Move to group
-            </MenuItemButtom>
+            </MenuItemButton>
           </li>
         )}
         {restrictions?.duplicate !== DISABLED && (
@@ -296,7 +300,7 @@ const TaskItemContextMenu = ({
           !isSubtask &&
           !subtasksDisabled && (
             <li>
-              <MenuItemButtom
+              <MenuItemButton
                 type="button"
                 onClick={() => {
                   dispatch(openQuickAddSubtask(task.taskIdentifier));
@@ -307,11 +311,18 @@ const TaskItemContextMenu = ({
               </MenuItemButtom>
             </li>
           )}
+        {!isTemplateTask && (
+          <li>
+            <MenuItemButton type="button" onClick={handleShareTask}>
+              Share Task
+            </MenuItemButton>
+          </li>
+        )}
         {restrictions?.delete !== DISABLED && (
           <>
             <Divider />
             <li>
-              <MenuItemButtom
+              <MenuItemButton
                 type="button"
                 color={palette.oPlusRed}
                 onClick={handleDeleteTask}
