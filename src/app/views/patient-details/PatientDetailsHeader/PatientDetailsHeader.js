@@ -2,6 +2,7 @@ import React from 'react';
 import { useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
 import { useBoolean } from 'hooks/useBoolean';
+import moment from 'moment';
 import EmailIcon from 'img/email-icon.svg';
 import PhoneIcon from 'img/phone-icon.svg';
 import MobileIcon from 'img/mobile-icon.svg';
@@ -45,6 +46,7 @@ const PatientDetailsHeader = () => {
     phoneMobile,
     phoneHome,
     age,
+    dob,
     mrn,
     gender,
     genderIdentity,
@@ -133,10 +135,11 @@ const PatientDetailsHeader = () => {
           </Box>
           <PatientDetails>
             <PatientDetailsInformation>
-              {(age || gender) && (
+              {(age || gender || dob) && (
                 <>
                   <PatientInfo>
-                    {age && `${age} `}
+                    {dob && `${moment(dob).format('MMM D, YYYY')} | `}
+                    {age && `${age} | `}
                     {gender && `${gender?.charAt(0)?.toUpperCase()}`}
                   </PatientInfo>
                   {genderIdentity && (
