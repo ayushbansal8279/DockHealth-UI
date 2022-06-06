@@ -33,7 +33,7 @@ import {
 } from './styled';
 
 // eslint-disable-next-line sonarjs/cognitive-complexity
-const PatientDetailsHeader = () => {
+const PatientDetailsHeader = ({ customFields }) => {
   const history = useHistory();
   const [isDrawerOpen, setIsDrawerOpen, unsetIsDrawerOpen] = useBoolean(false);
   const patient = useSelector(patientSelector);
@@ -173,28 +173,63 @@ const PatientDetailsHeader = () => {
                 </>
               )}
               {patient?.patientMetaData?.map(
-                ({ customFieldName, displayName, value, displayOptions }) => (
-                  <>
-                    {displayOptions?.includes('PATIENT_HEADER') && value && (
-                      <>
-                        <PatientInfo>
-                          <Typography>{customFieldName}: </Typography>
-                          <Box ml={1} />
-                          <TextTypeHeader text={displayName || value} />
-                        </PatientInfo>
-                        <PatientInfoDivider />
-                      </>
-                    )}
-                  </>
-                ),
+                ({
+                  customFieldName,
+                  displayName,
+                  value,
+                  values,
+                  displayOptions,
+                  customFieldIdentifier,
+                }) => {
+                  const customField = Object.values(customFields)
+                    .flat()
+                    .find(field => field.identifier === customFieldIdentifier);
+                  let renderedText;
+                  if (customField.fieldType === 'MULTI_SELECT') {
+                    renderedText =
+                      value
+                        ?.split(',')
+                        .map(selected => {
+                          return customField.options.find(
+                            option => option.identifier === selected,
+                          )?.name;
+                        })
+                        .join(',') ?? '';
+                  }
+
+                  return (
+                    <React.Fragment key={customFieldIdentifier}>
+                      {displayOptions?.includes('PATIENT_HEADER') && value && (
+                        <>
+                          <PatientInfo>
+                            <Typography>{customFieldName}: </Typography>
+                            <Box ml={1} />
+                            {customField.fieldType === 'MULTI_SELECT' ? (
+                              <TextTypeHeader text={renderedText || ''} />
+                            ) : (
+                              <TextTypeHeader text={displayName || value} />
+                            )}
+                          </PatientInfo>
+                          <PatientInfoDivider />
+                        </>
+                      )}
+                    </React.Fragment>
+                  );
+                },
               )}
             </PatientDetailsInformation>
           </PatientDetails>
           <PatientDetails>
             <PatientDetailsInformation>
               {patient?.patientMetaData?.map(
-                ({ customFieldName, displayName, value, contextType }) => (
-                  <>
+                ({
+                  customFieldName,
+                  displayName,
+                  value,
+                  contextType,
+                  customFieldIdentifier,
+                }) => (
+                  <React.Fragment key={customFieldIdentifier}>
                     {contextType === 'PREDEFINED' && value && (
                       <>
                         <PatientInfo>
@@ -203,7 +238,7 @@ const PatientDetailsHeader = () => {
                         <PatientInfoDivider />
                       </>
                     )}
-                  </>
+                  </React.Fragment>
                 ),
               )}
             </PatientDetailsInformation>
@@ -212,6 +247,7 @@ const PatientDetailsHeader = () => {
             patient={patient}
             isOpenedDetails={isDrawerOpen}
             closeDetails={unsetIsDrawerOpen}
+            customFields={customFields}
           />
         </>
       ) : (

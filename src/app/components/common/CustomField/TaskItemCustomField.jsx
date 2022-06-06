@@ -83,6 +83,7 @@ const TaskItemCustomField = ({
       return (
         <TaskItemDate value={value} onChange={handleChange} field={field} />
       );
+    case FieldType.DROPDOWN_MULTI:
     case FieldType.DROPDOWN: {
       return (
         <TaskItemDropdown

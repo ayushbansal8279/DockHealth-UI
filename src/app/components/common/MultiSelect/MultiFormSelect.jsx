@@ -1,9 +1,9 @@
 import React from 'react';
 import { useFormContext } from 'react-hook-form';
 import { useMount, useUnmount } from 'react-use';
-import Select from './Select';
+import MultiSelect from './MultiSelect';
 
-const FormSelect = ({ name, onChange, ...restProps }) => {
+const MultiFormSelect = ({ name, onChange, ...restProps }) => {
   const {
     register,
     clearErrors,
@@ -14,7 +14,11 @@ const FormSelect = ({ name, onChange, ...restProps }) => {
   } = useFormContext();
   const error = errors?.[name]?.message;
 
-  const value = watch(name) || '';
+  let value = watch(name) || [];
+
+  if (typeof value === 'string') {
+    value = value.includes(',') ? value.split(',') : [value];
+  }
 
   useMount(() => {
     register(name);
@@ -26,19 +30,23 @@ const FormSelect = ({ name, onChange, ...restProps }) => {
 
   const handleChange = event => {
     if (error) clearErrors(name);
+
+    // const joinedValues =
+    //   event.target.value.length > 0 ? event.target.value.join(',') : null;
     setValue(name, event.target.value);
     if (typeof onChange === 'function') onChange(event.target.value);
   };
 
   return (
-    <Select
+    <MultiSelect
       name={name}
       value={value}
       onChange={handleChange}
       error={error}
+      multiple
       {...restProps}
     />
   );
 };
 
-export default FormSelect;
+export default MultiFormSelect;

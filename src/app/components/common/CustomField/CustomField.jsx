@@ -19,6 +19,7 @@ import { workflowAutofocusFieldSelector } from 'selectors/workflow-drawer-select
 import { Box } from '@material-ui/core';
 import CustomFieldTextEditor from './CustomFieldTextEditor';
 import { ColorIndicator } from './styled';
+import MultiFormSelect from '../MultiSelect/MultiFormSelect';
 
 const CustomField = ({
   readOnly,
@@ -168,6 +169,22 @@ const CustomField = ({
           <Box position="relative">
             {colorIndicator && <ColorIndicator color={colorIndicator} />}
             <FormSelect
+              readOnly={readOnly}
+              label={name}
+              options={dropdownOptions}
+              name={fieldName}
+              onBlur={handleBlur}
+              inputRef={inputReference}
+              ref={componentReference}
+              onChange={() => setWasChanged(true)}
+            />
+          </Box>
+        );
+      }
+      case FieldType.DROPDOWN_MULTI: {
+        return (
+          <Box position="relative">
+            <MultiFormSelect
               readOnly={readOnly}
               label={name}
               options={dropdownOptions}

@@ -138,7 +138,10 @@ const EditCustomFieldModal = ({
 
   useEffect(() => {
     if (isCreatingNewField) {
-      if (fieldTypeValue === FieldType.DROPDOWN) {
+      if (
+        fieldTypeValue === FieldType.DROPDOWN ||
+        fieldTypeValue === FieldType.DROPDOWN_MULTI
+      ) {
         setValue('options', [
           {
             identifier: optionsValue?.length || 0,

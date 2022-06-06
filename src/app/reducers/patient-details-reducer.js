@@ -473,7 +473,6 @@ export default function(state = INITIAL_STATE, action = {}) {
 
     case ActionTypes.UPDATE_PATIENT_DETAILS_SUCCESS: {
       const { details } = payload;
-
       return {
         ...state,
         patient: {

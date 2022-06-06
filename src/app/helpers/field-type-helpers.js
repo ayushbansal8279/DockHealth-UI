@@ -11,6 +11,7 @@ export const FieldType = {
   LONG_TEXT: 'LONG_TEXT',
   BOOL: 'BOOLEAN',
   NUMBER: 'NUMBER',
+  DROPDOWN_MULTI: 'MULTI_SELECT',
 };
 
 export const CustomFieldWidthConfig = {
@@ -20,6 +21,7 @@ export const CustomFieldWidthConfig = {
   [FieldType.LONG_TEXT]: '164',
   [FieldType.BOOL]: '164',
   [FieldType.NUMBER]: '164',
+  [FieldType.DROPDOWN_MULTI]: '164',
 };
 
 export const FieldTypeLabel = {
@@ -29,6 +31,7 @@ export const FieldTypeLabel = {
   [FieldType.LONG_TEXT]: 'Long Text Field',
   [FieldType.BOOL]: 'Yes/No',
   [FieldType.NUMBER]: 'Number',
+  [FieldType.DROPDOWN_MULTI]: 'Dropdown Multi Selection',
 };
 
 export const FIELD_TYPE_OPTIONS = [
@@ -56,6 +59,10 @@ export const FIELD_TYPE_OPTIONS = [
     value: FieldType.BOOL,
     label: FieldTypeLabel[FieldType.BOOL],
   },
+  {
+    value: FieldType.DROPDOWN_MULTI,
+    label: FieldTypeLabel[FieldType.DROPDOWN_MULTI],
+  },
 ];
 
 export const FIELD_TYPES = [
@@ -67,8 +74,8 @@ export const FIELD_TYPES = [
   },
   {
     key: FieldType.DATE,
-    image: FieldTypeDateImg,
     title: FieldTypeLabel[FieldType.DATE],
+    image: FieldTypeDateImg,
     description: 'Choose a date from a calendar selection',
   },
   {
@@ -94,5 +101,11 @@ export const FIELD_TYPES = [
     image: FieldTypeToggleImg,
     title: FieldTypeLabel[FieldType.BOOL],
     description: 'Choose from two options yes or no',
+  },
+  {
+    key: FieldType.DROPDOWN_MULTI,
+    image: FieldTypeDropdownImg,
+    title: FieldTypeLabel[FieldType.DROPDOWN_MULTI],
+    description: 'Create your own selections to choose from in a dropdown',
   },
 ];
