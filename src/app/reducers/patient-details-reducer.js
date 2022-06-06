@@ -588,6 +588,26 @@ export default function(state = INITIAL_STATE, action = {}) {
       };
     }
 
+    case ActionTypes.PATIENT_ADD_LABEL_SUCCESS:
+      return {
+        ...state,
+        patient: {
+          ...state.patient,
+          patientLabels: [...(state.patient.patientLabels ?? []), action.label],
+        },
+      };
+
+    case ActionTypes.PATIENT_DELETE_LABEL_SUCCESS:
+      return {
+        ...state,
+        patient: {
+          ...state.patient,
+          patientLabels: state.patient.patientLabels.filter(
+            l => l.labelIdentifier !== action.deletedLabelIdentifier,
+          ),
+        },
+      };
+
     default:
       return TaskBaseReducer(state, action, updateTasksStateCallback);
   }

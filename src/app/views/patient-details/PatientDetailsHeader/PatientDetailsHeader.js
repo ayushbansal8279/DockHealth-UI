@@ -57,7 +57,6 @@ const PatientDetailsHeader = () => {
   const organization = useSelector(organizationSelector);
   const emrPatientLink = organization?.emrPatientLink;
   const isLoadingDetails = isFetchingPatient || !patient;
-
   return (
     <PatientDetailsContainer>
       {!isLoadingDetails ? (
