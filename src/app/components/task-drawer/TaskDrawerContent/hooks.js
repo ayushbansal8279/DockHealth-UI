@@ -149,7 +149,7 @@ const initializeTaskDrawerHooks = ({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [selectedParentTask]);
 
-  useLayoutEffect(() => {
+  useEffect(() => {
     if (
       taskDrawerOpen &&
       taskList !== undefined &&

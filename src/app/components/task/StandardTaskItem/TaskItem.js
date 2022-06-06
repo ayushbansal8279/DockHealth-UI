@@ -137,8 +137,9 @@ const TaskItem = React.memo(
       subTasksCount,
       dependencyTasksCompletedCount,
       dependencyTasksCount,
+      read,
     } = task;
-
+    console.log(read);
     const {
       columnsConfig,
       customColumnsConfig,
