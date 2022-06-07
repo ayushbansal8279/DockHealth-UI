@@ -36,6 +36,10 @@ const StickyMainTaskItemCell = styled.div`
     width: 100px;
     height: calc(100% + 2px);
     z-index: -1;
+    
+    @media print {
+      left: -102px;
+    }
   }
 
   &::after {
