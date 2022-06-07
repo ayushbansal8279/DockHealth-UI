@@ -51,7 +51,6 @@ import {
   getQuickFilters,
   selectQuickFilter,
 } from 'actions/mega-filter-actions';
-import { updateCurrentUserPreferences } from 'actions/user-actions';
 import PatientDetailsHeader from './PatientDetailsHeader/PatientDetailsHeader';
 import PatientWidget from './PatientWidget/PatientWidget';
 import { DEFAULT_TAB, TABS_CONFIG } from './helpers';
@@ -277,7 +276,7 @@ const PatientDetailsView = () => {
         </LayoutHeader>
       }
     >
-      <ColumnsConfigProvider hidePatientCustomColumns>
+      <ColumnsConfigProvider>
         <StickyContainer>
           <PatientDetailsHeader />
           <PatientDetailsTabsContainer>
