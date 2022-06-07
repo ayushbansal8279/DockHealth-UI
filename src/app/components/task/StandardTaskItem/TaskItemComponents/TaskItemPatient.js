@@ -4,8 +4,9 @@ import PatientDropdown from 'components/patients/PatientDropdown/PatientDropdown
 import { getCustomerTypeLabel } from 'helpers/customer-type-helper';
 import { checkIfTemplateTask } from 'helpers/task-helpers';
 import { capitalize } from 'helpers/capitalize';
-import { Link as RouterLink } from 'react-router-dom';
+import { Link as RouterLink, useLocation } from 'react-router-dom';
 import Highlighter from 'react-highlight-words';
+
 import {
   AddPlaceholder,
   ClickablePatient,
@@ -29,6 +30,7 @@ const TaskItemPatient = ({
   readOnly,
   // eslint-disable-next-line sonarjs/cognitive-complexity
 }) => {
+  const { pathname } = useLocation();
   const [isPopoverOpen, setPopoverOpen] = useState(false);
   const isCompleted = taskStatus === 'COMPLETE';
   const isTemplateTask = checkIfTemplateTask(task);
@@ -105,7 +107,14 @@ const TaskItemPatient = ({
           disableLink={readOnly}
           patientIdentifier={patient.patientIdentifier}
         >
-          <Link to={`/core/patient/${patient.patientIdentifier}`}>
+          <Link
+            to={{
+              pathname: `/core/patient/${patient.patientIdentifier}`,
+              state: {
+                from: pathname,
+              },
+            }}
+          >
             <PatientLabelComponent>
               {(matchPatient || matchPatientMRN) && highlightedValue ? (
                 <Highlighter
@@ -130,7 +139,14 @@ const TaskItemPatient = ({
           disableLink={readOnly}
           patientIdentifier={patient.patientIdentifier}
         >
-          <Link to={`/core/patient/${patient.patientIdentifier}`}>
+          <Link
+            to={{
+              pathname: `/core/patient/${patient.patientIdentifier}`,
+              state: {
+                from: pathname,
+              },
+            }}
+          >
             <PatientLabelComponent>
               {(matchPatient || matchPatientMRN) && highlightedValue ? (
                 <Highlighter
