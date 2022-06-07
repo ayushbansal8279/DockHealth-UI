@@ -11,17 +11,17 @@ import BasicLayoutHeader from 'components/template/BasicLayoutHeader/BasicLayout
 import ViewLayout from 'components/template/ViewLayout/ViewLayout';
 import { ColumnsConfigProvider } from 'context-api/columns-config-context';
 import { CUSTOM_FIELDS_SETTINGS_PATH } from 'routing/helpers/paths';
+import AccessRestrictor from 'components/access/AccessRestrictor/AccessRestrictor';
+import { UserOrganizationRole } from 'helpers/user-helper';
 import TaskCustomFieldsView from './TaskCustomFieldsView';
 import PatientCustomFieldsView from './PatientCustomFieldsView';
 import { ViewContainer } from './styled';
-import AccessRestrictor from 'components/access/AccessRestrictor/AccessRestrictor';
-import { UserOrganizationRole } from 'helpers/user-helper';
 import UserCustomFieldsView from './UserCustomFieldsView';
 
 const TABS = {
   0: 'patient',
   1: 'task',
-  2: 'user',
+  2: 'provider',
 };
 
 const CustomFieldsView = () => {
