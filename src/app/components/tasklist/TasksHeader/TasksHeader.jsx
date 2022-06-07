@@ -16,6 +16,7 @@ import {
 import { sortAlphabetical } from 'helpers/custom-fields-helpers';
 import { BulkContainer, StickyColumnContainer } from './styled';
 import { getTaskHeaderOptions, reorderColumns } from './helpers';
+import { isNotEmptyArray } from 'helpers/utils-helpers';
 
 const { DISABLED } = SINGLE_TASK_RESTRICTIONS_OPTIONS;
 
@@ -119,7 +120,7 @@ const TasksHeader = ({
 
   const getColumnOrder = useCallback(
     TaskItemColumnType => {
-      if (Array.isArray(columnsOrder) && columnsOrder.length > 0) {
+      if (isNotEmptyArray(columnsOrder)) {
         const existingOrder = columnsOrder?.indexOf(TaskItemColumnType);
         if (existingOrder >= 0) return existingOrder;
         return 999;

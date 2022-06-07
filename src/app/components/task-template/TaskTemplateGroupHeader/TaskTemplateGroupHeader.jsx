@@ -13,12 +13,11 @@ import { pluck } from 'ramda';
 import { extractTasksAndSubtasks } from 'helpers/tasklist-helpers';
 import { useDispatch, useSelector } from 'react-redux';
 import ThreeDotsIcon from 'img/three-dots';
-import { FormatColorResetOutlined, MoreVert } from '@material-ui/icons';
+import { MoreVert } from '@material-ui/icons';
 import * as ModalActions from 'modal/actions';
 import * as WorkflowActions from 'actions/workflow-actions';
 import * as TaskActions from 'actions/task-actions';
 import * as TemplateBundleActions from 'actions/template-bundle-actions';
-import { useBoolean } from 'hooks/useBoolean';
 import {
   TaskItemColumn,
   TaskItemColumnWidth,
@@ -60,6 +59,7 @@ import {
   TemplateHandle,
   TaskTemplateOptionsContainer,
 } from './styled';
+import { isNotEmptyArray } from 'helpers/utils-helpers';
 
 const TaskTemplateGroupHeader = ({
   templateGroup = {},
@@ -354,7 +354,7 @@ const TaskTemplateGroupHeader = ({
 
   const getColumnOrder = useCallback(
     TaskItemColumnType => {
-      if (Array.isArray(columnsOrder) && columnsOrder.length > 0) {
+      if (isNotEmptyArray(columnsOrder)) {
         const existingOrder = columnsOrder?.indexOf(TaskItemColumnType);
         if (existingOrder >= 0) return existingOrder;
         return 999;

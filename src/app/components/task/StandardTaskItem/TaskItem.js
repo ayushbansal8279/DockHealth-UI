@@ -77,6 +77,7 @@ import {
   DetailsButton,
   DecisionCellContainer,
 } from '../styled';
+import { isNotEmptyArray } from 'helpers/utils-helpers';
 
 const { DISABLED, READ_ONLY } = SINGLE_TASK_RESTRICTIONS_OPTIONS;
 
@@ -340,7 +341,7 @@ const TaskItem = React.memo(
 
     const getColumnOrder = useCallback(
       TaskItemColumnType => {
-        if (Array.isArray(columnsOrder) && columnsOrder.length > 0) {
+        if (isNotEmptyArray(columnsOrder)) {
           const existingOrder = columnsOrder?.indexOf(TaskItemColumnType);
           if (existingOrder >= 0) return existingOrder;
           return 999;

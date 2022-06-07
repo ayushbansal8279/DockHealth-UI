@@ -156,6 +156,7 @@ const TaskDescription = ({ readOnly, disableMentions }) => {
           selectedTask={selectedTask}
         >
           <TextEditor
+            characterLimit={false}
             readOnly={readOnly}
             ref={descriptionReference}
             taskListIdentifier={taskListIdentifier}
