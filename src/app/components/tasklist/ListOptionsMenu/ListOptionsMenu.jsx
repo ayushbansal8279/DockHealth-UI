@@ -24,7 +24,6 @@ import ColorPicker from 'components/common/ColorPicker/ColorPicker';
 
 const ListOptionsMenu = props => {
   const { list, children, tasks, moreOptions } = props;
-  console.log(props);
   const dispatch = useDispatch();
   const history = useHistory();
   const currentUser = useSelector(userProfileSelector);
