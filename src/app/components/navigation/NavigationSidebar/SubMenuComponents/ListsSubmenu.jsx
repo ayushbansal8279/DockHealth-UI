@@ -114,13 +114,9 @@ const ListsSubmenu = () => {
                   : `drawer-menu-list-item`
               }
             >
-              {!['INBOX', 'PUBLIC'].includes(list?.listType) ? (
-                <ListOptionsMenu list={list}>
-                  <MoreVert color="primary" />
-                </ListOptionsMenu>
-              ) : (
-                <Box m={2} />
-              )}
+              <ListOptionsMenu moreOptions list={list}>
+                <MoreVert color="primary" />
+              </ListOptionsMenu>
               {list.color && (
                 <Box mr={1}>
                   <ColorIndicator color={list.color} />
