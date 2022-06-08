@@ -49,6 +49,7 @@ import TaskListActivityFeedView from 'views/ActivityFeed/TaskListActivityFeedVie
 import UserProfileView from 'views/UserProfile/UserProfileView';
 import CustomFieldsView from 'views/custom-fields/CustomFieldsView';
 import AnalyticsView from 'views/analytics/AnalyticsView';
+import MessengerView from 'views/messenger/MessengerView';
 import { DashboardTasksTab } from 'helpers/dashboard-helpers';
 import SingleTaskView from 'views/single-task/SingleTaskView';
 import { UserOrganizationRole } from 'helpers/user-helper';
@@ -213,6 +214,11 @@ export const TEMPLATE_CORE_SUBSCRIPTION_PLAN_ROUTES = [
     path: '/analytics',
     RouteComponent: AnalyticsView,
     allowedToRoles: [ADMIN, OWNER],
+  },
+  {
+    path: '/messenger',
+    RouteComponent: MessengerView,
+    allowedToRoles: [ADMIN, OWNER, MEMBER, DOCK_PRO],
   },
 ];
 
