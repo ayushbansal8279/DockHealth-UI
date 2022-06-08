@@ -17,7 +17,6 @@ const ProfessionalServicesTail = props => {
   const { active, setSelectedProfessionalServices } = props;
 
   const handleOnClick = () => {
-    console.log(`current state of porfessional services active: ${active}`);
     setSelectedProfessionalServices(!active);
   };
 
