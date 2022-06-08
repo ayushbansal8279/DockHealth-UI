@@ -7,7 +7,7 @@ import React, {
   useState,
 } from 'react';
 import { Tabs, Grid } from '@material-ui/core';
-import { compose, equals, groupBy, prop, sortBy } from 'ramda';
+import { compose, equals } from 'ramda';
 import { useDispatch, useSelector } from 'react-redux';
 import debounce from 'lodash.debounce';
 import {
@@ -51,7 +51,6 @@ import {
   getQuickFilters,
   selectQuickFilter,
 } from 'actions/mega-filter-actions';
-import * as CustomFieldsApi from 'api/custom-fields-api';
 import PatientDetailsHeader from './PatientDetailsHeader/PatientDetailsHeader';
 import PatientWidget from './PatientWidget/PatientWidget';
 import { DEFAULT_TAB, TABS_CONFIG } from './helpers';
@@ -60,8 +59,6 @@ import {
   PatientDetailsTabsContainer,
   MainTab,
 } from './styled';
-
-const groupByCategory = groupBy(prop('fieldCategoryType'));
 
 const PatientDetailsView = () => {
   const { patientIdentifier } = useParams();
@@ -80,7 +77,6 @@ const PatientDetailsView = () => {
   const quickFiltersList = useSelector(quickFiltersSelector);
   const addQuickFilterOption = useSelector(addQuickFilterOptionSelector);
   const selectedQuickFilter = useSelector(selectedQuickFilterSelector);
-  const [customFields, setCustomFields] = useState(null);
 
   useEffect(() => {
     dispatch(PatientDetailsActions.initializePatientState(patientIdentifier));
@@ -109,18 +105,6 @@ const PatientDetailsView = () => {
     })();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
-
-  useEffect(() => {
-    CustomFieldsApi.getAllPatientCustomFields(true, patientIdentifier).then(
-      data => {
-        compose(
-          setCustomFields,
-          groupByCategory,
-          sortBy(prop('sortIndex')),
-        )(data);
-      },
-    );
-  }, [patientIdentifier]);
 
   useEffect(() => {
     // eslint-disable-next-line unicorn/consistent-function-scoping
@@ -294,7 +278,7 @@ const PatientDetailsView = () => {
     >
       <ColumnsConfigProvider hidePatientCustomColumns>
         <StickyContainer>
-          <PatientDetailsHeader customFields={customFields} />
+          <PatientDetailsHeader />
           <PatientDetailsTabsContainer>
             <Grid container>
               <Tabs value={activeTabPath} onChange={handleTabChange}>

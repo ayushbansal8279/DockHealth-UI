@@ -14,9 +14,10 @@ import {
   userProfileSelector,
   userHasPatientCustomFieldsFeatureSelector,
 } from 'selectors/user-selectors';
-import { compose } from 'ramda';
+import { groupBy, prop, compose, sortBy } from 'ramda';
 import { useFormContext } from 'react-hook-form';
 import { capitalize } from 'helpers/capitalize';
+import * as CustomFieldsApi from 'api/custom-fields-api';
 import LabeledCollapse from 'components/common/LabeledCollapse/LabeledCollapse';
 import FormInput from 'components/common/Input/FormInput';
 import FormPhoneNumberInput from 'components/common/PhoneNumberInput/FormPhoneNumberInput';
@@ -31,8 +32,11 @@ import moment from 'moment';
 import { useBoolean } from 'hooks/useBoolean';
 import CategoryOptions from 'components/common/CategoryOptions/CategoryOptions';
 import * as patientsApi from 'api/patients-api';
+import { FieldType } from 'helpers/field-type-helpers';
 import { formatMetaDataOutput, GENDER_OPTIONS_BIRTH } from './helpers';
 import { HidableContainer } from './styled';
+
+const groupByCategory = groupBy(prop('fieldCategoryType'));
 
 const PatientForm = forwardRef(
   (
@@ -44,7 +48,6 @@ const PatientForm = forwardRef(
       emrIntegrationEnabled,
       edited = true,
       buttonLabel,
-      customFields,
     },
     reference,
   ) => {
@@ -52,6 +55,7 @@ const PatientForm = forwardRef(
     const { handleSubmit } = useFormContext();
     const [isOpenedPersonal, setIsOpenedPersonal] = useState(true);
     const [isOpenedContact, setIsOpenedContact] = useState(true);
+    const [customFields, setCustomFields] = useState(null);
     const userProfile = useSelector(userProfileSelector);
     const { orgUserRole } = userProfile || {};
     const { 0: emptyPersonalVisible, 3: toggleEmptyPersonal } = useBoolean(
@@ -72,7 +76,6 @@ const PatientForm = forwardRef(
         })),
       [genderIdentityOptions],
     );
-    console.log('fields', customFields);
 
     const getGenderIdentityOptions = useCallback(async () => {
       const options = await patientsApi.getGenderIdentityOptions();
@@ -87,40 +90,55 @@ const PatientForm = forwardRef(
       userHasPatientCustomFieldsFeatureSelector,
     );
 
-    // useEffect(() => {
-    //   CustomFieldsApi.getAllPatientCustomFields(
-    //     true,
-    //     patient?.patientIdentifier || undefined,
-    //   ).then(data => {
-    //     compose(
-    //       setCustomFields,
-    //       groupByCategory,
-    //       sortBy(prop('sortIndex')),
-    //     )(data);
-    //   });
-    // }, [patient]);
+    useEffect(() => {
+      CustomFieldsApi.getAllPatientCustomFields(
+        true,
+        patient?.patientIdentifier || undefined,
+      ).then(data => {
+        compose(
+          setCustomFields,
+          groupByCategory,
+          sortBy(prop('sortIndex')),
+        )(data);
+      });
+    }, [patient]);
 
     const renderCustomField = useCallback(
       (field, index, showEmpty = true) => {
-        const initialFieldValue = patient?.patientMetaData?.find(
+        const patientCustomField = patient?.patientMetaData?.find(
           ({ customFieldIdentifier }) =>
             field.identifier === customFieldIdentifier,
         );
-        return (
+
+        return field.fieldType === FieldType.DROPDOWN_MULTI ? (
           <HidableContainer
             key={field.identifier}
-            visibility={!showEmpty && !initialFieldValue?.value}
+            visibility={!showEmpty && !patientCustomField?.values}
           >
             {index !== 0 && <Spacing vertical={3} />}
             <CustomField
               readOnly={!edited}
               field={field}
-              initialValue={initialFieldValue}
+              initialValue={patientCustomField?.values}
+              fieldsGroupKey="patientMetaData"
+            />
+          </HidableContainer>
+        ) : (
+          <HidableContainer
+            key={field.identifier}
+            visibility={!showEmpty && !patientCustomField?.value}
+          >
+            {index !== 0 && <Spacing vertical={3} />}
+            <CustomField
+              readOnly={!edited}
+              field={field}
+              initialValue={patientCustomField?.value}
               fieldsGroupKey="patientMetaData"
             />
           </HidableContainer>
         );
       },
+
       [patient, edited],
     );
 

@@ -29,12 +29,7 @@ import {
 } from 'helpers/customer-type-helper';
 import PatientLabels from '../PatientLabels/PatientLabels';
 
-const PatientDetailsDrawer = ({
-  patient,
-  isOpenedDetails,
-  closeDetails,
-  customFields,
-}) => {
+const PatientDetailsDrawer = ({ patient, isOpenedDetails, closeDetails }) => {
   const history = useHistory();
   const { patientIdentifier } = patient;
   const formattedDob = patient?.dob
@@ -44,7 +39,7 @@ const PatientDetailsDrawer = ({
     ...patient,
     dob: formattedDob,
   };
-  console.log('PATIENT_VALUES', patientValues);
+
   const dispatch = useDispatch();
   const currentUser = useSelector(userProfileSelector);
   const [isActive, setActive, unsetActive] = useBoolean(false);
@@ -201,7 +196,6 @@ const PatientDetailsDrawer = ({
           edited={isActive}
           customerTypeLabel={customerTypeLabel}
           buttonLabel="SAVE EDITS"
-          customFields={customFields}
         />
       </PatientDrawer>
     </FormProvider>

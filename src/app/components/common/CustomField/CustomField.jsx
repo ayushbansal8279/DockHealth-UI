@@ -52,10 +52,11 @@ const CustomField = ({
         color: option.color,
       })) || [];
 
-    if (o.length > 0) o.unshift({ label: 'None', value: null });
+    if (o.length > 0 && fieldType !== FieldType.DROPDOWN_MULTI)
+      o.unshift({ label: 'None', value: null });
 
     return o;
-  }, [options]);
+  }, [fieldType, options]);
 
   const handleBlur = useCallback(
     data => {
@@ -69,7 +70,7 @@ const CustomField = ({
   const fieldName = `${fieldsGroupKey}.${identifier}`;
 
   useEffect(() => {
-    if (initialValue) setValue(fieldName, initialValue.value);
+    if (initialValue) setValue(fieldName, initialValue);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 

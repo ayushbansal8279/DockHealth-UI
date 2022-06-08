@@ -6,6 +6,7 @@ import {
   MenuItem,
   FormHelperText,
   ListItemText,
+  Checkbox,
 } from '@material-ui/core';
 import {
   func,
@@ -19,7 +20,6 @@ import {
 } from 'prop-types';
 import zIndex from 'styles/z-index';
 import Input from '../Input/Input';
-import { ColorIndicator } from './styled';
 
 const MultiSelect = ({
   options,
@@ -33,7 +33,7 @@ const MultiSelect = ({
   inputRef,
   ...restProps
 }) => {
-  const renderedValues = value.map(selected => {
+  const renderedValues = value?.map(selected => {
     return options.find(option => option.value === selected)?.label;
   });
   return readOnly ? (
@@ -41,7 +41,7 @@ const MultiSelect = ({
       name={name}
       label={label}
       readOnly={readOnly}
-      value={renderedValues.join(',') || ''}
+      value={renderedValues?.join(',')}
       error={error}
       placeholder={placeholder}
       {...restProps}
@@ -63,11 +63,14 @@ const MultiSelect = ({
             horizontal: 'left',
           },
           getContentAnchorEl: null,
-          style: { zIndex: zIndex.optionsMenu },
+          style: {
+            marginTop: name.includes('taskMetaData') ? '40px' : '0',
+            zIndex: zIndex.optionsMenu,
+          },
         }}
         inputProps={{ name, shrink: 'true', placeholder, inputRef }}
         variant={variant}
-        value={value}
+        value={value ?? []}
         renderValue={selectedValue =>
           selectedValue
             .map(selected => {
@@ -78,12 +81,10 @@ const MultiSelect = ({
         {...restProps}
       >
         {options?.map(option => {
-          const { OptionIcon } = option;
           return (
             <MenuItem key={option.value} value={option.value}>
-              {option.color && <ColorIndicator color={option.color} />}
-              {OptionIcon || null}
-              <ListItemText>{option.label}</ListItemText>
+              <Checkbox checked={value?.indexOf(option.value) > -1} />
+              <ListItemText primary={option.label} />
             </MenuItem>
           );
         })}

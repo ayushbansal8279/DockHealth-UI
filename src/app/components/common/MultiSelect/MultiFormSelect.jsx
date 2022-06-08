@@ -13,12 +13,7 @@ const MultiFormSelect = ({ name, onChange, ...restProps }) => {
     unregister,
   } = useFormContext();
   const error = errors?.[name]?.message;
-
-  let value = watch(name) || [];
-
-  if (typeof value === 'string') {
-    value = value.includes(',') ? value.split(',') : [value];
-  }
+  const value = watch(name, []);
 
   useMount(() => {
     register(name);
@@ -30,9 +25,6 @@ const MultiFormSelect = ({ name, onChange, ...restProps }) => {
 
   const handleChange = event => {
     if (error) clearErrors(name);
-
-    // const joinedValues =
-    //   event.target.value.length > 0 ? event.target.value.join(',') : null;
     setValue(name, event.target.value);
     if (typeof onChange === 'function') onChange(event.target.value);
   };

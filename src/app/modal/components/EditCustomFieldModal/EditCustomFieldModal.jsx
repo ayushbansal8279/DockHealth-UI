@@ -313,13 +313,15 @@ const EditCustomFieldModal = ({
                                 }
                               />
                               <Box m={2} />
-                              <ColorPicker
-                                name={`selectOptionColor[${identifier}]`}
-                                value={color}
-                                onChange={partial(handleOptionColorChange, [
-                                  identifier,
-                                ])}
-                              />
+                              {fieldTypeValue === FieldType.DROPDOWN && (
+                                <ColorPicker
+                                  name={`selectOptionColor[${identifier}]`}
+                                  value={color}
+                                  onChange={partial(handleOptionColorChange, [
+                                    identifier,
+                                  ])}
+                                />
+                              )}
                             </Grid>
                           );
                         })}

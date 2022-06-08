@@ -1,3 +1,4 @@
+import { isNotEmptyArray } from 'helpers/utils-helpers';
 import moment from 'moment';
 import { isEmpty } from 'ramda';
 import { mixed, string, object } from 'yup';
@@ -30,7 +31,7 @@ export function formatMetaDataOutput(outputData) {
     key => key.length === 36,
   );
   const formattedMetadata = filteredMetaDataKeys.map(key => {
-    if (Array.isArray(metadata[key]) && metadata[key].length > 0) {
+    if (isNotEmptyArray(metadata[key])) {
       return {
         customFieldIdentifier: key,
         values: metadata[key],

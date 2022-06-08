@@ -16,6 +16,7 @@ import {
   isFetchingPatientSelector,
 } from 'selectors/patient-details-selectors';
 import TextTypeHeader from 'components/common/TextTypeHeader/TextTypeHeader';
+import { FieldType } from 'helpers/field-type-helpers';
 import PatientDetailsDrawer from '../PatientDetailsDrawer/PatientDetailsDrawer';
 import PatientDetailsLoader from '../PatientDetailsLoader/PatientDetailsLoader';
 import {
@@ -33,7 +34,7 @@ import {
 } from './styled';
 
 // eslint-disable-next-line sonarjs/cognitive-complexity
-const PatientDetailsHeader = ({ customFields }) => {
+const PatientDetailsHeader = () => {
   const history = useHistory();
   const [isDrawerOpen, setIsDrawerOpen, unsetIsDrawerOpen] = useBoolean(false);
   const patient = useSelector(patientSelector);
@@ -172,51 +173,39 @@ const PatientDetailsHeader = ({ customFields }) => {
                   <PatientInfoDivider />
                 </>
               )}
-              {patient?.patientMetaData?.map(
-                ({
-                  customFieldName,
-                  displayName,
-                  value,
-                  values,
-                  displayOptions,
-                  customFieldIdentifier,
-                }) => {
-                  const customField = Object.values(customFields)
-                    .flat()
-                    .find(field => field.identifier === customFieldIdentifier);
-                  let renderedText;
-                  if (customField.fieldType === 'MULTI_SELECT') {
-                    renderedText =
-                      value
-                        ?.split(',')
-                        .map(selected => {
-                          return customField.options.find(
-                            option => option.identifier === selected,
-                          )?.name;
-                        })
-                        .join(',') ?? '';
-                  }
-
-                  return (
-                    <React.Fragment key={customFieldIdentifier}>
-                      {displayOptions?.includes('PATIENT_HEADER') && value && (
-                        <>
-                          <PatientInfo>
-                            <Typography>{customFieldName}: </Typography>
-                            <Box ml={1} />
-                            {customField.fieldType === 'MULTI_SELECT' ? (
-                              <TextTypeHeader text={renderedText || ''} />
-                            ) : (
-                              <TextTypeHeader text={displayName || value} />
-                            )}
-                          </PatientInfo>
-                          <PatientInfoDivider />
-                        </>
-                      )}
-                    </React.Fragment>
-                  );
-                },
-              )}
+              {patient?.patientMetaData
+                ?.filter(
+                  meta =>
+                    meta.displayOptions?.includes('PATIENT_HEADER') &&
+                    (meta.value || meta.displayNames),
+                )
+                .map(
+                  ({
+                    customFieldName,
+                    displayName,
+                    value,
+                    displayNames,
+                    fieldType,
+                    customFieldIdentifier,
+                  }) => {
+                    return (
+                      <React.Fragment key={customFieldIdentifier}>
+                        <PatientInfo>
+                          <Typography>{customFieldName}: </Typography>
+                          <Box ml={1} />
+                          {fieldType === FieldType.DROPDOWN_MULTI ? (
+                            <TextTypeHeader
+                              text={displayNames?.join(',') || ''}
+                            />
+                          ) : (
+                            <TextTypeHeader text={displayName || value} />
+                          )}
+                        </PatientInfo>
+                        <PatientInfoDivider />
+                      </React.Fragment>
+                    );
+                  },
+                )}
             </PatientDetailsInformation>
           </PatientDetails>
           <PatientDetails>
@@ -247,7 +236,6 @@ const PatientDetailsHeader = ({ customFields }) => {
             patient={patient}
             isOpenedDetails={isDrawerOpen}
             closeDetails={unsetIsDrawerOpen}
-            customFields={customFields}
           />
         </>
       ) : (
