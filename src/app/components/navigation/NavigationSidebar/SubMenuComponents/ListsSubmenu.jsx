@@ -114,7 +114,7 @@ const ListsSubmenu = () => {
                   : `drawer-menu-list-item`
               }
             >
-              <ListOptionsMenu moreOptions list={list}>
+              <ListOptionsMenu list={list}>
                 <MoreVert color="primary" />
               </ListOptionsMenu>
               {list.color && (
