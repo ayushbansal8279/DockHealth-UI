@@ -8,6 +8,9 @@ export const StickyHeader = styled.div`
   z-index: 102;
   background-color: ${palette.white};
   padding: 0 55px 0 55px;
+  @media print {
+    display: none;
+  }
 `;
 
 export const StickyElement = styled.div`

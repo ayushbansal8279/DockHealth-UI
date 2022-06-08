@@ -24,19 +24,21 @@ import {
   ModalHeader,
   ModalHeaderContainerStyled,
   ModalWrapper,
-} from '../styled';
+  TextWaringStyled,
+} from '../../styled';
+import {
+  CheckboxContainerStyled,
+  IncludeContainerStyled,
+  InfoHeaderTextStyled,
+  TextEditorContainerStyled,
+} from './styled';
+import { closeModal } from '../../../actions';
 import {
   AttachmentContainerStyled,
   AttachmentsContainerStyled,
-  CheckboxContainerStyled,
-  IncludeContainerStyled,
   InfoHeaderAttachmentsTextStyled,
-  InfoHeaderTextStyled,
   InputContainerStyled,
-  TextEditorContainerStyled,
-  TextWaringStyled,
-} from './styled';
-import { closeModal } from '../../actions';
+} from '../styled';
 
 const SendEmailFromTaskModal = () => {
   const selectedTask = useSelector(selectedTaskSelector);

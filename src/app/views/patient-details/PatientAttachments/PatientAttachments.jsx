@@ -3,6 +3,8 @@ import React, { useCallback, useEffect, useState } from 'react';
 import palette from 'styles/palette';
 import { useSelector } from 'react-redux';
 import localStorageHelper from 'helpers/local-storage-helper';
+import { compose } from 'ramda';
+import { showGlobalErrorAlert } from 'alert/actions';
 import { Box, IconButton } from '@material-ui/core';
 import ViewModuleIcon from '@material-ui/icons/ViewModule';
 import ViewHeadlineIcon from '@material-ui/icons/ViewHeadline';
@@ -20,12 +22,15 @@ import FileListItemProgressBar from 'components/attachments/FileListItemProgress
 import FileGridItemProgressBar from 'components/attachments/FileGridItemProgressBar/FileGridItemProgressBar';
 import FileGridItemLoader from 'components/attachments/FileGridItemLoader/FileGridItemLoader';
 import FileListItemLoader from 'components/attachments/FileListItemLoader/FileListItemLoader';
+import GoogleDriveIcon from 'img/google-drive-icon';
+import GooglePicker from 'react-google-picker';
 import {
   PatientAttachmentsWrapper,
   AttachmentFileInput,
   DropzoneInfoText,
   DropzoneContainer,
   EmptyListText,
+  DriveIcon,
 } from './styled';
 import initializeAttachmentsSectionHooks from './hooks';
 import { FilesViewType, PATIENT_FILES_VIEW_TYPE } from './helpers';
@@ -34,6 +39,14 @@ const PatientAttachments = () => {
   const [activeViewType, setActiveViewType] = useState(
     localStorageHelper.getItem(PATIENT_FILES_VIEW_TYPE) || FilesViewType.GRID,
   );
+
+  if (process.env.GOOGLE_DRIVE_API_KEY) {
+    console.error('Missing GOOGLE_DRIVE_API_KEY environment variable');
+  }
+
+  if (process.env.GOOGLE_DRIVE_API_CLIENT_ID) {
+    console.error('Missing GOOGLE_DRIVE_API_CLIENT_ID environment variable');
+  }
 
   useEffect(() => {
     if (activeViewType === FilesViewType.GRID) {
@@ -44,6 +57,7 @@ const PatientAttachments = () => {
   }, [activeViewType]);
 
   const {
+    dispatch,
     handleCreateFolderClick,
     attachmentsSources,
     currentPatientAttachments,
@@ -61,6 +75,8 @@ const PatientAttachments = () => {
     openFolderInNewTab,
     renameAttachment,
     moveFileOrFolder,
+    handleGooglePickerChange,
+    handleAttachmentClick,
     dropzone: { getRootProps, getInputProps, isDragActive },
   } = initializeAttachmentsSectionHooks();
 
@@ -126,6 +142,22 @@ const PatientAttachments = () => {
           <AttachmentsBreadcrumbs />
         </Box>
         <Box display="flex" alignItems="center" flex="0 0 auto">
+          {process.env.GOOGLE_DRIVE_API_CLIENT_ID &&
+            process.env.GOOGLE_DRIVE_API_KEY && (
+              <GooglePicker
+                clientId={process.env.GOOGLE_DRIVE_API_CLIENT_ID}
+                developerKey={process.env.GOOGLE_DRIVE_API_KEY}
+                scope={['https://www.googleapis.com/auth/drive.readonly']}
+                onChange={handleGooglePickerChange}
+                onAuthFailed={compose(dispatch, showGlobalErrorAlert)}
+                multiselect
+                viewId="DOCS"
+              >
+                <IconButton>
+                  <DriveIcon src={GoogleDriveIcon} alt="Google Drive" />
+                </IconButton>
+              </GooglePicker>
+            )}
           <AddButton onClick={handleCreateFolderClick}>Create Folder</AddButton>
           <AddButton
             onClick={() => attachmentFileInputReference.current.click()}
@@ -190,9 +222,7 @@ const PatientAttachments = () => {
                 currentPatientAttachments.map(file => (
                   <FileItemComponent
                     key={file.attachmentIdentifier}
-                    onClick={() => {
-                      openAttachmentPreview(file);
-                    }}
+                    onClick={() => handleAttachmentClick(file)}
                     file={file}
                     options={getFileOptions(file)}
                   />

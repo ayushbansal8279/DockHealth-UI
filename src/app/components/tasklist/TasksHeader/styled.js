@@ -31,6 +31,10 @@ export const StickyColumnContainer = styled.div`
     width: 100px;
     height: calc(100% + 4px);
     z-index: -1;
+
+    @media print {
+      border-right: 1px solid ${palette.coolGrey3};
+    }
   }
 
   &::after {
@@ -40,10 +44,8 @@ export const StickyColumnContainer = styled.div`
     position: absolute;
     left: 0px;
     top: 0px;
-    /* width: 100%; */
     height: 100%;
     width: calc(100% - 15px);
-
     z-index: -1;
   }
 `;

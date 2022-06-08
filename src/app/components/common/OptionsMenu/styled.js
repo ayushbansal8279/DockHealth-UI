@@ -12,3 +12,9 @@ export const useMenuStyles = makeStyles({
     maxWidth: 300,
   },
 });
+
+export const OptionsMenuContainer = styled.div`
+  @media print {
+    display: none;
+  }
+`;

@@ -29,6 +29,18 @@ export function getCurrentPatientAttachments() {
     type: ActionTypes.GET_CURRENT_PATIENT_ATTACHMENTS,
   };
 }
+export function updateOrderPreferencesInPatientList(
+  listIdentifier,
+  listDisplayColumns,
+  currentUserIdentifier,
+) {
+  return {
+    type: ActionTypes.UPDATE_ORDER_PREFERENCES_IN_PATIENT_LIST,
+    listIdentifier,
+    listDisplayColumns,
+    currentUserIdentifier,
+  };
+}
 
 export function getCurrentPatientTasks(taskStatus) {
   return {
@@ -162,6 +174,23 @@ export const createPatientAttachment = (
   setCurrentlyUploadedAttachment,
   onAttachmentFileInputChange,
   restAttachments,
+});
+
+export const createPatientAttachmentReference = (
+  patientIdentifier,
+  name,
+  url,
+  mimeType,
+  referenceType,
+  folderIdentifier = null,
+) => ({
+  type: ActionTypes.ADD_PATIENT_ATTACHMENT_REFERENCE,
+  patientIdentifier,
+  name,
+  url,
+  mimeType,
+  referenceType,
+  folderIdentifier,
 });
 
 export function initializePatientAttachmentsFolder(folderIdentifier) {

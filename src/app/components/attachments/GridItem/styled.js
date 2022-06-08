@@ -3,6 +3,7 @@ import { fontSizes, fontWeights } from 'styles/font';
 import palette from 'styles/palette';
 
 export const Container = styled.div`
+  position: relative;
   display: inline-block;
   width: 203px;
   margin-bottom: 28px;

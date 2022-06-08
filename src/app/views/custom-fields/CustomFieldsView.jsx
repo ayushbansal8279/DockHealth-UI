@@ -11,13 +11,17 @@ import BasicLayoutHeader from 'components/template/BasicLayoutHeader/BasicLayout
 import ViewLayout from 'components/template/ViewLayout/ViewLayout';
 import { ColumnsConfigProvider } from 'context-api/columns-config-context';
 import { CUSTOM_FIELDS_SETTINGS_PATH } from 'routing/helpers/paths';
+import AccessRestrictor from 'components/access/AccessRestrictor/AccessRestrictor';
+import { UserOrganizationRole } from 'helpers/user-helper';
 import TaskCustomFieldsView from './TaskCustomFieldsView';
 import PatientCustomFieldsView from './PatientCustomFieldsView';
 import { ViewContainer } from './styled';
+import UserCustomFieldsView from './UserCustomFieldsView';
 
 const TABS = {
   0: 'patient',
   1: 'task',
+  2: 'provider',
 };
 
 const CustomFieldsView = () => {
@@ -87,10 +91,25 @@ const CustomFieldsView = () => {
                 {...applyProps(1)}
               />
             )}
+            <AccessRestrictor allowedToRoles={[UserOrganizationRole.ADMIN]}>
+              <Tab
+                label={
+                  <Link to={`${CUSTOM_FIELDS_SETTINGS_PATH}/${TABS[2]}`}>
+                    Provider Custom Fields
+                  </Link>
+                }
+                {...applyProps(1)}
+              />
+            </AccessRestrictor>
           </Tabs>
           <Box p={1} />
           {selectedTab === 0 && <PatientCustomFieldsView />}
           {selectedTab === 1 && <TaskCustomFieldsView editable />}
+          {selectedTab === 2 && (
+            <AccessRestrictor allowedToRoles={[UserOrganizationRole.ADMIN]}>
+              <UserCustomFieldsView editable />
+            </AccessRestrictor>
+          )}
         </ViewContainer>
       </ViewLayout>
     </ColumnsConfigProvider>

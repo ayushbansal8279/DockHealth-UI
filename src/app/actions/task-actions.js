@@ -847,6 +847,13 @@ export function deleteTasksLink(sourceTaskIdentifier, targetTaskIdentifier) {
   };
 }
 
+export function sendFaxForTask(task) {
+  return {
+    type: ActionTypes.SEND_FAX_FOR_TASK,
+    task: { ...task, communicationType: CommunicationType.FAX },
+  };
+}
+
 export function changeTaskIntentType(taskIdentifier, intentType) {
   return {
     type: ActionTypes.CHANGE_TASK_INTENT_TYPE,
@@ -874,5 +881,20 @@ export function bulkEditDuplicateTasksSuccess(duplicatedTasks) {
   return {
     type: ActionTypes.BULK_EDIT_DUPLICATE_TASKS_SUCCESS,
     duplicatedTasks,
+  };
+}
+
+export function shareTask(
+  taskIdentifier,
+  usersIdentifier,
+  externalUsers,
+  message,
+) {
+  return {
+    type: ActionTypes.SHARE_TASK,
+    taskIdentifier,
+    usersIdentifier,
+    externalUsers,
+    message,
   };
 }

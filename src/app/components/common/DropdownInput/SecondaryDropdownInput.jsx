@@ -6,7 +6,7 @@ import {
   useSecondaryTypeInputStyles,
   useSecondaryTypeTextFieldStyles,
 } from './styled';
-import { generateSelectOptions, generateAddOption } from './helpers';
+import { generateSelectOptions } from './helpers';
 
 const SecondaryDropdownInput = React.forwardRef(
   ({ options, width, ...restProps }, reference) => {

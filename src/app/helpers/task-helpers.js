@@ -152,6 +152,7 @@ export const TaskItemColumnWidth = {
   [TaskItemColumn.ASSIGNED]: {
     WIDE: 90,
     NARROW: 60,
+    PRINT: 170,
   },
   [TaskItemColumn.PATIENT]: 164,
   [TaskItemColumn.SUBTASKS_COUNT]: 60,

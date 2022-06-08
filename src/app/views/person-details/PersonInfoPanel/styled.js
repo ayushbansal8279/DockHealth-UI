@@ -13,6 +13,7 @@ export const InfoPanelContainer = styled.div`
   line-height: 1.2;
   font-weight: ${fontWeights.light};
   background: ${palette.white};
+  flex-wrap: wrap;
 `;
 
 export const PersonTitle = styled.p`
@@ -24,37 +25,47 @@ export const PersonTitle = styled.p`
   text-transform: uppercase;
 `;
 
-export const ContactInfoContainer = styled.div`
+export const ContactContainer = styled.div`
   display: flex;
-  flex-shrink: 0;
-  flex-direction: row;
   align-items: center;
-  justify-content: flex-start;
-  padding: 0 ${spacing.huge};
+`;
+
+export const CustomFieldsContainer = styled.div`
+  flex-basis: 100%;
+  display: flex;
+  padding-top: 12px;
+  align-items: center;
+  flex-wrap: wrap;
+  position: relative;
+  left: -20px;
+`;
+
+export const UserInfo = styled.div`
+  padding: 0 ${spacing.large};
   color: ${palette.mediumGrey};
+  display: flex;
+  align-items: center;
 `;
 
-export const ContactInfoItem = styled.p`
-  margin-bottom: 0;
+export const UserInfoDivider = styled.div`
+  height: 13px;
+  width: 2px;
+  background-color: ${palette.coolGrey3};
 
-  &:not(:first-child) {
-    padding-left: ${spacing.huge};
-  }
-
-  &:not(:last-child) {
-    position: relative;
-    padding-right: ${spacing.huge};
-    &:after {
-      position: absolute;
-      top: 0;
-      right: -2px;
-      display: block;
-      content: '|';
-    }
+  &:last-child {
+    visibility: hidden;
   }
 `;
 
-export const ArchivePersonButton = styled.button`
+export const IconWrapper = styled.a`
+  margin-left: 10px;
+  margin-right: 10px;
+  cursor: pointer;
+  align-items: center;
+  display: flex;
+`;
+
+export const HeaderActionButton = styled.button`
   flex-shrink: 0;
   color: ${palette.lighterCyanBlue};
   cursor: pointer;
@@ -62,6 +73,10 @@ export const ArchivePersonButton = styled.button`
 
   &:hover {
     filter: brightness(1.25);
+  }
+
+  @media print {
+    display: none;
   }
 `;
 

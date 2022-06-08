@@ -12,6 +12,10 @@ export const Row = styled.div`
   border: 1px solid ${palette.coolGrey2};
   background-color: ${palette.white};
 
+  @media print {
+    height: auto;
+  }
+
   ${({ clickable }) =>
     clickable &&
     `

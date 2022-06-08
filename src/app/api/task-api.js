@@ -120,7 +120,8 @@ export function duplicateTask(taskIdentifier, includeAttachments) {
       showAlert({
         status: 'error',
         title: 'Error',
-        text: error?.response?.data?.errorMessage ?? 'Error in duplicating task.',
+        text:
+          error?.response?.data?.errorMessage ?? 'Error in duplicating task.',
       });
       throw error;
     });
@@ -531,6 +532,20 @@ export function updateTasksLink(link) {
   return axios.put(`task/link`, link).then(({ data }) => data);
 }
 
-export function sendEmailForTask(task) {
+export function shareTask(
+  taskIdentifier,
+  usersIdentifier,
+  externalUsers,
+  message,
+) {
+  // TODO: add sharing task endpoint
+  console.log('taskIdentifier', taskIdentifier);
+  console.log('usersIdentifier', usersIdentifier);
+  console.log('externalUsers', externalUsers);
+  console.log('message', message);
+  return Promise.resolve();
+}
+
+export function sendMessageForTask(task) {
   return axios.post('task/communication/send', task).then(({ data }) => data);
 }

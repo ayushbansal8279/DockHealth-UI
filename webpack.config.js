@@ -34,6 +34,8 @@ const exposed = [
   'INTERCOM_APP_CODE',
   'PHONE_COUNTRY_CODES',
   'DYNATRACE_SCRIPT',
+  'GOOGLE_DRIVE_API_KEY',
+  'GOOGLE_DRIVE_API_CLIENT_ID',
 ];
 const exposedEnvironment = {};
 exposed.forEach(i => {

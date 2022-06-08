@@ -1,6 +1,7 @@
 import { bool, number, string, shape, func, oneOf } from 'prop-types';
 import React, { useMemo } from 'react';
 import { useSelector } from 'react-redux';
+import ExternalUserIcon from 'img/external-user-icon';
 import { activeUsersListSelector } from 'selectors/active-users-selector';
 import Tooltip from 'components/common/Tooltip/Tooltip';
 import {

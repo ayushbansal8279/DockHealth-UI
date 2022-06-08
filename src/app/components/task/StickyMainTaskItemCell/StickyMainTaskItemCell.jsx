@@ -17,6 +17,7 @@ const StickyMainTaskItemCell = styled.div`
   width: 100%;
   min-width: 500px;
   left: ${({ isSubtask }) => (isSubtask ? '61px' : '24px')};
+  ${({ order }) => (order ? `order: ${order};` : '')}
   border-left: 1px solid ${palette.coolGrey3};
   border-right: 1px solid ${palette.coolGrey3};
   align-items: center;
@@ -35,6 +36,10 @@ const StickyMainTaskItemCell = styled.div`
     width: 100px;
     height: calc(100% + 2px);
     z-index: -1;
+    
+    @media print {
+      left: -102px;
+    }
   }
 
   &::after {

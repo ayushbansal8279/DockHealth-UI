@@ -7,6 +7,11 @@ export const HorizontalScrollOuterWrapper = styled.div`
   overflow-x: auto;
   overflow-y: overlay;
   flex: 1;
+
+  @media print {
+    overflow-x: initial;
+    overflow-y: initial;
+  }
 `;
 export const HorizontalScrollInnerWrapper = styled.div`
   width: fit-content;

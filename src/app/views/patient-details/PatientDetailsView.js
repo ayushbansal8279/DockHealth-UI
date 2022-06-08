@@ -51,39 +51,14 @@ import {
   getQuickFilters,
   selectQuickFilter,
 } from 'actions/mega-filter-actions';
+import PatientDetailsHeader from './PatientDetailsHeader/PatientDetailsHeader';
+import PatientWidget from './PatientWidget/PatientWidget';
+import { DEFAULT_TAB, TABS_CONFIG } from './helpers';
 import {
   PatientDetailsContainer,
   PatientDetailsTabsContainer,
   MainTab,
 } from './styled';
-import PatientDetailsHeader from './PatientDetailsHeader/PatientDetailsHeader';
-import PatientTasksList from './PatientTasksList/PatientTasksList';
-import PatientNotes from './PatientNotes/PatientNotes';
-import PatientAttachments from './PatientAttachments/PatientAttachments';
-import PatientWidget from './PatientWidget/PatientWidget';
-
-const TABS_CONFIG = [
-  {
-    label: 'All tasks',
-    mainPath: 'tasks',
-    additionalPath: ':taskListIdentifier?',
-    RouteComponent: PatientTasksList,
-    exact: true,
-  },
-  {
-    label: 'Notes',
-    mainPath: 'notes',
-    RouteComponent: PatientNotes,
-  },
-  {
-    label: 'Files',
-    mainPath: 'files',
-    additionalPath: ':folderIdentifier?',
-    RouteComponent: PatientAttachments,
-  },
-];
-
-const DEFAULT_TAB = TABS_CONFIG[0];
 
 const PatientDetailsView = () => {
   const { patientIdentifier } = useParams();
@@ -301,7 +276,7 @@ const PatientDetailsView = () => {
         </LayoutHeader>
       }
     >
-      <ColumnsConfigProvider hidePatientCustomColumns>
+      <ColumnsConfigProvider>
         <StickyContainer>
           <PatientDetailsHeader />
           <PatientDetailsTabsContainer>

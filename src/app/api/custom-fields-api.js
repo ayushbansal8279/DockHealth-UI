@@ -18,6 +18,11 @@ export function getAllTaskListCustomFields(taskListIdentifier = undefined) {
     })
     .then(({ data }) => data);
 }
+
+export function getAllProviderCustomFields() {
+  return axios.get(`custom/field/getAll/PROVIDER`).then(({ data }) => data);
+}
+
 export function getAllTaskCustomFields(
   targetIdentifier = undefined,
   taskListIdentifier = undefined,
@@ -69,4 +74,9 @@ export function sortTaskCustomFields(identifiers, taskListIdentifier) {
       customFieldIdentifiers: identifiers,
     },
   );
+}
+export function sortUserCustomFields(identifiers) {
+  return axios.put(`custom/field/sortCustomFields/PROVIDER`, {
+    customFieldIdentifiers: identifiers,
+  });
 }
