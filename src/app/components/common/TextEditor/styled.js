@@ -148,3 +148,9 @@ export const LinkIconContainer = styled.div`
     padding-top: 0px;
   }
 `;
+
+export const Counter = styled.div`
+  display: flex;
+  justify-content: end;
+  ${({ alert }) => alert && `color: ${palette.red}`}
+`;

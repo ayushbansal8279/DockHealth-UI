@@ -15,6 +15,7 @@ import {
 } from 'helpers/customer-type-helper';
 import { organizationSelector } from 'selectors/organization-selectors';
 // eslint-disable-next-line import/no-cycle
+import { useLocation } from 'react-router-dom';
 import TextTypeHeader from 'components/common/TextTypeHeader/TextTypeHeader';
 import {
   PatientCardContainer,
@@ -107,6 +108,7 @@ const PatientCard = ({
   disabled,
   disableLink,
 }) => {
+  const { pathname } = useLocation();
   const reference = useRef(null);
   const [patientData, setPatientData] = useState(null);
   const [cardOpen, openCard, closeCard] = useBooleanWithTimeout();
@@ -199,7 +201,14 @@ const PatientCard = ({
                       .toUpperCase()}
                   </PatientName>
                   {!disableLink && (
-                    <Link to={`/core/patient/${patientIdentifier}`}>
+                    <Link
+                      to={{
+                        pathname: `/core/patient/${patientIdentifier}`,
+                        state: {
+                          from: pathname,
+                        },
+                      }}
+                    >
                       <PatientLinkText>
                         view {customerTypeLabel}
                       </PatientLinkText>
@@ -217,9 +226,10 @@ const PatientCard = ({
                   <>
                     <Spacing vertical={2} />
                     <PatientInfo>
-                      {(age || gender) && (
+                      {(age || gender || dob) && (
                         <InfoItem>
-                          {age && `${age} `}
+                          {dob && `${moment(dob).format('MMM D, YYYY')} | `}
+                          {age && `${age} | `}
                           {gender && `${gender?.charAt(0)?.toUpperCase()}`}
                         </InfoItem>
                       )}

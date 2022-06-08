@@ -883,3 +883,18 @@ export function bulkEditDuplicateTasksSuccess(duplicatedTasks) {
     duplicatedTasks,
   };
 }
+
+export function shareTask(
+  taskIdentifier,
+  usersIdentifier,
+  externalUsers,
+  message,
+) {
+  return {
+    type: ActionTypes.SHARE_TASK,
+    taskIdentifier,
+    usersIdentifier,
+    externalUsers,
+    message,
+  };
+}

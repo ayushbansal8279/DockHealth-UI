@@ -5,12 +5,13 @@ import palette from 'styles/palette';
 export const Text = styled.p`
   margin-bottom: 0;
   color: ${palette.mediumGrey};
-  text-overflow: ellipsis;
   @media not print {
+    text-overflow: ellipsis;
     overflow: hidden;
     white-space: nowrap;
   }
   @media print {
+    text-overflow: auto;
     overflow: auto;
     white-space: wrap;
   }
@@ -18,10 +19,12 @@ export const Text = styled.p`
 
 export const LongTextBox = styled.div`
   width: 100%;
-  height: 28px;
   margin-bottom: 0;
   color: ${palette.mediumGrey};
   cursor: pointer;
+  @media not print {
+    height: 28px;
+  }
 `;
 
 export const Divider = styled.hr`

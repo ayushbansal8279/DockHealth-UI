@@ -276,7 +276,7 @@ const PatientDetailsView = () => {
         </LayoutHeader>
       }
     >
-      <ColumnsConfigProvider hidePatientCustomColumns>
+      <ColumnsConfigProvider>
         <StickyContainer>
           <PatientDetailsHeader />
           <PatientDetailsTabsContainer>

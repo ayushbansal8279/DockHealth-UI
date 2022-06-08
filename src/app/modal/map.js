@@ -57,6 +57,7 @@ import UnassignTaskTemplateModal from './components/UnassignTaskTemplateModal/Un
 import PatientPickerModal from './components/PatientPickerModal/PatientPickerModal';
 import MergePatientsModal from './components/MergePatientsModal/MergePatientsModal';
 import SelectDestinationGroupModal from './components/SelectDestinationGroupModal/SelectDestinationGroupModal';
+import ShareTaskModal from './components/ShareTaskModal/ShareTaskModal';
 import PatientFolderModal from './components/PatientFolderModal/PatientFolderModal';
 import SelectPatientFolderModal from './components/SelectPatientFolderModal/SelectPatientFolderModal';
 import SmartFlowListModal from './components/SmartFlowListModal/SmartFlowListModal';
@@ -125,6 +126,7 @@ const MODAL_MAP = {
   UnassignTaskTemplate: UnassignTaskTemplateModal,
   PatientPicker: PatientPickerModal,
   MergePatients: MergePatientsModal,
+  ShareTask: ShareTaskModal,
   PatientFolder: PatientFolderModal,
   SelectPatientFolder: SelectPatientFolderModal,
   SmartFlowList: SmartFlowListModal,

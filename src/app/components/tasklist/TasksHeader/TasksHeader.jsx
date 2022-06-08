@@ -3,7 +3,7 @@ import { useSelector } from 'react-redux';
 import Checkbox from 'components/common/Checkbox/Checkbox';
 import ColumnSortHeader from 'components/tasklist/ColumnSortHeader/ColumnSortHeader';
 import { SortHeaderRow } from 'components/tasklist/ColumnSortHeader/styled';
-import { TaskItemColumn, TaskItemColumnWidth } from 'helpers/task-helpers';
+import { TaskItemColumn } from 'helpers/task-helpers';
 import { getCustomerTypeLabel } from 'helpers/customer-type-helper';
 import { capitalize } from 'helpers/capitalize';
 import { useColumnsConfig } from 'context-api/columns-config-context';
@@ -14,9 +14,9 @@ import {
   SINGLE_TASK_RESTRICTIONS_PROFILES,
 } from 'restrictions/task-restrictions';
 import { sortAlphabetical } from 'helpers/custom-fields-helpers';
+import { isNotEmptyArray } from 'helpers/utils-helpers';
 import { BulkContainer, StickyColumnContainer } from './styled';
 import { getTaskHeaderOptions, reorderColumns } from './helpers';
-import { isNotEmptyArray } from 'helpers/utils-helpers';
 
 const { DISABLED } = SINGLE_TASK_RESTRICTIONS_OPTIONS;
 
@@ -162,7 +162,7 @@ const TasksHeader = ({
           truncateEnabled
           onSortChange={onSortChange}
           snapshot={snapshot}
-          printWidth={TaskItemColumnWidth[TaskItemColumn.ASSIGNED].PRINT}
+          printWidth={f.printWidth}
         />
       );
     },

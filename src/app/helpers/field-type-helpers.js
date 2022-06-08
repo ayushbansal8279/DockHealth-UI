@@ -14,6 +14,12 @@ export const FieldType = {
   DROPDOWN_MULTI: 'MULTI_SELECT',
 };
 
+export const FieldCharakterLimit = {
+  TEXT: 250,
+  LONG_TEXT: 1000,
+  RICH_TEXT: 5000,
+};
+
 export const CustomFieldWidthConfig = {
   [FieldType.DATE]: '120',
   [FieldType.DROPDOWN]: '164',

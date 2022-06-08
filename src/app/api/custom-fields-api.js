@@ -19,7 +19,7 @@ export function getAllTaskListCustomFields(taskListIdentifier = undefined) {
     .then(({ data }) => data);
 }
 
-export function getAllUserListCustomFields() {
+export function getAllProviderCustomFields() {
   return axios.get(`custom/field/getAll/PROVIDER`).then(({ data }) => data);
 }
 

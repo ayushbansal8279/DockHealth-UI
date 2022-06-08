@@ -299,7 +299,7 @@ const PatientList = ({
           <AddRecordOption
             showAddOption={!currentOrganization?.emrIntegrationEnabled}
             customerTypeLabel={customerTypeLabel}
-            handleAddRecord={handleAddPatient}
+            onClick={handleAddPatient}
             searchValue={searchValue}
           />
         )}

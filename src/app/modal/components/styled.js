@@ -100,7 +100,7 @@ export const ModalDescription = styled.p`
   margin-bottom: 0;
   font-size: ${fontSizes.regular};
   font-weight: ${fontWeights.light};
-  color: ${palette.mediumGrey};
+  color: ${palette.coolGrey1};
   text-align: center;
 `;
 

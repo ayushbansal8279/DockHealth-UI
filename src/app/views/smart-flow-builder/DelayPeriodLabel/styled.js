@@ -5,7 +5,7 @@ import palette from 'styles/palette';
 export const Label = styled.div`
   align-items: center;
 
-  width: ${({ fixedWidth }) => (fixedWidth ? '160px' : 'fit-content')};
+  width: ${({ fixedWidth }) => (fixedWidth ? '180px' : 'fit-content')};
   height: fit-content;
   padding-right: 10px;
   padding-left: 10px;

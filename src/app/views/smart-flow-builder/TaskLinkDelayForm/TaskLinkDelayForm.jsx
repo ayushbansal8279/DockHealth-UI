@@ -77,8 +77,8 @@ const TaskLinkDelayForm = props => {
               options={DELAY_PERIOD_UNIT_OPTIONS}
             />
           </Box>
-          <Box p={1} />
-          <Box width="100%">
+          {/* <Box p={1} /> */}
+          {/* <Box width="100%">
             <SecondaryDropdownInput
               name="timeRelative"
               width={275}
@@ -86,9 +86,9 @@ const TaskLinkDelayForm = props => {
               onSelect={newValue => setValue('timeRelative', newValue)}
               options={TIME_TYPE_OPTIONS}
             />
-          </Box>
-          <Box p={1} />
-          <Box width="100%">
+          </Box> */}
+          {/* <Box p={1} /> */}
+          {/* <Box width="100%">
             <SecondaryDropdownInput
               name="timeReference"
               width={275}
@@ -96,7 +96,7 @@ const TaskLinkDelayForm = props => {
               onSelect={newValue => setValue('timeReference', newValue)}
               options={TIME_REFERENCE_OPTIONS}
             />
-          </Box>
+          </Box> */}
           <Box p={1} />
           <Box width="100%" display="flex" alignItems="center">
             <Checkbox

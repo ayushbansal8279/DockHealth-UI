@@ -73,6 +73,18 @@ export const userHasTaskCustomFieldsFeatureSelector = createSelector(
     organizationAvailableFeatures?.includes('TASK_CUSTOM_FIELDS'),
 );
 
+export const userHasSendEmailFeatureSelector = createSelector(
+  userProfileSelector,
+  ({ organizationAvailableFeatures }) =>
+    organizationAvailableFeatures?.includes('SEND_COMM_EMAIL'),
+);
+
+export const userHasSendFaxFeatureSelector = createSelector(
+  userProfileSelector,
+  ({ organizationAvailableFeatures }) =>
+    organizationAvailableFeatures?.includes('SEND_COMM_FAX'),
+);
+
 export const userSetupClientViewSelector = createSelector(
   userViewSetupSelector,
   ({ mainSetup }) => mainSetup,

@@ -36,6 +36,12 @@ const updateTasksStateCallback = (state, updateTaskFromAction) => {
 
 const PersonDetailsReducer = (state = initialState, action) => {
   switch (action.type) {
+    case ActionTypes.UPDATE_USER:
+      return {
+        ...state,
+        userDetails: { ...state.userDetails, ...action.user },
+      };
+
     case ActionTypes.INITIALIZE_USER_DETAILS_STATE: {
       const { userIdentifier, currentTasksStatus } = action;
 

@@ -26,7 +26,7 @@ export const MenuContainer = styled.ul`
   font-weight: ${fontWeights.light};
 `;
 
-export const MenuItemButtom = styled.button`
+export const MenuItemButton = styled.button`
   width: 100%;
   padding: ${spacing.smallPlus} ${spacing.regularPlus};
   text-align: left;

@@ -270,7 +270,7 @@ const SelectDropdown = React.forwardRef(
                 {showAddRecordOption && (
                   <ListItem key="addRecordButton">
                     <AddRecordOption
-                      handleAddRecord={() => onAddItemClick(inputValue)}
+                      onClick={() => onAddItemClick(inputValue)}
                       searchValue={inputValue}
                     />
                   </ListItem>

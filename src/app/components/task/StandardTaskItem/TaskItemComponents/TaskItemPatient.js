@@ -3,15 +3,18 @@ import PatientCard from 'components/patients/PatientCard/PatientCard';
 import PatientDropdown from 'components/patients/PatientDropdown/PatientDropdown';
 import { getCustomerTypeLabel } from 'helpers/customer-type-helper';
 import { checkIfTemplateTask } from 'helpers/task-helpers';
+import { Box } from '@material-ui/core';
 import { capitalize } from 'helpers/capitalize';
-import { Link as RouterLink } from 'react-router-dom';
+import { Link as RouterLink, useLocation } from 'react-router-dom';
 import Highlighter from 'react-highlight-words';
+
 import {
   AddPlaceholder,
   ClickablePatient,
   PatientLabel,
   DisabledLink,
   DisabledPatientLabel,
+  PatientPrintAdditionalInfo,
 } from '../../styled';
 
 const TaskItemPatient = ({
@@ -29,6 +32,7 @@ const TaskItemPatient = ({
   readOnly,
   // eslint-disable-next-line sonarjs/cognitive-complexity
 }) => {
+  const { pathname } = useLocation();
   const [isPopoverOpen, setPopoverOpen] = useState(false);
   const isCompleted = taskStatus === 'COMPLETE';
   const isTemplateTask = checkIfTemplateTask(task);
@@ -105,7 +109,14 @@ const TaskItemPatient = ({
           disableLink={readOnly}
           patientIdentifier={patient.patientIdentifier}
         >
-          <Link to={`/core/patient/${patient.patientIdentifier}`}>
+          <Link
+            to={{
+              pathname: `/core/patient/${patient.patientIdentifier}`,
+              state: {
+                from: pathname,
+              },
+            }}
+          >
             <PatientLabelComponent>
               {(matchPatient || matchPatientMRN) && highlightedValue ? (
                 <Highlighter
@@ -123,6 +134,10 @@ const TaskItemPatient = ({
               )}
             </PatientLabelComponent>
           </Link>
+          <PatientPrintAdditionalInfo>
+            {patient.mrn && <Box whiteSpace="normal">MRN: {patient.mrn}</Box>}
+            {patient.dob && <Box whiteSpace="normal">DoB: {patient.dob}</Box>}
+          </PatientPrintAdditionalInfo>
         </PatientCard>
       )}
       {patient && !isSubtask && !openPatientPopover && (
@@ -130,7 +145,14 @@ const TaskItemPatient = ({
           disableLink={readOnly}
           patientIdentifier={patient.patientIdentifier}
         >
-          <Link to={`/core/patient/${patient.patientIdentifier}`}>
+          <Link
+            to={{
+              pathname: `/core/patient/${patient.patientIdentifier}`,
+              state: {
+                from: pathname,
+              },
+            }}
+          >
             <PatientLabelComponent>
               {(matchPatient || matchPatientMRN) && highlightedValue ? (
                 <Highlighter
@@ -146,6 +168,14 @@ const TaskItemPatient = ({
               ) : (
                 `${patientName}`
               )}
+              <PatientPrintAdditionalInfo>
+                {patient.mrn && (
+                  <Box whiteSpace="normal">MRN: {patient.mrn}</Box>
+                )}
+                {patient.dob && (
+                  <Box whiteSpace="normal">DoB: {patient.dob}</Box>
+                )}
+              </PatientPrintAdditionalInfo>
             </PatientLabelComponent>
           </Link>
         </PatientCard>

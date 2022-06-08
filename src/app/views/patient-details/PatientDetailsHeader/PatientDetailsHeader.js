@@ -1,7 +1,8 @@
-import React from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
-import { useHistory } from 'react-router-dom';
+import { useHistory, useLocation } from 'react-router-dom';
 import { useBoolean } from 'hooks/useBoolean';
+import moment from 'moment';
 import EmailIcon from 'img/email-icon.svg';
 import PhoneIcon from 'img/phone-icon.svg';
 import MobileIcon from 'img/mobile-icon.svg';
@@ -10,6 +11,7 @@ import { Box, Chip, Grid, Typography } from '@material-ui/core';
 import { getCustomerUniqueIDShortLabel } from 'helpers/customer-type-helper';
 import Tooltip from 'components/common/Tooltip/Tooltip';
 import { userProfileSelector } from 'selectors/user-selectors';
+import { PATIENTS_LIST_ALL } from 'routing/helpers/paths';
 import { organizationSelector } from 'selectors/organization-selectors';
 import {
   patientSelector,
@@ -36,6 +38,7 @@ import {
 // eslint-disable-next-line sonarjs/cognitive-complexity
 const PatientDetailsHeader = () => {
   const history = useHistory();
+  const location = useLocation();
   const [isDrawerOpen, setIsDrawerOpen, unsetIsDrawerOpen] = useBoolean(false);
   const patient = useSelector(patientSelector);
   const {
@@ -46,6 +49,7 @@ const PatientDetailsHeader = () => {
     phoneMobile,
     phoneHome,
     age,
+    dob,
     mrn,
     gender,
     genderIdentity,
@@ -56,6 +60,19 @@ const PatientDetailsHeader = () => {
   const organization = useSelector(organizationSelector);
   const emrPatientLink = organization?.emrPatientLink;
   const isLoadingDetails = isFetchingPatient || !patient;
+  const [cameFrom, setCameFrom] = useState();
+
+  const goBack = useCallback(() => {
+    if (cameFrom) {
+      history.push(cameFrom);
+    } else {
+      history.push(PATIENTS_LIST_ALL);
+    }
+  }, [cameFrom, history]);
+
+  useEffect(() => {
+    if (location?.state?.from) setCameFrom(location.state.from);
+  }, [location]);
 
   return (
     <PatientDetailsContainer>
@@ -65,7 +82,7 @@ const PatientDetailsHeader = () => {
             <Box flex="1 0 0" display="flex" alignItems="center">
               <Grid container alignItems="center">
                 <Box flexBasis={30}>
-                  <button type="button" onClick={history.goBack}>
+                  <button type="button" onClick={goBack}>
                     <img
                       src={ArrowLeftIcon}
                       alt="back-navigation"
@@ -134,10 +151,11 @@ const PatientDetailsHeader = () => {
           </Box>
           <PatientDetails>
             <PatientDetailsInformation>
-              {(age || gender) && (
+              {(age || gender || dob) && (
                 <>
                   <PatientInfo>
-                    {age && `${age} `}
+                    {dob && `${moment(dob).format('MMM D, YYYY')} | `}
+                    {age && `${age} | `}
                     {gender && `${gender?.charAt(0)?.toUpperCase()}`}
                   </PatientInfo>
                   {genderIdentity && (

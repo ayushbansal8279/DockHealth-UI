@@ -176,6 +176,23 @@ export const createPatientAttachment = (
   restAttachments,
 });
 
+export const createPatientAttachmentReference = (
+  patientIdentifier,
+  name,
+  url,
+  mimeType,
+  referenceType,
+  folderIdentifier = null,
+) => ({
+  type: ActionTypes.ADD_PATIENT_ATTACHMENT_REFERENCE,
+  patientIdentifier,
+  name,
+  url,
+  mimeType,
+  referenceType,
+  folderIdentifier,
+});
+
 export function initializePatientAttachmentsFolder(folderIdentifier) {
   return {
     type: ActionTypes.INITIALIZE_PATIENT_ATTACHMENTS_FOLDER,
