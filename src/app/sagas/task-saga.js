@@ -153,9 +153,9 @@ function* refreshTemplateBundle({ templateBundleIdentifier }) {
   }
 }
 
-function* sendFaxForTask(task) {
+function* sendFaxForTask({ communicationDetails }) {
   try {
-    yield call(TaskApi.sendMessageForTask, task);
+    yield call(TaskApi.sendMessageForTask, communicationDetails);
     yield put(showGlobalAlert(AlertMessages.FAX_SENT));
   } catch {
     yield put(showGlobalErrorAlert());

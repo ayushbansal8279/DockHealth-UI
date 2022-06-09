@@ -847,10 +847,13 @@ export function deleteTasksLink(sourceTaskIdentifier, targetTaskIdentifier) {
   };
 }
 
-export function sendFaxForTask(task) {
+export function sendFaxForTask(communicationDetails) {
   return {
     type: ActionTypes.SEND_FAX_FOR_TASK,
-    task: { ...task, communicationType: CommunicationType.FAX },
+    communicationDetails: {
+      ...communicationDetails,
+      communicationType: CommunicationType.FAX,
+    },
   };
 }
 

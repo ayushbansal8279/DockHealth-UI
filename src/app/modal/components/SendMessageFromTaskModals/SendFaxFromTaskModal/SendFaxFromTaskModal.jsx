@@ -151,7 +151,7 @@ const SendFaxFromTaskModal = () => {
                 message,
                 recipientContact: faxNumber.replace(/\D/g, ''),
                 taskAttachmentIdentifiers: attachments,
-                identifier,
+                taskIdentifier: identifier,
               }),
             );
             dispatch(closeModal());
