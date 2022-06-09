@@ -28,6 +28,7 @@ import {
   CustomFieldText,
   CustomFieldHeaderText,
   DragHandle,
+  CenterBox,
 } from './styled';
 
 // eslint-disable-next-line sonarjs/cognitive-complexity
@@ -244,7 +245,9 @@ const PatientCustomFieldsView = () => {
         ))
       )}
       <Box p={1} />
-      <AddButton onClick={handleAddFieldClick}>Add custom field</AddButton>
+      <CenterBox>
+        <AddButton onClick={handleAddFieldClick}>Add custom field</AddButton>
+      </CenterBox>
     </>
   );
 };
