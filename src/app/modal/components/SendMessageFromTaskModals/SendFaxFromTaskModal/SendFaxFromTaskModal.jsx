@@ -135,8 +135,8 @@ const SendFaxFromTaskModal = () => {
           )}
         </InputContainerStyled>
         <TextWaringStyled>
-          Disclaimer / Explainer - that PHI is being shared external to their
-          team / organization
+          Disclaimer: Please be aware, you may be sharing protected health
+          information outside of your organization
         </TextWaringStyled>
       </ModalDescriptionContainer>
       <ModalFooterStyled>
