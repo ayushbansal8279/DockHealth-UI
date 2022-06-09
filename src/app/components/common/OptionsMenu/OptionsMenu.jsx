@@ -133,7 +133,7 @@ OptionsMenu.propTypes = {
   ).isRequired,
   isDisabled: bool,
   disablePortal: bool,
-  placement: oneOf(['bottom-end', 'top-end', 'left-start']),
+  placement: oneOf(['bottom-end', 'top-end', 'left-start', 'bottom-start']),
   customButtonComponent: elementType,
 };
 
