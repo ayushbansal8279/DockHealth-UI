@@ -31,8 +31,8 @@ export const CustomFieldWidthConfig = {
 export const FieldTypeLabel = {
   [FieldType.DATE]: 'Calendar Date',
   [FieldType.DROPDOWN]: 'Dropdown Selection',
-  [FieldType.TEXT]: 'Open Text Field',
-  [FieldType.LONG_TEXT]: 'Long Text Field',
+  [FieldType.TEXT]: 'Short Text Field',
+  [FieldType.LONG_TEXT]: 'Rich Text Field',
   [FieldType.BOOL]: 'Yes/No',
   [FieldType.NUMBER]: 'Number',
 };
@@ -81,13 +81,14 @@ export const FIELD_TYPES = [
     key: FieldType.TEXT,
     image: FieldTypeTextImg,
     title: FieldTypeLabel[FieldType.TEXT],
-    description: 'Allow free form text in an open text field',
+    description: 'Capture short, simple text such as a name',
   },
   {
     key: FieldType.LONG_TEXT,
     image: FieldTypeTextImg,
     title: FieldTypeLabel[FieldType.LONG_TEXT],
-    description: 'Allow long text in an open text field',
+    description:
+      'Capture long text with formatting options like bold, bullet points, multi-lines and hyperlinks',
   },
   {
     key: FieldType.NUMBER,
