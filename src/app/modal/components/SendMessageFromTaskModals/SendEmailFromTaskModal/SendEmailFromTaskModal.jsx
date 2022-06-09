@@ -288,7 +288,7 @@ const SendEmailFromTaskModal = () => {
                   .tokenizedText,
                 recipientContact: email,
                 taskAttachmentIdentifiers: attachmentsToSend,
-                identifier,
+                taskIdentifier: identifier,
               }),
             );
             dispatch(closeModal());

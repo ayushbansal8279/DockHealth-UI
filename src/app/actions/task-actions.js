@@ -832,10 +832,13 @@ export function updateTasksLink(link) {
   };
 }
 
-export function sendEmailForTask(task) {
+export function sendEmailForTask(communicationDetails) {
   return {
     type: ActionTypes.SEND_EMAIL_FOR_TASK,
-    task: { ...task, communicationType: CommunicationType.EMAIL },
+    communicationDetails: {
+      ...communicationDetails,
+      communicationType: CommunicationType.EMAIL,
+    },
   };
 }
 

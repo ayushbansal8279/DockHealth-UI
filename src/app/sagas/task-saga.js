@@ -99,9 +99,9 @@ function* updateTasksLink({ link }) {
   }
 }
 
-function* sendEmailForTask(task) {
+function* sendEmailForTask({ communicationDetails }) {
   try {
-    yield call(TaskApi.sendMessageForTask, task);
+    yield call(TaskApi.sendMessageForTask, communicationDetails);
     yield put(showGlobalAlert(AlertMessages.MAIL_SENT));
   } catch {
     yield put(showGlobalErrorAlert());
