@@ -116,14 +116,16 @@ const SendFaxFromTaskModal = () => {
               <AttachmentsContainerStyled>
                 {validAttachments.map(attachment => {
                   return (
-                    <AttachmentContainerStyled key={attachment.attachmentId}>
+                    <AttachmentContainerStyled
+                      key={attachment.attachmentIdentifier}
+                    >
                       <Checkbox
                         size={18}
                         onClick={() =>
-                          addAttachmentHandler(attachment.attachmentId)
+                          addAttachmentHandler(attachment.attachmentIdentifier)
                         }
                         isChecked={attachmentsToSend.includes(
-                          attachment.attachmentId,
+                          attachment.attachmentIdentifier,
                         )}
                       />
                       <span>{attachment.fileName}</span>
@@ -150,7 +152,8 @@ const SendFaxFromTaskModal = () => {
               sendFaxForTask({
                 message,
                 recipientContact: faxNumber.replace(/\D/g, ''),
-                taskAttachmentIdentifiers: attachments,
+                // taskAttachmentIdentifiers: attachments,
+                taskAttachmentIdentifiers: attachmentsToSend,
                 taskIdentifier: identifier,
               }),
             );
