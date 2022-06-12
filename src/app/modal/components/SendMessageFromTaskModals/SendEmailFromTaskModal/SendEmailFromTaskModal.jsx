@@ -251,14 +251,16 @@ const SendEmailFromTaskModal = () => {
             <AttachmentsContainerStyled>
               {attachments.map(attachment => {
                 return (
-                  <AttachmentContainerStyled key={attachment.attachmentId}>
+                  <AttachmentContainerStyled
+                    key={attachment.attachmentIdentifier}
+                  >
                     <Checkbox
                       size={18}
                       onClick={() =>
-                        addAttachmentHandler(attachment.attachmentId)
+                        addAttachmentHandler(attachment.attachmentIdentifier)
                       }
                       isChecked={attachmentsToSend.includes(
-                        attachment.attachmentId,
+                        attachment.attachmentIdentifier,
                       )}
                     />
                     <span>{attachment.fileName}</span>
@@ -269,8 +271,8 @@ const SendEmailFromTaskModal = () => {
           </>
         )}
         <TextWaringStyled>
-          Disclaimer / Explainer - that PHI is being shared external to their
-          team / organization
+          Disclaimer: Please be aware, you may be sharing protected health
+          information outside of your organization
         </TextWaringStyled>
       </ModalDescriptionContainer>
       <ModalFooterStyled>
@@ -284,11 +286,12 @@ const SendEmailFromTaskModal = () => {
           onClick={() => {
             dispatch(
               sendEmailForTask({
-                message: convertFromEditorStateToOutput(detailsState)
+                message: subject,
+                details: convertFromEditorStateToOutput(detailsState)
                   .tokenizedText,
                 recipientContact: email,
                 taskAttachmentIdentifiers: attachmentsToSend,
-                identifier,
+                taskIdentifier: identifier,
               }),
             );
             dispatch(closeModal());

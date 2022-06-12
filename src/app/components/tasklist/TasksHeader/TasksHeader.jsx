@@ -17,6 +17,7 @@ import { sortAlphabetical } from 'helpers/custom-fields-helpers';
 import { isNotEmptyArray } from 'helpers/utils-helpers';
 import { BulkContainer, StickyColumnContainer } from './styled';
 import { getTaskHeaderOptions, reorderColumns } from './helpers';
+import { isNotEmptyArray } from 'helpers/utils-helpers';
 
 const { DISABLED } = SINGLE_TASK_RESTRICTIONS_OPTIONS;
 

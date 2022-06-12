@@ -60,6 +60,7 @@ import {
   TemplateHandle,
   TaskTemplateOptionsContainer,
 } from './styled';
+import { isNotEmptyArray } from 'helpers/utils-helpers';
 
 const TaskTemplateGroupHeader = ({
   templateGroup = {},

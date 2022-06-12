@@ -832,10 +832,13 @@ export function updateTasksLink(link) {
   };
 }
 
-export function sendEmailForTask(task) {
+export function sendEmailForTask(communicationDetails) {
   return {
     type: ActionTypes.SEND_EMAIL_FOR_TASK,
-    task: { ...task, communicationType: CommunicationType.EMAIL },
+    communicationDetails: {
+      ...communicationDetails,
+      communicationType: CommunicationType.EMAIL,
+    },
   };
 }
 
@@ -847,10 +850,13 @@ export function deleteTasksLink(sourceTaskIdentifier, targetTaskIdentifier) {
   };
 }
 
-export function sendFaxForTask(task) {
+export function sendFaxForTask(communicationDetails) {
   return {
     type: ActionTypes.SEND_FAX_FOR_TASK,
-    task: { ...task, communicationType: CommunicationType.FAX },
+    communicationDetails: {
+      ...communicationDetails,
+      communicationType: CommunicationType.FAX,
+    },
   };
 }
 
