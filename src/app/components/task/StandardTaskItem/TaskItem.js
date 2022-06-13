@@ -78,7 +78,6 @@ import {
   DetailsButton,
   DecisionCellContainer,
 } from '../styled';
-import { isNotEmptyArray } from 'helpers/utils-helpers';
 
 const { DISABLED, READ_ONLY } = SINGLE_TASK_RESTRICTIONS_OPTIONS;
 
