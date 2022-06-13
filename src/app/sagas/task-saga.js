@@ -109,6 +109,23 @@ function* sendEmailForTask({ communicationDetails }) {
   }
 }
 
+function* markTaskAsRead(task) {
+  try {
+    const updatedTask = yield call(
+      TaskApi.flagUnread,
+      task?.taskIdentifier,
+      false,
+    );
+    yield put({
+      type: ActionTypes.MARK_TASK_AS_READ_SUCCESS,
+      task: updatedTask,
+    });
+  } catch (error) {
+    yield put({ type: ActionTypes.MARK_TASK_AS_READ_FAILURE });
+    yield put(showGlobalErrorAlert());
+  }
+}
+
 function* deleteTasksLink({ sourceTaskIdentifier, targetTaskIdentifier }) {
   try {
     yield call(
@@ -355,4 +372,5 @@ export default function* watchTask() {
   yield takeEvery(ActionTypes.REFRESH_TASK, refreshTask);
   yield takeEvery(ActionTypes.INSERT_CREATED_TASK, insertCreatedTask);
   yield takeEvery(ActionTypes.SHARE_TASK, shareTask);
+  yield takeEvery(ActionTypes.MARK_TASK_AS_READ, markTaskAsRead);
 }

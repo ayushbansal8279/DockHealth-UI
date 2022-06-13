@@ -617,21 +617,6 @@ export function reassignTask(taskIdentifier, userId) {
       });
 }
 
-export function markTaskRead(task) {
-  return dispatch =>
-    TaskApi.flagUnread(task?.taskIdentifier, false)
-      .then(() => {
-        // do nothing
-        dispatch({
-          type: ActionTypes.TASK_READ_SUCCESS,
-          task,
-        });
-      })
-      .catch(error => {
-        throw error;
-      });
-}
-
 export const loadSubTasks = task => dispatch => {
   dispatch({
     type: ActionTypes.REQUEST_LOAD_SUBTASKS,
@@ -839,6 +824,13 @@ export function sendEmailForTask(communicationDetails) {
       ...communicationDetails,
       communicationType: CommunicationType.EMAIL,
     },
+  };
+}
+
+export function markTaskAsRead(taskIdentifier) {
+  return {
+    type: ActionTypes.MARK_TASK_AS_READ,
+    taskIdentifier,
   };
 }
 
