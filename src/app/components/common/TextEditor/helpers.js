@@ -61,6 +61,17 @@ const substituteNameForIdInText = (rawText, mentions) => {
   return textWithIds;
 };
 
+export const substituteNameForIdInTokenizedText = (rawText, mentions) => {
+  let textWithIds = rawText;
+  mentions.forEach(({ name, identifier }) => {
+    textWithIds = textWithIds.replace(
+      new RegExp(` @{${identifier}}`, 'g'),
+      ` ${name}`,
+    );
+  });
+  return textWithIds;
+};
+
 export const convertFromEditorStateToOutput = (editorState, handleRichText) => {
   const stateContent = convertToRaw(editorState.getCurrentContent());
   const textBlocks = stateContent.blocks.map(block => block.text);

@@ -4,10 +4,13 @@ import Checkbox from 'components/common/Checkbox/Checkbox';
 import Input from 'components/common/Input/Input';
 import TextEditor from 'components/common/TextEditor/TextEditor';
 import React, { useCallback, useState } from 'react';
-import { EditorState, Modifier } from 'draft-js';
+import { EditorState } from 'draft-js';
 
 import { useDispatch, useSelector } from 'react-redux';
-import { convertFromEditorStateToOutput } from 'components/common/TextEditor/helpers';
+import {
+  convertFromEditorStateToOutput,
+  substituteNameForIdInTokenizedText,
+} from 'components/common/TextEditor/helpers';
 import { selectedTaskSelector } from 'selectors/task-drawer-selectors';
 import { sendEmailForTask } from 'actions/task-actions';
 import { IconButton } from '@material-ui/core';
@@ -15,6 +18,7 @@ import { Replay } from '@material-ui/icons';
 import palette from 'styles/palette';
 import { validateEmail } from 'helpers/validation-helper';
 import { formatDate } from 'helpers/formatters';
+import { createMentionEntities } from 'components/common/TextEditor/create-mention-entities';
 import {
   CloseIcon,
   CloseIconButton,
@@ -48,6 +52,9 @@ const SendEmailFromTaskModal = () => {
     attachments,
     identifier,
     description,
+    tokenizedDescription,
+    taskMentions,
+    tokenizedDetails,
   } = selectedTask;
   const dispatch = useDispatch();
   const [email, setEmail] = useState('');
@@ -66,31 +73,19 @@ const SendEmailFromTaskModal = () => {
 
   const [attachmentsToSend, setAttachmentsToSend] = useState([]);
 
-  const insertPlaceholder = useCallback(
-    (label, meta) => {
-      const currentContent = detailsState.getCurrentContent();
-      const selection = detailsState.getSelection();
-      currentContent.createEntity('PLACEHOLDER', 'IMMUTABLE', meta);
-      const textWithEntity = Modifier.insertText(
-        currentContent,
-        selection,
-        label,
-        null,
-        currentContent.getLastCreatedEntityKey(),
+  const insertTextFromTask = useCallback(
+    meta => {
+      const currentState = convertFromEditorStateToOutput(detailsState, true);
+      const newState = createMentionEntities(
+        `${currentState.meta}\n ${meta.meta}`,
+        `${currentState.tokenizedText}\n${meta.tokenized}`,
+        [...currentState.mentions, taskMentions],
+        true,
       );
 
-      const editorWithInsert = EditorState.push(
-        detailsState,
-        textWithEntity,
-        'insert-characters',
-      );
-      const newEditorState = EditorState.moveSelectionToEnd(
-        editorWithInsert,
-        textWithEntity.getSelectionAfter(),
-      );
-      setDetailsState(newEditorState);
+      setDetailsState(EditorState.push(detailsState, newState));
     },
-    [detailsState],
+    [detailsState, taskMentions],
   );
 
   const includeCheckBoxes = [
@@ -101,9 +96,13 @@ const SendEmailFromTaskModal = () => {
         const flag = !isTaskDescriptionIncluded;
         if (flag) {
           setIsTaskDescriptionIncluded(flag);
-          insertPlaceholder('_DESCRIPTION_', {
+          insertTextFromTask({
             meta: description,
             name: '_DESCRIPTION_',
+            tokenized: substituteNameForIdInTokenizedText(
+              tokenizedDescription,
+              taskMentions,
+            ),
           });
         }
       },
@@ -115,9 +114,12 @@ const SendEmailFromTaskModal = () => {
         const flag = !isTaskDetailsIncluded;
         if (flag) {
           setIsTaskDetailsIncluded(flag);
-          insertPlaceholder('_DETAILS_', {
+          insertTextFromTask({
             meta: details,
-            name: '_DETAILS_',
+            tokenized: substituteNameForIdInTokenizedText(
+              tokenizedDetails,
+              taskMentions,
+            ),
           });
         }
       },
@@ -136,8 +138,9 @@ const SendEmailFromTaskModal = () => {
               )} \n ${comment.tokenizedComment}`;
             })
             .join('\n');
-          insertPlaceholder('_COMMENTS_', {
+          insertTextFromTask({
             meta: commentsContent,
+            tokenized: commentsContent,
             name: '_COMMENTS_',
           });
         }
@@ -287,7 +290,7 @@ const SendEmailFromTaskModal = () => {
             dispatch(
               sendEmailForTask({
                 message: subject,
-                details: convertFromEditorStateToOutput(detailsState)
+                details: convertFromEditorStateToOutput(detailsState, true)
                   .tokenizedText,
                 recipientContact: email,
                 taskAttachmentIdentifiers: attachmentsToSend,
