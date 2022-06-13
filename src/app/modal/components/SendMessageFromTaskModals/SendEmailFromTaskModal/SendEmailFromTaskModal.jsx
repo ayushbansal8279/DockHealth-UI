@@ -190,7 +190,7 @@ const SendEmailFromTaskModal = () => {
             type="email"
             label="email"
             name="email"
-            placeholder="type the email address"
+            placeholder="Type the email address"
             InputLabelProps={{
               shrink: true,
             }}
@@ -205,7 +205,7 @@ const SendEmailFromTaskModal = () => {
             type="text"
             label="subject"
             name="email"
-            placeholder="type the email subject"
+            placeholder="Type the email subject"
             InputLabelProps={{
               shrink: true,
             }}
@@ -240,7 +240,7 @@ const SendEmailFromTaskModal = () => {
             showToolbar
             state={detailsState}
             onChange={setDetailsState}
-            placeholder="email body"
+            placeholder=" Email body"
           />
         </TextEditorContainerStyled>
         {attachments?.length > 0 && (
