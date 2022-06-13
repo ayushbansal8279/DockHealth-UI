@@ -119,7 +119,7 @@ export const ModalFooterStyled = styled.div`
 
 export const TextWaringStyled = styled.p`
   padding-top: 1.5rem;
-  color: #ff0000;
+  color: ${palette.mediumGrey};
   font-size: 16px;
   width: 100%;
   font-weight: 700;
