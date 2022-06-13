@@ -54,6 +54,7 @@ import {
   SINGLE_TASK_RESTRICTIONS_OPTIONS,
 } from 'restrictions/task-restrictions';
 import { sortAlphabetical } from 'helpers/custom-fields-helpers';
+import { isNotEmptyArray } from 'helpers/utils-helpers';
 import { getSubtaskStylingLink } from './helpers';
 import TaskItemContextMenu from '../TaskItemContextMenu/TaskItemContextMenu';
 import TaskItemBulkEdit from './TaskItemComponents/TaskItemBulkEdit';
@@ -77,7 +78,6 @@ import {
   DetailsButton,
   DecisionCellContainer,
 } from '../styled';
-import { isNotEmptyArray } from 'helpers/utils-helpers';
 
 const { DISABLED, READ_ONLY } = SINGLE_TASK_RESTRICTIONS_OPTIONS;
 

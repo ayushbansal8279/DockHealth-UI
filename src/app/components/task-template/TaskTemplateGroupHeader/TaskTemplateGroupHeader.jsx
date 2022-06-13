@@ -47,6 +47,7 @@ import {
 import { currentTaskListSelector } from 'selectors/task-list-selectors';
 import { openDrawer } from 'actions/workflow-drawer-actions';
 import { sortAlphabetical } from 'helpers/custom-fields-helpers';
+import { isNotEmptyArray } from 'helpers/utils-helpers';
 import TemplateHeaderName from '../TaskTemplateName/TaskTemplateName';
 import TaskHeaderPatient from '../TaskTemplatePatient/TaskTemplatePatient';
 import TemplateItemWorkflowStatus from '../TaskTemplateWorkflowStatus/TaskTemplateWorkflowStatus';
@@ -59,7 +60,6 @@ import {
   TemplateHandle,
   TaskTemplateOptionsContainer,
 } from './styled';
-import { isNotEmptyArray } from 'helpers/utils-helpers';
 
 const TaskTemplateGroupHeader = ({
   templateGroup = {},
