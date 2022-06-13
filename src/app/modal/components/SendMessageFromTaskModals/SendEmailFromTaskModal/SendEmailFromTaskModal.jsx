@@ -15,6 +15,7 @@ import { Replay } from '@material-ui/icons';
 import palette from 'styles/palette';
 import { validateEmail } from 'helpers/validation-helper';
 import { formatDate } from 'helpers/formatters';
+import CustomTextEditor from 'components/task-drawer/CustomTextEditor/CustomTextEditor';
 import {
   CloseIcon,
   CloseIconButton,
@@ -233,15 +234,16 @@ const SendEmailFromTaskModal = () => {
           );
         })}
         <TextEditorContainerStyled>
-          <TextEditor
-            readOnly={false}
-            minHeight={100}
-            disableMentions
-            showToolbar
-            state={detailsState}
-            onChange={setDetailsState}
-            placeholder=" Email body"
-          />
+          <CustomTextEditor label="Email body">
+            <TextEditor
+              readOnly={false}
+              minHeight={100}
+              disableMentions
+              showToolbar
+              state={detailsState}
+              onChange={setDetailsState}
+            />
+          </CustomTextEditor>
         </TextEditorContainerStyled>
         {attachments?.length > 0 && (
           <>
