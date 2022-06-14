@@ -3,6 +3,7 @@ import React, { useRef, useEffect } from 'react';
 
 import { PatientWidgetsWrapper } from './styled';
 import initializeWidgetSectionHooks from './hooks';
+import { isNumber } from '@material-ui/data-grid';
 
 // import ImportWidgetScript from 'components/common/ImportWidgetScript/ImportWidgetScript';
 
@@ -23,7 +24,10 @@ const PatientWidget = ({ url, height, width }) => {
 
   const sdk = useRef(null);
 
-  // eslint-disable-next-line unicorn/consistent-function-scoping
+  const handleOnReady = parameters => {
+    console.log(`handleOnReady: ${JSON.stringify(parameters, null, 2)}`);
+  };
+
   const handleOnNavigate = location => {
     console.log(`handleOnNavigate: ${JSON.stringify(location, null, 2)}`);
   };
@@ -46,6 +50,7 @@ const PatientWidget = ({ url, height, width }) => {
       targetOrigin: widgetDomain,
     });
 
+    sdk.current.onReady(handleOnReady);
     sdk.current.onNavigate(handleOnNavigate);
   }, [widgetDomain]);
 
@@ -70,8 +75,8 @@ const PatientWidget = ({ url, height, width }) => {
         ref={frameReference}
         title="Widget"
         id="widgetId"
-        height={`${height}px`}
-        width={`${width}px`}
+        height={isNumber(height) ? `${height}px` : `${height}`}
+        width={isNumber(width) ? `${width}px` : `${width}`}
         style={{ border: 'none' }}
         src={widgetUrl}
       />
