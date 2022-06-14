@@ -126,6 +126,23 @@ function* markTaskAsRead(task) {
   }
 }
 
+function* markTaskAsUnRead(task) {
+  try {
+    const updatedTask = yield call(
+      TaskApi.flagUnread,
+      task?.taskIdentifier,
+      true,
+    );
+    yield put({
+      type: ActionTypes.MARK_TASK_AS_UNREAD_SUCCESS,
+      task: updatedTask,
+    });
+  } catch (error) {
+    yield put({ type: ActionTypes.MARK_TASK_AS_UNREAD_FAILURE });
+    yield put(showGlobalErrorAlert());
+  }
+}
+
 function* deleteTasksLink({ sourceTaskIdentifier, targetTaskIdentifier }) {
   try {
     yield call(
@@ -373,4 +390,5 @@ export default function* watchTask() {
   yield takeEvery(ActionTypes.INSERT_CREATED_TASK, insertCreatedTask);
   yield takeEvery(ActionTypes.SHARE_TASK, shareTask);
   yield takeEvery(ActionTypes.MARK_TASK_AS_READ, markTaskAsRead);
+  yield takeEvery(ActionTypes.MARK_TASK_AS_UNREAD, markTaskAsUnRead);
 }

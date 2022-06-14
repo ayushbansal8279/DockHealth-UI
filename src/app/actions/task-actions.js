@@ -834,6 +834,13 @@ export function markTaskAsRead(taskIdentifier) {
   };
 }
 
+export function markTaskAsUnRead(taskIdentifier) {
+  return {
+    type: ActionTypes.MARK_TASK_AS_UNREAD,
+    taskIdentifier,
+  };
+}
+
 export function deleteTasksLink(sourceTaskIdentifier, targetTaskIdentifier) {
   return {
     type: ActionTypes.DELETE_TASKS_LINK,

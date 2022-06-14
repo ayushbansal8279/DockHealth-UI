@@ -14,6 +14,7 @@ import {
   openQuickAddSubtask,
   moveTask,
   markTaskAsRead,
+  markTaskAsUnRead,
 } from 'actions/task-actions';
 import { openModal, closeModal } from 'modal/actions';
 import { getTasksGroupsList } from 'actions/list-details-actions';
@@ -178,6 +179,10 @@ const TaskItemContextMenu = ({
     dispatch(markTaskAsRead(task.taskIdentifier));
   }, []);
 
+  const handleMarkAsUnRead = useCallback(() => {
+    dispatch(markTaskAsUnRead(task.taskIdentifier));
+  }, []);
+
   const handleMoveTask = useCallback(() => {
     const hasSubtasks = task.subTasksCount !== 0;
 
@@ -294,7 +299,7 @@ const TaskItemContextMenu = ({
             </MenuItemButton>
           </li>
         )}
-        {!task.read && !isTemplateTask && !isBundleTask && (
+        {!task.read && !isTemplateTask && (
           <li>
             <MenuItemButton
               tabIndex="0"
@@ -302,6 +307,17 @@ const TaskItemContextMenu = ({
               onClick={handleMarkAsRead}
             >
               Mark as read
+            </MenuItemButton>
+          </li>
+        )}
+        {task.read && !isTemplateTask && (
+          <li>
+            <MenuItemButton
+              tabIndex="0"
+              type="button"
+              onClick={handleMarkAsUnRead}
+            >
+              Mark as unread
             </MenuItemButton>
           </li>
         )}
