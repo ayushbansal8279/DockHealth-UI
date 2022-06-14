@@ -100,11 +100,28 @@ function* updateTasksLink({ link }) {
   }
 }
 
-function* sendEmailForTask(task) {
+function* sendEmailForTask({ communicationDetails }) {
   try {
-    yield call(TaskApi.sendMessageForTask, task);
+    yield call(TaskApi.sendMessageForTask, communicationDetails);
     yield put(showGlobalAlert(AlertMessages.MAIL_SENT));
   } catch {
+    yield put(showGlobalErrorAlert());
+  }
+}
+
+function* markTaskAsRead(task) {
+  try {
+    const updatedTask = yield call(
+      TaskApi.flagUnread,
+      task?.taskIdentifier,
+      false,
+    );
+    yield put({
+      type: ActionTypes.MARK_TASK_AS_READ_SUCCESS,
+      task: updatedTask,
+    });
+  } catch (error) {
+    yield put({ type: ActionTypes.MARK_TASK_AS_READ_FAILURE });
     yield put(showGlobalErrorAlert());
   }
 }
@@ -154,9 +171,9 @@ function* refreshTemplateBundle({ templateBundleIdentifier }) {
   }
 }
 
-function* sendFaxForTask(task) {
+function* sendFaxForTask({ communicationDetails }) {
   try {
-    yield call(TaskApi.sendMessageForTask, task);
+    yield call(TaskApi.sendMessageForTask, communicationDetails);
     yield put(showGlobalAlert(AlertMessages.FAX_SENT));
   } catch {
     yield put(showGlobalErrorAlert());
@@ -355,4 +372,5 @@ export default function* watchTask() {
   yield takeEvery(ActionTypes.REFRESH_TASK, refreshTask);
   yield takeEvery(ActionTypes.INSERT_CREATED_TASK, insertCreatedTask);
   yield takeEvery(ActionTypes.SHARE_TASK, shareTask);
+  yield takeEvery(ActionTypes.MARK_TASK_AS_READ, markTaskAsRead);
 }

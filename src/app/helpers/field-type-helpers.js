@@ -3,6 +3,7 @@ import FieldTypeNumberImg from 'img/patient/field-type-number';
 import FieldTypeDateImg from 'img/patient/field-type-date';
 import FieldTypeTextImg from 'img/patient/field-type-text';
 import FieldTypeDropdownImg from 'img/patient/field-type-dropdown';
+import FieldTypeLink from 'img/patient/field-type-link';
 
 export const FieldType = {
   DATE: 'DATE',
@@ -12,6 +13,7 @@ export const FieldType = {
   BOOL: 'BOOLEAN',
   NUMBER: 'NUMBER',
   DROPDOWN_MULTI: 'MULTI_SELECT',
+  HYPERLINK: 'HYPERLINK',
 };
 
 export const FieldCharakterLimit = {
@@ -28,16 +30,18 @@ export const CustomFieldWidthConfig = {
   [FieldType.BOOL]: '164',
   [FieldType.NUMBER]: '164',
   [FieldType.DROPDOWN_MULTI]: '164',
+  [FieldType.HYPERLINK]: '164',
 };
 
 export const FieldTypeLabel = {
   [FieldType.DATE]: 'Calendar Date',
   [FieldType.DROPDOWN]: 'Dropdown Selection',
-  [FieldType.TEXT]: 'Open Text Field',
-  [FieldType.LONG_TEXT]: 'Long Text Field',
+  [FieldType.TEXT]: 'Short Text Field',
+  [FieldType.LONG_TEXT]: 'Rich Text Field',
   [FieldType.BOOL]: 'Yes/No',
   [FieldType.NUMBER]: 'Number',
   [FieldType.DROPDOWN_MULTI]: 'Dropdown Multi Selection',
+  [FieldType.HYPERLINK]: 'Link',
 };
 
 export const FIELD_TYPE_OPTIONS = [
@@ -69,6 +73,10 @@ export const FIELD_TYPE_OPTIONS = [
     value: FieldType.DROPDOWN_MULTI,
     label: FieldTypeLabel[FieldType.DROPDOWN_MULTI],
   },
+  {
+    value: FieldType.HYPERLINK,
+    label: FieldTypeLabel[FieldType.HYPERLINK],
+  },
 ];
 
 export const FIELD_TYPES = [
@@ -88,13 +96,14 @@ export const FIELD_TYPES = [
     key: FieldType.TEXT,
     image: FieldTypeTextImg,
     title: FieldTypeLabel[FieldType.TEXT],
-    description: 'Allow free form text in an open text field',
+    description: 'Capture short, simple text such as a name',
   },
   {
     key: FieldType.LONG_TEXT,
     image: FieldTypeTextImg,
     title: FieldTypeLabel[FieldType.LONG_TEXT],
-    description: 'Allow long text in an open text field',
+    description:
+      'Capture long text with formatting options like bold, bullet points, multi-lines and hyperlinks',
   },
   {
     key: FieldType.NUMBER,
@@ -113,5 +122,11 @@ export const FIELD_TYPES = [
     image: FieldTypeDropdownImg,
     title: FieldTypeLabel[FieldType.DROPDOWN_MULTI],
     description: 'Create your own selections to choose from in a dropdown',
+  },
+  {
+    key: FieldType.HYPERLINK,
+    image: FieldTypeLink,
+    title: FieldTypeLabel[FieldType.HYPERLINK],
+    description: 'Add a named link for a website',
   },
 ];

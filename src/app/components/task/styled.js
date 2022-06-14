@@ -150,6 +150,7 @@ export const Description = styled.div`
   text-overflow: ellipsis;
   white-space: initial;
   max-width: 480px;
+  ${props => props.isUnread && 'font-weight: 900; font-size: 16px;'}
 
   @media screen and (max-width: 1300px) {
     max-width: 300px;

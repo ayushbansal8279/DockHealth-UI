@@ -212,7 +212,7 @@ const TaskBaseReducer = (state, action, updateStateCallback) => {
 
       return updateStateCallback(state, updateTaskFromAction);
     }
-
+    case ActionTypes.MARK_TASK_AS_READ_SUCCESS:
     case ActionTypes.UPDATE_TASK_DESCRIPTION_SUCCESS:
     case ActionTypes.UPDATE_TASK_DETAILS_SUCCESS:
     case ActionTypes.UPDATE_TASK_SUCCESS:

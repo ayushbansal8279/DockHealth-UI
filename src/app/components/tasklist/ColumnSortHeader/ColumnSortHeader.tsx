@@ -133,7 +133,16 @@ const ColumnSortHeader: React.FC<ColumnSortHeaderProps> = ({
         </Popper>
       </>
     );
-  }, [draggable, id, isHovered, label, onSortChange, sort, truncateEnabled]);
+  }, [
+    draggable,
+    id,
+    isDraggingOver,
+    isHovered,
+    label,
+    onSortChange,
+    sort,
+    truncateEnabled,
+  ]);
 
   if (!draggable)
     return (

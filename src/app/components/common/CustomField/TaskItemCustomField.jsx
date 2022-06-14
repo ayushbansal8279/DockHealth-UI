@@ -6,6 +6,7 @@ import TaskItemDropdown from 'components/task/StandardTaskItem/customFieldsTaskI
 import TaskItemText from 'components/task/StandardTaskItem/customFieldsTaskItemComponents/TaskItemText/TaskItemText';
 import TaskItemLongText from 'components/task/StandardTaskItem/customFieldsTaskItemComponents/TaskItemLongText/TaskItemLongText';
 import TaskItemNumber from 'components/task/StandardTaskItem/customFieldsTaskItemComponents/TaskItemNumber/TaskItemNumber';
+
 import { updatePartialWorkflow } from 'actions/task-template-actions';
 import { partialUpdateTask, storeAsCurrentTask } from 'actions/task-actions';
 import { TaskItemType } from 'helpers/task-helpers';
@@ -15,6 +16,8 @@ import { updatePatientDetails } from 'actions/patient-details-actions';
 import TaskItemMultiDropdown from 'components/task/StandardTaskItem/customFieldsTaskItemComponents/TaskItemMultiDropdown/TaskItemMultiDropdown';
 import { isNotEmptyArray } from 'helpers/utils-helpers';
 import { createMetaDataObjectToSend } from 'helpers/custom-fields-helpers';
+import { StyledHyperLink } from 'components/auth/AuthComponents.styled';
+import { trunc } from 'helpers/utility-functions';
 
 const TaskItemCustomField = ({
   readOnly,
@@ -147,6 +150,15 @@ const TaskItemCustomField = ({
           onChange={handleChange}
           field={field}
         />
+      );
+    case FieldType.HYPERLINK:
+      return (
+        <StyledHyperLink
+          href={value?.startsWith('http') ? value : `//${value}`}
+          target="_blank"
+        >
+          {trunc(value, 15)}
+        </StyledHyperLink>
       );
     default:
       return <div>{field.name}</div>;

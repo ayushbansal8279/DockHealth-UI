@@ -13,6 +13,7 @@ import {
   duplicateTask,
   openQuickAddSubtask,
   moveTask,
+  markTaskAsRead,
 } from 'actions/task-actions';
 import { openModal, closeModal } from 'modal/actions';
 import { getTasksGroupsList } from 'actions/list-details-actions';
@@ -173,6 +174,10 @@ const TaskItemContextMenu = ({
     dispatch(openModal('DeleteTaskConfirmation', modalProps));
   }, []);
 
+  const handleMarkAsRead = useCallback(() => {
+    dispatch(markTaskAsRead(task.taskIdentifier));
+  }, []);
+
   const handleMoveTask = useCallback(() => {
     const hasSubtasks = task.subTasksCount !== 0;
 
@@ -286,6 +291,17 @@ const TaskItemContextMenu = ({
           <li>
             <MenuItemButton type="button" onClick={handleMoveGroupTask}>
               Move to group
+            </MenuItemButton>
+          </li>
+        )}
+        {!task.read && !isTemplateTask && !isBundleTask && (
+          <li>
+            <MenuItemButton
+              tabIndex="0"
+              type="button"
+              onClick={handleMarkAsRead}
+            >
+              Mark as read
             </MenuItemButton>
           </li>
         )}
