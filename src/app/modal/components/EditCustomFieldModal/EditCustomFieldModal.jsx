@@ -138,7 +138,10 @@ const EditCustomFieldModal = ({
 
   useEffect(() => {
     if (isCreatingNewField) {
-      if (fieldTypeValue === FieldType.DROPDOWN) {
+      if (
+        fieldTypeValue === FieldType.DROPDOWN ||
+        fieldTypeValue === FieldType.DROPDOWN_MULTI
+      ) {
         setValue('options', [
           {
             identifier: optionsValue?.length || 0,
@@ -311,13 +314,15 @@ const EditCustomFieldModal = ({
                                 }
                               />
                               <Box m={2} />
-                              <ColorPicker
-                                name={`selectOptionColor[${identifier}]`}
-                                value={color}
-                                onChange={partial(handleOptionColorChange, [
-                                  identifier,
-                                ])}
-                              />
+                              {fieldTypeValue === FieldType.DROPDOWN && (
+                                <ColorPicker
+                                  name={`selectOptionColor[${identifier}]`}
+                                  value={color}
+                                  onChange={partial(handleOptionColorChange, [
+                                    identifier,
+                                  ])}
+                                />
+                              )}
                             </Grid>
                           );
                         })}

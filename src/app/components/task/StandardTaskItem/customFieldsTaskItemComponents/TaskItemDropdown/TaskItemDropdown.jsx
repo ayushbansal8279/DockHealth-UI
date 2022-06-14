@@ -1,7 +1,6 @@
 /* eslint-disable import/extensions */
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { AddPlaceholder } from 'components/task/styled';
-import { Box } from '@material-ui/core';
 import {
   ColorIndicator,
   DropdownBox,

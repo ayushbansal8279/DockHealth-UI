@@ -18,6 +18,7 @@ import {
   isFetchingPatientSelector,
 } from 'selectors/patient-details-selectors';
 import TextTypeHeader from 'components/common/TextTypeHeader/TextTypeHeader';
+import { FieldType } from 'helpers/field-type-helpers';
 import PatientDetailsDrawer from '../PatientDetailsDrawer/PatientDetailsDrawer';
 import PatientDetailsLoader from '../PatientDetailsLoader/PatientDetailsLoader';
 import {
@@ -190,29 +191,52 @@ const PatientDetailsHeader = () => {
                   <PatientInfoDivider />
                 </>
               )}
-              {patient?.patientMetaData?.map(
-                ({ customFieldName, displayName, value, displayOptions }) => (
-                  <>
-                    {displayOptions?.includes('PATIENT_HEADER') && value && (
-                      <>
+              {patient?.patientMetaData
+                ?.filter(
+                  meta =>
+                    meta.displayOptions?.includes('PATIENT_HEADER') &&
+                    (meta.value || meta.displayNames),
+                )
+                .map(
+                  ({
+                    customFieldName,
+                    displayName,
+                    value,
+                    displayNames,
+                    fieldType,
+                    customFieldIdentifier,
+                  }) => {
+                    return (
+                      <React.Fragment key={customFieldIdentifier}>
                         <PatientInfo>
                           <Typography>{customFieldName}: </Typography>
                           <Box ml={1} />
-                          <TextTypeHeader text={displayName || value} />
+                          {fieldType === FieldType.DROPDOWN_MULTI ? (
+                            <TextTypeHeader
+                              text={displayNames?.join(',') || ''}
+                            />
+                          ) : (
+                            <TextTypeHeader text={displayName || value} />
+                          )}
                         </PatientInfo>
                         <PatientInfoDivider />
-                      </>
-                    )}
-                  </>
-                ),
-              )}
+                      </React.Fragment>
+                    );
+                  },
+                )}
             </PatientDetailsInformation>
           </PatientDetails>
           <PatientDetails>
             <PatientDetailsInformation>
               {patient?.patientMetaData?.map(
-                ({ customFieldName, displayName, value, contextType }) => (
-                  <>
+                ({
+                  customFieldName,
+                  displayName,
+                  value,
+                  contextType,
+                  customFieldIdentifier,
+                }) => (
+                  <React.Fragment key={customFieldIdentifier}>
                     {contextType === 'PREDEFINED' && value && (
                       <>
                         <PatientInfo>
@@ -221,7 +245,7 @@ const PatientDetailsHeader = () => {
                         <PatientInfoDivider />
                       </>
                     )}
-                  </>
+                  </React.Fragment>
                 ),
               )}
             </PatientDetailsInformation>
