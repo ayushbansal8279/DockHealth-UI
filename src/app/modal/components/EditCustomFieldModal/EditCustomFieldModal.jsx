@@ -249,14 +249,15 @@ const EditCustomFieldModal = ({
                         label="Field label name"
                       />
                     </Grid>
-                    {fieldTypeValue !== FieldType.DATE && (
-                      <Grid item xs={12}>
-                        <FormInput
-                          name="placeholder"
-                          label="Field label placeholder"
-                        />
-                      </Grid>
-                    )}
+                    {fieldTypeValue !== FieldType.DATE &&
+                      fieldTypeValue !== FieldType.HYPERLINK && (
+                        <Grid item xs={12}>
+                          <FormInput
+                            name="placeholder"
+                            label="Field label placeholder"
+                          />
+                        </Grid>
+                      )}
                     <Grid item xs={6}>
                       <FormSelect
                         readOnly={!!customField}

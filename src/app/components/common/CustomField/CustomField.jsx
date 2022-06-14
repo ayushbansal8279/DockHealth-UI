@@ -184,6 +184,23 @@ const CustomField = ({
           </Box>
         );
       }
+      case FieldType.HYPERLINK:
+        return (
+          <CustomFieldTextEditor
+            identifier={identifier}
+            readOnly={readOnly}
+            label={name}
+            name={fieldName}
+            onBlur={handleBlur}
+            inputRef={inputReference}
+            taskIdentifier={taskIdentifier}
+            task={task}
+            fieldsGroupKey={fieldsGroupKey}
+            ref={componentReference}
+            onChange={() => setWasChanged(true)}
+          />
+        );
+
       default:
         return <div>{field.name}</div>;
     }
