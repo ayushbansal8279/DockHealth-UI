@@ -32,6 +32,7 @@ import moment from 'moment';
 import { useBoolean } from 'hooks/useBoolean';
 import CategoryOptions from 'components/common/CategoryOptions/CategoryOptions';
 import * as patientsApi from 'api/patients-api';
+import { FieldType } from 'helpers/field-type-helpers';
 import { formatMetaDataOutput, GENDER_OPTIONS_BIRTH } from './helpers';
 import { HidableContainer } from './styled';
 
@@ -104,25 +105,40 @@ const PatientForm = forwardRef(
 
     const renderCustomField = useCallback(
       (field, index, showEmpty = true) => {
-        const initialFieldValue = patient?.patientMetaData?.find(
+        const patientCustomField = patient?.patientMetaData?.find(
           ({ customFieldIdentifier }) =>
             field.identifier === customFieldIdentifier,
         );
-        return (
+
+        return field.fieldType === FieldType.DROPDOWN_MULTI ? (
           <HidableContainer
             key={field.identifier}
-            visibility={!showEmpty && !initialFieldValue?.value}
+            visibility={!showEmpty && !patientCustomField?.values}
           >
             {index !== 0 && <Spacing vertical={3} />}
             <CustomField
               readOnly={!edited}
               field={field}
-              initialValue={initialFieldValue}
+              initialValue={patientCustomField?.values}
+              fieldsGroupKey="patientMetaData"
+            />
+          </HidableContainer>
+        ) : (
+          <HidableContainer
+            key={field.identifier}
+            visibility={!showEmpty && !patientCustomField?.value}
+          >
+            {index !== 0 && <Spacing vertical={3} />}
+            <CustomField
+              readOnly={!edited}
+              field={field}
+              initialValue={patientCustomField?.value}
               fieldsGroupKey="patientMetaData"
             />
           </HidableContainer>
         );
       },
+
       [patient, edited],
     );
 

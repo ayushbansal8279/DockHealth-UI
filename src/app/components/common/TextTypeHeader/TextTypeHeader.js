@@ -12,7 +12,6 @@ const TextTypeHeader = ({ text }) => {
       handleRichText: false,
     }),
   );
-
   useEffect(() => {
     if (descriptionState.getCurrentContent().getPlainText() !== text) {
       setDescriptionState(
