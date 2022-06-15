@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-expressions */
 /* eslint-disable sonarjs/cognitive-complexity */
 import React, { useRef, useEffect, useState, useCallback } from 'react';
 import { useHistory } from 'react-router-dom';
@@ -7,7 +8,7 @@ import Spacing from 'components/common/Spacing';
 import OnboardingIndicator from 'components/common/OnboardingIndicator/OnboardingIndicator';
 import { FormProvider, useForm, useFieldArray } from 'react-hook-form';
 import { object, string, array } from 'yup';
-import { yupResolver } from "@hookform/resolvers/yup";
+import { yupResolver } from '@hookform/resolvers/yup';
 import { Grid } from '@material-ui/core';
 import { checkBAASignedStatus } from 'actions/organization-actions';
 import { openModal } from 'modal/actions';
@@ -156,13 +157,13 @@ const OnboardingTeamSetupView = () => {
 
   useEffect(() => {
     if (lastFirstNameFieldReference) {
-      lastFirstNameFieldReference.focus();
+      lastFirstNameFieldReference?.focus();
     }
   }, [lastFirstNameFieldReference]);
 
   useEffect(() => {
     if (firstFirstNameFieldReference.current) {
-      firstFirstNameFieldReference.current.focus();
+      firstFirstNameFieldReference.current?.focus();
     }
   }, [firstFirstNameFieldReference]);
 
@@ -244,7 +245,6 @@ const OnboardingTeamSetupView = () => {
                   <Grid item xs={3}>
                     <Input
                       inputRef={element => {
-                        register(element);
                         if (!firstFirstNameFieldReference.current) {
                           firstFirstNameFieldReference.current = element;
                         }
@@ -261,11 +261,13 @@ const OnboardingTeamSetupView = () => {
                         errors?.organizationMembers?.[item.index]?.firstName
                           ?.message
                       }
+                      {...register(
+                        `organizationMembers[${item.index}].firstName`,
+                      )}
                     />
                   </Grid>
                   <Grid item xs={3}>
                     <Input
-                      inputRef={register}
                       name={`organizationMembers[${item.index}].lastName`}
                       label="Last name"
                       required
@@ -274,11 +276,13 @@ const OnboardingTeamSetupView = () => {
                         errors?.organizationMembers?.[item.index]?.lastName
                           ?.message
                       }
+                      {...register(
+                        `organizationMembers[${item.index}].lastName`,
+                      )}
                     />
                   </Grid>
                   <Grid item xs={fieldState ? 5 : 6}>
                     <Input
-                      inputRef={register}
                       type="text"
                       name={`organizationMembers[${item.index}].email`}
                       label="Email"
@@ -288,6 +292,7 @@ const OnboardingTeamSetupView = () => {
                         errors?.organizationMembers?.[item.index]?.email
                           ?.message
                       }
+                      {...register(`organizationMembers[${item.index}].email`)}
                     />
                   </Grid>
                   {fieldState && (
@@ -307,9 +312,9 @@ const OnboardingTeamSetupView = () => {
                   )}
                 </Grid>
                 <input
-                  ref={register}
                   name={`organizationMembers[${item.index}].index`}
                   type="hidden"
+                  {...register(`organizationMembers[${item.index}].index`)}
                 />
               </div>
             );
