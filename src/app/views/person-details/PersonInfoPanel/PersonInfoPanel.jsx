@@ -1,13 +1,9 @@
 import React from 'react';
-import { useSelector, useDispatch } from 'react-redux';
+import { useSelector } from 'react-redux';
 import { useBoolean } from 'hooks/useBoolean';
-import { Link, useHistory } from 'react-router-dom';
-import { removeUserFromOrganization } from 'api/organization-api';
-import { openModal } from 'modal/actions';
-import { showGlobalErrorAlert } from 'alert/actions';
+import { Link } from 'react-router-dom';
 import UserAvatar from 'components/user/UserAvatar/UserAvatar';
 import ArrowLeftIcon from 'img/arrow-left';
-import { userProfileSelector } from 'selectors/user-selectors';
 import { userDetailsSelector } from 'selectors/person-details-selectors';
 import Spacing from 'components/common/Spacing';
 import { Box, Typography } from '@material-ui/core';
@@ -16,6 +12,8 @@ import EmailIcon from 'img/email-icon.svg';
 import PhoneIcon from 'img/phone-icon.svg';
 import MobileIcon from 'img/mobile-icon.svg';
 import TextTypeHeader from 'components/common/TextTypeHeader/TextTypeHeader';
+import AccessRestrictor from 'components/access/AccessRestrictor/AccessRestrictor';
+import { UserOrganizationRole } from 'helpers/user-helper';
 import PersonInfoLoader from './PersonInfoLoader';
 import PersonDetailsDrawer from '../PersonDetailsDrawer/PersonDetailsDrawer';
 import {
@@ -29,8 +27,9 @@ import {
   CustomFieldsContainer,
 } from './styled';
 
+const { ADMIN, OWNER } = UserOrganizationRole;
+
 const PersonInfoPanel = () => {
-  const dispatch = useDispatch();
   const [isDrawerOpen, openDrawer, closeDrawer] = useBoolean(false);
   const userDetails = useSelector(userDetailsSelector);
   const {
@@ -38,36 +37,9 @@ const PersonInfoPanel = () => {
     email,
     firstName,
     lastName,
-    userIdentifier,
     workPhoneNumber,
     userMetaData,
   } = userDetails || {};
-  const history = useHistory();
-
-  const { orgUserRole } = useSelector(userProfileSelector);
-
-  const isAdminOrOwner = orgUserRole === 'ADMIN' || orgUserRole === 'OWNER';
-
-  const handleArchiveUser = () => {
-    dispatch(
-      openModal('ArchivePerson', {
-        confirm: () => {
-          removeUserFromOrganization(userIdentifier)
-            .then(() => {
-              history.push('/people');
-            })
-            .catch(error => {
-              dispatch(
-                showGlobalErrorAlert(
-                  error?.errorMessage ??
-                    'Could not archive this person, please try again later',
-                ),
-              );
-            });
-        },
-      }),
-    );
-  };
 
   return (
     <>
@@ -91,17 +63,13 @@ const PersonInfoPanel = () => {
                   showOnlineIndicator={false}
                 />
                 <PersonTitle>{`${firstName} ${lastName}`}</PersonTitle>
-                {isAdminOrOwner && userIdentifier && (
+                <AccessRestrictor allowedToRoles={[ADMIN, OWNER]}>
                   <Box ml={2} display="flex">
-                    <HeaderActionButton onClick={handleArchiveUser}>
-                      Archive this person
-                    </HeaderActionButton>
-                    <Box mx={1} />
                     <HeaderActionButton onClick={openDrawer}>
                       View details
                     </HeaderActionButton>
                   </Box>
-                )}
+                </AccessRestrictor>
               </Box>
               <ContactContainer>
                 {email && (

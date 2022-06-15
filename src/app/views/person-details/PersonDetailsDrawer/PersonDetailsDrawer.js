@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useMemo } from 'react';
+import React, { useEffect, useRef, useMemo, useCallback } from 'react';
 import { useBoolean } from 'hooks/useBoolean';
 import { userProfileSelector } from 'selectors/user-selectors';
 import { useDispatch, useSelector } from 'react-redux';
@@ -10,8 +10,12 @@ import { IconButton } from '@material-ui/core';
 import CloseIcon from '@material-ui/icons/Close';
 import MoreVertIcon from '@material-ui/icons/MoreVert';
 import OptionsMenu from 'components/common/OptionsMenu/OptionsMenu';
-import { validationSchema } from './helpers';
+import { useHistory } from 'react-router-dom';
+import { removeUserFromOrganization } from 'api/organization-api';
+import { showGlobalErrorAlert } from 'alert/actions';
+import { UserOrganizationRole } from 'helpers/user-helper';
 import PersonForm from '../PersonForm/PersonForm';
+import { validationSchema } from './helpers';
 import {
   DrawerWrapper,
   ContentWrapper,
@@ -20,10 +24,14 @@ import {
   MoreActionsWrapper,
 } from './styled';
 
+const { ADMIN, OWNER } = UserOrganizationRole;
+
 const PersonDetailsDrawer = ({ user, isOpenedDetails, closeDrawer }) => {
   const dispatch = useDispatch();
+  const history = useHistory();
   const userProfile = useSelector(userProfileSelector);
-  const isAdmin = userProfile?.orgUserRole === 'ADMIN';
+  const isAdminOrOwner =
+    userProfile.orgUserRole === ADMIN || userProfile.orgUserRole === OWNER;
   const [isActive, setActive, unsetActive] = useBoolean(false);
   const {
     firstName,
@@ -93,14 +101,38 @@ const PersonDetailsDrawer = ({ user, isOpenedDetails, closeDrawer }) => {
     );
   };
 
+  const handleArchiveUser = useCallback(() => {
+    dispatch(
+      openModal('ArchivePerson', {
+        confirm: () => {
+          removeUserFromOrganization(userIdentifier)
+            .then(() => {
+              history.push('/people');
+            })
+            .catch(error => {
+              dispatch(
+                showGlobalErrorAlert(
+                  error?.errorMessage ??
+                    'Could not archive this person, please try again later',
+                ),
+              );
+            });
+        },
+      }),
+    );
+  }, [dispatch, history, userIdentifier]);
   const contextMenuOptions = useMemo(
     () => [
-      isAdmin && {
+      isAdminOrOwner && {
         name: 'Edit',
         onClick: setActive,
       },
+      isAdminOrOwner && {
+        name: 'Archive',
+        onClick: handleArchiveUser,
+      },
     ],
-    [isAdmin, setActive],
+    [handleArchiveUser, isAdminOrOwner, setActive],
   );
 
   return (
@@ -113,7 +145,7 @@ const PersonDetailsDrawer = ({ user, isOpenedDetails, closeDrawer }) => {
         <StickyHeader>
           <TitleName>{`${lastName}, ${firstName}`}</TitleName>
           <MoreActionsWrapper>
-            {isAdmin && (
+            {isAdminOrOwner && (
               <OptionsMenu
                 options={contextMenuOptions}
                 customButtonComponent={IconButton}
