@@ -157,7 +157,7 @@ const OnboardingTeamSetupView = () => {
 
   useEffect(() => {
     if (lastFirstNameFieldReference) {
-      lastFirstNameFieldReference?.focus();
+      lastFirstNameFieldReference.current?.focus();
     }
   }, [lastFirstNameFieldReference]);
 
