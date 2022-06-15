@@ -1,14 +1,16 @@
 /* eslint-disable sonarjs/cognitive-complexity */
-import React, { useRef, useEffect } from 'react';
+import React, { useRef, useEffect, useState } from 'react';
 
+import { isNumber } from '@material-ui/data-grid';
 import { PatientWidgetsWrapper } from './styled';
 import initializeWidgetSectionHooks from './hooks';
-import { isNumber } from '@material-ui/data-grid';
 
 // import ImportWidgetScript from 'components/common/ImportWidgetScript/ImportWidgetScript';
 
 const PatientWidget = ({ url, height, width }) => {
   const { userProfile, patient } = initializeWidgetSectionHooks();
+
+  const [widgetReady, setWidgetReady] = useState(false);
 
   // var widgetScript = ImportWidgetScript(
   //   'script/dockhealth-widget-sdk-internal.js',
@@ -26,6 +28,7 @@ const PatientWidget = ({ url, height, width }) => {
 
   const handleOnReady = parameters => {
     console.log(`handleOnReady: ${JSON.stringify(parameters, null, 2)}`);
+    setWidgetReady(true);
   };
 
   const handleOnNavigate = location => {
@@ -54,20 +57,40 @@ const PatientWidget = ({ url, height, width }) => {
     sdk.current.onNavigate(handleOnNavigate);
   }, [widgetDomain]);
 
-  setTimeout(() => {
-    if (userProfile?.userIdentifier) {
-      sdk.current.fireStateChanged({
-        name: 'userIdentifier',
-        value: userProfile?.userIdentifier,
-      });
+  useEffect(() => {
+    if (widgetReady) {
+      console.log(
+        'firing state change for userIdentifier and patientIdentifier',
+      );
+      if (userProfile?.userIdentifier) {
+        sdk.current.fireStateChanged({
+          name: 'userIdentifier',
+          value: userProfile?.userIdentifier,
+        });
+      }
+      if (patient?.patientIdentifier) {
+        sdk.current.fireStateChanged({
+          name: 'patientIdentifier',
+          value: patient?.patientIdentifier,
+        });
+      }
     }
-    if (patient?.patientIdentifier) {
-      sdk.current.fireStateChanged({
-        name: 'patientIdentifier',
-        value: patient?.patientIdentifier,
-      });
-    }
-  }, 1000);
+  }, [patient, userProfile, widgetReady]);
+
+  // setTimeout(() => {
+  //   if (userProfile?.userIdentifier) {
+  //     sdk.current.fireStateChanged({
+  //       name: 'userIdentifier',
+  //       value: userProfile?.userIdentifier,
+  //     });
+  //   }
+  //   if (patient?.patientIdentifier) {
+  //     sdk.current.fireStateChanged({
+  //       name: 'patientIdentifier',
+  //       value: patient?.patientIdentifier,
+  //     });
+  //   }
+  // }, 1000);
 
   return (
     <PatientWidgetsWrapper>
