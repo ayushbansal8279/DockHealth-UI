@@ -1,3 +1,4 @@
+/* eslint-disable import/no-cycle */
 /* eslint-disable import/extensions */
 /* eslint-disable sonarjs/cognitive-complexity */
 import React, { useMemo, useState, useEffect, useRef } from 'react';
@@ -5,7 +6,7 @@ import { useSelector } from 'react-redux';
 import { descend, prop } from 'ramda';
 import moment from 'moment';
 import { Box, Popper, Typography } from '@material-ui/core';
-import { Link } from 'react-router-dom';
+import { Link, useLocation } from 'react-router-dom';
 import * as PatientApi from 'api/patient-api';
 import useBooleanWithTimeout from 'hooks/use-boolean-with-timeout';
 import Spacing from 'components/common/Spacing';
@@ -14,8 +15,6 @@ import {
   getCustomerUniqueIDShortLabel,
 } from 'helpers/customer-type-helper';
 import { organizationSelector } from 'selectors/organization-selectors';
-// eslint-disable-next-line import/no-cycle
-import { useLocation } from 'react-router-dom';
 import TextTypeHeader from 'components/common/TextTypeHeader/TextTypeHeader';
 import {
   PatientCardContainer,
@@ -27,19 +26,14 @@ import {
   Divider,
   PatientInfo,
   InfoItem,
-  PatientNote,
-  NoteDivider,
   NotesTitle,
-  NoteDescription,
-  NoteInfo,
   PatientCellWrapper,
   PatientMRNAnchor,
   CustomFieldPatientInfo,
-  PatientNotesWrapper,
-  PinnedNotesWrapper,
 } from './styled';
 import PatientCardDetailsLoader from './PatientCardDetailsLoader';
 import PatientCardNotesLoader from './PatientCardNotesLoader';
+import PatientCardNote from './PatientCardNote';
 
 const renderPatientNotes = (
   unpinnedNotes,
@@ -54,49 +48,18 @@ const renderPatientNotes = (
   const unpinnedSorted = unpinnedNotes?.sort(descend(prop('dateUpdated')));
   const notes = [...(pinnedSorted ?? []), ...(unpinnedSorted ?? [])];
 
-  const renderNoteDescription = (description, dateUpdated) => {
-    return (
-      <>
-        <NoteDescription>{description || <br />}</NoteDescription>
-        <NoteInfo>
-          {patientName} {moment(dateUpdated).format('h:mma M/DD/YY')}
-        </NoteInfo>
-      </>
-    );
-  };
-
-  const renderNote = ({ description, dateUpdated, pinned }, index) => {
-    return (
-      <PatientNote>
-        {index !== 0 && (
-          <>
-            <Spacing vertical={2} />
-            <NoteDivider />
-            <Spacing vertical={1} />
-          </>
-        )}
-        {pinned && (
-          <PinnedNotesWrapper>
-            {renderNoteDescription(description, dateUpdated)}
-          </PinnedNotesWrapper>
-        )}
-        {!pinned && (
-          <PatientNotesWrapper>
-            {renderNoteDescription(description, dateUpdated)}
-          </PatientNotesWrapper>
-        )}
-      </PatientNote>
-    );
-  };
-
   return notes?.length > 0 ? (
     <>
       <Divider />
       <PatientNotesSection>
         <NotesTitle>Notes</NotesTitle>
-        {notes.map(note => {
-          return renderNote(note);
-        })}
+        {notes.map((note, index) => (
+          <PatientCardNote
+            note={note}
+            patientName={patientName}
+            index={index}
+          />
+        ))}
       </PatientNotesSection>
     </>
   ) : null;
