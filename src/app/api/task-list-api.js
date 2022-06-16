@@ -356,3 +356,9 @@ export function updateUserCustomFieldsOptionsListViewSetup(
     })
     .then(({ data }) => data);
 }
+
+export function sortTasksListsForUser(sortedTaskLists) {
+  return axios
+    .put(`/list/sortTaskListsForUser`, { taskListIdentifiers: sortedTaskLists })
+    .then(({ data }) => data);
+}
