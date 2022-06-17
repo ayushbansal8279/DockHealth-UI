@@ -25,6 +25,7 @@ import PeopleIcon from 'img/navigation/PeopleIcon';
 import PatientsIcon from 'img/navigation/PatientsIcon';
 import SettingsIcon from 'img/navigation/SettingsIcon';
 import TemplatesIcon from 'img/navigation/TemplatesIcon';
+import ChatIcon from '@mui/icons-material/Chat';
 import EducationCenterIcon from 'img/navigation/EducationCenterIcon';
 import DockcoinIconImage from 'img/navigation/dock-coin-icon.svg';
 import UserAvatar from 'components/user/UserAvatar/UserAvatar';
@@ -254,7 +255,7 @@ const NavigationSidebar = () => {
             <AccessRestrictor allowedToRoles={[ADMIN, OWNER, MEMBER]}>
               <IconNavigationItem
                 name="Messenger"
-                icon={PeopleIcon}
+                icon={ChatIcon}
                 path={MESSENGER_PATH}
                 onItemClick={handleNavigationItemClick}
               />

@@ -1,6 +1,7 @@
-import { Grid } from '@material-ui/core';
+import { Grid, IconButton, Popover } from '@material-ui/core';
 import queryString from 'query-string';
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useCallback } from 'react';
+import Draggable from 'react-draggable';
 import { isNil } from 'ramda';
 import { useDispatch, useSelector } from 'react-redux';
 import { Link, useParams, useLocation, useHistory } from 'react-router-dom';
@@ -22,6 +23,8 @@ import Spacing from 'components/common/Spacing';
 import Button from 'components/common/Button/Button';
 import LightbulbBig from 'img/lightbulb-big';
 import SearchInput from 'components/common/SearchInput/SearchInput';
+import ChatIcon from '@mui/icons-material/Chat';
+import GroupChannelContainer from 'views/messenger/group-channel/GroupChannelContainer';
 import UsersList from './UsersList/UsersList';
 import {
   ListLoaderContainer,
@@ -38,6 +41,21 @@ function UserGroupView() {
   const [isSearchFocused, setSearchFocused, unsetSearchFocused] = useBoolean(
     false,
   );
+  const [open, setOpen, unsetOpen] = useBoolean(false);
+
+  const [anchorElement, setAnchorElement] = useState(null);
+
+  const handleClick = event => {
+    setOpen();
+    setAnchorElement(event.currentTarget);
+  };
+
+  const handleClose = useCallback(() => {
+    unsetOpen();
+    setAnchorElement(null);
+  }, [unsetOpen]);
+
+  const id = open ? 'simple-popover' : undefined;
 
   const { groupIdentifier: groupIdentifierUrlParameter } = useParams();
   const history = useHistory();
@@ -97,6 +115,38 @@ function UserGroupView() {
                   onBlur={unsetSearchFocused}
                 />
               </SearchInputWrapper>
+            </Grid>
+            <Grid container xs={8} xl={8} md={8} lg={8} justify="center">
+              <IconButton
+                aria-describedby={id}
+                variant="contained"
+                onClick={handleClick}
+              >
+                <ChatIcon />
+              </IconButton>
+              {/* make class handle */}
+              <Draggable handle=".handle">
+                <Popover
+                  id={id}
+                  open={open}
+                  anchorEl={anchorElement}
+                  anchorOrigin={{
+                    vertical: 'top',
+                    horizontal: 'left',
+                  }}
+                  transformOrigin={{
+                    vertical: 'top',
+                    horizontal: 'left',
+                  }}
+                  onClose={handleClose}
+                >
+                  <GroupChannelContainer
+                    identifier={currentUser.identifier}
+                    name={currentUser.name}
+                    channelUrl="sendbird_group_channel_140571109_e686fc399df276dcda6e240337836d33c4c79397"
+                  />
+                </Popover>
+              </Draggable>
             </Grid>
           </Grid>
         </PageContentHeader>
