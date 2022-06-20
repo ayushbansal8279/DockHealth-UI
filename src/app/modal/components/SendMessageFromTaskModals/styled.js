@@ -1,6 +1,12 @@
 import styled from 'styled-components';
 import palette from 'styles/palette';
 
+export const TextEditorContainerStyled = styled.div`
+  margin-top: 1.5rem;
+  width: 100%;
+  background: #f7fafb;
+`;
+
 export const InfoHeaderAttachmentsTextStyled = styled.p`
   color: ${palette.coolGrey1};
   width: 100%;

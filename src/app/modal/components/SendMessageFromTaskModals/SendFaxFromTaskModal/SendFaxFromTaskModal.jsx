@@ -1,5 +1,8 @@
 import Input from 'components/common/Input/Input';
 import InputMask from 'react-input-mask';
+import TextEditor from 'components/common/TextEditor/TextEditor';
+import { EditorState } from 'draft-js';
+import CustomTextEditor from 'components/task-drawer/CustomTextEditor/CustomTextEditor';
 import React, { useCallback, useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { sendFaxForTask } from 'actions/task-actions';
@@ -24,12 +27,13 @@ import {
   AttachmentsContainerStyled,
   InfoHeaderAttachmentsTextStyled,
   InputContainerStyled,
+  TextEditorContainerStyled,
 } from '../styled';
 
 const SendFaxFromTaskModal = () => {
   const dispatch = useDispatch();
   const [faxNumber, setFaxNumber] = useState('___-___-____');
-  const [message, setMessage] = useState('');
+  const [message, setMessage] = useState(() => EditorState.createEmpty());
   const [faxError, setFaxError] = useState(false);
   const [isInvalidToSend, setIsInvalidToSend] = useState(true);
   const selectedTask = useSelector(selectedTaskSelector);
@@ -102,12 +106,18 @@ const SendFaxFromTaskModal = () => {
               />
             )}
           </InputMask>
-          <Input
-            multiline
-            placeholder="type message"
-            value={message}
-            onChange={event => setMessage(event.target.value)}
-          />
+          <TextEditorContainerStyled>
+            <CustomTextEditor label="Fax body">
+              <TextEditor
+                readOnly={false}
+                minHeight={100}
+                disableMentions
+                showToolbar
+                state={message}
+                onChange={setMessage}
+              />
+            </CustomTextEditor>
+          </TextEditorContainerStyled>
           {validAttachments?.length > 0 && (
             <>
               <InfoHeaderAttachmentsTextStyled>
