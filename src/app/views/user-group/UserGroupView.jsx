@@ -131,12 +131,12 @@ function UserGroupView() {
                   open={open}
                   anchorEl={anchorElement}
                   anchorOrigin={{
-                    vertical: 'top',
+                    vertical: 'bottom',
                     horizontal: 'left',
                   }}
                   transformOrigin={{
                     vertical: 'top',
-                    horizontal: 'left',
+                    horizontal: 'right',
                   }}
                   onClose={handleClose}
                 >
