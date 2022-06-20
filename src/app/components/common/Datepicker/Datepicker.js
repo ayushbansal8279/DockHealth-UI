@@ -30,6 +30,8 @@ const Datepicker = ({
   const [currentMonthMoment, setCurrentMonthMoment] = useState(null);
 
   const momentSelectedDate = selectedDate ? moment(selectedDate) : null;
+  const currentDay = moment();
+  const currentDayString = currentDay.format('YYYY-MM-DD');
 
   useMount(() => {
     setCurrentMonthMoment(
@@ -65,10 +67,11 @@ const Datepicker = ({
         minDate,
         maxDate,
         showRange,
+        currentDay,
       }),
     // useEffect work better for primitive values (like strings in here)
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    [formattedCurrentMonth, selectedDate],
+    [formattedCurrentMonth, selectedDate, currentDayString],
   );
 
   const setNextMonth = () =>
