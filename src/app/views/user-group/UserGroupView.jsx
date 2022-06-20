@@ -116,7 +116,7 @@ function UserGroupView() {
                 />
               </SearchInputWrapper>
             </Grid>
-            <Grid container xs={8} xl={8} md={8} lg={8} justify="center">
+            <Grid container xs={8} xl={8} md={8} lg={8} justify="flex-end">
               <IconButton
                 aria-describedby={id}
                 variant="contained"
