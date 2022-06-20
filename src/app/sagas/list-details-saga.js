@@ -1,3 +1,4 @@
+/* eslint-disable no-console */
 import R, {
   isEmpty,
   move,
@@ -61,7 +62,6 @@ import { onSortChanged, onSearchChanged } from 'helpers/ga-event-helper';
 import { openModal } from 'modal/actions';
 import { applyTaskTemplate as applyTaskTemplateAction } from 'actions/list-details-actions';
 import * as CustomFieldsApi from 'api/custom-fields-api';
-import * as TaskListApi from 'api/task-list-api';
 import store from '../store';
 
 export const DO_CREATE_TASK = 'DO_CREATE_TASK';
@@ -714,23 +714,6 @@ function* getListCustomFields({ taskListIdentifier }) {
   }
 }
 
-function* updateListCustomFieldsSetup({ setup }) {
-  try {
-    const { taskListIdentifier } = yield select(locationParametersSelector);
-    yield call(
-      TaskListApi.updateUserCustomFieldsOptionsListViewSetup,
-      setup,
-      taskListIdentifier,
-    );
-    yield put({
-      type: ActionTypes.UPDATE_CUSTOM_LIST_FIELDS_SETUP_SUCCESS,
-    });
-  } catch {
-    yield put(showGlobalErrorAlert());
-    yield put({ type: ActionTypes.UPDATE_CUSTOM_LIST_FIELDS_SETUP_FAILURE });
-  }
-}
-
 function* taskCounterIncreaseWatcher({ task }) {
   const currentTaskList = yield select(currentTaskListSelector);
   if (currentTaskList) {
@@ -878,10 +861,7 @@ export default function* watchTasksGroupsList() {
     ActionTypes.SEARCH_CURRENT_LIST_TASKS,
     searchCurrentListTasks,
   );
-  yield takeEvery(
-    ActionTypes.UPDATE_CUSTOM_LIST_FIELDS_SETUP,
-    updateListCustomFieldsSetup,
-  );
+
   yield takeEvery(ActionTypes.DELETE_TASK_LIST_GROUP, deleteTaskListGroup);
   yield takeEvery(
     ActionTypes.CHANGE_TASK_LIST_GROUP_NAME,

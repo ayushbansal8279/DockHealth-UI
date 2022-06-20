@@ -22,7 +22,7 @@ import TaskCustomFieldsModal from '../../../modal/customModals/TaskCustomFieldsM
 
 const TASKS_VISIBILITY_KEY = 'SHOW_WORKFLOW_COMPLETED_TASKS';
 
-const ListDetailsToolbar = ({ onColumnSetupChange, additionalOptions }) => {
+const ListDetailsToolbar = ({ additionalOptions }) => {
   const dispatch = useDispatch();
   const { search } = useLocation();
   const history = useHistory();
@@ -103,7 +103,6 @@ const ListDetailsToolbar = ({ onColumnSetupChange, additionalOptions }) => {
           <>
             <Box mx={0.5} />
             <CustomizeToolbarButton
-              onChange={onColumnSetupChange}
               openCustomFieldModal={() => setCustomFieldsModalOpened(true)}
               additionalOptions={additionalOptions}
             />

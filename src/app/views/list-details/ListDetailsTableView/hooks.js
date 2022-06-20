@@ -9,14 +9,7 @@ import useActions from 'hooks/use-actions';
 import usePrevious from 'hooks/use-previous';
 import { TaskListTabName } from 'helpers/tasklist-helpers';
 import localStorageHelper from 'helpers/local-storage-helper';
-import { TaskItemColumn } from 'helpers/task-helpers';
-import {
-  updateUserListViewSetup,
-  updateColumnOnListPreferences,
-  updateOrderColumnOnListPreferences,
-} from 'actions/task-list-actions';
-import { updateOrganizationCustomFields } from 'actions/organization-actions';
-
+import { updateUserListViewSetup } from 'actions/task-list-actions';
 import { checkIfTaskMatchesFilters } from 'helpers/filters-helpers';
 import { TASK_DISAPPEAR_DELAY } from 'helpers/task-update-helper';
 import {
@@ -38,13 +31,16 @@ import {
 } from 'selectors/task-list-selectors';
 import { userProfileSelector } from 'selectors/user-selectors';
 import { selectedFiltersInMegaFilterSelector } from 'selectors/mega-filter-selectors';
-
 import { useColumnsConfig } from 'context-api/columns-config-context';
 import * as TaskActions from 'actions/task-actions';
 import * as ListDetailsActions from 'actions/list-details-actions';
 import { createTask } from 'sagas/list-details-saga';
 import * as ModalActions from 'modal/actions';
 import * as UserAuthApi from 'api/user-auth-api';
+import {
+  TaskItemColumn,
+  TASK_ITEM_BASE_COLUMN_CONFIG,
+} from 'helpers/task-helpers';
 
 const LIST_DETAILS_FIRST_TIME_KEY = 'LIST_DETAILS_FIRST_TIME_KEY';
 
@@ -57,11 +53,7 @@ const initializeListDetailsViewHooks = () => {
   );
   const taskList = useSelector(currentTaskListSelector);
   const currentStatus = useSelector(currentTaskListTasksStatusSelector);
-  const {
-    columnsConfig,
-    setColumnsConfig,
-    setColumnsOrder,
-  } = useColumnsConfig();
+  const { setViewSpecificConfig, setCurrentList } = useColumnsConfig();
   const currentUser = useSelector(userProfileSelector);
   const { userIdentifier: currentUserIdentifier } = currentUser || {};
   const members = useSelector(taskListMembersSelector);
@@ -81,7 +73,6 @@ const initializeListDetailsViewHooks = () => {
 
   const [isTourOpen, setIsTourOpen] = useState(false);
   const [tourConditionChecked, setTourConditionChecked] = useState(false);
-  // const [searchValue, setSearchValue] = useState('');
   const searchValue = useSelector(searchTermSelector);
 
   const prevCurrentUser = usePrevious(currentUser);
@@ -450,6 +441,21 @@ const initializeListDetailsViewHooks = () => {
     SHOW_WORKFLOW_COMPLETED_TASKS: false,
   };
 
+  const PATIENT_SPECIFIC_LIST_VIEW_COLUMNS_CONFIG = {
+    ...TASK_ITEM_BASE_COLUMN_CONFIG,
+    [TaskItemColumn.PATIENT]: false,
+    [TaskItemColumn.LIST_NAME]: false,
+  };
+
+  useEffect(() => {
+    setViewSpecificConfig(PATIENT_SPECIFIC_LIST_VIEW_COLUMNS_CONFIG);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  useEffect(() => {
+    setCurrentList(taskList);
+  }, [setCurrentList, taskList]);
+
   const displayListPreferences = useMemo(() => {
     const { displayOptions = [] } =
       taskList?.listType === 'PUBLIC'
@@ -463,82 +469,6 @@ const initializeListDetailsViewHooks = () => {
       VIEW_LIST_OPTIONS_CONFIG,
     );
   }, [VIEW_LIST_OPTIONS_CONFIG, currentUserIdentifier, taskList]);
-
-  const setDisplayColumnPreferences = useCallback(
-    (newConfig, options) => {
-      if (options?.isCustomColumn) {
-        dispatch(
-          updateOrganizationCustomFields(
-            newConfig.filter(f => f.isChecked).map(f => f.identifier),
-          ),
-        );
-      } else {
-        const parsedConfig = Object.entries(newConfig).reduce(
-          (accumulator, [key, value]) =>
-            value ? [...accumulator, key] : accumulator,
-          [],
-        );
-        dispatch(
-          updateColumnOnListPreferences(
-            parsedConfig,
-            taskList.taskListIdentifier,
-            currentUserIdentifier,
-          ),
-        );
-      }
-    },
-    [currentUserIdentifier, dispatch, taskList],
-  );
-
-  const handleOrderChange = useCallback(
-    newConfig => {
-      dispatch(
-        updateOrderColumnOnListPreferences(
-          newConfig,
-          taskList.taskListIdentifier,
-          currentUserIdentifier,
-        ),
-      );
-    },
-    [currentUserIdentifier, dispatch, taskList],
-  );
-
-  const CONFIGURABLE_COLUMNS_CONFIG = {
-    [TaskItemColumn.WORKFLOW_STATUS]: false,
-    [TaskItemColumn.ASSIGNED]: false,
-    [TaskItemColumn.ACTIVITY]: false,
-    [TaskItemColumn.START_DATE]: false,
-    [TaskItemColumn.DUE_DATE]: false,
-    [TaskItemColumn.PATIENT]: false,
-  };
-
-  useEffect(() => {
-    const { displayColumns = [] } =
-      taskList?.listType === 'PUBLIC'
-        ? taskList
-        : taskList?.listUsers?.find(
-            user => user.identifier === currentUserIdentifier,
-          ) || {};
-
-    const transformedColumnsPreference = displayColumns.reduce(
-      (accumulator, value) => ({ ...accumulator, [value]: true }),
-      { ...columnsConfig, ...CONFIGURABLE_COLUMNS_CONFIG },
-    );
-    setColumnsConfig(transformedColumnsPreference);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [currentUserIdentifier, setColumnsConfig, taskList]);
-
-  useEffect(() => {
-    const { listDisplayColumns } =
-      taskList?.listType === 'PUBLIC'
-        ? taskList
-        : taskList?.listUsers?.find(
-            user => user.identifier === currentUserIdentifier,
-          ) || {};
-
-    if (listDisplayColumns) setColumnsOrder(listDisplayColumns);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [currentUserIdentifier, setColumnsOrder, taskList]);
 
   const setDisplayListPreferences = useCallback(
     columnKey => {
@@ -568,7 +498,6 @@ const initializeListDetailsViewHooks = () => {
   );
 
   return {
-    handleOrderChange,
     taskList,
     bulkEditIsDisabled,
     bulkEditTasks,
@@ -598,7 +527,6 @@ const initializeListDetailsViewHooks = () => {
     toggleTaskCompletedStatus,
     displayListPreferences,
     setDisplayListPreferences,
-    setDisplayColumnPreferences,
     refreshFilters,
     dispatch,
   };

@@ -1,4 +1,3 @@
-/* eslint-disable sonarjs/cognitive-complexity */
 import React, { useCallback, useMemo, useRef, useEffect } from 'react';
 import { isEmpty, pluck } from 'ramda';
 import { useDispatch, useSelector } from 'react-redux';
@@ -8,10 +7,7 @@ import {
   tasksSelector,
   sortSelector,
 } from 'selectors/person-details-selectors';
-import {
-  userProfileSelector,
-  userProfileDashboardPrefsSelector,
-} from 'selectors/user-selectors';
+import { userProfileSelector } from 'selectors/user-selectors';
 import { hasFiltersAppliedSelector } from 'selectors/mega-filter-selectors';
 import { addingNewSubtaskParentIdSelector } from 'selectors/task-drawer-selectors';
 import { openModal } from 'modal/actions';
@@ -51,7 +47,6 @@ const PersonDetailsOpenedTasks = ({
   onOrderChange,
 }) => {
   const dispatch = useDispatch();
-
   const userIdentifier = useSelector(userIdentifierSelector);
   const isFetchingTasks = useSelector(tasksIsFetchingSelector);
   const tasks = useSelector(tasksSelector);
@@ -61,30 +56,16 @@ const PersonDetailsOpenedTasks = ({
   const addingNewSubtaskParentId = useSelector(
     addingNewSubtaskParentIdSelector,
   );
-  const { columnsConfig, setColumnsConfig } = useColumnsConfig();
-  const userPreferColumns = useSelector(userProfileDashboardPrefsSelector);
-
-  useEffect(() => {
-    const config =
-      userPreferColumns?.reduce(
-        (accumulator, value) => ({ ...accumulator, [value]: true }),
-        taskItemConfig,
-      ) || {};
-    const customizedDashboardConfig = {
-      ...columnsConfig,
-      ...config,
-      ...taskItemConfig,
-    };
-    setColumnsConfig(customizedDashboardConfig);
-
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [setColumnsConfig, userPreferColumns]);
-
+  const { setViewSpecificConfig } = useColumnsConfig();
   const quickAddTaskInputReference = useRef(null);
   const filteredTasks = useMemo(
     () => (!searchValue ? tasks : filterTasksBySearchValue(tasks, searchValue)),
     [searchValue, tasks],
   );
+
+  useEffect(() => {
+    setViewSpecificConfig(taskItemConfig);
+  }, [setViewSpecificConfig, taskItemConfig]);
 
   const handleQuickAddTask = task => {
     dispatch(

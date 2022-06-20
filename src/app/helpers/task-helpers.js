@@ -172,6 +172,17 @@ export const TASK_ITEM_BASE_COLUMN_CONFIG = {
   [TaskItemColumn.DECISION_SELECT]: true,
 };
 
+export const SHOW_COLUMNS_CONFIG = {
+  [TaskItemColumn.WORKFLOW_STATUS]: true,
+  [TaskItemColumn.ASSIGNED]: true,
+  [TaskItemColumn.ACTIVITY]: true,
+  [TaskItemColumn.START_DATE]: true,
+  [TaskItemColumn.DUE_DATE]: true,
+  [TaskItemColumn.PATIENT]: true,
+  [TaskItemColumn.SUBTASKS_COUNT]: true,
+  [TaskItemColumn.LIST_NAME]: true,
+};
+
 export const TASK_ITEM_SORT_METHODS = {
   [TaskItemColumn.DESCRIPTION]: sortWith([
     ascend(pipe(prop('description'), defaultTo('~'), toLower)),
@@ -305,3 +316,5 @@ export function updateSubtasksInTaskWithCallback(
 
   return task;
 }
+export const isColumnChecked = (columns, columnName) =>
+  !!columns?.find(c => c.identifier === columnName)?.isChecked;

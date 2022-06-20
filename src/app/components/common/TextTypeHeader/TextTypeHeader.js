@@ -1,3 +1,5 @@
+/* eslint-disable import/no-cycle */
+/* eslint-disable import/no-named-as-default */
 import { Box } from '@material-ui/core';
 import { convertToEditorState } from 'components/common/TextEditor/helpers';
 import TextEditor from 'components/common/TextEditor/TextEditor';

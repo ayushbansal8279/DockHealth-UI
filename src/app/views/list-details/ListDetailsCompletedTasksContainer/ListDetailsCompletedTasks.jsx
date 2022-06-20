@@ -31,7 +31,6 @@ const ListDetailsCompletedTasks = ({
   sort,
   onSortChange,
   viewSetup,
-  onOrderChange,
   // eslint-disable-next-line sonarjs/cognitive-complexity
 }) => {
   const renderEmptyState = () => {
@@ -85,7 +84,6 @@ const ListDetailsCompletedTasks = ({
                 }}
                 sort={sort}
                 onSortChange={onSortChange}
-                onOrderChange={onOrderChange}
               >
                 {({
                   isLoadingGroup,

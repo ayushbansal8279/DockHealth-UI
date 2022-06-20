@@ -72,7 +72,6 @@ const TasksGroup = ({
   taskListIdentifier,
   sort,
   onSortChange,
-  onOrderChange,
   onTaskGroupViewModeChange,
   applyTemplate,
   groupPagination,
@@ -339,7 +338,6 @@ const TasksGroup = ({
             groupHasMultipleAssignees={groupHasMultipleAssignees}
             isGroupSelected={isGroupSelected}
             onGroupSelect={handleGroupSelect}
-            onOrderChange={onOrderChange}
           />
         )}
         {children({

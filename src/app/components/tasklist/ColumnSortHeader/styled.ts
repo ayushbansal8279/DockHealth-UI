@@ -27,6 +27,7 @@ export const SortButton = styled.button<{
 }>`
   position: relative;
   flex: ${({ width }) => (width ? `0 0 ${width}px` : '1')};
+  ${({ width }) => width && `max-width: ${width}px;`};
   height: 35px;
   text-align: left;
   font-family: 'Roboto Condensed', sans-serif;

@@ -552,20 +552,11 @@ export function rejectInviteToTaskList(taskList) {
   };
 }
 
-export const updateColumnOnListPreferences = (
+export const updateListPreferences = (
   setup,
   taskListIdentifier,
   currentUserIdentifier,
 ) => ({
-  type: ActionTypes.UPDATE_LIST_COLUMNS_DISPLAY_SETUP,
-  payload: { setup, taskListIdentifier, currentUserIdentifier },
-});
-
-export const updateOrderColumnOnListPreferences = (
-  setup,
-  taskListIdentifier,
-  currentUserIdentifier,
-) => ({
-  type: ActionTypes.UPDATE_ORDER_COLUMNS_SETUP,
+  type: ActionTypes.UPDATE_LIST_PREFERENCES,
   payload: { setup, taskListIdentifier, currentUserIdentifier },
 });

@@ -1,18 +1,5 @@
 /* eslint-disable import/prefer-default-export */
-import { TaskItemColumn } from 'helpers/task-helpers';
-
-const SHOW_COLUMNS_CONFIG = {
-  [TaskItemColumn.WORKFLOW_STATUS]: true,
-  [TaskItemColumn.ASSIGNED]: true,
-  [TaskItemColumn.ACTIVITY]: true,
-  [TaskItemColumn.START_DATE]: true,
-  [TaskItemColumn.DUE_DATE]: true,
-  [TaskItemColumn.PATIENT]: true,
-};
+import { SHOW_COLUMNS_CONFIG } from 'helpers/task-helpers';
 
 export const limitToConfigurableKeys = dataToLimit =>
-  dataToLimit.reduce(
-    (accumulator, [key, value]) =>
-      SHOW_COLUMNS_CONFIG[key] ? { ...accumulator, [key]: value } : accumulator,
-    {},
-  );
+  dataToLimit.filter(c => SHOW_COLUMNS_CONFIG[c.identifier]);

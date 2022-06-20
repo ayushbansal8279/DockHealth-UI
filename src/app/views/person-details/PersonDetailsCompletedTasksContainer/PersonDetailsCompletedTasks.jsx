@@ -8,7 +8,6 @@ import {
   taskCountersSelector,
   sortSelector,
 } from 'selectors/person-details-selectors';
-import { userProfileDashboardPrefsSelector } from 'selectors/user-selectors';
 import { hasFiltersAppliedSelector } from 'selectors/mega-filter-selectors';
 import { sortUserTasks } from 'actions/person-details-actions';
 import { filterTasksBySearchValue } from 'helpers/task-search-helper';
@@ -32,32 +31,18 @@ const PersonDetailsCompletedTasks = ({
   onOrderChange,
   // eslint-disable-next-line sonarjs/cognitive-complexity
 }) => {
+  const dispatch = useDispatch();
   const isFetchingTasks = useSelector(completedTasksIsFetchingSelector);
   const tasks = useSelector(completedTasksSelector);
   const isFetchingMoreTasks = useSelector(completedTasksIsFetchingMoreSelector);
   const taskCounters = useSelector(taskCountersSelector);
   const sort = useSelector(sortSelector);
   const areFiltersApplied = useSelector(hasFiltersAppliedSelector);
-
-  const dispatch = useDispatch();
-  const { columnsConfig, setColumnsConfig } = useColumnsConfig();
-  const userPreferColumns = useSelector(userProfileDashboardPrefsSelector);
+  const { setViewSpecificConfig } = useColumnsConfig();
 
   useEffect(() => {
-    const config =
-      userPreferColumns?.reduce(
-        (accumulator, value) => ({ ...accumulator, [value]: true }),
-        taskItemConfig,
-      ) || {};
-    const customizedDashboardConfig = {
-      ...columnsConfig,
-      ...config,
-      ...taskItemConfig,
-    };
-    setColumnsConfig(customizedDashboardConfig);
-
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [setColumnsConfig, userPreferColumns]);
+    setViewSpecificConfig(taskItemConfig);
+  }, [setViewSpecificConfig, taskItemConfig]);
 
   const filteredTasks = useMemo(
     () => (!searchValue ? tasks : filterTasksBySearchValue(tasks, searchValue)),

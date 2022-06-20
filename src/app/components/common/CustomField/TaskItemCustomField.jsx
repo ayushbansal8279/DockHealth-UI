@@ -15,7 +15,10 @@ import { useDispatch } from 'react-redux';
 import { updatePatientDetails } from 'actions/patient-details-actions';
 import TaskItemMultiDropdown from 'components/task/StandardTaskItem/customFieldsTaskItemComponents/TaskItemMultiDropdown/TaskItemMultiDropdown';
 import { isNotEmptyArray } from 'helpers/utils-helpers';
-import { createMetaDataObjectToSend } from 'helpers/custom-fields-helpers';
+import {
+  createMetaDataObjectToSend,
+  CUSTOM_FIELD_TYPES,
+} from 'helpers/custom-fields-helpers';
 import { StyledHyperLink } from 'components/auth/AuthComponents.styled';
 import { trunc } from 'helpers/utility-functions';
 
@@ -28,7 +31,7 @@ const TaskItemCustomField = ({
   // eslint-disable-next-line sonarjs/cognitive-complexity
 }) => {
   const { value, values } = customFieldValue || {};
-  const patientType = field.targetType === 'PATIENT';
+  const patientType = field.targetType === CUSTOM_FIELD_TYPES.PATIENT;
   const isWorkflow =
     task.itemType === TaskItemType.BUNDLE ||
     task.itemType === TaskItemType.TEMPLATE;

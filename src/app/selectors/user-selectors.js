@@ -18,24 +18,9 @@ export const userOrganizationsSelector = createSelector(
   ({ userOrganizations }) => userOrganizations,
 );
 
-export const userProfileDashboardPrefsSelector = createSelector(
-  userStateSelector,
-  ({ userPreference }) => userPreference?.displayColumns,
-);
-
-export const userProfileColumnOrderSelector = createSelector(
+export const userPreferencesSelector = createSelector(
   userStateSelector,
   ({ userPreference }) => userPreference?.listDisplayColumns,
-);
-
-export const userProfileCustomFieldsSelector = createSelector(
-  userStateSelector,
-  ({ userPreference }) => userPreference?.customFieldDisplayColumns,
-);
-
-export const dashboardGroupsOrderPreferencesSelector = createSelector(
-  userStateSelector,
-  ({ userPreference }) => userPreference?.displayGroups,
 );
 
 export const dashboardGroupsPreferencesSelector = createSelector(

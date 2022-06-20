@@ -1,4 +1,4 @@
-import React from 'react';
+/* eslint-disable import/no-cycle */
 import PatientTasksList from './PatientTasksList/PatientTasksList';
 import PatientNotes from './PatientNotes/PatientNotes';
 import PatientAttachments from './PatientAttachments/PatientAttachments';

@@ -1,3 +1,4 @@
+/* eslint-disable no-underscore-dangle */
 import React, { useState, useRef, useMemo, useCallback } from 'react';
 import { Box, List, ListItemText, MenuItem, Popover } from '@material-ui/core';
 import CustomizeIcon from 'img/customize-icon';
@@ -16,6 +17,11 @@ import UpgradePlan from 'components/common/UpgradePlan/UpgradePlan';
 import UpgradePlanPopup from 'components/common/UpgradePlanPopup/UpgradePlanPopup';
 import CustomFieldsIcon from 'img/premium/custom-fields';
 import {
+  CUSTOM_FIELD_TYPES,
+  sortAlphabetical,
+} from 'helpers/custom-fields-helpers';
+import { sort } from 'ramda';
+import {
   PlusIcon,
   PopoverContainer,
   CustomizeImg,
@@ -27,7 +33,6 @@ import { limitToConfigurableKeys } from './helpers';
 import ToolbarButton from '../ToolbarButton/ToolbarButton';
 
 const CustomizeToolbarButton = ({
-  onChange,
   openCustomFieldModal,
   additionalOptions,
   showCustomColumnCreate = true,
@@ -41,38 +46,30 @@ const CustomizeToolbarButton = ({
   const userHasTaskCustomFieldsFeature = useSelector(
     userHasTaskCustomFieldsFeatureSelector,
   );
-  const {
-    columnsConfig,
-    setColumnsConfig,
-    customColumnsConfig,
-    setCustomColumnsConfig,
-    patientCustomColumnsConfig,
-    setPatientCustomColumnsConfig,
-  } = useColumnsConfig();
+  const { columns, setColumns } = useColumnsConfig();
 
   const ColumnOptionNames = {
     [TaskItemColumn.ACTIVITY]: 'Details',
+    [TaskItemColumn.SUBTASKS_COUNT]: 'Subtasks',
     [TaskItemColumn.ASSIGNED]: 'Assigned',
     [TaskItemColumn.WORKFLOW_STATUS]: 'Status',
     [TaskItemColumn.START_DATE]: 'Start date',
     [TaskItemColumn.DUE_DATE]: 'Due date',
+    [TaskItemColumn.LIST_NAME]: 'List name',
     [TaskItemColumn.PATIENT]: capitalize(getCustomerTypeLabel(userProfile)),
   };
 
   const onClickCheckbox = useCallback(
-    columnKey => {
-      const newSetup = {
-        ...columnsConfig,
-        [columnKey]: !columnsConfig[columnKey],
-      };
-
-      setColumnsConfig(newSetup);
-      const newConfigurableSetup = limitToConfigurableKeys(
-        Object.entries(newSetup),
+    column => {
+      const newSetup = columns.map(c =>
+        c.identifier === column.identifier
+          ? { ...c, isChecked: !c.isChecked }
+          : c,
       );
-      if (typeof onChange === 'function') onChange(newConfigurableSetup);
+
+      setColumns(newSetup);
     },
-    [columnsConfig, onChange, setColumnsConfig],
+    [columns, setColumns],
   );
 
   const handleAddColumnClick = useCallback(() => {
@@ -83,56 +80,26 @@ const CustomizeToolbarButton = ({
     }
   }, [openCustomFieldModal, userHasTaskCustomFieldsFeature]);
 
-  const onClickCustomFieldsCheckbox = useCallback(
-    column => {
-      const { identifier } = column;
-      const newSetup = customColumnsConfig.map(f => {
-        if (f.identifier === identifier) {
-          return { ...f, isChecked: !f.isChecked };
-        }
-        return f;
-      });
-      setCustomColumnsConfig(newSetup);
-      if (typeof onChange === 'function')
-        onChange([...newSetup, ...patientCustomColumnsConfig], {
-          isCustomColumn: true,
-        });
-    },
-    [
-      customColumnsConfig,
-      onChange,
-      patientCustomColumnsConfig,
-      setCustomColumnsConfig,
-    ],
-  );
-
-  const onClickPatientCustomFieldsCheckbox = useCallback(
-    column => {
-      const { identifier } = column;
-      // eslint-disable-next-line sonarjs/no-identical-functions
-      const newSetup = patientCustomColumnsConfig.map(f => {
-        if (f.identifier === identifier) {
-          return { ...f, isChecked: !f.isChecked };
-        }
-        return f;
-      });
-      setPatientCustomColumnsConfig(newSetup);
-      if (typeof onChange === 'function')
-        onChange([...newSetup, ...customColumnsConfig], {
-          isCustomColumn: true,
-        });
-    },
-    [
-      patientCustomColumnsConfig,
-      setPatientCustomColumnsConfig,
-      onChange,
-      customColumnsConfig,
-    ],
-  );
-
   const columnsConfigToDisplay = useMemo(() => {
-    return limitToConfigurableKeys(Object.entries(columnsConfig));
-  }, [columnsConfig]);
+    return limitToConfigurableKeys(
+      columns.filter(c => c._customFieldType === CUSTOM_FIELD_TYPES.REGULAR),
+    );
+  }, [columns]);
+
+  const renderElement = useCallback(
+    (column, name) =>
+      (name || column.name) && (
+        <MenuItem
+          key={column.identifier}
+          onClick={() => onClickCheckbox(column)}
+        >
+          <Checkbox isChecked={column.isChecked} />
+          <Box mx={0.5} />
+          <ListItemText>{name || column.name}</ListItemText>
+        </MenuItem>
+      ),
+    [onClickCheckbox],
+  );
 
   return (
     <>
@@ -164,18 +131,15 @@ const CustomizeToolbarButton = ({
             </ListItemText>
           </Box>
           <List>
-            {Object.keys(columnsConfigToDisplay).map(columnKey => {
-              const optionName = ColumnOptionNames[columnKey];
-              const isChecked = columnsConfigToDisplay[columnKey];
-              return (
-                optionName && (
-                  <MenuItem onClick={() => onClickCheckbox(columnKey)}>
-                    <Checkbox isChecked={isChecked} />
-                    <Box mx={0.5} />
-                    <ListItemText>{optionName}</ListItemText>
-                  </MenuItem>
-                )
-              );
+            {sort(
+              (a, b) =>
+                ColumnOptionNames[a?.identifier].localeCompare(
+                  ColumnOptionNames[b?.identifier],
+                ),
+              columnsConfigToDisplay,
+            ).map(column => {
+              const optionName = ColumnOptionNames[column.identifier];
+              return optionName && renderElement(column, optionName);
             })}
           </List>
           {userHasTaskCustomFieldsFeature && (
@@ -188,21 +152,13 @@ const CustomizeToolbarButton = ({
                 </ListItemText>
               </Box>
               <List>
-                {customColumnsConfig.map(column => {
-                  const { name, isChecked = false } = column;
-                  return (
-                    name && (
-                      <MenuItem
-                        key={column.identifier}
-                        onClick={() => onClickCustomFieldsCheckbox(column)}
-                      >
-                        <Checkbox isChecked={isChecked} />
-                        <Box mx={0.5} />
-                        <ListItemText>{name}</ListItemText>
-                      </MenuItem>
-                    )
-                  );
-                })}
+                {sortAlphabetical(
+                  columns.filter(
+                    c =>
+                      c._customFieldType === CUSTOM_FIELD_TYPES.TASK_LIST ||
+                      c._customFieldType === CUSTOM_FIELD_TYPES.ORGANIZATION,
+                  ),
+                ).map(column => renderElement(column))}
                 {showCustomColumnCreate && (
                   <MenuItem
                     onClick={handleAddColumnClick}
@@ -216,36 +172,23 @@ const CustomizeToolbarButton = ({
               </List>
             </>
           )}
-          {userHasPatientCustomFieldsFeatureSelector &&
-            patientCustomColumnsConfig?.length > 0 && (
-              <>
-                <Box display="flex" justifyContent="space-between" mt={1}>
-                  <Box mx={0.5} />
-                  <ListItemText>
-                    <b>Patient Custom Columns</b>
-                  </ListItemText>
-                </Box>
-                <List>
-                  {patientCustomColumnsConfig.map(column => {
-                    const { name, isChecked = false } = column;
-                    return (
-                      name && (
-                        <MenuItem
-                          key={column.identifier}
-                          onClick={() =>
-                            onClickPatientCustomFieldsCheckbox(column)
-                          }
-                        >
-                          <Checkbox isChecked={isChecked} />
-                          <Box mx={0.5} />
-                          <ListItemText>{name}</ListItemText>
-                        </MenuItem>
-                      )
-                    );
-                  })}
-                </List>
-              </>
-            )}
+          {userHasPatientCustomFieldsFeatureSelector && columns?.length > 0 && (
+            <>
+              <Box display="flex" justifyContent="space-between" mt={1}>
+                <Box mx={0.5} />
+                <ListItemText>
+                  <b>Patient Custom Columns</b>
+                </ListItemText>
+              </Box>
+              <List>
+                {sortAlphabetical(
+                  columns.filter(
+                    c => c._customFieldType === CUSTOM_FIELD_TYPES.PATIENT,
+                  ),
+                ).map(column => renderElement(column))}
+              </List>
+            </>
+          )}
           {additionalOptions && additionalOptions.length > 0 && (
             <>
               <Spacer />
@@ -317,7 +260,6 @@ const CustomizeToolbarButton = ({
         onClose={() => setOpenUpgradePopup(false)}
         title="Add custom fields"
         description="Available with Dock Premium, custom task fields provide greater context and discoverable content."
-        // learnMoreLink="url"
         iconImage={<img src={CustomFieldsIcon} alt="Custom Task Fields" />}
       />
     </>

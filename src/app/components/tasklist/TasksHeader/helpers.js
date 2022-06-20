@@ -18,79 +18,78 @@ const { DISABLED } = SINGLE_TASK_RESTRICTIONS_OPTIONS;
 export const getTaskHeaderOptions = (
   customerTypeLabel,
   groupHasMultipleAssignees,
-  config,
+  column,
   restrictions,
-) => [
-  {
-    id: TaskHeaderColumn.DESCRIPTION,
-    label: 'Tasks',
-    draggable: false,
-    shouldBeDisplayed: config[TaskHeaderColumn.DESCRIPTION],
-  },
-  {
-    id: TaskHeaderColumn.SUBTASKS_COUNT,
-    label: 'Sub',
-    draggable: true,
-    width: TaskItemColumnWidth[TaskHeaderColumn.SUBTASKS_COUNT],
-    shouldBeDisplayed: config[TaskHeaderColumn.DESCRIPTION],
-  },
-  {
-    id: TaskHeaderColumn.PATIENT,
-    label: customerTypeLabel,
-    draggable: true,
-    width: TaskItemColumnWidth[TaskHeaderColumn.PATIENT],
-    shouldBeDisplayed: config[TaskHeaderColumn.PATIENT],
-  },
-  {
-    id: TaskHeaderColumn.WORKFLOW_STATUS,
-    label: 'Status',
-    draggable: true,
-    width: TaskItemColumnWidth[TaskHeaderColumn.WORKFLOW_STATUS],
-    shouldBeDisplayed: config[TaskHeaderColumn.WORKFLOW_STATUS],
-  },
-  {
-    id: TaskHeaderColumn.ACTIVITY,
-    label: 'Details',
-    draggable: true,
-    width: TaskItemColumnWidth[TaskHeaderColumn.ACTIVITY],
-    shouldBeDisplayed: config[TaskHeaderColumn.ACTIVITY],
-  },
-  {
-    id: TaskHeaderColumn.START_DATE,
-    label: 'Start',
-    draggable: true,
-    width: TaskItemColumnWidth[TaskHeaderColumn.START_DATE],
-    shouldBeDisplayed: config[TaskHeaderColumn.START_DATE],
-  },
-  {
-    id: TaskHeaderColumn.DUE_DATE,
-    label: 'Due',
-    draggable: true,
-    width: TaskItemColumnWidth[TaskHeaderColumn.DUE_DATE],
-    shouldBeDisplayed:
-      config[TaskHeaderColumn.DUE_DATE] && restrictions?.dueDate !== DISABLED,
-  },
-  {
-    id: TaskHeaderColumn.ASSIGNED,
-    label: groupHasMultipleAssignees ? 'Assign' : 'Asgn',
-    draggable: true,
-    width: TaskItemColumnWidth[TaskHeaderColumn.ASSIGNED].WIDE,
-    shouldBeDisplayed: config[TaskHeaderColumn.ASSIGNED],
-    printWidth: TaskItemColumnWidth[TaskHeaderColumn.ASSIGNED].PRINT,
-  },
-  {
-    id: TaskHeaderColumn.LIST_NAME,
-    label: 'List',
-    draggable: true,
-    width: TaskItemColumnWidth[TaskHeaderColumn.LIST_NAME],
-    shouldBeDisplayed:
-      config[TaskHeaderColumn.LIST_NAME] && restrictions?.listName !== DISABLED,
-  },
-];
+) => {
+  const predefinedHeaderColumns = [
+    {
+      identifier: TaskHeaderColumn.DESCRIPTION,
+      label: 'Tasks',
+      draggable: false,
+    },
+    {
+      identifier: TaskHeaderColumn.SUBTASKS_COUNT,
+      label: 'Sub',
+      draggable: true,
+      width: TaskItemColumnWidth[TaskHeaderColumn.SUBTASKS_COUNT],
+    },
+    {
+      identifier: TaskHeaderColumn.PATIENT,
+      label: customerTypeLabel,
+      draggable: true,
+      width: TaskItemColumnWidth[TaskHeaderColumn.PATIENT],
+    },
+    {
+      identifier: TaskHeaderColumn.WORKFLOW_STATUS,
+      label: 'Status',
+      draggable: true,
+      width: TaskItemColumnWidth[TaskHeaderColumn.WORKFLOW_STATUS],
+    },
+    {
+      identifier: TaskHeaderColumn.ACTIVITY,
+      label: 'Details',
+      draggable: true,
+      width: TaskItemColumnWidth[TaskHeaderColumn.ACTIVITY],
+    },
+    {
+      identifier: TaskHeaderColumn.START_DATE,
+      label: 'Start',
+      draggable: true,
+      width: TaskItemColumnWidth[TaskHeaderColumn.START_DATE],
+    },
+    {
+      identifier: TaskHeaderColumn.DUE_DATE,
+      label: 'Due',
+      draggable: true,
+      width: TaskItemColumnWidth[TaskHeaderColumn.DUE_DATE],
+      hidden: restrictions?.dueDate !== DISABLED,
+    },
+    {
+      identifier: TaskHeaderColumn.ASSIGNED,
+      label: groupHasMultipleAssignees ? 'Assign' : 'Asgn',
+      draggable: true,
+      width: TaskItemColumnWidth[TaskHeaderColumn.ASSIGNED].WIDE,
+      printWidth: TaskItemColumnWidth[TaskHeaderColumn.ASSIGNED].PRINT,
+    },
+    {
+      identifier: TaskHeaderColumn.LIST_NAME,
+      label: 'List',
+      draggable: true,
+      width: TaskItemColumnWidth[TaskHeaderColumn.LIST_NAME],
+      hidden: restrictions?.listName !== DISABLED,
+    },
+  ];
+
+  const foundHeaderColumn = predefinedHeaderColumns.find(
+    c => c.identifier === column.identifier,
+  );
+
+  return { ...foundHeaderColumn, ...column };
+};
 
 export const reorderColumns = (list, startIndex, endIndex) => {
   const result = [...list];
-  const [removed] = result.splice(startIndex + 1, 1);
-  result.splice(endIndex + 1, 0, removed);
+  const [removed] = result.splice(startIndex, 1);
+  result.splice(endIndex, 0, removed);
   return result;
 };
