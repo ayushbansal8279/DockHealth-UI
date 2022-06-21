@@ -11,12 +11,14 @@ function GroupChannelContainer(props) {
     process.env.SENDBIRD_APP_ID ?? 'D11A4B11-21AD-4025-9D8C-2BCF693C814C';
 
   return (
-    <MessageContainer>
+    <>
       <HandleBar className="handle" />
-      <SBProvider appId={appId} userId={identifier} nickname={name}>
-        <GroupChannel currentChannelUrl={channelUrl} className="handle" />
-      </SBProvider>
-    </MessageContainer>
+      <MessageContainer className="handle">
+        <SBProvider appId={appId} userId={identifier} nickname={name}>
+          <GroupChannel currentChannelUrl={channelUrl} />
+        </SBProvider>
+      </MessageContainer>
+    </>
   );
 }
 

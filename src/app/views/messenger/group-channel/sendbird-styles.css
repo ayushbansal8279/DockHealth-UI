@@ -1,7 +1,9 @@
 .sendbird-message-hoc__message-content {
-    height: 50px;
+    height: 60px;
 }
-
+.sendbird-separator {
+    margin-top: 50px;
+}
 .sendbird-channel-header__right-icon {
     visibility: hidden;
     display: none;

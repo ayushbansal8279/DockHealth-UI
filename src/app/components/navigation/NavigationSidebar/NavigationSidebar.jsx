@@ -25,7 +25,7 @@ import PeopleIcon from 'img/navigation/PeopleIcon';
 import PatientsIcon from 'img/navigation/PatientsIcon';
 import SettingsIcon from 'img/navigation/SettingsIcon';
 import TemplatesIcon from 'img/navigation/TemplatesIcon';
-import ChatIcon from '@mui/icons-material/Chat';
+import ChatIcon from '@material-ui/icons/Chat';
 import EducationCenterIcon from 'img/navigation/EducationCenterIcon';
 import DockcoinIconImage from 'img/navigation/dock-coin-icon.svg';
 import UserAvatar from 'components/user/UserAvatar/UserAvatar';
