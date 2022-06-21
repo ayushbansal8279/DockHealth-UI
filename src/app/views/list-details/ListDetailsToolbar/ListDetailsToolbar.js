@@ -4,6 +4,7 @@ import TaskViewTypeToolbarSelect from 'components/tasklist/TaskViewTypeToolbarSe
 import { Box } from '@material-ui/core';
 import TaskStatusToolbarSelect from 'components/tasklist/TaskStatusToolbarSelect/TaskStatusToolbarSelect';
 import CompleteTasksVisibilitySwitch from 'components/tasklist/CompleteTasksVisibilitySwitch/CompleteTasksVisibilitySwitch';
+import ChatPopover from 'views/chat/group-channel/ChatPopover';
 import InboxTips from 'components/tasklist/InboxTips/InboxTips';
 import { ViewType, getViewTypeFromQueryString } from 'helpers/view-type-helper';
 import { useLocation, useHistory } from 'react-router-dom';
@@ -133,6 +134,9 @@ const ListDetailsToolbar = ({ onColumnSetupChange, additionalOptions }) => {
           )}
           <Box mx={0.5} />
         </Box>
+      )}
+      {viewType === ViewType.LIST_VIEW && (
+        <ChatPopover channelUrl="sendbird_group_channel_140571109_e686fc399df276dcda6e240337836d33c4c79397" />
       )}
     </ToolbarContainer>
   );

@@ -1,7 +1,6 @@
-import { Grid, IconButton, Popover } from '@material-ui/core';
+import { Grid } from '@material-ui/core';
 import queryString from 'query-string';
-import React, { useEffect, useState, useCallback } from 'react';
-import Draggable from 'react-draggable';
+import React, { useEffect, useState } from 'react';
 import { isNil } from 'ramda';
 import { useDispatch, useSelector } from 'react-redux';
 import { Link, useParams, useLocation, useHistory } from 'react-router-dom';
@@ -16,6 +15,7 @@ import {
   unsetCurrentUserGroup,
 } from 'actions/user-groups-actions';
 import ViewLayout from 'components/template/ViewLayout/ViewLayout';
+import ChatPopover from 'views/chat/group-channel/ChatPopover';
 import BasicLayoutHeader from 'components/template/BasicLayoutHeader/BasicLayoutHeader';
 import ListSkeletonLoader from 'components/common/ListSkeletonLoader/ListSkeletonLoader';
 import PageContentHeader from 'components/common/PageContentHeader/PageContentHeader';
@@ -23,8 +23,6 @@ import Spacing from 'components/common/Spacing';
 import Button from 'components/common/Button/Button';
 import LightbulbBig from 'img/lightbulb-big';
 import SearchInput from 'components/common/SearchInput/SearchInput';
-import ChatIcon from '@material-ui/icons/Chat';
-import GroupChannelContainer from 'views/chat/group-channel/GroupChannelContainer';
 import UsersList from './UsersList/UsersList';
 import {
   ListLoaderContainer,
@@ -41,21 +39,6 @@ function UserGroupView() {
   const [isSearchFocused, setSearchFocused, unsetSearchFocused] = useBoolean(
     false,
   );
-  const [open, setOpen, unsetOpen] = useBoolean(false);
-
-  const [anchorElement, setAnchorElement] = useState(null);
-
-  const handleClick = event => {
-    setOpen();
-    setAnchorElement(event.currentTarget);
-  };
-
-  const handleClose = useCallback(() => {
-    unsetOpen();
-    setAnchorElement(null);
-  }, [unsetOpen]);
-
-  const id = open ? 'simple-popover' : undefined;
 
   const { groupIdentifier: groupIdentifierUrlParameter } = useParams();
   const history = useHistory();
@@ -117,36 +100,7 @@ function UserGroupView() {
               </SearchInputWrapper>
             </Grid>
             <Grid container xs={8} xl={8} md={8} lg={8} justify="flex-end">
-              <IconButton
-                aria-describedby={id}
-                variant="contained"
-                onClick={handleClick}
-              >
-                <ChatIcon />
-              </IconButton>
-              {/* make class handle */}
-              <Draggable handle=".handle">
-                <Popover
-                  id={id}
-                  open={open}
-                  anchorEl={anchorElement}
-                  anchorOrigin={{
-                    vertical: 'bottom',
-                    horizontal: 'left',
-                  }}
-                  transformOrigin={{
-                    vertical: 50,
-                    horizontal: 600,
-                  }}
-                  onClose={handleClose}
-                >
-                  <GroupChannelContainer
-                    identifier={currentUser.identifier}
-                    name={currentUser.name}
-                    channelUrl="sendbird_group_channel_140571109_e686fc399df276dcda6e240337836d33c4c79397"
-                  />
-                </Popover>
-              </Draggable>
+              <ChatPopover channelUrl="sendbird_group_channel_140571109_e686fc399df276dcda6e240337836d33c4c79397" />
             </Grid>
           </Grid>
         </PageContentHeader>
