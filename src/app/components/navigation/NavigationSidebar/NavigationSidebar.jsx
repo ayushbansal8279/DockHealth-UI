@@ -8,7 +8,7 @@ import {
   USERS_PATH,
   SUBS_SETTINGS_PATH,
   USERS_SETTINGS_PATH,
-  MESSENGER_PATH,
+  CHAT_PATH,
 } from 'routing/helpers/paths';
 import Spacing from 'components/common/Spacing.tsx';
 import { userProfileSelector } from 'selectors/user-selectors';
@@ -254,9 +254,9 @@ const NavigationSidebar = () => {
             </AccessRestrictor>
             <AccessRestrictor allowedToRoles={[ADMIN, OWNER, MEMBER]}>
               <IconNavigationItem
-                name="Messenger"
+                name="Chat"
                 icon={ChatIcon}
-                path={MESSENGER_PATH}
+                path={CHAT_PATH}
                 onItemClick={handleNavigationItemClick}
               />
             </AccessRestrictor>
