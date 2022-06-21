@@ -216,7 +216,7 @@ export const TEMPLATE_CORE_SUBSCRIPTION_PLAN_ROUTES = [
     allowedToRoles: [ADMIN, OWNER],
   },
   {
-    path: '/messenger',
+    path: '/chat',
     RouteComponent: ChatView,
     allowedToRoles: [ADMIN, OWNER, MEMBER, DOCK_PRO],
   },
