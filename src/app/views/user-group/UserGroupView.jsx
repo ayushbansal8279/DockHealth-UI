@@ -24,7 +24,7 @@ import Button from 'components/common/Button/Button';
 import LightbulbBig from 'img/lightbulb-big';
 import SearchInput from 'components/common/SearchInput/SearchInput';
 import ChatIcon from '@material-ui/icons/Chat';
-import GroupChannelContainer from 'views/messenger/group-channel/GroupChannelContainer';
+import GroupChannelContainer from 'views/chat/group-channel/GroupChannelContainer';
 import UsersList from './UsersList/UsersList';
 import {
   ListLoaderContainer,
