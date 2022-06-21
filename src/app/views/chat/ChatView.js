@@ -6,6 +6,7 @@ import { useSelector } from 'react-redux';
 import { App as SendbirdApp } from 'sendbird-uikit';
 import 'sendbird-uikit/dist/index.css';
 import { Container, ColorSet } from './styled';
+import './sendbird-styles.css';
 
 const ChatView = () => {
   const { name, identifier } = useSelector(userProfileSelector);
