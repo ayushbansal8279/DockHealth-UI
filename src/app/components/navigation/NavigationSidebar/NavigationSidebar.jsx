@@ -32,6 +32,8 @@ import UserAvatar from 'components/user/UserAvatar/UserAvatar';
 import OrganizationTile from 'components/org/OrganizationTile/OrganizationTile';
 import { openModal } from 'modal/actions';
 import AccessRestrictor from 'components/access/AccessRestrictor/AccessRestrictor';
+// import GroupChatPopover from 'views/chat/group-channel/GroupChatPopover';
+import ChatPopover from 'views/chat/ChatPopover';
 import OrganizationSubmenu from './SubMenuComponents/OrganizationSubmenu';
 import ProfileSubmenu from './SubMenuComponents/ProfileSubmenu';
 import EducationCenterSubmenu from './SubMenuComponents/EducationCenterSubmenu';
@@ -59,6 +61,7 @@ export const SubmenuKey = {
   SETTINGS: 'SETTINGS',
   EDUCATION_CENTER: 'EDUCATION_CENTER',
   DOCKCOIN: 'DOCKCOIN',
+  CHAT: 'CHAT',
 };
 
 const {
@@ -149,6 +152,10 @@ const NavigationSidebar = () => {
   const handleReferClick = () => {
     dispatch(TemplateActions.hideSubMenu());
     dispatch(openModal('ReferAColleague'));
+  };
+
+  const handleChatClick = () => {
+    dispatch(TemplateActions.hideSubMenu());
   };
 
   return (
@@ -277,6 +284,19 @@ const NavigationSidebar = () => {
                   onItemClick={handleNavigationItemClick}
                 />
               </div>
+            </AccessRestrictor>
+
+            <AccessRestrictor allowedToRoles={[ADMIN, OWNER, MEMBER]}>
+              <NavigationItem
+                name="Chat Popover"
+                subMenuKey={SubmenuKey.CHAT}
+                onItemClick={handleChatClick}
+              >
+                <>
+                  {/* <GroupChatPopover channelUrl="sendbird_group_channel_140571109_e686fc399df276dcda6e240337836d33c4c79397" /> */}
+                  <ChatPopover />
+                </>
+              </NavigationItem>
             </AccessRestrictor>
 
             <AccessRestrictor

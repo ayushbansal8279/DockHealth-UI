@@ -7,7 +7,7 @@ import GroupChannelContainer from 'views/chat/group-channel/GroupChannelContaine
 import { userProfileSelector } from 'selectors/user-selectors';
 import { useSelector } from 'react-redux';
 
-const ChatPopover = props => {
+const GroupChatPopover = props => {
   const { channelUrl } = props;
   const { name, identifier } = useSelector(userProfileSelector);
   const [open, setOpen, unsetOpen] = useBoolean(false);
@@ -60,4 +60,4 @@ const ChatPopover = props => {
   );
 };
 
-export default ChatPopover;
+export default GroupChatPopover;
