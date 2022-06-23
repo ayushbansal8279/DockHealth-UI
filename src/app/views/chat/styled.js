@@ -1,6 +1,14 @@
 /* eslint-disable import/prefer-default-export */
-import styled from 'styled-components';
 // import palette from 'styles/palette';
+import { withStyles } from '@material-ui/core/styles';
+import { IconButton } from '@material-ui/core';
+import styled from 'styled-components';
+
+export const StyledIconButton = withStyles({
+  root: {
+    color: 'inherit',
+  },
+})(IconButton);
 
 export const Container = styled.div`
   max-width: 1280px;

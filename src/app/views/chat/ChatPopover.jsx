@@ -1,12 +1,13 @@
 import React, { useCallback, useState } from 'react';
-import { IconButton, Popover } from '@material-ui/core';
+import { IconButton, Popover, Box } from '@material-ui/core';
 import ChatIcon from '@material-ui/icons/Chat';
+import CloseIcon from '@material-ui/icons/Close';
 import Draggable from 'react-draggable';
 import { useBoolean } from 'hooks/useBoolean';
 import { App as SendbirdApp } from 'sendbird-uikit';
 import { userProfileSelector } from 'selectors/user-selectors';
 import { useSelector } from 'react-redux';
-import { Container, ColorSet } from './styled';
+import { Container, ColorSet, StyledIconButton } from './styled';
 
 const ChatPopover = () => {
   const { name, identifier } = useSelector(userProfileSelector);
@@ -53,6 +54,12 @@ const ChatPopover = () => {
           onClose={handleClose}
         >
           <Container className="handle">
+            <Box display="flex">
+              <Box mx={0.5} />
+              <StyledIconButton onClick={handleClose}>
+                <CloseIcon />
+              </StyledIconButton>
+            </Box>
             <SendbirdApp
               appId={appId}
               userId={identifier}
