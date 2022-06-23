@@ -12,6 +12,8 @@ import { closeModal } from 'modal/actions';
 import CustomTextEditor from 'components/task-drawer/CustomTextEditor/CustomTextEditor';
 import TextEditor from 'components/common/TextEditor/TextEditor';
 import Select from 'components/common/Select/Select';
+import { EmrNoteTypeOptions } from 'helpers/task-helpers';
+import { sendEmrForTask } from 'actions/task-actions';
 import {
   IncludeContainerStyled,
   InfoHeaderTextStyled,
@@ -32,7 +34,7 @@ import TaskCheckBoxes from '../TaskCheckBoxes';
 
 function SendEmrNoteFromTaskModal() {
   const selectedTask = useSelector(selectedTaskSelector);
-  const { taskMentions } = selectedTask;
+  const { taskMentions, taskIdentifier } = selectedTask;
   const dispatch = useDispatch();
   const [noteType, setNoteType] = useState(null);
   const [isTaskDescriptionIncluded, setIsTaskDescriptionIncluded] = useState(
@@ -73,6 +75,11 @@ function SendEmrNoteFromTaskModal() {
     setNoteType(value);
   };
 
+  const EmrOptions = Object.keys(EmrNoteTypeOptions).map(option => ({
+    label: EmrNoteTypeOptions[option],
+    value: option,
+  }));
+
   return (
     <ModalWrapper width="600px">
       <CloseIconButton size="small" onClick={() => dispatch(closeModal())}>
@@ -87,7 +94,7 @@ function SendEmrNoteFromTaskModal() {
       <ModalDescriptionContainer>
         <InputContainerStyled>
           <Select
-            options={[{ label: '1', value: '13' }]}
+            options={EmrOptions}
             value={noteType}
             onChange={handleOptionChange}
           />
@@ -128,16 +135,14 @@ function SendEmrNoteFromTaskModal() {
           variant="primary"
           disabled={!detailsState.getCurrentContent().hasText()}
           onClick={() => {
-            // dispatch(
-            //   sendEMRForTask({
-            //     message: subject,
-            //     details: convertFromEditorStateToOutput(detailsState, true)
-            //       .tokenizedText,
-            //     recipientContact: email,
-            //     taskAttachmentIdentifiers: attachmentsToSend,
-            //     taskIdentifier: identifier,
-            //   }),
-            // );
+            dispatch(
+              sendEmrForTask({
+                noteType,
+                details: convertFromEditorStateToOutput(detailsState, true)
+                  .tokenizedText,
+                taskIdentifier,
+              }),
+            );
             dispatch(closeModal());
           }}
         >

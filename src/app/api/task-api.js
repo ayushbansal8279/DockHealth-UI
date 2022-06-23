@@ -549,3 +549,9 @@ export function shareTask(
 export function sendMessageForTask(task) {
   return axios.post('task/communication/send', task).then(({ data }) => data);
 }
+
+export function postToEMR(task) {
+  return axios
+    .post('task/communication/postToEMR', task)
+    .then(({ data }) => data);
+}

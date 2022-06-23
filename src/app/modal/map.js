@@ -135,9 +135,5 @@ const MODAL_MAP = {
   SendEmailFromTask: SendEmailFromTaskModal,
   SendEmrFromTask: SendEmrNoteFromTaskModal,
 };
-export const keys = [
-  { SendEmrFromTask: 'SendEmrFromTask' },
-  'SendEmailFromTask',
-];
 
 export default MODAL_MAP;
