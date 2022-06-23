@@ -75,9 +75,7 @@ function* reorderTaskLists({ payload }) {
     const taskListIdentifiers = move(source, destination, activeLists);
     const identifiers = pluck('taskListIdentifier', taskListIdentifiers);
 
-    const sortedIdentifiers = { taskListIdentifiers: identifiers };
-
-    yield call(TaskListApi.sortTasksListsForUser, sortedIdentifiers);
+    yield call(TaskListApi.sortTasksListsForUser, identifiers);
     yield put({
       type: ActionTypes.REORDER_TASKLISTS,
     });
