@@ -571,11 +571,9 @@ export const updateColumnOnListPreferences = (
 //     });
 // }
 
-export function reorderTaskLists({ list, source, destination }) {
+export function reorderTaskLists(activeLists, source, destination) {
   return {
     type: ActionTypes.REORDER_TASKLISTS,
-    list,
-    source,
-    destination,
+    payload: { activeLists, source, destination },
   };
 }

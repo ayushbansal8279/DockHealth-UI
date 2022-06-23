@@ -96,7 +96,7 @@ const ListsSubmenu = () => {
   const handleDragEnd = useCallback(
     ({ destination, source }) => {
       dispatch(
-        TaskListActions.reorderTaskLists(activeLists, destination, source),
+        TaskListActions.reorderTaskLists(activeLists, source, destination),
       );
     },
     [activeLists, dispatch],
