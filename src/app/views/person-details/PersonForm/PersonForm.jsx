@@ -16,6 +16,7 @@ import Button from 'components/common/Button/Button';
 import Spacing from 'components/common/Spacing';
 import { useBoolean } from 'hooks/useBoolean';
 import CategoryOptions from 'components/common/CategoryOptions/CategoryOptions';
+import { scrollToError } from 'helpers/ui-helper';
 import { formatMetaDataOutput } from './helpers';
 import { HidableContainer } from './styled';
 
@@ -69,7 +70,10 @@ const PersonForm = forwardRef(
 
     return (
       <form
-        onSubmit={handleSubmit(compose(onSubmit, formatMetaDataOutput))}
+        onSubmit={handleSubmit(
+          compose(onSubmit, formatMetaDataOutput),
+          scrollToError,
+        )}
         ref={reference}
       >
         <LabeledCollapse

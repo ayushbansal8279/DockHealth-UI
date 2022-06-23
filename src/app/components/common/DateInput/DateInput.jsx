@@ -1,5 +1,5 @@
 /* eslint-disable unicorn/consistent-function-scoping */
-import React, { useRef, useMemo, useCallback } from 'react';
+import React, { useRef, useCallback, useEffect } from 'react';
 import moment from 'moment';
 import InputMask from 'react-input-mask';
 import Input from 'components/common/Input/Input';
@@ -21,10 +21,13 @@ const DateInput = ({
   readOnly,
   disabled,
   error,
+  setError = () => {},
   name,
   maxDate,
   inputRef: outerTextInputReference,
+  clearErrors,
   ...otherProps
+  // eslint-disable-next-line sonarjs/cognitive-complexity
 }) => {
   const [open, setOpen, unsetOpen] = useBoolean(false);
   const textFieldReference = useRef(null);
@@ -48,6 +51,7 @@ const DateInput = ({
   };
 
   const handleClear = () => {
+    clearErrors(name);
     onChange({ target: { value: null } });
     setTimeout(() => {
       textInputReference.current.focus();
@@ -60,27 +64,29 @@ const DateInput = ({
     setTimeout(() => {
       textInputReference.current.focus();
     }, 0);
+    clearErrors(name);
   };
 
-  const showError = useMemo(() => {
-    const noMissingParts = !value.includes('_');
-    const validDate = momentDate.isValid();
-    if (!value || value === '' || value === '__/__/____') return error;
-    return noMissingParts && validDate ? error : 'Invalid date format';
-  }, [error, momentDate, value]);
+  useEffect(() => {
+    if (value?.trim() === '' || value === '__/__/____') {
+      clearErrors(name);
+    } else if ((name && dateValue === 'Invalid date') || value.includes('_')) {
+      setError(name, { type: 'custom', message: 'Invalid date format' });
+    } else if (typeof clearErrors === 'function') clearErrors(name);
+  }, [clearErrors, dateValue, name, setError, value]);
 
   return (
     <>
       <Input
         ref={textFieldReference}
         inputRef={textInputReference}
-        value={dateValue}
+        value={value}
         onChange={handleChange}
         readOnly={readOnly}
         disabled={disabled}
         shrink={!!dateValue}
         name={name}
-        error={showError}
+        error={error}
         endAdornment={
           <Box display="flex">
             <IconButton disabled={readOnly || disabled} onClick={setOpen}>

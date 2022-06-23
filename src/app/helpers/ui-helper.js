@@ -1,20 +1,19 @@
-import $ from 'jquery';
+/* eslint-disable no-unused-expressions */
+/* eslint-disable import/prefer-default-export */
+import { isEmpty } from 'ramda';
 
-export function toggleAlert(notification, type) {
-	// type "success" shows green bg
-	// type "error" shows red bg
-	// if(type !== undefined){
-	$('.new-task').addClass(type);
-	// }
-	$('.new-task').text(notification);
-	$('.new-task').addClass('show');
-	setTimeout(function () {
-		$('.new-task').removeClass('show');
-		$('.new-task').removeClass(type);
-	}, 4000);
+export function scrollToError(errors) {
+  if (errors && !isEmpty(errors)) {
+    const errorsvalues = Object.values(errors);
+    const name =
+      errorsvalues[0]?.ref?.name ||
+      Object.values(errorsvalues[0])?.[0]?.ref?.name;
+    if (errorsvalues.length > 0) {
+      const firstErrorElement = document.getElementsByName(name)[0];
+      firstErrorElement?.scrollIntoView({
+        behavior: `smooth`,
+        block: 'center',
+      });
+    }
+  }
 }
-
-export function scrollToTop(){
-	$("html, body").animate({ scrollTop: 0 }, "slow");
-}
-
