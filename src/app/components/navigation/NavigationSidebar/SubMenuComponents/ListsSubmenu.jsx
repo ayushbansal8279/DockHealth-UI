@@ -65,7 +65,7 @@ const ListsSubmenu = () => {
   const isGuest = orgUserRole === 'GUEST';
   const [activeLists, setActiveLists] = useState(null);
 
-  useMemo(() => {
+  useEffect(() => {
     const lists =
       taskLists && pendingTaskLists
         ? [...taskLists, ...pendingTaskLists]
