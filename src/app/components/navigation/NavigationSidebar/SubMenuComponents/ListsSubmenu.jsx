@@ -281,11 +281,7 @@ const ListsSubmenu = () => {
         <DragDropContext onDragEnd={handleDragEnd}>
           <Droppable droppableId="droppable">
             {provided => (
-              <div
-                {...provided.droppableProps}
-                ref={provided.innerRef}
-                // style={getListStyle(snapshot.isDraggingOver)}
-              >
+              <div {...provided.droppableProps} ref={provided.innerRef}>
                 {renderLists(activeLists, false)}
               </div>
             )}
