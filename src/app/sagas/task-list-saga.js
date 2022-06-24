@@ -1,10 +1,11 @@
 import { takeLatest, call, put, takeEvery, select } from 'redux-saga/effects';
 import { currentTaskListIdentifierSelector } from 'selectors/task-list-selectors';
-import { pluck, move } from 'ramda';
+import { pluck } from 'ramda';
+import { showGlobalAlert, showGlobalErrorAlert } from 'alert/actions';
+import AlertMessages from 'alert/AlertMessages';
 import * as TaskListApi from 'api/task-list-api';
 import * as ActionTypes from 'actions/action-types';
 import * as TaskListActions from 'actions/task-list-actions';
-import { showGlobalErrorAlert } from 'alert/actions';
 
 function* initializeTaskListState() {
   yield put(TaskListActions.getCurrentTaskList());
@@ -60,30 +61,15 @@ function* updateListViewDisplaySetup({ payload }) {
 
 function* reorderTaskLists({ payload }) {
   try {
-    if (!payload) {
-      return;
-    }
-    const {
-      source: { index: source },
-      destination: { index: destination },
-      activeLists,
-    } = payload;
+    if (!payload) return;
 
-    if (destination === source || !activeLists || !source || !destination)
-      return;
-
-    const taskListIdentifiers = move(source, destination, activeLists);
-    const identifiers = pluck('taskListIdentifier', taskListIdentifiers);
+    const { activeLists } = payload;
+    const identifiers = pluck('taskListIdentifier', activeLists);
 
     yield call(TaskListApi.sortTasksListsForUser, identifiers);
-    yield put({
-      type: ActionTypes.REORDER_TASKLISTS,
-    });
-    yield put({ type: ActionTypes.REORDER_TASKLISTS_SUCCESS });
+    yield put(showGlobalAlert(AlertMessages.UPDATED));
   } catch (error) {
-    console.log(`error ${error}`);
     yield put(showGlobalErrorAlert());
-    yield put({ type: ActionTypes.REORDER_TASKLISTS_FAILURE });
   }
 }
 

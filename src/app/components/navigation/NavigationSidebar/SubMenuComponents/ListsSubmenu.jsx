@@ -27,6 +27,7 @@ import ListOptionsMenu from 'components/tasklist/ListOptionsMenu/ListOptionsMenu
 import LabeledCollapse from 'components/common/LabeledCollapse/LabeledCollapse';
 import { Box } from '@material-ui/core';
 import { useBoolean } from 'hooks/useBoolean';
+import { move } from 'ramda';
 import Spacing from 'components/common/Spacing';
 import {
   SubmenuDivider,
@@ -95,9 +96,8 @@ const ListsSubmenu = () => {
 
   const handleDragEnd = useCallback(
     ({ destination, source }) => {
-      dispatch(
-        TaskListActions.reorderTaskLists(activeLists, source, destination),
-      );
+      setActiveLists(move(source.index, destination.index, activeLists));
+      dispatch(TaskListActions.reorderTaskLists(activeLists));
     },
     [activeLists, dispatch],
   );

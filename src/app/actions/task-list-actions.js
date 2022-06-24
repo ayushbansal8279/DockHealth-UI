@@ -561,19 +561,9 @@ export const updateColumnOnListPreferences = (
   payload: { setup, taskListIdentifier, currentUserIdentifier },
 });
 
-// export function reorderTaskLists(payload) {
-//   const { reorderedLists } = payload;
-
-//   TaskListApi.sortTasksListsForUser(reorderedLists)
-//     .then(() => 'success')
-//     .catch(error => {
-//       throw error;
-//     });
-// }
-
-export function reorderTaskLists(activeLists, source, destination) {
+export function reorderTaskLists(activeLists) {
   return {
     type: ActionTypes.REORDER_TASKLISTS,
-    payload: { activeLists, source, destination },
+    payload: { activeLists },
   };
 }
