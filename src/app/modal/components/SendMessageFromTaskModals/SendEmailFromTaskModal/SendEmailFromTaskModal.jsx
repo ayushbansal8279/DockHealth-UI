@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/camelcase */
 import Button from 'components/common/Button/Button';
 import Checkbox from 'components/common/Checkbox/Checkbox';
 import Input from 'components/common/Input/Input';
@@ -6,18 +5,13 @@ import TextEditor from 'components/common/TextEditor/TextEditor';
 import React, { useCallback, useRef, useState } from 'react';
 import { EditorState } from 'draft-js';
 import { useDispatch, useSelector } from 'react-redux';
-import {
-  convertFromEditorStateToOutput,
-  substituteNameForIdInTokenizedText,
-} from 'components/common/TextEditor/helpers';
+import { convertFromEditorStateToOutput } from 'components/common/TextEditor/helpers';
 import { selectedTaskSelector } from 'selectors/task-drawer-selectors';
 import { sendEmailForTask } from 'actions/task-actions';
 import { IconButton } from '@material-ui/core';
 import { Replay } from '@material-ui/icons';
 import palette from 'styles/palette';
 import { validateEmail } from 'helpers/validation-helper';
-import { formatDate } from 'helpers/formatters';
-
 import CustomTextEditor from 'components/task-drawer/CustomTextEditor/CustomTextEditor';
 import { createMentionEntities } from 'components/common/TextEditor/create-mention-entities';
 
@@ -34,34 +28,23 @@ import {
   ModalWrapper,
   TextWaringStyled,
 } from '../../styled';
-import {
-  CheckboxContainerStyled,
-  IncludeContainerStyled,
-  InfoHeaderTextStyled,
-  TextEditorContainerStyled,
-} from './styled';
 import { closeModal } from '../../../actions';
 import {
   AddEditLabelStyled,
   AttachmentContainerStyled,
   AttachmentsContainerStyled,
+  IncludeContainerStyled,
   InfoHeaderAttachmentsTextStyled,
+  InfoHeaderTextStyled,
   InputContainerStyled,
+  TextEditorContainerStyled,
 } from '../styled';
 import AddContactStep from '../../AddContactStep/AddContactStep';
+import TaskCheckBoxes from '../TaskCheckBoxes';
 
 const SendEmailFromTaskModal = () => {
   const selectedTask = useSelector(selectedTaskSelector);
-  const {
-    details,
-    comments,
-    attachments,
-    identifier,
-    description,
-    tokenizedDescription,
-    taskMentions,
-    tokenizedDetails,
-  } = selectedTask;
+  const { attachments, identifier, taskMentions } = selectedTask;
   const dispatch = useDispatch();
   const portalReference = useRef(null);
   const [subject, setSubject] = useState('');
@@ -94,66 +77,6 @@ const SendEmailFromTaskModal = () => {
     },
     [detailsState, taskMentions],
   );
-
-  const includeCheckBoxes = [
-    {
-      label: 'Task Description',
-      value: isTaskDescriptionIncluded,
-      onClick: () => {
-        const flag = !isTaskDescriptionIncluded;
-        if (flag) {
-          setIsTaskDescriptionIncluded(flag);
-          insertTextFromTask({
-            meta: description,
-            name: '_DESCRIPTION_',
-            tokenized: substituteNameForIdInTokenizedText(
-              tokenizedDescription,
-              taskMentions,
-            ),
-          });
-        }
-      },
-    },
-    {
-      label: 'Task Details',
-      value: isTaskDetailsIncluded,
-      onClick: () => {
-        const flag = !isTaskDetailsIncluded;
-        if (flag) {
-          setIsTaskDetailsIncluded(flag);
-          insertTextFromTask({
-            meta: details,
-            tokenized: substituteNameForIdInTokenizedText(
-              tokenizedDetails,
-              taskMentions,
-            ),
-          });
-        }
-      },
-    },
-    {
-      label: 'Task Comments',
-      value: isTaskCommentsIncluded,
-      onClick: () => {
-        const flag = !isTaskCommentsIncluded;
-        if (flag) {
-          setIsTaskCommentsIncluded(flag);
-          const commentsContent = comments
-            .map(comment => {
-              return `Comment by ${comment.creator.name} at ${formatDate(
-                comment.dateCreated,
-              )} \n ${comment.tokenizedComment}`;
-            })
-            .join('\n');
-          insertTextFromTask({
-            meta: commentsContent,
-            tokenized: commentsContent,
-            name: '_COMMENTS_',
-          });
-        }
-      },
-    },
-  ];
 
   const handleBlur = useCallback(
     event => {
@@ -280,19 +203,16 @@ const SendEmailFromTaskModal = () => {
             <Replay htmlColor={palette.coolGrey9} />
           </IconButton>
         </IncludeContainerStyled>
-        {includeCheckBoxes.map(checkbox => {
-          return (
-            <CheckboxContainerStyled key={checkbox.label}>
-              <Checkbox
-                size={18}
-                onClick={checkbox.onClick}
-                isChecked={checkbox.value}
-                isDisabled={checkbox.value}
-              />
-              <span>{checkbox.label}</span>
-            </CheckboxContainerStyled>
-          );
-        })}
+        <TaskCheckBoxes
+          isTaskDescriptionIncluded={isTaskDescriptionIncluded}
+          setIsTaskDescriptionIncluded={setIsTaskDescriptionIncluded}
+          isTaskDetailsIncluded={isTaskDetailsIncluded}
+          setIsTaskDetailsIncluded={setIsTaskDetailsIncluded}
+          isTaskCommentsIncluded={isTaskCommentsIncluded}
+          setIsTaskCommentsIncluded={setIsTaskCommentsIncluded}
+          insertTextFromTask={insertTextFromTask}
+          selectedTask={selectedTask}
+        />
         <TextEditorContainerStyled>
           <CustomTextEditor label="Email body">
             <TextEditor
