@@ -34,3 +34,9 @@ export const InputContainerStyled = styled.div`
   gap: 0.5rem;
   flex-direction: column;
 `;
+
+export const AddEditLabelStyled = styled.p`
+  text-align: right;
+  color: ${palette.brightBlue};
+  margin-bottom: 0.5rem;
+`;

@@ -3,9 +3,8 @@ import Button from 'components/common/Button/Button';
 import Checkbox from 'components/common/Checkbox/Checkbox';
 import Input from 'components/common/Input/Input';
 import TextEditor from 'components/common/TextEditor/TextEditor';
-import React, { useCallback, useState } from 'react';
+import React, { useCallback, useRef, useState } from 'react';
 import { EditorState } from 'draft-js';
-
 import { useDispatch, useSelector } from 'react-redux';
 import {
   convertFromEditorStateToOutput,
@@ -18,8 +17,12 @@ import { Replay } from '@material-ui/icons';
 import palette from 'styles/palette';
 import { validateEmail } from 'helpers/validation-helper';
 import { formatDate } from 'helpers/formatters';
+
 import CustomTextEditor from 'components/task-drawer/CustomTextEditor/CustomTextEditor';
 import { createMentionEntities } from 'components/common/TextEditor/create-mention-entities';
+
+import { CommunicationType } from 'helpers/task-helpers';
+import ContactsAutocomplete from 'components/common/ContactsAutoComplete/ContactsAutocomplete';
 import {
   CloseIcon,
   CloseIconButton,
@@ -39,11 +42,13 @@ import {
 } from './styled';
 import { closeModal } from '../../../actions';
 import {
+  AddEditLabelStyled,
   AttachmentContainerStyled,
   AttachmentsContainerStyled,
   InfoHeaderAttachmentsTextStyled,
   InputContainerStyled,
 } from '../styled';
+import AddContactStep from '../../AddContactStep/AddContactStep';
 
 const SendEmailFromTaskModal = () => {
   const selectedTask = useSelector(selectedTaskSelector);
@@ -58,9 +63,11 @@ const SendEmailFromTaskModal = () => {
     tokenizedDetails,
   } = selectedTask;
   const dispatch = useDispatch();
-  const [email, setEmail] = useState('');
+  const portalReference = useRef(null);
   const [subject, setSubject] = useState('');
+  const [contact, setContact] = useState(null);
   const [error, setError] = useState(false);
+  const [show, setShow] = useState(false);
   const [isTaskDescriptionIncluded, setIsTaskDescriptionIncluded] = useState(
     false,
   );
@@ -73,7 +80,6 @@ const SendEmailFromTaskModal = () => {
   );
 
   const [attachmentsToSend, setAttachmentsToSend] = useState([]);
-
   const insertTextFromTask = useCallback(
     meta => {
       const currentState = convertFromEditorStateToOutput(detailsState, true);
@@ -149,14 +155,40 @@ const SendEmailFromTaskModal = () => {
     },
   ];
 
-  const handleBlur = useCallback(event => {
-    const emailValue = event.target.value;
-    if (!validateEmail(emailValue)) {
-      setError(true);
-    } else {
-      setError(false);
-    }
-  }, []);
+  const handleBlur = useCallback(
+    event => {
+      const emailValue = event.target.value;
+
+      if (!validateEmail(emailValue)) {
+        setError(true);
+        setContact(null);
+      } else {
+        if (!contact) {
+          setContact({
+            value: emailValue,
+          });
+        }
+        setError(false);
+      }
+    },
+    [contact],
+  );
+
+  const renderAddOrEdit = () => {
+    if (contact && !contact.value && !contact.identifier)
+      return (
+        <AddEditLabelStyled onClick={() => setShow(true)}>
+          Add Contact
+        </AddEditLabelStyled>
+      );
+    if (contact && contact.identifier)
+      return (
+        <AddEditLabelStyled onClick={() => setShow(true)}>
+          Edit Contact
+        </AddEditLabelStyled>
+      );
+    return null;
+  };
 
   const handleReset = useCallback(() => {
     setIsTaskCommentsIncluded(false);
@@ -190,29 +222,54 @@ const SendEmailFromTaskModal = () => {
       </ModalHeaderContainerStyled>
       <ModalDescriptionContainer>
         <InputContainerStyled>
-          <Input
+          <ContactsAutocomplete
             type="email"
-            label="email"
-            name="email"
             placeholder="Type the email address"
-            InputLabelProps={{
-              shrink: true,
-            }}
-            onChange={event => setEmail(event.target.value)}
             onBlur={handleBlur}
-            value={email}
-            autoFocus
-            helperText={error ? 'Incorrect email' : null}
+            onChange={(event, newValue) => {
+              if (typeof newValue === 'string') {
+                if (validateEmail(newValue)) {
+                  setContact({ value: newValue });
+                } else {
+                  setError(true);
+                }
+              } else {
+                setContact(newValue);
+              }
+            }}
+            handleCloseIcon={() => setContact(null)}
             error={error}
+            autoFocus
           />
+          {renderAddOrEdit()}
+          {contact?.identifier && (
+            <Input
+              type="text"
+              label="Recipient’s Email"
+              disabled
+              value={contact.label}
+            />
+          )}
+          <div ref={portalReference}>
+            {show && (
+              <AddContactStep
+                type={CommunicationType.EMAIL}
+                show={show}
+                setContactData={setContact}
+                handleShow={setShow}
+                email={contact.value}
+                name={contact.label}
+                container={portalReference.current}
+                identifier={contact.identifier}
+              />
+            )}
+          </div>
           <Input
             type="text"
             label="subject"
             name="email"
             placeholder="Type the email subject"
-            InputLabelProps={{
-              shrink: true,
-            }}
+            shrink
             onChange={event => setSubject(event.target.value)}
             value={subject}
           />
@@ -286,7 +343,8 @@ const SendEmailFromTaskModal = () => {
           width="150px"
           variant="primary"
           disabled={
-            !validateEmail(email) || !detailsState.getCurrentContent().hasText()
+            !validateEmail(contact?.value) ||
+            !detailsState.getCurrentContent().hasText()
           }
           onClick={() => {
             dispatch(
@@ -294,7 +352,7 @@ const SendEmailFromTaskModal = () => {
                 message: subject,
                 details: convertFromEditorStateToOutput(detailsState, true)
                   .tokenizedText,
-                recipientContact: email,
+                recipientContact: contact.email,
                 taskAttachmentIdentifiers: attachmentsToSend,
                 taskIdentifier: identifier,
               }),
