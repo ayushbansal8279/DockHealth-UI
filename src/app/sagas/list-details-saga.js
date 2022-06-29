@@ -125,8 +125,8 @@ function* getTasksGroupsList() {
     if (!taskListIdentifier) {
       return;
     }
-
-    const groups = yield call(getGroupsByListId, taskListIdentifier);
+    const status = yield select(currentTaskListTasksStatusSelector);
+    const groups = yield call(getGroupsByListId, taskListIdentifier, status);
     yield put({
       type: ActionTypes.GET_TASKS_GROUPS_LIST_SUCCESS,
       groups,
@@ -142,13 +142,14 @@ function* getCurrentListTasks() {
     const selectedFilters = yield select(selectedFiltersInMegaFilterSelector);
     const sort = yield select(taskDetailsSortSelector);
     const searchTerm = yield select(searchTermSelector);
+    const status = yield select(currentTaskListTasksStatusSelector);
 
     if (searchTerm) {
       const groupedTasks = yield call(
         ListDetailsApi.searchTasksByTaskList,
         taskListIdentifier,
         searchTerm,
-        TaskStatus.INCOMPLETE,
+        status,
       );
       yield put({
         type: ActionTypes.GET_CURRENT_LIST_TASKS_SUCCESS,
@@ -173,7 +174,7 @@ function* getCurrentListTasks() {
           put(
             ListDetailsActions.getTasksForTaskGroups({
               taskGroupIdentifier,
-              status: TaskStatus.INCOMPLETE,
+              status,
               startPosition: 0,
               sort,
               refresh: true,
@@ -185,7 +186,7 @@ function* getCurrentListTasks() {
       const groupedTasks = yield call(
         ListDetailsApi.getFilteredTasksForList,
         taskListIdentifier,
-        TaskStatus.INCOMPLETE,
+        status,
         sort,
         selectedFilters,
       );
@@ -197,49 +198,6 @@ function* getCurrentListTasks() {
   } catch {
     yield put(showGlobalErrorAlert());
     yield put({ type: ActionTypes.GET_CURRENT_LIST_TASKS_FAILURE });
-  }
-}
-
-function* getCurrentListCompleteTasks() {
-  try {
-    const taskListIdentifier = yield select(currentTaskListIdentifierSelector);
-    const selectedFilters = yield select(selectedFiltersInMegaFilterSelector);
-    const sort = yield select(taskDetailsSortSelector);
-    const searchTerm = yield select(searchTermSelector);
-
-    let groupedTasks;
-
-    if (searchTerm) {
-      groupedTasks = yield call(
-        ListDetailsApi.searchTasksByTaskList,
-        taskListIdentifier,
-        searchTerm,
-        TaskStatus.COMPLETE,
-      );
-    } else if (!selectedFilters || isEmpty(selectedFilters)) {
-      groupedTasks = yield call(
-        ListDetailsApi.getListTasksGroupedByTaskGroup,
-        taskListIdentifier,
-        TaskStatus.COMPLETE,
-        sort,
-        0,
-      );
-    } else {
-      groupedTasks = yield call(
-        ListDetailsApi.getFilteredTasksForList,
-        taskListIdentifier,
-        TaskStatus.COMPLETE,
-        sort,
-        selectedFilters,
-      );
-    }
-
-    yield put({
-      type: ActionTypes.GET_CURRENT_LIST_COMPLETE_TASKS_SUCCESS,
-      groupedTasks,
-    });
-  } catch {
-    yield put({ type: ActionTypes.GET_CURRENT_LIST_COMPLETE_TASKS_FAILURE });
   }
 }
 
@@ -270,13 +228,7 @@ function* getCurrentTaskListFilterOptions() {
 function* refreshGroupedTasks({ payload }) {
   try {
     const { withLoader = true } = payload || {};
-    const status = yield select(currentTaskListTasksStatusSelector);
-
-    if (status === TaskStatus.INCOMPLETE) {
-      yield put(ListDetailsActions.getCurrentListTasks(withLoader));
-    } else {
-      yield put(ListDetailsActions.getCurrentListCompleteTasks());
-    }
+    yield put(ListDetailsActions.getCurrentListTasks(withLoader));
   } catch (error) {
     console.log(error);
   }
@@ -501,13 +453,10 @@ function* initializeListDetailsTableState() {
       }
 
       yield all([
-        status === TaskStatus.INCOMPLETE &&
-          put(ListDetailsActions.getTasksGroupsList()),
+        put(ListDetailsActions.getTasksGroupsList()),
         put(ListDetailsActions.getListDetailsTaskCounters(taskListIdentifier)),
-        status === TaskStatus.INCOMPLETE
-          ? put(ListDetailsActions.getCurrentListTasks())
-          : put(ListDetailsActions.getCurrentListCompleteTasks()),
       ]);
+      yield put(ListDetailsActions.getCurrentListTasks());
     }
 
     const isSelectedTask = yield select(taskIsSelectedSelector);
@@ -535,6 +484,7 @@ function* doCreateTask(payload) {
       autoOpenDrawer,
     } = payload;
     const { taskListIdentifier } = yield select(locationParametersSelector);
+    const status = yield select(currentTaskListTasksStatusSelector);
 
     if (taskListIdentifier) {
       const createdTask = yield call(createTaskApi, {
@@ -564,7 +514,7 @@ function* doCreateTask(payload) {
         } else if (!taskGroup) {
           yield call(getTasksForTaskGroups, {
             taskGroupIdentifier,
-            status: 'INCOMPLETE',
+            status,
           });
         } else {
           yield put({
@@ -591,14 +541,9 @@ function* doCreateTask(payload) {
 
 function* searchCurrentListTasks() {
   try {
-    const status = yield select(currentTaskListTasksStatusSelector);
     onSearchChanged();
 
-    yield put(
-      status === TaskStatus.INCOMPLETE
-        ? ListDetailsActions.getCurrentListTasks()
-        : ListDetailsActions.getCurrentListCompleteTasks(),
-    );
+    yield put(ListDetailsActions.getCurrentListTasks());
   } catch (error) {
     yield put(showGlobalErrorAlert());
   }
@@ -827,10 +772,6 @@ export default function* watchTasksGroupsList() {
     doGetListDetailsCounters,
   );
   yield takeLatest(ActionTypes.GET_CURRENT_LIST_TASKS, getCurrentListTasks);
-  yield takeLatest(
-    ActionTypes.GET_CURRENT_LIST_COMPLETE_TASKS,
-    getCurrentListCompleteTasks,
-  );
   yield takeLatest(
     ActionTypes.REFRESH_LIST_DETAILS_GROUPED_TASKS,
     refreshGroupedTasks,

@@ -37,7 +37,7 @@ import {
   DroppablePlaceholder,
 } from '../ListDetailsTableView/styled';
 
-const ListDetailsOpenedTasks = ({
+const ListDetailsTasks = ({
   createTaskGroupList,
   toggleCompleteTask,
   groupedTasks,
@@ -399,4 +399,4 @@ const ListDetailsOpenedTasks = ({
   );
 };
 
-export default ListDetailsOpenedTasks;
+export default ListDetailsTasks;

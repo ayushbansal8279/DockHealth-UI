@@ -249,7 +249,7 @@ const initializeListDetailsViewHooks = () => {
     ({ taskGroupIdentifier, startPosition, viewMode, refresh }) => {
       const payload = {
         taskGroupIdentifier,
-        status: 'INCOMPLETE',
+        status: params.tabName || 'INCOMPLETE',
         startPosition,
         sort,
         viewMode,
@@ -257,24 +257,7 @@ const initializeListDetailsViewHooks = () => {
       };
       dispatch(ListDetailsActions.getTasksForTaskGroups(payload));
     },
-    [dispatch, sort],
-  );
-
-  const loadMoreTasksForList = useCallback(
-    ({ status, startPosition, viewMode }) => {
-      const { taskListIdentifier } = params;
-
-      actions.getListTasksGroupedByTaskGroup(
-        taskListIdentifier,
-        sort,
-        status,
-        startPosition,
-        0,
-        true,
-        viewMode,
-      );
-    },
-    [actions, params, sort],
+    [dispatch, params.tabName, sort],
   );
 
   const toggleTaskCompletedStatus = useCallback(
@@ -510,7 +493,6 @@ const initializeListDetailsViewHooks = () => {
     isCompletedTasksFetching,
     isFetching,
     isTourOpen,
-    loadMoreTasksForList,
     loadTasksForTaskGroup,
     members,
     openedTasks,

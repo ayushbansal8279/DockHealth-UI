@@ -189,18 +189,6 @@ const ListDetailsReducer = (state = initialState, action) => {
       };
     }
 
-    case ActionTypes.GET_CURRENT_LIST_COMPLETE_TASKS_SUCCESS: {
-      const { groupedTasks } = action;
-
-      return {
-        ...state,
-        completedGroupedTasks: {
-          taskGroups: groupedTasks,
-        },
-        isCompletedTasksFetching: false,
-      };
-    }
-
     case ActionTypes.REQUEST_ALL_LIST_DETAILS_GROUPS: {
       return {
         ...state,
@@ -327,13 +315,6 @@ const ListDetailsReducer = (state = initialState, action) => {
         tasks: [],
         completedTasks: [],
         showingCompletedTasks: false,
-      };
-
-    case ActionTypes.GET_CURRENT_LIST_COMPLETE_TASKS:
-      return {
-        ...state,
-        completedTasks: [],
-        isCompletedTasksFetching: true,
       };
 
     case ActionTypes.GET_LIST_DETAILS_TASK_COUNTERS_FAILURE:

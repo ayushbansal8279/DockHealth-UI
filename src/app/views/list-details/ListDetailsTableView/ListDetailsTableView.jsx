@@ -6,8 +6,7 @@ import TaskDrawer from 'components/task-drawer/TaskDrawer/TaskDrawer';
 import BulkEditSection from 'components/tasklist/BulkEditSection/BulkEditSection';
 import HorizontallyScrolledViewLayout from 'components/template/HorizontallyScrolledViewLayout/HorizontallyScrolledViewLayout';
 import StickyContainer from 'components/common/HorizontalScroll/StickyContainer';
-import OpenedTasksView from '../ListDetailsOpenedTasksContainer/ListDetailsOpenedTasksContainer';
-import CompletedTasksView from '../ListDetailsCompletedTasksContainer/ListDetailsCompletedTasksContainer';
+import TasksView from '../ListDetailsTasksContainer/ListDetailsTasksContainer';
 import ListDetailsHeader from '../ListDetailsHeader/ListDetailsHeader';
 import ListDetailsToolbar from '../ListDetailsToolbar/ListDetailsToolbar';
 import initializeListDetailsViewHooks from './hooks';
@@ -26,7 +25,6 @@ const ListDetailsTableView = () => {
     isCompletedTasksFetching,
     isFetching,
     isTourOpen,
-    loadMoreTasksForList,
     loadTasksForTaskGroup,
     openedTasks,
     quickAddTask,
@@ -63,7 +61,6 @@ const ListDetailsTableView = () => {
       checked: displayListPreferences.SHOW_WORKFLOW_COMPLETED_TASKS,
     },
   ];
-
   return (
     <HorizontallyScrolledViewLayout
       header={
@@ -95,41 +92,25 @@ const ListDetailsTableView = () => {
                 additionalOptions={additionalToolbarOptions}
               />
             </StickyContainer>
-            {selectedTab === TaskListTabName.COMPLETE ? (
-              <CompletedTasksView
-                viewSetup={displayListPreferences}
-                toggleCompleteTask={toggleTaskCompletedStatus}
-                onTaskUpdate={handleTaskUpdate}
-                searchValue={searchValue}
-                listUniqueKey={taskListIdentifier}
-                loadMoreTasksForList={loadMoreTasksForList}
-                sort={sort}
-                onSortChange={compose(
-                  dispatch,
-                  ListDetailsActions.sortListDetailsTasks,
-                )}
-              />
-            ) : (
-              <OpenedTasksView
-                viewSetup={displayListPreferences}
-                taskListIdentifier={taskListIdentifier}
-                quickAddTask={quickAddTask}
-                createTaskGroupList={handleCreateGroup}
-                toggleCompleteTask={toggleTaskCompletedStatus}
-                onTaskUpdate={handleTaskUpdate}
-                updateWorkflowStatus={handleUpdateWorkflowStatus}
-                searchValue={searchValue}
-                sort={sort}
-                onSortChange={compose(
-                  dispatch,
-                  ListDetailsActions.sortListDetailsTasks,
-                )}
-                listUniqueKey={taskListIdentifier}
-                taskCounters={taskCounters}
-                loadTasksForTaskGroup={loadTasksForTaskGroup}
-                resetSort={resetSort}
-              />
-            )}
+            <TasksView
+              viewSetup={displayListPreferences}
+              taskListIdentifier={taskListIdentifier}
+              quickAddTask={quickAddTask}
+              createTaskGroupList={handleCreateGroup}
+              toggleCompleteTask={toggleTaskCompletedStatus}
+              onTaskUpdate={handleTaskUpdate}
+              updateWorkflowStatus={handleUpdateWorkflowStatus}
+              searchValue={searchValue}
+              sort={sort}
+              onSortChange={compose(
+                dispatch,
+                ListDetailsActions.sortListDetailsTasks,
+              )}
+              listUniqueKey={taskListIdentifier}
+              taskCounters={taskCounters}
+              loadTasksForTaskGroup={loadTasksForTaskGroup}
+              resetSort={resetSort}
+            />
           </TaskViewContainer>
           <TaskDrawer
             fromFirstAddTask={taskCounters?.incomplete === 0}
