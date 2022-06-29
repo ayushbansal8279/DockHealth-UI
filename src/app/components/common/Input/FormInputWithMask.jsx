@@ -1,24 +1,19 @@
 import React from 'react';
 import { useFormContext } from 'react-hook-form';
 import { useMount, useUnmount } from 'react-use';
+import InputMask from 'react-input-mask';
 import Input from './Input';
 
-const FormInput = React.forwardRef(
+const FormInputWithMask = React.forwardRef(
   (
-    {
-      name,
-      onChange,
-      inputComponent: InputComponent = Input,
-      validate,
-      disableClearErrorOnKeyUp,
-      ...restProps
-    },
+    { name, onChange, validate, disableClearErrorOnKeyUp, mask, ...restProps },
     reference,
   ) => {
     const {
       register,
       clearErrors,
       formState: { errors },
+      inputComponent: InputComponent = Input,
       watch,
       setValue,
       unregister,
@@ -48,20 +43,29 @@ const FormInput = React.forwardRef(
     };
 
     return (
-      <InputComponent
-        setError={setError}
-        ref={reference}
+      <InputMask
+        mask={mask}
         name={name}
         value={value ?? ''}
+        alwaysShowMask
         onChange={handleChange}
-        error={error}
-        errors={errors}
-        onKeyUp={() => (disableClearErrorOnKeyUp ? null : clearErrors(name))}
-        clearErrors={clearErrors}
-        {...restProps}
-      />
+      >
+        {() => (
+          <InputComponent
+            error={error}
+            errors={errors}
+            ref={reference}
+            setError={setError}
+            onKeyUp={() =>
+              disableClearErrorOnKeyUp ? null : clearErrors(name)
+            }
+            clearErrors={clearErrors}
+            {...restProps}
+          />
+        )}
+      </InputMask>
     );
   },
 );
 
-export default FormInput;
+export default FormInputWithMask;
