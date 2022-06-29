@@ -5,7 +5,7 @@ import { useBoolean } from 'hooks/useBoolean';
 import usePrevious from 'hooks/use-previous';
 import Tooltip from 'components/common/Tooltip/Tooltip';
 import TaskItemPopover from 'components/task/TaskItemPopover/TaskItemPopover';
-import CustomTextEditor from 'components/task-drawer/CustomTextEditor/CustomTextEditor';
+import CustomTextEditor from 'components/common/CustomTextEditor/CustomTextEditor';
 import TextEditor from 'components/common/TextEditor/TextEditor';
 import { createMentionEntities } from 'components/common/TextEditor/create-mention-entities';
 import { useMentionsEditorState } from 'components/common/TextEditor/use-mentions-editor-state';

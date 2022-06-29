@@ -52,6 +52,7 @@ import AnalyticsView from 'views/analytics/AnalyticsView';
 import { DashboardTasksTab } from 'helpers/dashboard-helpers';
 import SingleTaskView from 'views/single-task/SingleTaskView';
 import { UserOrganizationRole } from 'helpers/user-helper';
+import Templates from 'views/Templates/Templates';
 import { onLeaveGlobalSearch } from './TemplateCoreSubscriptionPlan/GlobalSearch';
 import {
   onEnterListDetailsView,
@@ -117,6 +118,11 @@ export const SETTINGS_ROUTES = [
     path: '/custom-fields/:tabName?',
     RouteComponent: CustomFieldsView,
     allowedToRoles: [ADMIN, OWNER, MEMBER, GUEST],
+  },
+  {
+    path: '/templates',
+    RouteComponent: Templates,
+    allowedToRoles: [ADMIN, OWNER],
   },
 ];
 

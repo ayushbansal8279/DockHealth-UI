@@ -12,7 +12,7 @@ import { IconButton } from '@material-ui/core';
 import { Replay } from '@material-ui/icons';
 import palette from 'styles/palette';
 import { validateEmail } from 'helpers/validation-helper';
-import CustomTextEditor from 'components/task-drawer/CustomTextEditor/CustomTextEditor';
+import CustomTextEditor from 'components/common/CustomTextEditor/CustomTextEditor';
 import { createMentionEntities } from 'components/common/TextEditor/create-mention-entities';
 import ReactModal from 'react-modal';
 

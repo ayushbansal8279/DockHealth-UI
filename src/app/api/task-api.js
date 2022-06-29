@@ -1,3 +1,4 @@
+/* eslint-disable no-console */
 /* eslint-disable eqeqeq */
 /* eslint-disable sonarjs/no-identical-functions */
 import moment from 'moment';

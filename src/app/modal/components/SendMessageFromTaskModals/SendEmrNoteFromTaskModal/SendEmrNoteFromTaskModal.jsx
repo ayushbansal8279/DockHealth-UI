@@ -9,7 +9,7 @@ import { Replay } from '@material-ui/icons';
 import palette from 'styles/palette';
 import Button from 'components/common/Button/Button';
 import { closeModal } from 'modal/actions';
-import CustomTextEditor from 'components/task-drawer/CustomTextEditor/CustomTextEditor';
+import CustomTextEditor from 'components/common/CustomTextEditor/CustomTextEditor';
 import TextEditor from 'components/common/TextEditor/TextEditor';
 import Select from 'components/common/Select/Select';
 import { EmrNoteTypeOptions } from 'helpers/task-helpers';

@@ -75,6 +75,7 @@ function AddContactStep({
           });
           break;
         default:
+          // eslint-disable-next-line no-console
           console.warn(`No Value provided for ${type}`);
           break;
       }
