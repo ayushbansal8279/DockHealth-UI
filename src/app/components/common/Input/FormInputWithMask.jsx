@@ -29,8 +29,6 @@ const FormInputWithMask = React.forwardRef(
 
     const value = watch(name);
 
-    console.log(errors);
-
     useMount(() => {
       register(name, { validate });
     });
@@ -40,7 +38,7 @@ const FormInputWithMask = React.forwardRef(
     });
 
     const handleChange = event => {
-      setValue(name, event.target.value);
+      setValue(name, event.target.value, { shouldDirty: true });
       if (typeof onChange === 'function') onChange(event);
     };
 

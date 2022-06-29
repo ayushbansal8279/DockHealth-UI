@@ -1,7 +1,7 @@
 import { withStyles } from '@material-ui/core/styles';
 import { ButtonGroup } from '@material-ui/core';
+import styled from 'styled-components';
 
-// eslint-disable-next-line import/prefer-default-export
 export const ButtonGroupFlexStyled = withStyles({
   root: {
     display: 'flex',
@@ -9,3 +9,7 @@ export const ButtonGroupFlexStyled = withStyles({
     gap: '50px',
   },
 })(ButtonGroup);
+
+export const ContactStepFormStyled = styled.form`
+  width: 100%;
+`;

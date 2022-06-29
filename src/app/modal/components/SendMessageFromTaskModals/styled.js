@@ -38,7 +38,15 @@ export const InputContainerStyled = styled.div`
 export const AddEditLabelStyled = styled.p`
   text-align: right;
   color: ${palette.brightBlue};
+  text-decoration: underline;
+  text-decoration-color: transparent;
   margin-bottom: 0.5rem;
+  cursor: pointer;
+  transition: all 0.2s;
+  &:hover,
+  &:focus {
+    text-decoration-color: ${palette.brightBlue};
+  }
 `;
 
 export const CheckboxContainerStyled = styled.div`

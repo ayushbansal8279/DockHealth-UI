@@ -3,8 +3,8 @@ import Autocomplete from '@material-ui/lab/Autocomplete';
 import CircularProgress from '@material-ui/core/CircularProgress';
 import { withStyles } from '@material-ui/core/styles';
 import { getAllContacts } from 'api/contacts-api';
-import { CloseIcon } from 'components/tour-wizard/Tour/styled';
 import { matchSorter } from 'match-sorter';
+import { CommunicationType } from 'helpers/task-helpers';
 import Input from '../Input/Input';
 import { RenderOptionStyled } from './styled';
 
@@ -23,17 +23,18 @@ const StandardAutocompleteMUI = withStyles({
   },
 })(Autocomplete);
 
-const ContactsAutocomplete = ({
+const ContactsAutoComplete = ({
   type,
   onChange,
   onBlur,
   placeholder,
   error,
-  handleCloseIcon,
+  errorMessage,
   ...restProps
 }) => {
   const [open, setOpen] = useState(false);
   const [contacts, setContacts] = useState([]);
+
   const loading = open && contacts.length === 0;
 
   useEffect(() => {
@@ -46,20 +47,39 @@ const ContactsAutocomplete = ({
     (async () => {
       const response = await getAllContacts();
       if (active) {
-        setContacts(
-          response.map(contact => ({
-            label: contact.name,
-            value: contact.email,
-            identifier: contact.identifier,
-          })),
-        );
+        switch (type) {
+          case CommunicationType.EMAIL:
+            setContacts(
+              response
+                .filter(contact => contact.email)
+                .map(contact => ({
+                  label: contact.name,
+                  value: contact.email,
+                  identifier: contact.identifier,
+                })),
+            );
+            break;
+          case CommunicationType.FAX:
+            setContacts(
+              response
+                .filter(contact => contact.faxPhoneNumber)
+                .map(contact => ({
+                  label: contact.name,
+                  value: contact.faxPhoneNumber,
+                  identifier: contact.identifier,
+                })),
+            );
+            break;
+          default:
+            setContacts([]);
+        }
       }
     })();
 
     return () => {
       active = false;
     };
-  }, [loading]);
+  }, [loading, type]);
 
   React.useEffect(() => {
     if (!open) {
@@ -78,7 +98,6 @@ const ContactsAutocomplete = ({
       onClose={() => {
         setOpen(false);
       }}
-      closeIcon={<CloseIcon onClick={handleCloseIcon} fontSize="small" />}
       loadingText="Getting contacts"
       onBlur={onBlur}
       onChange={onChange}
@@ -99,9 +118,8 @@ const ContactsAutocomplete = ({
         return (
           <Input
             {...parameters}
-            label="Email"
             autoFocus
-            helperText={error ? 'Incorrect email' : null}
+            helperText={error ? errorMessage : null}
             error={error}
             placeholder={placeholder}
             shrink
@@ -124,4 +142,4 @@ const ContactsAutocomplete = ({
   );
 };
 
-export default ContactsAutocomplete;
+export default ContactsAutoComplete;

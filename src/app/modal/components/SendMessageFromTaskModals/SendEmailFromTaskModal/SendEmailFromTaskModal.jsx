@@ -2,7 +2,7 @@ import Button from 'components/common/Button/Button';
 import Checkbox from 'components/common/Checkbox/Checkbox';
 import Input from 'components/common/Input/Input';
 import TextEditor from 'components/common/TextEditor/TextEditor';
-import React, { useCallback, useRef, useState } from 'react';
+import React, { useCallback, useState } from 'react';
 import { EditorState } from 'draft-js';
 import { useDispatch, useSelector } from 'react-redux';
 import { convertFromEditorStateToOutput } from 'components/common/TextEditor/helpers';
@@ -14,9 +14,10 @@ import palette from 'styles/palette';
 import { validateEmail } from 'helpers/validation-helper';
 import CustomTextEditor from 'components/task-drawer/CustomTextEditor/CustomTextEditor';
 import { createMentionEntities } from 'components/common/TextEditor/create-mention-entities';
+import ReactModal from 'react-modal';
 
 import { CommunicationType } from 'helpers/task-helpers';
-import ContactsAutocomplete from 'components/common/ContactsAutoComplete/ContactsAutocomplete';
+import ContactsAutoComplete from 'components/common/ContactsAutoComplete/ContactsAutocomplete';
 import {
   CloseIcon,
   CloseIconButton,
@@ -30,7 +31,6 @@ import {
 } from '../../styled';
 import { closeModal } from '../../../actions';
 import {
-  AddEditLabelStyled,
   AttachmentContainerStyled,
   AttachmentsContainerStyled,
   IncludeContainerStyled,
@@ -39,14 +39,14 @@ import {
   InputContainerStyled,
   TextEditorContainerStyled,
 } from '../styled';
-import AddContactStep from '../../AddContactStep/AddContactStep';
+import AddContactStep from '../../AddContactModal/AddContactModal';
 import TaskCheckBoxes from '../TaskCheckBoxes';
+import { renderAddOrEdit } from '../helpers';
 
 const SendEmailFromTaskModal = () => {
   const selectedTask = useSelector(selectedTaskSelector);
   const { attachments, identifier, taskMentions } = selectedTask;
   const dispatch = useDispatch();
-  const portalReference = useRef(null);
   const [subject, setSubject] = useState('');
   const [contact, setContact] = useState(null);
   const [error, setError] = useState(false);
@@ -78,7 +78,7 @@ const SendEmailFromTaskModal = () => {
     [detailsState, taskMentions],
   );
 
-  const handleBlur = useCallback(
+  const handleEmailBlur = useCallback(
     event => {
       const emailValue = event.target.value;
 
@@ -96,22 +96,6 @@ const SendEmailFromTaskModal = () => {
     },
     [contact],
   );
-
-  const renderAddOrEdit = () => {
-    if (contact && !contact.value && !contact.identifier)
-      return (
-        <AddEditLabelStyled onClick={() => setShow(true)}>
-          Add Contact
-        </AddEditLabelStyled>
-      );
-    if (contact && contact.identifier)
-      return (
-        <AddEditLabelStyled onClick={() => setShow(true)}>
-          Edit Contact
-        </AddEditLabelStyled>
-      );
-    return null;
-  };
 
   const handleReset = useCallback(() => {
     setIsTaskCommentsIncluded(false);
@@ -145,11 +129,15 @@ const SendEmailFromTaskModal = () => {
       </ModalHeaderContainerStyled>
       <ModalDescriptionContainer>
         <InputContainerStyled>
-          <ContactsAutocomplete
-            type="email"
+          <ContactsAutoComplete
+            type={CommunicationType.EMAIL}
             placeholder="Type the email address"
-            onBlur={handleBlur}
-            onChange={(event, newValue) => {
+            onBlur={handleEmailBlur}
+            onChange={(event, newValue, reason) => {
+              if (reason === 'clear') {
+                setContact(null);
+                return;
+              }
               if (typeof newValue === 'string') {
                 if (validateEmail(newValue)) {
                   setContact({ value: newValue });
@@ -160,33 +148,21 @@ const SendEmailFromTaskModal = () => {
                 setContact(newValue);
               }
             }}
-            handleCloseIcon={() => setContact(null)}
             error={error}
             autoFocus
+            disabled={show}
+            label="Email"
+            errorMessage="Incorrect email"
           />
-          {renderAddOrEdit()}
+          {renderAddOrEdit(contact, setShow)}
           {contact?.identifier && (
             <Input
               type="text"
-              label="Recipient’s Email"
+              label="Recipient’s Name"
               disabled
               value={contact.label}
             />
           )}
-          <div ref={portalReference}>
-            {show && (
-              <AddContactStep
-                type={CommunicationType.EMAIL}
-                show={show}
-                setContactData={setContact}
-                handleShow={setShow}
-                email={contact.value}
-                name={contact.label}
-                container={portalReference.current}
-                identifier={contact.identifier}
-              />
-            )}
-          </div>
           <Input
             type="text"
             label="subject"
@@ -272,7 +248,7 @@ const SendEmailFromTaskModal = () => {
                 message: subject,
                 details: convertFromEditorStateToOutput(detailsState, true)
                   .tokenizedText,
-                recipientContact: contact.email,
+                recipientContact: contact.value,
                 taskAttachmentIdentifiers: attachmentsToSend,
                 taskIdentifier: identifier,
               }),
@@ -283,6 +259,24 @@ const SendEmailFromTaskModal = () => {
           send
         </Button>
       </ModalFooterStyled>
+      <ReactModal
+        isOpen={show}
+        overlayClassName="modal-overlay"
+        className="modal-content"
+        onRequestClose={() => {
+          setShow(false);
+        }}
+      >
+        <AddContactStep
+          type={CommunicationType.EMAIL}
+          show={show}
+          setContactData={setContact}
+          handleShow={setShow}
+          email={contact?.value}
+          name={contact?.label}
+          identifier={contact?.identifier}
+        />
+      </ReactModal>
     </ModalWrapper>
   );
 };
