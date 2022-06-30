@@ -14,8 +14,8 @@ import {
   convertToEditorState,
 } from 'components/common/TextEditor/helpers';
 import PopoverBottomBar from 'components/task/PopoverBottomBar/PopoverBottomBar';
-import { Text, LongTextBox, Divider } from './styled';
 import { FieldCharakterLimit } from 'helpers/field-type-helpers';
+import { Text, LongTextBox, Divider } from './styled';
 
 const TaskItemLongText = ({ value = '', onChange, openDrawer, field }) => {
   const detailsReference = useRef(null);
