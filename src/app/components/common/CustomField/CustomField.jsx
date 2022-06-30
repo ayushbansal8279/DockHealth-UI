@@ -163,6 +163,7 @@ const CustomField = ({
             inputRef={inputReference}
             ref={componentReference}
             onChange={() => setWasChanged(true)}
+            disableClearErrorOnKeyUp
           />
         );
       case FieldType.DROPDOWN: {

@@ -318,3 +318,11 @@ export function updateSubtasksInTaskWithCallback(
 }
 export const isColumnChecked = (columns, columnName) =>
   !!columns?.find(c => c.identifier === columnName)?.isChecked;
+
+export const EmrNoteTypeOptions = {
+  COMMUNICATION_NOTE: 'Communication note',
+  REFERRAL_NOTE: 'Referral note',
+  CONSULT_NOTE: 'Consult note',
+  PROCEDURE_NOTE: 'Procedure note',
+  PROGRESS_NOTE: 'Progress note',
+};

@@ -827,6 +827,13 @@ export function sendEmailForTask(communicationDetails) {
   };
 }
 
+export function sendEmrForTask(emrData) {
+  return {
+    type: ActionTypes.SEND_EMR_FOR_TASK,
+    emrData,
+  };
+}
+
 export function markTaskAsRead(taskIdentifier) {
   return {
     type: ActionTypes.MARK_TASK_AS_READ,

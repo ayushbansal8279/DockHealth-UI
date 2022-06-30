@@ -40,3 +40,41 @@ export const InputContainerStyled = styled.div`
   gap: 0.5rem;
   flex-direction: column;
 `;
+
+export const AddEditLabelStyled = styled.p`
+  text-align: right;
+  color: ${palette.brightBlue};
+  text-decoration: underline;
+  text-decoration-color: transparent;
+  margin-bottom: 0.5rem;
+  cursor: pointer;
+  transition: all 0.2s;
+  &:hover,
+  &:focus {
+    text-decoration-color: ${palette.brightBlue};
+  }
+`;
+
+export const CheckboxContainerStyled = styled.div`
+  display: flex;
+  align-content: center;
+  justify-content: flex-start;
+  align-items: center;
+  width: 100%;
+  gap: 0.5rem;
+`;
+
+export const IncludeContainerStyled = styled.div`
+  padding-top: 1.5rem;
+  display: flex;
+  justify-content: space-between;
+  width: 100%;
+  align-items: center;
+`;
+
+export const InfoHeaderTextStyled = styled.p`
+  color: ${palette.coolGrey9};
+  font-family: 'Montserrat';
+  font-weight: 600;
+  margin: 0;
+`;
