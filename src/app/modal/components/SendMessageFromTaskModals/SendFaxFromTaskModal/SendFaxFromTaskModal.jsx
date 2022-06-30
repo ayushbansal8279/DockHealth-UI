@@ -83,7 +83,10 @@ const SendFaxFromTaskModal = () => {
       setFaxError(false);
     }
   };
-  const isValidToSend = !!(validateFaxInput(contact?.value ?? '') && message);
+  const isValidToSend = !!(
+    validateFaxInput(contact?.value ?? '') &&
+    message.getCurrentContent().hasText()
+  );
 
   return (
     <ModalWrapper width="600px">
