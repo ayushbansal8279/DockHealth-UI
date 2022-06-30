@@ -99,6 +99,7 @@ const onSubmit = ({
       family_name: lastName,
       given_name: firstName,
       'custom:referral': referral,
+      'custom:app_environment': process.env.APP_ENV,
     });
     setDialogTitle(`Please confirm your email.`);
     setDialogMessage(

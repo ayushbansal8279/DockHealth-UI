@@ -34,6 +34,7 @@ const exposed = [
   'INTERCOM_APP_CODE',
   'PHONE_COUNTRY_CODES',
   'DYNATRACE_SCRIPT',
+  'APP_ENV',
 ];
 const exposedEnvironment = {};
 exposed.forEach(i => {
