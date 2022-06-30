@@ -6,8 +6,9 @@ import {
   convertToRaw,
   CompositeDecorator,
   SelectionState,
+  convertFromRaw,
 } from 'draft-js';
-import { draftToMarkdown } from 'markdown-draft-js';
+import { draftToMarkdown, markdownToDraft } from 'markdown-draft-js';
 import { createMentionEntities } from './create-mention-entities';
 import { HighlightedElement } from './styled';
 import Placeholder from './AddOns/Placeholder/Placeholder';
@@ -114,6 +115,34 @@ export const convertFromEditorStateToOutput = (editorState, handleRichText) => {
     tokenizedText: substituteNameForIdInText(textValue, mentions),
     mentions,
   };
+};
+
+export const addStylesToText = text => {
+  const extendedStyleItems = {
+    STRIKETHROUGH: {
+      open: function open() {
+        return '~~';
+      },
+
+      close: function close() {
+        return '~~';
+      },
+    },
+    UNDERLINE: {
+      open: function open() {
+        return '++';
+      },
+
+      close: function close() {
+        return '++';
+      },
+    },
+  };
+
+  const text2 = markdownToDraft(text, {
+    styleItems: extendedStyleItems,
+  });
+  return convertFromRaw(text2);
 };
 
 const HighlightedComponent = ({ children }) => {

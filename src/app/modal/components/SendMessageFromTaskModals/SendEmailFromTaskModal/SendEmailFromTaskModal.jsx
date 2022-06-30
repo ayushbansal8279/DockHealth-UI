@@ -5,7 +5,10 @@ import TextEditor from 'components/common/TextEditor/TextEditor';
 import React, { useCallback, useState } from 'react';
 import { EditorState } from 'draft-js';
 import { useDispatch, useSelector } from 'react-redux';
-import { convertFromEditorStateToOutput } from 'components/common/TextEditor/helpers';
+import {
+  addStylesToText,
+  convertFromEditorStateToOutput,
+} from 'components/common/TextEditor/helpers';
 import { selectedTaskSelector } from 'selectors/task-drawer-selectors';
 import { sendEmailForTask } from 'actions/task-actions';
 import { IconButton } from '@material-ui/core';
@@ -18,6 +21,7 @@ import ReactModal from 'react-modal';
 
 import { CommunicationType } from 'helpers/task-helpers';
 import ContactsAutoComplete from 'components/common/ContactsAutoComplete/ContactsAutocomplete';
+import TemplateAutoComplete from 'components/common/TemplateAutoComplete/TemplateAutoComplete';
 import {
   CloseIcon,
   CloseIconButton,
@@ -155,6 +159,21 @@ const SendEmailFromTaskModal = () => {
             errorMessage="Incorrect email"
           />
           {renderAddOrEdit(contact, setShow)}
+          <TemplateAutoComplete
+            type={CommunicationType.EMAIL}
+            placeholder="Pick template"
+            onChange={(event, newValue, reason) => {
+              if (reason === 'clear') {
+                setSubject('');
+                setDetailsState(() => EditorState.createEmpty());
+                return;
+              }
+              const text = addStylesToText(newValue?.body ?? '');
+              setDetailsState(EditorState.push(detailsState, text));
+              setSubject(newValue?.value ?? '');
+            }}
+            disabled={show}
+          />
           {contact?.identifier && (
             <Input
               type="text"
