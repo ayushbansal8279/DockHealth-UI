@@ -1,4 +1,7 @@
 import Input from 'components/common/Input/Input';
+import TextEditor from 'components/common/TextEditor/TextEditor';
+import { EditorState } from 'draft-js';
+import CustomTextEditor from 'components/common/CustomTextEditor/CustomTextEditor';
 import React, { useCallback, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { sendFaxForTask } from 'actions/task-actions';
@@ -10,6 +13,7 @@ import { closeModal } from 'modal/actions';
 import { CommunicationType } from 'helpers/task-helpers';
 import ContactsAutoComplete from 'components/common/ContactsAutoComplete/ContactsAutocomplete';
 import ReactModal from 'react-modal';
+import { convertFromEditorStateToOutput } from 'components/common/TextEditor/helpers';
 import {
   CloseIcon,
   CloseIconButton,
@@ -26,13 +30,14 @@ import {
   AttachmentsContainerStyled,
   InfoHeaderAttachmentsTextStyled,
   InputContainerStyled,
+  TextEditorContainerStyled,
 } from '../styled';
 import { makeFaxNumber, renderAddOrEdit, validateFaxInput } from '../helpers';
 import AddContactStep from '../../AddContactModal/AddContactModal';
 
 const SendFaxFromTaskModal = () => {
   const dispatch = useDispatch();
-  const [message, setMessage] = useState('');
+  const [message, setMessage] = useState(() => EditorState.createEmpty());
   const [faxError, setFaxError] = useState(false);
   const [contact, setContact] = useState(null);
   const [show, setShow] = useState(false);
@@ -123,12 +128,18 @@ const SendFaxFromTaskModal = () => {
               value={contact.label}
             />
           )}
-          <Input
-            multiline
-            placeholder="type message"
-            value={message}
-            onChange={event => setMessage(event.target.value)}
-          />
+          <TextEditorContainerStyled>
+            <CustomTextEditor label="Fax body">
+              <TextEditor
+                readOnly={false}
+                minHeight={100}
+                disableMentions
+                showToolbar
+                state={message}
+                onChange={setMessage}
+              />
+            </CustomTextEditor>
+          </TextEditorContainerStyled>
           {validAttachments?.length > 0 && (
             <>
               <InfoHeaderAttachmentsTextStyled>
@@ -171,7 +182,8 @@ const SendFaxFromTaskModal = () => {
           onClick={() => {
             dispatch(
               sendFaxForTask({
-                message,
+                message: convertFromEditorStateToOutput(message, true)
+                  .tokenizedText,
                 recipientContact: contact?.value.replace(/\D/g, ''),
                 // taskAttachmentIdentifiers: attachments,
                 taskAttachmentIdentifiers: attachmentsToSend,
