@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import Autocomplete from '@material-ui/lab/Autocomplete';
 import CircularProgress from '@material-ui/core/CircularProgress';
 import { withStyles } from '@material-ui/core/styles';
@@ -32,8 +32,9 @@ const TemplateAutoComplete = ({
 }) => {
   const [open, setOpen] = useState(false);
   const [templates, setTemplates] = useState([]);
+  const dataLoaded = useRef(false);
 
-  const loading = open && templates.length === 0;
+  const loading = open && !dataLoaded.current;
 
   useEffect(() => {
     let active = true;
@@ -56,9 +57,11 @@ const TemplateAutoComplete = ({
         );
       }
     });
+    dataLoaded.current = true;
 
     return () => {
       active = false;
+      dataLoaded.current = false;
     };
   }, [loading, type]);
 
@@ -80,6 +83,7 @@ const TemplateAutoComplete = ({
         setOpen(false);
       }}
       loadingText="Getting templates"
+      noOptionsText="No templates provided"
       onBlur={onBlur}
       onChange={onChange}
       getOptionSelected={(option, value) =>

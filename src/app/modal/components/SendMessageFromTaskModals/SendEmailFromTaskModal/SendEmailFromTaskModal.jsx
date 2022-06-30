@@ -101,7 +101,7 @@ const SendEmailFromTaskModal = () => {
     [contact],
   );
 
-  const handleReset = useCallback(() => {
+  const handleTextEditorReset = useCallback(() => {
     setIsTaskCommentsIncluded(false);
     setIsTaskDescriptionIncluded(false);
     setIsTaskDetailsIncluded(false);
@@ -137,7 +137,7 @@ const SendEmailFromTaskModal = () => {
             type={CommunicationType.EMAIL}
             placeholder="Type the email address"
             onBlur={handleEmailBlur}
-            onChange={(event, newValue, reason) => {
+            onChange={(_event, newValue, reason) => {
               if (reason === 'clear') {
                 setContact(null);
                 return;
@@ -162,10 +162,10 @@ const SendEmailFromTaskModal = () => {
           <TemplateAutoComplete
             type={CommunicationType.EMAIL}
             placeholder="Pick template"
-            onChange={(event, newValue, reason) => {
+            onChange={(_event, newValue, reason) => {
+              handleTextEditorReset();
               if (reason === 'clear') {
                 setSubject('');
-                setDetailsState(() => EditorState.createEmpty());
                 return;
               }
               const text = addStylesToText(newValue?.body ?? '');
@@ -194,7 +194,7 @@ const SendEmailFromTaskModal = () => {
         </InputContainerStyled>
         <IncludeContainerStyled>
           <InfoHeaderTextStyled>Include the following</InfoHeaderTextStyled>
-          <IconButton onClick={handleReset}>
+          <IconButton onClick={handleTextEditorReset}>
             <Replay htmlColor={palette.coolGrey9} />
           </IconButton>
         </IncludeContainerStyled>
