@@ -1,18 +1,19 @@
-import React, { useCallback, useState } from 'react';
+import React, { useState, useCallback } from 'react';
 import { IconButton, Popover, Box } from '@material-ui/core';
 import { useHistory } from 'react-router-dom';
 import ChatIcon from '@material-ui/icons/Chat';
+import ArrowBack from '@material-ui/icons/ArrowBack';
 import CloseIcon from '@material-ui/icons/Close';
 import OpenInNewIcon from '@material-ui/icons/OpenInNew';
 import Draggable from 'react-draggable';
 import { useBoolean } from 'hooks/useBoolean';
 import { CHAT_PATH } from 'routing/helpers/paths';
-import { App as SendbirdApp } from 'sendbird-uikit';
 import { userProfileSelector } from 'selectors/user-selectors';
 import { useSelector } from 'react-redux';
+import Chat from './Chat';
+import SelectedChannelContext from './SelectedChannelContext';
 import {
   Container,
-  ColorSet,
   StyledIconButton,
   HeaderContainer,
   ChatContainer,
@@ -24,8 +25,8 @@ const ChatPopover = () => {
   const [anchorElement, setAnchorElement] = useState(null);
   const history = useHistory();
 
-  const appId =
-    process.env.SENDBIRD_APP_ID ?? 'D11A4B11-21AD-4025-9D8C-2BCF693C814C';
+  const [selectedChannel, setSelectedChannel] = useState(null);
+  const value = { selectedChannel, setSelectedChannel };
 
   const handleClick = event => {
     setOpen();
@@ -44,6 +45,10 @@ const ChatPopover = () => {
   }, [history, unsetOpen]);
 
   const id = open ? 'simple-popover' : undefined;
+
+  const handleClickGoBack = useCallback(() => {
+    setSelectedChannel(null);
+  }, []);
 
   return (
     <div>
@@ -72,26 +77,22 @@ const ChatPopover = () => {
         >
           <Container>
             <HeaderContainer className="handle">
-              {/* <Box display="flex"> */}
-              <StyledIconButton onClick={handleLeaveIconClick}>
-                <OpenInNewIcon />
+              <StyledIconButton
+                onClick={
+                  selectedChannel ? handleClickGoBack : handleLeaveIconClick
+                }
+              >
+                {selectedChannel ? <ArrowBack /> : <OpenInNewIcon />}
               </StyledIconButton>
               <Box mx={0.5} />
               <StyledIconButton onClick={handleClose}>
                 <CloseIcon />
               </StyledIconButton>
-              {/* </Box> */}
             </HeaderContainer>
             <ChatContainer>
-              <SendbirdApp
-                appId={appId}
-                userId={identifier}
-                nickname={name}
-                colorSet={ColorSet}
-                useReaction
-                useMessageGrouping
-                userListQuery
-              />
+              <SelectedChannelContext.Provider value={value}>
+                <Chat userId={identifier} name={name} />
+              </SelectedChannelContext.Provider>
             </ChatContainer>
           </Container>
         </Popover>

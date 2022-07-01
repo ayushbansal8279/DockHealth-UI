@@ -3,8 +3,8 @@ import ViewLayout from 'components/template/ViewLayout/ViewLayout';
 import BasicLayoutHeader from 'components/template/BasicLayoutHeader/BasicLayoutHeader';
 import { userProfileSelector } from 'selectors/user-selectors';
 import { useSelector } from 'react-redux';
-import { App as SendbirdApp } from 'sendbird-uikit';
-import 'sendbird-uikit/dist/index.css';
+import SendBirdApp from '@sendbird/uikit-react/App';
+// import 'sendbird-uikit/dist/index.css';
 import { Container, ColorSet } from './styled';
 import './sendbird-styles.css';
 
@@ -17,7 +17,7 @@ const ChatView = () => {
   return (
     <ViewLayout header={<BasicLayoutHeader title="Chat" />}>
       <Container>
-        <SendbirdApp
+        <SendBirdApp
           appId={APP_ID}
           userId={identifier}
           nickname={name}

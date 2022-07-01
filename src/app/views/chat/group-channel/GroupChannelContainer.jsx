@@ -1,8 +1,8 @@
 import React from 'react';
-import { SendBirdProvider as SBProvider } from 'sendbird-uikit';
+import SendbirdProvider from '@sendbird/uikit-react/SendbirdProvider';
 import GroupChannel from './GroupChannel';
 import { MessageContainer, HandleBar } from './styled';
-import 'sendbird-uikit/dist/index.css';
+// import 'sendbird-uikit/dist/index.css';
 import './sendbird-styles.css';
 
 function GroupChannelContainer(props) {
@@ -14,9 +14,9 @@ function GroupChannelContainer(props) {
     <>
       <HandleBar className="handle" />
       <MessageContainer className="handle">
-        <SBProvider appId={appId} userId={identifier} nickname={name}>
+        <SendbirdProvider appId={appId} userId={identifier} nickname={name}>
           <GroupChannel currentChannelUrl={channelUrl} />
-        </SBProvider>
+        </SendbirdProvider>
       </MessageContainer>
     </>
   );
