@@ -318,6 +318,7 @@ export const StandardTaskItemContainer = styled.div`
 
   @media print {
     height: auto;
+    border: 1px solid ${palette.coolGrey1};
   }
 `;
 

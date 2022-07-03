@@ -46,4 +46,8 @@ export const StickyColumnContainer = styled.div`
 
     z-index: -1;
   }
+
+  @media print {
+    border-left: 1px solid ${palette.coolGrey1} !important;
+  }
 `;

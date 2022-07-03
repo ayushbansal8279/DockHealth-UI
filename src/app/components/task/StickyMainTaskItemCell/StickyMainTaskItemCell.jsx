@@ -58,6 +58,10 @@ const StickyMainTaskItemCell = styled.div`
           `
         : ''};
   }
+
+  @media print {
+    border-left: 1px solid ${palette.coolGrey1} !important;
+  }
 `;
 
 export default StickyMainTaskItemCell;
