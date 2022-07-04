@@ -402,7 +402,12 @@ const ListDetailsReducer = (state = initialState, action) => {
           ...state.groupedTasks,
           taskGroups: state.groupedTasks?.taskGroups?.map(g => ({
             ...g,
-            tasks: updateBundleInList(dataToUpdate, bundleIdentifier, g.tasks),
+            tasks: updateBundleInList(
+              dataToUpdate,
+              bundleIdentifier,
+              g.tasks,
+              g.groupIdentifier,
+            ),
           })),
         },
       };
