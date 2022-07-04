@@ -85,9 +85,6 @@ const TaskTemplateGroupHeader = ({
     identifier,
     tasksCount,
     tasksCompletedCount,
-    comments,
-    labels,
-    attachments,
   } = templateGroup;
 
   const { dragHandleProps } = draggableProvided;
