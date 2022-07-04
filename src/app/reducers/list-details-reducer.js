@@ -301,7 +301,11 @@ const ListDetailsReducer = (state = initialState, action) => {
             const taskInWorkflowsCount = groupOfTasks.taskGroups?.[0]?.tasks
               .filter(t => t.itemType === 'BUNDLE')
               .reduce((accumulator, current) => {
-                return accumulator + current.tasksCount || 0;
+                return (
+                  accumulator +
+                  (current.tasksCount || 0) -
+                  (current.tasksCompletedCount || 0)
+                );
               }, 0);
             return {
               ...g,
