@@ -430,7 +430,7 @@ const TaskItem = React.memo(
                     onSelect={chooseTaskDecisionOutcome}
                     task={task}
                     templateBundleIdentifier={templateBundleIdentifier}
-                    disabled={isCompleted}
+                    disabled={isCompleted || !isDependencyEmptyOrCompleted}
                     error={taskDecisionError}
                     clearError={() => setTaskDecisionError(false)}
                   />

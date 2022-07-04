@@ -36,6 +36,7 @@ const exposed = [
   'DYNATRACE_SCRIPT',
   'GOOGLE_DRIVE_API_KEY',
   'GOOGLE_DRIVE_API_CLIENT_ID',
+  'APP_ENV',
 ];
 const exposedEnvironment = {};
 exposed.forEach(i => {

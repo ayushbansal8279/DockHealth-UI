@@ -264,6 +264,7 @@ const PatientsView = () => {
               <TaskTemplateApplicatorContainer>
                 <TaskTemplateApplicator
                   onTemplateSelect={handleTemplateSelect}
+                  bulkApply
                 />
               </TaskTemplateApplicatorContainer>
             )}

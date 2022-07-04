@@ -77,21 +77,6 @@ const PatientWidget = ({ url, height, width }) => {
     }
   }, [patient, userProfile, widgetReady]);
 
-  // setTimeout(() => {
-  //   if (userProfile?.userIdentifier) {
-  //     sdk.current.fireStateChanged({
-  //       name: 'userIdentifier',
-  //       value: userProfile?.userIdentifier,
-  //     });
-  //   }
-  //   if (patient?.patientIdentifier) {
-  //     sdk.current.fireStateChanged({
-  //       name: 'patientIdentifier',
-  //       value: patient?.patientIdentifier,
-  //     });
-  //   }
-  // }, 1000);
-
   return (
     <PatientWidgetsWrapper>
       <iframe

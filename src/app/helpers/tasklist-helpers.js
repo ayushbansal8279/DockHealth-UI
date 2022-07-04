@@ -55,6 +55,7 @@ export function updateBundleInList(
   dataToUpdate,
   bundleIdentifier,
   listOfTasks,
+  groupIdentifier,
 ) {
   const existingBundle = listOfTasks?.find(
     ({ identifier }) => identifier === bundleIdentifier,
@@ -66,7 +67,11 @@ export function updateBundleInList(
         : t,
     );
   }
-  if (dataToUpdate.identifier) {
+  if (
+    dataToUpdate.identifier &&
+    (!groupIdentifier ||
+      groupIdentifier === dataToUpdate.parentTaskWorkflowIdentifier)
+  ) {
     return [dataToUpdate, ...listOfTasks];
   }
   return listOfTasks;
