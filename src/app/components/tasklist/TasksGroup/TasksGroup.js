@@ -326,6 +326,7 @@ const TasksGroup = ({
               {applyTemplate && (
                 <TaskTemplateApplicator
                   onTemplateSelect={handleTemplateSelect}
+                  bulkApply={false}
                 />
               )}
             </Grid>
