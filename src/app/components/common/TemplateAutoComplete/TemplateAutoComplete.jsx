@@ -2,11 +2,9 @@ import React, { useEffect, useRef, useState } from 'react';
 import Autocomplete from '@material-ui/lab/Autocomplete';
 import CircularProgress from '@material-ui/core/CircularProgress';
 import { withStyles } from '@material-ui/core/styles';
-import { getAllContacts } from 'api/contacts-api';
 import { matchSorter } from 'match-sorter';
-import { CommunicationType } from 'helpers/task-helpers';
+import { getAllTemplates } from 'api/template-api';
 import Input from '../Input/Input';
-import { RenderOptionStyled } from './styled';
 
 const filterOptions = (options, { inputValue }) =>
   matchSorter(options, inputValue, { keys: ['label', 'value'] });
@@ -23,7 +21,7 @@ const StandardAutocompleteMUI = withStyles({
   },
 })(Autocomplete);
 
-const ContactsAutoComplete = ({
+const TemplateAutoComplete = ({
   type,
   onChange,
   onBlur,
@@ -33,47 +31,32 @@ const ContactsAutoComplete = ({
   ...restProps
 }) => {
   const [open, setOpen] = useState(false);
-  const [contacts, setContacts] = useState([]);
-
+  const [templates, setTemplates] = useState([]);
   const dataLoaded = useRef(false);
 
   const loading = open && !dataLoaded.current;
+
   useEffect(() => {
     let active = true;
+
     if (!loading) {
       return undefined;
     }
-    (async () => {
-      const response = await getAllContacts();
+
+    getAllTemplates().then(data => {
       if (active) {
-        switch (type) {
-          case CommunicationType.EMAIL:
-            setContacts(
-              response
-                .filter(contact => contact.email)
-                .map(contact => ({
-                  label: contact.name,
-                  value: contact.email,
-                  identifier: contact.identifier,
-                })),
-            );
-            break;
-          case CommunicationType.FAX:
-            setContacts(
-              response
-                .filter(contact => contact.faxPhoneNumber)
-                .map(contact => ({
-                  label: contact.name,
-                  value: contact.faxPhoneNumber,
-                  identifier: contact.identifier,
-                })),
-            );
-            break;
-          default:
-            setContacts([]);
-        }
+        setTemplates(
+          data
+            .filter(t => t.type === type)
+            .map(t => ({
+              label: t.name,
+              value: t.shortMessage,
+              body: t.details,
+              identifier: t.identifier,
+            })),
+        );
       }
-    })();
+    });
     dataLoaded.current = true;
 
     return () => {
@@ -84,14 +67,14 @@ const ContactsAutoComplete = ({
 
   React.useEffect(() => {
     if (!open) {
-      setContacts([]);
+      setTemplates([]);
     }
   }, [open]);
 
   return (
     <StandardAutocompleteMUI
       filterOptions={filterOptions}
-      id={`autocomplete-contact-${type}`}
+      id="autocomplete-template"
       open={open}
       onOpen={() => {
         setOpen(true);
@@ -99,28 +82,22 @@ const ContactsAutoComplete = ({
       onClose={() => {
         setOpen(false);
       }}
-      loadingText="Getting contacts"
+      loadingText="Getting templates"
+      noOptionsText="No templates provided"
       onBlur={onBlur}
       onChange={onChange}
-      getOptionSelected={(option, value) => option.value === value.value}
-      getOptionLabel={option => option.value ?? option}
-      renderOption={option => (
-        <RenderOptionStyled>
-          {option.label}
-          <span>({option.value})</span>
-        </RenderOptionStyled>
-      )}
-      options={contacts}
+      getOptionSelected={(option, value) =>
+        option.identifier === value.identifier
+      }
+      getOptionLabel={option => option.label}
+      options={templates}
       loading={loading}
-      freeSolo
       handleHomeEndKeys
-      noOptionsText="No contacts provided"
       openOnFocus
       renderInput={parameters => {
         return (
           <Input
             {...parameters}
-            autoFocus
             helperText={error ? errorMessage : null}
             error={error}
             placeholder={placeholder}
@@ -144,4 +121,4 @@ const ContactsAutoComplete = ({
   );
 };
 
-export default ContactsAutoComplete;
+export default TemplateAutoComplete;

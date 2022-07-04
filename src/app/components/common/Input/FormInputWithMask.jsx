@@ -17,7 +17,6 @@ const FormInputWithMask = React.forwardRef(
       watch,
       setValue,
       unregister,
-      setError,
     } = useFormContext();
 
     const isNested = name.includes('.');
@@ -55,11 +54,9 @@ const FormInputWithMask = React.forwardRef(
             error={error}
             errors={errors}
             ref={reference}
-            setError={setError}
             onKeyUp={() =>
               disableClearErrorOnKeyUp ? null : clearErrors(name)
             }
-            clearErrors={clearErrors}
             {...restProps}
           />
         )}

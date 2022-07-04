@@ -57,8 +57,8 @@ const FormInput = React.forwardRef(
         error={error}
         errors={errors}
         onKeyUp={() => (disableClearErrorOnKeyUp ? null : clearErrors(name))}
-        clearErrors={clearErrors}
         {...restProps}
+        clearErrors={clearErrors}
       />
     );
   },

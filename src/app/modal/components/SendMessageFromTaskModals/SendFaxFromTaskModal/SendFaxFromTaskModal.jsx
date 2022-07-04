@@ -13,7 +13,11 @@ import { closeModal } from 'modal/actions';
 import { CommunicationType } from 'helpers/task-helpers';
 import ContactsAutoComplete from 'components/common/ContactsAutoComplete/ContactsAutocomplete';
 import ReactModal from 'react-modal';
-import { convertFromEditorStateToOutput } from 'components/common/TextEditor/helpers';
+import {
+  addStylesToText,
+  convertFromEditorStateToOutput,
+} from 'components/common/TextEditor/helpers';
+import TemplateAutoComplete from 'components/common/TemplateAutoComplete/TemplateAutoComplete';
 import {
   CloseIcon,
   CloseIconButton,
@@ -79,7 +83,10 @@ const SendFaxFromTaskModal = () => {
       setFaxError(false);
     }
   };
-  const isValidToSend = !!(validateFaxInput(contact?.value ?? '') && message);
+  const isValidToSend = !!(
+    validateFaxInput(contact?.value ?? '') &&
+    message.getCurrentContent().hasText()
+  );
 
   return (
     <ModalWrapper width="600px">
@@ -120,6 +127,19 @@ const SendFaxFromTaskModal = () => {
             value={contact?.value ?? ''}
           />
           {renderAddOrEdit(contact, setShow)}
+          <TemplateAutoComplete
+            type={CommunicationType.FAX}
+            placeholder="Pick template"
+            onChange={(event, newValue, reason) => {
+              if (reason === 'clear') {
+                setMessage(() => EditorState.createEmpty());
+                return;
+              }
+              const text = addStylesToText(newValue?.body ?? '');
+              setMessage(EditorState.push(message, text));
+            }}
+            disabled={show}
+          />
           {contact?.identifier && (
             <Input
               type="text"
