@@ -62,6 +62,7 @@ import { onSortChanged, onSearchChanged } from 'helpers/ga-event-helper';
 import { openModal } from 'modal/actions';
 import { applyTaskTemplate as applyTaskTemplateAction } from 'actions/list-details-actions';
 import * as CustomFieldsApi from 'api/custom-fields-api';
+import { getTasksForWorkflow } from 'actions/template-bundle-actions';
 import store from '../store';
 
 export const DO_CREATE_TASK = 'DO_CREATE_TASK';
@@ -132,6 +133,7 @@ function* getTasksGroupsList() {
       groups,
     });
   } catch (error) {
+    console.log('error', error);
     yield put({ type: ActionTypes.GET_TASKS_GROUPS_LIST_FAILURE });
   }
 }
@@ -266,6 +268,7 @@ function* getTasksForTaskGroups(payload) {
       shouldSaveInStore = true,
       sort,
       viewMode,
+      fetchWorkflowTasks = false,
     } = payload;
     const { taskListIdentifier } = yield select(locationParametersSelector);
     yield put({
@@ -284,6 +287,15 @@ function* getTasksForTaskGroups(payload) {
       sort,
       viewMode,
     );
+
+    if (fetchWorkflowTasks) {
+      const bundles = groupOfTasks?.taskGroups?.[0]?.tasks?.filter(
+        t => t.itemType === 'BUNDLE',
+      );
+      yield all(
+        [...(bundles || [])]?.map(b => put(getTasksForWorkflow(b.identifier))),
+      );
+    }
 
     if (shouldSaveInStore) {
       yield put({
