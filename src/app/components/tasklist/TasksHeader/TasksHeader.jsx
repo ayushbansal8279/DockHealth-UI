@@ -145,6 +145,7 @@ const TasksHeader = ({
             label={f.name}
             width={CustomFieldWidthConfig[f.fieldType]}
             snapshot={snapshot}
+            printWidth={CustomFieldWidthConfig[f.fieldType]}
           />
         );
       }
@@ -162,7 +163,11 @@ const TasksHeader = ({
           truncateEnabled
           onSortChange={onSortChange}
           snapshot={snapshot}
-          printWidth={TaskItemColumnWidth[TaskItemColumn.ASSIGNED].PRINT}
+          printWidth={
+            f.id === TaskItemColumn.ASSIGNED
+              ? TaskItemColumnWidth[TaskItemColumn.ASSIGNED].PRINT
+              : undefined
+          }
         />
       );
     },
@@ -193,6 +198,7 @@ const TasksHeader = ({
                   label="Tasks"
                   sort={sort}
                   onSortChange={onSortChange}
+                  printWidth={300}
                 />
               )}
             </StickyColumnContainer>
