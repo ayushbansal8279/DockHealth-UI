@@ -2,6 +2,7 @@ import React, { useState, useCallback } from 'react';
 import { IconButton, Popover, Box } from '@material-ui/core';
 import { useHistory } from 'react-router-dom';
 import ChatIcon from '@material-ui/icons/Chat';
+// import ChatIcon from 'img/modals/chat';
 import ArrowBack from '@material-ui/icons/ArrowBack';
 import CloseIcon from '@material-ui/icons/Close';
 import OpenInNewIcon from '@material-ui/icons/OpenInNew';
@@ -64,16 +65,16 @@ const ChatPopover = () => {
           id={id}
           open={open}
           anchorEl={anchorElement}
-          anchorOrigin={{
-            vertical: 'top',
-            horizontal: 'right',
-          }}
           transformOrigin={{
+            vertical: 50,
+            horizontal: 350,
+          }}
+          anchorOrigin={{
             vertical: 'bottom',
             horizontal: 'left',
           }}
-          PaperProps={{ style: { height: '100vh' } }}
-          onClose={handleClose}
+          PaperProps={{ style: { height: '500px', width: '375px' } }}
+          disableEnforceFocus
         >
           <Container>
             <HeaderContainer className="handle">

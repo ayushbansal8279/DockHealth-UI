@@ -8,7 +8,6 @@ import {
   USERS_PATH,
   SUBS_SETTINGS_PATH,
   USERS_SETTINGS_PATH,
-  CHAT_PATH,
 } from 'routing/helpers/paths';
 import Spacing from 'components/common/Spacing.tsx';
 import { userProfileSelector } from 'selectors/user-selectors';
@@ -25,15 +24,12 @@ import PeopleIcon from 'img/navigation/PeopleIcon';
 import PatientsIcon from 'img/navigation/PatientsIcon';
 import SettingsIcon from 'img/navigation/SettingsIcon';
 import TemplatesIcon from 'img/navigation/TemplatesIcon';
-import ChatIcon from '@material-ui/icons/Chat';
 import EducationCenterIcon from 'img/navigation/EducationCenterIcon';
 import DockcoinIconImage from 'img/navigation/dock-coin-icon.svg';
 import UserAvatar from 'components/user/UserAvatar/UserAvatar';
 import OrganizationTile from 'components/org/OrganizationTile/OrganizationTile';
 import { openModal } from 'modal/actions';
 import AccessRestrictor from 'components/access/AccessRestrictor/AccessRestrictor';
-// import GroupChatPopover from 'views/chat/group-channel/GroupChatPopover';
-import ChatPopover from 'views/chat/ChatPopover';
 import OrganizationSubmenu from './SubMenuComponents/OrganizationSubmenu';
 import ProfileSubmenu from './SubMenuComponents/ProfileSubmenu';
 import EducationCenterSubmenu from './SubMenuComponents/EducationCenterSubmenu';
@@ -154,10 +150,6 @@ const NavigationSidebar = () => {
     dispatch(openModal('ReferAColleague'));
   };
 
-  const handleChatClick = () => {
-    dispatch(TemplateActions.hideSubMenu());
-  };
-
   return (
     <ClickAwayListener onClickAway={closeSubMenu}>
       <DrawerContentContainer isOpen={!!SubMenuComponent}>
@@ -259,14 +251,6 @@ const NavigationSidebar = () => {
                 isNew
               />
             </AccessRestrictor>
-            <AccessRestrictor allowedToRoles={[ADMIN, OWNER, MEMBER]}>
-              <IconNavigationItem
-                name="Chat"
-                icon={ChatIcon}
-                path={CHAT_PATH}
-                onItemClick={handleNavigationItemClick}
-              />
-            </AccessRestrictor>
           </Grid>
           <Grid container direction="column">
             <AccessRestrictor allowedToRoles={[ADMIN, OWNER]}>
@@ -284,19 +268,6 @@ const NavigationSidebar = () => {
                   onItemClick={handleNavigationItemClick}
                 />
               </div>
-            </AccessRestrictor>
-
-            <AccessRestrictor allowedToRoles={[ADMIN, OWNER, MEMBER]}>
-              <NavigationItem
-                name="Chat Popover"
-                subMenuKey={SubmenuKey.CHAT}
-                onItemClick={handleChatClick}
-              >
-                <>
-                  {/* <GroupChatPopover channelUrl="sendbird_group_channel_140571109_e686fc399df276dcda6e240337836d33c4c79397" /> */}
-                  <ChatPopover />
-                </>
-              </NavigationItem>
             </AccessRestrictor>
 
             <AccessRestrictor

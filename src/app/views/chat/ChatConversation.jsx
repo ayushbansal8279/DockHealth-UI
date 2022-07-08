@@ -7,14 +7,10 @@ const ChatChannelConversation = props => {
   const { currentChannelUrl } = props;
 
   return (
-    <div className="customized-app">
-      <div className="sendbird-app__wrap">
-        <div className="sendbird-app__conversation-wrap">
-          <ChannelProvider channelUrl={currentChannelUrl}>
-            <ChannelUI />
-          </ChannelProvider>
-        </div>
-      </div>
+    <div className="sendbird-app__conversation-wrap">
+      <ChannelProvider channelUrl={currentChannelUrl}>
+        <ChannelUI />
+      </ChannelProvider>
     </div>
   );
 };

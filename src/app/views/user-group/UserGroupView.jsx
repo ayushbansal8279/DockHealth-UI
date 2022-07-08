@@ -15,7 +15,7 @@ import {
   unsetCurrentUserGroup,
 } from 'actions/user-groups-actions';
 import ViewLayout from 'components/template/ViewLayout/ViewLayout';
-import GroupChatPopover from 'views/chat/group-channel/GroupChatPopover';
+
 import BasicLayoutHeader from 'components/template/BasicLayoutHeader/BasicLayoutHeader';
 import ListSkeletonLoader from 'components/common/ListSkeletonLoader/ListSkeletonLoader';
 import PageContentHeader from 'components/common/PageContentHeader/PageContentHeader';
@@ -98,9 +98,6 @@ function UserGroupView() {
                   onBlur={unsetSearchFocused}
                 />
               </SearchInputWrapper>
-            </Grid>
-            <Grid container xs={8} xl={8} md={8} lg={8} justify="flex-end">
-              <GroupChatPopover channelUrl="sendbird_group_channel_140571109_e686fc399df276dcda6e240337836d33c4c79397" />
             </Grid>
           </Grid>
         </PageContentHeader>

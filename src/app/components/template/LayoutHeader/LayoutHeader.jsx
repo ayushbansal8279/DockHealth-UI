@@ -7,6 +7,7 @@ import ActivityAlerts from 'components/activity-alerts/ActivityAlerts';
 import { UserOrganizationRole } from 'helpers/user-helper';
 import TrialBanner from 'components/navigation/TrialBanner/TrialBanner';
 import AccessRestrictor from 'components/access/AccessRestrictor/AccessRestrictor';
+import ChatPopover from 'views/chat/ChatPopover';
 import {
   HeaderContainer,
   MainHeader,
@@ -34,6 +35,13 @@ const LayoutHeader = props => {
           {children}
         </Box>
         <Box mx={1} />
+        <AccessRestrictor
+          allowedToRoles={[ADMIN, OWNER, MEMBER, GUEST, EXTERNAL]}
+        >
+          <Box mx={1} />
+          <ChatPopover />
+          <Box mx={1} />
+        </AccessRestrictor>
         <AccessRestrictor
           allowedToRoles={[ADMIN, OWNER, MEMBER, GUEST, EXTERNAL]}
         >

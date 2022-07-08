@@ -7,6 +7,7 @@ import AddChannel from '@sendbird/uikit-react/ChannelList/components/AddChannel'
 import { userProfileSelector } from 'selectors/user-selectors';
 import { useSelector } from 'react-redux';
 import { CircularProgress } from '@material-ui/core';
+import { Title } from 'views/TaskTour/styled';
 
 export default function ChatChannelList(props) {
   const { setSelectedChannel } = props;
@@ -22,8 +23,14 @@ export default function ChatChannelList(props) {
   }
 
   return (
-    <div className="custom-channel-list">
-      <ChannelListHeader renderIconButton={AddChannel} />
+    <div className="sendbird-app__channellist-wrap">
+      <ChannelListHeader
+        renderHeader={() => {
+          return <Title>Channels</Title>;
+        }}
+        allowProfileEdit={false}
+        renderIconButton={AddChannel}
+      />
       {allChannels.map(channel => {
         return (
           <div key={channel.url}>
