@@ -59,6 +59,8 @@ const CustomizeToolbarButton = ({
     [TaskItemColumn.PATIENT]: capitalize(getCustomerTypeLabel(userProfile)),
   };
 
+  const customerTypeLabel = getCustomerTypeLabel(userProfile);
+
   const onClickCheckbox = useCallback(
     column => {
       const newSetup = columns.map(c =>
@@ -172,23 +174,36 @@ const CustomizeToolbarButton = ({
               </List>
             </>
           )}
-          {userHasPatientCustomFieldsFeatureSelector && columns?.length > 0 && (
-            <>
-              <Box display="flex" justifyContent="space-between" mt={1}>
-                <Box mx={0.5} />
-                <ListItemText>
-                  <b>Patient Custom Columns</b>
-                </ListItemText>
-              </Box>
-              <List>
-                {sortAlphabetical(
-                  columns.filter(
-                    c => c._customFieldType === CUSTOM_FIELD_TYPES.PATIENT,
-                  ),
-                ).map(column => renderElement(column))}
-              </List>
-            </>
-          )}
+          {userHasPatientCustomFieldsFeatureSelector &&
+            patientCustomColumnsConfig?.length > 0 && (
+              <>
+                <Box display="flex" justifyContent="space-between" mt={1}>
+                  <Box mx={0.5} />
+                  <ListItemText>
+                    <b>{customerTypeLabel} Custom Columns</b>
+                  </ListItemText>
+                </Box>
+                <List>
+                  {patientCustomColumnsConfig.map(column => {
+                    const { name, isChecked = false } = column;
+                    return (
+                      name && (
+                        <MenuItem
+                          key={column.identifier}
+                          onClick={() =>
+                            onClickPatientCustomFieldsCheckbox(column)
+                          }
+                        >
+                          <Checkbox isChecked={isChecked} />
+                          <Box mx={0.5} />
+                          <ListItemText>{name}</ListItemText>
+                        </MenuItem>
+                      )
+                    );
+                  })}
+                </List>
+              </>
+            )}
           {additionalOptions && additionalOptions.length > 0 && (
             <>
               <Spacer />

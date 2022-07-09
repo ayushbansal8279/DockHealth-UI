@@ -7,6 +7,7 @@ import {
   userHasPatientCustomFieldsFeatureSelector,
   userHasTaskCustomFieldsFeatureSelector,
 } from 'selectors/user-selectors';
+import { getCustomerTypeLabel } from 'helpers/customer-type-helper';
 import BasicLayoutHeader from 'components/template/BasicLayoutHeader/BasicLayoutHeader';
 import ViewLayout from 'components/template/ViewLayout/ViewLayout';
 import { ColumnsConfigProvider } from 'context-api/columns-config-context';
@@ -36,6 +37,8 @@ const CustomFieldsView = () => {
   );
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const initial = Object.entries(TABS).find(([_, name]) => name === tabName);
+
+  const customerTypeLabel = getCustomerTypeLabel(userProfile);
 
   const [selectedTab, setSelectedTab] = useState(
     initial ? Number(initial[0]) : 0,
@@ -75,7 +78,7 @@ const CustomFieldsView = () => {
               <Tab
                 label={
                   <Link to={`${CUSTOM_FIELDS_SETTINGS_PATH}/${TABS[0]}`}>
-                    Patient Custom Fields
+                    {customerTypeLabel} Custom Fields
                   </Link>
                 }
                 {...applyProps(0)}
