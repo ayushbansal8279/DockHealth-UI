@@ -17,6 +17,9 @@ export const ColorIndicator = styled.span`
   width: 20px;
   height: 20px;
   border-radius: 12px;
+  @media print {
+    display: none;
+  }
 `;
 
 export const MainHeader = styled.div`
@@ -53,6 +56,9 @@ export const Title = styled.h1`
 `;
 
 export const Description = styled.p`
+  @media print {
+    margin-left: 30px;
+  }
   margin-bottom: 0;
   font-family: inherit;
   font-size: ${fontSizes.smallPlus};

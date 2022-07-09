@@ -51,39 +51,14 @@ import {
   getQuickFilters,
   selectQuickFilter,
 } from 'actions/mega-filter-actions';
+import PatientDetailsHeader from './PatientDetailsHeader/PatientDetailsHeader';
+import PatientWidget from './PatientWidget/PatientWidget';
+import { DEFAULT_TAB, TABS_CONFIG } from './helpers';
 import {
   PatientDetailsContainer,
   PatientDetailsTabsContainer,
   MainTab,
 } from './styled';
-import PatientDetailsHeader from './PatientDetailsHeader/PatientDetailsHeader';
-import PatientTasksList from './PatientTasksList/PatientTasksList';
-import PatientNotes from './PatientNotes/PatientNotes';
-import PatientAttachments from './PatientAttachments/PatientAttachments';
-import PatientWidget from './PatientWidget/PatientWidget';
-
-const TABS_CONFIG = [
-  {
-    label: 'All tasks',
-    mainPath: 'tasks',
-    additionalPath: ':taskListIdentifier?',
-    RouteComponent: PatientTasksList,
-    exact: true,
-  },
-  {
-    label: 'Notes',
-    mainPath: 'notes',
-    RouteComponent: PatientNotes,
-  },
-  {
-    label: 'Files',
-    mainPath: 'files',
-    additionalPath: ':folderIdentifier?',
-    RouteComponent: PatientAttachments,
-  },
-];
-
-const DEFAULT_TAB = TABS_CONFIG[0];
 
 const PatientDetailsView = () => {
   const { patientIdentifier } = useParams();
@@ -103,6 +78,8 @@ const PatientDetailsView = () => {
   const addQuickFilterOption = useSelector(addQuickFilterOptionSelector);
   const selectedQuickFilter = useSelector(selectedQuickFilterSelector);
 
+  const [tabsConfiguration, setTabsConfiguration] = useState(TABS_CONFIG);
+
   useEffect(() => {
     dispatch(PatientDetailsActions.initializePatientState(patientIdentifier));
 
@@ -116,8 +93,10 @@ const PatientDetailsView = () => {
     (async () => {
       const widgets = await getPatientWidgets();
 
+      const widgetTabs = [];
+
       if (widgets && widgets.length > 0) {
-        TABS_CONFIG.push({
+        widgetTabs.push({
           label: widgets[0].name,
           mainPath: `widget/${widgets[0].identifier}`,
           url: widgets[0].url,
@@ -126,6 +105,8 @@ const PatientDetailsView = () => {
           type: 'widget',
           RouteComponent: PatientWidget,
         });
+
+        setTabsConfiguration(tabsConfiguration.concat(widgetTabs));
       }
     })();
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -175,7 +156,7 @@ const PatientDetailsView = () => {
 
   const activeTabPath = useMemo(() => {
     // eslint-disable-next-line no-restricted-syntax
-    for (const tab of TABS_CONFIG) {
+    for (const tab of tabsConfiguration) {
       const regex = new RegExp(`/${tab.mainPath}/|/${tab.mainPath}$`, 'gi');
       if (regex.test(pathname)) {
         return tab.mainPath;
@@ -301,13 +282,13 @@ const PatientDetailsView = () => {
         </LayoutHeader>
       }
     >
-      <ColumnsConfigProvider hidePatientCustomColumns>
+      <ColumnsConfigProvider>
         <StickyContainer>
           <PatientDetailsHeader />
           <PatientDetailsTabsContainer>
             <Grid container>
               <Tabs value={activeTabPath} onChange={handleTabChange}>
-                {TABS_CONFIG.map(t => (
+                {tabsConfiguration.map(t => (
                   <MainTab
                     key={t.mainPath}
                     value={t.mainPath}
@@ -320,7 +301,7 @@ const PatientDetailsView = () => {
         </StickyContainer>
         <PatientDetailsContainer>
           <Switch>
-            {TABS_CONFIG?.map(route => (
+            {tabsConfiguration?.map(route => (
               <RouteWrapper
                 allowedToRoles={route.allowedToRoles}
                 key={route.mainPath}

@@ -6,11 +6,33 @@ import {
   convertToRaw,
   CompositeDecorator,
   SelectionState,
+  convertFromRaw,
 } from 'draft-js';
-import { draftToMarkdown } from 'markdown-draft-js';
+import { draftToMarkdown, markdownToDraft } from 'markdown-draft-js';
 import { createMentionEntities } from './create-mention-entities';
 import { HighlightedElement } from './styled';
 import Placeholder from './AddOns/Placeholder/Placeholder';
+
+const extendedStyleItems = {
+  STRIKETHROUGH: {
+    open: function open() {
+      return '~~';
+    },
+
+    close: function close() {
+      return '~~';
+    },
+  },
+  UNDERLINE: {
+    open: function open() {
+      return '++';
+    },
+
+    close: function close() {
+      return '++';
+    },
+  },
+};
 
 export const SUGGESTIONS_PLACEHOLDER = {
   name: '',
@@ -61,6 +83,17 @@ const substituteNameForIdInText = (rawText, mentions) => {
   return textWithIds;
 };
 
+export const substituteNameForIdInTokenizedText = (rawText, mentions) => {
+  let textWithIds = rawText;
+  mentions.forEach(({ name, identifier }) => {
+    textWithIds = textWithIds.replace(
+      new RegExp(` @{${identifier}}`, 'g'),
+      ` ${name}`,
+    );
+  });
+  return textWithIds;
+};
+
 export const convertFromEditorStateToOutput = (editorState, handleRichText) => {
   const stateContent = convertToRaw(editorState.getCurrentContent());
   const textBlocks = stateContent.blocks.map(block => block.text);
@@ -70,27 +103,6 @@ export const convertFromEditorStateToOutput = (editorState, handleRichText) => {
     ...entity.data,
     type: entity.type,
   }));
-
-  const extendedStyleItems = {
-    STRIKETHROUGH: {
-      open: function open() {
-        return '~~';
-      },
-
-      close: function close() {
-        return '~~';
-      },
-    },
-    UNDERLINE: {
-      open: function open() {
-        return '++';
-      },
-
-      close: function close() {
-        return '++';
-      },
-    },
-  };
 
   const textValue = handleRichText
     ? draftToMarkdown(stateContent, {
@@ -103,6 +115,13 @@ export const convertFromEditorStateToOutput = (editorState, handleRichText) => {
     tokenizedText: substituteNameForIdInText(textValue, mentions),
     mentions,
   };
+};
+
+export const addStylesToText = text => {
+  const draftText = markdownToDraft(text, {
+    styleItems: extendedStyleItems,
+  });
+  return convertFromRaw(draftText);
 };
 
 const HighlightedComponent = ({ children }) => {
@@ -223,4 +242,9 @@ export const moveSelectionToEnd = editorState => {
     focusOffset: length,
   });
   return EditorState.forceSelection(editorState, selection);
+};
+
+export const countCharakters = state => {
+  const { tokenizedText } = convertFromEditorStateToOutput(state, true);
+  return tokenizedText.length || 0;
 };

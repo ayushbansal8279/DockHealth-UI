@@ -25,7 +25,6 @@ export const CircleContainer = styled.div`
   align-items: center;
   border-radius: 50%;
   position: relative;
-  left: -13px;
 `;
 
 export default SortArrowContainer;

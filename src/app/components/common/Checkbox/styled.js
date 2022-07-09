@@ -21,7 +21,7 @@ export const CheckboxInput = styled.div`
   align-items: center;
   flex-shrink: 0;
   opacity: ${({ disabled }) => (disabled ? 0.5 : 1)};
-
+  pointer-events: ${({ disabled }) => (disabled ? 'none' : 'auto')};
   ${({ disabled }) =>
     !disabled &&
     `
@@ -32,5 +32,8 @@ export const CheckboxInput = styled.div`
 
   ${Icon} {
     visibility: ${props => (props.isChecked ? 'visible' : 'hidden')};
+  }
+  @media print {
+    opacity: 0;
   }
 `;

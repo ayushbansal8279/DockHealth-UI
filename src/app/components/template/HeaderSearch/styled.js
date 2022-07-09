@@ -12,6 +12,9 @@ export const SearchInputWrapper = styled.div`
   transition: flex-basis 0.25s ease-out;
   border: 1px solid ${palette.coolGrey2};
   color: ${palette.coolGrey1};
+  @media print {
+    display: none;
+  }
 `;
 
 export const SearchInput = styled.input`

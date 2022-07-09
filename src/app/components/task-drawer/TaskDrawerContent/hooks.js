@@ -21,7 +21,7 @@ import {
   storeAsCurrentTask,
   deleteTask,
   duplicateTask,
-  markTaskRead,
+  markTaskAsRead,
 } from 'actions/task-actions';
 import { UPDATE_TASK_SUCCESS } from 'actions/action-types';
 import { openDrawer, closeDrawer } from 'actions/task-drawer-actions';
@@ -149,14 +149,14 @@ const initializeTaskDrawerHooks = ({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [selectedParentTask]);
 
-  useLayoutEffect(() => {
+  useEffect(() => {
     if (
       taskDrawerOpen &&
       taskList !== undefined &&
       taskListIdentifier &&
       selectedTask?.taskIdentifier
     ) {
-      markTaskRead(selectedTask)(dispatch);
+      dispatch(markTaskAsRead(selectedTask?.taskIdentifier));
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [selectedTaskIdentifier, taskDrawerOpen]);

@@ -152,6 +152,7 @@ export const TaskItemColumnWidth = {
   [TaskItemColumn.ASSIGNED]: {
     WIDE: 90,
     NARROW: 60,
+    PRINT: 170,
   },
   [TaskItemColumn.PATIENT]: 164,
   [TaskItemColumn.SUBTASKS_COUNT]: 60,
@@ -169,6 +170,17 @@ export const TASK_ITEM_BASE_COLUMN_CONFIG = {
   [TaskItemColumn.ASSIGNED]: true,
   [TaskItemColumn.LIST_NAME]: false,
   [TaskItemColumn.DECISION_SELECT]: true,
+};
+
+export const SHOW_COLUMNS_CONFIG = {
+  [TaskItemColumn.WORKFLOW_STATUS]: true,
+  [TaskItemColumn.ASSIGNED]: true,
+  [TaskItemColumn.ACTIVITY]: true,
+  [TaskItemColumn.START_DATE]: true,
+  [TaskItemColumn.DUE_DATE]: true,
+  [TaskItemColumn.PATIENT]: true,
+  [TaskItemColumn.SUBTASKS_COUNT]: true,
+  [TaskItemColumn.LIST_NAME]: true,
 };
 
 export const TASK_ITEM_SORT_METHODS = {
@@ -304,3 +316,13 @@ export function updateSubtasksInTaskWithCallback(
 
   return task;
 }
+export const isColumnChecked = (columns, columnName) =>
+  !!columns?.find(c => c.identifier === columnName)?.isChecked;
+
+export const EmrNoteTypeOptions = {
+  COMMUNICATION_NOTE: 'Communication note',
+  REFERRAL_NOTE: 'Referral note',
+  CONSULT_NOTE: 'Consult note',
+  PROCEDURE_NOTE: 'Procedure note',
+  PROGRESS_NOTE: 'Progress note',
+};

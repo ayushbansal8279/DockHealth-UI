@@ -330,11 +330,9 @@ export function leaveList(taskListIdentifier) {
     });
 }
 
-export function updateUserColumnsListViewSetup(setup, taskListIdentifier) {
+export function updateListPreferences(setup, taskListIdentifier) {
   return axios
-    .put(`list/updateUserPreferences/${taskListIdentifier}`, {
-      displayColumns: setup,
-    })
+    .put(`list/updateUserPreferences/${taskListIdentifier}`, setup)
     .then(({ data }) => data);
 }
 
@@ -342,17 +340,6 @@ export function updateUserOptionsListViewSetup(setup, taskListIdentifier) {
   return axios
     .put(`list/updateUserPreferences/${taskListIdentifier}`, {
       displayOptions: setup,
-    })
-    .then(({ data }) => data);
-}
-
-export function updateUserCustomFieldsOptionsListViewSetup(
-  setup,
-  taskListIdentifier,
-) {
-  return axios
-    .put(`list/updateUserPreferences/${taskListIdentifier}`, {
-      customFieldDisplayColumns: setup,
     })
     .then(({ data }) => data);
 }

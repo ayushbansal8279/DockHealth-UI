@@ -31,8 +31,6 @@ const AnalyticsFilters = () => {
     [dispatch],
   );
 
-  console.log('filters', selectedFilters);
-
   const handleSaveQuickFilter = useCallback(
     () =>
       dispatch(

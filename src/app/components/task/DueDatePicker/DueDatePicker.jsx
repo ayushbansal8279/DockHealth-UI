@@ -82,17 +82,22 @@ const DueDatePicker = ({
   };
 
   const handleInsertDateAsText = () => {
-    const noMissingParts = !dateMaskValue.includes('_');
-    if (noMissingParts) {
-      const momentDate = moment(dateMaskValue, DATE_MASK_FORMAT);
-      const validDate = momentDate.isValid();
-      if (validDate) {
-        const formattedDate = momentDate.format(DATE_ISO_FORMAT);
-        handleDatePick(formattedDate);
-        return;
-      }
+    const areSomeMissingParts = dateMaskValue.includes('_');
+    if (areSomeMissingParts) {
+      return;
     }
-    setDateMaskValue(moment(selectedDate).format(DATE_MASK_FORMAT) || '');
+
+    const momentDate = moment(dateMaskValue, DATE_MASK_FORMAT);
+    const validDate = momentDate.isValid();
+    if (!validDate) {
+      return;
+    }
+    if (momentDate.isBefore(new Date(), 'day')) {
+      setDateMaskValue('');
+      return;
+    }
+    const formattedDate = momentDate.format(DATE_ISO_FORMAT);
+    handleDatePick(formattedDate);
   };
 
   return (
@@ -131,7 +136,10 @@ const DueDatePicker = ({
         </QuickSelectButton>
         <QuickSelectButton
           type="button"
-          isSelected={momentSelectedDate?.isSame(moment().add(1, 'days'), 'd')}
+          isSelected={momentSelectedDate?.isSame(
+            moment().add(1, 'days'),
+            'day',
+          )}
           onClick={() =>
             handleDatePick(
               moment()

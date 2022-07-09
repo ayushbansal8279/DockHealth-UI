@@ -38,6 +38,7 @@ import {
   getQuickFilters,
 } from 'actions/mega-filter-actions';
 import { determineTaskCounts } from './helpers';
+import { HeaderMembersContainer } from './styled';
 
 const ListDetailsHeader = props => {
   const {
@@ -154,7 +155,7 @@ const ListDetailsHeader = props => {
 
   return (
     <LayoutHeader horizontalSticky>
-      {taskList && !['INBOX', 'PUBLIC'].includes(listType) && (
+      {taskList && (
         <Box position="absolute" top={listDescription ? 17 : 27} left={10}>
           <ListOptionsMenu list={taskList} moreOptions tasks={tasks}>
             <MoreVert color="primary" />
@@ -190,7 +191,7 @@ const ListDetailsHeader = props => {
       />
       <LayoutHeader.Spacer />
       {shownUsers && listType !== 'PUBLIC' && (
-        <>
+        <HeaderMembersContainer>
           {shownUsers.map((user, index) => {
             return (
               <Box key={user.identifier} pl={index !== 0 ? 0.5 : 0}>
@@ -234,7 +235,7 @@ const ListDetailsHeader = props => {
               />
             </Box>
           )}
-        </>
+        </HeaderMembersContainer>
       )}
     </LayoutHeader>
   );

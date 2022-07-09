@@ -23,20 +23,16 @@ function* getCurrentTaskList() {
   }
 }
 
-function* updateListColumnsDisplaySetup({ payload }) {
+function* updateListPreferences({ payload }) {
   try {
     const { setup, taskListIdentifier } = payload;
-    yield call(
-      TaskListApi.updateUserColumnsListViewSetup,
-      setup,
-      taskListIdentifier,
-    );
+    yield call(TaskListApi.updateListPreferences, setup, taskListIdentifier);
     yield put({
-      type: ActionTypes.UPDATE_LIST_COLUMNS_DISPLAY_SETUP_SUCCESS,
+      type: ActionTypes.UPDATE_LIST_PREFERENCES_SUCCESS,
     });
   } catch {
     yield put(showGlobalErrorAlert());
-    yield put({ type: ActionTypes.UPDATE_LIST_COLUMNS_DISPLAY_SETUP_FAILURE });
+    yield put({ type: ActionTypes.UPDATE_LIST_PREFERENCES_FAILURE });
   }
 }
 
@@ -64,11 +60,8 @@ export default function* watchTasklist() {
   );
   yield takeLatest(ActionTypes.GET_CURRENT_TASK_LIST, getCurrentTaskList);
   yield takeEvery(
-    ActionTypes.UPDATE_LIST_COLUMNS_DISPLAY_SETUP,
-    updateListColumnsDisplaySetup,
-  );
-  yield takeEvery(
     ActionTypes.UPDATE_LIST_VIEW_SETUP,
     updateListViewDisplaySetup,
   );
+  yield takeEvery(ActionTypes.UPDATE_LIST_PREFERENCES, updateListPreferences);
 }

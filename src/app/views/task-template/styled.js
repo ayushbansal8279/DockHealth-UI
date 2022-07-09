@@ -16,6 +16,10 @@ export const SearchWrapper = styled.div`
 
 export const SearchAndFilterContainer = styled.div`
   display: flex;
+
+  @media print {
+    display: none;
+  }
 `;
 
 export const UpgradePlanPopupHeader = styled.div`

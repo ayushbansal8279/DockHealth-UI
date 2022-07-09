@@ -56,6 +56,10 @@ export const TaskTemplateApplicatorContainer = styled.div`
   margin-bottom: ${spacing.small};
   font-size: ${fontSizes.smallPlus};
   color: ${palette.mediumGrey};
+
+  @media print {
+    display: none;
+  }
 `;
 
 export const TaskTemplateApplicatorLabel = styled.span`

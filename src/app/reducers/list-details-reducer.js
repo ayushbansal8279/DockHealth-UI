@@ -189,18 +189,6 @@ const ListDetailsReducer = (state = initialState, action) => {
       };
     }
 
-    case ActionTypes.GET_CURRENT_LIST_COMPLETE_TASKS_SUCCESS: {
-      const { groupedTasks } = action;
-
-      return {
-        ...state,
-        completedGroupedTasks: {
-          taskGroups: groupedTasks,
-        },
-        isCompletedTasksFetching: false,
-      };
-    }
-
     case ActionTypes.REQUEST_ALL_LIST_DETAILS_GROUPS: {
       return {
         ...state,
@@ -301,7 +289,11 @@ const ListDetailsReducer = (state = initialState, action) => {
             const taskInWorkflowsCount = groupOfTasks.taskGroups?.[0]?.tasks
               .filter(t => t.itemType === 'BUNDLE')
               .reduce((accumulator, current) => {
-                return accumulator + current.tasksCount || 0;
+                return (
+                  accumulator +
+                  (current.tasksCount || 0) -
+                  (current.tasksCompletedCount || 0)
+                );
               }, 0);
             return {
               ...g,
@@ -327,13 +319,6 @@ const ListDetailsReducer = (state = initialState, action) => {
         tasks: [],
         completedTasks: [],
         showingCompletedTasks: false,
-      };
-
-    case ActionTypes.GET_CURRENT_LIST_COMPLETE_TASKS:
-      return {
-        ...state,
-        completedTasks: [],
-        isCompletedTasksFetching: true,
       };
 
     case ActionTypes.GET_LIST_DETAILS_TASK_COUNTERS_FAILURE:
@@ -398,7 +383,12 @@ const ListDetailsReducer = (state = initialState, action) => {
           ...state.groupedTasks,
           taskGroups: state.groupedTasks?.taskGroups?.map(g => ({
             ...g,
-            tasks: updateBundleInList(dataToUpdate, bundleIdentifier, g.tasks),
+            tasks: updateBundleInList(
+              dataToUpdate,
+              bundleIdentifier,
+              g.tasks,
+              g.groupIdentifier,
+            ),
           })),
         },
       };
@@ -709,18 +699,47 @@ const ListDetailsReducer = (state = initialState, action) => {
     case ActionTypes.APPLY_TASK_TEMPLATE_SUCCESS: {
       const { template, taskGroupIdentifier } = action;
 
+      // check if task group is empty
+      const existingGroup = state.listGroups?.find(
+        g => g.taskGroupIdentifier === taskGroupIdentifier,
+      );
+      const groupWithTasks = state.groupedTasks?.taskGroups?.find(
+        ({ groupIdentifier }) => groupIdentifier === taskGroupIdentifier,
+      );
+
+      if (groupWithTasks) {
+        return {
+          ...state,
+          groupedTasks: {
+            ...state.groupedTasks,
+            taskGroups: state.groupedTasks?.taskGroups?.map(g =>
+              g.groupIdentifier === taskGroupIdentifier
+                ? {
+                    ...g,
+                    tasks: [template, ...g.tasks],
+                  }
+                : g,
+            ),
+          },
+        };
+      }
+      // add the group
+      const existingGroupedTasks = state.groupedTasks?.taskGroups;
+      const newGroupedTasks = [
+        {
+          groupIdentifier: existingGroup.taskGroupIdentifier,
+          groupName: existingGroup.groupName,
+          tasks: [template],
+        },
+      ];
+
+      const allGroupedTasks = existingGroupedTasks?.concat(newGroupedTasks);
+
       return {
         ...state,
         groupedTasks: {
           ...state.groupedTasks,
-          taskGroups: state.groupedTasks?.taskGroups?.map(g =>
-            g.groupIdentifier === taskGroupIdentifier
-              ? {
-                  ...g,
-                  tasks: [template, ...g.tasks],
-                }
-              : g,
-          ),
+          taskGroups: allGroupedTasks,
         },
       };
     }

@@ -7,7 +7,7 @@ import FilterPopover from 'components/filter/FilterPopover/FilterPopover';
 import FilterHeader from 'components/filter/FilterHeader/FilterHeader';
 import FilterTable from 'components/filter/FilterTable/FilterTable';
 import CustomFilters from 'components/filter/CustomFilters/CustomFilters';
-import { MegaFilterNoResultsLabel } from './styled';
+import { MegaFilterNoResultsLabel, MegaFilterContainer } from './styled';
 
 const MegaFilter = ({
   children,
@@ -46,7 +46,7 @@ const MegaFilter = ({
   }, [isOpen]);
 
   return (
-    <>
+    <MegaFilterContainer>
       {children || (
         <FilterButton
           ref={megaFilterButtonReference}
@@ -101,7 +101,7 @@ const MegaFilter = ({
           </FilterTable>
         </>
       </FilterPopover>
-    </>
+    </MegaFilterContainer>
   );
 };
 

@@ -38,3 +38,8 @@ export const EmptyListText = styled.p`
   margin-bottom: 0;
   color: ${palette.coolGrey2};
 `;
+
+export const DriveIcon = styled.img`
+  height: 24px;
+  width: 24px;
+`;

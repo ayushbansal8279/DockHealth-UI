@@ -8,6 +8,7 @@
 /dist/*.svg
 /dist/*.ttf
 /dist/*.gz
+/dist/*.gif
 /dist/index.html
 dist*.zip
 /backup/**

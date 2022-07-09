@@ -2,6 +2,7 @@ import { takeEvery, put, call, all, delay } from 'redux-saga/effects';
 import { pluck, move } from 'ramda';
 import { showGlobalAlert, showGlobalErrorAlert } from 'alert/actions';
 import AlertMessages from 'alert/AlertMessages';
+import { closeModal } from 'modal/actions';
 import * as ActionTypes from 'actions/action-types';
 import * as TaskApi from 'api/task-api';
 import * as TaskActions from 'actions/task-actions';
@@ -99,11 +100,54 @@ function* updateTasksLink({ link }) {
   }
 }
 
-function* sendEmailForTask(task) {
+function* sendEmailForTask({ communicationDetails }) {
   try {
-    yield call(TaskApi.sendEmailForTask, task);
+    yield call(TaskApi.sendMessageForTask, communicationDetails);
     yield put(showGlobalAlert(AlertMessages.MAIL_SENT));
   } catch {
+    yield put(showGlobalErrorAlert());
+  }
+}
+
+function* sendEmrForTask({ emrData }) {
+  try {
+    yield call(TaskApi.postToEMR, emrData);
+    yield put(showGlobalAlert(AlertMessages.EMR_SENT));
+  } catch {
+    yield put(showGlobalErrorAlert());
+  }
+}
+
+function* markTaskAsRead(task) {
+  try {
+    const updatedTask = yield call(
+      TaskApi.flagUnread,
+      task?.taskIdentifier,
+      false,
+    );
+    yield put({
+      type: ActionTypes.MARK_TASK_AS_READ_SUCCESS,
+      task: updatedTask,
+    });
+  } catch (error) {
+    yield put({ type: ActionTypes.MARK_TASK_AS_READ_FAILURE });
+    yield put(showGlobalErrorAlert());
+  }
+}
+
+function* markTaskAsUnRead(task) {
+  try {
+    const updatedTask = yield call(
+      TaskApi.flagUnread,
+      task?.taskIdentifier,
+      true,
+    );
+    yield put({
+      type: ActionTypes.MARK_TASK_AS_UNREAD_SUCCESS,
+      task: updatedTask,
+    });
+  } catch (error) {
+    yield put({ type: ActionTypes.MARK_TASK_AS_UNREAD_FAILURE });
     yield put(showGlobalErrorAlert());
   }
 }
@@ -148,6 +192,15 @@ function* refreshTemplateBundle({ templateBundleIdentifier }) {
         TemplateBundleActions.completeTemplateBundle(templateBundleIdentifier),
       );
     }
+  } catch {
+    yield put(showGlobalErrorAlert());
+  }
+}
+
+function* sendFaxForTask({ communicationDetails }) {
+  try {
+    yield call(TaskApi.sendMessageForTask, communicationDetails);
+    yield put(showGlobalAlert(AlertMessages.FAX_SENT));
   } catch {
     yield put(showGlobalErrorAlert());
   }
@@ -299,12 +352,43 @@ function* insertCreatedTask({ taskIdentifier }) {
   }
 }
 
+function* shareTask({
+  taskIdentifier,
+  usersIdentifier,
+  externalUsers,
+  message,
+}) {
+  try {
+    yield call(
+      TaskApi.shareTask,
+      taskIdentifier,
+      usersIdentifier,
+      externalUsers,
+      message,
+    );
+
+    yield all([
+      put({ type: ActionTypes.SHARE_TASK_SUCCESS, taskIdentifier }),
+      put(showGlobalAlert(AlertMessages.SHARED)),
+      put(closeModal()),
+    ]);
+  } catch {
+    yield all([
+      put({ type: ActionTypes.SHARE_TASK_FAILURE, taskIdentifier }),
+      put(showGlobalErrorAlert()),
+    ]);
+  }
+}
+
 export default function* watchTask() {
   yield takeEvery(ActionTypes.REORDER_SUBTASKS, reorderSubtasks);
   yield takeEvery(ActionTypes.ADD_TASK_DEPENDENCY_LINK, addTaskDependencyLink);
   yield takeEvery(ActionTypes.DELETE_TASKS_LINK, deleteTasksLink);
   yield takeEvery(ActionTypes.UPDATE_TASKS_LINK, updateTasksLink);
+  yield takeEvery(ActionTypes.SEND_FAX_FOR_TASK, sendFaxForTask);
   yield takeEvery(ActionTypes.SEND_EMAIL_FOR_TASK, sendEmailForTask);
+  yield takeEvery(ActionTypes.SEND_EMR_FOR_TASK, sendEmrForTask);
+
   yield takeEvery(ActionTypes.CHOOSE_DECISION_TASK_OPTION, chooseTaskOutcome);
   yield takeEvery(ActionTypes.REFRESH_TASK_BUNDLE, refreshTemplateBundle);
   yield takeEvery(ActionTypes.CHANGE_TASK_INTENT_TYPE, changeTaskIntentType);
@@ -315,4 +399,7 @@ export default function* watchTask() {
   yield takeEvery(ActionTypes.CHANGE_TASK_PRIORITY, changeTaskPriority);
   yield takeEvery(ActionTypes.REFRESH_TASK, refreshTask);
   yield takeEvery(ActionTypes.INSERT_CREATED_TASK, insertCreatedTask);
+  yield takeEvery(ActionTypes.SHARE_TASK, shareTask);
+  yield takeEvery(ActionTypes.MARK_TASK_AS_READ, markTaskAsRead);
+  yield takeEvery(ActionTypes.MARK_TASK_AS_UNREAD, markTaskAsUnRead);
 }

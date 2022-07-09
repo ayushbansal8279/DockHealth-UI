@@ -30,7 +30,6 @@ import {
   CANCEL_TASKLIST_INVITE_SUCCESS,
   GET_PENDING_TASKLIST_SUCCESS,
   GET_ARCHIVED_TASKLIST_SUCCESS,
-  UPDATE_LIST_COLUMNS_DISPLAY_SETUP,
   UPDATE_LIST_VIEW_SETUP,
   INITIALIZE_TASK_LIST_STATE,
   CLEAR_TASK_LIST_STATE,
@@ -154,26 +153,7 @@ const TaskListReducer = (state = initialState, action) => {
               },
       };
     }
-    case UPDATE_LIST_COLUMNS_DISPLAY_SETUP: {
-      const { setup, currentUserIdentifier } = action.payload;
-      return {
-        ...state,
-        currentTaskList:
-          state.currentTaskList.listType === 'PUBLIC'
-            ? {
-                ...state.currentTaskList,
-                displayColumns: setup,
-              }
-            : {
-                ...state.currentTaskList,
-                listUsers: state.currentTaskList.listUsers.map(user =>
-                  user.identifier === currentUserIdentifier
-                    ? { ...user, displayColumns: setup }
-                    : user,
-                ),
-              },
-      };
-    }
+
     case INVITE_USER_TO_TASKLIST_SUCCESS:
       return inviteUser(state, action);
 
