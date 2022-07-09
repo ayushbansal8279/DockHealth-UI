@@ -58,6 +58,11 @@ export const TaskTemplateGroupHeaderContainer = styled.div`
       opacity: 1;
     }
   }
+
+  @media print {
+    border-top: 1px solid ${palette.coolGrey1};
+    border-bottom: 1px solid ${palette.coolGrey1};
+  }
 `;
 
 export const TaskTemplateProgressCircle = styled.div`

@@ -150,6 +150,7 @@ export const Description = styled.div`
   text-overflow: ellipsis;
   white-space: initial;
   max-width: 480px;
+  ${props => props.isUnread && 'font-weight: 900; font-size: 14px;'}
 
   @media screen and (max-width: 1300px) {
     max-width: 300px;
@@ -286,6 +287,10 @@ export const MainStandardTaskItemCell = styled(StandardTaskItemCell)`
   &:hover button {
     visibility: visible;
   }
+  @media print {
+    height: 100%;
+    border-right: 1px solid ${palette.coolGrey3};
+  }
 `;
 
 export const ClickablePatient = styled.span`
@@ -317,7 +322,9 @@ export const StandardTaskItemContainer = styled.div`
       : ''};
 
   @media print {
+    border-left: 1px solid ${palette.coolGrey3};
     height: auto;
+    border: 1px solid ${palette.coolGrey1};
   }
 `;
 
@@ -557,6 +564,13 @@ export const DescriptionBorder = styled.div`
   }
 
   ${({ isEdited }) => isEdited && `border-color: ${palette.coolGrey2};`}
+`;
+
+export const PatientPrintAdditionalInfo = styled.div`
+  display: none;
+  @media print {
+    display: initial;
+  }
 `;
 
 export const DecisionCellContainer = styled.div`

@@ -150,7 +150,8 @@ export function searchTasksByAssignedToUserGroupedByImplicitGroups(searchTerm) {
       `/task/searchTasksByAssignedToUserGroupedByImplicitGroups?searchTerm=${searchTerm}&status=INCOMPLETE`,
     )
     .then(({ data }) => {
-      return includeCustomFieldsPatientsToEachTask(data);
+      return includeCustomFieldsPatientsToEachTask({ taskGroups: data })
+        ?.taskGroups;
     })
     .catch(error => {
       throw new Error(error?.response?.data?.errorMessage);
@@ -163,7 +164,8 @@ export function searchTasksForOrganizationGroupedByImplicitGroups(searchTerm) {
       `/task/searchTasksForOrganizationGroupedByImplicitGroups?searchTerm=${searchTerm}&status=INCOMPLETE`,
     )
     .then(({ data }) => {
-      return includeCustomFieldsPatientsToEachTask(data);
+      return includeCustomFieldsPatientsToEachTask({ taskGroups: data })
+        ?.taskGroups;
     })
     .catch(error => {
       throw new Error(error?.response?.data?.errorMessage);

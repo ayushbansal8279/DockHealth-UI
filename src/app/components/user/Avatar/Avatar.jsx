@@ -19,6 +19,7 @@ const Avatar = React.forwardRef(
     {
       initials,
       pictureSrc,
+      pictureSize = '100%',
       name,
       color,
       size,
@@ -45,7 +46,9 @@ const Avatar = React.forwardRef(
           </div>
         );
 
-        return <MemberImage src={pictureSrc} alt={alt} />;
+        return (
+          <MemberImage src={pictureSrc} pictureSize={pictureSize} alt={alt} />
+        );
       }
       return isGroup ? initials?.[0]?.toUpperCase() : initials?.toLowerCase();
     }, [pictureSrc, isGroup, initials, name]);

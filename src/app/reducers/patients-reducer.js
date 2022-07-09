@@ -252,7 +252,7 @@ const PatientsReducer = (state = initialState, action) => {
         ...state,
         currentPatientsList: {
           ...state.currentPatientsList,
-          patients: state.currentPatientsList.patients?.map(patient => ({
+          patients: state.currentPatientsList?.patients?.map(patient => ({
             ...patient,
             isSelected: false,
           })),

@@ -76,6 +76,7 @@ export const getTaskHeaderOptions = (
     draggable: true,
     width: TaskItemColumnWidth[TaskHeaderColumn.ASSIGNED].WIDE,
     shouldBeDisplayed: config[TaskHeaderColumn.ASSIGNED],
+    printWidth: TaskItemColumnWidth[TaskHeaderColumn.ASSIGNED].PRINT,
   },
   {
     id: TaskHeaderColumn.LIST_NAME,

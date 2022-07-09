@@ -19,6 +19,7 @@ import { workflowAutofocusFieldSelector } from 'selectors/workflow-drawer-select
 import { Box } from '@material-ui/core';
 import CustomFieldTextEditor from './CustomFieldTextEditor';
 import { ColorIndicator } from './styled';
+import MultiFormSelect from '../MultiSelect/MultiFormSelect';
 
 const CustomField = ({
   readOnly,
@@ -51,10 +52,11 @@ const CustomField = ({
         color: option.color,
       })) || [];
 
-    if (o.length > 0) o.unshift({ label: 'None', value: null });
+    if (o.length > 0 && fieldType !== FieldType.DROPDOWN_MULTI)
+      o.unshift({ label: 'None', value: null });
 
     return o;
-  }, [options]);
+  }, [fieldType, options]);
 
   const handleBlur = useCallback(
     data => {
@@ -67,7 +69,7 @@ const CustomField = ({
 
   const fieldName = `${fieldsGroupKey}.${identifier}`;
   useEffect(() => {
-    if (initialValue) setValue(fieldName, initialValue.value);
+    if (initialValue) setValue(fieldName, initialValue);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
@@ -161,6 +163,7 @@ const CustomField = ({
             inputRef={inputReference}
             ref={componentReference}
             onChange={() => setWasChanged(true)}
+            disableClearErrorOnKeyUp
           />
         );
       case FieldType.DROPDOWN: {
@@ -184,6 +187,39 @@ const CustomField = ({
           </Box>
         );
       }
+      case FieldType.DROPDOWN_MULTI: {
+        return (
+          <Box position="relative">
+            <MultiFormSelect
+              readOnly={readOnly}
+              label={name}
+              options={dropdownOptions}
+              name={fieldName}
+              onBlur={handleBlur}
+              inputRef={inputReference}
+              ref={componentReference}
+              onChange={() => setWasChanged(true)}
+            />
+          </Box>
+        );
+      }
+      case FieldType.HYPERLINK:
+        return (
+          <CustomFieldTextEditor
+            identifier={identifier}
+            readOnly={readOnly}
+            label={name}
+            name={fieldName}
+            onBlur={handleBlur}
+            inputRef={inputReference}
+            taskIdentifier={taskIdentifier}
+            task={task}
+            fieldsGroupKey={fieldsGroupKey}
+            ref={componentReference}
+            onChange={() => setWasChanged(true)}
+          />
+        );
+
       default:
         return <div>{field.name}</div>;
     }
