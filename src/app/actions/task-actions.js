@@ -617,21 +617,6 @@ export function reassignTask(taskIdentifier, userId) {
       });
 }
 
-export function markTaskRead(task) {
-  return dispatch =>
-    TaskApi.flagUnread(task?.taskIdentifier, false)
-      .then(() => {
-        // do nothing
-        dispatch({
-          type: ActionTypes.TASK_READ_SUCCESS,
-          task,
-        });
-      })
-      .catch(error => {
-        throw error;
-      });
-}
-
 export const loadSubTasks = task => dispatch => {
   dispatch({
     type: ActionTypes.REQUEST_LOAD_SUBTASKS,
@@ -842,6 +827,20 @@ export function sendEmailForTask(communicationDetails) {
   };
 }
 
+export function markTaskAsRead(taskIdentifier) {
+  return {
+    type: ActionTypes.MARK_TASK_AS_READ,
+    taskIdentifier,
+  };
+}
+
+export function markTaskAsUnRead(taskIdentifier) {
+  return {
+    type: ActionTypes.MARK_TASK_AS_UNREAD,
+    taskIdentifier,
+  };
+}
+
 export function deleteTasksLink(sourceTaskIdentifier, targetTaskIdentifier) {
   return {
     type: ActionTypes.DELETE_TASKS_LINK,
@@ -887,5 +886,20 @@ export function bulkEditDuplicateTasksSuccess(duplicatedTasks) {
   return {
     type: ActionTypes.BULK_EDIT_DUPLICATE_TASKS_SUCCESS,
     duplicatedTasks,
+  };
+}
+
+export function shareTask(
+  taskIdentifier,
+  usersIdentifier,
+  externalUsers,
+  message,
+) {
+  return {
+    type: ActionTypes.SHARE_TASK,
+    taskIdentifier,
+    usersIdentifier,
+    externalUsers,
+    message,
   };
 }

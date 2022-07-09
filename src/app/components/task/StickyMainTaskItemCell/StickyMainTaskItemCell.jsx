@@ -36,6 +36,10 @@ const StickyMainTaskItemCell = styled.div`
     width: 100px;
     height: calc(100% + 2px);
     z-index: -1;
+    
+    @media print {
+      left: -102px;
+    }
   }
 
   &::after {
@@ -57,6 +61,13 @@ const StickyMainTaskItemCell = styled.div`
             ${highlightDescription} 6s ease-out;
           `
         : ''};
+  }
+
+  @media print {
+    border-left: 1px solid ${palette.coolGrey1} !important;
+    min-width: 200px;
+    max-width: 300px;
+    height: auto;
   }
 `;
 

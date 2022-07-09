@@ -3,6 +3,7 @@ import { useState, useCallback, useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { useHistory, useParams } from 'react-router-dom';
 import { useDropzone } from 'react-dropzone';
+import { showGlobalErrorAlert } from 'alert/actions';
 import { memoizeWith, identity, isEmpty } from 'ramda';
 import * as PatientDetailsActions from 'actions/patient-details-actions';
 import {
@@ -242,7 +243,39 @@ const initializeAttachmentsSectionHooks = () => {
     [dispatch],
   );
 
+  const handleAttachmentClick = attachment => {
+    if (attachment.type === PatientAttachmentType.FILE_GDRIVE) {
+      // TODO: check property name for file url when backend will be done
+      if (attachment.fileUrl) {
+        window.open(attachment.fileUrl, '_blank', 'noopener,noreferrer');
+      } else {
+        dispatch(showGlobalErrorAlert());
+      }
+    } else {
+      openAttachmentPreview(attachment);
+    }
+  };
+
+  const handleGooglePickerChange = ({ docs }) => {
+    if (docs?.length > 0) {
+      docs.forEach(({ name, url, mimeType }) => {
+        dispatch(
+          PatientDetailsActions.createPatientAttachmentReference(
+            patientIdentifier,
+            name,
+            url,
+            mimeType,
+            PatientAttachmentType.FILE_GDRIVE,
+            folderIdentifier ?? null,
+          ),
+        );
+      });
+    }
+  };
+
   return {
+    dispatch,
+    handleAttachmentClick,
     handleCreateFolderClick,
     attachmentsSources,
     currentPatientAttachments: attachments,
@@ -260,6 +293,7 @@ const initializeAttachmentsSectionHooks = () => {
     openFolderInNewTab,
     renameAttachment,
     moveFileOrFolder,
+    handleGooglePickerChange,
     dropzone: {
       getRootProps,
       getInputProps,

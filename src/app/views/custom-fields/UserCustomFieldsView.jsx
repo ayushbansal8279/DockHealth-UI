@@ -41,7 +41,7 @@ const UserCustomFieldsView = () => {
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
 
   const fetchUserCustomFields = () => {
-    CustomFieldsApi.getAllUserListCustomFields()
+    CustomFieldsApi.getAllProviderCustomFields()
       .then(data => {
         const customFieldsData = data?.filter(
           cf => cf.contextType === 'CUSTOM',

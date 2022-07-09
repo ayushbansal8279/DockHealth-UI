@@ -29,6 +29,14 @@ export const TaskTemplateNameInput = styled.input`
   &:focus {
     outline: none;
   }
+
+  @media print {
+    height: auto;
+    text-overflow: auto;
+    overflow: auto;
+    white-space: wrap;
+    min-width: 200px;
+  }
 `;
 
 export const NameTooltip = styled.div`

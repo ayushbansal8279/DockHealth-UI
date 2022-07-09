@@ -26,7 +26,6 @@ const FormSelect = ({ name, onChange, ...restProps }) => {
 
   const handleChange = event => {
     if (error) clearErrors(name);
-
     setValue(name, event.target.value);
     if (typeof onChange === 'function') onChange(event.target.value);
   };

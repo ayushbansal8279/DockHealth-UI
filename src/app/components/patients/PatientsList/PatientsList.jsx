@@ -1,7 +1,7 @@
 /* eslint-disable sonarjs/cognitive-complexity */
 import React, { useCallback, useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
-import { useHistory } from 'react-router-dom';
+import { useHistory, useLocation } from 'react-router-dom';
 import * as ActionTypes from 'actions/action-types';
 import { Grid } from '@material-ui/core';
 import { lookupEMRPatient } from 'api/patient-api';
@@ -38,6 +38,7 @@ const PatientsList = ({
   hasImportErrors,
   isFetching,
 }) => {
+  const { pathname } = useLocation();
   const history = useHistory();
   const dispatch = useDispatch();
   const { currentUser } = useSelector(store => ({
@@ -92,9 +93,19 @@ const PatientsList = ({
             if (fromEMR) {
               const patient = await lookupEMRPatient(patientIdentifier);
 
-              history.push(`/core/patient/${patient.patientIdentifier}`);
+              history.push({
+                pathname: `/core/patient/${patient.patientIdentifier}`,
+                state: {
+                  from: pathname,
+                },
+              });
             } else {
-              history.push(`/core/patient/${patientIdentifier}`);
+              history.push({
+                pathname: `/core/patient/${patientIdentifier}`,
+                state: {
+                  from: pathname,
+                },
+              });
             }
           }}
           className="patient-cell"

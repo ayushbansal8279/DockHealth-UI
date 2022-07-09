@@ -109,6 +109,9 @@ export function updateCurrentUser(formProps) {
   });
 }
 
+export const updateUser = user =>
+  axios.patch(`user`, user).then(({ data }) => data);
+
 export function getCurrentUserNotificationPreferences() {
   return axios.get('user/userNotificationPreferences').then(({ data }) => {
     return data;

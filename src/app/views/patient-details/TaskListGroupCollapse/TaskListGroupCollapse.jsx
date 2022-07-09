@@ -8,6 +8,7 @@ import RotatableChevron from 'components/common/RotatableChevron/RotatableChevro
 import ViewTypeSwitch, {
   ViewType,
 } from 'components/tasklist/ViewTypeSwitch/ViewTypeSwitch';
+import StickyContainer from 'components/common/HorizontalScroll/StickyContainer';
 import {
   Container,
   GroupHeader,
@@ -34,29 +35,31 @@ const TaskListGroupCollapse = props => {
 
   return (
     <Container>
-      <GroupHeader stickyHeader={stickyHeader}>
-        <Box
-          display="flex"
-          flex={1}
-          alignItems="center"
-          overflow="hidden"
-          onClick={toggleOpen}
-        >
-          {group && group?.groupType && <RotatableChevron rotated={open} />}
-          <Box p={1} />
-          <GroupTitle>
-            <GroupName>
-              <span>
-                {group?.groupType === TaskGroupType.TASKLIST_DEFAULT
-                  ? 'New tasks'
-                  : group?.groupName}
-              </span>
-            </GroupName>
-            {count && <GroupCount>({count})</GroupCount>}
-          </GroupTitle>
-        </Box>
-        {open && <ViewTypeSwitch value={viewType} onChange={setViewType} />}
-      </GroupHeader>
+      <StickyContainer left={24} decreaseWidth={2 * 24} zIndex={13}>
+        <GroupHeader stickyHeader={stickyHeader}>
+          <Box
+            display="flex"
+            flex={1}
+            alignItems="center"
+            overflow="hidden"
+            onClick={toggleOpen}
+          >
+            {group && group?.groupType && <RotatableChevron rotated={open} />}
+            <Box p={1} />
+            <GroupTitle>
+              <GroupName>
+                <span>
+                  {group?.groupType === TaskGroupType.TASKLIST_DEFAULT
+                    ? 'New tasks'
+                    : group?.groupName}
+                </span>
+              </GroupName>
+              {count && <GroupCount>({count})</GroupCount>}
+            </GroupTitle>
+          </Box>
+          {open && <ViewTypeSwitch value={viewType} onChange={setViewType} />}
+        </GroupHeader>
+      </StickyContainer>
       <Collapse timeout={150} in={open}>
         <Box p={0.5} />
         {children({ isFullView })}

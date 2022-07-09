@@ -39,6 +39,8 @@ const TopSection = ({
     onCompleteToggle,
     isDependencyEmptyOrCompleted,
     isTaskStatusTogglingDisabled,
+    isTemplateTask,
+    handleShareTask,
   } = initializeTaskDrawerTopSectionHooks({
     onDelete,
     onDuplicate,
@@ -73,6 +75,10 @@ const TopSection = ({
         },
         restriction: restrictions?.duplicate === DISABLED,
       },
+      !isTemplateTask && {
+        name: 'Share Task',
+        onClick: handleShareTask,
+      },
       {
         name: 'Copy task link',
         onClick: handleCopyLink,
@@ -93,6 +99,8 @@ const TopSection = ({
       },
     ],
     [
+      isTemplateTask,
+      duplicateTaskWithoutConfirmation,
       handleMoveTask,
       restrictions,
       handleCopyLink,
@@ -100,6 +108,7 @@ const TopSection = ({
       sendFaxAvailable,
       openDeleteConfirmationModal,
       selectedTask,
+      handleShareTask,
       openDuplicateConfirmationModal,
       duplicateTaskWithoutConfirmation,
       dispatch,
