@@ -10,3 +10,8 @@ export const MegaFilterNoResultsLabel = styled.p`
   font-family: 'Montserrat', sans-serif;
   margin-bottom: 0;
 `;
+export const MegaFilterContainer = styled.div`
+  @media print {
+    display: none;
+  }
+`;

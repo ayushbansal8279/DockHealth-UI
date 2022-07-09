@@ -86,3 +86,10 @@ export function quickAddTask(newTask) {
       });
   };
 }
+
+export function updateUser(user) {
+  return {
+    type: ActionTypes.UPDATE_USER,
+    user,
+  };
+}

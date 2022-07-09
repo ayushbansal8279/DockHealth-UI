@@ -1,6 +1,7 @@
 import { makeStyles } from '@material-ui/core/styles';
 import styled from 'styled-components';
 import palette from 'styles/palette';
+import { Drawer } from '@material-ui/core';
 
 export const DrawerContainer = styled.div`
   display: flex;
@@ -35,4 +36,14 @@ export const MainContainer = styled.div`
   overflow-x: hidden;
   overflow-y: auto;
   z-index: 9;
+  @media print {
+    overflow-x: initial;
+    overflow-y: initial;
+  }
+`;
+
+export const MaterialDrawer = styled(Drawer)`
+  @media print {
+    display: none;
+  }
 `;

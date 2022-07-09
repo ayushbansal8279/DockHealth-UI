@@ -66,6 +66,27 @@ export function createAttachmentFolder(
     .then(({ data }) => data);
 }
 
+export function createAttachmentReference(
+  patientIdentifier,
+  name,
+  url,
+  mimeType,
+  referenceType,
+  folderIdentifier,
+) {
+  return axios
+    .post(`patient/attachment/other`, {
+      patientIdentifier,
+      fileName: name,
+      // TODO: check property name for file url when backend will be done
+      fileUrl: url,
+      contentType: mimeType,
+      type: referenceType,
+      parentAttachmentIdentifier: folderIdentifier ?? undefined,
+    })
+    .then(({ data }) => data);
+}
+
 export function updatePatientAttachment(attachment) {
   return axios.put(`patient/attachment`, attachment).then(({ data }) => data);
 }

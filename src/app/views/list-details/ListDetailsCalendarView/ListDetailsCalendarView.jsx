@@ -24,7 +24,7 @@ const ListDetailsCalendarView = () => {
   );
   const status = useSelector(currentTaskListTasksStatusSelector);
   const taskList = useSelector(currentTaskListSelector);
-  const { taskListIdentifier, listName, listDescription, listType } =
+  const { taskListIdentifier, listName, listDescription, color } =
     taskList || {};
   const { startDate, endDate } = useSelector(calendarDateRangeSelector);
 
@@ -45,14 +45,18 @@ const ListDetailsCalendarView = () => {
     <ViewLayout
       header={
         <LayoutHeader horizontalSticky>
-          {taskList && !['INBOX', 'PUBLIC'].includes(listType) && (
+          {taskList && (
             <Box position="absolute" top={listDescription ? 17 : 27} left={10}>
               <ListOptionsMenu list={taskList}>
                 <MoreVert color="primary" />
               </ListOptionsMenu>
             </Box>
           )}
-          <LayoutHeader.Title title={listName} description={listDescription} />
+          <LayoutHeader.Title
+            title={listName}
+            description={listDescription}
+            colorIndicator={color}
+          />
         </LayoutHeader>
       }
     >

@@ -1,3 +1,4 @@
+/* eslint-disable no-underscore-dangle */
 /* eslint-disable sonarjs/cognitive-complexity */
 import React, {
   useState,
@@ -5,7 +6,6 @@ import React, {
   useRef,
   useCallback,
   useContext,
-  useMemo,
 } from 'react';
 import { pluck } from 'ramda';
 import { useDispatch, useSelector } from 'react-redux';
@@ -39,6 +39,7 @@ import {
   TaskPriority,
   getPriorityColor,
   TaskItemColumnWidth,
+  isColumnChecked,
 } from 'helpers/task-helpers';
 import DependencyIcon from 'img/dependency-icon.svg';
 import DependencyListPopover from 'components/common/DependencyListPopover/DependencyListPopover';
@@ -53,7 +54,7 @@ import {
   SINGLE_TASK_FEATURES,
   SINGLE_TASK_RESTRICTIONS_OPTIONS,
 } from 'restrictions/task-restrictions';
-import { sortAlphabetical } from 'helpers/custom-fields-helpers';
+import { CUSTOM_FIELD_TYPES } from 'helpers/custom-fields-helpers';
 import { getSubtaskStylingLink } from './helpers';
 import TaskItemContextMenu from '../TaskItemContextMenu/TaskItemContextMenu';
 import TaskItemBulkEdit from './TaskItemComponents/TaskItemBulkEdit';
@@ -138,11 +139,7 @@ const TaskItem = React.memo(
       dependencyTasksCount,
     } = task;
 
-    const {
-      columnsConfig,
-      customColumnsConfig,
-      patientCustomColumnsConfig,
-    } = useColumnsConfig();
+    const { columns } = useColumnsConfig();
     const { listName, taskListIdentifier } = taskList || {};
     const isCompleted = task.status === 'COMPLETE';
     const isTemplateTask = checkIfTemplateTask(task);
@@ -151,17 +148,6 @@ const TaskItem = React.memo(
     const isDecisionSelected = task.taskOutcomes?.reduce(
       (accumulator, currentValue) => accumulator || currentValue.isSelected,
       false,
-    );
-
-    const alphabeticalSortedAllTypeCustomFields = useMemo(
-      () =>
-        sortAlphabetical([
-          ...customColumnsConfig,
-          ...patientCustomColumnsConfig.map(c => ({
-            ...c,
-          })),
-        ]),
-      [customColumnsConfig, patientCustomColumnsConfig],
     );
 
     const isTaskStatusTogglingDisabled =
@@ -339,6 +325,12 @@ const TaskItem = React.memo(
       dispatch(storeAsCurrentTask(null));
     };
 
+    const getColumnOrder = useCallback(
+      TaskItemColumnType =>
+        columns?.findIndex(c => c.identifier === TaskItemColumnType),
+      [columns],
+    );
+
     return (
       <>
         <StandardTaskItemPanel
@@ -356,6 +348,7 @@ const TaskItem = React.memo(
             isAddingTask={false}
           >
             <StickyMainTaskItemCell
+              order={0}
               isSubtask={showSubtaskStylingLink}
               newlyCreated={newlyCreated}
               backgroundColor={pageBackground}
@@ -414,45 +407,44 @@ const TaskItem = React.memo(
                     </DependencyIconContainer>
                   </>
                 )}
-                {columnsConfig[TaskItemColumn.DESCRIPTION] && (
-                  <>
-                    <TaskItemDescription
-                      disableMentions={restrictions?.mentions === DISABLED}
-                      disabled={restrictions?.description === READ_ONLY}
-                      task={task}
-                      isCompletedGroup={isCompletedGroup}
-                      highlightedValue={highlightedValue}
-                      hasParentTaskLabel={hasParentTaskLabel}
-                      isEditing={isEditingDescription}
-                      setEditing={setEditingDescription}
-                    />
-                    <DetailsButton>Details</DetailsButton>
-                  </>
-                )}
+
+                <>
+                  <TaskItemDescription
+                    disableMentions={restrictions?.mentions === DISABLED}
+                    disabled={restrictions?.description === READ_ONLY}
+                    task={task}
+                    isCompletedGroup={isCompletedGroup}
+                    highlightedValue={highlightedValue}
+                    hasParentTaskLabel={hasParentTaskLabel}
+                    isEditing={isEditingDescription}
+                    setEditing={setEditingDescription}
+                  />
+                  <DetailsButton>Details</DetailsButton>
+                </>
               </MainStandardTaskItemCell>
-              {columnsConfig[TaskItemColumn.DECISION_SELECT] &&
-                showDecisionRow && (
-                  <DecisionCellContainer>
-                    <TaskItemDecision
-                      outcomes={task.taskOutcomes}
-                      dispatch={dispatch}
-                      onSelect={chooseTaskDecisionOutcome}
-                      task={task}
-                      templateBundleIdentifier={templateBundleIdentifier}
-                      disabled={isCompleted}
-                      error={taskDecisionError}
-                      clearError={() => setTaskDecisionError(false)}
-                    />
-                  </DecisionCellContainer>
-                )}
+              {showDecisionRow && (
+                <DecisionCellContainer>
+                  <TaskItemDecision
+                    outcomes={task.taskOutcomes}
+                    dispatch={dispatch}
+                    onSelect={chooseTaskDecisionOutcome}
+                    task={task}
+                    templateBundleIdentifier={templateBundleIdentifier}
+                    disabled={isCompleted || !isDependencyEmptyOrCompleted}
+                    error={taskDecisionError}
+                    clearError={() => setTaskDecisionError(false)}
+                  />
+                </DecisionCellContainer>
+              )}
             </StickyMainTaskItemCell>
-            {columnsConfig[TaskItemColumn.SUBTASKS_COUNT] && (
+            {isColumnChecked(columns, TaskItemColumn.SUBTASKS_COUNT) && (
               <TaskItemCell
                 key={`subtask_count_${taskIdentifier}`}
                 width={TaskItemColumnWidth[TaskItemColumn.SUBTASKS_COUNT]}
                 justify="center"
                 paddingLeft="tiny"
                 paddingRight="tiny"
+                order={getColumnOrder(TaskItemColumn.SUBTASKS_COUNT)}
               >
                 <TaskItemSubtasks
                   isSubtask={isSubtask}
@@ -469,10 +461,11 @@ const TaskItem = React.memo(
                 />
               </TaskItemCell>
             )}
-            {columnsConfig[TaskItemColumn.PATIENT] && (
+            {isColumnChecked(columns, TaskItemColumn.PATIENT) && (
               <TaskItemCell
                 key={`patient_${taskIdentifier}`}
                 width={TaskItemColumnWidth[TaskItemColumn.PATIENT]}
+                order={getColumnOrder(TaskItemColumn.PATIENT)}
               >
                 <TaskItemPatient
                   highlightedValue={highlightedValue}
@@ -491,7 +484,7 @@ const TaskItem = React.memo(
                 />
               </TaskItemCell>
             )}
-            {columnsConfig[TaskItemColumn.WORKFLOW_STATUS] && (
+            {isColumnChecked(columns, TaskItemColumn.WORKFLOW_STATUS) && (
               <TaskItemCell
                 key={`task_status_${taskIdentifier}`}
                 width={TaskItemColumnWidth[TaskItemColumn.WORKFLOW_STATUS]}
@@ -500,6 +493,7 @@ const TaskItem = React.memo(
                 onContextMenu={event => {
                   event.stopPropagation();
                 }}
+                order={getColumnOrder(TaskItemColumn.WORKFLOW_STATUS)}
               >
                 <TaskItemWorkflowStatus
                   task={task}
@@ -513,10 +507,11 @@ const TaskItem = React.memo(
                 />
               </TaskItemCell>
             )}
-            {columnsConfig[TaskItemColumn.ACTIVITY] && (
+            {isColumnChecked(columns, TaskItemColumn.ACTIVITY) && (
               <TaskItemCell
                 key={`activity_${taskIdentifier}`}
                 width={TaskItemColumnWidth[TaskItemColumn.ACTIVITY]}
+                order={getColumnOrder(TaskItemColumn.ACTIVITY)}
               >
                 <TaskItemIcons
                   restrictions={restrictions}
@@ -533,31 +528,34 @@ const TaskItem = React.memo(
             )}
             {restrictions?.dueDate !== DISABLED && (
               <>
-                {columnsConfig[TaskItemColumn.START_DATE] && (
+                {isColumnChecked(columns, TaskItemColumn.START_DATE) && (
                   <TaskItemCell
                     width={TaskItemColumnWidth[TaskItemColumn.START_DATE]}
                     onContextMenu={event => {
                       event.stopPropagation();
                     }}
+                    order={getColumnOrder(TaskItemColumn.START_DATE)}
                   />
                 )}
-                {columnsConfig[TaskItemColumn.DUE_DATE] && !isTemplateTask && (
-                  <TaskItemCell
-                    key={`due_date_${taskIdentifier}`}
-                    width={TaskItemColumnWidth[TaskItemColumn.DUE_DATE]}
-                    paddingLeft="tiny"
-                    paddingRight="tiny"
-                    justify="center"
-                    onContextMenu={event => {
-                      event.stopPropagation();
-                    }}
-                  >
-                    <TaskItemDueDate task={task} />
-                  </TaskItemCell>
-                )}
+                {isColumnChecked(columns, TaskItemColumn.DUE_DATE) &&
+                  !isTemplateTask && (
+                    <TaskItemCell
+                      key={`due_date_${taskIdentifier}`}
+                      width={TaskItemColumnWidth[TaskItemColumn.DUE_DATE]}
+                      paddingLeft="tiny"
+                      paddingRight="tiny"
+                      justify="center"
+                      onContextMenu={event => {
+                        event.stopPropagation();
+                      }}
+                      order={getColumnOrder(TaskItemColumn.DUE_DATE)}
+                    >
+                      <TaskItemDueDate task={task} />
+                    </TaskItemCell>
+                  )}
               </>
             )}
-            {columnsConfig[TaskItemColumn.ASSIGNED] && (
+            {isColumnChecked(columns, TaskItemColumn.ASSIGNED) && (
               <TaskItemCell
                 key={`assigned_${taskIdentifier}`}
                 width={TaskItemColumnWidth[TaskItemColumn.ASSIGNED].WIDE}
@@ -567,6 +565,8 @@ const TaskItem = React.memo(
                 onContextMenu={event => {
                   event.stopPropagation();
                 }}
+                order={getColumnOrder(TaskItemColumn.ASSIGNED)}
+                printWidth={TaskItemColumnWidth[TaskItemColumn.ASSIGNED].PRINT}
               >
                 <TaskItemMembers
                   readOnly={restrictions?.assigment === READ_ONLY}
@@ -579,10 +579,11 @@ const TaskItem = React.memo(
               </TaskItemCell>
             )}
             {restrictions?.listName !== DISABLED &&
-              columnsConfig[TaskItemColumn.LIST_NAME] && (
+              isColumnChecked(columns, TaskItemColumn.LIST_NAME) && (
                 <TaskItemCell
                   key={`list_${taskIdentifier}`}
                   width={TaskItemColumnWidth[TaskItemColumn.LIST_NAME]}
+                  order={getColumnOrder(TaskItemColumn.LIST_NAME)}
                 >
                   <TaskItemList
                     listName={listName}
@@ -593,8 +594,12 @@ const TaskItem = React.memo(
               )}
             {restrictions?.customFields !== DISABLED && (
               <>
-                {alphabeticalSortedAllTypeCustomFields
-                  .filter(f => f.isChecked)
+                {columns
+                  .filter(
+                    f =>
+                      f.isChecked &&
+                      f._customFieldType !== CUSTOM_FIELD_TYPES.REGULAR,
+                  )
                   .map(field => {
                     const taskCustomFieldValue = task?.taskMetaData?.find(
                       f => f.customFieldIdentifier === field.identifier,
@@ -603,18 +608,19 @@ const TaskItem = React.memo(
                       f => f.customFieldIdentifier === field.identifier,
                     );
                     const customFieldValue =
-                      field.targetType === 'PATIENT'
+                      field.targetType === CUSTOM_FIELD_TYPES.PATIENT
                         ? patientCustomFieldValue
                         : taskCustomFieldValue;
 
                     const hidePatientCustomFields =
-                      field.targetType === 'PATIENT' &&
+                      field.targetType === CUSTOM_FIELD_TYPES.PATIENT &&
                       !task?.patient?.patientIdentifier;
                     return (
                       <TaskItemCell
                         key={`custom_${taskIdentifier}_${field.identifier}`}
                         padding="4px"
                         width={CustomFieldWidthConfig[field.fieldType]}
+                        order={getColumnOrder(field.identifier)}
                       >
                         {!hidePatientCustomFields && (
                           <TaskItemCustomField

@@ -7,16 +7,16 @@ import {
   AdornmentContainer,
 } from './styled';
 
-const PatientList = ({
+const AddRecordOption = ({
   showAddOption = true,
   customerTypeLabel = 'record',
-  handleAddRecord,
+  onClick,
   searchValue,
 }) => {
-  return !showAddOption || !typeof handleAddRecord === 'function' ? (
+  return !showAddOption || !typeof onClick === 'function' ? (
     <NoPatientFound>No {customerTypeLabel} found</NoPatientFound>
   ) : (
-    <ListItemButton type="button" onMouseDown={handleAddRecord}>
+    <ListItemButton type="button" onMouseDown={onClick}>
       <ListItemCustomText>
         <AdornmentContainer>+</AdornmentContainer>
         <AddText>Add &quot;{searchValue}&quot;</AddText>
@@ -25,4 +25,4 @@ const PatientList = ({
   );
 };
 
-export default PatientList;
+export default AddRecordOption;

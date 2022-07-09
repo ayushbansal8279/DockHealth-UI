@@ -13,11 +13,13 @@ import {
   duplicateTask,
   openQuickAddSubtask,
   moveTask,
+  markTaskAsRead,
+  markTaskAsUnRead,
 } from 'actions/task-actions';
 import { openModal, closeModal } from 'modal/actions';
 import { getTasksGroupsList } from 'actions/list-details-actions';
 import { SINGLE_TASK_RESTRICTIONS_OPTIONS } from 'restrictions/task-restrictions';
-import { Backdrop, MenuContainer, MenuItemButtom, Divider } from './styled';
+import { Backdrop, MenuContainer, MenuItemButton, Divider } from './styled';
 
 const { DISABLED, READ_ONLY } = SINGLE_TASK_RESTRICTIONS_OPTIONS;
 
@@ -173,6 +175,14 @@ const TaskItemContextMenu = ({
     dispatch(openModal('DeleteTaskConfirmation', modalProps));
   }, []);
 
+  const handleMarkAsRead = useCallback(() => {
+    dispatch(markTaskAsRead(task.taskIdentifier));
+  }, []);
+
+  const handleMarkAsUnRead = useCallback(() => {
+    dispatch(markTaskAsUnRead(task.taskIdentifier));
+  }, []);
+
   const handleMoveTask = useCallback(() => {
     const hasSubtasks = task.subTasksCount !== 0;
 
@@ -255,6 +265,10 @@ const TaskItemContextMenu = ({
     };
   }, []);
 
+  const handleShareTask = () => {
+    dispatch(openModal('ShareTask', { taskIdentifier: task.identifier }));
+  };
+
   if (!position || !position.x || !position.y) return null;
 
   return (
@@ -273,30 +287,52 @@ const TaskItemContextMenu = ({
       >
         {restrictions?.move !== DISABLED && !isTemplateTask && !isBundleTask && (
           <li>
-            <MenuItemButtom tabIndex="0" type="button" onClick={handleMoveTask}>
+            <MenuItemButton tabIndex="0" type="button" onClick={handleMoveTask}>
               Move to list
-            </MenuItemButtom>
+            </MenuItemButton>
           </li>
         )}
         {restrictions?.move !== DISABLED && !isTemplateTask && !isBundleTask && (
           <li>
-            <MenuItemButtom type="button" onClick={handleMoveGroupTask}>
+            <MenuItemButton type="button" onClick={handleMoveGroupTask}>
               Move to group
-            </MenuItemButtom>
+            </MenuItemButton>
+          </li>
+        )}
+        {!task.read && !isTemplateTask && (
+          <li>
+            <MenuItemButton
+              tabIndex="0"
+              type="button"
+              onClick={handleMarkAsRead}
+            >
+              Mark as read
+            </MenuItemButton>
+          </li>
+        )}
+        {task.read && !isTemplateTask && (
+          <li>
+            <MenuItemButton
+              tabIndex="0"
+              type="button"
+              onClick={handleMarkAsUnRead}
+            >
+              Mark as unread
+            </MenuItemButton>
           </li>
         )}
         {restrictions?.duplicate !== DISABLED && (
           <li>
-            <MenuItemButtom type="button" onClick={handleDuplicateTask}>
+            <MenuItemButton type="button" onClick={handleDuplicateTask}>
               Duplicate {isSubtask ? 'subtask' : 'task'}
-            </MenuItemButtom>
+            </MenuItemButton>
           </li>
         )}
         {restrictions?.subtasks !== READ_ONLY &&
           !isSubtask &&
           !subtasksDisabled && (
             <li>
-              <MenuItemButtom
+              <MenuItemButton
                 type="button"
                 onClick={() => {
                   dispatch(openQuickAddSubtask(task.taskIdentifier));
@@ -304,20 +340,27 @@ const TaskItemContextMenu = ({
                 }}
               >
                 Create subtask
-              </MenuItemButtom>
+              </MenuItemButton>
             </li>
           )}
+        {!isTemplateTask && (
+          <li>
+            <MenuItemButton type="button" onClick={handleShareTask}>
+              Share Task
+            </MenuItemButton>
+          </li>
+        )}
         {restrictions?.delete !== DISABLED && (
           <>
             <Divider />
             <li>
-              <MenuItemButtom
+              <MenuItemButton
                 type="button"
                 color={palette.oPlusRed}
                 onClick={handleDeleteTask}
               >
                 Delete {isSubtask ? 'subtask' : 'task'}
-              </MenuItemButtom>
+              </MenuItemButton>
             </li>
           </>
         )}

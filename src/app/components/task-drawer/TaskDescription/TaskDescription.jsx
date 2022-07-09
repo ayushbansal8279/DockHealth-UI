@@ -19,7 +19,7 @@ import {
   isEditorStateEmpty,
 } from 'components/common/TextEditor/helpers';
 import { createMentionEntities } from 'components/common/TextEditor/create-mention-entities';
-import CustomTextEditor from 'components/task-drawer/CustomTextEditor/CustomTextEditor';
+import CustomTextEditor from 'components/common/CustomTextEditor/CustomTextEditor';
 import { useMentionsEditorState } from 'components/common/TextEditor/use-mentions-editor-state';
 import { selectedTaskSelector } from 'selectors/task-drawer-selectors';
 import { DescriptionTextContainer, DescriptionError } from './styled';
@@ -156,6 +156,7 @@ const TaskDescription = ({ readOnly, disableMentions }) => {
           selectedTask={selectedTask}
         >
           <TextEditor
+            characterLimit={false}
             readOnly={readOnly}
             ref={descriptionReference}
             taskListIdentifier={taskListIdentifier}

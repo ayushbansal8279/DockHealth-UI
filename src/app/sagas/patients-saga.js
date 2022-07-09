@@ -206,9 +206,16 @@ function* addBulkLabel({ payload }) {
 
 function* addPatientLabel({ payload }) {
   try {
-    yield call(addLabel, payload);
+    const label = yield call(addLabel, payload);
+    yield put({
+      type: ActionTypes.PATIENT_ADD_LABEL_SUCCESS,
+      label,
+    });
     yield put(showGlobalAlert(AlertMessages.LABEL_CREATED));
   } catch {
+    yield put({
+      type: ActionTypes.PATIENT_ADD_LABEL_FAILURE,
+    });
     yield put(showGlobalErrorAlert());
   }
 }
@@ -225,8 +232,15 @@ function* deleteBulkLabel({ payload }) {
 function* deletePatientLabel({ payload }) {
   try {
     yield call(removeLabelForPatient, payload);
+    yield put({
+      type: ActionTypes.PATIENT_DELETE_LABEL_SUCCESS,
+      deletedLabelIdentifier: payload.labelIdentifier,
+    });
     yield put(showGlobalAlert(AlertMessages.LABEL_DELETED));
   } catch {
+    yield put({
+      type: ActionTypes.PATIENT_DELETE_LABEL_FAILURE,
+    });
     yield put(showGlobalErrorAlert());
   }
 }

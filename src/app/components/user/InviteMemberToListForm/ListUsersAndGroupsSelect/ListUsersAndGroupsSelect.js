@@ -272,8 +272,8 @@ const ListUsersAndGroupsSelect = ({
                   ) : (
                     <EmptyPeopleResult>
                       <AddRecordOption
-                        handleAddRecord={handleEmptyResultActionClick}
                         searchValue={searchInputValue}
+                        onClick={handleEmptyResultActionClick}
                       />
                     </EmptyPeopleResult>
                   )}

@@ -58,8 +58,16 @@ export const StyledEditorContainer = styled.div`
       height: 1.3em;
       overflow: hidden;
 
+      @media print {
+        height: auto;
+      }
+
       & .public-DraftStyleDefault-block {
         white-space: pre;
+
+        @media print {
+          white-space: initial;
+        }
 
         ${isReadOnly &&
           `
@@ -139,4 +147,10 @@ export const LinkIconContainer = styled.div`
   & button {
     padding-top: 0px;
   }
+`;
+
+export const Counter = styled.div`
+  display: flex;
+  justify-content: end;
+  ${({ alert }) => alert && `color: ${palette.red}`}
 `;

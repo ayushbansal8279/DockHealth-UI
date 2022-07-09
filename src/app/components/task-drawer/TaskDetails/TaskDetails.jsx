@@ -10,7 +10,7 @@ import { useBoolean } from 'hooks/useBoolean';
 import usePrevious from 'hooks/use-previous';
 import { updateTaskDetails } from 'actions/task-actions';
 import { checkIfTemplateTask } from 'helpers/task-helpers';
-import CustomTextEditor from 'components/task-drawer/CustomTextEditor/CustomTextEditor';
+import CustomTextEditor from 'components/common/CustomTextEditor/CustomTextEditor';
 import TextEditor from 'components/common/TextEditor/TextEditor';
 import { useMentionsEditorState } from 'components/common/TextEditor/use-mentions-editor-state';
 import {

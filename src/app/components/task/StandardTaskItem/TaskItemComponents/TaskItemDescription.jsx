@@ -57,6 +57,7 @@ const TaskItemDescription = ({
     completedDt,
     taskList,
     linkedTaskTemplate,
+    read,
   } = task;
   const { taskListIdentifier } = taskList || {};
   const { matchDescription } = searchMetaData || {};
@@ -168,6 +169,7 @@ const TaskItemDescription = ({
             }
           }}
           isCrossedOut={!isCompletedGroup && isCompleted}
+          isUnread={!read}
         >
           <DescriptionBorder
             disabled={disabled}

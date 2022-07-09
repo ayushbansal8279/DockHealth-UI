@@ -1,5 +1,4 @@
 import React, { useCallback } from 'react';
-import { Box } from '@material-ui/core';
 import { FieldType } from 'helpers/field-type-helpers';
 import TaskItemBoolean from 'components/task/StandardTaskItem/customFieldsTaskItemComponents/TaskItemBoolean/TaskItemBoolean';
 import TaskItemDate from 'components/task/StandardTaskItem/customFieldsTaskItemComponents/TaskItemDate';
@@ -7,13 +6,21 @@ import TaskItemDropdown from 'components/task/StandardTaskItem/customFieldsTaskI
 import TaskItemText from 'components/task/StandardTaskItem/customFieldsTaskItemComponents/TaskItemText/TaskItemText';
 import TaskItemLongText from 'components/task/StandardTaskItem/customFieldsTaskItemComponents/TaskItemLongText/TaskItemLongText';
 import TaskItemNumber from 'components/task/StandardTaskItem/customFieldsTaskItemComponents/TaskItemNumber/TaskItemNumber';
+
 import { updatePartialWorkflow } from 'actions/task-template-actions';
 import { partialUpdateTask, storeAsCurrentTask } from 'actions/task-actions';
 import { TaskItemType } from 'helpers/task-helpers';
 import { openDrawer } from 'actions/task-drawer-actions';
 import { useDispatch } from 'react-redux';
-import { pick } from 'ramda';
 import { updatePatientDetails } from 'actions/patient-details-actions';
+import TaskItemMultiDropdown from 'components/task/StandardTaskItem/customFieldsTaskItemComponents/TaskItemMultiDropdown/TaskItemMultiDropdown';
+import { isNotEmptyArray } from 'helpers/utils-helpers';
+import {
+  createMetaDataObjectToSend,
+  CUSTOM_FIELD_TYPES,
+} from 'helpers/custom-fields-helpers';
+import { StyledHyperLink } from 'components/auth/AuthComponents.styled';
+import { trunc } from 'helpers/utility-functions';
 
 const TaskItemCustomField = ({
   readOnly,
@@ -23,8 +30,8 @@ const TaskItemCustomField = ({
   onClick,
   // eslint-disable-next-line sonarjs/cognitive-complexity
 }) => {
-  const { value } = customFieldValue || {};
-  const patientType = field.targetType === 'PATIENT';
+  const { value, values } = customFieldValue || {};
+  const patientType = field.targetType === CUSTOM_FIELD_TYPES.PATIENT;
   const isWorkflow =
     task.itemType === TaskItemType.BUNDLE ||
     task.itemType === TaskItemType.TEMPLATE;
@@ -47,22 +54,37 @@ const TaskItemCustomField = ({
       if (task?.patient) {
         const patientMetaData = (task?.patient?.patientMetaData || [])
           ?.filter(tmd => tmd.customFieldIdentifier !== field.identifier)
-          ?.map(pick(['customFieldIdentifier', 'value']));
-        patientMetaData.push({
-          customFieldIdentifier: field.identifier,
-          value: newValue,
-        });
+          ?.map(tmd => createMetaDataObjectToSend(tmd));
+        if (isNotEmptyArray(newValue)) {
+          patientMetaData.push({
+            customFieldIdentifier: field.identifier,
+            values: newValue,
+          });
+        } else {
+          patientMetaData.push({
+            customFieldIdentifier: field.identifier,
+            value: newValue,
+          });
+        }
         const patientIdentifier = task?.patient?.patientIdentifier;
         dispatch(updatePatientDetails(patientIdentifier, { patientMetaData }));
       }
     } else {
       const taskMetaData = task.taskMetaData
         ?.filter(tmd => tmd.customFieldIdentifier !== field.identifier)
-        ?.map(pick(['customFieldIdentifier', 'value']));
-      taskMetaData.push({
-        customFieldIdentifier: field.identifier,
-        value: newValue,
-      });
+        ?.map(tmd => createMetaDataObjectToSend(tmd));
+      if (isNotEmptyArray(newValue)) {
+        taskMetaData.push({
+          customFieldIdentifier: field.identifier,
+          values: newValue,
+        });
+      } else {
+        taskMetaData.push({
+          customFieldIdentifier: field.identifier,
+          value: newValue,
+        });
+      }
+
       if (isWorkflow) {
         dispatch(updatePartialWorkflow(task?.identifier, { taskMetaData }));
       } else {
@@ -84,6 +106,16 @@ const TaskItemCustomField = ({
       return (
         <TaskItemDate value={value} onChange={handleChange} field={field} />
       );
+    case FieldType.DROPDOWN_MULTI: {
+      return (
+        <TaskItemMultiDropdown
+          readOnly={readOnly}
+          value={values || []}
+          onChange={handleChange}
+          field={field}
+        />
+      );
+    }
     case FieldType.DROPDOWN: {
       return (
         <TaskItemDropdown
@@ -105,20 +137,13 @@ const TaskItemCustomField = ({
       );
     case FieldType.LONG_TEXT:
       return (
-        <Box
-          width="100%"
-          height="100%"
-          display="flex"
-          alignItems="center"
-          onClick={handleClick}
-        >
-          <TaskItemLongText
-            readOnly={readOnly}
-            value={value}
-            onChange={handleChange}
-            field={field}
-          />
-        </Box>
+        <TaskItemLongText
+          readOnly={readOnly}
+          value={value}
+          onChange={handleChange}
+          openDrawer={!patientType ? handleClick : undefined}
+          field={field}
+        />
       );
     case FieldType.NUMBER:
       return (
@@ -128,6 +153,15 @@ const TaskItemCustomField = ({
           onChange={handleChange}
           field={field}
         />
+      );
+    case FieldType.HYPERLINK:
+      return (
+        <StyledHyperLink
+          href={value?.startsWith('http') ? value : `//${value}`}
+          target="_blank"
+        >
+          {trunc(value, 15)}
+        </StyledHyperLink>
       );
     default:
       return <div>{field.name}</div>;

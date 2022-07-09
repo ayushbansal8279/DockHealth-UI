@@ -76,6 +76,8 @@ const CustomFieldsSection = () => {
         const fieldName = `taskMetaData.${template.identifier}`;
         if (cf?.value) {
           setValue(fieldName, cf.value);
+        } else if (cf?.values) {
+          setValue(fieldName, cf.values);
         } else {
           setValue(fieldName, null);
         }

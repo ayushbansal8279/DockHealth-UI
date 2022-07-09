@@ -617,21 +617,6 @@ export function reassignTask(taskIdentifier, userId) {
       });
 }
 
-export function markTaskRead(task) {
-  return dispatch =>
-    TaskApi.flagUnread(task?.taskIdentifier, false)
-      .then(() => {
-        // do nothing
-        dispatch({
-          type: ActionTypes.TASK_READ_SUCCESS,
-          task,
-        });
-      })
-      .catch(error => {
-        throw error;
-      });
-}
-
 export const loadSubTasks = task => dispatch => {
   dispatch({
     type: ActionTypes.REQUEST_LOAD_SUBTASKS,
@@ -832,10 +817,34 @@ export function updateTasksLink(link) {
   };
 }
 
-export function sendEmailForTask(task) {
+export function sendEmailForTask(communicationDetails) {
   return {
     type: ActionTypes.SEND_EMAIL_FOR_TASK,
-    task: { ...task, communicationType: CommunicationType.EMAIL },
+    communicationDetails: {
+      ...communicationDetails,
+      communicationType: CommunicationType.EMAIL,
+    },
+  };
+}
+
+export function sendEmrForTask(emrData) {
+  return {
+    type: ActionTypes.SEND_EMR_FOR_TASK,
+    emrData,
+  };
+}
+
+export function markTaskAsRead(taskIdentifier) {
+  return {
+    type: ActionTypes.MARK_TASK_AS_READ,
+    taskIdentifier,
+  };
+}
+
+export function markTaskAsUnRead(taskIdentifier) {
+  return {
+    type: ActionTypes.MARK_TASK_AS_UNREAD,
+    taskIdentifier,
   };
 }
 
@@ -844,6 +853,16 @@ export function deleteTasksLink(sourceTaskIdentifier, targetTaskIdentifier) {
     type: ActionTypes.DELETE_TASKS_LINK,
     sourceTaskIdentifier,
     targetTaskIdentifier,
+  };
+}
+
+export function sendFaxForTask(communicationDetails) {
+  return {
+    type: ActionTypes.SEND_FAX_FOR_TASK,
+    communicationDetails: {
+      ...communicationDetails,
+      communicationType: CommunicationType.FAX,
+    },
   };
 }
 
@@ -874,5 +893,20 @@ export function bulkEditDuplicateTasksSuccess(duplicatedTasks) {
   return {
     type: ActionTypes.BULK_EDIT_DUPLICATE_TASKS_SUCCESS,
     duplicatedTasks,
+  };
+}
+
+export function shareTask(
+  taskIdentifier,
+  usersIdentifier,
+  externalUsers,
+  message,
+) {
+  return {
+    type: ActionTypes.SHARE_TASK,
+    taskIdentifier,
+    usersIdentifier,
+    externalUsers,
+    message,
   };
 }

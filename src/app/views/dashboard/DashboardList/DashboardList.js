@@ -48,10 +48,7 @@ import { DashboardTasksTab } from 'helpers/dashboard-helpers';
 import { ViewType, getViewTypeFromQueryString } from 'helpers/view-type-helper';
 import GroupedListSkeletonLoader from 'components/tasklist/GroupedListSkeletonLoader/GroupedListSkeletonLoader';
 import StickyContainer from 'components/common/HorizontalScroll/StickyContainer';
-import {
-  dashboardGroupsPreferencesSelector,
-  dashboardGroupsOrderPreferencesSelector,
-} from 'selectors/user-selectors';
+import { dashboardGroupsPreferencesSelector } from 'selectors/user-selectors';
 import { updateCurrentUserPreferences } from 'actions/user-actions';
 import { Context } from 'components/common/HorizontalScroll/HorizontalScrollContainer';
 import DashboardTasksGroup from './DashboardTasksGroup';
@@ -95,10 +92,6 @@ const DashboardList = ({
   const isSortApplied = !!currentSort?.key;
   const { key: sortKey, order: sortOrder } = currentSort;
 
-  const dashboardGroupsOrderPreferences = useSelector(
-    dashboardGroupsOrderPreferencesSelector,
-  );
-
   const filteredDashboardTasks = useMemo(() => {
     return dashboardTasks?.filter(taskGroupInfo =>
       dashboardGroupsPreferences?.includes(taskGroupInfo?.groupType),
@@ -107,14 +100,14 @@ const DashboardList = ({
 
   const orderedDashboardTasks = useMemo(() => {
     const sorted = () => {
-      return dashboardGroupsOrderPreferences
+      return dashboardGroupsPreferences
         .map(groupType =>
           filteredDashboardTasks.find(g => g.groupType === groupType),
         )
         .filter(element => element);
     };
-    return dashboardGroupsOrderPreferences ? sorted() : filteredDashboardTasks;
-  }, [dashboardGroupsOrderPreferences, filteredDashboardTasks]);
+    return dashboardGroupsPreferences ? sorted() : filteredDashboardTasks;
+  }, [dashboardGroupsPreferences, filteredDashboardTasks]);
 
   const currentSortMethod = useMemo(() => {
     if (!sortKey) return identity;
@@ -222,8 +215,8 @@ const DashboardList = ({
 
   const groupOrder = useMemo(() => {
     const defaultGroupOrder = dashboardTasks.map(g => g.groupType);
-    return dashboardGroupsOrderPreferences || defaultGroupOrder;
-  }, [dashboardGroupsOrderPreferences, dashboardTasks]);
+    return dashboardGroupsPreferences || defaultGroupOrder;
+  }, [dashboardGroupsPreferences, dashboardTasks]);
 
   const flattedOrderedDashboardTasks = useMemo(
     () => orderedDashboardTasks.map(g => g.groupType),

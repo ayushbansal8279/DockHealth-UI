@@ -24,7 +24,6 @@ import ColorPicker from 'components/common/ColorPicker/ColorPicker';
 
 const ListOptionsMenu = props => {
   const { list, children, tasks, moreOptions } = props;
-
   const dispatch = useDispatch();
   const history = useHistory();
   const currentUser = useSelector(userProfileSelector);
@@ -227,18 +226,17 @@ const ListOptionsMenu = props => {
             },
           ];
         }
-        if (moreOptions) {
-          baseList = [
-            ...baseList,
-            {
-              key: 'print',
-              name: 'Print',
-              onClick: () => onPrintClick(targetList),
-            },
-          ];
-        }
       }
-
+      if (moreOptions) {
+        baseList = [
+          ...baseList,
+          {
+            key: 'print',
+            name: 'Print',
+            onClick: () => onPrintClick(targetList),
+          },
+        ];
+      }
       return baseList;
     },
     [
@@ -262,20 +260,18 @@ const ListOptionsMenu = props => {
       placement="bottom-start"
       options={getMenuItems(list)}
       footer={
-        MASTER_ROLES.includes(list?.role) ? (
-          <ColorPicker
-            onChange={event =>
-              dispatch(
-                TaskListActions.saveTaskList({
-                  taskListIdentifier: list.taskListIdentifier,
-                  color: event.target.value,
-                }),
-              )
-            }
-            value={list.color}
-            variant="circle"
-          />
-        ) : null
+        <ColorPicker
+          onChange={event =>
+            dispatch(
+              TaskListActions.saveTaskList({
+                taskListIdentifier: list.taskListIdentifier,
+                color: event.target.value,
+              }),
+            )
+          }
+          value={list.color}
+          variant="circle"
+        />
       }
     >
       {children}

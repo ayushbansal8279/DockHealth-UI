@@ -14,7 +14,7 @@ import {
   userProfileSelector,
   userHasPatientCustomFieldsFeatureSelector,
 } from 'selectors/user-selectors';
-import { groupBy, prop, compose, sortBy } from 'ramda';
+import { groupBy, prop, compose, sortBy, isEmpty } from 'ramda';
 import { useFormContext } from 'react-hook-form';
 import { capitalize } from 'helpers/capitalize';
 import * as CustomFieldsApi from 'api/custom-fields-api';
@@ -32,6 +32,8 @@ import moment from 'moment';
 import { useBoolean } from 'hooks/useBoolean';
 import CategoryOptions from 'components/common/CategoryOptions/CategoryOptions';
 import * as patientsApi from 'api/patients-api';
+import { FieldType } from 'helpers/field-type-helpers';
+import { scrollToError } from 'helpers/ui-helper';
 import { formatMetaDataOutput, GENDER_OPTIONS_BIRTH } from './helpers';
 import { HidableContainer } from './styled';
 
@@ -51,7 +53,10 @@ const PatientForm = forwardRef(
     reference,
   ) => {
     const history = useHistory();
-    const { handleSubmit } = useFormContext();
+    const {
+      handleSubmit,
+      formState: { errors },
+    } = useFormContext();
     const [isOpenedPersonal, setIsOpenedPersonal] = useState(true);
     const [isOpenedContact, setIsOpenedContact] = useState(true);
     const [customFields, setCustomFields] = useState(null);
@@ -104,25 +109,40 @@ const PatientForm = forwardRef(
 
     const renderCustomField = useCallback(
       (field, index, showEmpty = true) => {
-        const initialFieldValue = patient?.patientMetaData?.find(
+        const patientCustomField = patient?.patientMetaData?.find(
           ({ customFieldIdentifier }) =>
             field.identifier === customFieldIdentifier,
         );
-        return (
+
+        return field.fieldType === FieldType.DROPDOWN_MULTI ? (
           <HidableContainer
             key={field.identifier}
-            visibility={!showEmpty && !initialFieldValue?.value}
+            visibility={!showEmpty && !patientCustomField?.values}
           >
             {index !== 0 && <Spacing vertical={3} />}
             <CustomField
               readOnly={!edited}
               field={field}
-              initialValue={initialFieldValue}
+              initialValue={patientCustomField?.values}
+              fieldsGroupKey="patientMetaData"
+            />
+          </HidableContainer>
+        ) : (
+          <HidableContainer
+            key={field.identifier}
+            visibility={!showEmpty && !patientCustomField?.value}
+          >
+            {index !== 0 && <Spacing vertical={3} />}
+            <CustomField
+              readOnly={!edited}
+              field={field}
+              initialValue={patientCustomField?.value}
               fieldsGroupKey="patientMetaData"
             />
           </HidableContainer>
         );
       },
+
       [patient, edited],
     );
 
@@ -131,7 +151,10 @@ const PatientForm = forwardRef(
 
     return (
       <form
-        onSubmit={handleSubmit(compose(onSubmit, formatMetaDataOutput))}
+        onSubmit={handleSubmit(
+          compose(onSubmit, formatMetaDataOutput),
+          scrollToError,
+        )}
         ref={reference}
       >
         <LabeledCollapse
@@ -280,7 +303,17 @@ const PatientForm = forwardRef(
             )}
           </div>
           {edited && (
-            <Button width="auto" type="submit">
+            <Button
+              width="auto"
+              type="submit"
+              onClick={event => {
+                if (!isEmpty(errors)) {
+                  event.preventDefault();
+                  event.stopPropagation();
+                  scrollToError(errors);
+                }
+              }}
+            >
               {buttonLabel || `SAVE ${customerTypeLabel}`}
             </Button>
           )}

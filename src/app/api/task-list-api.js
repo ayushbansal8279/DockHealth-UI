@@ -330,11 +330,9 @@ export function leaveList(taskListIdentifier) {
     });
 }
 
-export function updateUserColumnsListViewSetup(setup, taskListIdentifier) {
+export function updateListPreferences(setup, taskListIdentifier) {
   return axios
-    .put(`list/updateUserPreferences/${taskListIdentifier}`, {
-      displayColumns: setup,
-    })
+    .put(`list/updateUserPreferences/${taskListIdentifier}`, setup)
     .then(({ data }) => data);
 }
 

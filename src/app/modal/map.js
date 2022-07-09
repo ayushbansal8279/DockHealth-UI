@@ -57,11 +57,15 @@ import UnassignTaskTemplateModal from './components/UnassignTaskTemplateModal/Un
 import PatientPickerModal from './components/PatientPickerModal/PatientPickerModal';
 import MergePatientsModal from './components/MergePatientsModal/MergePatientsModal';
 import SelectDestinationGroupModal from './components/SelectDestinationGroupModal/SelectDestinationGroupModal';
+import ShareTaskModal from './components/ShareTaskModal/ShareTaskModal';
 import PatientFolderModal from './components/PatientFolderModal/PatientFolderModal';
 import SelectPatientFolderModal from './components/SelectPatientFolderModal/SelectPatientFolderModal';
 import SmartFlowListModal from './components/SmartFlowListModal/SmartFlowListModal';
 import UnarchivePatientModal from './components/UnarchivePatientModal/UnarchivePatientModal';
-import SendEmailFromTaskModal from './components/SendEmailFromTaskModal/SendEmailFromTaskModal';
+import SendEmailFromTaskModal from './components/SendMessageFromTaskModals/SendEmailFromTaskModal/SendEmailFromTaskModal';
+import SendFaxFromTaskModal from './components/SendMessageFromTaskModals/SendFaxFromTaskModal/SendFaxFromTaskModal';
+import EditTemplateModal from './components/EditTemplateModal/EditTemplateModal';
+import SendEmrNoteFromTaskModal from './components/SendMessageFromTaskModals/SendEmrNoteFromTaskModal/SendEmrNoteFromTaskModal';
 
 const MODAL_MAP = {
   CompleteAllTasks: CompleteAllTasksModal,
@@ -124,10 +128,14 @@ const MODAL_MAP = {
   UnassignTaskTemplate: UnassignTaskTemplateModal,
   PatientPicker: PatientPickerModal,
   MergePatients: MergePatientsModal,
+  ShareTask: ShareTaskModal,
   PatientFolder: PatientFolderModal,
   SelectPatientFolder: SelectPatientFolderModal,
   SmartFlowList: SmartFlowListModal,
+  SendFaxFromTask: SendFaxFromTaskModal,
   SendEmailFromTask: SendEmailFromTaskModal,
+  EditTemplate: EditTemplateModal,
+  SendEmrFromTask: SendEmrNoteFromTaskModal,
 };
 
 export default MODAL_MAP;

@@ -5,7 +5,14 @@ import SecondaryDropdownInput from 'components/common/DropdownInput/SecondaryDro
 import SecondaryNumberInput from 'components/common/NumberInput/SecondaryNumberInput';
 import PopoverBottomBar from 'components/task/PopoverBottomBar/PopoverBottomBar';
 import { FormProvider, useForm } from 'react-hook-form';
-import { DELAY_PERIOD_UNIT_OPTIONS, DelayPeriodUnit } from './helpers';
+import {
+  DELAY_PERIOD_UNIT_OPTIONS,
+  DelayPeriodUnit,
+  TIME_TYPE,
+  TIME_REFERENCE,
+  TIME_TYPE_OPTIONS,
+  TIME_REFERENCE_OPTIONS,
+} from './helpers';
 import { DelayPeriodForm, Title, CheckboxLabel } from './styled';
 
 const TaskLinkDelayForm = props => {
@@ -16,26 +23,29 @@ const TaskLinkDelayForm = props => {
       delayPeriod: link?.delayPeriod || 3,
       delayPeriodUnit: link?.delayPeriodUnit || DelayPeriodUnit.DAY,
       delayIsBusinessDays: link?.delayIsBusinessDays || false,
+      timeRelative: link?.timeRelative || TIME_TYPE.AFTER,
+      timeReference: link?.timeReference || Object.keys(TIME_REFERENCE)[0],
     },
   });
   const { watch, setValue, register, unregister, handleSubmit } = formMethods;
-
   useEffect(() => {
     register('delayPeriod');
     register('delayPeriodUnit');
     register('delayIsBusinessDays');
+    register('timeRelative');
+    register('timeReference');
 
     return () => {
       unregister('delayPeriod');
       unregister('delayPeriodUnit');
       unregister('delayIsBusinessDays');
+      unregister('timeRelative');
+      unregister('timeReference');
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
-
   const delayPeriodValue = watch('delayPeriod');
   const delayIsBusinessDaysValue = watch('delayIsBusinessDays');
-
   return (
     <FormProvider {...formMethods}>
       <DelayPeriodForm onSubmit={handleSubmit(onSubmit)}>
@@ -62,11 +72,31 @@ const TaskLinkDelayForm = props => {
               name="delayPeriodUnit"
               placeholder="Select unit"
               value={watch('delayPeriodUnit')}
-              onSelect={newValue => setValue('delayPeriodUnit', newValue)}
               width={207}
+              onSelect={newValue => setValue('delayPeriodUnit', newValue)}
               options={DELAY_PERIOD_UNIT_OPTIONS}
             />
           </Box>
+          {/* <Box p={1} /> */}
+          {/* <Box width="100%">
+            <SecondaryDropdownInput
+              name="timeRelative"
+              width={275}
+              value={watch('timeRelative')}
+              onSelect={newValue => setValue('timeRelative', newValue)}
+              options={TIME_TYPE_OPTIONS}
+            />
+          </Box> */}
+          {/* <Box p={1} /> */}
+          {/* <Box width="100%">
+            <SecondaryDropdownInput
+              name="timeReference"
+              width={275}
+              value={watch('timeReference')}
+              onSelect={newValue => setValue('timeReference', newValue)}
+              options={TIME_REFERENCE_OPTIONS}
+            />
+          </Box> */}
           <Box p={1} />
           <Box width="100%" display="flex" alignItems="center">
             <Checkbox

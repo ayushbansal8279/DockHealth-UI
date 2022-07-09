@@ -84,6 +84,37 @@ export default function(state = INITIAL_STATE, action = {}) {
       };
     }
 
+    case ActionTypes.UPDATE_LIST_PREFERENCES: {
+      const {
+        currentUserIdentifier,
+        setup: { listDisplayColumns },
+        taskListIdentifier,
+      } = action.payload;
+      return {
+        ...state,
+        lists: state.lists?.map(l => {
+          if (l?.listType === 'PUBLIC') {
+            return l.taskListIdentifier === taskListIdentifier
+              ? {
+                  ...l,
+                  listDisplayColumns,
+                }
+              : l;
+          }
+          return l.taskListIdentifier === taskListIdentifier
+            ? {
+                ...l,
+                listUsers: l.listUsers.map(u =>
+                  u.identifier === currentUserIdentifier
+                    ? { ...u, listDisplayColumns }
+                    : u,
+                ),
+              }
+            : l;
+        }),
+      };
+    }
+
     case ActionTypes.CLEAR_PATIENT_STATE:
       return {
         ...INITIAL_STATE,
@@ -181,7 +212,8 @@ export default function(state = INITIAL_STATE, action = {}) {
       };
     }
 
-    case ActionTypes.ADD_PATIENT_ATTACHMENT_SUCCESS: {
+    case ActionTypes.ADD_PATIENT_ATTACHMENT_SUCCESS:
+    case ActionTypes.ADD_PATIENT_ATTACHMENT_REFERENCE_SUCCESS: {
       return {
         ...state,
         attachments: [...(state.attachments || []), action.attachment],
@@ -455,7 +487,6 @@ export default function(state = INITIAL_STATE, action = {}) {
 
     case ActionTypes.UPDATE_PATIENT_DETAILS_SUCCESS: {
       const { details } = payload;
-
       return {
         ...state,
         patient: {
@@ -568,6 +599,26 @@ export default function(state = INITIAL_STATE, action = {}) {
         ),
       };
     }
+
+    case ActionTypes.PATIENT_ADD_LABEL_SUCCESS:
+      return {
+        ...state,
+        patient: {
+          ...state.patient,
+          patientLabels: [...(state.patient.patientLabels ?? []), action.label],
+        },
+      };
+
+    case ActionTypes.PATIENT_DELETE_LABEL_SUCCESS:
+      return {
+        ...state,
+        patient: {
+          ...state.patient,
+          patientLabels: state.patient.patientLabels.filter(
+            l => l.labelIdentifier !== action.deletedLabelIdentifier,
+          ),
+        },
+      };
 
     default:
       return TaskBaseReducer(state, action, updateTasksStateCallback);

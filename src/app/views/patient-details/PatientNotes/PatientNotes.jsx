@@ -146,7 +146,7 @@ const PatientNotes = () => {
       ) || [null, null],
     [notes],
   );
-  const renderPatient = note => {
+  const renderNote = note => {
     const { description, mentions, ...restNotes } = note;
 
     return (
@@ -169,14 +169,10 @@ const PatientNotes = () => {
         <>
           {pinnedNotes?.length > 0 && (
             <PinnedNotesWrapper>
-              {pinnedNotes
-                ?.sort(descend(prop('dateUpdated')))
-                ?.map(renderPatient)}
+              {pinnedNotes?.sort(descend(prop('dateUpdated')))?.map(renderNote)}
             </PinnedNotesWrapper>
           )}
-          {unpinnedNotes
-            ?.sort(descend(prop('dateUpdated')))
-            ?.map(renderPatient)}
+          {unpinnedNotes?.sort(descend(prop('dateUpdated')))?.map(renderNote)}
           <ClickAwayListener onClickAway={handleClickAway}>
             <RichTextInputContainer>
               <TextEditor

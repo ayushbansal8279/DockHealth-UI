@@ -1,6 +1,6 @@
-import React from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
-import { useHistory } from 'react-router-dom';
+import { useHistory, useLocation } from 'react-router-dom';
 import { useBoolean } from 'hooks/useBoolean';
 import moment from 'moment';
 import EmailIcon from 'img/email-icon.svg';
@@ -11,12 +11,14 @@ import { Box, Chip, Grid, Typography } from '@material-ui/core';
 import { getCustomerUniqueIDShortLabel } from 'helpers/customer-type-helper';
 import Tooltip from 'components/common/Tooltip/Tooltip';
 import { userProfileSelector } from 'selectors/user-selectors';
+import { PATIENTS_LIST_ALL } from 'routing/helpers/paths';
 import { organizationSelector } from 'selectors/organization-selectors';
 import {
   patientSelector,
   isFetchingPatientSelector,
 } from 'selectors/patient-details-selectors';
 import TextTypeHeader from 'components/common/TextTypeHeader/TextTypeHeader';
+import { FieldType } from 'helpers/field-type-helpers';
 import PatientDetailsDrawer from '../PatientDetailsDrawer/PatientDetailsDrawer';
 import PatientDetailsLoader from '../PatientDetailsLoader/PatientDetailsLoader';
 import {
@@ -36,6 +38,7 @@ import {
 // eslint-disable-next-line sonarjs/cognitive-complexity
 const PatientDetailsHeader = () => {
   const history = useHistory();
+  const location = useLocation();
   const [isDrawerOpen, setIsDrawerOpen, unsetIsDrawerOpen] = useBoolean(false);
   const patient = useSelector(patientSelector);
   const {
@@ -57,6 +60,19 @@ const PatientDetailsHeader = () => {
   const organization = useSelector(organizationSelector);
   const emrPatientLink = organization?.emrPatientLink;
   const isLoadingDetails = isFetchingPatient || !patient;
+  const [cameFrom, setCameFrom] = useState();
+
+  const goBack = useCallback(() => {
+    if (cameFrom) {
+      history.push(cameFrom);
+    } else {
+      history.push(PATIENTS_LIST_ALL);
+    }
+  }, [cameFrom, history]);
+
+  useEffect(() => {
+    if (location?.state?.from) setCameFrom(location.state.from);
+  }, [location]);
 
   return (
     <PatientDetailsContainer>
@@ -66,7 +82,7 @@ const PatientDetailsHeader = () => {
             <Box flex="1 0 0" display="flex" alignItems="center">
               <Grid container alignItems="center">
                 <Box flexBasis={30}>
-                  <button type="button" onClick={history.goBack}>
+                  <button type="button" onClick={goBack}>
                     <img
                       src={ArrowLeftIcon}
                       alt="back-navigation"
@@ -175,29 +191,52 @@ const PatientDetailsHeader = () => {
                   <PatientInfoDivider />
                 </>
               )}
-              {patient?.patientMetaData?.map(
-                ({ customFieldName, displayName, value, displayOptions }) => (
-                  <>
-                    {displayOptions?.includes('PATIENT_HEADER') && value && (
-                      <>
+              {patient?.patientMetaData
+                ?.filter(
+                  meta =>
+                    meta.displayOptions?.includes('PATIENT_HEADER') &&
+                    (meta.value || meta.displayNames),
+                )
+                .map(
+                  ({
+                    customFieldName,
+                    displayName,
+                    value,
+                    displayNames,
+                    fieldType,
+                    customFieldIdentifier,
+                  }) => {
+                    return (
+                      <React.Fragment key={customFieldIdentifier}>
                         <PatientInfo>
                           <Typography>{customFieldName}: </Typography>
                           <Box ml={1} />
-                          <TextTypeHeader text={displayName || value} />
+                          {fieldType === FieldType.DROPDOWN_MULTI ? (
+                            <TextTypeHeader
+                              text={displayNames?.join(',') || ''}
+                            />
+                          ) : (
+                            <TextTypeHeader text={displayName || value} />
+                          )}
                         </PatientInfo>
                         <PatientInfoDivider />
-                      </>
-                    )}
-                  </>
-                ),
-              )}
+                      </React.Fragment>
+                    );
+                  },
+                )}
             </PatientDetailsInformation>
           </PatientDetails>
           <PatientDetails>
             <PatientDetailsInformation>
               {patient?.patientMetaData?.map(
-                ({ customFieldName, displayName, value, contextType }) => (
-                  <>
+                ({
+                  customFieldName,
+                  displayName,
+                  value,
+                  contextType,
+                  customFieldIdentifier,
+                }) => (
+                  <React.Fragment key={customFieldIdentifier}>
                     {contextType === 'PREDEFINED' && value && (
                       <>
                         <PatientInfo>
@@ -206,7 +245,7 @@ const PatientDetailsHeader = () => {
                         <PatientInfoDivider />
                       </>
                     )}
-                  </>
+                  </React.Fragment>
                 ),
               )}
             </PatientDetailsInformation>

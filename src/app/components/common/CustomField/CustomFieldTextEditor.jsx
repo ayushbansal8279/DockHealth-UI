@@ -1,11 +1,6 @@
-import React, {
-  useCallback,
-  useLayoutEffect,
-  useEffect,
-  useState,
-} from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import { useFormContext } from 'react-hook-form';
-import { EditorState, ContentState } from 'draft-js';
+import { EditorState } from 'draft-js';
 import {
   convertFromEditorStateToOutput,
   convertToEditorState,
@@ -18,9 +13,10 @@ import { TaskItemType } from 'helpers/task-helpers';
 import { showGlobalAlert } from 'alert/actions';
 import AlertMessages from 'alert/AlertMessages';
 import { formatMetaDataOutput } from 'components/task-drawer/CustomFieldsSection/helpers';
-import CustomTextEditor from 'components/task-drawer/CustomTextEditor/CustomTextEditor';
+import CustomTextEditor from 'components/common/CustomTextEditor/CustomTextEditor';
 import TextEditor from '../TextEditor/TextEditor';
 import { CustomTextEditorContainer } from './styled';
+import { createMentionEntities } from '../TextEditor/create-mention-entities';
 
 const CustomFieldTextEditor = ({
   readOnly,
@@ -32,21 +28,16 @@ const CustomFieldTextEditor = ({
   task,
   fieldsGroupKey,
   inputRef,
+  characterLimit,
+  oneline,
+  enableRichText = false,
 }) => {
   const dispatch = useDispatch();
   const { getValues, watch, register, unregister, setValue } = useFormContext();
-  const initialValue = getValues();
   const value = watch(name);
   const [isFocused, setIsFocused] = useState(false);
-
-  const [state, setState] = useMentionsEditorState(
-    convertToEditorState({
-      rawText: initialValue?.[name],
-      tokenizedText: initialValue?.[name],
-      mentions: [],
-      handleRichText: false,
-    }),
-  );
+  const [updatedValue, setUpdatedValue] = useState(value);
+  const [state, setState] = useMentionsEditorState(convertToEditorState());
 
   useEffect(() => {
     register(name);
@@ -55,12 +46,11 @@ const CustomFieldTextEditor = ({
     };
   }, [name, register, unregister]);
 
-  useLayoutEffect(() => {
-    if (value?.length) {
-      const newState = EditorState.createWithContent(
-        ContentState.createFromText(value),
-      );
-      setState(newState);
+  useEffect(() => {
+    if (value !== null && value !== updatedValue) {
+      const newContent = createMentionEntities(value, value, [], true);
+      setUpdatedValue(value);
+      setState(EditorState.push(state, newContent));
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [value]);
@@ -68,56 +58,58 @@ const CustomFieldTextEditor = ({
   const updateCustomFields = useCallback(
     text => {
       const values = getValues(fieldsGroupKey);
-      const previousValue = values[name];
-      if (!text && !previousValue) return;
-      if (previousValue !== text) {
-        values[identifier] = text;
-        if (taskIdentifier) {
-          const formattedValue = formatMetaDataOutput({
-            taskMetaData: values,
-          });
-          const adjustedValues = formattedValue.taskMetaData.map(object => ({
-            ...object,
-            customFieldIdentifier: object.customFieldIdentifier,
-          }));
-          if (adjustedValues.length > 0) {
-            // eslint-disable-next-line no-unused-expressions
-            task?.itemType === TaskItemType.BUNDLE ||
-            task?.itemType === TaskItemType.TEMPLATE
-              ? dispatch(
-                  updatePartialWorkflow(task?.identifier, {
-                    taskMetaData: adjustedValues,
-                  }),
-                )
-              : dispatch(
-                  partialUpdateTask(task?.identifier, {
-                    taskMetaData: adjustedValues,
-                  }),
-                );
-            dispatch(showGlobalAlert(AlertMessages.UPDATED));
-          }
-        } else {
-          setValue(name, text);
+      if (text === updatedValue) return;
+      values[identifier] = text;
+      if (taskIdentifier) {
+        const formattedValue = formatMetaDataOutput({
+          taskMetaData: values,
+        });
+        setUpdatedValue(text);
+        const adjustedValues = formattedValue.taskMetaData.map(object => ({
+          ...object,
+          customFieldIdentifier: object.customFieldIdentifier,
+        }));
+        if (adjustedValues.length > 0) {
+          // eslint-disable-next-line no-unused-expressions
+          task?.itemType === TaskItemType.BUNDLE ||
+          task?.itemType === TaskItemType.TEMPLATE
+            ? dispatch(
+                updatePartialWorkflow(task?.identifier, {
+                  taskMetaData: adjustedValues,
+                }),
+              )
+            : dispatch(
+                partialUpdateTask(task?.identifier, {
+                  taskMetaData: adjustedValues,
+                }),
+              );
+          dispatch(showGlobalAlert(AlertMessages.UPDATED));
         }
+      } else {
+        setValue(name, text);
       }
     },
     [
       getValues,
+      fieldsGroupKey,
       name,
+      updatedValue,
       identifier,
       taskIdentifier,
       task,
       dispatch,
       setValue,
-      fieldsGroupKey,
     ],
   );
 
   const handleBlur = useCallback(() => {
-    const { rawText } = convertFromEditorStateToOutput(state, false);
-    updateCustomFields(rawText);
+    const { tokenizedText } = convertFromEditorStateToOutput(
+      state,
+      enableRichText,
+    );
+    updateCustomFields(tokenizedText);
     setIsFocused(false);
-  }, [state, updateCustomFields]);
+  }, [enableRichText, state, updateCustomFields]);
 
   return (
     <CustomTextEditor
@@ -128,15 +120,17 @@ const CustomFieldTextEditor = ({
     >
       <CustomTextEditorContainer>
         <TextEditor
+          characterLimit={characterLimit}
           readOnly={readOnly}
           placeholder={placeholder}
           state={state}
           onChange={setState}
           onBlur={handleBlur}
           disableMentions
-          oneline
+          oneline={oneline}
           ref={inputRef}
           onFocus={() => setIsFocused(true)}
+          showToolbar={enableRichText}
         />
       </CustomTextEditorContainer>
     </CustomTextEditor>

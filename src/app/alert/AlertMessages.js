@@ -17,11 +17,14 @@ const AlertMessages = {
   ATTACHMENT_REMOVED: 'Attachment removed',
   TASK_DUPLICATED: 'Task duplicted',
   PATIENT_ARCHIVED: 'Archived',
+  SHARED: 'Shared',
   PATIENT_UNARCHIVED: 'Restored',
   WORKFLOW_CREATED: 'Workflow created',
   LABEL_CREATED: 'Label created',
   LABEL_DELETED: 'Label deleted',
+  FAX_SENT: 'Fax Sent',
   MAIL_SENT: 'Mail Sent',
+  EMR_SENT: 'Emr Sent',
 };
 
 export default AlertMessages;

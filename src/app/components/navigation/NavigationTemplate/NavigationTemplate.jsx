@@ -1,12 +1,16 @@
 import React from 'react';
-import { Drawer as MaterialDrawer } from '@material-ui/core';
 import { useSelector } from 'react-redux';
 import { isNavbarVisibleSelector } from 'selectors/template-selectors';
 import { userProfileSelector } from 'selectors/user-selectors';
 import Intercom from 'react-intercom';
 import GlobalAlertChip from 'alert/GlobalAlertChip';
 import NavigationSidebar from 'components/navigation/NavigationSidebar/NavigationSidebar';
-import { DrawerContainer, MainContainer, useDrawerClasses } from './styled';
+import {
+  DrawerContainer,
+  MainContainer,
+  useDrawerClasses,
+  MaterialDrawer,
+} from './styled';
 
 const { INTERCOM_APP_CODE } = process.env;
 
