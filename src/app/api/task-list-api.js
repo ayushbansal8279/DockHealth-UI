@@ -343,3 +343,20 @@ export function updateUserOptionsListViewSetup(setup, taskListIdentifier) {
     })
     .then(({ data }) => data);
 }
+
+export function updateUserCustomFieldsOptionsListViewSetup(
+  setup,
+  taskListIdentifier,
+) {
+  return axios
+    .put(`list/updateUserPreferences/${taskListIdentifier}`, {
+      customFieldDisplayColumns: setup,
+    })
+    .then(({ data }) => data);
+}
+
+export function sortTasksListsForUser(sortedTaskLists) {
+  return axios
+    .put(`/list/sortTaskListsForUser`, { taskListIdentifiers: sortedTaskLists })
+    .then(({ data }) => data);
+}
