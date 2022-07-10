@@ -137,10 +137,12 @@ const DashboardTasksGroup = ({
     setNewTasks(dashboardTasks);
   }, [dashboardTasks]);
 
-  const groupHasMultipleAssignees = useMemo(
-    () => tasks?.some(({ assignedToUsers }) => assignedToUsers?.length > 1),
-    [tasks],
-  );
+  const groupHasMultipleAssignees = false;
+
+  // const groupHasMultipleAssignees = useMemo(
+  //   () => tasks?.some(({ assignedToUsers }) => assignedToUsers?.length > 1),
+  //   [tasks],
+  // );
 
   const dueDateForQuickAdd = useMemo(() => {
     if (groupType === DashboardGroup.TODAY)

@@ -167,15 +167,17 @@ const TasksGroup = ({
     [],
   );
 
-  const groupHasMultipleAssignees = useMemo(
-    () =>
-      tasks.some(task =>
-        task?.itemType === 'BUNDLE'
-          ? task.tasks.some(checkHasMultipleAssignees)
-          : checkHasMultipleAssignees(task),
-      ),
-    [checkHasMultipleAssignees, tasks],
-  );
+  const groupHasMultipleAssignees = false;
+
+  // const groupHasMultipleAssignees = useMemo(
+  //   () =>
+  //     tasks.some(task =>
+  //       task?.itemType === 'BUNDLE'
+  //         ? task.tasks.some(checkHasMultipleAssignees)
+  //         : checkHasMultipleAssignees(task),
+  //     ),
+  //   [checkHasMultipleAssignees, tasks],
+  // );
 
   const isGroupSelected = useMemo(() => checkIfAllTasksSelected(tasks), [
     tasks,

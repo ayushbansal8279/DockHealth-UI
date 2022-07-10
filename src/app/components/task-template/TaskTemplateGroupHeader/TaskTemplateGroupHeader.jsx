@@ -483,7 +483,8 @@ const TaskTemplateGroupHeader = ({
         <TaskItemCell
           key={`assigned_${identifier}`}
           width={TaskItemColumnWidth[TaskItemColumn.ASSIGNED].WIDE}
-          justify={groupHasMultipleAssignees ? 'flex-start' : 'center'}
+          // eslint-disable-next-line sonarjs/no-all-duplicated-branches
+          justify={groupHasMultipleAssignees ? 'center' : 'center'}
           paddingLeft="small"
           paddingRight="small"
           onContextMenu={event => {
