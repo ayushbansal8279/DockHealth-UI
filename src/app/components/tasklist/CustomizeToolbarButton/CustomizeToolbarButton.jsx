@@ -174,36 +174,23 @@ const CustomizeToolbarButton = ({
               </List>
             </>
           )}
-          {userHasPatientCustomFieldsFeatureSelector &&
-            patientCustomColumnsConfig?.length > 0 && (
-              <>
-                <Box display="flex" justifyContent="space-between" mt={1}>
-                  <Box mx={0.5} />
-                  <ListItemText>
-                    <b>{customerTypeLabel} Custom Columns</b>
-                  </ListItemText>
-                </Box>
-                <List>
-                  {patientCustomColumnsConfig.map(column => {
-                    const { name, isChecked = false } = column;
-                    return (
-                      name && (
-                        <MenuItem
-                          key={column.identifier}
-                          onClick={() =>
-                            onClickPatientCustomFieldsCheckbox(column)
-                          }
-                        >
-                          <Checkbox isChecked={isChecked} />
-                          <Box mx={0.5} />
-                          <ListItemText>{name}</ListItemText>
-                        </MenuItem>
-                      )
-                    );
-                  })}
-                </List>
-              </>
-            )}
+          {userHasPatientCustomFieldsFeatureSelector && columns?.length > 0 && (
+            <>
+              <Box display="flex" justifyContent="space-between" mt={1}>
+                <Box mx={0.5} />
+                <ListItemText>
+                  <b>{customerTypeLabel} Custom Columns</b>
+                </ListItemText>
+              </Box>
+              <List>
+                {sortAlphabetical(
+                  columns.filter(
+                    c => c._customFieldType === CUSTOM_FIELD_TYPES.PATIENT,
+                  ),
+                ).map(column => renderElement(column))}
+              </List>
+            </>
+          )}
           {additionalOptions && additionalOptions.length > 0 && (
             <>
               <Spacer />
