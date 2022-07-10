@@ -59,7 +59,7 @@ const CustomizeToolbarButton = ({
     [TaskItemColumn.PATIENT]: capitalize(getCustomerTypeLabel(userProfile)),
   };
 
-  const customerTypeLabel = getCustomerTypeLabel(userProfile);
+  const customerTypeLabel = capitalize(getCustomerTypeLabel(userProfile));
 
   const onClickCheckbox = useCallback(
     column => {
