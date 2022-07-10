@@ -7,6 +7,7 @@ import {
   userHasPatientCustomFieldsFeatureSelector,
   userHasTaskCustomFieldsFeatureSelector,
 } from 'selectors/user-selectors';
+import { checkIfUserIsOrganizationAdmin } from 'helpers/user-helper';
 import { getCustomerTypeLabel } from 'helpers/customer-type-helper';
 import BasicLayoutHeader from 'components/template/BasicLayoutHeader/BasicLayoutHeader';
 import ViewLayout from 'components/template/ViewLayout/ViewLayout';
@@ -43,12 +44,7 @@ const CustomFieldsView = () => {
   );
 
   useEffect(() => {
-    if (
-      !(
-        userProfile?.orgUserRole === 'OWNER' ||
-        userProfile?.orgUserRole === 'ADMIN'
-      )
-    ) {
+    if (!checkIfUserIsOrganizationAdmin(userProfile)) {
       history.push('/');
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
