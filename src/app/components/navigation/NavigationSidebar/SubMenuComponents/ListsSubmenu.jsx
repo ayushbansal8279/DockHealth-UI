@@ -96,8 +96,9 @@ const ListsSubmenu = () => {
 
   const handleDragEnd = useCallback(
     ({ destination, source }) => {
-      setActiveLists(move(source.index, destination.index, activeLists));
-      dispatch(TaskListActions.reorderTaskLists(activeLists));
+      const reorderedLists = move(source.index, destination.index, activeLists);
+      setActiveLists(reorderedLists);
+      dispatch(TaskListActions.reorderTaskLists(reorderedLists));
     },
     [activeLists, dispatch],
   );
@@ -120,11 +121,7 @@ const ListsSubmenu = () => {
               <DrawerListsItem
                 key={`listsubmenu_${list.taskListIdentifier}`}
                 data-list-id={list.taskListIdentifier}
-                className={
-                  list.listType === 'INBOX'
-                    ? 'drawer-menu-list-inbox'
-                    : `drawer-menu-list-item`
-                }
+                className="drawer-menu-list-item"
               >
                 <ListOptionsMenu list={list}>
                   <MoreVert color="primary" />
@@ -179,6 +176,68 @@ const ListsSubmenu = () => {
 
       return listsList
         ? listsList.map((list, index) => {
+            if (list.listType === 'INBOX' || list.listType === 'PUBLIC') {
+              return (
+                <DrawerListsItem
+                  key={`listsubmenu_${list.taskListIdentifier}`}
+                  data-list-id={list.taskListIdentifier}
+                  className={
+                    list.listType === 'INBOX'
+                      ? 'drawer-menu-list-inbox'
+                      : `drawer-menu-list-item`
+                  }
+                >
+                  {!['INBOX', 'PUBLIC'].includes(list?.listType) ? (
+                    <ListOptionsMenu list={list}>
+                      <MoreVert color="primary" />
+                    </ListOptionsMenu>
+                  ) : (
+                    <Box m={2} />
+                  )}
+                  {list.color && (
+                    <Box mr={1}>
+                      <ColorIndicator color={list.color} />
+                    </Box>
+                  )}
+                  <ListNameText
+                    color={archived && palette.coolGrey2}
+                    isActive={
+                      activeTaskListIdentifier === list?.taskListIdentifier
+                    }
+                    onMouseEnter={event =>
+                      handleMouseEnter(event, list?.listName)
+                    }
+                    onMouseLeave={() => setPopoverLabel(null)}
+                    // eslint-disable-next-line sonarjs/no-identical-functions
+                    onClick={() => {
+                      if (activeTaskListIdentifier === list?.taskListIdentifier)
+                        return;
+
+                      if (list?.status === 'PENDING') {
+                        onTaskListInvitationAccepted();
+                        dispatch(TaskListActions.acceptInviteToTaskList(list));
+                      }
+                      history.push(createTaskListPath(list.taskListIdentifier));
+                    }}
+                  >
+                    {list?.listName}
+                  </ListNameText>
+                  {list?.status === 'PENDING' && (
+                    <DrawerListsItemNewLabel>New</DrawerListsItemNewLabel>
+                  )}
+                  <DrawerItemOptions>
+                    <div>{list?.numberOfTasks ? list?.numberOfTasks : 0}</div>
+                    {list.hasUpdatesForMember ? (
+                      <Box m=" 0 5px">
+                        <UpdatesForMemberIndicator />
+                      </Box>
+                    ) : (
+                      <Box m={1} />
+                    )}
+                  </DrawerItemOptions>
+                </DrawerListsItem>
+              );
+            }
             return (
               <Draggable
                 key={list.taskListIdentifier}
@@ -194,6 +253,7 @@ const ListsSubmenu = () => {
                         ? 'drawer-menu-list-inbox'
                         : `drawer-menu-list-item`
                     }
+                    isDraggable
                     ref={provided.innerRef}
                     {...provided.draggableProps}
                     {...provided.dragHandleProps}
