@@ -161,7 +161,6 @@ export const TaskItemColumnWidth = {
 
 export const TASK_ITEM_BASE_COLUMN_CONFIG = {
   [TaskItemColumn.DESCRIPTION]: true,
-  [TaskItemColumn.SUBTASKS_COUNT]: true,
   [TaskItemColumn.PATIENT]: true,
   [TaskItemColumn.WORKFLOW_STATUS]: true,
   [TaskItemColumn.ACTIVITY]: true,
@@ -169,7 +168,6 @@ export const TASK_ITEM_BASE_COLUMN_CONFIG = {
   [TaskItemColumn.DUE_DATE]: true,
   [TaskItemColumn.ASSIGNED]: true,
   [TaskItemColumn.LIST_NAME]: false,
-  [TaskItemColumn.DECISION_SELECT]: true,
 };
 
 export const SHOW_COLUMNS_CONFIG = {
@@ -179,7 +177,6 @@ export const SHOW_COLUMNS_CONFIG = {
   [TaskItemColumn.START_DATE]: true,
   [TaskItemColumn.DUE_DATE]: true,
   [TaskItemColumn.PATIENT]: true,
-  [TaskItemColumn.SUBTASKS_COUNT]: true,
   [TaskItemColumn.LIST_NAME]: true,
 };
 

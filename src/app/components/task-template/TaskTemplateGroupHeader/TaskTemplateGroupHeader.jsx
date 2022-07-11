@@ -400,14 +400,10 @@ const TaskTemplateGroupHeader = ({
           </TaskTemplateProgressCircle>
         </TaskTemplateOptionsContainer>
       </StickyMainTaskItemCell>
-
-      {isColumnChecked(columns, TaskItemColumn.SUBTASKS_COUNT) && (
-        <TaskItemCell
-          key={`subtask_count_${identifier}`}
-          width={TaskItemColumnWidth[TaskItemColumn.SUBTASKS_COUNT]}
-          order={getColumnOrder(TaskItemColumn.SUBTASKS_COUNT)}
-        />
-      )}
+      <TaskItemCell
+        key={`subtask_count_${identifier}`}
+        width={TaskItemColumnWidth[TaskItemColumn.SUBTASKS_COUNT]}
+      />
       {isColumnChecked(columns, TaskItemColumn.PATIENT) && (
         <TaskItemCell
           key={`patient_${identifier}`}

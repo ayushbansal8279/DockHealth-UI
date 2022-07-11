@@ -437,30 +437,27 @@ const TaskItem = React.memo(
                 </DecisionCellContainer>
               )}
             </StickyMainTaskItemCell>
-            {isColumnChecked(columns, TaskItemColumn.SUBTASKS_COUNT) && (
-              <TaskItemCell
-                key={`subtask_count_${taskIdentifier}`}
-                width={TaskItemColumnWidth[TaskItemColumn.SUBTASKS_COUNT]}
-                justify="center"
-                paddingLeft="tiny"
-                paddingRight="tiny"
-                order={getColumnOrder(TaskItemColumn.SUBTASKS_COUNT)}
-              >
-                <TaskItemSubtasks
-                  isSubtask={isSubtask}
-                  subtaskQuickAddOpen={subtaskQuickAddOpen}
-                  subtasksDisabled={subtasksDisabled}
-                  subTasksCount={subTasksCount}
-                  isOpen={isOpen}
-                  isNestedTask={isNestedTask}
-                  onSubtaskLabelClick={onSubtaskLabelClick}
-                  taskIdentifier={taskIdentifier}
-                  openQuickAddSubtask={openQuickAddSubtask}
-                  dispatch={dispatch}
-                  readOnly={restrictions?.subtasks === READ_ONLY}
-                />
-              </TaskItemCell>
-            )}
+            <TaskItemCell
+              key={`subtask_count_${taskIdentifier}`}
+              width={TaskItemColumnWidth[TaskItemColumn.SUBTASKS_COUNT]}
+              justify="center"
+              paddingLeft="tiny"
+              paddingRight="tiny"
+            >
+              <TaskItemSubtasks
+                isSubtask={isSubtask}
+                subtaskQuickAddOpen={subtaskQuickAddOpen}
+                subtasksDisabled={subtasksDisabled}
+                subTasksCount={subTasksCount}
+                isOpen={isOpen}
+                isNestedTask={isNestedTask}
+                onSubtaskLabelClick={onSubtaskLabelClick}
+                taskIdentifier={taskIdentifier}
+                openQuickAddSubtask={openQuickAddSubtask}
+                dispatch={dispatch}
+                readOnly={restrictions?.subtasks === READ_ONLY}
+              />
+            </TaskItemCell>
             {isColumnChecked(columns, TaskItemColumn.PATIENT) && (
               <TaskItemCell
                 key={`patient_${taskIdentifier}`}
