@@ -15,7 +15,7 @@ const ChatView = () => {
     `D11A4B11-21AD-4025-9D8C-2BCF693C814C`;
 
   return (
-    <ViewLayout header={<BasicLayoutHeader title="Chat" />}>
+    <ViewLayout header={<BasicLayoutHeader title="Chat" isChat />}>
       <Container>
         <SendBirdApp
           appId={APP_ID}

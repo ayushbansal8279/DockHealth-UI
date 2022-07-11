@@ -20,7 +20,7 @@ import {
 const { ADMIN, OWNER, MEMBER, GUEST, EXTERNAL } = UserOrganizationRole;
 
 const LayoutHeader = props => {
-  const { children, horizontalSticky } = props;
+  const { children, horizontalSticky, isChat } = props;
 
   return (
     <HeaderContainer horizontalSticky={horizontalSticky}>
@@ -39,7 +39,7 @@ const LayoutHeader = props => {
           allowedToRoles={[ADMIN, OWNER, MEMBER, GUEST, EXTERNAL]}
         >
           <Box mx={1} />
-          <ChatPopover />
+          {isChat ? <></> : <ChatPopover />}
           <Box mx={1} />
         </AccessRestrictor>
         <AccessRestrictor
