@@ -159,6 +159,14 @@ const SendEmailFromTaskModal = () => {
             errorMessage="Incorrect email"
           />
           {renderAddOrEdit(contact, setShow)}
+          {contact?.identifier && (
+            <Input
+              type="text"
+              label="Recipient’s Name"
+              disabled
+              value={contact.label}
+            />
+          )}
           <TemplateAutoComplete
             type={CommunicationType.EMAIL}
             placeholder="Pick template"
@@ -174,14 +182,6 @@ const SendEmailFromTaskModal = () => {
             }}
             disabled={show}
           />
-          {contact?.identifier && (
-            <Input
-              type="text"
-              label="Recipient’s Name"
-              disabled
-              value={contact.label}
-            />
-          )}
           <Input
             type="text"
             label="subject"
