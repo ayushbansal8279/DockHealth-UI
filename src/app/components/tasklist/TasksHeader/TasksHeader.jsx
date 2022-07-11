@@ -1,30 +1,27 @@
-import React, { useCallback, useMemo } from 'react';
+/* eslint-disable no-underscore-dangle */
+import React, { useCallback } from 'react';
 import { useSelector } from 'react-redux';
 import Checkbox from 'components/common/Checkbox/Checkbox';
 import ColumnSortHeader from 'components/tasklist/ColumnSortHeader/ColumnSortHeader';
 import { SortHeaderRow } from 'components/tasklist/ColumnSortHeader/styled';
 import { TaskItemColumn, TaskItemColumnWidth } from 'helpers/task-helpers';
 import { getCustomerTypeLabel } from 'helpers/customer-type-helper';
-import { capitalize } from 'helpers/capitalize';
 import { useColumnsConfig } from 'context-api/columns-config-context';
 import { CustomFieldWidthConfig } from 'helpers/field-type-helpers';
 import { DragDropContext, Droppable } from 'react-beautiful-dnd';
-import {
-  SINGLE_TASK_RESTRICTIONS_OPTIONS,
-  SINGLE_TASK_RESTRICTIONS_PROFILES,
-} from 'restrictions/task-restrictions';
-import { sortAlphabetical } from 'helpers/custom-fields-helpers';
-import { isNotEmptyArray } from 'helpers/utils-helpers';
+import { SINGLE_TASK_RESTRICTIONS_PROFILES } from 'restrictions/task-restrictions';
+import { CUSTOM_FIELD_TYPES } from 'helpers/custom-fields-helpers';
 import { BulkContainer, StickyColumnContainer } from './styled';
-import { getTaskHeaderOptions, reorderColumns } from './helpers';
-
-const { DISABLED } = SINGLE_TASK_RESTRICTIONS_OPTIONS;
+import {
+  getTaskHeaderOptions,
+  reorderColumns,
+  TaskHeaderColumn,
+} from './helpers';
 
 const TasksHeader = ({
   bulkEditEnabled,
   sort,
   onSortChange,
-  onOrderChange,
   isGroupSelected,
   onGroupSelect,
   groupHasMultipleAssignees,
@@ -33,71 +30,11 @@ const TasksHeader = ({
   const { currentUser } = useSelector(store => ({
     currentUser: store.userState.userProfile,
   }));
-  const {
-    columnsConfig,
-    customColumnsConfig,
-    patientCustomColumnsConfig,
-    columnsOrder,
-    setColumnsOrder,
-  } = useColumnsConfig();
+  const { columns, setColumns } = useColumnsConfig();
   const customerTypeLabel = getCustomerTypeLabel(currentUser);
-  const customerTypeLabelCapitalized = capitalize(customerTypeLabel);
-
-  const alphabeticalSortedAllTypeCustomFields = useMemo(
-    () =>
-      sortAlphabetical([...customColumnsConfig, ...patientCustomColumnsConfig]),
-    [customColumnsConfig, patientCustomColumnsConfig],
-  );
 
   const restrictions =
     SINGLE_TASK_RESTRICTIONS_PROFILES[currentUser?.orgUserRole];
-
-  const regularFieldsList = useMemo(
-    () =>
-      getTaskHeaderOptions(
-        customerTypeLabelCapitalized,
-        groupHasMultipleAssignees,
-        columnsConfig,
-        restrictions,
-      ),
-    [
-      customerTypeLabelCapitalized,
-      groupHasMultipleAssignees,
-      columnsConfig,
-      restrictions,
-    ],
-  );
-
-  const mergedFields = useMemo(() => {
-    const allFields = [
-      ...regularFieldsList.filter(f => f.shouldBeDisplayed),
-      ...(restrictions?.customFields !== DISABLED
-        ? alphabeticalSortedAllTypeCustomFields.filter(f => f.isChecked)
-        : []),
-    ];
-
-    if (columnsOrder?.length > 0) {
-      const fieldsWithOrder = allFields
-        .filter(f => columnsOrder?.indexOf(f.identifier || f.id) >= 0)
-        .sort((a, b) => {
-          return (
-            columnsOrder?.indexOf(a.identifier || a.id) -
-            columnsOrder?.indexOf(b.identifier || b.id)
-          );
-        });
-      const fieldsWithoutOrder = allFields.filter(
-        f => columnsOrder?.indexOf(f.identifier || f.id) < 0,
-      );
-      return [...fieldsWithOrder, ...fieldsWithoutOrder];
-    }
-
-    return allFields;
-  }, [
-    alphabeticalSortedAllTypeCustomFields,
-    columnsOrder,
-    regularFieldsList,
-    restrictions,
-  ]);
 
   const onDragEnd = useCallback(
     column => {
@@ -105,63 +42,57 @@ const TasksHeader = ({
         return;
       }
       const newOrder = reorderColumns(
-        mergedFields.map(f => f.id || f.identifier),
+        columns.filter(f => f.isChecked),
         column.source.index,
         column.destination.index,
       );
-
       if (newOrder) {
-        onOrderChange(newOrder);
-        setColumnsOrder(newOrder);
+        setColumns([
+          ...newOrder,
+          ...columns.filter(({ isChecked }) => !isChecked),
+        ]);
       }
     },
-    [mergedFields, onOrderChange, setColumnsOrder],
-  );
-
-  const getColumnOrder = useCallback(
-    TaskItemColumnType => {
-      if (isNotEmptyArray(columnsOrder)) {
-        const existingOrder = columnsOrder?.indexOf(TaskItemColumnType);
-        if (existingOrder >= 0) return existingOrder;
-        return 999;
-      }
-      return 'initial';
-    },
-    [columnsOrder],
+    [columns, setColumns],
   );
 
   const renderColumn = useCallback(
     (f, index, snapshot) => {
-      if (f.contextType === 'CUSTOM') {
+      if (f._customFieldType === CUSTOM_FIELD_TYPES.REGULAR) {
         return (
           <ColumnSortHeader
             key={f.identifier}
-            draggable
             index={index}
+            draggable={
+              ![TaskHeaderColumn.SUBTASKS_COUNT].includes(f.identifier)
+            }
+            disabled={[
+              TaskHeaderColumn.ACTIVITY,
+              TaskHeaderColumn.START_DATE,
+            ].includes(f.identifier)}
             isDraggingOver={snapshot.isDraggingOver}
-            disabled={f.targetType === 'PATIENT'}
-            truncateEnabled
             id={f.identifier}
-            label={f.name}
-            width={CustomFieldWidthConfig[f.fieldType]}
+            label={f.label}
+            width={f.width}
+            sort={sort}
+            truncateEnabled
+            onSortChange={onSortChange}
             snapshot={snapshot}
             printWidth={CustomFieldWidthConfig[f.fieldType]}
           />
         );
       }
-
       return (
         <ColumnSortHeader
-          key={f.id}
+          key={f.identifier}
           index={index}
           draggable
           isDraggingOver={snapshot.isDraggingOver}
-          id={f.id}
-          label={f.label}
-          width={f.width}
-          sort={sort}
+          disabled={f.targetType === 'PATIENT'}
           truncateEnabled
-          onSortChange={onSortChange}
+          id={f.identifier}
+          label={f.name}
+          width={+CustomFieldWidthConfig[f.fieldType]}
           snapshot={snapshot}
           printWidth={
             f.id === TaskItemColumn.ASSIGNED
@@ -179,10 +110,7 @@ const TasksHeader = ({
       <Droppable droppableId="droppableHeader" direction="horizontal">
         {(provided, snapshot) => (
           <SortHeaderRow ref={provided.innerRef} {...provided.droppableProps}>
-            <StickyColumnContainer
-              backgroundColor={pageBackground}
-              order={getColumnOrder(TaskItemColumn.DESCRIPTION)}
-            >
+            <StickyColumnContainer backgroundColor={pageBackground}>
               {bulkEditEnabled && (
                 <BulkContainer>
                   <Checkbox
@@ -192,18 +120,28 @@ const TasksHeader = ({
                 </BulkContainer>
               )}
               <ColumnSortHeader width={35} />
-              {columnsConfig[TaskItemColumn.DESCRIPTION] && (
-                <ColumnSortHeader
-                  id={TaskItemColumn.DESCRIPTION}
-                  label="Tasks"
-                  sort={sort}
-                  onSortChange={onSortChange}
-                  printWidth={300}
-                />
-              )}
+              <ColumnSortHeader
+                id={TaskItemColumn.DESCRIPTION}
+                label="Tasks"
+                sort={sort}
+                onSortChange={onSortChange}
+                printWidth={300}
+              />
             </StickyColumnContainer>
-            {mergedFields
-              .filter(f => f.id !== 'TASK_DESCRIPTION')
+            {columns
+              .filter(
+                f => f.identifier !== TaskItemColumn.DESCRIPTION && f.isChecked,
+              )
+              .map(c =>
+                c._customFieldType === CUSTOM_FIELD_TYPES.REGULAR
+                  ? getTaskHeaderOptions(
+                      customerTypeLabel,
+                      groupHasMultipleAssignees,
+                      c,
+                      restrictions,
+                    )
+                  : c,
+              )
               .map((c, index) => renderColumn(c, index, snapshot))}
             {provided.placeholder}
           </SortHeaderRow>

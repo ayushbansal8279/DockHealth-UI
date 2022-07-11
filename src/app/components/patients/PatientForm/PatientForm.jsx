@@ -14,6 +14,7 @@ import {
   userProfileSelector,
   userHasPatientCustomFieldsFeatureSelector,
 } from 'selectors/user-selectors';
+import { checkIfUserIsOrganizationAdmin } from 'helpers/user-helper';
 import { groupBy, prop, compose, sortBy, isEmpty } from 'ramda';
 import { useFormContext } from 'react-hook-form';
 import { capitalize } from 'helpers/capitalize';
@@ -61,7 +62,6 @@ const PatientForm = forwardRef(
     const [isOpenedContact, setIsOpenedContact] = useState(true);
     const [customFields, setCustomFields] = useState(null);
     const userProfile = useSelector(userProfileSelector);
-    const { orgUserRole } = userProfile || {};
     const { 0: emptyPersonalVisible, 3: toggleEmptyPersonal } = useBoolean(
       false,
     );
@@ -69,7 +69,7 @@ const PatientForm = forwardRef(
       false,
     );
     const { 0: emptyOtherVisible, 3: toggleEmptyOther } = useBoolean(false);
-    const isAdmin = orgUserRole === 'ADMIN' || orgUserRole === 'OWNER';
+    const isAdmin = checkIfUserIsOrganizationAdmin(userProfile);
     const [genderIdentityOptions, setGenderIdentityOptions] = useState([]);
 
     const GENDER_OPTIONS_IDENTITY = useMemo(

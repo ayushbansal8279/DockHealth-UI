@@ -116,7 +116,7 @@ const PatientDetailsDrawer = ({ patient, isOpenedDetails, closeDetails }) => {
 
   const contextMenuOptions = useMemo(
     () => [
-      {
+      !isActive && {
         name: 'Edit',
         onClick: setActive,
       },

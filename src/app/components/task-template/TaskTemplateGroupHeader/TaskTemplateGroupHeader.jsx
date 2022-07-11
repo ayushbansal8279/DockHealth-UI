@@ -1,3 +1,4 @@
+/* eslint-disable no-underscore-dangle */
 /* eslint-disable react-hooks/rules-of-hooks */
 import React, {
   useState,
@@ -19,6 +20,7 @@ import * as WorkflowActions from 'actions/workflow-actions';
 import * as TaskActions from 'actions/task-actions';
 import * as TemplateBundleActions from 'actions/template-bundle-actions';
 import {
+  isColumnChecked,
   TaskItemColumn,
   TaskItemColumnWidth,
   TaskStatus,
@@ -46,8 +48,7 @@ import {
 } from 'actions/list-details-actions';
 import { currentTaskListSelector } from 'selectors/task-list-selectors';
 import { openDrawer } from 'actions/workflow-drawer-actions';
-import { sortAlphabetical } from 'helpers/custom-fields-helpers';
-import { isNotEmptyArray } from 'helpers/utils-helpers';
+import { CUSTOM_FIELD_TYPES } from 'helpers/custom-fields-helpers';
 import TemplateHeaderName from '../TaskTemplateName/TaskTemplateName';
 import TaskHeaderPatient from '../TaskTemplatePatient/TaskTemplatePatient';
 import TemplateItemWorkflowStatus from '../TaskTemplateWorkflowStatus/TaskTemplateWorkflowStatus';
@@ -98,25 +99,14 @@ const TaskTemplateGroupHeader = ({
   }));
   const currentList = useSelector(currentTaskListSelector);
   const dispatch = useDispatch();
-  const {
-    columnsConfig,
-    customColumnsConfig,
-    patientCustomColumnsConfig,
-    columnsOrder,
-  } = useColumnsConfig();
+  const { columns } = useColumnsConfig();
   useEffect(() => {
     setNameInputValue(name);
   }, [name]);
 
-  // const workFlowData = templateGroup;
   const [workFlowData, setWorkFlowData] = useState(undefined);
   const selectedWorkflow = useSelector(workflowSelector);
 
-  const alphabeticalSortedAllTypeCustomFields = useMemo(
-    () =>
-      sortAlphabetical([...customColumnsConfig, ...patientCustomColumnsConfig]),
-    [customColumnsConfig, patientCustomColumnsConfig],
-  );
   const [completedTasksAmount, allTasksAmount] = useMemo(
     () =>
       tasks.reduce(
@@ -350,16 +340,11 @@ const TaskTemplateGroupHeader = ({
   }, [dispatch, isBundleSelected, filteredTasks]);
 
   const getColumnOrder = useCallback(
-    TaskItemColumnType => {
-      if (isNotEmptyArray(columnsOrder)) {
-        const existingOrder = columnsOrder?.indexOf(TaskItemColumnType);
-        if (existingOrder >= 0) return existingOrder;
-        return 999;
-      }
-      return 'initial';
-    },
-    [columnsOrder],
+    TaskItemColumnType =>
+      columns?.findIndex(c => c.identifier === TaskItemColumnType),
+    [columns],
   );
+
   const getWorkflowData = useCallback(async id => {
     setWorkFlowData(await TaskTemplateApi.getTemplateBasicDetails(id));
   }, []);
@@ -371,65 +356,55 @@ const TaskTemplateGroupHeader = ({
 
   return (
     <TaskTemplateGroupHeaderContainer isSelected={isBundleSelected}>
-      {columnsConfig[TaskItemColumn.DESCRIPTION] && (
-        <StickyMainTaskItemCell
-          backgroundColor={pageBackground}
-          isSelected={isBundleSelected}
-          isEditingDescription={isEditing}
-          order={getColumnOrder(TaskItemColumn.DESCRIPTION)}
-        >
-          {!groupDragAndDropDisabled && !bulkEditIsActive && (
-            <TemplateHandle
-              src={ThreeDotsIcon}
-              alt="Handle"
-              {...dragHandleProps}
-            />
-          )}
-          {isOpen && (
-            <Checkbox
-              isChecked={isBundleSelected}
-              onClick={handleBundleSelect}
-            />
-          )}
-          <Box m={1} />
-          <RotatableChevron rotated={isOpen} onClick={() => setOpen(!isOpen)} />
-          <Spacing horizontal={2} />
-          <OptionsMenu options={menuOptions}>
-            <MoreVert color="primary" />
-          </OptionsMenu>
-          <TemplateHeaderName
-            templateGroup={templateGroup}
-            isEditing={isEditing}
-            nameInputError={nameInputError}
-            setNameInputValue={setNameInputValue}
-            setNameInputError={setNameInputError}
-            setIsEditing={setIsEditing}
-            handleNameInputKeyDown={handleNameInputKeyDown}
-            nameInputValue={nameInputValue}
+      <StickyMainTaskItemCell
+        backgroundColor={pageBackground}
+        isSelected={isBundleSelected}
+        isEditingDescription={isEditing}
+        order={0}
+      >
+        {!groupDragAndDropDisabled && !bulkEditIsActive && (
+          <TemplateHandle
+            src={ThreeDotsIcon}
+            alt="Handle"
+            {...dragHandleProps}
           />
-          <TaskTemplateOptionsContainer
-            groupHasMultipleAssignees={groupHasMultipleAssignees}
-          >
-            <TaskTemplateProgressCircle>
-              <ProgressBar
-                width={80}
-                progress={
-                  (completedTasksAmountFinal / allTasksAmountFinal) * 100
-                }
-                label={`${completedTasksAmountFinal}/${allTasksAmountFinal}`}
-              />
-            </TaskTemplateProgressCircle>
-          </TaskTemplateOptionsContainer>
-        </StickyMainTaskItemCell>
-      )}
-      {columnsConfig[TaskItemColumn.SUBTASKS_COUNT] && (
-        <TaskItemCell
-          key={`subtask_count_${identifier}`}
-          width={TaskItemColumnWidth[TaskItemColumn.SUBTASKS_COUNT]}
-          order={getColumnOrder(TaskItemColumn.SUBTASKS_COUNT)}
+        )}
+        {isOpen && (
+          <Checkbox isChecked={isBundleSelected} onClick={handleBundleSelect} />
+        )}
+        <Box m={1} />
+        <RotatableChevron rotated={isOpen} onClick={() => setOpen(!isOpen)} />
+        <Spacing horizontal={2} />
+        <OptionsMenu options={menuOptions}>
+          <MoreVert color="primary" />
+        </OptionsMenu>
+        <TemplateHeaderName
+          templateGroup={templateGroup}
+          isEditing={isEditing}
+          nameInputError={nameInputError}
+          setNameInputValue={setNameInputValue}
+          setNameInputError={setNameInputError}
+          setIsEditing={setIsEditing}
+          handleNameInputKeyDown={handleNameInputKeyDown}
+          nameInputValue={nameInputValue}
         />
-      )}
-      {columnsConfig[TaskItemColumn.PATIENT] && (
+        <TaskTemplateOptionsContainer
+          groupHasMultipleAssignees={groupHasMultipleAssignees}
+        >
+          <TaskTemplateProgressCircle>
+            <ProgressBar
+              width={80}
+              progress={(completedTasksAmountFinal / allTasksAmountFinal) * 100}
+              label={`${completedTasksAmountFinal}/${allTasksAmountFinal}`}
+            />
+          </TaskTemplateProgressCircle>
+        </TaskTemplateOptionsContainer>
+      </StickyMainTaskItemCell>
+      <TaskItemCell
+        key={`subtask_count_${identifier}`}
+        width={TaskItemColumnWidth[TaskItemColumn.SUBTASKS_COUNT]}
+      />
+      {isColumnChecked(columns, TaskItemColumn.PATIENT) && (
         <TaskItemCell
           key={`patient_${identifier}`}
           width={TaskItemColumnWidth[TaskItemColumn.PATIENT]}
@@ -446,7 +421,7 @@ const TaskTemplateGroupHeader = ({
           )}
         </TaskItemCell>
       )}
-      {columnsConfig[TaskItemColumn.WORKFLOW_STATUS] && (
+      {isColumnChecked(columns, TaskItemColumn.WORKFLOW_STATUS) && (
         <TaskItemCell
           key={`task_status_${identifier}`}
           width={TaskItemColumnWidth[TaskItemColumn.WORKFLOW_STATUS]}
@@ -464,7 +439,7 @@ const TaskTemplateGroupHeader = ({
           />
         </TaskItemCell>
       )}
-      {columnsConfig[TaskItemColumn.ACTIVITY] && (
+      {isColumnChecked(columns, TaskItemColumn.ACTIVITY) && (
         <TaskItemCell
           key={`activity_${identifier}`}
           width={TaskItemColumnWidth[TaskItemColumn.ACTIVITY]}
@@ -480,7 +455,7 @@ const TaskTemplateGroupHeader = ({
           />
         </TaskItemCell>
       )}
-      {columnsConfig[TaskItemColumn.START_DATE] && (
+      {isColumnChecked(columns, TaskItemColumn.START_DATE) && (
         <TaskItemCell
           key={`start_date_${identifier}`}
           width={TaskItemColumnWidth[TaskItemColumn.START_DATE]}
@@ -490,7 +465,7 @@ const TaskTemplateGroupHeader = ({
           <TaskTemplateStartDate workflow={templateGroup} />
         </TaskItemCell>
       )}
-      {columnsConfig[TaskItemColumn.DUE_DATE] && (
+      {isColumnChecked(columns, TaskItemColumn.DUE_DATE) && (
         <TaskItemCell
           key={`due_date_${identifier}`}
           width={TaskItemColumnWidth[TaskItemColumn.DUE_DATE]}
@@ -500,11 +475,12 @@ const TaskTemplateGroupHeader = ({
           <TaskTemplateDueDate workflow={templateGroup} />
         </TaskItemCell>
       )}
-      {columnsConfig[TaskItemColumn.ASSIGNED] && (
+      {isColumnChecked(columns, TaskItemColumn.ASSIGNED) && (
         <TaskItemCell
           key={`assigned_${identifier}`}
           width={TaskItemColumnWidth[TaskItemColumn.ASSIGNED].WIDE}
-          justify={groupHasMultipleAssignees ? 'flex-start' : 'center'}
+          // eslint-disable-next-line sonarjs/no-all-duplicated-branches
+          justify={groupHasMultipleAssignees ? 'center' : 'center'}
           paddingLeft="small"
           paddingRight="small"
           onContextMenu={event => {
@@ -525,60 +501,60 @@ const TaskTemplateGroupHeader = ({
           />
         </TaskItemCell>
       )}
-      {columnsConfig[TaskItemColumn.LIST_NAME] && (
+      {isColumnChecked(columns, TaskItemColumn.LIST_NAME) && (
         <TaskItemCell
           key={`list_${identifier}`}
           width={TaskItemColumnWidth[TaskItemColumn.LIST_NAME]}
           order={getColumnOrder(TaskItemColumn.LIST_NAME)}
         />
       )}
-      {alphabeticalSortedAllTypeCustomFields &&
-        workFlowData &&
-        alphabeticalSortedAllTypeCustomFields
-          .filter(f => f.isChecked)
-          .map(field => {
-            const taskCustomFieldValue = workFlowData?.taskMetaData?.find(
-              f => f.customFieldIdentifier === field.identifier,
-            );
-            const patientCustomFieldValue = workFlowData?.patient?.patientMetaData?.find(
-              f => f.customFieldIdentifier === field.identifier,
-            );
-            const customFieldValue =
-              field.targetType === 'PATIENT'
-                ? patientCustomFieldValue
-                : taskCustomFieldValue;
+      {columns
+        .filter(
+          f => f.isChecked && f._customFieldType !== CUSTOM_FIELD_TYPES.REGULAR,
+        )
+        .map(field => {
+          const taskCustomFieldValue = workFlowData?.taskMetaData?.find(
+            f => f.customFieldIdentifier === field.identifier,
+          );
+          const patientCustomFieldValue = workFlowData?.patient?.patientMetaData?.find(
+            f => f.customFieldIdentifier === field.identifier,
+          );
+          const customFieldValue =
+            field.targetType === CUSTOM_FIELD_TYPES.PATIENT
+              ? patientCustomFieldValue
+              : taskCustomFieldValue;
 
-            const hidePatientCustomFields =
-              field.targetType === 'PATIENT' &&
-              !workFlowData?.patient?.patientIdentifier;
+          const hidePatientCustomFields =
+            field.targetType === CUSTOM_FIELD_TYPES.PATIENT &&
+            !workFlowData?.patient?.patientIdentifier;
 
-            return (
-              <TaskItemCell
-                key={`custom_${identifier}_${field.identifier}`}
-                width={CustomFieldWidthConfig[field.fieldType]}
-                order={getColumnOrder(field.identifier)}
-              >
-                {!hidePatientCustomFields && (
-                  <TaskItemCustomField
-                    customFieldValue={customFieldValue}
-                    onClick={(fieldIdentifier, workflow) => {
-                      if (field.targetType === 'PATIENT') return;
-                      dispatch(
-                        openDrawer(
-                          workflow.identifier,
-                          workflow,
-                          fieldIdentifier,
-                        ),
-                      );
-                    }}
-                    field={field}
-                    readOnly
-                    task={workFlowData}
-                  />
-                )}
-              </TaskItemCell>
-            );
-          })}
+          return (
+            <TaskItemCell
+              key={`custom_${identifier}_${field.identifier}`}
+              width={CustomFieldWidthConfig[field.fieldType]}
+              order={getColumnOrder(field.identifier)}
+            >
+              {!hidePatientCustomFields && workFlowData && (
+                <TaskItemCustomField
+                  customFieldValue={customFieldValue}
+                  onClick={(fieldIdentifier, workflow) => {
+                    if (field.targetType === CUSTOM_FIELD_TYPES.PATIENT) return;
+                    dispatch(
+                      openDrawer(
+                        workflow.identifier,
+                        workflow,
+                        fieldIdentifier,
+                      ),
+                    );
+                  }}
+                  field={field}
+                  readOnly
+                  task={workFlowData}
+                />
+              )}
+            </TaskItemCell>
+          );
+        })}
     </TaskTemplateGroupHeaderContainer>
   );
 };

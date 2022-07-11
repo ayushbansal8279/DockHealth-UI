@@ -13,7 +13,7 @@ import { TaskItemType } from 'helpers/task-helpers';
 import { showGlobalAlert } from 'alert/actions';
 import AlertMessages from 'alert/AlertMessages';
 import { formatMetaDataOutput } from 'components/task-drawer/CustomFieldsSection/helpers';
-import CustomTextEditor from 'components/task-drawer/CustomTextEditor/CustomTextEditor';
+import CustomTextEditor from 'components/common/CustomTextEditor/CustomTextEditor';
 import TextEditor from '../TextEditor/TextEditor';
 import { CustomTextEditorContainer } from './styled';
 import { createMentionEntities } from '../TextEditor/create-mention-entities';

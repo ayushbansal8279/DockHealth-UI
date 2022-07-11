@@ -37,7 +37,7 @@ import {
   DroppablePlaceholder,
 } from '../ListDetailsTableView/styled';
 
-const ListDetailsOpenedTasks = ({
+const ListDetailsTasks = ({
   createTaskGroupList,
   toggleCompleteTask,
   groupedTasks,
@@ -56,7 +56,6 @@ const ListDetailsOpenedTasks = ({
   onSortChange,
   resetSort,
   viewSetup,
-  onOrderChange,
 }) => {
   const [draggedId, setDraggableId] = useState(null);
   const dispatch = useDispatch();
@@ -176,7 +175,6 @@ const ListDetailsOpenedTasks = ({
 
           return (
             <TasksGroup
-              onOrderChange={onOrderChange}
               key={taskGroupIdentifier}
               isDefaultGroup={groupName === 'DEFAULT'}
               groupName={groupName === 'DEFAULT' ? 'New tasks' : groupName}
@@ -401,4 +399,4 @@ const ListDetailsOpenedTasks = ({
   );
 };
 
-export default ListDetailsOpenedTasks;
+export default ListDetailsTasks;

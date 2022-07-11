@@ -12,8 +12,6 @@ import EmailIcon from 'img/email-icon.svg';
 import PhoneIcon from 'img/phone-icon.svg';
 import MobileIcon from 'img/mobile-icon.svg';
 import TextTypeHeader from 'components/common/TextTypeHeader/TextTypeHeader';
-import AccessRestrictor from 'components/access/AccessRestrictor/AccessRestrictor';
-import { UserOrganizationRole } from 'helpers/user-helper';
 import PersonInfoLoader from './PersonInfoLoader';
 import PersonDetailsDrawer from '../PersonDetailsDrawer/PersonDetailsDrawer';
 import {
@@ -26,8 +24,6 @@ import {
   UserInfoDivider,
   CustomFieldsContainer,
 } from './styled';
-
-const { ADMIN, OWNER } = UserOrganizationRole;
 
 const PersonInfoPanel = () => {
   const [isDrawerOpen, openDrawer, closeDrawer] = useBoolean(false);
@@ -63,13 +59,11 @@ const PersonInfoPanel = () => {
                   showOnlineIndicator={false}
                 />
                 <PersonTitle>{`${firstName} ${lastName}`}</PersonTitle>
-                <AccessRestrictor allowedToRoles={[ADMIN, OWNER]}>
-                  <Box ml={2} display="flex">
-                    <HeaderActionButton onClick={openDrawer}>
-                      View details
-                    </HeaderActionButton>
-                  </Box>
-                </AccessRestrictor>
+                <Box ml={2} display="flex">
+                  <HeaderActionButton onClick={openDrawer}>
+                    View details
+                  </HeaderActionButton>
+                </Box>
               </Box>
               <ContactContainer>
                 {email && (

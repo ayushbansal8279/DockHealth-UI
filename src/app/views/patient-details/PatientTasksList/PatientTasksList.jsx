@@ -1,3 +1,4 @@
+/* eslint-disable import/no-cycle */
 /* eslint-disable sonarjs/cognitive-complexity */
 import React, { useCallback, useEffect, useMemo } from 'react';
 import { compose, pluck } from 'ramda';
@@ -13,7 +14,6 @@ import EmptyTaskListBird from 'img/animals/bird';
 import {
   getPatientFilterOptions,
   getCurrentPatientTasks,
-  updateOrderPreferencesInPatientList,
 } from 'actions/patient-details-actions';
 import { openModal, closeModal } from 'modal/actions';
 import { PatientTasksSagaActions } from 'sagas/patient-details-saga';
@@ -26,6 +26,7 @@ import {
   completeTasksVisibilitySelector,
   patientTaskSearchSelector,
   patientTasksSortSelector,
+  patientSelector,
 } from 'selectors/patient-details-selectors';
 import { addingNewSubtaskParentIdSelector } from 'selectors/task-drawer-selectors';
 import {
@@ -35,8 +36,6 @@ import {
 import {
   userProfileSelector,
   userSetupClientViewSelector,
-  userProfileDashboardPrefsSelector,
-  userProfileColumnOrderSelector,
 } from 'selectors/user-selectors';
 import TaskDrawer from 'components/task-drawer/TaskDrawer/TaskDrawer';
 import BulkEditSection from 'components/tasklist/BulkEditSection/BulkEditSection';
@@ -47,7 +46,11 @@ import NoSearchResultsView from 'components/tasklist/EmptyListView/NoSearchResul
 import { getTaskListForUser } from 'api/task-list-api';
 import NoFilterResultsView from 'components/tasklist/EmptyListView/NoFilterResultsView';
 import EmptyListView from 'components/tasklist/EmptyListView/EmptyListView';
-import { TaskItemColumn, TaskItemType } from 'helpers/task-helpers';
+import {
+  TaskItemColumn,
+  TaskItemType,
+  TASK_ITEM_BASE_COLUMN_CONFIG,
+} from 'helpers/task-helpers';
 import { getCustomerTypeLabel } from 'helpers/customer-type-helper';
 import { checkIfAllTasksSelected } from 'helpers/bulk-edit-helpers';
 import { extractTasksAndSubtasks } from 'helpers/tasklist-helpers';
@@ -55,8 +58,6 @@ import { useColumnsConfig } from 'context-api/columns-config-context';
 import { ListDetailsContainer } from 'components/tasklist/DropdownListSection/styled';
 import StickyContainer from 'components/common/HorizontalScroll/StickyContainer';
 import { ListViewType } from '../helpers';
-import { updateUserAllFieldsOrderSetup } from 'api/task-list-api';
-import { updateCurrentUserPreferences } from 'actions/user-actions';
 import {
   checkIfSelectedListIsPresent,
   groupTasks,
@@ -66,23 +67,16 @@ import TaskListToolbar from '../TaskListToolbar/TaskListToolbar';
 import TaskListGroupCollapse from '../TaskListGroupCollapse/TaskListGroupCollapse';
 import TasksToolbar from '../TasksToolbar/TasksToolbar';
 
-const PATIENT_VIEW_COLUMNS_CONFIG = {
+const PATIENT_SPECIFIC_LIST_VIEW_COLUMNS_CONFIG = {
+  ...TASK_ITEM_BASE_COLUMN_CONFIG,
   [TaskItemColumn.PATIENT]: false,
   [TaskItemColumn.LIST_NAME]: false,
 };
 
-const PATIENT_ALL_TASKS_VIEW_COLUMNS_CONFIG = {
+const PATIENT_ALL_JOINED_LISTS_VIEW_COLUMNS_CONFIG = {
+  ...TASK_ITEM_BASE_COLUMN_CONFIG,
   [TaskItemColumn.PATIENT]: false,
   [TaskItemColumn.LIST_NAME]: true,
-};
-
-const PATIENT_CONFIGURABLE_COLUMNS_CONFIG = {
-  [TaskItemColumn.WORKFLOW_STATUS]: false,
-  [TaskItemColumn.ASSIGNED]: false,
-  [TaskItemColumn.ACTIVITY]: false,
-  [TaskItemColumn.START_DATE]: false,
-  [TaskItemColumn.DUE_DATE]: false,
-  [TaskItemColumn.PATIENT]: false,
 };
 
 const PatientTasksListView = () => {
@@ -103,12 +97,10 @@ const PatientTasksListView = () => {
   );
   const customerTypeLabel = getCustomerTypeLabel(currentUser);
   const {
-    columnsConfig,
-    setColumnsConfig,
-    setColumnsOrder,
+    setCurrentList,
+    currentList,
+    setViewSpecificConfig,
   } = useColumnsConfig();
-  const userPreferColumns = useSelector(userProfileDashboardPrefsSelector);
-  const userOrderColumns = useSelector(userProfileColumnOrderSelector);
   const dispatch = useDispatch();
   const history = useHistory();
   const {
@@ -118,57 +110,68 @@ const PatientTasksListView = () => {
     sortPatientTasks,
     initializeSavedFilters,
   } = useActions(PatientTasksSagaActions);
+  const patient = useSelector(patientSelector);
 
   const isAllTasksView = taskListIdentifierParameter === ListViewType.ALL_TASKS;
 
-  const handleOrderChange = useCallback(
-    listDisplayColumns => {
-      if (isAllTasksView) {
-        dispatch(
-          updateCurrentUserPreferences({
-            listDisplayColumns,
-          }),
-        );
-      } else {
-        dispatch(
-          updateOrderPreferencesInPatientList(
-            taskListIdentifierParameter,
-            listDisplayColumns,
-            currentUser.identifier,
+  const enrichedWithPatientMetaDataLists = useMemo(() => {
+    if (patient?.patientMetaData) {
+      const { patientMetaData } = patient;
+      return lists?.map(l => ({
+        ...l,
+        tasks: l.tasks.map(t => ({
+          ...t,
+          patient: { ...t.patient, patientMetaData },
+        })),
+      }));
+    }
+    return lists;
+  }, [lists, patient]);
+
+  const filteredLists = useMemo(
+    () =>
+      taskSearch
+        ? searchTaskInPatientLists(enrichedWithPatientMetaDataLists, taskSearch)
+        : enrichedWithPatientMetaDataLists,
+    [enrichedWithPatientMetaDataLists, taskSearch],
+  );
+
+  const activeList = useMemo(
+    () =>
+      isAllTasksView
+        ? filteredLists?.reduce(
+            (accumulator, { tasks }) => ({
+              ...accumulator,
+              tasks: [...accumulator.tasks, ...tasks],
+            }),
+            { tasks: [] },
+          )
+        : filteredLists?.find(
+            l => l.taskListIdentifier === taskListIdentifierParameter,
           ),
-        );
-        updateUserAllFieldsOrderSetup(
-          listDisplayColumns,
-          taskListIdentifierParameter,
-        );
-      }
-    },
-    [
-      currentUser.identifier,
-      dispatch,
-      isAllTasksView,
-      taskListIdentifierParameter,
-    ],
+    [filteredLists, isAllTasksView, taskListIdentifierParameter],
   );
 
   useEffect(() => {
-    const taskItemConfig = isAllTasksView
-      ? PATIENT_ALL_TASKS_VIEW_COLUMNS_CONFIG
-      : PATIENT_VIEW_COLUMNS_CONFIG;
-    const config =
-      userPreferColumns?.reduce(
-        (accumulator, value) => ({ ...accumulator, [value]: true }),
-        PATIENT_CONFIGURABLE_COLUMNS_CONFIG,
-      ) || {};
-    const customizedDashboardConfig = {
-      ...columnsConfig,
-      ...config,
-      ...taskItemConfig,
-    };
-    setColumnsConfig(customizedDashboardConfig);
+    if (isAllTasksView) {
+      setViewSpecificConfig(PATIENT_ALL_JOINED_LISTS_VIEW_COLUMNS_CONFIG);
+    } else {
+      setViewSpecificConfig(PATIENT_SPECIFIC_LIST_VIEW_COLUMNS_CONFIG);
+    }
+  }, [isAllTasksView, setViewSpecificConfig]);
 
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [isAllTasksView, setColumnsConfig, userPreferColumns]);
+  useEffect(() => {
+    if (isAllTasksView && currentList) {
+      setCurrentList(null);
+    }
+    if (
+      !isAllTasksView &&
+      activeList &&
+      currentList?.taskListIdentifier !== activeList?.taskListIdentifier
+    ) {
+      setCurrentList(activeList);
+    }
+  }, [activeList, currentList, isAllTasksView, setCurrentList]);
 
   useEffect(() => {
     if (patientIdentifier) {
@@ -177,11 +180,6 @@ const PatientTasksListView = () => {
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [patientIdentifier]);
-
-  const filteredLists = useMemo(
-    () => (taskSearch ? searchTaskInPatientLists(lists, taskSearch) : lists),
-    [lists, taskSearch],
-  );
 
   useEffect(() => {
     if (
@@ -279,64 +277,33 @@ const PatientTasksListView = () => {
     [dispatch, togglePatientTaskStatus],
   );
 
-  const activeList = useMemo(
-    () =>
-      isAllTasksView
-        ? filteredLists?.reduce(
-            (accumulator, { tasks }) => ({
-              ...accumulator,
-              tasks: [...accumulator.tasks, ...tasks],
-            }),
-            { tasks: [] },
-          )
-        : filteredLists?.find(
-            l => l.taskListIdentifier === taskListIdentifierParameter,
-          ),
-    [filteredLists, isAllTasksView, taskListIdentifierParameter],
-  );
-
-  useEffect(() => {
-    if (isAllTasksView && userOrderColumns) {
-      setColumnsOrder(userOrderColumns);
-    } else {
-      const taskListOrder = activeList?.listUsers?.find(
-        u => u.identifier === currentUser.identifier,
-      )?.listDisplayColumns;
-      if (taskListOrder) setColumnsOrder(taskListOrder);
-    }
-  }, [
-    activeList,
-    currentUser.identifier,
-    isAllTasksView,
-    setColumnsOrder,
-    userOrderColumns,
-  ]);
-
   const groupedTasks = useMemo(() => {
     if (isAllTasksView) return undefined;
 
     return groupTasks(activeList?.tasks);
   }, [activeList, isAllTasksView]);
 
-  const groupHasMultipleAssignees = useMemo(
-    () =>
-      activeList?.tasks
-        .flatMap(item =>
-          item.itemType === TaskItemType.BUNDLE ? item.tasks : [item],
-        )
-        .some(
-          // eslint-disable-next-line no-shadow
-          ({ assignedToUsers, subtasks }) =>
-            (assignedToUsers && assignedToUsers.length > 1) ||
-            (subtasks &&
-              subtasks.length > 0 &&
-              subtasks.some(
-                ({ assignedToUsers: subtaskAssignedToUsers }) =>
-                  subtaskAssignedToUsers && subtaskAssignedToUsers.length > 1,
-              )),
-        ),
-    [activeList],
-  );
+  const groupHasMultipleAssignees = false;
+
+  // const groupHasMultipleAssignees = useMemo(
+  //   () =>
+  //     activeList?.tasks
+  //       .flatMap(item =>
+  //         item.itemType === TaskItemType.BUNDLE ? item.tasks : [item],
+  //       )
+  //       .some(
+  //         // eslint-disable-next-line no-shadow
+  //         ({ assignedToUsers, subtasks }) =>
+  //           (assignedToUsers && assignedToUsers.length > 1) ||
+  //           (subtasks &&
+  //             subtasks.length > 0 &&
+  //             subtasks.some(
+  //               ({ assignedToUsers: subtaskAssignedToUsers }) =>
+  //                 subtaskAssignedToUsers && subtaskAssignedToUsers.length > 1,
+  //             )),
+  //       ),
+  //   [activeList],
+  // );
 
   const isGroupSelected = useCallback(
     tasks => checkIfAllTasksSelected(tasks),
@@ -380,7 +347,6 @@ const PatientTasksListView = () => {
               groupHasMultipleAssignees={groupHasMultipleAssignees}
               isGroupSelected={isGroupSelected(tasks)}
               onGroupSelect={() => handleGroupSelect(tasks)}
-              onOrderChange={handleOrderChange}
             />
           )}
           {tasks?.map(task =>
@@ -420,7 +386,6 @@ const PatientTasksListView = () => {
       sortPatientTasks,
       groupHasMultipleAssignees,
       isGroupSelected,
-      handleOrderChange,
       handleGroupSelect,
       handleToggleTaskStatus,
       updatePatientTaskInList,
@@ -456,7 +421,6 @@ const PatientTasksListView = () => {
                       zIndex={13}
                     >
                       <TaskListHeader
-                        onOrderChange={handleOrderChange}
                         list={!isAllTasksView ? activeList : null}
                         viewSetup={viewSetup}
                         refreshView={compose(dispatch, getCurrentPatientTasks)}

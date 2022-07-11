@@ -271,6 +271,16 @@ export const DrawerListsItem = styled.div`
   &:not(:last-child) {
     margin-bottom: 10px;
   }
+
+  ${({ isDraggable }) =>
+    isDraggable
+      ? `
+        &:hover {
+          border: 1px solid ${palette.coolGrey2};
+          background-color: ${palette.coolGrey3};
+        }
+      `
+      : ``}
 `;
 
 export const DrawerListsItemLoader = withStyles({

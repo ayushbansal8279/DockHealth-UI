@@ -22,15 +22,14 @@ import {
 } from 'routing/helpers/paths';
 import { DashboardTasksTab } from 'helpers/dashboard-helpers';
 import { ViewType, getViewTypeFromQueryString } from 'helpers/view-type-helper';
-import {
-  userProfileDashboardPrefsSelector,
-  dashboardGroupsPreferencesSelector,
-  userProfileColumnOrderSelector,
-} from 'selectors/user-selectors';
+import { dashboardGroupsPreferencesSelector } from 'selectors/user-selectors';
 import TaskViewTypeToolbarSelect from 'components/tasklist/TaskViewTypeToolbarSelect/TaskViewTypeToolbarSelect';
 import CustomizeToolbarButton from 'components/tasklist/CustomizeToolbarButton/CustomizeToolbarButton';
 import { useColumnsConfig } from 'context-api/columns-config-context';
-import { TaskItemColumn } from 'helpers/task-helpers';
+import {
+  TaskItemColumn,
+  TASK_ITEM_BASE_COLUMN_CONFIG,
+} from 'helpers/task-helpers';
 import { UserOrganizationRole } from 'helpers/user-helper';
 import AccessRestrictor from 'components/access/AccessRestrictor/AccessRestrictor';
 import {
@@ -42,19 +41,11 @@ import {
 } from './styled';
 
 const DASHBOARD_BASE_COLUMNS_CONFIG = {
+  ...TASK_ITEM_BASE_COLUMN_CONFIG,
   [TaskItemColumn.LIST_NAME]: true,
 };
 
 const { ADMIN, OWNER, MEMBER, GUEST, EXTERNAL } = UserOrganizationRole;
-
-const DASHBOARD_CONFIGURABLE_COLUMNS_CONFIG = {
-  [TaskItemColumn.WORKFLOW_STATUS]: false,
-  [TaskItemColumn.ASSIGNED]: false,
-  [TaskItemColumn.ACTIVITY]: false,
-  [TaskItemColumn.DUE_DATE]: false,
-  [TaskItemColumn.START_DATE]: false,
-  [TaskItemColumn.PATIENT]: false,
-};
 
 const DashboardToolbar = () => {
   const history = useHistory();
@@ -66,13 +57,7 @@ const DashboardToolbar = () => {
     left: 0,
   });
   const tabName = useSelector(dashboardTabNameSelector);
-  const userPreferColumns = useSelector(userProfileDashboardPrefsSelector);
-  const userOrderColumns = useSelector(userProfileColumnOrderSelector);
-  const {
-    columnsConfig,
-    setColumnsConfig,
-    setColumnsOrder,
-  } = useColumnsConfig();
+  const { setViewSpecificConfig } = useColumnsConfig();
   const dashboardGroupsPreferences = useSelector(
     dashboardGroupsPreferencesSelector,
   );
@@ -127,52 +112,8 @@ const DashboardToolbar = () => {
   }, [groupList, groupsPreferences, updateGroupsPreferences]);
 
   useEffect(() => {
-    const config =
-      userPreferColumns?.reduce(
-        (accumulator, value) =>
-          Object.keys(DASHBOARD_CONFIGURABLE_COLUMNS_CONFIG).includes(value)
-            ? { ...accumulator, [value]: true }
-            : accumulator,
-        DASHBOARD_CONFIGURABLE_COLUMNS_CONFIG,
-      ) || {};
-    const customizedDashboardConfig = {
-      ...columnsConfig,
-      ...config,
-      ...DASHBOARD_BASE_COLUMNS_CONFIG,
-    };
-    setColumnsConfig(customizedDashboardConfig);
-
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [setColumnsConfig, userPreferColumns]);
-
-  useEffect(() => {
-    if (userOrderColumns) setColumnsOrder(userOrderColumns);
-  }, [setColumnsOrder, userOrderColumns]);
-
-  const onColumnSetupChange = useCallback(
-    (newConfig, options) => {
-      if (options?.isCustomColumn) {
-        dispatch(
-          updateCurrentUserPreferences({
-            customFieldDisplayColumns: newConfig
-              .filter(f => f.isChecked)
-              .map(f => f.identifier),
-          }),
-        );
-      } else {
-        dispatch(
-          updateCurrentUserPreferences({
-            displayColumns: Object.entries(newConfig).reduce(
-              (accumulator, [key, value]) =>
-                value ? [...accumulator, key] : accumulator,
-              [],
-            ),
-          }),
-        );
-      }
-    },
-    [dispatch],
-  );
+    setViewSpecificConfig(DASHBOARD_BASE_COLUMNS_CONFIG);
+  }, [setViewSpecificConfig]);
 
   const handleChangeViewType = useCallback(
     event => {
@@ -240,7 +181,6 @@ const DashboardToolbar = () => {
             <Spacing horizontal={4} />
             <AccessRestrictor allowedToRoles={[ADMIN, OWNER, MEMBER, GUEST]}>
               <CustomizeToolbarButton
-                onChange={onColumnSetupChange}
                 showCustomColumnCreate={false}
                 additionalOptionsTitle="Groups"
                 additionalOptions={additionalOptions}

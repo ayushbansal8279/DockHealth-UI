@@ -1,4 +1,3 @@
-/* eslint-disable react/no-did-update-set-state */
 import React, { useState, useEffect, useCallback } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useParams } from 'react-router-dom';
@@ -9,7 +8,11 @@ import * as ModalActions from 'modal/actions';
 import { userProfileSelector } from 'selectors/user-selectors';
 import { onSearchChanged } from 'helpers/ga-event-helper';
 import { TaskListTabName } from 'helpers/tasklist-helpers';
-import { TaskItemColumn, TaskStatus } from 'helpers/task-helpers';
+import {
+  TaskItemColumn,
+  TaskStatus,
+  TASK_ITEM_BASE_COLUMN_CONFIG,
+} from 'helpers/task-helpers';
 import TaskDrawer from 'components/task-drawer/TaskDrawer/TaskDrawer';
 import LayoutHeader from 'components/template/LayoutHeader/LayoutHeader';
 import { updateCurrentUserPreferences } from 'actions/user-actions';
@@ -26,6 +29,7 @@ import UserDetailsFilters from './UserDetailsFilters/UserDetailsFilters';
 import { TaskViewContainer } from './styled';
 
 const PERSON_VIEW_COLUMNS_CONFIG = {
+  ...TASK_ITEM_BASE_COLUMN_CONFIG,
   [TaskItemColumn.LIST_NAME]: true,
 };
 

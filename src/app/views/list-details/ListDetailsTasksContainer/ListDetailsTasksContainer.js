@@ -6,7 +6,7 @@ import {
   groupTasksSelector,
 } from 'selectors/list-details-selectors';
 import { hasFiltersAppliedSelector } from 'selectors/mega-filter-selectors';
-import ListDetailsOpenedTasks from './ListDetailsOpenedTasks';
+import ListDetailsTasks from './ListDetailsTasks';
 
 const mapStateToProps = (state, ownProps) => {
   const { searchValue, ...restOwnProps } = ownProps;
@@ -38,8 +38,4 @@ const mergeProps = (stateProps, dispatchProps, ownProps) => {
   };
 };
 
-export default connect(
-  mapStateToProps,
-  null,
-  mergeProps,
-)(ListDetailsOpenedTasks);
+export default connect(mapStateToProps, null, mergeProps)(ListDetailsTasks);

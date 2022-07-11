@@ -28,12 +28,6 @@ export function getCurrentListTasks(withLoader) {
   };
 }
 
-export function getCurrentListCompleteTasks() {
-  return {
-    type: ActionTypes.GET_CURRENT_LIST_COMPLETE_TASKS,
-  };
-}
-
 export function searchCurrentListTasks(searchTerm) {
   return {
     type: ActionTypes.SEARCH_CURRENT_LIST_TASKS,

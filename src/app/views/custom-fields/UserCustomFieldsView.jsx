@@ -36,7 +36,7 @@ const UserCustomFieldsView = () => {
   const dispatch = useDispatch();
   const [customFields, setCustomFields] = useState(null);
   const [isFetching, setIsFetching] = useState(true);
-  const { setCustomColumnsConfig, customColumnsConfig } = useColumnsConfig();
+  const { columns, setColumnsToState } = useColumnsConfig();
   const sensors = useSensors(useSensor(MouseSensor), useSensor(TouchSensor));
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
 
@@ -67,10 +67,10 @@ const UserCustomFieldsView = () => {
         },
         customField: field,
         onUpdated: updatedField => {
-          setCustomColumnsConfig([
-            ...customColumnsConfig.map(f =>
+          setColumnsToState([
+            ...columns.map(f =>
               f.identifier === updatedField.identifier
-                ? { ...updatedField, isChecked: f.isChecked }
+                ? { ...f, ...updatedField }
                 : f,
             ),
           ]);
@@ -93,9 +93,7 @@ const UserCustomFieldsView = () => {
         description:
           'Are you sure you want to delete this custom user / provider field? This action cannot be undone.',
         confirm: () => {
-          setCustomColumnsConfig([
-            ...customColumnsConfig.filter(f => f.identifier !== id),
-          ]);
+          setColumnsToState([...columns.filter(f => f.identifier !== id)]);
           CustomFieldsApi.deleteCustomField(id)
             .then(() =>
               setCustomFields(previousValue =>
@@ -146,7 +144,7 @@ const UserCustomFieldsView = () => {
           type: 'PROVIDER',
         },
         onAdded: async customField => {
-          setCustomColumnsConfig([...customColumnsConfig, customField]);
+          setColumnsToState([...columns, customField]);
           const newFields = (sortedFields
             ? [...sortedFields, customField]
             : [customField]

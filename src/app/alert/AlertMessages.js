@@ -24,6 +24,7 @@ const AlertMessages = {
   LABEL_DELETED: 'Label deleted',
   FAX_SENT: 'Fax Sent',
   MAIL_SENT: 'Mail Sent',
+  EMR_SENT: 'Emr Sent',
 };
 
 export default AlertMessages;

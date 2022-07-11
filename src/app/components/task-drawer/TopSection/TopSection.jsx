@@ -92,6 +92,10 @@ const TopSection = ({
         onClick: () => dispatch(openModal('SendFaxFromTask')),
       },
       {
+        name: 'Post Note to EMR',
+        onClick: () => dispatch(openModal('SendEmrFromTask')),
+      },
+      {
         name: 'Delete',
         color: palette.error,
         onClick: openDeleteConfirmationModal,
@@ -110,7 +114,6 @@ const TopSection = ({
       selectedTask,
       handleShareTask,
       openDuplicateConfirmationModal,
-      duplicateTaskWithoutConfirmation,
       dispatch,
     ],
   );

@@ -43,7 +43,7 @@ const FormInput = React.forwardRef(
     });
 
     const handleChange = event => {
-      setValue(name, event.target.value);
+      setValue(name, event.target.value, { shouldDirty: true });
       if (typeof onChange === 'function') onChange(event);
     };
 
@@ -57,8 +57,8 @@ const FormInput = React.forwardRef(
         error={error}
         errors={errors}
         onKeyUp={() => (disableClearErrorOnKeyUp ? null : clearErrors(name))}
-        clearErrors={clearErrors}
         {...restProps}
+        clearErrors={clearErrors}
       />
     );
   },

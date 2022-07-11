@@ -72,7 +72,6 @@ const TasksGroup = ({
   taskListIdentifier,
   sort,
   onSortChange,
-  onOrderChange,
   onTaskGroupViewModeChange,
   applyTemplate,
   groupPagination,
@@ -168,15 +167,17 @@ const TasksGroup = ({
     [],
   );
 
-  const groupHasMultipleAssignees = useMemo(
-    () =>
-      tasks.some(task =>
-        task?.itemType === 'BUNDLE'
-          ? task.tasks.some(checkHasMultipleAssignees)
-          : checkHasMultipleAssignees(task),
-      ),
-    [checkHasMultipleAssignees, tasks],
-  );
+  const groupHasMultipleAssignees = false;
+
+  // const groupHasMultipleAssignees = useMemo(
+  //   () =>
+  //     tasks.some(task =>
+  //       task?.itemType === 'BUNDLE'
+  //         ? task.tasks.some(checkHasMultipleAssignees)
+  //         : checkHasMultipleAssignees(task),
+  //     ),
+  //   [checkHasMultipleAssignees, tasks],
+  // );
 
   const isGroupSelected = useMemo(() => checkIfAllTasksSelected(tasks), [
     tasks,
@@ -340,7 +341,6 @@ const TasksGroup = ({
             groupHasMultipleAssignees={groupHasMultipleAssignees}
             isGroupSelected={isGroupSelected}
             onGroupSelect={handleGroupSelect}
-            onOrderChange={onOrderChange}
           />
         )}
         {children({

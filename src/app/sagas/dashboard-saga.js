@@ -1,3 +1,4 @@
+/* eslint-disable no-console */
 /* eslint-disable sonarjs/no-identical-functions */
 import {
   put,
@@ -139,7 +140,6 @@ function* getDashboardGroups() {
         getTasksForOrganizationByImplicitGroup,
         'SHARED_TASKS',
       );
-      // TODO: need to test when api will be available
       yield put({
         type: ActionTypes.GET_DASHBOARD_GROUPS_SUCCESS,
         tasksList: data,
