@@ -12,7 +12,11 @@ import { DragDropContext, Droppable } from 'react-beautiful-dnd';
 import { SINGLE_TASK_RESTRICTIONS_PROFILES } from 'restrictions/task-restrictions';
 import { CUSTOM_FIELD_TYPES } from 'helpers/custom-fields-helpers';
 import { BulkContainer, StickyColumnContainer } from './styled';
-import { getTaskHeaderOptions, reorderColumns } from './helpers';
+import {
+  getTaskHeaderOptions,
+  reorderColumns,
+  TaskHeaderColumn,
+} from './helpers';
 
 const TasksHeader = ({
   bulkEditEnabled,
@@ -59,7 +63,13 @@ const TasksHeader = ({
           <ColumnSortHeader
             key={f.identifier}
             index={index}
-            draggable
+            draggable={
+              ![TaskHeaderColumn.SUBTASKS_COUNT].includes(f.identifier)
+            }
+            disabled={[
+              TaskHeaderColumn.ACTIVITY,
+              TaskHeaderColumn.START_DATE,
+            ].includes(f.identifier)}
             isDraggingOver={snapshot.isDraggingOver}
             id={f.identifier}
             label={f.label}
@@ -75,8 +85,8 @@ const TasksHeader = ({
       return (
         <ColumnSortHeader
           key={f.identifier}
-          draggable
           index={index}
+          draggable
           isDraggingOver={snapshot.isDraggingOver}
           disabled={f.targetType === 'PATIENT'}
           truncateEnabled
