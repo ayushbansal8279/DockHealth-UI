@@ -93,7 +93,7 @@ const PersonForm = forwardRef(
         ref={reference}
       >
         <LabeledCollapse
-          name="Provider personal Info"
+          name="User Personal Info"
           isOpened={isOpenedPersonal}
           onClick={() => setIsOpenedPersonal(!isOpenedPersonal)}
         >
@@ -135,7 +135,7 @@ const PersonForm = forwardRef(
 
         {customFields?.length > 0 && (
           <LabeledCollapse
-            name="Provider Other Info"
+            name="User Other Info"
             isOpened={isOpenedContact}
             onClick={() => setIsOpenedContact(!isOpenedContact)}
           >

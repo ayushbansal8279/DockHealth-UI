@@ -91,7 +91,7 @@ const CustomFieldsView = () => {
             <Tab
               label={
                 <Link to={`${CUSTOM_FIELDS_SETTINGS_PATH}/${TABS[2]}`}>
-                  Provider Custom Fields
+                  User Custom Fields
                 </Link>
               }
               {...applyProps(1)}
