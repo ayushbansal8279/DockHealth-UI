@@ -38,17 +38,6 @@ const BoardTasksList = ({
           {...dropProvided.droppableProps}
         >
           <BoardColumnTasksContainer ref={dropProvided.innerRef}>
-            {column?.tasks?.map((t, index) => {
-              return (
-                <BoardColumnTask
-                  taskContextMenuOptions={getTaskContextMenuOptionsArray(t)}
-                  task={t}
-                  key={t.identifier}
-                  column={column}
-                  index={index}
-                />
-              );
-            })}
             {isAddTaskFieldVisible && (
               <Box mt="20px">
                 <QuickAddTaskInput
@@ -61,6 +50,18 @@ const BoardTasksList = ({
                 />
               </Box>
             )}
+            {column?.tasks?.map((t, index) => {
+              return (
+                <BoardColumnTask
+                  taskContextMenuOptions={getTaskContextMenuOptionsArray(t)}
+                  task={t}
+                  key={t.identifier}
+                  column={column}
+                  index={index}
+                />
+              );
+            })}
+
             {dropProvided.placeholder}
           </BoardColumnTasksContainer>
         </Box>
