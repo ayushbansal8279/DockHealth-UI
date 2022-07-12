@@ -73,7 +73,7 @@ const ChatPopover = () => {
             vertical: 'bottom',
             horizontal: 'left',
           }}
-          PaperProps={{ style: { height: '500px', width: '375px' } }}
+          PaperProps={{ style: { height: '700px', width: '525px' } }}
           disableEnforceFocus
         >
           <Container>

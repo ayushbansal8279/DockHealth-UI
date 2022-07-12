@@ -8,7 +8,7 @@ const ChatChannelConversation = props => {
 
   return (
     <div className="sendbird-app__conversation-wrap">
-      <ChannelProvider channelUrl={currentChannelUrl}>
+      <ChannelProvider channelUrl={currentChannelUrl} showSearchIcon>
         <ChannelUI />
       </ChannelProvider>
     </div>

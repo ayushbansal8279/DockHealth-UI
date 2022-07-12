@@ -35,9 +35,10 @@
     width: 100% !important;
 }
 
-/* .sendbird-conversation__messages-padding{
-    padding-left: 40px !important;
-} */
+.sendbird-conversation__messages-padding{
+    /* padding-left: 40px !important; */
+    overflow-x: hidden !important;
+}
 
 .sendbird-message-content__middle__body-container{
     width: 250px;
