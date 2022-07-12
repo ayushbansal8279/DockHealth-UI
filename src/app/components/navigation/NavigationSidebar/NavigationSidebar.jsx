@@ -8,7 +8,6 @@ import {
   USERS_PATH,
   SUBS_SETTINGS_PATH,
   USERS_SETTINGS_PATH,
-  MESSENGER_PATH,
 } from 'routing/helpers/paths';
 import Spacing from 'components/common/Spacing.tsx';
 import { userProfileSelector } from 'selectors/user-selectors';
@@ -233,29 +232,11 @@ const NavigationSidebar = () => {
                 onItemClick={handleNavigationItemClick}
               />
             </AccessRestrictor>
-            <AccessRestrictor allowedToRoles={[ADMIN, OWNER, MEMBER, GUEST]}>
-              <IconNavigationItem
-                name="Education Center"
-                icon={EducationCenterIcon}
-                subMenuKey={SubmenuKey.EDUCATION_CENTER}
-                subMenuOpen={openedSubMenuKey === SubmenuKey.EDUCATION_CENTER}
-                onItemClick={handleNavigationItemClick}
-              />
-            </AccessRestrictor>
             <AccessRestrictor allowedToRoles={[ADMIN, OWNER]}>
               <IconNavigationItem
                 name="Analytics"
                 icon={BarChartIcon}
                 path="/core/analytics"
-                onItemClick={handleNavigationItemClick}
-                isNew
-              />
-            </AccessRestrictor>
-            <AccessRestrictor allowedToRoles={[ADMIN, OWNER, MEMBER]}>
-              <IconNavigationItem
-                name="Messenger"
-                icon={PeopleIcon}
-                path={MESSENGER_PATH}
                 onItemClick={handleNavigationItemClick}
               />
             </AccessRestrictor>
@@ -277,7 +258,15 @@ const NavigationSidebar = () => {
                 />
               </div>
             </AccessRestrictor>
-
+            <AccessRestrictor allowedToRoles={[ADMIN, OWNER, MEMBER, GUEST]}>
+              <IconNavigationItem
+                name="Education Center"
+                icon={EducationCenterIcon}
+                subMenuKey={SubmenuKey.EDUCATION_CENTER}
+                subMenuOpen={openedSubMenuKey === SubmenuKey.EDUCATION_CENTER}
+                onItemClick={handleNavigationItemClick}
+              />
+            </AccessRestrictor>
             <AccessRestrictor
               allowedToRoles={[ADMIN, OWNER, MEMBER, GUEST, EXTERNAL]}
             >
