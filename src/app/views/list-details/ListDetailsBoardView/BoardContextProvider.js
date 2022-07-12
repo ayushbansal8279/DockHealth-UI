@@ -139,7 +139,7 @@ const BoardContextProvider = ({ contextName, children }) => {
                 dispatch(
                   applyTaskTemplate({
                     taskTemplateIdentifier,
-                    taskListIdentifier: taskList.taskListIdentifier,
+                    taskListIdentifier: taskList?.taskListIdentifier,
                     taskGroupIdentifier,
                   }),
                 );
@@ -182,7 +182,7 @@ const BoardContextProvider = ({ contextName, children }) => {
     getTaskContextMenuOptionsArray,
     groupList,
     groupTasks,
-    taskList.taskListIdentifier,
+    taskList,
   ]);
 
   return typeof children === 'function' ? children(context) : children;
