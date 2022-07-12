@@ -2,11 +2,9 @@ import React from 'react';
 import { Grid } from '@material-ui/core';
 import ArrowLeftIcon from 'img/arrow-left.svg';
 import { updateNotificationSettings } from 'api/user-api';
-import Switch from 'components/common/Switch/Switch';
 import {
   ActivityAlertsPopoverLabel,
   ActivityAlertsHeaderLabel,
-  ActivityAlertsSwitchLabel,
 } from '../styled';
 import {
   ActivityAlertsSettingsHeader,
@@ -15,7 +13,6 @@ import {
   ActivityAlertsSettingsItemsContainer,
   ActivityAlertsSettingsItemsHeader,
   ActivityAlertsSettingsItemsHeaderLabel,
-  ActivityAlertsSettingsItemsHeaderBlueLabel,
   BlueCheckbox,
   CheckboxContainer,
   ArrowButton,
@@ -72,7 +69,6 @@ const ActivityAlertsSettingsRow = ({
 const ActivityAlertsSettings = ({
   setSelectedScreen,
   notificationSettings,
-  hasAnyOptionTurnedOn,
   refreshNotificationSettings,
 }) => {
   return (
@@ -80,41 +76,22 @@ const ActivityAlertsSettings = ({
       <ActivityAlertsSettingsHeader>
         <ActivityAlertsHeaderLabel>
           <ActivityAlertsPopoverLabel>
-            <ArrowButton onClick={() => setSelectedScreen('LIST')}>
-              <img src={ArrowLeftIcon} alt="back-navigation" />
-            </ArrowButton>
-            Settings
+            {typeof setSelectedScreen === 'function' && (
+              <ArrowButton onClick={() => setSelectedScreen('LIST')}>
+                <img src={ArrowLeftIcon} alt="back-navigation" />
+              </ArrowButton>
+            )}
+            Task notification preferences
           </ActivityAlertsPopoverLabel>
         </ActivityAlertsHeaderLabel>
-        <div>
-          <Switch
-            checked={hasAnyOptionTurnedOn}
-            onChange={() => {
-              updateNotificationSettings(
-                notificationSettings.map(s => ({
-                  ...s,
-                  emailEnabled: !hasAnyOptionTurnedOn,
-                  pushNotificationEnabled: !hasAnyOptionTurnedOn,
-                })),
-              ).then(refreshNotificationSettings);
-            }}
-          />
-          <ActivityAlertsSwitchLabel>
-            {hasAnyOptionTurnedOn ? 'ON' : 'OFF'}
-          </ActivityAlertsSwitchLabel>
-        </div>
       </ActivityAlertsSettingsHeader>
       <ActivityAlertsSettingsItemsContainer>
         <ActivityAlertsSettingsItemsHeader>
           <Grid container>
-            <Grid item xs={6} alignItems="flex-start" justify="flex-start">
-              <ActivityAlertsSettingsItemsHeaderBlueLabel>
-                NOTIFY ME WHEN
-              </ActivityAlertsSettingsItemsHeaderBlueLabel>
-            </Grid>
+            <Grid item xs={6} alignItems="flex-start" justify="flex-start" />
             <Grid item xs={3}>
               <ActivityAlertsSettingsItemsHeaderLabel>
-                NOTIFICATIONS
+                IN APP
               </ActivityAlertsSettingsItemsHeaderLabel>
             </Grid>
             <Grid item xs={3}>
