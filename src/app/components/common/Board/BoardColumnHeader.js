@@ -13,17 +13,24 @@ const BoardColumnHeader = ({
   name,
   tasksLength = 0,
   columnContextMenuOptions,
+  onAddWorkflow,
+  onAddTaskOption,
 }) => {
+  const addWorkflowOption = { name: 'Add Workflow', onClick: onAddWorkflow };
+  const mergedColumnContextMenuOptions = addWorkflowOption
+    ? [addWorkflowOption, ...columnContextMenuOptions]
+    : columnContextMenuOptions;
+
   return (
     <BoardColumnHeaderContainer>
       <ColumnName>{`${name} (${tasksLength})`}</ColumnName>
       <ActionsContainer>
-        <Button>
+        <Button onClick={onAddTaskOption}>
           <PlusIcon>+</PlusIcon>
         </Button>
-        {columnContextMenuOptions?.length && (
+        {mergedColumnContextMenuOptions?.length && (
           <OptionsMenu
-            options={columnContextMenuOptions}
+            options={mergedColumnContextMenuOptions}
             customButtonComponent={IconButton}
           >
             <MoreVertIcon />

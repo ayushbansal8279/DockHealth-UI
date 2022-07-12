@@ -4,11 +4,14 @@ import BoardColumn from './BoardColumn';
 import { BoardContainer } from './styled';
 
 const Board = ({
+  taskList,
   columns,
   getColumnContextMenuOptionsArray,
   getTaskContextMenuOptionsArray,
   onReorderColumns,
   onReorderTasks,
+  onAddTask,
+  onAddWorkflow,
 }) => {
   const handleDragEnd = useCallback(
     ({ type, source, destination }) => {
@@ -45,6 +48,9 @@ const Board = ({
             >
               {columns?.map((column, index) => (
                 <BoardColumn
+                  onAddTask={onAddTask}
+                  onAddWorkflow={onAddWorkflow}
+                  taskList={taskList}
                   getColumnContextMenuOptionsArray={
                     getColumnContextMenuOptionsArray
                   }

@@ -1,16 +1,34 @@
 import { Box } from '@material-ui/core';
-import React from 'react';
+import React, { useCallback } from 'react';
 import { Draggable } from 'react-beautiful-dnd';
+import { useBoolean } from 'hooks/useBoolean';
 import BoardColumnHeader from './BoardColumnHeader';
 import BoardTasksList from './BoardTasksList';
 import { BoardColumnContainer } from './styled';
 
 const BoardColumn = ({
+  taskList,
   column,
   getTaskContextMenuOptionsArray,
   getColumnContextMenuOptionsArray,
   index,
+  onAddTask,
+  onAddWorkflow,
 }) => {
+  const [
+    isAddTaskFieldVisible,
+    showAddTaskField,
+    hideAddTaskField,
+  ] = useBoolean(false);
+
+  const handleAddTask = useCallback(
+    ({ description }) => {
+      onAddTask(column, description);
+      hideAddTaskField();
+    },
+    [column, hideAddTaskField, onAddTask],
+  );
+
   return (
     <Draggable draggableId={column.identifier} index={index}>
       {(provided, snapshot) => (
@@ -25,11 +43,17 @@ const BoardColumn = ({
               )}
               tasksLength={column?.tasks?.length}
               name={column.name}
+              onAddTaskOption={showAddTaskField}
+              onAddWorkflow={() => onAddWorkflow(column)}
             />
           </Box>
           <BoardTasksList
+            isAddTaskFieldVisible={isAddTaskFieldVisible}
             getTaskContextMenuOptionsArray={getTaskContextMenuOptionsArray}
             column={column}
+            taskList={taskList}
+            onAddTask={handleAddTask}
+            hideAddTaskField={hideAddTaskField}
           />
         </BoardColumnContainer>
       )}

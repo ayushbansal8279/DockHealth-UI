@@ -21,8 +21,10 @@ const QuickAddTaskInput = React.forwardRef(
       validator,
       taskListIdentifier = null,
       disableMentions = false,
+      small,
     },
     reference,
+    // eslint-disable-next-line sonarjs/cognitive-complexity
   ) => {
     const [
       newTaskDescription,
@@ -93,14 +95,22 @@ const QuickAddTaskInput = React.forwardRef(
               ref={reference || quickAddTaskInputReference}
               taskListIdentifier={taskListIdentifier}
               disableMentions={disableMentions}
-              placeholder="Add a task and press enter on your keyboard"
+              placeholder={
+                small
+                  ? 'Add a task'
+                  : 'Add a task and press enter on your keyboard'
+              }
               onFocus={() => {
                 setIsFocused(true);
                 if (typeof onFocus === 'function') onFocus();
               }}
               onBlur={() => {
+                const { tokenizedText } = convertFromEditorStateToOutput(
+                  newTaskDescription,
+                  false,
+                );
                 setIsFocused(false);
-                if (typeof onBlur === 'function') onBlur();
+                if (typeof onBlur === 'function') onBlur(tokenizedText);
               }}
               state={newTaskDescription}
               onChange={handleOnChange}
@@ -131,7 +141,7 @@ const QuickAddTaskInput = React.forwardRef(
               }}
             />
           </MentionsEditorContainer>
-          {hasInputValue && isFocused && (
+          {!small && hasInputValue && isFocused && (
             <>
               <Spacing horizontal={4} />
               <QuickAddHint>Press enter to save this task</QuickAddHint>

@@ -1,46 +1,23 @@
-import React, { useCallback, useState } from 'react';
+import React, { useState } from 'react';
 import MoreVert from '@material-ui/icons/MoreVert';
 import { Box, Typography } from '@material-ui/core';
-import {
-  reorderTaskListGroups,
-  reorderTasksInGroup,
-  reassignTasksToAnotherGroup,
-} from 'actions/list-details-actions';
+
 import ViewLayout from 'components/template/ViewLayout/ViewLayout';
 import TaskDrawer from 'components/task-drawer/TaskDrawer/TaskDrawer';
 import { currentTaskListSelector } from 'selectors/task-list-selectors';
 import ListOptionsMenu from 'components/tasklist/ListOptionsMenu/ListOptionsMenu';
 import LayoutHeader from 'components/template/LayoutHeader/LayoutHeader';
 import Board from 'components/common/Board/Board';
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 import ToolbarSelect from 'components/tasklist/ToolbarSelect/ToolbarSelect';
 import ListDetailsToolbar from '../ListDetailsToolbar/ListDetailsToolbar';
 import { BOARD_CONTEXTS_OPTIONS } from './helpers';
 import BoardContextProvider from './BoardContextProvider';
 
 const ListDetailsBoardView = () => {
-  const dispatch = useDispatch();
   const taskList = useSelector(currentTaskListSelector);
   const [boardContextName, setBoardContextName] = useState(
     BOARD_CONTEXTS_OPTIONS[0].value,
-  );
-
-  const handleReorderTasks = useCallback(
-    (source, destination) => {
-      if (source?.droppableId === destination?.droppableId) {
-        dispatch(reorderTasksInGroup({ destination, source }));
-      } else {
-        dispatch(reassignTasksToAnotherGroup({ destination, source }));
-      }
-    },
-    [dispatch],
-  );
-
-  const handleReorderColumns = useCallback(
-    (sourceIndex, destinationIndex) => {
-      dispatch(reorderTaskListGroups(sourceIndex, destinationIndex));
-    },
-    [dispatch],
   );
 
   return (
@@ -80,9 +57,14 @@ const ListDetailsBoardView = () => {
           columns = [],
           getTaskContextMenuOptionsArray,
           getColumnContextMenuOptionsArray,
+          handleReorderTasks,
+          handleReorderColumns,
+          handleAddTask,
+          handleAddWorkflow,
         }) => (
           <>
             <Board
+              taskList={taskList}
               getTaskContextMenuOptionsArray={getTaskContextMenuOptionsArray}
               getColumnContextMenuOptionsArray={
                 getColumnContextMenuOptionsArray
@@ -90,6 +72,8 @@ const ListDetailsBoardView = () => {
               columns={columns}
               onReorderTasks={handleReorderTasks}
               onReorderColumns={handleReorderColumns}
+              onAddTask={handleAddTask}
+              onAddWorkflow={handleAddWorkflow}
             />
           </>
         )}

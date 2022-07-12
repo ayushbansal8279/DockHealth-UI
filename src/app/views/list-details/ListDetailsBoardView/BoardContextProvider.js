@@ -11,8 +11,18 @@ import {
 } from 'selectors/list-details-selectors';
 import { openModal, closeModal } from 'modal/actions';
 import { deleteTask } from 'actions/task-actions';
+import {
+  reorderTaskListGroups,
+  reorderTasksInGroup,
+  reassignTasksToAnotherGroup,
+  applyTaskTemplate,
+} from 'actions/list-details-actions';
+import { createTask } from 'sagas/list-details-saga';
+import { getTemplates } from 'api/task-template-api';
+
 import { BOARD_CONTEXTS } from './helpers';
 
+// eslint-disable-next-line sonarjs/cognitive-complexity
 const BoardContextProvider = ({ contextName, children }) => {
   const dispatch = useDispatch();
   const groupList = useSelector(listDetailsGroupsSelector);
@@ -81,7 +91,7 @@ const BoardContextProvider = ({ contextName, children }) => {
   const getTaskContextMenuOptionsArray = useCallback(
     task => ({
       [BOARD_CONTEXTS.TASKS_GROUPS]: [
-        { name: 'delete', onClick: () => handleDeleteTask(task) },
+        { name: 'Delete', onClick: () => handleDeleteTask(task) },
       ],
     }),
     [handleDeleteTask],
@@ -89,7 +99,7 @@ const BoardContextProvider = ({ contextName, children }) => {
   const getColumnContextMenuOptionsArray = useCallback(
     column => ({
       [BOARD_CONTEXTS.TASKS_GROUPS]: [
-        { name: 'delete', onClick: () => handleDeleteColumn(column) },
+        { name: 'Delete', onClick: () => handleDeleteColumn(column) },
       ],
     }),
     [handleDeleteColumn],
@@ -99,6 +109,45 @@ const BoardContextProvider = ({ contextName, children }) => {
     // eslint-disable-next-line sonarjs/no-small-switch
     switch (contextName) {
       case BOARD_CONTEXTS.TASKS_GROUPS: {
+        const handleReorderTasks = (source, destination) => {
+          if (source?.droppableId === destination?.droppableId) {
+            dispatch(reorderTasksInGroup({ destination, source }));
+          } else {
+            dispatch(reassignTasksToAnotherGroup({ destination, source }));
+          }
+        };
+
+        const handleReorderColumns = (sourceIndex, destinationIndex) => {
+          dispatch(reorderTaskListGroups(sourceIndex, destinationIndex));
+        };
+
+        const handleAddTask = ({ identifier }, description) => {
+          const payload = {
+            taskGroupIdentifier: identifier,
+            description,
+          };
+          dispatch(createTask(payload));
+        };
+
+        const handleAddWorkflow = ({ identifier: taskGroupIdentifier }) => {
+          dispatch(
+            openModal('SmartFlowList', {
+              fetchMethod: () => getTemplates(),
+              closeModal,
+              confirmText: 'Select',
+              setWorkflow: ({ identifier: taskTemplateIdentifier }) => {
+                dispatch(
+                  applyTaskTemplate({
+                    taskTemplateIdentifier,
+                    taskListIdentifier: taskList.taskListIdentifier,
+                    taskGroupIdentifier,
+                  }),
+                );
+              },
+            }),
+          );
+        };
+
         const columns = groupList?.map(g => {
           const foundGroup = groupTasks?.find(
             gt => gt.groupIdentifier === g.taskGroupIdentifier,
@@ -112,6 +161,10 @@ const BoardContextProvider = ({ contextName, children }) => {
 
         return {
           columns,
+          handleReorderTasks,
+          handleReorderColumns,
+          handleAddTask,
+          handleAddWorkflow,
           getTaskContextMenuOptionsArray: task =>
             getTaskContextMenuOptionsArray(task)?.[contextName],
           getColumnContextMenuOptionsArray: task =>
@@ -124,10 +177,12 @@ const BoardContextProvider = ({ contextName, children }) => {
     }
   }, [
     contextName,
+    dispatch,
     getColumnContextMenuOptionsArray,
     getTaskContextMenuOptionsArray,
     groupList,
     groupTasks,
+    taskList.taskListIdentifier,
   ]);
 
   return typeof children === 'function' ? children(context) : children;

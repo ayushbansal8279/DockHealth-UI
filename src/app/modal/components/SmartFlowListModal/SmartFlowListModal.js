@@ -30,7 +30,12 @@ import {
   ModalHeader,
 } from '../styled';
 
-const SmartFlowListModal = ({ fetchMethod, closeModal, setWorkflow }) => {
+const SmartFlowListModal = ({
+  fetchMethod,
+  closeModal,
+  setWorkflow,
+  confirmText,
+}) => {
   const [smartFlows, setSmartFlows] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const [history, setHistory] = useState(['/']);
@@ -246,7 +251,7 @@ const SmartFlowListModal = ({ fetchMethod, closeModal, setWorkflow }) => {
             closeModal();
           }}
         >
-          connect
+          {confirmText || 'connect'}
         </Button>
       </ModalFooterStyled>
     </ModalWrapper>
