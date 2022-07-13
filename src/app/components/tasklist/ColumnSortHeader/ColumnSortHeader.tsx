@@ -79,16 +79,16 @@ const ColumnSortHeader: React.FC<ColumnSortHeaderProps> = ({
           ref={descriptionTextReference}
         >
           <Box display="flex">
-            {draggable && (
-              <Box p="0 5px 0 5px">
-                <Box>
+            <Box p="0 5px 0 5px">
+              <Box>
+                {draggable && (
                   <ThreeDots
                     hideIcon={!isHovered || isDraggingOver}
                     src={ThreeDotsIcon}
                   />
-                </Box>
+                )}
               </Box>
-            )}
+            </Box>
             {id === sort?.key &&
               sort?.order &&
               id &&
@@ -167,7 +167,12 @@ const ColumnSortHeader: React.FC<ColumnSortHeaderProps> = ({
       onMouseLeave={() => setIsHovered(false)}
       printWidth={printWidth}
     >
-      <Draggable key={id} draggableId={id} index={index}>
+      <Draggable
+        isDragDisabled={!draggable}
+        key={id}
+        draggableId={id}
+        index={index}
+      >
         {(provided: any) => (
           <div
             ref={provided.innerRef}

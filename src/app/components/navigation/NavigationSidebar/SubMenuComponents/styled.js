@@ -267,20 +267,20 @@ export const DrawerListsItem = styled.div`
   align-items: center;
   color: ${palette.mediumGrey};
   font-size: ${fontSizes.regular};
-
+  box-sizing: border-box;
+  border: 1px solid transparent;
   &:not(:last-child) {
     margin-bottom: 10px;
   }
 
   ${({ isDraggable }) =>
-    isDraggable
-      ? `
+    isDraggable &&
+    `
         &:hover {
           border: 1px solid ${palette.coolGrey2};
           background-color: ${palette.coolGrey3};
         }
-      `
-      : ``}
+      `}
 `;
 
 export const DrawerListsItemLoader = withStyles({
