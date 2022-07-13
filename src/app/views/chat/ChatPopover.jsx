@@ -1,5 +1,5 @@
 import React, { useState, useCallback } from 'react';
-import { IconButton, Popover, Box } from '@material-ui/core';
+import { IconButton, Popover, Box, Typography } from '@material-ui/core';
 import { useHistory } from 'react-router-dom';
 import ChatIcon from '@material-ui/icons/Chat';
 // import ChatIcon from 'img/modals/chat';
@@ -85,6 +85,10 @@ const ChatPopover = () => {
               >
                 {selectedChannel ? <ArrowBack /> : <OpenInNewIcon />}
               </StyledIconButton>
+              <Box mx={0.5} />
+              <Typography color="white" variant="h3">
+                Chat
+              </Typography>
               <Box mx={0.5} />
               <StyledIconButton onClick={handleClose}>
                 <CloseIcon />
