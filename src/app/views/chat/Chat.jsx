@@ -4,6 +4,7 @@ import { ChannelListProvider } from '@sendbird/uikit-react/ChannelList/context';
 import ChatChannelList from './ChatChannelList';
 import ChatConversation from './ChatConversation';
 import SelectedChannelContext from './SelectedChannelContext';
+import { ColorSet } from './styled';
 import '@sendbird/uikit-react/dist/index.css';
 
 export default function Chat(props) {
@@ -22,6 +23,7 @@ export default function Chat(props) {
         userId={userId}
         nickname={name}
         profileUrl={profileUrl}
+        colorSet={ColorSet}
       >
         {selectedChannel !== null ? (
           <ChatConversation currentChannelUrl={selectedChannel.url} />

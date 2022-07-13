@@ -22,9 +22,9 @@ export const Container = styled.div`
 export const ColorSet = {
   '--sendbird-light-primary-500': '#00487c',
   '--sendbird-light-primary-400': '#4bb3fd',
-  '--sendbird-light-primary-300': '#213a56',
+  '--sendbird-light-primary-300': palette.midnightBlue,
   '--sendbird-light-primary-200': '#0496ff',
-  '--sendbird-light-primary-100': '#027bc5',
+  '--sendbird-light-primary-100': '#027bce',
 };
 
 export const HeaderContainer = styled.div`
