@@ -1,5 +1,5 @@
 import React from 'react';
-import ChannelPreview from '@sendbird/uikit-react/ChannelList/components/ChannelPreview';
+// import ChannelPreview from '@sendbird/uikit-react/ChannelList/components/ChannelPreview';
 import ChannelPreviewAction from '@sendbird/uikit-react/ChannelList/components/ChannelPreviewAction';
 import { useChannelListContext } from '@sendbird/uikit-react/ChannelList/context';
 import ChannelListHeader from '@sendbird/uikit-react/ChannelList/components/ChannelListHeader';
@@ -8,6 +8,7 @@ import { userProfileSelector } from 'selectors/user-selectors';
 import { useSelector } from 'react-redux';
 import { CircularProgress } from '@material-ui/core';
 import { Title } from 'views/TaskTour/styled';
+import ChatChannelPreview from './ChatChannelPreview';
 
 export default function ChatChannelList(props) {
   const { setSelectedChannel } = props;
@@ -34,7 +35,7 @@ export default function ChatChannelList(props) {
       {allChannels.map(channel => {
         return (
           <div key={channel.url}>
-            <ChannelPreview
+            <ChatChannelPreview
               channel={channel}
               currentUser={identifier}
               isActive={false}
