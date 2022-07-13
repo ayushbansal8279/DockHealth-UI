@@ -21,7 +21,6 @@ const BulkEditSection = ({
     if (disabled || !Array.isArray(allTasks)) {
       return null;
     }
-
     const extractedTasks = extractTasksAndSubtasks(allTasks);
     return {
       parentTasks: extractedTasks.parentTasks.filter(

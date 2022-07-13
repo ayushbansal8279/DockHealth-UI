@@ -155,41 +155,31 @@ const TasksGroup = ({
 
   const { bulkEditEnabled } = useContext(BulkEditContext);
 
-  const checkHasMultipleAssignees = useCallback(
-    ({ assignedToUsers, subtasks: taskSubtasks }) =>
-      (assignedToUsers && assignedToUsers.length > 1) ||
-      (taskSubtasks &&
-        taskSubtasks.length > 0 &&
-        taskSubtasks.some(
-          ({ assignedToUsers: subtaskAssignedToUsers }) =>
-            subtaskAssignedToUsers && subtaskAssignedToUsers.length > 1,
-        )),
-    [],
-  );
-
   const groupHasMultipleAssignees = false;
-
-  // const groupHasMultipleAssignees = useMemo(
-  //   () =>
-  //     tasks.some(task =>
-  //       task?.itemType === 'BUNDLE'
-  //         ? task.tasks.some(checkHasMultipleAssignees)
-  //         : checkHasMultipleAssignees(task),
-  //     ),
-  //   [checkHasMultipleAssignees, tasks],
-  // );
 
   const isGroupSelected = useMemo(() => checkIfAllTasksSelected(tasks), [
     tasks,
   ]);
 
   const handleGroupSelect = useCallback(() => {
-    const { parentTasks, subtasks } = extractTasksAndSubtasks(tasks);
+    const { parentTasks, subtasks } = extractTasksAndSubtasks(
+      tasks.filter(t => t.itemType === 'TASK'),
+    );
     const allTasks = [...parentTasks, ...subtasks];
     dispatch(
       TaskActions.changeTasksSelectedState(
         !isGroupSelected,
         pluck('identifier', allTasks),
+      ),
+    );
+
+    dispatch(
+      TaskActions.changeWorkflowSelectedState(
+        !isGroupSelected,
+        pluck(
+          'identifier',
+          tasks.filter(t => t.itemType === 'BUNDLE'),
+        ),
       ),
     );
   }, [dispatch, isGroupSelected, tasks]);
