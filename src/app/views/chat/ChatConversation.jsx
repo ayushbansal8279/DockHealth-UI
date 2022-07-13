@@ -8,16 +8,20 @@ const ChatChannelConversation = props => {
   const { currentChannelUrl } = props;
 
   const [showSettings, setShowSettings] = useState(false);
+  const [showSearch, setShowSearch] = useState(false);
 
   return (
     <>
       <div className="sendbird-app__conversation-wrap">
         <ChannelProvider
           channelUrl={currentChannelUrl}
-          showSearchIcon
+          showSearchIcon={false}
           onChatHeaderActionClick={() => {
             setShowSettings(true);
-            console.log(`info button clicked`);
+          }}
+          onSearchClick={() => {
+            setShowSettings(false);
+            setShowSearch(!showSearch);
           }}
         >
           <ChannelUI />
