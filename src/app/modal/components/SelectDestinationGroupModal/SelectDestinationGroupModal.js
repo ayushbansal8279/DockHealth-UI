@@ -2,13 +2,13 @@ import React, { useState, useCallback } from 'react';
 import { Box, Grid } from '@material-ui/core';
 import Button from 'components/common/Button/Button';
 import { Container } from './styled';
+import GroupPicker from '../common/GroupPicker/GroupPicker';
 import {
   ModalWrapperWithPadding,
   CloseIconButton,
   CloseIcon,
   FlexButtonWrapper,
 } from '../styled';
-import GroupSelect from './Steps/GroupSelect';
 
 const SelectDestinationGroupModal = ({
   closeModal,
@@ -32,7 +32,7 @@ const SelectDestinationGroupModal = ({
         <CloseIcon />
       </CloseIconButton>
       <Container>
-        <GroupSelect
+        <GroupPicker
           selectedList={selectedList}
           selectedGroup={selectedGroup}
           setSelectedGroup={setSelectedGroup}

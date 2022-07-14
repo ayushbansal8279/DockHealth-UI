@@ -225,13 +225,15 @@ const PatientTasksListView = () => {
       } else {
         dispatch(
           openModal('ListPicker', {
+            enableSelectingGroupStep: true,
             fetchMethod: getTaskListForUser,
-            confirm: listId =>
+            confirm: (listId, taskGroupId) =>
               dispatch(
                 addTask({
                   description,
                   taskListIdentifier: listId,
                   patientIdentifier,
+                  taskGroupIdentifier: taskGroupId,
                 }),
               ),
           }),
