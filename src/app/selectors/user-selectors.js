@@ -70,6 +70,12 @@ export const userHasSendFaxFeatureSelector = createSelector(
     organizationAvailableFeatures?.includes('SEND_COMM_FAX'),
 );
 
+export const userHasSendSmsFeatureSelector = createSelector(
+  userProfileSelector,
+  ({ organizationAvailableFeatures }) =>
+    organizationAvailableFeatures?.includes('SEND_COMM_SMS'),
+);
+
 export const userSetupClientViewSelector = createSelector(
   userViewSetupSelector,
   ({ mainSetup }) => mainSetup,

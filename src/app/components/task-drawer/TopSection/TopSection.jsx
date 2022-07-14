@@ -13,6 +13,7 @@ import { SINGLE_TASK_RESTRICTIONS_OPTIONS } from 'restrictions/task-restrictions
 import {
   userHasSendEmailFeatureSelector,
   userHasSendFaxFeatureSelector,
+  userHasSendSmsFeatureSelector,
 } from 'selectors/user-selectors';
 import { useDispatch, useSelector } from 'react-redux';
 import { openModal } from 'modal/actions';
@@ -50,6 +51,7 @@ const TopSection = ({
 
   const sendEmailAvailable = useSelector(userHasSendEmailFeatureSelector);
   const sendFaxAvailable = useSelector(userHasSendFaxFeatureSelector);
+  const sendSmsAvailable = useSelector(userHasSendSmsFeatureSelector);
 
   const options = useMemo(
     () => [
@@ -91,6 +93,10 @@ const TopSection = ({
         name: 'Send FAX',
         onClick: () => dispatch(openModal('SendFaxFromTask')),
       },
+      sendSmsAvailable && {
+        name: 'Send SMS',
+        onClick: () => dispatch(openModal('SendSmsFromTask')),
+      },
       {
         name: 'Post Note to EMR',
         onClick: () => dispatch(openModal('SendEmrFromTask')),
@@ -103,17 +109,18 @@ const TopSection = ({
       },
     ],
     [
-      isTemplateTask,
-      duplicateTaskWithoutConfirmation,
       handleMoveTask,
       restrictions,
+      isTemplateTask,
+      handleShareTask,
       handleCopyLink,
       sendEmailAvailable,
       sendFaxAvailable,
+      sendSmsAvailable,
       openDeleteConfirmationModal,
       selectedTask,
-      handleShareTask,
       openDuplicateConfirmationModal,
+      duplicateTaskWithoutConfirmation,
       dispatch,
     ],
   );

@@ -866,6 +866,16 @@ export function sendFaxForTask(communicationDetails) {
   };
 }
 
+export function sendSmsForTask(communicationDetails) {
+  return {
+    type: ActionTypes.SEND_SMS_FOR_TASK,
+    communicationDetails: {
+      ...communicationDetails,
+      communicationType: CommunicationType.SMS,
+    },
+  };
+}
+
 export function changeTaskIntentType(taskIdentifier, intentType) {
   return {
     type: ActionTypes.CHANGE_TASK_INTENT_TYPE,
