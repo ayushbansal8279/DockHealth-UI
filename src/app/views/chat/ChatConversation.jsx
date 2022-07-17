@@ -29,10 +29,7 @@ const ChatChannelConversation = props => {
       </div>
       {showSettings && (
         <div className="sendbird-app__settingspanel-wrap">
-          <ChatChannelSettings
-            currentChannelUrl={currentChannelUrl}
-            setShowSettings={setShowSettings}
-          />
+          <ChatChannelSettings setShowSettings={setShowSettings} />
         </div>
       )}
     </>

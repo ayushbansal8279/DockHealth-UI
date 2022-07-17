@@ -1,5 +1,7 @@
 .sendbird-modal {
     z-index: 2000;
+    max-height: 75%;
+    margin-top: 30px;
 }
 
 .sendbird-message-hoc__message-content {
@@ -21,6 +23,7 @@
 .sendbird-app__channellist-wrap{
     width: 100%;
     max-width: 100% !important;
+    max-width: 520px !important;
 }
 
 .sendbird-channel-preview{
@@ -42,4 +45,20 @@
 
 .sendbird-message-content__middle__body-container{
     width: 250px;
+}
+
+.sendbird-channel-preview__content__upper__header__channel-name{
+    max-width: 300px !important;
+}
+
+.sendbird-chat-header .sendbird-chat-header__left__title{
+    max-width: 350px;
+}
+
+.sendbird-modal__content.sendbird-modal__body{
+    height: auto;
+}
+
+.sendbird-badge__text{
+    margin-top: 5px !important;
 }

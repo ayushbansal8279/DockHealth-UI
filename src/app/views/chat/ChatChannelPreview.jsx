@@ -51,13 +51,6 @@ export default function ChatChannelPreview({
                 />
               </div>
             )}
-            {/* <Label
-              className="sendbird-channel-preview__content__upper__header__channel-name"
-              type={LabelTypography.SUBTITLE_2}
-              color={LabelColors.ONBACKGROUND_1}
-            >
-              {getChannelTitle(channel, userId, stringSet)}
-            </Label> */}
             <Label
               className="sendbird-channel-preview__content__upper__header__channel-name"
               type={LabelTypography.SUBTITLE_2}

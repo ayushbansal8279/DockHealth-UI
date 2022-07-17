@@ -40,18 +40,14 @@ export default function ChatChannelList(props) {
               currentUser={identifier}
               isActive={false}
               renderChannelAction={() => {
-                console.log('channel action happening');
                 return (
                   <ChannelPreviewAction
                     channel={channel}
-                    onLeaveChannel={() => {
-                      console.log('leaving channel');
-                    }}
+                    onLeaveChannel={() => {}}
                   />
                 );
               }}
               onClick={() => {
-                console.log('click happened');
                 if (channel && channel.url) {
                   setSelectedChannel(channel);
                 }
