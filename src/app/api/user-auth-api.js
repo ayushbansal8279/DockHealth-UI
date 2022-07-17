@@ -32,7 +32,7 @@ Amplify.configure({
     region: process.env.AWS_REGION,
     userPoolId: process.env.AWS_USERPOOLID,
     userPoolWebClientId: process.env.AWS_CLIENTAPP,
-    authenticationFlowType: 'USER_PASSWORD_AUTH',
+    authenticationFlowType: 'USER_SRP_AUTH',
   },
 });
 
@@ -507,3 +507,19 @@ export const verifyNewPhoneNumber = code => {
 
   return Auth.verifyUserAttributeSubmit(userAuth, 'phone_number', code);
 };
+
+export function checkSSO(email) {
+  // eslint-disable-next-line consistent-return
+  return new Promise(async resolve => {
+    try {
+      const checkSSOUrl = `${process.env.HEYDOC_SERVICES_BASE_URL}auth/checkSSO`;
+      const response = await axios.get(`${checkSSOUrl}?email=${email}`);
+      const issuer = response?.data.issuer;
+      console.log(`issuer: ${issuer}`);
+      resolve(issuer);
+    } catch (error) {
+      console.log(error);
+      resolve('');
+    }
+  });
+}

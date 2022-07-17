@@ -6,6 +6,7 @@ import queryString from 'query-string';
 import { setAuthBaseState } from 'actions/auth-base-actions';
 import LoginFormUsername from 'components/auth/LoginFormUsername';
 import { AUTH_BASE_STATES } from 'reducers/auth-base-reducer';
+import * as UserAuthApi from 'api/user-auth-api';
 
 const onSubmit = (form, history) => {
   const { username } = form;
@@ -23,7 +24,18 @@ const onSubmit = (form, history) => {
   ) {
     window.location.href = `${process.env.HEYDOC_SERVICES_BASE_URL}oidc/authorize`;
   } else {
-    history.push('loginUser');
+    UserAuthApi.checkSSO(username)
+      .then(issuer => {
+        if (issuer) {
+          window.location.href = `${process.env.HEYDOC_SERVICES_BASE_URL}oidc/authorize?iss=${issuer}`;
+        } else {
+          history.push('loginUser');
+        }
+      })
+      .catch(error => {
+        console.log(error);
+        history.push('loginUser');
+      });
   }
 };
 
