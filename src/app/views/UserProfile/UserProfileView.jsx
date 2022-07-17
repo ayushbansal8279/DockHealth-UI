@@ -1,5 +1,5 @@
-import React, { useEffect, useCallback, useMemo } from 'react';
-import { Grid } from '@material-ui/core';
+import React, { useEffect, useCallback, useMemo, useState } from 'react';
+import { Box, Grid } from '@material-ui/core';
 import { useDispatch, useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
 import { isEmpty } from 'ramda';
@@ -25,6 +25,8 @@ import {
   userProfileSelector,
   userOrganizationsSelector,
 } from 'selectors/user-selectors';
+import ActivityAlertsSettings from 'components/activity-alerts/ActivityAlertsSettings/ActivityAlertsSettings';
+import { getNotificationSettings } from 'api/user-api';
 import UserProfileForm from './UserProfileForm/UserProfileForm';
 import {
   ProfileSettingsWrapper,
@@ -47,9 +49,23 @@ import {
 const UserProfileView = () => {
   const dispatch = useDispatch();
   const history = useHistory();
+  const [notificationSettings, setNotificationSettings] = useState([]);
 
   const userProfile = useSelector(userProfileSelector);
   const userOrganizations = useSelector(userOrganizationsSelector);
+
+  const refreshNotificationSettings = useCallback(() => {
+    (async function fetchData() {
+      const {
+        notificationSettings: notificationSettingsData,
+      } = await getNotificationSettings();
+      setNotificationSettings(notificationSettingsData);
+    })();
+  }, []);
+
+  useEffect(() => {
+    refreshNotificationSettings();
+  }, [refreshNotificationSettings]);
 
   const currentOrganization = useMemo(
     () =>
@@ -124,6 +140,11 @@ const UserProfileView = () => {
     }
   };
 
+  const hasAnyOptionTurnedOn = notificationSettings.some(
+    ({ emailEnabled, pushNotificationEnabled }) =>
+      emailEnabled || pushNotificationEnabled,
+  );
+
   return (
     <ViewLayout header={<BasicLayoutHeader title="Profile &amp; Settings" />}>
       <ViewContainer>
@@ -171,9 +192,16 @@ const UserProfileView = () => {
             </SettingsSection>
             <Divider />
             <UserProfileForm userProfile={userProfile} />
-            <Spacing vertical={8} />
+            <Spacing vertical={6} />
+            <Box position="relative" left="-24px">
+              <ActivityAlertsSettings
+                hasAnyOptionTurnedOn={hasAnyOptionTurnedOn}
+                notificationSettings={notificationSettings}
+                refreshNotificationSettings={refreshNotificationSettings}
+              />
+            </Box>
+            <Spacing vertical={6} />
             <Divider />
-            <Spacing vertical={2} />
             <AppVersionInfoWrapper>
               <AppVersionInfoIcon src={MobileDevices} alt="Mobile app" />
               <AppVersionInfoTextWrapper>

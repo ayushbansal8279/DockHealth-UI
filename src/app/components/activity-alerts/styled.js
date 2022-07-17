@@ -71,11 +71,11 @@ export const ActivityAlertsPopover = withStyles({
 })(Popover);
 
 export const ActivityAlertsPopoverLabel = styled.div`
+  display: flex;
   color: black;
   font-weight: ${fontWeights.regularPlus};
   text-transform: uppercase;
   font-family: Montserrat;
-  margin-right: ${spacing.smallPlus};
 `;
 
 export const ActivityAlertsList = styled.div`
@@ -89,11 +89,21 @@ export const ActivityAlertsClearAllLabel = styled.div`
   display: flex;
   align-items: center;
   font-family: Montserrat;
-  color: ${palette.brightBlue};
   font-size: ${fontSizes.small};
   font-weight: ${fontWeights.regularPlus};
   cursor: pointer;
-  margin-right: ${spacing.tiny};
+  padding: ${spacing.tiny} ${spacing.regular};
+`;
+
+export const CustomizeLabel = styled.div`
+  display: flex;
+  align-items: center;
+  font-family: Montserrat;
+  font-size: ${fontSizes.small};
+  font-weight: ${fontWeights.regularPlus};
+  cursor: pointer;
+  padding: ${spacing.tiny} ${spacing.regular};
+  border-left: 1px solid ${palette.coolGrey2};
 `;
 
 export const ActivityAlertsHeader = styled.div`
@@ -139,7 +149,6 @@ export const ActivityAlertsToastsContainer = styled.div`
 
 export const SettingsButton = styled.button`
   cursor: pointer;
-  margin-left: ${spacing.smallPlus};
 `;
 
 export const ActivityAlertsOptions = styled.div`
