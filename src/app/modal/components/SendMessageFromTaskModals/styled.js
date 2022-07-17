@@ -41,7 +41,7 @@ export const InputContainerStyled = styled.div`
   flex-direction: column;
 `;
 
-export const AddEditLabelStyled = styled.p`
+export const AddEditLabelStyled = styled.span`
   text-align: right;
   color: ${palette.brightBlue};
   text-decoration: underline;
@@ -53,6 +53,10 @@ export const AddEditLabelStyled = styled.p`
   &:focus {
     text-decoration-color: ${palette.brightBlue};
   }
+`;
+
+export const AddEditContactLink = styled.div`
+  margin-left: auto;
 `;
 
 export const CheckboxContainerStyled = styled.div`
@@ -77,4 +81,22 @@ export const InfoHeaderTextStyled = styled.p`
   font-family: 'Montserrat';
   font-weight: 600;
   margin: 0;
+`;
+
+export const LabelName = styled.span`
+  color: ${palette.coolGrey1};
+  width: 100%;
+  font-weight: 800;
+`;
+
+export const LabelValue = styled.span`
+  color: ${palette.coolGrey1};
+  width: 100%;
+  font-weight: 400;
+`;
+
+export const ContactInfoRow = styled.div`
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
 `;
