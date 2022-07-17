@@ -103,7 +103,7 @@ const NavigationSidebar = () => {
     renderMenuTourPopover,
   } = menuTourHooks({
     menuDrawerOpen: null,
-    hideTour: false,
+    hideTour: true,
     isUserAdmin,
   });
 
