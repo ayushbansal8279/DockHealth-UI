@@ -237,6 +237,7 @@ export const DrawerMyOrganizationLabel = styled(DrawerSubmenuLabel)`
 export const DrawerOrganizationsList = styled.div`
   padding: ${spacing.large} ${spacing.smallPlus} ${spacing.small};
   border-bottom: 1px solid ${palette.coolGrey2};
+  overflow: auto;
 `;
 
 // Lists
