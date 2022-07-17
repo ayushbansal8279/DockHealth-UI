@@ -131,7 +131,6 @@ const ContactsAutoComplete = ({
         return (
           <Input
             {...parameters}
-            autoFocus
             helperText={error ? errorMessage : null}
             error={error}
             placeholder={placeholder}
