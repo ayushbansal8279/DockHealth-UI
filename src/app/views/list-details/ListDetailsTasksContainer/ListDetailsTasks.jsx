@@ -390,13 +390,15 @@ const ListDetailsTasks = ({
           >
             {renderTasks()}
             {!!createTaskGroupList && !isSearchApplied && !areFiltersApplied && (
-              <GroupNameSection
-                onEnterClick={onGroupNameClick}
-                placeholder={messages.placeholder}
-                closeOnEnter
-              >
-                <AddGroupNameButton />
-              </GroupNameSection>
+              <StickyContainer left={24} decreaseWidth={2 * 24}>
+                <GroupNameSection
+                  onEnterClick={onGroupNameClick}
+                  placeholder={messages.placeholder}
+                  closeOnEnter
+                >
+                  <AddGroupNameButton />
+                </GroupNameSection>
+              </StickyContainer>
             )}
           </DragDropContext>
         </>

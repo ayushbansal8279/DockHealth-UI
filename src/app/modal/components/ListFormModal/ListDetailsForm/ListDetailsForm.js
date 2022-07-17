@@ -9,10 +9,11 @@ import FormInput from 'components/common/Input/FormInput';
 import Spacing from 'components/common/Spacing.tsx';
 import Button from 'components/common/Button/Button';
 import { useHistory } from 'react-router-dom';
+import Checkbox from 'components/common/Checkbox/Checkbox';
 import { createTaskListPath } from '../../../../routing/helpers/paths';
 import { Title, ButtonWrapper, Header } from '../styled';
 import messages from './messages';
-import { StyledForm } from './styled';
+import { CheckboxContainer, CheckboxDescription, StyledForm } from './styled';
 
 const validateListName = value => {
   if (!value || ![...value]?.filter(char => char !== ' ').length > 0) {
@@ -83,11 +84,14 @@ const ListDetailsForm = ({
     defaultValues: {
       listName: list?.listName,
       listDescription: list?.listDescription,
+      restrictCustomization: list ? !!list?.restrictCustomization : true,
     },
     reValidateMode: 'onSubmit',
   });
 
-  const { handleSubmit } = formMethods;
+  const { handleSubmit, watch, setValue } = formMethods;
+
+  const restrictCustomizationValue = watch('restrictCustomization');
 
   return (
     <StyledForm
@@ -129,6 +133,20 @@ const ListDetailsForm = ({
               name="listDescription"
               placeholder="Do you want to add a desciption for the list?"
             />
+            <Spacing vertical={4} />
+            <CheckboxContainer>
+              <Checkbox
+                size={16}
+                onClick={() =>
+                  setValue('restrictCustomization', !restrictCustomizationValue)
+                }
+                isChecked={restrictCustomizationValue}
+              />
+              <Spacing horizontal={3} />
+              <CheckboxDescription>
+                Restrict Customization for Members
+              </CheckboxDescription>
+            </CheckboxContainer>
             <Spacing vertical={4} />
           </Grid>
           <Grid container direction="row" justify="center">
