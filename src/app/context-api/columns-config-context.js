@@ -49,10 +49,15 @@ export function ColumnsConfigProvider({
 
   const currentPreferences = useMemo(() => {
     if (currentList) {
-      return currentList?.listType === 'PUBLIC'
-        ? currentList?.listDisplayColumns
-        : currentList?.listUsers?.find(u => u.identifier === userIdentifier)
-            ?.listDisplayColumns;
+      let displayColumns =
+        currentList?.listType === 'PUBLIC'
+          ? currentList?.listDisplayColumns
+          : currentList?.listUsers?.find(u => u.identifier === userIdentifier)
+              ?.listDisplayColumns;
+      if (!displayColumns || displayColumns.length === 0) {
+        displayColumns = currentList?.listDisplayColumns;
+      }
+      return displayColumns;
     }
     return OrganizationCustomFieldsPreferences;
   }, [OrganizationCustomFieldsPreferences, currentList, userIdentifier]);
