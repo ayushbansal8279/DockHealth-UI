@@ -124,10 +124,21 @@ const BulkEditOptionsBar = ({
 
   const allSelectedTasksIdentifiers = useMemo(
     () => [
-      ...parentTasks?.map(({ identifier }) => identifier),
+      ...parentTasks
+        ?.filter(t => t.itemType === 'TASK')
+        ?.map(({ identifier }) => identifier),
       ...subtasks?.map(({ identifier }) => identifier),
     ],
     [parentTasks, subtasks],
+  );
+
+  const allSelectedWorkflowIdentifiers = useMemo(
+    () => [
+      ...parentTasks
+        ?.filter(t => t.itemType === 'BUNDLE')
+        ?.map(({ identifier }) => identifier),
+    ],
+    [parentTasks],
   );
 
   const allSelectedTasksLength = allSelectedTasks.length;
@@ -192,6 +203,7 @@ const BulkEditOptionsBar = ({
       bulkEditTasksApi({
         bulkEditType: 'STATUS',
         taskIdentifiers: allSelectedTasksIdentifiers,
+        taskWorkflowIdentifiers: allSelectedWorkflowIdentifiers,
         workflowStatusIdentifier: workflowStatus?.identifier || null,
       })
         .then(({ transactionIdentifier }) => {
@@ -237,6 +249,7 @@ const BulkEditOptionsBar = ({
       filters,
       searchValue,
       dispatch,
+      allSelectedWorkflowIdentifiers,
       allSelectedTasksLength,
       shouldRefreshTasksEveryTime,
       refreshTasks,
@@ -252,6 +265,7 @@ const BulkEditOptionsBar = ({
       bulkEditTasksApi({
         bulkEditType: 'DUE_DATE',
         taskIdentifiers: allSelectedTasksIdentifiers,
+        taskWorkflowIdentifiers: allSelectedWorkflowIdentifiers,
         dueDate,
       })
         .then(({ transactionIdentifier }) => {
@@ -301,6 +315,7 @@ const BulkEditOptionsBar = ({
       allSelectedTasksIdentifiers,
       filters,
       dispatch,
+      allSelectedWorkflowIdentifiers,
       allSelectedTasksLength,
       shouldRefreshTasksEveryTime,
       refreshTasks,
@@ -321,6 +336,7 @@ const BulkEditOptionsBar = ({
       bulkEditTasksApi({
         bulkEditType: 'ASSIGN',
         taskIdentifiers: allSelectedTasksIdentifiers,
+        taskWorkflowIdentifiers: allSelectedWorkflowIdentifiers,
         assignedToIdentifiers: pluck('userIdentifier', selectedUsers),
       })
         .then(({ transactionIdentifier }) => {
@@ -364,6 +380,7 @@ const BulkEditOptionsBar = ({
       filters,
       searchValue,
       dispatch,
+      allSelectedWorkflowIdentifiers,
       allSelectedTasksLength,
       shouldRefreshTasksEveryTime,
       refreshTasks,
@@ -383,6 +400,7 @@ const BulkEditOptionsBar = ({
       return bulkEditTasksApi({
         bulkEditType: 'DUPLICATE',
         taskIdentifiers: allSelectedTasksIdentifiers,
+        taskWorkflowIdentifiers: allSelectedWorkflowIdentifiers,
         includeAttachmentsForDuplication,
       }).then(({ transactionIdentifier, tasks: duplicatedTasks }) => {
         dispatch(bulkEditDuplicateTasksSuccess(duplicatedTasks));
@@ -430,8 +448,9 @@ const BulkEditOptionsBar = ({
   }, [
     allSelectedTasks,
     allSelectedTasksIdentifiers,
-    refreshTasks,
+    allSelectedWorkflowIdentifiers,
     dispatch,
+    refreshTasks,
     allSelectedTasksLength,
     onClose,
     shouldRefreshTasksEveryTime,
@@ -446,6 +465,7 @@ const BulkEditOptionsBar = ({
       return bulkEditTasksApi({
         bulkEditType: 'MOVE',
         taskIdentifiers: allSelectedTasksIdentifiers,
+        taskWorkflowIdentifiers: allSelectedWorkflowIdentifiers,
         ...selectedDestination,
       }).then(({ transactionIdentifier }) => {
         if (refreshTasks && typeof refreshTasks === 'function') {
@@ -520,6 +540,7 @@ const BulkEditOptionsBar = ({
   }, [
     allSelectedTasksIdentifiers,
     allSelectedTasksLength,
+    allSelectedWorkflowIdentifiers,
     dispatch,
     onClose,
     parentTasks,
@@ -535,6 +556,7 @@ const BulkEditOptionsBar = ({
       bulkEditTasksApi({
         bulkEditType: 'COMPLETE',
         taskIdentifiers: allSelectedTasksIdentifiers,
+        taskWorkflowIdentifiers: allSelectedWorkflowIdentifiers,
       })
         .then(({ transactionIdentifier }) => {
           dispatch(getTasksGroupsList());
@@ -601,6 +623,7 @@ const BulkEditOptionsBar = ({
     allSelectedTasksIdentifiers,
     currentUser,
     dispatch,
+    allSelectedWorkflowIdentifiers,
     taskListIdentifier,
     allSelectedTasksLength,
     shouldRefreshTasksEveryTime,
@@ -625,6 +648,7 @@ const BulkEditOptionsBar = ({
           bulkEditTasksApi({
             bulkEditType: 'DELETE',
             taskIdentifiers: allSelectedTasksIdentifiers,
+            taskWorkflowIdentifiers: allSelectedWorkflowIdentifiers,
           })
             .then(({ transactionIdentifier }) => {
               dispatch(getTasksGroupsList());
@@ -675,6 +699,7 @@ const BulkEditOptionsBar = ({
     dispatch,
     allParentTasksHaveRelatedSubtasks,
     allSelectedTasksIdentifiers,
+    allSelectedWorkflowIdentifiers,
     taskListIdentifier,
     allSelectedTasksLength,
     shouldRefreshTasksEveryTime,
@@ -696,6 +721,7 @@ const BulkEditOptionsBar = ({
       numberOfSelectedItems={allSelectedTasksLength}
       isDisabled={isDisabled}
       onClose={onClose}
+      includedWorkflow={!!allSelectedTasks.find(t => t.itemType === 'BUNDLE')}
     >
       <>
         {mergedConfig[BulkEditOptionsConfig.DUPLICATE_OPTION] && (

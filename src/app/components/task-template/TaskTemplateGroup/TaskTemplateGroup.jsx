@@ -99,6 +99,7 @@ const TaskTemplateGroup = ({
   return (
     <TaskTemplateGroupContainer ref={innerRef} {...draggableProps}>
       <TaskTemplateGroupHeader
+        isFetchingTasks={isFetchingTasks}
         templateGroup={templateGroup}
         groupHasMultipleAssignees={groupHasMultipleAssignees}
         draggableProvided={draggableProvided}

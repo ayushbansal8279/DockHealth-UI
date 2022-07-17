@@ -776,6 +776,14 @@ export function changeTasksSelectedState(newSelectedState, taskIdentifiers) {
   };
 }
 
+export function changeWorkflowSelectedState(newSelectedState, identifier) {
+  return {
+    type: ActionTypes.CHANGE_WORKFLOW_SELECTED_STATE,
+    identifier,
+    newSelectedState,
+  };
+}
+
 export function addSubtask(parentTaskIdentifier, subtask) {
   return function addSubtaskDispatch(dispatch) {
     return TaskApi.addTask({ ...subtask, parentTaskIdentifier })
