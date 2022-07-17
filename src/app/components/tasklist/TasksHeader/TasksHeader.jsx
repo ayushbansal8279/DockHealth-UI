@@ -129,15 +129,22 @@ const TasksHeader = ({
                   />
                 </BulkContainer>
               )}
-              <ColumnSortHeader width={35} />
               <ColumnSortHeader
                 id={TaskItemColumn.DESCRIPTION}
                 label="Tasks"
                 sort={sort}
                 onSortChange={onSortChange}
-                printWidth={300}
+                width={TaskItemColumnWidth[TaskItemColumn.DESCRIPTION].WIDE}
+                printWidth={
+                  TaskItemColumnWidth[TaskItemColumn.DESCRIPTION].PRINT
+                }
               />
             </StickyColumnContainer>
+            <ColumnSortHeader
+              id={TaskItemColumn.SUBTASKS_COUNT}
+              label="Sub"
+              width={TaskItemColumnWidth[TaskItemColumn.SUBTASKS_COUNT]}
+            />
             {columns
               .filter(
                 f => f.identifier !== TaskItemColumn.DESCRIPTION && f.isChecked,

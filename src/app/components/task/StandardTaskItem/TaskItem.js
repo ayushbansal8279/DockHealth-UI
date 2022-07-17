@@ -377,6 +377,8 @@ const TaskItem = React.memo(
                 position="static"
                 isSubtask={showSubtaskStylingLink}
                 isSticky
+                width={500}
+                printWidth={300}
               >
                 <CircleIcon
                   src={isCompleted ? CircleCompleted : Circle}
