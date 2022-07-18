@@ -7,6 +7,7 @@ import { selectedTaskSelector } from 'selectors/task-drawer-selectors';
 import { closeModal } from 'modal/actions';
 import { CommunicationType } from 'helpers/task-helpers';
 import ContactsAutoComplete from 'components/common/ContactsAutoComplete/ContactsAutocomplete';
+import TemplateAutoComplete from 'components/common/TemplateAutoComplete/TemplateAutoComplete';
 import {
   CloseIcon,
   CloseIconButton,
@@ -70,6 +71,17 @@ const SendSmsFromTaskModal = () => {
             label="Phone"
             errorMessage="Incorrect Phone number"
             value={contact?.value ?? ''}
+          />
+          <TemplateAutoComplete
+            type={CommunicationType.SMS}
+            placeholder="Pick template"
+            onChange={(_, newValue, reason) => {
+              if (reason === 'clear') {
+                setMessage('');
+                return;
+              }
+              setMessage(newValue?.value || '');
+            }}
           />
           <Input
             type="text"

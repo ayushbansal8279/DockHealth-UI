@@ -137,7 +137,7 @@
     "babel-plugin-styled-components": "^1.10.0",
     "babel-plugin-transform-imports": "^2.0.0",
     "bower-webpack-plugin": "^0.1.9",
-    "css-loader": "^5.2.7",
+    "css-loader": "^3.0.0",
     "dotenv": "^2.0.0",
     "enzyme": "^3.8.0",
     "enzyme-adapter-react-16": "^1.9.1",
