@@ -11,6 +11,7 @@ import {
 import { ViewType, getViewTypeFromQueryString } from 'helpers/view-type-helper';
 import ListDetailsTableView from './ListDetailsTableView/ListDetailsTableView';
 import ListDetailsCalendarView from './ListDetailsCalendarView/ListDetailsCalendarView';
+import ListDetailsBoardView from './ListDetailsBoardView/ListDetailsBoardView';
 
 const ListDetailsView = () => {
   const parameters = useParams();
@@ -38,12 +39,16 @@ const ListDetailsView = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  return viewType === ViewType.CALENDAR_VIEW ? (
-    <ListDetailsCalendarView />
-  ) : (
-    <ColumnsConfigProvider>
-      <ListDetailsTableView />
-    </ColumnsConfigProvider>
+  return (
+    <>
+      {viewType === ViewType.LIST_VIEW && (
+        <ColumnsConfigProvider>
+          <ListDetailsTableView />
+        </ColumnsConfigProvider>
+      )}
+      {viewType === ViewType.CALENDAR_VIEW && <ListDetailsCalendarView />}
+      {viewType === ViewType.BOARD_VIEW && <ListDetailsBoardView />}
+    </>
   );
 };
 

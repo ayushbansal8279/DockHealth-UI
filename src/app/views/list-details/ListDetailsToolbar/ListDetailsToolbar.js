@@ -22,7 +22,7 @@ import TaskCustomFieldsModal from '../../../modal/customModals/TaskCustomFieldsM
 
 const TASKS_VISIBILITY_KEY = 'SHOW_WORKFLOW_COMPLETED_TASKS';
 
-const ListDetailsToolbar = ({ additionalOptions }) => {
+const ListDetailsToolbar = ({ additionalOptions, children }) => {
   const dispatch = useDispatch();
   const { search } = useLocation();
   const history = useHistory();
@@ -140,6 +140,7 @@ const ListDetailsToolbar = ({ additionalOptions }) => {
           <Box mx={0.5} />
         </Box>
       )}
+      {children}
     </ToolbarContainer>
   );
 };
