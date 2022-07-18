@@ -53,6 +53,7 @@ import { DashboardTasksTab } from 'helpers/dashboard-helpers';
 import SingleTaskView from 'views/single-task/SingleTaskView';
 import { UserOrganizationRole } from 'helpers/user-helper';
 import Templates from 'views/Templates/Templates';
+import Contacts from 'views/Contacts/Contacts';
 import { onLeaveGlobalSearch } from './TemplateCoreSubscriptionPlan/GlobalSearch';
 import {
   onEnterListDetailsView,
@@ -122,6 +123,11 @@ export const SETTINGS_ROUTES = [
   {
     path: '/templates',
     RouteComponent: Templates,
+    allowedToRoles: [ADMIN, OWNER],
+  },
+  {
+    path: '/contacts',
+    RouteComponent: Contacts,
     allowedToRoles: [ADMIN, OWNER],
   },
 ];

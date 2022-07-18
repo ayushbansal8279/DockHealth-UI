@@ -31,6 +31,7 @@ const SettingsSubmenu = () => {
       )}
       <AccessRestrictor allowedToRoles={[ADMIN, OWNER]}>
         <SubMenuLink to="/settings/templates">Templates</SubMenuLink>
+        <SubMenuLink to="/settings/contacts">Contacts</SubMenuLink>
       </AccessRestrictor>
     </Box>
   );

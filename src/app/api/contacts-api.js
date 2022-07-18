@@ -23,3 +23,11 @@ export const editContact = async contact => {
   }
   return null;
 };
+
+export const deleteContact = async id => {
+  const response = await axios.delete(`/contact/${id}`);
+  if (response.status === 200 && response.data) {
+    return response.data;
+  }
+  return null;
+};
