@@ -59,6 +59,8 @@ const CustomizeToolbarButton = ({
     [TaskItemColumn.PATIENT]: capitalize(getCustomerTypeLabel(userProfile)),
   };
 
+  const customerTypeLabel = capitalize(getCustomerTypeLabel(userProfile));
+
   const onClickCheckbox = useCallback(
     column => {
       const newSetup = columns.map(c =>
@@ -177,7 +179,7 @@ const CustomizeToolbarButton = ({
               <Box display="flex" justifyContent="space-between" mt={1}>
                 <Box mx={0.5} />
                 <ListItemText>
-                  <b>Patient Custom Columns</b>
+                  <b>{customerTypeLabel} Custom Columns</b>
                 </ListItemText>
               </Box>
               <List>

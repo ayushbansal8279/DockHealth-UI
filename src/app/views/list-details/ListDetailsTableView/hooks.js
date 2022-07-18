@@ -37,10 +37,6 @@ import * as ListDetailsActions from 'actions/list-details-actions';
 import { createTask } from 'sagas/list-details-saga';
 import * as ModalActions from 'modal/actions';
 import * as UserAuthApi from 'api/user-auth-api';
-import {
-  TaskItemColumn,
-  TASK_ITEM_BASE_COLUMN_CONFIG,
-} from 'helpers/task-helpers';
 
 const LIST_DETAILS_FIRST_TIME_KEY = 'LIST_DETAILS_FIRST_TIME_KEY';
 
@@ -53,7 +49,7 @@ const initializeListDetailsViewHooks = () => {
   );
   const taskList = useSelector(currentTaskListSelector);
   const currentStatus = useSelector(currentTaskListTasksStatusSelector);
-  const { setViewSpecificConfig, setCurrentList } = useColumnsConfig();
+  const { setCurrentList } = useColumnsConfig();
   const currentUser = useSelector(userProfileSelector);
   const { userIdentifier: currentUserIdentifier } = currentUser || {};
   const members = useSelector(taskListMembersSelector);
@@ -424,17 +420,6 @@ const initializeListDetailsViewHooks = () => {
     SHOW_WORKFLOW_COMPLETED_TASKS: false,
   };
 
-  const PATIENT_SPECIFIC_LIST_VIEW_COLUMNS_CONFIG = {
-    ...TASK_ITEM_BASE_COLUMN_CONFIG,
-    [TaskItemColumn.PATIENT]: false,
-    [TaskItemColumn.LIST_NAME]: false,
-  };
-
-  useEffect(() => {
-    setViewSpecificConfig(PATIENT_SPECIFIC_LIST_VIEW_COLUMNS_CONFIG);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
-
   useEffect(() => {
     setCurrentList(taskList);
   }, [setCurrentList, taskList]);
@@ -445,7 +430,9 @@ const initializeListDetailsViewHooks = () => {
         ? taskList
         : taskList?.listUsers?.find(
             user => user.identifier === currentUserIdentifier,
-          ) || {};
+          ) ||
+          taskList ||
+          {};
 
     return displayOptions.reduce(
       (accumulator, value) => ({ ...accumulator, [value]: true }),

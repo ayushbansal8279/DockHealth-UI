@@ -27,10 +27,11 @@ import { BulkEditContext } from 'components/tasklist/BulkEditSection/BulkEditSec
 import LoadMoreButton, {
   LoadMoreSection,
 } from 'components/common/LoadMoreButton/LoadMoreButton';
-import { TaskItemType } from 'helpers/task-helpers';
+import { TaskItemType, TaskStatus } from 'helpers/task-helpers';
 import StandardTaskItem from 'components/task/StandardTaskItem/StandardTaskItem';
 import TaskTemplateGroup from 'components/task-template/TaskTemplateGroup/TaskTemplateGroup';
 import TasksSkeletonLoader from 'components/task/TasksSkeletonLoader/TasksSkeletonLoader';
+import { useParams } from 'react-router-dom';
 import StickyContainer from 'components/common/HorizontalScroll/StickyContainer';
 import {
   TaskGroupsContainer,
@@ -59,6 +60,8 @@ const ListDetailsTasks = ({
 }) => {
   const [draggedId, setDraggableId] = useState(null);
   const dispatch = useDispatch();
+  const { tabName } = useParams();
+  const isCompletedView = tabName?.toUpperCase() === TaskStatus.COMPLETE;
 
   const renderEmptyState = () => {
     if (isSearchApplied) return <NoSearchResultsView />;
@@ -175,6 +178,7 @@ const ListDetailsTasks = ({
 
           return (
             <TasksGroup
+              isCompletedGroup={isCompletedView}
               key={taskGroupIdentifier}
               isDefaultGroup={groupName === 'DEFAULT'}
               groupName={groupName === 'DEFAULT' ? 'New tasks' : groupName}
@@ -301,6 +305,7 @@ const ListDetailsTasks = ({
                                       />
                                     ) : (
                                       <TaskTemplateGroup
+                                        isCompletedTab={isCompletedView}
                                         viewSetup={viewSetup}
                                         isStartedDnD={
                                           draggedId === task.identifier
@@ -349,6 +354,7 @@ const ListDetailsTasks = ({
       isSearchApplied,
       areFiltersApplied,
       groupedTasks,
+      isCompletedView,
       quickAddTask,
       onTaskUpdate,
       draggedId,
@@ -359,12 +365,12 @@ const ListDetailsTasks = ({
       sort,
       onSortChange,
       applyTemplate,
+      dispatch,
       loadTasksForTaskGroup,
       isSortApplied,
       dragAndDropDisabled,
       showClearSortFiltersModal,
       viewSetup,
-      dispatch,
     ],
   );
 
@@ -384,13 +390,15 @@ const ListDetailsTasks = ({
           >
             {renderTasks()}
             {!!createTaskGroupList && !isSearchApplied && !areFiltersApplied && (
-              <GroupNameSection
-                onEnterClick={onGroupNameClick}
-                placeholder={messages.placeholder}
-                closeOnEnter
-              >
-                <AddGroupNameButton />
-              </GroupNameSection>
+              <StickyContainer left={24} decreaseWidth={2 * 24}>
+                <GroupNameSection
+                  onEnterClick={onGroupNameClick}
+                  placeholder={messages.placeholder}
+                  closeOnEnter
+                >
+                  <AddGroupNameButton />
+                </GroupNameSection>
+              </StickyContainer>
             )}
           </DragDropContext>
         </>

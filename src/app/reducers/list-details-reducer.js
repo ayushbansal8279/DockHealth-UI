@@ -65,10 +65,10 @@ const updateTaskInList = (taskGroups, updateTaskCallback) =>
     ...group,
     tasks: mapWithRemove(t => {
       if (t.itemType === TaskItemType.BUNDLE) {
-        return {
+        return updateTaskCallback({
           ...t,
           tasks: mapWithRemove(updateTaskCallback, t.tasks),
-        };
+        });
       }
       return updateTaskCallback(t);
     }, group.tasks),

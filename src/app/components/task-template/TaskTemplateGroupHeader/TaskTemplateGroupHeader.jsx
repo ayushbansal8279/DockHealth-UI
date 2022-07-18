@@ -78,6 +78,7 @@ const TaskTemplateGroupHeader = ({
   setShowCompletedTasks,
   showIncompleteTasks,
   setShowIncompleteTasks,
+  isFetchingTasks,
   // eslint-disable-next-line sonarjs/cognitive-complexity
 }) => {
   const {
@@ -86,6 +87,7 @@ const TaskTemplateGroupHeader = ({
     identifier,
     tasksCount,
     tasksCompletedCount,
+    selected,
   } = templateGroup;
 
   const { dragHandleProps } = draggableProvided;
@@ -328,16 +330,64 @@ const TaskTemplateGroupHeader = ({
   );
 
   const handleBundleSelect = useCallback(() => {
-    const { parentTasks, subtasks } = extractTasksAndSubtasks(filteredTasks);
+    if (filteredTasks.length > 0 && isOpen) {
+      const { parentTasks, subtasks } = extractTasksAndSubtasks(filteredTasks);
+      const allTasks = [...parentTasks, ...subtasks];
+      dispatch(
+        TaskActions.changeTasksSelectedState(
+          !isBundleSelected,
+          pluck('identifier', allTasks),
+        ),
+      );
+      dispatch(TaskActions.changeWorkflowSelectedState(false, identifier));
+    } else {
+      dispatch(TaskActions.changeWorkflowSelectedState(!selected, identifier));
+    }
+  }, [filteredTasks, isOpen, dispatch, isBundleSelected, identifier, selected]);
 
-    const allTasks = [...parentTasks, ...subtasks];
-    dispatch(
-      TaskActions.changeTasksSelectedState(
-        !isBundleSelected,
-        pluck('identifier', allTasks),
-      ),
-    );
-  }, [dispatch, isBundleSelected, filteredTasks]);
+  useEffect(() => {
+    if (selected && isOpen && filteredTasks?.length > 0) {
+      const { parentTasks, subtasks } = extractTasksAndSubtasks(filteredTasks);
+      const allTasks = [...parentTasks, ...subtasks];
+      dispatch(TaskActions.changeWorkflowSelectedState(false, identifier));
+      dispatch(
+        TaskActions.changeTasksSelectedState(
+          !isBundleSelected,
+          pluck('identifier', allTasks),
+        ),
+      );
+    }
+  }, [
+    dispatch,
+    filteredTasks,
+    identifier,
+    isBundleSelected,
+    isFetchingTasks,
+    isOpen,
+    selected,
+  ]);
+
+  useEffect(() => {
+    if (!isOpen && isBundleSelected && !selected) {
+      const { parentTasks, subtasks } = extractTasksAndSubtasks(filteredTasks);
+      const allTasks = [...parentTasks, ...subtasks];
+      dispatch(
+        TaskActions.changeTasksSelectedState(
+          !isBundleSelected,
+          pluck('identifier', allTasks),
+        ),
+      );
+      dispatch(TaskActions.changeWorkflowSelectedState(true, identifier));
+    }
+  }, [
+    dispatch,
+    filteredTasks,
+    identifier,
+    isBundleSelected,
+    isFetchingTasks,
+    isOpen,
+    selected,
+  ]);
 
   const getColumnOrder = useCallback(
     TaskItemColumnType =>
@@ -369,9 +419,10 @@ const TaskTemplateGroupHeader = ({
             {...dragHandleProps}
           />
         )}
-        {isOpen && (
-          <Checkbox isChecked={isBundleSelected} onClick={handleBundleSelect} />
-        )}
+        <Checkbox
+          isChecked={selected || isBundleSelected}
+          onClick={handleBundleSelect}
+        />
         <Box m={1} />
         <RotatableChevron rotated={isOpen} onClick={() => setOpen(!isOpen)} />
         <Spacing horizontal={2} />
@@ -400,14 +451,10 @@ const TaskTemplateGroupHeader = ({
           </TaskTemplateProgressCircle>
         </TaskTemplateOptionsContainer>
       </StickyMainTaskItemCell>
-
-      {isColumnChecked(columns, TaskItemColumn.SUBTASKS_COUNT) && (
-        <TaskItemCell
-          key={`subtask_count_${identifier}`}
-          width={TaskItemColumnWidth[TaskItemColumn.SUBTASKS_COUNT]}
-          order={getColumnOrder(TaskItemColumn.SUBTASKS_COUNT)}
-        />
-      )}
+      <TaskItemCell
+        key={`subtask_count_${identifier}`}
+        width={TaskItemColumnWidth[TaskItemColumn.SUBTASKS_COUNT]}
+      />
       {isColumnChecked(columns, TaskItemColumn.PATIENT) && (
         <TaskItemCell
           key={`patient_${identifier}`}
@@ -483,7 +530,8 @@ const TaskTemplateGroupHeader = ({
         <TaskItemCell
           key={`assigned_${identifier}`}
           width={TaskItemColumnWidth[TaskItemColumn.ASSIGNED].WIDE}
-          justify={groupHasMultipleAssignees ? 'flex-start' : 'center'}
+          // eslint-disable-next-line sonarjs/no-all-duplicated-branches
+          justify={groupHasMultipleAssignees ? 'center' : 'center'}
           paddingLeft="small"
           paddingRight="small"
           onContextMenu={event => {

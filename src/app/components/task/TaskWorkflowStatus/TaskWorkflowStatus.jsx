@@ -3,6 +3,7 @@ import React, { useEffect, useRef } from 'react';
 import { useBoolean } from 'hooks/useBoolean';
 import { useDispatch, useSelector } from 'react-redux';
 import { userProfileSelector } from 'selectors/user-selectors';
+import { checkIfUserIsOrganizationAdmin } from 'helpers/user-helper';
 import {
   organizationStatusesSelector,
   fetchingOrganizationStatusesSelector,
@@ -27,9 +28,7 @@ const TaskWorkflowStatus = ({
   const dispatch = useDispatch();
 
   const userProfile = useSelector(userProfileSelector);
-  const { orgUserRole } = userProfile || {};
-
-  const isAdmin = orgUserRole === 'ADMIN' || orgUserRole === 'OWNER';
+  const isAdmin = checkIfUserIsOrganizationAdmin(userProfile);
 
   const statuses = useSelector(organizationStatusesSelector);
   const isFetching = useSelector(fetchingOrganizationStatusesSelector);

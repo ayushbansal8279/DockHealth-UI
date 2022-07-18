@@ -4,6 +4,7 @@ import { useHistory } from 'react-router-dom';
 import { Elements } from 'react-stripe-elements';
 import { useMount } from 'react-use';
 import { SUBS_SETTINGS_PATH } from 'routing/helpers/paths';
+import { checkIfUserIsOrganizationAdmin } from 'helpers/user-helper';
 import {
   getBillingDetails,
   getInvoiceDetails,
@@ -91,12 +92,7 @@ const BillingsView = () => {
   }));
 
   useEffect(() => {
-    if (
-      !(
-        userProfile?.orgUserRole === 'OWNER' ||
-        userProfile?.orgUserRole === 'ADMIN'
-      )
-    ) {
+    if (!checkIfUserIsOrganizationAdmin(userProfile)) {
       history.push('/');
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps

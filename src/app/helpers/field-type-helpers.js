@@ -40,26 +40,34 @@ export const FieldTypeLabel = {
   [FieldType.LONG_TEXT]: 'Rich Text Field',
   [FieldType.BOOL]: 'Yes/No',
   [FieldType.NUMBER]: 'Number',
-  [FieldType.DROPDOWN_MULTI]: 'Dropdown Multi Selection',
+  [FieldType.DROPDOWN_MULTI]: 'Dropdown Multi-Selection',
   [FieldType.HYPERLINK]: 'Link',
 };
 
 export const FIELD_TYPE_OPTIONS = [
   {
-    value: FieldType.DROPDOWN,
-    label: FieldTypeLabel[FieldType.DROPDOWN],
+    value: FieldType.TEXT,
+    label: FieldTypeLabel[FieldType.TEXT],
   },
   {
     value: FieldType.DATE,
     label: FieldTypeLabel[FieldType.DATE],
   },
   {
-    value: FieldType.TEXT,
-    label: FieldTypeLabel[FieldType.TEXT],
+    value: FieldType.HYPERLINK,
+    label: FieldTypeLabel[FieldType.HYPERLINK],
   },
   {
     value: FieldType.LONG_TEXT,
     label: FieldTypeLabel[FieldType.LONG_TEXT],
+  },
+  {
+    value: FieldType.DROPDOWN,
+    label: FieldTypeLabel[FieldType.DROPDOWN],
+  },
+  {
+    value: FieldType.DROPDOWN_MULTI,
+    label: FieldTypeLabel[FieldType.DROPDOWN_MULTI],
   },
   {
     value: FieldType.NUMBER,
@@ -69,22 +77,14 @@ export const FIELD_TYPE_OPTIONS = [
     value: FieldType.BOOL,
     label: FieldTypeLabel[FieldType.BOOL],
   },
-  {
-    value: FieldType.DROPDOWN_MULTI,
-    label: FieldTypeLabel[FieldType.DROPDOWN_MULTI],
-  },
-  {
-    value: FieldType.HYPERLINK,
-    label: FieldTypeLabel[FieldType.HYPERLINK],
-  },
 ];
 
 export const FIELD_TYPES = [
   {
-    key: FieldType.DROPDOWN,
-    image: FieldTypeDropdownImg,
-    title: FieldTypeLabel[FieldType.DROPDOWN],
-    description: 'Create your own selections to choose from in a dropdown',
+    key: FieldType.TEXT,
+    image: FieldTypeTextImg,
+    title: FieldTypeLabel[FieldType.TEXT],
+    description: 'Capture short, simple text such as a name',
   },
   {
     key: FieldType.DATE,
@@ -93,10 +93,10 @@ export const FIELD_TYPES = [
     description: 'Choose a date from a calendar selection',
   },
   {
-    key: FieldType.TEXT,
-    image: FieldTypeTextImg,
-    title: FieldTypeLabel[FieldType.TEXT],
-    description: 'Capture short, simple text such as a name',
+    key: FieldType.HYPERLINK,
+    image: FieldTypeLink,
+    title: FieldTypeLabel[FieldType.HYPERLINK],
+    description: 'Add a named link for a website',
   },
   {
     key: FieldType.LONG_TEXT,
@@ -104,6 +104,19 @@ export const FIELD_TYPES = [
     title: FieldTypeLabel[FieldType.LONG_TEXT],
     description:
       'Capture long text with formatting options like bold, bullet points, multi-lines and hyperlinks',
+  },
+  {
+    key: FieldType.DROPDOWN,
+    image: FieldTypeDropdownImg,
+    title: FieldTypeLabel[FieldType.DROPDOWN],
+    description:
+      'Create your own selections to choose a single option from a dropdown',
+  },
+  {
+    key: FieldType.DROPDOWN_MULTI,
+    image: FieldTypeDropdownImg,
+    title: FieldTypeLabel[FieldType.DROPDOWN_MULTI],
+    description: 'Create selections to choose multiple from a dropdown',
   },
   {
     key: FieldType.NUMBER,
@@ -116,17 +129,5 @@ export const FIELD_TYPES = [
     image: FieldTypeToggleImg,
     title: FieldTypeLabel[FieldType.BOOL],
     description: 'Choose from two options yes or no',
-  },
-  {
-    key: FieldType.DROPDOWN_MULTI,
-    image: FieldTypeDropdownImg,
-    title: FieldTypeLabel[FieldType.DROPDOWN_MULTI],
-    description: 'Create your own selections to choose from in a dropdown',
-  },
-  {
-    key: FieldType.HYPERLINK,
-    image: FieldTypeLink,
-    title: FieldTypeLabel[FieldType.HYPERLINK],
-    description: 'Add a named link for a website',
   },
 ];

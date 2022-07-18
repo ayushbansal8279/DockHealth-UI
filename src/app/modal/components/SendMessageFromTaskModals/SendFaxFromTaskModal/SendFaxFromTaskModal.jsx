@@ -127,6 +127,14 @@ const SendFaxFromTaskModal = () => {
             value={contact?.value ?? ''}
           />
           {renderAddOrEdit(contact, setShow)}
+          {contact?.identifier && (
+            <Input
+              type="text"
+              label="Recipient’s Name"
+              disabled
+              value={contact.label}
+            />
+          )}
           <TemplateAutoComplete
             type={CommunicationType.FAX}
             placeholder="Pick template"
@@ -140,14 +148,6 @@ const SendFaxFromTaskModal = () => {
             }}
             disabled={show}
           />
-          {contact?.identifier && (
-            <Input
-              type="text"
-              label="Recipient’s Name"
-              disabled
-              value={contact.label}
-            />
-          )}
           <TextEditorContainerStyled>
             <CustomTextEditor label="Fax body">
               <TextEditor

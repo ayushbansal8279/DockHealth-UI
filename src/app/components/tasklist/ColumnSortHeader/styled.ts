@@ -15,6 +15,7 @@ export const DescriptionTooltipWrapper = styled.div`
 
 export const LabelWrapper = styled.p<{ ordered: boolean }>`
   margin-bottom: 0;
+  padding-left: 5px;
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
@@ -73,5 +74,7 @@ export const SortHeaderRow = styled.div`
 
   @media print {
     border: 1px solid ${palette.coolGrey1};
+    justify-content: flex-start;
+    align-items: left;
   }
 `;

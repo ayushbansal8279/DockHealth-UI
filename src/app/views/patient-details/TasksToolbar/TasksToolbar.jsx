@@ -31,13 +31,15 @@ const TasksToolbar = props => {
       } else {
         dispatch(
           openModal('ListPicker', {
+            enableSelectingGroupStep: true,
             fetchMethod: getTaskListForUser,
-            confirm: listId =>
+            confirm: (listId, taskGroupId) =>
               dispatch(
                 applyTemplate({
                   taskTemplateIdentifier: identifier,
                   taskListIdentifier: listId,
                   patientIdentifier,
+                  taskGroupIdentifier: taskGroupId,
                 }),
               ),
           }),

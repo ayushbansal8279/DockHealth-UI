@@ -150,7 +150,9 @@ export const Description = styled.div`
   text-overflow: ellipsis;
   white-space: initial;
   max-width: 480px;
-  ${props => props.isUnread && 'font-weight: 900; font-size: 14px;'}
+  font-weight: 400;
+  font-size: 14px;
+  ${props => props.isUnread && 'font-weight: 900; font-size: 15px;'}
 
   @media screen and (max-width: 1300px) {
     max-width: 300px;
@@ -288,6 +290,7 @@ export const MainStandardTaskItemCell = styled(StandardTaskItemCell)`
     visibility: visible;
   }
   @media print {
+    min-width: ${props => props.printWidth};
     height: 100%;
     border-right: 1px solid ${palette.coolGrey3};
   }
@@ -575,8 +578,8 @@ export const PatientPrintAdditionalInfo = styled.div`
 
 export const DecisionCellContainer = styled.div`
   height: 100%;
-  width: 168px;
-  padding: ${spacing.small} ${spacing.regular};
+  width: 150px;
+  padding: ${spacing.small} ${spacing.small};
   border-left: 1px solid ${palette.coolGrey3};
 `;
 

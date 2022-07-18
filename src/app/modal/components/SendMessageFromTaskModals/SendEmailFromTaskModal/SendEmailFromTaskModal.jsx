@@ -42,6 +42,10 @@ import {
   InfoHeaderTextStyled,
   InputContainerStyled,
   TextEditorContainerStyled,
+  LabelName,
+  LabelValue,
+  ContactInfoRow,
+  AddEditContactLink,
 } from '../styled';
 import AddContactStep from '../../AddContactModal/AddContactModal';
 import TaskCheckBoxes from '../TaskCheckBoxes';
@@ -153,12 +157,21 @@ const SendEmailFromTaskModal = () => {
               }
             }}
             error={error}
-            autoFocus
             disabled={show}
             label="Email"
             errorMessage="Incorrect email"
           />
-          {renderAddOrEdit(contact, setShow)}
+          <ContactInfoRow>
+            {contact?.identifier && (
+              <div>
+                <LabelName>Recipient: </LabelName>
+                <LabelValue>{contact.label}</LabelValue>
+              </div>
+            )}
+            <AddEditContactLink>
+              {renderAddOrEdit(contact, setShow)}
+            </AddEditContactLink>
+          </ContactInfoRow>
           <TemplateAutoComplete
             type={CommunicationType.EMAIL}
             placeholder="Pick template"
@@ -174,14 +187,6 @@ const SendEmailFromTaskModal = () => {
             }}
             disabled={show}
           />
-          {contact?.identifier && (
-            <Input
-              type="text"
-              label="Recipient’s Name"
-              disabled
-              value={contact.label}
-            />
-          )}
           <Input
             type="text"
             label="subject"

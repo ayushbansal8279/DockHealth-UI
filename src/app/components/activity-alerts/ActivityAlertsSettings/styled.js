@@ -15,7 +15,7 @@ export const ActivityAlertsSettingsItem = styled.div`
   border-radius: 4px;
   padding: ${fontSizes.smallPlus};
   margin-bottom: ${fontSizes.smallPlus};
-  border-radous: 4;
+  border-radius: 4;
   font-size: ${fontSizes.smallPlus};
   font-weight: ${fontWeights.bold};
   color: ${palette.mediumGrey};
@@ -30,7 +30,7 @@ export const ActivityAlertsSettingsItem = styled.div`
 
 export const ActivityAlertsSettingsItemsContainer = styled.div`
   font-family: 'Roboto', sans-serif;
-  margin-top: ${spacing.giga};
+  margin-top: ${spacing.large};
   display: flex;
   flex-direction: column;
   padding: 0 ${spacing.large} ${spacing.large};

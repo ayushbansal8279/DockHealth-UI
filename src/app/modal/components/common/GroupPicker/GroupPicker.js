@@ -12,9 +12,9 @@ import {
   QuickAddInput,
   QuickAddInputWrapper,
   ListItemTextButton,
-} from '../styled';
+} from '../../SelectDestinationGroupModal/styled';
 
-const GroupSelect = ({
+const GroupPicker = ({
   selectedList,
   selectedGroup,
   setSelectedGroup,
@@ -123,4 +123,4 @@ const GroupSelect = ({
   );
 };
 
-export default GroupSelect;
+export default GroupPicker;

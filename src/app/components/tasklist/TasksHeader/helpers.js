@@ -66,7 +66,7 @@ export const getTaskHeaderOptions = (
     },
     {
       identifier: TaskHeaderColumn.ASSIGNED,
-      label: groupHasMultipleAssignees ? 'Assign' : 'Asgn',
+      label: 'Assign',
       draggable: true,
       width: TaskItemColumnWidth[TaskHeaderColumn.ASSIGNED].WIDE,
       printWidth: TaskItemColumnWidth[TaskHeaderColumn.ASSIGNED].PRINT,

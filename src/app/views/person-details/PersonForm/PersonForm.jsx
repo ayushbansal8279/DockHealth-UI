@@ -5,6 +5,7 @@ import { Box } from '@material-ui/core';
 import { useHistory } from 'react-router-dom';
 import { CUSTOM_FIELDS_SETTINGS_PATH } from 'routing/helpers/paths';
 import { userProfileSelector } from 'selectors/user-selectors';
+import { checkIfUserIsOrganizationAdmin } from 'helpers/user-helper';
 import { compose } from 'ramda';
 import { useFormContext } from 'react-hook-form';
 import * as CustomFieldsApi from 'api/custom-fields-api';
@@ -16,6 +17,7 @@ import Button from 'components/common/Button/Button';
 import Spacing from 'components/common/Spacing';
 import { useBoolean } from 'hooks/useBoolean';
 import CategoryOptions from 'components/common/CategoryOptions/CategoryOptions';
+import { FieldType } from 'helpers/field-type-helpers';
 import { scrollToError } from 'helpers/ui-helper';
 import { formatMetaDataOutput } from './helpers';
 import { HidableContainer } from './styled';
@@ -29,7 +31,7 @@ const PersonForm = forwardRef(
     const [customFields, setCustomFields] = useState(null);
     const userProfile = useSelector(userProfileSelector);
     const { 0: emptyOtherVisible, 3: toggleEmptyOther } = useBoolean(false);
-    const isAdmin = userProfile?.orgUserRole === 'ADMIN';
+    const isAdmin = checkIfUserIsOrganizationAdmin(userProfile);
 
     useEffect(() => {
       CustomFieldsApi.getAllProviderCustomFields(
@@ -43,26 +45,40 @@ const PersonForm = forwardRef(
 
     const renderCustomField = useCallback(
       (field, index, showEmpty = true) => {
-        const initialFieldValue = user?.providerMetaData?.find(
+        const providerCustomField = user?.providerMetaData?.find(
           ({ customFieldIdentifier }) =>
             field.identifier === customFieldIdentifier,
         );
-        return (
+
+        return field.fieldType === FieldType.DROPDOWN_MULTI ? (
           <HidableContainer
             key={field.identifier}
-            visibility={!showEmpty && !initialFieldValue?.value}
+            visibility={!showEmpty && !providerCustomField?.values}
           >
             {index !== 0 && <Spacing vertical={3} />}
             <CustomField
-              readOnly={!(isAdmin && edited)}
+              readOnly={!edited}
               field={field}
-              initialValue={initialFieldValue}
+              initialValue={providerCustomField?.values}
+              fieldsGroupKey="providerMetaData"
+            />
+          </HidableContainer>
+        ) : (
+          <HidableContainer
+            key={field.identifier}
+            visibility={!showEmpty && !providerCustomField?.value}
+          >
+            {index !== 0 && <Spacing vertical={3} />}
+            <CustomField
+              readOnly={!edited}
+              field={field}
+              initialValue={providerCustomField?.value}
               fieldsGroupKey="providerMetaData"
             />
           </HidableContainer>
         );
       },
-      [user, isAdmin, edited],
+      [user, edited],
     );
 
     const handleAddButtonClick = () =>
@@ -77,7 +93,7 @@ const PersonForm = forwardRef(
         ref={reference}
       >
         <LabeledCollapse
-          name="Provider personal Info"
+          name="User Personal Info"
           isOpened={isOpenedPersonal}
           onClick={() => setIsOpenedPersonal(!isOpenedPersonal)}
         >
@@ -119,7 +135,7 @@ const PersonForm = forwardRef(
 
         {customFields?.length > 0 && (
           <LabeledCollapse
-            name="Provider Other Info"
+            name="User Other Info"
             isOpened={isOpenedContact}
             onClick={() => setIsOpenedContact(!isOpenedContact)}
           >

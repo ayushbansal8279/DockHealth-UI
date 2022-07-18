@@ -208,13 +208,15 @@ const PatientsView = () => {
 
       dispatch(
         openModal('ListPicker', {
+          enableSelectingGroupStep: true,
           fetchMethod: getTaskListForUser,
-          confirm: listId =>
+          confirm: (listId, taskGroupIdentifier) =>
             dispatch(
               PatientsActions.patientBulkCreateWorkflow({
                 workflowIdentifier: template.identifier,
                 taskListIdentifier: listId,
                 assignedToUsers: assignedPatients,
+                taskGroupIdentifier,
               }),
             ),
         }),

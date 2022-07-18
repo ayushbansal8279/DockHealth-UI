@@ -16,6 +16,7 @@ export function checkIfAllTasksSelected(tasks) {
 
   return tasks.every(task => {
     if (task.itemType === TaskItemType.BUNDLE) {
+      if (task.selected) return true;
       if (!task.tasks || isEmpty(task.tasks)) {
         return false;
       }

@@ -5,6 +5,8 @@ import { FormProvider, useForm } from 'react-hook-form';
 import { useDispatch, useSelector } from 'react-redux';
 import { object, string } from 'yup';
 import { yupResolver } from '@hookform/resolvers/yup';
+import { checkIfUserIsOrganizationAdmin } from 'helpers/user-helper';
+import { userProfileSelector } from 'selectors/user-selectors';
 import { invitePersonToOrganization } from 'api/organization-api';
 import { showAlert } from 'helpers/utility-functions';
 import * as AlertActions from 'alert/actions';
@@ -38,11 +40,9 @@ const InvitePeoplePopover = ({
     reValidateMode: 'onSubmit',
   });
   const dispatch = useDispatch();
-  const orgUserRole = useSelector(
-    store => store.userState.userProfile?.orgUserRole,
-  );
+  const currentUser = useSelector(userProfileSelector);
 
-  const isOwnerOrAdmin = orgUserRole === 'OWNER' || orgUserRole === 'ADMIN';
+  const isOwnerOrAdmin = checkIfUserIsOrganizationAdmin(currentUser);
 
   const closePopover = useCallback(
     event => {

@@ -225,13 +225,15 @@ const PatientTasksListView = () => {
       } else {
         dispatch(
           openModal('ListPicker', {
+            enableSelectingGroupStep: true,
             fetchMethod: getTaskListForUser,
-            confirm: listId =>
+            confirm: (listId, taskGroupId) =>
               dispatch(
                 addTask({
                   description,
                   taskListIdentifier: listId,
                   patientIdentifier,
+                  taskGroupIdentifier: taskGroupId,
                 }),
               ),
           }),
@@ -283,25 +285,27 @@ const PatientTasksListView = () => {
     return groupTasks(activeList?.tasks);
   }, [activeList, isAllTasksView]);
 
-  const groupHasMultipleAssignees = useMemo(
-    () =>
-      activeList?.tasks
-        .flatMap(item =>
-          item.itemType === TaskItemType.BUNDLE ? item.tasks : [item],
-        )
-        .some(
-          // eslint-disable-next-line no-shadow
-          ({ assignedToUsers, subtasks }) =>
-            (assignedToUsers && assignedToUsers.length > 1) ||
-            (subtasks &&
-              subtasks.length > 0 &&
-              subtasks.some(
-                ({ assignedToUsers: subtaskAssignedToUsers }) =>
-                  subtaskAssignedToUsers && subtaskAssignedToUsers.length > 1,
-              )),
-        ),
-    [activeList],
-  );
+  const groupHasMultipleAssignees = false;
+
+  // const groupHasMultipleAssignees = useMemo(
+  //   () =>
+  //     activeList?.tasks
+  //       .flatMap(item =>
+  //         item.itemType === TaskItemType.BUNDLE ? item.tasks : [item],
+  //       )
+  //       .some(
+  //         // eslint-disable-next-line no-shadow
+  //         ({ assignedToUsers, subtasks }) =>
+  //           (assignedToUsers && assignedToUsers.length > 1) ||
+  //           (subtasks &&
+  //             subtasks.length > 0 &&
+  //             subtasks.some(
+  //               ({ assignedToUsers: subtaskAssignedToUsers }) =>
+  //                 subtaskAssignedToUsers && subtaskAssignedToUsers.length > 1,
+  //             )),
+  //       ),
+  //   [activeList],
+  // );
 
   const isGroupSelected = useCallback(
     tasks => checkIfAllTasksSelected(tasks),

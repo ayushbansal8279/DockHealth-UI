@@ -560,3 +560,10 @@ export const updateListPreferences = (
   type: ActionTypes.UPDATE_LIST_PREFERENCES,
   payload: { setup, taskListIdentifier, currentUserIdentifier },
 });
+
+export function reorderTaskLists(activeLists) {
+  return {
+    type: ActionTypes.REORDER_TASKLISTS,
+    payload: { activeLists },
+  };
+}
