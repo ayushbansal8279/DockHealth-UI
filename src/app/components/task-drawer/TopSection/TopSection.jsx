@@ -14,6 +14,8 @@ import {
   userHasSendEmailFeatureSelector,
   userHasSendFaxFeatureSelector,
   userHasSendSmsFeatureSelector,
+  userHasPostEMRNoteFeatureSelector,
+  userHasShareTaskFeatureSelector,
 } from 'selectors/user-selectors';
 import { useDispatch, useSelector } from 'react-redux';
 import { openModal } from 'modal/actions';
@@ -52,6 +54,8 @@ const TopSection = ({
   const sendEmailAvailable = useSelector(userHasSendEmailFeatureSelector);
   const sendFaxAvailable = useSelector(userHasSendFaxFeatureSelector);
   const sendSmsAvailable = useSelector(userHasSendSmsFeatureSelector);
+  const postToEMRAvailable = useSelector(userHasPostEMRNoteFeatureSelector);
+  const shareTaskAvailable = useSelector(userHasShareTaskFeatureSelector);
 
   const options = useMemo(
     () => [
@@ -77,10 +81,11 @@ const TopSection = ({
         },
         restriction: restrictions?.duplicate === DISABLED,
       },
-      !isTemplateTask && {
-        name: 'Share Task',
-        onClick: handleShareTask,
-      },
+      shareTaskAvailable &&
+        !isTemplateTask && {
+          name: 'Share Task',
+          onClick: handleShareTask,
+        },
       {
         name: 'Copy task link',
         onClick: handleCopyLink,
@@ -97,7 +102,7 @@ const TopSection = ({
         name: 'Send SMS',
         onClick: () => dispatch(openModal('SendSmsFromTask')),
       },
-      {
+      postToEMRAvailable && {
         name: 'Post Note to EMR',
         onClick: () => dispatch(openModal('SendEmrFromTask')),
       },
@@ -111,12 +116,14 @@ const TopSection = ({
     [
       handleMoveTask,
       restrictions,
+      shareTaskAvailable,
       isTemplateTask,
       handleShareTask,
       handleCopyLink,
       sendEmailAvailable,
       sendFaxAvailable,
       sendSmsAvailable,
+      postToEMRAvailable,
       openDeleteConfirmationModal,
       selectedTask,
       openDuplicateConfirmationModal,

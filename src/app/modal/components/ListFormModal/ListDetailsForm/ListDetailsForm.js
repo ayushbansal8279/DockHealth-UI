@@ -148,6 +148,10 @@ const ListDetailsForm = ({
               </CheckboxDescription>
             </CheckboxContainer>
             <Spacing vertical={4} />
+            <span>
+              Note: You will need to reconfigure the columns displayed on the
+              list when you change the above option.
+            </span>
           </Grid>
           <Grid container direction="row" justify="center">
             <ButtonWrapper>

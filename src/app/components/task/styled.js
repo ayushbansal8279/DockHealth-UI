@@ -290,6 +290,7 @@ export const MainStandardTaskItemCell = styled(StandardTaskItemCell)`
     visibility: visible;
   }
   @media print {
+    min-width: ${props => props.printWidth};
     height: 100%;
     border-right: 1px solid ${palette.coolGrey3};
   }
@@ -577,8 +578,8 @@ export const PatientPrintAdditionalInfo = styled.div`
 
 export const DecisionCellContainer = styled.div`
   height: 100%;
-  width: 168px;
-  padding: ${spacing.small} ${spacing.regular};
+  width: 150px;
+  padding: ${spacing.small} ${spacing.small};
   border-left: 1px solid ${palette.coolGrey3};
 `;
 

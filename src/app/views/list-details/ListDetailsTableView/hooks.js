@@ -430,7 +430,9 @@ const initializeListDetailsViewHooks = () => {
         ? taskList
         : taskList?.listUsers?.find(
             user => user.identifier === currentUserIdentifier,
-          ) || {};
+          ) ||
+          taskList ||
+          {};
 
     return displayOptions.reduce(
       (accumulator, value) => ({ ...accumulator, [value]: true }),
