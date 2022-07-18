@@ -57,7 +57,9 @@ const ListDetailsToolbar = ({ additionalOptions }) => {
         ? taskList
         : taskList?.listUsers?.find(
             user => user.identifier === currentUser.identifier,
-          ) || {},
+          ) ||
+          taskList ||
+          {},
     [taskList, currentUser],
   );
 
