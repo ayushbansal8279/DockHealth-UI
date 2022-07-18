@@ -11,6 +11,7 @@ import { CustomFieldWidthConfig } from 'helpers/field-type-helpers';
 import { DragDropContext, Droppable } from 'react-beautiful-dnd';
 import { SINGLE_TASK_RESTRICTIONS_PROFILES } from 'restrictions/task-restrictions';
 import { CUSTOM_FIELD_TYPES } from 'helpers/custom-fields-helpers';
+import { currentTaskListSelector } from 'selectors/list-details-selectors';
 import { BulkContainer, StickyColumnContainer } from './styled';
 import {
   getTaskHeaderOptions,
@@ -27,14 +28,18 @@ const TasksHeader = ({
   groupHasMultipleAssignees,
   pageBackground,
 }) => {
+  const taskList = useSelector(currentTaskListSelector);
   const { currentUser } = useSelector(store => ({
     currentUser: store.userState.userProfile,
   }));
   const { columns, setColumns } = useColumnsConfig();
   const customerTypeLabel = getCustomerTypeLabel(currentUser);
-
+  const isListCreator =
+    taskList?.creator?.identifier === currentUser.identifier;
   const restrictions =
     SINGLE_TASK_RESTRICTIONS_PROFILES[currentUser?.orgUserRole];
+  const restrictCustomizationFeatures =
+    taskList?.restrictCustomization && !isListCreator;
 
   const onDragEnd = useCallback(
     column => {
@@ -64,6 +69,7 @@ const TasksHeader = ({
             key={f.identifier}
             index={index}
             draggable={
+              !restrictCustomizationFeatures &&
               ![TaskHeaderColumn.SUBTASKS_COUNT].includes(f.identifier)
             }
             disabled={[
@@ -86,7 +92,7 @@ const TasksHeader = ({
         <ColumnSortHeader
           key={f.identifier}
           index={index}
-          draggable
+          draggable={!restrictCustomizationFeatures}
           isDraggingOver={snapshot.isDraggingOver}
           disabled={f.targetType === 'PATIENT'}
           truncateEnabled
@@ -102,12 +108,16 @@ const TasksHeader = ({
         />
       );
     },
-    [onSortChange, sort],
+    [onSortChange, restrictCustomizationFeatures, sort],
   );
 
   return (
     <DragDropContext onDragEnd={onDragEnd}>
-      <Droppable droppableId="droppableHeader" direction="horizontal">
+      <Droppable
+        isDropDisabled={restrictCustomizationFeatures}
+        droppableId="droppableHeader"
+        direction="horizontal"
+      >
         {(provided, snapshot) => (
           <SortHeaderRow ref={provided.innerRef} {...provided.droppableProps}>
             <StickyColumnContainer backgroundColor={pageBackground}>
@@ -119,15 +129,22 @@ const TasksHeader = ({
                   />
                 </BulkContainer>
               )}
-              <ColumnSortHeader width={35} />
               <ColumnSortHeader
                 id={TaskItemColumn.DESCRIPTION}
                 label="Tasks"
                 sort={sort}
                 onSortChange={onSortChange}
-                printWidth={300}
+                width={TaskItemColumnWidth[TaskItemColumn.DESCRIPTION].WIDE}
+                printWidth={
+                  TaskItemColumnWidth[TaskItemColumn.DESCRIPTION].PRINT
+                }
               />
             </StickyColumnContainer>
+            <ColumnSortHeader
+              id={TaskItemColumn.SUBTASKS_COUNT}
+              label="Sub"
+              width={TaskItemColumnWidth[TaskItemColumn.SUBTASKS_COUNT]}
+            />
             {columns
               .filter(
                 f => f.identifier !== TaskItemColumn.DESCRIPTION && f.isChecked,

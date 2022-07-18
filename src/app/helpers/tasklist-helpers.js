@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-expressions */
 import { TaskItemType, TaskStatus } from './task-helpers';
 
 export const TaskListTabName = {
@@ -28,15 +29,21 @@ export function extractTasksAndSubtasks(listOfTasks) {
     (accumulator, task) => {
       if (task.itemType === TaskItemType.BUNDLE) {
         // eslint-disable-next-line no-unused-expressions
-        task.tasks?.forEach(t => {
-          if (t.parentTaskIdentifier) {
-            accumulator.subtasks.push(t);
-          } else {
-            accumulator.parentTasks.push(t);
-            // eslint-disable-next-line no-unused-expressions
-            t.subtasks?.forEach(subtask => accumulator.subtasks.push(subtask));
-          }
-        });
+        if (task.selected) {
+          accumulator.parentTasks.push(task);
+        } else {
+          task.tasks?.forEach(t => {
+            if (t.parentTaskIdentifier) {
+              accumulator.subtasks.push(t);
+            } else {
+              accumulator.parentTasks.push(t);
+              // eslint-disable-next-line no-unused-expressions
+              t.subtasks?.forEach(subtask =>
+                accumulator.subtasks.push(subtask),
+              );
+            }
+          });
+        }
       } else if (task.parentTaskIdentifier) {
         accumulator.subtasks.push(task);
       } else {

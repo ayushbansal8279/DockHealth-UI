@@ -70,6 +70,7 @@ const PersonDetailsOpenedTasks = ({
   const handleQuickAddTask = task => {
     dispatch(
       openModal('ListPicker', {
+        enableSelectingGroupStep: true,
         fetchMethod: () => getSharedTaskListsWithCurrentUser(userIdentifier),
         listCreationPayload: {
           adminIdentifiers:
@@ -77,12 +78,12 @@ const PersonDetailsOpenedTasks = ({
               ? [userIdentifier]
               : [],
         },
-        confirm: taskListIdentifier => {
+        confirm: (taskListIdentifier, taskGroupIdentifier) => {
           const payload = {
             ...task,
             taskListIdentifier,
             assignedToIdentifier: userIdentifier,
-            taskGroupIdentifier: null,
+            taskGroupIdentifier,
           };
 
           dispatch(quickAddTask(payload)).then(() => {

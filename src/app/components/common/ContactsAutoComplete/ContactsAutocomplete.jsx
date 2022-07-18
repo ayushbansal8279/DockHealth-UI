@@ -69,6 +69,17 @@ const ContactsAutoComplete = ({
                 })),
             );
             break;
+          case CommunicationType.SMS:
+            setContacts(
+              response
+                .filter(contact => contact.mobilePhoneNumber)
+                .map(contact => ({
+                  label: contact.name,
+                  value: contact.mobilePhoneNumber,
+                  identifier: contact.identifier,
+                })),
+            );
+            break;
           default:
             setContacts([]);
         }
@@ -120,7 +131,6 @@ const ContactsAutoComplete = ({
         return (
           <Input
             {...parameters}
-            autoFocus
             helperText={error ? errorMessage : null}
             error={error}
             placeholder={placeholder}

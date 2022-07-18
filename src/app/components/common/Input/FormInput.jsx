@@ -25,8 +25,8 @@ const FormInput = React.forwardRef(
       setError,
     } = useFormContext();
 
-    const isNested = name.includes('.');
-    const nestedParts = name.split('.');
+    const isNested = name?.includes('.');
+    const nestedParts = name?.split('.');
 
     const error = isNested
       ? errors?.[nestedParts[0]]?.[nestedParts[1]]?.message

@@ -228,7 +228,7 @@ const SubscriptionsView = () => {
                 />
               ))}
             </Box>
-            {!professionalServicesIncluded && (
+            {/* {!professionalServicesIncluded && (
               <>
                 <Box
                   width="100%"
@@ -251,7 +251,7 @@ const SubscriptionsView = () => {
                   }
                 />
               </>
-            )}
+            )} */}
             <Box p={1} />
             <Title>
               Billing <SubTitleDescription>Est</SubTitleDescription>

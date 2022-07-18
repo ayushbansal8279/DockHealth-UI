@@ -1,5 +1,5 @@
 /* eslint-disable react-hooks/rules-of-hooks */
-import { useEffect, useState, useCallback, useMemo } from 'react';
+import { useEffect, useState, useCallback } from 'react';
 import { isEmpty } from 'ramda';
 import { openModal, closeModal } from 'modal/actions';
 import CommentIcon from 'img/modals/comment';
@@ -9,7 +9,6 @@ import {
   taskDrawerFocusFieldSelector,
 } from 'selectors/task-drawer-selectors';
 import { userProfileSelector } from 'selectors/user-selectors';
-import { checkIfTemplateTask } from 'helpers/task-helpers';
 import { deleteComment, updateComment, addComment } from 'actions/task-actions';
 
 const initializeCommentSectionHooks = () => {
@@ -17,9 +16,7 @@ const initializeCommentSectionHooks = () => {
   const selectedTask = useSelector(selectedTaskSelector);
   const taskListIdentifier = selectedTask?.taskList?.taskListIdentifier;
   const taskDrawerFocusField = useSelector(taskDrawerFocusFieldSelector);
-  const isTemplateTask = useMemo(() => checkIfTemplateTask(selectedTask), [
-    selectedTask,
-  ]);
+
   const [commentsList, setCommentsList] = useState([]);
 
   const { comments = [], taskIdentifier: selectedTaskIdentifier } =
@@ -101,7 +98,6 @@ const initializeCommentSectionHooks = () => {
     updateComment: boundUpdateComment,
     addComment: boundAddComment,
     taskListIdentifier,
-    isTemplateTask,
     taskDrawerFocusField,
   };
 };

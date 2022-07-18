@@ -31,10 +31,11 @@ const ListDetailsToolbar = ({ additionalOptions }) => {
   const tasksStatus = useSelector(currentTaskListTasksStatusSelector);
   const isOrganizationAdmin = checkIfUserIsOrganizationAdmin(currentUser);
   const taskList = useSelector(currentTaskListSelector);
-  const { taskListIdentifier } = taskList || {};
+  const { taskListIdentifier, restrictCustomization } = taskList || {};
   const isListCreator =
     taskList?.creator?.identifier === currentUser.identifier;
   const viewType = getViewTypeFromQueryString(search);
+  const restrictCustomizationFeatures = restrictCustomization && !isListCreator;
 
   const handleChangeViewType = useCallback(
     event => {
@@ -56,7 +57,9 @@ const ListDetailsToolbar = ({ additionalOptions }) => {
         ? taskList
         : taskList?.listUsers?.find(
             user => user.identifier === currentUser.identifier,
-          ) || {},
+          ) ||
+          taskList ||
+          {},
     [taskList, currentUser],
   );
 
@@ -101,11 +104,15 @@ const ListDetailsToolbar = ({ additionalOptions }) => {
         />
         {viewType === ViewType.LIST_VIEW && (
           <>
-            <Box mx={0.5} />
-            <CustomizeToolbarButton
-              openCustomFieldModal={() => setCustomFieldsModalOpened(true)}
-              additionalOptions={additionalOptions}
-            />
+            {!restrictCustomizationFeatures && (
+              <>
+                <Box mx={0.5} />
+                <CustomizeToolbarButton
+                  openCustomFieldModal={() => setCustomFieldsModalOpened(true)}
+                  additionalOptions={additionalOptions}
+                />
+              </>
+            )}
             <Box mx={0.5} />
             <TaskCustomFieldsModal
               opened={customFieldsModalOpened}
