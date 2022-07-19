@@ -25,7 +25,7 @@ const AlertMessages = {
   FAX_SENT: 'Fax Sent',
   SMS_SENT: 'Sms Sent',
   MAIL_SENT: 'Mail Sent',
-  EMR_SENT: 'Emr Sent',
+  EMR_SENT: 'EHR Note posted',
 };
 
 export default AlertMessages;

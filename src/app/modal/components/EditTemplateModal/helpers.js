@@ -23,7 +23,7 @@ export const TEMPLATE_TYPE_OPTIONS = [
     value: TEMPLATE_TYPES.SMS,
   },
   {
-    label: 'EMR_NOTE',
+    label: 'EHR Note',
     value: TEMPLATE_TYPES.EMR_NOTE,
   },
 ];
