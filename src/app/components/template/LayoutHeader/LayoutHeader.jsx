@@ -39,7 +39,7 @@ const LayoutHeader = props => {
           allowedToRoles={[ADMIN, OWNER, MEMBER, GUEST, EXTERNAL]}
         >
           <Box mx={1} />
-          {isChat ? <></> : <ChatPopover />}
+          {!isChat ?? <ChatPopover />}
           <Box mx={1} />
         </AccessRestrictor>
         <AccessRestrictor

@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 // import ChannelPreview from '@sendbird/uikit-react/ChannelList/components/ChannelPreview';
 import ChannelPreviewAction from '@sendbird/uikit-react/ChannelList/components/ChannelPreviewAction';
 import { useChannelListContext } from '@sendbird/uikit-react/ChannelList/context';
@@ -11,15 +11,17 @@ import { Title } from 'views/TaskTour/styled';
 import ChatChannelPreview from './ChatChannelPreview';
 
 export default function ChatChannelList(props) {
-  const { setSelectedChannel } = props;
+  const { setSelectedChannel, isFullView } = props;
   const { identifier } = useSelector(userProfileSelector);
   const { allChannels, initialized, loading } = useChannelListContext();
 
-  if (!initialized) {
-    return <CircularProgress />;
-  }
+  useEffect(() => {
+    if (allChannels && allChannels.length > 0 && isFullView) {
+      setSelectedChannel(allChannels[0]);
+    }
+  }, [allChannels, isFullView, setSelectedChannel]);
 
-  if (loading) {
+  if (!initialized || loading) {
     return <CircularProgress />;
   }
 
@@ -32,13 +34,13 @@ export default function ChatChannelList(props) {
         allowProfileEdit={false}
         renderIconButton={AddChannel}
       />
-      {allChannels.map(channel => {
+      {allChannels.map((channel, idx) => {
         return (
           <div key={channel.url}>
             <ChatChannelPreview
               channel={channel}
               currentUser={identifier}
-              isActive={false}
+              isActive={isFullView && idx === 0}
               renderChannelAction={() => {
                 return (
                   <ChannelPreviewAction
@@ -48,7 +50,7 @@ export default function ChatChannelList(props) {
                 );
               }}
               onClick={() => {
-                if (channel && channel.url) {
+                if (channel?.url) {
                   setSelectedChannel(channel);
                 }
               }}

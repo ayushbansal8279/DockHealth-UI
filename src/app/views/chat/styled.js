@@ -1,4 +1,3 @@
-/* eslint-disable import/prefer-default-export */
 import { withStyles } from '@material-ui/core/styles';
 import { IconButton } from '@material-ui/core';
 import palette from 'styles/palette';

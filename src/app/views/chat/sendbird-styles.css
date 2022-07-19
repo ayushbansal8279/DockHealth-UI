@@ -56,9 +56,18 @@
 }
 
 .sendbird-modal__content.sendbird-modal__body{
-    height: auto;
+    height: 100% !important;
+}
+
+.sendbird-create-channel--scroll{
+    height: 100%;
 }
 
 .sendbird-badge__text{
     margin-top: 5px !important;
+}
+
+.full-view-chat.sendbird-app__wrap .sendbird-channel-list{
+    width: 320px !important;
+    overflow: scroll;
 }
