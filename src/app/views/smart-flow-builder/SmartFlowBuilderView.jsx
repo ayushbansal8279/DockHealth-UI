@@ -14,6 +14,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import NavigateNextIcon from '@material-ui/icons/NavigateNext';
 import HardDependencyIcon from 'img/template/hard-dependency';
 import CalendarIcon from 'img/template/calendar-icon';
+import WorkflowLinkIcon from 'img/template/workflow-icon';
 import {
   createWorkflowFolderPath,
   WORKFLOW_LIBRARY_PATH,
@@ -293,16 +294,16 @@ const SmartFlowBuilderView = () => {
           }
         },
       },
-      // {
-      //   id: NodeType.NEW_WORKFLOW_LINK,
-      //   label: 'Workflow',
-      //   icon: WorkflowLinkIcon,
-      //   onClick: () => {
-      //     const position = calculateNewElementPosition(layout);
-      //     dispatch(addNewNestedFlowElement(position));
-      //     centerViewToElement(position);
-      //   },
-      // },
+      {
+        id: NodeType.NEW_WORKFLOW_LINK,
+        label: 'Workflow',
+        icon: WorkflowLinkIcon,
+        onClick: () => {
+          const position = calculateNewElementPosition(layout);
+          dispatch(addNewNestedFlowElement(position));
+          centerViewToElement(position);
+        },
+      },
     ];
 
     let actions = [...baseActions];
@@ -517,6 +518,7 @@ const SmartFlowBuilderView = () => {
         dispatch(addNewNestedFlowElement(position));
         break;
       default:
+        // eslint-disable-next-line no-console
         console.error('UNHANDLED NODE TYPE');
         break;
     }

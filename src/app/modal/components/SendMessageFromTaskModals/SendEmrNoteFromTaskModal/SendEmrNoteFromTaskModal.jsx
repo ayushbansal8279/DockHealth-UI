@@ -86,9 +86,9 @@ function SendEmrNoteFromTaskModal() {
         <CloseIcon htmlColor="#C1CCDA" />
       </CloseIconButton>
       <ModalHeaderContainerStyled>
-        <ModalHeader>post note to emr</ModalHeader>
+        <ModalHeader>Post note to EHR</ModalHeader>
         <ModalDescription>
-          Post a summary to the patient’s medical record
+          Post a summary to the patient’s health record
         </ModalDescription>
       </ModalHeaderContainerStyled>
       <ModalDescriptionContainer>
@@ -116,7 +116,7 @@ function SendEmrNoteFromTaskModal() {
           selectedTask={selectedTask}
         />
         <TextEditorContainerStyled>
-          <CustomTextEditor label="Emr note">
+          <CustomTextEditor label="EHR note">
             <TextEditor
               readOnly={false}
               minHeight={100}

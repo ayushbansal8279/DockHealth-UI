@@ -103,7 +103,7 @@ const TopSection = ({
         onClick: () => dispatch(openModal('SendSmsFromTask')),
       },
       postToEMRAvailable && {
-        name: 'Post Note to EMR',
+        name: 'Post Note to EHR',
         onClick: () => dispatch(openModal('SendEmrFromTask')),
       },
       {

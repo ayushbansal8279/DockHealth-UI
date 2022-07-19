@@ -34,7 +34,7 @@ const PersonInfoPanel = () => {
     firstName,
     lastName,
     workPhoneNumber,
-    userMetaData,
+    providerMetaData,
   } = userDetails || {};
 
   return (
@@ -102,21 +102,26 @@ const PersonInfoPanel = () => {
               </ContactContainer>
             </Box>
             <CustomFieldsContainer>
-              {userMetaData
+              {providerMetaData
                 ?.filter(
-                  ({ displayOptions, value }) =>
-                    displayOptions?.includes('PROVIDER_HEADER') && value,
+                  ({ displayOptions, value, values }) =>
+                    displayOptions?.includes('PROVIDER_HEADER') &&
+                    (value || values),
                 )
-                ?.map(({ customFieldName, displayName, value }) => (
-                  <>
-                    <UserInfo>
-                      <Typography>{customFieldName}: </Typography>
-                      <Box ml={1} />
-                      <TextTypeHeader text={displayName || value} />
-                    </UserInfo>
-                    <UserInfoDivider />
-                  </>
-                ))}
+                ?.map(
+                  ({ customFieldName, displayName, value, displayNames }) => (
+                    <>
+                      <UserInfo>
+                        <Typography>{customFieldName}: </Typography>
+                        <Box ml={1} />
+                        <TextTypeHeader
+                          text={displayName || value || displayNames.join(', ')}
+                        />
+                      </UserInfo>
+                      <UserInfoDivider />
+                    </>
+                  ),
+                )}
             </CustomFieldsContainer>
           </>
         ) : (

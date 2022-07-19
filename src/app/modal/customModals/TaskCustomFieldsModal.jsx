@@ -15,11 +15,11 @@ const TaskCustomFieldsModal = ({
   taskListIdentifier,
   opened,
   handleClose,
-  isListCreator,
+  isListAdmin,
   isOrganizationAdmin,
 }) => {
   const hasMainListEditPermission = isOrganizationAdmin;
-  const hasSpecificListEditPermission = isOrganizationAdmin || isListCreator;
+  const hasSpecificListEditPermission = isOrganizationAdmin || isListAdmin;
   const [selectedTab, setSelectedTab] = useState(1);
   const applyProps = useCallback(index => {
     return {

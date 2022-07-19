@@ -62,13 +62,17 @@ const TaskItemMultiDropdown = ({ value: initialValue, onChange, field }) => {
               .map(selected => {
                 return options.find(option => option.value === selected)?.label;
               })
-              .join(',')
+              .join(', ')
           }
         >
           {options?.map(option => {
             return (
               <MenuItem key={option.value} value={option.value}>
-                <Checkbox checked />
+                {value.includes(option.value) ? (
+                  <Checkbox checked />
+                ) : (
+                  <Checkbox />
+                )}
                 <ListItemText primary={option.label} />
               </MenuItem>
             );

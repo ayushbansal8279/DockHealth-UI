@@ -7,6 +7,10 @@ import { SUBS_SETTINGS_PATH, USERS_SETTINGS_PATH } from 'routing/helpers/paths';
 import {
   userHasPatientCustomFieldsFeatureSelector,
   userHasTaskCustomFieldsFeatureSelector,
+  userHasSendEmailFeatureSelector,
+  userHasSendFaxFeatureSelector,
+  userHasSendSmsFeatureSelector,
+  userHasPostEMRNoteFeatureSelector,
 } from 'selectors/user-selectors';
 import { SubMenuLink } from './styled';
 
@@ -19,6 +23,10 @@ const SettingsSubmenu = () => {
   const taskCustomFieldsAvailable = useSelector(
     userHasTaskCustomFieldsFeatureSelector,
   );
+  const sendEmailAvailable = useSelector(userHasSendEmailFeatureSelector);
+  const sendFaxAvailable = useSelector(userHasSendFaxFeatureSelector);
+  const sendSmsAvailable = useSelector(userHasSendSmsFeatureSelector);
+  const postToEMRAvailable = useSelector(userHasPostEMRNoteFeatureSelector);
 
   return (
     <Box widht={1}>
@@ -29,10 +37,14 @@ const SettingsSubmenu = () => {
       {(patientCustomFieldsAvailable || taskCustomFieldsAvailable) && (
         <SubMenuLink to="/settings/custom-fields">Custom Fields</SubMenuLink>
       )}
-      <AccessRestrictor allowedToRoles={[ADMIN, OWNER]}>
-        <SubMenuLink to="/settings/templates">Templates</SubMenuLink>
-        <SubMenuLink to="/settings/contacts">Contacts</SubMenuLink>
-      </AccessRestrictor>
+      {(sendEmailAvailable ||
+        sendFaxAvailable ||
+        sendSmsAvailable ||
+        postToEMRAvailable) && (
+        <AccessRestrictor allowedToRoles={[ADMIN, OWNER]}>
+          <SubMenuLink to="/settings/templates">Templates</SubMenuLink>
+        </AccessRestrictor>
+      )}
     </Box>
   );
 };

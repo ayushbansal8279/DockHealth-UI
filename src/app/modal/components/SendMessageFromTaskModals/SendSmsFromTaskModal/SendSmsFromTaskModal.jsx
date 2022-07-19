@@ -50,13 +50,13 @@ const SendSmsFromTaskModal = () => {
       </CloseIconButton>
       <ModalHeaderContainerStyled>
         <ModalHeader>Send sms</ModalHeader>
-        <ModalDescription>Send a sms for this task</ModalDescription>
+        <ModalDescription>Send a SMS for this task</ModalDescription>
       </ModalHeaderContainerStyled>
       <ModalDescriptionContainer>
         <InputContainerStyled>
           <ContactsAutoComplete
             type={CommunicationType.SMS}
-            placeholder="Type the phone address"
+            placeholder="Type the phone number or name of the contact"
             onBlur={handlePhoneBlur}
             onChange={(_, newValue, reason) => {
               if (reason === 'clear') {
@@ -68,7 +68,7 @@ const SendSmsFromTaskModal = () => {
             error={PhoneError}
             autoFocus
             label="Phone"
-            errorMessage="Incorrect Phone number"
+            errorMessage="Incorrect phone number"
             value={contact?.value ?? ''}
           />
           <Input
