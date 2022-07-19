@@ -11,7 +11,8 @@ import { CustomFieldWidthConfig } from 'helpers/field-type-helpers';
 import { DragDropContext, Droppable } from 'react-beautiful-dnd';
 import { SINGLE_TASK_RESTRICTIONS_PROFILES } from 'restrictions/task-restrictions';
 import { CUSTOM_FIELD_TYPES } from 'helpers/custom-fields-helpers';
-import { currentTaskListSelector } from 'selectors/list-details-selectors';
+import { currentTaskListSelector } from 'selectors/task-list-selectors';
+import { isMemberAdmin } from 'helpers/list-members-helper';
 import { BulkContainer, StickyColumnContainer } from './styled';
 import {
   getTaskHeaderOptions,
@@ -34,12 +35,14 @@ const TasksHeader = ({
   }));
   const { columns, setColumns } = useColumnsConfig();
   const customerTypeLabel = getCustomerTypeLabel(currentUser);
-  const isListCreator =
-    taskList?.creator?.identifier === currentUser.identifier;
+  const currentUserMember = taskList?.listUsers.find(
+    u => u.identifier === currentUser?.identifier,
+  );
+  const isListAdmin = isMemberAdmin(currentUserMember);
   const restrictions =
     SINGLE_TASK_RESTRICTIONS_PROFILES[currentUser?.orgUserRole];
   const restrictCustomizationFeatures =
-    taskList?.restrictCustomization && !isListCreator;
+    taskList?.restrictCustomization && !isListAdmin;
 
   const onDragEnd = useCallback(
     column => {

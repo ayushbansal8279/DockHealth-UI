@@ -139,7 +139,7 @@ const SendEmailFromTaskModal = () => {
         <InputContainerStyled>
           <ContactsAutoComplete
             type={CommunicationType.EMAIL}
-            placeholder="Type the email address"
+            placeholder="Type the email address or name of the contact"
             onBlur={handleEmailBlur}
             onChange={(_event, newValue, reason) => {
               if (reason === 'clear') {

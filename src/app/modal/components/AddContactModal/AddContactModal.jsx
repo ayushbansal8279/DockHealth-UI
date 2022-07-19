@@ -125,11 +125,11 @@ function AddContactStep({
                 />
               </Grid>
               <Grid item>
-                <FormInput
+                <FormInputWithMask
+                  mask="999-999-9999"
                   name="phone"
                   label="Phone"
                   placeholder="Type the phone number"
-                  shrink
                 />
               </Grid>
               <Grid item>
@@ -137,7 +137,7 @@ function AddContactStep({
                   mask="999-999-9999"
                   name="fax"
                   label="Fax"
-                  placeholder="type the fax number"
+                  placeholder="Type the fax number"
                 />
               </Grid>
 
@@ -164,7 +164,7 @@ function AddContactStep({
                       ) : null
                     }
                   >
-                    {identifier ? 'edit' : 'save'}
+                    Save
                   </Button>
                 </ButtonGroupFlexStyled>
               </Grid>

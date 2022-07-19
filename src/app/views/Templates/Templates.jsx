@@ -1,10 +1,17 @@
 import BasicLayoutHeader from 'components/template/BasicLayoutHeader/BasicLayoutHeader';
 import ViewLayout from 'components/template/ViewLayout/ViewLayout';
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
+import { useHistory } from 'react-router-dom';
+import { useDispatch, useSelector } from 'react-redux';
 import { getAllTemplates, deleteTemplate } from 'api/template-api';
 import { Box, Button } from '@material-ui/core';
-import { useDispatch } from 'react-redux';
 import { openModal, closeModal } from 'modal/actions';
+import {
+  userHasSendEmailFeatureSelector,
+  userHasSendFaxFeatureSelector,
+  userHasSendSmsFeatureSelector,
+  userHasPostEMRNoteFeatureSelector,
+} from 'selectors/user-selectors';
 import { StyledDataGrid } from './DataGridStyles';
 import { getTemplateColumns } from './helpers';
 import { ViewContainer, AddTemplateWrapper } from './styled';
@@ -12,9 +19,29 @@ import { ViewContainer, AddTemplateWrapper } from './styled';
 const PAGE_SIZE = 30;
 
 const Templates = () => {
+  const history = useHistory();
   const [templates, setTemplates] = useState([]);
   const [page, setPage] = useState(0);
   const dispatch = useDispatch();
+
+  const sendEmailAvailable = useSelector(userHasSendEmailFeatureSelector);
+  const sendFaxAvailable = useSelector(userHasSendFaxFeatureSelector);
+  const sendSmsAvailable = useSelector(userHasSendSmsFeatureSelector);
+  const postToEMRAvailable = useSelector(userHasPostEMRNoteFeatureSelector);
+
+  useEffect(() => {
+    if (
+      sendEmailAvailable ||
+      sendFaxAvailable ||
+      sendSmsAvailable ||
+      postToEMRAvailable
+    ) {
+      // continue
+    } else {
+      history.push('/');
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   useEffect(() => {
     getAllTemplates().then(list => setTemplates(list));

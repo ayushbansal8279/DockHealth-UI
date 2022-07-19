@@ -14,7 +14,6 @@ import { openDrawer } from 'actions/task-drawer-actions';
 import { useDispatch } from 'react-redux';
 import { updatePatientDetails } from 'actions/patient-details-actions';
 import TaskItemMultiDropdown from 'components/task/StandardTaskItem/customFieldsTaskItemComponents/TaskItemMultiDropdown/TaskItemMultiDropdown';
-import { isNotEmptyArray } from 'helpers/utils-helpers';
 import {
   createMetaDataObjectToSend,
   CUSTOM_FIELD_TYPES,
@@ -55,7 +54,7 @@ const TaskItemCustomField = ({
         const patientMetaData = (task?.patient?.patientMetaData || [])
           ?.filter(tmd => tmd.customFieldIdentifier !== field.identifier)
           ?.map(tmd => createMetaDataObjectToSend(tmd));
-        if (isNotEmptyArray(newValue)) {
+        if (Array.isArray(newValue)) {
           patientMetaData.push({
             customFieldIdentifier: field.identifier,
             values: newValue,
@@ -73,7 +72,7 @@ const TaskItemCustomField = ({
       const taskMetaData = task.taskMetaData
         ?.filter(tmd => tmd.customFieldIdentifier !== field.identifier)
         ?.map(tmd => createMetaDataObjectToSend(tmd));
-      if (isNotEmptyArray(newValue)) {
+      if (Array.isArray(newValue)) {
         taskMetaData.push({
           customFieldIdentifier: field.identifier,
           values: newValue,

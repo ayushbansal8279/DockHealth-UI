@@ -41,7 +41,7 @@ const MultiSelect = ({
       name={name}
       label={label}
       readOnly={readOnly}
-      value={renderedValues?.join(',')}
+      value={renderedValues?.join(', ')}
       error={error}
       placeholder={placeholder}
       {...restProps}
@@ -76,7 +76,7 @@ const MultiSelect = ({
             .map(selected => {
               return options.find(option => option.value === selected)?.label;
             })
-            .join(',')
+            .join(', ')
         }
         {...restProps}
       >
