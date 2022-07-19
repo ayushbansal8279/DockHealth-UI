@@ -518,6 +518,7 @@ const SmartFlowBuilderView = () => {
         dispatch(addNewNestedFlowElement(position));
         break;
       default:
+        // eslint-disable-next-line no-console
         console.error('UNHANDLED NODE TYPE');
         break;
     }

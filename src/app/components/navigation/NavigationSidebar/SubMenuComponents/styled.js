@@ -44,6 +44,11 @@ export const SubMenuLink = styled(Link)`
   }
 `;
 
+export const MenuLink = styled(SubMenuLink)`
+  color: ${palette.mediumGrey};
+  padding: 0;
+`;
+
 export const BlueSubMenuLink = styled(SubMenuLink)`
   color: ${palette.brightBlue};
 
