@@ -1,4 +1,3 @@
-import Input from 'components/common/Input/Input';
 import TextEditor from 'components/common/TextEditor/TextEditor';
 import { EditorState } from 'draft-js';
 import CustomTextEditor from 'components/common/CustomTextEditor/CustomTextEditor';
@@ -35,6 +34,10 @@ import {
   InfoHeaderAttachmentsTextStyled,
   InputContainerStyled,
   TextEditorContainerStyled,
+  LabelName,
+  LabelValue,
+  ContactInfoRow,
+  AddEditContactLink,
 } from '../styled';
 import { makeFaxNumber, renderAddOrEdit, validateFaxInput } from '../helpers';
 import AddContactStep from '../../AddContactModal/AddContactModal';
@@ -101,7 +104,7 @@ const SendFaxFromTaskModal = () => {
         <InputContainerStyled>
           <ContactsAutoComplete
             type={CommunicationType.FAX}
-            placeholder="Type the fax address"
+            placeholder="Type the fax number or name of the contact"
             onBlur={handleFaxBlur}
             onChange={(event, newValue, reason) => {
               if (reason === 'clear') {
@@ -122,19 +125,21 @@ const SendFaxFromTaskModal = () => {
             error={faxError}
             autoFocus
             label="Fax"
-            errorMessage="Incorrect Fax number"
+            errorMessage="Incorrect fax number"
             disabled={show}
             value={contact?.value ?? ''}
           />
-          {renderAddOrEdit(contact, setShow)}
-          {contact?.identifier && (
-            <Input
-              type="text"
-              label="Recipient’s Name"
-              disabled
-              value={contact.label}
-            />
-          )}
+          <ContactInfoRow>
+            {contact?.identifier && (
+              <div>
+                <LabelName>Recipient: </LabelName>
+                <LabelValue>{contact.label}</LabelValue>
+              </div>
+            )}
+            <AddEditContactLink>
+              {renderAddOrEdit(contact, setShow)}
+            </AddEditContactLink>
+          </ContactInfoRow>
           <TemplateAutoComplete
             type={CommunicationType.FAX}
             placeholder="Pick template"
@@ -149,7 +154,7 @@ const SendFaxFromTaskModal = () => {
             disabled={show}
           />
           <TextEditorContainerStyled>
-            <CustomTextEditor label="Fax body">
+            <CustomTextEditor label="Fax Cover Message">
               <TextEditor
                 readOnly={false}
                 minHeight={100}
