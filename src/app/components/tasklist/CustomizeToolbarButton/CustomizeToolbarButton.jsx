@@ -1,3 +1,4 @@
+/* eslint-disable sonarjs/cognitive-complexity */
 /* eslint-disable no-underscore-dangle */
 import React, { useState, useRef, useMemo, useCallback } from 'react';
 import { Box, List, ListItemText, MenuItem, Popover } from '@material-ui/core';
@@ -37,6 +38,7 @@ const CustomizeToolbarButton = ({
   additionalOptions,
   showCustomColumnCreate = true,
   additionalOptionsTitle = 'Display Options',
+  disableButton = false,
 }) => {
   const [open, setOpen] = useState(false);
   const [openUpgradePopup, setOpenUpgradePopup] = useState(false);
@@ -108,7 +110,13 @@ const CustomizeToolbarButton = ({
       <ToolbarButton
         ref={buttonReference}
         icon={<CustomizeImg src={CustomizeIcon} alt="view type icon" />}
-        onClick={() => setOpen(!open)}
+        onClick={disableButton ? undefined : () => setOpen(!open)}
+        disableButton={disableButton}
+        tooltip={
+          disableButton
+            ? 'Customization is restricted by list admin'
+            : 'Customize your list'
+        }
       >
         Customize
       </ToolbarButton>

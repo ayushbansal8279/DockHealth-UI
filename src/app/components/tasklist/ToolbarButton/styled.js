@@ -9,6 +9,7 @@ export const CustomizeButton = styled.button`
   align-items: center;
   border-radius: 5px;
   color: ${({ color }) => color || palette.darkGrey};
+  ${({ disableButton }) => `opacity: ${disableButton ? 0.5 : 1};`}
 
   &:hover {
     background: ${palette.coolGrey3};

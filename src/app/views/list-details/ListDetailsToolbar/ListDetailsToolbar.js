@@ -17,6 +17,7 @@ import {
   currentTaskListSelector,
   currentTaskListTasksStatusSelector,
 } from 'selectors/task-list-selectors';
+import { isMemberAdmin } from 'helpers/list-members-helper';
 import { ToolbarContainer } from './styled';
 import TaskCustomFieldsModal from '../../../modal/customModals/TaskCustomFieldsModal';
 
@@ -32,10 +33,12 @@ const ListDetailsToolbar = ({ additionalOptions }) => {
   const isOrganizationAdmin = checkIfUserIsOrganizationAdmin(currentUser);
   const taskList = useSelector(currentTaskListSelector);
   const { taskListIdentifier, restrictCustomization } = taskList || {};
-  const isListCreator =
-    taskList?.creator?.identifier === currentUser.identifier;
+  const currentUserMember = taskList?.listUsers.find(
+    u => u.identifier === currentUser?.identifier,
+  );
+  const isListAdmin = isMemberAdmin(currentUserMember);
   const viewType = getViewTypeFromQueryString(search);
-  const restrictCustomizationFeatures = restrictCustomization && !isListCreator;
+  const restrictCustomizationFeatures = restrictCustomization && !isListAdmin;
 
   const handleChangeViewType = useCallback(
     event => {
@@ -104,22 +107,19 @@ const ListDetailsToolbar = ({ additionalOptions }) => {
         />
         {viewType === ViewType.LIST_VIEW && (
           <>
-            {!restrictCustomizationFeatures && (
-              <>
-                <Box mx={0.5} />
-                <CustomizeToolbarButton
-                  openCustomFieldModal={() => setCustomFieldsModalOpened(true)}
-                  additionalOptions={additionalOptions}
-                />
-              </>
-            )}
+            <Box mx={0.5} />
+            <CustomizeToolbarButton
+              openCustomFieldModal={() => setCustomFieldsModalOpened(true)}
+              additionalOptions={additionalOptions}
+              disableButton={restrictCustomizationFeatures}
+            />
             <Box mx={0.5} />
             <TaskCustomFieldsModal
               opened={customFieldsModalOpened}
               handleClose={() => setCustomFieldsModalOpened(false)}
               taskListIdentifier={taskList?.taskListIdentifier}
               isOrganizationAdmin={isOrganizationAdmin}
-              isListCreator={isListCreator}
+              isListAdmin={isListAdmin}
             />
             {taskList?.listType === 'INBOX' && (
               <>

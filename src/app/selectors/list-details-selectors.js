@@ -8,11 +8,6 @@ export const tasksIsFetchingSelector = createSelector(
   ({ isFetching }) => isFetching,
 );
 
-export const currentTaskListSelector = createSelector(
-  listTasksSelector,
-  ({ currentTaskList }) => currentTaskList,
-);
-
 export const completedTasksSelector = createSelector(
   listTasksSelector,
   ({ completedTasks }) => completedTasks,
