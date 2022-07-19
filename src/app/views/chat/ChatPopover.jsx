@@ -2,7 +2,6 @@ import React, { useState, useCallback } from 'react';
 import { IconButton, Popover, Box, Typography } from '@material-ui/core';
 import { useHistory } from 'react-router-dom';
 import ChatIcon from '@material-ui/icons/Chat';
-// import ChatIcon from 'img/modals/chat';
 import ArrowBack from '@material-ui/icons/ArrowBack';
 import CloseIcon from '@material-ui/icons/Close';
 import OpenInNewIcon from '@material-ui/icons/OpenInNew';
@@ -11,6 +10,7 @@ import { useBoolean } from 'hooks/useBoolean';
 import { CHAT_PATH } from 'routing/helpers/paths';
 import { userProfileSelector } from 'selectors/user-selectors';
 import { useSelector } from 'react-redux';
+import SBProvider from '@sendbird/uikit-react/SendbirdProvider';
 import Chat from './Chat';
 import SelectedChannelContext from './SelectedChannelContext';
 import {
@@ -25,6 +25,9 @@ const ChatPopover = () => {
   const [open, setOpen, unsetOpen] = useBoolean(false);
   const [anchorElement, setAnchorElement] = useState(null);
   const history = useHistory();
+
+  const appId =
+    process.env.SENDBIRD_APP_ID ?? 'D11A4B11-21AD-4025-9D8C-2BCF693C814C';
 
   const [selectedChannel, setSelectedChannel] = useState(null);
   const value = { selectedChannel, setSelectedChannel };
@@ -96,7 +99,9 @@ const ChatPopover = () => {
             </HeaderContainer>
             <ChatContainer>
               <SelectedChannelContext.Provider value={value}>
-                <Chat userId={identifier} name={name} />
+                <SBProvider appId={appId} userId={identifier} nickname={name}>
+                  <Chat userId={identifier} name={name} />
+                </SBProvider>
               </SelectedChannelContext.Provider>
             </ChatContainer>
           </Container>
