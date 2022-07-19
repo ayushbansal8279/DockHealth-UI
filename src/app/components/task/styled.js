@@ -65,6 +65,8 @@ export const CompletedBy = styled.div`
   transition: all 0.1s ease-out;
   transition-delay: ${props => (props.isCompleted ? '0' : '0.4')}s;
   font-size: ${fontSizes.small};
+  padding-left: 5px;
+  padding-bottom: 2px;
 
   > span {
     color: ${palette.brightBlue};
@@ -73,6 +75,21 @@ export const CompletedBy = styled.div`
     transition: transform 0.4s ease-out;
     transition-delay: ${props => (props.isCompleted ? 0.1 : 0)}s;
     transform: translateX(${props => (props.isCompleted ? 0 : -100)}%);
+  }
+`;
+
+export const TaskContext = styled.div`
+  align-items: flex-end;
+  display: flex;
+  overflow: hidden;
+  font-size: ${fontSizes.small};
+  padding-left: 5px;
+  padding-bottom: 2px;
+
+  > span {
+    color: ${palette.brightBlue};
+    font-weight: ${fontWeights.regular};
+    line-height: 1;
   }
 `;
 

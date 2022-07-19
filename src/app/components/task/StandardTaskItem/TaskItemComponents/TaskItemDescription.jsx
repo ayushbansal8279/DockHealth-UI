@@ -34,11 +34,12 @@ import {
   TaskItemDescriptionIndicators,
   DescriptionTooltipWrapper,
   DescriptionBorder,
+  TaskContext,
 } from '../../styled';
 
 const TaskItemDescription = ({
   task,
-  isCompletedGroup,
+  // isCompletedGroup,
   highlightedValue,
   hasParentTaskLabel,
   isEditing,
@@ -168,7 +169,7 @@ const TaskItemDescription = ({
               );
             }
           }}
-          isCrossedOut={!isCompletedGroup && isCompleted}
+          isCrossedOut={isCompleted}
           isUnread={!read}
         >
           <DescriptionBorder
@@ -224,9 +225,9 @@ const TaskItemDescription = ({
         </Description>
       </Box>
       <TaskItemDescriptionIndicators>
-        {isCompletedGroup && (
+        {isCompleted && (
           <CompletedBy isCompleted={isCompleted}>
-            <span>{`Completed by ${completedByName} ${completedDt &&
+            <span>{`By ${completedByName} ${completedDt &&
               ` on ${
                 completedDt ? `${moment(completedDt).format('MM/DD/YYYY')}` : ''
               }`} ${
@@ -245,6 +246,11 @@ const TaskItemDescription = ({
               >{` ${parentTask.description}`}</span>
             </TaskItemParentTaskLabel>
           </>
+        )}
+        {linkedTaskTemplate && !isCompleted && (
+          <TaskContext>
+            <span>Triggers: {linkedTaskTemplate.name}</span>
+          </TaskContext>
         )}
       </TaskItemDescriptionIndicators>
     </DescriptionBox>
