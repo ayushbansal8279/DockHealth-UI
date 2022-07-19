@@ -8,6 +8,7 @@ import withSendBird from '@sendbird/uikit-react/withSendBird';
 import { ChannelListProvider } from '@sendbird/uikit-react/ChannelList/context';
 import ChatConversation from './ChatConversation';
 import ChatChannelList from './ChatChannelList';
+import SelectedChannelContext from './SelectedChannelContext';
 import { Container, ColorSet } from './styled';
 import './sendbird-styles.css';
 
@@ -17,27 +18,30 @@ const ChatView = () => {
     process.env.REACT_APP_SENDBIRD_APP_ID ??
     `D11A4B11-21AD-4025-9D8C-2BCF693C814C`;
 
-  const [selectedChannel, setSelectedChannel] = useState('');
+  const [selectedChannel, setSelectedChannel] = useState(null);
+  const value = { selectedChannel, setSelectedChannel };
 
   return (
     <ViewLayout header={<BasicLayoutHeader title="Chat" isChat />}>
       <Container>
         <div className="full-view-chat sendbird-app__wrap">
-          <SBProvider
-            appId={APP_ID}
-            userId={identifier}
-            nickname={name}
-            colorSet={ColorSet}
-          >
-            <ChannelListProvider>
-              <ChatChannelList
-                className="full-view-chat"
-                setSelectedChannel={setSelectedChannel}
-                isFullView
-              />
-            </ChannelListProvider>
-            <ChatConversation currentChannelUrl={selectedChannel.url} />
-          </SBProvider>
+          <SelectedChannelContext.Provider value={value}>
+            <SBProvider
+              appId={APP_ID}
+              userId={identifier}
+              nickname={name}
+              colorSet={ColorSet}
+            >
+              <ChannelListProvider>
+                <ChatChannelList
+                  className="full-view-chat"
+                  setSelectedChannel={setSelectedChannel}
+                  isFullView
+                />
+              </ChannelListProvider>
+              <ChatConversation currentChannelUrl={selectedChannel?.url} />
+            </SBProvider>
+          </SelectedChannelContext.Provider>
         </div>
       </Container>
     </ViewLayout>

@@ -18,6 +18,7 @@ import {
   StyledIconButton,
   HeaderContainer,
   ChatContainer,
+  ColorSet,
 } from './styled';
 
 const ChatPopover = () => {
@@ -99,7 +100,12 @@ const ChatPopover = () => {
             </HeaderContainer>
             <ChatContainer>
               <SelectedChannelContext.Provider value={value}>
-                <SBProvider appId={appId} userId={identifier} nickname={name}>
+                <SBProvider
+                  appId={appId}
+                  userId={identifier}
+                  nickname={name}
+                  colorSet={ColorSet}
+                >
                   <Chat userId={identifier} name={name} />
                 </SBProvider>
               </SelectedChannelContext.Provider>
