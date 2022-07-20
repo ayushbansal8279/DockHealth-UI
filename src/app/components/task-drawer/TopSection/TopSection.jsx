@@ -58,61 +58,62 @@ const TopSection = ({
   const shareTaskAvailable = useSelector(userHasShareTaskFeatureSelector);
 
   const options = useMemo(
-    () => [
-      {
-        name: 'Move',
-        onClick: handleMoveTask,
-        restriction: restrictions?.move === DISABLED,
-      },
-      {
-        name: 'Duplicate',
-        onClick: () => {
-          const hasAttachments = !!(
-            selectedTask &&
-            selectedTask.attachments &&
-            selectedTask.attachments.length > 0
-          );
+    () =>
+      [
+        {
+          name: 'Move',
+          onClick: handleMoveTask,
+          restriction: restrictions?.move === DISABLED,
+        },
+        {
+          name: 'Duplicate',
+          onClick: () => {
+            const hasAttachments = !!(
+              selectedTask &&
+              selectedTask.attachments &&
+              selectedTask.attachments.length > 0
+            );
 
-          if (hasAttachments) {
-            openDuplicateConfirmationModal();
-          } else {
-            duplicateTaskWithoutConfirmation();
-          }
+            if (hasAttachments) {
+              openDuplicateConfirmationModal();
+            } else {
+              duplicateTaskWithoutConfirmation();
+            }
+          },
+          restriction: restrictions?.duplicate === DISABLED,
         },
-        restriction: restrictions?.duplicate === DISABLED,
-      },
-      shareTaskAvailable &&
-        !isTemplateTask && {
-          name: 'Share Task',
-          onClick: handleShareTask,
+        shareTaskAvailable &&
+          !isTemplateTask && {
+            name: 'Share Task',
+            onClick: handleShareTask,
+          },
+        {
+          name: 'Copy task link',
+          onClick: handleCopyLink,
         },
-      {
-        name: 'Copy task link',
-        onClick: handleCopyLink,
-      },
-      sendEmailAvailable && {
-        name: 'Send Email',
-        onClick: () => dispatch(openModal('SendEmailFromTask')),
-      },
-      sendFaxAvailable && {
-        name: 'Send FAX',
-        onClick: () => dispatch(openModal('SendFaxFromTask')),
-      },
-      sendSmsAvailable && {
-        name: 'Send SMS',
-        onClick: () => dispatch(openModal('SendSmsFromTask')),
-      },
-      postToEMRAvailable && {
-        name: 'Post Note to EHR',
-        onClick: () => dispatch(openModal('SendEmrFromTask')),
-      },
-      {
-        name: 'Delete',
-        color: palette.error,
-        onClick: openDeleteConfirmationModal,
-        restriction: restrictions?.delete === DISABLED,
-      },
-    ],
+        sendEmailAvailable && {
+          name: 'Send Email',
+          onClick: () => dispatch(openModal('SendEmailFromTask')),
+        },
+        sendFaxAvailable && {
+          name: 'Send FAX',
+          onClick: () => dispatch(openModal('SendFaxFromTask')),
+        },
+        sendSmsAvailable && {
+          name: 'Send SMS',
+          onClick: () => dispatch(openModal('SendSmsFromTask')),
+        },
+        postToEMRAvailable && {
+          name: 'Post Note to EHR',
+          onClick: () => dispatch(openModal('SendEmrFromTask')),
+        },
+        {
+          name: 'Delete',
+          color: palette.error,
+          onClick: openDeleteConfirmationModal,
+          restriction: restrictions?.delete === DISABLED,
+        },
+      ].filter(o => typeof o !== 'boolean'),
     [
       handleMoveTask,
       restrictions,

@@ -88,7 +88,15 @@ function UserGroupView() {
       <Grid container justify="center">
         <PageContentHeader>
           <Grid container wrap="nowrap">
-            <Grid item xs={6} xl={6} md={5} lg={4} justify="flex-start">
+            <Grid
+              container
+              item
+              xs={6}
+              xl={6}
+              md={5}
+              lg={4}
+              justify="flex-start"
+            >
               <SearchInputWrapper fullWidth={isSearchFocused || searchTerm}>
                 <SearchInput
                   value={searchTerm}

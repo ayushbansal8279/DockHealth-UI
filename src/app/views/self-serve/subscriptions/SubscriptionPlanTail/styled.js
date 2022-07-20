@@ -81,7 +81,7 @@ export const SubscribeButton = styled.button`
   color: ${({ active, color }) => (active ? color : palette.white)};
   font-size: ${fontSizes.smallPlus};
   font-weight: ${fontWeights.bold};
-  ${({ active }) => !active && 'text-transform: uppercase;'}
+  ${({ active }) => (!active ? 'text-transform: uppercase;' : '')}
 `;
 
 export const ContactUsAnchor = styled.a`

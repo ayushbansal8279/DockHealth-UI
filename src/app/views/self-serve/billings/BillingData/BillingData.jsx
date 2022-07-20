@@ -10,7 +10,7 @@ import {
 } from 'react-stripe-elements';
 import { useEffectOnce, useToggle } from 'react-use';
 import { object, string } from 'yup';
-import { yupResolver } from "@hookform/resolvers/yup";
+import { yupResolver } from '@hookform/resolvers/yup';
 import Spacing from 'components/common/Spacing';
 import Input from 'components/common/Input/Input';
 import FormInput from 'components/common/Input/FormInput';

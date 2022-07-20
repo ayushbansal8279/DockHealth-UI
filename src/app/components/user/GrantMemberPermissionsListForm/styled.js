@@ -56,11 +56,11 @@ export const MemberFullNameWrapper = styled.div`
   flex: 1;
   overflow: hidden;
 
-  ${({ isPending }) => isPending && 'opacity: 0.7;'}
+  ${({ isPending }) => (isPending ? 'opacity: 0.7;' : '')}
 `;
 
 export const MemberAvatarWrapper = styled.div`
-  ${({ isPending }) => isPending && 'opacity: 0.7;'}
+  ${({ isPending }) => (isPending ? 'opacity: 0.7;' : '')}
 `;
 
 export const MemberFullName = styled.p`

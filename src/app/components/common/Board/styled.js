@@ -47,7 +47,7 @@ export const TaskContainer = styled.div`
 `;
 
 export const BoardColumnTasksContainer = styled.div`
-  ${({ isDragging }) => isDragging && 'cursor: grab;'}
+  ${({ isDragging }) => (isDragging ? 'cursor: grab;' : '')}
   height: 100%;
   width: 245px;
 `;

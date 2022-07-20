@@ -210,20 +210,14 @@ const CustomizeToolbarButton = ({
               </Box>
               <List>
                 {additionalOptions.map(option => {
-                  const {
-                    name,
-                    checked = false,
-                    disabled,
-                    key,
-                    onClick,
-                  } = option;
+                  const { name, checked = false, disabled, onClick } = option;
                   return (
                     name && (
                       <MenuItem
-                        key={key}
+                        key={name}
                         onClick={() => {
                           if (typeof onClick === 'function' && !disabled)
-                            onClick(key);
+                            onClick();
                         }}
                       >
                         <Checkbox isDisabled={disabled} isChecked={checked} />
@@ -262,7 +256,7 @@ const CustomizeToolbarButton = ({
           horizontal: 155,
         }}
         anchorOrigin={{
-          vertical: 'middle',
+          vertical: 'center',
           horizontal: 'right',
         }}
         anchorEl={addColumnButtonReference.current}

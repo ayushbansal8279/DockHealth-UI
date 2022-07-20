@@ -40,7 +40,7 @@ export const StyledInput = styled.input`
   outline: none;
   padding: 1rem 2.5rem 0 1rem;
 
-  ${props => props.isPassword && 'padding-right: 5rem;'}
+  ${props => (props.isPassword ? 'padding-right: 5rem;' : '')}
 
   &:focus, &:active {
     background-color: transparent;
@@ -88,7 +88,7 @@ export const StyledInputContainer = styled.div`
   position: relative;
   height: 3.75rem;
   margin-top: 1.5rem;
-  ${props => props.invisible && 'opacity: 0;'}
+  ${props => (props.invisible ? 'opacity: 0;' : '')}
   width: 100%;
 
   &.error {

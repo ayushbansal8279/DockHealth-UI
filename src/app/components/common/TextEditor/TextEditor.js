@@ -8,7 +8,7 @@ import React, {
   useEffect,
 } from 'react';
 import { useSelector } from 'react-redux';
-import { convertToRaw, Entity, EditorState } from 'draft-js';
+import { convertToRaw, EditorState } from 'draft-js';
 import { makeStyles } from '@material-ui/core/styles';
 import Editor from 'draft-js-plugins-editor';
 import debounce from 'lodash.debounce';
@@ -308,7 +308,7 @@ const TextEditor = React.forwardRef(
         const startOffset = selection.getStartOffset();
         const block = content.getBlockForKey(startKey);
         const linkKey = block.getEntityAt(startOffset);
-        const linkInstance = Entity.get(linkKey);
+        const linkInstance = currentState.getEntity(linkKey);
         const { url } = linkInstance.getData();
 
         return url || '';

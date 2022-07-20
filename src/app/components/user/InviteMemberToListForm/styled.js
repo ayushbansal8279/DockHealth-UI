@@ -56,11 +56,11 @@ export const ItemFullNameWrapper = styled.div`
   flex: 1;
   overflow: hidden;
 
-  ${({ isPending }) => isPending && 'opacity: 0.7;'}
+  ${({ isPending }) => (isPending ? 'opacity: 0.7;' : '')}
 `;
 
 export const ItemAvatarWrapper = styled.div`
-  ${({ isPending }) => isPending && 'opacity: 0.7;'}
+  ${({ isPending }) => (isPending ? 'opacity: 0.7;' : '')}
 `;
 
 export const ItemFullName = styled.p`
