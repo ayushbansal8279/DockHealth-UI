@@ -1,5 +1,4 @@
-import React from 'react';
-import ChannelPreview from '@sendbird/uikit-react/ChannelList/components/ChannelPreview';
+import React, { useEffect, useContext } from 'react';
 import ChannelPreviewAction from '@sendbird/uikit-react/ChannelList/components/ChannelPreviewAction';
 import { useChannelListContext } from '@sendbird/uikit-react/ChannelList/context';
 import ChannelListHeader from '@sendbird/uikit-react/ChannelList/components/ChannelListHeader';
@@ -8,17 +7,25 @@ import { userProfileSelector } from 'selectors/user-selectors';
 import { useSelector } from 'react-redux';
 import { CircularProgress } from '@material-ui/core';
 import { Title } from 'views/TaskTour/styled';
+import SelectedChannelContext from './SelectedChannelContext';
+import ChatChannelPreview from './ChatChannelPreview';
 
 export default function ChatChannelList(props) {
-  const { setSelectedChannel } = props;
+  const { isFullView } = props;
   const { identifier } = useSelector(userProfileSelector);
   const { allChannels, initialized, loading } = useChannelListContext();
 
-  if (!initialized) {
-    return <CircularProgress />;
-  }
+  const { setSelectedChannel, selectedChannel } = useContext(
+    SelectedChannelContext,
+  );
 
-  if (loading) {
+  useEffect(() => {
+    if (allChannels && allChannels.length > 0 && isFullView) {
+      setSelectedChannel(allChannels[0]);
+    }
+  }, [allChannels, isFullView, setSelectedChannel]);
+
+  if (!initialized || loading) {
     return <CircularProgress />;
   }
 
@@ -34,24 +41,20 @@ export default function ChatChannelList(props) {
       {allChannels.map(channel => {
         return (
           <div key={channel.url}>
-            <ChannelPreview
+            <ChatChannelPreview
               channel={channel}
               currentUser={identifier}
-              isActive={false}
+              isActive={isFullView && selectedChannel === channel}
               renderChannelAction={() => {
-                console.log('channel action happening');
                 return (
                   <ChannelPreviewAction
                     channel={channel}
-                    onLeaveChannel={() => {
-                      console.log('leaving channel');
-                    }}
+                    onLeaveChannel={() => {}}
                   />
                 );
               }}
               onClick={() => {
-                console.log('click happened');
-                if (channel && channel.url) {
+                if (channel?.url) {
                   setSelectedChannel(channel);
                 }
               }}
