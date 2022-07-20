@@ -3,7 +3,6 @@ import { ChannelSettingsProvider } from '@sendbird/uikit-react/ChannelSettings/c
 import ChannelSettingsUI from '@sendbird/uikit-react/ChannelSettings/components/ChannelSettingsUI';
 import UserPanel from '@sendbird/uikit-react/ChannelSettings/components/UserPanel';
 import SelectedChannelContext from './SelectedChannelContext';
-// import AdminPanel from '@sendbird/uikit-react/ChannelSettings/components/AdminPanel';
 
 const ChatChannelSettings = props => {
   const { setShowSettings } = props;
