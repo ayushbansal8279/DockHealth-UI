@@ -137,10 +137,12 @@ const DashboardTasksGroup = ({
     setNewTasks(dashboardTasks);
   }, [dashboardTasks]);
 
-  const groupHasMultipleAssignees = useMemo(
-    () => tasks?.some(({ assignedToUsers }) => assignedToUsers?.length > 1),
-    [tasks],
-  );
+  const groupHasMultipleAssignees = false;
+
+  // const groupHasMultipleAssignees = useMemo(
+  //   () => tasks?.some(({ assignedToUsers }) => assignedToUsers?.length > 1),
+  //   [tasks],
+  // );
 
   const dueDateForQuickAdd = useMemo(() => {
     if (groupType === DashboardGroup.TODAY)
@@ -160,6 +162,7 @@ const DashboardTasksGroup = ({
   const handleQuickAddTask = ({ description, patientIdentifier }) => {
     dispatch(
       openModal('ListPicker', {
+        enableSelectingGroupStep: true,
         fetchMethod: () => getSharedTaskListsWithCurrentUser(userIdentifier),
         listCreationPayload: {
           adminIdentifiers:
@@ -167,11 +170,12 @@ const DashboardTasksGroup = ({
               ? [userIdentifier]
               : [],
         },
-        confirm: taskListIdentifier => {
+        confirm: (taskListIdentifier, taskGroupIdentifier) => {
           dispatch(
             TaskActions.saveTask({
               description,
               taskListIdentifier,
+              taskGroupIdentifier,
               assignedToIdentifier: userIdentifier,
               patientIdentifier,
               dueDate: dueDateForQuickAdd,

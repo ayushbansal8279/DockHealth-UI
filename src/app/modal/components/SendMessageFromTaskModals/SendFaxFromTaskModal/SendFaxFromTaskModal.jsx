@@ -1,6 +1,7 @@
-import Input from 'components/common/Input/Input';
-import InputMask from 'react-input-mask';
-import React, { useCallback, useEffect, useState } from 'react';
+import TextEditor from 'components/common/TextEditor/TextEditor';
+import { EditorState } from 'draft-js';
+import CustomTextEditor from 'components/common/CustomTextEditor/CustomTextEditor';
+import React, { useCallback, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { sendFaxForTask } from 'actions/task-actions';
 import Button from 'components/common/Button/Button';
@@ -8,6 +9,14 @@ import { selectedTaskSelector } from 'selectors/task-drawer-selectors';
 import Checkbox from 'components/common/Checkbox/Checkbox';
 
 import { closeModal } from 'modal/actions';
+import { CommunicationType } from 'helpers/task-helpers';
+import ContactsAutoComplete from 'components/common/ContactsAutoComplete/ContactsAutocomplete';
+import ReactModal from 'react-modal';
+import {
+  addStylesToText,
+  convertFromEditorStateToOutput,
+} from 'components/common/TextEditor/helpers';
+import TemplateAutoComplete from 'components/common/TemplateAutoComplete/TemplateAutoComplete';
 import {
   CloseIcon,
   CloseIconButton,
@@ -24,14 +33,22 @@ import {
   AttachmentsContainerStyled,
   InfoHeaderAttachmentsTextStyled,
   InputContainerStyled,
+  TextEditorContainerStyled,
+  LabelName,
+  LabelValue,
+  ContactInfoRow,
+  AddEditContactLink,
 } from '../styled';
+import { makeFaxNumber, renderAddOrEdit, validateFaxInput } from '../helpers';
+import AddContactStep from '../../AddContactModal/AddContactModal';
 
 const SendFaxFromTaskModal = () => {
   const dispatch = useDispatch();
-  const [faxNumber, setFaxNumber] = useState('___-___-____');
-  const [message, setMessage] = useState('');
+  const [message, setMessage] = useState(() => EditorState.createEmpty());
   const [faxError, setFaxError] = useState(false);
-  const [isInvalidToSend, setIsInvalidToSend] = useState(true);
+  const [contact, setContact] = useState(null);
+  const [show, setShow] = useState(false);
+
   const selectedTask = useSelector(selectedTaskSelector);
   const [attachmentsToSend, setAttachmentsToSend] = useState([]);
   const { attachments, identifier } = selectedTask;
@@ -57,20 +74,22 @@ const SendFaxFromTaskModal = () => {
     [attachmentsToSend],
   );
 
-  const handleFaxBlur = () => {
-    return faxNumber.includes('_') ? setFaxError(true) : setFaxError(false);
-  };
-
-  useEffect(() => {
-    if (
-      !faxNumber.includes('_') &&
-      ((validAttachments.length > 0 && attachmentsToSend.length > 0) || message)
-    ) {
-      setIsInvalidToSend(false);
+  const handleFaxBlur = event => {
+    const faxNumber = event.target.value;
+    if (!validateFaxInput(faxNumber)) {
+      setFaxError(true);
     } else {
-      setIsInvalidToSend(true);
+      if (!contact || contact.value !== faxNumber) {
+        const [first, middle, last] = makeFaxNumber(faxNumber);
+        setContact({ value: `${first}-${middle}-${last}` });
+      }
+      setFaxError(false);
     }
-  }, [message, attachmentsToSend, validAttachments, faxNumber, faxError]);
+  };
+  const isValidToSend = !!(
+    validateFaxInput(contact?.value ?? '') &&
+    message.getCurrentContent().hasText()
+  );
 
   return (
     <ModalWrapper width="600px">
@@ -83,31 +102,69 @@ const SendFaxFromTaskModal = () => {
       </ModalHeaderContainerStyled>
       <ModalDescriptionContainer>
         <InputContainerStyled>
-          <InputMask
-            mask="999-999-9999"
-            value={faxNumber}
-            onChange={event => setFaxNumber(event.target.value)}
+          <ContactsAutoComplete
+            type={CommunicationType.FAX}
+            placeholder="Type the fax number or name of the contact"
             onBlur={handleFaxBlur}
-            alwaysShowMask
-          >
-            {() => (
-              <Input
-                type="tel"
-                label="fax"
-                name="fax"
-                placeholder="type the fax number"
-                autoFocus
-                helperText={faxError ? 'Incorrect fax' : null}
-                error={faxError}
-              />
-            )}
-          </InputMask>
-          <Input
-            multiline
-            placeholder="type message"
-            value={message}
-            onChange={event => setMessage(event.target.value)}
+            onChange={(event, newValue, reason) => {
+              if (reason === 'clear') {
+                setContact(null);
+                return;
+              }
+              if (typeof newValue === 'string') {
+                if (validateFaxInput(newValue)) {
+                  const [first, middle, last] = makeFaxNumber(newValue);
+                  setContact({ value: `${first}-${middle}-${last}` });
+                } else {
+                  setFaxError(true);
+                }
+              } else {
+                setContact(newValue);
+              }
+            }}
+            error={faxError}
+            autoFocus
+            label="Fax"
+            errorMessage="Incorrect fax number"
+            disabled={show}
+            value={contact?.value ?? ''}
           />
+          <ContactInfoRow>
+            {contact?.identifier && (
+              <div>
+                <LabelName>Recipient: </LabelName>
+                <LabelValue>{contact.label}</LabelValue>
+              </div>
+            )}
+            <AddEditContactLink>
+              {renderAddOrEdit(contact, setShow)}
+            </AddEditContactLink>
+          </ContactInfoRow>
+          <TemplateAutoComplete
+            type={CommunicationType.FAX}
+            placeholder="Pick template"
+            onChange={(event, newValue, reason) => {
+              if (reason === 'clear') {
+                setMessage(() => EditorState.createEmpty());
+                return;
+              }
+              const text = addStylesToText(newValue?.body ?? '');
+              setMessage(EditorState.push(message, text));
+            }}
+            disabled={show}
+          />
+          <TextEditorContainerStyled>
+            <CustomTextEditor label="Fax Cover Message">
+              <TextEditor
+                readOnly={false}
+                minHeight={100}
+                disableMentions
+                showToolbar
+                state={message}
+                onChange={setMessage}
+              />
+            </CustomTextEditor>
+          </TextEditorContainerStyled>
           {validAttachments?.length > 0 && (
             <>
               <InfoHeaderAttachmentsTextStyled>
@@ -146,12 +203,13 @@ const SendFaxFromTaskModal = () => {
           uppercase
           width="150px"
           variant="primary"
-          disabled={isInvalidToSend}
+          disabled={faxError || !isValidToSend}
           onClick={() => {
             dispatch(
               sendFaxForTask({
-                message,
-                recipientContact: faxNumber.replace(/\D/g, ''),
+                message: convertFromEditorStateToOutput(message, true)
+                  .tokenizedText,
+                recipientContact: contact?.value.replace(/\D/g, ''),
                 // taskAttachmentIdentifiers: attachments,
                 taskAttachmentIdentifiers: attachmentsToSend,
                 taskIdentifier: identifier,
@@ -163,6 +221,24 @@ const SendFaxFromTaskModal = () => {
           send
         </Button>
       </ModalFooterStyled>
+      <ReactModal
+        isOpen={show}
+        overlayClassName="modal-overlay"
+        className="modal-content"
+        onRequestClose={() => {
+          setShow(false);
+        }}
+      >
+        <AddContactStep
+          type={CommunicationType.FAX}
+          show={show}
+          setContactData={setContact}
+          handleShow={setShow}
+          fax={contact?.value}
+          name={contact?.label}
+          identifier={contact?.identifier}
+        />
+      </ReactModal>
     </ModalWrapper>
   );
 };

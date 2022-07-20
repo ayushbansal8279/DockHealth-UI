@@ -17,12 +17,13 @@ import {
   currentTaskListSelector,
   currentTaskListTasksStatusSelector,
 } from 'selectors/task-list-selectors';
+import { isMemberAdmin } from 'helpers/list-members-helper';
 import { ToolbarContainer } from './styled';
 import TaskCustomFieldsModal from '../../../modal/customModals/TaskCustomFieldsModal';
 
 const TASKS_VISIBILITY_KEY = 'SHOW_WORKFLOW_COMPLETED_TASKS';
 
-const ListDetailsToolbar = ({ onColumnSetupChange, additionalOptions }) => {
+const ListDetailsToolbar = ({ additionalOptions, children }) => {
   const dispatch = useDispatch();
   const { search } = useLocation();
   const history = useHistory();
@@ -31,10 +32,13 @@ const ListDetailsToolbar = ({ onColumnSetupChange, additionalOptions }) => {
   const tasksStatus = useSelector(currentTaskListTasksStatusSelector);
   const isOrganizationAdmin = checkIfUserIsOrganizationAdmin(currentUser);
   const taskList = useSelector(currentTaskListSelector);
-  const { taskListIdentifier } = taskList || {};
-  const isListCreator =
-    taskList?.creator?.identifier === currentUser.identifier;
+  const { taskListIdentifier, restrictCustomization } = taskList || {};
+  const currentUserMember = taskList?.listUsers.find(
+    u => u.identifier === currentUser?.identifier,
+  );
+  const isListAdmin = isMemberAdmin(currentUserMember);
   const viewType = getViewTypeFromQueryString(search);
+  const restrictCustomizationFeatures = restrictCustomization && !isListAdmin;
 
   const handleChangeViewType = useCallback(
     event => {
@@ -56,7 +60,9 @@ const ListDetailsToolbar = ({ onColumnSetupChange, additionalOptions }) => {
         ? taskList
         : taskList?.listUsers?.find(
             user => user.identifier === currentUser.identifier,
-          ) || {},
+          ) ||
+          taskList ||
+          {},
     [taskList, currentUser],
   );
 
@@ -103,9 +109,9 @@ const ListDetailsToolbar = ({ onColumnSetupChange, additionalOptions }) => {
           <>
             <Box mx={0.5} />
             <CustomizeToolbarButton
-              onChange={onColumnSetupChange}
               openCustomFieldModal={() => setCustomFieldsModalOpened(true)}
               additionalOptions={additionalOptions}
+              disableButton={restrictCustomizationFeatures}
             />
             <Box mx={0.5} />
             <TaskCustomFieldsModal
@@ -113,7 +119,7 @@ const ListDetailsToolbar = ({ onColumnSetupChange, additionalOptions }) => {
               handleClose={() => setCustomFieldsModalOpened(false)}
               taskListIdentifier={taskList?.taskListIdentifier}
               isOrganizationAdmin={isOrganizationAdmin}
-              isListCreator={isListCreator}
+              isListAdmin={isListAdmin}
             />
             {taskList?.listType === 'INBOX' && (
               <>
@@ -134,6 +140,7 @@ const ListDetailsToolbar = ({ onColumnSetupChange, additionalOptions }) => {
           <Box mx={0.5} />
         </Box>
       )}
+      {children}
     </ToolbarContainer>
   );
 };

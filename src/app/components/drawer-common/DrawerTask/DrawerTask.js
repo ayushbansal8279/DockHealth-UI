@@ -31,7 +31,6 @@ import { useMentionsEditorState } from 'components/common/TextEditor/use-mention
 import MemberGroup from 'components/user/MemberGroup/MemberGroup';
 import TaskIcon from 'components/task/TaskIcon/TaskIcon';
 import AssignMemberIcon from 'components/user/AssignMemberIcon/AssingMemberIcon';
-import { createSingleTaskPath } from 'routing/helpers/paths';
 import { DueDateBasicLabel } from 'components/task/styled';
 import DueDatePicker from 'components/task/DueDatePicker/DueDatePicker';
 import TaskDragHandle from 'components/task/TaskDragHandle/TaskDragHandle';
@@ -45,7 +44,6 @@ import {
 } from 'helpers/task-helpers';
 import { userProfileSelector } from 'selectors/user-selectors';
 import { DrawerFieldEnum } from 'helpers/task-drawer-helpers';
-import { useParams, useHistory } from 'react-router-dom';
 import {
   SINGLE_TASK_RESTRICTIONS_OPTIONS,
   SINGLE_TASK_RESTRICTIONS_PROFILES,
@@ -91,8 +89,6 @@ const DrawerTask = props => {
     reminderType,
   } = task;
 
-  const { identifier } = useParams();
-  const history = useHistory();
   const isCompleted = status === 'COMPLETE';
   const isTemplateTask = checkIfTemplateTask(task);
 
@@ -107,11 +103,9 @@ const DrawerTask = props => {
 
   const handleGoToChildTask = useCallback(
     childTask => {
-      return identifier
-        ? history.push(createSingleTaskPath(childTask.identifier))
-        : dispatch(storeAsCurrentTask(childTask));
+      return dispatch(storeAsCurrentTask(childTask));
     },
-    [dispatch, history, identifier],
+    [dispatch],
   );
 
   const handleReassignSubtask = useCallback(

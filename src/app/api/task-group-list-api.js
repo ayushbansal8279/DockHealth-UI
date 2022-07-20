@@ -2,9 +2,11 @@ import axios from './axios-heydoc';
 
 export const TASKGROUP_DEFAULT_TYPE = 'TASKLIST_DEFAULT';
 
-export const getGroupsByListId = listIdentifier =>
+export const getGroupsByListId = (listIdentifier, status = 'INCOMPLETE') =>
   axios
-    .get(`task/stats/getTaskStatsForListTaskGroups/${listIdentifier}`)
+    .get(
+      `task/stats/getTaskStatsForListTaskGroups/${listIdentifier}?status=${status}`,
+    )
     .then(({ data }) => data)
     .catch(error => {
       throw new Error(error?.response?.data?.errorMessage);

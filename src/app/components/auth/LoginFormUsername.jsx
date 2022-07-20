@@ -3,7 +3,7 @@ import React, { useState } from 'react';
 import { FormProvider, useForm } from 'react-hook-form';
 import { useMount } from 'react-use';
 import { object, string } from 'yup';
-import { yupResolver } from "@hookform/resolvers/yup";
+import { yupResolver } from '@hookform/resolvers/yup';
 import * as UserAuthApi from 'api/user-auth-api';
 import FormInput from 'components/common/Input/FormInput';
 import Loader, { LoaderSizes } from 'components/common/Loader/Loader';

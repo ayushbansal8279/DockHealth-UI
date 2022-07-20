@@ -29,18 +29,6 @@ export function getCurrentPatientAttachments() {
     type: ActionTypes.GET_CURRENT_PATIENT_ATTACHMENTS,
   };
 }
-export function updateOrderPreferencesInPatientList(
-  listIdentifier,
-  listDisplayColumns,
-  currentUserIdentifier,
-) {
-  return {
-    type: ActionTypes.UPDATE_ORDER_PREFERENCES_IN_PATIENT_LIST,
-    listIdentifier,
-    listDisplayColumns,
-    currentUserIdentifier,
-  };
-}
 
 export function getCurrentPatientTasks(taskStatus) {
   return {

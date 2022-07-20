@@ -2,7 +2,7 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import React, { useCallback, useEffect, useRef } from 'react';
 import PropTypes from 'prop-types';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import palette from 'styles/palette';
 import * as TaskApi from 'api/task-api';
 import { onRightClickAction } from 'helpers/ga-event-helper';
@@ -19,6 +19,7 @@ import {
 import { openModal, closeModal } from 'modal/actions';
 import { getTasksGroupsList } from 'actions/list-details-actions';
 import { SINGLE_TASK_RESTRICTIONS_OPTIONS } from 'restrictions/task-restrictions';
+import { userHasShareTaskFeatureSelector } from 'selectors/user-selectors';
 import { Backdrop, MenuContainer, MenuItemButton, Divider } from './styled';
 
 const { DISABLED, READ_ONLY } = SINGLE_TASK_RESTRICTIONS_OPTIONS;
@@ -38,6 +39,8 @@ const TaskItemContextMenu = ({
   const isSubtask = !!task.parentTaskIdentifier;
   const isTemplateTask = checkIfTemplateTask(task);
   const isBundleTask = checkIfBundleTask(task);
+
+  const shareTaskAvailable = useSelector(userHasShareTaskFeatureSelector);
 
   const handleKeyDown = useCallback(event => {
     function handleBackward() {
@@ -343,7 +346,7 @@ const TaskItemContextMenu = ({
               </MenuItemButton>
             </li>
           )}
-        {!isTemplateTask && (
+        {shareTaskAvailable && !isTemplateTask && (
           <li>
             <MenuItemButton type="button" onClick={handleShareTask}>
               Share Task

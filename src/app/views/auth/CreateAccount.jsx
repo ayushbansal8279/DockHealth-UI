@@ -9,7 +9,7 @@ import { useHistory } from 'react-router-dom';
 import { useMount } from 'react-use';
 import styled from 'styled-components';
 import { object, string } from 'yup';
-import { yupResolver } from "@hookform/resolvers/yup";
+import { yupResolver } from '@hookform/resolvers/yup';
 import { validPasswordSchema } from 'helpers/validation-helper';
 import { setAuthBaseState } from 'actions/auth-base-actions';
 import * as organizationApi from 'api/organization-api';
@@ -99,6 +99,7 @@ const onSubmit = ({
       family_name: lastName,
       given_name: firstName,
       'custom:referral': referral,
+      'custom:app_environment': process.env.APP_ENV,
     });
     setDialogTitle(`Please confirm your email.`);
     setDialogMessage(

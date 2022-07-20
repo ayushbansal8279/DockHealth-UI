@@ -3,6 +3,7 @@ import React, { useState, useEffect } from 'react';
 import { useDispatch } from 'react-redux';
 import { Switch, useRouteMatch, useHistory, Redirect } from 'react-router-dom';
 import NavigationTemplate from 'components/navigation/NavigationTemplate/NavigationTemplate';
+import PageLoader from 'components/navigation/PageLoader';
 import checkUserAuthentication from 'routing/helpers/check-user-authentication';
 import checkUserAccountState from 'routing/helpers/check-user-account-state';
 import { RouteWrapper } from 'routing/components';
@@ -56,26 +57,29 @@ const TemplateCoreSubscriptionPlan = ({
   }, [dispatch, history, onEnter, onLeave, setRedirection]);
 
   return (
-    <NavigationTemplate>
+    <>
       {!isLoading && (
-        <Switch>
-          {isLoaded &&
-            childRoutes?.map(route => (
-              <RouteWrapper
-                allowedToRoles={route.allowedToRoles}
-                key={route.path}
-                path={`${path}${route.path}`}
-                RouteComponent={route.RouteComponent}
-                onEnter={route.onEnter}
-                onUpdate={route.onUpdate}
-                onLeave={route.onLeave}
-                exact={route.exact}
-              />
-            ))}
-          <Redirect from={`${path}/home`} to={`${path}/home/my-tasks`} />
-        </Switch>
+        <NavigationTemplate>
+          <Switch>
+            {isLoaded &&
+              childRoutes?.map(route => (
+                <RouteWrapper
+                  allowedToRoles={route.allowedToRoles}
+                  key={route.path}
+                  path={`${path}${route.path}`}
+                  RouteComponent={route.RouteComponent}
+                  onEnter={route.onEnter}
+                  onUpdate={route.onUpdate}
+                  onLeave={route.onLeave}
+                  exact={route.exact}
+                />
+              ))}
+            <Redirect from={`${path}/home`} to={`${path}/home/my-tasks`} />
+          </Switch>
+        </NavigationTemplate>
       )}
-    </NavigationTemplate>
+      {isLoading && <PageLoader />}
+    </>
   );
 };
 

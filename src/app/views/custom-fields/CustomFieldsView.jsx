@@ -7,12 +7,12 @@ import {
   userHasPatientCustomFieldsFeatureSelector,
   userHasTaskCustomFieldsFeatureSelector,
 } from 'selectors/user-selectors';
+import { checkIfUserIsOrganizationAdmin } from 'helpers/user-helper';
+import { getCustomerTypeLabel } from 'helpers/customer-type-helper';
 import BasicLayoutHeader from 'components/template/BasicLayoutHeader/BasicLayoutHeader';
 import ViewLayout from 'components/template/ViewLayout/ViewLayout';
 import { ColumnsConfigProvider } from 'context-api/columns-config-context';
 import { CUSTOM_FIELDS_SETTINGS_PATH } from 'routing/helpers/paths';
-import AccessRestrictor from 'components/access/AccessRestrictor/AccessRestrictor';
-import { UserOrganizationRole } from 'helpers/user-helper';
 import TaskCustomFieldsView from './TaskCustomFieldsView';
 import PatientCustomFieldsView from './PatientCustomFieldsView';
 import { ViewContainer } from './styled';
@@ -37,17 +37,14 @@ const CustomFieldsView = () => {
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const initial = Object.entries(TABS).find(([_, name]) => name === tabName);
 
+  const customerTypeLabel = getCustomerTypeLabel(userProfile);
+
   const [selectedTab, setSelectedTab] = useState(
     initial ? Number(initial[0]) : 0,
   );
 
   useEffect(() => {
-    if (
-      !(
-        userProfile?.orgUserRole === 'OWNER' ||
-        userProfile?.orgUserRole === 'ADMIN'
-      )
-    ) {
+    if (!checkIfUserIsOrganizationAdmin(userProfile)) {
       history.push('/');
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -75,7 +72,7 @@ const CustomFieldsView = () => {
               <Tab
                 label={
                   <Link to={`${CUSTOM_FIELDS_SETTINGS_PATH}/${TABS[0]}`}>
-                    Patient Custom Fields
+                    {customerTypeLabel} Custom Fields
                   </Link>
                 }
                 {...applyProps(0)}
@@ -91,25 +88,19 @@ const CustomFieldsView = () => {
                 {...applyProps(1)}
               />
             )}
-            <AccessRestrictor allowedToRoles={[UserOrganizationRole.ADMIN]}>
-              <Tab
-                label={
-                  <Link to={`${CUSTOM_FIELDS_SETTINGS_PATH}/${TABS[2]}`}>
-                    Provider Custom Fields
-                  </Link>
-                }
-                {...applyProps(1)}
-              />
-            </AccessRestrictor>
+            <Tab
+              label={
+                <Link to={`${CUSTOM_FIELDS_SETTINGS_PATH}/${TABS[2]}`}>
+                  User Custom Fields
+                </Link>
+              }
+              {...applyProps(1)}
+            />
           </Tabs>
           <Box p={1} />
           {selectedTab === 0 && <PatientCustomFieldsView />}
           {selectedTab === 1 && <TaskCustomFieldsView editable />}
-          {selectedTab === 2 && (
-            <AccessRestrictor allowedToRoles={[UserOrganizationRole.ADMIN]}>
-              <UserCustomFieldsView editable />
-            </AccessRestrictor>
-          )}
+          {selectedTab === 2 && <UserCustomFieldsView editable />}
         </ViewContainer>
       </ViewLayout>
     </ColumnsConfigProvider>

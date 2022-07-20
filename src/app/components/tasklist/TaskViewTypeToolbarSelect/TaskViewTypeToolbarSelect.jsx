@@ -12,6 +12,10 @@ const OPTIONS = [
     label: 'Calendar view',
     value: ViewType.CALENDAR_VIEW,
   },
+  {
+    label: 'Board View',
+    value: ViewType.BOARD_VIEW,
+  },
 ];
 
 const TaskViewTypeToolbarSelect = ({ value, onChange, ...restProps }) => {

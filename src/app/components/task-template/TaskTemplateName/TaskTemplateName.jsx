@@ -4,7 +4,13 @@ import { Fade, Popper } from '@material-ui/core';
 import { openDrawer } from 'actions/workflow-drawer-actions';
 import { checkIfShouldDisplayTooltip } from 'components/task/OverflowTooltip/OverflowTooltip';
 import { useDispatch } from 'react-redux';
-import { TaskTemplateNameInput, NameContainer, NameTooltip } from './styled';
+import {
+  TaskTemplateNameInput,
+  NameContainer,
+  NameTooltip,
+  TaskTemplateDescriptionIndicators,
+  TaskTemplateContext,
+} from './styled';
 
 const TaskTemplateName = ({
   nameInputReference,
@@ -30,26 +36,37 @@ const TaskTemplateName = ({
           dispatch(openDrawer(identifier, templateGroup));
         }}
       >
-        <TaskTemplateNameInput
-          ref={nameInputReference}
-          readOnly={!isEditing}
-          error={nameInputError}
-          onChange={event => {
-            setNameInputValue(event.target?.value);
-            setNameInputError(false);
-          }}
-          onBlur={() => {
-            setIsEditing(false);
-            setNameInputValue(name);
-          }}
-          onKeyDown={handleNameInputKeyDown}
-          value={nameInputValue}
-          onClick={event => {
-            if (isEditing) {
-              event.stopPropagation();
-            }
-          }}
-        />
+        <div>
+          <TaskTemplateNameInput
+            ref={nameInputReference}
+            readOnly={!isEditing}
+            error={nameInputError}
+            onChange={event => {
+              setNameInputValue(event.target?.value);
+              setNameInputError(false);
+            }}
+            onBlur={() => {
+              setIsEditing(false);
+              setNameInputValue(name);
+            }}
+            onKeyDown={handleNameInputKeyDown}
+            value={nameInputValue}
+            onClick={event => {
+              if (isEditing) {
+                event.stopPropagation();
+              }
+            }}
+          />
+          {templateGroup?.sourceTaskBundleTemplate && (
+            <TaskTemplateDescriptionIndicators>
+              <TaskTemplateContext>
+                <span>
+                  Triggered by {templateGroup?.sourceTaskBundleTemplate?.name}
+                </span>
+              </TaskTemplateContext>
+            </TaskTemplateDescriptionIndicators>
+          )}
+        </div>
       </NameContainer>
       <Popper
         anchorEl={nameInputReference?.current}

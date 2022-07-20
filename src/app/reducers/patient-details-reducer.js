@@ -34,10 +34,10 @@ const updateTaskInList = (lists, updateTaskCallback) =>
     ...list,
     tasks: mapWithRemove(t => {
       if (t.itemType === TaskItemType.BUNDLE) {
-        return {
+        return updateTaskCallback({
           ...t,
           tasks: mapWithRemove(updateTaskCallback, t.tasks),
-        };
+        });
       }
 
       return updateTaskCallback(t);
@@ -84,21 +84,34 @@ export default function(state = INITIAL_STATE, action = {}) {
       };
     }
 
-    case ActionTypes.UPDATE_ORDER_PREFERENCES_IN_PATIENT_LIST: {
+    case ActionTypes.UPDATE_LIST_PREFERENCES: {
+      const {
+        currentUserIdentifier,
+        setup: { listDisplayColumns },
+        taskListIdentifier,
+      } = action.payload;
       return {
         ...state,
-        lists: state.lists?.map(l =>
-          l.taskListIdentifier === action.listIdentifier
+        lists: state.lists?.map(l => {
+          if (l?.listType === 'PUBLIC') {
+            return l.taskListIdentifier === taskListIdentifier
+              ? {
+                  ...l,
+                  listDisplayColumns,
+                }
+              : l;
+          }
+          return l.taskListIdentifier === taskListIdentifier
             ? {
                 ...l,
                 listUsers: l.listUsers.map(u =>
-                  u.identifier === action.currentUserIdentifier
-                    ? { ...u, listDisplayColumns: action.listDisplayColumns }
+                  u.identifier === currentUserIdentifier
+                    ? { ...u, listDisplayColumns }
                     : u,
                 ),
               }
-            : l,
-        ),
+            : l;
+        }),
       };
     }
 

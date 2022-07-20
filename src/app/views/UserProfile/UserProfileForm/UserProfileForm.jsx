@@ -4,7 +4,7 @@ import palette from 'styles/palette';
 import React, { useMemo, useEffect } from 'react';
 import { FormProvider, useForm } from 'react-hook-form';
 import { useDispatch } from 'react-redux';
-import { yupResolver } from "@hookform/resolvers/yup";
+import { yupResolver } from '@hookform/resolvers/yup';
 import Button from 'components/common/Button/Button';
 import { head } from 'ramda';
 import { getCurrentUser, updateCurrentUser } from 'actions/user-actions';
@@ -94,7 +94,14 @@ const UserProfileForm = ({ userProfile }) => {
   return (
     <FormProvider {...formMethods}>
       <StyledForm
-        onSubmit={handleSubmit(data => dispatch(updateCurrentUser(data)))}
+        onSubmit={handleSubmit(data =>
+          dispatch(
+            updateCurrentUser({
+              ...data,
+              userIdentifier: userProfile.identifier,
+            }),
+          ),
+        )}
         autoComplete="off"
         autoCorrect="off"
       >

@@ -1,3 +1,4 @@
+/* eslint-disable import/no-cycle */
 /* eslint-disable sonarjs/cognitive-complexity */
 import React, {
   useState,
@@ -31,6 +32,7 @@ import {
   createInlineStyleButton,
 } from '@draft-js-plugins/buttons';
 import { useMentionsEditorState } from 'components/common/TextEditor/use-mentions-editor-state';
+import { FieldCharakterLimit } from 'helpers/field-type-helpers';
 import { getCustomerTypeLabel } from 'helpers/customer-type-helper';
 import UsersSuggestionsPopover from './UsersSuggestionsPopover/UsersSuggestionsPopover';
 import PatientsSuggestionsPopover from './PatientsSuggestionsPopover/PatientsSuggestionsPopover';
@@ -50,12 +52,12 @@ import {
   createLinkDecorator,
   createPlaceholderDecorator,
   countCharakters,
+  convertFromEditorStateToOutput,
 } from './helpers';
 import { Counter, StyledEditorContainer, ToolbarContainer } from './styled';
 import LinkButton from './Link/LinkButton';
 import LinkPopover from './Link/LinkPopover';
 import { createLinkAtSelection, hasEntity } from './Link/helpers';
-import { FieldCharakterLimit } from 'helpers/field-type-helpers';
 
 const fetchPatientsWithDebounce = debounce(
   (value, setPatientSuggestions, areSuggestionsOpened) => {
@@ -382,9 +384,19 @@ const TextEditor = React.forwardRef(
     const handleEditorBlur = useCallback(
       event => {
         setShowCounter(false);
-        if (!linkPopoverOpen) onBlur(event);
+        if (!linkPopoverOpen) {
+          if (currentState) {
+            const { tokenizedText } = convertFromEditorStateToOutput(
+              currentState,
+              showToolbar,
+            );
+            onBlur(event, tokenizedText);
+          } else {
+            onBlur(event);
+          }
+        }
       },
-      [linkPopoverOpen, onBlur],
+      [linkPopoverOpen, onBlur, showToolbar, currentState],
     );
 
     return (

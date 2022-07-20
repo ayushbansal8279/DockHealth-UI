@@ -14,7 +14,8 @@ import {
   userProfileSelector,
   userHasPatientCustomFieldsFeatureSelector,
 } from 'selectors/user-selectors';
-import { groupBy, prop, compose, sortBy } from 'ramda';
+import { checkIfUserIsOrganizationAdmin } from 'helpers/user-helper';
+import { groupBy, prop, compose, sortBy, isEmpty } from 'ramda';
 import { useFormContext } from 'react-hook-form';
 import { capitalize } from 'helpers/capitalize';
 import * as CustomFieldsApi from 'api/custom-fields-api';
@@ -33,6 +34,7 @@ import { useBoolean } from 'hooks/useBoolean';
 import CategoryOptions from 'components/common/CategoryOptions/CategoryOptions';
 import * as patientsApi from 'api/patients-api';
 import { FieldType } from 'helpers/field-type-helpers';
+import { scrollToError } from 'helpers/ui-helper';
 import { formatMetaDataOutput, GENDER_OPTIONS_BIRTH } from './helpers';
 import { HidableContainer } from './styled';
 
@@ -52,12 +54,14 @@ const PatientForm = forwardRef(
     reference,
   ) => {
     const history = useHistory();
-    const { handleSubmit } = useFormContext();
+    const {
+      handleSubmit,
+      formState: { errors },
+    } = useFormContext();
     const [isOpenedPersonal, setIsOpenedPersonal] = useState(true);
     const [isOpenedContact, setIsOpenedContact] = useState(true);
     const [customFields, setCustomFields] = useState(null);
     const userProfile = useSelector(userProfileSelector);
-    const { orgUserRole } = userProfile || {};
     const { 0: emptyPersonalVisible, 3: toggleEmptyPersonal } = useBoolean(
       false,
     );
@@ -65,7 +69,7 @@ const PatientForm = forwardRef(
       false,
     );
     const { 0: emptyOtherVisible, 3: toggleEmptyOther } = useBoolean(false);
-    const isAdmin = orgUserRole === 'ADMIN' || orgUserRole === 'OWNER';
+    const isAdmin = checkIfUserIsOrganizationAdmin(userProfile);
     const [genderIdentityOptions, setGenderIdentityOptions] = useState([]);
 
     const GENDER_OPTIONS_IDENTITY = useMemo(
@@ -147,7 +151,10 @@ const PatientForm = forwardRef(
 
     return (
       <form
-        onSubmit={handleSubmit(compose(onSubmit, formatMetaDataOutput))}
+        onSubmit={handleSubmit(
+          compose(onSubmit, formatMetaDataOutput),
+          scrollToError,
+        )}
         ref={reference}
       >
         <LabeledCollapse
@@ -296,7 +303,17 @@ const PatientForm = forwardRef(
             )}
           </div>
           {edited && (
-            <Button width="auto" type="submit">
+            <Button
+              width="auto"
+              type="submit"
+              onClick={event => {
+                if (!isEmpty(errors)) {
+                  event.preventDefault();
+                  event.stopPropagation();
+                  scrollToError(errors);
+                }
+              }}
+            >
               {buttonLabel || `SAVE ${customerTypeLabel}`}
             </Button>
           )}

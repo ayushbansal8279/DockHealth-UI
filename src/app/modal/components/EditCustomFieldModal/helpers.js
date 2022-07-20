@@ -33,7 +33,7 @@ export const getAdditionalUserOptions = ({
   handleDisplayOptionChange,
 }) => [
   {
-    label: 'Include on Provider Header',
+    label: 'Include on User Profile Header',
     key: 'PROVIDER_HEADER',
     value: !!displayOptionsState?.displayOptions?.find(
       option => option === 'PROVIDER_HEADER',
@@ -41,7 +41,7 @@ export const getAdditionalUserOptions = ({
     onChange: value => handleDisplayOptionChange(value, 'PROVIDER_HEADER'),
   },
   {
-    label: 'Include on Provider List',
+    label: 'Include on User List',
     key: 'PROVIDER_LIST',
     value: !!displayOptionsState?.displayOptions?.find(
       option => option === 'PROVIDER_LIST',

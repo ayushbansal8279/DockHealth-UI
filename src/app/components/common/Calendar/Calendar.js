@@ -104,12 +104,14 @@ const Calendar = ({ taskListIdentifier }) => {
       } else {
         dispatch(
           openModal('ListPicker', {
+            enableSelectingGroupStep: true,
             fetchMethod: () =>
               getSharedTaskListsWithCurrentUser(userIdentifier),
-            confirm: id => {
+            confirm: (taskListId, taskGroupIdentifier) => {
               const taskDetails = {
                 description,
-                taskListIdentifier: id,
+                taskListIdentifier: taskListId,
+                taskGroupIdentifier,
                 assignedToIdentifier: userIdentifier,
                 dueDate,
               };

@@ -18,24 +18,9 @@ export const userOrganizationsSelector = createSelector(
   ({ userOrganizations }) => userOrganizations,
 );
 
-export const userProfileDashboardPrefsSelector = createSelector(
-  userStateSelector,
-  ({ userPreference }) => userPreference?.displayColumns,
-);
-
-export const userProfileColumnOrderSelector = createSelector(
+export const userPreferencesSelector = createSelector(
   userStateSelector,
   ({ userPreference }) => userPreference?.listDisplayColumns,
-);
-
-export const userProfileCustomFieldsSelector = createSelector(
-  userStateSelector,
-  ({ userPreference }) => userPreference?.customFieldDisplayColumns,
-);
-
-export const dashboardGroupsOrderPreferencesSelector = createSelector(
-  userStateSelector,
-  ({ userPreference }) => userPreference?.displayGroups,
 );
 
 export const dashboardGroupsPreferencesSelector = createSelector(
@@ -83,6 +68,30 @@ export const userHasSendFaxFeatureSelector = createSelector(
   userProfileSelector,
   ({ organizationAvailableFeatures }) =>
     organizationAvailableFeatures?.includes('SEND_COMM_FAX'),
+);
+
+export const userHasSendSmsFeatureSelector = createSelector(
+  userProfileSelector,
+  ({ organizationAvailableFeatures }) =>
+    organizationAvailableFeatures?.includes('SEND_COMM_SMS'),
+);
+
+export const userHasPostEMRNoteFeatureSelector = createSelector(
+  userProfileSelector,
+  ({ organizationAvailableFeatures }) =>
+    organizationAvailableFeatures?.includes('POST_EMR_NOTE'),
+);
+
+export const userHasBoardVieweFeatureSelector = createSelector(
+  userProfileSelector,
+  ({ organizationAvailableFeatures }) =>
+    organizationAvailableFeatures?.includes('BOARD_VIEW'),
+);
+
+export const userHasShareTaskFeatureSelector = createSelector(
+  userProfileSelector,
+  ({ organizationAvailableFeatures }) =>
+    organizationAvailableFeatures?.includes('SHARE_TASK'),
 );
 
 export const userSetupClientViewSelector = createSelector(

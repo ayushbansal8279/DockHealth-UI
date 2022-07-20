@@ -16,6 +16,16 @@ export const BOOL_SELECT_OPTIONS = [
   },
 ];
 
+export const CUSTOM_FIELD_TYPES = {
+  REGULAR: 'REGULAR',
+  TASK_LIST: 'TASK_LIST',
+  ORGANIZATION: 'ORGANIZATION',
+  PATIENT: 'PATIENT',
+};
+
+export const sortAlphabetical = (array, propertyName = 'name') =>
+  sort((a, b) => a?.[propertyName].localeCompare(b?.[propertyName]), array);
+
 export const createMetaDataObjectToSend = metaDataField => {
   if (metaDataField.value) {
     return {
@@ -32,6 +42,3 @@ export const createMetaDataObjectToSend = metaDataField => {
 
   return null;
 };
-
-export const sortAlphabetical = array =>
-  sort((a, b) => a?.name.localeCompare(b), array);

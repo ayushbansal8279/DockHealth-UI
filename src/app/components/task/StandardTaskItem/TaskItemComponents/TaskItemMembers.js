@@ -40,7 +40,9 @@ const TaskItemMembers = ({
     >
       {assignedToUsers?.length ? (
         <>
-          <AssigneeMatchingWrapper matched={matchAssignedTo} />
+          {matchAssignedTo && (
+            <AssigneeMatchingWrapper matched={matchAssignedTo} />
+          )}
           <MemberGroup members={assignedToUsers} />
         </>
       ) : (

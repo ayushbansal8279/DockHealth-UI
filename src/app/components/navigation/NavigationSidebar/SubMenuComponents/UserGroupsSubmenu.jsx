@@ -39,6 +39,7 @@ import {
   DrawerItemOptions,
   DrawerListsItemLoader,
   UpgradePlanContainer,
+  MenuLink,
 } from './styled';
 
 // eslint-disable-next-line sonarjs/cognitive-complexity
@@ -125,6 +126,11 @@ const UserGroupsSubmenu = () => {
                 </DrawerItemOptions>
               </DrawerListsItem>
             ))}
+            <DrawerListsItem>
+              <ListNameText>
+                <MenuLink to="/settings/contacts">Contacts</MenuLink>
+              </ListNameText>
+            </DrawerListsItem>
           </>
         ) : (
           <>

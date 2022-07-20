@@ -12,6 +12,12 @@ export function formatMetaDataOutput(outputData) {
   );
 
   const formattedMetadata = filteredMetaDataKeys.map(key => {
+    if (Array.isArray(metadata[key])) {
+      return {
+        customFieldIdentifier: key,
+        values: metadata[key],
+      };
+    }
     return {
       customFieldIdentifier: key,
       value: metadata[key],

@@ -1,8 +1,6 @@
 import React, { useRef, useState } from 'react';
 import { useSelector } from 'react-redux';
-import { Grid } from '@material-ui/core';
 import Spacing from 'components/common/Spacing.tsx';
-import Button from 'components/common/Button/Button';
 import { userProfileSelector } from 'selectors/user-selectors';
 import {
   Title,
@@ -20,8 +18,6 @@ const ListSelectSection = ({
   isFetchingLists,
   onListSelection,
   onAddList,
-  onSave,
-  onCancel,
 }) => {
   const addListInput = useRef();
   const [isInputFoucused, setInputFocused] = useState(false);
@@ -34,12 +30,6 @@ const ListSelectSection = ({
       onAddList(listName);
       addListInput.current.value = '';
     }
-  };
-
-  const handleSaveClick = () => {
-    if (addListInput?.current?.value)
-      handleAddNewList(addListInput?.current?.value);
-    else onSave(selectedList?.taskListIdentifier);
   };
 
   return (
@@ -87,24 +77,6 @@ const ListSelectSection = ({
           />
         </AddListInputWrapper>
       )}
-      <Spacing vertical={4} />
-      <Grid container direction="row" spacing={2}>
-        <Grid item xs={6}>
-          <Button
-            variant="secondary"
-            type="button"
-            onClick={onCancel}
-            size="small"
-          >
-            Cancel
-          </Button>
-        </Grid>
-        <Grid item xs={6}>
-          <Button type="button" onClick={() => handleSaveClick()} size="small">
-            Save
-          </Button>
-        </Grid>
-      </Grid>
     </>
   );
 };

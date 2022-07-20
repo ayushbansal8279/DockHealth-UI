@@ -30,3 +30,6 @@ export const getMemberStatus = member => {
 
 export const isMemberPending = member =>
   member.userStatus === 'PENDING' || member.userStatus === 'INVITED';
+
+export const isMemberAdmin = member =>
+  member?.taskListUserRole === 'ADMIN' || member?.taskListUserRole === 'OWNER';
