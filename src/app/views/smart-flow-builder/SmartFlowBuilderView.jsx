@@ -34,6 +34,8 @@ import {
   deleteTemporaryElement,
   linkTasks,
   saveTaskTemplateLayout,
+  saveTaskTemplateLayoutToHistory,
+  undoTaskTemplateLayout,
   selectTaskTemplate,
   unselectTaskTemplate,
 } from 'actions/task-template-actions';
@@ -65,6 +67,7 @@ import { showGlobalAlert } from 'alert/actions';
 import AlertMessages from 'alert/AlertMessages';
 import { useBoolean } from 'hooks/useBoolean';
 import palette from 'styles/palette';
+import * as AlertActions from 'alert/actions';
 import NewTaskNode from './NewTaskNode/NewTaskNode';
 import TaskNode from './TaskNode/TaskNode';
 import TaskLink from './TaskLink/TaskLink';
@@ -538,8 +541,17 @@ const SmartFlowBuilderView = () => {
 
   const handleAutoAlignClick = async () => {
     const autoLayout = await getAutoLayout(tasks);
+    dispatch(saveTaskTemplateLayoutToHistory());
     dispatch(saveTaskTemplateLayout(autoLayout));
     setTimeout(reactFlowInstance.current.fitView, 0);
+    dispatch(
+      AlertActions.showGlobalAlertWithUndo(
+        'AUTO ALIGNMENT APPLIED',
+        'UNDO_AUTO_ALIGN',
+        () => dispatch(undoTaskTemplateLayout()),
+        { preventRequest: true },
+      ),
+    );
   };
 
   const selectedTasks = useMemo(
