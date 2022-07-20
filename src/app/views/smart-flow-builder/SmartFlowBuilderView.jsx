@@ -546,7 +546,7 @@ const SmartFlowBuilderView = () => {
     setTimeout(reactFlowInstance.current.fitView, 0);
     dispatch(
       AlertActions.showGlobalAlertWithUndo(
-        'AUTO ALIGNMENT APPLIED',
+        'AUTO ALIGNMENT',
         'UNDO_AUTO_ALIGN',
         () => dispatch(undoTaskTemplateLayout()),
         { preventRequest: true },
