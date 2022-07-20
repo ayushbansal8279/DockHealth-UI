@@ -13,7 +13,6 @@ const CommentSection = () => {
     updateComment,
     addComment,
     taskListIdentifier,
-    isTemplateTask,
     taskDrawerFocusField,
   } = initializeCommentSectionHooks();
 
@@ -21,7 +20,6 @@ const CommentSection = () => {
     <CommentSectionContainer>
       <AddComment
         autoFocus={taskDrawerFocusField === DrawerFieldEnum.COMMENT}
-        disableMentions={isTemplateTask}
         taskListIdentifier={taskListIdentifier}
         onAdd={addComment}
       />
@@ -34,7 +32,6 @@ const CommentSection = () => {
             onDelete={removeComment}
             onUpdate={updateComment}
             taskListIdentifier={taskListIdentifier}
-            disableMentions={isTemplateTask}
           />
         ))}
       </CommentsListContainer>

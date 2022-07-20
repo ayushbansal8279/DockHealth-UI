@@ -500,6 +500,22 @@ const TaskBaseReducer = (state, action, updateStateCallback) => {
       return updateStateCallback(state, updateStateFromAction);
     }
 
+    case ActionTypes.CHANGE_WORKFLOW_SELECTED_STATE: {
+      if (Array.isArray(action.identifier)) {
+        const identifiers = action.identifier;
+        return updateStateCallback(state, task =>
+          identifiers.includes(task.identifier)
+            ? { ...task, selected: action.newSelectedState || true }
+            : task,
+        );
+      }
+      return updateStateCallback(state, task =>
+        action.identifier === task.identifier
+          ? { ...task, selected: action.newSelectedState }
+          : task,
+      );
+    }
+
     case ActionTypes.ADD_SUBTASK: {
       const { subtask } = action;
       const { parentTaskIdentifier } = subtask;

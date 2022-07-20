@@ -44,6 +44,11 @@ export const SubMenuLink = styled(Link)`
   }
 `;
 
+export const MenuLink = styled(SubMenuLink)`
+  color: ${palette.mediumGrey};
+  padding: 0;
+`;
+
 export const BlueSubMenuLink = styled(SubMenuLink)`
   color: ${palette.brightBlue};
 
@@ -237,6 +242,7 @@ export const DrawerMyOrganizationLabel = styled(DrawerSubmenuLabel)`
 export const DrawerOrganizationsList = styled.div`
   padding: ${spacing.large} ${spacing.smallPlus} ${spacing.small};
   border-bottom: 1px solid ${palette.coolGrey2};
+  overflow: auto;
 `;
 
 // Lists
@@ -267,10 +273,20 @@ export const DrawerListsItem = styled.div`
   align-items: center;
   color: ${palette.mediumGrey};
   font-size: ${fontSizes.regular};
-
+  box-sizing: border-box;
+  border: 1px solid transparent;
   &:not(:last-child) {
     margin-bottom: 10px;
   }
+
+  ${({ isDraggable }) =>
+    isDraggable &&
+    `
+        &:hover {
+          border: 1px solid ${palette.coolGrey2};
+          background-color: ${palette.coolGrey3};
+        }
+      `}
 `;
 
 export const DrawerListsItemLoader = withStyles({

@@ -1,6 +1,7 @@
 export const ViewType = {
   LIST_VIEW: 'LIST_VIEW',
   CALENDAR_VIEW: 'CALENDAR_VIEW',
+  BOARD_VIEW: 'BOARD_VIEW',
 };
 export const VIEW_TYPE_OPTIONS = [
   {
@@ -10,6 +11,10 @@ export const VIEW_TYPE_OPTIONS = [
   {
     label: 'Calendar View',
     value: ViewType.CALENDAR_VIEW,
+  },
+  {
+    label: 'Board View',
+    value: ViewType.BOARD_VIEW,
   },
 ];
 

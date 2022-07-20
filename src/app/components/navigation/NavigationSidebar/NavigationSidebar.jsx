@@ -104,7 +104,7 @@ const NavigationSidebar = () => {
     renderMenuTourPopover,
   } = menuTourHooks({
     menuDrawerOpen: null,
-    hideTour: false,
+    hideTour: true,
     isUserAdmin,
   });
 
@@ -233,22 +233,12 @@ const NavigationSidebar = () => {
                 onItemClick={handleNavigationItemClick}
               />
             </AccessRestrictor>
-            <AccessRestrictor allowedToRoles={[ADMIN, OWNER, MEMBER, GUEST]}>
-              <IconNavigationItem
-                name="Education Center"
-                icon={EducationCenterIcon}
-                subMenuKey={SubmenuKey.EDUCATION_CENTER}
-                subMenuOpen={openedSubMenuKey === SubmenuKey.EDUCATION_CENTER}
-                onItemClick={handleNavigationItemClick}
-              />
-            </AccessRestrictor>
             <AccessRestrictor allowedToRoles={[ADMIN, OWNER]}>
               <IconNavigationItem
                 name="Analytics"
                 icon={BarChartIcon}
                 path="/core/analytics"
                 onItemClick={handleNavigationItemClick}
-                isNew
               />
             </AccessRestrictor>
           </Grid>
@@ -269,7 +259,15 @@ const NavigationSidebar = () => {
                 />
               </div>
             </AccessRestrictor>
-
+            <AccessRestrictor allowedToRoles={[ADMIN, OWNER, MEMBER, GUEST]}>
+              <IconNavigationItem
+                name="Education Center"
+                icon={EducationCenterIcon}
+                subMenuKey={SubmenuKey.EDUCATION_CENTER}
+                subMenuOpen={openedSubMenuKey === SubmenuKey.EDUCATION_CENTER}
+                onItemClick={handleNavigationItemClick}
+              />
+            </AccessRestrictor>
             <AccessRestrictor
               allowedToRoles={[ADMIN, OWNER, MEMBER, GUEST, EXTERNAL]}
             >

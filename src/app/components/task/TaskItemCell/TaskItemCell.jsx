@@ -31,7 +31,8 @@ const TaskItemCell = styled.div`
       width: ${printWidth}px;
       min-width: ${printWidth}px;
       max-width: ${printWidth}px;
-  `};
+    `};
+    border-right: 1px solid ${palette.coolGrey1};
   }
 `;
 

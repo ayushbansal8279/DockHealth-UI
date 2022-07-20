@@ -7,17 +7,20 @@ import NewBlueBellIcon from 'img/notifications/new-blue-bell';
 import WhiteBellIcon from 'img/notifications/white-bell';
 import NewWhiteBellIcon from 'img/notifications/new-white-bell';
 import CrossedBellIcon from 'img/notifications/crossed-bell';
-import SettingsIcon from 'img/navigation/SettingsIcon';
 import { onActivityAlertOpened } from 'helpers/ga-event-helper';
 import * as ActivityAlertsApi from 'api/activity-alerts-api';
-import { getNotificationSettings } from 'api/user-api';
+import {
+  getNotificationSettings,
+  updateNotificationSettings,
+} from 'api/user-api';
 import { swithAlertsToastsHide } from 'actions/activity-alerts-actions';
 import { clearNotifications } from 'actions/template-actions';
 import { initializePusher } from 'helpers/pusher-instance';
+import Switch from 'components/common/Switch/Switch';
 import ActivityAlertsItem from './ActivityAlertsItem/ActivityAlertsItem';
 import ActivityAlertsSettings from './ActivityAlertsSettings/ActivityAlertsSettings';
 import ActivityAlertsLoader from './ActivityAlertsLoader/ActivityAlertsLoader';
-import palette from 'styles/palette';
+
 import {
   ActivityAlertsImg,
   ActivityAlertsPopover,
@@ -29,6 +32,8 @@ import {
   EmptyActivityAlerts,
   SettingsButton,
   ActivityAlertsOptions,
+  CustomizeLabel,
+  ActivityAlertsSwitchLabel,
 } from './styled';
 
 const getIconsConfig = variant => {
@@ -235,6 +240,23 @@ const ActivityAlerts = ({ variant = 'blue' }) => {
                 <ActivityAlertsPopoverLabel>
                   Notifications
                 </ActivityAlertsPopoverLabel>
+                <div>
+                  <Switch
+                    checked={hasAnyOptionTurnedOn}
+                    onChange={() => {
+                      updateNotificationSettings(
+                        notificationSettings.map(s => ({
+                          ...s,
+                          emailEnabled: !hasAnyOptionTurnedOn,
+                          pushNotificationEnabled: !hasAnyOptionTurnedOn,
+                        })),
+                      ).then(refreshNotificationSettings);
+                    }}
+                  />
+                  <ActivityAlertsSwitchLabel>
+                    {hasAnyOptionTurnedOn ? 'ON' : 'OFF'}
+                  </ActivityAlertsSwitchLabel>
+                </div>
               </ActivityAlertsHeaderLabel>
               <ActivityAlertsOptions>
                 {activityAlertsList?.length !== 0 && (
@@ -243,10 +265,7 @@ const ActivityAlerts = ({ variant = 'blue' }) => {
                   </ActivityAlertsClearAllLabel>
                 )}
                 <SettingsButton onClick={() => setSelectedScreen('SETTINGS')}>
-                  <SettingsIcon
-                    strokeColor={palette.coolGrey1}
-                    fillColor="none"
-                  />
+                  <CustomizeLabel>Customize</CustomizeLabel>
                 </SettingsButton>
               </ActivityAlertsOptions>
             </ActivityAlertsHeader>

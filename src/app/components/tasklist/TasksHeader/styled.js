@@ -13,7 +13,8 @@ export const BulkContainer = styled.div`
 export const StickyColumnContainer = styled.div`
   position: sticky;
   display: flex;
-  width: 100%;
+  /* width: 100%; */
+  flex: 1;
   min-width: 500px;
   left: 24px;
   z-index: 11;
@@ -47,5 +48,12 @@ export const StickyColumnContainer = styled.div`
     height: 100%;
     width: calc(100% - 15px);
     z-index: -1;
+  }
+
+  @media print {
+    border-left: 1px solid ${palette.coolGrey1} !important;
+    width: 300px;
+    min-width: 200px;
+    max-width: 300px;
   }
 `;

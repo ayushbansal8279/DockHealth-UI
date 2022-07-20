@@ -29,6 +29,14 @@ export const TaskTemplateNameInput = styled.input`
   &:focus {
     outline: none;
   }
+
+  @media print {
+    height: auto;
+    text-overflow: auto;
+    overflow: auto;
+    white-space: wrap;
+    min-width: 200px;
+  }
 `;
 
 export const NameTooltip = styled.div`
@@ -45,4 +53,24 @@ export const NameTooltip = styled.div`
 export const NameContainer = styled.div`
   display: flex;
   flex: 1;
+`;
+
+export const TaskTemplateDescriptionIndicators = styled.div`
+  display: flex;
+  align-items: baseline;
+`;
+
+export const TaskTemplateContext = styled.div`
+  align-items: flex-end;
+  display: flex;
+  overflow: hidden;
+  font-size: ${fontSizes.small};
+  padding-left: 15px;
+  padding-bottom: 2px;
+
+  > span {
+    color: ${palette.brightBlue};
+    font-weight: ${fontWeights.regular};
+    line-height: 1;
+  }
 `;

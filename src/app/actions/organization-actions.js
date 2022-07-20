@@ -239,9 +239,3 @@ export function getOrganizationCustomFields() {
     type: ActionTypes.GET_ORGANIZATION_CUSTOM_FIELDS,
   };
 }
-export function updateOrganizationCustomFields(setup) {
-  return {
-    type: ActionTypes.UPDATE_CUSTOM_LIST_FIELDS_SETUP,
-    setup,
-  };
-}

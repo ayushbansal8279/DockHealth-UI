@@ -6,11 +6,33 @@ import {
   convertToRaw,
   CompositeDecorator,
   SelectionState,
+  convertFromRaw,
 } from 'draft-js';
-import { draftToMarkdown } from 'markdown-draft-js';
+import { draftToMarkdown, markdownToDraft } from 'markdown-draft-js';
 import { createMentionEntities } from './create-mention-entities';
 import { HighlightedElement } from './styled';
 import Placeholder from './AddOns/Placeholder/Placeholder';
+
+const extendedStyleItems = {
+  STRIKETHROUGH: {
+    open: function open() {
+      return '~~';
+    },
+
+    close: function close() {
+      return '~~';
+    },
+  },
+  UNDERLINE: {
+    open: function open() {
+      return '++';
+    },
+
+    close: function close() {
+      return '++';
+    },
+  },
+};
 
 export const SUGGESTIONS_PLACEHOLDER = {
   name: '',
@@ -82,27 +104,6 @@ export const convertFromEditorStateToOutput = (editorState, handleRichText) => {
     type: entity.type,
   }));
 
-  const extendedStyleItems = {
-    STRIKETHROUGH: {
-      open: function open() {
-        return '~~';
-      },
-
-      close: function close() {
-        return '~~';
-      },
-    },
-    UNDERLINE: {
-      open: function open() {
-        return '++';
-      },
-
-      close: function close() {
-        return '++';
-      },
-    },
-  };
-
   const textValue = handleRichText
     ? draftToMarkdown(stateContent, {
         styleItems: extendedStyleItems,
@@ -114,6 +115,13 @@ export const convertFromEditorStateToOutput = (editorState, handleRichText) => {
     tokenizedText: substituteNameForIdInText(textValue, mentions),
     mentions,
   };
+};
+
+export const addStylesToText = text => {
+  const draftText = markdownToDraft(text, {
+    styleItems: extendedStyleItems,
+  });
+  return convertFromRaw(draftText);
 };
 
 const HighlightedComponent = ({ children }) => {

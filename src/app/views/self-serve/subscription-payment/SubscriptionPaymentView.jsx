@@ -4,6 +4,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
 import { Elements } from 'react-stripe-elements';
 import { useMount } from 'react-use';
+import { checkIfUserIsOrganizationAdmin } from 'helpers/user-helper';
 import {
   getBillingEstimate,
   setPaymentNewPlan,
@@ -127,12 +128,7 @@ const SubscriptionPaymentView = () => {
   }));
 
   useEffect(() => {
-    if (
-      !(
-        userProfile?.orgUserRole === 'OWNER' ||
-        userProfile?.orgUserRole === 'ADMIN'
-      )
-    ) {
+    if (!checkIfUserIsOrganizationAdmin(userProfile)) {
       history.push('/');
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps

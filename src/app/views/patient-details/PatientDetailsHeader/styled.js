@@ -39,13 +39,9 @@ export const PatientName = styled.div`
 `;
 
 export const PatientInfo = styled.div`
-  padding: 0 ${spacing.large};
+  padding: 2px ${spacing.large};
   color: ${palette.mediumGrey};
   display: flex;
-
-  &:first-child {
-    padding-left: 0;
-  }
 `;
 
 export const PatientInfoDivider = styled.div`
@@ -66,13 +62,14 @@ export const PatientDetailsInformation = styled.div`
   display: flex;
   align-items: center;
   margin-top: ${spacing.small};
+  flex-wrap: wrap;
 `;
 
 export const PatientDetails = styled.div`
   display: flex;
   align-items: baseline;
   justify-content: space-between;
-  padding-left: 30px;
+  padding-left: 8px;
 `;
 
 export const NavigationBackIcon = styled.img`

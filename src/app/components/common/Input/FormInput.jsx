@@ -10,6 +10,7 @@ const FormInput = React.forwardRef(
       onChange,
       inputComponent: InputComponent = Input,
       validate,
+      disableClearErrorOnKeyUp,
       ...restProps
     },
     reference,
@@ -21,8 +22,15 @@ const FormInput = React.forwardRef(
       watch,
       setValue,
       unregister,
+      setError,
     } = useFormContext();
-    const error = errors?.[name]?.message;
+
+    const isNested = name?.includes('.');
+    const nestedParts = name?.split('.');
+
+    const error = isNested
+      ? errors?.[nestedParts[0]]?.[nestedParts[1]]?.message
+      : errors?.[name]?.message;
 
     const value = watch(name);
 
@@ -35,19 +43,22 @@ const FormInput = React.forwardRef(
     });
 
     const handleChange = event => {
-      setValue(name, event.target.value);
+      setValue(name, event.target.value, { shouldDirty: true });
       if (typeof onChange === 'function') onChange(event);
     };
 
     return (
       <InputComponent
+        setError={setError}
         ref={reference}
         name={name}
         value={value ?? ''}
         onChange={handleChange}
         error={error}
-        onKeyUp={() => clearErrors(name)}
+        errors={errors}
+        onKeyUp={() => (disableClearErrorOnKeyUp ? null : clearErrors(name))}
         {...restProps}
+        clearErrors={clearErrors}
       />
     );
   },

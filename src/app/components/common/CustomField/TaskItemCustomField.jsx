@@ -14,8 +14,10 @@ import { openDrawer } from 'actions/task-drawer-actions';
 import { useDispatch } from 'react-redux';
 import { updatePatientDetails } from 'actions/patient-details-actions';
 import TaskItemMultiDropdown from 'components/task/StandardTaskItem/customFieldsTaskItemComponents/TaskItemMultiDropdown/TaskItemMultiDropdown';
-import { isNotEmptyArray } from 'helpers/utils-helpers';
-import { createMetaDataObjectToSend } from 'helpers/custom-fields-helpers';
+import {
+  createMetaDataObjectToSend,
+  CUSTOM_FIELD_TYPES,
+} from 'helpers/custom-fields-helpers';
 import { StyledHyperLink } from 'components/auth/AuthComponents.styled';
 import { trunc } from 'helpers/utility-functions';
 
@@ -28,7 +30,7 @@ const TaskItemCustomField = ({
   // eslint-disable-next-line sonarjs/cognitive-complexity
 }) => {
   const { value, values } = customFieldValue || {};
-  const patientType = field.targetType === 'PATIENT';
+  const patientType = field.targetType === CUSTOM_FIELD_TYPES.PATIENT;
   const isWorkflow =
     task.itemType === TaskItemType.BUNDLE ||
     task.itemType === TaskItemType.TEMPLATE;
@@ -52,7 +54,7 @@ const TaskItemCustomField = ({
         const patientMetaData = (task?.patient?.patientMetaData || [])
           ?.filter(tmd => tmd.customFieldIdentifier !== field.identifier)
           ?.map(tmd => createMetaDataObjectToSend(tmd));
-        if (isNotEmptyArray(newValue)) {
+        if (Array.isArray(newValue)) {
           patientMetaData.push({
             customFieldIdentifier: field.identifier,
             values: newValue,
@@ -70,7 +72,7 @@ const TaskItemCustomField = ({
       const taskMetaData = task.taskMetaData
         ?.filter(tmd => tmd.customFieldIdentifier !== field.identifier)
         ?.map(tmd => createMetaDataObjectToSend(tmd));
-      if (isNotEmptyArray(newValue)) {
+      if (Array.isArray(newValue)) {
         taskMetaData.push({
           customFieldIdentifier: field.identifier,
           values: newValue,

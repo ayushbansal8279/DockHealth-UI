@@ -12,8 +12,6 @@ import EmailIcon from 'img/email-icon.svg';
 import PhoneIcon from 'img/phone-icon.svg';
 import MobileIcon from 'img/mobile-icon.svg';
 import TextTypeHeader from 'components/common/TextTypeHeader/TextTypeHeader';
-import AccessRestrictor from 'components/access/AccessRestrictor/AccessRestrictor';
-import { UserOrganizationRole } from 'helpers/user-helper';
 import PersonInfoLoader from './PersonInfoLoader';
 import PersonDetailsDrawer from '../PersonDetailsDrawer/PersonDetailsDrawer';
 import {
@@ -27,8 +25,6 @@ import {
   CustomFieldsContainer,
 } from './styled';
 
-const { ADMIN, OWNER } = UserOrganizationRole;
-
 const PersonInfoPanel = () => {
   const [isDrawerOpen, openDrawer, closeDrawer] = useBoolean(false);
   const userDetails = useSelector(userDetailsSelector);
@@ -38,7 +34,7 @@ const PersonInfoPanel = () => {
     firstName,
     lastName,
     workPhoneNumber,
-    userMetaData,
+    providerMetaData,
   } = userDetails || {};
 
   return (
@@ -63,13 +59,11 @@ const PersonInfoPanel = () => {
                   showOnlineIndicator={false}
                 />
                 <PersonTitle>{`${firstName} ${lastName}`}</PersonTitle>
-                <AccessRestrictor allowedToRoles={[ADMIN, OWNER]}>
-                  <Box ml={2} display="flex">
-                    <HeaderActionButton onClick={openDrawer}>
-                      View details
-                    </HeaderActionButton>
-                  </Box>
-                </AccessRestrictor>
+                <Box ml={2} display="flex">
+                  <HeaderActionButton onClick={openDrawer}>
+                    View details
+                  </HeaderActionButton>
+                </Box>
               </Box>
               <ContactContainer>
                 {email && (
@@ -108,21 +102,26 @@ const PersonInfoPanel = () => {
               </ContactContainer>
             </Box>
             <CustomFieldsContainer>
-              {userMetaData
+              {providerMetaData
                 ?.filter(
-                  ({ displayOptions, value }) =>
-                    displayOptions?.includes('PROVIDER_HEADER') && value,
+                  ({ displayOptions, value, values }) =>
+                    displayOptions?.includes('PROVIDER_HEADER') &&
+                    (value || values),
                 )
-                ?.map(({ customFieldName, displayName, value }) => (
-                  <>
-                    <UserInfo>
-                      <Typography>{customFieldName}: </Typography>
-                      <Box ml={1} />
-                      <TextTypeHeader text={displayName || value} />
-                    </UserInfo>
-                    <UserInfoDivider />
-                  </>
-                ))}
+                ?.map(
+                  ({ customFieldName, displayName, value, displayNames }) => (
+                    <>
+                      <UserInfo>
+                        <Typography>{customFieldName}: </Typography>
+                        <Box ml={1} />
+                        <TextTypeHeader
+                          text={displayName || value || displayNames.join(', ')}
+                        />
+                      </UserInfo>
+                      <UserInfoDivider />
+                    </>
+                  ),
+                )}
             </CustomFieldsContainer>
           </>
         ) : (

@@ -24,9 +24,6 @@ import {
   EditCommentButton,
 } from './styled';
 
-const ADMIN_USER_ROLE = 'ADMIN';
-const OWNER_USER_ROLE = 'OWNER';
-
 const Comment = ({
   comment,
   onDelete,

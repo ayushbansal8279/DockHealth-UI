@@ -22,6 +22,7 @@ export const GroupContainer = styled.div`
   flex-direction: row;
   justify-content: center;
   width: fit-content;
+  margin-left: 10px;
 
   & > ${GroupItem}, & > div {
     &:not(:first-child) {

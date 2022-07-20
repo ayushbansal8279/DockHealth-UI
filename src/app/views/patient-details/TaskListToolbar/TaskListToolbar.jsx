@@ -1,3 +1,4 @@
+/* eslint-disable import/no-cycle */
 /* eslint-disable sonarjs/cognitive-complexity */
 import React, { useCallback } from 'react';
 import { Box } from '@material-ui/core';
@@ -14,7 +15,6 @@ import {
 } from 'actions/patient-details-actions';
 import { updateUserPageViewSetup } from 'actions/task-list-actions';
 import { userSetupClientViewSelector } from 'selectors/user-selectors';
-import { updateCurrentUserPreferences } from 'actions/user-actions';
 import Spacing from 'components/common/Spacing';
 import { TaskStatus } from 'helpers/task-helpers';
 import TaskStatusToolbarSelect from 'components/tasklist/TaskStatusToolbarSelect/TaskStatusToolbarSelect';
@@ -38,6 +38,7 @@ const TaskListToolbar = props => {
     useSelector(currentListTasksStatusSelector) || TaskStatus.INCOMPLETE;
   const viewSetup = useSelector(userSetupClientViewSelector);
   const [closeMorePopover] = useBoolean(false);
+  const isAllTasksView = taskListIdentifierParameter === ListViewType.ALL_TASKS;
 
   const listOptions = lists?.map(
     ({ taskListIdentifier, listName, tasks = [] }) => {
@@ -87,7 +88,6 @@ const TaskListToolbar = props => {
     );
   };
 
-  const isAllTasksView = taskListIdentifierParameter === ListViewType.ALL_TASKS;
   const OPTIONS = [
     {
       name: 'Show Workflow Details',
@@ -112,31 +112,6 @@ const TaskListToolbar = props => {
       checked: viewSetup.SHOW_WORKFLOW_COMPLETED_TASKS,
     },
   ];
-
-  const onColumnSetupChange = useCallback(
-    (newConfig, options) => {
-      if (options?.isCustomColumn) {
-        dispatch(
-          updateCurrentUserPreferences({
-            customFieldDisplayColumns: newConfig
-              .filter(f => f.isChecked)
-              .map(f => f.identifier),
-          }),
-        );
-      } else {
-        dispatch(
-          updateCurrentUserPreferences({
-            displayColumns: Object.entries(newConfig).reduce(
-              (accumulator, [key, value]) =>
-                value ? [...accumulator, key] : accumulator,
-              [],
-            ),
-          }),
-        );
-      }
-    },
-    [dispatch],
-  );
 
   const handleChangeTasksStatus = useCallback(
     event => {
@@ -202,7 +177,6 @@ const TaskListToolbar = props => {
       />
       <Spacing horizontal={4} />
       <CustomizeToolbarButton
-        onChange={onColumnSetupChange}
         showCustomColumnCreate={false}
         additionalOptions={OPTIONS}
       />

@@ -18,7 +18,7 @@ import {
   TaskTemplateApplicatorLabel,
 } from './styled';
 
-const TaskTemplateApplicator = ({ onTemplateSelect }) => {
+const TaskTemplateApplicator = ({ onTemplateSelect, bulkApply = false }) => {
   const popoverReference = useRef(null);
   const [isPopoverOpen, openPopover, closePopover] = useBoolean(false);
   const [searchValue, setSearchValue] = useState('');
@@ -58,11 +58,13 @@ const TaskTemplateApplicator = ({ onTemplateSelect }) => {
     template => {
       onTemplateSelect(template);
       closePopover();
-      dispatch({
-        type: ActionTypes.UNSELECT_ALL_PATIENTS,
-      });
+      if (bulkApply) {
+        dispatch({
+          type: ActionTypes.UNSELECT_ALL_PATIENTS,
+        });
+      }
     },
-    [closePopover, onTemplateSelect, dispatch],
+    [onTemplateSelect, closePopover, bulkApply, dispatch],
   );
 
   const handleClose = useCallback(() => {

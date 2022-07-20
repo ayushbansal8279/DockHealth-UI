@@ -48,7 +48,7 @@ export const ModalDescriptionContainer = styled.div`
   display: flex;
   flex-direction: column;
   align-items: center;
-  padding: ${spacing.largePlus};
+  padding: ${spacing.large};
 `;
 
 export const ButtonsContainer = styled.div`

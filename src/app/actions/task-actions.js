@@ -776,6 +776,14 @@ export function changeTasksSelectedState(newSelectedState, taskIdentifiers) {
   };
 }
 
+export function changeWorkflowSelectedState(newSelectedState, identifier) {
+  return {
+    type: ActionTypes.CHANGE_WORKFLOW_SELECTED_STATE,
+    identifier,
+    newSelectedState,
+  };
+}
+
 export function addSubtask(parentTaskIdentifier, subtask) {
   return function addSubtaskDispatch(dispatch) {
     return TaskApi.addTask({ ...subtask, parentTaskIdentifier })
@@ -827,6 +835,13 @@ export function sendEmailForTask(communicationDetails) {
   };
 }
 
+export function sendEmrForTask(emrData) {
+  return {
+    type: ActionTypes.SEND_EMR_FOR_TASK,
+    emrData,
+  };
+}
+
 export function markTaskAsRead(taskIdentifier) {
   return {
     type: ActionTypes.MARK_TASK_AS_READ,
@@ -855,6 +870,16 @@ export function sendFaxForTask(communicationDetails) {
     communicationDetails: {
       ...communicationDetails,
       communicationType: CommunicationType.FAX,
+    },
+  };
+}
+
+export function sendSmsForTask(communicationDetails) {
+  return {
+    type: ActionTypes.SEND_SMS_FOR_TASK,
+    communicationDetails: {
+      ...communicationDetails,
+      communicationType: CommunicationType.SMS,
     },
   };
 }

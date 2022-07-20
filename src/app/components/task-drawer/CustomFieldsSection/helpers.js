@@ -1,5 +1,3 @@
-import { isNotEmptyArray } from 'helpers/utils-helpers';
-
 /* eslint-disable import/prefer-default-export */
 export function formatMetaDataOutput(outputData) {
   const metadata = outputData.taskMetaData;
@@ -8,7 +6,7 @@ export function formatMetaDataOutput(outputData) {
   );
 
   const formattedMetadata = filteredMetaDataKeys.map(key => {
-    if (isNotEmptyArray(metadata[key])) {
+    if (Array.isArray(metadata[key])) {
       return {
         customFieldIdentifier: key,
         values: metadata[key],

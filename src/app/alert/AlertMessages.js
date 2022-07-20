@@ -23,7 +23,9 @@ const AlertMessages = {
   LABEL_CREATED: 'Label created',
   LABEL_DELETED: 'Label deleted',
   FAX_SENT: 'Fax Sent',
+  SMS_SENT: 'Sms Sent',
   MAIL_SENT: 'Mail Sent',
+  EMR_SENT: 'EHR Note posted',
 };
 
 export default AlertMessages;

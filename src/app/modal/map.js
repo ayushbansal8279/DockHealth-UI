@@ -64,6 +64,10 @@ import SmartFlowListModal from './components/SmartFlowListModal/SmartFlowListMod
 import UnarchivePatientModal from './components/UnarchivePatientModal/UnarchivePatientModal';
 import SendEmailFromTaskModal from './components/SendMessageFromTaskModals/SendEmailFromTaskModal/SendEmailFromTaskModal';
 import SendFaxFromTaskModal from './components/SendMessageFromTaskModals/SendFaxFromTaskModal/SendFaxFromTaskModal';
+import EditTemplateModal from './components/EditTemplateModal/EditTemplateModal';
+import SendEmrNoteFromTaskModal from './components/SendMessageFromTaskModals/SendEmrNoteFromTaskModal/SendEmrNoteFromTaskModal';
+import SendSmsFromTaskModal from './components/SendMessageFromTaskModals/SendSmsFromTaskModal/SendSmsFromTaskModal';
+import EditContactModal from './components/EditContactModal/EditContactModal';
 
 const MODAL_MAP = {
   CompleteAllTasks: CompleteAllTasksModal,
@@ -132,6 +136,10 @@ const MODAL_MAP = {
   SmartFlowList: SmartFlowListModal,
   SendFaxFromTask: SendFaxFromTaskModal,
   SendEmailFromTask: SendEmailFromTaskModal,
+  EditTemplate: EditTemplateModal,
+  SendEmrFromTask: SendEmrNoteFromTaskModal,
+  SendSmsFromTask: SendSmsFromTaskModal,
+  EditContact: EditContactModal,
 };
 
 export default MODAL_MAP;

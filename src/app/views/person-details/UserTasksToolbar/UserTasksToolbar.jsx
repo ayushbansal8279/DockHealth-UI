@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useState } from 'react';
+import React, { useCallback, useState } from 'react';
 import { useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
 import {
@@ -6,8 +6,6 @@ import {
   userIdentifierSelector,
 } from 'selectors/person-details-selectors';
 import { TaskListTabName } from 'helpers/tasklist-helpers';
-import { useColumnsConfig } from 'context-api/columns-config-context';
-import { userProfileColumnOrderSelector } from 'selectors/user-selectors';
 import TaskStatusToolbarSelect from 'components/tasklist/TaskStatusToolbarSelect/TaskStatusToolbarSelect';
 import { Box } from '@material-ui/core';
 import CustomizeToolbarButton from 'components/tasklist/CustomizeToolbarButton/CustomizeToolbarButton';
@@ -27,12 +25,6 @@ const UserTasksToolbar = () => {
   const taskList = useSelector(currentTaskListSelector);
   const isListCreator =
     taskList?.creator?.identifier === currentUser.identifier;
-  const userOrderColumns = useSelector(userProfileColumnOrderSelector);
-  const { setColumnsOrder } = useColumnsConfig();
-
-  useEffect(() => {
-    if (userOrderColumns) setColumnsOrder(userOrderColumns);
-  }, [setColumnsOrder, userOrderColumns]);
 
   const handleSelectTab = useCallback(
     tab => {
