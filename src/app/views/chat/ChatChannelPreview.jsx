@@ -98,7 +98,7 @@ export default function ChatChannelPreview({
             {getLastMessage(channel)}
           </Label>
           <div className="sendbird-channel-preview__content__lower__unread-message-count">
-            {getChannelUnreadMessageCount(channel) ? ( // return number
+            {getChannelUnreadMessageCount(channel) ? (
               <Badge count={getChannelUnreadMessageCount(channel)} />
             ) : null}
           </div>

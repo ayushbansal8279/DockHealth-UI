@@ -4,7 +4,6 @@ import format from 'date-fns/format';
 import formatRelative from 'date-fns/formatRelative';
 import isYesterday from 'date-fns/isYesterday';
 
-// import { truncateString } from '../../utils';
 const getStringSet = (lang = 'en') => {
   const stringSet = {
     en: {
