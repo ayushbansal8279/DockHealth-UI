@@ -26,6 +26,8 @@ export const PATIENTS_LIST_ALL = '/core/patients/list/all';
 export const PATIENTS_LIST_ARCHIVED = '/core/patients/list/archived';
 export const PATIENTS_LIST = '/core/patients/list';
 
+export const CHAT_PATH = '/core/chat';
+
 export const createSingleTaskPath = taskIdentifier =>
   `${SINGLE_TASK_PATH}/${taskIdentifier}`;
 
