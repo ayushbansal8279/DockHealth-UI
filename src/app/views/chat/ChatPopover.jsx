@@ -1,7 +1,8 @@
-import React, { useState, useCallback } from 'react';
+import React, { useState, useCallback, useEffect } from 'react';
 import { IconButton, Popover, Box, Typography } from '@material-ui/core';
 import { useHistory } from 'react-router-dom';
-import ChatIcon from '@material-ui/icons/Chat';
+import sendBirdSelectors from '@sendbird/uikit-react/sendBirdSelectors';
+import useSendbirdStateContext from '@sendbird/uikit-react/useSendbirdStateContext';
 import ArrowBack from '@material-ui/icons/ArrowBack';
 import CloseIcon from '@material-ui/icons/Close';
 import OpenInNewIcon from '@material-ui/icons/OpenInNew';
@@ -10,7 +11,7 @@ import { useBoolean } from 'hooks/useBoolean';
 import { CHAT_PATH } from 'routing/helpers/paths';
 import { userProfileSelector } from 'selectors/user-selectors';
 import { useSelector } from 'react-redux';
-import SBProvider from '@sendbird/uikit-react/SendbirdProvider';
+import TaskIcon from 'components/task/TaskIcon/TaskIcon';
 import Chat from './Chat';
 import SelectedChannelContext from './SelectedChannelContext';
 import {
@@ -18,7 +19,6 @@ import {
   StyledIconButton,
   HeaderContainer,
   ChatContainer,
-  ColorSet,
 } from './styled';
 
 const ChatPopover = () => {
@@ -26,9 +26,6 @@ const ChatPopover = () => {
   const [open, setOpen, unsetOpen] = useBoolean(false);
   const [anchorElement, setAnchorElement] = useState(null);
   const history = useHistory();
-
-  const appId =
-    process.env.SENDBIRD_APP_ID ?? 'D11A4B11-21AD-4025-9D8C-2BCF693C814C';
 
   const [selectedChannel, setSelectedChannel] = useState(null);
   const value = { selectedChannel, setSelectedChannel };
@@ -55,6 +52,19 @@ const ChatPopover = () => {
     setSelectedChannel(null);
   }, []);
 
+  const context = useSendbirdStateContext();
+  const sdkInstance = sendBirdSelectors.getSdk(context);
+
+  const [unreadMessageCount, setUnreadMessageCount] = useState(null);
+
+  useEffect(() => {
+    if (sdkInstance && sdkInstance.getTotalUnreadMessageCount) {
+      sdkInstance
+        .getTotalUnreadMessageCount()
+        .then(count => setUnreadMessageCount(count));
+    }
+  }, [sdkInstance]);
+
   return (
     <div>
       <IconButton
@@ -62,7 +72,7 @@ const ChatPopover = () => {
         variant="contained"
         onClick={handleClick}
       >
-        <ChatIcon />
+        <TaskIcon type="comments" isActive isNew={unreadMessageCount > 0} />
       </IconButton>
       <Draggable handle=".handle">
         <Popover
@@ -100,14 +110,7 @@ const ChatPopover = () => {
             </HeaderContainer>
             <ChatContainer>
               <SelectedChannelContext.Provider value={value}>
-                <SBProvider
-                  appId={appId}
-                  userId={identifier}
-                  nickname={name}
-                  colorSet={ColorSet}
-                >
-                  <Chat userId={identifier} name={name} />
-                </SBProvider>
+                <Chat userId={identifier} name={name} />
               </SelectedChannelContext.Provider>
             </ChatContainer>
           </Container>
