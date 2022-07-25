@@ -71,3 +71,8 @@
     width: 320px !important;
     overflow: scroll;
 }
+
+.sendbird-message-hoc__message-content{
+    height: fit-content;
+    padding-top: 10px;
+}
