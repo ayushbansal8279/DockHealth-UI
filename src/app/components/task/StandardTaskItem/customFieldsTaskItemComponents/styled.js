@@ -125,7 +125,7 @@ export const Description = styled.div`
   width: 100%;
   padding-right: ${spacing.smallPlus};
   overflow-wrap: anywhere;
-  ${props => props.isCrossedOut && 'text-decoration: line-through;'}
+  ${props => (props.isCrossedOut ? 'text-decoration: line-through;' : '')}
   cursor: pointer;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -299,7 +299,9 @@ export const StandardTaskThreeDots = styled(ThreeDots)`
 export const StandardTaskItemPanel = styled.div`
   position: relative;
   ${props =>
-    props.isDragging && 'box-shadow: 0px 0px 11px rgba(204, 204, 204, 0.8)'};
+    props.isDragging
+      ? 'box-shadow: 0px 0px 11px rgba(204, 204, 204, 0.8)'
+      : ''};
 
   &:hover {
     & ${ThreeDots}, & ${AddPlaceholder} {

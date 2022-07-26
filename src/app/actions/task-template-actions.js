@@ -140,6 +140,19 @@ export function saveTaskTemplateLayout(layout) {
   };
 }
 
+export function saveTaskTemplateLayoutToHistory(layout) {
+  return {
+    type: ActionTypes.SAVE_HISTORY_TASK_TEMPLATE_LAYOUT,
+    layout,
+  };
+}
+
+export function undoTaskTemplateLayout() {
+  return {
+    type: ActionTypes.RECOVER_HISTORY_TASK_TEMPLATE_LAYOUT,
+  };
+}
+
 export function addNewTaskElement(position) {
   return {
     type: ActionTypes.ADD_NEW_TASK_ELEMENT,

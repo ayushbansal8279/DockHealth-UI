@@ -44,7 +44,8 @@ export const Step = styled.button`
   border-radius: 4px;
   outline: none;
   ${({ isCurrent }) => isCurrent && `background: ${palette.coolGrey2};`}
-  ${({ isDisabled }) => !isDisabled && 'cursor: pointer;'}
+  ${({ isDisabled }) =>
+    !isDisabled ? 'cursor: pointer;' : ''}
 
   &:not(:last-child) {
     margin-right: ${spacing.tiny};

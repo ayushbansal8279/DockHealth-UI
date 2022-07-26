@@ -66,11 +66,12 @@ AvatarFilterMember.propTypes = {
     profileThumbnailPictureHash: string,
   }),
   onSelectFilters: func.isRequired,
-  selectedFilters: objectOf(arrayOf(string)).isRequired,
+  selectedFilters: objectOf(arrayOf(string)),
 };
 
 AvatarFilterMember.defaultProps = {
   member: null,
+  selectedFilters: null,
 };
 
 export default AvatarFilterMember;

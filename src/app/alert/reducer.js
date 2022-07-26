@@ -22,6 +22,7 @@ export default function(state = initialState, action = {}) {
         type: payload.type,
         transactionIdentifier: payload.transactionIdentifier,
         undoCallback: payload.undoCallback,
+        options: payload.options,
       };
 
     case SHOW_SIDEBAR_ALERT:

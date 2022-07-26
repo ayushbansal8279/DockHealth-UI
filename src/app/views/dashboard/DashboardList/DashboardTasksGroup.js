@@ -139,11 +139,6 @@ const DashboardTasksGroup = ({
 
   const groupHasMultipleAssignees = false;
 
-  // const groupHasMultipleAssignees = useMemo(
-  //   () => tasks?.some(({ assignedToUsers }) => assignedToUsers?.length > 1),
-  //   [tasks],
-  // );
-
   const dueDateForQuickAdd = useMemo(() => {
     if (groupType === DashboardGroup.TODAY)
       return moment()
@@ -203,19 +198,21 @@ const DashboardTasksGroup = ({
 
   const isDragAndDropDisabled = !tasks || tasks.length < 2;
 
-  const options = useMemo(
-    () => [
-      !isFirstGroup && {
+  const options = useMemo(() => {
+    const optionsArray = [];
+    if (!isFirstGroup)
+      optionsArray.push({
         name: 'Move up',
         onClick: moveGroupUp,
-      },
-      !isLastGroup && {
+      });
+    if (!isLastGroup)
+      optionsArray.push({
         name: 'Move down',
         onClick: moveGroupDown,
-      },
-    ],
-    [isFirstGroup, isLastGroup, moveGroupDown, moveGroupUp],
-  );
+      });
+
+    return optionsArray;
+  }, [isFirstGroup, isLastGroup, moveGroupDown, moveGroupUp]);
 
   const handleOrderChange = useCallback(
     listDisplayColumns => {

@@ -16,6 +16,7 @@ export const showGlobalAlertWithUndo = (
   text,
   transactionIdentifier,
   undoCallback,
+  options,
 ) => ({
   type: SHOW_GLOBAL_ALERT,
   payload: {
@@ -23,6 +24,7 @@ export const showGlobalAlertWithUndo = (
     transactionIdentifier,
     undoCallback,
     type: AlertTypes.SUCCESS,
+    options,
   },
 });
 

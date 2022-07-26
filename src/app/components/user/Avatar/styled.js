@@ -33,7 +33,7 @@ export const AvatarContainer = styled.div`
   justify-content: center;
   position: relative;
   width: ${props => props.size ?? 110}px;
-  opacity: ${props => props.isBlurred && '0.5'};
+  opacity: ${props => (props.isBlurred ? '0.5' : '')};
   overflow: visible;
   cursor: ${({ clickable }) => (clickable ? 'pointer' : 'inherit')};
 `;

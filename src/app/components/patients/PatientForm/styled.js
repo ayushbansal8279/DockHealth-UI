@@ -2,8 +2,8 @@
 import styled from 'styled-components';
 
 export const HidableContainer = styled.div`
-  visibility: ${props => (props.visibility ? 'hidden' : 'visible')};
-  max-height: ${props => (props.visibility ? '0px' : '500px')};
-  opacity: ${props => (props.visibility ? 0 : 1)};
+  visibility: ${props => (props.visible ? 'hidden' : 'visible')};
+  max-height: ${props => (props.visible ? '0px' : '500px')};
+  opacity: ${props => (props.visible ? 0 : 1)};
   transition: all 250ms ease-out;
 `;

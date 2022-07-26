@@ -9,7 +9,7 @@ const CompleteTasksVisibilitySwitch = props => {
   const { visible, onChange } = props;
   return (
     <ToolbarButton
-      color={!visible && palette.coolGrey1}
+      color={visible ? palette.coolGrey1 : null}
       icon={
         <VisibilityImg
           src={visible ? CompleteTasksVisibleIcon : CompleteTasksHiddenIcon}

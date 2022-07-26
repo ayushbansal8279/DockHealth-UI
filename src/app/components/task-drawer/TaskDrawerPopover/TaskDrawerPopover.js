@@ -29,7 +29,7 @@ const TaskDrawerPopover = ({ disabled, placement, children, content }) => {
       <StyledPopover
         anchorEl={buttonReference?.current}
         anchorOrigin={{
-          vertical: placement,
+          vertical: placement || 'top',
           horizontal: 'right',
         }}
         transformOrigin={{

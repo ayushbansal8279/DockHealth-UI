@@ -57,6 +57,8 @@ const PatientForm = forwardRef(
     const {
       handleSubmit,
       formState: { errors },
+      setError,
+      clearErrors,
     } = useFormContext();
     const [isOpenedPersonal, setIsOpenedPersonal] = useState(true);
     const [isOpenedContact, setIsOpenedContact] = useState(true);
@@ -117,7 +119,7 @@ const PatientForm = forwardRef(
         return field.fieldType === FieldType.DROPDOWN_MULTI ? (
           <HidableContainer
             key={field.identifier}
-            visibility={!showEmpty && !patientCustomField?.values}
+            visible={!showEmpty && !patientCustomField?.values}
           >
             {index !== 0 && <Spacing vertical={3} />}
             <CustomField
@@ -130,7 +132,7 @@ const PatientForm = forwardRef(
         ) : (
           <HidableContainer
             key={field.identifier}
-            visibility={!showEmpty && !patientCustomField?.value}
+            visible={!showEmpty && !patientCustomField?.value}
           >
             {index !== 0 && <Spacing vertical={3} />}
             <CustomField
@@ -205,6 +207,8 @@ const PatientForm = forwardRef(
             inputComponent={DateInput}
             name="dob"
             maxDate={moment().toISOString()}
+            setError={setError}
+            clearErrors={clearErrors}
           />
           <Spacing vertical={3} />
           <FormInput

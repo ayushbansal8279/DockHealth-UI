@@ -18,123 +18,135 @@ import TextEditor from '../TextEditor/TextEditor';
 import { CustomTextEditorContainer } from './styled';
 import { createMentionEntities } from '../TextEditor/create-mention-entities';
 
-const CustomFieldTextEditor = ({
-  readOnly,
-  name,
-  label,
-  placeholder,
-  taskIdentifier,
-  identifier,
-  task,
-  fieldsGroupKey,
-  inputRef,
-  characterLimit,
-  oneline,
-  enableRichText = false,
-}) => {
-  const dispatch = useDispatch();
-  const { getValues, watch, register, unregister, setValue } = useFormContext();
-  const value = watch(name);
-  const [isFocused, setIsFocused] = useState(false);
-  const [updatedValue, setUpdatedValue] = useState(value);
-  const [state, setState] = useMentionsEditorState(convertToEditorState());
-
-  useEffect(() => {
-    register(name);
-    return () => {
-      unregister(name);
-    };
-  }, [name, register, unregister]);
-
-  useEffect(() => {
-    if (value !== null && value !== updatedValue) {
-      const newContent = createMentionEntities(value, value, [], true);
-      setUpdatedValue(value);
-      setState(EditorState.push(state, newContent));
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [value]);
-
-  const updateCustomFields = useCallback(
-    text => {
-      const values = getValues(fieldsGroupKey);
-      if (text === updatedValue) return;
-      values[identifier] = text;
-      if (taskIdentifier) {
-        const formattedValue = formatMetaDataOutput({
-          taskMetaData: values,
-        });
-        setUpdatedValue(text);
-        const adjustedValues = formattedValue.taskMetaData.map(object => ({
-          ...object,
-          customFieldIdentifier: object.customFieldIdentifier,
-        }));
-        if (adjustedValues.length > 0) {
-          // eslint-disable-next-line no-unused-expressions
-          task?.itemType === TaskItemType.BUNDLE ||
-          task?.itemType === TaskItemType.TEMPLATE
-            ? dispatch(
-                updatePartialWorkflow(task?.identifier, {
-                  taskMetaData: adjustedValues,
-                }),
-              )
-            : dispatch(
-                partialUpdateTask(task?.identifier, {
-                  taskMetaData: adjustedValues,
-                }),
-              );
-          dispatch(showGlobalAlert(AlertMessages.UPDATED));
-        }
-      } else {
-        setValue(name, text);
-      }
-    },
-    [
-      getValues,
-      fieldsGroupKey,
+const CustomFieldTextEditor = React.forwardRef(
+  (
+    {
+      readOnly,
       name,
-      updatedValue,
-      identifier,
+      label,
+      placeholder,
       taskIdentifier,
+      identifier,
       task,
-      dispatch,
+      fieldsGroupKey,
+      inputRef,
+      characterLimit,
+      oneline,
+      enableRichText = false,
+    },
+    reference,
+  ) => {
+    const dispatch = useDispatch();
+    const {
+      getValues,
+      watch,
+      register,
+      unregister,
       setValue,
-    ],
-  );
+    } = useFormContext();
+    const value = watch(name);
+    const [isFocused, setIsFocused] = useState(false);
+    const [updatedValue, setUpdatedValue] = useState(value);
+    const [state, setState] = useMentionsEditorState(convertToEditorState());
 
-  const handleBlur = useCallback(() => {
-    const { tokenizedText } = convertFromEditorStateToOutput(
-      state,
-      enableRichText,
+    useEffect(() => {
+      register(name);
+      return () => {
+        unregister(name);
+      };
+    }, [name, register, unregister]);
+
+    useEffect(() => {
+      if (value !== null && value !== updatedValue) {
+        const newContent = createMentionEntities(value, value, [], true);
+        setUpdatedValue(value);
+        setState(EditorState.push(state, newContent));
+      }
+      // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [value]);
+
+    const updateCustomFields = useCallback(
+      text => {
+        const values = getValues(fieldsGroupKey);
+        if (text === updatedValue) return;
+        values[identifier] = text;
+        if (taskIdentifier) {
+          const formattedValue = formatMetaDataOutput({
+            taskMetaData: values,
+          });
+          setUpdatedValue(text);
+          const adjustedValues = formattedValue.taskMetaData.map(object => ({
+            ...object,
+            customFieldIdentifier: object.customFieldIdentifier,
+          }));
+          if (adjustedValues.length > 0) {
+            // eslint-disable-next-line no-unused-expressions
+            task?.itemType === TaskItemType.BUNDLE ||
+            task?.itemType === TaskItemType.TEMPLATE
+              ? dispatch(
+                  updatePartialWorkflow(task?.identifier, {
+                    taskMetaData: adjustedValues,
+                  }),
+                )
+              : dispatch(
+                  partialUpdateTask(task?.identifier, {
+                    taskMetaData: adjustedValues,
+                  }),
+                );
+            dispatch(showGlobalAlert(AlertMessages.UPDATED));
+          }
+        } else {
+          setValue(name, text);
+        }
+      },
+      [
+        getValues,
+        fieldsGroupKey,
+        name,
+        updatedValue,
+        identifier,
+        taskIdentifier,
+        task,
+        dispatch,
+        setValue,
+      ],
     );
-    updateCustomFields(tokenizedText);
-    setIsFocused(false);
-  }, [enableRichText, state, updateCustomFields]);
 
-  return (
-    <CustomTextEditor
-      hasError={false}
-      empty={value?.length > 0}
-      focused={isFocused}
-      label={label}
-    >
-      <CustomTextEditorContainer>
-        <TextEditor
-          characterLimit={characterLimit}
-          readOnly={readOnly}
-          placeholder={placeholder}
-          state={state}
-          onChange={setState}
-          onBlur={handleBlur}
-          disableMentions
-          oneline={oneline}
-          ref={inputRef}
-          onFocus={() => setIsFocused(true)}
-          showToolbar={enableRichText}
-        />
-      </CustomTextEditorContainer>
-    </CustomTextEditor>
-  );
-};
+    const handleBlur = useCallback(() => {
+      const { tokenizedText } = convertFromEditorStateToOutput(
+        state,
+        enableRichText,
+      );
+      updateCustomFields(tokenizedText);
+      setIsFocused(false);
+    }, [enableRichText, state, updateCustomFields]);
+
+    return (
+      <CustomTextEditor
+        hasError={false}
+        empty={value?.length > 0}
+        focused={isFocused}
+        label={label}
+        ref={reference}
+      >
+        <CustomTextEditorContainer>
+          <TextEditor
+            characterLimit={characterLimit}
+            readOnly={readOnly}
+            placeholder={placeholder}
+            state={state}
+            onChange={setState}
+            onBlur={handleBlur}
+            disableMentions
+            oneline={oneline}
+            ref={inputRef}
+            onFocus={() => setIsFocused(true)}
+            showToolbar={enableRichText}
+          />
+        </CustomTextEditorContainer>
+      </CustomTextEditor>
+    );
+  },
+);
 
 export default CustomFieldTextEditor;
