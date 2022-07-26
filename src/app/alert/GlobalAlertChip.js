@@ -100,16 +100,20 @@ class GlobalAlertChip extends Component {
   handleUndoClick = async () => {
     const {
       showErrorAlert,
-      alertState: { undoCallback, transactionIdentifier },
+      alertState: { undoCallback, transactionIdentifier, options },
     } = this.props;
     this.handleCloseAlert();
-    try {
-      const rollbackResponse = await TaskApi.rollbackTransaction(
-        transactionIdentifier,
-      );
-      undoCallback(rollbackResponse);
-    } catch {
-      showErrorAlert();
+    if (options?.preventRequest) {
+      undoCallback(transactionIdentifier);
+    } else {
+      try {
+        const rollbackResponse = await TaskApi.rollbackTransaction(
+          transactionIdentifier,
+        );
+        undoCallback(rollbackResponse);
+      } catch {
+        showErrorAlert();
+      }
     }
   };
 

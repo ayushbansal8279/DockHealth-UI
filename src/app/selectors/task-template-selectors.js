@@ -49,6 +49,11 @@ export const currentTaskTemplateIdentifierSelector = createSelector(
   prop('currentTaskTemplateIdentifier'),
 );
 
+export const historyTaskTemplateSelector = createSelector(
+  taskTemplateStateSelector,
+  prop('taskTemplateHistoryDetails'),
+);
+
 export const currentTaskTemplateSelector = createSelector(
   taskTemplateStateSelector,
   prop('currentTaskTemplate'),
