@@ -6,7 +6,7 @@ import { useSelector } from 'react-redux';
 import SBProvider from '@sendbird/uikit-react/SendbirdProvider';
 import withSendBird from '@sendbird/uikit-react/withSendBird';
 import { ChannelListProvider } from '@sendbird/uikit-react/ChannelList/context';
-import ChatConversation from './ChatConversation';
+import ChatConversation from './channel/ChatConversation';
 import ChatChannelList from './ChatChannelList';
 import SelectedChannelContext from './SelectedChannelContext';
 import { Container, ColorSet } from './styled';
