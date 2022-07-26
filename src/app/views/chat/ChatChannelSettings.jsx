@@ -6,7 +6,6 @@ import SelectedChannelContext from './SelectedChannelContext';
 import ShowSettingsContext from './ShowSettingsContext';
 
 const ChatChannelSettings = () => {
-  // const { setShowSettings } = props;
   const { selectedChannel } = useContext(SelectedChannelContext);
   const { setShowSettings } = useContext(ShowSettingsContext);
 

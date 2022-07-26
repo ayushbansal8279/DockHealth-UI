@@ -8,8 +8,6 @@ import ShowSettingsContext from './ShowSettingsContext';
 const ChatChannelConversation = props => {
   const { currentChannelUrl } = props;
 
-  // const [showSettings, setShowSettings] = useState(false);
-
   const { setShowSettings, showSettings } = useContext(ShowSettingsContext);
 
   const [showSearch, setShowSearch] = useState(false);

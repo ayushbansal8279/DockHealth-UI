@@ -59,7 +59,6 @@ const ChatPopover = () => {
 
   const context = useSendbirdStateContext();
   const sdkInstance = sendBirdSelectors.getSdk(context);
-  // const userEventHandler = sdkInstance.UserEventHandler();
   const [unreadMessageCount, setUnreadMessageCount] = useState(null);
 
   useEffect(() => {
