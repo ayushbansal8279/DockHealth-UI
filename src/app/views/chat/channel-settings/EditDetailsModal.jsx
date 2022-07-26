@@ -16,18 +16,14 @@ import uuidv4 from './uuid';
 const EditDetails = props => {
   const { onSubmit, onCancel } = props;
 
-  console.log('inside of edit details');
-
-  const context = useContext(ChannelSettingsContext);
-  console.log(`context: ${JSON.stringify(context)}`);
-
   const {
     channel,
     onChannelModified,
     onBeforeUpdateChannel,
     setChannelUpdateId,
   } = useContext(ChannelSettingsContext);
-  const title = channel?.name;
+
+  const title = channel?.name !== 'Group Channel' ? channel?.name : '';
 
   const state = useSendbirdStateContext();
   const userId = state?.config?.userId;
@@ -43,13 +39,12 @@ const EditDetails = props => {
 
   return (
     <Modal
-      titleText={stringSet.MODAL__CHANNEL_INFORMATION__TITLE}
-      submitText={stringSet.BUTTON__SAVE}
+      titleText="Edit channel information"
+      submitText="save"
       onCancel={onCancel}
       onSubmit={() => {
         if (title !== '' && !inputReference.current.value) {
           if (formReference.current.reportValidity) {
-            // might not work in explorer
             formReference.current.reportValidity();
           }
           return;
@@ -102,8 +97,8 @@ const EditDetails = props => {
         }}
       >
         <div className="channel-profile-form__img-section">
-          <InputLabel>
-            {stringSet.MODAL__CHANNEL_INFORMATION__CHANNEL_IMAGE}
+          <InputLabel type={Typography.CAPTION_1} color={Colors.PRIMARY}>
+            Channel Image
           </InputLabel>
           <div className="channel-profile-form__avatar">
             {currentImg ? (
@@ -135,14 +130,12 @@ const EditDetails = props => {
             notUnderline
           >
             <Label type={Typography.BUTTON_1} color={Colors.PRIMARY}>
-              {stringSet.MODAL__CHANNEL_INFORMATION__UPLOAD}
+              Upload
             </Label>
           </TextButton>
         </div>
         <div className="channel-profile-form__name-section">
-          <InputLabel>
-            {stringSet.MODAL__CHANNEL_INFORMATION__CHANNEL_NAME}
-          </InputLabel>
+          <InputLabel>Channel Name</InputLabel>
           <Input
             required={title !== ''}
             name="channel-profile-form__name"

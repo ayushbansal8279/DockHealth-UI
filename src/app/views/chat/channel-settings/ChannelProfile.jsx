@@ -3,8 +3,6 @@ import useSendbirdStateContext from '@sendbird/uikit-react/useSendbirdStateConte
 import ChannelAvatar from '@sendbird/uikit-react/ui/ChannelAvatar';
 import TextButton from '@sendbird/uikit-react/ui/TextButton';
 import Label from '@sendbird/uikit-react/ui/Label';
-// import EditDetailsModal from '@sendbird/uikit-react/ChannelSettings/components/EditDetailsModal';
-import Button from 'components/common/Button/Button';
 import EditDetails from './EditDetailsModal';
 import { LocalizationContext } from '../channel/ChannelLocalizationContext';
 import SelectedChannelContext from '../SelectedChannelContext';
@@ -69,10 +67,9 @@ const ChannelProfile = () => {
             type={Typography.BUTTON_1}
             color={disabled ? Colors.ONBACKGROUND_2 : Colors.PRIMARY}
           >
-            {stringSet.CHANNEL_SETTING__PROFILE__EDIT}
+            Edit
           </Label>
         </TextButton>
-        <Button onClick={() => setShowModal(true)}>Show modal</Button>
         {showModal && (
           <EditDetails
             onCancel={() => setShowModal(false)}

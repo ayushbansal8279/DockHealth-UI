@@ -2,8 +2,6 @@ import React, { useContext } from 'react';
 import { ChannelSettingsProvider } from '@sendbird/uikit-react/ChannelSettings/context';
 import ChannelSettingsUI from '@sendbird/uikit-react/ChannelSettings/components/ChannelSettingsUI';
 import UserPanel from '@sendbird/uikit-react/ChannelSettings/components/UserPanel';
-// import ChannelSettingsContext from './ChannelSettingsContext';
-// import ChannelProfile from '@sendbird/uikit-react/ChannelSettings/components/ChannelProfile';
 import CustomChannelSettingsProvider from './CustomChannelSettingsProvider';
 import ChannelProfile from './ChannelProfile';
 import SelectedChannelContext from '../SelectedChannelContext';
@@ -14,13 +12,15 @@ const ChatChannelSettings = props => {
 
   return (
     <div className="sendbird-app__settingspanel-wrap">
-      <CustomChannelSettingsProvider channelUrl={selectedChannel.url}>
-        <ChannelSettingsProvider
+      <ChannelSettingsProvider
+        channelUrl={selectedChannel.url}
+        onCloseClick={() => {
+          setShowSettings(false);
+        }}
+      >
+        <CustomChannelSettingsProvider
           channelUrl={selectedChannel.url}
           channel={selectedChannel}
-          onCloseClick={() => {
-            setShowSettings(false);
-          }}
         >
           <ChannelSettingsUI
             renderModerationPanel={() => {
@@ -30,8 +30,8 @@ const ChatChannelSettings = props => {
               return <ChannelProfile />;
             }}
           />
-        </ChannelSettingsProvider>
-      </CustomChannelSettingsProvider>
+        </CustomChannelSettingsProvider>
+      </ChannelSettingsProvider>
     </div>
   );
 };
