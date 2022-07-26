@@ -57,6 +57,7 @@ export const SubmenuKey = {
   SETTINGS: 'SETTINGS',
   EDUCATION_CENTER: 'EDUCATION_CENTER',
   DOCKCOIN: 'DOCKCOIN',
+  CHAT: 'CHAT',
 };
 
 const {

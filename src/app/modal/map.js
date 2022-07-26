@@ -67,6 +67,7 @@ import SendFaxFromTaskModal from './components/SendMessageFromTaskModals/SendFax
 import EditTemplateModal from './components/EditTemplateModal/EditTemplateModal';
 import SendEmrNoteFromTaskModal from './components/SendMessageFromTaskModals/SendEmrNoteFromTaskModal/SendEmrNoteFromTaskModal';
 import SendSmsFromTaskModal from './components/SendMessageFromTaskModals/SendSmsFromTaskModal/SendSmsFromTaskModal';
+import EditContactModal from './components/EditContactModal/EditContactModal';
 
 const MODAL_MAP = {
   CompleteAllTasks: CompleteAllTasksModal,
@@ -138,6 +139,7 @@ const MODAL_MAP = {
   EditTemplate: EditTemplateModal,
   SendEmrFromTask: SendEmrNoteFromTaskModal,
   SendSmsFromTask: SendSmsFromTaskModal,
+  EditContact: EditContactModal,
 };
 
 export default MODAL_MAP;

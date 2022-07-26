@@ -83,6 +83,7 @@ const DueDatePicker = ({
 
   const handleInsertDateAsText = () => {
     const areSomeMissingParts = dateMaskValue.includes('_');
+
     if (areSomeMissingParts) {
       return;
     }
@@ -90,10 +91,6 @@ const DueDatePicker = ({
     const momentDate = moment(dateMaskValue, DATE_MASK_FORMAT);
     const validDate = momentDate.isValid();
     if (!validDate) {
-      return;
-    }
-    if (momentDate.isBefore(new Date(), 'day')) {
-      setDateMaskValue('');
       return;
     }
     const formattedDate = momentDate.format(DATE_ISO_FORMAT);
