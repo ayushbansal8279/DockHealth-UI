@@ -152,5 +152,5 @@ export const LinkIconContainer = styled.div`
 export const Counter = styled.div`
   display: flex;
   justify-content: end;
-  ${({ alert }) => alert && `color: ${palette.red}`}
+  ${({ alert }) => (alert ? `color: ${palette.red};` : '')}
 `;

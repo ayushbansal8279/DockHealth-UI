@@ -76,7 +76,7 @@ export const RoleItem = styled.div`
   cursor: ${props => (props.isDisabled ? 'not-allowed' : 'pointer')};
   background-color: ${props =>
     props.isSelected ? palette.coolGrey4 : 'transparent'};
-  ${props => props.isDisabled && 'filter: grayscale(70%)'};
+  ${props => (props.isDisabled ? 'filter: grayscale(70%)' : '')};
   position: relative;
 
   & > img {

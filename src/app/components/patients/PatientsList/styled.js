@@ -6,7 +6,8 @@ import spacing from 'styles/spacing';
 export const NonEmptyListTable = styled.div`
   color: ${palette.unknownGrey1};
   margin: 0.2rem;
-  ${props => props.highlightedPatientIdentifier && 'margin-right: 0.25rem;'}
+  ${props =>
+    props.highlightedPatientIdentifier ? 'margin-right: 0.25rem;' : ''}
 `;
 
 export const ListLoaderContainer = styled.div`

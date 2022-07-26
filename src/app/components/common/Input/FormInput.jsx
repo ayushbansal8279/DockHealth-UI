@@ -17,12 +17,11 @@ const FormInput = React.forwardRef(
   ) => {
     const {
       register,
-      clearErrors,
       formState: { errors },
       watch,
       setValue,
       unregister,
-      setError,
+      clearErrors,
     } = useFormContext();
 
     const isNested = name?.includes('.');
@@ -49,7 +48,6 @@ const FormInput = React.forwardRef(
 
     return (
       <InputComponent
-        setError={setError}
         ref={reference}
         name={name}
         value={value ?? ''}
@@ -58,7 +56,6 @@ const FormInput = React.forwardRef(
         errors={errors}
         onKeyUp={() => (disableClearErrorOnKeyUp ? null : clearErrors(name))}
         {...restProps}
-        clearErrors={clearErrors}
       />
     );
   },

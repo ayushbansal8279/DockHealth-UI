@@ -34,8 +34,8 @@ export const TasksGroupActionButton = styled.button`
 `;
 
 export const Arrow = styled.img`
-  transform: ${props => props.isOpen && 'rotateX(180deg)'};
-  -webkit-transform: ${props => props.isOpen && 'rotateX(180deg)'};
+  transform: ${props => (props.isOpen ? 'rotateX(180deg)' : '')};
+  -webkit-transform: ${props => (props.isOpen ? 'rotateX(180deg)' : '')};
   padding-left: ${spacing.tiny};
   padding-right: ${spacing.smallPlus};
   transition: all 0.5s ease-in-out;

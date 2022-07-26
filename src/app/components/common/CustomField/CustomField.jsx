@@ -35,7 +35,7 @@ const CustomField = ({
   const { identifier, name, placeholder, fieldType, options } = field;
   const inputReference = useRef(null);
   const componentReference = useRef(null);
-  const { setValue, watch } = useFormContext();
+  const { setValue, watch, setError, clearErrors } = useFormContext();
   const [wasChanged, setWasChanged] = useState(false);
   const isWorkflow =
     task &&
@@ -164,6 +164,8 @@ const CustomField = ({
             ref={componentReference}
             onChange={() => setWasChanged(true)}
             disableClearErrorOnKeyUp
+            setError={setError}
+            clearErrors={clearErrors}
           />
         );
       case FieldType.DROPDOWN: {
@@ -224,6 +226,7 @@ const CustomField = ({
         return <div>{field.name}</div>;
     }
   }, [
+    clearErrors,
     dropdownOptions,
     field.name,
     fieldName,
@@ -234,6 +237,7 @@ const CustomField = ({
     name,
     placeholder,
     readOnly,
+    setError,
     task,
     taskIdentifier,
     watch,

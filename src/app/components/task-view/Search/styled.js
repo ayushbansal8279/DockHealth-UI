@@ -29,7 +29,7 @@ export const StyledTextField = styled(TextField)`
     border-radius: 0.25rem;
     color: ${palette.coolGrey1};
     height: 2.5rem;
-    ${props => props.fullWidth && 'width: 100%;'}
+    ${props => (props.fullWidth ? 'width: 100%;' : '')}
 
     & .MuiInputBase-root {
       border: 0.0625rem solid

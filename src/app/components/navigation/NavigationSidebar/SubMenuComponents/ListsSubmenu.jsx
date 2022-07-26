@@ -132,7 +132,7 @@ const ListsSubmenu = () => {
                   </Box>
                 )}
                 <ListNameText
-                  color={archived && palette.coolGrey2}
+                  color={archived ? palette.coolGrey2 : undefined}
                   isActive={
                     activeTaskListIdentifier === list?.taskListIdentifier
                   }
@@ -200,7 +200,7 @@ const ListsSubmenu = () => {
                     </Box>
                   )}
                   <ListNameText
-                    color={archived && palette.coolGrey2}
+                    color={archived ? palette.coolGrey2 : undefined}
                     isActive={
                       activeTaskListIdentifier === list?.taskListIdentifier
                     }
@@ -271,7 +271,7 @@ const ListsSubmenu = () => {
                       </Box>
                     )}
                     <ListNameText
-                      color={archived && palette.coolGrey2}
+                      color={archived ? palette.coolGrey2 : undefined}
                       isActive={
                         activeTaskListIdentifier === list?.taskListIdentifier
                       }

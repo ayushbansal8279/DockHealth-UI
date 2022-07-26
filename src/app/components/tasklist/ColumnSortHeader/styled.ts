@@ -13,7 +13,7 @@ export const DescriptionTooltipWrapper = styled.div`
   cursor: initial;
 `;
 
-export const LabelWrapper = styled.p<{ ordered: boolean }>`
+export const LabelWrapper = styled.div<{ ordered: boolean }>`
   margin-bottom: 0;
   padding-left: 5px;
   overflow: hidden;

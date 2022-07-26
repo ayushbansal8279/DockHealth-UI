@@ -55,6 +55,7 @@ const renderPatientNotes = (
         <NotesTitle>Notes</NotesTitle>
         {notes.map((note, index) => (
           <PatientCardNote
+            key={note.identifier}
             note={note}
             patientName={patientName}
             index={index}
