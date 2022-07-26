@@ -25,6 +25,7 @@ const Datepicker = ({
   maxDate,
   initialMonthMomentValue,
   showRange,
+  disablePast,
   onMonthChange = () => null,
 }) => {
   const [currentMonthMoment, setCurrentMonthMoment] = useState(null);
@@ -68,6 +69,7 @@ const Datepicker = ({
         maxDate,
         showRange,
         currentDay,
+        disablePast,
       }),
     // useEffect work better for primitive values (like strings in here)
     // eslint-disable-next-line react-hooks/exhaustive-deps

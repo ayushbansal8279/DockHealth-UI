@@ -57,6 +57,7 @@ export const renderDayLabels = ({
   minDate,
   showRange,
   currentDay,
+  disablePast,
 }) => {
   const currentMonthStartPoint = moment(currentMonthMoment)
     .startOf('month')
@@ -100,6 +101,9 @@ export const renderDayLabels = ({
         maxDate,
       );
 
+    const disableIfIsPast =
+      dayMoment.isBefore(currentDay, 'days') && disablePast;
+
     return (
       <CalendarIconWrapper
         isToday={dayMoment.isSame(moment(), 'days')}
@@ -110,7 +114,7 @@ export const renderDayLabels = ({
           color={isDaySelected || isDayInSelectedRange ? 'primary' : 'default'}
           size="small"
           onMouseDown={() => onDateChange(dayMoment.format(DATE_ISO_FORMAT))}
-          disabled={dayMoment.isBefore(currentDay, 'days')}
+          disabled={isOutOfRange || disableIfIsPast}
         >
           <CalendarDayLabel
             isDisabled={isOutOfRange}
@@ -121,9 +125,7 @@ export const renderDayLabels = ({
               variant="h6"
               color="inherit"
               align="center"
-              weight={
-                dayMoment.isBefore(currentDay, 'days') ? 'normal' : 'bold'
-              }
+              weight={disableIfIsPast ? 'normal' : 'bold'}
             >
               {dayMoment.format('D')}
             </MontserratTypography>
