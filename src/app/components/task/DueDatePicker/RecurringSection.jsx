@@ -358,6 +358,7 @@ const RecurringSection = ({
                 <>
                   <Spacing horizontal={3} />
                   <SecondaryDateInput
+                    disablePast
                     value={watch(FormField.END_DATE)}
                     error={endDateError}
                     onChange={value => {
