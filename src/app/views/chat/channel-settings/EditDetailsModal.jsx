@@ -40,7 +40,7 @@ const EditDetails = props => {
   return (
     <Modal
       titleText="Edit channel information"
-      submitText="save"
+      submitText="Save"
       onCancel={onCancel}
       onSubmit={() => {
         if (title !== '' && !inputReference.current.value) {
@@ -97,7 +97,7 @@ const EditDetails = props => {
         }}
       >
         <div className="channel-profile-form__img-section">
-          <InputLabel type={Typography.CAPTION_1} color={Colors.PRIMARY}>
+          <InputLabel type={Typography.BODY_1} color="primary">
             Channel Image
           </InputLabel>
           <div className="channel-profile-form__avatar">
@@ -135,7 +135,9 @@ const EditDetails = props => {
           </TextButton>
         </div>
         <div className="channel-profile-form__name-section">
-          <InputLabel>Channel Name</InputLabel>
+          <InputLabel color="primary" size="small">
+            Channel Name
+          </InputLabel>
           <Input
             required={title !== ''}
             name="channel-profile-form__name"
