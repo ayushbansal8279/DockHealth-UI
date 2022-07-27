@@ -14,6 +14,7 @@ import { useSelector } from 'react-redux';
 import TaskIcon from 'components/task/TaskIcon/TaskIcon';
 import Chat from './Chat';
 import SelectedChannelContext from './SelectedChannelContext';
+import ShowSettingsContext from './ShowSettingsContext';
 import {
   Container,
   StyledIconButton,
@@ -29,6 +30,9 @@ const ChatPopover = () => {
 
   const [selectedChannel, setSelectedChannel] = useState(null);
   const value = { selectedChannel, setSelectedChannel };
+
+  const [showSettings, setShowSettings] = useState(false);
+  const showSettingsValue = { showSettings, setShowSettings };
 
   const handleClick = event => {
     setOpen();
@@ -50,11 +54,11 @@ const ChatPopover = () => {
 
   const handleClickGoBack = useCallback(() => {
     setSelectedChannel(null);
+    setShowSettings(false);
   }, []);
 
   const context = useSendbirdStateContext();
   const sdkInstance = sendBirdSelectors.getSdk(context);
-
   const [unreadMessageCount, setUnreadMessageCount] = useState(null);
 
   useEffect(() => {
@@ -110,7 +114,9 @@ const ChatPopover = () => {
             </HeaderContainer>
             <ChatContainer>
               <SelectedChannelContext.Provider value={value}>
-                <Chat userId={identifier} name={name} />
+                <ShowSettingsContext.Provider value={showSettingsValue}>
+                  <Chat userId={identifier} name={name} />
+                </ShowSettingsContext.Provider>
               </SelectedChannelContext.Provider>
             </ChatContainer>
           </Container>

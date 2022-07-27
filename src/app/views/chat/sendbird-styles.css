@@ -76,3 +76,7 @@
     height: fit-content;
     padding-top: 10px;
 }
+
+.sendbird-channel-settings{
+    width: 100%;
+}

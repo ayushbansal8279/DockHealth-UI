@@ -3,10 +3,11 @@ import { ChannelSettingsProvider } from '@sendbird/uikit-react/ChannelSettings/c
 import ChannelSettingsUI from '@sendbird/uikit-react/ChannelSettings/components/ChannelSettingsUI';
 import UserPanel from '@sendbird/uikit-react/ChannelSettings/components/UserPanel';
 import SelectedChannelContext from './SelectedChannelContext';
+import ShowSettingsContext from './ShowSettingsContext';
 
-const ChatChannelSettings = props => {
-  const { setShowSettings } = props;
+const ChatChannelSettings = () => {
   const { selectedChannel } = useContext(SelectedChannelContext);
+  const { setShowSettings } = useContext(ShowSettingsContext);
 
   return (
     <div className="sendbird-app__settingspanel-wrap">
