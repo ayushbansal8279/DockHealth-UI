@@ -2,7 +2,6 @@ import React, { useEffect, useContext } from 'react';
 import ChannelPreviewAction from '@sendbird/uikit-react/ChannelList/components/ChannelPreviewAction';
 import { useChannelListContext } from '@sendbird/uikit-react/ChannelList/context';
 import ChannelListHeader from '@sendbird/uikit-react/ChannelList/components/ChannelListHeader';
-// import AddChannel from '@sendbird/uikit-react/ChannelList/components/AddChannel';
 import { userProfileSelector } from 'selectors/user-selectors';
 import { useSelector } from 'react-redux';
 import { CircularProgress } from '@material-ui/core';
