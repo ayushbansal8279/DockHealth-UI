@@ -39,6 +39,7 @@ export default function ChatChannelList(props) {
         renderIconButton={AddChannel}
       />
       {allChannels.map(channel => {
+        console.log(`channel: ${JSON.stringify(channel)}`);
         return (
           <div key={channel.url}>
             <ChatChannelPreview
