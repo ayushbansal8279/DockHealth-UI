@@ -24,7 +24,7 @@ export const InputBox = styled.div`
 `;
 
 export const ListContainer = styled.div`
-  max-height: 264px;
+  max-height: 100%;
   overflow-y: auto;
 `;
 
