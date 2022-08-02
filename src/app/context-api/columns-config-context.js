@@ -20,7 +20,11 @@ import {
   getAllPatientCustomFields,
   getAllTaskListCustomFields,
 } from '../api/custom-fields-api';
-import { translateInitialColumnsConfig, translateStateToApi } from './helpers';
+import {
+  getInitialColumnWidth,
+  translateInitialColumnsConfig,
+  translateStateToApi,
+} from './helpers';
 
 export const ColumnsConfigContext = createContext();
 
@@ -121,7 +125,10 @@ export function ColumnsConfigProvider({
       .map(field => ({
         ...field,
         isChecked: !!currentPreferences?.includes(field.identifier),
+        columnWidth: getInitialColumnWidth(field), // check and get custom width if is avaible  (when API will be available), if not = use getInitialColumnWidth
       }));
+
+    console.log('mergedPreferencesAndFields', mergedPreferencesAndFields);
 
     // sort data by defined order
     const fieldsWithOrder = mergedPreferencesAndFields

@@ -48,7 +48,6 @@ import { useColumnsConfig } from 'context-api/columns-config-context';
 import TaskItemCustomField from 'components/common/CustomField/TaskItemCustomField';
 import StickyMainTaskItemCell from 'components/task/StickyMainTaskItemCell/StickyMainTaskItemCell';
 import TaskItemCell from 'components/task/TaskItemCell/TaskItemCell';
-import { CustomFieldWidthConfig } from 'helpers/field-type-helpers';
 import {
   SINGLE_TASK_RESTRICTIONS_PROFILES,
   SINGLE_TASK_FEATURES,
@@ -463,7 +462,11 @@ const TaskItem = React.memo(
             {isColumnChecked(columns, TaskItemColumn.PATIENT) && (
               <TaskItemCell
                 key={`patient_${taskIdentifier}`}
-                width={TaskItemColumnWidth[TaskItemColumn.PATIENT]}
+                width={
+                  columns?.find(
+                    ({ identifier }) => identifier === TaskItemColumn.PATIENT,
+                  ).columnWidth
+                }
                 order={getColumnOrder(TaskItemColumn.PATIENT)}
               >
                 <TaskItemPatient
@@ -486,7 +489,12 @@ const TaskItem = React.memo(
             {isColumnChecked(columns, TaskItemColumn.WORKFLOW_STATUS) && (
               <TaskItemCell
                 key={`task_status_${taskIdentifier}`}
-                width={TaskItemColumnWidth[TaskItemColumn.WORKFLOW_STATUS]}
+                width={
+                  columns?.find(
+                    ({ identifier }) =>
+                      identifier === TaskItemColumn.WORKFLOW_STATUS,
+                  ).columnWidth
+                }
                 paddingLeft="smallPlus"
                 paddingRight="tiny"
                 onContextMenu={event => {
@@ -509,7 +517,11 @@ const TaskItem = React.memo(
             {isColumnChecked(columns, TaskItemColumn.ACTIVITY) && (
               <TaskItemCell
                 key={`activity_${taskIdentifier}`}
-                width={TaskItemColumnWidth[TaskItemColumn.ACTIVITY]}
+                width={
+                  columns?.find(
+                    ({ identifier }) => identifier === TaskItemColumn.ACTIVITY,
+                  ).columnWidth
+                }
                 order={getColumnOrder(TaskItemColumn.ACTIVITY)}
               >
                 <TaskItemIcons
@@ -529,7 +541,12 @@ const TaskItem = React.memo(
               <>
                 {isColumnChecked(columns, TaskItemColumn.START_DATE) && (
                   <TaskItemCell
-                    width={TaskItemColumnWidth[TaskItemColumn.START_DATE]}
+                    width={
+                      columns?.find(
+                        ({ identifier }) =>
+                          identifier === TaskItemColumn.START_DATE,
+                      ).columnWidth
+                    }
                     onContextMenu={event => {
                       event.stopPropagation();
                     }}
@@ -540,7 +557,12 @@ const TaskItem = React.memo(
                   !isTemplateTask && (
                     <TaskItemCell
                       key={`due_date_${taskIdentifier}`}
-                      width={TaskItemColumnWidth[TaskItemColumn.DUE_DATE]}
+                      width={
+                        columns?.find(
+                          ({ identifier }) =>
+                            identifier === TaskItemColumn.DUE_DATE,
+                        ).columnWidth
+                      }
                       paddingLeft="tiny"
                       paddingRight="tiny"
                       justify="center"
@@ -554,10 +576,15 @@ const TaskItem = React.memo(
                   )}
               </>
             )}
+
             {isColumnChecked(columns, TaskItemColumn.ASSIGNED) && (
               <TaskItemCell
                 key={`assigned_${taskIdentifier}`}
-                width={TaskItemColumnWidth[TaskItemColumn.ASSIGNED].WIDE}
+                width={
+                  columns?.find(
+                    ({ identifier }) => identifier === TaskItemColumn.ASSIGNED,
+                  ).columnWidth
+                }
                 justify={multipleAssigneesContext ? 'flex-start' : 'center'}
                 paddingLeft="small"
                 paddingRight="small"
@@ -581,7 +608,12 @@ const TaskItem = React.memo(
               isColumnChecked(columns, TaskItemColumn.LIST_NAME) && (
                 <TaskItemCell
                   key={`list_${taskIdentifier}`}
-                  width={TaskItemColumnWidth[TaskItemColumn.LIST_NAME]}
+                  width={
+                    columns?.find(
+                      ({ identifier }) =>
+                        identifier === TaskItemColumn.LIST_NAME,
+                    ).columnWidth
+                  }
                   order={getColumnOrder(TaskItemColumn.LIST_NAME)}
                 >
                   <TaskItemList
@@ -618,7 +650,7 @@ const TaskItem = React.memo(
                       <TaskItemCell
                         key={`custom_${taskIdentifier}_${field.identifier}`}
                         padding="4px"
-                        width={CustomFieldWidthConfig[field.fieldType]}
+                        width={field.columnWidth}
                         order={getColumnOrder(field.identifier)}
                       >
                         {!hidePatientCustomFields && (
