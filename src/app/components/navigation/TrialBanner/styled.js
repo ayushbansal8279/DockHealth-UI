@@ -10,7 +10,7 @@ export const TrialBannerContainer = styled.div`
   color: ${palette.white};
   display: flex;
   height: ${props => (props.isBannerVisible ? '2.875rem' : 0)};
-  ${props => !props.uppercase && 'text-transform: none;'}
+  ${props => (!props.uppercase ? 'text-transform: none;' : '')}
   justify-content: center;
   width: 100%;
   font-family: 'Montserrat', sans-serif;

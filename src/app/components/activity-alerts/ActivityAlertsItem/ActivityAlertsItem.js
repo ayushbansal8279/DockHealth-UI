@@ -3,10 +3,13 @@
 /* eslint-disable sonarjs/no-identical-functions */
 import React from 'react';
 import moment from 'moment';
-import { useHistory } from 'react-router-dom';
+import { useHistory, useLocation } from 'react-router-dom';
 import { selectCurrentOrganizationWithRedirection } from 'api/organization-api';
 import CircleCompleted from 'img/circle-completed';
 import CrossIcon from 'img/notifications/cross';
+import { useDispatch } from 'react-redux';
+import { openDrawer } from 'actions/task-drawer-actions';
+import { storeAsCurrentTask } from 'actions/task-actions';
 import {
   ActivityAlertsItemContainer,
   ActivityAlertsItemHeader,
@@ -27,6 +30,8 @@ const getInterpolatedText = (tpl, args) =>
 
 const AlertItem = ({ itemAlert, onClearAlert, withCrossIcon, closeAlerts }) => {
   const history = useHistory();
+  const location = useLocation();
+  const dispatch = useDispatch();
   const {
     activityAlertTitle,
     activityAlertSubTitle,
@@ -81,9 +86,13 @@ const AlertItem = ({ itemAlert, onClearAlert, withCrossIcon, closeAlerts }) => {
 
       if (organizationIdentifier === currentOrganizationIdentifier) {
         closeAlerts();
-        history.push(
-          `/core/tasks/${taskListIdentifier}/${status}/${taskIdentifier}`,
-        );
+        const newPath = `/core/tasks/${taskListIdentifier}/${status}/${taskIdentifier}`;
+        if (location.pathname === newPath) {
+          dispatch(storeAsCurrentTask(task));
+          dispatch(openDrawer());
+        } else {
+          history.push(newPath);
+        }
       } else {
         sessionStorage.setItem('selectedTaskIdentifier', taskIdentifier);
         closeAlerts();

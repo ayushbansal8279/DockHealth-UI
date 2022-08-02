@@ -1,4 +1,6 @@
 /* eslint-disable @typescript-eslint/no-var-requires */
+// eslint-disable-next-line @typescript-eslint/camelcase, import/no-extraneous-dependencies, @typescript-eslint/no-unused-vars
+// import Symbol_observable from 'symbol-observable';
 /* eslint-disable global-require */
 import MomentUtils from '@date-io/moment';
 import { MuiThemeProvider } from '@material-ui/core/styles';

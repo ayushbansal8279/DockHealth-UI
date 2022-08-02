@@ -24,6 +24,7 @@ const initialWorkflowLibraryState = {
 const initialState = {
   ...initialWorkflowLibraryState,
   taskTemplateDetails: {},
+  taskTemplateHistoryDetails: {},
   currentTaskTemplateIdentifier: null,
   currentTaskTemplate: null,
 };
@@ -394,6 +395,13 @@ const TaskTemplateReducer = (state = initialState, action) => {
       };
     }
 
+    case ActionTypes.SAVE_HISTORY_TASK_TEMPLATE_LAYOUT: {
+      return {
+        ...state,
+        taskTemplateHistoryDetails: { ...state.taskTemplateDetails },
+      };
+    }
+
     case ActionTypes.SAVE_TASK_TEMPLATE_LAYOUT_SUCCESS: {
       return {
         ...state,
@@ -404,6 +412,13 @@ const TaskTemplateReducer = (state = initialState, action) => {
             isSavingLayout: false,
           },
         ),
+      };
+    }
+
+    case ActionTypes.RECOVER_HISTORY_TASK_TEMPLATE_LAYOUT: {
+      return {
+        ...state,
+        taskTemplateDetails: { ...state.taskTemplateHistoryDetails },
       };
     }
 

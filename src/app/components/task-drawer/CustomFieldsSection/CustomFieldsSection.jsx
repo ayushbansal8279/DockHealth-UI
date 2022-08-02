@@ -104,7 +104,7 @@ const CustomFieldsSection = () => {
       const hasValue = !!getValues('taskMetaData')?.[field.identifier];
       const visible = isFocused || emptyVisible || hasValue;
       return (
-        <HidableContainer key={field.identifier} visibility={!visible}>
+        <HidableContainer key={field.identifier} visible={!visible}>
           <Grid item xs={12} style={styleFullRow}>
             <CustomField
               readOnly={false}

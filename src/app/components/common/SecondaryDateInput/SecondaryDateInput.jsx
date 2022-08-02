@@ -17,6 +17,7 @@ const SecondaryDateInput = ({
   error,
   popoverDisabled = false,
   onEnter,
+  disablePast,
 }) => {
   const inputReference = useRef(null);
   const [isPopoverOpen, openPopover, closePopover] = useBoolean();
@@ -86,6 +87,7 @@ const SecondaryDateInput = ({
               <Datepicker
                 selectedDate={isoDate}
                 onDateChange={handleDatepickerDateSelection}
+                disablePast={disablePast}
               />
             </PopoverCard>
           </Popper>

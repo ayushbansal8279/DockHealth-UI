@@ -10,7 +10,6 @@ import AdditionalMembersCounter from '../AdditionalMembersCounter/AdditionalMemb
 
 const MemberGroup = ({ members, max, size }) => {
   const currentUser = useSelector(userProfileSelector);
-
   const sortedUsersOrAndGroups = useMemo(
     () =>
       members.slice().sort((a, b) => {
@@ -39,24 +38,19 @@ const MemberGroup = ({ members, max, size }) => {
     <GroupContainer>
       <>
         {members?.map((member, index) => (
-          <NameWrapper>{`
+          <NameWrapper key={member.identifier}>{`
         ${member.name}${index !== shownMembers.length - 1 ? ', ' : ''}
         `}</NameWrapper>
         ))}
       </>
       {shownMembers?.map((member, index) => (
-        <>
-          <GroupItem
-            key={member?.identifier}
-            zIndex={shownMembers.length - index}
-          >
-            {isUserGroup(member) ? (
-              <GroupAvatar size={size} group={member} />
-            ) : (
-              <UserAvatar user={member} size={size} />
-            )}
-          </GroupItem>
-        </>
+        <GroupItem key={member.identifier} zIndex={shownMembers.length - index}>
+          {isUserGroup(member) ? (
+            <GroupAvatar size={size} group={member} />
+          ) : (
+            <UserAvatar user={member} size={size} />
+          )}
+        </GroupItem>
       ))}
       {hiddenMembers && (
         <GroupItem zIndex={0}>

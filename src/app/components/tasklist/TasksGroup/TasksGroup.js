@@ -236,21 +236,22 @@ const TasksGroup = ({
   );
 
   const options = useMemo(
-    () => [
-      !isFirstGroup && {
-        name: 'Move up',
-        onClick: moveGroupUp,
-      },
-      !isLastGroup && {
-        name: 'Move down',
-        onClick: moveGroupDown,
-      },
-      !isDefaultGroup && {
-        name: 'Delete',
-        color: palette.red,
-        onClick: handleDeleteGroup,
-      },
-    ],
+    () =>
+      [
+        !isFirstGroup && {
+          name: 'Move up',
+          onClick: moveGroupUp,
+        },
+        !isLastGroup && {
+          name: 'Move down',
+          onClick: moveGroupDown,
+        },
+        !isDefaultGroup && {
+          name: 'Delete',
+          color: palette.red,
+          onClick: handleDeleteGroup,
+        },
+      ].filter(o => typeof o !== 'boolean'),
     [
       isDefaultGroup,
       isFirstGroup,

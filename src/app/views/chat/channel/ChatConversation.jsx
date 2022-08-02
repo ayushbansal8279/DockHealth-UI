@@ -1,13 +1,15 @@
-import React, { useState } from 'react';
+import React, { useState, useContext } from 'react';
 import withSendBird from '@sendbird/uikit-react/withSendBird';
 import { ChannelProvider } from '@sendbird/uikit-react/Channel/context';
 import ChannelUI from '@sendbird/uikit-react/Channel/components/ChannelUI';
 import ChatChannelSettings from '../channel-settings/ChatChannelSettings';
+import ShowSettingsContext from '../ShowSettingsContext';
 
 const ChatChannelConversation = props => {
   const { currentChannelUrl } = props;
 
-  const [showSettings, setShowSettings] = useState(false);
+  const { setShowSettings, showSettings } = useContext(ShowSettingsContext);
+
   const [showSearch, setShowSearch] = useState(false);
 
   return (
@@ -28,9 +30,7 @@ const ChatChannelConversation = props => {
         </ChannelProvider>
       </div>
       {showSettings && (
-        <div className="sendbird-app__settingspanel-wrap">
-          <ChatChannelSettings setShowSettings={setShowSettings} />
-        </div>
+        <ChatChannelSettings setShowSettings={setShowSettings} />
       )}
     </>
   );

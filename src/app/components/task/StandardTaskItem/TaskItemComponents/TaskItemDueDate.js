@@ -38,18 +38,20 @@ const TaskItemDueDate = ({ task }) => {
         placement="top"
         title={dueDate ? 'Edit due date' : 'Add due date'}
       >
-        {dueDate ? (
-          <DateLabel
-            date={dueDate}
-            isOverdue={isDueDateOverdue(task)}
-            hasReminder={reminderType && reminderType !== ReminderType.NONE}
-            hasRecurringSchedule={hasRecurringSchedule}
-          />
-        ) : (
-          <div>
-            <TaskIcon type="calendar" />
-          </div>
-        )}
+        <>
+          {dueDate ? (
+            <DateLabel
+              date={dueDate}
+              isOverdue={isDueDateOverdue(task)}
+              hasReminder={reminderType && reminderType !== ReminderType.NONE}
+              hasRecurringSchedule={hasRecurringSchedule}
+            />
+          ) : (
+            <div>
+              <TaskIcon type="calendar" />
+            </div>
+          )}
+        </>
       </Tooltip>
     </TaskItemPopover>
   );

@@ -15,7 +15,7 @@ const TaskStatusToolbarSelect = ({ value, onChange, ...restProps }) => {
   return (
     <ToolbarSelect
       options={OPTIONS}
-      value={value}
+      value={value || ''}
       name="task-status"
       onChange={onChange}
       icon={<img src={TasksStatusSwitchIcon} alt="view type icon" />}

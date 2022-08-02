@@ -53,7 +53,7 @@ const PersonForm = forwardRef(
         return field.fieldType === FieldType.DROPDOWN_MULTI ? (
           <HidableContainer
             key={field.identifier}
-            visibility={!showEmpty && !providerCustomField?.values}
+            visible={!showEmpty && !providerCustomField?.values}
           >
             {index !== 0 && <Spacing vertical={3} />}
             <CustomField
@@ -66,7 +66,7 @@ const PersonForm = forwardRef(
         ) : (
           <HidableContainer
             key={field.identifier}
-            visibility={!showEmpty && !providerCustomField?.value}
+            visible={!showEmpty && !providerCustomField?.value}
           >
             {index !== 0 && <Spacing vertical={3} />}
             <CustomField

@@ -22,6 +22,7 @@ import {
   taskTemplateSelector,
   allTemplateDetailsSelector,
   currentTaskTemplateIdentifierSelector,
+  historyTaskTemplateSelector,
 } from 'selectors/task-template-selectors';
 import {
   createTemporaryOptionsForDecisionTask,
@@ -478,6 +479,26 @@ function* saveTaskTemplateLayout({ layout }) {
   }
 }
 
+function* undoTaskTemplateLayout() {
+  try {
+    const taskTemplateIdentifier = yield select(
+      currentTaskTemplateIdentifierSelector,
+    );
+    const previousTemplate = yield select(historyTaskTemplateSelector);
+    const { layout } = previousTemplate[taskTemplateIdentifier];
+    yield call(
+      TaskTemplateApi.saveTemplateLayout,
+      taskTemplateIdentifier,
+      layout,
+    );
+    yield put({
+      type: ActionTypes.SAVE_TASK_TEMPLATE_LAYOUT_SUCCESS,
+    });
+  } catch {
+    yield put(showGlobalErrorAlert());
+  }
+}
+
 function* updateTaskPositionInLayout({ taskIdentifier, position }) {
   try {
     const taskTemplateIdentifier = yield select(
@@ -837,6 +858,10 @@ export default function* watchTaskTemplate() {
   yield takeLatest(
     ActionTypes.SAVE_TASK_TEMPLATE_LAYOUT,
     saveTaskTemplateLayout,
+  );
+  yield takeLatest(
+    ActionTypes.RECOVER_HISTORY_TASK_TEMPLATE_LAYOUT,
+    undoTaskTemplateLayout,
   );
   yield takeEvery(
     ActionTypes.UPDATE_TASK_POSITION_IN_LAYOUT,
