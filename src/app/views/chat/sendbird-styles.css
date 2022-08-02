@@ -77,6 +77,19 @@
     padding-top: 10px;
 }
 
+.channel-profile-form__name-section .MuiInputLabel-root{
+    text-transform: none;
+    text-align: left;
+    color: black;
+}
+
+.channel-profile-form__img-section .MuiInputLabel-root{
+    text-transform: none;
+    text-align: left;
+    color: black;
+    width: 100%;
+}
+
 .sendbird-channel-settings{
     width: 100%;
 }

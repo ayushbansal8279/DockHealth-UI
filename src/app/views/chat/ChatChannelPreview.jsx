@@ -6,7 +6,7 @@ import Label, {
   LabelTypography,
   LabelColors,
 } from '@sendbird/uikit-react/ui/Label';
-import { LocalizationContext } from './ChannelLocalizationContext';
+import { LocalizationContext } from './channel/ChannelLocalizationContext';
 import '@sendbird/uikit-react/dist/index.css';
 import {
   getChannelTitle,
@@ -14,7 +14,7 @@ import {
   getLastMessageCreatedAt,
   getChannelUnreadMessageCount,
   getLastMessage,
-} from './ChannelUtils';
+} from './channel/ChannelUtils';
 
 export default function ChatChannelPreview({
   channel,
