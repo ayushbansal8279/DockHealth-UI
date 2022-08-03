@@ -376,7 +376,7 @@ const TaskItem = React.memo(
                 position="static"
                 isSubtask={showSubtaskStylingLink}
                 isSticky
-                width={500}
+                width={500} // TODO: Width should be dependent on columns like below (but here, if the width )
                 printWidth={300}
               >
                 <CircleIcon
@@ -440,7 +440,7 @@ const TaskItem = React.memo(
             </StickyMainTaskItemCell>
             <TaskItemCell
               key={`subtask_count_${taskIdentifier}`}
-              width={TaskItemColumnWidth[TaskItemColumn.SUBTASKS_COUNT]}
+              width={TaskItemColumnWidth[TaskItemColumn.SUBTASKS_COUNT]} // TODO: Width should be dependent on columns like below (but here, if the width )
               justify="center"
               paddingLeft="tiny"
               paddingRight="tiny"

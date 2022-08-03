@@ -128,8 +128,6 @@ export function ColumnsConfigProvider({
         columnWidth: getInitialColumnWidth(field), // check and get custom width if is avaible  (when API will be available), if not = use getInitialColumnWidth
       }));
 
-    console.log('mergedPreferencesAndFields', mergedPreferencesAndFields);
-
     // sort data by defined order
     const fieldsWithOrder = mergedPreferencesAndFields
       .filter(f => currentPreferences?.includes(f.identifier))
@@ -172,10 +170,18 @@ export function ColumnsConfigProvider({
     currentList,
   ]);
 
+  const setColumnWidth = useCallback((identifier, columnWidth) => {
+    console.log(identifier, columnWidth);
+    // setColumnsToState(state =>
+    //   state.map(c => (identifier === c.identifier ? { ...c, columnWidth } : c)),
+    // );
+  }, []);
+
   const value = {
     columns,
     setColumns: setColumnsAndUpdateApi,
     setColumnsToState,
+    setColumnWidth,
     currentList,
     setCurrentList,
     viewSpecificConfig,

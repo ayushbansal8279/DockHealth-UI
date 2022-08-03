@@ -17,7 +17,6 @@ const { DISABLED } = SINGLE_TASK_RESTRICTIONS_OPTIONS;
 
 export const getTaskHeaderOptions = (
   customerTypeLabel,
-  groupHasMultipleAssignees,
   column,
   restrictions,
 ) => {
@@ -31,51 +30,43 @@ export const getTaskHeaderOptions = (
       identifier: TaskHeaderColumn.SUBTASKS_COUNT,
       label: 'Sub',
       draggable: true,
-      width: TaskItemColumnWidth[TaskHeaderColumn.SUBTASKS_COUNT],
     },
     {
       identifier: TaskHeaderColumn.PATIENT,
       label: customerTypeLabel,
       draggable: true,
-      width: TaskItemColumnWidth[TaskHeaderColumn.PATIENT],
     },
     {
       identifier: TaskHeaderColumn.WORKFLOW_STATUS,
       label: 'Status',
       draggable: true,
-      width: TaskItemColumnWidth[TaskHeaderColumn.WORKFLOW_STATUS],
     },
     {
       identifier: TaskHeaderColumn.ACTIVITY,
       label: 'Details',
       draggable: true,
-      width: TaskItemColumnWidth[TaskHeaderColumn.ACTIVITY],
     },
     {
       identifier: TaskHeaderColumn.START_DATE,
       label: 'Start',
       draggable: true,
-      width: TaskItemColumnWidth[TaskHeaderColumn.START_DATE],
     },
     {
       identifier: TaskHeaderColumn.DUE_DATE,
       label: 'Due',
       draggable: true,
-      width: TaskItemColumnWidth[TaskHeaderColumn.DUE_DATE],
       hidden: restrictions?.dueDate !== DISABLED,
     },
     {
       identifier: TaskHeaderColumn.ASSIGNED,
       label: 'Assign',
       draggable: true,
-      width: TaskItemColumnWidth[TaskHeaderColumn.ASSIGNED].WIDE,
       printWidth: TaskItemColumnWidth[TaskHeaderColumn.ASSIGNED].PRINT,
     },
     {
       identifier: TaskHeaderColumn.LIST_NAME,
       label: 'List',
       draggable: true,
-      width: TaskItemColumnWidth[TaskHeaderColumn.LIST_NAME],
       hidden: restrictions?.listName !== DISABLED,
     },
   ];

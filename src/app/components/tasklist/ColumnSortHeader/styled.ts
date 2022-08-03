@@ -3,6 +3,17 @@ import { fontSizes, fontWeights } from 'styles/font';
 import palette from 'styles/palette';
 import spacing from 'styles/spacing';
 
+export const ResizeHandler = styled.div`
+  position: absolute;
+  top: 0;
+  left: 100%;
+  width: 5px;
+  height: 35px;
+  background-color: red;
+  cursor: ew-resize;
+  z-index: 1;
+`;
+
 export const DescriptionTooltipWrapper = styled.div`
   display: block;
   width: 100%;
@@ -27,8 +38,9 @@ export const SortButton = styled.button<{
   width?: number;
 }>`
   position: relative;
-  flex: ${({ width }) => (width ? `0 0 ${width}px` : '1')};
-  ${({ width }) => width && `max-width: ${width}px;`};
+  /* flex: ${({ width }) => (width ? `0 0 ${width}px` : '1')};
+  ${({ width }) => width && `max-width: ${width}px;`}; */
+  ${({ width }) => width && `width: ${width}px;`}
   height: 35px;
   text-align: left;
   font-family: 'Roboto Condensed', sans-serif;

@@ -26,14 +26,13 @@ const TasksHeader = ({
   onSortChange,
   isGroupSelected,
   onGroupSelect,
-  groupHasMultipleAssignees,
   pageBackground,
 }) => {
   const taskList = useSelector(currentTaskListSelector);
   const { currentUser } = useSelector(store => ({
     currentUser: store.userState.userProfile,
   }));
-  const { columns, setColumns } = useColumnsConfig();
+  const { columns, setColumns, setColumnWidth } = useColumnsConfig();
   const customerTypeLabel = getCustomerTypeLabel(currentUser);
   const currentUserMember = taskList?.listUsers.find(
     u => u.identifier === currentUser?.identifier,
@@ -82,7 +81,7 @@ const TasksHeader = ({
             isDraggingOver={snapshot.isDraggingOver}
             id={f.identifier}
             label={f.label}
-            width={f.width}
+            width={f.columnWidth}
             sort={sort}
             truncateEnabled
             onSortChange={onSortChange}
@@ -101,7 +100,7 @@ const TasksHeader = ({
           truncateEnabled
           id={f.identifier}
           label={f.name}
-          width={+CustomFieldWidthConfig[f.fieldType]}
+          width={+f.columnWidth}
           snapshot={snapshot}
           printWidth={
             f.id === TaskItemColumn.ASSIGNED
@@ -112,6 +111,14 @@ const TasksHeader = ({
       );
     },
     [onSortChange, restrictCustomizationFeatures, sort],
+  );
+
+  const handleResizeColumn = useCallback(
+    (identifier, _, { size }) => {
+      const { width } = size;
+      setColumnWidth(identifier, width);
+    },
+    [setColumnWidth],
   );
 
   return (
@@ -137,7 +144,7 @@ const TasksHeader = ({
                 label="Tasks"
                 sort={sort}
                 onSortChange={onSortChange}
-                width={TaskItemColumnWidth[TaskItemColumn.DESCRIPTION].WIDE}
+                width={TaskItemColumnWidth[TaskItemColumn.DESCRIPTION].WIDE} // TODO: Width should be dependent on columns like below (but here, if the width )
                 printWidth={
                   TaskItemColumnWidth[TaskItemColumn.DESCRIPTION].PRINT
                 }
@@ -146,7 +153,8 @@ const TasksHeader = ({
             <ColumnSortHeader
               id={TaskItemColumn.SUBTASKS_COUNT}
               label="Sub"
-              width={TaskItemColumnWidth[TaskItemColumn.SUBTASKS_COUNT]}
+              width={TaskItemColumnWidth[TaskItemColumn.SUBTASKS_COUNT]} // TODO: Width should be dependent on columns like below (but here, if the width )
+              onResize={handleResizeColumn}
             />
             {columns
               .filter(
@@ -154,12 +162,7 @@ const TasksHeader = ({
               )
               .map(c =>
                 c._customFieldType === CUSTOM_FIELD_TYPES.REGULAR
-                  ? getTaskHeaderOptions(
-                      customerTypeLabel,
-                      groupHasMultipleAssignees,
-                      c,
-                      restrictions,
-                    )
+                  ? getTaskHeaderOptions(customerTypeLabel, c, restrictions)
                   : c,
               )
               .map((c, index) => renderColumn(c, index, snapshot))}
