@@ -30,6 +30,7 @@ import UserAvatar from 'components/user/UserAvatar/UserAvatar';
 import OrganizationTile from 'components/org/OrganizationTile/OrganizationTile';
 import { openModal } from 'modal/actions';
 import AccessRestrictor from 'components/access/AccessRestrictor/AccessRestrictor';
+import ChatPopover from 'views/chat/ChatPopover';
 import OrganizationSubmenu from './SubMenuComponents/OrganizationSubmenu';
 import ProfileSubmenu from './SubMenuComponents/ProfileSubmenu';
 import EducationCenterSubmenu from './SubMenuComponents/EducationCenterSubmenu';
@@ -57,7 +58,7 @@ export const SubmenuKey = {
   SETTINGS: 'SETTINGS',
   EDUCATION_CENTER: 'EDUCATION_CENTER',
   DOCKCOIN: 'DOCKCOIN',
-  CHAT: 'CHAT',
+  DOCKCHAT: 'DOCKCHAT',
 };
 
 const {
@@ -243,6 +244,15 @@ const NavigationSidebar = () => {
             </AccessRestrictor>
           </Grid>
           <Grid container direction="column">
+            <AccessRestrictor
+              allowedToRoles={[ADMIN, OWNER, MEMBER, GUEST, EXTERNAL]}
+            >
+              <NavigationItem name="Dock Chat" subMenuKey={SubmenuKey.DOCKCHAT}>
+                <>
+                  <ChatPopover />
+                </>
+              </NavigationItem>
+            </AccessRestrictor>
             <AccessRestrictor allowedToRoles={[ADMIN, OWNER]}>
               <div ref={settingsMenuReference}>
                 <IconNavigationItem
