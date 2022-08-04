@@ -7,12 +7,32 @@ export const ResizeHandler = styled.div<{ enabled: boolean }>`
   position: absolute;
   top: 0;
   left: calc(100% - 2px);
-  width: 2px;
+  width: 1px;
   height: 35px;
   background-color: ${palette.coolGrey3};
   z-index: 1;
   cursor: ew-resize;
   ${({ enabled }) => (enabled ? `` : 'display: none;')}
+
+  &:hover {
+    &:after {
+      opacity: 1;
+      background-color: ${palette.coolGrey2};
+    }
+  }
+
+  &:after {
+    content: '';
+    position: absolute;
+    top: 0px;
+    left: -2px;
+    width: 5px;
+    height: 35px;
+    background-color: none;
+    cursor: ew-resize;
+    opacity: 0;
+    transition: opacity 0.3s;
+  }
 `;
 
 export const DescriptionTooltipWrapper = styled.div`
