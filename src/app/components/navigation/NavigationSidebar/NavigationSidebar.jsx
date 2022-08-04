@@ -249,8 +249,6 @@ const NavigationSidebar = () => {
                 onItemClick={handleNavigationItemClick}
               />
             </AccessRestrictor>
-          </Grid>
-          <Grid container direction="column">
             <AccessRestrictor
               allowedToRoles={[ADMIN, OWNER, MEMBER, GUEST, EXTERNAL]}
             >
@@ -265,6 +263,8 @@ const NavigationSidebar = () => {
                 </>
               </NavigationItem>
             </AccessRestrictor>
+          </Grid>
+          <Grid container direction="column">
             <AccessRestrictor allowedToRoles={[ADMIN, OWNER]}>
               <div ref={settingsMenuReference}>
                 <IconNavigationItem
