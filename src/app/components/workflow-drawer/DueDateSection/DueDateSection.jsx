@@ -72,6 +72,7 @@ const DueDateSection = ({ disabled }) => {
                 selectedDate={dueDateTime}
                 onDateChange={handleDueDateSave}
                 recurring={hasRecurringSchedule}
+                disableRecurring
                 onCloseClick={closePopover}
               />
             )}
