@@ -7,7 +7,7 @@ export const BulkContainer = styled.div`
   display: flex;
   align-items: center;
   justify-content: center;
-  margin-left: ${spacing.smallPlus};
+  margin-right: ${spacing.smallPlus};
 `;
 
 export const StickyColumnContainer = styled.div`

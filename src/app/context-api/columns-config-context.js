@@ -16,6 +16,7 @@ import {
 import { updateCurrentUserPreferences } from 'actions/user-actions';
 import { updateListPreferences } from 'actions/task-list-actions';
 import { CUSTOM_FIELD_TYPES } from 'helpers/custom-fields-helpers';
+import { TaskHeaderColumn } from 'components/tasklist/TasksHeader/helpers';
 import {
   getAllPatientCustomFields,
   getAllTaskListCustomFields,
@@ -27,6 +28,11 @@ import {
 } from './helpers';
 
 export const ColumnsConfigContext = createContext();
+
+const columnsAlwaysVisible = [
+  TaskHeaderColumn.DESCRIPTION,
+  TaskHeaderColumn.SUBTASKS_COUNT,
+];
 
 export function ColumnsConfigProvider({
   children,
@@ -51,6 +57,8 @@ export function ColumnsConfigProvider({
     userPreferencesSelector,
   );
 
+  console.log('currentList', currentList);
+
   const currentPreferences = useMemo(() => {
     if (currentList) {
       let displayColumns =
@@ -59,7 +67,11 @@ export function ColumnsConfigProvider({
           : currentList?.listUsers?.find(u => u.identifier === userIdentifier)
               ?.listDisplayColumns;
       if (!displayColumns || displayColumns.length === 0) {
-        displayColumns = currentList?.listDisplayColumns;
+        displayColumns = [currentList?.listDisplayColumns];
+      }
+      if (!displayColumns.includes(columnsAlwaysVisible[0])) {
+        // apply always visible at first if are not specified
+        return [...columnsAlwaysVisible, ...displayColumns];
       }
       return displayColumns;
     }
@@ -69,7 +81,6 @@ export function ColumnsConfigProvider({
   const setColumnsAndUpdateApi = useCallback(
     newState => {
       setColumnsToState(newState);
-      console.log('currentList', currentList);
       if (currentList) {
         dispatch(
           updateListPreferences(
@@ -123,9 +134,13 @@ export function ColumnsConfigProvider({
     // join preferences to data
     const mergedPreferencesAndFields = joinedColumnsData.map(field => ({
       ...field,
-      isChecked: !!currentPreferences?.includes(field.identifier),
+      isChecked:
+        !!currentPreferences?.includes(field.identifier) ||
+        columnsAlwaysVisible?.includes(field.identifier),
       columnWidth: getInitialColumnWidth(field), // TODO: check and get custom width if is avaible  (API in progress), if not = use getInitialColumnWidth
     }));
+
+    console.log('currentPreferences', currentPreferences);
 
     // sort data by defined order
     const fieldsWithOrder = mergedPreferencesAndFields

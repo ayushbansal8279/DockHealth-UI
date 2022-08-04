@@ -95,10 +95,9 @@ const ColumnSortHeader = ({
           ordered={!!(id === sort?.key && sort?.order)}
           ref={descriptionTextReference}
         >
-          {children}
           <Box display="flex">
-            <Box p="0 5px 0 5px">
-              <Box>
+            <Box p="0 5px 0 10px" position="relative">
+              <Box position="absolute" left="5px" top="0px">
                 {draggable && (
                   <ThreeDots
                     hideIcon={!isHovered || isDraggingOver}
@@ -107,6 +106,7 @@ const ColumnSortHeader = ({
                 )}
               </Box>
             </Box>
+            {children}
             {id === sort?.key &&
               sort?.order &&
               id &&

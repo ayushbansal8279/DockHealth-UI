@@ -24,7 +24,7 @@ export const getTaskHeaderOptions = (
     {
       identifier: TaskHeaderColumn.DESCRIPTION,
       label: 'Tasks',
-      draggable: false,
+      draggable: true,
     },
     {
       identifier: TaskHeaderColumn.SUBTASKS_COUNT,

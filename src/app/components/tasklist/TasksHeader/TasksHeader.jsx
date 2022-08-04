@@ -86,10 +86,7 @@ const TasksHeader = ({
             }
             key={f.identifier}
             index={index}
-            draggable={
-              !restrictCustomizationFeatures &&
-              ![TaskHeaderColumn.SUBTASKS_COUNT].includes(f.identifier)
-            }
+            draggable={!restrictCustomizationFeatures}
             disabled={[
               TaskHeaderColumn.ACTIVITY,
               TaskHeaderColumn.START_DATE,
@@ -103,7 +100,20 @@ const TasksHeader = ({
             onSortChange={onSortChange}
             snapshot={snapshot}
             printWidth={CustomFieldWidthConfig[f.fieldType]}
-          />
+          >
+            {f.identifier === TaskHeaderColumn.DESCRIPTION && bulkEditEnabled && (
+              <BulkContainer>
+                <Checkbox
+                  isChecked={isGroupSelected}
+                  onClick={event => {
+                    event.preventDefault();
+                    event.stopPropagation();
+                    onGroupSelect(event);
+                  }}
+                />
+              </BulkContainer>
+            )}
+          </ColumnSortHeader>
         );
       }
       return (
@@ -130,7 +140,10 @@ const TasksHeader = ({
       );
     },
     [
+      bulkEditEnabled,
       handleResizeColumn,
+      isGroupSelected,
+      onGroupSelect,
       onSortChange,
       restrictCustomizationFeatures,
       setColumnWidth,
@@ -151,62 +164,25 @@ const TasksHeader = ({
               backgroundColor={pageBackground}
               customWidthExists
             >
-              <ColumnSortHeader
-                id={TaskItemColumn.DESCRIPTION}
-                label="Tasks"
-                sort={sort}
-                onSortChange={onSortChange}
-                width={
-                  columns?.find(
-                    ({ identifier }) =>
-                      identifier === TaskItemColumn.DESCRIPTION,
-                  )?.columnWidth
-                }
-                printWidth={
-                  TaskItemColumnWidth[TaskItemColumn.DESCRIPTION].PRINT
-                }
-                onResize={
-                  typeof setColumnWidth === 'function'
-                    ? handleResizeColumn
-                    : null
-                }
-              >
-                {bulkEditEnabled && (
-                  <BulkContainer>
-                    <Checkbox
-                      isChecked={isGroupSelected}
-                      onClick={onGroupSelect}
-                    />
-                  </BulkContainer>
-                )}
-              </ColumnSortHeader>
+              {renderColumn(
+                getTaskHeaderOptions(
+                  customerTypeLabel,
+                  columns.filter(f => f.isChecked)?.[0],
+                  restrictions,
+                ),
+                0,
+                snapshot,
+              )}
             </StickyColumnContainer>
-            <ColumnSortHeader
-              id={TaskItemColumn.SUBTASKS_COUNT}
-              label="Sub"
-              width={
-                columns?.find(
-                  ({ identifier }) =>
-                    identifier === TaskItemColumn.SUBTASKS_COUNT,
-                )?.columnWidth
-              }
-              onResize={
-                typeof setColumnWidth === 'function' ? handleResizeColumn : null
-              }
-            />
             {columns
-              .filter(
-                f =>
-                  f.identifier !== TaskItemColumn.DESCRIPTION &&
-                  f.identifier !== TaskItemColumn.SUBTASKS_COUNT &&
-                  f.isChecked,
-              )
+              .filter(f => f.isChecked)
+              .filter((_, index) => index !== 0)
               .map(c =>
                 c._customFieldType === CUSTOM_FIELD_TYPES.REGULAR
                   ? getTaskHeaderOptions(customerTypeLabel, c, restrictions)
                   : c,
               )
-              .map((c, index) => renderColumn(c, index, snapshot))}
+              .map((c, index) => renderColumn(c, index + 1, snapshot))}
             {provided.placeholder}
           </SortHeaderRow>
         )}
