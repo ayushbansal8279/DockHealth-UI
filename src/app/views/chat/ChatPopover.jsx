@@ -30,13 +30,14 @@ const ChatPopover = ({ setShowChatPopover }) => {
   const history = useHistory();
 
   const [selectedChannel, setSelectedChannel] = useState(null);
-  const value = { selectedChannel, setSelectedChannel };
+  const value = { selectedChannel, setSelectedChannel, setShowChatPopover };
 
   const [showSettings, setShowSettings] = useState(false);
   const showSettingsValue = { showSettings, setShowSettings };
 
   const handleClick = event => {
     setOpen();
+    setShowChatPopover(true);
     setAnchorElement(event.currentTarget);
   };
 
@@ -55,9 +56,10 @@ const ChatPopover = ({ setShowChatPopover }) => {
   const id = open ? 'simple-popover' : undefined;
 
   const handleClickGoBack = useCallback(() => {
+    setShowChatPopover(true);
     setSelectedChannel(null);
     setShowSettings(false);
-  }, []);
+  }, [setShowChatPopover]);
 
   const context = useSendbirdStateContext();
   const sdkInstance = sendBirdSelectors.getSdk(context);
@@ -108,7 +110,7 @@ const ChatPopover = ({ setShowChatPopover }) => {
               </StyledIconButton>
               <Box mx={0.5} />
               <Typography color="white" variant="h3">
-                Chat
+                Dock Chat
               </Typography>
               <Box mx={0.5} />
               <StyledIconButton onClick={handleClose}>
