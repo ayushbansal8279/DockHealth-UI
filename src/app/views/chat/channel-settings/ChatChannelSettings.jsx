@@ -1,4 +1,4 @@
-import React, { useContext } from 'react';
+import React, { useContext, useEffect } from 'react';
 import { ChannelSettingsProvider } from '@sendbird/uikit-react/ChannelSettings/context';
 import ChannelSettingsUI from '@sendbird/uikit-react/ChannelSettings/components/ChannelSettingsUI';
 import UserPanel from '@sendbird/uikit-react/ChannelSettings/components/UserPanel';
@@ -8,8 +8,14 @@ import SelectedChannelContext from '../SelectedChannelContext';
 import ShowSettingsContext from '../ShowSettingsContext';
 
 const ChatChannelSettings = () => {
-  const { selectedChannel } = useContext(SelectedChannelContext);
+  const { selectedChannel, setShowChatPopover } = useContext(
+    SelectedChannelContext,
+  );
   const { setShowSettings } = useContext(ShowSettingsContext);
+
+  useEffect(() => {
+    setShowChatPopover(true);
+  }, [setShowChatPopover]);
 
   return (
     <div className="sendbird-app__settingspanel-wrap">
