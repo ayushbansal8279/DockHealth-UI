@@ -26,10 +26,8 @@ import {
   MemberRow,
   MemberName,
   ListContentSection,
-  UnassignedIcon,
   MemberRowSkeletonLoader,
   highlightStyle,
-  CheckboxSpacing,
   NoRecordsText,
 } from './styled';
 
@@ -171,12 +169,6 @@ const MultiAssignChatInviteMembersList = ({
     [membersOptions, selectMembersWithDebounce, selectedMembers],
   );
 
-  const displayUnassignedOption = 'unassigned'.includes(
-    searchValue.toLowerCase(),
-  );
-  const displayAssignAllOption =
-    'assign all'.includes(searchValue.toLowerCase()) && !enableLazyLoading;
-
   const displayUsersList = useMemo(() => {
     if (enableLazyLoading) return isValueSendable;
     return !!filteredMembers.length || isFetchingMembers;
@@ -228,30 +220,6 @@ const MultiAssignChatInviteMembersList = ({
         />
       </InputBox>
       <ListContainer>
-        {(displayAssignAllOption || displayUnassignedOption) && (
-          <ListContentSection>
-            {displayUnassignedOption && (
-              <MemberRow
-                key={UNASSIGNED_KEY}
-                isSelected={selectedMembers?.length === 0}
-                onClick={event => handleOptionClick(event, UNASSIGNED_KEY)}
-              >
-                <CheckboxSpacing />
-                <Spacing horizontal={3} />
-                <UnassignedIcon />
-                <Spacing horizontal={3} />
-                <MemberName>
-                  <Highlighter
-                    highlightStyle={highlightStyle}
-                    searchWords={searchValue?.toLowerCase().split(/\s+/)}
-                    autoEscape
-                    textToHighlight="Unassign"
-                  />
-                </MemberName>
-              </MemberRow>
-            )}
-          </ListContentSection>
-        )}
         {!isValueSendable && (
           <ListContentSection>
             {filteredSelectedMembers?.map(member => {

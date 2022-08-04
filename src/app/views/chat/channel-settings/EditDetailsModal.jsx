@@ -39,7 +39,7 @@ const EditDetails = props => {
 
   return (
     <Modal
-      titleText="Edit channel information"
+      titleText="Edit Conversation Information"
       submitText="Save"
       onCancel={onCancel}
       onSubmit={() => {
@@ -136,7 +136,7 @@ const EditDetails = props => {
         </div>
         <div className="channel-profile-form__name-section">
           <InputLabel color="primary" size="small">
-            Channel Name
+            Conversation Name
           </InputLabel>
           <Input
             required={title !== ''}

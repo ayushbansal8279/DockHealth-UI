@@ -33,7 +33,7 @@ export default function ChatChannelList(props) {
     <div className="sendbird-app__channellist-wrap">
       <ChannelListHeader
         renderHeader={() => {
-          return <Title>Channels</Title>;
+          return <Title>Conversations</Title>;
         }}
         allowProfileEdit={false}
         renderIconButton={CustomAddChannel}

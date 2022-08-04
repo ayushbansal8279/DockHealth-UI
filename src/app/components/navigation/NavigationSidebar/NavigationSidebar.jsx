@@ -1,5 +1,5 @@
 /* eslint-disable sonarjs/cognitive-complexity */
-import React, { useCallback, useEffect } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import { ClickAwayListener, Grid } from '@material-ui/core';
 import { useDispatch, useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
@@ -86,6 +86,8 @@ const NavigationSidebar = () => {
   const currentUser = useSelector(userProfileSelector);
   const openedSubMenuKey = useSelector(subMenuKeySelector);
 
+  const [showChatPopover, setShowChatPopover] = useState(false);
+
   const { orgUserRole } = currentUser || {};
   const isUserAdmin = ['ADMIN', 'OWNER'].includes(orgUserRole);
 
@@ -145,6 +147,11 @@ const NavigationSidebar = () => {
     },
     [dispatch, history, openedSubMenuKey, closeSubMenu],
   );
+
+  const handleDockChatClick = useCallback(() => {
+    setShowChatPopover(!showChatPopover);
+    dispatch(TemplateActions.hideSubMenu());
+  }, [dispatch, showChatPopover, setShowChatPopover]);
 
   const handleReferClick = () => {
     dispatch(TemplateActions.hideSubMenu());
@@ -247,9 +254,14 @@ const NavigationSidebar = () => {
             <AccessRestrictor
               allowedToRoles={[ADMIN, OWNER, MEMBER, GUEST, EXTERNAL]}
             >
-              <NavigationItem name="Dock Chat" subMenuKey={SubmenuKey.DOCKCHAT}>
+              <NavigationItem
+                name="Dock Chat"
+                subMenuKey={SubmenuKey.DOCKCHAT}
+                onItemClick={handleDockChatClick}
+                subMenuOpen={showChatPopover}
+              >
                 <>
-                  <ChatPopover />
+                  <ChatPopover setShowChatPopover={setShowChatPopover} />
                 </>
               </NavigationItem>
             </AccessRestrictor>

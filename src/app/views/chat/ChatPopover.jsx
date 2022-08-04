@@ -22,7 +22,7 @@ import {
   ChatContainer,
 } from './styled';
 
-const ChatPopover = () => {
+const ChatPopover = ({ setShowChatPopover }) => {
   const { name, identifier } = useSelector(userProfileSelector);
   const [open, setOpen, unsetOpen] = useBoolean(false);
   const [anchorElement, setAnchorElement] = useState(null);
@@ -40,9 +40,10 @@ const ChatPopover = () => {
   };
 
   const handleClose = useCallback(() => {
+    setShowChatPopover(false);
     unsetOpen();
     setAnchorElement(null);
-  }, [unsetOpen]);
+  }, [unsetOpen, setShowChatPopover]);
 
   const handleLeaveIconClick = useCallback(() => {
     unsetOpen();
