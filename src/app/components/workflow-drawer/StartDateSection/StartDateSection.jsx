@@ -72,6 +72,7 @@ const StartDateSection = ({ disabled }) => {
                 selectedDate={startDateTime}
                 onDateChange={handleStartDateSave}
                 recurring={hasRecurringSchedule}
+                disableRecurring
                 onCloseClick={closePopover}
               />
             )}
