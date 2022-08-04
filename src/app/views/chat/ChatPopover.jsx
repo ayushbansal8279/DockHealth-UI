@@ -57,17 +57,17 @@ const ChatPopover = () => {
 
   const [unreadMessageCount, setUnreadMessageCount] = useState(null);
 
-  const onTotalUnreadMessageCountUpdated = useCallback(count => {
-    console.log('total unread messages updated');
-    setUnreadMessageCount(count + 1);
-  }, []);
+  const onTotalUnreadMessageCountUpdated = useCallback(
+    count => {
+      setUnreadMessageCount(count);
+    },
+    [setUnreadMessageCount],
+  );
 
   const addUserEventHandler = useCallback(
     handler => {
       if (sdkInstance) {
-        console.log('event handler added');
-        console.log(`handler: ${JSON.stringify(handler)}`);
-        const handlerId = 'SendbirdChatCount'; // uuidv4();
+        const handlerId = 'SendbirdChatCount';
         sdkInstance.addUserEventHandler(handlerId, handler);
         return handlerId;
       }
@@ -78,7 +78,7 @@ const ChatPopover = () => {
 
   const removeUserEventHandler = useCallback(
     handlerId => {
-      if (sdkInstance) {
+      if (sdkInstance && sdkInstance.removeUserEventHandler) {
         sdkInstance.removeUserEventHandler(handlerId);
       }
     },
@@ -104,7 +104,9 @@ const ChatPopover = () => {
       handler.onTotalUnreadMessageCountUpdated = onTotalUnreadMessageCountUpdated;
       handlerId = addUserEventHandler(handler);
     }
-    return handlerId && removeUserEventHandler(handlerId);
+    return () => {
+      removeUserEventHandler(handlerId);
+    };
   }, [
     addUserEventHandler,
     onTotalUnreadMessageCountUpdated,
