@@ -1,12 +1,13 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import React, { useCallback, useState, useRef } from 'react';
+import React, { useCallback, useState, useRef, useEffect } from 'react';
 import SortArrow from 'components/common/SortArrow/SortArrow';
 import { SortOrderType } from 'helpers/sorting-helper';
 import { checkIfShouldDisplayTooltip } from 'components/task/OverflowTooltip/OverflowTooltip';
 import { Box, Fade, Popper } from '@material-ui/core';
 import { Draggable } from 'react-beautiful-dnd';
 import ThreeDotsIcon from 'img/three-dots.svg';
-import { Resizable, ResizableBox } from 'react-resizable';
+import { Resizable } from 'react-resizable';
+import usePrevious from 'hooks/use-previous';
 import {
   SortButton,
   LabelWrapper,
@@ -15,26 +16,10 @@ import {
   ResizeHandler,
 } from './styled';
 
-interface ColumnSortHeaderProps {
-  id: string;
-  disabled?: boolean;
-  label?: ReactChild;
-  sort: { key: string | null; order: string | null };
-  width?: number;
-  onSortChange?: (key: string | null, order: string | null) => void;
-  truncateEnabled: boolean;
-  isDraggingOver?: boolean;
-  draggable?: boolean;
-  index?: number;
-  printWidth?: number;
-  snapshot?: any;
-  onResize?: (id: string, event: Event, data: any) => void;
-}
-
-const ColumnSortHeader: React.FC<ColumnSortHeaderProps> = ({
+const ColumnSortHeader = ({
   id,
   label,
-  width,
+  width = 100,
   sort,
   onSortChange,
   truncateEnabled,
@@ -45,19 +30,27 @@ const ColumnSortHeader: React.FC<ColumnSortHeaderProps> = ({
   snapshot,
   onResize,
   printWidth,
+  children,
+  flex,
   // eslint-disable-next-line sonarjs/cognitive-complexity
 }) => {
   const descriptionTextReference = useRef();
-  const [isHovered, setIsHovered] = useState<boolean>(false);
-  const [columnWidth, setcolumnWidth] = useState(width);
+  const [isHovered, setIsHovered] = useState(false);
+  const [columnWidth, setcolumnWidth] = useState(+width);
   const [isResizing, setIsResizing] = useState(false);
+  const previousWidth = usePrevious(width);
+
+  useEffect(() => {
+    if (width && previousWidth !== width && width !== columnWidth)
+      setcolumnWidth(width);
+  }, [columnWidth, previousWidth, width]);
 
   const switchSort = useCallback(() => {
     if (
+      isResizing ||
       disabled ||
       typeof onSortChange !== 'function' ||
-      isDraggingOver ||
-      isResizing
+      isDraggingOver
     )
       return;
 
@@ -81,12 +74,19 @@ const ColumnSortHeader: React.FC<ColumnSortHeaderProps> = ({
           break;
       }
     }
-  }, [disabled, onSortChange, isDraggingOver, isResizing, sort, id]);
+  }, [isResizing, disabled, onSortChange, isDraggingOver, sort, id]);
 
-  const handleResize = useCallback((event: Event, data: any) => {
+  const handleResize = useCallback((_, data) => {
     setcolumnWidth(data.size.width);
-    // if (typeof onResize === 'function') {onResize(id, event, data);
   }, []);
+
+  const handleResizeStop = useCallback(
+    (event, data) => {
+      if (typeof onResize === 'function') onResize(id, event, data);
+      setTimeout(() => setIsResizing(false), 1000);
+    },
+    [id, onResize],
+  );
 
   const randerContent = useCallback(() => {
     return (
@@ -95,6 +95,7 @@ const ColumnSortHeader: React.FC<ColumnSortHeaderProps> = ({
           ordered={!!(id === sort?.key && sort?.order)}
           ref={descriptionTextReference}
         >
+          {children}
           <Box display="flex">
             <Box p="0 5px 0 5px">
               <Box>
@@ -124,6 +125,8 @@ const ColumnSortHeader: React.FC<ColumnSortHeaderProps> = ({
               overflow={truncateEnabled ? 'hidden' : 'initial'}
               width="100%"
               whiteSpace="nowrap"
+              display="flex"
+              alignItems="center"
             >
               {label}
             </Box>
@@ -151,6 +154,7 @@ const ColumnSortHeader: React.FC<ColumnSortHeaderProps> = ({
       </div>
     );
   }, [
+    children,
     draggable,
     id,
     isDraggingOver,
@@ -164,20 +168,27 @@ const ColumnSortHeader: React.FC<ColumnSortHeaderProps> = ({
   if (!draggable)
     return (
       <Resizable
-        minConstraints={[20, 20]}
         onResizeStart={() => setIsResizing(true)}
-        onResizeStop={() => setIsResizing(false)}
+        minConstraints={[20, 20]}
+        maxConstraints={[1000, 35]}
         height={35}
         width={columnWidth}
         onResize={handleResize}
-        axis="x"
+        onResizeStop={handleResizeStop}
+        axis={typeof onResize === 'function' ? 'x' : 'none'}
         handle={
-          <Box>
-            <ResizeHandler />
+          <Box
+            onClick={event => {
+              event.stopPropagation();
+              event.preventDefault();
+            }}
+          >
+            <ResizeHandler enabled={typeof onResize === 'function'} />
           </Box>
         }
       >
         <SortButton
+          flex={flex}
           disabled={!label || disabled}
           type="button"
           width={columnWidth}
@@ -190,25 +201,27 @@ const ColumnSortHeader: React.FC<ColumnSortHeaderProps> = ({
       </Resizable>
     );
 
-  console.log('isResizing', isResizing);
-
   return (
     <Resizable
-      minConstraints={[20, 20]}
-      // maxConstraints={[500, 35]}
       onResizeStart={() => setIsResizing(true)}
-      onResizeStop={() => setIsResizing(false)}
+      minConstraints={[20, 20]}
+      maxConstraints={[1000, 35]}
       height={35}
       width={columnWidth}
       onResize={handleResize}
-      axis="x"
+      onResizeStop={handleResizeStop}
+      axis={typeof onResize === 'function' ? 'x' : 'none'}
       handle={
-        <Box>
-          <ResizeHandler />
+        <Box
+          onClick={event => {
+            event.stopPropagation();
+            event.preventDefault();
+          }}
+        >
+          <ResizeHandler enabled={typeof onResize === 'function'} />
         </Box>
       }
     >
-      {/* <Box width={columnWidth}> */}
       <SortButton
         type="button"
         width={snapshot?.draggingOverWith === id ? 0 : columnWidth}
@@ -223,7 +236,7 @@ const ColumnSortHeader: React.FC<ColumnSortHeaderProps> = ({
           draggableId={id}
           index={index}
         >
-          {(provided: any) => (
+          {provided => (
             <div
               ref={provided.innerRef}
               {...provided.draggableProps}
@@ -235,7 +248,6 @@ const ColumnSortHeader: React.FC<ColumnSortHeaderProps> = ({
           )}
         </Draggable>
       </SortButton>
-      {/* </Box> */}
     </Resizable>
   );
 };

@@ -411,6 +411,11 @@ const TaskTemplateGroupHeader = ({
         isSelected={isBundleSelected}
         isEditingDescription={isEditing}
         order={0}
+        width={
+          columns?.find(
+            ({ identifier: id }) => id === TaskItemColumn.DESCRIPTION,
+          )?.columnWidth
+        }
       >
         {!groupDragAndDropDisabled && !bulkEditIsActive && (
           <TemplateHandle
@@ -429,7 +434,7 @@ const TaskTemplateGroupHeader = ({
         <OptionsMenu options={menuOptions}>
           <MoreVert color="primary" />
         </OptionsMenu>
-        <TemplateHeaderName // TODO: Width should be dependent on columns like below (but here, if the width )
+        <TemplateHeaderName
           templateGroup={templateGroup}
           isEditing={isEditing}
           nameInputError={nameInputError}
@@ -452,8 +457,15 @@ const TaskTemplateGroupHeader = ({
         </TaskTemplateOptionsContainer>
       </StickyMainTaskItemCell>
       <TaskItemCell
+        justify="center"
+        paddingLeft="tiny"
+        paddingRight="tiny"
         key={`subtask_count_${identifier}`}
-        width={TaskItemColumnWidth[TaskItemColumn.SUBTASKS_COUNT]} // TODO: Width should be dependent on columns like below (but here, if the width )
+        width={
+          columns?.find(
+            ({ identifier: id }) => id === TaskItemColumn.SUBTASKS_COUNT,
+          )?.columnWidth
+        }
       />
       {isColumnChecked(columns, TaskItemColumn.PATIENT) && (
         <TaskItemCell
@@ -481,7 +493,7 @@ const TaskTemplateGroupHeader = ({
           width={
             columns?.find(
               ({ identifier: id }) => id === TaskItemColumn.WORKFLOW_STATUS,
-            ).columnWidth
+            )?.columnWidth
           }
           paddingLeft="smallPlus"
           paddingRight="tiny"
@@ -504,7 +516,7 @@ const TaskTemplateGroupHeader = ({
           width={
             columns?.find(
               ({ identifier: id }) => id === TaskItemColumn.ACTIVITY,
-            ).columnWidth
+            )?.columnWidth
           }
           order={getColumnOrder(TaskItemColumn.ACTIVITY)}
         >
@@ -524,7 +536,7 @@ const TaskTemplateGroupHeader = ({
           width={
             columns?.find(
               ({ identifier: id }) => id === TaskItemColumn.START_DATE,
-            ).columnWidth
+            )?.columnWidth
           }
           justify="center"
           order={getColumnOrder(TaskItemColumn.START_DATE)}
@@ -538,7 +550,7 @@ const TaskTemplateGroupHeader = ({
           width={
             columns?.find(
               ({ identifier: id }) => id === TaskItemColumn.DUE_DATE,
-            ).columnWidth
+            )?.columnWidth
           }
           justify="center"
           order={getColumnOrder(TaskItemColumn.DUE_DATE)}
@@ -552,7 +564,7 @@ const TaskTemplateGroupHeader = ({
           width={
             columns?.find(
               ({ identifier: id }) => id === TaskItemColumn.ASSIGNED,
-            ).columnWidth
+            )?.columnWidth
           }
           // eslint-disable-next-line sonarjs/no-all-duplicated-branches
           justify={groupHasMultipleAssignees ? 'center' : 'center'}
@@ -582,7 +594,7 @@ const TaskTemplateGroupHeader = ({
           width={
             columns?.find(
               ({ identifier: id }) => id === TaskItemColumn.LIST_NAME,
-            ).columnWidth
+            )?.columnWidth
           }
           order={getColumnOrder(TaskItemColumn.LIST_NAME)}
         />

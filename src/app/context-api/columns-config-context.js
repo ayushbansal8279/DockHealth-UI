@@ -69,6 +69,7 @@ export function ColumnsConfigProvider({
   const setColumnsAndUpdateApi = useCallback(
     newState => {
       setColumnsToState(newState);
+      console.log('currentList', currentList);
       if (currentList) {
         dispatch(
           updateListPreferences(
@@ -120,13 +121,11 @@ export function ColumnsConfigProvider({
     ];
 
     // join preferences to data
-    const mergedPreferencesAndFields = joinedColumnsData
-      .filter(f => f.identifier !== 'TASK_DESCRIPTION')
-      .map(field => ({
-        ...field,
-        isChecked: !!currentPreferences?.includes(field.identifier),
-        columnWidth: getInitialColumnWidth(field), // check and get custom width if is avaible  (when API will be available), if not = use getInitialColumnWidth
-      }));
+    const mergedPreferencesAndFields = joinedColumnsData.map(field => ({
+      ...field,
+      isChecked: !!currentPreferences?.includes(field.identifier),
+      columnWidth: getInitialColumnWidth(field), // TODO: check and get custom width if is avaible  (API in progress), if not = use getInitialColumnWidth
+    }));
 
     // sort data by defined order
     const fieldsWithOrder = mergedPreferencesAndFields
@@ -170,12 +169,39 @@ export function ColumnsConfigProvider({
     currentList,
   ]);
 
-  const setColumnWidth = useCallback((identifier, columnWidth) => {
-    console.log(identifier, columnWidth);
-    // setColumnsToState(state =>
-    //   state.map(c => (identifier === c.identifier ? { ...c, columnWidth } : c)),
-    // );
-  }, []);
+  const setColumnWidth = useCallback(
+    ({ columnIdentifier, columnWidth }) => {
+      // eslint-disable-next-line no-console
+      console.log('columnIdentifier', columnIdentifier);
+      // eslint-disable-next-line no-console
+      console.log('columnWidth', columnWidth);
+
+      const translatedStateToApiDataStructure = 'placeholer'; // TODO: replace
+      if (currentList) {
+        dispatch(
+          updateListPreferences(
+            {
+              oooooooooooo: translatedStateToApiDataStructure, // TODO: replace the field name and the proper translated data
+            },
+            currentList.taskListIdentifier,
+            userIdentifier,
+          ),
+        );
+      } else {
+        dispatch(
+          updateCurrentUserPreferences({
+            oooooooooooo: translatedStateToApiDataStructure, // TODO: replace the field name and the proper translated data
+          }),
+        );
+      }
+      setColumnsToState(state =>
+        state.map(c =>
+          columnIdentifier === c.identifier ? { ...c, columnWidth } : c,
+        ),
+      );
+    },
+    [currentList, dispatch, userIdentifier],
+  );
 
   const value = {
     columns,
@@ -199,9 +225,13 @@ export function useColumnsConfig() {
   const context = useContext(ColumnsConfigContext);
   if (context === undefined) {
     return {
-      columns: translateInitialColumnsConfig(
-        TASK_ITEM_BASE_COLUMN_CONFIG,
-      ).map(f => ({ ...f, isChecked: true })),
+      columns: translateInitialColumnsConfig(TASK_ITEM_BASE_COLUMN_CONFIG).map(
+        f => ({
+          ...f,
+          isChecked: true,
+          columnWidth: getInitialColumnWidth(f),
+        }),
+      ),
       setColumns: () => {
         throw new Error(
           'if you want to use setColumns, useColumnsConfig must be used within a ColumnsConfigProvider',

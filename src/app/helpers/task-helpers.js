@@ -166,6 +166,8 @@ export const TaskItemColumnWidth = {
 };
 
 export const TASK_ITEM_BASE_COLUMN_CONFIG = {
+  [TaskItemColumn.DESCRIPTION]: true,
+  [TaskItemColumn.SUBTASKS_COUNT]: true,
   [TaskItemColumn.PATIENT]: true,
   [TaskItemColumn.WORKFLOW_STATUS]: true,
   [TaskItemColumn.ACTIVITY]: true,

@@ -353,6 +353,11 @@ const TaskItem = React.memo(
               backgroundColor={pageBackground}
               isSelected={isSelected || selected}
               isEditingDescription={isEditingDescription}
+              width={
+                columns?.find(
+                  ({ identifier }) => identifier === TaskItemColumn.DESCRIPTION,
+                )?.columnWidth
+              }
             >
               <DotsContainer
                 showDraggableDots={showDraggableDots}
@@ -376,7 +381,6 @@ const TaskItem = React.memo(
                 position="static"
                 isSubtask={showSubtaskStylingLink}
                 isSticky
-                width={500} // TODO: Width should be dependent on columns like below (but here, if the width )
                 printWidth={300}
               >
                 <CircleIcon
@@ -440,7 +444,12 @@ const TaskItem = React.memo(
             </StickyMainTaskItemCell>
             <TaskItemCell
               key={`subtask_count_${taskIdentifier}`}
-              width={TaskItemColumnWidth[TaskItemColumn.SUBTASKS_COUNT]} // TODO: Width should be dependent on columns like below (but here, if the width )
+              width={
+                columns?.find(
+                  ({ identifier }) =>
+                    identifier === TaskItemColumn.SUBTASKS_COUNT,
+                )?.columnWidth
+              }
               justify="center"
               paddingLeft="tiny"
               paddingRight="tiny"
@@ -465,7 +474,7 @@ const TaskItem = React.memo(
                 width={
                   columns?.find(
                     ({ identifier }) => identifier === TaskItemColumn.PATIENT,
-                  ).columnWidth
+                  )?.columnWidth
                 }
                 order={getColumnOrder(TaskItemColumn.PATIENT)}
               >
@@ -493,7 +502,7 @@ const TaskItem = React.memo(
                   columns?.find(
                     ({ identifier }) =>
                       identifier === TaskItemColumn.WORKFLOW_STATUS,
-                  ).columnWidth
+                  )?.columnWidth
                 }
                 paddingLeft="smallPlus"
                 paddingRight="tiny"
@@ -520,7 +529,7 @@ const TaskItem = React.memo(
                 width={
                   columns?.find(
                     ({ identifier }) => identifier === TaskItemColumn.ACTIVITY,
-                  ).columnWidth
+                  )?.columnWidth
                 }
                 order={getColumnOrder(TaskItemColumn.ACTIVITY)}
               >
@@ -545,7 +554,7 @@ const TaskItem = React.memo(
                       columns?.find(
                         ({ identifier }) =>
                           identifier === TaskItemColumn.START_DATE,
-                      ).columnWidth
+                      )?.columnWidth
                     }
                     onContextMenu={event => {
                       event.stopPropagation();
@@ -561,7 +570,7 @@ const TaskItem = React.memo(
                         columns?.find(
                           ({ identifier }) =>
                             identifier === TaskItemColumn.DUE_DATE,
-                        ).columnWidth
+                        )?.columnWidth
                       }
                       paddingLeft="tiny"
                       paddingRight="tiny"
@@ -583,7 +592,7 @@ const TaskItem = React.memo(
                 width={
                   columns?.find(
                     ({ identifier }) => identifier === TaskItemColumn.ASSIGNED,
-                  ).columnWidth
+                  )?.columnWidth
                 }
                 justify={multipleAssigneesContext ? 'flex-start' : 'center'}
                 paddingLeft="small"
@@ -612,7 +621,7 @@ const TaskItem = React.memo(
                     columns?.find(
                       ({ identifier }) =>
                         identifier === TaskItemColumn.LIST_NAME,
-                    ).columnWidth
+                    )?.columnWidth
                   }
                   order={getColumnOrder(TaskItemColumn.LIST_NAME)}
                 >

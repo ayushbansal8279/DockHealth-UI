@@ -11,11 +11,16 @@ export const BulkContainer = styled.div`
 `;
 
 export const StickyColumnContainer = styled.div`
+  ${({ customWidthExists }) =>
+    customWidthExists
+      ? ''
+      : `
+    flex: 1;
+  min-width: 500px;
+  `}
   position: sticky;
   display: flex;
-  /* width: 100%; */
-  flex: 1;
-  min-width: 500px;
+
   left: 24px;
   z-index: 11;
   border-left: 1px solid ${palette.coolGrey3};
@@ -46,7 +51,7 @@ export const StickyColumnContainer = styled.div`
     left: 0px;
     top: 0px;
     height: 100%;
-    width: calc(100% - 15px);
+    width: 100%;
     z-index: -1;
   }
 

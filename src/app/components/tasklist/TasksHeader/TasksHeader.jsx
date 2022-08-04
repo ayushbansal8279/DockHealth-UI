@@ -2,7 +2,6 @@
 import React, { useCallback } from 'react';
 import { useSelector } from 'react-redux';
 import Checkbox from 'components/common/Checkbox/Checkbox';
-import ColumnSortHeader from 'components/tasklist/ColumnSortHeader/ColumnSortHeader';
 import { SortHeaderRow } from 'components/tasklist/ColumnSortHeader/styled';
 import { TaskItemColumn, TaskItemColumnWidth } from 'helpers/task-helpers';
 import { getCustomerTypeLabel } from 'helpers/customer-type-helper';
@@ -19,6 +18,7 @@ import {
   reorderColumns,
   TaskHeaderColumn,
 } from './helpers';
+import ColumnSortHeader from '../ColumnSortHeader/ColumnSortHeader';
 
 const TasksHeader = ({
   bulkEditEnabled,
@@ -63,11 +63,27 @@ const TasksHeader = ({
     [columns, setColumns],
   );
 
+  const handleResizeColumn = useCallback(
+    (identifier, _, { size }) => {
+      const { width } = size;
+      if (typeof setColumnWidth === 'function') {
+        setColumnWidth({
+          columnIdentifier: identifier,
+          columnWidth: width,
+        });
+      }
+    },
+    [setColumnWidth],
+  );
+
   const renderColumn = useCallback(
     (f, index, snapshot) => {
       if (f._customFieldType === CUSTOM_FIELD_TYPES.REGULAR) {
         return (
           <ColumnSortHeader
+            onResize={
+              typeof setColumnWidth === 'function' ? handleResizeColumn : null
+            }
             key={f.identifier}
             index={index}
             draggable={
@@ -92,6 +108,9 @@ const TasksHeader = ({
       }
       return (
         <ColumnSortHeader
+          onResize={
+            typeof setColumnWidth === 'function' ? handleResizeColumn : null
+          }
           key={f.identifier}
           index={index}
           draggable={!restrictCustomizationFeatures}
@@ -110,15 +129,13 @@ const TasksHeader = ({
         />
       );
     },
-    [onSortChange, restrictCustomizationFeatures, sort],
-  );
-
-  const handleResizeColumn = useCallback(
-    (identifier, _, { size }) => {
-      const { width } = size;
-      setColumnWidth(identifier, width);
-    },
-    [setColumnWidth],
+    [
+      handleResizeColumn,
+      onSortChange,
+      restrictCustomizationFeatures,
+      setColumnWidth,
+      sort,
+    ],
   );
 
   return (
@@ -130,35 +147,59 @@ const TasksHeader = ({
       >
         {(provided, snapshot) => (
           <SortHeaderRow ref={provided.innerRef} {...provided.droppableProps}>
-            <StickyColumnContainer backgroundColor={pageBackground}>
-              {bulkEditEnabled && (
-                <BulkContainer>
-                  <Checkbox
-                    isChecked={isGroupSelected}
-                    onClick={onGroupSelect}
-                  />
-                </BulkContainer>
-              )}
+            <StickyColumnContainer
+              backgroundColor={pageBackground}
+              customWidthExists
+            >
               <ColumnSortHeader
                 id={TaskItemColumn.DESCRIPTION}
                 label="Tasks"
                 sort={sort}
                 onSortChange={onSortChange}
-                width={TaskItemColumnWidth[TaskItemColumn.DESCRIPTION].WIDE} // TODO: Width should be dependent on columns like below (but here, if the width )
+                width={
+                  columns?.find(
+                    ({ identifier }) =>
+                      identifier === TaskItemColumn.DESCRIPTION,
+                  )?.columnWidth
+                }
                 printWidth={
                   TaskItemColumnWidth[TaskItemColumn.DESCRIPTION].PRINT
                 }
-              />
+                onResize={
+                  typeof setColumnWidth === 'function'
+                    ? handleResizeColumn
+                    : null
+                }
+              >
+                {bulkEditEnabled && (
+                  <BulkContainer>
+                    <Checkbox
+                      isChecked={isGroupSelected}
+                      onClick={onGroupSelect}
+                    />
+                  </BulkContainer>
+                )}
+              </ColumnSortHeader>
             </StickyColumnContainer>
             <ColumnSortHeader
               id={TaskItemColumn.SUBTASKS_COUNT}
               label="Sub"
-              width={TaskItemColumnWidth[TaskItemColumn.SUBTASKS_COUNT]} // TODO: Width should be dependent on columns like below (but here, if the width )
-              onResize={handleResizeColumn}
+              width={
+                columns?.find(
+                  ({ identifier }) =>
+                    identifier === TaskItemColumn.SUBTASKS_COUNT,
+                )?.columnWidth
+              }
+              onResize={
+                typeof setColumnWidth === 'function' ? handleResizeColumn : null
+              }
             />
             {columns
               .filter(
-                f => f.identifier !== TaskItemColumn.DESCRIPTION && f.isChecked,
+                f =>
+                  f.identifier !== TaskItemColumn.DESCRIPTION &&
+                  f.identifier !== TaskItemColumn.SUBTASKS_COUNT &&
+                  f.isChecked,
               )
               .map(c =>
                 c._customFieldType === CUSTOM_FIELD_TYPES.REGULAR

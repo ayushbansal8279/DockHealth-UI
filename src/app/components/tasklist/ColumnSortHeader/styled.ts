@@ -3,15 +3,16 @@ import { fontSizes, fontWeights } from 'styles/font';
 import palette from 'styles/palette';
 import spacing from 'styles/spacing';
 
-export const ResizeHandler = styled.div`
+export const ResizeHandler = styled.div<{ enabled: boolean }>`
   position: absolute;
   top: 0;
-  left: 100%;
-  width: 5px;
+  left: calc(100% - 2px);
+  width: 2px;
   height: 35px;
-  background-color: red;
-  cursor: ew-resize;
+  background-color: ${palette.coolGrey3};
   z-index: 1;
+  cursor: ew-resize;
+  ${({ enabled }) => (enabled ? `` : 'display: none;')}
 `;
 
 export const DescriptionTooltipWrapper = styled.div`
@@ -24,9 +25,9 @@ export const DescriptionTooltipWrapper = styled.div`
   cursor: initial;
 `;
 
-export const LabelWrapper = styled.div<{ ordered: boolean }>`
+export const LabelWrapper = styled.div<{ ordered: boolean; flex: number }>`
+  display: flex;
   margin-bottom: 0;
-  padding-left: 5px;
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
@@ -36,11 +37,10 @@ export const LabelWrapper = styled.div<{ ordered: boolean }>`
 export const SortButton = styled.button<{
   printWidth?: number;
   width?: number;
+  flex?: number;
 }>`
   position: relative;
-  /* flex: ${({ width }) => (width ? `0 0 ${width}px` : '1')};
-  ${({ width }) => width && `max-width: ${width}px;`}; */
-  ${({ width }) => width && `width: ${width}px;`}
+  ${({ width }) => (width ? `width: ${width}px;` : '')}
   height: 35px;
   text-align: left;
   font-family: 'Roboto Condensed', sans-serif;
@@ -48,6 +48,7 @@ export const SortButton = styled.button<{
   font-weight: ${fontWeights.regularPlus};
   text-transform: uppercase;
   color: ${palette.mediumGrey};
+  ${({ flex }) => (flex ? `flex: ${flex};` : '')};
   &:hover {
     background-color: ${palette.coolGrey3};
   }
@@ -76,7 +77,7 @@ export const ThreeDots = styled.img<{ hideIcon: boolean }>`
 export const SortHeaderRow = styled.div`
   display: flex;
   flex-direction: row;
-  justify-content: flex-end;
+  justify-content: flex-start; //changed start => end
   align-items: center;
   width: 100%;
   background: ${palette.white};
