@@ -330,6 +330,51 @@ const TaskItem = React.memo(
       [columns],
     );
 
+    const randerFirstColumnCover = useCallback(
+      (content, index) => {
+        if (index !== 0) return content;
+        return (
+          <StickyMainTaskItemCell
+            order={0}
+            isSubtask={showSubtaskStylingLink}
+            newlyCreated={newlyCreated}
+            backgroundColor={pageBackground}
+            isSelected={isSelected || selected}
+            isEditingDescription={isEditingDescription}
+            width={
+              columns?.find(
+                ({ identifier }) => identifier === TaskItemColumn.DESCRIPTION,
+              )?.columnWidth
+            }
+          >
+            <DotsContainer
+              showDraggableDots={showDraggableDots}
+              dragHandleProps={dragHandleProps}
+            />
+            {showPriority && (
+              <PriorityIndicator color={getPriorityColor(task.priority)} />
+            )}
+            {showSubtaskStylingLink && getSubtaskStylingLink(isLast)}
+            {content}
+          </StickyMainTaskItemCell>
+        );
+      },
+      [
+        columns,
+        dragHandleProps,
+        isEditingDescription,
+        isLast,
+        isSelected,
+        newlyCreated,
+        pageBackground,
+        selected,
+        showDraggableDots,
+        showPriority,
+        showSubtaskStylingLink,
+        task,
+      ],
+    );
+
     return (
       <>
         <StandardTaskItemPanel
@@ -346,7 +391,81 @@ const TaskItem = React.memo(
             }
             isAddingTask={false}
           >
-            <StickyMainTaskItemCell
+            {/*  */}
+            {bulkEditEnabled && (
+              <TaskItemBulkEdit
+                isChecked={selected}
+                onClick={onClickBulkEdit}
+              />
+            )}
+            <MainStandardTaskItemCell
+              bolded
+              paddingLeft="smallPlus"
+              paddingRight="small"
+              onClick={onClickTaskItem}
+              position="static"
+              isSubtask={showSubtaskStylingLink}
+              isSticky
+              printWidth={300}
+            >
+              <CircleIcon
+                src={isCompleted ? CircleCompleted : Circle}
+                isClickable={
+                  !isTaskStatusTogglingDisabled && isDependencyEmptyOrCompleted
+                }
+                isCompleted={isCompleted}
+                onClick={onCircleClick}
+              />
+
+              {!isDependencyEmptyOrCompleted && (
+                <>
+                  <DependencyIconContainer
+                    onMouseEnter={openDependencyPopover}
+                    onMouseLeave={closeDependencyPopover}
+                    ref={dependencyIconReference}
+                  >
+                    <img src={DependencyIcon} alt="search" />
+                    {dependencyIconReference.current && (
+                      <DependencyListPopover
+                        anchorEl={dependencyIconReference.current}
+                        open={dependencyPopoverOpen}
+                        dependencyTasksCount={dependencyTasksCount}
+                        task={task}
+                      />
+                    )}
+                  </DependencyIconContainer>
+                </>
+              )}
+
+              <>
+                <TaskItemDescription
+                  disableMentions={restrictions?.mentions === DISABLED}
+                  disabled={restrictions?.description === READ_ONLY}
+                  task={task}
+                  isCompletedGroup={isCompletedGroup}
+                  highlightedValue={highlightedValue}
+                  hasParentTaskLabel={hasParentTaskLabel}
+                  isEditing={isEditingDescription}
+                  setEditing={setEditingDescription}
+                />
+                <DetailsButton>Details</DetailsButton>
+              </>
+            </MainStandardTaskItemCell>
+            {showDecisionRow && (
+              <DecisionCellContainer>
+                <TaskItemDecision
+                  outcomes={task.taskOutcomes}
+                  dispatch={dispatch}
+                  onSelect={chooseTaskDecisionOutcome}
+                  task={task}
+                  templateBundleIdentifier={templateBundleIdentifier}
+                  disabled={isCompleted || !isDependencyEmptyOrCompleted}
+                  error={taskDecisionError}
+                  clearError={() => setTaskDecisionError(false)}
+                />
+              </DecisionCellContainer>
+            )}
+            {/* <StickyMainTaskItemCell
               order={0}
               isSubtask={showSubtaskStylingLink}
               newlyCreated={newlyCreated}
@@ -441,7 +560,7 @@ const TaskItem = React.memo(
                   />
                 </DecisionCellContainer>
               )}
-            </StickyMainTaskItemCell>
+            </StickyMainTaskItemCell> */}
             <TaskItemCell
               key={`subtask_count_${taskIdentifier}`}
               width={
@@ -585,7 +704,6 @@ const TaskItem = React.memo(
                   )}
               </>
             )}
-
             {isColumnChecked(columns, TaskItemColumn.ASSIGNED) && (
               <TaskItemCell
                 key={`assigned_${taskIdentifier}`}
