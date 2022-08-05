@@ -11,6 +11,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { organizationCustomFieldsSelector } from 'selectors/organization-selectors';
 import {
   userPreferencesSelector,
+  OrganizationWidthFieldsPreferencesSelector,
   userProfileSelector,
 } from 'selectors/user-selectors';
 import { updateCurrentUserPreferences } from 'actions/user-actions';
@@ -24,6 +25,7 @@ import {
   getInitialColumnWidth,
   translateInitialColumnsConfig,
   translateStateToApi,
+  translateWidthToApi,
 } from './helpers';
 
 export const ColumnsConfigContext = createContext();
@@ -50,6 +52,9 @@ export function ColumnsConfigProvider({
   const OrganizationCustomFieldsPreferences = useSelector(
     userPreferencesSelector,
   );
+  const OrganizationWidthFieldsPreferences = useSelector(
+    OrganizationWidthFieldsPreferencesSelector,
+  );
 
   const currentPreferences = useMemo(() => {
     if (currentList) {
@@ -66,10 +71,24 @@ export function ColumnsConfigProvider({
     return OrganizationCustomFieldsPreferences;
   }, [OrganizationCustomFieldsPreferences, currentList, userIdentifier]);
 
+  const currentWidthPreferences = useMemo(() => {
+    if (currentList) {
+      let displayColumns =
+        currentList?.listType === 'PUBLIC'
+          ? currentList?.listDisplayColumnPrefs
+          : currentList?.listUsers?.find(u => u.identifier === userIdentifier)
+              ?.listDisplayColumnPrefs;
+      if (!displayColumns || displayColumns.length === 0) {
+        displayColumns = currentList?.listDisplayColumnPrefs;
+      }
+      return displayColumns;
+    }
+    return OrganizationWidthFieldsPreferences;
+  }, [OrganizationWidthFieldsPreferences, currentList, userIdentifier]);
+
   const setColumnsAndUpdateApi = useCallback(
     newState => {
       setColumnsToState(newState);
-      console.log('currentList', currentList);
       if (currentList) {
         dispatch(
           updateListPreferences(
@@ -124,7 +143,10 @@ export function ColumnsConfigProvider({
     const mergedPreferencesAndFields = joinedColumnsData.map(field => ({
       ...field,
       isChecked: !!currentPreferences?.includes(field.identifier),
-      columnWidth: getInitialColumnWidth(field), // TODO: check and get custom width if is avaible  (API in progress), if not = use getInitialColumnWidth
+      columnWidth: Number(
+        currentWidthPreferences.find(c => c.displayColumn === field.identifier)
+          ?.width || getInitialColumnWidth(field),
+      ),
     }));
 
     // sort data by defined order
@@ -144,6 +166,7 @@ export function ColumnsConfigProvider({
   }, [
     currentList,
     currentPreferences,
+    currentWidthPreferences,
     initialColumns,
     organizationCustomFields,
     patientCustomColumns,
@@ -171,17 +194,15 @@ export function ColumnsConfigProvider({
 
   const setColumnWidth = useCallback(
     ({ columnIdentifier, columnWidth }) => {
-      // eslint-disable-next-line no-console
-      console.log('columnIdentifier', columnIdentifier);
-      // eslint-disable-next-line no-console
-      console.log('columnWidth', columnWidth);
+      const updatedState = columns.map(c =>
+        columnIdentifier === c.identifier ? { ...c, columnWidth } : c,
+      );
 
-      const translatedStateToApiDataStructure = 'placeholer'; // TODO: replace
       if (currentList) {
         dispatch(
           updateListPreferences(
             {
-              oooooooooooo: translatedStateToApiDataStructure, // TODO: replace the field name and the proper translated data
+              listDisplayColumnPrefs: translateWidthToApi(updatedState),
             },
             currentList.taskListIdentifier,
             userIdentifier,
@@ -190,17 +211,13 @@ export function ColumnsConfigProvider({
       } else {
         dispatch(
           updateCurrentUserPreferences({
-            oooooooooooo: translatedStateToApiDataStructure, // TODO: replace the field name and the proper translated data
+            listDisplayColumnPrefs: translateWidthToApi(updatedState),
           }),
         );
       }
-      setColumnsToState(state =>
-        state.map(c =>
-          columnIdentifier === c.identifier ? { ...c, columnWidth } : c,
-        ),
-      );
+      setColumnsToState(updatedState);
     },
-    [currentList, dispatch, userIdentifier],
+    [columns, currentList, dispatch, userIdentifier],
   );
 
   const value = {

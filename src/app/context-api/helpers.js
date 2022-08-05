@@ -23,3 +23,9 @@ export const getInitialColumnWidth = column => {
     return TaskItemColumnWidth[column.identifier];
   return TaskItemColumnWidth[column.identifier]?.DEFAULT;
 };
+
+export const translateWidthToApi = state =>
+  state.map(c => ({
+    displayColumn: c.identifier,
+    width: c.columnWidth?.toString(),
+  }));
