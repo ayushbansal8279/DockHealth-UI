@@ -1,6 +1,5 @@
 import React, { useCallback, useContext, useEffect } from 'react';
 import { ChannelSettingsProvider } from '@sendbird/uikit-react/ChannelSettings/context';
-import UserPanel from '@sendbird/uikit-react/ChannelSettings/components/UserPanel';
 import CustomChannelSettingsProvider from './CustomChannelSettingsProvider';
 import ChannelProfile from './ChannelProfile';
 import CustomChannelSettingsUI from './CustomChannelSettingsUi.jsx';
@@ -33,9 +32,6 @@ const ChatChannelSettings = () => {
           onCloseClick={handleOnCloseClick}
         >
           <CustomChannelSettingsUI
-            renderModerationPanel={() => {
-              return <UserPanel />;
-            }}
             renderChannelProfile={() => {
               return <ChannelProfile />;
             }}

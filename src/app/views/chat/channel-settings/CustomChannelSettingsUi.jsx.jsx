@@ -3,7 +3,9 @@ import useSendbirdStateContext from '@sendbird/uikit-react/useSendbirdStateConte
 import Label from '@sendbird/uikit-react/ui/Label';
 import IconButton from '@sendbird/uikit-react/ui/IconButton';
 import Icon from '@sendbird/uikit-react/ui/Icon';
-import LeaveChannel from '@sendbird/uikit-react/ChannelSettings/components/LeaveChannel';
+// import UserPanel from '@sendbird/uikit-react/ChannelSettings/components/UserPanel';
+import UserPanel from './CustomUserPanel';
+import LeaveChannel from './LeaveChannel';
 import ChannelSettingsContext from './ChannelSettingsContext';
 import { Typography, Colors } from './LabelTypography';
 import ChannelProfile from './ChannelProfile';
@@ -76,6 +78,7 @@ const CustomChannelSettingsUI = props => {
       </div>
       <div className="sendbird-channel-settings__scroll-area">
         {renderChannelProfile() || <ChannelProfile />}
+        <UserPanel />
         <div
           className={[
             'sendbird-channel-settings__panel-item',

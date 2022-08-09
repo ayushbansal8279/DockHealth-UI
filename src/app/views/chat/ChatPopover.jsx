@@ -11,8 +11,8 @@ import { useBoolean } from 'hooks/useBoolean';
 import { CHAT_PATH } from 'routing/helpers/paths';
 import { userProfileSelector } from 'selectors/user-selectors';
 import { useSelector } from 'react-redux';
-import TaskIcon from 'components/task/TaskIcon/TaskIcon';
 import { NavigationIconNewLabel } from 'components/navigation/NavigationSidebar/styled';
+import ChatIcon from './Icons/ChatIcon';
 import Chat from './Chat';
 import SelectedChannelContext from './SelectedChannelContext';
 import ShowSettingsContext from './ShowSettingsContext';
@@ -80,7 +80,7 @@ const ChatPopover = ({ setShowChatPopover }) => {
         variant="contained"
         onClick={handleClick}
       >
-        <TaskIcon type="comments" isActive isNew={unreadMessageCount > 0} />
+        <ChatIcon type="comments" isActive isNew={unreadMessageCount > 0} />
       </IconButton>
       <NavigationIconNewLabel>New!</NavigationIconNewLabel>
       <Draggable handle=".handle">
