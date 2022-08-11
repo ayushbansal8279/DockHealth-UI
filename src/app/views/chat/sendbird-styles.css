@@ -99,4 +99,8 @@
 }
 .sendbird-modal__content .sendbird-modal__body{
     height: 200px !important;
+    overflow: scroll;
+}
+.sendbird-channel-settings__scroll-area{
+    height: 500px !important;
 }

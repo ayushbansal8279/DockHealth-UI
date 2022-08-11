@@ -12,10 +12,15 @@ import './sendbird-styles.css';
 
 const ChatView = () => {
   const [selectedChannel, setSelectedChannel] = useState(null);
-  const value = { selectedChannel, setSelectedChannel };
+  const [, setShowChatPopover] = useState(false);
+  const value = { selectedChannel, setSelectedChannel, setShowChatPopover };
 
   const [showSettings, setShowSettings] = useState(false);
-  const showSettingsValue = { showSettings, setShowSettings };
+
+  const showSettingsValue = {
+    showSettings,
+    setShowSettings,
+  };
 
   return (
     <ViewLayout header={<BasicLayoutHeader title="Chat" isChat />}>

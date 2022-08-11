@@ -70,12 +70,14 @@ const EditDetails = props => {
           });
         } else {
           logger.info('ChannelSettings: normal');
+          const parameters = { name: 'new name' };
           channel
-            .updateChannel({
-              coverImage: currentImg,
-              name: currentTitle,
-              data: channel?.data || '',
-            })
+            .updateChannel(parameters)
+            // .updateChannel({
+            //   // coverImage: currentImg,
+            //   name: currentTitle,
+            //   // data: channel?.data || '',
+            // })
             .then(groupChannel => {
               logger.info(
                 'ChannelSettings: Channel information updated',
@@ -84,6 +86,9 @@ const EditDetails = props => {
               onChannelModified(groupChannel);
               setChannelUpdateId(uuidv4());
               onSubmit();
+            })
+            .catch(error => {
+              console.log(`error creating group channel: ${error}`);
             });
         }
       }}

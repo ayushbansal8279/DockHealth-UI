@@ -4,6 +4,7 @@ import React, {
   useEffect,
   useMemo,
   useCallback,
+  useContext,
 } from 'react';
 import Highlighter from 'react-highlight-words';
 import * as OrganizationApi from 'api/organization-api';
@@ -19,6 +20,7 @@ import { isUserGroup } from 'helpers/user-helper';
 import GroupAvatar from 'components/user/GroupAvatar/GroupAvatar';
 import { getUsersByName } from 'api/user-api';
 import { organizationSelector } from 'selectors/organization-selectors';
+import ChannelSettingsContext from '../channel-settings/ChannelSettingsContext';
 import {
   Input,
   InputBox,
@@ -44,7 +46,7 @@ const MultiAssignChatInviteMembersList = ({
   const { emrIntegrationEnabled } = useSelector(organizationSelector);
   const currentUser = useSelector(userProfileSelector);
   const [membersOptions, setMembersOptions] = useState([]);
-  const [selectedMembers, setSelectedMembers] = useState(savedSelectedMembers);
+  const [selectedMembers, setSelectedMembers] = useState([]);
   const [isFetchingMembers, setIsFetchingMembers] = useState(false);
   const [searchValue, setSearchValue] = useState('');
   const enableLazyLoading = emrIntegrationEnabled && enabled;
@@ -88,15 +90,19 @@ const MultiAssignChatInviteMembersList = ({
   );
 
   useEffect(() => {
-    setSelectedMembers([...savedSelectedMembers]);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+    if (savedSelectedMembers.length > 0 && selectedMembers.length === 0) {
+      const members = savedSelectedMembers.map(member => {
+        return { identifier: member.userId, name: member.nickname };
+      });
+      setSelectedMembers([...members]);
+    }
+  }, [savedSelectedMembers, selectedMembers]);
 
   const inputReference = useRef(null);
 
   const selectMembersWithDebounce = useCallback(
     debounce(selection => {
-      onSelect(selection.map(s => ({ ...s, userIdentifier: s.identifier })));
+      onSelect(selection.map(s => ({ ...s, userIdentifier: s.userId })));
       // eslint-disable-next-line no-unused-expressions
       inputReference.current?.focus();
     }, 700),

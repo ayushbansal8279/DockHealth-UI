@@ -13,6 +13,7 @@ import { LocalizationContext } from '../channel/ChannelLocalizationContext';
 import uuidv4 from './uuid';
 import InviteUsers from '../add-channel/CustomInviteUsers';
 import InviteUsersModal from './InviteUsersModal';
+import { CreateChannelProvider } from '@sendbird/uikit-react/CreateChannel/context';
 // import InviteUsersModal from './InviteUsersModal';
 
 // import MembersModal from './MembersModal';
@@ -189,13 +190,15 @@ const MemberList = () => {
         Invite To Conversation
       </Button>
       {showInviteUsers && (
-        <InviteUsersModal
-          onSubmit={() => {
-            setShowInviteUsers(false);
-            refreshList();
-          }}
-          onCancel={() => setShowInviteUsers(false)}
-        />
+        <CreateChannelProvider channelUrl={channel.url}>
+          <InviteUsersModal
+            onSubmit={() => {
+              setShowInviteUsers(false);
+              refreshList();
+            }}
+            onCancel={() => setShowInviteUsers(false)}
+          />
+        </CreateChannelProvider>
       )}
     </>
   );

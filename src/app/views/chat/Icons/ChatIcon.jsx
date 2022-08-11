@@ -8,4 +8,5 @@ const ChatIcon = ({ height = 22, isActive, isNew }) => (
     <NewLabel isHidden={!isNew || !isActive} />
   </Wrapper>
 );
+
 export default ChatIcon;

@@ -44,6 +44,7 @@ export const NavigationButton = styled.button`
   flex-direction: column;
   align-items: center;
   width: 67px;
+  height: 47px !important;
   ${({ subMenuOpen }) => subMenuOpen && `background-color: ${palette.white}; `}
   ${({ isActive }) => !isActive && `cursor: pointer;`}
 `;

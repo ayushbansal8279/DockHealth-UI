@@ -4,6 +4,7 @@ import ChannelAvatar from '@sendbird/uikit-react/ui/ChannelAvatar';
 import TextButton from '@sendbird/uikit-react/ui/TextButton';
 import Label from '@sendbird/uikit-react/ui/Label';
 import EditDetails from './EditDetailsModal';
+import EditDetailsModal from '@sendbird/uikit-react/ChannelSettings/components/EditDetailsModal';
 import { LocalizationContext } from '../channel/ChannelLocalizationContext';
 import SelectedChannelContext from '../SelectedChannelContext';
 import { Typography, Colors } from './LabelTypography';

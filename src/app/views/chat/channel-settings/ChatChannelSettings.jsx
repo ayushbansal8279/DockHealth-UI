@@ -5,6 +5,7 @@ import ChannelProfile from './ChannelProfile';
 import CustomChannelSettingsUI from './CustomChannelSettingsUi.jsx';
 import SelectedChannelContext from '../SelectedChannelContext';
 import ShowSettingsContext from '../ShowSettingsContext';
+import ChannelSettingsUI from '@sendbird/uikit-react/ChannelSettings/components/ChannelSettingsUI';
 
 const ChatChannelSettings = () => {
   const { selectedChannel, setShowChatPopover } = useContext(
@@ -31,10 +32,10 @@ const ChatChannelSettings = () => {
           channel={selectedChannel}
           onCloseClick={handleOnCloseClick}
         >
-          <CustomChannelSettingsUI
-            renderChannelProfile={() => {
-              return <ChannelProfile />;
-            }}
+          <ChannelSettingsUI
+          // renderChannelProfile={() => {
+          //   return <ChannelProfile />;
+          // }}
           />
         </CustomChannelSettingsProvider>
       </ChannelSettingsProvider>

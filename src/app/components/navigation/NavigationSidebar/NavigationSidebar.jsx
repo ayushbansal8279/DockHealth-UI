@@ -46,6 +46,7 @@ import {
   MainMenuContainer,
   SubMenuContainer,
   DockcoinIcon,
+  NavigationIconContainer,
   BarChartIcon,
 } from './styled';
 
@@ -252,16 +253,18 @@ const NavigationSidebar = () => {
             <AccessRestrictor
               allowedToRoles={[ADMIN, OWNER, MEMBER, GUEST, EXTERNAL]}
             >
-              <NavigationItem
-                name="Dock Chat"
-                subMenuKey={SubmenuKey.DOCKCHAT}
-                onItemClick={handleDockChatClick}
-                subMenuOpen={showChatPopover}
-              >
-                <>
-                  <ChatPopover setShowChatPopover={setShowChatPopover} />
-                </>
-              </NavigationItem>
+              <NavigationIconContainer>
+                <NavigationItem
+                  name="Dock Chat"
+                  subMenuKey={SubmenuKey.DOCKCHAT}
+                  onItemClick={handleDockChatClick}
+                  subMenuOpen={showChatPopover}
+                >
+                  <>
+                    <ChatPopover setShowChatPopover={setShowChatPopover} />
+                  </>
+                </NavigationItem>
+              </NavigationIconContainer>
             </AccessRestrictor>
           </Grid>
           <Grid container direction="column">
