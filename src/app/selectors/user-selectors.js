@@ -23,6 +23,11 @@ export const userPreferencesSelector = createSelector(
   ({ userPreference }) => userPreference?.listDisplayColumns,
 );
 
+export const OrganizationWidthFieldsPreferencesSelector = createSelector(
+  userStateSelector,
+  ({ userPreference }) => userPreference?.listDisplayColumnPrefs,
+);
+
 export const dashboardGroupsPreferencesSelector = createSelector(
   userStateSelector,
   ({ userPreference }) => userPreference?.displayGroups,

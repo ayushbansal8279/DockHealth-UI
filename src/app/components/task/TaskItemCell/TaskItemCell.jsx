@@ -23,6 +23,8 @@ const TaskItemCell = styled.div`
     props.paddingLeft ? spacing[props.paddingLeft] : spacing.regular};
   padding-right: ${props =>
     props.paddingLeft ? spacing[props.paddingRight] : spacing.regular};
+  max-height: 35px;
+  overflow: hidden;
 
   @media print {
     ${({ printWidth }) =>

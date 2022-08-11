@@ -11,6 +11,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { organizationCustomFieldsSelector } from 'selectors/organization-selectors';
 import {
   userPreferencesSelector,
+  OrganizationWidthFieldsPreferencesSelector,
   userProfileSelector,
 } from 'selectors/user-selectors';
 import { updateCurrentUserPreferences } from 'actions/user-actions';
@@ -20,7 +21,12 @@ import {
   getAllPatientCustomFields,
   getAllTaskListCustomFields,
 } from '../api/custom-fields-api';
-import { translateInitialColumnsConfig, translateStateToApi } from './helpers';
+import {
+  getInitialColumnWidth,
+  translateInitialColumnsConfig,
+  translateStateToApi,
+  translateWidthToApi,
+} from './helpers';
 
 export const ColumnsConfigContext = createContext();
 
@@ -46,6 +52,9 @@ export function ColumnsConfigProvider({
   const OrganizationCustomFieldsPreferences = useSelector(
     userPreferencesSelector,
   );
+  const OrganizationWidthFieldsPreferences = useSelector(
+    OrganizationWidthFieldsPreferencesSelector,
+  );
 
   const currentPreferences = useMemo(() => {
     if (currentList) {
@@ -61,6 +70,21 @@ export function ColumnsConfigProvider({
     }
     return OrganizationCustomFieldsPreferences;
   }, [OrganizationCustomFieldsPreferences, currentList, userIdentifier]);
+
+  const currentWidthPreferences = useMemo(() => {
+    if (currentList) {
+      let displayColumns =
+        currentList?.listType === 'PUBLIC'
+          ? currentList?.listDisplayColumnPrefs
+          : currentList?.listUsers?.find(u => u.identifier === userIdentifier)
+              ?.listDisplayColumnPrefs;
+      if (!displayColumns || displayColumns.length === 0) {
+        displayColumns = currentList?.listDisplayColumnPrefs;
+      }
+      return displayColumns;
+    }
+    return OrganizationWidthFieldsPreferences;
+  }, [OrganizationWidthFieldsPreferences, currentList, userIdentifier]);
 
   const setColumnsAndUpdateApi = useCallback(
     newState => {
@@ -116,12 +140,14 @@ export function ColumnsConfigProvider({
     ];
 
     // join preferences to data
-    const mergedPreferencesAndFields = joinedColumnsData
-      .filter(f => f.identifier !== 'TASK_DESCRIPTION')
-      .map(field => ({
-        ...field,
-        isChecked: !!currentPreferences?.includes(field.identifier),
-      }));
+    const mergedPreferencesAndFields = joinedColumnsData.map(field => ({
+      ...field,
+      isChecked: !!currentPreferences?.includes(field.identifier),
+      columnWidth: Number(
+        currentWidthPreferences.find(c => c.displayColumn === field.identifier)
+          ?.width || getInitialColumnWidth(field),
+      ),
+    }));
 
     // sort data by defined order
     const fieldsWithOrder = mergedPreferencesAndFields
@@ -140,6 +166,7 @@ export function ColumnsConfigProvider({
   }, [
     currentList,
     currentPreferences,
+    currentWidthPreferences,
     initialColumns,
     organizationCustomFields,
     patientCustomColumns,
@@ -165,10 +192,39 @@ export function ColumnsConfigProvider({
     currentList,
   ]);
 
+  const setColumnWidth = useCallback(
+    ({ columnIdentifier, columnWidth }) => {
+      const updatedState = columns.map(c =>
+        columnIdentifier === c.identifier ? { ...c, columnWidth } : c,
+      );
+
+      if (currentList) {
+        dispatch(
+          updateListPreferences(
+            {
+              listDisplayColumnPrefs: translateWidthToApi(updatedState),
+            },
+            currentList.taskListIdentifier,
+            userIdentifier,
+          ),
+        );
+      } else {
+        dispatch(
+          updateCurrentUserPreferences({
+            listDisplayColumnPrefs: translateWidthToApi(updatedState),
+          }),
+        );
+      }
+      setColumnsToState(updatedState);
+    },
+    [columns, currentList, dispatch, userIdentifier],
+  );
+
   const value = {
     columns,
     setColumns: setColumnsAndUpdateApi,
     setColumnsToState,
+    setColumnWidth,
     currentList,
     setCurrentList,
     viewSpecificConfig,
@@ -186,9 +242,13 @@ export function useColumnsConfig() {
   const context = useContext(ColumnsConfigContext);
   if (context === undefined) {
     return {
-      columns: translateInitialColumnsConfig(
-        TASK_ITEM_BASE_COLUMN_CONFIG,
-      ).map(f => ({ ...f, isChecked: true })),
+      columns: translateInitialColumnsConfig(TASK_ITEM_BASE_COLUMN_CONFIG).map(
+        f => ({
+          ...f,
+          isChecked: true,
+          columnWidth: getInitialColumnWidth(f),
+        }),
+      ),
       setColumns: () => {
         throw new Error(
           'if you want to use setColumns, useColumnsConfig must be used within a ColumnsConfigProvider',

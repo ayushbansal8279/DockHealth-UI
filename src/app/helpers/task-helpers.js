@@ -150,12 +150,14 @@ export const TaskItemColumnWidth = {
   [TaskItemColumn.ACTIVITY]: 150,
   [TaskItemColumn.LIST_NAME]: 168,
   [TaskItemColumn.ASSIGNED]: {
+    DEFAULT: 90,
     WIDE: 90,
     NARROW: 60,
     PRINT: 170,
   },
   [TaskItemColumn.PATIENT]: 164,
   [TaskItemColumn.DESCRIPTION]: {
+    DEFAULT: 500,
     WIDE: 475,
     PRINT: 300,
   },
@@ -164,6 +166,8 @@ export const TaskItemColumnWidth = {
 };
 
 export const TASK_ITEM_BASE_COLUMN_CONFIG = {
+  [TaskItemColumn.DESCRIPTION]: true,
+  [TaskItemColumn.SUBTASKS_COUNT]: true,
   [TaskItemColumn.PATIENT]: true,
   [TaskItemColumn.WORKFLOW_STATUS]: true,
   [TaskItemColumn.ACTIVITY]: true,

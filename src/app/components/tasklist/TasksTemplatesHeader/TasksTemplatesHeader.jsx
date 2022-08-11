@@ -20,6 +20,7 @@ const TasksTemplatesHeader = ({ sort, onSortChange, taskItemConfig = {} }) => {
       <ColumnSortHeader width={30} />
       {mergedConfig[TaskTemplateItemColumn.NAME] && (
         <ColumnSortHeader
+          flex={1}
           id={TaskTemplateItemColumn.NAME}
           label="Name"
           sort={sort}

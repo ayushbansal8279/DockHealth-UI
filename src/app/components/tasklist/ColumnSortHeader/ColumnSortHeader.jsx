@@ -1,37 +1,25 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import React, { useCallback, useState, useRef } from 'react';
+import React, { useCallback, useState, useRef, useEffect } from 'react';
 import SortArrow from 'components/common/SortArrow/SortArrow';
 import { SortOrderType } from 'helpers/sorting-helper';
 import { checkIfShouldDisplayTooltip } from 'components/task/OverflowTooltip/OverflowTooltip';
 import { Box, Fade, Popper } from '@material-ui/core';
 import { Draggable } from 'react-beautiful-dnd';
 import ThreeDotsIcon from 'img/three-dots.svg';
+import { Resizable } from 'react-resizable';
+import usePrevious from 'hooks/use-previous';
 import {
   SortButton,
   LabelWrapper,
   DescriptionTooltipWrapper,
   ThreeDots,
+  ResizeHandler,
 } from './styled';
 
-interface ColumnSortHeaderProps {
-  id: string;
-  disabled?: boolean;
-  label?: ReactChild;
-  sort: { key: string | null; order: string | null };
-  width?: number;
-  onSortChange?: (key: string | null, order: string | null) => void;
-  truncateEnabled: boolean;
-  isDraggingOver?: boolean;
-  draggable?: boolean;
-  index?: number;
-  printWidth?: number;
-  snapshot?: any;
-}
-
-const ColumnSortHeader: React.FC<ColumnSortHeaderProps> = ({
+const ColumnSortHeader = ({
   id,
   label,
-  width,
+  width = 100,
   sort,
   onSortChange,
   truncateEnabled,
@@ -40,13 +28,30 @@ const ColumnSortHeader: React.FC<ColumnSortHeaderProps> = ({
   draggable = false,
   index,
   snapshot,
+  onResize,
   printWidth,
+  children,
+  flex,
   // eslint-disable-next-line sonarjs/cognitive-complexity
 }) => {
   const descriptionTextReference = useRef();
-  const [isHovered, setIsHovered] = useState<boolean>(false);
+  const [isHovered, setIsHovered] = useState(false);
+  const [columnWidth, setcolumnWidth] = useState(+width);
+  const [isResizing, setIsResizing] = useState(false);
+  const previousWidth = usePrevious(width);
+
+  useEffect(() => {
+    if (width && previousWidth !== width && width !== columnWidth)
+      setcolumnWidth(width);
+  }, [columnWidth, previousWidth, width]);
+
   const switchSort = useCallback(() => {
-    if (disabled || typeof onSortChange !== 'function' || isDraggingOver)
+    if (
+      isResizing ||
+      disabled ||
+      typeof onSortChange !== 'function' ||
+      isDraggingOver
+    )
       return;
 
     const { key, order } = sort || {};
@@ -69,15 +74,28 @@ const ColumnSortHeader: React.FC<ColumnSortHeaderProps> = ({
           break;
       }
     }
-  }, [disabled, onSortChange, isDraggingOver, sort, id]);
+  }, [isResizing, disabled, onSortChange, isDraggingOver, sort, id]);
+
+  const handleResize = useCallback((_, data) => {
+    setcolumnWidth(data.size.width);
+  }, []);
+
+  const handleResizeStop = useCallback(
+    (event, data) => {
+      if (typeof onResize === 'function') onResize(id, event, data);
+      setTimeout(() => setIsResizing(false), 1000);
+    },
+    [id, onResize],
+  );
 
   const randerContent = useCallback(() => {
     return (
-      <>
+      <div>
         <LabelWrapper
           ordered={!!(id === sort?.key && sort?.order)}
           ref={descriptionTextReference}
         >
+          {children}
           <Box display="flex">
             <Box p="0 5px 0 5px">
               <Box>
@@ -107,6 +125,8 @@ const ColumnSortHeader: React.FC<ColumnSortHeaderProps> = ({
               overflow={truncateEnabled ? 'hidden' : 'initial'}
               width="100%"
               whiteSpace="nowrap"
+              display="flex"
+              alignItems="center"
             >
               {label}
             </Box>
@@ -131,9 +151,10 @@ const ColumnSortHeader: React.FC<ColumnSortHeaderProps> = ({
             </Fade>
           )}
         </Popper>
-      </>
+      </div>
     );
   }, [
+    children,
     draggable,
     id,
     isDraggingOver,
@@ -146,45 +167,88 @@ const ColumnSortHeader: React.FC<ColumnSortHeaderProps> = ({
 
   if (!draggable)
     return (
-      <SortButton
-        disabled={!label || disabled}
-        type="button"
-        width={width}
-        onClick={switchSort}
-        onMouseEnter={() => setIsHovered(true)}
-        onMouseLeave={() => setIsHovered(false)}
+      <Resizable
+        onResizeStart={() => setIsResizing(true)}
+        minConstraints={[20, 20]}
+        maxConstraints={[1000, 35]}
+        height={35}
+        width={columnWidth}
+        onResize={handleResize}
+        onResizeStop={handleResizeStop}
+        axis={typeof onResize === 'function' ? 'x' : 'none'}
+        handle={
+          <Box
+            onClick={event => {
+              event.stopPropagation();
+              event.preventDefault();
+            }}
+          >
+            <ResizeHandler enabled={typeof onResize === 'function'} />
+          </Box>
+        }
       >
-        {randerContent()}
-      </SortButton>
+        <SortButton
+          flex={flex}
+          disabled={!label || disabled}
+          type="button"
+          width={columnWidth}
+          onClick={switchSort}
+          onMouseEnter={() => setIsHovered(true)}
+          onMouseLeave={() => setIsHovered(false)}
+        >
+          {randerContent()}
+        </SortButton>
+      </Resizable>
     );
 
   return (
-    <SortButton
-      type="button"
-      width={snapshot?.draggingOverWith === id ? 0 : width}
-      onClick={switchSort}
-      onMouseEnter={() => setIsHovered(true)}
-      onMouseLeave={() => setIsHovered(false)}
-      printWidth={printWidth}
+    <Resizable
+      onResizeStart={() => setIsResizing(true)}
+      minConstraints={[20, 20]}
+      maxConstraints={[1000, 35]}
+      height={35}
+      width={columnWidth}
+      onResize={handleResize}
+      onResizeStop={handleResizeStop}
+      axis={typeof onResize === 'function' ? 'x' : 'none'}
+      handle={
+        <Box
+          onClick={event => {
+            event.stopPropagation();
+            event.preventDefault();
+          }}
+        >
+          <ResizeHandler enabled={typeof onResize === 'function'} />
+        </Box>
+      }
     >
-      <Draggable
-        isDragDisabled={!draggable}
-        key={id}
-        draggableId={id}
-        index={index}
+      <SortButton
+        type="button"
+        width={snapshot?.draggingOverWith === id ? 0 : columnWidth}
+        onClick={switchSort}
+        onMouseEnter={() => setIsHovered(true)}
+        onMouseLeave={() => setIsHovered(false)}
+        printWidth={printWidth}
       >
-        {(provided: any) => (
-          <div
-            ref={provided.innerRef}
-            {...provided.draggableProps}
-            {...provided.dragHandleProps}
-            style={provided.draggableProps.style}
-          >
-            {randerContent()}
-          </div>
-        )}
-      </Draggable>
-    </SortButton>
+        <Draggable
+          isDragDisabled={!draggable}
+          key={id}
+          draggableId={id}
+          index={index}
+        >
+          {provided => (
+            <div
+              ref={provided.innerRef}
+              {...provided.draggableProps}
+              {...provided.dragHandleProps}
+              style={provided.draggableProps.style}
+            >
+              {randerContent()}
+            </div>
+          )}
+        </Draggable>
+      </SortButton>
+    </Resizable>
   );
 };
 

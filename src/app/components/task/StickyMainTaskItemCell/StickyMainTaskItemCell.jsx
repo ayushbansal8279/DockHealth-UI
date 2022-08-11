@@ -14,9 +14,12 @@ export const highlightDescription = keyframes`
 const StickyMainTaskItemCell = styled.div`
   position: sticky;
   display: flex;
-  width: 100%;
-  min-width: 500px;
-  left: ${({ isSubtask }) => (isSubtask ? '61px' : '24px')};
+  width: ${({ width, isSubtask }) => {
+    if (width && isSubtask) return `${width - 36}px`;
+    if (width && !isSubtask) return `${width}px`;
+    return '100%';
+  }};
+  left: ${({ isSubtask }) => (isSubtask ? '60px' : '24px')};
   ${({ order }) => (order ? `order: ${order};` : '')}
   border-left: 1px solid ${palette.coolGrey3};
   border-right: 1px solid ${palette.coolGrey3};

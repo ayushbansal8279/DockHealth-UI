@@ -38,7 +38,7 @@ import { useColumnsConfig } from 'context-api/columns-config-context';
 import StickyMainTaskItemCell from 'components/task/StickyMainTaskItemCell/StickyMainTaskItemCell';
 import TaskItemCell from 'components/task/TaskItemCell/TaskItemCell';
 import TaskTemplateDueDate from 'components/task-template/TaskTemplateDueDate/TaskTemplateDueDate';
-import { CustomFieldWidthConfig } from 'helpers/field-type-helpers';
+// import { CustomFieldWidthConfig } from 'helpers/field-type-helpers';
 import { updatePartialWorkflow } from 'actions/task-template-actions';
 import { compose } from 'redux';
 import { openModal } from 'modal/actions';
@@ -411,6 +411,11 @@ const TaskTemplateGroupHeader = ({
         isSelected={isBundleSelected}
         isEditingDescription={isEditing}
         order={0}
+        width={
+          columns?.find(
+            ({ identifier: id }) => id === TaskItemColumn.DESCRIPTION,
+          )?.columnWidth
+        }
       >
         {!groupDragAndDropDisabled && !bulkEditIsActive && (
           <TemplateHandle
@@ -452,13 +457,23 @@ const TaskTemplateGroupHeader = ({
         </TaskTemplateOptionsContainer>
       </StickyMainTaskItemCell>
       <TaskItemCell
+        justify="center"
+        paddingLeft="tiny"
+        paddingRight="tiny"
         key={`subtask_count_${identifier}`}
-        width={TaskItemColumnWidth[TaskItemColumn.SUBTASKS_COUNT]}
+        width={
+          columns?.find(
+            ({ identifier: id }) => id === TaskItemColumn.SUBTASKS_COUNT,
+          )?.columnWidth
+        }
       />
       {isColumnChecked(columns, TaskItemColumn.PATIENT) && (
         <TaskItemCell
           key={`patient_${identifier}`}
-          width={TaskItemColumnWidth[TaskItemColumn.PATIENT]}
+          width={
+            columns?.find(({ identifier: id }) => id === TaskItemColumn.PATIENT)
+              .columnWidth
+          }
           alignItems="flex-start"
           order={getColumnOrder(TaskItemColumn.PATIENT)}
         >
@@ -475,7 +490,11 @@ const TaskTemplateGroupHeader = ({
       {isColumnChecked(columns, TaskItemColumn.WORKFLOW_STATUS) && (
         <TaskItemCell
           key={`task_status_${identifier}`}
-          width={TaskItemColumnWidth[TaskItemColumn.WORKFLOW_STATUS]}
+          width={
+            columns?.find(
+              ({ identifier: id }) => id === TaskItemColumn.WORKFLOW_STATUS,
+            )?.columnWidth
+          }
           paddingLeft="smallPlus"
           paddingRight="tiny"
           onContextMenu={event => {
@@ -490,10 +509,15 @@ const TaskTemplateGroupHeader = ({
           />
         </TaskItemCell>
       )}
+
       {isColumnChecked(columns, TaskItemColumn.ACTIVITY) && (
         <TaskItemCell
           key={`activity_${identifier}`}
-          width={TaskItemColumnWidth[TaskItemColumn.ACTIVITY]}
+          width={
+            columns?.find(
+              ({ identifier: id }) => id === TaskItemColumn.ACTIVITY,
+            )?.columnWidth
+          }
           order={getColumnOrder(TaskItemColumn.ACTIVITY)}
         >
           <TaskTemplateIcons
@@ -509,7 +533,11 @@ const TaskTemplateGroupHeader = ({
       {isColumnChecked(columns, TaskItemColumn.START_DATE) && (
         <TaskItemCell
           key={`start_date_${identifier}`}
-          width={TaskItemColumnWidth[TaskItemColumn.START_DATE]}
+          width={
+            columns?.find(
+              ({ identifier: id }) => id === TaskItemColumn.START_DATE,
+            )?.columnWidth
+          }
           justify="center"
           order={getColumnOrder(TaskItemColumn.START_DATE)}
         >
@@ -519,7 +547,11 @@ const TaskTemplateGroupHeader = ({
       {isColumnChecked(columns, TaskItemColumn.DUE_DATE) && (
         <TaskItemCell
           key={`due_date_${identifier}`}
-          width={TaskItemColumnWidth[TaskItemColumn.DUE_DATE]}
+          width={
+            columns?.find(
+              ({ identifier: id }) => id === TaskItemColumn.DUE_DATE,
+            )?.columnWidth
+          }
           justify="center"
           order={getColumnOrder(TaskItemColumn.DUE_DATE)}
         >
@@ -529,7 +561,11 @@ const TaskTemplateGroupHeader = ({
       {isColumnChecked(columns, TaskItemColumn.ASSIGNED) && (
         <TaskItemCell
           key={`assigned_${identifier}`}
-          width={TaskItemColumnWidth[TaskItemColumn.ASSIGNED].WIDE}
+          width={
+            columns?.find(
+              ({ identifier: id }) => id === TaskItemColumn.ASSIGNED,
+            )?.columnWidth
+          }
           // eslint-disable-next-line sonarjs/no-all-duplicated-branches
           justify={groupHasMultipleAssignees ? 'center' : 'center'}
           paddingLeft="small"
@@ -555,7 +591,11 @@ const TaskTemplateGroupHeader = ({
       {isColumnChecked(columns, TaskItemColumn.LIST_NAME) && (
         <TaskItemCell
           key={`list_${identifier}`}
-          width={TaskItemColumnWidth[TaskItemColumn.LIST_NAME]}
+          width={
+            columns?.find(
+              ({ identifier: id }) => id === TaskItemColumn.LIST_NAME,
+            )?.columnWidth
+          }
           order={getColumnOrder(TaskItemColumn.LIST_NAME)}
         />
       )}
@@ -582,7 +622,7 @@ const TaskTemplateGroupHeader = ({
           return (
             <TaskItemCell
               key={`custom_${identifier}_${field.identifier}`}
-              width={CustomFieldWidthConfig[field.fieldType]}
+              width={field.columnWidth}
               order={getColumnOrder(field.identifier)}
             >
               {!hidePatientCustomFields && workFlowData && (
