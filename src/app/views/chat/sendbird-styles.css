@@ -1,6 +1,7 @@
 .sendbird-modal {
     z-index: 2000;
     max-height: 75%;
+    height: 500px;
     margin-top: 30px;
 }
 
@@ -92,4 +93,14 @@
 
 .sendbird-channel-settings{
     width: 100%;
+}
+.sendbird-label--caption-2{
+    line-height: 0.9;
+}
+.sendbird-modal__content .sendbird-modal__body{
+    height: 200px !important;
+    overflow: scroll;
+}
+.sendbird-channel-settings__scroll-area{
+    height: 500px !important;
 }

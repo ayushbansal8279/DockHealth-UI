@@ -1,35 +1,41 @@
-import React, { useContext } from 'react';
+import React, { useCallback, useContext, useEffect } from 'react';
 import { ChannelSettingsProvider } from '@sendbird/uikit-react/ChannelSettings/context';
-import ChannelSettingsUI from '@sendbird/uikit-react/ChannelSettings/components/ChannelSettingsUI';
-import UserPanel from '@sendbird/uikit-react/ChannelSettings/components/UserPanel';
 import CustomChannelSettingsProvider from './CustomChannelSettingsProvider';
 import ChannelProfile from './ChannelProfile';
+import CustomChannelSettingsUI from './CustomChannelSettingsUi.jsx';
 import SelectedChannelContext from '../SelectedChannelContext';
 import ShowSettingsContext from '../ShowSettingsContext';
+import ChannelSettingsUI from '@sendbird/uikit-react/ChannelSettings/components/ChannelSettingsUI';
 
 const ChatChannelSettings = () => {
-  const { selectedChannel } = useContext(SelectedChannelContext);
+  const { selectedChannel, setShowChatPopover } = useContext(
+    SelectedChannelContext,
+  );
   const { setShowSettings } = useContext(ShowSettingsContext);
+
+  const handleOnCloseClick = useCallback(() => {
+    setShowSettings(false);
+  }, [setShowSettings]);
+
+  useEffect(() => {
+    setShowChatPopover(true);
+  }, [setShowChatPopover]);
 
   return (
     <div className="sendbird-app__settingspanel-wrap">
       <ChannelSettingsProvider
         channelUrl={selectedChannel.url}
-        onCloseClick={() => {
-          setShowSettings(false);
-        }}
+        onCloseClick={handleOnCloseClick}
       >
         <CustomChannelSettingsProvider
           channelUrl={selectedChannel.url}
           channel={selectedChannel}
+          onCloseClick={handleOnCloseClick}
         >
           <ChannelSettingsUI
-            renderModerationPanel={() => {
-              return <UserPanel />;
-            }}
-            renderChannelProfile={() => {
-              return <ChannelProfile />;
-            }}
+          // renderChannelProfile={() => {
+          //   return <ChannelProfile />;
+          // }}
           />
         </CustomChannelSettingsProvider>
       </ChannelSettingsProvider>

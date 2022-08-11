@@ -43,7 +43,7 @@ const InviteUsers = ({ onCancel }) => {
 
   return (
     <Modal
-      titleText="Create New Channel"
+      titleText="Create New Conversation"
       submitText="Submit"
       type="PRIMARY"
       onCancel={onCancel}

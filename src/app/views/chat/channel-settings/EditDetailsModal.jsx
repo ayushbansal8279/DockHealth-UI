@@ -39,7 +39,7 @@ const EditDetails = props => {
 
   return (
     <Modal
-      titleText="Edit channel information"
+      titleText="Edit Conversation Information"
       submitText="Save"
       onCancel={onCancel}
       onSubmit={() => {
@@ -70,12 +70,14 @@ const EditDetails = props => {
           });
         } else {
           logger.info('ChannelSettings: normal');
+          const parameters = { name: 'new name' };
           channel
-            .updateChannel({
-              coverImage: currentImg,
-              name: currentTitle,
-              data: channel?.data || '',
-            })
+            .updateChannel(parameters)
+            // .updateChannel({
+            //   // coverImage: currentImg,
+            //   name: currentTitle,
+            //   // data: channel?.data || '',
+            // })
             .then(groupChannel => {
               logger.info(
                 'ChannelSettings: Channel information updated',
@@ -84,6 +86,9 @@ const EditDetails = props => {
               onChannelModified(groupChannel);
               setChannelUpdateId(uuidv4());
               onSubmit();
+            })
+            .catch(error => {
+              console.log(`error creating group channel: ${error}`);
             });
         }
       }}
@@ -136,7 +141,7 @@ const EditDetails = props => {
         </div>
         <div className="channel-profile-form__name-section">
           <InputLabel color="primary" size="small">
-            Channel Name
+            Conversation Name
           </InputLabel>
           <Input
             required={title !== ''}

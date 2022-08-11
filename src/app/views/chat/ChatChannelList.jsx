@@ -15,9 +15,15 @@ export default function ChatChannelList(props) {
   const { identifier } = useSelector(userProfileSelector);
   const { allChannels, initialized, loading } = useChannelListContext();
 
-  const { setSelectedChannel, selectedChannel } = useContext(
-    SelectedChannelContext,
-  );
+  const {
+    setSelectedChannel,
+    selectedChannel,
+    setShowChatPopover,
+  } = useContext(SelectedChannelContext);
+
+  useEffect(() => {
+    setShowChatPopover(true);
+  }, [setShowChatPopover]);
 
   useEffect(() => {
     if (allChannels && allChannels.length > 0 && isFullView) {
@@ -33,7 +39,7 @@ export default function ChatChannelList(props) {
     <div className="sendbird-app__channellist-wrap">
       <ChannelListHeader
         renderHeader={() => {
-          return <Title>Channels</Title>;
+          return <Title>Conversations</Title>;
         }}
         allowProfileEdit={false}
         renderIconButton={CustomAddChannel}
@@ -56,6 +62,7 @@ export default function ChatChannelList(props) {
               onClick={() => {
                 if (channel?.url) {
                   setSelectedChannel(channel);
+                  setShowChatPopover(true);
                 }
               }}
             />

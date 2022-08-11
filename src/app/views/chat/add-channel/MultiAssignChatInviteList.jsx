@@ -4,6 +4,7 @@ import React, {
   useEffect,
   useMemo,
   useCallback,
+  useContext,
 } from 'react';
 import Highlighter from 'react-highlight-words';
 import * as OrganizationApi from 'api/organization-api';
@@ -19,6 +20,7 @@ import { isUserGroup } from 'helpers/user-helper';
 import GroupAvatar from 'components/user/GroupAvatar/GroupAvatar';
 import { getUsersByName } from 'api/user-api';
 import { organizationSelector } from 'selectors/organization-selectors';
+import ChannelSettingsContext from '../channel-settings/ChannelSettingsContext';
 import {
   Input,
   InputBox,
@@ -26,10 +28,8 @@ import {
   MemberRow,
   MemberName,
   ListContentSection,
-  UnassignedIcon,
   MemberRowSkeletonLoader,
   highlightStyle,
-  CheckboxSpacing,
   NoRecordsText,
 } from './styled';
 
@@ -90,15 +90,19 @@ const MultiAssignChatInviteMembersList = ({
   );
 
   useEffect(() => {
-    setSelectedMembers([...savedSelectedMembers]);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+    if (savedSelectedMembers.length > 0 && selectedMembers.length === 0) {
+      const members = savedSelectedMembers.map(member => {
+        return { identifier: member.userId, name: member.nickname };
+      });
+      setSelectedMembers([...members]);
+    }
+  }, [savedSelectedMembers, selectedMembers]);
 
   const inputReference = useRef(null);
 
   const selectMembersWithDebounce = useCallback(
     debounce(selection => {
-      onSelect(selection.map(s => ({ ...s, userIdentifier: s.identifier })));
+      onSelect(selection.map(s => ({ ...s, userIdentifier: s.userId })));
       // eslint-disable-next-line no-unused-expressions
       inputReference.current?.focus();
     }, 700),
@@ -171,12 +175,6 @@ const MultiAssignChatInviteMembersList = ({
     [membersOptions, selectMembersWithDebounce, selectedMembers],
   );
 
-  const displayUnassignedOption = 'unassigned'.includes(
-    searchValue.toLowerCase(),
-  );
-  const displayAssignAllOption =
-    'assign all'.includes(searchValue.toLowerCase()) && !enableLazyLoading;
-
   const displayUsersList = useMemo(() => {
     if (enableLazyLoading) return isValueSendable;
     return !!filteredMembers.length || isFetchingMembers;
@@ -228,30 +226,6 @@ const MultiAssignChatInviteMembersList = ({
         />
       </InputBox>
       <ListContainer>
-        {(displayAssignAllOption || displayUnassignedOption) && (
-          <ListContentSection>
-            {displayUnassignedOption && (
-              <MemberRow
-                key={UNASSIGNED_KEY}
-                isSelected={selectedMembers?.length === 0}
-                onClick={event => handleOptionClick(event, UNASSIGNED_KEY)}
-              >
-                <CheckboxSpacing />
-                <Spacing horizontal={3} />
-                <UnassignedIcon />
-                <Spacing horizontal={3} />
-                <MemberName>
-                  <Highlighter
-                    highlightStyle={highlightStyle}
-                    searchWords={searchValue?.toLowerCase().split(/\s+/)}
-                    autoEscape
-                    textToHighlight="Unassign"
-                  />
-                </MemberName>
-              </MemberRow>
-            )}
-          </ListContentSection>
-        )}
         {!isValueSendable && (
           <ListContentSection>
             {filteredSelectedMembers?.map(member => {

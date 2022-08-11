@@ -11,7 +11,8 @@ import { useBoolean } from 'hooks/useBoolean';
 import { CHAT_PATH } from 'routing/helpers/paths';
 import { userProfileSelector } from 'selectors/user-selectors';
 import { useSelector } from 'react-redux';
-import TaskIcon from 'components/task/TaskIcon/TaskIcon';
+import { NavigationIconNewLabel } from 'components/navigation/NavigationSidebar/styled';
+import ChatIcon from './Icons/ChatIcon';
 import Chat from './Chat';
 import SelectedChannelContext from './SelectedChannelContext';
 import ShowSettingsContext from './ShowSettingsContext';
@@ -22,27 +23,29 @@ import {
   ChatContainer,
 } from './styled';
 
-const ChatPopover = () => {
+const ChatPopover = ({ setShowChatPopover }) => {
   const { name, identifier } = useSelector(userProfileSelector);
   const [open, setOpen, unsetOpen] = useBoolean(false);
   const [anchorElement, setAnchorElement] = useState(null);
   const history = useHistory();
 
   const [selectedChannel, setSelectedChannel] = useState(null);
-  const value = { selectedChannel, setSelectedChannel };
+  const value = { selectedChannel, setSelectedChannel, setShowChatPopover };
 
   const [showSettings, setShowSettings] = useState(false);
   const showSettingsValue = { showSettings, setShowSettings };
 
   const handleClick = event => {
     setOpen();
+    setShowChatPopover(true);
     setAnchorElement(event.currentTarget);
   };
 
   const handleClose = useCallback(() => {
+    setShowChatPopover(false);
     unsetOpen();
     setAnchorElement(null);
-  }, [unsetOpen]);
+  }, [unsetOpen, setShowChatPopover]);
 
   const handleLeaveIconClick = useCallback(() => {
     unsetOpen();
@@ -53,9 +56,10 @@ const ChatPopover = () => {
   const id = open ? 'simple-popover' : undefined;
 
   const handleClickGoBack = useCallback(() => {
+    setShowChatPopover(true);
     setSelectedChannel(null);
     setShowSettings(false);
-  }, []);
+  }, [setShowChatPopover]);
 
   const context = useSendbirdStateContext();
   const sdkInstance = sendBirdSelectors.getSdk(context);
@@ -125,8 +129,9 @@ const ChatPopover = () => {
         variant="contained"
         onClick={handleClick}
       >
-        <TaskIcon type="comments" isActive isNew={unreadMessageCount > 0} />
+        <ChatIcon type="comments" isActive isNew={unreadMessageCount > 0} />
       </IconButton>
+      <NavigationIconNewLabel>New!</NavigationIconNewLabel>
       <Draggable handle=".handle">
         <Popover
           id={id}
@@ -154,7 +159,7 @@ const ChatPopover = () => {
               </StyledIconButton>
               <Box mx={0.5} />
               <Typography color="white" variant="h3">
-                Chat
+                Dock Chat
               </Typography>
               <Box mx={0.5} />
               <StyledIconButton onClick={handleClose}>

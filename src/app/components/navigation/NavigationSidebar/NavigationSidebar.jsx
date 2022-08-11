@@ -1,5 +1,5 @@
 /* eslint-disable sonarjs/cognitive-complexity */
-import React, { useCallback, useEffect } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import { ClickAwayListener, Grid } from '@material-ui/core';
 import { useDispatch, useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
@@ -30,6 +30,7 @@ import UserAvatar from 'components/user/UserAvatar/UserAvatar';
 import OrganizationTile from 'components/org/OrganizationTile/OrganizationTile';
 import { openModal } from 'modal/actions';
 import AccessRestrictor from 'components/access/AccessRestrictor/AccessRestrictor';
+import ChatPopover from 'views/chat/ChatPopover';
 import OrganizationSubmenu from './SubMenuComponents/OrganizationSubmenu';
 import ProfileSubmenu from './SubMenuComponents/ProfileSubmenu';
 import EducationCenterSubmenu from './SubMenuComponents/EducationCenterSubmenu';
@@ -45,6 +46,7 @@ import {
   MainMenuContainer,
   SubMenuContainer,
   DockcoinIcon,
+  NavigationIconContainer,
   BarChartIcon,
 } from './styled';
 
@@ -57,7 +59,7 @@ export const SubmenuKey = {
   SETTINGS: 'SETTINGS',
   EDUCATION_CENTER: 'EDUCATION_CENTER',
   DOCKCOIN: 'DOCKCOIN',
-  CHAT: 'CHAT',
+  DOCKCHAT: 'DOCKCHAT',
 };
 
 const {
@@ -84,6 +86,8 @@ const NavigationSidebar = () => {
   const dispatch = useDispatch();
   const currentUser = useSelector(userProfileSelector);
   const openedSubMenuKey = useSelector(subMenuKeySelector);
+
+  const [showChatPopover, setShowChatPopover] = useState(false);
 
   const { orgUserRole } = currentUser || {};
   const isUserAdmin = ['ADMIN', 'OWNER'].includes(orgUserRole);
@@ -144,6 +148,11 @@ const NavigationSidebar = () => {
     },
     [dispatch, history, openedSubMenuKey, closeSubMenu],
   );
+
+  const handleDockChatClick = useCallback(() => {
+    setShowChatPopover(!showChatPopover);
+    dispatch(TemplateActions.hideSubMenu());
+  }, [dispatch, showChatPopover, setShowChatPopover]);
 
   const handleReferClick = () => {
     dispatch(TemplateActions.hideSubMenu());
@@ -240,6 +249,22 @@ const NavigationSidebar = () => {
                 path="/core/analytics"
                 onItemClick={handleNavigationItemClick}
               />
+            </AccessRestrictor>
+            <AccessRestrictor
+              allowedToRoles={[ADMIN, OWNER, MEMBER, GUEST, EXTERNAL]}
+            >
+              <NavigationIconContainer>
+                <NavigationItem
+                  name="Dock Chat"
+                  subMenuKey={SubmenuKey.DOCKCHAT}
+                  onItemClick={handleDockChatClick}
+                  subMenuOpen={showChatPopover}
+                >
+                  <>
+                    <ChatPopover setShowChatPopover={setShowChatPopover} />
+                  </>
+                </NavigationItem>
+              </NavigationIconContainer>
             </AccessRestrictor>
           </Grid>
           <Grid container direction="column">
