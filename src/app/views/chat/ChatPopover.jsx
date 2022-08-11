@@ -61,13 +61,62 @@ const ChatPopover = () => {
   const sdkInstance = sendBirdSelectors.getSdk(context);
   const [unreadMessageCount, setUnreadMessageCount] = useState(null);
 
+  const onTotalUnreadMessageCountUpdated = useCallback(
+    count => {
+      setUnreadMessageCount(count);
+    },
+    [setUnreadMessageCount],
+  );
+
+  const addUserEventHandler = useCallback(
+    handler => {
+      if (sdkInstance) {
+        const handlerId = 'SendbirdChatCount';
+        sdkInstance.addUserEventHandler(handlerId, handler);
+        return handlerId;
+      }
+      return null;
+    },
+    [sdkInstance],
+  );
+
+  const removeUserEventHandler = useCallback(
+    handlerId => {
+      if (sdkInstance && sdkInstance.removeUserEventHandler) {
+        sdkInstance.removeUserEventHandler(handlerId);
+      }
+    },
+    [sdkInstance],
+  );
+
   useEffect(() => {
     if (sdkInstance && sdkInstance.getTotalUnreadMessageCount) {
       sdkInstance
         .getTotalUnreadMessageCount()
         .then(count => setUnreadMessageCount(count));
     }
-  }, [sdkInstance]);
+  });
+
+  useEffect(() => {
+    let handlerId;
+    if (
+      sdkInstance &&
+      sdkInstance.userEventHandlers &&
+      sdkInstance.getTotalUnreadMessageCount
+    ) {
+      const handler = new sdkInstance.UserEventHandler();
+      handler.onTotalUnreadMessageCountUpdated = onTotalUnreadMessageCountUpdated;
+      handlerId = addUserEventHandler(handler);
+    }
+    return () => {
+      removeUserEventHandler(handlerId);
+    };
+  }, [
+    addUserEventHandler,
+    onTotalUnreadMessageCountUpdated,
+    removeUserEventHandler,
+    sdkInstance,
+  ]);
 
   return (
     <div>
