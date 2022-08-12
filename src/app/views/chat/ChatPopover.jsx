@@ -58,16 +58,13 @@ const ChatPopover = ({ setShowChatPopover, openChat = true }) => {
           id={id}
           open={open}
           anchorEl={anchorElement}
-          transformOrigin={{
-            vertical: 50,
-            horizontal: 350,
-          }}
           anchorOrigin={{
-            vertical: 'bottom',
-            horizontal: 'left',
+            vertical: 50,
+            horizontal: 10,
           }}
           PaperProps={{ style: { height: '700px', width: '525px' } }}
           disableEnforceFocus
+          style={{ width: '550px', height: '750px' }}
         >
           <Container>
             <HeaderContainer className="handle">
