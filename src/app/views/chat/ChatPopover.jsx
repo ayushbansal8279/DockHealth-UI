@@ -1,8 +1,6 @@
-import React, { useState, useCallback, useEffect } from 'react';
-import { IconButton, Popover, Box, Typography } from '@material-ui/core';
+import React, { useState, useCallback } from 'react';
+import { Popover, Box, Typography } from '@material-ui/core';
 import { useHistory } from 'react-router-dom';
-import sendBirdSelectors from '@sendbird/uikit-react/sendBirdSelectors';
-import useSendbirdStateContext from '@sendbird/uikit-react/useSendbirdStateContext';
 import ArrowBack from '@material-ui/icons/ArrowBack';
 import CloseIcon from '@material-ui/icons/Close';
 import OpenInNewIcon from '@material-ui/icons/OpenInNew';
@@ -11,8 +9,6 @@ import { useBoolean } from 'hooks/useBoolean';
 import { CHAT_PATH } from 'routing/helpers/paths';
 import { userProfileSelector } from 'selectors/user-selectors';
 import { useSelector } from 'react-redux';
-import { NavigationIconNewLabel } from 'components/navigation/NavigationSidebar/styled';
-import ChatIcon from './Icons/ChatIcon';
 import Chat from './Chat';
 import SelectedChannelContext from './SelectedChannelContext';
 import ShowSettingsContext from './ShowSettingsContext';
@@ -23,9 +19,9 @@ import {
   ChatContainer,
 } from './styled';
 
-const ChatPopover = ({ setShowChatPopover }) => {
+const ChatPopover = ({ setShowChatPopover, openChat = true }) => {
   const { name, identifier } = useSelector(userProfileSelector);
-  const [open, setOpen, unsetOpen] = useBoolean(false);
+  const [open, unsetOpen] = useBoolean(openChat);
   const [anchorElement, setAnchorElement] = useState(null);
   const history = useHistory();
 
@@ -34,12 +30,6 @@ const ChatPopover = ({ setShowChatPopover }) => {
 
   const [showSettings, setShowSettings] = useState(false);
   const showSettingsValue = { showSettings, setShowSettings };
-
-  const handleClick = event => {
-    setOpen();
-    setShowChatPopover(true);
-    setAnchorElement(event.currentTarget);
-  };
 
   const handleClose = useCallback(() => {
     setShowChatPopover(false);
@@ -61,77 +51,8 @@ const ChatPopover = ({ setShowChatPopover }) => {
     setShowSettings(false);
   }, [setShowChatPopover]);
 
-  const context = useSendbirdStateContext();
-  const sdkInstance = sendBirdSelectors.getSdk(context);
-  const [unreadMessageCount, setUnreadMessageCount] = useState(null);
-
-  const onTotalUnreadMessageCountUpdated = useCallback(
-    count => {
-      setUnreadMessageCount(count);
-    },
-    [setUnreadMessageCount],
-  );
-
-  const addUserEventHandler = useCallback(
-    handler => {
-      if (sdkInstance) {
-        const handlerId = 'SendbirdChatCount';
-        sdkInstance.addUserEventHandler(handlerId, handler);
-        return handlerId;
-      }
-      return null;
-    },
-    [sdkInstance],
-  );
-
-  const removeUserEventHandler = useCallback(
-    handlerId => {
-      if (sdkInstance && sdkInstance.removeUserEventHandler) {
-        sdkInstance.removeUserEventHandler(handlerId);
-      }
-    },
-    [sdkInstance],
-  );
-
-  useEffect(() => {
-    if (sdkInstance && sdkInstance.getTotalUnreadMessageCount) {
-      sdkInstance
-        .getTotalUnreadMessageCount()
-        .then(count => setUnreadMessageCount(count));
-    }
-  });
-
-  useEffect(() => {
-    let handlerId;
-    if (
-      sdkInstance &&
-      sdkInstance.userEventHandlers &&
-      sdkInstance.getTotalUnreadMessageCount
-    ) {
-      const handler = new sdkInstance.UserEventHandler();
-      handler.onTotalUnreadMessageCountUpdated = onTotalUnreadMessageCountUpdated;
-      handlerId = addUserEventHandler(handler);
-    }
-    return () => {
-      removeUserEventHandler(handlerId);
-    };
-  }, [
-    addUserEventHandler,
-    onTotalUnreadMessageCountUpdated,
-    removeUserEventHandler,
-    sdkInstance,
-  ]);
-
   return (
     <div>
-      <IconButton
-        aria-describedby={id}
-        variant="contained"
-        onClick={handleClick}
-      >
-        <ChatIcon type="comments" isActive isNew={unreadMessageCount > 0} />
-      </IconButton>
-      <NavigationIconNewLabel>New!</NavigationIconNewLabel>
       <Draggable handle=".handle">
         <Popover
           id={id}

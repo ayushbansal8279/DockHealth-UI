@@ -31,6 +31,7 @@ import OrganizationTile from 'components/org/OrganizationTile/OrganizationTile';
 import { openModal } from 'modal/actions';
 import AccessRestrictor from 'components/access/AccessRestrictor/AccessRestrictor';
 import ChatPopover from 'views/chat/ChatPopover';
+import ChatIcon from 'views/chat/Icons/ChatIcon';
 import OrganizationSubmenu from './SubMenuComponents/OrganizationSubmenu';
 import ProfileSubmenu from './SubMenuComponents/ProfileSubmenu';
 import EducationCenterSubmenu from './SubMenuComponents/EducationCenterSubmenu';
@@ -254,16 +255,15 @@ const NavigationSidebar = () => {
               allowedToRoles={[ADMIN, OWNER, MEMBER, GUEST, EXTERNAL]}
             >
               <NavigationIconContainer>
-                <NavigationItem
+                <IconNavigationItem
                   name="Dock Chat"
-                  subMenuKey={SubmenuKey.DOCKCHAT}
+                  icon={() => {
+                    return <ChatIcon />;
+                  }}
+                  path=""
                   onItemClick={handleDockChatClick}
-                  subMenuOpen={showChatPopover}
-                >
-                  <>
-                    <ChatPopover setShowChatPopover={setShowChatPopover} />
-                  </>
-                </NavigationItem>
+                  isNew
+                />
               </NavigationIconContainer>
             </AccessRestrictor>
           </Grid>
@@ -297,7 +297,7 @@ const NavigationSidebar = () => {
               allowedToRoles={[ADMIN, OWNER, MEMBER, GUEST, EXTERNAL]}
             >
               <NavigationItem
-                name="Dockcoin"
+                name="Dock Coin"
                 subMenuKey={SubmenuKey.DOCKCOIN}
                 onItemClick={handleReferClick}
               >
@@ -331,6 +331,12 @@ const NavigationSidebar = () => {
           )}
         </SubMenuContainer>
         {renderMenuTourPopover()}
+        {showChatPopover && (
+          <ChatPopover
+            setShowChatPopover={setShowChatPopover}
+            openChat={showChatPopover}
+          />
+        )}
       </DrawerContentContainer>
     </ClickAwayListener>
   );
