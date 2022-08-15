@@ -111,12 +111,17 @@ export function addPatient(patient) {
 }
 
 export function updatePatient(patientIdentifier, details) {
-  if (details.dob === '') {
+  const patientDetails = details;
+  if (patientDetails.dob === '') {
     // eslint-disable-next-line no-param-reassign
-    details.dob = null;
+    patientDetails.dob = null;
   }
+  delete patientDetails.patientId;
+  delete patientDetails.age;
+  delete patientDetails.notes;
+
   return axios
-    .patch(`patient/${patientIdentifier}`, details)
+    .patch(`patient/${patientIdentifier}`, patientDetails)
     .then(response => {
       return response.data;
     })
