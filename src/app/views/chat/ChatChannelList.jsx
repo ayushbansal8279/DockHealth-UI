@@ -26,10 +26,25 @@ export default function ChatChannelList(props) {
   }, [setShowChatPopover]);
 
   useEffect(() => {
-    if (allChannels && allChannels.length > 0 && isFullView) {
+    const passedChannel = JSON.parse(
+      sessionStorage.getItem('selectedChannelUrl'),
+    );
+    if (passedChannel) {
+      setSelectedChannel(passedChannel);
+      sessionStorage.removeItem('selectedChannelUrl');
+    }
+  });
+
+  useEffect(() => {
+    if (
+      allChannels &&
+      allChannels.length > 0 &&
+      isFullView &&
+      !selectedChannel
+    ) {
       setSelectedChannel(allChannels[0]);
     }
-  }, [allChannels, isFullView, setSelectedChannel]);
+  }, [allChannels, isFullView, selectedChannel, setSelectedChannel]);
 
   if (!initialized || loading) {
     return <CircularProgress />;

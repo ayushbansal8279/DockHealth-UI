@@ -18,11 +18,13 @@ import * as UserAuthApi from 'api/user-auth-api';
 import WorkflowDrawer from 'components/workflow-drawer/WorkflowDrawer/WorkflowDrawer';
 import Notification from 'components/common/Notification/Notification';
 import ActivityAlertsToasts from 'components/activity-alerts/ActivityAlertsToasts';
-import { featurePalette } from 'styles/palette';
+import SendbirdProvider from '@sendbird/uikit-react/SendbirdProvider';
+import palette, { featurePalette } from 'styles/palette';
 import { useMobile, useSmallScreen } from 'helpers/utility-functions';
 import Modal from '../modal/Modal';
 import RotateScreen from './RotateScreen';
 import MobileSmallScreen from './MobileSmallScreen';
+import ChatActivityAlertsToasts from './chat/alerts/ChatActivityAlertsToasts';
 
 const AppContainer = styled.div`
   font-family: 'Roboto', sans-serif;
@@ -60,7 +62,18 @@ const MainContainer = styled.main`
   }
 `;
 
+const sendbirdColorSet = {
+  '--sendbird-light-primary-500': '#00487c',
+  '--sendbird-light-primary-400': '#4bb3fd',
+  '--sendbird-light-primary-300': palette.midnightBlue,
+  '--sendbird-light-primary-200': '#0496ff',
+  '--sendbird-light-primary-100': '#027bce',
+};
+
 ReactModal.setAppElement('#app');
+
+const appId =
+  process.env.SENDBIRD_APP_ID ?? 'D11A4B11-21AD-4025-9D8C-2BCF693C814C';
 
 class App extends PureComponent {
   idleTimer = null;
@@ -234,6 +247,8 @@ class App extends PureComponent {
         orientationType,
       );
 
+    const { identifier, name } = userProfile;
+
     const mountIdleTimer = userProfile && !isEmpty(userProfile);
     // eslint-disable-next-line unicorn/consistent-function-scoping
     const idleTimerReference = reference => {
@@ -246,34 +261,43 @@ class App extends PureComponent {
           <MobileSmallScreen />
         ) : !showRotateScreenPage ? (
           <>
-            <div id="portal" />
-            <Modal />
-            <WorkflowDrawer />
-            <ActivityAlertsToasts />
-            <div className="new-task" />
-            {mountIdleTimer && (
+            <SendbirdProvider
+              appId={appId}
+              userId={identifier}
+              nickname={name}
+              colorSet={sendbirdColorSet}
+            >
+              <div id="portal" />
+              <Modal />
+              <WorkflowDrawer />
+              <ActivityAlertsToasts />
+
+              <ChatActivityAlertsToasts />
+              <div className="new-task" />
+              {mountIdleTimer && (
+                <IdleTimer
+                  ref={reference => {
+                    this.idleTimer = reference;
+                  }}
+                  element={document}
+                  onActive={this.onActive}
+                  onIdle={this.onIdle}
+                  onAction={this.onAction}
+                  debounce={250}
+                  timeout={systemTimeout}
+                />
+              )}
               <IdleTimer
-                ref={reference => {
-                  this.idleTimer = reference;
-                }}
+                ref={idleTimerReference}
                 element={document}
-                onActive={this.onActive}
-                onIdle={this.onIdle}
-                onAction={this.onAction}
+                onActive={this.onActiveForPresence}
+                onIdle={this.onIdleForPresence}
                 debounce={250}
-                timeout={systemTimeout}
+                timeout={idleTimeout}
               />
-            )}
-            <IdleTimer
-              ref={idleTimerReference}
-              element={document}
-              onActive={this.onActiveForPresence}
-              onIdle={this.onIdleForPresence}
-              debounce={250}
-              timeout={idleTimeout}
-            />
-            <MainContainer>{children}</MainContainer>
-            <Notification />
+              <MainContainer>{children}</MainContainer>
+              <Notification />
+            </SendbirdProvider>
           </>
         ) : (
           <RotateScreen />
