@@ -4,7 +4,7 @@ import React, {
   useEffect,
   useMemo,
   useCallback,
-  useContext,
+  // useContext,
 } from 'react';
 import Highlighter from 'react-highlight-words';
 import * as OrganizationApi from 'api/organization-api';
@@ -20,7 +20,7 @@ import { isUserGroup } from 'helpers/user-helper';
 import GroupAvatar from 'components/user/GroupAvatar/GroupAvatar';
 import { getUsersByName } from 'api/user-api';
 import { organizationSelector } from 'selectors/organization-selectors';
-import ChannelSettingsContext from '../channel-settings/ChannelSettingsContext';
+// import ChannelSettingsContext from '../channel-settings/ChannelSettingsContext';
 import {
   Input,
   InputBox,
