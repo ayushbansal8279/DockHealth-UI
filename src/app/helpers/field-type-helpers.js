@@ -18,7 +18,7 @@ export const FieldType = {
 
 export const FieldCharakterLimit = {
   TEXT: 250,
-  LONG_TEXT: 1000,
+  LONG_TEXT: 5000,
   RICH_TEXT: 5000,
 };
 
