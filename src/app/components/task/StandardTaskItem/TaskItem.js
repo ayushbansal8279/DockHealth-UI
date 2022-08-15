@@ -601,10 +601,10 @@ const TaskItem = React.memo(
                   )
                   .map(field => {
                     const taskCustomFieldValue = task?.taskMetaData?.find(
-                      f => f.customFieldIdentifier === field.identifier,
+                      f => f?.customFieldIdentifier === field.identifier,
                     );
                     const patientCustomFieldValue = task?.patient?.patientMetaData?.find(
-                      f => f.customFieldIdentifier === field.identifier,
+                      f => f?.customFieldIdentifier === field.identifier,
                     );
                     const customFieldValue =
                       field.targetType === CUSTOM_FIELD_TYPES.PATIENT

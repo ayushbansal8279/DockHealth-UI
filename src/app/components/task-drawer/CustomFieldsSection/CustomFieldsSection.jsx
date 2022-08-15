@@ -70,8 +70,7 @@ const CustomFieldsSection = () => {
     if (task?.taskMetaData) {
       templates?.forEach(template => {
         const cf = task?.taskMetaData?.find(
-          ({ customFieldIdentifier }) =>
-            customFieldIdentifier === template.identifier,
+          field => field?.customFieldIdentifier === template.identifier,
         );
         const fieldName = `taskMetaData.${template.identifier}`;
         if (cf?.value) {
