@@ -1,8 +1,8 @@
 import React, { useContext } from 'react';
 import { ChannelListProvider } from '@sendbird/uikit-react/ChannelList/context';
 import ChatChannelList from './ChatChannelList';
-import ChatConversation from './ChatConversation';
-import ChatChannelSettings from './ChatChannelSettings';
+import ChatConversation from './channel/ChatConversation';
+import ChatChannelSettings from './channel-settings/ChatChannelSettings';
 import SelectedChannelContext from './SelectedChannelContext';
 import ShowSettingsContext from './ShowSettingsContext';
 import '@sendbird/uikit-react/dist/index.css';

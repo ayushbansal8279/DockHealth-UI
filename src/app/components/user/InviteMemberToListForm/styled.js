@@ -15,7 +15,7 @@ export const LoaderWrapper = styled.div`
   display: flex;
   flex: 1;
   justify-content: center;
-  alignitems: center;
+  align-items: center;
 `;
 
 export const ListItem = styled.div`
@@ -88,8 +88,7 @@ export const ExternalUserInviteFormWrapper = styled.div`
   bottom: ${({ externalInvitePosition }) =>
     externalInvitePosition?.bottom || 0}px;
   left: ${({ externalInvitePosition }) => externalInvitePosition?.left || 0}px;
-  padding-right: 110px;
   background: ${palette.white};
-  box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
+  width: 100%;
   z-index: 2;
 `;

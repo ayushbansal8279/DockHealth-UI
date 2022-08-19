@@ -27,14 +27,16 @@ export const ColorSet = {
 };
 
 export const HeaderContainer = styled.div`
-  height: 10%;
+  // height: 10%;
+  height: 50px;
   width: 100%;
   display: flex;
   justify-content: space-between;
   align-items: center;
   padding: 0 20px;
-  background-color: ${palette.darkBlue};
+  background-color: ${palette.midnightBlue};
   color: ${palette.white};
+  font-family: Roboto Condensed;
 `;
 
 export const ChatContainer = styled.div`

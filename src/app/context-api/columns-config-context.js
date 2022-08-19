@@ -11,6 +11,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { organizationCustomFieldsSelector } from 'selectors/organization-selectors';
 import {
   userPreferencesSelector,
+  OrganizationWidthFieldsPreferencesSelector,
   userProfileSelector,
 } from 'selectors/user-selectors';
 import { updateCurrentUserPreferences } from 'actions/user-actions';
@@ -25,6 +26,7 @@ import {
   getInitialColumnWidth,
   translateInitialColumnsConfig,
   translateStateToApi,
+  translateWidthToApi,
 } from './helpers';
 
 export const ColumnsConfigContext = createContext();
@@ -49,6 +51,7 @@ export function ColumnsConfigProvider({
   const [taskListCustomColumns, setTaskListCustomColumns] = useState([]);
   const [columns, setColumnsToState] = useState([]);
   const [viewSpecificConfig, setViewSpecificConfig] = useState(initialColumns);
+  const [hasWidthPreferences, setHasWidthPreferences] = useState(false);
 
   const organizationCustomFields = useSelector(
     organizationCustomFieldsSelector,
@@ -56,8 +59,9 @@ export function ColumnsConfigProvider({
   const OrganizationCustomFieldsPreferences = useSelector(
     userPreferencesSelector,
   );
-
-  console.log('currentList', currentList);
+  const OrganizationWidthFieldsPreferences = useSelector(
+    OrganizationWidthFieldsPreferencesSelector,
+  );
 
   const currentPreferences = useMemo(() => {
     if (currentList) {
@@ -77,6 +81,29 @@ export function ColumnsConfigProvider({
     }
     return OrganizationCustomFieldsPreferences;
   }, [OrganizationCustomFieldsPreferences, currentList, userIdentifier]);
+
+  const currentWidthPreferences = useMemo(() => {
+    if (currentList) {
+      let displayColumns =
+        currentList?.listType === 'PUBLIC'
+          ? currentList?.listDisplayColumnPrefs
+          : currentList?.listUsers?.find(u => u.identifier === userIdentifier)
+              ?.listDisplayColumnPrefs;
+      if (!displayColumns || displayColumns.length === 0) {
+        displayColumns = currentList?.listDisplayColumnPrefs;
+      }
+      return displayColumns;
+    }
+    return OrganizationWidthFieldsPreferences;
+  }, [OrganizationWidthFieldsPreferences, currentList, userIdentifier]);
+
+  useEffect(() => {
+    if (currentWidthPreferences) {
+      setHasWidthPreferences(true);
+    } else {
+      setHasWidthPreferences(false);
+    }
+  }, [currentWidthPreferences]);
 
   const setColumnsAndUpdateApi = useCallback(
     newState => {
@@ -137,10 +164,12 @@ export function ColumnsConfigProvider({
       isChecked:
         !!currentPreferences?.includes(field.identifier) ||
         columnsAlwaysVisible?.includes(field.identifier),
-      columnWidth: getInitialColumnWidth(field), // TODO: check and get custom width if is avaible  (API in progress), if not = use getInitialColumnWidth
+      columnWidth: Number(
+        currentWidthPreferences?.find(
+          c => c.displayColumn === field?.identifier,
+        )?.width || getInitialColumnWidth(field),
+      ),
     }));
-
-    console.log('currentPreferences', currentPreferences);
 
     // sort data by defined order
     const fieldsWithOrder = mergedPreferencesAndFields
@@ -159,6 +188,7 @@ export function ColumnsConfigProvider({
   }, [
     currentList,
     currentPreferences,
+    currentWidthPreferences,
     initialColumns,
     organizationCustomFields,
     patientCustomColumns,
@@ -186,17 +216,16 @@ export function ColumnsConfigProvider({
 
   const setColumnWidth = useCallback(
     ({ columnIdentifier, columnWidth }) => {
-      // eslint-disable-next-line no-console
-      console.log('columnIdentifier', columnIdentifier);
-      // eslint-disable-next-line no-console
-      console.log('columnWidth', columnWidth);
+      setHasWidthPreferences(true);
+      const updatedState = columns.map(c =>
+        columnIdentifier === c.identifier ? { ...c, columnWidth } : c,
+      );
 
-      const translatedStateToApiDataStructure = 'placeholer'; // TODO: replace
       if (currentList) {
         dispatch(
           updateListPreferences(
             {
-              oooooooooooo: translatedStateToApiDataStructure, // TODO: replace the field name and the proper translated data
+              listDisplayColumnPrefs: translateWidthToApi(updatedState),
             },
             currentList.taskListIdentifier,
             userIdentifier,
@@ -205,17 +234,13 @@ export function ColumnsConfigProvider({
       } else {
         dispatch(
           updateCurrentUserPreferences({
-            oooooooooooo: translatedStateToApiDataStructure, // TODO: replace the field name and the proper translated data
+            listDisplayColumnPrefs: translateWidthToApi(updatedState),
           }),
         );
       }
-      setColumnsToState(state =>
-        state.map(c =>
-          columnIdentifier === c.identifier ? { ...c, columnWidth } : c,
-        ),
-      );
+      setColumnsToState(updatedState);
     },
-    [currentList, dispatch, userIdentifier],
+    [columns, currentList, dispatch, userIdentifier],
   );
 
   const value = {
@@ -227,6 +252,7 @@ export function ColumnsConfigProvider({
     setCurrentList,
     viewSpecificConfig,
     setViewSpecificConfig,
+    hasWidthPreferences,
   };
 
   return (

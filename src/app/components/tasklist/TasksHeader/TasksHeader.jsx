@@ -64,12 +64,12 @@ const TasksHeader = ({
   );
 
   const handleResizeColumn = useCallback(
-    (identifier, _, { size }) => {
+    (identifier, { size, index }) => {
       const { width } = size;
       if (typeof setColumnWidth === 'function') {
         setColumnWidth({
           columnIdentifier: identifier,
-          columnWidth: width,
+          columnWidth: index === 0 ? width - 25 : width,
         });
       }
     },
@@ -82,7 +82,9 @@ const TasksHeader = ({
         return (
           <ColumnSortHeader
             onResize={
-              typeof setColumnWidth === 'function' ? handleResizeColumn : null
+              typeof setColumnWidth === 'function'
+                ? (id, _, size) => handleResizeColumn(id, { ...size, index })
+                : null
             }
             key={f.identifier}
             index={index}
@@ -94,14 +96,14 @@ const TasksHeader = ({
             isDraggingOver={snapshot.isDraggingOver}
             id={f.identifier}
             label={f.label}
-            width={f.columnWidth}
+            width={index === 0 ? Number(f.columnWidth) + 25 : f.columnWidth}
             sort={sort}
             truncateEnabled
             onSortChange={onSortChange}
             snapshot={snapshot}
             printWidth={CustomFieldWidthConfig[f.fieldType]}
           >
-            {f.identifier === TaskHeaderColumn.DESCRIPTION && bulkEditEnabled && (
+            {index === 0 && bulkEditEnabled && (
               <BulkContainer>
                 <Checkbox
                   isChecked={isGroupSelected}
@@ -129,14 +131,27 @@ const TasksHeader = ({
           truncateEnabled
           id={f.identifier}
           label={f.name}
-          width={+f.columnWidth}
+          width={index === 0 ? +f.columnWidth + 25 : f.columnWidth}
           snapshot={snapshot}
           printWidth={
             f.id === TaskItemColumn.ASSIGNED
               ? TaskItemColumnWidth[TaskItemColumn.ASSIGNED].PRINT
               : undefined
           }
-        />
+        >
+          {index === 0 && bulkEditEnabled && (
+            <BulkContainer>
+              <Checkbox
+                isChecked={isGroupSelected}
+                onClick={event => {
+                  event.preventDefault();
+                  event.stopPropagation();
+                  onGroupSelect(event);
+                }}
+              />
+            </BulkContainer>
+          )}
+        </ColumnSortHeader>
       );
     },
     [

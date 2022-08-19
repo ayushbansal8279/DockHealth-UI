@@ -12,12 +12,13 @@ export const highlightDescription = keyframes`
 `;
 
 const StickyMainTaskItemCell = styled.div`
+${({ customWidthExists }) => (customWidthExists ? '' : 'flex: 1;')}
   position: sticky;
   display: flex;
   width: ${({ width, isSubtask }) => {
     if (width && isSubtask) return `${width - 36}px`;
     if (width && !isSubtask) return `${width}px`;
-    return '100%';
+    return '';
   }};
   left: ${({ isSubtask }) => (isSubtask ? '60px' : '24px')};
   ${({ order }) => (order ? `order: ${order};` : '')}

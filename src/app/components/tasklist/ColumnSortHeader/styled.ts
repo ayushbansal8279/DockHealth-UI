@@ -60,7 +60,12 @@ export const SortButton = styled.button<{
   flex?: number;
 }>`
   position: relative;
-  ${({ width }) => (width ? `width: ${width}px;` : '')}
+  ${({ width }) => {
+    if (typeof width === 'number') {
+      return `width: ${width}px;`;
+    }
+    return `width: ${width};`;
+  }}
   height: 35px;
   text-align: left;
   font-family: 'Roboto Condensed', sans-serif;

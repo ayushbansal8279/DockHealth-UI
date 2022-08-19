@@ -2,11 +2,11 @@ import React, { useEffect, useContext } from 'react';
 import ChannelPreviewAction from '@sendbird/uikit-react/ChannelList/components/ChannelPreviewAction';
 import { useChannelListContext } from '@sendbird/uikit-react/ChannelList/context';
 import ChannelListHeader from '@sendbird/uikit-react/ChannelList/components/ChannelListHeader';
-import AddChannel from '@sendbird/uikit-react/ChannelList/components/AddChannel';
 import { userProfileSelector } from 'selectors/user-selectors';
 import { useSelector } from 'react-redux';
 import { CircularProgress } from '@material-ui/core';
 import { Title } from 'views/TaskTour/styled';
+import CustomAddChannel from './add-channel/CustomAddChannel';
 import SelectedChannelContext from './SelectedChannelContext';
 import ChatChannelPreview from './ChatChannelPreview';
 
@@ -15,15 +15,36 @@ export default function ChatChannelList(props) {
   const { identifier } = useSelector(userProfileSelector);
   const { allChannels, initialized, loading } = useChannelListContext();
 
-  const { setSelectedChannel, selectedChannel } = useContext(
-    SelectedChannelContext,
-  );
+  const {
+    setSelectedChannel,
+    selectedChannel,
+    setShowChatPopover,
+  } = useContext(SelectedChannelContext);
 
   useEffect(() => {
-    if (allChannels && allChannels.length > 0 && isFullView) {
+    setShowChatPopover(true);
+  }, [setShowChatPopover]);
+
+  useEffect(() => {
+    const passedChannel = JSON.parse(
+      sessionStorage.getItem('selectedChannelUrl'),
+    );
+    if (passedChannel) {
+      setSelectedChannel(passedChannel);
+      sessionStorage.removeItem('selectedChannelUrl');
+    }
+  });
+
+  useEffect(() => {
+    if (
+      allChannels &&
+      allChannels.length > 0 &&
+      isFullView &&
+      !selectedChannel
+    ) {
       setSelectedChannel(allChannels[0]);
     }
-  }, [allChannels, isFullView, setSelectedChannel]);
+  }, [allChannels, isFullView, selectedChannel, setSelectedChannel]);
 
   if (!initialized || loading) {
     return <CircularProgress />;
@@ -33,10 +54,10 @@ export default function ChatChannelList(props) {
     <div className="sendbird-app__channellist-wrap">
       <ChannelListHeader
         renderHeader={() => {
-          return <Title>Channels</Title>;
+          return <Title>Conversations</Title>;
         }}
         allowProfileEdit={false}
-        renderIconButton={AddChannel}
+        renderIconButton={CustomAddChannel}
       />
       {allChannels.map(channel => {
         return (
@@ -56,6 +77,7 @@ export default function ChatChannelList(props) {
               onClick={() => {
                 if (channel?.url) {
                   setSelectedChannel(channel);
+                  setShowChatPopover(true);
                 }
               }}
             />

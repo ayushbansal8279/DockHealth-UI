@@ -19,7 +19,7 @@ import {
 const ColumnSortHeader = ({
   id,
   label,
-  width = 100,
+  width,
   sort,
   onSortChange,
   truncateEnabled,

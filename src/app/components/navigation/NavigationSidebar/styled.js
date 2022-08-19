@@ -44,6 +44,7 @@ export const NavigationButton = styled.button`
   flex-direction: column;
   align-items: center;
   width: 67px;
+  height: 47px !important;
   ${({ subMenuOpen }) => subMenuOpen && `background-color: ${palette.white}; `}
   ${({ isActive }) => !isActive && `cursor: pointer;`}
 `;
@@ -91,3 +92,15 @@ export const BarChartIcon = withStyles({
     height: 32,
   },
 })(MuiBarChartIcon);
+
+export const NewLabel = styled.div`
+  position: absolute;
+  top: -4px;
+  right: -6px;
+  width: 12px;
+  height: 12px;
+  border-radius: 6px;
+  background-color: ${palette.oPlusRed};
+  opacity: ${({ isHidden }) => (isHidden ? 0 : 1)};
+  transition: opacity 0.3s ease-out;
+`;

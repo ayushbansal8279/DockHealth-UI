@@ -1,16 +1,22 @@
-import React, { useState, useContext } from 'react';
+import React, { useState, useContext, useEffect } from 'react';
 import withSendBird from '@sendbird/uikit-react/withSendBird';
 import { ChannelProvider } from '@sendbird/uikit-react/Channel/context';
 import ChannelUI from '@sendbird/uikit-react/Channel/components/ChannelUI';
-import ChatChannelSettings from './ChatChannelSettings';
-import ShowSettingsContext from './ShowSettingsContext';
+import ChatChannelSettings from '../channel-settings/ChatChannelSettings';
+import ShowSettingsContext from '../ShowSettingsContext';
+import SelectedChannelContext from '../SelectedChannelContext';
 
 const ChatChannelConversation = props => {
   const { currentChannelUrl } = props;
 
+  const { setShowChatPopover } = useContext(SelectedChannelContext);
   const { setShowSettings, showSettings } = useContext(ShowSettingsContext);
 
   const [showSearch, setShowSearch] = useState(false);
+
+  useEffect(() => {
+    setShowChatPopover(true);
+  }, [setShowChatPopover]);
 
   return (
     <>
