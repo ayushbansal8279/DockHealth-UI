@@ -317,6 +317,7 @@ const TaskItem = React.memo(
     const showDecisionRow = task.intentType === 'DECISION' && !isTemplateTask;
     const hasParentTaskLabel = isSubtask && !isNestedTask && parentTask;
 
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     const onClickBulkEdit = () =>
       dispatch(selectTask(taskIdentifier, !selected));
     const onCloseContextMenu = () => {

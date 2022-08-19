@@ -451,66 +451,11 @@ const TaskTemplateGroupHeader = ({
     ],
   );
 
-  console.log(
-    'getColumnOrder(TaskItemColumn.DESCRIPTION)',
-    getColumnOrder(TaskItemColumn.DESCRIPTION),
-  );
-
   return (
     <TaskTemplateGroupHeaderContainer isSelected={isBundleSelected}>
-      {/* <StickyMainTaskItemCell
-        backgroundColor={pageBackground}
-        isSelected={isBundleSelected}
-        isEditingDescription={isEditing}
-        order={0}
-        width={
-          columns?.find(
-            ({ identifier: id }) => id === TaskItemColumn.DESCRIPTION,
-          )?.columnWidth
-        }
-      >
-        {!groupDragAndDropDisabled && !bulkEditIsActive && (
-          <TemplateHandle
-            src={ThreeDotsIcon}
-            alt="Handle"
-            {...dragHandleProps}
-          />
-        )}
-        <Checkbox
-          isChecked={selected || isBundleSelected}
-          onClick={handleBundleSelect}
-        />
-        <Box m={1} />
-        <RotatableChevron rotated={isOpen} onClick={() => setOpen(!isOpen)} />
-        <Spacing horizontal={2} />
-        <OptionsMenu options={menuOptions}>
-          <MoreVert color="primary" />
-        </OptionsMenu>
-        <TemplateHeaderName
-          templateGroup={templateGroup}
-          isEditing={isEditing}
-          nameInputError={nameInputError}
-          setNameInputValue={setNameInputValue}
-          setNameInputError={setNameInputError}
-          setIsEditing={setIsEditing}
-          handleNameInputKeyDown={handleNameInputKeyDown}
-          nameInputValue={nameInputValue}
-        />
-        <TaskTemplateOptionsContainer
-          groupHasMultipleAssignees={groupHasMultipleAssignees}
-        >
-          <TaskTemplateProgressCircle>
-            <ProgressBar
-              width={80}
-              progress={(completedTasksAmountFinal / allTasksAmountFinal) * 100}
-              label={`${completedTasksAmountFinal}/${allTasksAmountFinal}`}
-            />
-          </TaskTemplateProgressCircle>
-        </TaskTemplateOptionsContainer>
-      </StickyMainTaskItemCell> */}
       {randerFirstColumnCoverIfNecessary(
         <>
-          <TaskItemCell // here I used TaskItemCell but there is broken // TODO:
+          <TaskItemCell
             key={`task_description_${identifier}`}
             width={
               getColumnOrder(TaskItemColumn.DESCRIPTION) === 0
