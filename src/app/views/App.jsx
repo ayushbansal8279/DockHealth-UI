@@ -229,7 +229,8 @@ class App extends PureComponent {
 
   render() {
     const isMobile = useMobile();
-    const isSmall = useSmallScreen();
+    // const isSmall = useSmallScreen();
+    const isSmall = false;
 
     const {
       userState: { userProfile },
@@ -241,11 +242,12 @@ class App extends PureComponent {
     const { children } = this.props;
     const isLessThen1024 = window?.innerWidth < 1024;
     const orientationType = window?.screen?.orientation?.type;
-    const showRotateScreenPage =
-      isLessThen1024 &&
-      ['portrait-primary', 'portrait-secondary', 'portrait'].includes(
-        orientationType,
-      );
+    // const showRotateScreenPage =
+    //   isLessThen1024 &&
+    //   ['portrait-primary', 'portrait-secondary', 'portrait'].includes(
+    //     orientationType,
+    //   );
+    const showRotateScreenPage = false;
 
     const { identifier, name } = userProfile;
 
