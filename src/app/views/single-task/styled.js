@@ -10,3 +10,9 @@ export const TaskViewContainer = styled.div`
   height: fit-content;
   background-color: ${palette.coolGrey4};
 `;
+
+export const SingleTaskHeaderNav = styled.div`
+  @media screen and (max-width: 800px) {
+    display: none;
+  }
+`;

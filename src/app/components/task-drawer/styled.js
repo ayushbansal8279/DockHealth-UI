@@ -39,3 +39,9 @@ export const FiledInListName = styled.span`
   text-overflow: ellipsis;
   max-width: 250px;
 `;
+
+export const TopSectionFiledIn = styled.div`
+  @media screen and (max-width: 800px) {
+    display: none;
+  }
+`;

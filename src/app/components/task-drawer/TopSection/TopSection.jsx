@@ -19,7 +19,7 @@ import {
 } from 'selectors/user-selectors';
 import { useDispatch, useSelector } from 'react-redux';
 import { openModal } from 'modal/actions';
-import { HorizontalLabel, FiledInListName } from '../styled';
+import { HorizontalLabel, FiledInListName, TopSectionFiledIn } from '../styled';
 import initializeTaskDrawerTopSectionHooks from './hooks';
 
 const { DISABLED } = SINGLE_TASK_RESTRICTIONS_OPTIONS;
@@ -165,12 +165,14 @@ const TopSection = ({
               isCompleted={selectedTask?.status === TaskStatus.COMPLETE}
               onClick={onCompleteToggle}
             />
-            <Spacing horizontal={3} />
-            <HorizontalLabel>Filed In: </HorizontalLabel>
-            <Spacing horizontal={3} />
-            <FiledInListName>
-              {selectedTask?.taskList?.listName}
-            </FiledInListName>
+            <TopSectionFiledIn>
+              <Spacing horizontal={3} />
+              <HorizontalLabel>Filed In: </HorizontalLabel>
+              <Spacing horizontal={3} />
+              <FiledInListName>
+                {selectedTask?.taskList?.listName}
+              </FiledInListName>
+            </TopSectionFiledIn>
           </>
         )}
       </Box>
