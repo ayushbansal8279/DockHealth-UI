@@ -409,6 +409,7 @@ const TaskTemplateGroupHeader = ({
       if (order !== 0) return content;
       return (
         <StickyMainTaskItemCell
+          customWidthExists
           backgroundColor={pageBackground}
           isSelected={isBundleSelected}
           isEditingDescription={isEditing}
