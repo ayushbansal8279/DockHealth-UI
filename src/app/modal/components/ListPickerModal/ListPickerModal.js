@@ -92,6 +92,7 @@ const ListPickerModal = ({
         <Container>
           <StepsContainer stepIndex={step}>
             <ListSelectStep
+              enableSelectingGroupStep={enableSelectingGroupStep}
               selectedList={selectedList}
               setSelectedList={setSelectedList}
               setNextStep={() => setStep(STEPS[2])}

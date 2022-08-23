@@ -26,6 +26,7 @@ const ListSelectStep = ({
   setLists,
   onAddList,
   savingList,
+  enableSelectingGroupStep,
 }) => {
   const [isFetchingLists, setIsFetchingLists] = useState(true);
   const [
@@ -83,14 +84,16 @@ const ListSelectStep = ({
                   >
                     {list.listName}
                   </ListItemTextButton>
-                  <IconButton
-                    onClick={() => {
-                      setSelectedList(list);
-                      setNextStep();
-                    }}
-                  >
-                    <NextArrow />
-                  </IconButton>
+                  {enableSelectingGroupStep && (
+                    <IconButton
+                      onClick={() => {
+                        setSelectedList(list);
+                        setNextStep();
+                      }}
+                    >
+                      <NextArrow />
+                    </IconButton>
+                  )}
                 </ListItem>
               ))
             ) : (
