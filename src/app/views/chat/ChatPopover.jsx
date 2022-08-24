@@ -1,6 +1,5 @@
 import React, { useState, useCallback } from 'react';
 import { Popover, Box } from '@material-ui/core';
-import { useHistory } from 'react-router-dom';
 import ArrowBack from '@material-ui/icons/ArrowBack';
 import CloseIcon from '@material-ui/icons/Close';
 import OpenInNewIcon from '@material-ui/icons/OpenInNew';
@@ -24,7 +23,6 @@ const ChatPopover = ({ setShowChatPopover, openChat = true }) => {
   const { name, identifier } = useSelector(userProfileSelector);
   const [open, unsetOpen] = useBoolean(openChat);
   const [anchorElement, setAnchorElement] = useState(null);
-  const history = useHistory();
 
   const [selectedChannel, setSelectedChannel] = useState(null);
   const value = { selectedChannel, setSelectedChannel, setShowChatPopover };
@@ -41,8 +39,8 @@ const ChatPopover = ({ setShowChatPopover, openChat = true }) => {
   const handleLeaveIconClick = useCallback(() => {
     unsetOpen();
     setAnchorElement(null);
-    history.push(CHAT_PATH);
-  }, [history, unsetOpen]);
+    window.open(`${window.location.origin.toString()}/#${CHAT_PATH}`, '_blank');
+  }, [unsetOpen]);
 
   const id = open ? 'simple-popover' : undefined;
 
