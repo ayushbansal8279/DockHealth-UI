@@ -25,12 +25,13 @@ export const Wrapper = styled.div<{
 
 export const NewLabel = styled.div<{ isHidden?: boolean }>`
   position: absolute;
-  top: 4px;
+  top: 0px;
   right: -6px;
-  width: 12px;
-  height: 12px;
+  width: 8px;
+  height: 8px;
   border-radius: 6px;
-  background-color: ${palette.oPlusRed};
+  background-color: #feb52b;
+  border: 1px solid #ffffff;
   opacity: ${({ isHidden }) => (isHidden ? 0 : 1)};
   transition: opacity 0.3s ease-out;
 `;
