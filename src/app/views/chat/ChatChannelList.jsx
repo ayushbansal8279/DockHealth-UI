@@ -5,10 +5,10 @@ import ChannelListHeader from '@sendbird/uikit-react/ChannelList/components/Chan
 import { userProfileSelector } from 'selectors/user-selectors';
 import { useSelector } from 'react-redux';
 import { CircularProgress } from '@material-ui/core';
-import { Title } from 'views/TaskTour/styled';
 import CustomAddChannel from './add-channel/CustomAddChannel';
 import SelectedChannelContext from './SelectedChannelContext';
 import ChatChannelPreview from './ChatChannelPreview';
+import { ChannelListTitle } from './styled';
 
 export default function ChatChannelList(props) {
   const { isFullView } = props;
@@ -54,7 +54,7 @@ export default function ChatChannelList(props) {
     <div className="sendbird-app__channellist-wrap">
       <ChannelListHeader
         renderHeader={() => {
-          return <Title>Conversations</Title>;
+          return <ChannelListTitle>Conversations</ChannelListTitle>;
         }}
         allowProfileEdit={false}
         renderIconButton={CustomAddChannel}

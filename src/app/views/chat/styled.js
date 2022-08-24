@@ -1,5 +1,7 @@
 import { withStyles } from '@material-ui/core/styles';
 import { IconButton } from '@material-ui/core';
+import spacing from 'styles/spacing';
+import { fontSizes, fontWeights } from 'styles/font';
 import palette from 'styles/palette';
 import styled from 'styled-components';
 
@@ -8,6 +10,24 @@ export const StyledIconButton = withStyles({
     color: 'inherit',
   },
 })(IconButton);
+
+export const ChatHeaderTitle = styled.h3`
+  margin: 0;
+  padding: ${spacing.smallPlus};
+  font-size: ${fontSizes.large};
+  font-weight: ${fontWeights.regularPlus};
+  font-family: 'Roboto Condensed', sans-serif;
+  color: ${palette.white};
+`;
+
+export const ChannelListTitle = styled.h6`
+  margin: 0;
+  padding: ${spacing.smallPlus};
+  font-size: ${fontSizes.large};
+  font-weight: ${fontWeights.regular};
+  font-family: 'Roboto Condensed', sans-serif;
+  color: ${palette.midnightBlue};
+`;
 
 export const Container = styled.div`
   max-width: 1280px;
