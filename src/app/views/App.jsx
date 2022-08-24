@@ -67,7 +67,7 @@ const sendbirdColorSet = {
   '--sendbird-light-primary-400': '#4bb3fd',
   '--sendbird-light-primary-300': palette.midnightBlue,
   '--sendbird-light-primary-200': '#0496ff',
-  '--sendbird-light-primary-100': '#027bce',
+  '--sendbird-light-primary-100': palette.lightGrey2,
 };
 
 ReactModal.setAppElement('#app');
