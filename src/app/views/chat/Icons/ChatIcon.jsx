@@ -4,7 +4,7 @@ import sendBirdSelectors from '@sendbird/uikit-react/sendBirdSelectors';
 import ChatMessageIcon from './ChatImageIcon';
 import { Wrapper, NewLabel } from './styled';
 
-const ChatIcon = ({ height = 18 }) => {
+const ChatIcon = ({ height = 25 }) => {
   const [unreadMessageCount, setUnreadMessageCount] = useState(null);
 
   const context = useSendbirdStateContext();

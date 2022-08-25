@@ -25,8 +25,8 @@ export const Wrapper = styled.div<{
 
 export const NewLabel = styled.div<{ isHidden?: boolean }>`
   position: absolute;
-  top: 0px;
-  right: -6px;
+  top: 2px;
+  right: -2px;
   width: 8px;
   height: 8px;
   border-radius: 6px;

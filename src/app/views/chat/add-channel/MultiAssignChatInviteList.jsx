@@ -226,7 +226,7 @@ const MultiAssignChatInviteMembersList = ({
         />
       </InputBox>
       <ListContainer>
-        {!isValueSendable && (
+        {!isValueSendable && filteredSelectedMembers?.length > 0 && (
           <ListContentSection>
             {filteredSelectedMembers?.map(member => {
               return renderSelectOption(member, true);
