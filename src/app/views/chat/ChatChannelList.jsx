@@ -10,6 +10,7 @@ import { Title } from 'views/TaskTour/styled';
 import { selectChannel } from 'actions/sendbird-actions';
 import CustomAddChannel from './add-channel/CustomAddChannel';
 import ChatChannelPreview from './ChatChannelPreview';
+import { ChannelListTitle } from './styled';
 
 export default function ChatChannelList(props) {
   const { isFullView } = props;
@@ -47,7 +48,7 @@ export default function ChatChannelList(props) {
     <div className="sendbird-app__channellist-wrap">
       <ChannelListHeader
         renderHeader={() => {
-          return <Title>Conversations</Title>;
+          return <ChannelListTitle>Conversations</ChannelListTitle>;
         }}
         allowProfileEdit={false}
         renderIconButton={CustomAddChannel}

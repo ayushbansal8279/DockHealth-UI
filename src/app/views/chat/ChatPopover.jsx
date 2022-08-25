@@ -1,6 +1,5 @@
 import React, { useState, useCallback } from 'react';
-import { Popover, Box, Typography } from '@material-ui/core';
-import { useHistory } from 'react-router-dom';
+import { Popover, Box } from '@material-ui/core';
 import ArrowBack from '@material-ui/icons/ArrowBack';
 import CloseIcon from '@material-ui/icons/Close';
 import OpenInNewIcon from '@material-ui/icons/OpenInNew';
@@ -21,6 +20,7 @@ import {
   StyledIconButton,
   HeaderContainer,
   ChatContainer,
+  ChatHeaderTitle,
 } from './styled';
 
 const ChatPopover = () => {
@@ -31,7 +31,6 @@ const ChatPopover = () => {
 
   const [open, unsetOpen] = useBoolean(showPopover);
   const [anchorElement, setAnchorElement] = useState(null);
-  const history = useHistory();
 
   const [showSettings, setShowSettings] = useState(false);
   const showSettingsValue = { showSettings, setShowSettings };
@@ -46,8 +45,8 @@ const ChatPopover = () => {
     unsetOpen();
     dispatch(closePopover(null));
     setAnchorElement(null);
-    history.push(CHAT_PATH);
-  }, [history, unsetOpen, dispatch]);
+    window.open(`${window.location.origin.toString()}/#${CHAT_PATH}`, '_blank');
+  }, [unsetOpen]);
 
   const id = open ? 'simple-popover' : undefined;
 
@@ -84,9 +83,7 @@ const ChatPopover = () => {
                 {selectedChannel ? <ArrowBack /> : <OpenInNewIcon />}
               </StyledIconButton>
               <Box mx={0.5} />
-              <Typography color="white" variant="h3">
-                Dock Chat
-              </Typography>
+              <ChatHeaderTitle>Dock Chat</ChatHeaderTitle>
               <Box mx={0.5} />
               <StyledIconButton onClick={handleClose}>
                 <CloseIcon />
