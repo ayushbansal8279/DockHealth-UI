@@ -4,7 +4,6 @@ import React, {
   useEffect,
   useMemo,
   useCallback,
-  // useContext,
 } from 'react';
 import Highlighter from 'react-highlight-words';
 import * as OrganizationApi from 'api/organization-api';
@@ -20,7 +19,7 @@ import { isUserGroup } from 'helpers/user-helper';
 import GroupAvatar from 'components/user/GroupAvatar/GroupAvatar';
 import { getUsersByName } from 'api/user-api';
 import { organizationSelector } from 'selectors/organization-selectors';
-// import ChannelSettingsContext from '../channel-settings/ChannelSettingsContext';
+
 import {
   Input,
   InputBox,
@@ -226,7 +225,7 @@ const MultiAssignChatInviteMembersList = ({
         />
       </InputBox>
       <ListContainer>
-        {!isValueSendable && filteredSelectedMembers?.length > 0 && (
+        {filteredSelectedMembers?.length > 0 && (
           <ListContentSection>
             {filteredSelectedMembers?.map(member => {
               return renderSelectOption(member, true);
