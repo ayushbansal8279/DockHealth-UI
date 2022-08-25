@@ -125,3 +125,18 @@ export const TextWaringStyled = styled.p`
   font-weight: 700;
   margin-bottom: 0.5rem;
 `;
+
+export const StepsContainer = styled.div`
+  display: flex;
+  height: 100%;
+  width: auto;
+  flex-direction: row;
+  flex-wrap: nowrap;
+  transform: translateX(-${({ stepIndex }) => stepIndex * 384 || 0}px);
+  transition: transform 0.3s ease-out;
+`;
+export const Container = styled.div`
+  height: 384px;
+  width: 384px;
+  overflow: hidden;
+`;

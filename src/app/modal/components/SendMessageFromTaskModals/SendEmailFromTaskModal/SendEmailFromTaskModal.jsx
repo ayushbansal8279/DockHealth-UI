@@ -222,6 +222,7 @@ const SendEmailFromTaskModal = () => {
               showToolbar
               state={detailsState}
               onChange={setDetailsState}
+              maxHeight={200}
             />
           </CustomTextEditor>
         </TextEditorContainerStyled>

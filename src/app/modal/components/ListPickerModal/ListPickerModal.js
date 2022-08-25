@@ -1,18 +1,24 @@
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect, useCallback, useRef } from 'react';
 import { useDispatch } from 'react-redux';
 import { getTaskListForUser } from 'actions/task-list-actions';
 import { addTaskList } from 'api/task-list-api';
 import Button from 'components/common/Button/Button';
 import { Grid } from '@material-ui/core';
 import Spacing from 'components/common/Spacing';
-import { Description, ListPickerModalWrapper, Title } from './styled';
-import { ModalWrapperWithPadding, CloseIconButton, CloseIcon } from '../styled';
-import ListSelectSection from './ListSelectSection';
-import GroupPicker from '../common/GroupPicker/GroupPicker';
+import { ListPickerModalWrapper } from './styled';
+import {
+  ModalWrapperWithPadding,
+  CloseIconButton,
+  CloseIcon,
+  StepsContainer,
+  Container,
+} from '../styled';
+import GroupSelectSection from './GroupSelectSection';
+import ListSelectStep from './ListSelectStep';
 
 const STEPS = {
-  1: 1,
-  2: 2,
+  1: 0,
+  2: 1,
 };
 
 const ListPickerModal = ({
@@ -31,12 +37,9 @@ const ListPickerModal = ({
   const [isSavingList, setSavingList] = useState(false);
 
   const dispatch = useDispatch();
+  const addListInput = useRef(null);
 
   const handleSave = () => {
-    if (enableSelectingGroupStep && step === STEPS[1]) {
-      setStep(STEPS[2]);
-      return;
-    }
     confirm(selectedList.taskListIdentifier, selectedGroup.taskGroupIdentifier);
     closeModal();
   };
@@ -86,28 +89,33 @@ const ListPickerModal = ({
         <CloseIconButton onClick={closeModal} size="small" color="secondary">
           <CloseIcon />
         </CloseIconButton>
-        {step === STEPS[1] && (
-          <ListSelectSection
-            lists={lists}
-            selectedList={selectedList}
-            isFetchingLists={isFetchingLists}
-            onListSelection={setSelectedList}
-            onAddList={handleAddNewList}
-          />
-        )}
-        {step === STEPS[2] && (
-          <>
-            <Title>Select group</Title>
-            <Description>Choose a group for your task</Description>
-            <Spacing vertical={4} />
-            <GroupPicker
+        <Container>
+          <StepsContainer stepIndex={step}>
+            <ListSelectStep
+              enableSelectingGroupStep={enableSelectingGroupStep}
               selectedList={selectedList}
-              selectedGroup={selectedGroup}
-              setSelectedGroup={setSelectedGroup}
-              onCreateGroup={onCreateGroup}
+              setSelectedList={setSelectedList}
+              setNextStep={() => setStep(STEPS[2])}
+              closeModal={closeModal}
+              addListInput={addListInput}
+              lists={lists}
+              setLists={setLists}
+              onAddList={handleAddNewList}
+              savingList={isFetchingLists}
             />
-          </>
-        )}
+            {enableSelectingGroupStep && (
+              <GroupSelectSection
+                onCreateGroup={onCreateGroup}
+                selectedList={selectedList}
+                setSelectedList={setSelectedList}
+                selectedGroup={selectedGroup}
+                setSelectedGroup={setSelectedGroup}
+                setPreviousStep={() => setStep(STEPS[1])}
+                setNextStep={() => setStep(STEPS[2])}
+              />
+            )}
+          </StepsContainer>
+        </Container>
         <Spacing vertical={4} />
         <Grid container direction="row" spacing={2}>
           <Grid item xs={6}>
@@ -125,11 +133,7 @@ const ListPickerModal = ({
               type="button"
               onClick={handleSave}
               size="small"
-              disabled={
-                isSavingList ||
-                !selectedList ||
-                (step === STEPS[2] && !selectedGroup)
-              }
+              disabled={isSavingList || isFetchingLists || !selectedList}
             >
               Select
             </Button>
