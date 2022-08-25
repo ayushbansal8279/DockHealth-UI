@@ -19,7 +19,7 @@ import createToolbarPlugin, {
 } from '@draft-js-plugins/static-toolbar';
 import StrikethroughSIcon from '@material-ui/icons/StrikethroughS';
 import Spacing from 'components/common/Spacing.tsx';
-import { ClickAwayListener } from '@material-ui/core';
+import { Box, ClickAwayListener } from '@material-ui/core';
 import {
   ItalicButton,
   BoldButton,
@@ -88,6 +88,7 @@ const separatorStyles = makeStyles({
 const TextEditor = React.forwardRef(
   (
     {
+      maxHeight,
       showToolbar = false,
       fullHeight,
       readOnly,
@@ -454,28 +455,56 @@ const TextEditor = React.forwardRef(
                 </Toolbar>
               </ToolbarContainer>
             )}
-            <Editor
-              handleBeforeInput={handleAllowType}
-              handlePastedText={handleAllowPaste}
-              customStyleMap={styleMap}
-              ref={reference}
-              plugins={plugins}
-              editorState={currentState}
-              readOnly={readOnly}
-              placeholder={showPlaceholder ? placeholder : ''}
-              onFocus={handleFocus}
-              onBlur={handleEditorBlur}
-              onChange={handleChange}
-              keyBindingFn={keyBindingFn}
-              handleKeyCommand={handleKeyCommand}
-              decorators={[
-                ...(highlightedValues?.length > 0
-                  ? [createHighlightDecorator(highlightedValues)]
-                  : []),
-                createLinkDecorator,
-                createPlaceholderDecorator,
-              ]}
-            />
+            {maxHeight ? (
+              <Box maxHeight={maxHeight} overflow="auto">
+                <Editor
+                  handleBeforeInput={handleAllowType}
+                  handlePastedText={handleAllowPaste}
+                  customStyleMap={styleMap}
+                  ref={reference}
+                  plugins={plugins}
+                  editorState={currentState}
+                  readOnly={readOnly}
+                  placeholder={showPlaceholder ? placeholder : ''}
+                  onFocus={handleFocus}
+                  onBlur={handleEditorBlur}
+                  onChange={handleChange}
+                  keyBindingFn={keyBindingFn}
+                  handleKeyCommand={handleKeyCommand}
+                  decorators={[
+                    ...(highlightedValues?.length > 0
+                      ? [createHighlightDecorator(highlightedValues)]
+                      : []),
+                    createLinkDecorator,
+                    createPlaceholderDecorator,
+                  ]}
+                />
+              </Box>
+            ) : (
+              <Editor
+                handleBeforeInput={handleAllowType}
+                handlePastedText={handleAllowPaste}
+                customStyleMap={styleMap}
+                ref={reference}
+                plugins={plugins}
+                editorState={currentState}
+                readOnly={readOnly}
+                placeholder={showPlaceholder ? placeholder : ''}
+                onFocus={handleFocus}
+                onBlur={handleEditorBlur}
+                onChange={handleChange}
+                keyBindingFn={keyBindingFn}
+                handleKeyCommand={handleKeyCommand}
+                decorators={[
+                  ...(highlightedValues?.length > 0
+                    ? [createHighlightDecorator(highlightedValues)]
+                    : []),
+                  createLinkDecorator,
+                  createPlaceholderDecorator,
+                ]}
+              />
+            )}
+
             <Spacing horizontal={4} />
             {!disableMentions && taskListIdentifier && (
               <UsersMentionSuggestions
