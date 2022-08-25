@@ -8,9 +8,13 @@ import Draggable from 'react-draggable';
 import { useBoolean } from 'hooks/useBoolean';
 import { CHAT_PATH } from 'routing/helpers/paths';
 import { userProfileSelector } from 'selectors/user-selectors';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
+import {
+  showChatPopoverSelector,
+  selectedChatChannelSelector,
+} from 'selectors/sendbird-selectors';
+import { closePopover, openPopover } from 'actions/sendbird-actions';
 import Chat from './Chat';
-import SelectedChannelContext from './SelectedChannelContext';
 import ShowSettingsContext from './ShowSettingsContext';
 import {
   Container,
@@ -19,37 +23,41 @@ import {
   ChatContainer,
 } from './styled';
 
-const ChatPopover = ({ setShowChatPopover, openChat = true }) => {
+const ChatPopover = () => {
   const { name, identifier } = useSelector(userProfileSelector);
-  const [open, unsetOpen] = useBoolean(openChat);
+  const showPopover = useSelector(showChatPopoverSelector);
+  const selectedChannel = useSelector(selectedChatChannelSelector);
+  const dispatch = useDispatch();
+
+  const [open, unsetOpen] = useBoolean(showPopover);
   const [anchorElement, setAnchorElement] = useState(null);
   const history = useHistory();
-
-  const [selectedChannel, setSelectedChannel] = useState(null);
-  const value = { selectedChannel, setSelectedChannel, setShowChatPopover };
 
   const [showSettings, setShowSettings] = useState(false);
   const showSettingsValue = { showSettings, setShowSettings };
 
   const handleClose = useCallback(() => {
-    setShowChatPopover(false);
+    dispatch(closePopover());
     unsetOpen();
     setAnchorElement(null);
-  }, [unsetOpen, setShowChatPopover]);
+  }, [unsetOpen, dispatch]);
 
   const handleLeaveIconClick = useCallback(() => {
     unsetOpen();
+    dispatch(closePopover(null));
     setAnchorElement(null);
     history.push(CHAT_PATH);
-  }, [history, unsetOpen]);
+  }, [history, unsetOpen, dispatch]);
 
   const id = open ? 'simple-popover' : undefined;
 
   const handleClickGoBack = useCallback(() => {
-    setShowChatPopover(true);
-    setSelectedChannel(null);
-    setShowSettings(false);
-  }, [setShowChatPopover]);
+    if (showSettings === true) {
+      setShowSettings(false);
+    } else {
+      dispatch(openPopover(null));
+    }
+  }, [dispatch, showSettings]);
 
   return (
     <div>
@@ -85,11 +93,9 @@ const ChatPopover = ({ setShowChatPopover, openChat = true }) => {
               </StyledIconButton>
             </HeaderContainer>
             <ChatContainer>
-              <SelectedChannelContext.Provider value={value}>
-                <ShowSettingsContext.Provider value={showSettingsValue}>
-                  <Chat userId={identifier} name={name} />
-                </ShowSettingsContext.Provider>
-              </SelectedChannelContext.Provider>
+              <ShowSettingsContext.Provider value={showSettingsValue}>
+                <Chat userId={identifier} name={name} />
+              </ShowSettingsContext.Provider>
             </ChatContainer>
           </Container>
         </Popover>

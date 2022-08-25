@@ -1,8 +1,8 @@
 /* eslint-disable sonarjs/cognitive-complexity */
-import React, { useCallback, useEffect, useState } from 'react';
+import React, { useCallback, useEffect } from 'react';
 import { ClickAwayListener, Grid } from '@material-ui/core';
 import { useDispatch, useSelector } from 'react-redux';
-import { useHistory } from 'react-router-dom';
+import { useHistory, useLocation } from 'react-router-dom';
 import {
   WORKFLOW_LIBRARY_PATH,
   USERS_PATH,
@@ -11,6 +11,7 @@ import {
 } from 'routing/helpers/paths';
 import Spacing from 'components/common/Spacing.tsx';
 import { userProfileSelector } from 'selectors/user-selectors';
+import { showChatPopoverSelector } from 'selectors/sendbird-selectors';
 import { UserOrganizationRole } from 'helpers/user-helper';
 import { getCustomerTypeLabel } from 'helpers/customer-type-helper';
 import { capitalize } from 'helpers/capitalize';
@@ -32,6 +33,7 @@ import { openModal } from 'modal/actions';
 import AccessRestrictor from 'components/access/AccessRestrictor/AccessRestrictor';
 import ChatPopover from 'views/chat/ChatPopover';
 import ChatIcon from 'views/chat/Icons/ChatIcon';
+import { openPopover } from 'actions/sendbird-actions';
 import OrganizationSubmenu from './SubMenuComponents/OrganizationSubmenu';
 import ProfileSubmenu from './SubMenuComponents/ProfileSubmenu';
 import EducationCenterSubmenu from './SubMenuComponents/EducationCenterSubmenu';
@@ -85,10 +87,10 @@ const SubmenuComponents = {
 const NavigationSidebar = () => {
   const history = useHistory();
   const dispatch = useDispatch();
+  const location = useLocation();
   const currentUser = useSelector(userProfileSelector);
+  const showChatPopover = useSelector(showChatPopoverSelector);
   const openedSubMenuKey = useSelector(subMenuKeySelector);
-
-  const [showChatPopover, setShowChatPopover] = useState(false);
 
   const { orgUserRole } = currentUser || {};
   const isUserAdmin = ['ADMIN', 'OWNER'].includes(orgUserRole);
@@ -151,9 +153,11 @@ const NavigationSidebar = () => {
   );
 
   const handleDockChatClick = useCallback(() => {
-    setShowChatPopover(!showChatPopover);
-    dispatch(TemplateActions.hideSubMenu());
-  }, [dispatch, showChatPopover, setShowChatPopover]);
+    if (location.pathname !== '/core/chat') {
+      dispatch(openPopover(null));
+      dispatch(TemplateActions.hideSubMenu());
+    }
+  }, [dispatch, location]);
 
   const handleReferClick = () => {
     dispatch(TemplateActions.hideSubMenu());
@@ -331,12 +335,7 @@ const NavigationSidebar = () => {
           )}
         </SubMenuContainer>
         {renderMenuTourPopover()}
-        {showChatPopover && (
-          <ChatPopover
-            setShowChatPopover={setShowChatPopover}
-            openChat={showChatPopover}
-          />
-        )}
+        {showChatPopover && <ChatPopover />}
       </DrawerContentContainer>
     </ClickAwayListener>
   );

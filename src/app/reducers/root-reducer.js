@@ -24,6 +24,7 @@ import PatientsReducer from './patients-reducer';
 import AnalyticsReducer from './analytics-reducer';
 import WorkflowDrawerReducer from './workflow-drawer-reducer';
 import CalendarTasksReducer from './calendar-tasks-reducer';
+import SendbirdReducer from './sendbird-reducer';
 
 const appReducer = combineReducers({
   templateState: TemplateReducer,
@@ -50,6 +51,7 @@ const appReducer = combineReducers({
   analytics: AnalyticsReducer,
   workflowDrawer: WorkflowDrawerReducer,
   calendarTasks: CalendarTasksReducer,
+  sendbird: SendbirdReducer,
 });
 
 export default function rootReducer(state, action) {
