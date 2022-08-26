@@ -54,6 +54,7 @@ import {
   SINGLE_TASK_RESTRICTIONS_OPTIONS,
 } from 'restrictions/task-restrictions';
 import { CUSTOM_FIELD_TYPES } from 'helpers/custom-fields-helpers';
+import { Box } from '@material-ui/core';
 import { getSubtaskStylingLink } from './helpers';
 import TaskItemContextMenu from '../TaskItemContextMenu/TaskItemContextMenu';
 import TaskItemBulkEdit from './TaskItemComponents/TaskItemBulkEdit';
@@ -118,6 +119,7 @@ const TaskItem = React.memo(
     pageBackground,
     newlyCreated,
     parentContainerReference,
+    listContainsWorkflow,
   }) => {
     const {
       taskIdentifier,
@@ -358,6 +360,7 @@ const TaskItem = React.memo(
                 onClick={onClickBulkEdit}
               />
             )}
+            <Box ml={listContainsWorkflow ? '54px' : '0px'} />
             {content}
           </StickyMainTaskItemCell>
         );
@@ -368,6 +371,7 @@ const TaskItem = React.memo(
         isEditingDescription,
         isLast,
         isSelected,
+        listContainsWorkflow,
         newlyCreated,
         onClickBulkEdit,
         pageBackground,
@@ -443,37 +447,36 @@ const TaskItem = React.memo(
                       </DependencyIconContainer>
                     </>
                   )}
-
-                  <>
-                    <TaskItemDescription
-                      disableMentions={restrictions?.mentions === DISABLED}
-                      disabled={restrictions?.description === READ_ONLY}
-                      task={task}
-                      isCompletedGroup={isCompletedGroup}
-                      highlightedValue={highlightedValue}
-                      isSubtask={isSubtask}
-                      isEditing={isEditingDescription}
-                      setEditing={setEditingDescription}
-                    />
-                    <DetailsButton>Details</DetailsButton>
-                  </>
+                  <TaskItemDescription
+                    disableMentions={restrictions?.mentions === DISABLED}
+                    disabled={restrictions?.description === READ_ONLY}
+                    task={task}
+                    isCompletedGroup={isCompletedGroup}
+                    highlightedValue={highlightedValue}
+                    isSubtask={isSubtask}
+                    isEditing={isEditingDescription}
+                    setEditing={setEditingDescription}
+                  />
+                  <DetailsButton>Details</DetailsButton>
+                  {showDecisionRow && (
+                    <DecisionCellContainer
+                      onClick={event => event.stopPropagation()}
+                    >
+                      <TaskItemDecision
+                        outcomes={task.taskOutcomes}
+                        dispatch={dispatch}
+                        onSelect={chooseTaskDecisionOutcome}
+                        task={task}
+                        templateBundleIdentifier={templateBundleIdentifier}
+                        disabled={isCompleted || !isDependencyEmptyOrCompleted}
+                        error={taskDecisionError}
+                        clearError={() => setTaskDecisionError(false)}
+                      />
+                    </DecisionCellContainer>
+                  )}
                 </MainStandardTaskItemCell>
               </>,
               getColumnOrder(TaskItemColumn.DESCRIPTION),
-            )}
-            {showDecisionRow && (
-              <DecisionCellContainer>
-                <TaskItemDecision
-                  outcomes={task.taskOutcomes}
-                  dispatch={dispatch}
-                  onSelect={chooseTaskDecisionOutcome}
-                  task={task}
-                  templateBundleIdentifier={templateBundleIdentifier}
-                  disabled={isCompleted || !isDependencyEmptyOrCompleted}
-                  error={taskDecisionError}
-                  clearError={() => setTaskDecisionError(false)}
-                />
-              </DecisionCellContainer>
             )}
             <>
               {randerFirstColumnCoverIfNecessary(

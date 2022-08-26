@@ -1,3 +1,4 @@
+/* eslint-disable sonarjs/cognitive-complexity */
 /* eslint-disable no-underscore-dangle */
 import React, { useCallback } from 'react';
 import { useSelector } from 'react-redux';
@@ -12,6 +13,7 @@ import { SINGLE_TASK_RESTRICTIONS_PROFILES } from 'restrictions/task-restriction
 import { CUSTOM_FIELD_TYPES } from 'helpers/custom-fields-helpers';
 import { currentTaskListSelector } from 'selectors/task-list-selectors';
 import { isMemberAdmin } from 'helpers/list-members-helper';
+import { Box } from '@material-ui/core';
 import { BulkContainer, StickyColumnContainer } from './styled';
 import {
   getTaskHeaderOptions,
@@ -27,6 +29,7 @@ const TasksHeader = ({
   isGroupSelected,
   onGroupSelect,
   pageBackground,
+  listContainsWorkflow,
 }) => {
   const taskList = useSelector(currentTaskListSelector);
   const { currentUser } = useSelector(store => ({
@@ -42,6 +45,15 @@ const TasksHeader = ({
     SINGLE_TASK_RESTRICTIONS_PROFILES[currentUser?.orgUserRole];
   const restrictCustomizationFeatures =
     taskList?.restrictCustomization && !isListAdmin;
+
+  const handleClickCheckbox = useCallback(
+    event => {
+      event.preventDefault();
+      event.stopPropagation();
+      onGroupSelect(event);
+    },
+    [onGroupSelect],
+  );
 
   const onDragEnd = useCallback(
     column => {
@@ -69,11 +81,12 @@ const TasksHeader = ({
       if (typeof setColumnWidth === 'function') {
         setColumnWidth({
           columnIdentifier: identifier,
-          columnWidth: index === 0 ? width - 25 : width,
+          columnWidth:
+            index === 0 ? width - (listContainsWorkflow ? 25 + 54 : 25) : width,
         });
       }
     },
-    [setColumnWidth],
+    [listContainsWorkflow, setColumnWidth],
   );
 
   const renderColumn = useCallback(
@@ -96,7 +109,11 @@ const TasksHeader = ({
             isDraggingOver={snapshot.isDraggingOver}
             id={f.identifier}
             label={f.label}
-            width={index === 0 ? Number(f.columnWidth) + 25 : f.columnWidth}
+            width={
+              index === 0
+                ? Number(f.columnWidth) + (listContainsWorkflow ? 25 + 54 : 25)
+                : f.columnWidth
+            }
             sort={sort}
             truncateEnabled
             onSortChange={onSortChange}
@@ -107,12 +124,9 @@ const TasksHeader = ({
               <BulkContainer>
                 <Checkbox
                   isChecked={isGroupSelected}
-                  onClick={event => {
-                    event.preventDefault();
-                    event.stopPropagation();
-                    onGroupSelect(event);
-                  }}
+                  onClick={handleClickCheckbox}
                 />
+                {listContainsWorkflow && <Box ml="54px" />}
               </BulkContainer>
             )}
           </ColumnSortHeader>
@@ -131,7 +145,11 @@ const TasksHeader = ({
           truncateEnabled
           id={f.identifier}
           label={f.name}
-          width={index === 0 ? +f.columnWidth + 25 : f.columnWidth}
+          width={
+            index === 0
+              ? +f.columnWidth + (listContainsWorkflow ? 25 + 54 : 25)
+              : f.columnWidth
+          }
           snapshot={snapshot}
           printWidth={
             f.id === TaskItemColumn.ASSIGNED
@@ -143,12 +161,9 @@ const TasksHeader = ({
             <BulkContainer>
               <Checkbox
                 isChecked={isGroupSelected}
-                onClick={event => {
-                  event.preventDefault();
-                  event.stopPropagation();
-                  onGroupSelect(event);
-                }}
+                onClick={handleClickCheckbox}
               />
+              {listContainsWorkflow && <Box ml="54px" />}
             </BulkContainer>
           )}
         </ColumnSortHeader>
@@ -156,9 +171,10 @@ const TasksHeader = ({
     },
     [
       bulkEditEnabled,
+      handleClickCheckbox,
       handleResizeColumn,
       isGroupSelected,
-      onGroupSelect,
+      listContainsWorkflow,
       onSortChange,
       restrictCustomizationFeatures,
       setColumnWidth,

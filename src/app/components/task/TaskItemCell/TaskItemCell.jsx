@@ -6,7 +6,6 @@ import palette from 'styles/palette';
 const TaskItemCell = styled.div`
   ${({ order }) => (order ? `order: ${order};` : '')}
   position: relative;
-  /* width: ${props => (!props.width ? '100%' : '')}; */
   justify-content: ${props => props.justify || 'flex-start'};
   align-items: ${({ alignItems }) => alignItems || 'center'};
   border-right: ${({ order }) =>
@@ -28,6 +27,9 @@ const TaskItemCell = styled.div`
     props.paddingLeft ? spacing[props.paddingRight] : spacing.regular};
   max-height: 35px;
   overflow: hidden;
+  /* ${({ listContainsWorkflow }) => {
+    return listContainsWorkflow ? 'padding-left: 55px;' : '';
+  }} */
 
   @media print {
     ${({ printWidth }) =>

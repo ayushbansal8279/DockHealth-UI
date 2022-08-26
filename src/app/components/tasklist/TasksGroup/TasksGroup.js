@@ -52,6 +52,7 @@ import {
 import TasksHeader from '../TasksHeader/TasksHeader';
 
 const TasksGroup = ({
+  listContainsWorkflow,
   isDefaultGroup,
   isFirstGroup,
   isLastGroup,
@@ -326,6 +327,7 @@ const TasksGroup = ({
         )}
         {(tasks?.length > 0 || isLoadingGroup) && (
           <TasksHeader
+            listContainsWorkflow={listContainsWorkflow}
             bulkEditEnabled={bulkEditEnabled}
             sort={sort}
             onSortChange={onSortChange}

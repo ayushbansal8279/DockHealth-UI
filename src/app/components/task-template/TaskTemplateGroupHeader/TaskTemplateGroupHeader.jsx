@@ -414,7 +414,7 @@ const TaskTemplateGroupHeader = ({
           isSelected={isBundleSelected}
           isEditingDescription={isEditing}
           order={0}
-          width={+width + 25}
+          width={+width + 26 + 54}
         >
           {!groupDragAndDropDisabled && !bulkEditIsActive && (
             <TemplateHandle
@@ -459,11 +459,9 @@ const TaskTemplateGroupHeader = ({
           <TaskItemCell
             key={`task_description_${identifier}`}
             width={
-              getColumnOrder(TaskItemColumn.DESCRIPTION) === 0
-                ? 'undefined'
-                : columns?.find(
-                    ({ identifier: id }) => id === TaskItemColumn.DESCRIPTION,
-                  )?.columnWidth
+              columns?.find(
+                ({ identifier: id }) => id === TaskItemColumn.DESCRIPTION,
+              )?.columnWidth
             }
             paddingLeft="smallPlus"
             paddingRight="tiny"
@@ -508,13 +506,9 @@ const TaskTemplateGroupHeader = ({
           paddingRight="tiny"
           key={`subtask_count_${identifier}`}
           width={
-            getColumnOrder(TaskItemColumn.SUBTASKS_COUNT) !== 0
-              ? columns?.find(
-                  ({ identifier: id }) => id === TaskItemColumn.SUBTASKS_COUNT,
-                )?.columnWidth
-              : columns?.find(
-                  ({ identifier: id }) => id === TaskItemColumn.SUBTASKS_COUNT,
-                )?.columnWidth - 60
+            columns?.find(
+              ({ identifier: id }) => id === TaskItemColumn.SUBTASKS_COUNT,
+            )?.columnWidth
           }
           order={getColumnOrder(TaskItemColumn.SUBTASKS_COUNT)}
         />,
@@ -530,13 +524,9 @@ const TaskTemplateGroupHeader = ({
             <TaskItemCell
               key={`patient_${identifier}`}
               width={
-                getColumnOrder(TaskItemColumn.PATIENT) !== 0
-                  ? columns?.find(
-                      ({ identifier: id }) => id === TaskItemColumn.PATIENT,
-                    ).columnWidth
-                  : columns?.find(
-                      ({ identifier: id }) => id === TaskItemColumn.PATIENT,
-                    ).columnWidth - 60
+                columns?.find(
+                  ({ identifier: id }) => id === TaskItemColumn.PATIENT,
+                ).columnWidth
               }
               alignItems="flex-start"
               order={getColumnOrder(TaskItemColumn.PATIENT)}
@@ -562,15 +552,9 @@ const TaskTemplateGroupHeader = ({
             <TaskItemCell
               key={`task_status_${identifier}`}
               width={
-                getColumnOrder(TaskItemColumn.WORKFLOW_STATUS) !== 0
-                  ? columns?.find(
-                      ({ identifier: id }) =>
-                        id === TaskItemColumn.WORKFLOW_STATUS,
-                    )?.columnWidth
-                  : columns?.find(
-                      ({ identifier: id }) =>
-                        id === TaskItemColumn.WORKFLOW_STATUS,
-                    )?.columnWidth - 60
+                columns?.find(
+                  ({ identifier: id }) => id === TaskItemColumn.WORKFLOW_STATUS,
+                )?.columnWidth
               }
               paddingLeft="smallPlus"
               paddingRight="tiny"
@@ -599,13 +583,9 @@ const TaskTemplateGroupHeader = ({
             <TaskItemCell
               key={`activity_${identifier}`}
               width={
-                getColumnOrder(TaskItemColumn.ACTIVITY) !== 0
-                  ? columns?.find(
-                      ({ identifier: id }) => id === TaskItemColumn.ACTIVITY,
-                    )?.columnWidth
-                  : columns?.find(
-                      ({ identifier: id }) => id === TaskItemColumn.ACTIVITY,
-                    )?.columnWidth - 60
+                columns?.find(
+                  ({ identifier: id }) => id === TaskItemColumn.ACTIVITY,
+                )?.columnWidth
               }
               order={getColumnOrder(TaskItemColumn.ACTIVITY)}
             >
@@ -631,13 +611,9 @@ const TaskTemplateGroupHeader = ({
             <TaskItemCell
               key={`start_date_${identifier}`}
               width={
-                getColumnOrder(TaskItemColumn.START_DATE) !== 0
-                  ? columns?.find(
-                      ({ identifier: id }) => id === TaskItemColumn.START_DATE,
-                    )?.columnWidth
-                  : columns?.find(
-                      ({ identifier: id }) => id === TaskItemColumn.START_DATE,
-                    )?.columnWidth - 60
+                columns?.find(
+                  ({ identifier: id }) => id === TaskItemColumn.START_DATE,
+                )?.columnWidth
               }
               justify="center"
               order={getColumnOrder(TaskItemColumn.START_DATE)}
@@ -657,13 +633,9 @@ const TaskTemplateGroupHeader = ({
             <TaskItemCell
               key={`due_date_${identifier}`}
               width={
-                getColumnOrder(TaskItemColumn.DUE_DATE) !== 0
-                  ? columns?.find(
-                      ({ identifier: id }) => id === TaskItemColumn.DUE_DATE,
-                    )?.columnWidth
-                  : columns?.find(
-                      ({ identifier: id }) => id === TaskItemColumn.DUE_DATE,
-                    )?.columnWidth - 60
+                columns?.find(
+                  ({ identifier: id }) => id === TaskItemColumn.DUE_DATE,
+                )?.columnWidth
               }
               justify="center"
               order={getColumnOrder(TaskItemColumn.DUE_DATE)}
@@ -683,13 +655,9 @@ const TaskTemplateGroupHeader = ({
             <TaskItemCell
               key={`assigned_${identifier}`}
               width={
-                getColumnOrder(TaskItemColumn.ASSIGNED) !== 0
-                  ? columns?.find(
-                      ({ identifier: id }) => id === TaskItemColumn.ASSIGNED,
-                    )?.columnWidth
-                  : columns?.find(
-                      ({ identifier: id }) => id === TaskItemColumn.ASSIGNED,
-                    )?.columnWidth - 60
+                columns?.find(
+                  ({ identifier: id }) => id === TaskItemColumn.ASSIGNED,
+                )?.columnWidth
               }
               // eslint-disable-next-line sonarjs/no-all-duplicated-branches
               justify={groupHasMultipleAssignees ? 'center' : 'center'}
@@ -725,13 +693,9 @@ const TaskTemplateGroupHeader = ({
             <TaskItemCell
               key={`list_${identifier}`}
               width={
-                getColumnOrder(TaskItemColumn.LIST_NAME) !== 0
-                  ? columns?.find(
-                      ({ identifier: id }) => id === TaskItemColumn.LIST_NAME,
-                    )?.columnWidth
-                  : columns?.find(
-                      ({ identifier: id }) => id === TaskItemColumn.LIST_NAME,
-                    )?.columnWidth - 60
+                columns?.find(
+                  ({ identifier: id }) => id === TaskItemColumn.LIST_NAME,
+                )?.columnWidth
               }
               order={getColumnOrder(TaskItemColumn.LIST_NAME)}
             />,
@@ -765,11 +729,7 @@ const TaskTemplateGroupHeader = ({
           return randerFirstColumnCoverIfNecessary(
             <TaskItemCell
               key={`custom_${identifier}_${field.identifier}`}
-              width={
-                getColumnOrder(field.identifier) !== 0
-                  ? field.columnWidth
-                  : field.columnWidth - 60
-              }
+              width={field.columnWidth}
               order={getColumnOrder(field.identifier)}
             >
               {!hidePatientCustomFields && workFlowData && (

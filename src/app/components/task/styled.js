@@ -599,10 +599,13 @@ export const PatientPrintAdditionalInfo = styled.div`
 `;
 
 export const DecisionCellContainer = styled.div`
-  height: 100%;
-  width: 150px;
-  padding: ${spacing.small} ${spacing.small};
+  height: 34px;
+  width: 120px;
+  display: flex;
+  align-items: center;
   border-left: 1px solid ${palette.coolGrey3};
+  padding-left: 10px;
+  margin-left: 8px;
 `;
 
 export const DisabledLink = styled.span``;

@@ -25,6 +25,7 @@ const Subtasks = ({
   isFetchingSubTasks,
   shouldShowBlockModalOnDrag,
   showClearSortFiltersModal,
+  listContainsWorkflow,
   ...restProps
 }) => {
   const dispatch = useDispatch();
@@ -101,6 +102,7 @@ const Subtasks = ({
                             {...draggableProps}
                           >
                             <TaskItem
+                              listContainsWorkflow={listContainsWorkflow}
                               dragHandleProps={dragHandleProps}
                               key={subtask.taskIdentifier}
                               task={{ ...subtask, taskList }}
