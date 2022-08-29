@@ -1,10 +1,11 @@
-import React, { useState, useContext, useCallback } from 'react';
+import React, { useState, useCallback } from 'react';
 import { useCreateChannelContext } from '@sendbird/uikit-react/CreateChannel/context';
 import useSendbirdStateContext from '@sendbird/uikit-react/useSendbirdStateContext';
 import sendBirdSelectors from '@sendbird/uikit-react/sendBirdSelectors';
 import Modal from '@sendbird/uikit-react/ui/Modal';
+import { useDispatch } from 'react-redux';
+import { selectChannel } from 'actions/sendbird-actions';
 import MultiAssignChatInviteMembersList from './MultiAssignChatInviteList';
-import SelectedChannelContext from '../SelectedChannelContext';
 
 const InviteUsers = ({ onCancel }) => {
   const { createChannel } = useCreateChannelContext();
@@ -12,9 +13,9 @@ const InviteUsers = ({ onCancel }) => {
   const globalStore = useSendbirdStateContext();
   const sdkInstance = sendBirdSelectors.getSdk(globalStore);
 
-  const [selectedMembers, setSelectedMembers] = useState([]);
+  const dispatch = useDispatch();
 
-  const { setSelectedChannel } = useContext(SelectedChannelContext);
+  const [selectedMembers, setSelectedMembers] = useState([]);
 
   const onSubmit = useCallback(() => {
     const parameters = new sdkInstance.GroupChannelParams();
@@ -29,7 +30,7 @@ const InviteUsers = ({ onCancel }) => {
     parameters.name = '';
 
     createChannel(parameters).then(channel => {
-      setSelectedChannel(channel);
+      dispatch(selectChannel(channel));
     });
 
     onCancel();
@@ -38,7 +39,7 @@ const InviteUsers = ({ onCancel }) => {
     onCancel,
     sdkInstance.GroupChannelParams,
     selectedMembers,
-    setSelectedChannel,
+    dispatch,
   ]);
 
   return (
