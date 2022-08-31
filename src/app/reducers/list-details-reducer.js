@@ -243,7 +243,7 @@ const ListDetailsReducer = (state = initialState, action) => {
 
       const groupsToUpdate = groupOfTasks.taskGroups;
 
-      let updatedTaskGroups = state.groupedTasks?.taskGroups;
+      let updatedTaskGroups = state.groupedTasks?.taskGroups || [];
 
       groupsToUpdate.forEach(group => {
         let groupExists = false;
@@ -646,7 +646,6 @@ const ListDetailsReducer = (state = initialState, action) => {
     case ActionTypes.MOVE_WORKFLOW_TO_DIFFERENT_LIST_SUCCESS:
     case ActionTypes.DELETE_WORKFLOW: {
       const { identifier } = action;
-
       return {
         ...state,
         groupedTasks: {
@@ -724,7 +723,7 @@ const ListDetailsReducer = (state = initialState, action) => {
         };
       }
       // add the group
-      const existingGroupedTasks = state.groupedTasks?.taskGroups;
+      const existingGroupedTasks = state.groupedTasks?.taskGroups || [];
       const newGroupedTasks = [
         {
           groupIdentifier: existingGroup.taskGroupIdentifier,
