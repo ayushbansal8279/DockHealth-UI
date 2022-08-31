@@ -505,7 +505,7 @@ const TaskBaseReducer = (state, action, updateStateCallback) => {
         const identifiers = action.identifier;
         return updateStateCallback(state, task =>
           identifiers.includes(task.identifier)
-            ? { ...task, selected: action.newSelectedState || true }
+            ? { ...task, selected: action.newSelectedState }
             : task,
         );
       }
