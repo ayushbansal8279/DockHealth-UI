@@ -51,7 +51,10 @@ const DeleteConfirmationModal = ({
               fullWidth
               variant="primary-red"
               size="small"
-              onClick={confirm}
+              onClick={() => {
+                confirm();
+                closeModal();
+              }}
             >
               {confirmButtonText}
             </Button>
