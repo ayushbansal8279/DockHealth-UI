@@ -68,6 +68,8 @@ export const Column = styled.div`
   display: flex;
   flex-direction: column;
   flex: ${({ width }) => (width ? `${width}px` : `1`)} 0 0;
+  ${({ width }) => (width ? `max-width: ${width}px;` : ``)};
+  ${({ maxHeight }) => (maxHeight ? `max-height: ${maxHeight}px;` : ``)};
 `;
 
 export const SelectedPatientsWrapper = styled.div`
