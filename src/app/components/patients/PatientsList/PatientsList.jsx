@@ -1,5 +1,5 @@
 /* eslint-disable sonarjs/cognitive-complexity */
-import React, { useCallback, useEffect, useState } from 'react';
+import React, { useCallback, useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { useHistory, useLocation } from 'react-router-dom';
 import * as ActionTypes from 'actions/action-types';
@@ -55,9 +55,15 @@ const PatientsList = ({
   const { currentUser } = useSelector(store => ({
     currentUser: store.userState.userProfile,
   }));
-  const [isListChecked, setIsListChecked] = useState(false);
   const customerTypeLabel = getCustomerTypeLabel(currentUser);
   const uniqueIdentifierLabel = getCustomerUniqueIDLabel(currentUser);
+
+  const selectedPatientsCount = patients?.filter(p => p.isSelected).length;
+  const patientsCount = patients?.length;
+  const isListChecked =
+    patientsCount &&
+    selectedPatientsCount &&
+    patientsCount === selectedPatientsCount;
 
   const setSelectedPatient = useCallback(
     data => {
@@ -71,7 +77,6 @@ const PatientsList = ({
   );
 
   const handleListSelect = useCallback(() => {
-    setIsListChecked(previous => !previous);
     dispatch({
       type: isListChecked
         ? ActionTypes.UNSELECT_ALL_PATIENTS
