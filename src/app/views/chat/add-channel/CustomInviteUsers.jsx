@@ -3,8 +3,9 @@ import { useCreateChannelContext } from '@sendbird/uikit-react/CreateChannel/con
 import useSendbirdStateContext from '@sendbird/uikit-react/useSendbirdStateContext';
 import sendBirdSelectors from '@sendbird/uikit-react/sendBirdSelectors';
 import Modal from '@sendbird/uikit-react/ui/Modal';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { selectChannel } from 'actions/sendbird-actions';
+import { userProfileSelector } from 'selectors/user-selectors';
 import MultiAssignChatInviteMembersList from './MultiAssignChatInviteList';
 
 const InviteUsers = ({ onCancel }) => {
@@ -12,6 +13,8 @@ const InviteUsers = ({ onCancel }) => {
 
   const globalStore = useSendbirdStateContext();
   const sdkInstance = sendBirdSelectors.getSdk(globalStore);
+
+  const { identifier: currentUserId } = useSelector(userProfileSelector);
 
   const dispatch = useDispatch();
 
@@ -27,6 +30,10 @@ const InviteUsers = ({ onCancel }) => {
         return member.identifier;
       }),
     );
+    // parameters.invitedUserIds = selectedMembers.map(
+    //   member => member.identifier,
+    // );
+    parameters.operatorUserIds = [currentUserId];
     parameters.name = '';
 
     createChannel(parameters).then(channel => {
@@ -35,10 +42,11 @@ const InviteUsers = ({ onCancel }) => {
 
     onCancel();
   }, [
-    createChannel,
-    onCancel,
     sdkInstance.GroupChannelParams,
     selectedMembers,
+    currentUserId,
+    createChannel,
+    onCancel,
     dispatch,
   ]);
 

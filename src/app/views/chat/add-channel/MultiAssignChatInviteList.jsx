@@ -61,16 +61,20 @@ const MultiAssignChatInviteMembersList = ({
             );
             return { ...user, isSelected };
           })
-        : membersOptions?.filter(({ name, identifier }) => {
-            const isSelected = !!selectedMembers.find(
-              ({ identifier: id }) => id === identifier,
-            );
-            return (
-              !isSelected &&
-              name.toLowerCase().startsWith(searchValue.toLowerCase()) &&
-              identifier !== currentUser?.identifier
-            );
-          }),
+        : membersOptions?.filter(
+            ({ name, identifier, itemType, userStatus }) => {
+              const isSelected = !!selectedMembers.find(
+                ({ identifier: id }) => id === identifier,
+              );
+              return (
+                !isSelected &&
+                name.toLowerCase().startsWith(searchValue.toLowerCase()) &&
+                identifier !== currentUser?.identifier &&
+                itemType === 'USER' &&
+                userStatus === 'ACTIVE'
+              );
+            },
+          ),
     [
       enableLazyLoading,
       membersOptions,

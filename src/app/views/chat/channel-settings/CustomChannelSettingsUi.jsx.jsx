@@ -1,34 +1,30 @@
-import React, { useState, useCallback, useContext } from 'react';
+import React, { useState, useCallback } from 'react';
 import useSendbirdStateContext from '@sendbird/uikit-react/useSendbirdStateContext';
 import Label from '@sendbird/uikit-react/ui/Label';
 import IconButton from '@sendbird/uikit-react/ui/IconButton';
 import Icon from '@sendbird/uikit-react/ui/Icon';
-// import UserPanel from '@sendbird/uikit-react/ChannelSettings/components/UserPanel';
+import { selectedChatChannelSelector } from 'selectors/sendbird-selectors';
+import { useSelector } from 'react-redux';
 import UserPanel from './CustomUserPanel';
 import LeaveChannel from './LeaveChannel';
 import ChannelSettingsContext from './ChannelSettingsContext';
 import { Typography, Colors } from './LabelTypography';
 import ChannelProfile from './ChannelProfile';
-import SelectedChannelContext from '../SelectedChannelContext';
 
 const CustomChannelSettingsUI = props => {
   const state = useSendbirdStateContext();
   const [showLeaveChannelModal, setShowLeaveChannelModal] = useState(false);
 
-  const isOnline = state?.config?.isOnline;
   const logger = state?.config?.logger;
 
   const { invalidChannel, onCloseClick } = ChannelSettingsContext;
-  const { selectedChannel: channel } = useContext(SelectedChannelContext);
+  const channel = useSelector(selectedChatChannelSelector);
 
   const { renderChannelProfile } = props;
 
   const handleLeaveChannel = useCallback(() => {
-    if (!isOnline) {
-      return;
-    }
     setShowLeaveChannelModal(true);
-  }, [isOnline]);
+  }, []);
 
   if (!channel || invalidChannel) {
     return (
@@ -83,7 +79,6 @@ const CustomChannelSettingsUI = props => {
           className={[
             'sendbird-channel-settings__panel-item',
             'sendbird-channel-settings__leave-channel',
-            !isOnline ? 'sendbird-channel-settings__panel-item__disabled' : '',
           ].join(' ')}
           role="button"
           onKeyDown={handleLeaveChannel}
@@ -111,7 +106,6 @@ const CustomChannelSettingsUI = props => {
             }}
             onSubmit={() => {
               setShowLeaveChannelModal(false);
-              onCloseClick();
             }}
           />
         )}

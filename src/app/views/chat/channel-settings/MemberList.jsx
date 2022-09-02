@@ -1,200 +1,124 @@
-import React, { useEffect, useState, useCallback, useContext } from 'react';
-
+import React, {
+  useState,
+  useContext,
+  useCallback,
+  useMemo,
+  useEffect,
+} from 'react';
 import Button from '@sendbird/uikit-react/ui/Button';
-import IconButton from '@sendbird/uikit-react/ui/IconButton';
-import Icon from '@sendbird/uikit-react/ui/Icon';
-import ContextMenu from '@sendbird/uikit-react/ui/ContextMenu';
-
-import UserListItem from '@sendbird/uikit-react/ui/UserListItem';
-
-import useSendbirdStateContext from '@sendbird/uikit-react/useSendbirdStateContext';
-import ChannelSettingsContext from './ChannelSettingsContext';
-import { LocalizationContext } from '../channel/ChannelLocalizationContext';
-import uuidv4 from './uuid';
-import InviteUsers from '../add-channel/CustomInviteUsers';
-import InviteUsersModal from './InviteUsersModal';
 import { CreateChannelProvider } from '@sendbird/uikit-react/CreateChannel/context';
-// import InviteUsersModal from './InviteUsersModal';
+import * as OrganizationApi from 'api/organization-api';
+import { ListContentSection } from 'components/task/MultiAssignPopover/styled';
+import UserAvatar from 'components/user/UserAvatar/UserAvatar';
+import GroupAvatar from 'components/user/GroupAvatar/GroupAvatar';
+import Spacing from 'components/common/Spacing';
+import { isUserGroup } from 'helpers/user-helper';
+import ChannelSettingsContext from './ChannelSettingsContext';
+import InviteUsersModal from './InviteUsersModal';
+import {
+  ListContainer,
+  MemberName,
+  MemberRow,
+  MemberRowSkeletonLoader,
+} from './styled';
 
-// import MembersModal from './MembersModal';
-// import InviteUsers from './InviteUsersModal';
-
-const MemberList = () => {
-  const [members, setMembers] = useState([]);
-  const [hasNext, setHasNext] = useState(false);
-  const [showAllMembers, setShowAllMembers] = useState(false);
+const MemberList = ({ onError }) => {
   const [showInviteUsers, setShowInviteUsers] = useState(false);
 
-  const state = useSendbirdStateContext();
-  const { channel, setChannelUpdateId } = useContext(ChannelSettingsContext);
-  const { stringSet } = useContext(LocalizationContext);
+  const { channel } = useContext(ChannelSettingsContext);
+  const { members, myRole } = channel;
+  const [organizationMembers, setOrganizationMembers] = useState([]);
+  const [isFetchingMembers, setIsFetchingMembers] = useState(false);
 
-  const sdk = state?.stores?.sdkStore?.sdk;
-  const userId = state?.config?.userId;
+  // const [filteredMembers,setFilteredMembers] = useState([]);
+
+  const filteredMembers = useMemo(
+    () =>
+      organizationMembers?.filter(
+        ({ identifier }) =>
+          !!members.find(({ userId: id }) => id === identifier),
+      ),
+    [members, organizationMembers],
+  );
+
+  const isOperator = myRole === 'operator';
+
+  const handleOptionClick = useCallback(() => {
+    // add context menu in future updates
+  }, []);
 
   useEffect(() => {
-    if (!channel) {
-      setMembers([]);
-      return;
-    }
+    (async () => {
+      setIsFetchingMembers(true);
+      setOrganizationMembers([]);
+      try {
+        const totalMembers = await OrganizationApi.getOrganizationUsersAndUserGroups();
+        setOrganizationMembers(totalMembers);
+      } catch (error) {
+        if (typeof onError === 'function') onError(error);
+      }
+      setIsFetchingMembers(false);
+    })();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
-    const memberUserListQuery = channel?.createMemberListQuery({ limit: 10 });
-    memberUserListQuery.next().then(returnedMembers => {
-      setMembers(returnedMembers);
-      setHasNext(memberUserListQuery.hasNext);
-    });
-  }, [channel]);
-
-  const refreshList = useCallback(() => {
-    if (!channel) {
-      setMembers([]);
-      return;
-    }
-    const memberUserListQuery = channel?.createMemberListQuery({ limit: 10 });
-    memberUserListQuery.next().then(returnedMembers => {
-      setMembers(returnedMembers);
-      setHasNext(memberUserListQuery.hasNext);
-      setChannelUpdateId(uuidv4());
-    });
-  }, [channel, setChannelUpdateId]);
+  const renderSelectOption = useCallback(
+    (member, isSelected) => {
+      // eslint-disable-next-line no-param-reassign
+      member.identifier = member.userId;
+      return (
+        <MemberRow
+          key={member?.userId}
+          isSelected={isSelected}
+          onClick={event => handleOptionClick(event, member)}
+        >
+          {/* <Checkbox isChecked={isSelected} /> */}
+          <Spacing horizontal={3} />
+          {isUserGroup(member) ? (
+            <GroupAvatar group={member} hideTooltip />
+          ) : (
+            <UserAvatar user={member} hideTooltip />
+          )}
+          <Spacing horizontal={3} />
+          <MemberName>{member.name}</MemberName>
+        </MemberRow>
+      );
+    },
+    [handleOptionClick],
+  );
 
   return (
     <>
-      {/* {members.map(member => (
-        <UserListItem
-          key={member.userId}
-          user={member}
-          currentUser={sdk.currentUser.userId}
-          action={
-            userId !== member.userId
-              ? ({ actionRef, parentRef }) => (
-                  <ContextMenu
-                    menuTrigger={toggleDropdown => (
-                      <IconButton
-                        className="sendbird-user-message__more__menu"
-                        width="32px"
-                        height="32px"
-                        onClick={toggleDropdown}
-                      >
-                        <Icon
-                          width="24px"
-                          height="24px"
-                          type="MORE"
-                          fillColor="CONTENT_INVERSE"
-                        />
-                      </IconButton>
-                    )}
-                    // menuItems={closeDropdown => (
-                    //   <MenuItems
-                    //         parentContainRef={parentRef}
-                    //         parentRef={actionRef} // for catching location(x, y) of MenuItems
-                    //         closeDropdown={closeDropdown}
-                    //         openLeft
-                    //     >
-                    //         <MenuItem
-                    //         onClick={() => {
-                    //             if ((member.role !== 'operator')) {
-                    //             channel?.addOperators([member.userId]).then(() => {
-                    //                 refreshList();
-                    //                 closeDropdown();
-                    //             });
-                    //             } else {
-                    //             channel?.removeOperators([member.userId]).then(() => {
-                    //                 refreshList();
-                    //                 closeDropdown();
-                    //             });
-                    //             }
-                    //         }}
-                    //         >
-                    //         {
-                    //             member.role !== 'operator'
-                    //             ? stringSet.CHANNEL_SETTING__MODERATION__REGISTER_AS_OPERATOR
-                    //             : stringSet.CHANNEL_SETTING__MODERATION__UNREGISTER_OPERATOR
-                    //         }
-                    //         </MenuItem>
-                    //         {
-                    //         // No muted members in broadcast channel
-                    //         !channel?.isBroadcast && (
-                    //             <MenuItem
-                    //             onClick={() => {
-                    //                 if (member.isMuted) {
-                    //                 channel?.unmuteUser(member).then(() => {
-                    //                     refreshList();
-                    //                     closeDropdown();
-                    //                 })
-                    //                 } else {
-                    //                 channel?.muteUser(member).then(() => {
-                    //                     refreshList();
-                    //                     closeDropdown();
-                    //                 });
-                    //                 }
-                    //             }}
-                    //             >
-                    //             {
-                    //                 member.isMuted
-                    //                 ? stringSet.CHANNEL_SETTING__MODERATION__UNMUTE
-                    //                 : stringSet.CHANNEL_SETTING__MODERATION__MUTE
-                    //             }
-                    //             </MenuItem>
-                    //         )
-                    //         }
-                    //         <MenuItem
-                    //         onClick={() => {
-                    //             channel?.banUser(member, -1, '').then(() => {
-                    //             refreshList();
-                    //             closeDropdown();
-                    //             });
-                    //         }}
-                    //         >
-                    //         {stringSet.CHANNEL_SETTING__MODERATION__BAN}
-                    //         </MenuItem>
-                    //     </MenuItems>
-                    //     )}
-                  />
-                )
-              : null
-          }
-        />
-      ))} */}
-      {/* <div className="sendbird-channel-settings-accordion__footer">
-        {hasNext && (
-          <Button
-            type="SECONDARY"
-            size="SMALL"
-            onClick={() => setShowAllMembers(true)}
-          >
-            {stringSet.CHANNEL_SETTING__MEMBERS__SEE_ALL_MEMBERS}
-          </Button>
-        )}
+      <ListContainer>
+        <ListContentSection>
+          {!isFetchingMembers ? (
+            filteredMembers?.map(member =>
+              renderSelectOption(member, member.isSelected),
+            )
+          ) : (
+            <>
+              {new Array(4).fill().map((_, index) => (
+                // eslint-disable-next-line react/no-array-index-key
+                <MemberRowSkeletonLoader key={index} />
+              ))}
+            </>
+          )}
+        </ListContentSection>
+      </ListContainer>
+      {isOperator && (
         <Button
           type="SECONDARY"
           size="SMALL"
           onClick={() => setShowInviteUsers(true)}
         >
-          {stringSet.CHANNEL_SETTING__MEMBERS__INVITE_MEMBER}
+          Invite To Conversation
         </Button>
-      </div> */}
-      {/* {showAllMembers && (
-        <MembersModal
-          onCancel={() => {
-            setShowAllMembers(false);
-            refreshList();
-          }}
-        />
-      )} */}
-      <Button
-        type="SECONDARY"
-        size="SMALL"
-        onClick={() => setShowInviteUsers(true)}
-      >
-        Invite To Conversation
-      </Button>
+      )}
       {showInviteUsers && (
         <CreateChannelProvider channelUrl={channel.url}>
           <InviteUsersModal
             onSubmit={() => {
               setShowInviteUsers(false);
-              refreshList();
             }}
             onCancel={() => setShowInviteUsers(false)}
           />

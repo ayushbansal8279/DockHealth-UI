@@ -107,3 +107,7 @@
 .sendbird-channel-settings__scroll-area{
     height: 500px !important;
 }
+
+.sendbird-channel-profile__title{
+    max-width: none !important;
+}

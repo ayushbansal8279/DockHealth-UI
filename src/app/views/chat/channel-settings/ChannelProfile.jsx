@@ -3,10 +3,10 @@ import useSendbirdStateContext from '@sendbird/uikit-react/useSendbirdStateConte
 import ChannelAvatar from '@sendbird/uikit-react/ui/ChannelAvatar';
 import TextButton from '@sendbird/uikit-react/ui/TextButton';
 import Label from '@sendbird/uikit-react/ui/Label';
+import { useSelector } from 'react-redux';
+import { selectedChatChannelSelector } from 'selectors/sendbird-selectors';
 import EditDetails from './EditDetailsModal';
-import EditDetailsModal from '@sendbird/uikit-react/ChannelSettings/components/EditDetailsModal';
 import { LocalizationContext } from '../channel/ChannelLocalizationContext';
-import SelectedChannelContext from '../SelectedChannelContext';
 import { Typography, Colors } from './LabelTypography';
 
 const ChannelProfile = () => {
@@ -19,7 +19,7 @@ const ChannelProfile = () => {
   const isOnline = state?.config?.isOnline;
   const disabled = !isOnline;
 
-  const { selectedChannel } = useContext(SelectedChannelContext);
+  const selectedChannel = useSelector(selectedChatChannelSelector);
 
   const getChannelName = () => {
     if (selectedChannel?.name && selectedChannel?.name !== 'Group Channel') {
