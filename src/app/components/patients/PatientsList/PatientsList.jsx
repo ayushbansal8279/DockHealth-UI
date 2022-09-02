@@ -1,5 +1,5 @@
 /* eslint-disable sonarjs/cognitive-complexity */
-import React, { useCallback, useEffect } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { useHistory, useLocation } from 'react-router-dom';
 import * as ActionTypes from 'actions/action-types';
@@ -10,10 +10,15 @@ import {
   getCustomerTypeLabel,
   getCustomerUniqueIDLabel,
 } from 'helpers/customer-type-helper';
+import Checkbox from 'components/common/Checkbox/Checkbox';
 import PatientImportPopover from '../PatientImportPopover/PatientImportPopover';
 import TaskItemBulkEdit from '../../task/StandardTaskItem/TaskItemComponents/TaskItemBulkEdit';
 import EmptyFilteredPatientsList from '../EmptyFilteredPatientsList/EmptyFilteredPatientsList';
-import { NonEmptyListTable, ListLoaderContainer } from './styled';
+import {
+  NonEmptyListTable,
+  ListLoaderContainer,
+  BulkContainer,
+} from './styled';
 import { StyledDataGrid } from './DataGridStyles';
 
 const renderColumnHeader = props => {
@@ -28,6 +33,12 @@ const renderColumnHeader = props => {
     </>
   );
 };
+
+const renderCheckboxColumnHeader = ({ isListChecked, onListSelect }) => (
+  <BulkContainer>
+    <Checkbox isChecked={isListChecked} onClick={onListSelect} />
+  </BulkContainer>
+);
 
 const PatientsList = ({
   isFiltered,
@@ -44,7 +55,7 @@ const PatientsList = ({
   const { currentUser } = useSelector(store => ({
     currentUser: store.userState.userProfile,
   }));
-
+  const [isListChecked, setIsListChecked] = useState(false);
   const customerTypeLabel = getCustomerTypeLabel(currentUser);
   const uniqueIdentifierLabel = getCustomerUniqueIDLabel(currentUser);
 
@@ -59,6 +70,15 @@ const PatientsList = ({
     [dispatch],
   );
 
+  const handleListSelect = useCallback(() => {
+    setIsListChecked(previous => !previous);
+    dispatch({
+      type: isListChecked
+        ? ActionTypes.UNSELECT_ALL_PATIENTS
+        : ActionTypes.SELECT_ALL_PATIENTS,
+    });
+  }, [dispatch, isListChecked]);
+
   useEffect(() => {
     return () => {
       dispatch({
@@ -71,7 +91,12 @@ const PatientsList = ({
     {
       field: 'isSelected',
       headerName: '',
-      renderHeader: renderColumnHeader,
+      sortable: false,
+      renderHeader: () =>
+        renderCheckboxColumnHeader({
+          isListChecked,
+          onListSelect: handleListSelect,
+        }),
       renderCell: ({ row }) => (
         <span>
           <TaskItemBulkEdit
