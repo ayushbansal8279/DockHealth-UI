@@ -9,18 +9,10 @@ import Button from '@sendbird/uikit-react/ui/Button';
 import { CreateChannelProvider } from '@sendbird/uikit-react/CreateChannel/context';
 import * as OrganizationApi from 'api/organization-api';
 import { ListContentSection } from 'components/task/MultiAssignPopover/styled';
-import UserAvatar from 'components/user/UserAvatar/UserAvatar';
-import GroupAvatar from 'components/user/GroupAvatar/GroupAvatar';
-import Spacing from 'components/common/Spacing';
-import { isUserGroup } from 'helpers/user-helper';
 import ChannelSettingsContext from './ChannelSettingsContext';
 import InviteUsersModal from './InviteUsersModal';
-import {
-  ListContainer,
-  MemberName,
-  MemberRow,
-  MemberRowSkeletonLoader,
-} from './styled';
+import MemberListItem from './MemeberListItem';
+import { ListContainer, MemberRowSkeletonLoader } from './styled';
 
 const MemberList = ({ onError }) => {
   const [showInviteUsers, setShowInviteUsers] = useState(false);
@@ -29,8 +21,6 @@ const MemberList = ({ onError }) => {
   const { members, myRole } = channel;
   const [organizationMembers, setOrganizationMembers] = useState([]);
   const [isFetchingMembers, setIsFetchingMembers] = useState(false);
-
-  // const [filteredMembers,setFilteredMembers] = useState([]);
 
   const filteredMembers = useMemo(
     () =>
@@ -44,7 +34,7 @@ const MemberList = ({ onError }) => {
   const isOperator = myRole === 'operator';
 
   const handleOptionClick = useCallback(() => {
-    // add context menu in future updates
+    // add context menu in future updates\
   }, []);
 
   useEffect(() => {
@@ -67,24 +57,15 @@ const MemberList = ({ onError }) => {
       // eslint-disable-next-line no-param-reassign
       member.identifier = member.userId;
       return (
-        <MemberRow
-          key={member?.userId}
+        <MemberListItem
+          member={member}
           isSelected={isSelected}
-          onClick={event => handleOptionClick(event, member)}
-        >
-          {/* <Checkbox isChecked={isSelected} /> */}
-          <Spacing horizontal={3} />
-          {isUserGroup(member) ? (
-            <GroupAvatar group={member} hideTooltip />
-          ) : (
-            <UserAvatar user={member} hideTooltip />
-          )}
-          <Spacing horizontal={3} />
-          <MemberName>{member.name}</MemberName>
-        </MemberRow>
+          channel={channel}
+          handleOptionClick={handleOptionClick}
+        />
       );
     },
-    [handleOptionClick],
+    [channel, handleOptionClick],
   );
 
   return (

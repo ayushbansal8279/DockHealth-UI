@@ -5,7 +5,8 @@ import IconButton from '@sendbird/uikit-react/ui/IconButton';
 import Icon from '@sendbird/uikit-react/ui/Icon';
 import { selectedChatChannelSelector } from 'selectors/sendbird-selectors';
 import { useSelector } from 'react-redux';
-import UserPanel from './CustomUserPanel';
+// import UserPanel from './CustomUserPanel';
+import MemberList from './MemberList';
 import LeaveChannel from './LeaveChannel';
 import ChannelSettingsContext from './ChannelSettingsContext';
 import { Typography, Colors } from './LabelTypography';
@@ -74,7 +75,7 @@ const CustomChannelSettingsUI = props => {
       </div>
       <div className="sendbird-channel-settings__scroll-area">
         {renderChannelProfile() || <ChannelProfile />}
-        <UserPanel />
+        <MemberList />
         <div
           className={[
             'sendbird-channel-settings__panel-item',
