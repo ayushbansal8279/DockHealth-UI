@@ -35,7 +35,7 @@ const ListOptionsMenu = props => {
   const MASTER_ROLES = ['ADMIN', 'OWNER'];
   const PRIVILEGE_ROLES = [...MASTER_ROLES, 'MEMBER'];
 
-  const currentUserMember = list?.listUsers.find(
+  const currentUserMember = list?.listUsers?.find(
     u => u.identifier === currentUser?.identifier,
   );
   const isListAdmin = isMemberAdmin(currentUserMember);
