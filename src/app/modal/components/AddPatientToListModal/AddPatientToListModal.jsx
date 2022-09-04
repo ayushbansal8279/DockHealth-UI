@@ -156,7 +156,7 @@ const AddPatientToListModal = ({
             <PatientList onSelect={handleSelectPatient} />
           </Column>
           <Spacing horizontal={4} />
-          <Column>
+          <Column maxHeight={325}>
             <Header>Included {customerTypeLabel}s in list</Header>
             <Spacing vertical={4} />
             <SelectedPatientsWrapper>
