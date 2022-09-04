@@ -1,4 +1,4 @@
-import React, { useCallback } from 'react';
+import React, { useCallback, useRef } from 'react';
 import moment from 'moment';
 import { Box } from '@material-ui/core';
 import RecurringIcon from 'img/recurring-arrows';
@@ -10,7 +10,8 @@ import Input from 'components/common/Input/Input';
 import { updateTaskDueDate } from 'actions/task-actions';
 import { useDispatch, useSelector } from 'react-redux';
 import { selectedTaskSelector } from 'selectors/task-drawer-selectors';
-import TaskDrawerPopover from '../TaskDrawerPopover/TaskDrawerPopover';
+import { useBoolean } from 'hooks/useBoolean';
+import PopoverCard from 'components/common/PopoverCard/PopoverCard';
 import { formatDueTime } from './helpers';
 import { AdornmentClear } from '../styled';
 import {
@@ -19,16 +20,19 @@ import {
   DueDateSectionWrapper,
   Placeholder,
   DueDateText,
+  StyledButton,
+  StyledPopover,
 } from './styled';
 
 const DueDateSection = () => {
   const dispatch = useDispatch();
-  const selectedTask = useSelector(selectedTaskSelector) || {};
+  const selectedTask = useSelector(selectedTaskSelector);
   const { taskIdentifier, dueDate, hasRecurringSchedule } = selectedTask;
   const momentDueDate = dueDate ? moment(dueDate) : null;
   const isTemplateTask = checkIfTemplateTask(selectedTask);
   const sectionDisabled = isTemplateTask || !taskIdentifier;
-
+  const buttonReference = useRef(null);
+  const [isPopoverOpen, openPopover, closePopover] = useBoolean(false);
   const handleDueDateSave = useCallback(
     updatedDueDateTime => {
       dispatch(updateTaskDueDate(selectedTask, updatedDueDateTime));
@@ -40,19 +44,15 @@ const DueDateSection = () => {
     <DueDateSectionWrapper disabled={isTemplateTask}>
       <Input
         label="Due date"
+        ref={buttonReference}
         shrink
         customInputComponent={() => (
-          <TaskDrawerPopover
-            disabled={sectionDisabled}
-            content={({ closePopover }) => (
-              <DueDatePicker
-                taskIdentifier={taskIdentifier}
-                selectedDate={dueDate}
-                onDateChange={handleDueDateSave}
-                recurring={hasRecurringSchedule}
-                onCloseClick={closePopover}
-              />
-            )}
+          <StyledButton
+            type="button"
+            onClick={event => {
+              event.stopPropagation();
+              openPopover(true);
+            }}
           >
             <DueDateContentWrapper>
               {momentDueDate ? (
@@ -86,9 +86,40 @@ const DueDateSection = () => {
                 </Placeholder>
               )}
             </DueDateContentWrapper>
-          </TaskDrawerPopover>
+          </StyledButton>
         )}
       />
+      <StyledPopover
+        anchorEl={buttonReference?.current}
+        anchorOrigin={{
+          vertical: 'top',
+          horizontal: 'right',
+        }}
+        transformOrigin={{
+          vertical: 'top',
+          horizontal: 'right',
+        }}
+        open={isPopoverOpen}
+        onClose={event => {
+          event.stopPropagation();
+          closePopover();
+        }}
+        width="auto"
+      >
+        {isPopoverOpen && (
+          <PopoverCard>
+            <Box width="auto" minWidth={buttonReference.current?.offsetWidth}>
+              <DueDatePicker
+                taskIdentifier={taskIdentifier}
+                selectedDate={dueDate}
+                onDateChange={handleDueDateSave}
+                recurring={hasRecurringSchedule}
+                onCloseClick={closePopover}
+              />
+            </Box>
+          </PopoverCard>
+        )}
+      </StyledPopover>
     </DueDateSectionWrapper>
   );
 };
