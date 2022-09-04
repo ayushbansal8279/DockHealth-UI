@@ -138,6 +138,14 @@ const TasksHeader = ({
     ],
   );
 
+  const handleGroupSelect = useCallback(
+    event => {
+      event.stopPropagation();
+      onGroupSelect(event);
+    },
+    [onGroupSelect],
+  );
+
   return (
     <DragDropContext onDragEnd={onDragEnd}>
       <Droppable
@@ -175,7 +183,7 @@ const TasksHeader = ({
                   <BulkContainer>
                     <Checkbox
                       isChecked={isGroupSelected}
-                      onClick={onGroupSelect}
+                      onClick={handleGroupSelect}
                     />
                   </BulkContainer>
                 )}
