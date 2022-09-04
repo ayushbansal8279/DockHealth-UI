@@ -14,3 +14,11 @@ export const ListLoaderContainer = styled.div`
   width: 915px;
   margin: ${spacing.giga} auto;
 `;
+
+export const BulkContainer = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: absolute;
+  left: 24px;
+`;
