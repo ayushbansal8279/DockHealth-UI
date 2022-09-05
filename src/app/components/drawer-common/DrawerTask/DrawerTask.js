@@ -87,6 +87,8 @@ const DrawerTask = props => {
     taskList,
     hasRecurringSchedule,
     reminderType,
+    dependencyTasksCompletedCount,
+    dependencyTasksCount,
   } = task;
 
   const isCompleted = status === 'COMPLETE';
@@ -100,6 +102,17 @@ const DrawerTask = props => {
       handleRichText: false,
     }),
   );
+
+  const isDecisionTask = task.intentType === 'DECISION';
+  const isDecisionSelected = task.taskOutcomes?.reduce(
+    (accumulator, currentValue) => accumulator || currentValue.isSelected,
+    false,
+  );
+  const isTaskStatusTogglingDisabled =
+    isTemplateTask || (isDecisionTask && !isDecisionSelected);
+
+  const isDependencyEmptyOrCompleted =
+    dependencyTasksCount === dependencyTasksCompletedCount;
 
   const handleGoToChildTask = useCallback(
     childTask => {
@@ -151,13 +164,17 @@ const DrawerTask = props => {
       <CircleIcon
         src={isCompleted ? CircleCompleted : Circle}
         isCompleted={isCompleted}
-        isClickable
+        isClickable={
+          !isTaskStatusTogglingDisabled && isDependencyEmptyOrCompleted
+        }
         onClick={event => {
           event.stopPropagation();
-          (isCompleted
-            ? onTaskDrawerSubtaskReActivated
-            : onTaskDrawerSubtaskCompleted)();
-          dispatch(toggleCompleteTask(task, currentUser));
+          if (!isTaskStatusTogglingDisabled && isDependencyEmptyOrCompleted) {
+            (isCompleted
+              ? onTaskDrawerSubtaskReActivated
+              : onTaskDrawerSubtaskCompleted)();
+            dispatch(toggleCompleteTask(task, currentUser));
+          }
         }}
       />
       <DescriptionContainer
