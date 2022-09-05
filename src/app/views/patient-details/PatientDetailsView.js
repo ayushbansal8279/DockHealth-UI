@@ -7,7 +7,8 @@ import React, {
   useState,
 } from 'react';
 import { Tabs, Grid } from '@material-ui/core';
-import { compose, equals } from 'ramda';
+import compose from 'ramda/src/compose';
+import equals from 'ramda/src/equals';
 import { useDispatch, useSelector } from 'react-redux';
 import debounce from 'lodash.debounce';
 import {
@@ -163,7 +164,7 @@ const PatientDetailsView = () => {
       }
     }
     return DEFAULT_TAB.mainPath;
-  }, [pathname]);
+  }, [pathname, tabsConfiguration]);
 
   const handleTabChange = (_, newTabValue) => {
     history.push(`${url}/${newTabValue}`);
