@@ -430,7 +430,19 @@ export const reassignTasksToAnotherGroup = (
     });
 
 export const bulkEditTasks = bulkEditOption =>
-  axios.put('/task/bulkEdit', bulkEditOption).then(({ data }) => data);
+  axios
+    .put('/task/bulkEdit', bulkEditOption)
+    .then(({ data }) => data)
+    .catch(error => {
+      showAlert({
+        status: 'error',
+        title: 'Error',
+        text:
+          error?.response?.data?.errorMessage ??
+          'Error in bulk operation. Please try again.',
+      });
+      throw error;
+    });
 
 export function rollbackTransaction(transactionIdentifier) {
   return axios
