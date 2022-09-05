@@ -5,7 +5,7 @@ import 'simplebar/dist/simplebar.min.css';
 
 import { node } from 'prop-types';
 import React, { PureComponent } from 'react';
-import { isEmpty } from 'ramda';
+import isEmpty from 'ramda/src/isEmpty';
 import { connect } from 'react-redux';
 import IdleTimer from 'react-idle-timer';
 import { withRouter } from 'react-router-dom';

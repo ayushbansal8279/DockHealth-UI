@@ -1,6 +1,6 @@
 /* eslint-disable no-param-reassign */
 import axios from 'axios';
-import { identity } from 'ramda';
+import identity from 'ramda/src/identity';
 import { showToast } from 'helpers/utility-functions';
 
 const NETWORK_ERROR = 'NETWORK_ERROR';

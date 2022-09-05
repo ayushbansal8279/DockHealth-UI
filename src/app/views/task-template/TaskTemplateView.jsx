@@ -34,7 +34,11 @@ import {
   TEMPLATE_TASK_ITEM_SORT_METHODS,
   TEMPLATE_TASK_ITEM_SORT_DESC_METHODS,
 } from 'helpers/workflow-helpers';
-import { compose, identity, differenceWith, eqBy, prop } from 'ramda';
+import compose from 'ramda/src/compose';
+import identity from 'ramda/src/identity';
+import differenceWith from 'ramda/src/differenceWith';
+import eqBy from 'ramda/src/eqBy';
+import prop from 'ramda/src/prop';
 import { SortOrderType } from 'helpers/sorting-helper';
 import moment from 'moment';
 import { createWorkflowFolderPath } from 'routing/helpers/paths';

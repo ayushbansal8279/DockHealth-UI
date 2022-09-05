@@ -1,4 +1,5 @@
-import { partial, pluck } from 'ramda';
+import partial from 'ramda/src/partial';
+import pluck from 'ramda/src/pluck';
 import { TaskItemType } from './task-helpers';
 
 export function checkIfTaskMatchSearchValue(searchValue, task) {

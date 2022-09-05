@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { isEmpty } from 'ramda';
+import isEmpty from 'ramda/src/isEmpty';
 import { useHistory } from 'react-router-dom';
 import { Typography } from '@material-ui/core';
 import Button from 'components/common/Button/Button';

@@ -1,5 +1,8 @@
 import * as ActionTypes from 'actions/action-types';
-import { pipe, prop, uniqBy, move } from 'ramda';
+import pipe from 'ramda/src/pipe';
+import prop from 'ramda/src/prop';
+import uniqBy from 'ramda/src/uniqBy';
+import move from 'ramda/src/move';
 import { mapWithRemove } from 'helpers/utility-functions';
 import { reorderTasksForWorkflow } from 'helpers/workflow-helpers';
 import { TaskGroupType, TaskItemType } from 'helpers/task-helpers';

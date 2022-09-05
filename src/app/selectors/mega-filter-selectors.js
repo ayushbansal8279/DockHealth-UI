@@ -1,4 +1,4 @@
-import { isEmpty } from 'ramda';
+import isEmpty from 'ramda/src/isEmpty';
 import { createSelector } from 'reselect';
 
 export const megaFilterStateSelector = state => state.megaFilter;

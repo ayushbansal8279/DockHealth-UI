@@ -3,7 +3,7 @@ import React, { useState, useCallback, useMemo } from 'react';
 import { Box } from '@material-ui/core';
 import { useDispatch } from 'react-redux';
 import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd';
-import { isEmpty } from 'ramda';
+import isEmpty from 'ramda/src/isEmpty';
 import * as TaskActions from 'actions/task-actions';
 import { onSubtaskOrderChanged } from 'helpers/ga-event-helper';
 import TasksSkeletonLoader from 'components/task/TasksSkeletonLoader/TasksSkeletonLoader';

@@ -3,7 +3,7 @@ import React, { useCallback, useEffect, useState } from 'react';
 import palette from 'styles/palette';
 import { useSelector } from 'react-redux';
 import localStorageHelper from 'helpers/local-storage-helper';
-import { compose } from 'ramda';
+import compose from 'ramda/src/compose';
 import { showGlobalErrorAlert } from 'alert/actions';
 import { Box, IconButton } from '@material-ui/core';
 import ViewModuleIcon from '@material-ui/icons/ViewModule';

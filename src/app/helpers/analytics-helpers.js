@@ -1,4 +1,6 @@
-import { descend, prop, sort } from 'ramda';
+import descend from 'ramda/src/descend';
+import prop from 'ramda/src/prop';
+import sort from 'ramda/src/sort';
 import palette from 'styles/palette';
 
 export const TrendType = {

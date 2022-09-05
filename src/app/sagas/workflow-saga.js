@@ -1,5 +1,5 @@
 import { all, call, put, select, takeEvery } from 'redux-saga/effects';
-import { pluck } from 'ramda';
+import pluck from 'ramda/src/pluck';
 import * as TemplateBundleApi from 'api/template-bundle-api';
 import { reorderTasksForWorkflow } from 'helpers/workflow-helpers';
 import * as WorkflowApi from 'api/workflow-api';

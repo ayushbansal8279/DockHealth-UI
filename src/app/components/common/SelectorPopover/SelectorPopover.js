@@ -1,7 +1,7 @@
 import React from 'react';
 import { Popover } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
-import { omit } from 'ramda';
+import omit from 'ramda/src/omit';
 import { ItemsList } from './styled';
 
 const usePopoverClasses = makeStyles({

@@ -1,5 +1,5 @@
 import React from 'react';
-import { isEmpty } from 'ramda';
+import isEmpty from 'ramda/src/isEmpty';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import { Box } from '@material-ui/core';

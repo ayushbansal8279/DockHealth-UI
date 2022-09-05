@@ -1,5 +1,10 @@
 import moment from 'moment';
-import { always, cond, equals, range, startsWith, T } from 'ramda';
+import always from 'ramda/src/always';
+import cond from 'ramda/src/cond';
+import equals from 'ramda/src/equals';
+import range from 'ramda/src/range';
+import startsWith from 'ramda/src/startsWith';
+import T from 'ramda/src/T';
 import React, { useCallback, useState } from 'react';
 import DownloadIcon from 'img/download.svg';
 import {

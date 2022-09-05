@@ -1,6 +1,6 @@
 import { takeLatest, call, put, takeEvery, select } from 'redux-saga/effects';
 import { currentTaskListIdentifierSelector } from 'selectors/task-list-selectors';
-import { pluck } from 'ramda';
+import pluck from 'ramda/src/pluck';
 import { showGlobalAlert, showGlobalErrorAlert } from 'alert/actions';
 import AlertMessages from 'alert/AlertMessages';
 import * as TaskListApi from 'api/task-list-api';

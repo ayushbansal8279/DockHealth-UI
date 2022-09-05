@@ -1,4 +1,5 @@
-import { mergeDeepRight, omit } from 'ramda';
+import mergeDeepRight from 'ramda/src/mergeDeepRight';
+import omit from 'ramda/src/omit';
 import {
   GET_BILLING_DETAILS_FAILURE,
   GET_BILLING_DETAILS_SUCCESS,

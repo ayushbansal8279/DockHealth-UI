@@ -1,5 +1,7 @@
 /* eslint-disable react-hooks/rules-of-hooks */
-import { equals, find, uniq } from 'ramda';
+import equals from 'ramda/src/equals';
+import find from 'ramda/src/find';
+import uniq from 'ramda/src/uniq';
 import { useCallback, useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { createBreakpoint, useToggle } from 'react-use';

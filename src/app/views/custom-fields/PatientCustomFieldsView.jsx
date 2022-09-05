@@ -1,6 +1,8 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import { useDispatch } from 'react-redux';
-import { map, pluck, move } from 'ramda';
+import map from 'ramda/src/map';
+import pluck from 'ramda/src/pluck';
+import move from 'ramda/src/move';
 import { Box, IconButton } from '@material-ui/core';
 import { Skeleton } from '@material-ui/lab';
 import DeleteIcon from '@material-ui/icons/Delete';

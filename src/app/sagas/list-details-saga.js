@@ -1,13 +1,13 @@
 /* eslint-disable no-console */
-import R, {
-  isEmpty,
-  move,
-  remove,
-  insert,
-  pluck,
-  filter,
-  compose,
-} from 'ramda';
+import isEmpty from 'ramda/src/isEmpty';
+import move from 'ramda/src/move';
+import remove from 'ramda/src/remove';
+import insert from 'ramda/src/insert';
+import pluck from 'ramda/src/pluck';
+import filter from 'ramda/src/filter';
+import compose from 'ramda/src/compose';
+import * as takeFirst from 'ramda/src/take';
+
 import {
   put,
   call,
@@ -168,7 +168,7 @@ function* getCurrentListTasks() {
       }
       const groupsToGet = compose(
         filter(g => g.metricValue > 0),
-        R.take(5),
+        takeFirst(5),
       )(groups);
 
       yield all([

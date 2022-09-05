@@ -1,5 +1,6 @@
 import { takeEvery, put, call, all, delay } from 'redux-saga/effects';
-import { pluck, move } from 'ramda';
+import pluck from 'ramda/src/pluck';
+import move from 'ramda/src/move';
 import { showGlobalAlert, showGlobalErrorAlert } from 'alert/actions';
 import AlertMessages from 'alert/AlertMessages';
 import { closeModal } from 'modal/actions';

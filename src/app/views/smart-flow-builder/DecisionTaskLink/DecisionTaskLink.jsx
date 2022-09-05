@@ -1,7 +1,7 @@
 /* eslint-disable sonarjs/cognitive-complexity */
 import React, { useState, useEffect, useRef } from 'react';
 import { ClickAwayListener, Paper, Popper } from '@material-ui/core';
-import { isNil } from 'ramda';
+import isNil from 'ramda/src/isNil';
 import CalendarIcon from 'img/template/calendar-icon';
 import { deleteTasksLink, updateTasksLink } from 'actions/task-actions';
 import {

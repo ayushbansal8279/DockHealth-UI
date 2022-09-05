@@ -3,7 +3,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
 import { Box, Grid } from '@material-ui/core';
 import usePrevious from 'hooks/use-previous';
-import { equals } from 'ramda';
+import equals from 'ramda/src/equals';
 import {
   BillingFrequency,
   SUBSCRIPTION_PLANS,

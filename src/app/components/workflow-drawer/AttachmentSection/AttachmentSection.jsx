@@ -1,5 +1,5 @@
 import React, { useState, useRef, useCallback, useEffect } from 'react';
-import { isEmpty } from 'ramda';
+import isEmpty from 'ramda/src/isEmpty';
 import { useDropzone } from 'react-dropzone';
 import * as WorkflowApi from 'api/workflow-api';
 import {

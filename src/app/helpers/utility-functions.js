@@ -1,7 +1,7 @@
 import linkifyString from 'linkifyjs/string';
 import escape from 'lodash.escape';
 import escapeRegExp from 'lodash.escaperegexp';
-import { curry } from 'ramda';
+import curry from 'ramda/src/curry';
 import Swal from 'sweetalert2';
 import parsePhoneNumber from 'libphonenumber-js';
 

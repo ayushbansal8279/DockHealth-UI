@@ -1,4 +1,4 @@
-import { sort } from 'ramda';
+import sort from 'ramda/src/sort';
 
 /* eslint-disable import/prefer-default-export */
 export const BOOL_SELECT_OPTIONS = [

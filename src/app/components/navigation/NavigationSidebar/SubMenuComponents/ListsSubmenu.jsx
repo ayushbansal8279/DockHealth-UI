@@ -27,7 +27,7 @@ import ListOptionsMenu from 'components/tasklist/ListOptionsMenu/ListOptionsMenu
 import LabeledCollapse from 'components/common/LabeledCollapse/LabeledCollapse';
 import { Box } from '@material-ui/core';
 import { useBoolean } from 'hooks/useBoolean';
-import { move } from 'ramda';
+import move from 'ramda/src/move';
 import Spacing from 'components/common/Spacing';
 import {
   SubmenuDivider,

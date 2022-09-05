@@ -13,7 +13,7 @@ import {
   taskDrawerSelector,
 } from 'selectors/task-drawer-selectors';
 import { HOME_PATH } from 'routing/helpers/paths';
-import { isEmpty } from 'ramda';
+import isEmpty from 'ramda/src/isEmpty';
 import { TaskViewContainer } from './styled';
 import SingleTaskHeader from './SingleTaskHeader/SingleTaskHeader';
 import SingleTaskSkeleton from './SingleTaskSkeleton';

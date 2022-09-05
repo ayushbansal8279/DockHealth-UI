@@ -1,5 +1,7 @@
 import { createSelector } from 'reselect';
-import { compose, path, prop } from 'ramda';
+import compose from 'ramda/src/compose';
+import path from 'ramda/src/path';
+import prop from 'ramda/src/prop';
 import { checkIfTemplateWorkflow } from 'helpers/workflow-helpers';
 
 export const workflowDrawerStateSelector = state => state.workflowDrawer;

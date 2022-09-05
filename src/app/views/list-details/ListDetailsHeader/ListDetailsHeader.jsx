@@ -17,7 +17,8 @@ import {
 } from 'selectors/task-list-selectors';
 import { openModal } from 'modal/actions';
 import { getMembersByTaskListId } from 'actions/task-list-actions';
-import { splitAt, equals } from 'ramda';
+import splitAt from 'ramda/src/splitAt';
+import equals from 'ramda/src/equals';
 import {
   filterListDetailsTasks,
   getCurrentTaskListFilterOptions,

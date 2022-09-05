@@ -6,7 +6,7 @@ import { useHistory } from 'react-router-dom';
 import { CUSTOM_FIELDS_SETTINGS_PATH } from 'routing/helpers/paths';
 import { userProfileSelector } from 'selectors/user-selectors';
 import { checkIfUserIsOrganizationAdmin } from 'helpers/user-helper';
-import { compose } from 'ramda';
+import compose from 'ramda/src/compose';
 import { useFormContext } from 'react-hook-form';
 import * as CustomFieldsApi from 'api/custom-fields-api';
 import LabeledCollapse from 'components/common/LabeledCollapse/LabeledCollapse';

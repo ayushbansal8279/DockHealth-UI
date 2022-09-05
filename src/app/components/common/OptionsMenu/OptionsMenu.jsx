@@ -1,5 +1,5 @@
 import React, { useRef, useState } from 'react';
-import { prop } from 'ramda';
+import prop from 'ramda/src/prop';
 import {
   arrayOf,
   bool,

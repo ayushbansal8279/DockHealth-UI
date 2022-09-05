@@ -3,7 +3,7 @@
 import moment from 'moment';
 import React, { useCallback } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { pluck } from 'ramda';
+import pluck from 'ramda/src/pluck';
 import Circle from 'img/circle';
 import CircleCompleted from 'img/circle-completed';
 import SimpleArrowRight from 'img/simple-arrow-right';

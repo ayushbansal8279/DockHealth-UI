@@ -1,4 +1,5 @@
-import { memoizeWith, identity } from 'ramda';
+import memoizeWith from 'ramda/src/memoizeWith';
+import identity from 'ramda/src/identity';
 
 import { getTaskAttachment } from 'api/task-api';
 import { Image, Movie, Description, Audiotrack } from '@material-ui/icons';

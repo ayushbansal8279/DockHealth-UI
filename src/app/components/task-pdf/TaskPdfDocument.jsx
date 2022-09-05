@@ -1,6 +1,9 @@
 import { Document, pdf, PDFViewer } from '@react-pdf/renderer';
 import styled from '@react-pdf/styled-components';
-import { memoizeWith, isEmpty, head } from 'ramda';
+import memoizeWith from 'ramda/src/memoizeWith';
+import isEmpty from 'ramda/src/isEmpty';
+import head from 'ramda/src/head';
+
 import React from 'react';
 import { useAsync } from 'react-use';
 import { getUserAvatarBuffer } from 'api/user-api';

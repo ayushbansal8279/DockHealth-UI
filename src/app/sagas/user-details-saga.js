@@ -15,7 +15,7 @@ import {
 import { selectedFiltersInMegaFilterSelector } from 'selectors/mega-filter-selectors';
 import { TaskStatus } from 'helpers/task-helpers';
 import sessionStorageHelper from 'helpers/session-storage-helper';
-import { isEmpty } from 'ramda';
+import isEmpty from 'ramda/src/isEmpty';
 
 function* initializeUserTasks(status) {
   yield put(PersonDetailsActions.getUserTaskCounters());

@@ -7,7 +7,7 @@ import spacing from 'styles/spacing';
 import palette from 'styles/palette';
 import { fontWeights, fontSizes } from 'styles/font';
 import { Skeleton } from '@material-ui/lab';
-import { prop } from 'ramda';
+import prop from 'ramda/src/prop';
 
 export const ColorIndicator = styled.span`
   display: block;

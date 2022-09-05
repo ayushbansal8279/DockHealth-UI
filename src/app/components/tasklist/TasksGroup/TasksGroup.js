@@ -8,7 +8,8 @@ import React, {
   useState,
 } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
-import { isNil, pluck } from 'ramda';
+import isNil from 'ramda/src/isNil';
+import pluck from 'ramda/src/pluck';
 import { Grid } from '@material-ui/core';
 import MoreVert from '@material-ui/icons/MoreVert';
 import ArrowIcon from 'img/arrow';

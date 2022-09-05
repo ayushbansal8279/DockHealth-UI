@@ -1,5 +1,5 @@
 import moment from 'moment';
-import { isEmpty } from 'ramda';
+import isEmpty from 'ramda/src/isEmpty';
 import { mixed, string, object } from 'yup';
 
 const DATE_FORMAT = 'MM/DD/YYYY';

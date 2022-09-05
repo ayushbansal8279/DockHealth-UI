@@ -3,7 +3,8 @@
 /* eslint-disable sonarjs/cognitive-complexity */
 import React, { useMemo, useState, useEffect, useRef } from 'react';
 import { useSelector } from 'react-redux';
-import { descend, prop } from 'ramda';
+import descend from 'ramda/src/descend';
+import prop from 'ramda/src/prop';
 import moment from 'moment';
 import { Box, Popper, Typography } from '@material-ui/core';
 import { Link, useLocation } from 'react-router-dom';

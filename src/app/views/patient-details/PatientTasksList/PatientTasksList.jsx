@@ -1,7 +1,8 @@
 /* eslint-disable import/no-cycle */
 /* eslint-disable sonarjs/cognitive-complexity */
 import React, { useCallback, useEffect, useMemo } from 'react';
-import { compose, pluck } from 'ramda';
+import compose from 'ramda/src/compose';
+import pluck from 'ramda/src/pluck';
 import useActions from 'hooks/use-actions';
 import { useDispatch, useSelector } from 'react-redux';
 import { Box } from '@material-ui/core';

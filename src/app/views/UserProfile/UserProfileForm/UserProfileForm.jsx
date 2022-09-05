@@ -6,7 +6,7 @@ import { FormProvider, useForm } from 'react-hook-form';
 import { useDispatch } from 'react-redux';
 import { yupResolver } from '@hookform/resolvers/yup';
 import Button from 'components/common/Button/Button';
-import { head } from 'ramda';
+import head from 'ramda/src/head';
 import { getCurrentUser, updateCurrentUser } from 'actions/user-actions';
 import { openModal } from 'modal/actions';
 import FormInput from 'components/common/Input/FormInput';

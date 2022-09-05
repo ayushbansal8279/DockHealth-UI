@@ -9,7 +9,7 @@ import React, {
 import { FormProvider, useForm } from 'react-hook-form';
 import { string, object, array } from 'yup';
 import { yupResolver } from '@hookform/resolvers/yup';
-import { partial } from 'ramda';
+import partial from 'ramda/src/partial';
 import { Box, Grid, IconButton } from '@material-ui/core';
 import DeleteIcon from '@material-ui/icons/Delete';
 import { useDispatch } from 'react-redux';

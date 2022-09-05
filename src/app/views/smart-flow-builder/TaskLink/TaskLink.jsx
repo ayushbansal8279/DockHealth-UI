@@ -1,5 +1,5 @@
 import React, { useRef } from 'react';
-import { isNil } from 'ramda';
+import isNil from 'ramda/src/isNil';
 import { useBoolean } from 'hooks/useBoolean';
 import { useDispatch } from 'react-redux';
 import { Paper, Popper, ClickAwayListener } from '@material-ui/core';

@@ -10,7 +10,8 @@ import {
 import ViewLayout from 'components/template/ViewLayout/ViewLayout';
 import BasicLayoutHeader from 'components/template/BasicLayoutHeader/BasicLayoutHeader';
 import { useDispatch, useSelector } from 'react-redux';
-import { compose, equals } from 'ramda';
+import compose from 'ramda/src/compose';
+import equals from 'ramda/src/equals';
 import * as AnalyticsActions from 'actions/analytics-actions';
 
 import MegaFilter from 'components/tasklist/MegaFilter/MegaFilter';
