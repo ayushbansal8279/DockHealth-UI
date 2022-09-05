@@ -6,6 +6,7 @@ import TaskIcon from 'components/task/TaskIcon/TaskIcon';
 import DateLabel from 'components/common/DateLabel/DateLabel';
 import { updatePartialWorkflow } from 'actions/task-template-actions';
 import { useDispatch } from 'react-redux';
+import { openModal, closeModal } from 'modal/actions';
 
 const TaskTemplateAnchorDate = props => {
   const { workflow } = props;
@@ -18,9 +19,15 @@ const TaskTemplateAnchorDate = props => {
         anchorDateTime: updatedDate,
       };
 
-      if (!updatedDate) payload.anchorDateTimeCleared = true;
+      const modalProps = {
+        confirm: async () => {
+          if (!updatedDate) payload.anchorDateTimeCleared = true;
+          dispatch(updatePartialWorkflow(identifier, payload));
 
-      dispatch(updatePartialWorkflow(identifier, payload));
+          dispatch(closeModal());
+        },
+      };
+      dispatch(openModal('AnchorDateChangeConfirmation', modalProps));
     },
     [dispatch, identifier],
   );
