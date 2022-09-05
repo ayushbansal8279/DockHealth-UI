@@ -27,7 +27,7 @@ import {
 const DueDateSection = () => {
   const dispatch = useDispatch();
   const selectedTask = useSelector(selectedTaskSelector);
-  const { taskIdentifier, dueDate, hasRecurringSchedule } = selectedTask;
+  const { taskIdentifier, dueDate, hasRecurringSchedule } = selectedTask || {};
   const momentDueDate = dueDate ? moment(dueDate) : null;
   const isTemplateTask = checkIfTemplateTask(selectedTask);
   const sectionDisabled = isTemplateTask || !taskIdentifier;
