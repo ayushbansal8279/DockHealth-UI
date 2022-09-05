@@ -7,7 +7,7 @@ import React, {
   useCallback,
   useContext,
 } from 'react';
-import { pluck } from 'ramda';
+import pluck from 'ramda/src/pluck';
 import { useDispatch, useSelector } from 'react-redux';
 import { isTaskSelectedSelector } from 'selectors/task-drawer-selectors';
 import { openTaskDrawerWithContent } from 'actions/task-drawer-actions';
@@ -587,6 +587,20 @@ const TaskItem = React.memo(
                       <TaskItemDueDate task={task} />
                     </TaskItemCell>
                   )}
+                {isColumnChecked(columns, TaskItemColumn.ANCHOR_DATE) && (
+                  <TaskItemCell
+                    width={
+                      columns?.find(
+                        ({ identifier }) =>
+                          identifier === TaskItemColumn.ANCHOR_DATE,
+                      )?.columnWidth
+                    }
+                    onContextMenu={event => {
+                      event.stopPropagation();
+                    }}
+                    order={getColumnOrder(TaskItemColumn.ANCHOR_DATE)}
+                  />
+                )}
               </>
             )}
 

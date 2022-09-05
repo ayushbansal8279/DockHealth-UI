@@ -9,6 +9,7 @@ export const TaskHeaderColumn = {
   ACTIVITY: 'ACTIVITY',
   START_DATE: 'START_DT',
   DUE_DATE: 'DUE_DT',
+  ANCHOR_DATE: 'ANCHOR_DT',
   ASSIGNED: 'ASSIGNED_TO',
   LIST_NAME: 'LIST_NAME',
 };
@@ -56,6 +57,11 @@ export const getTaskHeaderOptions = (
       label: 'Due',
       draggable: true,
       hidden: restrictions?.dueDate !== DISABLED,
+    },
+    {
+      identifier: TaskHeaderColumn.ANCHOR_DATE,
+      label: 'Anchor',
+      draggable: true,
     },
     {
       identifier: TaskHeaderColumn.ASSIGNED,

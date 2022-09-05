@@ -3,7 +3,7 @@ import { useHistory } from 'react-router-dom';
 import { Grid } from '@material-ui/core';
 import * as WorkflowDrawerActions from 'actions/workflow-drawer-actions';
 import { AnimatePresence } from 'framer-motion/dist/framer-motion';
-import { compose } from 'ramda';
+import compose from 'ramda/src/compose';
 import { useDispatch, useSelector } from 'react-redux';
 import {
   isWorkflowDrawerOpenSelector,
@@ -18,6 +18,7 @@ import AssignedToSection from '../AssignedToSection/AssignedToSection';
 import HistorySection from '../HistorySection/HistorySection';
 import DueDateSection from '../DueDateSection/DueDateSection';
 import StartDateSection from '../StartDateSection/StartDateSection';
+import AnchorDateSection from '../AnchorDateSection/AnchorDateSection';
 import ReminderSection from '../ReminderSection/ReminderSection';
 import PrioritySection from '../PrioritySection/PrioritySection';
 import StatusSection from '../StatusSection/StatusSection';
@@ -88,7 +89,9 @@ const WorkflowDrawer = () => {
                   <Grid item xs={6}>
                     <StartDateSection disabled={!!isTemplateTask} />
                   </Grid>
-                  <Grid item xs={6} />
+                  <Grid item xs={6}>
+                    <AnchorDateSection disabled={!!isTemplateTask} />
+                  </Grid>
                   <Grid item xs={6}>
                     <DueDateSection disabled={!!isTemplateTask} />
                   </Grid>

@@ -93,6 +93,7 @@ const TasksHeader = ({
             disabled={[
               TaskHeaderColumn.ACTIVITY,
               TaskHeaderColumn.START_DATE,
+              TaskHeaderColumn.ANCHOR_DATE,
             ].includes(f.identifier)}
             isDraggingOver={snapshot.isDraggingOver}
             id={f.identifier}

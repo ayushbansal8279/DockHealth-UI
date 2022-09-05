@@ -10,7 +10,7 @@ import React, {
 } from 'react';
 import { Box } from '@material-ui/core';
 import { checkIfAllTasksSelected } from 'helpers/bulk-edit-helpers';
-import { pluck } from 'ramda';
+import pluck from 'ramda/src/pluck';
 import { extractTasksAndSubtasks } from 'helpers/tasklist-helpers';
 import { useDispatch, useSelector } from 'react-redux';
 import ThreeDotsIcon from 'img/three-dots';
@@ -54,6 +54,7 @@ import TaskHeaderPatient from '../TaskTemplatePatient/TaskTemplatePatient';
 import TemplateItemWorkflowStatus from '../TaskTemplateWorkflowStatus/TaskTemplateWorkflowStatus';
 import TaskTemplateMembers from '../TaskTemplateMembers/TaskTemplateMembers';
 import TaskTemplateStartDate from '../TaskTemplateStartDate/TaskTemplateStartDate';
+import TaskTemplateAnchorDate from '../TaskTemplateAnchorDate/TaskTemplateAnchorDate';
 import TaskTemplateIcons from '../TaskTemplateIcons/TaskTemplateIcons';
 import {
   TaskTemplateGroupHeaderContainer,
@@ -556,6 +557,20 @@ const TaskTemplateGroupHeader = ({
           order={getColumnOrder(TaskItemColumn.DUE_DATE)}
         >
           <TaskTemplateDueDate workflow={templateGroup} />
+        </TaskItemCell>
+      )}
+      {isColumnChecked(columns, TaskItemColumn.ANCHOR_DATE) && (
+        <TaskItemCell
+          key={`due_date_${identifier}`}
+          width={
+            columns?.find(
+              ({ identifier: id }) => id === TaskItemColumn.ANCHOR_DATE,
+            )?.columnWidth
+          }
+          justify="center"
+          order={getColumnOrder(TaskItemColumn.ANCHOR_DATE)}
+        >
+          <TaskTemplateAnchorDate workflow={templateGroup} />
         </TaskItemCell>
       )}
       {isColumnChecked(columns, TaskItemColumn.ASSIGNED) && (
