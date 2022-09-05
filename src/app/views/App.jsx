@@ -20,7 +20,8 @@ import Notification from 'components/common/Notification/Notification';
 import ActivityAlertsToasts from 'components/activity-alerts/ActivityAlertsToasts';
 import SendbirdProvider from '@sendbird/uikit-react/SendbirdProvider';
 import palette, { featurePalette } from 'styles/palette';
-import { useMobile, useSmallScreen } from 'helpers/utility-functions';
+// import { useMobile, useSmallScreen } from 'helpers/utility-functions';
+import { useMobile } from 'helpers/utility-functions';
 import Modal from '../modal/Modal';
 import RotateScreen from './RotateScreen';
 import MobileSmallScreen from './MobileSmallScreen';
@@ -72,8 +73,7 @@ const sendbirdColorSet = {
 
 ReactModal.setAppElement('#app');
 
-const appId =
-  process.env.SENDBIRD_APP_ID ?? 'D11A4B11-21AD-4025-9D8C-2BCF693C814C';
+const appId = process.env.SENDBIRD_APP_ID;
 
 class App extends PureComponent {
   idleTimer = null;
@@ -240,16 +240,14 @@ class App extends PureComponent {
     const idleTimeout = systemTimeout / 2;
 
     const { children } = this.props;
-    const isLessThen1024 = window?.innerWidth < 1024;
-    const orientationType = window?.screen?.orientation?.type;
+    // const isLessThen1024 = window?.innerWidth < 1024;
+    // const orientationType = window?.screen?.orientation?.type;
     // const showRotateScreenPage =
     //   isLessThen1024 &&
     //   ['portrait-primary', 'portrait-secondary', 'portrait'].includes(
     //     orientationType,
     //   );
     const showRotateScreenPage = false;
-
-    const { identifier, name } = userProfile;
 
     const mountIdleTimer = userProfile && !isEmpty(userProfile);
     // eslint-disable-next-line unicorn/consistent-function-scoping
@@ -265,8 +263,8 @@ class App extends PureComponent {
           <>
             <SendbirdProvider
               appId={appId}
-              userId={identifier}
-              nickname={name}
+              userId={userProfile?.identifier}
+              nickname={userProfile?.name}
               colorSet={sendbirdColorSet}
             >
               <div id="portal" />
