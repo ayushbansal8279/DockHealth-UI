@@ -1,11 +1,11 @@
 import { Typography } from '@material-ui/core';
-import { createMuiTheme, ThemeProvider } from '@material-ui/core/styles';
+import { createTheme, ThemeProvider } from '@material-ui/core/styles';
 import React from 'react';
 import palette from './palette';
 import themeCommonOverrides from './theme-components';
 
 const themeMontserratFactory = ({ fontWeight }) =>
-  createMuiTheme({
+  createTheme({
     palette: {
       primary: {
         main: palette.lighterCyanBlue,
