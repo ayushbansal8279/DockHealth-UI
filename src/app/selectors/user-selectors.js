@@ -99,6 +99,12 @@ export const userHasShareTaskFeatureSelector = createSelector(
     organizationAvailableFeatures?.includes('SHARE_TASK'),
 );
 
+export const userHasDockChatFeatureSelector = createSelector(
+  userProfileSelector,
+  ({ organizationAvailableFeatures }) =>
+    organizationAvailableFeatures?.includes('DOCK_CHAT'),
+);
+
 export const userSetupClientViewSelector = createSelector(
   userViewSetupSelector,
   ({ mainSetup }) => mainSetup,
