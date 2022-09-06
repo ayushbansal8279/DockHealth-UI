@@ -15,6 +15,7 @@ import {
 import TaskDrawerPopover from 'components/task-drawer/TaskDrawerPopover/TaskDrawerPopover';
 import { updatePartialWorkflow } from 'actions/task-template-actions';
 import { WorkflowDrawerFieldNames } from 'helpers/workflow-drawer-helpers';
+import { openModal, closeModal } from 'modal/actions';
 import { formatDueTime } from './helpers';
 import { AdornmentClear } from '../styled';
 import {
@@ -40,9 +41,17 @@ const AnchorDateSection = ({ disabled }) => {
         anchorDateTime: date,
       };
 
-      if (!date) payload.anchorDateTimeCleared = true;
+      const modalProps = {
+        confirm: async () => {
+          if (!date) payload.anchorDateTimeCleared = true;
+          dispatch(
+            updatePartialWorkflow(selectedWorkflow?.identifier, payload),
+          );
 
-      dispatch(updatePartialWorkflow(selectedWorkflow?.identifier, payload));
+          dispatch(closeModal());
+        },
+      };
+      dispatch(openModal('AnchorDateChangeConfirmation', modalProps));
     },
     [dispatch, selectedWorkflow],
   );
