@@ -14,7 +14,10 @@ import {
   userProfileSelector,
   userHasDockChatFeatureSelector,
 } from 'selectors/user-selectors';
-import { showChatPopoverSelector } from 'selectors/sendbird-selectors';
+import {
+  showChatPopoverSelector,
+  selectedChatChannelSelector,
+} from 'selectors/sendbird-selectors';
 import { UserOrganizationRole } from 'helpers/user-helper';
 import { getCustomerTypeLabel } from 'helpers/customer-type-helper';
 import { capitalize } from 'helpers/capitalize';
@@ -94,6 +97,7 @@ const NavigationSidebar = () => {
   const currentUser = useSelector(userProfileSelector);
   const showChatPopover = useSelector(showChatPopoverSelector);
   const openedSubMenuKey = useSelector(subMenuKeySelector);
+  const selectedChannel = useSelector(selectedChatChannelSelector);
 
   const { orgUserRole } = currentUser || {};
   const isUserAdmin = ['ADMIN', 'OWNER'].includes(orgUserRole);
@@ -160,10 +164,10 @@ const NavigationSidebar = () => {
 
   const handleDockChatClick = useCallback(() => {
     if (location.pathname !== '/core/chat') {
-      dispatch(openPopover(null));
+      dispatch(openPopover(selectedChannel ?? null));
       dispatch(TemplateActions.hideSubMenu());
     }
-  }, [dispatch, location]);
+  }, [dispatch, location.pathname, selectedChannel]);
 
   // const handleReferClick = () => {
   //   dispatch(TemplateActions.hideSubMenu());
