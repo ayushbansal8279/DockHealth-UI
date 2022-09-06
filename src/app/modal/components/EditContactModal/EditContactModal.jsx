@@ -90,11 +90,11 @@ const EditContactModal = ({ closeModal, contact, onAdded, onUpdated }) => {
                 />
               </Grid>
               <Grid item>
-                <FormInput
+                <FormInputWithMask
+                  mask="999-999-9999"
                   name="mobilePhoneNumber"
                   label="Phone"
                   placeholder="Type the phone number"
-                  shrink
                 />
               </Grid>
               <Grid item>
@@ -126,7 +126,7 @@ const EditContactModal = ({ closeModal, contact, onAdded, onUpdated }) => {
                       ) : null
                     }
                   >
-                    {editMode ? 'edit' : 'save'}
+                    Save
                   </Button>
                 </ButtonGroupFlexStyled>
               </Grid>

@@ -35,19 +35,19 @@ export const getContactColumns = ({ onEditContact, onDeteleContact }) => [
   {
     field: 'email',
     headerName: 'Email',
-    width: 150,
-    renderHeader: renderColumnHeader,
-  },
-  {
-    field: 'faxPhoneNumber',
-    headerName: 'Fax',
-    width: 150,
+    width: 250,
     renderHeader: renderColumnHeader,
   },
   {
     field: 'mobilePhoneNumber',
     headerName: 'Phone',
-    width: 150,
+    width: 120,
+    renderHeader: renderColumnHeader,
+  },
+  {
+    field: 'faxPhoneNumber',
+    headerName: 'Fax',
+    width: 120,
     renderHeader: renderColumnHeader,
   },
   {
