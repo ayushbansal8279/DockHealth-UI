@@ -13,6 +13,7 @@ import EditIcon from '@material-ui/icons/Edit';
 import DeleteOutlineIcon from '@material-ui/icons/DeleteOutline';
 import { getEdgeCenter, useStoreState } from 'react-flow-renderer';
 import { useDispatch } from 'react-redux';
+import { openModal } from 'modal/actions';
 import LinkPath from '../LinkPath/LinkPath';
 import TaskLinkOptions from '../TaskLinkOptions/TaskLinkOptions';
 import TaskLinkDelayForm from '../TaskLinkDelayForm/TaskLinkDelayForm';
@@ -97,6 +98,16 @@ const DecisionTaskLink = props => {
     }
   };
 
+  const handleDelete = (callback, actionName = 'do this action') => {
+    const modalProps = {
+      title: actionName,
+      description: `Are you sure you want to ${actionName.toLowerCase()}? This action cannot be undone.`,
+      confirm: callback,
+    };
+
+    dispatch(openModal('DeleteConfirmation', modalProps));
+  };
+
   const menuOptions = [
     {
       key: 'edit',
@@ -116,7 +127,7 @@ const DecisionTaskLink = props => {
       key: 'delete',
       icon: <DeleteOutlineIcon style={{ height: 13 }} />,
       label: `Delete link`,
-      onClick: deleteLink,
+      onClick: () => handleDelete(deleteLink, 'Delete link'),
     },
   ];
 
