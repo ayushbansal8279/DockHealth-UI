@@ -2,7 +2,7 @@ import React, { useEffect, useRef, useCallback, useMemo } from 'react';
 import { Box } from '@material-ui/core';
 import { useHistory } from 'react-router-dom';
 import { useBoolean } from 'hooks/useBoolean';
-import mergeDeepRight from 'ramda/src/prop';
+import mergeDeepRight from 'ramda/src/mergeDeepRight';
 import moment from 'moment';
 import { useDispatch, useSelector } from 'react-redux';
 import { yupResolver } from '@hookform/resolvers/yup';
