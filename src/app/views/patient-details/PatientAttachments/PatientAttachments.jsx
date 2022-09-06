@@ -31,6 +31,7 @@ import {
   DropzoneContainer,
   EmptyListText,
   DriveIcon,
+  DownloadAllLink,
 } from './styled';
 import initializeAttachmentsSectionHooks from './hooks';
 import { FilesViewType, PATIENT_FILES_VIEW_TYPE } from './helpers';
@@ -78,6 +79,7 @@ const PatientAttachments = () => {
     handleGooglePickerChange,
     handleAttachmentClick,
     dropzone: { getRootProps, getInputProps, isDragActive },
+    downloadAllFiles,
   } = initializeAttachmentsSectionHooks();
 
   const isFetching = useSelector(isFetchingPatientAttachmentsSelector);
@@ -242,6 +244,13 @@ const PatientAttachments = () => {
                     <FileGridItemProgressBar value={uploadProgress} />
                   )}
                 </>
+              )}
+              {currentPatientAttachments.length > 0 && (
+                <div>
+                  <DownloadAllLink onClick={downloadAllFiles}>
+                    Download All
+                  </DownloadAllLink>
+                </div>
               )}
             </NamedCollapse>
             <AttachmentPreview
