@@ -39,7 +39,7 @@ export const StickyColumnContainer = styled.div`
     z-index: -1;
 
     @media print {
-      border-right: 1px solid ${palette.coolGrey3};
+      border-left: 1px solid ${palette.coolGrey1};
     }
   }
 
@@ -56,6 +56,8 @@ export const StickyColumnContainer = styled.div`
   }
 
   @media print {
+    border-top: 1px solid ${palette.coolGrey1};
+    border-bottom: 1px solid ${palette.coolGrey1};
     border-left: 1px solid ${palette.coolGrey1} !important;
     width: 300px;
     min-width: 200px;
