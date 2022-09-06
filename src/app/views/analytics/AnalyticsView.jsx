@@ -147,6 +147,10 @@ const AnalyticsView = () => {
           onClear={() => dispatch(AnalyticsActions.clearAnalyticsFilter())}
         />
         <Box p={1} />
+        <span>
+          By default (no filter) stats below are displayed for tasks created in
+          the last 30 day period.
+        </span>
         <ChartsContainer>
           <ChartTail name="Tasks Created and Completed">
             <TasksStatisticsChart />
