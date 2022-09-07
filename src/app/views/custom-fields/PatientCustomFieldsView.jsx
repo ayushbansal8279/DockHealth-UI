@@ -44,7 +44,7 @@ const PatientCustomFieldsView = () => {
     CustomFieldsApi.getAllPatientCustomFields()
       .then(data => {
         const customFieldsData = data?.filter(
-          cf => cf.contextType === 'CUSTOM',
+          cf => cf.contextType === 'CUSTOM' || cf.contextType === 'PREDEFINED',
         );
         setCustomFields(customFieldsData);
         setIsFetching(false);
