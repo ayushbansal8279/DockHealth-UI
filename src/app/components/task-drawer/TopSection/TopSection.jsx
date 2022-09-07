@@ -88,7 +88,7 @@ const TopSection = ({
           restriction: restrictions?.duplicate === DISABLED,
         },
         {
-          name: 'Unread',
+          name: 'Mark as unread',
           onClick: handleMarkAsUnRead,
         },
         shareTaskAvailable &&
