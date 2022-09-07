@@ -105,6 +105,12 @@ export const userHasDockChatFeatureSelector = createSelector(
     organizationAvailableFeatures?.includes('DOCK_CHAT'),
 );
 
+export const userHasBoardViewFeatureSelector = createSelector(
+  userProfileSelector,
+  ({ organizationAvailableFeatures }) =>
+    organizationAvailableFeatures?.includes('BOARD_VIEW'),
+);
+
 export const userSetupClientViewSelector = createSelector(
   userViewSetupSelector,
   ({ mainSetup }) => mainSetup,
