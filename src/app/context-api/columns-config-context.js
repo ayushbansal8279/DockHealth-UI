@@ -145,7 +145,7 @@ export function ColumnsConfigProvider({
       isChecked: !!currentPreferences?.includes(field.identifier),
       columnWidth: Number(
         currentWidthPreferences?.find(
-          c => c.displayColumn === field?.identifier,
+          c => c.displayColumn === field?.identifier && c.width !== 'NaN',
         )?.width || getInitialColumnWidth(field),
       ),
     }));
