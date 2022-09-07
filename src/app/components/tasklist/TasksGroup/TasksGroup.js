@@ -306,7 +306,7 @@ const TasksGroup = ({
       </StickyContainer>
 
       <Tasks timeout={150} in={isOpen}>
-        {!!quickAddTask && !isSearchApplied && (
+        {!!quickAddTask && !isSearchApplied && !isCompletedGroup && (
           <StickyContainer left={24} decreaseWidth={2 * 24} zIndex={100}>
             <Grid container>
               <Grid item xs>
