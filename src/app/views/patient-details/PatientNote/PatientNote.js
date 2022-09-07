@@ -149,6 +149,7 @@ const PatientNote = ({
           <Box m={2} />
           <PatientNoteInformation>
             <TextEditor
+              getFocusFromParent={isEdited}
               readOnly={!isEdited}
               showToolbar
               taskListIdentifier={patientNoteIdentifier}
