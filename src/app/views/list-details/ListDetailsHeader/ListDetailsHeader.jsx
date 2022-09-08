@@ -195,10 +195,15 @@ const ListDetailsHeader = props => {
         <HeaderMembersContainer>
           {shownUsers.map((user, index) => {
             return (
-              <Box key={user.identifier} pl={index !== 0 ? 0.5 : 0}>
+              <Box
+                display="flex"
+                alignItems="center"
+                key={user.identifier}
+                pl={index !== 0 ? 0.5 : 0}
+              >
                 <AvatarFilterMember
                   member={user}
-                  size={45}
+                  size={36}
                   onSelectFilters={handleFilterSelect}
                   selectedFilters={selectedFilters}
                 />
@@ -218,7 +223,7 @@ const ListDetailsHeader = props => {
           {!isUserGuest(currentUser) && listType && listType !== 'INBOX' && (
             <Box pl={0.5}>
               <InviteMemberButton
-                size={45}
+                size={36}
                 onClick={() =>
                   dispatch(
                     openModal('InviteToList', {
