@@ -1,4 +1,4 @@
-import React, { useState, useRef, useContext } from 'react';
+import React, { useState, useRef, useContext, useCallback } from 'react';
 import useSendbirdStateContext from '@sendbird/uikit-react/useSendbirdStateContext';
 import Modal from '@sendbird/uikit-react/ui/Modal';
 import Input from '@sendbird/uikit-react/ui/Input';
@@ -35,49 +35,60 @@ const EditDetails = props => {
   const globalStore = useSendbirdStateContext();
   const sdkInstance = sendBirdSelectors.getSdk(globalStore);
 
+  const handleSubmit = useCallback(async () => {
+    if (title !== '' && !inputReference.current.value) {
+      if (formReference.current.reportValidity) {
+        formReference.current.reportValidity();
+      }
+      return;
+    }
+
+    const currentTitle = inputReference.current.value;
+    setCurrentImg(newFile);
+    logger.info('ChannelSettings: Channel information being updated', {
+      currentTitle,
+      currentImg,
+    });
+    if (onBeforeUpdateChannel) {
+      logger.info('ChannelSettings: onBeforeUpdateChannel');
+      const parameters = onBeforeUpdateChannel(
+        currentTitle,
+        currentImg,
+        channel?.data,
+      );
+      await channel.updateChannel(parameters);
+    } else if (sdkInstance) {
+      logger.info('ChannelSettings: normal');
+      const parameters = new sdkInstance.GroupChannelParams();
+      parameters.name = currentTitle;
+      channel
+        .updateChannel(parameters)
+
+        .then(groupChannel => {
+          logger.info(
+            'ChannelSettings: Channel information updated',
+            groupChannel,
+          );
+          onSubmit();
+        });
+    }
+  }, [
+    channel,
+    currentImg,
+    logger,
+    newFile,
+    onBeforeUpdateChannel,
+    onSubmit,
+    sdkInstance,
+    title,
+  ]);
+
   return (
     <Modal
       titleText="Edit Conversation Information"
       submitText="Save"
       onCancel={onCancel}
-      onSubmit={async () => {
-        if (title !== '' && !inputReference.current.value) {
-          if (formReference.current.reportValidity) {
-            formReference.current.reportValidity();
-          }
-          return;
-        }
-
-        const currentTitle = inputReference.current.value;
-        setCurrentImg(newFile);
-        logger.info('ChannelSettings: Channel information being updated', {
-          currentTitle,
-          currentImg,
-        });
-        if (onBeforeUpdateChannel) {
-          logger.info('ChannelSettings: onBeforeUpdateChannel');
-          const parameters = onBeforeUpdateChannel(
-            currentTitle,
-            currentImg,
-            channel?.data,
-          );
-          await channel.updateChannel(parameters);
-        } else if (sdkInstance) {
-          logger.info('ChannelSettings: normal');
-          const parameters = new sdkInstance.GroupChannelParams();
-          parameters.name = currentTitle;
-          channel
-            .updateChannel(parameters)
-
-            .then(groupChannel => {
-              logger.info(
-                'ChannelSettings: Channel information updated',
-                groupChannel,
-              );
-              onSubmit();
-            });
-        }
-      }}
+      onSubmit={handleSubmit}
       type={Type.PRIMARY}
     >
       <form
