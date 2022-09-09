@@ -1,4 +1,4 @@
-import React, { useState, useCallback, useEffect } from 'react';
+import React, { useState, useCallback, useEffect, useMemo } from 'react';
 import Modal from '@sendbird/uikit-react/ui/Modal';
 import { useSelector } from 'react-redux';
 import { selectedChatChannelSelector } from 'selectors/sendbird-selectors';
@@ -27,8 +27,14 @@ const InviteUsersModal = ({ onCancel, onSubmit }) => {
     });
   }, [channel]);
 
-  const handleSubmit = useCallback(async () => {
+  const deselectedMembers = useMemo(() => {
     const currentChannelMembers = channel.members;
+    return currentChannelMembers.filter(({ userId: identifier }) => {
+      return !selectedMembers.find(({ identifier: id }) => id === identifier);
+    });
+  }, [channel, selectedMembers]);
+
+  const handleSubmit = useCallback(async () => {
     const selectedIdentifiers = selectedMembers.map(
       member => member.identifier,
     );
@@ -39,12 +45,6 @@ const InviteUsersModal = ({ onCancel, onSubmit }) => {
     const membersToUnban = selectedMembers.filter(({ identifier }) => {
       return bannedMembers.find(({ userId: id }) => id === identifier);
     });
-
-    const deselectedMembers = currentChannelMembers.filter(
-      ({ userId: identifier }) => {
-        return !selectedMembers.find(({ identifier: id }) => id === identifier);
-      },
-    );
 
     await Promise.all(
       deselectedMembers.map(({ userId: identifier }) => {
@@ -57,7 +57,7 @@ const InviteUsersModal = ({ onCancel, onSubmit }) => {
 
     await channel.inviteWithUserIds(selectedIdentifiers);
     onSubmit();
-  }, [channel, selectedMembers, onSubmit]);
+  }, [selectedMembers, channel, deselectedMembers, onSubmit]);
 
   return (
     <Modal
