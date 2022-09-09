@@ -28,7 +28,6 @@ const MemberListItem = ({ member, channel, isSelected, handleOptionClick }) => {
       isSelected={isSelected}
       onClick={event => handleOptionClick(event, member)}
     >
-      {/* <Checkbox isChecked={isSelected} /> */}
       <Spacing horizontal={3} />
       {isUserGroup(member) ? (
         <GroupAvatar group={member} hideTooltip />
