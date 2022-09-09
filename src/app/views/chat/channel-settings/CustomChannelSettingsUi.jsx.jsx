@@ -5,7 +5,6 @@ import IconButton from '@sendbird/uikit-react/ui/IconButton';
 import Icon from '@sendbird/uikit-react/ui/Icon';
 import { selectedChatChannelSelector } from 'selectors/sendbird-selectors';
 import { useSelector } from 'react-redux';
-// import UserPanel from './CustomUserPanel';
 import MemberList from './MemberList';
 import LeaveChannel from './LeaveChannel';
 import ChannelSettingsContext from './ChannelSettingsContext';
