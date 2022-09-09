@@ -36,17 +36,17 @@ const ChatPopover = () => {
   const showSettingsValue = { showSettings, setShowSettings };
 
   const handleClose = useCallback(() => {
-    dispatch(closePopover());
+    dispatch(closePopover(selectedChannel));
     unsetOpen();
     setAnchorElement(null);
-  }, [unsetOpen, dispatch]);
+  }, [dispatch, selectedChannel, unsetOpen]);
 
   const handleLeaveIconClick = useCallback(() => {
     unsetOpen();
     dispatch(closePopover(null));
     setAnchorElement(null);
     window.open(`${window.location.origin.toString()}/#${CHAT_PATH}`, '_blank');
-  }, [unsetOpen]);
+  }, [dispatch, unsetOpen]);
 
   const id = open ? 'simple-popover' : undefined;
 

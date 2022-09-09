@@ -20,7 +20,7 @@ export default function Chat() {
   return (
     <div className="sendbird-app__wrap">
       {selectedChannel !== null ? (
-        <ChatConversation currentChannelUrl={selectedChannel.url} />
+        <ChatConversation currentChannelUrl={selectedChannel?.url} />
       ) : (
         <ChannelListProvider>
           <ChatChannelList />
