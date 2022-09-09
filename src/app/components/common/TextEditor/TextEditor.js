@@ -181,7 +181,7 @@ const TextEditor = React.forwardRef(
 
     const handleClickAway = useCallback(() => {
       if (isFocused) {
-        setIsFocused(false);
+        // setIsFocused(false);
       }
     }, [isFocused]);
 
@@ -466,7 +466,7 @@ const TextEditor = React.forwardRef(
                   editorState={currentState}
                   readOnly={readOnly}
                   placeholder={showPlaceholder ? placeholder : ''}
-                  onFocus={handleFocus}
+                  // onFocus={handleFocus}
                   onBlur={handleEditorBlur}
                   onChange={handleChange}
                   keyBindingFn={keyBindingFn}
@@ -551,7 +551,7 @@ const TextEditor = React.forwardRef(
               />
             )}
           </StyledEditorContainer>
-          {!!characterLimit && showCounter && (
+          {!!characterLimit && (getFocusFromParent ?? showCounter) && (
             <Counter alert={counter >= characterLimit}>
               {`${counter}/${characterLimit}`}
             </Counter>
