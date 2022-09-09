@@ -1,6 +1,6 @@
 /* eslint-disable sonarjs/cognitive-complexity */
 import React, { useCallback } from 'react';
-import { Grid } from '@material-ui/core';
+import { Box, Grid, Typography } from '@material-ui/core';
 import { checkIfBundleTask } from 'helpers/task-helpers';
 import Spacing from 'components/common/Spacing';
 import TextEditor from 'components/common/TextEditor/TextEditor';
@@ -46,6 +46,7 @@ import {
   styleNoPaddingRow,
   ReferenceParentButton,
   ReferenceParentName,
+  FiledInListName,
 } from './styled';
 
 const { DISABLED, READ_ONLY } = SINGLE_TASK_RESTRICTIONS_OPTIONS;
@@ -143,6 +144,12 @@ const TaskDrawerContent = props => {
           />
         </Grid>
         {selectedTask && <TaskDrawerDivider />}
+        <Spacing vertical={5} />
+        <Box display="flex" padding="0 32px">
+          <Typography>List: </Typography>
+          <Spacing horizontal={3} />
+          <FiledInListName>{selectedTask?.taskList?.listName}</FiledInListName>
+        </Box>
         <Spacing vertical={2} />
         {isSubtask && (
           <Grid item xs={12} style={styleFullRowThin}>
