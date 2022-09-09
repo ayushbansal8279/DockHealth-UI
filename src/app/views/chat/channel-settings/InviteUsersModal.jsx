@@ -1,4 +1,4 @@
-import React, { useState, useCallback, useEffect, useMemo } from 'react';
+import React, { useState, useCallback, useEffect } from 'react';
 import Modal from '@sendbird/uikit-react/ui/Modal';
 import { useSelector } from 'react-redux';
 import { selectedChatChannelSelector } from 'selectors/sendbird-selectors';
@@ -27,24 +27,23 @@ const InviteUsersModal = ({ onCancel, onSubmit }) => {
     });
   }, [channel]);
 
-  const deselectedMembers = useMemo(() => {
-    const currentChannelMembers = channel.members;
-    return currentChannelMembers.filter(({ userId: identifier }) => {
-      return !selectedMembers.find(({ identifier: id }) => id === identifier);
-    });
-  }, [channel, selectedMembers]);
-
-  const membersToUnban = useMemo(async () => {
-    const bannedMembersQuery = channel.createBannedUserListQuery();
-    const bannedMembers = await bannedMembersQuery.next();
-    return selectedMembers.filter(({ identifier }) => {
-      return bannedMembers.find(({ userId: id }) => id === identifier);
-    });
-  }, [channel, selectedMembers]);
-
   const handleSubmit = useCallback(async () => {
+    const currentChannelMembers = channel.members;
     const selectedIdentifiers = selectedMembers.map(
       member => member.identifier,
+    );
+
+    const bannedMembersQuery = channel.createBannedUserListQuery();
+    const bannedMembers = await bannedMembersQuery.next();
+
+    const membersToUnban = selectedMembers.filter(({ identifier }) => {
+      return bannedMembers.find(({ userId: id }) => id === identifier);
+    });
+
+    const deselectedMembers = currentChannelMembers.filter(
+      ({ userId: identifier }) => {
+        return !selectedMembers.find(({ identifier: id }) => id === identifier);
+      },
     );
 
     await Promise.all(
@@ -58,7 +57,7 @@ const InviteUsersModal = ({ onCancel, onSubmit }) => {
 
     await channel.inviteWithUserIds(selectedIdentifiers);
     onSubmit();
-  }, [selectedMembers, deselectedMembers, membersToUnban, channel, onSubmit]);
+  }, [channel, selectedMembers, onSubmit]);
 
   return (
     <Modal
