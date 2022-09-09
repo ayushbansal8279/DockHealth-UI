@@ -34,17 +34,18 @@ const InviteUsersModal = ({ onCancel, onSubmit }) => {
     });
   }, [channel, selectedMembers]);
 
+  const membersToUnban = useMemo(async () => {
+    const bannedMembersQuery = channel.createBannedUserListQuery();
+    const bannedMembers = await bannedMembersQuery.next();
+    return selectedMembers.filter(({ identifier }) => {
+      return bannedMembers.find(({ userId: id }) => id === identifier);
+    });
+  }, [channel, selectedMembers]);
+
   const handleSubmit = useCallback(async () => {
     const selectedIdentifiers = selectedMembers.map(
       member => member.identifier,
     );
-
-    const bannedMembersQuery = channel.createBannedUserListQuery();
-    const bannedMembers = await bannedMembersQuery.next();
-
-    const membersToUnban = selectedMembers.filter(({ identifier }) => {
-      return bannedMembers.find(({ userId: id }) => id === identifier);
-    });
 
     await Promise.all(
       deselectedMembers.map(({ userId: identifier }) => {
@@ -57,7 +58,7 @@ const InviteUsersModal = ({ onCancel, onSubmit }) => {
 
     await channel.inviteWithUserIds(selectedIdentifiers);
     onSubmit();
-  }, [selectedMembers, channel, deselectedMembers, onSubmit]);
+  }, [selectedMembers, deselectedMembers, membersToUnban, channel, onSubmit]);
 
   return (
     <Modal
