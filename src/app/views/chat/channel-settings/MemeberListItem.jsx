@@ -8,23 +8,32 @@ import MoreVert from '@material-ui/icons/MoreVert';
 import { Box } from '@material-ui/core';
 import { MemberName, MemberRow } from './styled';
 
-const MemberListItem = ({ member, channel, isSelected, handleOptionClick }) => {
+const MemberListItem = ({
+  member,
+  channelMember,
+  channel,
+  isSelected,
+  handleOptionClick,
+}) => {
   const menuOptions = useMemo(
-    () => [
-      {
-        name: 'Make Admin',
-        onClick: async () => {
-          const { userIdentifier: identifier } = member;
-          await channel.addOperators([identifier]);
-        },
-      },
-    ],
-    [channel, member],
+    () =>
+      channelMember?.role !== 'operator'
+        ? [
+            {
+              name: 'Make Admin',
+              onClick: async () => {
+                const { userIdentifier: identifier } = member;
+                await channel.addOperators([identifier]);
+              },
+            },
+          ]
+        : [],
+    [channel, member, channelMember],
   );
 
   return (
     <MemberRow
-      key={member?.userId}
+      key={member?.userIdentifier}
       isSelected={isSelected}
       onClick={event => handleOptionClick(event, member)}
     >
@@ -35,7 +44,9 @@ const MemberListItem = ({ member, channel, isSelected, handleOptionClick }) => {
         <UserAvatar user={member} hideTooltip />
       )}
       <Spacing horizontal={3} />
-      <MemberName>{member.name}</MemberName>
+      <MemberName>
+        {member.name} {channelMember?.role === 'operator' ? '(Admin)' : ''}
+      </MemberName>
       <>
         <Box m={2} />
         <OptionsMenu options={menuOptions}>

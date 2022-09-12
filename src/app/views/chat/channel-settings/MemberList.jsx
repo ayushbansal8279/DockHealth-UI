@@ -55,10 +55,14 @@ const MemberList = ({ onError }) => {
   const renderSelectOption = useCallback(
     (member, isSelected) => {
       // eslint-disable-next-line no-param-reassign
-      member.identifier = member.userId;
+      member.identifier = member.userIdentifier;
+      const channelMember = channel.members?.find(
+        ({ userId }) => userId === member.userIdentifier,
+      );
       return (
         <MemberListItem
           member={member}
+          channelMember={channelMember}
           isSelected={isSelected}
           channel={channel}
           handleOptionClick={handleOptionClick}
