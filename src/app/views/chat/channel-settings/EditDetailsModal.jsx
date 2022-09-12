@@ -1,4 +1,4 @@
-import React, { useState, useRef, useContext } from 'react';
+import React, { useState, useRef, useContext, useCallback } from 'react';
 import useSendbirdStateContext from '@sendbird/uikit-react/useSendbirdStateContext';
 import Modal from '@sendbird/uikit-react/ui/Modal';
 import Input from '@sendbird/uikit-react/ui/Input';
@@ -7,21 +7,16 @@ import Label from '@sendbird/uikit-react/ui/Label';
 import { InputLabel } from '@material-ui/core';
 import TextButton from '@sendbird/uikit-react/ui/TextButton';
 import ChannelAvatar from '@sendbird/uikit-react/ui/ChannelAvatar';
+import sendBirdSelectors from '@sendbird/uikit-react/sendBirdSelectors';
 import ChannelSettingsContext from './ChannelSettingsContext';
 import { LocalizationContext } from '../channel/ChannelLocalizationContext';
 import { Colors, Typography } from './LabelTypography';
 import { Type } from './ButtonType';
-import uuidv4 from './uuid';
 
 const EditDetails = props => {
   const { onSubmit, onCancel } = props;
 
-  const {
-    channel,
-    onChannelModified,
-    onBeforeUpdateChannel,
-    setChannelUpdateId,
-  } = useContext(ChannelSettingsContext);
+  const { channel, onBeforeUpdateChannel } = useContext(ChannelSettingsContext);
 
   const title = channel?.name !== 'Group Channel' ? channel?.name : '';
 
@@ -37,61 +32,63 @@ const EditDetails = props => {
   const [newFile, setNewFile] = useState(null);
   const { stringSet } = useContext(LocalizationContext);
 
+  const globalStore = useSendbirdStateContext();
+  const sdkInstance = sendBirdSelectors.getSdk(globalStore);
+
+  const handleSubmit = useCallback(async () => {
+    if (title !== '' && !inputReference.current.value) {
+      if (formReference.current.reportValidity) {
+        formReference.current.reportValidity();
+      }
+      return;
+    }
+
+    const currentTitle = inputReference.current.value;
+    setCurrentImg(newFile);
+    logger.info('ChannelSettings: Channel information being updated', {
+      currentTitle,
+      currentImg,
+    });
+    if (onBeforeUpdateChannel) {
+      logger.info('ChannelSettings: onBeforeUpdateChannel');
+      const parameters = onBeforeUpdateChannel(
+        currentTitle,
+        currentImg,
+        channel?.data,
+      );
+      await channel.updateChannel(parameters);
+    } else if (sdkInstance) {
+      logger.info('ChannelSettings: normal');
+      const parameters = new sdkInstance.GroupChannelParams();
+      parameters.name = currentTitle;
+      channel
+        .updateChannel(parameters)
+
+        .then(groupChannel => {
+          logger.info(
+            'ChannelSettings: Channel information updated',
+            groupChannel,
+          );
+          onSubmit();
+        });
+    }
+  }, [
+    channel,
+    currentImg,
+    logger,
+    newFile,
+    onBeforeUpdateChannel,
+    onSubmit,
+    sdkInstance,
+    title,
+  ]);
+
   return (
     <Modal
       titleText="Edit Conversation Information"
       submitText="Save"
       onCancel={onCancel}
-      onSubmit={() => {
-        if (title !== '' && !inputReference.current.value) {
-          if (formReference.current.reportValidity) {
-            formReference.current.reportValidity();
-          }
-          return;
-        }
-
-        const currentTitle = inputReference.current.value;
-        setCurrentImg(newFile);
-        logger.info('ChannelSettings: Channel information being updated', {
-          currentTitle,
-          currentImg,
-        });
-        if (onBeforeUpdateChannel) {
-          logger.info('ChannelSettings: onBeforeUpdateChannel');
-          const parameters = onBeforeUpdateChannel(
-            currentTitle,
-            currentImg,
-            channel?.data,
-          );
-          channel.updateChannel(parameters).then(groupChannel => {
-            onChannelModified(groupChannel);
-            setChannelUpdateId(uuidv4());
-            onSubmit();
-          });
-        } else {
-          logger.info('ChannelSettings: normal');
-          const parameters = { name: 'new name' };
-          channel
-            .updateChannel(parameters)
-            // .updateChannel({
-            //   // coverImage: currentImg,
-            //   name: currentTitle,
-            //   // data: channel?.data || '',
-            // })
-            .then(groupChannel => {
-              logger.info(
-                'ChannelSettings: Channel information updated',
-                groupChannel,
-              );
-              onChannelModified(groupChannel);
-              setChannelUpdateId(uuidv4());
-              onSubmit();
-            })
-            .catch(error => {
-              console.log(`error creating group channel: ${error}`);
-            });
-        }
-      }}
+      onSubmit={handleSubmit}
       type={Type.PRIMARY}
     >
       <form
@@ -103,7 +100,7 @@ const EditDetails = props => {
       >
         <div className="channel-profile-form__img-section">
           <InputLabel type={Typography.BODY_1} color="primary">
-            Channel Image
+            Image
           </InputLabel>
           <div className="channel-profile-form__avatar">
             {currentImg ? (

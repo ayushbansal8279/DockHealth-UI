@@ -1,5 +1,5 @@
 /* eslint-disable sonarjs/cognitive-complexity */
-import React, { useMemo } from 'react';
+import React, { useMemo, useCallback } from 'react';
 import { CircleIcon } from 'components/task/styled';
 import { Box, IconButton } from '@material-ui/core';
 import { Close, MoreHoriz } from '@material-ui/icons';
@@ -8,6 +8,7 @@ import palette from 'styles/palette';
 import Circle from 'img/circle.svg';
 import CircleCompleted from 'img/circle-completed.svg';
 import OptionsMenu from 'components/common/OptionsMenu/OptionsMenu';
+import { markTaskAsUnRead } from 'actions/task-actions';
 import { SINGLE_TASK_RESTRICTIONS_OPTIONS } from 'restrictions/task-restrictions';
 import {
   userHasSendEmailFeatureSelector,
@@ -57,6 +58,10 @@ const TopSection = ({
   const postToEMRAvailable = useSelector(userHasPostEMRNoteFeatureSelector);
   const shareTaskAvailable = useSelector(userHasShareTaskFeatureSelector);
 
+  const handleMarkAsUnRead = useCallback(() => {
+    dispatch(markTaskAsUnRead(selectedTask.taskIdentifier));
+  }, [dispatch, selectedTask]);
+
   const options = useMemo(
     () =>
       [
@@ -81,6 +86,10 @@ const TopSection = ({
             }
           },
           restriction: restrictions?.duplicate === DISABLED,
+        },
+        {
+          name: 'Mark as unread',
+          onClick: handleMarkAsUnRead,
         },
         shareTaskAvailable &&
           !isTemplateTask && {
@@ -117,6 +126,7 @@ const TopSection = ({
     [
       handleMoveTask,
       restrictions,
+      handleMarkAsUnRead,
       shareTaskAvailable,
       isTemplateTask,
       handleShareTask,
