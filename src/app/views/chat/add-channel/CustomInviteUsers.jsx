@@ -30,9 +30,6 @@ const InviteUsers = ({ onCancel }) => {
         return member.identifier;
       }),
     );
-    // parameters.invitedUserIds = selectedMembers.map(
-    //   member => member.identifier,
-    // );
     parameters.operatorUserIds = [currentUserId];
     parameters.name = '';
 

@@ -4,7 +4,7 @@ import { useSelector } from 'react-redux';
 import { selectedChatChannelSelector } from 'selectors/sendbird-selectors';
 import CustomChannelSettingsProvider from './CustomChannelSettingsProvider';
 import ChannelProfile from './ChannelProfile';
-import CustomChannelSettingsUI from './CustomChannelSettingsUi.jsx';
+import CustomChannelSettingsUI from './CustomChannelSettingsUi';
 import ShowSettingsContext from '../ShowSettingsContext';
 
 const ChatChannelSettings = () => {
