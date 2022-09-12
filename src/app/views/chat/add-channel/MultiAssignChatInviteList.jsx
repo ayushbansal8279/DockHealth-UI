@@ -68,7 +68,7 @@ const MultiAssignChatInviteMembersList = ({
               );
               return (
                 !isSelected &&
-                name.toLowerCase().startsWith(searchValue.toLowerCase()) &&
+                name.toLowerCase().includes(searchValue.toLowerCase()) &&
                 identifier !== currentUser?.identifier &&
                 itemType === 'USER' &&
                 userStatus === 'ACTIVE'
