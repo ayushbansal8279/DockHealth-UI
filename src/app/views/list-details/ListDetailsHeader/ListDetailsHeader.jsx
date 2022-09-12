@@ -214,7 +214,7 @@ const ListDetailsHeader = props => {
             <Box pl={0.5}>
               <AdditionalMembersCounterPopover
                 hiddenMembers={hiddenUsers}
-                size={45}
+                size={36}
                 onSelectFilters={handleFilterSelect}
                 selectedFilters={selectedFilters}
               />

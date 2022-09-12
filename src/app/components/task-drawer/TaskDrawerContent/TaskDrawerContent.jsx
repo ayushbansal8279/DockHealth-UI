@@ -144,16 +144,14 @@ const TaskDrawerContent = props => {
           />
         </Grid>
         {selectedTask && <TaskDrawerDivider />}
-        <Spacing vertical={5} />
         <Box display="flex" padding="0 32px">
           <Typography>List: </Typography>
           <Spacing horizontal={3} />
           <FiledInListName>{selectedTask?.taskList?.listName}</FiledInListName>
         </Box>
-        <Spacing vertical={2} />
         {isSubtask && (
           <Grid item xs={12} style={styleFullRowThin}>
-            <Spacing vertical={4} />
+            <Spacing vertical={2} />
             {selectedParentTask ? (
               <ReferenceParentButton type="button" onClick={onClickParentTask}>
                 <ReferenceParentName>
@@ -174,7 +172,7 @@ const TaskDrawerContent = props => {
         )}
         {!isSubtask && (parentBundle || taskTemplate) && (
           <Grid item xs={12} style={styleFullRowThin}>
-            <Spacing vertical={4} />
+            <Spacing vertical={2} />
             <ReferenceParentButton
               type="button"
               onClick={handleWorkflowReferenceClick}
