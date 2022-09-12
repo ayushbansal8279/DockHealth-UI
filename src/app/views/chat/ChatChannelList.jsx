@@ -6,7 +6,7 @@ import { userProfileSelector } from 'selectors/user-selectors';
 import { useDispatch, useSelector } from 'react-redux';
 import { selectedChatChannelSelector } from 'selectors/sendbird-selectors';
 import { CircularProgress } from '@material-ui/core';
-import { Title } from 'views/TaskTour/styled';
+// import { Title } from 'views/TaskTour/styled';
 import { selectChannel } from 'actions/sendbird-actions';
 import CustomAddChannel from './add-channel/CustomAddChannel';
 import ChatChannelPreview from './ChatChannelPreview';
