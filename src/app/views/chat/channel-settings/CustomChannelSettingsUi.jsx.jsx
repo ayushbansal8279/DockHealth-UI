@@ -1,4 +1,4 @@
-import React, { useState, useCallback } from 'react';
+import React, { useState, useCallback, useContext } from 'react';
 import useSendbirdStateContext from '@sendbird/uikit-react/useSendbirdStateContext';
 import Label from '@sendbird/uikit-react/ui/Label';
 import IconButton from '@sendbird/uikit-react/ui/IconButton';
@@ -17,7 +17,7 @@ const CustomChannelSettingsUI = props => {
 
   const logger = state?.config?.logger;
 
-  const { invalidChannel, onCloseClick } = ChannelSettingsContext;
+  const { invalidChannel, onCloseClick } = useContext(ChannelSettingsContext);
   const channel = useSelector(selectedChatChannelSelector);
 
   const { renderChannelProfile } = props;
@@ -31,7 +31,7 @@ const CustomChannelSettingsUI = props => {
       <div>
         <div className="sendbird-channel-settings__header">
           <Label type={Typography.H_2} color={Colors.ONBACKGROUND_1}>
-            Conversation Information
+            Information
           </Label>
           <Icon
             className="sendbird-channel-settings__close-icon"
@@ -52,7 +52,7 @@ const CustomChannelSettingsUI = props => {
     <>
       <div className="sendbird-channel-settings__header">
         <Label type={Typography.H_2} color={Colors.ONBACKGROUND_1}>
-          Conversation Information
+          Information
         </Label>
         <div className="sendbird-channel-settings__header-icon">
           <IconButton

@@ -100,7 +100,7 @@ const EditDetails = props => {
       >
         <div className="channel-profile-form__img-section">
           <InputLabel type={Typography.BODY_1} color="primary">
-            Channel Image
+            Image
           </InputLabel>
           <div className="channel-profile-form__avatar">
             {currentImg ? (
