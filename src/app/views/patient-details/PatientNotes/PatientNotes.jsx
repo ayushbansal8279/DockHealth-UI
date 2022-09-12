@@ -178,6 +178,7 @@ const PatientNotes = () => {
           <ClickAwayListener onClickAway={handleClickAway}>
             <RichTextInputContainer>
               <TextEditor
+                getFocusFromParent={editMode}
                 showToolbar
                 ref={addNoteInputReference}
                 taskListIdentifier={patientIdentifier}

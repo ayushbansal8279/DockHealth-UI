@@ -14,6 +14,7 @@ export const useMenuStyles = makeStyles({
 });
 
 export const OptionsMenuContainer = styled.div`
+  display: flex;
   @media print {
     display: none;
   }

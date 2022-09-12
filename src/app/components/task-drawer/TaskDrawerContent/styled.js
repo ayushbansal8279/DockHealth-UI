@@ -96,3 +96,11 @@ export const TaskDrawerDivider = styled(Divider)`
     opacity: 0.3;
   }
 `;
+
+export const FiledInListName = styled.a`
+  color: ${palette.brightBlue};
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  max-width: 250px;
+`;

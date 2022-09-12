@@ -1,14 +1,14 @@
 /* eslint-disable sonarjs/cognitive-complexity */
-import React, { useMemo } from 'react';
+import React, { useMemo, useCallback } from 'react';
 import { CircleIcon } from 'components/task/styled';
 import { Box, IconButton } from '@material-ui/core';
 import { Close, MoreHoriz } from '@material-ui/icons';
 import { checkIfTemplateTask, TaskStatus } from 'helpers/task-helpers';
-import Spacing from 'components/common/Spacing';
 import palette from 'styles/palette';
 import Circle from 'img/circle.svg';
 import CircleCompleted from 'img/circle-completed.svg';
 import OptionsMenu from 'components/common/OptionsMenu/OptionsMenu';
+import { markTaskAsUnRead } from 'actions/task-actions';
 import { SINGLE_TASK_RESTRICTIONS_OPTIONS } from 'restrictions/task-restrictions';
 import {
   userHasSendEmailFeatureSelector,
@@ -19,7 +19,8 @@ import {
 } from 'selectors/user-selectors';
 import { useDispatch, useSelector } from 'react-redux';
 import { openModal } from 'modal/actions';
-import { HorizontalLabel, FiledInListName, TopSectionFiledIn } from '../styled';
+import ShareLinkIcon from 'img/share-link.svg';
+import { HorizontalLabel } from '../styled';
 import initializeTaskDrawerTopSectionHooks from './hooks';
 
 const { DISABLED } = SINGLE_TASK_RESTRICTIONS_OPTIONS;
@@ -57,6 +58,10 @@ const TopSection = ({
   const postToEMRAvailable = useSelector(userHasPostEMRNoteFeatureSelector);
   const shareTaskAvailable = useSelector(userHasShareTaskFeatureSelector);
 
+  const handleMarkAsUnRead = useCallback(() => {
+    dispatch(markTaskAsUnRead(selectedTask.taskIdentifier));
+  }, [dispatch, selectedTask]);
+
   const options = useMemo(
     () =>
       [
@@ -81,6 +86,10 @@ const TopSection = ({
             }
           },
           restriction: restrictions?.duplicate === DISABLED,
+        },
+        {
+          name: 'Mark as unread',
+          onClick: handleMarkAsUnRead,
         },
         shareTaskAvailable &&
           !isTemplateTask && {
@@ -117,6 +126,7 @@ const TopSection = ({
     [
       handleMoveTask,
       restrictions,
+      handleMarkAsUnRead,
       shareTaskAvailable,
       isTemplateTask,
       handleShareTask,
@@ -151,8 +161,6 @@ const TopSection = ({
       <Box display="flex">
         {selectedTask && !checkIfTemplateTask(selectedTask) && (
           <>
-            <HorizontalLabel>Mark Complete : </HorizontalLabel>
-            <Spacing horizontal={3} />
             <CircleIcon
               src={
                 selectedTask?.status === TaskStatus.COMPLETE
@@ -165,18 +173,29 @@ const TopSection = ({
               isCompleted={selectedTask?.status === TaskStatus.COMPLETE}
               onClick={onCompleteToggle}
             />
-            <TopSectionFiledIn>
-              <Spacing horizontal={3} />
-              <HorizontalLabel>Filed In: </HorizontalLabel>
-              <Spacing horizontal={3} />
-              <FiledInListName>
-                {selectedTask?.taskList?.listName}
-              </FiledInListName>
-            </TopSectionFiledIn>
+            <HorizontalLabel>Complete Task</HorizontalLabel>
           </>
         )}
       </Box>
       <Box display="flex">
+        {handleCopyLink && (
+          <>
+            <Box
+              display="flex"
+              alignItems="center"
+              style={{ cursor: 'pointer' }}
+              onClick={handleCopyLink}
+            >
+              <img
+                src={ShareLinkIcon}
+                fontSize="small"
+                color="primary"
+                alt="Copy the Task link"
+              />
+            </Box>
+            <Box mx={0.5} />
+          </>
+        )}
         {allowedOptions.length !== 0 && (
           <OptionsMenu
             options={allowedOptions}
@@ -190,17 +209,7 @@ const TopSection = ({
             />
           </OptionsMenu>
         )}
-        <Box mx={0.5} />
-        {/* {handleCopyLink && (
-          <Box
-            display="flex"
-            alignItems="center"
-            cursor="pointer"
-            onClick={handleCopyLink}
-          >
-            <FileCopy fontSize="small" color="primary" />
-          </Box>
-        )} */}
+
         {!hideCloseIcon && (
           <IconButton
             onClick={() => {

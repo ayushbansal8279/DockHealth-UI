@@ -46,7 +46,7 @@ const MegaFilter = ({
   }, [isOpen]);
 
   return (
-    <MegaFilterContainer>
+    <MegaFilterContainer isFilterApplied={isFilterApplied}>
       {children || (
         <FilterButton
           ref={megaFilterButtonReference}

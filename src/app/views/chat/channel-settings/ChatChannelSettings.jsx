@@ -4,9 +4,8 @@ import { useSelector } from 'react-redux';
 import { selectedChatChannelSelector } from 'selectors/sendbird-selectors';
 import CustomChannelSettingsProvider from './CustomChannelSettingsProvider';
 import ChannelProfile from './ChannelProfile';
-import CustomChannelSettingsUI from './CustomChannelSettingsUi.jsx';
+import CustomChannelSettingsUI from './CustomChannelSettingsUi';
 import ShowSettingsContext from '../ShowSettingsContext';
-import ChannelSettingsUI from '@sendbird/uikit-react/ChannelSettings/components/ChannelSettingsUI';
 
 const ChatChannelSettings = () => {
   const selectedChannel = useSelector(selectedChatChannelSelector);
@@ -19,18 +18,18 @@ const ChatChannelSettings = () => {
   return (
     <div className="sendbird-app__settingspanel-wrap">
       <ChannelSettingsProvider
-        channelUrl={selectedChannel.url}
+        channelUrl={selectedChannel?.url}
         onCloseClick={handleOnCloseClick}
       >
         <CustomChannelSettingsProvider
-          channelUrl={selectedChannel.url}
+          channelUrl={selectedChannel?.url}
           channel={selectedChannel}
           onCloseClick={handleOnCloseClick}
         >
-          <ChannelSettingsUI
-          // renderChannelProfile={() => {
-          //   return <ChannelProfile />;
-          // }}
+          <CustomChannelSettingsUI
+            renderChannelProfile={() => {
+              return <ChannelProfile />;
+            }}
           />
         </CustomChannelSettingsProvider>
       </ChannelSettingsProvider>
