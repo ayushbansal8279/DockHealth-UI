@@ -18,11 +18,11 @@ const ChatChannelSettings = () => {
   return (
     <div className="sendbird-app__settingspanel-wrap">
       <ChannelSettingsProvider
-        channelUrl={selectedChannel.url}
+        channelUrl={selectedChannel?.url}
         onCloseClick={handleOnCloseClick}
       >
         <CustomChannelSettingsProvider
-          channelUrl={selectedChannel.url}
+          channelUrl={selectedChannel?.url}
           channel={selectedChannel}
           onCloseClick={handleOnCloseClick}
         >
