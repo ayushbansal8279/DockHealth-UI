@@ -10,7 +10,11 @@ import AttachmentButton from 'components/attachments/AttachmentButton/Attachment
 import AttachmentProgressBar from 'components/attachments/AttachmentProgressBar/AttachmentProgressBar';
 import AddAttachmentButton from 'components/attachments/AddAttachmentButton/AddAttachmentButton';
 import initializeAttachmentsSectionHooks from './hooks';
-import { AttachmentsContainer, AttachmentFileInput } from './styled';
+import {
+  AttachmentsContainer,
+  AttachmentFileInput,
+  DownloadAllLink,
+} from './styled';
 
 const AttachmentsSection = () => {
   const {
@@ -26,6 +30,7 @@ const AttachmentsSection = () => {
     hideAttachmentPreview,
     previewedAttachment,
     dropzone: { getRootProps, getInputProps, isDragActive },
+    downloadAllFiles,
   } = initializeAttachmentsSectionHooks();
 
   return (
@@ -91,6 +96,15 @@ const AttachmentsSection = () => {
           )}
           <AddAttachmentButton />
         </Grid>
+        {currentTaskAttachments && currentTaskAttachments.length > 0 && (
+          <Grid item xs={12}>
+            <div>
+              <DownloadAllLink onClick={downloadAllFiles}>
+                Download All
+              </DownloadAllLink>
+            </div>
+          </Grid>
+        )}
       </Grid>
     </AttachmentsContainer>
   );

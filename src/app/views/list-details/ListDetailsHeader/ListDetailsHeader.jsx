@@ -17,7 +17,8 @@ import {
 } from 'selectors/task-list-selectors';
 import { openModal } from 'modal/actions';
 import { getMembersByTaskListId } from 'actions/task-list-actions';
-import { splitAt, equals } from 'ramda';
+import splitAt from 'ramda/src/splitAt';
+import equals from 'ramda/src/equals';
 import {
   filterListDetailsTasks,
   getCurrentTaskListFilterOptions,
@@ -194,10 +195,15 @@ const ListDetailsHeader = props => {
         <HeaderMembersContainer>
           {shownUsers.map((user, index) => {
             return (
-              <Box key={user.identifier} pl={index !== 0 ? 0.5 : 0}>
+              <Box
+                display="flex"
+                alignItems="center"
+                key={user.identifier}
+                pl={index !== 0 ? 0.5 : 0}
+              >
                 <AvatarFilterMember
                   member={user}
-                  size={45}
+                  size={36}
                   onSelectFilters={handleFilterSelect}
                   selectedFilters={selectedFilters}
                 />
@@ -208,7 +214,7 @@ const ListDetailsHeader = props => {
             <Box pl={0.5}>
               <AdditionalMembersCounterPopover
                 hiddenMembers={hiddenUsers}
-                size={45}
+                size={36}
                 onSelectFilters={handleFilterSelect}
                 selectedFilters={selectedFilters}
               />
@@ -217,7 +223,7 @@ const ListDetailsHeader = props => {
           {!isUserGuest(currentUser) && listType && listType !== 'INBOX' && (
             <Box pl={0.5}>
               <InviteMemberButton
-                size={45}
+                size={36}
                 onClick={() =>
                   dispatch(
                     openModal('InviteToList', {

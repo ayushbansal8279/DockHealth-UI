@@ -2,7 +2,7 @@
 import { useEffect, useState, useCallback, useRef, useReducer } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { useDropzone } from 'react-dropzone';
-import { isEmpty } from 'ramda';
+import isEmpty from 'ramda/src/isEmpty';
 import { selectedTaskSelector } from 'selectors/task-drawer-selectors';
 import { removeTaskAttachment, addTaskAttachment } from 'actions/task-actions';
 import { useBoolean } from 'hooks/useBoolean';
@@ -173,6 +173,18 @@ const initializeAttachmentsSectionHooks = () => {
     [loadAttachmentsContent, showAttachmentPreview],
   );
 
+  const downloadAllFiles = useCallback(async () => {
+    attachments.map(async ({ attachmentIdentifier, fileName }) => {
+      const { data } = await getMemoTaskAttachment(attachmentIdentifier);
+      const url = window.URL.createObjectURL(new Blob([data]));
+      const link = document.createElement('a');
+      link.href = url;
+      link.setAttribute('download', fileName);
+      document.body.append(link);
+      link.click();
+    });
+  }, [attachments]);
+
   return {
     attachmentsSources,
     currentTaskAttachments,
@@ -192,6 +204,7 @@ const initializeAttachmentsSectionHooks = () => {
       getInputProps,
       isDragActive,
     },
+    downloadAllFiles,
   };
 };
 

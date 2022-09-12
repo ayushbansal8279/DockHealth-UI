@@ -8,7 +8,7 @@ import {
   takeLeading,
   delay,
 } from 'redux-saga/effects';
-import { isEmpty } from 'ramda';
+import isEmpty from 'ramda/src/isEmpty';
 import * as ActionTypes from 'actions/action-types';
 import * as PatientTasksApi from 'api/patient-tasks-api';
 import * as TaskListApi from 'api/task-list-api';

@@ -1,7 +1,8 @@
 /* eslint-disable sonarjs/no-identical-functions */
 import React, { useMemo, useCallback } from 'react';
 import { useParams } from 'react-router-dom';
-import { isEmpty, pluck } from 'ramda';
+import isEmpty from 'ramda/src/isEmpty';
+import pluck from 'ramda/src/pluck';
 import { bulkEditTasks as bulkEditTasksApi } from 'api/task-api';
 import { checkIfTemplateTask } from 'helpers/task-helpers';
 import { BulkEditOptionsConfig } from 'helpers/bulk-edit-helpers';

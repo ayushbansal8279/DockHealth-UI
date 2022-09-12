@@ -1,5 +1,5 @@
 import { createSelector } from 'reselect';
-import { prop } from 'ramda';
+import prop from 'ramda/src/prop';
 
 export const listTasksSelector = state => state.listDetails;
 

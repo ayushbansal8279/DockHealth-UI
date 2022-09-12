@@ -3,7 +3,7 @@
 /* eslint-disable func-names */
 import React, { useState, useEffect } from 'react';
 import { useSelector } from 'react-redux';
-import { isEmpty } from 'ramda';
+import isEmpty from 'ramda/src/isEmpty';
 import { initializePusher } from 'helpers/pusher-instance';
 import { getActivityAlertDetails } from 'api/activity-alerts-api';
 import ActivityAlertsToast from './ActivityAlertsToast/ActivityAlertsToast';

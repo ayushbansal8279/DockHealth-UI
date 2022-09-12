@@ -4,7 +4,9 @@ import { useSelector, useDispatch } from 'react-redux';
 import { useHistory, useParams } from 'react-router-dom';
 import { useDropzone } from 'react-dropzone';
 import { showGlobalErrorAlert } from 'alert/actions';
-import { memoizeWith, identity, isEmpty } from 'ramda';
+import memoizeWith from 'ramda/src/memoizeWith';
+import identity from 'ramda/src/identity';
+import isEmpty from 'ramda/src/isEmpty';
 import * as PatientDetailsActions from 'actions/patient-details-actions';
 import {
   patientSelector,
@@ -273,6 +275,18 @@ const initializeAttachmentsSectionHooks = () => {
     }
   };
 
+  const downloadAllFiles = useCallback(async () => {
+    attachments.map(async ({ attachmentIdentifier, fileName }) => {
+      const { data } = await getMemoPatientAttachment(attachmentIdentifier);
+      const url = window.URL.createObjectURL(new Blob([data]));
+      const link = document.createElement('a');
+      link.href = url;
+      link.setAttribute('download', fileName);
+      document.body.append(link);
+      link.click();
+    });
+  }, [attachments]);
+
   return {
     dispatch,
     handleAttachmentClick,
@@ -299,6 +313,7 @@ const initializeAttachmentsSectionHooks = () => {
       getInputProps,
       isDragActive,
     },
+    downloadAllFiles,
   };
 };
 

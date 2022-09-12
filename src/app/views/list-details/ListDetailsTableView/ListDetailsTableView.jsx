@@ -1,5 +1,5 @@
 import React from 'react';
-import { compose } from 'ramda';
+import compose from 'ramda/src/compose';
 import { TaskListTabName } from 'helpers/tasklist-helpers';
 import * as ListDetailsActions from 'actions/list-details-actions';
 import TaskDrawer from 'components/task-drawer/TaskDrawer/TaskDrawer';

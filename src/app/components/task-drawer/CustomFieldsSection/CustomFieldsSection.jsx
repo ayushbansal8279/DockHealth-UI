@@ -7,7 +7,7 @@ import { getTaskCustomFields } from 'actions/task-drawer-actions';
 import CustomField from 'components/common/CustomField/CustomField';
 import { useBoolean } from 'hooks/useBoolean';
 import { useForm, FormProvider } from 'react-hook-form';
-import { compose } from 'ramda';
+import compose from 'ramda/src/compose';
 import CategoryOptions from 'components/common/CategoryOptions/CategoryOptions';
 import { partialUpdateTask } from 'actions/task-actions';
 import { updatePartialWorkflow } from 'actions/task-template-actions';

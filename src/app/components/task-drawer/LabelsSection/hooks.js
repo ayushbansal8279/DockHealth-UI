@@ -1,7 +1,7 @@
 /* eslint-disable react-hooks/rules-of-hooks */
 import { useState, useCallback } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
-import { prop } from 'ramda';
+import prop from 'ramda/src/prop';
 import { checkIfTemplateTask } from 'helpers/task-helpers';
 import {
   addLabel,

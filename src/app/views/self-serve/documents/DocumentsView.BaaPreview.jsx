@@ -1,5 +1,7 @@
 import { Grid } from '@material-ui/core';
-import { identity, memoizeWith, range } from 'ramda';
+import identity from 'ramda/src/identity';
+import memoizeWith from 'ramda/src/memoizeWith';
+import range from 'ramda/src/range';
 import React, { useCallback, useState } from 'react';
 import { useAsync } from 'react-use';
 import { downloadSignedDocument } from 'api/organization-api';

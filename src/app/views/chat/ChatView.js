@@ -1,10 +1,12 @@
 import React, { useState } from 'react';
+import { useHistory } from 'react-router-dom';
 import ViewLayout from 'components/template/ViewLayout/ViewLayout';
 import BasicLayoutHeader from 'components/template/BasicLayoutHeader/BasicLayoutHeader';
 import withSendBird from '@sendbird/uikit-react/withSendBird';
 import { ChannelListProvider } from '@sendbird/uikit-react/ChannelList/context';
 import { useSelector } from 'react-redux';
 import { selectedChatChannelSelector } from 'selectors/sendbird-selectors';
+import { userHasDockChatFeatureSelector } from 'selectors/user-selectors';
 import ChatConversation from './channel/ChatConversation';
 import ChatChannelList from './ChatChannelList';
 import ShowSettingsContext from './ShowSettingsContext';
@@ -12,6 +14,7 @@ import { Container } from './styled';
 import './sendbird-styles.css';
 
 const ChatView = () => {
+  const history = useHistory();
   const selectedChannel = useSelector(selectedChatChannelSelector);
 
   const [showSettings, setShowSettings] = useState(false);
@@ -20,6 +23,11 @@ const ChatView = () => {
     showSettings,
     setShowSettings,
   };
+
+  const dockChatAvailable = useSelector(userHasDockChatFeatureSelector);
+  if (!dockChatAvailable) {
+    history.push(`/core/home`);
+  }
 
   return (
     <ViewLayout header={<BasicLayoutHeader title="Chat" isChat />}>

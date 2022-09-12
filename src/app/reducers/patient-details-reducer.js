@@ -586,7 +586,6 @@ export default function(state = INITIAL_STATE, action = {}) {
 
     case ActionTypes.APPLY_TEMPLATE_SUCCESS: {
       const { template, taskListIdentifier } = action;
-
       return {
         ...state,
         lists: state.lists?.map(l =>

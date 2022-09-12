@@ -8,7 +8,7 @@ import { SubmenuKey } from 'components/navigation/NavigationSidebar/NavigationSi
 import TourPopover from 'components/tour-popover/TourPopper/TourPopper';
 import StandardTourContent from 'components/tour-popover/content/StandardTourContent/StandardTourContent';
 import localStorageHelper from 'helpers/local-storage-helper';
-import { isNil } from 'ramda';
+import isNil from 'ramda/src/isNil';
 import {
   onNewUserTourEnter,
   onInboxTourEnter,

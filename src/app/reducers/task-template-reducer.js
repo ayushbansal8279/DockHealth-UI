@@ -1,7 +1,7 @@
 /* eslint-disable sonarjs/cognitive-complexity */
 /* eslint-disable sonarjs/max-switch-cases */
 import * as ActionTypes from 'actions/action-types';
-import { omit } from 'ramda';
+import omit from 'ramda/src/omit';
 import { mapWithRemove } from 'helpers/utility-functions';
 import {
   createDecisionTaskNodes,

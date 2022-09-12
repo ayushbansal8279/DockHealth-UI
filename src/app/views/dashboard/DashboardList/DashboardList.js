@@ -8,7 +8,8 @@ import React, {
 } from 'react';
 import { connect, useDispatch, useSelector } from 'react-redux';
 import { useLocation } from 'react-router-dom';
-import { identity, isEmpty } from 'ramda';
+import identity from 'ramda/src/identity';
+import isEmpty from 'ramda/src/isEmpty';
 import { bindActionCreators } from 'redux';
 import EmptyTaskListBird from 'img/animals/bird';
 import EmptyTaskListAlpaca from 'img/animals/alpaca';

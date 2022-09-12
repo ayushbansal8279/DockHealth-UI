@@ -1,4 +1,5 @@
-import { prop, compose } from 'ramda';
+import prop from 'ramda/src/prop';
+import compose from 'ramda/src/compose';
 import { createSelector } from 'reselect';
 
 export const analyticsStateSelector = state => state.analytics;

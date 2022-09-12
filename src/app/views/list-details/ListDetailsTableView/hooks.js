@@ -3,7 +3,8 @@
 import { useEffect, useCallback, useState, useMemo, useRef } from 'react';
 import { useHistory, useParams } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
-import { isEmpty, isNil } from 'ramda';
+import isEmpty from 'ramda/src/isEmpty';
+import isNil from 'ramda/src/isNil';
 import { initializePusher } from 'helpers/pusher-instance';
 import useActions from 'hooks/use-actions';
 import usePrevious from 'hooks/use-previous';

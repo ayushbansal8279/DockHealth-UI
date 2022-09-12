@@ -1,7 +1,10 @@
 import { bool, shape, string } from 'prop-types';
 import React from 'react';
 import Highlighter from 'react-highlight-words';
-import { prop, sortBy, compose, toLower } from 'ramda';
+import prop from 'ramda/src/prop';
+import sortBy from 'ramda/src/sortBy';
+import compose from 'ramda/src/compose';
+import toLower from 'ramda/src/toLower';
 import { SuggestionItemContainer, SuggestionText } from './styled';
 
 const PatientSelectItem = React.forwardRef(

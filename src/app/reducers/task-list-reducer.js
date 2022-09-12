@@ -1,6 +1,12 @@
 /* eslint-disable sonarjs/max-switch-cases */
 /* eslint-disable sonarjs/cognitive-complexity */
-import { lensProp, map, propEq, set, when, pickBy, isNil } from 'ramda';
+import lensProp from 'ramda/src/lensProp';
+import map from 'ramda/src/map';
+import propEq from 'ramda/src/propEq';
+import set from 'ramda/src/set';
+import when from 'ramda/src/when';
+import pickBy from 'ramda/src/pickBy';
+import isNil from 'ramda/src/isNil';
 
 import {
   ACCEPT_INVITE_TOTASKLIST_SUCCESS,

@@ -1,6 +1,6 @@
 /* eslint-disable react-hooks/rules-of-hooks */
 import { useSelector, useDispatch } from 'react-redux';
-import { prop } from 'ramda';
+import prop from 'ramda/src/prop';
 import {
   addLabel,
   editLabel,

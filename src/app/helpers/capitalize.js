@@ -1,4 +1,5 @@
-import { replace, toUpper } from 'ramda';
+import replace from 'ramda/src/replace';
+import toUpper from 'ramda/src/toUpper';
 
 export const capitalize = replace(/^./, toUpper);
 

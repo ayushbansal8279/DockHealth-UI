@@ -18,7 +18,10 @@ import {
   customPatientsListsSelector,
   isFetchingPatientsListsSelector,
 } from 'selectors/patients-selectors';
-import { prop, sortBy, compose, toLower } from 'ramda';
+import prop from 'ramda/src/prop';
+import sortBy from 'ramda/src/sortBy';
+import compose from 'ramda/src/compose';
+import toLower from 'ramda/src/toLower';
 import {
   userProfileSelector,
   userHasPatientCustomListsFeatureSelector,

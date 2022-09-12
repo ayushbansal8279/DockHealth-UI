@@ -43,3 +43,10 @@ export const DriveIcon = styled.img`
   height: 24px;
   width: 24px;
 `;
+
+export const DownloadAllLink = styled.a`
+  align-items: center;
+  color: ${palette.brightBlue};
+  padding: ${spacing.tiny} ${spacing.small};
+  margin: ${spacing.tiny};
+`;

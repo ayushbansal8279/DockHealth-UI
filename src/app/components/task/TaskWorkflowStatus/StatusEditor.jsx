@@ -1,5 +1,5 @@
 import React, { useCallback, useEffect, useState } from 'react';
-import { pluck } from 'ramda';
+import pluck from 'ramda/src/pluck';
 import PopoverBottomBar from 'components/task/PopoverBottomBar/PopoverBottomBar';
 import { useDispatch, useSelector } from 'react-redux';
 import { organizationStatusesSelector } from 'selectors/organization-selectors';

@@ -1,7 +1,10 @@
 import React, { useMemo, useState } from 'react';
 import { Grid } from '@material-ui/core';
 import moment from 'moment';
-import { filter, includes, isEmpty, reject } from 'ramda';
+import filter from 'ramda/src/filter';
+import includes from 'ramda/src/includes';
+import isEmpty from 'ramda/src/isEmpty';
+import reject from 'ramda/src/reject';
 import ListSkeletonLoader from 'components/common/ListSkeletonLoader/ListSkeletonLoader';
 import Spacing from 'components/common/Spacing.tsx';
 import Search from 'components/task-view/Search/Search';

@@ -21,7 +21,8 @@ import UserAvatar from 'components/user/UserAvatar/UserAvatar';
 import LayoutHeader from 'components/template/LayoutHeader/LayoutHeader';
 import MegaFilter from 'components/tasklist/MegaFilter/MegaFilter';
 import HeaderSearch from 'components/template/HeaderSearch/HeaderSearch';
-import { compose, equals } from 'ramda';
+import compose from 'ramda/src/compose';
+import equals from 'ramda/src/equals';
 import {
   showAddQuickFilterOption,
   createQuickFilter,

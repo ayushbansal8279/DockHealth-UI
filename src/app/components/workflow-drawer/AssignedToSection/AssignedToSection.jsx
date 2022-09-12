@@ -1,6 +1,7 @@
 /* eslint-disable react/jsx-no-duplicate-props */
 import React, { useCallback, useEffect, useRef, useState } from 'react';
-import { pluck, trim } from 'ramda';
+import pluck from 'ramda/src/pluck';
+import trim from 'ramda/src/trim';
 import { useDispatch, useSelector } from 'react-redux';
 import { userProfileSelector } from 'selectors/user-selectors';
 import TaskDrawerPopover from 'components/task-drawer/TaskDrawerPopover/TaskDrawerPopover';

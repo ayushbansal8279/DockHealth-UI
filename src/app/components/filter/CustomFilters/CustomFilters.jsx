@@ -3,7 +3,7 @@ import React, { useCallback, useEffect, useState } from 'react';
 import { useHistory } from 'react-router-dom';
 import { cleanClickFilter } from 'actions/mega-filter-actions';
 import { useDispatch } from 'react-redux';
-import { compose } from 'ramda';
+import compose from 'ramda/src/compose';
 import CustomFilterOption from '../CustomFilterOption/CustomFilterOption';
 import { CustomFiltersContainer, Label, OptionsList } from './styled';
 import { getUniqueQuickFilterLabelName } from './helpers';

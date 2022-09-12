@@ -15,7 +15,8 @@ export const translateStateToApi = state =>
   state.filter(c => c.isChecked).map(c => c.identifier);
 
 export const getInitialColumnWidth = column => {
-  const isCustomField = column?.contextType === 'CUSTOM';
+  const isCustomField =
+    column?.contextType === 'CUSTOM' || column?.contextType === 'PREDEFINED';
   if (isCustomField) {
     return CustomFieldWidthConfig[column.fieldType];
   }

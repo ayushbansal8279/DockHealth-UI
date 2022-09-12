@@ -40,6 +40,7 @@ export const CircleIcon = styled.img`
   cursor: ${({ isClickable }) => (isClickable ? 'pointer' : 'initial')};
   margin-right: ${spacing.smallPlus};
   ${({ isCompleted }) => !isCompleted && `margin-left: 4px;`}
+  opacity: ${({ isClickable }) => (isClickable ? '1' : '0.5')};
 `;
 
 export const Description = styled.div`

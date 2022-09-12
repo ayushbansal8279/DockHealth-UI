@@ -24,7 +24,7 @@ const InviteUsers = ({ onCancel }) => {
     const parameters = new sdkInstance.GroupChannelParams();
     parameters.isPublic = false;
     parameters.isEphemeral = false;
-    parameters.isDistinct = false;
+    parameters.isDistinct = true;
     parameters.addUserIds(
       selectedMembers.map(member => {
         return member.identifier;

@@ -1,15 +1,13 @@
 import moment from 'moment';
-import {
-  pipe,
-  prop,
-  path,
-  sortWith,
-  ascend,
-  descend,
-  defaultTo,
-  toLower,
-  move,
-} from 'ramda';
+import pipe from 'ramda/src/pipe';
+import prop from 'ramda/src/prop';
+import path from 'ramda/src/path';
+import sortWith from 'ramda/src/sortWith';
+import ascend from 'ramda/src/ascend';
+import descend from 'ramda/src/descend';
+import defaultTo from 'ramda/src/defaultTo';
+import toLower from 'ramda/src/toLower';
+import move from 'ramda/src/move';
 import { TaskStatus } from 'helpers/task-helpers';
 
 /* eslint-disable import/prefer-default-export */

@@ -2,7 +2,7 @@
 import React, { useCallback, useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
-import { pluck } from 'ramda';
+import pluck from 'ramda/src/pluck';
 import { showGlobalAlert, showGlobalErrorAlert } from 'alert/actions';
 import AlertMessages from 'alert/AlertMessages';
 import { updatePatientsList, getPatientsByListId } from 'api/patients-api';
@@ -156,7 +156,7 @@ const AddPatientToListModal = ({
             <PatientList onSelect={handleSelectPatient} />
           </Column>
           <Spacing horizontal={4} />
-          <Column>
+          <Column maxHeight={325}>
             <Header>Included {customerTypeLabel}s in list</Header>
             <Spacing vertical={4} />
             <SelectedPatientsWrapper>

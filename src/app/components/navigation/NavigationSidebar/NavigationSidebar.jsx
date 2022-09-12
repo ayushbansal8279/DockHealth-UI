@@ -10,8 +10,14 @@ import {
   USERS_SETTINGS_PATH,
 } from 'routing/helpers/paths';
 import Spacing from 'components/common/Spacing.tsx';
-import { userProfileSelector } from 'selectors/user-selectors';
-import { showChatPopoverSelector } from 'selectors/sendbird-selectors';
+import {
+  userProfileSelector,
+  userHasDockChatFeatureSelector,
+} from 'selectors/user-selectors';
+import {
+  showChatPopoverSelector,
+  selectedChatChannelSelector,
+} from 'selectors/sendbird-selectors';
 import { UserOrganizationRole } from 'helpers/user-helper';
 import { getCustomerTypeLabel } from 'helpers/customer-type-helper';
 import { capitalize } from 'helpers/capitalize';
@@ -26,10 +32,10 @@ import PatientsIcon from 'img/navigation/PatientsIcon';
 import SettingsIcon from 'img/navigation/SettingsIcon';
 import TemplatesIcon from 'img/navigation/TemplatesIcon';
 import EducationCenterIcon from 'img/navigation/EducationCenterIcon';
-import DockcoinIconImage from 'img/navigation/dock-coin-icon.svg';
+// import DockcoinIconImage from 'img/navigation/dock-coin-icon.svg';
 import UserAvatar from 'components/user/UserAvatar/UserAvatar';
 import OrganizationTile from 'components/org/OrganizationTile/OrganizationTile';
-import { openModal } from 'modal/actions';
+// import { openModal } from 'modal/actions';
 import AccessRestrictor from 'components/access/AccessRestrictor/AccessRestrictor';
 import ChatPopover from 'views/chat/ChatPopover';
 import ChatIcon from 'views/chat/Icons/ChatIcon';
@@ -48,7 +54,7 @@ import {
   DrawerContentContainer,
   MainMenuContainer,
   SubMenuContainer,
-  DockcoinIcon,
+  // DockcoinIcon,
   NavigationIconContainer,
   BarChartIcon,
 } from './styled';
@@ -91,6 +97,7 @@ const NavigationSidebar = () => {
   const currentUser = useSelector(userProfileSelector);
   const showChatPopover = useSelector(showChatPopoverSelector);
   const openedSubMenuKey = useSelector(subMenuKeySelector);
+  const selectedChannel = useSelector(selectedChatChannelSelector);
 
   const { orgUserRole } = currentUser || {};
   const isUserAdmin = ['ADMIN', 'OWNER'].includes(orgUserRole);
@@ -98,6 +105,9 @@ const NavigationSidebar = () => {
   const currentOrganizationIdentifier = sessionStorage.getItem(
     'currentOrganizationIdentifier',
   );
+
+  const dockChatAvailable = useSelector(userHasDockChatFeatureSelector);
+
   const { organizationProfileColor, organizationInitials } =
     currentUser?.userOrganizations?.find(
       ({ organizationIdentifier }) =>
@@ -154,15 +164,15 @@ const NavigationSidebar = () => {
 
   const handleDockChatClick = useCallback(() => {
     if (location.pathname !== '/core/chat') {
-      dispatch(openPopover(null));
+      dispatch(openPopover(selectedChannel ?? null));
       dispatch(TemplateActions.hideSubMenu());
     }
-  }, [dispatch, location]);
+  }, [dispatch, location.pathname, selectedChannel]);
 
-  const handleReferClick = () => {
-    dispatch(TemplateActions.hideSubMenu());
-    dispatch(openModal('ReferAColleague'));
-  };
+  // const handleReferClick = () => {
+  //   dispatch(TemplateActions.hideSubMenu());
+  //   dispatch(openModal('ReferAColleague'));
+  // };
 
   return (
     <ClickAwayListener onClickAway={closeSubMenu}>
@@ -255,21 +265,23 @@ const NavigationSidebar = () => {
                 onItemClick={handleNavigationItemClick}
               />
             </AccessRestrictor>
-            <AccessRestrictor
-              allowedToRoles={[ADMIN, OWNER, MEMBER, GUEST, EXTERNAL]}
-            >
-              <NavigationIconContainer>
-                <IconNavigationItem
-                  name="Dock Chat"
-                  icon={() => {
-                    return <ChatIcon />;
-                  }}
-                  path=""
-                  onItemClick={handleDockChatClick}
-                  isNew
-                />
-              </NavigationIconContainer>
-            </AccessRestrictor>
+            {dockChatAvailable && (
+              <AccessRestrictor
+                allowedToRoles={[ADMIN, OWNER, MEMBER, GUEST, EXTERNAL]}
+              >
+                <NavigationIconContainer>
+                  <IconNavigationItem
+                    name="Dock Chat"
+                    icon={() => {
+                      return <ChatIcon />;
+                    }}
+                    path=""
+                    onItemClick={handleDockChatClick}
+                    isNew
+                  />
+                </NavigationIconContainer>
+              </AccessRestrictor>
+            )}
           </Grid>
           <Grid container direction="column">
             <AccessRestrictor allowedToRoles={[ADMIN, OWNER]}>
@@ -297,7 +309,7 @@ const NavigationSidebar = () => {
                 onItemClick={handleNavigationItemClick}
               />
             </AccessRestrictor>
-            <AccessRestrictor
+            {/* <AccessRestrictor
               allowedToRoles={[ADMIN, OWNER, MEMBER, GUEST, EXTERNAL]}
             >
               <NavigationItem
@@ -309,7 +321,7 @@ const NavigationSidebar = () => {
                   <DockcoinIcon src={DockcoinIconImage} />
                 </>
               </NavigationItem>
-            </AccessRestrictor>
+            </AccessRestrictor> */}
             <div ref={profileMenuReference}>
               <NavigationItem
                 name="Account"

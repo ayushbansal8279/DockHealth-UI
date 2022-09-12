@@ -1,4 +1,5 @@
-import { isEmpty, isNil } from 'ramda';
+import isEmpty from 'ramda/src/isEmpty';
+import isNil from 'ramda/src/isNil';
 
 export const FilterOptionsCategory = {
   ASSIGNED_TO: 'assignedTo',

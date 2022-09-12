@@ -13,7 +13,8 @@ import { showGlobalErrorAlert, showGlobalAlert } from 'alert/actions';
 import AlertMessages from 'alert/AlertMessages';
 import { updateWorkflowStatusForTasks } from 'actions/task-actions';
 import { organizationStatusesSelector } from 'selectors/organization-selectors';
-import { pluck, move } from 'ramda';
+import pluck from 'ramda/src/pluck';
+import move from 'ramda/src/move';
 import * as CustomFieldsApi from 'api/custom-fields-api';
 
 const GET_ORGANIZATION_STATUSES = '@@saga/GET_ORGANIZATION_STATUSES';

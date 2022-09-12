@@ -4,7 +4,7 @@ import { fontSizes } from 'styles/font';
 import palette from 'styles/palette';
 
 export const ViewContainer = styled.div`
-  max-width: 800px;
+  max-width: 1200px;
   width: 100%;
   margin: 0 auto;
   padding: 50px 20px;

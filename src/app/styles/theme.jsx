@@ -1,14 +1,14 @@
 import { Typography } from '@material-ui/core';
-import { createMuiTheme, ThemeProvider } from '@material-ui/core/styles';
+import { createTheme, ThemeProvider } from '@material-ui/core/styles';
 import React from 'react';
-import { memoizeWith } from 'ramda';
+import memoizeWith from 'ramda/src/memoizeWith';
 import palette from './palette';
 import themeCommonOverrides from './theme-components';
 
 const themeFactory = memoizeWith(
   ({ fontWeight, fontFamily }) => `${fontWeight}${fontFamily}`,
   ({ fontWeight, fontFamily }) =>
-    createMuiTheme({
+    createTheme({
       palette: {
         primary: {
           main: palette.lighterCyanBlue,

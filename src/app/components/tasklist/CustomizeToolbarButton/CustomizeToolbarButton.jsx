@@ -21,7 +21,7 @@ import {
   CUSTOM_FIELD_TYPES,
   sortAlphabetical,
 } from 'helpers/custom-fields-helpers';
-import { sort } from 'ramda';
+import sort from 'ramda/src/sort';
 import {
   PlusIcon,
   PopoverContainer,
@@ -57,6 +57,7 @@ const CustomizeToolbarButton = ({
     [TaskItemColumn.WORKFLOW_STATUS]: 'Status',
     [TaskItemColumn.START_DATE]: 'Start date',
     [TaskItemColumn.DUE_DATE]: 'Due date',
+    [TaskItemColumn.ANCHOR_DATE]: 'Anchor date',
     [TaskItemColumn.LIST_NAME]: 'List name',
     [TaskItemColumn.PATIENT]: capitalize(getCustomerTypeLabel(userProfile)),
   };

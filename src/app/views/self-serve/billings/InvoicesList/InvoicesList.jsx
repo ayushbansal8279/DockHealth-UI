@@ -1,6 +1,11 @@
 import { Grid } from '@material-ui/core';
 import moment from 'moment';
-import { ascend, descend, head, isEmpty, prop, sort } from 'ramda';
+import ascend from 'ramda/src/ascend';
+import descend from 'ramda/src/descend';
+import head from 'ramda/src/head';
+import isEmpty from 'ramda/src/isEmpty';
+import prop from 'ramda/src/prop';
+import sort from 'ramda/src/sort';
 import React, { useState } from 'react';
 import { useSelector } from 'react-redux';
 import ListSkeletonLoader from 'components/common/ListSkeletonLoader/ListSkeletonLoader';

@@ -1,5 +1,5 @@
 /* eslint-disable import/prefer-default-export */
-import { isEmpty } from 'ramda';
+import isEmpty from 'ramda/src/isEmpty';
 
 export const determineTaskCounts = ({
   selectedFilters,

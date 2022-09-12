@@ -60,8 +60,10 @@ export const TaskTemplateGroupHeaderContainer = styled.div`
   }
 
   @media print {
+    border-left: 1px solid ${palette.coolGrey3};
     border-top: 1px solid ${palette.coolGrey1};
     border-bottom: 1px solid ${palette.coolGrey1};
+    page-break-inside: avoid;
   }
 `;
 

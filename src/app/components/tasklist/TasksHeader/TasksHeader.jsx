@@ -93,6 +93,7 @@ const TasksHeader = ({
             disabled={[
               TaskHeaderColumn.ACTIVITY,
               TaskHeaderColumn.START_DATE,
+              TaskHeaderColumn.ANCHOR_DATE,
             ].includes(f.identifier)}
             isDraggingOver={snapshot.isDraggingOver}
             id={f.identifier}
@@ -138,6 +139,14 @@ const TasksHeader = ({
     ],
   );
 
+  const handleGroupSelect = useCallback(
+    event => {
+      event.stopPropagation();
+      onGroupSelect(event);
+    },
+    [onGroupSelect],
+  );
+
   return (
     <DragDropContext onDragEnd={onDragEnd}>
       <Droppable
@@ -175,7 +184,7 @@ const TasksHeader = ({
                   <BulkContainer>
                     <Checkbox
                       isChecked={isGroupSelected}
-                      onClick={onGroupSelect}
+                      onClick={handleGroupSelect}
                     />
                   </BulkContainer>
                 )}

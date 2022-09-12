@@ -36,7 +36,7 @@ const TaskTemplateName = ({
           dispatch(openDrawer(identifier, templateGroup));
         }}
       >
-        <div>
+        <>
           <TaskTemplateNameInput
             ref={nameInputReference}
             readOnly={!isEditing}
@@ -66,7 +66,7 @@ const TaskTemplateName = ({
               </TaskTemplateContext>
             </TaskTemplateDescriptionIndicators>
           )}
-        </div>
+        </>
       </NameContainer>
       <Popper
         anchorEl={nameInputReference?.current}

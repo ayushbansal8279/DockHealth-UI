@@ -40,7 +40,10 @@ const ListPickerModal = ({
   const addListInput = useRef(null);
 
   const handleSave = () => {
-    confirm(selectedList.taskListIdentifier, selectedGroup.taskGroupIdentifier);
+    confirm(
+      selectedList.taskListIdentifier,
+      selectedGroup?.taskGroupIdentifier,
+    );
     closeModal();
   };
 

@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { useHistory } from 'react-router-dom';
 import MoreVert from '@material-ui/icons/MoreVert';
 import { Box, Typography } from '@material-ui/core';
 
@@ -10,15 +11,22 @@ import LayoutHeader from 'components/template/LayoutHeader/LayoutHeader';
 import Board from 'components/common/Board/Board';
 import { useSelector } from 'react-redux';
 import ToolbarSelect from 'components/tasklist/ToolbarSelect/ToolbarSelect';
+import { userHasBoardViewFeatureSelector } from 'selectors/user-selectors';
 import ListDetailsToolbar from '../ListDetailsToolbar/ListDetailsToolbar';
 import { BOARD_CONTEXTS_OPTIONS } from './helpers';
 import BoardContextProvider from './BoardContextProvider';
 
 const ListDetailsBoardView = () => {
+  const history = useHistory();
   const taskList = useSelector(currentTaskListSelector);
   const [boardContextName, setBoardContextName] = useState(
     BOARD_CONTEXTS_OPTIONS[0].value,
   );
+
+  const boardViewAvailable = useSelector(userHasBoardViewFeatureSelector);
+  if (!boardViewAvailable) {
+    history.push(`/core/home`);
+  }
 
   return (
     <ViewLayout

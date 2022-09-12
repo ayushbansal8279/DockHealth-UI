@@ -1,7 +1,7 @@
 /* eslint-disable sonarjs/cognitive-complexity */
 import React, { useRef, useState, useEffect } from 'react';
 import { Box } from '@material-ui/core';
-import { isEmpty } from 'ramda';
+import isEmpty from 'ramda/src/isEmpty';
 import FilterButton from 'components/filter/FilterButton/FilterButton';
 import FilterPopover from 'components/filter/FilterPopover/FilterPopover';
 import FilterHeader from 'components/filter/FilterHeader/FilterHeader';
@@ -46,7 +46,7 @@ const MegaFilter = ({
   }, [isOpen]);
 
   return (
-    <MegaFilterContainer>
+    <MegaFilterContainer isFilterApplied={isFilterApplied}>
       {children || (
         <FilterButton
           ref={megaFilterButtonReference}

@@ -309,7 +309,6 @@ export const MainStandardTaskItemCell = styled(StandardTaskItemCell)`
   @media print {
     min-width: ${props => props.printWidth};
     height: 100%;
-    border-right: 1px solid ${palette.coolGrey3};
   }
 `;
 
@@ -345,6 +344,7 @@ export const StandardTaskItemContainer = styled.div`
     border-left: 1px solid ${palette.coolGrey3};
     height: auto;
     border: 1px solid ${palette.coolGrey1};
+    page-break-inside: avoid;
   }
 `;
 

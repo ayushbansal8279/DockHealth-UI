@@ -4,7 +4,7 @@ import MemberGroup from 'components/user/MemberGroup/MemberGroup';
 import Tooltip from 'components/common/Tooltip/Tooltip';
 import TaskItemPopover from 'components/task/TaskItemPopover/TaskItemPopover';
 import MultiAssignMembersList from 'components/task/MultiAssignPopover/MultiAssignMembersList';
-import { pluck } from 'ramda';
+import pluck from 'ramda/src/pluck';
 import { AssigneeMatchingWrapper } from './styled';
 
 const TaskTemplateMembers = ({

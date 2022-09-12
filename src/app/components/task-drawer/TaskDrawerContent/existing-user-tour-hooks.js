@@ -1,6 +1,6 @@
 /* eslint-disable react-hooks/rules-of-hooks */
 import React, { useRef, useState, useEffect } from 'react';
-import { isNil } from 'ramda';
+import isNil from 'ramda/src/isNil';
 import localStorageHelper from 'helpers/local-storage-helper';
 import TourPopper from 'components/tour-popover/TourPopper/TourPopper';
 import TaskDrawerTourContent from 'components/tour-popover/content/TaskDrawerTourContent/TaskDrawerTourContent';

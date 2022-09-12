@@ -1,5 +1,5 @@
 import React, { useMemo } from 'react';
-import { innerJoin } from 'ramda';
+import innerJoin from 'ramda/src/innerJoin';
 import MultiAssignMembersList from 'components/task/MultiAssignPopover/MultiAssignMembersList';
 import TaskItemPopover from 'components/task/TaskItemPopover/TaskItemPopover';
 import BulkEditOption from 'components/bulk-edit/BulkEditOption/BulkEditOption';

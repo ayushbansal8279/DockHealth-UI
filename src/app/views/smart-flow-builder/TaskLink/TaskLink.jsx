@@ -1,5 +1,5 @@
 import React, { useRef } from 'react';
-import { isNil } from 'ramda';
+import isNil from 'ramda/src/isNil';
 import { useBoolean } from 'hooks/useBoolean';
 import { useDispatch } from 'react-redux';
 import { Paper, Popper, ClickAwayListener } from '@material-ui/core';
@@ -8,12 +8,14 @@ import HardDependencyIcon from 'img/template/hard-dependency';
 import CalendarIcon from 'img/template/calendar-icon';
 import DeleteOutlineIcon from '@material-ui/icons/DeleteOutline';
 import { getEdgeCenter, useStoreState } from 'react-flow-renderer';
+import { openModal } from 'modal/actions';
 import LinkPath from '../LinkPath/LinkPath';
 import { LabelsWrapper, HardDependencyLabel } from './styled';
 import TaskLinkDelayForm from '../TaskLinkDelayForm/TaskLinkDelayForm';
 import TaskLinkOptions from '../TaskLinkOptions/TaskLinkOptions';
 import DelayPeriodLabel from '../DelayPeriodLabel/DelayPeriodLabel';
 
+// eslint-disable-next-line sonarjs/cognitive-complexity
 const TaskLink = props => {
   const {
     sourceX,
@@ -79,6 +81,16 @@ const TaskLink = props => {
     dispatch(deleteTasksLink(sourceTaskIdentifier, targetTaskIdentifier));
   };
 
+  const handleDelete = (callback, actionName = 'do this action') => {
+    const modalProps = {
+      title: actionName,
+      description: `Are you sure you want to ${actionName.toLowerCase()}? This action cannot be undone.`,
+      confirm: callback,
+    };
+
+    dispatch(openModal('DeleteConfirmation', modalProps));
+  };
+
   const menuOptions = [
     {
       key: 'dependency',
@@ -92,13 +104,16 @@ const TaskLink = props => {
       label: `${
         delayPeriod && delayPeriodUnit ? 'Remove' : 'Add'
       } time until task`,
-      onClick: togglePeriodDelay,
+      onClick: () =>
+        delayPeriod && delayPeriodUnit
+          ? handleDelete(togglePeriodDelay, 'Remove time until task')
+          : togglePeriodDelay(),
     },
     {
       key: 'delete',
       icon: <DeleteOutlineIcon style={{ height: 13 }} />,
       label: `Delete link`,
-      onClick: deleteLink,
+      onClick: () => handleDelete(deleteLink, 'Delete link'),
     },
   ];
 
