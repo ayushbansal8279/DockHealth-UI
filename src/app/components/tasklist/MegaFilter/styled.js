@@ -11,7 +11,8 @@ export const MegaFilterNoResultsLabel = styled.p`
   margin-bottom: 0;
 `;
 export const MegaFilterContainer = styled.div`
-  border: 1px solid #c1ccda;
+  border: ${props =>
+    props.isFilterApplied === true ? 'none' : `1px solid #c1ccda`};
   padding: 0 8px;
   height: 36px;
   display: flex;
