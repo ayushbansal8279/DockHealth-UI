@@ -43,6 +43,7 @@ export const CommunicationType = {
   EMAIL: 'EMAIL',
   FAX: 'FAX',
   SMS: 'SMS',
+  ESIGN: 'ESIGN',
 };
 
 export function getPriorityColor(priority) {

@@ -207,6 +207,15 @@ function* sendFaxForTask({ communicationDetails }) {
   }
 }
 
+function* sendESignForTask({ communicationDetails }) {
+  try {
+    yield call(TaskApi.sendMessageForTask, communicationDetails);
+    yield put(showGlobalAlert(AlertMessages.ESIGN_SENT));
+  } catch {
+    yield put(showGlobalErrorAlert());
+  }
+}
+
 function* sendSmsForTask({ communicationDetails }) {
   try {
     yield call(TaskApi.sendMessageForTask, communicationDetails);
@@ -396,6 +405,7 @@ export default function* watchTask() {
   yield takeEvery(ActionTypes.DELETE_TASKS_LINK, deleteTasksLink);
   yield takeEvery(ActionTypes.UPDATE_TASKS_LINK, updateTasksLink);
   yield takeEvery(ActionTypes.SEND_FAX_FOR_TASK, sendFaxForTask);
+  yield takeEvery(ActionTypes.SEND_ESIGN_FOR_TASK, sendESignForTask);
   yield takeEvery(ActionTypes.SEND_SMS_FOR_TASK, sendSmsForTask);
   yield takeEvery(ActionTypes.SEND_EMAIL_FOR_TASK, sendEmailForTask);
   yield takeEvery(ActionTypes.SEND_EMR_FOR_TASK, sendEmrForTask);

@@ -874,6 +874,16 @@ export function sendFaxForTask(communicationDetails) {
   };
 }
 
+export function sendESignForTask(communicationDetails) {
+  return {
+    type: ActionTypes.SEND_ESIGN_FOR_TASK,
+    communicationDetails: {
+      ...communicationDetails,
+      communicationType: CommunicationType.ESIGN,
+    },
+  };
+}
+
 export function sendSmsForTask(communicationDetails) {
   return {
     type: ActionTypes.SEND_SMS_FOR_TASK,

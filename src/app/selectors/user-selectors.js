@@ -81,6 +81,12 @@ export const userHasSendSmsFeatureSelector = createSelector(
     organizationAvailableFeatures?.includes('SEND_COMM_SMS'),
 );
 
+export const userHasSendESignFeatureSelector = createSelector(
+  userProfileSelector,
+  ({ organizationAvailableFeatures }) =>
+    organizationAvailableFeatures?.includes('SEND_COMM_ESIGN'),
+);
+
 export const userHasPostEMRNoteFeatureSelector = createSelector(
   userProfileSelector,
   ({ organizationAvailableFeatures }) =>
