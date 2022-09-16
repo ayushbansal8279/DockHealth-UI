@@ -561,7 +561,7 @@ const TaskTemplateGroupHeader = ({
       )}
       {isColumnChecked(columns, TaskItemColumn.ANCHOR_DATE) && (
         <TaskItemCell
-          key={`due_date_${identifier}`}
+          key={`anchor_date_${identifier}`}
           width={
             columns?.find(
               ({ identifier: id }) => id === TaskItemColumn.ANCHOR_DATE,
