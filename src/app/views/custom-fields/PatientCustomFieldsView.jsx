@@ -184,53 +184,55 @@ const PatientCustomFieldsView = () => {
                 }
               >
                 <SortableContext items={pluck('identifier', sortedFields)}>
-                  {sortedFields.map(field => (
-                    <SortableItem
-                      key={field.identifier}
-                      itemId={field.identifier}
-                    >
-                      {({ dragHandleProps }) => (
-                        <div>
-                          <CustomFieldItem>
-                            <DragHandle {...dragHandleProps}>
-                              <DragHandleIcon />
-                            </DragHandle>
-                            <CustomFieldCell>
-                              <CustomFieldText>{field.name}</CustomFieldText>
-                            </CustomFieldCell>
-                            <CustomFieldCell>
-                              <CustomFieldText>
-                                {FieldTypeLabel[field.fieldType]}
-                              </CustomFieldText>
-                            </CustomFieldCell>
-                            <CustomFieldCell>
-                              <CustomFieldText>
-                                {CategoryLabel[field.fieldCategoryType]}
-                              </CustomFieldText>
-                            </CustomFieldCell>
-                            <CustomFieldCell>
-                              <IconButton
-                                size="small"
-                                onClick={() => handleEditClick(field)}
-                              >
-                                <EditIcon />
-                              </IconButton>
-                            </CustomFieldCell>
-                            <CustomFieldCell>
-                              <IconButton
-                                size="small"
-                                onClick={() =>
-                                  handleRemoveClick(field.identifier)
-                                }
-                              >
-                                <DeleteIcon />
-                              </IconButton>
-                            </CustomFieldCell>
-                          </CustomFieldItem>
-                        </div>
-                      )}
-                    </SortableItem>
-                  ))}
+                  {sortedFields
+                    .filter(field => field.contextType !== 'PREDEFINED')
+                    .map(field => (
+                      <SortableItem
+                        key={field.identifier}
+                        itemId={field.identifier}
+                      >
+                        {({ dragHandleProps }) => (
+                          <div>
+                            <CustomFieldItem>
+                              <DragHandle {...dragHandleProps}>
+                                <DragHandleIcon />
+                              </DragHandle>
+                              <CustomFieldCell>
+                                <CustomFieldText>{field.name}</CustomFieldText>
+                              </CustomFieldCell>
+                              <CustomFieldCell>
+                                <CustomFieldText>
+                                  {FieldTypeLabel[field.fieldType]}
+                                </CustomFieldText>
+                              </CustomFieldCell>
+                              <CustomFieldCell>
+                                <CustomFieldText>
+                                  {CategoryLabel[field.fieldCategoryType]}
+                                </CustomFieldText>
+                              </CustomFieldCell>
+                              <CustomFieldCell>
+                                <IconButton
+                                  size="small"
+                                  onClick={() => handleEditClick(field)}
+                                >
+                                  <EditIcon />
+                                </IconButton>
+                              </CustomFieldCell>
+                              <CustomFieldCell>
+                                <IconButton
+                                  size="small"
+                                  onClick={() =>
+                                    handleRemoveClick(field.identifier)
+                                  }
+                                >
+                                  <DeleteIcon />
+                                </IconButton>
+                              </CustomFieldCell>
+                            </CustomFieldItem>
+                          </div>
+                        )}
+                      </SortableItem>
+                    ))}
                 </SortableContext>
               </DndContext>
             </>
