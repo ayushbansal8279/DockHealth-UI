@@ -1,17 +1,13 @@
 import React, { useState, useCallback } from 'react';
-import { Popover, Box } from '@material-ui/core';
+import { Box } from '@material-ui/core';
 import ArrowBack from '@material-ui/icons/ArrowBack';
 import CloseIcon from '@material-ui/icons/Close';
 import OpenInNewIcon from '@material-ui/icons/OpenInNew';
-import Draggable from 'react-draggable';
-import { useBoolean } from 'hooks/useBoolean';
 import { CHAT_PATH } from 'routing/helpers/paths';
 import { userProfileSelector } from 'selectors/user-selectors';
 import { useDispatch, useSelector } from 'react-redux';
-import {
-  showChatPopoverSelector,
-  selectedChatChannelSelector,
-} from 'selectors/sendbird-selectors';
+import { Rnd } from 'react-rnd';
+import { selectedChatChannelSelector } from 'selectors/sendbird-selectors';
 import { closePopover, openPopover } from 'actions/sendbird-actions';
 import Chat from './Chat';
 import ShowSettingsContext from './ShowSettingsContext';
@@ -25,30 +21,20 @@ import {
 
 const ChatPopover = () => {
   const { name, identifier } = useSelector(userProfileSelector);
-  const showPopover = useSelector(showChatPopoverSelector);
   const selectedChannel = useSelector(selectedChatChannelSelector);
   const dispatch = useDispatch();
-
-  const [open, unsetOpen] = useBoolean(showPopover);
-  const [anchorElement, setAnchorElement] = useState(null);
 
   const [showSettings, setShowSettings] = useState(false);
   const showSettingsValue = { showSettings, setShowSettings };
 
   const handleClose = useCallback(() => {
     dispatch(closePopover(selectedChannel));
-    unsetOpen();
-    setAnchorElement(null);
-  }, [dispatch, selectedChannel, unsetOpen]);
+  }, [dispatch, selectedChannel]);
 
   const handleLeaveIconClick = useCallback(() => {
-    unsetOpen();
     dispatch(closePopover(null));
-    setAnchorElement(null);
     window.open(`${window.location.origin.toString()}/#${CHAT_PATH}`, '_blank');
-  }, [dispatch, unsetOpen]);
-
-  const id = open ? 'simple-popover' : undefined;
+  }, [dispatch]);
 
   const handleClickGoBack = useCallback(() => {
     if (showSettings === true) {
@@ -58,45 +44,52 @@ const ChatPopover = () => {
     }
   }, [dispatch, showSettings]);
 
+  const [containerPosition, setContainerPosition] = useState({ x: -300, y: 0 });
+  const [containerSize, setContainerSize] = useState({
+    width: 550,
+    height: 750,
+  });
+
   return (
-    <div>
-      <Draggable handle=".handle">
-        <Popover
-          id={id}
-          open={open}
-          anchorEl={anchorElement}
-          anchorOrigin={{
-            vertical: 50,
-            horizontal: 10,
-          }}
-          PaperProps={{ style: { height: '700px', width: '525px' } }}
-          disableEnforceFocus
-          style={{ width: '550px', height: '750px' }}
-        >
-          <Container>
-            <HeaderContainer className="handle">
-              <StyledIconButton
-                onClick={
-                  selectedChannel ? handleClickGoBack : handleLeaveIconClick
-                }
-              >
-                {selectedChannel ? <ArrowBack /> : <OpenInNewIcon />}
-              </StyledIconButton>
-              <Box mx={0.5} />
-              <ChatHeaderTitle>Dock Chat</ChatHeaderTitle>
-              <Box mx={0.5} />
-              <StyledIconButton onClick={handleClose}>
-                <CloseIcon />
-              </StyledIconButton>
-            </HeaderContainer>
-            <ChatContainer>
-              <ShowSettingsContext.Provider value={showSettingsValue}>
-                <Chat userId={identifier} name={name} />
-              </ShowSettingsContext.Provider>
-            </ChatContainer>
-          </Container>
-        </Popover>
-      </Draggable>
+    <div style={{ right: 0, top: 0 }}>
+      <Rnd
+        size={{ width: containerSize.width, height: containerSize.height }}
+        position={{ x: containerPosition.x, y: containerPosition.y }}
+        onDragStop={(_event, d) => {
+          setContainerPosition({ x: d.x, y: d.y });
+        }}
+        minWidth="400px"
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
+        onResizeStop={(_event, direction, reference, _delta, _position) => {
+          setContainerSize({
+            width: reference.style.width,
+            height: reference.style.height,
+          });
+        }}
+      >
+        <Container>
+          <HeaderContainer className="handle">
+            <StyledIconButton
+              onClick={
+                selectedChannel ? handleClickGoBack : handleLeaveIconClick
+              }
+            >
+              {selectedChannel ? <ArrowBack /> : <OpenInNewIcon />}
+            </StyledIconButton>
+            <Box mx={0.5} />
+            <ChatHeaderTitle>Dock Chat</ChatHeaderTitle>
+            <Box mx={0.5} />
+            <StyledIconButton onClick={handleClose}>
+              <CloseIcon />
+            </StyledIconButton>
+          </HeaderContainer>
+          <ChatContainer>
+            <ShowSettingsContext.Provider value={showSettingsValue}>
+              <Chat userId={identifier} name={name} />
+            </ShowSettingsContext.Provider>
+          </ChatContainer>
+        </Container>
+      </Rnd>
     </div>
   );
 };

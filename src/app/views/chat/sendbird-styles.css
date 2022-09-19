@@ -21,12 +21,13 @@
 
 .sendbird-channel-list{
     width: 100%;
+    overflow-y: scroll;
 }
 
 .sendbird-app__channellist-wrap{
     width: 100%;
     max-width: 100% !important;
-    max-width: 520px !important;
+    /* max-width: 520px !important; */
 }
 
 .sendbird-channel-preview{
@@ -110,4 +111,12 @@
 
 .sendbird-channel-profile__title{
     max-width: none !important;
+}
+
+.react-draggable{
+    overflow-y: hidden !important;
+    overflow-x: hidden !important;
+    background-color: var(--sendbird-light-background-50);
+    border-bottom: 1px solid var(--sendbird-light-onlight-04);
+    border-right: 1px solid var(--sendbird-light-onlight-04);
 }
