@@ -80,6 +80,7 @@ const TaskTemplateGroupHeader = ({
   showIncompleteTasks,
   setShowIncompleteTasks,
   isFetchingTasks,
+  showTasksWithGroup = true,
   // eslint-disable-next-line sonarjs/cognitive-complexity
 }) => {
   const {
@@ -430,7 +431,9 @@ const TaskTemplateGroupHeader = ({
           onClick={handleBundleSelect}
         />
         <Box m={1} />
-        <RotatableChevron rotated={isOpen} onClick={() => setOpen(!isOpen)} />
+        {showTasksWithGroup && (
+          <RotatableChevron rotated={isOpen} onClick={() => setOpen(!isOpen)} />
+        )}
         <Spacing horizontal={2} />
         <OptionsMenu options={menuOptions}>
           <MoreVert color="primary" />

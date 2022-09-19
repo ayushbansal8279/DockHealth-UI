@@ -29,6 +29,7 @@ const TaskTemplateGroup = ({
   disablePatientAssignment,
   isCompletedTab = false,
   viewSetup,
+  showTasksWithGroup = true,
   // eslint-disable-next-line sonarjs/cognitive-complexity
 }) => {
   const {
@@ -114,6 +115,7 @@ const TaskTemplateGroup = ({
         setShowCompletedTasks={setShowCompletedTasks}
         showIncompleteTasks={showIncompleteTasks}
         setShowIncompleteTasks={setShowIncompleteTasks}
+        showTasksWithGroup={showTasksWithGroup}
       />
       {!isStartedDnD && (
         <TaskTemplateGroupList timeout={150} in={isOpen && !isStartedDnD}>
