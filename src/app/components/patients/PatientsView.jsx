@@ -243,7 +243,8 @@ const PatientsView = () => {
                 {listIdentifier === DefaultPatientsListType.ALL_PATIENTS &&
                   patients?.length >= MAX_PATIENT_ALL_RESULTS && (
                     <RefineSearchText>
-                      Please further refine search, too many results!
+                      Only displaying limited number of patient profiles. Please
+                      further refine search!
                     </RefineSearchText>
                   )}
                 <PatientsList

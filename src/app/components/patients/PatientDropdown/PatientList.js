@@ -307,7 +307,8 @@ const PatientList = ({
         <ListContainer withBorder={patients.length !== 0}>
           {!isLoadingPatients && patients.length >= MAX_PATIENT_RESULTS && (
             <RefineSearchRow>
-              Please further refine search, too many results!
+              Only displaying limited number of patient profiles. Please further
+              refine search!
             </RefineSearchRow>
           )}
           {!isLoadingPatients && patients?.length !== 0 && (
