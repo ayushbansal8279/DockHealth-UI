@@ -109,7 +109,6 @@ export const StyledCrossIcon = styled.img`
 `;
 
 export const StyledFooter = styled.div`
-  position: absolute;
   bottom: 0;
   left: 0;
   right: 0;
@@ -117,7 +116,6 @@ export const StyledFooter = styled.div`
   display: flex;
   justify-content: flex-end;
   align-items: center;
-  background-color: ${palette.coolGrey4};
   border-radius: 0 0 8px 8px;
   padding-bottom: ${spacing.small};
 
