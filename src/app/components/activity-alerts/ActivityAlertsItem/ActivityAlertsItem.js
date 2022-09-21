@@ -77,7 +77,8 @@ const AlertItem = ({ itemAlert, onClearAlert, withCrossIcon, closeAlerts }) => {
     activityAlertType === 'MARK_COMPLETE' ||
     activityAlertType === 'MENTION_TASK' ||
     activityAlertType === 'MENTION_COMMENT' ||
-    activityAlertType === 'TASK_IS_DUE_TODAY'
+    activityAlertType === 'TASK_IS_DUE_TODAY' ||
+    activityAlertType === 'CREATE_TASK_BUNDLE'
   ) {
     onGoFunction = () => {
       const currentOrganizationIdentifier = sessionStorage.getItem(
