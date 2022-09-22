@@ -221,7 +221,7 @@ const PatientsList = ({
     },
   ];
   const formattedPatients = patients?.map(patient => ({
-    id: patient?.patientIdentifier || patient?.id,
+    id: patient?.patientIdentifier || patient?.id || patient?.mrn,
     ...patient,
   }));
   return (

@@ -19,7 +19,7 @@ export const InputWrapper = styled.div`
   width: 66.67%;
   max-width: 1147px;
   margin: 0 auto;
-  padding-top: ${({ hasValue }) => (hasValue ? 32 : 200)}px;
+  padding-top: ${({ hasValue }) => (hasValue ? 16 : 32)}px;
   transition: padding 0.3s ease-out;
 `;
 
