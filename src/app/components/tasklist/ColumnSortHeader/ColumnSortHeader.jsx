@@ -218,7 +218,9 @@ const ColumnSortHeader = ({
             event.preventDefault();
           }}
         >
-          <ResizeHandler enabled={typeof onResize === 'function'} />
+          {typeof handleResize === 'function' && (
+            <ResizeHandler enabled={typeof onResize === 'function'} />
+          )}
         </Box>
       }
     >

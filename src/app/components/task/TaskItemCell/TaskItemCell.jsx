@@ -27,9 +27,6 @@ const TaskItemCell = styled.div`
     props.paddingLeft ? spacing[props.paddingRight] : spacing.regular};
   max-height: 35px;
   overflow: hidden;
-  /* ${({ listContainsWorkflow }) => {
-    return listContainsWorkflow ? 'padding-left: 55px;' : '';
-  }} */
 
   @media print {
     ${({ printWidth }) =>

@@ -609,3 +609,18 @@ export const DecisionCellContainer = styled.div`
 `;
 
 export const DisabledLink = styled.span``;
+
+export const ActionIconsContainer = styled.div`
+  display: flex;
+  position: relative;
+  width: 65px;
+  &::after {
+    border-right: 1px solid ${palette.coolGrey3};
+    content: '';
+    position: absolute;
+    top: -4px;
+    left: 100%;
+    width: 0px;
+    height: 36px;
+  }
+`;

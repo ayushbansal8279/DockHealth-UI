@@ -60,6 +60,7 @@ import {
   TaskTemplateProgressCircle,
   TemplateHandle,
   TaskTemplateOptionsContainer,
+  ActionIconsContainer,
 } from './styled';
 
 const TaskTemplateGroupHeader = ({
@@ -423,16 +424,22 @@ const TaskTemplateGroupHeader = ({
               {...dragHandleProps}
             />
           )}
-          <Checkbox
-            isChecked={selected || isBundleSelected}
-            onClick={handleBundleSelect}
-          />
-          <Box m={1} />
-          <RotatableChevron rotated={isOpen} onClick={() => setOpen(!isOpen)} />
-          <Spacing horizontal={2} />
-          <OptionsMenu options={menuOptions}>
-            <MoreVert color="primary" />
-          </OptionsMenu>
+          <ActionIconsContainer>
+            <Checkbox
+              isChecked={selected || isBundleSelected}
+              onClick={handleBundleSelect}
+            />
+            <Box m={1} />
+            <RotatableChevron
+              rotated={isOpen}
+              onClick={() => setOpen(!isOpen)}
+            />
+            <Spacing horizontal={2} />
+            <OptionsMenu options={menuOptions}>
+              <MoreVert color="primary" />
+            </OptionsMenu>
+          </ActionIconsContainer>
+
           {content}
         </StickyMainTaskItemCell>
       );

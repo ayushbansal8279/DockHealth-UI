@@ -161,22 +161,6 @@ const ListDetailsTasks = ({
     [dispatch, taskListIdentifier],
   );
 
-  const listContainsWorkflow = useMemo(() => {
-    return groupedTasks
-      ?.reduce(
-        (accumulator, currentValue) => [
-          ...accumulator,
-          ...(currentValue?.tasks || []),
-        ],
-        [],
-      )
-      .reduce(
-        (accumulator, currentValue) =>
-          accumulator ? true : currentValue?.itemType !== TaskItemType.TASK,
-        false,
-      );
-  }, [groupedTasks]);
-
   const renderTasks = useCallback(
     () =>
       groupList
@@ -194,7 +178,6 @@ const ListDetailsTasks = ({
 
           return (
             <TasksGroup
-              listContainsWorkflow={listContainsWorkflow}
               isCompletedGroup={isCompletedView}
               key={taskGroupIdentifier}
               isDefaultGroup={groupName === 'DEFAULT'}
@@ -278,9 +261,6 @@ const ListDetailsTasks = ({
                                   <>
                                     {task?.itemType === TaskItemType.TASK ? (
                                       <StandardTaskItem
-                                        listContainsWorkflow={
-                                          listContainsWorkflow
-                                        }
                                         key={task.identifier}
                                         isFullView={isFullView}
                                         isDragging={isDragging}
@@ -389,7 +369,6 @@ const ListDetailsTasks = ({
       loadTasksForTaskGroup,
       isSortApplied,
       dragAndDropDisabled,
-      listContainsWorkflow,
       showClearSortFiltersModal,
       viewSetup,
     ],

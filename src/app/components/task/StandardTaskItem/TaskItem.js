@@ -77,6 +77,7 @@ import {
   DependencyIconContainer,
   DetailsButton,
   DecisionCellContainer,
+  ActionIconsContainer,
 } from '../styled';
 
 const { DISABLED, READ_ONLY } = SINGLE_TASK_RESTRICTIONS_OPTIONS;
@@ -119,7 +120,6 @@ const TaskItem = React.memo(
     pageBackground,
     newlyCreated,
     parentContainerReference,
-    listContainsWorkflow,
   }) => {
     const {
       taskIdentifier,
@@ -354,13 +354,24 @@ const TaskItem = React.memo(
               <PriorityIndicator color={getPriorityColor(task.priority)} />
             )}
             {showSubtaskStylingLink && getSubtaskStylingLink(isLast)}
-            {bulkEditEnabled && (
-              <TaskItemBulkEdit
-                isChecked={selected}
-                onClick={onClickBulkEdit}
+            <ActionIconsContainer>
+              {bulkEditEnabled && (
+                <TaskItemBulkEdit
+                  isChecked={selected}
+                  onClick={onClickBulkEdit}
+                />
+              )}
+              <Box ml="10px" />
+              <CircleIcon
+                src={isCompleted ? CircleCompleted : Circle}
+                isClickable={
+                  !isTaskStatusTogglingDisabled && isDependencyEmptyOrCompleted
+                }
+                isCompleted={isCompleted}
+                onClick={onCircleClick}
               />
-            )}
-            <Box ml={listContainsWorkflow ? '54px' : '0px'} />
+            </ActionIconsContainer>
+            {/* <Box ml="5px" /> */}
             {content}
           </StickyMainTaskItemCell>
         );
@@ -368,11 +379,14 @@ const TaskItem = React.memo(
       [
         bulkEditEnabled,
         dragHandleProps,
+        isCompleted,
+        isDependencyEmptyOrCompleted,
         isEditingDescription,
         isLast,
         isSelected,
-        listContainsWorkflow,
+        isTaskStatusTogglingDisabled,
         newlyCreated,
+        onCircleClick,
         onClickBulkEdit,
         pageBackground,
         selected,
@@ -418,16 +432,6 @@ const TaskItem = React.memo(
                   isSticky
                   printWidth={300}
                 >
-                  <CircleIcon
-                    src={isCompleted ? CircleCompleted : Circle}
-                    isClickable={
-                      !isTaskStatusTogglingDisabled &&
-                      isDependencyEmptyOrCompleted
-                    }
-                    isCompleted={isCompleted}
-                    onClick={onCircleClick}
-                  />
-
                   {!isDependencyEmptyOrCompleted && (
                     <>
                       <DependencyIconContainer

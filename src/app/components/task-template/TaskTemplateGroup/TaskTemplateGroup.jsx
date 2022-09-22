@@ -158,7 +158,6 @@ const TaskTemplateGroup = ({
                             draggableSnapshot,
                           ) => (
                             <StandardTaskItemContainer
-                              listContainsWorkflow
                               isStartedDnD={
                                 draggedTaskIdentifier === task.taskIdentifier
                               }

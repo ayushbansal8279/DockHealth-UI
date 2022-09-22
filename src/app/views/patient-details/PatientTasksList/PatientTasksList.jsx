@@ -308,14 +308,6 @@ const PatientTasksListView = () => {
     [dispatch, isGroupSelected],
   );
 
-  const listContainsWorkflow = useMemo(() => {
-    return activeList?.tasks?.reduce(
-      (accumulator, currentValue) =>
-        accumulator ? true : currentValue?.itemType !== TaskItemType.TASK,
-      false,
-    );
-  }, [activeList]);
-
   const renderTasks = useCallback(
     (tasks, { isFullView, taskGroupIdentifier }) => (
       <>
@@ -331,7 +323,6 @@ const PatientTasksListView = () => {
         <div className="IN" style={{ width: 'fit-content', minWidth: '100%' }}>
           {tasks && tasks.length > 0 && (
             <TasksHeader
-              listContainsWorkflow={listContainsWorkflow}
               bulkEditEnabled
               sort={sort}
               onSortChange={sortPatientTasks}
@@ -343,7 +334,6 @@ const PatientTasksListView = () => {
           {tasks?.map(task =>
             task.itemType === TaskItemType.TASK ? (
               <StandardTaskItem
-                listContainsWorkflow={listContainsWorkflow}
                 key={task.identifier}
                 isFullView={isFullView}
                 task={task}
@@ -379,7 +369,6 @@ const PatientTasksListView = () => {
       groupHasMultipleAssignees,
       isGroupSelected,
       handleGroupSelect,
-      listContainsWorkflow,
       handleToggleTaskStatus,
       updatePatientTaskInList,
       updatePatientTaskWorkflowStatus,

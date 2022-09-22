@@ -6,7 +6,7 @@ import spacing from 'styles/spacing';
 export const ResizeHandler = styled.div<{ enabled: boolean }>`
   position: absolute;
   top: 0;
-  left: calc(100% - 2px);
+  left: calc(100% - 1px);
   width: 1px;
   height: 35px;
   background-color: ${palette.coolGrey3};

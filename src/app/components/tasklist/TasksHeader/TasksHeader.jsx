@@ -13,7 +13,6 @@ import { SINGLE_TASK_RESTRICTIONS_PROFILES } from 'restrictions/task-restriction
 import { CUSTOM_FIELD_TYPES } from 'helpers/custom-fields-helpers';
 import { currentTaskListSelector } from 'selectors/task-list-selectors';
 import { isMemberAdmin } from 'helpers/list-members-helper';
-import { Box } from '@material-ui/core';
 import { BulkContainer, StickyColumnContainer } from './styled';
 import {
   getTaskHeaderOptions,
@@ -29,7 +28,6 @@ const TasksHeader = ({
   isGroupSelected,
   onGroupSelect,
   pageBackground,
-  listContainsWorkflow,
 }) => {
   const taskList = useSelector(currentTaskListSelector);
   const { currentUser } = useSelector(store => ({
@@ -76,17 +74,16 @@ const TasksHeader = ({
   );
 
   const handleResizeColumn = useCallback(
-    (identifier, { size, index }) => {
+    (identifier, { size }) => {
       const { width } = size;
       if (typeof setColumnWidth === 'function') {
         setColumnWidth({
           columnIdentifier: identifier,
-          columnWidth:
-            index === 0 ? width - (listContainsWorkflow ? 25 + 54 : 25) : width,
+          columnWidth: width,
         });
       }
     },
-    [listContainsWorkflow, setColumnWidth],
+    [setColumnWidth],
   );
 
   const renderColumn = useCallback(
@@ -109,26 +106,22 @@ const TasksHeader = ({
             isDraggingOver={snapshot.isDraggingOver}
             id={f.identifier}
             label={f.label}
-            width={
-              index === 0
-                ? Number(f.columnWidth) + (listContainsWorkflow ? 25 + 54 : 25)
-                : f.columnWidth
-            }
+            width={Number(f.columnWidth)}
             sort={sort}
             truncateEnabled
             onSortChange={onSortChange}
             snapshot={snapshot}
             printWidth={CustomFieldWidthConfig[f.fieldType]}
           >
-            {index === 0 && bulkEditEnabled && (
+            {/* {index === 0 && bulkEditEnabled && (
               <BulkContainer>
                 <Checkbox
                   isChecked={isGroupSelected}
                   onClick={handleClickCheckbox}
                 />
-                {listContainsWorkflow && <Box ml="54px" />}
+                <Box ml="54px" />
               </BulkContainer>
-            )}
+            )} */}
           </ColumnSortHeader>
         );
       }
@@ -145,11 +138,7 @@ const TasksHeader = ({
           truncateEnabled
           id={f.identifier}
           label={f.name}
-          width={
-            index === 0
-              ? +f.columnWidth + (listContainsWorkflow ? 25 + 54 : 25)
-              : f.columnWidth
-          }
+          width={+f.columnWidth}
           snapshot={snapshot}
           printWidth={
             f.id === TaskItemColumn.ASSIGNED
@@ -157,24 +146,20 @@ const TasksHeader = ({
               : undefined
           }
         >
-          {index === 0 && bulkEditEnabled && (
+          {/* {index === 0 && bulkEditEnabled && (
             <BulkContainer>
               <Checkbox
                 isChecked={isGroupSelected}
                 onClick={handleClickCheckbox}
               />
-              {listContainsWorkflow && <Box ml="54px" />}
+              <Box ml="54px" />
             </BulkContainer>
-          )}
+          )} */}
         </ColumnSortHeader>
       );
     },
     [
-      bulkEditEnabled,
-      handleClickCheckbox,
       handleResizeColumn,
-      isGroupSelected,
-      listContainsWorkflow,
       onSortChange,
       restrictCustomizationFeatures,
       setColumnWidth,
@@ -195,6 +180,14 @@ const TasksHeader = ({
               backgroundColor={pageBackground}
               customWidthExists
             >
+              {bulkEditEnabled && (
+                <BulkContainer>
+                  <Checkbox
+                    isChecked={isGroupSelected}
+                    onClick={handleClickCheckbox}
+                  />
+                </BulkContainer>
+              )}
               {renderColumn(
                 getTaskHeaderOptions(
                   customerTypeLabel,
