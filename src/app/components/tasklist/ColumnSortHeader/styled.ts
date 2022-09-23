@@ -102,7 +102,7 @@ export const ThreeDots = styled.img<{ hideIcon: boolean }>`
 export const SortHeaderRow = styled.div`
   display: flex;
   flex-direction: row;
-  justify-content: flex-start; //changed start => end
+  justify-content: flex-start;
   align-items: center;
   width: 100%;
   background: ${palette.white};

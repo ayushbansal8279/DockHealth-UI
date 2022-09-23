@@ -371,7 +371,6 @@ const TaskItem = React.memo(
                 onClick={onCircleClick}
               />
             </ActionIconsContainer>
-            {/* <Box ml="5px" /> */}
             {content}
           </StickyMainTaskItemCell>
         );

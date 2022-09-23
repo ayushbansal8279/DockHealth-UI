@@ -33,7 +33,7 @@ const TasksHeader = ({
   const { currentUser } = useSelector(store => ({
     currentUser: store.userState.userProfile,
   }));
-  const { columns, setColumns, setColumnWidth } = useColumnsConfig();
+  const { columns, setColumns, setColumnWidth = () => {} } = useColumnsConfig();
   const customerTypeLabel = getCustomerTypeLabel(currentUser);
   const currentUserMember = taskList?.listUsers.find(
     u => u.identifier === currentUser?.identifier,
@@ -76,95 +76,49 @@ const TasksHeader = ({
   const handleResizeColumn = useCallback(
     (identifier, { size }) => {
       const { width } = size;
-      if (typeof setColumnWidth === 'function') {
-        setColumnWidth({
-          columnIdentifier: identifier,
-          columnWidth: width,
-        });
-      }
+      setColumnWidth({
+        columnIdentifier: identifier,
+        columnWidth: width,
+      });
     },
     [setColumnWidth],
   );
 
   const renderColumn = useCallback(
     (f, index, snapshot) => {
-      if (f._customFieldType === CUSTOM_FIELD_TYPES.REGULAR) {
-        return (
-          <ColumnSortHeader
-            onResize={
-              typeof setColumnWidth === 'function'
-                ? (id, _, size) => handleResizeColumn(id, { ...size, index })
-                : null
-            }
-            key={f.identifier}
-            index={index}
-            draggable={!restrictCustomizationFeatures}
-            disabled={[
-              TaskHeaderColumn.ACTIVITY,
-              TaskHeaderColumn.START_DATE,
-            ].includes(f.identifier)}
-            isDraggingOver={snapshot.isDraggingOver}
-            id={f.identifier}
-            label={f.label}
-            width={Number(f.columnWidth)}
-            sort={sort}
-            truncateEnabled
-            onSortChange={onSortChange}
-            snapshot={snapshot}
-            printWidth={CustomFieldWidthConfig[f.fieldType]}
-          >
-            {/* {index === 0 && bulkEditEnabled && (
-              <BulkContainer>
-                <Checkbox
-                  isChecked={isGroupSelected}
-                  onClick={handleClickCheckbox}
-                />
-                <Box ml="54px" />
-              </BulkContainer>
-            )} */}
-          </ColumnSortHeader>
-        );
-      }
+      const isRegular = f._customFieldType === CUSTOM_FIELD_TYPES.REGULAR;
+      const regularPrintWidth = CustomFieldWidthConfig[f.fieldType];
+      const customPrintWidth =
+        f.id === TaskItemColumn.ASSIGNED
+          ? TaskItemColumnWidth[TaskItemColumn.ASSIGNED].PRINT
+          : undefined;
       return (
         <ColumnSortHeader
-          onResize={
-            typeof setColumnWidth === 'function' ? handleResizeColumn : null
-          }
+          onResize={(id, _, size) => handleResizeColumn(id, { ...size, index })}
           key={f.identifier}
           index={index}
           draggable={!restrictCustomizationFeatures}
           isDraggingOver={snapshot.isDraggingOver}
-          disabled={f.targetType === 'PATIENT'}
+          disabled={
+            isRegular
+              ? [
+                  TaskHeaderColumn.ACTIVITY,
+                  TaskHeaderColumn.START_DATE,
+                ].includes(f.identifier)
+              : f.targetType === 'PATIENT'
+          }
           truncateEnabled
           id={f.identifier}
-          label={f.name}
-          width={+f.columnWidth}
+          label={isRegular ? f.label : f.name}
+          width={f.columnWidth}
           snapshot={snapshot}
-          printWidth={
-            f.id === TaskItemColumn.ASSIGNED
-              ? TaskItemColumnWidth[TaskItemColumn.ASSIGNED].PRINT
-              : undefined
-          }
-        >
-          {/* {index === 0 && bulkEditEnabled && (
-            <BulkContainer>
-              <Checkbox
-                isChecked={isGroupSelected}
-                onClick={handleClickCheckbox}
-              />
-              <Box ml="54px" />
-            </BulkContainer>
-          )} */}
-        </ColumnSortHeader>
+          sort={isRegular ? sort : null}
+          onSortChange={isRegular ? onSortChange : null}
+          printWidth={isRegular ? regularPrintWidth : customPrintWidth}
+        />
       );
     },
-    [
-      handleResizeColumn,
-      onSortChange,
-      restrictCustomizationFeatures,
-      setColumnWidth,
-      sort,
-    ],
+    [handleResizeColumn, onSortChange, restrictCustomizationFeatures, sort],
   );
 
   return (
