@@ -3,8 +3,8 @@ import React, { useCallback, useEffect, useState } from 'react';
 import palette from 'styles/palette';
 import { useSelector } from 'react-redux';
 import localStorageHelper from 'helpers/local-storage-helper';
-import { compose } from 'ramda';
-import { showGlobalErrorAlert } from 'alert/actions';
+// import compose from 'ramda/src/compose';
+// import { showGlobalErrorAlert } from 'alert/actions';
 import { Box, IconButton } from '@material-ui/core';
 import ViewModuleIcon from '@material-ui/icons/ViewModule';
 import ViewHeadlineIcon from '@material-ui/icons/ViewHeadline';
@@ -22,15 +22,16 @@ import FileListItemProgressBar from 'components/attachments/FileListItemProgress
 import FileGridItemProgressBar from 'components/attachments/FileGridItemProgressBar/FileGridItemProgressBar';
 import FileGridItemLoader from 'components/attachments/FileGridItemLoader/FileGridItemLoader';
 import FileListItemLoader from 'components/attachments/FileListItemLoader/FileListItemLoader';
-import GoogleDriveIcon from 'img/google-drive-icon';
-import GooglePicker from 'react-google-picker';
+// import GoogleDriveIcon from 'img/google-drive-icon';
+// import GooglePicker from 'react-google-picker';
 import {
   PatientAttachmentsWrapper,
   AttachmentFileInput,
   DropzoneInfoText,
   DropzoneContainer,
   EmptyListText,
-  DriveIcon,
+  // DriveIcon,
+  DownloadAllLink,
 } from './styled';
 import initializeAttachmentsSectionHooks from './hooks';
 import { FilesViewType, PATIENT_FILES_VIEW_TYPE } from './helpers';
@@ -57,7 +58,7 @@ const PatientAttachments = () => {
   }, [activeViewType]);
 
   const {
-    dispatch,
+    // dispatch,
     handleCreateFolderClick,
     attachmentsSources,
     currentPatientAttachments,
@@ -75,9 +76,10 @@ const PatientAttachments = () => {
     openFolderInNewTab,
     renameAttachment,
     moveFileOrFolder,
-    handleGooglePickerChange,
+    // handleGooglePickerChange,
     handleAttachmentClick,
     dropzone: { getRootProps, getInputProps, isDragActive },
+    downloadAllFiles,
   } = initializeAttachmentsSectionHooks();
 
   const isFetching = useSelector(isFetchingPatientAttachmentsSelector);
@@ -142,7 +144,7 @@ const PatientAttachments = () => {
           <AttachmentsBreadcrumbs />
         </Box>
         <Box display="flex" alignItems="center" flex="0 0 auto">
-          {process.env.GOOGLE_DRIVE_API_CLIENT_ID &&
+          {/* {process.env.GOOGLE_DRIVE_API_CLIENT_ID &&
             process.env.GOOGLE_DRIVE_API_KEY && (
               <GooglePicker
                 clientId={process.env.GOOGLE_DRIVE_API_CLIENT_ID}
@@ -157,7 +159,7 @@ const PatientAttachments = () => {
                   <DriveIcon src={GoogleDriveIcon} alt="Google Drive" />
                 </IconButton>
               </GooglePicker>
-            )}
+            )} */}
           <AddButton onClick={handleCreateFolderClick}>Create Folder</AddButton>
           <AddButton
             onClick={() => attachmentFileInputReference.current.click()}
@@ -242,6 +244,13 @@ const PatientAttachments = () => {
                     <FileGridItemProgressBar value={uploadProgress} />
                   )}
                 </>
+              )}
+              {currentPatientAttachments.length > 0 && (
+                <div>
+                  <DownloadAllLink onClick={downloadAllFiles}>
+                    Download All
+                  </DownloadAllLink>
+                </div>
               )}
             </NamedCollapse>
             <AttachmentPreview

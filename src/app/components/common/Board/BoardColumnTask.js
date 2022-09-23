@@ -16,7 +16,7 @@ import {
   SINGLE_TASK_RESTRICTIONS_PROFILES,
   SINGLE_TASK_RESTRICTIONS_OPTIONS,
 } from 'restrictions/task-restrictions';
-import { pluck } from 'ramda';
+import pluck from 'ramda/src/pluck';
 import {
   TaskContainer,
   Header,

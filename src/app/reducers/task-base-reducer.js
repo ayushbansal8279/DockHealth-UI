@@ -1,5 +1,5 @@
 /* eslint-disable sonarjs/cognitive-complexity */
-import { isEmpty } from 'ramda';
+import isEmpty from 'ramda/src/isEmpty';
 import * as ActionTypes from 'actions/action-types';
 import { checkIfTaskMatchesFilters } from 'helpers/filters-helpers';
 import { checkIfTaskMatchesSearch } from 'helpers/search-helpers';
@@ -505,7 +505,7 @@ const TaskBaseReducer = (state, action, updateStateCallback) => {
         const identifiers = action.identifier;
         return updateStateCallback(state, task =>
           identifiers.includes(task.identifier)
-            ? { ...task, selected: action.newSelectedState || true }
+            ? { ...task, selected: action.newSelectedState }
             : task,
         );
       }

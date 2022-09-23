@@ -1,7 +1,9 @@
-import React from 'react';
+import React, { useCallback } from 'react';
 import moment from 'moment';
-import { useHistory } from 'react-router-dom';
+// import { useHistory } from 'react-router-dom';
 import CrossIcon from 'img/notifications/cross';
+// import * as ActionTypes from 'actions/action-types';
+import { useDispatch } from 'react-redux';
 import {
   ActivityAlertsItemContainer,
   ActivityAlertsItemHeader,
@@ -12,6 +14,7 @@ import {
   StyledCrossIcon,
   StyledFooter,
 } from 'components/activity-alerts/ActivityAlertsItem/styled';
+import { openPopover } from 'actions/sendbird-actions';
 import ChatMessageIcon from '../Icons/ChatImageIcon';
 
 const ChatAlertItem = ({
@@ -20,7 +23,7 @@ const ChatAlertItem = ({
   withCrossIcon,
   closeAlerts,
 }) => {
-  const history = useHistory();
+  const dispatch = useDispatch();
 
   const { message: messageAlert, channel } = itemAlert;
   const {
@@ -31,12 +34,10 @@ const ChatAlertItem = ({
   const { members } = channel;
   const nickNames = members.map(member => member.nickname).join(', ');
 
-  const onGoFunction = () => {
+  const onGoFunction = useCallback(() => {
+    dispatch(openPopover(channel));
     closeAlerts();
-    const newPath = `/core/chat`;
-    history.push(newPath);
-    sessionStorage.setItem('selectedChannelUrl', JSON.stringify(channel));
-  };
+  }, [channel, closeAlerts, dispatch]);
 
   const formattedNickNames =
     nickNames?.length > 65

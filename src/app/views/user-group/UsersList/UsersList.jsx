@@ -2,7 +2,7 @@ import React from 'react';
 import { useHistory } from 'react-router-dom';
 import { Grid } from '@material-ui/core';
 import { createFilter } from 'react-search-input';
-import { isEmpty } from 'ramda';
+import isEmpty from 'ramda/src/isEmpty';
 import { capitalize } from 'helpers/capitalize';
 import Spacing from 'components/common/Spacing.tsx';
 import { RobotoTypography } from 'styles/theme';

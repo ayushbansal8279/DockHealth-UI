@@ -9,7 +9,11 @@ import React, {
 } from 'react';
 import { bulkEditTasks } from 'api/task-api';
 import { useParams, Link, useHistory } from 'react-router-dom';
-import { compose, isNil, not, path, pluck } from 'ramda';
+import compose from 'ramda/src/compose';
+import isNil from 'ramda/src/isNil';
+import not from 'ramda/src/not';
+import path from 'ramda/src/path';
+import pluck from 'ramda/src/pluck';
 import { useDispatch, useSelector } from 'react-redux';
 import NavigateNextIcon from '@material-ui/icons/NavigateNext';
 import HardDependencyIcon from 'img/template/hard-dependency';

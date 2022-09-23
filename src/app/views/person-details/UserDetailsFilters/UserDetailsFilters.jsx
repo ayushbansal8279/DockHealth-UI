@@ -27,7 +27,7 @@ import {
   userIdentifierSelector,
 } from 'selectors/person-details-selectors';
 import { TaskStatus } from 'helpers/task-helpers';
-import { equals } from 'ramda';
+import equals from 'ramda/src/equals';
 import { determineTaskCounts } from './helpers';
 
 const UserDetailsFilters = () => {

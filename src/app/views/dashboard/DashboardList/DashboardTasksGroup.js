@@ -6,7 +6,8 @@ import React, {
   useMemo,
   useRef,
 } from 'react';
-import { compose, pluck } from 'ramda';
+import compose from 'ramda/src/compose';
+import pluck from 'ramda/src/pluck';
 import moment from 'moment';
 import { useDispatch, useSelector } from 'react-redux';
 import * as TaskActions from 'actions/task-actions';

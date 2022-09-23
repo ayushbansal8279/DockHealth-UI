@@ -17,6 +17,10 @@ import TasksSkeletonLoader from 'components/task/TasksSkeletonLoader/TasksSkelet
 import { addingNewSubtaskParentIdSelector } from 'selectors/task-drawer-selectors';
 import palette from 'styles/palette';
 import StickyContainer from 'components/common/HorizontalScroll/StickyContainer';
+import { TaskItemType } from 'helpers/task-helpers';
+import TaskTemplateGroup from 'components/task-template/TaskTemplateGroup/TaskTemplateGroup';
+import { userSetupClientViewSelector } from 'selectors/user-selectors';
+import TasksHeader from 'components/tasklist/TasksHeader/TasksHeader';
 
 const GlobalSearchList = ({
   list,
@@ -36,6 +40,7 @@ const GlobalSearchList = ({
   const addingNewSubtaskParentId = useSelector(
     addingNewSubtaskParentIdSelector,
   );
+  const viewSetup = useSelector(userSetupClientViewSelector);
 
   const showMoreTasks = () => {
     getMoreTasksForTaskList(list.taskListIdentifier, list.tasks?.length);
@@ -79,26 +84,46 @@ const GlobalSearchList = ({
           </ListNameContainer>
         </ListDetailsHeader>
       </StickyContainer>
+      <TasksHeader
+        bulkEditEnabled={false}
+        sort={false}
+        groupHasMultipleAssignees={containsMultipleAssignees}
+        isGroupSelected={false}
+      />
       <Tasks timeout={150} in={isOpen}>
         {tasks?.map(task => (
-          <StandardTaskItem
-            pageBackground={palette.blueGrey}
-            key={task.taskIdentifier}
-            currentUser={currentUser}
-            storeAsCurrentTask={storeAsCurrentTask}
-            task={task}
-            isCompletedGroup={isCompletedList}
-            toggleCompleteTask={toggleTaskStatus}
-            onTaskUpdate={onTaskUpdate}
-            updateWorkflowStatus={updateWorkflowStatus}
-            dragAndDropDisabled
-            selectedTask={selectedTask}
-            isFullView
-            highlightedValue={highlightedValue}
-            addingNewSubtask={addingNewSubtaskParentId === task.identifier}
-            subtasksDisabled
-            multipleAssigneesContext={containsMultipleAssignees}
-          />
+          <>
+            {task?.itemType === TaskItemType.TASK ? (
+              <StandardTaskItem
+                pageBackground={palette.blueGrey}
+                key={task.taskIdentifier}
+                currentUser={currentUser}
+                storeAsCurrentTask={storeAsCurrentTask}
+                task={task}
+                isCompletedGroup={isCompletedList}
+                toggleCompleteTask={toggleTaskStatus}
+                onTaskUpdate={onTaskUpdate}
+                updateWorkflowStatus={updateWorkflowStatus}
+                dragAndDropDisabled
+                selectedTask={selectedTask}
+                isFullView
+                highlightedValue={highlightedValue}
+                addingNewSubtask={addingNewSubtaskParentId === task.identifier}
+                subtasksDisabled
+                multipleAssigneesContext={containsMultipleAssignees}
+              />
+            ) : (
+              <TaskTemplateGroup
+                isCompletedTab={false}
+                viewSetup={viewSetup}
+                templateGroup={task}
+                groupHasMultipleAssignees={containsMultipleAssignees}
+                isFullView
+                dragAndDropDisabled
+                showTasksWithGroup={false}
+              />
+            )}
+          </>
         ))}
         {isLoadingMore && <TasksSkeletonLoader rows={4} />}
         {hasMoreTasks && (

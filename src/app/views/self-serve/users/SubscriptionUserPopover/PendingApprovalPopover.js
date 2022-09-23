@@ -1,7 +1,7 @@
 /* eslint-disable sonarjs/no-identical-functions */
 import React, { useState, useCallback } from 'react';
 import { useDispatch } from 'react-redux';
-import { pathEq } from 'ramda';
+import pathEq from 'ramda/src/pathEq';
 import { Popover } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
 import clsx from 'clsx';

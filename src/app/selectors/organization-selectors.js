@@ -1,4 +1,4 @@
-import { prop } from 'ramda';
+import prop from 'ramda/src/prop';
 import { createSelector } from 'reselect';
 
 export const organizationStateSelector = state => state.organizationState;

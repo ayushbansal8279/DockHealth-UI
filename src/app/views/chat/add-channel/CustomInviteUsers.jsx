@@ -1,10 +1,12 @@
-import React, { useState, useContext, useCallback } from 'react';
+import React, { useState, useCallback } from 'react';
 import { useCreateChannelContext } from '@sendbird/uikit-react/CreateChannel/context';
 import useSendbirdStateContext from '@sendbird/uikit-react/useSendbirdStateContext';
 import sendBirdSelectors from '@sendbird/uikit-react/sendBirdSelectors';
 import Modal from '@sendbird/uikit-react/ui/Modal';
+import { useDispatch, useSelector } from 'react-redux';
+import { selectChannel } from 'actions/sendbird-actions';
+import { userProfileSelector } from 'selectors/user-selectors';
 import MultiAssignChatInviteMembersList from './MultiAssignChatInviteList';
-import SelectedChannelContext from '../SelectedChannelContext';
 
 const InviteUsers = ({ onCancel }) => {
   const { createChannel } = useCreateChannelContext();
@@ -12,33 +14,37 @@ const InviteUsers = ({ onCancel }) => {
   const globalStore = useSendbirdStateContext();
   const sdkInstance = sendBirdSelectors.getSdk(globalStore);
 
-  const [selectedMembers, setSelectedMembers] = useState([]);
+  const { identifier: currentUserId } = useSelector(userProfileSelector);
 
-  const { setSelectedChannel } = useContext(SelectedChannelContext);
+  const dispatch = useDispatch();
+
+  const [selectedMembers, setSelectedMembers] = useState([]);
 
   const onSubmit = useCallback(() => {
     const parameters = new sdkInstance.GroupChannelParams();
     parameters.isPublic = false;
     parameters.isEphemeral = false;
-    parameters.isDistinct = false;
+    parameters.isDistinct = true;
     parameters.addUserIds(
       selectedMembers.map(member => {
         return member.identifier;
       }),
     );
+    parameters.operatorUserIds = [currentUserId];
     parameters.name = '';
 
     createChannel(parameters).then(channel => {
-      setSelectedChannel(channel);
+      dispatch(selectChannel(channel));
     });
 
     onCancel();
   }, [
-    createChannel,
-    onCancel,
     sdkInstance.GroupChannelParams,
     selectedMembers,
-    setSelectedChannel,
+    currentUserId,
+    createChannel,
+    onCancel,
+    dispatch,
   ]);
 
   return (

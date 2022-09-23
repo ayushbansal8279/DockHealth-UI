@@ -1,4 +1,4 @@
-import { clamp } from 'ramda';
+import clamp from 'ramda/src/clamp';
 
 const palette = {
   // primary

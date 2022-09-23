@@ -1,6 +1,8 @@
 /* eslint-disable sonarjs/cognitive-complexity */
 import React, { useCallback, useMemo, useRef, useState } from 'react';
-import { compose, descend, prop } from 'ramda';
+import compose from 'ramda/src/compose';
+import descend from 'ramda/src/descend';
+import prop from 'ramda/src/prop';
 import { useDispatch, useSelector } from 'react-redux';
 import {
   patientSelector,
@@ -176,6 +178,7 @@ const PatientNotes = () => {
           <ClickAwayListener onClickAway={handleClickAway}>
             <RichTextInputContainer>
               <TextEditor
+                getFocusFromParent={editMode}
                 showToolbar
                 ref={addNoteInputReference}
                 taskListIdentifier={patientIdentifier}

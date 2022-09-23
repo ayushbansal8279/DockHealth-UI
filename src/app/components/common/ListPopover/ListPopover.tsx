@@ -1,7 +1,7 @@
 import { ListItem, Popover, PopoverProps } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
 import clsx from 'clsx';
-import { omit } from 'ramda';
+import omit from 'ramda/src/omit';
 import React from 'react';
 import palette from 'styles/palette';
 

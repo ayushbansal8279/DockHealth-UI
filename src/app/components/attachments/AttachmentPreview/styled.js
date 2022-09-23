@@ -1,6 +1,6 @@
 import { Dialog } from '@material-ui/core';
 import { withStyles } from '@material-ui/core/styles';
-import { Document, Page } from 'react-pdf';
+import { Document, Page } from 'react-pdf/dist/esm/entry.webpack';
 import styled from 'styled-components';
 import palette from 'styles/palette';
 

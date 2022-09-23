@@ -2,7 +2,7 @@ import styled from 'styled-components';
 import palette from 'styles/palette';
 import spacing from 'styles/spacing';
 import { fontSizes, fontWeights } from 'styles/font';
-import { prop } from 'ramda';
+import prop from 'ramda/src/prop';
 
 export const Divider = styled.div`
   width: 100%;

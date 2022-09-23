@@ -1,99 +1,95 @@
 import React, { useState, useCallback } from 'react';
-import { Popover, Box, Typography } from '@material-ui/core';
-import { useHistory } from 'react-router-dom';
+import { Box } from '@material-ui/core';
 import ArrowBack from '@material-ui/icons/ArrowBack';
 import CloseIcon from '@material-ui/icons/Close';
 import OpenInNewIcon from '@material-ui/icons/OpenInNew';
-import Draggable from 'react-draggable';
-import { useBoolean } from 'hooks/useBoolean';
 import { CHAT_PATH } from 'routing/helpers/paths';
 import { userProfileSelector } from 'selectors/user-selectors';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
+import { Rnd } from 'react-rnd';
+import { selectedChatChannelSelector } from 'selectors/sendbird-selectors';
+import { closePopover, openPopover } from 'actions/sendbird-actions';
 import Chat from './Chat';
-import SelectedChannelContext from './SelectedChannelContext';
 import ShowSettingsContext from './ShowSettingsContext';
 import {
   Container,
   StyledIconButton,
   HeaderContainer,
   ChatContainer,
+  ChatHeaderTitle,
 } from './styled';
 
-const ChatPopover = ({ setShowChatPopover, openChat = true }) => {
+const ChatPopover = () => {
   const { name, identifier } = useSelector(userProfileSelector);
-  const [open, unsetOpen] = useBoolean(openChat);
-  const [anchorElement, setAnchorElement] = useState(null);
-  const history = useHistory();
-
-  const [selectedChannel, setSelectedChannel] = useState(null);
-  const value = { selectedChannel, setSelectedChannel, setShowChatPopover };
+  const selectedChannel = useSelector(selectedChatChannelSelector);
+  const dispatch = useDispatch();
 
   const [showSettings, setShowSettings] = useState(false);
   const showSettingsValue = { showSettings, setShowSettings };
 
   const handleClose = useCallback(() => {
-    setShowChatPopover(false);
-    unsetOpen();
-    setAnchorElement(null);
-  }, [unsetOpen, setShowChatPopover]);
+    dispatch(closePopover(selectedChannel));
+  }, [dispatch, selectedChannel]);
 
   const handleLeaveIconClick = useCallback(() => {
-    unsetOpen();
-    setAnchorElement(null);
-    history.push(CHAT_PATH);
-  }, [history, unsetOpen]);
-
-  const id = open ? 'simple-popover' : undefined;
+    dispatch(closePopover(null));
+    window.open(`${window.location.origin.toString()}/#${CHAT_PATH}`, '_blank');
+  }, [dispatch]);
 
   const handleClickGoBack = useCallback(() => {
-    setShowChatPopover(true);
-    setSelectedChannel(null);
-    setShowSettings(false);
-  }, [setShowChatPopover]);
+    if (showSettings === true) {
+      setShowSettings(false);
+    } else {
+      dispatch(openPopover(null));
+    }
+  }, [dispatch, showSettings]);
+
+  const [containerPosition, setContainerPosition] = useState({ x: -300, y: 0 });
+  const [containerSize, setContainerSize] = useState({
+    width: 550,
+    height: 750,
+  });
 
   return (
-    <div>
-      <Draggable handle=".handle">
-        <Popover
-          id={id}
-          open={open}
-          anchorEl={anchorElement}
-          anchorOrigin={{
-            vertical: 50,
-            horizontal: 10,
-          }}
-          PaperProps={{ style: { height: '700px', width: '525px' } }}
-          disableEnforceFocus
-          style={{ width: '550px', height: '750px' }}
-        >
-          <Container>
-            <HeaderContainer className="handle">
-              <StyledIconButton
-                onClick={
-                  selectedChannel ? handleClickGoBack : handleLeaveIconClick
-                }
-              >
-                {selectedChannel ? <ArrowBack /> : <OpenInNewIcon />}
-              </StyledIconButton>
-              <Box mx={0.5} />
-              <Typography color="white" variant="h3">
-                Dock Chat
-              </Typography>
-              <Box mx={0.5} />
-              <StyledIconButton onClick={handleClose}>
-                <CloseIcon />
-              </StyledIconButton>
-            </HeaderContainer>
-            <ChatContainer>
-              <SelectedChannelContext.Provider value={value}>
-                <ShowSettingsContext.Provider value={showSettingsValue}>
-                  <Chat userId={identifier} name={name} />
-                </ShowSettingsContext.Provider>
-              </SelectedChannelContext.Provider>
-            </ChatContainer>
-          </Container>
-        </Popover>
-      </Draggable>
+    <div style={{ right: 0, top: 0 }}>
+      <Rnd
+        size={{ width: containerSize.width, height: containerSize.height }}
+        position={{ x: containerPosition.x, y: containerPosition.y }}
+        onDragStop={(_event, d) => {
+          setContainerPosition({ x: d.x, y: d.y });
+        }}
+        minWidth="400px"
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
+        onResizeStop={(_event, direction, reference, _delta, _position) => {
+          setContainerSize({
+            width: reference.style.width,
+            height: reference.style.height,
+          });
+        }}
+      >
+        <Container>
+          <HeaderContainer className="handle">
+            <StyledIconButton
+              onClick={
+                selectedChannel ? handleClickGoBack : handleLeaveIconClick
+              }
+            >
+              {selectedChannel ? <ArrowBack /> : <OpenInNewIcon />}
+            </StyledIconButton>
+            <Box mx={0.5} />
+            <ChatHeaderTitle>Dock Chat</ChatHeaderTitle>
+            <Box mx={0.5} />
+            <StyledIconButton onClick={handleClose}>
+              <CloseIcon />
+            </StyledIconButton>
+          </HeaderContainer>
+          <ChatContainer>
+            <ShowSettingsContext.Provider value={showSettingsValue}>
+              <Chat userId={identifier} name={name} />
+            </ShowSettingsContext.Provider>
+          </ChatContainer>
+        </Container>
+      </Rnd>
     </div>
   );
 };

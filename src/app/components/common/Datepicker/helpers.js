@@ -1,7 +1,7 @@
 import moment from 'moment';
 import React from 'react';
 import { MontserratTypography } from 'styles/theme-montserrat';
-import { range } from 'ramda';
+import range from 'ramda/src/range';
 import {
   CalendarDayLabel,
   CalendarIconButton,

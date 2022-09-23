@@ -81,6 +81,12 @@ export const userHasSendSmsFeatureSelector = createSelector(
     organizationAvailableFeatures?.includes('SEND_COMM_SMS'),
 );
 
+export const userHasSendESignFeatureSelector = createSelector(
+  userProfileSelector,
+  ({ organizationAvailableFeatures }) =>
+    organizationAvailableFeatures?.includes('SEND_COMM_ESIGN'),
+);
+
 export const userHasPostEMRNoteFeatureSelector = createSelector(
   userProfileSelector,
   ({ organizationAvailableFeatures }) =>
@@ -97,6 +103,18 @@ export const userHasShareTaskFeatureSelector = createSelector(
   userProfileSelector,
   ({ organizationAvailableFeatures }) =>
     organizationAvailableFeatures?.includes('SHARE_TASK'),
+);
+
+export const userHasDockChatFeatureSelector = createSelector(
+  userProfileSelector,
+  ({ organizationAvailableFeatures }) =>
+    organizationAvailableFeatures?.includes('DOCK_CHAT'),
+);
+
+export const userHasBoardViewFeatureSelector = createSelector(
+  userProfileSelector,
+  ({ organizationAvailableFeatures }) =>
+    organizationAvailableFeatures?.includes('BOARD_VIEW'),
 );
 
 export const userSetupClientViewSelector = createSelector(

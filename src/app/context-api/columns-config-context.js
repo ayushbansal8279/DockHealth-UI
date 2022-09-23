@@ -166,7 +166,7 @@ export function ColumnsConfigProvider({
         columnsAlwaysVisible?.includes(field.identifier),
       columnWidth: Number(
         currentWidthPreferences?.find(
-          c => c.displayColumn === field?.identifier,
+          c => c.displayColumn === field?.identifier && c.width !== 'NaN',
         )?.width || getInitialColumnWidth(field),
       ),
     }));

@@ -54,4 +54,7 @@ export const MaterialDrawer = styled(Drawer)`
   @media print {
     display: none;
   }
+  @media screen and (max-width: 800px) {
+    display: none;
+  }
 `;

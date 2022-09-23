@@ -5,7 +5,7 @@ import { useBoolean } from 'hooks/useBoolean';
 import { showGlobalErrorAlert } from 'alert/actions';
 import { addTaskDependencyLink } from 'actions/task-actions';
 import { getAvailableTaskDependencies } from 'api/task-api';
-import { prop } from 'ramda';
+import prop from 'ramda/src/prop';
 import QuickAddTaskInputWrapper from '../QuickAddTaskInputWrapper/QuickAddTaskInputWrapper';
 import { StyledInput } from './styled';
 

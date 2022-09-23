@@ -5,7 +5,9 @@ import {
   NodeTargetHandle,
   getUniqueLinkId,
 } from 'helpers/smart-flow-builder-helpers';
-import { isNil, pick, prop } from 'ramda';
+import isNil from 'ramda/src/isNil';
+import pick from 'ramda/src/pick';
+import prop from 'ramda/src/prop';
 
 // eslint-disable-next-line sonarjs/cognitive-complexity
 export function mapLayoutToElements(layout, tasks) {

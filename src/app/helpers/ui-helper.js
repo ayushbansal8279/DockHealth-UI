@@ -1,6 +1,6 @@
 /* eslint-disable no-unused-expressions */
 /* eslint-disable import/prefer-default-export */
-import { isEmpty } from 'ramda';
+import isEmpty from 'ramda/src/isEmpty';
 
 export function scrollToError(errors) {
   if (errors && !isEmpty(errors)) {

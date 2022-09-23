@@ -2,6 +2,7 @@ import styled from 'styled-components';
 import spacing from 'styles/spacing';
 import palette from 'styles/palette';
 import { fontSizes } from 'styles/font';
+import ChevronRightIcon from '@material-ui/icons/ChevronRight';
 
 export const ListPickerModalWrapper = styled.div`
   display: flex;
@@ -76,25 +77,118 @@ export const ListsWrapper = styled.div`
   overflow: auto;
 `;
 
-export const ListItem = styled.button`
-  display: block;
-  width: 100%;
+export const ListItemTextButton = styled.button`
+  flex: 1;
+  margin: 0;
   padding: ${spacing.smallPlus} ${spacing.regularPlus};
-  color: ${({ isSelected }) => (isSelected ? palette.white : palette.darkGrey)};
   font-size: ${fontSizes.regular};
   text-align: left;
+  outline: none;
   cursor: ${({ isSelected }) => (isSelected ? 'initial' : 'pointer')};
-  ${({ isSelected }) => isSelected && `background: ${palette.darkBlue};`}
+`;
+
+export const NextArrow = styled(ChevronRightIcon)`
+  color: ${palette.lightGrey};
+`;
+
+export const ListItem = styled.div`
+  display: block;
+  width: 100%;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
   appearance: none;
   border-radius: 0;
-  outline: none;
+  background-color: ${({ isSelected }) =>
+    isSelected ? palette.darkBlue : 'transparent'};
 
-  ${({ isSelected }) =>
-    !isSelected && `&:hover { background: ${palette.brightBlueWithAlpha}; }`}
+  &:hover {
+    background-color: ${({ isSelected }) =>
+      isSelected ? palette.darkBlue : palette.brightBlueWithAlpha};
+  }
+
+  & ${ListItemTextButton} {
+    color: ${({ isSelected }) =>
+      isSelected ? palette.white : palette.darkGrey};
+  }
+
+  & ${NextArrow} {
+    color: ${({ isSelected }) =>
+      isSelected ? palette.white : palette.lightGrey};
+  }
 `;
 
 export const EmptyMessage = styled.p`
   color: ${palette.coolGrey2};
   margin-top: ${spacing.huge};
   text-align: center;
+`;
+
+export const TitleWithButtonWrapper = styled.div`
+  position: relative;
+  padding-left: ${spacing.giga};
+  overflow: visible;
+
+  & > button {
+    position: absolute;
+    left: 0px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: ${palette.brightBlue};
+    cursor: pointer;
+  }
+`;
+
+export const QuickAddInputWrapper = styled.div`
+  position: relative;
+  width: 100%;
+  font-size: ${fontSizes.smallPlus};
+
+  &:before {
+    position: absolute;
+    top: 50%;
+    left: ${spacing.regularPlus};
+    display: block;
+    content: '+';
+    transform: translateY(-50%);
+    color: ${palette.orange};
+    font-size: ${fontSizes.regular};
+  }
+
+  ${({ isFocused }) =>
+    isFocused &&
+    `
+      &:before {
+        opacity: 0;
+      }
+    `}
+`;
+
+export const QuickAddInput = styled.input`
+  height: auto;
+  padding: ${spacing.smallPlus} ${spacing.huge};
+  margin-bottom: 0;
+  border-color: ${palette.coolGrey2};
+  border-top: none;
+  font-size: ${fontSizes.regular};
+  box-shadow: none;
+
+  &:disabled {
+    background-color: transparent;
+  }
+
+  &:focus {
+    border-top: none;
+    border-color: ${palette.coolGrey2};
+    box-shadow: none;
+  }
+`;
+
+export const Step = styled.div`
+  height: 100%;
+  flex: 384px 0 0;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
 `;

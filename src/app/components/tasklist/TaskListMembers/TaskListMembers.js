@@ -1,6 +1,6 @@
 import React from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { splitAt } from 'ramda';
+import splitAt from 'ramda/src/splitAt';
 import { openModal } from 'modal/actions';
 import { isMemberPending } from 'helpers/list-members-helper';
 import Spacing from 'components/common/Spacing';

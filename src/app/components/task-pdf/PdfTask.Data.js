@@ -1,5 +1,5 @@
 import moment from 'moment';
-import { isEmpty } from 'ramda';
+import isEmpty from 'ramda/src/isEmpty';
 import { getPatientName } from 'helpers/utility-functions';
 
 const getDueDateData = ({ dueDate }) => {

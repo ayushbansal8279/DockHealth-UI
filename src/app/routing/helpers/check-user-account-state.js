@@ -82,13 +82,13 @@ const checkUserAccountState = async ({
       return subscriptionPath;
     }
 
-    if (isMobile) {
-      return await handleMobileRedirection({
-        data,
-        orgData,
-        history,
-      });
-    }
+    // if (isMobile) {
+    //   return await handleMobileRedirection({
+    //     data,
+    //     orgData,
+    //     history,
+    //   });
+    // }
 
     dispatch(getCurrentUserNotificationPreferences());
     dispatch(getOrganizationCustomFields());

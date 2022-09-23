@@ -112,7 +112,9 @@ export const SortHeaderRow = styled.div`
 
   @media print {
     border: 1px solid ${palette.coolGrey1};
+    border-left: 1px solid ${palette.coolGrey3};
     justify-content: flex-start;
     align-items: left;
+    page-break-inside: avoid;
   }
 `;

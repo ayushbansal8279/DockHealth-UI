@@ -1,6 +1,6 @@
 import { bool, number, string, func, oneOf } from 'prop-types';
 import React, { useMemo } from 'react';
-import { omit } from 'ramda';
+import omit from 'ramda/src/omit';
 import palette from 'styles/palette';
 import { ActivityStatus } from 'helpers/user-helper';
 import {

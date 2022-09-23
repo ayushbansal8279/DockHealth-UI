@@ -1,7 +1,7 @@
 import { Grid } from '@material-ui/core';
 import queryString from 'query-string';
 import React, { useEffect, useState } from 'react';
-import { isNil } from 'ramda';
+import isNil from 'ramda/src/isNil';
 import { useDispatch, useSelector } from 'react-redux';
 import { Link, useParams, useLocation, useHistory } from 'react-router-dom';
 import { USERS_SETTINGS_PATH } from 'routing/helpers/paths';

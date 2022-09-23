@@ -260,6 +260,19 @@ const PatientsReducer = (state = initialState, action) => {
       };
     }
 
+    case ActionTypes.SELECT_ALL_PATIENTS: {
+      return {
+        ...state,
+        currentPatientsList: {
+          ...state.currentPatientsList,
+          patients: state.currentPatientsList?.patients?.map(patient => ({
+            ...patient,
+            isSelected: true,
+          })),
+        },
+      };
+    }
+
     case ActionTypes.PATIENT_BULK_DELETE_PATIENTS_SUCCESS: {
       const { patientIdentifiers } = action;
 

@@ -1,6 +1,10 @@
 /* eslint-disable import/prefer-default-export */
 import * as TaskListApi from 'api/task-list-api';
-import { pipe, sortBy, prop, uniqBy, innerJoin } from 'ramda';
+import pipe from 'ramda/src/pipe';
+import sortBy from 'ramda/src/sortBy';
+import prop from 'ramda/src/prop';
+import uniqBy from 'ramda/src/uniqBy';
+import innerJoin from 'ramda/src/innerJoin';
 
 const convert = pipe(sortBy(prop('userName')), uniqBy(prop('identifier')));
 

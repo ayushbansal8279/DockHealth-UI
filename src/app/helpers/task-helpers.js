@@ -1,18 +1,17 @@
 import moment from 'moment';
-import {
-  pipe,
-  prop,
-  path,
-  sortWith,
-  ascend,
-  descend,
-  defaultTo,
-  toLower,
-  trim,
-  ifElse,
-  isNil,
-  unless,
-} from 'ramda';
+import pipe from 'ramda/src/pipe';
+import prop from 'ramda/src/prop';
+import path from 'ramda/src/path';
+import sortWith from 'ramda/src/sortWith';
+import ascend from 'ramda/src/ascend';
+import descend from 'ramda/src/descend';
+import defaultTo from 'ramda/src/defaultTo';
+import toLower from 'ramda/src/toLower';
+import trim from 'ramda/src/trim';
+import ifElse from 'ramda/src/ifElse';
+import isNil from 'ramda/src/isNil';
+import unless from 'ramda/src/unless';
+
 import palette from 'styles/palette';
 
 /* eslint-disable import/prefer-default-export */
@@ -44,6 +43,7 @@ export const CommunicationType = {
   EMAIL: 'EMAIL',
   FAX: 'FAX',
   SMS: 'SMS',
+  ESIGN: 'ESIGN',
 };
 
 export function getPriorityColor(priority) {
@@ -135,6 +135,7 @@ export const TaskItemColumn = {
   DESCRIPTION: 'TASK_DESCRIPTION',
   DUE_DATE: 'DUE_DT',
   START_DATE: 'START_DT',
+  ANCHOR_DATE: 'ANCHOR_DT',
   ACTIVITY: 'ACTIVITY',
   LIST_NAME: 'LIST_NAME',
   ASSIGNED: 'ASSIGNED_TO',
@@ -147,6 +148,7 @@ export const TaskItemColumn = {
 export const TaskItemColumnWidth = {
   [TaskItemColumn.DUE_DATE]: 78,
   [TaskItemColumn.START_DATE]: 78,
+  [TaskItemColumn.ANCHOR_DATE]: 78,
   [TaskItemColumn.ACTIVITY]: 150,
   [TaskItemColumn.LIST_NAME]: 168,
   [TaskItemColumn.ASSIGNED]: {
@@ -173,6 +175,7 @@ export const TASK_ITEM_BASE_COLUMN_CONFIG = {
   [TaskItemColumn.ACTIVITY]: true,
   [TaskItemColumn.START_DATE]: true,
   [TaskItemColumn.DUE_DATE]: true,
+  [TaskItemColumn.ANCHOR_DATE]: true,
   [TaskItemColumn.ASSIGNED]: true,
   [TaskItemColumn.LIST_NAME]: false,
 };
@@ -183,6 +186,7 @@ export const SHOW_COLUMNS_CONFIG = {
   [TaskItemColumn.ACTIVITY]: true,
   [TaskItemColumn.START_DATE]: true,
   [TaskItemColumn.DUE_DATE]: true,
+  [TaskItemColumn.ANCHOR_DATE]: true,
   [TaskItemColumn.PATIENT]: true,
   [TaskItemColumn.LIST_NAME]: true,
 };

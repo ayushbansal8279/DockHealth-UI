@@ -6,7 +6,7 @@ import React, {
   useCallback,
   useRef,
 } from 'react';
-import { isEmpty } from 'ramda';
+import isEmpty from 'ramda/src/isEmpty';
 import { useDispatch } from 'react-redux';
 import { openDrawer } from 'actions/task-drawer-actions';
 import { storeAsCurrentTask, loadSubTasks } from 'actions/task-actions';

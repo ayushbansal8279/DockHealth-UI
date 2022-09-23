@@ -1,6 +1,7 @@
 /* eslint-disable react/jsx-no-duplicate-props */
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
-import { pluck, trim } from 'ramda';
+import pluck from 'ramda/src/pluck';
+import trim from 'ramda/src/trim';
 import { useSelector } from 'react-redux';
 import { userProfileSelector } from 'selectors/user-selectors';
 import { onTaskDrawerTaskAssigned } from 'helpers/ga-event-helper';

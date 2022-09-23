@@ -1,8 +1,8 @@
 /* eslint-disable sonarjs/cognitive-complexity */
-import React, { useCallback, useEffect, useState } from 'react';
+import React, { useCallback, useEffect } from 'react';
 import { ClickAwayListener, Grid } from '@material-ui/core';
 import { useDispatch, useSelector } from 'react-redux';
-import { useHistory } from 'react-router-dom';
+import { useHistory, useLocation } from 'react-router-dom';
 import {
   WORKFLOW_LIBRARY_PATH,
   USERS_PATH,
@@ -10,7 +10,14 @@ import {
   USERS_SETTINGS_PATH,
 } from 'routing/helpers/paths';
 import Spacing from 'components/common/Spacing.tsx';
-import { userProfileSelector } from 'selectors/user-selectors';
+import {
+  userProfileSelector,
+  userHasDockChatFeatureSelector,
+} from 'selectors/user-selectors';
+import {
+  showChatPopoverSelector,
+  selectedChatChannelSelector,
+} from 'selectors/sendbird-selectors';
 import { UserOrganizationRole } from 'helpers/user-helper';
 import { getCustomerTypeLabel } from 'helpers/customer-type-helper';
 import { capitalize } from 'helpers/capitalize';
@@ -25,13 +32,14 @@ import PatientsIcon from 'img/navigation/PatientsIcon';
 import SettingsIcon from 'img/navigation/SettingsIcon';
 import TemplatesIcon from 'img/navigation/TemplatesIcon';
 import EducationCenterIcon from 'img/navigation/EducationCenterIcon';
-import DockcoinIconImage from 'img/navigation/dock-coin-icon.svg';
+// import DockcoinIconImage from 'img/navigation/dock-coin-icon.svg';
 import UserAvatar from 'components/user/UserAvatar/UserAvatar';
 import OrganizationTile from 'components/org/OrganizationTile/OrganizationTile';
-import { openModal } from 'modal/actions';
+// import { openModal } from 'modal/actions';
 import AccessRestrictor from 'components/access/AccessRestrictor/AccessRestrictor';
 import ChatPopover from 'views/chat/ChatPopover';
 import ChatIcon from 'views/chat/Icons/ChatIcon';
+import { openPopover } from 'actions/sendbird-actions';
 import OrganizationSubmenu from './SubMenuComponents/OrganizationSubmenu';
 import ProfileSubmenu from './SubMenuComponents/ProfileSubmenu';
 import EducationCenterSubmenu from './SubMenuComponents/EducationCenterSubmenu';
@@ -46,7 +54,7 @@ import {
   DrawerContentContainer,
   MainMenuContainer,
   SubMenuContainer,
-  DockcoinIcon,
+  // DockcoinIcon,
   NavigationIconContainer,
   BarChartIcon,
 } from './styled';
@@ -85,10 +93,11 @@ const SubmenuComponents = {
 const NavigationSidebar = () => {
   const history = useHistory();
   const dispatch = useDispatch();
+  const location = useLocation();
   const currentUser = useSelector(userProfileSelector);
+  const showChatPopover = useSelector(showChatPopoverSelector);
   const openedSubMenuKey = useSelector(subMenuKeySelector);
-
-  const [showChatPopover, setShowChatPopover] = useState(false);
+  const selectedChannel = useSelector(selectedChatChannelSelector);
 
   const { orgUserRole } = currentUser || {};
   const isUserAdmin = ['ADMIN', 'OWNER'].includes(orgUserRole);
@@ -96,6 +105,9 @@ const NavigationSidebar = () => {
   const currentOrganizationIdentifier = sessionStorage.getItem(
     'currentOrganizationIdentifier',
   );
+
+  const dockChatAvailable = useSelector(userHasDockChatFeatureSelector);
+
   const { organizationProfileColor, organizationInitials } =
     currentUser?.userOrganizations?.find(
       ({ organizationIdentifier }) =>
@@ -151,14 +163,16 @@ const NavigationSidebar = () => {
   );
 
   const handleDockChatClick = useCallback(() => {
-    setShowChatPopover(!showChatPopover);
-    dispatch(TemplateActions.hideSubMenu());
-  }, [dispatch, showChatPopover, setShowChatPopover]);
+    if (location.pathname !== '/core/chat') {
+      dispatch(openPopover(selectedChannel ?? null));
+      dispatch(TemplateActions.hideSubMenu());
+    }
+  }, [dispatch, location.pathname, selectedChannel]);
 
-  const handleReferClick = () => {
-    dispatch(TemplateActions.hideSubMenu());
-    dispatch(openModal('ReferAColleague'));
-  };
+  // const handleReferClick = () => {
+  //   dispatch(TemplateActions.hideSubMenu());
+  //   dispatch(openModal('ReferAColleague'));
+  // };
 
   return (
     <ClickAwayListener onClickAway={closeSubMenu}>
@@ -251,21 +265,23 @@ const NavigationSidebar = () => {
                 onItemClick={handleNavigationItemClick}
               />
             </AccessRestrictor>
-            <AccessRestrictor
-              allowedToRoles={[ADMIN, OWNER, MEMBER, GUEST, EXTERNAL]}
-            >
-              <NavigationIconContainer>
-                <IconNavigationItem
-                  name="Dock Chat"
-                  icon={() => {
-                    return <ChatIcon />;
-                  }}
-                  path=""
-                  onItemClick={handleDockChatClick}
-                  isNew
-                />
-              </NavigationIconContainer>
-            </AccessRestrictor>
+            {dockChatAvailable && (
+              <AccessRestrictor
+                allowedToRoles={[ADMIN, OWNER, MEMBER, GUEST, EXTERNAL]}
+              >
+                <NavigationIconContainer>
+                  <IconNavigationItem
+                    name="Dock Chat"
+                    icon={() => {
+                      return <ChatIcon />;
+                    }}
+                    path=""
+                    onItemClick={handleDockChatClick}
+                    isNew
+                  />
+                </NavigationIconContainer>
+              </AccessRestrictor>
+            )}
           </Grid>
           <Grid container direction="column">
             <AccessRestrictor allowedToRoles={[ADMIN, OWNER]}>
@@ -293,7 +309,7 @@ const NavigationSidebar = () => {
                 onItemClick={handleNavigationItemClick}
               />
             </AccessRestrictor>
-            <AccessRestrictor
+            {/* <AccessRestrictor
               allowedToRoles={[ADMIN, OWNER, MEMBER, GUEST, EXTERNAL]}
             >
               <NavigationItem
@@ -305,7 +321,7 @@ const NavigationSidebar = () => {
                   <DockcoinIcon src={DockcoinIconImage} />
                 </>
               </NavigationItem>
-            </AccessRestrictor>
+            </AccessRestrictor> */}
             <div ref={profileMenuReference}>
               <NavigationItem
                 name="Account"
@@ -331,12 +347,7 @@ const NavigationSidebar = () => {
           )}
         </SubMenuContainer>
         {renderMenuTourPopover()}
-        {showChatPopover && (
-          <ChatPopover
-            setShowChatPopover={setShowChatPopover}
-            openChat={showChatPopover}
-          />
-        )}
+        {showChatPopover && <ChatPopover />}
       </DrawerContentContainer>
     </ClickAwayListener>
   );

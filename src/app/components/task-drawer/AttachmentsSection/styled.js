@@ -66,3 +66,10 @@ export const AttachmentFileInput = styled.input.attrs({
   visibility: hidden;
   width: 1px;
 `;
+
+export const DownloadAllLink = styled.a`
+  align-items: center;
+  color: ${palette.brightBlue};
+  padding: ${spacing.tiny} ${spacing.small};
+  margin: ${spacing.tiny};
+`;

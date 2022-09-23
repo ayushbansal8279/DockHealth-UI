@@ -10,7 +10,10 @@ import { createUserGroupPath, USERS_PATH } from 'routing/helpers/paths';
 import AddButton from 'components/common/AddButton/AddButton.tsx';
 import OptionsMenu from 'components/common/OptionsMenu/OptionsMenu';
 import { MoreVert } from '@material-ui/icons';
-import { prop, sortBy, toLower, compose } from 'ramda';
+import prop from 'ramda/src/prop';
+import sortBy from 'ramda/src/sortBy';
+import toLower from 'ramda/src/toLower';
+import compose from 'ramda/src/compose';
 import {
   isFetchingUserGroupsSelector,
   defaultUserGroupsSelector,

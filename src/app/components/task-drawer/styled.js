@@ -1,6 +1,7 @@
 import styled from 'styled-components';
 import palette from 'styles/palette';
 import { Close } from '@material-ui/icons';
+import { fontWeights } from 'styles/font';
 
 export const EndAdornmentContainer = styled.div`
   align-items: center;
@@ -24,18 +25,11 @@ export const AdornmentClear = styled(Close)`
 `;
 
 export const HorizontalLabel = styled.span`
-  color: ${palette.coolGrey1};
   font-family: 'Roboto Condensed', sans-serif;
   margin-right: 5px;
+  font-weight: ${fontWeights.bold};
   & > * {
     font-size: 1rem;
     margin-right: 5px;
   }
-`;
-
-export const FiledInListName = styled.span`
-  overflow: hidden;
-  white-space: nowrap;
-  text-overflow: ellipsis;
-  max-width: 250px;
 `;

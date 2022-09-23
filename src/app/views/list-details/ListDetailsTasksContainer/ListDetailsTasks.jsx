@@ -3,7 +3,7 @@
 import React, { useState, useCallback, useMemo, useContext } from 'react';
 import { useDispatch } from 'react-redux';
 import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd';
-import { isEmpty } from 'ramda';
+import isEmpty from 'ramda/src/isEmpty';
 import EmptyTaskListAlpaca from 'img/animals/alpaca';
 import EmptyTaskListBear from 'img/animals/bear';
 import { openModal as openModalAction } from 'modal/actions';

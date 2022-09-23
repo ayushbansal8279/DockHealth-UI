@@ -1,9 +1,9 @@
 import palette from 'styles/palette';
-import { createMuiTheme } from '@material-ui/core/styles';
+import { createTheme } from '@material-ui/core/styles';
 import { fontSizes, fontWeights } from 'styles/font';
 import spacing from 'styles/spacing';
 
-export const redTheme = createMuiTheme({
+export const redTheme = createTheme({
   palette: {
     text: {
       primary: palette.oPlusRed,

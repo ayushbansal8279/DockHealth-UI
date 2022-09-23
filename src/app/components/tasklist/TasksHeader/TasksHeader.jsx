@@ -87,23 +87,31 @@ const TasksHeader = ({
   const renderColumn = useCallback(
     (f, index, snapshot) => {
       const isRegular = f._customFieldType === CUSTOM_FIELD_TYPES.REGULAR;
-      const regularPrintWidth = CustomFieldWidthConfig[f.fieldType];
+      const customFieldDefaultPrintWidth = CustomFieldWidthConfig[f.fieldType];
+      const regularFieldDefaultPrintWidth =
+        typeof TaskItemColumnWidth[f.identifier] === 'object'
+          ? TaskItemColumnWidth[f.identifier].PRINT ||
+            TaskItemColumnWidth[f.identifier].DEFAULT
+          : TaskItemColumnWidth[f.identifier];
       const customPrintWidth =
-        f.id === TaskItemColumn.ASSIGNED
-          ? TaskItemColumnWidth[TaskItemColumn.ASSIGNED].PRINT
-          : undefined;
+        customFieldDefaultPrintWidth || regularFieldDefaultPrintWidth;
+
       return (
         <ColumnSortHeader
           onResize={(id, _, size) => handleResizeColumn(id, { ...size, index })}
           key={f.identifier}
           index={index}
-          draggable={!restrictCustomizationFeatures}
+          draggable={
+            !restrictCustomizationFeatures &&
+            ![TaskHeaderColumn.SUBTASKS_COUNT].includes(f.identifier)
+          }
           isDraggingOver={snapshot.isDraggingOver}
           disabled={
             isRegular
               ? [
                   TaskHeaderColumn.ACTIVITY,
                   TaskHeaderColumn.START_DATE,
+                  TaskHeaderColumn.ANCHOR_DATE,
                 ].includes(f.identifier)
               : f.targetType === 'PATIENT'
           }
@@ -114,7 +122,7 @@ const TasksHeader = ({
           snapshot={snapshot}
           sort={isRegular ? sort : null}
           onSortChange={isRegular ? onSortChange : null}
-          printWidth={isRegular ? regularPrintWidth : customPrintWidth}
+          printWidth={+customPrintWidth}
         />
       );
     },

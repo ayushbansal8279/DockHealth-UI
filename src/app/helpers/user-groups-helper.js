@@ -1,6 +1,5 @@
 /* eslint-disable import/prefer-default-export */
-
-import { innerJoin } from 'ramda';
+import innerJoin from 'ramda/src/innerJoin';
 import { ActivityStatus } from './user-helper';
 
 export const UserGroupType = {

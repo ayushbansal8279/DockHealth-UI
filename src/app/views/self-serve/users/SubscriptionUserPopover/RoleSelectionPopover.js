@@ -1,6 +1,6 @@
 import React, { useState, useCallback } from 'react';
 import { useDispatch } from 'react-redux';
-import { pathEq } from 'ramda';
+import pathEq from 'ramda/src/pathEq';
 import SelectorPopover from 'components/common/SelectorPopover/SelectorPopover';
 import Button from 'components/common/Button/Button';
 import { changeUserOrganizationRole } from 'actions/organization-actions';

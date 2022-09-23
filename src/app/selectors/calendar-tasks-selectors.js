@@ -1,4 +1,4 @@
-import { pick } from 'ramda';
+import pick from 'ramda/src/pick';
 import { createSelector } from 'reselect';
 
 export const calendarTasksStateSelector = state => state.calendarTasks;

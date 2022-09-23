@@ -34,10 +34,10 @@ function TaskCheckBoxes({
           insertTextFromTask({
             meta: description,
             name: '_DESCRIPTION_',
-            tokenized: substituteNameForIdInTokenizedText(
+            tokenized: `Task Description: ${substituteNameForIdInTokenizedText(
               tokenizedDescription,
               taskMentions,
-            ),
+            )}`,
           });
         }
       },
@@ -52,10 +52,10 @@ function TaskCheckBoxes({
           setIsTaskDetailsIncluded(flag);
           insertTextFromTask({
             meta: details,
-            tokenized: substituteNameForIdInTokenizedText(
+            tokenized: `Task Details: ${substituteNameForIdInTokenizedText(
               tokenizedDetails,
               taskMentions,
-            ),
+            )}`,
           });
         }
       },
@@ -77,7 +77,7 @@ function TaskCheckBoxes({
             .join('\n');
           insertTextFromTask({
             meta: commentsContent,
-            tokenized: commentsContent,
+            tokenized: `Task Comments: ${commentsContent}`,
             name: '_COMMENTS_',
           });
         }

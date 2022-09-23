@@ -1,5 +1,6 @@
 import memoize from 'lodash.memoize';
-import { uniqBy, prop } from 'ramda';
+import uniqBy from 'ramda/src/uniqBy';
+import prop from 'ramda/src/prop';
 import { noop } from 'helpers/utility-functions';
 import axios from './axios-heydoc';
 

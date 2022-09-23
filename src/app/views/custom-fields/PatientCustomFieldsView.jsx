@@ -1,6 +1,8 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import { useDispatch } from 'react-redux';
-import { map, pluck, move } from 'ramda';
+import map from 'ramda/src/map';
+import pluck from 'ramda/src/pluck';
+import move from 'ramda/src/move';
 import { Box, IconButton } from '@material-ui/core';
 import { Skeleton } from '@material-ui/lab';
 import DeleteIcon from '@material-ui/icons/Delete';
@@ -42,7 +44,7 @@ const PatientCustomFieldsView = () => {
     CustomFieldsApi.getAllPatientCustomFields()
       .then(data => {
         const customFieldsData = data?.filter(
-          cf => cf.contextType === 'CUSTOM',
+          cf => cf.contextType === 'CUSTOM' || cf.contextType === 'PREDEFINED',
         );
         setCustomFields(customFieldsData);
         setIsFetching(false);
@@ -182,53 +184,55 @@ const PatientCustomFieldsView = () => {
                 }
               >
                 <SortableContext items={pluck('identifier', sortedFields)}>
-                  {sortedFields.map(field => (
-                    <SortableItem
-                      key={field.identifier}
-                      itemId={field.identifier}
-                    >
-                      {({ dragHandleProps }) => (
-                        <div>
-                          <CustomFieldItem>
-                            <DragHandle {...dragHandleProps}>
-                              <DragHandleIcon />
-                            </DragHandle>
-                            <CustomFieldCell>
-                              <CustomFieldText>{field.name}</CustomFieldText>
-                            </CustomFieldCell>
-                            <CustomFieldCell>
-                              <CustomFieldText>
-                                {FieldTypeLabel[field.fieldType]}
-                              </CustomFieldText>
-                            </CustomFieldCell>
-                            <CustomFieldCell>
-                              <CustomFieldText>
-                                {CategoryLabel[field.fieldCategoryType]}
-                              </CustomFieldText>
-                            </CustomFieldCell>
-                            <CustomFieldCell>
-                              <IconButton
-                                size="small"
-                                onClick={() => handleEditClick(field)}
-                              >
-                                <EditIcon />
-                              </IconButton>
-                            </CustomFieldCell>
-                            <CustomFieldCell>
-                              <IconButton
-                                size="small"
-                                onClick={() =>
-                                  handleRemoveClick(field.identifier)
-                                }
-                              >
-                                <DeleteIcon />
-                              </IconButton>
-                            </CustomFieldCell>
-                          </CustomFieldItem>
-                        </div>
-                      )}
-                    </SortableItem>
-                  ))}
+                  {sortedFields
+                    .filter(field => field.contextType !== 'PREDEFINED')
+                    .map(field => (
+                      <SortableItem
+                        key={field.identifier}
+                        itemId={field.identifier}
+                      >
+                        {({ dragHandleProps }) => (
+                          <div>
+                            <CustomFieldItem>
+                              <DragHandle {...dragHandleProps}>
+                                <DragHandleIcon />
+                              </DragHandle>
+                              <CustomFieldCell>
+                                <CustomFieldText>{field.name}</CustomFieldText>
+                              </CustomFieldCell>
+                              <CustomFieldCell>
+                                <CustomFieldText>
+                                  {FieldTypeLabel[field.fieldType]}
+                                </CustomFieldText>
+                              </CustomFieldCell>
+                              <CustomFieldCell>
+                                <CustomFieldText>
+                                  {CategoryLabel[field.fieldCategoryType]}
+                                </CustomFieldText>
+                              </CustomFieldCell>
+                              <CustomFieldCell>
+                                <IconButton
+                                  size="small"
+                                  onClick={() => handleEditClick(field)}
+                                >
+                                  <EditIcon />
+                                </IconButton>
+                              </CustomFieldCell>
+                              <CustomFieldCell>
+                                <IconButton
+                                  size="small"
+                                  onClick={() =>
+                                    handleRemoveClick(field.identifier)
+                                  }
+                                >
+                                  <DeleteIcon />
+                                </IconButton>
+                              </CustomFieldCell>
+                            </CustomFieldItem>
+                          </div>
+                        )}
+                      </SortableItem>
+                    ))}
                 </SortableContext>
               </DndContext>
             </>

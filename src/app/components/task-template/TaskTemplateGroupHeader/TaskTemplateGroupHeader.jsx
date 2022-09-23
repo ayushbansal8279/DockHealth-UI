@@ -10,7 +10,7 @@ import React, {
 } from 'react';
 import { Box } from '@material-ui/core';
 import { checkIfAllTasksSelected } from 'helpers/bulk-edit-helpers';
-import { pluck } from 'ramda';
+import pluck from 'ramda/src/pluck';
 import { extractTasksAndSubtasks } from 'helpers/tasklist-helpers';
 import { useDispatch, useSelector } from 'react-redux';
 import ThreeDotsIcon from 'img/three-dots';
@@ -54,6 +54,7 @@ import TaskHeaderPatient from '../TaskTemplatePatient/TaskTemplatePatient';
 import TemplateItemWorkflowStatus from '../TaskTemplateWorkflowStatus/TaskTemplateWorkflowStatus';
 import TaskTemplateMembers from '../TaskTemplateMembers/TaskTemplateMembers';
 import TaskTemplateStartDate from '../TaskTemplateStartDate/TaskTemplateStartDate';
+import TaskTemplateAnchorDate from '../TaskTemplateAnchorDate/TaskTemplateAnchorDate';
 import TaskTemplateIcons from '../TaskTemplateIcons/TaskTemplateIcons';
 import {
   TaskTemplateGroupHeaderContainer,
@@ -80,6 +81,7 @@ const TaskTemplateGroupHeader = ({
   showIncompleteTasks,
   setShowIncompleteTasks,
   isFetchingTasks,
+  showTasksWithGroup = true,
   // eslint-disable-next-line sonarjs/cognitive-complexity
 }) => {
   const {
@@ -430,10 +432,12 @@ const TaskTemplateGroupHeader = ({
               onClick={handleBundleSelect}
             />
             <Box m={1} />
-            <RotatableChevron
-              rotated={isOpen}
-              onClick={() => setOpen(!isOpen)}
-            />
+            {showTasksWithGroup && (
+              <RotatableChevron
+                rotated={isOpen}
+                onClick={() => setOpen(!isOpen)}
+              />
+            )}
             <Spacing horizontal={2} />
             <OptionsMenu options={menuOptions}>
               <MoreVert color="primary" />
@@ -456,6 +460,7 @@ const TaskTemplateGroupHeader = ({
       pageBackground,
       selected,
       setOpen,
+      showTasksWithGroup,
     ],
   );
 
@@ -655,6 +660,20 @@ const TaskTemplateGroupHeader = ({
             )?.columnWidth,
           )}
         </>
+      )}
+      {isColumnChecked(columns, TaskItemColumn.ANCHOR_DATE) && (
+        <TaskItemCell
+          key={`anchor_date_${identifier}`}
+          width={
+            columns?.find(
+              ({ identifier: id }) => id === TaskItemColumn.ANCHOR_DATE,
+            )?.columnWidth
+          }
+          justify="center"
+          order={getColumnOrder(TaskItemColumn.ANCHOR_DATE)}
+        >
+          <TaskTemplateAnchorDate workflow={templateGroup} />
+        </TaskItemCell>
       )}
       {isColumnChecked(columns, TaskItemColumn.ASSIGNED) && (
         <>

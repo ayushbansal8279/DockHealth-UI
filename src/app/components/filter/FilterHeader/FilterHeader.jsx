@@ -1,7 +1,7 @@
 import React from 'react';
 import { Box } from '@material-ui/core';
 import FilterSearch from 'components/filter/FilterSearch/FilterSearch';
-import { isEmpty } from 'ramda';
+import isEmpty from 'ramda/src/isEmpty';
 import { Container, Title, HeaderButton } from './styled';
 
 const FilterHeader = props => {

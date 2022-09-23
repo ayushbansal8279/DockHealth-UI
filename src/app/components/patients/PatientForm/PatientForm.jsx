@@ -15,7 +15,11 @@ import {
   userHasPatientCustomFieldsFeatureSelector,
 } from 'selectors/user-selectors';
 import { checkIfUserIsOrganizationAdmin } from 'helpers/user-helper';
-import { groupBy, prop, compose, sortBy, isEmpty } from 'ramda';
+import groupBy from 'ramda/src/groupBy';
+import prop from 'ramda/src/prop';
+import compose from 'ramda/src/compose';
+import sortBy from 'ramda/src/sortBy';
+import isEmpty from 'ramda/src/isEmpty';
 import { useFormContext } from 'react-hook-form';
 import { capitalize } from 'helpers/capitalize';
 import * as CustomFieldsApi from 'api/custom-fields-api';

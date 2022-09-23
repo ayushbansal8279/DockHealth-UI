@@ -1,7 +1,7 @@
 import React, { useMemo } from 'react';
 import palette from 'styles/palette';
 import { useDispatch, useSelector } from 'react-redux';
-import { compose } from 'ramda';
+import compose from 'ramda/src/compose';
 import { Box } from '@material-ui/core';
 import CloseIcon from '@material-ui/icons/Close';
 import MoreHoriz from '@material-ui/icons/MoreHoriz';

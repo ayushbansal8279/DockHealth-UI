@@ -2,7 +2,7 @@ import styled from 'styled-components';
 import palette from 'styles/palette';
 import DockLogoSrc from 'img/dock-header-logo';
 import { fontSizes, fontWeights } from 'styles/font';
-import { prop } from 'ramda';
+import prop from 'ramda/src/prop';
 
 export const HeaderContainer = styled.div`
   height: auto;

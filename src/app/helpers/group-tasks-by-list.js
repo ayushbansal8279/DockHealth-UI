@@ -7,24 +7,22 @@
  * @typedef {Object} Task
  * @property {TaskList} taskList
  */
-import {
-  concat,
-  curry,
-  defaultTo,
-  groupBy,
-  head,
-  isNil,
-  keys,
-  map,
-  path,
-  pipe,
-  prop,
-  propOr,
-  sortBy,
-  toLower,
-  uniq,
-  values,
-} from 'ramda';
+import concat from 'ramda/src/concat';
+import curry from 'ramda/src/curry';
+import defaultTo from 'ramda/src/defaultTo';
+import groupBy from 'ramda/src/groupBy';
+import head from 'ramda/src/head';
+import isNil from 'ramda/src/isNil';
+import keys from 'ramda/src/keys';
+import map from 'ramda/src/map';
+import path from 'ramda/src/path';
+import pipe from 'ramda/src/pipe';
+import prop from 'ramda/src/prop';
+import propOr from 'ramda/src/propOr';
+import sortBy from 'ramda/src/sortBy';
+import toLower from 'ramda/src/toLower';
+import uniq from 'ramda/src/uniq';
+import values from 'ramda/src/values';
 
 const getTaskListFromTasks = pipe(head, propOr({}, 'taskList'));
 

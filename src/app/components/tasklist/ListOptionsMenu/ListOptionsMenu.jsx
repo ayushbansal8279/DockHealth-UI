@@ -21,6 +21,7 @@ import * as TaskListActions from 'actions/task-list-actions';
 import palette from 'styles/palette';
 import { printTaskPdf } from 'components/task-pdf/TaskPdfDocument';
 import ColorPicker from 'components/common/ColorPicker/ColorPicker';
+import { isMemberAdmin } from 'helpers/list-members-helper';
 
 const ListOptionsMenu = props => {
   const { list, children, tasks, moreOptions } = props;
@@ -33,6 +34,11 @@ const ListOptionsMenu = props => {
   );
   const MASTER_ROLES = ['ADMIN', 'OWNER'];
   const PRIVILEGE_ROLES = [...MASTER_ROLES, 'MEMBER'];
+
+  const currentUserMember = list?.listUsers?.find(
+    u => u.identifier === currentUser?.identifier,
+  );
+  const isListAdmin = isMemberAdmin(currentUserMember);
 
   const openListEditModal = useCallback(
     targetList => {
@@ -260,18 +266,20 @@ const ListOptionsMenu = props => {
       placement="bottom-start"
       options={getMenuItems(list)}
       footer={
-        <ColorPicker
-          onChange={event =>
-            dispatch(
-              TaskListActions.saveTaskList({
-                taskListIdentifier: list.taskListIdentifier,
-                color: event.target.value,
-              }),
-            )
-          }
-          value={list.color}
-          variant="circle"
-        />
+        isListAdmin ? (
+          <ColorPicker
+            onChange={event =>
+              dispatch(
+                TaskListActions.saveTaskList({
+                  taskListIdentifier: list.taskListIdentifier,
+                  color: event.target.value,
+                }),
+              )
+            }
+            value={list.color}
+            variant="circle"
+          />
+        ) : null
       }
     >
       {children}

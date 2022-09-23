@@ -2,7 +2,7 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 /* eslint-disable func-names */
 import React, { useState, useEffect, useCallback } from 'react';
-import { isEmpty } from 'ramda';
+import isEmpty from 'ramda/src/isEmpty';
 import { ActivityAlertsToastsContainer } from 'components/activity-alerts/styled';
 import { useSendbirdStateContext } from '@sendbird/uikit-react';
 import sendBirdSelectors from '@sendbird/uikit-react/sendBirdSelectors';

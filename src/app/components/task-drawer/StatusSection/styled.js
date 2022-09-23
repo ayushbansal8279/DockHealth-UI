@@ -1,4 +1,4 @@
-import { prop } from 'ramda';
+import prop from 'ramda/src/prop';
 import styled from 'styled-components';
 
 export const StatusFlag = styled.div`

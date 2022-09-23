@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/camelcase */
 import React from 'react';
-import { isEmpty } from 'ramda';
+import isEmpty from 'ramda/src/isEmpty';
 import {
   EditorState,
   convertToRaw,

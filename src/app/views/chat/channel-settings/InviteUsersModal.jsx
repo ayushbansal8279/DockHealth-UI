@@ -1,24 +1,16 @@
-import React, { useState, useContext, useCallback, useEffect } from 'react';
-import { useCreateChannelContext } from '@sendbird/uikit-react/CreateChannel/context';
-import useSendbirdStateContext from '@sendbird/uikit-react/useSendbirdStateContext';
-import sendBirdSelectors from '@sendbird/uikit-react/sendBirdSelectors';
+import React, { useState, useCallback, useEffect } from 'react';
 import Modal from '@sendbird/uikit-react/ui/Modal';
+import { useSelector } from 'react-redux';
+import { selectedChatChannelSelector } from 'selectors/sendbird-selectors';
 import MultiAssignChatInviteMembersList from '../add-channel/MultiAssignChatInviteList';
-import ChannelSettingsContext from './ChannelSettingsContext';
-import SelectedChannelContext from '../SelectedChannelContext';
 
 const InviteUsersModal = ({ onCancel, onSubmit }) => {
-  const globalStore = useSendbirdStateContext();
-  const { channel } = useContext(ChannelSettingsContext);
-  const { createChannel } = useCreateChannelContext();
-  const sdkInstance = sendBirdSelectors.getSdk(globalStore);
+  const channel = useSelector(selectedChatChannelSelector);
 
-  const [members, setMembers] = useState([]);
-  const [hasNext, setHasNext] = useState(false);
+  const [, setMembers] = useState([]);
+  const [, setHasNext] = useState(false);
 
   const [selectedMembers, setSelectedMembers] = useState([]);
-
-  const { setSelectedChannel } = useContext(SelectedChannelContext);
 
   useEffect(() => {
     if (!channel) {
@@ -35,63 +27,37 @@ const InviteUsersModal = ({ onCancel, onSubmit }) => {
     });
   }, [channel]);
 
-  const handleSubmit = useCallback(() => {
-    const filteredMembers = Object.keys(selectedMembers).filter(
-      m => selectedMembers[m],
+  const handleSubmit = useCallback(async () => {
+    const currentChannelMembers = channel.members;
+    const selectedIdentifiers = selectedMembers.map(
+      member => member.identifier,
     );
 
-    console.log(
-      `users selected: ${JSON.stringify(
-        selectedMembers,
-      )} for channel: ${JSON.stringify(channel)}`,
+    const bannedMembersQuery = channel.createBannedUserListQuery();
+    const bannedMembers = await bannedMembersQuery.next();
+
+    const membersToUnban = selectedMembers.filter(({ identifier }) => {
+      return bannedMembers.find(({ userId: id }) => id === identifier);
+    });
+
+    const deselectedMembers = currentChannelMembers.filter(
+      ({ userId: identifier }) => {
+        return !selectedMembers.find(({ identifier: id }) => id === identifier);
+      },
     );
 
-    channel
-      .inviteWithUserIds(['4936ef1a-4bbe-11ea-a4e8-124feabd863a'])
-      .then(() => {
-        onSubmit(filteredMembers);
-        onCancel();
-      })
-      .catch(error => {
-        console.log(`error inviting: ${error}`);
-      });
-  }, [channel, onCancel, onSubmit, selectedMembers]);
+    await Promise.all(
+      deselectedMembers.map(({ userId: identifier }) => {
+        return channel.banUserWithUserId(identifier, -1, '');
+      }),
+      membersToUnban.map(({ identifier }) => {
+        return channel.unbanUserWithUserId(identifier);
+      }),
+    );
 
-  // const handleSubmit = useCallback(() => {
-  //   const parameters = new sdkInstance.GroupChannelParams();
-  //   parameters.isPublic = false;
-  //   parameters.isEphemeral = false;
-  //   parameters.isDistinct = false;
-  //   const selectedMembersMap = selectedMembers.map(member => {
-  //     return member.identifier;
-  //   });
-  //   console.log(`selected members map: ${selectedMembersMap}`);
-  //   parameters.addUserIds(selectedMembersMap);
-  //   parameters.name = null;
-
-  //   console.log(`paratmers: ${JSON.stringify(parameters)}`);
-
-  //   createChannel(parameters).then(returnedChannel => {
-  //     console.log(`returned channel: ${JSON.stringify(returnedChannel)}`);
-  //     setSelectedChannel(returnedChannel);
-  //   });
-
-  //   onCancel();
-  // }, [
-  //   sdkInstance.GroupChannelParams,
-  //   selectedMembers,
-  //   createChannel,
-  //   onCancel,
-  //   setSelectedChannel,
-  // ]);
-
-//   const handleSubmit = useCallback(async () => {
-//     const userIds = selectedMembers.map(member => {
-//       return member.identifier;
-//     });
-//     await channel.inviteWithUserIds(userIds);
-//     onCancel();
-//   }, [channel, selectedMembers, onCancel]);
+    await channel.inviteWithUserIds(selectedIdentifiers);
+    onSubmit();
+  }, [channel, selectedMembers, onSubmit]);
 
   return (
     <Modal

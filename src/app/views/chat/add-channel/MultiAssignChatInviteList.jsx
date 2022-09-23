@@ -4,7 +4,6 @@ import React, {
   useEffect,
   useMemo,
   useCallback,
-  // useContext,
 } from 'react';
 import Highlighter from 'react-highlight-words';
 import * as OrganizationApi from 'api/organization-api';
@@ -20,7 +19,7 @@ import { isUserGroup } from 'helpers/user-helper';
 import GroupAvatar from 'components/user/GroupAvatar/GroupAvatar';
 import { getUsersByName } from 'api/user-api';
 import { organizationSelector } from 'selectors/organization-selectors';
-// import ChannelSettingsContext from '../channel-settings/ChannelSettingsContext';
+
 import {
   Input,
   InputBox,
@@ -62,16 +61,20 @@ const MultiAssignChatInviteMembersList = ({
             );
             return { ...user, isSelected };
           })
-        : membersOptions?.filter(({ name, identifier }) => {
-            const isSelected = !!selectedMembers.find(
-              ({ identifier: id }) => id === identifier,
-            );
-            return (
-              !isSelected &&
-              name.toLowerCase().startsWith(searchValue.toLowerCase()) &&
-              identifier !== currentUser?.identifier
-            );
-          }),
+        : membersOptions?.filter(
+            ({ name, identifier, itemType, userStatus }) => {
+              const isSelected = !!selectedMembers.find(
+                ({ identifier: id }) => id === identifier,
+              );
+              return (
+                !isSelected &&
+                name.toLowerCase().includes(searchValue.toLowerCase()) &&
+                identifier !== currentUser?.identifier &&
+                itemType === 'USER' &&
+                userStatus === 'ACTIVE'
+              );
+            },
+          ),
     [
       enableLazyLoading,
       membersOptions,
@@ -226,7 +229,7 @@ const MultiAssignChatInviteMembersList = ({
         />
       </InputBox>
       <ListContainer>
-        {!isValueSendable && (
+        {filteredSelectedMembers?.length > 0 && (
           <ListContentSection>
             {filteredSelectedMembers?.map(member => {
               return renderSelectOption(member, true);

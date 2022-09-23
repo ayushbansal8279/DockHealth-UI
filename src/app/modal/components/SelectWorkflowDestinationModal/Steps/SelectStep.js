@@ -6,7 +6,7 @@ import {
   getTemplates,
   getTemplatesForSpecificFolder,
 } from 'api/task-template-api';
-import { remove } from 'ramda';
+import remove from 'ramda/src/remove';
 import * as TaskTemplateApi from 'api/task-template-api';
 import {
   TitleWithButtonWrapper,
@@ -99,6 +99,7 @@ const SelectStep = ({
       setListId(identifier);
       pushToBreadcrumbsList(identifier);
       getTemplatesForSpecificFolder(identifier)
+        // eslint-disable-next-line sonarjs/no-identical-functions
         .then(folders => {
           setFoldersList(
             folders.filter(({ templateType }) => templateType === 'FOLDER'),

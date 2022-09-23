@@ -15,7 +15,9 @@ import { showGlobalErrorAlert } from 'alert/actions';
 import { analyticsSelectedFiltersSelector } from 'selectors/analytics-selectors';
 import * as AnalyticsApi from 'api/analytics-api';
 import { TrendType } from 'helpers/analytics-helpers';
-import { sortBy, compose, map } from 'ramda';
+import sortBy from 'ramda/src/sortBy';
+import compose from 'ramda/src/compose';
+import map from 'ramda/src/map';
 import palette from 'styles/palette';
 
 const CreatedCommentsChart = () => {

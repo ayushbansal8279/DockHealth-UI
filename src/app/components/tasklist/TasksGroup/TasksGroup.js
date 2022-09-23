@@ -8,7 +8,8 @@ import React, {
   useState,
 } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
-import { isNil, pluck } from 'ramda';
+import isNil from 'ramda/src/isNil';
+import pluck from 'ramda/src/pluck';
 import { Grid } from '@material-ui/core';
 import MoreVert from '@material-ui/icons/MoreVert';
 import ArrowIcon from 'img/arrow';
@@ -305,7 +306,7 @@ const TasksGroup = ({
       </StickyContainer>
 
       <Tasks timeout={150} in={isOpen}>
-        {!!quickAddTask && !isSearchApplied && (
+        {!!quickAddTask && !isSearchApplied && !isCompletedGroup && (
           <StickyContainer left={24} decreaseWidth={2 * 24} zIndex={100}>
             <Grid container>
               <Grid item xs>

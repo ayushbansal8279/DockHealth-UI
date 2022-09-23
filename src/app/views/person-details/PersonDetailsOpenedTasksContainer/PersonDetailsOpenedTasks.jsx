@@ -1,5 +1,6 @@
 import React, { useCallback, useMemo, useRef, useEffect } from 'react';
-import { isEmpty, pluck } from 'ramda';
+import isEmpty from 'ramda/src/isEmpty';
+import pluck from 'ramda/src/pluck';
 import { useDispatch, useSelector } from 'react-redux';
 import {
   userIdentifierSelector,

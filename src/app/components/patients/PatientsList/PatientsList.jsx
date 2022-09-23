@@ -10,10 +10,15 @@ import {
   getCustomerTypeLabel,
   getCustomerUniqueIDLabel,
 } from 'helpers/customer-type-helper';
+import Checkbox from 'components/common/Checkbox/Checkbox';
 import PatientImportPopover from '../PatientImportPopover/PatientImportPopover';
 import TaskItemBulkEdit from '../../task/StandardTaskItem/TaskItemComponents/TaskItemBulkEdit';
 import EmptyFilteredPatientsList from '../EmptyFilteredPatientsList/EmptyFilteredPatientsList';
-import { NonEmptyListTable, ListLoaderContainer } from './styled';
+import {
+  NonEmptyListTable,
+  ListLoaderContainer,
+  BulkContainer,
+} from './styled';
 import { StyledDataGrid } from './DataGridStyles';
 
 const renderColumnHeader = props => {
@@ -28,6 +33,12 @@ const renderColumnHeader = props => {
     </>
   );
 };
+
+const renderCheckboxColumnHeader = ({ isListChecked, onListSelect }) => (
+  <BulkContainer>
+    <Checkbox isChecked={isListChecked} onClick={onListSelect} />
+  </BulkContainer>
+);
 
 const PatientsList = ({
   isFiltered,
@@ -44,9 +55,15 @@ const PatientsList = ({
   const { currentUser } = useSelector(store => ({
     currentUser: store.userState.userProfile,
   }));
-
   const customerTypeLabel = getCustomerTypeLabel(currentUser);
   const uniqueIdentifierLabel = getCustomerUniqueIDLabel(currentUser);
+
+  const selectedPatientsCount = patients?.filter(p => p.isSelected).length;
+  const patientsCount = patients?.length;
+  const isListChecked =
+    patientsCount &&
+    selectedPatientsCount &&
+    patientsCount === selectedPatientsCount;
 
   const setSelectedPatient = useCallback(
     data => {
@@ -58,6 +75,14 @@ const PatientsList = ({
     },
     [dispatch],
   );
+
+  const handleListSelect = useCallback(() => {
+    dispatch({
+      type: isListChecked
+        ? ActionTypes.UNSELECT_ALL_PATIENTS
+        : ActionTypes.SELECT_ALL_PATIENTS,
+    });
+  }, [dispatch, isListChecked]);
 
   useEffect(() => {
     return () => {
@@ -71,7 +96,12 @@ const PatientsList = ({
     {
       field: 'isSelected',
       headerName: '',
-      renderHeader: renderColumnHeader,
+      sortable: false,
+      renderHeader: () =>
+        renderCheckboxColumnHeader({
+          isListChecked,
+          onListSelect: handleListSelect,
+        }),
       renderCell: ({ row }) => (
         <span>
           <TaskItemBulkEdit
@@ -191,7 +221,7 @@ const PatientsList = ({
     },
   ];
   const formattedPatients = patients?.map(patient => ({
-    id: patient?.patientIdentifier || patient?.id,
+    id: patient?.patientIdentifier || patient?.id || patient?.mrn,
     ...patient,
   }));
   return (

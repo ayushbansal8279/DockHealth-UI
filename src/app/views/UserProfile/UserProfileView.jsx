@@ -2,7 +2,7 @@ import React, { useEffect, useCallback, useMemo, useState } from 'react';
 import { Box, Grid } from '@material-ui/core';
 import { useDispatch, useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
-import { isEmpty } from 'ramda';
+import isEmpty from 'ramda/src/isEmpty';
 import MobileDevices from 'img/devices';
 import * as UserAuthApi from 'api/user-auth-api';
 import * as OrganizationApi from 'api/organization-api';

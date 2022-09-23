@@ -1,5 +1,5 @@
 import React, { useCallback, useEffect, useState } from 'react';
-import { clone } from 'ramda';
+import clone from 'ramda/src/clone';
 import moment from 'moment';
 import { FormProvider, useForm } from 'react-hook-form';
 import { useDispatch } from 'react-redux';

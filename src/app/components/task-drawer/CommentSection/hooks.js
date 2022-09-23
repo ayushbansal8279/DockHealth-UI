@@ -1,6 +1,6 @@
 /* eslint-disable react-hooks/rules-of-hooks */
 import { useEffect, useState, useCallback } from 'react';
-import { isEmpty } from 'ramda';
+import isEmpty from 'ramda/src/isEmpty';
 import { openModal, closeModal } from 'modal/actions';
 import CommentIcon from 'img/modals/comment';
 import { useSelector, useDispatch } from 'react-redux';

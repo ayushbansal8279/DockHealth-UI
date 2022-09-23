@@ -7,7 +7,7 @@ import React, {
   useState,
 } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { pluck } from 'ramda';
+import pluck from 'ramda/src/pluck';
 import { useHistory } from 'react-router-dom';
 import palette from 'styles/palette';
 import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd';
