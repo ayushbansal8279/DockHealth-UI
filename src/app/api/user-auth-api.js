@@ -13,7 +13,7 @@ import {
   GET_CURRENT_USER_FAILURE,
 } from 'actions/action-types';
 import * as UserApi from 'api/user-api';
-import { noop } from 'helpers/utility-functions';
+import { noop, showAlert } from 'helpers/utility-functions';
 import { dummyAccess } from 'reducers/user-reducer';
 import Auth from '@aws-amplify/auth';
 import configureStore from '../ConfigureStore';
@@ -383,6 +383,13 @@ export function getUserByEmailAndAccessToken(userEmail, accessToken) {
       .catch(error => {
         store.dispatch({
           type: GET_CURRENT_USER_FAILURE,
+        });
+        showAlert({
+          status: 'error',
+          title: 'Error',
+          text:
+            error?.response?.data?.error ??
+            'Error authentication. Please try again.',
         });
         reject(error);
       });
