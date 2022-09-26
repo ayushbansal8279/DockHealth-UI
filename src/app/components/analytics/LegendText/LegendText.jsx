@@ -4,15 +4,15 @@ import Tooltip from 'components/common/Tooltip/Tooltip';
 import { trunc } from 'helpers/utility-functions';
 
 const LegendText = props => {
-  const { color, value } = props;
+  const { color, value, metricValue } = props;
   return (
     <span style={{ color: color || palette.mediumGrey }}>
       {value.length > 20 ? (
-        <Tooltip title={value}>
-          <span>{trunc(value, 20)}</span>
+        <Tooltip title={`${value} (${metricValue})`}>
+          <span>{`${trunc(value, 20)} (${metricValue})`}</span>
         </Tooltip>
       ) : (
-        value
+        `${value} (${metricValue})`
       )}
     </span>
   );
