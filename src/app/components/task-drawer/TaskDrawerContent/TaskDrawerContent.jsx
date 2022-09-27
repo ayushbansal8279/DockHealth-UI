@@ -12,6 +12,7 @@ import {
   SINGLE_TASK_RESTRICTIONS_PROFILES,
   SINGLE_TASK_RESTRICTIONS_OPTIONS,
 } from 'restrictions/task-restrictions';
+import StartDateSection from 'components/task-drawer/StartDateSection/StartDateSection';
 import AttachmentsSection from '../AttachmentsSection/AttachmentsSection';
 import CommentSection from '../CommentSection/CommentSection';
 import LabelsSection from '../LabelsSection/LabelsSection';
@@ -223,22 +224,29 @@ const TaskDrawerContent = props => {
             disabled={restrictions?.assigment === READ_ONLY}
           />
         </Grid>
-        {restrictions?.dueDate !== DISABLED && (
+        {restrictions?.startDate !== DISABLED && (
           <Grid item xs={6} style={styleLeftColumn}>
+            <div ref={dueDateSectionReference}>
+              <StartDateSection />
+            </div>
+          </Grid>
+        )}
+        {restrictions?.dueDate !== DISABLED && (
+          <Grid item xs={6} style={styleRightColumn}>
             <div ref={dueDateSectionReference}>
               <DueDateSection />
             </div>
           </Grid>
         )}
         {restrictions?.reminder !== DISABLED && (
-          <Grid item xs={6} style={styleRightColumn}>
+          <Grid item xs={6} style={styleLeftColumn}>
             {!isTemplateTask && <ReminderSection onSave={handleUpdateTask} />}
           </Grid>
         )}
-        <Grid item xs={6} style={styleLeftColumn}>
+        <Grid item xs={6} style={styleRightColumn}>
           <PrioritySection onTaskUpdate={onTaskUpdate} />
         </Grid>
-        <Grid item xs={6} style={styleRightColumn}>
+        <Grid item xs={6} style={styleLeftColumn}>
           <div ref={statusSectionReference}>
             <StatusSection onTaskUpdate={onTaskUpdate} />
           </div>

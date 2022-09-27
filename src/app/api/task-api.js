@@ -196,6 +196,33 @@ export function updateTaskDescription(task, description) {
     });
 }
 
+export const updateStartDate = (taskIdentifier, startDate) => {
+  return axios
+    .put(
+      `task/addOrUpdateStartDate/${taskIdentifier}`,
+      {},
+      {
+        params: {
+          startDate: startDate
+            ? moment(startDate).format('MM/DD/YYYY HH:mm:ss ZZ')
+            : null,
+        },
+      },
+    )
+    .then(response => {
+      return response.data;
+    })
+    .catch(error => {
+      showAlert({
+        status: 'error',
+        title: 'Error',
+        text:
+          error?.response?.data?.errorMessage ?? 'Error updating start date.',
+      });
+      throw error;
+    });
+};
+
 export const updateDueDate = (taskIdentifier, dueDate) => {
   return axios
     .put(
