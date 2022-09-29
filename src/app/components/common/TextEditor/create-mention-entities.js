@@ -56,6 +56,7 @@ export const createMentionEntitiesFromRawText = (
             inline: ['ins', 'links'],
           },
         },
+        preserveNewlines: true,
       })
     : convertToRaw(ContentState.createFromText(text));
 
