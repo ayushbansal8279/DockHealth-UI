@@ -22,6 +22,7 @@ import FileListItemProgressBar from 'components/attachments/FileListItemProgress
 import FileGridItemProgressBar from 'components/attachments/FileGridItemProgressBar/FileGridItemProgressBar';
 import FileGridItemLoader from 'components/attachments/FileGridItemLoader/FileGridItemLoader';
 import FileListItemLoader from 'components/attachments/FileListItemLoader/FileListItemLoader';
+import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd';
 // import GoogleDriveIcon from 'img/google-drive-icon';
 // import GooglePicker from 'react-google-picker';
 import {
@@ -132,6 +133,10 @@ const PatientAttachments = () => {
     [deleteAttachment, moveFileOrFolder, openFolderInNewTab, renameAttachment],
   );
 
+  const handleDragEnd = useCallback(() => {
+    console.log(`drag ended`);
+  }, []);
+
   return (
     <PatientAttachmentsWrapper isDragActive={isDragActive}>
       <Box display="flex" width="100%" mb={2}>
@@ -203,56 +208,84 @@ const PatientAttachments = () => {
               ref={attachmentFileInputReference}
               {...getInputProps()}
             />
-            {folders.length > 0 && (
-              <NamedCollapse name="Folders">
-                {activeViewType === FilesViewType.LIST && <FileListHeader />}
-                {folders.map(folder => (
-                  <FolderItemComponent
-                    key={folder.attachmentIdentifier}
-                    folder={folder}
-                    options={getFolderOptions(folder)}
-                    onClick={() => {
-                      navigateToFolder(folder);
-                    }}
-                  />
-                ))}
-              </NamedCollapse>
-            )}
-            <NamedCollapse name="Files">
-              {activeViewType === FilesViewType.LIST && <FileListHeader />}
-              {currentPatientAttachments.length > 0 ? (
-                currentPatientAttachments.map(file => (
-                  <FileItemComponent
-                    key={file.attachmentIdentifier}
-                    onClick={() => handleAttachmentClick(file)}
-                    file={file}
-                    options={getFileOptions(file)}
-                  />
-                ))
-              ) : (
-                <>
-                  {!currentlyUploadedAttachment && (
-                    <EmptyListText>List of files is empty</EmptyListText>
-                  )}
-                </>
-              )}
-              {currentlyUploadedAttachment && (
-                <>
-                  {activeViewType === FilesViewType.LIST ? (
-                    <FileListItemProgressBar value={uploadProgress} />
-                  ) : (
-                    <FileGridItemProgressBar value={uploadProgress} />
-                  )}
-                </>
-              )}
-              {currentPatientAttachments.length > 0 && (
-                <div>
-                  <DownloadAllLink onClick={downloadAllFiles}>
-                    Download All
-                  </DownloadAllLink>
-                </div>
-              )}
-            </NamedCollapse>
+            <DragDropContext onDragEnd={handleDragEnd}>
+              <Droppable droppableId="droppable">
+                {provided => (
+                  <div {...provided.droppableProps} ref={provided.innerRef}>
+                    {folders.length > 0 && (
+                      <NamedCollapse name="Folders">
+                        {activeViewType === FilesViewType.LIST && (
+                          <FileListHeader />
+                        )}
+                        {folders.map((folder, index) => (
+                          <Draggable
+                            key={folder.attachmentIdentifier}
+                            draggableId={folder.attachmentIdentifier}
+                            index={index}
+                          >
+                            {provided => (
+                              <div
+                                ref={provided.innerRef}
+                                {...provided.draggableProps}
+                                {...provided.dragHandleProps}
+                              >
+                                <FolderItemComponent
+                                  folder={folder}
+                                  options={getFolderOptions(folder)}
+                                  onClick={() => {
+                                    navigateToFolder(folder);
+                                  }}
+                                />
+                              </div>
+                            )}
+                          </Draggable>
+                        ))}
+                      </NamedCollapse>
+                    )}
+                    <NamedCollapse name="Files">
+                      {activeViewType === FilesViewType.LIST && (
+                        <FileListHeader />
+                      )}
+                      {currentPatientAttachments.length > 0 ? (
+                        currentPatientAttachments.map(file => (
+                          <FileItemComponent
+                            key={file.attachmentIdentifier}
+                            onClick={() => handleAttachmentClick(file)}
+                            file={file}
+                            options={getFileOptions(file)}
+                          />
+                        ))
+                      ) : (
+                        <>
+                          {!currentlyUploadedAttachment && (
+                            <EmptyListText>
+                              List of files is empty
+                            </EmptyListText>
+                          )}
+                        </>
+                      )}
+                      {currentlyUploadedAttachment && (
+                        <>
+                          {activeViewType === FilesViewType.LIST ? (
+                            <FileListItemProgressBar value={uploadProgress} />
+                          ) : (
+                            <FileGridItemProgressBar value={uploadProgress} />
+                          )}
+                        </>
+                      )}
+                      {currentPatientAttachments.length > 0 && (
+                        <div>
+                          <DownloadAllLink onClick={downloadAllFiles}>
+                            Download All
+                          </DownloadAllLink>
+                        </div>
+                      )}
+                    </NamedCollapse>
+                  </div>
+                )}
+              </Droppable>
+            </DragDropContext>
+
             <AttachmentPreview
               attachment={previewedAttachment}
               attachmentsSources={attachmentsSources}
