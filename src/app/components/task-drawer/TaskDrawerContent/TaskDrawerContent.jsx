@@ -225,28 +225,33 @@ const TaskDrawerContent = props => {
           />
         </Grid>
         {restrictions?.startDate !== DISABLED && (
-          <Grid item xs={6} style={styleLeftColumn}>
-            <div ref={dueDateSectionReference}>
-              <StartDateSection />
-            </div>
-          </Grid>
+          <>
+            <Grid item xs={6} style={styleLeftColumn}>
+              <div ref={dueDateSectionReference}>
+                <StartDateSection />
+              </div>
+            </Grid>
+            <Grid item xs={6} style={styleRightColumn}>
+              <div />
+            </Grid>
+          </>
         )}
         {restrictions?.dueDate !== DISABLED && (
-          <Grid item xs={6} style={styleRightColumn}>
+          <Grid item xs={6} style={styleLeftColumn}>
             <div ref={dueDateSectionReference}>
               <DueDateSection />
             </div>
           </Grid>
         )}
         {restrictions?.reminder !== DISABLED && (
-          <Grid item xs={6} style={styleLeftColumn}>
+          <Grid item xs={6} style={styleRightColumn}>
             {!isTemplateTask && <ReminderSection onSave={handleUpdateTask} />}
           </Grid>
         )}
-        <Grid item xs={6} style={styleRightColumn}>
+        <Grid item xs={6} style={styleLeftColumn}>
           <PrioritySection onTaskUpdate={onTaskUpdate} />
         </Grid>
-        <Grid item xs={6} style={styleLeftColumn}>
+        <Grid item xs={6} style={styleRightColumn}>
           <div ref={statusSectionReference}>
             <StatusSection onTaskUpdate={onTaskUpdate} />
           </div>
