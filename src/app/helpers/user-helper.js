@@ -5,6 +5,7 @@ export const UserOrganizationRole = {
   GUEST: 'GUEST',
   EXTERNAL: 'EXTERNAL',
   DOCK_PRO: 'DOCK_PRO',
+  VIEW_ONLY: 'VIEW_ONLY',
 };
 
 export const getOrgRole = roleKey => {

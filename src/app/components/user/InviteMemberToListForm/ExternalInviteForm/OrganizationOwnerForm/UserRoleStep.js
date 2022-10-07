@@ -15,7 +15,7 @@ import {
   RoleOptionHeaderAdditionalInfo,
 } from './styled';
 
-const { DOCK_PRO } = UserOrganizationRole;
+const { DOCK_PRO, VIEW_ONLY } = UserOrganizationRole;
 
 const UserRoleStep = ({ navigateToPreviousStep, disabled }) => {
   const { watch, setValue } = useFormContext();
@@ -94,6 +94,27 @@ const UserRoleStep = ({ navigateToPreviousStep, disabled }) => {
             A Dock Pro user will only have access to the workflow library and
             can help with building out Workflows and Smartflows for your team.
           </RoleOptionDescription>
+        </RoleOptionLabel>
+        <Divider />
+        <input
+          id="ViewOnly"
+          type="radio"
+          name="userRole"
+          value={VIEW_ONLY}
+          checked={roleValue === VIEW_ONLY}
+          onChange={event => setValue(event.target.name, event.target.value)}
+        />
+        <RoleOptionLabel
+          isSelected={roleValue === VIEW_ONLY}
+          htmlFor="ViewOnly"
+        >
+          <RoleOptionHeaderWrapper>
+            <RoleOptionHeader>View Only</RoleOptionHeader>
+            <RoleOptionHeaderAdditionalInfo>
+              *Limited Access
+            </RoleOptionHeaderAdditionalInfo>
+          </RoleOptionHeaderWrapper>
+          <RoleOptionDescription />
         </RoleOptionLabel>
         <Divider />
       </RoleSelectionWrapper>
