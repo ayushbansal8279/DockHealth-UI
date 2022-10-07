@@ -14,11 +14,25 @@ import {
 } from './styled';
 
 const FolderGridItem = props => {
-  const { folder, options, onClick } = props;
+  const {
+    folder,
+    options,
+    onClick,
+    onDragStart,
+    onDragEnter,
+    onDragEnd,
+    draggable = false,
+  } = props;
   const { fileName, dateCreated } = folder;
 
   return (
-    <Container onClick={onClick}>
+    <Container
+      onClick={onClick}
+      onDragStart={onDragStart}
+      onDragEnter={onDragEnter}
+      onDragEnd={onDragEnd}
+      draggable={draggable}
+    >
       <DetailsContainer>
         <Box mt="-2px" mr={1}>
           <FolderOpenIcon />

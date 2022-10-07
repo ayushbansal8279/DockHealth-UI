@@ -17,13 +17,27 @@ import {
 } from './styled';
 
 const FileGridItem = props => {
-  const { file, options, onClick } = props;
+  const {
+    file,
+    options,
+    onClick,
+    onDragStart,
+    onDragEnter,
+    onDragEnd,
+    draggable = false,
+  } = props;
   const { fileName, contentType, dateCreated, type } = file;
 
   const IconComponent = getIconFromContentType(contentType);
 
   return (
-    <Container onClick={onClick}>
+    <Container
+      onClick={onClick}
+      onDragStart={onDragStart}
+      onDragEnter={onDragEnter}
+      onDragEnd={onDragEnd}
+      draggable={draggable}
+    >
       <IconContainer>
         <IconComponent fontSize="inherit" />
       </IconContainer>
