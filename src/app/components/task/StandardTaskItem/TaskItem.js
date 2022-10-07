@@ -59,6 +59,7 @@ import TaskItemContextMenu from '../TaskItemContextMenu/TaskItemContextMenu';
 import TaskItemBulkEdit from './TaskItemComponents/TaskItemBulkEdit';
 import TaskItemDescription from './TaskItemComponents/TaskItemDescription';
 import TaskItemPatient from './TaskItemComponents/TaskItemPatient';
+import TaskItemStartDate from './TaskItemComponents/TaskItemStartDate';
 import TaskItemDueDate from './TaskItemComponents/TaskItemDueDate';
 import TaskItemSubtasks from './TaskItemComponents/TaskItemSubtasks';
 import TaskItemIcons from './TaskItemComponents/TaskItemIcons';
@@ -564,7 +565,9 @@ const TaskItem = React.memo(
                       event.stopPropagation();
                     }}
                     order={getColumnOrder(TaskItemColumn.START_DATE)}
-                  />
+                  >
+                    <TaskItemStartDate task={task} />
+                  </TaskItemCell>
                 )}
                 {isColumnChecked(columns, TaskItemColumn.DUE_DATE) &&
                   !isTemplateTask && (
