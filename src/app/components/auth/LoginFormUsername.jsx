@@ -12,6 +12,7 @@ import Button from 'components/common/Button/Button';
 import { MontserratTypography } from 'styles/theme-montserrat';
 import { showAlert } from 'helpers/utility-functions';
 import { StyledForm, StyledHyperLink } from './AuthComponents.styled';
+import SSOOptions from './SSOOptions';
 
 const validationSchema = object().shape({
   username: string()
@@ -99,8 +100,8 @@ const LoginFormUsername = props => {
             <Button id="loginButton" fullWidth size="large" type="submit">
               Continue
             </Button>
-            <Spacing vertical={6} />
-            <Spacing vertical={4} />
+            <Spacing vertical={2} />
+            <SSOOptions />
           </>
         )}
         {showLoginMessage && (

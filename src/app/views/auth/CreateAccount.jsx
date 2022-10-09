@@ -42,6 +42,7 @@ import {
   ButtonsContainer,
   FixedWidthButtonWrapper,
 } from 'modal/components/styled';
+import SSOOptions from 'components/auth/SSOOptions';
 import {
   OnboardingDialog,
   OnboardingHeader,
@@ -166,6 +167,7 @@ const StyledForm = styled.form`
   width: 100%;
 `;
 
+// eslint-disable-next-line sonarjs/cognitive-complexity
 const CreateAccount = props => {
   const [isDialogShown, showDialog, hideDialog] = useBoolean(false);
   const [
@@ -301,11 +303,12 @@ const CreateAccount = props => {
           </Button>
           <Spacing vertical={5} />
           <MontserratTypography variant="h4">
-            <span style={{ padding: '0rem 1rem' }}>
+            <span style={{ padding: '0rem 1rem 0rem 0rem' }}>
               I already have an account.
             </span>
             <StyledLink to="/auth/login">SIGN IN</StyledLink>
           </MontserratTypography>
+          <SSOOptions />
         </FormProvider>
       </StyledForm>
       <OnboardingDialog open={isDialogShown} fullWidth maxWidth="sm">
