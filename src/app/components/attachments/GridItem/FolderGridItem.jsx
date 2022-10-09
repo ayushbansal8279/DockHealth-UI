@@ -22,11 +22,13 @@ const FolderGridItem = props => {
     onDragEnter,
     onDragEnd,
     draggable = false,
+    style,
   } = props;
   const { fileName, dateCreated } = folder;
 
   return (
     <Container
+      style={style}
       onClick={onClick}
       onDragStart={onDragStart}
       onDragEnter={onDragEnter}

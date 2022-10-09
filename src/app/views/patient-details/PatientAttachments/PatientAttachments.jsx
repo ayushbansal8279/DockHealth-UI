@@ -160,10 +160,41 @@ const PatientAttachments = () => {
 
   const dragEnter = (event, position, isFile = false) => {
     dragOverItem.current = position;
+    // setDragOverStyle({ border: `2px solid ${palette.midnightBlue}` });
+    const styledList = foldersList.map(folder => {
+      const styledFolder = folder;
+      styledFolder.style = { border: `1px solid ${palette.coolGrey2}` };
+      return styledFolder;
+    });
+
+    if (!isFile) {
+      styledList[position].style = {
+        border: `2px solid ${palette.midnightBlue}`,
+      };
+      // setFoldersList(styledList);
+    }
+    setFoldersList(styledList);
+
     setDidDragOverFile(isFile);
   };
 
   const drop = useCallback(() => {
+    // setDragOverStyle({ border: `1px solid ${palette.coolGrey2}` });
+    if (dragOverItem && dragOverItem.current) {
+      // foldersList[dragOverItem.current].style = {
+      //   border: `1px solid ${palette.coolGrey2}`,
+      // };
+
+      setFoldersList(
+        // eslint-disable-next-line sonarjs/no-identical-functions
+        foldersList.map(folder => {
+          const styledFolder = folder;
+          styledFolder.style = { border: `1px solid ${palette.coolGrey2}` };
+          return styledFolder;
+        }),
+      );
+    }
+
     if (didDragOverFile) {
       return;
     }
@@ -180,6 +211,9 @@ const PatientAttachments = () => {
       copyListItems.splice(dragItem.current, 1);
       setFilesList(copyListItems);
     } else {
+      if (dragItem.current === dragOverItem.current) {
+        return;
+      }
       dispatch(
         PatientDetailsActions.movePatientAttachment(
           foldersList[dragItem.current],
@@ -282,6 +316,8 @@ const PatientAttachments = () => {
                     onDragEnd={drop}
                     key={folder.attachmentIdentifier}
                     draggable
+                    // style={dragOverStyle}
+                    style={folder.style ?? {}}
                   />
                 ))}
               </NamedCollapse>
