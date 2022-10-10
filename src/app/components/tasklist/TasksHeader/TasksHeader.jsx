@@ -116,10 +116,12 @@ const TasksHeader = ({
           index={index}
           draggable={!restrictCustomizationFeatures}
           isDraggingOver={snapshot.isDraggingOver}
-          disabled={f.targetType === 'PATIENT'}
+          disabled={false}
           truncateEnabled
           id={f.identifier}
           label={f.name}
+          sort={sort}
+          onSortChange={onSortChange}
           width={+f.columnWidth}
           snapshot={snapshot}
           printWidth={
