@@ -97,6 +97,7 @@ export const substituteNameForIdInTokenizedText = (rawText, mentions) => {
 export const convertFromEditorStateToOutput = (editorState, handleRichText) => {
   const stateContent = convertToRaw(editorState.getCurrentContent());
   const textBlocks = stateContent.blocks.map(block => block.text);
+
   const rawText = textBlocks.join('\n');
   const mentions = Object.values(stateContent.entityMap)?.map(entity => ({
     ...entity.data.mention,
@@ -107,6 +108,7 @@ export const convertFromEditorStateToOutput = (editorState, handleRichText) => {
   const textValue = handleRichText
     ? draftToMarkdown(stateContent, {
         styleItems: extendedStyleItems,
+        preserveNewlines: true,
       })
     : rawText;
 
@@ -120,6 +122,7 @@ export const convertFromEditorStateToOutput = (editorState, handleRichText) => {
 export const addStylesToText = text => {
   const draftText = markdownToDraft(text, {
     styleItems: extendedStyleItems,
+    preserveNewlines: true,
   });
   return convertFromRaw(draftText);
 };
