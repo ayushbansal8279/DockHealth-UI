@@ -92,13 +92,26 @@ export const BuilderHeader = styled.div`
   align-items: center;
   z-index: 5;
 `;
+export const EditIconWrapper = styled.div`
+  opacity: 0;
+  color: ${palette.coolGrey2};
+  margin-left: 8px;
+`;
 
 export const BuilderHeaderText = styled.p`
-  display: block;
+  display: flex;
+  align-items: center;
   margin-bottom: 0;
   font-family: 'Roboto', sans-serif;
   font-size: ${fontSizes.large};
-  color: ${({ color }) => color || palette.mediumGrey};
+  color: ${({ color }) => color || palette.brightBlue};
+
+  &:hover {
+    text-decoration: underline;
+    ${EditIconWrapper} {
+      opacity: 1;
+    }
+  }
 
   &:last-of-type {
     flex: 1;
