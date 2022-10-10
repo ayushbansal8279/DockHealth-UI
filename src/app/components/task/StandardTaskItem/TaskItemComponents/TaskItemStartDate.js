@@ -1,13 +1,13 @@
 import React, { useCallback } from 'react';
 import { useDispatch } from 'react-redux';
-import { updateTaskDueDate } from 'actions/task-actions';
+import { updateTaskStartDate } from 'actions/task-actions';
 import DueDatePicker from 'components/task/DueDatePicker/DueDatePicker';
 import TaskItemPopover from 'components/task/TaskItemPopover/TaskItemPopover';
 import TaskIcon from 'components/task/TaskIcon/TaskIcon';
 import Tooltip from 'components/common/Tooltip/Tooltip';
 import DateLabel from 'components/common/DateLabel/DateLabel';
 import { ReminderType } from 'helpers/task-helpers';
-import { onTaskDueDateChanged } from 'helpers/ga-event-helper';
+import { onTaskStartDateChanged } from 'helpers/ga-event-helper';
 
 const TaskItemStartDate = ({ task }) => {
   const dispatch = useDispatch();
@@ -16,8 +16,8 @@ const TaskItemStartDate = ({ task }) => {
 
   const handleDueDateChange = useCallback(
     newDueDate => {
-      dispatch(updateTaskDueDate(task, newDueDate));
-      onTaskDueDateChanged();
+      dispatch(updateTaskStartDate(task, newDueDate));
+      onTaskStartDateChanged();
     },
     [dispatch, task],
   );

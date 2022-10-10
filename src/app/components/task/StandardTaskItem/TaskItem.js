@@ -551,7 +551,7 @@ const TaskItem = React.memo(
                 />
               </TaskItemCell>
             )}
-            {restrictions?.dueDate !== DISABLED && (
+            {restrictions?.startDate !== DISABLED && (
               <>
                 {isColumnChecked(columns, TaskItemColumn.START_DATE) && (
                   <TaskItemCell
@@ -569,6 +569,10 @@ const TaskItem = React.memo(
                     <TaskItemStartDate task={task} />
                   </TaskItemCell>
                 )}
+              </>
+            )}
+            {restrictions?.dueDate !== DISABLED && (
+              <>
                 {isColumnChecked(columns, TaskItemColumn.DUE_DATE) &&
                   !isTemplateTask && (
                     <TaskItemCell

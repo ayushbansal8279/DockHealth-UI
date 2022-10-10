@@ -164,6 +164,14 @@ export function onTaskStatusChanged(status) {
   });
 }
 
+export function onTaskStartDateChanged() {
+  sendEvent({
+    usageEventType: USAGE_ACTION_EVENT_TYPE,
+    eventCategory: TASK_LIST_CATEGORY,
+    eventAction: 'Task start date changed',
+  });
+}
+
 export function onTaskDueDateChanged() {
   sendEvent({
     usageEventType: USAGE_ACTION_EVENT_TYPE,
