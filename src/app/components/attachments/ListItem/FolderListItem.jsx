@@ -7,11 +7,28 @@ import MoreVertIcon from '@material-ui/icons/MoreVert';
 import { Cell, Row } from './styled';
 
 const FolderListItem = props => {
-  const { folder, options, onClick } = props;
+  const {
+    folder,
+    options,
+    onClick,
+    onDragStart,
+    onDragEnter,
+    onDragEnd,
+    draggable = false,
+    style,
+  } = props;
   const { fileName, dateCreated, creator } = folder;
 
   return (
-    <Row onClick={onClick} clickable>
+    <Row
+      onClick={onClick}
+      clickable
+      style={style}
+      onDragStart={onDragStart}
+      onDragEnter={onDragEnter}
+      onDragEnd={onDragEnd}
+      draggable={draggable}
+    >
       <Cell bold>
         <FolderOpenIcon />
         <Box mx={1} />
