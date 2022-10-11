@@ -10,14 +10,14 @@ export const getAdditionalPatientOptions = ({
     ),
     onChange: value => handleDisplayOptionChange(value, 'PATIENT_HEADER'),
   },
-  {
-    label: 'Include on Patient Search',
-    key: 'PATIENT_SEARCH',
-    value: !!displayOptionsState?.displayOptions?.find(
-      option => option === 'PATIENT_SEARCH',
-    ),
-    onChange: value => handleDisplayOptionChange(value, 'PATIENT_SEARCH'),
-  },
+  // {
+  //   label: 'Include on Patient Search',
+  //   key: 'PATIENT_SEARCH',
+  //   value: !!displayOptionsState?.displayOptions?.find(
+  //     option => option === 'PATIENT_SEARCH',
+  //   ),
+  //   onChange: value => handleDisplayOptionChange(value, 'PATIENT_SEARCH'),
+  // },
   {
     label: 'Include on Patient List',
     key: 'PATIENT_LIST',
