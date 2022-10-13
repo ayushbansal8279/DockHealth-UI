@@ -589,7 +589,9 @@ export function checkSSO(email) {
   return new Promise(async resolve => {
     try {
       const checkSSOUrl = `${process.env.HEYDOC_SERVICES_BASE_URL}auth/checkSSO`;
-      const response = await axios.get(`${checkSSOUrl}?email=${email}`);
+      const response = await axios.get(
+        `${checkSSOUrl}?email=${encodeURIComponent(email)}`,
+      );
       const issuer = response?.data.issuer;
       console.log(`issuer: ${issuer}`);
       resolve(issuer);
