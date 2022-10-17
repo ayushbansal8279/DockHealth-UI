@@ -208,17 +208,25 @@ const PatientDetailsHeader = () => {
                   }) => {
                     return (
                       <React.Fragment key={customFieldIdentifier}>
-                        <PatientInfo>
-                          <Typography>{customFieldName}: </Typography>
-                          <Box ml={1} />
-                          {fieldType === FieldType.DROPDOWN_MULTI ? (
-                            <TextTypeHeader
-                              text={displayNames?.join(',') || ''}
-                            />
-                          ) : (
-                            <TextTypeHeader text={displayName || value} />
-                          )}
-                        </PatientInfo>
+                        {fieldType === FieldType.HYPERLINK ? (
+                          <PatientInfo>
+                            <a href={value} target="_blank" rel="noreferrer">
+                              {customFieldName}
+                            </a>
+                          </PatientInfo>
+                        ) : (
+                          <PatientInfo>
+                            <Typography>{customFieldName}: </Typography>
+                            <Box ml={1} />
+                            {fieldType === FieldType.DROPDOWN_MULTI ? (
+                              <TextTypeHeader
+                                text={displayNames?.join(',') || ''}
+                              />
+                            ) : (
+                              <TextTypeHeader text={displayName || value} />
+                            )}
+                          </PatientInfo>
+                        )}
                         <PatientInfoDivider />
                       </React.Fragment>
                     );
