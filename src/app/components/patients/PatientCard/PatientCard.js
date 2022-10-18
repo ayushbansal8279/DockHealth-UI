@@ -16,6 +16,7 @@ import {
   getCustomerUniqueIDShortLabel,
 } from 'helpers/customer-type-helper';
 import { organizationSelector } from 'selectors/organization-selectors';
+import { FieldType } from 'helpers/field-type-helpers';
 import TextTypeHeader from 'components/common/TextTypeHeader/TextTypeHeader';
 import {
   PatientCardContainer,
@@ -239,16 +240,31 @@ const PatientCard = ({
                       displayName,
                       value,
                       displayOptions,
+                      fieldType,
+                      customFieldIdentifier,
                     }) => (
-                      <>
-                        {displayOptions?.includes('PATIENT_HEADER') && value && (
-                          <CustomFieldPatientInfo>
-                            <Typography>{customFieldName}: </Typography>
-                            <Box ml={1} />
-                            <TextTypeHeader text={displayName || value} />
-                          </CustomFieldPatientInfo>
+                      <React.Fragment key={customFieldIdentifier}>
+                        {fieldType === FieldType.HYPERLINK ? (
+                          <>
+                            <CustomFieldPatientInfo>
+                              <a href={value} target="_blank" rel="noreferrer">
+                                {customFieldName}
+                              </a>
+                            </CustomFieldPatientInfo>
+                          </>
+                        ) : (
+                          <>
+                            {displayOptions?.includes('PATIENT_HEADER') &&
+                              value && (
+                                <CustomFieldPatientInfo>
+                                  <Typography>{customFieldName}: </Typography>
+                                  <Box ml={1} />
+                                  <TextTypeHeader text={displayName || value} />
+                                </CustomFieldPatientInfo>
+                              )}
+                          </>
                         )}
-                      </>
+                      </React.Fragment>
                     ),
                   )}
                 </Box>
