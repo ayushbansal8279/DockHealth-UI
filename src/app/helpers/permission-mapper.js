@@ -1,5 +1,18 @@
 import { UserOrganizationRole } from 'helpers/user-helper';
 
+export const PERMISSIONS = {
+  CAN_ACCESS_HOME_PAGE: 'canAccessHomePage',
+  CAN_ACCESS_SEARCH_PAGE: 'canAccessSearchPage',
+  CAN_ACCESS_TASK_LIST_PAGE: 'canAccessSearchPage',
+  CAN_ACCESS_PEOPLE_LIST_PAGE: 'canAccessPeopleListPage',
+  CAN_ACCESS_MEMBER_LIST_PAGE: 'canAccessMemberListPage',
+  CAN_ACCESS_WORKFLOW_LIST_PAGE: 'canAccessWorkflowListPage',
+  CAN_ACCESS_ANALYTICS_PAGE: 'canAccessAnalyticsPage',
+  CAN_ACCESS_CHAT_PAGE: 'canAccessChatPage',
+  CAN_ACCESS_SETTINGS_PAGE: 'canAccessSettingsPage',
+  CAN_ACCESS_EDUCATION_CENTER_PAGE: 'canAccessEducationCenterPage',
+};
+
 export default {
   [UserOrganizationRole.OWNER]: {
     canAccessHomePage: true,
