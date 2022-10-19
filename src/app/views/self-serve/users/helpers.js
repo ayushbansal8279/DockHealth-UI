@@ -52,6 +52,13 @@ export const USER_TYPES = new Proxy(
       description:
         'A Dock Pro user will only have access to the workflow library and can help with building out Workflows and Smartflows for your team.',
     },
+    VIEW_ONLY: {
+      label: 'View Only',
+      selectable: true,
+      changeable: true,
+      isLimitedAccess: true,
+      description: '',
+    },
     DEFAULT: {
       label: 'Invited',
       invitationModifiable: true,
