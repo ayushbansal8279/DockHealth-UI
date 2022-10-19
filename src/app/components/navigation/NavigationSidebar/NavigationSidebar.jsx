@@ -18,7 +18,6 @@ import {
   showChatPopoverSelector,
   selectedChatChannelSelector,
 } from 'selectors/sendbird-selectors';
-import { UserOrganizationRole } from 'helpers/user-helper';
 import { getCustomerTypeLabel } from 'helpers/customer-type-helper';
 import { capitalize } from 'helpers/capitalize';
 import { selectCurrentOrganization } from 'api/organization-api';
@@ -36,7 +35,18 @@ import EducationCenterIcon from 'img/navigation/EducationCenterIcon';
 import UserAvatar from 'components/user/UserAvatar/UserAvatar';
 import OrganizationTile from 'components/org/OrganizationTile/OrganizationTile';
 // import { openModal } from 'modal/actions';
-import AccessRestrictor from 'components/access/AccessRestrictor/AccessRestrictor';
+import AccessRestrictor, {
+  CAN_ACCESS_ANALYTICS_PAGE,
+  CAN_ACCESS_CHAT_PAGE,
+  CAN_ACCESS_EDUCATION_CENTER_PAGE,
+  CAN_ACCESS_HOME_PAGE,
+  CAN_ACCESS_MEMBER_LIST_PAGE,
+  CAN_ACCESS_PEOPLE_LIST_PAGE,
+  CAN_ACCESS_SEARCH_PAGE,
+  CAN_ACCESS_SETTINGS_PAGE,
+  CAN_ACCESS_TASK_LIST_PAGE,
+  CAN_ACCESS_WORKFLOW_LIST_PAGE,
+} from 'components/access/AccessRestrictor/AccessRestrictor';
 import ChatPopover from 'views/chat/ChatPopover';
 import ChatIcon from 'views/chat/Icons/ChatIcon';
 import { openPopover } from 'actions/sendbird-actions';
@@ -70,15 +80,6 @@ export const SubmenuKey = {
   DOCKCOIN: 'DOCKCOIN',
   DOCKCHAT: 'DOCKCHAT',
 };
-
-const {
-  ADMIN,
-  OWNER,
-  MEMBER,
-  GUEST,
-  EXTERNAL,
-  DOCK_PRO,
-} = UserOrganizationRole;
 
 const SubmenuComponents = {
   [SubmenuKey.ORGANIZATION]: OrganizationSubmenu,
@@ -197,9 +198,7 @@ const NavigationSidebar = () => {
                 </>
               </NavigationItem>
             </div>
-            <AccessRestrictor
-              allowedToRoles={[ADMIN, OWNER, MEMBER, GUEST, EXTERNAL]}
-            >
+            <AccessRestrictor required={[CAN_ACCESS_SEARCH_PAGE]}>
               <IconNavigationItem
                 name="Search"
                 icon={SearchIcon}
@@ -208,9 +207,7 @@ const NavigationSidebar = () => {
               />
             </AccessRestrictor>
 
-            <AccessRestrictor
-              allowedToRoles={[ADMIN, OWNER, MEMBER, GUEST, EXTERNAL]}
-            >
+            <AccessRestrictor required={[CAN_ACCESS_HOME_PAGE]}>
               <IconNavigationItem
                 name="Home"
                 icon={HomeIcon}
@@ -219,7 +216,7 @@ const NavigationSidebar = () => {
               />
             </AccessRestrictor>
 
-            <AccessRestrictor allowedToRoles={[ADMIN, OWNER, MEMBER, GUEST]}>
+            <AccessRestrictor required={[CAN_ACCESS_TASK_LIST_PAGE]}>
               <IconNavigationItem
                 name="Lists"
                 subMenuKey={SubmenuKey.LISTS}
@@ -229,7 +226,7 @@ const NavigationSidebar = () => {
                 onItemClick={handleNavigationItemClick}
               />
             </AccessRestrictor>
-            <AccessRestrictor allowedToRoles={[ADMIN, OWNER, MEMBER]}>
+            <AccessRestrictor required={[CAN_ACCESS_PEOPLE_LIST_PAGE]}>
               <IconNavigationItem
                 name="People"
                 icon={PeopleIcon}
@@ -239,7 +236,7 @@ const NavigationSidebar = () => {
                 onItemClick={handleNavigationItemClick}
               />
             </AccessRestrictor>
-            <AccessRestrictor allowedToRoles={[ADMIN, OWNER, MEMBER, GUEST]}>
+            <AccessRestrictor required={[CAN_ACCESS_MEMBER_LIST_PAGE]}>
               <IconNavigationItem
                 name={`${customerTypeLabelCapitalized}s`}
                 icon={PatientsIcon}
@@ -249,7 +246,7 @@ const NavigationSidebar = () => {
                 onItemClick={handleNavigationItemClick}
               />
             </AccessRestrictor>
-            <AccessRestrictor allowedToRoles={[ADMIN, OWNER, MEMBER, DOCK_PRO]}>
+            <AccessRestrictor required={[CAN_ACCESS_WORKFLOW_LIST_PAGE]}>
               <IconNavigationItem
                 name="Workflow Library"
                 icon={TemplatesIcon}
@@ -257,7 +254,7 @@ const NavigationSidebar = () => {
                 onItemClick={handleNavigationItemClick}
               />
             </AccessRestrictor>
-            <AccessRestrictor allowedToRoles={[ADMIN, OWNER]}>
+            <AccessRestrictor required={[CAN_ACCESS_ANALYTICS_PAGE]}>
               <IconNavigationItem
                 name="Analytics"
                 icon={BarChartIcon}
@@ -266,9 +263,7 @@ const NavigationSidebar = () => {
               />
             </AccessRestrictor>
             {dockChatAvailable && (
-              <AccessRestrictor
-                allowedToRoles={[ADMIN, OWNER, MEMBER, GUEST, EXTERNAL]}
-              >
+              <AccessRestrictor required={[CAN_ACCESS_CHAT_PAGE]}>
                 <NavigationIconContainer>
                   <IconNavigationItem
                     name="Dock Chat"
@@ -284,7 +279,7 @@ const NavigationSidebar = () => {
             )}
           </Grid>
           <Grid container direction="column">
-            <AccessRestrictor allowedToRoles={[ADMIN, OWNER]}>
+            <AccessRestrictor required={[CAN_ACCESS_SETTINGS_PAGE]}>
               <div ref={settingsMenuReference}>
                 <IconNavigationItem
                   name="Settings"
@@ -300,7 +295,7 @@ const NavigationSidebar = () => {
                 />
               </div>
             </AccessRestrictor>
-            <AccessRestrictor allowedToRoles={[ADMIN, OWNER, MEMBER, GUEST]}>
+            <AccessRestrictor required={[CAN_ACCESS_EDUCATION_CENTER_PAGE]}>
               <IconNavigationItem
                 name="Education Center"
                 icon={EducationCenterIcon}

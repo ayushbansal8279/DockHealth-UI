@@ -14,6 +14,7 @@ export const RouteWrapper = ({
   onLeave,
   exact,
   allowedToRoles,
+  permissions = [],
 }) => {
   const dispatch = useDispatch();
   const history = useHistory();
@@ -42,6 +43,7 @@ export const RouteWrapper = ({
 
   return (
     <SecuredRoute
+      required={permissions}
       allowedToRoles={allowedToRoles}
       path={path}
       component={RouteComponent}

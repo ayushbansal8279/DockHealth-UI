@@ -58,6 +58,7 @@ const TemplateCore = ({ childRoutes, onEnter, onLeave, setRedirection }) => {
             {isLoaded &&
               childRoutes?.map(route => (
                 <RouteWrapper
+                  permissions={route.permissions}
                   allowedToRoles={route.allowedToRoles}
                   key={route.path}
                   path={`${path}${route.path}`}
