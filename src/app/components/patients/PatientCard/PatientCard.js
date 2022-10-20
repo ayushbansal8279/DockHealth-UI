@@ -139,6 +139,25 @@ const PatientCard = ({
     phoneMobile,
     phoneHome,
   } = patientData || {};
+
+  const patientStreetAddress = patientData?.patientMetaData?.filter(
+    cf => cf.customFieldName === 'Home Street Address',
+  )[0]?.value;
+  const patientStreetCity = patientData?.patientMetaData?.filter(
+    cf => cf.customFieldName === 'City',
+  )[0]?.value;
+  const patientStreetState = patientData?.patientMetaData?.filter(
+    cf => cf.customFieldName === 'State / Province',
+  )[0]?.value;
+  const patientPostalCode = patientData?.patientMetaData?.filter(
+    cf => cf.customFieldName === 'Zip / Postal Code',
+  )[0]?.value;
+  const patientAddress =
+    (patientStreetAddress || '') +
+    (patientStreetCity ? `, ${patientStreetCity}` : '') +
+    (patientStreetState ? `, ${patientStreetState}` : '') +
+    (patientPostalCode ? ` - ${patientPostalCode}` : '');
+
   return (
     <PatientCellWrapper
       ref={reference}
@@ -200,7 +219,7 @@ const PatientCard = ({
                         </InfoItem>
                       )}
                       {genderIdentity && (
-                        <InfoItem>gender identity: {genderIdentity}</InfoItem>
+                        <InfoItem>Gender identity: {genderIdentity}</InfoItem>
                       )}
                       {mrn && !emrPatientLink && (
                         <InfoItem>
@@ -227,6 +246,9 @@ const PatientCard = ({
                           </InfoItem>
                           <br />
                         </>
+                      )}
+                      {patientAddress && patientAddress !== '' && (
+                        <InfoItem>Address: {patientAddress}</InfoItem>
                       )}
                       {phoneMobile && <InfoItem>M {phoneMobile}</InfoItem>}
                       {phoneHome && <InfoItem>H {phoneHome}</InfoItem>}
