@@ -3,6 +3,7 @@
 import React, { useEffect, useCallback } from 'react';
 import PropTypes from 'prop-types';
 import loadScript from 'load-script';
+import moment from 'moment';
 
 const GOOGLE_SDK_URL1 = 'https://apis.google.com/js/api.js';
 const GOOGLE_SDK_URL2 = 'https://accounts.google.com/gsi/client';
@@ -135,13 +136,29 @@ const GoogleDrivePicker = ({
 
     // const oauthToken = window.gapiAccessToken;
     const oauthToken = localStorage.getItem('GAPI_ACCESS_TOKEN');
+    const accessTokenExpirationDateTimeString = localStorage.getItem(
+      'GAPI_ACCESS_TOKEN_EXPIRATION',
+    );
+    const accessTokenExpirationDateTime = moment(
+      accessTokenExpirationDateTimeString,
+    );
 
-    if (oauthToken) {
+    if (
+      accessTokenExpirationDateTime &&
+      moment().isBefore(accessTokenExpirationDateTime)
+    ) {
       createPicker(oauthToken);
     } else {
+      localStorage.removeItem('GAPI_ACCESS_TOKEN');
+      localStorage.removeItem('GAPI_ACCESS_TOKEN_EXPIRATION');
       doAuth(response => {
         if (response.access_token) {
+          const accessTokenExpirationDT = moment().add(50, 'minutes');
           localStorage.setItem('GAPI_ACCESS_TOKEN', response.access_token);
+          localStorage.setItem(
+            'GAPI_ACCESS_TOKEN_EXPIRATION',
+            accessTokenExpirationDT.format(),
+          );
           createPicker(response.access_token);
         } else {
           onAuthFailed(response);
