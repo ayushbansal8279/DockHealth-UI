@@ -17,13 +17,13 @@ const NestedFlowNode = React.memo(({ data, isConnectable, selected, type }) => {
   const { taskIdentifier, linkedTaskTemplate } = task || {};
 
   const [currentWorkflow, setCurrentWorkflow] = useState({
-    name: linkedTaskTemplate.name,
-    identifier: linkedTaskTemplate.identifier,
+    name: linkedTaskTemplate?.name,
+    identifier: linkedTaskTemplate?.identifier,
   });
 
   const [workflow, setWorkflow] = useState({
-    name: linkedTaskTemplate.name,
-    identifier: linkedTaskTemplate.identifier,
+    name: linkedTaskTemplate?.name,
+    identifier: linkedTaskTemplate?.identifier,
   });
   const dispatch = useDispatch();
 
