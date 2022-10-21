@@ -4,8 +4,7 @@ import palette from 'styles/palette';
 import { fontWeights } from 'styles/font';
 
 export const Cross = styled.span`
-  color: ${palette.orange};
-  cursor: pointer;
+  color: ${({ disabled }) => (disabled ? palette.lightGrey : palette.orange)};
   margin-right: ${spacing.smallPlus};
 `;
 
@@ -15,8 +14,8 @@ export const Description = styled.div`
 `;
 
 export const Header = styled.span`
-  color: ${palette.brightBlue};
-  cursor: pointer;
+  color: ${({ disabled }) =>
+    disabled ? palette.lightGrey : palette.brightBlue};
   font-weight: ${fontWeights.regularPlus};
   text-transform: uppercase;
 `;
@@ -24,4 +23,5 @@ export const Header = styled.span`
 export const ButtonWrapper = styled.button`
   max-width: 100%;
   text-align: left;
+  cursor: not-allowed;
 `;

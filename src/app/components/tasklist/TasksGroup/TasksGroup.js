@@ -40,6 +40,11 @@ import TaskTemplateApplicator from 'components/task-template/TaskTemplateApplica
 import { addingNewSubtaskParentIdSelector } from 'selectors/task-drawer-selectors';
 
 import StickyContainer from 'components/common/HorizontalScroll/StickyContainer';
+import { userProfileSelector } from 'selectors/user-selectors';
+import {
+  TASK_LIST_RESTRICTIONS_OPTIONS,
+  TASK_LIST_RESTRICTIONS_PROFILES,
+} from 'restrictions/task-restrictions';
 import {
   TasksGroupContainer,
   TasksGroupHeader,
@@ -236,29 +241,39 @@ const TasksGroup = ({
     [dispatch, taskGroupIdentifier],
   );
 
+  const currentUser = useSelector(userProfileSelector);
+  const restrictions =
+    TASK_LIST_RESTRICTIONS_PROFILES[currentUser?.orgUserRole];
+  const { DISABLED } = TASK_LIST_RESTRICTIONS_OPTIONS;
+
   const options = useMemo(
     () =>
       [
         !isFirstGroup && {
           name: 'Move up',
           onClick: moveGroupUp,
+          disabled: restrictions.editSettings === DISABLED,
         },
         !isLastGroup && {
           name: 'Move down',
           onClick: moveGroupDown,
+          disabled: restrictions.editSettings === DISABLED,
         },
         !isDefaultGroup && {
           name: 'Delete',
           color: palette.red,
           onClick: handleDeleteGroup,
+          disabled: restrictions.editSettings === DISABLED,
         },
       ].filter(o => typeof o !== 'boolean'),
     [
-      isDefaultGroup,
       isFirstGroup,
+      moveGroupUp,
+      restrictions.editSettings,
+      DISABLED,
       isLastGroup,
       moveGroupDown,
-      moveGroupUp,
+      isDefaultGroup,
       handleDeleteGroup,
     ],
   );

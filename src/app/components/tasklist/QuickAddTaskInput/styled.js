@@ -17,6 +17,7 @@ export const AddTaskInputWrapper = styled.div`
   background-color: ${palette.white};
   text-align: left;
   color: ${palette.mediumGrey};
+  cursor: ${({ disabled }) => (disabled ? 'not-allowed' : 'default')};
 
   &:before {
     position: absolute;

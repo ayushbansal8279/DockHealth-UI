@@ -86,4 +86,16 @@ export default {
     canAccessSettingsPage: false,
     canAccessEducationCenterPage: false,
   },
+  [UserOrganizationRole.VIEW_ONLY]: {
+    canAccessHomePage: true,
+    canAccessSearchPage: true,
+    canAccessTaskListPage: true,
+    canAccessPeopleListPage: true,
+    canAccessMemberListPage: true,
+    canAccessWorkflowListPage: true,
+    canAccessAnalyticsPage: false,
+    canAccessChatPage: true,
+    canAccessSettingsPage: false,
+    canAccessEducationCenterPage: true,
+  },
 };

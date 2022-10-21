@@ -46,7 +46,11 @@ const ToolbarSelect = ({ options, name, value, icon, ...restProps }) => {
       >
         {options?.map(option => {
           return (
-            <MenuItem key={option.value} value={option.value}>
+            <MenuItem
+              key={option.value}
+              value={option.value}
+              disabled={option.disabled}
+            >
               {option.label}
             </MenuItem>
           );

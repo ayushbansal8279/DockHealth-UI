@@ -10,11 +10,11 @@ const Container = styled.div`
   }
 `;
 
-const AddGroupNameButton = () => (
+const AddGroupNameButton = ({ disabled }) => (
   <Container>
     <MontserratTypography>
-      <Cross>+</Cross>
-      <Header>{messages.label}</Header>
+      <Cross disabled={disabled}>+</Cross>
+      <Header disabled={disabled}>{messages.label}</Header>
     </MontserratTypography>
     <Description>
       <MontserratTypography>{messages.description}</MontserratTypography>
