@@ -9,13 +9,9 @@ export const Container = styled.div`
 `;
 
 export const ChartsContainer = styled.div`
-  display: grid;
+  display: flex;
+  position: relative;
+  flex-wrap: wrap;
+  gap: 24px;
   width: 100%;
-  grid-template-columns: repeat(2, 1fr);
-  grid-column-gap: 24px;
-  grid-row-gap: 32px;
-
-  @media (max-width: 1280px) {
-    grid-template-columns: 1fr;
-  }
 `;

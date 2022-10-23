@@ -452,6 +452,14 @@ export function updateTaskDetails(task, detailsState) {
   };
 }
 
+export function updateTaskStartDate(task, startDate) {
+  return {
+    type: ActionTypes.UPDATE_TASK_START_DATE,
+    task,
+    startDate,
+  };
+}
+
 export function updateTaskDueDate(task, dueDate) {
   return {
     type: ActionTypes.UPDATE_TASK_DUE_DATE,

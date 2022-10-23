@@ -248,6 +248,35 @@ function* reorderDashboardTasks({ taskGroupImplicitType, tasksOrder }) {
   }
 }
 
+function* updateTaskStartDateSuccess({ task: taskToChange, startDate }) {
+  const tabName = yield select(dashboardTabNameSelector);
+  const task = { ...taskToChange, startDate };
+  if (tabName) {
+    const groups = yield select(dashboardTasksSelector);
+    yield all(
+      groups
+        .filter(
+          ({ groupType }) =>
+            groupType === getGroupByDueDate(task.startDate, tabName) ||
+            groupType === getGroupByDueDate(taskToChange.startDate, tabName),
+        )
+        .map(({ groupType }) =>
+          put(DashboardActions.getDashboardTasksForGroup(groupType)),
+        ),
+    );
+
+    const dashboardGroups = yield call(
+      getDashboardTaskStasForImplicitGroups,
+      tabName,
+    );
+
+    yield put({
+      type: ActionTypes.GET_DASHBOARD_GROUP_STATS_SUCCESS,
+      tasksList: dashboardGroups,
+    });
+  }
+}
+
 function* updateTaskDueDateSuccess({ task: taskToChange, dueDate }) {
   const tabName = yield select(dashboardTabNameSelector);
   const task = { ...taskToChange, dueDate };
@@ -333,6 +362,10 @@ export default function* watchDashboard() {
   yield takeEvery(
     ActionTypes.LOAD_MORE_DASHBOARD_TASKS_FOR_GROUP,
     loadMoreDashboardTasksForGroup,
+  );
+  yield takeEvery(
+    ActionTypes.UPDATE_TASK_START_DATE_SUCCESS,
+    updateTaskStartDateSuccess,
   );
   yield takeEvery(
     ActionTypes.UPDATE_TASK_DUE_DATE_SUCCESS,

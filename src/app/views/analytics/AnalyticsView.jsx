@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useMemo } from 'react';
+import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { Box } from '@material-ui/core';
 import { useHistory } from 'react-router-dom';
 import { checkIfUserIsOrganizationAdmin } from 'helpers/user-helper';
@@ -121,6 +121,12 @@ const AnalyticsView = () => {
     [dispatch],
   );
 
+  const [maximizedChart, setMaximizedChart] = useState();
+
+  const handleChartMaximize = name => {
+    setMaximizedChart(name);
+  };
+
   return (
     <ViewLayout header={<BasicLayoutHeader title="Analytics" />}>
       <Container>
@@ -152,22 +158,32 @@ const AnalyticsView = () => {
           the last 30 day period.
         </span>
         <ChartsContainer>
-          <ChartTail name="Tasks Created and Completed">
+          <ChartTail
+            name="Tasks Created and Completed"
+            maximized={maximizedChart}
+            onMaximize={handleChartMaximize}
+          >
             <TasksStatisticsChart />
           </ChartTail>
-          <ChartTail name="Comments Created">
+          <ChartTail name="Comments Created" onMaximize={handleChartMaximize}>
             <CreatedCommentsChart />
           </ChartTail>
-          <ChartTail name="Tasks by Status">
+          <ChartTail name="Tasks by Status" onMaximize={handleChartMaximize}>
             <WorkflowStatusStatisticsChart />
           </ChartTail>
-          <ChartTail name="Tasks by Assigned To">
+          <ChartTail
+            name="Tasks by Assigned To"
+            onMaximize={handleChartMaximize}
+          >
             <AssignedToStatisticsChart />
           </ChartTail>
-          <ChartTail name="Tasks by Labels">
+          <ChartTail name="Tasks by Labels" onMaximize={handleChartMaximize}>
             <TaskLabelStatisticsChart />
           </ChartTail>
-          <ChartTail name="Tasks by Patient Labels">
+          <ChartTail
+            name="Tasks by Patient Labels"
+            onMaximize={handleChartMaximize}
+          >
             <PatientLabelStatisticsChart />
           </ChartTail>
         </ChartsContainer>
