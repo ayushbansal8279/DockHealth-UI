@@ -54,6 +54,7 @@ import {
   SINGLE_TASK_RESTRICTIONS_OPTIONS,
 } from 'restrictions/task-restrictions';
 import { CUSTOM_FIELD_TYPES } from 'helpers/custom-fields-helpers';
+import { Box } from '@material-ui/core';
 import { getSubtaskStylingLink } from './helpers';
 import TaskItemContextMenu from '../TaskItemContextMenu/TaskItemContextMenu';
 import TaskItemBulkEdit from './TaskItemComponents/TaskItemBulkEdit';
@@ -77,6 +78,7 @@ import {
   DependencyIconContainer,
   DetailsButton,
   DecisionCellContainer,
+  ActionIconsContainer,
 } from '../styled';
 
 const { DISABLED, READ_ONLY } = SINGLE_TASK_RESTRICTIONS_OPTIONS;
@@ -318,6 +320,7 @@ const TaskItem = React.memo(
     const showDecisionRow = task.intentType === 'DECISION' && !isTemplateTask;
     const hasParentTaskLabel = isSubtask && !isNestedTask && parentTask;
 
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     const onClickBulkEdit = () =>
       dispatch(selectTask(taskIdentifier, !selected));
     const onCloseContextMenu = () => {
@@ -329,6 +332,73 @@ const TaskItem = React.memo(
       TaskItemColumnType =>
         columns?.findIndex(c => c.identifier === TaskItemColumnType),
       [columns],
+    );
+
+    const randerFirstColumnCoverIfNecessary = useCallback(
+      (content, order) => {
+        if (order !== 0) return content;
+        return (
+          <StickyMainTaskItemCell
+            customWidthExists
+            order={0}
+            isSubtask={showSubtaskStylingLink}
+            newlyCreated={newlyCreated}
+            backgroundColor={pageBackground}
+            isSelected={isSelected || selected}
+            isEditingDescription={isEditingDescription}
+          >
+            <DotsContainer
+              showDraggableDots={showDraggableDots}
+              dragHandleProps={dragHandleProps}
+            />
+            {showPriority && (
+              <PriorityIndicator color={getPriorityColor(task.priority)} />
+            )}
+            {showSubtaskStylingLink && getSubtaskStylingLink(isLast)}
+            <ActionIconsContainer>
+              {bulkEditEnabled && (
+                <TaskItemBulkEdit
+                  isChecked={selected}
+                  onClick={onClickBulkEdit}
+                  isDisabled={
+                    isTaskStatusTogglingDisabled ||
+                    !isDependencyEmptyOrCompleted
+                  }
+                />
+              )}
+              <Box ml="10px" />
+              <CircleIcon
+                src={isCompleted ? CircleCompleted : Circle}
+                isClickable={
+                  !isTaskStatusTogglingDisabled && isDependencyEmptyOrCompleted
+                }
+                isCompleted={isCompleted}
+                onClick={onCircleClick}
+              />
+            </ActionIconsContainer>
+            {content}
+          </StickyMainTaskItemCell>
+        );
+      },
+      [
+        bulkEditEnabled,
+        dragHandleProps,
+        isCompleted,
+        isDependencyEmptyOrCompleted,
+        isEditingDescription,
+        isLast,
+        isSelected,
+        isTaskStatusTogglingDisabled,
+        newlyCreated,
+        onCircleClick,
+        onClickBulkEdit,
+        pageBackground,
+        selected,
+        showDraggableDots,
+        showPriority,
+        showSubtaskStylingLink,
+        task.priority,
+      ],
     );
 
     return (
@@ -347,158 +417,142 @@ const TaskItem = React.memo(
             }
             isAddingTask={false}
           >
-            <StickyMainTaskItemCell
-              order={0}
-              isSubtask={showSubtaskStylingLink}
-              newlyCreated={newlyCreated}
-              backgroundColor={pageBackground}
-              isSelected={isSelected || selected}
-              isEditingDescription={isEditingDescription}
-              width={
-                columns?.find(
-                  ({ identifier }) => identifier === TaskItemColumn.DESCRIPTION,
-                )?.columnWidth
-              }
-            >
-              <DotsContainer
-                showDraggableDots={showDraggableDots}
-                dragHandleProps={dragHandleProps}
-              />
-              {showPriority && (
-                <PriorityIndicator color={getPriorityColor(task.priority)} />
-              )}
-              {showSubtaskStylingLink && getSubtaskStylingLink(isLast)}
-              {bulkEditEnabled && (
-                <TaskItemBulkEdit
-                  isChecked={selected}
-                  isDisabled={
-                    isTaskStatusTogglingDisabled ||
-                    !isDependencyEmptyOrCompleted
+            {randerFirstColumnCoverIfNecessary(
+              <>
+                <MainStandardTaskItemCell
+                  width={
+                    columns?.find(
+                      ({ identifier }) =>
+                        identifier === TaskItemColumn.DESCRIPTION,
+                    )?.columnWidth
                   }
-                  onClick={onClickBulkEdit}
-                />
-              )}
-              <MainStandardTaskItemCell
-                bolded
-                paddingLeft="smallPlus"
-                paddingRight="small"
-                onClick={onClickTaskItem}
-                position="static"
-                isSubtask={showSubtaskStylingLink}
-                isSticky
-                printWidth={300}
-              >
-                <CircleIcon
-                  src={isCompleted ? CircleCompleted : Circle}
-                  isClickable={
-                    !isTaskStatusTogglingDisabled &&
-                    isDependencyEmptyOrCompleted
-                  }
-                  isCompleted={isCompleted}
-                  onClick={onCircleClick}
-                />
-
-                {!isDependencyEmptyOrCompleted && (
-                  <>
-                    <DependencyIconContainer
-                      onMouseEnter={openDependencyPopover}
-                      onMouseLeave={closeDependencyPopover}
-                      ref={dependencyIconReference}
-                    >
-                      <img src={DependencyIcon} alt="search" />
-                      {dependencyIconReference.current && (
-                        <DependencyListPopover
-                          anchorEl={dependencyIconReference.current}
-                          open={dependencyPopoverOpen}
-                          dependencyTasksCount={dependencyTasksCount}
-                          task={task}
-                        />
-                      )}
-                    </DependencyIconContainer>
-                  </>
-                )}
-
-                <>
+                  order={getColumnOrder(TaskItemColumn.DESCRIPTION)}
+                  bolded
+                  paddingLeft="smallPlus"
+                  paddingRight="small"
+                  onClick={onClickTaskItem}
+                  position="static"
+                  isSubtask={isSubtask}
+                  isSticky
+                  printWidth={300}
+                >
+                  {!isDependencyEmptyOrCompleted && (
+                    <>
+                      <DependencyIconContainer
+                        onMouseEnter={openDependencyPopover}
+                        onMouseLeave={closeDependencyPopover}
+                        ref={dependencyIconReference}
+                      >
+                        <img src={DependencyIcon} alt="search" />
+                        {dependencyIconReference.current && (
+                          <DependencyListPopover
+                            anchorEl={dependencyIconReference.current}
+                            open={dependencyPopoverOpen}
+                            dependencyTasksCount={dependencyTasksCount}
+                            task={task}
+                          />
+                        )}
+                      </DependencyIconContainer>
+                    </>
+                  )}
                   <TaskItemDescription
                     disableMentions={restrictions?.mentions === DISABLED}
                     disabled={restrictions?.description === READ_ONLY}
                     task={task}
                     isCompletedGroup={isCompletedGroup}
                     highlightedValue={highlightedValue}
-                    hasParentTaskLabel={hasParentTaskLabel}
+                    isSubtask={isSubtask}
                     isEditing={isEditingDescription}
                     setEditing={setEditingDescription}
                   />
                   <DetailsButton>Details</DetailsButton>
-                </>
-              </MainStandardTaskItemCell>
-              {showDecisionRow && (
-                <DecisionCellContainer>
-                  <TaskItemDecision
-                    outcomes={task.taskOutcomes}
-                    dispatch={dispatch}
-                    onSelect={chooseTaskDecisionOutcome}
-                    task={task}
-                    templateBundleIdentifier={templateBundleIdentifier}
-                    disabled={isCompleted || !isDependencyEmptyOrCompleted}
-                    error={taskDecisionError}
-                    clearError={() => setTaskDecisionError(false)}
-                  />
-                </DecisionCellContainer>
-              )}
-            </StickyMainTaskItemCell>
-            <TaskItemCell
-              key={`subtask_count_${taskIdentifier}`}
-              width={
-                columns?.find(
-                  ({ identifier }) =>
-                    identifier === TaskItemColumn.SUBTASKS_COUNT,
-                )?.columnWidth
-              }
-              justify="center"
-              paddingLeft="tiny"
-              paddingRight="tiny"
-            >
-              <TaskItemSubtasks
-                isSubtask={isSubtask}
-                subtaskQuickAddOpen={subtaskQuickAddOpen}
-                subtasksDisabled={subtasksDisabled}
-                subTasksCount={subTasksCount}
-                isOpen={isOpen}
-                isNestedTask={isNestedTask}
-                onSubtaskLabelClick={onSubtaskLabelClick}
-                taskIdentifier={taskIdentifier}
-                openQuickAddSubtask={openQuickAddSubtask}
-                dispatch={dispatch}
-                readOnly={restrictions?.subtasks === READ_ONLY}
-              />
-            </TaskItemCell>
-            {isColumnChecked(columns, TaskItemColumn.PATIENT) && (
-              <TaskItemCell
-                key={`patient_${taskIdentifier}`}
-                width={
-                  columns?.find(
-                    ({ identifier }) => identifier === TaskItemColumn.PATIENT,
-                  )?.columnWidth
-                }
-                order={getColumnOrder(TaskItemColumn.PATIENT)}
-              >
-                <TaskItemPatient
-                  highlightedValue={highlightedValue}
-                  taskStatus={task?.status}
+                  {showDecisionRow && (
+                    <DecisionCellContainer
+                      onClick={event => event.stopPropagation()}
+                    >
+                      <TaskItemDecision
+                        outcomes={task.taskOutcomes}
+                        dispatch={dispatch}
+                        onSelect={chooseTaskDecisionOutcome}
+                        task={task}
+                        templateBundleIdentifier={templateBundleIdentifier}
+                        disabled={isCompleted || !isDependencyEmptyOrCompleted}
+                        error={taskDecisionError}
+                        clearError={() => setTaskDecisionError(false)}
+                      />
+                    </DecisionCellContainer>
+                  )}
+                </MainStandardTaskItemCell>
+              </>,
+              getColumnOrder(TaskItemColumn.DESCRIPTION),
+            )}
+            <>
+              {randerFirstColumnCoverIfNecessary(
+                <TaskItemCell
                   isSubtask={isSubtask}
-                  parentHasPatient={parentHasPatient}
-                  hasParentTaskLabel={hasParentTaskLabel}
-                  matchPatientMRN={matchPatientMRN}
-                  patient={patient || parentTask?.patient}
-                  matchPatient={matchPatient}
-                  task={task}
-                  openPatientPopover={openPatientPopover}
-                  onTaskUpdate={onTaskUpdate}
-                  currentUser={currentUser}
-                  readOnly={restrictions?.patient === READ_ONLY}
-                />
-              </TaskItemCell>
+                  key={`subtask_count_${taskIdentifier}`}
+                  width={
+                    columns?.find(
+                      ({ identifier }) =>
+                        identifier === TaskItemColumn.SUBTASKS_COUNT,
+                    )?.columnWidth
+                  }
+                  order={getColumnOrder(TaskItemColumn.SUBTASKS_COUNT)}
+                  justify="center"
+                  paddingLeft="tiny"
+                  paddingRight="tiny"
+                >
+                  <TaskItemSubtasks
+                    isSubtask={isSubtask}
+                    subtaskQuickAddOpen={subtaskQuickAddOpen}
+                    subtasksDisabled={subtasksDisabled}
+                    subTasksCount={subTasksCount}
+                    isOpen={isOpen}
+                    isNestedTask={isNestedTask}
+                    onSubtaskLabelClick={onSubtaskLabelClick}
+                    taskIdentifier={taskIdentifier}
+                    openQuickAddSubtask={openQuickAddSubtask}
+                    dispatch={dispatch}
+                    readOnly={restrictions?.subtasks === READ_ONLY}
+                  />
+                </TaskItemCell>,
+                getColumnOrder(TaskItemColumn.SUBTASKS_COUNT),
+              )}
+            </>
+
+            {isColumnChecked(columns, TaskItemColumn.PATIENT) && (
+              <>
+                {randerFirstColumnCoverIfNecessary(
+                  <TaskItemCell
+                    isSubtask={isSubtask}
+                    key={`patient_${taskIdentifier}`}
+                    width={
+                      columns?.find(
+                        ({ identifier }) =>
+                          identifier === TaskItemColumn.PATIENT,
+                      )?.columnWidth
+                    }
+                    order={getColumnOrder(TaskItemColumn.PATIENT)}
+                  >
+                    <TaskItemPatient
+                      highlightedValue={highlightedValue}
+                      taskStatus={task?.status}
+                      isSubtask={isSubtask}
+                      parentHasPatient={parentHasPatient}
+                      hasParentTaskLabel={hasParentTaskLabel}
+                      matchPatientMRN={matchPatientMRN}
+                      patient={patient || parentTask?.patient}
+                      matchPatient={matchPatient}
+                      task={task}
+                      openPatientPopover={openPatientPopover}
+                      onTaskUpdate={onTaskUpdate}
+                      currentUser={currentUser}
+                      readOnly={restrictions?.patient === READ_ONLY}
+                    />
+                  </TaskItemCell>,
+                  getColumnOrder(TaskItemColumn.PATIENT),
+                )}
+              </>
             )}
             {isColumnChecked(columns, TaskItemColumn.WORKFLOW_STATUS) && (
               <TaskItemCell
@@ -553,14 +607,18 @@ const TaskItem = React.memo(
             )}
             {restrictions?.startDate !== DISABLED && (
               <>
-                {isColumnChecked(columns, TaskItemColumn.START_DATE) && (
+                {randerFirstColumnCoverIfNecessary(
                   <TaskItemCell
+                    isSubtask={isSubtask}
+                    key={`task_status_${taskIdentifier}`}
                     width={
                       columns?.find(
                         ({ identifier }) =>
-                          identifier === TaskItemColumn.START_DATE,
+                          identifier === TaskItemColumn.WORKFLOW_STATUS,
                       )?.columnWidth
                     }
+                    paddingLeft="smallPlus"
+                    paddingRight="tiny"
                     onContextMenu={event => {
                       event.stopPropagation();
                     }}
@@ -583,79 +641,167 @@ const TaskItem = React.memo(
                             identifier === TaskItemColumn.DUE_DATE,
                         )?.columnWidth
                       }
-                      paddingLeft="tiny"
-                      paddingRight="tiny"
-                      justify="center"
-                      onContextMenu={event => {
-                        event.stopPropagation();
-                      }}
-                      order={getColumnOrder(TaskItemColumn.DUE_DATE)}
-                    >
-                      <TaskItemDueDate task={task} />
-                    </TaskItemCell>
-                  )}
-                {isColumnChecked(columns, TaskItemColumn.ANCHOR_DATE) && (
-                  <TaskItemCell
-                    width={
-                      columns?.find(
-                        ({ identifier }) =>
-                          identifier === TaskItemColumn.ANCHOR_DATE,
-                      )?.columnWidth
-                    }
-                    onContextMenu={event => {
-                      event.stopPropagation();
-                    }}
-                    order={getColumnOrder(TaskItemColumn.ANCHOR_DATE)}
-                  />
+                    />
+                  </TaskItemCell>,
+                  getColumnOrder(TaskItemColumn.WORKFLOW_STATUS),
                 )}
               </>
             )}
-
-            {isColumnChecked(columns, TaskItemColumn.ASSIGNED) && (
+            {isColumnChecked(columns, TaskItemColumn.ACTIVITY) && (
+              <>
+                {randerFirstColumnCoverIfNecessary(
+                  <TaskItemCell
+                    isSubtask={isSubtask}
+                    key={`activity_${taskIdentifier}`}
+                    width={
+                      columns?.find(
+                        ({ identifier }) =>
+                          identifier === TaskItemColumn.ACTIVITY,
+                      )?.columnWidth
+                    }
+                    order={getColumnOrder(TaskItemColumn.ACTIVITY)}
+                  >
+                    <TaskItemIcons
+                      restrictions={restrictions}
+                      matchComments={matchComments}
+                      comments={comments}
+                      task={task}
+                      matchLabels={matchLabels}
+                      labels={labels}
+                      matchAttachments={matchAttachments}
+                      attachments={attachments}
+                      dispatch={dispatch}
+                    />
+                  </TaskItemCell>,
+                  getColumnOrder(TaskItemColumn.ACTIVITY),
+                )}
+              </>
+            )}
+            {restrictions?.dueDate !== DISABLED && (
+              <>
+                {isColumnChecked(columns, TaskItemColumn.START_DATE) && (
+                  <>
+                    {randerFirstColumnCoverIfNecessary(
+                      <TaskItemCell
+                        isSubtask={isSubtask}
+                        width={
+                          columns?.find(
+                            ({ identifier }) =>
+                              identifier === TaskItemColumn.START_DATE,
+                          )?.columnWidth
+                        }
+                        onContextMenu={event => {
+                          event.stopPropagation();
+                        }}
+                        order={getColumnOrder(TaskItemColumn.START_DATE)}
+                      />,
+                      getColumnOrder(TaskItemColumn.START_DATE),
+                    )}
+                  </>
+                )}
+                {isColumnChecked(columns, TaskItemColumn.DUE_DATE) &&
+                  !isTemplateTask && (
+                    <>
+                      {randerFirstColumnCoverIfNecessary(
+                        <TaskItemCell
+                          isSubtask={isSubtask}
+                          key={`due_date_${taskIdentifier}`}
+                          width={
+                            columns?.find(
+                              ({ identifier }) =>
+                                identifier === TaskItemColumn.DUE_DATE,
+                            )?.columnWidth
+                          }
+                          paddingLeft="tiny"
+                          paddingRight="tiny"
+                          justify="center"
+                          onContextMenu={event => {
+                            event.stopPropagation();
+                          }}
+                          order={getColumnOrder(TaskItemColumn.DUE_DATE)}
+                        >
+                          <TaskItemDueDate task={task} />
+                        </TaskItemCell>,
+                        getColumnOrder(TaskItemColumn.DUE_DATE),
+                      )}
+                    </>
+                  )}
+              </>
+            )}
+            {isColumnChecked(columns, TaskItemColumn.ANCHOR_DATE) && (
               <TaskItemCell
-                key={`assigned_${taskIdentifier}`}
                 width={
                   columns?.find(
-                    ({ identifier }) => identifier === TaskItemColumn.ASSIGNED,
+                    ({ identifier }) =>
+                      identifier === TaskItemColumn.ANCHOR_DATE,
                   )?.columnWidth
                 }
-                justify={multipleAssigneesContext ? 'flex-start' : 'center'}
-                paddingLeft="small"
-                paddingRight="small"
                 onContextMenu={event => {
                   event.stopPropagation();
                 }}
-                order={getColumnOrder(TaskItemColumn.ASSIGNED)}
-                printWidth={TaskItemColumnWidth[TaskItemColumn.ASSIGNED].PRINT}
-              >
-                <TaskItemMembers
-                  readOnly={restrictions?.assigment === READ_ONLY}
-                  multipleAssigneesContext={multipleAssigneesContext}
-                  task={task}
-                  assignedToUsers={assignedToUsers}
-                  handleReasignTask={handleReasignTask}
-                  matchAssignedTo={matchAssignedTo}
-                />
-              </TaskItemCell>
+                order={getColumnOrder(TaskItemColumn.ANCHOR_DATE)}
+              />
+            )}
+            {isColumnChecked(columns, TaskItemColumn.ASSIGNED) && (
+              <>
+                {randerFirstColumnCoverIfNecessary(
+                  <TaskItemCell
+                    isSubtask={isSubtask}
+                    key={`assigned_${taskIdentifier}`}
+                    width={
+                      columns?.find(
+                        ({ identifier }) =>
+                          identifier === TaskItemColumn.ASSIGNED,
+                      )?.columnWidth
+                    }
+                    justify={multipleAssigneesContext ? 'flex-start' : 'center'}
+                    paddingLeft="small"
+                    paddingRight="small"
+                    onContextMenu={event => {
+                      event.stopPropagation();
+                    }}
+                    order={getColumnOrder(TaskItemColumn.ASSIGNED)}
+                    printWidth={
+                      TaskItemColumnWidth[TaskItemColumn.ASSIGNED].PRINT
+                    }
+                  >
+                    <TaskItemMembers
+                      readOnly={restrictions?.assigment === READ_ONLY}
+                      multipleAssigneesContext={multipleAssigneesContext}
+                      task={task}
+                      assignedToUsers={assignedToUsers}
+                      handleReasignTask={handleReasignTask}
+                      matchAssignedTo={matchAssignedTo}
+                    />
+                  </TaskItemCell>,
+                  getColumnOrder(TaskItemColumn.ASSIGNED),
+                )}
+              </>
             )}
             {restrictions?.listName !== DISABLED &&
               isColumnChecked(columns, TaskItemColumn.LIST_NAME) && (
-                <TaskItemCell
-                  key={`list_${taskIdentifier}`}
-                  width={
-                    columns?.find(
-                      ({ identifier }) =>
-                        identifier === TaskItemColumn.LIST_NAME,
-                    )?.columnWidth
-                  }
-                  order={getColumnOrder(TaskItemColumn.LIST_NAME)}
-                >
-                  <TaskItemList
-                    listName={listName}
-                    taskListIdentifier={taskListIdentifier}
-                    taskStatus={task.status}
-                  />
-                </TaskItemCell>
+                <>
+                  {randerFirstColumnCoverIfNecessary(
+                    <TaskItemCell
+                      isSubtask={isSubtask}
+                      key={`list_${taskIdentifier}`}
+                      width={
+                        columns?.find(
+                          ({ identifier }) =>
+                            identifier === TaskItemColumn.LIST_NAME,
+                        )?.columnWidth
+                      }
+                      order={getColumnOrder(TaskItemColumn.LIST_NAME)}
+                    >
+                      <TaskItemList
+                        listName={listName}
+                        taskListIdentifier={taskListIdentifier}
+                        taskStatus={task.status}
+                      />
+                    </TaskItemCell>,
+                    getColumnOrder(TaskItemColumn.LIST_NAME),
+                  )}
+                </>
               )}
             {restrictions?.customFields !== DISABLED && (
               <>
@@ -681,20 +827,26 @@ const TaskItem = React.memo(
                       field.targetType === CUSTOM_FIELD_TYPES.PATIENT &&
                       !task?.patient?.patientIdentifier;
                     return (
-                      <TaskItemCell
-                        key={`custom_${taskIdentifier}_${field.identifier}`}
-                        padding="4px"
-                        width={field.columnWidth}
-                        order={getColumnOrder(field.identifier)}
-                      >
-                        {!hidePatientCustomFields && (
-                          <TaskItemCustomField
-                            field={field}
-                            customFieldValue={customFieldValue}
-                            task={task}
-                          />
+                      <>
+                        {randerFirstColumnCoverIfNecessary(
+                          <TaskItemCell
+                            isSubtask={isSubtask}
+                            key={`custom_${taskIdentifier}_${field.identifier}`}
+                            padding="4px"
+                            width={field.columnWidth}
+                            order={getColumnOrder(field.identifier)}
+                          >
+                            {!hidePatientCustomFields && (
+                              <TaskItemCustomField
+                                field={field}
+                                customFieldValue={customFieldValue}
+                                task={task}
+                              />
+                            )}
+                          </TaskItemCell>,
+                          getColumnOrder(field.identifier),
                         )}
-                      </TaskItemCell>
+                      </>
                     );
                   })}
               </>

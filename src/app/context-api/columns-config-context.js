@@ -17,6 +17,7 @@ import {
 import { updateCurrentUserPreferences } from 'actions/user-actions';
 import { updateListPreferences } from 'actions/task-list-actions';
 import { CUSTOM_FIELD_TYPES } from 'helpers/custom-fields-helpers';
+import { TaskHeaderColumn } from 'components/tasklist/TasksHeader/helpers';
 import {
   getAllPatientCustomFields,
   getAllTaskListCustomFields,
@@ -29,6 +30,11 @@ import {
 } from './helpers';
 
 export const ColumnsConfigContext = createContext();
+
+const columnsAlwaysVisible = [
+  TaskHeaderColumn.DESCRIPTION,
+  TaskHeaderColumn.SUBTASKS_COUNT,
+];
 
 export function ColumnsConfigProvider({
   children,
@@ -45,6 +51,7 @@ export function ColumnsConfigProvider({
   const [taskListCustomColumns, setTaskListCustomColumns] = useState([]);
   const [columns, setColumnsToState] = useState([]);
   const [viewSpecificConfig, setViewSpecificConfig] = useState(initialColumns);
+  const [hasWidthPreferences, setHasWidthPreferences] = useState(false);
 
   const organizationCustomFields = useSelector(
     organizationCustomFieldsSelector,
@@ -64,7 +71,11 @@ export function ColumnsConfigProvider({
           : currentList?.listUsers?.find(u => u.identifier === userIdentifier)
               ?.listDisplayColumns;
       if (!displayColumns || displayColumns.length === 0) {
-        displayColumns = currentList?.listDisplayColumns;
+        displayColumns = [currentList?.listDisplayColumns];
+      }
+      if (!displayColumns.includes(columnsAlwaysVisible[0])) {
+        // apply always visible at first if are not specified
+        return [...columnsAlwaysVisible, ...displayColumns];
       }
       return displayColumns;
     }
@@ -85,6 +96,14 @@ export function ColumnsConfigProvider({
     }
     return OrganizationWidthFieldsPreferences;
   }, [OrganizationWidthFieldsPreferences, currentList, userIdentifier]);
+
+  useEffect(() => {
+    if (currentWidthPreferences) {
+      setHasWidthPreferences(true);
+    } else {
+      setHasWidthPreferences(false);
+    }
+  }, [currentWidthPreferences]);
 
   const setColumnsAndUpdateApi = useCallback(
     newState => {
@@ -142,7 +161,9 @@ export function ColumnsConfigProvider({
     // join preferences to data
     const mergedPreferencesAndFields = joinedColumnsData.map(field => ({
       ...field,
-      isChecked: !!currentPreferences?.includes(field.identifier),
+      isChecked:
+        !!currentPreferences?.includes(field.identifier) ||
+        columnsAlwaysVisible?.includes(field.identifier),
       columnWidth: Number(
         currentWidthPreferences?.find(
           c => c.displayColumn === field?.identifier && c.width !== 'NaN',
@@ -195,6 +216,7 @@ export function ColumnsConfigProvider({
 
   const setColumnWidth = useCallback(
     ({ columnIdentifier, columnWidth }) => {
+      setHasWidthPreferences(true);
       const updatedState = columns.map(c =>
         columnIdentifier === c.identifier ? { ...c, columnWidth } : c,
       );
@@ -230,6 +252,7 @@ export function ColumnsConfigProvider({
     setCurrentList,
     viewSpecificConfig,
     setViewSpecificConfig,
+    hasWidthPreferences,
   };
 
   return (

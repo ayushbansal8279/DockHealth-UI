@@ -1,7 +1,5 @@
 import styled from 'styled-components';
-import { fontSizes, fontWeights } from 'styles/font';
 import palette from 'styles/palette';
-import spacing from 'styles/spacing';
 
 export const TaskViewContainer = styled.div`
   display: flex;
