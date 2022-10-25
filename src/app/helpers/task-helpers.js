@@ -105,6 +105,23 @@ export function getCommentsIconTooltipTitle(comments) {
   return `${comments?.length || 0} comment${comments.length === 1 ? '' : 's'}`;
 }
 
+export function isStartDateInPast(task) {
+  if (!task) {
+    return false;
+  }
+  // const { startDate, status } = task;
+
+  // const startDateObjet = moment(startDate);
+
+  return false;
+  // return (
+  //   status === TaskStatus.INCOMPLETE &&
+  //   (startDateObjet.format('HH:mm') !== '00:00' && startDateObjet.hours() > 4
+  //     ? startDateObjet.isBefore(moment())
+  //     : startDateObjet.isBefore(moment().startOf('day')))
+  // );
+}
+
 export function isDueDateOverdue(task) {
   if (!task) {
     return false;

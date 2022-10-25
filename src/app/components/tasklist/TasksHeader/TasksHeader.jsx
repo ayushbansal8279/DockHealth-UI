@@ -106,19 +106,13 @@ const TasksHeader = ({
             ![TaskHeaderColumn.SUBTASKS_COUNT].includes(f.identifier)
           }
           isDraggingOver={snapshot.isDraggingOver}
-          disabled={
-            isRegular
-              ? [
-                  TaskHeaderColumn.ACTIVITY,
-                  TaskHeaderColumn.START_DATE,
-                  TaskHeaderColumn.ANCHOR_DATE,
-                ].includes(f.identifier)
-              : f.targetType === 'PATIENT'
-          }
+          disabled={false}
           truncateEnabled
           id={f.identifier}
           label={isRegular ? f.label : f.name}
-          width={f.columnWidth}
+          sort={sort}
+          onSortChange={onSortChange}
+          width={+f.columnWidth}
           snapshot={snapshot}
           sort={isRegular ? sort : null}
           onSortChange={isRegular ? onSortChange : null}

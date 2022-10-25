@@ -37,8 +37,10 @@ const TaskLabelStatisticsChart = () => {
       });
   }, [dispatch, selectedFilters]);
 
-  const renderLegendText = value => {
-    return <LegendText value={value} />;
+  const renderLegendText = (value, entry) => {
+    return (
+      <LegendText value={value} metricValue={entry?.payload?.metricValue} />
+    );
   };
 
   return (

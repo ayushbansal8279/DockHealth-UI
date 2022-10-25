@@ -16,6 +16,7 @@ import {
   getCustomerUniqueIDShortLabel,
 } from 'helpers/customer-type-helper';
 import { organizationSelector } from 'selectors/organization-selectors';
+import { FieldType } from 'helpers/field-type-helpers';
 import TextTypeHeader from 'components/common/TextTypeHeader/TextTypeHeader';
 import {
   PatientCardContainer,
@@ -138,6 +139,25 @@ const PatientCard = ({
     phoneMobile,
     phoneHome,
   } = patientData || {};
+
+  const patientStreetAddress = patientData?.patientMetaData?.filter(
+    cf => cf.customFieldName === 'Home Street Address',
+  )[0]?.value;
+  const patientStreetCity = patientData?.patientMetaData?.filter(
+    cf => cf.customFieldName === 'City',
+  )[0]?.value;
+  const patientStreetState = patientData?.patientMetaData?.filter(
+    cf => cf.customFieldName === 'State / Province',
+  )[0]?.value;
+  const patientPostalCode = patientData?.patientMetaData?.filter(
+    cf => cf.customFieldName === 'Zip / Postal Code',
+  )[0]?.value;
+  const patientAddress =
+    (patientStreetAddress || '') +
+    (patientStreetCity ? `, ${patientStreetCity}` : '') +
+    (patientStreetState ? `, ${patientStreetState}` : '') +
+    (patientPostalCode ? ` - ${patientPostalCode}` : '');
+
   return (
     <PatientCellWrapper
       ref={reference}
@@ -199,7 +219,7 @@ const PatientCard = ({
                         </InfoItem>
                       )}
                       {genderIdentity && (
-                        <InfoItem>gender identity: {genderIdentity}</InfoItem>
+                        <InfoItem>Gender identity: {genderIdentity}</InfoItem>
                       )}
                       {mrn && !emrPatientLink && (
                         <InfoItem>
@@ -227,6 +247,9 @@ const PatientCard = ({
                           <br />
                         </>
                       )}
+                      {patientAddress && patientAddress !== '' && (
+                        <InfoItem>Address: {patientAddress}</InfoItem>
+                      )}
                       {phoneMobile && <InfoItem>M {phoneMobile}</InfoItem>}
                       {phoneHome && <InfoItem>H {phoneHome}</InfoItem>}
                     </PatientInfo>
@@ -239,16 +262,31 @@ const PatientCard = ({
                       displayName,
                       value,
                       displayOptions,
+                      fieldType,
+                      customFieldIdentifier,
                     }) => (
-                      <>
-                        {displayOptions?.includes('PATIENT_HEADER') && value && (
-                          <CustomFieldPatientInfo>
-                            <Typography>{customFieldName}: </Typography>
-                            <Box ml={1} />
-                            <TextTypeHeader text={displayName || value} />
-                          </CustomFieldPatientInfo>
+                      <React.Fragment key={customFieldIdentifier}>
+                        {fieldType === FieldType.HYPERLINK ? (
+                          <>
+                            <CustomFieldPatientInfo>
+                              <a href={value} target="_blank" rel="noreferrer">
+                                {customFieldName}
+                              </a>
+                            </CustomFieldPatientInfo>
+                          </>
+                        ) : (
+                          <>
+                            {displayOptions?.includes('PATIENT_HEADER') &&
+                              value && (
+                                <CustomFieldPatientInfo>
+                                  <Typography>{customFieldName}: </Typography>
+                                  <Box ml={1} />
+                                  <TextTypeHeader text={displayName || value} />
+                                </CustomFieldPatientInfo>
+                              )}
+                          </>
                         )}
-                      </>
+                      </React.Fragment>
                     ),
                   )}
                 </Box>

@@ -300,6 +300,29 @@ function* updateTaskDetails({ task, detailsState }) {
   }
 }
 
+function* updateTaskStartDate({ task, startDate }) {
+  try {
+    const updatedTask = yield call(
+      TaskApi.updateStartDate,
+      task.identifier,
+      startDate,
+    );
+    yield put({
+      type: ActionTypes.UPDATE_TASK_START_DATE_SUCCESS,
+      task,
+      startDate: updatedTask.startDate,
+    });
+    yield put(showGlobalAlert(AlertMessages.UPDATED));
+  } catch {
+    yield put({
+      type: ActionTypes.UPDATE_TASK_START_DATE_FAILURE,
+      task,
+      startDate: task.startDate,
+    });
+    yield put(showGlobalErrorAlert());
+  }
+}
+
 function* updateTaskDueDate({ task, dueDate }) {
   try {
     const updatedTask = yield call(
@@ -416,6 +439,7 @@ export default function* watchTask() {
   yield takeEvery(ActionTypes.ADD_TASK, addTask);
   yield takeEvery(ActionTypes.UPDATE_TASK_DESCRIPTION, updateTaskDescription);
   yield takeEvery(ActionTypes.UPDATE_TASK_DETAILS, updateTaskDetails);
+  yield takeEvery(ActionTypes.UPDATE_TASK_START_DATE, updateTaskStartDate);
   yield takeEvery(ActionTypes.UPDATE_TASK_DUE_DATE, updateTaskDueDate);
   yield takeEvery(ActionTypes.CHANGE_TASK_PRIORITY, changeTaskPriority);
   yield takeEvery(ActionTypes.REFRESH_TASK, refreshTask);

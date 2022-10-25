@@ -8,11 +8,26 @@ import MoreVertIcon from '@material-ui/icons/MoreVert';
 import { Cell, Row } from './styled';
 
 const FileListItem = props => {
-  const { file, options, onClick } = props;
+  const {
+    file,
+    options,
+    onClick,
+    onDragStart,
+    onDragEnter,
+    onDragEnd,
+    draggable = false,
+  } = props;
   const { fileName, dateCreated, creator, type } = file;
 
   return (
-    <Row onClick={onClick} clickable>
+    <Row
+      onClick={onClick}
+      clickable
+      onDragStart={onDragStart}
+      onDragEnter={onDragEnter}
+      onDragEnd={onDragEnd}
+      draggable={draggable}
+    >
       <Cell bold>
         {type === PatientAttachmentType.FILE_GDRIVE && (
           <>

@@ -13,7 +13,7 @@ import {
   GET_CURRENT_USER_FAILURE,
 } from 'actions/action-types';
 import * as UserApi from 'api/user-api';
-import { noop } from 'helpers/utility-functions';
+import { noop, showAlert } from 'helpers/utility-functions';
 import { dummyAccess } from 'reducers/user-reducer';
 import Auth from '@aws-amplify/auth';
 import configureStore from '../ConfigureStore';
@@ -384,6 +384,13 @@ export function getUserByEmailAndAccessToken(userEmail, accessToken) {
         store.dispatch({
           type: GET_CURRENT_USER_FAILURE,
         });
+        showAlert({
+          status: 'error',
+          title: 'Error',
+          text:
+            error?.response?.data?.error ??
+            'Error authentication. Please try again.',
+        });
         reject(error);
       });
   });
@@ -491,6 +498,75 @@ export function getEnterpriseAccessTokensByAuthCode(authCode, iss) {
   });
 }
 
+export function getEnterpriseAccessTokensForEmbeddedSSO(
+  authToken,
+  userIdentifier,
+  targetType,
+  targetIdentifier,
+) {
+  // eslint-disable-next-line consistent-return, sonarjs/cognitive-complexity
+  return new Promise(async (resolve, reject) => {
+    try {
+      const authUrl = `${process.env.HEYDOC_SERVICES_BASE_URL}oidc`;
+      const authData = `authToken=${authToken}&userIdentifier=${userIdentifier}&targetType=${targetType}&targetIdentifier=${targetIdentifier}`;
+
+      await axios.post(`${authUrl}/embeddedToken`, authData).then(response => {
+        const userRefreshToken = response?.data.refresh_token;
+        const userAccessToken = response?.data.access_token;
+        const email = response?.data.profile;
+        const organizationIdentifier = response?.data.organizationIdentifier;
+        const patientIdentifier = response?.data.patientIdentifier;
+        const taskListIdentifier = response?.data.taskListIdentifier;
+        const taskIdentifier = response?.data.taskIdentifier;
+        sessionStorage.setItem('EnterpriseUserFlag', true);
+        sessionStorage.setItem('SSO_ACCESSTOKEN', userAccessToken);
+        sessionStorage.setItem('SSO_REFRESHTOKEN', userRefreshToken);
+        sessionStorage.setItem('SSO_USEREMAIL', email);
+        sessionStorage.setItem('accessToken', userAccessToken);
+
+        if (organizationIdentifier && organizationIdentifier !== '') {
+          sessionStorage.setItem(
+            'OrganizationIdentifier',
+            organizationIdentifier,
+          );
+          sessionStorage.setItem(
+            'currentOrganizationIdentifier',
+            organizationIdentifier,
+          );
+        }
+
+        if (patientIdentifier && patientIdentifier !== '') {
+          sessionStorage.setItem('PatientIdentifier', patientIdentifier);
+        }
+        if (taskListIdentifier && taskListIdentifier !== '') {
+          sessionStorage.setItem('TaskListIdentifier', taskListIdentifier);
+        }
+        if (taskIdentifier && taskIdentifier !== '') {
+          sessionStorage.setItem('TaskIdentifier', taskIdentifier);
+        }
+        try {
+          sendEvent({
+            eventAction: 'LOGIN_SUCCESS',
+            eventCategory: 'AUTH',
+            usageEventType: 'USAGE_ACTION',
+          });
+        } catch (error) {
+          // do nothing
+        }
+      });
+      try {
+        await UserApi.captureLocalTimezone();
+      } catch (error) {
+        console.log(error);
+      }
+      resolve('success');
+    } catch (error) {
+      reject(error);
+      return Promise.reject(error);
+    }
+  });
+}
+
 export const updatePhoneNumber = async (email, existingPhone, newPhone) => {
   const { userAuth } = store.getState().userState;
 
@@ -513,7 +589,9 @@ export function checkSSO(email) {
   return new Promise(async resolve => {
     try {
       const checkSSOUrl = `${process.env.HEYDOC_SERVICES_BASE_URL}auth/checkSSO`;
-      const response = await axios.get(`${checkSSOUrl}?email=${email}`);
+      const response = await axios.get(
+        `${checkSSOUrl}?email=${encodeURIComponent(email)}`,
+      );
       const issuer = response?.data.issuer;
       console.log(`issuer: ${issuer}`);
       resolve(issuer);

@@ -60,6 +60,7 @@ import TaskItemContextMenu from '../TaskItemContextMenu/TaskItemContextMenu';
 import TaskItemBulkEdit from './TaskItemComponents/TaskItemBulkEdit';
 import TaskItemDescription from './TaskItemComponents/TaskItemDescription';
 import TaskItemPatient from './TaskItemComponents/TaskItemPatient';
+import TaskItemStartDate from './TaskItemComponents/TaskItemStartDate';
 import TaskItemDueDate from './TaskItemComponents/TaskItemDueDate';
 import TaskItemSubtasks from './TaskItemComponents/TaskItemSubtasks';
 import TaskItemIcons from './TaskItemComponents/TaskItemIcons';
@@ -554,6 +555,57 @@ const TaskItem = React.memo(
               </>
             )}
             {isColumnChecked(columns, TaskItemColumn.WORKFLOW_STATUS) && (
+              <TaskItemCell
+                key={`task_status_${taskIdentifier}`}
+                width={
+                  columns?.find(
+                    ({ identifier }) =>
+                      identifier === TaskItemColumn.WORKFLOW_STATUS,
+                  )?.columnWidth
+                }
+                paddingLeft="smallPlus"
+                paddingRight="tiny"
+                onContextMenu={event => {
+                  event.stopPropagation();
+                }}
+                order={getColumnOrder(TaskItemColumn.WORKFLOW_STATUS)}
+              >
+                <TaskItemWorkflowStatus
+                  task={task}
+                  updateWorkflowStatus={handleUpdateWorkflowStatus}
+                  workflowStatus={workflowStatus}
+                  matchWorkflowStatus={matchWorkflowStatus}
+                  highlightedValue={highlightedValue}
+                  showDefaultTaskStatusCompleted={
+                    selectedOrganization?.showDefaultTaskStatusCompleted
+                  }
+                />
+              </TaskItemCell>
+            )}
+            {isColumnChecked(columns, TaskItemColumn.ACTIVITY) && (
+              <TaskItemCell
+                key={`activity_${taskIdentifier}`}
+                width={
+                  columns?.find(
+                    ({ identifier }) => identifier === TaskItemColumn.ACTIVITY,
+                  )?.columnWidth
+                }
+                order={getColumnOrder(TaskItemColumn.ACTIVITY)}
+              >
+                <TaskItemIcons
+                  restrictions={restrictions}
+                  matchComments={matchComments}
+                  comments={comments}
+                  task={task}
+                  matchLabels={matchLabels}
+                  labels={labels}
+                  matchAttachments={matchAttachments}
+                  attachments={attachments}
+                  dispatch={dispatch}
+                />
+              </TaskItemCell>
+            )}
+            {restrictions?.startDate !== DISABLED && (
               <>
                 {randerFirstColumnCoverIfNecessary(
                   <TaskItemCell
@@ -570,16 +622,24 @@ const TaskItem = React.memo(
                     onContextMenu={event => {
                       event.stopPropagation();
                     }}
-                    order={getColumnOrder(TaskItemColumn.WORKFLOW_STATUS)}
+                    order={getColumnOrder(TaskItemColumn.START_DATE)}
                   >
-                    <TaskItemWorkflowStatus
-                      task={task}
-                      updateWorkflowStatus={handleUpdateWorkflowStatus}
-                      workflowStatus={workflowStatus}
-                      matchWorkflowStatus={matchWorkflowStatus}
-                      highlightedValue={highlightedValue}
-                      showDefaultTaskStatusCompleted={
-                        selectedOrganization?.showDefaultTaskStatusCompleted
+                    <TaskItemStartDate task={task} />
+                  </TaskItemCell>
+                )}
+              </>
+            )}
+            {restrictions?.dueDate !== DISABLED && (
+              <>
+                {isColumnChecked(columns, TaskItemColumn.DUE_DATE) &&
+                  !isTemplateTask && (
+                    <TaskItemCell
+                      key={`due_date_${taskIdentifier}`}
+                      width={
+                        columns?.find(
+                          ({ identifier }) =>
+                            identifier === TaskItemColumn.DUE_DATE,
+                        )?.columnWidth
                       }
                     />
                   </TaskItemCell>,
