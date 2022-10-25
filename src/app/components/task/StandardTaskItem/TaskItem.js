@@ -583,71 +583,6 @@ const TaskItem = React.memo(
               </TaskItemCell>
             )}
             {isColumnChecked(columns, TaskItemColumn.ACTIVITY) && (
-              <TaskItemCell
-                key={`activity_${taskIdentifier}`}
-                width={
-                  columns?.find(
-                    ({ identifier }) => identifier === TaskItemColumn.ACTIVITY,
-                  )?.columnWidth
-                }
-                order={getColumnOrder(TaskItemColumn.ACTIVITY)}
-              >
-                <TaskItemIcons
-                  restrictions={restrictions}
-                  matchComments={matchComments}
-                  comments={comments}
-                  task={task}
-                  matchLabels={matchLabels}
-                  labels={labels}
-                  matchAttachments={matchAttachments}
-                  attachments={attachments}
-                  dispatch={dispatch}
-                />
-              </TaskItemCell>
-            )}
-            {restrictions?.startDate !== DISABLED && (
-              <>
-                {randerFirstColumnCoverIfNecessary(
-                  <TaskItemCell
-                    isSubtask={isSubtask}
-                    key={`task_status_${taskIdentifier}`}
-                    width={
-                      columns?.find(
-                        ({ identifier }) =>
-                          identifier === TaskItemColumn.WORKFLOW_STATUS,
-                      )?.columnWidth
-                    }
-                    paddingLeft="smallPlus"
-                    paddingRight="tiny"
-                    onContextMenu={event => {
-                      event.stopPropagation();
-                    }}
-                    order={getColumnOrder(TaskItemColumn.START_DATE)}
-                  >
-                    <TaskItemStartDate task={task} />
-                  </TaskItemCell>
-                )}
-              </>
-            )}
-            {restrictions?.dueDate !== DISABLED && (
-              <>
-                {isColumnChecked(columns, TaskItemColumn.DUE_DATE) &&
-                  !isTemplateTask && (
-                    <TaskItemCell
-                      key={`due_date_${taskIdentifier}`}
-                      width={
-                        columns?.find(
-                          ({ identifier }) =>
-                            identifier === TaskItemColumn.DUE_DATE,
-                        )?.columnWidth
-                      }
-                    />
-                  </TaskItemCell>,
-                  getColumnOrder(TaskItemColumn.WORKFLOW_STATUS),
-                )}
-              </>
-            )}
-            {isColumnChecked(columns, TaskItemColumn.ACTIVITY) && (
               <>
                 {randerFirstColumnCoverIfNecessary(
                   <TaskItemCell
@@ -684,17 +619,23 @@ const TaskItem = React.memo(
                     {randerFirstColumnCoverIfNecessary(
                       <TaskItemCell
                         isSubtask={isSubtask}
+                        key={`start_date_${taskIdentifier}`}
                         width={
                           columns?.find(
                             ({ identifier }) =>
                               identifier === TaskItemColumn.START_DATE,
                           )?.columnWidth
                         }
+                        paddingLeft="tiny"
+                        paddingRight="tiny"
+                        justify="center"
                         onContextMenu={event => {
                           event.stopPropagation();
                         }}
                         order={getColumnOrder(TaskItemColumn.START_DATE)}
-                      />,
+                      >
+                        <TaskItemStartDate task={task} />
+                      </TaskItemCell>,
                       getColumnOrder(TaskItemColumn.START_DATE),
                     )}
                   </>
