@@ -51,7 +51,7 @@ const USER_TYPES = new Proxy(
       changeable: true,
       isLimitedAccess: true,
       description:
-        'A Dock Pro user will only have access to the workflow library and can help with building out Workflows and Smartflows for your team.',
+        'A Dock Pro user will have admin access to setup the configurations and workflows for your team.',
     },
   },
   {
