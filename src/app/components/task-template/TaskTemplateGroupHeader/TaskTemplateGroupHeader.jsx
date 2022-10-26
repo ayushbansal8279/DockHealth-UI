@@ -49,6 +49,10 @@ import {
 import { currentTaskListSelector } from 'selectors/task-list-selectors';
 import { openDrawer } from 'actions/workflow-drawer-actions';
 import { CUSTOM_FIELD_TYPES } from 'helpers/custom-fields-helpers';
+import {
+  TASK_LIST_RESTRICTIONS_OPTIONS,
+  TASK_LIST_RESTRICTIONS_PROFILES,
+} from 'restrictions/task-restrictions';
 import TemplateHeaderName from '../TaskTemplateName/TaskTemplateName';
 import TaskHeaderPatient from '../TaskTemplatePatient/TaskTemplatePatient';
 import TemplateItemWorkflowStatus from '../TaskTemplateWorkflowStatus/TaskTemplateWorkflowStatus';
@@ -406,6 +410,10 @@ const TaskTemplateGroupHeader = ({
     !selectedWorkflow ? getWorkflowData(identifier) : setWorkFlowData(null);
   }, [getWorkflowData, identifier, selectedWorkflow]);
 
+  const restrictions =
+    TASK_LIST_RESTRICTIONS_PROFILES[currentUser?.orgUserRole];
+  const { DISABLED } = TASK_LIST_RESTRICTIONS_OPTIONS;
+
   return (
     <TaskTemplateGroupHeaderContainer isSelected={isBundleSelected}>
       <StickyMainTaskItemCell
@@ -419,25 +427,33 @@ const TaskTemplateGroupHeader = ({
           )?.columnWidth
         }
       >
-        {!groupDragAndDropDisabled && !bulkEditIsActive && (
-          <TemplateHandle
-            src={ThreeDotsIcon}
-            alt="Handle"
-            {...dragHandleProps}
+        {!groupDragAndDropDisabled &&
+          !bulkEditIsActive &&
+          restrictions?.createTask !== DISABLED && (
+            <TemplateHandle
+              src={ThreeDotsIcon}
+              alt="Handle"
+              {...dragHandleProps}
+            />
+          )}
+        {restrictions?.createTask !== DISABLED && (
+          <Checkbox
+            isChecked={selected || isBundleSelected}
+            onClick={handleBundleSelect}
           />
         )}
-        <Checkbox
-          isChecked={selected || isBundleSelected}
-          onClick={handleBundleSelect}
-        />
         <Box m={1} />
         {showTasksWithGroup && (
           <RotatableChevron rotated={isOpen} onClick={() => setOpen(!isOpen)} />
         )}
-        <Spacing horizontal={2} />
-        <OptionsMenu options={menuOptions}>
-          <MoreVert color="primary" />
-        </OptionsMenu>
+        {restrictions?.createTask !== DISABLED && (
+          <>
+            <Spacing horizontal={2} />
+            <OptionsMenu options={menuOptions}>
+              <MoreVert color="primary" />
+            </OptionsMenu>
+          </>
+        )}
         <TemplateHeaderName
           templateGroup={templateGroup}
           isEditing={isEditing}
@@ -559,7 +575,9 @@ const TaskTemplateGroupHeader = ({
           justify="center"
           order={getColumnOrder(TaskItemColumn.DUE_DATE)}
         >
-          <TaskTemplateDueDate workflow={templateGroup} />
+          {restrictions?.createTask !== DISABLED && (
+            <TaskTemplateDueDate workflow={templateGroup} />
+          )}
         </TaskItemCell>
       )}
       {isColumnChecked(columns, TaskItemColumn.ANCHOR_DATE) && (

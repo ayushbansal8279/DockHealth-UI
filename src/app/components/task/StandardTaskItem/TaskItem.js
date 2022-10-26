@@ -52,6 +52,7 @@ import {
   SINGLE_TASK_RESTRICTIONS_PROFILES,
   SINGLE_TASK_FEATURES,
   SINGLE_TASK_RESTRICTIONS_OPTIONS,
+  TASK_LIST_RESTRICTIONS_PROFILES,
 } from 'restrictions/task-restrictions';
 import { CUSTOM_FIELD_TYPES } from 'helpers/custom-fields-helpers';
 import { getSubtaskStylingLink } from './helpers';
@@ -170,6 +171,8 @@ const TaskItem = React.memo(
     const currentUser = useSelector(userProfileSelector);
     const restrictions =
       SINGLE_TASK_RESTRICTIONS_PROFILES[currentUser?.orgUserRole];
+    const taskListRestrictions =
+      TASK_LIST_RESTRICTIONS_PROFILES[currentUser?.orgUserRole];
     const isSelected = useSelector(
       isTaskSelectedSelector(taskIdentifier, isSelectedByHighlighted),
     );
@@ -359,24 +362,27 @@ const TaskItem = React.memo(
                 )?.columnWidth
               }
             >
-              <DotsContainer
-                showDraggableDots={showDraggableDots}
-                dragHandleProps={dragHandleProps}
-              />
+              {taskListRestrictions?.createTask !== DISABLED && (
+                <DotsContainer
+                  showDraggableDots={showDraggableDots}
+                  dragHandleProps={dragHandleProps}
+                />
+              )}
               {showPriority && (
                 <PriorityIndicator color={getPriorityColor(task.priority)} />
               )}
               {showSubtaskStylingLink && getSubtaskStylingLink(isLast)}
-              {bulkEditEnabled && (
-                <TaskItemBulkEdit
-                  isChecked={selected}
-                  isDisabled={
-                    isTaskStatusTogglingDisabled ||
-                    !isDependencyEmptyOrCompleted
-                  }
-                  onClick={onClickBulkEdit}
-                />
-              )}
+              {taskListRestrictions?.createTask !== DISABLED &&
+                bulkEditEnabled && (
+                  <TaskItemBulkEdit
+                    isChecked={selected}
+                    isDisabled={
+                      isTaskStatusTogglingDisabled ||
+                      !isDependencyEmptyOrCompleted
+                    }
+                    onClick={onClickBulkEdit}
+                  />
+                )}
               <MainStandardTaskItemCell
                 bolded
                 paddingLeft="smallPlus"
@@ -394,7 +400,11 @@ const TaskItem = React.memo(
                     isDependencyEmptyOrCompleted
                   }
                   isCompleted={isCompleted}
-                  onClick={onCircleClick}
+                  onClick={
+                    taskListRestrictions?.createTask !== DISABLED
+                      ? onCircleClick
+                      : () => {}
+                  }
                 />
 
                 {!isDependencyEmptyOrCompleted && (
@@ -550,59 +560,60 @@ const TaskItem = React.memo(
                 />
               </TaskItemCell>
             )}
-            {restrictions?.dueDate !== DISABLED && (
-              <>
-                {isColumnChecked(columns, TaskItemColumn.START_DATE) && (
+            <>
+              {isColumnChecked(columns, TaskItemColumn.START_DATE) && (
+                <TaskItemCell
+                  width={
+                    columns?.find(
+                      ({ identifier }) =>
+                        identifier === TaskItemColumn.START_DATE,
+                    )?.columnWidth
+                  }
+                  onContextMenu={event => {
+                    event.stopPropagation();
+                  }}
+                  order={getColumnOrder(TaskItemColumn.START_DATE)}
+                />
+              )}
+              {isColumnChecked(columns, TaskItemColumn.DUE_DATE) &&
+                !isTemplateTask && (
                   <TaskItemCell
+                    key={`due_date_${taskIdentifier}`}
                     width={
                       columns?.find(
                         ({ identifier }) =>
-                          identifier === TaskItemColumn.START_DATE,
+                          identifier === TaskItemColumn.DUE_DATE,
                       )?.columnWidth
                     }
+                    paddingLeft="tiny"
+                    paddingRight="tiny"
+                    justify="center"
                     onContextMenu={event => {
                       event.stopPropagation();
                     }}
-                    order={getColumnOrder(TaskItemColumn.START_DATE)}
-                  />
+                    order={getColumnOrder(TaskItemColumn.DUE_DATE)}
+                  >
+                    <TaskItemDueDate
+                      task={task}
+                      disabled={restrictions?.dueDate === DISABLED}
+                    />
+                  </TaskItemCell>
                 )}
-                {isColumnChecked(columns, TaskItemColumn.DUE_DATE) &&
-                  !isTemplateTask && (
-                    <TaskItemCell
-                      key={`due_date_${taskIdentifier}`}
-                      width={
-                        columns?.find(
-                          ({ identifier }) =>
-                            identifier === TaskItemColumn.DUE_DATE,
-                        )?.columnWidth
-                      }
-                      paddingLeft="tiny"
-                      paddingRight="tiny"
-                      justify="center"
-                      onContextMenu={event => {
-                        event.stopPropagation();
-                      }}
-                      order={getColumnOrder(TaskItemColumn.DUE_DATE)}
-                    >
-                      <TaskItemDueDate task={task} />
-                    </TaskItemCell>
-                  )}
-                {isColumnChecked(columns, TaskItemColumn.ANCHOR_DATE) && (
-                  <TaskItemCell
-                    width={
-                      columns?.find(
-                        ({ identifier }) =>
-                          identifier === TaskItemColumn.ANCHOR_DATE,
-                      )?.columnWidth
-                    }
-                    onContextMenu={event => {
-                      event.stopPropagation();
-                    }}
-                    order={getColumnOrder(TaskItemColumn.ANCHOR_DATE)}
-                  />
-                )}
-              </>
-            )}
+              {isColumnChecked(columns, TaskItemColumn.ANCHOR_DATE) && (
+                <TaskItemCell
+                  width={
+                    columns?.find(
+                      ({ identifier }) =>
+                        identifier === TaskItemColumn.ANCHOR_DATE,
+                    )?.columnWidth
+                  }
+                  onContextMenu={event => {
+                    event.stopPropagation();
+                  }}
+                  order={getColumnOrder(TaskItemColumn.ANCHOR_DATE)}
+                />
+              )}
+            </>
 
             {isColumnChecked(columns, TaskItemColumn.ASSIGNED) && (
               <TaskItemCell
@@ -631,67 +642,63 @@ const TaskItem = React.memo(
                 />
               </TaskItemCell>
             )}
-            {restrictions?.listName !== DISABLED &&
-              isColumnChecked(columns, TaskItemColumn.LIST_NAME) && (
-                <TaskItemCell
-                  key={`list_${taskIdentifier}`}
-                  width={
-                    columns?.find(
-                      ({ identifier }) =>
-                        identifier === TaskItemColumn.LIST_NAME,
-                    )?.columnWidth
-                  }
-                  order={getColumnOrder(TaskItemColumn.LIST_NAME)}
-                >
-                  <TaskItemList
-                    listName={listName}
-                    taskListIdentifier={taskListIdentifier}
-                    taskStatus={task.status}
-                  />
-                </TaskItemCell>
-              )}
-            {restrictions?.customFields !== DISABLED && (
-              <>
-                {columns
-                  .filter(
-                    f =>
-                      f.isChecked &&
-                      f._customFieldType !== CUSTOM_FIELD_TYPES.REGULAR,
-                  )
-                  .map(field => {
-                    const taskCustomFieldValue = task?.taskMetaData?.find(
-                      f => f?.customFieldIdentifier === field.identifier,
-                    );
-                    const patientCustomFieldValue = task?.patient?.patientMetaData?.find(
-                      f => f?.customFieldIdentifier === field.identifier,
-                    );
-                    const customFieldValue =
-                      field.targetType === CUSTOM_FIELD_TYPES.PATIENT
-                        ? patientCustomFieldValue
-                        : taskCustomFieldValue;
-
-                    const hidePatientCustomFields =
-                      field.targetType === CUSTOM_FIELD_TYPES.PATIENT &&
-                      !task?.patient?.patientIdentifier;
-                    return (
-                      <TaskItemCell
-                        key={`custom_${taskIdentifier}_${field.identifier}`}
-                        padding="4px"
-                        width={field.columnWidth}
-                        order={getColumnOrder(field.identifier)}
-                      >
-                        {!hidePatientCustomFields && (
-                          <TaskItemCustomField
-                            field={field}
-                            customFieldValue={customFieldValue}
-                            task={task}
-                          />
-                        )}
-                      </TaskItemCell>
-                    );
-                  })}
-              </>
+            {isColumnChecked(columns, TaskItemColumn.LIST_NAME) && (
+              <TaskItemCell
+                key={`list_${taskIdentifier}`}
+                width={
+                  columns?.find(
+                    ({ identifier }) => identifier === TaskItemColumn.LIST_NAME,
+                  )?.columnWidth
+                }
+                order={getColumnOrder(TaskItemColumn.LIST_NAME)}
+              >
+                <TaskItemList
+                  listName={listName}
+                  taskListIdentifier={taskListIdentifier}
+                  taskStatus={task.status}
+                />
+              </TaskItemCell>
             )}
+            <>
+              {columns
+                .filter(
+                  f =>
+                    f.isChecked &&
+                    f._customFieldType !== CUSTOM_FIELD_TYPES.REGULAR,
+                )
+                .map(field => {
+                  const taskCustomFieldValue = task?.taskMetaData?.find(
+                    f => f?.customFieldIdentifier === field.identifier,
+                  );
+                  const patientCustomFieldValue = task?.patient?.patientMetaData?.find(
+                    f => f?.customFieldIdentifier === field.identifier,
+                  );
+                  const customFieldValue =
+                    field.targetType === CUSTOM_FIELD_TYPES.PATIENT
+                      ? patientCustomFieldValue
+                      : taskCustomFieldValue;
+
+                  const hidePatientCustomFields =
+                    field.targetType === CUSTOM_FIELD_TYPES.PATIENT &&
+                    !task?.patient?.patientIdentifier;
+                  return (
+                    <TaskItemCell
+                      key={`custom_${taskIdentifier}_${field.identifier}`}
+                      padding="4px"
+                      width={field.columnWidth}
+                      order={getColumnOrder(field.identifier)}
+                    >
+                      {!hidePatientCustomFields && (
+                        <TaskItemCustomField
+                          field={field}
+                          customFieldValue={customFieldValue}
+                          task={task}
+                        />
+                      )}
+                    </TaskItemCell>
+                  );
+                })}
+            </>
           </StandardTaskItemContainer>
         </StandardTaskItemPanel>
         {showContextMenu && contextMenu && (

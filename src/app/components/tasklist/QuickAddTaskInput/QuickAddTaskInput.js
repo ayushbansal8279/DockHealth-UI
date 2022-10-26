@@ -22,7 +22,6 @@ const QuickAddTaskInput = React.forwardRef(
       taskListIdentifier = null,
       disableMentions = false,
       small,
-      disabled = false,
     },
     reference,
     // eslint-disable-next-line sonarjs/cognitive-complexity
@@ -84,17 +83,13 @@ const QuickAddTaskInput = React.forwardRef(
       if (error) {
         setError(null);
       }
-      if (!disabled) {
-        setNewTaskDescription(state);
-        setHasInputValue(
-          !!convertFromEditorStateToOutput(state, false).rawText,
-        );
-      }
+      setNewTaskDescription(state);
+      setHasInputValue(!!convertFromEditorStateToOutput(state, false).rawText);
     };
 
     return (
       <>
-        <AddTaskInputWrapper hasError={!!error} disabled={disabled}>
+        <AddTaskInputWrapper hasError={!!error}>
           <MentionsEditorContainer>
             <TextEditor
               ref={reference || quickAddTaskInputReference}

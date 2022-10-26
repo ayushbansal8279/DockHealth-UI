@@ -16,7 +16,7 @@ import {
   DownloadAllLink,
 } from './styled';
 
-const AttachmentsSection = () => {
+const AttachmentsSection = ({ disabled = false }) => {
   const {
     attachmentsSources,
     currentTaskAttachments,
@@ -43,6 +43,7 @@ const AttachmentsSection = () => {
         attachmentsLoading={attachmentsLoading}
       />
       <AttachmentFileInput
+        disabled={disabled}
         ref={attachmentFileInputReference}
         {...getInputProps()}
       />

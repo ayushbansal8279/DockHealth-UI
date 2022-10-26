@@ -33,6 +33,7 @@ const Select = React.forwardRef(
       value,
       placeholder,
       inputRef,
+      disabled = false,
       ...restProps
     },
     reference,
@@ -46,6 +47,7 @@ const Select = React.forwardRef(
         value={selectedOption?.label || ''}
         error={error}
         placeholder={placeholder}
+        disabled={disabled}
         {...restProps}
       />
     ) : (
@@ -54,6 +56,7 @@ const Select = React.forwardRef(
           {label}
         </InputLabel>
         <MuiSelect
+          disabled={disabled}
           MenuProps={{
             anchorOrigin: {
               vertical: 'bottom',

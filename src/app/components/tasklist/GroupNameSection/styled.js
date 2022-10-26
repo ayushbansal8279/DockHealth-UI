@@ -4,7 +4,7 @@ import palette from 'styles/palette';
 import { fontWeights } from 'styles/font';
 
 export const Cross = styled.span`
-  color: ${({ disabled }) => (disabled ? palette.lightGrey : palette.orange)};
+  color: ${palette.orange};
   margin-right: ${spacing.smallPlus};
 `;
 
@@ -14,8 +14,7 @@ export const Description = styled.div`
 `;
 
 export const Header = styled.span`
-  color: ${({ disabled }) =>
-    disabled ? palette.lightGrey : palette.brightBlue};
+  color: ${palette.brightBlue};
   font-weight: ${fontWeights.regularPlus};
   text-transform: uppercase;
 `;

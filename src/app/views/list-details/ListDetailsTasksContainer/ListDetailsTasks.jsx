@@ -68,6 +68,11 @@ const ListDetailsTasks = ({
   const { tabName } = useParams();
   const isCompletedView = tabName?.toUpperCase() === TaskStatus.COMPLETE;
 
+  const currentUser = useSelector(userProfileSelector);
+  const restrictions =
+    TASK_LIST_RESTRICTIONS_PROFILES[currentUser?.orgUserRole];
+  const { DISABLED } = TASK_LIST_RESTRICTIONS_OPTIONS;
+
   const renderEmptyState = () => {
     if (isSearchApplied) return <NoSearchResultsView />;
 
@@ -259,7 +264,9 @@ const ListDetailsTasks = ({
                                 draggableId={String(task.identifier)}
                                 index={index}
                                 isDragDisabled={
-                                  isCompletedGroup || dragAndDropDisabled
+                                  isCompletedGroup ||
+                                  dragAndDropDisabled ||
+                                  restrictions?.createGroup === DISABLED
                                 }
                               >
                                 {(draggableProvided, { isDragging }) => (
@@ -374,15 +381,12 @@ const ListDetailsTasks = ({
       loadTasksForTaskGroup,
       isSortApplied,
       dragAndDropDisabled,
+      restrictions,
+      DISABLED,
       showClearSortFiltersModal,
       viewSetup,
     ],
   );
-
-  const currentUser = useSelector(userProfileSelector);
-  const restrictions =
-    TASK_LIST_RESTRICTIONS_PROFILES[currentUser?.orgUserRole];
-  const { DISABLED } = TASK_LIST_RESTRICTIONS_OPTIONS;
 
   if (isFetchingData || isEmpty(groupList))
     return <GroupedListSkeletonLoader />;
@@ -403,16 +407,16 @@ const ListDetailsTasks = ({
               <StickyContainer left={24} decreaseWidth={2 * 24}>
                 <GroupNameSection
                   onEnterClick={
-                    restrictions.createGroup === DISABLED
+                    restrictions?.createGroup === DISABLED
                       ? onGroupNameClick
                       : () => undefined
                   }
                   placeholder={messages.placeholder}
                   closeOnEnter
                 >
-                  <AddGroupNameButton
-                    disabled={restrictions.createGroup === DISABLED}
-                  />
+                  {restrictions?.createGroup !== DISABLED && (
+                    <AddGroupNameButton />
+                  )}
                 </GroupNameSection>
               </StickyContainer>
             )}

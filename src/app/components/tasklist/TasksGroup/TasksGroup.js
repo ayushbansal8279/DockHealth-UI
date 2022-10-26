@@ -245,31 +245,30 @@ const TasksGroup = ({
   const restrictions =
     TASK_LIST_RESTRICTIONS_PROFILES[currentUser?.orgUserRole];
   const { DISABLED } = TASK_LIST_RESTRICTIONS_OPTIONS;
-
   const options = useMemo(
     () =>
       [
         !isFirstGroup && {
           name: 'Move up',
           onClick: moveGroupUp,
-          disabled: restrictions.editSettings === DISABLED,
+          disabled: restrictions?.editSettings === DISABLED,
         },
         !isLastGroup && {
           name: 'Move down',
           onClick: moveGroupDown,
-          disabled: restrictions.editSettings === DISABLED,
+          disabled: restrictions?.editSettings === DISABLED,
         },
         !isDefaultGroup && {
           name: 'Delete',
           color: palette.red,
           onClick: handleDeleteGroup,
-          disabled: restrictions.editSettings === DISABLED,
+          disabled: restrictions?.editSettings === DISABLED,
         },
       ].filter(o => typeof o !== 'boolean'),
     [
       isFirstGroup,
       moveGroupUp,
-      restrictions.editSettings,
+      restrictions,
       DISABLED,
       isLastGroup,
       moveGroupDown,
@@ -321,25 +320,28 @@ const TasksGroup = ({
       </StickyContainer>
 
       <Tasks timeout={150} in={isOpen}>
-        {!!quickAddTask && !isSearchApplied && !isCompletedGroup && (
-          <StickyContainer left={24} decreaseWidth={2 * 24} zIndex={100}>
-            <Grid container>
-              <Grid item xs>
-                <QuickAddTaskInput
-                  taskListIdentifier={taskListIdentifier}
-                  quickAddTask={onQuickAddTask}
-                  validator={quickTaskInputValidator}
-                />
+        {restrictions?.createTask !== DISABLED &&
+          !!quickAddTask &&
+          !isSearchApplied &&
+          !isCompletedGroup && (
+            <StickyContainer left={24} decreaseWidth={2 * 24} zIndex={100}>
+              <Grid container>
+                <Grid item xs>
+                  <QuickAddTaskInput
+                    taskListIdentifier={taskListIdentifier}
+                    quickAddTask={onQuickAddTask}
+                    validator={quickTaskInputValidator}
+                  />
+                </Grid>
+                {applyTemplate && (
+                  <TaskTemplateApplicator
+                    onTemplateSelect={handleTemplateSelect}
+                    bulkApply={false}
+                  />
+                )}
               </Grid>
-              {applyTemplate && (
-                <TaskTemplateApplicator
-                  onTemplateSelect={handleTemplateSelect}
-                  bulkApply={false}
-                />
-              )}
-            </Grid>
-          </StickyContainer>
-        )}
+            </StickyContainer>
+          )}
         {(tasks?.length > 0 || isLoadingGroup) && (
           <TasksHeader
             bulkEditEnabled={bulkEditEnabled}
