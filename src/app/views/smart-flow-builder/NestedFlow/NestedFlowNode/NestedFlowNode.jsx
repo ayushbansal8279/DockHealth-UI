@@ -4,7 +4,7 @@ import { IconButton, Typography } from '@material-ui/core';
 import { openModal, closeModal } from 'modal/actions';
 import { deleteTask, partialUpdateTask } from 'actions/task-actions';
 import { getTemplates } from 'api/task-template-api';
-import { Edit, Delete, FindReplace } from '@material-ui/icons';
+import { Edit, Delete } from '@material-ui/icons';
 import palette from 'styles/palette';
 
 import TaskNodeHandles from 'views/smart-flow-builder/TaskNodeHandles/TaskNodeHandles';
@@ -17,13 +17,13 @@ const NestedFlowNode = React.memo(({ data, isConnectable, selected, type }) => {
   const { taskIdentifier, linkedTaskTemplate } = task || {};
 
   const [currentWorkflow, setCurrentWorkflow] = useState({
-    name: linkedTaskTemplate.name,
-    identifier: linkedTaskTemplate.identifier,
+    name: linkedTaskTemplate?.name,
+    identifier: linkedTaskTemplate?.identifier,
   });
 
   const [workflow, setWorkflow] = useState({
-    name: linkedTaskTemplate.name,
-    identifier: linkedTaskTemplate.identifier,
+    name: linkedTaskTemplate?.name,
+    identifier: linkedTaskTemplate?.identifier,
   });
   const dispatch = useDispatch();
 

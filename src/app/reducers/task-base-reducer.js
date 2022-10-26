@@ -231,6 +231,21 @@ const TaskBaseReducer = (state, action, updateStateCallback) => {
       return updateStateCallback(state, updateTaskFromAction);
     }
 
+    case ActionTypes.UPDATE_TASK_START_DATE:
+    case ActionTypes.UPDATE_TASK_START_DATE_FAILURE: {
+      const { task, startDate } = action;
+
+      const updateTaskFromAction = t => {
+        if (t.taskIdentifier === task.taskIdentifier) {
+          return { ...t, startDate };
+        }
+
+        return updateNestedTask({ startDate }, task.taskIdentifier, t);
+      };
+
+      return updateStateCallback(state, updateTaskFromAction);
+    }
+
     case ActionTypes.UPDATE_TASK_DUE_DATE:
     case ActionTypes.UPDATE_TASK_DUE_DATE_FAILURE: {
       const { task, dueDate } = action;

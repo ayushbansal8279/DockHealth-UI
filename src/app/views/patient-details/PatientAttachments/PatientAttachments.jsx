@@ -1,7 +1,7 @@
 /* eslint-disable sonarjs/cognitive-complexity */
-import React, { useCallback, useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useState, useRef } from 'react';
 import palette from 'styles/palette';
-import { useSelector } from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
 import localStorageHelper from 'helpers/local-storage-helper';
 // import compose from 'ramda/src/compose';
 // import { showGlobalErrorAlert } from 'alert/actions';
@@ -22,6 +22,7 @@ import FileListItemProgressBar from 'components/attachments/FileListItemProgress
 import FileGridItemProgressBar from 'components/attachments/FileGridItemProgressBar/FileGridItemProgressBar';
 import FileGridItemLoader from 'components/attachments/FileGridItemLoader/FileGridItemLoader';
 import FileListItemLoader from 'components/attachments/FileListItemLoader/FileListItemLoader';
+import * as PatientDetailsActions from 'actions/patient-details-actions';
 import GoogleDriveIcon from 'img/google-drive-icon';
 import GoogleDrivePicker from 'components/common/GoogleDrivePicker/GoogleDrivePicker';
 import {
@@ -74,6 +75,22 @@ const PatientAttachments = () => {
     downloadAllFiles,
   } = initializeAttachmentsSectionHooks();
 
+  const [foldersList, setFoldersList] = useState([]);
+  const [filesList, setFilesList] = useState([]);
+
+  useEffect(() => {
+    setFoldersList(folders);
+  }, [folders]);
+
+  useEffect(() => {
+    setFilesList(currentPatientAttachments);
+  }, [currentPatientAttachments]);
+
+  const dispatch = useDispatch();
+
+  const [didDragFile, setDidDragFile] = useState(false);
+  const [didDragOverFile, setDidDragOverFile] = useState(false);
+
   const isFetching = useSelector(isFetchingPatientAttachmentsSelector);
 
   const FileItemComponent =
@@ -124,9 +141,85 @@ const PatientAttachments = () => {
     [deleteAttachment, moveFileOrFolder, openFolderInNewTab, renameAttachment],
   );
 
-  // const handleGoogleAuthError = useCallback(() => {
-  //   dispatch(showGlobalErrorAlert());
-  // }, [dispatch]);
+  const dragItem = useRef();
+  const dragOverItem = useRef();
+
+  const dragStart = (event, position, isFile = false) => {
+    dragItem.current = position;
+    setDidDragFile(isFile);
+  };
+
+  const dragEnter = (event, position, isFile = false) => {
+    dragOverItem.current = position;
+    // setDragOverStyle({ border: `2px solid ${palette.midnightBlue}` });
+    const styledList = foldersList.map(folder => {
+      const styledFolder = folder;
+      styledFolder.style = { border: `1px solid ${palette.coolGrey2}` };
+      return styledFolder;
+    });
+
+    if (!isFile) {
+      styledList[position].style = {
+        border: `2px solid ${palette.midnightBlue}`,
+      };
+      // setFoldersList(styledList);
+    }
+    setFoldersList(styledList);
+
+    setDidDragOverFile(isFile);
+  };
+
+  const drop = useCallback(() => {
+    // setDragOverStyle({ border: `1px solid ${palette.coolGrey2}` });
+    if (dragOverItem && dragOverItem.current) {
+      // foldersList[dragOverItem.current].style = {
+      //   border: `1px solid ${palette.coolGrey2}`,
+      // };
+
+      setFoldersList(
+        // eslint-disable-next-line sonarjs/no-identical-functions
+        foldersList.map(folder => {
+          const styledFolder = folder;
+          styledFolder.style = { border: `1px solid ${palette.coolGrey2}` };
+          return styledFolder;
+        }),
+      );
+    }
+
+    if (didDragOverFile) {
+      return;
+    }
+
+    if (didDragFile) {
+      dispatch(
+        PatientDetailsActions.movePatientAttachment(
+          filesList[dragItem.current],
+          foldersList[dragOverItem.current].attachmentIdentifier,
+        ),
+      );
+
+      const copyListItems = [...filesList];
+      copyListItems.splice(dragItem.current, 1);
+      setFilesList(copyListItems);
+    } else {
+      if (dragItem.current === dragOverItem.current) {
+        return;
+      }
+      dispatch(
+        PatientDetailsActions.movePatientAttachment(
+          foldersList[dragItem.current],
+          foldersList[dragOverItem.current].attachmentIdentifier,
+        ),
+      );
+      const copyListItems = [...foldersList];
+      copyListItems.splice(dragItem.current, 1);
+      setFoldersList(copyListItems);
+    }
+    dragItem.current = null;
+    dragOverItem.current = null;
+    setDidDragFile(false);
+    setDidDragOverFile(false);
+  }, [didDragFile, didDragOverFile, dispatch, filesList, foldersList]);
 
   return (
     <PatientAttachmentsWrapper isDragActive={isDragActive}>
@@ -203,30 +296,40 @@ const PatientAttachments = () => {
               ref={attachmentFileInputReference}
               {...getInputProps()}
             />
-            {folders.length > 0 && (
+            {foldersList.length > 0 && (
               <NamedCollapse name="Folders">
                 {activeViewType === FilesViewType.LIST && <FileListHeader />}
-                {folders.map(folder => (
+                {foldersList.map((folder, index) => (
                   <FolderItemComponent
-                    key={folder.attachmentIdentifier}
                     folder={folder}
                     options={getFolderOptions(folder)}
                     onClick={() => {
                       navigateToFolder(folder);
                     }}
+                    onDragStart={event => dragStart(event, index)}
+                    onDragEnter={event => dragEnter(event, index)}
+                    onDragEnd={drop}
+                    key={folder.attachmentIdentifier}
+                    draggable
+                    // style={dragOverStyle}
+                    style={folder.style ?? {}}
                   />
                 ))}
               </NamedCollapse>
             )}
             <NamedCollapse name="Files">
               {activeViewType === FilesViewType.LIST && <FileListHeader />}
-              {currentPatientAttachments.length > 0 ? (
-                currentPatientAttachments.map(file => (
+              {filesList.length > 0 ? (
+                filesList.map((file, index) => (
                   <FileItemComponent
                     key={file.attachmentIdentifier}
                     onClick={() => handleAttachmentClick(file)}
                     file={file}
                     options={getFileOptions(file)}
+                    onDragStart={event => dragStart(event, index, true)}
+                    onDragEnter={event => dragEnter(event, index, true)}
+                    onDragEnd={drop}
+                    draggable
                   />
                 ))
               ) : (

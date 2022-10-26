@@ -287,8 +287,10 @@ export const StandardTaskItemCell = styled.div`
   font-weight: ${props =>
     props.bolded ? fontWeights.regular : fontWeights.light};
   color: ${palette.mediumGrey};
-  min-width: ${props => props.width};
-  max-width: ${props => props.width};
+  min-width: ${({ width, isSubtask, order }) =>
+    isSubtask && order === 0 ? +width - 36 : width}px;
+  max-width: ${({ width, isSubtask, order }) =>
+    isSubtask && order === 0 ? +width - 36 : width}px;
   padding: ${spacing.small} 0;
   padding: ${props => props.padding || `${spacing.small} 0`};
   padding-left: ${props =>
@@ -302,7 +304,8 @@ export const StandardTaskItemCell = styled.div`
 
 export const MainStandardTaskItemCell = styled(StandardTaskItemCell)`
   flex: 1;
-  border-right: 0;
+  ${({ order }) => (order === 0 ? 'border: transparent;' : ``)}
+  ${({ order }) => (order ? `order: ${order};` : '')}
   &:hover button {
     visibility: visible;
   }
@@ -596,10 +599,28 @@ export const PatientPrintAdditionalInfo = styled.div`
 `;
 
 export const DecisionCellContainer = styled.div`
-  height: 100%;
-  width: 150px;
-  padding: ${spacing.small} ${spacing.small};
+  height: 34px;
+  width: 120px;
+  display: flex;
+  align-items: center;
   border-left: 1px solid ${palette.coolGrey3};
+  padding-left: 10px;
+  margin-left: 8px;
 `;
 
 export const DisabledLink = styled.span``;
+
+export const ActionIconsContainer = styled.div`
+  display: flex;
+  position: relative;
+  width: 65px;
+  &::after {
+    border-right: 1px solid ${palette.coolGrey3};
+    content: '';
+    position: absolute;
+    top: -4px;
+    left: 100%;
+    width: 0px;
+    height: 36px;
+  }
+`;
