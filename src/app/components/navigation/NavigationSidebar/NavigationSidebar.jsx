@@ -198,7 +198,7 @@ const NavigationSidebar = () => {
               </NavigationItem>
             </div>
             <AccessRestrictor
-              allowedToRoles={[ADMIN, OWNER, MEMBER, GUEST, EXTERNAL]}
+              allowedToRoles={[ADMIN, OWNER, MEMBER, GUEST, EXTERNAL, DOCK_PRO]}
             >
               <IconNavigationItem
                 name="Search"
@@ -209,7 +209,7 @@ const NavigationSidebar = () => {
             </AccessRestrictor>
 
             <AccessRestrictor
-              allowedToRoles={[ADMIN, OWNER, MEMBER, GUEST, EXTERNAL]}
+              allowedToRoles={[ADMIN, OWNER, MEMBER, GUEST, EXTERNAL, DOCK_PRO]}
             >
               <IconNavigationItem
                 name="Home"
@@ -219,7 +219,9 @@ const NavigationSidebar = () => {
               />
             </AccessRestrictor>
 
-            <AccessRestrictor allowedToRoles={[ADMIN, OWNER, MEMBER, GUEST]}>
+            <AccessRestrictor
+              allowedToRoles={[ADMIN, OWNER, MEMBER, GUEST, DOCK_PRO]}
+            >
               <IconNavigationItem
                 name="Lists"
                 subMenuKey={SubmenuKey.LISTS}
@@ -229,7 +231,7 @@ const NavigationSidebar = () => {
                 onItemClick={handleNavigationItemClick}
               />
             </AccessRestrictor>
-            <AccessRestrictor allowedToRoles={[ADMIN, OWNER, MEMBER]}>
+            <AccessRestrictor allowedToRoles={[ADMIN, OWNER, MEMBER, DOCK_PRO]}>
               <IconNavigationItem
                 name="People"
                 icon={PeopleIcon}
@@ -284,7 +286,7 @@ const NavigationSidebar = () => {
             )}
           </Grid>
           <Grid container direction="column">
-            <AccessRestrictor allowedToRoles={[ADMIN, OWNER]}>
+            <AccessRestrictor allowedToRoles={[ADMIN, OWNER, DOCK_PRO]}>
               <div ref={settingsMenuReference}>
                 <IconNavigationItem
                   name="Settings"
@@ -300,7 +302,9 @@ const NavigationSidebar = () => {
                 />
               </div>
             </AccessRestrictor>
-            <AccessRestrictor allowedToRoles={[ADMIN, OWNER, MEMBER, GUEST]}>
+            <AccessRestrictor
+              allowedToRoles={[ADMIN, OWNER, MEMBER, GUEST, DOCK_PRO]}
+            >
               <IconNavigationItem
                 name="Education Center"
                 icon={EducationCenterIcon}

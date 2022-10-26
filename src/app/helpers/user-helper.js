@@ -25,9 +25,11 @@ export const getOrgRole = roleKey => {
 };
 
 export const checkIfUserIsOrganizationAdmin = user =>
-  [UserOrganizationRole.ADMIN, UserOrganizationRole.OWNER].includes(
-    user.orgUserRole,
-  );
+  [
+    UserOrganizationRole.ADMIN,
+    UserOrganizationRole.OWNER,
+    UserOrganizationRole.DOCK_PRO,
+  ].includes(user.orgUserRole);
 
 export function isUserGuest(user) {
   return user?.orgUserRole === UserOrganizationRole.GUEST;
