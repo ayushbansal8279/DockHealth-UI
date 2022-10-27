@@ -72,6 +72,7 @@ import AlertMessages from 'alert/AlertMessages';
 import { useBoolean } from 'hooks/useBoolean';
 import palette from 'styles/palette';
 import * as AlertActions from 'alert/actions';
+import EditIcon from '@material-ui/icons/Edit';
 import NewTaskNode from './NewTaskNode/NewTaskNode';
 import TaskNode from './TaskNode/TaskNode';
 import TaskLink from './TaskLink/TaskLink';
@@ -94,6 +95,7 @@ import {
   BuilderHeaderText,
   SidebarDivider,
   AutoAlignButton,
+  EditIconWrapper,
 } from './styled';
 import ConnectionLink from './ConnectionLink/ConnectionLink';
 import TaskLinkDelayForm from './TaskLinkDelayForm/TaskLinkDelayForm';
@@ -647,7 +649,12 @@ const SmartFlowBuilderView = () => {
                   dispatch(openDrawer(workflow.identifier, workflow))
                 }
               >
-                <BuilderHeaderText>{name}</BuilderHeaderText>
+                <BuilderHeaderText>
+                  {name}
+                  <EditIconWrapper>
+                    <EditIcon fontSize="small" color="inherit" />
+                  </EditIconWrapper>
+                </BuilderHeaderText>
               </button>
             </BuilderHeader>
             {mergedElementsWithActions && (

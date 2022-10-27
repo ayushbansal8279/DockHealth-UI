@@ -6,7 +6,7 @@ import spacing from 'styles/spacing';
 export const ResizeHandler = styled.div<{ enabled: boolean }>`
   position: absolute;
   top: 0;
-  left: calc(100% - 2px);
+  left: calc(100% - 1px);
   width: 1px;
   height: 35px;
   background-color: ${palette.coolGrey3};
@@ -60,7 +60,12 @@ export const SortButton = styled.button<{
   flex?: number;
 }>`
   position: relative;
-  ${({ width }) => (width ? `width: ${width}px;` : '')}
+  ${({ width }) => {
+    if (typeof width === 'number') {
+      return `width: ${width}px;`;
+    }
+    return `width: ${width};`;
+  }}
   height: 35px;
   text-align: left;
   font-family: 'Roboto Condensed', sans-serif;
@@ -97,7 +102,7 @@ export const ThreeDots = styled.img<{ hideIcon: boolean }>`
 export const SortHeaderRow = styled.div`
   display: flex;
   flex-direction: row;
-  justify-content: flex-start; //changed start => end
+  justify-content: flex-start;
   align-items: center;
   width: 100%;
   background: ${palette.white};

@@ -3,7 +3,7 @@ import { FormProvider, useForm } from 'react-hook-form';
 import { useMount, useToggle } from 'react-use';
 import styled from 'styled-components';
 import { object, string } from 'yup';
-import { yupResolver } from "@hookform/resolvers/yup";
+import { yupResolver } from '@hookform/resolvers/yup';
 import EyeClose from 'img/auth/eye-close.svg';
 import EyeOpen from 'img/auth/eye-open.svg';
 import { MontserratTypography } from 'styles/theme-montserrat';
@@ -11,6 +11,7 @@ import Button from 'components/common/Button/Button';
 import FormInput from 'components/common/Input/FormInput';
 import Spacing from 'components/common/Spacing';
 import { StyledForm, StyledLink } from './AuthComponents.styled';
+import SSOOptions from './SSOOptions';
 
 const validationSchema = object().shape({
   username: string()
@@ -100,10 +101,11 @@ const LoginFormPassword = ({
         <Button id="loginButton" fullWidth size="large" type="submit">
           {unconfirmedUserFlag ? 'Resend confirmation Email' : 'Continue'}
         </Button>
-        <Spacing vertical={6} />
+        <Spacing vertical={4} />
         <MontserratTypography variant="h4">
           <StyledLink to="/auth/forgotPassword">FORGOT PASSWORD?</StyledLink>
         </MontserratTypography>
+        <SSOOptions />
       </FormProvider>
     </StyledForm>
   );

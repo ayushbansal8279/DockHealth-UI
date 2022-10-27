@@ -1,13 +1,23 @@
 /* eslint-disable import/prefer-default-export */
 import styled from 'styled-components';
-import spacing from 'styles/spacing';
 import palette from 'styles/palette';
 
 export const BulkContainer = styled.div`
+  position: relative;
   display: flex;
   align-items: center;
   justify-content: center;
-  margin-left: ${spacing.smallPlus};
+  padding-right: 54px;
+  margin-left: 12px;
+  &::after {
+    border-right: 1px solid ${palette.coolGrey3};
+    content: '';
+    position: absolute;
+    top: 0px;
+    left: calc(100% - 1px);
+    width: 0px;
+    height: 36px;
+  }
 `;
 
 export const StickyColumnContainer = styled.div`

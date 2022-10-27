@@ -1,3 +1,4 @@
+/* eslint-disable sonarjs/cognitive-complexity */
 /* eslint-disable no-underscore-dangle */
 import React, { useCallback } from 'react';
 import { useSelector } from 'react-redux';
@@ -32,7 +33,7 @@ const TasksHeader = ({
   const { currentUser } = useSelector(store => ({
     currentUser: store.userState.userProfile,
   }));
-  const { columns, setColumns, setColumnWidth } = useColumnsConfig();
+  const { columns, setColumns, setColumnWidth = () => {} } = useColumnsConfig();
   const customerTypeLabel = getCustomerTypeLabel(currentUser);
   const currentUserMember = taskList?.listUsers.find(
     u => u.identifier === currentUser?.identifier,
@@ -42,6 +43,15 @@ const TasksHeader = ({
     SINGLE_TASK_RESTRICTIONS_PROFILES[currentUser?.orgUserRole];
   const restrictCustomizationFeatures =
     taskList?.restrictCustomization && !isListAdmin;
+
+  const handleClickCheckbox = useCallback(
+    event => {
+      event.preventDefault();
+      event.stopPropagation();
+      onGroupSelect(event);
+    },
+    [onGroupSelect],
+  );
 
   const onDragEnd = useCallback(
     column => {
@@ -64,89 +74,53 @@ const TasksHeader = ({
   );
 
   const handleResizeColumn = useCallback(
-    (identifier, _, { size }) => {
+    (identifier, { size }) => {
       const { width } = size;
-      if (typeof setColumnWidth === 'function') {
-        setColumnWidth({
-          columnIdentifier: identifier,
-          columnWidth: width,
-        });
-      }
+      setColumnWidth({
+        columnIdentifier: identifier,
+        columnWidth: width,
+      });
     },
     [setColumnWidth],
   );
 
   const renderColumn = useCallback(
     (f, index, snapshot) => {
-      if (f._customFieldType === CUSTOM_FIELD_TYPES.REGULAR) {
-        return (
-          <ColumnSortHeader
-            onResize={
-              typeof setColumnWidth === 'function' ? handleResizeColumn : null
-            }
-            key={f.identifier}
-            index={index}
-            draggable={
-              !restrictCustomizationFeatures &&
-              ![TaskHeaderColumn.SUBTASKS_COUNT].includes(f.identifier)
-            }
-            disabled={[
-              TaskHeaderColumn.ACTIVITY,
-              TaskHeaderColumn.START_DATE,
-              TaskHeaderColumn.ANCHOR_DATE,
-            ].includes(f.identifier)}
-            isDraggingOver={snapshot.isDraggingOver}
-            id={f.identifier}
-            label={f.label}
-            width={f.columnWidth}
-            sort={sort}
-            truncateEnabled
-            onSortChange={onSortChange}
-            snapshot={snapshot}
-            printWidth={CustomFieldWidthConfig[f.fieldType]}
-          />
-        );
-      }
+      const isRegular = f._customFieldType === CUSTOM_FIELD_TYPES.REGULAR;
+      const customFieldDefaultPrintWidth = CustomFieldWidthConfig[f.fieldType];
+      const regularFieldDefaultPrintWidth =
+        typeof TaskItemColumnWidth[f.identifier] === 'object'
+          ? TaskItemColumnWidth[f.identifier].PRINT ||
+            TaskItemColumnWidth[f.identifier].DEFAULT
+          : TaskItemColumnWidth[f.identifier];
+      const customPrintWidth =
+        customFieldDefaultPrintWidth || regularFieldDefaultPrintWidth;
+
       return (
         <ColumnSortHeader
-          onResize={
-            typeof setColumnWidth === 'function' ? handleResizeColumn : null
-          }
+          onResize={(id, _, size) => handleResizeColumn(id, { ...size, index })}
           key={f.identifier}
           index={index}
-          draggable={!restrictCustomizationFeatures}
+          draggable={
+            !restrictCustomizationFeatures &&
+            ![TaskHeaderColumn.SUBTASKS_COUNT].includes(f.identifier)
+          }
           isDraggingOver={snapshot.isDraggingOver}
           disabled={false}
           truncateEnabled
           id={f.identifier}
-          label={f.name}
+          label={isRegular ? f.label : f.name}
           sort={sort}
           onSortChange={onSortChange}
           width={+f.columnWidth}
           snapshot={snapshot}
-          printWidth={
-            f.id === TaskItemColumn.ASSIGNED
-              ? TaskItemColumnWidth[TaskItemColumn.ASSIGNED].PRINT
-              : undefined
-          }
+          sort={isRegular ? sort : null}
+          onSortChange={isRegular ? onSortChange : null}
+          printWidth={+customPrintWidth}
         />
       );
     },
-    [
-      handleResizeColumn,
-      onSortChange,
-      restrictCustomizationFeatures,
-      setColumnWidth,
-      sort,
-    ],
-  );
-
-  const handleGroupSelect = useCallback(
-    event => {
-      event.stopPropagation();
-      onGroupSelect(event);
-    },
-    [onGroupSelect],
+    [handleResizeColumn, onSortChange, restrictCustomizationFeatures, sort],
   );
 
   return (
@@ -162,62 +136,33 @@ const TasksHeader = ({
               backgroundColor={pageBackground}
               customWidthExists
             >
-              <ColumnSortHeader
-                id={TaskItemColumn.DESCRIPTION}
-                label="Tasks"
-                sort={sort}
-                onSortChange={onSortChange}
-                width={
-                  columns?.find(
-                    ({ identifier }) =>
-                      identifier === TaskItemColumn.DESCRIPTION,
-                  )?.columnWidth
-                }
-                printWidth={
-                  TaskItemColumnWidth[TaskItemColumn.DESCRIPTION].PRINT
-                }
-                onResize={
-                  typeof setColumnWidth === 'function'
-                    ? handleResizeColumn
-                    : null
-                }
-              >
-                {bulkEditEnabled && (
-                  <BulkContainer>
-                    <Checkbox
-                      isChecked={isGroupSelected}
-                      onClick={handleGroupSelect}
-                    />
-                  </BulkContainer>
-                )}
-              </ColumnSortHeader>
+              {bulkEditEnabled && (
+                <BulkContainer>
+                  <Checkbox
+                    isChecked={isGroupSelected}
+                    onClick={handleClickCheckbox}
+                  />
+                </BulkContainer>
+              )}
+              {renderColumn(
+                getTaskHeaderOptions(
+                  customerTypeLabel,
+                  columns.filter(f => f.isChecked)?.[0],
+                  restrictions,
+                ),
+                0,
+                snapshot,
+              )}
             </StickyColumnContainer>
-            <ColumnSortHeader
-              id={TaskItemColumn.SUBTASKS_COUNT}
-              label="Sub"
-              width={
-                columns?.find(
-                  ({ identifier }) =>
-                    identifier === TaskItemColumn.SUBTASKS_COUNT,
-                )?.columnWidth
-              }
-              onResize={
-                typeof setColumnWidth === 'function' ? handleResizeColumn : null
-              }
-            />
             {columns
-              .filter(
-                f =>
-                  f.identifier !== TaskItemColumn.DESCRIPTION &&
-                  f.identifier !== TaskItemColumn.SUBTASKS_COUNT &&
-                  f.isChecked,
-              )
+              .filter(f => f.isChecked)
+              .filter((_, index) => index !== 0)
               .map(c =>
                 c._customFieldType === CUSTOM_FIELD_TYPES.REGULAR
                   ? getTaskHeaderOptions(customerTypeLabel, c, restrictions)
                   : c,
               )
-              .map((c, index) => renderColumn(c, index, snapshot))}
+              .map((c, index) => renderColumn(c, index + 1, snapshot))}
             {provided.placeholder}
           </SortHeaderRow>
         )}

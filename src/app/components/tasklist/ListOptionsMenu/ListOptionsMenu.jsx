@@ -19,12 +19,11 @@ import { openModal, closeModal } from 'modal/actions';
 import { hideSubMenu } from 'actions/template-actions';
 import * as TaskListActions from 'actions/task-list-actions';
 import palette from 'styles/palette';
-import { printTaskPdf } from 'components/task-pdf/TaskPdfDocument';
 import ColorPicker from 'components/common/ColorPicker/ColorPicker';
 import { isMemberAdmin } from 'helpers/list-members-helper';
 
 const ListOptionsMenu = props => {
-  const { list, children, tasks, moreOptions } = props;
+  const { list, children, moreOptions } = props;
   const dispatch = useDispatch();
   const history = useHistory();
   const currentUser = useSelector(userProfileSelector);
@@ -102,21 +101,19 @@ const ListOptionsMenu = props => {
     [dispatch],
   );
 
-  const onPrintClick = useCallback(
-    targetList => {
-      const { listUsers: taskListMembers } = targetList || {};
-
-      onPrint();
-      return printTaskPdf({
-        title: targetList?.listName,
-        tasks,
-        taskListMembers,
-        isListNameVisible: false,
-        isPatientVisible: true,
-      });
-    },
-    [tasks],
-  );
+  const onPrintClick = useCallback(() => {
+    onPrint();
+    window.print();
+    // INFO: Here's an old print implementation, may be a day when this would need to be restored
+    // const { listUsers: taskListMembers } = targetList || {};
+    // return printTaskPdf({
+    //   title: targetList?.listName,
+    //   tasks,
+    //   taskListMembers,
+    //   isListNameVisible: false,
+    //   isPatientVisible: true,
+    // });
+  }, []);
 
   // TODO: change to flag inside list object
   const isListArchived = useCallback(
