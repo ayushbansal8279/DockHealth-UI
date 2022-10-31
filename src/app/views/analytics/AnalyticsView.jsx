@@ -121,9 +121,9 @@ const AnalyticsView = () => {
     [dispatch],
   );
 
-  const [maximizedChart, setMaximizedChart] = useState();
+  const [maximizedChart, setMaximizedChart] = useState(null);
 
-  const handleChartMaximize = name => {
+  const handleMaximizedChart = name => {
     setMaximizedChart(name);
   };
 
@@ -161,28 +161,42 @@ const AnalyticsView = () => {
           <ChartTail
             name="Tasks Created and Completed"
             maximized={maximizedChart}
-            onMaximize={handleChartMaximize}
+            onMaximize={handleMaximizedChart}
           >
             <TasksStatisticsChart />
           </ChartTail>
-          <ChartTail name="Comments Created" onMaximize={handleChartMaximize}>
+          <ChartTail
+            name="Comments Created"
+            maximized={maximizedChart}
+            onMaximize={handleMaximizedChart}
+          >
             <CreatedCommentsChart />
           </ChartTail>
-          <ChartTail name="Tasks by Status" onMaximize={handleChartMaximize}>
+          <ChartTail
+            name="Tasks by Status"
+            maximized={maximizedChart}
+            onMaximize={handleMaximizedChart}
+          >
             <WorkflowStatusStatisticsChart />
           </ChartTail>
           <ChartTail
             name="Tasks by Assigned To"
-            onMaximize={handleChartMaximize}
+            maximized={maximizedChart}
+            onMaximize={handleMaximizedChart}
           >
             <AssignedToStatisticsChart />
           </ChartTail>
-          <ChartTail name="Tasks by Labels" onMaximize={handleChartMaximize}>
+          <ChartTail
+            name="Tasks by Labels"
+            maximized={maximizedChart}
+            onMaximize={handleMaximizedChart}
+          >
             <TaskLabelStatisticsChart />
           </ChartTail>
           <ChartTail
             name="Tasks by Patient Labels"
-            onMaximize={handleChartMaximize}
+            maximized={maximizedChart}
+            onMaximize={handleMaximizedChart}
           >
             <PatientLabelStatisticsChart />
           </ChartTail>
