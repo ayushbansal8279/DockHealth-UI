@@ -55,7 +55,7 @@ import {
 import { getCustomerTypeLabel } from 'helpers/customer-type-helper';
 import { checkIfAllTasksSelected } from 'helpers/bulk-edit-helpers';
 import { extractTasksAndSubtasks } from 'helpers/tasklist-helpers';
-import { useColumnsConfig } from 'context-api/columns-config-context';
+import { useTaskListColumnsConfig } from 'context-api/columns-config-context';
 import { ListDetailsContainer } from 'components/tasklist/DropdownListSection/styled';
 import StickyContainer from 'components/common/HorizontalScroll/StickyContainer';
 import { ListViewType } from '../helpers';
@@ -101,7 +101,7 @@ const PatientTasksListView = () => {
     setCurrentList,
     currentList,
     setViewSpecificConfig,
-  } = useColumnsConfig();
+  } = useTaskListColumnsConfig();
   const dispatch = useDispatch();
   const history = useHistory();
   const {

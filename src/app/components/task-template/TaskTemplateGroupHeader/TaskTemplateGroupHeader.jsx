@@ -34,7 +34,7 @@ import { BulkEditContext } from 'components/tasklist/BulkEditSection/BulkEditSec
 import TaskItemCustomField from 'components/common/CustomField/TaskItemCustomField';
 import OptionsMenu from 'components/common/OptionsMenu/OptionsMenu';
 import Spacing from 'components/common/Spacing';
-import { useColumnsConfig } from 'context-api/columns-config-context';
+import { useTaskListColumnsConfig } from 'context-api/columns-config-context';
 import StickyMainTaskItemCell from 'components/task/StickyMainTaskItemCell/StickyMainTaskItemCell';
 import TaskItemCell from 'components/task/TaskItemCell/TaskItemCell';
 import TaskTemplateDueDate from 'components/task-template/TaskTemplateDueDate/TaskTemplateDueDate';
@@ -104,7 +104,7 @@ const TaskTemplateGroupHeader = ({
   }));
   const currentList = useSelector(currentTaskListSelector);
   const dispatch = useDispatch();
-  const { columns } = useColumnsConfig();
+  const { columns } = useTaskListColumnsConfig();
   useEffect(() => {
     setNameInputValue(name);
   }, [name]);

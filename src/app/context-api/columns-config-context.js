@@ -262,7 +262,7 @@ export function ColumnsConfigProvider({
   );
 }
 
-export function useColumnsConfig() {
+export function useTaskListColumnsConfig() {
   const context = useContext(ColumnsConfigContext);
   if (context === undefined) {
     return {

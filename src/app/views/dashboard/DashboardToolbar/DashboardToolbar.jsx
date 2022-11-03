@@ -25,7 +25,7 @@ import { ViewType, getViewTypeFromQueryString } from 'helpers/view-type-helper';
 import { dashboardGroupsPreferencesSelector } from 'selectors/user-selectors';
 import TaskViewTypeToolbarSelect from 'components/tasklist/TaskViewTypeToolbarSelect/TaskViewTypeToolbarSelect';
 import CustomizeToolbarButton from 'components/tasklist/CustomizeToolbarButton/CustomizeToolbarButton';
-import { useColumnsConfig } from 'context-api/columns-config-context';
+import { useTaskListColumnsConfig } from 'context-api/columns-config-context';
 import {
   TaskItemColumn,
   TASK_ITEM_BASE_COLUMN_CONFIG,
@@ -57,7 +57,7 @@ const DashboardToolbar = () => {
     left: 0,
   });
   const tabName = useSelector(dashboardTabNameSelector);
-  const { setViewSpecificConfig } = useColumnsConfig();
+  const { setViewSpecificConfig } = useTaskListColumnsConfig();
   const dashboardGroupsPreferences = useSelector(
     dashboardGroupsPreferencesSelector,
   );

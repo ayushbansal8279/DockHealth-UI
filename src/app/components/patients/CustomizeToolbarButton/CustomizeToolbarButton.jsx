@@ -11,7 +11,7 @@ import {
   userHasPatientCustomFieldsFeatureSelector,
 } from 'selectors/user-selectors';
 import { useSelector } from 'react-redux';
-import { TaskItemColumn } from 'helpers/task-helpers';
+import { PatientColumn } from 'helpers/patient-list-helpers';
 import { capitalize } from 'helpers/capitalize';
 import { getCustomerTypeLabel } from 'helpers/customer-type-helper';
 import UpgradePlan from 'components/common/UpgradePlan/UpgradePlan';
@@ -31,7 +31,7 @@ import {
   UpgradePlanPopupHeader,
 } from './styled';
 import { limitToConfigurableKeys } from './helpers';
-import ToolbarButton from '../ToolbarButton/ToolbarButton';
+import ToolbarButton from '../../tasklist/ToolbarButton/ToolbarButton';
 
 const CustomizeToolbarButton = ({
   openCustomFieldModal,
@@ -51,15 +51,12 @@ const CustomizeToolbarButton = ({
   const { columns, setColumns } = useTaskListColumnsConfig();
 
   const ColumnOptionNames = {
-    [TaskItemColumn.ACTIVITY]: 'Details',
-    [TaskItemColumn.SUBTASKS_COUNT]: 'Subtasks',
-    [TaskItemColumn.ASSIGNED]: 'Assigned',
-    [TaskItemColumn.WORKFLOW_STATUS]: 'Status',
-    [TaskItemColumn.START_DATE]: 'Start date',
-    [TaskItemColumn.DUE_DATE]: 'Due date',
-    [TaskItemColumn.ANCHOR_DATE]: 'Anchor date',
-    [TaskItemColumn.LIST_NAME]: 'List name',
-    [TaskItemColumn.PATIENT]: capitalize(getCustomerTypeLabel(userProfile)),
+    [PatientColumn.MEMBER]: 'Member',
+    [PatientColumn.UNIQUE_ID]: 'Unique Identifier',
+    [PatientColumn.DOB]: 'DOB',
+    [PatientColumn.AGE]: 'Age',
+    [PatientColumn.GENDER_AT_BIRTH]: 'Gender at Brith',
+    [PatientColumn.GENDER_IDENTITY]: 'Gender Identifier',
   };
 
   const customerTypeLabel = capitalize(getCustomerTypeLabel(userProfile));
@@ -144,7 +141,7 @@ const CustomizeToolbarButton = ({
           <List>
             {sort(
               (a, b) =>
-                ColumnOptionNames[a?.identifier].localeCompare(
+                ColumnOptionNames[a?.identifier]?.localeCompare(
                   ColumnOptionNames[b?.identifier],
                 ),
               columnsConfigToDisplay,

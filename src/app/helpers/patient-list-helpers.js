@@ -28,3 +28,12 @@ export function getPatientListIdentifierByUrlParameter(urlParameter) {
 export function getPatientsListFiltersStorageKey(patientsListIdentifier) {
   return `PATIENTS_LIST_${patientsListIdentifier}`;
 }
+
+export const PatientColumn = {
+  MEMBER: 'patient',
+  UNIQUE_ID: 'mrn',
+  DOB: 'dob',
+  AGE: 'age',
+  GENDER_AT_BIRTH: 'gender',
+  GENDER_IDENTITY: 'genderIdentity',
+};
