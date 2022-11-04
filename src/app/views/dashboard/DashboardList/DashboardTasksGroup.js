@@ -11,6 +11,8 @@ import pluck from 'ramda/src/pluck';
 import moment from 'moment';
 import { useDispatch, useSelector } from 'react-redux';
 import * as TaskActions from 'actions/task-actions';
+import * as ModalActions from 'modal/actions';
+import useActions from 'hooks/use-actions';
 import { Collapse } from '@material-ui/core';
 import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd';
 import ArrowIcon from 'img/arrow';
@@ -95,6 +97,8 @@ const DashboardTasksGroup = ({
   const quickAddTaskInputReference = useRef(null);
   const parentContainerReference = useRef(null);
   const dispatch = useDispatch();
+
+  const modalActions = useActions(ModalActions);
 
   const currentTaskLength = dashboardTasks?.length || 0;
   const previousTaskLength = usePrevious(currentTaskLength) || 0;
@@ -192,9 +196,24 @@ const DashboardTasksGroup = ({
 
   const handleToggleCompletedTask = useCallback(
     task => {
-      dispatch(TaskActions.toggleCompleteTask(task));
+      const hasIncompletedSubtasks =
+        task.subtasks?.length > 0
+          ? task.subtasks.find(subtask => subtask.status === 'INCOMPLETE')
+          : task.subTasksCount - task.subTasksCompletedCount > 0;
+
+      if (task.status === 'INCOMPLETE' && hasIncompletedSubtasks) {
+        const modalProps = {
+          confirm: () => {
+            modalActions.closeModal();
+            dispatch(TaskActions.toggleCompleteTask(task));
+          },
+        };
+        modalActions.openModal('CompleteAllTasks', modalProps);
+      } else {
+        dispatch(TaskActions.toggleCompleteTask(task));
+      }
     },
-    [dispatch],
+    [dispatch, modalActions],
   );
 
   const isDragAndDropDisabled = !tasks || tasks.length < 2;

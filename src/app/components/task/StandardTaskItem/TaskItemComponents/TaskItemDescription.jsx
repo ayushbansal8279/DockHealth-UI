@@ -77,10 +77,11 @@ const TaskItemDescription = ({
   const descriptionReference = useRef(null);
   const isCompleted = status === TaskStatus.COMPLETE;
 
-  const completedByName =
-    `${completedBy?.firstName.charAt(0)}. ${completedBy?.lastName}`
-      .trim()
-      .replace(/^\.$/, '') || 'Unknown';
+  const completedByName = completedBy
+    ? `${completedBy?.firstName.charAt(0)}. ${completedBy?.lastName}`
+        .trim()
+        .replace(/^\.$/, '') || 'Unknown'
+    : 'Unknown';
 
   const convertedDescriptionState = useMemo(
     () => convertFromEditorStateToOutput(descriptionState, false),
