@@ -6,6 +6,7 @@ import isEmpty from 'ramda/src/isEmpty';
 import { ActivityAlertsToastsContainer } from 'components/activity-alerts/styled';
 import { useSendbirdStateContext } from '@sendbird/uikit-react';
 import sendBirdSelectors from '@sendbird/uikit-react/sendBirdSelectors';
+import ShipBellSound from 'components/../sounds/ship_bell_single.mp3';
 import ChatActivityAlertsToast from './ChatActivityAlertsToast';
 
 const ChatActivityAlertsToasts = () => {
@@ -18,6 +19,8 @@ const ChatActivityAlertsToasts = () => {
   const context = useSendbirdStateContext();
 
   const sdkInstance = sendBirdSelectors.getSdk(context);
+
+  const [audio] = useState(new Audio(ShipBellSound));
 
   const addGroupChannelEventHandler = useCallback(
     handler => {
@@ -45,6 +48,7 @@ const ChatActivityAlertsToasts = () => {
     setMessage(message);
     setChannel(channel);
     setNewAlert({ message, channel });
+    audio.play();
   });
 
   useEffect(() => {

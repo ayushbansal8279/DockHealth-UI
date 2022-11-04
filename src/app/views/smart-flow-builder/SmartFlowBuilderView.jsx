@@ -645,9 +645,7 @@ const SmartFlowBuilderView = () => {
               </Box>
               <button
                 type="button"
-                onClick={() =>
-                  dispatch(openDrawer(workflow.identifier, workflow))
-                }
+                onClick={() => dispatch(openDrawer(workflow.identifier, null))}
               >
                 <BuilderHeaderText>
                   {name}

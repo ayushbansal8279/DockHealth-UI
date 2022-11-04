@@ -69,7 +69,7 @@ const config = (environment, options) => {
           loader: 'style-loader!css-loader',
         },
         {
-          test: /\.(png|svg|ttf|gif)$/,
+          test: /\.(png|svg|ttf|gif|mp3)$/,
           loader: 'file-loader',
         },
       ],
@@ -121,6 +121,7 @@ const config = (environment, options) => {
         '.png',
         '.svg',
         '.ttf',
+        '.mp3',
       ],
       alias: {
         restrictions: path.resolve(__dirname, 'src/app/restrictions'),
