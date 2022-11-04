@@ -12,7 +12,7 @@ export const Container = styled.div`
   overflow: hidden;
   position: ${({ maximized }) => (maximized ? 'absolute' : 'relative')};
   width: ${({ maximized }) => (maximized ? '100%' : 'calc(50% - 24px)')};
-  height: ${({ maximized }) => (maximized ? '100%' : '420px')};
+  height: ${({ maximized }) => (maximized ? '75vh' : '420px')};
   z-index: ${({ maximized }) => (maximized ? '999' : '0')};
 
   @media (max-width: 1280px) {
