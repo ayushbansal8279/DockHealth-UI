@@ -370,10 +370,6 @@ const TaskItem = React.memo(
               {bulkEditEnabled && (
                 <TaskItemBulkEdit
                   isChecked={selected}
-                  isDisabled={
-                    isTaskStatusTogglingDisabled ||
-                    !isDependencyEmptyOrCompleted
-                  }
                   onClick={onClickBulkEdit}
                 />
               )}
