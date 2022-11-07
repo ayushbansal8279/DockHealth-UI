@@ -25,6 +25,7 @@ import {
   bulkEditComplete,
   bulkEditDueDateSuccess,
   bulkEditDuplicateTasksSuccess,
+  refreshTaskBundle,
 } from 'actions/task-actions';
 import * as ActionTypes from 'actions/action-types';
 import {
@@ -192,6 +193,15 @@ const BulkEditOptionsBar = ({
     [dispatch],
   );
 
+  const refreshTaskWorkflows = useCallback(
+    workflowIdentifiers => {
+      workflowIdentifiers.forEach(identifier =>
+        dispatch(refreshTaskBundle(identifier)),
+      );
+    },
+    [dispatch],
+  );
+
   const handleChangeWorkflowStatusTasks = useCallback(
     workflowStatus => {
       bulkEditWorkflowStatus(
@@ -208,6 +218,7 @@ const BulkEditOptionsBar = ({
         workflowStatusIdentifier: workflowStatus?.identifier || null,
       })
         .then(({ transactionIdentifier }) => {
+          refreshTaskWorkflows(allSelectedWorkflowIdentifiers);
           dispatch(
             AlertActions.showGlobalAlertWithUndo(
               `${allSelectedTasksLength} STATUS CHANGED`,
@@ -256,6 +267,7 @@ const BulkEditOptionsBar = ({
       refreshTasks,
       onClose,
       updateTasks,
+      refreshTaskWorkflows,
     ],
   );
 
@@ -273,6 +285,7 @@ const BulkEditOptionsBar = ({
           dispatch(
             bulkEditDueDateSuccess(allSelectedTasksIdentifiers, dueDate),
           );
+          refreshTaskWorkflows(allSelectedWorkflowIdentifiers);
           dispatch(
             AlertActions.showGlobalAlertWithUndo(
               allSelectedTasksLength > 1
@@ -322,6 +335,7 @@ const BulkEditOptionsBar = ({
       refreshTasks,
       onClose,
       updateTasks,
+      refreshTaskWorkflows,
     ],
   );
 
@@ -341,6 +355,7 @@ const BulkEditOptionsBar = ({
         assignedToIdentifiers: pluck('userIdentifier', selectedUsers),
       })
         .then(({ transactionIdentifier }) => {
+          refreshTaskWorkflows(allSelectedWorkflowIdentifiers);
           dispatch(
             AlertActions.showGlobalAlertWithUndo(
               allSelectedTasksLength > 1
@@ -386,6 +401,7 @@ const BulkEditOptionsBar = ({
       shouldRefreshTasksEveryTime,
       refreshTasks,
       updateTasks,
+      refreshTaskWorkflows,
     ],
   );
 
@@ -409,6 +425,7 @@ const BulkEditOptionsBar = ({
         if (refreshTasks && typeof refreshTasks === 'function') {
           refreshTasks();
         }
+        refreshTaskWorkflows(allSelectedWorkflowIdentifiers);
 
         dispatch(
           AlertActions.showGlobalAlertWithUndo(
@@ -456,6 +473,7 @@ const BulkEditOptionsBar = ({
     onClose,
     shouldRefreshTasksEveryTime,
     deleteTasks,
+    refreshTaskWorkflows,
   ]);
 
   const handleMoveTasks = useCallback(async () => {
@@ -472,6 +490,7 @@ const BulkEditOptionsBar = ({
         if (refreshTasks && typeof refreshTasks === 'function') {
           refreshTasks();
         }
+        refreshTaskWorkflows(allSelectedWorkflowIdentifiers);
 
         dispatch(
           AlertActions.showGlobalAlertWithUndo(
@@ -547,6 +566,7 @@ const BulkEditOptionsBar = ({
     parentTasks,
     refreshTasks,
     subtasks,
+    refreshTaskWorkflows,
   ]);
 
   const handleCompleteTasks = useCallback(() => {
@@ -654,6 +674,12 @@ const BulkEditOptionsBar = ({
             .then(({ transactionIdentifier }) => {
               dispatch(getTasksGroupsList());
               dispatch(getListDetailsTaskCounters(taskListIdentifier));
+              if (
+                allSelectedWorkflowIdentifiers &&
+                allSelectedWorkflowIdentifiers.length > 0
+              ) {
+                refreshTasks();
+              }
               dispatch(
                 AlertActions.showGlobalAlertWithUndo(
                   allSelectedTasksLength > 1

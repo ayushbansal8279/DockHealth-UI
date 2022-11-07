@@ -360,10 +360,6 @@ const TaskItem = React.memo(
                 <TaskItemBulkEdit
                   isChecked={selected}
                   onClick={onClickBulkEdit}
-                  isDisabled={
-                    isTaskStatusTogglingDisabled ||
-                    !isDependencyEmptyOrCompleted
-                  }
                 />
               )}
               <Box ml="10px" />
