@@ -341,55 +341,61 @@ const TaskTemplateGroupHeader = ({
           pluck('identifier', allTasks),
         ),
       );
-      dispatch(TaskActions.changeWorkflowSelectedState(false, identifier));
+      dispatch(
+        TaskActions.changeWorkflowSelectedState(!isBundleSelected, identifier),
+      );
     } else {
       dispatch(TaskActions.changeWorkflowSelectedState(!selected, identifier));
     }
   }, [filteredTasks, isOpen, dispatch, isBundleSelected, identifier, selected]);
 
-  useEffect(() => {
-    if (selected && isOpen && filteredTasks?.length > 0) {
-      const { parentTasks, subtasks } = extractTasksAndSubtasks(filteredTasks);
-      const allTasks = [...parentTasks, ...subtasks];
-      dispatch(TaskActions.changeWorkflowSelectedState(false, identifier));
-      dispatch(
-        TaskActions.changeTasksSelectedState(
-          !isBundleSelected,
-          pluck('identifier', allTasks),
-        ),
-      );
-    }
-  }, [
-    dispatch,
-    filteredTasks,
-    identifier,
-    isBundleSelected,
-    isFetchingTasks,
-    isOpen,
-    selected,
-  ]);
+  // useEffect(() => {
+  //   if (selected && isOpen && filteredTasks?.length > 0) {
+  //     const { parentTasks, subtasks } = extractTasksAndSubtasks(filteredTasks);
+  //     const allTasks = [...parentTasks, ...subtasks];
+  //     dispatch(
+  //       TaskActions.changeWorkflowSelectedState(!isBundleSelected, identifier),
+  //     );
+  //     dispatch(
+  //       TaskActions.changeTasksSelectedState(
+  //         !isBundleSelected,
+  //         pluck('identifier', allTasks),
+  //       ),
+  //     );
+  //   }
+  // }, [
+  //   dispatch,
+  //   filteredTasks,
+  //   identifier,
+  //   isBundleSelected,
+  //   isFetchingTasks,
+  //   isOpen,
+  //   selected,
+  // ]);
 
-  useEffect(() => {
-    if (!isOpen && isBundleSelected && !selected) {
-      const { parentTasks, subtasks } = extractTasksAndSubtasks(filteredTasks);
-      const allTasks = [...parentTasks, ...subtasks];
-      dispatch(
-        TaskActions.changeTasksSelectedState(
-          !isBundleSelected,
-          pluck('identifier', allTasks),
-        ),
-      );
-      dispatch(TaskActions.changeWorkflowSelectedState(true, identifier));
-    }
-  }, [
-    dispatch,
-    filteredTasks,
-    identifier,
-    isBundleSelected,
-    isFetchingTasks,
-    isOpen,
-    selected,
-  ]);
+  // useEffect(() => {
+  //   if (!isOpen && isBundleSelected && !selected) {
+  //     const { parentTasks, subtasks } = extractTasksAndSubtasks(filteredTasks);
+  //     const allTasks = [...parentTasks, ...subtasks];
+  //     dispatch(
+  //       TaskActions.changeTasksSelectedState(
+  //         !isBundleSelected,
+  //         pluck('identifier', allTasks),
+  //       ),
+  //     );
+  //     dispatch(
+  //       TaskActions.changeWorkflowSelectedState(!isBundleSelected, identifier),
+  //     );
+  //   }
+  // }, [
+  //   dispatch,
+  //   filteredTasks,
+  //   identifier,
+  //   isBundleSelected,
+  //   isFetchingTasks,
+  //   isOpen,
+  //   selected,
+  // ]);
 
   const getColumnOrder = useCallback(
     TaskItemColumnType =>
