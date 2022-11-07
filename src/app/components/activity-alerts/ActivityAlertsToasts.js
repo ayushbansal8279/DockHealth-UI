@@ -29,7 +29,7 @@ const listenRealTimeAlerts = (currentUser, showAlert, audio) => {
       if (alert) {
         sessionStorage.setItem('hasUnreadAlerts', true);
         showAlert(alert);
-        audio.play();
+        // audio.play();
       }
     });
   }
