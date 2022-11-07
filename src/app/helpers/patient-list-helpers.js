@@ -37,3 +37,21 @@ export const PatientColumn = {
   GENDER_AT_BIRTH: 'gender',
   GENDER_IDENTITY: 'genderIdentity',
 };
+
+export const PatientHeaderColumn = {
+  MEMBER: 'MEMBER',
+  UNIQUE_ID: 'UNIQUE_ID',
+  DOB: 'DOB',
+  AGE: 'AGE',
+  GENDER_AT_BIRTH: 'GENDER_AT_BIRTH',
+  GENDER_IDENTITY: 'GENDER_IDENTITY',
+};
+
+export const PATIENT_BASE_COLUMN_CONFIG = {
+  [PatientHeaderColumn.MEMBER]: true,
+  [PatientHeaderColumn.UNIQUE_ID]: true,
+  [PatientHeaderColumn.DOB]: true,
+  [PatientHeaderColumn.AGE]: true,
+  [PatientHeaderColumn.GENDER_AT_BIRTH]: true,
+  [PatientHeaderColumn.GENDER_IDENTITY]: true,
+};

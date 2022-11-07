@@ -23,6 +23,7 @@ import BulkEditSection from 'components/patients/BulkEditSection/BulkEditSection
 import TaskTemplateApplicator from 'components/task-template/TaskTemplateApplicator/TaskTemplateApplicator';
 import { getTaskListForUser } from 'api/task-list-api';
 import { openModal, closeModal } from 'modal/actions';
+import { PatientListColumnsConfigProvider } from 'context-api/patients-columns-config-context';
 import PatientsList from './PatientsList/PatientsList';
 import PatientsToolbar from './PatientsToolbar/PatientsToolbar';
 import EmptyListViewWithQuickAddTask from './BulkEditSection/BulkEditOptionsBar/BulkEditCreateTask';
@@ -226,7 +227,7 @@ const PatientsView = () => {
   );
 
   return (
-    <>
+    <PatientListColumnsConfigProvider>
       <PatientEditContext.Provider value={providerValue}>
         <ViewLayout
           header={
@@ -281,7 +282,7 @@ const PatientsView = () => {
           </BulkEditSectionContainer>
         </BulkEditSection>
       </PatientEditContext.Provider>
-    </>
+    </PatientListColumnsConfigProvider>
   );
 };
 
