@@ -5,13 +5,23 @@ import { Box, List, ListItemText, MenuItem, Popover } from '@material-ui/core';
 import CustomizeIcon from 'img/customize-icon';
 import Checkbox from 'components/common/Checkbox/Checkbox';
 import { usePatientListColumnsConfig } from 'context-api/patients-columns-config-context';
-import { userHasTaskCustomFieldsFeatureSelector } from 'selectors/user-selectors';
+import {
+  userHasPatientCustomFieldsFeatureSelector,
+  userHasTaskCustomFieldsFeatureSelector,
+  userProfileSelector,
+} from 'selectors/user-selectors';
 import { useSelector } from 'react-redux';
 import { PatientHeaderColumn } from 'helpers/patient-list-helpers';
 import UpgradePlan from 'components/common/UpgradePlan/UpgradePlan';
 import UpgradePlanPopup from 'components/common/UpgradePlanPopup/UpgradePlanPopup';
 import CustomFieldsIcon from 'img/premium/custom-fields';
 import sort from 'ramda/src/sort';
+import {
+  CUSTOM_FIELD_TYPES,
+  sortAlphabetical,
+} from 'helpers/custom-fields-helpers';
+import { getCustomerTypeLabel } from 'helpers/customer-type-helper';
+import { capitalize } from 'helpers/capitalize';
 import {
   PlusIcon,
   PopoverContainer,
@@ -31,6 +41,7 @@ const CustomizeToolbarButton = ({
   const [openUpgradePopup, setOpenUpgradePopup] = useState(false);
   const buttonReference = useRef(null);
   const addColumnButtonReference = useRef(null);
+  const userProfile = useSelector(userProfileSelector);
   const userHasTaskCustomFieldsFeature = useSelector(
     userHasTaskCustomFieldsFeatureSelector,
   );
@@ -44,6 +55,8 @@ const CustomizeToolbarButton = ({
     [PatientHeaderColumn.GENDER_AT_BIRTH]: 'Gender at Brith',
     [PatientHeaderColumn.GENDER_IDENTITY]: 'Gender Identifier',
   };
+
+  const customerTypeLabel = capitalize(getCustomerTypeLabel(userProfile));
 
   const onClickCheckbox = useCallback(
     column => {
@@ -148,6 +161,23 @@ const CustomizeToolbarButton = ({
                     )
                   );
                 })}
+              </List>
+            </>
+          )}
+          {userHasPatientCustomFieldsFeatureSelector && columns?.length > 0 && (
+            <>
+              <Box display="flex" justifyContent="space-between" mt={1}>
+                <Box mx={0.5} />
+                <ListItemText>
+                  <b>{customerTypeLabel} Custom Columns</b>
+                </ListItemText>
+              </Box>
+              <List>
+                {sortAlphabetical(
+                  columns.filter(
+                    c => c._customFieldType === CUSTOM_FIELD_TYPES.PATIENT,
+                  ),
+                ).map(column => renderElement(column))}
               </List>
             </>
           )}

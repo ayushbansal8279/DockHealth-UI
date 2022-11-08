@@ -223,12 +223,24 @@ const PatientsList = ({
       renderHeader: renderColumnHeader,
       flex: 0.5,
     },
-  ].filter(column => {
-    return (
-      columnsData.find(data => PatientColumn[data.identifier] === column.field)
-        ?.isChecked ?? false
+  ]
+    .filter(column => {
+      return (
+        columnsData.find(
+          data => PatientColumn[data.identifier] === column.field,
+        )?.isChecked ?? false
+      );
+    })
+    .concat(
+      columnsData
+        .filter(column => column.targetType === 'PATIENT' && column.isChecked)
+        .map(column => ({
+          field: column.identifier,
+          headerName: column.name,
+          renderHeader: renderColumnHeader,
+          flex: 0.5,
+        })),
     );
-  });
 
   const formattedPatients = patients?.map(patient => ({
     id: patient?.patientIdentifier || patient?.id || patient?.mrn,
