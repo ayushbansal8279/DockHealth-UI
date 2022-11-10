@@ -47,6 +47,10 @@
     overflow-x: hidden !important;
 }
 
+.sendbird-conversation__messages{
+    overflow-y: hidden !important;
+}
+
 .sendbird-message-content__middle__body-container{
     width: 250px;
 }
