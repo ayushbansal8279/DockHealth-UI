@@ -1,7 +1,6 @@
 /* eslint-disable sonarjs/cognitive-complexity */
 import React, { useRef, useEffect, useState } from 'react';
 
-import { isNumber } from '@material-ui/data-grid';
 import { PatientWidgetsWrapper } from './styled';
 import initializeWidgetSectionHooks from './hooks';
 
@@ -83,8 +82,8 @@ const PatientWidget = ({ url, height, width }) => {
         ref={frameReference}
         title="Widget"
         id="widgetId"
-        height={isNumber(height) ? `${height}px` : `${height}`}
-        width={isNumber(width) ? `${width}px` : `${width}`}
+        height={Number.isNaN(height) ? `${height}` : `${height}px`}
+        width={Number.isNaN(width) ? `${width}` : `${width}px`}
         style={{ border: 'none' }}
         src={widgetUrl}
       />
