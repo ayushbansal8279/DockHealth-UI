@@ -163,13 +163,12 @@ export const Description = styled.div`
   overflow-wrap: anywhere;
   ${props => (props.isCrossedOut ? 'text-decoration: line-through;' : '')}
   cursor: pointer;
-  overflow: hidden;
   text-overflow: ellipsis;
   white-space: initial;
   max-width: 480px;
   font-weight: 400;
   font-size: 14px;
-  ${props => (props.isUnread ? 'font-weight: 900; font-size: 15px;' : '')}
+  ${props => (props.isUnread ? 'font-weight: 900; font-size: 15px;' : '')};
 
   @media screen and (max-width: 1300px) {
     max-width: 300px;
@@ -200,7 +199,6 @@ export const DescriptionBox = styled.div`
   display: flex;
   flex-direction: column;
   flex: 1;
-  overflow: hidden;
   cursor: pointer;
 `;
 
@@ -576,19 +574,33 @@ export const DetailsButton = styled.button`
 `;
 
 export const DescriptionBorder = styled.div`
-  padding: 0 2px;
-  overflow: hidden;
+  padding: 6px 8px;
+  margin: -6px 0;
   border-radius: 4px;
   border-width: 1px;
   border-style: solid;
   border-color: transparent;
   ${({ disabled }) => (disabled ? 'border: 0px;' : '')}
+  ${({ isEdited }) => isEdited && `border-color: ${palette.coolGrey2};`}
+`;
+
+export const DescriptionEditButton = styled.div`
+  margin-left: 8px;
+  border-radius: 3px;
 
   &:hover {
-    border-color: ${palette.coolGrey2};
+    background-color: ${palette.coolGrey3};
   }
 
-  ${({ isEdited }) => isEdited && `border-color: ${palette.coolGrey2};`}
+  & .MuiIconButton-root {
+    color: ${palette.brightBlue};
+    margin: 0;
+  }
+
+  & .MuiSvgIcon-root {
+    height: 14px;
+    width: 14px;
+  }
 `;
 
 export const PatientPrintAdditionalInfo = styled.div`

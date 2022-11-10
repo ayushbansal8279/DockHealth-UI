@@ -334,6 +334,8 @@ const TaskItem = React.memo(
       [columns],
     );
 
+    const [isEditButtonVisible, setEditButtonVisible] = useState(false);
+
     const randerFirstColumnCoverIfNecessary = useCallback(
       (content, order) => {
         if (order !== 0) return content;
@@ -406,6 +408,8 @@ const TaskItem = React.memo(
         <StandardTaskItemPanel
           onContextMenu={handleTaskItemRightClick}
           isDragging={isDragging}
+          onMouseEnter={() => setEditButtonVisible(true)}
+          onMouseLeave={() => setEditButtonVisible(false)}
         >
           <StandardTaskItemContainer
             newlyCreated={newlyCreated}
@@ -464,6 +468,7 @@ const TaskItem = React.memo(
                     isSubtask={isSubtask}
                     isEditing={isEditingDescription}
                     setEditing={setEditingDescription}
+                    isEditButtonVisible={isEditButtonVisible}
                   />
                   <DetailsButton>Details</DetailsButton>
                   {showDecisionRow && (
