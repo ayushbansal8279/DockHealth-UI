@@ -18,7 +18,7 @@ import {
 } from './helpers';
 
 // eslint-disable-next-line sonarjs/cognitive-complexity
-const ReminderSection = ({ onSave }) => {
+const ReminderSection = ({ onSave, disabled }) => {
   const selectedTask = useSelector(selectedTaskSelector) || {};
   const { reminderType, reminderTime = null, dueDate } = selectedTask || {};
   const isDisabled = !dueDate;
@@ -114,7 +114,7 @@ const ReminderSection = ({ onSave }) => {
     <FormProvider {...formMethods}>
       <ReminderContainer>
         <Checkbox
-          isDisabled={isCheckboxDisabled}
+          isDisabled={isCheckboxDisabled || disabled}
           isChecked={reminderChecked ?? false}
           onClick={handleToggleReminder}
         />

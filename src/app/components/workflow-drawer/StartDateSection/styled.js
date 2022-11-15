@@ -44,6 +44,8 @@ export const StartDateSectionWrapper = styled.div`
   ${({ disabled }) =>
     disabled &&
     `
+    pointer-events: none;
+    
     & ${Placeholder}, & ${StartDateLabel} {
       color: ${palette.coolGrey2};
     }

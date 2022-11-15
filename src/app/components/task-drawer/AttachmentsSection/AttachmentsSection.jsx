@@ -95,7 +95,7 @@ const AttachmentsSection = ({ disabled = false }) => {
               <Spacing horizontal={4} />
             </>
           )}
-          <AddAttachmentButton />
+          {!disabled && <AddAttachmentButton />}
         </Grid>
         {currentTaskAttachments && currentTaskAttachments.length > 0 && (
           <Grid item xs={12}>

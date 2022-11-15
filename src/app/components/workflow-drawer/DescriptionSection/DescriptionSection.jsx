@@ -20,7 +20,7 @@ import { WorkflowDrawerFieldNames } from 'helpers/workflow-drawer-helpers';
 import { createMentionEntities } from 'components/common/TextEditor/create-mention-entities';
 import { EditorState } from 'draft-js';
 
-const DescriptionSection = () => {
+const DescriptionSection = ({ readOnly }) => {
   const DEBOUNCE_TIME = 3000;
   const selectedWorkflow = useSelector(workflowSelector);
   const { taskList } = selectedWorkflow || {};
@@ -124,6 +124,7 @@ const DescriptionSection = () => {
         onBlur={unsetFocused}
         state={detailsState}
         onChange={onChangeDetailsEditor}
+        readOnly={readOnly}
       />
     </CustomTextEditor>
   );

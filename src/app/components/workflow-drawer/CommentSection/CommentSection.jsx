@@ -11,7 +11,7 @@ import Comment from 'components/drawer-common/Comment/Comment';
 import * as WorkflowActions from 'actions/workflow-actions';
 import { userProfileSelector } from 'selectors/user-selectors';
 
-const CommentSection = () => {
+const CommentSection = ({ disabled }) => {
   const dispatch = useDispatch();
   const workflowIdentifier = useSelector(workflowIdentifierSelector);
   const currentUser = useSelector(userProfileSelector);
@@ -46,11 +46,13 @@ const CommentSection = () => {
 
   return (
     <>
-      <AddComment
-        disableMentions={isWorkflowTemplate}
-        taskListIdentifier={workflowListIdentifier}
-        onAdd={handleAddComment}
-      />
+      {!disabled && (
+        <AddComment
+          disableMentions={isWorkflowTemplate}
+          taskListIdentifier={workflowListIdentifier}
+          onAdd={handleAddComment}
+        />
+      )}
       {comments?.map(comment => (
         <Comment
           key={comment.commentIdentifier}
