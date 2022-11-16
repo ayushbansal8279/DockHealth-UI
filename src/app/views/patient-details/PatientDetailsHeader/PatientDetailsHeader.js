@@ -19,6 +19,10 @@ import {
 } from 'selectors/patient-details-selectors';
 import TextTypeHeader from 'components/common/TextTypeHeader/TextTypeHeader';
 import { FieldType } from 'helpers/field-type-helpers';
+import {
+  TASK_LIST_RESTRICTIONS_OPTIONS,
+  TASK_LIST_RESTRICTIONS_PROFILES,
+} from 'restrictions/task-restrictions';
 import PatientDetailsDrawer from '../PatientDetailsDrawer/PatientDetailsDrawer';
 import PatientDetailsLoader from '../PatientDetailsLoader/PatientDetailsLoader';
 import {
@@ -34,6 +38,8 @@ import {
   ContactContainer,
   PatientMRNAnchor,
 } from './styled';
+
+const { DISABLED } = TASK_LIST_RESTRICTIONS_OPTIONS;
 
 // eslint-disable-next-line sonarjs/cognitive-complexity
 const PatientDetailsHeader = () => {
@@ -61,6 +67,8 @@ const PatientDetailsHeader = () => {
   const emrPatientLink = organization?.emrPatientLink;
   const isLoadingDetails = isFetchingPatient || !patient;
   const [cameFrom, setCameFrom] = useState();
+  const taskListRestrictions =
+    TASK_LIST_RESTRICTIONS_PROFILES[currentUser?.orgUserRole];
 
   const goBack = useCallback(() => {
     if (cameFrom) {
@@ -94,9 +102,11 @@ const PatientDetailsHeader = () => {
                   {[`${lastName},`, firstName, middleName].join(' ')}
                 </PatientName>
                 <Box mx={1} />
-                <ButtonContainer onClick={setIsDrawerOpen}>
-                  <PatientDetailsLabel>View details</PatientDetailsLabel>
-                </ButtonContainer>
+                {taskListRestrictions.createTask !== DISABLED && (
+                  <ButtonContainer onClick={setIsDrawerOpen}>
+                    <PatientDetailsLabel>View details</PatientDetailsLabel>
+                  </ButtonContainer>
+                )}
                 <Box mx={1} />
                 <Box flex="500px 0 0">
                   {patient?.patientLabels?.map(

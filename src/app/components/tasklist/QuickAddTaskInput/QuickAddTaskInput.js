@@ -4,12 +4,20 @@ import TextEditor from 'components/common/TextEditor/TextEditor';
 import { useMentionsEditorState } from 'components/common/TextEditor/use-mentions-editor-state';
 import Spacing from 'components/common/Spacing';
 import React, { useEffect, useRef, useState } from 'react';
+import { useSelector } from 'react-redux';
+import { userProfileSelector } from 'selectors/user-selectors';
+import {
+  TASK_LIST_RESTRICTIONS_PROFILES,
+  TASK_LIST_RESTRICTIONS_OPTIONS,
+} from 'restrictions/task-restrictions';
 import {
   AddTaskInputWrapper,
   MentionsEditorContainer,
   ErrorLabel,
   QuickAddHint,
 } from './styled';
+
+const { DISABLED } = TASK_LIST_RESTRICTIONS_OPTIONS;
 
 const QuickAddTaskInput = React.forwardRef(
   (
@@ -34,6 +42,10 @@ const QuickAddTaskInput = React.forwardRef(
     const [error, setError] = useState(null);
     const [isFocused, setIsFocused] = useState(false);
     const quickAddTaskInputReference = useRef(null);
+
+    const currentUser = useSelector(userProfileSelector);
+    const taskListRestrictions =
+      TASK_LIST_RESTRICTIONS_PROFILES[currentUser?.orgUserRole];
 
     useEffect(() => {
       if (autofocus) {
@@ -86,6 +98,10 @@ const QuickAddTaskInput = React.forwardRef(
       setNewTaskDescription(state);
       setHasInputValue(!!convertFromEditorStateToOutput(state, false).rawText);
     };
+
+    if (taskListRestrictions.createTask === DISABLED) {
+      return null;
+    }
 
     return (
       <>

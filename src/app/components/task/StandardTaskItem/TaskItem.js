@@ -623,69 +623,65 @@ const TaskItem = React.memo(
                 )}
               </>
             )}
-            {restrictions?.dueDate !== DISABLED && (
+            {isColumnChecked(columns, TaskItemColumn.START_DATE) && (
               <>
-                {isColumnChecked(columns, TaskItemColumn.START_DATE) && (
-                  <>
-                    {randerFirstColumnCoverIfNecessary(
-                      <TaskItemCell
-                        isSubtask={isSubtask}
-                        key={`start_date_${taskIdentifier}`}
-                        width={
-                          columns?.find(
-                            ({ identifier }) =>
-                              identifier === TaskItemColumn.START_DATE,
-                          )?.columnWidth
-                        }
-                        paddingLeft="tiny"
-                        paddingRight="tiny"
-                        justify="center"
-                        onContextMenu={event => {
-                          event.stopPropagation();
-                        }}
-                        order={getColumnOrder(TaskItemColumn.START_DATE)}
-                      >
-                        <TaskItemStartDate
-                          task={task}
-                          disabled={restrictions?.dueDate === DISABLED}
-                        />
-                      </TaskItemCell>,
-                      getColumnOrder(TaskItemColumn.START_DATE),
-                    )}
-                  </>
+                {randerFirstColumnCoverIfNecessary(
+                  <TaskItemCell
+                    isSubtask={isSubtask}
+                    key={`start_date_${taskIdentifier}`}
+                    width={
+                      columns?.find(
+                        ({ identifier }) =>
+                          identifier === TaskItemColumn.START_DATE,
+                      )?.columnWidth
+                    }
+                    paddingLeft="tiny"
+                    paddingRight="tiny"
+                    justify="center"
+                    onContextMenu={event => {
+                      event.stopPropagation();
+                    }}
+                    order={getColumnOrder(TaskItemColumn.START_DATE)}
+                  >
+                    <TaskItemStartDate
+                      task={task}
+                      disabled={restrictions?.startDate === DISABLED}
+                    />
+                  </TaskItemCell>,
+                  getColumnOrder(TaskItemColumn.START_DATE),
                 )}
-                {isColumnChecked(columns, TaskItemColumn.DUE_DATE) &&
-                  !isTemplateTask && (
-                    <>
-                      {randerFirstColumnCoverIfNecessary(
-                        <TaskItemCell
-                          isSubtask={isSubtask}
-                          key={`due_date_${taskIdentifier}`}
-                          width={
-                            columns?.find(
-                              ({ identifier }) =>
-                                identifier === TaskItemColumn.DUE_DATE,
-                            )?.columnWidth
-                          }
-                          paddingLeft="tiny"
-                          paddingRight="tiny"
-                          justify="center"
-                          onContextMenu={event => {
-                            event.stopPropagation();
-                          }}
-                          order={getColumnOrder(TaskItemColumn.DUE_DATE)}
-                        >
-                          <TaskItemDueDate
-                            task={task}
-                            disabled={restrictions?.dueDate === DISABLED}
-                          />
-                        </TaskItemCell>,
-                        getColumnOrder(TaskItemColumn.DUE_DATE),
-                      )}
-                    </>
-                  )}
               </>
             )}
+            {isColumnChecked(columns, TaskItemColumn.DUE_DATE) &&
+              !isTemplateTask && (
+                <>
+                  {randerFirstColumnCoverIfNecessary(
+                    <TaskItemCell
+                      isSubtask={isSubtask}
+                      key={`due_date_${taskIdentifier}`}
+                      width={
+                        columns?.find(
+                          ({ identifier }) =>
+                            identifier === TaskItemColumn.DUE_DATE,
+                        )?.columnWidth
+                      }
+                      paddingLeft="tiny"
+                      paddingRight="tiny"
+                      justify="center"
+                      onContextMenu={event => {
+                        event.stopPropagation();
+                      }}
+                      order={getColumnOrder(TaskItemColumn.DUE_DATE)}
+                    >
+                      <TaskItemDueDate
+                        task={task}
+                        disabled={restrictions?.dueDate === DISABLED}
+                      />
+                    </TaskItemCell>,
+                    getColumnOrder(TaskItemColumn.DUE_DATE),
+                  )}
+                </>
+              )}
             {isColumnChecked(columns, TaskItemColumn.ANCHOR_DATE) && (
               <TaskItemCell
                 width={
@@ -792,13 +788,14 @@ const TaskItem = React.memo(
                           width={field.columnWidth}
                           order={getColumnOrder(field.identifier)}
                         >
-                          {!hidePatientCustomFields && (
-                            <TaskItemCustomField
-                              field={field}
-                              customFieldValue={customFieldValue}
-                              task={task}
-                            />
-                          )}
+                          {!hidePatientCustomFields &&
+                            taskListRestrictions?.createTask !== DISABLED && (
+                              <TaskItemCustomField
+                                field={field}
+                                customFieldValue={customFieldValue}
+                                task={task}
+                              />
+                            )}
                         </TaskItemCell>,
                         getColumnOrder(field.identifier),
                       )}

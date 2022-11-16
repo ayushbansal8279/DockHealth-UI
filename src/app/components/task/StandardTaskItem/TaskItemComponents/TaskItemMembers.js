@@ -47,9 +47,7 @@ const TaskItemMembers = ({
         </>
       ) : (
         <Tooltip placement="top" title="Assign to">
-          <div>
-            <AssignMemberIcon />
-          </div>
+          <div>{!readOnly && <AssignMemberIcon />}</div>
         </Tooltip>
       )}
     </TaskItemPopover>
