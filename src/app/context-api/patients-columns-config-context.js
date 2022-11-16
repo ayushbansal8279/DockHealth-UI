@@ -6,18 +6,18 @@ import React, {
   useMemo,
   useState,
 } from 'react';
-import { TASK_ITEM_BASE_COLUMN_CONFIG } from 'helpers/task-helpers';
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 import { organizationCustomFieldsSelector } from 'selectors/organization-selectors';
 import {
   userPreferencesSelector,
   OrganizationWidthFieldsPreferencesSelector,
   userProfileSelector,
 } from 'selectors/user-selectors';
-import { updateCurrentUserPreferences } from 'actions/user-actions';
-import { updateListPreferences } from 'actions/task-list-actions';
 import { CUSTOM_FIELD_TYPES } from 'helpers/custom-fields-helpers';
-import { TaskHeaderColumn } from 'components/tasklist/TasksHeader/helpers';
+import {
+  PATIENT_BASE_COLUMN_CONFIG,
+  PatientHeaderColumn,
+} from 'helpers/patient-list-helpers';
 import {
   getAllPatientCustomFields,
   getAllTaskListCustomFields,
@@ -25,25 +25,18 @@ import {
 import {
   getInitialColumnWidth,
   translateInitialColumnsConfig,
-  translateStateToApi,
-  translateWidthToApi,
 } from './helpers';
 
-export const ColumnsConfigContext = createContext();
+export const PatientListColumnsConfigContext = createContext();
 
-const columnsAlwaysVisible = [
-  TaskHeaderColumn.DESCRIPTION,
-  TaskHeaderColumn.SUBTASKS_COUNT,
-];
+const columnsAlwaysVisible = [PatientHeaderColumn.MEMBER];
 
-export function ColumnsConfigProvider({
+export function PatientListColumnsConfigProvider({
   children,
-  initialColumns = TASK_ITEM_BASE_COLUMN_CONFIG,
+  initialColumns = PATIENT_BASE_COLUMN_CONFIG,
   hideCustomColumns,
   hidePatientCustomColumns,
 }) {
-  const dispatch = useDispatch();
-
   const { userIdentifier } = useSelector(userProfileSelector);
 
   const [currentList, setCurrentList] = useState(null);
@@ -105,29 +98,9 @@ export function ColumnsConfigProvider({
     }
   }, [currentWidthPreferences]);
 
-  const setColumnsAndUpdateApi = useCallback(
-    newState => {
-      setColumnsToState(newState);
-      if (currentList) {
-        dispatch(
-          updateListPreferences(
-            {
-              listDisplayColumns: translateStateToApi(newState),
-            },
-            currentList.taskListIdentifier,
-            userIdentifier,
-          ),
-        );
-      } else {
-        dispatch(
-          updateCurrentUserPreferences({
-            listDisplayColumns: translateStateToApi(newState),
-          }),
-        );
-      }
-    },
-    [currentList, dispatch, userIdentifier],
-  );
+  const setColumnsAndUpdateApi = useCallback(newState => {
+    setColumnsToState(newState);
+  }, []);
 
   useEffect(() => {
     if (currentList?.taskListIdentifier && !hideCustomColumns) {
@@ -220,27 +193,9 @@ export function ColumnsConfigProvider({
       const updatedState = columns.map(c =>
         columnIdentifier === c.identifier ? { ...c, columnWidth } : c,
       );
-
-      if (currentList) {
-        dispatch(
-          updateListPreferences(
-            {
-              listDisplayColumnPrefs: translateWidthToApi(updatedState),
-            },
-            currentList.taskListIdentifier,
-            userIdentifier,
-          ),
-        );
-      } else {
-        dispatch(
-          updateCurrentUserPreferences({
-            listDisplayColumnPrefs: translateWidthToApi(updatedState),
-          }),
-        );
-      }
       setColumnsToState(updatedState);
     },
-    [columns, currentList, dispatch, userIdentifier],
+    [columns],
   );
 
   const value = {
@@ -256,17 +211,17 @@ export function ColumnsConfigProvider({
   };
 
   return (
-    <ColumnsConfigContext.Provider value={value}>
+    <PatientListColumnsConfigContext.Provider value={value}>
       {children}
-    </ColumnsConfigContext.Provider>
+    </PatientListColumnsConfigContext.Provider>
   );
 }
 
-export function useTaskListColumnsConfig() {
-  const context = useContext(ColumnsConfigContext);
+export function usePatientListColumnsConfig() {
+  const context = useContext(PatientListColumnsConfigContext);
   if (context === undefined) {
     return {
-      columns: translateInitialColumnsConfig(TASK_ITEM_BASE_COLUMN_CONFIG).map(
+      columns: translateInitialColumnsConfig(PATIENT_BASE_COLUMN_CONFIG).map(
         f => ({
           ...f,
           isChecked: true,
