@@ -7,7 +7,7 @@ import React, {
   useEffect,
   useMemo,
 } from 'react';
-import { Box, Fade, Popper } from '@material-ui/core';
+import { Box, Fade, IconButton, Popper } from '@material-ui/core';
 import { useDispatch } from 'react-redux';
 import moment from 'moment';
 import {
@@ -26,6 +26,7 @@ import {
 import { useMentionsEditorState } from 'components/common/TextEditor/use-mentions-editor-state';
 import { EditorState } from 'draft-js';
 import { createMentionEntities } from 'components/common/TextEditor/create-mention-entities';
+import EditIcon from '@material-ui/icons/Edit';
 import {
   Description,
   DescriptionBox,
@@ -35,6 +36,7 @@ import {
   DescriptionTooltipWrapper,
   DescriptionBorder,
   TaskContext,
+  DescriptionEditButton,
 } from '../../styled';
 
 const TaskItemDescription = ({
@@ -46,6 +48,7 @@ const TaskItemDescription = ({
   setEditing,
   disabled,
   disableMentions,
+  isEditButtonVisible = false,
 }) => {
   const {
     description,
@@ -159,7 +162,7 @@ const TaskItemDescription = ({
 
   return (
     <DescriptionBox>
-      <Box display="flex" flex={1} overflow="hidden">
+      <Box display="flex" flex={1}>
         <Description
           onMouseEnter={() => setIsHovered(true)}
           onMouseLeave={() => setIsHovered(false)}
@@ -173,17 +176,7 @@ const TaskItemDescription = ({
           isCrossedOut={isCompleted}
           isUnread={!read}
         >
-          <DescriptionBorder
-            disabled={disabled}
-            isEdited={isEditing}
-            onClick={event => {
-              if (!disabled) {
-                event.stopPropagation();
-                event.preventDefault();
-                setEditing(true);
-              }
-            }}
-          >
+          <DescriptionBorder disabled={disabled} isEdited={isEditing}>
             <TextEditor
               ref={descriptionReference}
               readOnly={disabled || !isEditing}
@@ -223,6 +216,21 @@ const TaskItemDescription = ({
               )}
             </Popper>
           </DescriptionBorder>
+          {isEditButtonVisible && (
+            <DescriptionEditButton>
+              <IconButton
+                onClick={event => {
+                  if (!disabled) {
+                    event.stopPropagation();
+                    event.preventDefault();
+                    setEditing(true);
+                  }
+                }}
+              >
+                <EditIcon />
+              </IconButton>
+            </DescriptionEditButton>
+          )}
         </Description>
       </Box>
       <TaskItemDescriptionIndicators>
