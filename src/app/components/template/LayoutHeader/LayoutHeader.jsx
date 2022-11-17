@@ -1,5 +1,6 @@
 /* eslint-disable react-hooks/rules-of-hooks */
 import React from 'react';
+import { useSelector } from 'react-redux';
 import { HOME_PATH } from 'routing/helpers/paths';
 import { Link } from 'react-router-dom';
 import { Box } from '@material-ui/core';
@@ -7,6 +8,7 @@ import ActivityAlerts from 'components/activity-alerts/ActivityAlerts';
 import { UserOrganizationRole } from 'helpers/user-helper';
 import TrialBanner from 'components/navigation/TrialBanner/TrialBanner';
 import AccessRestrictor from 'components/access/AccessRestrictor/AccessRestrictor';
+import { selectedUserOrganizationSelector } from 'selectors/user-selectors';
 import {
   HeaderContainer,
   MainHeader,
@@ -20,6 +22,9 @@ const { ADMIN, OWNER, MEMBER, GUEST, EXTERNAL } = UserOrganizationRole;
 
 const LayoutHeader = props => {
   const { children, horizontalSticky } = props;
+
+  const currentOrganization = useSelector(selectedUserOrganizationSelector);
+  const whiteLabelEnabled = currentOrganization?.whiteLabelEnabled || false;
 
   return (
     <HeaderContainer horizontalSticky={horizontalSticky}>
@@ -40,9 +45,11 @@ const LayoutHeader = props => {
           <ActivityAlerts />
         </AccessRestrictor>
         <Box mx={1} />
-        <Link to={HOME_PATH}>
-          <DockHeaderImage />
-        </Link>
+        {!whiteLabelEnabled && (
+          <Link to={HOME_PATH}>
+            <DockHeaderImage />
+          </Link>
+        )}
       </MainHeader>
       <TrialBanner />
     </HeaderContainer>

@@ -1,7 +1,10 @@
 import React from 'react';
 import { useSelector } from 'react-redux';
 import { isNavbarVisibleSelector } from 'selectors/template-selectors';
-import { userProfileSelector } from 'selectors/user-selectors';
+import {
+  userProfileSelector,
+  selectedUserOrganizationSelector,
+} from 'selectors/user-selectors';
 import Intercom from 'react-intercom';
 import GlobalAlertChip from 'alert/GlobalAlertChip';
 import NavigationSidebar from 'components/navigation/NavigationSidebar/NavigationSidebar';
@@ -16,6 +19,7 @@ const { INTERCOM_APP_CODE } = process.env;
 
 const NavigationTemplate = ({ children }) => {
   const currentUser = useSelector(userProfileSelector);
+  const currentOrganization = useSelector(selectedUserOrganizationSelector);
   const isNavbarVisible = useSelector(isNavbarVisibleSelector);
 
   const drawerClasses = useDrawerClasses({
@@ -29,6 +33,8 @@ const NavigationTemplate = ({ children }) => {
           name: `${currentUser.firstName} ${currentUser.lastName}`,
         }
       : undefined;
+
+  const whiteLabelEnabled = currentOrganization?.whiteLabelEnabled || false;
 
   return (
     <DrawerContainer>
@@ -45,7 +51,7 @@ const NavigationTemplate = ({ children }) => {
       <MainContainer>
         <GlobalAlertChip />
         {children}
-        {intercomUser && intercomUser.name && (
+        {intercomUser && intercomUser.name && !whiteLabelEnabled && (
           <Intercom appID={INTERCOM_APP_CODE} {...intercomUser} />
         )}
       </MainContainer>

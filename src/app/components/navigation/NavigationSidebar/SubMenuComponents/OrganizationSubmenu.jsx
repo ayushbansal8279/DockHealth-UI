@@ -77,6 +77,8 @@ const OrganizationSubmenu = ({
     }
   };
 
+  const whiteLabelEnabled = currentOrganization?.whiteLabelEnabled || false;
+
   const handleLeaveOrganiztion = useCallback(() => {
     dispatch(
       openModalAction('LeaveOrganization', {
@@ -146,55 +148,61 @@ const OrganizationSubmenu = ({
           <MoreVert />
         </OptionsMenu>
       </Grid>
-      <Grid container justify="space-between" alignItems="center">
-        <SubmenuHeader>My Organizations </SubmenuHeader>
-        <AddButton onClick={() => history.push('/onboarding/new-organization')}>
-          Add
-        </AddButton>
-      </Grid>
-      <SubmenuDivider />
-      <DrawerOrganizationsList>
-        {availableUserOrganizations?.map(org => (
-          <>
-            <OrganizationIdentifier
-              isOpen
-              tileConfig={{
-                fontSize: 'smallPlus',
-                ...org,
+      {!whiteLabelEnabled && (
+        <>
+          <Grid container justify="space-between" alignItems="center">
+            <SubmenuHeader>My Organizations </SubmenuHeader>
+            <AddButton
+              onClick={() => history.push('/onboarding/new-organization')}
+            >
+              Add
+            </AddButton>
+          </Grid>
+          <SubmenuDivider />
+          <DrawerOrganizationsList>
+            {availableUserOrganizations?.map(org => (
+              <>
+                <OrganizationIdentifier
+                  isOpen
+                  tileConfig={{
+                    fontSize: 'smallPlus',
+                    ...org,
+                  }}
+                  key={`org_${org?.organizationIdentifier}`}
+                  identifierConfig={{ fontColor: '#8492a4' }}
+                  organizationName={org?.organizationName}
+                  onSelect={() =>
+                    selectCurrentOrganization(org?.organizationIdentifier)
+                  }
+                  onMouseEnterName={event =>
+                    handleMouseEnter(event, org?.organizationName)
+                  }
+                  onMouseLeaveName={() => setPopoverLabel(null)}
+                />
+                <SpacingContainer>
+                  <Spacing vertical={4} />
+                  <Spacing vertical={2} />
+                </SpacingContainer>
+              </>
+            ))}
+            <RolloverPopover
+              anchorEl={hoveredItemReference?.current}
+              anchorOrigin={{
+                vertical: 'top',
+                horizontal: 'left',
               }}
-              key={`org_${org?.organizationIdentifier}`}
-              identifierConfig={{ fontColor: '#8492a4' }}
-              organizationName={org?.organizationName}
-              onSelect={() =>
-                selectCurrentOrganization(org?.organizationIdentifier)
-              }
-              onMouseEnterName={event =>
-                handleMouseEnter(event, org?.organizationName)
-              }
-              onMouseLeaveName={() => setPopoverLabel(null)}
-            />
-            <SpacingContainer>
-              <Spacing vertical={4} />
-              <Spacing vertical={2} />
-            </SpacingContainer>
-          </>
-        ))}
-        <RolloverPopover
-          anchorEl={hoveredItemReference?.current}
-          anchorOrigin={{
-            vertical: 'top',
-            horizontal: 'left',
-          }}
-          open={!!popoverLabel}
-          transformOrigin={{
-            vertical: 'top',
-            horizontal: 'left',
-          }}
-          transitionDuration={100}
-        >
-          <RolloverPopoverLabel>{popoverLabel}</RolloverPopoverLabel>
-        </RolloverPopover>
-      </DrawerOrganizationsList>
+              open={!!popoverLabel}
+              transformOrigin={{
+                vertical: 'top',
+                horizontal: 'left',
+              }}
+              transitionDuration={100}
+            >
+              <RolloverPopoverLabel>{popoverLabel}</RolloverPopoverLabel>
+            </RolloverPopover>
+          </DrawerOrganizationsList>
+        </>
+      )}
     </>
   );
 };

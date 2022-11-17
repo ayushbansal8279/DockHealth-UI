@@ -29,7 +29,10 @@ import {
   quickFiltersSelector,
   selectedQuickFilterSelector,
 } from 'selectors/mega-filter-selectors';
-import { userProfileSelector } from 'selectors/user-selectors';
+import {
+  userProfileSelector,
+  selectedUserOrganizationSelector,
+} from 'selectors/user-selectors';
 import { setPatientTaskSearch } from 'sagas/patient-details-saga';
 import { onSearchChanged } from 'helpers/ga-event-helper';
 import { RouteWrapper } from 'routing/components';
@@ -54,7 +57,7 @@ import {
 } from 'actions/mega-filter-actions';
 import PatientDetailsHeader from './PatientDetailsHeader/PatientDetailsHeader';
 import PatientWidget from './PatientWidget/PatientWidget';
-import { DEFAULT_TAB, TABS_CONFIG } from './helpers';
+import { DEFAULT_TAB, DEFAULT_TABS_CONFIG, TABS_CONFIG } from './helpers';
 import {
   PatientDetailsContainer,
   PatientDetailsTabsContainer,
@@ -79,7 +82,13 @@ const PatientDetailsView = () => {
   const addQuickFilterOption = useSelector(addQuickFilterOptionSelector);
   const selectedQuickFilter = useSelector(selectedQuickFilterSelector);
 
-  const [tabsConfiguration, setTabsConfiguration] = useState(TABS_CONFIG);
+  const currentOrganization = useSelector(selectedUserOrganizationSelector);
+  const patientNotesDisabled =
+    currentOrganization?.disabledFeatures?.includes('PATIENT_NOTES') || false;
+
+  const [tabsConfiguration, setTabsConfiguration] = useState(
+    patientNotesDisabled ? DEFAULT_TABS_CONFIG : TABS_CONFIG,
+  );
 
   useEffect(() => {
     dispatch(PatientDetailsActions.initializePatientState(patientIdentifier));
