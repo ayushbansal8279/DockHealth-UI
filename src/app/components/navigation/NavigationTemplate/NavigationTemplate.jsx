@@ -8,6 +8,7 @@ import {
 import Intercom from 'react-intercom';
 import GlobalAlertChip from 'alert/GlobalAlertChip';
 import NavigationSidebar from 'components/navigation/NavigationSidebar/NavigationSidebar';
+import { useHistory } from 'react-router-dom';
 import {
   DrawerContainer,
   MainContainer,
@@ -36,18 +37,27 @@ const NavigationTemplate = ({ children }) => {
 
   const whiteLabelEnabled = currentOrganization?.whiteLabelEnabled || false;
 
+  const history = useHistory();
+  const { location } = history;
+  const { pathname } = location;
+  const isPatientView = pathname.includes('/core/patient');
+  const embeddedMode = sessionStorage.getItem('EmbeddedMode') || false;
+  const embeddedModePatientView = isPatientView && embeddedMode;
+
   return (
     <DrawerContainer>
-      <MaterialDrawer
-        classes={{
-          root: drawerClasses.drawer,
-          paper: drawerClasses.drawerPaper,
-        }}
-        variant="permanent"
-        anchor="left"
-      >
-        <NavigationSidebar />
-      </MaterialDrawer>
+      {!embeddedModePatientView && (
+        <MaterialDrawer
+          classes={{
+            root: drawerClasses.drawer,
+            paper: drawerClasses.drawerPaper,
+          }}
+          variant="permanent"
+          anchor="left"
+        >
+          <NavigationSidebar />
+        </MaterialDrawer>
+      )}
       <MainContainer>
         <GlobalAlertChip />
         {children}
