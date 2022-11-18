@@ -291,10 +291,8 @@ export const StandardTaskItemCell = styled.div`
     isSubtask && order === 0 ? +width - 36 : width}px;
   padding: ${spacing.small} 0;
   padding: ${props => props.padding || `${spacing.small} 0`};
-  padding-left: ${props =>
-    props.paddingLeft ? spacing[props.paddingLeft] : spacing.regular};
-  padding-right: ${props =>
-    props.paddingLeft ? spacing[props.paddingRight] : spacing.regular};
+  padding-left: ${spacing.small};
+  padding-right: ${spacing.small};
   width: ${props => (!props.width ? '100%' : '')};
   justify-content: ${props => props.justify || 'flex-start'};
   position: relative;
