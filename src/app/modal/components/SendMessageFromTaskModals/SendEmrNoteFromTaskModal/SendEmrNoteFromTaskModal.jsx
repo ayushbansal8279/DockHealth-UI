@@ -2,7 +2,10 @@ import React, { useCallback, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { selectedTaskSelector } from 'selectors/task-drawer-selectors';
 import { EditorState } from 'draft-js';
-import { convertFromEditorStateToOutput } from 'components/common/TextEditor/helpers';
+import {
+  convertFromEditorStateToOutput,
+  addStylesToText,
+} from 'components/common/TextEditor/helpers';
 import { createMentionEntities } from 'components/common/TextEditor/create-mention-entities';
 import { IconButton } from '@material-ui/core';
 import { Replay } from '@material-ui/icons';
@@ -12,7 +15,8 @@ import { closeModal } from 'modal/actions';
 import CustomTextEditor from 'components/common/CustomTextEditor/CustomTextEditor';
 import TextEditor from 'components/common/TextEditor/TextEditor';
 import Select from 'components/common/Select/Select';
-import { EmrNoteTypeOptions } from 'helpers/task-helpers';
+import { EmrNoteTypeOptions, CommunicationType } from 'helpers/task-helpers';
+import TemplateAutoComplete from 'components/common/TemplateAutoComplete/TemplateAutoComplete';
 import { sendEmrForTask } from 'actions/task-actions';
 import {
   IncludeContainerStyled,
@@ -115,6 +119,19 @@ function SendEmrNoteFromTaskModal() {
           insertTextFromTask={insertTextFromTask}
           selectedTask={selectedTask}
         />
+        <InputContainerStyled>
+          <TemplateAutoComplete
+            type={CommunicationType.EMR}
+            placeholder="Pick template"
+            onChange={(_event, newValue) => {
+              handleReset();
+              const text = addStylesToText(newValue?.body ?? '');
+              setDetailsState(EditorState.push(detailsState, text));
+              // setSubject(newValue?.value ?? '');
+            }}
+            // disabled={show}
+          />
+        </InputContainerStyled>
         <TextEditorContainerStyled>
           <CustomTextEditor label="EHR note">
             <TextEditor
