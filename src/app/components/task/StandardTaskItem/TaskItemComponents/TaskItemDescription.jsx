@@ -79,6 +79,7 @@ const TaskItemDescription = ({
   );
   const descriptionReference = useRef(null);
   const isCompleted = status === TaskStatus.COMPLETE;
+  const isDecisionTask = task?.intentType === 'DECISION';
 
   const completedByName = completedBy
     ? `${completedBy?.firstName.charAt(0)}. ${completedBy?.lastName}`
@@ -256,9 +257,14 @@ const TaskItemDescription = ({
             </TaskItemParentTaskLabel>
           </>
         )}
-        {linkedTaskTemplate && !isCompleted && (
+        {linkedTaskTemplate && !isCompleted && !isDecisionTask && (
           <TaskContext>
             <span>Triggers: {linkedTaskTemplate.name}</span>
+          </TaskContext>
+        )}
+        {linkedTaskTemplate && !isCompleted && isDecisionTask && (
+          <TaskContext>
+            <span>Triggers a SmartFlow</span>
           </TaskContext>
         )}
       </TaskItemDescriptionIndicators>
