@@ -103,6 +103,19 @@ function SendEmrNoteFromTaskModal() {
             onChange={handleOptionChange}
           />
         </InputContainerStyled>
+        <InputContainerStyled>
+          <TemplateAutoComplete
+            type={CommunicationType.EMR}
+            placeholder="Pick template"
+            onChange={(_event, newValue) => {
+              handleReset();
+              const text = addStylesToText(newValue?.body ?? '');
+              setDetailsState(EditorState.push(detailsState, text));
+              // setSubject(newValue?.value ?? '');
+            }}
+            // disabled={show}
+          />
+        </InputContainerStyled>
         <IncludeContainerStyled>
           <InfoHeaderTextStyled>Include the following</InfoHeaderTextStyled>
           <IconButton onClick={handleReset}>
@@ -119,19 +132,6 @@ function SendEmrNoteFromTaskModal() {
           insertTextFromTask={insertTextFromTask}
           selectedTask={selectedTask}
         />
-        <InputContainerStyled>
-          <TemplateAutoComplete
-            type={CommunicationType.EMR}
-            placeholder="Pick template"
-            onChange={(_event, newValue) => {
-              handleReset();
-              const text = addStylesToText(newValue?.body ?? '');
-              setDetailsState(EditorState.push(detailsState, text));
-              // setSubject(newValue?.value ?? '');
-            }}
-            // disabled={show}
-          />
-        </InputContainerStyled>
         <TextEditorContainerStyled>
           <CustomTextEditor label="EHR note">
             <TextEditor
