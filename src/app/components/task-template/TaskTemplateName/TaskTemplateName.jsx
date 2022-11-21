@@ -60,9 +60,7 @@ const TaskTemplateName = ({
           {templateGroup?.sourceTaskBundleTemplate && (
             <TaskTemplateDescriptionIndicators>
               <TaskTemplateContext>
-                <span>
-                  Triggered by {templateGroup?.sourceTaskBundleTemplate?.name}
-                </span>
+                <span>{templateGroup?.sourceTaskBundleTemplate?.name}</span>
               </TaskTemplateContext>
             </TaskTemplateDescriptionIndicators>
           )}

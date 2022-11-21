@@ -72,5 +72,10 @@ export const TaskTemplateContext = styled.div`
     color: ${palette.brightBlue};
     font-weight: ${fontWeights.regular};
     line-height: 1;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    width: 100px;
+    padding-top: 10px;
   }
 `;
