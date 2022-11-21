@@ -1,21 +1,21 @@
 import { bool, shape, string } from 'prop-types';
 import React from 'react';
 import Highlighter from 'react-highlight-words';
-import prop from 'ramda/src/prop';
-import sortBy from 'ramda/src/sortBy';
-import compose from 'ramda/src/compose';
-import toLower from 'ramda/src/toLower';
+// import prop from 'ramda/src/prop';
+// import sortBy from 'ramda/src/sortBy';
+// import compose from 'ramda/src/compose';
+// import toLower from 'ramda/src/toLower';
 import { SuggestionItemContainer, SuggestionText } from './styled';
 
 const PatientSelectItem = React.forwardRef(
   ({ patient, searchValue, isFocused, ...restProps }, reference) => {
     const { name, dob, mrn } = patient;
-    const sortedPatientMetaData = patient?.patientMetaData
-      ? sortBy(
-          compose(toLower, prop('customFieldName')),
-          patient?.patientMetaData,
-        )
-      : [];
+    // const sortedPatientMetaData = patient?.patientMetaData
+    //   ? sortBy(
+    //       compose(toLower, prop('customFieldName')),
+    //       patient?.patientMetaData,
+    //     )
+    //   : [];
 
     return (
       <SuggestionItemContainer
@@ -40,7 +40,7 @@ const PatientSelectItem = React.forwardRef(
             textToHighlight={mrn ?? ''}
           />
         </SuggestionText>
-        {sortedPatientMetaData?.map(
+        {/* {sortedPatientMetaData?.map(
           ({ displayName, value, displayOptions }) => (
             <>
               {displayOptions?.includes('PATIENT_SEARCH') && value && (
@@ -48,7 +48,7 @@ const PatientSelectItem = React.forwardRef(
               )}
             </>
           ),
-        )}
+        )} */}
       </SuggestionItemContainer>
     );
   },
