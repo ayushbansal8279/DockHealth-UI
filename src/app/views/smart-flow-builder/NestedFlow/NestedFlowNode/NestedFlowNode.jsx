@@ -4,11 +4,12 @@ import { IconButton, Typography } from '@material-ui/core';
 import { openModal, closeModal } from 'modal/actions';
 import { deleteTask, partialUpdateTask } from 'actions/task-actions';
 import { getTemplates } from 'api/task-template-api';
-import { Edit, Delete, FindReplace } from '@material-ui/icons';
+import { Edit, Delete } from '@material-ui/icons';
 import palette from 'styles/palette';
 
 import TaskNodeHandles from 'views/smart-flow-builder/TaskNodeHandles/TaskNodeHandles';
 import TaskNodeWrapper from 'views/smart-flow-builder/TaskNodeWrapper/TaskNodeWrapper';
+import { TaskNodeEllipsis } from 'views/smart-flow-builder/TaskNodeWrapper/styled';
 import { IconContainerStyled } from './styled';
 import NestedFlowNodeStyled from '../styled';
 
@@ -67,8 +68,12 @@ const NestedFlowNode = React.memo(({ data, isConnectable, selected, type }) => {
       onTargetHandleHover={data.onTargetHandleHover}
     >
       <TaskNodeWrapper selected={selected} type={type}>
+        <TaskNodeEllipsis />
         <NestedFlowNodeStyled>
-          <Typography component="p">{task.description}</Typography>
+          <Typography component="p" style={{ maxHeight: '100%' }}>
+            {task.description.slice(0, 40)}
+            {task.description.length > 40 && '...'}
+          </Typography>
           <IconContainerStyled>
             <IconButton onClick={handleDelete}>
               <Delete htmlColor={palette.white} />
