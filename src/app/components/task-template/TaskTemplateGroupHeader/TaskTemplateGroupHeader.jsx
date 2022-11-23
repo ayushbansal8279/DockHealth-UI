@@ -517,7 +517,7 @@ const TaskTemplateGroupHeader = ({
         columns?.find(({ identifier: id }) => id === TaskItemColumn.DESCRIPTION)
           ?.columnWidth,
       )}
-      {randerFirstColumnCoverIfNecessary(
+      {/* {randerFirstColumnCoverIfNecessary(
         <TaskItemCell
           justify="center"
           paddingLeft="tiny"
@@ -534,7 +534,7 @@ const TaskTemplateGroupHeader = ({
         columns?.find(
           ({ identifier: id }) => id === TaskItemColumn.SUBTASKS_COUNT,
         )?.columnWidth,
-      )}
+      )} */}
 
       {isColumnChecked(columns, TaskItemColumn.PATIENT) && (
         <>
