@@ -55,8 +55,8 @@ export const NavigationIconContainer = styled.div`
     justify-content: center;
     align-items: center;
     height: 47px;
-    color: ${({ isActive }) =>
-      isActive ? palette.oPlusRed : palette.coolGrey2};
+    color: ${({ isActive, navSelectedColor }) =>
+      isActive ? navSelectedColor || palette.oPlusRed : palette.coolGrey2};
 
     ${({ subMenuOpen, isActive }) =>
       !subMenuOpen &&

@@ -23,8 +23,14 @@ const NavigationTemplate = ({ children }) => {
   const currentOrganization = useSelector(selectedUserOrganizationSelector);
   const isNavbarVisible = useSelector(isNavbarVisibleSelector);
 
+  const navBackgroundColorItem =
+    currentOrganization?.themeSettings?.find(
+      ({ name }) => name === 'navigation.menu.backgroundColor',
+    ) || {};
+
   const drawerClasses = useDrawerClasses({
     isNavbarVisible,
+    navBackgroundColor: navBackgroundColorItem?.value,
   });
 
   const intercomUser =

@@ -29,7 +29,8 @@ export const useDrawerClasses = makeStyles({
     position: 'static',
     transform: ({ isNavbarVisible }) =>
       isNavbarVisible ? 'translateX(0px)' : 'translateX(-100%)',
-    backgroundColor: palette.midnightBlue,
+    backgroundColor: ({ navBackgroundColor }) =>
+      navBackgroundColor || palette.midnightBlue,
     border: 0,
     overflow: 'initial',
     width: 'auto',

@@ -5,6 +5,7 @@ import { NavigationIconContainer, NavigationIconNewLabel } from './styled';
 const IconNavigationItem = ({
   icon: Icon,
   subMenuOpen,
+  navSelectedColor,
   isNew,
   ...restProps
 }) => {
@@ -16,6 +17,7 @@ const IconNavigationItem = ({
           <NavigationIconContainer
             isActive={isActive}
             subMenuOpen={subMenuOpen}
+            navSelectedColor={navSelectedColor}
           >
             <Icon />
           </NavigationIconContainer>

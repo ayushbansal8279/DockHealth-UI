@@ -13,6 +13,7 @@ import Spacing from 'components/common/Spacing.tsx';
 import {
   userProfileSelector,
   userHasDockChatFeatureSelector,
+  selectedUserOrganizationSelector,
 } from 'selectors/user-selectors';
 import {
   showChatPopoverSelector,
@@ -95,6 +96,8 @@ const NavigationSidebar = () => {
   const dispatch = useDispatch();
   const location = useLocation();
   const currentUser = useSelector(userProfileSelector);
+  const currentOrganization = useSelector(selectedUserOrganizationSelector);
+
   const showChatPopover = useSelector(showChatPopoverSelector);
   const openedSubMenuKey = useSelector(subMenuKeySelector);
   const selectedChannel = useSelector(selectedChatChannelSelector);
@@ -131,6 +134,11 @@ const NavigationSidebar = () => {
 
   const customerTypeLabel = getCustomerTypeLabel(currentUser);
   const customerTypeLabelCapitalized = capitalize(customerTypeLabel);
+
+  const navSelectedColorItem =
+    currentOrganization?.themeSettings?.find(
+      ({ name }) => name === 'navigation.menu.selectedColor',
+    ) || {};
 
   useEffect(() => {
     const unlisten = history.listen(() =>
@@ -205,6 +213,7 @@ const NavigationSidebar = () => {
                 icon={SearchIcon}
                 path="/core/search"
                 onItemClick={handleNavigationItemClick}
+                navSelectedColor={navSelectedColorItem?.value}
               />
             </AccessRestrictor>
 
@@ -216,6 +225,7 @@ const NavigationSidebar = () => {
                 icon={HomeIcon}
                 path="/core/home"
                 onItemClick={handleNavigationItemClick}
+                navSelectedColor={navSelectedColorItem?.value}
               />
             </AccessRestrictor>
 
@@ -229,6 +239,7 @@ const NavigationSidebar = () => {
                 subMenuOpen={openedSubMenuKey === SubmenuKey.LISTS}
                 path="/core/tasks"
                 onItemClick={handleNavigationItemClick}
+                navSelectedColor={navSelectedColorItem?.value}
               />
             </AccessRestrictor>
             <AccessRestrictor allowedToRoles={[ADMIN, OWNER, MEMBER, DOCK_PRO]}>
@@ -239,6 +250,7 @@ const NavigationSidebar = () => {
                 subMenuOpen={openedSubMenuKey === SubmenuKey.PEOPLE}
                 path={USERS_PATH}
                 onItemClick={handleNavigationItemClick}
+                navSelectedColor={navSelectedColorItem?.value}
               />
             </AccessRestrictor>
             <AccessRestrictor allowedToRoles={[ADMIN, OWNER, MEMBER, GUEST]}>
@@ -249,6 +261,7 @@ const NavigationSidebar = () => {
                 subMenuOpen={openedSubMenuKey === SubmenuKey.PATIENTS}
                 path="/core/patients"
                 onItemClick={handleNavigationItemClick}
+                navSelectedColor={navSelectedColorItem?.value}
               />
             </AccessRestrictor>
             <AccessRestrictor allowedToRoles={[ADMIN, OWNER, MEMBER, DOCK_PRO]}>
@@ -257,6 +270,7 @@ const NavigationSidebar = () => {
                 icon={TemplatesIcon}
                 path={WORKFLOW_LIBRARY_PATH}
                 onItemClick={handleNavigationItemClick}
+                navSelectedColor={navSelectedColorItem?.value}
               />
             </AccessRestrictor>
             <AccessRestrictor allowedToRoles={[ADMIN, OWNER]}>
@@ -265,6 +279,7 @@ const NavigationSidebar = () => {
                 icon={BarChartIcon}
                 path="/core/analytics"
                 onItemClick={handleNavigationItemClick}
+                navSelectedColor={navSelectedColorItem?.value}
               />
             </AccessRestrictor>
             {dockChatAvailable && (
@@ -279,6 +294,7 @@ const NavigationSidebar = () => {
                     }}
                     path=""
                     onItemClick={handleDockChatClick}
+                    navSelectedColor={navSelectedColorItem?.value}
                     isNew
                   />
                 </NavigationIconContainer>
@@ -299,6 +315,7 @@ const NavigationSidebar = () => {
                     USERS_SETTINGS_PATH,
                   ]}
                   onItemClick={handleNavigationItemClick}
+                  navSelectedColor={navSelectedColorItem?.value}
                 />
               </div>
             </AccessRestrictor>
@@ -311,6 +328,7 @@ const NavigationSidebar = () => {
                 subMenuKey={SubmenuKey.EDUCATION_CENTER}
                 subMenuOpen={openedSubMenuKey === SubmenuKey.EDUCATION_CENTER}
                 onItemClick={handleNavigationItemClick}
+                navSelectedColor={navSelectedColorItem?.value}
               />
             </AccessRestrictor>
             {/* <AccessRestrictor
@@ -332,6 +350,7 @@ const NavigationSidebar = () => {
                 subMenuKey={SubmenuKey.PROFILE}
                 subMenuOpen={openedSubMenuKey === SubmenuKey.PROFILE}
                 onItemClick={handleNavigationItemClick}
+                navSelectedColor={navSelectedColorItem?.value}
               >
                 <>
                   <Spacing vertical={3} />
