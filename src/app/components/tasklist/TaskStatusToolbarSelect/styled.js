@@ -1,8 +1,7 @@
-/* eslint-disable import/prefer-default-export */
 import styled from 'styled-components';
 
-export const VisibilityImg = styled.img`
-  width: 21px;
+// eslint-disable-next-line import/prefer-default-export
+export const ViewTypeImg = styled.img`
   ${({ iconColorActive }) =>
     iconColorActive
       ? `filter: ${iconColorActive}; `

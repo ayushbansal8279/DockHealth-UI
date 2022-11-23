@@ -39,6 +39,7 @@ const CustomizeToolbarButton = ({
   showCustomColumnCreate = true,
   additionalOptionsTitle = 'Display Options',
   disableButton = false,
+  iconColorActive,
 }) => {
   const [open, setOpen] = useState(false);
   const [openUpgradePopup, setOpenUpgradePopup] = useState(false);
@@ -110,7 +111,13 @@ const CustomizeToolbarButton = ({
     <>
       <ToolbarButton
         ref={buttonReference}
-        icon={<CustomizeImg src={CustomizeIcon} alt="view type icon" />}
+        icon={
+          <CustomizeImg
+            src={CustomizeIcon}
+            alt="view type icon"
+            iconColorActive={iconColorActive}
+          />
+        }
         onClick={disableButton ? undefined : () => setOpen(!open)}
         disableButton={disableButton}
         tooltip={
