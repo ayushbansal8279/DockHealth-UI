@@ -43,7 +43,12 @@ const DescriptionSection = () => {
   const updateDetails = useCallback(
     state => {
       const { tokenizedText } = convertFromEditorStateToOutput(state, true);
-      if (selectedWorkflow && selectedWorkflow?.identifier) {
+      if (
+        selectedWorkflow &&
+        selectedWorkflow?.identifier &&
+        selectedWorkflow?.description !== tokenizedText &&
+        (selectedWorkflow?.description || tokenizedText !== '')
+      ) {
         dispatch(
           updatePartialWorkflow(selectedWorkflow?.identifier, {
             description: tokenizedText || '',
