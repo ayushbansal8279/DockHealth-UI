@@ -102,7 +102,7 @@ const PatientDetailsHeader = () => {
                   {[`${lastName},`, firstName, middleName].join(' ')}
                 </PatientName>
                 <Box mx={1} />
-                {taskListRestrictions.createTask !== DISABLED && (
+                {taskListRestrictions?.createTask !== DISABLED && (
                   <ButtonContainer onClick={setIsDrawerOpen}>
                     <PatientDetailsLabel>View details</PatientDetailsLabel>
                   </ButtonContainer>

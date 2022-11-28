@@ -137,7 +137,7 @@ const TaskTemplateApplicator = ({ onTemplateSelect, bulkApply = false }) => {
     [setSearchValue, debouncedSearch],
   );
 
-  if (taskListRestrictions.createTask === DISABLED) {
+  if (taskListRestrictions?.createTask === DISABLED) {
     return null;
   }
 
