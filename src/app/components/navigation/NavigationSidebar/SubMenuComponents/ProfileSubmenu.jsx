@@ -15,6 +15,7 @@ import {
   UserInitialCircle,
   SubMenuLink,
   BlueSubMenuLink,
+  Version,
 } from './styled';
 
 const ProfileSubmenu = () => {
@@ -54,6 +55,7 @@ const ProfileSubmenu = () => {
             <SubmenuDivider />
             <Box m={0.5} />
             <BlueSubMenuLink to="/auth/logout">Logout</BlueSubMenuLink>
+            <Version>version: {process.env.VERSION}</Version>
           </>
         ) : null}
       </Grid>
