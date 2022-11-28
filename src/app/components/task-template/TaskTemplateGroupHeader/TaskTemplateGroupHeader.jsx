@@ -80,7 +80,7 @@ const TaskTemplateGroupHeader = ({
   setShowCompletedTasks,
   showIncompleteTasks,
   setShowIncompleteTasks,
-  isFetchingTasks,
+  // isFetchingTasks,
   showTasksWithGroup = true,
   // eslint-disable-next-line sonarjs/cognitive-complexity
 }) => {
@@ -743,10 +743,14 @@ const TaskTemplateGroupHeader = ({
           f => f.isChecked && f._customFieldType !== CUSTOM_FIELD_TYPES.REGULAR,
         )
         .map(field => {
-          const taskCustomFieldValue = workFlowData?.taskMetaData?.find(
+          const workflowDetails =
+            templateGroup.assignedToUsers || !workFlowData
+              ? templateGroup
+              : workFlowData;
+          const taskCustomFieldValue = workflowDetails?.taskMetaData?.find(
             f => f.customFieldIdentifier === field.identifier,
           );
-          const patientCustomFieldValue = workFlowData?.patient?.patientMetaData?.find(
+          const patientCustomFieldValue = workflowDetails?.patient?.patientMetaData?.find(
             f => f.customFieldIdentifier === field.identifier,
           );
           const customFieldValue =
@@ -756,7 +760,7 @@ const TaskTemplateGroupHeader = ({
 
           const hidePatientCustomFields =
             field.targetType === CUSTOM_FIELD_TYPES.PATIENT &&
-            !workFlowData?.patient?.patientIdentifier;
+            !workflowDetails?.patient?.patientIdentifier;
 
           return randerFirstColumnCoverIfNecessary(
             <TaskItemCell
@@ -764,7 +768,7 @@ const TaskTemplateGroupHeader = ({
               width={field.columnWidth}
               order={getColumnOrder(field.identifier)}
             >
-              {!hidePatientCustomFields && workFlowData && (
+              {!hidePatientCustomFields && workflowDetails && (
                 <TaskItemCustomField
                   customFieldValue={customFieldValue}
                   onClick={(fieldIdentifier, workflow) => {
@@ -779,7 +783,7 @@ const TaskTemplateGroupHeader = ({
                   }}
                   field={field}
                   readOnly
-                  task={workFlowData}
+                  task={workflowDetails}
                 />
               )}
             </TaskItemCell>,

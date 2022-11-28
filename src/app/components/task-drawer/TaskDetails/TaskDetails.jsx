@@ -23,7 +23,7 @@ import debounce from 'lodash.debounce';
 import { DetailsContainer } from './styled';
 
 const TaskDetails = ({ readOnly, disableMentions }) => {
-  const DEBOUNCE_TIME = 3000;
+  const DEBOUNCE_TIME = 10000;
   const selectedTask = useSelector(selectedTaskSelector);
   const { taskList } = selectedTask || {};
   const { taskListIdentifier } = taskList || {};

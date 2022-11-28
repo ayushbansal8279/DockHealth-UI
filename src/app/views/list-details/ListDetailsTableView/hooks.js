@@ -375,7 +375,9 @@ const initializeListDetailsViewHooks = () => {
       ) {
         if (
           (data.eventType?.startsWith('CREATE_TASK_BUNDLE') ||
-            data.eventType?.startsWith('DUPLICATE_TASK_BUNDLE')) &&
+            data.eventType?.startsWith('UPDATE_TASK_BUNDLE') ||
+            data.eventType?.startsWith('DUPLICATE_TASK_BUNDLE') ||
+            data.eventType?.startsWith('MORE_TASKS_TASK_BUNDLE')) &&
           data.taskBundle.identifier
         ) {
           actions.refreshTaskBundle(data.taskBundle.identifier);
