@@ -6,10 +6,11 @@ import { useSelector } from 'react-redux';
 import isEmpty from 'ramda/src/isEmpty';
 import { initializePusher } from 'helpers/pusher-instance';
 import { getActivityAlertDetails } from 'api/activity-alerts-api';
+import ShipBellSound from 'components/../sounds/ship_bell.mp3';
 import ActivityAlertsToast from './ActivityAlertsToast/ActivityAlertsToast';
 import { ActivityAlertsToastsContainer } from './styled';
 
-const listenRealTimeAlerts = (currentUser, showAlert) => {
+const listenRealTimeAlerts = (currentUser, showAlert, audio) => {
   if (!currentUser || !currentUser.userIdentifier) {
     return;
   }
@@ -28,6 +29,7 @@ const listenRealTimeAlerts = (currentUser, showAlert) => {
       if (alert) {
         sessionStorage.setItem('hasUnreadAlerts', true);
         showAlert(alert);
+        // audio.play();
       }
     });
   }
@@ -37,6 +39,8 @@ const ActivityAlertsToasts = () => {
   const [alertsList, setAlertsList] = useState([]);
   const [newAlert, setNewAlert] = useState({});
   const [lastElement, setLastElement] = useState(null);
+
+  const [audio] = useState(new Audio(ShipBellSound));
 
   const { currentUser } = useSelector(store => ({
     currentUser: store.userState.userProfile,
@@ -50,8 +54,8 @@ const ActivityAlertsToasts = () => {
   };
 
   useEffect(() => {
-    listenRealTimeAlerts(currentUser, showActivityAlert);
-  }, [currentUser]);
+    listenRealTimeAlerts(currentUser, showActivityAlert, audio);
+  }, [currentUser, audio]);
 
   useEffect(() => {
     if (!isEmpty(newAlert)) {

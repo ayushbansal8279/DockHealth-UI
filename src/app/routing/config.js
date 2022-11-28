@@ -156,6 +156,7 @@ export const TEMPLATE_CORE_SUBSCRIPTION_PLAN_ROUTES = [
     RouteComponent: props => (
       <DashboardView tabName={DashboardTasksTab.SHARED_TASKS} {...props} />
     ),
+    allowedToRoles: [ADMIN, OWNER, MEMBER, GUEST, DOCK_PRO, EXTERNAL],
   },
   {
     path: '/home/all-tasks',
@@ -193,6 +194,7 @@ export const TEMPLATE_CORE_SUBSCRIPTION_PLAN_ROUTES = [
   {
     path: '/people/:groupIdentifier?',
     RouteComponent: UserGroupView,
+    allowedToRoles: [ADMIN, OWNER, MEMBER, GUEST, DOCK_PRO],
   },
   {
     path: '/task/:identifier',

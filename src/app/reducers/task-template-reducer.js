@@ -68,7 +68,7 @@ const TaskTemplateReducer = (state = initialState, action) => {
       if (state.taskTemplates) {
         return {
           ...state,
-          taskTemplates: state.taskTemplates.map(taskTemplate =>
+          taskTemplates: state.taskTemplates?.map(taskTemplate =>
             taskTemplate.identifier === action.taskWorkflowIdentifier
               ? { ...taskTemplate, ...action.newData }
               : taskTemplate,
@@ -112,20 +112,6 @@ const TaskTemplateReducer = (state = initialState, action) => {
         ...state,
         isError: true,
       };
-
-    case ActionTypes.UPDATE_PARTIAL_WORKFLOW: {
-      if (state.taskTemplates) {
-        return {
-          ...state,
-          taskTemplates: state.taskTemplates?.map(taskTemplate =>
-            taskTemplate.identifier === action.taskWorkflowIdentifier
-              ? { ...taskTemplate, ...action.dataToUpdate }
-              : taskTemplate,
-          ),
-        };
-      }
-      return state;
-    }
 
     case ActionTypes.ADD_TASK_TEMPLATE_SUCCESS:
       if (state.taskTemplates) {

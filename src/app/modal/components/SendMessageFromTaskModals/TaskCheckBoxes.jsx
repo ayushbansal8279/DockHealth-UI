@@ -13,6 +13,7 @@ function TaskCheckBoxes({
   setIsTaskCommentsIncluded,
   insertTextFromTask,
   selectedTask,
+  displayOnlyDescription = false,
 }) {
   const {
     details,
@@ -22,7 +23,8 @@ function TaskCheckBoxes({
     taskMentions,
     tokenizedDetails,
   } = selectedTask;
-  const includeCheckBoxes = [
+
+  let includeCheckBoxes = [
     {
       label: 'Task Description',
       value: isTaskDescriptionIncluded,
@@ -84,6 +86,11 @@ function TaskCheckBoxes({
       },
     },
   ];
+
+  includeCheckBoxes = displayOnlyDescription
+    ? includeCheckBoxes.splice(0, 1)
+    : includeCheckBoxes;
+
   return includeCheckBoxes.map(checkbox => {
     return (
       <CheckboxContainerStyled key={checkbox.label}>

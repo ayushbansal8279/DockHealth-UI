@@ -8,6 +8,10 @@ import { closeModal } from 'modal/actions';
 import { CommunicationType } from 'helpers/task-helpers';
 import ContactsAutoComplete from 'components/common/ContactsAutoComplete/ContactsAutocomplete';
 import TemplateAutoComplete from 'components/common/TemplateAutoComplete/TemplateAutoComplete';
+import { IconButton } from '@material-ui/core';
+import { Replay } from '@material-ui/icons';
+import palette from 'styles/palette';
+import TaskCheckBoxes from '../TaskCheckBoxes';
 import {
   CloseIcon,
   CloseIconButton,
@@ -18,6 +22,8 @@ import {
   ModalHeaderContainerStyled,
   ModalWrapper,
   TextWaringStyled,
+  IncludeContainerStyled,
+  InfoHeaderTextStyled,
 } from '../../styled';
 import { InputContainerStyled } from '../styled';
 
@@ -26,7 +32,11 @@ const SendSmsFromTaskModal = () => {
   const [message, setMessage] = useState('');
   const [PhoneError, setPhoneError] = useState(false);
   const [contact, setContact] = useState(null);
-  const { identifier } = useSelector(selectedTaskSelector);
+  const [isTaskDescriptionIncluded, setIsTaskDescriptionIncluded] = useState(
+    false,
+  );
+  const selectedTask = useSelector(selectedTaskSelector);
+  const { identifier } = selectedTask;
 
   const handlePhoneBlur = useCallback(event => {
     const phoneNumber = event.target.value;
@@ -43,6 +53,18 @@ const SendSmsFromTaskModal = () => {
     );
     dispatch(closeModal());
   }, [contact, dispatch, identifier, message]);
+
+  const handleTextEditorReset = useCallback(() => {
+    setIsTaskDescriptionIncluded(false);
+    setMessage('');
+  }, []);
+
+  const insertTextFromTask = useCallback(
+    meta => {
+      setMessage(`${message}\n ${meta.meta}`);
+    },
+    [message],
+  );
 
   return (
     <ModalWrapper width="600px">
@@ -82,6 +104,19 @@ const SendSmsFromTaskModal = () => {
               }
               setMessage(newValue?.value || '');
             }}
+          />
+          <IncludeContainerStyled>
+            <InfoHeaderTextStyled>Include the following</InfoHeaderTextStyled>
+            <IconButton onClick={handleTextEditorReset}>
+              <Replay htmlColor={palette.coolGrey9} />
+            </IconButton>
+          </IncludeContainerStyled>
+          <TaskCheckBoxes
+            isTaskDescriptionIncluded={isTaskDescriptionIncluded}
+            setIsTaskDescriptionIncluded={setIsTaskDescriptionIncluded}
+            selectedTask={selectedTask}
+            insertTextFromTask={insertTextFromTask}
+            displayOnlyDescription
           />
           <Input
             type="text"

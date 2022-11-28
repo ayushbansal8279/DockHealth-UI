@@ -18,7 +18,7 @@ import NoFilterResultsView from 'components/tasklist/EmptyListView/NoFilterResul
 import TasksGroup from 'components/tasklist/TasksGroup/TasksGroup';
 import GroupedListSkeletonLoader from 'components/tasklist/GroupedListSkeletonLoader/GroupedListSkeletonLoader';
 import StandardTaskItem from 'components/task/StandardTaskItem/StandardTaskItem';
-import { useColumnsConfig } from 'context-api/columns-config-context';
+import { useTaskListColumnsConfig } from 'context-api/columns-config-context';
 import { TaskGroupsContainer } from '../styled';
 
 const PersonDetailsCompletedTasks = ({
@@ -38,7 +38,7 @@ const PersonDetailsCompletedTasks = ({
   const taskCounters = useSelector(taskCountersSelector);
   const sort = useSelector(sortSelector);
   const areFiltersApplied = useSelector(hasFiltersAppliedSelector);
-  const { setViewSpecificConfig } = useColumnsConfig();
+  const { setViewSpecificConfig } = useTaskListColumnsConfig();
 
   useEffect(() => {
     setViewSpecificConfig(taskItemConfig);

@@ -34,7 +34,7 @@ import { BulkEditContext } from 'components/tasklist/BulkEditSection/BulkEditSec
 import TaskItemCustomField from 'components/common/CustomField/TaskItemCustomField';
 import OptionsMenu from 'components/common/OptionsMenu/OptionsMenu';
 import Spacing from 'components/common/Spacing';
-import { useColumnsConfig } from 'context-api/columns-config-context';
+import { useTaskListColumnsConfig } from 'context-api/columns-config-context';
 import StickyMainTaskItemCell from 'components/task/StickyMainTaskItemCell/StickyMainTaskItemCell';
 import TaskItemCell from 'components/task/TaskItemCell/TaskItemCell';
 import TaskTemplateDueDate from 'components/task-template/TaskTemplateDueDate/TaskTemplateDueDate';
@@ -84,7 +84,7 @@ const TaskTemplateGroupHeader = ({
   setShowCompletedTasks,
   showIncompleteTasks,
   setShowIncompleteTasks,
-  isFetchingTasks,
+  // isFetchingTasks,
   showTasksWithGroup = true,
   // eslint-disable-next-line sonarjs/cognitive-complexity
 }) => {
@@ -108,7 +108,7 @@ const TaskTemplateGroupHeader = ({
   }));
   const currentList = useSelector(currentTaskListSelector);
   const dispatch = useDispatch();
-  const { columns } = useColumnsConfig();
+  const { columns } = useTaskListColumnsConfig();
   useEffect(() => {
     setNameInputValue(name);
   }, [name]);
@@ -346,55 +346,61 @@ const TaskTemplateGroupHeader = ({
           pluck('identifier', allTasks),
         ),
       );
-      dispatch(TaskActions.changeWorkflowSelectedState(false, identifier));
+      dispatch(
+        TaskActions.changeWorkflowSelectedState(!isBundleSelected, identifier),
+      );
     } else {
       dispatch(TaskActions.changeWorkflowSelectedState(!selected, identifier));
     }
   }, [filteredTasks, isOpen, dispatch, isBundleSelected, identifier, selected]);
 
-  useEffect(() => {
-    if (selected && isOpen && filteredTasks?.length > 0) {
-      const { parentTasks, subtasks } = extractTasksAndSubtasks(filteredTasks);
-      const allTasks = [...parentTasks, ...subtasks];
-      dispatch(TaskActions.changeWorkflowSelectedState(false, identifier));
-      dispatch(
-        TaskActions.changeTasksSelectedState(
-          !isBundleSelected,
-          pluck('identifier', allTasks),
-        ),
-      );
-    }
-  }, [
-    dispatch,
-    filteredTasks,
-    identifier,
-    isBundleSelected,
-    isFetchingTasks,
-    isOpen,
-    selected,
-  ]);
+  // useEffect(() => {
+  //   if (selected && isOpen && filteredTasks?.length > 0) {
+  //     const { parentTasks, subtasks } = extractTasksAndSubtasks(filteredTasks);
+  //     const allTasks = [...parentTasks, ...subtasks];
+  //     dispatch(
+  //       TaskActions.changeWorkflowSelectedState(!isBundleSelected, identifier),
+  //     );
+  //     dispatch(
+  //       TaskActions.changeTasksSelectedState(
+  //         !isBundleSelected,
+  //         pluck('identifier', allTasks),
+  //       ),
+  //     );
+  //   }
+  // }, [
+  //   dispatch,
+  //   filteredTasks,
+  //   identifier,
+  //   isBundleSelected,
+  //   isFetchingTasks,
+  //   isOpen,
+  //   selected,
+  // ]);
 
-  useEffect(() => {
-    if (!isOpen && isBundleSelected && !selected) {
-      const { parentTasks, subtasks } = extractTasksAndSubtasks(filteredTasks);
-      const allTasks = [...parentTasks, ...subtasks];
-      dispatch(
-        TaskActions.changeTasksSelectedState(
-          !isBundleSelected,
-          pluck('identifier', allTasks),
-        ),
-      );
-      dispatch(TaskActions.changeWorkflowSelectedState(true, identifier));
-    }
-  }, [
-    dispatch,
-    filteredTasks,
-    identifier,
-    isBundleSelected,
-    isFetchingTasks,
-    isOpen,
-    selected,
-  ]);
+  // useEffect(() => {
+  //   if (!isOpen && isBundleSelected && !selected) {
+  //     const { parentTasks, subtasks } = extractTasksAndSubtasks(filteredTasks);
+  //     const allTasks = [...parentTasks, ...subtasks];
+  //     dispatch(
+  //       TaskActions.changeTasksSelectedState(
+  //         !isBundleSelected,
+  //         pluck('identifier', allTasks),
+  //       ),
+  //     );
+  //     dispatch(
+  //       TaskActions.changeWorkflowSelectedState(!isBundleSelected, identifier),
+  //     );
+  //   }
+  // }, [
+  //   dispatch,
+  //   filteredTasks,
+  //   identifier,
+  //   isBundleSelected,
+  //   isFetchingTasks,
+  //   isOpen,
+  //   selected,
+  // ]);
 
   const getColumnOrder = useCallback(
     TaskItemColumnType =>
@@ -757,10 +763,14 @@ const TaskTemplateGroupHeader = ({
           f => f.isChecked && f._customFieldType !== CUSTOM_FIELD_TYPES.REGULAR,
         )
         .map(field => {
-          const taskCustomFieldValue = workFlowData?.taskMetaData?.find(
+          const workflowDetails =
+            templateGroup.assignedToUsers || !workFlowData
+              ? templateGroup
+              : workFlowData;
+          const taskCustomFieldValue = workflowDetails?.taskMetaData?.find(
             f => f.customFieldIdentifier === field.identifier,
           );
-          const patientCustomFieldValue = workFlowData?.patient?.patientMetaData?.find(
+          const patientCustomFieldValue = workflowDetails?.patient?.patientMetaData?.find(
             f => f.customFieldIdentifier === field.identifier,
           );
           const customFieldValue =
@@ -770,7 +780,7 @@ const TaskTemplateGroupHeader = ({
 
           const hidePatientCustomFields =
             field.targetType === CUSTOM_FIELD_TYPES.PATIENT &&
-            !workFlowData?.patient?.patientIdentifier;
+            !workflowDetails?.patient?.patientIdentifier;
 
           return randerFirstColumnCoverIfNecessary(
             <TaskItemCell
@@ -778,7 +788,7 @@ const TaskTemplateGroupHeader = ({
               width={field.columnWidth}
               order={getColumnOrder(field.identifier)}
             >
-              {!hidePatientCustomFields && workFlowData && (
+              {!hidePatientCustomFields && workflowDetails && (
                 <TaskItemCustomField
                   customFieldValue={customFieldValue}
                   onClick={(fieldIdentifier, workflow) => {
@@ -793,7 +803,7 @@ const TaskTemplateGroupHeader = ({
                   }}
                   field={field}
                   readOnly
-                  task={workFlowData}
+                  task={workflowDetails}
                 />
               )}
             </TaskItemCell>,

@@ -206,7 +206,6 @@ const NavigationSidebar = () => {
                 onItemClick={handleNavigationItemClick}
               />
             </AccessRestrictor>
-
             <AccessRestrictor required={[CAN_ACCESS_HOME_PAGE]}>
               <IconNavigationItem
                 name="Home"
@@ -215,7 +214,6 @@ const NavigationSidebar = () => {
                 onItemClick={handleNavigationItemClick}
               />
             </AccessRestrictor>
-
             <AccessRestrictor required={[CAN_ACCESS_TASK_LIST_PAGE]}>
               <IconNavigationItem
                 name="Lists"

@@ -31,6 +31,7 @@ import AdornedButton from 'components/common/AdornedButton/AdornedButton';
 import SearchInput from 'components/common/SearchInput/SearchInput';
 import FilterPopover from 'components/filter/FilterPopover/FilterPopover';
 import { getCustomerTypeLabel } from 'helpers/customer-type-helper';
+import CustomizeToolbarButton from 'components/patients/CustomizeToolbarButton/CustomizeToolbarButton';
 import CreatePatientDrawer from '../CreatePatientDrawer/CreatePatientDrawer';
 import PatientsFilter from '../PatientsFilter/PatientsFilter';
 import { ImportButton, InputWrapper, SearchHelperText } from './styled';
@@ -82,8 +83,8 @@ const PatientsToolbar = ({ refreshPatientList, setImportPopoverOpen }) => {
   );
 
   const onListTypeChange = useCallback(
-    e => {
-      const { value } = e.target;
+    event => {
+      const { value } = event.target;
       const { url } = OPTIONS.find(o => o.value === value);
       if (url) history.push(url);
     },
@@ -131,6 +132,7 @@ const PatientsToolbar = ({ refreshPatientList, setImportPopoverOpen }) => {
               onClick={toggleFilter}
               onClear={() => dispatch(PatientsActions.clearPatientsFilters())}
             />
+            <CustomizeToolbarButton />
           </Box>
           <Box display="flex" alignItems="center">
             {!isGuest &&

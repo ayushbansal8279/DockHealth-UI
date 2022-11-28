@@ -6,7 +6,7 @@ import Checkbox from 'components/common/Checkbox/Checkbox';
 import { SortHeaderRow } from 'components/tasklist/ColumnSortHeader/styled';
 import { TaskItemColumnWidth } from 'helpers/task-helpers';
 import { getCustomerTypeLabel } from 'helpers/customer-type-helper';
-import { useColumnsConfig } from 'context-api/columns-config-context';
+import { useTaskListColumnsConfig } from 'context-api/columns-config-context';
 import { CustomFieldWidthConfig } from 'helpers/field-type-helpers';
 import { DragDropContext, Droppable } from 'react-beautiful-dnd';
 import { SINGLE_TASK_RESTRICTIONS_PROFILES } from 'restrictions/task-restrictions';
@@ -33,7 +33,11 @@ const TasksHeader = ({
   const { currentUser } = useSelector(store => ({
     currentUser: store.userState.userProfile,
   }));
-  const { columns, setColumns, setColumnWidth = () => {} } = useColumnsConfig();
+  const {
+    columns,
+    setColumns,
+    setColumnWidth = () => {},
+  } = useTaskListColumnsConfig();
   const customerTypeLabel = getCustomerTypeLabel(currentUser);
   const currentUserMember = taskList?.listUsers.find(
     u => u.identifier === currentUser?.identifier,

@@ -35,7 +35,7 @@ import QuickAddTaskInput from 'components/tasklist/QuickAddTaskInput/QuickAddTas
 import { checkIfAllTasksSelected } from 'helpers/bulk-edit-helpers';
 import { extractTasksAndSubtasks } from 'helpers/tasklist-helpers';
 import { changeTasksSelectedState } from 'actions/task-actions';
-import { useColumnsConfig } from 'context-api/columns-config-context';
+import { useTaskListColumnsConfig } from 'context-api/columns-config-context';
 import StickyContainer from 'components/common/HorizontalScroll/StickyContainer';
 import { TaskGroupsContainer } from '../styled';
 
@@ -57,7 +57,7 @@ const PersonDetailsOpenedTasks = ({
   const addingNewSubtaskParentId = useSelector(
     addingNewSubtaskParentIdSelector,
   );
-  const { setViewSpecificConfig } = useColumnsConfig();
+  const { setViewSpecificConfig } = useTaskListColumnsConfig();
   const quickAddTaskInputReference = useRef(null);
   const filteredTasks = useMemo(
     () => (!searchValue ? tasks : filterTasksBySearchValue(tasks, searchValue)),

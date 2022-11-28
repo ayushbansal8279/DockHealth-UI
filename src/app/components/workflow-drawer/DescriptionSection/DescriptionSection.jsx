@@ -8,47 +8,29 @@ import TextEditor from 'components/common/TextEditor/TextEditor';
 import { useMentionsEditorState } from 'components/common/TextEditor/use-mentions-editor-state';
 import {
   convertFromEditorStateToOutput,
+  convertToEditorState,
   isEditorStateEmpty,
 } from 'components/common/TextEditor/helpers';
 import debounce from 'lodash.debounce';
-import {
-  workflowSelector,
-  workflowAutofocusFieldSelector,
-} from 'selectors/workflow-drawer-selectors';
+import { workflowSelector } from 'selectors/workflow-drawer-selectors';
 import { updatePartialWorkflow } from 'actions/task-template-actions';
-import { WorkflowDrawerFieldNames } from 'helpers/workflow-drawer-helpers';
-import { createMentionEntities } from 'components/common/TextEditor/create-mention-entities';
-import { EditorState } from 'draft-js';
 
-const DescriptionSection = ({ readOnly }) => {
-  const DEBOUNCE_TIME = 3000;
+const DescriptionSection = () => {
+  const DEBOUNCE_TIME = 10000;
   const selectedWorkflow = useSelector(workflowSelector);
   const { taskList } = selectedWorkflow || {};
   const { taskListIdentifier } = taskList || {};
   const dispatch = useDispatch();
   const detailsReference = useRef(null);
   const [isFocused, setFocused, unsetFocused] = useBoolean();
-  const autoFocusFieldName = useSelector(workflowAutofocusFieldSelector);
-  const [detailsState, setDetailsState] = useMentionsEditorState();
-  const isDescriptionInitialized = useRef(false);
-  const isDescriptionInitializationUpdated = useRef(false);
-
-  useEffect(() => {
-    if (
-      isDescriptionInitialized.current &&
-      selectedWorkflow?.tokenizedDescription
-    ) {
-      const newContent = createMentionEntities(
-        selectedWorkflow.tokenizedDescription,
-        selectedWorkflow.description,
-        selectedWorkflow.taskMentions || [],
-        true,
-      );
-      setDetailsState(EditorState.push(detailsState, newContent));
-    }
-    isDescriptionInitialized.current = true;
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [selectedWorkflow]);
+  const [detailsState, setDetailsState] = useMentionsEditorState(
+    convertToEditorState({
+      rawText: selectedWorkflow?.description,
+      tokenizedText: selectedWorkflow?.tokenizedDescription,
+      mentions: selectedWorkflow?.taskMentions,
+      handleRichText: true,
+    }),
+  );
 
   const isTemplateWorkflow = checkIfTemplateTask(selectedWorkflow);
 
@@ -58,27 +40,21 @@ const DescriptionSection = ({ readOnly }) => {
 
   const previousIsFocused = usePrevious(isFocused);
 
-  useEffect(() => {
-    if (
-      detailsReference.current &&
-      autoFocusFieldName === WorkflowDrawerFieldNames.DESCRIPTION
-    ) {
-      detailsReference.current.focus();
-    }
-  }, [autoFocusFieldName]);
-
   const updateDetails = useCallback(
     state => {
       const { tokenizedText } = convertFromEditorStateToOutput(state, true);
-      if (isDescriptionInitializationUpdated.current) {
+      if (
+        selectedWorkflow &&
+        selectedWorkflow?.identifier &&
+        selectedWorkflow?.description !== tokenizedText &&
+        (selectedWorkflow?.description || tokenizedText !== '')
+      ) {
         dispatch(
           updatePartialWorkflow(selectedWorkflow?.identifier, {
             description: tokenizedText || '',
             descriptionCleared: !(tokenizedText && tokenizedText !== ''),
           }),
         );
-      } else {
-        isDescriptionInitializationUpdated.current = true;
       }
     },
     [dispatch, selectedWorkflow],
@@ -109,6 +85,7 @@ const DescriptionSection = ({ readOnly }) => {
 
   return (
     <CustomTextEditor
+      key={selectedWorkflow?.identifier}
       empty={isEmptyDetailsState}
       focused={isFocused}
       label="description"

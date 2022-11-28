@@ -32,7 +32,7 @@ import {
 } from 'selectors/task-list-selectors';
 import { userProfileSelector } from 'selectors/user-selectors';
 import { selectedFiltersInMegaFilterSelector } from 'selectors/mega-filter-selectors';
-import { useColumnsConfig } from 'context-api/columns-config-context';
+import { useTaskListColumnsConfig } from 'context-api/columns-config-context';
 import * as TaskActions from 'actions/task-actions';
 import * as ListDetailsActions from 'actions/list-details-actions';
 import { createTask } from 'sagas/list-details-saga';
@@ -50,7 +50,7 @@ const initializeListDetailsViewHooks = () => {
   );
   const taskList = useSelector(currentTaskListSelector);
   const currentStatus = useSelector(currentTaskListTasksStatusSelector);
-  const { setCurrentList } = useColumnsConfig();
+  const { setCurrentList } = useTaskListColumnsConfig();
   const currentUser = useSelector(userProfileSelector);
   const { userIdentifier: currentUserIdentifier } = currentUser || {};
   const members = useSelector(taskListMembersSelector);
@@ -375,7 +375,9 @@ const initializeListDetailsViewHooks = () => {
       ) {
         if (
           (data.eventType?.startsWith('CREATE_TASK_BUNDLE') ||
-            data.eventType?.startsWith('DUPLICATE_TASK_BUNDLE')) &&
+            data.eventType?.startsWith('UPDATE_TASK_BUNDLE') ||
+            data.eventType?.startsWith('DUPLICATE_TASK_BUNDLE') ||
+            data.eventType?.startsWith('MORE_TASKS_TASK_BUNDLE')) &&
           data.taskBundle.identifier
         ) {
           actions.refreshTaskBundle(data.taskBundle.identifier);

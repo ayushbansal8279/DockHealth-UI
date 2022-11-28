@@ -23,7 +23,7 @@ import {
 import { SortableContext } from '@dnd-kit/sortable';
 import DragHandleIcon from 'img/drag-handle';
 import SortableItem from 'components/common/SortableItem/SortableItem';
-import { useColumnsConfig } from 'context-api/columns-config-context';
+import { useTaskListColumnsConfig } from 'context-api/columns-config-context';
 import {
   EmptyListPlaceholder,
   CustomFieldItem,
@@ -38,7 +38,7 @@ const UserCustomFieldsView = () => {
   const dispatch = useDispatch();
   const [customFields, setCustomFields] = useState(null);
   const [isFetching, setIsFetching] = useState(true);
-  const { columns, setColumnsToState } = useColumnsConfig();
+  const { columns, setColumnsToState } = useTaskListColumnsConfig();
   const sensors = useSensors(useSensor(MouseSensor), useSensor(TouchSensor));
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
 

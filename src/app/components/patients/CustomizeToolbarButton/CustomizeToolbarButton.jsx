@@ -1,27 +1,27 @@
 /* eslint-disable sonarjs/cognitive-complexity */
 /* eslint-disable no-underscore-dangle */
-import React, { useState, useRef, useMemo, useCallback } from 'react';
+import React, { useState, useRef, useCallback } from 'react';
 import { Box, List, ListItemText, MenuItem, Popover } from '@material-ui/core';
 import CustomizeIcon from 'img/customize-icon';
 import Checkbox from 'components/common/Checkbox/Checkbox';
-import { useTaskListColumnsConfig } from 'context-api/columns-config-context';
+import { usePatientListColumnsConfig } from 'context-api/patients-columns-config-context';
 import {
-  userProfileSelector,
-  userHasTaskCustomFieldsFeatureSelector,
   userHasPatientCustomFieldsFeatureSelector,
+  userHasTaskCustomFieldsFeatureSelector,
+  userProfileSelector,
 } from 'selectors/user-selectors';
 import { useSelector } from 'react-redux';
-import { TaskItemColumn } from 'helpers/task-helpers';
-import { capitalize } from 'helpers/capitalize';
-import { getCustomerTypeLabel } from 'helpers/customer-type-helper';
+import { PatientHeaderColumn } from 'helpers/patient-list-helpers';
 import UpgradePlan from 'components/common/UpgradePlan/UpgradePlan';
 import UpgradePlanPopup from 'components/common/UpgradePlanPopup/UpgradePlanPopup';
 import CustomFieldsIcon from 'img/premium/custom-fields';
+import sort from 'ramda/src/sort';
 import {
   CUSTOM_FIELD_TYPES,
   sortAlphabetical,
 } from 'helpers/custom-fields-helpers';
-import sort from 'ramda/src/sort';
+import { getCustomerTypeLabel } from 'helpers/customer-type-helper';
+import { capitalize } from 'helpers/capitalize';
 import {
   PlusIcon,
   PopoverContainer,
@@ -30,13 +30,10 @@ import {
   UpgradePlanContainer,
   UpgradePlanPopupHeader,
 } from './styled';
-import { limitToConfigurableKeys } from './helpers';
-import ToolbarButton from '../ToolbarButton/ToolbarButton';
+import ToolbarButton from '../../tasklist/ToolbarButton/ToolbarButton';
 
 const CustomizeToolbarButton = ({
-  openCustomFieldModal,
   additionalOptions,
-  showCustomColumnCreate = true,
   additionalOptionsTitle = 'Display Options',
   disableButton = false,
 }) => {
@@ -48,18 +45,15 @@ const CustomizeToolbarButton = ({
   const userHasTaskCustomFieldsFeature = useSelector(
     userHasTaskCustomFieldsFeatureSelector,
   );
-  const { columns, setColumns } = useTaskListColumnsConfig();
+  const { columns, setColumns } = usePatientListColumnsConfig();
 
   const ColumnOptionNames = {
-    [TaskItemColumn.ACTIVITY]: 'Details',
-    [TaskItemColumn.SUBTASKS_COUNT]: 'Subtasks',
-    [TaskItemColumn.ASSIGNED]: 'Assigned',
-    [TaskItemColumn.WORKFLOW_STATUS]: 'Status',
-    [TaskItemColumn.START_DATE]: 'Start date',
-    [TaskItemColumn.DUE_DATE]: 'Due date',
-    [TaskItemColumn.ANCHOR_DATE]: 'Anchor date',
-    [TaskItemColumn.LIST_NAME]: 'List name',
-    [TaskItemColumn.PATIENT]: capitalize(getCustomerTypeLabel(userProfile)),
+    [PatientHeaderColumn.MEMBER]: 'Member',
+    [PatientHeaderColumn.UNIQUE_ID]: 'Unique Identifier',
+    [PatientHeaderColumn.DOB]: 'DOB',
+    [PatientHeaderColumn.AGE]: 'Age',
+    [PatientHeaderColumn.GENDER_AT_BIRTH]: 'Gender at Brith',
+    [PatientHeaderColumn.GENDER_IDENTITY]: 'Gender Identifier',
   };
 
   const customerTypeLabel = capitalize(getCustomerTypeLabel(userProfile));
@@ -76,20 +70,6 @@ const CustomizeToolbarButton = ({
     },
     [columns, setColumns],
   );
-
-  const handleAddColumnClick = useCallback(() => {
-    if (userHasTaskCustomFieldsFeature) {
-      openCustomFieldModal();
-    } else {
-      setOpenUpgradePopup(true);
-    }
-  }, [openCustomFieldModal, userHasTaskCustomFieldsFeature]);
-
-  const columnsConfigToDisplay = useMemo(() => {
-    return limitToConfigurableKeys(
-      columns.filter(c => c._customFieldType === CUSTOM_FIELD_TYPES.REGULAR),
-    );
-  }, [columns]);
 
   const renderElement = useCallback(
     (column, name) =>
@@ -144,62 +124,15 @@ const CustomizeToolbarButton = ({
           <List>
             {sort(
               (a, b) =>
-                ColumnOptionNames[a?.identifier].localeCompare(
-                  ColumnOptionNames[b?.identifier],
+                ColumnOptionNames[a.identifier]?.localeCompare(
+                  ColumnOptionNames[b.identifier],
                 ),
-              columnsConfigToDisplay,
+              columns,
             ).map(column => {
               const optionName = ColumnOptionNames[column.identifier];
               return optionName && renderElement(column, optionName);
             })}
           </List>
-          {userHasTaskCustomFieldsFeature && (
-            <>
-              <Spacer />
-              <Box display="flex" justifyContent="space-between" mt={1}>
-                <Box mx={0.5} />
-                <ListItemText>
-                  <b>Task Custom Columns</b>
-                </ListItemText>
-              </Box>
-              <List>
-                {sortAlphabetical(
-                  columns.filter(
-                    c =>
-                      c._customFieldType === CUSTOM_FIELD_TYPES.TASK_LIST ||
-                      c._customFieldType === CUSTOM_FIELD_TYPES.ORGANIZATION,
-                  ),
-                ).map(column => renderElement(column))}
-                {showCustomColumnCreate && (
-                  <MenuItem
-                    onClick={handleAddColumnClick}
-                    ref={addColumnButtonReference}
-                  >
-                    <PlusIcon>+</PlusIcon>
-                    <Box mx={0.5} />
-                    <ListItemText>Create Custom Column</ListItemText>
-                  </MenuItem>
-                )}
-              </List>
-            </>
-          )}
-          {userHasPatientCustomFieldsFeatureSelector && columns?.length > 0 && (
-            <>
-              <Box display="flex" justifyContent="space-between" mt={1}>
-                <Box mx={0.5} />
-                <ListItemText>
-                  <b>{customerTypeLabel} Custom Columns</b>
-                </ListItemText>
-              </Box>
-              <List>
-                {sortAlphabetical(
-                  columns.filter(
-                    c => c._customFieldType === CUSTOM_FIELD_TYPES.PATIENT,
-                  ),
-                ).map(column => renderElement(column))}
-              </List>
-            </>
-          )}
           {additionalOptions && additionalOptions.length > 0 && (
             <>
               <Spacer />
@@ -228,6 +161,23 @@ const CustomizeToolbarButton = ({
                     )
                   );
                 })}
+              </List>
+            </>
+          )}
+          {userHasPatientCustomFieldsFeatureSelector && columns?.length > 0 && (
+            <>
+              <Box display="flex" justifyContent="space-between" mt={1}>
+                <Box mx={0.5} />
+                <ListItemText>
+                  <b>{customerTypeLabel} Custom Columns</b>
+                </ListItemText>
+              </Box>
+              <List>
+                {sortAlphabetical(
+                  columns.filter(
+                    c => c._customFieldType === CUSTOM_FIELD_TYPES.PATIENT,
+                  ),
+                ).map(column => renderElement(column))}
               </List>
             </>
           )}
