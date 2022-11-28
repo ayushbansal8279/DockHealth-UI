@@ -126,7 +126,9 @@ const DashboardView = ({ tabName }) => {
     const taskBundleCallback = ({ eventType, taskBundle }) => {
       if (
         eventType?.startsWith('CREATE_TASK_BUNDLE') ||
-        eventType?.startsWith('DUPLICATE_TASK_BUNDLE')
+        eventType?.startsWith('UPDATE_TASK_BUNDLE') ||
+        eventType?.startsWith('DUPLICATE_TASK_BUNDLE') ||
+        eventType?.startsWith('MORE_TASKS_TASK_BUNDLE')
       ) {
         dispatch(TaskActions.refreshTaskBundle(taskBundle.identifier));
       }
