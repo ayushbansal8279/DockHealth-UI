@@ -6,7 +6,6 @@ import { downloadPatientImportTemplate } from 'api/patient-api';
 import Spacing from 'components/common/Spacing';
 import { getCustomerTypeLabel } from 'helpers/customer-type-helper';
 import { capitalize } from 'helpers/capitalize';
-import PatientImportAnimals from 'img/animals/PatientImportAnimals.svg';
 import ExcelLogo from 'img/excel-logo.svg';
 import ImportPatientsModal from 'modal/components/ImportPatientsModal/ImportPatientsModal';
 import {
@@ -16,7 +15,6 @@ import {
   StyledButton,
   DownloadTemplate,
   DownloadIcon,
-  ImportAnimals,
 } from './styled';
 
 const EmptyPatientsList = ({
@@ -68,7 +66,6 @@ const EmptyPatientsList = ({
             </div>
           </EmptyListContent>
         </div>
-        <ImportAnimals src={PatientImportAnimals} alt="empty view" />
 
         <Dialog
           open={importPopupOpen}

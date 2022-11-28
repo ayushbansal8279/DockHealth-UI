@@ -4,8 +4,6 @@ import React, { useState, useCallback, useMemo, useContext } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd';
 import isEmpty from 'ramda/src/isEmpty';
-import EmptyTaskListAlpaca from 'img/animals/alpaca';
-import EmptyTaskListBear from 'img/animals/bear';
 import { openModal as openModalAction } from 'modal/actions';
 import { onTaskOrderChanged } from 'helpers/ga-event-helper';
 import {
@@ -88,13 +86,11 @@ const ListDetailsTasks = ({
             <EmptyListView
               title={['Way to go!', 'You’ve completed all of your tasks.']}
               description="Take a breather, tomorrow is a new day full of possibilities."
-              image={EmptyTaskListAlpaca}
             />
           ) : (
             <EmptyListView
               title="This list has no tasks"
               description="Be the first to add a task to this list!"
-              image={EmptyTaskListBear}
             />
           )}
         </EmptyTaskAddView>

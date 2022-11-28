@@ -19,7 +19,6 @@ import {
   getUserTaskCounters,
 } from 'actions/person-details-actions';
 import { onSortChanged } from 'helpers/ga-event-helper';
-import EmptyTaskListFox from 'img/animals/fox.png';
 import { getSharedTaskListsWithCurrentUser } from 'api/task-list-api';
 import { filterTasksBySearchValue } from 'helpers/task-search-helper';
 import NoSearchResultsView from 'components/tasklist/EmptyListView/NoSearchResultsView';
@@ -105,7 +104,6 @@ const PersonDetailsOpenedTasks = ({
         <EmptyListView
           title="This person has no tasks"
           description="Add and automatically assign a task to this person above."
-          image={EmptyTaskListFox}
         />
       </EmptyListViewWithQuickAddTask>
     );

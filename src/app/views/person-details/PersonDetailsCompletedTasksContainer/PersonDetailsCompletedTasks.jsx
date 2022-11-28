@@ -11,7 +11,6 @@ import {
 import { hasFiltersAppliedSelector } from 'selectors/mega-filter-selectors';
 import { sortUserTasks } from 'actions/person-details-actions';
 import { filterTasksBySearchValue } from 'helpers/task-search-helper';
-import EmptyTaskListBear from 'img/animals/bear.svg';
 import NoSearchResultsView from 'components/tasklist/EmptyListView/NoSearchResultsView';
 import EmptyListView from 'components/tasklist/EmptyListView/EmptyListView';
 import NoFilterResultsView from 'components/tasklist/EmptyListView/NoFilterResultsView';
@@ -58,7 +57,6 @@ const PersonDetailsCompletedTasks = ({
       <EmptyListView
         title="There are no completed tasks"
         description=""
-        image={EmptyTaskListBear}
       />
     );
   };

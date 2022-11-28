@@ -11,8 +11,6 @@ import { useLocation } from 'react-router-dom';
 import identity from 'ramda/src/identity';
 import isEmpty from 'ramda/src/isEmpty';
 import { bindActionCreators } from 'redux';
-import EmptyTaskListBird from 'img/animals/bird';
-import EmptyTaskListAlpaca from 'img/animals/alpaca';
 import Spacing from 'components/common/Spacing';
 import * as ModalActions from 'modal/actions';
 import { getUserTaskStats } from 'api/user-api';
@@ -191,7 +189,6 @@ const DashboardList = ({
         <EmptyListView
           title={['Way to go!', 'You’ve completed all of your tasks.']}
           description="Take a breather, tomorrow is a new day full of possibilities."
-          image={EmptyTaskListAlpaca}
         />
       );
 
@@ -200,7 +197,6 @@ const DashboardList = ({
         widthBreakpoint={1400}
         title={['There are no tasks', 'assigned to you.']}
         description="Add tasks above to automatically assign to yourself."
-        image={EmptyTaskListBird}
       />
     );
   };

@@ -11,7 +11,6 @@ import { DrawerFieldEnum } from 'helpers/task-drawer-helpers';
 import { changeTasksSelectedState, addTask } from 'actions/task-actions';
 import { createPatientDetailsListPath } from 'routing/helpers/paths';
 import TaskListHeader from 'views/patient-details/TaskListHeader/TaskListHeader';
-import EmptyTaskListBird from 'img/animals/bird';
 import {
   getPatientFilterOptions,
   getCurrentPatientTasks,
@@ -254,7 +253,6 @@ const PatientTasksListView = () => {
         <EmptyListView
           title={`This ${customerTypeLabel} has no tasks`}
           description={`Add tasks for this ${customerTypeLabel} above.`}
-          image={EmptyTaskListBird}
         />
       </EmptyListViewWithQuickAddTask>
     );
