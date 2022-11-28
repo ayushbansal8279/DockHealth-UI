@@ -18,7 +18,7 @@ import {
 } from './styled';
 import { EndAdornmentContainer, AdornmentClear } from '../styled';
 
-const StatusSection = ({ onTaskUpdate }) => {
+const StatusSection = ({ onTaskUpdate, disabled = false }) => {
   const dispatch = useDispatch();
   const selectedTask = useSelector(selectedTaskSelector) || {};
   const { workflowStatus, taskIdentifier } = selectedTask || {};
@@ -59,6 +59,7 @@ const StatusSection = ({ onTaskUpdate }) => {
 
   return (
     <TaskDrawerPopover
+      disabled={disabled}
       content={({ closePopover, resetPosition }) => (
         <TaskWorkflowStatus
           selectedStatusIdentifier={workflowStatus?.identifier}
@@ -76,6 +77,7 @@ const StatusSection = ({ onTaskUpdate }) => {
           label="Status"
           name="workflowStatus"
           placeholder="Is there a status?"
+          disabled={disabled}
           InputLabelProps={{
             shrink: true,
           }}

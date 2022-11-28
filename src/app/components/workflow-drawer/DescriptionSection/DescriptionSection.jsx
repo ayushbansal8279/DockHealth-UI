@@ -101,6 +101,7 @@ const DescriptionSection = () => {
         onBlur={unsetFocused}
         state={detailsState}
         onChange={onChangeDetailsEditor}
+        readOnly={readOnly}
       />
     </CustomTextEditor>
   );

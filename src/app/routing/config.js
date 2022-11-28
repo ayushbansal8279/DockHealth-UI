@@ -53,9 +53,9 @@ import AnalyticsView from 'views/analytics/AnalyticsView';
 import ChatView from 'views/chat/ChatView';
 import { DashboardTasksTab } from 'helpers/dashboard-helpers';
 import SingleTaskView from 'views/single-task/SingleTaskView';
-import { UserOrganizationRole } from 'helpers/user-helper';
 import Templates from 'views/Templates/Templates';
 import Contacts from 'views/Contacts/Contacts';
+import { PERMISSIONS } from 'helpers/permission-mapper';
 import { onLeaveGlobalSearch } from './TemplateCoreSubscriptionPlan/GlobalSearch';
 import {
   onEnterListDetailsView,
@@ -63,74 +63,76 @@ import {
 } from './TemplateCoreSubscriptionPlan/ListDetails';
 
 const {
-  ADMIN,
-  OWNER,
-  MEMBER,
-  GUEST,
-  EXTERNAL,
-  DOCK_PRO,
-} = UserOrganizationRole;
+  CAN_ACCESS_HOME_PAGE,
+  CAN_ACCESS_SEARCH_PAGE,
+  CAN_ACCESS_TASK_LIST_PAGE,
+  CAN_ACCESS_MEMBER_LIST_PAGE,
+  CAN_ACCESS_WORKFLOW_LIST_PAGE,
+  CAN_ACCESS_ANALYTICS_PAGE,
+  CAN_ACCESS_CHAT_PAGE,
+  CAN_ACCESS_SETTINGS_PAGE,
+} = PERMISSIONS;
 
 export const SETTINGS_ROUTES = [
   {
     path: '/userprofile',
     RouteComponent: UserProfileView,
-    allowedToRoles: [ADMIN, OWNER, MEMBER, GUEST, DOCK_PRO],
+    permissions: [CAN_ACCESS_SETTINGS_PAGE],
   },
   {
     path: '/support',
     RouteComponent: SupportView,
-    allowedToRoles: [ADMIN, OWNER, MEMBER, GUEST],
+    permissions: [CAN_ACCESS_SETTINGS_PAGE],
   },
   {
     path: '/subscriptions',
     RouteComponent: SubscriptionsView,
-    allowedToRoles: [ADMIN, OWNER, MEMBER, GUEST],
+    permissions: [CAN_ACCESS_SETTINGS_PAGE],
   },
   {
     path: '/users',
     RouteComponent: UsersView,
-    allowedToRoles: [ADMIN, OWNER, MEMBER, GUEST],
+    permissions: [CAN_ACCESS_SETTINGS_PAGE],
   },
   {
     path: '/billing',
     RouteComponent: BillingsView,
-    allowedToRoles: [ADMIN, OWNER, MEMBER, GUEST],
+    permissions: [CAN_ACCESS_SETTINGS_PAGE],
   },
   {
     path: '/documents',
     RouteComponent: DocumentsView,
-    allowedToRoles: [ADMIN, OWNER, MEMBER, GUEST],
+    permissions: [CAN_ACCESS_SETTINGS_PAGE],
   },
   {
     path: '/subscription-payment',
     RouteComponent: SubscriptionPaymentView,
-    allowedToRoles: [ADMIN, OWNER, MEMBER, GUEST],
+    permissions: [CAN_ACCESS_SETTINGS_PAGE],
   },
   {
     path: '/subscription-payment-finished',
     RouteComponent: SubscriptionPaymentFinishedView,
-    allowedToRoles: [ADMIN, OWNER, MEMBER, GUEST],
+    permissions: [CAN_ACCESS_SETTINGS_PAGE],
   },
   {
     path: '/subscription-expired',
     RouteComponent: SubscriptionExpiredView,
-    allowedToRoles: [ADMIN, OWNER, MEMBER, GUEST],
+    permissions: [CAN_ACCESS_SETTINGS_PAGE],
   },
   {
     path: '/custom-fields/:tabName?',
     RouteComponent: CustomFieldsView,
-    allowedToRoles: [ADMIN, OWNER, DOCK_PRO],
+    permissions: [CAN_ACCESS_SETTINGS_PAGE],
   },
   {
     path: '/templates',
     RouteComponent: Templates,
-    allowedToRoles: [ADMIN, OWNER, DOCK_PRO],
+    permissions: [CAN_ACCESS_SETTINGS_PAGE],
   },
   {
     path: '/contacts',
     RouteComponent: Contacts,
-    allowedToRoles: [ADMIN, OWNER],
+    permissions: [CAN_ACCESS_SETTINGS_PAGE],
   },
 ];
 
@@ -140,7 +142,14 @@ export const TEMPLATE_CORE_SUBSCRIPTION_PLAN_ROUTES = [
     RouteComponent: props => (
       <DashboardView tabName={DashboardTasksTab.MY_TASKS} {...props} />
     ),
-    allowedToRoles: [ADMIN, OWNER, MEMBER, GUEST, DOCK_PRO, EXTERNAL],
+    permissions: [CAN_ACCESS_HOME_PAGE],
+  },
+  {
+    path: '/home/shared-with-me-tasks',
+    RouteComponent: props => (
+      <DashboardView tabName={DashboardTasksTab.SHARED_TASKS} {...props} />
+    ),
+    permissions: [CAN_ACCESS_HOME_PAGE],
   },
   {
     path: '/home/shared-with-me-tasks',
@@ -154,33 +163,33 @@ export const TEMPLATE_CORE_SUBSCRIPTION_PLAN_ROUTES = [
     RouteComponent: props => (
       <DashboardView tabName={DashboardTasksTab.ALL_TASKS} {...props} />
     ),
-    allowedToRoles: [ADMIN, OWNER, MEMBER, GUEST, DOCK_PRO, EXTERNAL],
+    permissions: [CAN_ACCESS_HOME_PAGE],
   },
   {
     path: '/search',
     RouteComponent: GlobalSearchView,
     onLeave: onLeaveGlobalSearch,
-    allowedToRoles: [ADMIN, OWNER, MEMBER, GUEST, DOCK_PRO],
+    permissions: [CAN_ACCESS_SEARCH_PAGE],
   },
   {
     path: '/patients/list/:listIdentifier?',
     RouteComponent: PatientsView,
-    allowedToRoles: [ADMIN, OWNER, MEMBER, GUEST],
+    permissions: [CAN_ACCESS_MEMBER_LIST_PAGE],
   },
   {
     path: '/patient/:patientIdentifier',
     RouteComponent: PatientDetailsView,
-    allowedToRoles: [ADMIN, OWNER, MEMBER, GUEST],
+    permissions: [CAN_ACCESS_MEMBER_LIST_PAGE],
   },
   {
     path: '/activityfeed',
     RouteComponent: TaskListActivityFeedView,
-    allowedToRoles: [ADMIN, OWNER, MEMBER, GUEST],
+    permissions: [CAN_ACCESS_TASK_LIST_PAGE],
   },
   {
     path: '/assignedToPerson/:userIdentifier/:tabName?',
     RouteComponent: PersonDetailsView,
-    allowedToRoles: [ADMIN, OWNER, MEMBER, GUEST, DOCK_PRO],
+    permissions: [CAN_ACCESS_TASK_LIST_PAGE],
   },
   {
     path: '/people/:groupIdentifier?',
@@ -190,43 +199,43 @@ export const TEMPLATE_CORE_SUBSCRIPTION_PLAN_ROUTES = [
   {
     path: '/task/:identifier',
     RouteComponent: SingleTaskView,
-    allowedToRoles: [ADMIN, OWNER, MEMBER, GUEST, DOCK_PRO],
+    permissions: [CAN_ACCESS_TASK_LIST_PAGE],
   },
   {
     path: '/task-tour/:taskListIdentifier',
     RouteComponent: TaskTourView,
-    allowedToRoles: [ADMIN, OWNER, MEMBER, GUEST, DOCK_PRO],
+    permissions: [CAN_ACCESS_TASK_LIST_PAGE],
   },
   {
     path: '/tasks/:taskListIdentifier/:tabName?/:taskIdentifier?',
     RouteComponent: ListDetailsView,
     onEnter: onEnterListDetailsView,
     onLeave: onLeaveListDetailsView,
-    allowedToRoles: [ADMIN, OWNER, MEMBER, GUEST, DOCK_PRO],
+    permissions: [CAN_ACCESS_TASK_LIST_PAGE],
   },
   {
     path: '/workflows/library/:identifier?',
     RouteComponent: React.lazy(() =>
       import('views/task-template/TaskTemplateView'),
     ),
-    allowedToRoles: [ADMIN, OWNER, MEMBER, DOCK_PRO],
+    permissions: [CAN_ACCESS_WORKFLOW_LIST_PAGE],
   },
   {
     path: '/workflows/builder/:identifier',
     RouteComponent: React.lazy(() =>
       import('views/smart-flow-builder/SmartFlowBuilderView'),
     ),
-    allowedToRoles: [ADMIN, OWNER, MEMBER, DOCK_PRO],
+    permissions: [CAN_ACCESS_WORKFLOW_LIST_PAGE],
   },
   {
     path: '/analytics',
     RouteComponent: AnalyticsView,
-    allowedToRoles: [ADMIN, OWNER],
+    permissions: [CAN_ACCESS_ANALYTICS_PAGE],
   },
   {
     path: '/chat',
     RouteComponent: ChatView,
-    allowedToRoles: [ADMIN, OWNER, MEMBER, DOCK_PRO],
+    permissions: [CAN_ACCESS_CHAT_PAGE],
   },
 ];
 
@@ -366,6 +375,6 @@ export const SIMPLE_ROUTES = [
   {
     path: '/selfEnrolledUser',
     RouteComponent: SelfEnrolledUser,
-    allowedToRoles: [ADMIN, OWNER, MEMBER, GUEST, EXTERNAL],
+    permissions: [CAN_ACCESS_HOME_PAGE],
   },
 ];

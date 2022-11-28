@@ -1,20 +1,33 @@
-import React from 'react';
 import { useSelector } from 'react-redux';
 import { userProfileSelector } from 'selectors/user-selectors';
 
-const AccessRestrictor = ({ children, allowedToRoles }) => {
-  const { orgUserRole } = useSelector(userProfileSelector);
+const RestrictAccess = ({ children, required = [], allowedToRoles }) => {
+  const { orgUserPermissions } = useSelector(userProfileSelector);
 
-  if (!allowedToRoles) return children;
+  if (allowedToRoles) {
+    console.warn('Using deprecated prop.', new Error().stack);
+  }
 
-  if (typeof allowedToRoles === 'string') {
-    return allowedToRoles === orgUserRole ? children : null;
+  if (!orgUserPermissions) {
+    return null;
   }
-  if (Array.isArray(allowedToRoles)) {
-    const matched = allowedToRoles.find(r => r === orgUserRole);
-    return matched ? children : null;
+
+  if (required.every(permission => orgUserPermissions[permission])) {
+    return children;
   }
-  return children;
+
+  return null;
 };
 
-export default AccessRestrictor;
+export const CAN_ACCESS_HOME_PAGE = 'canAccessHomePage';
+export const CAN_ACCESS_SEARCH_PAGE = 'canAccessSearchPage';
+export const CAN_ACCESS_TASK_LIST_PAGE = 'canAccessSearchPage';
+export const CAN_ACCESS_PEOPLE_LIST_PAGE = 'canAccessPeopleListPage';
+export const CAN_ACCESS_MEMBER_LIST_PAGE = 'canAccessMemberListPage';
+export const CAN_ACCESS_WORKFLOW_LIST_PAGE = 'canAccessWorkflowListPage';
+export const CAN_ACCESS_ANALYTICS_PAGE = 'canAccessAnalyticsPage';
+export const CAN_ACCESS_CHAT_PAGE = 'canAccessChatPage';
+export const CAN_ACCESS_SETTINGS_PAGE = 'canAccessSettingsPage';
+export const CAN_ACCESS_EDUCATION_CENTER_PAGE = 'canAccessEducationCenterPage';
+
+export default RestrictAccess;

@@ -30,7 +30,7 @@ import {
   styleFullRow,
 } from './styled';
 
-const CustomFieldsSection = () => {
+const CustomFieldsSection = ({ disabled }) => {
   const dispatch = useDispatch();
   const selectedTask = useSelector(selectedTaskSelector);
   const selectedWorkflow = useSelector(workflowSelector);
@@ -106,7 +106,7 @@ const CustomFieldsSection = () => {
         <HidableContainer key={field.identifier} visible={!visible}>
           <Grid item xs={12} style={styleFullRow}>
             <CustomField
-              readOnly={false}
+              readOnly={disabled}
               field={field}
               onBlur={(data, wasChanged) =>
                 handleBlur(data, wasChanged, field.fieldType)
@@ -120,7 +120,7 @@ const CustomFieldsSection = () => {
         </HidableContainer>
       );
     },
-    [taskDrawerFocusField, getValues, emptyVisible, task, handleBlur],
+    [taskDrawerFocusField, getValues, emptyVisible, disabled, task, handleBlur],
   );
   if (templates.length === 0) return null;
   return (

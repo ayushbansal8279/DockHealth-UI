@@ -10,13 +10,20 @@ import {
   getTemplatesForSpecificFolder,
   searchTemplates,
 } from 'api/task-template-api';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import * as ActionTypes from 'actions/action-types';
+import {
+  TASK_LIST_RESTRICTIONS_PROFILES,
+  TASK_LIST_RESTRICTIONS_OPTIONS,
+} from 'restrictions/task-restrictions';
+import { userProfileSelector } from 'selectors/user-selectors';
 import TaskTemplatePopover from './TaskTemplatePopover';
 import {
   TaskTemplateApplicatorContainer,
   TaskTemplateApplicatorLabel,
 } from './styled';
+
+const { DISABLED } = TASK_LIST_RESTRICTIONS_OPTIONS;
 
 const TaskTemplateApplicator = ({ onTemplateSelect, bulkApply = false }) => {
   const popoverReference = useRef(null);
@@ -25,6 +32,11 @@ const TaskTemplateApplicator = ({ onTemplateSelect, bulkApply = false }) => {
   const [parentList, setParentList] = useState([]);
   const [taskTemplatesList, setTaskTemplatesList] = useState(null);
   const [taskTemplatesIsLoading, setTaskTemplatesIsLoading] = useState(null);
+
+  const currentUser = useSelector(userProfileSelector);
+  const taskListRestrictions =
+    TASK_LIST_RESTRICTIONS_PROFILES[currentUser?.orgUserRole];
+
   const dispatch = useDispatch();
   const getNestedTemplatesList = useCallback(
     identifier => {
@@ -124,6 +136,10 @@ const TaskTemplateApplicator = ({ onTemplateSelect, bulkApply = false }) => {
     },
     [setSearchValue, debouncedSearch],
   );
+
+  if (taskListRestrictions.createTask === DISABLED) {
+    return null;
+  }
 
   return (
     <>

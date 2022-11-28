@@ -49,6 +49,10 @@ import {
 import { currentTaskListSelector } from 'selectors/task-list-selectors';
 import { openDrawer } from 'actions/workflow-drawer-actions';
 import { CUSTOM_FIELD_TYPES } from 'helpers/custom-fields-helpers';
+import {
+  TASK_LIST_RESTRICTIONS_OPTIONS,
+  TASK_LIST_RESTRICTIONS_PROFILES,
+} from 'restrictions/task-restrictions';
 import TemplateHeaderName from '../TaskTemplateName/TaskTemplateName';
 import TaskHeaderPatient from '../TaskTemplatePatient/TaskTemplatePatient';
 import TemplateItemWorkflowStatus from '../TaskTemplateWorkflowStatus/TaskTemplateWorkflowStatus';
@@ -413,6 +417,10 @@ const TaskTemplateGroupHeader = ({
     !selectedWorkflow ? getWorkflowData(identifier) : setWorkFlowData(null);
   }, [getWorkflowData, identifier, selectedWorkflow]);
 
+  const restrictions =
+    TASK_LIST_RESTRICTIONS_PROFILES[currentUser?.orgUserRole];
+  const { DISABLED } = TASK_LIST_RESTRICTIONS_OPTIONS;
+
   const randerFirstColumnCoverIfNecessary = useCallback(
     (content, order, width) => {
       if (order !== 0) return content;
@@ -425,18 +433,22 @@ const TaskTemplateGroupHeader = ({
           order={0}
           width={+width + 26 + 54}
         >
-          {!groupDragAndDropDisabled && !bulkEditIsActive && (
-            <TemplateHandle
-              src={ThreeDotsIcon}
-              alt="Handle"
-              {...dragHandleProps}
-            />
-          )}
+          {!groupDragAndDropDisabled &&
+            !bulkEditIsActive &&
+            restrictions?.createTask !== DISABLED && (
+              <TemplateHandle
+                src={ThreeDotsIcon}
+                alt="Handle"
+                {...dragHandleProps}
+              />
+            )}
           <ActionIconsContainer>
-            <Checkbox
-              isChecked={selected || isBundleSelected}
-              onClick={handleBundleSelect}
-            />
+            {restrictions?.createTask !== DISABLED && (
+              <Checkbox
+                isChecked={selected || isBundleSelected}
+                onClick={handleBundleSelect}
+              />
+            )}
             <Box m={1} />
             {showTasksWithGroup && (
               <RotatableChevron
@@ -444,10 +456,14 @@ const TaskTemplateGroupHeader = ({
                 onClick={() => setOpen(!isOpen)}
               />
             )}
-            <Spacing horizontal={2} />
-            <OptionsMenu options={menuOptions}>
-              <MoreVert color="primary" />
-            </OptionsMenu>
+            {restrictions?.createTask !== DISABLED && (
+              <>
+                <Spacing horizontal={2} />
+                <OptionsMenu options={menuOptions}>
+                  <MoreVert color="primary" />
+                </OptionsMenu>
+              </>
+            )}
           </ActionIconsContainer>
 
           {content}
@@ -455,6 +471,7 @@ const TaskTemplateGroupHeader = ({
       );
     },
     [
+      DISABLED,
       bulkEditIsActive,
       dragHandleProps,
       groupDragAndDropDisabled,
@@ -464,6 +481,7 @@ const TaskTemplateGroupHeader = ({
       isOpen,
       menuOptions,
       pageBackground,
+      restrictions,
       selected,
       setOpen,
       showTasksWithGroup,
@@ -658,7 +676,9 @@ const TaskTemplateGroupHeader = ({
               justify="center"
               order={getColumnOrder(TaskItemColumn.DUE_DATE)}
             >
-              <TaskTemplateDueDate workflow={templateGroup} />
+              {restrictions?.createTask !== DISABLED && (
+                <TaskTemplateDueDate workflow={templateGroup} />
+              )}
             </TaskItemCell>,
             getColumnOrder(TaskItemColumn.DUE_DATE),
             columns?.find(

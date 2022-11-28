@@ -11,6 +11,11 @@ import {
 } from 'selectors/workflow-drawer-selectors';
 import WorkflowDrawerHeader from 'components/workflow-drawer/DrawerHeader/DrawerHeader';
 import { checkIfTemplateWorkflow } from 'helpers/workflow-helpers';
+import { userProfileSelector } from 'selectors/user-selectors';
+import {
+  SINGLE_WORKFLOW_RESTRICTIONS_PROFILES,
+  WORKFLOW_LIST_RESTRICTIONS_OPTIONS,
+} from 'restrictions/task-restrictions';
 import NameSection from '../NameSection/NameSection';
 import DescriptionSection from '../DescriptionSection/DescriptionSection';
 import PatientSection from '../PatientSection/PatientSection';
@@ -35,6 +40,8 @@ import {
   SectionSpacer,
 } from './styled';
 
+const { DISABLED } = WORKFLOW_LIST_RESTRICTIONS_OPTIONS;
+
 const WorkflowDrawer = () => {
   const dispatch = useDispatch();
   const history = useHistory();
@@ -44,6 +51,9 @@ const WorkflowDrawer = () => {
     () => checkIfTemplateWorkflow(selectedWorkflow),
     [selectedWorkflow],
   );
+
+  const { orgUserRole } = useSelector(userProfileSelector);
+  const restrictions = SINGLE_WORKFLOW_RESTRICTIONS_PROFILES[orgUserRole];
 
   useEffect(() => {
     const unlisten = history.listen(
@@ -75,56 +85,93 @@ const WorkflowDrawer = () => {
               <SectionContainer>
                 <Grid container spacing={4}>
                   <Grid item xs={12}>
-                    <NameSection />
+                    <NameSection readOnly={restrictions?.name === DISABLED} />
                   </Grid>
                   <Grid item xs={12}>
-                    <DescriptionSection />
+                    <DescriptionSection
+                      readOnly={restrictions?.description === DISABLED}
+                    />
                   </Grid>
                   <Grid item xs={6}>
-                    <PatientSection disabled={!!isTemplateTask} />
+                    <PatientSection
+                      disabled={
+                        !!isTemplateTask || restrictions?.patient === DISABLED
+                      }
+                    />
                   </Grid>
                   <Grid item xs={6}>
-                    <AssignedToSection />
+                    <AssignedToSection
+                      disabled={restrictions?.assignedTo === DISABLED}
+                    />
                   </Grid>
                   <Grid item xs={6}>
-                    <StartDateSection disabled={!!isTemplateTask} />
+                    <StartDateSection
+                      disabled={
+                        !!isTemplateTask || restrictions?.startDate === DISABLED
+                      }
+                    />
                   </Grid>
                   <Grid item xs={6}>
-                    <AnchorDateSection disabled={!!isTemplateTask} />
+                    <AnchorDateSection
+                      disabled={
+                        !!isTemplateTask ||
+                        restrictions?.anchorDate === DISABLED
+                      }
+                    />
                   </Grid>
                   <Grid item xs={6}>
-                    <DueDateSection disabled={!!isTemplateTask} />
+                    <DueDateSection
+                      disabled={
+                        !!isTemplateTask || restrictions?.dueDate === DISABLED
+                      }
+                    />
                   </Grid>
                   <Grid item xs={6}>
-                    <ReminderSection disabled={!!isTemplateTask} />
+                    <ReminderSection
+                      disabled={
+                        !!isTemplateTask || restrictions?.reminder === DISABLED
+                      }
+                    />
                   </Grid>
                   <Grid item xs={6}>
-                    <PrioritySection />
+                    <PrioritySection
+                      disabled={restrictions?.priority === DISABLED}
+                    />
                   </Grid>
                   <Grid item xs={6}>
-                    <StatusSection />
+                    <StatusSection
+                      disabled={restrictions?.status === DISABLED}
+                    />
                   </Grid>
                   <Grid item xs={12}>
-                    <LabelsSection />
+                    <LabelsSection
+                      disabled={restrictions?.labels === DISABLED}
+                    />
                   </Grid>
                 </Grid>
               </SectionContainer>
               <SectionContainer>
-                <AttachmentSection />
+                <AttachmentSection
+                  disabled={restrictions?.attachments === DISABLED}
+                />
               </SectionContainer>
               <SectionSpacer />
               <SectionContainer>
-                <TasksSection />
+                <TasksSection disabled={restrictions?.tasks === DISABLED} />
               </SectionContainer>
               <SectionContainer withBackground>
-                <CommentSection />
+                <CommentSection
+                  disabled={restrictions?.comments === DISABLED}
+                />
               </SectionContainer>
               <SectionSpacer />
               <>
-                <CustomFieldsSection />
+                <CustomFieldsSection
+                  disabled={restrictions?.customFields === DISABLED}
+                />
               </>
               <SectionContainer>
-                <HistorySection />
+                <HistorySection disabled={restrictions?.history === DISABLED} />
               </SectionContainer>
             </WorkflowDrawerContainer>
           </AnimatedContainer>

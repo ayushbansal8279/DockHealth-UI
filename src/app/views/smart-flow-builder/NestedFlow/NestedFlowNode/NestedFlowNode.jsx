@@ -4,7 +4,7 @@ import { IconButton, Typography } from '@material-ui/core';
 import { openModal, closeModal } from 'modal/actions';
 import { deleteTask, partialUpdateTask } from 'actions/task-actions';
 import { getTemplates } from 'api/task-template-api';
-import { Edit, Delete, FindReplace } from '@material-ui/icons';
+import { Edit, Delete } from '@material-ui/icons';
 import palette from 'styles/palette';
 
 import TaskNodeHandles from 'views/smart-flow-builder/TaskNodeHandles/TaskNodeHandles';

@@ -13,7 +13,7 @@ import { updatePartialWorkflow } from 'actions/task-template-actions';
 import { PriorityFieldContainer, PriorityFlagContainer } from './styled';
 import { PRIORITY_OPTIONS } from './helpers';
 
-const PrioritySection = () => {
+const PrioritySection = ({ disabled }) => {
   const dispatch = useDispatch();
   const selectedWorkflow = useSelector(workflowSelector);
   const { priority } = selectedWorkflow || {};
@@ -51,6 +51,7 @@ const PrioritySection = () => {
         value={priority || TaskPriority.NONE}
         onChange={handleOptionChange}
         options={PRIORITY_OPTIONS}
+        disabled={disabled}
       />
     </PriorityFieldContainer>
   );

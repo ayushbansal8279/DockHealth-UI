@@ -1,7 +1,7 @@
 /* eslint-disable sonarjs/no-identical-functions */
 /* eslint-disable sonarjs/cognitive-complexity */
 import React, { useState, useCallback, useMemo, useContext } from 'react';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd';
 import isEmpty from 'ramda/src/isEmpty';
 import EmptyTaskListAlpaca from 'img/animals/alpaca';
@@ -33,6 +33,11 @@ import TaskTemplateGroup from 'components/task-template/TaskTemplateGroup/TaskTe
 import TasksSkeletonLoader from 'components/task/TasksSkeletonLoader/TasksSkeletonLoader';
 import { useParams } from 'react-router-dom';
 import StickyContainer from 'components/common/HorizontalScroll/StickyContainer';
+import { userProfileSelector } from 'selectors/user-selectors';
+import {
+  TASK_LIST_RESTRICTIONS_OPTIONS,
+  TASK_LIST_RESTRICTIONS_PROFILES,
+} from 'restrictions/task-restrictions';
 import {
   TaskGroupsContainer,
   DroppablePlaceholder,
@@ -62,6 +67,11 @@ const ListDetailsTasks = ({
   const dispatch = useDispatch();
   const { tabName } = useParams();
   const isCompletedView = tabName?.toUpperCase() === TaskStatus.COMPLETE;
+
+  const currentUser = useSelector(userProfileSelector);
+  const restrictions =
+    TASK_LIST_RESTRICTIONS_PROFILES[currentUser?.orgUserRole];
+  const { DISABLED } = TASK_LIST_RESTRICTIONS_OPTIONS;
 
   const renderEmptyState = () => {
     if (isSearchApplied) return <NoSearchResultsView />;
@@ -254,7 +264,9 @@ const ListDetailsTasks = ({
                                 draggableId={String(task.identifier)}
                                 index={index}
                                 isDragDisabled={
-                                  isCompletedGroup || dragAndDropDisabled
+                                  isCompletedGroup ||
+                                  dragAndDropDisabled ||
+                                  restrictions?.createGroup === DISABLED
                                 }
                               >
                                 {(draggableProvided, { isDragging }) => (
@@ -369,6 +381,8 @@ const ListDetailsTasks = ({
       loadTasksForTaskGroup,
       isSortApplied,
       dragAndDropDisabled,
+      restrictions,
+      DISABLED,
       showClearSortFiltersModal,
       viewSetup,
     ],
@@ -392,11 +406,17 @@ const ListDetailsTasks = ({
             {!!createTaskGroupList && !isSearchApplied && !areFiltersApplied && (
               <StickyContainer left={24} decreaseWidth={2 * 24}>
                 <GroupNameSection
-                  onEnterClick={onGroupNameClick}
+                  onEnterClick={
+                    restrictions?.createGroup === DISABLED
+                      ? onGroupNameClick
+                      : () => undefined
+                  }
                   placeholder={messages.placeholder}
                   closeOnEnter
                 >
-                  <AddGroupNameButton />
+                  {restrictions?.createGroup !== DISABLED && (
+                    <AddGroupNameButton />
+                  )}
                 </GroupNameSection>
               </StickyContainer>
             )}
