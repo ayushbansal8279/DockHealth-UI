@@ -4,6 +4,10 @@ import spacing from 'styles/spacing';
 
 export const CustomizeImg = styled.img`
   width: 21px;
+  ${({ iconColorActive }) =>
+    iconColorActive
+      ? `filter: ${iconColorActive}; `
+      : 'filter: invert(60%) sepia(60%) saturate(1790%) hue-rotate(348deg) brightness(100%) contrast(88%);'}
 `;
 
 export const PopoverContainer = styled.div`

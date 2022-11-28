@@ -52,6 +52,7 @@ const EmbeddedSso = props => {
           targetIdentifier,
         )
           .then(() => {
+            sessionStorage.setItem('EmbeddedMode', true);
             if (viewType === 'PATIENT') {
               const patientIdentifier = sessionStorage.getItem(
                 'PatientIdentifier',

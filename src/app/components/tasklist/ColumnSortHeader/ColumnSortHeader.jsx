@@ -32,6 +32,8 @@ const ColumnSortHeader = ({
   printWidth,
   children,
   flex,
+  tasksHeaderTextTransform,
+  tasksHeaderTextColor,
   // eslint-disable-next-line sonarjs/cognitive-complexity
 }) => {
   const descriptionTextReference = useRef();
@@ -88,82 +90,86 @@ const ColumnSortHeader = ({
     [id, onResize],
   );
 
-  const randerContent = useCallback(() => {
-    return (
-      <div>
-        <LabelWrapper
-          ordered={!!(id === sort?.key && sort?.order)}
-          ref={descriptionTextReference}
-        >
-          <Box display="flex">
-            <Box p="0 5px 0 10px" position="relative">
-              <Box position="absolute" left="5px" top="0px">
-                {draggable && (
-                  <ThreeDots
-                    hideIcon={!isHovered || isDraggingOver}
-                    src={ThreeDotsIcon}
-                  />
+  const randerContent = useCallback(
+    tasksHeaderTextColor => {
+      return (
+        <div>
+          <LabelWrapper
+            ordered={!!(id === sort?.key && sort?.order)}
+            tasksHeaderTextColor={tasksHeaderTextColor}
+            ref={descriptionTextReference}
+          >
+            <Box display="flex">
+              <Box p="0 5px 0 10px" position="relative">
+                <Box position="absolute" left="5px" top="0px">
+                  {draggable && (
+                    <ThreeDots
+                      hideIcon={!isHovered || isDraggingOver}
+                      src={ThreeDotsIcon}
+                    />
+                  )}
+                </Box>
+              </Box>
+              {children}
+              {id === sort?.key &&
+                sort?.order &&
+                id &&
+                label &&
+                typeof onSortChange === 'function' && (
+                  <Box p="0 5px 0 5px">
+                    <SortArrow
+                      isParentHovered={false}
+                      orderType={id === sort?.key && sort?.order}
+                    />
+                  </Box>
                 )}
+
+              <Box
+                textOverflow="ellipsis"
+                overflow={truncateEnabled ? 'hidden' : 'initial'}
+                width="100%"
+                whiteSpace="nowrap"
+                display="flex"
+                alignItems="center"
+              >
+                {label}
               </Box>
             </Box>
-            {children}
-            {id === sort?.key &&
-              sort?.order &&
-              id &&
-              label &&
-              typeof onSortChange === 'function' && (
-                <Box p="0 5px 0 5px">
-                  <SortArrow
-                    isParentHovered={false}
-                    orderType={id === sort?.key && sort?.order}
-                  />
-                </Box>
-              )}
-
-            <Box
-              textOverflow="ellipsis"
-              overflow={truncateEnabled ? 'hidden' : 'initial'}
-              width="100%"
-              whiteSpace="nowrap"
-              display="flex"
-              alignItems="center"
-            >
-              {label}
-            </Box>
-          </Box>
-        </LabelWrapper>
-        <Popper
-          anchorEl={descriptionTextReference.current}
-          placement="bottom-start"
-          open={
-            checkIfShouldDisplayTooltip(descriptionTextReference.current) &&
-            isHovered
-          }
-          style={{
-            zIndex: 115,
-            maxWidth: descriptionTextReference?.current?.offsetWidth || '650px',
-          }}
-          transition
-        >
-          {({ TransitionProps }) => (
-            <Fade {...TransitionProps} timeout={250}>
-              <DescriptionTooltipWrapper>{label}</DescriptionTooltipWrapper>
-            </Fade>
-          )}
-        </Popper>
-      </div>
-    );
-  }, [
-    children,
-    draggable,
-    id,
-    isDraggingOver,
-    isHovered,
-    label,
-    onSortChange,
-    sort,
-    truncateEnabled,
-  ]);
+          </LabelWrapper>
+          <Popper
+            anchorEl={descriptionTextReference.current}
+            placement="bottom-start"
+            open={
+              checkIfShouldDisplayTooltip(descriptionTextReference.current) &&
+              isHovered
+            }
+            style={{
+              zIndex: 115,
+              maxWidth: descriptionTextReference?.current?.offsetWidth || '650px',
+            }}
+            transition
+          >
+            {({ TransitionProps }) => (
+              <Fade {...TransitionProps} timeout={250}>
+                <DescriptionTooltipWrapper>{label}</DescriptionTooltipWrapper>
+              </Fade>
+            )}
+          </Popper>
+        </div>
+      );
+    },
+    [
+      children,
+      draggable,
+      id,
+      isDraggingOver,
+      isHovered,
+      label,
+      onSortChange,
+      sort,
+      truncateEnabled,
+    ],
+  );
 
   if (!draggable)
     return (
@@ -195,8 +201,9 @@ const ColumnSortHeader = ({
           onClick={switchSort}
           onMouseEnter={() => setIsHovered(true)}
           onMouseLeave={() => setIsHovered(false)}
+          tasksHeaderTextTransform={tasksHeaderTextTransform}
         >
-          {randerContent()}
+          {randerContent(tasksHeaderTextColor)}
         </SortButton>
       </Resizable>
     );
@@ -231,6 +238,7 @@ const ColumnSortHeader = ({
         onMouseEnter={() => setIsHovered(true)}
         onMouseLeave={() => setIsHovered(false)}
         printWidth={printWidth}
+        tasksHeaderTextTransform={tasksHeaderTextTransform}
       >
         <Draggable
           isDragDisabled={!draggable}
@@ -245,7 +253,7 @@ const ColumnSortHeader = ({
               {...provided.dragHandleProps}
               style={provided.draggableProps.style}
             >
-              {randerContent()}
+              {randerContent(tasksHeaderTextColor)}
             </div>
           )}
         </Draggable>

@@ -40,4 +40,14 @@ export const TABS_CONFIG = [
   },
 ];
 
+export const DEFAULT_TABS_CONFIG = [
+  {
+    label: 'All tasks',
+    mainPath: 'tasks',
+    additionalPath: ':taskListIdentifier?',
+    RouteComponent: PatientTasksList,
+    exact: true,
+  },
+];
+
 export const DEFAULT_TAB = TABS_CONFIG[0];

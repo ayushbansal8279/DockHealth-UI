@@ -1,7 +1,10 @@
 import React from 'react';
 import { Box, Grid } from '@material-ui/core';
 import { useDispatch, useSelector } from 'react-redux';
-import { userProfileSelector } from 'selectors/user-selectors';
+import {
+  userProfileSelector,
+  selectedUserOrganizationSelector,
+} from 'selectors/user-selectors';
 import { getUserAvatarUrl, hasProfilePicture } from 'helpers/user-helper';
 import * as TemplateActions from 'actions/template-actions';
 import {
@@ -21,7 +24,10 @@ import {
 const ProfileSubmenu = () => {
   const dispatch = useDispatch();
   const userProfile = useSelector(userProfileSelector);
+  const currentOrganization = useSelector(selectedUserOrganizationSelector);
   const { name, titles, initials, bubbleColor } = userProfile || {};
+
+  const whiteLabelEnabled = currentOrganization?.whiteLabelEnabled || false;
 
   return (
     <ProfileSubmenuContainer>
@@ -50,7 +56,9 @@ const ProfileSubmenu = () => {
             )}
             <Box m={2} />
             <SubMenuLink to="/settings/userprofile">Profile</SubMenuLink>
-            <SubMenuLink to="/settings/documents">Agreements</SubMenuLink>
+            {!whiteLabelEnabled && (
+              <SubMenuLink to="/settings/documents">Agreements</SubMenuLink>
+            )}
             <Box m={0.5} />
             <SubmenuDivider />
             <Box m={0.5} />

@@ -11,7 +11,10 @@ import { TaskStatus } from 'helpers/task-helpers';
 import { updateUserListViewSetup } from 'actions/task-list-actions';
 import CustomizeToolbarButton from 'components/tasklist/CustomizeToolbarButton/CustomizeToolbarButton';
 import { checkIfUserIsOrganizationAdmin } from 'helpers/user-helper';
-import { userProfileSelector } from 'selectors/user-selectors';
+import {
+  userProfileSelector,
+  selectedUserOrganizationSelector,
+} from 'selectors/user-selectors';
 import { useDispatch, useSelector } from 'react-redux';
 import {
   currentTaskListSelector,
@@ -29,6 +32,7 @@ const ListDetailsToolbar = ({ additionalOptions, children }) => {
   const history = useHistory();
   const [customFieldsModalOpened, setCustomFieldsModalOpened] = useState(false);
   const currentUser = useSelector(userProfileSelector);
+  const currentOrganization = useSelector(selectedUserOrganizationSelector);
   const tasksStatus = useSelector(currentTaskListTasksStatusSelector);
   const isOrganizationAdmin = checkIfUserIsOrganizationAdmin(currentUser);
   const taskList = useSelector(currentTaskListSelector);
@@ -39,6 +43,10 @@ const ListDetailsToolbar = ({ additionalOptions, children }) => {
   const isListAdmin = isMemberAdmin(currentUserMember);
   const viewType = getViewTypeFromQueryString(search);
   const restrictCustomizationFeatures = restrictCustomization && !isListAdmin;
+  const iconColorActiveItem =
+    currentOrganization?.themeSettings?.find(
+      ({ name }) => name === 'icon.color.active',
+    ) || {};
 
   const handleChangeViewType = useCallback(
     event => {
@@ -99,11 +107,13 @@ const ListDetailsToolbar = ({ additionalOptions, children }) => {
         <TaskStatusToolbarSelect
           value={tasksStatus}
           onChange={handleChangeTasksStatus}
+          iconColorActive={iconColorActiveItem?.value}
         />
         <Box mx={0.5} />
         <TaskViewTypeToolbarSelect
           value={viewType}
           onChange={handleChangeViewType}
+          iconColorActive={iconColorActiveItem?.value}
         />
         {viewType === ViewType.LIST_VIEW && (
           <>
@@ -112,6 +122,7 @@ const ListDetailsToolbar = ({ additionalOptions, children }) => {
               openCustomFieldModal={() => setCustomFieldsModalOpened(true)}
               additionalOptions={additionalOptions}
               disableButton={restrictCustomizationFeatures}
+              iconColorActive={iconColorActiveItem?.value}
             />
             <Box mx={0.5} />
             <TaskCustomFieldsModal
@@ -135,6 +146,7 @@ const ListDetailsToolbar = ({ additionalOptions, children }) => {
             <CompleteTasksVisibilitySwitch
               visible={displayOptions.includes(TASKS_VISIBILITY_KEY)}
               onChange={handleTasksVisibilityChange}
+              iconColorActive={iconColorActiveItem?.value}
             />
           )}
           <Box mx={0.5} />

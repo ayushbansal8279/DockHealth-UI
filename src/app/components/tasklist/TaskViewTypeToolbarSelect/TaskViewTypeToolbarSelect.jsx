@@ -23,7 +23,12 @@ const OPTIONS_MORE = [
   },
 ];
 
-const TaskViewTypeToolbarSelect = ({ value, onChange, ...restProps }) => {
+const TaskViewTypeToolbarSelect = ({
+  value,
+  onChange,
+  iconColorActive,
+  ...restProps
+}) => {
   const boardViewAvailable = useSelector(userHasBoardViewFeatureSelector);
 
   let OPTIONS = OPTIONS_DEFAULT;
@@ -36,7 +41,13 @@ const TaskViewTypeToolbarSelect = ({ value, onChange, ...restProps }) => {
       value={value}
       name="task-view-type"
       onChange={onChange}
-      icon={<img src={ViewTypeIcon} alt="view type icon" />}
+      icon={
+        <img
+          src={ViewTypeIcon}
+          alt="view type icon"
+          style={{ filter: iconColorActive }}
+        />
+      }
       {...restProps}
     />
   );

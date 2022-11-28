@@ -498,7 +498,7 @@ const TaskItem = React.memo(
               </>,
               getColumnOrder(TaskItemColumn.DESCRIPTION),
             )}
-            <>
+            {/* <>
               {randerFirstColumnCoverIfNecessary(
                 <TaskItemCell
                   isSubtask={isSubtask}
@@ -530,7 +530,7 @@ const TaskItem = React.memo(
                 </TaskItemCell>,
                 getColumnOrder(TaskItemColumn.SUBTASKS_COUNT),
               )}
-            </>
+            </> */}
 
             {isColumnChecked(columns, TaskItemColumn.PATIENT) && (
               <>

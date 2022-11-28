@@ -6,7 +6,13 @@ import {
   TASK_TEMPLATE_ITEM_BASE_COLUMN_CONFIG,
 } from 'helpers/workflow-helpers';
 
-const TasksTemplatesHeader = ({ sort, onSortChange, taskItemConfig = {} }) => {
+const TasksTemplatesHeader = ({
+  sort,
+  onSortChange,
+  taskItemConfig = {},
+  tasksHeaderTextTransform,
+  tasksHeaderTextColor,
+}) => {
   const mergedConfig = useMemo(
     () => ({
       ...TASK_TEMPLATE_ITEM_BASE_COLUMN_CONFIG,
@@ -17,7 +23,11 @@ const TasksTemplatesHeader = ({ sort, onSortChange, taskItemConfig = {} }) => {
 
   return (
     <SortHeaderRow>
-      <ColumnSortHeader width={30} />
+      <ColumnSortHeader
+        width={30}
+        tasksHeaderTextTransform={tasksHeaderTextTransform}
+        tasksHeaderTextColor={tasksHeaderTextColor}
+      />
       {mergedConfig[TaskTemplateItemColumn.NAME] && (
         <ColumnSortHeader
           flex={1}
@@ -25,6 +35,8 @@ const TasksTemplatesHeader = ({ sort, onSortChange, taskItemConfig = {} }) => {
           label="Name"
           sort={sort}
           onSortChange={onSortChange}
+          tasksHeaderTextTransform={tasksHeaderTextTransform}
+          tasksHeaderTextColor={tasksHeaderTextColor}
         />
       )}
       {mergedConfig[TaskTemplateItemColumn.CREATED_BY] && (
@@ -34,6 +46,8 @@ const TasksTemplatesHeader = ({ sort, onSortChange, taskItemConfig = {} }) => {
           width={150}
           sort={sort}
           onSortChange={onSortChange}
+          tasksHeaderTextTransform={tasksHeaderTextTransform}
+          tasksHeaderTextColor={tasksHeaderTextColor}
         />
       )}
       {mergedConfig[TaskTemplateItemColumn.CREATED] && (
@@ -43,6 +57,8 @@ const TasksTemplatesHeader = ({ sort, onSortChange, taskItemConfig = {} }) => {
           width={150}
           sort={sort}
           onSortChange={onSortChange}
+          tasksHeaderTextTransform={tasksHeaderTextTransform}
+          tasksHeaderTextColor={tasksHeaderTextColor}
         />
       )}
       {mergedConfig[TaskTemplateItemColumn.PERMISSIONS] && (
@@ -52,6 +68,8 @@ const TasksTemplatesHeader = ({ sort, onSortChange, taskItemConfig = {} }) => {
           width={200}
           sort={sort}
           onSortChange={onSortChange}
+          tasksHeaderTextTransform={tasksHeaderTextTransform}
+          tasksHeaderTextColor={tasksHeaderTextColor}
         />
       )}
     </SortHeaderRow>

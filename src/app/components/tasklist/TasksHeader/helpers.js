@@ -27,11 +27,11 @@ export const getTaskHeaderOptions = (
       label: 'Tasks',
       draggable: true,
     },
-    {
-      identifier: TaskHeaderColumn.SUBTASKS_COUNT,
-      label: 'Sub',
-      draggable: true,
-    },
+    // {
+    //   identifier: TaskHeaderColumn.SUBTASKS_COUNT,
+    //   label: 'Sub',
+    //   draggable: true,
+    // },
     {
       identifier: TaskHeaderColumn.PATIENT,
       label: customerTypeLabel,
