@@ -44,6 +44,7 @@ export const CommunicationType = {
   FAX: 'FAX',
   SMS: 'SMS',
   ESIGN: 'ESIGN',
+  EMR: 'EMR_NOTE',
 };
 
 export function getPriorityColor(priority) {
