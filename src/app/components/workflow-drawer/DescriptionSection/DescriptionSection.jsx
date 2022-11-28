@@ -16,7 +16,7 @@ import { workflowSelector } from 'selectors/workflow-drawer-selectors';
 import { updatePartialWorkflow } from 'actions/task-template-actions';
 
 const DescriptionSection = () => {
-  const DEBOUNCE_TIME = 3000;
+  const DEBOUNCE_TIME = 10000;
   const selectedWorkflow = useSelector(workflowSelector);
   const { taskList } = selectedWorkflow || {};
   const { taskListIdentifier } = taskList || {};
@@ -43,7 +43,12 @@ const DescriptionSection = () => {
   const updateDetails = useCallback(
     state => {
       const { tokenizedText } = convertFromEditorStateToOutput(state, true);
-      if (selectedWorkflow && selectedWorkflow?.identifier) {
+      if (
+        selectedWorkflow &&
+        selectedWorkflow?.identifier &&
+        selectedWorkflow?.description !== tokenizedText &&
+        (selectedWorkflow?.description || tokenizedText !== '')
+      ) {
         dispatch(
           updatePartialWorkflow(selectedWorkflow?.identifier, {
             description: tokenizedText || '',
