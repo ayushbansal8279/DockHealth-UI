@@ -20,6 +20,7 @@ import {
 import {
   userProfileSelector,
   userHasSmartFlowsSelector,
+  selectedUserOrganizationSelector,
 } from 'selectors/user-selectors';
 import AddButton from 'components/common/AddButton/AddButton';
 import Spacing from 'components/common/Spacing';
