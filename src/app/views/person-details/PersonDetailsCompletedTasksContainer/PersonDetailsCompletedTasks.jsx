@@ -54,10 +54,7 @@ const PersonDetailsCompletedTasks = ({
     if (areFiltersApplied) return <NoFilterResultsView />;
 
     return (
-      <EmptyListView
-        title="There are no completed tasks"
-        description=""
-      />
+      <EmptyListView title="There are no completed tasks" description="" />
     );
   };
 

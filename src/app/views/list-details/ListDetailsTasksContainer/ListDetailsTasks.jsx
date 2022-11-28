@@ -101,7 +101,6 @@ const ListDetailsTasks = ({
       <EmptyListView
         title="This list has no tasks"
         description="Be the first to add a task to this list!"
-        image={EmptyTaskListBear}
       />
     );
   };

@@ -66,6 +66,7 @@ const {
   CAN_ACCESS_HOME_PAGE,
   CAN_ACCESS_SEARCH_PAGE,
   CAN_ACCESS_TASK_LIST_PAGE,
+  CAN_ACCESS_PEOPLE_LIST_PAGE,
   CAN_ACCESS_MEMBER_LIST_PAGE,
   CAN_ACCESS_WORKFLOW_LIST_PAGE,
   CAN_ACCESS_ANALYTICS_PAGE,
@@ -152,13 +153,6 @@ export const TEMPLATE_CORE_SUBSCRIPTION_PLAN_ROUTES = [
     permissions: [CAN_ACCESS_HOME_PAGE],
   },
   {
-    path: '/home/shared-with-me-tasks',
-    RouteComponent: props => (
-      <DashboardView tabName={DashboardTasksTab.SHARED_TASKS} {...props} />
-    ),
-    allowedToRoles: [ADMIN, OWNER, MEMBER, GUEST, DOCK_PRO, EXTERNAL],
-  },
-  {
     path: '/home/all-tasks',
     RouteComponent: props => (
       <DashboardView tabName={DashboardTasksTab.ALL_TASKS} {...props} />
@@ -194,7 +188,7 @@ export const TEMPLATE_CORE_SUBSCRIPTION_PLAN_ROUTES = [
   {
     path: '/people/:groupIdentifier?',
     RouteComponent: UserGroupView,
-    allowedToRoles: [ADMIN, OWNER, MEMBER, GUEST, DOCK_PRO],
+    permissions: [CAN_ACCESS_PEOPLE_LIST_PAGE],
   },
   {
     path: '/task/:identifier',

@@ -99,7 +99,7 @@ const QuickAddTaskInput = React.forwardRef(
       setHasInputValue(!!convertFromEditorStateToOutput(state, false).rawText);
     };
 
-    if (taskListRestrictions.createTask === DISABLED) {
+    if (taskListRestrictions?.createTask === DISABLED) {
       return null;
     }
 
