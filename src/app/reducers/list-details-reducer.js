@@ -1,3 +1,4 @@
+/* eslint-disable unicorn/no-nested-ternary */
 import * as ActionTypes from 'actions/action-types';
 import pipe from 'ramda/src/pipe';
 import prop from 'ramda/src/prop';
@@ -242,7 +243,7 @@ const ListDetailsReducer = (state = initialState, action) => {
     }
 
     case ActionTypes.REQUEST_TASKLIST_GROUP_TASKS_SUCCESS: {
-      const { groupOfTasks, refresh } = action;
+      const { groupOfTasks, refresh, startPosition = 0 } = action;
 
       const groupsToUpdate = groupOfTasks.taskGroups;
 
@@ -257,6 +258,8 @@ const ListDetailsReducer = (state = initialState, action) => {
               ...taskGroup,
               tasks: refresh
                 ? group.tasks
+                : startPosition === 0
+                ? dedupe(group.tasks.concat(taskGroup.tasks))
                 : dedupe(taskGroup.tasks.concat(group.tasks)),
               hasMore: group.hasMore,
               moreTasksIndex: group.moreTasksIndex,

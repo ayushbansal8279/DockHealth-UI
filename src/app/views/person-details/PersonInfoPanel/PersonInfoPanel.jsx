@@ -11,7 +11,6 @@ import Tooltip from 'components/common/Tooltip/Tooltip';
 import EmailIcon from 'img/email-icon.svg';
 import PhoneIcon from 'img/phone-icon.svg';
 import MobileIcon from 'img/mobile-icon.svg';
-import TextTypeHeader from 'components/common/TextTypeHeader/TextTypeHeader';
 import PersonInfoLoader from './PersonInfoLoader';
 import PersonDetailsDrawer from '../PersonDetailsDrawer/PersonDetailsDrawer';
 import {
@@ -114,9 +113,7 @@ const PersonInfoPanel = () => {
                       <UserInfo>
                         <Typography>{customFieldName}: </Typography>
                         <Box ml={1} />
-                        <TextTypeHeader
-                          text={displayName || value || displayNames.join(', ')}
-                        />
+                        `${displayName || value || displayNames.join(', ')}`
                       </UserInfo>
                       <UserInfoDivider />
                     </>

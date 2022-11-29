@@ -219,7 +219,7 @@ const PatientsList = ({
     },
     {
       field: 'genderIdentity',
-      headerName: 'GENDER IDENTIFY',
+      headerName: 'GENDER IDENTITY',
       renderHeader: renderColumnHeader,
       flex: 0.5,
     },
