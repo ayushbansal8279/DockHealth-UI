@@ -117,25 +117,36 @@ const PatientDetailsView = () => {
     // eslint-disable-next-line unicorn/consistent-function-scoping
     const taskCallback = ({ eventType, task }) => {
       if (
-        eventType?.startsWith('CREATE_TASK') ||
-        eventType?.startsWith('DUPLICATE_TASK')
+        task?.patient &&
+        task?.patient.patientIdentifier === patientIdentifier
       ) {
-        dispatch(TaskActions.insertCreatedTask(task.taskIdentifier));
-      } else {
-        dispatch(TaskActions.refreshTask(task.taskIdentifier));
+        if (
+          eventType?.startsWith('CREATE_TASK') ||
+          eventType?.startsWith('DUPLICATE_TASK')
+        ) {
+          dispatch(TaskActions.insertCreatedTask(task.taskIdentifier));
+        } else {
+          dispatch(TaskActions.refreshTask(task.taskIdentifier));
+        }
       }
     };
 
     // eslint-disable-next-line unicorn/consistent-function-scoping
     const taskBundleCallback = ({ eventType, taskBundle }) => {
+      // eslint-disable-next-line sonarjs/no-collapsible-if
       if (
-        (eventType?.startsWith('CREATE_TASK_BUNDLE') ||
-          eventType?.startsWith('UPDATE_TASK_BUNDLE') ||
-          eventType?.startsWith('DUPLICATE_TASK_BUNDLE') ||
-          eventType?.startsWith('MORE_TASKS_TASK_BUNDLE')) &&
-        taskBundle.identifier
+        taskBundle?.patient &&
+        taskBundle?.patient.patientIdentifier === patientIdentifier
       ) {
-        dispatch(TaskActions.refreshTaskBundle(taskBundle.identifier));
+        if (
+          (eventType?.startsWith('CREATE_TASK_BUNDLE') ||
+            eventType?.startsWith('UPDATE_TASK_BUNDLE') ||
+            eventType?.startsWith('DUPLICATE_TASK_BUNDLE') ||
+            eventType?.startsWith('MORE_TASKS_TASK_BUNDLE')) &&
+          taskBundle.identifier
+        ) {
+          dispatch(TaskActions.refreshTaskBundle(taskBundle.identifier));
+        }
       }
     };
 
@@ -155,7 +166,7 @@ const PatientDetailsView = () => {
         ch.unsubscribe(channelName);
       }
     };
-  }, [currentUserIdentifier, dispatch]);
+  }, [currentUserIdentifier, patientIdentifier, dispatch]);
 
   const activeTabPath = useMemo(() => {
     // eslint-disable-next-line no-restricted-syntax
