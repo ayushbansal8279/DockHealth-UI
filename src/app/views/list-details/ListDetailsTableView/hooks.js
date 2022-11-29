@@ -361,7 +361,15 @@ const initializeListDetailsViewHooks = () => {
             data.eventType?.startsWith('DUPLICATE_TASK')) &&
           data.task?.creator.userIdentifier !== currentUserIdentifier
         ) {
-          refreshTab();
+          if (data.task?.taskGroups && data.task?.taskGroups.length > 0) {
+            loadTasksForTaskGroup({
+              taskGroupIdentifier: data.task?.taskGroups[0].taskGroupIdentifier,
+              startPosition: 0,
+              refresh: false,
+            });
+          } else {
+            refreshTab();
+          }
         } else if (data.task.taskIdentifier) {
           actions.refreshTask(data.task.identifier);
         }
@@ -402,6 +410,8 @@ const initializeListDetailsViewHooks = () => {
     taskListIdentifierParam,
     currentUserIdentifier,
     actions,
+    dispatch,
+    loadTasksForTaskGroup,
   ]);
 
   useEffect(() => {
