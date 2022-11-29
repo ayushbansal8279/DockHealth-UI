@@ -17,7 +17,6 @@ import {
   patientSelector,
   isFetchingPatientSelector,
 } from 'selectors/patient-details-selectors';
-import TextTypeHeader from 'components/common/TextTypeHeader/TextTypeHeader';
 import { FieldType } from 'helpers/field-type-helpers';
 import PatientDetailsDrawer from '../PatientDetailsDrawer/PatientDetailsDrawer';
 import PatientDetailsLoader from '../PatientDetailsLoader/PatientDetailsLoader';
@@ -218,13 +217,9 @@ const PatientDetailsHeader = () => {
                           <PatientInfo>
                             <Typography>{customFieldName}: </Typography>
                             <Box ml={1} />
-                            {fieldType === FieldType.DROPDOWN_MULTI ? (
-                              <TextTypeHeader
-                                text={displayNames?.join(',') || ''}
-                              />
-                            ) : (
-                              <TextTypeHeader text={displayName || value} />
-                            )}
+                            {fieldType === FieldType.DROPDOWN_MULTI
+                              ? `${displayNames?.join(',') || ''}`
+                              : `${displayName || value}`}
                           </PatientInfo>
                         )}
                         <PatientInfoDivider />
