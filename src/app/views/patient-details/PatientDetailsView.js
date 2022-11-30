@@ -110,7 +110,7 @@ const PatientDetailsView = () => {
           label: widgets[0].name,
           mainPath: `widget/${widgets[0].identifier}`,
           url: widgetDetails?.authToken
-            ? `${widgets[0].url}?authToken=${widgetDetails?.authToken}`
+            ? `${widgets[0].url}?authToken=${widgetDetails?.authToken}&idToken=${widgetDetails?.idToken}`
             : widgets[0].url,
           height: widgets[0].height,
           width: widgets[0].width,
