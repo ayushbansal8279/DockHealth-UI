@@ -63,6 +63,7 @@ import TaskItemDescription from './TaskItemComponents/TaskItemDescription';
 import TaskItemPatient from './TaskItemComponents/TaskItemPatient';
 import TaskItemStartDate from './TaskItemComponents/TaskItemStartDate';
 import TaskItemDueDate from './TaskItemComponents/TaskItemDueDate';
+import TaskItemCreatedDate from './TaskItemComponents/TaskItemCreatedDate';
 import TaskItemSubtasks from './TaskItemComponents/TaskItemSubtasks';
 import TaskItemIcons from './TaskItemComponents/TaskItemIcons';
 import TaskItemMembers from './TaskItemComponents/TaskItemMembers';
@@ -733,6 +734,36 @@ const TaskItem = React.memo(
                 )}
               </>
             )}
+            {isColumnChecked(columns, TaskItemColumn.CREATED_DATE) &&
+              !isTemplateTask && (
+                <>
+                  {randerFirstColumnCoverIfNecessary(
+                    <TaskItemCell
+                      isSubtask={isSubtask}
+                      key={`created_date_${taskIdentifier}`}
+                      width={
+                        columns?.find(
+                          ({ identifier }) =>
+                            identifier === TaskItemColumn.CREATED_DATE,
+                        )?.columnWidth
+                      }
+                      paddingLeft="tiny"
+                      paddingRight="tiny"
+                      justify="center"
+                      onContextMenu={event => {
+                        event.stopPropagation();
+                      }}
+                      order={getColumnOrder(TaskItemColumn.CREATED_DATE)}
+                    >
+                      <TaskItemCreatedDate
+                        task={task}
+                        disabled={restrictions?.createdDate === DISABLED}
+                      />
+                    </TaskItemCell>,
+                    getColumnOrder(TaskItemColumn.CREATED_DATE),
+                  )}
+                </>
+              )}
             {isColumnChecked(columns, TaskItemColumn.LIST_NAME) && (
               <>
                 {randerFirstColumnCoverIfNecessary(
