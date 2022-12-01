@@ -10,6 +10,7 @@ export const TaskHeaderColumn = {
   START_DATE: 'START_DT',
   DUE_DATE: 'DUE_DT',
   CREATED_DATE: 'CREATED_DT',
+  CREATED_BY: 'CREATED_BY',
   ANCHOR_DATE: 'ANCHOR_DT',
   ASSIGNED: 'ASSIGNED_TO',
   LIST_NAME: 'LIST_NAME',
@@ -63,7 +64,13 @@ export const getTaskHeaderOptions = (
       identifier: TaskHeaderColumn.CREATED_DATE,
       label: 'Created On',
       draggable: true,
-      hidden: restrictions?.dueDate !== DISABLED,
+      hidden: restrictions?.createdDate !== DISABLED,
+    },
+    {
+      identifier: TaskHeaderColumn.CREATED_BY,
+      label: 'Created By',
+      draggable: true,
+      hidden: restrictions?.createdBy !== DISABLED,
     },
     {
       identifier: TaskHeaderColumn.ANCHOR_DATE,

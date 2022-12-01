@@ -59,6 +59,7 @@ const CustomizeToolbarButton = ({
     [TaskItemColumn.START_DATE]: 'Start date',
     [TaskItemColumn.DUE_DATE]: 'Due date',
     [TaskItemColumn.CREATED_DATE]: 'Created date',
+    [TaskItemColumn.CREATED_BY]: 'Create by',
     [TaskItemColumn.ANCHOR_DATE]: 'Anchor date',
     [TaskItemColumn.LIST_NAME]: 'List name',
     [TaskItemColumn.PATIENT]: capitalize(getCustomerTypeLabel(userProfile)),

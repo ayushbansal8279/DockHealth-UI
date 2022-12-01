@@ -127,6 +127,7 @@ const TaskItem = React.memo(
     const {
       taskIdentifier,
       assignedToUsers,
+      creator,
       attachments,
       comments,
       labels,
@@ -731,6 +732,42 @@ const TaskItem = React.memo(
                     />
                   </TaskItemCell>,
                   getColumnOrder(TaskItemColumn.ASSIGNED),
+                )}
+              </>
+            )}
+            {isColumnChecked(columns, TaskItemColumn.CREATED_BY) && (
+              <>
+                {randerFirstColumnCoverIfNecessary(
+                  <TaskItemCell
+                    isSubtask={isSubtask}
+                    key={`assigned_${taskIdentifier}`}
+                    width={
+                      columns?.find(
+                        ({ identifier }) =>
+                          identifier === TaskItemColumn.CREATED_BY,
+                      )?.columnWidth
+                    }
+                    justify={multipleAssigneesContext ? 'flex-start' : 'center'}
+                    paddingLeft="small"
+                    paddingRight="small"
+                    onContextMenu={event => {
+                      event.stopPropagation();
+                    }}
+                    order={getColumnOrder(TaskItemColumn.CREATED_BY)}
+                    printWidth={
+                      TaskItemColumnWidth[TaskItemColumn.CREATED_BY].PRINT
+                    }
+                  >
+                    <TaskItemMembers
+                      readOnly
+                      multipleAssigneesContext={multipleAssigneesContext}
+                      task={task}
+                      assignedToUsers={[creator]}
+                      handleReasignTask={null}
+                      matchAssignedTo={matchAssignedTo}
+                    />
+                  </TaskItemCell>,
+                  getColumnOrder(TaskItemColumn.CREATED_BY),
                 )}
               </>
             )}
