@@ -9,6 +9,7 @@ import { capitalize } from 'helpers/capitalize';
 import PatientImportAnimals from 'img/animals/PatientImportAnimals.svg';
 import ExcelLogo from 'img/excel-logo.svg';
 import ImportPatientsModal from 'modal/components/ImportPatientsModal/ImportPatientsModal';
+import { userProfileSelector } from 'selectors/user-selectors';
 import {
   EmptyListContainer,
   EmptyListHeader,
@@ -26,9 +27,7 @@ const EmptyPatientsList = ({
   setImportPopoverOpen,
   refreshPatientList,
 }) => {
-  const { currentUser } = useSelector(store => ({
-    currentUser: store.userState.userProfile,
-  }));
+  const currentUser = useSelector(userProfileSelector);
   const customerTypeLabel = getCustomerTypeLabel(currentUser);
   const customerTypeLabelCapitalized = capitalize(customerTypeLabel);
 

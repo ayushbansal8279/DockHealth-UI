@@ -4,7 +4,7 @@ import React, { useCallback } from 'react';
 import { useSelector } from 'react-redux';
 import Checkbox from 'components/common/Checkbox/Checkbox';
 import { SortHeaderRow } from 'components/tasklist/ColumnSortHeader/styled';
-import { TaskItemColumn, TaskItemColumnWidth } from 'helpers/task-helpers';
+import { TaskItemColumnWidth } from 'helpers/task-helpers';
 import { getCustomerTypeLabel } from 'helpers/customer-type-helper';
 import { useColumnsConfig } from 'context-api/columns-config-context';
 import { CustomFieldWidthConfig } from 'helpers/field-type-helpers';
@@ -13,6 +13,7 @@ import { SINGLE_TASK_RESTRICTIONS_PROFILES } from 'restrictions/task-restriction
 import { CUSTOM_FIELD_TYPES } from 'helpers/custom-fields-helpers';
 import { currentTaskListSelector } from 'selectors/task-list-selectors';
 import { isMemberAdmin } from 'helpers/list-members-helper';
+import { userProfileSelector } from 'selectors/user-selectors';
 import { BulkContainer, StickyColumnContainer } from './styled';
 import {
   getTaskHeaderOptions,
@@ -30,9 +31,7 @@ const TasksHeader = ({
   pageBackground,
 }) => {
   const taskList = useSelector(currentTaskListSelector);
-  const { currentUser } = useSelector(store => ({
-    currentUser: store.userState.userProfile,
-  }));
+  const currentUser = useSelector(userProfileSelector);
   const { columns, setColumns, setColumnWidth = () => {} } = useColumnsConfig();
   const customerTypeLabel = getCustomerTypeLabel(currentUser);
   const currentUserMember = taskList?.listUsers.find(
@@ -110,8 +109,6 @@ const TasksHeader = ({
           truncateEnabled
           id={f.identifier}
           label={isRegular ? f.label : f.name}
-          sort={sort}
-          onSortChange={onSortChange}
           width={+f.columnWidth}
           snapshot={snapshot}
           sort={isRegular ? sort : null}

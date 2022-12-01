@@ -7,6 +7,7 @@ import Spacing from 'components/common/Spacing';
 import { getCustomerTypeLabel } from 'helpers/customer-type-helper';
 import { capitalize } from 'helpers/capitalize';
 import RedFolder from 'img/modals/red-folder';
+import { userProfileSelector } from 'selectors/user-selectors';
 import { redTheme } from '../../themes/red-theme';
 
 import {
@@ -19,9 +20,7 @@ import {
 } from '../styled';
 
 const ArchivePatientModal = ({ closeModal, confirm }) => {
-  const { currentUser } = useSelector(store => ({
-    currentUser: store.userState.userProfile,
-  }));
+  const currentUser = useSelector(userProfileSelector);
   const customerTypeLabel = getCustomerTypeLabel(currentUser);
   const customerTypeLabelCapitalized = capitalize(customerTypeLabel);
 

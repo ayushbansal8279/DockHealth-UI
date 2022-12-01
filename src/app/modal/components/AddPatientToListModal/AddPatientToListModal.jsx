@@ -13,6 +13,7 @@ import Button from 'components/common/Button/Button';
 import PatientList from 'components/patients/PatientDropdown/PatientList';
 import { getCustomerTypeLabel } from 'helpers/customer-type-helper';
 import { capitalize } from 'helpers/capitalize';
+import { userProfileSelector } from 'selectors/user-selectors';
 import { createPatientListPath } from '../../../routing/helpers/paths';
 import { CloseIconButton, CloseIcon } from '../styled';
 import {
@@ -47,9 +48,7 @@ const AddPatientToListModal = ({
   const { patientListIdentifier, listName, listDescription } =
     patientsList || {};
 
-  const { currentUser } = useSelector(store => ({
-    currentUser: store.userState.userProfile,
-  }));
+  const currentUser = useSelector(userProfileSelector);
 
   const customerTypeLabel = getCustomerTypeLabel(currentUser);
   const customerTypeLabelCapitalized = capitalize(customerTypeLabel);

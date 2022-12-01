@@ -7,9 +7,11 @@ import isEmpty from 'ramda/src/isEmpty';
 import { initializePusher } from 'helpers/pusher-instance';
 import { getActivityAlertDetails } from 'api/activity-alerts-api';
 import ShipBellSound from 'components/../sounds/ship_bell.mp3';
+import { userProfileSelector } from 'selectors/user-selectors';
 import ActivityAlertsToast from './ActivityAlertsToast/ActivityAlertsToast';
 import { ActivityAlertsToastsContainer } from './styled';
 
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 const listenRealTimeAlerts = (currentUser, showAlert, audio) => {
   if (!currentUser || !currentUser.userIdentifier) {
     return;
@@ -42,9 +44,7 @@ const ActivityAlertsToasts = () => {
 
   const [audio] = useState(new Audio(ShipBellSound));
 
-  const { currentUser } = useSelector(store => ({
-    currentUser: store.userState.userProfile,
-  }));
+  const currentUser = useSelector(userProfileSelector);
 
   const showActivityAlert = async alert => {
     const alertDetails = await getActivityAlertDetails(

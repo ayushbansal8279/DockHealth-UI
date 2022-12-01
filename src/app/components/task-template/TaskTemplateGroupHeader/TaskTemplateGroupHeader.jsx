@@ -49,6 +49,7 @@ import {
 import { currentTaskListSelector } from 'selectors/task-list-selectors';
 import { openDrawer } from 'actions/workflow-drawer-actions';
 import { CUSTOM_FIELD_TYPES } from 'helpers/custom-fields-helpers';
+import { userProfileSelector } from 'selectors/user-selectors';
 import TemplateHeaderName from '../TaskTemplateName/TaskTemplateName';
 import TaskHeaderPatient from '../TaskTemplatePatient/TaskTemplatePatient';
 import TemplateItemWorkflowStatus from '../TaskTemplateWorkflowStatus/TaskTemplateWorkflowStatus';
@@ -99,9 +100,7 @@ const TaskTemplateGroupHeader = ({
   const [nameInputValue, setNameInputValue] = useState(name);
   const [nameInputError, setNameInputError] = useState(false);
   const nameInputReference = useRef(null);
-  const { currentUser } = useSelector(store => ({
-    currentUser: store.userState.userProfile,
-  }));
+  const currentUser = useSelector(userProfileSelector);
   const currentList = useSelector(currentTaskListSelector);
   const dispatch = useDispatch();
   const { columns } = useColumnsConfig();

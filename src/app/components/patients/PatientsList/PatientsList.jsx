@@ -11,6 +11,7 @@ import {
   getCustomerUniqueIDLabel,
 } from 'helpers/customer-type-helper';
 import Checkbox from 'components/common/Checkbox/Checkbox';
+import { userProfileSelector } from 'selectors/user-selectors';
 import PatientImportPopover from '../PatientImportPopover/PatientImportPopover';
 import TaskItemBulkEdit from '../../task/StandardTaskItem/TaskItemComponents/TaskItemBulkEdit';
 import EmptyFilteredPatientsList from '../EmptyFilteredPatientsList/EmptyFilteredPatientsList';
@@ -52,9 +53,7 @@ const PatientsList = ({
   const { pathname } = useLocation();
   const history = useHistory();
   const dispatch = useDispatch();
-  const { currentUser } = useSelector(store => ({
-    currentUser: store.userState.userProfile,
-  }));
+  const currentUser = useSelector(userProfileSelector);
   const customerTypeLabel = getCustomerTypeLabel(currentUser);
   const uniqueIdentifierLabel = getCustomerUniqueIDLabel(currentUser);
 

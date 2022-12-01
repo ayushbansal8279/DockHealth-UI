@@ -5,6 +5,7 @@ import { Add as AddIcon } from '@material-ui/icons';
 import circleCompleted from 'img/circle-completed.svg';
 import { getCustomerTypeLabel } from 'helpers/customer-type-helper';
 import { capitalize } from 'helpers/capitalize';
+import { userProfileSelector } from 'selectors/user-selectors';
 import {
   ImportPatientPopoverWrapper,
   ImportPatientPopoverWrapperMinimized,
@@ -52,9 +53,7 @@ const PatientImportPopover = ({
     ? patientImportDetails?.errorDetails
     : `${patientImportDetails?.trackingDetails?.length} Errors`;
 
-  const { currentUser } = useSelector(store => ({
-    currentUser: store.userState.userProfile,
-  }));
+  const currentUser = useSelector(userProfileSelector);
 
   const customerTypeLabel = getCustomerTypeLabel(currentUser);
   const customerTypeLabelCapitalized = capitalize(customerTypeLabel);
