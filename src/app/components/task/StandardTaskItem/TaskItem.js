@@ -64,6 +64,8 @@ import TaskItemPatient from './TaskItemComponents/TaskItemPatient';
 import TaskItemStartDate from './TaskItemComponents/TaskItemStartDate';
 import TaskItemDueDate from './TaskItemComponents/TaskItemDueDate';
 import TaskItemCreatedDate from './TaskItemComponents/TaskItemCreatedDate';
+import TaskItemCompletedDate from './TaskItemComponents/TaskItemCompletedDate';
+import TaskItemElapsedTime from './TaskItemComponents/TaskItemElapsedTime';
 import TaskItemSubtasks from './TaskItemComponents/TaskItemSubtasks';
 import TaskItemIcons from './TaskItemComponents/TaskItemIcons';
 import TaskItemMembers from './TaskItemComponents/TaskItemMembers';
@@ -740,7 +742,7 @@ const TaskItem = React.memo(
                 {randerFirstColumnCoverIfNecessary(
                   <TaskItemCell
                     isSubtask={isSubtask}
-                    key={`assigned_${taskIdentifier}`}
+                    key={`created_by_${taskIdentifier}`}
                     width={
                       columns?.find(
                         ({ identifier }) =>
@@ -798,6 +800,102 @@ const TaskItem = React.memo(
                       />
                     </TaskItemCell>,
                     getColumnOrder(TaskItemColumn.CREATED_DATE),
+                  )}
+                </>
+              )}
+            {isColumnChecked(columns, TaskItemColumn.COMPLETED_DATE) &&
+              !isTemplateTask && (
+                <>
+                  {randerFirstColumnCoverIfNecessary(
+                    <TaskItemCell
+                      isSubtask={isSubtask}
+                      key={`completed_date_${taskIdentifier}`}
+                      width={
+                        columns?.find(
+                          ({ identifier }) =>
+                            identifier === TaskItemColumn.COMPLETED_DATE,
+                        )?.columnWidth
+                      }
+                      paddingLeft="tiny"
+                      paddingRight="tiny"
+                      justify="center"
+                      onContextMenu={event => {
+                        event.stopPropagation();
+                      }}
+                      order={getColumnOrder(TaskItemColumn.COMPLETED_DATE)}
+                    >
+                      <TaskItemCompletedDate
+                        task={task}
+                        disabled={restrictions?.completedDate === DISABLED}
+                      />
+                    </TaskItemCell>,
+                    getColumnOrder(TaskItemColumn.COMPLETED_DATE),
+                  )}
+                </>
+              )}
+            {isColumnChecked(columns, TaskItemColumn.COMPLETED_BY) && (
+              <>
+                {randerFirstColumnCoverIfNecessary(
+                  <TaskItemCell
+                    isSubtask={isSubtask}
+                    key={`completed_by_${taskIdentifier}`}
+                    width={
+                      columns?.find(
+                        ({ identifier }) =>
+                          identifier === TaskItemColumn.COMPLETED_BY,
+                      )?.columnWidth
+                    }
+                    justify={multipleAssigneesContext ? 'flex-start' : 'center'}
+                    paddingLeft="small"
+                    paddingRight="small"
+                    onContextMenu={event => {
+                      event.stopPropagation();
+                    }}
+                    order={getColumnOrder(TaskItemColumn.COMPLETED_BY)}
+                    printWidth={
+                      TaskItemColumnWidth[TaskItemColumn.COMPLETED_BY].PRINT
+                    }
+                  >
+                    <TaskItemMembers
+                      readOnly
+                      multipleAssigneesContext={multipleAssigneesContext}
+                      task={task}
+                      assignedToUsers={[creator]}
+                      handleReasignTask={null}
+                      matchAssignedTo={matchAssignedTo}
+                    />
+                  </TaskItemCell>,
+                  getColumnOrder(TaskItemColumn.COMPLETED_BY),
+                )}
+              </>
+            )}
+            {isColumnChecked(columns, TaskItemColumn.ELAPSED_TIME) &&
+              !isTemplateTask && (
+                <>
+                  {randerFirstColumnCoverIfNecessary(
+                    <TaskItemCell
+                      isSubtask={isSubtask}
+                      key={`elapsed_time_${taskIdentifier}`}
+                      width={
+                        columns?.find(
+                          ({ identifier }) =>
+                            identifier === TaskItemColumn.ELAPSED_TIME,
+                        )?.columnWidth
+                      }
+                      paddingLeft="tiny"
+                      paddingRight="tiny"
+                      justify="center"
+                      onContextMenu={event => {
+                        event.stopPropagation();
+                      }}
+                      order={getColumnOrder(TaskItemColumn.ELAPSED_TIME)}
+                    >
+                      <TaskItemElapsedTime
+                        task={task}
+                        disabled={restrictions?.elapsedTime === DISABLED}
+                      />
+                    </TaskItemCell>,
+                    getColumnOrder(TaskItemColumn.ELAPSED_TIME),
                   )}
                 </>
               )}
