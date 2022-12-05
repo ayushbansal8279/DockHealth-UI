@@ -16,6 +16,7 @@ import {
 import UserAvatar from 'components/user/UserAvatar/UserAvatar';
 import { isUserGroup } from 'helpers/user-helper';
 import GroupAvatar from 'components/user/GroupAvatar/GroupAvatar';
+import { userProfileSelector } from 'selectors/user-selectors';
 import messages from './messages';
 import ListMembersSelect from './ListMembersSelect/ListMembersSelect';
 import {
@@ -64,7 +65,7 @@ const GrantMemberPermissionsListForm = ({ list, onMembersRefresh }) => {
     );
   }, []);
 
-  const userProfile = useSelector(state => state.userState.userProfile);
+  const userProfile = useSelector(userProfileSelector);
 
   const organizationMembersNotInTheList = useMemo(
     () =>

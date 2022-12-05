@@ -17,6 +17,7 @@ import {
 } from 'helpers/ga-event-helper';
 import { isUserGroup } from 'helpers/user-helper';
 import GroupAvatar from 'components/user/GroupAvatar/GroupAvatar';
+import { userProfileSelector } from 'selectors/user-selectors';
 import messages from './messages';
 import ListUsersAndGroupsSelect from './ListUsersAndGroupsSelect/ListUsersAndGroupsSelect';
 import ExternalInviteForm from './ExternalInviteForm/ExternalInviteForm';
@@ -99,7 +100,7 @@ const InviteUserOrGroupToListForm = ({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [list]);
 
-  const userProfile = useSelector(state => state.userState.userProfile);
+  const userProfile = useSelector(userProfileSelector);
 
   const organizationUsersAndGroupsNotInTheList = useMemo(
     () =>

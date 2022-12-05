@@ -7,6 +7,7 @@ import { useBoolean } from 'hooks/useBoolean';
 import * as TaskApi from 'api/task-api';
 import { selectedTaskSelector } from 'selectors/task-drawer-selectors';
 import EmptyHistoryLabel from 'components/drawer-common/EmptyHistoryLabel/EmptyHistoryLabel';
+import { userProfileSelector } from 'selectors/user-selectors';
 
 const HistorySection = () => {
   const [isHistoryLoading, setHistoryLoading, unsetHistoryLoading] = useBoolean(
@@ -15,7 +16,7 @@ const HistorySection = () => {
   const [history, setHistory] = useState(null);
   const selectedTask = useSelector(selectedTaskSelector);
   const selectedTaskIdentifier = selectedTask?.taskIdentifier;
-  const currentUser = useSelector(store => store.userState.userProfile);
+  const currentUser = useSelector(userProfileSelector);
 
   useEffect(() => {
     setHistory(null);
