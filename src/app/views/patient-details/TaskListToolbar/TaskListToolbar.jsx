@@ -14,7 +14,10 @@ import {
   setCurrentListTasksStatus,
 } from 'actions/patient-details-actions';
 import { updateUserPageViewSetup } from 'actions/task-list-actions';
-import { userSetupClientViewSelector } from 'selectors/user-selectors';
+import {
+  userSetupClientViewSelector,
+  selectedUserOrganizationSelector,
+} from 'selectors/user-selectors';
 import Spacing from 'components/common/Spacing';
 import { TaskStatus } from 'helpers/task-helpers';
 import TaskStatusToolbarSelect from 'components/tasklist/TaskStatusToolbarSelect/TaskStatusToolbarSelect';
@@ -67,6 +70,12 @@ const TaskListToolbar = props => {
       };
     },
   );
+
+  const currentOrganization = useSelector(selectedUserOrganizationSelector);
+  const iconColorActiveItem =
+    currentOrganization?.themeSettings?.find(
+      ({ name }) => name === 'icon.color.active',
+    ) || {};
 
   const handleListChange = event => {
     history.push(
@@ -174,11 +183,13 @@ const TaskListToolbar = props => {
       <TaskStatusToolbarSelect
         value={tasksStatus}
         onChange={handleChangeTasksStatus}
+        iconColorActive={iconColorActiveItem?.value}
       />
       <Spacing horizontal={4} />
       <CustomizeToolbarButton
         showCustomColumnCreate={false}
         additionalOptions={OPTIONS}
+        iconColorActive={iconColorActiveItem?.value}
       />
       <Spacing horizontal={4} />
       <ToolbarButton onClick={onPrintClick}>Print</ToolbarButton>

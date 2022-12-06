@@ -18,7 +18,10 @@ import {
   DefaultPatientsListType,
 } from 'helpers/patient-list-helpers';
 import { organizationSelector } from 'selectors/organization-selectors';
-import { userProfileSelector } from 'selectors/user-selectors';
+import {
+  userProfileSelector,
+  selectedUserOrganizationSelector,
+} from 'selectors/user-selectors';
 import {
   currentPatientsListIdentifierSelector,
   patientsListSearchTermSelector,
@@ -62,6 +65,7 @@ const PatientsToolbar = ({ refreshPatientList, setImportPopoverOpen }) => {
   const { emrIntegrationEnabled } = useSelector(organizationSelector) || {};
   const listIdentifier = useSelector(currentPatientsListIdentifierSelector);
   const currentUser = useSelector(userProfileSelector);
+  const currentOrganization = useSelector(selectedUserOrganizationSelector);
   const { orgUserRole } = currentUser || {};
   const customerTypeLabel = getCustomerTypeLabel(currentUser).toUpperCase();
   const { listIdentifier: listIdentifierParameter } = useParams();
@@ -69,6 +73,11 @@ const PatientsToolbar = ({ refreshPatientList, setImportPopoverOpen }) => {
   const isGuest = orgUserRole === 'GUEST';
 
   const [importPopupOpen, setImportPopupOpen] = useState(false);
+
+  const iconColorActiveItem =
+    currentOrganization?.themeSettings?.find(
+      ({ name }) => name === 'icon.color.active',
+    ) || {};
 
   const handleSearchChange = searchTerm => {
     dispatch(PatientsActions.changePatientsSearchTerm(searchTerm));
@@ -132,7 +141,9 @@ const PatientsToolbar = ({ refreshPatientList, setImportPopoverOpen }) => {
               onClick={toggleFilter}
               onClear={() => dispatch(PatientsActions.clearPatientsFilters())}
             />
-            <CustomizeToolbarButton />
+            <CustomizeToolbarButton
+              iconColorActive={iconColorActiveItem?.value}
+            />
           </Box>
           <Box display="flex" alignItems="center">
             {!isGuest &&

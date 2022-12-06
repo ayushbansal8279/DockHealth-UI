@@ -22,7 +22,10 @@ import {
 } from 'routing/helpers/paths';
 import { DashboardTasksTab } from 'helpers/dashboard-helpers';
 import { ViewType, getViewTypeFromQueryString } from 'helpers/view-type-helper';
-import { dashboardGroupsPreferencesSelector } from 'selectors/user-selectors';
+import {
+  dashboardGroupsPreferencesSelector,
+  selectedUserOrganizationSelector,
+} from 'selectors/user-selectors';
 import TaskViewTypeToolbarSelect from 'components/tasklist/TaskViewTypeToolbarSelect/TaskViewTypeToolbarSelect';
 import CustomizeToolbarButton from 'components/tasklist/CustomizeToolbarButton/CustomizeToolbarButton';
 import { useTaskListColumnsConfig } from 'context-api/columns-config-context';
@@ -66,6 +69,11 @@ const DashboardToolbar = () => {
     dashboardGroupsPreferences || [],
   );
   const sentInitialSetup = useRef(false);
+  const currentOrganization = useSelector(selectedUserOrganizationSelector);
+  const iconColorActiveItem =
+    currentOrganization?.themeSettings?.find(
+      ({ name }) => name === 'icon.color.active',
+    ) || {};
 
   useEffect(() => {
     if (
@@ -173,6 +181,7 @@ const DashboardToolbar = () => {
             <TaskViewTypeToolbarSelect
               value={viewType}
               onChange={handleChangeViewType}
+              iconColorActive={iconColorActiveItem?.value}
             />
           </TaskViewSelectWrapper>
         )}
@@ -184,6 +193,7 @@ const DashboardToolbar = () => {
                 showCustomColumnCreate={false}
                 additionalOptionsTitle="Groups"
                 additionalOptions={additionalOptions}
+                iconColorActive={iconColorActiveItem?.value}
               />
             </AccessRestrictor>
           </>

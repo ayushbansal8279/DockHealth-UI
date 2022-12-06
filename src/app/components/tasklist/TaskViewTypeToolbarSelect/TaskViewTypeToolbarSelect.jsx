@@ -4,6 +4,7 @@ import ToolbarSelect from 'components/tasklist/ToolbarSelect/ToolbarSelect';
 import ViewTypeIcon from 'img/view-type-icon';
 import { ViewType } from 'helpers/view-type-helper';
 import { userHasBoardViewFeatureSelector } from 'selectors/user-selectors';
+import { ViewTypeImg } from './styled';
 
 const OPTIONS_DEFAULT = [
   {
@@ -42,10 +43,10 @@ const TaskViewTypeToolbarSelect = ({
       name="task-view-type"
       onChange={onChange}
       icon={
-        <img
+        <ViewTypeImg
           src={ViewTypeIcon}
           alt="view type icon"
-          style={{ filter: iconColorActive }}
+          iconColorActive={iconColorActive}
         />
       }
       {...restProps}
