@@ -52,7 +52,7 @@ const CustomizeToolbarButton = ({
   const { columns, setColumns } = useTaskListColumnsConfig();
 
   const ColumnOptionNames = {
-    [TaskItemColumn.ACTIVITY]: 'Details',
+    [TaskItemColumn.ACTIVITY]: 'Activity',
     [TaskItemColumn.SUBTASKS_COUNT]: 'Subtasks',
     [TaskItemColumn.ASSIGNED]: 'Assigned',
     [TaskItemColumn.WORKFLOW_STATUS]: 'Status',
@@ -60,6 +60,7 @@ const CustomizeToolbarButton = ({
     [TaskItemColumn.DUE_DATE]: 'Due date',
     [TaskItemColumn.ANCHOR_DATE]: 'Anchor date',
     [TaskItemColumn.LIST_NAME]: 'List name',
+    [TaskItemColumn.TASK_DETAILS]: 'Details',
     [TaskItemColumn.PATIENT]: capitalize(getCustomerTypeLabel(userProfile)),
   };
 

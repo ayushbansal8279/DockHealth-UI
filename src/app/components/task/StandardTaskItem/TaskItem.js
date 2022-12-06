@@ -63,6 +63,8 @@ import TaskItemDescription from './TaskItemComponents/TaskItemDescription';
 import TaskItemPatient from './TaskItemComponents/TaskItemPatient';
 import TaskItemStartDate from './TaskItemComponents/TaskItemStartDate';
 import TaskItemDueDate from './TaskItemComponents/TaskItemDueDate';
+import TaskItemDetails from './TaskItemComponents/TaskItemDetails';
+import TaskItemLongText from './customFieldsTaskItemComponents/TaskItemLongText/TaskItemLongText';
 import TaskItemSubtasks from './TaskItemComponents/TaskItemSubtasks';
 import TaskItemIcons from './TaskItemComponents/TaskItemIcons';
 import TaskItemMembers from './TaskItemComponents/TaskItemMembers';
@@ -754,6 +756,30 @@ const TaskItem = React.memo(
                     />
                   </TaskItemCell>,
                   getColumnOrder(TaskItemColumn.LIST_NAME),
+                )}
+              </>
+            )}
+            {isColumnChecked(columns, TaskItemColumn.TASK_DETAILS) && (
+              <>
+                {randerFirstColumnCoverIfNecessary(
+                  <TaskItemCell
+                    isSubtask={isSubtask}
+                    key={`task_details_${taskIdentifier}`}
+                    width={
+                      columns?.find(
+                        ({ identifier }) =>
+                          identifier === TaskItemColumn.TASK_DETAILS,
+                      )?.columnWidth
+                    }
+                    order={getColumnOrder(TaskItemColumn.TASK_DETAILS)}
+                  >
+                    <TaskItemDetails
+                      task={task}
+                      fieldIdentifier={TaskItemColumn.TASK_DETAILS}
+                      onClick={onClickTaskItem}
+                    />
+                  </TaskItemCell>,
+                  getColumnOrder(TaskItemColumn.TASK_DETAILS),
                 )}
               </>
             )}
