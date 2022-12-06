@@ -12,6 +12,7 @@ import {
 } from 'actions/organization-actions';
 import ViewLayout from 'components/template/ViewLayout/ViewLayout';
 import LayoutHeader from 'components/template/LayoutHeader/LayoutHeader';
+import { userProfileSelector } from 'selectors/user-selectors';
 import {
   H2,
   SubscriptionPaymentViewContainer,
@@ -21,9 +22,7 @@ const SubscriptionPaymentFinishedView = () => {
   const dispatch = useDispatch();
   const history = useHistory();
 
-  const organizationIdentifier = useSelector(
-    store => store.userState?.userProfile?.organizationIdentifier,
-  );
+  const { organizationIdentifier } = useSelector(userProfileSelector);
 
   useMount(() => {
     getOrganizationById({ organizationIdentifier })(dispatch);

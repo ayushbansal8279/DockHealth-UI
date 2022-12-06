@@ -9,6 +9,7 @@ import {
 } from 'helpers/user-helper';
 import { getGroupActivityStatus } from 'helpers/user-groups-helper';
 import GroupAvatar from 'components/user/GroupAvatar/GroupAvatar';
+import { activeUsersListSelector } from 'selectors/active-users-selector';
 import {
   SuggestionItemContainer,
   SuggestionText,
@@ -40,9 +41,7 @@ const UserSuggestionItem = ({
     }
   };
 
-  const { activeUsersList } = useSelector(store => ({
-    activeUsersList: store.activeUsers.activeUsersList,
-  }));
+  const activeUsersList = useSelector(activeUsersListSelector);
 
   const activityStatus = isUserGroup(mention)
     ? getGroupActivityStatus(mention, activeUsersList)

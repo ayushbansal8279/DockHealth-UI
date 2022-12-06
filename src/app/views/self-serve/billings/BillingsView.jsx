@@ -84,11 +84,8 @@ const BillingsView = () => {
 
   const [error, setError] = useState('');
 
-  const { organizationIdentifier } = useSelector(
-    store => store.userState.userProfile,
-  );
-
   const userProfile = useSelector(userProfileSelector);
+  const { organizationIdentifier } = userProfile;
 
   useEffect(() => {
     if (!checkIfUserIsOrganizationAdmin(userProfile)) {
