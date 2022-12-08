@@ -3,10 +3,13 @@ import { SINGLE_TASK_RESTRICTIONS_OPTIONS } from 'restrictions/task-restrictions
 
 export const TaskHeaderColumn = {
   DESCRIPTION: 'TASK_DESCRIPTION',
+  TASK_DETAILS: 'TASK_DETAILS',
   SUBTASKS_COUNT: 'SUBTASKS_COUNT',
   PATIENT: 'PATIENT',
   WORKFLOW_STATUS: 'WORKFLOW_STATUS',
-  ACTIVITY: 'ACTIVITY',
+  COMMENTS: 'COMMENTS',
+  LABELS: 'LABELS',
+  FILES: 'FILES',
   START_DATE: 'START_DT',
   DUE_DATE: 'DUE_DT',
   CREATED_DATE: 'CREATED_DT',
@@ -32,6 +35,11 @@ export const getTaskHeaderOptions = (
       label: 'Tasks',
       draggable: true,
     },
+    {
+      identifier: TaskHeaderColumn.TASK_DETAILS,
+      label: 'Details',
+      draggable: true,
+    },
     // {
     //   identifier: TaskHeaderColumn.SUBTASKS_COUNT,
     //   label: 'Sub',
@@ -48,8 +56,18 @@ export const getTaskHeaderOptions = (
       draggable: true,
     },
     {
-      identifier: TaskHeaderColumn.ACTIVITY,
-      label: 'Details',
+      identifier: TaskHeaderColumn.COMMENTS,
+      label: 'Comments',
+      draggable: true,
+    },
+    {
+      identifier: TaskHeaderColumn.LABELS,
+      label: 'Labels',
+      draggable: true,
+    },
+    {
+      identifier: TaskHeaderColumn.FILES,
+      label: 'Files',
       draggable: true,
     },
     {

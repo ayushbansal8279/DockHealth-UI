@@ -63,6 +63,8 @@ import TaskItemDescription from './TaskItemComponents/TaskItemDescription';
 import TaskItemPatient from './TaskItemComponents/TaskItemPatient';
 import TaskItemStartDate from './TaskItemComponents/TaskItemStartDate';
 import TaskItemDueDate from './TaskItemComponents/TaskItemDueDate';
+import TaskItemDetails from './TaskItemComponents/TaskItemDetails';
+import TaskItemLongText from './customFieldsTaskItemComponents/TaskItemLongText/TaskItemLongText';
 import TaskItemCreatedDate from './TaskItemComponents/TaskItemCreatedDate';
 import TaskItemCompletedDate from './TaskItemComponents/TaskItemCompletedDate';
 import TaskItemElapsedTime from './TaskItemComponents/TaskItemElapsedTime';
@@ -600,33 +602,80 @@ const TaskItem = React.memo(
                 />
               </TaskItemCell>
             )}
-            {isColumnChecked(columns, TaskItemColumn.ACTIVITY) && (
+            {isColumnChecked(columns, TaskItemColumn.COMMENTS) && (
               <>
                 {randerFirstColumnCoverIfNecessary(
                   <TaskItemCell
                     isSubtask={isSubtask}
-                    key={`activity_${taskIdentifier}`}
+                    key={`comments_${taskIdentifier}`}
                     width={
                       columns?.find(
                         ({ identifier }) =>
-                          identifier === TaskItemColumn.ACTIVITY,
+                          identifier === TaskItemColumn.COMMENTS,
                       )?.columnWidth
                     }
-                    order={getColumnOrder(TaskItemColumn.ACTIVITY)}
+                    order={getColumnOrder(TaskItemColumn.COMMENTS)}
                   >
                     <TaskItemIcons
                       restrictions={restrictions}
                       matchComments={matchComments}
                       comments={comments}
                       task={task}
+                      dispatch={dispatch}
+                    />
+                  </TaskItemCell>,
+                  getColumnOrder(TaskItemColumn.COMMENTS),
+                )}
+              </>
+            )}
+            {isColumnChecked(columns, TaskItemColumn.LABELS) && (
+              <>
+                {randerFirstColumnCoverIfNecessary(
+                  <TaskItemCell
+                    isSubtask={isSubtask}
+                    key={`labels_${taskIdentifier}`}
+                    width={
+                      columns?.find(
+                        ({ identifier }) =>
+                          identifier === TaskItemColumn.LABELS,
+                      )?.columnWidth
+                    }
+                    order={getColumnOrder(TaskItemColumn.LABELS)}
+                  >
+                    <TaskItemIcons
+                      restrictions={restrictions}
+                      task={task}
                       matchLabels={matchLabels}
                       labels={labels}
+                      dispatch={dispatch}
+                    />
+                  </TaskItemCell>,
+                  getColumnOrder(TaskItemColumn.LABELS),
+                )}
+              </>
+            )}
+            {isColumnChecked(columns, TaskItemColumn.FILES) && (
+              <>
+                {randerFirstColumnCoverIfNecessary(
+                  <TaskItemCell
+                    isSubtask={isSubtask}
+                    key={`files_${taskIdentifier}`}
+                    width={
+                      columns?.find(
+                        ({ identifier }) => identifier === TaskItemColumn.FILES,
+                      )?.columnWidth
+                    }
+                    order={getColumnOrder(TaskItemColumn.FILES)}
+                  >
+                    <TaskItemIcons
+                      restrictions={restrictions}
+                      task={task}
                       matchAttachments={matchAttachments}
                       attachments={attachments}
                       dispatch={dispatch}
                     />
                   </TaskItemCell>,
-                  getColumnOrder(TaskItemColumn.ACTIVITY),
+                  getColumnOrder(TaskItemColumn.FILES),
                 )}
               </>
             )}
@@ -926,6 +975,30 @@ const TaskItem = React.memo(
                     />
                   </TaskItemCell>,
                   getColumnOrder(TaskItemColumn.LIST_NAME),
+                )}
+              </>
+            )}
+            {isColumnChecked(columns, TaskItemColumn.TASK_DETAILS) && (
+              <>
+                {randerFirstColumnCoverIfNecessary(
+                  <TaskItemCell
+                    isSubtask={isSubtask}
+                    key={`task_details_${taskIdentifier}`}
+                    width={
+                      columns?.find(
+                        ({ identifier }) =>
+                          identifier === TaskItemColumn.TASK_DETAILS,
+                      )?.columnWidth
+                    }
+                    order={getColumnOrder(TaskItemColumn.TASK_DETAILS)}
+                  >
+                    <TaskItemDetails
+                      task={task}
+                      fieldIdentifier={TaskItemColumn.TASK_DETAILS}
+                      onClick={onClickTaskItem}
+                    />
+                  </TaskItemCell>,
+                  getColumnOrder(TaskItemColumn.TASK_DETAILS),
                 )}
               </>
             )}

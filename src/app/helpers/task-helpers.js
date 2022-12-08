@@ -154,7 +154,6 @@ export const TaskItemColumn = {
   DUE_DATE: 'DUE_DT',
   START_DATE: 'START_DT',
   ANCHOR_DATE: 'ANCHOR_DT',
-  ACTIVITY: 'ACTIVITY',
   LIST_NAME: 'LIST_NAME',
   ASSIGNED: 'ASSIGNED_TO',
   PATIENT: 'PATIENT',
@@ -166,6 +165,10 @@ export const TaskItemColumn = {
   // SUBTASKS_COUNT: 'SUBTASKS_COUNT',
   WORKFLOW_STATUS: 'WORKFLOW_STATUS',
   DECISION_SELECT: 'DECISION_SELECT',
+  TASK_DETAILS: 'TASK_DETAILS',
+  COMMENTS: 'COMMENTS',
+  LABELS: 'LABELS',
+  FILES: 'FILES',
 };
 
 export const TaskItemColumnWidth = {
@@ -173,6 +176,9 @@ export const TaskItemColumnWidth = {
   [TaskItemColumn.CREATED_DATE]: 115,
   [TaskItemColumn.START_DATE]: 78,
   [TaskItemColumn.ANCHOR_DATE]: 78,
+  [TaskItemColumn.COMMENTS]: 100,
+  [TaskItemColumn.LABELS]: 100,
+  [TaskItemColumn.FILES]: 100,
   [TaskItemColumn.COMPLETED_DATE]: 150,
   [TaskItemColumn.ELAPSED_TIME]: 150,
   [TaskItemColumn.COMPLETED_BY]: 150,
@@ -196,16 +202,24 @@ export const TaskItemColumnWidth = {
     WIDE: 475,
     PRINT: 300,
   },
+  [TaskItemColumn.TASK_DETAILS]: {
+    DEFAULT: 500,
+    WIDE: 475,
+    PRINT: 300,
+  },
   [TaskItemColumn.SUBTASKS_COUNT]: 60,
   [TaskItemColumn.WORKFLOW_STATUS]: 120,
 };
 
 export const TASK_ITEM_BASE_COLUMN_CONFIG = {
   [TaskItemColumn.DESCRIPTION]: true,
+  [TaskItemColumn.TASK_DETAILS]: true,
   [TaskItemColumn.SUBTASKS_COUNT]: true,
   [TaskItemColumn.PATIENT]: true,
   [TaskItemColumn.WORKFLOW_STATUS]: true,
-  [TaskItemColumn.ACTIVITY]: true,
+  [TaskItemColumn.COMMENTS]: true,
+  [TaskItemColumn.LABELS]: true,
+  [TaskItemColumn.FILES]: true,
   [TaskItemColumn.START_DATE]: true,
   [TaskItemColumn.DUE_DATE]: true,
   [TaskItemColumn.COMPLETED_DATE]: true,
@@ -221,7 +235,9 @@ export const TASK_ITEM_BASE_COLUMN_CONFIG = {
 export const SHOW_COLUMNS_CONFIG = {
   [TaskItemColumn.WORKFLOW_STATUS]: true,
   [TaskItemColumn.ASSIGNED]: true,
-  [TaskItemColumn.ACTIVITY]: true,
+  [TaskItemColumn.COMMENTS]: true,
+  [TaskItemColumn.LABELS]: true,
+  [TaskItemColumn.FILES]: true,
   [TaskItemColumn.START_DATE]: true,
   [TaskItemColumn.DUE_DATE]: true,
   [TaskItemColumn.CREATED_DATE]: true,
@@ -232,11 +248,15 @@ export const SHOW_COLUMNS_CONFIG = {
   [TaskItemColumn.ANCHOR_DATE]: true,
   [TaskItemColumn.PATIENT]: true,
   [TaskItemColumn.LIST_NAME]: true,
+  [TaskItemColumn.TASK_DETAILS]: true,
 };
 
 export const TASK_ITEM_SORT_METHODS = {
   [TaskItemColumn.DESCRIPTION]: sortWith([
     ascend(pipe(prop('description'), defaultTo('~'), toLower)),
+  ]),
+  [TaskItemColumn.TASK_DETAILS]: sortWith([
+    ascend(pipe(prop('details'), defaultTo('~'), toLower)),
   ]),
   [TaskItemColumn.DUE_DATE]: sortWith([
     ascend(pipe(prop('dueDate'), defaultTo('~'))),
@@ -292,6 +312,9 @@ export const TASK_ITEM_SORT_METHODS = {
 export const TASK_ITEM_SORT_DESC_METHODS = {
   [TaskItemColumn.DESCRIPTION]: sortWith([
     descend(pipe(prop('description'), defaultTo(' '), toLower)),
+  ]),
+  [TaskItemColumn.TASK_DETAILS]: sortWith([
+    descend(pipe(prop('details'), defaultTo(' '), toLower)),
   ]),
   [TaskItemColumn.DUE_DATE]: sortWith([
     descend(pipe(prop('dueDate'), defaultTo(' '))),
