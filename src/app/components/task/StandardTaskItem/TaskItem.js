@@ -130,6 +130,8 @@ const TaskItem = React.memo(
       taskIdentifier,
       assignedToUsers,
       creator,
+      completedBy,
+      completedDate,
       attachments,
       comments,
       labels,
@@ -856,14 +858,18 @@ const TaskItem = React.memo(
                       TaskItemColumnWidth[TaskItemColumn.COMPLETED_BY].PRINT
                     }
                   >
-                    <TaskItemMembers
-                      readOnly
-                      multipleAssigneesContext={multipleAssigneesContext}
-                      task={task}
-                      assignedToUsers={[creator]}
-                      handleReasignTask={null}
-                      matchAssignedTo={matchAssignedTo}
-                    />
+                    <>
+                      {completedDate && completedBy && (
+                        <TaskItemMembers
+                          readOnly
+                          multipleAssigneesContext={multipleAssigneesContext}
+                          task={task}
+                          assignedToUsers={[completedBy]}
+                          handleReasignTask={null}
+                          matchAssignedTo={matchAssignedTo}
+                        />
+                      )}
+                    </>
                   </TaskItemCell>,
                   getColumnOrder(TaskItemColumn.COMPLETED_BY),
                 )}

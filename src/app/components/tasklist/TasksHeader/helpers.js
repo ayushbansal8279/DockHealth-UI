@@ -65,13 +65,13 @@ export const getTaskHeaderOptions = (
     },
     {
       identifier: TaskHeaderColumn.CREATED_DATE,
-      label: 'Created On',
+      label: 'Created date',
       draggable: true,
       hidden: restrictions?.createdDate !== DISABLED,
     },
     {
       identifier: TaskHeaderColumn.COMPLETED_DATE,
-      label: 'Completed On',
+      label: 'Completed date',
       draggable: true,
       hidden: restrictions?.completedDate !== DISABLED,
     },
@@ -83,13 +83,13 @@ export const getTaskHeaderOptions = (
     },
     {
       identifier: TaskHeaderColumn.COMPLETED_BY,
-      label: 'Completed By',
+      label: 'Completed by',
       draggable: true,
       hidden: restrictions?.completedBy !== DISABLED,
     },
     {
       identifier: TaskHeaderColumn.CREATED_BY,
-      label: 'Created By',
+      label: 'Created by',
       draggable: true,
       hidden: restrictions?.createdBy !== DISABLED,
     },
