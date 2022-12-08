@@ -7,7 +7,9 @@ export const TaskHeaderColumn = {
   SUBTASKS_COUNT: 'SUBTASKS_COUNT',
   PATIENT: 'PATIENT',
   WORKFLOW_STATUS: 'WORKFLOW_STATUS',
-  ACTIVITY: 'ACTIVITY',
+  COMMENTS: 'COMMENTS',
+  LABELS: 'LABELS',
+  FILES: 'FILES',
   START_DATE: 'START_DT',
   DUE_DATE: 'DUE_DT',
   ANCHOR_DATE: 'ANCHOR_DT',
@@ -49,8 +51,18 @@ export const getTaskHeaderOptions = (
       draggable: true,
     },
     {
-      identifier: TaskHeaderColumn.ACTIVITY,
-      label: 'Activity',
+      identifier: TaskHeaderColumn.COMMENTS,
+      label: 'Comments',
+      draggable: true,
+    },
+    {
+      identifier: TaskHeaderColumn.LABELS,
+      label: 'Labels',
+      draggable: true,
+    },
+    {
+      identifier: TaskHeaderColumn.FILES,
+      label: 'Files',
       draggable: true,
     },
     {

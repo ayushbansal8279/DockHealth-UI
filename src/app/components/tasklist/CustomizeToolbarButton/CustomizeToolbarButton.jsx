@@ -52,7 +52,9 @@ const CustomizeToolbarButton = ({
   const { columns, setColumns } = useTaskListColumnsConfig();
 
   const ColumnOptionNames = {
-    [TaskItemColumn.ACTIVITY]: 'Activity',
+    [TaskItemColumn.COMMENTS]: 'Comments',
+    [TaskItemColumn.LABELS]: 'Labels',
+    [TaskItemColumn.FILES]: 'Files',
     [TaskItemColumn.SUBTASKS_COUNT]: 'Subtasks',
     [TaskItemColumn.ASSIGNED]: 'Assigned',
     [TaskItemColumn.WORKFLOW_STATUS]: 'Status',
