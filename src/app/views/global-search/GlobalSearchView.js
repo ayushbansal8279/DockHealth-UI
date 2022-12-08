@@ -12,8 +12,7 @@ import {
   isSearchingCompletedTasksSelector,
 } from 'selectors/global-search-selectors';
 import { selectedTaskSelector } from 'selectors/task-drawer-selectors';
-import EmptyGlobalSearch from 'img/empty-global-search.png';
-import EmptyGlobalSearchResults from 'img/empty-global-search-results';
+// import EmptyGlobalSearch from 'img/empty-global-search.png';
 import { userProfileSelector } from 'selectors/user-selectors';
 import * as TaskActions from 'actions/task-actions';
 import { GlobalSearchSagaActions } from 'sagas/global-search-saga';
@@ -26,7 +25,7 @@ import {
   GlobalSearchWrapper,
   GlobalSearchStickyHeader,
   ViewSidePadding,
-  EmptyGlobalSearchImage,
+  // EmptyGlobalSearchImage,
   EmptyGlobaSearchWrapper,
   EmptySearchText,
   EmptyResultsText,
@@ -64,10 +63,6 @@ const GlobalSearchView = ({
               Sorry, we couldn&apos;t find anything for your search
             </EmptyResultsText>
             <Box m={3} />
-            <EmptyGlobalSearchImage
-              src={EmptyGlobalSearchResults}
-              alt="No results"
-            />
           </>
         ) : (
           <>
@@ -75,10 +70,6 @@ const GlobalSearchView = ({
               Search tasks, comments, dates and more!
             </EmptySearchText>
             <Box m={3} />
-            <EmptyGlobalSearchImage
-              src={EmptyGlobalSearch}
-              alt="Empty global search"
-            />
           </>
         )}
       </EmptyGlobaSearchWrapper>
