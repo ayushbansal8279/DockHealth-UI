@@ -22,5 +22,4 @@ export const Header = styled.span`
 export const ButtonWrapper = styled.button`
   max-width: 100%;
   text-align: left;
-  cursor: not-allowed;
 `;

@@ -68,10 +68,12 @@ const SelectDestinationModal = ({
 
       const responseData = {
         taskListIdentifier: taskList?.taskListIdentifier,
+        listName: taskList?.listName,
       };
 
       if (selectedGroup) {
         responseData.taskGroupIdentifier = selectedGroup.taskGroupIdentifier;
+        responseData.groupName = selectedGroup.groupName;
       }
 
       if (selectedParentTask) {
