@@ -92,7 +92,8 @@ const PatientDetailsView = () => {
 
   useEffect(() => {
     (async () => {
-      const widgets = await getPatientWidgets();
+      const widgetDetails = await getPatientWidgets();
+      const widgets = widgetDetails?.widgets;
 
       const widgetTabs = [];
 
@@ -100,7 +101,9 @@ const PatientDetailsView = () => {
         widgetTabs.push({
           label: widgets[0].name,
           mainPath: `widget/${widgets[0].identifier}`,
-          url: widgets[0].url,
+          url: widgetDetails?.authToken
+            ? `${widgets[0].url}?authToken=${widgetDetails?.authToken}&idToken=${widgetDetails?.idToken}`
+            : widgets[0].url,
           height: widgets[0].height,
           width: widgets[0].width,
           type: 'widget',
