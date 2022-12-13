@@ -169,6 +169,7 @@ export const Description = styled.div`
   font-weight: 400;
   font-size: 14px;
   ${props => (props.isUnread ? 'font-weight: 900; font-size: 15px;' : '')};
+  overflow: hidden;
 
   @media screen and (max-width: 1300px) {
     max-width: 300px;
@@ -200,6 +201,7 @@ export const DescriptionBox = styled.div`
   flex-direction: column;
   flex: 1;
   cursor: pointer;
+  width: 100%;
 `;
 
 export const DecisionBox = styled.div`
@@ -578,6 +580,7 @@ export const DescriptionBorder = styled.div`
   border-width: 1px;
   border-style: solid;
   border-color: transparent;
+  width: 100%;
   ${({ disabled }) => (disabled ? 'border: 0px;' : '')}
   ${({ isEdited }) => isEdited && `border-color: ${palette.coolGrey2};`}
 `;
