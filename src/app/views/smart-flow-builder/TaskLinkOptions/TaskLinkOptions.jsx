@@ -25,12 +25,14 @@ const TaskLinkOptions = props => {
           }}
         >
           <MenuList classes={menuClasses} onClick={onClose}>
-            {options.map(({ key, label, icon, onClick }) => (
-              <MenuItem key={key} onClick={onClick}>
-                <MenuItemIconWrapper>{icon}</MenuItemIconWrapper>
-                {label}
-              </MenuItem>
-            ))}
+            {options
+              .sort((a, b) => a.label.localeCompare(b.label))
+              .map(({ key, label, icon, onClick }) => (
+                <MenuItem key={key} onClick={onClick}>
+                  <MenuItemIconWrapper>{icon}</MenuItemIconWrapper>
+                  {label}
+                </MenuItem>
+              ))}
           </MenuList>
         </Paper>
       </ClickAwayListener>

@@ -54,7 +54,7 @@ const TaskItemDropdown = ({
           name="dropdownCustomField"
           value={value}
           onChange={handleChange}
-          options={options}
+          options={options.sort((a, b) => a.label.localeCompare(b.label))}
           disableUnderline
           IconComponent={() => <></>}
         />

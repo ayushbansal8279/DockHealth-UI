@@ -45,7 +45,7 @@ const TaskItemDecision = ({
         value={value}
         onChange={handleChange}
         error={error}
-        options={options}
+        options={options.sort((a, b) => a.label.localeCompare(b.label))}
         disabled={disabled}
       />
     </DecisionBox>
