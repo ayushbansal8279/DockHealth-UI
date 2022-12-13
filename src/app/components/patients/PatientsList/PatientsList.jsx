@@ -209,13 +209,13 @@ const PatientsList = ({
     },
     {
       field: 'gender',
-      headerName: 'GENDER AT BIRTH',
+      headerName: 'SEX AT BIRTH',
       renderHeader: renderColumnHeader,
       flex: 0.5,
     },
     {
       field: 'genderIdentity',
-      headerName: 'GENDER IDENTITY',
+      headerName: 'GENDER',
       renderHeader: renderColumnHeader,
       flex: 0.5,
     },
