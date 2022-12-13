@@ -20,7 +20,7 @@ const TaskItemWorkflowStatus = ({
 }) => {
   const statusNameReference = useRef(null);
   const { name } = workflowStatus || {};
-  const searchWords = highlightedValue?.toLowerCase().split(/\s+/);
+  const searchWords = highlightedValue?.toLowerCase().split(/\s+/) || '-';
   const tooltipVisible =
     statusNameReference.current &&
     statusNameReference.current.offsetWidth <
@@ -58,9 +58,13 @@ const TaskItemWorkflowStatus = ({
                       {matchWorkflowStatus ? (
                         <Highlighter
                           highlightClassName="list-highlight"
-                          searchWords={searchWords}
+                          searchWords={
+                            matchWorkflowStatus
+                              ? searchWords
+                              : `${name}`.toLowerCase().split(/\s+/)
+                          }
                           autoEscape
-                          textToHighlight={name}
+                          textToHighlight={`${name}`}
                         />
                       ) : (
                         name

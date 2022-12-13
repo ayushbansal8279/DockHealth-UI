@@ -2,19 +2,19 @@ import React, { useRef, useCallback } from 'react';
 import TaskItemPopover from 'components/task/TaskItemPopover/TaskItemPopover';
 import TaskWorkflowStatus from 'components/task/TaskWorkflowStatus/TaskWorkflowStatus';
 import Tooltip from 'components/common/Tooltip/Tooltip';
-import Highlighter from 'react-highlight-words';
+// import Highlighter from 'react-highlight-words';
 import { AddPlaceholder, StatusName, StatusWrapper, StatusBar } from './styled';
 
 const TaskTemplateWorkflowStatus = ({
   workflow,
   onWorkflowUpdate,
-  highlightedValue,
+  // highlightedValue,
 }) => {
-  const matchWorkflowStatus = workflow?.searchMetaData?.matchPatient;
+  // const matchWorkflowStatus = workflow?.searchMetaData?.matchPatient;
   const statusNameReference = useRef(null);
   const { workflowStatus, identifier } = workflow || {};
   const { name } = workflowStatus || {};
-  const searchWords = highlightedValue?.toLowerCase().split(/\s+/);
+  // const searchWords = highlightedValue?.toLowerCase().split(/\s+/);
   const tooltipVisible =
     statusNameReference.current &&
     statusNameReference.current.offsetWidth <
@@ -49,18 +49,7 @@ const TaskTemplateWorkflowStatus = ({
           <>
             <StatusBar color={workflowStatus?.color} />
             <Tooltip title={name} placement="top" hideTooltip={!tooltipVisible}>
-              <StatusName ref={statusNameReference}>
-                {matchWorkflowStatus ? (
-                  <Highlighter
-                    highlightClassName="list-highlight"
-                    searchWords={searchWords}
-                    autoEscape
-                    textToHighlight={name}
-                  />
-                ) : (
-                  name
-                )}
-              </StatusName>
+              <StatusName ref={statusNameReference}>{name}</StatusName>
             </Tooltip>
           </>
         </StatusWrapper>
