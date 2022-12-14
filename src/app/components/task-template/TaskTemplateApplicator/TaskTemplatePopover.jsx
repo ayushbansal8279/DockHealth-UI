@@ -140,10 +140,14 @@ const TaskTemplatePopover = ({
         )}
         {!taskTemplatesIsLoading &&
           folders?.length > 0 &&
-          folders.map(folder => renderFolder(folder))}
+          folders
+            .sort((a, b) => a.name.localeCompare(b.name))
+            .map(folder => renderFolder(folder))}
         {!taskTemplatesIsLoading &&
           templates?.length > 0 &&
-          templates.map(folder => renderTemplate(folder))}
+          templates
+            .sort((a, b) => a.name.localeCompare(b.name))
+            .map(folder => renderTemplate(folder))}
         {!taskTemplatesIsLoading && taskTemplatesList?.length === 0 && (
           <EmptyLabel>There are no workflows to select from</EmptyLabel>
         )}
