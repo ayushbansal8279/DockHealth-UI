@@ -18,8 +18,9 @@ import { TaskItemType } from 'helpers/task-helpers';
 import { workflowAutofocusFieldSelector } from 'selectors/workflow-drawer-selectors';
 import { Box } from '@material-ui/core';
 import CustomFieldTextEditor from './CustomFieldTextEditor';
-import { ColorIndicator } from './styled';
+import { ColorIndicator, DescriptionError } from './styled';
 import MultiFormSelect from '../MultiSelect/MultiFormSelect';
+import CustomFieldErrorContext from './CustomFieldErrorContext';
 
 const CustomField = ({
   readOnly,
@@ -32,11 +33,28 @@ const CustomField = ({
   // eslint-disable-next-line sonarjs/cognitive-complexity
 }) => {
   const containerReference = useRef(null);
-  const { identifier, name, placeholder, fieldType, options } = field;
+  const {
+    identifier,
+    name,
+    placeholder,
+    fieldType,
+    options,
+    displayOptions,
+  } = field;
+  const isRequired = displayOptions.includes('TASK_REQUIRED');
   const inputReference = useRef(null);
   const componentReference = useRef(null);
   const { setValue, watch, setError, clearErrors } = useFormContext();
   const [wasChanged, setWasChanged] = useState(false);
+  const [descriptionErrorState, setDescriptionErrorState] = useState(false);
+
+  const errorContextValue = {
+    identifier,
+    descriptionErrorState,
+    setDescriptionErrorState,
+    isRequired,
+  };
+
   const isWorkflow =
     task &&
     (task.itemType === TaskItemType.BUNDLE ||
@@ -134,7 +152,11 @@ const CustomField = ({
             onBlur={handleBlur}
             inputRef={inputReference}
             ref={componentReference}
-            onChange={() => setWasChanged(true)}
+            onChange={event => {
+              console.log(event.target.value);
+              setWasChanged(true);
+            }}
+            required={isRequired}
           />
         );
       case FieldType.BOOL:
@@ -166,6 +188,7 @@ const CustomField = ({
             disableClearErrorOnKeyUp
             setError={setError}
             clearErrors={clearErrors}
+            required={isRequired}
           />
         );
       case FieldType.DROPDOWN: {
@@ -185,6 +208,7 @@ const CustomField = ({
               inputRef={inputReference}
               ref={componentReference}
               onChange={() => setWasChanged(true)}
+              required={isRequired}
             />
           </Box>
         );
@@ -241,9 +265,19 @@ const CustomField = ({
     task,
     taskIdentifier,
     watch,
+    isRequired,
   ]);
 
-  return <div ref={containerReference}>{renderCustomField()}</div>;
+  return (
+    <div ref={containerReference}>
+      <CustomFieldErrorContext.Provider value={errorContextValue}>
+        {renderCustomField()}
+      </CustomFieldErrorContext.Provider>
+      {descriptionErrorState && (
+        <DescriptionError>This Field is Required</DescriptionError>
+      )}
+    </div>
+  );
 };
 
 export default CustomField;

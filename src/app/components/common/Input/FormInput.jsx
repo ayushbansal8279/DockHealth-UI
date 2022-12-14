@@ -11,6 +11,7 @@ const FormInput = React.forwardRef(
       inputComponent: InputComponent = Input,
       validate,
       disableClearErrorOnKeyUp,
+      required,
       ...restProps
     },
     reference,
@@ -54,6 +55,7 @@ const FormInput = React.forwardRef(
         onChange={handleChange}
         error={error}
         errors={errors}
+        required={required}
         onKeyUp={() => (disableClearErrorOnKeyUp ? null : clearErrors(name))}
         {...restProps}
       />

@@ -1,4 +1,5 @@
 import CompleteAllTasksModal from './components/CompleteAllTasksModal/CompleteAllTasksModal';
+import CompleteAllFieldsModal from './components/ComplateAllFieldsModal/CompleteAllFieldsModal';
 import AttachmentsDuplicateModal from './components/AttachmentsDuplicateModal/AttachmentsDuplicateModal';
 import ListPickerModal from './components/ListPickerModal/ListPickerModal';
 import ArchivePatientModal from './components/ArchivePatientModal/ArchivePatientModal';
@@ -73,6 +74,7 @@ import AnchorDateChangeConfirmationModal from './components/AnchorDateChangeConf
 
 const MODAL_MAP = {
   CompleteAllTasks: CompleteAllTasksModal,
+  CompleteAllFields: CompleteAllFieldsModal,
   AttachmentsDuplicate: AttachmentsDuplicateModal,
   ListPicker: ListPickerModal,
   UnarchivePatient: UnarchivePatientModal,

@@ -101,7 +101,8 @@ const CustomFieldsSection = ({ disabled }) => {
     field => {
       const isFocused = taskDrawerFocusField === field.identifier;
       const hasValue = !!getValues('taskMetaData')?.[field.identifier];
-      const visible = isFocused || emptyVisible || hasValue;
+      const isRequired = field.displayOptions.includes('TASK_REQUIRED');
+      const visible = isFocused || emptyVisible || hasValue || isRequired;
       return (
         <HidableContainer key={field.identifier} visible={!visible}>
           <Grid item xs={12} style={styleFullRow}>
