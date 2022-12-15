@@ -69,9 +69,10 @@ const TaskItemCustomField = ({
         dispatch(updatePatientDetails(patientIdentifier, { patientMetaData }));
       }
     } else {
-      const taskMetaData = task.taskMetaData
-        ?.filter(tmd => tmd.customFieldIdentifier !== field.identifier)
-        ?.map(tmd => createMetaDataObjectToSend(tmd));
+      const taskMetaData =
+        task.taskMetaData
+          ?.filter(tmd => tmd.customFieldIdentifier !== field.identifier)
+          ?.map(tmd => createMetaDataObjectToSend(tmd)) ?? [];
       if (Array.isArray(newValue)) {
         taskMetaData.push({
           customFieldIdentifier: field.identifier,

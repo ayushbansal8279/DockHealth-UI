@@ -12,7 +12,6 @@ import { useDispatch, useSelector } from 'react-redux';
 import { isTaskSelectedSelector } from 'selectors/task-drawer-selectors';
 import { openTaskDrawerWithContent } from 'actions/task-drawer-actions';
 import {
-  openQuickAddSubtask,
   selectTask,
   storeAsCurrentTask,
   chooseTaskDecisionOutcome,
@@ -64,11 +63,9 @@ import TaskItemPatient from './TaskItemComponents/TaskItemPatient';
 import TaskItemStartDate from './TaskItemComponents/TaskItemStartDate';
 import TaskItemDueDate from './TaskItemComponents/TaskItemDueDate';
 import TaskItemDetails from './TaskItemComponents/TaskItemDetails';
-import TaskItemLongText from './customFieldsTaskItemComponents/TaskItemLongText/TaskItemLongText';
 import TaskItemCreatedDate from './TaskItemComponents/TaskItemCreatedDate';
 import TaskItemCompletedDate from './TaskItemComponents/TaskItemCompletedDate';
 import TaskItemElapsedTime from './TaskItemComponents/TaskItemElapsedTime';
-import TaskItemSubtasks from './TaskItemComponents/TaskItemSubtasks';
 import TaskItemIcons from './TaskItemComponents/TaskItemIcons';
 import TaskItemMembers from './TaskItemComponents/TaskItemMembers';
 import TaskItemList from './TaskItemComponents/TaskItemList';
@@ -100,8 +97,6 @@ const DotsContainer = ({ showDraggableDots, dragHandleProps }) => {
 };
 const TaskItem = React.memo(
   ({
-    isOpen,
-    switchOpen,
     toggleCompleteTask,
     task,
     dragHandleProps,
@@ -118,7 +113,6 @@ const TaskItem = React.memo(
     isNestedTask = false,
     subtasksDisabled,
     multipleAssigneesContext,
-    highlightTasksOfTheSameParent,
     isDashboardTask,
     openPatientPopover,
     templateBundleIdentifier,
@@ -127,6 +121,7 @@ const TaskItem = React.memo(
     pageBackground,
     newlyCreated,
     parentContainerReference,
+    patient: parentPatient,
   }) => {
     const {
       taskIdentifier,
@@ -143,9 +138,7 @@ const TaskItem = React.memo(
       parentTaskIdentifier,
       searchMetaData = {},
       parentTask,
-      subtaskQuickAddOpen,
       selected,
-      subTasksCount,
       dependencyTasksCompletedCount,
       dependencyTasksCount,
     } = task;
@@ -278,31 +271,6 @@ const TaskItem = React.memo(
         task,
         isDependencyEmptyOrCompleted,
         isDecisionSelected,
-      ],
-    );
-
-    const onSubtaskLabelClick = useCallback(
-      event => {
-        event.stopPropagation();
-        if (!subtasksDisabled) {
-          if (!isOpen) {
-            switchOpen(true);
-          } else {
-            switchOpen(!isOpen);
-          }
-        } else {
-          highlightTasksOfTheSameParent(
-            task.parentTaskIdentifier || task.taskIdentifier,
-          );
-        }
-      },
-      [
-        subtasksDisabled,
-        isOpen,
-        switchOpen,
-        highlightTasksOfTheSameParent,
-        task.parentTaskIdentifier,
-        task.taskIdentifier,
       ],
     );
 
@@ -561,7 +529,7 @@ const TaskItem = React.memo(
                       parentHasPatient={parentHasPatient}
                       hasParentTaskLabel={hasParentTaskLabel}
                       matchPatientMRN={matchPatientMRN}
-                      patient={patient || parentTask?.patient}
+                      patient={patient || parentTask?.patient || parentPatient}
                       matchPatient={matchPatient}
                       task={task}
                       openPatientPopover={openPatientPopover}
