@@ -33,6 +33,7 @@ const Select = React.forwardRef(
       value,
       placeholder,
       inputRef,
+      required,
       disabled = false,
       ...restProps
     },
@@ -44,6 +45,7 @@ const Select = React.forwardRef(
         name={name}
         label={label}
         readOnly={readOnly}
+        required={required}
         value={selectedOption?.label || ''}
         error={error}
         placeholder={placeholder}
@@ -52,7 +54,7 @@ const Select = React.forwardRef(
       />
     ) : (
       <FormControl error={error}>
-        <InputLabel shrink={!!value} variant={variant}>
+        <InputLabel shrink={!!value} variant={variant} required={required}>
           {label}
         </InputLabel>
         <MuiSelect

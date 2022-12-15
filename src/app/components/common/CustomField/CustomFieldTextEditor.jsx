@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useState, useContext } from 'react';
 import { useFormContext } from 'react-hook-form';
 import { EditorState } from 'draft-js';
 import {
@@ -17,6 +17,7 @@ import CustomTextEditor from 'components/common/CustomTextEditor/CustomTextEdito
 import TextEditor from '../TextEditor/TextEditor';
 import { CustomTextEditorContainer } from './styled';
 import { createMentionEntities } from '../TextEditor/create-mention-entities';
+import CustomFieldErrorContext from './CustomFieldErrorContext';
 
 const CustomFieldTextEditor = React.forwardRef(
   (
@@ -49,6 +50,12 @@ const CustomFieldTextEditor = React.forwardRef(
     const [updatedValue, setUpdatedValue] = useState(value);
     const [state, setState] = useMentionsEditorState(convertToEditorState());
 
+    const {
+      descriptionErrorState,
+      setDescriptionErrorState,
+      isRequired,
+    } = useContext(CustomFieldErrorContext);
+
     useEffect(() => {
       register(name);
       return () => {
@@ -67,6 +74,12 @@ const CustomFieldTextEditor = React.forwardRef(
 
     const updateCustomFields = useCallback(
       text => {
+        if (!text && isRequired) {
+          setDescriptionErrorState(true);
+          return;
+        }
+
+        setDescriptionErrorState(false);
         const values = getValues(fieldsGroupKey);
         if (text === updatedValue) return;
         values[identifier] = text;
@@ -100,15 +113,17 @@ const CustomFieldTextEditor = React.forwardRef(
         }
       },
       [
+        isRequired,
         getValues,
         fieldsGroupKey,
-        name,
         updatedValue,
         identifier,
         taskIdentifier,
+        setDescriptionErrorState,
         task,
         dispatch,
         setValue,
+        name,
       ],
     );
 
@@ -123,10 +138,11 @@ const CustomFieldTextEditor = React.forwardRef(
 
     return (
       <CustomTextEditor
-        hasError={false}
+        hasError={descriptionErrorState}
         empty={value?.length > 0}
         focused={isFocused}
         label={label}
+        required={isRequired}
         ref={reference}
       >
         <CustomTextEditorContainer>

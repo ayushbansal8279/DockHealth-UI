@@ -4,7 +4,7 @@ import { useMount, useUnmount } from 'react-use';
 import Select from './Select';
 
 const FormSelect = React.forwardRef(
-  ({ name, onChange, ...restProps }, reference) => {
+  ({ name, onChange, required, ...restProps }, reference) => {
     const {
       register,
       clearErrors,
@@ -38,6 +38,7 @@ const FormSelect = React.forwardRef(
         onChange={handleChange}
         error={error}
         ref={reference}
+        required={required}
         {...restProps}
       />
     );
