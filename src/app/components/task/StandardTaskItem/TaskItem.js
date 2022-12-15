@@ -66,6 +66,7 @@ import TaskItemDetails from './TaskItemComponents/TaskItemDetails';
 import TaskItemCreatedDate from './TaskItemComponents/TaskItemCreatedDate';
 import TaskItemCompletedDate from './TaskItemComponents/TaskItemCompletedDate';
 import TaskItemElapsedTime from './TaskItemComponents/TaskItemElapsedTime';
+import TaskItemSubtasks from './TaskItemComponents/TaskItemSubtasks';
 import TaskItemIcons from './TaskItemComponents/TaskItemIcons';
 import TaskItemMembers from './TaskItemComponents/TaskItemMembers';
 import TaskItemList from './TaskItemComponents/TaskItemList';
@@ -97,6 +98,8 @@ const DotsContainer = ({ showDraggableDots, dragHandleProps }) => {
 };
 const TaskItem = React.memo(
   ({
+    isOpen,
+    switchOpen,
     toggleCompleteTask,
     task,
     dragHandleProps,
@@ -112,6 +115,7 @@ const TaskItem = React.memo(
     showSubtaskStylingLink,
     isNestedTask = false,
     subtasksDisabled,
+    highlightTasksOfTheSameParent,
     multipleAssigneesContext,
     isDashboardTask,
     openPatientPopover,
@@ -139,7 +143,9 @@ const TaskItem = React.memo(
       parentTaskIdentifier,
       searchMetaData = {},
       parentTask,
+      subtaskQuickAddOpen,
       selected,
+      subTasksCount,
       dependencyTasksCompletedCount,
       dependencyTasksCount,
     } = task;
@@ -209,6 +215,31 @@ const TaskItem = React.memo(
     const { bulkEditEnabled } = useContext(BulkEditContext);
 
     const selectedOrganization = useSelector(selectedUserOrganizationSelector);
+
+    const onSubtaskLabelClick = useCallback(
+      event => {
+        event.stopPropagation();
+        if (!subtasksDisabled) {
+          if (!isOpen) {
+            switchOpen(true);
+          } else {
+            switchOpen(!isOpen);
+          }
+        } else {
+          highlightTasksOfTheSameParent(
+            task.parentTaskIdentifier || task.taskIdentifier,
+          );
+        }
+      },
+      [
+        subtasksDisabled,
+        isOpen,
+        switchOpen,
+        highlightTasksOfTheSameParent,
+        task.parentTaskIdentifier,
+        task.taskIdentifier,
+      ],
+    );
 
     const handleTaskItemRightClick = useCallback(
       event => {
@@ -465,7 +496,7 @@ const TaskItem = React.memo(
                       isNestedTask={isNestedTask}
                       onSubtaskLabelClick={onSubtaskLabelClick}
                       taskIdentifier={taskIdentifier}
-                      openQuickAddSubtask={openQuickAddSubtask}
+                      // openQuickAddSubtask={openQuickAddSubtask}
                       dispatch={dispatch}
                       readOnly={restrictions?.subtasks === READ_ONLY}
                     />
