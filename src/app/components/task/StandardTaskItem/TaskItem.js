@@ -64,7 +64,7 @@ import TaskItemPatient from './TaskItemComponents/TaskItemPatient';
 import TaskItemStartDate from './TaskItemComponents/TaskItemStartDate';
 import TaskItemDueDate from './TaskItemComponents/TaskItemDueDate';
 import TaskItemDetails from './TaskItemComponents/TaskItemDetails';
-import TaskItemLongText from './customFieldsTaskItemComponents/TaskItemLongText/TaskItemLongText';
+// import TaskItemLongText from './customFieldsTaskItemComponents/TaskItemLongText/TaskItemLongText';
 import TaskItemCreatedDate from './TaskItemComponents/TaskItemCreatedDate';
 import TaskItemCompletedDate from './TaskItemComponents/TaskItemCompletedDate';
 import TaskItemElapsedTime from './TaskItemComponents/TaskItemElapsedTime';
@@ -485,6 +485,21 @@ const TaskItem = React.memo(
                     setEditing={setEditingDescription}
                     isEditButtonVisible={isEditButtonVisible}
                   />
+                  {!isSubtask && (
+                    <TaskItemSubtasks
+                      isSubtask={isSubtask}
+                      subtaskQuickAddOpen={subtaskQuickAddOpen}
+                      subtasksDisabled={subtasksDisabled}
+                      subTasksCount={subTasksCount}
+                      isOpen={isOpen}
+                      isNestedTask={isNestedTask}
+                      onSubtaskLabelClick={onSubtaskLabelClick}
+                      taskIdentifier={taskIdentifier}
+                      openQuickAddSubtask={openQuickAddSubtask}
+                      dispatch={dispatch}
+                      readOnly={restrictions?.subtasks === READ_ONLY}
+                    />
+                  )}
                   <DetailsButton>Details</DetailsButton>
                   {showDecisionRow && (
                     <DecisionCellContainer
@@ -764,6 +779,7 @@ const TaskItem = React.memo(
                           identifier === TaskItemColumn.ASSIGNED,
                       )?.columnWidth
                     }
+                    // eslint-disable-next-line sonarjs/no-duplicate-string
                     justify={multipleAssigneesContext ? 'flex-start' : 'center'}
                     paddingLeft="small"
                     paddingRight="small"

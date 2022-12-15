@@ -1,9 +1,9 @@
-import React, { useCallback } from 'react';
+import React from 'react';
 import SubtaskIcon from 'img/SubtaskIcon';
 import ParentTaskIcon from 'img/ParentTaskIcon';
 import {
-  AddPlaceholder,
-  AddSubtaskButton,
+  // AddPlaceholder,
+  // AddSubtaskButton,
   SubtasksCellContentButton,
   SubtasksCellText,
 } from '../../styled';
@@ -16,25 +16,25 @@ const TaskItemSubtasks = ({
   isOpen,
   isNestedTask,
   onSubtaskLabelClick,
-  taskIdentifier,
-  openQuickAddSubtask,
-  dispatch,
-  readOnly,
+  // taskIdentifier,
+  // openQuickAddSubtask,
+  // dispatch,
+  // readOnly,
 }) => {
-  const onClickAddSubtask = useCallback(
-    () => dispatch(openQuickAddSubtask(taskIdentifier)),
-    [dispatch, openQuickAddSubtask, taskIdentifier],
-  );
+  // const onClickAddSubtask = useCallback(
+  //   () => dispatch(openQuickAddSubtask(taskIdentifier)),
+  //   [dispatch, openQuickAddSubtask, taskIdentifier],
+  // );
   return !isSubtask &&
     !subtaskQuickAddOpen &&
     !subtasksDisabled &&
     !subTasksCount ? (
     <>
-      {!readOnly && (
+      {/* {!readOnly && (
         <AddSubtaskButton type="button" onClick={onClickAddSubtask}>
           <AddPlaceholder>+ Add</AddPlaceholder>
         </AddSubtaskButton>
-      )}
+      )} */}
     </>
   ) : (
     <>

@@ -494,7 +494,7 @@ export const SubtaskStylingLastLink = styled.div`
 `;
 
 export const SubtasksCellContentButton = styled.button`
-  width: 100%;
+  width: 50px;
   display: flex;
   justify-content: center;
   align-items: center;
