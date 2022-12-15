@@ -348,7 +348,8 @@ const EditCustomFieldModal = ({
                       </>
                     )}
                   </Grid>
-                  {customField?.fieldType !== 'LONG_TEXT' &&
+                  {(customField?.fieldType !== 'LONG_TEXT' ||
+                    type === 'TASK') &&
                     ADDITIONAL_OPTIONS?.length > 0 && (
                       <Box m={2}>
                         <AdditionalOptions options={ADDITIONAL_OPTIONS} />
