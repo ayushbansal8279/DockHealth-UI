@@ -12,7 +12,6 @@ import isNil from 'ramda/src/isNil';
 import pluck from 'ramda/src/pluck';
 import { Grid } from '@material-ui/core';
 import MoreVert from '@material-ui/icons/MoreVert';
-import ArrowIcon from 'img/arrow';
 import * as TaskActions from 'actions/task-actions';
 import { checkIfAllTasksSelected } from 'helpers/bulk-edit-helpers';
 import { closeModal, openModal } from 'modal/actions';
@@ -28,7 +27,8 @@ import {
 import QuickAddTaskInput from 'components/tasklist/QuickAddTaskInput/QuickAddTaskInput';
 import listSectionSavedState from 'helpers/list-section-saved-state';
 import { extractTasksAndSubtasks } from 'helpers/tasklist-helpers';
-import { Arrow } from 'components/tasklist/DropdownListSection/styled';
+import RotatableChevron from 'components/common/RotatableChevron/RotatableChevron';
+import Spacing from 'components/common/Spacing';
 import { BulkEditContext } from 'components/tasklist/BulkEditSection/BulkEditSection';
 import GroupNameSection from 'components/tasklist/GroupNameSection/GroupNameSection';
 import ViewTypeSwitch, {
@@ -84,6 +84,7 @@ const TasksGroup = ({
   isFetchingMoreTasks,
   hasMoreTasks,
   children,
+  iconColorActive,
 }) => {
   const addingNewSubtaskParentId = useSelector(
     addingNewSubtaskParentIdSelector,
@@ -288,12 +289,14 @@ const TasksGroup = ({
               </OptionsMenu>
             </GroupOptionsContainer>
           )}
-          <Arrow
+          <Spacing horizontal={2} />
+          <RotatableChevron
             alt="arrow"
-            isOpen={isOpen}
+            rotated={!isOpen}
             onClick={onToggleGroupOpen}
-            src={ArrowIcon}
+            color={iconColorActive}
           />
+          <Spacing horizontal={3} />
           <GroupNameSectionWrapper>
             <GroupNameSection
               initialValue={groupName}
@@ -331,12 +334,14 @@ const TasksGroup = ({
                     taskListIdentifier={taskListIdentifier}
                     quickAddTask={onQuickAddTask}
                     validator={quickTaskInputValidator}
+                    iconColorActive={iconColorActive}
                   />
                 </Grid>
                 {applyTemplate && (
                   <TaskTemplateApplicator
                     onTemplateSelect={handleTemplateSelect}
                     bulkApply={false}
+                    iconColorActive={iconColorActive}
                   />
                 )}
               </Grid>

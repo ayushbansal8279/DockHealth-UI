@@ -19,7 +19,7 @@ const EmptyListContainer = styled.div`
   font-weight: ${fontWeights.bold};
 `;
 
-const BulkEditCreateTask = () => {
+const BulkEditCreateTask = iconColorActive => {
   const patientContext = useContext(PatientEditContext);
   const dispatch = useDispatch();
 
@@ -61,6 +61,7 @@ const BulkEditCreateTask = () => {
             return 'The task description is too short (min. 2 characters)';
           return null;
         }}
+        iconColorActive={iconColorActive}
       />
       <Spacing vertical={5} />
     </EmptyListContainer>

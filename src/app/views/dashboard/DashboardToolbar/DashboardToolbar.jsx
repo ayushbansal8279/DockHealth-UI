@@ -18,14 +18,11 @@ import Spacing from 'components/common/Spacing';
 import {
   HOME_ALL_TASKS_PATH,
   HOME_PATH,
-  HOME_SHARED_PATH,
+  // HOME_SHARED_PATH,
 } from 'routing/helpers/paths';
 import { DashboardTasksTab } from 'helpers/dashboard-helpers';
 import { ViewType, getViewTypeFromQueryString } from 'helpers/view-type-helper';
-import {
-  dashboardGroupsPreferencesSelector,
-  selectedUserOrganizationSelector,
-} from 'selectors/user-selectors';
+import { dashboardGroupsPreferencesSelector } from 'selectors/user-selectors';
 import TaskViewTypeToolbarSelect from 'components/tasklist/TaskViewTypeToolbarSelect/TaskViewTypeToolbarSelect';
 import CustomizeToolbarButton from 'components/tasklist/CustomizeToolbarButton/CustomizeToolbarButton';
 import { useTaskListColumnsConfig } from 'context-api/columns-config-context';
@@ -50,7 +47,7 @@ const DASHBOARD_BASE_COLUMNS_CONFIG = {
 
 const { ADMIN, OWNER, MEMBER, GUEST, EXTERNAL } = UserOrganizationRole;
 
-const DashboardToolbar = () => {
+const DashboardToolbar = ({ iconColorFilterActive, iconColorActive }) => {
   const history = useHistory();
   const { search } = useLocation();
   const viewType = getViewTypeFromQueryString(search);
@@ -69,11 +66,6 @@ const DashboardToolbar = () => {
     dashboardGroupsPreferences || [],
   );
   const sentInitialSetup = useRef(false);
-  const currentOrganization = useSelector(selectedUserOrganizationSelector);
-  const iconColorActiveItem =
-    currentOrganization?.themeSettings?.find(
-      ({ name }) => name === 'icon.color.active',
-    ) || {};
 
   useEffect(() => {
     if (
@@ -151,7 +143,7 @@ const DashboardToolbar = () => {
               isSelected={tabName === DashboardTasksTab.MY_TASKS}
             />
           </AccessRestrictor>
-          <AccessRestrictor allowedToRoles={[EXTERNAL]}>
+          {/* <AccessRestrictor allowedToRoles={[EXTERNAL]}>
             <DashboardTab
               label="Shared with me"
               setHighlightPosition={setHighlightPosition}
@@ -160,7 +152,7 @@ const DashboardToolbar = () => {
               }}
               isSelected={tabName === DashboardTasksTab.SHARED_TASKS}
             />
-          </AccessRestrictor>
+          </AccessRestrictor> */}
           <AccessRestrictor allowedToRoles={[ADMIN, OWNER, MEMBER, GUEST]}>
             <DashboardTab
               label="All Tasks"
@@ -181,7 +173,8 @@ const DashboardToolbar = () => {
             <TaskViewTypeToolbarSelect
               value={viewType}
               onChange={handleChangeViewType}
-              iconColorActive={iconColorActiveItem?.value}
+              iconColorFilterActive={iconColorFilterActive}
+              iconColorActive={iconColorActive}
             />
           </TaskViewSelectWrapper>
         )}
@@ -193,7 +186,7 @@ const DashboardToolbar = () => {
                 showCustomColumnCreate={false}
                 additionalOptionsTitle="Groups"
                 additionalOptions={additionalOptions}
-                iconColorActive={iconColorActiveItem?.value}
+                iconColorFilterActive={iconColorFilterActive}
               />
             </AccessRestrictor>
           </>

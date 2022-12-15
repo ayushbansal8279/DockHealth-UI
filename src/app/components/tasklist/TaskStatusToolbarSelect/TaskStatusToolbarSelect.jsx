@@ -15,6 +15,7 @@ const OPTIONS = [
 const TaskStatusToolbarSelect = ({
   value,
   onChange,
+  iconColorFilterActive,
   iconColorActive,
   ...restProps
 }) => {
@@ -28,9 +29,10 @@ const TaskStatusToolbarSelect = ({
         <ViewTypeImg
           src={TasksStatusSwitchIcon}
           alt="view type icon"
-          iconColorActive={iconColorActive}
+          iconColorFilterActive={iconColorFilterActive}
         />
       }
+      iconColorActive={iconColorActive}
       {...restProps}
     />
   );

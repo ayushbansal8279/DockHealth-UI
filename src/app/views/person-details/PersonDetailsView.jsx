@@ -5,7 +5,10 @@ import * as PersonDetailsActions from 'actions/person-details-actions';
 import * as TaskActions from 'actions/task-actions';
 import * as MegaFilterActions from 'actions/mega-filter-actions';
 import * as ModalActions from 'modal/actions';
-import { userProfileSelector } from 'selectors/user-selectors';
+import {
+  userProfileSelector,
+  selectedUserOrganizationSelector,
+} from 'selectors/user-selectors';
 import { onSearchChanged } from 'helpers/ga-event-helper';
 import { TaskListTabName } from 'helpers/tasklist-helpers';
 import {
@@ -39,6 +42,12 @@ const PersonDetailsView = () => {
   const [searchValue, setSearchValue] = useState('');
   const dispatch = useDispatch();
   const currentUser = useSelector(userProfileSelector);
+
+  const currentOrganization = useSelector(selectedUserOrganizationSelector);
+  const iconColorActiveItem =
+    currentOrganization?.themeSettings?.find(
+      ({ name }) => name === 'icon.active.color',
+    ) || {};
 
   useEffect(() => {
     return () => {
@@ -158,6 +167,7 @@ const PersonDetailsView = () => {
               toggleCompleteTask={toggleTaskCompletedStatus}
               onTaskUpdate={handleTaskUpdate}
               onOrderChange={handleOrderChange}
+              iconColorActive={iconColorActiveItem?.value}
             />
           ) : (
             <OpenedTasksView
@@ -168,6 +178,7 @@ const PersonDetailsView = () => {
               onTaskUpdate={handleTaskUpdate}
               updateWorkflowStatus={handleUpdateWorkflowStatus}
               onOrderChange={handleOrderChange}
+              iconColorActive={iconColorActiveItem?.value}
             />
           )}
         </TaskViewContainer>

@@ -36,6 +36,7 @@ import {
 import {
   userProfileSelector,
   userSetupClientViewSelector,
+  selectedUserOrganizationSelector,
 } from 'selectors/user-selectors';
 import TaskDrawer from 'components/task-drawer/TaskDrawer/TaskDrawer';
 import BulkEditSection from 'components/tasklist/BulkEditSection/BulkEditSection';
@@ -113,6 +114,12 @@ const PatientTasksListView = () => {
   const patient = useSelector(patientSelector);
 
   const isAllTasksView = taskListIdentifierParameter === ListViewType.ALL_TASKS;
+
+  const currentOrganization = useSelector(selectedUserOrganizationSelector);
+  const iconColorActiveItem =
+    currentOrganization?.themeSettings?.find(
+      ({ name }) => name === 'icon.active.color',
+    ) || {};
 
   const enrichedWithPatientMetaDataLists = useMemo(() => {
     if (patient?.patientMetaData) {
@@ -249,7 +256,10 @@ const PatientTasksListView = () => {
     if (areFiltersApplied) return <NoFilterResultsView />;
 
     return (
-      <EmptyListViewWithQuickAddTask quickAddTask={quickAddTask}>
+      <EmptyListViewWithQuickAddTask
+        quickAddTask={quickAddTask}
+        iconColorActive={iconColorActiveItem?.value}
+      >
         <EmptyListView
           title={`This ${customerTypeLabel} has no tasks`}
           description={`Add tasks for this ${customerTypeLabel} above.`}
@@ -316,6 +326,7 @@ const PatientTasksListView = () => {
               taskListIdentifier={activeList?.taskListIdentifier}
               taskGroupIdentifier={taskGroupIdentifier}
               onQuickAddTask={quickAddTask}
+              iconColorActive={iconColorActiveItem?.value}
             />
           </StickyContainer>
         )}
@@ -343,6 +354,7 @@ const PatientTasksListView = () => {
                 dragAndDropDisabled
                 addingNewSubtask={addingNewSubtaskParentId === task.identifier}
                 multipleAssigneesContext={groupHasMultipleAssignees}
+                iconColorActive={iconColorActiveItem?.value}
               />
             ) : (
               <TaskTemplateGroup
@@ -353,6 +365,7 @@ const PatientTasksListView = () => {
                 isFullView={isFullView}
                 groupDragAndDropDisabled
                 disablePatientAssignment
+                iconColorActive={iconColorActiveItem?.value}
               />
             ),
           )}
@@ -373,6 +386,7 @@ const PatientTasksListView = () => {
       updatePatientTaskWorkflowStatus,
       addingNewSubtaskParentId,
       viewSetup,
+      iconColorActiveItem,
     ],
   );
 

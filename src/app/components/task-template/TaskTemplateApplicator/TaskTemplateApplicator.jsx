@@ -1,7 +1,7 @@
 /* eslint-disable react-hooks/rules-of-hooks */
 import React, { useRef, useState, useCallback } from 'react';
 import { useBoolean } from 'hooks/useBoolean';
-import palette from 'styles/palette';
+// import palette from 'styles/palette';
 import Spacing from 'components/common/Spacing';
 import { RotatableHeaderChevron } from 'components/common/RotatableChevron/RotatableChevron';
 import debounce from 'lodash.debounce';
@@ -25,7 +25,11 @@ import {
 
 const { DISABLED } = TASK_LIST_RESTRICTIONS_OPTIONS;
 
-const TaskTemplateApplicator = ({ onTemplateSelect, bulkApply = false }) => {
+const TaskTemplateApplicator = ({
+  onTemplateSelect,
+  bulkApply = false,
+  iconColorActive,
+}) => {
   const popoverReference = useRef(null);
   const [isPopoverOpen, openPopover, closePopover] = useBoolean(false);
   const [searchValue, setSearchValue] = useState('');
@@ -153,7 +157,7 @@ const TaskTemplateApplicator = ({ onTemplateSelect, bulkApply = false }) => {
         <Spacing horizontal={3} />
         <RotatableHeaderChevron
           rotated={isPopoverOpen}
-          color={palette.oPlusRed}
+          color={iconColorActive}
         />
       </TaskTemplateApplicatorContainer>
       <TaskTemplatePopover

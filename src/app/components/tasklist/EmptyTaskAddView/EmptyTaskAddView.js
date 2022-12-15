@@ -4,7 +4,12 @@ import Spacing from 'components/common/Spacing';
 import QuickAddTaskInput from 'components/tasklist/QuickAddTaskInput/QuickAddTaskInput';
 import EmptyListWrapper from './styled';
 
-const EmptyTaskAddView = ({ quickAddTask, children, taskListIdentifier }) => {
+const EmptyTaskAddView = ({
+  quickAddTask,
+  children,
+  taskListIdentifier,
+  iconColorActive,
+}) => {
   return (
     <EmptyListWrapper>
       <MontserratTypography variant="h3" weight="400" color="inherit">
@@ -20,6 +25,7 @@ const EmptyTaskAddView = ({ quickAddTask, children, taskListIdentifier }) => {
 
           return null;
         }}
+        iconColorActive={iconColorActive}
       />
       {children ? (
         <>

@@ -74,9 +74,13 @@ const PatientsToolbar = ({ refreshPatientList, setImportPopoverOpen }) => {
 
   const [importPopupOpen, setImportPopupOpen] = useState(false);
 
+  const iconColorFilterActiveItem =
+    currentOrganization?.themeSettings?.find(
+      ({ name }) => name === 'icon.active.filter',
+    ) || {};
   const iconColorActiveItem =
     currentOrganization?.themeSettings?.find(
-      ({ name }) => name === 'icon.color.active',
+      ({ name }) => name === 'icon.active.color',
     ) || {};
 
   const handleSearchChange = searchTerm => {
@@ -132,6 +136,7 @@ const PatientsToolbar = ({ refreshPatientList, setImportPopoverOpen }) => {
                 name="patient-list-type"
                 onChange={onListTypeChange}
                 icon={<img src={TasksStatusSwitchIcon} alt="view type icon" />}
+                iconColorActive={iconColorActiveItem?.value}
               />
             </Box>
             <Box m={1} />
@@ -142,7 +147,7 @@ const PatientsToolbar = ({ refreshPatientList, setImportPopoverOpen }) => {
               onClear={() => dispatch(PatientsActions.clearPatientsFilters())}
             />
             <CustomizeToolbarButton
-              iconColorActive={iconColorActiveItem?.value}
+              iconColorFilterActive={iconColorFilterActiveItem?.value}
             />
           </Box>
           <Box display="flex" alignItems="center">

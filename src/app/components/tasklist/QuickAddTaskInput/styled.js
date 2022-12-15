@@ -25,7 +25,7 @@ export const AddTaskInputWrapper = styled.div`
     display: block;
     content: '+';
     transform: translateY(-50%);
-    color: ${palette.orange};
+    color: ${props => props.iconColor || palette.orange};
     font-size: ${fontSizes.regular};
   }
 

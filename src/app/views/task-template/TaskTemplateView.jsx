@@ -92,6 +92,10 @@ const TaskTemplateView = () => {
   const taskTemplates = useSelector(taskTemplatesSelector);
   const userProfile = useSelector(userProfileSelector);
   const currentOrganization = useSelector(selectedUserOrganizationSelector);
+  const iconColorActiveItem =
+    currentOrganization?.themeSettings?.find(
+      ({ name }) => name === 'icon.active.color',
+    ) || {};
 
   const folders = useMemo(
     () =>
@@ -309,6 +313,7 @@ const TaskTemplateView = () => {
                     key={template.identifier}
                     template={template}
                     isFullView={viewType === ViewType.FULL_VIEW}
+                    iconColorActive={iconColorActiveItem?.value}
                   >
                     <TaskTemplateHeader
                       createdBy={template.creator.userName}

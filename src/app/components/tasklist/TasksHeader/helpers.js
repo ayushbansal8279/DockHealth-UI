@@ -47,7 +47,8 @@ export const getTaskHeaderOptions = (
     // },
     {
       identifier: TaskHeaderColumn.PATIENT,
-      label: customerTypeLabel,
+      label:
+        customerTypeLabel.charAt(0).toUpperCase() + customerTypeLabel.slice(1),
       draggable: true,
     },
     {

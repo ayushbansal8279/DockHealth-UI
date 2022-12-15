@@ -4,7 +4,7 @@ import zIndex from 'styles/z-index';
 import { useStyles, SelectWrapper } from './styled';
 
 const ToolbarSelect = ({ options, name, value, icon, ...restProps }) => {
-  const classes = useStyles();
+  const classes = useStyles({ iconColorActive: restProps.iconColorActive });
 
   return (
     <SelectWrapper>

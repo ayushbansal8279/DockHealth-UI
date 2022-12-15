@@ -14,6 +14,7 @@ const BoardTasksList = ({
   hideAddTaskField,
   taskList,
   onAddTask,
+  iconColorActive,
 }) => {
   const handleBlur = useCallback(
     text => {
@@ -47,6 +48,7 @@ const BoardTasksList = ({
                   taskListIdentifier={taskList?.taskListIdentifier}
                   quickAddTask={onAddTask}
                   validator={quickTaskInputValidator}
+                  iconColorActive={iconColorActive}
                 />
               </Box>
             )}

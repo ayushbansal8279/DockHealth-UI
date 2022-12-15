@@ -27,6 +27,7 @@ const OPTIONS_MORE = [
 const TaskViewTypeToolbarSelect = ({
   value,
   onChange,
+  iconColorFilterActive,
   iconColorActive,
   ...restProps
 }) => {
@@ -46,9 +47,10 @@ const TaskViewTypeToolbarSelect = ({
         <ViewTypeImg
           src={ViewTypeIcon}
           alt="view type icon"
-          iconColorActive={iconColorActive}
+          iconColorFilterActive={iconColorFilterActive}
         />
       }
+      iconColorActive={iconColorActive}
       {...restProps}
     />
   );

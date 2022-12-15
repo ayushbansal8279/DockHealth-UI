@@ -12,7 +12,12 @@ import TaskTemplateApplicator from 'components/task-template/TaskTemplateApplica
 import QuickAddTaskInput from 'components/tasklist/QuickAddTaskInput/QuickAddTaskInput';
 
 const TasksToolbar = props => {
-  const { taskListIdentifier, taskGroupIdentifier, onQuickAddTask } = props;
+  const {
+    taskListIdentifier,
+    taskGroupIdentifier,
+    onQuickAddTask,
+    iconColorActive,
+  } = props;
   const quickAddTaskInputReference = useRef(null);
   const dispatch = useDispatch();
   const { patientIdentifier } = useParams();
@@ -65,9 +70,13 @@ const TasksToolbar = props => {
               quickAddTaskInputReference.current.focus();
             }, 0);
           }}
+          iconColorActive={iconColorActive}
         />
       </Grid>
-      <TaskTemplateApplicator onTemplateSelect={handleApplyTemplate} />
+      <TaskTemplateApplicator
+        onTemplateSelect={handleApplyTemplate}
+        iconColorActive={iconColorActive}
+      />
     </Grid>
   );
 };

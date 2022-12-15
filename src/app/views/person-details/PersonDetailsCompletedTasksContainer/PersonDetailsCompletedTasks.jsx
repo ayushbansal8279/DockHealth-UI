@@ -28,6 +28,7 @@ const PersonDetailsCompletedTasks = ({
   listUniqueKey,
   taskItemConfig,
   onOrderChange,
+  iconColorActive,
   // eslint-disable-next-line sonarjs/cognitive-complexity
 }) => {
   const dispatch = useDispatch();
@@ -131,6 +132,7 @@ const PersonDetailsCompletedTasks = ({
                           highlightTasksOfTheSameParent
                         }
                         dragAndDropDisabled
+                        iconColorActive={iconColorActive}
                       />
                     ))}
                   </>

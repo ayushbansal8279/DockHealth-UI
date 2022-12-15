@@ -122,6 +122,7 @@ const TaskItem = React.memo(
     newlyCreated,
     parentContainerReference,
     patient: parentPatient,
+    iconColorActive,
   }) => {
     const {
       taskIdentifier,
@@ -403,6 +404,7 @@ const TaskItem = React.memo(
                 : STANDARD_TASK_HEIGHT
             }
             isAddingTask={false}
+            iconColorActive={iconColorActive}
           >
             {randerFirstColumnCoverIfNecessary(
               <>
@@ -453,6 +455,21 @@ const TaskItem = React.memo(
                     setEditing={setEditingDescription}
                     isEditButtonVisible={isEditButtonVisible}
                   />
+                  {!isSubtask && (
+                    <TaskItemSubtasks
+                      isSubtask={isSubtask}
+                      subtaskQuickAddOpen={subtaskQuickAddOpen}
+                      subtasksDisabled={subtasksDisabled}
+                      subTasksCount={subTasksCount}
+                      isOpen={isOpen}
+                      isNestedTask={isNestedTask}
+                      onSubtaskLabelClick={onSubtaskLabelClick}
+                      taskIdentifier={taskIdentifier}
+                      openQuickAddSubtask={openQuickAddSubtask}
+                      dispatch={dispatch}
+                      readOnly={restrictions?.subtasks === READ_ONLY}
+                    />
+                  )}
                   <DetailsButton>Details</DetailsButton>
                   {showDecisionRow && (
                     <DecisionCellContainer
@@ -467,6 +484,7 @@ const TaskItem = React.memo(
                         disabled={isCompleted || !isDependencyEmptyOrCompleted}
                         error={taskDecisionError}
                         clearError={() => setTaskDecisionError(false)}
+                        iconColorActive={iconColorActive}
                       />
                     </DecisionCellContainer>
                   )}
@@ -732,6 +750,7 @@ const TaskItem = React.memo(
                           identifier === TaskItemColumn.ASSIGNED,
                       )?.columnWidth
                     }
+                    // eslint-disable-next-line sonarjs/no-duplicate-string
                     justify={multipleAssigneesContext ? 'flex-start' : 'center'}
                     paddingLeft="small"
                     paddingRight="small"
