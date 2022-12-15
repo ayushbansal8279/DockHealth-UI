@@ -13,6 +13,7 @@ import {
   isFetchingPatientsSelector,
   patientsListSearchTermSelector,
 } from 'selectors/patients-selectors';
+import { selectedUserOrganizationSelector } from 'selectors/user-selectors';
 import { PatientEditContext } from 'context-api/patient-edit-context';
 import * as PatientsActions from 'actions/patients-actions';
 import * as PatientApi from 'api/patient-api';
@@ -26,7 +27,7 @@ import { openModal, closeModal } from 'modal/actions';
 import { PatientListColumnsConfigProvider } from 'context-api/patients-columns-config-context';
 import PatientsList from './PatientsList/PatientsList';
 import PatientsToolbar from './PatientsToolbar/PatientsToolbar';
-import EmptyListViewWithQuickAddTask from './BulkEditSection/BulkEditOptionsBar/BulkEditCreateTask';
+import BulkEditCreateTask from './BulkEditSection/BulkEditOptionsBar/BulkEditCreateTask';
 import {
   PatientsViewContainer,
   PatientsListContainer,
@@ -63,6 +64,12 @@ const PatientsView = () => {
     setHasImportErrors,
     unsetHasImportErrors,
   ] = useBoolean(false);
+
+  const currentOrganization = useSelector(selectedUserOrganizationSelector);
+  const iconColorActiveItem =
+    currentOrganization?.themeSettings?.find(
+      ({ name }) => name === 'icon.active.color',
+    ) || {};
 
   useEffect(() => {
     dispatch(PatientsActions.initializePatientsListState(listIdentifier));
@@ -263,12 +270,17 @@ const PatientsView = () => {
         </ViewLayout>
         <BulkEditSection>
           <BulkEditSectionContainer>
-            {createTaskOption && <EmptyListViewWithQuickAddTask />}
+            {createTaskOption && (
+              <BulkEditCreateTask
+                iconColorActive={iconColorActiveItem?.value}
+              />
+            )}
             {createWorkflowOption && (
               <TaskTemplateApplicatorContainer>
                 <TaskTemplateApplicator
                   onTemplateSelect={handleTemplateSelect}
                   bulkApply
+                  iconColorActive={iconColorActiveItem?.value}
                 />
               </TaskTemplateApplicatorContainer>
             )}

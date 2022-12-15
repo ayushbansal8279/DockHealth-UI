@@ -65,6 +65,7 @@ const TaskTemplate = ({
   isFullView,
   children,
   highlighted = false,
+  iconColorActive,
 }) => {
   const {
     identifier,
@@ -394,6 +395,7 @@ const TaskTemplate = ({
                                   containsMultipleAssignees
                                 }
                                 noMargin
+                                iconColorActive={iconColorActive}
                               />
                             )}
                           </Draggable>
@@ -408,6 +410,7 @@ const TaskTemplate = ({
                 <QuickAddTaskInput
                   disableMentions
                   quickAddTask={handleAddTaskToTemplate}
+                  iconColorActive={iconColorActive}
                 />
               </QuickAddInputWrapper>
             </>

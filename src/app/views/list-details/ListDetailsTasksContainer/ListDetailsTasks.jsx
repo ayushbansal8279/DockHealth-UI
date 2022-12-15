@@ -31,7 +31,10 @@ import TaskTemplateGroup from 'components/task-template/TaskTemplateGroup/TaskTe
 import TasksSkeletonLoader from 'components/task/TasksSkeletonLoader/TasksSkeletonLoader';
 import { useParams } from 'react-router-dom';
 import StickyContainer from 'components/common/HorizontalScroll/StickyContainer';
-import { userProfileSelector } from 'selectors/user-selectors';
+import {
+  userProfileSelector,
+  selectedUserOrganizationSelector,
+} from 'selectors/user-selectors';
 import {
   TASK_LIST_RESTRICTIONS_OPTIONS,
   TASK_LIST_RESTRICTIONS_PROFILES,
@@ -71,6 +74,12 @@ const ListDetailsTasks = ({
     TASK_LIST_RESTRICTIONS_PROFILES[currentUser?.orgUserRole];
   const { DISABLED } = TASK_LIST_RESTRICTIONS_OPTIONS;
 
+  const currentOrganization = useSelector(selectedUserOrganizationSelector);
+  const iconColorActiveItem =
+    currentOrganization?.themeSettings?.find(
+      ({ name }) => name === 'icon.active.color',
+    ) || {};
+
   const renderEmptyState = () => {
     if (isSearchApplied) return <NoSearchResultsView />;
 
@@ -81,6 +90,7 @@ const ListDetailsTasks = ({
         <EmptyTaskAddView
           quickAddTask={quickAddTask}
           taskListIdentifier={taskListIdentifier}
+          iconColorActive={iconColorActiveItem?.value}
         >
           {taskCounters?.complete > 0 ? (
             <EmptyListView
@@ -225,6 +235,7 @@ const ListDetailsTasks = ({
               sort={sort}
               onSortChange={onSortChange}
               applyTemplate={applyTemplate}
+              iconColorActive={iconColorActiveItem?.value}
             >
               {({
                 isFetchingMoreTasks,
@@ -309,6 +320,9 @@ const ListDetailsTasks = ({
                                         highlightTasksOfTheSameParent={
                                           highlightTasksOfTheSameParent
                                         }
+                                        iconColorActive={
+                                          iconColorActiveItem?.value
+                                        }
                                       />
                                     ) : (
                                       <TaskTemplateGroup
@@ -326,6 +340,9 @@ const ListDetailsTasks = ({
                                         dragAndDropDisabled={
                                           isCompletedGroup ||
                                           dragAndDropDisabled
+                                        }
+                                        iconColorActive={
+                                          iconColorActiveItem?.value
                                         }
                                       />
                                     )}
@@ -380,6 +397,7 @@ const ListDetailsTasks = ({
       DISABLED,
       showClearSortFiltersModal,
       viewSetup,
+      iconColorActiveItem,
     ],
   );
 

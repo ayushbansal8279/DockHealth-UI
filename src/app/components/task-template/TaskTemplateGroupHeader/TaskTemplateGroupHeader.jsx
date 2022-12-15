@@ -90,6 +90,7 @@ const TaskTemplateGroupHeader = ({
   setShowIncompleteTasks,
   // isFetchingTasks,
   showTasksWithGroup = true,
+  iconColorActive,
   // eslint-disable-next-line sonarjs/cognitive-complexity
 }) => {
   const {
@@ -458,6 +459,7 @@ const TaskTemplateGroupHeader = ({
               <RotatableChevron
                 rotated={isOpen}
                 onClick={() => setOpen(!isOpen)}
+                color={iconColorActive}
               />
             )}
             {restrictions?.createTask !== DISABLED && (
@@ -489,6 +491,7 @@ const TaskTemplateGroupHeader = ({
       selected,
       setOpen,
       showTasksWithGroup,
+      iconColorActive,
     ],
   );
 

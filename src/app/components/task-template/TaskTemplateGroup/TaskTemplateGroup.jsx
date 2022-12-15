@@ -35,6 +35,7 @@ const TaskTemplateGroup = ({
   isCompletedTab = false,
   viewSetup,
   showTasksWithGroup = true,
+  iconColorActive,
   // eslint-disable-next-line sonarjs/cognitive-complexity
 }) => {
   const {
@@ -126,6 +127,7 @@ const TaskTemplateGroup = ({
         showIncompleteTasks={showIncompleteTasks}
         setShowIncompleteTasks={setShowIncompleteTasks}
         showTasksWithGroup={showTasksWithGroup}
+        iconColorActive={iconColorActive}
       />
       {!isStartedDnD && (
         <TaskTemplateGroupList timeout={150} in={isOpen && !isStartedDnD}>
@@ -190,6 +192,7 @@ const TaskTemplateGroup = ({
                                 parentTaskGroupIdentifier
                               }
                               noMargin
+                              iconColorActive={iconColorActive}
                             />
                           )}
                         </Draggable>
@@ -212,6 +215,7 @@ const TaskTemplateGroup = ({
 
                       return null;
                     }}
+                    iconColorActive={iconColorActive}
                   />
                 </QuickAddInputWrapper>
               )}

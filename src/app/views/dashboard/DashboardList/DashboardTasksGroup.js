@@ -15,7 +15,6 @@ import * as ModalActions from 'modal/actions';
 import useActions from 'hooks/use-actions';
 import { Collapse } from '@material-ui/core';
 import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd';
-import ArrowIcon from 'img/arrow';
 import { getSharedTaskListsWithCurrentUser } from 'api/task-list-api';
 import {
   DashboardGroup,
@@ -28,7 +27,6 @@ import {
   reorderDashboardTasks,
 } from 'actions/dashboard-actions';
 import { checkIfAllTasksSelected } from 'helpers/bulk-edit-helpers';
-import { Arrow } from 'components/tasklist/DropdownListSection/styled';
 import QuickAddTaskInput from 'components/tasklist/QuickAddTaskInput/QuickAddTaskInput';
 import LoadMoreButton, {
   LoadMoreSection,
@@ -39,8 +37,9 @@ import TasksHeader from 'components/tasklist/TasksHeader/TasksHeader';
 import { extractTasksAndSubtasks } from 'helpers/tasklist-helpers';
 import palette from 'styles/palette';
 import StickyContainer from 'components/common/HorizontalScroll/StickyContainer';
+import RotatableChevron from 'components/common/RotatableChevron/RotatableChevron';
+import Spacing from 'components/common/Spacing';
 import { dashboardLastCreatedTaskIdentifierSelector } from 'selectors/dashboard-selectors';
-
 import { usePrevious } from 'react-use';
 import OptionsMenu from 'components/common/OptionsMenu/OptionsMenu';
 import { MoreVert } from '@material-ui/icons';
@@ -76,6 +75,7 @@ const DashboardTasksGroup = ({
   isLastGroup,
   moveGroupUp,
   moveGroupDown,
+  iconColorActive,
 }) => {
   const {
     groupName,
@@ -255,12 +255,14 @@ const DashboardTasksGroup = ({
                 <MoreVert color="primary" />
               </OptionsMenu>
             </GroupOptionsContainer>
-            <Arrow
+            <Spacing horizontal={2} />
+            <RotatableChevron
               alt="arrow"
-              isOpen={groupIsOpen}
+              rotated={!groupIsOpen}
               onClick={onSwitchGroup}
-              src={ArrowIcon}
+              color={iconColorActive}
             />
+            <Spacing horizontal={3} />
             <GroupNameSectionWrapper>
               <DashboardTasksGroupLabel>
                 <DashboardTasksGroupLabelName>
@@ -297,6 +299,7 @@ const DashboardTasksGroup = ({
 
                       return null;
                     }}
+                    iconColorActive={iconColorActive}
                   />
                 </StickyElement>
               </StickyContainer>
@@ -383,6 +386,7 @@ const DashboardTasksGroup = ({
                                     }
                                     subtasksDisabled
                                     isDashboardTask
+                                    iconColorActive={iconColorActive}
                                   />
                                 </DashboardTaskItemContainer>
                               </div>

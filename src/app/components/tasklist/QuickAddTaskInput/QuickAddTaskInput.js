@@ -30,6 +30,7 @@ const QuickAddTaskInput = React.forwardRef(
       taskListIdentifier = null,
       disableMentions = false,
       small,
+      iconColorActive,
     },
     reference,
     // eslint-disable-next-line sonarjs/cognitive-complexity
@@ -105,7 +106,7 @@ const QuickAddTaskInput = React.forwardRef(
 
     return (
       <>
-        <AddTaskInputWrapper hasError={!!error}>
+        <AddTaskInputWrapper hasError={!!error} iconColor={iconColorActive}>
           <MentionsEditorContainer>
             <TextEditor
               ref={reference || quickAddTaskInputReference}

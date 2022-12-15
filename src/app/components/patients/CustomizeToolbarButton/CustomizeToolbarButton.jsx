@@ -36,6 +36,7 @@ const CustomizeToolbarButton = ({
   additionalOptions,
   additionalOptionsTitle = 'Display Options',
   disableButton = false,
+  iconColorFilterActive,
 }) => {
   const [open, setOpen] = useState(false);
   const [openUpgradePopup, setOpenUpgradePopup] = useState(false);
@@ -90,7 +91,13 @@ const CustomizeToolbarButton = ({
     <>
       <ToolbarButton
         ref={buttonReference}
-        icon={<CustomizeImg src={CustomizeIcon} alt="view type icon" />}
+        icon={
+          <CustomizeImg
+            src={CustomizeIcon}
+            alt="view type icon"
+            iconColorFilterActive={iconColorFilterActive}
+          />
+        }
         onClick={disableButton ? undefined : () => setOpen(!open)}
         disableButton={disableButton}
         tooltip={

@@ -127,6 +127,7 @@ const TaskItem = React.memo(
     pageBackground,
     newlyCreated,
     parentContainerReference,
+    iconColorActive,
   }) => {
     const {
       taskIdentifier,
@@ -435,6 +436,7 @@ const TaskItem = React.memo(
                 : STANDARD_TASK_HEIGHT
             }
             isAddingTask={false}
+            iconColorActive={iconColorActive}
           >
             {randerFirstColumnCoverIfNecessary(
               <>
@@ -514,6 +516,7 @@ const TaskItem = React.memo(
                         disabled={isCompleted || !isDependencyEmptyOrCompleted}
                         error={taskDecisionError}
                         clearError={() => setTaskDecisionError(false)}
+                        iconColorActive={iconColorActive}
                       />
                     </DecisionCellContainer>
                   )}

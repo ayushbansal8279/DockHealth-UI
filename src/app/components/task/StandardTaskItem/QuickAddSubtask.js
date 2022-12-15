@@ -18,6 +18,7 @@ const QuickAddSubatask = ({
   parentTaskIdentifier,
   taskListIdentifier = null,
   onFocus,
+  iconColorActive,
   // eslint-disable-next-line sonarjs/cognitive-complexity
 }) => {
   const editorReference = useRef(null);
@@ -104,7 +105,7 @@ const QuickAddSubatask = ({
   };
 
   return (
-    <StandardTaskItemContainer isAddingTask>
+    <StandardTaskItemContainer isAddingTask iconColorActive={iconColorActive}>
       <MainStandardTaskItemCell
         bolded
         position="static"

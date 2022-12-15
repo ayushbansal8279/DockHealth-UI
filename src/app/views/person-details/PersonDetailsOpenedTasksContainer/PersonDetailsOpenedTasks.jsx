@@ -45,6 +45,7 @@ const PersonDetailsOpenedTasks = ({
   onTaskUpdate,
   updateWorkflowStatus,
   onOrderChange,
+  iconColorActive,
 }) => {
   const dispatch = useDispatch();
   const userIdentifier = useSelector(userIdentifierSelector);
@@ -100,7 +101,10 @@ const PersonDetailsOpenedTasks = ({
     if (areFiltersApplied) return <NoFilterResultsView />;
 
     return (
-      <EmptyListViewWithQuickAddTask quickAddTask={handleQuickAddTask}>
+      <EmptyListViewWithQuickAddTask
+        quickAddTask={handleQuickAddTask}
+        iconColorActive={iconColorActive}
+      >
         <EmptyListView
           title="This person has no tasks"
           description="Add and automatically assign a task to this person above."
@@ -152,6 +156,7 @@ const PersonDetailsOpenedTasks = ({
                           quickAddTaskInputReference.current.focus();
                         }, 0);
                       }}
+                      iconColorActive={iconColorActive}
                     />
                   </StickyContainer>
                   <TasksHeader
@@ -179,6 +184,7 @@ const PersonDetailsOpenedTasks = ({
                       isSearchApplied={searchValue}
                       multipleAssigneesContext
                       dragAndDropDisabled
+                      iconColorActive={iconColorActive}
                     />
                   ))}
                 </>

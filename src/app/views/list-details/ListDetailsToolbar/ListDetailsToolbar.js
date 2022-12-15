@@ -43,9 +43,13 @@ const ListDetailsToolbar = ({ additionalOptions, children }) => {
   const isListAdmin = isMemberAdmin(currentUserMember);
   const viewType = getViewTypeFromQueryString(search);
   const restrictCustomizationFeatures = restrictCustomization && !isListAdmin;
+  const iconColorFilterActiveItem =
+    currentOrganization?.themeSettings?.find(
+      ({ name }) => name === 'icon.active.filter',
+    ) || {};
   const iconColorActiveItem =
     currentOrganization?.themeSettings?.find(
-      ({ name }) => name === 'icon.color.active',
+      ({ name }) => name === 'icon.active.color',
     ) || {};
 
   const handleChangeViewType = useCallback(
@@ -107,12 +111,14 @@ const ListDetailsToolbar = ({ additionalOptions, children }) => {
         <TaskStatusToolbarSelect
           value={tasksStatus}
           onChange={handleChangeTasksStatus}
+          iconColorFilterActive={iconColorFilterActiveItem?.value}
           iconColorActive={iconColorActiveItem?.value}
         />
         <Box mx={0.5} />
         <TaskViewTypeToolbarSelect
           value={viewType}
           onChange={handleChangeViewType}
+          iconColorFilterActive={iconColorFilterActiveItem?.value}
           iconColorActive={iconColorActiveItem?.value}
         />
         {viewType === ViewType.LIST_VIEW && (
@@ -122,7 +128,7 @@ const ListDetailsToolbar = ({ additionalOptions, children }) => {
               openCustomFieldModal={() => setCustomFieldsModalOpened(true)}
               additionalOptions={additionalOptions}
               disableButton={restrictCustomizationFeatures}
-              iconColorActive={iconColorActiveItem?.value}
+              iconColorFilterActive={iconColorFilterActiveItem?.value}
             />
             <Box mx={0.5} />
             <TaskCustomFieldsModal
@@ -146,7 +152,7 @@ const ListDetailsToolbar = ({ additionalOptions, children }) => {
             <CompleteTasksVisibilitySwitch
               visible={displayOptions.includes(TASKS_VISIBILITY_KEY)}
               onChange={handleTasksVisibilityChange}
-              iconColorActive={iconColorActiveItem?.value}
+              iconColorFilterActive={iconColorFilterActiveItem?.value}
             />
           )}
           <Box mx={0.5} />

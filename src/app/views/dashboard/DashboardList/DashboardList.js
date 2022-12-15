@@ -47,7 +47,10 @@ import { DashboardTasksTab } from 'helpers/dashboard-helpers';
 import { ViewType, getViewTypeFromQueryString } from 'helpers/view-type-helper';
 import GroupedListSkeletonLoader from 'components/tasklist/GroupedListSkeletonLoader/GroupedListSkeletonLoader';
 import StickyContainer from 'components/common/HorizontalScroll/StickyContainer';
-import { dashboardGroupsPreferencesSelector } from 'selectors/user-selectors';
+import {
+  dashboardGroupsPreferencesSelector,
+  selectedUserOrganizationSelector,
+} from 'selectors/user-selectors';
 import { updateCurrentUserPreferences } from 'actions/user-actions';
 import { Context } from 'components/common/HorizontalScroll/HorizontalScrollContainer';
 import DashboardTasksGroup from './DashboardTasksGroup';
@@ -90,6 +93,16 @@ const DashboardList = ({
   const { usageState } = currentUser;
   const isSortApplied = !!currentSort?.key;
   const { key: sortKey, order: sortOrder } = currentSort;
+
+  const currentOrganization = useSelector(selectedUserOrganizationSelector);
+  const iconColorFilterActiveItem =
+    currentOrganization?.themeSettings?.find(
+      ({ name }) => name === 'icon.active.filter',
+    ) || {};
+  const iconColorActiveItem =
+    currentOrganization?.themeSettings?.find(
+      ({ name }) => name === 'icon.active.color',
+    ) || {};
 
   const filteredDashboardTasks = useMemo(() => {
     return dashboardTasks?.filter(taskGroupInfo =>
@@ -312,6 +325,8 @@ const DashboardList = ({
             <DashboardToolbar
               tourModalIsOpen={tourModalIsOpen}
               openTourModal={openTourModal}
+              iconColorFilterActive={iconColorFilterActiveItem?.value}
+              iconColorActive={iconColorActiveItem?.value}
             />
           )}
         </StickyHeader>
@@ -348,6 +363,7 @@ const DashboardList = ({
                         isLastGroup={index === orderedDashboardTasks.length - 1}
                         moveGroupUp={() => moveGroupUp(item)}
                         moveGroupDown={() => moveGroupDown(item)}
+                        iconColorActive={iconColorActiveItem?.value}
                       />
                     ),
                 )

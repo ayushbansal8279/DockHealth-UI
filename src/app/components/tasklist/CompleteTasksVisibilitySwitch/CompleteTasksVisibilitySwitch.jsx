@@ -6,7 +6,7 @@ import ToolbarButton from 'components/tasklist/ToolbarButton/ToolbarButton';
 import { VisibilityImg } from './styled';
 
 const CompleteTasksVisibilitySwitch = props => {
-  const { visible, onChange, iconColorActive } = props;
+  const { visible, onChange, iconColorFilterActive } = props;
   return (
     <ToolbarButton
       color={visible ? palette.coolGrey1 : null}
@@ -14,7 +14,7 @@ const CompleteTasksVisibilitySwitch = props => {
         <VisibilityImg
           src={visible ? CompleteTasksVisibleIcon : CompleteTasksHiddenIcon}
           alt={visible ? 'complete-tasks-visible' : 'complete-tasks-hidden'}
-          iconColorActive={iconColorActive}
+          iconColorFilterActive={iconColorFilterActive}
         />
       }
       onClick={() => onChange(!visible)}

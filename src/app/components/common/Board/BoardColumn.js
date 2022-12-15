@@ -14,6 +14,7 @@ const BoardColumn = ({
   index,
   onAddTask,
   onAddWorkflow,
+  iconColorActive,
 }) => {
   const [
     isAddTaskFieldVisible,
@@ -54,6 +55,7 @@ const BoardColumn = ({
             taskList={taskList}
             onAddTask={handleAddTask}
             hideAddTaskField={hideAddTaskField}
+            iconColorActive={iconColorActive}
           />
         </BoardColumnContainer>
       )}
