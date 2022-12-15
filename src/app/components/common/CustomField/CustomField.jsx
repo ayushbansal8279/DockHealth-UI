@@ -18,7 +18,7 @@ import { TaskItemType } from 'helpers/task-helpers';
 import { workflowAutofocusFieldSelector } from 'selectors/workflow-drawer-selectors';
 import { Box } from '@material-ui/core';
 import CustomFieldTextEditor from './CustomFieldTextEditor';
-import { ColorIndicator, DescriptionError } from './styled';
+import { ColorIndicator } from './styled';
 import MultiFormSelect from '../MultiSelect/MultiFormSelect';
 import CustomFieldErrorContext from './CustomFieldErrorContext';
 
@@ -273,9 +273,6 @@ const CustomField = ({
       <CustomFieldErrorContext.Provider value={errorContextValue}>
         {renderCustomField()}
       </CustomFieldErrorContext.Provider>
-      {descriptionErrorState && (
-        <DescriptionError>This Field is Required</DescriptionError>
-      )}
     </div>
   );
 };
