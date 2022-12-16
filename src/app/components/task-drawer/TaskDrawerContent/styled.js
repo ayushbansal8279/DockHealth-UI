@@ -38,7 +38,7 @@ export const styleNoPaddingRow = {
 };
 
 export const styleFullRow = {
-  padding: '1rem 2rem',
+  padding: '0.5rem 2rem',
   height: rowHeight,
 };
 
@@ -57,16 +57,16 @@ export const styleEmailRow = {
 };
 
 export const styleCommentRow = {
-  padding: '1rem 2rem',
+  padding: '0.5rem 2rem',
 };
 
 export const styleLeftColumn = {
-  padding: '1rem 1rem 1rem 2rem',
+  padding: '0.5rem 1rem 0.5rem 2rem',
   height: rowHeight,
 };
 
 export const styleRightColumn = {
-  padding: '1rem 2rem 1rem 1rem',
+  padding: '0.5rem 2rem 0.5rem 1rem',
   height: rowHeight,
 };
 

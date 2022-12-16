@@ -9,7 +9,11 @@ import {
   SINGLE_TASK_RESTRICTIONS_PROFILES,
 } from 'restrictions/task-restrictions';
 import initializeCommentSectionHooks from './hooks';
-import { CommentSectionContainer, CommentsListContainer } from './styled';
+import {
+  CommentSectionContainer,
+  CommentsListContainer,
+  Title,
+} from './styled';
 
 const CommentSection = () => {
   const {
@@ -28,6 +32,7 @@ const CommentSection = () => {
 
   return (
     <CommentSectionContainer>
+      <Title>Comments</Title>
       {restrictions?.comments !== DISABLED && (
         <AddComment
           autoFocus={taskDrawerFocusField === DrawerFieldEnum.COMMENT}
