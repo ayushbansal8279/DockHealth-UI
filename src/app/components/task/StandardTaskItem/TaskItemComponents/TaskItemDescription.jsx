@@ -216,22 +216,22 @@ const TaskItemDescription = ({
                 </Fade>
               )}
             </Popper>
+            {isEditButtonVisible && (
+              <DescriptionEditButton active={isEditing}>
+                <IconButton
+                  onClick={event => {
+                    if (!disabled) {
+                      event.stopPropagation();
+                      event.preventDefault();
+                      setEditing(true);
+                    }
+                  }}
+                >
+                  <EditIcon />
+                </IconButton>
+              </DescriptionEditButton>
+            )}
           </DescriptionBorder>
-          {isEditButtonVisible && (
-            <DescriptionEditButton>
-              <IconButton
-                onClick={event => {
-                  if (!disabled) {
-                    event.stopPropagation();
-                    event.preventDefault();
-                    setEditing(true);
-                  }
-                }}
-              >
-                <EditIcon />
-              </IconButton>
-            </DescriptionEditButton>
-          )}
         </Description>
       </Box>
       <TaskItemDescriptionIndicators>
