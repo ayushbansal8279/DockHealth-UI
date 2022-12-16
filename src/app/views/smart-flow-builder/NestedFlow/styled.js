@@ -12,4 +12,19 @@ const NestedFlowNodeStyled = styled.div`
   color: ${palette.white};
 `;
 
+export const TaskWrapper = styled.div`
+  color: ${palette.white};
+  background-color: ${palette.cyanBlue};
+  border-radius: 4px;
+  max-width: 230px;
+`;
+
+export const TaskLinks = styled.div`
+  padding: 0 20px;
+  max-width: 230px;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+`;
+
 export default NestedFlowNodeStyled;
