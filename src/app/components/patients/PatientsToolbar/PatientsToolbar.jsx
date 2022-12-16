@@ -37,7 +37,12 @@ import { getCustomerTypeLabel } from 'helpers/customer-type-helper';
 import CustomizeToolbarButton from 'components/patients/CustomizeToolbarButton/CustomizeToolbarButton';
 import CreatePatientDrawer from '../CreatePatientDrawer/CreatePatientDrawer';
 import PatientsFilter from '../PatientsFilter/PatientsFilter';
-import { ImportButton, InputWrapper, SearchHelperText } from './styled';
+import {
+  ImportButton,
+  InputWrapper,
+  SearchHelperText,
+  PatientsListImg,
+} from './styled';
 
 const OPTIONS = [
   {
@@ -135,19 +140,25 @@ const PatientsToolbar = ({ refreshPatientList, setImportPopoverOpen }) => {
                 value={optionBasedUrl}
                 name="patient-list-type"
                 onChange={onListTypeChange}
-                icon={<img src={TasksStatusSwitchIcon} alt="view type icon" />}
+                icon={
+                  <PatientsListImg
+                    src={TasksStatusSwitchIcon}
+                    alt="list type icon"
+                    iconColorFilterActive={iconColorFilterActiveItem?.value}
+                  />
+                }
                 iconColorActive={iconColorActiveItem?.value}
               />
             </Box>
+            <CustomizeToolbarButton
+              iconColorFilterActive={iconColorFilterActiveItem?.value}
+            />
             <Box m={1} />
             <FilterButton
               ref={filterButtonReference}
               active={filtersActive}
               onClick={toggleFilter}
               onClear={() => dispatch(PatientsActions.clearPatientsFilters())}
-            />
-            <CustomizeToolbarButton
-              iconColorFilterActive={iconColorFilterActiveItem?.value}
             />
           </Box>
           <Box display="flex" alignItems="center">
