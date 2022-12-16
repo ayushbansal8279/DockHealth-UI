@@ -69,6 +69,8 @@ const PatientDetailsHeader = () => {
   const taskListRestrictions =
     TASK_LIST_RESTRICTIONS_PROFILES[currentUser?.orgUserRole];
 
+  const embeddedMode = sessionStorage.getItem('EmbeddedMode') || false;
+
   const goBack = useCallback(() => {
     if (cameFrom) {
       history.push(cameFrom);
@@ -89,13 +91,15 @@ const PatientDetailsHeader = () => {
             <Box flex="1 0 0" display="flex" alignItems="center">
               <Grid container alignItems="center">
                 <Box flexBasis={30}>
-                  <button type="button" onClick={goBack}>
-                    <img
-                      src={ArrowLeftIcon}
-                      alt="back-navigation"
-                      style={{ width: '16px' }}
-                    />
-                  </button>
+                  {!embeddedMode && (
+                    <button type="button" onClick={goBack}>
+                      <img
+                        src={ArrowLeftIcon}
+                        alt="back-navigation"
+                        style={{ width: '16px' }}
+                      />
+                    </button>
+                  )}
                 </Box>
                 <PatientName>
                   {[`${lastName},`, firstName, middleName].join(' ')}
@@ -160,7 +164,7 @@ const PatientDetailsHeader = () => {
           </Box>
           <PatientDetails>
             <PatientDetailsInformation>
-              {(age || gender || dob) && (
+              {(age || gender || dob) && !embeddedMode && (
                 <>
                   <PatientInfo>
                     {dob && `${moment(dob).format('MMM D, YYYY')} | `}

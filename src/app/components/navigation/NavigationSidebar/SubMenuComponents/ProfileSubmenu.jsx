@@ -28,6 +28,7 @@ const ProfileSubmenu = () => {
   const { name, titles, initials, bubbleColor } = userProfile || {};
 
   const whiteLabelEnabled = currentOrganization?.whiteLabelEnabled || false;
+  const embeddedMode = sessionStorage.getItem('EmbeddedMode') || false;
 
   return (
     <ProfileSubmenuContainer>
@@ -55,15 +56,19 @@ const ProfileSubmenu = () => {
               </UserInitialCircle>
             )}
             <Box m={2} />
-            <SubMenuLink to="/settings/userprofile">Profile</SubMenuLink>
+            {!embeddedMode && (
+              <SubMenuLink to="/settings/userprofile">Profile</SubMenuLink>
+            )}
             {!whiteLabelEnabled && (
               <SubMenuLink to="/settings/documents">Agreements</SubMenuLink>
             )}
             <Box m={0.5} />
             <SubmenuDivider />
             <Box m={0.5} />
-            <BlueSubMenuLink to="/auth/logout">Logout</BlueSubMenuLink>
-            <Version>version: {process.env.VERSION}</Version>
+            {!embeddedMode && (
+              <BlueSubMenuLink to="/auth/logout">Logout</BlueSubMenuLink>
+            )}
+            <Version>App Version: {process.env.VERSION || '0.0.0'}</Version>
           </>
         ) : null}
       </Grid>

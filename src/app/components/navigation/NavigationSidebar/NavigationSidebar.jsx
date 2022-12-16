@@ -111,6 +111,7 @@ const NavigationSidebar = () => {
   );
 
   const dockChatAvailable = useSelector(userHasDockChatFeatureSelector);
+  const embeddedMode = sessionStorage.getItem('EmbeddedMode') || false;
 
   const { organizationProfileColor, organizationInitials } =
     currentUser?.userOrganizations?.find(
@@ -235,46 +236,54 @@ const NavigationSidebar = () => {
                 navSelectedColor={navSelectedColorItem?.value}
               />
             </AccessRestrictor>
-            <AccessRestrictor required={[CAN_ACCESS_PEOPLE_LIST_PAGE]}>
-              <IconNavigationItem
-                name="People"
-                icon={PeopleIcon}
-                subMenuKey={SubmenuKey.USER_GROUPS}
-                subMenuOpen={openedSubMenuKey === SubmenuKey.PEOPLE}
-                path={USERS_PATH}
-                onItemClick={handleNavigationItemClick}
-                navSelectedColor={navSelectedColorItem?.value}
-              />
-            </AccessRestrictor>
-            <AccessRestrictor required={[CAN_ACCESS_MEMBER_LIST_PAGE]}>
-              <IconNavigationItem
-                name={`${customerTypeLabelCapitalized}s`}
-                icon={PatientsIcon}
-                subMenuKey={SubmenuKey.PATIENTS}
-                subMenuOpen={openedSubMenuKey === SubmenuKey.PATIENTS}
-                path="/core/patients"
-                onItemClick={handleNavigationItemClick}
-                navSelectedColor={navSelectedColorItem?.value}
-              />
-            </AccessRestrictor>
-            <AccessRestrictor required={[CAN_ACCESS_WORKFLOW_LIST_PAGE]}>
-              <IconNavigationItem
-                name="Workflow Library"
-                icon={TemplatesIcon}
-                path={WORKFLOW_LIBRARY_PATH}
-                onItemClick={handleNavigationItemClick}
-                navSelectedColor={navSelectedColorItem?.value}
-              />
-            </AccessRestrictor>
-            <AccessRestrictor required={[CAN_ACCESS_ANALYTICS_PAGE]}>
-              <IconNavigationItem
-                name="Analytics"
-                icon={BarChartIcon}
-                path="/core/analytics"
-                onItemClick={handleNavigationItemClick}
-                navSelectedColor={navSelectedColorItem?.value}
-              />
-            </AccessRestrictor>
+            {!embeddedMode && (
+              <AccessRestrictor required={[CAN_ACCESS_PEOPLE_LIST_PAGE]}>
+                <IconNavigationItem
+                  name="People"
+                  icon={PeopleIcon}
+                  subMenuKey={SubmenuKey.USER_GROUPS}
+                  subMenuOpen={openedSubMenuKey === SubmenuKey.PEOPLE}
+                  path={USERS_PATH}
+                  onItemClick={handleNavigationItemClick}
+                  navSelectedColor={navSelectedColorItem?.value}
+                />
+              </AccessRestrictor>
+            )}
+            {!embeddedMode && (
+              <AccessRestrictor required={[CAN_ACCESS_MEMBER_LIST_PAGE]}>
+                <IconNavigationItem
+                  name={`${customerTypeLabelCapitalized}s`}
+                  icon={PatientsIcon}
+                  subMenuKey={SubmenuKey.PATIENTS}
+                  subMenuOpen={openedSubMenuKey === SubmenuKey.PATIENTS}
+                  path="/core/patients"
+                  onItemClick={handleNavigationItemClick}
+                  navSelectedColor={navSelectedColorItem?.value}
+                />
+              </AccessRestrictor>
+            )}
+            {!embeddedMode && (
+              <AccessRestrictor required={[CAN_ACCESS_WORKFLOW_LIST_PAGE]}>
+                <IconNavigationItem
+                  name="Workflow Library"
+                  icon={TemplatesIcon}
+                  path={WORKFLOW_LIBRARY_PATH}
+                  onItemClick={handleNavigationItemClick}
+                  navSelectedColor={navSelectedColorItem?.value}
+                />
+              </AccessRestrictor>
+            )}
+            {!embeddedMode && (
+              <AccessRestrictor required={[CAN_ACCESS_ANALYTICS_PAGE]}>
+                <IconNavigationItem
+                  name="Analytics"
+                  icon={BarChartIcon}
+                  path="/core/analytics"
+                  onItemClick={handleNavigationItemClick}
+                  navSelectedColor={navSelectedColorItem?.value}
+                />
+              </AccessRestrictor>
+            )}
             {dockChatAvailable && (
               <AccessRestrictor required={[CAN_ACCESS_CHAT_PAGE]}>
                 <NavigationIconContainer>

@@ -86,6 +86,8 @@ const PatientDetailsView = () => {
   const patientNotesDisabled =
     currentOrganization?.disabledFeatures?.includes('PATIENT_NOTES') || false;
 
+  const embeddedMode = sessionStorage.getItem('EmbeddedMode') || false;
+
   const [tabsConfiguration, setTabsConfiguration] = useState(
     patientNotesDisabled ? DEFAULT_TABS_CONFIG : TABS_CONFIG,
   );
@@ -277,7 +279,9 @@ const PatientDetailsView = () => {
     <HorizontallyScrolledViewLayout
       header={
         <LayoutHeader>
-          <LayoutHeader.Title title={capitalize(customerTypeLabel)} />
+          <LayoutHeader.Title
+            title={embeddedMode ? '' : capitalize(customerTypeLabel)}
+          />
           <LayoutHeader.Spacer />
           <HeaderSearch
             value={searchValue}
