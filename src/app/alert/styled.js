@@ -87,8 +87,10 @@ export const ChipContainer = styled.div`
 
   & ${ChipBackground} {
     width: ${({ isOpen }) => (isOpen ? '100%' : '0')};
-    background-color: ${({ type }) =>
-      type === 'error' ? palette.oPlusRed : palette.accentYellow};
+    background-color: ${({ type, backgroundColor }) =>
+      type === 'error'
+        ? palette.oPlusRed
+        : backgroundColor || palette.accentYellow};
     transition: width ${FULL_ANIMATION_TIME}s linear,
       background-color 0s linear
         ${({ isOpen }) => (isOpen ? 0 : FULL_ANIMATION_TIME)}s;

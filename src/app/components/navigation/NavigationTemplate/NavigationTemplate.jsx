@@ -27,6 +27,10 @@ const NavigationTemplate = ({ children }) => {
     currentOrganization?.themeSettings?.find(
       ({ name }) => name === 'navigation.menu.backgroundColor',
     ) || {};
+  const globalAlertBackgroundColorItem =
+    currentOrganization?.themeSettings?.find(
+      ({ name }) => name === 'global.alert.backgroundColor',
+    ) || {};
 
   const drawerClasses = useDrawerClasses({
     isNavbarVisible,
@@ -65,7 +69,9 @@ const NavigationTemplate = ({ children }) => {
         </MaterialDrawer>
       )}
       <MainContainer>
-        <GlobalAlertChip />
+        <GlobalAlertChip
+          backgroundColor={globalAlertBackgroundColorItem?.value}
+        />
         {children}
         {intercomUser && intercomUser.name && !whiteLabelEnabled && (
           <Intercom appID={INTERCOM_APP_CODE} {...intercomUser} />
