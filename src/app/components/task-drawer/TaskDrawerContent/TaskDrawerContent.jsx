@@ -7,7 +7,10 @@ import TextEditor from 'components/common/TextEditor/TextEditor';
 import TaskDescription from 'components/task-drawer/TaskDescription/TaskDescription';
 import { DrawerFieldEnum } from 'helpers/task-drawer-helpers';
 import { useSelector } from 'react-redux';
-import { userProfileSelector } from 'selectors/user-selectors';
+import {
+  userProfileSelector,
+  selectedUserOrganizationSelector,
+} from 'selectors/user-selectors';
 import {
   SINGLE_TASK_RESTRICTIONS_PROFILES,
   SINGLE_TASK_RESTRICTIONS_OPTIONS,
@@ -115,6 +118,11 @@ const TaskDrawerContent = props => {
   }, [clearFormStates, handleCloseTaskDrawer]);
 
   const { orgUserRole } = useSelector(userProfileSelector);
+  const currentOrganization = useSelector(selectedUserOrganizationSelector);
+  const taskAttachmentsDisabled =
+    currentOrganization?.disabledFeatures?.includes('TASK_ATTACHMENTS') ||
+    false;
+
   const restrictions = SINGLE_TASK_RESTRICTIONS_PROFILES[orgUserRole];
   const taskListRestrictions = TASK_LIST_RESTRICTIONS_PROFILES[orgUserRole];
 
@@ -269,11 +277,18 @@ const TaskDrawerContent = props => {
             </div>
           </Grid>
         )}
-        <Grid item xs={12} style={styleFullRow}>
-          <AttachmentsSection
-            restrictions={restrictions?.attachments}
-            disabled={restrictions?.attachments === DISABLED}
-          />
+        {!taskAttachmentsDisabled && (
+          <Grid item xs={12} style={styleFullRow}>
+            <AttachmentsSection
+              restrictions={restrictions?.attachments}
+              disabled={restrictions?.attachments === DISABLED}
+            />
+          </Grid>
+        )}
+        <Grid item xs={12} style={styleCommentRow}>
+          <div ref={commentsSectionReference}>
+            <CommentSection />
+          </div>
         </Grid>
         {selectedTask && !isSubtask && (
           <Grid item xs={12}>
@@ -288,11 +303,6 @@ const TaskDrawerContent = props => {
               <DependenciesSection />
             </Grid>
           )}
-        <Grid item xs={12} style={styleCommentRow}>
-          <div ref={commentsSectionReference}>
-            <CommentSection />
-          </div>
-        </Grid>
         {restrictions?.customFields !== DISABLED && (
           <Grid item xs={12} style={styleNoPaddingRow}>
             <CustomFieldsSection />
