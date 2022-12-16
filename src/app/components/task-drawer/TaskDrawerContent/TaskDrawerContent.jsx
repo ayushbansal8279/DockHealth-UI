@@ -122,6 +122,8 @@ const TaskDrawerContent = props => {
   const taskAttachmentsDisabled =
     currentOrganization?.disabledFeatures?.includes('TASK_ATTACHMENTS') ||
     false;
+  const taskStartDateDisabled =
+    currentOrganization?.disabledFeatures?.includes('TASK_START_DATE') || false;
 
   const restrictions = SINGLE_TASK_RESTRICTIONS_PROFILES[orgUserRole];
   const taskListRestrictions = TASK_LIST_RESTRICTIONS_PROFILES[orgUserRole];
@@ -235,14 +237,20 @@ const TaskDrawerContent = props => {
             disabled={restrictions?.assigment === READ_ONLY}
           />
         </Grid>
-        <Grid item xs={6} style={styleLeftColumn}>
-          <div ref={dueDateSectionReference}>
-            <StartDateSection disabled={restrictions?.startDate === DISABLED} />
-          </div>
-        </Grid>
-        <Grid item xs={6} style={styleRightColumn}>
-          <div />
-        </Grid>
+        {!taskStartDateDisabled && (
+          <Grid item xs={6} style={styleLeftColumn}>
+            <div ref={dueDateSectionReference}>
+              <StartDateSection
+                disabled={restrictions?.startDate === DISABLED}
+              />
+            </div>
+          </Grid>
+        )}
+        {!taskStartDateDisabled && (
+          <Grid item xs={6} style={styleRightColumn}>
+            <div />
+          </Grid>
+        )}
         <Grid item xs={6} style={styleLeftColumn}>
           <div ref={dueDateSectionReference}>
             <DueDateSection disabled={restrictions?.dueDate === DISABLED} />
