@@ -578,6 +578,7 @@ export const DetailsButton = styled.button`
 `;
 
 export const DescriptionBorder = styled.div`
+  display: flex;
   padding: 6px 8px;
   margin: -6px 0;
   border-radius: 4px;
@@ -592,6 +593,8 @@ export const DescriptionBorder = styled.div`
 export const DescriptionEditButton = styled.div`
   margin-left: 8px;
   border-radius: 3px;
+  max-height: 18px;
+  background-color: ${({ active }) => (active ? palette.coolGrey3 : '')};
 
   &:hover {
     background-color: ${palette.coolGrey3};
