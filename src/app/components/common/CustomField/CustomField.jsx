@@ -152,10 +152,7 @@ const CustomField = ({
             onBlur={handleBlur}
             inputRef={inputReference}
             ref={componentReference}
-            onChange={event => {
-              console.log(event.target.value);
-              setWasChanged(true);
-            }}
+            onChange={() => setWasChanged(true)}
             required={isRequired}
           />
         );

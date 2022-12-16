@@ -270,6 +270,12 @@ const TaskDrawerContent = props => {
             />
           </div>
         </Grid>
+        {/* Put custom fields here */}
+        {restrictions?.customFields !== DISABLED && (
+          <Grid item xs={12} style={styleNoPaddingRow}>
+            <CustomFieldsSection fieldCategoryType="TASK_CORE" />
+          </Grid>
+        )}
         {restrictions?.labels !== DISABLED && (
           <Grid item xs={12} style={styleFullRow}>
             <div ref={labelsSectionReference}>
@@ -305,7 +311,7 @@ const TaskDrawerContent = props => {
           )}
         {restrictions?.customFields !== DISABLED && (
           <Grid item xs={12} style={styleNoPaddingRow}>
-            <CustomFieldsSection />
+            <CustomFieldsSection fieldCategoryType="TASK_OTHER" />
           </Grid>
         )}
       </Grid>
