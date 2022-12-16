@@ -28,7 +28,10 @@ import {
   patientTasksSortSelector,
   patientSelector,
 } from 'selectors/patient-details-selectors';
-import { addingNewSubtaskParentIdSelector } from 'selectors/task-drawer-selectors';
+import {
+  addingNewSubtaskParentIdSelector,
+  taskCustomFieldsSelector,
+} from 'selectors/task-drawer-selectors';
 import {
   hasFiltersAppliedSelector,
   selectedFiltersInMegaFilterSelector,
@@ -51,6 +54,7 @@ import {
   TaskItemColumn,
   TaskItemType,
   TASK_ITEM_BASE_COLUMN_CONFIG,
+  findIncompleteRequiredFields,
 } from 'helpers/task-helpers';
 import { getCustomerTypeLabel } from 'helpers/customer-type-helper';
 import { checkIfAllTasksSelected } from 'helpers/bulk-edit-helpers';
@@ -115,6 +119,7 @@ const PatientTasksListView = () => {
 
   const isAllTasksView = taskListIdentifierParameter === ListViewType.ALL_TASKS;
 
+  const { templates } = useSelector(taskCustomFieldsSelector);
   const currentOrganization = useSelector(selectedUserOrganizationSelector);
   const iconColorActiveItem =
     currentOrganization?.themeSettings?.find(
@@ -270,6 +275,20 @@ const PatientTasksListView = () => {
 
   const handleToggleTaskStatus = useCallback(
     task => {
+      const incompleteRequiredFields = findIncompleteRequiredFields(
+        templates,
+        task,
+      );
+      const isRequiredFieldsAreIncomplete = incompleteRequiredFields.length > 0;
+
+      if (isRequiredFieldsAreIncomplete) {
+        const modalProps = {
+          incompleteFields: incompleteRequiredFields,
+        };
+        dispatch(openModal('CompleteAllFields', modalProps));
+        return;
+      }
+
       const hasIncompletedSubtasks = task.subtasks.find(
         subtask => subtask.status === 'INCOMPLETE',
       );
@@ -285,7 +304,7 @@ const PatientTasksListView = () => {
         togglePatientTaskStatus(task);
       }
     },
-    [dispatch, togglePatientTaskStatus],
+    [dispatch, templates, togglePatientTaskStatus],
   );
 
   const groupedTasks = useMemo(() => {

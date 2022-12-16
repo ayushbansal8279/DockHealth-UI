@@ -424,3 +424,21 @@ export const EmrNoteTypeOptions = {
   PROCEDURE_NOTE: 'Procedure note',
   PROGRESS_NOTE: 'Progress note',
 };
+
+export function findIncompleteRequiredFields(customFields, task) {
+  return customFields?.filter(field => {
+    const { taskMetaData } = task;
+    const { identifier: taskFieldIdentifier } = field;
+    const matchingMetaData = taskMetaData.find(
+      ({ customFieldIdentifier }) =>
+        customFieldIdentifier === taskFieldIdentifier,
+    );
+    return (
+      field.displayOptions.includes('TASK_REQUIRED') &&
+      (matchingMetaData === undefined ||
+        matchingMetaData?.length === 0 ||
+        matchingMetaData?.value === undefined ||
+        matchingMetaData?.value === '')
+    );
+  });
+}

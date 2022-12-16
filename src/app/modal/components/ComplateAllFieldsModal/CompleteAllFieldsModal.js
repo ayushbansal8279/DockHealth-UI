@@ -28,14 +28,15 @@ const CompleteAllFieldsModal = ({ closeModal, incompleteFields }) => {
         <ModalIconContainer>
           <ModalMainIcon src={CircleCompletedGrey} alt="completed" />
           <Typography color="textSecondary" variant="h2">
-            A Field IS INCOMPLETE
+            A Required Field IS INCOMPLETE
           </Typography>
         </ModalIconContainer>
         <ModalDescriptionContainer>
           <Typography variant="body1">
-            You’re about to complete a primary task which has a required fields
-            that are incomplete. {`\n${formattedIncompleteFields}`}
+            You’re about to complete a task which has required fields that are
+            incomplete.
           </Typography>
+          <Typography variant="h6">{`${formattedIncompleteFields}`}</Typography>
         </ModalDescriptionContainer>
         <ButtonsContainer>
           <FlexButtonWrapper>
@@ -45,7 +46,7 @@ const CompleteAllFieldsModal = ({ closeModal, incompleteFields }) => {
               size="small"
               onClick={closeModal}
             >
-              Do not complete
+              OK
             </Button>
           </FlexButtonWrapper>
           <Spacing horizontal={4} />

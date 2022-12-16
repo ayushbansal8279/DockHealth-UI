@@ -1,12 +1,13 @@
 import React, { useCallback } from 'react';
 import { bindActionCreators } from 'redux';
-import { connect } from 'react-redux';
+import { connect, useSelector } from 'react-redux';
 import * as TaskActions from 'actions/task-actions';
 import * as ModalActions from 'modal/actions';
 import * as AlertActions from 'alert/actions';
 import AlertMessages from 'alert/AlertMessages';
 import { userProfileSelector } from 'selectors/user-selectors';
-
+import { taskCustomFieldsSelector } from 'selectors/task-drawer-selectors';
+import { findIncompleteRequiredFields } from 'helpers/task-helpers';
 import StandardTaskItem from '../StandardTaskItem/StandardTaskItem';
 
 const StandardTaskItemContainer = ({
@@ -19,6 +20,7 @@ const StandardTaskItemContainer = ({
   isBundleTask,
   ...restProps
 }) => {
+  const { templates } = useSelector(taskCustomFieldsSelector);
   const handleTaskUpdate = useCallback(
     (taskIdentifier, dataToUpdate) => {
       taskActions
@@ -72,6 +74,20 @@ const StandardTaskItemContainer = ({
 
   const handleToggleTaskCompletedStatus = useCallback(
     task => {
+      const incompleteRequiredFields = findIncompleteRequiredFields(
+        templates,
+        task,
+      );
+      const isRequiredFieldsAreIncomplete = incompleteRequiredFields.length > 0;
+
+      if (isRequiredFieldsAreIncomplete) {
+        const modalProps = {
+          incompleteFields: incompleteRequiredFields,
+        };
+        modalActions.openModal('CompleteAllFields', modalProps);
+        return;
+      }
+
       const hasIncompletedSubtasks =
         task.subtasks?.length > 0
           ? task.subtasks.find(subtask => subtask.status === 'INCOMPLETE')
@@ -89,7 +105,7 @@ const StandardTaskItemContainer = ({
         toggleCompleteTaskStatus(task);
       }
     },
-    [modalActions, toggleCompleteTaskStatus],
+    [modalActions, templates, toggleCompleteTaskStatus],
   );
 
   return (

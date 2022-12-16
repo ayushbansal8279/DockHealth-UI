@@ -30,6 +30,8 @@ import {
   taskListMembersSelector,
   archivedTaskListsSelector,
 } from 'selectors/task-list-selectors';
+import { taskCustomFieldsSelector } from 'selectors/task-drawer-selectors';
+import { findIncompleteRequiredFields } from 'helpers/task-helpers';
 import { userProfileSelector } from 'selectors/user-selectors';
 import { selectedFiltersInMegaFilterSelector } from 'selectors/mega-filter-selectors';
 import { useTaskListColumnsConfig } from 'context-api/columns-config-context';
@@ -81,6 +83,7 @@ const initializeListDetailsViewHooks = () => {
 
   const dispatch = useDispatch();
   const { taskListIdentifier: taskListIdentifierParam, tabName } = params;
+  const { templates } = useSelector(taskCustomFieldsSelector);
 
   useEffect(() => {
     if (currentTaskListIdentifier)
@@ -259,6 +262,20 @@ const initializeListDetailsViewHooks = () => {
 
   const toggleTaskCompletedStatus = useCallback(
     task => {
+      const incompleteRequiredFields = findIncompleteRequiredFields(
+        templates,
+        task,
+      );
+      const isRequiredFieldsAreIncomplete = incompleteRequiredFields.length > 0;
+
+      if (isRequiredFieldsAreIncomplete) {
+        const modalProps = {
+          incompleteFields: incompleteRequiredFields,
+        };
+        modalActions.openModal('CompleteAllFields', modalProps);
+        return;
+      }
+
       const hasIncompletedSubtasks =
         task.subtasks?.length > 0
           ? task.subtasks.find(subtask => subtask.status === 'INCOMPLETE')
@@ -276,7 +293,7 @@ const initializeListDetailsViewHooks = () => {
         invokeToggleCompleteAction(task);
       }
     },
-    [invokeToggleCompleteAction, modalActions],
+    [invokeToggleCompleteAction, modalActions, templates],
   );
 
   useEffect(() => {

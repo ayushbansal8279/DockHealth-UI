@@ -15,8 +15,10 @@ import {
   TaskItemColumn,
   TaskStatus,
   TASK_ITEM_BASE_COLUMN_CONFIG,
+  findIncompleteRequiredFields,
 } from 'helpers/task-helpers';
 import TaskDrawer from 'components/task-drawer/TaskDrawer/TaskDrawer';
+import { taskCustomFieldsSelector } from 'selectors/task-drawer-selectors';
 import LayoutHeader from 'components/template/LayoutHeader/LayoutHeader';
 import { updateCurrentUserPreferences } from 'actions/user-actions';
 import HeaderSearch from 'components/template/HeaderSearch/HeaderSearch';
@@ -43,6 +45,7 @@ const PersonDetailsView = () => {
   const dispatch = useDispatch();
   const currentUser = useSelector(userProfileSelector);
 
+  const { templates } = useSelector(taskCustomFieldsSelector);
   const currentOrganization = useSelector(selectedUserOrganizationSelector);
   const iconColorActiveItem =
     currentOrganization?.themeSettings?.find(
@@ -95,6 +98,20 @@ const PersonDetailsView = () => {
   };
 
   const toggleTaskCompletedStatus = task => {
+    const incompleteRequiredFields = findIncompleteRequiredFields(
+      templates,
+      task,
+    );
+    const isRequiredFieldsAreIncomplete = incompleteRequiredFields.length > 0;
+
+    if (isRequiredFieldsAreIncomplete) {
+      const modalProps = {
+        incompleteFields: incompleteRequiredFields,
+      };
+      dispatch(ModalActions.openModal('CompleteAllFields', modalProps));
+      return;
+    }
+
     const hasIncompletedSubtasks = task.subtasks.find(
       subtask => subtask.status === 'INCOMPLETE',
     );

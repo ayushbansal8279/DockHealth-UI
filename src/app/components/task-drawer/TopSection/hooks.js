@@ -2,7 +2,10 @@
 import { useCallback } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { openModal, closeModal } from 'modal/actions';
-import { checkIfTemplateTask } from 'helpers/task-helpers';
+import {
+  checkIfTemplateTask,
+  findIncompleteRequiredFields,
+} from 'helpers/task-helpers';
 import { userProfileSelector } from 'selectors/user-selectors';
 import {
   selectedTaskSelector,
@@ -22,8 +25,8 @@ const initializeTaskDrawerTopSectionHooks = ({
   const dispatch = useDispatch();
   const selectedTask = useSelector(selectedTaskSelector);
   const templateBundleIdentifier = selectedTask?.templateBundleIdentifier;
-  const currentUser = useSelector(userProfileSelector);
   const { templates } = useSelector(taskCustomFieldsSelector);
+  const currentUser = useSelector(userProfileSelector);
   const isTemplateTask = checkIfTemplateTask(selectedTask);
   const isDecisionTask = selectedTask?.intentType === 'DECISION';
   const isDecisionSelected = selectedTask?.taskOutcomes?.reduce(
@@ -139,23 +142,11 @@ const initializeTaskDrawerTopSectionHooks = ({
   const onCompleteToggle = useCallback(
     // eslint-disable-next-line sonarjs/cognitive-complexity
     event => {
-      const incompleteRequiredFields = templates.filter(field => {
-        const { taskMetaData } = selectedTask;
-        const { identifier: taskFieldIdentifier } = field;
-        const matchingMetaData = taskMetaData.find(
-          ({ customFieldIdentifier, value }) => {
-            return (
-              customFieldIdentifier === taskFieldIdentifier && /\s/g.test(value)
-            );
-          },
-        );
-        return (
-          field.displayOptions.includes('TASK_REQUIRED') &&
-          (matchingMetaData === undefined || matchingMetaData?.length === 0)
-        );
-      });
-
-      const isRequiredFieldsIncomplete = incompleteRequiredFields.length > 0;
+      const incompleteRequiredFields = findIncompleteRequiredFields(
+        templates,
+        selectedTask,
+      );
+      const isRequiredFieldsAreIncomplete = incompleteRequiredFields.length > 0;
 
       if (!isTaskStatusTogglingDisabled && isDependencyEmptyOrCompleted) {
         const hasIncompletedSubtasks =
@@ -171,15 +162,15 @@ const initializeTaskDrawerTopSectionHooks = ({
           isBundleTask = true;
         }
 
-        if (isRequiredFieldsIncomplete) {
+        if (isRequiredFieldsAreIncomplete) {
           const modalProps = {
             incompleteFields: incompleteRequiredFields,
           };
           dispatch(openModal('CompleteAllFields', modalProps));
-        } else if (
-          selectedTask.status === 'INCOMPLETE' &&
-          hasIncompletedSubtasks
-        ) {
+          return;
+        }
+
+        if (selectedTask.status === 'INCOMPLETE' && hasIncompletedSubtasks) {
           const modalProps = {
             confirm: () => {
               dispatch(closeModal());
