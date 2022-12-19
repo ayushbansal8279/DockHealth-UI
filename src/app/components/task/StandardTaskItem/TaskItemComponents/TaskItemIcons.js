@@ -42,7 +42,7 @@ const TaskItemIcons = ({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [task]);
   return (
-    <Grid container>
+    <Grid container wrap="nowrap">
       {comments ? (
         <GridImg item xs={12} matched={matchComments}>
           <Tooltip
