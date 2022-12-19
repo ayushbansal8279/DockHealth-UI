@@ -528,7 +528,7 @@ const TaskTemplateGroupHeader = ({
             >
               <TaskTemplateProgressCircle>
                 <ProgressBar
-                  width={80}
+                  width={40}
                   progress={
                     (completedTasksAmountFinal / allTasksAmountFinal) * 100
                   }
