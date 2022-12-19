@@ -4,8 +4,8 @@ export const Category = {
 };
 
 export const CategoryLabel = {
-  [Category.TASK_OTHER]: 'Task Other',
-  [Category.TASK_CORE]: 'Task Core',
+  [Category.TASK_CORE]: 'Core',
+  [Category.TASK_OTHER]: 'Other Info',
 };
 
 export const CATEGORY_OPTIONS = [

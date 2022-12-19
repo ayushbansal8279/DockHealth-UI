@@ -11,6 +11,7 @@ import EditIcon from '@material-ui/icons/Edit';
 import { showGlobalErrorAlert } from 'alert/actions';
 import * as CustomFieldsApi from 'api/custom-fields-api';
 import { FieldTypeLabel } from 'helpers/field-type-helpers';
+import { CategoryLabel } from 'helpers/task-details-helpers';
 import { openModal } from 'modal/actions';
 import AddButton from 'components/common/AddButton/AddButton';
 import {
@@ -185,6 +186,12 @@ const TaskCustomFieldsView = ({ taskListIdentifier, editable = false }) => {
                   <CustomFieldHeaderText>Field type</CustomFieldHeaderText>
                 </CustomFieldCell>
                 <CustomFieldCell>
+                  <CustomFieldHeaderText>Field category</CustomFieldHeaderText>
+                </CustomFieldCell>
+                <CustomFieldCell>
+                  <CustomFieldHeaderText>Required</CustomFieldHeaderText>
+                </CustomFieldCell>
+                <CustomFieldCell>
                   <Box width="68px" />
                 </CustomFieldCell>
               </CustomFieldItem>
@@ -214,6 +221,19 @@ const TaskCustomFieldsView = ({ taskListIdentifier, editable = false }) => {
                             <CustomFieldCell>
                               <CustomFieldText>
                                 {FieldTypeLabel[field.fieldType]}
+                              </CustomFieldText>
+                            </CustomFieldCell>
+                            <CustomFieldCell>
+                              <CustomFieldText>
+                                {CategoryLabel[field.fieldCategoryType]}
+                              </CustomFieldText>
+                            </CustomFieldCell>
+                            <CustomFieldCell>
+                              <CustomFieldText>
+                                {field.displayOptions &&
+                                field.displayOptions?.includes('TASK_REQUIRED')
+                                  ? 'Yes'
+                                  : ''}
                               </CustomFieldText>
                             </CustomFieldCell>
                             {editable && (

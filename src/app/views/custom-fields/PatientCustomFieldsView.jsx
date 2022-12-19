@@ -174,6 +174,14 @@ const PatientCustomFieldsView = () => {
                   <CustomFieldHeaderText>Field category</CustomFieldHeaderText>
                 </CustomFieldCell>
                 <CustomFieldCell>
+                  <CustomFieldHeaderText>Show on Header</CustomFieldHeaderText>
+                </CustomFieldCell>
+                <CustomFieldCell>
+                  <CustomFieldHeaderText>
+                    Include in Search
+                  </CustomFieldHeaderText>
+                </CustomFieldCell>
+                <CustomFieldCell>
                   <Box width="68px" />
                 </CustomFieldCell>
               </CustomFieldItem>
@@ -208,6 +216,26 @@ const PatientCustomFieldsView = () => {
                               <CustomFieldCell>
                                 <CustomFieldText>
                                   {CategoryLabel[field.fieldCategoryType]}
+                                </CustomFieldText>
+                              </CustomFieldCell>
+                              <CustomFieldCell>
+                                <CustomFieldText>
+                                  {field.displayOptions &&
+                                  field.displayOptions?.includes(
+                                    'PATIENT_HEADER',
+                                  )
+                                    ? 'Yes'
+                                    : ''}
+                                </CustomFieldText>
+                              </CustomFieldCell>
+                              <CustomFieldCell>
+                                <CustomFieldText>
+                                  {field.displayOptions &&
+                                  field.displayOptions?.includes(
+                                    'PATIENT_SEARCH',
+                                  )
+                                    ? 'Yes'
+                                    : ''}
                                 </CustomFieldText>
                               </CustomFieldCell>
                               <CustomFieldCell>
