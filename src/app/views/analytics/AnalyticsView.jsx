@@ -130,28 +130,30 @@ const AnalyticsView = () => {
   return (
     <ViewLayout header={<BasicLayoutHeader title="Analytics" />}>
       <Container>
-        <MegaFilter
-          filters={filters}
-          selectedFilters={selectedFilters}
-          onSelectFilters={compose(
-            dispatch,
-            AnalyticsActions.setAnalyticsSelectedFilters,
-          )}
-          onOpen={handleMegaFilterOpen}
-          isFetching={isFetchingFilters}
-          quickFiltersList={quickFiltersList}
-          addQuickFilterOption={addQuickFilterOption}
-          selectedQuickFilter={selectedQuickFilter}
-          selectQuickFilter={handleSelectQuickFilter}
-          onSaveClick={handleSaveQuickFilter}
-          onSaveAsNewClick={handleSaveAsQuickFilter}
-          wasChangedFilters={wasChangedFilters}
-          onQuickFilterCreate={handleQuickFilterCreate}
-          onQuickFilterUpdate={handleQuickFilterUpdate}
-          onQuickFilterDelete={handleQuickFilterDelete}
-          onSelectedFiltersChange={handleSelectedFiltersChange}
-          onClear={() => dispatch(AnalyticsActions.clearAnalyticsFilter())}
-        />
+        <div style={{ width: '150px' }}>
+          <MegaFilter
+            filters={filters}
+            selectedFilters={selectedFilters}
+            onSelectFilters={compose(
+              dispatch,
+              AnalyticsActions.setAnalyticsSelectedFilters,
+            )}
+            onOpen={handleMegaFilterOpen}
+            isFetching={isFetchingFilters}
+            quickFiltersList={quickFiltersList}
+            addQuickFilterOption={addQuickFilterOption}
+            selectedQuickFilter={selectedQuickFilter}
+            selectQuickFilter={handleSelectQuickFilter}
+            onSaveClick={handleSaveQuickFilter}
+            onSaveAsNewClick={handleSaveAsQuickFilter}
+            wasChangedFilters={wasChangedFilters}
+            onQuickFilterCreate={handleQuickFilterCreate}
+            onQuickFilterUpdate={handleQuickFilterUpdate}
+            onQuickFilterDelete={handleQuickFilterDelete}
+            onSelectedFiltersChange={handleSelectedFiltersChange}
+            onClear={() => dispatch(AnalyticsActions.clearAnalyticsFilter())}
+          />
+        </div>
         <Box p={1} />
         <span>
           By default (no filter) stats below are displayed for tasks created in
