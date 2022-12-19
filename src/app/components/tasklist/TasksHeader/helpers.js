@@ -132,7 +132,7 @@ export const getTaskHeaderOptions = (
   ];
 
   const foundHeaderColumn = predefinedHeaderColumns.find(
-    c => c.identifier === column.identifier,
+    c => c.identifier === column?.identifier,
   );
 
   return { ...foundHeaderColumn, ...column };
