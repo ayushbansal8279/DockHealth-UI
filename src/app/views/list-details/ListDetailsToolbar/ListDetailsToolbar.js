@@ -3,7 +3,7 @@ import uniq from 'ramda/src/uniq';
 import TaskViewTypeToolbarSelect from 'components/tasklist/TaskViewTypeToolbarSelect/TaskViewTypeToolbarSelect';
 import { Box } from '@material-ui/core';
 import TaskStatusToolbarSelect from 'components/tasklist/TaskStatusToolbarSelect/TaskStatusToolbarSelect';
-import CompleteTasksVisibilitySwitch from 'components/tasklist/CompleteTasksVisibilitySwitch/CompleteTasksVisibilitySwitch';
+// import CompleteTasksVisibilitySwitch from 'components/tasklist/CompleteTasksVisibilitySwitch/CompleteTasksVisibilitySwitch';
 import InboxTips from 'components/tasklist/InboxTips/InboxTips';
 import { ViewType, getViewTypeFromQueryString } from 'helpers/view-type-helper';
 import { useLocation, useHistory } from 'react-router-dom';
@@ -148,13 +148,13 @@ const ListDetailsToolbar = ({ additionalOptions, children }) => {
       </Box>
       {viewType === ViewType.LIST_VIEW && (
         <Box display="flex" flex={1} justifyContent="flex-end">
-          {tasksStatus === TaskStatus.INCOMPLETE && (
+          {/* {tasksStatus === TaskStatus.INCOMPLETE && (
             <CompleteTasksVisibilitySwitch
               visible={displayOptions.includes(TASKS_VISIBILITY_KEY)}
               onChange={handleTasksVisibilityChange}
               iconColorFilterActive={iconColorFilterActiveItem?.value}
             />
-          )}
+          )} */}
           <Box mx={0.5} />
         </Box>
       )}
