@@ -8,7 +8,10 @@ const TaskItemElapsedTime = ({ task }) => {
   const DATE_ISO_FORMAT = 'YYYY-MM-DD';
 
   const elapsedTime = useMemo(() => {
-    const createdDate = moment(createdDateTime, DATE_ISO_FORMAT);
+    if (!createdDateTime) {
+      return '';
+    }
+    const createdDate = moment(createdDateTime);
     let endDate = moment();
     if (completedDate) {
       endDate = moment(completedDate, DATE_ISO_FORMAT);
@@ -16,6 +19,10 @@ const TaskItemElapsedTime = ({ task }) => {
     const days = endDate.diff(createdDate, 'days');
     if (days <= 0) {
       const hours = endDate.diff(createdDate, 'hours');
+      if (hours <= 0) {
+        const minutes = endDate.diff(createdDate, 'minutes');
+        return `${minutes} min`;
+      }
       return `${hours} hr`;
     }
     return `${days} d`;

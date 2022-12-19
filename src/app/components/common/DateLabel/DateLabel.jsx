@@ -12,23 +12,37 @@ const DateLabel = props => {
     hasReminder,
     hasRecurringSchedule,
     format = 'MM/DD',
+    showTime = false,
+    timeFormat = 'HH:mm',
   } = props;
   return (
-    <DueDateBasicLabel isOverdue={isOverdue}>
-      <DateText>{moment(date).format(format)}</DateText>
-      {hasReminder && (
+    <>
+      <DueDateBasicLabel isOverdue={isOverdue}>
+        <DateText>{moment(date).format(format)}</DateText>
+        {hasReminder && (
+          <>
+            <Spacing horizontal={2} />
+            <ReminderIcon />
+          </>
+        )}
+        {hasRecurringSchedule && (
+          <>
+            <Spacing horizontal={2} />
+            <RecurringIcon />
+          </>
+        )}
+      </DueDateBasicLabel>
+      {showTime && (
         <>
-          <Spacing horizontal={2} />
-          <ReminderIcon />
+          <Spacing horizontal={1} />
+          <DueDateBasicLabel isOverdue={isOverdue}>
+            <>
+              <DateText>{moment(date).format(timeFormat)}</DateText>
+            </>
+          </DueDateBasicLabel>
         </>
       )}
-      {hasRecurringSchedule && (
-        <>
-          <Spacing horizontal={2} />
-          <RecurringIcon />
-        </>
-      )}
-    </DueDateBasicLabel>
+    </>
   );
 };
 
