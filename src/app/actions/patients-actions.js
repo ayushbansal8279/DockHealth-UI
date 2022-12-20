@@ -114,3 +114,12 @@ export function patientBulkDeletePatient(payload) {
     payload,
   };
 }
+
+export const updateListPreferences = (
+  setup,
+  patientListIdentifier,
+  currentUserIdentifier,
+) => ({
+  type: ActionTypes.UPDATE_PATIENTS_LIST_PREFERENCES,
+  payload: { setup, patientListIdentifier, currentUserIdentifier },
+});

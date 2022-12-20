@@ -13,6 +13,7 @@ import {
 import Checkbox from 'components/common/Checkbox/Checkbox';
 import { usePatientListColumnsConfig } from 'context-api/patients-columns-config-context';
 import { PatientColumn } from 'helpers/patient-list-helpers';
+import { patientsListSelector } from 'selectors/patients-selectors';
 import PatientImportPopover from '../PatientImportPopover/PatientImportPopover';
 import TaskItemBulkEdit from '../../task/StandardTaskItem/TaskItemComponents/TaskItemBulkEdit';
 import EmptyFilteredPatientsList from '../EmptyFilteredPatientsList/EmptyFilteredPatientsList';
@@ -67,6 +68,8 @@ const PatientsList = ({
     selectedPatientsCount &&
     patientsCount === selectedPatientsCount;
 
+  const patientsList = useSelector(patientsListSelector);
+
   const setSelectedPatient = useCallback(
     data => {
       dispatch({
@@ -94,7 +97,14 @@ const PatientsList = ({
     };
   }, [dispatch]);
 
-  const { columns: columnsData } = usePatientListColumnsConfig();
+  const {
+    columns: columnsData,
+    setCurrentPatientList,
+  } = usePatientListColumnsConfig();
+
+  useEffect(() => {
+    setCurrentPatientList(patientsList?.listDetails);
+  }, [setCurrentPatientList, patientsList]);
 
   const columns = [
     {
@@ -242,10 +252,23 @@ const PatientsList = ({
         })),
     );
 
-  const formattedPatients = patients?.map(patient => ({
-    id: patient?.patientIdentifier || patient?.id || patient?.mrn,
-    ...patient,
-  }));
+  const formattedPatients = patients?.map(patient => {
+    const metaData = patient.patientMetaData?.map(pmd => {
+      return {
+        key: pmd.customFieldIdentifier,
+        value: pmd.displayName || pmd.value,
+      };
+    });
+    const patientDetails = {
+      id: patient?.patientIdentifier || patient?.id || patient?.mrn,
+      ...patient,
+    };
+    // eslint-disable-next-line no-unused-expressions
+    metaData?.forEach(element => {
+      patientDetails[element.key] = element.value;
+    });
+    return patientDetails;
+  });
   return (
     <>
       {isFetching ? (

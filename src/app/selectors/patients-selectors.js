@@ -28,6 +28,11 @@ export const isFetchingPatientsListDetailsSelector = createSelector(
     currentPatientsList?.isFetchingListDetails || false,
 );
 
+export const patientsListSelector = createSelector(
+  patientsStateSelector,
+  ({ currentPatientsList }) => currentPatientsList,
+);
+
 export const patientsListDetailsSelector = createSelector(
   patientsStateSelector,
   ({ currentPatientsList }) => currentPatientsList?.listDetails || null,

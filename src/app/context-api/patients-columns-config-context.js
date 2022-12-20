@@ -6,25 +6,24 @@ import React, {
   useMemo,
   useState,
 } from 'react';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { organizationCustomFieldsSelector } from 'selectors/organization-selectors';
 import {
   userPreferencesSelector,
-  OrganizationWidthFieldsPreferencesSelector,
+  // OrganizationWidthFieldsPreferencesSelector,
   userProfileSelector,
 } from 'selectors/user-selectors';
+import { updateListPreferences } from 'actions/patients-actions';
 import { CUSTOM_FIELD_TYPES } from 'helpers/custom-fields-helpers';
 import {
   PATIENT_BASE_COLUMN_CONFIG,
   PatientHeaderColumn,
 } from 'helpers/patient-list-helpers';
-import {
-  getAllPatientCustomFields,
-  getAllTaskListCustomFields,
-} from '../api/custom-fields-api';
+import { getAllPatientCustomFields } from '../api/custom-fields-api';
 import {
   getInitialColumnWidth,
   translateInitialColumnsConfig,
+  translateStateToApi,
 } from './helpers';
 
 export const PatientListColumnsConfigContext = createContext();
@@ -37,11 +36,12 @@ export function PatientListColumnsConfigProvider({
   hideCustomColumns,
   hidePatientCustomColumns,
 }) {
+  const dispatch = useDispatch();
+
   const { userIdentifier } = useSelector(userProfileSelector);
 
-  const [currentList, setCurrentList] = useState(null);
+  const [currentPatientList, setCurrentPatientList] = useState(null);
   const [patientCustomColumns, setPatientCustomColumns] = useState([]);
-  const [taskListCustomColumns, setTaskListCustomColumns] = useState([]);
   const [columns, setColumnsToState] = useState([]);
   const [viewSpecificConfig, setViewSpecificConfig] = useState(initialColumns);
   const [hasWidthPreferences, setHasWidthPreferences] = useState(false);
@@ -52,81 +52,68 @@ export function PatientListColumnsConfigProvider({
   const OrganizationCustomFieldsPreferences = useSelector(
     userPreferencesSelector,
   );
-  const OrganizationWidthFieldsPreferences = useSelector(
-    OrganizationWidthFieldsPreferencesSelector,
-  );
+  // const OrganizationWidthFieldsPreferences = useSelector(
+  //   OrganizationWidthFieldsPreferencesSelector,
+  // );
 
   const currentPreferences = useMemo(() => {
-    if (currentList) {
-      let displayColumns =
-        currentList?.listType === 'PUBLIC'
-          ? currentList?.listDisplayColumns
-          : currentList?.listUsers?.find(u => u.identifier === userIdentifier)
-              ?.listDisplayColumns;
-      if (!displayColumns || displayColumns.length === 0) {
-        displayColumns = [currentList?.listDisplayColumns];
-      }
-      if (!displayColumns.includes(columnsAlwaysVisible[0])) {
+    if (currentPatientList) {
+      const displayColumns = currentPatientList?.listDisplayColumns;
+      if (displayColumns) {
         // apply always visible at first if are not specified
         return [...columnsAlwaysVisible, ...displayColumns];
       }
-      return displayColumns;
+      return [...columnsAlwaysVisible];
     }
     return OrganizationCustomFieldsPreferences;
-  }, [OrganizationCustomFieldsPreferences, currentList, userIdentifier]);
+  }, [OrganizationCustomFieldsPreferences, currentPatientList]);
 
-  const currentWidthPreferences = useMemo(() => {
-    if (currentList) {
-      let displayColumns =
-        currentList?.listType === 'PUBLIC'
-          ? currentList?.listDisplayColumnPrefs
-          : currentList?.listUsers?.find(u => u.identifier === userIdentifier)
-              ?.listDisplayColumnPrefs;
-      if (!displayColumns || displayColumns.length === 0) {
-        displayColumns = currentList?.listDisplayColumnPrefs;
-      }
-      return displayColumns;
-    }
-    return OrganizationWidthFieldsPreferences;
-  }, [OrganizationWidthFieldsPreferences, currentList, userIdentifier]);
+  // const currentWidthPreferences = useMemo(() => {
+  //   if (currentList) {
+  //     let displayColumns =
+  //       currentList?.listType === 'PUBLIC'
+  //         ? currentList?.listDisplayColumnPrefs
+  //         : currentList?.listUsers?.find(u => u.identifier === userIdentifier)
+  //             ?.listDisplayColumnPrefs;
+  //     if (!displayColumns || displayColumns.length === 0) {
+  //       displayColumns = currentList?.listDisplayColumnPrefs;
+  //     }
+  //     return displayColumns;
+  //   }
+  //   return OrganizationWidthFieldsPreferences;
+  // }, [OrganizationWidthFieldsPreferences, currentList, userIdentifier]);
 
-  useEffect(() => {
-    if (currentWidthPreferences) {
-      setHasWidthPreferences(true);
-    } else {
-      setHasWidthPreferences(false);
-    }
-  }, [currentWidthPreferences]);
+  // useEffect(() => {
+  //   if (currentWidthPreferences) {
+  //     setHasWidthPreferences(true);
+  //   } else {
+  //     setHasWidthPreferences(false);
+  //   }
+  // }, [currentWidthPreferences]);
 
-  const setColumnsAndUpdateApi = useCallback(newState => {
-    setColumnsToState(newState);
-  }, []);
-
-  useEffect(() => {
-    if (currentList?.taskListIdentifier && !hideCustomColumns) {
-      getAllTaskListCustomFields(currentList.taskListIdentifier).then(data => {
-        setTaskListCustomColumns(
-          data.map(d => ({
-            ...d,
-            _customFieldType: CUSTOM_FIELD_TYPES.TASK_LIST,
-          })),
+  const setColumnsAndUpdateApi = useCallback(
+    newState => {
+      setColumnsToState(newState);
+      if (currentPatientList) {
+        dispatch(
+          updateListPreferences(
+            {
+              listDisplayColumns: translateStateToApi(newState),
+            },
+            currentPatientList?.patientListIdentifier,
+            userIdentifier,
+          ),
         );
-      });
-    }
-  }, [currentList, hideCustomColumns]);
+      }
+    },
+    [currentPatientList, dispatch, userIdentifier],
+  );
 
   useEffect(() => {
     // collect data
     const joinedColumnsData = [
       // regular fields data
       ...translateInitialColumnsConfig(viewSpecificConfig),
-      // org level custom fields
-      ...organizationCustomFields.map(d => ({
-        ...d,
-        _customFieldType: CUSTOM_FIELD_TYPES.ORGANIZATION,
-      })),
-      // list level fields data - if a list exists
-      ...(currentList ? taskListCustomColumns : []),
       // patient level custom fields
       ...patientCustomColumns,
     ];
@@ -137,11 +124,11 @@ export function PatientListColumnsConfigProvider({
       isChecked:
         !!currentPreferences?.includes(field.identifier) ||
         columnsAlwaysVisible?.includes(field.identifier),
-      columnWidth: Number(
-        currentWidthPreferences?.find(
-          c => c.displayColumn === field?.identifier && c.width !== 'NaN',
-        )?.width || getInitialColumnWidth(field),
-      ),
+      // columnWidth: Number(
+      //   currentWidthPreferences?.find(
+      //     c => c.displayColumn === field?.identifier && c.width !== 'NaN',
+      //   )?.width || getInitialColumnWidth(field),
+      // ),
     }));
 
     // sort data by defined order
@@ -159,18 +146,17 @@ export function PatientListColumnsConfigProvider({
 
     setColumnsToState([...fieldsWithOrder, ...fieldsWithoutOrder]);
   }, [
-    currentList,
+    currentPatientList,
     currentPreferences,
-    currentWidthPreferences,
     initialColumns,
     organizationCustomFields,
     patientCustomColumns,
-    taskListCustomColumns,
     viewSpecificConfig,
   ]);
 
   useEffect(() => {
     if (!hidePatientCustomColumns) {
+      // eslint-disable-next-line sonarjs/no-identical-functions
       getAllPatientCustomFields().then(data => {
         setPatientCustomColumns(
           data.map(d => ({
@@ -184,7 +170,7 @@ export function PatientListColumnsConfigProvider({
     OrganizationCustomFieldsPreferences,
     hideCustomColumns,
     hidePatientCustomColumns,
-    currentList,
+    currentPatientList,
   ]);
 
   const setColumnWidth = useCallback(
@@ -203,8 +189,8 @@ export function PatientListColumnsConfigProvider({
     setColumns: setColumnsAndUpdateApi,
     setColumnsToState,
     setColumnWidth,
-    currentList,
-    setCurrentList,
+    currentPatientList,
+    setCurrentPatientList,
     viewSpecificConfig,
     setViewSpecificConfig,
     hasWidthPreferences,
