@@ -35,11 +35,7 @@ const DateLabel = props => {
       {showTime && (
         <>
           <Spacing horizontal={1} />
-          <DueDateBasicLabel isOverdue={isOverdue}>
-            <>
-              <DateText>{moment(date).format(timeFormat)}</DateText>
-            </>
-          </DueDateBasicLabel>
+          <DateText>{moment(date).format(timeFormat)}</DateText>
         </>
       )}
     </>
