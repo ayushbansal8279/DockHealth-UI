@@ -15,6 +15,10 @@ import {
   getCustomerTypeLabel,
   getCustomerUniqueIDShortLabel,
 } from 'helpers/customer-type-helper';
+import {
+  userProfileSelector,
+  selectedUserOrganizationSelector,
+} from 'selectors/user-selectors';
 import { organizationSelector } from 'selectors/organization-selectors';
 import { FieldType } from 'helpers/field-type-helpers';
 import {
@@ -95,12 +99,14 @@ const PatientCard = ({
     [patientNotes],
   );
 
-  const { currentUser } = useSelector(store => ({
-    currentUser: store.userState.userProfile,
-  }));
+  const currentUser = useSelector(userProfileSelector);
+  const currentOrganization = useSelector(selectedUserOrganizationSelector);
 
   const customerTypeLabel = getCustomerTypeLabel(currentUser);
-  const uniqueIdentifierLabel = getCustomerUniqueIDShortLabel(currentUser);
+  const uniqueIdentifierLabel = getCustomerUniqueIDShortLabel(
+    currentUser,
+    currentOrganization,
+  );
 
   const organization = useSelector(organizationSelector);
   const emrPatientLink = organization?.emrPatientLink;
