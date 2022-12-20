@@ -46,12 +46,17 @@ import {
 
 const OPTIONS = [
   {
-    label: 'All Patients',
+    label: 'All Active',
     value: DefaultPatientsListType.ALL_PATIENTS,
     url: PATIENTS_LIST_ALL,
   },
   {
-    label: 'Archived Patients',
+    label: 'Active (with Tasks)',
+    value: DefaultPatientsListType.ACTIVE_PATIENTS,
+    url: PATIENTS_LIST_ARCHIVED,
+  },
+  {
+    label: 'Archived',
     value: DefaultPatientsListType.ARCHIVED_PATIENTS,
     url: PATIENTS_LIST_ARCHIVED,
   },
