@@ -191,12 +191,12 @@ const TextEditor = React.forwardRef(
 
     const handleChange = useCallback(
       newState => {
-        const { tokenizedText } = convertFromEditorStateToOutput(
-          newState,
-          true,
-        );
+        // const { tokenizedText } = convertFromEditorStateToOutput(
+        //   newState,
+        //   true,
+        // );
 
-        console.log('tokenizedText', tokenizedText);
+        // console.log('tokenizedText', tokenizedText);
         if (!state) setEditorState(newState);
         onChange(newState);
       },
@@ -399,7 +399,7 @@ const TextEditor = React.forwardRef(
             );
             onBlur(event, tokenizedText);
 
-            console.log('tokenizedText', tokenizedText);
+            // console.log('tokenizedText', tokenizedText);
           } else {
             onBlur(event);
           }
