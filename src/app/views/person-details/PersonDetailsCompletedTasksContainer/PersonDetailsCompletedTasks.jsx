@@ -11,14 +11,13 @@ import {
 import { hasFiltersAppliedSelector } from 'selectors/mega-filter-selectors';
 import { sortUserTasks } from 'actions/person-details-actions';
 import { filterTasksBySearchValue } from 'helpers/task-search-helper';
-import EmptyTaskListBear from 'img/animals/bear.svg';
 import NoSearchResultsView from 'components/tasklist/EmptyListView/NoSearchResultsView';
 import EmptyListView from 'components/tasklist/EmptyListView/EmptyListView';
 import NoFilterResultsView from 'components/tasklist/EmptyListView/NoFilterResultsView';
 import TasksGroup from 'components/tasklist/TasksGroup/TasksGroup';
 import GroupedListSkeletonLoader from 'components/tasklist/GroupedListSkeletonLoader/GroupedListSkeletonLoader';
 import StandardTaskItem from 'components/task/StandardTaskItem/StandardTaskItem';
-import { useColumnsConfig } from 'context-api/columns-config-context';
+import { useTaskListColumnsConfig } from 'context-api/columns-config-context';
 import { TaskGroupsContainer } from '../styled';
 
 const PersonDetailsCompletedTasks = ({
@@ -29,6 +28,7 @@ const PersonDetailsCompletedTasks = ({
   listUniqueKey,
   taskItemConfig,
   onOrderChange,
+  iconColorActive,
   // eslint-disable-next-line sonarjs/cognitive-complexity
 }) => {
   const dispatch = useDispatch();
@@ -38,7 +38,7 @@ const PersonDetailsCompletedTasks = ({
   const taskCounters = useSelector(taskCountersSelector);
   const sort = useSelector(sortSelector);
   const areFiltersApplied = useSelector(hasFiltersAppliedSelector);
-  const { setViewSpecificConfig } = useColumnsConfig();
+  const { setViewSpecificConfig } = useTaskListColumnsConfig();
 
   useEffect(() => {
     setViewSpecificConfig(taskItemConfig);
@@ -55,11 +55,7 @@ const PersonDetailsCompletedTasks = ({
     if (areFiltersApplied) return <NoFilterResultsView />;
 
     return (
-      <EmptyListView
-        title="There are no completed tasks"
-        description=""
-        image={EmptyTaskListBear}
-      />
+      <EmptyListView title="There are no completed tasks" description="" />
     );
   };
 
@@ -136,6 +132,7 @@ const PersonDetailsCompletedTasks = ({
                           highlightTasksOfTheSameParent
                         }
                         dragAndDropDisabled
+                        iconColorActive={iconColorActive}
                       />
                     ))}
                   </>

@@ -11,8 +11,6 @@ import { useLocation } from 'react-router-dom';
 import identity from 'ramda/src/identity';
 import isEmpty from 'ramda/src/isEmpty';
 import { bindActionCreators } from 'redux';
-import EmptyTaskListBird from 'img/animals/bird';
-import EmptyTaskListAlpaca from 'img/animals/alpaca';
 import Spacing from 'components/common/Spacing';
 import * as ModalActions from 'modal/actions';
 import { getUserTaskStats } from 'api/user-api';
@@ -49,7 +47,10 @@ import { DashboardTasksTab } from 'helpers/dashboard-helpers';
 import { ViewType, getViewTypeFromQueryString } from 'helpers/view-type-helper';
 import GroupedListSkeletonLoader from 'components/tasklist/GroupedListSkeletonLoader/GroupedListSkeletonLoader';
 import StickyContainer from 'components/common/HorizontalScroll/StickyContainer';
-import { dashboardGroupsPreferencesSelector } from 'selectors/user-selectors';
+import {
+  dashboardGroupsPreferencesSelector,
+  selectedUserOrganizationSelector,
+} from 'selectors/user-selectors';
 import { updateCurrentUserPreferences } from 'actions/user-actions';
 import { Context } from 'components/common/HorizontalScroll/HorizontalScrollContainer';
 import DashboardTasksGroup from './DashboardTasksGroup';
@@ -92,6 +93,16 @@ const DashboardList = ({
   const { usageState } = currentUser;
   const isSortApplied = !!currentSort?.key;
   const { key: sortKey, order: sortOrder } = currentSort;
+
+  const currentOrganization = useSelector(selectedUserOrganizationSelector);
+  const iconColorFilterActiveItem =
+    currentOrganization?.themeSettings?.find(
+      ({ name }) => name === 'icon.active.filter',
+    ) || {};
+  const iconColorActiveItem =
+    currentOrganization?.themeSettings?.find(
+      ({ name }) => name === 'icon.active.color',
+    ) || {};
 
   const filteredDashboardTasks = useMemo(() => {
     return dashboardTasks?.filter(taskGroupInfo =>
@@ -191,7 +202,6 @@ const DashboardList = ({
         <EmptyListView
           title={['Way to go!', 'You’ve completed all of your tasks.']}
           description="Take a breather, tomorrow is a new day full of possibilities."
-          image={EmptyTaskListAlpaca}
         />
       );
 
@@ -200,7 +210,6 @@ const DashboardList = ({
         widthBreakpoint={1400}
         title={['There are no tasks', 'assigned to you.']}
         description="Add tasks above to automatically assign to yourself."
-        image={EmptyTaskListBird}
       />
     );
   };
@@ -316,6 +325,8 @@ const DashboardList = ({
             <DashboardToolbar
               tourModalIsOpen={tourModalIsOpen}
               openTourModal={openTourModal}
+              iconColorFilterActive={iconColorFilterActiveItem?.value}
+              iconColorActive={iconColorActiveItem?.value}
             />
           )}
         </StickyHeader>
@@ -352,6 +363,7 @@ const DashboardList = ({
                         isLastGroup={index === orderedDashboardTasks.length - 1}
                         moveGroupUp={() => moveGroupUp(item)}
                         moveGroupDown={() => moveGroupDown(item)}
+                        iconColorActive={iconColorActiveItem?.value}
                       />
                     ),
                 )

@@ -2,8 +2,18 @@ import React from 'react';
 import { DrawerFieldEnum } from 'helpers/task-drawer-helpers';
 import Comment from 'components/drawer-common/Comment/Comment';
 import AddComment from 'components/drawer-common/AddComment/AddComment';
-import { CommentSectionContainer, CommentsListContainer } from './styled';
+import { useSelector } from 'react-redux';
+import { userProfileSelector } from 'selectors/user-selectors';
+import {
+  SINGLE_TASK_RESTRICTIONS_OPTIONS,
+  SINGLE_TASK_RESTRICTIONS_PROFILES,
+} from 'restrictions/task-restrictions';
 import initializeCommentSectionHooks from './hooks';
+import {
+  CommentSectionContainer,
+  CommentsListContainer,
+  Title,
+} from './styled';
 
 const CommentSection = () => {
   const {
@@ -16,13 +26,20 @@ const CommentSection = () => {
     taskDrawerFocusField,
   } = initializeCommentSectionHooks();
 
+  const { orgUserRole } = useSelector(userProfileSelector);
+  const restrictions = SINGLE_TASK_RESTRICTIONS_PROFILES[orgUserRole];
+  const { DISABLED } = SINGLE_TASK_RESTRICTIONS_OPTIONS;
+
   return (
     <CommentSectionContainer>
-      <AddComment
-        autoFocus={taskDrawerFocusField === DrawerFieldEnum.COMMENT}
-        taskListIdentifier={taskListIdentifier}
-        onAdd={addComment}
-      />
+      <Title>Comments</Title>
+      {restrictions?.comments !== DISABLED && (
+        <AddComment
+          autoFocus={taskDrawerFocusField === DrawerFieldEnum.COMMENT}
+          taskListIdentifier={taskListIdentifier}
+          onAdd={addComment}
+        />
+      )}
       <CommentsListContainer>
         {comments?.map(comment => (
           <Comment

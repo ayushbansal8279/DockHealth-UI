@@ -24,7 +24,8 @@ import { addWorkflowAttachmentSuccess } from 'actions/workflow-actions';
 import AlertMessages from 'alert/AlertMessages';
 import { AttachmentFileInput } from './styled';
 
-const AttachmentSection = () => {
+// eslint-disable-next-line sonarjs/cognitive-complexity
+const AttachmentSection = ({ disabled }) => {
   const attachmentFileInputReference = useRef(null);
   const dispatch = useDispatch();
   const [previewedAttachment, setPreviewedAttachment] = useState(null);
@@ -171,34 +172,36 @@ const AttachmentSection = () => {
         isAttachmentPreviewOpen={isAttachmentPreviewOpen}
         attachmentsLoading={attachmentLoading}
       />
-      <AttachmentsDropzoneContainer
-        isDragActive={isDragActive}
-        {...getRootProps({ style: { outline: 'none' } })}
-      >
-        <AttachmentFileInput
-          ref={attachmentFileInputReference}
-          {...getInputProps()}
-        />
-        {attachmentLoading ? (
-          <>
-            <Loader />
-            <Box mx={2} />
-          </>
-        ) : (
-          attachments?.map(attachment => (
-            <AttachmentButton
-              key={attachment.attachmentIdentifier}
-              attachment={attachment}
-              onClick={handleAttachmentClick}
-              onRemoveClick={handleDeleteAttachment}
-            />
-          ))
-        )}
-        {isUploadingAttachments && (
-          <AttachmentProgressBar progress={uploadProgress} />
-        )}
-        <AddAttachmentButton />
-      </AttachmentsDropzoneContainer>
+      {!disabled && (
+        <AttachmentsDropzoneContainer
+          isDragActive={isDragActive}
+          {...getRootProps({ style: { outline: 'none' } })}
+        >
+          <AttachmentFileInput
+            ref={attachmentFileInputReference}
+            {...getInputProps()}
+          />
+          {attachmentLoading ? (
+            <>
+              <Loader />
+              <Box mx={2} />
+            </>
+          ) : (
+            attachments?.map(attachment => (
+              <AttachmentButton
+                key={attachment.attachmentIdentifier}
+                attachment={attachment}
+                onClick={handleAttachmentClick}
+                onRemoveClick={handleDeleteAttachment}
+              />
+            ))
+          )}
+          {isUploadingAttachments && (
+            <AttachmentProgressBar progress={uploadProgress} />
+          )}
+          <AddAttachmentButton />
+        </AttachmentsDropzoneContainer>
+      )}
     </DrawerSection>
   );
 };

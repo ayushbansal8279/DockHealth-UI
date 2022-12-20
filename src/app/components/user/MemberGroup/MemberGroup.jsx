@@ -38,13 +38,16 @@ const MemberGroup = ({ members, max, size }) => {
     <GroupContainer>
       <>
         {members?.map((member, index) => (
-          <NameWrapper key={member.identifier}>{`
-        ${member.name}${index !== shownMembers.length - 1 ? ', ' : ''}
+          <NameWrapper key={member?.identifier}>{`
+        ${member?.name}${index !== shownMembers.length - 1 ? ', ' : ''}
         `}</NameWrapper>
         ))}
       </>
       {shownMembers?.map((member, index) => (
-        <GroupItem key={member.identifier} zIndex={shownMembers.length - index}>
+        <GroupItem
+          key={member?.identifier}
+          zIndex={shownMembers.length - index}
+        >
           {isUserGroup(member) ? (
             <GroupAvatar size={size} group={member} />
           ) : (

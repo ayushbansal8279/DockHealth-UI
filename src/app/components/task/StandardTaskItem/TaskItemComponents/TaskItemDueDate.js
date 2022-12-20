@@ -9,7 +9,7 @@ import DateLabel from 'components/common/DateLabel/DateLabel';
 import { isDueDateOverdue, ReminderType } from 'helpers/task-helpers';
 import { onTaskDueDateChanged } from 'helpers/ga-event-helper';
 
-const TaskItemDueDate = ({ task }) => {
+const TaskItemDueDate = ({ task, disabled = false }) => {
   const dispatch = useDispatch();
   const { taskIdentifier, dueDate, hasRecurringSchedule, reminderType } =
     task || {};
@@ -24,6 +24,7 @@ const TaskItemDueDate = ({ task }) => {
 
   return (
     <TaskItemPopover
+      disabled={disabled}
       content={({ closePopover }) => (
         <DueDatePicker
           taskIdentifier={taskIdentifier}

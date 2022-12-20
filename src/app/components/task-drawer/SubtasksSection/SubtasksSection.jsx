@@ -8,19 +8,23 @@ import { userProfileSelector } from 'selectors/user-selectors';
 import { selectedTaskSelector } from 'selectors/task-drawer-selectors';
 import DrawerTask from 'components/drawer-common/DrawerTask/DrawerTask';
 import DrawerTaskLoader from 'components/drawer-common/DrawerTaskLoader/DrawerTaskLoader';
-import { SINGLE_TASK_RESTRICTIONS_OPTIONS } from 'restrictions/task-restrictions';
+import {
+  SINGLE_TASK_RESTRICTIONS_OPTIONS,
+  TASK_LIST_RESTRICTIONS_OPTIONS,
+  TASK_LIST_RESTRICTIONS_PROFILES,
+} from 'restrictions/task-restrictions';
 import { Container, Title } from './styled';
 import QuickAddSubtask from '../QuickAddSubtask/QuickAddSubtask';
 
 const { READ_ONLY } = SINGLE_TASK_RESTRICTIONS_OPTIONS;
 
-const SubtasksSection = ({ restrictions }) => {
+const SubtasksSection = ({ restrictions: isReadOnly }) => {
   const dispatch = useDispatch();
   const currentUser = useSelector(userProfileSelector);
   const selectedTask = useSelector(selectedTaskSelector) || {};
   const tasks = selectedTask.subtasks;
   const tasksCount = selectedTask.subTasksCount;
-  const readOnly = restrictions === READ_ONLY;
+  const readOnly = isReadOnly === READ_ONLY;
 
   const handleDragEnd = useCallback(
     ({ destination, source }) => {
@@ -38,6 +42,10 @@ const SubtasksSection = ({ restrictions }) => {
     },
     [dispatch, selectedTask],
   );
+
+  const restrictions =
+    TASK_LIST_RESTRICTIONS_PROFILES[currentUser?.orgUserRole];
+  const { DISABLED } = TASK_LIST_RESTRICTIONS_OPTIONS;
 
   const renderDraggableItem = ({
     task,
@@ -71,6 +79,7 @@ const SubtasksSection = ({ restrictions }) => {
                       key={task.identifier}
                       draggableId={String(task.identifier)}
                       index={index}
+                      isDragDisabled={restrictions?.createTask === DISABLED}
                     >
                       {(
                         {

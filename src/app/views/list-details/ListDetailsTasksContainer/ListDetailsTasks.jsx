@@ -1,11 +1,9 @@
 /* eslint-disable sonarjs/no-identical-functions */
 /* eslint-disable sonarjs/cognitive-complexity */
 import React, { useState, useCallback, useMemo, useContext } from 'react';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd';
 import isEmpty from 'ramda/src/isEmpty';
-import EmptyTaskListAlpaca from 'img/animals/alpaca';
-import EmptyTaskListBear from 'img/animals/bear';
 import { openModal as openModalAction } from 'modal/actions';
 import { onTaskOrderChanged } from 'helpers/ga-event-helper';
 import {
@@ -33,6 +31,14 @@ import TaskTemplateGroup from 'components/task-template/TaskTemplateGroup/TaskTe
 import TasksSkeletonLoader from 'components/task/TasksSkeletonLoader/TasksSkeletonLoader';
 import { useParams } from 'react-router-dom';
 import StickyContainer from 'components/common/HorizontalScroll/StickyContainer';
+import {
+  userProfileSelector,
+  selectedUserOrganizationSelector,
+} from 'selectors/user-selectors';
+import {
+  TASK_LIST_RESTRICTIONS_OPTIONS,
+  TASK_LIST_RESTRICTIONS_PROFILES,
+} from 'restrictions/task-restrictions';
 import {
   TaskGroupsContainer,
   DroppablePlaceholder,
@@ -63,6 +69,17 @@ const ListDetailsTasks = ({
   const { tabName } = useParams();
   const isCompletedView = tabName?.toUpperCase() === TaskStatus.COMPLETE;
 
+  const currentUser = useSelector(userProfileSelector);
+  const restrictions =
+    TASK_LIST_RESTRICTIONS_PROFILES[currentUser?.orgUserRole];
+  const { DISABLED } = TASK_LIST_RESTRICTIONS_OPTIONS;
+
+  const currentOrganization = useSelector(selectedUserOrganizationSelector);
+  const iconColorActiveItem =
+    currentOrganization?.themeSettings?.find(
+      ({ name }) => name === 'icon.active.color',
+    ) || {};
+
   const renderEmptyState = () => {
     if (isSearchApplied) return <NoSearchResultsView />;
 
@@ -73,18 +90,17 @@ const ListDetailsTasks = ({
         <EmptyTaskAddView
           quickAddTask={quickAddTask}
           taskListIdentifier={taskListIdentifier}
+          iconColorActive={iconColorActiveItem?.value}
         >
           {taskCounters?.complete > 0 ? (
             <EmptyListView
               title={['Way to go!', 'You’ve completed all of your tasks.']}
               description="Take a breather, tomorrow is a new day full of possibilities."
-              image={EmptyTaskListAlpaca}
             />
           ) : (
             <EmptyListView
               title="This list has no tasks"
               description="Be the first to add a task to this list!"
-              image={EmptyTaskListBear}
             />
           )}
         </EmptyTaskAddView>
@@ -95,7 +111,6 @@ const ListDetailsTasks = ({
       <EmptyListView
         title="This list has no tasks"
         description="Be the first to add a task to this list!"
-        image={EmptyTaskListBear}
       />
     );
   };
@@ -220,6 +235,7 @@ const ListDetailsTasks = ({
               sort={sort}
               onSortChange={onSortChange}
               applyTemplate={applyTemplate}
+              iconColorActive={iconColorActiveItem?.value}
             >
               {({
                 isFetchingMoreTasks,
@@ -254,7 +270,9 @@ const ListDetailsTasks = ({
                                 draggableId={String(task.identifier)}
                                 index={index}
                                 isDragDisabled={
-                                  isCompletedGroup || dragAndDropDisabled
+                                  isCompletedGroup ||
+                                  dragAndDropDisabled ||
+                                  restrictions?.createGroup === DISABLED
                                 }
                               >
                                 {(draggableProvided, { isDragging }) => (
@@ -302,6 +320,9 @@ const ListDetailsTasks = ({
                                         highlightTasksOfTheSameParent={
                                           highlightTasksOfTheSameParent
                                         }
+                                        iconColorActive={
+                                          iconColorActiveItem?.value
+                                        }
                                       />
                                     ) : (
                                       <TaskTemplateGroup
@@ -319,6 +340,9 @@ const ListDetailsTasks = ({
                                         dragAndDropDisabled={
                                           isCompletedGroup ||
                                           dragAndDropDisabled
+                                        }
+                                        iconColorActive={
+                                          iconColorActiveItem?.value
                                         }
                                       />
                                     )}
@@ -369,8 +393,11 @@ const ListDetailsTasks = ({
       loadTasksForTaskGroup,
       isSortApplied,
       dragAndDropDisabled,
+      restrictions,
+      DISABLED,
       showClearSortFiltersModal,
       viewSetup,
+      iconColorActiveItem,
     ],
   );
 
@@ -392,11 +419,17 @@ const ListDetailsTasks = ({
             {!!createTaskGroupList && !isSearchApplied && !areFiltersApplied && (
               <StickyContainer left={24} decreaseWidth={2 * 24}>
                 <GroupNameSection
-                  onEnterClick={onGroupNameClick}
+                  onEnterClick={
+                    restrictions?.createGroup === DISABLED
+                      ? onGroupNameClick
+                      : () => undefined
+                  }
                   placeholder={messages.placeholder}
                   closeOnEnter
                 >
-                  <AddGroupNameButton />
+                  {restrictions?.createGroup !== DISABLED && (
+                    <AddGroupNameButton />
+                  )}
                 </GroupNameSection>
               </StickyContainer>
             )}

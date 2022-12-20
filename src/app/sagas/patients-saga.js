@@ -82,6 +82,23 @@ function* updatePatientsList({ identifier, dataToUpdate }) {
   }
 }
 
+function* updatePatientsListPreferences({ payload }) {
+  try {
+    const { setup, patientListIdentifier } = payload;
+    yield call(
+      PatientsApi.updatePatientListPreferences,
+      setup,
+      patientListIdentifier,
+    );
+    yield put({
+      type: ActionTypes.UPDATE_PATIENTS_LIST_PREFERENCES_SUCCESS,
+    });
+  } catch {
+    yield put(showGlobalErrorAlert());
+    yield put({ type: ActionTypes.UPDATE_PATIENTS_LIST_PREFERENCES_FAILURE });
+  }
+}
+
 function* initializePatientsListState() {
   yield all([
     put(PatientsActions.getCurrentPatientsListDetails()),
@@ -305,4 +322,8 @@ export default function* watchPatients() {
   yield takeEvery(ActionTypes.PATIENT_DELETE_LABEL, deletePatientLabel);
   yield takeEvery(ActionTypes.PATIENT_BULK_CREATE_WORKFLOW, addBulkWorkflow);
   yield takeEvery(ActionTypes.PATIENT_BULK_DELETE_PATIENTS, deleteBulkPatient);
+  yield takeEvery(
+    ActionTypes.UPDATE_PATIENTS_LIST_PREFERENCES,
+    updatePatientsListPreferences,
+  );
 }

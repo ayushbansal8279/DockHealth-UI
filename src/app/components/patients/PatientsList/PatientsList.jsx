@@ -11,6 +11,9 @@ import {
   getCustomerUniqueIDLabel,
 } from 'helpers/customer-type-helper';
 import Checkbox from 'components/common/Checkbox/Checkbox';
+import { usePatientListColumnsConfig } from 'context-api/patients-columns-config-context';
+import { PatientColumn } from 'helpers/patient-list-helpers';
+import { patientsListSelector } from 'selectors/patients-selectors';
 import PatientImportPopover from '../PatientImportPopover/PatientImportPopover';
 import TaskItemBulkEdit from '../../task/StandardTaskItem/TaskItemComponents/TaskItemBulkEdit';
 import EmptyFilteredPatientsList from '../EmptyFilteredPatientsList/EmptyFilteredPatientsList';
@@ -65,6 +68,8 @@ const PatientsList = ({
     selectedPatientsCount &&
     patientsCount === selectedPatientsCount;
 
+  const patientsList = useSelector(patientsListSelector);
+
   const setSelectedPatient = useCallback(
     data => {
       dispatch({
@@ -91,6 +96,15 @@ const PatientsList = ({
       });
     };
   }, [dispatch]);
+
+  const {
+    columns: columnsData,
+    setCurrentPatientList,
+  } = usePatientListColumnsConfig();
+
+  useEffect(() => {
+    setCurrentPatientList(patientsList?.listDetails);
+  }, [setCurrentPatientList, patientsList]);
 
   const columns = [
     {
@@ -219,11 +233,42 @@ const PatientsList = ({
       renderHeader: renderColumnHeader,
       flex: 0.5,
     },
-  ];
-  const formattedPatients = patients?.map(patient => ({
-    id: patient?.patientIdentifier || patient?.id || patient?.mrn,
-    ...patient,
-  }));
+  ]
+    .filter(column => {
+      return (
+        columnsData.find(
+          data => PatientColumn[data.identifier] === column.field,
+        )?.isChecked ?? false
+      );
+    })
+    .concat(
+      columnsData
+        .filter(column => column.targetType === 'PATIENT' && column.isChecked)
+        .map(column => ({
+          field: column.identifier,
+          headerName: column.name,
+          renderHeader: renderColumnHeader,
+          flex: 0.5,
+        })),
+    );
+
+  const formattedPatients = patients?.map(patient => {
+    const metaData = patient.patientMetaData?.map(pmd => {
+      return {
+        key: pmd.customFieldIdentifier,
+        value: pmd.displayName || pmd.value,
+      };
+    });
+    const patientDetails = {
+      id: patient?.patientIdentifier || patient?.id || patient?.mrn,
+      ...patient,
+    };
+    // eslint-disable-next-line no-unused-expressions
+    metaData?.forEach(element => {
+      patientDetails[element.key] = element.value;
+    });
+    return patientDetails;
+  });
   return (
     <>
       {isFetching ? (

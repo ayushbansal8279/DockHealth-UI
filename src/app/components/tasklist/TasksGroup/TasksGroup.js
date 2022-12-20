@@ -12,7 +12,6 @@ import isNil from 'ramda/src/isNil';
 import pluck from 'ramda/src/pluck';
 import { Grid } from '@material-ui/core';
 import MoreVert from '@material-ui/icons/MoreVert';
-import ArrowIcon from 'img/arrow';
 import * as TaskActions from 'actions/task-actions';
 import { checkIfAllTasksSelected } from 'helpers/bulk-edit-helpers';
 import { closeModal, openModal } from 'modal/actions';
@@ -28,7 +27,8 @@ import {
 import QuickAddTaskInput from 'components/tasklist/QuickAddTaskInput/QuickAddTaskInput';
 import listSectionSavedState from 'helpers/list-section-saved-state';
 import { extractTasksAndSubtasks } from 'helpers/tasklist-helpers';
-import { Arrow } from 'components/tasklist/DropdownListSection/styled';
+import RotatableChevron from 'components/common/RotatableChevron/RotatableChevron';
+import Spacing from 'components/common/Spacing';
 import { BulkEditContext } from 'components/tasklist/BulkEditSection/BulkEditSection';
 import GroupNameSection from 'components/tasklist/GroupNameSection/GroupNameSection';
 import ViewTypeSwitch, {
@@ -40,6 +40,11 @@ import TaskTemplateApplicator from 'components/task-template/TaskTemplateApplica
 import { addingNewSubtaskParentIdSelector } from 'selectors/task-drawer-selectors';
 
 import StickyContainer from 'components/common/HorizontalScroll/StickyContainer';
+import { userProfileSelector } from 'selectors/user-selectors';
+import {
+  TASK_LIST_RESTRICTIONS_OPTIONS,
+  TASK_LIST_RESTRICTIONS_PROFILES,
+} from 'restrictions/task-restrictions';
 import {
   TasksGroupContainer,
   TasksGroupHeader,
@@ -79,6 +84,7 @@ const TasksGroup = ({
   isFetchingMoreTasks,
   hasMoreTasks,
   children,
+  iconColorActive,
 }) => {
   const addingNewSubtaskParentId = useSelector(
     addingNewSubtaskParentIdSelector,
@@ -236,29 +242,38 @@ const TasksGroup = ({
     [dispatch, taskGroupIdentifier],
   );
 
+  const currentUser = useSelector(userProfileSelector);
+  const restrictions =
+    TASK_LIST_RESTRICTIONS_PROFILES[currentUser?.orgUserRole];
+  const { DISABLED } = TASK_LIST_RESTRICTIONS_OPTIONS;
   const options = useMemo(
     () =>
       [
         !isFirstGroup && {
           name: 'Move up',
           onClick: moveGroupUp,
+          disabled: restrictions?.editSettings === DISABLED,
         },
         !isLastGroup && {
           name: 'Move down',
           onClick: moveGroupDown,
+          disabled: restrictions?.editSettings === DISABLED,
         },
         !isDefaultGroup && {
           name: 'Delete',
           color: palette.red,
           onClick: handleDeleteGroup,
+          disabled: restrictions?.editSettings === DISABLED,
         },
       ].filter(o => typeof o !== 'boolean'),
     [
-      isDefaultGroup,
       isFirstGroup,
+      moveGroupUp,
+      restrictions,
+      DISABLED,
       isLastGroup,
       moveGroupDown,
-      moveGroupUp,
+      isDefaultGroup,
       handleDeleteGroup,
     ],
   );
@@ -274,12 +289,14 @@ const TasksGroup = ({
               </OptionsMenu>
             </GroupOptionsContainer>
           )}
-          <Arrow
+          <Spacing horizontal={2} />
+          <RotatableChevron
             alt="arrow"
-            isOpen={isOpen}
+            rotated={!isOpen}
             onClick={onToggleGroupOpen}
-            src={ArrowIcon}
+            color={iconColorActive}
           />
+          <Spacing horizontal={3} />
           <GroupNameSectionWrapper>
             <GroupNameSection
               initialValue={groupName}
@@ -306,25 +323,30 @@ const TasksGroup = ({
       </StickyContainer>
 
       <Tasks timeout={150} in={isOpen}>
-        {!!quickAddTask && !isSearchApplied && !isCompletedGroup && (
-          <StickyContainer left={24} decreaseWidth={2 * 24} zIndex={100}>
-            <Grid container>
-              <Grid item xs>
-                <QuickAddTaskInput
-                  taskListIdentifier={taskListIdentifier}
-                  quickAddTask={onQuickAddTask}
-                  validator={quickTaskInputValidator}
-                />
+        {restrictions?.createTask !== DISABLED &&
+          !!quickAddTask &&
+          !isSearchApplied &&
+          !isCompletedGroup && (
+            <StickyContainer left={24} decreaseWidth={2 * 24} zIndex={100}>
+              <Grid container>
+                <Grid item xs>
+                  <QuickAddTaskInput
+                    taskListIdentifier={taskListIdentifier}
+                    quickAddTask={onQuickAddTask}
+                    validator={quickTaskInputValidator}
+                    iconColorActive={iconColorActive}
+                  />
+                </Grid>
+                {applyTemplate && (
+                  <TaskTemplateApplicator
+                    onTemplateSelect={handleTemplateSelect}
+                    bulkApply={false}
+                    iconColorActive={iconColorActive}
+                  />
+                )}
               </Grid>
-              {applyTemplate && (
-                <TaskTemplateApplicator
-                  onTemplateSelect={handleTemplateSelect}
-                  bulkApply={false}
-                />
-              )}
-            </Grid>
-          </StickyContainer>
-        )}
+            </StickyContainer>
+          )}
         {(tasks?.length > 0 || isLoadingGroup) && (
           <TasksHeader
             bulkEditEnabled={bulkEditEnabled}

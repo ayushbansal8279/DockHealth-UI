@@ -7,6 +7,7 @@ const EmptyListViewWithQuickAddTask = ({
   quickAddTask,
   children,
   taskListIdentifier,
+  iconColorActive,
 }) => (
   <EmptyListContainer>
     <QuickAddTaskInput
@@ -18,6 +19,7 @@ const EmptyListViewWithQuickAddTask = ({
 
         return null;
       }}
+      iconColorActive={iconColorActive}
     />
     <Spacing vertical={5} />
     {children}

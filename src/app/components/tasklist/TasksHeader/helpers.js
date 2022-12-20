@@ -3,12 +3,20 @@ import { SINGLE_TASK_RESTRICTIONS_OPTIONS } from 'restrictions/task-restrictions
 
 export const TaskHeaderColumn = {
   DESCRIPTION: 'TASK_DESCRIPTION',
+  TASK_DETAILS: 'TASK_DETAILS',
   SUBTASKS_COUNT: 'SUBTASKS_COUNT',
   PATIENT: 'PATIENT',
   WORKFLOW_STATUS: 'WORKFLOW_STATUS',
-  ACTIVITY: 'ACTIVITY',
+  COMMENTS: 'COMMENTS',
+  LABELS: 'LABELS',
+  FILES: 'FILES',
   START_DATE: 'START_DT',
   DUE_DATE: 'DUE_DT',
+  CREATED_DATE: 'CREATED_DT',
+  CREATED_BY: 'CREATED_BY',
+  COMPLETED_DATE: 'COMPLETED_DT',
+  ELAPSED_TIME: 'ELAPSED_TIME',
+  COMPLETED_BY: 'COMPLETED_BY',
   ANCHOR_DATE: 'ANCHOR_DT',
   ASSIGNED: 'ASSIGNED_TO',
   LIST_NAME: 'LIST_NAME',
@@ -28,13 +36,19 @@ export const getTaskHeaderOptions = (
       draggable: true,
     },
     {
-      identifier: TaskHeaderColumn.SUBTASKS_COUNT,
-      label: 'Sub',
+      identifier: TaskHeaderColumn.TASK_DETAILS,
+      label: 'Details',
       draggable: true,
     },
+    // {
+    //   identifier: TaskHeaderColumn.SUBTASKS_COUNT,
+    //   label: 'Sub',
+    //   draggable: true,
+    // },
     {
       identifier: TaskHeaderColumn.PATIENT,
-      label: customerTypeLabel,
+      label:
+        customerTypeLabel.charAt(0).toUpperCase() + customerTypeLabel.slice(1),
       draggable: true,
     },
     {
@@ -43,8 +57,18 @@ export const getTaskHeaderOptions = (
       draggable: true,
     },
     {
-      identifier: TaskHeaderColumn.ACTIVITY,
-      label: 'Details',
+      identifier: TaskHeaderColumn.COMMENTS,
+      label: 'Comments',
+      draggable: true,
+    },
+    {
+      identifier: TaskHeaderColumn.LABELS,
+      label: 'Labels',
+      draggable: true,
+    },
+    {
+      identifier: TaskHeaderColumn.FILES,
+      label: 'Files',
       draggable: true,
     },
     {
@@ -57,6 +81,36 @@ export const getTaskHeaderOptions = (
       label: 'Due',
       draggable: true,
       hidden: restrictions?.dueDate !== DISABLED,
+    },
+    {
+      identifier: TaskHeaderColumn.CREATED_DATE,
+      label: 'Created date',
+      draggable: true,
+      hidden: restrictions?.createdDate !== DISABLED,
+    },
+    {
+      identifier: TaskHeaderColumn.COMPLETED_DATE,
+      label: 'Completed date',
+      draggable: true,
+      hidden: restrictions?.completedDate !== DISABLED,
+    },
+    {
+      identifier: TaskHeaderColumn.ELAPSED_TIME,
+      label: 'Elapsed time',
+      draggable: true,
+      hidden: restrictions?.elapsedTime !== DISABLED,
+    },
+    {
+      identifier: TaskHeaderColumn.COMPLETED_BY,
+      label: 'Completed by',
+      draggable: true,
+      hidden: restrictions?.completedBy !== DISABLED,
+    },
+    {
+      identifier: TaskHeaderColumn.CREATED_BY,
+      label: 'Created by',
+      draggable: true,
+      hidden: restrictions?.createdBy !== DISABLED,
     },
     {
       identifier: TaskHeaderColumn.ANCHOR_DATE,
@@ -78,7 +132,7 @@ export const getTaskHeaderOptions = (
   ];
 
   const foundHeaderColumn = predefinedHeaderColumns.find(
-    c => c.identifier === column.identifier,
+    c => c.identifier === column?.identifier,
   );
 
   return { ...foundHeaderColumn, ...column };

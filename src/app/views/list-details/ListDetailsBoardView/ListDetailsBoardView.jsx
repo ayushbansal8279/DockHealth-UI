@@ -11,7 +11,10 @@ import LayoutHeader from 'components/template/LayoutHeader/LayoutHeader';
 import Board from 'components/common/Board/Board';
 import { useSelector } from 'react-redux';
 import ToolbarSelect from 'components/tasklist/ToolbarSelect/ToolbarSelect';
-import { userHasBoardViewFeatureSelector } from 'selectors/user-selectors';
+import {
+  userHasBoardViewFeatureSelector,
+  selectedUserOrganizationSelector,
+} from 'selectors/user-selectors';
 import ListDetailsToolbar from '../ListDetailsToolbar/ListDetailsToolbar';
 import { BOARD_CONTEXTS_OPTIONS } from './helpers';
 import BoardContextProvider from './BoardContextProvider';
@@ -27,6 +30,12 @@ const ListDetailsBoardView = () => {
   if (!boardViewAvailable) {
     history.push(`/core/home`);
   }
+
+  const currentOrganization = useSelector(selectedUserOrganizationSelector);
+  const iconColorActiveItem =
+    currentOrganization?.themeSettings?.find(
+      ({ name }) => name === 'icon.active.color',
+    ) || {};
 
   return (
     <ViewLayout
@@ -58,6 +67,7 @@ const ListDetailsBoardView = () => {
           value={boardContextName}
           name="board-context-type"
           onChange={setBoardContextName}
+          iconColorActive={iconColorActiveItem?.value}
         />
       </ListDetailsToolbar>
       <BoardContextProvider contextName={boardContextName}>
@@ -82,6 +92,7 @@ const ListDetailsBoardView = () => {
               onReorderColumns={handleReorderColumns}
               onAddTask={handleAddTask}
               onAddWorkflow={handleAddWorkflow}
+              iconColorActive={iconColorActiveItem?.value}
             />
           </>
         )}

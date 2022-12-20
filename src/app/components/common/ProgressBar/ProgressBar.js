@@ -1,5 +1,4 @@
 import React from 'react';
-import Spacing from '../Spacing';
 import {
   ProgressBarWrapper,
   ProgressBarLine,
@@ -15,7 +14,6 @@ const ProgressBar = ({ progress, width = 180, label }) => (
 
     {label && (
       <>
-        <Spacing horizontal={3} />
         <ProgressBarLabel>{label}</ProgressBarLabel>
       </>
     )}

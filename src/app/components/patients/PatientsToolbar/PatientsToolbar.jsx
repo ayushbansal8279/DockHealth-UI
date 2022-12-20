@@ -18,7 +18,10 @@ import {
   DefaultPatientsListType,
 } from 'helpers/patient-list-helpers';
 import { organizationSelector } from 'selectors/organization-selectors';
-import { userProfileSelector } from 'selectors/user-selectors';
+import {
+  userProfileSelector,
+  selectedUserOrganizationSelector,
+} from 'selectors/user-selectors';
 import {
   currentPatientsListIdentifierSelector,
   patientsListSearchTermSelector,
@@ -31,18 +34,29 @@ import AdornedButton from 'components/common/AdornedButton/AdornedButton';
 import SearchInput from 'components/common/SearchInput/SearchInput';
 import FilterPopover from 'components/filter/FilterPopover/FilterPopover';
 import { getCustomerTypeLabel } from 'helpers/customer-type-helper';
+import CustomizeToolbarButton from 'components/patients/CustomizeToolbarButton/CustomizeToolbarButton';
 import CreatePatientDrawer from '../CreatePatientDrawer/CreatePatientDrawer';
 import PatientsFilter from '../PatientsFilter/PatientsFilter';
-import { ImportButton, InputWrapper, SearchHelperText } from './styled';
+import {
+  ImportButton,
+  InputWrapper,
+  SearchHelperText,
+  PatientsListImg,
+} from './styled';
 
 const OPTIONS = [
   {
-    label: 'All Patients',
+    label: 'All Active',
     value: DefaultPatientsListType.ALL_PATIENTS,
     url: PATIENTS_LIST_ALL,
   },
   {
-    label: 'Archived Patients',
+    label: 'Active (with Tasks)',
+    value: DefaultPatientsListType.ACTIVE_PATIENTS,
+    url: PATIENTS_LIST_ARCHIVED,
+  },
+  {
+    label: 'Archived',
     value: DefaultPatientsListType.ARCHIVED_PATIENTS,
     url: PATIENTS_LIST_ARCHIVED,
   },
@@ -61,6 +75,7 @@ const PatientsToolbar = ({ refreshPatientList, setImportPopoverOpen }) => {
   const { emrIntegrationEnabled } = useSelector(organizationSelector) || {};
   const listIdentifier = useSelector(currentPatientsListIdentifierSelector);
   const currentUser = useSelector(userProfileSelector);
+  const currentOrganization = useSelector(selectedUserOrganizationSelector);
   const { orgUserRole } = currentUser || {};
   const customerTypeLabel = getCustomerTypeLabel(currentUser).toUpperCase();
   const { listIdentifier: listIdentifierParameter } = useParams();
@@ -68,6 +83,15 @@ const PatientsToolbar = ({ refreshPatientList, setImportPopoverOpen }) => {
   const isGuest = orgUserRole === 'GUEST';
 
   const [importPopupOpen, setImportPopupOpen] = useState(false);
+
+  const iconColorFilterActiveItem =
+    currentOrganization?.themeSettings?.find(
+      ({ name }) => name === 'icon.active.filter',
+    ) || {};
+  const iconColorActiveItem =
+    currentOrganization?.themeSettings?.find(
+      ({ name }) => name === 'icon.active.color',
+    ) || {};
 
   const handleSearchChange = searchTerm => {
     dispatch(PatientsActions.changePatientsSearchTerm(searchTerm));
@@ -82,8 +106,8 @@ const PatientsToolbar = ({ refreshPatientList, setImportPopoverOpen }) => {
   );
 
   const onListTypeChange = useCallback(
-    e => {
-      const { value } = e.target;
+    event => {
+      const { value } = event.target;
       const { url } = OPTIONS.find(o => o.value === value);
       if (url) history.push(url);
     },
@@ -121,9 +145,19 @@ const PatientsToolbar = ({ refreshPatientList, setImportPopoverOpen }) => {
                 value={optionBasedUrl}
                 name="patient-list-type"
                 onChange={onListTypeChange}
-                icon={<img src={TasksStatusSwitchIcon} alt="view type icon" />}
+                icon={
+                  <PatientsListImg
+                    src={TasksStatusSwitchIcon}
+                    alt="list type icon"
+                    iconColorFilterActive={iconColorFilterActiveItem?.value}
+                  />
+                }
+                iconColorActive={iconColorActiveItem?.value}
               />
             </Box>
+            <CustomizeToolbarButton
+              iconColorFilterActive={iconColorFilterActiveItem?.value}
+            />
             <Box m={1} />
             <FilterButton
               ref={filterButtonReference}

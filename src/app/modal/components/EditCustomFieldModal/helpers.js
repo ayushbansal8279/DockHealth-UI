@@ -50,6 +50,20 @@ export const getAdditionalUserOptions = ({
   },
 ];
 
+export const getAdditionalTaskOptions = ({
+  displayOptionsState,
+  handleDisplayOptionChange,
+}) => [
+  {
+    label: 'Required for Task completion',
+    key: 'TASK_REQUIRED',
+    value: !!displayOptionsState?.displayOptions?.find(
+      option => option === 'TASK_REQUIRED',
+    ),
+    onChange: value => handleDisplayOptionChange(value, 'TASK_REQUIRED'),
+  },
+];
+
 export const getAdditionalOptions = ({
   displayOptionsState,
   handleDisplayOptionChange,
@@ -64,6 +78,12 @@ export const getAdditionalOptions = ({
 
     case 'PROVIDER':
       return getAdditionalUserOptions({
+        displayOptionsState,
+        handleDisplayOptionChange,
+      });
+
+    case 'TASK':
+      return getAdditionalTaskOptions({
         displayOptionsState,
         handleDisplayOptionChange,
       });

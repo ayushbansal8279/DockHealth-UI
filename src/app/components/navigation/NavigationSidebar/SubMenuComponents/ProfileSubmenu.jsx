@@ -1,7 +1,10 @@
 import React from 'react';
 import { Box, Grid } from '@material-ui/core';
 import { useDispatch, useSelector } from 'react-redux';
-import { userProfileSelector } from 'selectors/user-selectors';
+import {
+  userProfileSelector,
+  selectedUserOrganizationSelector,
+} from 'selectors/user-selectors';
 import { getUserAvatarUrl, hasProfilePicture } from 'helpers/user-helper';
 import * as TemplateActions from 'actions/template-actions';
 import {
@@ -15,12 +18,17 @@ import {
   UserInitialCircle,
   SubMenuLink,
   BlueSubMenuLink,
+  Version,
 } from './styled';
 
 const ProfileSubmenu = () => {
   const dispatch = useDispatch();
   const userProfile = useSelector(userProfileSelector);
+  const currentOrganization = useSelector(selectedUserOrganizationSelector);
   const { name, titles, initials, bubbleColor } = userProfile || {};
+
+  const whiteLabelEnabled = currentOrganization?.whiteLabelEnabled || false;
+  const embeddedMode = sessionStorage.getItem('EmbeddedMode') || false;
 
   return (
     <ProfileSubmenuContainer>
@@ -48,12 +56,19 @@ const ProfileSubmenu = () => {
               </UserInitialCircle>
             )}
             <Box m={2} />
-            <SubMenuLink to="/settings/userprofile">Profile</SubMenuLink>
-            <SubMenuLink to="/settings/documents">Agreements</SubMenuLink>
+            {!embeddedMode && (
+              <SubMenuLink to="/settings/userprofile">Profile</SubMenuLink>
+            )}
+            {!whiteLabelEnabled && (
+              <SubMenuLink to="/settings/documents">Agreements</SubMenuLink>
+            )}
             <Box m={0.5} />
             <SubmenuDivider />
             <Box m={0.5} />
-            <BlueSubMenuLink to="/auth/logout">Logout</BlueSubMenuLink>
+            {!embeddedMode && (
+              <BlueSubMenuLink to="/auth/logout">Logout</BlueSubMenuLink>
+            )}
+            <Version>App Version: {process.env.VERSION || '0.0.0'}</Version>
           </>
         ) : null}
       </Grid>

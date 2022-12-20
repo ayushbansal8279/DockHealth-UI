@@ -59,6 +59,7 @@ const ChatPopover = () => {
           setContainerPosition({ x: d.x, y: d.y });
         }}
         minWidth="400px"
+        minHeight="500px"
         // eslint-disable-next-line @typescript-eslint/no-unused-vars
         onResizeStop={(_event, direction, reference, _delta, _position) => {
           setContainerSize({

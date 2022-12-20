@@ -20,6 +20,7 @@ import {
 import {
   userProfileSelector,
   userHasSmartFlowsSelector,
+  selectedUserOrganizationSelector,
 } from 'selectors/user-selectors';
 import AddButton from 'components/common/AddButton/AddButton';
 import Spacing from 'components/common/Spacing';
@@ -90,6 +91,12 @@ const TaskTemplateView = () => {
   const isFetchingTaskTemplates = useSelector(isFetchingTaskTemplatesSelector);
   const taskTemplates = useSelector(taskTemplatesSelector);
   const userProfile = useSelector(userProfileSelector);
+  const currentOrganization = useSelector(selectedUserOrganizationSelector);
+  const iconColorActiveItem =
+    currentOrganization?.themeSettings?.find(
+      ({ name }) => name === 'icon.active.color',
+    ) || {};
+
   const folders = useMemo(
     () =>
       taskTemplates?.filter(template => template.templateType === 'FOLDER') ||
@@ -112,6 +119,16 @@ const TaskTemplateView = () => {
     return differenceWith(eqBy(prop('identifier')), current, previous)?.[0]
       ?.identifier;
   }, [folders, previousFolders, previousTemplates, templates]);
+
+  const tasksHeaderTextTransformItem =
+    currentOrganization?.themeSettings?.find(
+      ({ name }) => name === 'tasks.header.textTransform',
+    ) || {};
+
+  const tasksHeaderTextColorItem =
+    currentOrganization?.themeSettings?.find(
+      ({ name }) => name === 'tasks.header.textColor',
+    ) || {};
 
   useEffect(() => {
     if (userProfile?.orgUserRole === 'GUEST') {
@@ -198,7 +215,7 @@ const TaskTemplateView = () => {
     <ColumnsConfigProvider
       initialColumns={{
         [TaskItemColumn.DESCRIPTION]: true,
-        [TaskItemColumn.SUBTASKS_COUNT]: true,
+        // [TaskItemColumn.SUBTASKS_COUNT]: true,
         [TaskItemColumn.WORKFLOW_STATUS]: true,
         [TaskItemColumn.ACTIVITY]: true,
         [TaskItemColumn.ASSIGNED]: true,
@@ -266,7 +283,12 @@ const TaskTemplateView = () => {
               </Grid>
             </SearchAndFilterContainer>
             <Spacing vertical={4} />
-            <TasksTemplatesHeader sort={sort} onSortChange={handleSortChange} />
+            <TasksTemplatesHeader
+              sort={sort}
+              onSortChange={handleSortChange}
+              tasksHeaderTextTransform={tasksHeaderTextTransformItem?.value}
+              tasksHeaderTextColor={tasksHeaderTextColorItem?.value}
+            />
             {!isFetchingTaskTemplates ? (
               <>
                 {currentSortMethodWithOrder(folders).map(template => (
@@ -291,6 +313,7 @@ const TaskTemplateView = () => {
                     key={template.identifier}
                     template={template}
                     isFullView={viewType === ViewType.FULL_VIEW}
+                    iconColorActive={iconColorActiveItem?.value}
                   >
                     <TaskTemplateHeader
                       createdBy={template.creator.userName}

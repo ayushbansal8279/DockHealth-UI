@@ -34,7 +34,7 @@ export function getPatientsByFilterCriteria(
 export function getPatientsListDetails(identifier) {
   return (
     axios
-      .get(`patient/list/${identifier}`)
+      .get(`patient/list/${identifier}?basicDetails=true`)
       // eslint-disable-next-line @typescript-eslint/no-unused-vars
       .then(({ data: { patients, ...restData } }) => restData)
   );
@@ -158,3 +158,9 @@ export const patientBulkDeleteLabel = payload => {
     return data;
   });
 };
+
+export function updatePatientListPreferences(setup, patientListIdentifier) {
+  return axios
+    .put(`patient/list/updateUserPreferences/${patientListIdentifier}`, setup)
+    .then(({ data }) => data);
+}

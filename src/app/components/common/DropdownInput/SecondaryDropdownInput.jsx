@@ -9,7 +9,7 @@ import {
 import { generateSelectOptions } from './helpers';
 
 const SecondaryDropdownInput = React.forwardRef(
-  ({ options, width, ...restProps }, reference) => {
+  ({ options, width, sortEnabled = false, ...restProps }, reference) => {
     const secondaryTypeInputClasses = useSecondaryTypeInputStyles();
     const secondaryTypeTextFieldClasses = useSecondaryTypeTextFieldStyles({
       width,
@@ -25,7 +25,7 @@ const SecondaryDropdownInput = React.forwardRef(
           textFieldClasses={secondaryTypeTextFieldClasses}
           {...restProps}
         >
-          {generateSelectOptions(options)}
+          {generateSelectOptions(options, sortEnabled)}
         </DropdownInput>
       </>
     );

@@ -15,7 +15,7 @@ import {
   DescriptionLabel,
 } from './styled';
 
-const NameSection = () => {
+const NameSection = ({ readOnly }) => {
   const selectedWorkflow = useSelector(workflowSelector);
   const autoFocusFieldName = useSelector(workflowAutofocusFieldSelector);
   const { name = '' } = selectedWorkflow || {};
@@ -71,6 +71,7 @@ const NameSection = () => {
             value={value}
             name="workflowName"
             onBlur={handleBlur}
+            readOnly={readOnly}
           />
         </DescriptionTextContainer>
         {descriptionErrorState && (

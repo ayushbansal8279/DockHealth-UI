@@ -5,8 +5,13 @@ import OptionsMenu from 'components/common/OptionsMenu/OptionsMenu';
 import { Container, Title } from './styled';
 
 const ChartTail = props => {
-  const { name, children } = props;
+  const { name, children, onMaximize } = props;
   const [maximized, setMaximized] = useState(false);
+
+  // eslint-disable-next-line react/destructuring-assignment
+  if (props.maximized !== null && props.maximized !== name) {
+    return null;
+  }
 
   return (
     <Container maximized={maximized}>
@@ -20,6 +25,11 @@ const ChartTail = props => {
                   name: maximized ? 'Minimize' : 'Maximize',
                   onClick: () => {
                     setMaximized(!maximized);
+                    if (maximized) {
+                      onMaximize(null);
+                    } else {
+                      onMaximize(name);
+                    }
                   },
                 },
               ]}
@@ -28,7 +38,9 @@ const ChartTail = props => {
             </OptionsMenu>
           </Box>
         </Title>
-        <Box flex={1}>{children}</Box>
+        <Box flex={1} key={maximized}>
+          {children}
+        </Box>
       </Box>
     </Container>
   );

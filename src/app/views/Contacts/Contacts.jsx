@@ -9,7 +9,7 @@ import { StyledDataGrid } from './DataGridStyles';
 import { getContactColumns } from './helpers';
 import { AddContactWrapper, ViewContainer } from './styled';
 
-const PAGE_SIZE = 100;
+const PAGE_SIZE = 10;
 
 const Contacts = () => {
   const [contacts, setContacts] = useState([]);
@@ -84,7 +84,9 @@ const Contacts = () => {
           rowHeight={35}
           headerHeight={45}
           page={page}
-          onPageChange={({ page: p }) => setPage(p)}
+          onPageChange={p => {
+            setPage(p);
+          }}
           pageSize={PAGE_SIZE}
           disableColumnMenu
           disableSelectionOnClick

@@ -1,3 +1,4 @@
+import PERMISSION_MAP from 'helpers/permission-mapper';
 import * as ActionTypes from '../actions/action-types';
 
 const defaultViewSetup = {
@@ -110,6 +111,7 @@ const UserReducer = (state = initialState, action) => {
         userProfile: {
           ...state.userProfile,
           ...user,
+          orgUserPermissions: PERMISSION_MAP[user.orgUserRole],
           // api is not returning picture hash if it's deleted
           profileThumbnailPictureHash: user.profileThumbnailPictureHash,
           profilePictureHash: user.profilePictureHash,

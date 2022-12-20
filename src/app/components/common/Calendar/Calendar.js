@@ -17,6 +17,10 @@ import { userProfileSelector } from 'selectors/user-selectors';
 import Tooltip from 'components/common/Tooltip/Tooltip';
 import Spacing from 'components/common/Spacing';
 import { ClickAwayListener, Typography } from '@material-ui/core';
+import {
+  TASK_LIST_RESTRICTIONS_OPTIONS,
+  TASK_LIST_RESTRICTIONS_PROFILES,
+} from 'restrictions/task-restrictions';
 import { transformTaskToEvent } from './helpers';
 import {
   CalendarContainer,
@@ -39,6 +43,11 @@ const Calendar = ({ taskListIdentifier }) => {
   const transformedTasks = useMemo(() => allTasks.map(transformTaskToEvent), [
     allTasks,
   ]);
+
+  const currentUser = useSelector(userProfileSelector);
+  const restrictions =
+    TASK_LIST_RESTRICTIONS_PROFILES[currentUser?.orgUserRole];
+  const { DISABLED } = TASK_LIST_RESTRICTIONS_OPTIONS;
 
   const handleEventClick = useCallback(
     data => {
@@ -136,22 +145,24 @@ const Calendar = ({ taskListIdentifier }) => {
           }}
         >
           <AddEventInputContainer>
-            <input
-              name="addTaskViaCalendar"
-              onBlur={event => onAddTaskInputBlur(event, eventInfo)}
-              ref={addTaskInputReference}
-              onClick={onAddTaskClick}
-              placeholder="Add a task..."
-              onKeyDown={event => {
-                event.stopPropagation();
-                if (event.key === 'Enter') {
-                  onAddTaskInputBlur(event, eventInfo);
-                } else if (event.key === 'Escape') {
-                  eventInfo.event.remove();
-                  setIsAddingTaskEnabled(true);
-                }
-              }}
-            />
+            {restrictions?.createTask !== DISABLED && (
+              <input
+                name="addTaskViaCalendar"
+                onBlur={event => onAddTaskInputBlur(event, eventInfo)}
+                ref={addTaskInputReference}
+                onClick={onAddTaskClick}
+                placeholder="Add a task..."
+                onKeyDown={event => {
+                  event.stopPropagation();
+                  if (event.key === 'Enter') {
+                    onAddTaskInputBlur(event, eventInfo);
+                  } else if (event.key === 'Escape') {
+                    eventInfo.event.remove();
+                    setIsAddingTaskEnabled(true);
+                  }
+                }}
+              />
+            )}
           </AddEventInputContainer>
         </ClickAwayListener>
       );

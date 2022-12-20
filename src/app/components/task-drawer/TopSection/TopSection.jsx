@@ -28,6 +28,7 @@ const { DISABLED } = SINGLE_TASK_RESTRICTIONS_OPTIONS;
 
 const TopSection = ({
   restrictions,
+  taskListRestrictions,
   onDelete,
   onDuplicate,
   closeTaskDrawer,
@@ -178,7 +179,11 @@ const TopSection = ({
                 !isTaskStatusTogglingDisabled && isDependencyEmptyOrCompleted
               }
               isCompleted={selectedTask?.status === TaskStatus.COMPLETE}
-              onClick={onCompleteToggle}
+              onClick={
+                taskListRestrictions?.createTask !== DISABLED
+                  ? onCompleteToggle
+                  : () => {}
+              }
             />
             <HorizontalLabel>Complete Task</HorizontalLabel>
           </>
@@ -203,20 +208,20 @@ const TopSection = ({
             <Box mx={0.5} />
           </>
         )}
-        {allowedOptions.length !== 0 && (
-          <OptionsMenu
-            options={allowedOptions}
-            customButtonComponent={IconButton}
-          >
-            <MoreHoriz
-              ref={element => {
-                if (element) setTourTaskMenuReference(element);
-              }}
-              color="primary"
-            />
-          </OptionsMenu>
-        )}
-
+        {allowedOptions.length !== 0 &&
+          taskListRestrictions?.createTask !== DISABLED && (
+            <OptionsMenu
+              options={allowedOptions}
+              customButtonComponent={IconButton}
+            >
+              <MoreHoriz
+                ref={element => {
+                  if (element) setTourTaskMenuReference(element);
+                }}
+                color="primary"
+              />
+            </OptionsMenu>
+          )}
         {!hideCloseIcon && (
           <IconButton
             onClick={() => {

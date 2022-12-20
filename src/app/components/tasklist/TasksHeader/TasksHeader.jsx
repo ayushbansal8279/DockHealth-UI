@@ -4,14 +4,15 @@ import React, { useCallback } from 'react';
 import { useSelector } from 'react-redux';
 import Checkbox from 'components/common/Checkbox/Checkbox';
 import { SortHeaderRow } from 'components/tasklist/ColumnSortHeader/styled';
-import { TaskItemColumn, TaskItemColumnWidth } from 'helpers/task-helpers';
+import { TaskItemColumnWidth } from 'helpers/task-helpers';
 import { getCustomerTypeLabel } from 'helpers/customer-type-helper';
-import { useColumnsConfig } from 'context-api/columns-config-context';
+import { useTaskListColumnsConfig } from 'context-api/columns-config-context';
 import { CustomFieldWidthConfig } from 'helpers/field-type-helpers';
 import { DragDropContext, Droppable } from 'react-beautiful-dnd';
 import { SINGLE_TASK_RESTRICTIONS_PROFILES } from 'restrictions/task-restrictions';
 import { CUSTOM_FIELD_TYPES } from 'helpers/custom-fields-helpers';
 import { currentTaskListSelector } from 'selectors/task-list-selectors';
+import { selectedUserOrganizationSelector } from 'selectors/user-selectors';
 import { isMemberAdmin } from 'helpers/list-members-helper';
 import { BulkContainer, StickyColumnContainer } from './styled';
 import {
@@ -33,7 +34,12 @@ const TasksHeader = ({
   const { currentUser } = useSelector(store => ({
     currentUser: store.userState.userProfile,
   }));
-  const { columns, setColumns, setColumnWidth = () => {} } = useColumnsConfig();
+  const currentOrganization = useSelector(selectedUserOrganizationSelector);
+  const {
+    columns,
+    setColumns,
+    setColumnWidth = () => {},
+  } = useTaskListColumnsConfig();
   const customerTypeLabel = getCustomerTypeLabel(currentUser);
   const currentUserMember = taskList?.listUsers.find(
     u => u.identifier === currentUser?.identifier,
@@ -43,6 +49,15 @@ const TasksHeader = ({
     SINGLE_TASK_RESTRICTIONS_PROFILES[currentUser?.orgUserRole];
   const restrictCustomizationFeatures =
     taskList?.restrictCustomization && !isListAdmin;
+
+  const tasksHeaderTextTransformItem =
+    currentOrganization?.themeSettings?.find(
+      ({ name }) => name === 'tasks.header.textTransform',
+    ) || {};
+  const tasksHeaderTextColorItem =
+    currentOrganization?.themeSettings?.find(
+      ({ name }) => name === 'tasks.header.textColor',
+    ) || {};
 
   const handleClickCheckbox = useCallback(
     event => {
@@ -110,17 +125,24 @@ const TasksHeader = ({
           truncateEnabled
           id={f.identifier}
           label={isRegular ? f.label : f.name}
-          sort={sort}
-          onSortChange={onSortChange}
           width={+f.columnWidth}
           snapshot={snapshot}
           sort={isRegular ? sort : null}
           onSortChange={isRegular ? onSortChange : null}
           printWidth={+customPrintWidth}
+          tasksHeaderTextTransform={tasksHeaderTextTransformItem?.value}
+          tasksHeaderTextColor={tasksHeaderTextColorItem?.value}
         />
       );
     },
-    [handleResizeColumn, onSortChange, restrictCustomizationFeatures, sort],
+    [
+      handleResizeColumn,
+      onSortChange,
+      restrictCustomizationFeatures,
+      sort,
+      tasksHeaderTextTransformItem,
+      tasksHeaderTextColorItem,
+    ],
   );
 
   return (

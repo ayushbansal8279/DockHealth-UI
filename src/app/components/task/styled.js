@@ -34,6 +34,10 @@ export const DecisionSelect = styled(Select)`
   & .MuiSelect-root:before {
     display: none;
   }
+  & .switchIcon > path {
+    fill: ${props =>
+      props.iconColorActive ? props.iconColorActive : palette.dirtyBanana};
+  },
 `;
 
 export const ListItemLink = styled(Link)`
@@ -163,13 +167,13 @@ export const Description = styled.div`
   overflow-wrap: anywhere;
   ${props => (props.isCrossedOut ? 'text-decoration: line-through;' : '')}
   cursor: pointer;
-  overflow: hidden;
   text-overflow: ellipsis;
   white-space: initial;
   max-width: 480px;
   font-weight: 400;
   font-size: 14px;
-  ${props => (props.isUnread ? 'font-weight: 900; font-size: 15px;' : '')}
+  ${props => (props.isUnread ? 'font-weight: 900; font-size: 15px;' : '')};
+  overflow: hidden;
 
   @media screen and (max-width: 1300px) {
     max-width: 300px;
@@ -200,8 +204,8 @@ export const DescriptionBox = styled.div`
   display: flex;
   flex-direction: column;
   flex: 1;
-  overflow: hidden;
   cursor: pointer;
+  width: 100%;
 `;
 
 export const DecisionBox = styled.div`
@@ -293,10 +297,8 @@ export const StandardTaskItemCell = styled.div`
     isSubtask && order === 0 ? +width - 36 : width}px;
   padding: ${spacing.small} 0;
   padding: ${props => props.padding || `${spacing.small} 0`};
-  padding-left: ${props =>
-    props.paddingLeft ? spacing[props.paddingLeft] : spacing.regular};
-  padding-right: ${props =>
-    props.paddingLeft ? spacing[props.paddingRight] : spacing.regular};
+  padding-left: ${spacing.small};
+  padding-right: ${spacing.small};
   width: ${props => (!props.width ? '100%' : '')};
   justify-content: ${props => props.justify || 'flex-start'};
   position: relative;
@@ -496,7 +498,7 @@ export const SubtaskStylingLastLink = styled.div`
 `;
 
 export const SubtasksCellContentButton = styled.button`
-  width: 100%;
+  width: 50px;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -576,19 +578,37 @@ export const DetailsButton = styled.button`
 `;
 
 export const DescriptionBorder = styled.div`
-  padding: 0 2px;
-  overflow: hidden;
+  display: flex;
+  padding: 6px 8px;
   border-radius: 4px;
   border-width: 1px;
   border-style: solid;
   border-color: transparent;
+  width: 100%;
   ${({ disabled }) => (disabled ? 'border: 0px;' : '')}
+  ${({ isEdited }) => isEdited && `border-color: ${palette.coolGrey2};`}
+`;
+
+export const DescriptionEditButton = styled.div`
+  margin-left: 8px;
+  border-radius: 3px;
+  max-height: 18px;
+  background-color: ${({ active }) => (active ? palette.coolGrey3 : '')};
+  display: ${({ active }) => (active ? 'none' : 'block')};
 
   &:hover {
-    border-color: ${palette.coolGrey2};
+    background-color: ${palette.coolGrey3};
   }
 
-  ${({ isEdited }) => isEdited && `border-color: ${palette.coolGrey2};`}
+  & .MuiIconButton-root {
+    color: ${palette.brightBlue};
+    margin: 0;
+  }
+
+  & .MuiSvgIcon-root {
+    height: 14px;
+    width: 14px;
+  }
 `;
 
 export const PatientPrintAdditionalInfo = styled.div`

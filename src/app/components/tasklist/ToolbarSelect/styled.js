@@ -20,6 +20,10 @@ export const useStyles = makeStyles({
     '& .MuiOutlinedInput-notchedOutline': {
       border: 'none',
     },
+    '& .switchIcon > path': {
+      fill: props =>
+        props.iconColorActive ? props.iconColorActive : palette.dirtyBanana,
+    },
   },
 });
 

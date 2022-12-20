@@ -54,6 +54,7 @@ const TemplateAuthBase = ({ childRoutes }) => {
             <Switch>
               {childRoutes?.map(route => (
                 <RouteWrapper
+                  permissions={route.permissions}
                   allowedToRoles={route.allowedToRoles}
                   key={route.path}
                   path={`${path}${route.path}`}

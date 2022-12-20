@@ -2,6 +2,7 @@ import React from 'react';
 import ToolbarSelect from 'components/tasklist/ToolbarSelect/ToolbarSelect';
 import TasksStatusSwitchIcon from 'img/tasks-status-switch-icon';
 import { TaskStatus } from 'helpers/task-helpers';
+import { ViewTypeImg } from './styled';
 
 const OPTIONS = [
   {
@@ -11,14 +12,27 @@ const OPTIONS = [
   { label: 'Archived Tasks', value: TaskStatus.COMPLETE },
 ];
 
-const TaskStatusToolbarSelect = ({ value, onChange, ...restProps }) => {
+const TaskStatusToolbarSelect = ({
+  value,
+  onChange,
+  iconColorFilterActive,
+  iconColorActive,
+  ...restProps
+}) => {
   return (
     <ToolbarSelect
       options={OPTIONS}
       value={value || ''}
       name="task-status"
       onChange={onChange}
-      icon={<img src={TasksStatusSwitchIcon} alt="view type icon" />}
+      icon={
+        <ViewTypeImg
+          src={TasksStatusSwitchIcon}
+          alt="view type icon"
+          iconColorFilterActive={iconColorFilterActive}
+        />
+      }
+      iconColorActive={iconColorActive}
       {...restProps}
     />
   );

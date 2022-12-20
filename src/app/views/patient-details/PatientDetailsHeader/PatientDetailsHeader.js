@@ -18,6 +18,10 @@ import {
   isFetchingPatientSelector,
 } from 'selectors/patient-details-selectors';
 import { FieldType } from 'helpers/field-type-helpers';
+import {
+  TASK_LIST_RESTRICTIONS_OPTIONS,
+  TASK_LIST_RESTRICTIONS_PROFILES,
+} from 'restrictions/task-restrictions';
 import PatientDetailsDrawer from '../PatientDetailsDrawer/PatientDetailsDrawer';
 import PatientDetailsLoader from '../PatientDetailsLoader/PatientDetailsLoader';
 import {
@@ -33,6 +37,8 @@ import {
   ContactContainer,
   PatientMRNAnchor,
 } from './styled';
+
+const { DISABLED } = TASK_LIST_RESTRICTIONS_OPTIONS;
 
 // eslint-disable-next-line sonarjs/cognitive-complexity
 const PatientDetailsHeader = () => {
@@ -60,6 +66,10 @@ const PatientDetailsHeader = () => {
   const emrPatientLink = organization?.emrPatientLink;
   const isLoadingDetails = isFetchingPatient || !patient;
   const [cameFrom, setCameFrom] = useState();
+  const taskListRestrictions =
+    TASK_LIST_RESTRICTIONS_PROFILES[currentUser?.orgUserRole];
+
+  const embeddedMode = sessionStorage.getItem('EmbeddedMode') || false;
 
   const goBack = useCallback(() => {
     if (cameFrom) {
@@ -81,21 +91,25 @@ const PatientDetailsHeader = () => {
             <Box flex="1 0 0" display="flex" alignItems="center">
               <Grid container alignItems="center">
                 <Box flexBasis={30}>
-                  <button type="button" onClick={goBack}>
-                    <img
-                      src={ArrowLeftIcon}
-                      alt="back-navigation"
-                      style={{ width: '16px' }}
-                    />
-                  </button>
+                  {!embeddedMode && (
+                    <button type="button" onClick={goBack}>
+                      <img
+                        src={ArrowLeftIcon}
+                        alt="back-navigation"
+                        style={{ width: '16px' }}
+                      />
+                    </button>
+                  )}
                 </Box>
                 <PatientName>
                   {[`${lastName},`, firstName, middleName].join(' ')}
                 </PatientName>
                 <Box mx={1} />
-                <ButtonContainer onClick={setIsDrawerOpen}>
-                  <PatientDetailsLabel>View details</PatientDetailsLabel>
-                </ButtonContainer>
+                {taskListRestrictions?.createTask !== DISABLED && (
+                  <ButtonContainer onClick={setIsDrawerOpen}>
+                    <PatientDetailsLabel>View details</PatientDetailsLabel>
+                  </ButtonContainer>
+                )}
                 <Box mx={1} />
                 <Box flex="500px 0 0">
                   {patient?.patientLabels?.map(
@@ -150,7 +164,7 @@ const PatientDetailsHeader = () => {
           </Box>
           <PatientDetails>
             <PatientDetailsInformation>
-              {(age || gender || dob) && (
+              {(age || gender || dob) && !embeddedMode && (
                 <>
                   <PatientInfo>
                     {dob && `${moment(dob).format('MMM D, YYYY')} | `}
