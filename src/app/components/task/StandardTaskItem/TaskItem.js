@@ -329,7 +329,7 @@ const TaskItem = React.memo(
     const showDraggableDots = !dragAndDropDisabled && isDraggable;
     const showPriority = task.priority && task.priority !== TaskPriority.NONE;
     const showDecisionRow = task.intentType === 'DECISION' && !isTemplateTask;
-    const hasParentTaskLabel = isSubtask && !isNestedTask && parentTask;
+    const hasParentTaskLabel = isSubtask && !isNestedTask && !!parentTask;
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
     const onClickBulkEdit = () =>
@@ -485,6 +485,7 @@ const TaskItem = React.memo(
                     isEditing={isEditingDescription}
                     setEditing={setEditingDescription}
                     isEditButtonVisible={isEditButtonVisible}
+                    hasParentTaskLabel={hasParentTaskLabel}
                   />
                   {!isSubtask && (
                     <TaskItemSubtasks
@@ -592,32 +593,37 @@ const TaskItem = React.memo(
               </>
             )}
             {isColumnChecked(columns, TaskItemColumn.WORKFLOW_STATUS) && (
-              <TaskItemCell
-                key={`task_status_${taskIdentifier}`}
-                width={
-                  columns?.find(
-                    ({ identifier }) =>
-                      identifier === TaskItemColumn.WORKFLOW_STATUS,
-                  )?.columnWidth
-                }
-                paddingLeft="smallPlus"
-                paddingRight="tiny"
-                onContextMenu={event => {
-                  event.stopPropagation();
-                }}
-                order={getColumnOrder(TaskItemColumn.WORKFLOW_STATUS)}
-              >
-                <TaskItemWorkflowStatus
-                  task={task}
-                  updateWorkflowStatus={handleUpdateWorkflowStatus}
-                  workflowStatus={workflowStatus}
-                  matchWorkflowStatus={matchWorkflowStatus}
-                  highlightedValue={highlightedValue}
-                  showDefaultTaskStatusCompleted={
-                    selectedOrganization?.showDefaultTaskStatusCompleted
-                  }
-                />
-              </TaskItemCell>
+              <>
+                {randerFirstColumnCoverIfNecessary(
+                  <TaskItemCell
+                    key={`task_status_${taskIdentifier}`}
+                    width={
+                      columns?.find(
+                        ({ identifier }) =>
+                          identifier === TaskItemColumn.WORKFLOW_STATUS,
+                      )?.columnWidth
+                    }
+                    paddingLeft="smallPlus"
+                    paddingRight="tiny"
+                    onContextMenu={event => {
+                      event.stopPropagation();
+                    }}
+                    order={getColumnOrder(TaskItemColumn.WORKFLOW_STATUS)}
+                  >
+                    <TaskItemWorkflowStatus
+                      task={task}
+                      updateWorkflowStatus={handleUpdateWorkflowStatus}
+                      workflowStatus={workflowStatus}
+                      matchWorkflowStatus={matchWorkflowStatus}
+                      highlightedValue={highlightedValue}
+                      showDefaultTaskStatusCompleted={
+                        selectedOrganization?.showDefaultTaskStatusCompleted
+                      }
+                    />
+                  </TaskItemCell>,
+                  getColumnOrder(TaskItemColumn.WORKFLOW_STATUS),
+                )}
+              </>
             )}
             {isColumnChecked(columns, TaskItemColumn.COMMENTS) && (
               <>
@@ -756,18 +762,23 @@ const TaskItem = React.memo(
                 </>
               )}
             {isColumnChecked(columns, TaskItemColumn.ANCHOR_DATE) && (
-              <TaskItemCell
-                width={
-                  columns?.find(
-                    ({ identifier }) =>
-                      identifier === TaskItemColumn.ANCHOR_DATE,
-                  )?.columnWidth
-                }
-                onContextMenu={event => {
-                  event.stopPropagation();
-                }}
-                order={getColumnOrder(TaskItemColumn.ANCHOR_DATE)}
-              />
+              <>
+                {randerFirstColumnCoverIfNecessary(
+                  <TaskItemCell
+                    width={
+                      columns?.find(
+                        ({ identifier }) =>
+                          identifier === TaskItemColumn.ANCHOR_DATE,
+                      )?.columnWidth
+                    }
+                    onContextMenu={event => {
+                      event.stopPropagation();
+                    }}
+                    order={getColumnOrder(TaskItemColumn.ANCHOR_DATE)}
+                  />,
+                  getColumnOrder(TaskItemColumn.ANCHOR_DATE),
+                )}
+              </>
             )}
             {isColumnChecked(columns, TaskItemColumn.ASSIGNED) && (
               <>

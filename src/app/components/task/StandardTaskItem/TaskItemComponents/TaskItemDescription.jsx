@@ -216,7 +216,7 @@ const TaskItemDescription = ({
                 </Fade>
               )}
             </Popper>
-            {isEditButtonVisible && (
+            {isEditButtonVisible && !isCompleted && (
               <DescriptionEditButton active={isEditing}>
                 <IconButton
                   onClick={event => {

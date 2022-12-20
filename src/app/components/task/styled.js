@@ -292,9 +292,9 @@ export const StandardTaskItemCell = styled.div`
     props.bolded ? fontWeights.regular : fontWeights.light};
   color: ${palette.mediumGrey};
   min-width: ${({ width, isSubtask, order }) =>
-    isSubtask && order === 0 ? +width - 36 : width}px;
+    isSubtask && order === 0 ? +width - 0 : width}px;
   max-width: ${({ width, isSubtask, order }) =>
-    isSubtask && order === 0 ? +width - 36 : width}px;
+    isSubtask && order === 0 ? +width - 0 : width}px;
   padding: ${spacing.small} 0;
   padding: ${props => props.padding || `${spacing.small} 0`};
   padding-left: ${spacing.small};
@@ -548,6 +548,7 @@ export const AddSubtaskButton = styled.button`
 export const TaskItemDescriptionIndicators = styled.div`
   display: flex;
   align-items: baseline;
+  margin-left: 5px;
 `;
 
 export const PatientLabel = styled.span`
@@ -579,7 +580,7 @@ export const DetailsButton = styled.button`
 
 export const DescriptionBorder = styled.div`
   display: flex;
-  padding: 6px 8px;
+  ${({ isEdited }) => (isEdited ? 'padding: 4px 8px;' : 'padding: 2px 8px;')}
   border-radius: 4px;
   border-width: 1px;
   border-style: solid;
