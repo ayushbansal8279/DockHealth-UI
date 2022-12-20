@@ -55,7 +55,7 @@ export const getAdditionalTaskOptions = ({
   handleDisplayOptionChange,
 }) => [
   {
-    label: 'Required',
+    label: 'Required for Task completion',
     key: 'TASK_REQUIRED',
     value: !!displayOptionsState?.displayOptions?.find(
       option => option === 'TASK_REQUIRED',
