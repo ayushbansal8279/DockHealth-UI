@@ -1,12 +1,13 @@
 /* eslint-disable sonarjs/cognitive-complexity */
 import React, { useEffect, useRef, useState } from 'react';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { Box } from '@material-ui/core';
 import ArrowBackIcon from '@material-ui/icons/ArrowBack';
 import { useBoolean } from 'hooks/useBoolean';
 import * as ActionTypes from 'actions/action-types';
 import { addTask } from 'api/task-api';
 import { getTasksForTaskListByTaskGroup } from 'api/list-details-api';
+import { selectedUserOrganizationSelector } from 'selectors/user-selectors';
 import { TaskItemType } from 'helpers/task-helpers';
 import {
   TitleWithButtonWrapper,
@@ -39,6 +40,12 @@ const ParentTaskSelectStep = ({
     unsetGroupInputFocused,
   ] = useBoolean(false);
   const dispatch = useDispatch();
+
+  const currentOrganization = useSelector(selectedUserOrganizationSelector);
+  const defaultGroupNameItem =
+    currentOrganization?.themeSettings?.find(
+      ({ name }) => name === 'content.label.default.group',
+    ) || {};
 
   const handleAddNewParentTask = taskDescription => {
     if (savingParentTask || !selectedList || !selectedGroup || !taskDescription)
@@ -109,7 +116,7 @@ const ParentTaskSelectStep = ({
             </button>
             <Title>
               {selectedGroup.groupName === 'DEFAULT'
-                ? 'New tasks'
+                ? defaultGroupNameItem?.value || 'New tasks'
                 : selectedGroup.groupName}
             </Title>
           </TitleWithButtonWrapper>
