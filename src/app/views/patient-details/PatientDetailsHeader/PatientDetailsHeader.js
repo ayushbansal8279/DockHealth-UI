@@ -174,9 +174,7 @@ const PatientDetailsHeader = () => {
                   {genderIdentity && (
                     <>
                       <PatientInfoDivider />
-                      <PatientInfo>
-                        gender identity: {genderIdentity}
-                      </PatientInfo>
+                      <PatientInfo>Gender: {genderIdentity}</PatientInfo>
                     </>
                   )}
                   <PatientInfoDivider />

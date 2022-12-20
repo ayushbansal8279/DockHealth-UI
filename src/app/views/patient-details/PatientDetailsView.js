@@ -105,6 +105,7 @@ const PatientDetailsView = () => {
     (async () => {
       const widgetDetails = await getPatientWidgets();
       const widgets = widgetDetails?.widgets;
+
       const widgetTabs = [];
 
       if (widgets && widgets.length > 0) {

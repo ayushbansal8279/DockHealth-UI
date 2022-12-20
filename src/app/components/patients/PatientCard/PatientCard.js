@@ -218,7 +218,7 @@ const PatientCard = ({
                         </InfoItem>
                       )}
                       {genderIdentity && (
-                        <InfoItem>Gender identity: {genderIdentity}</InfoItem>
+                        <InfoItem>Gender: {genderIdentity}</InfoItem>
                       )}
                       {mrn && !emrPatientLink && (
                         <InfoItem>
