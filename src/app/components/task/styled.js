@@ -292,9 +292,9 @@ export const StandardTaskItemCell = styled.div`
     props.bolded ? fontWeights.regular : fontWeights.light};
   color: ${palette.mediumGrey};
   min-width: ${({ width, isSubtask, order }) =>
-    isSubtask && order === 0 ? +width - 36 : width}px;
+    isSubtask && order === 0 ? +width - 0 : width}px;
   max-width: ${({ width, isSubtask, order }) =>
-    isSubtask && order === 0 ? +width - 36 : width}px;
+    isSubtask && order === 0 ? +width - 0 : width}px;
   padding: ${spacing.small} 0;
   padding: ${props => props.padding || `${spacing.small} 0`};
   padding-left: ${spacing.small};

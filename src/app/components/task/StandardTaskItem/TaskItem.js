@@ -329,7 +329,7 @@ const TaskItem = React.memo(
     const showDraggableDots = !dragAndDropDisabled && isDraggable;
     const showPriority = task.priority && task.priority !== TaskPriority.NONE;
     const showDecisionRow = task.intentType === 'DECISION' && !isTemplateTask;
-    const hasParentTaskLabel = isSubtask && !isNestedTask && parentTask;
+    const hasParentTaskLabel = isSubtask && !isNestedTask && !!parentTask;
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
     const onClickBulkEdit = () =>
@@ -485,6 +485,7 @@ const TaskItem = React.memo(
                     isEditing={isEditingDescription}
                     setEditing={setEditingDescription}
                     isEditButtonVisible={isEditButtonVisible}
+                    hasParentTaskLabel={hasParentTaskLabel}
                   />
                   {!isSubtask && (
                     <TaskItemSubtasks
