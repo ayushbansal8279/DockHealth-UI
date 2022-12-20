@@ -153,7 +153,7 @@ const DashboardToolbar = ({ iconColorFilterActive, iconColorActive }) => {
               isSelected={tabName === DashboardTasksTab.SHARED_TASKS}
             />
           </AccessRestrictor> */}
-          <AccessRestrictor allowedToRoles={[ADMIN, OWNER, MEMBER, GUEST]}>
+          <AccessRestrictor allowedToRoles={[ADMIN, OWNER]}>
             <DashboardTab
               label="All Tasks"
               setHighlightPosition={setHighlightPosition}
