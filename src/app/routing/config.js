@@ -72,18 +72,18 @@ const {
   CAN_ACCESS_ANALYTICS_PAGE,
   CAN_ACCESS_CHAT_PAGE,
   CAN_ACCESS_SETTINGS_PAGE,
+  CAN_ACCESS_PROFILE_PAGE,
 } = PERMISSIONS;
 
 export const SETTINGS_ROUTES = [
   {
     path: '/userprofile',
     RouteComponent: UserProfileView,
-    permissions: [CAN_ACCESS_SETTINGS_PAGE],
+    permissions: [CAN_ACCESS_PROFILE_PAGE],
   },
   {
     path: '/support',
     RouteComponent: SupportView,
-    permissions: [CAN_ACCESS_SETTINGS_PAGE],
   },
   {
     path: '/subscriptions',
@@ -103,7 +103,7 @@ export const SETTINGS_ROUTES = [
   {
     path: '/documents',
     RouteComponent: DocumentsView,
-    permissions: [CAN_ACCESS_SETTINGS_PAGE],
+    permissions: [CAN_ACCESS_PROFILE_PAGE],
   },
   {
     path: '/subscription-payment',
