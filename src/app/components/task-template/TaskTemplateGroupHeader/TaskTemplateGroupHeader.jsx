@@ -815,7 +815,7 @@ const TaskTemplateGroupHeader = ({
               order={getColumnOrder(TaskItemColumn.LABELS)}
             >
               <TaskTemplateIcons
-                comments={
+                labels={
                   templateGroup.labels || !workFlowData
                     ? templateGroup.labels
                     : workFlowData.labels
