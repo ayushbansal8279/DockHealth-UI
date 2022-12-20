@@ -548,6 +548,7 @@ export const AddSubtaskButton = styled.button`
 export const TaskItemDescriptionIndicators = styled.div`
   display: flex;
   align-items: baseline;
+  margin-left: 5px;
 `;
 
 export const PatientLabel = styled.span`
@@ -579,7 +580,7 @@ export const DetailsButton = styled.button`
 
 export const DescriptionBorder = styled.div`
   display: flex;
-  padding: 6px 8px;
+  ${({ isEdited }) => (isEdited ? 'padding: 4px 8px;' : 'padding: 2px 8px;')}
   border-radius: 4px;
   border-width: 1px;
   border-style: solid;
