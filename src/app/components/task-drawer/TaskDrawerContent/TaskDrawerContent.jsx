@@ -124,6 +124,8 @@ const TaskDrawerContent = props => {
     false;
   const taskStartDateDisabled =
     currentOrganization?.disabledFeatures?.includes('TASK_START_DATE') || false;
+  const subTasksDisabled =
+    currentOrganization?.disabledFeatures?.includes('TASK_SUBTASKS') || false;
 
   const restrictions = SINGLE_TASK_RESTRICTIONS_PROFILES[orgUserRole];
   const taskListRestrictions = TASK_LIST_RESTRICTIONS_PROFILES[orgUserRole];
@@ -304,7 +306,7 @@ const TaskDrawerContent = props => {
             <CommentSection />
           </div>
         </Grid>
-        {selectedTask && !isSubtask && (
+        {selectedTask && !isSubtask && !subTasksDisabled && (
           <Grid item xs={12}>
             <SubtasksSection restrictions={restrictions?.subtasks} />
           </Grid>
