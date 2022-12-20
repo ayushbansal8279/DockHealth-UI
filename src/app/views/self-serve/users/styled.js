@@ -16,7 +16,7 @@ export const UsersViewOuterContainer = styled.div`
 export const UsersViewContainer = styled.div`
   display: flex;
   flex-direction: column;
-  padding: 3rem 2rem;
+  padding: 1rem 1rem;
   max-width: 1200px;
   width: 1200px;
 `;

@@ -4,7 +4,6 @@ import { fontWeights, fontSizes } from 'styles/font';
 import palette from 'styles/palette';
 
 export const UsersTableContainer = styled.div`
-  margin-top: 1rem;
   width: 100%;
 
   && {
