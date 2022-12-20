@@ -446,7 +446,6 @@ const TaskItem = React.memo(
                         identifier === TaskItemColumn.DESCRIPTION,
                     )?.columnWidth
                   }
-                  }
                   order={getColumnOrder(TaskItemColumn.DESCRIPTION)}
                   bolded
                   paddingLeft="smallPlus"
