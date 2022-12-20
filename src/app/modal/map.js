@@ -69,6 +69,7 @@ import SendESignFromTaskModal from './components/SendMessageFromTaskModals/SendE
 import EditTemplateModal from './components/EditTemplateModal/EditTemplateModal';
 import SendEmrNoteFromTaskModal from './components/SendMessageFromTaskModals/SendEmrNoteFromTaskModal/SendEmrNoteFromTaskModal';
 import SendSmsFromTaskModal from './components/SendMessageFromTaskModals/SendSmsFromTaskModal/SendSmsFromTaskModal';
+import SendSecureMessageFromTaskModal from './components/SendMessageFromTaskModals/SendSecureMessageFromTaskModal/SendSecureMessageFromTaskModal';
 import EditContactModal from './components/EditContactModal/EditContactModal';
 import AnchorDateChangeConfirmationModal from './components/AnchorDateChangeConfirmationModal/AnchorDateChangeConfirmationModal';
 
@@ -144,6 +145,7 @@ const MODAL_MAP = {
   EditTemplate: EditTemplateModal,
   SendEmrFromTask: SendEmrNoteFromTaskModal,
   SendSmsFromTask: SendSmsFromTaskModal,
+  SendSecureMessageFromTask: SendSecureMessageFromTaskModal,
   EditContact: EditContactModal,
   AnchorDateChangeConfirmation: AnchorDateChangeConfirmationModal,
 };

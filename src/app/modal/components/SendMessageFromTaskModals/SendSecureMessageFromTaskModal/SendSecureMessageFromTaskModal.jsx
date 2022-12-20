@@ -1,0 +1,73 @@
+import Input from 'components/common/Input/Input';
+import React, { useCallback, useState } from 'react';
+import { useDispatch } from 'react-redux';
+import Button from 'components/common/Button/Button';
+// import { selectedTaskSelector } from 'selectors/task-drawer-selectors';
+import { closeModal } from 'modal/actions';
+import {
+  CloseIcon,
+  CloseIconButton,
+  ModalDescription,
+  ModalDescriptionContainer,
+  ModalFooterStyled,
+  ModalHeader,
+  ModalHeaderContainerStyled,
+  ModalWrapper,
+} from '../../styled';
+import { InputContainerStyled } from '../styled';
+
+const SendSecureMessageFromTaskModal = () => {
+  const dispatch = useDispatch();
+  const [message, setMessage] = useState('');
+
+  // const selectedTask = useSelector(selectedTaskSelector);
+  // const { identifier } = selectedTask;
+
+  const handleSubmit = useCallback(() => {
+    // dispatch(
+    //   sendSmsForTask({
+    //     message,
+    //     recipientContact: contact.value,
+    //     taskIdentifier: identifier,
+    //   }),
+    // );
+    dispatch(closeModal());
+  }, [dispatch]);
+  // }, [contact, dispatch, identifier, message]);
+
+  return (
+    <ModalWrapper width="600px">
+      <CloseIconButton size="small" onClick={() => dispatch(closeModal())}>
+        <CloseIcon htmlColor="#C1CCDA" />
+      </CloseIconButton>
+      <ModalHeaderContainerStyled>
+        <ModalHeader>Send Secure Message</ModalHeader>
+        <ModalDescription>Send message to patient</ModalDescription>
+      </ModalHeaderContainerStyled>
+      <ModalDescriptionContainer>
+        <InputContainerStyled>
+          <Input
+            type="text"
+            label="Message"
+            value={message}
+            onChange={event => {
+              setMessage(event.target.value);
+            }}
+          />
+        </InputContainerStyled>
+      </ModalDescriptionContainer>
+      <ModalFooterStyled>
+        <Button
+          uppercase
+          width="150px"
+          variant="primary"
+          onClick={handleSubmit}
+        >
+          send
+        </Button>
+      </ModalFooterStyled>
+    </ModalWrapper>
+  );
+};
+
+export default SendSecureMessageFromTaskModal;

@@ -81,6 +81,12 @@ export const userHasSendSmsFeatureSelector = createSelector(
     organizationAvailableFeatures?.includes('SEND_COMM_SMS'),
 );
 
+export const userHasSendSecureMessageFeatureSelector = createSelector(
+  userProfileSelector,
+  ({ organizationAvailableFeatures }) =>
+    organizationAvailableFeatures?.includes('SEND_COMM_SECURE_MSG'),
+);
+
 export const userHasSendESignFeatureSelector = createSelector(
   userProfileSelector,
   ({ organizationAvailableFeatures }) =>

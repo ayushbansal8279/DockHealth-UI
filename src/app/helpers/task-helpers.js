@@ -43,6 +43,7 @@ export const CommunicationType = {
   EMAIL: 'EMAIL',
   FAX: 'FAX',
   SMS: 'SMS',
+  SECURE_MSG: 'SECURE_MSG',
   ESIGN: 'ESIGN',
   EMR: 'EMR_NOTE',
 };
