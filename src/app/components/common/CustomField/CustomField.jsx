@@ -70,11 +70,11 @@ const CustomField = ({
         color: option.color,
       })) || [];
 
-    if (o.length > 0 && fieldType !== FieldType.DROPDOWN_MULTI)
+    if (o.length > 0 && fieldType !== FieldType.DROPDOWN_MULTI && !isRequired) {
       o.unshift({ label: 'None', value: null });
-
+    }
     return o;
-  }, [fieldType, options]);
+  }, [fieldType, isRequired, options]);
 
   const handleBlur = useCallback(
     data => {
