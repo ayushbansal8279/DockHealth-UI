@@ -361,10 +361,11 @@ const initializeListDetailsViewHooks = () => {
     [completedTasks, openedTasks, selectedTab],
   );
 
-  const bulkEditIsDisabled = useMemo(
-    () => selectedTab === TaskListTabName.COMPLETE,
-    [selectedTab],
-  );
+  const bulkEditIsDisabled = false;
+  // const bulkEditIsDisabled = useMemo(
+  //   () => selectedTab === TaskListTabName.COMPLETE,
+  //   [selectedTab],
+  // );
 
   // eslint-disable-next-line sonarjs/cognitive-complexity
   useEffect(() => {
