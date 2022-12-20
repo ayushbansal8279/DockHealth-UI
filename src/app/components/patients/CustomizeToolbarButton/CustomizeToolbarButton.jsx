@@ -53,8 +53,8 @@ const CustomizeToolbarButton = ({
     [PatientHeaderColumn.UNIQUE_ID]: 'Unique Identifier',
     [PatientHeaderColumn.DOB]: 'DOB',
     [PatientHeaderColumn.AGE]: 'Age',
-    [PatientHeaderColumn.GENDER_AT_BIRTH]: 'Gender at Brith',
-    [PatientHeaderColumn.GENDER_IDENTITY]: 'Gender Identifier',
+    [PatientHeaderColumn.GENDER_AT_BIRTH]: 'Sex at birth',
+    [PatientHeaderColumn.GENDER_IDENTITY]: 'Gender',
   };
 
   const customerTypeLabel = capitalize(getCustomerTypeLabel(userProfile));
