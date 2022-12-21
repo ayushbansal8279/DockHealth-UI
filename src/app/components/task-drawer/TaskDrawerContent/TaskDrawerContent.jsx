@@ -127,6 +127,12 @@ const TaskDrawerContent = props => {
   const subTasksDisabled =
     currentOrganization?.disabledFeatures?.includes('TASK_SUBTASKS') || false;
 
+  const taskLabelsLocationItem =
+    currentOrganization?.themeSettings?.find(
+      ({ name }) => name === 'task.labels.location',
+    ) || {};
+  const taskLabelsLocation = taskLabelsLocationItem?.value || 'default';
+
   const restrictions = SINGLE_TASK_RESTRICTIONS_PROFILES[orgUserRole];
   const taskListRestrictions = TASK_LIST_RESTRICTIONS_PROFILES[orgUserRole];
 
@@ -286,7 +292,7 @@ const TaskDrawerContent = props => {
             <CustomFieldsSection fieldCategoryType="TASK_CORE" />
           </Grid>
         )}
-        {restrictions?.labels !== DISABLED && (
+        {restrictions?.labels !== DISABLED && taskLabelsLocation === 'default' && (
           <Grid item xs={12} style={styleFullRow}>
             <div ref={labelsSectionReference}>
               <LabelsSection onTaskUpdate={onTaskUpdate} />
@@ -322,6 +328,13 @@ const TaskDrawerContent = props => {
         {restrictions?.customFields !== DISABLED && (
           <Grid item xs={12} style={styleNoPaddingRow}>
             <CustomFieldsSection fieldCategoryType="TASK_OTHER" />
+          </Grid>
+        )}
+        {restrictions?.labels !== DISABLED && taskLabelsLocation === 'bottom' && (
+          <Grid item xs={12} style={styleFullRow}>
+            <div ref={labelsSectionReference}>
+              <LabelsSection onTaskUpdate={onTaskUpdate} />
+            </div>
           </Grid>
         )}
       </Grid>
