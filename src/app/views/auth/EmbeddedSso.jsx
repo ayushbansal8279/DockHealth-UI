@@ -102,8 +102,9 @@ const EmbeddedSso = props => {
 
   return (
     <div>
-      <MontserratTypography variant="h2">
-        Signing you in...
+      <Spacing vertical={4} />
+      <MontserratTypography variant="h4">
+        Signing you in ...
       </MontserratTypography>
       <Spacing vertical={4} />
       <Loader size={LoaderSizes.big} />

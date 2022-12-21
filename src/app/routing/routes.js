@@ -16,6 +16,7 @@ import TemplateCore from '../views/TemplateCore/TemplateCore';
 import TemplateCoreSubscriptionPlan from '../views/TemplateCore/TemplateCoreSubscriptionPlan';
 import OnboardingTemplate from '../views/onboarding/OnboardingTemplate';
 import SecuredRoute from './SecuredRoute';
+import EmbeddedSSO from '../views/auth/EmbeddedSso';
 
 const transformPathname = pathname =>
   decodeURIComponent(pathname).replace(/^\/+/, '/');
@@ -109,6 +110,11 @@ const Routes = () => {
             component={route.RouteComponent}
           />
         ))}
+        <SecuredRoute
+          path="/auth/embedded"
+          component={EmbeddedSSO}
+          // render={() => <TemplateAuthBase childRoutes={AUTH_ROUTES} />}
+        />
         <SecuredRoute
           path="/auth"
           render={() => <TemplateAuthBase childRoutes={AUTH_ROUTES} />}

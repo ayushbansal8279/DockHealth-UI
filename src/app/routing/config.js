@@ -20,7 +20,7 @@ import ResetPasswordSuccess from 'views/auth/ResetPasswordSuccess';
 import SelfEnrolledUser from 'views/auth/SelfEnrolledUser';
 import UnEnrolledUser from 'views/auth/UnEnrolledUser';
 import ApproveDisapproveUser from 'views/auth/ApproveDisapproveUser';
-import EmbeddedSSO from 'views/auth/EmbeddedSso';
+// import EmbeddedSSO from 'views/auth/EmbeddedSso';
 import ErrorPage from 'views/ErrorPage';
 import ListDetailsView from 'views/list-details/ListDetailsView';
 import OnboardingBaaCheckView from 'views/onboarding/OnboardingBaaCheckView/OnboardingBaaCheckView';
@@ -356,13 +356,13 @@ export const AUTH_ROUTES = [
     path: '/inviteRequest/:requestIdentifier/:decisionType/:userIdentifier',
     RouteComponent: ApproveDisapproveUser,
   },
-  {
-    path: '/embedded',
-    RouteComponent: EmbeddedSSO,
-    onEnter: () => {
-      sessionStorage.removeItem('currentOrganizationIdentifier');
-    },
-  },
+  // {
+  //   path: '/embedded',
+  //   RouteComponent: EmbeddedSSO,
+  //   onEnter: () => {
+  //     sessionStorage.removeItem('currentOrganizationIdentifier');
+  //   },
+  // },
 ];
 
 export const SIMPLE_ROUTES = [
