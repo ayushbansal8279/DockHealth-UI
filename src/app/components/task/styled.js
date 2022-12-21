@@ -553,6 +553,9 @@ export const TaskItemDescriptionIndicators = styled.div`
 
 export const PatientLabel = styled.span`
   color: ${palette.mediumGrey};
+  font-weight: 700;
+  font-weight: ${fontWeights.bold};
+  font-size: 0.65 rem;
 
   &:hover {
     color: ${palette.brightBlue};
