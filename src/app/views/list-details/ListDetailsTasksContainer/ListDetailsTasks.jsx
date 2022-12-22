@@ -429,7 +429,7 @@ const ListDetailsTasks = ({
               <StickyContainer left={24} decreaseWidth={2 * 24}>
                 <GroupNameSection
                   onEnterClick={
-                    restrictions?.createGroup === DISABLED
+                    restrictions?.createGroup !== DISABLED
                       ? onGroupNameClick
                       : () => undefined
                   }
