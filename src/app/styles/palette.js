@@ -10,6 +10,8 @@ const palette = {
   accentYellow: '#feb52b',
   orange: '#ef8a23',
   darkOrange: '#d97e22',
+  dockBlueLight: '#e0eff9',
+  oPlusRedLight: '#fad3cf',
 
   // secondary
   purplePassion: '#553bbe',
