@@ -98,9 +98,20 @@ export const TaskDrawerDivider = styled(Divider)`
 `;
 
 export const FiledInListName = styled.a`
+  display: inline-block;
+  vertical-align: bottom;
   color: ${palette.brightBlue};
   overflow: hidden;
   white-space: nowrap;
   text-overflow: ellipsis;
   max-width: 250px;
+`;
+
+export const SubscriptionBadge = styled.div`
+  display: inline-block;
+  float: right;
+
+  & .MuiChip-root {
+    color: white;
+  }
 `;
