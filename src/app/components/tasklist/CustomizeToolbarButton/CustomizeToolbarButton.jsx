@@ -192,7 +192,7 @@ const CustomizeToolbarButton = ({
                   >
                     <PlusIcon>+</PlusIcon>
                     <Box mx={0.5} />
-                    <ListItemText>Create Custom Column</ListItemText>
+                    <ListItemText>Create/Edit Custom Column</ListItemText>
                   </MenuItem>
                 )}
               </List>
