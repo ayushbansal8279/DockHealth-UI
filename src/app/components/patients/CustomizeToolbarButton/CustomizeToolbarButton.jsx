@@ -55,6 +55,9 @@ const CustomizeToolbarButton = ({
     [PatientHeaderColumn.AGE]: 'Age',
     [PatientHeaderColumn.GENDER_AT_BIRTH]: 'Sex at birth',
     [PatientHeaderColumn.GENDER_IDENTITY]: 'Gender',
+    [PatientHeaderColumn.EMAIL]: 'Email',
+    [PatientHeaderColumn.MOBILE]: 'Mobile',
+    [PatientHeaderColumn.HOME]: 'Home',
   };
 
   const customerTypeLabel = capitalize(getCustomerTypeLabel(userProfile));

@@ -36,6 +36,9 @@ export const PatientColumn = {
   AGE: 'age',
   GENDER_AT_BIRTH: 'gender',
   GENDER_IDENTITY: 'genderIdentity',
+  EMAIL: 'email',
+  MOBILE: 'phoneMobile',
+  HOME: 'phoneHome',
 };
 
 export const PatientHeaderColumn = {
@@ -45,6 +48,9 @@ export const PatientHeaderColumn = {
   AGE: 'AGE',
   GENDER_AT_BIRTH: 'GENDER_AT_BIRTH',
   GENDER_IDENTITY: 'GENDER_IDENTITY',
+  EMAIL: 'EMAIL',
+  MOBILE: 'MOBILE',
+  HOME: 'HOME',
 };
 
 export const PATIENT_BASE_COLUMN_CONFIG = {
@@ -54,4 +60,7 @@ export const PATIENT_BASE_COLUMN_CONFIG = {
   [PatientHeaderColumn.AGE]: true,
   [PatientHeaderColumn.GENDER_AT_BIRTH]: true,
   [PatientHeaderColumn.GENDER_IDENTITY]: true,
+  [PatientHeaderColumn.EMAIL]: true,
+  [PatientHeaderColumn.MOBILE]: true,
+  [PatientHeaderColumn.HOME]: true,
 };

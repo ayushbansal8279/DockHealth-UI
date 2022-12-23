@@ -233,6 +233,24 @@ const PatientsList = ({
       renderHeader: renderColumnHeader,
       flex: 0.5,
     },
+    {
+      field: 'email',
+      headerName: 'EMAIL',
+      renderHeader: renderColumnHeader,
+      flex: 0.5,
+    },
+    {
+      field: 'phoneMobile',
+      headerName: 'MOBILE',
+      renderHeader: renderColumnHeader,
+      flex: 0.5,
+    },
+    {
+      field: 'phoneHome',
+      headerName: 'HOME',
+      renderHeader: renderColumnHeader,
+      flex: 0.5,
+    },
   ]
     .filter(column => {
       return (
