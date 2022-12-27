@@ -247,7 +247,7 @@ const PatientsView = () => {
               setImportPopoverOpen={setImportPopoverOpen}
             />
             <PatientsListContainer>
-              <Grid container>
+              <Grid>
                 {listIdentifier === DefaultPatientsListType.ALL_PATIENTS &&
                   patients?.length >= MAX_PATIENT_ALL_RESULTS && (
                     <RefineSearchText>

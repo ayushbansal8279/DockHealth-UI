@@ -5,8 +5,6 @@ import moment from 'moment';
 const TaskItemElapsedTime = ({ task }) => {
   const { createdDateTime, completedDt: completedDate } = task || {};
 
-  const DATE_ISO_FORMAT = 'YYYY-MM-DD';
-
   const elapsedTime = useMemo(() => {
     if (!createdDateTime) {
       return '';
@@ -14,7 +12,7 @@ const TaskItemElapsedTime = ({ task }) => {
     const createdDate = moment(createdDateTime);
     let endDate = moment();
     if (completedDate) {
-      endDate = moment(completedDate, DATE_ISO_FORMAT);
+      endDate = moment(completedDate);
     }
     const days = endDate.diff(createdDate, 'days');
     if (days <= 0) {
