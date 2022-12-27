@@ -260,7 +260,7 @@ const TaskDrawerContent = props => {
           {!isTemplateTask && (
             <ReminderSection
               onSave={handleUpdateTask}
-              disabled={restrictions?.reminder !== DISABLED}
+              disabled={restrictions?.reminder === DISABLED}
             />
           )}
         </Grid>
