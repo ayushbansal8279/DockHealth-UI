@@ -80,7 +80,8 @@ const PatientForm = forwardRef(
     const [genderIdentityOptions, setGenderIdentityOptions] = useState([]);
     const currentOrganization = useSelector(selectedUserOrganizationSelector);
     const genderIdentityDisabled =
-      currentOrganization?.disabledFeatures?.includes('PATIENT_GENDER') || false;
+      currentOrganization?.disabledFeatures?.includes('PATIENT_GENDER') ||
+      false;
 
     const GENDER_OPTIONS_IDENTITY = useMemo(
       () =>
