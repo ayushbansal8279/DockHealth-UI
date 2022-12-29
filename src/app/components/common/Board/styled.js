@@ -5,12 +5,27 @@ import spacing from 'styles/spacing';
 import { Skeleton } from '@material-ui/lab';
 import { withStyles } from '@material-ui/core/styles';
 
-export const WorkflowIndicator = styled.span`
+// export const WorkflowIndicator = styled.span`
+//   font-size: 0.65rem;
+//   position: relative;
+//   font-weight: 700;
+//   bottom: -25px;
+//   left: 170px;
+//   font-weight: ${fontWeights.bold};
+// `;
+
+export const WorkflowIndicator = styled.div`
   font-size: 0.65rem;
-  position: relative;
+  position: static;
   font-weight: 700;
-  bottom: -25px;
-  left: 170px;
+  font-weight: ${fontWeights.bold};
+  text-align: right;
+`;
+
+export const PatientContainer = styled.div`
+  font-size: 0.65rem;
+  position: static;
+  font-weight: 700;
   font-weight: ${fontWeights.bold};
 `;
 
@@ -63,8 +78,8 @@ export const ColumnName = styled.div`
 export const TaskName = styled.div`
   overflow: hidden;
   width: 100%;
-  max-height: 75px;
-  height: 75px;
+  max-height: 50px;
+  height: 50px;
   cursor: pointer;
 `;
 
@@ -98,6 +113,11 @@ export const OptionsContainer = styled.div`
 
 export const TaskActionsContainer = styled.div`
   padding: 12px 0;
+  display: flex;
+  align-items: center;
+`;
+
+export const WorkflowActionsContainer = styled.div`
   display: flex;
   align-items: center;
 `;
