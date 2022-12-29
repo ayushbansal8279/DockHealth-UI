@@ -148,6 +148,7 @@ const TaskItem = React.memo(
       subTasksCount,
       dependencyTasksCompletedCount,
       dependencyTasksCount,
+      hasEscalations,
     } = task;
 
     const { columns } = useTaskListColumnsConfig();
@@ -358,6 +359,7 @@ const TaskItem = React.memo(
             newlyCreated={newlyCreated}
             backgroundColor={pageBackground}
             isSelected={isSelected || selected}
+            hasEscalations={hasEscalations}
             isEditingDescription={isEditingDescription}
           >
             {taskListRestrictions?.createTask !== DISABLED && (
@@ -404,6 +406,7 @@ const TaskItem = React.memo(
         isEditingDescription,
         isLast,
         isSelected,
+        hasEscalations,
         isTaskStatusTogglingDisabled,
         newlyCreated,
         onCircleClick,
@@ -429,6 +432,7 @@ const TaskItem = React.memo(
           <StandardTaskItemContainer
             newlyCreated={newlyCreated}
             isSelected={isSelected || selected}
+            hasEscalations={hasEscalations}
             height={
               hasParentTaskLabel || isCompletedGroup
                 ? EXTENDED_TASK_HEIGHT
