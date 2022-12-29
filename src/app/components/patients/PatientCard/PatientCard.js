@@ -101,6 +101,8 @@ const PatientCard = ({
 
   const currentUser = useSelector(userProfileSelector);
   const currentOrganization = useSelector(selectedUserOrganizationSelector);
+  const genderIdentityDisabled =
+    currentOrganization?.disabledFeatures?.includes('PATIENT_GENDER') || false;
 
   const customerTypeLabel = getCustomerTypeLabel(currentUser);
   const uniqueIdentifierLabel = getCustomerUniqueIDShortLabel(
@@ -223,7 +225,7 @@ const PatientCard = ({
                           {gender && `${gender?.charAt(0)?.toUpperCase()}`}
                         </InfoItem>
                       )}
-                      {genderIdentity && (
+                      {!genderIdentityDisabled && genderIdentity && (
                         <InfoItem>Gender: {genderIdentity}</InfoItem>
                       )}
                       {mrn && !emrPatientLink && (
