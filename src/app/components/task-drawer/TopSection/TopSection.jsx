@@ -120,7 +120,7 @@ const TopSection = ({
           onClick: () => dispatch(openModal('SendSmsFromTask')),
         },
         sendSecureMessageAvailable && {
-          name: 'Send Secure Message',
+          name: 'Send Patient Message',
           onClick: () => dispatch(openModal('SendSecureMessageFromTask')),
         },
         sendESignAvailable && {

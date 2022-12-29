@@ -25,7 +25,8 @@ const AlertMessages = {
   FAX_SENT: 'Fax Sent',
   ESIGN_SENT: 'ESignature Request Sent',
   SMS_SENT: 'Sms Sent',
-  MAIL_SENT: 'Mail Sent',
+  SECURE_MSG_SENT: 'Patient Message Sent',
+  MAIL_SENT: 'Email Sent',
   EMR_SENT: 'EHR Note posted',
 };
 

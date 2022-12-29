@@ -225,6 +225,15 @@ function* sendSmsForTask({ communicationDetails }) {
   }
 }
 
+function* sendSecureMessageForTask({ communicationDetails }) {
+  try {
+    yield call(TaskApi.sendMessageForTask, communicationDetails);
+    yield put(showGlobalAlert(AlertMessages.SECURE_MSG_SENT));
+  } catch {
+    yield put(showGlobalErrorAlert());
+  }
+}
+
 function* chooseTaskOutcome({
   payload: { taskOutcomeIdentifier, templateBundleIdentifier },
 }) {
@@ -432,6 +441,10 @@ export default function* watchTask() {
   yield takeEvery(ActionTypes.SEND_SMS_FOR_TASK, sendSmsForTask);
   yield takeEvery(ActionTypes.SEND_EMAIL_FOR_TASK, sendEmailForTask);
   yield takeEvery(ActionTypes.SEND_EMR_FOR_TASK, sendEmrForTask);
+  yield takeEvery(
+    ActionTypes.SEND_SECURE_MSG_FOR_TASK,
+    sendSecureMessageForTask,
+  );
 
   yield takeEvery(ActionTypes.CHOOSE_DECISION_TASK_OPTION, chooseTaskOutcome);
   yield takeEvery(ActionTypes.REFRESH_TASK_BUNDLE, refreshTemplateBundle);

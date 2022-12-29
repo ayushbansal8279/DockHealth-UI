@@ -3,6 +3,8 @@ import React, { useCallback, useState } from 'react';
 import { useDispatch } from 'react-redux';
 import Button from 'components/common/Button/Button';
 // import { selectedTaskSelector } from 'selectors/task-drawer-selectors';
+import { CommunicationType } from 'helpers/task-helpers';
+import TemplateAutoComplete from 'components/common/TemplateAutoComplete/TemplateAutoComplete';
 import { closeModal } from 'modal/actions';
 import {
   CloseIcon,
@@ -46,6 +48,17 @@ const SendSecureMessageFromTaskModal = () => {
       </ModalHeaderContainerStyled>
       <ModalDescriptionContainer>
         <InputContainerStyled>
+          <TemplateAutoComplete
+            type={CommunicationType.SECURE_MSG}
+            placeholder="Pick template"
+            onChange={(_, newValue, reason) => {
+              if (reason === 'clear') {
+                setMessage('');
+                return;
+              }
+              setMessage(newValue?.value || '');
+            }}
+          />
           <Input
             type="text"
             label="Message"

@@ -7,11 +7,12 @@ export const TEMPLATE_TYPES = {
   FAX: 'FAX',
   SMS: 'SMS',
   EMR_NOTE: 'EMR_NOTE',
+  SECURE_MESSAGE: 'SECURE_MESSAGE',
 };
 
 export const TEMPLATE_TYPE_OPTIONS = [
   {
-    label: 'EMAIL',
+    label: 'Email',
     value: TEMPLATE_TYPES.EMAIL,
   },
   {
@@ -21,6 +22,10 @@ export const TEMPLATE_TYPE_OPTIONS = [
   {
     label: 'SMS',
     value: TEMPLATE_TYPES.SMS,
+  },
+  {
+    label: 'Patient Secure Message',
+    value: TEMPLATE_TYPES.SECURE_MESSAGE,
   },
   {
     label: 'EHR Note',
