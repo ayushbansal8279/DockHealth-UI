@@ -319,7 +319,8 @@ const PatientsList = ({
     const metaData = patient.patientMetaData?.map(pmd => {
       return {
         key: pmd.customFieldIdentifier,
-        value: pmd.displayName || pmd.value || pmd.displayNames,
+        value:
+          pmd.displayName || pmd.value || pmd.displayNames?.sort().toString(),
       };
     });
     const patientDetails = {
