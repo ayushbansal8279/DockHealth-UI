@@ -280,7 +280,9 @@ const PatientsList = ({
     .filter(column => {
       return (
         columnsDataSorted.find(
-          data => PatientColumn[data.identifier] === column.field,
+          data =>
+            PatientColumn[data.identifier] === column.field ||
+            column.field === 'isSelected',
         )?.isChecked ?? false
       );
     })
