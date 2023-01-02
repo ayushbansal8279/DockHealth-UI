@@ -89,6 +89,21 @@ export function mapSelectedOptionsToRequestPayload(selectedFilters) {
       };
     }
 
+    if (v.dateStart || v.dateEnd) {
+      return {
+        ...accumulator,
+        customFields: [
+          ...(accumulator.customFields || []),
+          {
+            customFieldIdentifier: k,
+            selectedOptionIdentifiers: v.options,
+            dateStart: v.dateStart || null,
+            dateEnd: v.dateEnd || null,
+          },
+        ],
+      };
+    }
+
     return {
       ...accumulator,
       customFields: [
