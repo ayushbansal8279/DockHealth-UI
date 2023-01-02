@@ -2,10 +2,7 @@
 import React, { useCallback, useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { useHistory, useLocation } from 'react-router-dom';
-import propOr from 'ramda/src/propOr';
-import sortBy from 'ramda/src/sortBy';
-import compose from 'ramda/src/compose';
-import toLower from 'ramda/src/toLower';
+import { ascend, compose, propOr, sortWith, toLower } from 'ramda';
 import * as ActionTypes from 'actions/action-types';
 import { Grid } from '@material-ui/core';
 import Tooltip from 'components/common/Tooltip/Tooltip';
@@ -110,8 +107,11 @@ const PatientsList = ({
     setCurrentPatientList,
   } = usePatientListColumnsConfig();
 
-  const columnsDataSorted = sortBy(
-    compose(toLower, propOr('', 'name')),
+  const columnsDataSorted = sortWith(
+    [
+      ascend(propOr(0, 'sortIndex')),
+      ascend(compose(toLower, propOr('', 'name'))),
+    ],
     columnsData,
   );
 
