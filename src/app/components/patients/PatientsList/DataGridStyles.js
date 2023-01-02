@@ -21,7 +21,7 @@ export const StyledDataGrid = styled(DataGrid)`
 
   .MuiDataGrid-columnHeaderTitleContainer {
     display: flex;
-    align-items: center;
+    align-items: left;
     margin-left: -15px;
   }
 
@@ -38,7 +38,6 @@ export const StyledDataGrid = styled(DataGrid)`
     font-family: Roboto Condensed;
     font-weight: ${fontWeights.light};
     font-size: ${fontSizes.smallPlus};
-    padding-left: ${spacing.large} !important;
   }
 
   .MuiDataGrid-colCell {

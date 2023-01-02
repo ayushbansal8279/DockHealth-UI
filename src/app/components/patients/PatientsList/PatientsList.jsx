@@ -2,10 +2,7 @@
 import React, { useCallback, useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { useHistory, useLocation } from 'react-router-dom';
-import propOr from 'ramda/src/propOr';
-import sortBy from 'ramda/src/sortBy';
-import compose from 'ramda/src/compose';
-import toLower from 'ramda/src/toLower';
+import { ascend, compose, propOr, sortWith, toLower } from 'ramda';
 import * as ActionTypes from 'actions/action-types';
 import { Grid } from '@material-ui/core';
 import Tooltip from 'components/common/Tooltip/Tooltip';
@@ -31,6 +28,7 @@ import {
   NonEmptyListTable,
   ListLoaderContainer,
   BulkContainer,
+  Text,
 } from './styled';
 import { StyledDataGrid } from './DataGridStyles';
 
@@ -41,7 +39,9 @@ const renderColumnHeader = props => {
   return (
     <>
       <div className="MuiDataGrid-colCellTitle">
-        <span>{headerName}</span>
+        <Tooltip placement="top" title={headerName}>
+          <Text width={colDef.width - 35}>{headerName}</Text>
+        </Tooltip>
       </div>
     </>
   );
@@ -114,8 +114,11 @@ const PatientsList = ({
     setCurrentPatientList,
   } = usePatientListColumnsConfig();
 
-  const columnsDataSorted = sortBy(
-    compose(toLower, propOr('', 'name')),
+  const columnsDataSorted = sortWith(
+    [
+      ascend(propOr(0, 'sortIndex')),
+      ascend(compose(toLower, propOr('', 'name'))),
+    ],
     columnsData,
   );
 
@@ -171,7 +174,11 @@ const PatientsList = ({
           }}
           className="patient-cell"
         >
-          {row.lastName}, {row.firstName}
+          <Tooltip placement="top" title={`${row.lastName}, ${row.firstName}`}>
+            <Text width="180">
+              {row.lastName}, {row.firstName}
+            </Text>
+          </Tooltip>
         </span>
       ),
       // flex: 1,
@@ -187,6 +194,11 @@ const PatientsList = ({
       renderHeader: renderColumnHeader,
       // flex: 0.5,
       width: 100,
+      renderCell: ({ row }) => (
+        <Tooltip placement="top" title={row.mrn}>
+          <Text width="80">{row.mrn}</Text>
+        </Tooltip>
+      ),
     },
     {
       field: 'dob',
@@ -264,7 +276,7 @@ const PatientsList = ({
       width: 140,
       renderCell: ({ row }) => (
         <Tooltip placement="top" title={row.email}>
-          <div>{row.email}</div>
+          <Text width="120">{row.email}</Text>
         </Tooltip>
       ),
       align: 'left',
@@ -287,7 +299,9 @@ const PatientsList = ({
     .filter(column => {
       return (
         columnsDataSorted.find(
-          data => PatientColumn[data.identifier] === column.field,
+          data =>
+            PatientColumn[data.identifier] === column.field ||
+            column.field === 'isSelected',
         )?.isChecked ?? false
       );
     })
@@ -299,10 +313,10 @@ const PatientsList = ({
           headerName: column.name,
           renderHeader: renderColumnHeader,
           // flex: 0.5,
-          width: 120,
+          width: 140,
           renderCell: ({ row }) => (
             <Tooltip placement="top" title={row[column.identifier]}>
-              <div>{row[column.identifier]}</div>
+              <Text width="120">{row[column.identifier]}</Text>
             </Tooltip>
           ),
         })),
@@ -312,7 +326,8 @@ const PatientsList = ({
     const metaData = patient.patientMetaData?.map(pmd => {
       return {
         key: pmd.customFieldIdentifier,
-        value: pmd.displayName || pmd.value || pmd.displayNames,
+        value:
+          pmd.displayName || pmd.value || pmd.displayNames?.sort().toString(),
       };
     });
     const patientDetails = {

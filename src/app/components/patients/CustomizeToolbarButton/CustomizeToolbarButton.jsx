@@ -49,15 +49,15 @@ const CustomizeToolbarButton = ({
   const { columns, setColumns } = usePatientListColumnsConfig();
 
   const ColumnOptionNames = {
-    [PatientHeaderColumn.MEMBER]: 'Member',
+    [PatientHeaderColumn.PATIENT]: 'Name',
     [PatientHeaderColumn.UNIQUE_ID]: 'Unique Identifier',
     [PatientHeaderColumn.DOB]: 'DOB',
     [PatientHeaderColumn.AGE]: 'Age',
     [PatientHeaderColumn.GENDER_AT_BIRTH]: 'Sex at birth',
     [PatientHeaderColumn.GENDER_IDENTITY]: 'Gender',
     [PatientHeaderColumn.EMAIL]: 'Email',
-    [PatientHeaderColumn.MOBILE]: 'Mobile',
-    [PatientHeaderColumn.HOME]: 'Home',
+    [PatientHeaderColumn.MOBILE]: 'Mobile Phone',
+    [PatientHeaderColumn.HOME]: 'Home Phone',
   };
 
   const customerTypeLabel = capitalize(getCustomerTypeLabel(userProfile));

@@ -9,7 +9,7 @@ export const getCustomerTypeLabel = currentUser => {
       return 'client';
 
     case 'MEMBER':
-      return 'Member';
+      return 'member';
 
     case 'CUSTOMER':
       return 'customer';

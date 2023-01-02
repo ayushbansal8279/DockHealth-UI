@@ -30,7 +30,7 @@ export function getPatientsListFiltersStorageKey(patientsListIdentifier) {
 }
 
 export const PatientColumn = {
-  MEMBER: 'patient',
+  PATIENT: 'patient',
   UNIQUE_ID: 'mrn',
   DOB: 'dob',
   AGE: 'age',
@@ -42,7 +42,7 @@ export const PatientColumn = {
 };
 
 export const PatientHeaderColumn = {
-  MEMBER: 'MEMBER',
+  PATIENT: 'PATIENT',
   UNIQUE_ID: 'UNIQUE_ID',
   DOB: 'DOB',
   AGE: 'AGE',
@@ -54,7 +54,7 @@ export const PatientHeaderColumn = {
 };
 
 export const PATIENT_BASE_COLUMN_CONFIG = {
-  [PatientHeaderColumn.MEMBER]: true,
+  [PatientHeaderColumn.PATIENT]: true,
   [PatientHeaderColumn.UNIQUE_ID]: true,
   [PatientHeaderColumn.DOB]: true,
   [PatientHeaderColumn.AGE]: true,

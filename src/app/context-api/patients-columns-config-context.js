@@ -28,7 +28,7 @@ import {
 
 export const PatientListColumnsConfigContext = createContext();
 
-const columnsAlwaysVisible = [PatientHeaderColumn.MEMBER];
+const columnsAlwaysVisible = [PatientHeaderColumn.PATIENT];
 
 export function PatientListColumnsConfigProvider({
   children,
