@@ -26,6 +26,7 @@ import {
   NonEmptyListTable,
   ListLoaderContainer,
   BulkContainer,
+  Text,
 } from './styled';
 import { StyledDataGrid } from './DataGridStyles';
 
@@ -36,7 +37,9 @@ const renderColumnHeader = props => {
   return (
     <>
       <div className="MuiDataGrid-colCellTitle">
-        <span>{headerName}</span>
+        <Tooltip placement="top" title={headerName}>
+          <Text width={colDef.width - 35}>{headerName}</Text>
+        </Tooltip>
       </div>
     </>
   );
@@ -164,7 +167,11 @@ const PatientsList = ({
           }}
           className="patient-cell"
         >
-          {row.lastName}, {row.firstName}
+          <Tooltip placement="top" title={`${row.lastName}, ${row.firstName}`}>
+            <Text width="180">
+              {row.lastName}, {row.firstName}
+            </Text>
+          </Tooltip>
         </span>
       ),
       // flex: 1,
@@ -180,6 +187,11 @@ const PatientsList = ({
       renderHeader: renderColumnHeader,
       // flex: 0.5,
       width: 100,
+      renderCell: ({ row }) => (
+        <Tooltip placement="top" title={row.mrn}>
+          <Text width="80">{row.mrn}</Text>
+        </Tooltip>
+      ),
     },
     {
       field: 'dob',
@@ -257,7 +269,7 @@ const PatientsList = ({
       width: 140,
       renderCell: ({ row }) => (
         <Tooltip placement="top" title={row.email}>
-          <div>{row.email}</div>
+          <Text width="120">{row.email}</Text>
         </Tooltip>
       ),
       align: 'left',
@@ -294,10 +306,10 @@ const PatientsList = ({
           headerName: column.name,
           renderHeader: renderColumnHeader,
           // flex: 0.5,
-          width: 120,
+          width: 140,
           renderCell: ({ row }) => (
             <Tooltip placement="top" title={row[column.identifier]}>
-              <div>{row[column.identifier]}</div>
+              <Text width="120">{row[column.identifier]}</Text>
             </Tooltip>
           ),
         })),
