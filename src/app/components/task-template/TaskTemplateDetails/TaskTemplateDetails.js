@@ -57,7 +57,7 @@ const TaskTemplateDetails = ({ workflow, onClick }) => {
       if (isWorkflow) {
         dispatch(
           updatePartialWorkflow(identifier, {
-            details: tokenizedDetails,
+            description: tokenizedDetails,
           }),
         );
       } else {
