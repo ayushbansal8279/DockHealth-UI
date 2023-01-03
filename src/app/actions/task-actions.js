@@ -907,7 +907,7 @@ export function sendSecureMessageForTask(communicationDetails) {
     type: ActionTypes.SEND_SECURE_MSG_FOR_TASK,
     communicationDetails: {
       ...communicationDetails,
-      communicationType: CommunicationType.SECURE_MSG,
+      communicationType: CommunicationType.SECURE_MESSAGE,
     },
   };
 }

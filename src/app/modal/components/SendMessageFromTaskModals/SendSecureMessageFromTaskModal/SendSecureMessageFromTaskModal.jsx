@@ -1,8 +1,9 @@
 import Input from 'components/common/Input/Input';
 import React, { useCallback, useState } from 'react';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import Button from 'components/common/Button/Button';
-// import { selectedTaskSelector } from 'selectors/task-drawer-selectors';
+import { sendSecureMessageForTask } from 'actions/task-actions';
+import { selectedTaskSelector } from 'selectors/task-drawer-selectors';
 import { CommunicationType } from 'helpers/task-helpers';
 import TemplateAutoComplete from 'components/common/TemplateAutoComplete/TemplateAutoComplete';
 import { closeModal } from 'modal/actions';
@@ -22,20 +23,19 @@ const SendSecureMessageFromTaskModal = () => {
   const dispatch = useDispatch();
   const [message, setMessage] = useState('');
 
-  // const selectedTask = useSelector(selectedTaskSelector);
-  // const { identifier } = selectedTask;
+  const selectedTask = useSelector(selectedTaskSelector);
+  const { identifier } = selectedTask;
 
   const handleSubmit = useCallback(() => {
-    // dispatch(
-    //   sendSmsForTask({
-    //     message,
-    //     recipientContact: contact.value,
-    //     taskIdentifier: identifier,
-    //   }),
-    // );
+    dispatch(
+      sendSecureMessageForTask({
+        message,
+        recipientContact: 'PATIENT',
+        taskIdentifier: identifier,
+      }),
+    );
     dispatch(closeModal());
-  }, [dispatch]);
-  // }, [contact, dispatch, identifier, message]);
+  }, [dispatch, identifier, message]);
 
   return (
     <ModalWrapper width="600px">
@@ -49,14 +49,14 @@ const SendSecureMessageFromTaskModal = () => {
       <ModalDescriptionContainer>
         <InputContainerStyled>
           <TemplateAutoComplete
-            type={CommunicationType.SECURE_MSG}
+            type={CommunicationType.SECURE_MESSAGE}
             placeholder="Pick template"
             onChange={(_, newValue, reason) => {
               if (reason === 'clear') {
                 setMessage('');
                 return;
               }
-              setMessage(newValue?.value || '');
+              setMessage(newValue?.body || '');
             }}
           />
           <Input
