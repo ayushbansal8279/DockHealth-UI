@@ -23,7 +23,7 @@ import PopoverBottomBar from 'components/task/PopoverBottomBar/PopoverBottomBar'
 import { FieldCharakterLimit } from 'helpers/field-type-helpers';
 import { Text, LongTextBox, Divider } from './styled';
 
-const TaskTemplateDetails = ({ workflow, onClick }) => {
+const TaskTemplateDetails = ({ workflow }) => {
   const detailsReference = useRef(null);
 
   const isWorkflow =
@@ -57,7 +57,7 @@ const TaskTemplateDetails = ({ workflow, onClick }) => {
       if (isWorkflow) {
         dispatch(
           updatePartialWorkflow(identifier, {
-            details: tokenizedDetails,
+            description: tokenizedDetails,
           }),
         );
       } else {
