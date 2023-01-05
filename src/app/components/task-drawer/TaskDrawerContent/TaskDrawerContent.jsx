@@ -218,7 +218,7 @@ const TaskDrawerContent = props => {
         )}
         <Grid item xs={12}>
           <TaskDetails
-            readOnly={restrictions?.details === READ_ONLY}
+            readOnly={restrictions?.taskDetails === READ_ONLY}
             disableMentions={restrictMentions}
           />
         </Grid>

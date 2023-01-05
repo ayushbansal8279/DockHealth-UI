@@ -17,7 +17,13 @@ import PopoverBottomBar from 'components/task/PopoverBottomBar/PopoverBottomBar'
 import { FieldCharakterLimit } from 'helpers/field-type-helpers';
 import { Text, LongTextBox, Divider } from './styled';
 
-const TaskItemLongText = ({ value = '', onChange, openDrawer, field }) => {
+const TaskItemLongText = ({
+  value = '',
+  onChange,
+  openDrawer,
+  field,
+  readOnly = false,
+}) => {
   const detailsReference = useRef(null);
   const [detailsState, setDetailsState] = useMentionsEditorState(
     convertToEditorState({
@@ -91,7 +97,7 @@ const TaskItemLongText = ({ value = '', onChange, openDrawer, field }) => {
             >
               <TextEditor
                 characterLimit={FieldCharakterLimit.LONG_TEXT}
-                readOnly={false}
+                readOnly={readOnly}
                 minHeight={100}
                 ref={detailsReference}
                 disableMentions

@@ -3,9 +3,14 @@ import PatientCard from 'components/patients/PatientCard/PatientCard';
 import PatientDropdown from 'components/patients/PatientDropdown/PatientDropdown';
 import { getCustomerTypeLabel } from 'helpers/customer-type-helper';
 import { capitalize } from 'helpers/capitalize';
-import { Link } from 'react-router-dom';
+import { Link as RouterLink } from 'react-router-dom';
 import Highlighter from 'react-highlight-words';
-import { AddPlaceholder, ClickablePatient, PatientLabel } from './styled';
+import {
+  AddPlaceholder,
+  ClickablePatient,
+  PatientLabel,
+  DisabledLink,
+} from './styled';
 
 const TaskTemplatePatient = ({
   highlightedValue,
@@ -13,12 +18,15 @@ const TaskTemplatePatient = ({
   openPatientPopover,
   onWorkflowUpdate,
   currentUser,
+  readOnly,
   // eslint-disable-next-line sonarjs/cognitive-complexity
 }) => {
   const [isPopoverOpen, setPopoverOpen] = useState(false);
   const matchPatientMRN = workflow?.searchMetaData?.matchPatientMRN;
   const matchPatient = workflow?.searchMetaData?.matchPatient;
   const { patient } = workflow;
+
+  const Link = readOnly ? DisabledLink : RouterLink;
 
   const handleUpdateRegularTaskPatient = useCallback(
     (patientIdentifier, patientToSave) => {
@@ -42,7 +50,7 @@ const TaskTemplatePatient = ({
 
   return (
     <ClickablePatient>
-      {!patient && !openPatientPopover && (
+      {!readOnly && !patient && !openPatientPopover && (
         <PatientDropdown
           selectedPatientIdentifier={patient ? patient.patientIdentifier : null}
           isPopoverOpen={isPopoverOpen}
@@ -53,11 +61,14 @@ const TaskTemplatePatient = ({
           <AddPlaceholder>+ Add {customerTypeLabelCapitalized}</AddPlaceholder>
         </PatientDropdown>
       )}
-      {!patient && openPatientPopover && (
+      {!readOnly && !patient && openPatientPopover && (
         <AddPlaceholder>+ Add {customerTypeLabelCapitalized}</AddPlaceholder>
       )}
       {patient && openPatientPopover && (
-        <PatientCard patientIdentifier={patient.patientIdentifier}>
+        <PatientCard
+          disableLink={readOnly}
+          patientIdentifier={patient.patientIdentifier}
+        >
           <Link to={`/core/patient/${patient.patientIdentifier}`}>
             <PatientLabel>
               {(matchPatient || matchPatientMRN) && highlightedValue ? (
@@ -79,7 +90,10 @@ const TaskTemplatePatient = ({
         </PatientCard>
       )}
       {patient && !openPatientPopover && (
-        <PatientCard patientIdentifier={patient.patientIdentifier}>
+        <PatientCard
+          disableLink={readOnly}
+          patientIdentifier={patient.patientIdentifier}
+        >
           <Link to={`/core/patient/${patient.patientIdentifier}`}>
             <PatientLabel>
               {(matchPatient || matchPatientMRN) && highlightedValue ? (

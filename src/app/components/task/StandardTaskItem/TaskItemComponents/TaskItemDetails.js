@@ -26,7 +26,7 @@ import {
   Divider,
 } from '../customFieldsTaskItemComponents/TaskItemLongText/styled';
 
-const TaskItemDetails = ({ task, onClick }) => {
+const TaskItemDetails = ({ task, onClick, readOnly }) => {
   const detailsReference = useRef(null);
 
   const isWorkflow =
@@ -128,7 +128,7 @@ const TaskItemDetails = ({ task, onClick }) => {
             >
               <TextEditor
                 characterLimit={FieldCharakterLimit.LONG_TEXT}
-                readOnly={false}
+                readOnly={readOnly}
                 minHeight={100}
                 ref={detailsReference}
                 disableMentions

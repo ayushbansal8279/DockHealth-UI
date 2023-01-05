@@ -623,6 +623,7 @@ const TaskItem = React.memo(
                       showDefaultTaskStatusCompleted={
                         selectedOrganization?.showDefaultTaskStatusCompleted
                       }
+                      readOnly={restrictions?.status === READ_ONLY}
                     />
                   </TaskItemCell>,
                   getColumnOrder(TaskItemColumn.WORKFLOW_STATUS),
@@ -1029,6 +1030,7 @@ const TaskItem = React.memo(
                       task={task}
                       fieldIdentifier={TaskItemColumn.TASK_DETAILS}
                       onClick={onClickTaskItem}
+                      readOnly={restrictions?.taskDetails === READ_ONLY}
                     />
                   </TaskItemCell>,
                   getColumnOrder(TaskItemColumn.TASK_DETAILS),
@@ -1067,14 +1069,14 @@ const TaskItem = React.memo(
                           width={field.columnWidth}
                           order={getColumnOrder(field.identifier)}
                         >
-                          {!hidePatientCustomFields &&
-                            taskListRestrictions?.createTask !== DISABLED && (
-                              <TaskItemCustomField
-                                field={field}
-                                customFieldValue={customFieldValue}
-                                task={task}
-                              />
-                            )}
+                          {!hidePatientCustomFields && (
+                            <TaskItemCustomField
+                              field={field}
+                              customFieldValue={customFieldValue}
+                              task={task}
+                              readOnly
+                            />
+                          )}
                         </TaskItemCell>,
                         getColumnOrder(field.identifier),
                       )}

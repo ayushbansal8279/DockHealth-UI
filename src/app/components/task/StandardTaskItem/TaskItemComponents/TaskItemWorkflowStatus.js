@@ -17,6 +17,7 @@ const TaskItemWorkflowStatus = ({
   matchWorkflowStatus,
   highlightedValue,
   showDefaultTaskStatusCompleted,
+  readOnly,
 }) => {
   const statusNameReference = useRef(null);
   const { name } = workflowStatus || {};
@@ -42,6 +43,7 @@ const TaskItemWorkflowStatus = ({
               onWidthChange={resetPosition}
             />
           )}
+          disabled={readOnly}
         >
           {workflowStatus ? (
             <StatusWrapper>

@@ -12,6 +12,7 @@ const TaskItemDropdown = ({
   value: initialValue,
   onChange,
   field: { options: initialOptions, displayOptions },
+  readOnly = false,
 }) => {
   const isRequired = displayOptions.includes('TASK_REQUIRED');
   const [value, setValue] = useState(initialValue);
@@ -60,6 +61,7 @@ const TaskItemDropdown = ({
           options={options.sort((a, b) => a.label.localeCompare(b.label))}
           disableUnderline
           IconComponent={() => <></>}
+          disabled={readOnly}
         />
       </DropdownBox>
     </>

@@ -8,7 +8,7 @@ import { updatePartialWorkflow } from 'actions/task-template-actions';
 import { useDispatch } from 'react-redux';
 
 const TaskTemplateStartDate = props => {
-  const { workflow } = props;
+  const { workflow, disabled = false } = props;
   const { identifier, startDateTime } = workflow || {};
   const dispatch = useDispatch();
 
@@ -27,6 +27,7 @@ const TaskTemplateStartDate = props => {
 
   return (
     <TaskItemPopover
+      disabled={disabled}
       content={({ closePopover }) => (
         <DueDatePicker
           taskIdentifier={identifier}
