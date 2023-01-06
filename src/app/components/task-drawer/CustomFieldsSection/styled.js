@@ -1,19 +1,15 @@
 import styled from 'styled-components';
 import { fontWeights, fontSizes } from 'styles/font';
 import palette from 'styles/palette';
-import spacing from 'styles/spacing';
 
 export const CustomFieldsSectionContainer = styled.div`
   color: ${palette.coolGrey1};
-  padding: 42px ${spacing.huge};
+  padding: 42px 0;
   border-top: 1px solid ${palette.coolGrey2};
 `;
 
 export const CustomFieldsSectionContainerNoLine = styled.div`
   color: ${palette.coolGrey1};
-  padding: 32px ${spacing.huge};
-  padding-top: 0 !important;
-  padding-bottom: 0 !important;
 `;
 
 export const HidableContainer = styled.div`
@@ -32,6 +28,6 @@ export const Title = styled.h3`
 export const rowHeight = 'fit-content';
 
 export const styleFullRow = {
-  padding: '1rem 0rem',
+  padding: '0.5rem 0rem',
   height: 'fit-content',
 };
