@@ -418,6 +418,7 @@ const TaskItem = React.memo(
       ],
     );
 
+    const descriptionColumnOrder = getColumnOrder(TaskItemColumn.DESCRIPTION);
     return (
       <>
         <StandardTaskItemPanel
@@ -444,7 +445,8 @@ const TaskItem = React.memo(
                     columns?.find(
                       ({ identifier }) =>
                         identifier === TaskItemColumn.DESCRIPTION,
-                    )?.columnWidth - (isSubtask ? 36 : 0)
+                    )?.columnWidth -
+                    (isSubtask && descriptionColumnOrder === 0 ? 36 : 0)
                   }
                   order={getColumnOrder(TaskItemColumn.DESCRIPTION)}
                   bolded
@@ -486,6 +488,13 @@ const TaskItem = React.memo(
                     setEditing={setEditingDescription}
                     isEditButtonVisible={isEditButtonVisible}
                     hasParentTaskLabel={hasParentTaskLabel}
+                    width={
+                      columns?.find(
+                        ({ identifier }) =>
+                          identifier === TaskItemColumn.DESCRIPTION,
+                      )?.columnWidth -
+                      (isSubtask && descriptionColumnOrder === 0 ? 106 : 70)
+                    }
                   />
                   {!isSubtask && (
                     <TaskItemSubtasks
