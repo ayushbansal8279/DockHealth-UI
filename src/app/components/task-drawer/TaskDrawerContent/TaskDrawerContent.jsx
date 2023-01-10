@@ -180,7 +180,10 @@ const TaskDrawerContent = props => {
           />
         </Grid>
         {selectedTask && <TaskDrawerDivider />}
-        <Box padding="0 32px" sx={{ width: '100%' }}>
+        <Box
+          padding={isMobile ? '8px 16px' : '8px 32px'}
+          sx={{ width: '100%' }}
+        >
           <Typography component="span">
             List:{' '}
             <FiledInListName>
@@ -196,11 +199,6 @@ const TaskDrawerContent = props => {
             <span ref={watchersReference}>Watchers</span>{' '}
             <a type="button">Unwatch</a>
           </SubscriptionBadge> */}
-        </Box>
-        <Box display="flex" padding={isMobile ? '0 16px' : '0 32px'}>
-          <Typography>List: </Typography>
-          <Spacing horizontal={3} />
-          <FiledInListName>{selectedTask?.taskList?.listName}</FiledInListName>
         </Box>
         {isSubtask && (
           <Grid item xs={12} style={styleFullRowThin(isMobile)}>
@@ -253,7 +251,7 @@ const TaskDrawerContent = props => {
             disableMentions={restrictMentions}
           />
         </Grid>
-        <Grid item xs={12} m={6} style={styleLeftColumn(isMobile)}>
+        <Grid item xs={12} md={6} style={styleLeftColumn(isMobile)}>
           <PatientSection
             selectedPatient={
               selectedTask?.patient || selectedParentTask?.patient || null
@@ -270,14 +268,14 @@ const TaskDrawerContent = props => {
             onSave={handleUpdateTask}
           />
         </Grid>
-        <Grid item xs={12} m={6} style={styleRightColumn(isMobile)}>
+        <Grid item xs={12} md={6} style={styleRightColumn(isMobile)}>
           <AssignedToSection
             onSave={handleUpdateTask}
             disabled={restrictions?.assigment === READ_ONLY}
           />
         </Grid>
         {!taskStartDateDisabled && (
-          <Grid item xs={12} m={6} style={styleLeftColumn(isMobile)}>
+          <Grid item xs={12} md={6} style={styleLeftColumn(isMobile)}>
             <div ref={dueDateSectionReference}>
               <StartDateSection
                 disabled={restrictions?.startDate === DISABLED}
@@ -286,16 +284,16 @@ const TaskDrawerContent = props => {
           </Grid>
         )}
         {!taskStartDateDisabled && (
-          <Grid item xs={12} m={6} style={styleRightColumn(isMobile)}>
+          <Grid item xs={12} md={6} style={styleRightColumn(isMobile)}>
             <div />
           </Grid>
         )}
-        <Grid item xs={12} m={6} style={styleLeftColumn(isMobile)}>
+        <Grid item xs={12} md={6} style={styleLeftColumn(isMobile)}>
           <div ref={dueDateSectionReference}>
             <DueDateSection disabled={restrictions?.dueDate === DISABLED} />
           </div>
         </Grid>
-        <Grid item xs={12} m={6} style={styleRightColumn(isMobile)}>
+        <Grid item xs={12} md={6} style={styleRightColumn(isMobile)}>
           {!isTemplateTask && (
             <ReminderSection
               onSave={handleUpdateTask}
@@ -303,13 +301,13 @@ const TaskDrawerContent = props => {
             />
           )}
         </Grid>
-        <Grid item xs={12} m={6} style={styleLeftColumn(isMobile)}>
+        <Grid item xs={12} md={6} style={styleLeftColumn(isMobile)}>
           <PrioritySection
             onTaskUpdate={onTaskUpdate}
             disabled={restrictions?.priority === DISABLED}
           />
         </Grid>
-        <Grid item xs={12} m={6} style={styleRightColumn(isMobile)}>
+        <Grid item xs={12} md={6} style={styleRightColumn(isMobile)}>
           <div ref={statusSectionReference}>
             <StatusSection
               onTaskUpdate={onTaskUpdate}
