@@ -6,13 +6,14 @@ import {
 } from 'helpers/customer-type-helper';
 import { openModal, closeModal } from 'modal/actions';
 import { useDispatch, useSelector } from 'react-redux';
-import { yupResolver } from "@hookform/resolvers/yup";
+import { yupResolver } from '@hookform/resolvers/yup';
 import * as PatientApi from 'api/patient-api';
 import { onPatientAdded as onPatientAddedEvent } from 'helpers/ga-event-helper';
 import { showAlert } from 'helpers/utility-functions';
 import PatientForm from 'components/patients/PatientForm/PatientForm';
 import { validationSchema } from 'components/patients/PatientForm/helpers';
 import PatientDrawer from 'components/patients/PatientDrawer/PatientDrawer';
+import { userProfileSelector } from 'selectors/user-selectors';
 
 const onSubmit = ({
   onClose,
@@ -44,9 +45,7 @@ const onSubmit = ({
 };
 
 const CreatePatientDrawer = ({ isSidebarOpen, onPatientCreated, onClose }) => {
-  const { currentUser } = useSelector(store => ({
-    currentUser: store.userState.userProfile,
-  }));
+  const currentUser = useSelector(userProfileSelector);
   const customerTypeLabel = getCustomerTypeLabel(currentUser);
   const uniqueIdentifierLabel = getCustomerUniqueIDLabel(currentUser);
   const dispatch = useDispatch();

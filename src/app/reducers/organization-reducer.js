@@ -315,11 +315,8 @@ const reducer = (state = initialState, action) => {
         isFetchingOrganizationUsers: false,
       };
 
-    default: {
-      return {
-        ...state,
-      };
-    }
+    default:
+      return state;
   }
 };
 

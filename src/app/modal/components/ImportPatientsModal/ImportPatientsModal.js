@@ -9,6 +9,7 @@ import UploadFileIcon from 'img/upload-file.svg';
 import { useDropzone } from 'react-dropzone';
 import { getCustomerTypeLabel } from 'helpers/customer-type-helper';
 import Button from 'components/common/Button/Button';
+import { userProfileSelector } from 'selectors/user-selectors';
 import { CloseIconButton, CloseIcon } from '../styled';
 import {
   ImportPatientModalWrapper,
@@ -32,9 +33,7 @@ const ImportPatientsModal = ({
 
   const [modalStep, setModalStep] = useState(step);
 
-  const { currentUser } = useSelector(store => ({
-    currentUser: store.userState.userProfile,
-  }));
+  const currentUser = useSelector(userProfileSelector);
   const customerTypeLabel = getCustomerTypeLabel(currentUser);
 
   const onFileInputChange = useCallback(() => {

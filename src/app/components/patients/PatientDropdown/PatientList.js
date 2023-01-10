@@ -17,6 +17,7 @@ import { noop } from 'helpers/utility-functions';
 import AddRecordOption from 'components/common/AddRecordOption/AddRecordOption';
 import { List } from 'react-virtualized';
 
+import { userProfileSelector } from 'selectors/user-selectors';
 import {
   Input,
   InputBox,
@@ -43,9 +44,7 @@ const PatientList = ({
   const [isLoadingPatients, setIsLoadingPatients] = useState(false);
   const inputReference = useRef(null);
   const [hoveredItemIndex, setHoveredItemIndex] = useState(0);
-  const { currentUser } = useSelector(store => ({
-    currentUser: store.userState.userProfile,
-  }));
+  const currentUser = useSelector(userProfileSelector);
   const currentOrganizationIdentifier = sessionStorage.getItem(
     'currentOrganizationIdentifier',
   );

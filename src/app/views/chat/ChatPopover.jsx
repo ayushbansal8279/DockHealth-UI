@@ -1,4 +1,4 @@
-import React, { useState, useCallback } from 'react';
+import React, { useState, useCallback, useMemo } from 'react';
 import { Box } from '@material-ui/core';
 import ArrowBack from '@material-ui/icons/ArrowBack';
 import CloseIcon from '@material-ui/icons/Close';
@@ -25,7 +25,10 @@ const ChatPopover = () => {
   const dispatch = useDispatch();
 
   const [showSettings, setShowSettings] = useState(false);
-  const showSettingsValue = { showSettings, setShowSettings };
+  const showSettingsValue = useMemo(() => ({ showSettings, setShowSettings }), [
+    showSettings,
+    setShowSettings,
+  ]);
 
   const handleClose = useCallback(() => {
     dispatch(closePopover(selectedChannel));

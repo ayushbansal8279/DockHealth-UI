@@ -10,7 +10,10 @@ import {
   setPaymentNewPlan,
 } from 'actions/organization-actions';
 import { saveBillingDetails } from 'api/organization-api';
-import { currentSubscriptionPlanSelector } from 'selectors/organization-selectors';
+import {
+  currentSubscriptionPlanSelector,
+  organizationSelector,
+} from 'selectors/organization-selectors';
 import ViewLayout from 'components/template/ViewLayout/ViewLayout';
 import LayoutHeader from 'components/template/LayoutHeader/LayoutHeader';
 import Spacing from 'components/common/Spacing';
@@ -25,6 +28,7 @@ import {
   PROFESSIONAL_SERVICES_PRICE,
   SUBSCRIPTION_PLANS,
 } from 'helpers/subscription-helper';
+import { userProfileSelector } from 'selectors/user-selectors';
 import BillingsViewBillingData from '../billings/BillingData/BillingData';
 import {
   DarkBlueTextContainer,
@@ -120,12 +124,8 @@ const SubscriptionPaymentView = () => {
 
   const currentSubscriptionPlan = useSelector(currentSubscriptionPlanSelector);
   const { activeUserCount } = currentSubscriptionPlan || {};
-  const { newPaymentPlan, userProfile } = useSelector(store => ({
-    ...store.organizationState,
-    organizationIdentifier:
-      store.userState?.userProfile?.organizationIdentifier,
-    userProfile: store.userState?.userProfile,
-  }));
+  const userProfile = useSelector(userProfileSelector);
+  const { newPaymentPlan } = useSelector(organizationSelector);
 
   useEffect(() => {
     if (!checkIfUserIsOrganizationAdmin(userProfile)) {

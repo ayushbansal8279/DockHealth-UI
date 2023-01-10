@@ -16,6 +16,7 @@ import { showAlert, useSmallScreen } from 'helpers/utility-functions';
 import { useBoolean } from 'hooks/useBoolean';
 import { MontserratTypography } from 'styles/theme-montserrat';
 import HelloSign from 'hellosign-embedded';
+import { userProfileSelector } from 'selectors/user-selectors';
 import { OnboardingAnchorDiv } from '../OnboardingTemplate.Components';
 import InvitationForm from './OnboardingBaaOverviewView.InvitationForm';
 
@@ -97,7 +98,7 @@ const OnboardingBaaSigning = ({ mainDisplayOption }) => {
 
   const [isProcessing, setProcessing] = useState(false);
 
-  const currentUserProfile = useSelector(store => store.userState.userProfile);
+  const currentUserProfile = useSelector(userProfileSelector);
 
   useMount(() => {
     // eslint-disable-next-line no-unused-expressions

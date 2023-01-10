@@ -7,6 +7,7 @@ import { MuiThemeProvider } from '@material-ui/core/styles';
 import Spacing from 'components/common/Spacing';
 import { getCustomerTypeLabel } from 'helpers/customer-type-helper';
 import patient from 'img/modals/patient';
+import { userProfileSelector } from 'selectors/user-selectors';
 import { redTheme } from '../../themes/red-theme';
 import {
   ModalWrapper,
@@ -23,9 +24,7 @@ const PrimaryText = styled.span`
 `;
 
 const UnassignPatientModal = ({ closeModal, confirm, isWorkflowModal }) => {
-  const { currentUser } = useSelector(store => ({
-    currentUser: store.userState.userProfile,
-  }));
+  const currentUser = useSelector(userProfileSelector);
   const customerTypeLabel = getCustomerTypeLabel(currentUser);
 
   return (

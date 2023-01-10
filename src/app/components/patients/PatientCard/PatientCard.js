@@ -17,6 +17,7 @@ import {
 } from 'helpers/customer-type-helper';
 import { organizationSelector } from 'selectors/organization-selectors';
 import { FieldType } from 'helpers/field-type-helpers';
+import { userProfileSelector } from 'selectors/user-selectors';
 import {
   PatientCardContainer,
   PatientInfoSection,
@@ -95,9 +96,7 @@ const PatientCard = ({
     [patientNotes],
   );
 
-  const { currentUser } = useSelector(store => ({
-    currentUser: store.userState.userProfile,
-  }));
+  const currentUser = useSelector(userProfileSelector);
 
   const customerTypeLabel = getCustomerTypeLabel(currentUser);
   const uniqueIdentifierLabel = getCustomerUniqueIDShortLabel(currentUser);

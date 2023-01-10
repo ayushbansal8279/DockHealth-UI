@@ -14,6 +14,7 @@ import { CUSTOM_FIELD_TYPES } from 'helpers/custom-fields-helpers';
 import { currentTaskListSelector } from 'selectors/task-list-selectors';
 import { selectedUserOrganizationSelector } from 'selectors/user-selectors';
 import { isMemberAdmin } from 'helpers/list-members-helper';
+import { userProfileSelector } from 'selectors/user-selectors';
 import { BulkContainer, StickyColumnContainer } from './styled';
 import {
   getTaskHeaderOptions,
@@ -31,9 +32,7 @@ const TasksHeader = ({
   pageBackground,
 }) => {
   const taskList = useSelector(currentTaskListSelector);
-  const { currentUser } = useSelector(store => ({
-    currentUser: store.userState.userProfile,
-  }));
+  const currentUser = useSelector(userProfileSelector);
   const currentOrganization = useSelector(selectedUserOrganizationSelector);
   const {
     columns,

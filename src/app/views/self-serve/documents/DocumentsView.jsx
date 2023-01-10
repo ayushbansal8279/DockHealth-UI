@@ -7,6 +7,7 @@ import { downloadBAADocument } from 'api/organization-api';
 import ViewLayout from 'components/template/ViewLayout/ViewLayout';
 import BasicLayoutHeader from 'components/template/BasicLayoutHeader/BasicLayoutHeader';
 // import BaaPreview from './DocumentsView.BaaPreview';
+import { userProfileSelector } from 'selectors/user-selectors';
 import {
   DocumentImage,
   DocumentLink,
@@ -14,11 +15,7 @@ import {
 } from './DocumentsView.Styled';
 
 const DocumentsView = () => {
-  const { userProfile } = useSelector(store => {
-    return {
-      userProfile: store.userState.userProfile,
-    };
-  });
+  const userProfile = useSelector(userProfileSelector);
 
   // const [isPreviewOpen, openPreview, hidePreview] = useBoolean(false);
   // const [isPreviewReady, setPreviewReady] = useBoolean(false);

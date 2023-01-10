@@ -6,6 +6,7 @@ import { MuiThemeProvider } from '@material-ui/core/styles';
 import Spacing from 'components/common/Spacing';
 import { getCustomerTypeLabel } from 'helpers/customer-type-helper';
 import DownArrow from 'img/modals/down-arrow';
+import { userProfileSelector } from 'selectors/user-selectors';
 import { redTheme } from '../../themes/red-theme';
 
 import {
@@ -19,9 +20,7 @@ import {
 } from '../styled';
 
 const InterruptEditModal = ({ closeModal, confirm }) => {
-  const { currentUser } = useSelector(store => ({
-    currentUser: store.userState.userProfile,
-  }));
+  const currentUser = useSelector(userProfileSelector);
   const customerTypeLabel = getCustomerTypeLabel(currentUser);
 
   return (

@@ -13,6 +13,7 @@ import {
   getCustomerUniqueIDLabel,
 } from 'helpers/customer-type-helper';
 import Checkbox from 'components/common/Checkbox/Checkbox';
+import { userProfileSelector } from 'selectors/user-selectors';
 import { usePatientListColumnsConfig } from 'context-api/patients-columns-config-context';
 import { PatientColumn } from 'helpers/patient-list-helpers';
 import { patientsListSelector } from 'selectors/patients-selectors';
@@ -60,9 +61,7 @@ const PatientsList = ({
   const { pathname } = useLocation();
   const history = useHistory();
   const dispatch = useDispatch();
-  const { currentUser } = useSelector(store => ({
-    currentUser: store.userState.userProfile,
-  }));
+  const currentUser = useSelector(userProfileSelector);
   const customerTypeLabel = getCustomerTypeLabel(currentUser);
   const uniqueIdentifierLabel = getCustomerUniqueIDLabel(currentUser);
 

@@ -54,9 +54,7 @@ const PatientsSubmenu = () => {
   const isGuest = orgUserRole === 'GUEST';
   const isInitialListFetching = isFetching && !defaultPatientsLists;
 
-  const { currentUser } = useSelector(store => ({
-    currentUser: store.userState.userProfile,
-  }));
+  const currentUser = useSelector(userProfileSelector);
   const customerTypeLabel = getCustomerTypeLabel(currentUser);
   const customerTypeLabelCapitalized = capitalize(customerTypeLabel);
   const customListsAvailable = useSelector(

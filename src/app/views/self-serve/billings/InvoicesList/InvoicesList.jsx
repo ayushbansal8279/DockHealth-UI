@@ -12,6 +12,7 @@ import ListSkeletonLoader from 'components/common/ListSkeletonLoader/ListSkeleto
 import SortingIcon from 'img/sorting-icon.svg';
 import { MontserratTypography } from 'styles/theme-montserrat';
 import Spacing from 'components/common/Spacing';
+import { organizationSelector } from 'selectors/organization-selectors';
 import {
   ChargeDetailsLink,
   InvoiceColumn,
@@ -139,9 +140,7 @@ const setCurrentSortingWithKey = ({ currentSorting, setCurrentSorting }) => ({
 const InvoicesList = () => {
   const [currentSorting, setCurrentSorting] = useState(defaultSorting);
 
-  const { invoiceDetails } = useSelector(store => ({
-    invoiceDetails: store.organizationState.invoiceDetails,
-  }));
+  const { invoiceDetails } = useSelector(organizationSelector);
 
   const invoiceOrderMethod = currentSorting.order === 'asc' ? ascend : descend;
   const sortedInvoicesData = invoiceDetails

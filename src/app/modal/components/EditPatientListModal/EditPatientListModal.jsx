@@ -11,6 +11,7 @@ import Spacing from 'components/common/Spacing.tsx';
 import Button from 'components/common/Button/Button';
 import { getCustomerTypeLabel } from 'helpers/customer-type-helper';
 import { capitalize } from 'helpers/capitalize';
+import { userProfileSelector } from 'selectors/user-selectors';
 import {
   EditPatientListModalWrapper,
   Title,
@@ -81,9 +82,7 @@ const EditPatientListModal = ({ closeModal, patientsList }) => {
 
   const { handleSubmit } = formMethods;
 
-  const { currentUser } = useSelector(store => ({
-    currentUser: store.userState.userProfile,
-  }));
+  const currentUser = useSelector(userProfileSelector);
   const customerTypeLabel = getCustomerTypeLabel(currentUser);
   const customerTypeLabelCapitalized = capitalize(customerTypeLabel);
 
