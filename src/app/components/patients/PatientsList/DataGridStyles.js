@@ -8,7 +8,7 @@ import spacing from 'styles/spacing';
 
 export const StyledDataGrid = styled(DataGrid)`
   &.MuiDataGrid-root {
-    max-width: 1179px;
+    // max-width: 1179px;
   }
   && {
     .MuiDataGrid-sortIcon {
@@ -18,9 +18,10 @@ export const StyledDataGrid = styled(DataGrid)`
       border-radius: 50%;
     }
   }
+
   .MuiDataGrid-columnHeaderTitleContainer {
     display: flex;
-    align-items: center;
+    align-items: left;
     margin-left: -15px;
   }
 
@@ -37,7 +38,6 @@ export const StyledDataGrid = styled(DataGrid)`
     font-family: Roboto Condensed;
     font-weight: ${fontWeights.light};
     font-size: ${fontSizes.smallPlus};
-    padding-left: ${spacing.large} !important;
   }
 
   .MuiDataGrid-colCell {

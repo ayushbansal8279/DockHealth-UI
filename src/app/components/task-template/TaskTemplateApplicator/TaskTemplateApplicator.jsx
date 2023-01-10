@@ -1,7 +1,7 @@
 /* eslint-disable react-hooks/rules-of-hooks */
 import React, { useRef, useState, useCallback } from 'react';
 import { useBoolean } from 'hooks/useBoolean';
-import palette from 'styles/palette';
+// import palette from 'styles/palette';
 import Spacing from 'components/common/Spacing';
 import { RotatableHeaderChevron } from 'components/common/RotatableChevron/RotatableChevron';
 import debounce from 'lodash.debounce';
@@ -10,21 +10,37 @@ import {
   getTemplatesForSpecificFolder,
   searchTemplates,
 } from 'api/task-template-api';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import * as ActionTypes from 'actions/action-types';
+import {
+  TASK_LIST_RESTRICTIONS_PROFILES,
+  TASK_LIST_RESTRICTIONS_OPTIONS,
+} from 'restrictions/task-restrictions';
+import { userProfileSelector } from 'selectors/user-selectors';
 import TaskTemplatePopover from './TaskTemplatePopover';
 import {
   TaskTemplateApplicatorContainer,
   TaskTemplateApplicatorLabel,
 } from './styled';
 
-const TaskTemplateApplicator = ({ onTemplateSelect, bulkApply = false }) => {
+const { DISABLED } = TASK_LIST_RESTRICTIONS_OPTIONS;
+
+const TaskTemplateApplicator = ({
+  onTemplateSelect,
+  bulkApply = false,
+  iconColorActive,
+}) => {
   const popoverReference = useRef(null);
   const [isPopoverOpen, openPopover, closePopover] = useBoolean(false);
   const [searchValue, setSearchValue] = useState('');
   const [parentList, setParentList] = useState([]);
   const [taskTemplatesList, setTaskTemplatesList] = useState(null);
   const [taskTemplatesIsLoading, setTaskTemplatesIsLoading] = useState(null);
+
+  const currentUser = useSelector(userProfileSelector);
+  const taskListRestrictions =
+    TASK_LIST_RESTRICTIONS_PROFILES[currentUser?.orgUserRole];
+
   const dispatch = useDispatch();
   const getNestedTemplatesList = useCallback(
     identifier => {
@@ -125,6 +141,10 @@ const TaskTemplateApplicator = ({ onTemplateSelect, bulkApply = false }) => {
     [setSearchValue, debouncedSearch],
   );
 
+  if (taskListRestrictions?.createTask === DISABLED) {
+    return null;
+  }
+
   return (
     <>
       <TaskTemplateApplicatorContainer
@@ -137,7 +157,7 @@ const TaskTemplateApplicator = ({ onTemplateSelect, bulkApply = false }) => {
         <Spacing horizontal={3} />
         <RotatableHeaderChevron
           rotated={isPopoverOpen}
-          color={palette.oPlusRed}
+          color={iconColorActive}
         />
       </TaskTemplateApplicatorContainer>
       <TaskTemplatePopover

@@ -15,7 +15,6 @@ import * as ModalActions from 'modal/actions';
 import useActions from 'hooks/use-actions';
 import { Collapse } from '@material-ui/core';
 import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd';
-import ArrowIcon from 'img/arrow';
 import { getSharedTaskListsWithCurrentUser } from 'api/task-list-api';
 import {
   DashboardGroup,
@@ -28,7 +27,6 @@ import {
   reorderDashboardTasks,
 } from 'actions/dashboard-actions';
 import { checkIfAllTasksSelected } from 'helpers/bulk-edit-helpers';
-import { Arrow } from 'components/tasklist/DropdownListSection/styled';
 import QuickAddTaskInput from 'components/tasklist/QuickAddTaskInput/QuickAddTaskInput';
 import LoadMoreButton, {
   LoadMoreSection,
@@ -39,12 +37,15 @@ import TasksHeader from 'components/tasklist/TasksHeader/TasksHeader';
 import { extractTasksAndSubtasks } from 'helpers/tasklist-helpers';
 import palette from 'styles/palette';
 import StickyContainer from 'components/common/HorizontalScroll/StickyContainer';
+import RotatableChevron from 'components/common/RotatableChevron/RotatableChevron';
+import Spacing from 'components/common/Spacing';
 import { dashboardLastCreatedTaskIdentifierSelector } from 'selectors/dashboard-selectors';
-
 import { usePrevious } from 'react-use';
 import OptionsMenu from 'components/common/OptionsMenu/OptionsMenu';
 import { MoreVert } from '@material-ui/icons';
 import { updateCurrentUserPreferences } from 'actions/user-actions';
+import { taskCustomFieldsSelector } from 'selectors/task-drawer-selectors';
+import { findIncompleteRequiredFields } from 'helpers/task-helpers';
 import {
   DashboardTasksGroupContainer,
   DashboardTasksGroupLabel,
@@ -76,6 +77,7 @@ const DashboardTasksGroup = ({
   isLastGroup,
   moveGroupUp,
   moveGroupDown,
+  iconColorActive,
 }) => {
   const {
     groupName,
@@ -102,6 +104,7 @@ const DashboardTasksGroup = ({
 
   const currentTaskLength = dashboardTasks?.length || 0;
   const previousTaskLength = usePrevious(currentTaskLength) || 0;
+  const { templates } = useSelector(taskCustomFieldsSelector);
 
   useEffect(() => {
     if (currentTaskLength > 0 && previousTaskLength === 0) {
@@ -196,6 +199,20 @@ const DashboardTasksGroup = ({
 
   const handleToggleCompletedTask = useCallback(
     task => {
+      const incompleteRequiredFields = findIncompleteRequiredFields(
+        templates,
+        task,
+      );
+      const isRequiredFieldsAreIncomplete = incompleteRequiredFields.length > 0;
+
+      if (isRequiredFieldsAreIncomplete) {
+        const modalProps = {
+          incompleteFields: incompleteRequiredFields,
+        };
+        modalActions.openModal('CompleteAllFields', modalProps);
+        return;
+      }
+
       const hasIncompletedSubtasks =
         task.subtasks?.length > 0
           ? task.subtasks.find(subtask => subtask.status === 'INCOMPLETE')
@@ -213,7 +230,7 @@ const DashboardTasksGroup = ({
         dispatch(TaskActions.toggleCompleteTask(task));
       }
     },
-    [dispatch, modalActions],
+    [dispatch, modalActions, templates],
   );
 
   const isDragAndDropDisabled = !tasks || tasks.length < 2;
@@ -255,12 +272,14 @@ const DashboardTasksGroup = ({
                 <MoreVert color="primary" />
               </OptionsMenu>
             </GroupOptionsContainer>
-            <Arrow
+            <Spacing horizontal={2} />
+            <RotatableChevron
               alt="arrow"
-              isOpen={groupIsOpen}
+              rotated={!groupIsOpen}
               onClick={onSwitchGroup}
-              src={ArrowIcon}
+              color={iconColorActive}
             />
+            <Spacing horizontal={3} />
             <GroupNameSectionWrapper>
               <DashboardTasksGroupLabel>
                 <DashboardTasksGroupLabelName>
@@ -297,6 +316,7 @@ const DashboardTasksGroup = ({
 
                       return null;
                     }}
+                    iconColorActive={iconColorActive}
                   />
                 </StickyElement>
               </StickyContainer>
@@ -383,6 +403,7 @@ const DashboardTasksGroup = ({
                                     }
                                     subtasksDisabled
                                     isDashboardTask
+                                    iconColorActive={iconColorActive}
                                   />
                                 </DashboardTaskItemContainer>
                               </div>

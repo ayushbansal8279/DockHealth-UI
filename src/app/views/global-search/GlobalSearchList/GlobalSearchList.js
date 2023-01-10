@@ -1,9 +1,7 @@
 import React, { useMemo, useState } from 'react';
 import { useSelector } from 'react-redux';
-import ArrowIcon from 'img/arrow';
 import StandardTaskItem from 'components/task/StandardTaskItem/StandardTaskItem';
 import {
-  Arrow,
   Tasks,
   ListDetailsContainer,
   ListDetailsHeader,
@@ -19,8 +17,13 @@ import palette from 'styles/palette';
 import StickyContainer from 'components/common/HorizontalScroll/StickyContainer';
 import { TaskItemType } from 'helpers/task-helpers';
 import TaskTemplateGroup from 'components/task-template/TaskTemplateGroup/TaskTemplateGroup';
-import { userSetupClientViewSelector } from 'selectors/user-selectors';
+import {
+  userSetupClientViewSelector,
+  selectedUserOrganizationSelector,
+} from 'selectors/user-selectors';
 import TasksHeader from 'components/tasklist/TasksHeader/TasksHeader';
+import RotatableChevron from 'components/common/RotatableChevron/RotatableChevron';
+import Spacing from 'components/common/Spacing';
 
 const GlobalSearchList = ({
   list,
@@ -41,6 +44,12 @@ const GlobalSearchList = ({
     addingNewSubtaskParentIdSelector,
   );
   const viewSetup = useSelector(userSetupClientViewSelector);
+
+  const currentOrganization = useSelector(selectedUserOrganizationSelector);
+  const iconColorActiveItem =
+    currentOrganization?.themeSettings?.find(
+      ({ name }) => name === 'icon.active.color',
+    ) || {};
 
   const showMoreTasks = () => {
     getMoreTasksForTaskList(list.taskListIdentifier, list.tasks?.length);
@@ -72,12 +81,14 @@ const GlobalSearchList = ({
             justify="flex-start"
             alignItems="center"
           >
-            <Arrow
+            <Spacing horizontal={2} />
+            <RotatableChevron
               alt="arrow"
-              isOpen={isOpen}
+              rotated={!isOpen}
               onClick={() => switchOpen(!isOpen)}
-              src={ArrowIcon}
+              color={iconColorActiveItem?.value}
             />
+            <Spacing horizontal={3} />
             <ListNameSection>
               {listName} ({tasks?.length || 0})
             </ListNameSection>
@@ -111,6 +122,7 @@ const GlobalSearchList = ({
                 addingNewSubtask={addingNewSubtaskParentId === task.identifier}
                 subtasksDisabled
                 multipleAssigneesContext={containsMultipleAssignees}
+                iconColorActive={iconColorActiveItem?.value}
               />
             ) : (
               <TaskTemplateGroup
@@ -121,6 +133,7 @@ const GlobalSearchList = ({
                 isFullView
                 dragAndDropDisabled
                 showTasksWithGroup={false}
+                iconColorActive={iconColorActiveItem?.value}
               />
             )}
           </>

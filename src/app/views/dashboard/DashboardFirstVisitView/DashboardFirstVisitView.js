@@ -1,7 +1,6 @@
 import React, { useMemo } from 'react';
 import { useHistory } from 'react-router-dom';
 import { useSelector } from 'react-redux';
-import OwlWithList from 'img/owl-with-list.png';
 import {
   taskListsSelector,
   pendingTaskListsSelector,
@@ -10,7 +9,6 @@ import Button from 'components/common/Button/Button';
 import Spacing from 'components/common/Spacing';
 import {
   Wrapper,
-  Picture,
   TextWrapper,
   Title,
   Description,
@@ -98,7 +96,6 @@ const DashboardFirstVisitView = ({
           </>
         )}
       </TextWrapper>
-      <Picture src={OwlWithList} alt="Create list" />
     </Wrapper>
   );
 };

@@ -1,6 +1,6 @@
 /* eslint-disable sonarjs/cognitive-complexity */
 /* eslint-disable no-unused-expressions */
-import React, { useEffect, useCallback } from 'react';
+import React, { useEffect, useCallback, useMemo } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { Grid } from '@material-ui/core';
 import { getTaskCustomFields } from 'actions/task-drawer-actions';
@@ -25,12 +25,13 @@ import { FieldType } from 'helpers/field-type-helpers';
 import { formatMetaDataOutput } from './helpers';
 import {
   CustomFieldsSectionContainer,
+  CustomFieldsSectionContainerNoLine,
   HidableContainer,
   Title,
   styleFullRow,
 } from './styled';
 
-const CustomFieldsSection = () => {
+const CustomFieldsSection = ({ disabled, fieldCategoryType }) => {
   const dispatch = useDispatch();
   const selectedTask = useSelector(selectedTaskSelector);
   const selectedWorkflow = useSelector(workflowSelector);
@@ -41,7 +42,25 @@ const CustomFieldsSection = () => {
   const taskDrawerFocusField = useSelector(
     isWorkflow ? workflowAutofocusFieldSelector : taskDrawerFocusFieldSelector,
   );
-  const { templates } = useSelector(taskCustomFieldsSelector);
+
+  const { templates: unfilteredTemplates } = useSelector(
+    taskCustomFieldsSelector,
+  );
+
+  const templates = useMemo(() => {
+    console.log(`unfilteredTemplates: ${JSON.stringify(unfilteredTemplates)}`);
+    const filtered = unfilteredTemplates.filter(unfilteredTemplate => {
+      console.log(
+        `field category type: ${unfilteredTemplate?.fieldCategoryType}`,
+      );
+      if (fieldCategoryType)
+        return unfilteredTemplate?.fieldCategoryType === fieldCategoryType;
+      return true;
+    });
+    console.log(`filtered templates: ${filtered}`);
+    return filtered;
+  }, [fieldCategoryType, unfilteredTemplates]);
+
   const { 0: emptyVisible, 3: toggleEmptyVisible } = useBoolean(false);
   useEffect(() => {
     if (task) {
@@ -101,12 +120,13 @@ const CustomFieldsSection = () => {
     field => {
       const isFocused = taskDrawerFocusField === field.identifier;
       const hasValue = !!getValues('taskMetaData')?.[field.identifier];
-      const visible = isFocused || emptyVisible || hasValue;
+      const isRequired = field.displayOptions.includes('TASK_REQUIRED');
+      const visible = isFocused || emptyVisible || hasValue || isRequired;
       return (
         <HidableContainer key={field.identifier} visible={!visible}>
           <Grid item xs={12} style={styleFullRow}>
             <CustomField
-              readOnly={false}
+              readOnly={disabled}
               field={field}
               onBlur={(data, wasChanged) =>
                 handleBlur(data, wasChanged, field.fieldType)
@@ -120,21 +140,29 @@ const CustomFieldsSection = () => {
         </HidableContainer>
       );
     },
-    [taskDrawerFocusField, getValues, emptyVisible, task, handleBlur],
+    [taskDrawerFocusField, getValues, emptyVisible, disabled, task, handleBlur],
   );
   if (templates.length === 0) return null;
   return (
     <FormProvider {...formMethods}>
-      <CustomFieldsSectionContainer>
-        <Title>Custom fields</Title>
-        {templates?.map((field, index) => {
-          return renderCustomField(field, index);
-        })}
-        <CategoryOptions
-          visibility={emptyVisible}
-          onToggle={toggleEmptyVisible}
-        />
-      </CustomFieldsSectionContainer>
+      {fieldCategoryType === 'TASK_CORE' ? (
+        <CustomFieldsSectionContainerNoLine>
+          {templates?.map((field, index) => {
+            return renderCustomField(field, index);
+          })}
+        </CustomFieldsSectionContainerNoLine>
+      ) : (
+        <CustomFieldsSectionContainer>
+          <Title>Custom fields</Title>
+          {templates?.map((field, index) => {
+            return renderCustomField(field, index);
+          })}
+          <CategoryOptions
+            visibility={emptyVisible}
+            onToggle={toggleEmptyVisible}
+          />
+        </CustomFieldsSectionContainer>
+      )}
     </FormProvider>
   );
 };

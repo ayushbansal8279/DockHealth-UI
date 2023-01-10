@@ -9,6 +9,13 @@ export const CustomFieldsSectionContainer = styled.div`
   border-top: 1px solid ${palette.coolGrey2};
 `;
 
+export const CustomFieldsSectionContainerNoLine = styled.div`
+  color: ${palette.coolGrey1};
+  padding: 32px ${spacing.huge};
+  padding-top: 0 !important;
+  padding-bottom: 0 !important;
+`;
+
 export const HidableContainer = styled.div`
   visibility: ${props => (props.visible ? 'hidden' : 'visible')};
   max-height: ${props => (props.visible ? '0px' : '500px')};

@@ -302,6 +302,7 @@ function* getTasksForTaskGroups(payload) {
         type: ActionTypes.REQUEST_TASKLIST_GROUP_TASKS_SUCCESS,
         groupOfTasks,
         refresh,
+        startPosition,
       });
     }
 

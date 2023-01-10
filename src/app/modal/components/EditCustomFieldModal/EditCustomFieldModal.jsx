@@ -17,6 +17,7 @@ import { showGlobalErrorAlert } from 'alert/actions';
 import * as CustomFieldsApi from 'api/custom-fields-api';
 import { FieldType, FIELD_TYPE_OPTIONS } from 'helpers/field-type-helpers';
 import { CATEGORY_OPTIONS, Category } from 'helpers/patient-details-helpers';
+import { CATEGORY_OPTIONS as TASK_CATEGORY_OPTIONS } from 'helpers/task-details-helpers';
 import FormInput from 'components/common/Input/FormInput';
 import Input from 'components/common/Input/Input';
 import Button from 'components/common/Button/Button';
@@ -280,6 +281,16 @@ const EditCustomFieldModal = ({
                         />
                       </Grid>
                     )}
+                    {type !== 'PROVIDER' && type !== 'PATIENT' && (
+                      <Grid item xs={6}>
+                        <FormSelect
+                          required
+                          label="Category"
+                          name="fieldCategoryType"
+                          options={TASK_CATEGORY_OPTIONS}
+                        />
+                      </Grid>
+                    )}
 
                     {optionsValue?.length > 0 && (
                       <>
@@ -337,7 +348,8 @@ const EditCustomFieldModal = ({
                       </>
                     )}
                   </Grid>
-                  {customField?.fieldType !== 'LONG_TEXT' &&
+                  {(customField?.fieldType !== 'LONG_TEXT' ||
+                    type === 'TASK') &&
                     ADDITIONAL_OPTIONS?.length > 0 && (
                       <Box m={2}>
                         <AdditionalOptions options={ADDITIONAL_OPTIONS} />

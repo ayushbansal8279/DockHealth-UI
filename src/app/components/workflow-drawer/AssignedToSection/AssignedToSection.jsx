@@ -15,7 +15,7 @@ import { WorkflowDrawerFieldNames } from 'helpers/workflow-drawer-helpers';
 import { updatePartialWorkflow } from 'actions/task-template-actions';
 import { AdornmentClear } from '../styled';
 
-const AssignedToSection = () => {
+const AssignedToSection = ({ disabled }) => {
   const currentUser = useSelector(userProfileSelector);
   const selectedWorkflow = useSelector(workflowSelector);
   const { assignedToUsers, taskList, taskListIdentifier } =
@@ -76,18 +76,22 @@ const AssignedToSection = () => {
 
   return (
     <TaskDrawerPopover
-      content={() => (
-        <MultiAssignMembersList
-          taskListIdentifiers={taskListIdentifier}
-          selectedMembers={assignedToUsersValue}
-          onSelect={handleAssignToSelection}
-          enableLazyLoading={
-            taskList?.listType === 'PUBLIC' || taskList?.listType === 'TEMPLATE'
-          }
-        />
-      )}
+      content={() =>
+        !disabled && (
+          <MultiAssignMembersList
+            taskListIdentifiers={taskListIdentifier}
+            selectedMembers={assignedToUsersValue}
+            onSelect={handleAssignToSelection}
+            enableLazyLoading={
+              taskList?.listType === 'PUBLIC' ||
+              taskList?.listType === 'TEMPLATE'
+            }
+          />
+        )
+      }
     >
       <Input
+        disabled={disabled}
         inputRef={inputReference}
         name="assignTo"
         type="text"

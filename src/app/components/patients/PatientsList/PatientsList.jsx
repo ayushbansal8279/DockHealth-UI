@@ -2,8 +2,10 @@
 import React, { useCallback, useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { useHistory, useLocation } from 'react-router-dom';
+import { ascend, compose, propOr, sortWith, toLower } from 'ramda';
 import * as ActionTypes from 'actions/action-types';
 import { Grid } from '@material-ui/core';
+import Tooltip from 'components/common/Tooltip/Tooltip';
 import { lookupEMRPatient } from 'api/patient-api';
 import ListSkeletonLoader from 'components/common/ListSkeletonLoader/ListSkeletonLoader';
 import {
@@ -12,6 +14,9 @@ import {
 } from 'helpers/customer-type-helper';
 import Checkbox from 'components/common/Checkbox/Checkbox';
 import { userProfileSelector } from 'selectors/user-selectors';
+import { usePatientListColumnsConfig } from 'context-api/patients-columns-config-context';
+import { PatientColumn } from 'helpers/patient-list-helpers';
+import { patientsListSelector } from 'selectors/patients-selectors';
 import PatientImportPopover from '../PatientImportPopover/PatientImportPopover';
 import TaskItemBulkEdit from '../../task/StandardTaskItem/TaskItemComponents/TaskItemBulkEdit';
 import EmptyFilteredPatientsList from '../EmptyFilteredPatientsList/EmptyFilteredPatientsList';
@@ -19,6 +24,7 @@ import {
   NonEmptyListTable,
   ListLoaderContainer,
   BulkContainer,
+  Text,
 } from './styled';
 import { StyledDataGrid } from './DataGridStyles';
 
@@ -29,7 +35,9 @@ const renderColumnHeader = props => {
   return (
     <>
       <div className="MuiDataGrid-colCellTitle">
-        <span>{headerName}</span>
+        <Tooltip placement="top" title={headerName}>
+          <Text width={colDef.width - 35}>{headerName}</Text>
+        </Tooltip>
       </div>
     </>
   );
@@ -64,6 +72,8 @@ const PatientsList = ({
     selectedPatientsCount &&
     patientsCount === selectedPatientsCount;
 
+  const patientsList = useSelector(patientsListSelector);
+
   const setSelectedPatient = useCallback(
     data => {
       dispatch({
@@ -90,6 +100,23 @@ const PatientsList = ({
       });
     };
   }, [dispatch]);
+
+  const {
+    columns: columnsData,
+    setCurrentPatientList,
+  } = usePatientListColumnsConfig();
+
+  const columnsDataSorted = sortWith(
+    [
+      ascend(propOr(0, 'sortIndex')),
+      ascend(compose(toLower, propOr('', 'name'))),
+    ],
+    columnsData,
+  );
+
+  useEffect(() => {
+    setCurrentPatientList(patientsList?.listDetails);
+  }, [setCurrentPatientList, patientsList]);
 
   const columns = [
     {
@@ -139,10 +166,15 @@ const PatientsList = ({
           }}
           className="patient-cell"
         >
-          {row.lastName}, {row.firstName}
+          <Tooltip placement="top" title={`${row.lastName}, ${row.firstName}`}>
+            <Text width="180">
+              {row.lastName}, {row.firstName}
+            </Text>
+          </Tooltip>
         </span>
       ),
-      flex: 1,
+      // flex: 1,
+      width: 200,
       valueGetter: parameters => {
         return `${parameters.row.lastName || ''}, ${parameters.row.firstName ||
           ''}`;
@@ -152,13 +184,20 @@ const PatientsList = ({
       field: 'mrn',
       headerName: uniqueIdentifierLabel.toUpperCase(),
       renderHeader: renderColumnHeader,
-      flex: 0.5,
+      // flex: 0.5,
+      width: 100,
+      renderCell: ({ row }) => (
+        <Tooltip placement="top" title={row.mrn}>
+          <Text width="80">{row.mrn}</Text>
+        </Tooltip>
+      ),
     },
     {
       field: 'dob',
       headerName: 'DOB',
       renderHeader: renderColumnHeader,
-      flex: 0.5,
+      // flex: 0.5,
+      width: 100,
       type: 'date',
       valueGetter: parameters => {
         return parameters.value
@@ -170,7 +209,8 @@ const PatientsList = ({
       field: 'age',
       headerName: 'AGE',
       renderHeader: renderColumnHeader,
-      flex: 0.5,
+      // flex: 0.5,
+      width: 70,
       sortComparator: (v1, v2, parameters1, parameters2) => {
         const { api } = parameters2;
         const sortModel = api.getSortModel();
@@ -208,21 +248,90 @@ const PatientsList = ({
     },
     {
       field: 'gender',
-      headerName: 'GENDER AT BIRTH',
+      headerName: 'SEX',
       renderHeader: renderColumnHeader,
-      flex: 0.5,
+      // flex: 0.5,
+      width: 80,
     },
     {
       field: 'genderIdentity',
-      headerName: 'GENDER IDENTIFY',
+      headerName: 'GENDER',
       renderHeader: renderColumnHeader,
-      flex: 0.5,
+      // flex: 0.5,
+      width: 100,
     },
-  ];
-  const formattedPatients = patients?.map(patient => ({
-    id: patient?.patientIdentifier || patient?.id || patient?.mrn,
-    ...patient,
-  }));
+    {
+      field: 'email',
+      headerName: 'EMAIL',
+      renderHeader: renderColumnHeader,
+      // flex: 0.5,
+      width: 140,
+      renderCell: ({ row }) => (
+        <Tooltip placement="top" title={row.email}>
+          <Text width="120">{row.email}</Text>
+        </Tooltip>
+      ),
+      align: 'left',
+    },
+    {
+      field: 'phoneMobile',
+      headerName: 'MOBILE',
+      renderHeader: renderColumnHeader,
+      // flex: 0.5,
+      width: 140,
+    },
+    {
+      field: 'phoneHome',
+      headerName: 'HOME',
+      renderHeader: renderColumnHeader,
+      // flex: 0.5,
+      width: 140,
+    },
+  ]
+    .filter(column => {
+      return (
+        columnsDataSorted.find(
+          data =>
+            PatientColumn[data.identifier] === column.field ||
+            column.field === 'isSelected',
+        )?.isChecked ?? false
+      );
+    })
+    .concat(
+      columnsDataSorted
+        .filter(column => column.targetType === 'PATIENT' && column.isChecked)
+        .map(column => ({
+          field: column.identifier,
+          headerName: column.name,
+          renderHeader: renderColumnHeader,
+          // flex: 0.5,
+          width: 140,
+          renderCell: ({ row }) => (
+            <Tooltip placement="top" title={row[column.identifier]}>
+              <Text width="120">{row[column.identifier]}</Text>
+            </Tooltip>
+          ),
+        })),
+    );
+
+  const formattedPatients = patients?.map(patient => {
+    const metaData = patient.patientMetaData?.map(pmd => {
+      return {
+        key: pmd.customFieldIdentifier,
+        value:
+          pmd.displayName || pmd.value || pmd.displayNames?.sort().toString(),
+      };
+    });
+    const patientDetails = {
+      id: patient?.patientIdentifier || patient?.id || patient?.mrn,
+      ...patient,
+    };
+    // eslint-disable-next-line no-unused-expressions
+    metaData?.forEach(element => {
+      patientDetails[element.key] = element.value;
+    });
+    return patientDetails;
+  });
   return (
     <>
       {isFetching ? (
@@ -233,7 +342,7 @@ const PatientsList = ({
         <>
           {patients?.length > 0 && formattedPatients ? (
             <Grid container xs={12} item justify="center">
-              <Grid item xs={12} xl={10} md={10} lg={10}>
+              <Grid item xs={12} xl={11} md={12} lg={11}>
                 <NonEmptyListTable listLength={patients?.length ?? 0}>
                   <StyledDataGrid
                     columns={columns}
@@ -244,6 +353,8 @@ const PatientsList = ({
                     autoHeight
                     disableColumnMenu
                     disableSelectionOnClick
+                    showColumnRightBorder
+                    showCellRightBorder
                   />
                 </NonEmptyListTable>
               </Grid>

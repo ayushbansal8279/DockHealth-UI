@@ -4,7 +4,7 @@ import zIndex from 'styles/z-index';
 import { useStyles, SelectWrapper } from './styled';
 
 const ToolbarSelect = ({ options, name, value, icon, ...restProps }) => {
-  const classes = useStyles();
+  const classes = useStyles({ iconColorActive: restProps.iconColorActive });
 
   return (
     <SelectWrapper>
@@ -46,7 +46,11 @@ const ToolbarSelect = ({ options, name, value, icon, ...restProps }) => {
       >
         {options?.map(option => {
           return (
-            <MenuItem key={option.value} value={option.value}>
+            <MenuItem
+              key={option.value}
+              value={option.value}
+              disabled={option.disabled}
+            >
               {option.label}
             </MenuItem>
           );

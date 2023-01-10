@@ -4,17 +4,34 @@ import { IconButton, Typography } from '@material-ui/core';
 import { openModal, closeModal } from 'modal/actions';
 import { deleteTask, partialUpdateTask } from 'actions/task-actions';
 import { getTemplates } from 'api/task-template-api';
-import { Edit, Delete, FindReplace } from '@material-ui/icons';
+import { Edit, Delete } from '@material-ui/icons';
 import palette from 'styles/palette';
+import ListsIcon from 'img/navigation/ListsIcon';
 
 import TaskNodeHandles from 'views/smart-flow-builder/TaskNodeHandles/TaskNodeHandles';
 import TaskNodeWrapper from 'views/smart-flow-builder/TaskNodeWrapper/TaskNodeWrapper';
+import { TaskNodeEllipsis } from 'views/smart-flow-builder/TaskNodeWrapper/styled';
 import { IconContainerStyled } from './styled';
-import NestedFlowNodeStyled from '../styled';
+import NestedFlowNodeStyled, { TaskLinks, TaskWrapper } from '../styled';
 
 const NestedFlowNode = React.memo(({ data, isConnectable, selected, type }) => {
   const { task } = data || {};
-  const { taskIdentifier, linkedTaskTemplate } = task || {};
+  const {
+    taskIdentifier,
+    linkedTaskTemplate,
+    linkedWorkflowTaskList,
+    linkedWorkflowTaskGroup,
+  } = task || {};
+
+  const [taskList, setTaskList] = useState(linkedWorkflowTaskList);
+  const [taskGroup, setTaskGroup] = useState(linkedWorkflowTaskGroup);
+
+  const [currentTaskList, setCurrentTaskList] = useState(
+    linkedWorkflowTaskList,
+  );
+  const [currentTaskGroup, setCurrentTaskGroup] = useState(
+    linkedWorkflowTaskGroup,
+  );
 
   const [currentWorkflow, setCurrentWorkflow] = useState({
     name: linkedTaskTemplate?.name,
@@ -37,16 +54,33 @@ const NestedFlowNode = React.memo(({ data, isConnectable, selected, type }) => {
     );
   };
   useEffect(() => {
-    if (!shallowEqual(workflow, currentWorkflow)) {
+    if (
+      !shallowEqual(workflow, currentWorkflow) ||
+      !shallowEqual(taskList, currentTaskList) ||
+      !shallowEqual(taskGroup, currentTaskGroup)
+    ) {
       dispatch(
         partialUpdateTask(taskIdentifier, {
           description: workflow.workflowName,
           linkedTemplateIdentifier: workflow.identifier,
+          linkedWorkflowTaskListIdentifier: taskList?.taskListIdentifier,
+          linkedWorkflowTaskGroupIdentifier: taskGroup?.taskGroupIdentifier,
         }),
       );
       setCurrentWorkflow(workflow);
+      setCurrentTaskList(taskList);
+      setCurrentTaskGroup(taskGroup);
     }
-  }, [workflow, dispatch, taskIdentifier, currentWorkflow]);
+  }, [
+    workflow,
+    dispatch,
+    taskIdentifier,
+    currentWorkflow,
+    taskList,
+    currentTaskList,
+    taskGroup,
+    currentTaskGroup,
+  ]);
 
   const handleDelete = () => {
     const modalProps = {
@@ -60,25 +94,87 @@ const NestedFlowNode = React.memo(({ data, isConnectable, selected, type }) => {
     dispatch(openModal('DeleteTaskConfirmation', modalProps));
   };
 
+  const handleOpenListPicker = () => {
+    dispatch(
+      openModal('SelectTaskDestination', {
+        fetchMethod: () => Promise.resolve(),
+        confirm: ({
+          taskListIdentifier,
+          listName,
+          taskGroupIdentifier,
+          groupName,
+        }) => {
+          if (taskListIdentifier) {
+            setTaskList({ taskListIdentifier, listName });
+          } else {
+            setTaskList(null);
+          }
+          if (taskGroupIdentifier) {
+            setTaskGroup({ taskGroupIdentifier, groupName });
+          } else {
+            setTaskGroup(null);
+          }
+        },
+      }),
+    );
+  };
+
+  const description = task?.description || workflow?.name;
+
   return (
     <TaskNodeHandles
       isConnectable={isConnectable}
       isConnecting={data.draggedEdgeSourceId}
       onTargetHandleHover={data.onTargetHandleHover}
     >
-      <TaskNodeWrapper selected={selected} type={type}>
-        <NestedFlowNodeStyled>
-          <Typography component="p">{task.description}</Typography>
-          <IconContainerStyled>
-            <IconButton onClick={handleDelete}>
-              <Delete htmlColor={palette.white} />
-            </IconButton>
-            <IconButton onClick={handleOpenModal}>
-              <Edit htmlColor={palette.white} />
-            </IconButton>
-          </IconContainerStyled>
-        </NestedFlowNodeStyled>
-      </TaskNodeWrapper>
+      <TaskWrapper>
+        <TaskNodeWrapper selected={selected} type={type} width={280}>
+          <TaskNodeEllipsis />
+          <NestedFlowNodeStyled>
+            <Typography component="p" style={{ maxHeight: '100%' }}>
+              {description?.slice(0, 40)}
+              {description?.length > 40 && '...'}
+            </Typography>
+            <IconContainerStyled>
+              <IconButton onClick={handleDelete}>
+                <Delete htmlColor={palette.white} />
+              </IconButton>
+              <IconButton onClick={handleOpenModal}>
+                <Edit htmlColor={palette.white} />
+              </IconButton>
+              <IconButton onClick={handleOpenListPicker}>
+                <ListsIcon color="white" />
+              </IconButton>
+            </IconContainerStyled>
+          </NestedFlowNodeStyled>
+        </TaskNodeWrapper>
+        <TaskLinks>
+          {taskList && (
+            <Typography
+              component="p"
+              style={{
+                overflow: 'hidden',
+                whiteSpace: 'nowrap',
+                textOverflow: 'ellipsis',
+              }}
+            >
+              {taskList.listName}
+            </Typography>
+          )}
+          {taskGroup && (
+            <Typography
+              component="p"
+              style={{
+                overflow: 'hidden',
+                whiteSpace: 'nowrap',
+                textOverflow: 'ellipsis',
+              }}
+            >
+              {taskGroup.groupName}
+            </Typography>
+          )}
+        </TaskLinks>
+      </TaskWrapper>
     </TaskNodeHandles>
   );
 });

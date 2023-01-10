@@ -34,7 +34,7 @@ import { BulkEditContext } from 'components/tasklist/BulkEditSection/BulkEditSec
 import TaskItemCustomField from 'components/common/CustomField/TaskItemCustomField';
 import OptionsMenu from 'components/common/OptionsMenu/OptionsMenu';
 import Spacing from 'components/common/Spacing';
-import { useColumnsConfig } from 'context-api/columns-config-context';
+import { useTaskListColumnsConfig } from 'context-api/columns-config-context';
 import StickyMainTaskItemCell from 'components/task/StickyMainTaskItemCell/StickyMainTaskItemCell';
 import TaskItemCell from 'components/task/TaskItemCell/TaskItemCell';
 import TaskTemplateDueDate from 'components/task-template/TaskTemplateDueDate/TaskTemplateDueDate';
@@ -50,12 +50,19 @@ import { currentTaskListSelector } from 'selectors/task-list-selectors';
 import { openDrawer } from 'actions/workflow-drawer-actions';
 import { CUSTOM_FIELD_TYPES } from 'helpers/custom-fields-helpers';
 import { userProfileSelector } from 'selectors/user-selectors';
+import {
+  TASK_LIST_RESTRICTIONS_OPTIONS,
+  TASK_LIST_RESTRICTIONS_PROFILES,
+} from 'restrictions/task-restrictions';
+import TaskTemplateCreatedByMembers from '../TaskTemplateMembers/TaskTemplateCreatedBy';
 import TemplateHeaderName from '../TaskTemplateName/TaskTemplateName';
 import TaskHeaderPatient from '../TaskTemplatePatient/TaskTemplatePatient';
 import TemplateItemWorkflowStatus from '../TaskTemplateWorkflowStatus/TaskTemplateWorkflowStatus';
 import TaskTemplateMembers from '../TaskTemplateMembers/TaskTemplateMembers';
 import TaskTemplateStartDate from '../TaskTemplateStartDate/TaskTemplateStartDate';
 import TaskTemplateAnchorDate from '../TaskTemplateAnchorDate/TaskTemplateAnchorDate';
+import TaskTemplateDate from '../TaskTemplateDate/TaskTemplateDate';
+import TaskTemplateElapsedTime from '../TaskTemplateElapsedTime/TaskTemplateElaspedTime';
 import TaskTemplateIcons from '../TaskTemplateIcons/TaskTemplateIcons';
 import {
   TaskTemplateGroupHeaderContainer,
@@ -64,6 +71,7 @@ import {
   TaskTemplateOptionsContainer,
   ActionIconsContainer,
 } from './styled';
+import TaskTemplateDetails from '../TaskTemplateDetails/TaskTemplateDetails';
 
 const TaskTemplateGroupHeader = ({
   templateGroup = {},
@@ -83,6 +91,7 @@ const TaskTemplateGroupHeader = ({
   setShowIncompleteTasks,
   // isFetchingTasks,
   showTasksWithGroup = true,
+  iconColorActive,
   // eslint-disable-next-line sonarjs/cognitive-complexity
 }) => {
   const {
@@ -103,7 +112,7 @@ const TaskTemplateGroupHeader = ({
   const currentUser = useSelector(userProfileSelector);
   const currentList = useSelector(currentTaskListSelector);
   const dispatch = useDispatch();
-  const { columns } = useColumnsConfig();
+  const { columns } = useTaskListColumnsConfig();
   useEffect(() => {
     setNameInputValue(name);
   }, [name]);
@@ -412,6 +421,10 @@ const TaskTemplateGroupHeader = ({
     !selectedWorkflow ? getWorkflowData(identifier) : setWorkFlowData(null);
   }, [getWorkflowData, identifier, selectedWorkflow]);
 
+  const restrictions =
+    TASK_LIST_RESTRICTIONS_PROFILES[currentUser?.orgUserRole];
+  const { DISABLED } = TASK_LIST_RESTRICTIONS_OPTIONS;
+
   const randerFirstColumnCoverIfNecessary = useCallback(
     (content, order, width) => {
       if (order !== 0) return content;
@@ -424,29 +437,38 @@ const TaskTemplateGroupHeader = ({
           order={0}
           width={+width + 26 + 54}
         >
-          {!groupDragAndDropDisabled && !bulkEditIsActive && (
-            <TemplateHandle
-              src={ThreeDotsIcon}
-              alt="Handle"
-              {...dragHandleProps}
-            />
-          )}
+          {!groupDragAndDropDisabled &&
+            !bulkEditIsActive &&
+            restrictions?.createTask !== DISABLED && (
+              <TemplateHandle
+                src={ThreeDotsIcon}
+                alt="Handle"
+                {...dragHandleProps}
+              />
+            )}
           <ActionIconsContainer>
-            <Checkbox
-              isChecked={selected || isBundleSelected}
-              onClick={handleBundleSelect}
-            />
+            {restrictions?.createTask !== DISABLED && (
+              <Checkbox
+                isChecked={selected || isBundleSelected}
+                onClick={handleBundleSelect}
+              />
+            )}
             <Box m={1} />
             {showTasksWithGroup && (
               <RotatableChevron
                 rotated={isOpen}
                 onClick={() => setOpen(!isOpen)}
+                color={iconColorActive}
               />
             )}
-            <Spacing horizontal={2} />
-            <OptionsMenu options={menuOptions}>
-              <MoreVert color="primary" />
-            </OptionsMenu>
+            {restrictions?.createTask !== DISABLED && (
+              <>
+                <Spacing horizontal={2} />
+                <OptionsMenu options={menuOptions}>
+                  <MoreVert color="primary" />
+                </OptionsMenu>
+              </>
+            )}
           </ActionIconsContainer>
 
           {content}
@@ -454,6 +476,7 @@ const TaskTemplateGroupHeader = ({
       );
     },
     [
+      DISABLED,
       bulkEditIsActive,
       dragHandleProps,
       groupDragAndDropDisabled,
@@ -463,9 +486,11 @@ const TaskTemplateGroupHeader = ({
       isOpen,
       menuOptions,
       pageBackground,
+      restrictions,
       selected,
       setOpen,
       showTasksWithGroup,
+      iconColorActive,
     ],
   );
 
@@ -502,7 +527,7 @@ const TaskTemplateGroupHeader = ({
             >
               <TaskTemplateProgressCircle>
                 <ProgressBar
-                  width={80}
+                  width={40}
                   progress={
                     (completedTasksAmountFinal / allTasksAmountFinal) * 100
                   }
@@ -516,7 +541,7 @@ const TaskTemplateGroupHeader = ({
         columns?.find(({ identifier: id }) => id === TaskItemColumn.DESCRIPTION)
           ?.columnWidth,
       )}
-      {randerFirstColumnCoverIfNecessary(
+      {/* {randerFirstColumnCoverIfNecessary(
         <TaskItemCell
           justify="center"
           paddingLeft="tiny"
@@ -533,7 +558,7 @@ const TaskTemplateGroupHeader = ({
         columns?.find(
           ({ identifier: id }) => id === TaskItemColumn.SUBTASKS_COUNT,
         )?.columnWidth,
-      )}
+      )} */}
 
       {isColumnChecked(columns, TaskItemColumn.PATIENT) && (
         <>
@@ -657,7 +682,9 @@ const TaskTemplateGroupHeader = ({
               justify="center"
               order={getColumnOrder(TaskItemColumn.DUE_DATE)}
             >
-              <TaskTemplateDueDate workflow={templateGroup} />
+              {restrictions?.createTask !== DISABLED && (
+                <TaskTemplateDueDate workflow={templateGroup} />
+              )}
             </TaskItemCell>,
             getColumnOrder(TaskItemColumn.DUE_DATE),
             columns?.find(
@@ -734,6 +761,292 @@ const TaskTemplateGroupHeader = ({
             columns?.find(
               ({ identifier: id }) => id === TaskItemColumn.LIST_NAME,
             )?.columnWidth,
+          )}
+        </>
+      )}
+      {isColumnChecked(columns, TaskItemColumn.COMMENTS) && (
+        <>
+          {randerFirstColumnCoverIfNecessary(
+            <TaskItemCell
+              isSubtask={false}
+              key={`comments_${identifier}`}
+              width={
+                columns?.find(
+                  ({ identifier: id }) => id === TaskItemColumn.COMMENTS,
+                )?.columnWidth
+              }
+              order={getColumnOrder(TaskItemColumn.COMMENTS)}
+            >
+              <TaskTemplateIcons
+                comments={
+                  templateGroup.comments || !workFlowData
+                    ? templateGroup.comments
+                    : workFlowData.comments
+                }
+                matchAttachComments={
+                  templateGroup.matchComments || !workFlowData
+                    ? templateGroup.matchComments
+                    : workFlowData.matchComments
+                }
+                workfkow={
+                  templateGroup.comments || !workFlowData
+                    ? templateGroup
+                    : workFlowData
+                }
+                dispatch={dispatch}
+              />
+            </TaskItemCell>,
+            getColumnOrder(TaskItemColumn.COMMENTS),
+          )}
+        </>
+      )}
+      {isColumnChecked(columns, TaskItemColumn.LABELS) && (
+        <>
+          {randerFirstColumnCoverIfNecessary(
+            <TaskItemCell
+              isSubtask={false}
+              key={`labels_${identifier}`}
+              width={
+                columns?.find(
+                  ({ identifier: id }) => id === TaskItemColumn.LABELS,
+                )?.columnWidth
+              }
+              order={getColumnOrder(TaskItemColumn.LABELS)}
+            >
+              <TaskTemplateIcons
+                labels={
+                  templateGroup.labels || !workFlowData
+                    ? templateGroup.labels
+                    : workFlowData.labels
+                }
+                matchLabels={
+                  templateGroup.matchLabels || !workFlowData
+                    ? templateGroup.matchLabels
+                    : workFlowData.matchLabels
+                }
+                workflow={
+                  templateGroup.labels || !workFlowData
+                    ? templateGroup
+                    : workFlowData
+                }
+                dispatch={dispatch}
+              />
+            </TaskItemCell>,
+            getColumnOrder(TaskItemColumn.LABELS),
+          )}
+        </>
+      )}
+      {isColumnChecked(columns, TaskItemColumn.FILES) && (
+        <>
+          {randerFirstColumnCoverIfNecessary(
+            <TaskItemCell
+              isSubtask={false}
+              key={`files_${identifier}`}
+              width={
+                columns?.find(
+                  ({ identifier: id }) => id === TaskItemColumn.FILES,
+                )?.columnWidth
+              }
+              order={getColumnOrder(TaskItemColumn.FILES)}
+            >
+              <TaskTemplateIcons
+                attachments={
+                  templateGroup.attachments || !workFlowData
+                    ? templateGroup.attachments
+                    : workFlowData.attachments
+                }
+                matchAttachments={
+                  templateGroup.matchAttachments || !workFlowData
+                    ? templateGroup.matchAttachments
+                    : workFlowData.matchAttachments
+                }
+                workflow={
+                  templateGroup.attachments || !workFlowData
+                    ? templateGroup
+                    : workFlowData
+                }
+                dispatch={dispatch}
+              />
+            </TaskItemCell>,
+            getColumnOrder(TaskItemColumn.FILES),
+          )}
+        </>
+      )}
+      {isColumnChecked(columns, TaskItemColumn.TASK_DETAILS) && (
+        <>
+          {randerFirstColumnCoverIfNecessary(
+            <TaskItemCell
+              isSubtask={false}
+              key={`task_details_${identifier}`}
+              width={
+                columns?.find(
+                  ({ identifier: id }) => id === TaskItemColumn.TASK_DETAILS,
+                )?.columnWidth
+              }
+              order={getColumnOrder(TaskItemColumn.TASK_DETAILS)}
+            >
+              <TaskTemplateDetails
+                workflow={
+                  templateGroup.description || !workFlowData
+                    ? templateGroup
+                    : workFlowData
+                }
+              />
+            </TaskItemCell>,
+            getColumnOrder(TaskItemColumn.TASK_DETAILS),
+          )}
+        </>
+      )}
+      {isColumnChecked(columns, TaskItemColumn.CREATED_BY) && (
+        <>
+          {randerFirstColumnCoverIfNecessary(
+            <TaskItemCell
+              isSubtask={false}
+              key={`created_by_${identifier}`}
+              width={
+                columns?.find(
+                  ({ identifier: id }) => id === TaskItemColumn.CREATED_BY,
+                )?.columnWidth
+              }
+              justify="center"
+              paddingLeft="small"
+              paddingRight="small"
+              onContextMenu={event => {
+                event.stopPropagation();
+              }}
+              order={getColumnOrder(TaskItemColumn.CREATED_BY)}
+              printWidth={TaskItemColumnWidth[TaskItemColumn.CREATED_BY].PRINT}
+            >
+              <TaskTemplateCreatedByMembers
+                workflow={
+                  templateGroup.creator || !workFlowData
+                    ? templateGroup
+                    : workFlowData
+                }
+                assignedToUsers={
+                  templateGroup?.creator ?? [templateGroup?.creator]
+                }
+              />
+            </TaskItemCell>,
+            getColumnOrder(TaskItemColumn.CREATED_BY),
+          )}
+        </>
+      )}
+      {isColumnChecked(columns, TaskItemColumn.CREATED_DATE) && (
+        <>
+          {randerFirstColumnCoverIfNecessary(
+            <TaskItemCell
+              key={`created_date_${identifier}`}
+              width={
+                columns?.find(
+                  ({ identifier: id }) => id === TaskItemColumn.CREATED_DATE,
+                )?.columnWidth
+              }
+              paddingLeft="tiny"
+              paddingRight="tiny"
+              justify="center"
+              onContextMenu={event => {
+                event.stopPropagation();
+              }}
+              order={getColumnOrder(TaskItemColumn.CREATED_DATE)}
+            >
+              <TaskTemplateDate
+                dateTime={templateGroup?.createdDateTime}
+                title="Created Date"
+                workflow={templateGroup}
+              />
+            </TaskItemCell>,
+            getColumnOrder(TaskItemColumn.CREATED_DATE),
+          )}
+        </>
+      )}
+      {isColumnChecked(columns, TaskItemColumn.COMPLETED_DATE) && (
+        <>
+          {randerFirstColumnCoverIfNecessary(
+            <TaskItemCell
+              key={`completed_date_${identifier}`}
+              width={
+                columns?.find(
+                  ({ identifier: id }) => id === TaskItemColumn.COMPLETED_DATE,
+                )?.columnWidth
+              }
+              paddingLeft="tiny"
+              paddingRight="tiny"
+              justify="center"
+              onContextMenu={event => {
+                event.stopPropagation();
+              }}
+              order={getColumnOrder(TaskItemColumn.COMPLETED_DATE)}
+            >
+              <TaskTemplateDate
+                workflow={templateGroup}
+                title="Completed On"
+                dateTime={templateGroup.completedDt}
+              />
+            </TaskItemCell>,
+            getColumnOrder(TaskItemColumn.COMPLETED_DATE),
+          )}
+        </>
+      )}
+      {isColumnChecked(columns, TaskItemColumn.COMPLETED_BY) && (
+        <>
+          {randerFirstColumnCoverIfNecessary(
+            <TaskItemCell
+              key={`completed_by_${identifier}`}
+              width={
+                columns?.find(
+                  ({ identifier: id }) => id === TaskItemColumn.COMPLETED_BY,
+                )?.columnWidth
+              }
+              justify="center"
+              paddingLeft="small"
+              paddingRight="small"
+              onContextMenu={event => {
+                event.stopPropagation();
+              }}
+              order={getColumnOrder(TaskItemColumn.COMPLETED_BY)}
+              printWidth={
+                TaskItemColumnWidth[TaskItemColumn.COMPLETED_BY].PRINT
+              }
+            >
+              <>
+                <TaskTemplateCreatedByMembers
+                  workflow={templateGroup}
+                  assignedToUsers={
+                    templateGroup?.completedBy
+                      ? [templateGroup.completedBy]
+                      : []
+                  }
+                />
+              </>
+            </TaskItemCell>,
+            getColumnOrder(TaskItemColumn.COMPLETED_BY),
+          )}
+        </>
+      )}
+      {isColumnChecked(columns, TaskItemColumn.ELAPSED_TIME) && (
+        <>
+          {randerFirstColumnCoverIfNecessary(
+            <TaskItemCell
+              key={`elapsed_time_${identifier}`}
+              width={
+                columns?.find(
+                  ({ identifier: id }) => id === TaskItemColumn.ELAPSED_TIME,
+                )?.columnWidth
+              }
+              paddingLeft="tiny"
+              paddingRight="tiny"
+              justify="center"
+              onContextMenu={event => {
+                event.stopPropagation();
+              }}
+              order={getColumnOrder(TaskItemColumn.ELAPSED_TIME)}
+            >
+              <TaskTemplateElapsedTime
+                workflow={templateGroup ?? workFlowData}
+              />
+            </TaskItemCell>,
+            getColumnOrder(TaskItemColumn.ELAPSED_TIME),
           )}
         </>
       )}

@@ -17,7 +17,6 @@ import {
 } from 'helpers/customer-type-helper';
 import { organizationSelector } from 'selectors/organization-selectors';
 import { FieldType } from 'helpers/field-type-helpers';
-import TextTypeHeader from 'components/common/TextTypeHeader/TextTypeHeader';
 import { userProfileSelector } from 'selectors/user-selectors';
 import {
   PatientCardContainer,
@@ -218,7 +217,7 @@ const PatientCard = ({
                         </InfoItem>
                       )}
                       {genderIdentity && (
-                        <InfoItem>Gender identity: {genderIdentity}</InfoItem>
+                        <InfoItem>Gender: {genderIdentity}</InfoItem>
                       )}
                       {mrn && !emrPatientLink && (
                         <InfoItem>
@@ -260,6 +259,7 @@ const PatientCard = ({
                       customFieldName,
                       displayName,
                       value,
+                      displayNames,
                       displayOptions,
                       fieldType,
                       customFieldIdentifier,
@@ -280,7 +280,9 @@ const PatientCard = ({
                                 <CustomFieldPatientInfo>
                                   <Typography>{customFieldName}: </Typography>
                                   <Box ml={1} />
-                                  <TextTypeHeader text={displayName || value} />
+                                  {fieldType === FieldType.DROPDOWN_MULTI
+                                    ? `${displayNames?.join(',') || ''}`
+                                    : `${displayName || value}`}
                                 </CustomFieldPatientInfo>
                               )}
                           </>

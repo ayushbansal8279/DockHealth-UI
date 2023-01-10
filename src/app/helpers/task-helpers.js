@@ -44,6 +44,7 @@ export const CommunicationType = {
   FAX: 'FAX',
   SMS: 'SMS',
   ESIGN: 'ESIGN',
+  EMR: 'EMR_NOTE',
 };
 
 export function getPriorityColor(priority) {
@@ -153,22 +154,43 @@ export const TaskItemColumn = {
   DUE_DATE: 'DUE_DT',
   START_DATE: 'START_DT',
   ANCHOR_DATE: 'ANCHOR_DT',
-  ACTIVITY: 'ACTIVITY',
   LIST_NAME: 'LIST_NAME',
   ASSIGNED: 'ASSIGNED_TO',
   PATIENT: 'PATIENT',
-  SUBTASKS_COUNT: 'SUBTASKS_COUNT',
+  CREATED_DATE: 'CREATED_DT',
+  CREATED_BY: 'CREATED_BY',
+  COMPLETED_DATE: 'COMPLETED_DT',
+  ELAPSED_TIME: 'ELAPSED_TIME',
+  COMPLETED_BY: 'COMPLETED_BY',
+  // SUBTASKS_COUNT: 'SUBTASKS_COUNT',
   WORKFLOW_STATUS: 'WORKFLOW_STATUS',
   DECISION_SELECT: 'DECISION_SELECT',
+  TASK_DETAILS: 'TASK_DETAILS',
+  COMMENTS: 'COMMENTS',
+  LABELS: 'LABELS',
+  FILES: 'FILES',
 };
 
 export const TaskItemColumnWidth = {
   [TaskItemColumn.DUE_DATE]: 78,
+  [TaskItemColumn.CREATED_DATE]: 115,
   [TaskItemColumn.START_DATE]: 78,
   [TaskItemColumn.ANCHOR_DATE]: 78,
+  [TaskItemColumn.COMMENTS]: 100,
+  [TaskItemColumn.LABELS]: 100,
+  [TaskItemColumn.FILES]: 100,
+  [TaskItemColumn.COMPLETED_DATE]: 150,
+  [TaskItemColumn.ELAPSED_TIME]: 150,
+  [TaskItemColumn.COMPLETED_BY]: 150,
   [TaskItemColumn.ACTIVITY]: 150,
   [TaskItemColumn.LIST_NAME]: 168,
   [TaskItemColumn.ASSIGNED]: {
+    DEFAULT: 90,
+    WIDE: 90,
+    NARROW: 60,
+    PRINT: 170,
+  },
+  [TaskItemColumn.CREATED_BY]: {
     DEFAULT: 90,
     WIDE: 90,
     NARROW: 60,
@@ -180,18 +202,31 @@ export const TaskItemColumnWidth = {
     WIDE: 475,
     PRINT: 300,
   },
+  [TaskItemColumn.TASK_DETAILS]: {
+    DEFAULT: 500,
+    WIDE: 475,
+    PRINT: 300,
+  },
   [TaskItemColumn.SUBTASKS_COUNT]: 60,
   [TaskItemColumn.WORKFLOW_STATUS]: 120,
 };
 
 export const TASK_ITEM_BASE_COLUMN_CONFIG = {
   [TaskItemColumn.DESCRIPTION]: true,
+  [TaskItemColumn.TASK_DETAILS]: true,
   [TaskItemColumn.SUBTASKS_COUNT]: true,
   [TaskItemColumn.PATIENT]: true,
   [TaskItemColumn.WORKFLOW_STATUS]: true,
-  [TaskItemColumn.ACTIVITY]: true,
+  [TaskItemColumn.COMMENTS]: true,
+  [TaskItemColumn.LABELS]: true,
+  [TaskItemColumn.FILES]: true,
   [TaskItemColumn.START_DATE]: true,
   [TaskItemColumn.DUE_DATE]: true,
+  [TaskItemColumn.COMPLETED_DATE]: true,
+  [TaskItemColumn.ELAPSED_TIME]: true,
+  [TaskItemColumn.COMPLETED_BY]: true,
+  [TaskItemColumn.CREATED_DATE]: true,
+  [TaskItemColumn.CREATED_BY]: true,
   [TaskItemColumn.ANCHOR_DATE]: true,
   [TaskItemColumn.ASSIGNED]: true,
   [TaskItemColumn.LIST_NAME]: false,
@@ -200,20 +235,37 @@ export const TASK_ITEM_BASE_COLUMN_CONFIG = {
 export const SHOW_COLUMNS_CONFIG = {
   [TaskItemColumn.WORKFLOW_STATUS]: true,
   [TaskItemColumn.ASSIGNED]: true,
-  [TaskItemColumn.ACTIVITY]: true,
+  [TaskItemColumn.COMMENTS]: true,
+  [TaskItemColumn.LABELS]: true,
+  [TaskItemColumn.FILES]: true,
   [TaskItemColumn.START_DATE]: true,
   [TaskItemColumn.DUE_DATE]: true,
+  [TaskItemColumn.CREATED_DATE]: true,
+  [TaskItemColumn.CREATED_BY]: true,
+  [TaskItemColumn.COMPLETED_DATE]: true,
+  [TaskItemColumn.ELAPSED_TIME]: true,
+  [TaskItemColumn.COMPLETED_BY]: true,
   [TaskItemColumn.ANCHOR_DATE]: true,
   [TaskItemColumn.PATIENT]: true,
   [TaskItemColumn.LIST_NAME]: true,
+  [TaskItemColumn.TASK_DETAILS]: true,
 };
 
 export const TASK_ITEM_SORT_METHODS = {
   [TaskItemColumn.DESCRIPTION]: sortWith([
     ascend(pipe(prop('description'), defaultTo('~'), toLower)),
   ]),
+  [TaskItemColumn.TASK_DETAILS]: sortWith([
+    ascend(pipe(prop('details'), defaultTo('~'), toLower)),
+  ]),
   [TaskItemColumn.DUE_DATE]: sortWith([
     ascend(pipe(prop('dueDate'), defaultTo('~'))),
+  ]),
+  [TaskItemColumn.CREATED_DATE]: sortWith([
+    ascend(pipe(prop('dateCreated'), defaultTo('~'))),
+  ]),
+  [TaskItemColumn.COMPLETED_DATE]: sortWith([
+    ascend(pipe(prop('completedDt'), defaultTo('~'))),
   ]),
   [TaskItemColumn.WORKFLOW_STATUS]: sortWith([
     ascend(
@@ -243,6 +295,12 @@ export const TASK_ITEM_SORT_METHODS = {
       pipe(path(['assignedToUsers', 0, 'userName']), defaultTo('~'), toLower),
     ),
   ]),
+  [TaskItemColumn.CREATED_BY]: sortWith([
+    ascend(pipe(path(['creator', 'userName']), defaultTo('~'), toLower)),
+  ]),
+  [TaskItemColumn.COMPLETED_BY]: sortWith([
+    ascend(pipe(path(['completedBy', 'userName']), defaultTo('~'), toLower)),
+  ]),
   [TaskItemColumn.LIST_NAME]: sortWith([
     ascend(pipe(path(['taskList', 'listName']), defaultTo('~'), toLower, trim)),
   ]),
@@ -255,8 +313,17 @@ export const TASK_ITEM_SORT_DESC_METHODS = {
   [TaskItemColumn.DESCRIPTION]: sortWith([
     descend(pipe(prop('description'), defaultTo(' '), toLower)),
   ]),
+  [TaskItemColumn.TASK_DETAILS]: sortWith([
+    descend(pipe(prop('details'), defaultTo(' '), toLower)),
+  ]),
   [TaskItemColumn.DUE_DATE]: sortWith([
     descend(pipe(prop('dueDate'), defaultTo(' '))),
+  ]),
+  [TaskItemColumn.CREATED_DATE]: sortWith([
+    descend(pipe(prop('createdDate'), defaultTo(' '))),
+  ]),
+  [TaskItemColumn.COMPLETED_DATE]: sortWith([
+    descend(pipe(prop('completedDt'), defaultTo(' '))),
   ]),
   [TaskItemColumn.WORKFLOW_STATUS]: sortWith([
     descend(
@@ -285,6 +352,12 @@ export const TASK_ITEM_SORT_DESC_METHODS = {
     descend(
       pipe(path(['assignedToUsers', 0, 'userName']), defaultTo(' '), toLower),
     ),
+  ]),
+  [TaskItemColumn.COMPLETED_BY]: sortWith([
+    descend(pipe(path(['completedBy', 'userName']), defaultTo(' '), toLower)),
+  ]),
+  [TaskItemColumn.CREATED_BY]: sortWith([
+    descend(pipe(path(['creator', 'userName']), defaultTo(' '), toLower)),
   ]),
   [TaskItemColumn.LIST_NAME]: sortWith([
     descend(
@@ -351,3 +424,21 @@ export const EmrNoteTypeOptions = {
   PROCEDURE_NOTE: 'Procedure note',
   PROGRESS_NOTE: 'Progress note',
 };
+
+export function findIncompleteRequiredFields(customFields, task) {
+  return customFields?.filter(field => {
+    const { taskMetaData } = task;
+    const { identifier: taskFieldIdentifier } = field;
+    const matchingMetaData = taskMetaData.find(
+      ({ customFieldIdentifier }) =>
+        customFieldIdentifier === taskFieldIdentifier,
+    );
+    return (
+      field.displayOptions.includes('TASK_REQUIRED') &&
+      (matchingMetaData === undefined ||
+        matchingMetaData?.length === 0 ||
+        matchingMetaData?.value === undefined ||
+        matchingMetaData?.value === '')
+    );
+  });
+}

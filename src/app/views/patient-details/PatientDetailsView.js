@@ -29,7 +29,10 @@ import {
   quickFiltersSelector,
   selectedQuickFilterSelector,
 } from 'selectors/mega-filter-selectors';
-import { userProfileSelector } from 'selectors/user-selectors';
+import {
+  userProfileSelector,
+  selectedUserOrganizationSelector,
+} from 'selectors/user-selectors';
 import { setPatientTaskSearch } from 'sagas/patient-details-saga';
 import { onSearchChanged } from 'helpers/ga-event-helper';
 import { RouteWrapper } from 'routing/components';
@@ -54,7 +57,7 @@ import {
 } from 'actions/mega-filter-actions';
 import PatientDetailsHeader from './PatientDetailsHeader/PatientDetailsHeader';
 import PatientWidget from './PatientWidget/PatientWidget';
-import { DEFAULT_TAB, TABS_CONFIG } from './helpers';
+import { DEFAULT_TAB, DEFAULT_TABS_CONFIG, TABS_CONFIG } from './helpers';
 import {
   PatientDetailsContainer,
   PatientDetailsTabsContainer,
@@ -79,7 +82,15 @@ const PatientDetailsView = () => {
   const addQuickFilterOption = useSelector(addQuickFilterOptionSelector);
   const selectedQuickFilter = useSelector(selectedQuickFilterSelector);
 
-  const [tabsConfiguration, setTabsConfiguration] = useState(TABS_CONFIG);
+  const currentOrganization = useSelector(selectedUserOrganizationSelector);
+  const patientNotesDisabled =
+    currentOrganization?.disabledFeatures?.includes('PATIENT_NOTES') || false;
+
+  const embeddedMode = sessionStorage.getItem('EmbeddedMode') || false;
+
+  const [tabsConfiguration, setTabsConfiguration] = useState(
+    patientNotesDisabled ? DEFAULT_TABS_CONFIG : TABS_CONFIG,
+  );
 
   useEffect(() => {
     dispatch(PatientDetailsActions.initializePatientState(patientIdentifier));
@@ -92,7 +103,8 @@ const PatientDetailsView = () => {
 
   useEffect(() => {
     (async () => {
-      const widgets = await getPatientWidgets();
+      const widgetDetails = await getPatientWidgets();
+      const widgets = widgetDetails?.widgets;
 
       const widgetTabs = [];
 
@@ -100,7 +112,9 @@ const PatientDetailsView = () => {
         widgetTabs.push({
           label: widgets[0].name,
           mainPath: `widget/${widgets[0].identifier}`,
-          url: widgets[0].url,
+          url: widgetDetails?.authToken
+            ? `${widgets[0].url}?authToken=${widgetDetails?.authToken}&idToken=${widgetDetails?.idToken}`
+            : widgets[0].url,
           height: widgets[0].height,
           width: widgets[0].width,
           type: 'widget',
@@ -117,25 +131,36 @@ const PatientDetailsView = () => {
     // eslint-disable-next-line unicorn/consistent-function-scoping
     const taskCallback = ({ eventType, task }) => {
       if (
-        eventType?.startsWith('CREATE_TASK') ||
-        eventType?.startsWith('DUPLICATE_TASK')
+        task?.patient &&
+        task?.patient.patientIdentifier === patientIdentifier
       ) {
-        dispatch(TaskActions.insertCreatedTask(task.taskIdentifier));
-      } else {
-        dispatch(TaskActions.refreshTask(task.taskIdentifier));
+        if (
+          eventType?.startsWith('CREATE_TASK') ||
+          eventType?.startsWith('DUPLICATE_TASK')
+        ) {
+          dispatch(TaskActions.insertCreatedTask(task.taskIdentifier));
+        } else {
+          dispatch(TaskActions.refreshTask(task.taskIdentifier));
+        }
       }
     };
 
     // eslint-disable-next-line unicorn/consistent-function-scoping
     const taskBundleCallback = ({ eventType, taskBundle }) => {
+      // eslint-disable-next-line sonarjs/no-collapsible-if
       if (
-        (eventType?.startsWith('CREATE_TASK_BUNDLE') ||
-          eventType?.startsWith('UPDATE_TASK_BUNDLE') ||
-          eventType?.startsWith('DUPLICATE_TASK_BUNDLE') ||
-          eventType?.startsWith('MORE_TASKS_TASK_BUNDLE')) &&
-        taskBundle.identifier
+        taskBundle?.patient &&
+        taskBundle?.patient.patientIdentifier === patientIdentifier
       ) {
-        dispatch(TaskActions.refreshTaskBundle(taskBundle.identifier));
+        if (
+          (eventType?.startsWith('CREATE_TASK_BUNDLE') ||
+            eventType?.startsWith('UPDATE_TASK_BUNDLE') ||
+            eventType?.startsWith('DUPLICATE_TASK_BUNDLE') ||
+            eventType?.startsWith('MORE_TASKS_TASK_BUNDLE')) &&
+          taskBundle.identifier
+        ) {
+          dispatch(TaskActions.refreshTaskBundle(taskBundle.identifier));
+        }
       }
     };
 
@@ -155,7 +180,7 @@ const PatientDetailsView = () => {
         ch.unsubscribe(channelName);
       }
     };
-  }, [currentUserIdentifier, dispatch]);
+  }, [currentUserIdentifier, patientIdentifier, dispatch]);
 
   const activeTabPath = useMemo(() => {
     // eslint-disable-next-line no-restricted-syntax
@@ -255,7 +280,9 @@ const PatientDetailsView = () => {
     <HorizontallyScrolledViewLayout
       header={
         <LayoutHeader>
-          <LayoutHeader.Title title={capitalize(customerTypeLabel)} />
+          <LayoutHeader.Title
+            title={embeddedMode ? '' : capitalize(customerTypeLabel)}
+          />
           <LayoutHeader.Spacer />
           <HeaderSearch
             value={searchValue}

@@ -4,7 +4,7 @@ import palette from 'styles/palette';
 import spacing from 'styles/spacing';
 
 export const Container = styled.div`
-  padding: 42px ${spacing.huge};
+  padding: ${spacing.regular} ${spacing.large};
   border-top: 1px solid ${palette.coolGrey2};
 `;
 

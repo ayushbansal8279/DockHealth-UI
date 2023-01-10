@@ -4,7 +4,7 @@ import React, { useState, useRef, useMemo, useCallback } from 'react';
 import { Box, List, ListItemText, MenuItem, Popover } from '@material-ui/core';
 import CustomizeIcon from 'img/customize-icon';
 import Checkbox from 'components/common/Checkbox/Checkbox';
-import { useColumnsConfig } from 'context-api/columns-config-context';
+import { useTaskListColumnsConfig } from 'context-api/columns-config-context';
 import {
   userProfileSelector,
   userHasTaskCustomFieldsFeatureSelector,
@@ -39,6 +39,7 @@ const CustomizeToolbarButton = ({
   showCustomColumnCreate = true,
   additionalOptionsTitle = 'Display Options',
   disableButton = false,
+  iconColorFilterActive,
 }) => {
   const [open, setOpen] = useState(false);
   const [openUpgradePopup, setOpenUpgradePopup] = useState(false);
@@ -48,17 +49,25 @@ const CustomizeToolbarButton = ({
   const userHasTaskCustomFieldsFeature = useSelector(
     userHasTaskCustomFieldsFeatureSelector,
   );
-  const { columns, setColumns } = useColumnsConfig();
+  const { columns, setColumns } = useTaskListColumnsConfig();
 
   const ColumnOptionNames = {
-    [TaskItemColumn.ACTIVITY]: 'Details',
+    [TaskItemColumn.COMMENTS]: 'Comments',
+    [TaskItemColumn.LABELS]: 'Labels',
+    [TaskItemColumn.FILES]: 'Files',
     [TaskItemColumn.SUBTASKS_COUNT]: 'Subtasks',
     [TaskItemColumn.ASSIGNED]: 'Assigned',
     [TaskItemColumn.WORKFLOW_STATUS]: 'Status',
     [TaskItemColumn.START_DATE]: 'Start date',
     [TaskItemColumn.DUE_DATE]: 'Due date',
+    [TaskItemColumn.CREATED_DATE]: 'Created date',
+    [TaskItemColumn.CREATED_BY]: 'Created by',
+    [TaskItemColumn.COMPLETED_DATE]: 'Completed date',
+    [TaskItemColumn.ELAPSED_TIME]: 'Elapsed time',
+    [TaskItemColumn.COMPLETED_BY]: `Completed by`,
     [TaskItemColumn.ANCHOR_DATE]: 'Anchor date',
     [TaskItemColumn.LIST_NAME]: 'List name',
+    [TaskItemColumn.TASK_DETAILS]: 'Details',
     [TaskItemColumn.PATIENT]: capitalize(getCustomerTypeLabel(userProfile)),
   };
 
@@ -110,7 +119,13 @@ const CustomizeToolbarButton = ({
     <>
       <ToolbarButton
         ref={buttonReference}
-        icon={<CustomizeImg src={CustomizeIcon} alt="view type icon" />}
+        icon={
+          <CustomizeImg
+            src={CustomizeIcon}
+            alt="view type icon"
+            iconColorFilterActive={iconColorFilterActive}
+          />
+        }
         onClick={disableButton ? undefined : () => setOpen(!open)}
         disableButton={disableButton}
         tooltip={
@@ -177,7 +192,7 @@ const CustomizeToolbarButton = ({
                   >
                     <PlusIcon>+</PlusIcon>
                     <Box mx={0.5} />
-                    <ListItemText>Create Custom Column</ListItemText>
+                    <ListItemText>Create/Edit Custom Column</ListItemText>
                   </MenuItem>
                 )}
               </List>

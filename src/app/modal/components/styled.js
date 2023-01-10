@@ -140,3 +140,18 @@ export const Container = styled.div`
   width: 384px;
   overflow: hidden;
 `;
+
+export const IncludeContainerStyled = styled.div`
+  padding-top: 1.5rem;
+  display: flex;
+  justify-content: space-between;
+  width: 100%;
+  align-items: center;
+`;
+
+export const InfoHeaderTextStyled = styled.p`
+  color: ${palette.coolGrey9};
+  font-family: 'Montserrat';
+  font-weight: 600;
+  margin: 0;
+`;

@@ -44,6 +44,11 @@ const StyledSelect = styled(Select)`
           border-color: ${palette.coolGrey1};
         }
       }
+
+      & .switchIcon > path {
+        fill: ${props =>
+          props.iconColorActive ? props.iconColorActive : palette.dirtyBanana};
+      }
     }
   }
 `;

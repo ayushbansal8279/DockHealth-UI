@@ -11,7 +11,6 @@ import { DrawerFieldEnum } from 'helpers/task-drawer-helpers';
 import { changeTasksSelectedState, addTask } from 'actions/task-actions';
 import { createPatientDetailsListPath } from 'routing/helpers/paths';
 import TaskListHeader from 'views/patient-details/TaskListHeader/TaskListHeader';
-import EmptyTaskListBird from 'img/animals/bird';
 import {
   getPatientFilterOptions,
   getCurrentPatientTasks,
@@ -29,7 +28,10 @@ import {
   patientTasksSortSelector,
   patientSelector,
 } from 'selectors/patient-details-selectors';
-import { addingNewSubtaskParentIdSelector } from 'selectors/task-drawer-selectors';
+import {
+  addingNewSubtaskParentIdSelector,
+  taskCustomFieldsSelector,
+} from 'selectors/task-drawer-selectors';
 import {
   hasFiltersAppliedSelector,
   selectedFiltersInMegaFilterSelector,
@@ -37,6 +39,7 @@ import {
 import {
   userProfileSelector,
   userSetupClientViewSelector,
+  selectedUserOrganizationSelector,
 } from 'selectors/user-selectors';
 import TaskDrawer from 'components/task-drawer/TaskDrawer/TaskDrawer';
 import BulkEditSection from 'components/tasklist/BulkEditSection/BulkEditSection';
@@ -51,11 +54,12 @@ import {
   TaskItemColumn,
   TaskItemType,
   TASK_ITEM_BASE_COLUMN_CONFIG,
+  findIncompleteRequiredFields,
 } from 'helpers/task-helpers';
 import { getCustomerTypeLabel } from 'helpers/customer-type-helper';
 import { checkIfAllTasksSelected } from 'helpers/bulk-edit-helpers';
 import { extractTasksAndSubtasks } from 'helpers/tasklist-helpers';
-import { useColumnsConfig } from 'context-api/columns-config-context';
+import { useTaskListColumnsConfig } from 'context-api/columns-config-context';
 import { ListDetailsContainer } from 'components/tasklist/DropdownListSection/styled';
 import StickyContainer from 'components/common/HorizontalScroll/StickyContainer';
 import { ListViewType } from '../helpers';
@@ -101,7 +105,7 @@ const PatientTasksListView = () => {
     setCurrentList,
     currentList,
     setViewSpecificConfig,
-  } = useColumnsConfig();
+  } = useTaskListColumnsConfig();
   const dispatch = useDispatch();
   const history = useHistory();
   const {
@@ -114,6 +118,13 @@ const PatientTasksListView = () => {
   const patient = useSelector(patientSelector);
 
   const isAllTasksView = taskListIdentifierParameter === ListViewType.ALL_TASKS;
+
+  const { templates } = useSelector(taskCustomFieldsSelector);
+  const currentOrganization = useSelector(selectedUserOrganizationSelector);
+  const iconColorActiveItem =
+    currentOrganization?.themeSettings?.find(
+      ({ name }) => name === 'icon.active.color',
+    ) || {};
 
   const enrichedWithPatientMetaDataLists = useMemo(() => {
     if (patient?.patientMetaData) {
@@ -250,11 +261,13 @@ const PatientTasksListView = () => {
     if (areFiltersApplied) return <NoFilterResultsView />;
 
     return (
-      <EmptyListViewWithQuickAddTask quickAddTask={quickAddTask}>
+      <EmptyListViewWithQuickAddTask
+        quickAddTask={quickAddTask}
+        iconColorActive={iconColorActiveItem?.value}
+      >
         <EmptyListView
           title={`This ${customerTypeLabel} has no tasks`}
           description={`Add tasks for this ${customerTypeLabel} above.`}
-          image={EmptyTaskListBird}
         />
       </EmptyListViewWithQuickAddTask>
     );
@@ -262,6 +275,20 @@ const PatientTasksListView = () => {
 
   const handleToggleTaskStatus = useCallback(
     task => {
+      const incompleteRequiredFields = findIncompleteRequiredFields(
+        templates,
+        task,
+      );
+      const isRequiredFieldsAreIncomplete = incompleteRequiredFields.length > 0;
+
+      if (isRequiredFieldsAreIncomplete) {
+        const modalProps = {
+          incompleteFields: incompleteRequiredFields,
+        };
+        dispatch(openModal('CompleteAllFields', modalProps));
+        return;
+      }
+
       const hasIncompletedSubtasks = task.subtasks.find(
         subtask => subtask.status === 'INCOMPLETE',
       );
@@ -277,7 +304,7 @@ const PatientTasksListView = () => {
         togglePatientTaskStatus(task);
       }
     },
-    [dispatch, togglePatientTaskStatus],
+    [dispatch, templates, togglePatientTaskStatus],
   );
 
   const groupedTasks = useMemo(() => {
@@ -318,6 +345,7 @@ const PatientTasksListView = () => {
               taskListIdentifier={activeList?.taskListIdentifier}
               taskGroupIdentifier={taskGroupIdentifier}
               onQuickAddTask={quickAddTask}
+              iconColorActive={iconColorActiveItem?.value}
             />
           </StickyContainer>
         )}
@@ -345,6 +373,7 @@ const PatientTasksListView = () => {
                 dragAndDropDisabled
                 addingNewSubtask={addingNewSubtaskParentId === task.identifier}
                 multipleAssigneesContext={groupHasMultipleAssignees}
+                iconColorActive={iconColorActiveItem?.value}
               />
             ) : (
               <TaskTemplateGroup
@@ -355,6 +384,7 @@ const PatientTasksListView = () => {
                 isFullView={isFullView}
                 groupDragAndDropDisabled
                 disablePatientAssignment
+                iconColorActive={iconColorActiveItem?.value}
               />
             ),
           )}
@@ -375,6 +405,7 @@ const PatientTasksListView = () => {
       updatePatientTaskWorkflowStatus,
       addingNewSubtaskParentId,
       viewSetup,
+      iconColorActiveItem,
     ],
   );
 

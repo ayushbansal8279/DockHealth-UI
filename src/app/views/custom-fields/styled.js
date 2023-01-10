@@ -11,7 +11,7 @@ export const Header = styled.h2`
 `;
 
 export const ViewContainer = styled.div`
-  max-width: 798px;
+  max-width: 1000px;
   width: 100%;
   margin: 0 auto;
   padding: 50px 20px;
@@ -34,10 +34,10 @@ export const CustomFieldItem = styled.div`
   display: grid;
   grid-template-columns: ${({ type, editable }) => {
     if (type === 'TASK') {
-      if (!editable) return '2fr 2fr';
-      return '2fr 1fr auto auto';
+      if (!editable) return '2fr 1fr 1fr 1fr';
+      return '2fr 1fr 1fr 1fr auto auto';
     }
-    return '2fr 1fr 1fr auto auto';
+    return '2fr 1fr 1fr 1fr 1fr auto auto';
   }};
   align-items: center;
   margin-bottom: 2px;

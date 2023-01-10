@@ -447,3 +447,9 @@ export const EducationSearchInput = styled.input`
   border: none;
   outline: none;
 `;
+
+export const Version = styled.p`
+  color: ${palette.darkGrey};
+  font-size: ${fontSizes.smallPlus};
+  font-weight: ${fontWeights.light};
+`;

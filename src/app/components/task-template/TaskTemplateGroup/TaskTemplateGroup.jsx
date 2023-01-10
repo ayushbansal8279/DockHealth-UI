@@ -1,6 +1,6 @@
 /* eslint-disable react-hooks/rules-of-hooks */
 import React, { useState, useMemo, useCallback, useEffect } from 'react';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import usePrevious from 'hooks/use-previous';
 import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd';
 import * as TaskActions from 'actions/task-actions';
@@ -10,6 +10,11 @@ import { TaskStatus } from 'helpers/task-helpers';
 import TasksSkeletonLoader from 'components/task/TasksSkeletonLoader/TasksSkeletonLoader';
 import StandardTaskItemContainer from 'components/task/StandardTaskItemContainer/StandardTaskItemContainer';
 import QuickAddTaskInput from 'components/tasklist/QuickAddTaskInput/QuickAddTaskInput';
+import { userProfileSelector } from 'selectors/user-selectors';
+import {
+  TASK_LIST_RESTRICTIONS_OPTIONS,
+  TASK_LIST_RESTRICTIONS_PROFILES,
+} from 'restrictions/task-restrictions';
 import TaskTemplateGroupHeader from '../TaskTemplateGroupHeader/TaskTemplateGroupHeader';
 import {
   TaskTemplateGroupContainer,
@@ -30,6 +35,7 @@ const TaskTemplateGroup = ({
   isCompletedTab = false,
   viewSetup,
   showTasksWithGroup = true,
+  iconColorActive,
   // eslint-disable-next-line sonarjs/cognitive-complexity
 }) => {
   const {
@@ -51,6 +57,11 @@ const TaskTemplateGroup = ({
   const [isAddingTask, setIsAddingTask] = useState(false);
   const dispatch = useDispatch();
   const previousIsOpen = usePrevious(isOpen);
+
+  const currentUser = useSelector(userProfileSelector);
+  const restrictions =
+    TASK_LIST_RESTRICTIONS_PROFILES[currentUser?.orgUserRole];
+  const { DISABLED } = TASK_LIST_RESTRICTIONS_OPTIONS;
 
   useEffect(() => {
     setOpen(SHOW_WORKFLOW_DETAILS);
@@ -116,6 +127,7 @@ const TaskTemplateGroup = ({
         showIncompleteTasks={showIncompleteTasks}
         setShowIncompleteTasks={setShowIncompleteTasks}
         showTasksWithGroup={showTasksWithGroup}
+        iconColorActive={iconColorActive}
       />
       {!isStartedDnD && (
         <TaskTemplateGroupList timeout={150} in={isOpen && !isStartedDnD}>
@@ -154,6 +166,7 @@ const TaskTemplateGroup = ({
                           key={task.taskIdentifier}
                           draggableId={task.taskIdentifier}
                           index={index}
+                          isDragDisabled={restrictions?.createTask === DISABLED}
                         >
                           {(
                             templateTaskDraggableProvided,
@@ -179,6 +192,7 @@ const TaskTemplateGroup = ({
                                 parentTaskGroupIdentifier
                               }
                               noMargin
+                              iconColorActive={iconColorActive}
                             />
                           )}
                         </Draggable>
@@ -201,6 +215,7 @@ const TaskTemplateGroup = ({
 
                       return null;
                     }}
+                    iconColorActive={iconColorActive}
                   />
                 </QuickAddInputWrapper>
               )}

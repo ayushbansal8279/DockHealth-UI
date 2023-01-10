@@ -19,7 +19,7 @@ import { TooltipContent } from './styled';
 const UserAvatar = React.forwardRef(
   ({ user, color, size, isSelected, hideTooltip, onClick }, reference) => {
     const activeUsersList = useSelector(activeUsersListSelector);
-    const { name, initials, bubbleColor, userStatus, orgUserRole } = user;
+    const { name, initials, bubbleColor, userStatus, orgUserRole } = user || {};
     const isExternal = orgUserRole === UserOrganizationRole.EXTERNAL;
     const isGuest = orgUserRole === UserOrganizationRole.GUEST;
 

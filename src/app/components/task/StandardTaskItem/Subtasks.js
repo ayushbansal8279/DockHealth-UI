@@ -111,6 +111,7 @@ const Subtasks = ({
                               showSubtaskStylingLink={!draggedId}
                               isNestedTask
                               {...restProps}
+                              patient={parentTask.patient}
                             />
                             {shouldRenderComments &&
                               (subtasks?.length > 0 || subTasksCount === 0) && (

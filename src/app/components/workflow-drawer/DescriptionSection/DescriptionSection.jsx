@@ -15,7 +15,7 @@ import debounce from 'lodash.debounce';
 import { workflowSelector } from 'selectors/workflow-drawer-selectors';
 import { updatePartialWorkflow } from 'actions/task-template-actions';
 
-const DescriptionSection = () => {
+const DescriptionSection = ({ readOnly }) => {
   const DEBOUNCE_TIME = 10000;
   const selectedWorkflow = useSelector(workflowSelector);
   const { taskList } = selectedWorkflow || {};
@@ -101,6 +101,7 @@ const DescriptionSection = () => {
         onBlur={unsetFocused}
         state={detailsState}
         onChange={onChangeDetailsEditor}
+        readOnly={readOnly}
       />
     </CustomTextEditor>
   );

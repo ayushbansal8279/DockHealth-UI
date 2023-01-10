@@ -82,6 +82,23 @@ function* updatePatientsList({ identifier, dataToUpdate }) {
   }
 }
 
+function* updatePatientsListPreferences({ payload }) {
+  try {
+    const { setup, patientListIdentifier } = payload;
+    yield call(
+      PatientsApi.updatePatientListPreferences,
+      setup,
+      patientListIdentifier,
+    );
+    yield put({
+      type: ActionTypes.UPDATE_PATIENTS_LIST_PREFERENCES_SUCCESS,
+    });
+  } catch {
+    yield put(showGlobalErrorAlert());
+    yield put({ type: ActionTypes.UPDATE_PATIENTS_LIST_PREFERENCES_FAILURE });
+  }
+}
+
 function* initializePatientsListState() {
   yield all([
     put(PatientsActions.getCurrentPatientsListDetails()),
@@ -96,16 +113,32 @@ function* getCurrentPatientsListFilterOptions() {
     );
     const selectedFilters = yield select(patientsSelectedFiltersSelector);
 
-    const options = yield call(
-      PatientsApi.getPatientsListFilterOptions,
-      currentPatientsListIdentifier,
-      selectedFilters,
-    );
+    if (selectedFilters) {
+      const filterValues = Object.values(selectedFilters);
 
-    yield put({
-      type: ActionTypes.GET_CURRENT_PATIENTS_LIST_FILTER_OPTIONS_SUCCESS,
-      options,
-    });
+      if (filterValues.length > 0) {
+        const firstFilter = filterValues[0];
+        if (
+          (firstFilter.dateStart && !firstFilter.dateEnd) ||
+          (firstFilter.dateEnd && !firstFilter.dateStart)
+        ) {
+          return;
+        }
+      }
+    }
+
+    if (!selectedFilters) {
+      const options = yield call(
+        PatientsApi.getPatientsListFilterOptions,
+        currentPatientsListIdentifier,
+        selectedFilters,
+      );
+
+      yield put({
+        type: ActionTypes.GET_CURRENT_PATIENTS_LIST_FILTER_OPTIONS_SUCCESS,
+        options,
+      });
+    }
   } catch {
     yield put(showGlobalErrorAlert());
     yield put({
@@ -147,6 +180,18 @@ function* getCurrentPatients() {
     let patients;
 
     if (selectedFilters) {
+      const filterValues = Object.values(selectedFilters);
+
+      if (filterValues.length > 0) {
+        const firstFilter = filterValues[0];
+        if (
+          (firstFilter.dateStart && !firstFilter.dateEnd) ||
+          (firstFilter.dateEnd && !firstFilter.dateStart)
+        ) {
+          return;
+        }
+      }
+
       patients = yield call(
         PatientsApi.getPatientsByFilterCriteria,
         currentPatientsListIdentifier,
@@ -305,4 +350,8 @@ export default function* watchPatients() {
   yield takeEvery(ActionTypes.PATIENT_DELETE_LABEL, deletePatientLabel);
   yield takeEvery(ActionTypes.PATIENT_BULK_CREATE_WORKFLOW, addBulkWorkflow);
   yield takeEvery(ActionTypes.PATIENT_BULK_DELETE_PATIENTS, deleteBulkPatient);
+  yield takeEvery(
+    ActionTypes.UPDATE_PATIENTS_LIST_PREFERENCES,
+    updatePatientsListPreferences,
+  );
 }

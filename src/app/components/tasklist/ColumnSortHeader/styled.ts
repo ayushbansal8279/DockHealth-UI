@@ -45,19 +45,25 @@ export const DescriptionTooltipWrapper = styled.div`
   cursor: initial;
 `;
 
-export const LabelWrapper = styled.div<{ ordered: boolean; flex: number }>`
+export const LabelWrapper = styled.div<{
+  ordered: boolean;
+  flex: number;
+  tasksHeaderTextColor: string;
+}>`
   display: flex;
   margin-bottom: 0;
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
-  color: ${({ ordered }) => (ordered ? palette.brightBlue : palette.coolGrey1)};
+  color: ${({ ordered, tasksHeaderTextColor }) =>
+    ordered ? palette.brightBlue : tasksHeaderTextColor || palette.coolGrey1};
 `;
 
 export const SortButton = styled.button<{
   printWidth?: number;
   width?: number;
   flex?: number;
+  tasksHeaderTextTransform?: string;
 }>`
   position: relative;
   ${({ width }) => {
@@ -71,8 +77,10 @@ export const SortButton = styled.button<{
   font-family: 'Roboto Condensed', sans-serif;
   font-size: ${fontSizes.smallPlus};
   font-weight: ${fontWeights.regularPlus};
-  text-transform: uppercase;
-  color: ${palette.mediumGrey};
+  ${({ tasksHeaderTextTransform }) =>
+    tasksHeaderTextTransform
+      ? `text-transform: ${tasksHeaderTextTransform};`
+      : 'text-transform: uppercase;'};
   ${({ flex }) => (flex ? `flex: ${flex};` : '')};
   &:hover {
     background-color: ${palette.coolGrey3};

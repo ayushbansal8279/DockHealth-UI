@@ -52,6 +52,13 @@ export const USER_TYPES = new Proxy(
       description:
         'A Dock Pro user will have admin access to setup the configurations and workflows for your team.',
     },
+    VIEW_ONLY: {
+      label: 'View Only',
+      selectable: true,
+      changeable: true,
+      isLimitedAccess: true,
+      description: '',
+    },
     DEFAULT: {
       label: 'Invited',
       invitationModifiable: true,

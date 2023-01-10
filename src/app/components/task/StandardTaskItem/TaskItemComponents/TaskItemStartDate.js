@@ -9,7 +9,7 @@ import DateLabel from 'components/common/DateLabel/DateLabel';
 import { ReminderType } from 'helpers/task-helpers';
 import { onTaskStartDateChanged } from 'helpers/ga-event-helper';
 
-const TaskItemStartDate = ({ task }) => {
+const TaskItemStartDate = ({ task, disabled = false }) => {
   const dispatch = useDispatch();
   const { taskIdentifier, startDate, hasRecurringSchedule, reminderType } =
     task || {};
@@ -24,6 +24,7 @@ const TaskItemStartDate = ({ task }) => {
 
   return (
     <TaskItemPopover
+      disabled={disabled}
       content={({ closePopover }) => (
         <DueDatePicker
           taskIdentifier={taskIdentifier}
@@ -31,6 +32,7 @@ const TaskItemStartDate = ({ task }) => {
           onDateChange={handleDueDateChange}
           recurring={hasRecurringSchedule}
           onCloseClick={closePopover}
+          disableRecurring
         />
       )}
     >
@@ -43,7 +45,7 @@ const TaskItemStartDate = ({ task }) => {
             <DateLabel
               date={startDate}
               hasReminder={reminderType && reminderType !== ReminderType.NONE}
-              hasRecurringSchedule={hasRecurringSchedule}
+              hasRecurringSchedule={false}
             />
           ) : (
             <div>

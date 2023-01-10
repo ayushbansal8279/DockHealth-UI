@@ -24,7 +24,7 @@ import {
   StyledPopover,
 } from './styled';
 
-const DueDateSection = () => {
+const DueDateSection = ({ disabled = false }) => {
   const dispatch = useDispatch();
   const selectedTask = useSelector(selectedTaskSelector);
   const { taskIdentifier, dueDate, hasRecurringSchedule } = selectedTask || {};
@@ -41,7 +41,7 @@ const DueDateSection = () => {
   );
 
   return (
-    <DueDateSectionWrapper disabled={isTemplateTask}>
+    <DueDateSectionWrapper disabled={isTemplateTask || disabled}>
       <Input
         label="Due date"
         ref={buttonReference}

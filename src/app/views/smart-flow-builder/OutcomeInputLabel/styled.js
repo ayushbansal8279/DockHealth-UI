@@ -6,9 +6,9 @@ export const EdgeLabel = styled.div`
   display: flex;
   align-items: center;
   margin: 0 auto;
-  height: 100%;
-  width: 120px;
-  max-width: 100%;
+  height: 32px;
+  width: auto;
+  max-width: 120px;
   padding: 0 10px;
   background: ${({ hasOutcome }) =>
     hasOutcome ? palette.brightBlue : palette.coolGrey2};
@@ -16,6 +16,9 @@ export const EdgeLabel = styled.div`
     hasOutcome ? palette.white : palette.mediumGrey};
   border-radius: 999px;
   transition: width 0.2s linear;
+  font-family: 'Roboto Condensed', sans-serif;
+  font-size: ${fontSizes.smallPlus};
+  font-weight: ${fontWeights.regular};
 `;
 
 export const OutcomeInput = styled.input`
@@ -23,12 +26,11 @@ export const OutcomeInput = styled.input`
   flex: 1;
   border: none;
   color: inherit;
-  font-family: 'Roboto Condensed', sans-serif;
-  font-size: ${fontSizes.smallPlus};
-  font-weight: ${fontWeights.regular};
   background: transparent;
   outline: none;
   overflow: hidden;
+  width: ${({ isEditorActive }) => (isEditorActive ? '200px' : `0`)};
+  transition: width 250ms cubic-bezier(0.65, 0, 0.35, 1);
 
   &:read-only {
     background: transparent;

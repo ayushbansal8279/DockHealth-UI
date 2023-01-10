@@ -101,7 +101,7 @@ const renderOption = ({
   );
 };
 
-const LabelsSection = () => {
+const LabelsSection = ({ disabled: disabledProperty }) => {
   const labels = useSelector(workflowLabelsSelector);
   const selectedWorkflow = useSelector(workflowSelector);
   const {
@@ -302,7 +302,7 @@ const LabelsSection = () => {
       disableCloseOnSelect={!!currentEditableOption}
       getInputReference={getInputReference}
       getOptionLabel={option => option?.labelName}
-      isDisabled={!!currentEditableOption}
+      isDisabled={disabledProperty}
       renderOption={renderOptionCallback}
       renderTags={renderTagsCallback}
       onInputChange={setInputState}

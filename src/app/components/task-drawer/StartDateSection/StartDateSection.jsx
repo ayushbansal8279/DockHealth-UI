@@ -1,11 +1,8 @@
 import React, { useCallback, useRef } from 'react';
 import moment from 'moment';
 import { Box } from '@material-ui/core';
-import RecurringIcon from 'img/recurring-arrows';
 import { checkIfTemplateTask, isStartDateInPast } from 'helpers/task-helpers';
 import DueDatePicker from 'components/task/DueDatePicker/DueDatePicker';
-import Spacing from 'components/common/Spacing';
-import Tooltip from 'components/common/Tooltip/Tooltip';
 import Input from 'components/common/Input/Input';
 import { updateTaskStartDate } from 'actions/task-actions';
 import { useDispatch, useSelector } from 'react-redux';
@@ -60,16 +57,6 @@ const StartDateSection = () => {
                 <StartDateContent error={isStartDateInPast(selectedTask)}>
                   <StartDateText>
                     {momentStartDate.format('MM/DD/YY')}
-                    {hasRecurringSchedule && (
-                      <>
-                        <Spacing horizontal={3} />
-                        <Tooltip title="Recurring Task" placement="right">
-                          <Box display="inline-block">
-                            <RecurringIcon />
-                          </Box>
-                        </Tooltip>
-                      </>
-                    )}
                   </StartDateText>
                   <StartDateText>{formatStartTime(startDate)}</StartDateText>
                   {!sectionDisabled && (
@@ -116,6 +103,7 @@ const StartDateSection = () => {
                 onDateChange={handleStartDateSave}
                 recurring={hasRecurringSchedule}
                 onCloseClick={closePopover}
+                disableRecurring
               />
             </Box>
           </PopoverCard>

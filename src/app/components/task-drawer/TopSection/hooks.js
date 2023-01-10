@@ -2,9 +2,15 @@
 import { useCallback } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { openModal, closeModal } from 'modal/actions';
-import { checkIfTemplateTask } from 'helpers/task-helpers';
+import {
+  checkIfTemplateTask,
+  findIncompleteRequiredFields,
+} from 'helpers/task-helpers';
 import { userProfileSelector } from 'selectors/user-selectors';
-import { selectedTaskSelector } from 'selectors/task-drawer-selectors';
+import {
+  selectedTaskSelector,
+  taskCustomFieldsSelector,
+} from 'selectors/task-drawer-selectors';
 import { toggleCompleteTask, moveTask } from 'actions/task-actions';
 import { useParams, useHistory } from 'react-router-dom';
 import { HOME_PATH } from 'routing/helpers/paths';
@@ -19,6 +25,7 @@ const initializeTaskDrawerTopSectionHooks = ({
   const dispatch = useDispatch();
   const selectedTask = useSelector(selectedTaskSelector);
   const templateBundleIdentifier = selectedTask?.templateBundleIdentifier;
+  const { templates } = useSelector(taskCustomFieldsSelector);
   const currentUser = useSelector(userProfileSelector);
   const isTemplateTask = checkIfTemplateTask(selectedTask);
   const isDecisionTask = selectedTask?.intentType === 'DECISION';
@@ -135,6 +142,12 @@ const initializeTaskDrawerTopSectionHooks = ({
   const onCompleteToggle = useCallback(
     // eslint-disable-next-line sonarjs/cognitive-complexity
     event => {
+      const incompleteRequiredFields = findIncompleteRequiredFields(
+        templates,
+        selectedTask,
+      );
+      const isRequiredFieldsAreIncomplete = incompleteRequiredFields.length > 0;
+
       if (!isTaskStatusTogglingDisabled && isDependencyEmptyOrCompleted) {
         const hasIncompletedSubtasks =
           selectedTask.subtasks?.length > 0
@@ -147,6 +160,14 @@ const initializeTaskDrawerTopSectionHooks = ({
         let isBundleTask = false;
         if (templateBundleIdentifier !== '') {
           isBundleTask = true;
+        }
+
+        if (isRequiredFieldsAreIncomplete) {
+          const modalProps = {
+            incompleteFields: incompleteRequiredFields,
+          };
+          dispatch(openModal('CompleteAllFields', modalProps));
+          return;
         }
 
         if (selectedTask.status === 'INCOMPLETE' && hasIncompletedSubtasks) {
@@ -185,6 +206,7 @@ const initializeTaskDrawerTopSectionHooks = ({
       isTaskStatusTogglingDisabled,
       isDependencyEmptyOrCompleted,
       selectedTask,
+      templates,
       templateBundleIdentifier,
       dispatch,
       currentUser,

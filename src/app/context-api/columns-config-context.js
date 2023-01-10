@@ -33,7 +33,7 @@ export const ColumnsConfigContext = createContext();
 
 const columnsAlwaysVisible = [
   TaskHeaderColumn.DESCRIPTION,
-  TaskHeaderColumn.SUBTASKS_COUNT,
+  // TaskHeaderColumn.SUBTASKS_COUNT,
 ];
 
 export function ColumnsConfigProvider({
@@ -272,7 +272,7 @@ export function ColumnsConfigProvider({
   );
 }
 
-export function useColumnsConfig() {
+export function useTaskListColumnsConfig() {
   const context = useContext(ColumnsConfigContext);
   if (context === undefined) {
     return {

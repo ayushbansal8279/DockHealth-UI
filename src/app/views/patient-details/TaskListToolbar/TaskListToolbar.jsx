@@ -14,7 +14,10 @@ import {
   setCurrentListTasksStatus,
 } from 'actions/patient-details-actions';
 import { updateUserPageViewSetup } from 'actions/task-list-actions';
-import { userSetupClientViewSelector } from 'selectors/user-selectors';
+import {
+  userSetupClientViewSelector,
+  selectedUserOrganizationSelector,
+} from 'selectors/user-selectors';
 import Spacing from 'components/common/Spacing';
 import { TaskStatus } from 'helpers/task-helpers';
 import TaskStatusToolbarSelect from 'components/tasklist/TaskStatusToolbarSelect/TaskStatusToolbarSelect';
@@ -67,6 +70,16 @@ const TaskListToolbar = props => {
       };
     },
   );
+
+  const currentOrganization = useSelector(selectedUserOrganizationSelector);
+  const iconColorFilterActiveItem =
+    currentOrganization?.themeSettings?.find(
+      ({ name }) => name === 'icon.active.filter',
+    ) || {};
+  const iconColorActiveItem =
+    currentOrganization?.themeSettings?.find(
+      ({ name }) => name === 'icon.active.color',
+    ) || {};
 
   const handleListChange = event => {
     history.push(
@@ -159,6 +172,7 @@ const TaskListToolbar = props => {
           }
           onChange={handleListViewTypeChange}
           options={LIST_TYPE_OPTIONS}
+          iconColorActive={iconColorActiveItem?.value}
         />
         <Box px={2} />
         {taskListIdentifierParameter !== ListViewType.ALL_TASKS && (
@@ -167,6 +181,7 @@ const TaskListToolbar = props => {
             value={taskListIdentifierParameter}
             onChange={handleListChange}
             options={listOptions}
+            iconColorActive={iconColorActiveItem?.value}
           />
         )}
       </ListsTabsContainer>
@@ -174,11 +189,14 @@ const TaskListToolbar = props => {
       <TaskStatusToolbarSelect
         value={tasksStatus}
         onChange={handleChangeTasksStatus}
+        iconColorFilterActive={iconColorFilterActiveItem?.value}
+        iconColorActive={iconColorActiveItem?.value}
       />
       <Spacing horizontal={4} />
       <CustomizeToolbarButton
         showCustomColumnCreate={false}
         additionalOptions={OPTIONS}
+        iconColorFilterActive={iconColorFilterActiveItem?.value}
       />
       <Spacing horizontal={4} />
       <ToolbarButton onClick={onPrintClick}>Print</ToolbarButton>

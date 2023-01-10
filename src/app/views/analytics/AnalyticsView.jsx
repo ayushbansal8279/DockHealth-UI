@@ -121,37 +121,39 @@ const AnalyticsView = () => {
     [dispatch],
   );
 
-  const [maximizedChart, setMaximizedChart] = useState();
+  const [maximizedChart, setMaximizedChart] = useState(null);
 
-  const handleChartMaximize = name => {
+  const handleMaximizedChart = name => {
     setMaximizedChart(name);
   };
 
   return (
     <ViewLayout header={<BasicLayoutHeader title="Analytics" />}>
       <Container>
-        <MegaFilter
-          filters={filters}
-          selectedFilters={selectedFilters}
-          onSelectFilters={compose(
-            dispatch,
-            AnalyticsActions.setAnalyticsSelectedFilters,
-          )}
-          onOpen={handleMegaFilterOpen}
-          isFetching={isFetchingFilters}
-          quickFiltersList={quickFiltersList}
-          addQuickFilterOption={addQuickFilterOption}
-          selectedQuickFilter={selectedQuickFilter}
-          selectQuickFilter={handleSelectQuickFilter}
-          onSaveClick={handleSaveQuickFilter}
-          onSaveAsNewClick={handleSaveAsQuickFilter}
-          wasChangedFilters={wasChangedFilters}
-          onQuickFilterCreate={handleQuickFilterCreate}
-          onQuickFilterUpdate={handleQuickFilterUpdate}
-          onQuickFilterDelete={handleQuickFilterDelete}
-          onSelectedFiltersChange={handleSelectedFiltersChange}
-          onClear={() => dispatch(AnalyticsActions.clearAnalyticsFilter())}
-        />
+        <div style={{ width: '150px' }}>
+          <MegaFilter
+            filters={filters}
+            selectedFilters={selectedFilters}
+            onSelectFilters={compose(
+              dispatch,
+              AnalyticsActions.setAnalyticsSelectedFilters,
+            )}
+            onOpen={handleMegaFilterOpen}
+            isFetching={isFetchingFilters}
+            quickFiltersList={quickFiltersList}
+            addQuickFilterOption={addQuickFilterOption}
+            selectedQuickFilter={selectedQuickFilter}
+            selectQuickFilter={handleSelectQuickFilter}
+            onSaveClick={handleSaveQuickFilter}
+            onSaveAsNewClick={handleSaveAsQuickFilter}
+            wasChangedFilters={wasChangedFilters}
+            onQuickFilterCreate={handleQuickFilterCreate}
+            onQuickFilterUpdate={handleQuickFilterUpdate}
+            onQuickFilterDelete={handleQuickFilterDelete}
+            onSelectedFiltersChange={handleSelectedFiltersChange}
+            onClear={() => dispatch(AnalyticsActions.clearAnalyticsFilter())}
+          />
+        </div>
         <Box p={1} />
         <span>
           By default (no filter) stats below are displayed for tasks created in
@@ -161,28 +163,42 @@ const AnalyticsView = () => {
           <ChartTail
             name="Tasks Created and Completed"
             maximized={maximizedChart}
-            onMaximize={handleChartMaximize}
+            onMaximize={handleMaximizedChart}
           >
             <TasksStatisticsChart />
           </ChartTail>
-          <ChartTail name="Comments Created" onMaximize={handleChartMaximize}>
+          <ChartTail
+            name="Comments Created"
+            maximized={maximizedChart}
+            onMaximize={handleMaximizedChart}
+          >
             <CreatedCommentsChart />
           </ChartTail>
-          <ChartTail name="Tasks by Status" onMaximize={handleChartMaximize}>
+          <ChartTail
+            name="Tasks by Status"
+            maximized={maximizedChart}
+            onMaximize={handleMaximizedChart}
+          >
             <WorkflowStatusStatisticsChart />
           </ChartTail>
           <ChartTail
             name="Tasks by Assigned To"
-            onMaximize={handleChartMaximize}
+            maximized={maximizedChart}
+            onMaximize={handleMaximizedChart}
           >
             <AssignedToStatisticsChart />
           </ChartTail>
-          <ChartTail name="Tasks by Labels" onMaximize={handleChartMaximize}>
+          <ChartTail
+            name="Tasks by Labels"
+            maximized={maximizedChart}
+            onMaximize={handleMaximizedChart}
+          >
             <TaskLabelStatisticsChart />
           </ChartTail>
           <ChartTail
             name="Tasks by Patient Labels"
-            onMaximize={handleChartMaximize}
+            maximized={maximizedChart}
+            onMaximize={handleMaximizedChart}
           >
             <PatientLabelStatisticsChart />
           </ChartTail>

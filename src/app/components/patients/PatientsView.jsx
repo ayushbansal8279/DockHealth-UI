@@ -1,7 +1,7 @@
 import React, { useCallback, useEffect, useState, useMemo } from 'react';
 import { useParams } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
-import { Grid } from '@material-ui/core';
+import { Grid, Box, Dialog } from '@material-ui/core';
 import {
   getPatientListIdentifierByUrlParameter,
   DefaultPatientsListType,
@@ -13,19 +13,32 @@ import {
   isFetchingPatientsSelector,
   patientsListSearchTermSelector,
 } from 'selectors/patients-selectors';
+import {
+  userProfileSelector,
+  selectedUserOrganizationSelector,
+} from 'selectors/user-selectors';
+import { organizationSelector } from 'selectors/organization-selectors';
 import { PatientEditContext } from 'context-api/patient-edit-context';
 import * as PatientsActions from 'actions/patients-actions';
 import * as PatientApi from 'api/patient-api';
 import ViewLayout from 'components/template/ViewLayout/ViewLayout';
-import BasicLayoutHeader from 'components/template/BasicLayoutHeader/BasicLayoutHeader';
+import LayoutHeader from 'components/template/LayoutHeader/LayoutHeader';
 import PatientLabels from 'views/patient-details/PatientLabels/PatientLabels';
 import BulkEditSection from 'components/patients/BulkEditSection/BulkEditSection';
 import TaskTemplateApplicator from 'components/task-template/TaskTemplateApplicator/TaskTemplateApplicator';
 import { getTaskListForUser } from 'api/task-list-api';
 import { openModal, closeModal } from 'modal/actions';
+import { PatientListColumnsConfigProvider } from 'context-api/patients-columns-config-context';
+import OptionsMenu from 'components/common/OptionsMenu/OptionsMenu';
+import MoreVert from '@material-ui/icons/MoreVert';
+import ImportPatientsModal from 'modal/components/ImportPatientsModal/ImportPatientsModal';
+import {
+  downloadPatientImportTemplate,
+  downloadPatientListData,
+} from 'api/patient-api';
 import PatientsList from './PatientsList/PatientsList';
 import PatientsToolbar from './PatientsToolbar/PatientsToolbar';
-import EmptyListViewWithQuickAddTask from './BulkEditSection/BulkEditOptionsBar/BulkEditCreateTask';
+import BulkEditCreateTask from './BulkEditSection/BulkEditOptionsBar/BulkEditCreateTask';
 import {
   PatientsViewContainer,
   PatientsListContainer,
@@ -37,6 +50,7 @@ import {
 
 const MAX_PATIENT_ALL_RESULTS = 1000;
 
+// eslint-disable-next-line sonarjs/cognitive-complexity
 const PatientsView = () => {
   const dispatch = useDispatch();
   const { listIdentifier: listIdentifierParameter } = useParams();
@@ -62,6 +76,19 @@ const PatientsView = () => {
     setHasImportErrors,
     unsetHasImportErrors,
   ] = useBoolean(false);
+
+  const [importPopupOpen, setImportPopupOpen] = useState(false);
+
+  const currentUser = useSelector(userProfileSelector);
+  const currentOrganization = useSelector(selectedUserOrganizationSelector);
+  const iconColorActiveItem =
+    currentOrganization?.themeSettings?.find(
+      ({ name }) => name === 'icon.active.color',
+    ) || {};
+
+  const { orgUserRole } = currentUser || {};
+  const isGuest = orgUserRole === 'GUEST';
+  const { emrIntegrationEnabled } = useSelector(organizationSelector) || {};
 
   useEffect(() => {
     dispatch(PatientsActions.initializePatientsListState(listIdentifier));
@@ -225,12 +252,56 @@ const PatientsView = () => {
     [dispatch, selectedPatients],
   );
 
+  const handleDownloadPatientListData = useCallback(async () => {
+    const filename = `Dock ${listName}.csv`;
+    const { data } = await downloadPatientListData(listIdentifier, filename);
+    const url = window.URL.createObjectURL(new Blob([data]));
+    const link = document.createElement('a');
+    link.href = url;
+    link.setAttribute('download', filename);
+    document.body.append(link);
+    link.click();
+  }, [listIdentifier, listName]);
+
   return (
-    <>
+    <PatientListColumnsConfigProvider>
       <PatientEditContext.Provider value={providerValue}>
         <ViewLayout
           header={
-            <BasicLayoutHeader title={listName} description={listDescription} />
+            <LayoutHeader>
+              <Box
+                position="absolute"
+                top={listDescription ? 17 : 27}
+                left={10}
+              >
+                <OptionsMenu
+                  disablePortal
+                  options={[
+                    !isGuest &&
+                      !emrIntegrationEnabled &&
+                      listIdentifier ===
+                        DefaultPatientsListType.ALL_PATIENTS && {
+                        name: 'Import from Excel',
+                        onClick: () => {
+                          setImportPopupOpen(true);
+                        },
+                      },
+                    !isGuest && {
+                      name: 'Export to CSV',
+                      onClick: () => {
+                        handleDownloadPatientListData();
+                      },
+                    },
+                  ]}
+                >
+                  <MoreVert color="primary" />
+                </OptionsMenu>
+              </Box>
+              <LayoutHeader.Title
+                title={listName}
+                description={listDescription}
+              />
+            </LayoutHeader>
           }
         >
           <PatientsViewContainer>
@@ -239,7 +310,7 @@ const PatientsView = () => {
               setImportPopoverOpen={setImportPopoverOpen}
             />
             <PatientsListContainer>
-              <Grid container>
+              <Grid>
                 {listIdentifier === DefaultPatientsListType.ALL_PATIENTS &&
                   patients?.length >= MAX_PATIENT_ALL_RESULTS && (
                     <RefineSearchText>
@@ -262,12 +333,17 @@ const PatientsView = () => {
         </ViewLayout>
         <BulkEditSection>
           <BulkEditSectionContainer>
-            {createTaskOption && <EmptyListViewWithQuickAddTask />}
+            {createTaskOption && (
+              <BulkEditCreateTask
+                iconColorActive={iconColorActiveItem?.value}
+              />
+            )}
             {createWorkflowOption && (
               <TaskTemplateApplicatorContainer>
                 <TaskTemplateApplicator
                   onTemplateSelect={handleTemplateSelect}
                   bulkApply
+                  iconColorActive={iconColorActiveItem?.value}
                 />
               </TaskTemplateApplicatorContainer>
             )}
@@ -280,8 +356,27 @@ const PatientsView = () => {
             )}
           </BulkEditSectionContainer>
         </BulkEditSection>
+        <Dialog
+          open={importPopupOpen}
+          onClose={() => setImportPopupOpen(false)}
+          PaperProps={{
+            elevation: 0,
+            square: true,
+            style: {},
+          }}
+        >
+          <ImportPatientsModal
+            closeModal={() => {
+              setImportPopupOpen(false);
+            }}
+            downloadTemplate={downloadPatientImportTemplate}
+            setImportPopoverOpen={setImportPopoverOpen}
+            refreshPatientList={refreshPatientList}
+            step={1}
+          />
+        </Dialog>
       </PatientEditContext.Provider>
-    </>
+    </PatientListColumnsConfigProvider>
   );
 };
 

@@ -46,6 +46,8 @@ export const DueDateSectionWrapper = styled.div`
   ${({ disabled }) =>
     disabled &&
     `
+    pointer-events: none;
+    
     & ${Placeholder}, & ${DueDateLabel} {
       color: ${palette.coolGrey2};
     }

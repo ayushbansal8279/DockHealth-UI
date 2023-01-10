@@ -11,6 +11,7 @@ import EditIcon from '@material-ui/icons/Edit';
 import { showGlobalErrorAlert } from 'alert/actions';
 import * as CustomFieldsApi from 'api/custom-fields-api';
 import { FieldTypeLabel } from 'helpers/field-type-helpers';
+import { CategoryLabel } from 'helpers/task-details-helpers';
 import { openModal } from 'modal/actions';
 import AddButton from 'components/common/AddButton/AddButton';
 import {
@@ -23,7 +24,7 @@ import {
 import { SortableContext } from '@dnd-kit/sortable';
 import DragHandleIcon from 'img/drag-handle';
 import SortableItem from 'components/common/SortableItem/SortableItem';
-import { useColumnsConfig } from 'context-api/columns-config-context';
+import { useTaskListColumnsConfig } from 'context-api/columns-config-context';
 import {
   EmptyListPlaceholder,
   CustomFieldItem,
@@ -38,7 +39,7 @@ const TaskCustomFieldsView = ({ taskListIdentifier, editable = false }) => {
   const dispatch = useDispatch();
   const [customFields, setCustomFields] = useState(null);
   const [isFetching, setIsFetching] = useState(true);
-  const { columns, setColumnsToState } = useColumnsConfig();
+  const { columns, setColumnsToState } = useTaskListColumnsConfig();
   const sensors = useSensors(useSensor(MouseSensor), useSensor(TouchSensor));
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
 
@@ -185,6 +186,12 @@ const TaskCustomFieldsView = ({ taskListIdentifier, editable = false }) => {
                   <CustomFieldHeaderText>Field type</CustomFieldHeaderText>
                 </CustomFieldCell>
                 <CustomFieldCell>
+                  <CustomFieldHeaderText>Field category</CustomFieldHeaderText>
+                </CustomFieldCell>
+                <CustomFieldCell>
+                  <CustomFieldHeaderText>Required</CustomFieldHeaderText>
+                </CustomFieldCell>
+                <CustomFieldCell>
                   <Box width="68px" />
                 </CustomFieldCell>
               </CustomFieldItem>
@@ -214,6 +221,19 @@ const TaskCustomFieldsView = ({ taskListIdentifier, editable = false }) => {
                             <CustomFieldCell>
                               <CustomFieldText>
                                 {FieldTypeLabel[field.fieldType]}
+                              </CustomFieldText>
+                            </CustomFieldCell>
+                            <CustomFieldCell>
+                              <CustomFieldText>
+                                {CategoryLabel[field.fieldCategoryType]}
+                              </CustomFieldText>
+                            </CustomFieldCell>
+                            <CustomFieldCell>
+                              <CustomFieldText>
+                                {field.displayOptions &&
+                                field.displayOptions?.includes('TASK_REQUIRED')
+                                  ? 'Yes'
+                                  : ''}
                               </CustomFieldText>
                             </CustomFieldCell>
                             {editable && (

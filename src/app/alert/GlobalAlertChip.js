@@ -120,6 +120,7 @@ class GlobalAlertChip extends Component {
   render = () => {
     const {
       alertState: { isGlobalOpen, text, type, transactionIdentifier },
+      backgroundColor,
     } = this.props;
 
     const { counter } = this.state;
@@ -129,6 +130,7 @@ class GlobalAlertChip extends Component {
         isOpen={isGlobalOpen}
         type={type}
         withUndo={transactionIdentifier}
+        backgroundColor={backgroundColor}
       >
         <MainChipButton type="button" onClick={this.handleCloseAlert}>
           <IconContainer>

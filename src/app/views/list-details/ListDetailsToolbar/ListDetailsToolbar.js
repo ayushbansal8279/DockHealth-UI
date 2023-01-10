@@ -3,7 +3,7 @@ import uniq from 'ramda/src/uniq';
 import TaskViewTypeToolbarSelect from 'components/tasklist/TaskViewTypeToolbarSelect/TaskViewTypeToolbarSelect';
 import { Box } from '@material-ui/core';
 import TaskStatusToolbarSelect from 'components/tasklist/TaskStatusToolbarSelect/TaskStatusToolbarSelect';
-import CompleteTasksVisibilitySwitch from 'components/tasklist/CompleteTasksVisibilitySwitch/CompleteTasksVisibilitySwitch';
+// import CompleteTasksVisibilitySwitch from 'components/tasklist/CompleteTasksVisibilitySwitch/CompleteTasksVisibilitySwitch';
 import InboxTips from 'components/tasklist/InboxTips/InboxTips';
 import { ViewType, getViewTypeFromQueryString } from 'helpers/view-type-helper';
 import { useLocation, useHistory } from 'react-router-dom';
@@ -11,7 +11,10 @@ import { TaskStatus } from 'helpers/task-helpers';
 import { updateUserListViewSetup } from 'actions/task-list-actions';
 import CustomizeToolbarButton from 'components/tasklist/CustomizeToolbarButton/CustomizeToolbarButton';
 import { checkIfUserIsOrganizationAdmin } from 'helpers/user-helper';
-import { userProfileSelector } from 'selectors/user-selectors';
+import {
+  userProfileSelector,
+  selectedUserOrganizationSelector,
+} from 'selectors/user-selectors';
 import { useDispatch, useSelector } from 'react-redux';
 import {
   currentTaskListSelector,
@@ -29,6 +32,7 @@ const ListDetailsToolbar = ({ additionalOptions, children }) => {
   const history = useHistory();
   const [customFieldsModalOpened, setCustomFieldsModalOpened] = useState(false);
   const currentUser = useSelector(userProfileSelector);
+  const currentOrganization = useSelector(selectedUserOrganizationSelector);
   const tasksStatus = useSelector(currentTaskListTasksStatusSelector);
   const isOrganizationAdmin = checkIfUserIsOrganizationAdmin(currentUser);
   const taskList = useSelector(currentTaskListSelector);
@@ -39,6 +43,14 @@ const ListDetailsToolbar = ({ additionalOptions, children }) => {
   const isListAdmin = isMemberAdmin(currentUserMember);
   const viewType = getViewTypeFromQueryString(search);
   const restrictCustomizationFeatures = restrictCustomization && !isListAdmin;
+  const iconColorFilterActiveItem =
+    currentOrganization?.themeSettings?.find(
+      ({ name }) => name === 'icon.active.filter',
+    ) || {};
+  const iconColorActiveItem =
+    currentOrganization?.themeSettings?.find(
+      ({ name }) => name === 'icon.active.color',
+    ) || {};
 
   const handleChangeViewType = useCallback(
     event => {
@@ -99,11 +111,15 @@ const ListDetailsToolbar = ({ additionalOptions, children }) => {
         <TaskStatusToolbarSelect
           value={tasksStatus}
           onChange={handleChangeTasksStatus}
+          iconColorFilterActive={iconColorFilterActiveItem?.value}
+          iconColorActive={iconColorActiveItem?.value}
         />
         <Box mx={0.5} />
         <TaskViewTypeToolbarSelect
           value={viewType}
           onChange={handleChangeViewType}
+          iconColorFilterActive={iconColorFilterActiveItem?.value}
+          iconColorActive={iconColorActiveItem?.value}
         />
         {viewType === ViewType.LIST_VIEW && (
           <>
@@ -112,6 +128,7 @@ const ListDetailsToolbar = ({ additionalOptions, children }) => {
               openCustomFieldModal={() => setCustomFieldsModalOpened(true)}
               additionalOptions={additionalOptions}
               disableButton={restrictCustomizationFeatures}
+              iconColorFilterActive={iconColorFilterActiveItem?.value}
             />
             <Box mx={0.5} />
             <TaskCustomFieldsModal
@@ -131,12 +148,13 @@ const ListDetailsToolbar = ({ additionalOptions, children }) => {
       </Box>
       {viewType === ViewType.LIST_VIEW && (
         <Box display="flex" flex={1} justifyContent="flex-end">
-          {tasksStatus === TaskStatus.INCOMPLETE && (
+          {/* {tasksStatus === TaskStatus.INCOMPLETE && (
             <CompleteTasksVisibilitySwitch
               visible={displayOptions.includes(TASKS_VISIBILITY_KEY)}
               onChange={handleTasksVisibilityChange}
+              iconColorFilterActive={iconColorFilterActiveItem?.value}
             />
-          )}
+          )} */}
           <Box mx={0.5} />
         </Box>
       )}

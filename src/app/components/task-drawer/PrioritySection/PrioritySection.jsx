@@ -9,7 +9,7 @@ import { getPriorityColor, TaskPriority } from 'helpers/task-helpers';
 import { PriorityFieldContainer, PriorityFlagContainer } from './styled';
 import { PRIORITY_OPTIONS } from './helpers';
 
-const PrioritySection = () => {
+const PrioritySection = ({ disabled = false }) => {
   const dispatch = useDispatch();
   const selectedTask = useSelector(selectedTaskSelector);
   const { priority } = selectedTask || {};
@@ -32,6 +32,7 @@ const PrioritySection = () => {
         value={priority || TaskPriority.NONE}
         onChange={handleOptionChange}
         options={PRIORITY_OPTIONS}
+        disabled={disabled}
       />
     </PriorityFieldContainer>
   );

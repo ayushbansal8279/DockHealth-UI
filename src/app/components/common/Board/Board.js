@@ -12,6 +12,7 @@ const Board = ({
   onReorderTasks,
   onAddTask,
   onAddWorkflow,
+  iconColorActive,
 }) => {
   const handleDragEnd = useCallback(
     ({ type, source, destination }) => {
@@ -60,6 +61,7 @@ const Board = ({
                   column={column}
                   key={column.identifier}
                   index={index}
+                  iconColorActive={iconColorActive}
                 />
               ))}
               {provided.placeholder}

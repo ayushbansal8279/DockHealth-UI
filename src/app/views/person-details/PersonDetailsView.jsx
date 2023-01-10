@@ -5,15 +5,20 @@ import * as PersonDetailsActions from 'actions/person-details-actions';
 import * as TaskActions from 'actions/task-actions';
 import * as MegaFilterActions from 'actions/mega-filter-actions';
 import * as ModalActions from 'modal/actions';
-import { userProfileSelector } from 'selectors/user-selectors';
+import {
+  userProfileSelector,
+  selectedUserOrganizationSelector,
+} from 'selectors/user-selectors';
 import { onSearchChanged } from 'helpers/ga-event-helper';
 import { TaskListTabName } from 'helpers/tasklist-helpers';
 import {
   TaskItemColumn,
   TaskStatus,
   TASK_ITEM_BASE_COLUMN_CONFIG,
+  findIncompleteRequiredFields,
 } from 'helpers/task-helpers';
 import TaskDrawer from 'components/task-drawer/TaskDrawer/TaskDrawer';
+import { taskCustomFieldsSelector } from 'selectors/task-drawer-selectors';
 import LayoutHeader from 'components/template/LayoutHeader/LayoutHeader';
 import { updateCurrentUserPreferences } from 'actions/user-actions';
 import HeaderSearch from 'components/template/HeaderSearch/HeaderSearch';
@@ -39,6 +44,13 @@ const PersonDetailsView = () => {
   const [searchValue, setSearchValue] = useState('');
   const dispatch = useDispatch();
   const currentUser = useSelector(userProfileSelector);
+
+  const { templates } = useSelector(taskCustomFieldsSelector);
+  const currentOrganization = useSelector(selectedUserOrganizationSelector);
+  const iconColorActiveItem =
+    currentOrganization?.themeSettings?.find(
+      ({ name }) => name === 'icon.active.color',
+    ) || {};
 
   useEffect(() => {
     return () => {
@@ -86,6 +98,20 @@ const PersonDetailsView = () => {
   };
 
   const toggleTaskCompletedStatus = task => {
+    const incompleteRequiredFields = findIncompleteRequiredFields(
+      templates,
+      task,
+    );
+    const isRequiredFieldsAreIncomplete = incompleteRequiredFields.length > 0;
+
+    if (isRequiredFieldsAreIncomplete) {
+      const modalProps = {
+        incompleteFields: incompleteRequiredFields,
+      };
+      dispatch(ModalActions.openModal('CompleteAllFields', modalProps));
+      return;
+    }
+
     const hasIncompletedSubtasks = task.subtasks.find(
       subtask => subtask.status === 'INCOMPLETE',
     );
@@ -158,6 +184,7 @@ const PersonDetailsView = () => {
               toggleCompleteTask={toggleTaskCompletedStatus}
               onTaskUpdate={handleTaskUpdate}
               onOrderChange={handleOrderChange}
+              iconColorActive={iconColorActiveItem?.value}
             />
           ) : (
             <OpenedTasksView
@@ -168,6 +195,7 @@ const PersonDetailsView = () => {
               onTaskUpdate={handleTaskUpdate}
               updateWorkflowStatus={handleUpdateWorkflowStatus}
               onOrderChange={handleOrderChange}
+              iconColorActive={iconColorActiveItem?.value}
             />
           )}
         </TaskViewContainer>

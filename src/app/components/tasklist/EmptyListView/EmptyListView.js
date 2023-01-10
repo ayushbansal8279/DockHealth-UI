@@ -3,19 +3,11 @@ import {
   EmptyListContainer,
   ContentWrapper,
   TextWrapper,
-  ImageWrapper,
-  Image,
   Title,
   Description,
 } from './styled';
 
-const EmptyListView = ({
-  title,
-  description,
-  image,
-  imageStyle,
-  widthBreakpoint,
-}) => (
+const EmptyListView = ({ title, description, widthBreakpoint }) => (
   <EmptyListContainer>
     <ContentWrapper mediaBreakpoint={widthBreakpoint}>
       <TextWrapper style={{ paddingRight: '0px' }}>
@@ -31,9 +23,6 @@ const EmptyListView = ({
         )}
         <Description>{description}</Description>
       </TextWrapper>
-      <ImageWrapper>
-        <Image src={image} alt="empty view" style={imageStyle} />
-      </ImageWrapper>
     </ContentWrapper>
   </EmptyListContainer>
 );
