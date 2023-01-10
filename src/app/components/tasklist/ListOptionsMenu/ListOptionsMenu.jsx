@@ -3,7 +3,7 @@ import React, { useCallback } from 'react';
 import OptionsMenu from 'components/common/OptionsMenu/OptionsMenu';
 import { useSelector, useDispatch } from 'react-redux';
 import { useHistory } from 'react-router-dom';
-import { isUserGuest } from 'helpers/user-helper';
+import { isUserGuest, isUserViewOnly } from 'helpers/user-helper';
 import {
   onTaskListDeleted,
   onTaskListInvitationRejected,
@@ -180,7 +180,7 @@ const ListOptionsMenu = props => {
         PRIVILEGE_ROLES.includes(targetList?.role) &&
         targetList?.listType !== 'INBOX'
       ) {
-        if (!isUserGuest(currentUser)) {
+        if (!isUserGuest(currentUser) && !isUserViewOnly(currentUser)) {
           baseList = [
             ...baseList,
             {

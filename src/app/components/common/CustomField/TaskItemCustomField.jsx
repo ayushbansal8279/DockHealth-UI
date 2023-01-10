@@ -104,7 +104,12 @@ const TaskItemCustomField = ({
       );
     case FieldType.DATE:
       return (
-        <TaskItemDate value={value} onChange={handleChange} field={field} />
+        <TaskItemDate
+          value={value}
+          onChange={handleChange}
+          field={field}
+          readOnly={readOnly}
+        />
       );
     case FieldType.DROPDOWN_MULTI: {
       return (

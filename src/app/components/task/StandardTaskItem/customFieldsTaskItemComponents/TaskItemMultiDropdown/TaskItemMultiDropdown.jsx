@@ -10,7 +10,12 @@ import {
 import zIndex from 'styles/z-index';
 import { DropdownBox } from './styled';
 
-const TaskItemMultiDropdown = ({ value: initialValue, onChange, field }) => {
+const TaskItemMultiDropdown = ({
+  value: initialValue,
+  onChange,
+  field,
+  readOnly = false,
+}) => {
   const { options: initialOptions } = field;
   const [value, setValue] = useState(initialValue);
   const options = useMemo(() => {
@@ -39,6 +44,7 @@ const TaskItemMultiDropdown = ({ value: initialValue, onChange, field }) => {
       <DropdownBox>
         <Select
           multiple
+          readOnly={readOnly}
           MenuProps={{
             anchorOrigin: {
               vertical: 'bottom',

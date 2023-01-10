@@ -32,6 +32,7 @@ const TaskItemStartDate = ({ task, disabled = false }) => {
           onDateChange={handleDueDateChange}
           recurring={hasRecurringSchedule}
           onCloseClick={closePopover}
+          disableRecurring
         />
       )}
     >
@@ -44,7 +45,7 @@ const TaskItemStartDate = ({ task, disabled = false }) => {
             <DateLabel
               date={startDate}
               hasReminder={reminderType && reminderType !== ReminderType.NONE}
-              hasRecurringSchedule={hasRecurringSchedule}
+              hasRecurringSchedule={false}
             />
           ) : (
             <div>

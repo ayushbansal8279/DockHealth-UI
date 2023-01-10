@@ -148,6 +148,7 @@ const TaskItem = React.memo(
       subTasksCount,
       dependencyTasksCompletedCount,
       dependencyTasksCount,
+      hasEscalations,
     } = task;
 
     const { columns } = useTaskListColumnsConfig();
@@ -358,6 +359,7 @@ const TaskItem = React.memo(
             newlyCreated={newlyCreated}
             backgroundColor={pageBackground}
             isSelected={isSelected || selected}
+            hasEscalations={hasEscalations}
             isEditingDescription={isEditingDescription}
           >
             {taskListRestrictions?.createTask !== DISABLED && (
@@ -404,6 +406,7 @@ const TaskItem = React.memo(
         isEditingDescription,
         isLast,
         isSelected,
+        hasEscalations,
         isTaskStatusTogglingDisabled,
         newlyCreated,
         onCircleClick,
@@ -429,6 +432,7 @@ const TaskItem = React.memo(
           <StandardTaskItemContainer
             newlyCreated={newlyCreated}
             isSelected={isSelected || selected}
+            hasEscalations={hasEscalations}
             height={
               hasParentTaskLabel || isCompletedGroup
                 ? EXTENDED_TASK_HEIGHT
@@ -619,6 +623,7 @@ const TaskItem = React.memo(
                       showDefaultTaskStatusCompleted={
                         selectedOrganization?.showDefaultTaskStatusCompleted
                       }
+                      readOnly={restrictions?.status === READ_ONLY}
                     />
                   </TaskItemCell>,
                   getColumnOrder(TaskItemColumn.WORKFLOW_STATUS),
@@ -1025,6 +1030,7 @@ const TaskItem = React.memo(
                       task={task}
                       fieldIdentifier={TaskItemColumn.TASK_DETAILS}
                       onClick={onClickTaskItem}
+                      readOnly={restrictions?.taskDetails === READ_ONLY}
                     />
                   </TaskItemCell>,
                   getColumnOrder(TaskItemColumn.TASK_DETAILS),
@@ -1063,14 +1069,14 @@ const TaskItem = React.memo(
                           width={field.columnWidth}
                           order={getColumnOrder(field.identifier)}
                         >
-                          {!hidePatientCustomFields &&
-                            taskListRestrictions?.createTask !== DISABLED && (
-                              <TaskItemCustomField
-                                field={field}
-                                customFieldValue={customFieldValue}
-                                task={task}
-                              />
-                            )}
+                          {!hidePatientCustomFields && (
+                            <TaskItemCustomField
+                              field={field}
+                              customFieldValue={customFieldValue}
+                              task={task}
+                              readOnly
+                            />
+                          )}
                         </TaskItemCell>,
                         getColumnOrder(field.identifier),
                       )}

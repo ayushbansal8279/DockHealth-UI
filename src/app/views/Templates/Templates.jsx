@@ -11,6 +11,7 @@ import {
   userHasSendFaxFeatureSelector,
   userHasSendSmsFeatureSelector,
   userHasPostEMRNoteFeatureSelector,
+  userHasSendSecureMessageFeatureSelector,
 } from 'selectors/user-selectors';
 import { StyledDataGrid } from './DataGridStyles';
 import { getTemplateColumns } from './helpers';
@@ -27,6 +28,9 @@ const Templates = () => {
   const sendEmailAvailable = useSelector(userHasSendEmailFeatureSelector);
   const sendFaxAvailable = useSelector(userHasSendFaxFeatureSelector);
   const sendSmsAvailable = useSelector(userHasSendSmsFeatureSelector);
+  const sendSecureMessageAvailable = useSelector(
+    userHasSendSecureMessageFeatureSelector,
+  );
   const postToEMRAvailable = useSelector(userHasPostEMRNoteFeatureSelector);
 
   useEffect(() => {
@@ -34,7 +38,8 @@ const Templates = () => {
       sendEmailAvailable ||
       sendFaxAvailable ||
       sendSmsAvailable ||
-      postToEMRAvailable
+      postToEMRAvailable ||
+      sendSecureMessageAvailable
     ) {
       // continue
     } else {

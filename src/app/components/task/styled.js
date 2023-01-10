@@ -328,7 +328,12 @@ export const ClickablePatient = styled.span`
 export const StandardTaskItemContainer = styled.div`
   position: relative;
   background-color: ${props =>
-    props.isSelected ? palette.brightBlueWithAlpha : palette.white};
+    props.isSelected
+      ? palette.brightBlueWithAlpha
+      : // eslint-disable-next-line unicorn/no-nested-ternary
+      props.hasEscalations
+      ? palette.oPlusRedLight
+      : palette.white};
   border: 1px solid ${palette.coolGrey3};
   border-right: none;
   display: flex;
@@ -553,6 +558,9 @@ export const TaskItemDescriptionIndicators = styled.div`
 
 export const PatientLabel = styled.span`
   color: ${palette.mediumGrey};
+  font-weight: 700;
+  font-weight: ${fontWeights.bold};
+  font-size: 0.65 rem;
 
   &:hover {
     color: ${palette.brightBlue};

@@ -75,7 +75,8 @@ const PatientDetailsHeader = () => {
   const [cameFrom, setCameFrom] = useState();
   const taskListRestrictions =
     TASK_LIST_RESTRICTIONS_PROFILES[currentUser?.orgUserRole];
-
+  const genderIdentityDisabled =
+    currentOrganization?.disabledFeatures?.includes('PATIENT_GENDER') || false;
   const embeddedMode = sessionStorage.getItem('EmbeddedMode') || false;
 
   const goBack = useCallback(() => {
@@ -178,7 +179,7 @@ const PatientDetailsHeader = () => {
                     {age && `${age} | `}
                     {gender && `${gender?.charAt(0)?.toUpperCase()}`}
                   </PatientInfo>
-                  {genderIdentity && (
+                  {!genderIdentityDisabled && genderIdentity && (
                     <>
                       <PatientInfoDivider />
                       <PatientInfo>Gender: {genderIdentity}</PatientInfo>

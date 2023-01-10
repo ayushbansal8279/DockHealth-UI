@@ -13,6 +13,7 @@ import { CUSTOM_FIELDS_SETTINGS_PATH } from 'routing/helpers/paths';
 import {
   userProfileSelector,
   userHasPatientCustomFieldsFeatureSelector,
+  selectedUserOrganizationSelector,
 } from 'selectors/user-selectors';
 import { checkIfUserIsOrganizationAdmin } from 'helpers/user-helper';
 import groupBy from 'ramda/src/groupBy';
@@ -77,6 +78,10 @@ const PatientForm = forwardRef(
     const { 0: emptyOtherVisible, 3: toggleEmptyOther } = useBoolean(false);
     const isAdmin = checkIfUserIsOrganizationAdmin(userProfile);
     const [genderIdentityOptions, setGenderIdentityOptions] = useState([]);
+    const currentOrganization = useSelector(selectedUserOrganizationSelector);
+    const genderIdentityDisabled =
+      currentOrganization?.disabledFeatures?.includes('PATIENT_GENDER') ||
+      false;
 
     const GENDER_OPTIONS_IDENTITY = useMemo(
       () =>
@@ -196,13 +201,17 @@ const PatientForm = forwardRef(
             options={GENDER_OPTIONS_BIRTH}
             name="gender"
           />
-          <Spacing vertical={3} />
-          <FormSelect
-            readOnly={!edited || emrIntegrationEnabled}
-            label="Gender"
-            options={GENDER_OPTIONS_IDENTITY}
-            name="genderIdentity"
-          />
+          {!genderIdentityDisabled && (
+            <>
+              <Spacing vertical={3} />
+              <FormSelect
+                readOnly={!edited || emrIntegrationEnabled}
+                label="Gender"
+                options={GENDER_OPTIONS_IDENTITY}
+                name="genderIdentity"
+              />
+            </>
+          )}
           <Spacing vertical={3} />
           <FormInput
             readOnly={!edited || emrIntegrationEnabled}

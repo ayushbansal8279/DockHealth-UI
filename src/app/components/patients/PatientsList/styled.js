@@ -22,3 +22,10 @@ export const BulkContainer = styled.div`
   position: absolute;
   left: 24px;
 `;
+
+export const Text = styled.span`
+  width: ${props => (props.width ? `${props.width}px;` : '')}
+  display: block;
+  overflow: hidden;
+  text-overflow: ellipsis;
+`;

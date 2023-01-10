@@ -258,6 +258,27 @@ export function downloadPatientImportTemplate() {
     .catch(noop);
 }
 
+export function downloadPatientListData(listIdentifier, filename) {
+  return axios({
+    url: `/patient/list/download/${listIdentifier}`,
+    method: 'GET',
+    responseType: 'blob',
+    headers: {
+      Accept: 'application/octet-stream',
+    },
+  })
+    .then(response => {
+      const url = window.URL.createObjectURL(new Blob([response.data]));
+      const link = document.createElement('a');
+      link.style.display = 'none';
+      link.href = url;
+      link.setAttribute('download', filename);
+      document.body.append(link);
+      link.click();
+    })
+    .catch(noop);
+}
+
 export function uploadPatientData(fileData, additionalConfig = {}) {
   const formData = new FormData();
   formData.append('file', fileData);

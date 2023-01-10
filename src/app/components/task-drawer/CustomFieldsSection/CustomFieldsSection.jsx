@@ -117,11 +117,12 @@ const CustomFieldsSection = ({ disabled, fieldCategoryType }) => {
   );
 
   const renderCustomField = useCallback(
-    field => {
+    (field, index, alwaysVisible) => {
       const isFocused = taskDrawerFocusField === field.identifier;
       const hasValue = !!getValues('taskMetaData')?.[field.identifier];
       const isRequired = field.displayOptions.includes('TASK_REQUIRED');
-      const visible = isFocused || emptyVisible || hasValue || isRequired;
+      const visible =
+        alwaysVisible || isFocused || emptyVisible || hasValue || isRequired;
       return (
         <HidableContainer key={field.identifier} visible={!visible}>
           <Grid item xs={12} style={styleFullRow}>
@@ -142,20 +143,21 @@ const CustomFieldsSection = ({ disabled, fieldCategoryType }) => {
     },
     [taskDrawerFocusField, getValues, emptyVisible, disabled, task, handleBlur],
   );
+
   if (templates.length === 0) return null;
   return (
     <FormProvider {...formMethods}>
       {fieldCategoryType === 'TASK_CORE' ? (
         <CustomFieldsSectionContainerNoLine>
           {templates?.map((field, index) => {
-            return renderCustomField(field, index);
+            return renderCustomField(field, index, true);
           })}
         </CustomFieldsSectionContainerNoLine>
       ) : (
         <CustomFieldsSectionContainer>
           <Title>Custom fields</Title>
           {templates?.map((field, index) => {
-            return renderCustomField(field, index);
+            return renderCustomField(field, index, false);
           })}
           <CategoryOptions
             visibility={emptyVisible}

@@ -12,6 +12,7 @@ const TaskTemplateMembers = ({
   workflow = {},
   onWorkflowUpdate,
   currentUser,
+  readOnly,
 }) => {
   const {
     assignedToUsers = [],
@@ -33,6 +34,7 @@ const TaskTemplateMembers = ({
 
   return (
     <TaskItemPopover
+      disabled={readOnly}
       contentWidth={230}
       content={({ closePopover }) => (
         <MultiAssignMembersList

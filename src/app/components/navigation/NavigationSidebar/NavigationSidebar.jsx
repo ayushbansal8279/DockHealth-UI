@@ -180,6 +180,10 @@ const NavigationSidebar = () => {
     }
   }, [dispatch, location.pathname, selectedChannel]);
 
+  const handleEducationCenterClick = useCallback(() => {
+    window.open('https://help.dock.health', '_blank');
+  }, []);
+
   // const handleReferClick = () => {
   //   dispatch(TemplateActions.hideSubMenu());
   //   dispatch(openModal('ReferAColleague'));
@@ -327,7 +331,7 @@ const NavigationSidebar = () => {
                   icon={EducationCenterIcon}
                   subMenuKey={SubmenuKey.EDUCATION_CENTER}
                   subMenuOpen={openedSubMenuKey === SubmenuKey.EDUCATION_CENTER}
-                  onItemClick={handleNavigationItemClick}
+                  onItemClick={handleEducationCenterClick}
                   navSelectedColor={navSelectedColorItem?.value}
                 />
               </AccessRestrictor>

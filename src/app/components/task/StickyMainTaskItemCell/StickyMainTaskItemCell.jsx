@@ -4,7 +4,7 @@ import spacing from 'styles/spacing';
 
 export const highlightDescription = keyframes`
   0% {
-      background: #e0eff9;
+      background: ${palette.dockBlueLight};
   }
   100% {
       background: ${palette.white};
@@ -50,7 +50,12 @@ ${({ customWidthExists }) => (customWidthExists ? '' : 'flex: 1;')}
     content: '';
     display: block;
     background-color: ${props =>
-      props.isSelected ? '#e0eff9' : palette.white};
+      props.isSelected
+        ? palette.dockBlueLight
+        : // eslint-disable-next-line unicorn/no-nested-ternary
+        props.hasEscalations
+        ? palette.oPlusRedLight
+        : palette.white};
     transition: background-color 0.3s ease-out;
     position: absolute;
     left: 0px;

@@ -22,7 +22,11 @@ import {
 } from 'routing/helpers/paths';
 import { DashboardTasksTab } from 'helpers/dashboard-helpers';
 import { ViewType, getViewTypeFromQueryString } from 'helpers/view-type-helper';
-import { dashboardGroupsPreferencesSelector } from 'selectors/user-selectors';
+import {
+  dashboardGroupsPreferencesSelector,
+  selectedUserOrganizationSelector,
+  userProfileSelector,
+} from 'selectors/user-selectors';
 import TaskViewTypeToolbarSelect from 'components/tasklist/TaskViewTypeToolbarSelect/TaskViewTypeToolbarSelect';
 import CustomizeToolbarButton from 'components/tasklist/CustomizeToolbarButton/CustomizeToolbarButton';
 import { useTaskListColumnsConfig } from 'context-api/columns-config-context';
@@ -66,6 +70,17 @@ const DashboardToolbar = ({ iconColorFilterActive, iconColorActive }) => {
     dashboardGroupsPreferences || [],
   );
   const sentInitialSetup = useRef(false);
+
+  const currentOrganization = useSelector(selectedUserOrganizationSelector);
+  const { orgUserRole } = useSelector(userProfileSelector);
+  const allTasksForMemberEnabledItem =
+    currentOrganization?.themeSettings?.find(
+      ({ name }) => name === 'constraint.allTasksForMember.enabled',
+    ) || {};
+  const restrictAllTasksForMember =
+    (orgUserRole === 'MEMBER' &&
+      allTasksForMemberEnabledItem?.value === 'false') ||
+    false;
 
   useEffect(() => {
     if (
@@ -153,17 +168,18 @@ const DashboardToolbar = ({ iconColorFilterActive, iconColorActive }) => {
               isSelected={tabName === DashboardTasksTab.SHARED_TASKS}
             />
           </AccessRestrictor> */}
-          <AccessRestrictor allowedToRoles={[ADMIN, OWNER]}>
-            <DashboardTab
-              label="All Tasks"
-              setHighlightPosition={setHighlightPosition}
-              onClick={() => {
-                history.push(`${HOME_ALL_TASKS_PATH}${search}`);
-              }}
-              isSelected={tabName === DashboardTasksTab.ALL_TASKS}
-            />
-          </AccessRestrictor>
-
+          {!restrictAllTasksForMember && (
+            <AccessRestrictor allowedToRoles={[ADMIN, OWNER, MEMBER]}>
+              <DashboardTab
+                label="All Tasks"
+                setHighlightPosition={setHighlightPosition}
+                onClick={() => {
+                  history.push(`${HOME_ALL_TASKS_PATH}${search}`);
+                }}
+                isSelected={tabName === DashboardTasksTab.ALL_TASKS}
+              />
+            </AccessRestrictor>
+          )}
           <DashboardTabHighlight {...highlightPosition} />
         </DashboardTabsContainer>
       </Grid>

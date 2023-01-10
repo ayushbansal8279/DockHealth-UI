@@ -9,7 +9,7 @@ import { useMentionsEditorState } from 'components/common/TextEditor/use-mention
 import { useBoolean } from 'hooks/useBoolean';
 import { TextContainer } from './styled';
 
-const TaskItemText = ({ value = '', onChange }) => {
+const TaskItemText = ({ value = '', onChange, readOnly = false }) => {
   const editorReference = useRef(null);
   const [textValue, setTextValue] = useState(value);
   const [isEditing, setEditing, unsetEditing] = useBoolean(false);
@@ -78,7 +78,7 @@ const TaskItemText = ({ value = '', onChange }) => {
       <TextContainer onClick={handleClick}>
         <TextEditor
           ref={editorReference}
-          readOnly={!isEditing}
+          readOnly={readOnly || !isEditing}
           state={state}
           onChange={data => {
             setState(data);
