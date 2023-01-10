@@ -205,7 +205,7 @@ export const DescriptionBox = styled.div`
   flex-direction: column;
   flex: 1;
   cursor: pointer;
-  width: 100%;
+  width: ${({ width }) => (width ? `${width}px` : '100%')};
 `;
 
 export const DecisionBox = styled.div`

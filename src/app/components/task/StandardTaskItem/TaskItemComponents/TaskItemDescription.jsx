@@ -49,6 +49,7 @@ const TaskItemDescription = ({
   disabled,
   disableMentions,
   isEditButtonVisible = false,
+  width,
 }) => {
   const {
     description,
@@ -162,7 +163,7 @@ const TaskItemDescription = ({
   );
 
   return (
-    <DescriptionBox>
+    <DescriptionBox width={width}>
       <Box display="flex" flex={1}>
         <Description
           onMouseEnter={() => setIsHovered(true)}

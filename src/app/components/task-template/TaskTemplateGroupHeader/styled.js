@@ -77,7 +77,6 @@ export const TaskTemplateOptionsContainer = styled.div`
   align-items: center;
   justify-content: flex-end;
   padding-right: ${spacing.smallPlus};
-  width: 164px;
   position: relative;
   overflow: hidden;
 `;

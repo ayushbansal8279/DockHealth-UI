@@ -4,13 +4,12 @@ import moment from 'moment';
 
 const TaskTemplateElapsedTime = ({ workflow }) => {
   const { createdDateTime } = workflow || {};
-  const DATE_ISO_FORMAT = 'YYYY-MM-DD';
 
   const elapsedTime = useMemo(() => {
     if (!createdDateTime) {
       return '';
     }
-    const createdDate = moment(createdDateTime, DATE_ISO_FORMAT);
+    const createdDate = moment(createdDateTime);
     const endDate = moment();
     const days = endDate.diff(createdDate, 'days');
     if (days <= 0) {

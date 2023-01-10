@@ -43,7 +43,7 @@ const NewNestedFlowNode = React.memo(props => {
           taskGroupIdentifier,
           groupName,
         }) => {
-          console.log(listName, groupName);
+          // console.log(listName, groupName);
           if (taskListIdentifier) {
             setTaskList({ taskListIdentifier, listName });
           }
@@ -62,15 +62,26 @@ const NewNestedFlowNode = React.memo(props => {
           {
             description: workflow.workflowName,
             taskTemplateIdentifier,
-            linkedTemplateIdentifier: workflow.identifier,
             intentType: NodeType.WORKFLOW_LINK,
+            linkedTemplateIdentifier: workflow.identifier,
+            linkedWorkflowTaskListIdentifier: taskList?.taskListIdentifier,
+            linkedWorkflowTaskGroupIdentifier: taskGroup?.taskGroupIdentifier,
           },
           id,
           { x: xPos, y: yPos },
         ),
       );
     }
-  }, [dispatch, id, taskTemplateIdentifier, workflow, xPos, yPos]);
+  }, [
+    dispatch,
+    id,
+    taskGroup,
+    taskList,
+    taskTemplateIdentifier,
+    workflow,
+    xPos,
+    yPos,
+  ]);
 
   return (
     <TaskNodeHandles
@@ -79,11 +90,8 @@ const NewNestedFlowNode = React.memo(props => {
       onTargetHandleHover={data.onTargetHandleHover}
     >
       <TaskWrapper>
-        <TaskNodeWrapper selected={selected} type={type}>
+        <TaskNodeWrapper selected={selected} type={type} width={280}>
           <NestedFlowNodeStyled>
-            <IconButton onClick={handleOpenModal}>
-              <Add htmlColor={palette.white} />
-            </IconButton>
             <Typography component="p">
               {workflow?.workflowName
                 ? workflow.workflowName
@@ -91,6 +99,9 @@ const NewNestedFlowNode = React.memo(props => {
             </Typography>
             <IconButton onClick={() => dispatch(deleteTemporaryElement(id))}>
               <Delete htmlColor={palette.white} />
+            </IconButton>
+            <IconButton onClick={handleOpenModal}>
+              <Add htmlColor={palette.white} />
             </IconButton>
             <IconButton onClick={handleOpenListPicker}>
               <ListsIcon color="white" />

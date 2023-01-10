@@ -217,7 +217,9 @@ const TaskTemplateView = () => {
         [TaskItemColumn.DESCRIPTION]: true,
         // [TaskItemColumn.SUBTASKS_COUNT]: true,
         [TaskItemColumn.WORKFLOW_STATUS]: true,
-        [TaskItemColumn.ACTIVITY]: true,
+        [TaskItemColumn.COMMENTS]: true,
+        [TaskItemColumn.LABELS]: true,
+        [TaskItemColumn.FILES]: true,
         [TaskItemColumn.ASSIGNED]: true,
       }}
       hideCustomColumns
