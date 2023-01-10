@@ -1,6 +1,6 @@
 /* eslint-disable sonarjs/cognitive-complexity */
-import React, { useCallback } from 'react';
-import { Box, Grid, Typography, useMediaQuery } from '@material-ui/core';
+import React, { useCallback, useRef, useState } from 'react';
+import { Box, Chip, Grid, Typography, useMediaQuery } from '@material-ui/core';
 import { checkIfBundleTask } from 'helpers/task-helpers';
 import Spacing from 'components/common/Spacing';
 import TextEditor from 'components/common/TextEditor/TextEditor';
@@ -17,6 +17,7 @@ import {
   TASK_LIST_RESTRICTIONS_PROFILES,
 } from 'restrictions/task-restrictions';
 import StartDateSection from 'components/workflow-drawer/StartDateSection/StartDateSection';
+import WatchersPopover from 'components/task-drawer/TaskDrawerContent/WatchersPopover/WatchersPopover';
 import AttachmentsSection from '../AttachmentsSection/AttachmentsSection';
 import CommentSection from '../CommentSection/CommentSection';
 import LabelsSection from '../LabelsSection/LabelsSection';
@@ -51,6 +52,7 @@ import {
   ReferenceParentButton,
   ReferenceParentName,
   FiledInListName,
+  SubscriptionBadge,
 } from './styled';
 
 const { DISABLED, READ_ONLY } = SINGLE_TASK_RESTRICTIONS_OPTIONS;
@@ -137,6 +139,17 @@ const TaskDrawerContent = props => {
 
   const restrictMentions = restrictions?.mentions === DISABLED;
 
+  const watchersReference = useRef(null);
+  const [isSubscriptionListOpen, setSubscriptionListOpen] = useState(false);
+
+  const handleSubscriptionCountClick = () => {
+    setSubscriptionListOpen(!isSubscriptionListOpen);
+  };
+
+  const handleSubscriptionListClose = () => {
+    setSubscriptionListOpen(false);
+  };
+
   const isMobile = useMediaQuery(theme => theme.breakpoints.down('sm'));
 
   return (
@@ -167,6 +180,24 @@ const TaskDrawerContent = props => {
           />
         </Grid>
         {selectedTask && <TaskDrawerDivider />}
+        <Box padding="0 32px" sx={{ width: '100%' }}>
+          <Typography component="span">
+            List:{' '}
+            <FiledInListName>
+              {selectedTask?.taskList?.listName}
+            </FiledInListName>
+          </Typography>
+          <SubscriptionBadge>
+            <Chip
+              label={12}
+              color="primary"
+              onClick={handleSubscriptionCountClick}
+            />{' '}
+            <span ref={watchersReference}>Watchers</span>{' '}
+            {/* eslint-disable-next-line jsx-a11y/anchor-is-valid */}
+            <a type="button">Unwatch</a>
+          </SubscriptionBadge>
+        </Box>
         <Box display="flex" padding={isMobile ? '0 16px' : '0 32px'}>
           <Typography>List: </Typography>
           <Spacing horizontal={3} />
@@ -351,6 +382,11 @@ const TaskDrawerContent = props => {
       )}
       {renderExistingUserTourPopover()}
       <TaskDrawerBackground onClick={closeTaskDrawer} />
+      <WatchersPopover
+        open={isSubscriptionListOpen}
+        anchorEl={watchersReference.current}
+        onClose={handleSubscriptionListClose}
+      />
     </TaskDrawerContainer>
   );
 };
