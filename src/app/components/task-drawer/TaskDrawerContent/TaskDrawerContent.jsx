@@ -187,16 +187,15 @@ const TaskDrawerContent = props => {
               {selectedTask?.taskList?.listName}
             </FiledInListName>
           </Typography>
-          <SubscriptionBadge>
+          {/* <SubscriptionBadge>
             <Chip
               label={12}
               color="primary"
               onClick={handleSubscriptionCountClick}
             />{' '}
             <span ref={watchersReference}>Watchers</span>{' '}
-            {/* eslint-disable-next-line jsx-a11y/anchor-is-valid */}
             <a type="button">Unwatch</a>
-          </SubscriptionBadge>
+          </SubscriptionBadge> */}
         </Box>
         <Box display="flex" padding={isMobile ? '0 16px' : '0 32px'}>
           <Typography>List: </Typography>
@@ -382,11 +381,11 @@ const TaskDrawerContent = props => {
       )}
       {renderExistingUserTourPopover()}
       <TaskDrawerBackground onClick={closeTaskDrawer} />
-      <WatchersPopover
+      {/* <WatchersPopover
         open={isSubscriptionListOpen}
         anchorEl={watchersReference.current}
         onClose={handleSubscriptionListClose}
-      />
+      /> */}
     </TaskDrawerContainer>
   );
 };
