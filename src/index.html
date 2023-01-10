@@ -157,11 +157,6 @@
 
     <script>
       let userAgentString = navigator.userAgent;
-      console.log(userAgentString);
-
-      // Detect Chrome
-      // let chromeAgent =
-      //     userAgentString.indexOf("Chrome") > -1;
 
       // Detect Internet Explorer
       let IExplorerAgent =
@@ -169,18 +164,12 @@
         (userAgentString.indexOf('rv:') > -1 &&
           userAgentString.indexOf('Firefox') == -1);
 
-      // if(chromeAgent){
-      //   alert('detected Chrome');
-      // }
       if (IExplorerAgent) {
-        // alert('detected IE');
-        // document.write('<h2>Dock Health is not supported on IE.</h2><h2>Please use Chrome, Firefox or Safari.</h2><br/>Open this link: <a href="'+window.location.href+'">'+window.location.href+'</a>');
         document.getElementById('UnsupportedSection').style.display = 'block';
         document.getElementById('currentLink').innerText = window.location.href;
       } else {
         document.write('<div id="app" />');
       }
     </script>
-    <!-- <div id="app" /> -->
   </body>
 </html>
