@@ -5,7 +5,7 @@ import palette from 'styles/palette';
 
 export const TaskNodeContainer = styled.div`
   position: relative;
-  width: ${TASK_NODE_WIDTH}px;
+  width: ${({ width }) => (width ? `${width}px` : `${TASK_NODE_WIDTH}px`)};
   height: auto;
   background-color: ${palette.white};
   box-shadow: 0px 0px 11px rgba(0, 0, 0, 0.15);
