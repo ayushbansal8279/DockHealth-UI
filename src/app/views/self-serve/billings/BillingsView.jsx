@@ -16,6 +16,7 @@ import Spacing from 'components/common/Spacing';
 import { useBoolean } from 'hooks/useBoolean';
 import { MontserratTypography } from 'styles/theme-montserrat';
 import * as AlertActions from 'alert/actions';
+import { userProfileSelector } from 'selectors/user-selectors';
 import BillingData from './BillingData/BillingData';
 import InvoicesList from './InvoicesList/InvoicesList';
 import {
@@ -83,13 +84,8 @@ const BillingsView = () => {
 
   const [error, setError] = useState('');
 
-  const { organizationIdentifier } = useSelector(
-    store => store.userState.userProfile,
-  );
-
-  const { userProfile } = useSelector(store => ({
-    userProfile: store.userState?.userProfile,
-  }));
+  const userProfile = useSelector(userProfileSelector);
+  const { organizationIdentifier } = userProfile;
 
   useEffect(() => {
     if (!checkIfUserIsOrganizationAdmin(userProfile)) {

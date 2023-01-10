@@ -9,7 +9,7 @@ import {
   selectedUserOrganizationSelector,
 } from 'selectors/user-selectors';
 import { openModal, closeModal } from 'modal/actions';
-import { useDispatch, useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux'
 import { yupResolver } from '@hookform/resolvers/yup';
 import * as PatientApi from 'api/patient-api';
 import { onPatientAdded as onPatientAddedEvent } from 'helpers/ga-event-helper';

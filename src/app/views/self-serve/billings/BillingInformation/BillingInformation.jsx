@@ -15,6 +15,7 @@ import CardVisaIcon from 'img/cards/visa.png';
 import palette from 'styles/palette';
 import { MontserratTypography } from 'styles/theme-montserrat';
 import { BillingFrequency } from 'helpers/subscription-helper';
+import { organizationSelector } from 'selectors/organization-selectors';
 
 const CARD_EXPIRATION_WARNING_DAYS = 15;
 
@@ -80,9 +81,7 @@ const BillingInformation = ({ setUpdatingBilling }) => {
   const dispatch = useDispatch();
   const history = useHistory();
 
-  const { billingData, billingDetails } = useSelector(
-    store => store.organizationState,
-  );
+  const { billingData, billingDetails } = useSelector(organizationSelector);
 
   useMount(() => {
     getBillingEstimate({})(dispatch);

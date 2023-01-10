@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useMemo, useState } from 'react';
 import { useHistory } from 'react-router-dom';
 import ViewLayout from 'components/template/ViewLayout/ViewLayout';
 import BasicLayoutHeader from 'components/template/BasicLayoutHeader/BasicLayoutHeader';
@@ -19,10 +19,13 @@ const ChatView = () => {
 
   const [showSettings, setShowSettings] = useState(false);
 
-  const showSettingsValue = {
-    showSettings,
-    setShowSettings,
-  };
+  const showSettingsValue = useMemo(
+    () => ({
+      showSettings,
+      setShowSettings,
+    }),
+    [showSettings, setShowSettings],
+  );
 
   const dockChatAvailable = useSelector(userHasDockChatFeatureSelector);
   if (!dockChatAvailable) {

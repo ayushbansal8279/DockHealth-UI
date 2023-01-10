@@ -16,6 +16,7 @@ import {
 import { getGroupActivityStatus } from 'helpers/user-groups-helper';
 import { formatPhoneNumber } from 'helpers/utility-functions';
 import moment from 'moment';
+import { activeUsersListSelector } from 'selectors/active-users-selector';
 import {
   MentionItem,
   UserCardContainer,
@@ -49,9 +50,7 @@ const UserMention = ({ mention, className, children }) => {
 
   const [cardOpen, openCard, closeCard] = useBooleanWithTimeout();
 
-  const { activeUsersList } = useSelector(store => ({
-    activeUsersList: store.activeUsers.activeUsersList,
-  }));
+  const activeUsersList = useSelector(activeUsersListSelector);
 
   const activityStatus = isUserGroup
     ? getGroupActivityStatus(userOrGroup, activeUsersList)

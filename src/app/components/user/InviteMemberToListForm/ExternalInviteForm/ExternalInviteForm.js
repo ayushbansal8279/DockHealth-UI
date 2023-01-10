@@ -2,6 +2,7 @@ import React, { useCallback, useState, useEffect } from 'react';
 import { useSelector } from 'react-redux';
 import * as TaskListApi from 'api/task-list-api';
 import { showAlert } from 'helpers/utility-functions';
+import { userProfileSelector } from 'selectors/user-selectors';
 import OrganizationOwnerForm from './OrganizationOwnerForm/OrganizationOwnerForm';
 import MemberForm from './MemberForm/MemberForm';
 import { ExternalInviteContainer } from './styled';
@@ -14,9 +15,7 @@ const ExternalInviteForm = ({
 }) => {
   const [isInviting, setIsInviting] = useState(false);
 
-  const { currentUser } = useSelector(store => ({
-    currentUser: store.userState.userProfile,
-  }));
+  const currentUser = useSelector(userProfileSelector);
 
   const isOrganizationAdmin = ['ADMIN', 'OWNER'].includes(
     currentUser.orgUserRole,

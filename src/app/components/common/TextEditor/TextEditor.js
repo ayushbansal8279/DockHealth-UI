@@ -34,6 +34,7 @@ import {
 import { useMentionsEditorState } from 'components/common/TextEditor/use-mentions-editor-state';
 import { FieldCharakterLimit } from 'helpers/field-type-helpers';
 import { getCustomerTypeLabel } from 'helpers/customer-type-helper';
+import { userProfileSelector } from 'selectors/user-selectors';
 import UsersSuggestionsPopover from './UsersSuggestionsPopover/UsersSuggestionsPopover';
 import PatientsSuggestionsPopover from './PatientsSuggestionsPopover/PatientsSuggestionsPopover';
 import PatientSuggestionItem from './PatientSuggestionItem/PatientSuggestionItem';
@@ -142,9 +143,7 @@ const TextEditor = React.forwardRef(
     const areUsersSuggestionsOpened = useRef(false);
     const arePatientSuggestionsOpened = useRef(false);
 
-    const { currentUser } = useSelector(store => ({
-      currentUser: store.userState.userProfile,
-    }));
+    const currentUser = useSelector(userProfileSelector);
 
     useEffect(() => {
       if (

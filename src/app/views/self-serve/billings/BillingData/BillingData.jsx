@@ -22,6 +22,7 @@ import CardMastercardIcon from 'img/cards/mastercard.png';
 import CardVisaIcon from 'img/cards/visa.png';
 import { MontserratTypography } from 'styles/theme-montserrat';
 import Loader, { LoaderSizes } from 'components/common/Loader/Loader';
+import { organizationSelector } from 'selectors/organization-selectors';
 import BillingInformation from '../BillingInformation/BillingInformation';
 import {
   AcceptedCardsContainer,
@@ -346,11 +347,8 @@ const BillingData = ({
   processingPayment,
   cancelSaveBillingClick,
 }) => {
-  const { billingDetails, hasDiscountCode } = useSelector(store => ({
-    billingDetails: store.organizationState.billingDetails,
-    userProfile: store.userState.userProfile,
-    hasDiscountCode: store.organizationState?.referralConfig?.hasDiscountCode,
-  }));
+  const { billingDetails, referralConfig } = useSelector(organizationSelector);
+  const { hasDiscountCode } = referralConfig;
 
   const formMethods = useForm({
     resolver: yupResolver(validationSchema),

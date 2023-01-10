@@ -243,17 +243,27 @@ export function ColumnsConfigProvider({
     [columns, currentList, dispatch, userIdentifier],
   );
 
-  const value = {
-    columns,
-    setColumns: setColumnsAndUpdateApi,
-    setColumnsToState,
-    setColumnWidth,
-    currentList,
-    setCurrentList,
-    viewSpecificConfig,
-    setViewSpecificConfig,
-    hasWidthPreferences,
-  };
+  const value = useMemo(
+    () => ({
+      columns,
+      setColumns: setColumnsAndUpdateApi,
+      setColumnsToState,
+      setColumnWidth,
+      currentList,
+      setCurrentList,
+      viewSpecificConfig,
+      setViewSpecificConfig,
+      hasWidthPreferences,
+    }),
+    [
+      columns,
+      currentList,
+      hasWidthPreferences,
+      setColumnWidth,
+      setColumnsAndUpdateApi,
+      viewSpecificConfig,
+    ],
+  );
 
   return (
     <ColumnsConfigContext.Provider value={value}>

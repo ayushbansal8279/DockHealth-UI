@@ -2,12 +2,11 @@ import React from 'react';
 import { useSelector } from 'react-redux';
 import { getCustomerTypeLabel } from 'helpers/customer-type-helper';
 import PatientsEmptyIcon from 'img/patients-empty.svg';
+import { userProfileSelector } from 'selectors/user-selectors';
 import { EmptyListContainer, EmptyListIcon } from './styled';
 
 const EmptyFilteredPatientsList = isFiltered => {
-  const { currentUser } = useSelector(store => ({
-    currentUser: store.userState.userProfile,
-  }));
+  const currentUser = useSelector(userProfileSelector);
   const customerTypeLabel = getCustomerTypeLabel(currentUser);
 
   return (

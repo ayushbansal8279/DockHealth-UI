@@ -17,6 +17,8 @@ import { swithAlertsToastsHide } from 'actions/activity-alerts-actions';
 import { clearNotifications } from 'actions/template-actions';
 import { initializePusher } from 'helpers/pusher-instance';
 import Switch from 'components/common/Switch/Switch';
+import { userProfileSelector } from 'selectors/user-selectors';
+import { templateStateSelector } from 'selectors/template-selectors';
 import ActivityAlertsItem from './ActivityAlertsItem/ActivityAlertsItem';
 import ActivityAlertsSettings from './ActivityAlertsSettings/ActivityAlertsSettings';
 import ActivityAlertsLoader from './ActivityAlertsLoader/ActivityAlertsLoader';
@@ -94,12 +96,9 @@ const listenRealTimeAlerts = (
 
 // eslint-disable-next-line sonarjs/cognitive-complexity
 const ActivityAlerts = ({ variant = 'blue' }) => {
-  const { currentUser, notificationsOpen, notificationsPage } = useSelector(
-    store => ({
-      currentUser: store.userState.userProfile,
-      notificationsOpen: store.templateState.notificationsOpen,
-      notificationsPage: store.templateState.notificationsPage,
-    }),
+  const currentUser = useSelector(userProfileSelector);
+  const { notificationsOpen, notificationsPage } = useSelector(
+    templateStateSelector,
   );
 
   const [isOpen, setIsOpen] = useState(false);

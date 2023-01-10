@@ -11,17 +11,14 @@ import { useSmallScreen } from 'helpers/utility-functions';
 import { MontserratTypography } from 'styles/theme-montserrat';
 import { RobotoTypography } from 'styles/theme';
 import { downloadBAADocument } from 'api/organization-api';
+import { userProfileSelector } from 'selectors/user-selectors';
 import { OnboardingAnchor } from '../OnboardingTemplate.Components';
 
 const OnboardingEulaView = () => {
   const history = useHistory();
   const [isEulaAccepted, toggleEulaAccepted] = useToggle(false);
 
-  const { userProfile } = useSelector(store => {
-    return {
-      userProfile: store.userState.userProfile,
-    };
-  });
+  const userProfile = useSelector(userProfileSelector);
   const [isBaaAccepted, toggleBaaAccepted] = useToggle(userProfile?.baaSigned);
 
   const continueButtonDisabled = !isEulaAccepted || !isBaaAccepted;

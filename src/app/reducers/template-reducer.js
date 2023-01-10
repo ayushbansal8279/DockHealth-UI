@@ -42,9 +42,8 @@ const TemplateReducer = (state = initialState, action) => {
       return { ...state, notificationsOpen: false, notificationsPage: '' };
     }
 
-    default: {
-      return { ...state };
-    }
+    default:
+      return state;
   }
 };
 
