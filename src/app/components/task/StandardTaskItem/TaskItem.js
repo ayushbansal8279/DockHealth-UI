@@ -446,7 +446,11 @@ const TaskItem = React.memo(
                       ({ identifier }) =>
                         identifier === TaskItemColumn.DESCRIPTION,
                     )?.columnWidth -
-                    (isSubtask && descriptionColumnOrder === 0 ? 36 : 0)
+                    (isSubtask &&
+                    !hasParentTaskLabel &&
+                    descriptionColumnOrder === 0
+                      ? 36
+                      : 0)
                   }
                   order={getColumnOrder(TaskItemColumn.DESCRIPTION)}
                   bolded
@@ -493,7 +497,11 @@ const TaskItem = React.memo(
                         ({ identifier }) =>
                           identifier === TaskItemColumn.DESCRIPTION,
                       )?.columnWidth -
-                      (isSubtask && descriptionColumnOrder === 0 ? 106 : 70)
+                      (isSubtask &&
+                      !hasParentTaskLabel &&
+                      descriptionColumnOrder === 0
+                        ? 106
+                        : 70)
                     }
                   />
                   {!isSubtask && (
