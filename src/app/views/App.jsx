@@ -86,8 +86,7 @@ class App extends PureComponent {
 
   logoutTimeout = null;
 
-  // eslint-disable-next-line react/no-deprecated
-  componentWillMount() {
+  componentDidMount() {
     const redirectToHome = JSON.parse(sessionStorage.getItem('redirectToHome'));
     const redirectToLink = sessionStorage.getItem('redirectToLink');
 
@@ -263,7 +262,7 @@ class App extends PureComponent {
           <>
             <SendbirdProvider
               appId={appId}
-              userId={userProfile?.identifier}
+              userId={userProfile?.identifier ?? ''}
               nickname={userProfile?.name}
               colorSet={sendbirdColorSet}
             >
