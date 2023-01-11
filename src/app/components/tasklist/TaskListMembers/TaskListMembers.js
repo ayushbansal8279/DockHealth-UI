@@ -8,14 +8,16 @@ import UserAvatar from 'components/user/UserAvatar/UserAvatar';
 import InviteMemberButton from 'components/user/InviteMemberButton/InviteMemberButton';
 import AdditionalMembersCounter from 'components/user/AdditionalMembersCounter/AdditionalMembersCounter';
 import { userProfileSelector } from 'selectors/user-selectors';
+import { isUserGuest, isUserViewOnly } from 'helpers/user-helper';
 import { MemberWrapper } from './styled';
 
 const TaskListMembers = ({ members, list, refreshMembers, limit = 4 }) => {
   const dispatch = useDispatch();
   const [shownMembers, hiddenMembers] = splitAt(limit, members ?? []);
 
-  const { orgUserRole } = useSelector(userProfileSelector);
-  const isGuest = orgUserRole === 'GUEST';
+  const currentUser = useSelector(userProfileSelector);
+  const isGuest = isUserGuest(currentUser);
+  const isViewOnly = isUserViewOnly(currentUser);
 
   return (
     <>
@@ -35,19 +37,22 @@ const TaskListMembers = ({ members, list, refreshMembers, limit = 4 }) => {
         </>
       )}
       <Spacing horizontal={2} />
-      {!isGuest && list?.listType !== 'INBOX' && list?.listType !== 'PUBLIC' && (
-        <InviteMemberButton
-          size={40}
-          onClick={() =>
-            dispatch(
-              openModal('InviteToList', {
-                list,
-                onMembersRefresh: refreshMembers,
-              }),
-            )
-          }
-        />
-      )}
+      {!isGuest &&
+        !isViewOnly &&
+        list?.listType !== 'INBOX' &&
+        list?.listType !== 'PUBLIC' && (
+          <InviteMemberButton
+            size={40}
+            onClick={() =>
+              dispatch(
+                openModal('InviteToList', {
+                  list,
+                  onMembersRefresh: refreshMembers,
+                }),
+              )
+            }
+          />
+        )}
     </>
   );
 };

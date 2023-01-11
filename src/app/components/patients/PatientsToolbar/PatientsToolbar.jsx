@@ -5,6 +5,7 @@ import { useBoolean } from 'hooks/useBoolean';
 import { useHistory, useParams } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import * as PatientsActions from 'actions/patients-actions';
+import { isUserGuest, isUserViewOnly } from 'helpers/user-helper';
 import ToolbarSelect from 'components/tasklist/ToolbarSelect/ToolbarSelect';
 import TasksStatusSwitchIcon from 'img/tasks-status-switch-icon';
 import {
@@ -69,11 +70,11 @@ const PatientsToolbar = () => {
   const listIdentifier = useSelector(currentPatientsListIdentifierSelector);
   const currentUser = useSelector(userProfileSelector);
   const currentOrganization = useSelector(selectedUserOrganizationSelector);
-  const { orgUserRole } = currentUser || {};
   const customerTypeLabel = getCustomerTypeLabel(currentUser).toUpperCase();
   const { listIdentifier: listIdentifierParameter } = useParams();
 
-  const isGuest = orgUserRole === 'GUEST';
+  const isGuest = isUserGuest(currentUser);
+  const isViewOnly = isUserViewOnly(currentUser);
 
   // const [importPopupOpen, setImportPopupOpen] = useState(false);
 
@@ -161,6 +162,7 @@ const PatientsToolbar = () => {
           </Box>
           <Box display="flex" alignItems="center">
             {!isGuest &&
+              !isViewOnly &&
               !emrIntegrationEnabled &&
               listIdentifier === DefaultPatientsListType.ALL_PATIENTS && (
                 <>

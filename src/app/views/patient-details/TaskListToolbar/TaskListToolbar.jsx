@@ -9,12 +9,14 @@ import { onPrint } from 'helpers/ga-event-helper';
 import { createPatientDetailsListPath } from 'routing/helpers/paths';
 import OutlinedSelect from 'components/common/OutlinedSelect/OutlinedSelect';
 import { currentListTasksStatusSelector } from 'selectors/patient-details-selectors';
+import { isUserViewOnly } from 'helpers/user-helper';
 import {
   getCurrentPatientTasks,
   setCurrentListTasksStatus,
 } from 'actions/patient-details-actions';
 import { updateUserPageViewSetup } from 'actions/task-list-actions';
 import {
+  userProfileSelector,
   userSetupClientViewSelector,
   selectedUserOrganizationSelector,
 } from 'selectors/user-selectors';
@@ -71,6 +73,7 @@ const TaskListToolbar = props => {
     },
   );
 
+  const currentUser = useSelector(userProfileSelector);
   const currentOrganization = useSelector(selectedUserOrganizationSelector);
   const iconColorFilterActiveItem =
     currentOrganization?.themeSettings?.find(
@@ -80,6 +83,26 @@ const TaskListToolbar = props => {
     currentOrganization?.themeSettings?.find(
       ({ name }) => name === 'icon.active.color',
     ) || {};
+  const viewOnlyArchivedTasksEnabledItem =
+    currentOrganization?.themeSettings?.find(
+      ({ name }) => name === 'role.viewOnly.patient.view.archivedTasks.enabled',
+    ) || {};
+  const viewOnlyCustomizeEnabledItem =
+    currentOrganization?.themeSettings?.find(
+      ({ name }) => name === 'role.viewOnly.patient.view.customize.enabled',
+    ) || {};
+  const viewOnlyArchivedTasksEnabled =
+    isUserViewOnly(currentUser) &&
+    viewOnlyArchivedTasksEnabledItem?.value === 'false'
+      ? // eslint-disable-next-line no-unneeded-ternary
+        false
+      : true;
+  const viewOnlyCustomizeEnabled =
+    isUserViewOnly(currentUser) &&
+    viewOnlyCustomizeEnabledItem?.value === 'false'
+      ? // eslint-disable-next-line no-unneeded-ternary
+        false
+      : true;
 
   const handleListChange = event => {
     history.push(
@@ -185,21 +208,29 @@ const TaskListToolbar = props => {
           />
         )}
       </ListsTabsContainer>
-      <Spacing horizontal={4} />
-      <TaskStatusToolbarSelect
-        value={tasksStatus}
-        onChange={handleChangeTasksStatus}
-        iconColorFilterActive={iconColorFilterActiveItem?.value}
-        iconColorActive={iconColorActiveItem?.value}
-      />
-      <Spacing horizontal={4} />
-      <CustomizeToolbarButton
-        showCustomColumnCreate={false}
-        additionalOptions={OPTIONS}
-        iconColorFilterActive={iconColorFilterActiveItem?.value}
-      />
-      <Spacing horizontal={4} />
-      <ToolbarButton onClick={onPrintClick}>Print</ToolbarButton>
+      {viewOnlyArchivedTasksEnabled && (
+        <>
+          <Spacing horizontal={4} />
+          <TaskStatusToolbarSelect
+            value={tasksStatus}
+            onChange={handleChangeTasksStatus}
+            iconColorFilterActive={iconColorFilterActiveItem?.value}
+            iconColorActive={iconColorActiveItem?.value}
+          />
+        </>
+      )}
+      {viewOnlyCustomizeEnabled && (
+        <>
+          <Spacing horizontal={4} />
+          <CustomizeToolbarButton
+            showCustomColumnCreate={false}
+            additionalOptions={OPTIONS}
+            iconColorFilterActive={iconColorFilterActiveItem?.value}
+          />
+          <Spacing horizontal={4} />
+          <ToolbarButton onClick={onPrintClick}>Print</ToolbarButton>
+        </>
+      )}
     </ListsToolbarContainer>
   );
 };
