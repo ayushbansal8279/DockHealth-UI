@@ -71,18 +71,16 @@ export const USER_TYPES = new Proxy(
 
 export const getUserTypeLabel = ({
   userStatus,
-  eulaAcknowledged,
+  // eulaAcknowledged,
   orgUserRole,
 }) => {
   let userType = null;
   if (['CANCELLED', 'INACTIVE', 'PENDING'].includes(userStatus)) {
     userType = USER_STATUS_TYPES[userStatus];
   } else {
-    const derivedOrgUserRole =
-      ['ACTIVE', 'INACTIVE'].includes(userStatus) && eulaAcknowledged
-        ? orgUserRole
-        : '';
-
+    const derivedOrgUserRole = ['ACTIVE', 'INACTIVE'].includes(userStatus)
+      ? orgUserRole
+      : '';
     userType = USER_TYPES[derivedOrgUserRole];
   }
 
