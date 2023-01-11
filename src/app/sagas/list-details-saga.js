@@ -39,6 +39,7 @@ import * as ActionTypes from 'actions/action-types';
 import { storeAsCurrentTask } from 'actions/task-actions';
 import { selectedFiltersInMegaFilterSelector } from 'selectors/mega-filter-selectors';
 import { taskIsSelectedSelector } from 'selectors/task-drawer-selectors';
+import { selectedUserOrganizationSelector } from 'selectors/user-selectors';
 import {
   listDetailsGroupsSelector,
   groupTasksSelector,
@@ -145,6 +146,16 @@ function* getCurrentListTasks() {
     const sort = yield select(taskDetailsSortSelector);
     const searchTerm = yield select(searchTermSelector);
     const status = yield select(currentTaskListTasksStatusSelector);
+
+    const currentOrganization = yield select(selectedUserOrganizationSelector);
+    const listTasksDefaultSortOrderItem =
+      currentOrganization?.themeSettings?.find(
+        ({ name }) => name === 'list.tasks.default.sort',
+      ) || {};
+    if (!sort.key && listTasksDefaultSortOrderItem) {
+      sort.key = 'CREATED_DT';
+      sort.order = listTasksDefaultSortOrderItem?.value;
+    }
 
     if (searchTerm) {
       const groupedTasks = yield call(
