@@ -49,7 +49,7 @@ const DASHBOARD_BASE_COLUMNS_CONFIG = {
   [TaskItemColumn.LIST_NAME]: true,
 };
 
-const { ADMIN, OWNER, MEMBER, GUEST, EXTERNAL } = UserOrganizationRole;
+const { ADMIN, OWNER, MEMBER, GUEST } = UserOrganizationRole;
 
 const DashboardToolbar = ({ iconColorFilterActive, iconColorActive }) => {
   const history = useHistory();

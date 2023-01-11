@@ -1,4 +1,3 @@
-/* eslint-disable import/prefer-default-export */
 export const hasAccessToElement = (userRole, allowedToRoles) => {
   if (!allowedToRoles) return true;
   if (!userRole) return null;

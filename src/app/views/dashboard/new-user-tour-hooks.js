@@ -1,4 +1,3 @@
-/* eslint-disable react-hooks/rules-of-hooks */
 import React, { useState, useEffect, useRef } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
@@ -22,7 +21,7 @@ export const DASHBOARD_FIRST_TIME_KEY = 'STORAGE_DASHBOARD_FIRST_TIME';
 export const STORAGE_DASHBOARD_TOUR_INBOX_KEY =
   'STORAGE_DASHBOARD_TOUR_INBOX_KEY';
 
-const newUserTourHooks = ({
+const useNewUserTourHooks = ({
   firstCreatedUserListIdentifier,
   setFirstCreatedUserListIdentifier,
   isNewUser,
@@ -174,4 +173,4 @@ const newUserTourHooks = ({
   };
 };
 
-export default newUserTourHooks;
+export default useNewUserTourHooks;

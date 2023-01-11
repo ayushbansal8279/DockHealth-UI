@@ -40,7 +40,6 @@ const UserCustomFieldsView = () => {
   const [isFetching, setIsFetching] = useState(true);
   const { columns, setColumnsToState } = useTaskListColumnsConfig();
   const sensors = useSensors(useSensor(MouseSensor), useSensor(TouchSensor));
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
 
   const fetchUserCustomFields = () => {
     CustomFieldsApi.getAllProviderCustomFields()

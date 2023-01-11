@@ -1,6 +1,3 @@
-/* eslint-disable import/prefer-default-export */
-/* eslint-disable react-hooks/exhaustive-deps */
-/* eslint-disable func-names */
 import React, { useEffect } from 'react';
 import { useRouteMatch, useHistory } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
@@ -22,23 +19,24 @@ export const RouteWrapper = ({
   const { url } = match;
 
   useEffect(() => {
-    (async function() {
+    (async () => {
       await dispatch(setLocationAndParameters(match));
     })();
 
     if (onEnter) {
-      (async function() {
+      (async () => {
         await onEnter({ dispatch, history, match });
       })();
     }
 
     return () => {
-      (async function() {
+      (async () => {
         if (onLeave) {
           await onLeave({ dispatch });
         }
       })();
     };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [url]);
 
   return (

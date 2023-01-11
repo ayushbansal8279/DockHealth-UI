@@ -1,4 +1,3 @@
-/* eslint-disable react-hooks/rules-of-hooks */
 import { useState, useCallback, useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { useHistory, useParams } from 'react-router-dom';
@@ -27,7 +26,7 @@ export const getMemoPatientAttachment = memoizeWith(
       : Promise.reject(),
 );
 
-const initializeAttachmentsSectionHooks = () => {
+const useInitializeAttachmentsSectionHooks = () => {
   const { folderIdentifier } = useParams();
   const dispatch = useDispatch();
   const history = useHistory();
@@ -317,4 +316,4 @@ const initializeAttachmentsSectionHooks = () => {
   };
 };
 
-export default initializeAttachmentsSectionHooks;
+export default useInitializeAttachmentsSectionHooks;

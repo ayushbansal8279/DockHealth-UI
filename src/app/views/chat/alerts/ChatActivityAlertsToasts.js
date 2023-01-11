@@ -1,6 +1,3 @@
-/* eslint-disable react-hooks/rules-of-hooks */
-/* eslint-disable react-hooks/exhaustive-deps */
-/* eslint-disable func-names */
 import React, { useState, useEffect, useCallback } from 'react';
 import isEmpty from 'ramda/src/isEmpty';
 import { ActivityAlertsToastsContainer } from 'components/activity-alerts/styled';
@@ -43,13 +40,16 @@ const ChatActivityAlertsToasts = () => {
     [sdkInstance],
   );
 
-  // eslint-disable-next-line no-shadow
-  const onMessageRecieved = useCallback((channel, message) => {
-    setMessage(message);
-    setChannel(channel);
-    setNewAlert({ message, channel });
-    audio.play();
-  });
+  const onMessageRecieved = useCallback(
+    // eslint-disable-next-line no-shadow
+    (channel, message) => {
+      setMessage(message);
+      setChannel(channel);
+      setNewAlert({ message, channel });
+      audio.play();
+    },
+    [audio],
+  );
 
   useEffect(() => {
     let handlerId;
@@ -62,6 +62,7 @@ const ChatActivityAlertsToasts = () => {
     return () => {
       removeGroupChannelEventHandler(handlerId);
     };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [sdkInstance]);
 
   useEffect(() => {
@@ -69,12 +70,14 @@ const ChatActivityAlertsToasts = () => {
       setAlertsList([...alertsList, newAlert]);
       setNewAlert({});
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [newAlert]);
 
   useEffect(() => {
     if (lastElement + 1 === alertsList?.length) {
       setAlertsList([]);
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [lastElement]);
 
   return (

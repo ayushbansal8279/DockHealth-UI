@@ -23,7 +23,6 @@ const checkIfWorkflowMatch = (searchValue, workflowStatus) => {
   return false;
 };
 
-// eslint-disable-next-line sonarjs/cognitive-complexity
 export const checkIfTaskMatchesSearch = (task, searchValue) => {
   const { workflowStatus, assignedTo } = task;
 

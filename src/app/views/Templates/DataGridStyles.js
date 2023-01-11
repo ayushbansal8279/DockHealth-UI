@@ -1,5 +1,3 @@
-/* eslint-disable import/prefer-default-export */
-/* eslint-disable unicorn/filename-case */
 import styled from 'styled-components';
 import { DataGrid } from '@material-ui/data-grid';
 import { fontWeights, fontSizes } from 'styles/font';

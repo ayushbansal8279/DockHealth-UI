@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/camelcase */
 import { Grid, Popover } from '@material-ui/core';
 import React, { useCallback, useState } from 'react';
 import { FormProvider, useForm } from 'react-hook-form';

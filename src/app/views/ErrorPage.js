@@ -7,7 +7,7 @@ const ErrorPage = () => (
         <div id="errorPage">
           <h2 className="title">Oops!</h2>
           <h4 className="subtitle">
-            {"Looks like you haven't been invited to join Dock."}
+            Looks like you haven&apos;t been invited to join Dock.
             <br />
             Contact an admin to join the fun!
           </h4>

@@ -1,4 +1,3 @@
-/* eslint-disable unicorn/no-nested-ternary */
 import React from 'react';
 import Spacing from 'components/common/Spacing.tsx';
 import Button from 'components/common/Button/Button';

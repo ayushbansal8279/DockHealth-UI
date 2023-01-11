@@ -1,8 +1,6 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
 import styled from 'styled-components';
 import { fontWeights, fontSizes } from 'styles/font';
 import palette from 'styles/palette';
-import spacing from 'styles/spacing';
 import Drawer from '@material-ui/core/Drawer';
 
 export const MoreActionsWrapper = styled.div`

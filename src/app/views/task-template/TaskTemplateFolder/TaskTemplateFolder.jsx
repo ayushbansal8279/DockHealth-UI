@@ -15,14 +15,12 @@ import * as TaskTemplateActions from 'actions/task-template-actions';
 import * as ModalActions from 'modal/actions';
 import OptionsMenu from 'components/common/OptionsMenu/OptionsMenu';
 import Folder from 'img/folder';
-import { Box } from '@material-ui/core';
 import {
   TaskTemplateContainer,
   TaskTemplateHeader,
   NameInput,
   HeaderChildrenContainer,
   FolderIcon,
-  MenuContainer,
   FolderIconContainer,
 } from './styled';
 

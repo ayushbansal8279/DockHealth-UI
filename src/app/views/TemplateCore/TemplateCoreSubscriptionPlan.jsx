@@ -1,4 +1,3 @@
-/* eslint-disable func-names */
 import React, { useState, useEffect } from 'react';
 import { useDispatch } from 'react-redux';
 import { Switch, useRouteMatch, useHistory, Redirect } from 'react-router-dom';
@@ -21,7 +20,7 @@ const TemplateCoreSubscriptionPlan = ({
   const [isLoaded, setIsLoaded] = useState(false);
 
   useEffect(() => {
-    (async function() {
+    (async () => {
       setIsLoading(true);
       // eslint-disable-next-line prefer-const
       let { redirectPath, user } = await checkUserAuthentication({
@@ -48,7 +47,7 @@ const TemplateCoreSubscriptionPlan = ({
     })();
 
     return () => {
-      (async function() {
+      (async () => {
         if (onLeave) {
           await onLeave({ dispatch });
         }

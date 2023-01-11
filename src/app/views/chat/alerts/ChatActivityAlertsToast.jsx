@@ -1,5 +1,3 @@
-/* eslint-disable react-hooks/exhaustive-deps */
-/* eslint-disable func-names */
 import React, { useState, useEffect } from 'react';
 import { ActivityAlertsToastContainer } from 'components/activity-alerts/ActivityAlertsToast/styled';
 import ChatActivityAlertsItem from './ChatActivityAlertsItem';
@@ -18,7 +16,7 @@ const ChatActivityAlertsToast = ({
 
   useEffect(() => {
     if (isCleared) {
-      setTimeout(function() {
+      setTimeout(() => {
         setShouldRender(false);
         onClear(itemAlert);
         // onClear(itemAlert?.activityAlertIdentifier);
@@ -26,10 +24,11 @@ const ChatActivityAlertsToast = ({
     }
 
     if (shouldRender) {
-      setTimeout(function() {
+      setTimeout(() => {
         setIsCleared(true);
       }, 5000);
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isCleared, shouldRender]);
 
   const topSpacing =

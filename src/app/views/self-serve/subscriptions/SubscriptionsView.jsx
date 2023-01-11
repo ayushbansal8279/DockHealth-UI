@@ -28,7 +28,6 @@ import {
 import { getUserByEmail } from 'api/user-auth-api';
 import CurrentPlan from './CurrentPlan/CurrentPlan';
 import SubscriptionPlanTail from './SubscriptionPlanTail/SubscriptionPlanTail';
-import ProfessionalServicesTail from './ProfessionalServicesTail/ProfessionalServicesTail';
 import {
   SubscriptionsViewContainer,
   SubscriptionsViewOuterContainer,
@@ -37,7 +36,6 @@ import {
   SwitchContainer,
   Switch,
   SwitchLabel,
-  ProfessionalServicesTitle,
   Title,
   TitleDescription,
   SubTitleDescription,

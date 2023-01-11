@@ -1,4 +1,3 @@
-/* eslint-disable import/prefer-default-export */
 import isEmpty from 'ramda/src/isEmpty';
 import { TaskItemType } from './task-helpers';
 

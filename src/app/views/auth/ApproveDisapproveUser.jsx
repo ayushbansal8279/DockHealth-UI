@@ -1,4 +1,3 @@
-/* eslint-disable unicorn/catch-error-name */
 import React, { useEffect, useState } from 'react';
 import { useDispatch } from 'react-redux';
 import styled from 'styled-components';
@@ -66,12 +65,12 @@ const ApproveDisapproveUser = ({ match }) => {
 
         setPageContent(successPageContent);
       })
-      .catch(({ response }) => {
+      .catch(error => {
         const errorPageContent = getPageContent('ERROR');
 
         setPageContent({
           ...errorPageContent,
-          title: response?.data?.errorMessage,
+          title: error?.response?.data?.errorMessage,
         });
       });
     // eslint-disable-next-line react-hooks/exhaustive-deps

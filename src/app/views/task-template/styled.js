@@ -3,7 +3,6 @@ import spacing from 'styles/spacing';
 import palette from 'styles/palette';
 import { fontSizes } from 'styles/font';
 
-// eslint-disable-next-line import/prefer-default-export
 export const TaskTemplateViewContainer = styled.div`
   text-align: right;
   padding: ${spacing.giga} 42px;

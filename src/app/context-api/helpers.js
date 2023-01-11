@@ -2,7 +2,6 @@ import { CUSTOM_FIELD_TYPES } from 'helpers/custom-fields-helpers';
 import { CustomFieldWidthConfig } from 'helpers/field-type-helpers';
 import { TaskItemColumnWidth } from 'helpers/task-helpers';
 
-/* eslint-disable import/prefer-default-export */
 export const translateInitialColumnsConfig = config =>
   Object.entries(config)
     .filter(([, value]) => value)

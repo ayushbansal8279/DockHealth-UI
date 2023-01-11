@@ -1,4 +1,3 @@
-/* eslint-disable react-hooks/rules-of-hooks */
 import { useSelector, useDispatch } from 'react-redux';
 import prop from 'ramda/src/prop';
 import {
@@ -51,7 +50,7 @@ const labelAddOrRemovePromise = ({
   return Promise.resolve();
 };
 
-const initializeLabelsSectionHooks = () => {
+const useInitializeLabelsSectionHooks = () => {
   const dispatch = useDispatch();
   const patient = useSelector(patientSelector);
   const isFetchingLabels = useSelector(isFetchingPatientLabelsSelector);
@@ -184,4 +183,4 @@ const initializeLabelsSectionHooks = () => {
   };
 };
 
-export default initializeLabelsSectionHooks;
+export default useInitializeLabelsSectionHooks;

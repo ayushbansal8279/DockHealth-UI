@@ -1,4 +1,3 @@
-/* eslint-disable sonarjs/no-identical-functions */
 /* eslint-disable sonarjs/cognitive-complexity */
 import React, { useState, useCallback, useMemo, useContext } from 'react';
 import { useDispatch, useSelector } from 'react-redux';

@@ -1,4 +1,3 @@
-/* eslint-disable react-hooks/rules-of-hooks */
 import { useEffect, useMemo, useState } from 'react';
 import sessionStorageHelper from 'helpers/session-storage-helper';
 import { ViewType } from 'components/tasklist/ViewTypeSwitch/ViewTypeSwitch';
@@ -6,7 +5,7 @@ import { ViewType } from 'components/tasklist/ViewTypeSwitch/ViewTypeSwitch';
 const DEFAULT_IS_OPEN_STATE = false;
 const DEFAULT_VIEW_TYPE = ViewType.SLIM_VIEW;
 
-const listSectionSavedState = ({ sessionStorageKey }) => {
+const useListSectionSavedState = ({ sessionStorageKey }) => {
   const storageState = useMemo(
     () => sessionStorageHelper.getItem(sessionStorageKey),
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -37,4 +36,4 @@ const listSectionSavedState = ({ sessionStorageKey }) => {
   };
 };
 
-export default listSectionSavedState;
+export default useListSectionSavedState;

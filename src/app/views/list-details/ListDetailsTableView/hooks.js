@@ -1,5 +1,4 @@
 /* eslint-disable unicorn/prevent-abbreviations */
-/* eslint-disable react-hooks/rules-of-hooks */
 import { useEffect, useCallback, useState, useMemo, useRef } from 'react';
 import { useHistory, useParams } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
@@ -43,7 +42,7 @@ import * as UserAuthApi from 'api/user-auth-api';
 
 const LIST_DETAILS_FIRST_TIME_KEY = 'LIST_DETAILS_FIRST_TIME_KEY';
 
-const initializeListDetailsViewHooks = () => {
+const useInitializeListDetailsViewHooks = () => {
   const history = useHistory();
   const params = useParams();
   const sort = useSelector(taskDetailsSortSelector);
@@ -532,4 +531,4 @@ const initializeListDetailsViewHooks = () => {
   };
 };
 
-export default initializeListDetailsViewHooks;
+export default useInitializeListDetailsViewHooks;

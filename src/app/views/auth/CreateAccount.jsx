@@ -1,5 +1,3 @@
-/* eslint-disable @typescript-eslint/camelcase */
-/* eslint-disable @typescript-eslint/no-explicit-any */
 import { Grid, Typography } from '@material-ui/core';
 import queryString from 'query-string';
 import React, { useState } from 'react';
