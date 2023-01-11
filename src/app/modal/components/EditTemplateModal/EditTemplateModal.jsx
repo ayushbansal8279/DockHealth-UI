@@ -189,7 +189,7 @@ const EditTemplateModal = ({ closeModal, template, onAdded, onUpdated }) => {
               </Box>
             </FormScrollingContainer>
             <Box m={2} />
-            <Grid container justify="flex-end">
+            <Grid container justifyContent="flex-end">
               <Button width="auto" variant="secondary" onClick={closeModal}>
                 Cancel
               </Button>

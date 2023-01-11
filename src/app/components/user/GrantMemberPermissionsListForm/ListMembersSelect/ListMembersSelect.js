@@ -222,7 +222,7 @@ const ListMembersSelect = ({
           {searchInputValue && (
             <AvailablePeopleWrapper fullWidth={!showMainInviteButton}>
               {isLoadingAvailablePeople ? (
-                <Grid container justify="center">
+                <Grid container justifyContent="center">
                   <Loader />
                 </Grid>
               ) : (

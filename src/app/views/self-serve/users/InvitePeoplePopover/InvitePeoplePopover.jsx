@@ -100,7 +100,7 @@ const InvitePeoplePopover = ({
     >
       <InvitePeoplePopoverContainer>
         <InvitePeoplePopoverSection>
-          <Grid container justify="space-between" alignItems="center">
+          <Grid container justifyContent="space-between" alignItems="center">
             <InvitePopoverHeader>Invite User</InvitePopoverHeader>
             <InvitePopoverCloseButton onClick={closePopover} type="button">
               &times;

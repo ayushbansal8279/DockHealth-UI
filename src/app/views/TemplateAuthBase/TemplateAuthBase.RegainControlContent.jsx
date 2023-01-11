@@ -24,7 +24,7 @@ const TemplateAuthBaseRegainControlContent = () => {
     <StyledGrid
       container
       direction="column"
-      justify="center"
+      justifyContent="center"
       alignItems="flex-start"
     >
       <a href="/#/core/home/my-tasks">

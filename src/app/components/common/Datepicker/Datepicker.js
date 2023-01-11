@@ -85,7 +85,7 @@ const Datepicker = ({
   return (
     <>
       <CalendarContainer>
-        <Grid container justify="space-between" alignItems="center">
+        <Grid container justifyContent="space-between" alignItems="center">
           <IconButton
             size="small"
             color="inherit"

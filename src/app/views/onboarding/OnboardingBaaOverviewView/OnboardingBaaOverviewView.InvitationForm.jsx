@@ -85,7 +85,7 @@ const InvitationForm = ({ hideInvitationForm }) => {
       autoCorrect="off"
     >
       <FormProvider {...formMethods}>
-        <Grid container alignItems="center" justify="space-between">
+        <Grid container alignItems="center" justifyContent="space-between">
           <MontserratTypography variant="h3">
             Invite the authorized signer of your organization
           </MontserratTypography>

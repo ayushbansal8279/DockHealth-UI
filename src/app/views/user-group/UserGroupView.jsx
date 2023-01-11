@@ -86,7 +86,7 @@ function UserGroupView() {
 
   return (
     <ViewLayout header={<BasicLayoutHeader title={name} />}>
-      <Grid container justify="center">
+      <Grid container justifyContent="center">
         <PageContentHeader>
           <Grid container wrap="nowrap">
             <Grid
@@ -96,7 +96,7 @@ function UserGroupView() {
               xl={6}
               md={5}
               lg={4}
-              justify="flex-start"
+              justifyContent="flex-start"
             >
               <SearchInputWrapper fullWidth={isSearchFocused || searchTerm}>
                 <SearchInput
@@ -109,7 +109,7 @@ function UserGroupView() {
             </Grid>
           </Grid>
         </PageContentHeader>
-        <Grid container xs={12} item justify="center">
+        <Grid container xs={12} item justifyContent="center">
           <Grid item xs={12} sm={12} md={8}>
             <Spacing vertical={4} />
             {isOrganizationAdmin && (

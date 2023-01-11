@@ -104,7 +104,7 @@ const EditPatientListModal = ({ closeModal, patientsList }) => {
         }
       >
         <FormProvider {...formMethods}>
-          <Grid container direction="column" justify="space-between">
+          <Grid container direction="column" justifyContent="space-between">
             <Grid item>
               <Header>
                 <Title>
@@ -129,7 +129,7 @@ const EditPatientListModal = ({ closeModal, patientsList }) => {
               />
               <Spacing vertical={4} />
             </Grid>
-            <Grid container direction="row" justify="center">
+            <Grid container direction="row" justifyContent="center">
               <ButtonWrapper>
                 <Button
                   fullWidth

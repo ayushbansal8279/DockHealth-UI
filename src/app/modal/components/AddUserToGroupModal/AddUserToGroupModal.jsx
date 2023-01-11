@@ -231,7 +231,7 @@ const AddUserToGroupModal = ({ closeModal, userGroupIdentifier }) => {
         </PatientsSection>
       </MainContentWrapper>
       <Spacing vertical={4} />
-      <Grid container direction="row" justify="flex-end">
+      <Grid container direction="row" justifyContent="flex-end">
         <Button
           variant="secondary"
           width="150px"

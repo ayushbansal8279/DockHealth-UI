@@ -359,7 +359,7 @@ const UsersTable = ({
       ) : (
         <>
           {showTableHeader && (
-            <Grid container justify="space-between" alignItems="center">
+            <Grid container justifyContent="space-between" alignItems="center">
               <Grid item sm={12} md={3}>
                 <SubscriptionStatusSwitcher
                   isSmallScreen={isSmallScreen}
@@ -373,7 +373,7 @@ const UsersTable = ({
                 md={9}
                 container
                 alignItems="center"
-                justify="flex-end"
+                justifyContent="flex-end"
                 wrap="nowrap"
               >
                 <Search

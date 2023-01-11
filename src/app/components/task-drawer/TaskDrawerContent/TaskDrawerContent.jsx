@@ -163,7 +163,7 @@ const TaskDrawerContent = props => {
           item
           xs={12}
           alignItems="center"
-          justify="space-between"
+          justifyContent="space-between"
           style={styleFirstRow(isMobile)}
         >
           <TopSection

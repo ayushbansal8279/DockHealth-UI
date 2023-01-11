@@ -300,7 +300,9 @@ const OnboardingTeamSetupView = () => {
                       container
                       item
                       xs={1}
-                      justify={fieldState.loading ? 'center' : 'flex-start'}
+                      justifyContent={
+                        fieldState.loading ? 'center' : 'flex-start'
+                      }
                       style={{ alignSelf: 'center' }}
                     >
                       {fieldState.loading ? (

@@ -2,7 +2,7 @@ import React from 'react';
 import { useForm, FormProvider } from 'react-hook-form';
 import { useDispatch } from 'react-redux';
 import { object, string, ref } from 'yup';
-import { yupResolver } from "@hookform/resolvers/yup";
+import { yupResolver } from '@hookform/resolvers/yup';
 import { Grid } from '@material-ui/core';
 import LockIcon from 'img/modals/lock';
 import * as UserAuthApi from 'api/user-auth-api';
@@ -102,7 +102,7 @@ const ChangePasswordModal = ({ closeModal }) => {
             name="confirmPassword"
           />
           <Spacing vertical={5} />
-          <Grid container justify="flex-end">
+          <Grid container justifyContent="flex-end">
             <Grid item xs={7}>
               <Button fullWidth type="submit">
                 Change password

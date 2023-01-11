@@ -221,11 +221,11 @@ const OnboardingBaaSigning = ({ mainDisplayOption }) => {
         <InvitationForm hideInvitationForm={hideInvitationForm} />
       ) : (
         <>
-          <Grid container justify={panelDetails.justify}>
+          <Grid container justifyContent={panelDetails.justify}>
             {panelDetails.topElement}
           </Grid>
           <Spacing vertical={4} />
-          <Grid container justify={panelDetails.justify}>
+          <Grid container justifyContent={panelDetails.justify}>
             {panelDetails.bottomElement}
           </Grid>
         </>

@@ -145,7 +145,7 @@ const DashboardToolbar = ({ iconColorFilterActive, iconColorActive }) => {
   );
 
   return (
-    <ToolbarContainer container direction="row" justify="space-between">
+    <ToolbarContainer container direction="row" justifyContent="space-between">
       <Grid item md={4}>
         <DashboardTabsContainer>
           <AccessRestrictor allowedToRoles={[ADMIN, OWNER, MEMBER, GUEST]}>

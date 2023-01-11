@@ -268,7 +268,7 @@ const TaskTemplateView = () => {
                   />
                 )}
               </SearchWrapper>
-              <Grid container justify="flex-end" alignItems="center">
+              <Grid container justifyContent="flex-end" alignItems="center">
                 <AddButton onClick={handleCreateTemplate}>
                   Add Workflow
                 </AddButton>

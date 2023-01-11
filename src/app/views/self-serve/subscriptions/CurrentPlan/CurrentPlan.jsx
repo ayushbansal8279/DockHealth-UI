@@ -62,7 +62,7 @@ const CurrentPlan = ({ currentSubscriptionPlan }) => {
           </ThemeProvider>
         )}
       </Grid>
-      <Grid container direction="column" justify="flex-end">
+      <Grid container direction="column" justifyContent="flex-end">
         {!isPlanFree(subscriptionDetails) && (
           <ThemeProvider theme={themeMontserratNormal}>
             <Typography variant="h6">

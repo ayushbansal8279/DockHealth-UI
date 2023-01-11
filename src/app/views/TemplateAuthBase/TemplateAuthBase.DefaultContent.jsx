@@ -23,7 +23,7 @@ const TemplateAuthBaseDefaultContent = () => {
   return (
     <StyledGrid
       container
-      justify="center"
+      justifyContent="center"
       alignItems="flex-start"
       direction="column"
     >

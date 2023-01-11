@@ -140,7 +140,7 @@ const OrganizationSubmenu = ({
 
   return (
     <>
-      <Grid container justify="space-between" alignItems="center">
+      <Grid container justifyContent="space-between" alignItems="center">
         <MyOrganizationLabel>
           {currentOrganization?.organizationName}
         </MyOrganizationLabel>
@@ -150,7 +150,7 @@ const OrganizationSubmenu = ({
       </Grid>
       {!whiteLabelEnabled && (
         <>
-          <Grid container justify="space-between" alignItems="center">
+          <Grid container justifyContent="space-between" alignItems="center">
             <SubmenuHeader>My Organizations </SubmenuHeader>
             <AddButton
               onClick={() => history.push('/onboarding/new-organization')}

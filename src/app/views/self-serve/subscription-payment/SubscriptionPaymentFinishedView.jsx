@@ -38,7 +38,7 @@ const SubscriptionPaymentFinishedView = () => {
           <Grid item sm={12}>
             <H2>Your purchase is complete</H2>
           </Grid>
-          <Grid item sm={12} container justify="flex-end">
+          <Grid item sm={12} container justifyContent="flex-end">
             <Box m={2} />
             <Grid item sm={12} container>
               <Button

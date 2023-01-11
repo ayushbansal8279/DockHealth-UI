@@ -98,7 +98,7 @@ const ChangePhoneNumberForm = () => {
         <Grid
           container
           direction={isSmallScreen ? 'column' : 'row'}
-          justify="space-between"
+          justifyContent="space-between"
           wrap="nowrap"
         >
           <Button onClick={hideDialog}>

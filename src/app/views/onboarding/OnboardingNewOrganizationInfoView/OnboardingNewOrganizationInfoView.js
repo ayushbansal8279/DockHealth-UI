@@ -24,7 +24,7 @@ const OnboardingNewOrganizationInfoView = () => {
         access to the people, patients and tasks on that list.
       </Description>
       <Spacing vertical={7} />
-      <Grid container justify="flex-end">
+      <Grid container justifyContent="flex-end">
         <Box flex="1">
           <Button onClick={history.goBack} variant="text" fullWidth>
             Cancel

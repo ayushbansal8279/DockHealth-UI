@@ -46,7 +46,7 @@ const GlobalSearchHeader = ({
     <TopSectionGrid
       container
       direction="row"
-      justify="flex-start"
+      justifyContent="flex-start"
       alignItems="center"
     >
       <InputWrapper>

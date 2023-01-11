@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { Grid } from '@material-ui/core';
 import { FormProvider, useForm } from 'react-hook-form';
 import { object, string } from 'yup';
-import { yupResolver } from "@hookform/resolvers/yup";
+import { yupResolver } from '@hookform/resolvers/yup';
 import Spacing from 'components/common/Spacing';
 import UserDetailsStep from './UserDetailsStep';
 import UserRoleStep from './UserRoleStep';
@@ -77,7 +77,7 @@ const OrganizationOwnerForm = ({
             disabled={disabled}
           />
         )}
-        <Grid container direction="row" justify="center">
+        <Grid container direction="row" justifyContent="center">
           {Object.values(FormStep).map(value => (
             <Step
               key={value}

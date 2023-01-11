@@ -14,7 +14,12 @@ const hubStyles = {
 
 const TemplateAuthBaseApproveDisapproveContent = () => {
   return (
-    <Grid container direction="column" justify="center" alignItems="flex-start">
+    <Grid
+      container
+      direction="column"
+      justifyContent="center"
+      alignItems="flex-start"
+    >
       <img src={DailyHubImage} style={hubStyles} alt="Dock Health daily hub" />
       <Spacing vertical={5} />
       <RobotoTypography variant="h3" weight="bold">

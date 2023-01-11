@@ -96,7 +96,7 @@ const OnboardingEulaView = () => {
           </Grid>
         )}
         <Spacing vertical={isSmallScreen ? 4 : 6} />
-        <Grid item sm={12} container justify="flex-end">
+        <Grid item sm={12} container justifyContent="flex-end">
           <Grid item xs={12} sm={12} md={4}>
             <Button
               disabled={continueButtonDisabled}
