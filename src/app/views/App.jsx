@@ -236,7 +236,23 @@ class App extends PureComponent {
       userState: { userProfile },
     } = this.props;
 
-    const systemTimeout = parseInt(process.env.SYSTEM_TIMEOUT, 10);
+    const userOrganizations = userProfile?.userOrganizations;
+    const selectedOrgIdentifier = userProfile?.organizationIdentifier;
+    const currentOrganization =
+      userOrganizations?.find(
+        ({ organizationIdentifier }) =>
+          organizationIdentifier === selectedOrgIdentifier,
+      ) || null;
+    const logoutTimeoutItem =
+      currentOrganization?.themeSettings?.find(
+        ({ name }) => name === 'logout.timeout',
+      ) || {};
+    const logoutTimeout = parseInt(logoutTimeoutItem?.value, 10);
+
+    const systemTimeout =
+      logoutTimeout > 0
+        ? logoutTimeout
+        : parseInt(process.env.SYSTEM_TIMEOUT, 10);
     const idleTimeout = systemTimeout / 2;
 
     const { children } = this.props;
@@ -249,7 +265,11 @@ class App extends PureComponent {
     //   );
     const showRotateScreenPage = false;
 
-    const mountIdleTimer = userProfile && !isEmpty(userProfile);
+    const mountIdleTimer =
+      userProfile &&
+      !isEmpty(userProfile) &&
+      userOrganizations &&
+      !isEmpty(userOrganizations);
     // eslint-disable-next-line unicorn/consistent-function-scoping
     const idleTimerReference = reference => {
       this.idleTimerForPresence = reference;
