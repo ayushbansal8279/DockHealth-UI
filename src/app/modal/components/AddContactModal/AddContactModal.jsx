@@ -84,6 +84,7 @@ function AddContactStep({
     } catch (error) {
       dispatch(showGlobalErrorAlert());
     } finally {
+      handleShow(false);
       setLoading(false);
     }
   };
