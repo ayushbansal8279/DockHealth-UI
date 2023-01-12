@@ -1,4 +1,3 @@
-/* eslint-disable import/prefer-default-export */
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import styled from 'styled-components';
 import { featurePalette } from 'styles/palette';

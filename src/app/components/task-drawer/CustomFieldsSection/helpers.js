@@ -1,4 +1,3 @@
-/* eslint-disable import/prefer-default-export */
 export function formatMetaDataOutput(outputData) {
   const metadata = outputData.taskMetaData;
   const filteredMetaDataKeys = Object.keys(metadata).filter(

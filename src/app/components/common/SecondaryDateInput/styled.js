@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
-/* eslint-disable import/prefer-default-export */
+
 import React from 'react';
 import styled from 'styled-components';
 import InputMask from 'react-input-mask';

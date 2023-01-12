@@ -1,4 +1,3 @@
-/* eslint-disable import/prefer-default-export */
 import { Skeleton } from '@material-ui/lab';
 import { withStyles } from '@material-ui/core/styles';
 

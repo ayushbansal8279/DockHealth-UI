@@ -1,4 +1,3 @@
-/* eslint-disable import/prefer-default-export */
 /* eslint-disable sonarjs/no-duplicate-string */
 import { string } from 'yup';
 

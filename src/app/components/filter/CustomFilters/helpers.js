@@ -1,4 +1,3 @@
-/* eslint-disable import/prefer-default-export */
 export const getUniqueQuickFilterLabelName = (
   list,
   prefix = 'Custom Filter',
