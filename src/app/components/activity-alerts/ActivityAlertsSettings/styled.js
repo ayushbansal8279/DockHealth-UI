@@ -29,7 +29,7 @@ export const ActivityAlertsSettingsItem = styled.div`
 `;
 
 export const ActivityAlertsSettingsItemsContainer = styled.div`
-  font-family: 'Roboto', sans-serif;
+  font-family: 'Roboto Condensed', sans-serif;
   margin-top: ${spacing.large};
   display: flex;
   flex-direction: column;

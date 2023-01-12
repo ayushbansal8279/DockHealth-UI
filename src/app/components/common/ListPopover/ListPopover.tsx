@@ -33,7 +33,7 @@ const useListItemClasses = makeStyles({
   root: {
     color: palette.coolGrey1,
     filter: 'brightness(1)',
-    fontFamily: '"Roboto", sans-serif',
+    fontFamily: '"Roboto Condensed", sans-serif',
     fontSize: '1rem',
     fontWeight: 500,
     margin: 0,

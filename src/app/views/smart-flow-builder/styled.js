@@ -102,7 +102,7 @@ export const BuilderHeaderText = styled.p`
   display: flex;
   align-items: center;
   margin-bottom: 0;
-  font-family: 'Roboto', sans-serif;
+  font-family: 'Roboto Condensed', sans-serif;
   font-size: ${fontSizes.large};
   color: ${({ color }) => color || palette.brightBlue};
 

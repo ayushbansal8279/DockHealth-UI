@@ -27,7 +27,7 @@ export const TaskTemplateHeader = styled.div`
   width: 100%;
   padding: 2px 0px 2px ${spacing.smallPlus};
   border: 1px solid ${palette.coolGrey3};
-  font-family: 'Roboto', sans-serif;
+  font-family: 'Roboto Condensed', sans-serif;
   font-size: ${fontSizes.smallPlus};
 `;
 

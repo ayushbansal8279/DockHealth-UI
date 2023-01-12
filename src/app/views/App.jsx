@@ -28,7 +28,7 @@ import MobileSmallScreen from './MobileSmallScreen';
 import ChatActivityAlertsToasts from './chat/alerts/ChatActivityAlertsToasts';
 
 const AppContainer = styled.div`
-  font-family: 'Roboto', sans-serif;
+  font-family: 'Roboto Condensed', sans-serif;
   overflow-x: hidden;
   position: relative;
   @media print {

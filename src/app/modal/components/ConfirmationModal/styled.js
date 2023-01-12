@@ -15,7 +15,7 @@ export const Description = styled.p`
   color: ${palette.mediumGrey};
   font-size: ${fontSizes.large};
   font-weight: ${fontWeights.regular};
-  font-family: 'Roboto', sans-serif;
+  font-family: 'Roboto Condensed', sans-serif;
 `;
 
 export const Image = styled.img`

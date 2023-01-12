@@ -48,7 +48,7 @@ export const FieldTypeImage = styled.img`
 export const FiledTypeDescription = styled.p`
   min-height: 72px;
   margin-bottom: 0;
-  font-family: 'Roboto', sans-serif;
+  font-family: 'Roboto Condensed', sans-serif;
   font-size: ${fontSizes.regular};
   font-weight: ${fontWeights.light};
   color: ${palette.coolGrey1};
@@ -56,7 +56,7 @@ export const FiledTypeDescription = styled.p`
 
 export const FiledTypeTitle = styled.p`
   margin-bottom: 8px;
-  font-family: 'Roboto', sans-serif;
+  font-family: 'Roboto Condensed', sans-serif;
   font-size: ${fontSizes.regular};
   font-weight: ${fontWeights.bold};
   color: ${palette.coolGrey1};

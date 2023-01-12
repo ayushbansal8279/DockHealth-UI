@@ -105,7 +105,7 @@ export const FormRow = styled.div`
 
 export const RowLabel = styled.label`
   color: ${palette.darkGrey};
-  font-family: 'Roboto', sans-serif;
+  font-family: 'Roboto Condensed', sans-serif;
   font-weight: ${fontWeights.bold};
 `;
 
