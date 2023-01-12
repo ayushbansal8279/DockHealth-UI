@@ -1,8 +1,8 @@
 import React, { useEffect, useMemo } from 'react';
+import ReactDOM from 'react-dom';
 import { useHistory } from 'react-router-dom';
 import { Grid } from '@material-ui/core';
 import * as WorkflowDrawerActions from 'actions/workflow-drawer-actions';
-import { AnimatePresence } from 'framer-motion/dist/framer-motion';
 import compose from 'ramda/src/compose';
 import { useDispatch, useSelector } from 'react-redux';
 import {
@@ -70,115 +70,102 @@ const WorkflowDrawer = () => {
     dispatch(WorkflowDrawerActions.closeDrawer());
   };
 
-  return (
-    <>
-      <AnimatePresence initial={false}>
-        {open && (
-          <AnimatedContainer
-            initial={{ translateX: '100%' }}
-            animate={{ translateX: 0 }}
-            exit={{ translateX: '100%' }}
-            transition={{ duration: 0.3, bounce: 0 }}
-          >
-            <WorkflowDrawerContainer key={selectedWorkflow?.identifier}>
-              <WorkflowDrawerHeader />
-              <SectionContainer>
-                <Grid container spacing={4}>
-                  <Grid item xs={12}>
-                    <NameSection readOnly={restrictions?.name === DISABLED} />
-                  </Grid>
-                  <Grid item xs={12}>
-                    <DescriptionSection
-                      readOnly={restrictions?.description === DISABLED}
-                    />
-                  </Grid>
-                  <Grid item xs={6}>
-                    <PatientSection
-                      disabled={
-                        !!isTemplateTask || restrictions?.patient === DISABLED
-                      }
-                    />
-                  </Grid>
-                  <Grid item xs={6}>
-                    <AssignedToSection
-                      disabled={restrictions?.assignedTo === DISABLED}
-                    />
-                  </Grid>
-                  <Grid item xs={6}>
-                    <StartDateSection
-                      disabled={
-                        !!isTemplateTask || restrictions?.startDate === DISABLED
-                      }
-                    />
-                  </Grid>
-                  <Grid item xs={6}>
-                    <AnchorDateSection
-                      disabled={
-                        !!isTemplateTask ||
-                        restrictions?.anchorDate === DISABLED
-                      }
-                    />
-                  </Grid>
-                  <Grid item xs={6}>
-                    <DueDateSection
-                      disabled={
-                        !!isTemplateTask || restrictions?.dueDate === DISABLED
-                      }
-                    />
-                  </Grid>
-                  <Grid item xs={6}>
-                    <ReminderSection
-                      disabled={
-                        !!isTemplateTask || restrictions?.reminder === DISABLED
-                      }
-                    />
-                  </Grid>
-                  <Grid item xs={6}>
-                    <PrioritySection
-                      disabled={restrictions?.priority === DISABLED}
-                    />
-                  </Grid>
-                  <Grid item xs={6}>
-                    <StatusSection
-                      disabled={restrictions?.status === DISABLED}
-                    />
-                  </Grid>
-                  <Grid item xs={12}>
-                    <LabelsSection
-                      disabled={restrictions?.labels === DISABLED}
-                    />
-                  </Grid>
+  return ReactDOM.createPortal(
+    <div>
+      {open && (
+        <AnimatedContainer>
+          <WorkflowDrawerContainer key={selectedWorkflow?.identifier}>
+            <WorkflowDrawerHeader />
+            <SectionContainer>
+              <Grid container spacing={4}>
+                <Grid item xs={12}>
+                  <NameSection readOnly={restrictions?.name === DISABLED} />
                 </Grid>
-              </SectionContainer>
-              <SectionContainer>
-                <AttachmentSection
-                  disabled={restrictions?.attachments === DISABLED}
-                />
-              </SectionContainer>
-              <SectionSpacer />
-              <SectionContainer>
-                <TasksSection disabled={restrictions?.tasks === DISABLED} />
-              </SectionContainer>
-              <SectionContainer withBackground>
-                <CommentSection
-                  disabled={restrictions?.comments === DISABLED}
-                />
-              </SectionContainer>
-              <SectionSpacer />
-              <>
-                <CustomFieldsSection
-                  disabled={restrictions?.customFields === DISABLED}
-                />
-              </>
-              <SectionContainer>
-                <HistorySection disabled={restrictions?.history === DISABLED} />
-              </SectionContainer>
-            </WorkflowDrawerContainer>
-          </AnimatedContainer>
-        )}
-      </AnimatePresence>
+                <Grid item xs={12}>
+                  <DescriptionSection
+                    readOnly={restrictions?.description === DISABLED}
+                  />
+                </Grid>
+                <Grid item xs={6}>
+                  <PatientSection
+                    disabled={
+                      !!isTemplateTask || restrictions?.patient === DISABLED
+                    }
+                  />
+                </Grid>
+                <Grid item xs={6}>
+                  <AssignedToSection
+                    disabled={restrictions?.assignedTo === DISABLED}
+                  />
+                </Grid>
+                <Grid item xs={6}>
+                  <StartDateSection
+                    disabled={
+                      !!isTemplateTask || restrictions?.startDate === DISABLED
+                    }
+                  />
+                </Grid>
+                <Grid item xs={6}>
+                  <AnchorDateSection
+                    disabled={
+                      !!isTemplateTask || restrictions?.anchorDate === DISABLED
+                    }
+                  />
+                </Grid>
+                <Grid item xs={6}>
+                  <DueDateSection
+                    disabled={
+                      !!isTemplateTask || restrictions?.dueDate === DISABLED
+                    }
+                  />
+                </Grid>
+                <Grid item xs={6}>
+                  <ReminderSection
+                    disabled={
+                      !!isTemplateTask || restrictions?.reminder === DISABLED
+                    }
+                  />
+                </Grid>
+                <Grid item xs={6}>
+                  <PrioritySection
+                    disabled={restrictions?.priority === DISABLED}
+                  />
+                </Grid>
+                <Grid item xs={6}>
+                  <StatusSection disabled={restrictions?.status === DISABLED} />
+                </Grid>
+                <Grid item xs={12}>
+                  <LabelsSection disabled={restrictions?.labels === DISABLED} />
+                </Grid>
+              </Grid>
+            </SectionContainer>
+            <SectionContainer>
+              <AttachmentSection
+                disabled={restrictions?.attachments === DISABLED}
+              />
+            </SectionContainer>
+            <SectionSpacer />
+            <SectionContainer>
+              <TasksSection disabled={restrictions?.tasks === DISABLED} />
+            </SectionContainer>
+            <SectionContainer withBackground>
+              <CommentSection disabled={restrictions?.comments === DISABLED} />
+            </SectionContainer>
+            <SectionSpacer />
+            <>
+              <CustomFieldsSection
+                disabled={restrictions?.customFields === DISABLED}
+              />
+            </>
+            <SectionContainer>
+              <HistorySection disabled={restrictions?.history === DISABLED} />
+            </SectionContainer>
+          </WorkflowDrawerContainer>
+        </AnimatedContainer>
+      )}
       {open && <Backdrop onClick={handleBackdropClick} />}
-    </>
+    </div>,
+    document.body,
   );
 };
 
