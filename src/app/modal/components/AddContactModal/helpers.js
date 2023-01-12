@@ -59,11 +59,11 @@ export const resolveSchema = type => {
 };
 
 export const mapToDTO = data => {
-  const { email, mobilePhoneNumber, type, name, fax } = data;
+  const { email, phone, type, name, fax } = data;
   return {
     email,
     type,
-    mobilePhoneNumber: mobilePhoneNumber,
+    mobilePhoneNumber: phone,
     faxPhoneNumber: fax,
     name,
   };
