@@ -7,7 +7,10 @@ import moment from 'moment';
 import { useDispatch, useSelector } from 'react-redux';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { organizationSelector } from 'selectors/organization-selectors';
-import { userProfileSelector } from 'selectors/user-selectors';
+import {
+  userProfileSelector,
+  selectedUserOrganizationSelector,
+} from 'selectors/user-selectors';
 import { FormProvider, useForm } from 'react-hook-form';
 import { openModal, closeModal } from 'modal/actions';
 import { createPatientDetailsPath } from 'routing/helpers/paths';
@@ -42,6 +45,7 @@ const PatientDetailsDrawer = ({ patient, isOpenedDetails, closeDetails }) => {
 
   const dispatch = useDispatch();
   const currentUser = useSelector(userProfileSelector);
+  const currentOrganization = useSelector(selectedUserOrganizationSelector);
   const [isActive, setActive, unsetActive] = useBoolean(false);
   const formMethods = useForm({
     defaultValues: patientValues,
@@ -87,7 +91,10 @@ const PatientDetailsDrawer = ({ patient, isOpenedDetails, closeDetails }) => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isOpenedDetails]);
 
-  const uniqueIdentifierLabel = getCustomerUniqueIDLabel(currentUser);
+  const uniqueIdentifierLabel = getCustomerUniqueIDLabel(
+    currentUser,
+    currentOrganization,
+  );
 
   const archivePatient = useCallback(() => {
     const modalProps = {

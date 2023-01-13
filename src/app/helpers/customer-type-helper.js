@@ -19,8 +19,17 @@ export const getCustomerTypeLabel = currentUser => {
   }
 };
 
-export const getCustomerUniqueIDLabel = currentUser => {
+export const getCustomerUniqueIDLabel = (currentUser, currentOrganization) => {
   const { organizationCustomerType } = currentUser;
+
+  const patientIDLabelItem =
+    currentOrganization?.themeSettings?.find(
+      ({ name }) => name === 'content.label.mrn',
+    ) || {};
+
+  if (patientIDLabelItem?.value) {
+    return patientIDLabelItem?.value;
+  }
 
   // eslint-disable-next-line sonarjs/no-small-switch
   switch (organizationCustomerType) {
@@ -32,8 +41,20 @@ export const getCustomerUniqueIDLabel = currentUser => {
   }
 };
 
-export const getCustomerUniqueIDShortLabel = currentUser => {
+export const getCustomerUniqueIDShortLabel = (
+  currentUser,
+  currentOrganization,
+) => {
   const { organizationCustomerType } = currentUser;
+
+  const patientIDLabelItem =
+    currentOrganization?.themeSettings?.find(
+      ({ name }) => name === 'content.label.mrn',
+    ) || {};
+
+  if (patientIDLabelItem?.value) {
+    return patientIDLabelItem?.value;
+  }
 
   // eslint-disable-next-line sonarjs/no-small-switch
   switch (organizationCustomerType) {

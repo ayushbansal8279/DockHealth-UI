@@ -10,7 +10,10 @@ import ArrowLeftIcon from 'img/arrow-left.svg';
 import { Box, Chip, Grid, Typography } from '@material-ui/core';
 import { getCustomerUniqueIDShortLabel } from 'helpers/customer-type-helper';
 import Tooltip from 'components/common/Tooltip/Tooltip';
-import { userProfileSelector } from 'selectors/user-selectors';
+import {
+  userProfileSelector,
+  selectedUserOrganizationSelector,
+} from 'selectors/user-selectors';
 import { PATIENTS_LIST_ALL } from 'routing/helpers/paths';
 import { organizationSelector } from 'selectors/organization-selectors';
 import {
@@ -61,14 +64,19 @@ const PatientDetailsHeader = () => {
   } = patient || {};
   const isFetchingPatient = useSelector(isFetchingPatientSelector);
   const currentUser = useSelector(userProfileSelector);
-  const uniqueIdentifierLabel = getCustomerUniqueIDShortLabel(currentUser);
+  const currentOrganization = useSelector(selectedUserOrganizationSelector);
+  const uniqueIdentifierLabel = getCustomerUniqueIDShortLabel(
+    currentUser,
+    currentOrganization,
+  );
   const organization = useSelector(organizationSelector);
   const emrPatientLink = organization?.emrPatientLink;
   const isLoadingDetails = isFetchingPatient || !patient;
   const [cameFrom, setCameFrom] = useState();
   const taskListRestrictions =
     TASK_LIST_RESTRICTIONS_PROFILES[currentUser?.orgUserRole];
-
+  const genderIdentityDisabled =
+    currentOrganization?.disabledFeatures?.includes('PATIENT_GENDER') || false;
   const embeddedMode = sessionStorage.getItem('EmbeddedMode') || false;
 
   const goBack = useCallback(() => {
@@ -171,7 +179,7 @@ const PatientDetailsHeader = () => {
                     {age && `${age} | `}
                     {gender && `${gender?.charAt(0)?.toUpperCase()}`}
                   </PatientInfo>
-                  {genderIdentity && (
+                  {!genderIdentityDisabled && genderIdentity && (
                     <>
                       <PatientInfoDivider />
                       <PatientInfo>Gender: {genderIdentity}</PatientInfo>

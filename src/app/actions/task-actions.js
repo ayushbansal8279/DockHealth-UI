@@ -902,6 +902,16 @@ export function sendSmsForTask(communicationDetails) {
   };
 }
 
+export function sendSecureMessageForTask(communicationDetails) {
+  return {
+    type: ActionTypes.SEND_SECURE_MSG_FOR_TASK,
+    communicationDetails: {
+      ...communicationDetails,
+      communicationType: CommunicationType.SECURE_MESSAGE,
+    },
+  };
+}
+
 export function changeTaskIntentType(taskIdentifier, intentType) {
   return {
     type: ActionTypes.CHANGE_TASK_INTENT_TYPE,

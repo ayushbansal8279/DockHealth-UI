@@ -10,7 +10,7 @@ import { isWorkflowDueDateOverdue } from 'helpers/workflow-helpers';
 import { useDispatch } from 'react-redux';
 
 const TaskTemplateDueDate = props => {
-  const { workflow } = props;
+  const { workflow, disabled = false } = props;
   const { identifier, dueDateTime, reminderType } = workflow || {};
   const dispatch = useDispatch();
 
@@ -27,6 +27,7 @@ const TaskTemplateDueDate = props => {
 
   return (
     <TaskItemPopover
+      disabled={disabled}
       content={({ closePopover }) => (
         <DueDatePicker
           taskIdentifier={identifier}

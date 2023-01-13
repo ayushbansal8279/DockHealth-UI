@@ -7,7 +7,7 @@ import { getCurrentUserNotificationPreferences } from 'actions/user-actions';
 import { getUserByEmail } from 'api/user-auth-api';
 import { captureLocalTimezone } from 'api/user-api';
 import { useMobile as checkIsMobile } from 'helpers/utility-functions';
-import { openModal } from 'modal/actions';
+// import { openModal } from 'modal/actions';
 import {
   EULA_PATH,
   UNENROLLED_USER,
@@ -16,7 +16,7 @@ import {
   SUBS_SETTINGS_PATH,
   SUBS_EXPIRED_PATH,
 } from './paths';
-import handleMobileRedirection from './handle-mobile-redirection';
+// import handleMobileRedirection from './handle-mobile-redirection';
 import handleHomeRedirection from './handle-home-redirection';
 import checkBAASignedStatus from './check-BAA-signed-status';
 
@@ -66,7 +66,12 @@ const checkUserAccountState = async ({
       return UNENROLLED_USER;
     }
 
-    if (data && !data.eulaAcknowledged && pathname !== EULA_PATH) {
+    if (
+      data &&
+      !data.eulaAcknowledged &&
+      pathname !== EULA_PATH &&
+      !orgData?.whiteLabelEnabled
+    ) {
       return EULA_PATH;
     }
 

@@ -9,7 +9,7 @@ import { StyledDataGrid } from './DataGridStyles';
 import { getContactColumns } from './helpers';
 import { AddContactWrapper, ViewContainer } from './styled';
 
-const PAGE_SIZE = 10;
+const PAGE_SIZE = 30;
 
 const Contacts = () => {
   const [contacts, setContacts] = useState([]);

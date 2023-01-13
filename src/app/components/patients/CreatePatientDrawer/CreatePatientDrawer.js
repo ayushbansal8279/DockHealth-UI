@@ -4,8 +4,12 @@ import {
   getCustomerTypeLabel,
   getCustomerUniqueIDLabel,
 } from 'helpers/customer-type-helper';
+import {
+  userProfileSelector,
+  selectedUserOrganizationSelector,
+} from 'selectors/user-selectors';
 import { openModal, closeModal } from 'modal/actions';
-import { useDispatch, useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux'
 import { yupResolver } from '@hookform/resolvers/yup';
 import * as PatientApi from 'api/patient-api';
 import { onPatientAdded as onPatientAddedEvent } from 'helpers/ga-event-helper';
@@ -13,7 +17,6 @@ import { showAlert } from 'helpers/utility-functions';
 import PatientForm from 'components/patients/PatientForm/PatientForm';
 import { validationSchema } from 'components/patients/PatientForm/helpers';
 import PatientDrawer from 'components/patients/PatientDrawer/PatientDrawer';
-import { userProfileSelector } from 'selectors/user-selectors';
 
 const onSubmit = ({
   onClose,
@@ -46,8 +49,12 @@ const onSubmit = ({
 
 const CreatePatientDrawer = ({ isSidebarOpen, onPatientCreated, onClose }) => {
   const currentUser = useSelector(userProfileSelector);
+  const currentOrganization = useSelector(selectedUserOrganizationSelector);
   const customerTypeLabel = getCustomerTypeLabel(currentUser);
-  const uniqueIdentifierLabel = getCustomerUniqueIDLabel(currentUser);
+  const uniqueIdentifierLabel = getCustomerUniqueIDLabel(
+    currentUser,
+    currentOrganization,
+  );
   const dispatch = useDispatch();
   const formMethods = useForm({
     resolver: yupResolver(validationSchema),

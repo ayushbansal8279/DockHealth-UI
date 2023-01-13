@@ -12,10 +12,14 @@ import {
   getCustomerTypeLabel,
   getCustomerUniqueIDLabel,
 } from 'helpers/customer-type-helper';
+import {
+  userProfileSelector,
+  selectedUserOrganizationSelector,
+} from 'selectors/user-selectors';
 import Checkbox from 'components/common/Checkbox/Checkbox';
-import { userProfileSelector } from 'selectors/user-selectors';
 import { usePatientListColumnsConfig } from 'context-api/patients-columns-config-context';
 import { PatientColumn } from 'helpers/patient-list-helpers';
+
 import { patientsListSelector } from 'selectors/patients-selectors';
 import PatientImportPopover from '../PatientImportPopover/PatientImportPopover';
 import TaskItemBulkEdit from '../../task/StandardTaskItem/TaskItemComponents/TaskItemBulkEdit';
@@ -62,8 +66,12 @@ const PatientsList = ({
   const history = useHistory();
   const dispatch = useDispatch();
   const currentUser = useSelector(userProfileSelector);
+  const currentOrganization = useSelector(selectedUserOrganizationSelector);
   const customerTypeLabel = getCustomerTypeLabel(currentUser);
-  const uniqueIdentifierLabel = getCustomerUniqueIDLabel(currentUser);
+  const uniqueIdentifierLabel = getCustomerUniqueIDLabel(
+    currentUser,
+    currentOrganization,
+  );
 
   const selectedPatientsCount = patients?.filter(p => p.isSelected).length;
   const patientsCount = patients?.length;

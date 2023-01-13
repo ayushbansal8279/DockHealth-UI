@@ -1,5 +1,5 @@
 /* eslint-disable react-hooks/rules-of-hooks */
-import React, { useState } from 'react';
+import React from 'react';
 import { Fade, Popper } from '@material-ui/core';
 import { openDrawer } from 'actions/workflow-drawer-actions';
 import { checkIfShouldDisplayTooltip } from 'components/task/OverflowTooltip/OverflowTooltip';
@@ -24,14 +24,11 @@ const TaskTemplateName = ({
   nameInputValue,
 }) => {
   const dispatch = useDispatch();
-  const [isHoverVisible, setIsHoverVisible] = useState(false);
   const { name, identifier } = templateGroup;
 
   return (
     <>
       <NameContainer
-        onMouseEnter={() => setIsHoverVisible(true)}
-        onMouseLeave={() => setIsHoverVisible(false)}
         onClick={() => {
           dispatch(openDrawer(identifier, templateGroup));
         }}
@@ -69,10 +66,7 @@ const TaskTemplateName = ({
       <Popper
         anchorEl={nameInputReference?.current}
         placement="bottom-start"
-        open={
-          checkIfShouldDisplayTooltip(nameInputReference?.current) &&
-          isHoverVisible
-        }
+        open={checkIfShouldDisplayTooltip(nameInputReference?.current)}
         style={{
           zIndex: 115,
           maxWidth: nameInputReference?.current?.offsetWidth || '650px',

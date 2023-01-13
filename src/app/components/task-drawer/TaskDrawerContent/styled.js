@@ -1,9 +1,7 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
 import styled from 'styled-components';
 import palette from 'styles/palette';
 import { Divider } from '@material-ui/core';
 import { fontSizes, fontWeights } from 'styles/font';
-import spacing from 'styles/spacing';
 
 export const TaskDrawerContainer = styled.div`
   position: relative;
@@ -32,43 +30,38 @@ export const styleTaskDrawerContainer = {
   padding: '1rem 0rem 0.5rem  0rem',
 };
 
-export const styleNoPaddingRow = {
-  padding: '0rem 0rem',
+export const styleFullRow = isMobile => ({
+  padding: isMobile ? '0.5rem 1rem' : '0.5rem 2rem',
   height: rowHeight,
-};
+});
 
-export const styleFullRow = {
-  padding: '0.5rem 2rem',
+export const styleFullRowThin = isMobile => ({
+  padding: isMobile ? '0rem 1rem' : '0rem 2rem',
   height: rowHeight,
-};
+});
 
-export const styleFullRowThin = {
-  padding: '0rem 2rem',
-  height: rowHeight,
-};
+export const styleFirstRow = isMobile => ({
+  padding: isMobile ? '0rem 1rem 0.5rem 1rem' : '0rem 2rem 0.5rem 2rem',
+});
 
-export const styleFirstRow = {
-  padding: '0rem 2rem 0.5rem 2rem',
-};
-
-export const styleEmailRow = {
-  padding: '0 2rem',
+export const styleEmailRow = isMobile => ({
+  padding: isMobile ? '0 1rem' : '0 2rem',
   backgroundColor: palette.blueGrey,
-};
+});
 
 export const styleCommentRow = {
   padding: '0.5rem 2rem',
 };
 
-export const styleLeftColumn = {
-  padding: '0.5rem 1rem 0.5rem 2rem',
+export const styleLeftColumn = isMobile => ({
+  padding: isMobile ? '0.5rem 1rem 0.5rem 1rem' : '0.5rem 1rem 0.5rem 2rem',
   height: rowHeight,
-};
+});
 
-export const styleRightColumn = {
-  padding: '0.5rem 2rem 0.5rem 1rem',
+export const styleRightColumn = isMobile => ({
+  padding: isMobile ? '0.5rem 1rem 0.5rem 1rem' : '0.5rem 2rem 0.5rem 1rem',
   height: rowHeight,
-};
+});
 
 export const ReferenceParentButton = styled.button`
   cursor: pointer;
@@ -98,9 +91,20 @@ export const TaskDrawerDivider = styled(Divider)`
 `;
 
 export const FiledInListName = styled.a`
+  display: inline-block;
+  vertical-align: bottom;
   color: ${palette.brightBlue};
   overflow: hidden;
   white-space: nowrap;
   text-overflow: ellipsis;
   max-width: 250px;
+`;
+
+export const SubscriptionBadge = styled.div`
+  display: inline-block;
+  float: right;
+
+  & .MuiChip-root {
+    color: white;
+  }
 `;

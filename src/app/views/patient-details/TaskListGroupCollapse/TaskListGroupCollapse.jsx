@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import { useSelector } from 'react-redux';
 import { Box, Collapse } from '@material-ui/core';
 import { useBoolean } from 'hooks/useBoolean';
 import usePrevious from 'hooks/use-previous';
@@ -9,6 +10,7 @@ import ViewTypeSwitch, {
   ViewType,
 } from 'components/tasklist/ViewTypeSwitch/ViewTypeSwitch';
 import StickyContainer from 'components/common/HorizontalScroll/StickyContainer';
+import { selectedUserOrganizationSelector } from 'selectors/user-selectors';
 import {
   Container,
   GroupHeader,
@@ -26,6 +28,12 @@ const TaskListGroupCollapse = props => {
   const isFullView = viewType === ViewType.FULL_VIEW;
 
   const previousViewType = usePrevious(viewType);
+
+  const currentOrganization = useSelector(selectedUserOrganizationSelector);
+  const defaultGroupNameItem =
+    currentOrganization?.themeSettings?.find(
+      ({ name }) => name === 'content.label.default.group',
+    ) || {};
 
   useEffect(() => {
     if (previousViewType) {
@@ -50,7 +58,7 @@ const TaskListGroupCollapse = props => {
               <GroupName>
                 <span>
                   {group?.groupType === TaskGroupType.TASKLIST_DEFAULT
-                    ? 'New tasks'
+                    ? defaultGroupNameItem?.value || 'New tasks'
                     : group?.groupName}
                 </span>
               </GroupName>

@@ -1,4 +1,5 @@
 import React, { useEffect, useRef, useState } from 'react';
+import { useSelector } from 'react-redux';
 import { Box, IconButton } from '@material-ui/core';
 import ArrowBackIcon from '@material-ui/icons/ArrowBack';
 import { useBoolean } from 'hooks/useBoolean';
@@ -6,6 +7,7 @@ import {
   getGroupsForTaskList,
   createGroupAssignedToList,
 } from 'api/task-group-list-api';
+import { selectedUserOrganizationSelector } from 'selectors/user-selectors';
 import {
   TitleWithButtonWrapper,
   Title,
@@ -27,6 +29,7 @@ const GroupSelectStep = ({
   setPreviousStep,
   selectParentTask,
   setNextStep,
+  // eslint-disable-next-line sonarjs/cognitive-complexity
 }) => {
   const addGroupReference = useRef(null);
   const [isFetchingGroups, setIsFetchingGroups] = useState(true);
@@ -37,6 +40,12 @@ const GroupSelectStep = ({
     setGroupInputFocused,
     unsetGroupInputFocused,
   ] = useBoolean(false);
+
+  const currentOrganization = useSelector(selectedUserOrganizationSelector);
+  const defaultGroupNameItem =
+    currentOrganization?.themeSettings?.find(
+      ({ name }) => name === 'content.label.default.group',
+    ) || {};
 
   const handleAddNewGroup = groupName => {
     if (savingGroup || !selectedList || !groupName) return;
@@ -112,7 +121,7 @@ const GroupSelectStep = ({
                         }
                       >
                         {group.groupName === 'DEFAULT'
-                          ? 'New tasks'
+                          ? defaultGroupNameItem?.value || 'New tasks'
                           : group.groupName}
                       </ListItemTextButton>
                       {selectParentTask && (

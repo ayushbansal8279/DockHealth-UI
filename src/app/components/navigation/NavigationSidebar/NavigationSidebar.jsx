@@ -137,6 +137,7 @@ const NavigationSidebar = () => {
   const customerTypeLabel = getCustomerTypeLabel(currentUser);
   const customerTypeLabelCapitalized = capitalize(customerTypeLabel);
 
+  const whiteLabelEnabled = currentOrganization?.whiteLabelEnabled || false;
   const navSelectedColorItem =
     currentOrganization?.themeSettings?.find(
       ({ name }) => name === 'navigation.menu.selectedColor',
@@ -323,16 +324,18 @@ const NavigationSidebar = () => {
                 />
               </div>
             </AccessRestrictor>
-            <AccessRestrictor required={[CAN_ACCESS_EDUCATION_CENTER_PAGE]}>
-              <IconNavigationItem
-                name="Education Center"
-                icon={EducationCenterIcon}
-                subMenuKey={SubmenuKey.EDUCATION_CENTER}
-                subMenuOpen={openedSubMenuKey === SubmenuKey.EDUCATION_CENTER}
-                onItemClick={handleEducationCenterClick}
-                navSelectedColor={navSelectedColorItem?.value}
-              />
-            </AccessRestrictor>
+            {!whiteLabelEnabled && (
+              <AccessRestrictor required={[CAN_ACCESS_EDUCATION_CENTER_PAGE]}>
+                <IconNavigationItem
+                  name="Education Center"
+                  icon={EducationCenterIcon}
+                  subMenuKey={SubmenuKey.EDUCATION_CENTER}
+                  subMenuOpen={openedSubMenuKey === SubmenuKey.EDUCATION_CENTER}
+                  onItemClick={handleEducationCenterClick}
+                  navSelectedColor={navSelectedColorItem?.value}
+                />
+              </AccessRestrictor>
+            )}
             {/* <AccessRestrictor
               allowedToRoles={[ADMIN, OWNER, MEMBER, GUEST, EXTERNAL]}
             >

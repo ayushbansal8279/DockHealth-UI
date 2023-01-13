@@ -29,7 +29,7 @@ import ListOptionsMenu from 'components/tasklist/ListOptionsMenu/ListOptionsMenu
 import HeaderSearch from 'components/template/HeaderSearch/HeaderSearch';
 import { Box } from '@material-ui/core';
 import InviteMemberButton from 'components/user/InviteMemberButton/InviteMemberButton';
-import { isUserGuest } from 'helpers/user-helper';
+import { isUserGuest, isUserViewOnly } from 'helpers/user-helper';
 import {
   selectQuickFilter,
   showAddQuickFilterOption,
@@ -220,27 +220,30 @@ const ListDetailsHeader = props => {
               />
             </Box>
           )}
-          {!isUserGuest(currentUser) && listType && listType !== 'INBOX' && (
-            <Box pl={0.5}>
-              <InviteMemberButton
-                size={36}
-                onClick={() =>
-                  dispatch(
-                    openModal('InviteToList', {
-                      list: taskList,
-                      onMembersRefresh: () =>
-                        dispatch(
-                          getMembersByTaskListId(
-                            taskList.taskListIdentifier,
-                            'ALL',
+          {!isUserGuest(currentUser) &&
+            !isUserViewOnly(currentUser) &&
+            listType &&
+            listType !== 'INBOX' && (
+              <Box pl={0.5}>
+                <InviteMemberButton
+                  size={36}
+                  onClick={() =>
+                    dispatch(
+                      openModal('InviteToList', {
+                        list: taskList,
+                        onMembersRefresh: () =>
+                          dispatch(
+                            getMembersByTaskListId(
+                              taskList.taskListIdentifier,
+                              'ALL',
+                            ),
                           ),
-                        ),
-                    }),
-                  )
-                }
-              />
-            </Box>
-          )}
+                      }),
+                    )
+                  }
+                />
+              </Box>
+            )}
         </HeaderMembersContainer>
       )}
     </LayoutHeader>

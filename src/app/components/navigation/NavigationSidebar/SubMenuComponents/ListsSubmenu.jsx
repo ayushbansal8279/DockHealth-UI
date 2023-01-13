@@ -25,6 +25,7 @@ import palette from 'styles/palette';
 import { createTaskListPath } from 'routing/helpers/paths';
 import ListOptionsMenu from 'components/tasklist/ListOptionsMenu/ListOptionsMenu';
 import LabeledCollapse from 'components/common/LabeledCollapse/LabeledCollapse';
+import { isUserGuest, isUserViewOnly } from 'helpers/user-helper';
 import { Box } from '@material-ui/core';
 import { useBoolean } from 'hooks/useBoolean';
 import move from 'ramda/src/move';
@@ -61,8 +62,11 @@ const ListsSubmenu = () => {
   const hoveredItemReference = useRef(null);
   const [popoverLabel, setPopoverLabel] = useState(null);
   const { 0: archivedVisible, 3: toggleArchived } = useBoolean(false);
-  const { orgUserRole } = useSelector(userProfileSelector);
-  const isGuest = orgUserRole === 'GUEST';
+
+  const currentUser = useSelector(userProfileSelector);
+  const isGuest = isUserGuest(currentUser);
+  const isViewOnly = isUserViewOnly(currentUser);
+
   const [activeLists, setActiveLists] = useState(null);
 
   useEffect(() => {
@@ -327,7 +331,9 @@ const ListsSubmenu = () => {
     <>
       <DrawerMyListsLabel>
         <div>My Lists</div>
-        {!isGuest && <AddButton onClick={openListAddModal}>Add</AddButton>}
+        {!isGuest && !isViewOnly && (
+          <AddButton onClick={openListAddModal}>Add</AddButton>
+        )}
       </DrawerMyListsLabel>
       <SubmenuDivider />
       {hasAnyPendingList && (

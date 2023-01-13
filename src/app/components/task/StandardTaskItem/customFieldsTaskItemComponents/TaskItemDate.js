@@ -6,7 +6,7 @@ import TaskIcon from 'components/task/TaskIcon/TaskIcon';
 import Tooltip from 'components/common/Tooltip/Tooltip';
 import DateLabel from 'components/common/DateLabel/DateLabel';
 
-const TaskItemDate = ({ value, onChange }) => {
+const TaskItemDate = ({ value, onChange, readOnly = false }) => {
   const handleDateChange = useCallback(
     newDate => {
       onChange(newDate ? newDate.format('MM/DD/YYYY') : null);
@@ -25,6 +25,7 @@ const TaskItemDate = ({ value, onChange }) => {
             hideDateTime
           />
         )}
+        disabled={readOnly}
       >
         <Tooltip placement="top" title={value ? 'Edit date' : 'Add date'}>
           {value ? (

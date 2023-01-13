@@ -11,8 +11,10 @@ import {
 const TaskItemDropdown = ({
   value: initialValue,
   onChange,
-  field: { options: initialOptions },
+  field: { options: initialOptions, displayOptions },
+  readOnly = false,
 }) => {
+  const isRequired = displayOptions.includes('TASK_REQUIRED');
   const [value, setValue] = useState(initialValue);
   const options = useMemo(() => {
     const o =
@@ -22,10 +24,12 @@ const TaskItemDropdown = ({
         color,
       })) || [];
 
-    if (o.length > 0) o.unshift({ label: 'None', value: null });
+    if (o.length > 0 && !isRequired) {
+      o.unshift({ label: 'None', value: null });
+    }
 
     return o;
-  }, [initialOptions]);
+  }, [initialOptions, isRequired]);
 
   useEffect(() => {
     setValue(initialValue);
@@ -57,6 +61,7 @@ const TaskItemDropdown = ({
           options={options.sort((a, b) => a.label.localeCompare(b.label))}
           disableUnderline
           IconComponent={() => <></>}
+          disabled={readOnly}
         />
       </DropdownBox>
     </>

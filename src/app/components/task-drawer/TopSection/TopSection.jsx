@@ -14,6 +14,7 @@ import {
   userHasSendEmailFeatureSelector,
   userHasSendFaxFeatureSelector,
   userHasSendSmsFeatureSelector,
+  userHasSendSecureMessageFeatureSelector,
   userHasSendESignFeatureSelector,
   userHasPostEMRNoteFeatureSelector,
   userHasShareTaskFeatureSelector,
@@ -57,6 +58,9 @@ const TopSection = ({
   const sendEmailAvailable = useSelector(userHasSendEmailFeatureSelector);
   const sendFaxAvailable = useSelector(userHasSendFaxFeatureSelector);
   const sendSmsAvailable = useSelector(userHasSendSmsFeatureSelector);
+  const sendSecureMessageAvailable = useSelector(
+    userHasSendSecureMessageFeatureSelector,
+  );
   const sendESignAvailable = useSelector(userHasSendESignFeatureSelector);
   const postToEMRAvailable = useSelector(userHasPostEMRNoteFeatureSelector);
   const shareTaskAvailable = useSelector(userHasShareTaskFeatureSelector);
@@ -115,6 +119,10 @@ const TopSection = ({
           name: 'Send SMS',
           onClick: () => dispatch(openModal('SendSmsFromTask')),
         },
+        sendSecureMessageAvailable && {
+          name: 'Send Patient Message',
+          onClick: () => dispatch(openModal('SendSecureMessageFromTask')),
+        },
         sendESignAvailable && {
           name: 'Send for ESign',
           onClick: () => dispatch(openModal('SendESignFromTask')),
@@ -141,6 +149,7 @@ const TopSection = ({
       sendEmailAvailable,
       sendFaxAvailable,
       sendSmsAvailable,
+      sendSecureMessageAvailable,
       sendESignAvailable,
       postToEMRAvailable,
       openDeleteConfirmationModal,

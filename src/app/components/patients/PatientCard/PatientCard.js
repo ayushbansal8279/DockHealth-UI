@@ -15,9 +15,12 @@ import {
   getCustomerTypeLabel,
   getCustomerUniqueIDShortLabel,
 } from 'helpers/customer-type-helper';
+import {
+  userProfileSelector,
+  selectedUserOrganizationSelector,
+} from 'selectors/user-selectors';
 import { organizationSelector } from 'selectors/organization-selectors';
 import { FieldType } from 'helpers/field-type-helpers';
-import { userProfileSelector } from 'selectors/user-selectors';
 import {
   PatientCardContainer,
   PatientInfoSection,
@@ -97,9 +100,15 @@ const PatientCard = ({
   );
 
   const currentUser = useSelector(userProfileSelector);
+  const currentOrganization = useSelector(selectedUserOrganizationSelector);
+  const genderIdentityDisabled =
+    currentOrganization?.disabledFeatures?.includes('PATIENT_GENDER') || false;
 
   const customerTypeLabel = getCustomerTypeLabel(currentUser);
-  const uniqueIdentifierLabel = getCustomerUniqueIDShortLabel(currentUser);
+  const uniqueIdentifierLabel = getCustomerUniqueIDShortLabel(
+    currentUser,
+    currentOrganization,
+  );
 
   const organization = useSelector(organizationSelector);
   const emrPatientLink = organization?.emrPatientLink;
@@ -216,7 +225,7 @@ const PatientCard = ({
                           {gender && `${gender?.charAt(0)?.toUpperCase()}`}
                         </InfoItem>
                       )}
-                      {genderIdentity && (
+                      {!genderIdentityDisabled && genderIdentity && (
                         <InfoItem>Gender: {genderIdentity}</InfoItem>
                       )}
                       {mrn && !emrPatientLink && (

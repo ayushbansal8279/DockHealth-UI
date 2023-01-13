@@ -10,6 +10,7 @@ import {
   userHasSendEmailFeatureSelector,
   userHasSendFaxFeatureSelector,
   userHasSendSmsFeatureSelector,
+  userHasSendSecureMessageFeatureSelector,
   userHasPostEMRNoteFeatureSelector,
 } from 'selectors/user-selectors';
 import { SubMenuLink } from './styled';
@@ -26,6 +27,9 @@ const SettingsSubmenu = () => {
   const sendEmailAvailable = useSelector(userHasSendEmailFeatureSelector);
   const sendFaxAvailable = useSelector(userHasSendFaxFeatureSelector);
   const sendSmsAvailable = useSelector(userHasSendSmsFeatureSelector);
+  const sendSecureMessageAvailable = useSelector(
+    userHasSendSecureMessageFeatureSelector,
+  );
   const postToEMRAvailable = useSelector(userHasPostEMRNoteFeatureSelector);
 
   return (
@@ -40,6 +44,7 @@ const SettingsSubmenu = () => {
       {(sendEmailAvailable ||
         sendFaxAvailable ||
         sendSmsAvailable ||
+        sendSecureMessageAvailable ||
         postToEMRAvailable) && (
         <AccessRestrictor allowedToRoles={[ADMIN, OWNER]}>
           <SubMenuLink to="/settings/templates">Templates</SubMenuLink>

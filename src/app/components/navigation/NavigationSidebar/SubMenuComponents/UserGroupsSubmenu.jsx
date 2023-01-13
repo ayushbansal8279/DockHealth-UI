@@ -14,6 +14,7 @@ import prop from 'ramda/src/prop';
 import sortBy from 'ramda/src/sortBy';
 import toLower from 'ramda/src/toLower';
 import compose from 'ramda/src/compose';
+
 import {
   isFetchingUserGroupsSelector,
   defaultUserGroupsSelector,
@@ -26,7 +27,8 @@ import {
 import { locationParametersSelector } from 'location/selectors';
 import {
   checkIfUserIsOrganizationAdmin,
-  UserOrganizationRole,
+  isUserGuest,
+  isUserViewOnly,
 } from 'helpers/user-helper';
 import {
   DefaultUserGroupUrl,
@@ -52,7 +54,6 @@ const UserGroupsSubmenu = () => {
   const defaultGroups = useSelector(defaultUserGroupsSelector);
   const groups = useSelector(userGroupsSelector);
   const isFetching = useSelector(isFetchingUserGroupsSelector);
-  const currentUser = useSelector(userProfileSelector);
   const userGroupsAvailable = useSelector(userHasUserGroupsFeatureSelector);
   const { groupIdentifier: groupIdentifierUrlParameter } = useSelector(
     locationParametersSelector,
@@ -62,7 +63,10 @@ const UserGroupsSubmenu = () => {
   const activeGroupIdentifier = getUserGroupIdentifierByUrlParameter(
     groupIdentifierUrlParameter,
   );
-  const isGuest = currentUser.orgUserRole === UserOrganizationRole.GUEST;
+  const currentUser = useSelector(userProfileSelector);
+  const isGuest = isUserGuest(currentUser);
+  const isViewOnly = isUserViewOnly(currentUser);
+
   const isOrganizationAdmin = checkIfUserIsOrganizationAdmin(currentUser);
   const isInitialListFetching = isFetching && !defaultGroups;
 
@@ -147,7 +151,7 @@ const UserGroupsSubmenu = () => {
           <Box m={6} flexShrink={0} />
           <DrawerMyListsLabel>
             <div>User Groups</div>
-            {isOrganizationAdmin && (
+            {isOrganizationAdmin && !isViewOnly && (
               <AddButton onClick={handleAddCustomListClick}>Add</AddButton>
             )}
           </DrawerMyListsLabel>

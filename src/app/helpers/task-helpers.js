@@ -43,6 +43,7 @@ export const CommunicationType = {
   EMAIL: 'EMAIL',
   FAX: 'FAX',
   SMS: 'SMS',
+  SECURE_MESSAGE: 'SECURE_MESSAGE',
   ESIGN: 'ESIGN',
   EMR: 'EMR_NOTE',
 };
@@ -437,8 +438,10 @@ export function findIncompleteRequiredFields(customFields, task) {
       field.displayOptions.includes('TASK_REQUIRED') &&
       (matchingMetaData === undefined ||
         matchingMetaData?.length === 0 ||
-        matchingMetaData?.value === undefined ||
-        matchingMetaData?.value === '')
+        !(
+          (matchingMetaData?.value && matchingMetaData?.value !== '') ||
+          (matchingMetaData?.values && matchingMetaData?.values.length > 0)
+        ))
     );
   });
 }

@@ -9,6 +9,7 @@ const TaskTemplateWorkflowStatus = ({
   workflow,
   onWorkflowUpdate,
   // highlightedValue,
+  readOnly,
 }) => {
   // const matchWorkflowStatus = workflow?.searchMetaData?.matchPatient;
   const statusNameReference = useRef(null);
@@ -43,6 +44,7 @@ const TaskTemplateWorkflowStatus = ({
           onWidthChange={resetPosition}
         />
       )}
+      disabled={readOnly}
     >
       {workflowStatus ? (
         <StatusWrapper>

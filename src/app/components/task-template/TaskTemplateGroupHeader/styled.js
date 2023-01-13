@@ -51,7 +51,8 @@ export const TaskTemplateGroupHeaderContainer = styled.div`
   width: 100%;
   border-top: 1px solid ${palette.coolGrey3};
   border-bottom: 1px solid ${palette.coolGrey3};
-  background-color: ${props => (props.isSelected ? '#e0eff9' : palette.white)};
+  background-color: ${props =>
+    props.isSelected ? palette.dockBlueLight : palette.white};
 
   &:hover {
     & ${TemplateHandle}, ${AddPlaceholder} {

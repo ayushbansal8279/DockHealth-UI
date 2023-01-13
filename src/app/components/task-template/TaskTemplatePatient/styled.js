@@ -42,3 +42,5 @@ export const AddPlaceholder = styled(Placeholder)`
     font-size: 16px;
   }
 `;
+
+export const DisabledLink = styled.span``;

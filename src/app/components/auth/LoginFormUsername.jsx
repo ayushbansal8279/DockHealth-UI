@@ -106,8 +106,8 @@ const LoginFormUsername = props => {
         )}
         {showLoginMessage && (
           <div>
-            <MontserratTypography variant="h2">
-              Signing you in...
+            <MontserratTypography variant="h3">
+              Signing you in
             </MontserratTypography>
             <Spacing vertical={4} />
             <Loader size={LoaderSizes.big} />

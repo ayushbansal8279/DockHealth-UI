@@ -79,6 +79,10 @@ const ListDetailsTasks = ({
     currentOrganization?.themeSettings?.find(
       ({ name }) => name === 'icon.active.color',
     ) || {};
+  const defaultGroupNameItem =
+    currentOrganization?.themeSettings?.find(
+      ({ name }) => name === 'content.label.default.group',
+    ) || {};
 
   const renderEmptyState = () => {
     if (isSearchApplied) return <NoSearchResultsView />;
@@ -196,7 +200,11 @@ const ListDetailsTasks = ({
               isCompletedGroup={isCompletedView}
               key={taskGroupIdentifier}
               isDefaultGroup={groupName === 'DEFAULT'}
-              groupName={groupName === 'DEFAULT' ? 'New tasks' : groupName}
+              groupName={
+                groupName === 'DEFAULT'
+                  ? defaultGroupNameItem?.value || 'New tasks'
+                  : groupName
+              }
               groupTaskCounts={metricValue}
               quickAddTask={quickAddTask}
               moveGroupUp={() => dispatch(reorderTaskListGroups(i, i - 1))}
@@ -379,6 +387,7 @@ const ListDetailsTasks = ({
       areFiltersApplied,
       groupedTasks,
       isCompletedView,
+      defaultGroupNameItem,
       quickAddTask,
       onTaskUpdate,
       draggedId,
@@ -389,6 +398,7 @@ const ListDetailsTasks = ({
       sort,
       onSortChange,
       applyTemplate,
+      iconColorActiveItem,
       dispatch,
       loadTasksForTaskGroup,
       isSortApplied,
@@ -397,7 +407,6 @@ const ListDetailsTasks = ({
       DISABLED,
       showClearSortFiltersModal,
       viewSetup,
-      iconColorActiveItem,
     ],
   );
 

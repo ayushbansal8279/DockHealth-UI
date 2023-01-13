@@ -36,6 +36,10 @@ export function isUserGuest(user) {
   return user?.orgUserRole === UserOrganizationRole.GUEST;
 }
 
+export function isUserViewOnly(user) {
+  return user?.orgUserRole === UserOrganizationRole.VIEW_ONLY;
+}
+
 export const UserStatus = {
   INVITED: 'INVITED',
   PENDING: 'PENDING',

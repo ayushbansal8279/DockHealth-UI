@@ -227,6 +227,7 @@ class App extends PureComponent {
     }
   };
 
+  // eslint-disable-next-line sonarjs/cognitive-complexity
   render() {
     const isMobile = useMobile();
     // const isSmall = useSmallScreen();
@@ -236,7 +237,23 @@ class App extends PureComponent {
       userState: { userProfile },
     } = this.props;
 
-    const systemTimeout = parseInt(process.env.SYSTEM_TIMEOUT, 10);
+    const userOrganizations = userProfile?.userOrganizations;
+    const selectedOrgIdentifier = userProfile?.organizationIdentifier;
+    const currentOrganization =
+      userOrganizations?.find(
+        ({ organizationIdentifier }) =>
+          organizationIdentifier === selectedOrgIdentifier,
+      ) || null;
+    const logoutTimeoutItem =
+      currentOrganization?.themeSettings?.find(
+        ({ name }) => name === 'logout.timeout',
+      ) || {};
+    const logoutTimeout = parseInt(logoutTimeoutItem?.value, 10);
+
+    const systemTimeout =
+      logoutTimeout > 0
+        ? logoutTimeout
+        : parseInt(process.env.SYSTEM_TIMEOUT, 10);
     const idleTimeout = systemTimeout / 2;
 
     const { children } = this.props;
@@ -249,11 +266,20 @@ class App extends PureComponent {
     //   );
     const showRotateScreenPage = false;
 
-    const mountIdleTimer = userProfile && !isEmpty(userProfile);
+    const mountIdleTimer =
+      userProfile &&
+      !isEmpty(userProfile) &&
+      userOrganizations &&
+      !isEmpty(userOrganizations);
     // eslint-disable-next-line unicorn/consistent-function-scoping
     const idleTimerReference = reference => {
       this.idleTimerForPresence = reference;
     };
+    const organizationAvailableFeatures =
+      userProfile?.organizationAvailableFeatures;
+    const dockChatAvailable = organizationAvailableFeatures?.includes(
+      'DOCK_CHAT',
+    );
 
     return (
       <AppContainer id="appHome">
@@ -262,9 +288,9 @@ class App extends PureComponent {
         ) : !showRotateScreenPage ? (
           <>
             <SendbirdProvider
-              appId={appId}
-              userId={userProfile?.identifier}
-              nickname={userProfile?.name}
+              appId={dockChatAvailable ? appId : ''}
+              userId={dockChatAvailable ? userProfile?.identifier : ''}
+              nickname={dockChatAvailable ? userProfile?.name : ''}
               colorSet={sendbirdColorSet}
             >
               <div id="portal" />

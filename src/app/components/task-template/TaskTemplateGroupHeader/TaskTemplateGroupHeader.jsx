@@ -51,7 +51,8 @@ import { openDrawer } from 'actions/workflow-drawer-actions';
 import { CUSTOM_FIELD_TYPES } from 'helpers/custom-fields-helpers';
 import { userProfileSelector } from 'selectors/user-selectors';
 import {
-  TASK_LIST_RESTRICTIONS_OPTIONS,
+  SINGLE_TASK_RESTRICTIONS_OPTIONS,
+  SINGLE_TASK_RESTRICTIONS_PROFILES,
   TASK_LIST_RESTRICTIONS_PROFILES,
 } from 'restrictions/task-restrictions';
 import TaskTemplateCreatedByMembers from '../TaskTemplateMembers/TaskTemplateCreatedBy';
@@ -422,8 +423,10 @@ const TaskTemplateGroupHeader = ({
   }, [getWorkflowData, identifier, selectedWorkflow]);
 
   const restrictions =
+    SINGLE_TASK_RESTRICTIONS_PROFILES[currentUser?.orgUserRole];
+  const taskListRestrictions =
     TASK_LIST_RESTRICTIONS_PROFILES[currentUser?.orgUserRole];
-  const { DISABLED } = TASK_LIST_RESTRICTIONS_OPTIONS;
+  const { DISABLED, READ_ONLY } = SINGLE_TASK_RESTRICTIONS_OPTIONS;
 
   const randerFirstColumnCoverIfNecessary = useCallback(
     (content, order, width) => {
@@ -439,7 +442,7 @@ const TaskTemplateGroupHeader = ({
         >
           {!groupDragAndDropDisabled &&
             !bulkEditIsActive &&
-            restrictions?.createTask !== DISABLED && (
+            taskListRestrictions?.createTask !== DISABLED && (
               <TemplateHandle
                 src={ThreeDotsIcon}
                 alt="Handle"
@@ -447,7 +450,7 @@ const TaskTemplateGroupHeader = ({
               />
             )}
           <ActionIconsContainer>
-            {restrictions?.createTask !== DISABLED && (
+            {taskListRestrictions?.createTask !== DISABLED && (
               <Checkbox
                 isChecked={selected || isBundleSelected}
                 onClick={handleBundleSelect}
@@ -461,7 +464,7 @@ const TaskTemplateGroupHeader = ({
                 color={iconColorActive}
               />
             )}
-            {restrictions?.createTask !== DISABLED && (
+            {taskListRestrictions?.createTask !== DISABLED && (
               <>
                 <Spacing horizontal={2} />
                 <OptionsMenu options={menuOptions}>
@@ -486,7 +489,7 @@ const TaskTemplateGroupHeader = ({
       isOpen,
       menuOptions,
       pageBackground,
-      restrictions,
+      taskListRestrictions,
       selected,
       setOpen,
       showTasksWithGroup,
@@ -579,6 +582,7 @@ const TaskTemplateGroupHeader = ({
                   workflow={templateGroup}
                   onWorkflowUpdate={compose(dispatch, updatePartialWorkflow)}
                   currentUser={currentUser}
+                  readOnly={restrictions?.patient === READ_ONLY}
                 />
               )}
             </TaskItemCell>,
@@ -609,6 +613,7 @@ const TaskTemplateGroupHeader = ({
                 workflow={templateGroup}
                 onWorkflowUpdate={compose(dispatch, updatePartialWorkflow)}
                 highlightedValue={highlightedValue}
+                readOnly={restrictions?.status === READ_ONLY}
               />
             </TaskItemCell>,
             getColumnOrder(TaskItemColumn.WORKFLOW_STATUS),
@@ -660,7 +665,10 @@ const TaskTemplateGroupHeader = ({
               justify="center"
               order={getColumnOrder(TaskItemColumn.START_DATE)}
             >
-              <TaskTemplateStartDate workflow={templateGroup} />
+              <TaskTemplateStartDate
+                workflow={templateGroup}
+                disabled={restrictions?.startDate === DISABLED}
+              />
             </TaskItemCell>,
             getColumnOrder(TaskItemColumn.START_DATE),
             columns?.find(
@@ -682,9 +690,10 @@ const TaskTemplateGroupHeader = ({
               justify="center"
               order={getColumnOrder(TaskItemColumn.DUE_DATE)}
             >
-              {restrictions?.createTask !== DISABLED && (
-                <TaskTemplateDueDate workflow={templateGroup} />
-              )}
+              <TaskTemplateDueDate
+                workflow={templateGroup}
+                disabled={restrictions?.dueDate === DISABLED}
+              />
             </TaskItemCell>,
             getColumnOrder(TaskItemColumn.DUE_DATE),
             columns?.find(
@@ -728,6 +737,7 @@ const TaskTemplateGroupHeader = ({
               printWidth={TaskItemColumnWidth[TaskItemColumn.ASSIGNED].PRINT}
             >
               <TaskTemplateMembers
+                readOnly={restrictions?.assigment === READ_ONLY}
                 currentUser={currentUser}
                 multipleAssigneesContext={groupHasMultipleAssignees}
                 workflow={
@@ -891,6 +901,7 @@ const TaskTemplateGroupHeader = ({
                     ? templateGroup
                     : workFlowData
                 }
+                readOnly={restrictions?.taskDetails === READ_ONLY}
               />
             </TaskItemCell>,
             getColumnOrder(TaskItemColumn.TASK_DETAILS),
@@ -1094,7 +1105,7 @@ const TaskTemplateGroupHeader = ({
                     );
                   }}
                   field={field}
-                  readOnly
+                  readOnly={taskListRestrictions?.createTask === DISABLED}
                   task={workflowDetails}
                 />
               )}

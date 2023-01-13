@@ -164,12 +164,11 @@ const WorkflowDrawer = () => {
                   disabled={restrictions?.comments === DISABLED}
                 />
               </SectionContainer>
-              <SectionSpacer />
-              <>
+              <SectionContainer>
                 <CustomFieldsSection
                   disabled={restrictions?.customFields === DISABLED}
                 />
-              </>
+              </SectionContainer>
               <SectionContainer>
                 <HistorySection disabled={restrictions?.history === DISABLED} />
               </SectionContainer>

@@ -1,10 +1,12 @@
 /* eslint-disable sonarjs/cognitive-complexity */
 import React, { useEffect, useRef, useState } from 'react';
+import { useSelector } from 'react-redux';
 import { useBoolean } from 'hooks/useBoolean';
 import {
   getGroupsForTaskList,
   createGroupAssignedToList,
 } from 'api/task-group-list-api';
+import { selectedUserOrganizationSelector } from 'selectors/user-selectors';
 import {
   ListItem,
   EmptyMessage,
@@ -30,6 +32,12 @@ const GroupPicker = ({
     setGroupInputFocused,
     unsetGroupInputFocused,
   ] = useBoolean(false);
+
+  const currentOrganization = useSelector(selectedUserOrganizationSelector);
+  const defaultGroupNameItem =
+    currentOrganization?.themeSettings?.find(
+      ({ name }) => name === 'content.label.default.group',
+    ) || {};
 
   const handleAddNewGroup = groupName => {
     if (savingGroup || !selectedList || !groupName) return;
@@ -93,7 +101,7 @@ const GroupPicker = ({
                         }
                       >
                         {group.groupName === 'DEFAULT'
-                          ? 'New tasks'
+                          ? defaultGroupNameItem?.value || 'New tasks'
                           : group.groupName}
                       </ListItemTextButton>
                     </ListItem>
