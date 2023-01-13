@@ -32,10 +32,7 @@ import {
 } from 'selectors/task-list-selectors';
 import { taskCustomFieldsSelector } from 'selectors/task-drawer-selectors';
 import { findIncompleteRequiredFields } from 'helpers/task-helpers';
-import {
-  userProfileSelector,
-  selectedUserOrganizationSelector,
-} from 'selectors/user-selectors';
+import { userProfileSelector } from 'selectors/user-selectors';
 import { selectedFiltersInMegaFilterSelector } from 'selectors/mega-filter-selectors';
 import { useTaskListColumnsConfig } from 'context-api/columns-config-context';
 import * as TaskActions from 'actions/task-actions';
@@ -57,7 +54,6 @@ const initializeListDetailsViewHooks = () => {
   const currentStatus = useSelector(currentTaskListTasksStatusSelector);
   const { setCurrentList } = useTaskListColumnsConfig();
   const currentUser = useSelector(userProfileSelector);
-  const currentOrganization = useSelector(selectedUserOrganizationSelector);
   const { userIdentifier: currentUserIdentifier } = currentUser || {};
   const members = useSelector(taskListMembersSelector);
   const pendingTaskLists = useSelector(pendingTaskListsSelector);
@@ -88,11 +84,6 @@ const initializeListDetailsViewHooks = () => {
   const dispatch = useDispatch();
   const { taskListIdentifier: taskListIdentifierParam, tabName } = params;
   const { templates } = useSelector(taskCustomFieldsSelector);
-
-  const listTasksDefaultSortOrderItem =
-    currentOrganization?.themeSettings?.find(
-      ({ name }) => name === 'list.tasks.default.sort',
-    ) || {};
 
   useEffect(() => {
     if (currentTaskListIdentifier)
@@ -256,10 +247,6 @@ const initializeListDetailsViewHooks = () => {
 
   const loadTasksForTaskGroup = useCallback(
     ({ taskGroupIdentifier, startPosition, viewMode, refresh }) => {
-      if (!sort.key && listTasksDefaultSortOrderItem) {
-        sort.key = 'CREATED_DT';
-        sort.order = listTasksDefaultSortOrderItem?.value;
-      }
       const payload = {
         taskGroupIdentifier,
         status: params.tabName || 'INCOMPLETE',
@@ -270,7 +257,7 @@ const initializeListDetailsViewHooks = () => {
       };
       dispatch(ListDetailsActions.getTasksForTaskGroups(payload));
     },
-    [dispatch, listTasksDefaultSortOrderItem, params.tabName, sort],
+    [dispatch, params.tabName, sort],
   );
 
   const toggleTaskCompletedStatus = useCallback(
