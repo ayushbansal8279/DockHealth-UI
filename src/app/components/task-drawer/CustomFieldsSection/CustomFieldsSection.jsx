@@ -48,17 +48,11 @@ const CustomFieldsSection = ({ disabled, fieldCategoryType }) => {
   );
 
   const templates = useMemo(() => {
-    console.log(`unfilteredTemplates: ${JSON.stringify(unfilteredTemplates)}`);
-    const filtered = unfilteredTemplates.filter(unfilteredTemplate => {
-      console.log(
-        `field category type: ${unfilteredTemplate?.fieldCategoryType}`,
-      );
+    return unfilteredTemplates.filter(unfilteredTemplate => {
       if (fieldCategoryType)
         return unfilteredTemplate?.fieldCategoryType === fieldCategoryType;
       return true;
     });
-    console.log(`filtered templates: ${filtered}`);
-    return filtered;
   }, [fieldCategoryType, unfilteredTemplates]);
 
   const { 0: emptyVisible, 3: toggleEmptyVisible } = useBoolean(false);
