@@ -348,7 +348,7 @@ const BillingData = ({
   cancelSaveBillingClick,
 }) => {
   const { billingDetails, referralConfig } = useSelector(organizationSelector);
-  const { hasDiscountCode } = referralConfig;
+  const hasDiscountCode = referralConfig?.hasDiscountCode;
 
   const formMethods = useForm({
     resolver: yupResolver(validationSchema),
