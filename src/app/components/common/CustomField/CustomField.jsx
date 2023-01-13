@@ -168,6 +168,7 @@ const CustomField = ({
             inputRef={inputReference}
             ref={componentReference}
             onChange={() => setWasChanged(true)}
+            required={isRequired}
           />
         );
       case FieldType.DATE:
@@ -222,6 +223,7 @@ const CustomField = ({
               inputRef={inputReference}
               ref={componentReference}
               onChange={() => setWasChanged(true)}
+              required={isRequired}
             />
           </Box>
         );
