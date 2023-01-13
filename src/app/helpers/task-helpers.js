@@ -438,8 +438,10 @@ export function findIncompleteRequiredFields(customFields, task) {
       field.displayOptions.includes('TASK_REQUIRED') &&
       (matchingMetaData === undefined ||
         matchingMetaData?.length === 0 ||
-        matchingMetaData?.value === undefined ||
-        matchingMetaData?.value === '')
+        !(
+          (matchingMetaData?.value && matchingMetaData?.value !== '') ||
+          (matchingMetaData?.values && matchingMetaData?.values.length > 0)
+        ))
     );
   });
 }
