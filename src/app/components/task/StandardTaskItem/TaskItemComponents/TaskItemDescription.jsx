@@ -1,12 +1,6 @@
 /* eslint-disable sonarjs/cognitive-complexity */
 /* eslint-disable import/extensions */
-import React, {
-  useCallback,
-  useRef,
-  useState,
-  useEffect,
-  useMemo,
-} from 'react';
+import React, { useCallback, useRef, useEffect, useMemo } from 'react';
 import { Box, Fade, IconButton, Popper } from '@material-ui/core';
 import { useDispatch } from 'react-redux';
 import moment from 'moment';
@@ -48,7 +42,6 @@ const TaskItemDescription = ({
   setEditing,
   disabled,
   disableMentions,
-  isEditButtonVisible = false,
   width,
 }) => {
   const {
@@ -68,7 +61,6 @@ const TaskItemDescription = ({
   const { matchDescription } = searchMetaData || {};
   const previousDescription = useRef(null);
   const descriptionTextReference = useRef(null);
-  const [isHovered, setIsHovered] = useState(false);
   const dispatch = useDispatch();
   const [descriptionState, setDescriptionState] = useMentionsEditorState(
     convertToEditorState({
@@ -166,8 +158,6 @@ const TaskItemDescription = ({
     <DescriptionBox width={width}>
       <Box display="flex" flex={1}>
         <Description
-          onMouseEnter={() => setIsHovered(true)}
-          onMouseLeave={() => setIsHovered(false)}
           ref={reference => {
             if (reference) {
               descriptionTextReference.current = reference.querySelector(
@@ -199,7 +189,6 @@ const TaskItemDescription = ({
               placement="bottom-start"
               open={
                 checkIfShouldDisplayTooltip(descriptionTextReference.current) &&
-                isHovered &&
                 !isEditing
               }
               style={{
@@ -217,7 +206,7 @@ const TaskItemDescription = ({
                 </Fade>
               )}
             </Popper>
-            {isEditButtonVisible && !isCompleted && (
+            {!isCompleted && (
               <DescriptionEditButton active={isEditing}>
                 <IconButton
                   onClick={event => {

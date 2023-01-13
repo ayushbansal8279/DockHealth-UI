@@ -206,6 +206,9 @@ export const DescriptionBox = styled.div`
   flex: 1;
   cursor: pointer;
   width: ${({ width }) => (width ? `${width}px` : '100%')};
+  &:hover > button {
+    visibility: visible;
+  }
 `;
 
 export const DecisionBox = styled.div`
@@ -604,6 +607,7 @@ export const DescriptionEditButton = styled.div`
   max-height: 18px;
   background-color: ${({ active }) => (active ? palette.coolGrey3 : '')};
   display: ${({ active }) => (active ? 'none' : 'block')};
+  visibility: hidden;
 
   &:hover {
     background-color: ${palette.coolGrey3};
