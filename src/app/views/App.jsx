@@ -227,6 +227,7 @@ class App extends PureComponent {
     }
   };
 
+  // eslint-disable-next-line sonarjs/cognitive-complexity
   render() {
     const isMobile = useMobile();
     // const isSmall = useSmallScreen();
@@ -274,6 +275,11 @@ class App extends PureComponent {
     const idleTimerReference = reference => {
       this.idleTimerForPresence = reference;
     };
+    const organizationAvailableFeatures =
+      userProfile?.organizationAvailableFeatures;
+    const dockChatAvailable = organizationAvailableFeatures?.includes(
+      'DOCK_CHAT',
+    );
 
     return (
       <AppContainer id="appHome">
@@ -282,9 +288,9 @@ class App extends PureComponent {
         ) : !showRotateScreenPage ? (
           <>
             <SendbirdProvider
-              appId={appId}
-              userId={userProfile?.identifier}
-              nickname={userProfile?.name}
+              appId={dockChatAvailable ? appId : ''}
+              userId={dockChatAvailable ? userProfile?.identifier : ''}
+              nickname={dockChatAvailable ? userProfile?.name : ''}
               colorSet={sendbirdColorSet}
             >
               <div id="portal" />
