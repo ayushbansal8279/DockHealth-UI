@@ -93,7 +93,7 @@ const UsersList = props => {
       {isEmpty(filteredUsers) ? (
         <ListContainer>
           <ListEntryContainer>
-            <Grid container justify="center" alignItems="center">
+            <Grid container justifyContent="center" alignItems="center">
               <RobotoTypography variant="h4">
                 No providers found
               </RobotoTypography>

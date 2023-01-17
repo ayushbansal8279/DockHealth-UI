@@ -106,12 +106,18 @@ const SupportSectionViewFaq = () => {
       <Grid
         container
         alignItems="center"
-        justify="space-between"
+        justifyContent="space-between"
         wrap="nowrap"
         item
         xs={12}
       >
-        <Grid item xs={6} container alignItems="center" justify="flex-start">
+        <Grid
+          item
+          xs={6}
+          container
+          alignItems="center"
+          justifyContent="flex-start"
+        >
           <Typography variant="h2">
             <b>FAQs</b>
           </Typography>
@@ -128,7 +134,7 @@ const SupportSectionViewFaq = () => {
           item
           xs={6}
           container
-          justify="flex-end"
+          justifyContent="flex-end"
           direction="row"
           wrap="nowrap"
         >

@@ -1,4 +1,3 @@
-/* eslint-disable import/prefer-default-export */
 import { capitalize } from 'helpers/capitalize';
 import { string, object } from 'yup';
 

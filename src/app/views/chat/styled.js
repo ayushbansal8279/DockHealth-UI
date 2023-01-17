@@ -35,7 +35,7 @@ export const Container = styled.div`
   height: 100%;
   margin: 0 auto;
   // padding: 16px 12px;
-  zindex: 0;
+  z-index: 0;
 `;
 
 export const ColorSet = {

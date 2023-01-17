@@ -1,4 +1,3 @@
-/* eslint-disable sonarjs/no-identical-functions */
 import React, { useState, useCallback } from 'react';
 import { useDispatch } from 'react-redux';
 import pathEq from 'ramda/src/pathEq';

@@ -1,6 +1,4 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
 import { Grid } from '@material-ui/core';
-import palette from 'styles/palette';
 import React, { useMemo, useEffect } from 'react';
 import { FormProvider, useForm } from 'react-hook-form';
 import { useDispatch } from 'react-redux';

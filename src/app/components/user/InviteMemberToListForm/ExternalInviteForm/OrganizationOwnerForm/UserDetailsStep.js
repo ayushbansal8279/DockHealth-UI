@@ -76,7 +76,13 @@ const UserDetailsStep = ({ closeInviteForm, disabled }) => {
           </InfoContainer>
           <Spacing vertical={2} />
         </Grid>
-        <Grid container item direction="row" justify="center" spacing={2}>
+        <Grid
+          container
+          item
+          direction="row"
+          justifyContent="center"
+          spacing={2}
+        >
           <Grid item xs={5}>
             <Button
               fullWidth

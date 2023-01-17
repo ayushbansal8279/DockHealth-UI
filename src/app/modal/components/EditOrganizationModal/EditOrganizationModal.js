@@ -157,7 +157,7 @@ const EditOrganizationModal = ({ closeModal, userProfile, onSuccess }) => {
           <Grid
             container
             direction="row"
-            justify="flex-end"
+            justifyContent="flex-end"
             alignItems="center"
           >
             <SaveButtonWrapper>

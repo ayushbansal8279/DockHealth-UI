@@ -21,7 +21,7 @@ const OnboardingTrialCheckView = () => {
     <div>
       <OnboardingH2Bold>Your free trial period has expired.</OnboardingH2Bold>
       <OnboardingSpacing3 />
-      <Grid container justify="flex-start">
+      <Grid container justifyContent="flex-start">
         <Button onClick={() => subscribeNow(history)}>
           <OnboardingH2Bold>Subscribe Now</OnboardingH2Bold>
         </Button>

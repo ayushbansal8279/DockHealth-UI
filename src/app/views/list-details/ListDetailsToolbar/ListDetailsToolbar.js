@@ -91,6 +91,7 @@ const ListDetailsToolbar = ({ additionalOptions, children }) => {
     [history, taskListIdentifier, search],
   );
 
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const handleTasksVisibilityChange = visible => {
     const newDisplayOptions = visible
       ? uniq([...displayOptions, TASKS_VISIBILITY_KEY])

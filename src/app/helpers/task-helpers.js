@@ -14,7 +14,6 @@ import unless from 'ramda/src/unless';
 
 import palette from 'styles/palette';
 
-/* eslint-disable import/prefer-default-export */
 export const TaskStatus = {
   INCOMPLETE: 'INCOMPLETE',
   COMPLETE: 'COMPLETE',

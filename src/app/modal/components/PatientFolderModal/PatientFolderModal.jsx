@@ -54,7 +54,7 @@ const PatientFolderModal = ({
             name="name"
             validate={validateFolderName}
           />
-          <Grid container direction="row" justify="flex-end">
+          <Grid container direction="row" justifyContent="flex-end">
             <Button
               width="auto"
               variant="secondary"

@@ -1,4 +1,3 @@
-/* eslint-disable import/prefer-default-export */
 import * as TaskListApi from 'api/task-list-api';
 import pipe from 'ramda/src/pipe';
 import sortBy from 'ramda/src/sortBy';

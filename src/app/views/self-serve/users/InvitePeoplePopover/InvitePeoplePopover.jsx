@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/camelcase */
 import { Grid, Popover } from '@material-ui/core';
 import React, { useCallback, useState } from 'react';
 import { FormProvider, useForm } from 'react-hook-form';
@@ -101,7 +100,7 @@ const InvitePeoplePopover = ({
     >
       <InvitePeoplePopoverContainer>
         <InvitePeoplePopoverSection>
-          <Grid container justify="space-between" alignItems="center">
+          <Grid container justifyContent="space-between" alignItems="center">
             <InvitePopoverHeader>Invite User</InvitePopoverHeader>
             <InvitePopoverCloseButton onClick={closePopover} type="button">
               &times;

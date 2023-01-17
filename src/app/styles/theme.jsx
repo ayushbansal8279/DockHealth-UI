@@ -59,10 +59,10 @@ const themeFactory = memoizeWith(
     }),
 );
 
-export const getTheme = ({ weight, condensed } = {}) =>
+export const getTheme = ({ weight } = {}) =>
   themeFactory({
     fontWeight: weight,
-    fontFamily: condensed ? 'Roboto Condensed' : 'Roboto',
+    fontFamily: 'Roboto Condensed',
   });
 
 export const RobotoTypography = ({

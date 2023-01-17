@@ -1,4 +1,3 @@
-/* eslint-disable react-hooks/rules-of-hooks */
 import equals from 'ramda/src/equals';
 import find from 'ramda/src/find';
 import uniq from 'ramda/src/uniq';
@@ -19,7 +18,7 @@ import {
 
 const useBreakpoint = createBreakpoint({ sm: 600, md: 960 });
 
-const initializeMembersTableHooks = () => {
+const useInitializeMembersTableHooks = () => {
   const organizationUsers = useSelector(organizationUsersSelector) || [];
   const isFetching = useSelector(isFetchingOrganizationUsersSelector);
   const currentBreakPoint = useBreakpoint();
@@ -128,4 +127,4 @@ const initializeMembersTableHooks = () => {
   };
 };
 
-export default initializeMembersTableHooks;
+export default useInitializeMembersTableHooks;

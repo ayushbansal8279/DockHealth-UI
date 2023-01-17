@@ -1,4 +1,3 @@
-/* eslint-disable import/prefer-default-export */
 import React from 'react';
 import { MoreActionsWrapper } from 'views/person-details/PersonDetailsDrawer/styled';
 import OptionsMenu from 'components/common/OptionsMenu/OptionsMenu';

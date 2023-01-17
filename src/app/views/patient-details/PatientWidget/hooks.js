@@ -1,4 +1,3 @@
-/* eslint-disable react-hooks/rules-of-hooks */
 import { useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { userProfileSelector } from 'selectors/user-selectors';
@@ -7,7 +6,7 @@ import // fetchPatientWidgets,
 'sagas/patient-details-saga';
 import { useBoolean } from 'hooks/useBoolean';
 
-const initializeWidgetSectionHooks = () => {
+const useInitializeWidgetSectionHooks = () => {
   const dispatch = useDispatch();
   const userProfile = useSelector(userProfileSelector);
   const patient = useSelector(patientSelector);
@@ -21,9 +20,7 @@ const initializeWidgetSectionHooks = () => {
 
   // const widgets = useSelector(patientWidgetsSelector) || [];
 
-  const [widgetsLoading, setWidgetsLoading, unsetWidgetsLoading] = useBoolean(
-    false,
-  );
+  const [widgetsLoading] = useBoolean(false);
 
   return {
     userProfile,
@@ -33,4 +30,4 @@ const initializeWidgetSectionHooks = () => {
   };
 };
 
-export default initializeWidgetSectionHooks;
+export default useInitializeWidgetSectionHooks;

@@ -1,4 +1,3 @@
-/* eslint-disable sonarjs/no-duplicate-string */
 import React, { useState } from 'react';
 import queryString from 'query-string';
 import { useHistory } from 'react-router-dom';
@@ -16,6 +15,8 @@ import {
   OnboardingDialog,
   OnboardingHeader,
 } from '../onboarding/OnboardingTemplate.Components';
+
+const FONT_FAMILY_NAME = 'roboto condensed';
 
 const resendEmail = async (email, dispatch) => {
   try {
@@ -40,7 +41,6 @@ const ConfirmRegistration = props => {
   const [userEmail, setUserEmail] = useState('');
   const history = useHistory();
 
-  // eslint-disable-next-line consistent-return
   useMount(() => {
     const { location } = props;
     const queryValues = queryString.parse(location.search);
@@ -77,14 +77,14 @@ const ConfirmRegistration = props => {
   });
 
   const onboardingDialogStyle = {
-    fontFamily: 'roboto condensed',
+    fontFamily: FONT_FAMILY_NAME,
     fontWeight: 300,
     fontSize: '18px',
     padding: '0rem 1rem',
   };
 
   const onboardingMessageStyle = {
-    fontFamily: 'roboto condensed',
+    fontFamily: FONT_FAMILY_NAME,
     fontWeight: 300,
     fontSize: '18px',
     padding: '0rem 1rem',
@@ -92,7 +92,7 @@ const ConfirmRegistration = props => {
   };
 
   const onboardingLinkStyle = {
-    fontFamily: 'roboto condensed',
+    fontFamily: FONT_FAMILY_NAME,
     fontWeight: 300,
     fontSize: '18px',
   };

@@ -349,7 +349,7 @@ const PatientsList = ({
       ) : (
         <>
           {patients?.length > 0 && formattedPatients ? (
-            <Grid container xs={12} item justify="center">
+            <Grid container xs={12} item justifyContent="center">
               <Grid item xs={12} xl={11} md={12} lg={11}>
                 <NonEmptyListTable listLength={patients?.length ?? 0}>
                   <StyledDataGrid

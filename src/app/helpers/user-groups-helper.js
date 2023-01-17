@@ -1,4 +1,3 @@
-/* eslint-disable import/prefer-default-export */
 import innerJoin from 'ramda/src/innerJoin';
 import { ActivityStatus } from './user-helper';
 

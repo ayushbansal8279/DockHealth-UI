@@ -13,7 +13,7 @@ export const Title = styled.label`
   color: ${palette.mediumGrey};
   text-transform: uppercase;
   font-size: ${fontSizes.smallPlus};
-  font-family: 'Roboto', sans-serif;
+  font-family: 'Roboto Condensed', sans-serif;
 `;
 
 export const HeaderButton = styled.button`

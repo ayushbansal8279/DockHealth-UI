@@ -112,7 +112,7 @@ const ListDetailsForm = ({
       }
     >
       <FormProvider {...formMethods}>
-        <Grid container direction="column" justify="space-between">
+        <Grid container direction="column" justifyContent="space-between">
           <Grid item>
             <Header>
               <Title>{list ? 'Edit a list' : 'Create a list'}</Title>
@@ -153,7 +153,7 @@ const ListDetailsForm = ({
               list when you change the above option.
             </span>
           </Grid>
-          <Grid container direction="row" justify="center">
+          <Grid container direction="row" justifyContent="center">
             <ButtonWrapper>
               <Button
                 fullWidth

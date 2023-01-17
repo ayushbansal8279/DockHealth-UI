@@ -23,7 +23,11 @@ const UserRoleStep = ({ navigateToPreviousStep, disabled }) => {
   const roleValue = watch('userRole');
 
   return (
-    <RoleFormWrapper container direction="column" justify="space-between">
+    <RoleFormWrapper
+      container
+      direction="column"
+      justifyContent="space-between"
+    >
       <Grid item>
         <RoleSelectionHeader>
           Select their role in your Organization
@@ -118,7 +122,7 @@ const UserRoleStep = ({ navigateToPreviousStep, disabled }) => {
         </RoleOptionLabel>
         <Divider />
       </RoleSelectionWrapper>
-      <Grid container item direction="row" justify="center" spacing={2}>
+      <Grid container item direction="row" justifyContent="center" spacing={2}>
         <Grid item xs={3}>
           <Button
             fullWidth

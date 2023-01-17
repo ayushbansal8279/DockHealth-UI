@@ -101,7 +101,7 @@ const BaaPreview = React.memo(({ isPreviewOpen, hidePreview }) => {
       </AttachmentPreviewHeader>
       <AttachmentPreviewContent>
         {data.loading && (
-          <Grid container justify="center" alignItems="center">
+          <Grid container justifyContent="center" alignItems="center">
             <Loader />
           </Grid>
         )}
@@ -113,7 +113,7 @@ const BaaPreview = React.memo(({ isPreviewOpen, hidePreview }) => {
           </StyledPdfDocument>
         )}
         {data.error && (
-          <Grid container justify="center" alignItems="center">
+          <Grid container justifyContent="center" alignItems="center">
             {data.error?.message}
           </Grid>
         )}

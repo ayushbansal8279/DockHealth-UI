@@ -1,5 +1,4 @@
 /* eslint-disable sonarjs/no-identical-functions */
-/* eslint-disable import/prefer-default-export */
 import {
   mapSelectedOptionsToRequestPayload,
   mapRequestSelectedOptionsToStore,

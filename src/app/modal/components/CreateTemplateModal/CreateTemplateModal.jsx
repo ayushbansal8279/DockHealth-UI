@@ -59,7 +59,7 @@ const CreateTemplateModal = ({ closeModal, onCreateSuccess }) => {
             placeholder="What would you like to name this workflow?"
             validate={validateTemplateName}
           />
-          <Grid container direction="row" justify="center">
+          <Grid container direction="row" justifyContent="center">
             <Button
               width="170px"
               variant="secondary"

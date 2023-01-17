@@ -1,4 +1,3 @@
-/* eslint-disable import/prefer-default-export */
 import { string, object } from 'yup';
 
 const REQUIRED_MESSAGE = 'This field is required';

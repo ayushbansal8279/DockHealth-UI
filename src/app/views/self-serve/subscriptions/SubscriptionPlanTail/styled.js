@@ -10,14 +10,13 @@ export const Container = styled.div`
   border-radius: 10px;
   box-shadow: 0px 6px 9px rgba(0, 0, 0, 0.17);
   border-top: 10px solid ${({ color }) => color};
-  font-family: 'Roboto', sans-serif;
+  font-family: 'Roboto Condensed', sans-serif;
 `;
 
 export const MostPopularText = styled.p`
   position: absolute;
   top: -20px;
   left: 0;
-  margin-bottom;
   color: ${palette.red};
   font-size: ${fontSizes.smallPlus};
   font-weight: ${fontWeights.light};

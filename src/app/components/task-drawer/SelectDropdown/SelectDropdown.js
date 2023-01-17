@@ -277,7 +277,7 @@ const SelectDropdown = React.forwardRef(
                 )}
               </>
             ) : (
-              <Grid container justify="center" alignItems="center">
+              <Grid container justifyContent="center" alignItems="center">
                 <Spacing vertical={3} />
                 <Loader size={LoaderSizes.small} />
                 <Spacing vertical={3} />

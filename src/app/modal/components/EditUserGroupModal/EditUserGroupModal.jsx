@@ -141,7 +141,7 @@ const EditUserGroupModal = ({ userGroup, closeModal }) => {
       </CloseIconButton>
       <StyledForm onSubmit={event => handleSubmit(onSubmit)(event)}>
         <FormProvider {...formMethods}>
-          <Grid container direction="column" justify="space-between">
+          <Grid container direction="column" justifyContent="space-between">
             <Grid item>
               <Header>
                 <Title>User Group Builder</Title>
@@ -197,7 +197,7 @@ const EditUserGroupModal = ({ userGroup, closeModal }) => {
                 onChange={newAvatar => setValue('avatar', newAvatar)}
               />
             </Grid>
-            <Grid container direction="row" justify="center">
+            <Grid container direction="row" justifyContent="center">
               <Spacing vertical={3} />
               <ButtonWrapper>
                 <Button

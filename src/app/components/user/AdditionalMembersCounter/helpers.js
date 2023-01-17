@@ -1,4 +1,3 @@
-/* eslint-disable import/prefer-default-export */
 import React from 'react';
 import isEmpty from 'ramda/src/isEmpty';
 import { HiddenMembersTooltipContainer, HiddenMemberName } from './styled';

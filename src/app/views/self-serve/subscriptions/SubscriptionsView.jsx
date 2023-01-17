@@ -28,7 +28,6 @@ import {
 import { getUserByEmail } from 'api/user-auth-api';
 import CurrentPlan from './CurrentPlan/CurrentPlan';
 import SubscriptionPlanTail from './SubscriptionPlanTail/SubscriptionPlanTail';
-import ProfessionalServicesTail from './ProfessionalServicesTail/ProfessionalServicesTail';
 import {
   SubscriptionsViewContainer,
   SubscriptionsViewOuterContainer,
@@ -37,7 +36,6 @@ import {
   SwitchContainer,
   Switch,
   SwitchLabel,
-  ProfessionalServicesTitle,
   Title,
   TitleDescription,
   SubTitleDescription,
@@ -304,7 +302,7 @@ const SubscriptionsView = () => {
               </BillingTableSummaryRow>
             </BillingTable>
             <Box p={1} />
-            <Grid container justify="flex-end">
+            <Grid container justifyContent="flex-end">
               {isCurrentPlanChanged && (
                 <Button
                   width="200px"

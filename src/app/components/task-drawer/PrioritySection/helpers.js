@@ -1,4 +1,3 @@
-/* eslint-disable import/prefer-default-export */
 import React from 'react';
 import { Box } from '@material-ui/core';
 import { getPriorityColor, TaskPriority } from 'helpers/task-helpers';

@@ -49,7 +49,7 @@ const DASHBOARD_BASE_COLUMNS_CONFIG = {
   [TaskItemColumn.LIST_NAME]: true,
 };
 
-const { ADMIN, OWNER, MEMBER, GUEST, EXTERNAL } = UserOrganizationRole;
+const { ADMIN, OWNER, MEMBER, GUEST } = UserOrganizationRole;
 
 const DashboardToolbar = ({ iconColorFilterActive, iconColorActive }) => {
   const history = useHistory();
@@ -145,7 +145,7 @@ const DashboardToolbar = ({ iconColorFilterActive, iconColorActive }) => {
   );
 
   return (
-    <ToolbarContainer container direction="row" justify="space-between">
+    <ToolbarContainer container direction="row" justifyContent="space-between">
       <Grid item md={4}>
         <DashboardTabsContainer>
           <AccessRestrictor allowedToRoles={[ADMIN, OWNER, MEMBER, GUEST]}>

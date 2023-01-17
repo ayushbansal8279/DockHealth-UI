@@ -1,4 +1,3 @@
-/* eslint-disable import/prefer-default-export */
 import { makeStyles } from '@material-ui/core/styles';
 import { fontSizes, fontWeights } from 'styles/font';
 import spacing from 'styles/spacing';

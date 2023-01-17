@@ -153,7 +153,7 @@ const BillingElement = ({
 const SaveBillingElement = ({ processingPayment, cancelSaveBillingClick }) => (
   <>
     <Spacing vertical={2} />
-    <Grid item sm={12} container wrap="nowrap" justify="flex-end">
+    <Grid item sm={12} container wrap="nowrap" justifyContent="flex-end">
       <H3>
         <span>By selecting Subscribe I agree to the </span>
         <Anchor
@@ -164,7 +164,7 @@ const SaveBillingElement = ({ processingPayment, cancelSaveBillingClick }) => (
         </Anchor>
       </H3>
     </Grid>
-    <Grid item sm={12} container justify="flex-end" wrap="nowrap">
+    <Grid item sm={12} container justifyContent="flex-end" wrap="nowrap">
       <Button
         onClick={cancelSaveBillingClick}
         variant="text"
@@ -193,7 +193,7 @@ const UpdateBillingElement = ({
   processingUpdate,
 }) =>
   isUpdatingBilling && (
-    <Grid item sm={12} container justify="flex-end" wrap="nowrap">
+    <Grid item sm={12} container justifyContent="flex-end" wrap="nowrap">
       <Button
         onClick={cancelUpdateBilling}
         variant="text"
@@ -315,7 +315,7 @@ const CreditPaymentForm = ({
       </Grid>
       {hasDiscountCode && <Grid item sm={12} md={9} />}
       {hasDiscountCode && (
-        <Grid item sm={12} md={3} wrap="nowrap" justify="flex-end">
+        <Grid item sm={12} md={3} wrap="nowrap" justifyContent="flex-end">
           <FormInput name="discountCode" label="Discount code" />
         </Grid>
       )}
@@ -348,7 +348,7 @@ const BillingData = ({
   cancelSaveBillingClick,
 }) => {
   const { billingDetails, referralConfig } = useSelector(organizationSelector);
-  const { hasDiscountCode } = referralConfig;
+  const { hasDiscountCode } = referralConfig ?? {};
 
   const formMethods = useForm({
     resolver: yupResolver(validationSchema),

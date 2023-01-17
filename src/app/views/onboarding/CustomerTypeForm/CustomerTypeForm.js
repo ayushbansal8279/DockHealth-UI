@@ -1,4 +1,3 @@
-/* eslint-disable import/extensions */
 import React, { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { userProfileSelector } from 'selectors/user-selectors';

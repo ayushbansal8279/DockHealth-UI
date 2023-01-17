@@ -165,7 +165,7 @@ const TaskItemDetails = ({ task, onClick, readOnly }) => {
             title={
               <pre
                 style={{
-                  fontFamily: "'Roboto', sans-serif",
+                  fontFamily: "'Roboto Condensed', sans-serif",
                   whiteSpace: 'pre-wrap',
                   wordBreak: 'keep-all',
                 }}

@@ -88,7 +88,12 @@ const ActivityAlertsSettings = ({
       <ActivityAlertsSettingsItemsContainer>
         <ActivityAlertsSettingsItemsHeader>
           <Grid container>
-            <Grid item xs={6} alignItems="flex-start" justify="flex-start" />
+            <Grid
+              item
+              xs={6}
+              alignItems="flex-start"
+              justifyContent="flex-start"
+            />
             <Grid item xs={3}>
               <ActivityAlertsSettingsItemsHeaderLabel>
                 IN APP

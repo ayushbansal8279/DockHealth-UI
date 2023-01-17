@@ -1,4 +1,3 @@
-/* eslint-disable import/prefer-default-export */
 import isEmpty from 'ramda/src/isEmpty';
 
 export const getHiddenMembersWithStatusContent = (

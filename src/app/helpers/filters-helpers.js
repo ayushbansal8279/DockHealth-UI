@@ -1,5 +1,4 @@
 import moment from 'moment';
-/* eslint-disable sonarjs/prefer-immediate-return */
 import isEmpty from 'ramda/src/isEmpty';
 
 const TASK_DUE_DATE_FORMAT = 'YYYY-MM-DDTHH:mm:ss.SSSZ';

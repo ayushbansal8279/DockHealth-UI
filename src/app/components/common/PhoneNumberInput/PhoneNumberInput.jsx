@@ -70,7 +70,7 @@ const CustomPhoneNumberInput = ({ readOnly, inputRef, ...otherProps }) => {
       country={defaultLang}
       countryCodeEditable={false}
       onlyCountries={phoneCountryCodes}
-      containerClass={classes.container}
+      containerClass={classes.root}
       inputClass={classes.input}
       buttonClass={classes.button}
       dropdownClass={classes.dropdown}

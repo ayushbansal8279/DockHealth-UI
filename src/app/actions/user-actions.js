@@ -1,4 +1,3 @@
-/* eslint-disable import/prefer-default-export */
 import * as UserApi from 'api/user-api';
 // import * as UserAuthApi from 'api/user-auth-api';
 import * as ActionTypes from 'actions/action-types';
@@ -6,7 +5,6 @@ import * as ActionTypes from 'actions/action-types';
 import { setAuthBaseState } from 'actions/auth-base-actions';
 import { AUTH_BASE_STATES } from 'reducers/auth-base-reducer';
 
-// eslint-disable-next-line unicorn/consistent-function-scoping
 export const acknowledgeEula = () => UserApi.acknowledgeEula();
 
 export const approveOrDenyInvitation = ({

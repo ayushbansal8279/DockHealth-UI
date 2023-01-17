@@ -34,8 +34,7 @@ const CustomFieldsView = () => {
   const taskCustomFieldsAvailable = useSelector(
     userHasTaskCustomFieldsFeatureSelector,
   );
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const initial = Object.entries(TABS).find(([_, name]) => name === tabName);
+  const initial = Object.entries(TABS).find(([, name]) => name === tabName);
 
   const customerTypeLabel = getCustomerTypeLabel(userProfile);
 

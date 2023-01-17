@@ -171,7 +171,7 @@ const InvoicesList = () => {
             {isEmpty(sortedInvoicesData) ? (
               <tr>
                 <td colSpan={columnDefinitions.length}>
-                  <Grid container justify="center" alignItems="center">
+                  <Grid container justifyContent="center" alignItems="center">
                     No invoices found
                   </Grid>
                 </td>

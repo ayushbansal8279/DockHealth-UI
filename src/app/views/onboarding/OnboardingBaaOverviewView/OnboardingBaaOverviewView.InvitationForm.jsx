@@ -5,7 +5,7 @@ import { FormProvider, useForm } from 'react-hook-form';
 import { useHistory } from 'react-router-dom';
 import { v4 as uuid } from 'uuid';
 import { object, string } from 'yup';
-import { yupResolver } from "@hookform/resolvers/yup";
+import { yupResolver } from '@hookform/resolvers/yup';
 import { inviteAuthorizedSigner } from 'api/organization-api';
 import Spacing from 'components/common/Spacing';
 import Button from 'components/common/Button/Button';
@@ -85,7 +85,7 @@ const InvitationForm = ({ hideInvitationForm }) => {
       autoCorrect="off"
     >
       <FormProvider {...formMethods}>
-        <Grid container alignItems="center" justify="space-between">
+        <Grid container alignItems="center" justifyContent="space-between">
           <MontserratTypography variant="h3">
             Invite the authorized signer of your organization
           </MontserratTypography>

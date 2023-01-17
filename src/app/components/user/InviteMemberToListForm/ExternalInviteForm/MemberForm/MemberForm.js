@@ -5,7 +5,7 @@ import Spacing from 'components/common/Spacing';
 import Button from 'components/common/Button/Button';
 import FormInput from 'components/common/Input/FormInput';
 import { object, string } from 'yup';
-import { yupResolver } from "@hookform/resolvers/yup";
+import { yupResolver } from '@hookform/resolvers/yup';
 import { FormWrapper, InfoContainer, InfoHeader, InfoText } from './styled';
 
 const REQUIRED_FIELD = 'This field is required';
@@ -79,7 +79,13 @@ const MemberForm = ({ initialValues, closeInviteForm, onSubmit, disabled }) => {
             </InfoContainer>
             <Spacing vertical={2} />
           </Grid>
-          <Grid container item direction="row" justify="center" spacing={2}>
+          <Grid
+            container
+            item
+            direction="row"
+            justifyContent="center"
+            spacing={2}
+          >
             <Grid item xs={4}>
               <Button
                 fullWidth

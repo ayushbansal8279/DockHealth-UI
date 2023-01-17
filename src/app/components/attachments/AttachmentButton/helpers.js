@@ -1,4 +1,3 @@
-/* eslint-disable import/prefer-default-export */
 import { Image, Movie, Description, Audiotrack } from '@material-ui/icons';
 
 export const getIconFromContentType = ({ contentType }) => {

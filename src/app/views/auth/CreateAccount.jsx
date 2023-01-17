@@ -1,5 +1,3 @@
-/* eslint-disable @typescript-eslint/camelcase */
-/* eslint-disable @typescript-eslint/no-explicit-any */
 import { Grid, Typography } from '@material-ui/core';
 import queryString from 'query-string';
 import React, { useState } from 'react';
@@ -241,7 +239,7 @@ const CreateAccount = props => {
   };
 
   return (
-    <StyledGrid container alignItems="center" justify="center">
+    <StyledGrid container alignItems="center" justifyContent="center">
       <StyledForm
         onSubmit={formMethods.handleSubmit(
           onSubmit({

@@ -1,4 +1,3 @@
-/* eslint-disable sonarjs/no-small-switch */
 const initialState = {
   alertsEnabled: false,
   alertToastHide: false,

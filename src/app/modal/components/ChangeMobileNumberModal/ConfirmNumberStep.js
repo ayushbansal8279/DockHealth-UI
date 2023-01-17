@@ -4,7 +4,7 @@ import MobilePhoneIcon from 'img/modals/mobile-phone';
 import { FormProvider, useForm } from 'react-hook-form';
 import { useDispatch } from 'react-redux';
 import { object, string } from 'yup';
-import { yupResolver } from "@hookform/resolvers/yup";
+import { yupResolver } from '@hookform/resolvers/yup';
 import { openModal } from 'modal/actions';
 import * as UserAuthApi from 'api/user-auth-api';
 import FormInput from 'components/common/Input/FormInput';
@@ -76,7 +76,11 @@ const ConfirmNumberStep = ({
           onSubmit({ dispatch, onUpdateSuccess, setError, newPhoneNumber }),
         )}
       >
-        <GridMaxHeight container direction="column" justify="space-between">
+        <GridMaxHeight
+          container
+          direction="column"
+          justifyContent="space-between"
+        >
           <Grid item>
             <Spacing vertical={4} />
             <LargeHelperText>

@@ -195,7 +195,7 @@ const SubscriptionPaymentView = () => {
                 <Grid
                   container
                   alignItems="flex-start"
-                  justify="flex-start"
+                  justifyContent="flex-start"
                   direction="column"
                 >
                   <DarkBlueTextContainer>
@@ -211,7 +211,7 @@ const SubscriptionPaymentView = () => {
                   <StyledLink to={SUBS_SETTINGS_PATH}>Change plans</StyledLink>
                 </Grid>
               </PricingItemVerticallyExpanded>
-              <Grid container alignItems="center" justify="flex-end">
+              <Grid container alignItems="center" justifyContent="flex-end">
                 <MontserratTypography variant="h3">
                   {planPricePerUser}
                 </MontserratTypography>
@@ -223,7 +223,7 @@ const SubscriptionPaymentView = () => {
                 </MontserratTypography>
                 <Spacing vertical={4} />
               </Grid>
-              <Grid container alignItems="center" justify="flex-end">
+              <Grid container alignItems="center" justifyContent="flex-end">
                 <MontserratTypography variant="h3">
                   {activeUserCount}
                 </MontserratTypography>
@@ -237,7 +237,7 @@ const SubscriptionPaymentView = () => {
               </Grid>
               {professionalServicesIncluded && (
                 <>
-                  <Grid container alignItems="center" justify="flex-end">
+                  <Grid container alignItems="center" justifyContent="flex-end">
                     <MontserratTypography variant="h3">
                       {priceFormatter(PROFESSIONAL_SERVICES_PRICE)}
                     </MontserratTypography>
@@ -253,7 +253,7 @@ const SubscriptionPaymentView = () => {
               )}
               <PricingItemDivider />
               <div />
-              <Grid container alignItems="center" justify="flex-end">
+              <Grid container alignItems="center" justifyContent="flex-end">
                 <Spacing vertical={4} />
                 <MontserratTypography variant="h3" weight="bold">
                   {planTotalPayment}

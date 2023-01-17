@@ -8,7 +8,7 @@ import { MontserratTypography } from 'styles/theme-montserrat';
 import { RobotoTypography } from 'styles/theme';
 import { FormProvider, useForm } from 'react-hook-form';
 import { object, string } from 'yup';
-import { yupResolver } from "@hookform/resolvers/yup";
+import { yupResolver } from '@hookform/resolvers/yup';
 import Spacing from 'components/common/Spacing.tsx';
 import { showAlert } from 'helpers/utility-functions';
 import { referAColleague } from 'api/organization-api';
@@ -152,7 +152,7 @@ export default function ReferAColleagueModal({ closeModal, openModal }) {
         <RightSideContentContainer>
           <StyledGrid
             container
-            justify="center"
+            justifyContent="center"
             alignItems="left"
             direction="column"
           >

@@ -172,7 +172,7 @@ const UserProfileView = () => {
               <Grid
                 container
                 direction="row"
-                justify="flex-start"
+                justifyContent="flex-start"
                 alignItems="center"
               >
                 <OrganizationAvatar

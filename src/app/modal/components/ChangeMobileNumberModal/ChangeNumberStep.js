@@ -2,7 +2,7 @@ import React from 'react';
 import { Grid } from '@material-ui/core';
 import { FormProvider, useForm } from 'react-hook-form';
 import { object, string } from 'yup';
-import { yupResolver } from "@hookform/resolvers/yup";
+import { yupResolver } from '@hookform/resolvers/yup';
 import * as UserAuthApi from 'api/user-auth-api';
 import FormPhoneNumberInput from 'components/common/PhoneNumberInput/FormPhoneNumberInput';
 import Spacing from 'components/common/Spacing';
@@ -68,7 +68,11 @@ const ChangeNumberStep = ({ goToNextStep, setNewPhoneNumber, userProfile }) => {
           onSubmit({ goToNextStep, setNewPhoneNumber, setError, userProfile }),
         )}
       >
-        <GridMaxHeight container direction="column" justify="space-between">
+        <GridMaxHeight
+          container
+          direction="column"
+          justifyContent="space-between"
+        >
           <Grid item>
             <Spacing vertical={5} />
             <HelperText>

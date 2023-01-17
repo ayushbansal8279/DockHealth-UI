@@ -1,5 +1,4 @@
 /* eslint-disable sonarjs/cognitive-complexity */
-/* eslint-disable unicorn/prevent-abbreviations */
 import React, {
   useState,
   useEffect,
@@ -373,13 +372,17 @@ const SmartFlowBuilderView = () => {
     let updatedElements = elements;
     let shouldUpdate = false;
 
-    selectedNodes.forEach(e => {
-      const isExistingTask = !!e.data.task;
+    selectedNodes.forEach(node => {
+      const isExistingTask = !!node.data.task;
 
       if (isExistingTask) {
         if (!shouldUpdate) shouldUpdate = true;
 
-        updatedElements = updateNodePosition(e.id, e.position, updatedElements);
+        updatedElements = updateNodePosition(
+          node.id,
+          node.position,
+          updatedElements,
+        );
       }
     });
 
@@ -392,7 +395,7 @@ const SmartFlowBuilderView = () => {
   const handleNodeDragStop = () => {
     const selectedNodes = reactFlowInstance.current
       .getElements()
-      .filter(e => selectedElements.find(se => se.id === e.id));
+      .filter(element => selectedElements.find(se => se.id === element.id));
 
     updateSelectedElementsPosition(selectedNodes);
   };
@@ -404,12 +407,12 @@ const SmartFlowBuilderView = () => {
   const mergedElementsWithActions = useMemo(
     () =>
       elements || temporaryElements
-        ? [...(elements || []), ...(temporaryElements || [])]?.map(e => {
+        ? [...(elements || []), ...(temporaryElements || [])]?.map(element => {
             return {
-              ...e,
-              isConnectable: draggedEdgeSourceId !== e.id,
+              ...element,
+              isConnectable: draggedEdgeSourceId !== element.id,
               data: {
-                ...e.data,
+                ...element.data,
                 draggedEdgeSourceId,
                 taskTemplateIdentifier: identifier,
                 onTargetHandleHover: setHoveredTargetHandle,
@@ -432,8 +435,8 @@ const SmartFlowBuilderView = () => {
         LinkType.TEMPORARY_DECISION,
       ].includes(type),
     );
-    const linksToDelete = elementsToDelete.filter(e => {
-      const { source, target, type } = e;
+    const linksToDelete = elementsToDelete.filter(element => {
+      const { source, target, type } = element;
 
       if (![LinkType.DECISION, LinkType.STANDARD].includes(type)) {
         return false;
@@ -473,17 +476,17 @@ const SmartFlowBuilderView = () => {
             }
 
             if (temporaryElementsToDelete.length > 0) {
-              temporaryElementsToDelete.forEach(e => {
-                dispatch(deleteTemporaryElement(e.id));
+              temporaryElementsToDelete.forEach(element => {
+                dispatch(deleteTemporaryElement(element.id));
               });
             }
 
             if (linksToDelete.length > 0) {
-              linksToDelete.forEach(e => {
+              linksToDelete.forEach(link => {
                 const {
                   source: sourceTaskIdentifier,
                   target: targetTaskIdentifier,
-                } = e;
+                } = link;
                 dispatch(
                   deleteTasksLink(sourceTaskIdentifier, targetTaskIdentifier),
                 );
@@ -540,9 +543,9 @@ const SmartFlowBuilderView = () => {
 
   const resetSelection = () => {
     // resetting selection by creating click event on react flow panel
-    const el = document.querySelector('.react-flow__pane');
+    const element = document.querySelector('.react-flow__pane');
     // eslint-disable-next-line no-unused-expressions
-    el?.click();
+    element?.click();
   };
 
   const handleAutoAlignClick = async () => {

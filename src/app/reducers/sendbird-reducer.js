@@ -1,4 +1,3 @@
-/* eslint-disable sonarjs/no-small-switch */
 import * as ActionTypes from 'actions/action-types';
 
 const initialState = {

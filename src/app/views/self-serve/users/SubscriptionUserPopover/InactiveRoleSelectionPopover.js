@@ -1,4 +1,3 @@
-/* eslint-disable sonarjs/no-identical-functions */
 import React, { useState } from 'react';
 import { useDispatch } from 'react-redux';
 import { Popover } from '@material-ui/core';
