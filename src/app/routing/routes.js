@@ -4,6 +4,7 @@ import { useEffectOnce } from 'react-use';
 import { parse } from 'query-string';
 import ReactGA from 'react-ga';
 import sendEvent from 'api/usage-api';
+import PageLoader from 'components/navigation/PageLoader';
 import {
   AUTH_ROUTES,
   ONBOARDING_ROUTES,
@@ -69,7 +70,7 @@ const Routes = () => {
   }, [history, redirection]);
 
   return (
-    <Suspense fallback={<div />}>
+    <Suspense fallback={<PageLoader />}>
       <Switch>
         {AUTH_ROUTES.map(route => (
           <Redirect

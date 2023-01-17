@@ -1,66 +1,132 @@
-import React from 'react';
-import PatientsView from 'components/patients/PatientsView';
-import TaskTourView from 'views/TaskTour/TaskTourView';
-import GlobalSearchView from 'views/global-search/GlobalSearchView';
-import ChangePhoneNumber from 'views/auth/ChangePhoneNumber';
-import ConfirmMFACode from 'views/auth/ConfirmMfaCode';
-import ConfirmRegistration from 'views/auth/ConfirmRegistration';
-import ConfirmRegistrationSuccess from 'views/auth/ConfirmRegistrationSuccess';
-import CreateAccount from 'views/auth/CreateAccount';
-import DashboardView from 'views/dashboard/DashboardView';
-import EmailSent from 'views/auth/EmailSent';
-import ForgotPassword from 'views/auth/ForgotPassword';
-import LoginPassword from 'views/auth/LoginPassword';
-import LoginUser from 'views/auth/LoginUser';
-import LoginWelcome from 'views/auth/LoginWelcome';
-import Logout from 'views/auth/Logout';
-import ResendCode from 'views/auth/ResendCode';
-import ResetPassword from 'views/auth/ResetPassword';
-import ResetPasswordSuccess from 'views/auth/ResetPasswordSuccess';
-import SelfEnrolledUser from 'views/auth/SelfEnrolledUser';
-import UnEnrolledUser from 'views/auth/UnEnrolledUser';
-import ApproveDisapproveUser from 'views/auth/ApproveDisapproveUser';
-// import EmbeddedSSO from 'views/auth/EmbeddedSso';
+import React, { lazy } from 'react';
 import ErrorPage from 'views/ErrorPage';
-import ListDetailsView from 'views/list-details/ListDetailsView';
-import OnboardingBaaCheckView from 'views/onboarding/OnboardingBaaCheckView/OnboardingBaaCheckView';
-import OnboardingBaaInvitationSentView from 'views/onboarding/OnboardingBaaInvitationSentView/OnboardingBaaInvitationSentView';
-import OnboardingBaaOverviewView from 'views/onboarding/OnboardingBaaOverviewView/OnboardingBaaOverviewView';
-import OnboardingEulaView from 'views/onboarding/OnboardingEulaView/OnboardingEulaView';
-import OnboardingTrialCheckView from 'views/onboarding/OnboardingTrialCheckView/OnboardingTrialCheckView';
-import OnboardingNewOrganizationInfoView from 'views/onboarding/OnboardingNewOrganizationInfoView/OnboardingNewOrganizationInfoView';
-import OnboardingCreateOrganizationView from 'views/onboarding/OnboardingCreateOrganizationView/OnboardingCreateOrganizationView';
-import OnboardingOrgSetupView from 'views/onboarding/OnboardingOrgSetupView/OnboardingOrgSetupView';
-import OnboardingTeamSetupView from 'views/onboarding/OnboardingTeamSetupView/OnboardingTeamSetupView';
-import OnboardingSelectCustomerTypeView from 'views/onboarding/OnboardingSelectCustomerTypeView/OnboardingSelectCustomerTypeView';
-import OnboardingQuestions from 'views/onboarding/OnboardingQuestions/OnboardingQuestions';
 import PageNotFound from 'views/PageNotFound';
-import PatientDetailsView from 'views/patient-details/PatientDetailsView';
-import UserGroupView from 'views/user-group/UserGroupView';
-import PersonDetailsView from 'views/person-details/PersonDetailsView';
-import BillingsView from 'views/self-serve/billings/BillingsView';
-import DocumentsView from 'views/self-serve/documents/DocumentsView';
-import SubscriptionPaymentFinishedView from 'views/self-serve/subscription-payment/SubscriptionPaymentFinishedView';
-import SubscriptionPaymentView from 'views/self-serve/subscription-payment/SubscriptionPaymentView';
-import SubscriptionsView from 'views/self-serve/subscriptions/SubscriptionsView';
-import SubscriptionExpiredView from 'views/self-serve/subscriptions/SubscriptionExpiredView';
-import UsersView from 'views/self-serve/users/UsersView';
-import SupportView from 'views/Support/SupportView';
-import TaskListActivityFeedView from 'views/ActivityFeed/TaskListActivityFeedView';
-import UserProfileView from 'views/UserProfile/UserProfileView';
-import CustomFieldsView from 'views/custom-fields/CustomFieldsView';
-import AnalyticsView from 'views/analytics/AnalyticsView';
 import ChatView from 'views/chat/ChatView';
 import { DashboardTasksTab } from 'helpers/dashboard-helpers';
-import SingleTaskView from 'views/single-task/SingleTaskView';
-import Templates from 'views/Templates/Templates';
-import Contacts from 'views/Contacts/Contacts';
 import { PERMISSIONS } from 'helpers/permission-mapper';
 import { onLeaveGlobalSearch } from './TemplateCoreSubscriptionPlan/GlobalSearch';
 import {
   onEnterListDetailsView,
   onLeaveListDetailsView,
 } from './TemplateCoreSubscriptionPlan/ListDetails';
+
+const UsersView = lazy(() => import('views/self-serve/users/UsersView'));
+const Contacts = lazy(() => import('views/Contacts/Contacts'));
+const Templates = lazy(() => import('views/Templates/Templates'));
+const SingleTaskView = lazy(() => import('views/single-task/SingleTaskView'));
+const AnalyticsView = lazy(() => import('views/analytics/AnalyticsView'));
+const CustomFieldsView = lazy(() =>
+  import('views/custom-fields/CustomFieldsView'),
+);
+const UserProfileView = lazy(() => import('views/UserProfile/UserProfileView'));
+const TaskListActivityFeedView = lazy(() =>
+  import('views/ActivityFeed/TaskListActivityFeedView'),
+);
+const SupportView = lazy(() => import('views/Support/SupportView'));
+const SubscriptionExpiredView = lazy(() =>
+  import('views/self-serve/subscriptions/SubscriptionExpiredView'),
+);
+const SubscriptionsView = lazy(() =>
+  import('views/self-serve/subscriptions/SubscriptionsView'),
+);
+const SubscriptionPaymentView = lazy(() =>
+  import('views/self-serve/subscription-payment/SubscriptionPaymentView'),
+);
+const SubscriptionPaymentFinishedView = lazy(() =>
+  import(
+    'views/self-serve/subscription-payment/SubscriptionPaymentFinishedView'
+  ),
+);
+const DocumentsView = lazy(() =>
+  import('views/self-serve/documents/DocumentsView'),
+);
+const BillingsView = lazy(() =>
+  import('views/self-serve/billings/BillingsView'),
+);
+const PersonDetailsView = lazy(() =>
+  import('views/person-details/PersonDetailsView'),
+);
+const UserGroupView = lazy(() => import('views/user-group/UserGroupView'));
+const PatientDetailsView = lazy(() =>
+  import('views/patient-details/PatientDetailsView'),
+);
+const OnboardingQuestions = lazy(() =>
+  import('views/onboarding/OnboardingQuestions/OnboardingQuestions'),
+);
+const OnboardingSelectCustomerTypeView = lazy(() =>
+  import(
+    'views/onboarding/OnboardingSelectCustomerTypeView/OnboardingSelectCustomerTypeView'
+  ),
+);
+const OnboardingTeamSetupView = lazy(() =>
+  import('views/onboarding/OnboardingTeamSetupView/OnboardingTeamSetupView'),
+);
+const OnboardingOrgSetupView = lazy(() =>
+  import('views/onboarding/OnboardingOrgSetupView/OnboardingOrgSetupView'),
+);
+const OnboardingCreateOrganizationView = lazy(() =>
+  import(
+    'views/onboarding/OnboardingCreateOrganizationView/OnboardingCreateOrganizationView'
+  ),
+);
+const OnboardingNewOrganizationInfoView = lazy(() =>
+  import(
+    'views/onboarding/OnboardingNewOrganizationInfoView/OnboardingNewOrganizationInfoView'
+  ),
+);
+const OnboardingTrialCheckView = lazy(() =>
+  import('views/onboarding/OnboardingTrialCheckView/OnboardingTrialCheckView'),
+);
+const OnboardingEulaView = lazy(() =>
+  import('views/onboarding/OnboardingEulaView/OnboardingEulaView'),
+);
+const OnboardingBaaOverviewView = lazy(() =>
+  import(
+    'views/onboarding/OnboardingBaaOverviewView/OnboardingBaaOverviewView'
+  ),
+);
+const OnboardingBaaInvitationSentView = lazy(() =>
+  import(
+    'views/onboarding/OnboardingBaaInvitationSentView/OnboardingBaaInvitationSentView'
+  ),
+);
+const OnboardingBaaCheckView = lazy(() =>
+  import('views/onboarding/OnboardingBaaCheckView/OnboardingBaaCheckView'),
+);
+const ListDetailsView = lazy(() =>
+  import('views/list-details/ListDetailsView'),
+);
+const ApproveDisapproveUser = lazy(() =>
+  import('views/auth/ApproveDisapproveUser'),
+);
+const UnEnrolledUser = lazy(() => import('views/auth/UnEnrolledUser'));
+const SelfEnrolledUser = lazy(() => import('views/auth/SelfEnrolledUser'));
+const ResetPasswordSuccess = lazy(() =>
+  import('views/auth/ResetPasswordSuccess'),
+);
+const ResetPassword = lazy(() => import('views/auth/ResetPassword'));
+const ResendCode = lazy(() => import('views/auth/ResendCode'));
+const Logout = lazy(() => import('views/auth/Logout'));
+const LoginWelcome = lazy(() => import('views/auth/LoginWelcome'));
+const LoginUser = lazy(() => import('views/auth/LoginUser'));
+const LoginPassword = lazy(() => import('views/auth/LoginPassword'));
+const ForgotPassword = lazy(() => import('views/auth/ForgotPassword'));
+const EmailSent = lazy(() => import('views/auth/EmailSent'));
+const DashboardView = lazy(() => import('views/dashboard/DashboardView'));
+const CreateAccount = lazy(() => import('views/auth/CreateAccount'));
+const ConfirmRegistrationSuccess = lazy(() =>
+  import('views/auth/ConfirmRegistrationSuccess'),
+);
+const ConfirmRegistration = lazy(() =>
+  import('views/auth/ConfirmRegistration'),
+);
+const ConfirmMFACode = lazy(() => import('views/auth/ConfirmMfaCode'));
+const ChangePhoneNumber = lazy(() => import('views/auth/ChangePhoneNumber'));
+const GlobalSearchView = lazy(() =>
+  import('views/global-search/GlobalSearchView'),
+);
+const TaskTourView = lazy(() => import('views/TaskTour/TaskTourView'));
+const PatientsView = lazy(() => import('components/patients/PatientsView'));
 
 const {
   CAN_ACCESS_HOME_PAGE,
