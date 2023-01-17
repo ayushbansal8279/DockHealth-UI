@@ -62,3 +62,8 @@ export const organizationCustomFieldsSelector = createSelector(
   organizationStateSelector,
   prop('organizationCustomFields'),
 );
+
+export const newPaymentPlanSelector = createSelector(
+  organizationStateSelector,
+  ({ newPaymentPlan }) => newPaymentPlan,
+);

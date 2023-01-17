@@ -12,7 +12,7 @@ import {
 import { saveBillingDetails } from 'api/organization-api';
 import {
   currentSubscriptionPlanSelector,
-  organizationSelector,
+  newPaymentPlanSelector,
 } from 'selectors/organization-selectors';
 import ViewLayout from 'components/template/ViewLayout/ViewLayout';
 import LayoutHeader from 'components/template/LayoutHeader/LayoutHeader';
@@ -20,7 +20,10 @@ import Spacing from 'components/common/Spacing';
 import { getUserByEmail } from 'api/user-auth-api';
 import { noop, showAlert } from 'helpers/utility-functions';
 import { useBoolean } from 'hooks/useBoolean';
-import { SUBS_SETTINGS_PATH } from 'routing/helpers/paths';
+import {
+  SUBS_SETTINGS_PATH,
+  SUBS_PAYMENT_FINISHED_PATH,
+} from 'routing/helpers/paths';
 import { MontserratTypography } from 'styles/theme-montserrat';
 import {
   BillingFrequency,
@@ -41,7 +44,7 @@ import {
 
 const finishSubscriptionPayment = (history, currentUser) => {
   getUserByEmail(currentUser.email, currentUser);
-  history.replace('/settings/subscription-payment-finished');
+  history.replace(SUBS_PAYMENT_FINISHED_PATH);
 };
 
 const cancelSubscriptionPayment = history => {
@@ -125,7 +128,7 @@ const SubscriptionPaymentView = () => {
   const currentSubscriptionPlan = useSelector(currentSubscriptionPlanSelector);
   const { activeUserCount } = currentSubscriptionPlan || {};
   const userProfile = useSelector(userProfileSelector);
-  const { newPaymentPlan } = useSelector(organizationSelector);
+  const newPaymentPlan = useSelector(newPaymentPlanSelector);
 
   useEffect(() => {
     if (!checkIfUserIsOrganizationAdmin(userProfile)) {
