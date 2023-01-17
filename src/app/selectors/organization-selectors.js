@@ -28,6 +28,16 @@ export const billingDetailsSelector = createSelector(
   ({ billingDetails }) => billingDetails,
 );
 
+export const invoiceDetailsSelector = createSelector(
+  organizationStateSelector,
+  ({ invoiceDetails }) => invoiceDetails,
+);
+
+export const referralConfigSelector = createSelector(
+  organizationStateSelector,
+  ({ referralConfig }) => referralConfig,
+);
+
 export const messageBannerBarSelector = createSelector(
   organizationStateSelector,
   ({ referralConfig }) => referralConfig?.messageBannerBar,

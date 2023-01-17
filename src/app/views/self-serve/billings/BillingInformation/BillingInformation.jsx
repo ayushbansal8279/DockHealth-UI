@@ -15,7 +15,10 @@ import CardVisaIcon from 'img/cards/visa.png';
 import palette from 'styles/palette';
 import { MontserratTypography } from 'styles/theme-montserrat';
 import { BillingFrequency } from 'helpers/subscription-helper';
-import { organizationSelector } from 'selectors/organization-selectors';
+import {
+  billingDetailsSelector,
+  currentSubscriptionPlanSelector,
+} from 'selectors/organization-selectors';
 
 const CARD_EXPIRATION_WARNING_DAYS = 15;
 
@@ -81,7 +84,8 @@ const BillingInformation = ({ setUpdatingBilling }) => {
   const dispatch = useDispatch();
   const history = useHistory();
 
-  const { billingData, billingDetails } = useSelector(organizationSelector);
+  const billingDetails = useSelector(billingDetailsSelector);
+  const currentSubscriptionPlan = useSelector(currentSubscriptionPlanSelector);
 
   useMount(() => {
     getBillingEstimate({})(dispatch);
@@ -110,17 +114,19 @@ const BillingInformation = ({ setUpdatingBilling }) => {
     cardExpirationMoment,
   );
 
-  const billingDateMoment = moment(billingData?.nextBillingDate ?? null);
+  const billingDateMoment = moment(
+    currentSubscriptionPlan?.nextBillingDate ?? null,
+  );
 
   const billingDateLabel = billingDateMoment.isValid()
     ? billingDateMoment.format('MMMM D, YYYY')
     : 'N/A';
 
   const billingEstimateLabel =
-    billingData?.subscriptionDetails?.billingFrequency ===
+    currentSubscriptionPlan?.subscriptionDetails?.billingFrequency ===
     BillingFrequency.ANNUAL
-      ? `$${billingData?.annualEstimate ?? 0}/yr`
-      : `$${billingData?.monthlyEstimate ?? 0}/mo`;
+      ? `$${currentSubscriptionPlan?.annualEstimate ?? 0}/yr`
+      : `$${currentSubscriptionPlan?.monthlyEstimate ?? 0}/mo`;
 
   return (
     <InformationContainer>
@@ -172,7 +178,7 @@ const BillingInformation = ({ setUpdatingBilling }) => {
         <MontserratTypography variant="h4">
           <span>{billingEstimateLabel}</span>
           <span> | </span>
-          <span>{billingData?.activeUserCount ?? 0} users </span>
+          <span>{currentSubscriptionPlan?.activeUserCount ?? 0} users </span>
           <LinkContainer onClick={() => goToUsersView(history)}>
             view users
           </LinkContainer>
