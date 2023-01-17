@@ -14,6 +14,9 @@ export const UNENROLLED_USER = '/auth/unEnrolledUser';
 export const DEFAULT_REDIRECT_PATH = '/auth/login';
 export const SUBS_SETTINGS_PATH = '/settings/subscriptions';
 export const SUBS_EXPIRED_PATH = '/settings/subscription-expired';
+export const SUBS_PAYMENT_PATH = '/settings/subscription-payment';
+export const SUBS_PAYMENT_FINISHED_PATH =
+  '/settings/subscription-payment-finished';
 export const USERS_SETTINGS_PATH = '/settings/users';
 export const CUSTOM_FIELDS_SETTINGS_PATH = '/settings/custom-fields';
 export const WORKFLOW_LIBRARY_PATH = '/core/workflows/library';

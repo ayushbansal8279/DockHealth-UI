@@ -3,7 +3,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
 import { Elements } from 'react-stripe-elements';
 import { useMount } from 'react-use';
-import { SUBS_SETTINGS_PATH } from 'routing/helpers/paths';
+import { SUBS_SETTINGS_PATH, SUBS_PAYMENT_PATH } from 'routing/helpers/paths';
 import { checkIfUserIsOrganizationAdmin } from 'helpers/user-helper';
 import {
   getBillingDetails,
@@ -103,7 +103,7 @@ const BillingsView = () => {
   const cancelUpdateBilling = () => {
     unsetUpdatingBilling();
 
-    if (history.location === '/settings/subscription-payment') {
+    if (history.location === SUBS_PAYMENT_PATH) {
       history.push(SUBS_SETTINGS_PATH);
     }
   };

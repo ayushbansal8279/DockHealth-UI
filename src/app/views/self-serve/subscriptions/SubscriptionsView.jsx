@@ -12,6 +12,10 @@ import {
   PROFESSIONAL_SERVICES_PRICE,
 } from 'helpers/subscription-helper';
 import {
+  SUBS_PAYMENT_PATH,
+  SUBS_PAYMENT_FINISHED_PATH,
+} from 'routing/helpers/paths';
+import {
   getBillingEstimate,
   setPaymentNewPlan,
   updateSubscriptionDetails,
@@ -28,7 +32,7 @@ import {
 import { getUserByEmail } from 'api/user-auth-api';
 import CurrentPlan from './CurrentPlan/CurrentPlan';
 import SubscriptionPlanTail from './SubscriptionPlanTail/SubscriptionPlanTail';
-import ProfessionalServicesTail from './ProfessionalServicesTail/ProfessionalServicesTail';
+// import ProfessionalServicesTail from './ProfessionalServicesTail/ProfessionalServicesTail';
 import {
   SubscriptionsViewContainer,
   SubscriptionsViewOuterContainer,
@@ -37,7 +41,7 @@ import {
   SwitchContainer,
   Switch,
   SwitchLabel,
-  ProfessionalServicesTitle,
+  // ProfessionalServicesTitle,
   Title,
   TitleDescription,
   SubTitleDescription,
@@ -103,7 +107,7 @@ const SubscriptionsView = () => {
       !equals(subscriptionDetails, previousSubscriptionDetails)
     ) {
       getUserByEmail(currentUser.email, currentUser);
-      history.push('subscription-payment-finished');
+      history.push(SUBS_PAYMENT_FINISHED_PATH);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [subscriptionDetails]);
@@ -153,7 +157,7 @@ const SubscriptionsView = () => {
           newPlan,
         }),
       );
-      history.push('/subscription-payment');
+      history.push(SUBS_PAYMENT_PATH);
     } else {
       dispatch(updateSubscriptionDetails(newPlan));
     }
