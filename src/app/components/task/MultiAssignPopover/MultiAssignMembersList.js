@@ -266,6 +266,18 @@ const MultiAssignMembersList = ({
       <ListContainer>
         {(displayAssignAllOption || displayUnassignedOption) && (
           <ListContentSection>
+            {displayCurrentUser &&
+              (function renderCurrentUserOption() {
+                const isSelected = !!selectedMembers.find(
+                  ({ identifier }) =>
+                    identifier === currentUserMember?.identifier,
+                );
+                return (
+                  <ListContentSection>
+                    {renderSelectOption(currentUserMember, isSelected)}
+                  </ListContentSection>
+                );
+              })()}
             {displayUnassignedOption && (
               <MemberRow
                 key={UNASSIGNED_KEY}
@@ -317,17 +329,6 @@ const MultiAssignMembersList = ({
             )}
           </ListContentSection>
         )}
-        {displayCurrentUser &&
-          (function renderCurrentUserOption() {
-            const isSelected = !!selectedMembers.find(
-              ({ identifier }) => identifier === currentUserMember?.identifier,
-            );
-            return (
-              <ListContentSection>
-                {renderSelectOption(currentUserMember, isSelected)}
-              </ListContentSection>
-            );
-          })()}
         {!isValueSendable && (
           <ListContentSection>
             {filteredSelectedMembers?.map(member => {
