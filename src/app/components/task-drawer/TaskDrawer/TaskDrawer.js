@@ -1,5 +1,6 @@
 /* eslint-disable sonarjs/cognitive-complexity */
 import React from 'react';
+import ReactDOM from 'react-dom';
 import { useSelector } from 'react-redux';
 import { taskDrawerOpenSelector } from 'selectors/task-drawer-selectors';
 import { AnimatePresence } from 'framer-motion/dist/framer-motion';
@@ -9,21 +10,17 @@ import { AnimatedContainer } from './styled';
 const TaskDrawer = props => {
   const taskDrawerOpen = useSelector(taskDrawerOpenSelector);
 
-  return (
-    <>
-      <AnimatePresence initial={false}>
-        {taskDrawerOpen && (
-          <AnimatedContainer
-            initial={{ translateX: '100%' }}
-            animate={{ translateX: 0 }}
-            exit={{ translateX: '100%' }}
-            transition={{ duration: 0.1, bounce: 0 }}
-          >
-            <TaskDrawerContent {...props} />
-          </AnimatedContainer>
-        )}
-      </AnimatePresence>
-    </>
+  return ReactDOM.createPortal(
+    <AnimatePresence initial={false}>
+      <AnimatedContainer
+        style={{
+          transform: taskDrawerOpen ? 'translateX(0%)' : 'translateX(100%)',
+        }}
+      >
+        <TaskDrawerContent {...props} />
+      </AnimatedContainer>
+    </AnimatePresence>,
+    document.body,
   );
 };
 
