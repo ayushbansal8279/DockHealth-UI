@@ -77,7 +77,7 @@ const OrganizationSubmenu = ({
     }
   };
 
-  const whiteLabelEnabled = currentOrganization?.whiteLabelEnabled || false;
+  const embeddedMode = sessionStorage.getItem('EmbeddedMode') || false;
 
   const handleLeaveOrganiztion = useCallback(() => {
     dispatch(
@@ -148,7 +148,7 @@ const OrganizationSubmenu = ({
           <MoreVert />
         </OptionsMenu>
       </Grid>
-      {!whiteLabelEnabled && (
+      {!embeddedMode && (
         <>
           <Grid container justify="space-between" alignItems="center">
             <SubmenuHeader>My Organizations </SubmenuHeader>
