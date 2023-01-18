@@ -95,7 +95,7 @@ const listenRealTimeAlerts = (
 };
 
 // eslint-disable-next-line sonarjs/cognitive-complexity
-const ActivityAlerts = ({ variant = 'blue' }) => {
+const ActivityAlerts = ({ variant = 'blue', patientIdentifier }) => {
   const currentUser = useSelector(userProfileSelector);
   const { notificationsOpen, notificationsPage } = useSelector(
     templateStateSelector,
@@ -116,9 +116,20 @@ const ActivityAlerts = ({ variant = 'blue' }) => {
   const iconReference = useRef(null);
   const dispatch = useDispatch();
 
+  const embeddedMode = sessionStorage.getItem('EmbeddedMode') || false;
+
   const getActivityAlerts = async () => {
     const alerts = await ActivityAlertsApi.getActivityAlerts();
-    setActivityAlertsList(alerts);
+    if (embeddedMode) {
+      const filteredAlerts = alerts?.filter(
+        alt =>
+          !patientIdentifier ||
+          alt.task?.patient?.patientIdentifier === patientIdentifier,
+      );
+      setActivityAlertsList(filteredAlerts);
+    } else {
+      setActivityAlertsList(alerts);
+    }
   };
 
   useEffect(() => {
