@@ -19,7 +19,10 @@ import {
 import { openModal, closeModal } from 'modal/actions';
 import { getTasksGroupsList } from 'actions/list-details-actions';
 import { SINGLE_TASK_RESTRICTIONS_OPTIONS } from 'restrictions/task-restrictions';
-import { userHasShareTaskFeatureSelector } from 'selectors/user-selectors';
+import {
+  userHasShareTaskFeatureSelector,
+  selectedUserOrganizationSelector,
+} from 'selectors/user-selectors';
 import { Backdrop, MenuContainer, MenuItemButton, Divider } from './styled';
 
 const { DISABLED, READ_ONLY } = SINGLE_TASK_RESTRICTIONS_OPTIONS;
@@ -41,6 +44,10 @@ const TaskItemContextMenu = ({
   const isBundleTask = checkIfBundleTask(task);
 
   const shareTaskAvailable = useSelector(userHasShareTaskFeatureSelector);
+
+  const currentOrganization = useSelector(selectedUserOrganizationSelector);
+  const subtasksFeatureDisabled =
+    currentOrganization?.disabledFeatures?.includes('TASK_SUBTASKS') || false;
 
   const handleKeyDown = useCallback(event => {
     function handleBackward() {
@@ -333,7 +340,8 @@ const TaskItemContextMenu = ({
         )}
         {restrictions?.subtasks !== READ_ONLY &&
           !isSubtask &&
-          !subtasksDisabled && (
+          !subtasksDisabled &&
+          !subtasksFeatureDisabled && (
             <li>
               <MenuItemButton
                 type="button"
