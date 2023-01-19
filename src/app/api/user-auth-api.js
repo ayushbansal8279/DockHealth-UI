@@ -2,7 +2,10 @@
 // eslint-disable-next-line import/no-extraneous-dependencies
 import Amplify from '@aws-amplify/core';
 import { onLogin, onLogout } from 'helpers/ga-event-helper';
-import { getCurrentUserOrganizations } from 'api/organization-api';
+import {
+  getCurrentUserOrganizations,
+  selectCurrentOrganization,
+} from 'api/organization-api';
 import {
   RESET_APP,
   GET_USER_AUTH_DATA_SUCCESS,
@@ -498,12 +501,17 @@ export function getEnterpriseAccessTokensByAuthCode(authCode, iss) {
   });
 }
 
+// eslint-disable-next-line sonarjs/cognitive-complexity
 export function getEnterpriseAccessTokensForEmbeddedSSO(
   authToken,
   userIdentifier,
   targetType,
   targetIdentifier,
+  orgIdentifier,
 ) {
+  if (orgIdentifier) {
+    axios.defaults.headers.common.CurrentOrganizationIdentifier = orgIdentifier;
+  }
   // eslint-disable-next-line consistent-return, sonarjs/cognitive-complexity
   return new Promise(async (resolve, reject) => {
     try {
@@ -552,6 +560,9 @@ export function getEnterpriseAccessTokensForEmbeddedSSO(
           });
         } catch (error) {
           // do nothing
+        }
+        if (orgIdentifier && orgIdentifier !== organizationIdentifier) {
+          selectCurrentOrganization(orgIdentifier);
         }
       });
       try {
