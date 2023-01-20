@@ -429,13 +429,13 @@ export const EmrNoteTypeOptions = {
 export function findIncompleteRequiredFields(customFields, task) {
   return customFields?.filter(field => {
     const { taskMetaData } = task;
-    const { identifier: taskFieldIdentifier } = field;
+    const taskFieldIdentifier = field?.identifier;
     const matchingMetaData = taskMetaData.find(
       ({ customFieldIdentifier }) =>
         customFieldIdentifier === taskFieldIdentifier,
     );
     return (
-      field.displayOptions.includes('TASK_REQUIRED') &&
+      field?.displayOptions.includes('TASK_REQUIRED') &&
       (matchingMetaData === undefined ||
         matchingMetaData?.length === 0 ||
         !(

@@ -1,5 +1,5 @@
 import { createSelector } from 'reselect';
-import prop from 'ramda/src/prop';
+// import prop from 'ramda/src/prop';
 
 export const listTasksSelector = state => state.listDetails;
 
@@ -66,5 +66,6 @@ export const taskCountersSelector = createSelector(
 
 export const listCustomFieldsSelector = createSelector(
   listTasksSelector,
-  prop('listCustomFields'),
+  // prop('listCustomFields'),
+  ({ listCustomFields }) => listCustomFields,
 );

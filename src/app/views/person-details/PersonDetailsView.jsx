@@ -18,7 +18,7 @@ import {
   findIncompleteRequiredFields,
 } from 'helpers/task-helpers';
 import TaskDrawer from 'components/task-drawer/TaskDrawer/TaskDrawer';
-import { taskCustomFieldsSelector } from 'selectors/task-drawer-selectors';
+import { organizationCustomFieldsSelector } from 'selectors/organization-selectors';
 import LayoutHeader from 'components/template/LayoutHeader/LayoutHeader';
 import { updateCurrentUserPreferences } from 'actions/user-actions';
 import HeaderSearch from 'components/template/HeaderSearch/HeaderSearch';
@@ -45,7 +45,11 @@ const PersonDetailsView = () => {
   const dispatch = useDispatch();
   const currentUser = useSelector(userProfileSelector);
 
-  const { templates } = useSelector(taskCustomFieldsSelector);
+  const organizationCustomFields = useSelector(
+    organizationCustomFieldsSelector,
+  );
+  const taskCustomFields = organizationCustomFields;
+
   const currentOrganization = useSelector(selectedUserOrganizationSelector);
   const iconColorActiveItem =
     currentOrganization?.themeSettings?.find(
@@ -99,10 +103,10 @@ const PersonDetailsView = () => {
 
   const toggleTaskCompletedStatus = task => {
     const incompleteRequiredFields = findIncompleteRequiredFields(
-      templates,
+      taskCustomFields,
       task,
     );
-    const isRequiredFieldsAreIncomplete = incompleteRequiredFields.length > 0;
+    const isRequiredFieldsAreIncomplete = incompleteRequiredFields?.length > 0;
 
     if (isRequiredFieldsAreIncomplete) {
       const modalProps = {

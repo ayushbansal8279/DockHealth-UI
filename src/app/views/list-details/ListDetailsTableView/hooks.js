@@ -13,6 +13,7 @@ import localStorageHelper from 'helpers/local-storage-helper';
 import { updateUserListViewSetup } from 'actions/task-list-actions';
 import { checkIfTaskMatchesFilters } from 'helpers/filters-helpers';
 import { TASK_DISAPPEAR_DELAY } from 'helpers/task-update-helper';
+import { organizationCustomFieldsSelector } from 'selectors/organization-selectors';
 import {
   completedTasksIsFetchingSelector,
   tasksIsFetchingSelector,
@@ -21,6 +22,7 @@ import {
   taskDetailsSortSelector,
   taskCountersSelector,
   searchTermSelector,
+  listCustomFieldsSelector,
 } from 'selectors/list-details-selectors';
 import {
   currentTaskListIdentifierSelector,
@@ -30,7 +32,6 @@ import {
   taskListMembersSelector,
   archivedTaskListsSelector,
 } from 'selectors/task-list-selectors';
-import { taskCustomFieldsSelector } from 'selectors/task-drawer-selectors';
 import { findIncompleteRequiredFields } from 'helpers/task-helpers';
 import { userProfileSelector } from 'selectors/user-selectors';
 import { selectedFiltersInMegaFilterSelector } from 'selectors/mega-filter-selectors';
@@ -43,6 +44,7 @@ import * as UserAuthApi from 'api/user-auth-api';
 
 const LIST_DETAILS_FIRST_TIME_KEY = 'LIST_DETAILS_FIRST_TIME_KEY';
 
+// eslint-disable-next-line sonarjs/cognitive-complexity
 const initializeListDetailsViewHooks = () => {
   const history = useHistory();
   const params = useParams();
@@ -83,7 +85,13 @@ const initializeListDetailsViewHooks = () => {
 
   const dispatch = useDispatch();
   const { taskListIdentifier: taskListIdentifierParam, tabName } = params;
-  const { templates } = useSelector(taskCustomFieldsSelector);
+  const organizationCustomFields = useSelector(
+    organizationCustomFieldsSelector,
+  );
+  const { listCustomFields } = useSelector(listCustomFieldsSelector);
+  const taskCustomFields = organizationCustomFields
+    ? organizationCustomFields.concat(listCustomFields)
+    : listCustomFields;
 
   useEffect(() => {
     if (currentTaskListIdentifier)
@@ -263,10 +271,11 @@ const initializeListDetailsViewHooks = () => {
   const toggleTaskCompletedStatus = useCallback(
     task => {
       const incompleteRequiredFields = findIncompleteRequiredFields(
-        templates,
+        taskCustomFields,
         task,
       );
-      const isRequiredFieldsAreIncomplete = incompleteRequiredFields.length > 0;
+      const isRequiredFieldsAreIncomplete =
+        incompleteRequiredFields?.length > 0;
 
       if (isRequiredFieldsAreIncomplete) {
         const modalProps = {
@@ -293,7 +302,7 @@ const initializeListDetailsViewHooks = () => {
         invokeToggleCompleteAction(task);
       }
     },
-    [invokeToggleCompleteAction, modalActions, templates],
+    [invokeToggleCompleteAction, modalActions, taskCustomFields],
   );
 
   useEffect(() => {

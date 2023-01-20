@@ -44,7 +44,7 @@ import { usePrevious } from 'react-use';
 import OptionsMenu from 'components/common/OptionsMenu/OptionsMenu';
 import { MoreVert } from '@material-ui/icons';
 import { updateCurrentUserPreferences } from 'actions/user-actions';
-import { taskCustomFieldsSelector } from 'selectors/task-drawer-selectors';
+import { organizationCustomFieldsSelector } from 'selectors/organization-selectors';
 import { findIncompleteRequiredFields } from 'helpers/task-helpers';
 import {
   DashboardTasksGroupContainer,
@@ -104,7 +104,10 @@ const DashboardTasksGroup = ({
 
   const currentTaskLength = dashboardTasks?.length || 0;
   const previousTaskLength = usePrevious(currentTaskLength) || 0;
-  const { templates } = useSelector(taskCustomFieldsSelector);
+  const organizationCustomFields = useSelector(
+    organizationCustomFieldsSelector,
+  );
+  const taskCustomFields = organizationCustomFields;
 
   useEffect(() => {
     if (currentTaskLength > 0 && previousTaskLength === 0) {
@@ -200,10 +203,11 @@ const DashboardTasksGroup = ({
   const handleToggleCompletedTask = useCallback(
     task => {
       const incompleteRequiredFields = findIncompleteRequiredFields(
-        templates,
+        taskCustomFields,
         task,
       );
-      const isRequiredFieldsAreIncomplete = incompleteRequiredFields.length > 0;
+      const isRequiredFieldsAreIncomplete =
+        incompleteRequiredFields?.length > 0;
 
       if (isRequiredFieldsAreIncomplete) {
         const modalProps = {
@@ -230,7 +234,7 @@ const DashboardTasksGroup = ({
         dispatch(TaskActions.toggleCompleteTask(task));
       }
     },
-    [dispatch, modalActions, templates],
+    [dispatch, modalActions, taskCustomFields],
   );
 
   const isDragAndDropDisabled = !tasks || tasks.length < 2;

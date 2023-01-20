@@ -28,10 +28,8 @@ import {
   patientTasksSortSelector,
   patientSelector,
 } from 'selectors/patient-details-selectors';
-import {
-  addingNewSubtaskParentIdSelector,
-  taskCustomFieldsSelector,
-} from 'selectors/task-drawer-selectors';
+import { addingNewSubtaskParentIdSelector } from 'selectors/task-drawer-selectors';
+import { organizationCustomFieldsSelector } from 'selectors/organization-selectors';
 import {
   hasFiltersAppliedSelector,
   selectedFiltersInMegaFilterSelector,
@@ -119,7 +117,11 @@ const PatientTasksListView = () => {
 
   const isAllTasksView = taskListIdentifierParameter === ListViewType.ALL_TASKS;
 
-  const { templates } = useSelector(taskCustomFieldsSelector);
+  const organizationCustomFields = useSelector(
+    organizationCustomFieldsSelector,
+  );
+  const taskCustomFields = organizationCustomFields;
+
   const currentOrganization = useSelector(selectedUserOrganizationSelector);
   const iconColorActiveItem =
     currentOrganization?.themeSettings?.find(
@@ -276,10 +278,11 @@ const PatientTasksListView = () => {
   const handleToggleTaskStatus = useCallback(
     task => {
       const incompleteRequiredFields = findIncompleteRequiredFields(
-        templates,
+        taskCustomFields,
         task,
       );
-      const isRequiredFieldsAreIncomplete = incompleteRequiredFields.length > 0;
+      const isRequiredFieldsAreIncomplete =
+        incompleteRequiredFields?.length > 0;
 
       if (isRequiredFieldsAreIncomplete) {
         const modalProps = {
@@ -304,7 +307,7 @@ const PatientTasksListView = () => {
         togglePatientTaskStatus(task);
       }
     },
-    [dispatch, templates, togglePatientTaskStatus],
+    [dispatch, taskCustomFields, togglePatientTaskStatus],
   );
 
   const groupedTasks = useMemo(() => {
