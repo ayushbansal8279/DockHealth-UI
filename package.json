@@ -9,7 +9,9 @@
     "dev": "webpack -d --watch",
     "build": "webpack -p",
     "start": "webpack-dev-server --mode development --content-base dist --inline --host 0.0.0.0 --port 3000",
-    "server:prod": "http-server dist -p 3000 -c-1 --cors"
+    "server:prod": "http-server dist -p 3000 -c-1 --cors",
+    "prepare": "husky install",
+    "lint-staged": "lint-staged"
   },
   "author": "",
   "license": "ISC",
@@ -90,8 +92,7 @@
     "sweetalert2": "11.7.0",
     "symbol-observable": "4.0.0",
     "uuid": "9.0.0",
-    "yup": "0.32.11",
-    "fsevents": "2.3.2"
+    "yup": "0.32.11"
   },
   "devDependencies": {
     "@babel/core": "7.20.12",
@@ -159,15 +160,9 @@
     "webpack-cli": "5.0.1",
     "webpack-dev-server": "4.11.1"
   },
-  "husky": {
-    "hooks": {
-      "pre-commit": "lint-staged"
-    }
-  },
   "lint-staged": {
     "*.{js,jsx,ts,tsx}": [
-      "eslint --fix",
-      "git add"
+      "eslint --fix"
     ]
   }
 }
