@@ -2,10 +2,7 @@
 // eslint-disable-next-line import/no-extraneous-dependencies
 import Amplify from '@aws-amplify/core';
 import { onLogin, onLogout } from 'helpers/ga-event-helper';
-import {
-  getCurrentUserOrganizations,
-  selectCurrentOrganization,
-} from 'api/organization-api';
+import { getCurrentUserOrganizations } from 'api/organization-api';
 import {
   RESET_APP,
   GET_USER_AUTH_DATA_SUCCESS,
@@ -509,14 +506,14 @@ export function getEnterpriseAccessTokensForEmbeddedSSO(
   targetIdentifier,
   orgIdentifier,
 ) {
-  if (orgIdentifier) {
-    axios.defaults.headers.common.CurrentOrganizationIdentifier = orgIdentifier;
+  if (orgIdentifier && orgIdentifier !== '') {
+    sessionStorage.setItem('currentOrganizationIdentifier', orgIdentifier);
   }
   // eslint-disable-next-line consistent-return, sonarjs/cognitive-complexity
   return new Promise(async (resolve, reject) => {
     try {
       const authUrl = `${process.env.HEYDOC_SERVICES_BASE_URL}oidc`;
-      const authData = `authToken=${authToken}&userIdentifier=${userIdentifier}&targetType=${targetType}&targetIdentifier=${targetIdentifier}`;
+      const authData = `authToken=${authToken}&userIdentifier=${userIdentifier}&targetType=${targetType}&targetIdentifier=${targetIdentifier}&organizationIdentifier=${orgIdentifier}`;
 
       await axios.post(`${authUrl}/embeddedToken`, authData).then(response => {
         const userRefreshToken = response?.data.refresh_token;
@@ -560,9 +557,6 @@ export function getEnterpriseAccessTokensForEmbeddedSSO(
           });
         } catch (error) {
           // do nothing
-        }
-        if (orgIdentifier && orgIdentifier !== organizationIdentifier) {
-          selectCurrentOrganization(orgIdentifier);
         }
       });
       try {
