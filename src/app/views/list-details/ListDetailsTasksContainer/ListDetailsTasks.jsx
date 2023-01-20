@@ -35,6 +35,8 @@ import {
   userProfileSelector,
   selectedUserOrganizationSelector,
 } from 'selectors/user-selectors';
+import { currentTaskListSelector } from 'selectors/task-list-selectors';
+import { isMemberAdmin } from 'helpers/list-members-helper';
 import {
   TASK_LIST_RESTRICTIONS_OPTIONS,
   TASK_LIST_RESTRICTIONS_PROFILES,
@@ -73,6 +75,14 @@ const ListDetailsTasks = ({
   const restrictions =
     TASK_LIST_RESTRICTIONS_PROFILES[currentUser?.orgUserRole];
   const { DISABLED } = TASK_LIST_RESTRICTIONS_OPTIONS;
+
+  const taskList = useSelector(currentTaskListSelector);
+  const { restrictCustomization } = taskList || {};
+  const currentUserMember = taskList?.listUsers.find(
+    u => u.identifier === currentUser?.identifier,
+  );
+  const isListAdmin = isMemberAdmin(currentUserMember);
+  const restrictCustomizationFeatures = restrictCustomization && !isListAdmin;
 
   const currentOrganization = useSelector(selectedUserOrganizationSelector);
   const iconColorActiveItem =
@@ -244,6 +254,7 @@ const ListDetailsTasks = ({
               onSortChange={onSortChange}
               applyTemplate={applyTemplate}
               iconColorActive={iconColorActiveItem?.value}
+              restrictCustomizationFeatures={restrictCustomizationFeatures}
             >
               {({
                 isFetchingMoreTasks,
@@ -407,6 +418,7 @@ const ListDetailsTasks = ({
       DISABLED,
       showClearSortFiltersModal,
       viewSetup,
+      restrictCustomizationFeatures,
     ],
   );
 
@@ -429,16 +441,16 @@ const ListDetailsTasks = ({
               <StickyContainer left={24} decreaseWidth={2 * 24}>
                 <GroupNameSection
                   onEnterClick={
-                    restrictions?.createGroup !== DISABLED
+                    restrictions?.createGroup !== DISABLED &&
+                    !restrictCustomizationFeatures
                       ? onGroupNameClick
                       : () => undefined
                   }
                   placeholder={messages.placeholder}
                   closeOnEnter
                 >
-                  {restrictions?.createGroup !== DISABLED && (
-                    <AddGroupNameButton />
-                  )}
+                  {restrictions?.createGroup !== DISABLED &&
+                    !restrictCustomizationFeatures && <AddGroupNameButton />}
                 </GroupNameSection>
               </StickyContainer>
             )}
