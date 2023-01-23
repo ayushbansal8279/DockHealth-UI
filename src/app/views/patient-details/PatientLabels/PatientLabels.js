@@ -50,6 +50,7 @@ function makeLabelToSend(value, patientId) {
 
 const renderOption = ({
   isEditable,
+  isEdited,
   option,
   registerOption,
   onEdit,
@@ -57,7 +58,11 @@ const renderOption = ({
   onSaveEdit,
   onDelete,
 }) => (
-  <OptionContainer key={option?.labelIdentifier} isEditable={isEditable}>
+  <OptionContainer
+    key={option?.labelIdentifier}
+    isEditable={isEditable}
+    isEdited={isEdited}
+  >
     <OptionButtonsInput
       ref={registerOption}
       defaultValue={option?.labelName}
@@ -142,14 +147,12 @@ const PatientLabels = ({ isPatientBulk, disableFocusOnRender = false }) => {
   }, [selectedPatients, patient]);
 
   useEffect(() => {
-    if (!disableFocusOnRender) {
-      if (currentEditableOption) {
-        optionReferences?.current[currentEditableOption]?.focus();
-      } else {
-        inputReference.current?.focus();
-      }
+    if (currentEditableOption) {
+      optionReferences?.current[currentEditableOption]?.focus();
+    } else {
+      inputReference.current?.focus();
     }
-  }, [currentEditableOption, inputReference, disableFocusOnRender]);
+  }, [currentEditableOption, inputReference]);
 
   const getInputReference = element => {
     inputReference.current = element;
@@ -158,6 +161,7 @@ const PatientLabels = ({ isPatientBulk, disableFocusOnRender = false }) => {
     option =>
       renderOption({
         option,
+        isEdited: currentEditableOption === option?.labelIdentifier,
         registerOption: element => {
           if (element) {
             optionReferences.current[option?.labelIdentifier] = element;
@@ -172,7 +176,7 @@ const PatientLabels = ({ isPatientBulk, disableFocusOnRender = false }) => {
         onSaveEdit: value => saveEditLabel(option?.labelIdentifier, value),
         onDelete: () => deleteLabel(option),
       }),
-    [deleteLabel, saveEditLabel],
+    [currentEditableOption, deleteLabel, saveEditLabel],
   );
 
   const removeHandler = useCallback(
