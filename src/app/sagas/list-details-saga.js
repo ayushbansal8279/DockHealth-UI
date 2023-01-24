@@ -66,6 +66,7 @@ import { getTasksForWorkflow } from 'actions/template-bundle-actions';
 import store from '../store';
 
 export const DO_CREATE_TASK = 'DO_CREATE_TASK';
+export const DEFAULT_TASK_GROUPS_TO_LOAD = 3;
 
 export const createTask = payload => ({
   type: DO_CREATE_TASK,
@@ -168,7 +169,7 @@ function* getCurrentListTasks() {
       }
       const groupsToGet = compose(
         filter(g => g.metricValue > 0),
-        takeFirst(5),
+        takeFirst(DEFAULT_TASK_GROUPS_TO_LOAD),
       )(groups);
 
       yield all([
