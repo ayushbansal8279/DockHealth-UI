@@ -79,6 +79,13 @@ const PatientDetailsHeader = () => {
     currentOrganization?.disabledFeatures?.includes('PATIENT_GENDER') || false;
   const embeddedMode = sessionStorage.getItem('EmbeddedMode') || false;
 
+  const patientContactsActionableItem =
+    currentOrganization?.themeSettings?.find(
+      ({ name }) => name === 'patient.contact.link.action.enabled',
+    ) || {};
+  const patientContactsActionable =
+    patientContactsActionableItem?.value !== 'false';
+
   const goBack = useCallback(() => {
     if (cameFrom) {
       history.push(cameFrom);
@@ -137,35 +144,65 @@ const PatientDetailsHeader = () => {
             <ContactContainer>
               {email && (
                 <Tooltip title={email} placement="bottom">
-                  <IconWrapper href={`mailto:${email}`}>
-                    <img
-                      src={EmailIcon}
-                      alt="email icon"
-                      style={{ height: '16px' }}
-                    />
-                  </IconWrapper>
+                  {patientContactsActionable ? (
+                    <IconWrapper href={`mailto:${email}`}>
+                      <img
+                        src={EmailIcon}
+                        alt="email"
+                        style={{ height: '16px' }}
+                      />
+                    </IconWrapper>
+                  ) : (
+                    <IconWrapper>
+                      <img
+                        src={EmailIcon}
+                        alt="email"
+                        style={{ height: '16px' }}
+                      />
+                    </IconWrapper>
+                  )}
                 </Tooltip>
               )}
               {phoneHome && (
                 <Tooltip title={phoneHome} placement="bottom">
-                  <IconWrapper href={`tel:${phoneHome}`}>
-                    <img
-                      src={PhoneIcon}
-                      alt="phone icon"
-                      style={{ height: '16px' }}
-                    />
-                  </IconWrapper>
+                  {patientContactsActionable ? (
+                    <IconWrapper href={`tel:${phoneHome}`}>
+                      <img
+                        src={PhoneIcon}
+                        alt="phone"
+                        style={{ height: '16px' }}
+                      />
+                    </IconWrapper>
+                  ) : (
+                    <IconWrapper>
+                      <img
+                        src={PhoneIcon}
+                        alt="phone"
+                        style={{ height: '16px' }}
+                      />
+                    </IconWrapper>
+                  )}
                 </Tooltip>
               )}
               {phoneMobile && (
                 <Tooltip title={phoneMobile} placement="bottom">
-                  <IconWrapper href={`tel:${phoneMobile}`}>
-                    <img
-                      src={MobileIcon}
-                      alt="mobile phon icon"
-                      style={{ height: '16px' }}
-                    />
-                  </IconWrapper>
+                  {patientContactsActionable ? (
+                    <IconWrapper href={`tel:${phoneMobile}`}>
+                      <img
+                        src={MobileIcon}
+                        alt="mobile phone"
+                        style={{ height: '16px' }}
+                      />
+                    </IconWrapper>
+                  ) : (
+                    <IconWrapper>
+                      <img
+                        src={MobileIcon}
+                        alt="mobile phone"
+                        style={{ height: '16px' }}
+                      />
+                    </IconWrapper>
+                  )}
                 </Tooltip>
               )}
             </ContactContainer>
