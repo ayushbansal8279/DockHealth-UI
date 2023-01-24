@@ -1,9 +1,6 @@
 import axios from './axios-heydoc';
 
-export function getAllPatientCustomFields(
-  active = true,
-  patientIdentifier = undefined,
-) {
+export function getAllPatientCustomFields(active = true, patientIdentifier) {
   return axios
     .get(`custom/field/getAll/PATIENT`, {
       params: { active, targetIdentifier: patientIdentifier },
@@ -11,7 +8,7 @@ export function getAllPatientCustomFields(
     .then(({ data }) => data);
 }
 
-export function getAllTaskListCustomFields(taskListIdentifier = undefined) {
+export function getAllTaskListCustomFields(taskListIdentifier) {
   return axios
     .get(`custom/field/getAll/TASK`, {
       params: { taskListIdentifier },
@@ -23,10 +20,7 @@ export function getAllProviderCustomFields() {
   return axios.get(`custom/field/getAll/PROVIDER`).then(({ data }) => data);
 }
 
-export function getAllTaskCustomFields(
-  targetIdentifier = undefined,
-  taskListIdentifier = undefined,
-) {
+export function getAllTaskCustomFields(targetIdentifier, taskListIdentifier) {
   return axios
     .get(`custom/field/getAll/TASK`, {
       params: { targetIdentifier, taskListIdentifier },

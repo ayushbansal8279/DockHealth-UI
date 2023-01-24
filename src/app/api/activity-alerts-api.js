@@ -17,7 +17,7 @@ export const getActivityAlertsPreferences = () =>
         alertsEnabled: notificationsEnabled,
       });
     })
-    .catch(error => {
+    .catch((error) => {
       throw error;
     });
 
@@ -30,23 +30,21 @@ export const getActivityAlerts = () =>
       sessionStorage.setItem('hasUnreadAlerts', false);
       return data;
     })
-    .catch(error => {
+    .catch((error) => {
       throw error;
     });
 
-export const getActivityAlertDetails = activityAlertId =>
+export const getActivityAlertDetails = (activityAlertId) =>
   axios({
     method: 'get',
     url: `/activity/alertDetails/${activityAlertId}`,
   })
-    .then(({ data }) => {
-      return data;
-    })
-    .catch(error => {
+    .then(({ data }) => data)
+    .catch((error) => {
       throw error;
     });
 
-export const clearActivityAlert = activityAlertId =>
+export const clearActivityAlert = (activityAlertId) =>
   axios({
     method: 'put',
     url: `/activity/clear/${activityAlertId}`,
@@ -58,7 +56,7 @@ export const clearAllActivityAlerts = () =>
     url: '/activity/clearAllActivityAlertsForUser',
   });
 
-export const switchActivityAlerts = value =>
+export const switchActivityAlerts = (value) =>
   axios({
     method: 'put',
     url: `/activity/notifications?enable=${value}`,
@@ -70,6 +68,6 @@ export const switchActivityAlerts = value =>
         alertsEnabled: value,
       });
     })
-    .catch(error => {
+    .catch((error) => {
       throw error;
     });

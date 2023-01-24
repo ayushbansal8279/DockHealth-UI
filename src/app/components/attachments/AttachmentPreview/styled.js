@@ -40,11 +40,11 @@ export const AttachmentPreviewHeader = styled.div`
 `;
 
 export const AttachmentPreviewHeaderSection = styled.div`
-  align-items: ${props => props.alignItems ?? 'flex-start'};
+  align-items: ${(props) => props.alignItems ?? 'flex-start'};
   display: flex;
   flex: 1;
-  flex-direction: ${props => props.direction ?? 'row'};
-  justify-content: ${props => props.justify ?? 'flex-start'};
+  flex-direction: ${(props) => props.direction ?? 'row'};
+  justify-content: ${(props) => props.justify ?? 'flex-start'};
   max-width: 33.3333%;
 `;
 
@@ -57,7 +57,7 @@ export const AttachmentPreviewHeaderAnchor = styled.a`
   transition: filter 0.25s ease-out;
   will-change: filter;
 
-  ${props =>
+  ${(props) =>
     props.disabled
       ? 'cursor: not-allowed;'
       : '&:hover { filter: brightness(0.8); }'}
@@ -65,7 +65,7 @@ export const AttachmentPreviewHeaderAnchor = styled.a`
 
 export const AttachmentPreviewHeaderLabel = styled.div`
   color: ${palette.white};
-  font-size: ${props => (props.big ? 2 : 1)}rem;
+  font-size: ${(props) => (props.big ? 2 : 1)}rem;
   max-width: 100%;
   overflow: hidden;
   text-overflow: ellipsis;

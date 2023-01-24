@@ -39,11 +39,9 @@ import { showGlobalErrorAlert } from 'alert/actions';
 function* initializeDashboardView() {
   try {
     const selectedFilters = yield select(dashboardSelectedFiltersSelector);
-    if (selectedFilters) {
-      yield put(DashboardActions.getDashboardTasks());
-    } else {
-      yield put(DashboardActions.getDashboardGroups());
-    }
+    yield selectedFilters
+      ? put(DashboardActions.getDashboardTasks())
+      : put(DashboardActions.getDashboardGroups());
   } catch (error) {
     console.log(error);
   }
@@ -84,7 +82,7 @@ function* getDashboardTasksForGroup({ groupType }) {
       0,
       tasks?.length || 0,
     );
-    const group = taskGroups.find(g => g.groupType === groupType);
+    const group = taskGroups.find((g) => g.groupType === groupType);
 
     yield put({
       type: ActionTypes.GET_DASHBOARD_TASKS_FOR_GROUP_SUCCESS,
@@ -116,7 +114,7 @@ function* loadMoreDashboardTasksForGroup({ groupType }) {
       groupType,
       customStartPosition,
     );
-    const group = taskGroups.find(g => g.groupType === groupType);
+    const group = taskGroups.find((g) => g.groupType === groupType);
 
     yield put({
       type: ActionTypes.LOAD_MORE_DASHBOARD_TASKS_FOR_GROUP_SUCCESS,
@@ -185,7 +183,7 @@ function* searchDashboardTasks({ searchTerm }) {
 
     yield put({
       type: ActionTypes.SEARCH_DASHBOARD_TASKS_SUCCESS,
-      tasksList: dashboardTasksGroups?.map(group => ({
+      tasksList: dashboardTasksGroups?.map((group) => ({
         ...group,
         metricValue: group?.tasks?.length || 0,
         defaultOpen: true,
@@ -214,7 +212,7 @@ function* getDashboardTasks() {
 
       yield put({
         type: ActionTypes.GET_DASHBOARD_TASKS_SUCCESS,
-        tasksList: taskGroups?.map(group => ({
+        tasksList: taskGroups?.map((group) => ({
           ...group,
           metricValue: group?.tasks?.length || 0,
           defaultOpen: true,
@@ -240,7 +238,7 @@ function* reorderDashboardTasks({ taskGroupImplicitType, tasksOrder }) {
     yield put(
       DashboardActions.getDashboardTasksForGroup(taskGroupImplicitType),
     );
-  } catch (error) {
+  } catch {
     yield put(
       DashboardActions.getDashboardTasksForGroup(taskGroupImplicitType),
     );

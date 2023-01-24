@@ -59,8 +59,8 @@ export function createTemporaryTaskNode(
   type = NodeType.NEW_STANDARD,
 ) {
   const numberOfNewTasks =
-    currentTemporaryElements?.filter(element => element.type === type).length ||
-    0;
+    currentTemporaryElements?.filter((element) => element.type === type)
+      .length || 0;
 
   return {
     id: `${type}-${numberOfNewTasks}`,
@@ -110,11 +110,11 @@ export function createDecisionTaskNodes(
   currentTemporaryElements,
   elementPosition,
 ) {
-  const newDecisionTaskId = `${
-    NodeType.NEW_DECISION
-  }-${currentTemporaryElements?.filter(
-    element => element.type === NodeType.NEW_DECISION,
-  ).length || 0}`;
+  const newDecisionTaskId = `${NodeType.NEW_DECISION}-${
+    currentTemporaryElements?.filter(
+      (element) => element.type === NodeType.NEW_DECISION,
+    ).length || 0
+  }`;
 
   const temporaryDecisionTask = {
     id: newDecisionTaskId,
@@ -144,23 +144,24 @@ export async function getAutoLayout(tasks, startX = 0, startY = 0) {
   const nodes = [];
   const edges = [];
 
-  tasks.forEach(({ identifier, taskLinks }) => {
+  for (const { identifier, taskLinks } of tasks) {
     nodes.push({ id: identifier, width: 230, height: 130 });
 
     // eslint-disable-next-line no-unused-expressions
-    taskLinks?.forEach(({ sourceTaskIdentifier, targetTaskIdentifier }) => {
-      if (
-        tasks.find(({ identifier: id }) => sourceTaskIdentifier === id) &&
-        tasks.find(({ identifier: id }) => targetTaskIdentifier === id)
-      ) {
-        edges.push({
-          id: getUniqueLinkId(sourceTaskIdentifier, targetTaskIdentifier),
-          sources: [sourceTaskIdentifier],
-          targets: [targetTaskIdentifier],
-        });
+    if (taskLinks)
+      for (const { sourceTaskIdentifier, targetTaskIdentifier } of taskLinks) {
+        if (
+          tasks.find(({ identifier: id }) => sourceTaskIdentifier === id) &&
+          tasks.find(({ identifier: id }) => targetTaskIdentifier === id)
+        ) {
+          edges.push({
+            id: getUniqueLinkId(sourceTaskIdentifier, targetTaskIdentifier),
+            sources: [sourceTaskIdentifier],
+            targets: [targetTaskIdentifier],
+          });
+        }
       }
-    });
-  });
+  }
 
   const graph = {
     id: 'root',

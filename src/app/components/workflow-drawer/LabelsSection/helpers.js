@@ -1,7 +1,7 @@
 import React from 'react';
 import { RobotoTypography } from 'styles/theme';
 
-export const getFormattedLabel = label => {
+export const getFormattedLabel = (label) => {
   const { labelIdentifier, labelName } = label;
   return {
     key: labelIdentifier,
@@ -16,4 +16,4 @@ export const getFormattedLabel = label => {
 };
 
 export const getFormattedLabels = ({ labels }) =>
-  (labels ?? []).map(label => getFormattedLabel(label));
+  (labels ?? []).map((label) => getFormattedLabel(label));

@@ -1,7 +1,7 @@
 import { createSelector } from 'reselect';
 import isEmpty from 'ramda/src/isEmpty';
 
-export const patientStateSelector = state => state.patient;
+export const patientStateSelector = (state) => state.patient;
 
 export const patientDetailsSelector = createSelector(
   patientStateSelector,

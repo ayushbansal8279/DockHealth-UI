@@ -8,24 +8,30 @@ export const UserOrganizationRole = {
   VIEW_ONLY: 'VIEW_ONLY',
 };
 
-export const getOrgRole = roleKey => {
+export const getOrgRole = (roleKey) => {
   switch (roleKey) {
-    case UserOrganizationRole.OWNER:
+    case UserOrganizationRole.OWNER: {
       return 'Owner';
-    case UserOrganizationRole.ADMIN:
+    }
+    case UserOrganizationRole.ADMIN: {
       return 'Admin';
-    case UserOrganizationRole.MEMBER:
+    }
+    case UserOrganizationRole.MEMBER: {
       return 'Member';
-    case UserOrganizationRole.GUEST:
+    }
+    case UserOrganizationRole.GUEST: {
       return 'Guest';
-    case UserOrganizationRole.DOCK_PRO:
+    }
+    case UserOrganizationRole.DOCK_PRO: {
       return 'Dock Pro';
-    default:
+    }
+    default: {
       return '';
+    }
   }
 };
 
-export const checkIfUserIsOrganizationAdmin = user =>
+export const checkIfUserIsOrganizationAdmin = (user) =>
   [
     UserOrganizationRole.ADMIN,
     UserOrganizationRole.OWNER,
@@ -65,17 +71,15 @@ export function isUserGroup(item) {
 
 export function getUserActivityStatus(user, activeUsers) {
   const onlineActiveUser =
-    activeUsers?.find(({ userIdentifier: id }) => {
-      return id === user?.userIdentifier;
-    }) || null;
+    activeUsers?.find(
+      ({ userIdentifier: id }) => id === user?.userIdentifier,
+    ) || null;
 
   if (onlineActiveUser && !onlineActiveUser.idle) return ActivityStatus.ONLINE;
 
   if (onlineActiveUser && onlineActiveUser.idle) return ActivityStatus.IDLE;
 
   if (!onlineActiveUser) return ActivityStatus.OFFLINE;
-
-  return undefined;
 }
 
 export function getUserAvatarUrl(user) {

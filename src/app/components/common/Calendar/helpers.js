@@ -13,7 +13,7 @@ export function escapeDueTime(dueDate) {
   return dueDate;
 }
 
-export const transformTaskToEvent = task => ({
+export const transformTaskToEvent = (task) => ({
   id: task.identifier,
   title: task.description,
   start: escapeDueTime(task.dueDate),

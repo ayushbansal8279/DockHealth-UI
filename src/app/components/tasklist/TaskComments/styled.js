@@ -48,7 +48,7 @@ export const TaskCommentText = styled.div`
   max-width: 575px;
   overflow: hidden;
   max-height: ${({ wholeCommentVisible }) =>
-    !wholeCommentVisible ? `2.2rem` : 'auto'};
+    wholeCommentVisible ? 'auto' : `2.2rem`};
 `;
 
 export const MoreButton = styled.button`

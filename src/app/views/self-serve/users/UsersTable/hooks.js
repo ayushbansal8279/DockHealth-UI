@@ -38,7 +38,7 @@ const useInitializeMembersTableHooks = () => {
   }, []);
 
   const toggleAllUsersSelected = useCallback(
-    event => {
+    (event) => {
       const newAllUsersSelected = event.target.checked;
 
       if (newAllUsersSelected) {
@@ -58,7 +58,7 @@ const useInitializeMembersTableHooks = () => {
   );
 
   const setCurrentSearch = useCallback(
-    search => {
+    (search) => {
       setCurrentSearchRaw(search);
       toggleAllUsersSelectedRaw(false);
     },
@@ -76,7 +76,7 @@ const useInitializeMembersTableHooks = () => {
   }, [organizationUsers, setSelectedUsers]);
 
   const toggleSelectedUser = useCallback(
-    toggledUser => event => {
+    (toggledUser) => (event) => {
       const { checked } = event.target;
 
       if (checked) {
@@ -88,7 +88,7 @@ const useInitializeMembersTableHooks = () => {
       } else {
         setSelectedUsers(
           selectedUsers.filter(
-            selectedUser => !equals(selectedUser, toggledUser),
+            (selectedUser) => !equals(selectedUser, toggledUser),
           ),
         );
 
@@ -108,7 +108,7 @@ const useInitializeMembersTableHooks = () => {
   );
 
   const isUserSelected = useCallback(
-    selectedUser => find(equals(selectedUser), selectedUsers),
+    (selectedUser) => find(equals(selectedUser), selectedUsers),
     [selectedUsers],
   );
 

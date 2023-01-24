@@ -35,7 +35,7 @@ const initializeCommentSectionHooks = () => {
   const dispatch = useDispatch();
 
   const boundRemoveComment = useCallback(
-    comment => {
+    (comment) => {
       deleteComment(
         selectedTask,
         comment,
@@ -58,18 +58,18 @@ const initializeCommentSectionHooks = () => {
   );
 
   const boundUpdateComment = useCallback(
-    comment => {
+    (comment) => {
       updateComment(selectedTask, comment)(dispatch);
     },
     [dispatch, selectedTask],
   );
 
   const boundAddComment = useCallback(
-    comment =>
+    (comment) =>
       addComment(selectedTask, {
         comment,
         creator: currentUser,
-      })(dispatch).then(newComment => {
+      })(dispatch).then((newComment) => {
         const newComments = [newComment.data, ...selectedTask.comments];
         selectedTask.comments = [newComment.data, ...selectedTask.comments];
 
@@ -80,7 +80,7 @@ const initializeCommentSectionHooks = () => {
     [currentUser, dispatch, selectedTask],
   );
 
-  const openDeleteCommentConfirmationModal = comment => {
+  const openDeleteCommentConfirmationModal = (comment) => {
     const modalProps = {
       title: 'Delete comment',
       description:

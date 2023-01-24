@@ -13,7 +13,7 @@ const styles = {
     transition: ANIMATION,
     zIndex: 1,
     boxShadow: 'none',
-    borderBottomColor: props =>
+    borderBottomColor: (props) =>
       props.disabled ? palette.coolGrey2 : palette.coolGrey1,
     '& label': {
       color: palette.coolGrey1,
@@ -42,8 +42,8 @@ const styles = {
       paddingBottom: 0,
     },
     '& .MuiInputBase-root': {
-      flexWrap: props => (props.parentType === 'selectTag' ? 'wrap' : ''),
-      paddingRight: props =>
+      flexWrap: (props) => (props.parentType === 'selectTag' ? 'wrap' : ''),
+      paddingRight: (props) =>
         props.parentType === 'selectTag' ? '30px' : '0px',
     },
   },

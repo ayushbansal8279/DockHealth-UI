@@ -69,11 +69,13 @@ export const StyledEditorContainer = styled.div`
           white-space: initial;
         }
 
-        ${isReadOnly &&
+        ${
+          isReadOnly &&
           `
           overflow: hidden;
           text-overflow: ellipsis;
-        `}
+        `
+        }
       }
     `}
 

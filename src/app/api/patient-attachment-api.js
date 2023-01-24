@@ -22,9 +22,9 @@ export function createPatientAttachment(
 }
 
 export function deletePatientAttachment(identifier) {
-  return axios.delete(`patient/attachment/${identifier}`).then(response => {
-    return response;
-  });
+  return axios
+    .delete(`patient/attachment/${identifier}`)
+    .then((response) => response);
 }
 
 export function downloadPatientAttachment(attachmentIdentifier) {
@@ -35,9 +35,7 @@ export function downloadPatientAttachment(attachmentIdentifier) {
     headers: {
       Accept: 'application/octet-stream',
     },
-  }).then(response => {
-    return response;
-  });
+  }).then((response) => response);
 }
 
 export function getPatientAttachments(patientIdentifier, folderIdentifier) {

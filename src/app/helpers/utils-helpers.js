@@ -1,2 +1,2 @@
-export const isNotEmptyArray = array =>
+export const isNotEmptyArray = (array) =>
   Array.isArray(array) && array.length > 0;

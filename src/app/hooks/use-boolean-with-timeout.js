@@ -4,12 +4,10 @@ function useBooleanWithTimeout(initialValue = false) {
   const timeoutReference = useRef(null);
   const [isTrue, setIsTrue] = useState(initialValue);
 
-  useEffect(() => {
-    return () => {
-      if (timeoutReference.current) {
-        clearTimeout(timeoutReference.current);
-      }
-    };
+  useEffect(() => () => {
+    if (timeoutReference.current) {
+      clearTimeout(timeoutReference.current);
+    }
   });
 
   const closeTrigger = () => {

@@ -17,10 +17,10 @@ export const StyledDataGrid = styled(DataGrid)`
     // calculating a height of a table is a workaround - MUI v4 doesn't support space beetween rows
     height: ${({ rows, pageSize, page }) => {
       let rowsLength;
-      if (rows.length - page * pageSize > pageSize) rowsLength = pageSize;
-      else {
-        rowsLength = rows.length - page * pageSize;
-      }
+      rowsLength =
+        rows.length - page * pageSize > pageSize
+          ? pageSize
+          : rows.length - page * pageSize;
 
       return (
         (rowsLength + 1) * (ROW_HEIGHT + ROW_MARGIN + ROW_BORDER) +
@@ -31,13 +31,14 @@ export const StyledDataGrid = styled(DataGrid)`
     .MuiDataGrid-renderingZone {
       ${({ rows, pageSize, page }) => {
         let rowsLength;
-        if (rows.length - page * pageSize > pageSize) rowsLength = pageSize;
-        else {
-          rowsLength = rows.length - page * pageSize;
-        }
-        return `max-height: ${(rowsLength + 1) *
-          (ROW_HEIGHT + ROW_MARGIN + ROW_BORDER) +
-          HEADER_HEIGHT}px !important`;
+        rowsLength =
+          rows.length - page * pageSize > pageSize
+            ? pageSize
+            : rows.length - page * pageSize;
+        return `max-height: ${
+          (rowsLength + 1) * (ROW_HEIGHT + ROW_MARGIN + ROW_BORDER) +
+          HEADER_HEIGHT
+        }px !important`;
       }}
     }
 

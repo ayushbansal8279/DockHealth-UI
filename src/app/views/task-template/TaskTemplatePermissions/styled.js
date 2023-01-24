@@ -19,22 +19,22 @@ export const StandardTaskItemCell = styled.div`
   position: ${({ position }) => position || 'relative'};
   align-items: ${({ alignItems }) => alignItems || 'center'};
   border-right: 1px solid ${palette.coolGrey3};
-  color: ${props => props.color || palette.mediumGrey};
+  color: ${(props) => props.color || palette.mediumGrey};
   display: flex;
   font-size: ${fontSizes.smallPlus};
-  font-weight: ${props =>
+  font-weight: ${(props) =>
     props.bolded ? fontWeights.regular : fontWeights.light};
   color: ${palette.mediumGrey};
-  min-width: ${props => props.width};
-  max-width: ${props => props.width};
+  min-width: ${(props) => props.width};
+  max-width: ${(props) => props.width};
   padding: ${spacing.small} 0;
-  padding: ${props => props.padding || `${spacing.small} 0`};
-  padding-left: ${props =>
+  padding: ${(props) => props.padding || `${spacing.small} 0`};
+  padding-left: ${(props) =>
     props.paddingLeft ? spacing[props.paddingLeft] : spacing.regular};
-  padding-right: ${props =>
+  padding-right: ${(props) =>
     props.paddingLeft ? spacing[props.paddingRight] : spacing.regular};
-  width: ${props => (!props.width ? '100%' : '')};
-  justify-content: ${props => props.justify || 'flex-start'};
+  width: ${(props) => (props.width ? '' : '100%')};
+  justify-content: ${(props) => props.justify || 'flex-start'};
   overflow: hidden;
 
   &:last-of-type {

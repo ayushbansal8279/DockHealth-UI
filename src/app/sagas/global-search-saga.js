@@ -45,7 +45,7 @@ const refreshTasks = () => ({
   type: DO_REFRESH_TASKS,
 });
 
-const setSearchValue = value => ({
+const setSearchValue = (value) => ({
   type: DO_SET_SEARCH_VALUE,
   payload: { value },
 });
@@ -54,12 +54,12 @@ const clearSearchValue = () => ({
   type: DO_CLEAR_SEARCH_VALUE,
 });
 
-const setSearchCompletedTasks = isSearchingCompletedTasks => ({
+const setSearchCompletedTasks = (isSearchingCompletedTasks) => ({
   type: DO_SET_SEARCH_COMPLETED_TASKS,
   payload: { isSearchingCompletedTasks },
 });
 
-const toggleTaskStatus = task => ({
+const toggleTaskStatus = (task) => ({
   type: DO_TOGGLE_GLOBAL_SEARCH_TASK_STATUS,
   payload: {
     task,
@@ -120,7 +120,7 @@ function* doRefreshTasks() {
     } else {
       yield put(GlobalSearchActions.requestGlobalSearchSuccess([]));
     }
-  } catch (error) {
+  } catch {
     yield put(GlobalSearchActions.requestGlobalSearchFailure());
   }
 }
@@ -164,7 +164,7 @@ function* doGetMoreTasksForTaskList({ payload }) {
         GlobalSearchActions.requestGlobalSearchMoreSuccess(response.taskLists),
       );
     }
-  } catch (error) {
+  } catch {
     yield put(GlobalSearchActions.requestGlobalSearchMoreFailure());
   }
 }
@@ -193,11 +193,9 @@ function* doSetSearchCompletedTasks({ payload }) {
   try {
     const { isSearchingCompletedTasks } = payload;
 
-    if (isSearchingCompletedTasks) {
-      yield put(GlobalSearchActions.searchCompletedTasks());
-    } else {
-      yield put(GlobalSearchActions.searchIncompletedTasks());
-    }
+    yield isSearchingCompletedTasks
+      ? put(GlobalSearchActions.searchCompletedTasks())
+      : put(GlobalSearchActions.searchIncompletedTasks());
 
     yield put(searchTasks());
   } catch (error) {
@@ -235,7 +233,7 @@ function* doToggleTaskCompleteStatus({ payload }) {
     }
 
     yield put(AlertActions.showGlobalAlert(successMessage));
-  } catch (error) {
+  } catch {
     yield put(refreshTasks());
   }
 }
@@ -252,7 +250,7 @@ function* doSetWorkflowStatus({ payload }) {
       workflowStatus,
     );
     yield put(AlertActions.showGlobalAlert(AlertMessages.UPDATED));
-  } catch (error) {
+  } catch {
     yield put(refreshTasks);
   }
 }
@@ -267,7 +265,7 @@ function* doUpdateTask({ payload }) {
     );
     yield put(GlobalSearchActions.updateGlobalSearchTask(updatedTask));
     yield put(AlertActions.showGlobalAlert(AlertMessages.UPDATED));
-  } catch (error) {
+  } catch {
     yield put(refreshTasks());
   }
 }

@@ -1,4 +1,4 @@
-const getItem = key => {
+const getItem = (key) => {
   try {
     const item = sessionStorage[key];
 
@@ -15,7 +15,7 @@ const setItem = (key, item) => {
   sessionStorage[key] = JSON.stringify(item);
 };
 
-const removeItem = key => {
+const removeItem = (key) => {
   sessionStorage.removeItem(key);
 };
 

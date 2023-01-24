@@ -33,7 +33,7 @@ const initialState = {
   },
 };
 
-const requestHistory = state => ({ ...state, isHistoryFetching: true });
+const requestHistory = (state) => ({ ...state, isHistoryFetching: true });
 
 const requestHistorySuccess = (state, { auditDetails }) => ({
   ...state,
@@ -50,8 +50,9 @@ const requestHistoryError = (state, { error }) => ({
 
 const TaskReducer = (state = initialState, action) => {
   switch (action.type) {
-    case REQUEST_HISTORY:
+    case REQUEST_HISTORY: {
       return requestHistory(state);
+    }
 
     case TASK_READ_SUCCESS: {
       const { task } = action;
@@ -72,33 +73,39 @@ const TaskReducer = (state = initialState, action) => {
       return state;
     }
 
-    case SET_AS_CURRENT_TASK:
+    case SET_AS_CURRENT_TASK: {
       return {
         ...state,
         selectedTask: action.task,
-        selectedTaskId: action.task != null ? action.task.taskIdentifier : null,
+        selectedTaskId:
+          action.task == undefined ? null : action.task.taskIdentifier,
         error: false,
       };
+    }
 
-    case SET_AS_CURRENT_TASK_ERROR:
+    case SET_AS_CURRENT_TASK_ERROR: {
       return {
         ...state,
         error: true,
       };
+    }
 
-    case OPEN_TASK_DRAWER_TO_ADD_TASK:
+    case OPEN_TASK_DRAWER_TO_ADD_TASK: {
       return {
         ...state,
         selectedTask: action.initialTaskState,
         selectedTaskId: action.initialTaskState.taskIdentifier || null,
         open: true,
       };
+    }
 
-    case GET_TASK_HISTORY_SUCCESS:
+    case GET_TASK_HISTORY_SUCCESS: {
       return requestHistorySuccess(state, action);
+    }
 
-    case GET_TASK_HISTORY_ERROR:
+    case GET_TASK_HISTORY_ERROR: {
       return requestHistoryError(state, action);
+    }
 
     case CHANGE_ADDING_NEW_TASK: {
       const { addingNewTask } = action;
@@ -127,7 +134,7 @@ const TaskReducer = (state = initialState, action) => {
         open,
         focusField,
         selectedTask: task,
-        selectedTaskId: task != null ? task.taskIdentifier : null,
+        selectedTaskId: task == undefined ? null : task.taskIdentifier,
       };
     }
     case GET_TASK_CUSTOM_FIELDS: {
@@ -156,7 +163,7 @@ const TaskReducer = (state = initialState, action) => {
       return state;
     }
 
-    default:
+    default: {
       if (state.selectedTask) {
         return TaskBaseReducer(
           state,
@@ -169,6 +176,7 @@ const TaskReducer = (state = initialState, action) => {
       }
 
       return state;
+    }
   }
 };
 

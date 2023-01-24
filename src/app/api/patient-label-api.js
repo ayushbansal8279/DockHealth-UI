@@ -9,9 +9,7 @@ export const addLabel = ({ labelIdentifier, labelName, patientIdentifier }) =>
       labelName,
       patientIdentifier,
     },
-  }).then(({ data }) => {
-    return data;
-  });
+  }).then(({ data }) => data);
 
 export const editLabel = ({ labelIdentifier, labelName, patientIdentifier }) =>
   axios({
@@ -22,9 +20,7 @@ export const editLabel = ({ labelIdentifier, labelName, patientIdentifier }) =>
       labelName,
       patientIdentifier,
     },
-  }).then(({ data }) => {
-    return data;
-  });
+  }).then(({ data }) => data);
 
 export const removeLabelForPatient = ({
   labelIdentifier,
@@ -39,9 +35,7 @@ export const removeLabelForPatient = ({
       labelName,
       patientIdentifier,
     },
-  }).then(({ data }) => {
-    return data;
-  });
+  }).then(({ data }) => data);
 
 export function getAllPatientLabels() {
   return axios.get(`/patient/label/getAll`).then(({ data }) => data);
@@ -51,6 +45,4 @@ export const removeLabelFromDatabase = ({ labelIdentifier }) =>
   axios({
     method: 'delete',
     url: `/patient/label/${labelIdentifier}`,
-  }).then(({ data }) => {
-    return data;
-  });
+  }).then(({ data }) => data);

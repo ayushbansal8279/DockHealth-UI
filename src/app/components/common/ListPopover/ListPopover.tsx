@@ -63,38 +63,40 @@ const useListItemClasses = makeStyles({
   },
 });
 
-const renderItem = ({
-  listItemClasses,
-}: {
-  listItemClasses: Record<'root' | 'active' | 'labelContainer', string>;
-}) => (popoverItem: PopoverListItem) => {
-  if (!popoverItem) {
-    return null;
-  }
+const renderItem =
+  ({
+    listItemClasses,
+  }: {
+    listItemClasses: Record<'root' | 'active' | 'labelContainer', string>;
+  }) =>
+  (popoverItem: PopoverListItem) => {
+    if (!popoverItem) {
+      return null;
+    }
 
-  const {
-    active = false,
-    key,
-    label,
-    onClick,
-    button = true,
-    ...otherProps
-  } = popoverItem;
+    const {
+      active = false,
+      key,
+      label,
+      onClick,
+      button = true,
+      ...otherProps
+    } = popoverItem;
 
-  return (
-    <ListItem
-      // explicit cast here is a workaround for ListItem typing issue
-      // check https://github.com/mui-org/material-ui/issues/14971
-      button={button as true}
-      className={clsx(listItemClasses.root, active && listItemClasses.active)}
-      onClick={onClick}
-      key={`list_${key}`}
-      {...otherProps}
-    >
-      <div className={clsx(listItemClasses.labelContainer)}>{label}</div>
-    </ListItem>
-  );
-};
+    return (
+      <ListItem
+        // explicit cast here is a workaround for ListItem typing issue
+        // check https://github.com/mui-org/material-ui/issues/14971
+        button={button as true}
+        className={clsx(listItemClasses.root, active && listItemClasses.active)}
+        onClick={onClick}
+        key={`list_${key}`}
+        {...otherProps}
+      >
+        <div className={clsx(listItemClasses.labelContainer)}>{label}</div>
+      </ListItem>
+    );
+  };
 
 const ListPopover = (allProps: ListPopoverProps) => {
   const { items, customRenderItem, ...props } = allProps;

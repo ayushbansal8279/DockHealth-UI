@@ -42,7 +42,7 @@ function* updateQuickFilter({
   try {
     const quickFilters = yield select(quickFiltersSelector);
     const editedOption = quickFilters.find(
-      option => option.quickFilterIdentifier === quickFilterIdentifier,
+      (option) => option.quickFilterIdentifier === quickFilterIdentifier,
     );
     const updatedOption = { ...editedOption, ...dataToUpdate };
     yield call(

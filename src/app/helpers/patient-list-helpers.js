@@ -16,7 +16,7 @@ export const DefaultPatientListUrl = {
 };
 
 export function getPatientListIdentifierByUrlParameter(urlParameter) {
-  if (!urlParameter) return undefined;
+  if (!urlParameter) return;
 
   const defaultPatientListIdentifier = Object.entries(
     DefaultPatientListUrl,

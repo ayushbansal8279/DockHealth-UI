@@ -60,7 +60,7 @@ export function loadMoreDashboardTasksForGroup(groupType) {
   };
 }
 
-export const searchDashboardTasks = searchTerm => ({
+export const searchDashboardTasks = (searchTerm) => ({
   type: ActionTypes.SEARCH_DASHBOARD_TASKS,
   searchTerm,
 });

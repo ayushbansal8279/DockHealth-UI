@@ -1,21 +1,26 @@
-export const getCustomerTypeLabel = currentUser => {
+export const getCustomerTypeLabel = (currentUser) => {
   const { organizationCustomerType } = currentUser;
 
   switch (organizationCustomerType) {
-    case 'PATIENT':
+    case 'PATIENT': {
       return 'patient';
+    }
 
-    case 'CLIENT':
+    case 'CLIENT': {
       return 'client';
+    }
 
-    case 'MEMBER':
+    case 'MEMBER': {
       return 'member';
+    }
 
-    case 'CUSTOMER':
+    case 'CUSTOMER': {
       return 'customer';
+    }
 
-    default:
+    default: {
       return 'patient';
+    }
   }
 };
 
@@ -33,11 +38,13 @@ export const getCustomerUniqueIDLabel = (currentUser, currentOrganization) => {
 
   // eslint-disable-next-line sonarjs/no-small-switch
   switch (organizationCustomerType) {
-    case 'PATIENT':
+    case 'PATIENT': {
       return 'MRN';
+    }
 
-    default:
+    default: {
       return 'Unique Identifier';
+    }
   }
 };
 
@@ -58,10 +65,12 @@ export const getCustomerUniqueIDShortLabel = (
 
   // eslint-disable-next-line sonarjs/no-small-switch
   switch (organizationCustomerType) {
-    case 'PATIENT':
+    case 'PATIENT': {
       return 'MRN';
+    }
 
-    default:
+    default: {
       return 'ID';
+    }
   }
 };

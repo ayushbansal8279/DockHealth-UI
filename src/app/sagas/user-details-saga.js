@@ -30,11 +30,9 @@ function* initializeUserTasks(status) {
     yield put(selectFiltersForMegaFilter(filters, userIdentifier, status));
   else {
     yield put(clearFiltersForMegaFilter());
-    if (status === TaskStatus.COMPLETE) {
-      yield put(PersonDetailsActions.getUserCompletedTasks());
-    } else {
-      yield put(PersonDetailsActions.getUserTasks());
-    }
+    yield status === TaskStatus.COMPLETE
+      ? put(PersonDetailsActions.getUserCompletedTasks())
+      : put(PersonDetailsActions.getUserTasks());
   }
 }
 
@@ -103,17 +101,9 @@ function* getTasks(status) {
 
   let tasks;
 
-  if (filters && !isEmpty(filters)) {
-    tasks = yield call(
-      UserApi.getUserFilteredTasks,
-      userIdentifier,
-      sort,
-      filters,
-      status,
-    );
-  } else {
-    tasks = yield call(UserApi.getUserTasks, userIdentifier, sort, status);
-  }
+  tasks = yield filters && !isEmpty(filters)
+    ? call(UserApi.getUserFilteredTasks, userIdentifier, sort, filters, status)
+    : call(UserApi.getUserTasks, userIdentifier, sort, status);
   return tasks;
 }
 
@@ -155,22 +145,18 @@ function* selectFiltersFromMegaFilter({ id, status }) {
 function* sortUserTasks() {
   const currentStatus = yield select(currentTasksStatusSelector);
 
-  if (currentStatus === TaskStatus.COMPLETE) {
-    yield put(PersonDetailsActions.getUserCompletedTasks());
-  } else {
-    yield put(PersonDetailsActions.getUserTasks());
-  }
+  yield currentStatus === TaskStatus.COMPLETE
+    ? put(PersonDetailsActions.getUserCompletedTasks())
+    : put(PersonDetailsActions.getUserTasks());
 }
 
 function* refreshUserTasks() {
   const currentStatus = yield select(currentTasksStatusSelector);
   yield put(PersonDetailsActions.getUserTaskCounters());
 
-  if (currentStatus === TaskStatus.COMPLETE) {
-    yield put(PersonDetailsActions.getUserCompletedTasks());
-  } else {
-    yield put(PersonDetailsActions.getUserTasks());
-  }
+  yield currentStatus === TaskStatus.COMPLETE
+    ? put(PersonDetailsActions.getUserCompletedTasks())
+    : put(PersonDetailsActions.getUserTasks());
 }
 
 function* getUserTaskFilterOptions() {

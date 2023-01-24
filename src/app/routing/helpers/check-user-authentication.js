@@ -30,17 +30,14 @@ const checkUserAuthentication = async ({ history, isRequiredLogin }) => {
         .then(() => {
           const patientIdentifier = sessionStorage.getItem('PatientIdentifier');
           console.log(patientIdentifier);
-          if (
+          window.location.href =
             patientIdentifier &&
             patientIdentifier !== '' &&
             patientIdentifier !== 'null'
-          ) {
-            window.location.href = `/#/core/patient/${patientIdentifier}`;
-          } else {
-            window.location.href = `/#/core/home`;
-          }
+              ? `/#/core/patient/${patientIdentifier}`
+              : `/#/core/home`;
         })
-        .catch(error => {
+        .catch((error) => {
           showAlert({ status: 'error', title: 'Error', text: error.message });
         });
     }
@@ -62,7 +59,7 @@ const checkUserAuthentication = async ({ history, isRequiredLogin }) => {
     }
 
     return { redirectPath: null, user };
-  } catch (error) {
+  } catch {
     history.push(DEFAULT_REDIRECT_PATH);
   }
 };

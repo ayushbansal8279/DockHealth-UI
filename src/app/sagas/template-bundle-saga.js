@@ -121,7 +121,7 @@ function* changePatientForTemplateBundle({ taskTemplateIdentifier, patient }) {
     yield put({
       type: ActionTypes.UPDATE_TEMPLATE_BUNDLE_SUCCESS,
       bundleIdentifier: bundle.identifier,
-      dataToUpdate: !patient ? { ...bundle, patient: null } : bundle,
+      dataToUpdate: patient ? bundle : { ...bundle, patient: null },
     });
   } catch {
     yield put({

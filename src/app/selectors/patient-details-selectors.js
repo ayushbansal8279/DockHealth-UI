@@ -1,7 +1,7 @@
 import { PatientAttachmentType } from 'helpers/patient-details-helpers';
 import { createSelector } from 'reselect';
 
-export const patientDetailsStateSelector = state => state.patientDetails;
+export const patientDetailsStateSelector = (state) => state.patientDetails;
 
 export const patientTaskListsSelector = createSelector(
   patientDetailsStateSelector,

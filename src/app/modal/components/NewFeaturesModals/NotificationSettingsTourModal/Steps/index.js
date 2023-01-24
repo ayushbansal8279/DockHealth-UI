@@ -1,4 +1,3 @@
-import NotificationSettingsStep from './NotificationSettingsStep';
-import SpeedOptimizationStep from './SpeedOptimizationStep';
+export { default as NotificationSettingsStep } from './NotificationSettingsStep';
 
-export { NotificationSettingsStep, SpeedOptimizationStep };
+export { default as SpeedOptimizationStep } from './SpeedOptimizationStep';

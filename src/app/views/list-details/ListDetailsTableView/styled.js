@@ -37,6 +37,6 @@ export const ListTourBackground = styled.div`
 
 export const DroppablePlaceholder = styled.div`
   min-height: 36px;
-  background-color: ${props =>
+  background-color: ${(props) =>
     props.isDraggingOverGroup ? palette.coolGrey2 : 'transparent'};
 `;

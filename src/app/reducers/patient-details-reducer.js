@@ -30,9 +30,9 @@ const INITIAL_STATE = {
 };
 
 const updateTaskInList = (lists, updateTaskCallback) =>
-  lists?.map(list => ({
+  lists?.map((list) => ({
     ...list,
-    tasks: mapWithRemove(t => {
+    tasks: mapWithRemove((t) => {
       if (t.itemType === TaskItemType.BUNDLE) {
         return updateTaskCallback({
           ...t,
@@ -44,34 +44,30 @@ const updateTaskInList = (lists, updateTaskCallback) =>
     }, list.tasks),
   }));
 
-const updateTasksStateCallback = (state, updateTaskFromAction) => {
-  return {
-    ...state,
-    lists: updateTaskInList(state.lists, updateTaskFromAction),
-  };
-};
+const updateTasksStateCallback = (state, updateTaskFromAction) => ({
+  ...state,
+  lists: updateTaskInList(state.lists, updateTaskFromAction),
+});
 
 function updateWorkflowInState(updateCallback, workflowIdentifier, state) {
   return {
     ...state,
-    lists: state?.lists?.map(list => {
-      return {
-        ...list,
-        tasks: list.tasks.map(t =>
-          t.identifier === workflowIdentifier ? updateCallback(t) : t,
-        ),
-      };
-    }),
+    lists: state?.lists?.map((list) => ({
+      ...list,
+      tasks: list.tasks.map((t) =>
+        t.identifier === workflowIdentifier ? updateCallback(t) : t,
+      ),
+    })),
   };
 }
 
 // eslint-disable-next-line sonarjs/cognitive-complexity
-export default function(state = INITIAL_STATE, action = {}) {
+export default function (state = INITIAL_STATE, action = {}) {
   const { type, payload } = action;
   switch (type) {
     case ActionTypes.UPDATE_PARTIAL_WORKFLOW_SUCCESS: {
       return updateWorkflowInState(
-        workflow => ({ ...workflow, ...action.newData }),
+        (workflow) => ({ ...workflow, ...action.newData }),
         action.taskWorkflowIdentifier,
         state,
       );
@@ -92,7 +88,7 @@ export default function(state = INITIAL_STATE, action = {}) {
       } = action.payload;
       return {
         ...state,
-        lists: state.lists?.map(l => {
+        lists: state.lists?.map((l) => {
           if (l?.listType === 'PUBLIC') {
             return l.taskListIdentifier === taskListIdentifier
               ? {
@@ -104,7 +100,7 @@ export default function(state = INITIAL_STATE, action = {}) {
           return l.taskListIdentifier === taskListIdentifier
             ? {
                 ...l,
-                listUsers: l.listUsers.map(u =>
+                listUsers: l.listUsers.map((u) =>
                   u.identifier === currentUserIdentifier
                     ? { ...u, listDisplayColumns }
                     : u,
@@ -115,10 +111,11 @@ export default function(state = INITIAL_STATE, action = {}) {
       };
     }
 
-    case ActionTypes.CLEAR_PATIENT_STATE:
+    case ActionTypes.CLEAR_PATIENT_STATE: {
       return {
         ...INITIAL_STATE,
       };
+    }
 
     case ActionTypes.INITIALIZE_PATIENT_ATTACHMENTS_FOLDER: {
       return {
@@ -191,7 +188,7 @@ export default function(state = INITIAL_STATE, action = {}) {
       return {
         ...state,
         attachments:
-          state.attachments?.map(a =>
+          state.attachments?.map((a) =>
             a.attachmentIdentifier === updatedAttachment.attachmentIdentifier
               ? { ...a, ...updatedAttachment }
               : a,
@@ -231,52 +228,59 @@ export default function(state = INITIAL_STATE, action = {}) {
       };
     }
 
-    case ActionTypes.TOGGLE_PATIENT_COMPLETE_TASKS_VISIBLE:
+    case ActionTypes.TOGGLE_PATIENT_COMPLETE_TASKS_VISIBLE: {
       return {
         ...state,
         completeTasksVisible: !state.completeTasksVisible,
       };
+    }
 
-    case ActionTypes.SELECT_PATIENT_LIST_TASK_STATUS:
+    case ActionTypes.SELECT_PATIENT_LIST_TASK_STATUS: {
       return {
         ...state,
         currentTasksStatus: action.taskStatus,
       };
+    }
 
-    case ActionTypes.GET_CURRENT_PATIENT_TASKS:
+    case ActionTypes.GET_CURRENT_PATIENT_TASKS: {
       return {
         ...state,
         isFetching: true,
         error: false,
       };
+    }
 
-    case ActionTypes.GET_CURRENT_PATIENT_TASKS_SUCCESS:
+    case ActionTypes.GET_CURRENT_PATIENT_TASKS_SUCCESS: {
       return {
         ...state,
         lists: action.lists,
         isFetching: false,
       };
+    }
 
-    case ActionTypes.GET_CURRENT_PATIENT_TASKS_FAILURE:
+    case ActionTypes.GET_CURRENT_PATIENT_TASKS_FAILURE: {
       return {
         ...state,
         isFetching: false,
         error: true,
       };
+    }
 
-    case ActionTypes.GET_PATIENT_TASKS_STATS_SUCCESS:
+    case ActionTypes.GET_PATIENT_TASKS_STATS_SUCCESS: {
       return {
         ...state,
         incompleteTasksCount: payload?.incompleteTasksCount,
         completeTasksCount: payload?.completeTasksCount,
       };
+    }
 
-    case ActionTypes.GET_PATIENT_TASKS_STATS_FAILURE:
+    case ActionTypes.GET_PATIENT_TASKS_STATS_FAILURE: {
       return {
         ...state,
         incompleteTasksCount: null,
         completeTasksCount: null,
       };
+    }
 
     case ActionTypes.UPDATE_PATIENT_TASK: {
       const { newTaskData, taskIdentifier } = payload;
@@ -290,11 +294,12 @@ export default function(state = INITIAL_STATE, action = {}) {
       };
     }
 
-    case ActionTypes.SET_PATIENT_TASK_SEARCH_VALUE:
+    case ActionTypes.SET_PATIENT_TASK_SEARCH_VALUE: {
       return {
         ...state,
         taskSearch: payload?.value,
       };
+    }
 
     case ActionTypes.SORT_PATIENT_TASKS: {
       const { key, order } = action.payload || {};
@@ -314,7 +319,7 @@ export default function(state = INITIAL_STATE, action = {}) {
 
       return {
         ...state,
-        lists: state.lists?.map(l => ({
+        lists: state.lists?.map((l) => ({
           ...l,
           tasks:
             dataToUpdate.taskListIdentifier === l.taskListIdentifier
@@ -343,7 +348,7 @@ export default function(state = INITIAL_STATE, action = {}) {
 
       return {
         ...state,
-        lists: state.lists?.map(l => ({
+        lists: state.lists?.map((l) => ({
           ...l,
           tasks: updateBundleInList(
             { tasks: reorderedTasks },
@@ -359,7 +364,7 @@ export default function(state = INITIAL_STATE, action = {}) {
 
       return {
         ...state,
-        lists: state.lists?.map(l => ({
+        lists: state.lists?.map((l) => ({
           ...l,
           tasks: updateBundleInList(
             { tasks: workflow.tasks },
@@ -380,9 +385,9 @@ export default function(state = INITIAL_STATE, action = {}) {
       if (bundleIdentifier) {
         return {
           ...state,
-          lists: state.lists?.map(l => ({
+          lists: state.lists?.map((l) => ({
             ...l,
-            tasks: l.tasks?.map(t =>
+            tasks: l.tasks?.map((t) =>
               t.identifier === bundleIdentifier
                 ? { ...t, tasks: [...(t.tasks || []), addedTask] }
                 : t,
@@ -395,7 +400,7 @@ export default function(state = INITIAL_STATE, action = {}) {
 
       return {
         ...state,
-        lists: state.lists?.map(l =>
+        lists: state.lists?.map((l) =>
           l.taskListIdentifier === taskListIdentifier
             ? {
                 ...l,
@@ -413,7 +418,7 @@ export default function(state = INITIAL_STATE, action = {}) {
 
       return {
         ...state,
-        lists: state.lists?.map(l =>
+        lists: state.lists?.map((l) =>
           l.taskListIdentifier === taskListIdentifier
             ? {
                 ...l,
@@ -431,7 +436,7 @@ export default function(state = INITIAL_STATE, action = {}) {
 
       return {
         ...state,
-        lists: state.lists?.map(l =>
+        lists: state.lists?.map((l) =>
           l.taskListIdentifier === taskListIdentifier
             ? {
                 ...l,
@@ -447,7 +452,7 @@ export default function(state = INITIAL_STATE, action = {}) {
 
       return {
         ...state,
-        lists: state.lists?.map(l => ({
+        lists: state.lists?.map((l) => ({
           ...l,
           tasks: l.tasks?.filter(
             ({ identifier }) => identifier !== bundleIdentifier,
@@ -462,7 +467,7 @@ export default function(state = INITIAL_STATE, action = {}) {
 
       return {
         ...state,
-        lists: state.lists?.map(l => ({
+        lists: state.lists?.map((l) => ({
           ...l,
           tasks: l.tasks?.filter(({ identifier: id }) => id !== identifier),
         })),
@@ -476,7 +481,7 @@ export default function(state = INITIAL_STATE, action = {}) {
         ...state,
         patient: {
           ...state.patient,
-          allNotes: state.patient.allNotes.map(note =>
+          allNotes: state.patient.allNotes.map((note) =>
             note.patientNoteIdentifier === patientNoteIdentifier
               ? { ...note, ...noteToUpdate }
               : note,
@@ -516,7 +521,7 @@ export default function(state = INITIAL_STATE, action = {}) {
         patient: {
           ...state.patient,
           allNotes: state.patient.allNotes.filter(
-            note => note.patientNoteIdentifier !== patientNoteIdentifier,
+            (note) => note.patientNoteIdentifier !== patientNoteIdentifier,
           ),
         },
       };
@@ -529,7 +534,7 @@ export default function(state = INITIAL_STATE, action = {}) {
         ...state,
         patient: {
           ...state.patient,
-          allNotes: state.patient.allNotes.map(note =>
+          allNotes: state.patient.allNotes.map((note) =>
             note.patientNoteIdentifier === patientNoteIdentifier
               ? { ...note, pinned: true }
               : note,
@@ -545,7 +550,7 @@ export default function(state = INITIAL_STATE, action = {}) {
         ...state,
         patient: {
           ...state.patient,
-          allNotes: state.patient.allNotes.map(note =>
+          allNotes: state.patient.allNotes.map((note) =>
             note.patientNoteIdentifier === patientNoteIdentifier
               ? { ...note, pinned: false }
               : note,
@@ -569,7 +574,7 @@ export default function(state = INITIAL_STATE, action = {}) {
 
       return {
         ...state,
-        lists: state.lists?.map(l => {
+        lists: state.lists?.map((l) => {
           if (
             l.taskListIdentifier === taskList.taskListIdentifier &&
             !l.tasks?.some(
@@ -588,7 +593,7 @@ export default function(state = INITIAL_STATE, action = {}) {
       const { template, taskListIdentifier } = action;
       return {
         ...state,
-        lists: state.lists?.map(l =>
+        lists: state.lists?.map((l) =>
           taskListIdentifier === l.taskListIdentifier
             ? {
                 ...l,
@@ -599,7 +604,7 @@ export default function(state = INITIAL_STATE, action = {}) {
       };
     }
 
-    case ActionTypes.PATIENT_ADD_LABEL_SUCCESS:
+    case ActionTypes.PATIENT_ADD_LABEL_SUCCESS: {
       return {
         ...state,
         patient: {
@@ -607,19 +612,22 @@ export default function(state = INITIAL_STATE, action = {}) {
           patientLabels: [...(state.patient.patientLabels ?? []), action.label],
         },
       };
+    }
 
-    case ActionTypes.PATIENT_DELETE_LABEL_SUCCESS:
+    case ActionTypes.PATIENT_DELETE_LABEL_SUCCESS: {
       return {
         ...state,
         patient: {
           ...state.patient,
           patientLabels: state.patient.patientLabels.filter(
-            l => l.labelIdentifier !== action.deletedLabelIdentifier,
+            (l) => l.labelIdentifier !== action.deletedLabelIdentifier,
           ),
         },
       };
+    }
 
-    default:
+    default: {
       return TaskBaseReducer(state, action, updateTasksStateCallback);
+    }
   }
 }

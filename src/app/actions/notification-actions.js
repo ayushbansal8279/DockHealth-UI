@@ -1,5 +1,5 @@
 export function notification(message, type, stay) {
-  return dispatch => {
+  return (dispatch) => {
     // return new Promise(resolve => {
     dispatch({
       type: `notification/${type || 'default'}`,

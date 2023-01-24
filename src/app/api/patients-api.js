@@ -7,11 +7,11 @@ import axios from './axios-heydoc';
 export function getGenderIdentityOptions() {
   return axios
     .get(`reference/genderIdentities`)
-    .then(response => response.data);
+    .then((response) => response.data);
 }
 
 export const getPatientsLists = () =>
-  axios.get('patient/list/getAll').then(response => response.data);
+  axios.get('patient/list/getAll').then((response) => response.data);
 
 export function getPatientsByListId(patientsListIdentifier) {
   return axios
@@ -48,7 +48,7 @@ export function getPatientsByCriteria(searchCriteria, patientListIdentifier) {
         patientListIdentifier,
       },
     })
-    .then(response => response.data);
+    .then((response) => response.data);
 }
 
 export function createPatientsList(patientList) {
@@ -72,18 +72,18 @@ export function getPatientsListFilterOptions(
   patientsListIdentifier,
   selectedFilters,
 ) {
-  const request = !selectedFilters
+  const request = selectedFilters
     ? axios
-        .get(`patient/filter/filterOptionsForList/${patientsListIdentifier}`)
-        .then(({ data }) => data)
-    : axios
         .post(
           `patient/filter/filterPatientsByCriteria/${patientsListIdentifier}`,
           mapSelectedOptionsToRequestPayload(selectedFilters),
         )
-        .then(({ data: { patientFilterOptions } }) => patientFilterOptions);
+        .then(({ data: { patientFilterOptions } }) => patientFilterOptions)
+    : axios
+        .get(`patient/filter/filterOptionsForList/${patientsListIdentifier}`)
+        .then(({ data }) => data);
 
-  return request.then(options => mapFilterOptions(options));
+  return request.then((options) => mapFilterOptions(options));
 }
 
 const PatientBulkActions = {
@@ -94,7 +94,7 @@ const PatientBulkActions = {
   DELETE_LABEL: 'DELETE_LABEL',
 };
 
-export const patientBulkCreateTask = payload => {
+export const patientBulkCreateTask = (payload) => {
   const {
     assignedToUsers,
     taskListIdentifier,
@@ -112,7 +112,7 @@ export const patientBulkCreateTask = payload => {
   axios.put(`patient/bulk`, body).then(({ data }) => data);
 };
 
-export const patientBulkCreateWorkflow = payload => {
+export const patientBulkCreateWorkflow = (payload) => {
   const { assignedToUsers, taskListIdentifier, workflowIdentifier } = payload;
 
   const body = {
@@ -125,7 +125,7 @@ export const patientBulkCreateWorkflow = payload => {
   axios.put(`patient/bulk`, body).then(({ data }) => data);
 };
 
-export const patientBulkDeletePatient = patientIdentifiers => {
+export const patientBulkDeletePatient = (patientIdentifiers) => {
   const body = {
     bulkOperationType: PatientBulkActions.DELETE_PATIENT,
     patientIdentifiers,
@@ -134,7 +134,7 @@ export const patientBulkDeletePatient = patientIdentifiers => {
   axios.put(`patient/bulk`, body).then(({ data }) => data);
 };
 
-export const patientBulkAddLabel = payload => {
+export const patientBulkAddLabel = (payload) => {
   const { labelIdentifier, labelName, assignedToUsers } = payload;
   const body = {
     bulkOperationType: PatientBulkActions.ADD_LABEL,
@@ -146,7 +146,7 @@ export const patientBulkAddLabel = payload => {
   axios.put(`patient/bulk`, body).then(({ data }) => data);
 };
 
-export const patientBulkDeleteLabel = payload => {
+export const patientBulkDeleteLabel = (payload) => {
   const { labelIdentifier, labelName, assignedToUsers } = payload;
   const body = {
     bulkOperationType: PatientBulkActions.DELETE_LABEL,
@@ -154,9 +154,7 @@ export const patientBulkDeleteLabel = payload => {
     labelName: labelName || null,
     patientIdentifiers: assignedToUsers,
   };
-  axios.put(`patient/bulk`, body).then(({ data }) => {
-    return data;
-  });
+  axios.put(`patient/bulk`, body).then(({ data }) => data);
 };
 
 export function updatePatientListPreferences(setup, patientListIdentifier) {

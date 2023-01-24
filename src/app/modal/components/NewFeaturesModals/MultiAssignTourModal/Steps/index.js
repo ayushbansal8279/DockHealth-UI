@@ -1,14 +1,7 @@
-import MultiAssignStep from './MultiAssignStep';
-import UndoOptionStep from './UndoOptionStep';
-import RemindersStep from './RemindersStep';
-import PeopleMentionsStep from './PeopleMentionsStep';
-import PatientsMentionsStep from './PatientsMentionsStep';
-
 // eslint-disable-next-line import/prefer-default-export
-export {
-  MultiAssignStep,
-  UndoOptionStep,
-  RemindersStep,
-  PeopleMentionsStep,
-  PatientsMentionsStep,
-};
+
+export { default as MultiAssignStep } from './MultiAssignStep';
+export { default as RemindersStep } from './RemindersStep';
+export { default as UndoOptionStep } from './UndoOptionStep';
+export { default as PatientsMentionsStep } from './PatientsMentionsStep';
+export { default as PeopleMentionsStep } from './PeopleMentionsStep';

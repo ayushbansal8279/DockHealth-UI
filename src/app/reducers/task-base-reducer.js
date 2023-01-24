@@ -15,7 +15,7 @@ const TaskBaseReducer = (state, action, updateStateCallback) => {
       const {
         payload: { patientIdentifier, details },
       } = action;
-      const updateTaskFromAction = task => {
+      const updateTaskFromAction = (task) => {
         if (task.patient?.patientIdentifier === patientIdentifier) {
           return {
             ...task,
@@ -33,7 +33,7 @@ const TaskBaseReducer = (state, action, updateStateCallback) => {
         comment: { data: comment },
       } = action;
 
-      const updateTaskFromAction = task => {
+      const updateTaskFromAction = (task) => {
         if (task.taskIdentifier === taskIdentifier) {
           return {
             ...task,
@@ -42,7 +42,7 @@ const TaskBaseReducer = (state, action, updateStateCallback) => {
         }
 
         return updateSubtasksInTaskWithCallback(
-          subtask => ({
+          (subtask) => ({
             ...subtask,
             comments: [comment].concat(subtask.comments),
           }),
@@ -57,21 +57,21 @@ const TaskBaseReducer = (state, action, updateStateCallback) => {
     case ActionTypes.DELETE_TASK_COMMENT_SUCCESS: {
       const { taskIdentifier, commentIdentifier } = action;
 
-      const updateTaskFromAction = task => {
+      const updateTaskFromAction = (task) => {
         if (task.taskIdentifier === taskIdentifier) {
           return {
             ...task,
             comments: task.comments?.filter(
-              comment => comment.commentIdentifier !== commentIdentifier,
+              (comment) => comment.commentIdentifier !== commentIdentifier,
             ),
           };
         }
 
         return updateSubtasksInTaskWithCallback(
-          subtask => ({
+          (subtask) => ({
             ...subtask,
             comments: subtask.comments?.filter(
-              comment => comment.commentIdentifier !== commentIdentifier,
+              (comment) => comment.commentIdentifier !== commentIdentifier,
             ),
           }),
           taskIdentifier,
@@ -85,14 +85,14 @@ const TaskBaseReducer = (state, action, updateStateCallback) => {
     case ActionTypes.DELETE_TASK: {
       const { taskIdentifier } = action;
 
-      const updateTaskFromAction = task => {
+      const updateTaskFromAction = (task) => {
         if (task.taskIdentifier === taskIdentifier) {
           return null;
         }
 
         if (task.subtasks?.length > 0) {
           const updatedSubtasks = task.subtasks?.filter(
-            s => s.taskIdentifier !== taskIdentifier,
+            (s) => s.taskIdentifier !== taskIdentifier,
           );
 
           return {
@@ -111,7 +111,7 @@ const TaskBaseReducer = (state, action, updateStateCallback) => {
     case ActionTypes.OPEN_QUICK_ADD_SUBTASK_INPUT: {
       const { taskIdentifier } = action;
 
-      const updateTaskFromAction = task =>
+      const updateTaskFromAction = (task) =>
         task.taskIdentifier === taskIdentifier
           ? { ...task, subtaskQuickAddOpen: true }
           : task;
@@ -122,7 +122,7 @@ const TaskBaseReducer = (state, action, updateStateCallback) => {
     case ActionTypes.CLOSE_QUICK_ADD_SUBTASK_INPUT: {
       const { taskIdentifier } = action;
 
-      const updateTaskFromAction = task =>
+      const updateTaskFromAction = (task) =>
         task.taskIdentifier === taskIdentifier
           ? { ...task, subtaskQuickAddOpen: false }
           : task;
@@ -133,7 +133,7 @@ const TaskBaseReducer = (state, action, updateStateCallback) => {
     case ActionTypes.TASK_ATTACHMENT_ADDED: {
       const { taskAttachment, taskIdentifier } = action;
 
-      const updateTaskFromAction = task => {
+      const updateTaskFromAction = (task) => {
         if (task.taskIdentifier === taskIdentifier) {
           return {
             ...task,
@@ -142,7 +142,7 @@ const TaskBaseReducer = (state, action, updateStateCallback) => {
         }
 
         return updateSubtasksInTaskWithCallback(
-          subtask => ({
+          (subtask) => ({
             ...subtask,
             attachments: [taskAttachment].concat(subtask.attachments),
           }),
@@ -157,21 +157,21 @@ const TaskBaseReducer = (state, action, updateStateCallback) => {
     case ActionTypes.TASK_ATTACHMENT_REMOVED: {
       const { taskAttachmentId, taskIdentifier } = action;
 
-      const updateTaskFromAction = task => {
+      const updateTaskFromAction = (task) => {
         if (task.taskIdentifier === taskIdentifier) {
           return {
             ...task,
             attachments: task.attachments?.filter(
-              a => a.attachmentIdentifier !== taskAttachmentId,
+              (a) => a.attachmentIdentifier !== taskAttachmentId,
             ),
           };
         }
 
         return updateSubtasksInTaskWithCallback(
-          subtask => ({
+          (subtask) => ({
             ...subtask,
             attachments: subtask.attachments?.filter(
-              a => a.attachmentIdentifier !== taskAttachmentId,
+              (a) => a.attachmentIdentifier !== taskAttachmentId,
             ),
           }),
           taskIdentifier,
@@ -187,7 +187,7 @@ const TaskBaseReducer = (state, action, updateStateCallback) => {
         task: { taskIdentifier },
       } = action;
 
-      const updateTaskFromAction = t =>
+      const updateTaskFromAction = (t) =>
         t.taskIdentifier === taskIdentifier
           ? {
               ...t,
@@ -201,7 +201,7 @@ const TaskBaseReducer = (state, action, updateStateCallback) => {
     case ActionTypes.LOAD_SUBTASKS_SUCCESS: {
       const { task } = action;
 
-      const updateTaskFromAction = t =>
+      const updateTaskFromAction = (t) =>
         t.taskIdentifier === task.taskIdentifier
           ? {
               ...t,
@@ -220,7 +220,7 @@ const TaskBaseReducer = (state, action, updateStateCallback) => {
     case ActionTypes.REFRESH_TASK_SUCCESS: {
       const { task } = action;
 
-      const updateTaskFromAction = t => {
+      const updateTaskFromAction = (t) => {
         if (t.taskIdentifier === task.taskIdentifier) {
           return { ...t, ...task };
         }
@@ -235,7 +235,7 @@ const TaskBaseReducer = (state, action, updateStateCallback) => {
     case ActionTypes.UPDATE_TASK_START_DATE_FAILURE: {
       const { task, startDate } = action;
 
-      const updateTaskFromAction = t => {
+      const updateTaskFromAction = (t) => {
         if (t.taskIdentifier === task.taskIdentifier) {
           return { ...t, startDate };
         }
@@ -250,7 +250,7 @@ const TaskBaseReducer = (state, action, updateStateCallback) => {
     case ActionTypes.UPDATE_TASK_DUE_DATE_FAILURE: {
       const { task, dueDate } = action;
 
-      const updateTaskFromAction = t => {
+      const updateTaskFromAction = (t) => {
         if (t.taskIdentifier === task.taskIdentifier) {
           return { ...t, dueDate };
         }
@@ -265,7 +265,7 @@ const TaskBaseReducer = (state, action, updateStateCallback) => {
     case ActionTypes.CHANGE_TASK_PRIORITY_FAILURE: {
       const { task, priority } = action;
 
-      const updateTaskFromAction = t => {
+      const updateTaskFromAction = (t) => {
         if (t.taskIdentifier === task.taskIdentifier) {
           return { ...t, priority };
         }
@@ -279,13 +279,13 @@ const TaskBaseReducer = (state, action, updateStateCallback) => {
     case ActionTypes.SET_COMPLETE_STATUS: {
       const { taskIdentifier, dataToUpdate } = action;
 
-      const updateTaskFromAction = t => {
+      const updateTaskFromAction = (t) => {
         if (t.taskIdentifier === taskIdentifier) {
           if (dataToUpdate.status === TaskStatus.COMPLETE) {
             return {
               ...t,
               ...dataToUpdate,
-              subtasks: t.subtasks?.map(s => ({
+              subtasks: t.subtasks?.map((s) => ({
                 ...s,
                 ...dataToUpdate,
               })),
@@ -306,11 +306,11 @@ const TaskBaseReducer = (state, action, updateStateCallback) => {
             ...updatedTask,
             dependencyTasksCompletedCount:
               updatedTask.taskDependencies?.filter(
-                s => s.status === TaskStatus.COMPLETE,
+                (s) => s.status === TaskStatus.COMPLETE,
               ).length || 0,
             subTasksCompletedCount:
               updatedTask.subtasks?.filter(
-                s => s.status === TaskStatus.COMPLETE,
+                (s) => s.status === TaskStatus.COMPLETE,
               ).length || 0,
           };
           return updatedTask;
@@ -328,9 +328,9 @@ const TaskBaseReducer = (state, action, updateStateCallback) => {
         comment,
       } = action;
 
-      const updateTaskFromAction = t => {
+      const updateTaskFromAction = (t) => {
         function updateCommentIfMatches(commentIdentifier, comments) {
-          return comments?.map(c =>
+          return comments?.map((c) =>
             c.commentIdentifier === commentIdentifier
               ? { ...c, ...comment }
               : c,
@@ -348,7 +348,7 @@ const TaskBaseReducer = (state, action, updateStateCallback) => {
         }
 
         return updateSubtasksInTaskWithCallback(
-          subtask => ({
+          (subtask) => ({
             ...subtask,
             comments: updateCommentIfMatches(
               comment.commentIdentifier,
@@ -370,7 +370,7 @@ const TaskBaseReducer = (state, action, updateStateCallback) => {
         filters,
         searchValue,
       } = action;
-      const updateTasksFromAction = task => {
+      const updateTasksFromAction = (task) => {
         let updatedTask = task;
 
         if (tasksToUpdate.includes(task.taskIdentifier)) {
@@ -382,7 +382,7 @@ const TaskBaseReducer = (state, action, updateStateCallback) => {
           if (dataToUpdate.patient) {
             updatedTask = {
               ...updatedTask,
-              subtasks: updatedTask.subtasks?.map(s => ({
+              subtasks: updatedTask.subtasks?.map((s) => ({
                 ...s,
                 patient: dataToUpdate.patient,
               })),
@@ -392,7 +392,7 @@ const TaskBaseReducer = (state, action, updateStateCallback) => {
           if (dataToUpdate.status === TaskStatus.COMPLETE) {
             updatedTask = {
               ...updatedTask,
-              subtasks: updatedTask.subtasks?.map(s => ({
+              subtasks: updatedTask.subtasks?.map((s) => ({
                 ...s,
                 patient: dataToUpdate.status,
               })),
@@ -402,7 +402,7 @@ const TaskBaseReducer = (state, action, updateStateCallback) => {
 
         updatedTask = {
           ...updatedTask,
-          subtasks: updatedTask.subtasks?.map(s =>
+          subtasks: updatedTask.subtasks?.map((s) =>
             tasksToUpdate.includes(s.taskIdentifier)
               ? { ...s, ...dataToUpdate }
               : s,
@@ -433,14 +433,14 @@ const TaskBaseReducer = (state, action, updateStateCallback) => {
 
     case ActionTypes.DELETE_TASKS_SUCCESS: {
       const { tasksToDelete } = action;
-      const updateTasksFromAction = task => {
+      const updateTasksFromAction = (task) => {
         if (tasksToDelete.includes(task.taskIdentifier)) {
           return null;
         }
 
         if (task.subtasks?.length > 0) {
           const updatedSubtasks = task.subtasks?.filter(
-            s => !tasksToDelete.includes(s.taskIdentifier),
+            (s) => !tasksToDelete.includes(s.taskIdentifier),
           );
 
           return {
@@ -458,7 +458,7 @@ const TaskBaseReducer = (state, action, updateStateCallback) => {
 
     case ActionTypes.COMPLETE_TASKS_SUCCESS: {
       const { tasksToDelete } = action;
-      const updateTasksFromAction = task => {
+      const updateTasksFromAction = (task) => {
         if (tasksToDelete.includes(task.taskIdentifier)) {
           return null;
         }
@@ -470,12 +470,12 @@ const TaskBaseReducer = (state, action, updateStateCallback) => {
     }
 
     case ActionTypes.UNSELECT_ALL_TASKS: {
-      const updateStateFromAction = task => {
+      const updateStateFromAction = (task) => {
         if (task.selected || task.subtasks?.some(({ selected }) => selected)) {
           return {
             ...task,
             selected: false,
-            subtasks: task.subtasks?.map(s => ({ ...s, selected: false })),
+            subtasks: task.subtasks?.map((s) => ({ ...s, selected: false })),
           };
         }
 
@@ -488,7 +488,7 @@ const TaskBaseReducer = (state, action, updateStateCallback) => {
     case ActionTypes.CHANGE_TASKS_SELECTED_STATE: {
       const { taskIdentifiers, newSelectedState } = action;
 
-      const updateStateFromAction = task => {
+      const updateStateFromAction = (task) => {
         if (
           taskIdentifiers.includes(task.taskIdentifier) ||
           task.subtasks?.some(({ taskIdentifier }) =>
@@ -501,7 +501,7 @@ const TaskBaseReducer = (state, action, updateStateCallback) => {
               ? newSelectedState
               : task.selected,
 
-            subtasks: task.subtasks?.map(s =>
+            subtasks: task.subtasks?.map((s) =>
               taskIdentifiers.includes(s.taskIdentifier)
                 ? { ...s, selected: newSelectedState }
                 : s,
@@ -518,13 +518,13 @@ const TaskBaseReducer = (state, action, updateStateCallback) => {
     case ActionTypes.CHANGE_WORKFLOW_SELECTED_STATE: {
       if (Array.isArray(action.identifier)) {
         const identifiers = action.identifier;
-        return updateStateCallback(state, task =>
+        return updateStateCallback(state, (task) =>
           identifiers.includes(task.identifier)
             ? { ...task, selected: action.newSelectedState }
             : task,
         );
       }
-      return updateStateCallback(state, task =>
+      return updateStateCallback(state, (task) =>
         action.identifier === task.identifier
           ? { ...task, selected: action.newSelectedState }
           : task,
@@ -535,7 +535,7 @@ const TaskBaseReducer = (state, action, updateStateCallback) => {
       const { subtask } = action;
       const { parentTaskIdentifier } = subtask;
 
-      const updateStateFromAction = task => {
+      const updateStateFromAction = (task) => {
         if (parentTaskIdentifier === task.taskIdentifier) {
           let updatedSubtasks = task.subtasks || [];
           updatedSubtasks = [...updatedSubtasks, subtask];
@@ -556,7 +556,7 @@ const TaskBaseReducer = (state, action, updateStateCallback) => {
     case ActionTypes.UPDATE_WORKFLOW_STATUS_FOR_TASKS: {
       const { statusIdentifier, dataToUpdate } = action;
 
-      const updateStateFromAction = task => {
+      const updateStateFromAction = (task) => {
         if (task.workflowStatus?.identifier === statusIdentifier) {
           return {
             ...task,
@@ -576,7 +576,7 @@ const TaskBaseReducer = (state, action, updateStateCallback) => {
     case ActionTypes.CHANGE_TASK_INTENT_TYPE: {
       const { taskIdentifier, intentType } = action;
 
-      const updateTaskFromAction = t => {
+      const updateTaskFromAction = (t) => {
         if (t.taskIdentifier === taskIdentifier) {
           return { ...t, intentType };
         }
@@ -590,12 +590,12 @@ const TaskBaseReducer = (state, action, updateStateCallback) => {
     case ActionTypes.ADD_TASK_OUTCOME_SUCCESS: {
       const { taskIdentifier, outcome, link } = action;
 
-      const updateTaskFromAction = t => {
+      const updateTaskFromAction = (t) => {
         if (t.taskIdentifier === taskIdentifier) {
           let { taskLinks } = t;
 
           if (link) {
-            taskLinks = taskLinks.map(l =>
+            taskLinks = taskLinks.map((l) =>
               l.sourceTaskIdentifier === link.sourceTaskIdentifier &&
               l.targetTaskIdentifier === link.targetTaskIdentifier
                 ? {
@@ -623,13 +623,13 @@ const TaskBaseReducer = (state, action, updateStateCallback) => {
       const { link } = action;
       const { sourceTaskIdentifier } = link;
 
-      const updateTaskFromAction = t => {
+      const updateTaskFromAction = (t) => {
         if (t.taskIdentifier === sourceTaskIdentifier) {
           return {
             ...t,
             taskLinks: [
               ...t.taskLinks.filter(
-                l =>
+                (l) =>
                   !(
                     l.sourceTaskIdentifier === link.sourceTaskIdentifier &&
                     l.targetTaskIdentifier === link.targetTaskIdentifier
@@ -646,8 +646,9 @@ const TaskBaseReducer = (state, action, updateStateCallback) => {
       return updateStateCallback(state, updateTaskFromAction);
     }
 
-    default:
+    default: {
       return state;
+    }
   }
 };
 

@@ -6,12 +6,13 @@ export const determineTaskCounts = ({
   tasks,
   tasksCount,
   status,
-}) => {
-  return selectedFilters && !isEmpty(selectedFilters) && !isFetching
+}) =>
+  selectedFilters && !isEmpty(selectedFilters) && !isFetching
     ? tasks?.reduce(
         (counter, task) =>
-          counter + task.subtasks?.filter(x => x.status === status).length + 1,
+          counter +
+          task.subtasks?.filter((x) => x.status === status).length +
+          1,
         0,
       ) || 0
     : tasksCount;
-};

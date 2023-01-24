@@ -12,7 +12,7 @@ export const AddTaskInputWrapper = styled.div`
   margin-bottom: ${spacing.small};
   padding: ${spacing.small} ${spacing.huge};
   border: 1px solid
-    ${props => (props.hasError ? palette.red : palette.coolGrey3)};
+    ${(props) => (props.hasError ? palette.red : palette.coolGrey3)};
   font-size: ${fontSizes.smallPlus};
   background-color: ${palette.white};
   text-align: left;
@@ -25,7 +25,7 @@ export const AddTaskInputWrapper = styled.div`
     display: block;
     content: '+';
     transform: translateY(-50%);
-    color: ${props => props.iconColor || palette.orange};
+    color: ${(props) => props.iconColor || palette.orange};
     font-size: ${fontSizes.regular};
   }
 

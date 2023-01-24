@@ -19,8 +19,8 @@ export function searchTasks(
       .get(
         `task/searchTasks?searchTerm=${searchTerm}&status=${status}&taskListIdentifier=${taskListIdentifier}&sortBy=${sortBy}&filterBy=${filterBy}&startPosition=${startPosition}&endPosition=${endPosition}`,
       )
-      .then(response => response.data)
-      .catch(error => {
+      .then((response) => response.data)
+      .catch((error) => {
         throw error;
       });
   }
@@ -28,8 +28,8 @@ export function searchTasks(
     .get(
       `task/searchTasks?searchTerm=${searchTerm}&status=${status}&taskListIdentifier=${taskListIdentifier}&startPosition=${startPosition}&endPosition=${endPosition}`,
     )
-    .then(response => response.data)
-    .catch(error => {
+    .then((response) => response.data)
+    .catch((error) => {
       throw error;
     });
 }
@@ -40,10 +40,8 @@ export function addTask(task) {
       ...task,
       createdByUserIdentifier: sessionStorage.userIdentifier,
     })
-    .then(response => {
-      return response.data;
-    })
-    .catch(error => {
+    .then((response) => response.data)
+    .catch((error) => {
       showAlert({
         status: 'error',
         title: 'Error',
@@ -61,10 +59,8 @@ export function updateTask(task) {
       ...task,
       createdByUserIdentifier: sessionStorage.userIdentifier,
     })
-    .then(response => {
-      return response;
-    })
-    .catch(error => {
+    .then((response) => response)
+    .catch((error) => {
       showAlert({
         status: 'error',
         title: 'Error',
@@ -77,10 +73,8 @@ export function updateTask(task) {
 export function partialUpdateTask(taskIdentifier, dataToUpdate) {
   return axios
     .patch(`task/${taskIdentifier}`, dataToUpdate)
-    .then(({ data }) => {
-      return data;
-    })
-    .catch(error => {
+    .then(({ data }) => data)
+    .catch((error) => {
       showAlert({
         status: 'error',
         title: 'Error',
@@ -93,13 +87,11 @@ export function partialUpdateTask(taskIdentifier, dataToUpdate) {
 export function deleteTask(taskIdentifier) {
   return axios
     .delete(`task/deleteTaskById/${taskIdentifier}`)
-    .then(response => {
-      return response;
-    })
-    .catch(error => {
+    .then((response) => response)
+    .catch((error) => {
       throw error;
     })
-    .catch(error => {
+    .catch((error) => {
       showAlert({
         status: 'error',
         title: 'Error',
@@ -114,10 +106,8 @@ export function duplicateTask(taskIdentifier, includeAttachments) {
     .put(
       `task/duplicateTask/${taskIdentifier}?includeAttachments=${includeAttachments}`,
     )
-    .then(response => {
-      return response.data;
-    })
-    .catch(error => {
+    .then((response) => response.data)
+    .catch((error) => {
       showAlert({
         status: 'error',
         title: 'Error',
@@ -131,10 +121,8 @@ export function duplicateTask(taskIdentifier, includeAttachments) {
 export function sortSubTask(taskIdentifier, direction) {
   return axios
     .put(`task/sortSubTask/${taskIdentifier}/${direction}`)
-    .then(response => {
-      return response.data;
-    })
-    .catch(error => {
+    .then((response) => response.data)
+    .catch((error) => {
       showAlert({
         status: 'error',
         title: 'Error',
@@ -149,10 +137,8 @@ export function sortSubTask(taskIdentifier, direction) {
 export function markComplete(task) {
   return axios
     .put(`task/updateTaskStatus/${task.taskIdentifier}?status=COMPLETE`)
-    .then(response => {
-      return response;
-    })
-    .catch(error => {
+    .then((response) => response)
+    .catch((error) => {
       showAlert({
         status: 'error',
         title: 'Error',
@@ -166,10 +152,8 @@ export function markComplete(task) {
 export function markIncomplete(task) {
   return axios
     .put(`task/updateTaskStatus/${task.taskIdentifier}?status=INCOMPLETE`)
-    .then(response => {
-      return response;
-    })
-    .catch(error => {
+    .then((response) => response)
+    .catch((error) => {
       showAlert({
         status: 'error',
         title: 'Error',
@@ -188,16 +172,14 @@ export function updateTaskDescription(task, description) {
       patientIdentifier: task?.patient?.patientIdentifier,
       description,
     })
-    .then(response => {
-      return response.data;
-    })
-    .catch(error => {
+    .then((response) => response.data)
+    .catch((error) => {
       throw new Error(error?.response?.data?.errorMessage);
     });
 }
 
-export const updateStartDate = (taskIdentifier, startDate) => {
-  return axios
+export const updateStartDate = (taskIdentifier, startDate) =>
+  axios
     .put(
       `task/addOrUpdateStartDate/${taskIdentifier}`,
       {},
@@ -209,10 +191,8 @@ export const updateStartDate = (taskIdentifier, startDate) => {
         },
       },
     )
-    .then(response => {
-      return response.data;
-    })
-    .catch(error => {
+    .then((response) => response.data)
+    .catch((error) => {
       showAlert({
         status: 'error',
         title: 'Error',
@@ -221,10 +201,9 @@ export const updateStartDate = (taskIdentifier, startDate) => {
       });
       throw error;
     });
-};
 
-export const updateDueDate = (taskIdentifier, dueDate) => {
-  return axios
+export const updateDueDate = (taskIdentifier, dueDate) =>
+  axios
     .put(
       `task/addOrUpdateDueDate/${taskIdentifier}`,
       {},
@@ -236,10 +215,8 @@ export const updateDueDate = (taskIdentifier, dueDate) => {
         },
       },
     )
-    .then(response => {
-      return response.data;
-    })
-    .catch(error => {
+    .then((response) => response.data)
+    .catch((error) => {
       showAlert({
         status: 'error',
         title: 'Error',
@@ -247,7 +224,6 @@ export const updateDueDate = (taskIdentifier, dueDate) => {
       });
       throw error;
     });
-};
 
 /**
  * Updates task workflow status.
@@ -260,7 +236,7 @@ export const updateWorkflowStatus = (taskIdentifier, workflowStatus) =>
     .put(
       `task/updateTaskWorkflowStatus/${taskIdentifier}?workflowStatus=${workflowStatus}`,
     )
-    .catch(error => error?.response?.data);
+    .catch((error) => error?.response?.data);
 
 export function assignOrReassignTask(task, assignedToUserIdentifier) {
   const { taskIdentifier } = task;
@@ -272,10 +248,8 @@ export function assignOrReassignTask(task, assignedToUserIdentifier) {
     .put(
       `task/addOrUpdateTaskAssignment/${taskIdentifier}?assignedToUserId=${userIdentifierToAssignTask}`,
     )
-    .then(response => {
-      return response.data;
-    })
-    .catch(error => {
+    .then((response) => response.data)
+    .catch((error) => {
       showAlert({
         status: 'error',
         title: 'Error',
@@ -290,18 +264,14 @@ export function assignOrReassignTask(task, assignedToUserIdentifier) {
 export function addComment(taskIdentifier, taskComment) {
   return axios
     .post(`task/comment/${taskIdentifier}`, taskComment)
-    .then(response => {
-      return response;
-    });
+    .then((response) => response);
 }
 
 export function deleteComment(commentIdentifier) {
   return axios
     .delete(`task/comment/deleteCommentById/${commentIdentifier}`)
-    .then(response => {
-      return response;
-    })
-    .catch(error => {
+    .then((response) => response)
+    .catch((error) => {
       showAlert({
         status: 'error',
         title: 'Error',
@@ -316,10 +286,8 @@ export function deleteComment(commentIdentifier) {
 export function updateComment(comment) {
   return axios
     .put('task/comment', comment)
-    .then(response => {
-      return response;
-    })
-    .catch(error => {
+    .then((response) => response)
+    .catch((error) => {
       showAlert({
         status: 'error',
         title: 'Error',
@@ -334,8 +302,8 @@ export function updateComment(comment) {
 export function flagUnread(taskIdentifier, unread) {
   return axios
     .put(`task/flagUserTaskAsUnread/${taskIdentifier}?flagUnread=${unread}`)
-    .then(response => response.data)
-    .catch(error => {
+    .then((response) => response.data)
+    .catch((error) => {
       throw error;
     });
 }
@@ -343,8 +311,8 @@ export function flagUnread(taskIdentifier, unread) {
 export function getTaskHistory(taskIdentifier) {
   return axios
     .get(`audit/findAuditsByTask/${taskIdentifier}`)
-    .then(response => response.data)
-    .catch(error => {
+    .then((response) => response.data)
+    .catch((error) => {
       throw error;
     });
 }
@@ -364,10 +332,8 @@ export function addTaskAttachment(
       },
       ...additionalConfig,
     })
-    .then(response => {
-      return response;
-    })
-    .catch(error => {
+    .then((response) => response)
+    .catch((error) => {
       if (error.response && error.response.status === 413) {
         showAlert({
           status: 'error',
@@ -392,10 +358,8 @@ export function addTaskAttachment(
 export function removeTaskAttachment(taskAttachmentId) {
   return axios
     .delete(`task/attachment/${taskAttachmentId}`)
-    .then(response => {
-      return response;
-    })
-    .catch(error => {
+    .then((response) => response)
+    .catch((error) => {
       showAlert({
         status: 'error',
         title: 'Error',
@@ -416,9 +380,7 @@ export function getTaskAttachment(taskAttachmentId) {
       Accept: 'application/octet-stream',
     },
   })
-    .then(response => {
-      return response;
-    })
+    .then((response) => response)
     .catch(noop);
 }
 
@@ -426,7 +388,7 @@ export function getTaskDetails(taskIdentifier) {
   return axios
     .get(`task/${taskIdentifier}`)
     .then(({ data }) => data)
-    .catch(error => {
+    .catch((error) => {
       throw error;
     });
 }
@@ -438,7 +400,7 @@ export function reorderTasksInGroup({ orderedTaskIds, taskGroupIdentifier }) {
       taskGroupIdentifier,
     })
     .then(({ data }) => data)
-    .catch(error => {
+    .catch((error) => {
       throw error;
     });
 }
@@ -452,15 +414,15 @@ export const reassignTasksToAnotherGroup = (
       taskIdentifiers,
     })
     .then(({ data }) => data)
-    .catch(error => {
+    .catch((error) => {
       throw error;
     });
 
-export const bulkEditTasks = bulkEditOption =>
+export const bulkEditTasks = (bulkEditOption) =>
   axios
     .put('/task/bulkEdit', bulkEditOption)
     .then(({ data }) => data)
-    .catch(error => {
+    .catch((error) => {
       showAlert({
         status: 'error',
         title: 'Error',
@@ -486,8 +448,8 @@ export function reorderSubtasks(
       taskIdentifiers: orderedSubtaskIdentifiers,
       parentTaskIdentifier,
     })
-    .then(response => response.data)
-    .catch(error => {
+    .then((response) => response.data)
+    .catch((error) => {
       throw error;
     });
 }

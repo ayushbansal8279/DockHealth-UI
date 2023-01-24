@@ -3,7 +3,7 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import { useSelector } from 'react-redux';
 import { taskDrawerOpenSelector } from 'selectors/task-drawer-selectors';
-import { AnimatePresence } from 'framer-motion/dist/framer-motion';
+import { AnimatePresence } from 'framer-motion';
 import TaskDrawerContent from 'components/task-drawer/TaskDrawerContent/TaskDrawerContent';
 import { AnimatedContainer } from './styled';
 

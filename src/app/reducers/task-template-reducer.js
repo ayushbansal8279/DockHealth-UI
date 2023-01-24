@@ -39,15 +39,14 @@ const templateDetailsInitialState = {
 function updateTasksStateCallback(state, updateTaskFromAction) {
   return {
     ...state,
-    taskTemplateDetails: Object.entries(state.taskTemplateDetails).reduce(
-      (accumulator, [key, value]) => ({
-        ...accumulator,
-        [key]: {
+    taskTemplateDetails: Object.fromEntries(
+      Object.entries(state.taskTemplateDetails).map(([key, value]) => [
+        key,
+        {
           ...value,
           tasks: mapWithRemove(updateTaskFromAction, value.tasks),
         },
-      }),
-      {},
+      ]),
     ),
   };
 }
@@ -56,7 +55,7 @@ function updateTaskTemplateDetailsState(identifier, currentState, newState) {
   return {
     ...currentState,
     [identifier]: {
-      ...(currentState[identifier] || {}),
+      ...currentState[identifier],
       ...newState,
     },
   };
@@ -68,7 +67,7 @@ const TaskTemplateReducer = (state = initialState, action) => {
       if (state.taskTemplates) {
         return {
           ...state,
-          taskTemplates: state.taskTemplates?.map(taskTemplate =>
+          taskTemplates: state.taskTemplates?.map((taskTemplate) =>
             taskTemplate.identifier === action.taskWorkflowIdentifier
               ? { ...taskTemplate, ...action.newData }
               : taskTemplate,
@@ -97,7 +96,7 @@ const TaskTemplateReducer = (state = initialState, action) => {
       if (state.taskTemplates) {
         return {
           ...state,
-          taskTemplates: state.taskTemplates.map(taskTemplate =>
+          taskTemplates: state.taskTemplates.map((taskTemplate) =>
             taskTemplate.identifier === action.workflow.identifier
               ? { ...taskTemplate, ...action.workflow }
               : taskTemplate,
@@ -107,13 +106,14 @@ const TaskTemplateReducer = (state = initialState, action) => {
       return state;
     }
 
-    case ActionTypes.GET_WORKFLOW_DETAILS_FAILURE:
+    case ActionTypes.GET_WORKFLOW_DETAILS_FAILURE: {
       return {
         ...state,
         isError: true,
       };
+    }
 
-    case ActionTypes.ADD_TASK_TEMPLATE_SUCCESS:
+    case ActionTypes.ADD_TASK_TEMPLATE_SUCCESS: {
       if (state.taskTemplates) {
         return {
           ...state,
@@ -121,8 +121,9 @@ const TaskTemplateReducer = (state = initialState, action) => {
         };
       }
       return state;
+    }
 
-    case ActionTypes.DUPLICATE_WORKFLOW_SUCCESS:
+    case ActionTypes.DUPLICATE_WORKFLOW_SUCCESS: {
       if (state.taskTemplates) {
         return {
           ...state,
@@ -130,40 +131,46 @@ const TaskTemplateReducer = (state = initialState, action) => {
         };
       }
       return state;
+    }
 
-    case ActionTypes.GET_WORKFLOW_FOLDER:
+    case ActionTypes.GET_WORKFLOW_FOLDER: {
       return {
         ...state,
         isFetching: true,
         isError: false,
       };
+    }
 
-    case ActionTypes.GET_WORKFLOW_FOLDER_SUCCESS:
+    case ActionTypes.GET_WORKFLOW_FOLDER_SUCCESS: {
       return {
         ...state,
         taskTemplates: action.workflows || [],
         parent: null,
         isFetching: false,
       };
+    }
 
-    case ActionTypes.GET_WORKFLOW_FOLDER_FAILURE:
+    case ActionTypes.GET_WORKFLOW_FOLDER_FAILURE: {
       return {
         ...state,
         isFetching: false,
         isError: true,
       };
+    }
 
-    case ActionTypes.GET_FOLDER_BREADCRUMBS:
+    case ActionTypes.GET_FOLDER_BREADCRUMBS: {
       return {
         ...state,
         breadcrumbs: null,
       };
+    }
 
-    case ActionTypes.GET_FOLDER_BREADCRUMBS_SUCCESS:
+    case ActionTypes.GET_FOLDER_BREADCRUMBS_SUCCESS: {
       return {
         ...state,
         breadcrumbs: action.breadcrumbs,
       };
+    }
 
     case ActionTypes.GET_TASK_TEMPLATE_TASKS: {
       const { taskTemplateIdentifier, withLoader } = action;
@@ -236,7 +243,7 @@ const TaskTemplateReducer = (state = initialState, action) => {
         return {
           ...state,
           taskTemplates: state.taskTemplates.filter(
-            t => t.identifier !== identifier,
+            (t) => t.identifier !== identifier,
           ),
           taskTemplateDetails: omit([identifier], state.taskTemplateDetails),
         };
@@ -250,7 +257,7 @@ const TaskTemplateReducer = (state = initialState, action) => {
       if (state.taskTemplates) {
         return {
           ...state,
-          taskTemplates: state.taskTemplates.map(template =>
+          taskTemplates: state.taskTemplates.map((template) =>
             template.identifier === taskTemplateIdentifier
               ? {
                   ...template,
@@ -285,12 +292,11 @@ const TaskTemplateReducer = (state = initialState, action) => {
     case ActionTypes.CLOSE_ALL_TASK_TEMPLATES: {
       return {
         ...state,
-        taskTemplateDetails: Object.entries(state.taskTemplateDetails).reduce(
-          (accumulator, [key, value]) => ({
-            ...accumulator,
-            [key]: { ...value, isOpen: false },
-          }),
-          {},
+        taskTemplateDetails: Object.fromEntries(
+          Object.entries(state.taskTemplateDetails).map(([key, value]) => [
+            key,
+            { ...value, isOpen: false },
+          ]),
         ),
       };
     }
@@ -412,9 +418,8 @@ const TaskTemplateReducer = (state = initialState, action) => {
       const { currentTaskTemplateIdentifier } = state;
       const { position } = action;
 
-      const { temporaryElements } = state.taskTemplateDetails[
-        currentTaskTemplateIdentifier
-      ];
+      const { temporaryElements } =
+        state.taskTemplateDetails[currentTaskTemplateIdentifier];
 
       return {
         ...state,
@@ -435,9 +440,8 @@ const TaskTemplateReducer = (state = initialState, action) => {
       const { currentTaskTemplateIdentifier } = state;
       const { position } = action;
 
-      const { temporaryElements } = state.taskTemplateDetails[
-        currentTaskTemplateIdentifier
-      ];
+      const { temporaryElements } =
+        state.taskTemplateDetails[currentTaskTemplateIdentifier];
 
       return {
         ...state,
@@ -462,9 +466,8 @@ const TaskTemplateReducer = (state = initialState, action) => {
       const { currentTaskTemplateIdentifier } = state;
       const { sourceTaskIdentifier } = action;
 
-      const { temporaryElements, layout } = state.taskTemplateDetails[
-        currentTaskTemplateIdentifier
-      ];
+      const { temporaryElements, layout } =
+        state.taskTemplateDetails[currentTaskTemplateIdentifier];
 
       const { position } =
         layout?.find(({ id }) => id === sourceTaskIdentifier) || {};
@@ -494,16 +497,10 @@ const TaskTemplateReducer = (state = initialState, action) => {
 
     case ActionTypes.ADD_TEMPORARY_LINK: {
       const { currentTaskTemplateIdentifier } = state;
-      const {
-        linkType,
-        sourceId,
-        targetId,
-        sourceHandle,
-        targetHandle,
-      } = action;
-      const { temporaryElements } = state.taskTemplateDetails[
-        currentTaskTemplateIdentifier
-      ];
+      const { linkType, sourceId, targetId, sourceHandle, targetHandle } =
+        action;
+      const { temporaryElements } =
+        state.taskTemplateDetails[currentTaskTemplateIdentifier];
 
       return {
         ...state,
@@ -533,9 +530,8 @@ const TaskTemplateReducer = (state = initialState, action) => {
       const { currentTaskTemplateIdentifier } = state;
       const { position } = action;
 
-      const { temporaryElements } = state.taskTemplateDetails[
-        currentTaskTemplateIdentifier
-      ];
+      const { temporaryElements } =
+        state.taskTemplateDetails[currentTaskTemplateIdentifier];
 
       return {
         ...state,
@@ -556,9 +552,8 @@ const TaskTemplateReducer = (state = initialState, action) => {
       const { currentTaskTemplateIdentifier } = state;
       const { elements } = action;
 
-      const { temporaryElements } = state.taskTemplateDetails[
-        currentTaskTemplateIdentifier
-      ];
+      const { temporaryElements } =
+        state.taskTemplateDetails[currentTaskTemplateIdentifier];
 
       return {
         ...state,
@@ -575,9 +570,8 @@ const TaskTemplateReducer = (state = initialState, action) => {
     case ActionTypes.DELETE_TEMPORARY_ELEMENT: {
       const { currentTaskTemplateIdentifier } = state;
       const { elementId } = action;
-      const { temporaryElements } = state.taskTemplateDetails[
-        currentTaskTemplateIdentifier
-      ];
+      const { temporaryElements } =
+        state.taskTemplateDetails[currentTaskTemplateIdentifier];
 
       return {
         ...state,
@@ -599,9 +593,8 @@ const TaskTemplateReducer = (state = initialState, action) => {
     case ActionTypes.EDIT_TEMPORARY_ELEMENT: {
       const { currentTaskTemplateIdentifier } = state;
       const { elementId, data } = action;
-      const { temporaryElements } = state.taskTemplateDetails[
-        currentTaskTemplateIdentifier
-      ];
+      const { temporaryElements } =
+        state.taskTemplateDetails[currentTaskTemplateIdentifier];
 
       return {
         ...state,
@@ -609,7 +602,7 @@ const TaskTemplateReducer = (state = initialState, action) => {
           currentTaskTemplateIdentifier,
           state.taskTemplateDetails,
           {
-            temporaryElements: temporaryElements.map(te =>
+            temporaryElements: temporaryElements.map((te) =>
               te.id === elementId ? { ...te, ...data } : te,
             ),
           },
@@ -621,8 +614,9 @@ const TaskTemplateReducer = (state = initialState, action) => {
       return state;
     }
 
-    default:
+    default: {
       return TaskBaseReducer(state, action, updateTasksStateCallback);
+    }
   }
 };
 

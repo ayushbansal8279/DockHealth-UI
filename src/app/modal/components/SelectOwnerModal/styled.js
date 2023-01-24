@@ -26,7 +26,8 @@ export const UserItem = styled.button`
   outline: none;
   font-family: 'Roboto Condensed', sans-serif;
   color: ${palette.mediumGrey};
-  background-color: ${props => props.isSelected && palette.brightBlueWithAlpha};
+  background-color: ${(props) =>
+    props.isSelected && palette.brightBlueWithAlpha};
   cursor: pointer;
 `;
 

@@ -42,10 +42,10 @@ export const ListLink = styled(ListItemLink)`
 export const CompletedBy = styled.div`
   align-items: flex-end;
   display: flex;
-  height: ${props => (props.isCompleted ? 0.8 : 0)}rem;
+  height: ${(props) => (props.isCompleted ? 0.8 : 0)}rem;
   overflow: hidden;
   transition: all 0.1s ease-out;
-  transition-delay: ${props => (props.isCompleted ? '0' : '0.4')}s;
+  transition-delay: ${(props) => (props.isCompleted ? '0' : '0.4')}s;
   font-size: ${fontSizes.small};
 
   > span {
@@ -53,15 +53,15 @@ export const CompletedBy = styled.div`
     font-weight: ${fontWeights.regular};
     line-height: 1;
     transition: transform 0.4s ease-out;
-    transition-delay: ${props => (props.isCompleted ? 0.1 : 0)}s;
-    transform: translateX(${props => (props.isCompleted ? 0 : -100)}%);
+    transition-delay: ${(props) => (props.isCompleted ? 0.1 : 0)}s;
+    transform: translateX(${(props) => (props.isCompleted ? 0 : -100)}%);
   }
 `;
 
 export const PrioritySwitch = styled.button`
   position: absolute;
   top: 50%;
-  left: ${props => props.left || '-12px'};
+  left: ${(props) => props.left || '-12px'};
   transform: translateY(-50%);
   cursor: ${({ isClickable = true }) => (isClickable ? 'pointer' : 'initial')};
 `;
@@ -125,7 +125,7 @@ export const Description = styled.div`
   width: 100%;
   padding-right: ${spacing.smallPlus};
   overflow-wrap: anywhere;
-  ${props => (props.isCrossedOut ? 'text-decoration: line-through;' : '')}
+  ${(props) => (props.isCrossedOut ? 'text-decoration: line-through;' : '')}
   cursor: pointer;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -213,22 +213,22 @@ export const StandardTaskItemCell = styled.div`
   position: ${({ position }) => position || 'relative'};
   align-items: ${({ alignItems }) => alignItems || 'center'};
   border-right: 1px solid ${palette.coolGrey3};
-  color: ${props => props.color || palette.mediumGrey};
+  color: ${(props) => props.color || palette.mediumGrey};
   display: flex;
   font-size: ${fontSizes.smallPlus};
-  font-weight: ${props =>
+  font-weight: ${(props) =>
     props.bolded ? fontWeights.regular : fontWeights.light};
   color: ${palette.mediumGrey};
-  min-width: ${props => props.width};
-  max-width: ${props => props.width};
+  min-width: ${(props) => props.width};
+  max-width: ${(props) => props.width};
   padding: ${spacing.small} 0;
-  padding: ${props => props.padding || `${spacing.small} 0`};
-  padding-left: ${props =>
+  padding: ${(props) => props.padding || `${spacing.small} 0`};
+  padding-left: ${(props) =>
     props.paddingLeft ? spacing[props.paddingLeft] : spacing.regular};
-  padding-right: ${props =>
+  padding-right: ${(props) =>
     props.paddingLeft ? spacing[props.paddingRight] : spacing.regular};
-  width: ${props => (!props.width ? '100%' : '')};
-  justify-content: ${props => props.justify || 'flex-start'};
+  width: ${(props) => (props.width ? '' : '100%')};
+  justify-content: ${(props) => props.justify || 'flex-start'};
   overflow: hidden;
 `;
 
@@ -246,7 +246,7 @@ export const ClickablePatient = styled.span`
 
 export const StandardTaskItemContainer = styled.div`
   position: relative;
-  background-color: ${props =>
+  background-color: ${(props) =>
     props.isSelected
       ? palette.brightBlueWithAlpha
       : // eslint-disable-next-line unicorn/no-nested-ternary
@@ -267,7 +267,7 @@ export const StandardTaskItemContainer = styled.div`
 `;
 
 export const StatusBar = styled.div`
-  background-color: ${props => props.color};
+  background-color: ${(props) => props.color};
   height: 100%;
   top: 0;
   left: 0;
@@ -303,7 +303,7 @@ export const StandardTaskThreeDots = styled(ThreeDots)`
 
 export const StandardTaskItemPanel = styled.div`
   position: relative;
-  ${props =>
+  ${(props) =>
     props.isDragging
       ? 'box-shadow: 0px 0px 11px rgba(204, 204, 204, 0.8)'
       : ''};

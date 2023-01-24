@@ -8,14 +8,14 @@ export const ProgressBarContainer = styled.div`
 
 export const ProgressBarWrapper = styled.div`
   background-color: ${palette.coolGrey3};
-  width: ${props => props.width};
+  width: ${(props) => props.width};
   height: 8px;
   border-radius: 10px;
 `;
 
 export const ProgressBarLine = styled.div`
   background-color: ${palette.brightBlue};
-  width: ${props => `${props.progress}%`};
+  width: ${(props) => `${props.progress}%`};
   border-radius: 4px;
   height: 100%;
 `;

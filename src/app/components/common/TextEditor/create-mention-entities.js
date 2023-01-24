@@ -30,7 +30,7 @@ const getIndicesOf = (searchValue, text, caseSensitive) => {
 const getEntityRanges = (text, mentionName, mentionKey) => {
   const indices = getIndicesOf(mentionName, text);
   if (indices.length > 0) {
-    return indices.map(offset => ({
+    return indices.map((offset) => ({
       key: mentionKey,
       length: mentionName.length,
       offset,
@@ -60,7 +60,7 @@ export const createMentionEntitiesFromRawText = (
       })
     : convertToRaw(ContentState.createFromText(text));
 
-  const rawState = tags.map(tag => {
+  const rawState = tags.map((tag) => {
     const { mentionType, ...data } = tag;
     return {
       type: mentionType === '@' ? 'mention' : `${mentionType}mention`,
@@ -69,16 +69,16 @@ export const createMentionEntitiesFromRawText = (
     };
   });
 
-  rawState.forEach(element => {
+  for (const element of rawState) {
     rawContent.entityMap[element?.data?.mention?.identifier] = element;
-  });
+  }
 
   const newBlocks = rawContent.blocks
-    .filter(block => !!block)
-    .map(block => {
+    .filter((block) => !!block)
+    .map((block) => {
       const ranges = [];
 
-      tags.forEach(({ mentionType, name, identifier }) => {
+      for (const { mentionType, name, identifier } of tags) {
         const entityRanges = getEntityRanges(
           block?.text || '',
           `${mentionType}${name}`,
@@ -87,7 +87,7 @@ export const createMentionEntitiesFromRawText = (
         if (entityRanges) {
           ranges.push(...entityRanges);
         }
-      });
+      }
       return {
         ...block,
         entityRanges: [...(block.entityRanges || []), ...ranges],
@@ -103,7 +103,7 @@ export const createMentionEntities = (
   tags,
   handleRichText,
 ) => {
-  const tagsWithType = tags.map(tag => {
+  const tagsWithType = tags.map((tag) => {
     const foundIndex = tokenizedText.indexOf(`{${tag.identifier}}`);
 
     if (foundIndex !== -1) {

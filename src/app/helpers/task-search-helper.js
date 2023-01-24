@@ -8,9 +8,9 @@ export function checkIfTaskMatchSearchValue(searchValue, task) {
 
   return !!(
     description?.toLowerCase().includes(searchValue.toLowerCase()) ||
-    pluck('comment', comments).filter(s =>
+    pluck('comment', comments).some((s) =>
       new RegExp(searchValue.toLowerCase(), 'ig').test(s),
-    ).length > 0 ||
+    ) ||
     patient?.firstName.toLowerCase().includes(searchValue.toLowerCase()) ||
     patient?.lastName.toLowerCase().includes(searchValue.toLowerCase()) ||
     assignedTo?.firstName.toLowerCase().includes(searchValue.toLowerCase()) ||

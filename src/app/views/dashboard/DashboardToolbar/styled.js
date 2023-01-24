@@ -34,8 +34,8 @@ export const DashboardTabHighlight = styled.div`
   height: 4px;
   position: absolute;
   bottom: -3px;
-  width: ${props => props.width};
-  left: ${props => props.left};
+  width: ${(props) => props.width};
+  left: ${(props) => props.left};
   transition: left 0.2s ease-out;
 `;
 

@@ -1,5 +1,3 @@
-import NewColumnsStep from './NewColumnsStep';
-import TaskDensityStep from './TaskDensityStep';
-import QuickAddSubtaskStep from './QuickAddSubtaskStep';
-
-export { TaskDensityStep, NewColumnsStep, QuickAddSubtaskStep };
+export { default as NewColumnsStep } from './NewColumnsStep';
+export { default as QuickAddSubtaskStep } from './QuickAddSubtaskStep';
+export { default as TaskDensityStep } from './TaskDensityStep';

@@ -1,5 +1,5 @@
 import { Grid, Typography } from '@material-ui/core';
-import { AnimatePresence, motion } from 'framer-motion/dist/framer-motion';
+import { AnimatePresence, motion } from 'framer-motion';
 import React from 'react';
 import styled from 'styled-components';
 import Loader from 'components/common/Loader/Loader';

@@ -11,9 +11,9 @@ export const DropHereText = styled.div`
 
 export const AttachmentsContainer = styled.div`
   color: ${palette.coolGrey1};
-  background-color: ${props =>
+  background-color: ${(props) =>
     props.isDragActive ? palette.coolGrey3 : palette.white};
-  border: ${props =>
+  border: ${(props) =>
     props.isDragActive ? `solid 1px ${palette.coolGrey2}` : `none`};
 `;
 

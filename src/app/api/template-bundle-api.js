@@ -3,10 +3,8 @@ import axios from './axios-heydoc';
 export function getTemplateBundle(identifier) {
   return axios
     .get(`task/workflow/${identifier}`)
-    .then(response => {
-      return response.data;
-    })
-    .catch(error => {
+    .then((response) => response.data)
+    .catch((error) => {
       throw error;
     });
 }
@@ -16,10 +14,8 @@ export function updateTemplateBundle(identifier, templateBundle) {
     .patch(`task/workflow/${identifier}`, {
       ...templateBundle,
     })
-    .then(response => {
-      return response.data;
-    })
-    .catch(error => {
+    .then((response) => response.data)
+    .catch((error) => {
       throw error;
     });
 }
@@ -34,9 +30,7 @@ export function moveWorkflowToList(
       taskListIdentifier,
       parentTaskWorkflowIdentifier: taskGroupIdentifier,
     })
-    .then(({ data }) => {
-      return data;
-    });
+    .then(({ data }) => data);
 }
 
 export function moveWorkflowToGroup(identifier, taskGroupIdentifier) {
@@ -44,9 +38,7 @@ export function moveWorkflowToGroup(identifier, taskGroupIdentifier) {
     .patch(`task/workflow/${identifier}`, {
       parentTaskWorkflowIdentifier: taskGroupIdentifier,
     })
-    .then(({ data }) => {
-      return data;
-    });
+    .then(({ data }) => data);
 }
 
 export function applyTemplate({
@@ -64,8 +56,8 @@ export function applyTemplate({
       patientIdentifier,
       overrideAssignmentMismatch: unassign,
     })
-    .then(response => response.data)
-    .catch(error => {
+    .then((response) => response.data)
+    .catch((error) => {
       throw error;
     });
 }
@@ -77,7 +69,7 @@ export function reorderTasksInBundle(bundleIdentifier, orderedTaskIds) {
       taskGroupIdentifier: bundleIdentifier,
     })
     .then(({ data }) => data)
-    .catch(error => {
+    .catch((error) => {
       throw error;
     });
 }

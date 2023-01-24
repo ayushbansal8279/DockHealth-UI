@@ -7,7 +7,7 @@ const handleHomeRedirection = async ({ data, isEulaPath, isHomePath }) => {
     }
 
     return null;
-  } catch (error) {
+  } catch {
     return DEFAULT_REDIRECT_PATH;
   }
 };

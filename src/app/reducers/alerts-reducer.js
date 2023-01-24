@@ -14,8 +14,9 @@ const AlertsReducer = (state = initialState, action) => {
       return { ...state, alertToastHide };
     }
 
-    default:
+    default: {
       return state;
+    }
   }
 };
 

@@ -1,7 +1,7 @@
 import prop from 'ramda/src/prop';
 import { createSelector } from 'reselect';
 
-export const taskTemplateStateSelector = state => state.taskTemplate;
+export const taskTemplateStateSelector = (state) => state.taskTemplate;
 
 export const taskTemplatesSelector = createSelector(
   taskTemplateStateSelector,
@@ -18,16 +18,16 @@ export const isFetchingTaskTemplatesSelector = createSelector(
   ({ isFetching }) => isFetching,
 );
 
-export const taskTemplateDetailsSelector = taskTemplateIdentifier =>
+export const taskTemplateDetailsSelector = (taskTemplateIdentifier) =>
   createSelector(
     taskTemplateStateSelector,
     ({ taskTemplateDetails }) => taskTemplateDetails[taskTemplateIdentifier],
   );
 
-export const taskTemplateSelector = taskTemplateIdentifier =>
+export const taskTemplateSelector = (taskTemplateIdentifier) =>
   createSelector(taskTemplateStateSelector, ({ taskTemplates }) =>
     taskTemplates.find(
-      template => template.identifier === taskTemplateIdentifier,
+      (template) => template.identifier === taskTemplateIdentifier,
     ),
   );
 

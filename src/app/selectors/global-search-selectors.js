@@ -1,6 +1,6 @@
 import { createSelector } from 'reselect';
 
-export const globalSearchStateSelector = state => state.globalSearch;
+export const globalSearchStateSelector = (state) => state.globalSearch;
 
 export const isSearchingCompletedTasksSelector = createSelector(
   globalSearchStateSelector,

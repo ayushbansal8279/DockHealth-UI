@@ -20,7 +20,7 @@ export const useStyles = makeStyles({
       border: 'none',
     },
     '& .switchIcon > path': {
-      fill: props =>
+      fill: (props) =>
         props.iconColorActive ? props.iconColorActive : palette.dirtyBanana,
     },
   },

@@ -6,7 +6,7 @@ export const ColorPickerLabel = styled.label`
   display: inline-block;
   width: 20px;
   height: 20px;
-  background: ${props => props.color};
+  background: ${(props) => props.color};
   cursor: pointer;
 
   ${({ variant }) =>

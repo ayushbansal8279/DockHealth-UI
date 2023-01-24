@@ -30,7 +30,7 @@ export const FilterOptionWrapper = styled.div`
     margin-bottom: 4px;
   }
 
-  ${props =>
+  ${(props) =>
     !props.disabled &&
     `
       cursor: pointer;

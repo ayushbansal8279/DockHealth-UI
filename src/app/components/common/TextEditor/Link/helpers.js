@@ -32,7 +32,7 @@ export const createLinkAtSelection = (
   return moveSelectionToEnd(nextEditorState);
 };
 
-export const removeLinkAtSelection = editorState => {
+export const removeLinkAtSelection = (editorState) => {
   const contentState = editorState.getCurrentContent();
   const selectionState = editorState.getSelection();
   const startKey = selectionState.getStartKey();
@@ -47,7 +47,7 @@ export const removeLinkAtSelection = editorState => {
   let entitySelection = null;
 
   contentBlock.findEntityRanges(
-    character => character.getEntity() === entity,
+    (character) => character.getEntity() === entity,
     (start, end) => {
       entitySelection = selectionState.merge({
         anchorOffset: start,
@@ -66,7 +66,7 @@ export const removeLinkAtSelection = editorState => {
   // return RichUtils.toggleLink(editorState, selection, null);
 };
 
-export const getCurrentEntityKey = editorState => {
+export const getCurrentEntityKey = (editorState) => {
   const selection = editorState.getSelection();
   const anchorKey = selection.getAnchorKey();
   const contentState = editorState.getCurrentContent();
@@ -76,7 +76,7 @@ export const getCurrentEntityKey = editorState => {
   return anchorBlock.getEntityAt(index);
 };
 
-export const getCurrentEntity = editorState => {
+export const getCurrentEntity = (editorState) => {
   const contentState = editorState.getCurrentContent();
   const entityKey = getCurrentEntityKey(editorState);
   return entityKey ? contentState.getEntity(entityKey) : null;

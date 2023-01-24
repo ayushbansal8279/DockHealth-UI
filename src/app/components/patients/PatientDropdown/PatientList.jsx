@@ -76,8 +76,8 @@ const PatientList = ({
   }, [inputReference]);
 
   const fetchPatients = useCallback(
-    value =>
-      getPatientsByCriteria(value).then(fetchedPatients => {
+    (value) =>
+      getPatientsByCriteria(value).then((fetchedPatients) => {
         const p = fetchedPatients.filter(
           ({ patientIdentifier }) =>
             !patientIdentifiersToExclude.includes(patientIdentifier),
@@ -98,7 +98,7 @@ const PatientList = ({
   );
 
   const fetchPatientsWithDebounce = useCallback(
-    debounce(value => {
+    debounce((value) => {
       fetchPatients(value).then(() => {
         setIsLoadingPatients(false);
       });
@@ -107,17 +107,17 @@ const PatientList = ({
   );
 
   const onPatientInputChange = useCallback(
-    event => {
+    (event) => {
       const value = event?.target?.value;
-      if (value !== '') {
-        setIsLoadingPatients(true);
-        setSearchValue(value);
-        fetchPatientsWithDebounce(value);
-      } else {
+      if (value === '') {
         fetchPatientsWithDebounce.cancel();
         setSearchValue('');
         setIsLoadingPatients(false);
         setPatients([]);
+      } else {
+        setIsLoadingPatients(true);
+        setSearchValue(value);
+        fetchPatientsWithDebounce(value);
       }
     },
     [fetchPatientsWithDebounce],
@@ -168,17 +168,18 @@ const PatientList = ({
 
   // eslint-disable-next-line unicorn/consistent-function-scoping
   // eslint-disable-next-line sonarjs/cognitive-complexity
-  const handleInputKeyDown = event => {
+  const handleInputKeyDown = (event) => {
     switch (event.keyCode) {
       // esc key
-      case 27:
+      case 27: {
         event.preventDefault();
         event.stopPropagation();
         clearInput();
         break;
+      }
 
       // enter key
-      case 13:
+      case 13: {
         event.preventDefault();
         event.stopPropagation();
 
@@ -190,49 +191,47 @@ const PatientList = ({
           clearInput();
         }
         break;
+      }
 
       // down arrow key
-      case 40:
+      case 40: {
         event.preventDefault();
         event.stopPropagation();
 
         if (patients?.length > 0) {
-          setHoveredItemIndex(previousIndex => {
+          setHoveredItemIndex((previousIndex) => {
             let newIndex;
-            if (previousIndex === patients.length - 1) {
-              newIndex = 0;
-            } else {
-              newIndex = previousIndex + 1;
-            }
+            newIndex =
+              previousIndex === patients.length - 1 ? 0 : previousIndex + 1;
 
             return newIndex;
           });
         }
         break;
+      }
 
       // up arrow key
-      case 38:
+      case 38: {
         event.preventDefault();
         event.stopPropagation();
 
         if (patients?.length > 0) {
-          setHoveredItemIndex(previousIndex => {
+          setHoveredItemIndex((previousIndex) => {
             let newIndex;
 
-            if (previousIndex === 0) {
-              newIndex = patients.length - 1;
-            } else {
-              newIndex = previousIndex - 1;
-            }
+            newIndex =
+              previousIndex === 0 ? patients.length - 1 : previousIndex - 1;
 
             return newIndex;
           });
         }
         break;
+      }
 
-      default:
+      default: {
         // do nothing
         break;
+      }
     }
   };
 
@@ -303,7 +302,7 @@ const PatientList = ({
           />
         )}
       {!isLoadingPatients && (
-        <ListContainer withBorder={patients.length !== 0}>
+        <ListContainer withBorder={patients.length > 0}>
           {!isLoadingPatients && patients.length >= MAX_PATIENT_RESULTS && (
             <RefineSearchRow>
               Only displaying limited number of patient profiles. Please further

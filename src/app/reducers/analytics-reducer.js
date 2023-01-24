@@ -39,14 +39,16 @@ const AnalyticsReducer = (state = initialState, action) => {
       };
     }
 
-    case ActionTypes.CLEAR_ANALYTICS_FILTER:
+    case ActionTypes.CLEAR_ANALYTICS_FILTER: {
       return {
         ...state,
         selectedFilters: null,
       };
+    }
 
-    default:
+    default: {
       return state;
+    }
   }
 };
 

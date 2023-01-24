@@ -13,26 +13,29 @@ const initialState = {
 
 const UserGroupsReducer = (state = initialState, action) => {
   switch (action.type) {
-    case ActionTypes.GET_USER_GROUPS:
+    case ActionTypes.GET_USER_GROUPS: {
       return {
         ...state,
         isFetchingGroups: true,
         error: false,
       };
+    }
 
-    case ActionTypes.GET_USER_GROUPS_SUCCESS:
+    case ActionTypes.GET_USER_GROUPS_SUCCESS: {
       return {
         ...state,
         groups: action.groups,
         isFetchingGroups: false,
       };
+    }
 
-    case ActionTypes.GET_USER_GROUPS_FAILURE:
+    case ActionTypes.GET_USER_GROUPS_FAILURE: {
       return {
         ...state,
         isFetchingGroups: false,
         error: true,
       };
+    }
 
     case ActionTypes.SET_CURRENT_USER_GROUP: {
       const { groupIdentifier } = action;
@@ -57,7 +60,7 @@ const UserGroupsReducer = (state = initialState, action) => {
         groupsDetails: {
           ...state.groupsDetails,
           [groupIdentifier]: {
-            ...(state.groupsDetails[groupIdentifier] || {}),
+            ...state.groupsDetails[groupIdentifier],
             isFetching: true,
             error: false,
           },
@@ -131,7 +134,7 @@ const UserGroupsReducer = (state = initialState, action) => {
         groupsDetails: {
           ...state.groupsDetails,
           [userGroupIdentifier]: {
-            ...(state.groupsDetails?.[userGroupIdentifier] || {}),
+            ...state.groupsDetails?.[userGroupIdentifier],
             isSaving: true,
             error: false,
           },
@@ -144,13 +147,13 @@ const UserGroupsReducer = (state = initialState, action) => {
 
       return {
         ...state,
-        groups: state.groups.map(g =>
+        groups: state.groups.map((g) =>
           g.identifier === userGroupIdentifier ? { ...g, ...userGroupData } : g,
         ),
         groupsDetails: {
           ...state.groupsDetails,
           [userGroupIdentifier]: {
-            ...(state.groupsDetails?.[userGroupIdentifier] || {}),
+            ...state.groupsDetails?.[userGroupIdentifier],
             ...userGroupData,
             isSaving: false,
             error: false,
@@ -168,7 +171,7 @@ const UserGroupsReducer = (state = initialState, action) => {
         groupsDetails: {
           ...state.groupsDetails,
           [userGroupIdentifier]: {
-            ...(state.groupsDetails?.[userGroupIdentifier] || {}),
+            ...state.groupsDetails?.[userGroupIdentifier],
             isSaving: false,
             error: true,
           },
@@ -182,13 +185,13 @@ const UserGroupsReducer = (state = initialState, action) => {
 
       return {
         ...state,
-        groups: state.groups.map(g =>
+        groups: state.groups.map((g) =>
           g.identifier === userGroupIdentifier ? { ...g, usersCount } : g,
         ),
         groupsDetails: {
           ...state.groupsDetails,
           [userGroupIdentifier]: {
-            ...(state.groupsDetails?.[userGroupIdentifier] || {}),
+            ...state.groupsDetails?.[userGroupIdentifier],
             users,
             usersCount,
             isSaving: false,
@@ -217,8 +220,9 @@ const UserGroupsReducer = (state = initialState, action) => {
       };
     }
 
-    default:
+    default: {
       return state;
+    }
   }
 };
 

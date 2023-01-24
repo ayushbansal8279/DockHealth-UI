@@ -7,19 +7,15 @@ import axios from './axios-heydoc';
 export function getOrganizationUsersAndUserGroups() {
   return axios
     .get('user/findAllUsersByOrganizationId?includeGroups=true')
-    .then(response => {
-      return response.data;
-    })
-    .catch(error => error?.response?.data);
+    .then((response) => response.data)
+    .catch((error) => error?.response?.data);
 }
 
 export function getOrganizationUsers() {
   return axios
     .get('user/findAllUsersByOrganizationId?includeGroups=false')
-    .then(response => {
-      return response.data;
-    })
-    .catch(error => error?.response?.data);
+    .then((response) => response.data)
+    .catch((error) => error?.response?.data);
 }
 
 export function findAllUsersForOrganization() {
@@ -47,7 +43,7 @@ export function findAllUsersForOrganization() {
 
       return uniqBy(prop('email'), allUsers);
     })
-    .catch(error => {
+    .catch((error) => {
       throw new Error(error?.response?.data ?? error?.message);
     });
 }
@@ -61,15 +57,14 @@ export function updateOrganizationCallType({ type, organizationIdentifier }) {
     .then(({ data }) => data);
 }
 
-export const getOrganization = organizationIdentifier => {
-  return axios.get(`/organization/${organizationIdentifier}`).then(response => {
+export const getOrganization = (organizationIdentifier) =>
+  axios.get(`/organization/${organizationIdentifier}`).then((response) => {
     if (response.data) {
       return response.data;
     }
 
     throw new Error('Organization not found');
   });
-};
 
 export const createOrganization = ({
   organizationName,
@@ -107,7 +102,7 @@ export const saveBillingDetails = ({ billingData, token }) =>
       },
       cardTokenIdentifier: token.token.id,
     },
-  }).then(response => response.data);
+  }).then((response) => response.data);
 
 export function updateSubscriptionPlan(newPlan) {
   return axios
@@ -125,20 +120,19 @@ export const getBillingEstimate = ({ subscriptionPlan, billingFrequency }) =>
       selectedSubscriptionPlan: subscriptionPlan,
       selectedBillingFrequency: billingFrequency,
     },
-  }).then(response => response.data);
+  }).then((response) => response.data);
 
-export const getBillingDetails = () => {
-  return axios({
+export const getBillingDetails = () =>
+  axios({
     method: 'get',
     url: `/organization/getBillingDetails`,
-  }).then(response => response.data);
-};
+  }).then((response) => response.data);
 
 export const getInvoiceDetails = () =>
   axios({
     method: 'get',
     url: `/organization/getInvoiceDetails`,
-  }).then(response => response.data);
+  }).then((response) => response.data);
 
 export const updateOrganization = ({
   organizationName,
@@ -155,7 +149,7 @@ export const updateOrganization = ({
       organizationProfileColor,
       organizationIdentifier,
     },
-  }).then(response => response.data);
+  }).then((response) => response.data);
 
 export const signOrganizationBAADocument = ({ legalEntityName }) =>
   axios({
@@ -164,7 +158,7 @@ export const signOrganizationBAADocument = ({ legalEntityName }) =>
     data: {
       organizationLegalEntityName: legalEntityName,
     },
-  }).then(response => response.data);
+  }).then((response) => response.data);
 
 export const storeSignatureResult = ({
   signatureIdentifier,
@@ -177,7 +171,7 @@ export const storeSignatureResult = ({
       signatureIdentifier,
       signatureResult,
     },
-  }).then(response => response.data);
+  }).then((response) => response.data);
 
 export const inviteAuthorizedSigner = ({
   firstName,
@@ -194,7 +188,7 @@ export const inviteAuthorizedSigner = ({
       email,
       phoneNumber,
     },
-  }).then(response => response.data);
+  }).then((response) => response.data);
 
 export const downloadSignedDocument = () =>
   axios({
@@ -204,16 +198,14 @@ export const downloadSignedDocument = () =>
     headers: {
       Accept: 'application/octet-stream',
     },
-  }).then(response => {
-    return response.data;
-  });
+  }).then((response) => response.data);
 
 export const checkBAASignedStatus = (organizationIdentifier, resetCachedOrg) =>
   axios
     .get(
       `/organization/checkBAASignedStatus?organizationIdentifier=${organizationIdentifier}`,
     )
-    .then(response => {
+    .then((response) => {
       if (resetCachedOrg) {
         sessionStorage.removeItem('refreshOrgMemo');
       }
@@ -230,20 +222,20 @@ const keyResolver = (...arguments_) => JSON.stringify(arguments_);
 export const checkBAASignedStatusWithMemo = () =>
   memoize(checkBAASignedStatus, keyResolver);
 
-export const getConfigurationForReferral = referralCode =>
-  axios.get(`/referral/config/${referralCode}`).then(response => {
+export const getConfigurationForReferral = (referralCode) =>
+  axios.get(`/referral/config/${referralCode}`).then((response) => {
     if (response && response.data) {
       return response.data;
     }
     throw new Error('Referral config not found');
   });
 
-export const referAColleague = referDetails => {
+export const referAColleague = (referDetails) => {
   axios({
     method: 'put',
     url: '/organization/referAColleague',
     data: referDetails,
-  }).then(response => response.data);
+  }).then((response) => response.data);
 };
 
 export function downloadBAADocument() {
@@ -255,7 +247,7 @@ export function downloadBAADocument() {
       Accept: 'application/octet-stream',
     },
   })
-    .then(response => {
+    .then((response) => {
       const url = window.URL.createObjectURL(new Blob([response.data]));
       const link = document.createElement('a');
       link.style.display = 'none';
@@ -300,12 +292,11 @@ export function reorderOrganizationStatuses(taskStatusIdentifiers) {
 export function changeUserOrganizationRole(userIdentifier, role) {
   return axios
     .put(
-      `${'organization/changeUserRoleForOrg/' +
-        '?markedUserId='}${userIdentifier}&role=${role}`,
+      `${
+        'organization/changeUserRoleForOrg/' + '?markedUserId='
+      }${userIdentifier}&role=${role}`,
     )
-    .then(response => {
-      return response.data;
-    });
+    .then((response) => response.data);
 }
 
 export function invitePersonToOrganization(person) {
@@ -314,10 +305,8 @@ export function invitePersonToOrganization(person) {
     method: 'put',
     data: person,
   })
-    .then(response => {
-      return response?.data;
-    })
-    .catch(error => {
+    .then((response) => response?.data)
+    .catch((error) => {
       throw new Error(error?.response?.data?.errorMessage);
     });
 }
@@ -327,10 +316,8 @@ export function resendInviteToOrganization(userIdentifier) {
     .put(
       `organization/resendInviteToOrganization/?userIdentifier=${userIdentifier}`,
     )
-    .then(({ data }) => {
-      return data;
-    })
-    .catch(error => {
+    .then(({ data }) => data)
+    .catch((error) => {
       throw new Error(error?.response?.data?.errorMessage);
     });
 }
@@ -340,10 +327,8 @@ export function resendApprovalRequestUserForOrganization(userIdentifier) {
     .put(
       `user/resendApprovalRequestUserForOrganization/?userIdentifier=${userIdentifier}`,
     )
-    .then(({ data }) => {
-      return data;
-    })
-    .catch(error => {
+    .then(({ data }) => data)
+    .catch((error) => {
       throw new Error(error?.response?.data?.errorMessage);
     });
 }
@@ -351,13 +336,12 @@ export function resendApprovalRequestUserForOrganization(userIdentifier) {
 export function cancelInviteToOrganization(markedUserIdentifier) {
   return axios
     .put(
-      `${'organization/cancelInviteToOrganization/' +
-        '?userIdentifier='}${markedUserIdentifier}`,
+      `${
+        'organization/cancelInviteToOrganization/' + '?userIdentifier='
+      }${markedUserIdentifier}`,
     )
-    .then(response => {
-      return response.data;
-    })
-    .catch(error => {
+    .then((response) => response.data)
+    .catch((error) => {
       throw new Error(error?.response?.data?.errorMessage);
     });
 }
@@ -365,13 +349,12 @@ export function cancelInviteToOrganization(markedUserIdentifier) {
 export function removeUserFromOrganization(removedUserIdentifier) {
   return axios
     .delete(
-      `${'user/removeUserFromOrganization' +
-        '?userIdentifier='}${removedUserIdentifier}`,
+      `${
+        'user/removeUserFromOrganization' + '?userIdentifier='
+      }${removedUserIdentifier}`,
     )
-    .then(response => {
-      return response.data;
-    })
-    .catch(error => {
+    .then((response) => response.data)
+    .catch((error) => {
       throw new Error(error?.response?.data?.errorMessage);
     });
 }
@@ -379,10 +362,8 @@ export function removeUserFromOrganization(removedUserIdentifier) {
 export function reactivateUserInOrganization(userIdentifier) {
   return axios
     .put(`${'user/addUserToOrganization?userIdentifier='}${userIdentifier}`)
-    .then(response => {
-      return response.data;
-    })
-    .catch(error => {
+    .then((response) => response.data)
+    .catch((error) => {
       throw new Error(error?.response?.data?.errorMessage);
     });
 }
@@ -392,10 +373,8 @@ export function approvePendingUser({ userIdentifier, role }) {
     .put(`user/approveUserForOrganization?userIdentifier=${userIdentifier}`, {
       role,
     })
-    .then(response => {
-      return response.data;
-    })
-    .catch(error => {
+    .then((response) => response.data)
+    .catch((error) => {
       throw new Error(error?.response?.data?.errorMessage);
     });
 }
@@ -403,10 +382,8 @@ export function approvePendingUser({ userIdentifier, role }) {
 export function denyPendingUser({ userIdentifier }) {
   return axios
     .put(`user/denyUserForOrganization?userIdentifier=${userIdentifier}`)
-    .then(response => {
-      return response.data;
-    })
-    .catch(error => {
+    .then((response) => response.data)
+    .catch((error) => {
       throw new Error(error?.response?.data?.errorMessage);
     });
 }
@@ -433,7 +410,7 @@ export function getCurrentUserOrganizations() {
   return axios.get('user/findUserOrganizations').then(({ data }) => data);
 }
 
-export const leaveOrganization = organizationIdentifier =>
+export const leaveOrganization = (organizationIdentifier) =>
   axios
     .delete(`/user/leaveOrganization/${organizationIdentifier}`)
     .then(({ data }) => data);
@@ -451,7 +428,8 @@ export function selectCurrentOrganizationWithRedirection(
       organizationIdentifier,
     );
     sessionStorage.setItem('redirectToLink', redirectionLink);
-    axios.defaults.headers.common.CurrentOrganizationIdentifier = organizationIdentifier;
+    axios.defaults.headers.common.CurrentOrganizationIdentifier =
+      organizationIdentifier;
     window.location.reload();
   });
 }
@@ -471,7 +449,8 @@ export function selectCurrentOrganization(
     if (redirectToHome) {
       sessionStorage.setItem('redirectToHome', JSON.stringify(true));
     }
-    axios.defaults.headers.common.CurrentOrganizationIdentifier = organizationIdentifier;
+    axios.defaults.headers.common.CurrentOrganizationIdentifier =
+      organizationIdentifier;
     window.location.reload();
   });
 }

@@ -37,7 +37,7 @@ export const useSecondaryTypeTextFieldStyles = makeStyles({
   root: {
     border: 'none',
     transition: 'none',
-    width: props => (props.width ? `${props.width}px` : '100%'),
+    width: (props) => (props.width ? `${props.width}px` : '100%'),
   },
 });
 

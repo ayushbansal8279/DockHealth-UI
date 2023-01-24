@@ -49,7 +49,7 @@ export const rotateImg = keyframes`
 
 export const ActivityAlertsImg = styled.img`
   cursor: pointer;
-  animation: ${props =>
+  animation: ${(props) =>
     props.withAnimaton
       ? css`
           ${rotateImg} 0.55s ease-in-out 0.25s

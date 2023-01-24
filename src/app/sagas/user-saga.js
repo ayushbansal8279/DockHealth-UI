@@ -53,7 +53,7 @@ function* getCurrentUser() {
       type: ActionTypes.GET_CURRENT_USER_SUCCESS,
       user,
     });
-  } catch (error) {
+  } catch {
     yield put(showGlobalErrorAlert());
     yield put({ type: ActionTypes.GET_CURRENT_USER_FAILURE });
   }
@@ -77,7 +77,7 @@ function* updateCurrentUser({ userData }) {
 
     yield put(showGlobalAlert(AlertMessages.UPDATED));
     yield put({ type: ActionTypes.UPDATE_CURRENT_USER_SUCCESS });
-  } catch (error) {
+  } catch {
     yield put(showGlobalErrorAlert());
     yield put({ type: ActionTypes.UPDATE_CURRENT_USER_FAILURE });
   }

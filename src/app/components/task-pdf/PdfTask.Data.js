@@ -9,9 +9,7 @@ const getDueDateData = ({ dueDate }) => {
     : '';
   const isOverdue =
     dueDateMoment.isValid() &&
-    moment()
-      .set({ hours: 0, minutes: 0, seconds: 0 })
-      .isAfter(dueDateMoment);
+    moment().set({ hours: 0, minutes: 0, seconds: 0 }).isAfter(dueDateMoment);
 
   return {
     dueDateLabel,
@@ -19,7 +17,7 @@ const getDueDateData = ({ dueDate }) => {
   };
 };
 
-const getPdfTaskData = props => {
+const getPdfTaskData = (props) => {
   const {
     comments,
     subTasksCount,
@@ -52,8 +50,9 @@ const getPdfTaskData = props => {
   const { color: workflowStatusColor, name: workflowStatusLabel } =
     workflowStatus || {};
 
-  const completedName = `${completedBy?.firstName?.charAt(0)?.toUpperCase() ??
-    ''}. ${completedBy?.lastName ?? ''}`
+  const completedName = `${
+    completedBy?.firstName?.charAt(0)?.toUpperCase() ?? ''
+  }. ${completedBy?.lastName ?? ''}`
     .trim()
     .replace(/^\.$/, '');
 

@@ -4,14 +4,14 @@ import {
 } from 'helpers/filter-options-helpers';
 import axios from './axios-heydoc';
 
-const includeCustomFieldsPatientsToEachTask = data => {
+const includeCustomFieldsPatientsToEachTask = (data) => {
   const { taskGroups } = data;
-  const updatedTaskGroups = taskGroups.map(g => ({
+  const updatedTaskGroups = taskGroups.map((g) => ({
     ...g,
-    tasks: (g?.tasks || []).map(t => {
-      const patient = (g.patients || []).find(p => {
-        return p?.patientIdentifier === t?.patient?.patientIdentifier;
-      });
+    tasks: (g?.tasks || []).map((t) => {
+      const patient = (g.patients || []).find(
+        (p) => p?.patientIdentifier === t?.patient?.patientIdentifier,
+      );
       const task = {
         ...t,
       };
@@ -27,10 +27,8 @@ const includeCustomFieldsPatientsToEachTask = data => {
 export function getTaskStatsForList(taskListIdentifier) {
   return axios
     .get(`/task/stats/getTaskStatsForList/${taskListIdentifier}`)
-    .then(resp => {
-      return resp?.data;
-    })
-    .catch(error => {
+    .then((resp) => resp?.data)
+    .catch((error) => {
       throw error;
     });
 }
@@ -113,9 +111,9 @@ export function getFilteredTasksForList(
         },
       },
     )
-    .then(({ data }) => {
-      return includeCustomFieldsPatientsToEachTask(data)?.taskGroups;
-    });
+    .then(
+      ({ data }) => includeCustomFieldsPatientsToEachTask(data)?.taskGroups,
+    );
 }
 
 export function getTaskListFilterOptions(
@@ -124,27 +122,25 @@ export function getTaskListFilterOptions(
   selectedFilters,
 ) {
   let request;
-  if (selectedFilters) {
-    request = axios
-      .post(
-        `task/filter/filterSpecificTasksByCriteria/${taskListIdentifier}?includeOptions=true`,
-        mapSelectedOptionsToRequestPayload(selectedFilters),
-        {
-          params: {
-            status,
+  request = selectedFilters
+    ? axios
+        .post(
+          `task/filter/filterSpecificTasksByCriteria/${taskListIdentifier}?includeOptions=true`,
+          mapSelectedOptionsToRequestPayload(selectedFilters),
+          {
+            params: {
+              status,
+            },
           },
-        },
-      )
-      .then(({ data }) => data.taskFilterOptions);
-  } else {
-    request = axios
-      .get(`task/filter/filterOptionsForTaskList/${taskListIdentifier}`, {
-        params: { status },
-      })
-      .then(({ data }) => data);
-  }
+        )
+        .then(({ data }) => data.taskFilterOptions)
+    : axios
+        .get(`task/filter/filterOptionsForTaskList/${taskListIdentifier}`, {
+          params: { status },
+        })
+        .then(({ data }) => data);
 
-  return request.then(responseFilters => mapFilterOptions(responseFilters));
+  return request.then((responseFilters) => mapFilterOptions(responseFilters));
 }
 
 export function getTasksForListByDateRange(

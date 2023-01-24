@@ -8,10 +8,10 @@ import { fontSizes, fontWeights } from 'styles/font';
 export const FilterButtonWrapper = styled(Button)`
   && {
     border-radius: 0;
-    background-color: ${props =>
+    background-color: ${(props) =>
       props.active ? palette.blueOcean : 'transparent'};
     :hover {
-      background-color: ${props =>
+      background-color: ${(props) =>
         props.active ? palette.blueOcean : 'transparent'};
     }
   }
@@ -20,8 +20,8 @@ export const FilterButtonWrapper = styled(Button)`
 export const FilterButtonLabel = withStyles({
   root: {
     fontFamily: 'Montserrat, sans-serif',
-    color: props => (props.active ? palette.white : palette.coolGrey1),
-    fontWeight: props =>
+    color: (props) => (props.active ? palette.white : palette.coolGrey1),
+    fontWeight: (props) =>
       props.active ? fontWeights.bold : fontWeights.regular,
     display: 'inline-block',
     marginRight: spacing.tiny,

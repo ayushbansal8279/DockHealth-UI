@@ -24,8 +24,9 @@ const SendbirdReducer = (state = initialState, action) => {
       } = action;
       return { ...state, channel };
     }
-    default:
+    default: {
       return state;
+    }
   }
 };
 

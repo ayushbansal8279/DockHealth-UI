@@ -7,7 +7,7 @@ export const renderPartsWithHighlighting = (optionValue, inputValue) => {
   const parts = parse(optionValue, matches);
   return (
     <>
-      {parts.map(part => (
+      {parts.map((part) => (
         <span
           key={`${optionValue}_${part}`}
           style={{ fontWeight: part.highlight ? 700 : 400 }}

@@ -17,6 +17,6 @@ export const ViewTypeButtonsWrapper = styled.div`
 export const ViewTypeButton = styled.button`
   margin-left: ${spacing.regularPlus};
   color: ${({ active }) => (active ? palette.brightBlue : palette.coolGrey2)};
-  cursor: ${props => (props.isHidden ? 'initial' : 'pointer')};
+  cursor: ${(props) => (props.isHidden ? 'initial' : 'pointer')};
   transition: color 0.3s ease-out;
 `;

@@ -76,17 +76,15 @@ const initializeTaskDrawerHooks = ({
   const parentBundle = useMemo(
     () =>
       selectedTask?.taskGroups?.find(
-        tg => tg.groupType === TaskGroupType.BUNDLE,
+        (tg) => tg.groupType === TaskGroupType.BUNDLE,
       ),
     [selectedTask],
   );
 
   const taskTemplate = selectedTask?.taskTemplate;
 
-  const [
-    parentDescriptionState,
-    setParentDescriptionState,
-  ] = useMentionsEditorState();
+  const [parentDescriptionState, setParentDescriptionState] =
+    useMentionsEditorState();
 
   useEffect(() => {
     const unlisten = history.listen(() => {
@@ -110,7 +108,7 @@ const initializeTaskDrawerHooks = ({
         taskIdentifier !== previousTaskIdentifierValue.current) ||
       (subtasks?.length === 0 && subTasksCount > 0)
     ) {
-      TaskApi.getTaskDetails(taskIdentifier).then(task => {
+      TaskApi.getTaskDetails(taskIdentifier).then((task) => {
         setSelectedParentTask(task.parentTask || null);
         dispatch({ type: UPDATE_TASK_SUCCESS, task });
       });
@@ -128,11 +126,8 @@ const initializeTaskDrawerHooks = ({
 
   useLayoutEffect(() => {
     if (selectedParentTask) {
-      const {
-        tokenizedDescription,
-        description,
-        taskMentions,
-      } = selectedParentTask;
+      const { tokenizedDescription, description, taskMentions } =
+        selectedParentTask;
       if (description) {
         const newContent = createMentionEntities(
           tokenizedDescription,
@@ -196,32 +191,33 @@ const initializeTaskDrawerHooks = ({
   );
 
   const onDuplicate = useCallback(
-    ({ afterDuplicate, includeAttachments }) => async event => {
-      if (event) {
-        event.preventDefault();
-        event.stopPropagation();
-      }
-
-      if (selectedTask && selectedTask.taskIdentifier != null) {
-        try {
-          const newTask = await duplicateTask(
-            selectedTask,
-            includeAttachments,
-          )(dispatch);
-          onTaskCreation(newTask);
-          storeAsCurrentTask(newTask)(dispatch);
-          afterDuplicate({ newTask });
-          onTaskDrawerTaskDuplicated();
-        } catch {
-          noop();
+    ({ afterDuplicate, includeAttachments }) =>
+      async (event) => {
+        if (event) {
+          event.preventDefault();
+          event.stopPropagation();
         }
-      }
-    },
+
+        if (selectedTask && selectedTask.taskIdentifier != undefined) {
+          try {
+            const newTask = await duplicateTask(
+              selectedTask,
+              includeAttachments,
+            )(dispatch);
+            onTaskCreation(newTask);
+            storeAsCurrentTask(newTask)(dispatch);
+            afterDuplicate({ newTask });
+            onTaskDrawerTaskDuplicated();
+          } catch {
+            noop();
+          }
+        }
+      },
     [dispatch, onTaskCreation, selectedTask],
   );
 
   const handleUpdateTask = useCallback(
-    async updatedTaskData => {
+    async (updatedTaskData) => {
       const updatedTask = await dispatch(
         partialUpdateTask(selectedTaskIdentifier, updatedTaskData),
       );
@@ -239,14 +235,17 @@ const initializeTaskDrawerHooks = ({
     return null;
   }, [selectedTaskDueDate]);
 
-  const isTemplateTask = useMemo(() => checkIfTemplateTask(selectedTask), [
-    selectedTask,
-  ]);
-  const onClickParentTask = useCallback(() => {
-    return identifier
-      ? history.push(createSingleTaskPath(selectedParentTask.identifier))
-      : dispatch(storeAsCurrentTask(selectedParentTask));
-  }, [dispatch, history, identifier, selectedParentTask]);
+  const isTemplateTask = useMemo(
+    () => checkIfTemplateTask(selectedTask),
+    [selectedTask],
+  );
+  const onClickParentTask = useCallback(
+    () =>
+      identifier
+        ? history.push(createSingleTaskPath(selectedParentTask.identifier))
+        : dispatch(storeAsCurrentTask(selectedParentTask)),
+    [dispatch, history, identifier, selectedParentTask],
+  );
 
   const handleWorkflowReferenceClick = useCallback(() => {
     dispatch(

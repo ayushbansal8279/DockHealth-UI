@@ -8,7 +8,7 @@ export const UserTypeButton = styled.button`
   
   * > * {
     font-weight: normal;
-    color: ${props =>
+    color: ${(props) =>
       props.isInvited || !props.clickable || props.isInactive
         ? palette.coolGrey1
         : palette.mediumGrey}

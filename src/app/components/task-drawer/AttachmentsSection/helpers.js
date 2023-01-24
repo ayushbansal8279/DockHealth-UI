@@ -24,7 +24,7 @@ export const acceptedFileFormats = [
 
 export const getMemoTaskAttachment = memoizeWith(
   identity,
-  attachmentIdentifier =>
+  (attachmentIdentifier) =>
     attachmentIdentifier
       ? getTaskAttachment(attachmentIdentifier)
       : Promise.reject(),
