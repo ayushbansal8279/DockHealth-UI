@@ -93,6 +93,12 @@ const ListDetailsTasks = ({
     currentOrganization?.themeSettings?.find(
       ({ name }) => name === 'content.label.default.group',
     ) || {};
+  const userSortingSupportEnabledItem =
+    currentOrganization?.themeSettings?.find(
+      ({ name }) => name === 'list.tasks.user.sort.enabled',
+    ) || {};
+  const userSortingSupportEnabled =
+    userSortingSupportEnabledItem?.value !== 'false';
 
   const renderEmptyState = () => {
     if (isSearchApplied) return <NoSearchResultsView />;
@@ -160,7 +166,7 @@ const ListDetailsTasks = ({
 
   const { bulkEditIsActive } = useContext(BulkEditContext);
 
-  const dragAndDropDisabled = bulkEditIsActive;
+  const dragAndDropDisabled = bulkEditIsActive || !userSortingSupportEnabled;
 
   const isSortApplied = !!sort?.key && !!sort?.order;
 
@@ -356,7 +362,7 @@ const ListDetailsTasks = ({
                                           groupHasMultipleAssignees
                                         }
                                         isFullView={isFullView}
-                                        dragAndDropDisabled={
+                                        groupDragAndDropDisabled={
                                           isCompletedGroup ||
                                           dragAndDropDisabled
                                         }
