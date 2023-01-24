@@ -3,7 +3,6 @@
 /* eslint-disable global-require */
 import MomentUtils from '@date-io/moment';
 import { MuiThemeProvider } from '@material-ui/core/styles';
-import { Font } from '@react-pdf/renderer';
 import { MuiPickersUtilsProvider } from 'material-ui-pickers';
 import { HashRouter } from 'react-router-dom';
 import moment from 'moment';
@@ -82,20 +81,6 @@ const stripeProps = SUBSCRIPTION_TOKEN_API_KEY
   : { apiKey: 'NON_EXISTENT_API_KEY' };
 
 const Index = () => {
-  Font.register({
-    family: 'Open Sans',
-    fonts: [
-      {
-        src: OpenSansRegularFontSource,
-        fontWeight: 'normal',
-      },
-      {
-        src: OpenSansBoldFontSource,
-        fontWeight: 'bold',
-      },
-    ],
-  });
-
   return (
     <MuiThemeProvider theme={getTheme()}>
       <MuiPickersUtilsProvider utils={MomentUtils}>

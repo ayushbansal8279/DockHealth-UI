@@ -3,32 +3,32 @@
   "env": {
     "browser": true,
     "node": true,
-    "es6": true,
-    "jest/globals": true
-  },
-  "settings": {
-    "import/resolver": "webpack"
+    "es6": true
   },
   "extends": [
     "airbnb",
     "airbnb/hooks",
-    "plugin:unicorn/recommended",
-    "plugin:sonarjs/recommended",
-    "prettier",
-    "prettier/react",
-    "prettier/standard",
-    "prettier/@typescript-eslint",
+    // "plugin:unicorn/recommended",
+    // "plugin:sonarjs/recommended",
     "plugin:@typescript-eslint/eslint-recommended",
-    "plugin:@typescript-eslint/recommended"
+    "plugin:@typescript-eslint/recommended",
+    "prettier"
   ],
   "plugins": [
     "@typescript-eslint",
-    "jest",
     "react",
     "react-hooks",
-    "unicorn",
+    // "unicorn",
     "prettier"
   ],
+  "settings": {
+    "import/resolver": {
+      "node": {
+        "paths": ["src/app"],
+        "extensions": [".js", ".jsx", ".ts", ".tsx"]
+      }
+    }
+  },
   "globals": {
     "closeAddForm": true,
     "closeDropdown": true,
@@ -86,6 +86,7 @@
     "no-unused-vars": "off",
     "consistent-return": "off",
     "@typescript-eslint/camelcase": "off",
-    "import/prefer-default-export": "off"
+    "import/prefer-default-export": "off",
+    "react/function-component-definition": "off"
   }
 }
