@@ -11,7 +11,10 @@ import {
 } from 'selectors/workflow-drawer-selectors';
 import WorkflowDrawerHeader from 'components/workflow-drawer/DrawerHeader/DrawerHeader';
 import { checkIfTemplateWorkflow } from 'helpers/workflow-helpers';
-import { userProfileSelector } from 'selectors/user-selectors';
+import {
+  userProfileSelector,
+  selectedUserOrganizationSelector,
+} from 'selectors/user-selectors';
 import {
   SINGLE_WORKFLOW_RESTRICTIONS_PROFILES,
   WORKFLOW_LIST_RESTRICTIONS_OPTIONS,
@@ -55,6 +58,13 @@ const WorkflowDrawer = () => {
   const { orgUserRole } = useSelector(userProfileSelector);
   const restrictions = SINGLE_WORKFLOW_RESTRICTIONS_PROFILES[orgUserRole];
 
+  const currentOrganization = useSelector(selectedUserOrganizationSelector);
+  const quickAddPatientEnabledItem =
+    currentOrganization?.themeSettings?.find(
+      ({ name }) => name === 'patient.quickadd.enabled',
+    ) || {};
+  const quickAddPatientEnabled = quickAddPatientEnabledItem?.value !== 'false';
+
   useEffect(() => {
     const unlisten = history.listen(
       compose(dispatch, WorkflowDrawerActions.closeDrawer),
@@ -97,6 +107,7 @@ const WorkflowDrawer = () => {
                       disabled={
                         !!isTemplateTask || restrictions?.patient === DISABLED
                       }
+                      quickAddPatientEnabled={quickAddPatientEnabled}
                     />
                   </Grid>
                   <Grid item xs={6}>

@@ -12,9 +12,11 @@ import { DragDropContext, Droppable } from 'react-beautiful-dnd';
 import { SINGLE_TASK_RESTRICTIONS_PROFILES } from 'restrictions/task-restrictions';
 import { CUSTOM_FIELD_TYPES } from 'helpers/custom-fields-helpers';
 import { currentTaskListSelector } from 'selectors/task-list-selectors';
-import { selectedUserOrganizationSelector } from 'selectors/user-selectors';
+import {
+  selectedUserOrganizationSelector,
+  userProfileSelector,
+} from 'selectors/user-selectors';
 import { isMemberAdmin } from 'helpers/list-members-helper';
-import { userProfileSelector } from 'selectors/user-selectors';
 import { BulkContainer, StickyColumnContainer } from './styled';
 import {
   getTaskHeaderOptions,
@@ -126,8 +128,8 @@ const TasksHeader = ({
           label={isRegular ? f.label : f.name}
           width={+f.columnWidth}
           snapshot={snapshot}
-          sort={isRegular ? sort : null}
-          onSortChange={isRegular ? onSortChange : null}
+          sort={sort}
+          onSortChange={onSortChange}
           printWidth={+customPrintWidth}
           tasksHeaderTextTransform={tasksHeaderTextTransformItem?.value}
           tasksHeaderTextColor={tasksHeaderTextColorItem?.value}
