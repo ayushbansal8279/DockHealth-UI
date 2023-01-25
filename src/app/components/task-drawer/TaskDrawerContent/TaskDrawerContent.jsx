@@ -17,7 +17,7 @@ import {
   TASK_LIST_RESTRICTIONS_PROFILES,
 } from 'restrictions/task-restrictions';
 import StartDateSection from 'components/workflow-drawer/StartDateSection/StartDateSection';
-import WatchersPopover from 'components/task-drawer/TaskDrawerContent/WatchersPopover/WatchersPopover';
+// import WatchersPopover from 'components/task-drawer/TaskDrawerContent/WatchersPopover/WatchersPopover';
 import AttachmentsSection from '../AttachmentsSection/AttachmentsSection';
 import CommentSection from '../CommentSection/CommentSection';
 import LabelsSection from '../LabelsSection/LabelsSection';
@@ -52,7 +52,7 @@ import {
   ReferenceParentButton,
   ReferenceParentName,
   FiledInListName,
-  SubscriptionBadge,
+  // SubscriptionBadge,
 } from './styled';
 
 const { DISABLED, READ_ONLY } = SINGLE_TASK_RESTRICTIONS_OPTIONS;
@@ -133,22 +133,27 @@ const TaskDrawerContent = props => {
       ({ name }) => name === 'task.labels.location',
     ) || {};
   const taskLabelsLocation = taskLabelsLocationItem?.value || 'default';
+  const quickAddPatientEnabledItem =
+    currentOrganization?.themeSettings?.find(
+      ({ name }) => name === 'patient.quickadd.enabled',
+    ) || {};
+  const quickAddPatientEnabled = quickAddPatientEnabledItem?.value !== 'false';
 
   const restrictions = SINGLE_TASK_RESTRICTIONS_PROFILES[orgUserRole];
   const taskListRestrictions = TASK_LIST_RESTRICTIONS_PROFILES[orgUserRole];
 
   const restrictMentions = restrictions?.mentions === DISABLED;
 
-  const watchersReference = useRef(null);
-  const [isSubscriptionListOpen, setSubscriptionListOpen] = useState(false);
+  // const watchersReference = useRef(null);
+  // const [isSubscriptionListOpen, setSubscriptionListOpen] = useState(false);
 
-  const handleSubscriptionCountClick = () => {
-    setSubscriptionListOpen(!isSubscriptionListOpen);
-  };
+  // const handleSubscriptionCountClick = () => {
+  //   setSubscriptionListOpen(!isSubscriptionListOpen);
+  // };
 
-  const handleSubscriptionListClose = () => {
-    setSubscriptionListOpen(false);
-  };
+  // const handleSubscriptionListClose = () => {
+  //   setSubscriptionListOpen(false);
+  // };
 
   const isMobile = useMediaQuery(theme => theme.breakpoints.down('sm'));
 
@@ -266,6 +271,7 @@ const TaskDrawerContent = props => {
             }
             autofocus={taskDrawerFocusField === DrawerFieldEnum.PATIENT}
             onSave={handleUpdateTask}
+            quickAddPatientEnabled={quickAddPatientEnabled}
           />
         </Grid>
         <Grid item xs={12} md={6} style={styleRightColumn(isMobile)}>

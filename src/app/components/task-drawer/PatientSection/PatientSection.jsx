@@ -28,6 +28,7 @@ const PatientSection = ({
   placeholder,
   onSave,
   isSubtask,
+  quickAddPatientEnabled,
   // eslint-disable-next-line sonarjs/cognitive-complexity
 }) => {
   const dispatch = useDispatch();
@@ -309,9 +310,13 @@ const PatientSection = ({
       onOptionSelect={handlePatientSelect}
       onClear={handleClearSelectedPatient}
       onAddItemClick={
-        currentOrganization?.emrIntegrationEnabled ? null : handleAddPatient
+        currentOrganization?.emrIntegrationEnabled || !quickAddPatientEnabled
+          ? null
+          : handleAddPatient
       }
-      addItemEnabled={!currentOrganization?.emrIntegrationEnabled}
+      addItemEnabled={
+        !currentOrganization?.emrIntegrationEnabled && quickAddPatientEnabled
+      }
       clearOnSuccess
       refineResultsCount={MAX_PATIENT_RESULTS}
       width={600}

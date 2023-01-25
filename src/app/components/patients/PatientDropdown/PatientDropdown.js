@@ -1,6 +1,7 @@
 import React, { useRef } from 'react';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { openModal } from 'modal/actions';
+import { selectedUserOrganizationSelector } from 'selectors/user-selectors';
 import PatientList from './PatientList';
 import { StyledPopover } from './styled';
 
@@ -17,6 +18,13 @@ const PatientDropdown = ({
 }) => {
   const popoverReference = useRef(null);
   const dispatch = useDispatch();
+
+  const currentOrganization = useSelector(selectedUserOrganizationSelector);
+  const quickAddPatientEnabledItem =
+    currentOrganization?.themeSettings?.find(
+      ({ name }) => name === 'patient.quickadd.enabled',
+    ) || {};
+  const quickAddPatientEnabled = quickAddPatientEnabledItem?.value !== 'false';
 
   const unassignPatient = () => {
     if (isMultipleChange || isSubtask || hasSubtasks) {
@@ -78,6 +86,7 @@ const PatientDropdown = ({
         <PatientList
           onSelect={handlePatientSelect}
           selectedPatientIdentifier={selectedPatientIdentifier}
+          disableAdding={!quickAddPatientEnabled}
         />
       </StyledPopover>
     </>
