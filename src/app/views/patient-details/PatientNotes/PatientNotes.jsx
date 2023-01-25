@@ -23,6 +23,7 @@ import { useMentionsEditorState } from 'components/common/TextEditor/use-mention
 import Button from 'components/common/Button/Button';
 import Spacing from 'components/common/Spacing';
 import { ClickAwayListener } from '@material-ui/core';
+import { checkIfUserIsOrganizationAdmin } from 'helpers/user-helper';
 import PatientNote from '../PatientNote/PatientNote';
 import PatientNotesLoader from '../PatientNotesLoader/PatientNotesLoader';
 import {
@@ -42,6 +43,8 @@ const PatientNotes = () => {
   const { patientIdentifier, allNotes: notes } = patient || {};
   const [editMode, setEditMode] = useState(false);
   const [modalIsOpened, setModalIsOpened] = useState(false);
+
+  const isOrganizationAdmin = checkIfUserIsOrganizationAdmin(currentUser);
 
   const handleRemoveNote = useCallback(
     patientNoteIdentifier => {
@@ -155,7 +158,10 @@ const PatientNotes = () => {
       <PatientNote
         key={note.patientNoteIdentifier}
         note={restNotes}
-        isEditable={currentUser.userIdentifier === note.creator?.userIdentifier}
+        isEditable={
+          currentUser.userIdentifier === note.creator?.userIdentifier ||
+          isOrganizationAdmin
+        }
         onSave={handleSaveNote}
         onRemove={handleRemoveNote}
         onPinChange={handlePinChange}
