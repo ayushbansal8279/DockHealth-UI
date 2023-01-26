@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
 import { useDispatch } from 'react-redux';
 import { Popover } from '@mui/material';
-// import { makeStyles } from '@mui/styles';
 import clsx from 'clsx';
 import { showGlobalAlert } from 'alert/actions';
 import Button from 'components/common/Button/Button';
@@ -71,14 +70,11 @@ const renderUserTypesOptions = ({ userTypes, selectedRoleKey }) => {
   );
 };
 
-const usePopoverClasses = undefined;
-//  makeStyles({
-//   root: {
-//     maxHeight: ({ maxItems }) => (maxItems ? `${maxItems * 2}rem` : undefined),
-//     minHeight: '2rem',
-//     overflowY: ({ maxItems }) => (maxItems ? 'auto' : undefined),
-//   },
-// });
+const popoverClasses = ({ maxItems }) => ({
+  maxHeight: () => (maxItems ? `${maxItems * 2}rem` : undefined),
+  minHeight: '2rem',
+  overflowY: () => (maxItems ? 'auto' : undefined),
+});
 
 const InactiveRoleSelectionPopover = (props) => {
   const {
@@ -90,7 +86,6 @@ const InactiveRoleSelectionPopover = (props) => {
     displayName,
   } = props;
   const [selectedStep, setSelectedStep] = useState('first');
-  const popoverClasses = usePopoverClasses(props);
   const [selectedRole, setSelectedRole] = useState({});
   const dispatch = useDispatch();
 
@@ -173,7 +168,7 @@ const InactiveRoleSelectionPopover = (props) => {
     <Popover
       anchorEl={labelReference?.current}
       PaperProps={{
-        className: clsx(popoverClasses.root),
+        className: clsx(popoverClasses(props)),
         elevation: 0,
         square: true,
       }}

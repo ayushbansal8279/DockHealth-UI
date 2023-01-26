@@ -1,7 +1,6 @@
 import React from 'react';
 import MuiTooltip from '@mui/material/Tooltip';
 import { bool, node, oneOf, oneOfType, string } from 'prop-types';
-import { useTooltipStyles } from './styled';
 
 const Tooltip = ({
   children,
@@ -10,14 +9,12 @@ const Tooltip = ({
   arrow = true,
   hideTooltip = false,
 }) => {
-  const classes = useTooltipStyles({ hideTooltip: hideTooltip || !title });
-
   return title ? (
     <MuiTooltip
+      hideTooltip={hideTooltip || !title}
       title={title}
       placement={placement}
       arrow={arrow}
-      classes={classes}
     >
       {children}
     </MuiTooltip>

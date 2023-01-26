@@ -75,8 +75,6 @@ const sendbirdColorSet = {
 
 ReactModal.setAppElement('#app');
 
-const appId = import.meta.env.SENDBIRD_APP_ID;
-
 class App extends PureComponent {
   idleTimer = null;
 
@@ -87,6 +85,8 @@ class App extends PureComponent {
   presenceChannelName = null;
 
   logoutTimeout = null;
+
+  appId = import.meta.env.VITE_SENDBIRD_APP_ID;
 
   componentDidMount() {
     const redirectToHome = JSON.parse(sessionStorage.getItem('redirectToHome'));
@@ -236,7 +236,7 @@ class App extends PureComponent {
       userState: { userProfile },
     } = this.props;
 
-    // const systemTimeout = Number.parseInt(import.meta.env.SYSTEM_TIMEOUT, 10);
+    // const systemTimeout = Number.parseInt(import.meta.env.VITE_SYSTEM_TIMEOUT, 10);
     // const idleTimeout = systemTimeout / 2;
 
     const { children } = this.props;
@@ -263,7 +263,7 @@ class App extends PureComponent {
           <RotateScreen />
         ) : (
           <SendbirdProvider
-            appId={appId}
+            appId={this.appId}
             userId={userProfile?.identifier ?? ''}
             nickname={userProfile?.name}
             colorSet={sendbirdColorSet}

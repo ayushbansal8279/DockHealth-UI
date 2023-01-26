@@ -67,9 +67,9 @@ const UserMention = ({ mention, className, children }) => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [cardOpen, userOrGroup]);
 
-  const localTime = !isUserGroup
-    ? moment().utc().add(userOrGroup?.timezoneOffset, 'hour').format('hh:mm A')
-    : null;
+  const localTime = isUserGroup
+    ? null
+    : moment().utc().add(userOrGroup?.timezoneOffset, 'hour').format('hh:mm A');
 
   const isActive =
     isUserGroup ||
@@ -102,7 +102,11 @@ const UserMention = ({ mention, className, children }) => {
                   <>
                     {userOrGroup.profilePictureHash && (
                       <AvatarImage
-                        src={`${import.meta.env.HEYDOC_SERVICES_BASE_URL}user/profilePicture/${userOrGroup.userIdentifier}/${userOrGroup.profilePictureHash}`}
+                        src={`${
+                          import.meta.env.VITE_HEYDOC_SERVICES_BASE_URL
+                        }user/profilePicture/${userOrGroup.userIdentifier}/${
+                          userOrGroup.profilePictureHash
+                        }`}
                         alt={userOrGroup.name}
                       />
                     )}

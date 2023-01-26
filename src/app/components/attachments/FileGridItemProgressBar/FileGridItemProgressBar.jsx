@@ -1,20 +1,14 @@
-import { Box, CircularProgress } from '@mui/material';
+import { Box } from '@mui/material';
 import React from 'react';
-import { Container, ProgressText, useProgressStyles } from './styled';
+import { Container, ProgressText, CircularProgress } from './styled';
 
 const FileGridItemProgressBar = (props) => {
   const { value } = props;
 
-  const classes = useProgressStyles();
-
   return (
     <Container>
       <Box position="relative">
-        <CircularProgress
-          classes={classes}
-          variant="determinate"
-          value={value}
-        />
+        <CircularProgress variant="determinate" value={value} />
         <Box
           position="absolute"
           top={0}

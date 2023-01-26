@@ -18,7 +18,7 @@ import {
   RightSideMaxWidthContainer,
 } from './TemplateAuthBase.styled';
 
-const { INTERCOM_APP_CODE } = import.meta.env;
+const { VITE_INTERCOM_APP_CODE } = import.meta.env;
 
 const getLeftSideContent = ({ currentAuthBaseState }) => {
   switch (currentAuthBaseState) {
@@ -72,7 +72,7 @@ const TemplateAuthBase = ({ childRoutes }) => {
                 to={`${path}/forgotPassword`}
               />
             </Switch>
-            <Intercom appID={INTERCOM_APP_CODE} />
+            <Intercom appID={VITE_INTERCOM_APP_CODE} />
           </RightSideMaxWidthContainer>
         </RightSideContentContainer>
       </RightSideMainContainer>

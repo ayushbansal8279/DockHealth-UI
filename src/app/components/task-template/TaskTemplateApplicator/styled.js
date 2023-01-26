@@ -3,7 +3,7 @@ import spacing from 'styles/spacing';
 import { fontSizes, fontWeights } from 'styles/font';
 import palette from 'styles/palette';
 import ChevronRightIcon from '@mui/icons-material/ChevronRight';
-import { Skeleton } from '@mui/lab';
+import Skeleton from '@mui/material/Skeleton';
 
 export const FolderIconContainer = styled.div`
   display: flex;

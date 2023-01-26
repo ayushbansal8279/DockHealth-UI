@@ -7,7 +7,7 @@ import { log } from 'helpers/log';
 const NETWORK_ERROR = 'NETWORK_ERROR';
 
 const axiosInstance = axios.create({
-  baseURL: import.meta.env.HEYDOC_SERVICES_BASE_URL,
+  baseURL: import.meta.env.VITE_HEYDOC_SERVICES_BASE_URL,
 });
 
 axiosInstance.interceptors.request.use(

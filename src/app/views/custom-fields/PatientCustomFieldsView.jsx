@@ -4,7 +4,7 @@ import map from 'ramda/src/map';
 import pluck from 'ramda/src/pluck';
 import move from 'ramda/src/move';
 import { Box, IconButton } from '@mui/material';
-import { Skeleton } from '@mui/lab';
+import Skeleton from '@mui/material/Skeleton';
 import DeleteIcon from '@mui/icons-material/Delete';
 import EditIcon from '@mui/icons-material/Edit';
 import { showGlobalErrorAlert } from 'alert/actions';

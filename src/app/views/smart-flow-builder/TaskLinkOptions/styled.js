@@ -1,6 +1,6 @@
 import styled from 'styled-components';
-// import { makeStyles } from '@mui/styles';
 import palette from 'styles/palette';
+import { MenuList as MuiMenuList } from '@mui/material';
 
 export const MenuItemIconWrapper = styled.div`
   display: flex;
@@ -14,9 +14,10 @@ export const MenuItemIconWrapper = styled.div`
   color: ${palette.white};
 `;
 
-export const useMenuStyles = undefined;
-// makeStyles({
-//   root: {
-//     width: 200,
-//   },
-// });
+export const MenuList = styled(MuiMenuList)`
+  &&& {
+    .MuiMenuList-root {
+      width: 200px;
+    }
+  }
+`;

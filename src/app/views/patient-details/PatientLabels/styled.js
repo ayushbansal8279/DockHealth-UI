@@ -1,8 +1,8 @@
-// import { makeStyles } from '@mui/styles';
 import styled from 'styled-components';
 import { fontSizes } from 'styles/font';
 import palette from 'styles/palette';
 import spacing from 'styles/spacing';
+import CustomAutocomplete from 'components/common/Autocomplete/Autocomplete';
 
 export const PatientLabelsContainer = styled.div`
   display: flex;
@@ -90,9 +90,10 @@ export const ReadOnlyLabelContainer = styled.div`
   padding: 1px 0;
 `;
 
-export const useAutocompleteStyles = undefined;
-// makeStyles({
-//   inputRoot: {
-//     paddingTop: '0 !important',
-//   },
-// });
+export const Autocomplete = styled(CustomAutocomplete)`
+  &&& {
+    .MuiAutocomplete-inputRoot {
+      padding-top: 0 !important;
+    }
+  }
+`;

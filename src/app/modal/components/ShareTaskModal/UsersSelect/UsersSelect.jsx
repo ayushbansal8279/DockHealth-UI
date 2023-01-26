@@ -2,7 +2,6 @@
 import React, { useCallback, useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { userProfileSelector } from 'selectors/user-selectors';
-import { Autocomplete } from '@mui/lab';
 import { isUserGroup } from 'helpers/user-helper';
 import GroupAvatar from 'components/user/GroupAvatar/GroupAvatar';
 import UserAvatar from 'components/user/UserAvatar/UserAvatar';
@@ -16,7 +15,7 @@ import * as AlertActions from 'alert/actions';
 import debounce from 'lodash.debounce';
 import { getUsersByName } from 'api/user-api';
 import {
-  useAutocompleteStyles,
+  Autocomplete,
   SelectedUsersContainer,
   SelectedUserItem,
   SelectedUserText,
@@ -33,8 +32,7 @@ const UsersSelect = (props) => {
   const [options, setOptions] = useState([]);
   const [isLoadingOptions, setLoadingOptions] = useState(false);
 
-  const classes = useAutocompleteStyles();
-
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   const getUsersWithDebounce = useCallback(
     debounce((searchValue) => {
       // TODO: change endpoint for the one with external users
@@ -98,7 +96,7 @@ const UsersSelect = (props) => {
         filterOptions={filter(
           (option) =>
             option.identifier !== currentUser.identifier &&
-            !selectedUsers.find(
+            !selectedUsers.some(
               (su) =>
                 su.identifier === option.identifier ||
                 su.email === option.email,
@@ -106,7 +104,6 @@ const UsersSelect = (props) => {
         )}
         loading={isLoadingOptions}
         options={options}
-        classes={classes}
         onInputChange={handleInputChange}
         onChange={(_, selectedOption) => {
           onAdd(selectedOption);

@@ -20,7 +20,7 @@ import { userProfileSelector } from 'selectors/user-selectors';
 import { OnboardingAnchorDiv } from '../OnboardingTemplate.Components';
 import InvitationForm from './OnboardingBaaOverviewView.InvitationForm';
 
-const { HELLOSIGN_CLIENT_ID, HELLOSIGN_DOMAIN_VERIFICATION_ENABLED } =
+const { VITE_HELLOSIGN_CLIENT_ID, VITE_HELLOSIGN_DOMAIN_VERIFICATION_ENABLED } =
   import.meta.env;
 
 const helloSignClient = new HelloSign();
@@ -102,13 +102,13 @@ const OnboardingBaaSigning = ({ mainDisplayOption }) => {
   const openHelloSign = useCallback(
     (signingUrl) => {
       const skipDomainVerification =
-        HELLOSIGN_DOMAIN_VERIFICATION_ENABLED !== 'true';
+        VITE_HELLOSIGN_DOMAIN_VERIFICATION_ENABLED !== 'true';
 
       setProcessing(true);
 
       // eslint-disable-next-line no-unused-expressions
       helloSignClient.open(signingUrl, {
-        clientId: HELLOSIGN_CLIENT_ID,
+        clientId: VITE_HELLOSIGN_CLIENT_ID,
         allowCancel: true,
         skipDomainVerification,
       });

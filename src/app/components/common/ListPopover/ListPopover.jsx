@@ -5,7 +5,7 @@ import omit from 'ramda/src/omit';
 import React from 'react';
 // import palette from 'styles/palette';
 
-const usePopoverClasses = undefined;
+// const usePopoverClasses = undefined;
 // makeStyles({
 //   root: {
 //     maxHeight: ({ maxItems }) => (maxItems ? `${maxItems * 2}rem` : undefined),
@@ -14,7 +14,7 @@ const usePopoverClasses = undefined;
 //   },
 // });
 
-const useListItemClasses = undefined;
+// const useListItemClasses = undefined;
 // makeStyles({
 //   root: {
 //     color: palette.coolGrey1,
@@ -82,14 +82,15 @@ const renderItem =
 
 const ListPopover = (allProps) => {
   const { items, customRenderItem, ...props } = allProps;
-  const listItemClasses = useListItemClasses();
-  const popoverClasses = usePopoverClasses(allProps);
+  const listItemClasses = undefined;
+  // const listItemClasses = useListItemClasses();
+  // const popoverClasses = usePopoverClasses(allProps);
   const renderItemMethod = customRenderItem || renderItem;
 
   return (
     <Popover
       PaperProps={{
-        className: clsx(popoverClasses.root),
+        // className: clsx(popoverClasses.root),
         elevation: 0,
         square: true,
       }}

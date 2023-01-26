@@ -1,7 +1,6 @@
-// import { makeStyles } from '@mui/styles';
-import clsx from 'clsx';
 import prop from 'ramda/src/prop';
 import React from 'react';
+import styled, { css } from 'styled-components';
 
 const spacingMapValues = new Proxy(
   {
@@ -35,31 +34,21 @@ const spacingMapValues = new Proxy(
   },
 );
 
-const useSpacingClasses = undefined;
-// makeStyles({
-//   root: {
-//     display: 'inline-block',
-//   },
-//   horizontal: {
-//     width: ({ horizontal }) => spacingMapValues[horizontal || 1],
-//     // height: '100%',
-//   },
-//   vertical: {
-//     width: '100%',
-//     height: ({ vertical }) => spacingMapValues[vertical || 1],
-//   },
-// });
+const SpacingDiv = styled.div`
+  display: inline-block;
+
+  ${({ horizontal }) => css`
+    width: ${spacingMapValues[horizontal || 1]};
+  `}
+
+  ${({ vertical }) => css`
+    width: 100%;
+    height: ${spacingMapValues[vertical || 1]};
+  `}
+`;
 
 const Spacing = React.memo(({ horizontal, vertical }) => {
-  const spacingClasses = useSpacingClasses({ horizontal, vertical });
-
-  const className = clsx(
-    spacingClasses.root,
-    horizontal && spacingClasses.horizontal,
-    vertical && spacingClasses.vertical,
-  );
-
-  return <div className={className} />;
+  return <SpacingDiv horizontal={horizontal} vertical={vertical} />;
 });
 
 export default Spacing;

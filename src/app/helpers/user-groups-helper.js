@@ -56,9 +56,11 @@ export function getUserGroupAvatarThumbnailUrl(userGroup) {
     userGroup.identifier &&
     userGroup.profileThumbnailPictureHash
   )
-    return `${import.meta.env.HEYDOC_SERVICES_BASE_URL}user/profilePicture/${
-      userGroup.identifier
-    }/${userGroup.profileThumbnailPictureHash}`;
+    return `${
+      import.meta.env.VITE_HEYDOC_SERVICES_BASE_URL
+    }user/profilePicture/${userGroup.identifier}/${
+      userGroup.profileThumbnailPictureHash
+    }`;
 
   return null;
 }

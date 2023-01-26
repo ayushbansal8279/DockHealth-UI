@@ -1,19 +1,21 @@
 import React from 'react';
-import { Popover } from '@mui/material';
-// import { makeStyles } from '@mui/styles';
+import { Popover as MuiPopover } from '@mui/material';
 import omit from 'ramda/src/omit';
+import styled from 'styled-components';
 import { ItemsList } from './styled';
 
-const usePopoverClasses = undefined;
-//  makeStyles({
-//   paper: {
-//     maxHeight: ({ maxItems }) => (maxItems ? `${maxItems * 2}rem` : undefined),
-//     minHeight: '2rem',
-//     overflowY: ({ maxItems }) => (maxItems ? 'auto' : undefined),
-//     boxShadow:
-//       '4px 2px 2px 0px rgba(0, 0, 0, 0.1), 4px 2px 3px 4px rgba(0, 0, 0, 0.07), 4px 2px 6px 4px rgba(0, 0, 0, 0.06)',
-//   },
-// });
+const Popover = styled(MuiPopover)`
+  &&& {
+    .MuiPopover-paper {
+      max-height: ${({ maxItems }) =>
+        maxItems ? `${maxItems * 2}rem` : undefined};
+      min-height: 2rem;
+      overflow-y: ${({ maxItems }) => (maxItems ? 'auto' : undefined)};
+      box-shadow: 4px 2px 2px 0px rgba(0, 0, 0, 0.1),
+        4px 2px 3px 4px rgba(0, 0, 0, 0.07), 4px 2px 6px 4px rgba(0, 0, 0, 0.06);
+    }
+  }
+`;
 
 const SelectorPopover = (props) => {
   const {
@@ -24,12 +26,10 @@ const SelectorPopover = (props) => {
     withPadding,
     listMaxHeight,
   } = props;
-  const popoverClasses = usePopoverClasses(props);
   const renderItemMethod = renderItem;
 
   return (
     <Popover
-      classes={popoverClasses}
       PaperProps={{
         elevation: 0,
         square: true,

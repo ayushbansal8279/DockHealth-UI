@@ -18,7 +18,6 @@ import ErrorBoundary from './ErrorBoundary';
 // import flags, { FlagsProvider } from './helpers/flags';
 import Routes from './routing/routes';
 import App from './views/App';
-import 'styles/app.css';
 
 if (import.meta.env.NODE_ENV === 'development') {
   const whyDidYouRender = require('@welldone-software/why-did-you-render');
@@ -50,21 +49,21 @@ moment.updateLocale('en', {
 const store = configureStore();
 
 const {
-  GA_TRACKING_CODE,
-  GA_TRACKING_CODE_ROLLUP,
-  // SUBSCRIPTION_TOKEN_API_KEY,
+  VITE_GA_TRACKING_CODE,
+  VITE_GA_TRACKING_CODE_ROLLUP,
+  // VITE_SUBSCRIPTION_TOKEN_API_KEY,
 } = import.meta.env;
 
 ReactGA.initialize(
   [
     {
-      trackingId: GA_TRACKING_CODE,
+      trackingId: VITE_GA_TRACKING_CODE,
       gaOptions: {
         name: 'webapp',
       },
     },
     {
-      trackingId: GA_TRACKING_CODE_ROLLUP,
+      trackingId: VITE_GA_TRACKING_CODE_ROLLUP,
       gaOptions: {
         name: 'rollup',
       },
@@ -76,8 +75,8 @@ ReactGA.initialize(
   },
 );
 
-// const stripeProps = SUBSCRIPTION_TOKEN_API_KEY
-//   ? { apiKey: SUBSCRIPTION_TOKEN_API_KEY }
+// const stripeProps = VITE_SUBSCRIPTION_TOKEN_API_KEY
+//   ? { apiKey: VITE_SUBSCRIPTION_TOKEN_API_KEY }
 //   : { apiKey: 'NON_EXISTENT_API_KEY' };
 
 const Index = () => (

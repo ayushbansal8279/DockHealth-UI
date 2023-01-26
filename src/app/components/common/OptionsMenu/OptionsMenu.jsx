@@ -14,7 +14,6 @@ import {
   ClickAwayListener,
   Paper,
   Popper,
-  MenuList,
   MenuItem,
   ListItemText,
   Box,
@@ -22,7 +21,7 @@ import {
 import zIndex from 'styles/z-index';
 import Tooltip from 'components/common/Tooltip/Tooltip';
 import palette from 'styles/palette';
-import { StyledButton, useMenuStyles, OptionsMenuContainer } from './styled';
+import { StyledButton, MenuList, OptionsMenuContainer } from './styled';
 
 const OptionsMenu = ({
   isDisabled,
@@ -36,7 +35,6 @@ const OptionsMenu = ({
   const assignMemberButtonReference = useRef(null);
   const [isOpen, openPopover] = useState(false);
   const Button = CustomButtonComponent || StyledButton;
-  const menuClasses = useMenuStyles();
 
   return (
     <OptionsMenuContainer>
@@ -67,7 +65,7 @@ const OptionsMenu = ({
         {isOpen && (
           <ClickAwayListener onClickAway={() => openPopover(false)}>
             <Paper>
-              <MenuList classes={menuClasses}>
+              <MenuList>
                 {options
                   ?.filter(prop('name'))
                   ?.map(

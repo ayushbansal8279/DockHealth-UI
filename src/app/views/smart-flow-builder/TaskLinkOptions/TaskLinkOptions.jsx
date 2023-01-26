@@ -1,19 +1,11 @@
 import React from 'react';
-import {
-  MenuItem,
-  Paper,
-  MenuList,
-  Popper,
-  ClickAwayListener,
-} from '@mui/material';
+import { MenuItem, Paper, Popper, ClickAwayListener } from '@mui/material';
 import { useStoreState } from 'react-flow-renderer';
-import { MenuItemIconWrapper, useMenuStyles } from './styled';
+import { MenuItemIconWrapper, MenuList } from './styled';
 
 const TaskLinkOptions = (props) => {
   const { anchorEl, options, onClose } = props;
   const { 2: zoom } = useStoreState((store) => store.transform);
-
-  const menuClasses = useMenuStyles();
 
   return (
     <Popper anchorEl={anchorEl} placement="right" open style={{ zIndex: 10 }}>
@@ -24,7 +16,7 @@ const TaskLinkOptions = (props) => {
             transformOrigin: 'center left',
           }}
         >
-          <MenuList classes={menuClasses} onClick={onClose}>
+          <MenuList onClick={onClose}>
             {options
               .sort((a, b) => a.label.localeCompare(b.label))
               .map(({ key, label, icon, onClick }) => (

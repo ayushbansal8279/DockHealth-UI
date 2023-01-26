@@ -1,7 +1,7 @@
 import React from 'react';
 
 const ConfirmRegistrationSuccess = () => {
-  const branchAppLink = import.meta.env.BRANCH_IO_APP_LINK;
+  const branchAppLink = import.meta.env.VITE_BRANCH_IO_APP_LINK;
   return (
     <div className="columns large-12">
       <div className="row expanded text-center">

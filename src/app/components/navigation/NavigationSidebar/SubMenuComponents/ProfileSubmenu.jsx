@@ -68,7 +68,9 @@ const ProfileSubmenu = () => {
             {!embeddedMode && (
               <BlueSubMenuLink to="/auth/logout">Logout</BlueSubMenuLink>
             )}
-            <Version>App Version: {import.meta.env.VERSION || '0.0.0'}</Version>
+            <Version>
+              App Version: {import.meta.env.VITE_VERSION || '0.0.0'}
+            </Version>
           </>
         ) : null}
       </Grid>

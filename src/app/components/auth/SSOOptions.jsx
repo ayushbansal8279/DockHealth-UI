@@ -1,4 +1,4 @@
-// eslint-disable-next-line unicorn/filename-case
+/* eslint-disable unicorn/filename-case */
 import React from 'react';
 import Spacing from 'components/common/Spacing';
 import { MontserratTypography } from 'styles/theme-montserrat';
@@ -10,10 +10,10 @@ import { SSOOptionsBar, SSOButton, GoogleLogoImage } from './styled';
 const SSOOptions = () => {
   let ssoURLGoogle;
   if (
-    import.meta.env.SSO_LAUNCH_URL_GOOGLE &&
-    import.meta.env.SSO_LAUNCH_URL_GOOGLE.length > 5
+    import.meta.env.VITE_SSO_LAUNCH_URL_GOOGLE &&
+    import.meta.env.VITE_SSO_LAUNCH_URL_GOOGLE.length > 5
   ) {
-    ssoURLGoogle = import.meta.env.SSO_LAUNCH_URL_GOOGLE;
+    ssoURLGoogle = import.meta.env.VITE_SSO_LAUNCH_URL_GOOGLE;
   }
 
   return (

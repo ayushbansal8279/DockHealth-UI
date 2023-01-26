@@ -121,7 +121,7 @@ const useInitializeListDetailsViewHooks = () => {
 
   const refreshAccessToken = useCallback((user) => {
     const systemTimeout = Number.parseInt(
-      import.meta.env.HEALTHCHECK_INTERVAL,
+      import.meta.env.VITE_HEALTHCHECK_INTERVAL,
       10,
     );
 

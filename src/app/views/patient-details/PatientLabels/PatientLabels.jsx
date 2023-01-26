@@ -9,7 +9,6 @@ import React, {
 } from 'react';
 import { Chip } from '@mui/material';
 import { useDispatch, useSelector } from 'react-redux';
-import Autocomplete from 'components/common/Autocomplete/Autocomplete';
 import {
   patientLabelsSelector,
   patientSelector,
@@ -29,7 +28,7 @@ import {
   OptionButtonsInput,
   NoOptionTextLabel,
   NoOptionContainer,
-  useAutocompleteStyles,
+  Autocomplete,
 } from './styled';
 
 function makeBulkLabelToSend(value, assignedPatients) {
@@ -125,8 +124,6 @@ const PatientLabels = ({ isPatientBulk, disableFocusOnRender = false }) => {
   const dispatch = useDispatch();
 
   const [selectedLabels, setSelectedLabels] = useState([]);
-
-  const classes = useAutocompleteStyles();
 
   useEffect(() => {
     if (selectedPatients) {
@@ -265,7 +262,6 @@ const PatientLabels = ({ isPatientBulk, disableFocusOnRender = false }) => {
       getOptionSelected={(option, value) => {
         return option.labelIdentifier === value.labelIdentifier;
       }}
-      classes={classes}
       disablePortal={!isPatientBulk}
       disableCloseOnSelect={!!currentEditableOption}
       getInputReference={getInputReference}

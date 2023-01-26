@@ -30,9 +30,9 @@ Amplify.configure({
   // To get the AWS Credentials, you need to configure
   // the Auth module with your Cognito Federated Identity Pool
   Auth: {
-    region: import.meta.env.AWS_REGION,
-    userPoolId: import.meta.env.AWS_USERPOOLID,
-    userPoolWebClientId: import.meta.env.AWS_CLIENTAPP,
+    region: import.meta.env.VITE_AWS_REGION,
+    userPoolId: import.meta.env.VITE_AWS_USERPOOLID,
+    userPoolWebClientId: import.meta.env.VITE_AWS_CLIENTAPP,
     authenticationFlowType: 'USER_SRP_AUTH',
   },
 });
@@ -447,7 +447,7 @@ export function getEnterpriseAccessTokensByAuthCode(authCode, iss) {
   // eslint-disable-next-line consistent-return
   return new Promise(async (resolve, reject) => {
     try {
-      const authUrl = `${import.meta.env.HEYDOC_SERVICES_BASE_URL}oidc`;
+      const authUrl = `${import.meta.env.VITE_HEYDOC_SERVICES_BASE_URL}oidc`;
       const authData = `grant_type=authorization_code&code=${authCode}&iss=${iss}`;
 
       await axios.post(`${authUrl}/token`, authData).then((response) => {
@@ -509,7 +509,7 @@ export function getEnterpriseAccessTokensForEmbeddedSSO(
   // eslint-disable-next-line consistent-return, sonarjs/cognitive-complexity
   return new Promise(async (resolve, reject) => {
     try {
-      const authUrl = `${import.meta.env.HEYDOC_SERVICES_BASE_URL}oidc`;
+      const authUrl = `${import.meta.env.VITE_HEYDOC_SERVICES_BASE_URL}oidc`;
       const authData = `authToken=${authToken}&userIdentifier=${userIdentifier}&targetType=${targetType}&targetIdentifier=${targetIdentifier}`;
 
       await axios
@@ -593,7 +593,7 @@ export function checkSSO(email) {
   return new Promise(async (resolve) => {
     try {
       const checkSSOUrl = `${
-        import.meta.env.HEYDOC_SERVICES_BASE_URL
+        import.meta.env.VITE_HEYDOC_SERVICES_BASE_URL
       }auth/checkSSO`;
       const response = await axios.get(
         `${checkSSOUrl}?email=${encodeURIComponent(email)}`,

@@ -1,6 +1,6 @@
-// import { makeStyles } from '@mui/styles';
 import styled from 'styled-components';
 import palette from 'styles/palette';
+import { MenuItem as MuiMenuItem } from '@mui/material';
 
 export const ListWrapper = styled.div`
   position: relative;
@@ -11,13 +11,14 @@ export const ListWrapper = styled.div`
   overflow-x: hidden;
 `;
 
-export const useMenuItemStyles = undefined;
-// makeStyles({
-//   root: {
-//     position: 'relative',
-//     paddingRight: 40,
-//   },
-// });
+export const MenuItem = styled(MuiMenuItem)`
+  &&& {
+    .MuiMenuItem-root {
+      position: relative;
+      padding-right: 40px;
+    }
+  }
+`;
 
 export const IconWrapper = styled.div`
   position: absolute;

@@ -1,5 +1,5 @@
 import styled from 'styled-components';
-import { Skeleton } from '@mui/lab';
+import Skeleton from '@mui/material/Skeleton';
 import { Popover } from '@mui/material';
 import palette from 'styles/palette';
 import spacing from 'styles/spacing';

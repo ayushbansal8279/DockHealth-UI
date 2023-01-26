@@ -82,9 +82,7 @@ const onSubmit =
     locationParameters,
   }) =>
   async ({ email, password, mobilePhoneNumber, lastName, firstName }) => {
-    const referral = locationParameters.referral
-      ? locationParameters.referral
-      : '';
+    const referral = locationParameters.referral ?? '';
     try {
       await registerAction({
         username: email,
@@ -96,7 +94,7 @@ const onSubmit =
         family_name: lastName,
         given_name: firstName,
         'custom:referral': referral,
-        'custom:app_environment': import.meta.env.APP_ENV,
+        'custom:app_environment': import.meta.env.VITE_APP_ENV,
       });
       setDialogTitle(`Please confirm your email.`);
       setDialogMessage(

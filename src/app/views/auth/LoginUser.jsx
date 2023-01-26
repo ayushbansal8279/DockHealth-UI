@@ -23,12 +23,16 @@ const onSubmit = (form, history) => {
       username.includes('@chboston.org') ||
       username.includes('@cardio.chboston.org'))
   ) {
-    window.location.href = `${import.meta.env.HEYDOC_SERVICES_BASE_URL}oidc/authorize`;
+    window.location.href = `${
+      import.meta.env.VITE_HEYDOC_SERVICES_BASE_URL
+    }oidc/authorize`;
   } else {
     UserAuthApi.checkSSO(username)
       .then((issuer) => {
         if (issuer) {
-          window.location.href = `${import.meta.env.HEYDOC_SERVICES_BASE_URL}oidc/authorize?iss=${issuer}`;
+          window.location.href = `${
+            import.meta.env.VITE_HEYDOC_SERVICES_BASE_URL
+          }oidc/authorize?iss=${issuer}`;
         } else {
           history.push('loginUser');
         }

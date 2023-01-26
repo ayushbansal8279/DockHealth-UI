@@ -83,9 +83,9 @@ export const StyledTextField = styled(TextField)`
 
 const InnerAdornment = ({ position, visible = true, classes, ...props }) => {
   const className = clsx(
-    classes.root,
-    position === 'end' && classes.positionEnd,
-    visible ? classes.visible : classes.invisible,
+    classes?.root,
+    position === 'end' && classes?.positionEnd,
+    visible ? classes?.visible : classes?.invisible,
   );
 
   return (

@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 /* eslint-disable import/no-cycle */
 /* eslint-disable sonarjs/cognitive-complexity */
 import React, {
@@ -9,7 +10,6 @@ import React, {
 } from 'react';
 import { useSelector } from 'react-redux';
 // import { convertToRaw, EditorState } from 'draft-js';
-// import { makeStyles } from '@mui/styles';
 // import Editor from 'draft-js-plugins-editor';
 import debounce from 'lodash.debounce';
 import { getPatientsByCriteria } from 'api/patients-api';
@@ -40,11 +40,11 @@ import PatientsSuggestionsPopover from './PatientsSuggestionsPopover/PatientsSug
 import PatientSuggestionItem from './PatientSuggestionItem/PatientSuggestionItem';
 import UserSuggestionItem from './UserSuggestionItem/UserSuggestionItem';
 // import '@draft-js-plugins/static-toolbar/lib/plugin.css';
-import {
-  // initializeLinkifyPlugin,
-  initializeUsersMentionPlugin,
-  initializePatientMentionPlugin,
-} from './plugin-config';
+// import {
+//   // initializeLinkifyPlugin,
+//   initializeUsersMentionPlugin,
+//   initializePatientMentionPlugin,
+// } from './plugin-config';
 import {
   SUGGESTIONS_PLACEHOLDER,
   mapPatientsToSuggestions,
@@ -123,8 +123,8 @@ const TextEditor = React.forwardRef(
     // const staticToolbarPlugin = useRef(createToolbarPlugin());
     // const { Toolbar } = staticToolbarPlugin.current;
     // const linkifyPlugin = useRef(initializeLinkifyPlugin());
-    const usersMentionPlugin = useRef(initializeUsersMentionPlugin());
-    const patientMentionPlugin = useRef(initializePatientMentionPlugin());
+    // const usersMentionPlugin = useRef(initializeUsersMentionPlugin());
+    // const patientMentionPlugin = useRef(initializePatientMentionPlugin());
     const [editorState, setEditorState] = useMentionsEditorState(initialState);
     const [isFocused, setIsFocused] = useState(false);
     const [usersSuggestions, setUsersSuggestions] = useState([
@@ -255,10 +255,10 @@ const TextEditor = React.forwardRef(
       }
     };
 
-    const { MentionSuggestions: UsersMentionSuggestions } =
-      usersMentionPlugin.current;
-    const { MentionSuggestions: PatientsMentionSuggestions } =
-      patientMentionPlugin.current;
+    // const { MentionSuggestions: UsersMentionSuggestions } =
+    //   usersMentionPlugin.current;
+    // const { MentionSuggestions: PatientsMentionSuggestions } =
+    //   patientMentionPlugin.current;
 
     // const plugins = useMemo(() => {
     //   const pluginArray = [];
@@ -298,25 +298,25 @@ const TextEditor = React.forwardRef(
     // const separaterClass = separatorStyles();
 
     const initText = useMemo(() => {
-      const selection = currentState.getSelection();
-      const anchorKey = selection.getAnchorKey();
-      const currentContent = currentState.getCurrentContent();
-      const currentBlock = currentContent.getBlockForKey(anchorKey);
-      const start = selection.getStartOffset();
-      const end = selection.getEndOffset();
-      return currentBlock.getText().slice(start, end);
+      const selection = currentState?.getSelection();
+      const anchorKey = selection?.getAnchorKey();
+      const currentContent = currentState?.getCurrentContent();
+      const currentBlock = currentContent?.getBlockForKey(anchorKey);
+      const start = selection?.getStartOffset();
+      const end = selection?.getEndOffset();
+      return currentBlock?.getText()?.slice(start, end);
     }, [currentState]);
 
     const initLink = useMemo(() => {
       try {
-        const selection = currentState.getSelection();
-        const content = currentState.getCurrentContent();
-        const startKey = selection.getStartKey();
-        const startOffset = selection.getStartOffset();
-        const block = content.getBlockForKey(startKey);
-        const linkKey = block.getEntityAt(startOffset);
-        const linkInstance = currentState.getEntity(linkKey);
-        const { url } = linkInstance.getData();
+        const selection = currentState?.getSelection();
+        const content = currentState?.getCurrentContent();
+        const startKey = selection?.getStartKey();
+        const startOffset = selection?.getStartOffset();
+        const block = content?.getBlockForKey(startKey);
+        const linkKey = block?.getEntityAt(startOffset);
+        const linkInstance = currentState?.getEntity(linkKey);
+        const { url } = linkInstance?.getData();
 
         return url || '';
       } catch {
@@ -517,7 +517,7 @@ const TextEditor = React.forwardRef(
             )}
 
             <Spacing horizontal={4} />
-            {!disableMentions && taskListIdentifier && (
+            {/* {!disableMentions && taskListIdentifier && (
               <UsersMentionSuggestions
                 onSearchChange={onUsersSearchChange}
                 suggestions={usersSuggestions}
@@ -560,7 +560,7 @@ const TextEditor = React.forwardRef(
                   setPatientSearchValue(null);
                 }}
               />
-            )}
+            )} */}
           </StyledEditorContainer>
           {!!characterLimit && (getFocusFromParent ?? showCounter) && (
             <Counter alert={counter >= characterLimit}>

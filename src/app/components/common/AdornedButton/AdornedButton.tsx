@@ -1,8 +1,6 @@
-import { ButtonBase, ButtonBaseProps } from '@mui/material';
-import clsx from 'clsx';
+import { ButtonBaseProps } from '@mui/material';
 import React from 'react';
-import { MontserratTypography } from 'styles/theme-montserrat';
-import { useAdornedButtonClasses } from './styled';
+import { ButtonBase, Label, Adornment } from './styled';
 
 interface AdornedButtonProps extends ButtonBaseProps {
   adornment?: React.ReactNode;
@@ -14,23 +12,12 @@ const AdornedButton = ({
   children,
   ...otherProps
 }: AdornedButtonProps) => {
-  const adornedButtonClasses = useAdornedButtonClasses();
-
   return (
-    <ButtonBase
-      className={clsx(adornedButtonClasses.root, otherProps?.className)}
-      {...otherProps}
-    >
-      {adornment && (
-        <div className={clsx(adornedButtonClasses.adornment)}>{adornment}</div>
-      )}
-      <MontserratTypography
-        variant="h4"
-        weight="500"
-        className={clsx(adornedButtonClasses.label)}
-      >
+    <ButtonBase {...otherProps}>
+      {adornment && <Adornment>{adornment}</Adornment>}
+      <Label variant="h4" weight="500">
         {children}
-      </MontserratTypography>
+      </Label>
     </ButtonBase>
   );
 };

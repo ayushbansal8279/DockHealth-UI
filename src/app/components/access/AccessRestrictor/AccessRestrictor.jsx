@@ -5,7 +5,7 @@ const RestrictAccess = ({ children, required = [], allowedToRoles }) => {
   const { orgUserPermissions } = useSelector(userProfileSelector);
 
   if (allowedToRoles) {
-    console.warn('Using deprecated prop.', new Error().stack);
+    // console.warn('Using deprecated prop.', new Error().stack);
   }
 
   if (!orgUserPermissions) {

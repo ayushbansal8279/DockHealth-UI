@@ -2,8 +2,6 @@ import React, { useState, useCallback } from 'react';
 import { useDispatch } from 'react-redux';
 import pathEq from 'ramda/src/pathEq';
 import { Popover } from '@mui/material';
-// import { makeStyles } from '@mui/styles';
-import clsx from 'clsx';
 import Button from 'components/common/Button/Button';
 import { showGlobalAlert, showGlobalErrorAlert } from 'alert/actions';
 import { changeUserOrganizationRole } from 'actions/organization-actions';
@@ -106,7 +104,6 @@ const renderUserTypesOptions = ({
   return renderedArray;
 };
 
-const usePopoverClasses = undefined;
 // makeStyles({
 //   root: {
 //     maxHeight: ({ maxItems }) => (maxItems ? `${maxItems * 2}rem` : undefined),
@@ -128,7 +125,6 @@ const PendingApprovalSelectionPopover = (props) => {
     userStatus,
   } = props;
   const [selectedStep, setSelectedStep] = useState('first');
-  const popoverClasses = usePopoverClasses(props);
   const [selectedRole, setSelectedRole] = useState({});
   const dispatch = useDispatch();
 
@@ -257,7 +253,7 @@ const PendingApprovalSelectionPopover = (props) => {
     <Popover
       anchorEl={labelReference?.current}
       PaperProps={{
-        className: clsx(popoverClasses.root),
+        // className: clsx(popoverClasses.root),
         elevation: 0,
         square: true,
       }}

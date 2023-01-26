@@ -56,7 +56,7 @@ const ConfirmRegistration = (props) => {
           success('Registration confirmed. Please Login');
           window.sessionStorage.setItem('confirmStatus', true);
           history.push(`login?uname=${encodeURIComponent(uname)}`);
-          // window.location.href = import.meta.env.BRANCH_IO_APP_LINK;
+          // window.location.href = import.meta.env.VITE_BRANCH_IO_APP_LINK;
         })
         .catch((error) => {
           const message = error.message || 'An error occurred.';
@@ -65,7 +65,7 @@ const ConfirmRegistration = (props) => {
             'User cannot confirm because user status is not UNCONFIRMED.'
           ) {
             history.push('login');
-            // window.location.href = import.meta.env.BRANCH_IO_APP_LINK;
+            // window.location.href = import.meta.env.VITE_BRANCH_IO_APP_LINK;
             return;
           }
           setDialogTitle(`Email confirmation`);

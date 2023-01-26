@@ -1,34 +1,22 @@
 import React from 'react';
-// import { makeStyles } from '@mui/styles';
 import { ListItemText, MenuItem, Select } from '@mui/material';
 // import zIndex from 'styles/z-index';
 import { func, number, shape, string, arrayOf, oneOfType } from 'prop-types';
 import styled from 'styled-components';
 import palette from 'styles/palette';
 
-const useOutlinedSelectStyles = undefined;
-// makeStyles({
-//   root: {
-//     width: ({ width }) => width,
-//     padding: 8,
-//   },
-//   icon: {
-//     color: 'indigo',
-//   },
-// });
-
-const useMenuStyles = undefined;
-//  makeStyles({
-//   paper: {
-//     maxHeight: 400,
-//     maxWidth: ({ width }) => width + 40,
-//     zIndex: zIndex.optionsMenu,
-//   },
-// });
-
 const StyledSelect = styled(Select)`
-  && {
+  &&& {
     border-radius: 0;
+
+    .MuiSelect-root {
+      width: ${({ width }) => width};
+      padding: 8;
+    }
+
+    .MuiSelect-icon {
+      color: indigo;
+    }
 
     &.MuiOutlinedInput-root {
       & > .MuiOutlinedInput-notchedOutline {
@@ -56,14 +44,13 @@ const StyledSelect = styled(Select)`
 
 const OutlinedSelect = (props) => {
   const { name, options, width, ...restProps } = props;
-  const classes = useOutlinedSelectStyles({ width });
-  const menuClasses = useMenuStyles({ width });
+  // const menuClasses = useMenuStyles({ width });
 
   return (
     <StyledSelect
-      classes={classes}
+      width={width}
       MenuProps={{
-        classes: menuClasses,
+        // classes: menuClasses,
         anchorOrigin: {
           vertical: 'bottom',
           horizontal: 'left',

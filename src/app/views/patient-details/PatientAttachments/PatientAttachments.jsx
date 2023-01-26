@@ -23,7 +23,7 @@ import FileGridItemProgressBar from 'components/attachments/FileGridItemProgress
 import FileGridItemLoader from 'components/attachments/FileGridItemLoader/FileGridItemLoader';
 import FileListItemLoader from 'components/attachments/FileListItemLoader/FileListItemLoader';
 import * as PatientDetailsActions from 'actions/patient-details-actions';
-import GoogleDriveIcon from 'img/google-drive-icon';
+import GoogleDriveIcon from 'img/google-drive-icon.png';
 import GoogleDrivePicker from 'components/common/GoogleDrivePicker/GoogleDrivePicker';
 import { log } from 'helpers/log';
 import {
@@ -234,10 +234,10 @@ const PatientAttachments = () => {
           <AttachmentsBreadcrumbs />
         </Box>
         <Box display="flex" alignItems="center" flex="0 0 auto">
-          {import.meta.env.GOOGLE_DRIVE_API_CLIENT_ID &&
+          {import.meta.env.VITE_GOOGLE_DRIVE_API_CLIENT_ID &&
             import.meta.env.GOOGLE_DRIVE_API_KEY && (
               <GoogleDrivePicker
-                clientId={import.meta.env.GOOGLE_DRIVE_API_CLIENT_ID}
+                clientId={import.meta.env.VITE_GOOGLE_DRIVE_API_CLIENT_ID}
                 developerKey={import.meta.env.GOOGLE_DRIVE_API_KEY}
                 scope="https://www.googleapis.com/auth/drive.readonly"
                 onChange={handleGooglePickerChange}
