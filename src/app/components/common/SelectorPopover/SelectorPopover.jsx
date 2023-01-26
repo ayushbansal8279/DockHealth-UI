@@ -1,20 +1,21 @@
 import React from 'react';
-import { Popover } from '@material-ui/core';
-import { makeStyles } from '@material-ui/core/styles';
+import { Popover } from '@mui/material';
+// import { makeStyles } from '@mui/styles';
 import omit from 'ramda/src/omit';
 import { ItemsList } from './styled';
 
-const usePopoverClasses = makeStyles({
-  paper: {
-    maxHeight: ({ maxItems }) => (maxItems ? `${maxItems * 2}rem` : undefined),
-    minHeight: '2rem',
-    overflowY: ({ maxItems }) => (maxItems ? 'auto' : undefined),
-    boxShadow:
-      '4px 2px 2px 0px rgba(0, 0, 0, 0.1), 4px 2px 3px 4px rgba(0, 0, 0, 0.07), 4px 2px 6px 4px rgba(0, 0, 0, 0.06)',
-  },
-});
+const usePopoverClasses = undefined;
+//  makeStyles({
+//   paper: {
+//     maxHeight: ({ maxItems }) => (maxItems ? `${maxItems * 2}rem` : undefined),
+//     minHeight: '2rem',
+//     overflowY: ({ maxItems }) => (maxItems ? 'auto' : undefined),
+//     boxShadow:
+//       '4px 2px 2px 0px rgba(0, 0, 0, 0.1), 4px 2px 3px 4px rgba(0, 0, 0, 0.07), 4px 2px 6px 4px rgba(0, 0, 0, 0.06)',
+//   },
+// });
 
-const SelectorPopover = props => {
+const SelectorPopover = (props) => {
   const {
     items,
     renderItem,
@@ -37,7 +38,7 @@ const SelectorPopover = props => {
     >
       {renderHeader && renderHeader()}
       <ItemsList withPadding={withPadding} listMaxHeight={listMaxHeight}>
-        {items?.map(item => renderItemMethod(item))}
+        {items?.map((item) => renderItemMethod(item))}
       </ItemsList>
       {renderFooter && renderFooter()}
     </Popover>

@@ -7,7 +7,7 @@ import React, {
   useMemo,
   useContext,
 } from 'react';
-import { Chip } from '@material-ui/core';
+import { Chip } from '@mui/material';
 import { useDispatch, useSelector } from 'react-redux';
 import Autocomplete from 'components/common/Autocomplete/Autocomplete';
 import {
@@ -61,11 +61,11 @@ const renderOption = ({
     <OptionButtonsInput
       ref={registerOption}
       defaultValue={option?.labelName}
-      onBlur={event => {
+      onBlur={(event) => {
         event.stopPropagation();
         onBlur();
       }}
-      onKeyDown={event => {
+      onKeyDown={(event) => {
         if (event.key === 'Enter') {
           event?.target?.blur();
           if (
@@ -86,7 +86,7 @@ const renderOption = ({
     <OptionButtonsContainer>
       <OptionButton
         type="button"
-        onClick={event => {
+        onClick={(event) => {
           event.stopPropagation();
           event.preventDefault();
           onEdit();
@@ -96,7 +96,7 @@ const renderOption = ({
       </OptionButton>
       <OptionButton
         type="button"
-        onClick={event => {
+        onClick={(event) => {
           event.stopPropagation();
           event.preventDefault();
           onDelete();
@@ -110,12 +110,8 @@ const renderOption = ({
 
 // eslint-disable-next-line sonarjs/cognitive-complexity
 const PatientLabels = ({ isPatientBulk, disableFocusOnRender = false }) => {
-  const {
-    saveEditLabel,
-    deleteLabel,
-    refreshLabels,
-    isFetchingLabels,
-  } = initializeLabelsSectionHooks({});
+  const { saveEditLabel, deleteLabel, refreshLabels, isFetchingLabels } =
+    initializeLabelsSectionHooks({});
 
   const labels = useSelector(patientLabelsSelector) || [];
   const [inputValue, setInputValue] = useState('');
@@ -151,14 +147,14 @@ const PatientLabels = ({ isPatientBulk, disableFocusOnRender = false }) => {
     }
   }, [currentEditableOption, inputReference, disableFocusOnRender]);
 
-  const getInputReference = element => {
+  const getInputReference = (element) => {
     inputReference.current = element;
   };
   const renderOptionCallback = useCallback(
-    option =>
+    (option) =>
       renderOption({
         option,
-        registerOption: element => {
+        registerOption: (element) => {
           if (element) {
             optionReferences.current[option?.labelIdentifier] = element;
           }
@@ -169,15 +165,15 @@ const PatientLabels = ({ isPatientBulk, disableFocusOnRender = false }) => {
         onBlur: () => {
           setCurrentEditableOption(null);
         },
-        onSaveEdit: value => saveEditLabel(option?.labelIdentifier, value),
+        onSaveEdit: (value) => saveEditLabel(option?.labelIdentifier, value),
         onDelete: () => deleteLabel(option),
       }),
     [deleteLabel, saveEditLabel],
   );
 
   const removeHandler = useCallback(
-    value => {
-      const assignedPatients = selectedPatients?.map(singlePatient => {
+    (value) => {
+      const assignedPatients = selectedPatients?.map((singlePatient) => {
         return singlePatient.patientIdentifier;
       });
       if (assignedPatients) {
@@ -187,10 +183,10 @@ const PatientLabels = ({ isPatientBulk, disableFocusOnRender = false }) => {
         const labelToRemove = makeLabelToSend(value, patient.patientIdentifier);
         dispatch(patientDeleteLabel(labelToRemove));
       }
-      setSelectedLabels(previousState => {
+      setSelectedLabels((previousState) => {
         return (
           previousState.filter(
-            label => label.labelIdentifier !== value.labelIdentifier,
+            (label) => label.labelIdentifier !== value.labelIdentifier,
           ) ?? []
         );
       });
@@ -199,8 +195,8 @@ const PatientLabels = ({ isPatientBulk, disableFocusOnRender = false }) => {
   );
 
   const saveHandler = useCallback(
-    value => {
-      const assignedPatients = selectedPatients?.map(singlePatient => {
+    (value) => {
+      const assignedPatients = selectedPatients?.map((singlePatient) => {
         return singlePatient.patientIdentifier;
       });
 
@@ -217,7 +213,7 @@ const PatientLabels = ({ isPatientBulk, disableFocusOnRender = false }) => {
 
   const renderTagsCallback = useCallback(
     () =>
-      selectedLabels.map(option => (
+      selectedLabels.map((option) => (
         <Chip
           key={option.labelIdentifier}
           onDelete={() => removeHandler(option)}
@@ -230,12 +226,12 @@ const PatientLabels = ({ isPatientBulk, disableFocusOnRender = false }) => {
   const noOptionText = useMemo(
     () => (
       <div
-        onMouseDown={event => {
+        onMouseDown={(event) => {
           event.preventDefault();
         }}
       >
         <NoOptionContainer
-          onClick={event => {
+          onClick={(event) => {
             if (inputValue) {
               event.stopPropagation();
               event.preventDefault();
@@ -273,13 +269,13 @@ const PatientLabels = ({ isPatientBulk, disableFocusOnRender = false }) => {
       disablePortal={!isPatientBulk}
       disableCloseOnSelect={!!currentEditableOption}
       getInputReference={getInputReference}
-      getOptionLabel={option => option?.labelName}
+      getOptionLabel={(option) => option?.labelName}
       isDisabled={!!currentEditableOption}
       renderOption={renderOptionCallback}
       renderTags={renderTagsCallback}
       onInputChange={setInputValue}
       InputProps={{
-        onKeyDown: event => {
+        onKeyDown: (event) => {
           if (event.key === 'Enter' && event?.target.value !== '') {
             event.stopPropagation();
             event.preventDefault();
@@ -302,7 +298,7 @@ const PatientLabels = ({ isPatientBulk, disableFocusOnRender = false }) => {
         if (currentEditableOption) {
           setCurrentEditableOption(null);
         }
-        setSelectedLabels(previousProps => {
+        setSelectedLabels((previousProps) => {
           return [...previousProps, labelToAdd];
         });
       }}

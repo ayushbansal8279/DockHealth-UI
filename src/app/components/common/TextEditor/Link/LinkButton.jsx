@@ -1,10 +1,10 @@
 import React from 'react';
-import LinkIcon from '@material-ui/icons/Link';
+import LinkIcon from '@mui/icons-material/Link';
 import { LinkButtonContainer, LinkButton } from './styled';
 
 const Link = ({ buttonReference, popoverOpen, handleOpen }) => (
   <LinkButtonContainer
-    onMouseDown={event => {
+    onMouseDown={(event) => {
       event.preventDefault();
       event.stopPropagation();
     }}

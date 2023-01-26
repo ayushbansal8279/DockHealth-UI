@@ -1,5 +1,5 @@
 import React, { useCallback } from 'react';
-import { Grid } from '@material-ui/core';
+import { Grid } from '@mui/material';
 import { openDrawer } from 'actions/workflow-drawer-actions';
 import {
   getLabelsIconTooltipTitle,

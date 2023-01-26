@@ -1,36 +1,36 @@
 import React from 'react';
-import { Field, reduxForm } from 'redux-form';
+// import { Field, reduxForm } from 'redux-form';
 import { Link } from 'react-router-dom';
-import AuthField from 'components/auth/AuthField/AuthField';
+// import AuthField from 'components/auth/AuthField/AuthField';
 
-const validate = values => {
-  const errors = {};
-  if (!values.username) {
-    errors.username = 'Required';
-  } else if (!/^[\w%+-.]+@[\d-.a-z]+\.[a-z]{2,10}$/i.test(values.username)) {
-    errors.username = 'Please enter a valid email address';
-  }
+// const validate = (values) => {
+//   const errors = {};
+//   if (!values.username) {
+//     errors.username = 'Required';
+//   } else if (!/^[\w%+-.]+@[\d-.a-z]+\.[a-z]{2,10}$/i.test(values.username)) {
+//     errors.username = 'Please enter a valid email address';
+//   }
 
-  if (!values.confirmationCode) {
-    errors.confirmationCode = 'Required';
-  }
+//   if (!values.confirmationCode) {
+//     errors.confirmationCode = 'Required';
+//   }
 
-  return errors;
-};
+//   return errors;
+// };
 
-const ResendCodeForm = props => {
+const ResendCodeForm = (props) => {
   const { handleSubmit, invalid, pristine, submitting } = props;
 
   return (
     <form className="inline-label top-buffer" onSubmit={handleSubmit}>
       <div className="row expanded">
-        <Field
+        {/* <Field
           name="username"
           type="text"
           component={AuthField}
           label="Email"
           xlinkHref="#icon-email"
-        />
+        /> */}
         <div className="columns small-12 text-center top-buffer">
           <button
             className={`button secondary expand${
@@ -50,7 +50,8 @@ const ResendCodeForm = props => {
   );
 };
 
-export default reduxForm({
-  form: 'ResendCodeForm',
-  validate,
-})(ResendCodeForm);
+export default ResendCodeForm;
+// export default reduxForm({
+//   form: 'ResendCodeForm',
+//   validate,
+// })(ResendCodeForm);

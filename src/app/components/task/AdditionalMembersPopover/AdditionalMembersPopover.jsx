@@ -2,8 +2,8 @@ import React, { useState, useRef, useCallback } from 'react';
 import { func, arrayOf, string, objectOf, shape } from 'prop-types';
 import AvatarFilterMember from 'components/user/AvatarFilterMember/AvatarFilterMember';
 import Checkbox from 'components/common/Checkbox/Checkbox';
-import Spacing from 'components/common/Spacing.tsx';
-import { Box, ClickAwayListener } from '@material-ui/core';
+import Spacing from 'components/common/Spacing';
+import { Box, ClickAwayListener } from '@mui/material';
 import zIndex from 'styles/z-index';
 import PopoverCard from 'components/common/PopoverCard/PopoverCard';
 import {
@@ -74,7 +74,7 @@ const AdditionalMembersPopover = ({
                 <Arrow />
                 <ListContainer>
                   <ListContentSection>
-                    {members?.map(member => {
+                    {members?.map((member) => {
                       const isSelected = isOptionSelected(
                         FilterOptionsCategory.ASSIGNED_TO,
                         member?.identifier,

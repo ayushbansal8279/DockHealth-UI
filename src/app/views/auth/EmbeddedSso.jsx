@@ -8,7 +8,7 @@ import { MontserratTypography } from 'styles/theme-montserrat';
 import Spacing from 'components/common/Spacing';
 import Loader, { LoaderSizes } from 'components/common/Loader/Loader';
 
-const EmbeddedSso = props => {
+const EmbeddedSso = (props) => {
   const history = useHistory();
 
   // eslint-disable-next-line sonarjs/cognitive-complexity
@@ -54,9 +54,8 @@ const EmbeddedSso = props => {
           .then(() => {
             sessionStorage.setItem('EmbeddedMode', true);
             if (viewType === 'PATIENT') {
-              const patientIdentifier = sessionStorage.getItem(
-                'PatientIdentifier',
-              );
+              const patientIdentifier =
+                sessionStorage.getItem('PatientIdentifier');
               if (
                 patientIdentifier &&
                 patientIdentifier !== '' &&
@@ -65,9 +64,8 @@ const EmbeddedSso = props => {
                 window.location.href = `/#/core/patient/${patientIdentifier}`;
               }
             } else if (viewType === 'LIST') {
-              const taskListIdentifier = sessionStorage.getItem(
-                'TaskListIdentifier',
-              );
+              const taskListIdentifier =
+                sessionStorage.getItem('TaskListIdentifier');
               if (
                 taskListIdentifier &&
                 taskListIdentifier !== '' &&
@@ -89,7 +87,7 @@ const EmbeddedSso = props => {
             }
             // setShowLoginMessage(false);
           })
-          .catch(error => {
+          .catch((error) => {
             showAlert({
               status: 'error',
               title: 'Error',

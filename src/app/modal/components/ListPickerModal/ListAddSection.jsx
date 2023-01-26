@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { addTaskList } from 'api/task-list-api';
-import { Grid } from '@material-ui/core';
+import { Grid } from '@mui/material';
 import Spacing from 'components/common/Spacing';
 import Button from 'components/common/Button/Button';
 import ModalFormInput from './ModalFormInput/ModalFormInput';
@@ -17,7 +17,7 @@ const ListAddSection = ({
   const [isSavingList, setSavingList] = useState(false);
   const { register, handleSubmit, errors } = useForm();
 
-  const onSubmit = formData => {
+  const onSubmit = (formData) => {
     if (isSavingList) return;
 
     setSavingList(true);

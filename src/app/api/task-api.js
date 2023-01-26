@@ -3,6 +3,7 @@
 /* eslint-disable sonarjs/no-identical-functions */
 import moment from 'moment';
 import { noop, showAlert } from 'helpers/utility-functions';
+import { log } from 'helpers/log';
 import axios from './axios-heydoc';
 
 export function searchTasks(
@@ -541,10 +542,10 @@ export function shareTask(
   message,
 ) {
   // TODO: add sharing task endpoint
-  console.log('taskIdentifier', taskIdentifier);
-  console.log('usersIdentifier', usersIdentifier);
-  console.log('externalUsers', externalUsers);
-  console.log('message', message);
+  log('taskIdentifier', taskIdentifier);
+  log('usersIdentifier', usersIdentifier);
+  log('externalUsers', externalUsers);
+  log('message', message);
   return Promise.resolve();
 }
 

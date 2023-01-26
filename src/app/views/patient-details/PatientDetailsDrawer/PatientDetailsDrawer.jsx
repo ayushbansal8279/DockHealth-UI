@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useCallback, useMemo } from 'react';
-import { Box } from '@material-ui/core';
+import { Box } from '@mui/material';
 import { useHistory } from 'react-router-dom';
 import { useBoolean } from 'hooks/useBoolean';
 import mergeDeepRight from 'ramda/src/mergeDeepRight';
@@ -82,11 +82,11 @@ const PatientDetailsDrawer = ({ patient, isOpenedDetails, closeDetails }) => {
   };
 
   useEffect(() => {
-    if (!isOpenedDetails) {
-      unsetActive();
-    } else {
+    if (isOpenedDetails) {
       reset({ ...patientValues });
       clearErrors(Object.keys(patientValues));
+    } else {
+      unsetActive();
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isOpenedDetails]);
@@ -111,7 +111,7 @@ const PatientDetailsDrawer = ({ patient, isOpenedDetails, closeDetails }) => {
     dispatch(openModal('UnarchivePatient', modalProps));
   }, [dispatch, history, patientIdentifier]);
 
-  const handleFormSubmit = data => {
+  const handleFormSubmit = (data) => {
     unsetActive();
     const updateData = mergeDeepRight(patient, data);
     updateData.allNotes = undefined;
@@ -134,7 +134,7 @@ const PatientDetailsDrawer = ({ patient, isOpenedDetails, closeDetails }) => {
             dispatch(
               openModal('PatientPicker', {
                 patientIdentifiersToExclude: [patient.patientIdentifier],
-                onSelect: selectedPatient => {
+                onSelect: (selectedPatient) => {
                   dispatch(
                     openModal('MergePatients', {
                       toPatient: selectedPatient,

@@ -35,14 +35,14 @@ const Board = ({
 
   return (
     <>
-      <DragDropContext onDragEnd={data => handleDragEnd(data)}>
+      <DragDropContext onDragEnd={(data) => handleDragEnd(data)}>
         <Droppable
           droppableId="board"
           type="COLUMN"
           direction="horizontal"
           isCombineEnabled
         >
-          {provided => (
+          {(provided) => (
             <BoardContainer
               ref={provided.innerRef}
               {...provided.droppableProps}

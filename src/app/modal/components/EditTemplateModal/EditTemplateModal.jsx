@@ -1,7 +1,7 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import { FormProvider, useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
-import { Box, Grid } from '@material-ui/core';
+import { Box, Grid } from '@mui/material';
 import { useDispatch } from 'react-redux';
 import { showGlobalAlert, showGlobalErrorAlert } from 'alert/actions';
 import FormInput from 'components/common/Input/FormInput';
@@ -10,8 +10,8 @@ import FormSelect from 'components/common/Select/FormSelect';
 import { createTemplate, editTemplate } from 'api/template-api';
 import TextEditor from 'components/common/TextEditor/TextEditor';
 import CustomTextEditor from 'components/common/CustomTextEditor/CustomTextEditor';
-import { createMentionEntities } from 'components/common/TextEditor/create-mention-entities';
-import { EditorState } from 'draft-js';
+// import { createMentionEntities } from 'components/common/TextEditor/create-mention-entities';
+// import { EditorState } from 'draft-js';
 import AlertMessages from 'alert/AlertMessages';
 import { CloseIconButton, CloseIcon } from '../styled';
 import {
@@ -58,7 +58,7 @@ const EditTemplateModal = ({ closeModal, template, onAdded, onUpdated }) => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  const handleEditSubmit = data => {
+  const handleEditSubmit = (data) => {
     setIsSaving(true);
     const updatedField = {
       ...template,
@@ -77,10 +77,10 @@ const EditTemplateModal = ({ closeModal, template, onAdded, onUpdated }) => {
       });
   };
 
-  const handleAddSubmit = data => {
+  const handleAddSubmit = (data) => {
     setIsSaving(true);
     createTemplate(data)
-      .then(addedField => {
+      .then((addedField) => {
         dispatch(showGlobalAlert(AlertMessages.CREATED));
         if (typeof onAdded === 'function') onAdded(addedField);
         setIsSaving(false);
@@ -93,31 +93,33 @@ const EditTemplateModal = ({ closeModal, template, onAdded, onUpdated }) => {
   };
 
   const initialSubjectData = useMemo(() => {
-    if (!template?.shortMessage) return;
-    const newContent = createMentionEntities(
-      template.shortMessage,
-      template.shortMessage,
-      [],
-      false,
-    );
+    // if (!template?.shortMessage) return;
+    // const newContent = createMentionEntities(
+    //   template.shortMessage,
+    //   template.shortMessage,
+    //   [],
+    //   false,
+    // );
     // eslint-disable-next-line consistent-return
-    return EditorState.push(EditorState.createEmpty(), newContent);
+    // return EditorState.push(EditorState.createEmpty(), newContent);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [template]);
 
   const initialMessageData = useMemo(() => {
-    if (!template?.details) return;
-    const enableRichText =
-      templateTypeValue === TEMPLATE_TYPES.EMAIL ||
-      templateTypeValue === TEMPLATE_TYPES.EMR_NOTE ||
-      templateTypeValue === TEMPLATE_TYPES.FAX;
-    const newContent = createMentionEntities(
-      template.details,
-      template.details,
-      [],
-      enableRichText,
-    );
+    // if (!template?.details) return;
+    // const enableRichText =
+    //   templateTypeValue === TEMPLATE_TYPES.EMAIL ||
+    //   templateTypeValue === TEMPLATE_TYPES.EMR_NOTE ||
+    //   templateTypeValue === TEMPLATE_TYPES.FAX;
+    // const newContent = createMentionEntities(
+    //   template.details,
+    //   template.details,
+    //   [],
+    //   enableRichText,
+    // );
     // eslint-disable-next-line consistent-return
-    return EditorState.push(EditorState.createEmpty(), newContent);
+    // return EditorState.push(EditorState.createEmpty(), newContent);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [template, templateTypeValue]);
 
   return (

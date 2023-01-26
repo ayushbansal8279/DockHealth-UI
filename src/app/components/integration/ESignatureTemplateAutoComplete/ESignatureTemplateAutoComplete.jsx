@@ -1,25 +1,27 @@
 import React, { useEffect, useRef, useState } from 'react';
-import Autocomplete from '@material-ui/lab/Autocomplete';
-import CircularProgress from '@material-ui/core/CircularProgress';
-import { withStyles } from '@material-ui/core/styles';
+import Autocomplete from '@mui/lab/Autocomplete';
+import CircularProgress from '@mui/material/CircularProgress';
 import { matchSorter } from 'match-sorter';
 import { getAllESignTemplates } from 'api/integration-api';
 import Input from 'components/common/Input/Input';
+import styled from 'styled-components';
 
 const filterOptions = (options, { inputValue }) =>
   matchSorter(options, inputValue, { keys: ['label', 'value'] });
 
-const StandardAutocompleteMUI = withStyles({
-  option: {
-    padding: 0,
-  },
-  listbox: {
-    padding: 0,
-  },
-  noOptions: {
-    padding: 0,
-  },
-})(Autocomplete);
+const StandardAutocompleteMUI = styled(Autocomplete)`
+  &&& {
+    .MuiAutocomplete-option {
+      padding: 0;
+    }
+    .MuiAutocomplete-listbox {
+      padding: 0;
+    }
+    .MuiAutocomplete-noOption {
+      padding: 0;
+    }
+  }
+`;
 
 const ESignatureTemplateAutoComplete = ({
   type,
@@ -40,13 +42,13 @@ const ESignatureTemplateAutoComplete = ({
     let active = true;
 
     if (!loading) {
-      return undefined;
+      return;
     }
 
-    getAllESignTemplates().then(data => {
+    getAllESignTemplates().then((data) => {
       if (active) {
         setTemplates(
-          data.map(t => ({
+          data.map((t) => ({
             label: t.title,
             // value: t.title,
             // body: t.title,
@@ -87,12 +89,12 @@ const ESignatureTemplateAutoComplete = ({
       getOptionSelected={(option, value) =>
         option.identifier === value.identifier
       }
-      getOptionLabel={option => option.label}
+      getOptionLabel={(option) => option.label}
       options={templates}
       loading={loading}
       handleHomeEndKeys
       openOnFocus
-      renderInput={parameters => {
+      renderInput={(parameters) => {
         return (
           <Input
             {...parameters}

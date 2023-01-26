@@ -41,7 +41,7 @@ const CommentSection = () => {
         />
       )}
       <CommentsListContainer>
-        {comments?.map(comment => (
+        {comments?.map((comment) => (
           <Comment
             key={comment.commentIdentifier}
             comment={comment}

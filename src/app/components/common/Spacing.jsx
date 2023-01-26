@@ -1,4 +1,4 @@
-import { makeStyles } from '@material-ui/core/styles';
+// import { makeStyles } from '@mui/styles';
 import clsx from 'clsx';
 import prop from 'ramda/src/prop';
 import React from 'react';
@@ -20,7 +20,7 @@ const spacingMapValues = new Proxy(
         return '';
       }
 
-      const objectValue = prop<string>(path, mapValues);
+      const objectValue = prop(path, mapValues);
 
       if (!objectValue) {
         throw new Error(
@@ -35,26 +35,22 @@ const spacingMapValues = new Proxy(
   },
 );
 
-interface SpacingProps {
-  horizontal?: keyof typeof spacingMapValues;
-  vertical?: keyof typeof spacingMapValues;
-}
+const useSpacingClasses = undefined;
+// makeStyles({
+//   root: {
+//     display: 'inline-block',
+//   },
+//   horizontal: {
+//     width: ({ horizontal }) => spacingMapValues[horizontal || 1],
+//     // height: '100%',
+//   },
+//   vertical: {
+//     width: '100%',
+//     height: ({ vertical }) => spacingMapValues[vertical || 1],
+//   },
+// });
 
-const useSpacingClasses = makeStyles({
-  root: {
-    display: 'inline-block',
-  },
-  horizontal: {
-    width: ({ horizontal }: SpacingProps) => spacingMapValues[horizontal || 1],
-    // height: '100%',
-  },
-  vertical: {
-    width: '100%',
-    height: ({ vertical }: SpacingProps) => spacingMapValues[vertical || 1],
-  },
-});
-
-const Spacing = React.memo(({ horizontal, vertical }: SpacingProps) => {
+const Spacing = React.memo(({ horizontal, vertical }) => {
   const spacingClasses = useSpacingClasses({ horizontal, vertical });
 
   const className = clsx(

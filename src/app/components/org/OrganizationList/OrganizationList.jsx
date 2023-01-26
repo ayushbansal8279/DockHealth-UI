@@ -71,7 +71,7 @@ const OrganizationList = ({
             availableUserOrganizations ? availableUserOrganizations.length : 1
           }
         >
-          {availableUserOrganizations?.map(org => (
+          {availableUserOrganizations?.map((org) => (
             <OrganizationIdentifier
               tileConfig={{
                 fontSize: 'smallPlus',

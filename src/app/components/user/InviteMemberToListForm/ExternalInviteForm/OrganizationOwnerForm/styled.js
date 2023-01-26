@@ -2,7 +2,7 @@ import styled from 'styled-components';
 import spacing from 'styles/spacing';
 import { fontSizes, fontWeights } from 'styles/font';
 import palette from 'styles/palette';
-import { Grid } from '@material-ui/core';
+import { Grid } from '@mui/material';
 
 export const FormWrapper = styled.form`
   width: 100%;

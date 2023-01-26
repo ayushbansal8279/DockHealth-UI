@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
-import { Box, Collapse } from '@material-ui/core';
+import { Box, Collapse } from '@mui/material';
 import { useBoolean } from 'hooks/useBoolean';
 import usePrevious from 'hooks/use-previous';
 import { onSlimViewChanged } from 'helpers/ga-event-helper';
@@ -19,7 +19,7 @@ import {
   GroupCount,
 } from './styled';
 
-const TaskListGroupCollapse = props => {
+const TaskListGroupCollapse = (props) => {
   const { children, group, count, stickyHeader = false } = props;
   // TODO: remove or when group will be added
   const { 0: open, 3: toggleOpen } = useBoolean(true);

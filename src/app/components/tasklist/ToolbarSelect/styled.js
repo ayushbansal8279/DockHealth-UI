@@ -1,4 +1,4 @@
-import { makeStyles } from '@material-ui/core/styles';
+import { makeStyles } from '@mui/styles';
 import styled from 'styled-components';
 import palette from 'styles/palette';
 
@@ -20,8 +20,7 @@ export const useStyles = makeStyles({
       border: 'none',
     },
     '& .switchIcon > path': {
-      fill: (props) =>
-        props.iconColorActive ? props.iconColorActive : palette.dirtyBanana,
+      fill: (props) => props.iconColorActive ?? palette.dirtyBanana,
     },
   },
 });

@@ -1,12 +1,11 @@
 /* eslint-disable sonarjs/cognitive-complexity */
-/* eslint-disable @typescript-eslint/camelcase */
 /* eslint-disable sonarjs/no-identical-functions */
 import React from 'react';
 import moment from 'moment';
 import { useHistory, useLocation } from 'react-router-dom';
 import { selectCurrentOrganizationWithRedirection } from 'api/organization-api';
-import CircleCompleted from 'img/circle-completed';
-import CrossIcon from 'img/notifications/cross';
+import CircleCompleted from 'img/circle-completed.svg';
+import CrossIcon from 'img/notifications/cross.svg';
 import { useDispatch } from 'react-redux';
 import { openDrawer } from 'actions/task-drawer-actions';
 import { storeAsCurrentTask } from 'actions/task-actions';

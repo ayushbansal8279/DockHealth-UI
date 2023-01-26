@@ -3,7 +3,7 @@ import PatientCard from 'components/patients/PatientCard/PatientCard';
 import PatientDropdown from 'components/patients/PatientDropdown/PatientDropdown';
 import { getCustomerTypeLabel } from 'helpers/customer-type-helper';
 import { checkIfTemplateTask } from 'helpers/task-helpers';
-import { Box } from '@material-ui/core';
+import { Box } from '@mui/material';
 import { capitalize } from 'helpers/capitalize';
 import { Link as RouterLink, useLocation } from 'react-router-dom';
 import Highlighter from 'react-highlight-words';
@@ -55,7 +55,7 @@ const TaskItemPatient = ({
     [onTaskUpdate, task],
   );
 
-  const openPopoverWhenNotCompleted = open =>
+  const openPopoverWhenNotCompleted = (open) =>
     !isCompleted ? setPopoverOpen(open) : () => {};
 
   const patientName = patient?.middleName

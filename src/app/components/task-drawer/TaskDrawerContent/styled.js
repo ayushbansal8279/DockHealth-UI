@@ -1,6 +1,6 @@
 import styled from 'styled-components';
 import palette from 'styles/palette';
-import { Divider } from '@material-ui/core';
+import { Divider } from '@mui/material';
 import { fontSizes, fontWeights } from 'styles/font';
 
 export const TaskDrawerContainer = styled.div`

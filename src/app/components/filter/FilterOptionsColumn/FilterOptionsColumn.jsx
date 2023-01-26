@@ -1,7 +1,7 @@
 import React from 'react';
 import { Container, Label, OptionsList } from './styled';
 
-const FilterOptionsColumn = props => {
+const FilterOptionsColumn = (props) => {
   const { label, children } = props;
   return (
     <Container>

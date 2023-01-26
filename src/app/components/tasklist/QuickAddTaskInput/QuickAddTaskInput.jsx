@@ -35,10 +35,8 @@ const QuickAddTaskInput = React.forwardRef(
     reference,
     // eslint-disable-next-line sonarjs/cognitive-complexity
   ) => {
-    const [
-      newTaskDescription,
-      setNewTaskDescription,
-    ] = useMentionsEditorState();
+    const [newTaskDescription, setNewTaskDescription] =
+      useMentionsEditorState();
     const [hasInputValue, setHasInputValue] = useState(false);
     const [error, setError] = useState(null);
     const [isFocused, setIsFocused] = useState(false);
@@ -65,11 +63,8 @@ const QuickAddTaskInput = React.forwardRef(
     const handleInputEnterDown = () => {
       let validatorError = null;
 
-      const {
-        rawText,
-        tokenizedText,
-        mentions,
-      } = convertFromEditorStateToOutput(newTaskDescription, false);
+      const { rawText, tokenizedText, mentions } =
+        convertFromEditorStateToOutput(newTaskDescription, false);
 
       // look for first patient mention to assign to created task
       const { identifier: patientIdentifier } =
@@ -92,7 +87,7 @@ const QuickAddTaskInput = React.forwardRef(
       }
     };
 
-    const handleOnChange = state => {
+    const handleOnChange = (state) => {
       if (error) {
         setError(null);
       }
@@ -131,7 +126,7 @@ const QuickAddTaskInput = React.forwardRef(
               }}
               state={newTaskDescription}
               onChange={handleOnChange}
-              keyBindingFn={event => {
+              keyBindingFn={(event) => {
                 if (event.keyCode === 13) {
                   return 'enter-command';
                 }
@@ -141,7 +136,7 @@ const QuickAddTaskInput = React.forwardRef(
 
                 return undefined;
               }}
-              handleKeyCommand={command => {
+              handleKeyCommand={(command) => {
                 if (command === 'enter-command') {
                   handleInputEnterDown();
                   return 'handled';

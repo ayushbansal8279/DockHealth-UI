@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
-import { IconButton } from '@material-ui/core';
+import { IconButton } from '@mui/material';
 import { useDispatch } from 'react-redux';
-import DeleteIcon from '@material-ui/icons/Delete';
+import DeleteIcon from '@mui/icons-material/Delete';
 import {
   addTaskToTemplate,
   deleteTemporaryElement,
@@ -11,7 +11,7 @@ import TaskNodeWrapper from '../TaskNodeWrapper/TaskNodeWrapper';
 import { NewTaskInput, NewTaskWrapper } from './styled';
 import TaskNodeHandles from '../TaskNodeHandles/TaskNodeHandles';
 
-const NewTaskNode = React.memo(props => {
+const NewTaskNode = React.memo((props) => {
   const { id, type, data, selected, xPos, yPos, isConnectable } = props;
 
   const { taskTemplateIdentifier } = data;
@@ -20,7 +20,7 @@ const NewTaskNode = React.memo(props => {
 
   const clearInput = () => setInputValue('');
 
-  const addTask = description => {
+  const addTask = (description) => {
     dispatch(
       addTaskToTemplate(
         {
@@ -34,22 +34,25 @@ const NewTaskNode = React.memo(props => {
     );
   };
 
-  const handleInputChange = event => setInputValue(event.target.value);
+  const handleInputChange = (event) => setInputValue(event.target.value);
 
-  const handleKeyDown = event => {
+  const handleKeyDown = (event) => {
     const { key } = event;
 
     switch (key) {
-      case 'Enter':
+      case 'Enter': {
         if (inputValue?.length > 0) {
           addTask(inputValue);
         }
         break;
-      case 'Escape':
+      }
+      case 'Escape': {
         clearInput();
         break;
-      default:
+      }
+      default: {
         break;
+      }
     }
   };
 

@@ -17,7 +17,7 @@ const SMARTFLOW_BULK_EDIT_CONFIG = {
   [BulkEditOptionsConfig.DELETE_OPTION]: true,
 };
 
-const BulkEditContainer = props => {
+const BulkEditContainer = (props) => {
   const { selectedTasks, onClose } = props;
 
   const dispatch = useDispatch();

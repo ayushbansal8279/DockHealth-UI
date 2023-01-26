@@ -1,7 +1,7 @@
 import React, { useCallback } from 'react';
 import moment from 'moment';
 // import { useHistory } from 'react-router-dom';
-import CrossIcon from 'img/notifications/cross';
+import CrossIcon from 'img/notifications/cross.svg';
 // import * as ActionTypes from 'actions/action-types';
 import { useDispatch } from 'react-redux';
 import {
@@ -32,7 +32,7 @@ const ChatAlertItem = ({
     _sender: { nickname: senderNickname },
   } = messageAlert;
   const { members } = channel;
-  const nickNames = members.map(member => member.nickname).join(', ');
+  const nickNames = members.map((member) => member.nickname).join(', ');
 
   const onGoFunction = useCallback(() => {
     dispatch(openPopover(channel));

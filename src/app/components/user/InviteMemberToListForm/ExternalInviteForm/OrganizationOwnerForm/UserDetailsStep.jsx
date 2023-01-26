@@ -1,6 +1,6 @@
 import React from 'react';
 import { useFormContext } from 'react-hook-form';
-import { Grid } from '@material-ui/core';
+import { Grid } from '@mui/material';
 import Input from 'components/common/Input/Input';
 import Spacing from 'components/common/Spacing';
 import Button from 'components/common/Button/Button';
@@ -40,7 +40,7 @@ const UserDetailsStep = ({ closeInviteForm, disabled }) => {
               required
               error={errors?.firstName?.message}
               value={firstNameValue}
-              onChange={event => setValue('firstName', event.target.value)}
+              onChange={(event) => setValue('firstName', event.target.value)}
             />
           </Grid>
           <Grid item xs={6}>
@@ -51,7 +51,7 @@ const UserDetailsStep = ({ closeInviteForm, disabled }) => {
               required
               error={errors?.lastName?.message}
               value={lastNameInputValue}
-              onChange={event => setValue('lastName', event.target.value)}
+              onChange={(event) => setValue('lastName', event.target.value)}
             />
           </Grid>
         </Grid>
@@ -65,7 +65,7 @@ const UserDetailsStep = ({ closeInviteForm, disabled }) => {
             required
             error={errors?.email?.message}
             value={emailInputValue}
-            onChange={event => setValue('email', event.target.value)}
+            onChange={(event) => setValue('email', event.target.value)}
           />
         </Grid>
         <Grid item>

@@ -1,7 +1,7 @@
 /* eslint-disable sonarjs/cognitive-complexity */
 /* eslint-disable unicorn/no-nested-ternary */
 import React, { useState, useRef, useMemo, useCallback } from 'react';
-import Spacing from 'components/common/Spacing.tsx';
+import Spacing from 'components/common/Spacing';
 import Button from 'components/common/Button/Button';
 import OnboardingQuestionsPicker from '../OnboardingQuestionsPicker';
 import { ROLE_OPTIONS, DOMAIN_OPTIONS } from '../options';
@@ -20,7 +20,7 @@ const OnboardingQuestionsOwnerStepOne = ({
   const roleReference = useRef(null);
   const domainReference = useRef(null);
 
-  const openPicker = field => setActiveOption(field);
+  const openPicker = (field) => setActiveOption(field);
 
   const questionReference = useMemo(() => {
     switch (activeOption) {
@@ -66,13 +66,13 @@ const OnboardingQuestionsOwnerStepOne = ({
   const onSelectOption = useMemo(() => {
     switch (activeOption) {
       case 'ROLE':
-        return option =>
-          roleOptions.some(opt => opt === option)
-            ? setRoleOptions(roleOptions.filter(opt => opt !== option))
+        return (option) =>
+          roleOptions.some((opt) => opt === option)
+            ? setRoleOptions(roleOptions.filter((opt) => opt !== option))
             : setRoleOptions([...roleOptions, option]);
 
       case 'DOMAIN':
-        return option => setDomainOption([option]);
+        return (option) => setDomainOption([option]);
 
       default:
         return null;

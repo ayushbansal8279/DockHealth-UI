@@ -1,7 +1,7 @@
 /* eslint-disable sonarjs/cognitive-complexity */
 /* eslint-disable unicorn/no-nested-ternary */
 import React, { useState, useRef, useMemo, useCallback } from 'react';
-import Spacing from 'components/common/Spacing.tsx';
+import Spacing from 'components/common/Spacing';
 import Button from 'components/common/Button/Button';
 import OnboardingQuestionsPicker from '../OnboardingQuestionsPicker';
 import { HEALTH_RECORD_OPTIONS, SOFTWARE_OPTIONS } from '../options';
@@ -21,7 +21,7 @@ const OnboardingQuestionsOwnerStepTwo = ({
   const healthRecordReference = useRef(null);
   const softwareReference = useRef(null);
 
-  const openPicker = field => setActiveOption(field);
+  const openPicker = (field) => setActiveOption(field);
 
   const questionReference = useMemo(() => {
     switch (activeOption) {
@@ -67,17 +67,19 @@ const OnboardingQuestionsOwnerStepTwo = ({
   const onSelectOption = useMemo(() => {
     switch (activeOption) {
       case 'HEALTH_RECORD':
-        return option =>
-          healthRecordOptions.some(opt => opt === option)
+        return (option) =>
+          healthRecordOptions.some((opt) => opt === option)
             ? setHealthRecordOptions(
-                healthRecordOptions.filter(opt => opt !== option),
+                healthRecordOptions.filter((opt) => opt !== option),
               )
             : setHealthRecordOptions([...healthRecordOptions, option]);
 
       case 'SOFTWARE':
-        return option =>
-          softwareOptions.some(opt => opt === option)
-            ? setSoftwareOptions(softwareOptions.filter(opt => opt !== option))
+        return (option) =>
+          softwareOptions.some((opt) => opt === option)
+            ? setSoftwareOptions(
+                softwareOptions.filter((opt) => opt !== option),
+              )
             : setSoftwareOptions([...softwareOptions, option]);
 
       default:

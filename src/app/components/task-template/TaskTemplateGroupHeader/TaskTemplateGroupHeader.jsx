@@ -8,13 +8,13 @@ import React, {
   useCallback,
   useEffect,
 } from 'react';
-import { Box } from '@material-ui/core';
+import { Box } from '@mui/material';
 import { checkIfAllTasksSelected } from 'helpers/bulk-edit-helpers';
 import pluck from 'ramda/src/pluck';
 import { extractTasksAndSubtasks } from 'helpers/tasklist-helpers';
 import { useDispatch, useSelector } from 'react-redux';
-import ThreeDotsIcon from 'img/three-dots';
-import { MoreVert } from '@material-ui/icons';
+import ThreeDotsIcon from 'img/three-dots.svg';
+import { MoreVert } from '@mui/icons-material';
 import * as ModalActions from 'modal/actions';
 import * as WorkflowActions from 'actions/workflow-actions';
 import * as TaskActions from 'actions/task-actions';
@@ -95,14 +95,8 @@ const TaskTemplateGroupHeader = ({
   iconColorActive,
   // eslint-disable-next-line sonarjs/cognitive-complexity
 }) => {
-  const {
-    name,
-    tasks,
-    identifier,
-    tasksCount,
-    tasksCompletedCount,
-    selected,
-  } = templateGroup;
+  const { name, tasks, identifier, tasksCount, tasksCompletedCount, selected } =
+    templateGroup;
 
   const { dragHandleProps } = draggableProvided;
   const { bulkEditIsActive } = useContext(BulkEditContext);
@@ -118,7 +112,7 @@ const TaskTemplateGroupHeader = ({
     setNameInputValue(name);
   }, [name]);
 
-  const [workFlowData, setWorkFlowData] = useState(undefined);
+  const [workFlowData, setWorkFlowData] = useState();
   const selectedWorkflow = useSelector(workflowSelector);
 
   const [completedTasksAmount, allTasksAmount] = useMemo(
@@ -168,7 +162,7 @@ const TaskTemplateGroupHeader = ({
 
     dispatch(
       openModal('SelectDestinationGroup', {
-        confirm: group => {
+        confirm: (group) => {
           dispatch(
             moveWorkflowToGroup(
               templateGroup.identifier,
@@ -297,7 +291,7 @@ const TaskTemplateGroupHeader = ({
   ]);
 
   const handleNameInputKeyDown = useCallback(
-    event => {
+    (event) => {
       const { key } = event;
       if (key === 'Enter') {
         setIsEditing(false);
@@ -330,8 +324,8 @@ const TaskTemplateGroupHeader = ({
     () =>
       tasks.filter(
         isCompletedTab
-          ? task => showIncompleteTasks || task.status === TaskStatus.COMPLETE
-          : task => showCompletedTasks || task.status !== TaskStatus.COMPLETE,
+          ? (task) => showIncompleteTasks || task.status === TaskStatus.COMPLETE
+          : (task) => showCompletedTasks || task.status !== TaskStatus.COMPLETE,
       ),
     [showCompletedTasks, showIncompleteTasks, tasks, isCompletedTab],
   );
@@ -408,18 +402,18 @@ const TaskTemplateGroupHeader = ({
   // ]);
 
   const getColumnOrder = useCallback(
-    TaskItemColumnType =>
-      columns?.findIndex(c => c.identifier === TaskItemColumnType),
+    (TaskItemColumnType) =>
+      columns?.findIndex((c) => c.identifier === TaskItemColumnType),
     [columns],
   );
 
-  const getWorkflowData = useCallback(async id => {
+  const getWorkflowData = useCallback(async (id) => {
     setWorkFlowData(await TaskTemplateApi.getTemplateBasicDetails(id));
   }, []);
 
   useEffect(() => {
     // eslint-disable-next-line no-unused-expressions
-    !selectedWorkflow ? getWorkflowData(identifier) : setWorkFlowData(null);
+    selectedWorkflow ? setWorkFlowData(null) : getWorkflowData(identifier);
   }, [getWorkflowData, identifier, selectedWorkflow]);
 
   const restrictions =
@@ -500,46 +494,44 @@ const TaskTemplateGroupHeader = ({
   return (
     <TaskTemplateGroupHeaderContainer isSelected={isBundleSelected}>
       {randerFirstColumnCoverIfNecessary(
-        <>
-          <TaskItemCell
-            key={`task_description_${identifier}`}
-            width={
-              columns?.find(
-                ({ identifier: id }) => id === TaskItemColumn.DESCRIPTION,
-              )?.columnWidth
-            }
-            paddingLeft="smallPlus"
-            paddingRight="tiny"
-            onContextMenu={event => {
-              event.stopPropagation();
-            }}
-            order={getColumnOrder(TaskItemColumn.DESCRIPTION)}
+        <TaskItemCell
+          key={`task_description_${identifier}`}
+          width={
+            columns?.find(
+              ({ identifier: id }) => id === TaskItemColumn.DESCRIPTION,
+            )?.columnWidth
+          }
+          paddingLeft="smallPlus"
+          paddingRight="tiny"
+          onContextMenu={(event) => {
+            event.stopPropagation();
+          }}
+          order={getColumnOrder(TaskItemColumn.DESCRIPTION)}
+        >
+          <TemplateHeaderName
+            templateGroup={templateGroup}
+            isEditing={isEditing}
+            nameInputError={nameInputError}
+            setNameInputValue={setNameInputValue}
+            setNameInputError={setNameInputError}
+            setIsEditing={setIsEditing}
+            handleNameInputKeyDown={handleNameInputKeyDown}
+            nameInputValue={nameInputValue}
+          />
+          <TaskTemplateOptionsContainer
+            groupHasMultipleAssignees={groupHasMultipleAssignees}
           >
-            <TemplateHeaderName
-              templateGroup={templateGroup}
-              isEditing={isEditing}
-              nameInputError={nameInputError}
-              setNameInputValue={setNameInputValue}
-              setNameInputError={setNameInputError}
-              setIsEditing={setIsEditing}
-              handleNameInputKeyDown={handleNameInputKeyDown}
-              nameInputValue={nameInputValue}
-            />
-            <TaskTemplateOptionsContainer
-              groupHasMultipleAssignees={groupHasMultipleAssignees}
-            >
-              <TaskTemplateProgressCircle>
-                <ProgressBar
-                  width={40}
-                  progress={
-                    (completedTasksAmountFinal / allTasksAmountFinal) * 100
-                  }
-                  label={`${completedTasksAmountFinal}/${allTasksAmountFinal}`}
-                />
-              </TaskTemplateProgressCircle>
-            </TaskTemplateOptionsContainer>
-          </TaskItemCell>
-        </>,
+            <TaskTemplateProgressCircle>
+              <ProgressBar
+                width={40}
+                progress={
+                  (completedTasksAmountFinal / allTasksAmountFinal) * 100
+                }
+                label={`${completedTasksAmountFinal}/${allTasksAmountFinal}`}
+              />
+            </TaskTemplateProgressCircle>
+          </TaskTemplateOptionsContainer>
+        </TaskItemCell>,
         getColumnOrder(TaskItemColumn.DESCRIPTION),
         columns?.find(({ identifier: id }) => id === TaskItemColumn.DESCRIPTION)
           ?.columnWidth,
@@ -604,7 +596,7 @@ const TaskTemplateGroupHeader = ({
               }
               paddingLeft="smallPlus"
               paddingRight="tiny"
-              onContextMenu={event => {
+              onContextMenu={(event) => {
                 event.stopPropagation();
               }}
               order={getColumnOrder(TaskItemColumn.WORKFLOW_STATUS)}
@@ -730,7 +722,7 @@ const TaskTemplateGroupHeader = ({
               justify={groupHasMultipleAssignees ? 'center' : 'center'}
               paddingLeft="small"
               paddingRight="small"
-              onContextMenu={event => {
+              onContextMenu={(event) => {
                 event.stopPropagation();
               }}
               order={getColumnOrder(TaskItemColumn.ASSIGNED)}
@@ -922,7 +914,7 @@ const TaskTemplateGroupHeader = ({
               justify="center"
               paddingLeft="small"
               paddingRight="small"
-              onContextMenu={event => {
+              onContextMenu={(event) => {
                 event.stopPropagation();
               }}
               order={getColumnOrder(TaskItemColumn.CREATED_BY)}
@@ -956,7 +948,7 @@ const TaskTemplateGroupHeader = ({
               paddingLeft="tiny"
               paddingRight="tiny"
               justify="center"
-              onContextMenu={event => {
+              onContextMenu={(event) => {
                 event.stopPropagation();
               }}
               order={getColumnOrder(TaskItemColumn.CREATED_DATE)}
@@ -984,7 +976,7 @@ const TaskTemplateGroupHeader = ({
               paddingLeft="tiny"
               paddingRight="tiny"
               justify="center"
-              onContextMenu={event => {
+              onContextMenu={(event) => {
                 event.stopPropagation();
               }}
               order={getColumnOrder(TaskItemColumn.COMPLETED_DATE)}
@@ -1012,7 +1004,7 @@ const TaskTemplateGroupHeader = ({
               justify="center"
               paddingLeft="small"
               paddingRight="small"
-              onContextMenu={event => {
+              onContextMenu={(event) => {
                 event.stopPropagation();
               }}
               order={getColumnOrder(TaskItemColumn.COMPLETED_BY)}
@@ -1048,7 +1040,7 @@ const TaskTemplateGroupHeader = ({
               paddingLeft="tiny"
               paddingRight="tiny"
               justify="center"
-              onContextMenu={event => {
+              onContextMenu={(event) => {
                 event.stopPropagation();
               }}
               order={getColumnOrder(TaskItemColumn.ELAPSED_TIME)}
@@ -1063,19 +1055,21 @@ const TaskTemplateGroupHeader = ({
       )}
       {columns
         .filter(
-          f => f.isChecked && f._customFieldType !== CUSTOM_FIELD_TYPES.REGULAR,
+          (f) =>
+            f.isChecked && f._customFieldType !== CUSTOM_FIELD_TYPES.REGULAR,
         )
-        .map(field => {
+        .map((field) => {
           const workflowDetails =
             templateGroup.assignedToUsers || !workFlowData
               ? templateGroup
               : workFlowData;
           const taskCustomFieldValue = workflowDetails?.taskMetaData?.find(
-            f => f.customFieldIdentifier === field.identifier,
+            (f) => f.customFieldIdentifier === field.identifier,
           );
-          const patientCustomFieldValue = workflowDetails?.patient?.patientMetaData?.find(
-            f => f.customFieldIdentifier === field.identifier,
-          );
+          const patientCustomFieldValue =
+            workflowDetails?.patient?.patientMetaData?.find(
+              (f) => f.customFieldIdentifier === field.identifier,
+            );
           const customFieldValue =
             field.targetType === CUSTOM_FIELD_TYPES.PATIENT
               ? patientCustomFieldValue

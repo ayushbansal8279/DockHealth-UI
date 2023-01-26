@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react';
-import { Grid } from '@material-ui/core';
-import OfficeIcon from 'img/modals/office';
+import { Grid } from '@mui/material';
+import OfficeIcon from 'img/modals/office.svg';
 import { useDispatch } from 'react-redux';
 import { openModal } from 'modal/actions';
 import { updateOrganization } from 'actions/organization-actions';
@@ -22,35 +22,33 @@ import {
 } from './styled';
 import { CloseIconButton, CloseIcon } from '../styled';
 
-const validateOrganizationName = value => {
-  if (![...value]?.filter(char => char !== ' ').length > 0) {
+const validateOrganizationName = (value) => {
+  if (![...value]?.filter((char) => char !== ' ').length > 0) {
     return 'This field is required';
   }
 
   return true;
 };
 
-const onSubmit = ({ dispatch, onSuccess, organizationIdentifier }) => ({
-  organizationName,
-  organizationInitials,
-  organizationProfileColor,
-}) => {
-  updateOrganization({
-    organizationIdentifier,
-    organizationName,
-    organizationInitials,
-    organizationProfileColor,
-  })(dispatch).then(() => {
-    onSuccess();
-    dispatch(
-      openModal('Confirmation', {
-        description: 'Changes to your Organization have been saved.',
-        icon: OfficeIcon,
-        altIcon: 'Organization',
-      }),
-    );
-  });
-};
+const onSubmit =
+  ({ dispatch, onSuccess, organizationIdentifier }) =>
+  ({ organizationName, organizationInitials, organizationProfileColor }) => {
+    updateOrganization({
+      organizationIdentifier,
+      organizationName,
+      organizationInitials,
+      organizationProfileColor,
+    })(dispatch).then(() => {
+      onSuccess();
+      dispatch(
+        openModal('Confirmation', {
+          description: 'Changes to your Organization have been saved.',
+          icon: OfficeIcon,
+          altIcon: 'Organization',
+        }),
+      );
+    });
+  };
 
 const EditOrganizationModal = ({ closeModal, userProfile, onSuccess }) => {
   const dispatch = useDispatch();
@@ -128,7 +126,7 @@ const EditOrganizationModal = ({ closeModal, userProfile, onSuccess }) => {
           <InitialsInput
             name="organizationInitials"
             placeholder="abc"
-            onChange={v => {
+            onChange={(v) => {
               setValue('organizationInitials', v);
             }}
             value={organizationInitialsValue}
@@ -147,7 +145,7 @@ const EditOrganizationModal = ({ closeModal, userProfile, onSuccess }) => {
           <Spacing vertical={3} />
           <ColorPicker
             name="organizationProfileColor"
-            onChange={event => {
+            onChange={(event) => {
               const { name, value } = event.target;
               setValue(name, value);
             }}

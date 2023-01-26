@@ -1,5 +1,5 @@
 import React from 'react';
-import MuiTooltip from '@material-ui/core/Tooltip';
+import MuiTooltip from '@mui/material/Tooltip';
 import { bool, node, oneOf, oneOfType, string } from 'prop-types';
 import { useTooltipStyles } from './styled';
 

@@ -16,12 +16,12 @@ class TaskListActivityFeedContainer extends PureComponent {
     findActivityFeedForAllTaskListsByUserId(0);
   }
 
-  handleClick = event => {
+  handleClick = (event) => {
     event.preventDefault();
   };
 
-  renderList = auditlist =>
-    auditlist?.map(audit => {
+  renderList = (auditlist) =>
+    auditlist?.map((audit) => {
       return (
         <div
           className="task-item row expanded condense align-middle"
@@ -43,7 +43,7 @@ class TaskListActivityFeedContainer extends PureComponent {
   renderTaskListName() {
     const { activityFeedForAllUserList } = this.props;
 
-    return activityFeedForAllUserList.map(auditsandtasklist => {
+    return activityFeedForAllUserList.map((auditsandtasklist) => {
       return (
         <li
           className="slim accordion-item"

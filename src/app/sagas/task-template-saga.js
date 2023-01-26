@@ -40,6 +40,7 @@ import {
   removeLabelFromDatabase,
 } from 'api/task-label-api';
 import { getLabels } from 'actions/workflow-drawer-actions';
+import { log } from 'helpers/log';
 
 function* initializeWorkflowLibraryState({ folderIdentifier }) {
   yield all([
@@ -193,10 +194,11 @@ function* addTemplate({ template, parentIdentifier = null, history }) {
         );
       }
     } catch (error) {
+      // eslint-disable-next-line no-console
       console.error(error);
     }
   } catch (error) {
-    console.log(error);
+    log(error);
     yield put(showGlobalErrorAlert());
   }
 }
@@ -615,7 +617,7 @@ function* linkTasks({ source, target, options, outcomeName }) {
       }
     }
   } catch (error) {
-    console.log('errorrr', error);
+    log('errorrr', error);
     yield put(showGlobalErrorAlert());
   }
 }
@@ -788,6 +790,7 @@ function* removeLabel({ labelIdentifier }) {
   }
 }
 
+// eslint-disable-next-line sonarjs/cognitive-complexity
 function* bulkEditDuplicateTasksSuccess({ duplicatedTasks }) {
   try {
     const currentTaskTemplateIdentifier = yield select(

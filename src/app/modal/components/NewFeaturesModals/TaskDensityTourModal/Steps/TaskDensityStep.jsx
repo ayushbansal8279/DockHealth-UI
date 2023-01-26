@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react';
 import Spacing from 'components/common/Spacing';
-import TaskDensityImage from 'img/tour/task-density/task-density';
+import TaskDensityImage from 'img/tour/task-density/task-density.png';
 import { onTourModalStepEnter } from 'helpers/ga-event-helper';
 import { Image, Title, Description } from '../../styled';
 

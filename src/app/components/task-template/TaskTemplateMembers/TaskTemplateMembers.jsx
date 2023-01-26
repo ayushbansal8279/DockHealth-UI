@@ -22,7 +22,7 @@ const TaskTemplateMembers = ({
   } = workflow;
 
   const handleWorkflowUpdate = useCallback(
-    selectedMembers => {
+    (selectedMembers) => {
       onWorkflowUpdate(identifier, {
         assignedToUsers: selectedMembers,
         assignedToIdentifiers: pluck('userIdentifier', selectedMembers),

@@ -20,7 +20,7 @@ class ResendCode extends PureComponent {
         success('Resent verification code. Please check your email.');
         history.push('/auth/confirmRegistration');
       })
-      .catch(error_ => {
+      .catch((error_) => {
         const message = error_.message || 'An error occurred.';
         const field = false;
         if (!field) {

@@ -1,5 +1,5 @@
 import React, { useRef, useEffect } from 'react';
-import EnvelopeIcon from 'img/modals/envelope';
+import EnvelopeIcon from 'img/modals/envelope.svg';
 import { Container, Image, Description } from './styled';
 
 const OnboardingInviteConfirmationModal = ({

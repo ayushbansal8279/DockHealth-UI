@@ -5,7 +5,7 @@ import PatientsEmptyIcon from 'img/patients-empty.svg';
 import { userProfileSelector } from 'selectors/user-selectors';
 import { EmptyListContainer, EmptyListIcon } from './styled';
 
-const EmptyFilteredPatientsList = isFiltered => {
+const EmptyFilteredPatientsList = (isFiltered) => {
   const currentUser = useSelector(userProfileSelector);
   const customerTypeLabel = getCustomerTypeLabel(currentUser);
 

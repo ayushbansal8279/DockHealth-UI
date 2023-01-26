@@ -8,8 +8,8 @@ import { closeModal } from 'modal/actions';
 import { CommunicationType } from 'helpers/task-helpers';
 import ContactsAutoComplete from 'components/common/ContactsAutoComplete/ContactsAutocomplete';
 import TemplateAutoComplete from 'components/common/TemplateAutoComplete/TemplateAutoComplete';
-import { IconButton } from '@material-ui/core';
-import { Replay } from '@material-ui/icons';
+import { IconButton } from '@mui/material';
+import { Replay } from '@mui/icons-material';
 import palette from 'styles/palette';
 import TaskCheckBoxes from '../TaskCheckBoxes';
 import {
@@ -32,13 +32,12 @@ const SendSmsFromTaskModal = () => {
   const [message, setMessage] = useState('');
   const [PhoneError, setPhoneError] = useState(false);
   const [contact, setContact] = useState(null);
-  const [isTaskDescriptionIncluded, setIsTaskDescriptionIncluded] = useState(
-    false,
-  );
+  const [isTaskDescriptionIncluded, setIsTaskDescriptionIncluded] =
+    useState(false);
   const selectedTask = useSelector(selectedTaskSelector);
   const { identifier } = selectedTask;
 
-  const handlePhoneBlur = useCallback(event => {
+  const handlePhoneBlur = useCallback((event) => {
     const phoneNumber = event.target.value;
     setPhoneError(phoneNumber?.length < 7);
   }, []);
@@ -60,7 +59,7 @@ const SendSmsFromTaskModal = () => {
   }, []);
 
   const insertTextFromTask = useCallback(
-    meta => {
+    (meta) => {
       setMessage(`${message}\n ${meta.meta}`);
     },
     [message],
@@ -122,7 +121,7 @@ const SendSmsFromTaskModal = () => {
             type="text"
             label="Message"
             value={message}
-            onChange={event => {
+            onChange={(event) => {
               setPhoneError(false);
               setMessage(event.target.value);
             }}

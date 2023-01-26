@@ -6,7 +6,7 @@ import {
   MenuItem,
   FormHelperText,
   ListItemText,
-} from '@material-ui/core';
+} from '@mui/material';
 import {
   func,
   number,
@@ -39,7 +39,7 @@ const Select = React.forwardRef(
     },
     reference,
   ) => {
-    const selectedOption = options?.find(element => element.value === value);
+    const selectedOption = options?.find((element) => element.value === value);
     return readOnly ? (
       <Input
         name={name}
@@ -76,12 +76,12 @@ const Select = React.forwardRef(
           inputProps={{ name, shrink: 1, placeholder, inputRef }}
           variant={variant}
           value={value || ''}
-          renderValue={selectedValue =>
-            options.find(option => option.value === selectedValue)?.label
+          renderValue={(selectedValue) =>
+            options.find((option) => option.value === selectedValue)?.label
           }
           {...restProps}
         >
-          {options?.map(option => {
+          {options?.map((option) => {
             const { OptionIcon } = option;
             return (
               <MenuItem key={option.value} value={option.value}>

@@ -139,7 +139,7 @@ const ListDetailsTasks = ({
   }, []);
 
   const onGroupNameClick = useCallback(
-    groupName => createTaskGroupList(groupName),
+    (groupName) => createTaskGroupList(groupName),
     [createTaskGroupList],
   );
 
@@ -185,12 +185,12 @@ const ListDetailsTasks = ({
         ?.filter(
           ({ taskGroupIdentifier }) =>
             (!isSearchApplied && !areFiltersApplied) ||
-            groupedTasks?.find(g => g.groupIdentifier === taskGroupIdentifier)
+            groupedTasks?.find((g) => g.groupIdentifier === taskGroupIdentifier)
               ?.tasks?.length > 0,
         )
         .map(({ groupName, taskGroupIdentifier, metricValue }, i) => {
           const group = groupedTasks?.find(
-            g => g.groupIdentifier === taskGroupIdentifier,
+            (g) => g.groupIdentifier === taskGroupIdentifier,
           );
           const isLoadingGroup = group?.isLoadingGroup;
 
@@ -230,7 +230,7 @@ const ListDetailsTasks = ({
                   refresh: false,
                 });
               }}
-              onTaskGroupViewModeChange={viewMode => {
+              onTaskGroupViewModeChange={(viewMode) => {
                 loadTasksForTaskGroup({
                   taskGroupIdentifier,
                   startPosition: 0,
@@ -424,23 +424,25 @@ const ListDetailsTasks = ({
             onDragEnd={!isSortApplied ? onDragEnd : () => {}}
           >
             {renderTasks()}
-            {!!createTaskGroupList && !isSearchApplied && !areFiltersApplied && (
-              <StickyContainer left={24} decreaseWidth={2 * 24}>
-                <GroupNameSection
-                  onEnterClick={
-                    restrictions?.createGroup !== DISABLED
-                      ? onGroupNameClick
-                      : () => undefined
-                  }
-                  placeholder={messages.placeholder}
-                  closeOnEnter
-                >
-                  {restrictions?.createGroup !== DISABLED && (
-                    <AddGroupNameButton />
-                  )}
-                </GroupNameSection>
-              </StickyContainer>
-            )}
+            {!!createTaskGroupList &&
+              !isSearchApplied &&
+              !areFiltersApplied && (
+                <StickyContainer left={24} decreaseWidth={2 * 24}>
+                  <GroupNameSection
+                    onEnterClick={
+                      restrictions?.createGroup !== DISABLED
+                        ? onGroupNameClick
+                        : () => undefined
+                    }
+                    placeholder={messages.placeholder}
+                    closeOnEnter
+                  >
+                    {restrictions?.createGroup !== DISABLED && (
+                      <AddGroupNameButton />
+                    )}
+                  </GroupNameSection>
+                </StickyContainer>
+              )}
           </DragDropContext>
         </>
       )}

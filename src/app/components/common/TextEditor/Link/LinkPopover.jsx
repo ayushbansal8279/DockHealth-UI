@@ -37,7 +37,7 @@ const LinkPopover = ({
         text: initText,
         link: initLink,
       });
-      setFormState(state => ({ ...state, text: initText }));
+      setFormState((state) => ({ ...state, text: initText }));
     }
   }, [initLink, initText, isPopoverOpen]);
 
@@ -63,12 +63,12 @@ const LinkPopover = ({
       <PopoverContainer>
         <TextContainer>Create a link</TextContainer>
         <Input
-          onClick={event => {
+          onClick={(event) => {
             event.stopPropagation();
             textInputReference.current.focus();
           }}
           inputRef={textInputReference}
-          onChange={event =>
+          onChange={(event) =>
             setFormState({ ...formState, text: event.target.value })
           }
           label="Text"
@@ -77,18 +77,18 @@ const LinkPopover = ({
         />
         <Spacing vertical={3} />
         <Input
-          onClick={event => {
+          onClick={(event) => {
             event.stopPropagation();
             linkInputReference.current.focus();
           }}
           inputRef={linkInputReference}
-          onChange={event =>
+          onChange={(event) =>
             setFormState({ ...formState, link: event.target.value })
           }
           label="Link"
           name="link"
           value={formState.link}
-          onKeyDown={event => {
+          onKeyDown={(event) => {
             if (event.key === 'Enter') {
               event.stopPropagation();
               event.preventDefault();

@@ -1,9 +1,9 @@
 import React from 'react';
-import { Grid } from '@material-ui/core';
+import { Grid } from '@mui/material';
 import Spacing from 'components/common/Spacing';
 import { MontserratTypography } from 'styles/theme-montserrat';
 import { RobotoTypography } from 'styles/theme';
-import DailyHubImage from 'img/auth-daily-hub-content-new';
+import DailyHubImage from 'img/auth-daily-hub-content-new.svg';
 
 const hubStyles = {
   display: 'block',

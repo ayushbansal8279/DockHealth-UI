@@ -1,13 +1,13 @@
-import { Grid } from '@material-ui/core';
+import { Grid } from '@mui/material';
 import React, { useEffect, useState } from 'react';
 import { FormProvider, useForm } from 'react-hook-form';
 import { useSelector } from 'react-redux';
-import {
-  CardCVCElement,
-  CardExpiryElement,
-  CardNumberElement,
-  injectStripe,
-} from 'react-stripe-elements';
+// import {
+//   CardCVCElement,
+//   CardExpiryElement,
+//   CardNumberElement,
+//   injectStripe,
+// } from 'react-stripe-elements';
 import { useEffectOnce, useToggle } from 'react-use';
 import { object, string } from 'yup';
 import { yupResolver } from '@hookform/resolvers/yup';
@@ -31,29 +31,29 @@ import {
 } from './styled';
 import { StyledCollapse, H3, Anchor } from '../styled';
 
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 const CardNumberInput = ({ inputRef, onChange, ...restProps }) => {
-  const [isEmpty, setIsEmpty] = useState(true);
-
-  return (
-    <CardNumberElement
-      ref={inputRef}
-      showIcon={!isEmpty}
-      onChange={event => {
-        // eslint-disable-next-line no-unused-expressions
-        onChange?.(event);
-        if (isEmpty !== event.empty) setIsEmpty(event.empty);
-      }}
-      {...restProps}
-    />
-  );
+  // const [isEmpty, setIsEmpty] = useState(true);
+  // <CardNumberElement
+  //   ref={inputRef}
+  //   showIcon={!isEmpty}
+  //   onChange={(event) => {
+  //     // eslint-disable-next-line no-unused-expressions
+  //     onChange?.(event);
+  //     if (isEmpty !== event.empty) setIsEmpty(event.empty);
+  //   }}
+  //   {...restProps}
+  // />
 };
 
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 const CardExpiryInput = ({ inputRef, ...restProps }) => {
-  return <CardExpiryElement ref={inputRef} {...restProps} />;
+  // return <CardExpiryElement ref={inputRef} {...restProps} />;
 };
 
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 const CardCvcInput = ({ inputRef, ...restProps }) => {
-  return <CardCVCElement ref={inputRef} {...restProps} />;
+  // return <CardCVCElement ref={inputRef} {...restProps} />;
 };
 
 const REQUIRED_MESSAGE = 'This field is required.';
@@ -62,9 +62,7 @@ const formFields = [
   {
     key: 'nameOnCard',
     defaultValue: '',
-    validation: string()
-      .required(REQUIRED_MESSAGE)
-      .typeError(REQUIRED_MESSAGE),
+    validation: string().required(REQUIRED_MESSAGE).typeError(REQUIRED_MESSAGE),
   },
   {
     key: 'cardExpiration',
@@ -81,30 +79,22 @@ const formFields = [
   {
     key: 'city',
     defaultValue: '',
-    validation: string()
-      .required(REQUIRED_MESSAGE)
-      .typeError(REQUIRED_MESSAGE),
+    validation: string().required(REQUIRED_MESSAGE).typeError(REQUIRED_MESSAGE),
   },
   {
     key: 'address',
     defaultValue: '',
-    validation: string()
-      .required(REQUIRED_MESSAGE)
-      .typeError(REQUIRED_MESSAGE),
+    validation: string().required(REQUIRED_MESSAGE).typeError(REQUIRED_MESSAGE),
   },
   {
     key: 'zip',
     defaultValue: '',
-    validation: string()
-      .required(REQUIRED_MESSAGE)
-      .typeError(REQUIRED_MESSAGE),
+    validation: string().required(REQUIRED_MESSAGE).typeError(REQUIRED_MESSAGE),
   },
   {
     key: 'state',
     defaultValue: '',
-    validation: string()
-      .required(REQUIRED_MESSAGE)
-      .typeError(REQUIRED_MESSAGE),
+    validation: string().required(REQUIRED_MESSAGE).typeError(REQUIRED_MESSAGE),
   },
 ];
 
@@ -355,23 +345,18 @@ const BillingData = ({
     reValidateMode: 'onSubmit',
   });
 
-  const {
-    handleSubmit,
-    register,
-    setValue,
-    unregister,
-    clearErrors,
-  } = formMethods;
+  const { handleSubmit, register, setValue, unregister, clearErrors } =
+    formMethods;
 
   useEffectOnce(() => {
-    formFields.forEach(({ key }) => {
+    for (const { key } of formFields) {
       register(key);
-    });
+    }
 
     return () => {
-      formFields.forEach(({ key }) => {
+      for (const { key } of formFields) {
         unregister(key);
-      });
+      }
     };
   });
 
@@ -391,8 +376,9 @@ const BillingData = ({
     setValue('cardExpiration', cardExpiration ?? '**/**');
     setValue(
       'cardNumber',
-      `${'*'.repeat(4)} ${'*'.repeat(4)} ${'*'.repeat(4)} ${cardLastFour ??
-        '*'.repeat(4)}`,
+      `${'*'.repeat(4)} ${'*'.repeat(4)} ${'*'.repeat(4)} ${
+        cardLastFour ?? '*'.repeat(4)
+      }`,
     );
     setValue('cardCvc', '***');
     setValue('city', billingAddressCity);
@@ -405,11 +391,8 @@ const BillingData = ({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [billingDetails, isUpdatingBilling]);
 
-  const [
-    processingUpdate,
-    setProcessingUpdate,
-    unsetProcessingUpdate,
-  ] = useBoolean(false);
+  const [processingUpdate, setProcessingUpdate, unsetProcessingUpdate] =
+    useBoolean(false);
 
   return (
     <form
@@ -444,4 +427,5 @@ const BillingData = ({
   );
 };
 
-export default injectStripe(BillingData);
+// export default injectStripe(BillingData);
+export default BillingData;

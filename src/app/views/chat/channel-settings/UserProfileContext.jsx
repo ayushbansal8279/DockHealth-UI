@@ -10,7 +10,7 @@ const UserProfileContext = React.createContext({
   renderUserProfile: null,
 });
 
-const UserProfileProvider = props => {
+const UserProfileProvider = (props) => {
   const { children } = props;
   return (
     <UserProfileContext.Provider value={props}>

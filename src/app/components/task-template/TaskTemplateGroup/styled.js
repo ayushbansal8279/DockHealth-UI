@@ -1,5 +1,5 @@
 import styled from 'styled-components';
-import { Collapse } from '@material-ui/core';
+import { Collapse } from '@mui/material';
 import spacing from 'styles/spacing';
 
 export const TaskTemplateGroupContainer = styled.div`

@@ -1,6 +1,6 @@
 /* eslint-disable react/no-array-index-key */
-import { Box } from '@material-ui/core';
-import { Skeleton } from '@material-ui/lab';
+import { Box } from '@mui/material';
+import { Skeleton } from '@mui/lab';
 import React from 'react';
 
 const SingleTaskSkeleton = ({ numberOfRows = 12 }) => (

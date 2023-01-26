@@ -7,7 +7,7 @@ import {
 } from 'selectors/person-details-selectors';
 import { TaskListTabName } from 'helpers/tasklist-helpers';
 import TaskStatusToolbarSelect from 'components/tasklist/TaskStatusToolbarSelect/TaskStatusToolbarSelect';
-import { Box } from '@material-ui/core';
+import { Box } from '@mui/material';
 import CustomizeToolbarButton from 'components/tasklist/CustomizeToolbarButton/CustomizeToolbarButton';
 import { userProfileSelector } from 'selectors/user-selectors';
 import { currentTaskListSelector } from 'selectors/task-list-selectors';
@@ -27,7 +27,7 @@ const UserTasksToolbar = () => {
     taskList?.creator?.identifier === currentUser.identifier;
 
   const handleSelectTab = useCallback(
-    tab => {
+    (tab) => {
       history.push(
         `/core/assignedToPerson/${userIdentifier}${
           tab === TaskListTabName.OPEN ? '' : `/${TaskListTabName.COMPLETE}`
@@ -47,7 +47,7 @@ const UserTasksToolbar = () => {
         <Box mx={0.5} />
         <TaskStatusToolbarSelect
           value={tasksStatus}
-          onChange={event => handleSelectTab(event.target.value)}
+          onChange={(event) => handleSelectTab(event.target.value)}
         />
         <Box mx={0.5} />
         <TaskCustomFieldsModal

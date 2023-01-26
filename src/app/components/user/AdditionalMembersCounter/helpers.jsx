@@ -6,7 +6,7 @@ export const getHiddenMembersTooltipContent = (
   hiddenMembers,
   activeUsersList,
 ) =>
-  hiddenMembers?.map(hiddenMember => {
+  hiddenMembers?.map((hiddenMember) => {
     const onlineActiveUser =
       activeUsersList?.find(({ identifier }) => {
         return identifier === hiddenMember?.identifier;

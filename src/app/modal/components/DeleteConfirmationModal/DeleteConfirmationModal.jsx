@@ -1,9 +1,9 @@
 import React from 'react';
-import { Typography } from '@material-ui/core';
+import { Typography } from '@mui/material';
 import Button from 'components/common/Button/Button';
-import { MuiThemeProvider } from '@material-ui/core/styles';
+import { ThemeProvider as MuiThemeProvider } from '@mui/material/styles';
 import Spacing from 'components/common/Spacing';
-import TrashCan from 'img/modals/trash-can';
+import TrashCan from 'img/modals/trash-can.svg';
 import { redTheme } from '../../themes/red-theme';
 import {
   ModalWrapper,

@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import StickyContainer from 'components/common/HorizontalScroll/StickyContainer';
-import { Collapse } from '@material-ui/core';
+import { Collapse } from '@mui/material';
 import {
   ShowMoreButton,
   CommentStylingLink,

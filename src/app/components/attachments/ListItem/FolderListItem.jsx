@@ -1,12 +1,12 @@
 import React from 'react';
 import moment from 'moment';
-import { Box, IconButton } from '@material-ui/core';
+import { Box, IconButton } from '@mui/material';
 import OptionsMenu from 'components/common/OptionsMenu/OptionsMenu';
-import FolderOpenIcon from '@material-ui/icons/FolderOpen';
-import MoreVertIcon from '@material-ui/icons/MoreVert';
+import FolderOpenIcon from '@mui/icons-material/FolderOpen';
+import MoreVertIcon from '@mui/icons-material/MoreVert';
 import { Cell, Row } from './styled';
 
-const FolderListItem = props => {
+const FolderListItem = (props) => {
   const {
     folder,
     options,
@@ -36,8 +36,8 @@ const FolderListItem = props => {
       </Cell>
       <Cell>{creator?.name || ''}</Cell>
       <Cell>{moment(dateCreated).fromNow()}</Cell>
-      <Cell onClick={event => event.stopPropagation()}>
-        <div onClick={event => event.stopPropagation()}>
+      <Cell onClick={(event) => event.stopPropagation()}>
+        <div onClick={(event) => event.stopPropagation()}>
           <OptionsMenu customButtonComponent={IconButton} options={options}>
             <MoreVertIcon />
           </OptionsMenu>

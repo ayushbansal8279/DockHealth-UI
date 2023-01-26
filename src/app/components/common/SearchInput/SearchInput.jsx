@@ -1,5 +1,5 @@
 import React, { useRef } from 'react';
-import SearchHeadsupIcon from 'img/search-headsup';
+import SearchHeadsupIcon from 'img/search-headsup.svg';
 import {
   StyledInput,
   SearchInputWrapper,
@@ -23,7 +23,7 @@ const SearchInput = React.forwardRef(
       inputReference.current?.focus();
     };
 
-    const onInputChange = event => {
+    const onInputChange = (event) => {
       const inputValue = event?.target?.value;
       onValueChange(inputValue);
     };

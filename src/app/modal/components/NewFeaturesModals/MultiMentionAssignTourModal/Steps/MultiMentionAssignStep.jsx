@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react';
 import Spacing from 'components/common/Spacing';
-import MultiMentionAssignImage from 'img/tour/multi-mention-assign/multi-mention-assign';
+import MultiMentionAssignImage from 'img/tour/multi-mention-assign/multi-mention-assign.svg';
 import { onTourModalStepEnter } from 'helpers/ga-event-helper';
 import { Image, Title, Description } from '../../styled';
 

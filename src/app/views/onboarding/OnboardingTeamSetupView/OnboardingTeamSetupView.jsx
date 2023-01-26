@@ -9,7 +9,7 @@ import OnboardingIndicator from 'components/common/OnboardingIndicator/Onboardin
 import { FormProvider, useForm, useFieldArray } from 'react-hook-form';
 import { object, string, array } from 'yup';
 import { yupResolver } from '@hookform/resolvers/yup';
-import { Grid } from '@material-ui/core';
+import { Grid } from '@mui/material';
 import { checkBAASignedStatus } from 'actions/organization-actions';
 import { openModal } from 'modal/actions';
 import { invitePersonToOrganization } from 'api/organization-api';
@@ -26,7 +26,7 @@ import {
   FieldStatusLabel,
 } from './styled';
 
-const renderSingleInviteLabel = isSuccess =>
+const renderSingleInviteLabel = (isSuccess) =>
   isSuccess ? (
     <FieldStatusLabel>Invite sent</FieldStatusLabel>
   ) : (
@@ -62,74 +62,77 @@ const fieldsSchema = object().shape({
   ),
 });
 
-const onSubmit = ({
-  setError,
-  setIsSaving,
-  fieldsState,
-  setFieldStateAtIndex,
-  dispatch,
-  history,
-}) => ({ organizationMembers }) => {
-  const filledFields = organizationMembers.filter(
-    ({ firstName, lastName, email }) => firstName && lastName && email,
-  );
+const onSubmit =
+  ({
+    setError,
+    setIsSaving,
+    fieldsState,
+    setFieldStateAtIndex,
+    dispatch,
+    history,
+  }) =>
+  ({ organizationMembers }) => {
+    const filledFields = organizationMembers.filter(
+      ({ firstName, lastName, email }) => firstName && lastName && email,
+    );
 
-  if (filledFields.length === 0) {
-    setError('organizationMembers', {
-      type: 'custom',
-      message: 'You have to invite at least one person',
-    });
-    return;
-  }
-
-  setIsSaving(true);
-  const invitationPromises = [];
-  filledFields.forEach(person => {
-    if (fieldsState[person.index]?.success) {
+    if (filledFields.length === 0) {
+      setError('organizationMembers', {
+        type: 'custom',
+        message: 'You have to invite at least one person',
+      });
       return;
     }
 
-    setFieldStateAtIndex(person.index, { loading: true });
-    invitationPromises.push(
-      invitePersonToOrganization(person)
-        .then(response => {
-          setFieldStateAtIndex(person.index, {
-            loading: false,
-            disabled: true,
-            success: true,
-          });
-          return response;
-        })
-        .catch(error => {
-          setFieldStateAtIndex(person.index, {
-            loading: false,
-            disabled: false,
-            success: false,
-          });
-          setError(`organizationMembers[${person.index}].email`, {
-            type: 'custom',
-            message:
-              error?.message || 'Something went wrong. Please try again later.',
-          });
-          throw new Error(error.message);
-        }),
-    );
-  });
+    setIsSaving(true);
+    const invitationPromises = [];
+    for (const person of filledFields) {
+      if (fieldsState[person.index]?.success) {
+        continue;
+      }
 
-  Promise.all(invitationPromises)
-    .then(() => {
-      setIsSaving(false);
-      history.push('/core/home/my-tasks');
-      dispatch(
-        openModal('OnboardingInviteConfirmation', {
-          moreThanOneInvite: filledFields.length > 1,
-        }),
+      setFieldStateAtIndex(person.index, { loading: true });
+      invitationPromises.push(
+        invitePersonToOrganization(person)
+          .then((response) => {
+            setFieldStateAtIndex(person.index, {
+              loading: false,
+              disabled: true,
+              success: true,
+            });
+            return response;
+          })
+          .catch((error) => {
+            setFieldStateAtIndex(person.index, {
+              loading: false,
+              disabled: false,
+              success: false,
+            });
+            setError(`organizationMembers[${person.index}].email`, {
+              type: 'custom',
+              message:
+                error?.message ||
+                'Something went wrong. Please try again later.',
+            });
+            throw new Error(error.message);
+          }),
       );
-    })
-    .catch(() => {
-      setIsSaving(false);
-    });
-};
+    }
+
+    Promise.all(invitationPromises)
+      .then(() => {
+        setIsSaving(false);
+        history.push('/core/home/my-tasks');
+        dispatch(
+          openModal('OnboardingInviteConfirmation', {
+            moreThanOneInvite: filledFields.length > 1,
+          }),
+        );
+      })
+      .catch(() => {
+        setIsSaving(false);
+      });
+  };
 
 const OnboardingTeamSetupView = () => {
   const dispatch = useDispatch();
@@ -139,10 +142,8 @@ const OnboardingTeamSetupView = () => {
 
   const [isSaving, setIsSaving] = useState(false);
   const [fieldsState, setFiledsState] = useState([]);
-  const [
-    lastFirstNameFieldReference,
-    setLastFirstNameFieldReference,
-  ] = useState(null);
+  const [lastFirstNameFieldReference, setLastFirstNameFieldReference] =
+    useState(null);
   const firstFirstNameFieldReference = useRef(null);
 
   useEffect(() => {
@@ -187,7 +188,7 @@ const OnboardingTeamSetupView = () => {
   });
 
   const setFieldStateAtIndex = useCallback((index, stateAtIndex) => {
-    setFiledsState(state => {
+    setFiledsState((state) => {
       const stateToReturn = [...state];
       stateToReturn[index] = stateAtIndex;
       return stateToReturn;
@@ -244,7 +245,7 @@ const OnboardingTeamSetupView = () => {
                 >
                   <Grid item xs={3}>
                     <Input
-                      inputRef={element => {
+                      inputRef={(element) => {
                         if (!firstFirstNameFieldReference.current) {
                           firstFirstNameFieldReference.current = element;
                         }

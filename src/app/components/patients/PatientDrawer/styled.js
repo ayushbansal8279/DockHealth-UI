@@ -3,7 +3,7 @@ import styled from 'styled-components';
 import { fontWeights, fontSizes } from 'styles/font';
 import palette from 'styles/palette';
 import spacing from 'styles/spacing';
-import Drawer from '@material-ui/core/Drawer';
+import Drawer from '@mui/material/Drawer';
 
 export const MoreActinsWrapper = styled.div`
   display: flex;

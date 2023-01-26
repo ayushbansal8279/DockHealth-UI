@@ -2,7 +2,7 @@ import styled from 'styled-components';
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import React from 'react';
 import palette from 'styles/palette';
-import { InputLabel } from '@material-ui/core';
+import { InputLabel } from '@mui/material';
 import { fontSizes, fontWeights } from 'styles/font';
 import spacing from 'styles/spacing';
 

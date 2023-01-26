@@ -2,8 +2,7 @@ import styled from 'styled-components';
 import { fontSizes, fontWeights } from 'styles/font';
 import palette from 'styles/palette';
 import spacing from 'styles/spacing';
-import { Skeleton } from '@material-ui/lab';
-import { withStyles } from '@material-ui/core/styles';
+import { Skeleton } from '@mui/lab';
 
 // export const WorkflowIndicator = styled.span`
 //   font-size: 0.65rem;
@@ -130,10 +129,12 @@ export const LoaderRow = styled.div`
   align-items: center;
 `;
 
-export const BoardTaskLoader = withStyles({
-  root: {
-    height: 140,
-    marginTop: 20,
-    width: '100%',
-  },
-})(Skeleton);
+export const BoardTaskLoader = styled(Skeleton)`
+  &&& {
+    .MuiSkeleton-root {
+      height: 140;
+      margin-top: 20;
+      width: '100%';
+    }
+  }
+`;

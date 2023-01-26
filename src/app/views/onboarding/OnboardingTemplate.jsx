@@ -51,7 +51,7 @@ const OnboardingTemplate = ({ childRoutes, setRedirection }) => {
           <OnboardingMainContainer isSmallScreen={isSmallScreen}>
             <Switch>
               {isLoaded &&
-                childRoutes?.map(route => (
+                childRoutes?.map((route) => (
                   <RouteWrapper
                     permissions={route.permissions}
                     allowedToRoles={route.allowedToRoles}

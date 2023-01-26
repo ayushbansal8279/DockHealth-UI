@@ -84,14 +84,18 @@ export function getUserActivityStatus(user, activeUsers) {
 
 export function getUserAvatarUrl(user) {
   if (user && user.userIdentifier)
-    return `${process.env.HEYDOC_SERVICES_BASE_URL}user/profilePicture/${user.userIdentifier}?UserPictureType=PROFILE`;
+    return `${import.meta.env.HEYDOC_SERVICES_BASE_URL}user/profilePicture/${
+      user.userIdentifier
+    }?UserPictureType=PROFILE`;
 
   return null;
 }
 
 export function getUserAvatarThumbnailUrl(user) {
   if (user && user.userIdentifier && user.profileThumbnailPictureHash)
-    return `${process.env.HEYDOC_SERVICES_BASE_URL}user/profilePicture/${user.userIdentifier}/${user.profileThumbnailPictureHash}`;
+    return `${import.meta.env.HEYDOC_SERVICES_BASE_URL}user/profilePicture/${
+      user.userIdentifier
+    }/${user.profileThumbnailPictureHash}`;
 
   return null;
 }

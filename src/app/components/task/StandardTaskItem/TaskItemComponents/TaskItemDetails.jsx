@@ -1,6 +1,6 @@
 import React, { useCallback, useEffect, useRef } from 'react';
-import { Box } from '@material-ui/core';
-import { EditorState } from 'draft-js';
+import { Box } from '@mui/material';
+// import { EditorState } from 'draft-js';
 import { useBoolean } from 'hooks/useBoolean';
 import { useDispatch } from 'react-redux';
 import { partialUpdateTask, storeAsCurrentTask } from 'actions/task-actions';
@@ -11,7 +11,7 @@ import TaskItemPopover from 'components/task/TaskItemPopover/TaskItemPopover';
 import CustomTextEditor from 'components/common/CustomTextEditor/CustomTextEditor';
 import TextEditor from 'components/common/TextEditor/TextEditor';
 import { TaskItemType } from 'helpers/task-helpers';
-import { createMentionEntities } from 'components/common/TextEditor/create-mention-entities';
+// import { createMentionEntities } from 'components/common/TextEditor/create-mention-entities';
 import { useMentionsEditorState } from 'components/common/TextEditor/use-mentions-editor-state';
 import { openDrawer } from 'actions/workflow-drawer-actions';
 import {
@@ -51,7 +51,7 @@ const TaskItemDetails = ({ task, onClick, readOnly }) => {
   }, [dispatch, task]);
 
   const handleChange = useCallback(
-    tokenizedDetails => {
+    (tokenizedDetails) => {
       if (isWorkflow) {
         dispatch(
           updatePartialWorkflow(identifier, {
@@ -71,8 +71,8 @@ const TaskItemDetails = ({ task, onClick, readOnly }) => {
       true,
     );
     if (details !== tokenizedText) {
-      const newContent = createMentionEntities(details, details, [], true);
-      setDetailsState(EditorState.push(detailsState, newContent));
+      // const newContent = createMentionEntities(details, details, [], true);
+      // setDetailsState(EditorState.push(detailsState, newContent));
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [details]);
@@ -87,7 +87,7 @@ const TaskItemDetails = ({ task, onClick, readOnly }) => {
   const previousIsFocused = usePrevious(isFocused);
 
   const updateDetails = useCallback(
-    state => {
+    (state) => {
       const { tokenizedText } = convertFromEditorStateToOutput(state, true);
       handleChange(tokenizedText);
     },
@@ -102,7 +102,7 @@ const TaskItemDetails = ({ task, onClick, readOnly }) => {
   }, [isFocused]);
 
   const onChangeDetailsEditor = useCallback(
-    state => {
+    (state) => {
       setDetailsState(state);
     },
     [setDetailsState],
@@ -112,6 +112,7 @@ const TaskItemDetails = ({ task, onClick, readOnly }) => {
     <Box width="100%" height="100%" display="flex" alignItems="center">
       <TaskItemPopover
         fullWidth
+        // eslint-disable-next-line react/no-unstable-nested-components
         content={({ closePopover }) => (
           <Box
             width="450px"

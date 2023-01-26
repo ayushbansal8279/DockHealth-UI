@@ -1,7 +1,7 @@
 import React from 'react';
-import MoreVertIcon from '@material-ui/icons/MoreVert';
+import MoreVertIcon from '@mui/icons-material/MoreVert';
 import OptionsMenu from 'components/common/OptionsMenu/OptionsMenu';
-import { Button, IconButton } from '@material-ui/core';
+import { Button, IconButton } from '@mui/material';
 import {
   BoardColumnHeaderContainer,
   ColumnName,

@@ -56,7 +56,7 @@ const LoginFormPassword = ({
     ? 'Your email is confirmed'
     : 'Welcome back!';
 
-  const handleUsernameChange = event => {
+  const handleUsernameChange = (event) => {
     setValue('username', event.target?.value?.trim() || '');
     onChange(event);
   };

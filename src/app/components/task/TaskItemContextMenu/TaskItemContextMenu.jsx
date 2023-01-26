@@ -42,7 +42,7 @@ const TaskItemContextMenu = ({
 
   const shareTaskAvailable = useSelector(userHasShareTaskFeatureSelector);
 
-  const handleKeyDown = useCallback(event => {
+  const handleKeyDown = useCallback((event) => {
     function handleBackward() {
       event.preventDefault();
       let elements = menuReference.current.querySelectorAll(
@@ -239,7 +239,7 @@ const TaskItemContextMenu = ({
 
     dispatch(
       openModal('SelectDestinationGroup', {
-        confirm: group => {
+        confirm: (group) => {
           dispatch(
             moveTask(
               task,
@@ -278,7 +278,7 @@ const TaskItemContextMenu = ({
     <Backdrop
       open
       onClick={onClose}
-      onContextMenu={event => {
+      onContextMenu={(event) => {
         event.preventDefault();
         onClose();
       }}
@@ -288,20 +288,28 @@ const TaskItemContextMenu = ({
         positionTop={position.y}
         positionLeft={position.x}
       >
-        {restrictions?.move !== DISABLED && !isTemplateTask && !isBundleTask && (
-          <li>
-            <MenuItemButton tabIndex="0" type="button" onClick={handleMoveTask}>
-              Move to list
-            </MenuItemButton>
-          </li>
-        )}
-        {restrictions?.move !== DISABLED && !isTemplateTask && !isBundleTask && (
-          <li>
-            <MenuItemButton type="button" onClick={handleMoveGroupTask}>
-              Move to group
-            </MenuItemButton>
-          </li>
-        )}
+        {restrictions?.move !== DISABLED &&
+          !isTemplateTask &&
+          !isBundleTask && (
+            <li>
+              <MenuItemButton
+                tabIndex="0"
+                type="button"
+                onClick={handleMoveTask}
+              >
+                Move to list
+              </MenuItemButton>
+            </li>
+          )}
+        {restrictions?.move !== DISABLED &&
+          !isTemplateTask &&
+          !isBundleTask && (
+            <li>
+              <MenuItemButton type="button" onClick={handleMoveGroupTask}>
+                Move to group
+              </MenuItemButton>
+            </li>
+          )}
         {!task.read && !isTemplateTask && (
           <li>
             <MenuItemButton

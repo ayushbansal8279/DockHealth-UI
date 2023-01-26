@@ -59,7 +59,7 @@ const Task = React.memo(
     const dispatch = useDispatch();
 
     const handleSetSubtasksOpen = useCallback(
-      areOpen => {
+      (areOpen) => {
         if (
           subTasksCount > 0 &&
           isEmpty(renderedSubtasks) &&

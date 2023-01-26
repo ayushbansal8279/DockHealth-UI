@@ -55,7 +55,7 @@ const TemplateCore = ({ childRoutes, onEnter, onLeave, setRedirection }) => {
         <NavigationTemplate locationPathname={history?.location?.pathname}>
           <Switch>
             {isLoaded &&
-              childRoutes?.map(route => (
+              childRoutes?.map((route) => (
                 <RouteWrapper
                   permissions={route.permissions}
                   allowedToRoles={route.allowedToRoles}

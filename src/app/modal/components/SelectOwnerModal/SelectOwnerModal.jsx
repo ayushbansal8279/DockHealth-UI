@@ -1,13 +1,13 @@
 import React, { useState } from 'react';
 import isEmpty from 'ramda/src/isEmpty';
 import { useHistory } from 'react-router-dom';
-import { Typography } from '@material-ui/core';
+import { Typography } from '@mui/material';
 import Button from 'components/common/Button/Button';
-import { MuiThemeProvider } from '@material-ui/core/styles';
+import { ThemeProvider as MuiThemeProvider } from '@mui/material/styles';
 import Spacing from 'components/common/Spacing';
 import UserAvatar from 'components/user/UserAvatar/UserAvatar';
 import SearchIcon from 'img/black-search-icon.svg';
-import folderUser from 'img/modals/user-folder';
+import folderUser from 'img/modals/user-folder.png';
 import { changeUserToOwner } from 'api/organization-api';
 import { redTheme } from '../../themes/red-theme';
 import {
@@ -38,7 +38,7 @@ const SelectOwnerModal = ({
   const history = useHistory();
 
   const currentActiveUsersWithMemberRole = currentActiveUsers?.filter(
-    user =>
+    (user) =>
       user?.orgUserRole === 'MEMBER' &&
       user?.userStatus === 'ACTIVE' &&
       user?.eulaAcknowledged === true,
@@ -69,7 +69,7 @@ const SelectOwnerModal = ({
         <UsersContainer>
           <SearchUserInputContainer>
             <SearchUserInput
-              onChange={event => setSearchQuery(event.target.value)}
+              onChange={(event) => setSearchQuery(event.target.value)}
             />
             <img src={SearchIcon} alt="Search icon" />
           </SearchUserInputContainer>
@@ -77,7 +77,7 @@ const SelectOwnerModal = ({
             {searchedUsers?.length === 0 && (
               <UserNotFound>No user found</UserNotFound>
             )}
-            {searchedUsers?.map(user => (
+            {searchedUsers?.map((user) => (
               <UserItem
                 onClick={() =>
                   selectedUser?.userIdentifier === user?.userIdentifier

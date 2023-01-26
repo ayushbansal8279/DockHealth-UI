@@ -1,7 +1,7 @@
 /* eslint-disable sonarjs/cognitive-complexity */
 import React, { useCallback, useRef, useEffect } from 'react';
 import moment from 'moment';
-import Spacing from 'components/common/Spacing.tsx';
+import Spacing from 'components/common/Spacing';
 import UserAvatar from 'components/user/UserAvatar/UserAvatar';
 import { RobotoTypography } from 'styles/theme';
 // eslint-disable-next-line import/no-named-as-default
@@ -110,16 +110,15 @@ const Comment = ({
               withEditedLabel={dateCreated !== dateUpdated}
               state={commentState}
               onChange={setCommentState}
-              keyBindingFn={event => {
+              keyBindingFn={(event) => {
                 if (event.keyCode === 13 && event.shiftKey) {
-                  return undefined;
+                  return;
                 }
                 if (event.keyCode === 13) {
                   return 'enter-command';
                 }
-                return undefined;
               }}
-              handleKeyCommand={command => {
+              handleKeyCommand={(command) => {
                 if (command === 'enter-command') {
                   onCommentEdited();
                   return 'handled';
@@ -138,7 +137,7 @@ const Comment = ({
               <EditCommentButton>
                 <RobotoTypography condensed variant="h5" color="inherit">
                   <CommentActionLabel
-                    onClick={event => {
+                    onClick={(event) => {
                       event.preventDefault();
                       event.stopPropagation();
                       onCommentEdited();
@@ -152,7 +151,7 @@ const Comment = ({
               <EditCommentButton>
                 <RobotoTypography condensed variant="h5" color="inherit">
                   <CommentActionLabel
-                    onClick={event => {
+                    onClick={(event) => {
                       event.preventDefault();
                       event.stopPropagation();
                       unsetEditing();
@@ -179,7 +178,7 @@ const Comment = ({
                   <EditCommentButton>
                     <RobotoTypography condensed variant="h5" color="inherit">
                       <CommentActionLabel
-                        onClick={event => {
+                        onClick={(event) => {
                           event.preventDefault();
                           event.stopPropagation();
                           setEditing();
@@ -196,7 +195,7 @@ const Comment = ({
                   <Spacing horizontal={3} />
                   <RobotoTypography condensed variant="h5" color="inherit">
                     <CommentActionLabel
-                      onClick={event => {
+                      onClick={(event) => {
                         event.preventDefault();
                         event.stopPropagation();
                         onDelete(comment);

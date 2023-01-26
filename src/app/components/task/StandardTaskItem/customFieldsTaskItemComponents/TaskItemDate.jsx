@@ -1,5 +1,5 @@
 import React, { useCallback } from 'react';
-import { Box } from '@material-ui/core';
+import { Box } from '@mui/material';
 import DatePicker from 'components/task/DatePicker/DatePicker';
 import TaskItemPopover from 'components/task/TaskItemPopover/TaskItemPopover';
 import TaskIcon from 'components/task/TaskIcon/TaskIcon';
@@ -8,7 +8,7 @@ import DateLabel from 'components/common/DateLabel/DateLabel';
 
 const TaskItemDate = ({ value, onChange, readOnly = false }) => {
   const handleDateChange = useCallback(
-    newDate => {
+    (newDate) => {
       onChange(newDate ? newDate.format('MM/DD/YYYY') : null);
     },
     [onChange],

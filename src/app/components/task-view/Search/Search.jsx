@@ -21,7 +21,7 @@ const Search = ({
   const searchReference = useRef(null);
 
   const onClearClick = useCallback(
-    event => {
+    (event) => {
       event.preventDefault();
       event.stopPropagation();
       onChange({ target: { value: '' } });

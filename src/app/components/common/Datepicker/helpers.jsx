@@ -38,7 +38,7 @@ const checkIfDayIsInSelectedRange = (
   return false;
 };
 
-export const renderDayOfWeekHeaderLabel = dayOfWeek => (
+export const renderDayOfWeekHeaderLabel = (dayOfWeek) => (
   <MontserratTypography
     key={dayOfWeek}
     variant="h4"
@@ -70,7 +70,7 @@ export const renderDayLabels = ({
     currentMonthEndPoint.diff(currentMonthStartPoint, 'day') || 0;
 
   // 1 is added in here because of ramda's range being one-sidedly exclusive
-  return range(0, displayedMonthDays + 1).map(index => {
+  return range(0, displayedMonthDays + 1).map((index) => {
     const dayMoment = moment(currentMonthStartPoint)
       .add(index, 'day')
       .startOf('day');
@@ -136,4 +136,4 @@ export const renderDayLabels = ({
   });
 };
 
-export const getCalendarFormattedMonth = date => date?.format('MMMM, YYYY');
+export const getCalendarFormattedMonth = (date) => date?.format('MMMM, YYYY');

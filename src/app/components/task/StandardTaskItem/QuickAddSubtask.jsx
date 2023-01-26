@@ -1,7 +1,7 @@
 /* eslint-disable import/extensions */
 import React, { useEffect, useRef, useState } from 'react';
 import { useDispatch } from 'react-redux';
-import Circle from 'img/circle';
+import Circle from 'img/circle.svg';
 import { validateNewSubtask } from 'helpers/validation-helper';
 import { onSubtaskAdded } from 'helpers/ga-event-helper';
 import { convertFromEditorStateToOutput } from 'components/common/TextEditor/helpers';
@@ -67,7 +67,7 @@ const QuickAddSubatask = ({
     }
   };
 
-  const handleOnChange = state => {
+  const handleOnChange = (state) => {
     if (error) {
       setError(null);
     }
@@ -80,17 +80,16 @@ const QuickAddSubatask = ({
   };
 
   // eslint-disable-next-line unicorn/consistent-function-scoping
-  const keyBindingMentionsEditor = event => {
+  const keyBindingMentionsEditor = (event) => {
     if (event.key === 'Enter') {
       return 'enter-command';
     }
     if (event.key === 'Escape') {
       return 'escape-command';
     }
-    return undefined;
   };
 
-  const handleKeyMentionsEditor = command => {
+  const handleKeyMentionsEditor = (command) => {
     if (command === 'enter-command') {
       handleInputEnterDown();
       return 'handled';

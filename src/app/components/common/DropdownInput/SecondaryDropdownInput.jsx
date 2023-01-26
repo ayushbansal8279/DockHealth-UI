@@ -1,5 +1,5 @@
 import React from 'react';
-import ArrowIcon from 'img/arrow';
+import ArrowIcon from 'img/arrow.svg';
 import DropdownInput from './DropdownInput';
 import {
   SelectArrowImg,

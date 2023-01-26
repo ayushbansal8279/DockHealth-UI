@@ -102,7 +102,7 @@ const GlobalSearchList = ({
         isGroupSelected={false}
       />
       <Tasks timeout={150} in={isOpen}>
-        {tasks?.map(task => (
+        {tasks?.map((task) => (
           <>
             {task?.itemType === TaskItemType.TASK ? (
               <StandardTaskItem

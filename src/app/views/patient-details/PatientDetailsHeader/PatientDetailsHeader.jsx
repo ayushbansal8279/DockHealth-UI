@@ -7,7 +7,7 @@ import EmailIcon from 'img/email-icon.svg';
 import PhoneIcon from 'img/phone-icon.svg';
 import MobileIcon from 'img/mobile-icon.svg';
 import ArrowLeftIcon from 'img/arrow-left.svg';
-import { Box, Chip, Grid, Typography } from '@material-ui/core';
+import { Box, Chip, Grid, Typography } from '@mui/material';
 import { getCustomerUniqueIDShortLabel } from 'helpers/customer-type-helper';
 import Tooltip from 'components/common/Tooltip/Tooltip';
 import {
@@ -93,7 +93,11 @@ const PatientDetailsHeader = () => {
 
   return (
     <PatientDetailsContainer>
-      {!isLoadingDetails ? (
+      {isLoadingDetails ? (
+        <Box pl="30px">
+          <PatientDetailsLoader />
+        </Box>
+      ) : (
         <>
           <Box display="flex" alignItems="center">
             <Box flex="1 0 0" display="flex" alignItems="center">
@@ -212,7 +216,7 @@ const PatientDetailsHeader = () => {
               )}
               {patient?.patientMetaData
                 ?.filter(
-                  meta =>
+                  (meta) =>
                     meta.displayOptions?.includes('PATIENT_HEADER') &&
                     (meta.value || meta.displayNames),
                 )
@@ -279,10 +283,6 @@ const PatientDetailsHeader = () => {
             closeDetails={unsetIsDrawerOpen}
           />
         </>
-      ) : (
-        <Box pl="30px">
-          <PatientDetailsLoader />
-        </Box>
       )}
     </PatientDetailsContainer>
   );

@@ -4,7 +4,7 @@ import Modal from '@sendbird/uikit-react/ui/Modal';
 import Input from '@sendbird/uikit-react/ui/Input';
 import Avatar from '@sendbird/uikit-react/ui/Avatar';
 import Label from '@sendbird/uikit-react/ui/Label';
-import { InputLabel } from '@material-ui/core';
+import { InputLabel } from '@mui/material';
 import TextButton from '@sendbird/uikit-react/ui/TextButton';
 import ChannelAvatar from '@sendbird/uikit-react/ui/ChannelAvatar';
 import sendBirdSelectors from '@sendbird/uikit-react/sendBirdSelectors';
@@ -13,7 +13,7 @@ import { LocalizationContext } from '../channel/ChannelLocalizationContext';
 import { Colors, Typography } from './LabelTypography';
 import { Type } from './ButtonType';
 
-const EditDetails = props => {
+const EditDetails = (props) => {
   const { onSubmit, onCancel } = props;
 
   const { channel, onBeforeUpdateChannel } = useContext(ChannelSettingsContext);
@@ -64,7 +64,7 @@ const EditDetails = props => {
       channel
         .updateChannel(parameters)
 
-        .then(groupChannel => {
+        .then((groupChannel) => {
           logger.info(
             'ChannelSettings: Channel information updated',
             groupChannel,
@@ -94,7 +94,7 @@ const EditDetails = props => {
       <form
         className="channel-profile-form"
         ref={formReference}
-        onSubmit={event => {
+        onSubmit={(event) => {
           event.preventDefault();
         }}
       >
@@ -120,7 +120,7 @@ const EditDetails = props => {
             type="file"
             accept="image/gif, image/jpeg, image/png"
             style={{ display: 'none' }}
-            onChange={event => {
+            onChange={(event) => {
               setCurrentImg(URL.createObjectURL(event.target.files[0]));
               setNewFile(event.target.files[0]);
               hiddenInputReference.current.value = '';

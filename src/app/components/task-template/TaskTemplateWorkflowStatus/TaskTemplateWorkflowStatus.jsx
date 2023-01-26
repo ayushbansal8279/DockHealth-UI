@@ -22,7 +22,7 @@ const TaskTemplateWorkflowStatus = ({
       statusNameReference.current.scrollWidth;
 
   const handleWorkflowUpdate = useCallback(
-    status => {
+    (status) => {
       const clearStatus = true;
       const donotClearStatus = false;
       onWorkflowUpdate(identifier, {

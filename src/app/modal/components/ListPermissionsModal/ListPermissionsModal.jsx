@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react';
-import { Grid } from '@material-ui/core';
+import { Grid } from '@mui/material';
 import GrantMemberPermissionsListForm from 'components/user/GrantMemberPermissionsListForm/GrantMemberPermissionsListForm';
 import { InviteToListModalWrapper, Header, Title, Description } from './styled';
 import { CloseIconButton, CloseIcon } from '../styled';

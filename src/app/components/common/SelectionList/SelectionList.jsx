@@ -1,5 +1,5 @@
-import { MenuItem } from '@material-ui/core';
-import ArrowForwardIcon from '@material-ui/icons/ArrowForwardIos';
+import { MenuItem } from '@mui/material';
+import ArrowForwardIcon from '@mui/icons-material/ArrowForwardIos';
 import { arrayOf, bool, func, shape, string } from 'prop-types';
 import React from 'react';
 import {
@@ -9,7 +9,7 @@ import {
   EmptyListText,
 } from './styled';
 
-const SelectionList = props => {
+const SelectionList = (props) => {
   const { isLoading, list, onParentChange } = props;
 
   const menuItemClasses = useMenuItemStyles();

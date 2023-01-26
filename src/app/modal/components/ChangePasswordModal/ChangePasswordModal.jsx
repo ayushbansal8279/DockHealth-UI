@@ -3,8 +3,8 @@ import { useForm, FormProvider } from 'react-hook-form';
 import { useDispatch } from 'react-redux';
 import { object, string, ref } from 'yup';
 import { yupResolver } from '@hookform/resolvers/yup';
-import { Grid } from '@material-ui/core';
-import LockIcon from 'img/modals/lock';
+import { Grid } from '@mui/material';
+import LockIcon from 'img/modals/lock.svg';
 import * as UserAuthApi from 'api/user-auth-api';
 import { openModal } from 'modal/actions';
 import Spacing from 'components/common/Spacing';
@@ -23,43 +23,40 @@ const REQUIRED_MESSAGE = 'This field is required';
 
 const validationSchema = object({
   currentPassword: string().required(REQUIRED_MESSAGE),
-  newPassword: string()
-    .required(REQUIRED_MESSAGE)
-    .concat(validPasswordSchema),
+  newPassword: string().required(REQUIRED_MESSAGE).concat(validPasswordSchema),
   confirmPassword: string().oneOf(
     [ref('newPassword'), null],
     'Passwords must match',
   ),
 });
 
-const onSubmit = ({ setError, dispatch }) => ({
-  currentPassword,
-  newPassword,
-}) => {
-  UserAuthApi.changePassword(currentPassword, newPassword)
-    .then(() => {
-      dispatch(
-        openModal('Confirmation', {
-          description: 'Your password has been updated.',
-          icon: LockIcon,
-          iconAlt: 'Password',
-        }),
-      );
-    })
-    .catch(error => {
-      if (error.code === 'NotAuthorizedException') {
-        setError('currentPassword', {
-          type: 'custom',
-          message: 'Incorrect password',
-        });
-      } else {
-        setError('regicurrentPasswordsterInput', {
-          type: 'custom',
-          message: error.message,
-        });
-      }
-    });
-};
+const onSubmit =
+  ({ setError, dispatch }) =>
+  ({ currentPassword, newPassword }) => {
+    UserAuthApi.changePassword(currentPassword, newPassword)
+      .then(() => {
+        dispatch(
+          openModal('Confirmation', {
+            description: 'Your password has been updated.',
+            icon: LockIcon,
+            iconAlt: 'Password',
+          }),
+        );
+      })
+      .catch((error) => {
+        if (error.code === 'NotAuthorizedException') {
+          setError('currentPassword', {
+            type: 'custom',
+            message: 'Incorrect password',
+          });
+        } else {
+          setError('regicurrentPasswordsterInput', {
+            type: 'custom',
+            message: error.message,
+          });
+        }
+      });
+  };
 
 const ChangePasswordModal = ({ closeModal }) => {
   const dispatch = useDispatch();

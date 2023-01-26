@@ -25,9 +25,6 @@ export function generateTimeOptions() {
     .reduce((accumulator, currentValue, index) => {
       accumulator.push(
         moment(currentHour).add({ hours: index }).format(TIME_12H_FORMAT),
-      );
-
-      accumulator.push(
         moment(currentHour)
           .add({ hours: index, minutes: 30 })
           .format(TIME_12H_FORMAT),

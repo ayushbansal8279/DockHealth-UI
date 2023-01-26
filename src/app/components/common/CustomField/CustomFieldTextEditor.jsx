@@ -1,6 +1,6 @@
 import React, { useCallback, useEffect, useState, useContext } from 'react';
 import { useFormContext } from 'react-hook-form';
-import { EditorState } from 'draft-js';
+// import { EditorState } from 'draft-js';
 import {
   convertFromEditorStateToOutput,
   convertToEditorState,
@@ -16,7 +16,7 @@ import { formatMetaDataOutput } from 'components/task-drawer/CustomFieldsSection
 import CustomTextEditor from 'components/common/CustomTextEditor/CustomTextEditor';
 import TextEditor from '../TextEditor/TextEditor';
 import { CustomTextEditorContainer } from './styled';
-import { createMentionEntities } from '../TextEditor/create-mention-entities';
+// import { createMentionEntities } from '../TextEditor/create-mention-entities';
 import CustomFieldErrorContext from './CustomFieldErrorContext';
 
 const CustomFieldTextEditor = React.forwardRef(
@@ -38,23 +38,15 @@ const CustomFieldTextEditor = React.forwardRef(
     reference,
   ) => {
     const dispatch = useDispatch();
-    const {
-      getValues,
-      watch,
-      register,
-      unregister,
-      setValue,
-    } = useFormContext();
+    const { getValues, watch, register, unregister, setValue } =
+      useFormContext();
     const value = watch(name);
     const [isFocused, setIsFocused] = useState(false);
     const [updatedValue, setUpdatedValue] = useState(value);
     const [state, setState] = useMentionsEditorState(convertToEditorState());
 
-    const {
-      descriptionErrorState,
-      setDescriptionErrorState,
-      isRequired,
-    } = useContext(CustomFieldErrorContext);
+    const { descriptionErrorState, setDescriptionErrorState, isRequired } =
+      useContext(CustomFieldErrorContext);
 
     useEffect(() => {
       register(name);
@@ -65,15 +57,15 @@ const CustomFieldTextEditor = React.forwardRef(
 
     useEffect(() => {
       if (value !== null && value !== updatedValue) {
-        const newContent = createMentionEntities(value, value, [], true);
+        // const newContent = createMentionEntities(value, value, [], true);
         setUpdatedValue(value);
-        setState(EditorState.push(state, newContent));
+        // setState(EditorState.push(state, newContent));
       }
       // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [value]);
 
     const updateCustomFields = useCallback(
-      text => {
+      (text) => {
         if (!text && isRequired) {
           setDescriptionErrorState(true);
           return;
@@ -88,7 +80,7 @@ const CustomFieldTextEditor = React.forwardRef(
             taskMetaData: values,
           });
           setUpdatedValue(text);
-          const adjustedValues = formattedValue.taskMetaData.map(object => ({
+          const adjustedValues = formattedValue.taskMetaData.map((object) => ({
             ...object,
             customFieldIdentifier: object.customFieldIdentifier,
           }));

@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Box, IconButton } from '@material-ui/core';
+import { Box, IconButton } from '@mui/material';
 import { useBoolean } from 'hooks/useBoolean';
 import { useSelector } from 'react-redux';
 import { userProfileSelector } from 'selectors/user-selectors';
@@ -29,11 +29,8 @@ const ListSelectStep = ({
   enableSelectingGroupStep,
 }) => {
   const [isFetchingLists, setIsFetchingLists] = useState(true);
-  const [
-    listInputFocused,
-    setListInputFocused,
-    unsetListInputFocused,
-  ] = useBoolean(false);
+  const [listInputFocused, setListInputFocused, unsetListInputFocused] =
+    useBoolean(false);
 
   const currentUser = useSelector(userProfileSelector);
   const addListInputReference = addListInput;
@@ -41,7 +38,7 @@ const ListSelectStep = ({
   useEffect(() => {
     if (currentUser?.userIdentifier) {
       getSharedTaskListsWithCurrentUser(currentUser.userIdentifier)
-        .then(responseLists => {
+        .then((responseLists) => {
           setLists(responseLists);
           setIsFetchingLists(false);
         })
@@ -52,7 +49,7 @@ const ListSelectStep = ({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [currentUser]);
 
-  const handleAddNewList = listName => {
+  const handleAddNewList = (listName) => {
     if (listName) {
       onAddList(listName);
       addListInputReference.current.value = '';
@@ -67,7 +64,7 @@ const ListSelectStep = ({
         {!isFetchingLists && (
           <>
             {lists?.length > 0 ? (
-              lists.map(list => (
+              lists.map((list) => (
                 <ListItem
                   key={list.taskListIdentifier}
                   isSelected={
@@ -119,7 +116,7 @@ const ListSelectStep = ({
             }
           }}
           disabled={savingList || isFetchingLists}
-          onKeyDown={event =>
+          onKeyDown={(event) =>
             event.key === 'Enter' && handleAddNewList(event.target.value)
           }
         />

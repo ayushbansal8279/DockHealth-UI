@@ -6,7 +6,7 @@ import React, {
   useRef,
   useState,
 } from 'react';
-import { Tabs, Grid } from '@material-ui/core';
+import { Tabs, Grid } from '@mui/material';
 import compose from 'ramda/src/compose';
 import equals from 'ramda/src/equals';
 import { useDispatch, useSelector } from 'react-redux';
@@ -121,7 +121,7 @@ const PatientDetailsView = () => {
           RouteComponent: PatientWidget,
         });
 
-        setTabsConfiguration(tabsConfiguration.concat(widgetTabs));
+        setTabsConfiguration([...tabsConfiguration, ...widgetTabs]);
       }
     })();
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -150,17 +150,14 @@ const PatientDetailsView = () => {
       // eslint-disable-next-line sonarjs/no-collapsible-if
       if (
         taskBundle?.patient &&
-        taskBundle?.patient.patientIdentifier === patientIdentifier
+        taskBundle?.patient.patientIdentifier === patientIdentifier &&
+        (eventType?.startsWith('CREATE_TASK_BUNDLE') ||
+          eventType?.startsWith('UPDATE_TASK_BUNDLE') ||
+          eventType?.startsWith('DUPLICATE_TASK_BUNDLE') ||
+          eventType?.startsWith('MORE_TASKS_TASK_BUNDLE')) &&
+        taskBundle.identifier
       ) {
-        if (
-          (eventType?.startsWith('CREATE_TASK_BUNDLE') ||
-            eventType?.startsWith('UPDATE_TASK_BUNDLE') ||
-            eventType?.startsWith('DUPLICATE_TASK_BUNDLE') ||
-            eventType?.startsWith('MORE_TASKS_TASK_BUNDLE')) &&
-          taskBundle.identifier
-        ) {
-          dispatch(TaskActions.refreshTaskBundle(taskBundle.identifier));
-        }
+        dispatch(TaskActions.refreshTaskBundle(taskBundle.identifier));
       }
     };
 
@@ -198,14 +195,14 @@ const PatientDetailsView = () => {
   };
 
   const onSearchChangedWithDebounce = useCallback(
-    debounce(value => {
+    debounce((value) => {
       dispatch(setPatientTaskSearch(value));
       onSearchChanged();
     }, 500),
     [setPatientTaskSearch, onSearchChanged],
   );
 
-  const handleSearchValueChange = newValue => {
+  const handleSearchValueChange = (newValue) => {
     setSearchValue(newValue);
     onSearchChangedWithDebounce(newValue);
   };
@@ -247,14 +244,14 @@ const PatientDetailsView = () => {
       !equals(
         selectedFilters,
         quickFiltersList?.find(
-          f => f.quickFilterIdentifier === selectedQuickFilter,
+          (f) => f.quickFilterIdentifier === selectedQuickFilter,
         )?.selectedOptions,
       ),
     [quickFiltersList, selectedFilters, selectedQuickFilter],
   );
 
   const handleQuickFilterCreate = useCallback(
-    name =>
+    (name) =>
       dispatch(createQuickFilter(name, { patientIdentifier }, selectedFilters)),
     [dispatch, patientIdentifier, selectedFilters],
   );
@@ -272,7 +269,8 @@ const PatientDetailsView = () => {
   );
 
   const handleQuickFilterDelete = useCallback(
-    quickFilterIdentifier => dispatch(deleteQuickFilter(quickFilterIdentifier)),
+    (quickFilterIdentifier) =>
+      dispatch(deleteQuickFilter(quickFilterIdentifier)),
     [dispatch],
   );
 
@@ -318,7 +316,7 @@ const PatientDetailsView = () => {
           <PatientDetailsTabsContainer>
             <Grid container>
               <Tabs value={activeTabPath} onChange={handleTabChange}>
-                {tabsConfiguration.map(t => (
+                {tabsConfiguration.map((t) => (
                   <MainTab
                     key={t.mainPath}
                     value={t.mainPath}
@@ -331,7 +329,7 @@ const PatientDetailsView = () => {
         </StickyContainer>
         <PatientDetailsContainer>
           <Switch>
-            {tabsConfiguration?.map(route => (
+            {tabsConfiguration?.map((route) => (
               <RouteWrapper
                 allowedToRoles={route.allowedToRoles}
                 key={route.mainPath}
@@ -339,9 +337,8 @@ const PatientDetailsView = () => {
                   route.additionalPath ? `/${route.additionalPath}` : ''
                 }`}
                 RouteComponent={
-                  route.type !== 'widget'
-                    ? route.RouteComponent
-                    : () => (
+                  route.type === 'widget'
+                    ? () => (
                         <PatientWidget
                           url={route.url}
                           height={route.height}
@@ -349,6 +346,7 @@ const PatientDetailsView = () => {
                           identifier={route.identifier}
                         />
                       )
+                    : route.RouteComponent
                 }
                 onEnter={route.onEnter}
                 exact={route.exact}

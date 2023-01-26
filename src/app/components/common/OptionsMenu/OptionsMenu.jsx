@@ -18,7 +18,7 @@ import {
   MenuItem,
   ListItemText,
   Box,
-} from '@material-ui/core';
+} from '@mui/material';
 import zIndex from 'styles/z-index';
 import Tooltip from 'components/common/Tooltip/Tooltip';
 import palette from 'styles/palette';
@@ -44,7 +44,7 @@ const OptionsMenu = ({
         type="button"
         ref={assignMemberButtonReference}
         disabled={isDisabled}
-        onClick={event => {
+        onClick={(event) => {
           event.stopPropagation();
           openPopover(true);
         }}
@@ -56,7 +56,7 @@ const OptionsMenu = ({
         placement={placement}
         disablePortal={disablePortal}
         open={isOpen}
-        onClose={event => {
+        onClose={(event) => {
           event.stopPropagation();
           openPopover(false);
         }}
@@ -88,7 +88,7 @@ const OptionsMenu = ({
                         <div>
                           <MenuItem
                             color={color}
-                            onClick={event => {
+                            onClick={(event) => {
                               openPopover(false);
                               onClick(event);
                             }}

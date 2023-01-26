@@ -1,4 +1,4 @@
-import styled from '@react-pdf/styled-components';
+import styled from 'styled-components';
 import palette from 'styles/palette';
 
 const addWidth = ({ width }) => `

@@ -22,7 +22,9 @@ const ColorPicker = ({
           id={`${uniqueName}-${name}`}
           value={hex}
           checked={value?.toLowerCase() === hex?.toLowerCase()}
-          onChange={event => typeof onChange === 'function' && onChange(event)}
+          onChange={(event) =>
+            typeof onChange === 'function' && onChange(event)
+          }
         />
         <ColorPickerLabel
           variant={variant}

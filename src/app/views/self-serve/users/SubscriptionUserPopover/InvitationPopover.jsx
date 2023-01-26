@@ -36,7 +36,7 @@ const renderInvitations = ({
             reloadUsers();
             closePopover();
           })
-          .catch(error => {
+          .catch((error) => {
             dispatch(
               showGlobalErrorAlert(
                 error?.message ??
@@ -62,7 +62,7 @@ const renderInvitations = ({
             reloadUsers();
             closePopover();
           })
-          .catch(error => {
+          .catch((error) => {
             dispatch(
               showGlobalErrorAlert(
                 error?.message ??

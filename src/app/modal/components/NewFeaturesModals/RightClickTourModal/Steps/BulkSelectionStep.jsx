@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react';
 import Spacing from 'components/common/Spacing';
-import BulkSelectionImage from 'img/tour/right-click/bulk-selection';
+import BulkSelectionImage from 'img/tour/right-click/bulk-selection.svg';
 import { onTourModalStepEnter } from 'helpers/ga-event-helper';
 import { Image, Title, Description } from '../../styled';
 

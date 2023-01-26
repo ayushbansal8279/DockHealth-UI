@@ -27,11 +27,8 @@ const GroupPicker = ({
   const [isFetchingGroups, setIsFetchingGroups] = useState(true);
   const [groups, setGroups] = useState(null);
   const [savingGroup, setSavingGroup] = useState(false);
-  const [
-    groupInputFocused,
-    setGroupInputFocused,
-    unsetGroupInputFocused,
-  ] = useBoolean(false);
+  const [groupInputFocused, setGroupInputFocused, unsetGroupInputFocused] =
+    useBoolean(false);
 
   const currentOrganization = useSelector(selectedUserOrganizationSelector);
   const defaultGroupNameItem =
@@ -39,17 +36,17 @@ const GroupPicker = ({
       ({ name }) => name === 'content.label.default.group',
     ) || {};
 
-  const handleAddNewGroup = groupName => {
+  const handleAddNewGroup = (groupName) => {
     if (savingGroup || !selectedList || !groupName) return;
     setSavingGroup(true);
     createGroupAssignedToList({
       taskListIdentifier: selectedList?.taskListIdentifier,
       groupName,
     })
-      .then(createdGroup => {
+      .then((createdGroup) => {
         if (typeof onCreateGroup === 'function') onCreateGroup(createdGroup);
         setSavingGroup(false);
-        setGroups(previousGroups =>
+        setGroups((previousGroups) =>
           setGroups([...previousGroups, createdGroup]),
         );
         setSelectedGroup(createdGroup);
@@ -66,7 +63,7 @@ const GroupPicker = ({
       setIsFetchingGroups(true);
       setGroups(null);
       getGroupsForTaskList(selectedList.taskListIdentifier)
-        .then(responseGroups => {
+        .then((responseGroups) => {
           setGroups(responseGroups);
           setIsFetchingGroups(false);
         })
@@ -84,7 +81,7 @@ const GroupPicker = ({
             {!isFetchingGroups && (
               <>
                 {groups?.length > 0 ? (
-                  groups.map(group => (
+                  groups.map((group) => (
                     <ListItem
                       key={group.taskGroupIdentifier}
                       isSelected={
@@ -120,7 +117,7 @@ const GroupPicker = ({
               onFocus={setGroupInputFocused}
               onBlur={unsetGroupInputFocused}
               disabled={savingGroup || isFetchingGroups}
-              onKeyDown={event =>
+              onKeyDown={(event) =>
                 event.key === 'Enter' && handleAddNewGroup(event.target.value)
               }
             />

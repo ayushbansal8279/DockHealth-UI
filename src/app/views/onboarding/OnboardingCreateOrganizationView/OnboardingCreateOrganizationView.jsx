@@ -8,27 +8,29 @@ import {
 import { checkBAASignedStatus } from 'actions/organization-actions';
 import { useDispatch } from 'react-redux';
 
-const onSubmit = ({ dispatch }) => async ({
-  organizationName,
-  organizationInitials,
-  organizationThemeColor,
-}) => {
-  const { organizationIdentifier } = await createOrganization({
+const onSubmit =
+  ({ dispatch }) =>
+  async ({
     organizationName,
     organizationInitials,
-    organizationProfileColor: organizationThemeColor,
-  });
+    organizationThemeColor,
+  }) => {
+    const { organizationIdentifier } = await createOrganization({
+      organizationName,
+      organizationInitials,
+      organizationProfileColor: organizationThemeColor,
+    });
 
-  const { baaSigned } = await checkBAASignedStatus(organizationIdentifier)(
-    dispatch,
-  );
+    const { baaSigned } = await checkBAASignedStatus(organizationIdentifier)(
+      dispatch,
+    );
 
-  await selectCurrentOrganizationWithRedirection(
-    organizationIdentifier,
-    // baaSigned ? '#/onboarding/team-setup' : '#/onboarding/eula',
-    baaSigned ? '/#/core/home/my-tasks' : '#/onboarding/eula',
-  );
-};
+    await selectCurrentOrganizationWithRedirection(
+      organizationIdentifier,
+      // baaSigned ? '#/onboarding/team-setup' : '#/onboarding/eula',
+      baaSigned ? '/#/core/home/my-tasks' : '#/onboarding/eula',
+    );
+  };
 
 const OnboardingCreateOrganizationSetup = () => {
   const dispatch = useDispatch();

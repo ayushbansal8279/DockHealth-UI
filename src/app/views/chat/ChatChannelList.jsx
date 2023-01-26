@@ -5,7 +5,7 @@ import ChannelListHeader from '@sendbird/uikit-react/ChannelList/components/Chan
 import { userProfileSelector } from 'selectors/user-selectors';
 import { useDispatch, useSelector } from 'react-redux';
 import { selectedChatChannelSelector } from 'selectors/sendbird-selectors';
-import { CircularProgress } from '@material-ui/core';
+import { CircularProgress } from '@mui/material';
 import { selectChannel } from 'actions/sendbird-actions';
 import CustomAddChannel from './add-channel/CustomAddChannel';
 import ChatChannelPreview from './ChatChannelPreview';
@@ -31,7 +31,7 @@ export default function ChatChannelList(props) {
   }, [allChannels, dispatch, isFullView, selectedChannel]);
 
   const handleClick = useCallback(
-    channel => () => {
+    (channel) => () => {
       if (channel?.url) {
         dispatch(selectChannel(channel));
       }
@@ -52,7 +52,7 @@ export default function ChatChannelList(props) {
         allowProfileEdit={false}
         renderIconButton={CustomAddChannel}
       />
-      {allChannels.map(channel => {
+      {allChannels.map((channel) => {
         return (
           <div key={channel.url}>
             <ChatChannelPreview

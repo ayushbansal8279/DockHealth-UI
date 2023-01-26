@@ -6,7 +6,7 @@ import { useSelector } from 'react-redux';
 import descend from 'ramda/src/descend';
 import prop from 'ramda/src/prop';
 import moment from 'moment';
-import { Box, Popper, Typography } from '@material-ui/core';
+import { Box, Popper, Typography } from '@mui/material';
 import { Link, useLocation } from 'react-router-dom';
 import * as PatientApi from 'api/patient-api';
 import useBooleanWithTimeout from 'hooks/use-boolean-with-timeout';
@@ -117,7 +117,7 @@ const PatientCard = ({
     if (cardOpen && patientIdentifier !== patientData?.patientIdentifier) {
       setPatientData(null);
       PatientApi.getPatientById(patientIdentifier)
-        .then(fetchedPatient => {
+        .then((fetchedPatient) => {
           setPatientData(fetchedPatient);
           setPatientNotes(fetchedPatient.allNotes);
         })
@@ -148,16 +148,16 @@ const PatientCard = ({
   } = patientData || {};
 
   const patientStreetAddress = patientData?.patientMetaData?.filter(
-    cf => cf.customFieldName === 'Home Street Address',
+    (cf) => cf.customFieldName === 'Home Street Address',
   )[0]?.value;
   const patientStreetCity = patientData?.patientMetaData?.filter(
-    cf => cf.customFieldName === 'City',
+    (cf) => cf.customFieldName === 'City',
   )[0]?.value;
   const patientStreetState = patientData?.patientMetaData?.filter(
-    cf => cf.customFieldName === 'State / Province',
+    (cf) => cf.customFieldName === 'State / Province',
   )[0]?.value;
   const patientPostalCode = patientData?.patientMetaData?.filter(
-    cf => cf.customFieldName === 'Zip / Postal Code',
+    (cf) => cf.customFieldName === 'Zip / Postal Code',
   )[0]?.value;
   const patientAddress =
     (patientStreetAddress || '') +
@@ -179,7 +179,7 @@ const PatientCard = ({
         style={{ zIndex: 2000 }}
       >
         <PatientCardContainer
-          onClick={event => {
+          onClick={(event) => {
             event.stopPropagation();
           }}
         >

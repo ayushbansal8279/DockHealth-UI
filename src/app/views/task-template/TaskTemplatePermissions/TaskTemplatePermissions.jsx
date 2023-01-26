@@ -37,7 +37,7 @@ const TaskTemplatePermissions = ({ template }) => {
   }, [dispatch, members, identifier, template]);
   const { userIdentifier } = useSelector(userProfileSelector);
   const currentUser = members.find(
-    user => user.userIdentifier === userIdentifier,
+    (user) => user.userIdentifier === userIdentifier,
   );
 
   const hasAccessToEdit =
@@ -49,7 +49,7 @@ const TaskTemplatePermissions = ({ template }) => {
       justify="flex-end"
       paddingLeft="small"
       paddingRight="small"
-      onContextMenu={event => {
+      onContextMenu={(event) => {
         event.stopPropagation();
       }}
     >

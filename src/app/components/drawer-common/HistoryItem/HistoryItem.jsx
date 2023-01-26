@@ -8,7 +8,7 @@ import {
   TypeText,
 } from './styled';
 
-const HistoryItem = props => {
+const HistoryItem = (props) => {
   const { description, date, type } = props;
 
   const momentDate = moment(date);

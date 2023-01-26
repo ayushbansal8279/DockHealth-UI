@@ -99,12 +99,9 @@ function* getTasks(status) {
     select(sortSelector),
   ]);
 
-  let tasks;
-
-  tasks = yield filters && !isEmpty(filters)
+  return yield filters && !isEmpty(filters)
     ? call(UserApi.getUserFilteredTasks, userIdentifier, sort, filters, status)
     : call(UserApi.getUserTasks, userIdentifier, sort, status);
-  return tasks;
 }
 
 function* getUserTasks() {

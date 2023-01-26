@@ -2,11 +2,11 @@
 /* eslint-disable sonarjs/no-duplicated-branches */
 import React, { useState, useRef, useEffect, useCallback } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
-import BlueBellIcon from 'img/notifications/blue-bell';
-import NewBlueBellIcon from 'img/notifications/new-blue-bell';
-import WhiteBellIcon from 'img/notifications/white-bell';
-import NewWhiteBellIcon from 'img/notifications/new-white-bell';
-import CrossedBellIcon from 'img/notifications/crossed-bell';
+import BlueBellIcon from 'img/notifications/blue-bell.svg';
+import NewBlueBellIcon from 'img/notifications/new-blue-bell.svg';
+import WhiteBellIcon from 'img/notifications/white-bell.svg';
+import NewWhiteBellIcon from 'img/notifications/new-white-bell.svg';
+import CrossedBellIcon from 'img/notifications/crossed-bell.svg';
 import { onActivityAlertOpened } from 'helpers/ga-event-helper';
 import * as ActivityAlertsApi from 'api/activity-alerts-api';
 import {
@@ -38,26 +38,29 @@ import {
   ActivityAlertsSwitchLabel,
 } from './styled';
 
-const getIconsConfig = variant => {
+const getIconsConfig = (variant) => {
   switch (variant) {
-    case 'white':
+    case 'white': {
       return {
         BellIcon: WhiteBellIcon,
         NewBellIcon: NewWhiteBellIcon,
         MutedBellIcon: CrossedBellIcon,
       };
-    case 'blue':
+    }
+    case 'blue': {
       return {
         BellIcon: BlueBellIcon,
         NewBellIcon: NewBlueBellIcon,
         MutedBellIcon: CrossedBellIcon,
       };
-    default:
+    }
+    default: {
       return {
         BellIcon: BlueBellIcon,
         NewBellIcon: NewBlueBellIcon,
         MutedBellIcon: CrossedBellIcon,
       };
+    }
   }
 };
 
@@ -107,10 +110,8 @@ const ActivityAlerts = ({ variant = 'blue' }) => {
   const [hasUnreadAlertsState, setHasUnreadAlertsState] = useState(
     JSON.parse(sessionStorage.getItem('hasUnreadAlerts')),
   );
-  const [
-    activityAlertsListIsFetching,
-    setActivityAlertsListIsFetching,
-  ] = useState(null);
+  const [activityAlertsListIsFetching, setActivityAlertsListIsFetching] =
+    useState(null);
   const [notificationSettings, setNotificationSettings] = useState([]);
 
   const iconReference = useRef(null);
@@ -160,9 +161,8 @@ const ActivityAlerts = ({ variant = 'blue' }) => {
 
   const refreshNotificationSettings = useCallback(() => {
     (async function fetchData() {
-      const {
-        notificationSettings: notificationSettingsData,
-      } = await getNotificationSettings();
+      const { notificationSettings: notificationSettingsData } =
+        await getNotificationSettings();
       setNotificationSettings(notificationSettingsData);
     })();
   }, []);
@@ -171,8 +171,8 @@ const ActivityAlerts = ({ variant = 'blue' }) => {
     refreshNotificationSettings();
   }, [refreshNotificationSettings]);
 
-  const onClearAlert = async activityAlertId => {
-    setActivityAlertsList(previousList =>
+  const onClearAlert = async (activityAlertId) => {
+    setActivityAlertsList((previousList) =>
       previousList?.filter(
         ({ activityAlertIdentifier }) =>
           activityAlertIdentifier !== activityAlertId,
@@ -201,10 +201,10 @@ const ActivityAlerts = ({ variant = 'blue' }) => {
 
   if (hasUnreadAlertsState && hasAnyOptionTurnedOn) {
     CurrentBellIcon = NewBellIcon;
-  } else if (!hasAnyOptionTurnedOn) {
-    CurrentBellIcon = MutedBellIcon;
-  } else {
+  } else if (hasAnyOptionTurnedOn) {
     CurrentBellIcon = BellIcon;
+  } else {
+    CurrentBellIcon = MutedBellIcon;
   }
 
   return (
@@ -244,7 +244,7 @@ const ActivityAlerts = ({ variant = 'blue' }) => {
                     checked={hasAnyOptionTurnedOn}
                     onChange={() => {
                       updateNotificationSettings(
-                        notificationSettings.map(s => ({
+                        notificationSettings.map((s) => ({
                           ...s,
                           emailEnabled: !hasAnyOptionTurnedOn,
                           pushNotificationEnabled: !hasAnyOptionTurnedOn,
@@ -269,7 +269,9 @@ const ActivityAlerts = ({ variant = 'blue' }) => {
               </ActivityAlertsOptions>
             </ActivityAlertsHeader>
             <ActivityAlertsList>
-              {!activityAlertsListIsFetching ? (
+              {activityAlertsListIsFetching ? (
+                <ActivityAlertsLoader />
+              ) : (
                 <>
                   {activityAlertsList?.length === 0 && (
                     <EmptyActivityAlerts>
@@ -277,7 +279,7 @@ const ActivityAlerts = ({ variant = 'blue' }) => {
                     </EmptyActivityAlerts>
                   )}
                   {activityAlertsList?.length > 0 &&
-                    activityAlertsList?.map(itemAlert => (
+                    activityAlertsList?.map((itemAlert) => (
                       <ActivityAlertsItem
                         key={itemAlert.activityAlertIdentifier}
                         itemAlert={itemAlert}
@@ -290,8 +292,6 @@ const ActivityAlerts = ({ variant = 'blue' }) => {
                       />
                     ))}
                 </>
-              ) : (
-                <ActivityAlertsLoader />
               )}
             </ActivityAlertsList>
           </>

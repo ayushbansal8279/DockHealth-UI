@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Popper, ClickAwayListener } from '@material-ui/core';
+import { Popper, ClickAwayListener } from '@mui/material';
 import {
   PopperTopArrow,
   PopperBottomArrow,
@@ -18,7 +18,7 @@ const TourPopper = ({ children, anchorEl, position, open, onClose }) => {
   const isLeftArrow = position.includes('right');
   const isRightArrow = position.includes('left');
 
-  const setReference = element => {
+  const setReference = (element) => {
     if (element !== null && arrowReference === null) {
       setArrowReference(element);
     }

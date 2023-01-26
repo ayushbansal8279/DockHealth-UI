@@ -6,7 +6,7 @@ const InitialsInput = React.forwardRef(
     { name, placeholder, onChange, backgroundColor, value, size, maxChar = 3 },
     reference,
   ) => {
-    const handleInputChange = event => {
+    const handleInputChange = (event) => {
       const newValue = event.target.value.trim();
       if (newValue.length <= maxChar) {
         onChange(newValue);

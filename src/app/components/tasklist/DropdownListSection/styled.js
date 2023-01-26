@@ -1,4 +1,4 @@
-import { Collapse } from '@material-ui/core';
+import { Collapse } from '@mui/material';
 import palette from 'styles/palette';
 import styled from 'styled-components';
 import spacing from 'styles/spacing';

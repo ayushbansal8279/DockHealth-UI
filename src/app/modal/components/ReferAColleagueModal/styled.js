@@ -1,4 +1,4 @@
-import { Grid, IconButton } from '@material-ui/core';
+import { Grid, IconButton } from '@mui/material';
 import styled from 'styled-components';
 import palette, { opacify } from 'styles/palette';
 import DockHeaderLogo from 'img/dock-header-logo.svg';

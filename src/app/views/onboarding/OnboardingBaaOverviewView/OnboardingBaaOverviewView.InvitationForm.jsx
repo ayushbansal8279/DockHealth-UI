@@ -1,5 +1,5 @@
-import { Grid, IconButton } from '@material-ui/core';
-import { Close } from '@material-ui/icons';
+import { Grid, IconButton } from '@mui/material';
+import { Close } from '@mui/icons-material';
 import React from 'react';
 import { FormProvider, useForm } from 'react-hook-form';
 import { useHistory } from 'react-router-dom';
@@ -23,51 +23,48 @@ const validationSchema = object().shape({
     .required(REQUIRED_MESSAGE)
     .email('Please enter a valid email address'),
   mobilePhoneNumber: string()
-    .transform(value => value.replace(/\D/g, ''))
+    .transform((value) => value.replace(/\D/g, ''))
     .required(REQUIRED_MESSAGE)
     .matches(/\d{10}/, 'Please enter a valid phone number'),
 });
 
-const goToBaaInvitationSent = history => {
+const goToBaaInvitationSent = (history) => {
   history.push('/onboarding/baa-invitation-sent');
 };
 
 // eslint-disable-next-line unicorn/consistent-function-scoping
-const onInvitationSubmit = history => async ({
-  firstName,
-  lastName,
-  mobilePhoneNumber,
-  email,
-}) => {
-  const errorMessage = 'Error sending invitation, please try again later';
-  try {
-    inviteAuthorizedSigner({ email, firstName, lastName, mobilePhoneNumber })
-      .then(data => {
-        if (data.statusCode === 'SUCCESS') {
-          goToBaaInvitationSent(history);
-        } else {
+const onInvitationSubmit =
+  (history) =>
+  async ({ firstName, lastName, mobilePhoneNumber, email }) => {
+    const errorMessage = 'Error sending invitation, please try again later';
+    try {
+      inviteAuthorizedSigner({ email, firstName, lastName, mobilePhoneNumber })
+        .then((data) => {
+          if (data.statusCode === 'SUCCESS') {
+            goToBaaInvitationSent(history);
+          } else {
+            showAlert({
+              status: 'error',
+              title: 'Error',
+              text: errorMessage,
+            });
+          }
+        })
+        .catch((error) => {
           showAlert({
             status: 'error',
             title: 'Error',
-            text: errorMessage,
+            text: error?.message ?? errorMessage,
           });
-        }
-      })
-      .catch(error => {
-        showAlert({
-          status: 'error',
-          title: 'Error',
-          text: error?.message ?? errorMessage,
         });
+    } catch (error) {
+      showAlert({
+        icon: 'error',
+        title: 'Error',
+        text: error?.message ?? errorMessage,
       });
-  } catch (error) {
-    showAlert({
-      icon: 'error',
-      title: 'Error',
-      text: error?.message ?? errorMessage,
-    });
-  }
-};
+    }
+  };
 
 const InvitationForm = ({ hideInvitationForm }) => {
   const history = useHistory();

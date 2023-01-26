@@ -16,7 +16,7 @@ import { taskDrawerFocusFieldSelector } from 'selectors/task-drawer-selectors';
 import { useSelector } from 'react-redux';
 import { TaskItemType } from 'helpers/task-helpers';
 import { workflowAutofocusFieldSelector } from 'selectors/workflow-drawer-selectors';
-import { Box } from '@material-ui/core';
+import { Box } from '@mui/material';
 import CustomFieldTextEditor from './CustomFieldTextEditor';
 import { ColorIndicator } from './styled';
 import MultiFormSelect from '../MultiSelect/MultiFormSelect';
@@ -33,14 +33,8 @@ const CustomField = ({
   // eslint-disable-next-line sonarjs/cognitive-complexity
 }) => {
   const containerReference = useRef(null);
-  const {
-    identifier,
-    name,
-    placeholder,
-    fieldType,
-    options,
-    displayOptions,
-  } = field;
+  const { identifier, name, placeholder, fieldType, options, displayOptions } =
+    field;
   const isRequired = displayOptions.includes('TASK_REQUIRED');
   const inputReference = useRef(null);
   const componentReference = useRef(null);
@@ -64,7 +58,7 @@ const CustomField = ({
   );
   const dropdownOptions = useMemo(() => {
     const o =
-      options?.map(option => ({
+      options?.map((option) => ({
         label: option.name,
         value: option.identifier,
         color: option.color,
@@ -77,7 +71,7 @@ const CustomField = ({
   }, [fieldType, isRequired, options]);
 
   const handleBlur = useCallback(
-    data => {
+    (data) => {
       if (onBlur) {
         onBlur(data, wasChanged);
       }
@@ -190,8 +184,9 @@ const CustomField = ({
         );
       case FieldType.DROPDOWN: {
         const value = watch(fieldName) || '';
-        const colorIndicator = dropdownOptions?.find(o => o.value === value)
-          ?.color;
+        const colorIndicator = dropdownOptions?.find(
+          (o) => o.value === value,
+        )?.color;
 
         return (
           <Box position="relative">

@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react';
 import Spacing from 'components/common/Spacing';
-import CustomizeHomeImage from 'img/tour/home-improvements/customize-home';
+import CustomizeHomeImage from 'img/tour/home-improvements/customize-home.svg';
 import { onTourModalStepEnter } from 'helpers/ga-event-helper';
 import { Image, Title, Description } from '../../styled';
 

@@ -1,7 +1,7 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
-import { Box, Grid } from '@material-ui/core';
+import { Box, Grid } from '@mui/material';
 import usePrevious from 'hooks/use-previous';
 import equals from 'ramda/src/equals';
 import {
@@ -55,10 +55,8 @@ const SubscriptionsView = () => {
   const [selectedBillingFrequency, setSelectedBillingFrequency] = useState(
     BillingFrequency.MONTHLY,
   );
-  const [
-    selectedProfessionalServices,
-    setSelectedProfessionalServices,
-  ] = useState(false);
+  const [selectedProfessionalServices, setSelectedProfessionalServices] =
+    useState(false);
   const [selectedPlan, setSelectedPlan] = useState(null);
   const currentUser = useSelector(userProfileSelector);
   const isSavingNewPlan = useSelector(isSavingNewPlanSelector);
@@ -157,8 +155,8 @@ const SubscriptionsView = () => {
     }
   };
 
-  const hasExistingSubscription = !currentSubscriptionPlan?.subscriptionDetails
-    ?.trialEndDate;
+  const hasExistingSubscription =
+    !currentSubscriptionPlan?.subscriptionDetails?.trialEndDate;
 
   return (
     <ViewLayout header={<BasicLayoutHeader title="Subscriptions" />}>
@@ -187,7 +185,7 @@ const SubscriptionsView = () => {
               </SwitchLabel>
               <Switch
                 checked={selectedBillingFrequency === BillingFrequency.MONTHLY}
-                onChange={event =>
+                onChange={(event) =>
                   setSelectedBillingFrequency(
                     event.target.checked
                       ? BillingFrequency.MONTHLY
@@ -205,7 +203,7 @@ const SubscriptionsView = () => {
           <Box p={1} />
           <SubscriptionPlansContainer>
             <Box display="flex" justifyContent="space-between">
-              {SUBSCRIPTION_PLANS.map(plan => (
+              {SUBSCRIPTION_PLANS.map((plan) => (
                 <SubscriptionPlanTail
                   key={plan.key}
                   active={subscriptionPlan === plan.subscriptionPlan}
@@ -213,7 +211,7 @@ const SubscriptionsView = () => {
                   plan={plan}
                   hasExistingSubscription={hasExistingSubscription}
                   billingFrequency={selectedBillingFrequency}
-                  onSelect={newPlan => {
+                  onSelect={(newPlan) => {
                     if (newPlan === selectedPlan) {
                       setSelectedPlan(subscriptionPlan);
                     } else {

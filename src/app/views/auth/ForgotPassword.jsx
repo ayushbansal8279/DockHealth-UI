@@ -32,44 +32,45 @@ const ForgotPassword = () => {
   }, [setLoginAuthBaseState]);
 
   const onSubmit = useCallback(
-    ({ setError }) => form => {
-      UserAuthApi.forgotPassword({
-        username: form.username,
-      })
-        .then(resp => {
-          success(
-            `Sent verification code to: ${resp.CodeDeliveryDetails.Destination}`,
-          );
-          window.sessionStorage.setItem('username', form.username);
-          if (resp.CodeDeliveryDetails) {
-            const deliveryMedium = resp.CodeDeliveryDetails.DeliveryMedium;
-            if (deliveryMedium === 'EMAIL') {
-              history.push('resetPasswordEmailSent');
-            } else {
-              history.push('resetPassword');
-            }
-          }
+    ({ setError }) =>
+      (form) => {
+        UserAuthApi.forgotPassword({
+          username: form.username,
         })
-        .catch(error => {
-          let message = error?.message;
-          const errorCode = error?.code;
-          if (errorCode === 'InvalidParameterException') {
-            message =
-              'Email is not confirmed. Please check your email or click below to resend.'; // User is not confirmed.
-            setUnconfirmedUserFlag(true);
-          }
-          setError('username', {
-            type: 'custom',
-            message: message ?? 'Unknown Error. Please try again.',
+          .then((resp) => {
+            success(
+              `Sent verification code to: ${resp.CodeDeliveryDetails.Destination}`,
+            );
+            window.sessionStorage.setItem('username', form.username);
+            if (resp.CodeDeliveryDetails) {
+              const deliveryMedium = resp.CodeDeliveryDetails.DeliveryMedium;
+              if (deliveryMedium === 'EMAIL') {
+                history.push('resetPasswordEmailSent');
+              } else {
+                history.push('resetPassword');
+              }
+            }
+          })
+          .catch((error) => {
+            let message = error?.message;
+            const errorCode = error?.code;
+            if (errorCode === 'InvalidParameterException') {
+              message =
+                'Email is not confirmed. Please check your email or click below to resend.'; // User is not confirmed.
+              setUnconfirmedUserFlag(true);
+            }
+            setError('username', {
+              type: 'custom',
+              message: message ?? 'Unknown Error. Please try again.',
+            });
           });
-        });
-    },
+      },
     [history],
   );
 
   const onResendCode = useCallback(
     // eslint-disable-next-line unicorn/consistent-function-scoping
-    () => form => {
+    () => (form) => {
       try {
         UserAuthApi.resendConfirmationCode({
           username: form.username,

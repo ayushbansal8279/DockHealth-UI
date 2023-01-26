@@ -52,7 +52,7 @@ const DueDatePicker = ({
     }
   }, [dateValue, selectedDate]);
 
-  const handleDatePick = pickedDate => {
+  const handleDatePick = (pickedDate) => {
     setDateValue(pickedDate);
     const formattedToMask = moment(pickedDate).format(DATE_MASK_FORMAT);
     setDateMaskValue(formattedToMask);
@@ -65,7 +65,7 @@ const DueDatePicker = ({
     );
   };
 
-  const handleTimePick = pickedTime => {
+  const handleTimePick = (pickedTime) => {
     onDateChange(
       moment(
         `${moment(selectedDate).format(DATE_ISO_FORMAT)} ${pickedTime}`,
@@ -138,11 +138,7 @@ const DueDatePicker = ({
             'day',
           )}
           onClick={() =>
-            handleDatePick(
-              moment()
-                .add(1, 'days')
-                .format(DATE_ISO_FORMAT),
-            )
+            handleDatePick(moment().add(1, 'days').format(DATE_ISO_FORMAT))
           }
         >
           Tomorrow

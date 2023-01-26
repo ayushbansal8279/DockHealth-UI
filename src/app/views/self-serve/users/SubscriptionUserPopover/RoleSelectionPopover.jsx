@@ -4,8 +4,8 @@ import pathEq from 'ramda/src/pathEq';
 import SelectorPopover from 'components/common/SelectorPopover/SelectorPopover';
 import Button from 'components/common/Button/Button';
 import { changeUserOrganizationRole } from 'actions/organization-actions';
-import Circle from 'img/circle';
-import CircleCompleted from 'img/circle-completed';
+import Circle from 'img/circle.svg';
+import CircleCompleted from 'img/circle-completed.svg';
 import { openModal } from 'modal/actions';
 import {
   LimitedAccessLabel,
@@ -29,23 +29,21 @@ export const renderUserTypesOptions = ({
   let renderedArray = [];
 
   if (userStatus === 'ACTIVE') {
-    renderedArray = [
-      ...Object.entries(userTypes)
-        .filter(pathEq(['1', 'selectable'], true))
-        .map(([role, { label, description, isLimitedAccess }]) => ({
-          key: role,
-          button: true,
-          isSelected:
-            selectedRoleKey === role ||
-            (!selectedRoleKey && orgUserRole === role),
-          isLimitedAccess,
-          label,
-          description,
-          onSave: () => {
-            changeUserRole({ userIdentifier, role });
-          },
-        })),
-    ];
+    renderedArray = Object.entries(userTypes)
+      .filter(pathEq(['1', 'selectable'], true))
+      .map(([role, { label, description, isLimitedAccess }]) => ({
+        key: role,
+        button: true,
+        isSelected:
+          selectedRoleKey === role ||
+          (!selectedRoleKey && orgUserRole === role),
+        isLimitedAccess,
+        label,
+        description,
+        onSave: () => {
+          changeUserRole({ userIdentifier, role });
+        },
+      }));
   }
 
   if (userStatus === 'INACTIVE') {
@@ -140,7 +138,7 @@ const RoleSelectionPopover = ({
         vertical: 'center',
         horizontal: 'center',
       }}
-      renderItem={item =>
+      renderItem={(item) =>
         renderRoleItem({ ...item, onSelect: setSelectedRole })
       }
       onClose={() => {
@@ -166,7 +164,7 @@ const RoleSelectionPopover = ({
                   isCurrrentUser &&
                   orgUserRole === 'OWNER'
                 ) {
-                  removeSubscriptionWithNewOwnerFlow(modalProps =>
+                  removeSubscriptionWithNewOwnerFlow((modalProps) =>
                     dispatch(
                       openModal('SelectOwner', {
                         currentActiveUsers,

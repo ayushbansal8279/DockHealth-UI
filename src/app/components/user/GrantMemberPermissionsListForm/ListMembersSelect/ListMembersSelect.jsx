@@ -3,7 +3,7 @@ import Button from 'components/common/Button/Button';
 import UserAvatar from 'components/user/UserAvatar/UserAvatar';
 import { isUserGroup } from 'helpers/user-helper';
 import GroupAvatar from 'components/user/GroupAvatar/GroupAvatar';
-import { ClickAwayListener, Grid } from '@material-ui/core';
+import { ClickAwayListener, Grid } from '@mui/material';
 import Loader from 'components/common/Loader/Loader';
 import AddRecordOption from 'components/common/AddRecordOption/AddRecordOption';
 import {
@@ -46,7 +46,7 @@ const ListMembersSelect = ({
           (name.toLowerCase().includes(searchInputValue.toLowerCase()) ||
             email?.toLowerCase().startsWith(searchInputValue.toLowerCase())) &&
           !selectedMembers.some(
-            selectedMember => selectedMember.identifier === identifier,
+            (selectedMember) => selectedMember.identifier === identifier,
           ),
       ),
     [searchInputValue, availablePeople, selectedMembers],
@@ -55,14 +55,16 @@ const ListMembersSelect = ({
   const showMainInviteButton =
     !searchInputValue || searchedAvailablePeople.length > 0;
 
-  const removeSelectedMember = identifier => {
-    setSelectedMembers(currentSelectedMembers =>
-      currentSelectedMembers.filter(member => member.identifier !== identifier),
+  const removeSelectedMember = (identifier) => {
+    setSelectedMembers((currentSelectedMembers) =>
+      currentSelectedMembers.filter(
+        (member) => member.identifier !== identifier,
+      ),
     );
   };
 
-  const handleSelectMember = member => {
-    setSelectedMembers(perviousSelectedMember => [
+  const handleSelectMember = (member) => {
+    setSelectedMembers((perviousSelectedMember) => [
       ...perviousSelectedMember,
       member,
     ]);
@@ -73,7 +75,7 @@ const ListMembersSelect = ({
   const handleInviteSelectedPeople = () => {
     if (selectedMembers?.length > 0) {
       onAcitonButtonClick(
-        selectedMembers.map(m => ({ ...m, userIdentifier: m.identifier })),
+        selectedMembers.map((m) => ({ ...m, userIdentifier: m.identifier })),
       );
       setSelectedMembers([]);
     }
@@ -85,7 +87,7 @@ const ListMembersSelect = ({
     searchInputReference.current.blur();
   };
 
-  const handleSearchInputKeyDown = event => {
+  const handleSearchInputKeyDown = (event) => {
     switch (event.keyCode) {
       // esc key
       case 27:
@@ -128,7 +130,7 @@ const ListMembersSelect = ({
         event.stopPropagation();
 
         if (searchedAvailablePeople?.length > 0) {
-          setHoveredItemIndex(previousIndex => {
+          setHoveredItemIndex((previousIndex) => {
             let newIndex;
             if (previousIndex === searchedAvailablePeople.length - 1) {
               newIndex = 0;
@@ -149,7 +151,7 @@ const ListMembersSelect = ({
         event.stopPropagation();
 
         if (searchedAvailablePeople?.length > 0) {
-          setHoveredItemIndex(previousIndex => {
+          setHoveredItemIndex((previousIndex) => {
             let newIndex;
             if (previousIndex === 0) {
               newIndex = searchedAvailablePeople.length - 1;
@@ -177,7 +179,7 @@ const ListMembersSelect = ({
     }
   };
 
-  const handleSelectAreaClick = event => {
+  const handleSelectAreaClick = (event) => {
     event.preventDefault();
     event.stopPropagation();
 
@@ -195,7 +197,7 @@ const ListMembersSelect = ({
         >
           <SelectElement type="button" onClick={handleSelectAreaClick}>
             <>
-              {selectedMembers.map(member => (
+              {selectedMembers.map((member) => (
                 <MemberItemWrapper key={member.identifier}>
                   <MemberName>{member.name}</MemberName>
                   <RemoveMemberButton
@@ -210,7 +212,7 @@ const ListMembersSelect = ({
                 ref={searchInputReference}
                 onKeyDown={handleSearchInputKeyDown}
                 value={searchInputValue}
-                onChange={event => setSearchInputValue(event.target.value)}
+                onChange={(event) => setSearchInputValue(event.target.value)}
                 disabled={disabled}
               />
               {(!selectedMembers || selectedMembers.length === 0) &&
@@ -231,7 +233,7 @@ const ListMembersSelect = ({
                     searchedAvailablePeople.map((person, index) => (
                       <AvailablePeopleItemButton
                         key={person.identifier}
-                        ref={element => {
+                        ref={(element) => {
                           searchedPeopleReferences.current[index] = element;
                         }}
                         type="button"

@@ -2,6 +2,7 @@ import { takeEvery, put, call, select } from 'redux-saga/effects';
 import * as ActionTypes from 'actions/action-types';
 import * as MegaFilterApi from 'api/mega-filter-api';
 import { quickFiltersSelector } from 'selectors/mega-filter-selectors';
+import { log } from 'helpers/log';
 
 function* getQuickFilters({ viewSpecificData }) {
   try {
@@ -29,7 +30,7 @@ function* createQuickFilter({
 
     yield put({ type: ActionTypes.CREATE_QUICK_FILTER_SUCCESS, filter });
   } catch (error) {
-    console.log('error', error);
+    log('error', error);
     yield put({ type: ActionTypes.CREATE_QUICK_FILTER_FAILURE });
   }
 }
@@ -53,7 +54,7 @@ function* updateQuickFilter({
     );
     yield put({ type: ActionTypes.UPDATE_QUICK_FILTER_SUCCESS });
   } catch (error) {
-    console.log('error', error);
+    log('error', error);
     yield put({ type: ActionTypes.UPDATE_QUICK_FILTER_FAILURE });
   }
 }
@@ -63,7 +64,7 @@ function* deleteQuickFilter({ quickFilterIdentifier }) {
     yield call(MegaFilterApi.deleteQuickFilter, quickFilterIdentifier);
     yield put({ type: ActionTypes.DELETE_QUICK_FILTER_SUCCESS });
   } catch (error) {
-    console.log('error', error);
+    log('error', error);
     yield put({ type: ActionTypes.DELETE_QUICK_FILTER_FAILURE });
   }
 }

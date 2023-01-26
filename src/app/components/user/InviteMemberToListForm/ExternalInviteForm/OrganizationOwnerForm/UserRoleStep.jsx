@@ -1,6 +1,6 @@
 import React from 'react';
 import { useFormContext } from 'react-hook-form';
-import { Grid } from '@material-ui/core';
+import { Grid } from '@mui/material';
 import Button from 'components/common/Button/Button';
 import { UserOrganizationRole } from 'helpers/user-helper';
 import {
@@ -41,7 +41,7 @@ const UserRoleStep = ({ navigateToPreviousStep, disabled }) => {
           name="userRole"
           value="MEMBER"
           checked={roleValue === 'MEMBER'}
-          onChange={event => setValue(event.target.name, event.target.value)}
+          onChange={(event) => setValue(event.target.name, event.target.value)}
         />
         <RoleOptionLabel isSelected={roleValue === 'MEMBER'} htmlFor="Member">
           <RoleOptionHeaderWrapper>
@@ -60,7 +60,7 @@ const UserRoleStep = ({ navigateToPreviousStep, disabled }) => {
           name="userRole"
           value="GUEST"
           checked={roleValue === 'GUEST'}
-          onChange={event => setValue(event.target.name, event.target.value)}
+          onChange={(event) => setValue(event.target.name, event.target.value)}
         />
         <RoleOptionLabel isSelected={roleValue === 'GUEST'} htmlFor="Guest">
           <RoleOptionHeaderWrapper>
@@ -82,7 +82,7 @@ const UserRoleStep = ({ navigateToPreviousStep, disabled }) => {
           name="userRole"
           value={DOCK_PRO}
           checked={roleValue === DOCK_PRO}
-          onChange={event => setValue(event.target.name, event.target.value)}
+          onChange={(event) => setValue(event.target.name, event.target.value)}
         />
         <RoleOptionLabel
           isSelected={roleValue === 'DOCK_PRO'}
@@ -106,7 +106,7 @@ const UserRoleStep = ({ navigateToPreviousStep, disabled }) => {
           name="userRole"
           value={VIEW_ONLY}
           checked={roleValue === VIEW_ONLY}
-          onChange={event => setValue(event.target.name, event.target.value)}
+          onChange={(event) => setValue(event.target.name, event.target.value)}
         />
         <RoleOptionLabel
           isSelected={roleValue === VIEW_ONLY}

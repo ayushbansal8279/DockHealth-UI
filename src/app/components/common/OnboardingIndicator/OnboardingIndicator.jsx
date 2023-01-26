@@ -5,7 +5,7 @@ const OnboardingIndicator = ({ steps, completedSteps }) => {
   const stepsArray = Array.from({ length: steps }, (_, i) => i + 1);
   return (
     <IndicatorContainer>
-      {stepsArray.map(step => (
+      {stepsArray.map((step) => (
         <IndicatorBar
           steps={steps}
           step={step}

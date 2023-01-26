@@ -6,7 +6,7 @@ import React, {
   useCallback,
   useMemo,
 } from 'react';
-import { Chip } from '@material-ui/core';
+import { Chip } from '@mui/material';
 import Autocomplete from 'components/common/Autocomplete/Autocomplete';
 import { useDispatch, useSelector } from 'react-redux';
 import usePrevious from 'hooks/use-previous';
@@ -53,11 +53,11 @@ const renderOption = ({
         greyed={disabled}
         ref={registerOption}
         defaultValue={option?.labelName}
-        onBlur={event => {
+        onBlur={(event) => {
           event.stopPropagation();
           onBlur();
         }}
-        onKeyDown={event => {
+        onKeyDown={(event) => {
           if (event.key === 'Enter') {
             event?.target?.blur();
             if (
@@ -78,7 +78,7 @@ const renderOption = ({
       <OptionButtonsContainer>
         <OptionButton
           type="button"
-          onClick={event => {
+          onClick={(event) => {
             event.stopPropagation();
             event.preventDefault();
             onEdit();
@@ -88,7 +88,7 @@ const renderOption = ({
         </OptionButton>
         <OptionButton
           type="button"
-          onClick={event => {
+          onClick={(event) => {
             event.stopPropagation();
             event.preventDefault();
             onDelete();
@@ -150,10 +150,10 @@ const LabelsSection = ({ disabled: disabledProperty }) => {
   const handleAddLabel = useCallback(
     ({ labelIdentifier, labelName }) => {
       const alreadySelected = selectedLabels.find(
-        label => label.labelName === labelName,
+        (label) => label.labelName === labelName,
       );
       if (!alreadySelected && (labelName || labelName !== '')) {
-        setSelectedLabels(state => [
+        setSelectedLabels((state) => [
           ...state,
           { labelIdentifier, labelName, identifier },
         ]);
@@ -179,8 +179,8 @@ const LabelsSection = ({ disabled: disabledProperty }) => {
 
   const handleEditLabel = useCallback(
     ({ labelIdentifier, labelName }) => {
-      const findAndUpdate = state =>
-        state.map(label =>
+      const findAndUpdate = (state) =>
+        state.map((label) =>
           label.labelIdentifier === labelIdentifier
             ? { ...label, labelName }
             : label,
@@ -194,8 +194,8 @@ const LabelsSection = ({ disabled: disabledProperty }) => {
 
   const handleRemoveLabel = useCallback(
     ({ labelIdentifier, labelName }) => {
-      const findAndRemove = state =>
-        state.filter(label => label.labelIdentifier !== labelIdentifier);
+      const findAndRemove = (state) =>
+        state.filter((label) => label.labelIdentifier !== labelIdentifier);
       setSelectedLabels(findAndRemove);
       setLabelsList(findAndRemove);
       dispatch(removeLabel({ labelIdentifier, labelName, identifier }));
@@ -203,19 +203,19 @@ const LabelsSection = ({ disabled: disabledProperty }) => {
     [dispatch, identifier],
   );
 
-  const getInputReference = element => {
+  const getInputReference = (element) => {
     if (inputReference !== element) setInputReference(element);
   };
 
   const renderOptionCallback = useCallback(
-    option => {
+    (option) => {
       const disabled = !!selectedLabels.find(
-        label => label.labelIdentifier === option.labelIdentifier,
+        (label) => label.labelIdentifier === option.labelIdentifier,
       );
       return renderOption({
         option,
         disabled,
-        registerOption: element => {
+        registerOption: (element) => {
           if (element) {
             optionReferences.current[option?.labelIdentifier] = element;
           }
@@ -226,7 +226,7 @@ const LabelsSection = ({ disabled: disabledProperty }) => {
         onBlur: () => {
           setCurrentEditableOption(null);
         },
-        onSaveEdit: value =>
+        onSaveEdit: (value) =>
           handleEditLabel({
             labelIdentifier: option?.labelIdentifier,
             labelName: value,
@@ -239,14 +239,14 @@ const LabelsSection = ({ disabled: disabledProperty }) => {
 
   const renderTagsCallback = useCallback(
     () =>
-      selectedLabels.map(option => (
+      selectedLabels.map((option) => (
         <Chip
           deletable={!!option.labelIdentifier}
           key={option.labelIdentifier}
           onDelete={() => {
-            setSelectedLabels(state =>
+            setSelectedLabels((state) =>
               state.filter(
-                label => label.labelIdentifier !== option.labelIdentifier,
+                (label) => label.labelIdentifier !== option.labelIdentifier,
               ),
             );
             dispatch(
@@ -265,12 +265,12 @@ const LabelsSection = ({ disabled: disabledProperty }) => {
   const noOptionText = useMemo(
     () => (
       <div
-        onMouseDown={event => {
+        onMouseDown={(event) => {
           event.preventDefault();
         }}
       >
         <NoOptionContainer
-          onClick={event => {
+          onClick={(event) => {
             if (inputState) {
               event.stopPropagation();
               event.preventDefault();
@@ -301,13 +301,13 @@ const LabelsSection = ({ disabled: disabledProperty }) => {
       value={selectedLabels}
       disableCloseOnSelect={!!currentEditableOption}
       getInputReference={getInputReference}
-      getOptionLabel={option => option?.labelName}
+      getOptionLabel={(option) => option?.labelName}
       isDisabled={disabledProperty}
       renderOption={renderOptionCallback}
       renderTags={renderTagsCallback}
       onInputChange={setInputState}
       InputProps={{
-        onKeyDown: event => {
+        onKeyDown: (event) => {
           if (event.key === 'Enter' && event?.target.value !== '') {
             event.stopPropagation();
             event.preventDefault();
@@ -318,7 +318,7 @@ const LabelsSection = ({ disabled: disabledProperty }) => {
       }}
       noOptionsText={noOptionText}
       onOpen={getAllLabels}
-      onChange={values => {
+      onChange={(values) => {
         const valuesLength = values.length;
         const value = values[valuesLength - 1];
         handleAddLabel(value);

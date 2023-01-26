@@ -1,7 +1,7 @@
 import React, { useCallback, useState, useMemo } from 'react';
 import uniq from 'ramda/src/uniq';
 import TaskViewTypeToolbarSelect from 'components/tasklist/TaskViewTypeToolbarSelect/TaskViewTypeToolbarSelect';
-import { Box } from '@material-ui/core';
+import { Box } from '@mui/material';
 import TaskStatusToolbarSelect from 'components/tasklist/TaskStatusToolbarSelect/TaskStatusToolbarSelect';
 // import CompleteTasksVisibilitySwitch from 'components/tasklist/CompleteTasksVisibilitySwitch/CompleteTasksVisibilitySwitch';
 import InboxTips from 'components/tasklist/InboxTips/InboxTips';
@@ -38,7 +38,7 @@ const ListDetailsToolbar = ({ additionalOptions, children }) => {
   const taskList = useSelector(currentTaskListSelector);
   const { taskListIdentifier, restrictCustomization } = taskList || {};
   const currentUserMember = taskList?.listUsers.find(
-    u => u.identifier === currentUser?.identifier,
+    (u) => u.identifier === currentUser?.identifier,
   );
   const isListAdmin = isMemberAdmin(currentUserMember);
   const viewType = getViewTypeFromQueryString(search);
@@ -53,7 +53,7 @@ const ListDetailsToolbar = ({ additionalOptions, children }) => {
     ) || {};
 
   const handleChangeViewType = useCallback(
-    event => {
+    (event) => {
       const queryParameters = new URLSearchParams(search);
       const value = event?.target.value ?? ViewType.LIST_VIEW;
       if (value === ViewType.LIST_VIEW) {
@@ -71,7 +71,7 @@ const ListDetailsToolbar = ({ additionalOptions, children }) => {
       taskList?.listType === 'PUBLIC'
         ? taskList
         : taskList?.listUsers?.find(
-            user => user.identifier === currentUser.identifier,
+            (user) => user.identifier === currentUser.identifier,
           ) ||
           taskList ||
           {},
@@ -79,7 +79,7 @@ const ListDetailsToolbar = ({ additionalOptions, children }) => {
   );
 
   const handleChangeTasksStatus = useCallback(
-    event => {
+    (event) => {
       history.push(
         `/core/tasks/${taskListIdentifier}${
           event.target.value === TaskStatus.INCOMPLETE
@@ -92,10 +92,10 @@ const ListDetailsToolbar = ({ additionalOptions, children }) => {
   );
 
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const handleTasksVisibilityChange = visible => {
+  const handleTasksVisibilityChange = (visible) => {
     const newDisplayOptions = visible
       ? uniq([...displayOptions, TASKS_VISIBILITY_KEY])
-      : displayOptions.filter(k => k !== TASKS_VISIBILITY_KEY);
+      : displayOptions.filter((k) => k !== TASKS_VISIBILITY_KEY);
 
     dispatch(
       updateUserListViewSetup(
@@ -139,11 +139,7 @@ const ListDetailsToolbar = ({ additionalOptions, children }) => {
               isOrganizationAdmin={isOrganizationAdmin}
               isListAdmin={isListAdmin}
             />
-            {taskList?.listType === 'INBOX' && (
-              <>
-                <InboxTips />
-              </>
-            )}
+            {taskList?.listType === 'INBOX' && <InboxTips />}
           </>
         )}
       </Box>

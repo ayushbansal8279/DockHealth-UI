@@ -1,5 +1,6 @@
 import styled from 'styled-components';
 import palette from 'styles/palette';
+// eslint-disable-next-line import/no-cycle
 import { Variants } from './ColorPicker';
 
 export const ColorPickerLabel = styled.label`

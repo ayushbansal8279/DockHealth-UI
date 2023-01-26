@@ -19,7 +19,7 @@ const CommentSection = ({ disabled }) => {
   const isWorkflowTemplate = useSelector(isWorkflowTemplateSelector);
   const workflowListIdentifier = useSelector(workflowListIdentifierSelector);
 
-  const handleAddComment = tokenizedComment => {
+  const handleAddComment = (tokenizedComment) => {
     dispatch(
       WorkflowActions.addWorkflowComment(workflowIdentifier, tokenizedComment),
     );
@@ -53,7 +53,7 @@ const CommentSection = ({ disabled }) => {
           onAdd={handleAddComment}
         />
       )}
-      {comments?.map(comment => (
+      {comments?.map((comment) => (
         <Comment
           key={comment.commentIdentifier}
           disableMentions={isWorkflowTemplate}

@@ -1,7 +1,7 @@
 import { bool, number, string, shape, func, oneOf } from 'prop-types';
 import React, { useMemo } from 'react';
 import { useSelector } from 'react-redux';
-import ExternalUserIcon from 'img/external-user-icon';
+// import ExternalUserIcon from 'img/external-user-icon';
 import { activeUsersListSelector } from 'selectors/active-users-selector';
 import Tooltip from 'components/common/Tooltip/Tooltip';
 import {
@@ -33,7 +33,7 @@ const UserAvatar = React.forwardRef(
 
     const activityStatus = useMemo(() => {
       if (isInactive) {
-        return undefined;
+        return;
       }
       return getUserActivityStatus(user, activeUsersList);
     }, [activeUsersList, isInactive, user]);

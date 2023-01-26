@@ -1,5 +1,5 @@
 import styled from 'styled-components';
-import { DataGrid } from '@material-ui/data-grid';
+import { DataGrid } from '@mui/x-data-grid';
 import { fontWeights, fontSizes } from 'styles/font';
 import palette from 'styles/palette';
 

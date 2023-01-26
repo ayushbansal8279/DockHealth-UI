@@ -9,10 +9,12 @@ export const getCompletedByLabel = (completedBy, completedDt) => {
       .replace(/^\.$/, '') || 'Unknown';
 
   return (
-    <CompletedByLabel>{`Completed by ${completedByName} ${completedDt &&
+    <CompletedByLabel>{`Completed by ${completedByName} ${
+      completedDt &&
       ` on ${
         completedDt ? `on ${moment(completedDt).format('MM/DD/YYYY')}` : ''
-      }`}
+      }`
+    }
   `}</CompletedByLabel>
   );
 };

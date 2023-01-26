@@ -1,5 +1,4 @@
-import { IconButton } from '@material-ui/core';
-import { withStyles } from '@material-ui/core/styles';
+import { IconButton } from '@mui/material';
 import styled from 'styled-components';
 import palette, { opacify } from 'styles/palette';
 
@@ -44,18 +43,22 @@ export const CalendarDayLabel = styled.div`
   }};
 `;
 
-export const CalendarIconButton = withStyles({
-  root: {
-    height: '1.75rem',
-    width: '1.75rem',
-  },
-  colorPrimary: {
-    backgroundColor: palette.brightBlue,
-    '&:hover': {
-      backgroundColor: opacify(palette.brightBlue, 0.8),
-    },
-  },
-})(IconButton);
+export const CalendarIconButton = styled(IconButton)`
+  &&& {
+    .MuiIconButton-root {
+      height: 1.75rem;
+      width: 1.75rem;
+    }
+
+    .MuiIconButton-colorPrimary {
+      background-color: ${palette.brightBlue};
+
+      &:hover {
+        background-color: ${opacify(palette.brightBlue, 0.8)};
+      }
+    }
+  }
+`;
 
 export const CalendarIconWrapper = styled.div`
   border-radius: 50%;

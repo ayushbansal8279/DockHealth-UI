@@ -1,8 +1,7 @@
 import styled from 'styled-components';
 import { fontSizes, fontWeights } from 'styles/font';
 import palette from 'styles/palette';
-import MuiCheckIcon from '@material-ui/icons/Check';
-import { withStyles } from '@material-ui/core/styles';
+import MuiCheckIcon from '@mui/icons-material/Check';
 
 export const Container = styled.div`
   width: 279px;
@@ -115,11 +114,13 @@ export const FeatureText = styled.p`
   font-size: ${fontSizes.smallPlus};
 `;
 
-export const CheckIcon = withStyles({
-  root: {
-    position: 'absolute',
-    left: -30,
-    top: '50%',
-    transform: 'translateY(-50%)',
-  },
-})(MuiCheckIcon);
+export const CheckIcon = styled(MuiCheckIcon)`
+  &&& {
+    .MuiCheckIcon-root {
+      position: absolute;
+      left: -30px;
+      top: 50%;
+      transform: translateY(-50%);
+    }
+  }
+`;

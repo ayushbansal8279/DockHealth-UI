@@ -1,6 +1,6 @@
 import styled from 'styled-components';
 import palette from 'styles/palette';
-import DockLogoSrc from 'img/dock-header-logo';
+import DockLogoSrc from 'img/dock-header-logo.svg';
 import { fontSizes, fontWeights } from 'styles/font';
 import prop from 'ramda/src/prop';
 

@@ -1,6 +1,6 @@
 import React from 'react';
 import { useSelector } from 'react-redux';
-import { Dialog } from '@material-ui/core';
+import { Dialog } from '@mui/material';
 import { downloadPatientImportTemplate } from 'api/patient-api';
 
 import Spacing from 'components/common/Spacing';

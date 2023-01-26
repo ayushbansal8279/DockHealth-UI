@@ -1,11 +1,11 @@
 import React from 'react';
 import { useSelector } from 'react-redux';
-import { Typography } from '@material-ui/core';
+import { Typography } from '@mui/material';
 import Button from 'components/common/Button/Button';
-import { MuiThemeProvider } from '@material-ui/core/styles';
+import { ThemeProvider as MuiThemeProvider } from '@mui/material/styles';
 import Spacing from 'components/common/Spacing';
 import { getCustomerTypeLabel } from 'helpers/customer-type-helper';
-import DownArrow from 'img/modals/down-arrow';
+import DownArrow from 'img/modals/down-arrow.svg';
 import { userProfileSelector } from 'selectors/user-selectors';
 import { redTheme } from '../../themes/red-theme';
 

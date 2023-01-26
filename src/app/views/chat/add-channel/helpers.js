@@ -18,7 +18,8 @@ export async function collectJoinedListMembers(taskListIdentifiers) {
     );
     listMemembers =
       listMemembers.length === 0
-        ? listMemembers.concat(responseMembers)
+        ? // eslint-disable-next-line unicorn/prefer-spread
+          listMemembers.concat(responseMembers)
         : innerJoin(
             (existingRecord, newRecord) =>
               existingRecord.identifier === newRecord.identifier,

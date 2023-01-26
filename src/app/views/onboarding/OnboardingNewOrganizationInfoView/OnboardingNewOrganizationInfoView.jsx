@@ -1,4 +1,4 @@
-import { Box, Grid } from '@material-ui/core';
+import { Box, Grid } from '@mui/material';
 import Button from 'components/common/Button/Button';
 import Spacing from 'components/common/Spacing';
 import React from 'react';

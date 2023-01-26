@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react';
-import TaskStatusIntroImage from 'img/tour/task-status/task-status-intro';
+import TaskStatusIntroImage from 'img/tour/task-status/task-status-intro.png';
 import Spacing from 'components/common/Spacing';
 import { onTourModalStepEnter } from 'helpers/ga-event-helper';
 import { Image, Title, Description } from '../../styled';

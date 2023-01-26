@@ -2,7 +2,7 @@ import styled from 'styled-components';
 import palette from 'styles/palette';
 import spacing from 'styles/spacing';
 import { fontWeights, fontSizes } from 'styles/font';
-import { Tab } from '@material-ui/core';
+import { Tab } from '@mui/material';
 
 export const PatientDetailsTabsContainer = styled.div`
   padding: 0 ${spacing.huge};

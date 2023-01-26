@@ -43,6 +43,7 @@ const useInitializeAttachmentsSectionHooks = () => {
     }
   }, [dispatch, patientIdentifier, folderIdentifier]);
 
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   const attachments = useSelector(patientAttachmentsSelector) || [];
   const folders = useSelector(patientFoldersSelector) || [];
 

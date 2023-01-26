@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react';
 import Spacing from 'components/common/Spacing';
-import ReminderImage from 'img/tour/multi-assign/reminders';
+import ReminderImage from 'img/tour/multi-assign/reminders.svg';
 import { onTourModalStepEnter } from 'helpers/ga-event-helper';
 import { Image, Title, Description } from '../../styled';
 

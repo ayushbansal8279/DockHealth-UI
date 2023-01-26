@@ -82,7 +82,7 @@ const TaskTemplateGroup = ({
   }, [isOpen, tasks]);
 
   const handleAddBundleTask = useCallback(
-    task => {
+    (task) => {
       const taskData = {
         ...task,
         taskGroupIdentifier: identifier,
@@ -102,8 +102,8 @@ const TaskTemplateGroup = ({
     () =>
       tasks.filter(
         isCompletedTab
-          ? task => showIncompleteTasks || task.status === TaskStatus.COMPLETE
-          : task => showCompletedTasks || task.status !== TaskStatus.COMPLETE,
+          ? (task) => showIncompleteTasks || task.status === TaskStatus.COMPLETE
+          : (task) => showCompletedTasks || task.status !== TaskStatus.COMPLETE,
       ),
     [showCompletedTasks, showIncompleteTasks, tasks, isCompletedTab],
   );
@@ -156,7 +156,7 @@ const TaskTemplateGroup = ({
                 }}
               >
                 <Droppable droppableId={templateGroup.identifier}>
-                  {templateDroppableProvided => (
+                  {(templateDroppableProvided) => (
                     <div
                       ref={templateDroppableProvided.innerRef}
                       {...templateDroppableProvided.droppableProps}
@@ -209,8 +209,8 @@ const TaskTemplateGroup = ({
                     disableMentions
                     quickAddTask={handleAddBundleTask}
                     onBlur={() => setIsAddingTask(false)}
-                    validator={value => {
-                      if ([...value]?.filter(char => char !== ' ').length < 2)
+                    validator={(value) => {
+                      if ([...value]?.filter((char) => char !== ' ').length < 2)
                         return 'The task description is too short (min. 2 characters)';
 
                       return null;

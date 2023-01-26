@@ -42,7 +42,7 @@ const SendESignFromTaskModal = () => {
   const selectedTask = useSelector(selectedTaskSelector);
 
   const handleEmailBlur = useCallback(
-    event => {
+    (event) => {
       const emailValue = event.target.value;
 
       if (!validateEmail(emailValue)) {

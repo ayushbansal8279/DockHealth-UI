@@ -5,7 +5,7 @@ import ChannelUI from '@sendbird/uikit-react/Channel/components/ChannelUI';
 import ChatChannelSettings from '../channel-settings/ChatChannelSettings';
 import ShowSettingsContext from '../ShowSettingsContext';
 
-const ChatChannelConversation = props => {
+const ChatChannelConversation = (props) => {
   const { currentChannelUrl } = props;
 
   const { setShowSettings, showSettings } = useContext(ShowSettingsContext);

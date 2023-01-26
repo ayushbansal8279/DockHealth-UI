@@ -1,5 +1,5 @@
 import React from 'react';
-import Spacing from 'components/common/Spacing.tsx';
+import Spacing from 'components/common/Spacing';
 import Button from 'components/common/Button/Button';
 import {
   Option,

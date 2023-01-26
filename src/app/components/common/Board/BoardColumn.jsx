@@ -1,4 +1,4 @@
-import { Box } from '@material-ui/core';
+import { Box } from '@mui/material';
 import React, { useCallback } from 'react';
 import { Draggable } from 'react-beautiful-dnd';
 import { useBoolean } from 'hooks/useBoolean';
@@ -16,11 +16,8 @@ const BoardColumn = ({
   onAddWorkflow,
   iconColorActive,
 }) => {
-  const [
-    isAddTaskFieldVisible,
-    showAddTaskField,
-    hideAddTaskField,
-  ] = useBoolean(false);
+  const [isAddTaskFieldVisible, showAddTaskField, hideAddTaskField] =
+    useBoolean(false);
 
   const handleAddTask = useCallback(
     ({ description }) => {

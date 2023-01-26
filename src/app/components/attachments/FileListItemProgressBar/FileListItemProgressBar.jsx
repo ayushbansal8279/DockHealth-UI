@@ -1,8 +1,8 @@
 import React from 'react';
-import { Box, LinearProgress } from '@material-ui/core';
+import { Box, LinearProgress } from '@mui/material';
 import { ProgressText, useLinearProgressStyles } from './styled';
 
-const FileListItemProgressBar = props => {
+const FileListItemProgressBar = (props) => {
   const { value } = props;
 
   const classes = useLinearProgressStyles();

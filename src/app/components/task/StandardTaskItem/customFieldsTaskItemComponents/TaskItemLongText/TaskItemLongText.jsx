@@ -1,13 +1,13 @@
 import React, { useCallback, useEffect, useRef } from 'react';
-import { Box } from '@material-ui/core';
-import { EditorState } from 'draft-js';
+import { Box } from '@mui/material';
+// import { EditorState } from 'draft-js';
 import { useBoolean } from 'hooks/useBoolean';
 import usePrevious from 'hooks/use-previous';
 import Tooltip from 'components/common/Tooltip/Tooltip';
 import TaskItemPopover from 'components/task/TaskItemPopover/TaskItemPopover';
 import CustomTextEditor from 'components/common/CustomTextEditor/CustomTextEditor';
 import TextEditor from 'components/common/TextEditor/TextEditor';
-import { createMentionEntities } from 'components/common/TextEditor/create-mention-entities';
+// import { createMentionEntities } from 'components/common/TextEditor/create-mention-entities';
 import { useMentionsEditorState } from 'components/common/TextEditor/use-mentions-editor-state';
 import {
   convertFromEditorStateToOutput,
@@ -40,8 +40,8 @@ const TaskItemLongText = ({
       true,
     );
     if (value !== tokenizedText) {
-      const newContent = createMentionEntities(value, value, [], true);
-      setDetailsState(EditorState.push(detailsState, newContent));
+      // const newContent = createMentionEntities(value, value, [], true);
+      // setDetailsState(EditorState.push(detailsState, newContent));
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [value]);
@@ -56,7 +56,7 @@ const TaskItemLongText = ({
   const previousIsFocused = usePrevious(isFocused);
 
   const updateDetails = useCallback(
-    state => {
+    (state) => {
       const { tokenizedText } = convertFromEditorStateToOutput(state, true);
       onChange(tokenizedText);
     },
@@ -71,7 +71,7 @@ const TaskItemLongText = ({
   }, [isFocused]);
 
   const onChangeDetailsEditor = useCallback(
-    state => {
+    (state) => {
       setDetailsState(state);
     },
     [setDetailsState],
@@ -81,6 +81,7 @@ const TaskItemLongText = ({
     <Box width="100%" height="100%" display="flex" alignItems="center">
       <TaskItemPopover
         fullWidth
+        // eslint-disable-next-line react/no-unstable-nested-components
         content={({ closePopover }) => (
           <Box
             width="450px"

@@ -3,7 +3,7 @@ import Spacing from 'components/common/Spacing';
 import RotatableChevron from 'components/common/RotatableChevron/RotatableChevron';
 import palette from 'styles/palette';
 import spacing from 'styles/spacing';
-import { Box, Collapse } from '@material-ui/core';
+import { Box, Collapse } from '@mui/material';
 import PropTypes from 'prop-types';
 import {
   LabeledCollapseWrapper,
@@ -21,7 +21,7 @@ const LabeledCollapse = ({
   const [openedItem, setOpenedItem] = useState(null);
 
   const handleClick = useCallback(
-    event => {
+    (event) => {
       if (typeof isOpened === 'boolean') {
         onClick(name, event);
       } else {

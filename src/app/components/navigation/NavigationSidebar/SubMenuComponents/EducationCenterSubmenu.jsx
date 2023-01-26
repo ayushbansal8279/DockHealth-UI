@@ -1,9 +1,9 @@
 import React, { useEffect, useMemo, useRef, useState } from 'react';
 import { useHistory } from 'react-router-dom';
-import { Box, Grid } from '@material-ui/core';
+import { Box, Grid } from '@mui/material';
 import InfoIcon from 'img/info';
-import SearchIcon from 'img/search-headsup';
-import SearchClearIcon from 'img/search-clear';
+import SearchIcon from 'img/search-headsup.svg';
+import SearchClearIcon from 'img/search-clear.svg';
 import Video from 'components/common/Video/Video';
 import spacing from 'styles/spacing';
 import Spacing from 'components/common/Spacing';
@@ -83,7 +83,7 @@ const EducationCenterSubmenu = () => {
         <EducationSearchInput
           ref={searchInputReference}
           value={searchValue}
-          onChange={event => setSearchValue(event.target?.value || '')}
+          onChange={(event) => setSearchValue(event.target?.value || '')}
         />
         {searchValue && (
           <>
@@ -96,7 +96,7 @@ const EducationCenterSubmenu = () => {
       </Grid>
       <EducationCenterTitle>Education Center</EducationCenterTitle>
       <EducationCenterList>
-        {filteredCategories.map(category => (
+        {filteredCategories.map((category) => (
           <Box
             key={category.name}
             width="100%"
@@ -104,11 +104,11 @@ const EducationCenterSubmenu = () => {
             pb={spacing.smallPlus}
           >
             <CategoryName>{category.name}</CategoryName>
-            {category.items.map(item => (
+            {category.items.map((item) => (
               <LabeledCollapse
                 key={item.name}
                 onClick={() =>
-                  setOpenedItem(previousOpenedItem =>
+                  setOpenedItem((previousOpenedItem) =>
                     previousOpenedItem === item.name ? null : item.name,
                   )
                 }

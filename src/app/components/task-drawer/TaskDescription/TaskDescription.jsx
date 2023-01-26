@@ -7,7 +7,7 @@ import React, {
   useRef,
   useState,
 } from 'react';
-import { EditorState } from 'draft-js';
+// import { EditorState } from 'draft-js';
 import { useDispatch, useSelector } from 'react-redux';
 import { addTask, updateTaskDescription } from 'actions/task-actions';
 import { useBoolean } from 'hooks/useBoolean';
@@ -18,7 +18,7 @@ import {
   convertToEditorState,
   isEditorStateEmpty,
 } from 'components/common/TextEditor/helpers';
-import { createMentionEntities } from 'components/common/TextEditor/create-mention-entities';
+// import { createMentionEntities } from 'components/common/TextEditor/create-mention-entities';
 import CustomTextEditor from 'components/common/CustomTextEditor/CustomTextEditor';
 import { useMentionsEditorState } from 'components/common/TextEditor/use-mentions-editor-state';
 import { selectedTaskSelector } from 'selectors/task-drawer-selectors';
@@ -58,13 +58,13 @@ const TaskDescription = ({ readOnly, disableMentions }) => {
   useLayoutEffect(() => {
     if (!firstRender.current && selectedTask) {
       if (selectedTask.description) {
-        const newContent = createMentionEntities(
-          selectedTask.tokenizedDescription,
-          selectedTask.description,
-          selectedTask.taskMentions,
-          false,
-        );
-        setDescriptionState(EditorState.push(descriptionState, newContent));
+        // const newContent = createMentionEntities(
+        //   selectedTask.tokenizedDescription,
+        //   selectedTask.description,
+        //   selectedTask.taskMentions,
+        //   false,
+        // );
+        // setDescriptionState(EditorState.push(descriptionState, newContent));
       } else {
         setDescriptionState();
       }
@@ -131,7 +131,7 @@ const TaskDescription = ({ readOnly, disableMentions }) => {
   ]);
 
   const handleChange = useCallback(
-    state => {
+    (state) => {
       if (descriptionErrorState) {
         const { tokenizedText } = convertFromEditorStateToOutput(state, false);
         if (tokenizedText) {
@@ -168,14 +168,12 @@ const TaskDescription = ({ readOnly, disableMentions }) => {
             onBlur={handleBlur}
             state={descriptionState}
             onChange={handleChange}
-            keyBindingFn={event => {
+            keyBindingFn={(event) => {
               if (event.key === 'Enter') {
                 return 'enter-command';
               }
-
-              return undefined;
             }}
-            handleKeyCommand={command => {
+            handleKeyCommand={(command) => {
               if (command === 'enter-command') {
                 // eslint-disable-next-line no-unused-expressions
                 descriptionReference.current?.blur();

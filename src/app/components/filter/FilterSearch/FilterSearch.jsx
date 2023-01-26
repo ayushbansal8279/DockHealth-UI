@@ -18,7 +18,7 @@ const FilterSearch = ({ value, onValueChange }) => {
         <FilterSearchInput
           onFocus={() => setInputFocus(true)}
           onBlur={() => setInputFocus(false)}
-          onChange={event => {
+          onChange={(event) => {
             event.preventDefault();
             event.stopPropagation();
             onValueChange(event.target.value);

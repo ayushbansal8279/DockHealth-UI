@@ -1,7 +1,7 @@
 import styled from 'styled-components';
 import palette from 'styles/palette';
 import { fontWeights } from 'styles/font';
-import { Grid } from '@material-ui/core';
+import { Grid } from '@mui/material';
 
 export const ToolbarContainer = styled(Grid)`
   position: relative;

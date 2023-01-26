@@ -13,7 +13,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import * as TaskActions from 'actions/task-actions';
 import * as ModalActions from 'modal/actions';
 import useActions from 'hooks/use-actions';
-import { Collapse } from '@material-ui/core';
+import { Collapse } from '@mui/material';
 import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd';
 import { getSharedTaskListsWithCurrentUser } from 'api/task-list-api';
 import {
@@ -42,7 +42,7 @@ import Spacing from 'components/common/Spacing';
 import { dashboardLastCreatedTaskIdentifierSelector } from 'selectors/dashboard-selectors';
 import { usePrevious } from 'react-use';
 import OptionsMenu from 'components/common/OptionsMenu/OptionsMenu';
-import { MoreVert } from '@material-ui/icons';
+import { MoreVert } from '@mui/icons-material';
 import { updateCurrentUserPreferences } from 'actions/user-actions';
 import { taskCustomFieldsSelector } from 'selectors/task-drawer-selectors';
 import { findIncompleteRequiredFields } from 'helpers/task-helpers';
@@ -118,9 +118,10 @@ const DashboardTasksGroup = ({
     }
   }, [dashboardTasks, isLoading, metricValue]);
 
-  const isGroupSelected = useMemo(() => checkIfAllTasksSelected(tasks), [
-    tasks,
-  ]);
+  const isGroupSelected = useMemo(
+    () => checkIfAllTasksSelected(tasks),
+    [tasks],
+  );
 
   const handleGroupSelect = useCallback(() => {
     const { parentTasks, subtasks } = extractTasksAndSubtasks(tasks);
@@ -149,15 +150,10 @@ const DashboardTasksGroup = ({
 
   const dueDateForQuickAdd = useMemo(() => {
     if (groupType === DashboardGroup.TODAY)
-      return moment()
-        .startOf('day')
-        .toISOString();
+      return moment().startOf('day').toISOString();
 
     if (groupType === DashboardGroup.NEXT_7_DAYS)
-      return moment()
-        .add(7, 'days')
-        .startOf('day')
-        .toISOString();
+      return moment().add(7, 'days').startOf('day').toISOString();
 
     return null;
   }, [groupType]);
@@ -169,9 +165,9 @@ const DashboardTasksGroup = ({
         fetchMethod: () => getSharedTaskListsWithCurrentUser(userIdentifier),
         listCreationPayload: {
           adminIdentifiers:
-            currentUser.userIdentifier !== userIdentifier
-              ? [userIdentifier]
-              : [],
+            currentUser.userIdentifier === userIdentifier
+              ? []
+              : [userIdentifier],
         },
         confirm: (taskListIdentifier, taskGroupIdentifier) => {
           dispatch(
@@ -198,7 +194,7 @@ const DashboardTasksGroup = ({
   );
 
   const handleToggleCompletedTask = useCallback(
-    task => {
+    (task) => {
       const incompleteRequiredFields = findIncompleteRequiredFields(
         templates,
         task,
@@ -215,7 +211,7 @@ const DashboardTasksGroup = ({
 
       const hasIncompletedSubtasks =
         task.subtasks?.length > 0
-          ? task.subtasks.find(subtask => subtask.status === 'INCOMPLETE')
+          ? task.subtasks.find((subtask) => subtask.status === 'INCOMPLETE')
           : task.subTasksCount - task.subTasksCompletedCount > 0;
 
       if (task.status === 'INCOMPLETE' && hasIncompletedSubtasks) {
@@ -252,7 +248,7 @@ const DashboardTasksGroup = ({
   }, [isFirstGroup, isLastGroup, moveGroupDown, moveGroupUp]);
 
   const handleOrderChange = useCallback(
-    listDisplayColumns => {
+    (listDisplayColumns) => {
       dispatch(
         updateCurrentUserPreferences({
           listDisplayColumns,
@@ -310,8 +306,8 @@ const DashboardTasksGroup = ({
                         storeAsCurrentTask(null);
                       }
                     }}
-                    validator={value => {
-                      if ([...value]?.filter(char => char !== ' ').length < 2)
+                    validator={(value) => {
+                      if ([...value]?.filter((char) => char !== ' ').length < 2)
                         return 'The task description is too short (min. 2 characters)';
 
                       return null;
@@ -335,9 +331,7 @@ const DashboardTasksGroup = ({
               onBeforeDragStart={showClearSortFiltersModal}
               onDragEnd={({ destination, source }) => {
                 if (!isSortApplied) {
-                  if (!destination) {
-                    openModal('HomeScreenDragDrop');
-                  } else {
+                  if (destination) {
                     const { index: destinationIndex } = destination;
                     const { index: sourceIndex } = source;
                     const newTasks = [...tasks];
@@ -353,12 +347,14 @@ const DashboardTasksGroup = ({
                       ({ taskIdentifier }) => taskIdentifier,
                     );
                     dispatch(reorderDashboardTasks(groupType, newTasksOrder));
+                  } else {
+                    openModal('HomeScreenDragDrop');
                   }
                 }
               }}
             >
               <Droppable droppableId={groupName}>
-                {providedDroppable => {
+                {(providedDroppable) => {
                   return (
                     <DroppableBox
                       ref={providedDroppable.innerRef}

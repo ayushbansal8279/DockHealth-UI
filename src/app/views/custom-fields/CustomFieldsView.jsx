@@ -1,5 +1,5 @@
 import React, { useCallback, useState, useEffect } from 'react';
-import { Box, Tabs, Tab } from '@material-ui/core';
+import { Box, Tabs, Tab } from '@mui/material';
 import { useHistory, useParams, Link } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 import {
@@ -49,7 +49,7 @@ const CustomFieldsView = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [userProfile]);
 
-  const applyProps = useCallback(id => {
+  const applyProps = useCallback((id) => {
     return {
       id: `full-width-tab-${id}`,
       'aria-controls': `full-width-tabpanel-${id}`,

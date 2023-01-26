@@ -46,7 +46,7 @@ const ActivityAlertsToasts = () => {
 
   const currentUser = useSelector(userProfileSelector);
 
-  const showActivityAlert = async alert => {
+  const showActivityAlert = async (alert) => {
     const alertDetails = await getActivityAlertDetails(
       alert.activityAlertIdentifier,
     );

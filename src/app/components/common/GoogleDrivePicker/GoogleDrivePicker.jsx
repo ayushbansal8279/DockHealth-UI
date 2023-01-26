@@ -58,7 +58,7 @@ const GoogleDrivePicker = ({
     );
   }, [clientId, scope]);
 
-  const doAuth = useCallback(callback => {
+  const doAuth = useCallback((callback) => {
     window.googleAPITokenClient.callback = callback;
 
     const oauthToken = localStorage.getItem('GAPI_ACCESS_TOKEN');
@@ -75,7 +75,7 @@ const GoogleDrivePicker = ({
 
   const createPicker = useCallback(
     // eslint-disable-next-line consistent-return
-    oauthToken => {
+    (oauthToken) => {
       onAuthenticate(oauthToken);
 
       const googleViewId = window.google.picker.ViewId[viewId];
@@ -151,7 +151,7 @@ const GoogleDrivePicker = ({
     } else {
       localStorage.removeItem('GAPI_ACCESS_TOKEN');
       localStorage.removeItem('GAPI_ACCESS_TOKEN_EXPIRATION');
-      doAuth(response => {
+      doAuth((response) => {
         if (response.access_token) {
           const accessTokenExpirationDT = moment().add(50, 'minutes');
           localStorage.setItem('GAPI_ACCESS_TOKEN', response.access_token);

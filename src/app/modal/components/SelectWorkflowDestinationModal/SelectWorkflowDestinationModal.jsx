@@ -1,5 +1,5 @@
 import React, { useState, useCallback } from 'react';
-import { Box, Grid } from '@material-ui/core';
+import { Box, Grid } from '@mui/material';
 import Button from 'components/common/Button/Button';
 import { Container, StepsContainer } from './styled';
 import {

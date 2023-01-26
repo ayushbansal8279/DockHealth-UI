@@ -1,5 +1,5 @@
 import React, { useState, useCallback, useRef } from 'react';
-import { Box, Grid } from '@material-ui/core';
+import { Box, Grid } from '@mui/material';
 import Button from 'components/common/Button/Button';
 import { useDispatch, useSelector } from 'react-redux';
 import { userProfileSelector } from 'selectors/user-selectors';
@@ -45,10 +45,12 @@ const SelectDestinationModal = ({
         adminIdentifiers: [currentUser.userIdentifier],
         listName,
       })
-        .then(createdList => {
+        .then((createdList) => {
           setSavingList(false);
           setSelectedList(createdList);
-          setLists(previousLists => setLists([...previousLists, createdList]));
+          setLists((previousLists) =>
+            setLists([...previousLists, createdList]),
+          );
           addListInput.current.value = '';
           dispatch(getTaskListForUser());
           callback(createdList);
@@ -61,7 +63,7 @@ const SelectDestinationModal = ({
   );
 
   const handleConfirm = useCallback(
-    createdList => {
+    (createdList) => {
       const taskList = createdList || selectedList;
 
       if (!taskList) return;
@@ -106,11 +108,11 @@ const SelectDestinationModal = ({
   }, [handleAddNewList, handleConfirm]);
 
   const handleNextStep = useCallback(() => {
-    setStepIndex(previousStepIndex => previousStepIndex + 1);
+    setStepIndex((previousStepIndex) => previousStepIndex + 1);
   }, []);
 
   const handlePreviousStep = useCallback(() => {
-    setStepIndex(previousStepIndex => previousStepIndex - 1);
+    setStepIndex((previousStepIndex) => previousStepIndex - 1);
   }, []);
 
   return (

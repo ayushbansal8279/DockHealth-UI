@@ -120,7 +120,10 @@ const useInitializeListDetailsViewHooks = () => {
   }, [dispatch]);
 
   const refreshAccessToken = useCallback((user) => {
-    const systemTimeout = Number.parseInt(process.env.HEALTHCHECK_INTERVAL, 10);
+    const systemTimeout = Number.parseInt(
+      import.meta.env.HEALTHCHECK_INTERVAL,
+      10,
+    );
 
     if (sessionStorage.refreshAccessTokenTimeoutId) {
       clearTimeout(sessionStorage.refreshAccessTokenTimeoutId);
@@ -442,10 +445,13 @@ const useInitializeListDetailsViewHooks = () => {
     return () => {};
   }, [currentUserIdentifier]);
 
-  const VIEW_LIST_OPTIONS_CONFIG = {
-    SHOW_WORKFLOW_DETAILS: false,
-    SHOW_WORKFLOW_COMPLETED_TASKS: false,
-  };
+  const VIEW_LIST_OPTIONS_CONFIG = useMemo(
+    () => ({
+      SHOW_WORKFLOW_DETAILS: false,
+      SHOW_WORKFLOW_COMPLETED_TASKS: false,
+    }),
+    [],
+  );
 
   useEffect(() => {
     setCurrentList(taskList);

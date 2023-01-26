@@ -1,4 +1,4 @@
-import linkifyString from 'linkifyjs/string';
+import * as linkifyString from 'linkifyjs';
 import escape from 'lodash.escape';
 import escapeRegExp from 'lodash.escaperegexp';
 import curry from 'ramda/src/curry';
@@ -40,7 +40,7 @@ export const mergeRefs = (refs) => (value) => {
   for (const reference of refs) {
     if (typeof reference === 'function') {
       reference(value);
-    } else if (reference != undefined) {
+    } else if (reference !== undefined) {
       // eslint-disable-next-line no-param-reassign
       reference.current = value;
     }

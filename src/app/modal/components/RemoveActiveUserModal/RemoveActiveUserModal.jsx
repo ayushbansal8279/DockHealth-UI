@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from 'react';
-import { Typography } from '@material-ui/core';
+import { Typography } from '@mui/material';
 import Button from 'components/common/Button/Button';
-import { MuiThemeProvider } from '@material-ui/core/styles';
+import { ThemeProvider as MuiThemeProvider } from '@mui/material/styles';
 import Spacing from 'components/common/Spacing';
-import folderUser from 'img/modals/user-folder';
+import folderUser from 'img/modals/user-folder.png';
 import { getUserActiveTasksCount } from 'api/user-api';
 import { redTheme } from '../../themes/red-theme';
 import {

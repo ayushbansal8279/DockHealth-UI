@@ -1,7 +1,7 @@
 import React, { useMemo, useCallback, useEffect } from 'react';
-import { Popover } from '@material-ui/core';
+import { Popover } from '@mui/material';
 import Search from 'components/task-view/Search/Search';
-import Folder from 'img/folder';
+import Folder from 'img/folder.svg';
 import ArrowLeftIcon from 'img/arrow-left.svg';
 import { trunc } from 'helpers/utility-functions';
 import {
@@ -55,7 +55,7 @@ const TaskTemplatePopover = ({
   }, [onSearchChange, open, searchPhrase]);
 
   const renderTemplate = useCallback(
-    folder => {
+    (folder) => {
       const { taskTemplateIdentifier, name } = folder;
 
       return (
@@ -71,7 +71,7 @@ const TaskTemplatePopover = ({
   );
 
   const renderFolder = useCallback(
-    folder => {
+    (folder) => {
       const { taskTemplateIdentifier, name } = folder;
       return (
         <ListItem key={taskTemplateIdentifier}>
@@ -116,7 +116,7 @@ const TaskTemplatePopover = ({
           fullWidth
           noBackground
           value={searchPhrase}
-          onChange={event => onSearchChange(event?.target?.value)}
+          onChange={(event) => onSearchChange(event?.target?.value)}
           placeholder="Search Workflows"
         />
       </SearchContainer>
@@ -142,12 +142,12 @@ const TaskTemplatePopover = ({
           folders?.length > 0 &&
           folders
             .sort((a, b) => a.name.localeCompare(b.name))
-            .map(folder => renderFolder(folder))}
+            .map((folder) => renderFolder(folder))}
         {!taskTemplatesIsLoading &&
           templates?.length > 0 &&
           templates
             .sort((a, b) => a.name.localeCompare(b.name))
-            .map(folder => renderTemplate(folder))}
+            .map((folder) => renderTemplate(folder))}
         {!taskTemplatesIsLoading && taskTemplatesList?.length === 0 && (
           <EmptyLabel>There are no workflows to select from</EmptyLabel>
         )}

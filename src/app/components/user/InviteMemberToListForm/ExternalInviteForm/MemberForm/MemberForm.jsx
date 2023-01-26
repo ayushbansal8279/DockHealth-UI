@@ -1,5 +1,5 @@
 import React from 'react';
-import { Grid } from '@material-ui/core';
+import { Grid } from '@mui/material';
 import { FormProvider, useForm } from 'react-hook-form';
 import Spacing from 'components/common/Spacing';
 import Button from 'components/common/Button/Button';

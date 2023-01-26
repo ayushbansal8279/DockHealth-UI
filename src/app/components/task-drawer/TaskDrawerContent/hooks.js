@@ -12,9 +12,9 @@ import {
 import { useHistory, useParams } from 'react-router-dom';
 import { useDispatch, useSelector, batch } from 'react-redux';
 import moment from 'moment';
-import { EditorState } from 'draft-js';
+// import { EditorState } from 'draft-js';
 import { useMentionsEditorState } from 'components/common/TextEditor/use-mentions-editor-state';
-import { createMentionEntities } from 'components/common/TextEditor/create-mention-entities';
+// import { createMentionEntities } from 'components/common/TextEditor/create-mention-entities';
 import * as TaskApi from 'api/task-api';
 import {
   partialUpdateTask,
@@ -126,19 +126,19 @@ const initializeTaskDrawerHooks = ({
 
   useLayoutEffect(() => {
     if (selectedParentTask) {
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
       const { tokenizedDescription, description, taskMentions } =
         selectedParentTask;
       if (description) {
-        const newContent = createMentionEntities(
-          tokenizedDescription,
-          description,
-          taskMentions,
-          false,
-        );
-
-        setParentDescriptionState(
-          EditorState.push(parentDescriptionState, newContent),
-        );
+        // const newContent = createMentionEntities(
+        //   tokenizedDescription,
+        //   description,
+        //   taskMentions,
+        //   false,
+        // );
+        // setParentDescriptionState(
+        //   EditorState.push(parentDescriptionState, newContent),
+        // );
       }
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -198,7 +198,7 @@ const initializeTaskDrawerHooks = ({
           event.stopPropagation();
         }
 
-        if (selectedTask && selectedTask.taskIdentifier != undefined) {
+        if (selectedTask && selectedTask.taskIdentifier !== undefined) {
           try {
             const newTask = await duplicateTask(
               selectedTask,

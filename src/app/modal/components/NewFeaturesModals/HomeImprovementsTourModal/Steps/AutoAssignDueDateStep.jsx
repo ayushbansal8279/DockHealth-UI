@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react';
-import AutoAssignDueDateImage from 'img/tour/home-improvements/auto-assign-due-date';
+import AutoAssignDueDateImage from 'img/tour/home-improvements/auto-assign-due-date.svg';
 import Spacing from 'components/common/Spacing';
 import { onMentionsTourModalEvent } from 'helpers/ga-event-helper';
 import { Image, Title, Description } from '../../styled';

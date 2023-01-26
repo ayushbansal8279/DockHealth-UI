@@ -5,16 +5,9 @@ import PriorityFilterOption from 'components/filter/PriorityFilterOption/Priorit
 import FilterOption from 'components/filter/FilterOption/FilterOption';
 import { FilterOptionsCategory } from 'helpers/filter-options-helpers';
 
-const FilterOptionByCategory = props => {
-  const {
-    categoryId,
-    id,
-    selected,
-    displayValue,
-    count,
-    reference,
-    onClick,
-  } = props;
+const FilterOptionByCategory = (props) => {
+  const { categoryId, id, selected, displayValue, count, reference, onClick } =
+    props;
 
   switch (categoryId) {
     case FilterOptionsCategory.ASSIGNED_TO:

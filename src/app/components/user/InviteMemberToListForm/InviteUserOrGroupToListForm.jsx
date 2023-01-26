@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useMemo } from 'react';
-import { Grid, IconButton, ClickAwayListener } from '@material-ui/core';
-import { MoreVert } from '@material-ui/icons';
+import { Grid, IconButton, ClickAwayListener } from '@mui/material';
+import { MoreVert } from '@mui/icons-material';
 import { useDispatch, useSelector } from 'react-redux';
 import * as TaskListApi from 'api/task-list-api';
 import * as OrganizationApi from 'api/organization-api';
@@ -42,13 +42,10 @@ const InviteUserOrGroupToListForm = ({
 }) => {
   const dispatch = useDispatch();
   const [isSavingList, setIsSavingList] = useState(false);
-  const [
-    isUpdatingUsersAndGroupsList,
-    setIsUpdatingUsersAndGroupsList,
-  ] = useState(false);
-  const [listUsersAndGroupsFetched, setListUsersAndGroupsFetched] = useState(
-    false,
-  );
+  const [isUpdatingUsersAndGroupsList, setIsUpdatingUsersAndGroupsList] =
+    useState(false);
+  const [listUsersAndGroupsFetched, setListUsersAndGroupsFetched] =
+    useState(false);
   const [
     allOrganizationUsersAndGroupsFetched,
     setAllOrganizationUsersAndGroupsFetched,
@@ -57,15 +54,13 @@ const InviteUserOrGroupToListForm = ({
     opened: false,
   });
   const [listUsersAndGroups, setListUsersAndGroups] = useState([]);
-  const [
-    allOrganizationUsersAndGroups,
-    setAllOrganizationUsersAndGroups,
-  ] = useState([]);
+  const [allOrganizationUsersAndGroups, setAllOrganizationUsersAndGroups] =
+    useState([]);
 
   useEffect(() => {
     setAllOrganizationUsersAndGroupsFetched(false);
     OrganizationApi.getOrganizationUsersAndUserGroups().then(
-      organizationMembers => {
+      (organizationMembers) => {
         setAllOrganizationUsersAndGroups(organizationMembers);
         setAllOrganizationUsersAndGroupsFetched(true);
       },
@@ -83,7 +78,7 @@ const InviteUserOrGroupToListForm = ({
       onMembersRefresh();
 
     TaskListApi.getMembersByTaskListId(list.taskListIdentifier, 'ALL')
-      .then(usersAndGroups => {
+      .then((usersAndGroups) => {
         setListUsersAndGroups(usersAndGroups);
         setListUsersAndGroupsFetched(true);
         setIsUpdatingUsersAndGroupsList(false);
@@ -105,7 +100,7 @@ const InviteUserOrGroupToListForm = ({
   const organizationUsersAndGroupsNotInTheList = useMemo(
     () =>
       allOrganizationUsersAndGroups.filter(
-        organizationMember =>
+        (organizationMember) =>
           !listUsersAndGroups.some(
             ({ identifier }) => organizationMember.identifier === identifier,
           ),
@@ -121,7 +116,7 @@ const InviteUserOrGroupToListForm = ({
     return currentUserInList?.taskListUserRole;
   }, [userProfile, listUsersAndGroups]);
 
-  const handleInviteMembers = members => {
+  const handleInviteMembers = (members) => {
     setIsSavingList(true);
     const newMembersIdentifiers = members.map(({ identifier }) => identifier);
     const requestTaskList = {
@@ -138,7 +133,7 @@ const InviteUserOrGroupToListForm = ({
         refreshListUsersAndGroups();
         setIsSavingList(false);
       })
-      .catch(error => {
+      .catch((error) => {
         setIsSavingList(false);
         showAlert({
           status: 'error',
@@ -160,7 +155,7 @@ const InviteUserOrGroupToListForm = ({
       });
   };
 
-  const removeUserFromList = identifier => {
+  const removeUserFromList = (identifier) => {
     setIsUpdatingUsersAndGroupsList(true);
 
     TaskListApi.removeUserFromTaskList(list.taskListIdentifier, identifier)
@@ -173,7 +168,7 @@ const InviteUserOrGroupToListForm = ({
       });
   };
 
-  const cancelInviteToList = identifier => {
+  const cancelInviteToList = (identifier) => {
     setIsUpdatingUsersAndGroupsList(true);
 
     TaskListApi.cancelInviteToTaskList(list.taskListIdentifier, identifier)
@@ -185,7 +180,7 @@ const InviteUserOrGroupToListForm = ({
       });
   };
 
-  const resendInvitationToList = identifier => {
+  const resendInvitationToList = (identifier) => {
     setIsUpdatingUsersAndGroupsList(true);
 
     TaskListApi.inviteUserToTaskList(list.taskListIdentifier, identifier)
@@ -197,7 +192,7 @@ const InviteUserOrGroupToListForm = ({
       });
   };
 
-  const resendApprovalRequestToList = identifier => {
+  const resendApprovalRequestToList = (identifier) => {
     setIsUpdatingUsersAndGroupsList(true);
 
     OrganizationApi.resendApprovalRequestUserForOrganization(identifier)
@@ -209,7 +204,7 @@ const InviteUserOrGroupToListForm = ({
       });
   };
 
-  const handleOpenExternalInviteForm = searchedValue => {
+  const handleOpenExternalInviteForm = (searchedValue) => {
     const [firstName, lastName] = searchedValue?.split(' ');
     const emailEntered = isEmail(searchedValue);
     setExternalInviteFormState({
@@ -240,7 +235,7 @@ const InviteUserOrGroupToListForm = ({
           />
           <Spacing vertical={4} />
           <UserOrGroupListWrapper>
-            {listUsersAndGroups.map(userOrGroup => {
+            {listUsersAndGroups.map((userOrGroup) => {
               const status = getMemberStatus(userOrGroup);
               return (
                 <ListItem key={userOrGroup.identifier}>
@@ -286,12 +281,10 @@ const InviteUserOrGroupToListForm = ({
             })}
           </UserOrGroupListWrapper>
           {isUpdatingUsersAndGroupsList && (
-            <>
-              <Grid container direction="column" alignItems="center">
-                <Spacing vertical={3} />
-                <Loader />
-              </Grid>
-            </>
+            <Grid container direction="column" alignItems="center">
+              <Spacing vertical={3} />
+              <Loader />
+            </Grid>
           )}
         </>
       ) : (

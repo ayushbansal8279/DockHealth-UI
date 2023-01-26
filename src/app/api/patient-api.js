@@ -1,4 +1,5 @@
 import { fixList } from 'helpers/inbox-fix';
+import { log } from 'helpers/log';
 import { noop, showAlert } from 'helpers/utility-functions';
 
 import axios from './axios-heydoc';
@@ -8,7 +9,7 @@ export function getAllPatients() {
     .get('patient/getAllPatients?active=true')
     .then((response) => response.data)
     .catch((error) => {
-      console.log(error);
+      log(error);
       throw new Error(error?.response?.data?.errorMessage);
     });
 }
@@ -17,7 +18,7 @@ export function getSharedPatients() {
     .get('patient/getSharedPatients?active=true')
     .then((response) => response.data)
     .catch((error) => {
-      console.log(error);
+      log(error);
       throw new Error(error?.response?.data?.errorMessage);
     });
 }
@@ -26,7 +27,7 @@ export function getMyPatientsAll() {
     .get('patient/getPatientsForCurrentUser')
     .then((response) => response.data)
     .catch((error) => {
-      console.log(error);
+      log(error);
       throw new Error(error?.response?.data?.errorMessage);
     });
 }
@@ -36,7 +37,7 @@ export function getMyPatientsActive() {
     .get('patient/getPatientsForCurrentUser?taskStatus=INCOMPLETE')
     .then((response) => response.data)
     .catch((error) => {
-      console.log(error);
+      log(error);
       throw new Error(error?.response?.data?.errorMessage);
     });
 }
@@ -46,7 +47,7 @@ export function getPatientsByTaskList(taskListIdentifier) {
     .get(`patient/getPatientsByTaskList/${taskListIdentifier}`)
     .then((response) => response.data)
     .catch((error) => {
-      console.log(error);
+      log(error);
       throw new Error(error?.response?.data?.errorMessage);
     });
 }
@@ -56,7 +57,7 @@ export function getPatientsByName(searchedPatientName) {
     .get(`patient/getPatientsByName?inputStr=${searchedPatientName}`)
     .then((response) => response.data)
     .catch((error) => {
-      console.log(error);
+      log(error);
       throw new Error(error?.response?.data?.errorMessage);
     });
 }
@@ -66,7 +67,7 @@ export function getPatientById(patientIdentifier) {
     .get(`patient/${patientIdentifier}`)
     .then((response) => response.data)
     .catch((error) => {
-      console.log(error);
+      log(error);
       throw new Error(error?.response?.data?.errorMessage);
     });
 }
@@ -76,7 +77,7 @@ export function lookupEMRPatient(patientId) {
     .get(`patient/lookupEMRPatient/${patientId}`)
     .then((response) => response.data)
     .catch((error) => {
-      console.log(error);
+      log(error);
       throw new Error(error?.response?.data?.errorMessage);
     });
 }
@@ -86,7 +87,7 @@ export function removePatient(patientIdentifier) {
     .delete(`patient/${patientIdentifier}`)
     .then((response) => response)
     .catch((error) => {
-      console.log(error);
+      log(error);
       throw new Error(error?.response?.data?.errorMessage);
     });
 }
@@ -96,7 +97,7 @@ export function addPatient(patient) {
     .post('patient', patient)
     .then((response) => response.data)
     .catch((error) => {
-      console.log(error);
+      log(error);
       showAlert({
         status: 'error',
         title: 'Error',
@@ -122,7 +123,7 @@ export function updatePatient(patientIdentifier, details) {
     .patch(`patient/${patientIdentifier}`, patientDetails)
     .then((response) => response.data)
     .catch((error) => {
-      console.log(error);
+      log(error);
       showAlert({
         status: 'error',
         title: 'Error',
@@ -139,7 +140,7 @@ export function addPatientToTask(patientIdentifier, taskIdentifier) {
     )
     .then((response) => response.data)
     .catch((error) => {
-      console.log(error);
+      log(error);
       throw new Error(error?.response?.data?.errorMessage);
     });
 }
@@ -149,7 +150,7 @@ export function lookupEMRPatients(searchToken) {
     .get(`patient/lookupEMRPatients?searchToken=${searchToken}`)
     .then((response) => response.data)
     .catch((error) => {
-      console.log(error);
+      log(error);
       throw new Error(error?.response?.data?.errorMessage);
     });
 }
@@ -160,7 +161,7 @@ export function deletePatient(patientIdentifier) {
     .get(`patient/deletePatient/${patientIdentifier}`)
     .then((response) => response)
     .catch((error) => {
-      console.log(error);
+      log(error);
     });
 }
 
@@ -175,7 +176,7 @@ export const findUserTasksByPatient = (patientIdentifier, status) =>
     .get(`/task/findUserTasksByPatient/${patientIdentifier}?status=${status}`)
     .then((response) => fixList(response.data))
     .catch((error) => {
-      console.error(error);
+      error(error);
       throw new Error(error?.response?.data?.errorMessage);
     });
 
@@ -308,7 +309,7 @@ export function getLatestPatientImportDetails() {
     .get('patient/getLatestPatientImportProcessStatus')
     .then((response) => response.data)
     .catch((error) => {
-      console.log(error);
+      log(error);
       throw new Error(error?.response?.data?.errorMessage);
     });
 }
@@ -328,7 +329,7 @@ export function getPatientWidgets() {
     .get('widget/getAll/PATIENT')
     .then((response) => response.data)
     .catch((error) => {
-      console.log(error);
+      log(error);
       throw new Error(error?.response?.data?.errorMessage);
     });
 }

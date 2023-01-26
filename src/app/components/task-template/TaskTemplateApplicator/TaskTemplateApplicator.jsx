@@ -43,10 +43,10 @@ const TaskTemplateApplicator = ({
 
   const dispatch = useDispatch();
   const getNestedTemplatesList = useCallback(
-    identifier => {
+    (identifier) => {
       setTaskTemplatesIsLoading(true);
       getTemplatesForSpecificFolder(identifier)
-        .then(templatesList => {
+        .then((templatesList) => {
           setTaskTemplatesList(templatesList);
           setTaskTemplatesIsLoading(false);
         })
@@ -61,7 +61,7 @@ const TaskTemplateApplicator = ({
     setTaskTemplatesIsLoading(true);
     setParentList([]);
     getTemplates()
-      .then(templatesList => {
+      .then((templatesList) => {
         setTaskTemplatesList(templatesList);
         setTaskTemplatesIsLoading(false);
       })
@@ -71,7 +71,7 @@ const TaskTemplateApplicator = ({
   }, [setTaskTemplatesIsLoading]);
 
   const handleTemplateSelect = useCallback(
-    template => {
+    (template) => {
       onTemplateSelect(template);
       closePopover();
       if (bulkApply) {
@@ -90,7 +90,7 @@ const TaskTemplateApplicator = ({
   }, [closePopover, setSearchValue, setParentList]);
 
   const handleFolderClick = useCallback(
-    folder => {
+    (folder) => {
       setParentList([...(parentList || []), folder]);
       getNestedTemplatesList(folder.identifier);
     },
@@ -119,7 +119,7 @@ const TaskTemplateApplicator = ({
         setParentList([]);
         setTaskTemplatesIsLoading(true);
         searchTemplates(searchPhrase)
-          .then(templatesList => {
+          .then((templatesList) => {
             setTaskTemplatesList(templatesList);
             setTaskTemplatesIsLoading(false);
           })
@@ -134,7 +134,7 @@ const TaskTemplateApplicator = ({
   );
 
   const handleSearch = useCallback(
-    searchPhrase => {
+    (searchPhrase) => {
       setSearchValue(searchPhrase);
       debouncedSearch(searchPhrase);
     },

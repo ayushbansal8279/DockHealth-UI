@@ -63,6 +63,7 @@ import { openModal } from 'modal/actions';
 import { applyTaskTemplate as applyTaskTemplateAction } from 'actions/list-details-actions';
 import * as CustomFieldsApi from 'api/custom-fields-api';
 import { getTasksForWorkflow } from 'actions/template-bundle-actions';
+import { log } from 'helpers/log';
 import store from '../store';
 
 export const DO_CREATE_TASK = 'DO_CREATE_TASK';
@@ -116,7 +117,7 @@ function* doGetListDetailsCounters({ payload }) {
     yield put({
       type: ActionTypes.GET_LIST_DETAILS_TASK_COUNTERS_FAILURE,
     });
-    console.log(error);
+    log(error);
   }
 }
 
@@ -133,7 +134,7 @@ function* getTasksGroupsList() {
       groups,
     });
   } catch (error) {
-    console.log('error', error);
+    log('error', error);
     yield put({ type: ActionTypes.GET_TASKS_GROUPS_LIST_FAILURE });
   }
 }
@@ -232,7 +233,7 @@ function* refreshGroupedTasks({ payload }) {
     const { withLoader = true } = payload || {};
     yield put(ListDetailsActions.getCurrentListTasks(withLoader));
   } catch (error) {
-    console.log(error);
+    log(error);
   }
 }
 
@@ -310,7 +311,7 @@ function* getTasksForTaskGroups(payload) {
 
     return groupOfTasks;
   } catch (error) {
-    console.log(error);
+    log(error);
     yield put(showGlobalErrorAlert());
   }
 }
@@ -484,7 +485,7 @@ function* initializeListDetailsTableState() {
       yield put(openDrawer());
     }
   } catch (error) {
-    console.log('error', error);
+    log('error', error);
     yield put(showGlobalErrorAlert());
   }
 }
@@ -611,7 +612,7 @@ function* applyTaskTemplateFailure({
     };
     yield put(openModal('UnassignTaskTemplate', modalProps));
   } else {
-    console.log(error);
+    log(error);
     yield put(showGlobalErrorAlert());
   }
 }

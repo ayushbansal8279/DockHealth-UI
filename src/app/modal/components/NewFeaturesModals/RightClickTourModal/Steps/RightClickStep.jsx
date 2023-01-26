@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react';
 import Spacing from 'components/common/Spacing';
-import RightClickImage from 'img/tour/right-click/right-click';
+import RightClickImage from 'img/tour/right-click/right-click.png';
 import { onTourModalStepEnter } from 'helpers/ga-event-helper';
 import { Image, Title, Description } from '../../styled';
 

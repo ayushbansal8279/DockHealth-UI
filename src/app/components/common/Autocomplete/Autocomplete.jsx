@@ -3,21 +3,25 @@
 /* eslint-disable no-unused-expressions */
 import React, { useEffect, useRef, useCallback } from 'react';
 import propTypes from 'prop-types';
-import { Autocomplete as AutocompleteMUI } from '@material-ui/lab';
-import { withStyles } from '@material-ui/core/styles';
+import { Autocomplete as AutocompleteMUI } from '@mui/lab';
 import Input from 'components/common/Input/Input';
+import styled from 'styled-components';
 
-const StandardAutocompleteMUI = withStyles({
-  option: {
-    padding: 0,
-  },
-  listbox: {
-    padding: 0,
-  },
-  noOptions: {
-    padding: 0,
-  },
-})(AutocompleteMUI);
+const StandardAutocompleteMUI = styled(AutocompleteMUI)`
+  &&& {
+    .MuiAutocomplete-option {
+      padding: 0;
+    }
+
+    .MuiAutocomplete-listbox {
+      padding: 0;
+    }
+
+    .MuiAutocomplete-noOptions {
+      padding: 0;
+    }
+  }
+`;
 
 const StandardInput = ({
   label,
@@ -32,24 +36,22 @@ const StandardInput = ({
   const { InputProps: InputPropsParams, ...restParams } = params;
 
   return (
-    <>
-      <Input
-        label={label}
-        fullWidth
-        id={`autocomplete-input-${label}`}
-        onBlur={onBlurInput}
-        onFocus={onFocusInput}
-        placeholder={placeholder}
-        ref={textFieldReference}
-        disabled={isInputDisabled}
-        InputProps={{
-          ...InputPropsParams,
-          disableUnderline: true,
-          ...CustomInputProps,
-        }}
-        {...restParams}
-      />
-    </>
+    <Input
+      label={label}
+      fullWidth
+      id={`autocomplete-input-${label}`}
+      onBlur={onBlurInput}
+      onFocus={onFocusInput}
+      placeholder={placeholder}
+      ref={textFieldReference}
+      disabled={isInputDisabled}
+      InputProps={{
+        ...InputPropsParams,
+        disableUnderline: true,
+        ...CustomInputProps,
+      }}
+      {...restParams}
+    />
   );
 };
 
@@ -105,7 +107,7 @@ const Autocomplete = ({
   }, [getInputReference, textFieldReference]);
 
   const renderInput = useCallback(
-    parameters =>
+    (parameters) =>
       CustomInput ? (
         <CustomInput
           isInputDisabled={isInputDisabled}

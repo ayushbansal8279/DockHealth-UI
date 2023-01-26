@@ -1,8 +1,8 @@
 import React, { useMemo, useState, useRef, useCallback } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { useHistory } from 'react-router-dom';
-import { Grid, IconButton } from '@material-ui/core';
-import { MoreVert } from '@material-ui/icons';
+import { Grid, IconButton } from '@mui/material';
+import { MoreVert } from '@mui/icons-material';
 import { SUBS_SETTINGS_PATH } from 'routing/helpers/paths';
 import { userOrganizationsSelector } from 'selectors/user-selectors';
 import { logout } from 'api/user-auth-api';
@@ -31,7 +31,7 @@ import {
   SubmenuDivider,
 } from './styled';
 
-const MASTER_ROLES = ['ADMIN', 'OWNER'];
+const MASTER_ROLES = new Set(['ADMIN', 'OWNER']);
 const GUEST_ROLE = 'GUEST';
 
 const OrganizationSubmenu = ({
@@ -112,7 +112,7 @@ const OrganizationSubmenu = ({
 
   const menuOptions = useMemo(
     () => [
-      MASTER_ROLES.includes(orgUserRole) && {
+      MASTER_ROLES.has(orgUserRole) && {
         name: 'Edit Organization',
         onClick: handleEditOrganization,
       },
@@ -120,7 +120,7 @@ const OrganizationSubmenu = ({
         name: 'Leave Organization',
         onClick: handleLeaveOrganiztion,
       },
-      MASTER_ROLES.includes(orgUserRole) && {
+      MASTER_ROLES.has(orgUserRole) && {
         name: 'Manage Users',
         onClick: () => history.push(SUBS_SETTINGS_PATH),
       },
@@ -160,7 +160,7 @@ const OrganizationSubmenu = ({
           </Grid>
           <SubmenuDivider />
           <DrawerOrganizationsList>
-            {availableUserOrganizations?.map(org => (
+            {availableUserOrganizations?.map((org) => (
               <>
                 <OrganizationIdentifier
                   isOpen
@@ -174,7 +174,7 @@ const OrganizationSubmenu = ({
                   onSelect={() =>
                     selectCurrentOrganization(org?.organizationIdentifier)
                   }
-                  onMouseEnterName={event =>
+                  onMouseEnterName={(event) =>
                     handleMouseEnter(event, org?.organizationName)
                   }
                   onMouseLeaveName={() => setPopoverLabel(null)}

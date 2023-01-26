@@ -1,5 +1,5 @@
 import React from 'react';
-import { Grid } from '@material-ui/core';
+import { Grid } from '@mui/material';
 import { FormProvider, useForm } from 'react-hook-form';
 import { object, string } from 'yup';
 import { yupResolver } from '@hookform/resolvers/yup';
@@ -14,13 +14,13 @@ const PHONE_MASK = /^\d{10,15}$/;
 const MASK_MESSAGE =
   'Phone number has incorrect format. (NNN) NNN-NNNN or NNN-NNN-NNN is required.';
 
-export const matchEmptyNumber = value =>
+export const matchEmptyNumber = (value) =>
   value.replace(/_/g, '').replace(/^-+$/, '');
 
 const validationSchema = object({
   phoneNumber: string()
     // eslint-disable-next-line func-names
-    .transform(function(value) {
+    .transform(function (value) {
       if (value.length <= 3) {
         return '';
       }
@@ -30,28 +30,25 @@ const validationSchema = object({
     .required(REQUIRED_MESSAGE),
 });
 
-const onSubmit = ({
-  goToNextStep,
-  setNewPhoneNumber,
-  setError,
-  userProfile,
-}) => ({ phoneNumber }) => {
-  UserAuthApi.updatePhoneNumber(
-    userProfile.email,
-    userProfile.accountPhoneNumber,
-    `+${phoneNumber.replace(/[\s()-]/g, '')}`,
-  )
-    .then(() => {
-      goToNextStep();
-      setNewPhoneNumber(`+${phoneNumber}`);
-    })
-    .catch(() => {
-      setError('phoneNumber', {
-        type: 'custom',
-        message: 'Something went wrong. Please try again later.',
+const onSubmit =
+  ({ goToNextStep, setNewPhoneNumber, setError, userProfile }) =>
+  ({ phoneNumber }) => {
+    UserAuthApi.updatePhoneNumber(
+      userProfile.email,
+      userProfile.accountPhoneNumber,
+      `+${phoneNumber.replace(/[\s()-]/g, '')}`,
+    )
+      .then(() => {
+        goToNextStep();
+        setNewPhoneNumber(`+${phoneNumber}`);
+      })
+      .catch(() => {
+        setError('phoneNumber', {
+          type: 'custom',
+          message: 'Something went wrong. Please try again later.',
+        });
       });
-    });
-};
+  };
 
 const ChangeNumberStep = ({ goToNextStep, setNewPhoneNumber, userProfile }) => {
   const formMethods = useForm({

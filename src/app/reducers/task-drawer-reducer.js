@@ -78,7 +78,7 @@ const TaskReducer = (state = initialState, action) => {
         ...state,
         selectedTask: action.task,
         selectedTaskId:
-          action.task == undefined ? null : action.task.taskIdentifier,
+          action.task === undefined ? null : action.task.taskIdentifier,
         error: false,
       };
     }
@@ -134,7 +134,7 @@ const TaskReducer = (state = initialState, action) => {
         open,
         focusField,
         selectedTask: task,
-        selectedTaskId: task == undefined ? null : task.taskIdentifier,
+        selectedTaskId: task === undefined ? null : task.taskIdentifier,
       };
     }
     case GET_TASK_CUSTOM_FIELDS: {

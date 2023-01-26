@@ -1,8 +1,8 @@
 import React from 'react';
-import { Box } from '@material-ui/core';
+import { Box } from '@mui/material';
 import { Container, TasksText, CloseButton, CloseIcon } from './styled';
 
-const BulkEditBar = props => {
+const BulkEditBar = (props) => {
   const {
     numberOfSelectedItems,
     onClose,

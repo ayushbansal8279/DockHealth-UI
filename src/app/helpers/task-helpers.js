@@ -57,6 +57,7 @@ export function getPriorityColor(priority) {
     // case TaskPriority.LOW:
     //   return palette.bananaHammock;
     // case TaskPriority.NONE:
+    // eslint-disable-next-line unicorn/no-useless-switch-case
     case TaskPriority.LOW:
     default: {
       return 'transparent';
@@ -109,6 +110,7 @@ export function getCommentsIconTooltipTitle(comments) {
 }
 
 export function isStartDateInPast(task) {
+  // eslint-disable-next-line sonarjs/prefer-single-boolean-return
   if (!task) {
     return false;
   }

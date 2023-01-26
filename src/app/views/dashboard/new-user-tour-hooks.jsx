@@ -39,7 +39,7 @@ const useNewUserTourHooks = ({
   const [inboxPopoverOpen, setInboxPopoverOpen] = useState(false);
   const history = useHistory();
 
-  const hasAnyTask = lists?.some(list => list.numberOfTasks > 0);
+  const hasAnyTask = lists?.some((list) => list.numberOfTasks > 0);
   const hasInbox = lists?.some(({ listType }) => listType === 'INBOX');
 
   const startUserModalFlow = () => {

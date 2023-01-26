@@ -1,12 +1,12 @@
 import React from 'react';
 import { useSelector } from 'react-redux';
-import { Typography } from '@material-ui/core';
+import { Typography } from '@mui/material';
 import Button from 'components/common/Button/Button';
-import { MuiThemeProvider } from '@material-ui/core/styles';
+import { ThemeProvider as MuiThemeProvider } from '@mui/material/styles';
 import Spacing from 'components/common/Spacing';
 import { getCustomerTypeLabel } from 'helpers/customer-type-helper';
 import { capitalize } from 'helpers/capitalize';
-import RedFolder from 'img/modals/red-folder';
+import RedFolder from 'img/modals/red-folder.svg';
 import { userProfileSelector } from 'selectors/user-selectors';
 import { redTheme } from '../../themes/red-theme';
 

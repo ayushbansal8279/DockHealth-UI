@@ -1,5 +1,5 @@
 import React, { useCallback } from 'react';
-import { Grid } from '@material-ui/core';
+import { Grid } from '@mui/material';
 import { storeAsCurrentTask } from 'actions/task-actions';
 import { openDrawer } from 'actions/task-drawer-actions';
 import {

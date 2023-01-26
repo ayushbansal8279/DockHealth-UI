@@ -10,7 +10,7 @@ const INITIAL_STATE = {
   selectedQuickFilter: null,
 };
 
-export default function (state = INITIAL_STATE, action = {}) {
+export default (state = INITIAL_STATE, action = {}) => {
   const { type, error, selectedFilters } = action;
   switch (type) {
     case ActionTypes.CLEAN_QUICK_FILTER: {
@@ -114,4 +114,4 @@ export default function (state = INITIAL_STATE, action = {}) {
       return state;
     }
   }
-}
+};

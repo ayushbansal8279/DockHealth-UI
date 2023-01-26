@@ -2,9 +2,9 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { useBoolean } from 'hooks/useBoolean';
 import SubtaskIcon from 'img/SubtaskIcon';
-import { Box, IconButton } from '@material-ui/core';
-import EditIcon from '@material-ui/icons/Edit';
-import DeleteIcon from '@material-ui/icons/Delete';
+import { Box, IconButton } from '@mui/material';
+import EditIcon from '@mui/icons-material/Edit';
+import DeleteIcon from '@mui/icons-material/Delete';
 import { useDispatch } from 'react-redux';
 import { isUserGroup } from 'helpers/user-helper';
 import { DrawerFieldEnum } from 'helpers/task-drawer-helpers';
@@ -78,7 +78,7 @@ const TaskNode = React.memo(({ data, isConnectable, selected, type }) => {
     dispatch(openDrawer());
   };
 
-  const openTaskDrawer = filed => {
+  const openTaskDrawer = (filed) => {
     dispatch(openDrawer(filed));
     dispatch(storeAsCurrentTask(task));
   };
@@ -90,20 +90,23 @@ const TaskNode = React.memo(({ data, isConnectable, selected, type }) => {
     unsetEditing();
   };
 
-  const handleKeyDown = event => {
+  const handleKeyDown = (event) => {
     const { key } = event;
 
     switch (key) {
-      case 'Enter':
+      case 'Enter': {
         if (inputValue?.length > 0) {
           descriptionInputReference.current.blur();
         }
         break;
-      case 'Escape':
+      }
+      case 'Escape': {
         unsetEditing();
         break;
-      default:
+      }
+      default: {
         break;
+      }
     }
   };
 
@@ -142,7 +145,7 @@ const TaskNode = React.memo(({ data, isConnectable, selected, type }) => {
                 value={inputValue}
                 onKeyDown={handleKeyDown}
                 onBlur={handleBlur}
-                onChange={event => setInputValue(event.target?.value || '')}
+                onChange={(event) => setInputValue(event.target?.value || '')}
               />
             ) : (
               <TaskDescription>

@@ -17,10 +17,8 @@ const existingUserTaskDrawerTourHooks = ({
   hideTour,
 }) => {
   const [openedTourStep, setOpenedTourStep] = useState(null);
-  const [
-    openedFirstQuickAddTaskPopover,
-    setOpenedFirstQuickAddTaskPopover,
-  ] = useState(false);
+  const [openedFirstQuickAddTaskPopover, setOpenedFirstQuickAddTaskPopover] =
+    useState(false);
 
   const taskMenuReference = useRef(null);
   const dueDateSectionReference = useRef(null);
@@ -96,9 +94,8 @@ const existingUserTaskDrawerTourHooks = ({
 
   useEffect(() => {
     if (openedTourStep !== null) {
-      const { reference, afterScrollPosition, title } = tourSteps[
-        openedTourStep
-      ];
+      const { reference, afterScrollPosition, title } =
+        tourSteps[openedTourStep];
 
       // eslint-disable-next-line no-unused-expressions
       reference?.current.scrollIntoView({

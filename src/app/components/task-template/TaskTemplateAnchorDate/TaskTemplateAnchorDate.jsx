@@ -8,13 +8,13 @@ import { updatePartialWorkflow } from 'actions/task-template-actions';
 import { useDispatch } from 'react-redux';
 import { openModal, closeModal } from 'modal/actions';
 
-const TaskTemplateAnchorDate = props => {
+const TaskTemplateAnchorDate = (props) => {
   const { workflow } = props;
   const { identifier, anchorDateTime } = workflow || {};
   const dispatch = useDispatch();
 
   const handleAnchorDateChange = useCallback(
-    updatedDate => {
+    (updatedDate) => {
       const payload = {
         anchorDateTime: updatedDate,
       };

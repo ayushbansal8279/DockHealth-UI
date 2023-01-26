@@ -2,11 +2,12 @@
 import axios from 'axios';
 import identity from 'ramda/src/identity';
 import { showToast } from 'helpers/utility-functions';
+import { log } from 'helpers/log';
 
 const NETWORK_ERROR = 'NETWORK_ERROR';
 
 const axiosInstance = axios.create({
-  baseURL: process.env.HEYDOC_SERVICES_BASE_URL,
+  baseURL: import.meta.env.HEYDOC_SERVICES_BASE_URL,
 });
 
 axiosInstance.interceptors.request.use(
@@ -47,8 +48,8 @@ axiosInstance.interceptors.response.use(identity, (error) => {
     return;
   }
 
-  console.log('Connection error');
-  console.log(error);
+  log('Connection error');
+  log(error);
   if (String(error).includes('Network Error')) {
     // window.location.href = '/#/auth/login';
   }

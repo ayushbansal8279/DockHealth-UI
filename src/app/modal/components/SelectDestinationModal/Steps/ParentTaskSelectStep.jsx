@@ -1,8 +1,8 @@
 /* eslint-disable sonarjs/cognitive-complexity */
 import React, { useEffect, useRef, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { Box } from '@material-ui/core';
-import ArrowBackIcon from '@material-ui/icons/ArrowBack';
+import { Box } from '@mui/material';
+import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import { useBoolean } from 'hooks/useBoolean';
 import * as ActionTypes from 'actions/action-types';
 import { addTask } from 'api/task-api';
@@ -34,11 +34,8 @@ const ParentTaskSelectStep = ({
   const [fetchingError, setFetchingError] = useState(null);
   const [parentTasks, setParentTasks] = useState(null);
   const [savingParentTask, setSavingParentTask] = useState(false);
-  const [
-    groupInputFocused,
-    setGroupInputFocused,
-    unsetGroupInputFocused,
-  ] = useBoolean(false);
+  const [groupInputFocused, setGroupInputFocused, unsetGroupInputFocused] =
+    useBoolean(false);
   const dispatch = useDispatch();
 
   const currentOrganization = useSelector(selectedUserOrganizationSelector);
@@ -47,7 +44,7 @@ const ParentTaskSelectStep = ({
       ({ name }) => name === 'content.label.default.group',
     ) || {};
 
-  const handleAddNewParentTask = taskDescription => {
+  const handleAddNewParentTask = (taskDescription) => {
     if (savingParentTask || !selectedList || !selectedGroup || !taskDescription)
       return;
 
@@ -57,9 +54,9 @@ const ParentTaskSelectStep = ({
       taskGroupIdentifier: selectedGroup.taskGroupIdentifier,
       description: taskDescription,
     })
-      .then(createdParentTask => {
+      .then((createdParentTask) => {
         setSavingParentTask(false);
-        setParentTasks(previousParentTask =>
+        setParentTasks((previousParentTask) =>
           setParentTasks([...previousParentTask, createdParentTask]),
         );
         addParentTaskReference.current.value = '';
@@ -88,7 +85,7 @@ const ParentTaskSelectStep = ({
         0,
         null,
       )
-        .then(response => {
+        .then((response) => {
           setParentTasks(response?.taskGroups[0]?.tasks || []);
           setIsFetchingParentTasks(false);
         })
@@ -125,7 +122,7 @@ const ParentTaskSelectStep = ({
             {!isFetchingParentTasks && (
               <>
                 {parentTasks?.length > 0 ? (
-                  parentTasks.map(parentTask =>
+                  parentTasks.map((parentTask) =>
                     parentTask.itemType === TaskItemType.TASK ? (
                       <ListItem
                         key={parentTask.taskIdentifier}
@@ -165,7 +162,7 @@ const ParentTaskSelectStep = ({
               disabled={
                 savingParentTask || fetchingError || isFetchingParentTasks
               }
-              onKeyDown={event =>
+              onKeyDown={(event) =>
                 event.key === 'Enter' &&
                 handleAddNewParentTask(event.target.value)
               }

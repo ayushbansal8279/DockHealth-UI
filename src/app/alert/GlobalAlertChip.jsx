@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
-import CheckCircleOutlineIcon from '@material-ui/icons/CheckCircleOutline';
-import CloseIcon from '@material-ui/icons/Close';
+import CheckCircleOutlineIcon from '@mui/icons-material/CheckCircleOutline';
+import CloseIcon from '@mui/icons-material/Close';
 import { connect } from 'react-redux';
 import ReactDOM from 'react-dom';
 import * as TaskApi from 'api/task-api';
@@ -153,7 +153,7 @@ class GlobalAlertChip extends Component {
   };
 }
 
-const mapStateToProps = store => ({
+const mapStateToProps = (store) => ({
   alertState: store.alertChip,
 });
 

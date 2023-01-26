@@ -2,8 +2,7 @@ import styled from 'styled-components';
 import { fontSizes, fontWeights } from 'styles/font';
 import palette from 'styles/palette';
 import spacing from 'styles/spacing';
-import { withStyles } from '@material-ui/core/styles';
-import { Popover } from '@material-ui/core';
+import { Popover } from '@mui/material';
 
 export const DueDateLabel = styled.label`
   color: ${palette.coolGrey1};
@@ -62,11 +61,13 @@ export const StyledButton = styled.button`
   width: 100%;
 `;
 
-export const StyledPopover = withStyles({
-  paper: {
-    border: 'none',
-    boxShadow: 'none',
-    width: ({ width }) => width,
-    overflow: 'visible',
-  },
-})(Popover);
+export const StyledPopover = styled(Popover)`
+  &&& {
+    .MuiPopover-paper {
+      border: none;
+      box-shadow: none;
+      width: ${({ width }) => width};
+      overflow: visible;
+    }
+  }
+`;

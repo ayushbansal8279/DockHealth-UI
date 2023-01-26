@@ -7,7 +7,7 @@ import React, {
   useMemo,
 } from 'react';
 import { useSelector } from 'react-redux';
-import { Box } from '@material-ui/core';
+import { Box } from '@mui/material';
 import { useHistory } from 'react-router-dom';
 import { CUSTOM_FIELDS_SETTINGS_PATH } from 'routing/helpers/paths';
 import {
@@ -69,12 +69,10 @@ const PatientForm = forwardRef(
     const [isOpenedContact, setIsOpenedContact] = useState(true);
     const [customFields, setCustomFields] = useState(null);
     const userProfile = useSelector(userProfileSelector);
-    const { 0: emptyPersonalVisible, 3: toggleEmptyPersonal } = useBoolean(
-      false,
-    );
-    const { 0: emptyContactsVisible, 3: toggleEmptyContacts } = useBoolean(
-      false,
-    );
+    const { 0: emptyPersonalVisible, 3: toggleEmptyPersonal } =
+      useBoolean(false);
+    const { 0: emptyContactsVisible, 3: toggleEmptyContacts } =
+      useBoolean(false);
     const { 0: emptyOtherVisible, 3: toggleEmptyOther } = useBoolean(false);
     const isAdmin = checkIfUserIsOrganizationAdmin(userProfile);
     const [genderIdentityOptions, setGenderIdentityOptions] = useState([]);
@@ -85,7 +83,7 @@ const PatientForm = forwardRef(
 
     const GENDER_OPTIONS_IDENTITY = useMemo(
       () =>
-        genderIdentityOptions.map(o => ({
+        genderIdentityOptions.map((o) => ({
           value: o.genderIdentityType,
           label: o.description,
         })),
@@ -109,7 +107,7 @@ const PatientForm = forwardRef(
       CustomFieldsApi.getAllPatientCustomFields(
         true,
         patient?.patientIdentifier || undefined,
-      ).then(data => {
+      ).then((data) => {
         compose(
           setCustomFields,
           groupByCategory,
@@ -323,7 +321,7 @@ const PatientForm = forwardRef(
             <Button
               width="auto"
               type="submit"
-              onClick={event => {
+              onClick={(event) => {
                 if (!isEmpty(errors)) {
                   event.preventDefault();
                   event.stopPropagation();

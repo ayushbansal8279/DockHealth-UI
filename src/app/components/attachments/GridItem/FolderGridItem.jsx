@@ -1,9 +1,9 @@
 import React from 'react';
 import moment from 'moment';
-import { Box, IconButton } from '@material-ui/core';
+import { Box, IconButton } from '@mui/material';
 import OptionsMenu from 'components/common/OptionsMenu/OptionsMenu';
-import MoreVertIcon from '@material-ui/icons/MoreVert';
-import FolderOpenIcon from '@material-ui/icons/FolderOpen';
+import MoreVertIcon from '@mui/icons-material/MoreVert';
+import FolderOpenIcon from '@mui/icons-material/FolderOpen';
 import { trunc } from 'helpers/utility-functions';
 import {
   Container,
@@ -13,7 +13,7 @@ import {
   OptionsContainer,
 } from './styled';
 
-const FolderGridItem = props => {
+const FolderGridItem = (props) => {
   const {
     folder,
     options,
@@ -49,7 +49,7 @@ const FolderGridItem = props => {
           <CreatedText>{moment(dateCreated).fromNow()}</CreatedText>
         </Box>
         <OptionsContainer>
-          <div onClick={event => event.stopPropagation()}>
+          <div onClick={(event) => event.stopPropagation()}>
             <OptionsMenu customButtonComponent={IconButton} options={options}>
               <MoreVertIcon />
             </OptionsMenu>

@@ -36,9 +36,8 @@ const TimeDropdownInput = ({
   hideError,
   // eslint-disable-next-line sonarjs/cognitive-complexity
 }) => {
-  const [isPopoverOpen, setIsPopoverOpen, unsetIsPopoverOpen] = useBoolean(
-    false,
-  );
+  const [isPopoverOpen, setIsPopoverOpen, unsetIsPopoverOpen] =
+    useBoolean(false);
   const inputWrapperReference = useRef(null);
   const optionsContainerReference = useRef(null);
   const [options, setOptions] = useState([]);
@@ -85,7 +84,7 @@ const TimeDropdownInput = ({
   }, [resetDueTimeInput]);
 
   const validateInput = useCallback(
-    inputValue => {
+    (inputValue) => {
       if (!isTimeValid(inputValue) && !isTimeInputEmpty(inputValue)) {
         setTimeError(
           'Time must be between 12:00 am and 11:59 pm and include am/pm',
@@ -109,7 +108,7 @@ const TimeDropdownInput = ({
   );
 
   const saveTime = useCallback(
-    inputValue => {
+    (inputValue) => {
       if (inputValue !== savedValue && validateInput(inputValue)) {
         setTimeError(null);
         setTimeValue(inputValue);
@@ -131,7 +130,7 @@ const TimeDropdownInput = ({
 
   const handleInputKeyDown = useCallback(
     // eslint-disable-next-line sonarjs/cognitive-complexity
-    event => {
+    (event) => {
       switch (event.key) {
         case 'Escape':
           resetDueTimeInput();
@@ -158,7 +157,7 @@ const TimeDropdownInput = ({
           event.preventDefault();
           event.stopPropagation();
           if (!isPopoverOpen) setIsPopoverOpen();
-          setActiveElementIndex(selectedIndex => {
+          setActiveElementIndex((selectedIndex) => {
             const newIndex =
               selectedIndex === options.length - 1 || selectedIndex == null
                 ? 0
@@ -185,7 +184,7 @@ const TimeDropdownInput = ({
           event.preventDefault();
           event.stopPropagation();
           if (!isPopoverOpen) setIsPopoverOpen();
-          setActiveElementIndex(selectedIndex => {
+          setActiveElementIndex((selectedIndex) => {
             const newIndex =
               selectedIndex === 0 || selectedIndex === null
                 ? options.length - 1
@@ -225,13 +224,15 @@ const TimeDropdownInput = ({
   );
 
   const handleInputChange = useCallback(
-    event => {
+    (event) => {
       const newValue = event.target?.value?.toUpperCase();
       if (timeError) setTimeError(null);
       if (!isPopoverOpen) setIsPopoverOpen();
       setTimeValue(newValue);
       const foundOptionIndex = !isTimeInputEmpty(newValue)
-        ? options.findIndex(option => option.startsWith(newValue.split('_')[0]))
+        ? options.findIndex((option) =>
+            option.startsWith(newValue.split('_')[0]),
+          )
         : -1;
       setActiveElementIndex(foundOptionIndex === -1 ? null : foundOptionIndex);
       if (
@@ -263,9 +264,9 @@ const TimeDropdownInput = ({
           mask="19:59 am"
           maskChar="_"
           formatChars={{
-            '1': '[0-1]',
-            '5': '[0-5]',
-            '9': '[0-9]',
+            1: '[0-1]',
+            5: '[0-5]',
+            9: '[0-9]',
             a: '[APap]',
             m: '[Mm]',
           }}
@@ -293,7 +294,7 @@ const TimeDropdownInput = ({
             <TimeOptionButton
               key={option}
               type="button"
-              onMouseDown={event => {
+              onMouseDown={(event) => {
                 event.preventDefault();
                 setTimeValue(option);
                 unsetIsPopoverOpen();

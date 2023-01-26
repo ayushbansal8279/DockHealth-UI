@@ -23,7 +23,7 @@ const ExternalInviteForm = ({
 
   useEffect(() => {
     // eslint-disable-next-line unicorn/consistent-function-scoping
-    const handleKeyDown = event => {
+    const handleKeyDown = (event) => {
       if (event.keyCode === 27) {
         event.preventDefault();
         event.stopPropagation();
@@ -39,7 +39,7 @@ const ExternalInviteForm = ({
   }, []);
 
   const handleSubmitForm = useCallback(
-    data => {
+    (data) => {
       setIsInviting(true);
       TaskListApi.invitePersonToTaskList(taskListIdentifier, data)
         .then(() => {
@@ -47,7 +47,7 @@ const ExternalInviteForm = ({
           onInviteSuccess();
           closeInviteForm();
         })
-        .catch(error => {
+        .catch((error) => {
           setIsInviting(false);
           showAlert({
             status: 'error',

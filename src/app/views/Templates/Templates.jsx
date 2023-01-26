@@ -4,7 +4,7 @@ import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { useHistory } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { getAllTemplates, deleteTemplate } from 'api/template-api';
-import { Box, Button } from '@material-ui/core';
+import { Box, Button } from '@mui/material';
 import { openModal, closeModal } from 'modal/actions';
 import {
   userHasSendEmailFeatureSelector,
@@ -49,14 +49,14 @@ const Templates = () => {
   }, []);
 
   useEffect(() => {
-    getAllTemplates().then(list => setTemplates(list));
+    getAllTemplates().then((list) => setTemplates(list));
   }, []);
 
   const onAddTemplate = useCallback(() => {
     dispatch(
       openModal('EditTemplate', {
-        onAdded: newTemplate => {
-          setTemplates(s => [newTemplate, ...s]);
+        onAdded: (newTemplate) => {
+          setTemplates((s) => [newTemplate, ...s]);
         },
       }),
     );
@@ -66,13 +66,13 @@ const Templates = () => {
     ({ id }) => {
       dispatch(
         openModal('EditTemplate', {
-          template: templates.find(t => t.identifier === id),
-          onUpdated: template => {
-            setTemplates(s => [
-              ...s.map(t =>
+          template: templates.find((t) => t.identifier === id),
+          onUpdated: (template) => {
+            setTemplates((s) =>
+              s.map((t) =>
                 t.identifier === template.identifier ? template : t,
               ),
-            ]);
+            );
           },
         }),
       );
@@ -89,7 +89,7 @@ const Templates = () => {
         confirm: () => {
           dispatch(closeModal());
           deleteTemplate(id);
-          setTemplates(s => [...s.filter(t => t.identifier !== id)]);
+          setTemplates((s) => s.filter((t) => t.identifier !== id));
         },
       };
       dispatch(openModal('DeleteConfirmation', modalProps));
@@ -112,7 +112,7 @@ const Templates = () => {
         </Box>
         <StyledDataGrid
           columns={columns}
-          rows={templates.map(t => ({ ...t, id: t.identifier }))}
+          rows={templates.map((t) => ({ ...t, id: t.identifier }))}
           rowHeight={35}
           headerHeight={45}
           page={page}

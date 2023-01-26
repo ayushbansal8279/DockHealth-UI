@@ -1,5 +1,5 @@
 import React from 'react';
-import { MenuItem, Box, Select } from '@material-ui/core';
+import { MenuItem, Box, Select } from '@mui/material';
 import zIndex from 'styles/z-index';
 import { useStyles, SelectWrapper } from './styled';
 
@@ -30,9 +30,9 @@ const ToolbarSelect = ({ options, name, value, icon, ...restProps }) => {
         variant="outlined"
         inputProps={{ name }}
         value={value}
-        renderValue={selectedValue => {
+        renderValue={(selectedValue) => {
           const foundOption = options?.find(
-            option => option.value === selectedValue,
+            (option) => option.value === selectedValue,
           );
           return (
             <>
@@ -44,7 +44,7 @@ const ToolbarSelect = ({ options, name, value, icon, ...restProps }) => {
         }}
         {...restProps}
       >
-        {options?.map(option => {
+        {options?.map((option) => {
           return (
             <MenuItem
               key={option.value}

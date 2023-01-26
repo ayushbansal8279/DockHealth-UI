@@ -1,5 +1,4 @@
-import { withStyles } from '@material-ui/core/styles';
-import { Skeleton } from '@material-ui/lab';
+import { Skeleton } from '@mui/lab';
 import styled from 'styled-components';
 
 export const LoaderGroup = styled.div`
@@ -19,8 +18,10 @@ export const LoaderRow = styled.div`
   }
 `;
 
-export const LoaderElement = withStyles({
-  root: {
-    height: 19,
-  },
-})(Skeleton);
+export const LoaderElement = styled(Skeleton)`
+  &&& {
+    .MuiSkeleton-root {
+      height: 19px;
+    }
+  }
+`;

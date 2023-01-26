@@ -1,6 +1,6 @@
 /* eslint-disable react/forbid-prop-types */
 import React, { useEffect, useState, useCallback } from 'react';
-import { Popper } from '@material-ui/core';
+import { Popper } from '@mui/material';
 import { bool, instanceOf, string, number, shape } from 'prop-types';
 import { getTaskDependencies } from 'api/task-api';
 import TasksSkeletonLoader from 'components/task/TasksSkeletonLoader/TasksSkeletonLoader';
@@ -31,7 +31,7 @@ const DependencyListPopover = ({
     if (open) {
       setLoading(true);
       getTaskDependencies(taskIdentifier)
-        .then(data => {
+        .then((data) => {
           setList(data);
           setLoading(false);
         })
@@ -56,31 +56,33 @@ const DependencyListPopover = ({
       anchorEl={anchorEl}
       placement="bottom-start"
       open={open}
-      style={{ zIndex: 100000 }}
+      style={{ zIndex: 100_000 }}
       taskIdentifier={taskIdentifier}
     >
       <DependencyListContainer>
         <Header>Waiting on these tasks to be completed</Header>
         <ListWrapper>
-          {!loading ? (
+          {loading ? (
+            <TasksSkeletonLoader rows={dependencyTasksCount} />
+          ) : (
             <>
               {list
-                .filter(t => t.status === 'INCOMPLETE')
-                .map(dependencyTask => (
+                .filter((t) => t.status === 'INCOMPLETE')
+                .map((dependencyTask) => (
                   <ListElement key={dependencyTask.taskIdentifier}>
                     <DependencyIconWrapper>
                       <img src={dependencyIcon} alt="dependency icon" />
                     </DependencyIconWrapper>
                     <DependencyDescription
-                      onClick={event => onClickTaskItem(dependencyTask, event)}
+                      onClick={(event) =>
+                        onClickTaskItem(dependencyTask, event)
+                      }
                     >
                       {trunc(dependencyTask.description, 35)}
                     </DependencyDescription>
                   </ListElement>
                 ))}
             </>
-          ) : (
-            <TasksSkeletonLoader rows={dependencyTasksCount} />
           )}
         </ListWrapper>
       </DependencyListContainer>

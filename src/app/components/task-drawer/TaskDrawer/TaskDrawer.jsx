@@ -7,7 +7,7 @@ import { AnimatePresence } from 'framer-motion';
 import TaskDrawerContent from 'components/task-drawer/TaskDrawerContent/TaskDrawerContent';
 import { AnimatedContainer } from './styled';
 
-const TaskDrawer = props => {
+const TaskDrawer = (props) => {
   const taskDrawerOpen = useSelector(taskDrawerOpenSelector);
 
   return ReactDOM.createPortal(

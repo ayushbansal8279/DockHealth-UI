@@ -1,4 +1,4 @@
-import { ButtonBase, ButtonBaseProps } from '@material-ui/core';
+import { ButtonBase, ButtonBaseProps } from '@mui/material';
 import clsx from 'clsx';
 import React from 'react';
 import { MontserratTypography } from 'styles/theme-montserrat';

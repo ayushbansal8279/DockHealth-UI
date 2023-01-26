@@ -24,12 +24,11 @@ const AddComment = ({
   const [isFocused, setIsFocused] = useState(false);
   const currentUser = useSelector(userProfileSelector);
   const [commentState, setCommentState] = useMentionsEditorState();
-  const [isAddingComment, setAddingComment, unsetAddingComment] = useBoolean(
-    false,
-  );
+  const [isAddingComment, setAddingComment, unsetAddingComment] =
+    useBoolean(false);
 
   const onCommentChange = useCallback(
-    state => {
+    (state) => {
       if (!isAddingComment) {
         setCommentState(state);
       }
@@ -99,7 +98,7 @@ const AddComment = ({
           }}
           state={commentState}
           onChange={onCommentChange}
-          keyBindingFn={event => {
+          keyBindingFn={(event) => {
             if (event.keyCode === 13 && event.shiftKey) {
               return undefined;
             }
@@ -108,7 +107,7 @@ const AddComment = ({
             }
             return undefined;
           }}
-          handleKeyCommand={command => {
+          handleKeyCommand={(command) => {
             if (command === 'enter-command') {
               addCommentReference.current.blur();
               return 'handled';

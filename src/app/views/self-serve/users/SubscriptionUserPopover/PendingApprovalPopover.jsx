@@ -1,8 +1,8 @@
 import React, { useState, useCallback } from 'react';
 import { useDispatch } from 'react-redux';
 import pathEq from 'ramda/src/pathEq';
-import { Popover } from '@material-ui/core';
-import { makeStyles } from '@material-ui/core/styles';
+import { Popover } from '@mui/material';
+// import { makeStyles } from '@mui/styles';
 import clsx from 'clsx';
 import Button from 'components/common/Button/Button';
 import { showGlobalAlert, showGlobalErrorAlert } from 'alert/actions';
@@ -73,50 +73,49 @@ const renderUserTypesOptions = ({
   let renderedArray = [];
 
   if (userStatus === 'PENDING') {
-    renderedArray = [
-      ...Object.entries(userTypes)
-        .filter(pathEq(['1', 'selectable'], true))
-        .map(([role, { label, description, isLimitedAccess }]) => ({
-          key: role,
-          button: true,
-          isSelected: selectedRoleKey === role,
-          isLimitedAccess,
-          label,
-          description,
-          onSave: () => {
-            changeUserRole({ userIdentifier, role })
-              .then(() => {
-                dispatch(showGlobalAlert(`User's role changed successfully`));
-                reloadUsers();
-                closePopover();
-              })
-              .catch(error => {
-                dispatch(
-                  showGlobalErrorAlert(
-                    error?.message ??
-                      `User's role could not be changed, please try again later`,
-                  ),
-                );
+    renderedArray = Object.entries(userTypes)
+      .filter(pathEq(['1', 'selectable'], true))
+      .map(([role, { label, description, isLimitedAccess }]) => ({
+        key: role,
+        button: true,
+        isSelected: selectedRoleKey === role,
+        isLimitedAccess,
+        label,
+        description,
+        onSave: () => {
+          changeUserRole({ userIdentifier, role })
+            .then(() => {
+              dispatch(showGlobalAlert(`User's role changed successfully`));
+              reloadUsers();
+              closePopover();
+            })
+            .catch((error) => {
+              dispatch(
+                showGlobalErrorAlert(
+                  error?.message ??
+                    `User's role could not be changed, please try again later`,
+                ),
+              );
 
-                closePopover();
-              });
-          },
-        })),
-    ];
+              closePopover();
+            });
+        },
+      }));
   }
 
   return renderedArray;
 };
 
-const usePopoverClasses = makeStyles({
-  root: {
-    maxHeight: ({ maxItems }) => (maxItems ? `${maxItems * 2}rem` : undefined),
-    minHeight: '2rem',
-    overflowY: ({ maxItems }) => (maxItems ? 'auto' : undefined),
-  },
-});
+const usePopoverClasses = undefined;
+// makeStyles({
+//   root: {
+//     maxHeight: ({ maxItems }) => (maxItems ? `${maxItems * 2}rem` : undefined),
+//     minHeight: '2rem',
+//     overflowY: ({ maxItems }) => (maxItems ? 'auto' : undefined),
+//   },
+// });
 
-const PendingApprovalSelectionPopover = props => {
+const PendingApprovalSelectionPopover = (props) => {
   const {
     labelReference,
     isPopoverOpen,
@@ -167,7 +166,7 @@ const PendingApprovalSelectionPopover = props => {
                   reloadUsers();
                   closePopover();
                 })
-                .catch(error => {
+                .catch((error) => {
                   dispatch(
                     showGlobalErrorAlert(
                       error?.message ??
@@ -209,7 +208,7 @@ const PendingApprovalSelectionPopover = props => {
           removeSubscription,
           selectedRoleKey: selectedRole?.key,
           dispatch,
-        })?.map(item =>
+        })?.map((item) =>
           renderRoleItem({
             ...item,
             onSelect: setSelectedRole,
@@ -235,7 +234,7 @@ const PendingApprovalSelectionPopover = props => {
                 reloadUsers();
                 closePopover();
               })
-              .catch(error => {
+              .catch((error) => {
                 dispatch(
                   showGlobalErrorAlert(
                     error?.message ??

@@ -1,7 +1,7 @@
 import React, { useCallback } from 'react';
-import { Close } from '@material-ui/icons';
-import DialogActions from '@material-ui/core/DialogActions';
-import DialogContentText from '@material-ui/core/DialogContentText';
+import { Close } from '@mui/icons-material';
+import DialogActions from '@mui/material/DialogActions';
+import DialogContentText from '@mui/material/DialogContentText';
 
 import palette from 'styles/palette';
 import { MontserratTypography } from 'styles/theme-montserrat';
@@ -9,7 +9,7 @@ import { RobotoTypography } from 'styles/theme';
 import { FormProvider, useForm } from 'react-hook-form';
 import { object, string } from 'yup';
 import { yupResolver } from '@hookform/resolvers/yup';
-import Spacing from 'components/common/Spacing.tsx';
+import Spacing from 'components/common/Spacing';
 import { showAlert } from 'helpers/utility-functions';
 import { referAColleague } from 'api/organization-api';
 import Button from 'components/common/Button/Button';
@@ -40,28 +40,26 @@ const validationSchema = object().shape({
 });
 
 // eslint-disable-next-line unicorn/consistent-function-scoping
-const onSubmit = ({ handleReferralSuccess }) => async ({
-  firstName,
-  lastName,
-  email,
-  comments,
-}) => {
-  try {
-    await referAColleague({
-      firstName,
-      lastName,
-      email,
-      comments,
-    });
-    handleReferralSuccess(firstName, lastName);
-  } catch (error) {
-    showAlert({
-      status: 'error',
-      title: 'Error',
-      text: error?.message ?? 'Could not send an email, please try again later',
-    });
-  }
-};
+const onSubmit =
+  ({ handleReferralSuccess }) =>
+  async ({ firstName, lastName, email, comments }) => {
+    try {
+      await referAColleague({
+        firstName,
+        lastName,
+        email,
+        comments,
+      });
+      handleReferralSuccess(firstName, lastName);
+    } catch (error) {
+      showAlert({
+        status: 'error',
+        title: 'Error',
+        text:
+          error?.message ?? 'Could not send an email, please try again later',
+      });
+    }
+  };
 
 export default function ReferAColleagueModal({ closeModal, openModal }) {
   const formMethods = useForm({

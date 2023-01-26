@@ -10,14 +10,14 @@ import {
 const UsersSuggestionsPopover = React.forwardRef(
   ({ children, searchValue, isFetching, ...props }, reference) => {
     const suggestionsToDisplay = React.Children.toArray(children).filter(
-      suggestionChild => suggestionChild.props.mention.type !== 'DEFAULT',
+      (suggestionChild) => suggestionChild.props.mention.type !== 'DEFAULT',
     );
 
     return (
       <PopoverContainer {...props} ref={reference}>
         {suggestionsToDisplay.length > 0 && (
           <SuggestionsContainer>
-            {suggestionsToDisplay.map(child => (
+            {suggestionsToDisplay.map((child) => (
               <div key={child.props.mention.id}>
                 {React.cloneElement(child, child.props)}
               </div>

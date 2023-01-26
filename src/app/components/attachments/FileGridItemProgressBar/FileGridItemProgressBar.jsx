@@ -1,8 +1,8 @@
-import { Box, CircularProgress } from '@material-ui/core';
+import { Box, CircularProgress } from '@mui/material';
 import React from 'react';
 import { Container, ProgressText, useProgressStyles } from './styled';
 
-const FileGridItemProgressBar = props => {
+const FileGridItemProgressBar = (props) => {
   const { value } = props;
 
   const classes = useProgressStyles();

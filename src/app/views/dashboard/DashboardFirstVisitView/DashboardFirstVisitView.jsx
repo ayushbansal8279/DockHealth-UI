@@ -31,13 +31,13 @@ const DashboardFirstVisitView = ({
   );
 
   const list = allLists?.find(
-    l =>
+    (l) =>
       l.listType !== 'INBOX' &&
       l.listType !== 'PUBLIC' &&
       l.listType !== 'SHARED_SAMPLE',
   );
 
-  const sampleList = allLists?.find(l => l.listType === 'SHARED_SAMPLE');
+  const sampleList = allLists?.find((l) => l.listType === 'SHARED_SAMPLE');
 
   return (
     <Wrapper>

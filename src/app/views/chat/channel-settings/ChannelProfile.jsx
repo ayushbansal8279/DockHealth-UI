@@ -27,7 +27,7 @@ const ChannelProfile = () => {
     }
     if (selectedChannel?.name === 'Group Channel' || !selectedChannel?.name) {
       return (selectedChannel?.members || [])
-        .map(member => member.nickname || stringSet.NO_NAME)
+        .map((member) => member.nickname || stringSet.NO_NAME)
         .join(', ');
     }
 

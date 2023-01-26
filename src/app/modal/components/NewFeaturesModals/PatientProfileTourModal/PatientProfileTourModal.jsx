@@ -44,7 +44,10 @@ const PatientProfileTourModal = ({ closeModal }) => {
               Got it
             </Button>
           ) : (
-            <Button fullWidth onClick={() => setCurrentStep(step => step + 1)}>
+            <Button
+              fullWidth
+              onClick={() => setCurrentStep((step) => step + 1)}
+            >
               Next
             </Button>
           )}

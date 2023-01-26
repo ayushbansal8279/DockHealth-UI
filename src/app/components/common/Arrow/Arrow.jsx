@@ -1,8 +1,8 @@
 import React from 'react';
-import ArrowIcon from 'img/arrow';
-import ArrowSecondaryIcon from 'img/arrow-secondary';
-import ArrowTriangleIcon from 'img/arrow-triangle';
-import ArrowDefaultIcon from 'img/arrow-default';
+import ArrowIcon from 'img/arrow.svg';
+import ArrowSecondaryIcon from 'img/arrow-secondary.svg';
+import ArrowTriangleIcon from 'img/arrow-triangle.svg';
+import ArrowDefaultIcon from 'img/arrow-default.svg';
 
 import { ArrowImg, ArrowImgContainer, ArrowContainer } from './styled';
 

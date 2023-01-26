@@ -8,7 +8,7 @@ export function generateSelectOptions(options, sortEnabled) {
       .map(({ value, label }) => {
         return {
           key: value,
-          label: isHovered => (
+          label: (isHovered) => (
             <SelectOption isActive={isHovered}>{label}</SelectOption>
           ),
           value,
@@ -20,7 +20,7 @@ export function generateSelectOptions(options, sortEnabled) {
   return options.map(({ value, label }) => {
     return {
       key: value,
-      label: isHovered => (
+      label: (isHovered) => (
         <SelectOption isActive={isHovered}>{label}</SelectOption>
       ),
       value,

@@ -1,7 +1,7 @@
 import React, { useState, useRef, useMemo } from 'react';
 import Button from 'components/common/Button/Button';
 import UserAvatar from 'components/user/UserAvatar/UserAvatar';
-import { ClickAwayListener, Grid } from '@material-ui/core';
+import { ClickAwayListener, Grid } from '@mui/material';
 import Loader from 'components/common/Loader/Loader';
 import AddRecordOption from 'components/common/AddRecordOption/AddRecordOption';
 import { isUserGroup } from 'helpers/user-helper';
@@ -46,7 +46,7 @@ const ListUsersAndGroupsSelect = ({
           (name?.toLowerCase().includes(searchValue) ||
             email?.toLowerCase().startsWith(searchValue)) &&
           !selectedUsersAndGroups.some(
-            selectedUserAndGroup =>
+            (selectedUserAndGroup) =>
               selectedUserAndGroup.identifier === identifier,
           )
         );
@@ -57,16 +57,16 @@ const ListUsersAndGroupsSelect = ({
   const showMainInviteButton =
     !searchInputValue || searchedAvailableUsersAndGroups.length > 0;
 
-  const removeSelectedUserOrGroup = identifier => {
-    setSelectedUsersAndGroups(currentSelectedUsersAndGroups =>
+  const removeSelectedUserOrGroup = (identifier) => {
+    setSelectedUsersAndGroups((currentSelectedUsersAndGroups) =>
       currentSelectedUsersAndGroups.filter(
-        userOrGroup => userOrGroup.identifier !== identifier,
+        (userOrGroup) => userOrGroup.identifier !== identifier,
       ),
     );
   };
 
-  const handleSelectUserOrGroup = userOrGroup => {
-    setSelectedUsersAndGroups(perviousSelectedUserAndGroup => [
+  const handleSelectUserOrGroup = (userOrGroup) => {
+    setSelectedUsersAndGroups((perviousSelectedUserAndGroup) => [
       ...perviousSelectedUserAndGroup,
       userOrGroup,
     ]);
@@ -77,7 +77,7 @@ const ListUsersAndGroupsSelect = ({
   const handleInviteSelectedUsersAndGroups = () => {
     if (selectedUsersAndGroups?.length > 0) {
       onActionButtonClick(
-        selectedUsersAndGroups.map(s => ({
+        selectedUsersAndGroups.map((s) => ({
           ...s,
           userIdentifier: s.identifier,
         })),
@@ -92,7 +92,7 @@ const ListUsersAndGroupsSelect = ({
     searchInputReference.current.blur();
   };
 
-  const handleSearchInputKeyDown = event => {
+  const handleSearchInputKeyDown = (event) => {
     switch (event.keyCode) {
       // esc key
       case 27:
@@ -137,7 +137,7 @@ const ListUsersAndGroupsSelect = ({
         event.stopPropagation();
 
         if (searchedAvailableUsersAndGroups?.length > 0) {
-          setHoveredItemIndex(previousIndex => {
+          setHoveredItemIndex((previousIndex) => {
             let newIndex;
             if (previousIndex === searchedAvailableUsersAndGroups.length - 1) {
               newIndex = 0;
@@ -160,7 +160,7 @@ const ListUsersAndGroupsSelect = ({
         event.stopPropagation();
 
         if (searchedAvailableUsersAndGroups?.length > 0) {
-          setHoveredItemIndex(previousIndex => {
+          setHoveredItemIndex((previousIndex) => {
             let newIndex;
             if (previousIndex === 0) {
               newIndex = searchedAvailableUsersAndGroups.length - 1;
@@ -190,7 +190,7 @@ const ListUsersAndGroupsSelect = ({
     }
   };
 
-  const handleSelectAreaClick = event => {
+  const handleSelectAreaClick = (event) => {
     event.preventDefault();
     event.stopPropagation();
 
@@ -208,7 +208,7 @@ const ListUsersAndGroupsSelect = ({
         >
           <SelectElement type="button" onClick={handleSelectAreaClick}>
             <>
-              {selectedUsersAndGroups.map(user => {
+              {selectedUsersAndGroups.map((user) => {
                 return (
                   <ItemWrapper key={user.identifier}>
                     <ItemName>{user.name}</ItemName>
@@ -225,7 +225,7 @@ const ListUsersAndGroupsSelect = ({
                 ref={searchInputReference}
                 onKeyDown={handleSearchInputKeyDown}
                 value={searchInputValue}
-                onChange={event => setSearchInputValue(event.target.value)}
+                onChange={(event) => setSearchInputValue(event.target.value)}
                 disabled={disabled}
               />
               {(!selectedUsersAndGroups ||
@@ -248,10 +248,9 @@ const ListUsersAndGroupsSelect = ({
                       (userOrGroup, index) => (
                         <AvailablePeopleItemButton
                           key={userOrGroup.identifier}
-                          ref={element => {
-                            searchedUsersAndGroupsReferences.current[
-                              index
-                            ] = element;
+                          ref={(element) => {
+                            searchedUsersAndGroupsReferences.current[index] =
+                              element;
                           }}
                           type="button"
                           onClick={() => handleSelectUserOrGroup(userOrGroup)}

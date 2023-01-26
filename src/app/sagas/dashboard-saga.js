@@ -35,6 +35,7 @@ import {
   dashboardSelectedFiltersSelector,
 } from 'selectors/dashboard-selectors';
 import { showGlobalErrorAlert } from 'alert/actions';
+import { log } from 'helpers/log';
 
 function* initializeDashboardView() {
   try {
@@ -43,7 +44,7 @@ function* initializeDashboardView() {
       ? put(DashboardActions.getDashboardTasks())
       : put(DashboardActions.getDashboardGroups());
   } catch (error) {
-    console.log(error);
+    log(error);
   }
 }
 
@@ -62,7 +63,7 @@ function* getDashboardFilters() {
       filters,
     });
   } catch (error) {
-    console.log('error', error);
+    log('error', error);
     yield put({
       type: ActionTypes.GET_DASHBOARD_FILTERS_FAILURE,
     });
@@ -90,7 +91,7 @@ function* getDashboardTasksForGroup({ groupType }) {
       group,
     });
   } catch (error) {
-    console.log(error);
+    log(error);
     yield put({
       type: ActionTypes.GET_DASHBOARD_TASKS_FOR_GROUP_FAILURE,
     });
@@ -225,7 +226,7 @@ function* getDashboardTasks() {
       ]);
     }
   } catch (error) {
-    console.log(error);
+    log(error);
     yield put({
       type: ActionTypes.GET_DASHBOARD_TASKS_FAILURE,
     });

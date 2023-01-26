@@ -1,11 +1,11 @@
 import React, { useEffect, useRef, useState } from 'react';
-import { EditorState } from 'draft-js';
+// import { EditorState } from 'draft-js';
 import moment from 'moment';
 import UserAvatar from 'components/user/UserAvatar/UserAvatar';
 import TextEditor from 'components/common/TextEditor/TextEditor';
 import { convertToEditorState } from 'components/common/TextEditor/helpers';
 import { useMentionsEditorState } from 'components/common/TextEditor/use-mentions-editor-state';
-import { createMentionEntities } from 'components/common/TextEditor/create-mention-entities';
+// import { createMentionEntities } from 'components/common/TextEditor/create-mention-entities';
 import {
   TaskCommentAvatarContainer,
   TaskCommentContainer,
@@ -41,13 +41,13 @@ const TaskComment = ({
 
   useEffect(() => {
     if (previousCommentValue.current !== null) {
-      const newContent = createMentionEntities(
-        tokenizedComment,
-        comment,
-        commentMentions,
-        true,
-      );
-      setCommentState(EditorState.push(commentState, newContent));
+      // const newContent = createMentionEntities(
+      //   tokenizedComment,
+      //   comment,
+      //   commentMentions,
+      //   true,
+      // );
+      // setCommentState(EditorState.push(commentState, newContent));
     }
     previousCommentValue.current = comment;
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -96,7 +96,7 @@ const TaskComment = ({
           {hasMore && !wholeCommentVisible && (
             <MoreButton
               type="button"
-              onClick={event => {
+              onClick={(event) => {
                 event.preventDefault();
                 event.stopPropagation();
                 setWholeCommentVisible(true);

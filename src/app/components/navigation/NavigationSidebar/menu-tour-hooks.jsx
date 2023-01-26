@@ -79,9 +79,8 @@ const menuTourHooks = ({ menuDrawerOpen, hideTour, isUserAdmin }) => {
 
   useEffect(() => {
     if (openedTourStep !== null) {
-      const { reference, afterScrollPosition, title } = tourSteps[
-        openedTourStep
-      ];
+      const { reference, afterScrollPosition, title } =
+        tourSteps[openedTourStep];
 
       // eslint-disable-next-line no-unused-expressions
       reference?.current?.scrollIntoView({

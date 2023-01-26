@@ -1,5 +1,5 @@
-import { Typography } from '@material-ui/core';
-import { createTheme, ThemeProvider } from '@material-ui/core/styles';
+import { Typography } from '@mui/material';
+import { createTheme, ThemeProvider } from '@mui/material/styles';
 import React from 'react';
 import palette from './palette';
 import themeCommonOverrides from './theme-components';
@@ -66,9 +66,9 @@ const themeProxy = new Proxy(
   {
     bold: themeMontserrat,
     normal: themeMontserratNormal,
-    '300': themeMontserrat300,
-    '500': themeMontserrat500,
-    '600': themeMontserrat600,
+    300: themeMontserrat300,
+    500: themeMontserrat500,
+    600: themeMontserrat600,
   },
   {
     get(proxy, path) {

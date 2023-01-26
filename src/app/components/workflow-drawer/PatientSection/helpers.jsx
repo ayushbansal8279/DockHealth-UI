@@ -1,7 +1,7 @@
 import React from 'react';
 import PatientSelectItem from 'components/patients/PatientSelectItem/PatientSelectItem';
 
-export const getFormattedPatient = patient => {
+export const getFormattedPatient = (patient) => {
   if (!patient) {
     return null;
   }

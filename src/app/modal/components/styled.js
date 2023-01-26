@@ -1,16 +1,17 @@
-import { IconButton } from '@material-ui/core';
+import { Button, IconButton } from '@mui/material';
 import styled from 'styled-components';
 import spacing from 'styles/spacing';
 import palette from 'styles/palette';
-import { withStyles } from '@material-ui/core/styles';
-import { Close } from '@material-ui/icons';
+import { Close } from '@mui/icons-material';
 import { fontSizes, fontWeights } from 'styles/font';
 
-export const ActionButton = withStyles(() => ({
-  root: {
-    fontSize: '16px',
-  },
-}));
+export const ActionButton = styled(Button)`
+  &&& {
+    .MuiButton-root {
+      font-size: 16px;
+    }
+  }
+`;
 
 export const ModalWrapper = styled.div`
   position: relative;
@@ -72,21 +73,25 @@ export const FixedWidthButtonWrapper = styled.div`
   }
 `;
 
-export const CloseIconButton = withStyles({
-  root: {
-    position: 'absolute',
-    top: 8,
-    right: 8,
-    display: 'block',
-  },
-})(IconButton);
+export const CloseIconButton = styled(IconButton)`
+  &&& {
+    .MuiIconButton-root {
+      position: absolute;
+      top: 8px;
+      right: 8px;
+      display: block;
+    }
+  }
+`;
 
-export const CloseIcon = withStyles({
-  root: {
-    width: 16,
-    height: 16,
-  },
-})(Close);
+export const CloseIcon = styled(Close)`
+  &&& {
+    .MuiClose-root {
+      width: 16px;
+      height: 16px;
+    }
+  }
+`;
 
 export const ModalHeader = styled.p`
   margin-bottom: 0;

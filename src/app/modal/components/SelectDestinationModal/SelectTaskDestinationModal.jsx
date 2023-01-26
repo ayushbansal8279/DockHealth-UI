@@ -2,7 +2,7 @@ import React, { useMemo, useEffect } from 'react';
 
 import SelectDestinationModal from './SelectDestinationModal';
 
-const SelectTaskDestinationModal = props => {
+const SelectTaskDestinationModal = (props) => {
   const {
     closeModal,
     tasksToMove = [],

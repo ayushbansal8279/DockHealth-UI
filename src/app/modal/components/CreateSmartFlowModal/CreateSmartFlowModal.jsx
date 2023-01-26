@@ -1,5 +1,5 @@
 import React from 'react';
-import { Grid } from '@material-ui/core';
+import { Grid } from '@mui/material';
 import { FormProvider, useForm } from 'react-hook-form';
 import { useDispatch } from 'react-redux';
 import { useHistory } from 'react-router-dom';
@@ -12,8 +12,8 @@ import { ListFormModalWrapper, Header, Title, StyledForm } from './styled';
 
 const TEMPLATE_NAME_FIELD_NAME = 'name';
 
-const validateTemplateName = value => {
-  if (!value || ![...value]?.filter(char => char !== ' ').length > 0) {
+const validateTemplateName = (value) => {
+  if (!value || ![...value]?.filter((char) => char !== ' ').length > 0) {
     return 'This field is required';
   }
 
@@ -52,7 +52,7 @@ const CreateSmartFlowModal = ({ closeModal, onCreateSuccess }) => {
         <Title>Create a SmartFlow</Title>
       </Header>
       <StyledForm
-        onSubmit={event =>
+        onSubmit={(event) =>
           handleSubmit(
             createSubmit({
               event,

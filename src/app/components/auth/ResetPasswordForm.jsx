@@ -1,7 +1,7 @@
 import React from 'react';
 import { FormProvider, useForm } from 'react-hook-form';
 import { object, string } from 'yup';
-import { yupResolver } from "@hookform/resolvers/yup";
+import { yupResolver } from '@hookform/resolvers/yup';
 import { MontserratTypography } from 'styles/theme-montserrat';
 import Button from 'components/common/Button/Button';
 import FormInput from 'components/common/Input/FormInput';

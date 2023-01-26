@@ -17,12 +17,12 @@ import {
 } from 'sagas/patient-details-saga';
 import { openModal, closeModal } from 'modal/actions';
 import TextEditor from 'components/common/TextEditor/TextEditor';
-import { EditorState } from 'draft-js';
+// import { EditorState } from 'draft-js';
 import { convertFromEditorStateToOutput } from 'components/common/TextEditor/helpers';
 import { useMentionsEditorState } from 'components/common/TextEditor/use-mentions-editor-state';
 import Button from 'components/common/Button/Button';
 import Spacing from 'components/common/Spacing';
-import { ClickAwayListener } from '@material-ui/core';
+import { ClickAwayListener } from '@mui/material';
 import PatientNote from '../PatientNote/PatientNote';
 import PatientNotesLoader from '../PatientNotesLoader/PatientNotesLoader';
 import {
@@ -44,7 +44,7 @@ const PatientNotes = () => {
   const [modalIsOpened, setModalIsOpened] = useState(false);
 
   const handleRemoveNote = useCallback(
-    patientNoteIdentifier => {
+    (patientNoteIdentifier) => {
       const modalProps = {
         title: 'Delete note',
         description:
@@ -59,22 +59,27 @@ const PatientNotes = () => {
     [dispatch],
   );
 
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   const handleSaveNote = useCallback(compose(dispatch, updatePatientNote), []);
 
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   const handlePinChange = useCallback(
     compose(dispatch, changePatientNotePin),
     [],
   );
 
   const [noteState, setNoteState] = useMentionsEditorState();
-  const onNoteChange = state => setNoteState(state);
-  const clearNote = useCallback(() => setNoteState(EditorState.createEmpty()), [
-    setNoteState,
-  ]);
+  const onNoteChange = (state) => setNoteState(state);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  const clearNote = useCallback(
+    () =>
+      // () => setNoteState(EditorState.createEmpty()),
+      undefined[setNoteState],
+  );
 
   const isEmpty = useMemo(() => {
     const { tokenizedText } = convertFromEditorStateToOutput(noteState, true);
-    return !tokenizedText.trim().length;
+    return tokenizedText.trim().length === 0;
   }, [noteState]);
 
   const saveNote = useCallback(() => {
@@ -148,7 +153,7 @@ const PatientNotes = () => {
       ) || [null, null],
     [notes],
   );
-  const renderNote = note => {
+  const renderNote = (note) => {
     const { description, mentions, ...restNotes } = note;
 
     return (
@@ -167,7 +172,9 @@ const PatientNotes = () => {
 
   return (
     <PatientNotesWrapper>
-      {!isFetching ? (
+      {isFetching ? (
+        <PatientNotesLoader />
+      ) : (
         <>
           {pinnedNotes?.length > 0 && (
             <PinnedNotesWrapper>
@@ -214,8 +221,6 @@ const PatientNotes = () => {
             </RichTextInputContainer>
           </ClickAwayListener>
         </>
-      ) : (
-        <PatientNotesLoader />
       )}
     </PatientNotesWrapper>
   );

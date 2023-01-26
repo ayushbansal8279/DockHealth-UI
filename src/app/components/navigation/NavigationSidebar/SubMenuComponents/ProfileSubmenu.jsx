@@ -1,5 +1,5 @@
 import React from 'react';
-import { Box, Grid } from '@material-ui/core';
+import { Box, Grid } from '@mui/material';
 import { useDispatch, useSelector } from 'react-redux';
 import {
   userProfileSelector,
@@ -68,7 +68,7 @@ const ProfileSubmenu = () => {
             {!embeddedMode && (
               <BlueSubMenuLink to="/auth/logout">Logout</BlueSubMenuLink>
             )}
-            <Version>App Version: {process.env.VERSION || '0.0.0'}</Version>
+            <Version>App Version: {import.meta.env.VERSION || '0.0.0'}</Version>
           </>
         ) : null}
       </Grid>

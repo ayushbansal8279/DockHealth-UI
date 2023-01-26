@@ -1,4 +1,4 @@
-import { Box } from '@material-ui/core';
+import { Box } from '@mui/material';
 import React from 'react';
 import palette from 'styles/palette';
 import SubscriptionPlanFeature from '../SubscriptionPlanFeature/SubscriptionPlanFeature';
@@ -13,7 +13,7 @@ import {
   Level,
 } from './styled';
 
-const ProfessionalServicesTail = props => {
+const ProfessionalServicesTail = (props) => {
   const { active, setSelectedProfessionalServices } = props;
 
   const handleOnClick = () => {

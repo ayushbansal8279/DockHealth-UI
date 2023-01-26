@@ -65,7 +65,7 @@ const ApproveDisapproveUser = ({ match }) => {
 
         setPageContent(successPageContent);
       })
-      .catch(error => {
+      .catch((error) => {
         const errorPageContent = getPageContent('ERROR');
 
         setPageContent({

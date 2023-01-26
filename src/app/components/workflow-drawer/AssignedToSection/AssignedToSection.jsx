@@ -61,7 +61,7 @@ const AssignedToSection = ({ disabled }) => {
   }, [dispatch, selectedWorkflow]);
 
   const handleAssignToSelection = useCallback(
-    selectedMembers => {
+    (selectedMembers) => {
       setAssignedToUsersValue(selectedMembers);
       dispatch(
         updatePartialWorkflow(selectedWorkflow?.identifier, {

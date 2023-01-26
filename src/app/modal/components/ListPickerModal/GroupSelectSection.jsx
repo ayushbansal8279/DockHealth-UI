@@ -1,7 +1,7 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { useSelector } from 'react-redux';
-import { Box, IconButton } from '@material-ui/core';
-import ArrowBackIcon from '@material-ui/icons/ArrowBack';
+import { Box, IconButton } from '@mui/material';
+import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import { useBoolean } from 'hooks/useBoolean';
 import {
   getGroupsForTaskList,
@@ -36,11 +36,8 @@ const GroupSelectSection = ({
   const [isFetchingGroups, setIsFetchingGroups] = useState(true);
   const [groups, setGroups] = useState(null);
   const [savingGroup, setSavingGroup] = useState(false);
-  const [
-    groupInputFocused,
-    setGroupInputFocused,
-    unsetGroupInputFocused,
-  ] = useBoolean(false);
+  const [groupInputFocused, setGroupInputFocused, unsetGroupInputFocused] =
+    useBoolean(false);
 
   const currentOrganization = useSelector(selectedUserOrganizationSelector);
   const defaultGroupNameItem =
@@ -48,7 +45,7 @@ const GroupSelectSection = ({
       ({ name }) => name === 'content.label.default.group',
     ) || {};
 
-  const handleAddNewGroup = groupName => {
+  const handleAddNewGroup = (groupName) => {
     if (savingGroup || !selectedList || !groupName) return;
 
     setSavingGroup(true);
@@ -56,9 +53,9 @@ const GroupSelectSection = ({
       taskListIdentifier: selectedList?.taskListIdentifier,
       groupName,
     })
-      .then(createdGroup => {
+      .then((createdGroup) => {
         setSavingGroup(false);
-        setGroups(previousGroups =>
+        setGroups((previousGroups) =>
           setGroups([...previousGroups, createdGroup]),
         );
         addGroupReference.current.value = '';
@@ -74,7 +71,7 @@ const GroupSelectSection = ({
       setIsFetchingGroups(true);
       setGroups(null);
       getGroupsForTaskList(selectedList.taskListIdentifier)
-        .then(responseGroups => {
+        .then((responseGroups) => {
           setGroups(responseGroups);
           setIsFetchingGroups(false);
         })
@@ -106,7 +103,7 @@ const GroupSelectSection = ({
             {!isFetchingGroups && (
               <>
                 {groups?.length > 0 ? (
-                  groups.map(group => (
+                  groups.map((group) => (
                     <ListItem
                       key={group.taskGroupIdentifier}
                       isSelected={
@@ -152,7 +149,7 @@ const GroupSelectSection = ({
               onFocus={setGroupInputFocused}
               onBlur={unsetGroupInputFocused}
               disabled={savingGroup || isFetchingGroups}
-              onKeyDown={event =>
+              onKeyDown={(event) =>
                 event.key === 'Enter' && handleAddNewGroup(event.target.value)
               }
             />

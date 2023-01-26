@@ -15,7 +15,7 @@ const TaskItemDueDate = ({ task, disabled = false }) => {
     task || {};
 
   const handleDueDateChange = useCallback(
-    newDueDate => {
+    (newDueDate) => {
       dispatch(updateTaskDueDate(task, newDueDate));
       onTaskDueDateChanged();
     },

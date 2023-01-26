@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react';
-import TaskDetailsImage from 'img/tour/patient-custom-field/task-details';
+import TaskDetailsImage from 'img/tour/patient-custom-field/task-details.svg';
 import Spacing from 'components/common/Spacing';
 import { onTourModalStepEnter } from 'helpers/ga-event-helper';
 import { Image, Title, Description } from '../../styled';

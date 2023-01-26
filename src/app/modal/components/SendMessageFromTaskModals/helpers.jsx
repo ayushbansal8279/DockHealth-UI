@@ -18,14 +18,14 @@ export const renderAddOrEdit = (contact, handleShow) => {
   return null;
 };
 
-export const validateFaxInput = input => {
+export const validateFaxInput = (input) => {
   return (
     (input.length === 10 && /\d/.test(input)) ||
     (input.length === 12 && /(\d{3}-)(\d{3}-)(\d{4})/.test(input))
   );
 };
 
-export const makeFaxNumber = fax => {
+export const makeFaxNumber = (fax) => {
   if (/(\d{3}-)(\d{3}-)(\d{4})/.test(fax)) {
     return fax.split('-');
   }

@@ -21,6 +21,7 @@ import {
   setWorkflowStatus as setWorkflowStatusHelper,
   TASK_DISAPPEAR_DELAY,
 } from 'helpers/task-update-helper';
+import { log } from 'helpers/log';
 import { userProfileSelector } from '../selectors/user-selectors';
 
 const DO_SEARCH_TASKS = 'DO_SEARCH_TASKS';
@@ -130,7 +131,7 @@ function* doSearchTasks() {
     yield put(GlobalSearchActions.requestGlobalSearch());
     yield call(doRefreshTasks);
   } catch (error) {
-    console.log(error);
+    log(error);
   }
 }
 
@@ -176,7 +177,7 @@ function* doSetSearchValue({ payload }) {
     yield put(GlobalSearchActions.setSearchValue(value));
     yield put(searchTasks());
   } catch (error) {
-    console.log(error);
+    log(error);
   }
 }
 
@@ -185,7 +186,7 @@ function* doClearSearchValue() {
     yield put(GlobalSearchActions.setSearchValue(''));
     yield put(searchTasks());
   } catch (error) {
-    console.log(error);
+    log(error);
   }
 }
 
@@ -199,7 +200,7 @@ function* doSetSearchCompletedTasks({ payload }) {
 
     yield put(searchTasks());
   } catch (error) {
-    console.log(error);
+    log(error);
   }
 }
 

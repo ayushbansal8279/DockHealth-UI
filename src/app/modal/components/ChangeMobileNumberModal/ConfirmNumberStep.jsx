@@ -1,6 +1,6 @@
 import React from 'react';
-import { Grid } from '@material-ui/core';
-import MobilePhoneIcon from 'img/modals/mobile-phone';
+import { Grid } from '@mui/material';
+import MobilePhoneIcon from 'img/modals/mobile-phone.svg';
 import { FormProvider, useForm } from 'react-hook-form';
 import { useDispatch } from 'react-redux';
 import { object, string } from 'yup';
@@ -21,39 +21,39 @@ import { REQUIRED_MESSAGE } from './helpers';
 const validationSchema = object({
   authorizationCode: string()
     // eslint-disable-next-line func-names
-    .test('digits', 'This field should have digits only', value =>
+    .test('digits', 'This field should have digits only', (value) =>
       value.match(/^\d+$/),
     )
     .test(
       'length',
       'Authorization code must be exactly 6 digits',
-      value => value.length === 6,
+      (value) => value.length === 6,
     )
     .required(REQUIRED_MESSAGE),
 });
 
-const onSubmit = ({ onUpdateSuccess, setError, dispatch, newPhoneNumber }) => ({
-  authorizationCode,
-}) => {
-  UserAuthApi.verifyNewPhoneNumber(authorizationCode)
-    .then(() => {
-      onUpdateSuccess(newPhoneNumber);
-      dispatch(
-        openModal('Confirmation', {
-          description: 'Your mobile number has been verified and updated.',
-          icon: MobilePhoneIcon,
-          altIcon: 'Mobile phone',
-        }),
-      );
-    })
-    .catch(error => {
-      setError('authorizationCode', {
-        type: 'custom',
-        message:
-          error?.message || 'Something went wrong. Please try again later.',
+const onSubmit =
+  ({ onUpdateSuccess, setError, dispatch, newPhoneNumber }) =>
+  ({ authorizationCode }) => {
+    UserAuthApi.verifyNewPhoneNumber(authorizationCode)
+      .then(() => {
+        onUpdateSuccess(newPhoneNumber);
+        dispatch(
+          openModal('Confirmation', {
+            description: 'Your mobile number has been verified and updated.',
+            icon: MobilePhoneIcon,
+            altIcon: 'Mobile phone',
+          }),
+        );
+      })
+      .catch((error) => {
+        setError('authorizationCode', {
+          type: 'custom',
+          message:
+            error?.message || 'Something went wrong. Please try again later.',
+        });
       });
-    });
-};
+  };
 
 const ConfirmNumberStep = ({
   onUpdateSuccess,

@@ -12,7 +12,7 @@ import {
 } from 'selectors/dashboard-selectors';
 import { useHistory, useLocation } from 'react-router-dom';
 import { updateCurrentUserPreferences } from 'actions/user-actions';
-import { Grid } from '@material-ui/core';
+import { Grid } from '@mui/material';
 import DashboardTab from 'views/dashboard/DashboardTab/DashboardTab';
 import Spacing from 'components/common/Spacing';
 import {
@@ -90,8 +90,8 @@ const DashboardToolbar = ({ iconColorFilterActive, iconColorActive }) => {
       !sentInitialSetup.current
     ) {
       const initialPreferences = groupList
-        .filter(g => g.defaultOpen)
-        .flatMap(g => g.groupType);
+        .filter((g) => g.defaultOpen)
+        .flatMap((g) => g.groupType);
       if (initialPreferences) {
         sentInitialSetup.current = true;
         setGroupsPreferences(initialPreferences);
@@ -105,9 +105,9 @@ const DashboardToolbar = ({ iconColorFilterActive, iconColorActive }) => {
   }, [groupList, dashboardGroupsPreferences, dispatch]);
 
   const updateGroupsPreferences = useCallback(
-    groupType => {
+    (groupType) => {
       const newSetup = groupsPreferences?.includes(groupType)
-        ? groupsPreferences.filter(option => option !== groupType)
+        ? groupsPreferences.filter((option) => option !== groupType)
         : [...groupsPreferences, groupType];
 
       setGroupsPreferences(newSetup);
@@ -116,7 +116,7 @@ const DashboardToolbar = ({ iconColorFilterActive, iconColorActive }) => {
     [dispatch, groupsPreferences],
   );
   const additionalOptions = useMemo(() => {
-    return groupList?.map(group => ({
+    return groupList?.map((group) => ({
       name: group.groupName,
       onClick: () => updateGroupsPreferences(group.groupType),
       key: group.key,
@@ -131,7 +131,7 @@ const DashboardToolbar = ({ iconColorFilterActive, iconColorActive }) => {
   }, [setViewSpecificConfig]);
 
   const handleChangeViewType = useCallback(
-    event => {
+    (event) => {
       const queryParameters = new URLSearchParams(search);
       const value = event?.target.value ?? ViewType.LIST_VIEW;
       if (value === ViewType.LIST_VIEW) {

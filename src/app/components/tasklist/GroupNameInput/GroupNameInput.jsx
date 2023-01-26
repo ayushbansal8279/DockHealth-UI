@@ -15,7 +15,7 @@ export const Input = styled.input`
   outline: none;
   padding: ${spacing.smallPlus} ${spacing.regularPlus};
   text-transform: uppercase;
-  width: ${props => props.width || '260px'};
+  width: ${(props) => props.width || '260px'};
 `;
 
 const GroupNameInput = ({
@@ -29,7 +29,7 @@ const GroupNameInput = ({
   const wrapperReference = useRef(null);
 
   const handleClickOutside = useCallback(
-    event => {
+    (event) => {
       if (
         wrapperReference.current &&
         !wrapperReference.current.contains(event.target)
@@ -58,7 +58,7 @@ const GroupNameInput = ({
       <Input
         onBlur={onBlur}
         onChange={({ target }) => onChange(target?.value)}
-        onKeyDown={event => event.keyCode === 13 && onEnter()}
+        onKeyDown={(event) => event.keyCode === 13 && onEnter()}
         placeholder={placeholder}
         width={width}
         value={value}

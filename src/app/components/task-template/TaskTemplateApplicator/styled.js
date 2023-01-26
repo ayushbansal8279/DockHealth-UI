@@ -2,9 +2,8 @@ import styled from 'styled-components';
 import spacing from 'styles/spacing';
 import { fontSizes, fontWeights } from 'styles/font';
 import palette from 'styles/palette';
-import ChevronRightIcon from '@material-ui/icons/ChevronRight';
-import { withStyles } from '@material-ui/core/styles';
-import { Skeleton } from '@material-ui/lab';
+import ChevronRightIcon from '@mui/icons-material/ChevronRight';
+import { Skeleton } from '@mui/lab';
 
 export const FolderIconContainer = styled.div`
   display: flex;
@@ -107,11 +106,13 @@ export const EmptyLabel = styled.div`
   color: ${palette.mediumGrey};
 `;
 
-export const LoaderItem = withStyles({
-  root: {
-    margin: `${spacing.regular} ${spacing.large}`,
-  },
-})(Skeleton);
+export const LoaderItem = styled(Skeleton)`
+  &&& {
+    .MuiSkeleton-root {
+      margin: ${`${spacing.regular} ${spacing.large}`};
+    }
+  }
+`;
 
 export const LoaderContainer = styled.div`
   padding: ${spacing.smallPlus} 0;

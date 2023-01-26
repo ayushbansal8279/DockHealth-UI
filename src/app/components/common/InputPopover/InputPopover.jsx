@@ -1,5 +1,5 @@
 import React from 'react';
-import { Popper } from '@material-ui/core';
+import { Popper } from '@mui/material';
 import { bool, node, shape, object } from 'prop-types';
 import { StyledPopper } from './styled';
 

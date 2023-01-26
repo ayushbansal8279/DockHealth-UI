@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react';
 import Spacing from 'components/common/Spacing';
-import RecurringTaskScheduleImage from 'img/tour/task-recurring/recurring-schedule';
+import RecurringTaskScheduleImage from 'img/tour/task-recurring/recurring-schedule.svg';
 import { onTourModalStepEnter } from 'helpers/ga-event-helper';
 import { Image, Title, Description } from '../../styled';
 

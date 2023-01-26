@@ -10,7 +10,7 @@ import * as OrganizationApi from 'api/organization-api';
 import { arrayOf, func, oneOfType, shape, string } from 'prop-types';
 import debounce from 'lodash.debounce';
 import UserAvatar from 'components/user/UserAvatar/UserAvatar';
-import MagnifierIcon from 'img/magnifier';
+import MagnifierIcon from 'img/magnifier.svg';
 import Checkbox from 'components/common/Checkbox/Checkbox';
 import Spacing from 'components/common/Spacing';
 import { useSelector } from 'react-redux';
@@ -58,15 +58,15 @@ const MultiAssignMembersList = ({
   const filteredMembers = useMemo(
     () =>
       enableLazyLoading
-        ? membersOptions.map(user => {
+        ? membersOptions.map((user) => {
             const { identifier } = user;
-            const isSelected = !!selectedMembers.find(
+            const isSelected = !!selectedMembers.some(
               ({ identifier: id }) => id === identifier,
             );
             return { ...user, isSelected };
           })
         : membersOptions?.filter(({ name, identifier }) => {
-            const isSelected = !!selectedMembers.find(
+            const isSelected = !!selectedMembers.some(
               ({ identifier: id }) => id === identifier,
             );
             return (
@@ -108,8 +108,8 @@ const MultiAssignMembersList = ({
   const inputReference = useRef(null);
 
   const selectMembersWithDebounce = useCallback(
-    debounce(selection => {
-      onSelect(selection.map(s => ({ ...s, userIdentifier: s.identifier })));
+    debounce((selection) => {
+      onSelect(selection.map((s) => ({ ...s, userIdentifier: s.identifier })));
       // eslint-disable-next-line no-unused-expressions
       inputReference.current?.focus();
     }, 700),
@@ -161,7 +161,8 @@ const MultiAssignMembersList = ({
             );
             setMembersOptions(joinedMembers);
           } else {
-            const organizationMembers = await OrganizationApi.getOrganizationUsersAndUserGroups();
+            const organizationMembers =
+              await OrganizationApi.getOrganizationUsersAndUserGroups();
             setMembersOptions(organizationMembers);
           }
         } catch (error) {
@@ -206,7 +207,7 @@ const MultiAssignMembersList = ({
 
   const displayUsersList = useMemo(() => {
     if (enableLazyLoading) return isValueSendable;
-    return !!filteredMembers.length || isFetchingMembers;
+    return filteredMembers.length > 0 || isFetchingMembers;
   }, [
     enableLazyLoading,
     filteredMembers.length,
@@ -220,7 +221,7 @@ const MultiAssignMembersList = ({
         <MemberRow
           key={member?.identifier}
           isSelected={isSelected}
-          onClick={event => handleOptionClick(event, member)}
+          onClick={(event) => handleOptionClick(event, member)}
         >
           <Checkbox isChecked={isSelected} />
           <Spacing horizontal={3} />
@@ -260,7 +261,7 @@ const MultiAssignMembersList = ({
         <Input
           ref={inputReference}
           placeholder="Search"
-          onChange={event => setSearchValue(event.target.value)}
+          onChange={(event) => setSearchValue(event.target.value)}
         />
       </InputBox>
       <ListContainer>
@@ -270,7 +271,7 @@ const MultiAssignMembersList = ({
               <MemberRow
                 key={UNASSIGNED_KEY}
                 isSelected={selectedMembers?.length === 0}
-                onClick={event => handleOptionClick(event, UNASSIGNED_KEY)}
+                onClick={(event) => handleOptionClick(event, UNASSIGNED_KEY)}
               >
                 <CheckboxSpacing />
                 <Spacing horizontal={3} />
@@ -288,13 +289,17 @@ const MultiAssignMembersList = ({
             )}
             {displayAssignAllOption && membersOptions?.length > 0 && (
               <>
-                {!isFetchingMembers ? (
+                {isFetchingMembers ? (
+                  <MemberRowSkeletonLoader />
+                ) : (
                   <MemberRow
                     key={ASSIGN_ALL_KEY}
                     isSelected={
                       selectedMembers?.length === membersOptions?.length
                     }
-                    onClick={event => handleOptionClick(event, ASSIGN_ALL_KEY)}
+                    onClick={(event) =>
+                      handleOptionClick(event, ASSIGN_ALL_KEY)
+                    }
                   >
                     <CheckboxSpacing />
                     <Spacing horizontal={3} />
@@ -310,8 +315,6 @@ const MultiAssignMembersList = ({
                       ({membersOptions.length})
                     </MemberName>
                   </MemberRow>
-                ) : (
-                  <MemberRowSkeletonLoader />
                 )}
               </>
             )}
@@ -330,30 +333,34 @@ const MultiAssignMembersList = ({
           })()}
         {!isValueSendable && (
           <ListContentSection>
-            {filteredSelectedMembers?.map(member => {
+            {filteredSelectedMembers?.map((member) => {
               return renderSelectOption(member, true);
             })}
           </ListContentSection>
         )}
         {displayUsersList && (
           <ListContentSection>
-            {!isFetchingMembers ? (
-              filteredMembers?.map(member =>
+            {isFetchingMembers ? (
+              <>
+                {Array.from({ length: 4 })
+                  .fill()
+                  .map((_, index) => (
+                    // eslint-disable-next-line react/no-array-index-key
+                    <MemberRowSkeletonLoader key={index} />
+                  ))}
+              </>
+            ) : (
+              filteredMembers?.map((member) =>
                 renderSelectOption(member, member.isSelected),
               )
-            ) : (
-              <>
-                {new Array(4).fill().map((_, index) => (
-                  // eslint-disable-next-line react/no-array-index-key
-                  <MemberRowSkeletonLoader key={index} />
-                ))}
-              </>
             )}
           </ListContentSection>
         )}
-        {isValueSendable && !isFetchingMembers && !filteredMembers.length && (
-          <NoRecordsText>No users found</NoRecordsText>
-        )}
+        {isValueSendable &&
+          !isFetchingMembers &&
+          filteredMembers.length === 0 && (
+            <NoRecordsText>No users found</NoRecordsText>
+          )}
       </ListContainer>
     </>
   );

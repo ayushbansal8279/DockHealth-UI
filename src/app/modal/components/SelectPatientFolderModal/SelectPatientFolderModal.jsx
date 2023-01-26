@@ -1,8 +1,8 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import palette from 'styles/palette';
 import { useSelector } from 'react-redux';
-import { Box, Grid, IconButton } from '@material-ui/core';
-import ArrowBackIcon from '@material-ui/icons/ArrowBack';
+import { Box, Grid, IconButton } from '@mui/material';
+import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import { PatientAttachmentType } from 'helpers/patient-details-helpers';
 import Button from 'components/common/Button/Button';
 import SelectionList from 'components/common/SelectionList/SelectionList';
@@ -29,7 +29,7 @@ const SelectPatientFolderModal = ({ closeModal, onMove }) => {
     PatientAttachmentApi.getPatientAttachments(
       patientIdentifier,
       currentFolder?.attachmentIdentifier ?? null,
-    ).then(a => {
+    ).then((a) => {
       setFoldersList(
         a.filter(({ type }) => type === PatientAttachmentType.FOLDER),
       );
@@ -40,7 +40,7 @@ const SelectPatientFolderModal = ({ closeModal, onMove }) => {
     onMove(currentFolder?.attachmentIdentifier ?? null);
   };
 
-  const handleFolderChange = folderId => {
+  const handleFolderChange = (folderId) => {
     const nextFolder = foldersList.find(
       ({ attachmentIdentifier }) => attachmentIdentifier === folderId,
     );

@@ -3,7 +3,7 @@ export const CLOSE_MODAL = 'CLOSE_MODAL';
 
 const INITIAL_STATE = { isOpen: false, modalProps: {}, modalName: null };
 
-export default function (state = INITIAL_STATE, action = {}) {
+export default (state = INITIAL_STATE, action = {}) => {
   const { type, name, props = {} } = action;
 
   switch (type) {
@@ -22,4 +22,4 @@ export default function (state = INITIAL_STATE, action = {}) {
       return state;
     }
   }
-}
+};

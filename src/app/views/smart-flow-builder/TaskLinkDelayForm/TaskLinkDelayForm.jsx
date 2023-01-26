@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react';
-import { Box } from '@material-ui/core';
+import { Box } from '@mui/material';
 import Checkbox from 'components/common/Checkbox/Checkbox';
 import SecondaryDropdownInput from 'components/common/DropdownInput/SecondaryDropdownInput';
 import SecondaryNumberInput from 'components/common/NumberInput/SecondaryNumberInput';
@@ -15,7 +15,7 @@ import {
 } from './helpers';
 import { DelayPeriodForm, Title, CheckboxLabel } from './styled';
 
-const TaskLinkDelayForm = props => {
+const TaskLinkDelayForm = (props) => {
   const { link, onSubmit, onClose } = props;
   const formMethods = useForm({
     mode: 'onSubmit',
@@ -56,7 +56,7 @@ const TaskLinkDelayForm = props => {
             <SecondaryNumberInput
               name="delayPeriod"
               value={delayPeriodValue}
-              onChange={newValue => {
+              onChange={(newValue) => {
                 if (newValue === '' || Number(newValue) > 0) {
                   setValue(
                     'delayPeriod',
@@ -73,7 +73,7 @@ const TaskLinkDelayForm = props => {
               placeholder="Select unit"
               value={watch('delayPeriodUnit')}
               width={207}
-              onSelect={newValue => setValue('delayPeriodUnit', newValue)}
+              onSelect={(newValue) => setValue('delayPeriodUnit', newValue)}
               options={DELAY_PERIOD_UNIT_OPTIONS}
             />
           </Box>
@@ -83,7 +83,7 @@ const TaskLinkDelayForm = props => {
               name="timeRelative"
               width={275}
               value={watch('timeRelative')}
-              onSelect={newValue => setValue('timeRelative', newValue)}
+              onSelect={(newValue) => setValue('timeRelative', newValue)}
               options={TIME_TYPE_OPTIONS}
             />
           </Box>
@@ -93,7 +93,7 @@ const TaskLinkDelayForm = props => {
               name="timeReference"
               width={275}
               value={watch('timeReference')}
-              onSelect={newValue => setValue('timeReference', newValue)}
+              onSelect={(newValue) => setValue('timeReference', newValue)}
               options={TIME_REFERENCE_OPTIONS}
             />
           </Box>

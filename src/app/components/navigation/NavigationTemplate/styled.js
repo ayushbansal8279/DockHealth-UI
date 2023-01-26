@@ -1,7 +1,7 @@
-import { makeStyles } from '@material-ui/core/styles';
+// import { makeStyles } from '@mui/styles';
 import styled from 'styled-components';
 import palette from 'styles/palette';
-import { Drawer } from '@material-ui/core';
+import { Drawer } from '@mui/material';
 
 export const DrawerContainer = styled.div`
   display: flex;
@@ -18,24 +18,25 @@ export const SendBirdThemeColorSet = {
   '--sendbird-light-primary-100': '#027bce',
 };
 
-export const useDrawerClasses = makeStyles({
-  drawer: {
-    position: 'relative',
-    zIndex: 10,
-    flexShrink: 0,
-    whiteSpace: 'nowrap',
-  },
-  drawerPaper: {
-    position: 'static',
-    transform: ({ isNavbarVisible }) =>
-      isNavbarVisible ? 'translateX(0px)' : 'translateX(-100%)',
-    backgroundColor: ({ navBackgroundColor }) =>
-      navBackgroundColor || palette.midnightBlue,
-    border: 0,
-    overflow: 'initial',
-    width: 'auto',
-  },
-});
+export const useDrawerClasses = undefined;
+// makeStyles({
+//   drawer: {
+//     position: 'relative',
+//     zIndex: 10,
+//     flexShrink: 0,
+//     whiteSpace: 'nowrap',
+//   },
+//   drawerPaper: {
+//     position: 'static',
+//     transform: ({ isNavbarVisible }) =>
+//       isNavbarVisible ? 'translateX(0px)' : 'translateX(-100%)',
+//     backgroundColor: ({ navBackgroundColor }) =>
+//       navBackgroundColor || palette.midnightBlue,
+//     border: 0,
+//     overflow: 'initial',
+//     width: 'auto',
+//   },
+// });
 
 export const MainContainer = styled.div`
   position: relative;

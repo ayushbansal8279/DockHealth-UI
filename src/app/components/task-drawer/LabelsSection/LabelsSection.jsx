@@ -6,7 +6,7 @@ import React, {
   useCallback,
   useMemo,
 } from 'react';
-import { Chip } from '@material-ui/core';
+import { Chip } from '@mui/material';
 import Autocomplete from 'components/common/Autocomplete/Autocomplete';
 import { DrawerFieldEnum } from 'helpers/task-drawer-helpers';
 import { useSelector } from 'react-redux';
@@ -39,11 +39,11 @@ const renderOption = ({
     <OptionButtonsInput
       ref={registerOption}
       defaultValue={option?.labelName}
-      onBlur={event => {
+      onBlur={(event) => {
         event.stopPropagation();
         onBlur();
       }}
-      onKeyDown={event => {
+      onKeyDown={(event) => {
         if (event.key === 'Enter') {
           event?.target?.blur();
           if (
@@ -64,7 +64,7 @@ const renderOption = ({
     <OptionButtonsContainer>
       <OptionButton
         type="button"
-        onClick={event => {
+        onClick={(event) => {
           event.stopPropagation();
           event.preventDefault();
           onEdit();
@@ -74,7 +74,7 @@ const renderOption = ({
       </OptionButton>
       <OptionButton
         type="button"
-        onClick={event => {
+        onClick={(event) => {
           event.stopPropagation();
           event.preventDefault();
           onDelete();
@@ -131,13 +131,13 @@ const LabelsSection = ({ onTaskUpdate }) => {
     }
   }, [currentEditableOption, inputReference]);
 
-  const getInputReference = element => setInputReference(element);
+  const getInputReference = (element) => setInputReference(element);
 
   const renderOptionCallback = useCallback(
-    option =>
+    (option) =>
       renderOption({
         option,
-        registerOption: element => {
+        registerOption: (element) => {
           if (element) {
             optionReferences.current[option?.labelIdentifier] = element;
           }
@@ -148,7 +148,7 @@ const LabelsSection = ({ onTaskUpdate }) => {
         onBlur: () => {
           setCurrentEditableOption(null);
         },
-        onSaveEdit: value => saveEditLabel(option?.labelIdentifier, value),
+        onSaveEdit: (value) => saveEditLabel(option?.labelIdentifier, value),
         onDelete: () => {
           deleteLabel(option);
         },
@@ -158,13 +158,13 @@ const LabelsSection = ({ onTaskUpdate }) => {
 
   const renderTagsCallback = useCallback(
     () =>
-      selectedLabels.map(option => (
+      selectedLabels.map((option) => (
         <Chip
           key={option.labelIdentifier}
           onDelete={() => {
-            setSelectedLabels(state =>
+            setSelectedLabels((state) =>
               state.filter(
-                label => label.labelIdentifier !== option.labelIdentifier,
+                (label) => label.labelIdentifier !== option.labelIdentifier,
               ),
             );
             removeLabelFromTask(option);
@@ -178,12 +178,12 @@ const LabelsSection = ({ onTaskUpdate }) => {
   const noOptionText = useMemo(
     () => (
       <div
-        onMouseDown={event => {
+        onMouseDown={(event) => {
           event.preventDefault();
         }}
       >
         <NoOptionContainer
-          onClick={event => {
+          onClick={(event) => {
             if (inputState) {
               event.stopPropagation();
               event.preventDefault();
@@ -206,8 +206,8 @@ const LabelsSection = ({ onTaskUpdate }) => {
   );
 
   const handleSave = useCallback(
-    value => {
-      setSelectedLabels(state => [...state, value]);
+    (value) => {
+      setSelectedLabels((state) => [...state, value]);
       saveAddLabel(value);
     },
     [saveAddLabel],
@@ -223,13 +223,13 @@ const LabelsSection = ({ onTaskUpdate }) => {
         value={selectedLabels}
         disableCloseOnSelect={!!currentEditableOption}
         getInputReference={getInputReference}
-        getOptionLabel={option => option?.labelName}
+        getOptionLabel={(option) => option?.labelName}
         isDisabled={!!currentEditableOption}
         renderOption={renderOptionCallback}
         renderTags={renderTagsCallback}
         onInputChange={setInputState}
         InputProps={{
-          onKeyDown: event => {
+          onKeyDown: (event) => {
             if (event.key === 'Enter' && event?.target.value !== '') {
               event.stopPropagation();
               event.preventDefault();
@@ -242,7 +242,7 @@ const LabelsSection = ({ onTaskUpdate }) => {
         noOptionsText={noOptionText}
         onOpen={refreshLabels}
         isLoading={isLoadingLabels}
-        onChange={values => {
+        onChange={(values) => {
           const valuesLength = values.length;
           const value = values[valuesLength - 1];
           // saveAddLabel(value);

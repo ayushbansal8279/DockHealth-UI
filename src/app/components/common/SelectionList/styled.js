@@ -1,4 +1,4 @@
-import { makeStyles } from '@material-ui/core/styles';
+// import { makeStyles } from '@mui/styles';
 import styled from 'styled-components';
 import palette from 'styles/palette';
 
@@ -11,12 +11,13 @@ export const ListWrapper = styled.div`
   overflow-x: hidden;
 `;
 
-export const useMenuItemStyles = makeStyles({
-  root: {
-    position: 'relative',
-    paddingRight: 40,
-  },
-});
+export const useMenuItemStyles = undefined;
+// makeStyles({
+//   root: {
+//     position: 'relative',
+//     paddingRight: 40,
+//   },
+// });
 
 export const IconWrapper = styled.div`
   position: absolute;

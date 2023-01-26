@@ -34,9 +34,10 @@ export const DateInput = styled(({ hasError, ...props }) => (
   padding: 0 6px;
   border-width: 1px;
   border-style: solid;
-  border-color: ${props => (props.hasError ? palette.red : palette.coolGrey2)};
+  border-color: ${(props) =>
+    props.hasError ? palette.red : palette.coolGrey2};
   border-radius: 2px;
   overflow: auto;
-  color: ${props => (props.hasError ? palette.red : palette.coolGrey2)};
+  color: ${(props) => (props.hasError ? palette.red : palette.coolGrey2)};
   font-size: ${fontSizes.small};
 `;

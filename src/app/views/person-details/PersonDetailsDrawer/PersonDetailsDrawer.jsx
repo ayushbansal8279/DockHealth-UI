@@ -6,9 +6,9 @@ import { yupResolver } from '@hookform/resolvers/yup';
 import { updateUser } from 'actions/person-details-actions';
 import { FormProvider, useForm } from 'react-hook-form';
 import { openModal, closeModal } from 'modal/actions';
-import { IconButton } from '@material-ui/core';
-import CloseIcon from '@material-ui/icons/Close';
-import MoreVertIcon from '@material-ui/icons/MoreVert';
+import { IconButton } from '@mui/material';
+import CloseIcon from '@mui/icons-material/Close';
+import MoreVertIcon from '@mui/icons-material/MoreVert';
 import OptionsMenu from 'components/common/OptionsMenu/OptionsMenu';
 import { useHistory } from 'react-router-dom';
 import { removeUserFromOrganization } from 'api/organization-api';
@@ -82,16 +82,16 @@ const PersonDetailsDrawer = ({ user, isOpenedDetails, closeDrawer }) => {
   };
 
   useEffect(() => {
-    if (!isOpenedDetails) {
-      unsetActive();
-    } else {
+    if (isOpenedDetails) {
       reset({ ...editableFields });
       clearErrors(Object.keys(editableFields));
+    } else {
+      unsetActive();
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isOpenedDetails]);
 
-  const handleFormSubmit = data => {
+  const handleFormSubmit = (data) => {
     unsetActive();
     dispatch(
       updateUser({
@@ -109,7 +109,7 @@ const PersonDetailsDrawer = ({ user, isOpenedDetails, closeDrawer }) => {
             .then(() => {
               history.push('/people');
             })
-            .catch(error => {
+            .catch((error) => {
               dispatch(
                 showGlobalErrorAlert(
                   error?.errorMessage ??

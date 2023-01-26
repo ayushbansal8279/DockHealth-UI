@@ -15,8 +15,8 @@ import {
   ButtonsContainer,
 } from './styled';
 
-const validateOrganizationName = value => {
-  if (![...value]?.filter(char => char !== ' ').length > 0) {
+const validateOrganizationName = (value) => {
+  if (![...value]?.filter((char) => char !== ' ').length > 0) {
     return 'This field is required';
   }
 

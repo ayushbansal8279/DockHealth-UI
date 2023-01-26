@@ -1,4 +1,4 @@
-import { makeStyles } from '@material-ui/core/styles';
+// import { makeStyles } from '@mui/styles';
 import styled from 'styled-components';
 import { fontSizes } from 'styles/font';
 import palette from 'styles/palette';
@@ -90,8 +90,9 @@ export const ReadOnlyLabelContainer = styled.div`
   padding: 1px 0;
 `;
 
-export const useAutocompleteStyles = makeStyles({
-  inputRoot: {
-    paddingTop: '0 !important',
-  },
-});
+export const useAutocompleteStyles = undefined;
+// makeStyles({
+//   inputRoot: {
+//     paddingTop: '0 !important',
+//   },
+// });

@@ -2,7 +2,7 @@
 import React, { useRef, useState, useCallback } from 'react';
 import { useSelector } from 'react-redux';
 import palette from 'styles/palette';
-import { Grid } from '@material-ui/core';
+import { Grid } from '@mui/material';
 import Spacing from 'components/common/Spacing';
 import { uploadPatientData } from 'api/patient-api';
 import UploadFileIcon from 'img/upload-file.svg';
@@ -55,8 +55,8 @@ const ImportPatientsModal = ({
   }, [closeModal, refreshPatientList, setImportPopoverOpen]);
 
   const onDrop = useCallback(
-    acceptedFiles => {
-      acceptedFiles.forEach(file => {
+    (acceptedFiles) => {
+      acceptedFiles.forEach((file) => {
         uploadPatientData(file, {
           onUploadProgress: ({ loaded, total }) => {
             if (loaded === total) {

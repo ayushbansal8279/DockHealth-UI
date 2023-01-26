@@ -44,6 +44,7 @@ import {
 import { closeModal } from 'modal/actions';
 import { showGlobalAlert, showGlobalErrorAlert } from 'alert/actions';
 import { TaskStatus } from 'helpers/task-helpers';
+import { log } from 'helpers/log';
 import { PATIENTS_LIST_ALL } from '../routing/helpers/paths';
 
 export const DO_TOGGLE_PATIENT_TASK_STATUS = 'DO_TOGGLE_PATIENT_TASK_STATUS';
@@ -279,9 +280,7 @@ function* getCurrentPatientTasks({ payload }) {
     const sort = yield select(patientTasksSortSelector);
     const patientIdentifier = yield select(currentPatientIdentifierSelector);
 
-    let lists;
-
-    lists = yield selectedFilters && !isEmpty(selectedFilters)
+    const lists = yield selectedFilters && !isEmpty(selectedFilters)
       ? call(
           PatientTasksApi.fetchPatientTasksByPatientIdentifierWithFilters,
           patientIdentifier,
@@ -436,7 +435,7 @@ function* changePatientTasksFilters({ selectedFilters }) {
     );
     yield put(PatientDetailsActions.getCurrentPatientTasks());
   } catch (error) {
-    console.log(error);
+    log(error);
   }
 }
 
@@ -451,7 +450,7 @@ function* doInitializeSavedFiltersForPatient({ patientIdentifier }) {
       ),
     );
   } catch (error) {
-    console.log(error);
+    log(error);
   }
 }
 
@@ -459,7 +458,7 @@ function* doSetPatientTaskSearch({ payload }) {
   try {
     yield put({ type: ActionTypes.SET_PATIENT_TASK_SEARCH_VALUE, payload });
   } catch (error) {
-    console.log(error);
+    log(error);
   }
 }
 
@@ -537,7 +536,7 @@ function* doSortPatientTasks({ payload }) {
     });
     yield put(PatientDetailsActions.getCurrentPatientTasks());
   } catch (error) {
-    console.log(error);
+    log(error);
   }
 }
 

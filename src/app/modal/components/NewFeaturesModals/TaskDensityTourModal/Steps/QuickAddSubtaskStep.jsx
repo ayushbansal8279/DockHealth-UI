@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react';
 import Spacing from 'components/common/Spacing';
-import QuickAddSubtaskImage from 'img/tour/task-density/quick-add-subtask';
+import QuickAddSubtaskImage from 'img/tour/task-density/quick-add-subtask.png';
 import { onTourModalStepEnter } from 'helpers/ga-event-helper';
 import { Image, Title, Description } from '../../styled';
 

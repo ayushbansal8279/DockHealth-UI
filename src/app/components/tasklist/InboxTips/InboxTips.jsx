@@ -1,5 +1,5 @@
 import React, { useRef } from 'react';
-import { ClickAwayListener, Popper } from '@material-ui/core';
+import { ClickAwayListener, Popper } from '@mui/material';
 import { useBoolean } from 'hooks/useBoolean';
 import Button from 'components/common/Button/Button';
 import InboxHelpPanel from 'views/list-details/InboxHelpPanel/InboxHelpPanel';

@@ -15,18 +15,18 @@ import { getCustomerTypeLabel } from 'helpers/customer-type-helper';
 import { onTaskDrawerPatientAdded } from 'helpers/ga-event-helper';
 import { noop } from 'helpers/utility-functions';
 import AddRecordOption from 'components/common/AddRecordOption/AddRecordOption';
-import { List } from 'react-virtualized';
+// import { List } from 'react-virtualized';
 
 import { userProfileSelector } from 'selectors/user-selectors';
 import {
   Input,
   InputBox,
   ListContainer,
-  Row,
+  // Row,
   LoaderItem,
   LoaderContainer,
-  UnassignRowContainer,
-  UnassignRow,
+  // UnassignRowContainer,
+  // UnassignRow,
   RefineSearchRow,
 } from './styled';
 
@@ -97,6 +97,7 @@ const PatientList = ({
     [patientIdentifiersToExclude, selectedPatientIdentifier],
   );
 
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   const fetchPatientsWithDebounce = useCallback(
     debounce((value) => {
       fetchPatients(value).then(() => {
@@ -200,11 +201,9 @@ const PatientList = ({
 
         if (patients?.length > 0) {
           setHoveredItemIndex((previousIndex) => {
-            let newIndex;
-            newIndex =
-              previousIndex === patients.length - 1 ? 0 : previousIndex + 1;
-
-            return newIndex;
+            return previousIndex === patients.length - 1
+              ? 0
+              : previousIndex + 1;
           });
         }
         break;
@@ -217,12 +216,9 @@ const PatientList = ({
 
         if (patients?.length > 0) {
           setHoveredItemIndex((previousIndex) => {
-            let newIndex;
-
-            newIndex =
-              previousIndex === 0 ? patients.length - 1 : previousIndex - 1;
-
-            return newIndex;
+            return previousIndex === 0
+              ? patients.length - 1
+              : previousIndex - 1;
           });
         }
         break;
@@ -235,41 +231,41 @@ const PatientList = ({
     }
   };
 
-  const renderRow = ({ index, key, style }) => {
-    const option = patients[index];
-    return option.unassignOption ? (
-      <UnassignRowContainer
-        key={key}
-        style={style}
-        withBorder={displayUnassignedOption}
-      >
-        <UnassignRow
-          key="UNASSIGNED"
-          type="button"
-          onClick={() => {
-            clearInput();
-            onSelect(null);
-          }}
-          isHovered={hoveredItemIndex === index}
-        >
-          Unassign
-        </UnassignRow>
-      </UnassignRowContainer>
-    ) : (
-      <Row
-        key={key}
-        style={style}
-        type="button"
-        isHovered={hoveredItemIndex === index}
-        onClick={() => {
-          clearInput();
-          onSelect(option.patient);
-        }}
-      >
-        {option.label({ searchValue })}
-      </Row>
-    );
-  };
+  // const renderRow = ({ index, key, style }) => {
+  //   const option = patients[index];
+  //   return option.unassignOption ? (
+  //     <UnassignRowContainer
+  //       key={key}
+  //       style={style}
+  //       withBorder={displayUnassignedOption}
+  //     >
+  //       <UnassignRow
+  //         key="UNASSIGNED"
+  //         type="button"
+  //         onClick={() => {
+  //           clearInput();
+  //           onSelect(null);
+  //         }}
+  //         isHovered={hoveredItemIndex === index}
+  //       >
+  //         Unassign
+  //       </UnassignRow>
+  //     </UnassignRowContainer>
+  //   ) : (
+  //     <Row
+  //       key={key}
+  //       style={style}
+  //       type="button"
+  //       isHovered={hoveredItemIndex === index}
+  //       onClick={() => {
+  //         clearInput();
+  //         onSelect(option.patient);
+  //       }}
+  //     >
+  //       {option.label({ searchValue })}
+  //     </Row>
+  //   );
+  // };
 
   return (
     <>
@@ -310,14 +306,15 @@ const PatientList = ({
             </RefineSearchRow>
           )}
           {!isLoadingPatients && patients?.length !== 0 && (
-            <List
-              scrollToIndex={hoveredItemIndex}
-              width={600}
-              height={patients.length > 6 ? 248 : patients.length * 40}
-              rowHeight={40}
-              rowRenderer={renderRow}
-              rowCount={patients.length}
-            />
+            <div />
+            // <List
+            //   scrollToIndex={hoveredItemIndex}
+            //   width={600}
+            //   height={patients.length > 6 ? 248 : patients.length * 40}
+            //   rowHeight={40}
+            //   rowRenderer={renderRow}
+            //   rowCount={patients.length}
+            // />
           )}
         </ListContainer>
       )}

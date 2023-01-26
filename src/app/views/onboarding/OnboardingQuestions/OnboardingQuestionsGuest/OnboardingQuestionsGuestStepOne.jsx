@@ -1,7 +1,7 @@
 /* eslint-disable sonarjs/cognitive-complexity */
 /* eslint-disable unicorn/no-nested-ternary */
 import React, { useState, useRef, useMemo, useCallback } from 'react';
-import Spacing from 'components/common/Spacing.tsx';
+import Spacing from 'components/common/Spacing';
 import Button from 'components/common/Button/Button';
 import OnboardingQuestionsPicker from '../OnboardingQuestionsPicker';
 import { ROLE_OPTIONS, DOMAIN_OPTIONS } from '../options';
@@ -20,60 +20,72 @@ const OnboardingQuestionsGuest = ({
   const roleReference = useRef(null);
   const domainReference = useRef(null);
 
-  const openPicker = field => setActiveOption(field);
+  const openPicker = (field) => setActiveOption(field);
 
   const questionReference = useMemo(() => {
     switch (activeOption) {
-      case 'ROLE':
+      case 'ROLE': {
         return roleReference;
+      }
 
-      case 'DOMAIN':
+      case 'DOMAIN': {
         return domainReference;
+      }
 
-      default:
+      default: {
         return null;
+      }
     }
   }, [activeOption]);
 
   const getOptions = useCallback(() => {
     switch (activeOption) {
-      case 'ROLE':
+      case 'ROLE': {
         return ROLE_OPTIONS;
+      }
 
-      case 'DOMAIN':
+      case 'DOMAIN': {
         return DOMAIN_OPTIONS;
+      }
 
-      default:
+      default: {
         return [];
+      }
     }
   }, [activeOption]);
 
   const getSelectedOptions = useCallback(() => {
     switch (activeOption) {
-      case 'ROLE':
+      case 'ROLE': {
         return roleOptions;
+      }
 
-      case 'DOMAIN':
+      case 'DOMAIN': {
         return domainOption;
+      }
 
-      default:
+      default: {
         return [];
+      }
     }
   }, [activeOption, domainOption, roleOptions]);
 
   const onSelectOption = useMemo(() => {
     switch (activeOption) {
-      case 'ROLE':
-        return option =>
-          roleOptions.some(opt => opt === option)
-            ? setRoleOptions(roleOptions.filter(opt => opt !== option))
+      case 'ROLE': {
+        return (option) =>
+          roleOptions.includes(option)
+            ? setRoleOptions(roleOptions.filter((opt) => opt !== option))
             : setRoleOptions([...roleOptions, option]);
+      }
 
-      case 'DOMAIN':
-        return option => setDomainOption([option]);
+      case 'DOMAIN': {
+        return (option) => setDomainOption([option]);
+      }
 
-      default:
+      default: {
         return null;
+      }
     }
   }, [activeOption, roleOptions, setDomainOption, setRoleOptions]);
 
@@ -109,7 +121,7 @@ const OnboardingQuestionsGuest = ({
         <Option
           ref={roleReference}
           onClick={openRolePicker}
-          hasSelectedOption={roleOptions.length !== 0}
+          hasSelectedOption={roleOptions.length > 0}
         >
           {roleText}
         </Option>{' '}
@@ -117,7 +129,7 @@ const OnboardingQuestionsGuest = ({
         <Option
           ref={domainReference}
           onClick={openDomainPicker}
-          hasSelectedOption={domainOption.length !== 0}
+          hasSelectedOption={domainOption.length > 0}
         >
           {domainText}
         </Option>

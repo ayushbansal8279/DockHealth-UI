@@ -1,4 +1,4 @@
-import { Box } from '@material-ui/core';
+import { Box } from '@mui/material';
 import QuickAddTaskInput from 'components/tasklist/QuickAddTaskInput/QuickAddTaskInput';
 import React, { useCallback } from 'react';
 import { Droppable } from 'react-beautiful-dnd';
@@ -17,7 +17,7 @@ const BoardTasksList = ({
   iconColorActive,
 }) => {
   const handleBlur = useCallback(
-    text => {
+    (text) => {
       if (text.length === 0) hideAddTaskField();
     },
     [hideAddTaskField],

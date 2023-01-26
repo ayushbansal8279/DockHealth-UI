@@ -55,7 +55,7 @@ const DashboardHeader = () => {
   const addQuickFilterOption = useSelector(addQuickFilterOptionSelector);
   const selectedQuickFilter = useSelector(selectedQuickFilterSelector);
   const filteredDashboardTasks = dashboardTasks?.filter(
-    taskGroupInfo => taskGroupInfo?.metricValue !== 0,
+    (taskGroupInfo) => taskGroupInfo?.metricValue !== 0,
   );
   const currentCommonTabName = Object.entries(DashboardTasksTab || {})?.filter(
     ([, value]) => value === tabName,
@@ -79,14 +79,14 @@ const DashboardHeader = () => {
   }, [contextType, dispatch]);
 
   const searchTasksWithDebounce = useCallback(
-    debounce(value => {
+    debounce((value) => {
       onSearchChanged();
       dispatch(searchDashboardTasks(value));
     }, 1000),
     [],
   );
 
-  const handleSearchChange = value => {
+  const handleSearchChange = (value) => {
     setSearchValue(value);
     if (value) {
       searchTasksWithDebounce(value);
@@ -132,14 +132,15 @@ const DashboardHeader = () => {
       !equals(
         selectedFilters,
         quickFiltersList?.find(
-          f => f.quickFilterIdentifier === selectedQuickFilter,
+          (f) => f.quickFilterIdentifier === selectedQuickFilter,
         )?.selectedOptions,
       ),
     [quickFiltersList, selectedFilters, selectedQuickFilter],
   );
 
   const handleQuickFilterCreate = useCallback(
-    name => dispatch(createQuickFilter(name, { contextType }, selectedFilters)),
+    (name) =>
+      dispatch(createQuickFilter(name, { contextType }, selectedFilters)),
     [contextType, dispatch, selectedFilters],
   );
 
@@ -152,7 +153,8 @@ const DashboardHeader = () => {
   );
 
   const handleQuickFilterDelete = useCallback(
-    quickFilterIdentifier => dispatch(deleteQuickFilter(quickFilterIdentifier)),
+    (quickFilterIdentifier) =>
+      dispatch(deleteQuickFilter(quickFilterIdentifier)),
     [dispatch],
   );
 

@@ -292,9 +292,7 @@ export function reorderOrganizationStatuses(taskStatusIdentifiers) {
 export function changeUserOrganizationRole(userIdentifier, role) {
   return axios
     .put(
-      `${
-        'organization/changeUserRoleForOrg/' + '?markedUserId='
-      }${userIdentifier}&role=${role}`,
+      `${'organization/changeUserRoleForOrg/?markedUserId='}${userIdentifier}&role=${role}`,
     )
     .then((response) => response.data);
 }
@@ -336,9 +334,7 @@ export function resendApprovalRequestUserForOrganization(userIdentifier) {
 export function cancelInviteToOrganization(markedUserIdentifier) {
   return axios
     .put(
-      `${
-        'organization/cancelInviteToOrganization/' + '?userIdentifier='
-      }${markedUserIdentifier}`,
+      `${'organization/cancelInviteToOrganization/?userIdentifier='}${markedUserIdentifier}`,
     )
     .then((response) => response.data)
     .catch((error) => {
@@ -349,9 +345,7 @@ export function cancelInviteToOrganization(markedUserIdentifier) {
 export function removeUserFromOrganization(removedUserIdentifier) {
   return axios
     .delete(
-      `${
-        'user/removeUserFromOrganization' + '?userIdentifier='
-      }${removedUserIdentifier}`,
+      `${'user/removeUserFromOrganization?userIdentifier='}${removedUserIdentifier}`,
     )
     .then((response) => response.data)
     .catch((error) => {

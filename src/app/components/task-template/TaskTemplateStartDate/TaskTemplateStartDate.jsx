@@ -7,13 +7,13 @@ import DateLabel from 'components/common/DateLabel/DateLabel';
 import { updatePartialWorkflow } from 'actions/task-template-actions';
 import { useDispatch } from 'react-redux';
 
-const TaskTemplateStartDate = props => {
+const TaskTemplateStartDate = (props) => {
   const { workflow, disabled = false } = props;
   const { identifier, startDateTime } = workflow || {};
   const dispatch = useDispatch();
 
   const handleStartDateChange = useCallback(
-    updatedDate => {
+    (updatedDate) => {
       const payload = {
         startDateTime: updatedDate,
       };

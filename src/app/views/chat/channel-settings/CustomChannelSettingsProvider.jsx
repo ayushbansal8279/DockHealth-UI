@@ -3,7 +3,7 @@ import { UserProfileProvider } from './UserProfileContext';
 import ChannelSettingsContext from './ChannelSettingsContext';
 import uuidv4 from './uuid';
 
-const ChannelSettingsProvider = props => {
+const ChannelSettingsProvider = (props) => {
   const {
     children,
     className,

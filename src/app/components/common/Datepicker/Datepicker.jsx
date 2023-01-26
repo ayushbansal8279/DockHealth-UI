@@ -1,8 +1,8 @@
 import React, { useState, useMemo, useEffect } from 'react';
 import { useMount } from 'react-use';
 import moment from 'moment';
-import { Grid, IconButton } from '@material-ui/core';
-import { KeyboardArrowLeft, KeyboardArrowRight } from '@material-ui/icons';
+import { Grid, IconButton } from '@mui/material';
+import { KeyboardArrowLeft, KeyboardArrowRight } from '@mui/icons-material';
 import { MontserratTypography } from 'styles/theme-montserrat';
 import Spacing from 'components/common/Spacing';
 import {
@@ -42,7 +42,7 @@ const Datepicker = ({
     );
   });
 
-  const setMonthByDate = value => {
+  const setMonthByDate = (value) => {
     if (currentMonthMoment?.isSame(value, 'month')) return;
 
     const nextMonthMomentValue = value?.startOf('month');
@@ -83,37 +83,31 @@ const Datepicker = ({
     setMonthByDate(moment(currentMonthMoment)?.add(-1, 'M'));
 
   return (
-    <>
-      <CalendarContainer>
-        <Grid container justifyContent="space-between" alignItems="center">
-          <IconButton
-            size="small"
+    <CalendarContainer>
+      <Grid container justifyContent="space-between" alignItems="center">
+        <IconButton size="small" color="inherit" onMouseDown={setPreviousMonth}>
+          <KeyboardArrowLeft />
+        </IconButton>
+        <CurrentMonthLabel>
+          <MontserratTypography
+            variant="h4"
             color="inherit"
-            onMouseDown={setPreviousMonth}
+            weight="500"
+            noWrap
           >
-            <KeyboardArrowLeft />
-          </IconButton>
-          <CurrentMonthLabel>
-            <MontserratTypography
-              variant="h4"
-              color="inherit"
-              weight="500"
-              noWrap
-            >
-              {formattedCurrentMonth}
-            </MontserratTypography>
-          </CurrentMonthLabel>
-          <IconButton size="small" color="inherit" onMouseDown={setNextMonth}>
-            <KeyboardArrowRight />
-          </IconButton>
-        </Grid>
-        <Spacing vertical={5} />
-        <CalendarGridContainer>
-          {DAYS_OF_WEEK.map(renderDayOfWeekHeaderLabel)}
-          {dayLabelsToRender}
-        </CalendarGridContainer>
-      </CalendarContainer>
-    </>
+            {formattedCurrentMonth}
+          </MontserratTypography>
+        </CurrentMonthLabel>
+        <IconButton size="small" color="inherit" onMouseDown={setNextMonth}>
+          <KeyboardArrowRight />
+        </IconButton>
+      </Grid>
+      <Spacing vertical={5} />
+      <CalendarGridContainer>
+        {DAYS_OF_WEEK.map(renderDayOfWeekHeaderLabel)}
+        {dayLabelsToRender}
+      </CalendarGridContainer>
+    </CalendarContainer>
   );
 };
 

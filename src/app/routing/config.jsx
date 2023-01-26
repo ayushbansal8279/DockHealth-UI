@@ -206,21 +206,21 @@ export const SETTINGS_ROUTES = [
 export const TEMPLATE_CORE_SUBSCRIPTION_PLAN_ROUTES = [
   {
     path: '/home/my-tasks',
-    RouteComponent: props => (
+    RouteComponent: (props) => (
       <DashboardView tabName={DashboardTasksTab.MY_TASKS} {...props} />
     ),
     permissions: [CAN_ACCESS_HOME_PAGE],
   },
   {
     path: '/home/shared-with-me-tasks',
-    RouteComponent: props => (
+    RouteComponent: (props) => (
       <DashboardView tabName={DashboardTasksTab.SHARED_TASKS} {...props} />
     ),
     permissions: [CAN_ACCESS_HOME_PAGE],
   },
   {
     path: '/home/all-tasks',
-    RouteComponent: props => (
+    RouteComponent: (props) => (
       <DashboardView tabName={DashboardTasksTab.ALL_TASKS} {...props} />
     ),
     permissions: [CAN_ACCESS_HOME_PAGE],

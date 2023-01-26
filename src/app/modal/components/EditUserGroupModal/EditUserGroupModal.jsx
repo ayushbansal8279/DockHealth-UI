@@ -11,11 +11,11 @@ import { object, string } from 'yup';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { getUserGroupAvatarThumbnailUrl } from 'helpers/user-groups-helper';
 import { createUserGroup, updateUserGroup } from 'actions/user-groups-actions';
-import { Grid } from '@material-ui/core';
+import { Grid } from '@mui/material';
 import ColorPicker from 'components/common/ColorPicker/ColorPicker';
 import InitialsInput from 'components/common/InitialsInput/InitialsInput';
 import FormInput from 'components/common/Input/FormInput';
-import Spacing from 'components/common/Spacing.tsx';
+import Spacing from 'components/common/Spacing';
 import Button from 'components/common/Button/Button';
 import AvatarInput from 'components/user/AvatarInput/AvatarInput';
 import { ORGANIZATION_TILE_COLORS } from 'styles/organization-tile-colors';
@@ -119,11 +119,11 @@ const EditUserGroupModal = ({ userGroup, closeModal }) => {
     }
   }, [groupNameValue, setValue, userGroup]);
 
-  const onSubmit = data => {
+  const onSubmit = (data) => {
     if (identifier) {
       dispatch(updateUserGroup(identifier, data));
     } else {
-      const onSuccessCallback = createdGroupIdentifier => {
+      const onSuccessCallback = (createdGroupIdentifier) => {
         dispatch(
           openModal('AddUserToGroup', {
             userGroupIdentifier: createdGroupIdentifier,
@@ -139,7 +139,7 @@ const EditUserGroupModal = ({ userGroup, closeModal }) => {
       <CloseIconButton onClick={closeModal} size="small" color="secondary">
         <CloseIcon />
       </CloseIconButton>
-      <StyledForm onSubmit={event => handleSubmit(onSubmit)(event)}>
+      <StyledForm onSubmit={(event) => handleSubmit(onSubmit)(event)}>
         <FormProvider {...formMethods}>
           <Grid container direction="column" justifyContent="space-between">
             <Grid item>
@@ -167,7 +167,7 @@ const EditUserGroupModal = ({ userGroup, closeModal }) => {
                 name="initials"
                 placeholder="ab"
                 value={initialsValue}
-                onChange={v => {
+                onChange={(v) => {
                   setValue('initials', v);
                 }}
                 maxChar={2}
@@ -177,7 +177,7 @@ const EditUserGroupModal = ({ userGroup, closeModal }) => {
               <ColorPicker
                 name="bubbleColor"
                 value={avatarColorValue}
-                onChange={event => {
+                onChange={(event) => {
                   const { name, value } = event.target;
                   setValue(name, value);
                 }}
@@ -190,11 +190,11 @@ const EditUserGroupModal = ({ userGroup, closeModal }) => {
                 name={groupNameValue}
                 color={avatarColorValue}
                 pictureSrc={
-                  avatarValue !== undefined
-                    ? avatarValue
-                    : getUserGroupAvatarThumbnailUrl(userGroup)
+                  avatarValue === undefined
+                    ? getUserGroupAvatarThumbnailUrl(userGroup)
+                    : avatarValue
                 }
-                onChange={newAvatar => setValue('avatar', newAvatar)}
+                onChange={(newAvatar) => setValue('avatar', newAvatar)}
               />
             </Grid>
             <Grid container direction="row" justifyContent="center">

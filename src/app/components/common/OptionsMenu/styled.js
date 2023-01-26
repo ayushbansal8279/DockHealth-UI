@@ -1,16 +1,17 @@
-import { makeStyles } from '@material-ui/core/styles';
+// import { makeStyles } from '@mui/styles';
 import styled from 'styled-components';
 
 export const StyledButton = styled.button`
   display: block;
 `;
 
-export const useMenuStyles = makeStyles({
-  root: {
-    minWidth: 120,
-    maxWidth: 300,
-  },
-});
+export const useMenuStyles = undefined;
+// makeStyles({
+//   root: {
+//     minWidth: 120,
+//     maxWidth: 300,
+//   },
+// });
 
 export const OptionsMenuContainer = styled.div`
   display: flex;

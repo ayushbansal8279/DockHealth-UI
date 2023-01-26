@@ -14,10 +14,8 @@ import ListDetailsBoardView from './ListDetailsBoardView/ListDetailsBoardView';
 
 const ListDetailsView = () => {
   const parameters = useParams();
-  const {
-    taskListIdentifier: taskListIdentifierParameter,
-    tabName,
-  } = parameters;
+  const { taskListIdentifier: taskListIdentifierParameter, tabName } =
+    parameters;
   const { search } = useLocation();
   const viewType = getViewTypeFromQueryString(search);
   const dispatch = useDispatch();

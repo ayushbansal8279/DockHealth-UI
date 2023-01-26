@@ -62,7 +62,7 @@ function updateWorkflowInState(updateCallback, workflowIdentifier, state) {
 }
 
 // eslint-disable-next-line sonarjs/cognitive-complexity
-export default function (state = INITIAL_STATE, action = {}) {
+export default (state = INITIAL_STATE, action = {}) => {
   const { type, payload } = action;
   switch (type) {
     case ActionTypes.UPDATE_PARTIAL_WORKFLOW_SUCCESS: {
@@ -630,4 +630,4 @@ export default function (state = INITIAL_STATE, action = {}) {
       return TaskBaseReducer(state, action, updateTasksStateCallback);
     }
   }
-}
+};

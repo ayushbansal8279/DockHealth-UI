@@ -5,7 +5,7 @@ import {
   UploadBarOuterContainer,
 } from './styled';
 
-const AttachmentProgressBar = props => {
+const AttachmentProgressBar = (props) => {
   const { progress } = props;
 
   return (

@@ -1,5 +1,5 @@
 import React from 'react';
-import { Box } from '@material-ui/core';
+import { Box } from '@mui/material';
 import { getPriorityColor, TaskPriority } from 'helpers/task-helpers';
 import PriorityFlag from 'img/priority-flag';
 

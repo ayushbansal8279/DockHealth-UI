@@ -6,7 +6,7 @@ import {
   storeAsCurrentTask,
 } from 'actions/task-actions';
 import TaskContent from 'components/task-drawer/TaskDrawerContent/TaskDrawerContent';
-import { Box } from '@material-ui/core';
+import { Box } from '@mui/material';
 import { useParams, useHistory } from 'react-router-dom';
 import {
   selectedTaskSelector,

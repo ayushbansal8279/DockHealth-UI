@@ -1,13 +1,14 @@
-import { makeStyles } from '@material-ui/core/styles';
+// import { makeStyles } from '@mui/styles';
 import styled from 'styled-components';
 import { fontSizes } from 'styles/font';
 import palette from 'styles/palette';
 
-export const useProgressStyles = makeStyles({
-  colorPrimary: {
-    color: palette.midnightBlue,
-  },
-});
+export const useProgressStyles = undefined;
+// makeStyles({
+//   colorPrimary: {
+//     color: palette.midnightBlue,
+//   },
+// });
 
 export const Container = styled.div`
   display: inline-flex;

@@ -63,7 +63,7 @@ const PersonDetailsCompletedTasks = ({
     tasks?.reduce(
       (counter, task) =>
         counter +
-        task.subtasks?.filter(x => x.status === 'COMPLETE').length +
+        task.subtasks?.filter((x) => x.status === 'COMPLETE').length +
         1,
       0,
     ) || 0;
@@ -110,7 +110,7 @@ const PersonDetailsCompletedTasks = ({
                   highlightTasksOfTheSameParent,
                 }) => (
                   <>
-                    {tasks?.map(task => (
+                    {tasks?.map((task) => (
                       <StandardTaskItem
                         key={task.identifier}
                         isFullView={isFullView}

@@ -1,5 +1,5 @@
 import styled from 'styled-components';
-import { DataGrid } from '@material-ui/data-grid';
+import { DataGrid } from '@mui/x-data-grid';
 import { fontWeights, fontSizes } from 'styles/font';
 import palette from 'styles/palette';
 import spacing from 'styles/spacing';
@@ -16,8 +16,7 @@ export const StyledDataGrid = styled(DataGrid)`
 
     // calculating a height of a table is a workaround - MUI v4 doesn't support space beetween rows
     height: ${({ rows, pageSize, page }) => {
-      let rowsLength;
-      rowsLength =
+      const rowsLength =
         rows.length - page * pageSize > pageSize
           ? pageSize
           : rows.length - page * pageSize;
@@ -30,8 +29,7 @@ export const StyledDataGrid = styled(DataGrid)`
 
     .MuiDataGrid-renderingZone {
       ${({ rows, pageSize, page }) => {
-        let rowsLength;
-        rowsLength =
+        const rowsLength =
           rows.length - page * pageSize > pageSize
             ? pageSize
             : rows.length - page * pageSize;

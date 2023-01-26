@@ -3,11 +3,11 @@ import { useDispatch } from 'react-redux';
 import { deleteTemporaryElement } from 'actions/task-template-actions';
 import { useBoolean } from 'hooks/useBoolean';
 import { getEdgeCenter } from 'react-flow-renderer';
-import DeleteOutlineIcon from '@material-ui/icons/DeleteOutline';
+import DeleteOutlineIcon from '@mui/icons-material/DeleteOutline';
 import LinkPath from '../LinkPath/LinkPath';
 import TaskLinkOptions from '../TaskLinkOptions/TaskLinkOptions';
 
-const TemporaryTaskLink = props => {
+const TemporaryTaskLink = (props) => {
   const {
     id,
     sourceX,

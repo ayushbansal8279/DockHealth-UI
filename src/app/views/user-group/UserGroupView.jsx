@@ -1,4 +1,4 @@
-import { Grid } from '@material-ui/core';
+import { Grid } from '@mui/material';
 import queryString from 'query-string';
 import React, { useEffect, useState } from 'react';
 import isNil from 'ramda/src/isNil';
@@ -21,7 +21,7 @@ import ListSkeletonLoader from 'components/common/ListSkeletonLoader/ListSkeleto
 import PageContentHeader from 'components/common/PageContentHeader/PageContentHeader';
 import Spacing from 'components/common/Spacing';
 import Button from 'components/common/Button/Button';
-import LightbulbBig from 'img/lightbulb-big';
+import LightbulbBig from 'img/lightbulb-big.svg';
 import SearchInput from 'components/common/SearchInput/SearchInput';
 import UsersList from './UsersList/UsersList';
 import {
@@ -36,9 +36,8 @@ import {
 
 function UserGroupView() {
   const [searchTerm, setSearchTerm] = useState('');
-  const [isSearchFocused, setSearchFocused, unsetSearchFocused] = useBoolean(
-    false,
-  );
+  const [isSearchFocused, setSearchFocused, unsetSearchFocused] =
+    useBoolean(false);
 
   const { groupIdentifier: groupIdentifierUrlParameter } = useParams();
   const history = useHistory();
@@ -68,7 +67,7 @@ function UserGroupView() {
     }
   }, [search]);
 
-  const handleSearchTermChange = value => {
+  const handleSearchTermChange = (value) => {
     setSearchTerm(value);
 
     const parameters = queryString.parse(search) ?? {};

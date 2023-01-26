@@ -1,6 +1,6 @@
 import React from 'react';
-import { Box } from '@material-ui/core';
-import PatientsList from 'components/patients/PatientDropdown/PatientList.js';
+import { Box } from '@mui/material';
+import PatientsList from 'components/patients/PatientDropdown/PatientList';
 import { PatientListWrapper } from './styled';
 import {
   ModalHeader,
@@ -11,9 +11,9 @@ import {
 } from '../styled';
 
 const PatientPickerModal = ({
-  patientIdentifiersToExclude,
+  // patientIdentifiersToExclude,
   closeModal,
-  onSelect,
+  // onSelect,
 }) => {
   return (
     <ModalWrapperWithPadding width="auto">
@@ -26,10 +26,11 @@ const PatientPickerModal = ({
       <PatientListWrapper>
         <PatientsList
           disableAdding
-          patientIdentifiersToExclude={patientIdentifiersToExclude}
-          onSelect={patient => {
+          // patientIdentifiersToExclude={patientIdentifiersToExclude}
+          // eslint-disable-next-line @typescript-eslint/no-unused-vars
+          onSelect={(patient) => {
             closeModal();
-            onSelect(patient);
+            // onSelect(patient);
           }}
         />
       </PatientListWrapper>

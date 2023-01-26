@@ -1,7 +1,7 @@
 /* eslint-disable react/jsx-no-duplicate-props */
 import React, { useEffect, useRef, useState } from 'react';
-import { Grid } from '@material-ui/core';
-import { List } from 'react-virtualized';
+import { Grid } from '@mui/material';
+// import { List } from 'react-virtualized';
 import Loader, { LoaderSizes } from 'components/common/Loader/Loader';
 import Spacing from 'components/common/Spacing';
 import { useBoolean } from 'hooks/useBoolean';
@@ -20,7 +20,7 @@ import AddRecordOption from 'components/common/AddRecordOption/AddRecordOption';
 import {
   ListContainer,
   ListItem,
-  ListItemButton,
+  // ListItemButton,
   ListItemRefineButton,
 } from './styled';
 import { AdornmentClear } from '../styled';
@@ -50,13 +50,12 @@ const SelectDropdown = React.forwardRef(
     const inputContainerReference = useRef(null);
     const listReference = useRef(null);
     const [inputValue, setInputValue] = useState('');
-    const [currentSelectedOption, setCurrentSelectedOption] = useState(
-      selectedOption,
-    );
+    const [currentSelectedOption, setCurrentSelectedOption] =
+      useState(selectedOption);
     const [isFocused, setIsFocused, unsetIsFocused] = useBoolean(false);
     const [hoveredItemIndex, setHoveredItemIndex] = useState(0);
 
-    const handleInputChange = event => {
+    const handleInputChange = (event) => {
       const newValue = event.target.value;
       setInputValue(newValue);
       onInputChange(newValue);
@@ -84,22 +83,23 @@ const SelectDropdown = React.forwardRef(
       setHoveredItemIndex(0);
     }, [options]);
 
-    const handleOptionSelect = option => {
+    const handleOptionSelect = (option) => {
       setCurrentSelectedOption(option);
       onOptionSelect(option);
     };
 
-    const handleInputKeyDown = event => {
+    const handleInputKeyDown = (event) => {
       switch (event.keyCode) {
         // esc key
-        case 27:
+        case 27: {
           event.preventDefault();
           event.stopPropagation();
           inputContainerReference.current.querySelector('input').blur();
           break;
+        }
 
         // enter key
-        case 13:
+        case 13: {
           event.preventDefault();
           event.stopPropagation();
           if (inputValue && options?.length > 0 && options[hoveredItemIndex]) {
@@ -111,20 +111,17 @@ const SelectDropdown = React.forwardRef(
             onAddItemClick(inputValue);
           }
           break;
+        }
 
         // down arrow key
-        case 40:
+        case 40: {
           event.preventDefault();
           event.stopPropagation();
 
           if (options?.length > 0) {
-            setHoveredItemIndex(previousIndex => {
-              let newIndex;
-              if (previousIndex === options.length - 1) {
-                newIndex = 0;
-              } else {
-                newIndex = previousIndex + 1;
-              }
+            setHoveredItemIndex((previousIndex) => {
+              const newIndex =
+                previousIndex === options.length - 1 ? 0 : previousIndex + 1;
 
               if (listReference.current?.children?.[newIndex])
                 listReference.current.children[newIndex].scrollIntoView(false);
@@ -133,21 +130,17 @@ const SelectDropdown = React.forwardRef(
             });
           }
           break;
+        }
 
         // up arrow key
-        case 38:
+        case 38: {
           event.preventDefault();
           event.stopPropagation();
 
           if (options?.length > 0) {
-            setHoveredItemIndex(previousIndex => {
-              let newIndex;
-
-              if (previousIndex === 0) {
-                newIndex = options.length - 1;
-              } else {
-                newIndex = previousIndex - 1;
-              }
+            setHoveredItemIndex((previousIndex) => {
+              const newIndex =
+                previousIndex === 0 ? options.length - 1 : previousIndex - 1;
 
               if (
                 listReference.current?.children?.[newIndex] &&
@@ -164,10 +157,12 @@ const SelectDropdown = React.forwardRef(
             });
           }
           break;
+        }
 
-        default:
+        default: {
           // do nothing
           break;
+        }
       }
     };
 
@@ -179,23 +174,23 @@ const SelectDropdown = React.forwardRef(
       (!options || options.length === 0) &&
       currentSelectedOption?.displayLabel !== inputValue;
 
-    const renderOptionRow = ({ key, index, style }) => {
-      const option = options[index];
-      return (
-        <ListItem key={key} style={style}>
-          <ListItemButton
-            type="button"
-            isHovered={hoveredItemIndex === index}
-            onMouseDown={() => handleOptionSelect(option)}
-            onMouseEnter={() => setHoveredItemIndex(index)}
-          >
-            {typeof option.label === 'function'
-              ? option.label({ searchValue: inputValue })
-              : option.label}
-          </ListItemButton>
-        </ListItem>
-      );
-    };
+    // const renderOptionRow = ({ key, index, style }) => {
+    //   const option = options[index];
+    //   return (
+    //     <ListItem key={key} style={style}>
+    //       <ListItemButton
+    //         type="button"
+    //         isHovered={hoveredItemIndex === index}
+    //         onMouseDown={() => handleOptionSelect(option)}
+    //         onMouseEnter={() => setHoveredItemIndex(index)}
+    //       >
+    //         {typeof option.label === 'function'
+    //           ? option.label({ searchValue: inputValue })
+    //           : option.label}
+    //       </ListItemButton>
+    //     </ListItem>
+    //   );
+    // };
 
     return (
       <>
@@ -216,7 +211,7 @@ const SelectDropdown = React.forwardRef(
               onKeyDown: handleInputKeyDown,
             }}
             InputProps={{
-              endAdornment: !disabled ? (
+              endAdornment: disabled ? null : (
                 <>
                   {currentSelectedOption?.displayLabel === inputValue && (
                     <AdornmentClear
@@ -231,7 +226,7 @@ const SelectDropdown = React.forwardRef(
                     />
                   )}
                 </>
-              ) : null,
+              ),
             }}
             onFocus={setIsFocused}
             onBlur={unsetIsFocused}
@@ -244,7 +239,13 @@ const SelectDropdown = React.forwardRef(
               width || inputContainerReference?.current?.clientWidth || 300
             }
           >
-            {!isLoadingOptions ? (
+            {isLoadingOptions ? (
+              <Grid container justifyContent="center" alignItems="center">
+                <Spacing vertical={3} />
+                <Loader size={LoaderSizes.small} />
+                <Spacing vertical={3} />
+              </Grid>
+            ) : (
               <>
                 {options?.length >= refineResultsCount && (
                   <ListItem>
@@ -254,18 +255,19 @@ const SelectDropdown = React.forwardRef(
                   </ListItem>
                 )}
                 {options?.length > 0 && (
-                  <List
-                    scrollToIndex={hoveredItemIndex}
-                    width={
-                      width ||
-                      inputContainerReference?.current?.clientWidth ||
-                      300
-                    }
-                    height={options.length > 5 ? 208 : options.length * 40}
-                    rowHeight={40}
-                    rowRenderer={renderOptionRow}
-                    rowCount={options.length}
-                  />
+                  <div />
+                  // <List
+                  //   scrollToIndex={hoveredItemIndex}
+                  //   width={
+                  //     width ||
+                  //     inputContainerReference?.current?.clientWidth ||
+                  //     300
+                  //   }
+                  //   height={options.length > 5 ? 208 : options.length * 40}
+                  //   rowHeight={40}
+                  //   rowRenderer={renderOptionRow}
+                  //   rowCount={options.length}
+                  // />
                 )}
                 {showAddRecordOption && (
                   <ListItem key="addRecordButton">
@@ -276,12 +278,6 @@ const SelectDropdown = React.forwardRef(
                   </ListItem>
                 )}
               </>
-            ) : (
-              <Grid container justifyContent="center" alignItems="center">
-                <Spacing vertical={3} />
-                <Loader size={LoaderSizes.small} />
-                <Spacing vertical={3} />
-              </Grid>
             )}
           </ListContainer>
         )}

@@ -5,13 +5,13 @@ import {
   MenuList,
   Popper,
   ClickAwayListener,
-} from '@material-ui/core';
+} from '@mui/material';
 import { useStoreState } from 'react-flow-renderer';
 import { MenuItemIconWrapper, useMenuStyles } from './styled';
 
-const TaskLinkOptions = props => {
+const TaskLinkOptions = (props) => {
   const { anchorEl, options, onClose } = props;
-  const { 2: zoom } = useStoreState(store => store.transform);
+  const { 2: zoom } = useStoreState((store) => store.transform);
 
   const menuClasses = useMenuStyles();
 

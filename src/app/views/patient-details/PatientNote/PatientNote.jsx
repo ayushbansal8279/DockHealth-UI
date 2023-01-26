@@ -7,8 +7,8 @@ import React, {
 } from 'react';
 import palette from 'styles/palette';
 import OptionsMenu from 'components/common/OptionsMenu/OptionsMenu';
-import { Box, ClickAwayListener } from '@material-ui/core';
-import { MoreVert } from '@material-ui/icons';
+import { Box, ClickAwayListener } from '@mui/material';
+import { MoreVert } from '@mui/icons-material';
 import moment from 'moment';
 import UserAvatar from 'components/user/UserAvatar/UserAvatar';
 import TextEditor from 'components/common/TextEditor/TextEditor';
@@ -56,7 +56,7 @@ const PatientNote = ({
 
   const isEmpty = useMemo(() => {
     const { tokenizedText } = convertFromEditorStateToOutput(noteState, true);
-    return !tokenizedText.trim().length;
+    return tokenizedText.trim().length === 0;
   }, [noteState]);
 
   useEffect(() => {
@@ -159,7 +159,7 @@ const PatientNote = ({
               isDrawerEditor
               onFocus={handleFocus}
               state={noteState}
-              onChange={newState => setNoteState(newState)}
+              onChange={(newState) => setNoteState(newState)}
             />
             <PatientNoteAuthor>
               {creator.firstName} {creator.lastName}{' '}

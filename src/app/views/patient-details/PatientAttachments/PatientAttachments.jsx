@@ -5,9 +5,9 @@ import { useSelector, useDispatch } from 'react-redux';
 import localStorageHelper from 'helpers/local-storage-helper';
 // import compose from 'ramda/src/compose';
 // import { showGlobalErrorAlert } from 'alert/actions';
-import { Box, IconButton } from '@material-ui/core';
-import ViewModuleIcon from '@material-ui/icons/ViewModule';
-import ViewHeadlineIcon from '@material-ui/icons/ViewHeadline';
+import { Box, IconButton } from '@mui/material';
+import ViewModuleIcon from '@mui/icons-material/ViewModule';
+import ViewHeadlineIcon from '@mui/icons-material/ViewHeadline';
 import { isFetchingPatientAttachmentsSelector } from 'selectors/patient-details-selectors';
 import AttachmentsBreadcrumbs from 'views/patient-details/AttachmentsBreadcrumbs/AttachmentsBreadcrumbs';
 import AddButton from 'components/common/AddButton/AddButton';
@@ -25,6 +25,7 @@ import FileListItemLoader from 'components/attachments/FileListItemLoader/FileLi
 import * as PatientDetailsActions from 'actions/patient-details-actions';
 import GoogleDriveIcon from 'img/google-drive-icon';
 import GoogleDrivePicker from 'components/common/GoogleDrivePicker/GoogleDrivePicker';
+import { log } from 'helpers/log';
 import {
   PatientAttachmentsWrapper,
   AttachmentFileInput,
@@ -100,7 +101,7 @@ const PatientAttachments = () => {
     activeViewType === FilesViewType.GRID ? FolderGridItem : FolderListItem;
 
   const getFileOptions = useCallback(
-    file => [
+    (file) => [
       { name: 'Preview', onClick: () => openAttachmentPreview(file) },
       { name: 'Rename', onClick: () => renameAttachment(file) },
       {
@@ -122,7 +123,7 @@ const PatientAttachments = () => {
   );
 
   const getFolderOptions = useCallback(
-    folder => [
+    (folder) => [
       {
         name: 'Open in new tab',
         onClick: () => openFolderInNewTab(folder),
@@ -152,7 +153,7 @@ const PatientAttachments = () => {
   const dragEnter = (event, position, isFile = false) => {
     dragOverItem.current = position;
     // setDragOverStyle({ border: `2px solid ${palette.midnightBlue}` });
-    const styledList = foldersList.map(folder => {
+    const styledList = foldersList.map((folder) => {
       const styledFolder = folder;
       styledFolder.style = { border: `1px solid ${palette.coolGrey2}` };
       return styledFolder;
@@ -178,7 +179,7 @@ const PatientAttachments = () => {
 
       setFoldersList(
         // eslint-disable-next-line sonarjs/no-identical-functions
-        foldersList.map(folder => {
+        foldersList.map((folder) => {
           const styledFolder = folder;
           styledFolder.style = { border: `1px solid ${palette.coolGrey2}` };
           return styledFolder;
@@ -233,17 +234,17 @@ const PatientAttachments = () => {
           <AttachmentsBreadcrumbs />
         </Box>
         <Box display="flex" alignItems="center" flex="0 0 auto">
-          {process.env.GOOGLE_DRIVE_API_CLIENT_ID &&
-            process.env.GOOGLE_DRIVE_API_KEY && (
+          {import.meta.env.GOOGLE_DRIVE_API_CLIENT_ID &&
+            import.meta.env.GOOGLE_DRIVE_API_KEY && (
               <GoogleDrivePicker
-                clientId={process.env.GOOGLE_DRIVE_API_CLIENT_ID}
-                developerKey={process.env.GOOGLE_DRIVE_API_KEY}
+                clientId={import.meta.env.GOOGLE_DRIVE_API_CLIENT_ID}
+                developerKey={import.meta.env.GOOGLE_DRIVE_API_KEY}
                 scope="https://www.googleapis.com/auth/drive.readonly"
                 onChange={handleGooglePickerChange}
                 // onAuthFailed={compose(dispatch, showGlobalErrorAlert)}
                 // onAuthFailed={handleGoogleAuthError}
                 // onAuthenticate={token => console.log('oauth token:', token)}
-                onAuthFailed={data => console.log('on auth failed:', data)}
+                onAuthFailed={(data) => log('on auth failed:', data)}
                 multiselect
                 navHidden={false}
                 viewId="DOCS"
@@ -277,95 +278,7 @@ const PatientAttachments = () => {
           </IconButton>
         </Box>
       </Box>
-      {!isFetching ? (
-        <>
-          <DropzoneContainer
-            {...getRootProps({
-              onClick: event => event.stopPropagation(),
-              style: {
-                outline: 'none',
-              },
-            })}
-          >
-            <DropzoneInfoText>
-              {isDragActive
-                ? 'Drop the files here ...'
-                : 'Drag and drop files or documents here'}
-            </DropzoneInfoText>
-            <AttachmentFileInput
-              ref={attachmentFileInputReference}
-              {...getInputProps()}
-            />
-            {foldersList.length > 0 && (
-              <NamedCollapse name="Folders">
-                {activeViewType === FilesViewType.LIST && <FileListHeader />}
-                {foldersList.map((folder, index) => (
-                  <FolderItemComponent
-                    folder={folder}
-                    options={getFolderOptions(folder)}
-                    onClick={() => {
-                      navigateToFolder(folder);
-                    }}
-                    onDragStart={event => dragStart(event, index)}
-                    onDragEnter={event => dragEnter(event, index)}
-                    onDragEnd={drop}
-                    key={folder.attachmentIdentifier}
-                    draggable
-                    // style={dragOverStyle}
-                    style={folder.style ?? {}}
-                  />
-                ))}
-              </NamedCollapse>
-            )}
-            <NamedCollapse name="Files">
-              {activeViewType === FilesViewType.LIST && <FileListHeader />}
-              {filesList.length > 0 ? (
-                filesList.map((file, index) => (
-                  <FileItemComponent
-                    key={file.attachmentIdentifier}
-                    onClick={() => handleAttachmentClick(file)}
-                    file={file}
-                    options={getFileOptions(file)}
-                    onDragStart={event => dragStart(event, index, true)}
-                    onDragEnter={event => dragEnter(event, index, true)}
-                    onDragEnd={drop}
-                    draggable
-                  />
-                ))
-              ) : (
-                <>
-                  {!currentlyUploadedAttachment && (
-                    <EmptyListText>List of files is empty</EmptyListText>
-                  )}
-                </>
-              )}
-              {currentlyUploadedAttachment && (
-                <>
-                  {activeViewType === FilesViewType.LIST ? (
-                    <FileListItemProgressBar value={uploadProgress} />
-                  ) : (
-                    <FileGridItemProgressBar value={uploadProgress} />
-                  )}
-                </>
-              )}
-              {currentPatientAttachments.length > 0 && (
-                <div>
-                  <DownloadAllLink onClick={downloadAllFiles}>
-                    Download All
-                  </DownloadAllLink>
-                </div>
-              )}
-            </NamedCollapse>
-            <AttachmentPreview
-              attachment={previewedAttachment}
-              attachmentsSources={attachmentsSources}
-              hideAttachmentPreview={hideAttachmentPreview}
-              isAttachmentPreviewOpen={isAttachmentPreviewOpen}
-              attachmentsLoading={attachmentsLoading}
-            />
-          </DropzoneContainer>
-        </>
-      ) : (
+      {isFetching ? (
         <Box width="100%" mt="80px">
           {activeViewType === FilesViewType.LIST ? (
             <>
@@ -385,6 +298,94 @@ const PatientAttachments = () => {
             </>
           )}
         </Box>
+      ) : (
+        <DropzoneContainer
+          {...getRootProps({
+            onClick: (event) => event.stopPropagation(),
+            style: {
+              outline: 'none',
+            },
+          })}
+        >
+          <DropzoneInfoText>
+            {isDragActive
+              ? 'Drop the files here ...'
+              : 'Drag and drop files or documents here'}
+          </DropzoneInfoText>
+          <AttachmentFileInput
+            ref={attachmentFileInputReference}
+            {...getInputProps()}
+          />
+          {foldersList.length > 0 && (
+            <NamedCollapse name="Folders">
+              {activeViewType === FilesViewType.LIST && <FileListHeader />}
+              {foldersList.map((folder, index) => (
+                <FolderItemComponent
+                  folder={folder}
+                  options={getFolderOptions(folder)}
+                  onClick={() => {
+                    navigateToFolder(folder);
+                  }}
+                  onDragStart={(event) => dragStart(event, index)}
+                  onDragEnter={(event) => dragEnter(event, index)}
+                  onDragEnd={drop}
+                  key={folder.attachmentIdentifier}
+                  draggable
+                  // style={dragOverStyle}
+                  style={folder.style ?? {}}
+                />
+              ))}
+            </NamedCollapse>
+          )}
+          <NamedCollapse name="Files">
+            {activeViewType === FilesViewType.LIST && <FileListHeader />}
+            {filesList.length > 0 ? (
+              filesList.map((file, index) => (
+                <FileItemComponent
+                  key={file.attachmentIdentifier}
+                  onClick={() => handleAttachmentClick(file)}
+                  file={file}
+                  options={getFileOptions(file)}
+                  onDragStart={(event) => dragStart(event, index, true)}
+                  onDragEnter={(event) => dragEnter(event, index, true)}
+                  onDragEnd={drop}
+                  draggable
+                />
+              ))
+            ) : (
+              // eslint-disable-next-line react/jsx-no-useless-fragment
+              <>
+                {!currentlyUploadedAttachment && (
+                  <EmptyListText>List of files is empty</EmptyListText>
+                )}
+              </>
+            )}
+            {currentlyUploadedAttachment && (
+              // eslint-disable-next-line react/jsx-no-useless-fragment
+              <>
+                {activeViewType === FilesViewType.LIST ? (
+                  <FileListItemProgressBar value={uploadProgress} />
+                ) : (
+                  <FileGridItemProgressBar value={uploadProgress} />
+                )}
+              </>
+            )}
+            {currentPatientAttachments.length > 0 && (
+              <div>
+                <DownloadAllLink onClick={downloadAllFiles}>
+                  Download All
+                </DownloadAllLink>
+              </div>
+            )}
+          </NamedCollapse>
+          <AttachmentPreview
+            attachment={previewedAttachment}
+            attachmentsSources={attachmentsSources}
+            hideAttachmentPreview={hideAttachmentPreview}
+            isAttachmentPreviewOpen={isAttachmentPreviewOpen}
+            attachmentsLoading={attachmentsLoading}
+          />
+        </DropzoneContainer>
       )}
     </PatientAttachmentsWrapper>
   );

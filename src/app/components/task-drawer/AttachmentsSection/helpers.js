@@ -2,7 +2,7 @@ import memoizeWith from 'ramda/src/memoizeWith';
 import identity from 'ramda/src/identity';
 
 import { getTaskAttachment } from 'api/task-api';
-import { Image, Movie, Description, Audiotrack } from '@material-ui/icons';
+import { Image, Movie, Description, Audiotrack } from '@mui/icons-material';
 
 export const acceptedFileFormats = [
   'application/pdf',

@@ -18,26 +18,31 @@ import {
   RightSideMaxWidthContainer,
 } from './TemplateAuthBase.styled';
 
-const { INTERCOM_APP_CODE } = process.env;
+const { INTERCOM_APP_CODE } = import.meta.env;
 
 const getLeftSideContent = ({ currentAuthBaseState }) => {
   switch (currentAuthBaseState) {
-    case AUTH_BASE_STATES.DEFAULT:
+    case AUTH_BASE_STATES.DEFAULT: {
       return <TemplateAuthBaseDefaultContent />;
-    case AUTH_BASE_STATES.DAILY_HUB:
+    }
+    case AUTH_BASE_STATES.DAILY_HUB: {
       return <TemplateAuthBaseDailyHubContent />;
-    case AUTH_BASE_STATES.REGAIN_CONTROL:
+    }
+    case AUTH_BASE_STATES.REGAIN_CONTROL: {
       return <TemplateAuthBaseRegainControlContent />;
-    case AUTH_BASE_STATES.APPROVE_DISAPPROVE:
+    }
+    case AUTH_BASE_STATES.APPROVE_DISAPPROVE: {
       return <TemplateAuthBaseApproveDisapproveContent />;
-    default:
+    }
+    default: {
       return null;
+    }
   }
 };
 
 const TemplateAuthBase = ({ childRoutes }) => {
   const currentAuthBaseState = useSelector(
-    store => store.authBase.currentAuthBaseState,
+    (store) => store.authBase.currentAuthBaseState,
   );
 
   const leftSideContent = getLeftSideContent({ currentAuthBaseState });
@@ -52,7 +57,7 @@ const TemplateAuthBase = ({ childRoutes }) => {
         <RightSideContentContainer>
           <RightSideMaxWidthContainer>
             <Switch>
-              {childRoutes?.map(route => (
+              {childRoutes?.map((route) => (
                 <RouteWrapper
                   permissions={route.permissions}
                   allowedToRoles={route.allowedToRoles}

@@ -4,7 +4,7 @@ import Button from 'components/common/Button/Button';
 import Spacing from 'components/common/Spacing';
 import { MontserratTypography } from 'styles/theme-montserrat';
 
-const redirectToLogout = history => {
+const redirectToLogout = (history) => {
   history.replace('/auth/logout');
 };
 

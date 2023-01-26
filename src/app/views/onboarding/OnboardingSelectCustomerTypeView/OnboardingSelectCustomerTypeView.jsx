@@ -30,7 +30,7 @@ const OnboardingSelectCustomerTypeView = () => {
   const history = useHistory();
   return (
     <CustomerTypeForm
-      onSubmit={type => onSubmit({ dispatch, history, type })}
+      onSubmit={(type) => onSubmit({ dispatch, history, type })}
       onCancel={history.goBack}
       customerTypesList={customerTypesList}
     />

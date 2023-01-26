@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { useHistory } from 'react-router-dom';
-import MoreVert from '@material-ui/icons/MoreVert';
-import { Box, Typography } from '@material-ui/core';
+import MoreVert from '@mui/icons-material/MoreVert';
+import { Box, Typography } from '@mui/material';
 
 import ViewLayout from 'components/template/ViewLayout/ViewLayout';
 import TaskDrawer from 'components/task-drawer/TaskDrawer/TaskDrawer';
@@ -80,21 +80,17 @@ const ListDetailsBoardView = () => {
           handleAddTask,
           handleAddWorkflow,
         }) => (
-          <>
-            <Board
-              taskList={taskList}
-              getTaskContextMenuOptionsArray={getTaskContextMenuOptionsArray}
-              getColumnContextMenuOptionsArray={
-                getColumnContextMenuOptionsArray
-              }
-              columns={columns}
-              onReorderTasks={handleReorderTasks}
-              onReorderColumns={handleReorderColumns}
-              onAddTask={handleAddTask}
-              onAddWorkflow={handleAddWorkflow}
-              iconColorActive={iconColorActiveItem?.value}
-            />
-          </>
+          <Board
+            taskList={taskList}
+            getTaskContextMenuOptionsArray={getTaskContextMenuOptionsArray}
+            getColumnContextMenuOptionsArray={getColumnContextMenuOptionsArray}
+            columns={columns}
+            onReorderTasks={handleReorderTasks}
+            onReorderColumns={handleReorderColumns}
+            onAddTask={handleAddTask}
+            onAddWorkflow={handleAddWorkflow}
+            iconColorActive={iconColorActiveItem?.value}
+          />
         )}
       </BoardContextProvider>
 

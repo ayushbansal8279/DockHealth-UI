@@ -2,7 +2,7 @@ import React from 'react';
 import isEmpty from 'ramda/src/isEmpty';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
-import { Box } from '@material-ui/core';
+import { Box } from '@mui/material';
 import Spacing from 'components/common/Spacing';
 import {
   isLoadingGlobalSearchSelector,
@@ -93,8 +93,9 @@ const GlobalSearchView = ({
             ) : (
               <VerticalScrollContainer>
                 <Spacing vertical={5} />
-                {!isEmpty(lists)
-                  ? lists?.map(list =>
+                {isEmpty(lists)
+                  ? renderEmptyState()
+                  : lists?.map((list) =>
                       list.tasks?.length > 0 ? (
                         <GlobalSearchList
                           list={list}
@@ -110,8 +111,7 @@ const GlobalSearchView = ({
                           isLoadingMore={isLoadingMore}
                         />
                       ) : null,
-                    )
-                  : renderEmptyState()}
+                    )}
               </VerticalScrollContainer>
             )}
           </ViewSidePadding>
@@ -122,7 +122,7 @@ const GlobalSearchView = ({
   );
 };
 
-const mapDispatchToProps = dispatch => ({
+const mapDispatchToProps = (dispatch) => ({
   taskActions: bindActionCreators(TaskActions, dispatch),
   globalSearchSagaActions: bindActionCreators(
     GlobalSearchSagaActions,
@@ -130,7 +130,7 @@ const mapDispatchToProps = dispatch => ({
   ),
 });
 
-const mapStateToProps = store => ({
+const mapStateToProps = (store) => ({
   isLoadingView: isLoadingGlobalSearchSelector(store),
   isLoadingMore: isLoadingMoreGlobalSearchSelector(store),
   isSearchingCompletedTasks: isSearchingCompletedTasksSelector(store),

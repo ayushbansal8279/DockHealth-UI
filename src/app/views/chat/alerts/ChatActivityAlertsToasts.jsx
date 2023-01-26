@@ -20,7 +20,7 @@ const ChatActivityAlertsToasts = () => {
   const [audio] = useState(new Audio(ShipBellSound));
 
   const addGroupChannelEventHandler = useCallback(
-    handler => {
+    (handler) => {
       if (sdkInstance) {
         const handlerId = 'messageRecieved';
         sdkInstance.addChannelHandler(handlerId, handler);
@@ -32,7 +32,7 @@ const ChatActivityAlertsToasts = () => {
   );
 
   const removeGroupChannelEventHandler = useCallback(
-    handlerId => {
+    (handlerId) => {
       if (sdkInstance && sdkInstance.removeGroupChannelHandler) {
         sdkInstance.removeGroupChannelHandler(handlerId);
       }

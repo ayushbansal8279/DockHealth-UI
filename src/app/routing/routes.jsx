@@ -1,7 +1,7 @@
 import React, { useState, useEffect, Suspense } from 'react';
 import { Redirect, Switch, useHistory } from 'react-router-dom';
 import { useEffectOnce } from 'react-use';
-import { parse } from 'query-string';
+import queryString from 'query-string';
 import ReactGA from 'react-ga';
 import sendEvent from 'api/usage-api';
 import PageLoader from 'components/navigation/PageLoader';
@@ -19,15 +19,15 @@ import OnboardingTemplate from '../views/onboarding/OnboardingTemplate';
 import SecuredRoute from './SecuredRoute';
 import EmbeddedSSO from '../views/auth/EmbeddedSso';
 
-const transformPathname = pathname =>
+const transformPathname = (pathname) =>
   decodeURIComponent(pathname).replace(/^\/+/, '/');
 
 const sendPageviewEvent = async ({ history, pathname }) => {
-  const searchParameters = parse(history.location.search);
+  const searchParameters = queryString.parse(history.location.search);
 
-  const mappedSearchParameters = Object.entries(
-    searchParameters,
-  ).map(([name, value]) => ({ name, value }));
+  const mappedSearchParameters = Object.entries(searchParameters).map(
+    ([name, value]) => ({ name, value }),
+  );
 
   await sendEvent({
     eventAction: pathname,
@@ -48,7 +48,7 @@ const Routes = () => {
     ReactGA.pageview(firstPathname, ['webapp']);
     ReactGA.pageview(firstPathname, ['rollup']);
 
-    const removeHistoryListener = history.listen(location => {
+    const removeHistoryListener = history.listen((location) => {
       sendPageviewEvent({
         pathname: transformPathname(location.pathname),
         history,
@@ -72,7 +72,7 @@ const Routes = () => {
   return (
     <Suspense fallback={<PageLoader />}>
       <Switch>
-        {AUTH_ROUTES.map(route => (
+        {AUTH_ROUTES.map((route) => (
           <Redirect
             exact
             key={route.path}
@@ -80,7 +80,7 @@ const Routes = () => {
             to={`/auth${route.path}`}
           />
         ))}
-        {ONBOARDING_ROUTES.map(route => (
+        {ONBOARDING_ROUTES.map((route) => (
           <Redirect
             exact
             key={route.path}
@@ -88,7 +88,7 @@ const Routes = () => {
             to={`/onboarding${route.path}`}
           />
         ))}
-        {TEMPLATE_CORE_SUBSCRIPTION_PLAN_ROUTES.map(route => (
+        {TEMPLATE_CORE_SUBSCRIPTION_PLAN_ROUTES.map((route) => (
           <Redirect
             exact
             key={route.path}
@@ -96,7 +96,7 @@ const Routes = () => {
             to={`/core${route.path}`}
           />
         ))}
-        {SETTINGS_ROUTES.map(route => (
+        {SETTINGS_ROUTES.map((route) => (
           <Redirect
             exact
             key={route.path}
@@ -104,7 +104,7 @@ const Routes = () => {
             to={`/settings${route.path}`}
           />
         ))}
-        {SIMPLE_ROUTES?.map(route => (
+        {SIMPLE_ROUTES?.map((route) => (
           <SecuredRoute
             key={route.path}
             path={route.path}

@@ -25,7 +25,7 @@ const CustomerTypeForm = ({ onSubmit, customerTypesList }) => {
   });
   const { handleSubmit } = formContext;
 
-  const renderItem = item => (
+  const renderItem = (item) => (
     <PickerItem
       key={item.key}
       onClick={() => {
@@ -57,7 +57,7 @@ const CustomerTypeForm = ({ onSubmit, customerTypesList }) => {
         <UnderTitle>Almost Done!</UnderTitle>
         <Title>What do you call your customers?</Title>
         <Spacing vertical={5} />
-        {customerTypesList.map(element => renderItem(element))}
+        {customerTypesList.map((element) => renderItem(element))}
         <Spacing vertical={5} />
         <ButtonsContainer>
           <ButtonWrapper>

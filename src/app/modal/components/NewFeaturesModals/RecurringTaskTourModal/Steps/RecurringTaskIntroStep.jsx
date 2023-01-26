@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react';
-import RecurringTaskIntroImage from 'img/tour/task-recurring/recurring-intro';
+import RecurringTaskIntroImage from 'img/tour/task-recurring/recurring-intro.svg';
 import Spacing from 'components/common/Spacing';
 import { onTourModalStepEnter } from 'helpers/ga-event-helper';
 import { Image, Title, Description } from '../../styled';

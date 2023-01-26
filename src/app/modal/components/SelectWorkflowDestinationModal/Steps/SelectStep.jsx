@@ -1,6 +1,6 @@
 import React, { useEffect, useRef, useState, useCallback } from 'react';
-import { Box, IconButton } from '@material-ui/core';
-import ArrowBackIcon from '@material-ui/icons/ArrowBack';
+import { Box, IconButton } from '@mui/material';
+import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import { useBoolean } from 'hooks/useBoolean';
 import {
   getTemplates,
@@ -32,17 +32,14 @@ const SelectStep = ({
   const [foldersList, setFoldersList] = useState([]);
   const [listId, setListId] = useState(null);
   const [breadcrumbsIdList, setBreadcrumbsIdList] = useState([]);
-  const [
-    groupInputFocused,
-    setFolderInputFocused,
-    unsetFolderInputFocused,
-  ] = useBoolean(false);
+  const [groupInputFocused, setFolderInputFocused, unsetFolderInputFocused] =
+    useBoolean(false);
 
-  const handleAddNewFolder = name => {
+  const handleAddNewFolder = (name) => {
     if (!isAddingFolder) {
       setIsAddingFolder(true);
       TaskTemplateApi.addTemplate({ name, templateType: 'FOLDER' }, listId)
-        .then(createdFolder => {
+        .then((createdFolder) => {
           setFoldersList([...foldersList, createdFolder]);
           onAddFolderCallback(
             createdFolder.parentTaskWorkflowIdentifier
@@ -59,7 +56,7 @@ const SelectStep = ({
   };
 
   const pushToBreadcrumbsList = useCallback(
-    id => {
+    (id) => {
       setBreadcrumbsIdList([...breadcrumbsIdList, id]);
     },
     [setBreadcrumbsIdList, breadcrumbsIdList],
@@ -80,7 +77,7 @@ const SelectStep = ({
     setIsFetchingFolders(true);
     setListId(null);
     getTemplates()
-      .then(folders => {
+      .then((folders) => {
         setFoldersList(
           folders.filter(({ templateType }) => templateType === 'FOLDER'),
         );
@@ -94,13 +91,13 @@ const SelectStep = ({
   useEffect(getRootList, [getRootList]);
 
   const fetchChildList = useCallback(
-    identifier => {
+    (identifier) => {
       setIsFetchingFolders(true);
       setListId(identifier);
       pushToBreadcrumbsList(identifier);
       getTemplatesForSpecificFolder(identifier)
         // eslint-disable-next-line sonarjs/no-identical-functions
-        .then(folders => {
+        .then((folders) => {
           setFoldersList(
             folders.filter(({ templateType }) => templateType === 'FOLDER'),
           );
@@ -129,7 +126,7 @@ const SelectStep = ({
   ]);
 
   const handleGoToFolder = useCallback(
-    identifier => {
+    (identifier) => {
       fetchChildList(identifier);
     },
     [fetchChildList],
@@ -151,7 +148,7 @@ const SelectStep = ({
           {!isFetchingFolders && (
             <>
               {foldersList?.length > 0 ? (
-                foldersList.map(folder => (
+                foldersList.map((folder) => (
                   <ListItem
                     key={folder.identifier}
                     isSelected={selectedFolder === folder.identifier}
@@ -184,7 +181,7 @@ const SelectStep = ({
             onFocus={setFolderInputFocused}
             onBlur={unsetFolderInputFocused}
             disabled={isAddingFolder}
-            onKeyDown={event =>
+            onKeyDown={(event) =>
               event.key === 'Enter' && handleAddNewFolder(event.target.value)
             }
           />

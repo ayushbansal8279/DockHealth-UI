@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react';
 import Spacing from 'components/common/Spacing';
-import SpeedOptimizationImage from 'img/tour/task-density/new-columns';
+import SpeedOptimizationImage from 'img/tour/task-density/new-columns.png';
 import { onTourModalStepEnter } from 'helpers/ga-event-helper';
 import { Image, Title, Description } from '../../styled';
 

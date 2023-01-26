@@ -3,7 +3,7 @@ import { useDispatch } from 'react-redux';
 import { getTaskListForUser } from 'actions/task-list-actions';
 import { addTaskList } from 'api/task-list-api';
 import Button from 'components/common/Button/Button';
-import { Grid } from '@material-ui/core';
+import { Grid } from '@mui/material';
 import Spacing from 'components/common/Spacing';
 import { ListPickerModalWrapper } from './styled';
 import {
@@ -51,7 +51,7 @@ const ListPickerModal = ({
     dispatch(getTaskListForUser());
   };
 
-  const handleAddNewList = listName => {
+  const handleAddNewList = (listName) => {
     if (isSavingList) return;
 
     setSavingList(true);
@@ -59,9 +59,9 @@ const ListPickerModal = ({
       ...listCreationPayload,
       listName,
     })
-      .then(list => {
+      .then((list) => {
         setSavingList(false);
-        setLists(l => [list, ...l]);
+        setLists((l) => [list, ...l]);
         selectedList(list.taskListIdentifier);
         refreshListsInStore();
       })
@@ -72,7 +72,7 @@ const ListPickerModal = ({
 
   useEffect(() => {
     fetchMethod()
-      .then(data => {
+      .then((data) => {
         setLists(data);
         setIsFetchingLists(false);
       })

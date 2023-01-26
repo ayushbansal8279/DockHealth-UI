@@ -1,8 +1,8 @@
 /* eslint-disable import/extensions */
 import React, { useState } from 'react';
-import { Grid } from '@material-ui/core';
-import PersonIcon from 'img/modals/person';
-import PeopleIcon from 'img/modals/people';
+import { Grid } from '@mui/material';
+import PersonIcon from 'img/modals/person.svg';
+import PeopleIcon from 'img/modals/people.svg';
 import Spacing from 'components/common/Spacing';
 import InviteUserOrGroupToListForm from 'components/user/InviteMemberToListForm/InviteUserOrGroupToListForm';
 import { useDispatch } from 'react-redux';

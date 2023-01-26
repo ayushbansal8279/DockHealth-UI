@@ -64,7 +64,7 @@ const UserDetailsFilters = () => {
           status: 'COMPLETE',
         });
 
-  const handleFilterChange = updatedFilters => {
+  const handleFilterChange = (updatedFilters) => {
     dispatch(
       selectFiltersForMegaFilter(updatedFilters, userIdentifier, selectedTab),
     );
@@ -80,7 +80,7 @@ const UserDetailsFilters = () => {
       !equals(
         selectedFilters,
         quickFiltersList?.find(
-          f => f.quickFilterIdentifier === selectedQuickFilter,
+          (f) => f.quickFilterIdentifier === selectedQuickFilter,
         )?.selectedOptions,
       ),
     [quickFiltersList, selectedFilters, selectedQuickFilter],
@@ -116,7 +116,7 @@ const UserDetailsFilters = () => {
   );
 
   const handleQuickFilterCreate = useCallback(
-    name =>
+    (name) =>
       dispatch(
         createQuickFilter(
           name,
@@ -140,7 +140,8 @@ const UserDetailsFilters = () => {
   );
 
   const handleQuickFilterDelete = useCallback(
-    quickFilterIdentifier => dispatch(deleteQuickFilter(quickFilterIdentifier)),
+    (quickFilterIdentifier) =>
+      dispatch(deleteQuickFilter(quickFilterIdentifier)),
     [dispatch],
   );
 

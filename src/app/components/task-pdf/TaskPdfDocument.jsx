@@ -1,5 +1,5 @@
-import { Document, pdf, PDFViewer } from '@react-pdf/renderer';
-import styled from '@react-pdf/styled-components';
+// import { Document, pdf, PDFViewer } from '@react-pdf/renderer';
+import styled from 'styled-components';
 import memoizeWith from 'ramda/src/memoizeWith';
 import isEmpty from 'ramda/src/isEmpty';
 import head from 'ramda/src/head';
@@ -13,7 +13,7 @@ import PdfTask from './PdfTask';
 import { AvatarImage, AvatarInitials, PdfTaskWrapper } from './PdfTask.Styled';
 
 const getAvatarContent = memoizeWith(
-  propsObject => Object.values(propsObject).join('-'),
+  (propsObject) => Object.values(propsObject).join('-'),
   ({ userIdentifier, profileThumbnailPictureHash }) => {
     if (profileThumbnailPictureHash) {
       return getUserAvatarBuffer(userIdentifier);
@@ -50,26 +50,25 @@ const HeaderText = styled.Text`
   font-family: 'Open Sans';
   font-size: 8pt;
   padding: 0 4pt;
-  text-align: ${props => props.textAlign ?? 'left'};
-  width: ${props => props.width}pt;
+  text-align: ${(props) => props.textAlign ?? 'left'};
+  width: ${(props) => props.width}pt;
 `;
 
-const renderTask = ({
-  taskListMembers,
-  taskListMembersAvatars,
-  columnsWidth,
-}) => ({ taskIdentifier, ...props }) => (
-  <PdfTaskWrapper>
-    <PdfTask
-      key={taskIdentifier}
-      taskIdentifier={taskIdentifier}
-      taskListMembers={taskListMembers}
-      taskListMembersAvatars={taskListMembersAvatars}
-      columnsWidth={columnsWidth}
-      {...props}
-    />
-  </PdfTaskWrapper>
-);
+const renderTask =
+  ({ taskListMembers, taskListMembersAvatars, columnsWidth }) =>
+  ({ taskIdentifier, ...props }) =>
+    (
+      <PdfTaskWrapper>
+        <PdfTask
+          key={taskIdentifier}
+          taskIdentifier={taskIdentifier}
+          taskListMembers={taskListMembers}
+          taskListMembersAvatars={taskListMembersAvatars}
+          columnsWidth={columnsWidth}
+          {...props}
+        />
+      </PdfTaskWrapper>
+    );
 
 const getColumnWidths = (isPatientVisible, isListNameVisible) => {
   const basicTaskWidth = 352;
@@ -95,44 +94,40 @@ export const TaskPdfDocument = ({
   const columnsWidth = getColumnWidths(isPatientVisible, isListNameVisible);
 
   return (
-    <Document>
-      <StyledPage size="A4" wrap>
-        {title && <Title>{title}</Title>}
-        <HeaderView fixed>
-          <HeaderText width={columnsWidth.task}>TASK</HeaderText>
-          {columnsWidth.patient ? (
-            <HeaderText width={columnsWidth.patient} textAlign="center">
-              PATIENT
-            </HeaderText>
-          ) : (
-            undefined
-          )}
-          <HeaderText width={55} textAlign="center">
-            STATUS
+    // <Document>
+    <StyledPage size="A4" wrap>
+      {title && <Title>{title}</Title>}
+      <HeaderView fixed>
+        <HeaderText width={columnsWidth.task}>TASK</HeaderText>
+        {columnsWidth.patient ? (
+          <HeaderText width={columnsWidth.patient} textAlign="center">
+            PATIENT
           </HeaderText>
-          <HeaderText width={98} textAlign="center">
-            ASSIGNED TO
+        ) : undefined}
+        <HeaderText width={55} textAlign="center">
+          STATUS
+        </HeaderText>
+        <HeaderText width={98} textAlign="center">
+          ASSIGNED TO
+        </HeaderText>
+        <HeaderText width={57} textAlign="center">
+          DUE
+        </HeaderText>
+        {columnsWidth.listName ? (
+          <HeaderText width={columnsWidth.listName} textAlign="center">
+            LIST
           </HeaderText>
-          <HeaderText width={57} textAlign="center">
-            DUE
-          </HeaderText>
-          {columnsWidth.listName ? (
-            <HeaderText width={columnsWidth.listName} textAlign="center">
-              LIST
-            </HeaderText>
-          ) : (
-            undefined
-          )}
-        </HeaderView>
-        {tasks?.map(
-          renderTask({
-            taskListMembers,
-            taskListMembersAvatars,
-            columnsWidth,
-          }),
-        )}
-      </StyledPage>
-    </Document>
+        ) : undefined}
+      </HeaderView>
+      {tasks?.map(
+        renderTask({
+          taskListMembers,
+          taskListMembersAvatars,
+          columnsWidth,
+        }),
+      )}
+    </StyledPage>
+    // </Document>
   );
 };
 
@@ -140,13 +135,9 @@ export const getAllMembersAvatars = async ({ taskListMembers }) => {
   const taskListMembersPicturesMap = new Map();
 
   const membersAvatarsArray = await Promise.all(
-    taskListMembers.map(async member => {
-      const {
-        userIdentifier,
-        email,
-        profileThumbnailPictureHash,
-        initials,
-      } = member;
+    taskListMembers.map(async (member) => {
+      const { userIdentifier, email, profileThumbnailPictureHash, initials } =
+        member;
 
       let downloadedAvatarContent = null;
 
@@ -172,9 +163,9 @@ export const getAllMembersAvatars = async ({ taskListMembers }) => {
     }),
   );
 
-  membersAvatarsArray.forEach(({ userIdentifier, finalContent }) => {
+  for (const { userIdentifier, finalContent } of membersAvatarsArray) {
     taskListMembersPicturesMap.set(userIdentifier, finalContent);
-  });
+  }
 
   return taskListMembersPicturesMap;
 };
@@ -194,32 +185,32 @@ const downloadPdf = ({ url, tasks }) => {
   link.click();
 };
 
-export const printTaskPdf = async ({
-  tasks,
-  title = null,
-  taskListMembers,
-  isPatientVisible = true,
-  isListNameVisible = false,
-}) => {
-  const taskListMembersAvatars = await getAllMembersAvatars({
-    taskListMembers,
-  });
+// export const printTaskPdf = async ({
+//   tasks,
+//   title = null,
+//   taskListMembers,
+//   isPatientVisible = true,
+//   isListNameVisible = false,
+// }) => {
+//   const taskListMembersAvatars = await getAllMembersAvatars({
+//     taskListMembers,
+//   });
 
-  const pdfBlob = await pdf(
-    <TaskPdfDocument
-      tasks={tasks}
-      title={title}
-      taskListMembers={taskListMembers}
-      taskListMembersAvatars={taskListMembersAvatars}
-      isPatientVisible={isPatientVisible}
-      isListNameVisible={isListNameVisible}
-    />,
-  ).toBlob();
-  const pdfObjectUrl = URL.createObjectURL(pdfBlob);
+//   const pdfBlob = await pdf(
+//     <TaskPdfDocument
+//       tasks={tasks}
+//       title={title}
+//       taskListMembers={taskListMembers}
+//       taskListMembersAvatars={taskListMembersAvatars}
+//       isPatientVisible={isPatientVisible}
+//       isListNameVisible={isListNameVisible}
+//     />,
+//   ).toBlob();
+//   const pdfObjectUrl = URL.createObjectURL(pdfBlob);
 
-  const newWindow = window.open(pdfObjectUrl, '_blank');
-  newWindow.focus();
-};
+//   const newWindow = window.open(pdfObjectUrl, '_blank');
+//   newWindow.focus();
+// };
 
 export const TaskPdfPreview = ({
   tasks,
@@ -237,15 +228,15 @@ export const TaskPdfPreview = ({
   }
 
   return (
-    <PDFViewer width="100%" height={400}>
-      <TaskPdfDocument
-        tasks={tasks}
-        taskListMembers={taskListMembers}
-        taskListMembersAvatars={membersAvatarsData.value}
-        isPatientVisible={isPatientVisible}
-        isListNameVisible={isListNameVisible}
-        title={title}
-      />
-    </PDFViewer>
+    // <PDFViewer width="100%" height={400}>
+    <TaskPdfDocument
+      tasks={tasks}
+      taskListMembers={taskListMembers}
+      taskListMembersAvatars={membersAvatarsData.value}
+      isPatientVisible={isPatientVisible}
+      isListNameVisible={isListNameVisible}
+      title={title}
+    />
+    // </PDFViewer>
   );
 };

@@ -105,7 +105,7 @@ const DashboardList = ({
     ) || {};
 
   const filteredDashboardTasks = useMemo(() => {
-    return dashboardTasks?.filter(taskGroupInfo =>
+    return dashboardTasks?.filter((taskGroupInfo) =>
       dashboardGroupsPreferences?.includes(taskGroupInfo?.groupType),
     );
   }, [dashboardGroupsPreferences, dashboardTasks]);
@@ -113,10 +113,10 @@ const DashboardList = ({
   const orderedDashboardTasks = useMemo(() => {
     const sorted = () => {
       return dashboardGroupsPreferences
-        .map(groupType =>
-          filteredDashboardTasks.find(g => g.groupType === groupType),
+        .map((groupType) =>
+          filteredDashboardTasks.find((g) => g.groupType === groupType),
         )
-        .filter(element => element);
+        .filter((element) => element);
     };
     return dashboardGroupsPreferences ? sorted() : filteredDashboardTasks;
   }, [dashboardGroupsPreferences, filteredDashboardTasks]);
@@ -148,7 +148,7 @@ const DashboardList = ({
   useEffect(() => {
     if (currentUser) {
       if (tabName === DashboardTasksTab.MY_TASKS) {
-        getUserTaskStats(currentUser.userIdentifier).then(counters => {
+        getUserTaskStats(currentUser.userIdentifier).then((counters) => {
           const completeTaskCounter = counters.find(
             ({ metricName }) => metricName === 'COMPLETE_TASKS_COUNT',
           );
@@ -224,22 +224,21 @@ const DashboardList = ({
   }, [dispatch]);
 
   const groupOrder = useMemo(() => {
-    const defaultGroupOrder = dashboardTasks.map(g => g.groupType);
+    const defaultGroupOrder = dashboardTasks.map((g) => g.groupType);
     return dashboardGroupsPreferences || defaultGroupOrder;
   }, [dashboardGroupsPreferences, dashboardTasks]);
 
   const flattedOrderedDashboardTasks = useMemo(
-    () => orderedDashboardTasks.map(g => g.groupType),
+    () => orderedDashboardTasks.map((g) => g.groupType),
     [orderedDashboardTasks],
   );
 
   const moveGroupUp = useCallback(
-    groupToMove => {
+    (groupToMove) => {
       const elementToMove = groupToMove.groupType;
       const elementToMoveWholeListIndex = groupOrder.indexOf(elementToMove);
-      const elementToMoveLimitedListIndex = flattedOrderedDashboardTasks.indexOf(
-        elementToMove,
-      );
+      const elementToMoveLimitedListIndex =
+        flattedOrderedDashboardTasks.indexOf(elementToMove);
       const elementAbove =
         flattedOrderedDashboardTasks[elementToMoveLimitedListIndex - 1];
       const elementAboveWholeListIndex = groupOrder.indexOf(elementAbove);
@@ -270,12 +269,11 @@ const DashboardList = ({
   );
 
   const moveGroupDown = useCallback(
-    groupToMove => {
+    (groupToMove) => {
       const elementToMove = groupToMove.groupType;
       const elementToMoveWholeListIndex = groupOrder.indexOf(elementToMove);
-      const elementToMoveLimitedListIndex = flattedOrderedDashboardTasks.indexOf(
-        elementToMove,
-      );
+      const elementToMoveLimitedListIndex =
+        flattedOrderedDashboardTasks.indexOf(elementToMove);
 
       const elementBelow =
         flattedOrderedDashboardTasks[elementToMoveLimitedListIndex + 1];
@@ -383,7 +381,7 @@ const DashboardList = ({
   );
 };
 
-const mapStateToProps = state => ({
+const mapStateToProps = (state) => ({
   allDashboardTasks: dashboardAllTaskItemsSelector(state),
   dashboardTasks: dashboardTasksSelector(state),
   dashboardTasksIsLoading: dashboardTasksIsLoadingSelector(state),
@@ -391,7 +389,7 @@ const mapStateToProps = state => ({
   isTaskDrawerOpen: taskDrawerOpenSelector(state),
 });
 
-const mapDispatchToProps = dispatch => ({
+const mapDispatchToProps = (dispatch) => ({
   modalActions: bindActionCreators(ModalActions, dispatch),
   taskDrawerActions: bindActionCreators(TaskDrawerActions, dispatch),
   showNavbar: bindActionCreators(showNavbarAction, dispatch),

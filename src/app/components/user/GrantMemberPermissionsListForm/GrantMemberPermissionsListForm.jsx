@@ -1,7 +1,7 @@
 /* eslint-disable sonarjs/cognitive-complexity */
 import React, { useState, useEffect, useMemo, useCallback } from 'react';
-import { IconButton } from '@material-ui/core';
-import { MoreVert } from '@material-ui/icons';
+import { IconButton } from '@mui/material';
+import { MoreVert } from '@mui/icons-material';
 import { useSelector } from 'react-redux';
 import * as OrganizationApi from 'api/organization-api';
 import { showAlert } from 'helpers/utility-functions';
@@ -32,17 +32,15 @@ import {
 
 const GrantMemberPermissionsListForm = ({ list, onMembersRefresh }) => {
   const [isSavingList, setIsSavingList] = useState(false);
-  const [
-    allOrganizationMembersFetched,
-    setAllOrganizationMembersFetched,
-  ] = useState(false);
+  const [allOrganizationMembersFetched, setAllOrganizationMembersFetched] =
+    useState(false);
 
   const [listMembers, setListMembers] = useState(list.members);
   const [allOrganizationMembers, setAllOrganizationMembers] = useState([]);
 
   const { taskTemplateIdentifier, template } = list;
   const refreshData = useCallback(
-    newMembersList => {
+    (newMembersList) => {
       if (typeof onMembersRefresh === 'function') {
         onMembersRefresh(
           newMembersList.map(({ memberPermission, ...user }) => ({
@@ -58,7 +56,7 @@ const GrantMemberPermissionsListForm = ({ list, onMembersRefresh }) => {
   useEffect(() => {
     setAllOrganizationMembersFetched(false);
     OrganizationApi.getOrganizationUsersAndUserGroups().then(
-      organizationMembers => {
+      (organizationMembers) => {
         setAllOrganizationMembers(organizationMembers);
         setAllOrganizationMembersFetched(true);
       },
@@ -70,7 +68,7 @@ const GrantMemberPermissionsListForm = ({ list, onMembersRefresh }) => {
   const organizationMembersNotInTheList = useMemo(
     () =>
       allOrganizationMembers.filter(
-        organizationMember =>
+        (organizationMember) =>
           !listMembers.some(
             ({ identifier, userIdentifier }) =>
               organizationMember.identifier === identifier ||
@@ -80,7 +78,7 @@ const GrantMemberPermissionsListForm = ({ list, onMembersRefresh }) => {
     [allOrganizationMembers, listMembers],
   );
 
-  const handleInviteMembers = newMembers => {
+  const handleInviteMembers = (newMembers) => {
     if (newMembers.length > 0) {
       setIsSavingList(true);
       const memberIdentifiers = newMembers.map(({ identifier }) => identifier);
@@ -91,7 +89,7 @@ const GrantMemberPermissionsListForm = ({ list, onMembersRefresh }) => {
           refreshData(newMembersList);
           setIsSavingList(false);
         })
-        .catch(error => {
+        .catch((error) => {
           setListMembers([...listMembers]);
           setIsSavingList(false);
           showAlert({
@@ -103,9 +101,11 @@ const GrantMemberPermissionsListForm = ({ list, onMembersRefresh }) => {
     }
   };
 
-  const removeUserFromList = member => {
+  const removeUserFromList = (member) => {
     setIsSavingList(true);
-    const newList = listMembers.filter(m => m.identifier !== member.identifier);
+    const newList = listMembers.filter(
+      (m) => m.identifier !== member.identifier,
+    );
     setListMembers([...newList]);
 
     removeUserFromWorkflow(taskTemplateIdentifier, member.identifier)
@@ -113,7 +113,7 @@ const GrantMemberPermissionsListForm = ({ list, onMembersRefresh }) => {
         refreshData([...newList]);
         setIsSavingList(false);
       })
-      .catch(error => {
+      .catch((error) => {
         setListMembers([...newList, member]);
         setIsSavingList(false);
         showAlert({
@@ -123,13 +123,13 @@ const GrantMemberPermissionsListForm = ({ list, onMembersRefresh }) => {
         });
       });
   };
-  const switchUserAccess = member => {
+  const switchUserAccess = (member) => {
     setIsSavingList(true);
     const backupedList = [...listMembers];
     const hasEditorAccess = member.memberPermission === 'EDITOR';
     const memberPermission = hasEditorAccess ? 'VIEW' : 'EDITOR';
 
-    const newList = listMembers.flatMap(m =>
+    const newList = listMembers.flatMap((m) =>
       m.identifier === member.identifier ? { ...member, memberPermission } : m,
     );
 
@@ -144,7 +144,7 @@ const GrantMemberPermissionsListForm = ({ list, onMembersRefresh }) => {
       .then(() => {
         setIsSavingList(false);
       })
-      .catch(error => {
+      .catch((error) => {
         setListMembers([...backupedList]);
         setIsSavingList(false);
         showAlert({
@@ -156,7 +156,7 @@ const GrantMemberPermissionsListForm = ({ list, onMembersRefresh }) => {
   };
 
   const membersWithEditorAccess = useMemo(
-    () => listMembers.filter(member => member.memberPermission === 'EDITOR'),
+    () => listMembers.filter((member) => member.memberPermission === 'EDITOR'),
     [listMembers],
   );
 
@@ -178,7 +178,7 @@ const GrantMemberPermissionsListForm = ({ list, onMembersRefresh }) => {
           />
           <Spacing vertical={4} />
           <MembersListWrapper>
-            {listMembers.map(member => {
+            {listMembers.map((member) => {
               const hasEditorAccess = member.memberPermission === 'EDITOR';
               const isCreator =
                 template.creator.userIdentifier === member.identifier;

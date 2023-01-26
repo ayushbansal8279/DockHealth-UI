@@ -3,7 +3,7 @@ import Button from 'components/common/Button/Button';
 import moment from 'moment';
 import { useSelector } from 'react-redux';
 import { currentTaskTemplateIdentifierSelector } from 'selectors/task-template-selectors';
-import Folder from 'img/folder';
+import Folder from 'img/folder.svg';
 import debounce from 'lodash.debounce';
 
 import { TaskTemplateType } from 'helpers/task-helpers';
@@ -12,8 +12,8 @@ import {
   searchTemplates,
 } from 'api/task-template-api';
 import Search from 'components/task-view/Search/Search';
-import { IconButton } from '@material-ui/core';
-import { ArrowBack } from '@material-ui/icons';
+import { IconButton } from '@mui/material';
+import { ArrowBack } from '@mui/icons-material';
 import palette from 'styles/palette';
 import {
   DataGridWrapperStyled,
@@ -50,7 +50,7 @@ const SmartFlowListModal = ({
       field: 'workflowName',
       headerName: 'WORKFLOW NAME',
       width: 300,
-      renderCell: props => {
+      renderCell: (props) => {
         return props?.row?.type === TaskTemplateType.FOLDER ? (
           <FolderIconContainerStyled>
             <img src={Folder} alt="folder icon" />
@@ -98,10 +98,10 @@ const SmartFlowListModal = ({
   ];
 
   const mapDataToGrid = useCallback(
-    data => {
+    (data) => {
       return data
-        .filter(flow => flow.identifier !== currentWorkflowIdentifier)
-        .map(flow => {
+        .filter((flow) => flow.identifier !== currentWorkflowIdentifier)
+        .map((flow) => {
           return {
             id: flow.identifier,
             workflowName: flow.name,
@@ -121,12 +121,12 @@ const SmartFlowListModal = ({
       }
       setIsLoading(true);
       if (searchPhrase.length > 1) {
-        searchTemplates(searchPhrase).then(templatesList => {
+        searchTemplates(searchPhrase).then((templatesList) => {
           const data = mapDataToGrid(templatesList);
           setSmartFlows(data);
         });
       } else if (searchPhrase === '') {
-        fetchMethod().then(data => {
+        fetchMethod().then((data) => {
           const flows = mapDataToGrid(data);
           setSmartFlows(flows);
         });
@@ -137,7 +137,7 @@ const SmartFlowListModal = ({
   );
 
   const handleSearch = useCallback(
-    searchPhrase => {
+    (searchPhrase) => {
       setSearchTerm(searchPhrase);
       debouncedSearch(searchPhrase);
     },
@@ -145,7 +145,7 @@ const SmartFlowListModal = ({
   );
 
   const removeItem = useCallback(
-    index => {
+    (index) => {
       setHistory([...history.slice(0, index), ...history.slice(index + 1)]);
     },
     [history],
@@ -180,13 +180,13 @@ const SmartFlowListModal = ({
   useEffect(() => {
     setIsLoading(true);
     if (history.length === 1) {
-      fetchMethod().then(data => {
+      fetchMethod().then((data) => {
         const flows = mapDataToGrid(data);
         setIsLoading(false);
         setSmartFlows(flows);
       });
     } else {
-      getTemplatesForSpecificFolder(history.slice(-1)[0]).then(data => {
+      getTemplatesForSpecificFolder(history.slice(-1)[0]).then((data) => {
         const flow2s = mapDataToGrid(data);
         setSmartFlows(flow2s);
       });
@@ -210,7 +210,7 @@ const SmartFlowListModal = ({
             fullWidth
             noBackground
             value={searchTerm}
-            onChange={event => handleSearch(event?.target?.value)}
+            onChange={(event) => handleSearch(event?.target?.value)}
             placeholder="Search Workflows"
           />
         </SearchStyled>

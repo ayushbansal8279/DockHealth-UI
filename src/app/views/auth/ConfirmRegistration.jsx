@@ -33,7 +33,7 @@ const resendEmail = async (email, dispatch) => {
   }
 };
 
-const ConfirmRegistration = props => {
+const ConfirmRegistration = (props) => {
   const dispatch = useDispatch();
   const [isDialogShown, showDialog] = useBoolean(false);
   const [dialogTitle, setDialogTitle] = useState('');
@@ -56,16 +56,16 @@ const ConfirmRegistration = props => {
           success('Registration confirmed. Please Login');
           window.sessionStorage.setItem('confirmStatus', true);
           history.push(`login?uname=${encodeURIComponent(uname)}`);
-          // window.location.href = process.env.BRANCH_IO_APP_LINK;
+          // window.location.href = import.meta.env.BRANCH_IO_APP_LINK;
         })
-        .catch(error => {
+        .catch((error) => {
           const message = error.message || 'An error occurred.';
           if (
             message ===
             'User cannot confirm because user status is not UNCONFIRMED.'
           ) {
             history.push('login');
-            // window.location.href = process.env.BRANCH_IO_APP_LINK;
+            // window.location.href = import.meta.env.BRANCH_IO_APP_LINK;
             return;
           }
           setDialogTitle(`Email confirmation`);

@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { useSelector } from 'react-redux';
 import ExcelLogo from 'img/excel-logo.svg';
-import { Add as AddIcon } from '@material-ui/icons';
+import { Add as AddIcon } from '@mui/icons-material';
 import circleCompleted from 'img/circle-completed.svg';
 import { getCustomerTypeLabel } from 'helpers/customer-type-helper';
 import { capitalize } from 'helpers/capitalize';
@@ -43,10 +43,12 @@ const PatientImportPopover = ({
   const uploadedFileNameMaxLength = 30;
   const uploadedFileName =
     patientImportDetails?.fileName?.length > uploadedFileNameMaxLength
-      ? patientImportDetails?.fileName
-          ?.substring(0, uploadedFileNameMaxLength)
-          .trim()
-          .concat('...')
+      ? [
+          ...patientImportDetails?.fileName
+            ?.slice(0, Math.max(0, uploadedFileNameMaxLength))
+            .trim(),
+          '...',
+        ]
       : patientImportDetails?.fileName;
 
   const importErrorMessage = patientImportDetails?.errorDetails

@@ -1,8 +1,7 @@
 import styled from 'styled-components';
 import { fontSizes } from 'styles/font';
-import { withStyles } from '@material-ui/core/styles';
 import palette from 'styles/palette';
-import MuiCancelIcon from '@material-ui/icons/Cancel';
+import MuiCancelIcon from '@mui/icons-material/Cancel';
 
 export const SearchInputWrapper = styled.div`
   display: flex;
@@ -32,12 +31,14 @@ export const SearchInput = styled.input`
   }
 `;
 
-export const CancelIcon = withStyles({
-  root: {
-    width: 20,
-    height: 20,
-  },
-})(MuiCancelIcon);
+export const CancelIcon = styled(MuiCancelIcon)`
+  &&& {
+    .MuiCancelIcon-root {
+      width: 20px;
+      height: 20px;
+    }
+  }
+`;
 
 export const ClearButton = styled.button`
   color: inherit;

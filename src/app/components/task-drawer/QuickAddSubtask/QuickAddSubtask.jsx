@@ -1,5 +1,5 @@
 /* eslint-disable import/extensions */
-import { Box } from '@material-ui/core';
+import { Box } from '@mui/material';
 import React, { useRef, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { addSubtask } from 'actions/task-actions';
@@ -54,7 +54,7 @@ const QuickAddSubtask = () => {
     }
   };
 
-  const handleOnChange = state => {
+  const handleOnChange = (state) => {
     if (error) {
       setError(null);
     }
@@ -78,13 +78,13 @@ const QuickAddSubtask = () => {
           onBlur={unsetFocused}
           state={newTaskDescription}
           onChange={handleOnChange}
-          keyBindingFn={event => {
+          keyBindingFn={(event) => {
             if (event.keyCode === 13) {
               return 'enter-command';
             }
             return undefined;
           }}
-          handleKeyCommand={command => {
+          handleKeyCommand={(command) => {
             if (command === 'enter-command') {
               handleInputEnterDown();
               return 'handled';

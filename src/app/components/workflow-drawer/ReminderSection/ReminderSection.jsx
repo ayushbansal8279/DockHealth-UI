@@ -6,7 +6,7 @@ import Checkbox from 'components/common/Checkbox/Checkbox';
 import Spacing from 'components/common/Spacing';
 import TimeDropdownInput from 'components/common/TimeDropdownInput/TimeDropdownInput';
 import SecondaryDropdownInput from 'components/common/DropdownInput/SecondaryDropdownInput';
-import ArrowIcon from 'img/arrow';
+import ArrowIcon from 'img/arrow.svg';
 import { TIME_12H_FORMAT } from 'helpers/task-drawer-helpers';
 import { useDispatch, useSelector } from 'react-redux';
 import { workflowSelector } from 'selectors/workflow-drawer-selectors';
@@ -21,8 +21,11 @@ import {
 // eslint-disable-next-line sonarjs/cognitive-complexity
 const ReminderSection = ({ disabled }) => {
   const selectedWorkflow = useSelector(workflowSelector);
-  const { reminderType, reminderTime = null, dueDateTime } =
-    selectedWorkflow || {};
+  const {
+    reminderType,
+    reminderTime = null,
+    dueDateTime,
+  } = selectedWorkflow || {};
   const isDisabled = !dueDateTime || disabled;
   const reminderTypeDropdownReference = useRef(null);
   const formMethods = useForm();
@@ -48,7 +51,7 @@ const ReminderSection = ({ disabled }) => {
   }, [reminderTime, reminderType, setValue, setReminderTypeValue]);
 
   const handleReminderSave = useCallback(
-    data => {
+    (data) => {
       dispatch(updatePartialWorkflow(selectedWorkflow?.identifier, data));
     },
     [dispatch, selectedWorkflow],
@@ -96,7 +99,7 @@ const ReminderSection = ({ disabled }) => {
   ]);
 
   const handleSelectReminderType = useCallback(
-    value => {
+    (value) => {
       setValue(REMINDER_TYPE_FIELD_NAME, value);
       if (value === ReminderType.DAY_OF) {
         const defaultTime = undefined;
@@ -111,7 +114,7 @@ const ReminderSection = ({ disabled }) => {
   );
 
   const handleSelectReminderTime = useCallback(
-    value => {
+    (value) => {
       setValue(REMINDER_TIME_FIELD_NAME, value);
       handleReminderSave({ reminderTime: value });
     },
@@ -119,7 +122,7 @@ const ReminderSection = ({ disabled }) => {
   );
 
   const validateReminderTime = useCallback(
-    newValue => {
+    (newValue) => {
       const momentDueDate = moment(dueDateTime);
 
       if (
@@ -171,10 +174,10 @@ const ReminderSection = ({ disabled }) => {
               type="secondary"
               savedValue={reminderTime}
               value={watch(REMINDER_TIME_FIELD_NAME)}
-              onValueChange={newValue =>
+              onValueChange={(newValue) =>
                 setValue(REMINDER_TIME_FIELD_NAME, newValue)
               }
-              onSave={updatedReminderTime =>
+              onSave={(updatedReminderTime) =>
                 handleReminderSave({
                   reminderTime: updatedReminderTime,
                 })

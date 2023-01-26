@@ -72,7 +72,7 @@ const mapDispatchToProps = {
   setSearchCompletedTasks: GlobalSearchSagaActions.setSearchCompletedTasks,
 };
 
-const mapStateToProps = store => ({
+const mapStateToProps = (store) => ({
   searchValue: searchValueSelector(store),
   isSearchingCompletedTasks: isSearchingCompletedTasksSelector(store),
 });

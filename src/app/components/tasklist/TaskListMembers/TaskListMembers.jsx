@@ -35,19 +35,21 @@ const TaskListMembers = ({ members, list, refreshMembers, limit = 4 }) => {
         </>
       )}
       <Spacing horizontal={2} />
-      {!isGuest && list?.listType !== 'INBOX' && list?.listType !== 'PUBLIC' && (
-        <InviteMemberButton
-          size={40}
-          onClick={() =>
-            dispatch(
-              openModal('InviteToList', {
-                list,
-                onMembersRefresh: refreshMembers,
-              }),
-            )
-          }
-        />
-      )}
+      {!isGuest &&
+        list?.listType !== 'INBOX' &&
+        list?.listType !== 'PUBLIC' && (
+          <InviteMemberButton
+            size={40}
+            onClick={() =>
+              dispatch(
+                openModal('InviteToList', {
+                  list,
+                  onMembersRefresh: refreshMembers,
+                }),
+              )
+            }
+          />
+        )}
     </>
   );
 };

@@ -20,7 +20,7 @@ const TaskItemNumber = ({
         value={value}
         name="numberCustomField"
         onBlur={() => onChange(value)}
-        onChange={event => setValue(event.target.value)}
+        onChange={(event) => setValue(event.target.value)}
         InputProps={{ disableUnderline: true }}
         readOnly={readOnly}
       />

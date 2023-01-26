@@ -1,7 +1,7 @@
 /* eslint-disable import/no-cycle */
 /* eslint-disable sonarjs/cognitive-complexity */
 import React, { useCallback } from 'react';
-import { Box } from '@material-ui/core';
+import { Box } from '@mui/material';
 import { useSelector, useDispatch } from 'react-redux';
 import { useParams, useHistory } from 'react-router-dom';
 import { useBoolean } from 'hooks/useBoolean';
@@ -23,14 +23,14 @@ import { TaskStatus } from 'helpers/task-helpers';
 import TaskStatusToolbarSelect from 'components/tasklist/TaskStatusToolbarSelect/TaskStatusToolbarSelect';
 import CustomizeToolbarButton from 'components/tasklist/CustomizeToolbarButton/CustomizeToolbarButton';
 import ToolbarButton from 'components/tasklist/ToolbarButton/ToolbarButton';
-import { printTaskPdf } from 'components/task-pdf/TaskPdfDocument';
+// import { printTaskPdf } from 'components/task-pdf/TaskPdfDocument';
 import { ListsToolbarContainer, ListsTabsContainer } from './styled';
 import { ListViewType, LIST_TYPE_OPTIONS } from '../helpers';
 
-const TaskListToolbar = props => {
-  const { lists, currentList } = props;
-  const tasksToPrint = currentList?.tasks ? currentList?.tasks : [];
-  const listUsers = currentList?.listUsers ? currentList?.listUsers : [];
+const TaskListToolbar = (props) => {
+  const { lists } = props;
+  // const tasksToPrint = currentList?.tasks ? currentList?.tasks : [];
+  // const listUsers = currentList?.listUsers ? currentList?.listUsers : [];
   const {
     patientIdentifier,
     taskListIdentifier: taskListIdentifierParameter = ListViewType.ALL_TASKS,
@@ -81,7 +81,7 @@ const TaskListToolbar = props => {
       ({ name }) => name === 'icon.active.color',
     ) || {};
 
-  const handleListChange = event => {
+  const handleListChange = (event) => {
     history.push(
       createPatientDetailsListPath(
         patientIdentifier,
@@ -90,7 +90,7 @@ const TaskListToolbar = props => {
     );
   };
 
-  const handleListViewTypeChange = event => {
+  const handleListViewTypeChange = (event) => {
     history.push(
       createPatientDetailsListPath(
         patientIdentifier,
@@ -118,7 +118,8 @@ const TaskListToolbar = props => {
       onClick: () =>
         dispatch(
           updateUserPageViewSetup({
-            SHOW_WORKFLOW_COMPLETED_TASKS: !viewSetup.SHOW_WORKFLOW_COMPLETED_TASKS,
+            SHOW_WORKFLOW_COMPLETED_TASKS:
+              !viewSetup.SHOW_WORKFLOW_COMPLETED_TASKS,
           }),
         ),
       key: 'SHOW_COMPLETED_OR_UNCOMPLETED_WORKFLOW_DETAILS',
@@ -127,7 +128,7 @@ const TaskListToolbar = props => {
   ];
 
   const handleChangeTasksStatus = useCallback(
-    event => {
+    (event) => {
       const selectedTaskStatus =
         event.target.value === TaskStatus.INCOMPLETE
           ? TaskStatus.INCOMPLETE
@@ -141,24 +142,24 @@ const TaskListToolbar = props => {
   const onPrintClick = useCallback(() => {
     closeMorePopover();
     onPrint();
-    const title = isAllTasksView
-      ? 'All Tasks'
-      : listOptions.find(
-          element => element.value === taskListIdentifierParameter,
-        )?.label;
+    // const title = isAllTasksView
+    //   ? 'All Tasks'
+    //   : listOptions.find(
+    //       (element) => element.value === taskListIdentifierParameter,
+    //     )?.label;
 
-    return printTaskPdf({
-      title,
-      tasks: tasksToPrint,
-      taskListMembers: listUsers,
-    });
+    // return printTaskPdf({
+    //   title,
+    //   tasks: tasksToPrint,
+    //   taskListMembers: listUsers,
+    // });
   }, [
     closeMorePopover,
-    isAllTasksView,
-    listOptions,
-    taskListIdentifierParameter,
-    listUsers,
-    tasksToPrint,
+    // isAllTasksView,
+    // listOptions,
+    // taskListIdentifierParameter,
+    // listUsers,
+    // tasksToPrint,
   ]);
 
   return (

@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react';
 import Spacing from 'components/common/Spacing';
-import WorkflowProgressImage from 'img/tour/task-workflow/workflow-progress';
+import WorkflowProgressImage from 'img/tour/task-workflow/workflow-progress.svg';
 import { onTourModalStepEnter } from 'helpers/ga-event-helper';
 import { Image, Title, Description } from '../../styled';
 

@@ -1,6 +1,6 @@
 import styled from 'styled-components';
 import spacing from 'styles/spacing';
-import ChevronRightIcon from '@material-ui/icons/ChevronRight';
+import ChevronRightIcon from '@mui/icons-material/ChevronRight';
 import palette from 'styles/palette';
 import { fontSizes } from 'styles/font';
 

@@ -1,9 +1,9 @@
 import React, { useCallback } from 'react';
-import MoreVertIcon from '@material-ui/icons/MoreVert';
+import MoreVertIcon from '@mui/icons-material/MoreVert';
 import OptionsMenu from 'components/common/OptionsMenu/OptionsMenu';
 import { Draggable } from 'react-beautiful-dnd';
 import { trunc } from 'helpers/utility-functions';
-import { Box, IconButton } from '@material-ui/core';
+import { Box, IconButton } from '@mui/material';
 import TaskItemIcons from 'components/task/StandardTaskItem/TaskItemComponents/TaskItemIcons';
 import { useDispatch, useSelector } from 'react-redux';
 import TaskItemDueDate from 'components/task/StandardTaskItem/TaskItemComponents/TaskItemDueDate';
@@ -19,6 +19,7 @@ import {
   SINGLE_TASK_RESTRICTIONS_OPTIONS,
 } from 'restrictions/task-restrictions';
 import pluck from 'ramda/src/pluck';
+import { log } from 'helpers/log';
 import {
   TaskContainer,
   Header,
@@ -27,7 +28,6 @@ import {
   TaskActionsContainer,
   WorkflowIndicator,
   WorkflowActionsContainer,
-  PatientContainer,
 } from './styled';
 
 const BoardColumnTask = ({ task, index, taskContextMenuOptions }) => {
@@ -47,18 +47,14 @@ const BoardColumnTask = ({ task, index, taskContextMenuOptions }) => {
     name,
     patient,
   } = task;
-  const {
-    matchAssignedTo,
-    matchAttachments,
-    matchComments,
-    matchLabels,
-  } = searchMetaData;
+  const { matchAssignedTo, matchAttachments, matchComments, matchLabels } =
+    searchMetaData;
 
   const isWorkflow = itemType === 'BUNDLE';
   const title = isWorkflow ? name : description;
 
   // const { patientName } = patient;
-  console.log(`patient name: ${JSON.stringify(patient)}`);
+  log(`patient name: ${JSON.stringify(patient)}`);
 
   const restrictions =
     SINGLE_TASK_RESTRICTIONS_PROFILES[currentUser?.orgUserRole];
@@ -66,7 +62,7 @@ const BoardColumnTask = ({ task, index, taskContextMenuOptions }) => {
   const { READ_ONLY } = SINGLE_TASK_RESTRICTIONS_OPTIONS;
 
   const handleReasignTask = useCallback(
-    selectedMembers => {
+    (selectedMembers) => {
       partialUpdateTask(identifier, {
         assignedToUsers: selectedMembers,
         assignedToIdentifiers: pluck('userIdentifier', selectedMembers),
@@ -92,7 +88,7 @@ const BoardColumnTask = ({ task, index, taskContextMenuOptions }) => {
       index={index}
       shouldRespectForceTouch={false}
     >
-      {dragProvided => (
+      {(dragProvided) => (
         <Box>
           <TaskContainer
             ref={dragProvided.innerRef}
@@ -114,23 +110,21 @@ const BoardColumnTask = ({ task, index, taskContextMenuOptions }) => {
                 </OptionsContainer>
               )}
             </Header>
-            <>
-              <TaskItemPatient
-                // highlightedValue={highlightedValue}
-                taskStatus={task?.status}
-                isSubtask={false}
-                parentHasPatient
-                hasParentTaskLabel={false}
-                matchPatientMRN={false}
-                patient={patient}
-                // matchPatient={matchPatient}
-                task={task}
-                // openPatientPopover={openPatientPopover}
-                // onTaskUpdate={onTaskUpdate}
-                currentUser={currentUser}
-                readOnly={restrictions?.patient === READ_ONLY}
-              />
-            </>
+            <TaskItemPatient
+              // highlightedValue={highlightedValue}
+              taskStatus={task?.status}
+              isSubtask={false}
+              parentHasPatient
+              hasParentTaskLabel={false}
+              matchPatientMRN={false}
+              patient={patient}
+              // matchPatient={matchPatient}
+              task={task}
+              // openPatientPopover={openPatientPopover}
+              // onTaskUpdate={onTaskUpdate}
+              currentUser={currentUser}
+              readOnly={restrictions?.patient === READ_ONLY}
+            />
             {!isWorkflow && (
               <TaskActionsContainer>
                 <Box flex="3">

@@ -1,6 +1,5 @@
 import React from 'react';
-import { InputAdornment, TextField } from '@material-ui/core';
-import { withStyles } from '@material-ui/core/styles';
+import { InputAdornment, TextField } from '@mui/material';
 import clsx from 'clsx';
 import styled from 'styled-components';
 import palette, { opacify } from 'styles/palette';
@@ -23,17 +22,17 @@ export const ClearButton = styled.div`
 
 export const StyledTextField = styled(TextField)`
   && {
-    ${props =>
+    ${(props) =>
       props.transparentbackground === 'false' &&
       `background-color: ${palette.white};`}
     border-radius: 0.25rem;
     color: ${palette.coolGrey1};
     height: 2.5rem;
-    ${props => (props.fullWidth ? 'width: 100%;' : '')}
+    ${(props) => (props.fullWidth ? 'width: 100%;' : '')}
 
     & .MuiInputBase-root {
       border: 0.0625rem solid
-        ${props =>
+        ${(props) =>
           props.variant === 'outlined'
             ? palette.coolGrey3
             : opacify(palette.coolGrey3, 0)};
@@ -41,7 +40,7 @@ export const StyledTextField = styled(TextField)`
       height: 100%;
       padding: 0 0.25rem 0 0.5rem;
       transition: all 0.25s ease-in-out;
-      width: ${props => (props.fullWidth ? '100%' : '9rem')};
+      width: ${(props) => (props.fullWidth ? '100%' : '9rem')};
 
       &::after,
       &::before {
@@ -51,7 +50,7 @@ export const StyledTextField = styled(TextField)`
 
     & .MuiInputBase-root.Mui-focused {
       border: 0.0625rem solid ${palette.coolGrey3};
-      width: ${props => (props.fullWidth ? '100%' : '16.8125rem')};
+      width: ${(props) => (props.fullWidth ? '100%' : '16.8125rem')};
     }
 
     & input {
@@ -82,23 +81,7 @@ export const StyledTextField = styled(TextField)`
   }
 `;
 
-export const StyledAdornment = withStyles({
-  root: {
-    height: '1.125rem',
-    minHeight: '1.125rem',
-    minWidth: '1.125rem',
-    width: '1.125rem',
-  },
-  positionEnd: {
-    margin: '0 0.25rem',
-  },
-  visible: {
-    display: 'block',
-  },
-  invisible: {
-    display: 'none',
-  },
-})(({ position, visible = true, classes, ...props }) => {
+const InnerAdornment = ({ position, visible = true, classes, ...props }) => {
   const className = clsx(
     classes.root,
     position === 'end' && classes.positionEnd,
@@ -108,4 +91,27 @@ export const StyledAdornment = withStyles({
   return (
     <InputAdornment className={className} position={position} {...props} />
   );
-});
+};
+
+export const StyledAdornment = styled(InnerAdornment)`
+  &&& {
+    .MuiInputAdornment-root {
+      height: 1.125rem;
+      min-height: 1.125rem;
+      min-width: 1.125rem;
+      width: 1.125rem;
+    }
+
+    .MuiInputAdornment-positionEnd {
+      margin: 0 0.25rem;
+    }
+
+    .MuiInputAdornment-visible {
+      display: block;
+    }
+
+    .MuiInputAdornment-invisible {
+      display: none;
+    }
+  }
+`;

@@ -36,7 +36,7 @@ const OnboardingQuestionsPicker = ({
 
   const filteredAvailableOptions = useMemo(
     () =>
-      options.filter(item =>
+      options.filter((item) =>
         item.toLowerCase().includes(searchOption.toLowerCase()),
       ),
     [options, searchOption],
@@ -49,7 +49,7 @@ const OnboardingQuestionsPicker = ({
     return filteredAvailableOptions;
   }, [filteredAvailableOptions, searchOption]);
 
-  const onSearchChange = event => {
+  const onSearchChange = (event) => {
     event.preventDefault();
     setSearchOption(event.target.value);
   };
@@ -63,7 +63,7 @@ const OnboardingQuestionsPicker = ({
         type="text"
         placeholder="Search or add custom"
         autocomplete="false"
-        onKeyDown={event => {
+        onKeyDown={(event) => {
           if (event.key === 'Enter') {
             if (filteredAvailableOptions.length === 0 && searchOption !== '')
               onSelect(searchOption);
@@ -77,7 +77,7 @@ const OnboardingQuestionsPicker = ({
     [filteredAvailableOptions, onSelect, searchOption],
   );
 
-  const renderItem = item => (
+  const renderItem = (item) => (
     <PickerItem
       onClick={() => {
         onSelect(item);

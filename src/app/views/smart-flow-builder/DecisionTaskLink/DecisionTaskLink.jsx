@@ -1,6 +1,6 @@
 /* eslint-disable sonarjs/cognitive-complexity */
 import React, { useState, useEffect, useRef } from 'react';
-import { ClickAwayListener, Paper, Popper } from '@material-ui/core';
+import { ClickAwayListener, Paper, Popper } from '@mui/material';
 import isNil from 'ramda/src/isNil';
 import CalendarIcon from 'img/template/calendar-icon';
 import { deleteTasksLink, updateTasksLink } from 'actions/task-actions';
@@ -9,8 +9,8 @@ import {
   updateTaskOutcome,
 } from 'actions/task-template-actions';
 import { useBoolean } from 'hooks/useBoolean';
-import EditIcon from '@material-ui/icons/Edit';
-import DeleteOutlineIcon from '@material-ui/icons/DeleteOutline';
+import EditIcon from '@mui/icons-material/Edit';
+import DeleteOutlineIcon from '@mui/icons-material/DeleteOutline';
 import { getEdgeCenter, useStoreState } from 'react-flow-renderer';
 import { useDispatch } from 'react-redux';
 import { openModal } from 'modal/actions';
@@ -21,7 +21,7 @@ import DelayPeriodLabel from '../DelayPeriodLabel/DelayPeriodLabel';
 import { LabelsWrapper } from './styled';
 import OutcomeInputLabel from '../OutcomeInputLabel/OutcomeInputLabel';
 
-const DecisionTaskLink = props => {
+const DecisionTaskLink = (props) => {
   const {
     sourceX,
     sourceY,
@@ -47,14 +47,13 @@ const DecisionTaskLink = props => {
   const inputReference = useRef(null);
   const edgeLabelReference = useRef(null);
   const [areOptionsOpen, openOptions, closeOptions] = useBoolean(false);
-  const [isDelayPopoverOpen, openDelayPopover, closeDelayPopover] = useBoolean(
-    false,
-  );
+  const [isDelayPopoverOpen, openDelayPopover, closeDelayPopover] =
+    useBoolean(false);
   const [inputValue, setInputValue] = useState('');
   const [isEdited, setEdited, unsetEdited] = useBoolean(!outcome);
   const [isFocused, setFocused, unsetFocused] = useBoolean(false);
   const dispatch = useDispatch();
-  const { 2: zoom } = useStoreState(store => store.transform);
+  const { 2: zoom } = useStoreState((store) => store.transform);
 
   const delayOptionsVisible = !isNil(delayPeriod) && delayPeriodUnit;
 
@@ -153,22 +152,25 @@ const DecisionTaskLink = props => {
     }
   };
 
-  const handleKeyPress = event => {
+  const handleKeyPress = (event) => {
     const { key } = event;
 
     switch (key) {
-      case 'Enter':
+      case 'Enter': {
         saveTaskOutcome();
         break;
-      case 'Escape':
+      }
+      case 'Escape': {
         clearInput();
         break;
-      default:
+      }
+      default: {
         break;
+      }
     }
   };
 
-  const handleDelayPeriodSubmit = delayPeriodData => {
+  const handleDelayPeriodSubmit = (delayPeriodData) => {
     dispatch(
       updateTasksLink({
         ...link,
@@ -205,7 +207,7 @@ const DecisionTaskLink = props => {
               inputRef={inputReference}
               readOnly={!isEdited}
               value={inputValue}
-              onChange={event => setInputValue(event.target?.value || '')}
+              onChange={(event) => setInputValue(event.target?.value || '')}
               onKeyPress={handleKeyPress}
               onFocus={setFocused}
               onBlur={handleInputBlur}

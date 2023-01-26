@@ -9,7 +9,7 @@ import {
   selectedUserOrganizationSelector,
 } from 'selectors/user-selectors';
 import { openModal, closeModal } from 'modal/actions';
-import { useDispatch, useSelector } from 'react-redux'
+import { useDispatch, useSelector } from 'react-redux';
 import { yupResolver } from '@hookform/resolvers/yup';
 import * as PatientApi from 'api/patient-api';
 import { onPatientAdded as onPatientAddedEvent } from 'helpers/ga-event-helper';
@@ -18,34 +18,32 @@ import PatientForm from 'components/patients/PatientForm/PatientForm';
 import { validationSchema } from 'components/patients/PatientForm/helpers';
 import PatientDrawer from 'components/patients/PatientDrawer/PatientDrawer';
 
-const onSubmit = ({
-  onClose,
-  onPatientCreated,
-  uniqueIdentifierLabel,
-}) => data => {
-  const patientApiMethod = PatientApi.addPatient(data);
+const onSubmit =
+  ({ onClose, onPatientCreated, uniqueIdentifierLabel }) =>
+  (data) => {
+    const patientApiMethod = PatientApi.addPatient(data);
 
-  patientApiMethod
-    .then(response => {
-      onPatientAddedEvent();
-      if (typeof onPatientCreated === 'function') {
-        onPatientCreated(response);
-      }
-      onClose();
-    })
-    .catch(error => {
-      showAlert({
-        status: 'error',
-        title: 'Potential Duplicate',
-        text:
-          error?.message ??
-          `A patient with this name and ${uniqueIdentifierLabel} already exists!`,
-        showConfirmButton: true,
-        allowOutsideClick: false,
-        allowEscapeKey: false,
+    patientApiMethod
+      .then((response) => {
+        onPatientAddedEvent();
+        if (typeof onPatientCreated === 'function') {
+          onPatientCreated(response);
+        }
+        onClose();
+      })
+      .catch((error) => {
+        showAlert({
+          status: 'error',
+          title: 'Potential Duplicate',
+          text:
+            error?.message ??
+            `A patient with this name and ${uniqueIdentifierLabel} already exists!`,
+          showConfirmButton: true,
+          allowOutsideClick: false,
+          allowEscapeKey: false,
+        });
       });
-    });
-};
+  };
 
 const CreatePatientDrawer = ({ isSidebarOpen, onPatientCreated, onClose }) => {
   const currentUser = useSelector(userProfileSelector);
@@ -71,7 +69,7 @@ const CreatePatientDrawer = ({ isSidebarOpen, onPatientCreated, onClose }) => {
 
   const handleClose = () => {
     const values = getValues();
-    const inProgress = !Object.values(values).every(p => p === undefined);
+    const inProgress = !Object.values(values).every((p) => p === undefined);
     if (inProgress) {
       dispatch(
         openModal('InterruptEdit', {

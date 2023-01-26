@@ -329,6 +329,7 @@ const TaskBaseReducer = (state, action, updateStateCallback) => {
       } = action;
 
       const updateTaskFromAction = (t) => {
+        // eslint-disable-next-line unicorn/consistent-function-scoping
         function updateCommentIfMatches(commentIdentifier, comments) {
           return comments?.map((c) =>
             c.commentIdentifier === commentIdentifier

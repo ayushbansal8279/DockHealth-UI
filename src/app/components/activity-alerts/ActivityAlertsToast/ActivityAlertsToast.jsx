@@ -10,14 +10,14 @@ const ActivityAlertsToast = ({ itemAlert, positionInQueue, onClear }) => {
 
   useEffect(() => {
     if (isCleared) {
-      setTimeout(function() {
+      setTimeout(function () {
         setShouldRender(false);
         onClear(itemAlert?.activityAlertIdentifier);
       }, 600);
     }
 
     if (shouldRender) {
-      setTimeout(function() {
+      setTimeout(function () {
         setIsCleared(true);
       }, 5000);
     }

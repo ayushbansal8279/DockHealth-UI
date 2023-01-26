@@ -16,7 +16,7 @@ import {
   MaterialDrawer,
 } from './styled';
 
-const { INTERCOM_APP_CODE } = process.env;
+const { INTERCOM_APP_CODE } = import.meta.env;
 
 const NavigationTemplate = ({ children }) => {
   const currentUser = useSelector(userProfileSelector);

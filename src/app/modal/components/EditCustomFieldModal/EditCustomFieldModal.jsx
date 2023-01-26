@@ -10,8 +10,8 @@ import { FormProvider, useForm } from 'react-hook-form';
 import { string, object, array } from 'yup';
 import { yupResolver } from '@hookform/resolvers/yup';
 import partial from 'ramda/src/partial';
-import { Box, Grid, IconButton } from '@material-ui/core';
-import DeleteIcon from '@material-ui/icons/Delete';
+import { Box, Grid, IconButton } from '@mui/material';
+import DeleteIcon from '@mui/icons-material/Delete';
 import { useDispatch } from 'react-redux';
 import { showGlobalErrorAlert } from 'alert/actions';
 import * as CustomFieldsApi from 'api/custom-fields-api';
@@ -57,9 +57,11 @@ const EditCustomFieldModal = ({
           updatedOptions.push(displayOption);
         }
       } else {
-        updatedOptions = updatedOptions.filter(item => item !== displayOption);
+        updatedOptions = updatedOptions.filter(
+          (item) => item !== displayOption,
+        );
       }
-      setDisplayOptionsState(s => ({
+      setDisplayOptionsState((s) => ({
         ...s,
         displayOptions: updatedOptions,
       }));
@@ -107,14 +109,8 @@ const EditCustomFieldModal = ({
       ? { fieldCategoryType: Category.OTHER_INFO }
       : customField,
   });
-  const {
-    register,
-    unregister,
-    handleSubmit,
-    setValue,
-    watch,
-    errors,
-  } = formMethods;
+  const { register, unregister, handleSubmit, setValue, watch, errors } =
+    formMethods;
 
   useEffect(() => {
     register('fieldType');
@@ -159,7 +155,7 @@ const EditCustomFieldModal = ({
   const handleOptionValueChange = (optionId, event) => {
     setValue(
       'options',
-      optionsValue.map(o =>
+      optionsValue.map((o) =>
         o.identifier === optionId ? { ...o, name: event.target.value } : o,
       ),
     );
@@ -168,7 +164,7 @@ const EditCustomFieldModal = ({
   const handleOptionColorChange = (optionId, event) => {
     setValue(
       'options',
-      optionsValue.map(o =>
+      optionsValue.map((o) =>
         o.identifier === optionId ? { ...o, color: event.target.value } : o,
       ),
     );
@@ -181,14 +177,14 @@ const EditCustomFieldModal = ({
     ]);
   };
 
-  const handleRemoveOption = optionId => {
+  const handleRemoveOption = (optionId) => {
     setValue(
       'options',
       optionsValue.filter(({ identifier }) => identifier !== optionId),
     );
   };
 
-  const handleEditSubmit = data => {
+  const handleEditSubmit = (data) => {
     setIsSaving(true);
     const updatedField = {
       ...customField,
@@ -207,14 +203,14 @@ const EditCustomFieldModal = ({
       });
   };
 
-  const handleAddSubmit = data => {
+  const handleAddSubmit = (data) => {
     setIsSaving(true);
     CustomFieldsApi.addCustomField(
       { ...data, ...displayOptionsState },
       type,
       taskListIdentifier,
     )
-      .then(addedField => {
+      .then((addedField) => {
         onAdded(addedField);
         setIsSaving(false);
         closeModal();

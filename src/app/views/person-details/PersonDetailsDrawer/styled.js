@@ -1,7 +1,7 @@
 import styled from 'styled-components';
 import { fontWeights, fontSizes } from 'styles/font';
 import palette from 'styles/palette';
-import Drawer from '@material-ui/core/Drawer';
+import Drawer from '@mui/material/Drawer';
 
 export const MoreActionsWrapper = styled.div`
   display: flex;

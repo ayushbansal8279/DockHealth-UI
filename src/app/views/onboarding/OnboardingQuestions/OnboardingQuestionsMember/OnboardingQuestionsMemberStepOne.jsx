@@ -1,6 +1,6 @@
 /* eslint-disable unicorn/no-nested-ternary */
 import React, { useState, useRef, useMemo } from 'react';
-import Spacing from 'components/common/Spacing.tsx';
+import Spacing from 'components/common/Spacing';
 import Button from 'components/common/Button/Button';
 import OnboardingQuestionsPicker from '../OnboardingQuestionsPicker';
 import { ROLE_OPTIONS } from '../options';
@@ -18,11 +18,11 @@ const OnboardingQuestionsOwnerGuest = ({
 
   const roleReference = useRef(null);
 
-  const openPicker = field => setActiveOption(field);
+  const openPicker = (field) => setActiveOption(field);
 
-  const onSelectOption = option =>
-    roleOptions.some(opt => opt === option)
-      ? setRoleOptions(roleOptions.filter(opt => opt !== option))
+  const onSelectOption = (option) =>
+    roleOptions.some((opt) => opt === option)
+      ? setRoleOptions(roleOptions.filter((opt) => opt !== option))
       : setRoleOptions([...roleOptions, option]);
 
   const options = useMemo(() => {

@@ -19,7 +19,7 @@ import DateRangeOptions from 'components/filter/DateRangeOptions/DateRangeOption
 import FilterOptionByCategory from 'components/filter/FilterOptionByCategory/FilterOptionByCategory';
 import FilterOptionsGroup from 'components/filter/FilterOptionsGroup/FilterOptionsGroup';
 
-const FilterTable = props => {
+const FilterTable = (props) => {
   const {
     isLoading,
     searchValue,
@@ -91,7 +91,7 @@ const FilterTable = props => {
                   displayValue={displayValue}
                   count={count}
                   reference={reference}
-                  onClick={option =>
+                  onClick={(option) =>
                     (selected
                       ? handleFilterOptionUnselect
                       : handleFilterOptionSelect)(id, option)
@@ -104,8 +104,8 @@ const FilterTable = props => {
                 <DateRangeOptions
                   dateStart={selectedFilters?.[id]?.dateStart}
                   dateEnd={selectedFilters?.[id]?.dateEnd}
-                  onStartDateChange={v => handleRangeDateStartChange(id, v)}
-                  onEndDateChange={v => handleRangeDateEndChange(id, v)}
+                  onStartDateChange={(v) => handleRangeDateStartChange(id, v)}
+                  onEndDateChange={(v) => handleRangeDateEndChange(id, v)}
                 />
               </FilterOptionsGroup>
             )}

@@ -19,7 +19,7 @@ const Modal = ({ modal, ...restProps }) => {
     if (typeof modalProps?.onClose === 'function') modalProps.onClose();
   };
 
-  const handleCloseModal = event => {
+  const handleCloseModal = (event) => {
     closeModal(event);
     if (typeof modalProps?.onClose === 'function') modalProps.onClose(event);
   };
@@ -44,7 +44,7 @@ const Modal = ({ modal, ...restProps }) => {
   );
 };
 
-const mapStateToProps = store => ({
+const mapStateToProps = (store) => ({
   modal: store.modal,
 });
 

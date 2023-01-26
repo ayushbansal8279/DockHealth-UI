@@ -35,7 +35,7 @@ const PatientDropdown = ({
     }
   };
 
-  const handlePatientSelect = patient => {
+  const handlePatientSelect = (patient) => {
     if (!patient) {
       unassignPatient();
       return;

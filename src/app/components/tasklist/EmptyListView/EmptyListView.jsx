@@ -12,7 +12,7 @@ const EmptyListView = ({ title, description, widthBreakpoint }) => (
     <ContentWrapper mediaBreakpoint={widthBreakpoint}>
       <TextWrapper style={{ paddingRight: '0px' }}>
         {Array.isArray(title) ? (
-          title.map(t => (
+          title.map((t) => (
             <Title>
               {t}
               <br />

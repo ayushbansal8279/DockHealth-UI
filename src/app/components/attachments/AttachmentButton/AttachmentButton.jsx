@@ -2,8 +2,8 @@ import React from 'react';
 import Spacing from 'components/common/Spacing';
 import { RobotoTypography } from 'styles/theme';
 
-import { IconButton } from '@material-ui/core';
-import { Close } from '@material-ui/icons';
+import { IconButton } from '@mui/material';
+import { Close } from '@mui/icons-material';
 import Tooltip from 'components/common/Tooltip/Tooltip';
 import { Container, RemoveAttachmentButtonContainer } from './styled';
 import { getIconFromContentType } from './helpers';
@@ -16,7 +16,7 @@ const AttachmentButton = ({ attachment, onClick, onRemoveClick }) => {
     <Tooltip key={attachmentIdentifier} title={fileName}>
       <Container
         download={fileName}
-        onClick={event => {
+        onClick={(event) => {
           event.stopPropagation();
           event.preventDefault();
           onClick(attachment);
@@ -30,7 +30,7 @@ const AttachmentButton = ({ attachment, onClick, onRemoveClick }) => {
         {typeof onRemoveClick === 'function' && (
           <RemoveAttachmentButtonContainer>
             <IconButton
-              onClick={event => {
+              onClick={(event) => {
                 event.preventDefault();
                 event.stopPropagation();
                 onRemoveClick(attachmentIdentifier);

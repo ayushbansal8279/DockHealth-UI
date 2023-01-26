@@ -1,8 +1,8 @@
-import { Grid } from '@material-ui/core';
+import { Grid } from '@mui/material';
 import React, { useCallback, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
-import { Elements } from 'react-stripe-elements';
+// import { Elements } from 'react-stripe-elements';
 import { useMount } from 'react-use';
 import { checkIfUserIsOrganizationAdmin } from 'helpers/user-helper';
 import {
@@ -29,6 +29,7 @@ import {
   SUBSCRIPTION_PLANS,
 } from 'helpers/subscription-helper';
 import { userProfileSelector } from 'selectors/user-selectors';
+import { log } from 'helpers/log';
 import BillingsViewBillingData from '../billings/BillingData/BillingData';
 import {
   DarkBlueTextContainer,
@@ -44,79 +45,82 @@ const finishSubscriptionPayment = (history, currentUser) => {
   history.replace('/settings/subscription-payment-finished');
 };
 
-const cancelSubscriptionPayment = history => {
+const cancelSubscriptionPayment = (history) => {
   history.push(SUBS_SETTINGS_PATH);
 };
 
-const goToSubscriptions = history => {
+const goToSubscriptions = (history) => {
   history.replace(SUBS_SETTINGS_PATH);
 };
 
 /**
  * @param stripe - Stripe instance
  */
-const onSubmit = ({
-  subscriptionPlan,
-  billingFrequency,
-  professionalServicesIncluded,
-  setProcessingPayment,
-  unsetProcessingPayment,
-  history,
-  currentUser,
-  // eslint-disable-next-line unicorn/consistent-function-scoping
-}) => ({ stripe }) => data => {
-  setProcessingPayment();
+const onSubmit =
+  ({
+    subscriptionPlan,
+    billingFrequency,
+    professionalServicesIncluded,
+    setProcessingPayment,
+    unsetProcessingPayment,
+    history,
+    currentUser,
+    // eslint-disable-next-line unicorn/consistent-function-scoping
+  }) =>
+  ({ stripe }) =>
+  (data) => {
+    setProcessingPayment();
 
-  stripe
-    .createToken({ name: 'cardNumber' })
-    .then(token => {
-      if (token.error) {
-        throw token.error;
-      }
-      const billingData = data;
-      billingData.subscriptionDetails = {
-        subscriptionPlan,
-        billingFrequency,
-        professionalServicesIncluded,
-      };
-      saveBillingDetails({
-        billingData,
-        token,
-      })
-        .then(response => {
-          if (response.statusCode === 'SUCCESS') {
-            finishSubscriptionPayment(history, currentUser);
-          } else {
+    stripe
+      .createToken({ name: 'cardNumber' })
+      .then((token) => {
+        if (token.error) {
+          throw token.error;
+        }
+        const billingData = data;
+        billingData.subscriptionDetails = {
+          subscriptionPlan,
+          billingFrequency,
+          professionalServicesIncluded,
+        };
+        saveBillingDetails({
+          billingData,
+          token,
+        })
+          .then((response) => {
+            if (response.statusCode === 'SUCCESS') {
+              finishSubscriptionPayment(history, currentUser);
+            } else {
+              showAlert({
+                status: 'error',
+                title: 'Error',
+                text: response.errorMessage,
+              });
+            }
+            unsetProcessingPayment();
+          })
+          .catch((error) => {
+            log(error);
             showAlert({
               status: 'error',
               title: 'Error',
-              text: response.errorMessage,
+              text: 'Could not save subscription details, please try again later',
             });
-          }
-          unsetProcessingPayment();
-        })
-        .catch(error => {
-          console.log(error);
-          showAlert({
-            status: 'error',
-            title: 'Error',
-            text: 'Could not save subscription details, please try again later',
+            unsetProcessingPayment();
           });
-          unsetProcessingPayment();
+      })
+      .catch((error) => {
+        showAlert({
+          status: 'error',
+          title: 'Error',
+          text:
+            error?.message ??
+            'Could not update subscription details, please try again later',
         });
-    })
-    .catch(error => {
-      showAlert({
-        status: 'error',
-        title: 'Error',
-        text:
-          error?.message ??
-          'Could not update subscription details, please try again later',
-      });
 
-      unsetProcessingPayment();
-    });
-};
+        unsetProcessingPayment();
+      });
+  };
 
 const SubscriptionPaymentView = () => {
   const dispatch = useDispatch();
@@ -143,11 +147,8 @@ const SubscriptionPaymentView = () => {
     cancelSubscriptionPayment(history);
   }, [history]);
 
-  const [
-    processingPayment,
-    setProcessingPayment,
-    unsetProcessingPayment,
-  ] = useBoolean(false);
+  const [processingPayment, setProcessingPayment, unsetProcessingPayment] =
+    useBoolean(false);
 
   useMount(() => {
     if (!newPaymentPlan) {
@@ -268,7 +269,7 @@ const SubscriptionPaymentView = () => {
             </PricingGridContainer>
           </Grid>
           <Grid item sm={12}>
-            <Elements
+            {/* <Elements
               locale="en-US"
               fonts={[
                 {
@@ -276,27 +277,27 @@ const SubscriptionPaymentView = () => {
                     'https://fonts.googleapis.com/css?family=Montserrat&display=swap',
                 },
               ]}
-            >
-              <BillingsViewBillingData
-                isUpdatingBilling
-                setUpdatingBilling={noop}
-                unsetUpdatingBilling={noop}
-                cancelUpdateBilling={onCancelPaymentClick}
-                onSubmit={onSubmit({
-                  subscriptionPlan,
-                  billingFrequency,
-                  professionalServicesIncluded,
-                  processingPayment,
-                  setProcessingPayment,
-                  unsetProcessingPayment,
-                  history,
-                  currentUser: userProfile,
-                })}
-                firstTimeSaveBillingDetails
-                processingPayment={processingPayment}
-                cancelSaveBillingClick={onCancelSaveBillingClick}
-              />
-            </Elements>
+            > */}
+            <BillingsViewBillingData
+              isUpdatingBilling
+              setUpdatingBilling={noop}
+              unsetUpdatingBilling={noop}
+              cancelUpdateBilling={onCancelPaymentClick}
+              onSubmit={onSubmit({
+                subscriptionPlan,
+                billingFrequency,
+                professionalServicesIncluded,
+                processingPayment,
+                setProcessingPayment,
+                unsetProcessingPayment,
+                history,
+                currentUser: userProfile,
+              })}
+              firstTimeSaveBillingDetails
+              processingPayment={processingPayment}
+              cancelSaveBillingClick={onCancelSaveBillingClick}
+            />
+            {/* </Elements> */}
           </Grid>
         </Grid>
       </SubscriptionPaymentViewContainer>

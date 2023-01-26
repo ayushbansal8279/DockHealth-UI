@@ -2,7 +2,7 @@
 import React, { useRef, useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { useSelector } from 'react-redux';
-import { Popper } from '@material-ui/core';
+import { Popper } from '@mui/material';
 import useBooleanWithTimeout from 'hooks/use-boolean-with-timeout';
 import * as UserApi from 'api/user-api';
 import Spacing from 'components/common/Spacing';
@@ -59,7 +59,7 @@ const UserMention = ({ mention, className, children }) => {
   useEffect(() => {
     if (cardOpen && !userOrGroup) {
       UserApi.getUserById(mention.identifier)
-        .then(fetchedUserOrGroup => {
+        .then((fetchedUserOrGroup) => {
           setUserOrGroup(fetchedUserOrGroup);
         })
         .catch(() => {});
@@ -68,10 +68,7 @@ const UserMention = ({ mention, className, children }) => {
   }, [cardOpen, userOrGroup]);
 
   const localTime = !isUserGroup
-    ? moment()
-        .utc()
-        .add(userOrGroup?.timezoneOffset, 'hour')
-        .format('hh:mm A')
+    ? moment().utc().add(userOrGroup?.timezoneOffset, 'hour').format('hh:mm A')
     : null;
 
   const isActive =
@@ -94,7 +91,7 @@ const UserMention = ({ mention, className, children }) => {
         style={{ zIndex: 2000 }}
       >
         <UserCardContainer
-          onClick={event => {
+          onClick={(event) => {
             event.stopPropagation();
           }}
         >
@@ -105,7 +102,7 @@ const UserMention = ({ mention, className, children }) => {
                   <>
                     {userOrGroup.profilePictureHash && (
                       <AvatarImage
-                        src={`${process.env.HEYDOC_SERVICES_BASE_URL}user/profilePicture/${userOrGroup.userIdentifier}/${userOrGroup.profilePictureHash}`}
+                        src={`${import.meta.env.HEYDOC_SERVICES_BASE_URL}user/profilePicture/${userOrGroup.userIdentifier}/${userOrGroup.profilePictureHash}`}
                         alt={userOrGroup.name}
                       />
                     )}

@@ -48,10 +48,8 @@ const DashboardView = ({ tabName }) => {
   const dispatch = useDispatch();
   const currentUser = useSelector(userProfileSelector);
   const { userIdentifier: currentUserIdentifier } = currentUser || {};
-  const [
-    firstCreatedUserListIdentifier,
-    setFirstCreatedUserListIdentifier,
-  ] = useState(null);
+  const [firstCreatedUserListIdentifier, setFirstCreatedUserListIdentifier] =
+    useState(null);
   const [openConfetti, setOpenConfetti] = useState(false);
   const { usageState, orgUserRole } = currentUser ?? {};
   const { hasExistingLists, hasOnlyInvitedLists } = usageState ?? {};
@@ -161,8 +159,11 @@ const DashboardView = ({ tabName }) => {
 
   const customerTypeLabel = getCustomerTypeLabel(currentUser);
 
-  const refreshAccessToken = user => {
-    const systemTimeout = parseInt(process.env.HEALTHCHECK_INTERVAL, 10);
+  const refreshAccessToken = (user) => {
+    const systemTimeout = Number.parseInt(
+      import.meta.env.HEALTHCHECK_INTERVAL,
+      10,
+    );
 
     if (sessionStorage.refreshAccessTokenTimeoutId) {
       clearTimeout(sessionStorage.refreshAccessTokenTimeoutId);
@@ -189,7 +190,7 @@ const DashboardView = ({ tabName }) => {
     onNewUserTourEnter('Opened create list modal');
     dispatch(
       openModal('ListForm', {
-        onListCreationSuccess: taskListIdentifier => {
+        onListCreationSuccess: (taskListIdentifier) => {
           onNewUserTourEnter('Create list success');
           firstListIdentifier = taskListIdentifier;
         },
@@ -205,15 +206,12 @@ const DashboardView = ({ tabName }) => {
     );
   };
 
-  const {
-    tourModalIsOpen,
-    forceOpenTourModal,
-    renderNewUserTour,
-  } = newUserTourHooks({
-    firstCreatedUserListIdentifier,
-    setFirstCreatedUserListIdentifier,
-    isNewUser,
-  });
+  const { tourModalIsOpen, forceOpenTourModal, renderNewUserTour } =
+    newUserTourHooks({
+      firstCreatedUserListIdentifier,
+      setFirstCreatedUserListIdentifier,
+      isNewUser,
+    });
 
   return (
     <ColumnsConfigProvider>
@@ -242,7 +240,7 @@ const DashboardView = ({ tabName }) => {
                             }),
                           );
                         }}
-                        acceptInvitation={list =>
+                        acceptInvitation={(list) =>
                           dispatch(TaskListActions.acceptInviteToTaskList(list))
                         }
                       />

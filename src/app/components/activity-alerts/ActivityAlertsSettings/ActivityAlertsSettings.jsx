@@ -1,5 +1,5 @@
 import React from 'react';
-import { Grid } from '@material-ui/core';
+import { Grid } from '@mui/material';
 import ArrowLeftIcon from 'img/arrow-left.svg';
 import { updateNotificationSettings } from 'api/user-api';
 import {
@@ -106,7 +106,7 @@ const ActivityAlertsSettings = ({
             </Grid>
           </Grid>
         </ActivityAlertsSettingsItemsHeader>
-        {notificationSettings?.map(setting => (
+        {notificationSettings?.map((setting) => (
           <ActivityAlertsSettingsRow
             setting={setting}
             refreshNotificationSettings={refreshNotificationSettings}

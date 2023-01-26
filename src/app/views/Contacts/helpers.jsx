@@ -1,20 +1,18 @@
 import React from 'react';
 import { MoreActionsWrapper } from 'views/person-details/PersonDetailsDrawer/styled';
 import OptionsMenu from 'components/common/OptionsMenu/OptionsMenu';
-import { IconButton } from '@material-ui/core';
-import MoreVertIcon from '@material-ui/icons/MoreVert';
+import { IconButton } from '@mui/material';
+import MoreVertIcon from '@mui/icons-material/MoreVert';
 import palette from 'styles/palette';
 
-const renderColumnHeader = props => {
+const renderColumnHeader = (props) => {
   const { colDef } = props;
   const { headerName } = colDef;
 
   return (
-    <>
-      <div className="MuiDataGrid-colCellTitle">
-        <span>{headerName}</span>
-      </div>
-    </>
+    <div className="MuiDataGrid-colCellTitle">
+      <span>{headerName}</span>
+    </div>
   );
 };
 
@@ -53,7 +51,7 @@ export const getContactColumns = ({ onEditContact, onDeteleContact }) => [
     field: '',
     type: 'actions',
     width: 60,
-    renderCell: data => {
+    renderCell: (data) => {
       const contextMenuOptions = [
         {
           name: 'Edit',

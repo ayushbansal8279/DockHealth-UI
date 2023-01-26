@@ -16,7 +16,7 @@ import { getSharedTaskListsWithCurrentUser } from 'api/task-list-api';
 import { userProfileSelector } from 'selectors/user-selectors';
 import Tooltip from 'components/common/Tooltip/Tooltip';
 import Spacing from 'components/common/Spacing';
-import { ClickAwayListener, Typography } from '@material-ui/core';
+import { ClickAwayListener, Typography } from '@mui/material';
 import {
   TASK_LIST_RESTRICTIONS_OPTIONS,
   TASK_LIST_RESTRICTIONS_PROFILES,
@@ -40,9 +40,10 @@ const Calendar = ({ taskListIdentifier }) => {
   const { parentTasks, subtasks } = extractTasksAndSubtasks(tasks);
   const allTasks = [...parentTasks, ...subtasks];
 
-  const transformedTasks = useMemo(() => allTasks.map(transformTaskToEvent), [
-    allTasks,
-  ]);
+  const transformedTasks = useMemo(
+    () => allTasks.map(transformTaskToEvent),
+    [allTasks],
+  );
 
   const currentUser = useSelector(userProfileSelector);
   const restrictions =
@@ -50,7 +51,7 @@ const Calendar = ({ taskListIdentifier }) => {
   const { DISABLED } = TASK_LIST_RESTRICTIONS_OPTIONS;
 
   const handleEventClick = useCallback(
-    data => {
+    (data) => {
       const { id } = data.event;
       if (id !== temporaryTaskId) {
         const task = allTasks.find(({ identifier }) => identifier === id);
@@ -62,7 +63,7 @@ const Calendar = ({ taskListIdentifier }) => {
   );
 
   const handleDateSelect = useCallback(
-    selectInfo => {
+    (selectInfo) => {
       if (isAddingTaskEnabled) {
         setIsAddingTaskEnabled(false);
         const calendarApi = selectInfo.view.calendar;
@@ -79,7 +80,7 @@ const Calendar = ({ taskListIdentifier }) => {
   );
 
   const onAddTaskClick = useCallback(
-    event => {
+    (event) => {
       event.preventDefault();
       event.stopPropagation();
       if (isAddingTaskEnabled) {
@@ -135,7 +136,7 @@ const Calendar = ({ taskListIdentifier }) => {
     [dispatch, taskListIdentifier, userIdentifier],
   );
 
-  const renderEventContent = eventInfo => {
+  const renderEventContent = (eventInfo) => {
     if (eventInfo.event.id === temporaryTaskId) {
       return (
         <ClickAwayListener
@@ -148,11 +149,11 @@ const Calendar = ({ taskListIdentifier }) => {
             {restrictions?.createTask !== DISABLED && (
               <input
                 name="addTaskViaCalendar"
-                onBlur={event => onAddTaskInputBlur(event, eventInfo)}
+                onBlur={(event) => onAddTaskInputBlur(event, eventInfo)}
                 ref={addTaskInputReference}
                 onClick={onAddTaskClick}
                 placeholder="Add a task..."
-                onKeyDown={event => {
+                onKeyDown={(event) => {
                   event.stopPropagation();
                   if (event.key === 'Enter') {
                     onAddTaskInputBlur(event, eventInfo);
@@ -196,7 +197,7 @@ const Calendar = ({ taskListIdentifier }) => {
   };
 
   const handleDropDown = useCallback(
-    data => {
+    (data) => {
       const { id, start } = data.event;
       const task = allTasks.find(({ identifier }) => identifier === id);
       const dueDate = moment(start).toISOString();
@@ -206,9 +207,7 @@ const Calendar = ({ taskListIdentifier }) => {
   );
 
   const handleDateChange = ({ startStr, endStr }) => {
-    const startDate = moment(startStr)
-      .subtract(1, 'days')
-      .toISOString(true);
+    const startDate = moment(startStr).subtract(1, 'days').toISOString(true);
 
     dispatch(
       CalendarTasksActions.changeCalendarDateRange(

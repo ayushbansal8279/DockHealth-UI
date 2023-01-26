@@ -1,10 +1,10 @@
 import React from 'react';
 import moment from 'moment';
-import { Box, IconButton } from '@material-ui/core';
+import { Box, IconButton } from '@mui/material';
 import OptionsMenu from 'components/common/OptionsMenu/OptionsMenu';
-import MoreVertIcon from '@material-ui/icons/MoreVert';
+import MoreVertIcon from '@mui/icons-material/MoreVert';
 import { PatientAttachmentType } from 'helpers/patient-details-helpers';
-import GoogleDriveIcon from 'img/google-drive-icon';
+import GoogleDriveIcon from 'img/google-drive-icon.png';
 import { trunc } from 'helpers/utility-functions';
 import { getIconFromContentType } from './helpers';
 import {
@@ -16,7 +16,7 @@ import {
   OptionsContainer,
 } from './styled';
 
-const FileGridItem = props => {
+const FileGridItem = (props) => {
   const {
     file,
     options,
@@ -61,7 +61,7 @@ const FileGridItem = props => {
           <CreatedText>{moment(dateCreated).fromNow()}</CreatedText>
         </Box>
         <OptionsContainer>
-          <div onClick={event => event.stopPropagation()}>
+          <div onClick={(event) => event.stopPropagation()}>
             <OptionsMenu customButtonComponent={IconButton} options={options}>
               <MoreVertIcon />
             </OptionsMenu>

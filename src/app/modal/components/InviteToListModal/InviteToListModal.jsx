@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react';
-import { Grid } from '@material-ui/core';
+import { Grid } from '@mui/material';
 import InviteUserOrGroupToListForm from 'components/user/InviteMemberToListForm/InviteUserOrGroupToListForm';
 import { InviteToListModalWrapper, Header, Title, Description } from './styled';
 import { CloseIconButton, CloseIcon } from '../styled';

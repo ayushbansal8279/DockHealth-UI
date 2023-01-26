@@ -151,8 +151,8 @@ export async function getAutoLayout(tasks, startX = 0, startY = 0) {
     if (taskLinks)
       for (const { sourceTaskIdentifier, targetTaskIdentifier } of taskLinks) {
         if (
-          tasks.find(({ identifier: id }) => sourceTaskIdentifier === id) &&
-          tasks.find(({ identifier: id }) => targetTaskIdentifier === id)
+          tasks.some(({ identifier: id }) => sourceTaskIdentifier === id) &&
+          tasks.some(({ identifier: id }) => targetTaskIdentifier === id)
         ) {
           edges.push({
             id: getUniqueLinkId(sourceTaskIdentifier, targetTaskIdentifier),

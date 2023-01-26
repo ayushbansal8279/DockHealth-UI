@@ -10,8 +10,8 @@ import React, {
 import { useSelector, useDispatch } from 'react-redux';
 import isNil from 'ramda/src/isNil';
 import pluck from 'ramda/src/pluck';
-import { Grid } from '@material-ui/core';
-import MoreVert from '@material-ui/icons/MoreVert';
+import { Grid } from '@mui/material';
+import MoreVert from '@mui/icons-material/MoreVert';
 import * as TaskActions from 'actions/task-actions';
 import { checkIfAllTasksSelected } from 'helpers/bulk-edit-helpers';
 import { closeModal, openModal } from 'modal/actions';
@@ -130,7 +130,7 @@ const TasksGroup = ({
   }, [groupTaskCounts, tasks, isCompletedGroup, isDefaultGroup, switchOpen]);
 
   const onQuickAddTask = useCallback(
-    task => {
+    (task) => {
       quickAddTask({
         ...task,
         taskGroupIdentifier,
@@ -150,7 +150,7 @@ const TasksGroup = ({
     if (groupTaskCounts === 0 && !isLoadingGroup) switchOpen(true);
   }, [isLoadingGroup, switchOpen, tasks, groupTaskCounts]);
 
-  const highlightTasksOfTheSameParent = useCallback(parentTaskIdentifier => {
+  const highlightTasksOfTheSameParent = useCallback((parentTaskIdentifier) => {
     if (highlightTimeoutReference.current)
       clearTimeout(highlightTimeoutReference.current);
 
@@ -164,13 +164,14 @@ const TasksGroup = ({
 
   const groupHasMultipleAssignees = false;
 
-  const isGroupSelected = useMemo(() => checkIfAllTasksSelected(tasks), [
-    tasks,
-  ]);
+  const isGroupSelected = useMemo(
+    () => checkIfAllTasksSelected(tasks),
+    [tasks],
+  );
 
   const handleGroupSelect = useCallback(() => {
     const { parentTasks, subtasks } = extractTasksAndSubtasks(
-      tasks.filter(t => t.itemType === 'TASK'),
+      tasks.filter((t) => t.itemType === 'TASK'),
     );
     const allTasks = [...parentTasks, ...subtasks];
     dispatch(
@@ -185,14 +186,14 @@ const TasksGroup = ({
         !isGroupSelected,
         pluck(
           'identifier',
-          tasks.filter(t => t.itemType === 'BUNDLE'),
+          tasks.filter((t) => t.itemType === 'BUNDLE'),
         ),
       ),
     );
   }, [dispatch, isGroupSelected, tasks]);
 
   const handleTemplateSelect = useCallback(
-    template => {
+    (template) => {
       applyTemplate({
         taskTemplateIdentifier: template?.identifier,
         taskGroupIdentifier,
@@ -201,7 +202,7 @@ const TasksGroup = ({
     [applyTemplate, taskGroupIdentifier],
   );
 
-  const changeViewType = value => {
+  const changeViewType = (value) => {
     setViewType(value);
     if (value === ViewType.SLIM_VIEW) {
       onTaskGroupViewModeChange(ViewType.SLIM_VIEW);
@@ -213,8 +214,8 @@ const TasksGroup = ({
   };
 
   // eslint-disable-next-line unicorn/consistent-function-scoping
-  const quickTaskInputValidator = value => {
-    if ([...value]?.filter(char => char !== ' ').length < 2)
+  const quickTaskInputValidator = (value) => {
+    if ([...value]?.filter((char) => char !== ' ').length < 2)
       return 'The task description is too short (min. 2 characters)';
 
     return null;
@@ -234,7 +235,7 @@ const TasksGroup = ({
   }, [dispatch, taskGroupIdentifier]);
 
   const handleEditGroupName = useCallback(
-    newGroupName => {
+    (newGroupName) => {
       if (newGroupName) {
         dispatch(changeTaskListGroupName(taskGroupIdentifier, newGroupName));
       }
@@ -265,7 +266,7 @@ const TasksGroup = ({
           onClick: handleDeleteGroup,
           disabled: restrictions?.editSettings === DISABLED,
         },
-      ].filter(o => typeof o !== 'boolean'),
+      ].filter((o) => typeof o !== 'boolean'),
     [
       isFirstGroup,
       moveGroupUp,

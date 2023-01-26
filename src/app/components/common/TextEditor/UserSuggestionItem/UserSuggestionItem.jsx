@@ -29,10 +29,8 @@ const UserSuggestionItem = ({
     const containerElement =
       suggestionItemReference.current.parentElement.parentElement;
     const { offsetTop: itemOffsetTop, offsetHeight: itemHeight } = itemElement;
-    const {
-      scrollTop: containerScrollTop,
-      offsetHeight: containerHeight,
-    } = containerElement;
+    const { scrollTop: containerScrollTop, offsetHeight: containerHeight } =
+      containerElement;
 
     if (itemOffsetTop >= containerScrollTop + containerHeight) {
       containerElement.scrollTop = itemOffsetTop - containerHeight + itemHeight;

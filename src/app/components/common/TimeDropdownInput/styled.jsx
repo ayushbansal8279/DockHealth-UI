@@ -25,7 +25,7 @@ export const TimeInputMaskContainer = styled.div`
   align-items: center;
   display: flex;
   border: 0.0625rem solid transparent;
-  border-bottom-color: ${props =>
+  border-bottom-color: ${(props) =>
     props.hasError ? palette.error : palette.coolGrey1};
   border-radius: 0;
   height: 24px;

@@ -212,9 +212,7 @@ export function findAuditsByTaskList(taskListIdentifier, queryStartPosition) {
 export function findAuditsForAllTaskListsByUserId(queryStartPosition) {
   return axios
     .get(
-      `${
-        'audit/findAuditsForAllTaskListsByUserId/' + '?queryStartPosition='
-      }${queryStartPosition}`,
+      `${'audit/findAuditsForAllTaskListsByUserId/?queryStartPosition='}${queryStartPosition}`,
     )
     .then((response) => response?.data)
     .catch((error) => {

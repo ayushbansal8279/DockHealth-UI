@@ -3,7 +3,7 @@ import styled from 'styled-components';
 import { Link } from 'react-router-dom';
 import palette from 'styles/palette';
 import { fontSizes, fontWeights } from 'styles/font';
-import { Box } from '@material-ui/core';
+import { Box } from '@mui/material';
 
 const textStyles = `
 	font-family: 'Montserrat', sans-serif;

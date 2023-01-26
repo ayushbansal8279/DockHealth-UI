@@ -3,7 +3,7 @@ import palette from 'styles/palette';
 import spacing from 'styles/spacing';
 import { fontSizes, fontWeights } from 'styles/font';
 import prop from 'ramda/src/prop';
-import { Close } from '@material-ui/icons';
+import { Close } from '@mui/icons-material';
 
 export const DeleteStatusIcon = styled(Close)`
   && {

@@ -2,7 +2,7 @@
 /* eslint-disable react/no-array-index-key */
 import Spacing from 'components/common/Spacing';
 import React from 'react';
-import { Skeleton } from '@material-ui/lab';
+import { Skeleton } from '@mui/lab';
 import TasksSkeletonLoader from 'components/task/TasksSkeletonLoader/TasksSkeletonLoader';
 import { Container, LoaderGroup } from './styled';
 

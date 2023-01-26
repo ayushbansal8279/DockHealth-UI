@@ -1,6 +1,6 @@
 import styled from 'styled-components';
 import palette from 'styles/palette';
-import GoogleLogo from 'img/google_btn_light_normal_ios';
+import GoogleLogo from 'img/google_btn_light_normal_ios.svg';
 
 export const SSOOptionsBar = styled.div`
   width: 100%;

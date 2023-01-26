@@ -47,8 +47,10 @@ const TasksStatisticsChart = () => {
     request
       .then(([created, completed]) => {
         const metrics = map(({ date, metricValue }) => {
-          const completedValue = find(propEq('date', date), completed)
-            ?.metricValue;
+          const completedValue = find(
+            propEq('date', date),
+            completed,
+          )?.metricValue;
 
           return {
             created: metricValue,
@@ -72,7 +74,7 @@ const TasksStatisticsChart = () => {
           <XAxis
             dataKey="date"
             tick={{ fontSize: 12 }}
-            tickFormatter={value => moment(value).format('MM/DD/YY')}
+            tickFormatter={(value) => moment(value).format('MM/DD/YY')}
           />
 
           <YAxis
@@ -80,7 +82,7 @@ const TasksStatisticsChart = () => {
             label={{ value: 'Tasks', angle: -90, position: 'insideLeft' }}
           />
           <Tooltip
-            labelFormatter={value => moment(value).format('MM/DD/YYYY')}
+            labelFormatter={(value) => moment(value).format('MM/DD/YYYY')}
           />
           <Legend verticalAlign="bottom" />
           <Line

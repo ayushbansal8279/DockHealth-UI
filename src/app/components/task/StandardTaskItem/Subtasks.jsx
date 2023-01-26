@@ -1,6 +1,6 @@
 /* eslint-disable sonarjs/cognitive-complexity */
 import React, { useState, useCallback, useMemo } from 'react';
-import { Box } from '@material-ui/core';
+import { Box } from '@mui/material';
 import { useDispatch } from 'react-redux';
 import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd';
 import isEmpty from 'ramda/src/isEmpty';
@@ -64,7 +64,7 @@ const Subtasks = ({
           onDragEnd={!shouldShowBlockModalOnDrag ? onDragEnd : () => {}}
         >
           <Droppable droppableId={parentTask.taskIdentifier}>
-            {provided => (
+            {(provided) => (
               <div ref={provided.innerRef} {...provided.droppableProps}>
                 {shouldRenderSubtasks &&
                   subtasks?.map((subtask, index) => {

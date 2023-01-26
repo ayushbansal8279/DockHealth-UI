@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { useDispatch } from 'react-redux';
-import { Popover } from '@material-ui/core';
-import { makeStyles } from '@material-ui/core/styles';
+import { Popover } from '@mui/material';
+// import { makeStyles } from '@mui/styles';
 import clsx from 'clsx';
 import { showGlobalAlert } from 'alert/actions';
 import Button from 'components/common/Button/Button';
@@ -59,29 +59,28 @@ const USER_TYPES = new Proxy(
 );
 
 const renderUserTypesOptions = ({ userTypes, selectedRoleKey }) => {
-  return [
-    ...Object.entries(userTypes).map(
-      ([role, { label, description, isLimitedAccess }]) => ({
-        key: role,
-        button: true,
-        isSelected: selectedRoleKey === role,
-        isLimitedAccess,
-        label,
-        description,
-      }),
-    ),
-  ];
+  return Object.entries(userTypes).map(
+    ([role, { label, description, isLimitedAccess }]) => ({
+      key: role,
+      button: true,
+      isSelected: selectedRoleKey === role,
+      isLimitedAccess,
+      label,
+      description,
+    }),
+  );
 };
 
-const usePopoverClasses = makeStyles({
-  root: {
-    maxHeight: ({ maxItems }) => (maxItems ? `${maxItems * 2}rem` : undefined),
-    minHeight: '2rem',
-    overflowY: ({ maxItems }) => (maxItems ? 'auto' : undefined),
-  },
-});
+const usePopoverClasses = undefined;
+//  makeStyles({
+//   root: {
+//     maxHeight: ({ maxItems }) => (maxItems ? `${maxItems * 2}rem` : undefined),
+//     minHeight: '2rem',
+//     overflowY: ({ maxItems }) => (maxItems ? 'auto' : undefined),
+//   },
+// });
 
-const InactiveRoleSelectionPopover = props => {
+const InactiveRoleSelectionPopover = (props) => {
   const {
     labelReference,
     isPopoverOpen,
@@ -139,7 +138,7 @@ const InactiveRoleSelectionPopover = props => {
         {renderUserTypesOptions({
           userTypes: USER_TYPES,
           selectedRoleKey: selectedRole?.key,
-        })?.map(item =>
+        })?.map((item) =>
           renderRoleItem({
             ...item,
             onSelect: setSelectedRole,

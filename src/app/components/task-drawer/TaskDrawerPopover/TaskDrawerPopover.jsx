@@ -1,4 +1,4 @@
-import { Box } from '@material-ui/core';
+import { Box } from '@mui/material';
 import React, { useRef } from 'react';
 import { useUpdate } from 'react-use';
 import { useBoolean } from 'hooks/useBoolean';
@@ -8,9 +8,8 @@ import { StyledPopover, StyledButton } from './styled';
 
 const TaskDrawerPopover = ({ disabled, placement, children, content }) => {
   const buttonReference = useRef(null);
-  const [isPopoverOpen, openPopover, closePopover, togglePopover] = useBoolean(
-    false,
-  );
+  const [isPopoverOpen, openPopover, closePopover, togglePopover] =
+    useBoolean(false);
   const forceUpdate = useUpdate();
 
   return (
@@ -19,7 +18,7 @@ const TaskDrawerPopover = ({ disabled, placement, children, content }) => {
         type="button"
         ref={buttonReference}
         disabled={disabled}
-        onClick={event => {
+        onClick={(event) => {
           event.stopPropagation();
           openPopover(true);
         }}
@@ -37,7 +36,7 @@ const TaskDrawerPopover = ({ disabled, placement, children, content }) => {
           horizontal: 'right',
         }}
         open={isPopoverOpen}
-        onClose={event => {
+        onClose={(event) => {
           event.stopPropagation();
           closePopover();
         }}

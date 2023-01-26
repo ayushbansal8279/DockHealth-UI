@@ -1,6 +1,6 @@
 import React, { useCallback, useRef } from 'react';
 import moment from 'moment';
-import { Box } from '@material-ui/core';
+import { Box } from '@mui/material';
 import RecurringIcon from 'img/recurring-arrows';
 import { checkIfTemplateTask, isDueDateOverdue } from 'helpers/task-helpers';
 import DueDatePicker from 'components/task/DueDatePicker/DueDatePicker';
@@ -34,7 +34,7 @@ const DueDateSection = ({ disabled = false }) => {
   const buttonReference = useRef(null);
   const [isPopoverOpen, openPopover, closePopover] = useBoolean(false);
   const handleDueDateSave = useCallback(
-    updatedDueDateTime => {
+    (updatedDueDateTime) => {
       dispatch(updateTaskDueDate(selectedTask, updatedDueDateTime));
     },
     [dispatch, selectedTask],
@@ -49,7 +49,7 @@ const DueDateSection = ({ disabled = false }) => {
         customInputComponent={() => (
           <StyledButton
             type="button"
-            onClick={event => {
+            onClick={(event) => {
               event.stopPropagation();
               openPopover(true);
             }}
@@ -100,7 +100,7 @@ const DueDateSection = ({ disabled = false }) => {
           horizontal: 'right',
         }}
         open={isPopoverOpen}
-        onClose={event => {
+        onClose={(event) => {
           event.stopPropagation();
           closePopover();
         }}

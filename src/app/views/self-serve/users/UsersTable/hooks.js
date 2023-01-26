@@ -19,6 +19,7 @@ import {
 const useBreakpoint = createBreakpoint({ sm: 600, md: 960 });
 
 const useInitializeMembersTableHooks = () => {
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   const organizationUsers = useSelector(organizationUsersSelector) || [];
   const isFetching = useSelector(isFetchingOrganizationUsersSelector);
   const currentBreakPoint = useBreakpoint();

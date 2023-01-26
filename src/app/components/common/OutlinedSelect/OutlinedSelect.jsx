@@ -1,28 +1,30 @@
 import React from 'react';
-import { makeStyles } from '@material-ui/core/styles';
-import { ListItemText, MenuItem, Select } from '@material-ui/core';
-import zIndex from 'styles/z-index';
+// import { makeStyles } from '@mui/styles';
+import { ListItemText, MenuItem, Select } from '@mui/material';
+// import zIndex from 'styles/z-index';
 import { func, number, shape, string, arrayOf, oneOfType } from 'prop-types';
 import styled from 'styled-components';
 import palette from 'styles/palette';
 
-const useOutlinedSelectStyles = makeStyles({
-  root: {
-    width: ({ width }) => width,
-    padding: 8,
-  },
-  icon: {
-    color: 'indigo',
-  },
-});
+const useOutlinedSelectStyles = undefined;
+// makeStyles({
+//   root: {
+//     width: ({ width }) => width,
+//     padding: 8,
+//   },
+//   icon: {
+//     color: 'indigo',
+//   },
+// });
 
-const useMenuStyles = makeStyles({
-  paper: {
-    maxHeight: 400,
-    maxWidth: ({ width }) => width + 40,
-    zIndex: zIndex.optionsMenu,
-  },
-});
+const useMenuStyles = undefined;
+//  makeStyles({
+//   paper: {
+//     maxHeight: 400,
+//     maxWidth: ({ width }) => width + 40,
+//     zIndex: zIndex.optionsMenu,
+//   },
+// });
 
 const StyledSelect = styled(Select)`
   && {
@@ -46,14 +48,13 @@ const StyledSelect = styled(Select)`
       }
 
       & .switchIcon > path {
-        fill: ${props =>
-          props.iconColorActive ? props.iconColorActive : palette.dirtyBanana};
+        fill: ${(props) => props.iconColorActive ?? palette.dirtyBanana};
       }
     }
   }
 `;
 
-const OutlinedSelect = props => {
+const OutlinedSelect = (props) => {
   const { name, options, width, ...restProps } = props;
   const classes = useOutlinedSelectStyles({ width });
   const menuClasses = useMenuStyles({ width });
@@ -75,12 +76,12 @@ const OutlinedSelect = props => {
       }}
       variant="outlined"
       inputProps={{ name }}
-      renderValue={selectedValue =>
-        options.find(option => option.value === selectedValue)?.label
+      renderValue={(selectedValue) =>
+        options.find((option) => option.value === selectedValue)?.label
       }
       {...restProps}
     >
-      {options?.map(option => {
+      {options?.map((option) => {
         const { OptionIcon } = option;
         return (
           <MenuItem key={option.value} value={option.value}>

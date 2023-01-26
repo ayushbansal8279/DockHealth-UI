@@ -66,9 +66,9 @@ const PatientSection = ({
   }, [autofocus, patientInputReference]);
 
   const savePatient = useCallback(
-    async patientToSave => {
+    async (patientToSave) => {
       try {
-        const onSavePatient = async skipModals => {
+        const onSavePatient = async (skipModals) => {
           if (skipModals) {
             onTaskDrawerTaskPatientChanged();
             await onSave({
@@ -177,8 +177,8 @@ const PatientSection = ({
   );
 
   const fetchPatients = useCallback(
-    value =>
-      getPatientsByCriteria(value).then(fetchedPatients => {
+    (value) =>
+      getPatientsByCriteria(value).then((fetchedPatients) => {
         setPatients(fetchedPatients);
         return fetchedPatients;
       }),
@@ -186,7 +186,7 @@ const PatientSection = ({
   );
 
   const fetchPatientsWithDebounce = useCallback(
-    debounce(value => {
+    debounce((value) => {
       fetchPatients(value).then(() => {
         setIsLoadingPatients(false);
       });
@@ -195,7 +195,7 @@ const PatientSection = ({
   );
 
   const onPatientInputChange = useCallback(
-    value => {
+    (value) => {
       if (value !== '') {
         setIsLoadingPatients(true);
         fetchPatientsWithDebounce(value);
@@ -208,7 +208,7 @@ const PatientSection = ({
   );
 
   const handleClearSelectedPatient = useCallback(
-    async clearInput => {
+    async (clearInput) => {
       if (templateBundleIdentifier && selectedPatient) {
         dispatch(
           openModal('UnassignPatient', {
@@ -240,7 +240,7 @@ const PatientSection = ({
   );
 
   const handlePatientSelect = useCallback(
-    async selectedOption => {
+    async (selectedOption) => {
       const [lastName, names] = selectedOption.displayLabel.split(', ');
       const [firstName, middleName] = names.split(' ');
       const patient = {
@@ -259,7 +259,7 @@ const PatientSection = ({
   );
 
   const handleAddPatient = useCallback(
-    patient => {
+    (patient) => {
       if (currentOrganization.emrIntegrationEnabled) {
         return;
       }

@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Grid } from '@material-ui/core';
+import { Grid } from '@mui/material';
 import { FormProvider, useForm } from 'react-hook-form';
 import { object, string } from 'yup';
 import { yupResolver } from '@hookform/resolvers/yup';
@@ -53,7 +53,7 @@ const OrganizationOwnerForm = ({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  const ownerFormSubmit = data => {
+  const ownerFormSubmit = (data) => {
     if (currentFormStep === FormStep.USER_DETAILS) {
       setCurrentFormStep(FormStep.USER_ROLE);
     } else {
@@ -78,7 +78,7 @@ const OrganizationOwnerForm = ({
           />
         )}
         <Grid container direction="row" justifyContent="center">
-          {Object.values(FormStep).map(value => (
+          {Object.values(FormStep).map((value) => (
             <Step
               key={value}
               isCurrent={currentFormStep >= value}

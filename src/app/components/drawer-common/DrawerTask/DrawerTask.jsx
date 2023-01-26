@@ -4,9 +4,9 @@ import moment from 'moment';
 import React, { useCallback } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import pluck from 'ramda/src/pluck';
-import Circle from 'img/circle';
-import CircleCompleted from 'img/circle-completed';
-import SimpleArrowRight from 'img/simple-arrow-right';
+import Circle from 'img/circle.svg';
+import CircleCompleted from 'img/circle-completed.svg';
+import SimpleArrowRight from 'img/simple-arrow-right.svg';
 import RecurringIcon from 'img/recurring-arrows';
 import ReminderIcon from 'img/reminder';
 import {
@@ -64,7 +64,7 @@ import {
 
 const { DISABLED, READ_ONLY } = SINGLE_TASK_RESTRICTIONS_OPTIONS;
 
-const DrawerTask = props => {
+const DrawerTask = (props) => {
   const { task, currentUser, dragHandleProps } = props;
   const dispatch = useDispatch();
   const { orgUserRole } = useSelector(userProfileSelector);
@@ -115,14 +115,14 @@ const DrawerTask = props => {
     dependencyTasksCount === dependencyTasksCompletedCount;
 
   const handleGoToChildTask = useCallback(
-    childTask => {
+    (childTask) => {
       return dispatch(storeAsCurrentTask(childTask));
     },
     [dispatch],
   );
 
   const handleReassignSubtask = useCallback(
-    selectedMembers => {
+    (selectedMembers) => {
       onTaskDrawerSubtaskAssigned();
       dispatch(
         partialUpdateTask(task.taskIdentifier, {
@@ -148,7 +148,7 @@ const DrawerTask = props => {
   };
 
   const handleDueDateChange = useCallback(
-    newDueDate => {
+    (newDueDate) => {
       dispatch(updateTaskDueDate(task, newDueDate));
     },
     [dispatch, task],
@@ -167,7 +167,7 @@ const DrawerTask = props => {
         isClickable={
           !isTaskStatusTogglingDisabled && isDependencyEmptyOrCompleted
         }
-        onClick={event => {
+        onClick={(event) => {
           event.stopPropagation();
           if (!isTaskStatusTogglingDisabled && isDependencyEmptyOrCompleted) {
             (isCompleted

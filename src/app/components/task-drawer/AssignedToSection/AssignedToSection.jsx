@@ -16,9 +16,10 @@ const AssignedToSection = ({ onSave, disabled }) => {
   const currentUser = useSelector(userProfileSelector);
   const selectedTask = useSelector(selectedTaskSelector) || {};
   const { assignedToUsers, taskList } = selectedTask;
-  const isTemplateTask = useMemo(() => checkIfTemplateTask(selectedTask), [
-    selectedTask,
-  ]);
+  const isTemplateTask = useMemo(
+    () => checkIfTemplateTask(selectedTask),
+    [selectedTask],
+  );
   const currentTaskListIdentifier = taskList?.taskListIdentifier;
   const taskListIdentifier = isTemplateTask ? null : currentTaskListIdentifier;
   const [assignedToUsersValue, setAssignedToUsersValue] = useState();
@@ -49,7 +50,7 @@ const AssignedToSection = ({ onSave, disabled }) => {
   }, [onSave]);
 
   const handleAssignToSelection = useCallback(
-    selectedMembers => {
+    (selectedMembers) => {
       setAssignedToUsersValue(selectedMembers);
       onTaskDrawerTaskAssigned();
       onSave({

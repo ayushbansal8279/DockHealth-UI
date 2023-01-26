@@ -20,6 +20,7 @@ export function checkIfTasksHaveSubtasksOrComments(tasks) {
   });
 }
 
+// eslint-disable-next-line sonarjs/cognitive-complexity
 export function extractTasksAndSubtasks(listOfTasks) {
   if (!listOfTasks) {
     return { parentTasks: [], subtasks: [] };

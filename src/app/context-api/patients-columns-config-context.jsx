@@ -92,7 +92,7 @@ export function PatientListColumnsConfigProvider({
   // }, [currentWidthPreferences]);
 
   const setColumnsAndUpdateApi = useCallback(
-    newState => {
+    (newState) => {
       setColumnsToState(newState);
       if (currentPatientList) {
         dispatch(
@@ -119,7 +119,7 @@ export function PatientListColumnsConfigProvider({
     ];
 
     // join preferences to data
-    const mergedPreferencesAndFields = joinedColumnsData.map(field => ({
+    const mergedPreferencesAndFields = joinedColumnsData.map((field) => ({
       ...field,
       isChecked:
         !!currentPreferences?.includes(field.identifier) ||
@@ -133,7 +133,7 @@ export function PatientListColumnsConfigProvider({
 
     // sort data by defined order
     const fieldsWithOrder = mergedPreferencesAndFields
-      .filter(f => currentPreferences?.includes(f.identifier))
+      .filter((f) => currentPreferences?.includes(f.identifier))
       .sort((a, b) => {
         return (
           currentPreferences?.indexOf(a.identifier) -
@@ -141,7 +141,7 @@ export function PatientListColumnsConfigProvider({
         );
       });
     const fieldsWithoutOrder = mergedPreferencesAndFields.filter(
-      f => !currentPreferences?.includes(f.identifier),
+      (f) => !currentPreferences?.includes(f.identifier),
     );
 
     setColumnsToState([...fieldsWithOrder, ...fieldsWithoutOrder]);
@@ -157,9 +157,9 @@ export function PatientListColumnsConfigProvider({
   useEffect(() => {
     if (!hidePatientCustomColumns) {
       // eslint-disable-next-line sonarjs/no-identical-functions
-      getAllPatientCustomFields().then(data => {
+      getAllPatientCustomFields().then((data) => {
         setPatientCustomColumns(
-          data.map(d => ({
+          data.map((d) => ({
             ...d,
             _customFieldType: CUSTOM_FIELD_TYPES.PATIENT,
           })),
@@ -176,7 +176,7 @@ export function PatientListColumnsConfigProvider({
   const setColumnWidth = useCallback(
     ({ columnIdentifier, columnWidth }) => {
       setHasWidthPreferences(true);
-      const updatedState = columns.map(c =>
+      const updatedState = columns.map((c) =>
         columnIdentifier === c.identifier ? { ...c, columnWidth } : c,
       );
       setColumnsToState(updatedState);
@@ -208,7 +208,7 @@ export function usePatientListColumnsConfig() {
   if (context === undefined) {
     return {
       columns: translateInitialColumnsConfig(PATIENT_BASE_COLUMN_CONFIG).map(
-        f => ({
+        (f) => ({
           ...f,
           isChecked: true,
           columnWidth: getInitialColumnWidth(f),

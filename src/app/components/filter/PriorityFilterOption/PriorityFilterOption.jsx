@@ -1,5 +1,5 @@
 import React from 'react';
-import { Box } from '@material-ui/core';
+import { Box } from '@mui/material';
 import FilterOption from 'components/filter/FilterOption/FilterOption';
 import HighPriorityLabel from 'img/priority-high-label-icon.svg';
 

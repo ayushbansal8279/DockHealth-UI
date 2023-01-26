@@ -63,7 +63,7 @@ const TasksSection = () => {
       ) : (
         <DragDropContext onDragEnd={handleDragEnd}>
           <Droppable droppableId={workflow?.identifier}>
-            {provided => (
+            {(provided) => (
               <div ref={provided.innerRef} {...provided.droppableProps}>
                 {tasks?.map((task, index) => (
                   <Draggable

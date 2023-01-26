@@ -9,6 +9,7 @@ import {
   setCurrentPageInSessionStorage,
   showAlert,
 } from 'helpers/utility-functions';
+import { log } from 'helpers/log';
 import { CREATE_ACCOUNT_PATH, DEFAULT_REDIRECT_PATH } from './paths';
 
 const checkUserAuthentication = async ({ history, isRequiredLogin }) => {
@@ -29,7 +30,7 @@ const checkUserAuthentication = async ({ history, isRequiredLogin }) => {
       await getEnterpriseAccessTokensByAuthCode(authCode, issValue)
         .then(() => {
           const patientIdentifier = sessionStorage.getItem('PatientIdentifier');
-          console.log(patientIdentifier);
+          log(patientIdentifier);
           window.location.href =
             patientIdentifier &&
             patientIdentifier !== '' &&

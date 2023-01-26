@@ -68,7 +68,7 @@ const PersonDetailsOpenedTasks = ({
     setViewSpecificConfig(taskItemConfig);
   }, [setViewSpecificConfig, taskItemConfig]);
 
-  const handleQuickAddTask = task => {
+  const handleQuickAddTask = (task) => {
     dispatch(
       openModal('ListPicker', {
         enableSelectingGroupStep: true,
@@ -118,9 +118,10 @@ const PersonDetailsOpenedTasks = ({
     dispatch(sortUserTasks(key, order));
   };
 
-  const isGroupSelected = useMemo(() => checkIfAllTasksSelected(tasks), [
-    tasks,
-  ]);
+  const isGroupSelected = useMemo(
+    () => checkIfAllTasksSelected(tasks),
+    [tasks],
+  );
 
   const handleGroupSelect = useCallback(() => {
     const { parentTasks, subtasks } = extractTasksAndSubtasks(tasks);
@@ -150,7 +151,7 @@ const PersonDetailsOpenedTasks = ({
                   <StickyContainer left={24} decreaseWidth={2 * 24} zIndex={13}>
                     <QuickAddTaskInput
                       ref={quickAddTaskInputReference}
-                      quickAddTask={task => {
+                      quickAddTask={(task) => {
                         handleQuickAddTask(task);
                         setTimeout(() => {
                           quickAddTaskInputReference.current.focus();
@@ -168,7 +169,7 @@ const PersonDetailsOpenedTasks = ({
                     isGroupSelected={isGroupSelected}
                     onGroupSelect={handleGroupSelect}
                   />
-                  {filteredTasks?.map(task => (
+                  {filteredTasks?.map((task) => (
                     <StandardTaskItem
                       key={task.identifier}
                       isFullView={isFullView}

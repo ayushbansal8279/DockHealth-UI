@@ -1,26 +1,26 @@
 /* eslint-disable @typescript-eslint/no-var-requires */
 // import Symbol_observable from 'symbol-observable';
 /* eslint-disable global-require */
-import MomentUtils from '@date-io/moment';
-import { MuiThemeProvider } from '@material-ui/core/styles';
-import { MuiPickersUtilsProvider } from 'material-ui-pickers';
+// import MomentUtils from '@date-io/moment';
+import { ThemeProvider as MuiThemeProvider } from '@mui/material/styles';
+import { LocalizationProvider as MuiPickersUtilsProvider } from '@mui/x-date-pickers';
+import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
 import { HashRouter } from 'react-router-dom';
 import moment from 'moment';
 import React from 'react';
-import { render } from 'react-dom';
+import { createRoot } from 'react-dom/client';
 import ReactGA from 'react-ga';
 import { Provider } from 'react-redux';
-import { StripeProvider } from 'react-stripe-elements';
+// import { StripeProvider } from 'react-stripe-elements';
 import { getTheme } from 'styles/theme';
 import configureStore from './ConfigureStore';
 import ErrorBoundary from './ErrorBoundary';
-import flags, { FlagsProvider } from './helpers/flags';
-import OpenSansBoldFontSource from './fonts/OpenSans-Bold.ttf';
-import OpenSansRegularFontSource from './fonts/OpenSans-Regular.ttf';
+// import flags, { FlagsProvider } from './helpers/flags';
 import Routes from './routing/routes';
 import App from './views/App';
+import 'styles/app.css';
 
-if (process.env.NODE_ENV === 'development') {
+if (import.meta.env.NODE_ENV === 'development') {
   const whyDidYouRender = require('@welldone-software/why-did-you-render');
   whyDidYouRender(React);
 }
@@ -52,8 +52,8 @@ const store = configureStore();
 const {
   GA_TRACKING_CODE,
   GA_TRACKING_CODE_ROLLUP,
-  SUBSCRIPTION_TOKEN_API_KEY,
-} = process.env;
+  // SUBSCRIPTION_TOKEN_API_KEY,
+} = import.meta.env;
 
 ReactGA.initialize(
   [
@@ -76,30 +76,30 @@ ReactGA.initialize(
   },
 );
 
-const stripeProps = SUBSCRIPTION_TOKEN_API_KEY
-  ? { apiKey: SUBSCRIPTION_TOKEN_API_KEY }
-  : { apiKey: 'NON_EXISTENT_API_KEY' };
+// const stripeProps = SUBSCRIPTION_TOKEN_API_KEY
+//   ? { apiKey: SUBSCRIPTION_TOKEN_API_KEY }
+//   : { apiKey: 'NON_EXISTENT_API_KEY' };
 
-const Index = () => {
-  return (
-    <MuiThemeProvider theme={getTheme()}>
-      <MuiPickersUtilsProvider utils={MomentUtils}>
-        <FlagsProvider flags={flags}>
-          <Provider store={store}>
-            <StripeProvider {...stripeProps}>
-              <ErrorBoundary>
-                <HashRouter forceRefresh>
-                  <App>
-                    <Routes />
-                  </App>
-                </HashRouter>
-              </ErrorBoundary>
-            </StripeProvider>
-          </Provider>
-        </FlagsProvider>
-      </MuiPickersUtilsProvider>
-    </MuiThemeProvider>
-  );
-};
+const Index = () => (
+  <MuiThemeProvider theme={getTheme()}>
+    <MuiPickersUtilsProvider dateAdapter={AdapterDateFns}>
+      {/* <FlagsProvider flags={flags}> */}
+      <Provider store={store}>
+        {/* <StripeProvider {...stripeProps}> */}
+        <ErrorBoundary>
+          <HashRouter forceRefresh>
+            <App>
+              <Routes />
+            </App>
+          </HashRouter>
+        </ErrorBoundary>
+        {/* </StripeProvider> */}
+      </Provider>
+      {/* </FlagsProvider> */}
+    </MuiPickersUtilsProvider>
+  </MuiThemeProvider>
+);
 
-render(<Index />, document.querySelector('#app'));
+const container = document.querySelector('#app');
+const root = createRoot(container);
+root.render(<Index />);

@@ -14,7 +14,7 @@ export const getMatchedComments = (comments, matchingCommentIdentifiers) =>
       )
     : comments;
 
-export const getSubtaskStylingLink = isLast => {
+export const getSubtaskStylingLink = (isLast) => {
   if (isLast) return <SubtaskStylingLastLink />;
 
   return (

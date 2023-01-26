@@ -2,7 +2,7 @@
 import React from 'react';
 import Spacing from 'components/common/Spacing';
 import { MontserratTypography } from 'styles/theme-montserrat';
-import { Box } from '@material-ui/core';
+import { Box } from '@mui/material';
 import palette from 'styles/palette';
 import { SSOOptionsBar, SSOButton, GoogleLogoImage } from './styled';
 
@@ -10,10 +10,10 @@ import { SSOOptionsBar, SSOButton, GoogleLogoImage } from './styled';
 const SSOOptions = () => {
   let ssoURLGoogle;
   if (
-    process.env.SSO_LAUNCH_URL_GOOGLE &&
-    process.env.SSO_LAUNCH_URL_GOOGLE.length > 5
+    import.meta.env.SSO_LAUNCH_URL_GOOGLE &&
+    import.meta.env.SSO_LAUNCH_URL_GOOGLE.length > 5
   ) {
-    ssoURLGoogle = process.env.SSO_LAUNCH_URL_GOOGLE;
+    ssoURLGoogle = import.meta.env.SSO_LAUNCH_URL_GOOGLE;
   }
 
   return (

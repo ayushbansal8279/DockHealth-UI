@@ -4,9 +4,9 @@ import { useDispatch } from 'react-redux';
 import { showAlert } from 'helpers/utility-functions';
 import { onTaskListAdded, onTaskListEdited } from 'helpers/ga-event-helper';
 import * as TaskListActions from 'actions/task-list-actions';
-import { Grid } from '@material-ui/core';
+import { Grid } from '@mui/material';
 import FormInput from 'components/common/Input/FormInput';
-import Spacing from 'components/common/Spacing.tsx';
+import Spacing from 'components/common/Spacing';
 import Button from 'components/common/Button/Button';
 import { useHistory } from 'react-router-dom';
 import Checkbox from 'components/common/Checkbox/Checkbox';
@@ -15,59 +15,61 @@ import { Title, ButtonWrapper, Header } from '../styled';
 import messages from './messages';
 import { CheckboxContainer, CheckboxDescription, StyledForm } from './styled';
 
-const validateListName = value => {
-  if (!value || ![...value]?.filter(char => char !== ' ').length > 0) {
+const validateListName = (value) => {
+  if (!value || ![...value]?.filter((char) => char !== ' ').length > 0) {
     return 'This field is required';
   }
 
   return true;
 };
 
-const onSubmit = ({
-  event,
-  dispatch,
-  nextStep,
-  closeModal,
-  setIsSavingList,
-  onListCreationSuccess,
-  setList,
-  taskListIdentifier,
-  history,
-}) => data => {
-  event.stopPropagation();
-  event.preventDefault();
+const onSubmit =
+  ({
+    event,
+    dispatch,
+    nextStep,
+    closeModal,
+    setIsSavingList,
+    onListCreationSuccess,
+    setList,
+    taskListIdentifier,
+    history,
+  }) =>
+  (data) => {
+    event.stopPropagation();
+    event.preventDefault();
 
-  setIsSavingList(true);
-  dispatch(TaskListActions.saveTaskList({ ...data, taskListIdentifier }))
-    .then(updatedList => {
-      history.push(createTaskListPath(updatedList.taskListIdentifier));
-      if (updatedList) {
-        setList(updatedList);
+    setIsSavingList(true);
+    dispatch(TaskListActions.saveTaskList({ ...data, taskListIdentifier }))
+      .then((updatedList) => {
+        history.push(createTaskListPath(updatedList.taskListIdentifier));
+        if (updatedList) {
+          setList(updatedList);
 
-        const isNewList = !taskListIdentifier;
+          const isNewList = !taskListIdentifier;
 
-        if (isNewList) {
-          if (typeof onListCreationSuccess === 'function') {
-            onListCreationSuccess(updatedList.taskListIdentifier);
+          if (isNewList) {
+            if (typeof onListCreationSuccess === 'function') {
+              onListCreationSuccess(updatedList.taskListIdentifier);
+            }
+            onTaskListAdded();
+            nextStep();
+          } else {
+            onTaskListEdited();
+            closeModal();
           }
-          onTaskListAdded();
-          nextStep();
-        } else {
-          onTaskListEdited();
-          closeModal();
         }
-      }
-    })
-    .catch(error => {
-      setIsSavingList(false);
-      showAlert({
-        status: 'error',
-        title: 'Error',
-        text: error?.message ?? messages.submit.error,
+      })
+      .catch((error) => {
+        setIsSavingList(false);
+        showAlert({
+          status: 'error',
+          title: 'Error',
+          text: error?.message ?? messages.submit.error,
+        });
+        closeModal();
       });
-      closeModal();
-    });
-};
+  };
 
 const ListDetailsForm = ({
   closeModal,
@@ -95,7 +97,7 @@ const ListDetailsForm = ({
 
   return (
     <StyledForm
-      onSubmit={event =>
+      onSubmit={(event) =>
         handleSubmit(
           onSubmit({
             event,

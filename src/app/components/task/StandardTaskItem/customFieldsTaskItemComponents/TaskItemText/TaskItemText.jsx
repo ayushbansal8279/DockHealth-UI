@@ -44,7 +44,7 @@ const TaskItemText = ({ value = '', onChange, readOnly = false }) => {
     });
   };
 
-  const handleKeyBindingFn = useCallback(event => {
+  const handleKeyBindingFn = useCallback((event) => {
     if (event.key === 'Enter') {
       return 'enter-command';
     }
@@ -53,7 +53,7 @@ const TaskItemText = ({ value = '', onChange, readOnly = false }) => {
   }, []);
 
   const handleKeyCommand = useCallback(
-    command => {
+    (command) => {
       if (command === 'enter-command') {
         // eslint-disable-next-line no-unused-expressions
         editorReference.current?.blur();
@@ -80,7 +80,7 @@ const TaskItemText = ({ value = '', onChange, readOnly = false }) => {
           ref={editorReference}
           readOnly={readOnly || !isEditing}
           state={state}
-          onChange={data => {
+          onChange={(data) => {
             setState(data);
           }}
           onBlur={handleBlur}

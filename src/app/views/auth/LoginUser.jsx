@@ -7,6 +7,7 @@ import { setAuthBaseState } from 'actions/auth-base-actions';
 import LoginFormUsername from 'components/auth/LoginFormUsername';
 import { AUTH_BASE_STATES } from 'reducers/auth-base-reducer';
 import * as UserAuthApi from 'api/user-auth-api';
+import { log } from 'helpers/log';
 
 const onSubmit = (form, history) => {
   const { username } = form;
@@ -22,24 +23,24 @@ const onSubmit = (form, history) => {
       username.includes('@chboston.org') ||
       username.includes('@cardio.chboston.org'))
   ) {
-    window.location.href = `${process.env.HEYDOC_SERVICES_BASE_URL}oidc/authorize`;
+    window.location.href = `${import.meta.env.HEYDOC_SERVICES_BASE_URL}oidc/authorize`;
   } else {
     UserAuthApi.checkSSO(username)
-      .then(issuer => {
+      .then((issuer) => {
         if (issuer) {
-          window.location.href = `${process.env.HEYDOC_SERVICES_BASE_URL}oidc/authorize?iss=${issuer}`;
+          window.location.href = `${import.meta.env.HEYDOC_SERVICES_BASE_URL}oidc/authorize?iss=${issuer}`;
         } else {
           history.push('loginUser');
         }
       })
-      .catch(error => {
-        console.log(error);
+      .catch((error) => {
+        log(error);
         history.push('loginUser');
       });
   }
 };
 
-const LoginUser = props => {
+const LoginUser = (props) => {
   const dispatch = useDispatch();
   const history = useHistory();
 
@@ -68,7 +69,7 @@ const LoginUser = props => {
     setConfirmationBaseState();
   }, [confirmStatus, setConfirmationBaseState]);
 
-  return <LoginFormUsername onSubmit={form => onSubmit(form, history)} />;
+  return <LoginFormUsername onSubmit={(form) => onSubmit(form, history)} />;
 };
 
 export default LoginUser;

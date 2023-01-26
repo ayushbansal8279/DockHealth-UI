@@ -54,7 +54,7 @@ import {
   TASK_LIST_RESTRICTIONS_PROFILES,
 } from 'restrictions/task-restrictions';
 import { CUSTOM_FIELD_TYPES } from 'helpers/custom-fields-helpers';
-import { Box } from '@material-ui/core';
+import { Box } from '@mui/material';
 import { getSubtaskStylingLink } from './helpers';
 import TaskItemContextMenu from '../TaskItemContextMenu/TaskItemContextMenu';
 import TaskItemBulkEdit from './TaskItemComponents/TaskItemBulkEdit';
@@ -218,18 +218,16 @@ const TaskItem = React.memo(
     const selectedOrganization = useSelector(selectedUserOrganizationSelector);
 
     const onSubtaskLabelClick = useCallback(
-      event => {
+      (event) => {
         event.stopPropagation();
-        if (!subtasksDisabled) {
-          if (!isOpen) {
-            switchOpen(true);
-          } else {
-            switchOpen(!isOpen);
-          }
-        } else {
+        if (subtasksDisabled) {
           highlightTasksOfTheSameParent(
             task.parentTaskIdentifier || task.taskIdentifier,
           );
+        } else if (isOpen) {
+          switchOpen(!isOpen);
+        } else {
+          switchOpen(true);
         }
       },
       [
@@ -243,7 +241,7 @@ const TaskItem = React.memo(
     );
 
     const handleTaskItemRightClick = useCallback(
-      event => {
+      (event) => {
         event.preventDefault();
         if (showContextMenu) {
           setContextMenu({ x: event.pageX, y: event.pageY });
@@ -280,14 +278,14 @@ const TaskItem = React.memo(
     );
 
     const onCircleClick = useCallback(
-      event => {
+      (event) => {
         if (!isTaskStatusTogglingDisabled && isDependencyEmptyOrCompleted) {
           setTaskDecisionError(false);
           toggleCompleteTask({ ...task, templateBundleIdentifier });
-          if (!isSubtask) {
-            (isCompleted ? onTaskReActivated : onTaskCompleted)();
-          } else {
+          if (isSubtask) {
             (isCompleted ? onSubtaskReActivated : onSubtaskCompleted)();
+          } else {
+            (isCompleted ? onTaskReActivated : onTaskCompleted)();
           }
         } else if (!isDecisionSelected) {
           setTaskDecisionError(true);
@@ -308,7 +306,7 @@ const TaskItem = React.memo(
     );
 
     const handleReasignTask = useCallback(
-      selectedMembers => {
+      (selectedMembers) => {
         onTaskUpdate(taskIdentifier, {
           assignedToUsers: selectedMembers,
           assignedToIdentifiers: pluck('userIdentifier', selectedMembers),
@@ -320,7 +318,7 @@ const TaskItem = React.memo(
     );
 
     const handleUpdateWorkflowStatus = useCallback(
-      value => {
+      (value) => {
         updateWorkflowStatus(task, value);
         onTaskStatusChanged(value);
       },
@@ -341,8 +339,8 @@ const TaskItem = React.memo(
     };
 
     const getColumnOrder = useCallback(
-      TaskItemColumnType =>
-        columns?.findIndex(c => c.identifier === TaskItemColumnType),
+      (TaskItemColumnType) =>
+        columns?.findIndex((c) => c.identifier === TaskItemColumnType),
       [columns],
     );
 
@@ -388,9 +386,9 @@ const TaskItem = React.memo(
                 }
                 isCompleted={isCompleted}
                 onClick={
-                  taskListRestrictions?.createTask !== DISABLED
-                    ? onCircleClick
-                    : () => {}
+                  taskListRestrictions?.createTask === DISABLED
+                    ? () => {}
+                    : onCircleClick
                 }
               />
             </ActionIconsContainer>
@@ -526,7 +524,7 @@ const TaskItem = React.memo(
                   <DetailsButton>Details</DetailsButton>
                   {showDecisionRow && (
                     <DecisionCellContainer
-                      onClick={event => event.stopPropagation()}
+                      onClick={(event) => event.stopPropagation()}
                     >
                       <TaskItemDecision
                         outcomes={task.taskOutcomes}
@@ -626,7 +624,7 @@ const TaskItem = React.memo(
                     }
                     paddingLeft="smallPlus"
                     paddingRight="tiny"
-                    onContextMenu={event => {
+                    onContextMenu={(event) => {
                       event.stopPropagation();
                     }}
                     order={getColumnOrder(TaskItemColumn.WORKFLOW_STATUS)}
@@ -739,7 +737,7 @@ const TaskItem = React.memo(
                     paddingLeft="tiny"
                     paddingRight="tiny"
                     justify="center"
-                    onContextMenu={event => {
+                    onContextMenu={(event) => {
                       event.stopPropagation();
                     }}
                     order={getColumnOrder(TaskItemColumn.START_DATE)}
@@ -769,7 +767,7 @@ const TaskItem = React.memo(
                       paddingLeft="tiny"
                       paddingRight="tiny"
                       justify="center"
-                      onContextMenu={event => {
+                      onContextMenu={(event) => {
                         event.stopPropagation();
                       }}
                       order={getColumnOrder(TaskItemColumn.DUE_DATE)}
@@ -793,7 +791,7 @@ const TaskItem = React.memo(
                           identifier === TaskItemColumn.ANCHOR_DATE,
                       )?.columnWidth
                     }
-                    onContextMenu={event => {
+                    onContextMenu={(event) => {
                       event.stopPropagation();
                     }}
                     order={getColumnOrder(TaskItemColumn.ANCHOR_DATE)}
@@ -818,7 +816,7 @@ const TaskItem = React.memo(
                     justify={multipleAssigneesContext ? 'flex-start' : 'center'}
                     paddingLeft="small"
                     paddingRight="small"
-                    onContextMenu={event => {
+                    onContextMenu={(event) => {
                       event.stopPropagation();
                     }}
                     order={getColumnOrder(TaskItemColumn.ASSIGNED)}
@@ -854,7 +852,7 @@ const TaskItem = React.memo(
                     justify={multipleAssigneesContext ? 'flex-start' : 'center'}
                     paddingLeft="small"
                     paddingRight="small"
-                    onContextMenu={event => {
+                    onContextMenu={(event) => {
                       event.stopPropagation();
                     }}
                     order={getColumnOrder(TaskItemColumn.CREATED_BY)}
@@ -891,7 +889,7 @@ const TaskItem = React.memo(
                       paddingLeft="tiny"
                       paddingRight="tiny"
                       justify="center"
-                      onContextMenu={event => {
+                      onContextMenu={(event) => {
                         event.stopPropagation();
                       }}
                       order={getColumnOrder(TaskItemColumn.CREATED_DATE)}
@@ -921,7 +919,7 @@ const TaskItem = React.memo(
                       paddingLeft="tiny"
                       paddingRight="tiny"
                       justify="center"
-                      onContextMenu={event => {
+                      onContextMenu={(event) => {
                         event.stopPropagation();
                       }}
                       order={getColumnOrder(TaskItemColumn.COMPLETED_DATE)}
@@ -950,7 +948,7 @@ const TaskItem = React.memo(
                     justify={multipleAssigneesContext ? 'flex-start' : 'center'}
                     paddingLeft="small"
                     paddingRight="small"
-                    onContextMenu={event => {
+                    onContextMenu={(event) => {
                       event.stopPropagation();
                     }}
                     order={getColumnOrder(TaskItemColumn.COMPLETED_BY)}
@@ -991,7 +989,7 @@ const TaskItem = React.memo(
                       paddingLeft="tiny"
                       paddingRight="tiny"
                       justify="center"
-                      onContextMenu={event => {
+                      onContextMenu={(event) => {
                         event.stopPropagation();
                       }}
                       order={getColumnOrder(TaskItemColumn.ELAPSED_TIME)}
@@ -1057,17 +1055,18 @@ const TaskItem = React.memo(
             <>
               {columns
                 .filter(
-                  f =>
+                  (f) =>
                     f.isChecked &&
                     f._customFieldType !== CUSTOM_FIELD_TYPES.REGULAR,
                 )
-                .map(field => {
+                .map((field) => {
                   const taskCustomFieldValue = task?.taskMetaData?.find(
-                    f => f?.customFieldIdentifier === field.identifier,
+                    (f) => f?.customFieldIdentifier === field.identifier,
                   );
-                  const patientCustomFieldValue = task?.patient?.patientMetaData?.find(
-                    f => f?.customFieldIdentifier === field.identifier,
-                  );
+                  const patientCustomFieldValue =
+                    task?.patient?.patientMetaData?.find(
+                      (f) => f?.customFieldIdentifier === field.identifier,
+                    );
                   const customFieldValue =
                     field.targetType === CUSTOM_FIELD_TYPES.PATIENT
                       ? patientCustomFieldValue

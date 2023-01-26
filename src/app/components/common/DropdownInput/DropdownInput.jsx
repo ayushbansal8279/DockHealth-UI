@@ -66,7 +66,7 @@ const DropdownInput = React.forwardRef(
       }
     };
 
-    const handleInputKeyDown = event => {
+    const handleInputKeyDown = (event) => {
       switch (event.key) {
         case 'Escape':
           // eslint-disable-next-line no-unused-expressions
@@ -82,7 +82,7 @@ const DropdownInput = React.forwardRef(
         case 'ArrowDown':
           event.preventDefault();
           event.stopPropagation();
-          setHoveredItem(selectedItem =>
+          setHoveredItem((selectedItem) =>
             children.length - 1 === selectedItem ? 0 : selectedItem + 1,
           );
           break;
@@ -90,7 +90,7 @@ const DropdownInput = React.forwardRef(
         case 'ArrowUp':
           event.preventDefault();
           event.stopPropagation();
-          setHoveredItem(selectedItem =>
+          setHoveredItem((selectedItem) =>
             selectedItem === 0 ? children.length - 1 : selectedItem - 1,
           );
           break;
@@ -126,11 +126,11 @@ const DropdownInput = React.forwardRef(
           className={className}
           required={required}
           classes={textFieldClasses}
-          onFocus={event => {
+          onFocus={(event) => {
             openPopover();
             onFocus(event);
           }}
-          onBlur={event => {
+          onBlur={(event) => {
             closePopover();
             onBlur(event);
           }}

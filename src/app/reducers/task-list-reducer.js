@@ -88,6 +88,7 @@ const inviteMultipleUsers = (state, { invitedUsersIdentifier }) => ({
     ...state.tasklistmembers,
     ...state.orgusersnotintasklist
       .filter((user) => invitedUsersIdentifier.includes(user.userIdentifier))
+      // eslint-disable-next-line unicorn/no-array-callback-reference
       .map(inviteUserMapper),
   ],
   orgusersnotintasklist: state.orgusersnotintasklist.filter((user) =>

@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react';
 import Spacing from 'components/common/Spacing';
-import UndoOptionImage from 'img/tour/multi-assign/undo-option';
+import UndoOptionImage from 'img/tour/multi-assign/undo-option.svg';
 import { onTourModalStepEnter } from 'helpers/ga-event-helper';
 import { Image, Title, Description } from '../../styled';
 

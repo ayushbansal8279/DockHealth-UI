@@ -13,8 +13,8 @@ import palette from 'styles/palette';
 import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd';
 import Checkbox from 'components/common/Checkbox/Checkbox';
 import { createWorkflowBuilderPath } from 'routing/helpers/paths';
-import { Collapse } from '@material-ui/core';
-import { MoreVert } from '@material-ui/icons';
+import { Collapse } from '@mui/material';
+import { MoreVert } from '@mui/icons-material';
 import { onTaskOrderChanged } from 'helpers/ga-event-helper';
 import { checkIfAllTasksSelected } from 'helpers/bulk-edit-helpers';
 import {
@@ -131,7 +131,7 @@ const TaskTemplate = ({
             dispatch(
               ModalActions.openModal('SelectWorkflowDestination', {
                 confirmText: 'Move',
-                confirm: parentTaskWorkflowIdentifier => {
+                confirm: (parentTaskWorkflowIdentifier) => {
                   dispatch(
                     moveWorkflowToFolder(
                       identifier,
@@ -139,7 +139,7 @@ const TaskTemplate = ({
                     ),
                   );
                 },
-                onAddFolderCallback: createdFolder => {
+                onAddFolderCallback: (createdFolder) => {
                   if (
                     folderIdentifier ===
                     createdFolder.parentTaskWorkflowIdentifier
@@ -201,7 +201,7 @@ const TaskTemplate = ({
   );
 
   const handleNameInputKeyDown = useCallback(
-    event => {
+    (event) => {
       const {
         key,
         target: { value },
@@ -226,7 +226,7 @@ const TaskTemplate = ({
   );
 
   const handleAddTaskToTemplate = useCallback(
-    task => {
+    (task) => {
       dispatch(
         addTaskToTemplate({
           ...task,
@@ -264,7 +264,6 @@ const TaskTemplate = ({
         ({ assignedToUsers, subtasks }) =>
           (assignedToUsers && assignedToUsers.length > 1) ||
           (subtasks &&
-            subtasks.length > 0 &&
             subtasks.some(
               ({ assignedToUsers: subtaskAssignedToUsers }) =>
                 subtaskAssignedToUsers && subtaskAssignedToUsers.length > 1,
@@ -273,9 +272,10 @@ const TaskTemplate = ({
     [tasks],
   );
 
-  const isTemplateSelected = useMemo(() => checkIfAllTasksSelected(tasks), [
-    tasks,
-  ]);
+  const isTemplateSelected = useMemo(
+    () => checkIfAllTasksSelected(tasks),
+    [tasks],
+  );
 
   const handleTemplateSelect = useCallback(() => {
     const { parentTasks, subtasks } = extractTasksAndSubtasks(tasks);
@@ -299,7 +299,7 @@ const TaskTemplate = ({
     history.push(createWorkflowBuilderPath(identifier));
   };
 
-  const onChangeName = event => {
+  const onChangeName = (event) => {
     setNameInputValue(event.target?.value);
     setNameInputError(false);
   };
@@ -362,14 +362,16 @@ const TaskTemplate = ({
       </TaskTemplateHeader>
       <Collapse in={isOpen}>
         <>
-          {!isFetching ? (
+          {isFetching ? (
+            <TasksSkeletonLoader rows={4} />
+          ) : (
             <>
               <DragDropContext
                 onBeforeCapture={onBeforeCapture}
                 onDragEnd={onDragEnd}
               >
                 <Droppable droppableId="droppable">
-                  {droppableProvided => (
+                  {(droppableProvided) => (
                     <div
                       {...droppableProvided.droppableProps}
                       ref={droppableProvided.innerRef}
@@ -414,8 +416,6 @@ const TaskTemplate = ({
                 />
               </QuickAddInputWrapper>
             </>
-          ) : (
-            <TasksSkeletonLoader rows={4} />
           )}
         </>
       </Collapse>

@@ -1,4 +1,4 @@
-import { Grid } from '@material-ui/core';
+import { Grid } from '@mui/material';
 import moment from 'moment';
 import React from 'react';
 import { useFormContext } from 'react-hook-form';
@@ -52,11 +52,11 @@ const CardBrandIconImage = styled.img`
 `;
 
 const ExpirationLabel = styled.span`
-  color: ${props =>
+  color: ${(props) =>
     props.futureExpirationWarning ? palette.oPlusRed : palette.lightGrey};
 `;
 
-const goToUsersView = history => {
+const goToUsersView = (history) => {
   history.push('/users');
 };
 
@@ -106,9 +106,8 @@ const BillingInformation = ({ setUpdatingBilling }) => {
     .startOf('day')
     .add(CARD_EXPIRATION_WARNING_DAYS, 'days');
 
-  const futureExpirationWarning = !!futureExpirationMoment.isSameOrAfter(
-    cardExpirationMoment,
-  );
+  const futureExpirationWarning =
+    !!futureExpirationMoment.isSameOrAfter(cardExpirationMoment);
 
   const billingDateMoment = moment(billingData?.nextBillingDate ?? null);
 

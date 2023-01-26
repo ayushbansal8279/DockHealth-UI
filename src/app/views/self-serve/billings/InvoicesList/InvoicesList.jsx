@@ -1,4 +1,4 @@
-import { Grid } from '@material-ui/core';
+import { Grid } from '@mui/material';
 import moment from 'moment';
 import ascend from 'ramda/src/ascend';
 import descend from 'ramda/src/descend';
@@ -88,54 +88,53 @@ const renderInvoiceRow = ({
   );
 };
 
-const renderColumn = ({ currentSorting, setCurrentSorting }) => ({
-  sortingKey,
-  label,
-}) => {
-  return (
-    <InvoiceColumn
-      key={sortingKey}
-      onClick={() => setCurrentSorting({ newSortingKey: sortingKey })}
-    >
-      <InvoiceColumnInnerContainer>
-        <MontserratTypography variant="h4">
-          {label?.toUpperCase()}
-        </MontserratTypography>
-        {currentSorting.sortingKey === sortingKey && (
-          <SortingIconContainer>
-            <SortingIconImage
-              rotated={currentSorting.order === 'asc'}
-              src={SortingIcon}
-              alt="sorting icon"
-            />
-          </SortingIconContainer>
-        )}
-      </InvoiceColumnInnerContainer>
-    </InvoiceColumn>
-  );
-};
+const renderColumn =
+  ({ currentSorting, setCurrentSorting }) =>
+  ({ sortingKey, label }) => {
+    return (
+      <InvoiceColumn
+        key={sortingKey}
+        onClick={() => setCurrentSorting({ newSortingKey: sortingKey })}
+      >
+        <InvoiceColumnInnerContainer>
+          <MontserratTypography variant="h4">
+            {label?.toUpperCase()}
+          </MontserratTypography>
+          {currentSorting.sortingKey === sortingKey && (
+            <SortingIconContainer>
+              <SortingIconImage
+                rotated={currentSorting.order === 'asc'}
+                src={SortingIcon}
+                alt="sorting icon"
+              />
+            </SortingIconContainer>
+          )}
+        </InvoiceColumnInnerContainer>
+      </InvoiceColumn>
+    );
+  };
 
 const defaultSorting = { ...head(columnDefinitions), order: 'desc' };
 
-const setCurrentSortingWithKey = ({ currentSorting, setCurrentSorting }) => ({
-  newSortingKey,
-}) => {
-  const newSorting = columnDefinitions.find(
-    ({ sortingKey }) => newSortingKey === sortingKey,
-  );
+const setCurrentSortingWithKey =
+  ({ currentSorting, setCurrentSorting }) =>
+  ({ newSortingKey }) => {
+    const newSorting = columnDefinitions.find(
+      ({ sortingKey }) => newSortingKey === sortingKey,
+    );
 
-  if (newSorting) {
-    if (newSorting.sortingKey === currentSorting.sortingKey) {
-      newSorting.order = currentSorting.order === 'desc' ? 'asc' : 'desc';
+    if (newSorting) {
+      if (newSorting.sortingKey === currentSorting.sortingKey) {
+        newSorting.order = currentSorting.order === 'desc' ? 'asc' : 'desc';
+      } else {
+        newSorting.order = 'desc';
+      }
+
+      setCurrentSorting({ ...newSorting });
     } else {
-      newSorting.order = 'desc';
+      setCurrentSorting({ ...defaultSorting });
     }
-
-    setCurrentSorting({ ...newSorting });
-  } else {
-    setCurrentSorting({ ...defaultSorting });
-  }
-};
+  };
 
 const InvoicesList = () => {
   const [currentSorting, setCurrentSorting] = useState(defaultSorting);

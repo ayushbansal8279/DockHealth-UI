@@ -1,7 +1,7 @@
 import React from 'react';
 import LayoutHeader from '../LayoutHeader/LayoutHeader';
 
-const BasicLayoutHeader = props => {
+const BasicLayoutHeader = (props) => {
   const { title, description } = props;
   return (
     <LayoutHeader>

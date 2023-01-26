@@ -68,7 +68,7 @@ export function ColumnsConfigProvider({
       let displayColumns =
         currentList?.listType === 'PUBLIC'
           ? currentList?.listDisplayColumns
-          : currentList?.listUsers?.find(u => u.identifier === userIdentifier)
+          : currentList?.listUsers?.find((u) => u.identifier === userIdentifier)
               ?.listDisplayColumns;
       if (!displayColumns || displayColumns.length === 0) {
         displayColumns = [currentList?.listDisplayColumns];
@@ -87,7 +87,7 @@ export function ColumnsConfigProvider({
       let displayColumns =
         currentList?.listType === 'PUBLIC'
           ? currentList?.listDisplayColumnPrefs
-          : currentList?.listUsers?.find(u => u.identifier === userIdentifier)
+          : currentList?.listUsers?.find((u) => u.identifier === userIdentifier)
               ?.listDisplayColumnPrefs;
       if (!displayColumns || displayColumns.length === 0) {
         displayColumns = currentList?.listDisplayColumnPrefs;
@@ -106,7 +106,7 @@ export function ColumnsConfigProvider({
   }, [currentWidthPreferences]);
 
   const setColumnsAndUpdateApi = useCallback(
-    newState => {
+    (newState) => {
       setColumnsToState(newState);
       if (currentList) {
         dispatch(
@@ -131,14 +131,16 @@ export function ColumnsConfigProvider({
 
   useEffect(() => {
     if (currentList?.taskListIdentifier && !hideCustomColumns) {
-      getAllTaskListCustomFields(currentList.taskListIdentifier).then(data => {
-        setTaskListCustomColumns(
-          data.map(d => ({
-            ...d,
-            _customFieldType: CUSTOM_FIELD_TYPES.TASK_LIST,
-          })),
-        );
-      });
+      getAllTaskListCustomFields(currentList.taskListIdentifier).then(
+        (data) => {
+          setTaskListCustomColumns(
+            data.map((d) => ({
+              ...d,
+              _customFieldType: CUSTOM_FIELD_TYPES.TASK_LIST,
+            })),
+          );
+        },
+      );
     }
   }, [currentList, hideCustomColumns]);
 
@@ -148,7 +150,7 @@ export function ColumnsConfigProvider({
       // regular fields data
       ...translateInitialColumnsConfig(viewSpecificConfig),
       // org level custom fields
-      ...organizationCustomFields.map(d => ({
+      ...organizationCustomFields.map((d) => ({
         ...d,
         _customFieldType: CUSTOM_FIELD_TYPES.ORGANIZATION,
       })),
@@ -159,21 +161,21 @@ export function ColumnsConfigProvider({
     ];
 
     // join preferences to data
-    const mergedPreferencesAndFields = joinedColumnsData.map(field => ({
+    const mergedPreferencesAndFields = joinedColumnsData.map((field) => ({
       ...field,
       isChecked:
         !!currentPreferences?.includes(field.identifier) ||
         columnsAlwaysVisible?.includes(field.identifier),
       columnWidth: Number(
         currentWidthPreferences?.find(
-          c => c.displayColumn === field?.identifier && c.width !== 'NaN',
+          (c) => c.displayColumn === field?.identifier && c.width !== 'NaN',
         )?.width || getInitialColumnWidth(field),
       ),
     }));
 
     // sort data by defined order
     const fieldsWithOrder = mergedPreferencesAndFields
-      .filter(f => currentPreferences?.includes(f.identifier))
+      .filter((f) => currentPreferences?.includes(f.identifier))
       .sort((a, b) => {
         return (
           currentPreferences?.indexOf(a.identifier) -
@@ -181,7 +183,7 @@ export function ColumnsConfigProvider({
         );
       });
     const fieldsWithoutOrder = mergedPreferencesAndFields.filter(
-      f => !currentPreferences?.includes(f.identifier),
+      (f) => !currentPreferences?.includes(f.identifier),
     );
 
     setColumnsToState([...fieldsWithOrder, ...fieldsWithoutOrder]);
@@ -198,9 +200,9 @@ export function ColumnsConfigProvider({
 
   useEffect(() => {
     if (!hidePatientCustomColumns) {
-      getAllPatientCustomFields().then(data => {
+      getAllPatientCustomFields().then((data) => {
         setPatientCustomColumns(
-          data.map(d => ({
+          data.map((d) => ({
             ...d,
             _customFieldType: CUSTOM_FIELD_TYPES.PATIENT,
           })),
@@ -217,7 +219,7 @@ export function ColumnsConfigProvider({
   const setColumnWidth = useCallback(
     ({ columnIdentifier, columnWidth }) => {
       setHasWidthPreferences(true);
-      const updatedState = columns.map(c =>
+      const updatedState = columns.map((c) =>
         columnIdentifier === c.identifier ? { ...c, columnWidth } : c,
       );
 
@@ -277,7 +279,7 @@ export function useTaskListColumnsConfig() {
   if (context === undefined) {
     return {
       columns: translateInitialColumnsConfig(TASK_ITEM_BASE_COLUMN_CONFIG).map(
-        f => ({
+        (f) => ({
           ...f,
           isChecked: true,
           columnWidth: getInitialColumnWidth(f),

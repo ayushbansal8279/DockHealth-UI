@@ -16,6 +16,7 @@ import * as UserApi from 'api/user-api';
 import { noop, showAlert } from 'helpers/utility-functions';
 import { dummyAccess } from 'reducers/user-reducer';
 import Auth from '@aws-amplify/auth';
+import { log } from 'helpers/log';
 import configureStore from '../ConfigureStore';
 import axios from './axios-heydoc';
 import sendEvent from './usage-api';
@@ -29,9 +30,9 @@ Amplify.configure({
   // To get the AWS Credentials, you need to configure
   // the Auth module with your Cognito Federated Identity Pool
   Auth: {
-    region: process.env.AWS_REGION,
-    userPoolId: process.env.AWS_USERPOOLID,
-    userPoolWebClientId: process.env.AWS_CLIENTAPP,
+    region: import.meta.env.AWS_REGION,
+    userPoolId: import.meta.env.AWS_USERPOOLID,
+    userPoolWebClientId: import.meta.env.AWS_CLIENTAPP,
     authenticationFlowType: 'USER_SRP_AUTH',
   },
 });
@@ -65,7 +66,7 @@ export function register(userData) {
         resolve(data.user);
       })
       .catch((error) => {
-        console.log(error);
+        log(error);
         reject(error);
       });
   });
@@ -90,7 +91,7 @@ export function confirmRegistration(userData) {
         resolve(data.user);
       })
       .catch((error) => {
-        console.log(error);
+        log(error);
         reject(error);
       });
   });
@@ -109,7 +110,7 @@ export function resendConfirmationCode(userData) {
         resolve(data.user);
       })
       .catch((error) => {
-        console.log(error);
+        log(error);
         reject(error);
       });
   });
@@ -151,7 +152,7 @@ export function logout(history) {
           resolve();
         })
         .catch((error) => {
-          console.log(error);
+          log(error);
           reject(error);
         });
     }
@@ -192,7 +193,7 @@ export function login(loginUserName, password) {
         }
       })
       .catch((error) => {
-        console.log(error);
+        log(error);
         reject(error);
       });
   });
@@ -231,7 +232,7 @@ export function sendMFACode(userData) {
         resolve(loggedUser);
       })
       .catch((error) => {
-        console.log(error);
+        log(error);
         reject(error);
       });
   });
@@ -252,7 +253,7 @@ export function rememberDevice() {
         });
       })
       .catch((error) => {
-        console.log(error);
+        log(error);
       });
   });
 }
@@ -278,7 +279,7 @@ export async function isAuthenticated() {
     sessionStorage.setItem('accessToken', authData.accessToken.jwtToken);
     return { isLoggedIn: true, user };
   } catch (error) {
-    console.log(error);
+    log(error);
     if (sessionStorage.getItem('accessToken')) {
       const authUser = JSON.parse(sessionStorage.getItem('authUser'));
       return { isLoggedIn: true, user: authUser };
@@ -300,7 +301,7 @@ export function forgotPassword(userData) {
         resolve(data);
       })
       .catch((error) => {
-        console.log(error);
+        log(error);
         reject(error);
       });
   });
@@ -320,7 +321,7 @@ export function resetPassword(userData) {
         resolve(data);
       })
       .catch((error) => {
-        console.log(error);
+        log(error);
         reject(error);
       });
   });
@@ -446,7 +447,7 @@ export function getEnterpriseAccessTokensByAuthCode(authCode, iss) {
   // eslint-disable-next-line consistent-return
   return new Promise(async (resolve, reject) => {
     try {
-      const authUrl = `${process.env.HEYDOC_SERVICES_BASE_URL}oidc`;
+      const authUrl = `${import.meta.env.HEYDOC_SERVICES_BASE_URL}oidc`;
       const authData = `grant_type=authorization_code&code=${authCode}&iss=${iss}`;
 
       await axios.post(`${authUrl}/token`, authData).then((response) => {
@@ -488,11 +489,12 @@ export function getEnterpriseAccessTokensByAuthCode(authCode, iss) {
       try {
         await UserApi.captureLocalTimezone();
       } catch (error) {
-        console.log(error);
+        log(error);
       }
       resolve('success');
     } catch (error) {
       reject(error);
+      // eslint-disable-next-line no-promise-executor-return, unicorn/no-useless-promise-resolve-reject
       return Promise.reject(error);
     }
   });
@@ -507,7 +509,7 @@ export function getEnterpriseAccessTokensForEmbeddedSSO(
   // eslint-disable-next-line consistent-return, sonarjs/cognitive-complexity
   return new Promise(async (resolve, reject) => {
     try {
-      const authUrl = `${process.env.HEYDOC_SERVICES_BASE_URL}oidc`;
+      const authUrl = `${import.meta.env.HEYDOC_SERVICES_BASE_URL}oidc`;
       const authData = `authToken=${authToken}&userIdentifier=${userIdentifier}&targetType=${targetType}&targetIdentifier=${targetIdentifier}`;
 
       await axios
@@ -559,11 +561,12 @@ export function getEnterpriseAccessTokensForEmbeddedSSO(
       try {
         await UserApi.captureLocalTimezone();
       } catch (error) {
-        console.log(error);
+        log(error);
       }
       resolve('success');
     } catch (error) {
       reject(error);
+      // eslint-disable-next-line no-promise-executor-return, unicorn/no-useless-promise-resolve-reject
       return Promise.reject(error);
     }
   });
@@ -572,7 +575,6 @@ export function getEnterpriseAccessTokensForEmbeddedSSO(
 export const updatePhoneNumber = async (email, existingPhone, newPhone) => {
   const { userAuth } = store.getState().userState;
 
-  // eslint-disable-next-line @typescript-eslint/camelcase
   await Auth.updateUserAttributes(userAuth, { phone_number: `${newPhone}` });
 
   await Auth.verifyUserAttribute(userAuth, 'phone_number');
@@ -590,15 +592,17 @@ export function checkSSO(email) {
   // eslint-disable-next-line consistent-return
   return new Promise(async (resolve) => {
     try {
-      const checkSSOUrl = `${process.env.HEYDOC_SERVICES_BASE_URL}auth/checkSSO`;
+      const checkSSOUrl = `${
+        import.meta.env.HEYDOC_SERVICES_BASE_URL
+      }auth/checkSSO`;
       const response = await axios.get(
         `${checkSSOUrl}?email=${encodeURIComponent(email)}`,
       );
       const issuer = response?.data.issuer;
-      console.log(`issuer: ${issuer}`);
+      log(`issuer: ${issuer}`);
       resolve(issuer);
     } catch (error) {
-      console.log(error);
+      log(error);
       resolve('');
     }
   });

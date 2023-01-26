@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react';
 import Spacing from 'components/common/Spacing';
-import PatientProfileIntroImage from 'img/tour/patient-profile/patient-profile-intro';
+import PatientProfileIntroImage from 'img/tour/patient-profile/patient-profile-intro.svg';
 import { onTourModalStepEnter } from 'helpers/ga-event-helper';
 import { Image, Title, Description } from '../../styled';
 

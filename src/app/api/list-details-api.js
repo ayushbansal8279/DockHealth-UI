@@ -121,8 +121,7 @@ export function getTaskListFilterOptions(
   status,
   selectedFilters,
 ) {
-  let request;
-  request = selectedFilters
+  const request = selectedFilters
     ? axios
         .post(
           `task/filter/filterSpecificTasksByCriteria/${taskListIdentifier}?includeOptions=true`,

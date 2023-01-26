@@ -2,7 +2,7 @@
 import { useEffect, useState, useCallback } from 'react';
 import isEmpty from 'ramda/src/isEmpty';
 import { openModal, closeModal } from 'modal/actions';
-import CommentIcon from 'img/modals/comment';
+import CommentIcon from 'img/modals/comment.svg';
 import { useSelector, useDispatch } from 'react-redux';
 import {
   selectedTaskSelector,

@@ -1,5 +1,5 @@
 import React, { useCallback, useRef } from 'react';
-import { Grid } from '@material-ui/core';
+import { Grid } from '@mui/material';
 import { useParams } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
 
@@ -11,7 +11,7 @@ import { applyTemplate } from 'actions/template-bundle-actions';
 import TaskTemplateApplicator from 'components/task-template/TaskTemplateApplicator/TaskTemplateApplicator';
 import QuickAddTaskInput from 'components/tasklist/QuickAddTaskInput/QuickAddTaskInput';
 
-const TasksToolbar = props => {
+const TasksToolbar = (props) => {
   const {
     taskListIdentifier,
     taskGroupIdentifier,
@@ -60,7 +60,7 @@ const TasksToolbar = props => {
         <QuickAddTaskInput
           ref={quickAddTaskInputReference}
           taskListIdentifier={taskListIdentifier}
-          quickAddTask={task => {
+          quickAddTask={(task) => {
             onQuickAddTask({
               ...task,
               taskListIdentifier,
