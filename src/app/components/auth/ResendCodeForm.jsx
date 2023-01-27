@@ -1,36 +1,34 @@
-import React from 'react';
-// import { Field, reduxForm } from 'redux-form';
+import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
-// import AuthField from 'components/auth/AuthField/AuthField';
-
-// const validate = (values) => {
-//   const errors = {};
-//   if (!values.username) {
-//     errors.username = 'Required';
-//   } else if (!/^[\w%+-.]+@[\d-.a-z]+\.[a-z]{2,10}$/i.test(values.username)) {
-//     errors.username = 'Please enter a valid email address';
-//   }
-
-//   if (!values.confirmationCode) {
-//     errors.confirmationCode = 'Required';
-//   }
-
-//   return errors;
-// };
+import AuthField from 'components/auth/AuthField/AuthField';
 
 const ResendCodeForm = (props) => {
   const { handleSubmit, invalid, pristine, submitting } = props;
 
+  const [username, setUsername] = useState('');
+
+  const errors = {};
+  if (!username) {
+    errors.username = 'Required';
+  } else if (!/^[\w%+-.]+@[\d-.a-z]+\.[a-z]{2,10}$/i.test(username)) {
+    errors.username = 'Please enter a valid email address';
+  }
+
   return (
     <form className="inline-label top-buffer" onSubmit={handleSubmit}>
       <div className="row expanded">
-        {/* <Field
+        <AuthField
+          input={{
+            value: username,
+            onChange: (event) => {
+              setUsername(event.target.value);
+            },
+          }}
           name="username"
           type="text"
-          component={AuthField}
           label="Email"
-          xlinkHref="#icon-email"
-        /> */}
+          meta={{ error: errors.username }}
+        />
         <div className="columns small-12 text-center top-buffer">
           <button
             className={`button secondary expand${
@@ -51,7 +49,3 @@ const ResendCodeForm = (props) => {
 };
 
 export default ResendCodeForm;
-// export default reduxForm({
-//   form: 'ResendCodeForm',
-//   validate,
-// })(ResendCodeForm);

@@ -18,6 +18,7 @@ import { Link } from 'react-router-dom';
 //   return errors;
 // };
 
+//! Component not used, refactor without using redux-form if needed
 const ConfirmUserAccountForm = (props) => {
   const { handleSubmit, invalid, pristine, submitting } = props;
 

@@ -4,7 +4,7 @@ import ModalReducer from 'modal/reducers';
 import LocationReducer from 'location/reducers';
 import AlertChipReducer from 'alert/reducer';
 import AuthBaseReducer from './auth-base-reducer';
-import FormReducer from './form-reducer';
+// import FormReducer from './form-reducer';
 import MegaFilterReducer from './mega-filter-reducer';
 import notification from './notification-reducer';
 import OrganizationReducer from './organization-reducer';
@@ -32,7 +32,7 @@ const appReducer = combineReducers({
   notification,
   taskList: TaskListReducer,
   userGroups: UserGroupsReducer,
-  form: FormReducer,
+  // form: FormReducer,
   organizationState: OrganizationReducer,
   taskDrawerState: TaskDrawerReducer,
   authBase: AuthBaseReducer,
