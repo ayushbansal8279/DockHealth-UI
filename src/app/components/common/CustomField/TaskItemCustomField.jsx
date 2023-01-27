@@ -20,7 +20,6 @@ import {
 } from 'helpers/custom-fields-helpers';
 import { StyledHyperLink } from 'components/auth/AuthComponents.styled';
 import { trunc } from 'helpers/utility-functions';
-import { openModal, closeModal } from 'modal/actions';
 
 const TaskItemCustomField = ({
   readOnly,
@@ -89,14 +88,7 @@ const TaskItemCustomField = ({
       if (isWorkflow) {
         dispatch(updatePartialWorkflow(task?.identifier, { taskMetaData }));
       } else {
-        dispatch(
-          openModal('CompleteAllTasks', {
-            confirm: () => {
-              dispatch(closeModal());
-              dispatch(partialUpdateTask(task?.identifier, { taskMetaData }));
-            },
-          }),
-        );
+        dispatch(partialUpdateTask(task?.identifier, { taskMetaData }));
       }
     }
   };
