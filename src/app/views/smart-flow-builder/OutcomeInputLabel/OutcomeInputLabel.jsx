@@ -52,7 +52,6 @@ const OutcomeInputLabel = React.forwardRef((props, reference) => {
         ref={inputRef}
         value={isEditorActive ? value : ''}
         onChange={onChange}
-        onBlur={handleBlur}
         isEditorActive={isEditorActive}
       />
     </EdgeLabel>
