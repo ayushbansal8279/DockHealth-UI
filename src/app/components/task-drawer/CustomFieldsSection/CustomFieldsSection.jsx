@@ -86,16 +86,19 @@ const CustomFieldsSection = ({ disabled, fieldCategoryType }) => {
           field => field?.customFieldIdentifier === template.identifier,
         );
         const fieldName = `taskMetaData.${template.identifier}`;
-        if (cf?.value) {
-          setValue(fieldName, cf.value);
-        } else if (cf?.values) {
-          setValue(fieldName, cf.values);
-        } else {
-          setValue(fieldName, null);
+        const hasValue = !!getValues('taskMetaData')?.[template.identifier];
+        if (template.fieldType !== 'PICK_LIST' || !hasValue) {
+          if (cf?.value) {
+            setValue(fieldName, cf.value);
+          } else if (cf?.values) {
+            setValue(fieldName, cf.values);
+          } else {
+            setValue(fieldName, null);
+          }
         }
       });
     }
-  }, [setValue, task, templates]);
+  }, [getValues, setValue, task, templates]);
 
   const handleBlur = useCallback(
     (data, wasChanged = false, fieldType) => {
