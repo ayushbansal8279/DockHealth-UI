@@ -385,7 +385,8 @@ const initializeListDetailsViewHooks = () => {
       ) {
         if (
           (data.eventType?.startsWith('CREATE_TASK') ||
-            data.eventType?.startsWith('DUPLICATE_TASK')) &&
+            data.eventType?.startsWith('DUPLICATE_TASK') ||
+            data.eventType?.startsWith('MARK_INCOMPLETE')) &&
           data.task?.creator.userIdentifier !== currentUserIdentifier
         ) {
           if (data.task?.taskGroups && data.task?.taskGroups.length > 0) {
@@ -397,8 +398,13 @@ const initializeListDetailsViewHooks = () => {
           } else {
             refreshTab();
           }
-        } else if (data.task.taskIdentifier) {
+        } else if (data.eventType?.startsWith('MARK_COMPLETE')) {
           actions.refreshTask(data.task.identifier);
+          if (data.task) {
+            actions.makeTaskDisappear(data.task);
+          }
+        } else if (data.task?.taskIdentifier) {
+          actions.refreshTask(data.task?.identifier);
         }
       }
     };
@@ -439,6 +445,7 @@ const initializeListDetailsViewHooks = () => {
     actions,
     dispatch,
     loadTasksForTaskGroup,
+    currentUser,
   ]);
 
   useEffect(() => {
