@@ -11,7 +11,6 @@ import React from 'react';
 import { createRoot } from 'react-dom/client';
 import ReactGA from 'react-ga';
 import { Provider } from 'react-redux';
-// import { StripeProvider } from 'react-stripe-elements';
 import { getTheme } from 'styles/theme';
 import configureStore from './ConfigureStore';
 import ErrorBoundary from './ErrorBoundary';
@@ -84,7 +83,6 @@ const Index = () => (
     <MuiPickersUtilsProvider dateAdapter={AdapterDateFns}>
       {/* <FlagsProvider flags={flags}> */}
       <Provider store={store}>
-        {/* <StripeProvider {...stripeProps}> */}
         <ErrorBoundary>
           <HashRouter forceRefresh>
             <App>
@@ -92,7 +90,6 @@ const Index = () => (
             </App>
           </HashRouter>
         </ErrorBoundary>
-        {/* </StripeProvider> */}
       </Provider>
       {/* </FlagsProvider> */}
     </MuiPickersUtilsProvider>

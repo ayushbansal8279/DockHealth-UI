@@ -32,6 +32,8 @@
     "@mui/x-data-grid": "^5.17.20",
     "@mui/x-date-pickers": "^5.0.15",
     "@sendbird/uikit-react": "3.3.4",
+    "@stripe/react-stripe-js": "^1.16.4",
+    "@stripe/stripe-js": "^1.46.0",
     "@welldone-software/why-did-you-render": "7.0.1",
     "autosuggest-highlight": "3.3.4",
     "axios": "1.2.3",

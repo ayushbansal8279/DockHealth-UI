@@ -2,7 +2,8 @@ import { Grid } from '@mui/material';
 import React, { useCallback, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
-// import { Elements } from 'react-stripe-elements';
+import { Elements } from '@stripe/react-stripe-js';
+import { loadStripe } from '@stripe/stripe-js';
 import { useMount } from 'react-use';
 import { checkIfUserIsOrganizationAdmin } from 'helpers/user-helper';
 import {
@@ -121,6 +122,10 @@ const onSubmit =
         unsetProcessingPayment();
       });
   };
+
+const stripePromise = loadStripe(
+  import.meta.env.VITE_SUBSCRIPTION_TOKEN_API_KEY,
+);
 
 const SubscriptionPaymentView = () => {
   const dispatch = useDispatch();
@@ -269,7 +274,8 @@ const SubscriptionPaymentView = () => {
             </PricingGridContainer>
           </Grid>
           <Grid item sm={12}>
-            {/* <Elements
+            <Elements
+              stripe={stripePromise}
               locale="en-US"
               fonts={[
                 {
@@ -277,27 +283,27 @@ const SubscriptionPaymentView = () => {
                     'https://fonts.googleapis.com/css?family=Montserrat&display=swap',
                 },
               ]}
-            > */}
-            <BillingsViewBillingData
-              isUpdatingBilling
-              setUpdatingBilling={noop}
-              unsetUpdatingBilling={noop}
-              cancelUpdateBilling={onCancelPaymentClick}
-              onSubmit={onSubmit({
-                subscriptionPlan,
-                billingFrequency,
-                professionalServicesIncluded,
-                processingPayment,
-                setProcessingPayment,
-                unsetProcessingPayment,
-                history,
-                currentUser: userProfile,
-              })}
-              firstTimeSaveBillingDetails
-              processingPayment={processingPayment}
-              cancelSaveBillingClick={onCancelSaveBillingClick}
-            />
-            {/* </Elements> */}
+            >
+              <BillingsViewBillingData
+                isUpdatingBilling
+                setUpdatingBilling={noop}
+                unsetUpdatingBilling={noop}
+                cancelUpdateBilling={onCancelPaymentClick}
+                onSubmit={onSubmit({
+                  subscriptionPlan,
+                  billingFrequency,
+                  professionalServicesIncluded,
+                  processingPayment,
+                  setProcessingPayment,
+                  unsetProcessingPayment,
+                  history,
+                  currentUser: userProfile,
+                })}
+                firstTimeSaveBillingDetails
+                processingPayment={processingPayment}
+                cancelSaveBillingClick={onCancelSaveBillingClick}
+              />
+            </Elements>
           </Grid>
         </Grid>
       </SubscriptionPaymentViewContainer>

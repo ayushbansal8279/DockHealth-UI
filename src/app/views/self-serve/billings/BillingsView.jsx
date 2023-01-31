@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
-// import { Elements } from 'react-stripe-elements';
+import { Elements } from '@stripe/react-stripe-js';
+import { loadStripe } from '@stripe/stripe-js';
 import { useMount } from 'react-use';
 import { SUBS_SETTINGS_PATH } from 'routing/helpers/paths';
 import { checkIfUserIsOrganizationAdmin } from 'helpers/user-helper';
@@ -81,6 +82,10 @@ const onSubmit =
       });
   };
 
+const stripePromise = loadStripe(
+  import.meta.env.VITE_SUBSCRIPTION_TOKEN_API_KEY,
+);
+
 const BillingsView = () => {
   const dispatch = useDispatch();
   const history = useHistory();
@@ -125,7 +130,8 @@ const BillingsView = () => {
             </ErrorContainer>
             <Spacing vertical={4} />
           </StyledCollapse>
-          {/* <Elements
+          <Elements
+            stripe={stripePromise}
             locale="en-US"
             fonts={[
               {
@@ -133,19 +139,19 @@ const BillingsView = () => {
                   'https://fonts.googleapis.com/css?family=Montserrat&display=swap',
               },
             ]}
-          > */}
-          <BillingData
-            isUpdatingBilling={isUpdatingBilling}
-            setUpdatingBilling={setUpdatingBilling}
-            unsetUpdatingBilling={unsetUpdatingBilling}
-            cancelUpdateBilling={cancelUpdateBilling}
-            onSubmit={onSubmit({
-              setError,
-              dispatch,
-              organizationIdentifier,
-            })}
-          />
-          {/* </Elements> */}
+          >
+            <BillingData
+              isUpdatingBilling={isUpdatingBilling}
+              setUpdatingBilling={setUpdatingBilling}
+              unsetUpdatingBilling={unsetUpdatingBilling}
+              cancelUpdateBilling={cancelUpdateBilling}
+              onSubmit={onSubmit({
+                setError,
+                dispatch,
+                organizationIdentifier,
+              })}
+            />
+          </Elements>
           <InvoicesList />
         </BillingsViewInnerContainer>
       </BillingsViewContainer>

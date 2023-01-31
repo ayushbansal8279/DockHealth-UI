@@ -2,12 +2,12 @@ import { Grid } from '@mui/material';
 import React, { useEffect, useState } from 'react';
 import { FormProvider, useForm } from 'react-hook-form';
 import { useSelector } from 'react-redux';
-// import {
-//   CardCVCElement,
-//   CardExpiryElement,
-//   CardNumberElement,
-//   injectStripe,
-// } from 'react-stripe-elements';
+import {
+  CardCvcElement,
+  CardExpiryElement,
+  CardNumberElement,
+  useStripe,
+} from '@stripe/react-stripe-js';
 import { useEffectOnce, useToggle } from 'react-use';
 import { object, string } from 'yup';
 import { yupResolver } from '@hookform/resolvers/yup';
@@ -31,29 +31,26 @@ import {
 } from './styled';
 import { StyledCollapse, H3, Anchor } from '../styled';
 
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
 const CardNumberInput = ({ inputRef, onChange, ...restProps }) => {
-  // const [isEmpty, setIsEmpty] = useState(true);
-  // <CardNumberElement
-  //   ref={inputRef}
-  //   showIcon={!isEmpty}
-  //   onChange={(event) => {
-  //     // eslint-disable-next-line no-unused-expressions
-  //     onChange?.(event);
-  //     if (isEmpty !== event.empty) setIsEmpty(event.empty);
-  //   }}
-  //   {...restProps}
-  // />
+  const [isEmpty, setIsEmpty] = useState(true);
+  <CardNumberElement
+    ref={inputRef}
+    showIcon={!isEmpty}
+    onChange={(event) => {
+      // eslint-disable-next-line no-unused-expressions
+      onChange?.(event);
+      if (isEmpty !== event.empty) setIsEmpty(event.empty);
+    }}
+    {...restProps}
+  />;
 };
 
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
 const CardExpiryInput = ({ inputRef, ...restProps }) => {
-  // return <CardExpiryElement ref={inputRef} {...restProps} />;
+  return <CardExpiryElement ref={inputRef} {...restProps} />;
 };
 
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
 const CardCvcInput = ({ inputRef, ...restProps }) => {
-  // return <CardCVCElement ref={inputRef} {...restProps} />;
+  return <CardCvcElement ref={inputRef} {...restProps} />;
 };
 
 const REQUIRED_MESSAGE = 'This field is required.';
@@ -327,7 +324,6 @@ const CreditPaymentForm = ({
 };
 
 const BillingData = ({
-  stripe,
   isUpdatingBilling,
   setUpdatingBilling,
   unsetUpdatingBilling,
@@ -337,6 +333,8 @@ const BillingData = ({
   processingPayment,
   cancelSaveBillingClick,
 }) => {
+  const stripe = useStripe();
+
   const { billingDetails, referralConfig } = useSelector(organizationSelector);
   const { hasDiscountCode } = referralConfig ?? {};
 
@@ -427,5 +425,4 @@ const BillingData = ({
   );
 };
 
-// export default injectStripe(BillingData);
 export default BillingData;
