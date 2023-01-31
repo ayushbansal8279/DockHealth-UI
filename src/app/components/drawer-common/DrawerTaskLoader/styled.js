@@ -20,7 +20,7 @@ export const LoaderRow = styled.div`
 
 export const LoaderElement = styled(Skeleton)`
   &&& {
-    .MuiSkeleton-root {
+    &.MuiSkeleton-root {
       height: 19px;
     }
   }

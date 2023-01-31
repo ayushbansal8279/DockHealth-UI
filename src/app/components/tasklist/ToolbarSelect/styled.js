@@ -4,7 +4,7 @@ import { Select as MuiSelect } from '@mui/material';
 
 export const Select = styled(MuiSelect)`
   &&& {
-    .MuiSelect-root {
+    &.MuiSelect-root {
       display: flex;
       align-items: center;
       height: 46px;

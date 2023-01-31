@@ -5,7 +5,7 @@ import { MontserratTypography } from 'styles/theme-montserrat';
 
 export const ButtonBase = styled(MuiButtonBase)`
   &&& {
-    .MuiButtonBase-root {
+    &.MuiButtonBase-root {
       background-color: ${palette.white};
       border: 0.0625rem solid ${palette.coolGrey3};
       border-radius: 0;
@@ -13,7 +13,7 @@ export const ButtonBase = styled(MuiButtonBase)`
       white-space: nowrap;
     }
 
-    .MuiButtonBase-label {
+    &.MuiButtonBase-label {
       align-items: center;
       color: ${palette.brightBlue};
       font-size: 1.1875rem;
@@ -21,7 +21,7 @@ export const ButtonBase = styled(MuiButtonBase)`
       padding: 0 0.75rem;
     }
 
-    .MuiButtonBase-adornment {
+    &.MuiButtonBase-adornment {
       align-items: center;
       border-right: 0.0625rem solid ${palette.coolGrey3};
       color: ${palette.coolGrey1};
@@ -36,7 +36,7 @@ export const ButtonBase = styled(MuiButtonBase)`
 
 export const Label = styled(MontserratTypography)`
   &&& {
-    .MuiTypography-root {
+    &.MuiTypography-root {
       align-items: center;
       color: ${palette.brightBlue};
       font-size: 1.1875rem;

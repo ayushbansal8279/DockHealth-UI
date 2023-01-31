@@ -9,7 +9,7 @@ import SupportSectionViewVideos from './SupportView.Videos';
 
 const SupportViewContainer = styled(Grid)`
   &&& {
-    .MuiGrid-container {
+    &.MuiGrid-container {
       max-width: 1150px;
       margin: 0 auto;
       padding: 2rem 1rem;

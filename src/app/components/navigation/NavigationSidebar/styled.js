@@ -87,7 +87,7 @@ export const DockcoinIcon = styled.img`
 
 export const BarChartIcon = styled(MuiBarChartIcon)`
   &&& {
-    .MuiBarCharIcon-root {
+    &.MuiBarCharIcon-root {
       width: 32px;
       height: 32px;
     }

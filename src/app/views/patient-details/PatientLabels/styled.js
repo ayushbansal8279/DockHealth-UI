@@ -92,7 +92,7 @@ export const ReadOnlyLabelContainer = styled.div`
 
 export const Autocomplete = styled(CustomAutocomplete)`
   &&& {
-    .MuiAutocomplete-inputRoot {
+    &.MuiAutocomplete-inputRoot {
       padding-top: 0 !important;
     }
   }

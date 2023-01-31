@@ -95,22 +95,22 @@ const InnerAdornment = ({ position, visible = true, classes, ...props }) => {
 
 export const StyledAdornment = styled(InnerAdornment)`
   &&& {
-    .MuiInputAdornment-root {
+    &.MuiInputAdornment-root {
       height: 1.125rem;
       min-height: 1.125rem;
       min-width: 1.125rem;
       width: 1.125rem;
     }
 
-    .MuiInputAdornment-positionEnd {
+    &.MuiInputAdornment-positionEnd {
       margin: 0 0.25rem;
     }
 
-    .MuiInputAdornment-visible {
+    &.MuiInputAdornment-visible {
       display: block;
     }
 
-    .MuiInputAdornment-invisible {
+    &.MuiInputAdornment-invisible {
       display: none;
     }
   }

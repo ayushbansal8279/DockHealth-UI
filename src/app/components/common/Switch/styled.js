@@ -4,7 +4,7 @@ import palette from 'styles/palette';
 
 export const StyledSwitch = styled(Switch)`
   &&& {
-    .MuiSwitch-switchBase {
+    &.MuiSwitch-switchBase {
       color: ${palette.coolGrey4};
 
       & .checked {

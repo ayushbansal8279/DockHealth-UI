@@ -9,12 +9,12 @@ const StyledSelect = styled(Select)`
   &&& {
     border-radius: 0;
 
-    .MuiSelect-root {
+    &.MuiSelect-root {
       width: ${({ width }) => width};
       padding: 8;
     }
 
-    .MuiSelect-icon {
+    &.MuiSelect-icon {
       color: indigo;
     }
 

@@ -8,7 +8,7 @@ const InnerIconButton = ({ size, ...props }) => <IconButton {...props} />;
 
 export const StyledIconButton = styled(InnerIconButton)`
   &&& {
-    .MuiIconButton-root {
+    &.MuiIconButton-root {
       border: 0.125rem dashed ${palette.coolGrey1};
       color: ${palette.brightBlue};
       font-size: ${({ size }) => (size * 30) / 54};

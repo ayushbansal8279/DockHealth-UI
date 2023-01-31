@@ -18,7 +18,7 @@ export const FilterButtonWrapper = styled(Button)`
 
 export const FilterButtonLabel = styled(Typography)`
   &&& {
-    .MuiTypography-root {
+    &.MuiTypography-root {
       font-family: 'Montserrat', sans-serif;
       color: ${(props) => (props.active ? palette.white : palette.coolGrey1)};
       font-weight: ${(props) =>
@@ -41,7 +41,7 @@ export const FilterClearButtonWrapper = styled(Button)`
 
 export const FilterClearButtonLabel = styled(Typography)`
   &&& {
-    .MuiTypography-root {
+    &.MuiTypography-root {
       font-family: 'Montserrat', sans-serif;
       color: ${palette.white};
       font-size: ${fontSizes.small};

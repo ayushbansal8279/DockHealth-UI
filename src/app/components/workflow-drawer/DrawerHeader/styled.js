@@ -21,7 +21,7 @@ export const HeaderText = styled.p`
 
 export const StyledIconButton = styled(IconButton)`
   &&& {
-    .MuiIconButton-root {
+    &.MuiIconButton-root {
       color: inherit;
     }
   }

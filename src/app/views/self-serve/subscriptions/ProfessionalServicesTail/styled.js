@@ -59,7 +59,7 @@ export const PurchaseButton = styled.button`
 
 export const CheckIcon = styled(MuiCheckIcon)`
   &&& {
-    .MuiCheckIcon-root {
+    &.MuiCheckIcon-root {
       position: absolute;
       left: -30px;
       top: 50%;

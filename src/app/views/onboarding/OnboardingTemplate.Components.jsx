@@ -154,7 +154,7 @@ export const OnboardingHorizontalSpacing4 = styled(OnboardingHorizontalSpacing)`
 
 export const OnboardingFormControl = styled(FormControl)`
   &&& {
-    .MuiFormControl-root {
+    &.MuiFormControl-root {
       background-color: ${palette.lightGrey};
       height: 4rem;
     }
@@ -163,7 +163,7 @@ export const OnboardingFormControl = styled(FormControl)`
 
 export const OnboardingInputLabel = styled(InputLabel)`
   &&& {
-    .MuiInputLabel-root {
+    &.MuiInputLabel-root {
       color: ${palette.greyBlue};
       pointer-events: none;
       top: 50%;
@@ -172,13 +172,13 @@ export const OnboardingInputLabel = styled(InputLabel)`
       z-index: 2;
     }
 
-    .Mui-required {
+    &.Mui-required {
       & > span {
         color: ${palette.error};
       }
     }
 
-    .MuiInputLabel-shrink {
+    &.MuiInputLabel-shrink {
       color: ${palette.unknownGrey5};
       top: 5%;
       transform: translate(1.5rem, 0) scale(0.65);
@@ -186,7 +186,7 @@ export const OnboardingInputLabel = styled(InputLabel)`
       transition: all 200ms ease;
     }
 
-    .Mui-focused {
+    &.Mui-focused {
       color: ${palette.unknownGrey5} !important;
     }
   }
@@ -194,18 +194,18 @@ export const OnboardingInputLabel = styled(InputLabel)`
 
 export const OnboardingInputBase = styled(InputBase)`
   &&& {
-    .MuiInputBase-root {
+    &.MuiInputBase-root {
       border: 0.0625rem solid ${opacify(palette.error, 0)};
       height: 100%;
       transition: all 0.2s ease-out;
       z-index: 1;
     }
 
-    .Mui-error {
+    &.Mui-error {
       border: 0.0625rem solid ${palette.error};
     }
 
-    .MuiInputBase-input {
+    &.MuiInputBase-input {
       border-radius: 0.25rem;
       box-shadow: none;
       font-family: 'Open Sans', sans-serif;
@@ -321,13 +321,13 @@ const OnboardingDialogComponent = ({
 
 export const OnboardingDialog = styled(OnboardingDialogComponent)`
   &&& {
-    .MuiDialog-paper {
+    &.MuiDialog-paper {
       border-radius: 0;
       padding: -1rem 0rem;
       width: 500px;
     }
 
-    .MuiDialog-smallPaper {
+    &.MuiDialog-smallPaper {
       border-radius: 0;
       padding: 1rem;
     }

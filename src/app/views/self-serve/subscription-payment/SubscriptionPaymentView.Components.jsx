@@ -70,23 +70,23 @@ const InnerBillingButton = ({ classes, variant, fullWidth, ...props }) => {
 
 export const BillingButton = styled(InnerBillingButton)`
   &&& {
-    .MuiButtonBase-root {
+    &.MuiButtonBase-root {
       border-radius: 0.25rem;
       height: 3rem;
       padding: 0.25rem 2.5rem;
       margin-left: 1rem;
     }
 
-    .MuiButtonBase-contained {
+    &.MuiButtonBase-contained {
       background-color: ${palette.darkBlue};
       color: ${palette.white};
     }
 
-    .MuiButtonBase-outlined {
+    &.MuiButtonBase-outlined {
       color: ${palette.darkBlue};
     }
 
-    .MuiButtonBase-fullWidth {
+    &.MuiButtonBase-fullWidth {
       width: 100%;
     }
   }

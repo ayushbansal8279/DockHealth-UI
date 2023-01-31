@@ -27,7 +27,7 @@ export const StyledDataGrid = styled(DataGrid)`
       );
     }};
 
-    .MuiDataGrid-renderingZone {
+    &.MuiDataGrid-renderingZone {
       ${({ rows, pageSize, page }) => {
         const rowsLength =
           rows.length - page * pageSize > pageSize
@@ -40,28 +40,28 @@ export const StyledDataGrid = styled(DataGrid)`
       }}
     }
 
-    .MuiDataGrid-window {
+    &.MuiDataGrid-window {
       top: 35px !important;
     }
-    .MuiDataGrid-columnsContainer {
+    &.MuiDataGrid-columnsContainer {
       top: ${`-${ROW_MARGIN}px`};
     }
   }
   && {
-    .MuiDataGrid-sortIcon {
+    &.MuiDataGrid-sortIcon {
       background: ${palette.brightBlue};
       color: ${palette.white};
       padding: 1px;
       border-radius: 50%;
     }
   }
-  .MuiDataGrid-columnHeaderTitleContainer {
+  &.MuiDataGrid-columnHeaderTitleContainer {
     display: flex;
     align-items: center;
     margin-left: -15px;
   }
 
-  .MuiDataGrid-columnHeader {
+  &.MuiDataGrid-columnHeader {
     &--sorted {
       color: ${palette.brightBlue};
     }
@@ -70,13 +70,13 @@ export const StyledDataGrid = styled(DataGrid)`
     }
   }
 
-  .MuiDataGrid-colCellTitle {
+  &.MuiDataGrid-colCellTitle {
     color: #3d4858;
     font-family: 'Roboto Condensed', sans-serif;
     font-size: 0.875rem !important;
   }
 
-  .MuiDataGrid-columnHeaderWrapper {
+  &.MuiDataGrid-columnHeaderWrapper {
     border: ${`${ROW_BORDER}px solid #e5e9f2`};
     background-color: #ffffff;
     font-size: 0.875rem;
@@ -85,25 +85,25 @@ export const StyledDataGrid = styled(DataGrid)`
     text-transform: uppercase;
   }
 
-  .MuiDataGrid-cell {
+  &.MuiDataGrid-cell {
     font-family: Roboto Condensed;
     font-weight: ${fontWeights.light};
     font-size: ${fontSizes.smallPlus};
     padding-left: ${spacing.large} !important;
   }
 
-  .MuiDataGrid-colCell {
+  &.MuiDataGrid-colCell {
     outline: none !important;
     padding: 0 !important;
   }
 
-  .MuiDataGrid-cell {
+  &.MuiDataGrid-cell {
     outline: none !important;
     color: ${palette.darkGrey};
     border-bottom: none !important;
   }
 
-  .MuiDataGrid-colCellTitle {
+  &.MuiDataGrid-colCellTitle {
     background-color: white;
     font-family: Roboto Condensed;
     font-size: ${fontSizes.small};
@@ -117,10 +117,10 @@ export const StyledDataGrid = styled(DataGrid)`
     }
   }
 
-  .MuiDataGrid-columnSeparator {
+  &.MuiDataGrid-columnSeparator {
     visibility: hidden;
   }
-  .MuiDataGrid-columnsContainer {
+  &.MuiDataGrid-columnsContainer {
     border-bottom: 0 !important;
     border: 0 !important;
     min-height: 35px !important;
@@ -129,11 +129,11 @@ export const StyledDataGrid = styled(DataGrid)`
     height: 35px !important;
   }
 
-  .MuiDataGrid-columnHeaderWrapper {
+  &.MuiDataGrid-columnHeaderWrapper {
     background-color: white;
   }
 
-  .MuiDataGrid-row {
+  &.MuiDataGrid-row {
     width: 100% !important;
     background-color: white;
     cursor: default;
@@ -157,7 +157,7 @@ export const StyledDataGrid = styled(DataGrid)`
     }
   }
 
-  .Sorting-Arrow {
+  &.Sorting-Arrow {
     opacity: 0;
 
     &:hover {
@@ -166,7 +166,7 @@ export const StyledDataGrid = styled(DataGrid)`
     }
   }
 
-  .MuiTablePagination-input {
+  &.MuiTablePagination-input {
     display: none;
   }
 `;

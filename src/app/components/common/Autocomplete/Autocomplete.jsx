@@ -9,15 +9,15 @@ import styled from 'styled-components';
 
 const StandardAutocompleteMUI = styled(AutocompleteMUI)`
   &&& {
-    .MuiAutocomplete-option {
+    &.MuiAutocomplete-option {
       padding: 0;
     }
 
-    .MuiAutocomplete-listbox {
+    &.MuiAutocomplete-listbox {
       padding: 0;
     }
 
-    .MuiAutocomplete-noOptions {
+    &.MuiAutocomplete-noOptions {
       padding: 0;
     }
   }

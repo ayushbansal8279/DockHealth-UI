@@ -41,7 +41,9 @@ const themeMontserratFactory = ({ fontWeight }) =>
         fontWeight,
       },
     },
-    ...themeCommonOverrides(),
+    components: {
+      ...themeCommonOverrides(),
+    },
   });
 
 const themeMontserrat = themeMontserratFactory({ fontWeight: 'bold' });
@@ -79,7 +81,7 @@ const themeProxy = new Proxy(
 
 export const MontserratTypography = ({
   weight = 'normal',
-  textDecoration = undefined,
+  textDecoration,
   ...props
 }) => (
   <ThemeProvider theme={themeProxy[weight]}>

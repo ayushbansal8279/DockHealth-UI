@@ -16,7 +16,7 @@ export const MenuItemIconWrapper = styled.div`
 
 export const MenuList = styled(MuiMenuList)`
   &&& {
-    .MuiMenuList-root {
+    &.MuiMenuList-root {
       width: 200px;
     }
   }

@@ -133,7 +133,7 @@ const ANIMATION = 'all 0.2s ease-out';
 
 export default styled(TextInput)`
   &&& {
-    .MuiTextInput-root {
+    &.MuiTextInput-root {
       border: ${BORDER};
       border-radius: 0;
       font-family: ${FONT_FAMILY};
@@ -178,22 +178,22 @@ export default styled(TextInput)`
       }
     }
 
-    .MuiTextInput-label {
+    &.MuiTextInput-label {
       color: ${palette.oPlusRed};
     }
 
-    .MuiTextInput-error {
+    &.MuiTextInput-error {
       border: ${BORDER};
       border-bottom-color: ${palette.error};
     }
 
-    .MuiTextInput-errorMessage {
+    &.MuiTextInput-errorMessage {
       color: ${palette.error};
       font-family: ${FONT_FAMILY};
       font-size: 14px;
     }
 
-    .MuiTextInput-focused {
+    &.MuiTextInput-focused {
       border: ${BORDER};
       border-bottom-color: ${palette.coolGrey1};
       & .error {
@@ -202,7 +202,7 @@ export default styled(TextInput)`
       }
     }
 
-    .MuiTextInput-input {
+    &.MuiTextInput-input {
       border-radius: 0;
       box-shadow: none;
       color: ${palette.mediumGrey};

@@ -45,12 +45,12 @@ export const CalendarDayLabel = styled.div`
 
 export const CalendarIconButton = styled(IconButton)`
   &&& {
-    .MuiIconButton-root {
+    &.MuiIconButton-root {
       height: 1.75rem;
       width: 1.75rem;
     }
 
-    .MuiIconButton-colorPrimary {
+    &.MuiIconButton-colorPrimary {
       background-color: ${palette.brightBlue};
 
       &:hover {

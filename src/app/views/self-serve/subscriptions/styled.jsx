@@ -37,7 +37,7 @@ export const SubscriptionsTitle = styled.h2`
 
 export const Switch = styled(MuiSwitch)`
   &&& {
-    .MuiSwitch-switchBase {
+    &.MuiSwitch-switchBase {
       color: ${palette.midnightBlue} !important;
     }
   }

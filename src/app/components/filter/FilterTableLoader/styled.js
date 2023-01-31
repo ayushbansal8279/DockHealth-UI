@@ -3,7 +3,7 @@ import styled from 'styled-components';
 
 export const FilterOptionLoader = styled(Skeleton)`
   &&& {
-    .MuiSkeleton-root {
+    &.MuiSkeleton-root {
       height: 30px;
       border-radius: 4px;
 

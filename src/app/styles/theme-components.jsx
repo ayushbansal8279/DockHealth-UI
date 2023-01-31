@@ -42,26 +42,8 @@ const listItemStyles = {
 };
 
 const themeCommonOverrides = () => ({
-  props: {
-    MuiPaper: {
-      square: true,
-      elevation: 2,
-    },
-    MuiSelect: {
-      IconComponent: ArrowIcon,
-    },
-    MuiTabs: {
-      textColor: 'inherit',
-    },
-    MuiIconButton: {
-      size: 'small',
-    },
-    MuiSkeleton: {
-      variant: 'rect',
-    },
-  },
-  overrides: {
-    MuiListItem: {
+  MuiListItem: {
+    styleOverrides: {
       root: {
         '&$selected': {
           backgroundColor: palette.softCyan,
@@ -74,39 +56,53 @@ const themeCommonOverrides = () => ({
         },
       },
     },
-    MuiListItemText: {
+  },
+  MuiListItemText: {
+    styleOverrides: {
       root: {
         fontFamily: 'inherit',
         marginTop: 0,
         marginBottom: 0,
       },
     },
-    MuiBackdrop: {
+  },
+  MuiBackdrop: {
+    styleOverrides: {
       root: {
         backgroundColor: opacify(palette.midnightBlue, 0.5),
       },
     },
-    MuiCollapse: {
+  },
+  MuiCollapse: {
+    styleOverrides: {
       container: {
         width: '100%',
       },
     },
-    MuiPickersDay: {
+  },
+  MuiPickersDay: {
+    styleOverrides: {
       isSelected: {
         fontWeight: 'bold',
       },
     },
-    MuiTypography: {
+  },
+  MuiTypography: {
+    styleOverrides: {
       gutterBottom: {
         marginBottom: '0.5rem',
       },
     },
-    MuiFormControl: {
+  },
+  MuiFormControl: {
+    styleOverrides: {
       root: {
         width: '100%',
       },
     },
-    MuiInputLabel: {
+  },
+  MuiInputLabel: {
+    styleOverrides: {
       root: {
         color: palette.coolGrey6,
         textTransform: 'uppercase',
@@ -123,7 +119,9 @@ const themeCommonOverrides = () => ({
         fontSize: '12px',
       },
     },
-    MuiInputBase: {
+  },
+  MuiInputBase: {
+    styleOverrides: {
       root: {
         border: 'none',
         borderRadius: 0,
@@ -146,7 +144,9 @@ const themeCommonOverrides = () => ({
         },
       },
     },
-    MuiFilledInput: {
+  },
+  MuiFilledInput: {
+    styleOverrides: {
       root: {
         backgroundColor: '#F7FAFB !important',
       },
@@ -170,34 +170,56 @@ const themeCommonOverrides = () => ({
         },
       },
     },
-    MuiPaper: {
+  },
+  MuiPaper: {
+    defaultProps: {
+      square: true,
+      elevation: 2,
+    },
+    styleOverrides: {
       root: {
         border: 'none',
         borderRadius: 0,
       },
     },
-    MuiMenuItem: {
+  },
+  MuiMenuItem: {
+    styleOverrides: {
       root: listItemStyles,
     },
-    MuiAutocomplete: {
+  },
+  MuiAutocomplete: {
+    styleOverrides: {
       option: listItemStyles,
       popper: {
         zIndex: 6000,
       },
     },
-    MuiSelect: {
+  },
+  MuiSelect: {
+    defaultProps: {
+      IconComponent: ArrowIcon,
+    },
+    styleOverrides: {
       select: {
         '&:focus': {
           backgroundColor: 'transparent',
         },
       },
     },
-    MuiTabs: {
+  },
+  MuiTabs: {
+    defaultProps: {
+      textColor: 'inherit',
+    },
+    styleOverrides: {
       indicator: {
         backgroundColor: palette.brightBlue,
       },
     },
-    MuiTab: {
+  },
+  MuiTab: {
+    styleOverrides: {
       root: {
         fontFamily: "'Montserrat', sans-serif",
         fontWeight: fontWeights.bold,
@@ -214,12 +236,19 @@ const themeCommonOverrides = () => ({
         },
       },
     },
-    MuiIconButton: {
+  },
+  MuiIconButton: {
+    defaultProps: {
+      size: 'small',
+    },
+    styleOverrides: {
       root: {
         color: palette.coolGrey1,
       },
     },
-    MuiSvgIcon: {
+  },
+  MuiSvgIcon: {
+    styleOverrides: {
       colorPrimary: {
         color: palette.coolGrey1,
       },
@@ -227,12 +256,19 @@ const themeCommonOverrides = () => ({
         color: palette.brightBlue,
       },
     },
-    MuiSkeleton: {
+  },
+  MuiSkeleton: {
+    defaultProps: {
+      variant: 'rect',
+    },
+    styleOverrides: {
       root: {
         backgroundColor: palette.skeletonLoader,
       },
     },
-    MuiChip: {
+  },
+  MuiChip: {
+    styleOverrides: {
       root: {
         height: spacing.large,
         marginRight: spacing.tiny,

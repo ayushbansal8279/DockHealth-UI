@@ -7,7 +7,7 @@ export const LoaderRowContainer = styled.div`
 `;
 export const LoaderRow = styled(Skeleton)`
   &&& {
-    .MuiSkeleton-root {
+    &.MuiSkeleton-root {
       margin: ${spacing.small} 0;
     }
   }

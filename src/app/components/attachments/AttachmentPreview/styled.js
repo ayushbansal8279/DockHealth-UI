@@ -5,7 +5,7 @@ import palette from 'styles/palette';
 
 export const AttachmentPreviewDialog = styled(Dialog)`
   &&& {
-    .MuiDialog-paper {
+    &.MuiDialog-paper {
       border-radius: 0;
       max-width: '60.5rem';
       overflow-y: 'hidden';

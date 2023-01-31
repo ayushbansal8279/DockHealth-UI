@@ -3,7 +3,7 @@ import { Popover } from '@mui/material';
 
 export const StyledPopover = styled(Popover)`
   &&& {
-    .MuiPopover-paper {
+    &.MuiPopover-paper {
       border: none;
       box-shadow: none;
       width: ${({ width }) => width};

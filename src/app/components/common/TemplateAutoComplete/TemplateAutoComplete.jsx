@@ -11,13 +11,13 @@ const filterOptions = (options, { inputValue }) =>
 
 const StandardAutocompleteMUI = styled(Autocomplete)`
   &&& {
-    .MuiAutocomplete-options {
+    &.MuiAutocomplete-options {
       padding: 0;
     }
-    .MuiAutocomplete-listbox {
+    &.MuiAutocomplete-listbox {
       padding: 0;
     }
-    .MuiAutocomplete-noOptions {
+    &.MuiAutocomplete-noOptions {
       padding: 0;
     }
   }

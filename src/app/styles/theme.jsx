@@ -55,7 +55,9 @@ const themeFactory = memoizeWith(
           fontWeight,
         },
       },
-      ...themeCommonOverrides(),
+      components: {
+        ...themeCommonOverrides(),
+      },
     }),
 );
 

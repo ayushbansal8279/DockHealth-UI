@@ -3,7 +3,7 @@ import styled from 'styled-components';
 
 export const ButtonGroupFlexStyled = styled(ButtonGroup)`
   &&& {
-    .MuiButtonGroup-root {
+    &.MuiButtonGroup-root {
       display: flex;
       justify-content: center;
       gap: 50px;

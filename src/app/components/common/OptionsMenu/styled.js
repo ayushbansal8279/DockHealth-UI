@@ -7,7 +7,7 @@ export const StyledButton = styled.button`
 
 export const MenuList = styled(MuiMenuList)`
   &&& {
-    .MuiMenuList-root {
+    &.MuiMenuList-root {
       min-width: 120px;
       max-width: 300px;
     }

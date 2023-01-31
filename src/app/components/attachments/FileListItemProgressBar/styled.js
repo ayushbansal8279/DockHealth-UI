@@ -12,11 +12,11 @@ export const ProgressText = styled.p`
 `;
 
 export const LinearProgress = styled(MuiLinearProgress)`
-  .MuiLinearProgress-barColorPrimary {
+  &.MuiLinearProgress-barColorPrimary {
     background-color: ${palette.midnightBlue};
   }
 
-  .MuiLinearProgress-colorPrimary {
+  &.MuiLinearProgress-colorPrimary {
     background-color: ${palette.coolGrey2};
   }
 `;

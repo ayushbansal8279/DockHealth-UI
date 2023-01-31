@@ -13,7 +13,7 @@ export const ListWrapper = styled.div`
 
 export const MenuItem = styled(MuiMenuItem)`
   &&& {
-    .MuiMenuItem-root {
+    &.MuiMenuItem-root {
       position: relative;
       padding-right: 40px;
     }

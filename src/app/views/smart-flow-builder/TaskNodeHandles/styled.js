@@ -6,7 +6,7 @@ const NODE_HANDLE_SIZE = 14;
 
 export const AddIcon = styled(MuiAddIcon)`
   &&& {
-    .MuiAddIcon-root {
+    &.MuiAddIcon-root {
       width: ${0.8 * NODE_HANDLE_SIZE}px;
       height: ${0.8 * NODE_HANDLE_SIZE}px;
       color: ${palette.white};

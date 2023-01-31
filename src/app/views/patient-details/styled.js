@@ -15,7 +15,7 @@ export const PatientDetailsContainer = styled.div`
 `;
 
 export const MainTab = styled(Tab)`
-  .MuiTab-wrapper {
+  &.MuiTab-wrapper {
     font-weight: ${fontWeights.bold};
     font-size: ${fontSizes.regularPlus};
   }

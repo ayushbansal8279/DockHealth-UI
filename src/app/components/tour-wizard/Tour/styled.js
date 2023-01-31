@@ -49,7 +49,7 @@ export const StepDescription = styled.p`
 
 export const CloseIconButton = styled(IconButton)`
   &&& {
-    .MuiIconButton-root {
+    &.MuiIconButton-root {
       position: absolute;
       top: 8px;
       right: 8px;
@@ -61,7 +61,7 @@ export const CloseIconButton = styled(IconButton)`
 
 export const CloseIcon = styled(Close)`
   &&& {
-    .MuiClose-root {
+    &.MuiClose-root {
       width: 16px;
       height: 16px;
     }

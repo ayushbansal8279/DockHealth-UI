@@ -33,7 +33,7 @@ export const SearchInput = styled.input`
 
 export const CancelIcon = styled(MuiCancelIcon)`
   &&& {
-    .MuiCancelIcon-root {
+    &.MuiCancelIcon-root {
       width: 20px;
       height: 20px;
     }

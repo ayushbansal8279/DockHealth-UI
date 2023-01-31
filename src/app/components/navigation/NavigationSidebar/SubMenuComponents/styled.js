@@ -290,7 +290,7 @@ export const DrawerListsItem = styled.div`
 
 export const DrawerListsItemLoader = styled(Skeleton)`
   &&& {
-    .MuiSkeleton-root {
+    &.MuiSkeleton-root {
       height: 24px;
       margin-bottom: 10px;
     }

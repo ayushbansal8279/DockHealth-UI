@@ -6,7 +6,7 @@ import { Close } from '@mui/icons-material';
 
 export const CloseIconButton = styled(IconButton)`
   &&& {
-    .MuiIconButton-root {
+    &.MuiIconButton-root {
       position: absolute;
       top: 4px;
       right: 4px;
@@ -18,7 +18,7 @@ export const CloseIconButton = styled(IconButton)`
 
 export const CloseIcon = styled(Close)`
   &&& {
-    .MuiClose-root {
+    &.MuiClose-root {
       width: 16px;
       height: 16px;
     }

@@ -6,7 +6,7 @@ import { ItemsList } from './styled';
 
 const Popover = styled(MuiPopover)`
   &&& {
-    .MuiPopover-paper {
+    &.MuiPopover-paper {
       max-height: ${({ maxItems }) =>
         maxItems ? `${maxItems * 2}rem` : undefined};
       min-height: 2rem;

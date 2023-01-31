@@ -7,7 +7,7 @@ import { fontSizes, fontWeights } from 'styles/font';
 
 export const ActionButton = styled(Button)`
   &&& {
-    .MuiButton-root {
+    &.MuiButton-root {
       font-size: 16px;
     }
   }
@@ -75,7 +75,7 @@ export const FixedWidthButtonWrapper = styled.div`
 
 export const CloseIconButton = styled(IconButton)`
   &&& {
-    .MuiIconButton-root {
+    &.MuiButtonBase-root {
       position: absolute;
       top: 8px;
       right: 8px;
@@ -86,7 +86,7 @@ export const CloseIconButton = styled(IconButton)`
 
 export const CloseIcon = styled(Close)`
   &&& {
-    .MuiClose-root {
+    &.MuiSvgIcon-root {
       width: 16px;
       height: 16px;
     }

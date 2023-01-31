@@ -37,14 +37,18 @@ const spacingMapValues = new Proxy(
 const SpacingDiv = styled.div`
   display: inline-block;
 
-  ${({ horizontal }) => css`
-    width: ${spacingMapValues[horizontal || 1]};
-  `}
+  ${({ horizontal }) =>
+    horizontal &&
+    css`
+      width: ${spacingMapValues[horizontal || 1]};
+    `}
 
-  ${({ vertical }) => css`
-    width: 100%;
-    height: ${spacingMapValues[vertical || 1]};
-  `}
+  ${({ vertical }) =>
+    vertical &&
+    css`
+      width: 100%;
+      height: ${spacingMapValues[vertical || 1]};
+    `}
 `;
 
 const Spacing = React.memo(({ horizontal, vertical }) => {

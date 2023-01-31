@@ -22,22 +22,22 @@ const TypographyCustomComponent = ({
 
 export const TitleTypography = styled(TypographyCustomComponent)`
   &&& {
-    .MuiTypography-root {
+    &.MuiTypography-root {
       color: ${palette.greyBlue};
       width: '100%';
     }
 
-    .smallScreen {
+    &.smallScreen {
       font-size: '2.25rem';
     }
 
-    .MuiTypography-h2 {
+    &.MuiTypography-h2 {
       font-size: '150%';
       font-weight: 'bold';
       margin-bottom: '0.5em';
     }
 
-    .MuiTypography-h4 {
+    &.MuiTypography-h4 {
       font-size: '100%';
       font-weight: 'normal';
       line-height: '1.25';

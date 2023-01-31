@@ -15,7 +15,7 @@ const TEXT_RED = 'text-red';
 
 const StyledButton = styled(MuiButton)`
   &&& {
-    .MuiButton-root {
+    &.MuiButton-root {
       width: ${({ width }) => `${width}`};
       font-weight: ${fontWeights.regularPlus};
       font-family: 'Montserrat', sans-serif;
@@ -70,7 +70,7 @@ const StyledButton = styled(MuiButton)`
       }
     }
 
-    .MuiButton-containedPrimary {
+    &.MuiButton-containedPrimary {
       color: ${palette.white};
       background-color: ${palette.darkBlue};
       border-radius: 4px;
@@ -87,7 +87,7 @@ const StyledButton = styled(MuiButton)`
       }
     }
 
-    .MuiButton-containedSecondary {
+    &.MuiButton-containedSecondary {
       color: ${palette.white};
       background: ${palette.oPlusRed};
       border-radius: 4px;
@@ -104,7 +104,7 @@ const StyledButton = styled(MuiButton)`
       }
     }
 
-    .MuiButton-outlinedPrimary {
+    &.MuiButton-outlinedPrimary {
       color: ${palette.darkBlue};
       background: none;
       border: 2px solid ${palette.darkBlue};
@@ -123,7 +123,7 @@ const StyledButton = styled(MuiButton)`
       }
     }
 
-    .MuiButton-outlinedSecondary {
+    &.MuiButton-outlinedSecondary {
       color: ${palette.oPlusRed};
       background: none;
       border: 2px solid ${palette.oPlusRed};
@@ -143,7 +143,7 @@ const StyledButton = styled(MuiButton)`
       }
     }
 
-    .MuiButton-textPrimary {
+    &.MuiButton-textPrimary {
       color: ${palette.brightBlue};
       background: none;
       border: none;
@@ -163,7 +163,7 @@ const StyledButton = styled(MuiButton)`
       }
     }
 
-    .MuiButton-textSecondary {
+    &.MuiButton-textSecondary {
       color: ${palette.oPlusRed};
       background: none;
       border: none;

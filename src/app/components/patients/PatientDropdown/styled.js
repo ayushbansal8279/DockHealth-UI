@@ -7,7 +7,7 @@ import { fontSizes, fontWeights } from 'styles/font';
 
 export const StyledPopover = styled(Popover)`
   &&& {
-    .MuiPopover-paper {
+    &.MuiPopover-paper {
       border: none;
       box-shadow: 0px 0px 11px rgba(0, 0, 0, 0.15);
       min-width: 230px;
@@ -85,7 +85,7 @@ export const UnassignRowContainer = styled.div`
 
 export const LoaderItem = styled(Skeleton)`
   &&& {
-    .MuiSkeleton-root {
+    &.MuiSkeleton-root {
       margin: ${`${spacing.regular} ${spacing.large}`};
     }
   }

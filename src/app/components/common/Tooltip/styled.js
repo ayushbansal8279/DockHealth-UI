@@ -7,13 +7,13 @@ import styled from 'styled-components';
 
 export const MuiTooltip = styled(Tooltip)`
   &&& {
-    .MuiTooltip-popper {
+    &.MuiTooltip-popper {
       opacity: ${({ hideTooltip }) => (hideTooltip ? 0 : 1)};
       transition: opacity 0.2s ease-out;
       z-index: ${zIndex.tooltip};
     }
 
-    .MuiTooltip-tooltip {
+    &.MuiTooltip-tooltip {
       border-radius: 0;
       font-size: ${fontSizes.smallPlus};
       font-weight: ${fontWeights.light};
@@ -21,7 +21,7 @@ export const MuiTooltip = styled(Tooltip)`
       background-color: ${palette.mediumGrey};
     }
 
-    .MuiTooltip-arrow {
+    &.MuiTooltip-arrow {
       color: ${palette.mediumGrey};
     }
   }

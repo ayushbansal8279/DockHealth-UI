@@ -33,7 +33,7 @@ export const StickyHeader = styled.div`
 `;
 
 export const DrawerWrapper = styled(Drawer)`
-  .MuiDrawer-paper {
+  &.MuiDrawer-paper {
     width: 500px;
   }
 `;

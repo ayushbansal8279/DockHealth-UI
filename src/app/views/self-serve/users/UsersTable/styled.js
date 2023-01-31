@@ -7,7 +7,7 @@ export const UsersTableContainer = styled.div`
   width: 100%;
 
   && {
-    .MuiDataGrid-sortIcon {
+    &.MuiDataGrid-sortIcon {
       background: ${palette.brightBlue};
       color: ${palette.white};
       padding: 1px;
@@ -37,13 +37,13 @@ export const StyledDataGrid = styled(DataGrid)`
     background-color: ${palette.blueGrey};
   }
 
-  .MuiDataGrid-columnHeaderTitleContainer {
+  &.MuiDataGrid-columnHeaderTitleContainer {
     display: flex;
     align-items: center;
     margin-left: -15px;
   }
 
-  .MuiDataGrid-columnHeader {
+  &.MuiDataGrid-columnHeader {
     &:focus {
       outline: none !important;
     }
@@ -52,24 +52,24 @@ export const StyledDataGrid = styled(DataGrid)`
     }
   }
 
-  .MuiDataGrid-cell {
+  &.MuiDataGrid-cell {
     font-family: Roboto Condensed;
     font-weight: ${fontWeights.light};
     font-size: ${fontSizes.smallPlus};
     padding-left: 24px !important;
   }
 
-  .MuiDataGrid-colCell {
+  &.MuiDataGrid-colCell {
     outline: none !important;
     padding: 0 !important;
   }
 
-  .MuiDataGrid-cell {
+  &.MuiDataGrid-cell {
     outline: none !important;
     color: ${palette.darkGrey};
   }
 
-  .MuiDataGrid-colCellTitle {
+  &.MuiDataGrid-colCellTitle {
     background-color: white;
     font-family: Roboto Condensed;
     font-size: ${fontSizes.small};
@@ -83,15 +83,15 @@ export const StyledDataGrid = styled(DataGrid)`
     }
   }
 
-  .MuiDataGrid-columnSeparator {
+  &.MuiDataGrid-columnSeparator {
     visibility: hidden;
   }
 
-  .MuiDataGrid-columnHeaderWrapper {
+  &.MuiDataGrid-columnHeaderWrapper {
     background-color: white;
   }
 
-  .MuiDataGrid-row {
+  &.MuiDataGrid-row {
     background-color: white;
     cursor: default;
 
@@ -116,11 +116,11 @@ export const StyledDataGrid = styled(DataGrid)`
     }
   }
 
-  .MuiTablePagination-caption:nth-of-type(1) {
+  &.MuiTablePagination-caption:nth-of-type(1) {
     display: none;
   }
 
-  .MuiTablePagination-input {
+  &.MuiTablePagination-input {
     display: none;
   }
 `;

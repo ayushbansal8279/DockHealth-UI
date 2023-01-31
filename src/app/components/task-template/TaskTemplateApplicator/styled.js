@@ -108,7 +108,7 @@ export const EmptyLabel = styled.div`
 
 export const LoaderItem = styled(Skeleton)`
   &&& {
-    .MuiSkeleton-root {
+    &.MuiSkeleton-root {
       margin: ${`${spacing.regular} ${spacing.large}`};
     }
   }

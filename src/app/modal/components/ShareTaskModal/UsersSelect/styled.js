@@ -4,16 +4,16 @@ import { Autocomplete as MuiAutocomplete } from '@mui/lab';
 
 export const Autocomplete = styled(MuiAutocomplete)`
   &&& {
-    .MuiAutocomplete-root {
+    &.MuiAutocomplete-root {
       width: 100%;
     }
 
-    .MuiAutocomplete-inputRoot {
+    &.MuiAutocomplete-inputRoot {
       width: 100%;
       padding-right: 0 !important;
     }
 
-    .MuiAutocomplete-input {
+    &.MuiAutocomplete-input {
       width: 100% !important;
       padding: 24px;
       background: ${palette.coolGrey4};
@@ -21,7 +21,7 @@ export const Autocomplete = styled(MuiAutocomplete)`
       outline: none;
     }
 
-    .MuiAutocomplete-listbox {
+    &.MuiAutocomplete-listbox {
       max-height: 238px;
     }
   }

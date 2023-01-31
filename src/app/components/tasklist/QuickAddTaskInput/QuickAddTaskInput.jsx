@@ -133,8 +133,6 @@ const QuickAddTaskInput = React.forwardRef(
                 if (event.keyCode === 27) {
                   return 'escape-command';
                 }
-
-                return undefined;
               }}
               handleKeyCommand={(command) => {
                 if (command === 'enter-command') {

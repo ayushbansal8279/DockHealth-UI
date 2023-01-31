@@ -60,7 +60,7 @@ export const EditButton = styled.button`
 
 export const CloseIconButton = styled(IconButton)`
   &&& {
-    .MuiIconButton-root {
+    &.MuiIconButton-root {
       position: absolute;
       top: 5px;
       right: 5px;

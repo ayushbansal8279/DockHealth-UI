@@ -45,7 +45,7 @@ export const Title = styled.h5`
 
 export const CloseIconButton = styled(IconButton)`
   &&& {
-    .MuiIconButton-root {
+    &.MuiIconButton-root {
       position: absolute;
       top: 8px;
       right: 8px;
@@ -56,7 +56,7 @@ export const CloseIconButton = styled(IconButton)`
 
 export const CloseIcon = styled(Close)`
   &&& {
-    .MuiClose-root {
+    &.MuiClose-root {
       width: 16px;
       height: 16px;
     }

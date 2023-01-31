@@ -8,12 +8,11 @@ import palette from 'styles/palette';
 export const ListContainer = styled.div`
   background-color: ${palette.white};
   padding: 1rem;
-  }
 `;
 
 export const UsersListContainer = styled.div`
   && {
-    .MuiDataGrid-sortIcon {
+    &.MuiDataGrid-sortIcon {
       background: ${palette.brightBlue};
       color: ${palette.white};
       padding: 1px;
@@ -50,13 +49,13 @@ export const StyledDataGrid = styled(DataGrid)`
     max-width: 1179px;
   }
 
-  .MuiDataGrid-columnHeaderTitleContainer {
+  &.MuiDataGrid-columnHeaderTitleContainer {
     display: flex;
     align-items: center;
     margin-left: -15px;
   }
 
-  .MuiDataGrid-columnHeader {
+  &.MuiDataGrid-columnHeader {
     &:focus {
       outline: none !important;
     }
@@ -65,24 +64,24 @@ export const StyledDataGrid = styled(DataGrid)`
     }
   }
 
-  .MuiDataGrid-cell {
+  &.MuiDataGrid-cell {
     font-family: Roboto Condensed;
     font-weight: ${fontWeights.light};
     font-size: ${fontSizes.smallPlus};
     padding-left: ${spacing.large} !important;
   }
 
-  .MuiDataGrid-colCell {
+  &.MuiDataGrid-colCell {
     outline: none !important;
     padding: 0 !important;
   }
 
-  .MuiDataGrid-cell {
+  &.MuiDataGrid-cell {
     outline: none !important;
     color: ${palette.darkGrey};
   }
 
-  .MuiDataGrid-colCellTitle {
+  &.MuiDataGrid-colCellTitle {
     background-color: white;
     font-family: Roboto Condensed;
     font-size: ${fontSizes.small};
@@ -96,15 +95,15 @@ export const StyledDataGrid = styled(DataGrid)`
     }
   }
 
-  .MuiDataGrid-columnSeparator {
+  &.MuiDataGrid-columnSeparator {
     visibility: hidden;
   }
 
-  .MuiDataGrid-columnHeaderWrapper {
+  &.MuiDataGrid-columnHeaderWrapper {
     background-color: white;
   }
 
-  .MuiDataGrid-row {
+  &.MuiDataGrid-row {
     background-color: white;
     cursor: default;
 
@@ -122,12 +121,12 @@ export const StyledDataGrid = styled(DataGrid)`
     }
   }
 
-  .people-cell-container {
+  &.people-cell-container {
     display: flex;
     align-items: center;
   }
 
-  .Sorting-Arrow {
+  &.Sorting-Arrow {
     opacity: 0;
 
     &:hover {
@@ -136,11 +135,11 @@ export const StyledDataGrid = styled(DataGrid)`
     }
   }
 
-  .MuiTablePagination-caption:nth-of-type(1) {
+  &.MuiTablePagination-caption:nth-of-type(1) {
     display: none;
   }
 
-  .MuiTablePagination-input {
+  &.MuiTablePagination-input {
     display: none;
   }
 `;

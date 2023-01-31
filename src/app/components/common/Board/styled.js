@@ -131,7 +131,7 @@ export const LoaderRow = styled.div`
 
 export const BoardTaskLoader = styled(Skeleton)`
   &&& {
-    .MuiSkeleton-root {
+    &.MuiSkeleton-root {
       height: 140;
       margin-top: 20;
       width: '100%';

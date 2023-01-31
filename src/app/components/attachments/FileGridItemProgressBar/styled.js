@@ -5,7 +5,7 @@ import palette from 'styles/palette';
 
 export const CircularProgress = styled(MuiCircularProgress)`
   &&& {
-    .MuiCircularProgress-colorPrimary {
+    &.MuiCircularProgress-colorPrimary {
       color: ${palette.midnightBlue};
     }
   }
