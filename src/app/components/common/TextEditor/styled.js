@@ -3,6 +3,8 @@ import { fontWeights } from 'styles/font';
 import palette, { featurePalette } from 'styles/palette';
 
 export const StyledEditorContainer = styled.div`
+  overflow: hidden;
+  text-overflow: ellipsis;
   width: 100%;
   box-sizing: border-box;
   cursor: ${({ isReadOnly }) => (isReadOnly ? 'inherit' : 'text')};

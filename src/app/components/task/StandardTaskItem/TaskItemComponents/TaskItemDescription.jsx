@@ -1,7 +1,7 @@
 /* eslint-disable sonarjs/cognitive-complexity */
 /* eslint-disable import/extensions */
-import React, { useCallback, useRef, useEffect, useMemo } from 'react';
-import { Box, Fade, IconButton, Popper } from '@material-ui/core';
+import React, { useCallback, useRef, useEffect } from 'react';
+import { Box, IconButton } from '@material-ui/core';
 import { useDispatch } from 'react-redux';
 import moment from 'moment';
 import {
@@ -12,7 +12,6 @@ import { TaskStatus } from 'helpers/task-helpers';
 import { openDrawer } from 'actions/task-drawer-actions';
 import TextEditor from 'components/common/TextEditor/TextEditor';
 import Spacing from 'components/common/Spacing';
-import { checkIfShouldDisplayTooltip } from 'components/task/OverflowTooltip/OverflowTooltip';
 import {
   convertToEditorState,
   convertFromEditorStateToOutput,
@@ -27,7 +26,6 @@ import {
   CompletedBy,
   TaskItemParentTaskLabel,
   TaskItemDescriptionIndicators,
-  DescriptionTooltipWrapper,
   DescriptionBorder,
   TaskContext,
   DescriptionEditButton,
@@ -79,11 +77,6 @@ const TaskItemDescription = ({
         .trim()
         .replace(/^\.$/, '') || 'Unknown'
     : 'Unknown';
-
-  const convertedDescriptionState = useMemo(
-    () => convertFromEditorStateToOutput(descriptionState, false),
-    [descriptionState],
-  );
 
   useEffect(() => {
     if (isEditing && descriptionReference.current) {
@@ -184,28 +177,6 @@ const TaskItemDescription = ({
               onBlur={handleBlur}
               disableMentions={disableMentions}
             />
-            <Popper
-              anchorEl={descriptionTextReference.current}
-              placement="bottom-start"
-              open={
-                checkIfShouldDisplayTooltip(descriptionTextReference.current) &&
-                !isEditing
-              }
-              style={{
-                zIndex: 115,
-                maxWidth:
-                  descriptionTextReference?.current?.offsetWidth || '650px',
-              }}
-              transition
-            >
-              {({ TransitionProps }) => (
-                <Fade {...TransitionProps} timeout={250}>
-                  <DescriptionTooltipWrapper>
-                    {convertedDescriptionState?.rawText}
-                  </DescriptionTooltipWrapper>
-                </Fade>
-              )}
-            </Popper>
             {!isCompleted && (
               <DescriptionEditButton active={isEditing}>
                 <IconButton
