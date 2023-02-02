@@ -28,7 +28,7 @@ const FormPhoneNumberInput = ({ name, ...restProps }) => {
       value={value}
       error={error}
       onKeyUp={() => clearErrors(name)}
-      onChange={phone => {
+      onChange={(phone) => {
         setValue(name, phone);
       }}
       name={name}

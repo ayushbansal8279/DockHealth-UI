@@ -1,6 +1,5 @@
 import styled from 'styled-components';
-import { Skeleton } from '@material-ui/lab';
-import { withStyles } from '@material-ui/core/styles';
+import Skeleton from '@mui/material/Skeleton';
 
 export const LoaderRow = styled.div`
   display: flex;
@@ -10,9 +9,11 @@ export const LoaderRow = styled.div`
   align-items: center;
 `;
 
-export const LoaderElement = withStyles({
-  root: {
-    height: 19,
-    width: '100%',
-  },
-})(Skeleton);
+export const LoaderElement = styled(Skeleton)`
+  &&& {
+    &.MuiSkeleton-root {
+      height: 19px;
+      width: '100%';
+    }
+  }
+`;

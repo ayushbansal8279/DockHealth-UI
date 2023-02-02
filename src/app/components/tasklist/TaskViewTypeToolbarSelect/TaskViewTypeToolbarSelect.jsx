@@ -1,7 +1,7 @@
 import React from 'react';
 import { useSelector } from 'react-redux';
 import ToolbarSelect from 'components/tasklist/ToolbarSelect/ToolbarSelect';
-import ViewTypeIcon from 'img/view-type-icon';
+import ViewTypeIcon from 'img/view-type-icon.svg';
 import { ViewType } from 'helpers/view-type-helper';
 import { userHasBoardViewFeatureSelector } from 'selectors/user-selectors';
 import { ViewTypeImg } from './styled';

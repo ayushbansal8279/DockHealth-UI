@@ -7,6 +7,7 @@ import { showGlobalAlert, showGlobalErrorAlert } from 'alert/actions';
 import { applyTemplate as applyTemplateAction } from 'actions/template-bundle-actions';
 import { openModal } from 'modal/actions';
 import { getTasksForTaskGroups } from 'actions/list-details-actions';
+import { log } from 'helpers/log';
 import store from '../store';
 import { locationParametersSelector } from '../location/selectors';
 
@@ -30,7 +31,7 @@ function* updateTemplateBundle({ bundle, dataToUpdate }) {
 
     yield put(showGlobalAlert(AlertMessages.UPDATED));
   } catch (error) {
-    console.log('error', error);
+    log('error', error);
     yield put({
       type: ActionTypes.UPDATE_TEMPLATE_BUNDLE_FAILURE,
       bundleIdentifier: bundle.identifier,
@@ -121,7 +122,7 @@ function* changePatientForTemplateBundle({ taskTemplateIdentifier, patient }) {
     yield put({
       type: ActionTypes.UPDATE_TEMPLATE_BUNDLE_SUCCESS,
       bundleIdentifier: bundle.identifier,
-      dataToUpdate: !patient ? { ...bundle, patient: null } : bundle,
+      dataToUpdate: patient ? bundle : { ...bundle, patient: null },
     });
   } catch {
     yield put({
@@ -148,7 +149,7 @@ function* applyTaskBundleFailure({
     };
     yield put(openModal('UnassignTaskTemplate', modalProps));
   } else {
-    console.log(error);
+    log(error);
     yield put(showGlobalErrorAlert());
   }
 }

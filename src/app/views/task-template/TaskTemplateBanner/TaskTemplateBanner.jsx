@@ -1,6 +1,6 @@
 import React from 'react';
 import { bool, func } from 'prop-types';
-import { Close } from '@material-ui/icons';
+import { Close } from '@mui/icons-material';
 import Button from 'components/common/Button/Button';
 import TemplatesIcon from 'img/navigation/TemplatesIcon';
 import SmartFlowIcon from 'img/template/smartflow.svg';

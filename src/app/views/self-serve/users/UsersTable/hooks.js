@@ -19,6 +19,7 @@ import {
 const useBreakpoint = createBreakpoint({ sm: 600, md: 960 });
 
 const useInitializeMembersTableHooks = () => {
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   const organizationUsers = useSelector(organizationUsersSelector) || [];
   const isFetching = useSelector(isFetchingOrganizationUsersSelector);
   const currentBreakPoint = useBreakpoint();
@@ -38,7 +39,7 @@ const useInitializeMembersTableHooks = () => {
   }, []);
 
   const toggleAllUsersSelected = useCallback(
-    event => {
+    (event) => {
       const newAllUsersSelected = event.target.checked;
 
       if (newAllUsersSelected) {
@@ -58,7 +59,7 @@ const useInitializeMembersTableHooks = () => {
   );
 
   const setCurrentSearch = useCallback(
-    search => {
+    (search) => {
       setCurrentSearchRaw(search);
       toggleAllUsersSelectedRaw(false);
     },
@@ -76,7 +77,7 @@ const useInitializeMembersTableHooks = () => {
   }, [organizationUsers, setSelectedUsers]);
 
   const toggleSelectedUser = useCallback(
-    toggledUser => event => {
+    (toggledUser) => (event) => {
       const { checked } = event.target;
 
       if (checked) {
@@ -88,7 +89,7 @@ const useInitializeMembersTableHooks = () => {
       } else {
         setSelectedUsers(
           selectedUsers.filter(
-            selectedUser => !equals(selectedUser, toggledUser),
+            (selectedUser) => !equals(selectedUser, toggledUser),
           ),
         );
 
@@ -108,7 +109,7 @@ const useInitializeMembersTableHooks = () => {
   );
 
   const isUserSelected = useCallback(
-    selectedUser => find(equals(selectedUser), selectedUsers),
+    (selectedUser) => find(equals(selectedUser), selectedUsers),
     [selectedUsers],
   );
 

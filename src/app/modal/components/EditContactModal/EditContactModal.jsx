@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { FormProvider, useForm } from 'react-hook-form';
-import { Box, CircularProgress, Grid } from '@material-ui/core';
+import { Box, CircularProgress, Grid } from '@mui/material';
 import { useDispatch } from 'react-redux';
 import { showGlobalAlert, showGlobalErrorAlert } from 'alert/actions';
 import FormInput from 'components/common/Input/FormInput';
@@ -30,7 +30,7 @@ const EditContactModal = ({ closeModal, contact, onAdded, onUpdated }) => {
     defaultValues: contact,
   });
 
-  const onSubmit = async data => {
+  const onSubmit = async (data) => {
     setIsSaving(true);
 
     try {

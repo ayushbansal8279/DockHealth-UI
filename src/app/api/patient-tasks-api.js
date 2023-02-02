@@ -63,9 +63,7 @@ export function getPatientFilters(
             },
           },
         )
-        .then(({ data }) => {
-          return data.taskFilterOptions;
-        })
+        .then(({ data }) => data.taskFilterOptions)
     : axios
         .get(`task/filter/filterOptionsForPatient/${patientIdentifier}`, {
           params: {
@@ -74,5 +72,5 @@ export function getPatientFilters(
         })
         .then(({ data }) => data);
 
-  return request.then(options => mapFilterOptions(options));
+  return request.then((options) => mapFilterOptions(options));
 }

@@ -32,7 +32,7 @@ const WorkflowStatusStatisticsChart = () => {
           StatisticsGroupType.TASK_WORKFLOWSTATUS,
         )
     )
-      .then(responseMetrics => {
+      .then((responseMetrics) => {
         const mappedMetrics = responseMetrics.map(
           ({ metricName, metricValue, metricColor }) => ({
             metricName: metricName ?? 'No status',

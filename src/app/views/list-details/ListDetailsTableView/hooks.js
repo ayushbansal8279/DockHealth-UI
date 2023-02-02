@@ -119,8 +119,11 @@ const useInitializeListDetailsViewHooks = () => {
     dispatch(ListDetailsActions.getCurrentTaskListFilterOptions());
   }, [dispatch]);
 
-  const refreshAccessToken = useCallback(user => {
-    const systemTimeout = parseInt(process.env.HEALTHCHECK_INTERVAL, 10);
+  const refreshAccessToken = useCallback((user) => {
+    const systemTimeout = Number.parseInt(
+      import.meta.env.VITE_HEALTHCHECK_INTERVAL,
+      10,
+    );
 
     if (sessionStorage.refreshAccessTokenTimeoutId) {
       clearTimeout(sessionStorage.refreshAccessTokenTimeoutId);
@@ -139,7 +142,7 @@ const useInitializeListDetailsViewHooks = () => {
   }, []);
 
   const navigateToTab = useCallback(
-    tab => {
+    (tab) => {
       history.push(
         `/core/tasks/${taskListIdentifierParam}${
           tab === TaskListTabName.OPEN ? '' : `/${TaskListTabName.COMPLETE}`
@@ -150,7 +153,7 @@ const useInitializeListDetailsViewHooks = () => {
   );
 
   const quickAddTask = useCallback(
-    task => {
+    (task) => {
       if (task?.description) {
         const payload = {
           ...task,
@@ -164,7 +167,7 @@ const useInitializeListDetailsViewHooks = () => {
   );
 
   const refreshTabAfterTaskUpdate = useCallback(
-    updatedTask => {
+    (updatedTask) => {
       if (
         !checkIfTaskMatchesFilters(updatedTask, selectedFilters) ||
         sort?.key
@@ -189,7 +192,7 @@ const useInitializeListDetailsViewHooks = () => {
   }, [dispatch, params, refreshFilters, refreshTab, selectedFilters]);
 
   const changeSearchValue = useCallback(
-    searchQuery =>
+    (searchQuery) =>
       dispatch(ListDetailsActions.searchCurrentListTasks(searchQuery)),
     [dispatch],
   );
@@ -199,7 +202,7 @@ const useInitializeListDetailsViewHooks = () => {
   }, [dispatch]);
 
   const invokeToggleCompleteAction = useCallback(
-    task => {
+    (task) => {
       const { taskListIdentifier } = params;
 
       actions
@@ -238,7 +241,7 @@ const useInitializeListDetailsViewHooks = () => {
   );
 
   const handleCreateGroup = useCallback(
-    groupName => {
+    (groupName) => {
       dispatch(ListDetailsActions?.createTaskListGroup(groupName));
     },
     [dispatch],
@@ -260,7 +263,7 @@ const useInitializeListDetailsViewHooks = () => {
   );
 
   const toggleTaskCompletedStatus = useCallback(
-    task => {
+    (task) => {
       const incompleteRequiredFields = findIncompleteRequiredFields(
         templates,
         task,
@@ -277,7 +280,7 @@ const useInitializeListDetailsViewHooks = () => {
 
       const hasIncompletedSubtasks =
         task.subtasks?.length > 0
-          ? task.subtasks.find(subtask => subtask.status === 'INCOMPLETE')
+          ? task.subtasks.find((subtask) => subtask.status === 'INCOMPLETE')
           : task.subTasksCount - task.subTasksCompletedCount > 0;
 
       if (task.status === 'INCOMPLETE' && hasIncompletedSubtasks) {
@@ -368,7 +371,7 @@ const useInitializeListDetailsViewHooks = () => {
 
   // eslint-disable-next-line sonarjs/cognitive-complexity
   useEffect(() => {
-    const taskCallback = data => {
+    const taskCallback = (data) => {
       if (
         data.task?.taskList &&
         data.task?.taskList.taskListIdentifier === taskListIdentifierParam
@@ -392,21 +395,18 @@ const useInitializeListDetailsViewHooks = () => {
         }
       }
     };
-    const taskBundleCallback = data => {
+    const taskBundleCallback = (data) => {
       // eslint-disable-next-line sonarjs/no-collapsible-if
       if (
         data.taskListIdentifier &&
-        data.taskListIdentifier === taskListIdentifierParam
+        data.taskListIdentifier === taskListIdentifierParam &&
+        (data.eventType?.startsWith('CREATE_TASK_BUNDLE') ||
+          data.eventType?.startsWith('UPDATE_TASK_BUNDLE') ||
+          data.eventType?.startsWith('DUPLICATE_TASK_BUNDLE') ||
+          data.eventType?.startsWith('MORE_TASKS_TASK_BUNDLE')) &&
+        data.taskBundle.identifier
       ) {
-        if (
-          (data.eventType?.startsWith('CREATE_TASK_BUNDLE') ||
-            data.eventType?.startsWith('UPDATE_TASK_BUNDLE') ||
-            data.eventType?.startsWith('DUPLICATE_TASK_BUNDLE') ||
-            data.eventType?.startsWith('MORE_TASKS_TASK_BUNDLE')) &&
-          data.taskBundle.identifier
-        ) {
-          actions.refreshTaskBundle(data.taskBundle.identifier);
-        }
+        actions.refreshTaskBundle(data.taskBundle.identifier);
       }
     };
 
@@ -445,10 +445,13 @@ const useInitializeListDetailsViewHooks = () => {
     return () => {};
   }, [currentUserIdentifier]);
 
-  const VIEW_LIST_OPTIONS_CONFIG = {
-    SHOW_WORKFLOW_DETAILS: false,
-    SHOW_WORKFLOW_COMPLETED_TASKS: false,
-  };
+  const VIEW_LIST_OPTIONS_CONFIG = useMemo(
+    () => ({
+      SHOW_WORKFLOW_DETAILS: false,
+      SHOW_WORKFLOW_COMPLETED_TASKS: false,
+    }),
+    [],
+  );
 
   useEffect(() => {
     setCurrentList(taskList);
@@ -459,7 +462,7 @@ const useInitializeListDetailsViewHooks = () => {
       taskList?.listType === 'PUBLIC'
         ? taskList
         : taskList?.listUsers?.find(
-            user => user.identifier === currentUserIdentifier,
+            (user) => user.identifier === currentUserIdentifier,
           ) ||
           taskList ||
           {};
@@ -471,7 +474,7 @@ const useInitializeListDetailsViewHooks = () => {
   }, [VIEW_LIST_OPTIONS_CONFIG, currentUserIdentifier, taskList]);
 
   const setDisplayListPreferences = useCallback(
-    columnKey => {
+    (columnKey) => {
       const newConfig = {
         ...displayListPreferences,
         [columnKey]: !displayListPreferences[columnKey],

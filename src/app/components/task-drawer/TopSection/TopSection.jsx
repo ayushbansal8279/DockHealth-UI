@@ -1,8 +1,8 @@
 /* eslint-disable sonarjs/cognitive-complexity */
 import React, { useMemo, useCallback } from 'react';
 import { CircleIcon } from 'components/task/styled';
-import { Box, IconButton } from '@material-ui/core';
-import { Close, MoreHoriz } from '@material-ui/icons';
+import { Box, IconButton } from '@mui/material';
+import { Close, MoreHoriz } from '@mui/icons-material';
 import { checkIfTemplateTask, TaskStatus } from 'helpers/task-helpers';
 import palette from 'styles/palette';
 import Circle from 'img/circle.svg';
@@ -137,7 +137,7 @@ const TopSection = ({
           onClick: openDeleteConfirmationModal,
           restriction: restrictions?.delete === DISABLED,
         },
-      ].filter(o => typeof o !== 'boolean'),
+      ].filter((o) => typeof o !== 'boolean'),
     [
       handleMoveTask,
       restrictions,
@@ -163,7 +163,7 @@ const TopSection = ({
   const allowedOptions = useMemo(
     () =>
       options.filter(
-        o => o.restriction !== SINGLE_TASK_RESTRICTIONS_OPTIONS.DISABLED,
+        (o) => o.restriction !== SINGLE_TASK_RESTRICTIONS_OPTIONS.DISABLED,
       ),
     [options],
   );
@@ -189,9 +189,9 @@ const TopSection = ({
               }
               isCompleted={selectedTask?.status === TaskStatus.COMPLETE}
               onClick={
-                taskListRestrictions?.createTask !== DISABLED
-                  ? onCompleteToggle
-                  : () => {}
+                taskListRestrictions?.createTask === DISABLED
+                  ? () => {}
+                  : onCompleteToggle
               }
             />
             <HorizontalLabel>Complete Task</HorizontalLabel>
@@ -217,14 +217,14 @@ const TopSection = ({
             <Box mx={0.5} />
           </>
         )}
-        {allowedOptions.length !== 0 &&
+        {allowedOptions.length > 0 &&
           taskListRestrictions?.createTask !== DISABLED && (
             <OptionsMenu
               options={allowedOptions}
               customButtonComponent={IconButton}
             >
               <MoreHoriz
-                ref={element => {
+                ref={(element) => {
                   if (element) setTourTaskMenuReference(element);
                 }}
                 color="primary"

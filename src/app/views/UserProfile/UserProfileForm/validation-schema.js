@@ -5,7 +5,7 @@ const PHONE_MASK = /^$|^\d{10,15}$/;
 const MASK_MESSAGE =
   'Phone number has incorrect format. 10 or 9 digits (for international) are required.';
 
-export const matchEmptyNumber = value =>
+export const matchEmptyNumber = (value) =>
   value.replace(/_/g, '').replace(/^-+$/, '');
 
 export default object().shape({
@@ -16,7 +16,7 @@ export default object().shape({
   subspecialty: string().nullable(),
   department: string().nullable(),
   workPhoneNumber: string()
-    .transform(value => {
+    .transform((value) => {
       if (!value || value.length <= 3) {
         return '';
       }

@@ -1,3 +1,5 @@
+/* eslint-disable class-methods-use-this */
+/* eslint-disable react/no-unused-class-component-methods */
 /* eslint-disable unicorn/no-nested-ternary */
 /* eslint-disable sonarjs/no-duplicate-string */
 import 'normalize.css/normalize.css';
@@ -7,7 +9,7 @@ import { node } from 'prop-types';
 import React, { PureComponent } from 'react';
 import isEmpty from 'ramda/src/isEmpty';
 import { connect } from 'react-redux';
-import IdleTimer from 'react-idle-timer';
+// import IdleTimer from 'react-idle-timer';
 import { withRouter } from 'react-router-dom';
 import styled from 'styled-components';
 import ReactModal from 'react-modal';
@@ -73,8 +75,6 @@ const sendbirdColorSet = {
 
 ReactModal.setAppElement('#app');
 
-const appId = process.env.SENDBIRD_APP_ID;
-
 class App extends PureComponent {
   idleTimer = null;
 
@@ -85,6 +85,8 @@ class App extends PureComponent {
   presenceChannelName = null;
 
   logoutTimeout = null;
+
+  appId = import.meta.env.VITE_SENDBIRD_APP_ID;
 
   componentDidMount() {
     const redirectToHome = JSON.parse(sessionStorage.getItem('redirectToHome'));
@@ -128,10 +130,8 @@ class App extends PureComponent {
       ) {
         presenceChannel = pusherForPresence?.subscribe(presenceChannelName);
 
-        presenceChannel.bind('pusher:subscription_succeeded', function({
-          members,
-        }) {
-          const formattedMembers = Object.keys(members)?.map(memberKey => ({
+        presenceChannel.bind('pusher:subscription_succeeded', ({ members }) => {
+          const formattedMembers = Object.keys(members)?.map((memberKey) => ({
             ...members[memberKey],
             userIdentifier: memberKey,
             idle: false,
@@ -140,7 +140,7 @@ class App extends PureComponent {
           setActiveUsers(formattedMembers);
         });
 
-        presenceChannel.bind('pusher:member_added', function(member) {
+        presenceChannel.bind('pusher:member_added', (member) => {
           addActiveUser({
             ...member,
             userIdentifier: member.id,
@@ -148,34 +148,34 @@ class App extends PureComponent {
           });
         });
 
-        presenceChannel.bind('pusher:member_removed', function(member) {
+        presenceChannel.bind('pusher:member_removed', (member) => {
           removeActiveUser({
             ...member,
             userIdentifier: member.id,
           });
         });
 
-        presenceChannel.bind('client-event-dock-user-idle', function(
-          data,
-          metadata,
-        ) {
-          // console.log('idle user:', presenceChannel.members.get(metadata.user_id).info);
-          if (data.idle) {
-            setIdleStateForUser(
-              {
-                userIdentifier: metadata.user_id,
-              },
-              true,
-            );
-          } else {
-            setIdleStateForUser(
-              {
-                userIdentifier: metadata.user_id,
-              },
-              false,
-            );
-          }
-        });
+        presenceChannel.bind(
+          'client-event-dock-user-idle',
+          (data, metadata) => {
+            // console.log('idle user:', presenceChannel.members.get(metadata.user_id).info);
+            if (data.idle) {
+              setIdleStateForUser(
+                {
+                  userIdentifier: metadata.user_id,
+                },
+                true,
+              );
+            } else {
+              setIdleStateForUser(
+                {
+                  userIdentifier: metadata.user_id,
+                },
+                false,
+              );
+            }
+          },
+        );
       }
     }
   }
@@ -198,7 +198,7 @@ class App extends PureComponent {
   onIdle = () => {
     const { openModal: openModalAction } = this.props;
     // log out after 5min from showing modal
-    const logoutTimeout = setTimeout(this.logout, 300000);
+    const logoutTimeout = setTimeout(this.logout, 300_000);
 
     openModalAction('AutoLogout', {
       onClose: () => {
@@ -227,6 +227,7 @@ class App extends PureComponent {
   };
 
   render() {
+    // eslint-disable-next-line react-hooks/rules-of-hooks
     const isMobile = useMobile();
     // const isSmall = useSmallScreen();
     const isSmall = false;
@@ -235,8 +236,8 @@ class App extends PureComponent {
       userState: { userProfile },
     } = this.props;
 
-    const systemTimeout = parseInt(process.env.SYSTEM_TIMEOUT, 10);
-    const idleTimeout = systemTimeout / 2;
+    // const systemTimeout = Number.parseInt(import.meta.env.VITE_SYSTEM_TIMEOUT, 10);
+    // const idleTimeout = systemTimeout / 2;
 
     const { children } = this.props;
     // const isLessThen1024 = window?.innerWidth < 1024;
@@ -248,58 +249,56 @@ class App extends PureComponent {
     //   );
     const showRotateScreenPage = false;
 
-    const mountIdleTimer = userProfile && !isEmpty(userProfile);
+    // const mountIdleTimer = userProfile && !isEmpty(userProfile);
     // eslint-disable-next-line unicorn/consistent-function-scoping
-    const idleTimerReference = reference => {
-      this.idleTimerForPresence = reference;
-    };
+    // const idleTimerReference = (reference) => {
+    //   this.idleTimerForPresence = reference;
+    // };
 
     return (
       <AppContainer id="appHome">
         {isMobile && isSmall ? (
           <MobileSmallScreen />
-        ) : !showRotateScreenPage ? (
-          <>
-            <SendbirdProvider
-              appId={appId}
-              userId={userProfile?.identifier ?? ''}
-              nickname={userProfile?.name}
-              colorSet={sendbirdColorSet}
-            >
-              <div id="portal" />
-              <Modal />
-              <WorkflowDrawer />
-              <ActivityAlertsToasts />
-
-              <ChatActivityAlertsToasts />
-              <div className="new-task" />
-              {mountIdleTimer && (
-                <IdleTimer
-                  ref={reference => {
-                    this.idleTimer = reference;
-                  }}
-                  element={document}
-                  onActive={this.onActive}
-                  onIdle={this.onIdle}
-                  onAction={this.onAction}
-                  debounce={250}
-                  timeout={systemTimeout}
-                />
-              )}
-              <IdleTimer
-                ref={idleTimerReference}
-                element={document}
-                onActive={this.onActiveForPresence}
-                onIdle={this.onIdleForPresence}
-                debounce={250}
-                timeout={idleTimeout}
-              />
-              <MainContainer>{children}</MainContainer>
-              <Notification />
-            </SendbirdProvider>
-          </>
-        ) : (
+        ) : showRotateScreenPage ? (
           <RotateScreen />
+        ) : (
+          <SendbirdProvider
+            appId={this.appId}
+            userId={userProfile?.identifier ?? ''}
+            nickname={userProfile?.name}
+            colorSet={sendbirdColorSet}
+          >
+            <div id="portal" />
+            <Modal />
+            <WorkflowDrawer />
+            <ActivityAlertsToasts />
+
+            <ChatActivityAlertsToasts />
+            <div className="new-task" />
+            {/* {mountIdleTimer && (
+              <IdleTimer
+                ref={(reference) => {
+                  this.idleTimer = reference;
+                }}
+                element={document}
+                onActive={this.onActive}
+                onIdle={this.onIdle}
+                onAction={this.onAction}
+                debounce={250}
+                timeout={systemTimeout}
+              />
+            )}
+            <IdleTimer
+              ref={idleTimerReference}
+              element={document}
+              onActive={this.onActiveForPresence}
+              onIdle={this.onIdleForPresence}
+              debounce={250}
+              timeout={idleTimeout}
+            /> */}
+            <MainContainer>{children}</MainContainer>
+            <Notification />
+          </SendbirdProvider>
         )}
       </AppContainer>
     );
@@ -310,16 +309,16 @@ App.propTypes = {
   children: node.isRequired,
 };
 
-const mapStateToProps = state => ({
+const mapStateToProps = (state) => ({
   userState: state.userState,
 });
 
 const mapDispatchToProps = {
-  setActiveUsers: activeUsers => ({
+  setActiveUsers: (activeUsers) => ({
     type: 'active-users/setActiveUsers',
     activeUsers,
   }),
-  addActiveUser: user => ({
+  addActiveUser: (user) => ({
     type: 'active-users/addActiveUser',
     user,
   }),
@@ -328,7 +327,7 @@ const mapDispatchToProps = {
     user,
     idleStatus,
   }),
-  removeActiveUser: user => ({
+  removeActiveUser: (user) => ({
     type: 'active-users/removeActiveUser',
     user,
   }),

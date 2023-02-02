@@ -3,6 +3,7 @@ export const hasAccessToElement = (userRole, allowedToRoles) => {
   if (!userRole) return null;
   if (typeof allowedToRoles === 'string') return allowedToRoles === userRole;
   if (Array.isArray(allowedToRoles)) {
-    return !!allowedToRoles.find(r => r === userRole);
+    // eslint-disable-next-line unicorn/prefer-includes
+    return !!allowedToRoles.some((r) => r === userRole);
   }
 };

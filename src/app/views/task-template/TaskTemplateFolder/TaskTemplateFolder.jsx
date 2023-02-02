@@ -8,13 +8,13 @@ import React, {
 } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import palette from 'styles/palette';
-import { MoreVert } from '@material-ui/icons';
+import { MoreVert } from '@mui/icons-material';
 import { userProfileSelector } from 'selectors/user-selectors';
 import * as WorkflowActions from 'actions/workflow-actions';
 import * as TaskTemplateActions from 'actions/task-template-actions';
 import * as ModalActions from 'modal/actions';
 import OptionsMenu from 'components/common/OptionsMenu/OptionsMenu';
-import Folder from 'img/folder';
+import Folder from 'img/folder.svg';
 import {
   TaskTemplateContainer,
   TaskTemplateHeader,
@@ -104,7 +104,7 @@ const TaskTemplateFolder = ({
   );
 
   const handleNameInputKeyDown = useCallback(
-    event => {
+    (event) => {
       const {
         key,
         target: { value },
@@ -128,7 +128,7 @@ const TaskTemplateFolder = ({
     [dispatch, identifier],
   );
 
-  const onChangeName = event => {
+  const onChangeName = (event) => {
     setNameInputValue(event.target?.value);
     setNameInputError(false);
   };

@@ -10,7 +10,7 @@ export const CheckboxInput = styled.div`
   width ${({ size }) => size}px;
   height: ${({ size }) => size}px;
   border-radius: ${({ isCircle }) => (isCircle ? '50%' : '2px')};
-  border: ${props =>
+  border: ${(props) =>
     props.isChecked
       ? `1px solid ${palette.brightBlue}`
       : `1px solid ${palette.coolGrey2}`};
@@ -31,7 +31,7 @@ export const CheckboxInput = styled.div`
   `}
 
   ${Icon} {
-    visibility: ${props => (props.isChecked ? 'visible' : 'hidden')};
+    visibility: ${(props) => (props.isChecked ? 'visible' : 'hidden')};
   }
   @media print {
     opacity: 0;

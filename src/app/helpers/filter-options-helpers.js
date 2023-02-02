@@ -29,11 +29,11 @@ const FilterOptionsLabel = {
   [FilterOptionsCategory.TASK_STATUS]: 'Status',
 };
 
-const DATE_FILTER_OPTIONS = [
+const DATE_FILTER_OPTIONS = new Set([
   FilterOptionsCategory.DUE_DATE,
   FilterOptionsCategory.COMPLETE_DATE,
   FilterOptionsCategory.CREATED_DATE,
-];
+]);
 
 export function mapFilterOptions(filterOptions) {
   return filterOptions.optionsOrder
@@ -64,14 +64,14 @@ export function mapFilterOptions(filterOptions) {
 
       return null;
     })
-    .filter(value => !!value);
+    .filter((value) => !!value);
 }
 
 export function mapSelectedOptionsToRequestPayload(selectedFilters) {
   if (!selectedFilters) return null;
 
   return Object.entries(selectedFilters).reduce((accumulator, [k, v]) => {
-    if (DATE_FILTER_OPTIONS.includes(k)) {
+    if (DATE_FILTER_OPTIONS.has(k)) {
       return {
         ...accumulator,
         [k]: {
@@ -122,7 +122,7 @@ export function mapRequestSelectedOptionsToStore(selectedOptions) {
 
   return Object.entries(selectedOptions).reduce((accumulator, [k, v]) => {
     if (!v) return accumulator;
-    if (DATE_FILTER_OPTIONS.includes(k)) {
+    if (DATE_FILTER_OPTIONS.has(k)) {
       return {
         ...accumulator,
         [k]: {
@@ -143,12 +143,11 @@ export function mapRequestSelectedOptionsToStore(selectedOptions) {
 
     return {
       ...accumulator,
-      ...v.reduce(
-        (a, c) => ({
-          ...a,
-          [c.customFieldIdentifier]: { options: c.selectedOptionIdentifiers },
-        }),
-        {},
+      ...Object.fromEntries(
+        v.map((c) => [
+          c.customFieldIdentifier,
+          { options: c.selectedOptionIdentifiers },
+        ]),
       ),
     };
   }, {});
@@ -159,15 +158,15 @@ function clearEmptyFilterOptions(selectedFilters) {
     (accumulator, [optionCategoryId, value]) => {
       const optionValue = {};
 
-      Object.entries(value || {}).forEach(([k, v]) => {
+      for (const [k, v] of Object.entries(value || {})) {
         if (!isNil(v) && !isEmpty(v)) {
           optionValue[k] = v;
         }
-      });
+      }
 
       if (!isEmpty(optionValue)) {
         return {
-          ...(accumulator || {}),
+          ...accumulator,
           [optionCategoryId]: optionValue,
         };
       }
@@ -184,9 +183,9 @@ export function setFilterRangeStartDate(
   selectedFilters,
 ) {
   const newSelectedFilters = {
-    ...(selectedFilters || {}),
+    ...selectedFilters,
     [optionCategoryIdentifier]: {
-      ...(selectedFilters?.[optionCategoryIdentifier] || {}),
+      ...selectedFilters?.[optionCategoryIdentifier],
       dateStart: rangeValue,
     },
   };
@@ -200,9 +199,9 @@ export function setFilterRangeEndDate(
   selectedFilters,
 ) {
   const newSelectedFilters = {
-    ...(selectedFilters || {}),
+    ...selectedFilters,
     [optionCategoryIdentifier]: {
-      ...(selectedFilters?.[optionCategoryIdentifier] || {}),
+      ...selectedFilters?.[optionCategoryIdentifier],
       dateEnd: rangeValue,
     },
   };
@@ -216,9 +215,9 @@ export function selectFilterOption(
   selectedFilters,
 ) {
   return {
-    ...(selectedFilters || {}),
+    ...selectedFilters,
     [optionCategoryIdentifier]: {
-      ...(selectedFilters?.[optionCategoryIdentifier] || {}),
+      ...selectedFilters?.[optionCategoryIdentifier],
       options: [
         ...(selectedFilters?.[optionCategoryIdentifier]?.options || []),
         optionIdentifier,
@@ -233,12 +232,12 @@ export function unselectFilterOption(
   selectedFilters,
 ) {
   const newSelectedFilters = {
-    ...(selectedFilters || {}),
+    ...selectedFilters,
     [optionCategoryIdentifier]: {
-      ...(selectedFilters?.[optionCategoryIdentifier] || {}),
+      ...selectedFilters?.[optionCategoryIdentifier],
       options:
         selectedFilters?.[optionCategoryIdentifier]?.options?.filter(
-          id => id !== optionIdentifier,
+          (id) => id !== optionIdentifier,
         ) || null,
     },
   };

@@ -2,7 +2,7 @@
 import { useEffect, useState, useCallback } from 'react';
 import isEmpty from 'ramda/src/isEmpty';
 import { openModal, closeModal } from 'modal/actions';
-import CommentIcon from 'img/modals/comment';
+import CommentIcon from 'img/modals/comment.svg';
 import { useSelector, useDispatch } from 'react-redux';
 import {
   selectedTaskSelector,
@@ -35,7 +35,7 @@ const initializeCommentSectionHooks = () => {
   const dispatch = useDispatch();
 
   const boundRemoveComment = useCallback(
-    comment => {
+    (comment) => {
       deleteComment(
         selectedTask,
         comment,
@@ -58,18 +58,18 @@ const initializeCommentSectionHooks = () => {
   );
 
   const boundUpdateComment = useCallback(
-    comment => {
+    (comment) => {
       updateComment(selectedTask, comment)(dispatch);
     },
     [dispatch, selectedTask],
   );
 
   const boundAddComment = useCallback(
-    comment =>
+    (comment) =>
       addComment(selectedTask, {
         comment,
         creator: currentUser,
-      })(dispatch).then(newComment => {
+      })(dispatch).then((newComment) => {
         const newComments = [newComment.data, ...selectedTask.comments];
         selectedTask.comments = [newComment.data, ...selectedTask.comments];
 
@@ -80,7 +80,7 @@ const initializeCommentSectionHooks = () => {
     [currentUser, dispatch, selectedTask],
   );
 
-  const openDeleteCommentConfirmationModal = comment => {
+  const openDeleteCommentConfirmationModal = (comment) => {
     const modalProps = {
       title: 'Delete comment',
       description:

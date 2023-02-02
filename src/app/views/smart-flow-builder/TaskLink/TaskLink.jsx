@@ -2,11 +2,11 @@ import React, { useRef } from 'react';
 import isNil from 'ramda/src/isNil';
 import { useBoolean } from 'hooks/useBoolean';
 import { useDispatch } from 'react-redux';
-import { Paper, Popper, ClickAwayListener } from '@material-ui/core';
+import { Paper, Popper, ClickAwayListener } from '@mui/material';
 import { deleteTasksLink, updateTasksLink } from 'actions/task-actions';
 import HardDependencyIcon from 'img/template/hard-dependency';
 import CalendarIcon from 'img/template/calendar-icon';
-import DeleteOutlineIcon from '@material-ui/icons/DeleteOutline';
+import DeleteOutlineIcon from '@mui/icons-material/DeleteOutline';
 import { getEdgeCenter, useStoreState } from 'react-flow-renderer';
 import { openModal } from 'modal/actions';
 import LinkPath from '../LinkPath/LinkPath';
@@ -16,7 +16,7 @@ import TaskLinkOptions from '../TaskLinkOptions/TaskLinkOptions';
 import DelayPeriodLabel from '../DelayPeriodLabel/DelayPeriodLabel';
 
 // eslint-disable-next-line sonarjs/cognitive-complexity
-const TaskLink = props => {
+const TaskLink = (props) => {
   const {
     sourceX,
     sourceY,
@@ -37,11 +37,10 @@ const TaskLink = props => {
     sourcePosition,
     targetPosition,
   });
-  const { 2: zoom } = useStoreState(store => store.transform);
+  const { 2: zoom } = useStoreState((store) => store.transform);
   const labelWrapperReference = useRef(null);
-  const [isDelayPopoverOpen, openDelayPopover, closeDelayPopover] = useBoolean(
-    false,
-  );
+  const [isDelayPopoverOpen, openDelayPopover, closeDelayPopover] =
+    useBoolean(false);
   const [areOptionsOpen, openOptions, closeOptions] = useBoolean(false);
   const dispatch = useDispatch();
   const delayOptionsVisible = !isNil(delayPeriod) && delayPeriodUnit;
@@ -117,7 +116,7 @@ const TaskLink = props => {
     },
   ];
 
-  const handleDelayPeriodSubmit = delayPeriodData => {
+  const handleDelayPeriodSubmit = (delayPeriodData) => {
     dispatch(
       updateTasksLink({
         ...link,

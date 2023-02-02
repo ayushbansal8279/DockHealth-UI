@@ -1,6 +1,6 @@
 import styled from 'styled-components';
 import palette from 'styles/palette';
-import { Divider } from '@material-ui/core';
+import { Divider } from '@mui/material';
 import { fontSizes, fontWeights } from 'styles/font';
 
 export const TaskDrawerContainer = styled.div`
@@ -30,21 +30,21 @@ export const styleTaskDrawerContainer = {
   padding: '1rem 0rem 0.5rem  0rem',
 };
 
-export const styleFullRow = isMobile => ({
+export const styleFullRow = (isMobile) => ({
   padding: isMobile ? '0.5rem 1rem' : '0.5rem 2rem',
   height: rowHeight,
 });
 
-export const styleFullRowThin = isMobile => ({
+export const styleFullRowThin = (isMobile) => ({
   padding: isMobile ? '0rem 1rem' : '0rem 2rem',
   height: rowHeight,
 });
 
-export const styleFirstRow = isMobile => ({
+export const styleFirstRow = (isMobile) => ({
   padding: isMobile ? '0rem 1rem 0.5rem 1rem' : '0rem 2rem 0.5rem 2rem',
 });
 
-export const styleEmailRow = isMobile => ({
+export const styleEmailRow = (isMobile) => ({
   padding: isMobile ? '0 1rem' : '0 2rem',
   backgroundColor: palette.blueGrey,
 });
@@ -53,12 +53,12 @@ export const styleCommentRow = {
   padding: '0.5rem 2rem',
 };
 
-export const styleLeftColumn = isMobile => ({
+export const styleLeftColumn = (isMobile) => ({
   padding: isMobile ? '0.5rem 1rem 0.5rem 1rem' : '0.5rem 1rem 0.5rem 2rem',
   height: rowHeight,
 });
 
-export const styleRightColumn = isMobile => ({
+export const styleRightColumn = (isMobile) => ({
   padding: isMobile ? '0.5rem 1rem 0.5rem 1rem' : '0.5rem 2rem 0.5rem 1rem',
   height: rowHeight,
 });

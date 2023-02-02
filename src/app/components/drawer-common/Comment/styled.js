@@ -35,7 +35,7 @@ export const CommentContainer = styled.div`
   margin-left: ${spacing.smallPlus};
   font-size: ${fontSizes.regular};
   transition: background-color 0.25s ease-out;
-  background-color: ${props => (props.isEditing ? 'white' : '')};
+  background-color: ${(props) => (props.isEditing ? 'white' : '')};
   justify-content: space-between;
 `;
 

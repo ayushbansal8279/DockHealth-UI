@@ -1,4 +1,4 @@
-import { Add } from '@material-ui/icons';
+import { Add } from '@mui/icons-material';
 import React, { useCallback, useRef } from 'react';
 import { useToggle } from 'react-use';
 import AdornedButton from 'components/common/AdornedButton/AdornedButton';

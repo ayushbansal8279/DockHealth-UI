@@ -22,7 +22,7 @@ import palette from 'styles/palette';
 import ColorPicker from 'components/common/ColorPicker/ColorPicker';
 import { isMemberAdmin } from 'helpers/list-members-helper';
 
-const ListOptionsMenu = props => {
+const ListOptionsMenu = (props) => {
   const { list, children, moreOptions } = props;
   const dispatch = useDispatch();
   const history = useHistory();
@@ -35,12 +35,12 @@ const ListOptionsMenu = props => {
   const PRIVILEGE_ROLES = [...MASTER_ROLES, 'MEMBER'];
 
   const currentUserMember = list?.listUsers?.find(
-    u => u.identifier === currentUser?.identifier,
+    (u) => u.identifier === currentUser?.identifier,
   );
   const isListAdmin = isMemberAdmin(currentUserMember);
 
   const openListEditModal = useCallback(
-    targetList => {
+    (targetList) => {
       dispatch(openModal('ListForm', { list: targetList }));
       dispatch(hideSubMenu());
     },
@@ -48,7 +48,7 @@ const ListOptionsMenu = props => {
   );
 
   const openInviteToListModal = useCallback(
-    targetList => {
+    (targetList) => {
       dispatch(openModal('InviteToList', { list: targetList }));
       dispatch(hideSubMenu());
     },
@@ -56,7 +56,7 @@ const ListOptionsMenu = props => {
   );
 
   const openDeleteConfirmationModal = useCallback(
-    targetList => {
+    (targetList) => {
       const modalProps = {
         title: 'Delete list',
         description:
@@ -79,7 +79,7 @@ const ListOptionsMenu = props => {
   );
 
   const openLeaveListModal = useCallback(
-    targetList => {
+    (targetList) => {
       const { status, taskListIdentifier } = targetList;
 
       const modalProps = {
@@ -117,9 +117,9 @@ const ListOptionsMenu = props => {
 
   // TODO: change to flag inside list object
   const isListArchived = useCallback(
-    targetList => {
+    (targetList) => {
       return !!archivedTaskLists?.find(
-        taskList =>
+        (taskList) =>
           taskList.taskListIdentifier === targetList.taskListIdentifier,
       );
     },
@@ -127,7 +127,7 @@ const ListOptionsMenu = props => {
   );
 
   const handleArchiveList = useCallback(
-    targetList => {
+    (targetList) => {
       dispatch(
         TaskListActions.archiveTaskListById(targetList?.taskListIdentifier),
       );
@@ -138,7 +138,7 @@ const ListOptionsMenu = props => {
   );
 
   const handleUnarchiveList = useCallback(
-    targetList => {
+    (targetList) => {
       dispatch(
         TaskListActions.unarchiveTaskListById(targetList?.taskListIdentifier),
       );
@@ -147,7 +147,7 @@ const ListOptionsMenu = props => {
   );
 
   const getMenuItems = useCallback(
-    targetList => {
+    (targetList) => {
       if (
         MASTER_ROLES.includes(targetList?.role) &&
         isListArchived(targetList)
@@ -265,7 +265,7 @@ const ListOptionsMenu = props => {
       footer={
         isListAdmin ? (
           <ColorPicker
-            onChange={event =>
+            onChange={(event) =>
               dispatch(
                 TaskListActions.saveTaskList({
                   taskListIdentifier: list.taskListIdentifier,

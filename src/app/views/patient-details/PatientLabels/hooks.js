@@ -12,43 +12,45 @@ import {
   isFetchingPatientLabelsSelector,
 } from 'selectors/patient-details-selectors';
 
-const labelAddOrRemovePromise = ({
-  patientIdentifier,
-  currentLabelsIdentifiers,
-  formattedLabelsIdentifiers,
-}) => ({ labelIdentifier, labelName }) => {
-  if (!labelName || labelName === null || labelName === '') {
+const labelAddOrRemovePromise =
+  ({
+    patientIdentifier,
+    currentLabelsIdentifiers,
+    formattedLabelsIdentifiers,
+  }) =>
+  ({ labelIdentifier, labelName }) => {
+    if (!labelName || labelName === null || labelName === '') {
+      return Promise.resolve();
+    }
+
+    if (labelIdentifier === null) {
+      return addLabel({ labelName, patientIdentifier });
+    }
+
+    if (
+      !currentLabelsIdentifiers.includes(labelIdentifier) &&
+      formattedLabelsIdentifiers.includes(labelIdentifier)
+    ) {
+      return addLabel({
+        labelName,
+        labelIdentifier,
+        patientIdentifier,
+      });
+    }
+
+    if (
+      currentLabelsIdentifiers.includes(labelIdentifier) &&
+      !formattedLabelsIdentifiers.includes(labelIdentifier)
+    ) {
+      return removeLabelForPatient({
+        labelName,
+        labelIdentifier,
+        patientIdentifier,
+      });
+    }
+
     return Promise.resolve();
-  }
-
-  if (labelIdentifier === null) {
-    return addLabel({ labelName, patientIdentifier });
-  }
-
-  if (
-    !currentLabelsIdentifiers.includes(labelIdentifier) &&
-    formattedLabelsIdentifiers.includes(labelIdentifier)
-  ) {
-    return addLabel({
-      labelName,
-      labelIdentifier,
-      patientIdentifier,
-    });
-  }
-
-  if (
-    currentLabelsIdentifiers.includes(labelIdentifier) &&
-    !formattedLabelsIdentifiers.includes(labelIdentifier)
-  ) {
-    return removeLabelForPatient({
-      labelName,
-      labelIdentifier,
-      patientIdentifier,
-    });
-  }
-
-  return Promise.resolve();
-};
+  };
 
 const useInitializeLabelsSectionHooks = () => {
   const dispatch = useDispatch();
@@ -64,7 +66,7 @@ const useInitializeLabelsSectionHooks = () => {
     dispatch(PatientDetailsActions.getCurrentPatient());
   };
 
-  const saveAddOrRemoveLabel = async selectedLabels => {
+  const saveAddOrRemoveLabel = async (selectedLabels) => {
     const currentLabels = patient?.patientLabels ?? [];
     const currentLabelsIdentifiers = currentLabels.map(prop('labelIdentifier'));
 
@@ -94,7 +96,7 @@ const useInitializeLabelsSectionHooks = () => {
     refreshLabelsAndPatient();
   };
 
-  const saveAddLabel = async selectedLabel => {
+  const saveAddLabel = async (selectedLabel) => {
     const labelIdentifier = selectedLabel?.labelIdentifier;
     const labelName = selectedLabel?.labelName;
     const patientIdentifier = patient?.patientIdentifier;
@@ -112,7 +114,7 @@ const useInitializeLabelsSectionHooks = () => {
     refreshLabelsAndPatient();
   };
 
-  const saveAddLabelWithNewValue = async newValue => {
+  const saveAddLabelWithNewValue = async (newValue) => {
     const labelIdentifier = undefined;
     const labelName = newValue;
     const patientIdentifier = patient?.patientIdentifier;
@@ -147,7 +149,7 @@ const useInitializeLabelsSectionHooks = () => {
     refreshLabelsAndPatient();
   };
 
-  const removeLabelFromPatient = async selectedLabel => {
+  const removeLabelFromPatient = async (selectedLabel) => {
     const labelIdentifier = selectedLabel?.labelIdentifier;
     const labelName = selectedLabel?.labelName;
     const patientIdentifier = patient?.patientIdentifier;
@@ -161,7 +163,7 @@ const useInitializeLabelsSectionHooks = () => {
     refreshLabelsAndPatient();
   };
 
-  const deleteLabel = async selectedLabel => {
+  const deleteLabel = async (selectedLabel) => {
     const labelIdentifier = selectedLabel?.labelIdentifier;
 
     await removeLabelFromDatabase({

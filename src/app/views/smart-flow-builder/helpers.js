@@ -16,7 +16,7 @@ export function mapLayoutToElements(layout, tasks) {
 
     return tasks.reduce((accumulator, t) => {
       if (t.taskLinks) {
-        t.taskLinks.forEach(link => {
+        for (const link of t.taskLinks) {
           const { sourceTaskIdentifier, targetTaskIdentifier } = link;
           const layoutId = getUniqueLinkId(
             sourceTaskIdentifier,
@@ -48,7 +48,7 @@ export function mapLayoutToElements(layout, tasks) {
           }
 
           accumulator.push(linkElement);
-        });
+        }
       }
 
       let { position } =
@@ -92,7 +92,7 @@ export function mapElementsToLayout(elements) {
 }
 
 export function updateNodePosition(nodeId, newPosition, elements) {
-  return elements.map(n =>
+  return elements.map((n) =>
     n.id === nodeId ? { ...n, position: { ...n.position, ...newPosition } } : n,
   );
 }
@@ -109,7 +109,7 @@ export function calculateNewElementPosition(layout) {
   let lastElementX;
   let lastElementY;
 
-  layoutNodes.forEach(({ position }) => {
+  for (const { position } of layoutNodes) {
     const { x, y } = position;
     if (x < firstElementX || isNil(firstElementX)) {
       firstElementX = position.x;
@@ -120,7 +120,7 @@ export function calculateNewElementPosition(layout) {
     if (y > lastElementY || isNil(lastElementY)) {
       lastElementY = y;
     }
-  });
+  }
 
   const newElementPositionX =
     (lastElementX - firstElementX) / 2 + firstElementX;

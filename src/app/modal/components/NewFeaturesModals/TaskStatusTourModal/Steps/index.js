@@ -1,5 +1,5 @@
-import TaskStatusIntroStep from './TaskStatusIntroStep';
-import TaskStatusEditStep from './TaskStatusEditStep';
-
 // eslint-disable-next-line import/prefer-default-export
-export { TaskStatusIntroStep, TaskStatusEditStep };
+
+export { default as TaskStatusIntroStep } from './TaskStatusIntroStep';
+
+export { default as TaskStatusEditStep } from './TaskStatusEditStep';

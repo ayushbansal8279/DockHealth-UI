@@ -53,7 +53,7 @@ export const Description = styled.div`
   font-size: ${fontSizes.smallPlus};
   font-weight: ${fontWeights.regular};
 
-  ${props => (props.isCrossedOut ? 'text-decoration: line-through;' : '')}
+  ${(props) => (props.isCrossedOut ? 'text-decoration: line-through;' : '')}
 `;
 
 export const DescriptionContainer = styled.div`

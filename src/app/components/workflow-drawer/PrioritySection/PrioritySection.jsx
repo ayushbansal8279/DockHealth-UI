@@ -30,7 +30,7 @@ const PrioritySection = ({ disabled }) => {
     }
   }, [autoFocusFieldName]);
 
-  const handleOptionChange = event => {
+  const handleOptionChange = (event) => {
     const { value } = event.target;
     dispatch(
       updatePartialWorkflow(selectedWorkflow?.identifier, {

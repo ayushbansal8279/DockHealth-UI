@@ -11,14 +11,14 @@ const ChatIcon = ({ height = 25 }) => {
   const sdkInstance = sendBirdSelectors.getSdk(context);
 
   const onTotalUnreadMessageCountUpdated = useCallback(
-    count => {
+    (count) => {
       setUnreadMessageCount(count);
     },
     [setUnreadMessageCount],
   );
 
   const addUserEventHandler = useCallback(
-    handler => {
+    (handler) => {
       if (sdkInstance) {
         const handlerId = 'SendbirdChatCount';
         sdkInstance.addUserEventHandler(handlerId, handler);
@@ -30,7 +30,7 @@ const ChatIcon = ({ height = 25 }) => {
   );
 
   const removeUserEventHandler = useCallback(
-    handlerId => {
+    (handlerId) => {
       if (sdkInstance && sdkInstance.removeUserEventHandler) {
         sdkInstance.removeUserEventHandler(handlerId);
       }
@@ -42,7 +42,7 @@ const ChatIcon = ({ height = 25 }) => {
     if (sdkInstance && sdkInstance.getTotalUnreadMessageCount) {
       sdkInstance
         .getTotalUnreadMessageCount()
-        .then(count => setUnreadMessageCount(count));
+        .then((count) => setUnreadMessageCount(count));
     }
   });
 
@@ -54,7 +54,8 @@ const ChatIcon = ({ height = 25 }) => {
       sdkInstance.getTotalUnreadMessageCount
     ) {
       const handler = new sdkInstance.UserEventHandler();
-      handler.onTotalUnreadMessageCountUpdated = onTotalUnreadMessageCountUpdated;
+      handler.onTotalUnreadMessageCountUpdated =
+        onTotalUnreadMessageCountUpdated;
       handlerId = addUserEventHandler(handler);
     }
     return () => {

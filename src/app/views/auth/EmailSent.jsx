@@ -1,4 +1,4 @@
-import { Grid } from '@material-ui/core';
+import { Grid } from '@mui/material';
 import React from 'react';
 import Spacing from 'components/common/Spacing';
 import { MontserratTypography } from 'styles/theme-montserrat';

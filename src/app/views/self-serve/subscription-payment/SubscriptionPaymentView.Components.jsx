@@ -1,5 +1,4 @@
-import { ButtonBase } from '@material-ui/core';
-import { withStyles } from '@material-ui/core/styles';
+import { ButtonBase } from '@mui/material';
 import clsx from 'clsx';
 import React from 'react';
 import { Link } from 'react-router-dom';
@@ -59,24 +58,7 @@ export const SubscriptionPaymentViewContainer = styled.div`
   }
 `;
 
-export const BillingButton = withStyles({
-  root: {
-    borderRadius: '0.25rem',
-    height: '3rem',
-    padding: '0.25rem 2.5rem',
-    marginLeft: '1rem',
-  },
-  contained: {
-    backgroundColor: palette.darkBlue,
-    color: palette.white,
-  },
-  outlined: {
-    color: palette.darkBlue,
-  },
-  fullWidth: {
-    width: '100%',
-  },
-})(({ classes, variant, fullWidth, ...props }) => {
+const InnerBillingButton = ({ classes, variant, fullWidth, ...props }) => {
   const className = clsx(
     classes.root,
     classes[variant],
@@ -84,7 +66,31 @@ export const BillingButton = withStyles({
   );
 
   return <ButtonBase className={className} {...props} />;
-});
+};
+
+export const BillingButton = styled(InnerBillingButton)`
+  &&& {
+    &.MuiButtonBase-root {
+      border-radius: 0.25rem;
+      height: 3rem;
+      padding: 0.25rem 2.5rem;
+      margin-left: 1rem;
+    }
+
+    &.MuiButtonBase-contained {
+      background-color: ${palette.darkBlue};
+      color: ${palette.white};
+    }
+
+    &.MuiButtonBase-outlined {
+      color: ${palette.darkBlue};
+    }
+
+    &.MuiButtonBase-fullWidth {
+      width: 100%;
+    }
+  }
+`;
 
 export const PricingGridContainer = styled.div`
   background-color: ${palette.coolGrey4};

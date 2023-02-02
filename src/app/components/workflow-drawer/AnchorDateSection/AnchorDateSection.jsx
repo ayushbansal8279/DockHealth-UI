@@ -1,6 +1,6 @@
 import React, { useCallback, useEffect, useRef } from 'react';
 import moment from 'moment';
-import { Box } from '@material-ui/core';
+import { Box } from '@mui/material';
 import RecurringIcon from 'img/recurring-arrows';
 import { isDueDateOverdue } from 'helpers/task-helpers';
 import DueDatePicker from 'components/task/DueDatePicker/DueDatePicker';
@@ -36,7 +36,7 @@ const AnchorDateSection = ({ disabled }) => {
   const autoFocusFieldName = useSelector(workflowAutofocusFieldSelector);
 
   const handleAnchorDateSave = useCallback(
-    date => {
+    (date) => {
       const payload = {
         anchorDateTime: date,
       };
@@ -112,9 +112,9 @@ const AnchorDateSection = ({ disabled }) => {
                 </AnchorDateContent>
               ) : (
                 <Placeholder>
-                  {!disabled
-                    ? 'Set a Anchor date?'
-                    : 'Not available when creating a template'}
+                  {disabled
+                    ? 'Not available when creating a template'
+                    : 'Set a Anchor date?'}
                 </Placeholder>
               )}
             </AnchorDateContentWrapper>

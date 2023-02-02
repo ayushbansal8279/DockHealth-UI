@@ -1,7 +1,7 @@
 import React, { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import MoreVert from '@material-ui/icons/MoreVert';
-import { Box } from '@material-ui/core';
+import MoreVert from '@mui/icons-material/MoreVert';
+import { Box } from '@mui/material';
 import ViewLayout from 'components/template/ViewLayout/ViewLayout';
 import TaskDrawer from 'components/task-drawer/TaskDrawer/TaskDrawer';
 import {

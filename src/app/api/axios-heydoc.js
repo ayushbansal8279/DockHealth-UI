@@ -2,15 +2,16 @@
 import axios from 'axios';
 import identity from 'ramda/src/identity';
 import { showToast } from 'helpers/utility-functions';
+import { log } from 'helpers/log';
 
 const NETWORK_ERROR = 'NETWORK_ERROR';
 
 const axiosInstance = axios.create({
-  baseURL: process.env.HEYDOC_SERVICES_BASE_URL,
+  baseURL: import.meta.env.VITE_HEYDOC_SERVICES_BASE_URL,
 });
 
 axiosInstance.interceptors.request.use(
-  function(config) {
+  (config) => {
     if (config.url.includes('/oidc/') || config.url.includes('/fhir/')) {
       return config;
     }
@@ -19,18 +20,18 @@ axiosInstance.interceptors.request.use(
     const currentOrganizationIdentifier = sessionStorage.getItem(
       'currentOrganizationIdentifier',
     );
-    config.headers.CurrentOrganizationIdentifier = currentOrganizationIdentifier;
+    config.headers.CurrentOrganizationIdentifier =
+      currentOrganizationIdentifier;
     config.headers.Authorization = `Bearer ${currentAccessToken}`;
     return config;
   },
-  function(error) {
+  (error) =>
     // Do something with request error
-    return Promise.reject(error);
-  },
+    Promise.reject(error),
 );
 
 // eslint-disable-next-line consistent-return
-axiosInstance.interceptors.response.use(identity, error => {
+axiosInstance.interceptors.response.use(identity, (error) => {
   if (error.response) {
     localStorage.setItem(NETWORK_ERROR, 'false');
     return Promise.reject(error);
@@ -39,16 +40,16 @@ axiosInstance.interceptors.response.use(identity, error => {
   if (localStorage.getItem(NETWORK_ERROR) === 'false') {
     localStorage.setItem(NETWORK_ERROR, 'true');
     window.location.reload();
-    return undefined;
+    return;
   }
 
   // donot show the error for login
   if (window.location.hash && window.location.hash.includes('/auth/login')) {
-    return undefined;
+    return;
   }
 
-  console.log('Connection error');
-  console.log(error);
+  log('Connection error');
+  log(error);
   if (String(error).includes('Network Error')) {
     // window.location.href = '/#/auth/login';
   }

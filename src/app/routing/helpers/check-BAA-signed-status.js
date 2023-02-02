@@ -4,7 +4,7 @@ import { handleOrganizationResponse } from 'actions/organization-actions';
 import { checkBAASignedStatusWithMemo as checkBAASignedStatusWithMemoApi } from 'api/organization-api';
 import { DEFAULT_REDIRECT_PATH } from './paths';
 
-const checkBAASignedStatusFunc = checkBAASignedStatusWithMemoApi();
+const checkBASignedStatusFunction = checkBAASignedStatusWithMemoApi();
 
 const checkBAASignedStatus = async ({ dispatch, organizationIdentifier }) => {
   try {
@@ -16,10 +16,10 @@ const checkBAASignedStatus = async ({ dispatch, organizationIdentifier }) => {
 
     return await handleOrganizationResponse({
       fetchMethod: () =>
-        checkBAASignedStatusFunc(organizationIdentifier, refreshOrgMemo),
+        checkBASignedStatusFunction(organizationIdentifier, refreshOrgMemo),
       dispatch,
     });
-  } catch (error) {
+  } catch {
     return DEFAULT_REDIRECT_PATH;
   }
 };

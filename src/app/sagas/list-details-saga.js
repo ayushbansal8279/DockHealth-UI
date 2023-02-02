@@ -63,11 +63,12 @@ import { openModal } from 'modal/actions';
 import { applyTaskTemplate as applyTaskTemplateAction } from 'actions/list-details-actions';
 import * as CustomFieldsApi from 'api/custom-fields-api';
 import { getTasksForWorkflow } from 'actions/template-bundle-actions';
+import { log } from 'helpers/log';
 import store from '../store';
 
 export const DO_CREATE_TASK = 'DO_CREATE_TASK';
 
-export const createTask = payload => ({
+export const createTask = (payload) => ({
   type: DO_CREATE_TASK,
   ...payload,
 });
@@ -116,7 +117,7 @@ function* doGetListDetailsCounters({ payload }) {
     yield put({
       type: ActionTypes.GET_LIST_DETAILS_TASK_COUNTERS_FAILURE,
     });
-    console.log(error);
+    log(error);
   }
 }
 
@@ -133,7 +134,7 @@ function* getTasksGroupsList() {
       groups,
     });
   } catch (error) {
-    console.log('error', error);
+    log('error', error);
     yield put({ type: ActionTypes.GET_TASKS_GROUPS_LIST_FAILURE });
   }
 }
@@ -162,17 +163,17 @@ function* getCurrentListTasks() {
 
       if (!groups || isEmpty(groups)) {
         const action = yield take(
-          a => a.type === ActionTypes.GET_TASKS_GROUPS_LIST_SUCCESS,
+          (a) => a.type === ActionTypes.GET_TASKS_GROUPS_LIST_SUCCESS,
         );
         groups = action.groups;
       }
       const groupsToGet = compose(
-        filter(g => g.metricValue > 0),
+        filter((g) => g.metricValue > 0),
         takeFirst(5),
       )(groups);
 
-      yield all([
-        ...groupsToGet.map(({ taskGroupIdentifier }) =>
+      yield all(
+        groupsToGet.map(({ taskGroupIdentifier }) =>
           put(
             ListDetailsActions.getTasksForTaskGroups({
               taskGroupIdentifier,
@@ -183,7 +184,7 @@ function* getCurrentListTasks() {
             }),
           ),
         ),
-      ]);
+      );
     } else {
       const groupedTasks = yield call(
         ListDetailsApi.getFilteredTasksForList,
@@ -232,7 +233,7 @@ function* refreshGroupedTasks({ payload }) {
     const { withLoader = true } = payload || {};
     yield put(ListDetailsActions.getCurrentListTasks(withLoader));
   } catch (error) {
-    console.log(error);
+    log(error);
   }
 }
 
@@ -251,7 +252,7 @@ function* createTaskListGroup({ groupName }) {
         group: createdGroup,
       }),
     ]);
-  } catch (error) {
+  } catch {
     yield put(showGlobalErrorAlert());
   }
 }
@@ -290,10 +291,12 @@ function* getTasksForTaskGroups(payload) {
 
     if (fetchWorkflowTasks) {
       const bundles = groupOfTasks?.taskGroups?.[0]?.tasks?.filter(
-        t => t.itemType === 'BUNDLE',
+        (t) => t.itemType === 'BUNDLE',
       );
       yield all(
-        [...(bundles || [])]?.map(b => put(getTasksForWorkflow(b.identifier))),
+        [...(bundles || [])]?.map((b) =>
+          put(getTasksForWorkflow(b.identifier)),
+        ),
       );
     }
 
@@ -308,7 +311,7 @@ function* getTasksForTaskGroups(payload) {
 
     return groupOfTasks;
   } catch (error) {
-    console.log(error);
+    log(error);
     yield put(showGlobalErrorAlert());
   }
 }
@@ -482,7 +485,7 @@ function* initializeListDetailsTableState() {
       yield put(openDrawer());
     }
   } catch (error) {
-    console.log('error', error);
+    log('error', error);
     yield put(showGlobalErrorAlert());
   }
 }
@@ -524,15 +527,15 @@ function* doCreateTask(payload) {
 
         if (!taskGroupIdentifier) {
           yield put(ListDetailsActions.refreshListDetailsGroupedTasks(true));
-        } else if (!taskGroup) {
-          yield call(getTasksForTaskGroups, {
-            taskGroupIdentifier,
-            status,
-          });
-        } else {
+        } else if (taskGroup) {
           yield put({
             type: ActionTypes.ADD_TASK_SUCCESS,
             task: createdTask,
+          });
+        } else {
+          yield call(getTasksForTaskGroups, {
+            taskGroupIdentifier,
+            status,
           });
         }
       }
@@ -547,7 +550,7 @@ function* doCreateTask(payload) {
       );
       yield put(showGlobalAlert(AlertMessages.TASK_CREATED));
     }
-  } catch (error) {
+  } catch {
     yield put(showGlobalErrorAlert());
   }
 }
@@ -557,7 +560,7 @@ function* searchCurrentListTasks() {
     onSearchChanged();
 
     yield put(ListDetailsActions.getCurrentListTasks());
-  } catch (error) {
+  } catch {
     yield put(showGlobalErrorAlert());
   }
 }
@@ -609,7 +612,7 @@ function* applyTaskTemplateFailure({
     };
     yield put(openModal('UnassignTaskTemplate', modalProps));
   } else {
-    console.log(error);
+    log(error);
     yield put(showGlobalErrorAlert());
   }
 }
@@ -621,36 +624,31 @@ function* applyTaskTemplate({
   options: { unassign = false },
 }) {
   try {
-    const {
-      statusCode,
-      assignmentsMismatchCount,
-      taskWorkflowDto,
-    } = yield call(TemplateBundleApi.applyTemplate, {
-      taskTemplateIdentifier,
-      taskGroupIdentifier,
-      taskListIdentifier,
-      unassign,
-    });
+    const { statusCode, assignmentsMismatchCount, taskWorkflowDto } =
+      yield call(TemplateBundleApi.applyTemplate, {
+        taskTemplateIdentifier,
+        taskGroupIdentifier,
+        taskListIdentifier,
+        unassign,
+      });
     const isWarning = statusCode === 'WARNING';
 
-    if (isWarning) {
-      yield applyTaskTemplateFailure({
-        errorType: ERROR_TYPES.ASSIGNED_USERS_ARE_NOT_IN_THE_TASK_LIST,
-        failureDetails: { taskCount: assignmentsMismatchCount },
-        templateDetails: {
-          taskTemplateIdentifier,
-          taskGroupIdentifier,
+    yield isWarning
+      ? applyTaskTemplateFailure({
+          errorType: ERROR_TYPES.ASSIGNED_USERS_ARE_NOT_IN_THE_TASK_LIST,
+          failureDetails: { taskCount: assignmentsMismatchCount },
+          templateDetails: {
+            taskTemplateIdentifier,
+            taskGroupIdentifier,
+            taskListIdentifier,
+          },
+        })
+      : put({
+          type: ActionTypes.APPLY_TASK_TEMPLATE_SUCCESS,
+          template: taskWorkflowDto,
           taskListIdentifier,
-        },
-      });
-    } else {
-      yield put({
-        type: ActionTypes.APPLY_TASK_TEMPLATE_SUCCESS,
-        template: taskWorkflowDto,
-        taskListIdentifier,
-        taskGroupIdentifier,
-      });
-    }
+          taskGroupIdentifier,
+        });
   } catch {
     yield put(showGlobalErrorAlert());
   }
@@ -709,7 +707,7 @@ function* deleteTaskListGroup(payload) {
       groupIdentifier,
     });
     yield put(showGlobalAlert(AlertMessages.DELETED));
-  } catch (error) {
+  } catch {
     yield put(showGlobalErrorAlert());
     yield put({
       type: ActionTypes.DELETE_TASK_LIST_GROUP_FAILURE,
@@ -729,7 +727,7 @@ function* changeTaskListGroupName({ groupIdentifier, name }) {
       groupIdentifier,
       name,
     });
-  } catch (error) {
+  } catch {
     yield put({
       type: ActionTypes.CHANGE_TASK_LIST_GROUP_NAME_FAILURE,
       groupIdentifier,
@@ -748,7 +746,7 @@ function* reorderTaskListGroups({ newIndex, oldIndex }) {
     yield call(sortGroups, { taskGroupIdentifiers, taskListIdentifier });
     yield put({ type: ActionTypes.REORDER_TASK_LIST_GROUPS_SUCCESS });
     yield put(showGlobalAlert(AlertMessages.UPDATED));
-  } catch (error) {
+  } catch {
     yield put({
       type: ActionTypes.REORDER_TASK_LIST_GROUPS_FAILURE,
       newIndex,

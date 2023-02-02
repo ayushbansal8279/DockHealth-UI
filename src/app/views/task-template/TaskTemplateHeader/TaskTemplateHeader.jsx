@@ -3,7 +3,7 @@ import React from 'react';
 import TaskTemplatePermissions from 'views/task-template/TaskTemplatePermissions/TaskTemplatePermissions';
 import { HeaderContainer, StandardTaskItemCell, CreatedText } from './styled';
 
-const TaskTemplateHeader = template => {
+const TaskTemplateHeader = (template) => {
   const { createdBy, createdDate, taskTemplate } = template;
 
   return (

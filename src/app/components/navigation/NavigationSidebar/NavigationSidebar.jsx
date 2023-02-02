@@ -1,6 +1,6 @@
 /* eslint-disable sonarjs/cognitive-complexity */
 import React, { useCallback, useEffect } from 'react';
-import { ClickAwayListener, Grid } from '@material-ui/core';
+import { ClickAwayListener, Grid } from '@mui/material';
 import { useDispatch, useSelector } from 'react-redux';
 import { useHistory, useLocation } from 'react-router-dom';
 import {
@@ -9,7 +9,7 @@ import {
   SUBS_SETTINGS_PATH,
   USERS_SETTINGS_PATH,
 } from 'routing/helpers/paths';
-import Spacing from 'components/common/Spacing.tsx';
+import Spacing from 'components/common/Spacing';
 import {
   userProfileSelector,
   userHasDockChatFeatureSelector,

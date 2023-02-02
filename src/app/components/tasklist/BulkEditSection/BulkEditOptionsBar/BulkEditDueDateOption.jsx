@@ -10,7 +10,7 @@ const BulkEditDueDateOption = ({ handleChangeDateTasks, isDisabled }) => {
       placement="bottom"
       content={({ closePopover }) => (
         <DueDatePicker
-          onDateChange={newDueDate => {
+          onDateChange={(newDueDate) => {
             handleChangeDateTasks(newDueDate);
           }}
           disableRecurring

@@ -3,22 +3,20 @@ import { capitalize } from 'helpers/capitalize';
 import { CommunicationType } from 'helpers/task-helpers';
 import { string, object } from 'yup';
 
-const stringContainsNumber = testedString => {
-  return /\d/.test(testedString);
-};
+const stringContainsNumber = (testedString) => /\d/.test(testedString);
 
 // eslint-disable-next-line import/prefer-default-export
 export const mailValidationSchema = object({
-  type: string().required(d => `${capitalize(d.path)} is required`),
-  name: string().required(d => `${capitalize(d.path)} is required`),
+  type: string().required((d) => `${capitalize(d.path)} is required`),
+  name: string().required((d) => `${capitalize(d.path)} is required`),
   email: string()
     .email('Please provide valid email')
-    .required(d => `${capitalize(d.path)} is required`),
+    .required((d) => `${capitalize(d.path)} is required`),
   phone: string(),
   fax: string().test(
     'valid-fax',
-    d => `${capitalize(d.path)} is not valid`,
-    value =>
+    (d) => `${capitalize(d.path)} is not valid`,
+    (value) =>
       value === null ||
       (!value?.includes('_') && !stringContainsNumber(!value)),
   ),
@@ -26,31 +24,34 @@ export const mailValidationSchema = object({
 });
 
 export const faxValidationSchema = object({
-  type: string().required(d => `${capitalize(d.path)} is required`),
-  name: string().required(d => `${capitalize(d.path)} is required`),
+  type: string().required((d) => `${capitalize(d.path)} is required`),
+  name: string().required((d) => `${capitalize(d.path)} is required`),
   email: string().email('Please provide valid email'),
   phone: string(),
   fax: string()
     .test(
       'valid-fax',
-      d => `${capitalize(d.path)} is not valid`,
-      value => value === null || !value?.includes('_'),
+      (d) => `${capitalize(d.path)} is not valid`,
+      (value) => value === null || !value?.includes('_'),
     )
-    .required(d => `${capitalize(d.path)} is required`),
+    .required((d) => `${capitalize(d.path)} is required`),
   notes: string(),
 });
-export const resolveSchema = type => {
+export const resolveSchema = (type) => {
   switch (type) {
-    case CommunicationType.EMAIL:
+    case CommunicationType.EMAIL: {
       return yupResolver(mailValidationSchema);
-    case CommunicationType.FAX:
+    }
+    case CommunicationType.FAX: {
       return yupResolver(faxValidationSchema);
-    default:
+    }
+    default: {
       return null;
+    }
   }
 };
 
-export const mapToDTO = data => {
+export const mapToDTO = (data) => {
   const { email, phone, type, name, fax } = data;
   return {
     email,

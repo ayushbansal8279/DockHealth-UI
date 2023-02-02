@@ -8,7 +8,7 @@ import React, {
 } from 'react';
 import moment from 'moment';
 import Datepicker from 'components/common/Datepicker/Datepicker';
-import { ClickAwayListener, Paper, Popper } from '@material-ui/core';
+import { ClickAwayListener, Paper, Popper } from '@mui/material';
 import { useBoolean } from 'hooks/useBoolean';
 import { DateInput } from './styled';
 
@@ -69,11 +69,11 @@ const FilterDateInput = ({ date, onDateChange, minDate, maxDate }) => {
     <ClickAwayListener onClickAway={handleClickOutside}>
       <div>
         <DateInput
-          inputRef={inputElement => {
+          inputRef={(inputElement) => {
             inputReference.current = inputElement;
           }}
           onFocus={openCalendar}
-          onChange={event => {
+          onChange={(event) => {
             const { value: v } = event.target;
             setInputValue(v ?? '');
           }}
@@ -94,7 +94,7 @@ const FilterDateInput = ({ date, onDateChange, minDate, maxDate }) => {
             {isCalendarOpen && (
               <Datepicker
                 selectedDate={inputValueIso}
-                onDateChange={d => {
+                onDateChange={(d) => {
                   setInputValue(
                     moment(d, DATE_ISO_FORMAT).format(DATE_US_FORMAT),
                   );

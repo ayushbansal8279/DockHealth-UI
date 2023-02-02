@@ -22,9 +22,8 @@ export const searchTaskInPatientLists = (patientLists, searchValue) =>
 export function groupTasks(tasks) {
   const groupedTasks = tasks?.reduce(
     (accumulator, item) => {
-      const group = (item.itemType === TaskItemType.BUNDLE
-        ? item.tasks?.[0]
-        : item
+      const group = (
+        item.itemType === TaskItemType.BUNDLE ? item.tasks?.[0] : item
       )?.taskGroups?.find(({ groupType }) =>
         [TaskGroupType.TASKLIST, TaskGroupType.TASKLIST_DEFAULT].includes(
           groupType,
@@ -39,8 +38,8 @@ export function groupTasks(tasks) {
       return {
         ...accumulator,
         [groupId]: {
-          ...(accumulator[groupId] ?? {}),
-          ...(group ?? {}),
+          ...accumulator[groupId],
+          ...group,
           tasks: [...(accumulator[groupId]?.tasks ?? []), item],
         },
       };
@@ -50,5 +49,5 @@ export function groupTasks(tasks) {
     },
   );
 
-  return !groupedTasks ? tasks : Object.values(groupedTasks);
+  return groupedTasks ? Object.values(groupedTasks) : tasks;
 }

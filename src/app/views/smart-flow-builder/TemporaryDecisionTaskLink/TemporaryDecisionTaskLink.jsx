@@ -6,12 +6,12 @@ import {
 } from 'actions/task-template-actions';
 import { useBoolean } from 'hooks/useBoolean';
 import { getEdgeCenter } from 'react-flow-renderer';
-import DeleteOutlineIcon from '@material-ui/icons/DeleteOutline';
+import DeleteOutlineIcon from '@mui/icons-material/DeleteOutline';
 import LinkPath from '../LinkPath/LinkPath';
 import TaskLinkOptions from '../TaskLinkOptions/TaskLinkOptions';
 import OutcomeInputLabel from '../OutcomeInputLabel/OutcomeInputLabel';
 
-const TemporaryDecisionTaskLink = props => {
+const TemporaryDecisionTaskLink = (props) => {
   const {
     id,
     sourceX,
@@ -68,7 +68,7 @@ const TemporaryDecisionTaskLink = props => {
         <OutcomeInputLabel
           ref={centerReference}
           value={inputValue}
-          onChange={event => setInputValue(event.target?.value || '')}
+          onChange={(event) => setInputValue(event.target?.value || '')}
           onBlur={handleBlur}
         />
         {areOptionsOpen && (

@@ -2,7 +2,7 @@ import React from 'react';
 import { getSmoothStepPath, getMarkerEnd, Position } from 'react-flow-renderer';
 import palette from 'styles/palette';
 
-const LinkPath = props => {
+const LinkPath = (props) => {
   const {
     id,
     selected,

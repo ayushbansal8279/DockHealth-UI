@@ -1,7 +1,7 @@
-import { Grid } from '@material-ui/core';
+import { Grid } from '@mui/material';
 import React from 'react';
 import styled from 'styled-components';
-import Spacing from 'components/common/Spacing.tsx';
+import Spacing from 'components/common/Spacing';
 import DockHeaderLogo from 'img/dock-header-logo.svg';
 import { MontserratTypography } from 'styles/theme-montserrat';
 

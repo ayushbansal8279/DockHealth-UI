@@ -16,6 +16,7 @@ import * as UserApi from 'api/user-api';
 import { noop, showAlert } from 'helpers/utility-functions';
 import { dummyAccess } from 'reducers/user-reducer';
 import Auth from '@aws-amplify/auth';
+import { log } from 'helpers/log';
 import configureStore from '../ConfigureStore';
 import axios from './axios-heydoc';
 import sendEvent from './usage-api';
@@ -29,9 +30,9 @@ Amplify.configure({
   // To get the AWS Credentials, you need to configure
   // the Auth module with your Cognito Federated Identity Pool
   Auth: {
-    region: process.env.AWS_REGION,
-    userPoolId: process.env.AWS_USERPOOLID,
-    userPoolWebClientId: process.env.AWS_CLIENTAPP,
+    region: import.meta.env.VITE_AWS_REGION,
+    userPoolId: import.meta.env.VITE_AWS_USERPOOLID,
+    userPoolWebClientId: import.meta.env.VITE_AWS_CLIENTAPP,
     authenticationFlowType: 'USER_SRP_AUTH',
   },
 });
@@ -44,10 +45,10 @@ export function register(userData) {
 
   const username = unformattedUsername?.toLowerCase();
 
-  Object.keys(user).forEach(userDataKey => {
+  for (const userDataKey of Object.keys(user)) {
     const userDataValue = user[userDataKey];
     attributes[userDataKey] = userDataValue;
-  });
+  }
 
   return new Promise((resolve, reject) => {
     Auth.signUp({
@@ -56,7 +57,7 @@ export function register(userData) {
       attributes,
       validationData: [], // optional
     })
-      .then(data => {
+      .then((data) => {
         resolvedCognitoUser = data.user;
         store.dispatch({
           type: GET_USER_AUTH_DATA_SUCCESS,
@@ -64,8 +65,8 @@ export function register(userData) {
         });
         resolve(data.user);
       })
-      .catch(error => {
-        console.log(error);
+      .catch((error) => {
+        log(error);
         reject(error);
       });
   });
@@ -86,11 +87,11 @@ export function confirmRegistration(userData) {
       // Optional. Force user confirmation irrespective of existing alias. By default set to True.
       forceAliasCreation: true,
     })
-      .then(data => {
+      .then((data) => {
         resolve(data.user);
       })
-      .catch(error => {
-        console.log(error);
+      .catch((error) => {
+        log(error);
         reject(error);
       });
   });
@@ -104,12 +105,12 @@ export function resendConfirmationCode(userData) {
 
   return new Promise((resolve, reject) => {
     Auth.resendSignUp(username)
-      .then(data => {
+      .then((data) => {
         resolvedCognitoUser = data.user;
         resolve(data.user);
       })
-      .catch(error => {
-        console.log(error);
+      .catch((error) => {
+        log(error);
         reject(error);
       });
   });
@@ -150,8 +151,8 @@ export function logout(history) {
           sessionStorage.removeItem('selectedTaskIdentifier');
           resolve();
         })
-        .catch(error => {
-          console.log(error);
+        .catch((error) => {
+          log(error);
           reject(error);
         });
     }
@@ -170,7 +171,7 @@ export function login(loginUserName, password) {
       username, // Required, the username
       password, // Optional, the password
     })
-      .then(userAuth => {
+      .then((userAuth) => {
         resolvedCognitoUser = userAuth;
         if (
           userAuth.challengeName === 'SMS_MFA' ||
@@ -191,8 +192,8 @@ export function login(loginUserName, password) {
           resolve(userAuth);
         }
       })
-      .catch(error => {
-        console.log(error);
+      .catch((error) => {
+        log(error);
         reject(error);
       });
   });
@@ -213,7 +214,7 @@ export function sendMFACode(userData) {
       mfaCode, // Confirmation code
       'SMS_MFA', // MFA Type e.g. SMS_MFA, SOFTWARE_TOKEN_MFA
     )
-      .then(loggedUser => {
+      .then((loggedUser) => {
         resolvedCognitoUser = loggedUser;
         store.dispatch({
           type: GET_USER_AUTH_DATA_SUCCESS,
@@ -230,29 +231,29 @@ export function sendMFACode(userData) {
         });
         resolve(loggedUser);
       })
-      .catch(error => {
-        console.log(error);
+      .catch((error) => {
+        log(error);
         reject(error);
       });
   });
 }
 
 export function rememberDevice() {
-  return new Promise(resolve => {
+  return new Promise((resolve) => {
     Auth.currentAuthenticatedUser({
       bypassCache: true, // Optional, By default is false. If set to true, this call will send a request to Cognito to get the latest user data
     })
-      .then(user => {
+      .then((user) => {
         user.getCachedDeviceKeyAndPassword(); // without this line, the deviceKey is null
         user.setDeviceStatusRemembered({
-          onSuccess: result => {
+          onSuccess: (result) => {
             resolve(result);
           },
           onFailure: noop,
         });
       })
-      .catch(error => {
-        console.log(error);
+      .catch((error) => {
+        log(error);
       });
   });
 }
@@ -278,7 +279,7 @@ export async function isAuthenticated() {
     sessionStorage.setItem('accessToken', authData.accessToken.jwtToken);
     return { isLoggedIn: true, user };
   } catch (error) {
-    console.log(error);
+    log(error);
     if (sessionStorage.getItem('accessToken')) {
       const authUser = JSON.parse(sessionStorage.getItem('authUser'));
       return { isLoggedIn: true, user: authUser };
@@ -296,11 +297,11 @@ export function forgotPassword(userData) {
 
   return new Promise((resolve, reject) => {
     Auth.forgotPassword(username)
-      .then(data => {
+      .then((data) => {
         resolve(data);
       })
-      .catch(error => {
-        console.log(error);
+      .catch((error) => {
+        log(error);
         reject(error);
       });
   });
@@ -316,11 +317,11 @@ export function resetPassword(userData) {
 
   return new Promise((resolve, reject) => {
     Auth.forgotPasswordSubmit(username, verificationCode, password)
-      .then(data => {
+      .then((data) => {
         resolve(data);
       })
-      .catch(error => {
-        console.log(error);
+      .catch((error) => {
+        log(error);
         reject(error);
       });
   });
@@ -373,14 +374,14 @@ export function getUserByEmailAndAccessToken(userEmail, accessToken) {
             };
             resolve({ ...userProfile, access: dummyAccess });
           })
-          .catch(error => {
+          .catch((error) => {
             store.dispatch({
               type: GET_CURRENT_USER_ORGANIZATIONS_FAILURE,
             });
             reject(error);
           });
       })
-      .catch(error => {
+      .catch((error) => {
         store.dispatch({
           type: GET_CURRENT_USER_FAILURE,
         });
@@ -446,10 +447,10 @@ export function getEnterpriseAccessTokensByAuthCode(authCode, iss) {
   // eslint-disable-next-line consistent-return
   return new Promise(async (resolve, reject) => {
     try {
-      const authUrl = `${process.env.HEYDOC_SERVICES_BASE_URL}oidc`;
+      const authUrl = `${import.meta.env.VITE_HEYDOC_SERVICES_BASE_URL}oidc`;
       const authData = `grant_type=authorization_code&code=${authCode}&iss=${iss}`;
 
-      await axios.post(`${authUrl}/token`, authData).then(response => {
+      await axios.post(`${authUrl}/token`, authData).then((response) => {
         const userRefreshToken = response?.data.refresh_token;
         const userAccessToken = response?.data.access_token;
         const email = response?.data.profile;
@@ -481,18 +482,19 @@ export function getEnterpriseAccessTokensByAuthCode(authCode, iss) {
             eventCategory: 'AUTH',
             usageEventType: 'USAGE_ACTION',
           });
-        } catch (error) {
+        } catch {
           // do nothing
         }
       });
       try {
         await UserApi.captureLocalTimezone();
       } catch (error) {
-        console.log(error);
+        log(error);
       }
       resolve('success');
     } catch (error) {
       reject(error);
+      // eslint-disable-next-line no-promise-executor-return, unicorn/no-useless-promise-resolve-reject
       return Promise.reject(error);
     }
   });
@@ -507,61 +509,64 @@ export function getEnterpriseAccessTokensForEmbeddedSSO(
   // eslint-disable-next-line consistent-return, sonarjs/cognitive-complexity
   return new Promise(async (resolve, reject) => {
     try {
-      const authUrl = `${process.env.HEYDOC_SERVICES_BASE_URL}oidc`;
+      const authUrl = `${import.meta.env.VITE_HEYDOC_SERVICES_BASE_URL}oidc`;
       const authData = `authToken=${authToken}&userIdentifier=${userIdentifier}&targetType=${targetType}&targetIdentifier=${targetIdentifier}`;
 
-      await axios.post(`${authUrl}/embeddedToken`, authData).then(response => {
-        const userRefreshToken = response?.data.refresh_token;
-        const userAccessToken = response?.data.access_token;
-        const email = response?.data.profile;
-        const organizationIdentifier = response?.data.organizationIdentifier;
-        const patientIdentifier = response?.data.patientIdentifier;
-        const taskListIdentifier = response?.data.taskListIdentifier;
-        const taskIdentifier = response?.data.taskIdentifier;
-        sessionStorage.setItem('EnterpriseUserFlag', true);
-        sessionStorage.setItem('SSO_ACCESSTOKEN', userAccessToken);
-        sessionStorage.setItem('SSO_REFRESHTOKEN', userRefreshToken);
-        sessionStorage.setItem('SSO_USEREMAIL', email);
-        sessionStorage.setItem('accessToken', userAccessToken);
+      await axios
+        .post(`${authUrl}/embeddedToken`, authData)
+        .then((response) => {
+          const userRefreshToken = response?.data.refresh_token;
+          const userAccessToken = response?.data.access_token;
+          const email = response?.data.profile;
+          const organizationIdentifier = response?.data.organizationIdentifier;
+          const patientIdentifier = response?.data.patientIdentifier;
+          const taskListIdentifier = response?.data.taskListIdentifier;
+          const taskIdentifier = response?.data.taskIdentifier;
+          sessionStorage.setItem('EnterpriseUserFlag', true);
+          sessionStorage.setItem('SSO_ACCESSTOKEN', userAccessToken);
+          sessionStorage.setItem('SSO_REFRESHTOKEN', userRefreshToken);
+          sessionStorage.setItem('SSO_USEREMAIL', email);
+          sessionStorage.setItem('accessToken', userAccessToken);
 
-        if (organizationIdentifier && organizationIdentifier !== '') {
-          sessionStorage.setItem(
-            'OrganizationIdentifier',
-            organizationIdentifier,
-          );
-          sessionStorage.setItem(
-            'currentOrganizationIdentifier',
-            organizationIdentifier,
-          );
-        }
+          if (organizationIdentifier && organizationIdentifier !== '') {
+            sessionStorage.setItem(
+              'OrganizationIdentifier',
+              organizationIdentifier,
+            );
+            sessionStorage.setItem(
+              'currentOrganizationIdentifier',
+              organizationIdentifier,
+            );
+          }
 
-        if (patientIdentifier && patientIdentifier !== '') {
-          sessionStorage.setItem('PatientIdentifier', patientIdentifier);
-        }
-        if (taskListIdentifier && taskListIdentifier !== '') {
-          sessionStorage.setItem('TaskListIdentifier', taskListIdentifier);
-        }
-        if (taskIdentifier && taskIdentifier !== '') {
-          sessionStorage.setItem('TaskIdentifier', taskIdentifier);
-        }
-        try {
-          sendEvent({
-            eventAction: 'LOGIN_SUCCESS',
-            eventCategory: 'AUTH',
-            usageEventType: 'USAGE_ACTION',
-          });
-        } catch (error) {
-          // do nothing
-        }
-      });
+          if (patientIdentifier && patientIdentifier !== '') {
+            sessionStorage.setItem('PatientIdentifier', patientIdentifier);
+          }
+          if (taskListIdentifier && taskListIdentifier !== '') {
+            sessionStorage.setItem('TaskListIdentifier', taskListIdentifier);
+          }
+          if (taskIdentifier && taskIdentifier !== '') {
+            sessionStorage.setItem('TaskIdentifier', taskIdentifier);
+          }
+          try {
+            sendEvent({
+              eventAction: 'LOGIN_SUCCESS',
+              eventCategory: 'AUTH',
+              usageEventType: 'USAGE_ACTION',
+            });
+          } catch {
+            // do nothing
+          }
+        });
       try {
         await UserApi.captureLocalTimezone();
       } catch (error) {
-        console.log(error);
+        log(error);
       }
       resolve('success');
     } catch (error) {
       reject(error);
+      // eslint-disable-next-line no-promise-executor-return, unicorn/no-useless-promise-resolve-reject
       return Promise.reject(error);
     }
   });
@@ -570,7 +575,6 @@ export function getEnterpriseAccessTokensForEmbeddedSSO(
 export const updatePhoneNumber = async (email, existingPhone, newPhone) => {
   const { userAuth } = store.getState().userState;
 
-  // eslint-disable-next-line @typescript-eslint/camelcase
   await Auth.updateUserAttributes(userAuth, { phone_number: `${newPhone}` });
 
   await Auth.verifyUserAttribute(userAuth, 'phone_number');
@@ -578,7 +582,7 @@ export const updatePhoneNumber = async (email, existingPhone, newPhone) => {
   return axios.put(`/user/updateMFAPhoneNumber`, {}).then(({ data }) => data);
 };
 
-export const verifyNewPhoneNumber = code => {
+export const verifyNewPhoneNumber = (code) => {
   const { userAuth } = store.getState().userState;
 
   return Auth.verifyUserAttributeSubmit(userAuth, 'phone_number', code);
@@ -586,17 +590,19 @@ export const verifyNewPhoneNumber = code => {
 
 export function checkSSO(email) {
   // eslint-disable-next-line consistent-return
-  return new Promise(async resolve => {
+  return new Promise(async (resolve) => {
     try {
-      const checkSSOUrl = `${process.env.HEYDOC_SERVICES_BASE_URL}auth/checkSSO`;
+      const checkSSOUrl = `${
+        import.meta.env.VITE_HEYDOC_SERVICES_BASE_URL
+      }auth/checkSSO`;
       const response = await axios.get(
         `${checkSSOUrl}?email=${encodeURIComponent(email)}`,
       );
       const issuer = response?.data.issuer;
-      console.log(`issuer: ${issuer}`);
+      log(`issuer: ${issuer}`);
       resolve(issuer);
     } catch (error) {
-      console.log(error);
+      log(error);
       resolve('');
     }
   });

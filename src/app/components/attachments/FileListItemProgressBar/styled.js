@@ -1,4 +1,4 @@
-import { makeStyles } from '@material-ui/core/styles';
+import { LinearProgress as MuiLinearProgress } from '@mui/material';
 import styled from 'styled-components';
 import { fontSizes } from 'styles/font';
 import palette from 'styles/palette';
@@ -11,11 +11,12 @@ export const ProgressText = styled.p`
   color: ${palette.coolGrey2};
 `;
 
-export const useLinearProgressStyles = makeStyles({
-  barColorPrimary: {
-    backgroundColor: palette.midnightBlue,
-  },
-  colorPrimary: {
-    backgroundColor: palette.coolGrey2,
-  },
-});
+export const LinearProgress = styled(MuiLinearProgress)`
+  &.MuiLinearProgress-barColorPrimary {
+    background-color: ${palette.midnightBlue};
+  }
+
+  &.MuiLinearProgress-colorPrimary {
+    background-color: ${palette.coolGrey2};
+  }
+`;

@@ -42,7 +42,8 @@ const MemberList = ({ onError }) => {
       setIsFetchingMembers(true);
       setOrganizationMembers([]);
       try {
-        const totalMembers = await OrganizationApi.getOrganizationUsersAndUserGroups();
+        const totalMembers =
+          await OrganizationApi.getOrganizationUsersAndUserGroups();
         setOrganizationMembers(totalMembers);
       } catch (error) {
         if (typeof onError === 'function') onError(error);
@@ -77,7 +78,7 @@ const MemberList = ({ onError }) => {
       <ListContainer>
         <ListContentSection>
           {!isFetchingMembers ? (
-            filteredMembers?.map(member =>
+            filteredMembers?.map((member) =>
               renderSelectOption(member, member.isSelected),
             )
           ) : (

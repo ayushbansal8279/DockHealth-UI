@@ -1,5 +1,5 @@
 import React, { useMemo } from 'react';
-import { Box, Grid } from '@material-ui/core';
+import { Box, Grid } from '@mui/material';
 import { FormProvider, useForm } from 'react-hook-form';
 import { object, string } from 'yup';
 import FormInput from 'components/common/Input/FormInput';
@@ -7,7 +7,7 @@ import Button from 'components/common/Button/Button';
 
 const REQUIRED_FIELD = 'This field is required';
 
-const AddExternalUser = props => {
+const AddExternalUser = (props) => {
   const { initialValues, selectedUsers, onAdd, onCancel } = props;
 
   const validationSchema = useMemo(

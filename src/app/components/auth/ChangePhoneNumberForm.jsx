@@ -1,4 +1,4 @@
-import { Grid } from '@material-ui/core';
+import { Grid } from '@mui/material';
 import React, { useState } from 'react';
 import { FormProvider, useForm } from 'react-hook-form';
 import { object, string } from 'yup';
@@ -22,21 +22,21 @@ const REQUIRED_MESSAGE = 'This field is required';
 
 const validationSchema = object().shape({
   mobilePhoneNumber: string()
-    .transform(value => value.replace(/\D/g, ''))
+    .transform((value) => value.replace(/\D/g, ''))
     .required(REQUIRED_MESSAGE)
     .matches(/\d{10}/, 'This field should have a valid phone number'),
 });
 
 // eslint-disable-next-line unicorn/consistent-function-scoping
-const onSubmit = ({ showDialog, setDialogTitle, setDialogMessage }) => async ({
-  mobilePhoneNumber,
-}) => {
-  setDialogTitle(`Phone number changed`);
-  setDialogMessage(
-    `We have sent an authentication code to your mobile phone ${mobilePhoneNumber}.`,
-  );
-  showDialog();
-};
+const onSubmit =
+  ({ showDialog, setDialogTitle, setDialogMessage }) =>
+  async ({ mobilePhoneNumber }) => {
+    setDialogTitle(`Phone number changed`);
+    setDialogMessage(
+      `We have sent an authentication code to your mobile phone ${mobilePhoneNumber}.`,
+    );
+    showDialog();
+  };
 
 const ChangePhoneNumberForm = () => {
   const isSmallScreen = useSmallScreen();

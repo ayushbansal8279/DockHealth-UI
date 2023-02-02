@@ -1,38 +1,40 @@
-import { RichUtils, Modifier, EditorState } from 'draft-js';
+// import { RichUtils, Modifier, EditorState } from 'draft-js';
 import { moveSelectionToEnd } from '../helpers';
 
 export const createLinkAtSelection = (
   editorState,
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   { text = '', link = '' },
 ) => {
   if (link === '') return editorState;
-  const linkTitle = text === '' ? link : text;
-  const contentState = editorState.getCurrentContent();
-  const contentStateWithEntity = contentState.createEntity('LINK', 'MUTABLE', {
-    url: link,
-  });
-  const entityKey = contentStateWithEntity.getLastCreatedEntityKey();
-  const selection = editorState.getSelection();
-  const newContentState = Modifier.replaceText(
-    contentStateWithEntity,
-    selection,
-    linkTitle,
-    null,
-    entityKey,
-  );
-  let nextEditorState = EditorState.set(editorState, {
-    currentContent: newContentState,
-  });
-  nextEditorState = RichUtils.toggleLink(
-    nextEditorState,
-    nextEditorState.getSelection(),
-    entityKey,
-  );
+  // const linkTitle = text === '' ? link : text;
+  // const contentState = editorState.getCurrentContent();
+  // const contentStateWithEntity = contentState.createEntity('LINK', 'MUTABLE', {
+  //   url: link,
+  // });
+  // const entityKey = contentStateWithEntity.getLastCreatedEntityKey();
+  // const selection = editorState.getSelection();
+  // const newContentState = Modifier.replaceText(
+  //   contentStateWithEntity,
+  //   selection,
+  //   linkTitle,
+  //   null,
+  //   entityKey,
+  // );
+  // let nextEditorState = EditorState.set(editorState, {
+  //   currentContent: newContentState,
+  // });
+  // nextEditorState = RichUtils.toggleLink(
+  //   nextEditorState,
+  //   nextEditorState.getSelection(),
+  //   entityKey,
+  // );
 
-  return moveSelectionToEnd(nextEditorState);
+  // return moveSelectionToEnd(nextEditorState);
+  return moveSelectionToEnd();
 };
 
-export const removeLinkAtSelection = editorState => {
+export const removeLinkAtSelection = (editorState) => {
   const contentState = editorState.getCurrentContent();
   const selectionState = editorState.getSelection();
   const startKey = selectionState.getStartKey();
@@ -44,29 +46,30 @@ export const removeLinkAtSelection = editorState => {
     return editorState;
   }
 
-  let entitySelection = null;
+  // let entitySelection = null;
 
   contentBlock.findEntityRanges(
-    character => character.getEntity() === entity,
+    (character) => character.getEntity() === entity,
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     (start, end) => {
-      entitySelection = selectionState.merge({
-        anchorOffset: start,
-        focusOffset: end,
-      });
+      // entitySelection = selectionState.merge({
+      //   anchorOffset: start,
+      //   focusOffset: end,
+      // });
     },
   );
 
-  const newContentState = Modifier.applyEntity(
-    contentState,
-    entitySelection,
-    null,
-  );
+  // const newContentState = Modifier.applyEntity(
+  //   contentState,
+  //   entitySelection,
+  //   null,
+  // );
 
-  return EditorState.push(editorState, newContentState, 'apply-entity');
+  // return EditorState.push(editorState, newContentState, 'apply-entity');
   // return RichUtils.toggleLink(editorState, selection, null);
 };
 
-export const getCurrentEntityKey = editorState => {
+export const getCurrentEntityKey = (editorState) => {
   const selection = editorState.getSelection();
   const anchorKey = selection.getAnchorKey();
   const contentState = editorState.getCurrentContent();
@@ -76,7 +79,7 @@ export const getCurrentEntityKey = editorState => {
   return anchorBlock.getEntityAt(index);
 };
 
-export const getCurrentEntity = editorState => {
+export const getCurrentEntity = (editorState) => {
   const contentState = editorState.getCurrentContent();
   const entityKey = getCurrentEntityKey(editorState);
   return entityKey ? contentState.getEntity(entityKey) : null;

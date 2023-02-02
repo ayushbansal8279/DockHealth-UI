@@ -7,7 +7,7 @@ import React, {
   useEffect,
   useMemo,
 } from 'react';
-import { Box, Fade, IconButton, Popper } from '@material-ui/core';
+import { Box, Fade, IconButton, Popper } from '@mui/material';
 import { useDispatch } from 'react-redux';
 import moment from 'moment';
 import {
@@ -24,9 +24,9 @@ import {
   convertFromEditorStateToOutput,
 } from 'components/common/TextEditor/helpers';
 import { useMentionsEditorState } from 'components/common/TextEditor/use-mentions-editor-state';
-import { EditorState } from 'draft-js';
-import { createMentionEntities } from 'components/common/TextEditor/create-mention-entities';
-import EditIcon from '@material-ui/icons/Edit';
+// import { EditorState } from 'draft-js';
+// import { createMentionEntities } from 'components/common/TextEditor/create-mention-entities';
+import EditIcon from '@mui/icons-material/Edit';
 import {
   Description,
   DescriptionBox,
@@ -101,20 +101,20 @@ const TaskItemDescription = ({
 
   useEffect(() => {
     if (previousDescription.current !== null) {
-      const newContent = createMentionEntities(
-        tokenizedDescription,
-        description,
-        taskMentions,
-        false,
-      );
-      setDescriptionState(EditorState.push(descriptionState, newContent));
+      // const newContent = createMentionEntities(
+      //   tokenizedDescription,
+      //   description,
+      //   taskMentions,
+      //   false,
+      // );
+      // setDescriptionState(EditorState.push(descriptionState, newContent));
     }
     previousDescription.current = description;
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [description]);
 
   const onParentLabelClick = useCallback(
-    event => {
+    (event) => {
       event.preventDefault();
       event.stopPropagation();
       dispatch(openDrawer());
@@ -124,12 +124,10 @@ const TaskItemDescription = ({
     [parentTask],
   );
 
-  const handleKeyBindingFn = useCallback(event => {
+  const handleKeyBindingFunction = useCallback((event) => {
     if (event.key === 'Enter') {
       return 'enter-command';
     }
-
-    return undefined;
   }, []);
 
   const handleBlur = useCallback(() => {
@@ -150,7 +148,7 @@ const TaskItemDescription = ({
   }, [description, descriptionState, dispatch, setEditing, task]);
 
   const handleKeyCommand = useCallback(
-    command => {
+    (command) => {
       if (command === 'enter-command') {
         // eslint-disable-next-line no-unused-expressions
         descriptionReference.current?.blur();
@@ -168,7 +166,7 @@ const TaskItemDescription = ({
         <Description
           onMouseEnter={() => setIsHovered(true)}
           onMouseLeave={() => setIsHovered(false)}
-          ref={reference => {
+          ref={(reference) => {
             if (reference) {
               descriptionTextReference.current = reference.querySelector(
                 '.public-DraftStyleDefault-block',
@@ -189,7 +187,7 @@ const TaskItemDescription = ({
               highlightedValues={
                 matchDescription && highlightedValue?.toLowerCase().split(/\s+/)
               }
-              keyBindingFn={handleKeyBindingFn}
+              keyBindingFn={handleKeyBindingFunction}
               handleKeyCommand={handleKeyCommand}
               onBlur={handleBlur}
               disableMentions={disableMentions}
@@ -220,7 +218,7 @@ const TaskItemDescription = ({
             {isEditButtonVisible && !isCompleted && (
               <DescriptionEditButton active={isEditing}>
                 <IconButton
-                  onClick={event => {
+                  onClick={(event) => {
                     if (!disabled) {
                       event.stopPropagation();
                       event.preventDefault();
@@ -238,10 +236,12 @@ const TaskItemDescription = ({
       <TaskItemDescriptionIndicators>
         {isCompleted && (
           <CompletedBy isCompleted={isCompleted}>
-            <span>{`By ${completedByName} ${completedDt &&
+            <span>{`By ${completedByName} ${
+              completedDt &&
               ` on ${
                 completedDt ? `${moment(completedDt).format('MM/DD/YYYY')}` : ''
-              }`} ${
+              }`
+            } ${
               linkedTaskTemplate ? `, launched ${linkedTaskTemplate.name}` : ''
             }
             `}</span>

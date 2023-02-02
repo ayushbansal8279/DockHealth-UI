@@ -34,7 +34,7 @@ export const getMenuOptionsForMember = (
   }
 
   switch (userStatus) {
-    case 'ACTIVE':
+    case 'ACTIVE': {
       if (taskListUserRole === 'ADMIN' || taskListUserRole === 'OWNER') {
         return [
           {
@@ -82,8 +82,9 @@ export const getMenuOptionsForMember = (
           },
         },
       ];
+    }
 
-    case 'DENIED':
+    case 'DENIED': {
       return [
         {
           name: 'Remove From This List',
@@ -94,8 +95,9 @@ export const getMenuOptionsForMember = (
           },
         },
       ];
+    }
 
-    case 'PENDING':
+    case 'PENDING': {
       return [
         {
           name: 'Resend Request to Group Owner(s)',
@@ -110,8 +112,9 @@ export const getMenuOptionsForMember = (
           },
         },
       ];
+    }
 
-    case 'INVITED':
+    case 'INVITED': {
       return [
         {
           name: 'Resend Invitation',
@@ -126,14 +129,12 @@ export const getMenuOptionsForMember = (
           },
         },
       ];
+    }
 
-    default:
+    default: {
       return null;
+    }
   }
 };
 
-export const isEmail = value => {
-  return string()
-    .email()
-    .isValidSync(value);
-};
+export const isEmail = (value) => string().email().isValidSync(value);

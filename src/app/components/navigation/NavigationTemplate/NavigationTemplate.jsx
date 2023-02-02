@@ -9,14 +9,9 @@ import Intercom from 'react-intercom';
 import GlobalAlertChip from 'alert/GlobalAlertChip';
 import NavigationSidebar from 'components/navigation/NavigationSidebar/NavigationSidebar';
 import { useHistory } from 'react-router-dom';
-import {
-  DrawerContainer,
-  MainContainer,
-  useDrawerClasses,
-  MaterialDrawer,
-} from './styled';
+import { DrawerContainer, MainContainer, MaterialDrawer } from './styled';
 
-const { INTERCOM_APP_CODE } = process.env;
+const { VITE_INTERCOM_APP_CODE } = import.meta.env;
 
 const NavigationTemplate = ({ children }) => {
   const currentUser = useSelector(userProfileSelector);
@@ -31,11 +26,6 @@ const NavigationTemplate = ({ children }) => {
     currentOrganization?.themeSettings?.find(
       ({ name }) => name === 'global.alert.backgroundColor',
     ) || {};
-
-  const drawerClasses = useDrawerClasses({
-    isNavbarVisible,
-    navBackgroundColor: navBackgroundColorItem?.value,
-  });
 
   const intercomUser =
     currentUser.email && currentUser.firstName
@@ -58,10 +48,8 @@ const NavigationTemplate = ({ children }) => {
     <DrawerContainer>
       {!embeddedModePatientView && (
         <MaterialDrawer
-          classes={{
-            root: drawerClasses.drawer,
-            paper: drawerClasses.drawerPaper,
-          }}
+          $isNavbarVisible={isNavbarVisible}
+          $navBackgroundColor={navBackgroundColorItem?.value}
           variant="permanent"
           anchor="left"
         >
@@ -74,7 +62,7 @@ const NavigationTemplate = ({ children }) => {
         />
         {children}
         {intercomUser && intercomUser.name && !whiteLabelEnabled && (
-          <Intercom appID={INTERCOM_APP_CODE} {...intercomUser} />
+          <Intercom appID={VITE_INTERCOM_APP_CODE} {...intercomUser} />
         )}
       </MainContainer>
     </DrawerContainer>

@@ -13,64 +13,66 @@ const initialState = {
 };
 
 const updateTaskInList = (lists, updateTaskCallback) =>
-  lists.map(list => {
-    return {
-      ...list,
-      tasks: mapWithRemove(updateTaskCallback, list.tasks),
-    };
-  });
+  lists.map((list) => ({
+    ...list,
+    tasks: mapWithRemove(updateTaskCallback, list.tasks),
+  }));
 
-const updateTasksStateCallback = (state, updateTaskFromAction) => {
-  return {
-    ...state,
-    lists: updateTaskInList(state.lists, updateTaskFromAction),
-  };
-};
+const updateTasksStateCallback = (state, updateTaskFromAction) => ({
+  ...state,
+  lists: updateTaskInList(state.lists, updateTaskFromAction),
+});
 
 const GlobalSearchReducer = (state = initialState, action) => {
   const { type, payload } = action;
   switch (type) {
-    case types.SEARCH_COMPLETED_TASKS:
+    case types.SEARCH_COMPLETED_TASKS: {
       return {
         ...state,
         isSearchingCompletedTasks: true,
       };
+    }
 
-    case types.SEARCH_INCOMPLETED_TASKS:
+    case types.SEARCH_INCOMPLETED_TASKS: {
       return {
         ...state,
         isSearchingCompletedTasks: false,
       };
+    }
 
-    case types.SET_SEARCH_VALUE:
+    case types.SET_SEARCH_VALUE: {
       return {
         ...state,
         searchValue: payload?.value,
       };
+    }
 
-    case types.GLOBAL_SEARCH_REQUEST:
+    case types.GLOBAL_SEARCH_REQUEST: {
       return {
         ...state,
         isLoading: true,
       };
+    }
 
-    case types.GLOBAL_SEARCH_REQUEST_SUCCESS:
+    case types.GLOBAL_SEARCH_REQUEST_SUCCESS: {
       return {
         ...state,
         lists: payload?.lists,
         isLoading: false,
       };
+    }
 
-    case types.GLOBAL_SEARCH_MORE_REQUEST:
+    case types.GLOBAL_SEARCH_MORE_REQUEST: {
       return {
         ...state,
         isLoadingMore: true,
       };
+    }
 
-    case types.GLOBAL_SEARCH_MORE_REQUEST_SUCCESS:
+    case types.GLOBAL_SEARCH_MORE_REQUEST_SUCCESS: {
       return {
         ...state,
-        lists: state.lists?.map(list => {
+        lists: state.lists?.map((list) => {
           const matchingList = payload.lists?.find(
             ({ taskListIdentifier }) =>
               taskListIdentifier === list?.taskListIdentifier,
@@ -90,6 +92,7 @@ const GlobalSearchReducer = (state = initialState, action) => {
         }),
         isLoadingMore: false,
       };
+    }
 
     case types.UPDATE_GLOBAL_SEARCH_TASK: {
       const { task } = payload;
@@ -103,14 +106,16 @@ const GlobalSearchReducer = (state = initialState, action) => {
       };
     }
 
-    case types.RESET_GLOBAL_SEARCH:
+    case types.RESET_GLOBAL_SEARCH: {
       return {
         ...state,
         ...initialState,
       };
+    }
 
-    default:
+    default: {
       return TaskBaseReducer(state, action, updateTasksStateCallback);
+    }
   }
 };
 

@@ -73,10 +73,10 @@ export const RoleItem = styled.div`
   border-radius: 9px;
   width: 408px;
   margin-bottom: ${spacing.smallPlus};
-  cursor: ${props => (props.isDisabled ? 'not-allowed' : 'pointer')};
-  background-color: ${props =>
+  cursor: ${(props) => (props.isDisabled ? 'not-allowed' : 'pointer')};
+  background-color: ${(props) =>
     props.isSelected ? palette.coolGrey4 : 'transparent'};
-  ${props => (props.isDisabled ? 'filter: grayscale(70%)' : '')};
+  ${(props) => (props.isDisabled ? 'filter: grayscale(70%)' : '')};
   position: relative;
 
   & > img {
@@ -91,7 +91,7 @@ export const RoleItem = styled.div`
 export const RoleItemLabel = styled.div`
   font-size: ${fontSizes.regular};
   font-weight: ${fontWeights.bold};
-  color: ${props =>
+  color: ${(props) =>
     props.isSelected ? palette.brightBlue : palette.mediumGrey};
 `;
 
@@ -102,7 +102,7 @@ export const RoleItemDescription = styled.div`
 
 export const RoleSelectorFooter = styled.div`
   display: flex;
-  justify-content: ${props =>
+  justify-content: ${(props) =>
     props.multipleButtons ? 'space-between' : 'flex-end'};
   padding: ${spacing.regularPlus} ${spacing.largePlus} ${spacing.largePlus};
 `;

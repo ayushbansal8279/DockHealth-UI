@@ -1,35 +1,40 @@
-export const getMemberStatus = member => {
+export const getMemberStatus = (member) => {
   const { userStatus, taskListUserRole, orgUserRole } = member;
 
   switch (userStatus) {
-    case 'ACTIVE':
+    case 'ACTIVE': {
       if (orgUserRole === 'GUEST') return 'Guest';
 
       if (taskListUserRole === 'ADMIN' || taskListUserRole === 'OWNER')
         return 'List Admin';
 
       return null;
+    }
 
-    case 'PENDING':
+    case 'PENDING': {
       if (orgUserRole === 'GUEST') return 'Approval Pending (Guest)';
 
       return 'Approval Pending';
+    }
 
-    case 'DENIED':
+    case 'DENIED': {
       return 'Denied';
+    }
 
-    case 'INVITED':
+    case 'INVITED': {
       if (orgUserRole === 'GUEST') return 'Invitation Pending (Guest)';
 
       return 'Invitation Pending';
+    }
 
-    default:
+    default: {
       return null;
+    }
   }
 };
 
-export const isMemberPending = member =>
+export const isMemberPending = (member) =>
   member.userStatus === 'PENDING' || member.userStatus === 'INVITED';
 
-export const isMemberAdmin = member =>
+export const isMemberAdmin = (member) =>
   member?.taskListUserRole === 'ADMIN' || member?.taskListUserRole === 'OWNER';

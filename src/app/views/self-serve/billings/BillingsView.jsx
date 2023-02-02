@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
-import { Elements } from 'react-stripe-elements';
+import { Elements } from '@stripe/react-stripe-js';
+import { loadStripe } from '@stripe/stripe-js';
 import { useMount } from 'react-use';
 import { SUBS_SETTINGS_PATH } from 'routing/helpers/paths';
 import { checkIfUserIsOrganizationAdmin } from 'helpers/user-helper';
@@ -27,56 +28,63 @@ import {
 } from './styled';
 
 // eslint-disable-next-line unicorn/consistent-function-scoping
-const onSubmit = ({ setError, dispatch, organizationIdentifier }) => ({
-  stripe,
-  unsetUpdatingBilling,
-  setProcessingUpdate,
-  unsetProcessingUpdate,
-}) => data => {
-  setError('');
-  setProcessingUpdate();
-  return stripe
-    .createToken({ name: 'cardNumber' })
-    .then(token => {
-      if (token.error) {
-        throw token.error;
-      }
+const onSubmit =
+  ({ setError, dispatch, organizationIdentifier }) =>
+  ({
+    stripe,
+    unsetUpdatingBilling,
+    setProcessingUpdate,
+    unsetProcessingUpdate,
+  }) =>
+  (data) => {
+    setError('');
+    setProcessingUpdate();
+    return stripe
+      .createToken({ name: 'cardNumber' })
+      .then((token) => {
+        if (token.error) {
+          throw token.error;
+        }
 
-      saveBillingDetails({
-        billingData: data,
-        token,
-      })
-        .then(() => {
-          unsetUpdatingBilling();
-          unsetProcessingUpdate();
-          dispatch(
-            AlertActions.showGlobalAlert(
-              'Billing information updated successfully!',
-              'success',
-            ),
-          );
-          getBillingDetails({ organizationIdentifier })(dispatch);
+        saveBillingDetails({
+          billingData: data,
+          token,
         })
-        .catch(error => {
-          unsetProcessingUpdate();
-          setError('cardNumber', {
-            type: 'custom',
-            message:
-              error?.response?.data?.errorMessage ??
-              'Could not update billing information, please try again later',
+          .then(() => {
+            unsetUpdatingBilling();
+            unsetProcessingUpdate();
+            dispatch(
+              AlertActions.showGlobalAlert(
+                'Billing information updated successfully!',
+                'success',
+              ),
+            );
+            getBillingDetails({ organizationIdentifier })(dispatch);
+          })
+          .catch((error) => {
+            unsetProcessingUpdate();
+            setError('cardNumber', {
+              type: 'custom',
+              message:
+                error?.response?.data?.errorMessage ??
+                'Could not update billing information, please try again later',
+            });
           });
+      })
+      .catch((error) => {
+        unsetProcessingUpdate();
+        setError('cardNumber', {
+          type: 'custom',
+          message:
+            error?.message ??
+            'Could not update billing information, please try again later',
         });
-    })
-    .catch(error => {
-      unsetProcessingUpdate();
-      setError('cardNumber', {
-        type: 'custom',
-        message:
-          error?.message ??
-          'Could not update billing information, please try again later',
       });
-    });
-};
+  };
+
+const stripePromise = loadStripe(
+  import.meta.env.VITE_SUBSCRIPTION_TOKEN_API_KEY,
+);
 
 const BillingsView = () => {
   const dispatch = useDispatch();
@@ -94,11 +102,8 @@ const BillingsView = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [userProfile]);
 
-  const [
-    isUpdatingBilling,
-    setUpdatingBilling,
-    unsetUpdatingBilling,
-  ] = useBoolean(false);
+  const [isUpdatingBilling, setUpdatingBilling, unsetUpdatingBilling] =
+    useBoolean(false);
 
   const cancelUpdateBilling = () => {
     unsetUpdatingBilling();
@@ -126,6 +131,7 @@ const BillingsView = () => {
             <Spacing vertical={4} />
           </StyledCollapse>
           <Elements
+            stripe={stripePromise}
             locale="en-US"
             fonts={[
               {

@@ -2,7 +2,7 @@ import styled from 'styled-components';
 import palette from 'styles/palette';
 import spacing from 'styles/spacing';
 import { fontSizes, fontWeights } from 'styles/font';
-import { Popper } from '@material-ui/core';
+import { Popper } from '@mui/material';
 
 export const StyledPopper = styled(Popper)`
   left: -32px !important;

@@ -28,13 +28,13 @@ const StatusSection = ({ onTaskUpdate, disabled = false }) => {
   }, [dispatch]);
 
   const handleUpdateWorkflowStatus = useCallback(
-    newWorkflowStatus => {
+    (newWorkflowStatus) => {
       if (taskIdentifier) {
         updateWorkflowStatus(
           selectedTask,
           newWorkflowStatus,
         )(dispatch)
-          .then(updatedTask => {
+          .then((updatedTask) => {
             onTaskDrawerTaskStatusChanged(newWorkflowStatus?.name);
             onTaskUpdate(updatedTask);
             setAutoSaveVisible();

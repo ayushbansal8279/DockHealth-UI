@@ -2,7 +2,7 @@
 /* eslint-disable no-unused-expressions */
 import React, { useEffect, useCallback, useMemo } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { Grid } from '@material-ui/core';
+import { Grid } from '@mui/material';
 import { getTaskCustomFields } from 'actions/task-drawer-actions';
 import CustomField from 'components/common/CustomField/CustomField';
 import { useBoolean } from 'hooks/useBoolean';
@@ -22,6 +22,7 @@ import {
   workflowAutofocusFieldSelector,
 } from 'selectors/workflow-drawer-selectors';
 import { FieldType } from 'helpers/field-type-helpers';
+import { log } from 'helpers/log';
 import { formatMetaDataOutput } from './helpers';
 import {
   CustomFieldsSectionContainer,
@@ -35,6 +36,7 @@ const CustomFieldsSection = ({ disabled, fieldCategoryType }) => {
   const dispatch = useDispatch();
   const selectedTask = useSelector(selectedTaskSelector);
   const selectedWorkflow = useSelector(workflowSelector);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   const task = selectedTask || selectedWorkflow || {};
   const isWorkflow =
     task.itemType === TaskItemType.BUNDLE ||
@@ -48,16 +50,14 @@ const CustomFieldsSection = ({ disabled, fieldCategoryType }) => {
   );
 
   const templates = useMemo(() => {
-    console.log(`unfilteredTemplates: ${JSON.stringify(unfilteredTemplates)}`);
-    const filtered = unfilteredTemplates.filter(unfilteredTemplate => {
-      console.log(
-        `field category type: ${unfilteredTemplate?.fieldCategoryType}`,
-      );
+    log(`unfilteredTemplates: ${JSON.stringify(unfilteredTemplates)}`);
+    const filtered = unfilteredTemplates.filter((unfilteredTemplate) => {
+      log(`field category type: ${unfilteredTemplate?.fieldCategoryType}`);
       if (fieldCategoryType)
         return unfilteredTemplate?.fieldCategoryType === fieldCategoryType;
       return true;
     });
-    console.log(`filtered templates: ${filtered}`);
+    log(`filtered templates: ${filtered}`);
     return filtered;
   }, [fieldCategoryType, unfilteredTemplates]);
 
@@ -86,10 +86,10 @@ const CustomFieldsSection = ({ disabled, fieldCategoryType }) => {
   const { handleSubmit, setValue, getValues } = formMethods;
 
   useEffect(() => {
-    if (task?.taskMetaData) {
-      templates?.forEach(template => {
+    if (task?.taskMetaData && templates)
+      for (const template of templates) {
         const cf = task?.taskMetaData?.find(
-          field => field?.customFieldIdentifier === template.identifier,
+          (field) => field?.customFieldIdentifier === template.identifier,
         );
         const fieldName = `taskMetaData.${template.identifier}`;
         if (cf?.value) {
@@ -99,8 +99,7 @@ const CustomFieldsSection = ({ disabled, fieldCategoryType }) => {
         } else {
           setValue(fieldName, null);
         }
-      });
-    }
+      }
   }, [setValue, task, templates]);
 
   const handleBlur = useCallback(

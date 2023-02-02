@@ -1,5 +1,4 @@
-import { Grid, Typography } from '@material-ui/core';
-import { withStyles } from '@material-ui/core/styles';
+import { Grid, Typography } from '@mui/material';
 import clsx from 'clsx';
 import React from 'react';
 import { Link } from 'react-router-dom';
@@ -21,25 +20,30 @@ const TypographyCustomComponent = ({
   return <Typography className={className} {...props} />;
 };
 
-export const TitleTypography = withStyles({
-  root: {
-    color: palette.greyBlue,
-    width: '100%',
-  },
-  smallScreen: {
-    fontSize: '2.25rem',
-  },
-  h2: {
-    fontSize: '150%',
-    fontWeight: 'bold',
-    marginBottom: '0.5em',
-  },
-  h4: {
-    fontSize: '100%',
-    fontWeight: 'normal',
-    lineHeight: '1.25',
-  },
-})(TypographyCustomComponent);
+export const TitleTypography = styled(TypographyCustomComponent)`
+  &&& {
+    &.MuiTypography-root {
+      color: ${palette.greyBlue};
+      width: '100%';
+    }
+
+    &.smallScreen {
+      font-size: '2.25rem';
+    }
+
+    &.MuiTypography-h2 {
+      font-size: '150%';
+      font-weight: 'bold';
+      margin-bottom: '0.5em';
+    }
+
+    &.MuiTypography-h4 {
+      font-size: '100%';
+      font-weight: 'normal';
+      line-height: '1.25';
+    }
+  }
+`;
 
 export const StyledAnchorDiv = styled.div`
   color: ${palette.darkBlue};
@@ -79,8 +83,8 @@ export const StyledHyperLink = styled.a`
 
 export const StyledLabel = styled.div`
   font-family: 'Open Sans', sans-serif;
-  font-size: ${props => props.remFontSize || 1}rem;
-  font-weight: ${props => (props.bold ? 600 : 'normal')};
+  font-size: ${(props) => props.remFontSize || 1}rem;
+  font-weight: ${(props) => (props.bold ? 600 : 'normal')};
 
   & > a {
     color: ${palette.cyanBlue};
@@ -116,8 +120,8 @@ export const HeightDependentGrid = styled.div`
   box-sizing: border-box;
   display: flex;
   flex-direction: column;
-  flex-basis: ${props => (100 * props.size) / 12}%;
-  max-width: ${props => (100 * props.size) / 12}%;
+  flex-basis: ${(props) => (100 * props.size) / 12}%;
+  max-width: ${(props) => (100 * props.size) / 12}%;
 `;
 
 const Spacing = styled.div`

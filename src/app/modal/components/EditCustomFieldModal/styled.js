@@ -1,9 +1,8 @@
-import { Checkbox } from '@material-ui/core';
+import { Checkbox } from '@mui/material';
 import styled from 'styled-components';
 import { fontSizes, fontWeights } from 'styles/font';
 import palette from 'styles/palette';
 import spacing from 'styles/spacing';
-import { withStyles } from '@material-ui/core/styles';
 import { ModalWrapper } from '../styled';
 
 export const AdditionalOptionLabel = styled.span`
@@ -83,15 +82,16 @@ export const InfoText = styled.p`
   text-transform: uppercase;
 `;
 
-export const BlueCheckbox = withStyles({
-  root: {
-    color: palette.brightBlue,
-    '&$checked': {
-      color: palette.brightBlue,
-    },
-  },
-  checked: {},
-})(Checkbox);
+export const BlueCheckbox = styled(Checkbox)`
+  &&& {
+    &.MuiCheckbox-root {
+      color: ${palette.brightBlue};
+      & .checked {
+        color: ${palette.brightBlue};
+      }
+    }
+  }
+`;
 
 export const CheckboxContainer = styled.div`
   display: flex;

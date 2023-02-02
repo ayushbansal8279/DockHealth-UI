@@ -1,27 +1,30 @@
 import React, { useEffect, useRef, useState } from 'react';
-import Autocomplete from '@material-ui/lab/Autocomplete';
-import CircularProgress from '@material-ui/core/CircularProgress';
-import { withStyles } from '@material-ui/core/styles';
+import Autocomplete from '@mui/lab/Autocomplete';
+import CircularProgress from '@mui/material/CircularProgress';
 import { getAllContacts } from 'api/contacts-api';
 import { matchSorter } from 'match-sorter';
 import { CommunicationType } from 'helpers/task-helpers';
+import styled from 'styled-components';
 import Input from '../Input/Input';
 import { RenderOptionStyled } from './styled';
 
 const filterOptions = (options, { inputValue }) =>
   matchSorter(options, inputValue, { keys: ['label', 'value'] });
 
-const StandardAutocompleteMUI = withStyles({
-  option: {
-    padding: 0,
-  },
-  listbox: {
-    padding: 0,
-  },
-  noOptions: {
-    padding: 0,
-  },
-})(Autocomplete);
+const StandardAutocompleteMUI = styled(Autocomplete)`
+  &&& {
+    &.MuiAutocomplete-option {
+      padding: 0;
+    }
+
+    &.MuiAutocomplete-listbox {
+      padding: 0;
+    }
+    &.MuiAutocomplete-noOptions {
+      padding: 0;
+    }
+  }
+`;
 
 const ContactsAutoComplete = ({
   type,
@@ -41,47 +44,51 @@ const ContactsAutoComplete = ({
   useEffect(() => {
     let active = true;
     if (!loading) {
-      return undefined;
+      return;
     }
     (async () => {
       const response = await getAllContacts();
       if (active) {
         switch (type) {
-          case CommunicationType.EMAIL:
+          case CommunicationType.EMAIL: {
             setContacts(
               response
-                .filter(contact => contact.email)
-                .map(contact => ({
+                .filter((contact) => contact.email)
+                .map((contact) => ({
                   label: contact.name,
                   value: contact.email,
                   identifier: contact.identifier,
                 })),
             );
             break;
-          case CommunicationType.FAX:
+          }
+          case CommunicationType.FAX: {
             setContacts(
               response
-                .filter(contact => contact.faxPhoneNumber)
-                .map(contact => ({
+                .filter((contact) => contact.faxPhoneNumber)
+                .map((contact) => ({
                   label: contact.name,
                   value: contact.faxPhoneNumber,
                   identifier: contact.identifier,
                 })),
             );
             break;
-          case CommunicationType.SMS:
+          }
+          case CommunicationType.SMS: {
             setContacts(
               response
-                .filter(contact => contact.mobilePhoneNumber)
-                .map(contact => ({
+                .filter((contact) => contact.mobilePhoneNumber)
+                .map((contact) => ({
                   label: contact.name,
                   value: contact.mobilePhoneNumber,
                   identifier: contact.identifier,
                 })),
             );
             break;
-          default:
+          }
+          default: {
             setContacts([]);
+          }
         }
       }
     })();
@@ -114,8 +121,8 @@ const ContactsAutoComplete = ({
       onBlur={onBlur}
       onChange={onChange}
       getOptionSelected={(option, value) => option.value === value.value}
-      getOptionLabel={option => option.value ?? option}
-      renderOption={option => (
+      getOptionLabel={(option) => option.value ?? option}
+      renderOption={(option) => (
         <RenderOptionStyled>
           {option.label}
           <span>({option.value})</span>
@@ -127,7 +134,7 @@ const ContactsAutoComplete = ({
       handleHomeEndKeys
       noOptionsText="No contacts provided"
       openOnFocus
-      renderInput={parameters => {
+      renderInput={(parameters) => {
         return (
           <Input
             {...parameters}

@@ -49,16 +49,19 @@ export const CommunicationType = {
 
 export function getPriorityColor(priority) {
   switch (priority) {
-    case TaskPriority.HIGH:
+    case TaskPriority.HIGH: {
       return palette.tomatoInYoFace;
+    }
     // case TaskPriority.MEDIUM:
     //   return palette.orangeJulius;
     // case TaskPriority.LOW:
     //   return palette.bananaHammock;
     // case TaskPriority.NONE:
+    // eslint-disable-next-line unicorn/no-useless-switch-case
     case TaskPriority.LOW:
-    default:
+    default: {
       return 'transparent';
+    }
   }
 }
 
@@ -95,9 +98,9 @@ export function getAttachmentsIconTooltipTitle(attachments) {
   if (attachments.length === 1) {
     attachmentLabelDetails = `${attachments[0].fileName}`;
   } else if (attachments.length > 1) {
-    attachmentLabelDetails = `${
-      attachments[0].fileName
-    } + ${attachments.length - 1}`;
+    attachmentLabelDetails = `${attachments[0].fileName} + ${
+      attachments.length - 1
+    }`;
   }
   return attachmentLabelDetails;
 }
@@ -107,6 +110,7 @@ export function getCommentsIconTooltipTitle(comments) {
 }
 
 export function isStartDateInPast(task) {
+  // eslint-disable-next-line sonarjs/prefer-single-boolean-return
   if (!task) {
     return false;
   }
@@ -371,17 +375,17 @@ export const TASK_ITEM_SORT_DESC_METHODS = {
 
 export function updateNestedTask(dataToUpdate, taskIdentifier, task) {
   if (
-    task.subtasks?.some(s => s.taskIdentifier === taskIdentifier) ||
-    task.taskDependencies?.some(s => s.taskIdentifier === taskIdentifier)
+    task.subtasks?.some((s) => s.taskIdentifier === taskIdentifier) ||
+    task.taskDependencies?.some((s) => s.taskIdentifier === taskIdentifier)
   ) {
     return {
       ...task,
-      subtasks: task?.subtasks?.map(subtask =>
+      subtasks: task?.subtasks?.map((subtask) =>
         taskIdentifier === subtask.taskIdentifier
           ? { ...subtask, ...dataToUpdate }
           : subtask,
       ),
-      taskDependencies: task?.taskDependencies?.map(t =>
+      taskDependencies: task?.taskDependencies?.map((t) =>
         taskIdentifier === t.taskIdentifier ? { ...t, ...dataToUpdate } : t,
       ),
     };
@@ -396,17 +400,17 @@ export function updateSubtasksInTaskWithCallback(
   task,
 ) {
   if (
-    task.subtasks?.some(s => s.taskIdentifier === taskIdentifier) ||
-    task.taskDependencies?.some(s => s.taskIdentifier === taskIdentifier)
+    task.subtasks?.some((s) => s.taskIdentifier === taskIdentifier) ||
+    task.taskDependencies?.some((s) => s.taskIdentifier === taskIdentifier)
   ) {
     return {
       ...task,
-      subtasks: task?.subtasks?.map(subtask =>
+      subtasks: task?.subtasks?.map((subtask) =>
         taskIdentifier === subtask.taskIdentifier
           ? updateCallback(subtask)
           : subtask,
       ),
-      taskDependencies: task?.taskDependencies?.map(t =>
+      taskDependencies: task?.taskDependencies?.map((t) =>
         taskIdentifier === t.taskIdentifier ? updateCallback(t) : t,
       ),
     };
@@ -415,7 +419,7 @@ export function updateSubtasksInTaskWithCallback(
   return task;
 }
 export const isColumnChecked = (columns, columnName) =>
-  !!columns?.find(c => c.identifier === columnName)?.isChecked;
+  !!columns?.find((c) => c.identifier === columnName)?.isChecked;
 
 export const EmrNoteTypeOptions = {
   COMMUNICATION_NOTE: 'Communication note',
@@ -426,7 +430,7 @@ export const EmrNoteTypeOptions = {
 };
 
 export function findIncompleteRequiredFields(customFields, task) {
-  return customFields?.filter(field => {
+  return customFields?.filter((field) => {
     const { taskMetaData } = task;
     const { identifier: taskFieldIdentifier } = field;
     const matchingMetaData = taskMetaData.find(

@@ -2,7 +2,7 @@ import React from 'react';
 import { fontSizes } from 'styles/font';
 import RotatableChevron from 'components/common/RotatableChevron/RotatableChevron';
 import Spacing from 'components/common/Spacing';
-import { Box } from '@material-ui/core';
+import { Box } from '@mui/material';
 import AddButton from 'components/common/AddButton/AddButton';
 import { LabeledCollapseHeaderButton, LabeledCollapseItemName } from './styled';
 

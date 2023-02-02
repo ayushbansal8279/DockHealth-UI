@@ -14,15 +14,14 @@ import {
   ClickAwayListener,
   Paper,
   Popper,
-  MenuList,
   MenuItem,
   ListItemText,
   Box,
-} from '@material-ui/core';
+} from '@mui/material';
 import zIndex from 'styles/z-index';
 import Tooltip from 'components/common/Tooltip/Tooltip';
 import palette from 'styles/palette';
-import { StyledButton, useMenuStyles, OptionsMenuContainer } from './styled';
+import { StyledButton, MenuList, OptionsMenuContainer } from './styled';
 
 const OptionsMenu = ({
   isDisabled,
@@ -36,7 +35,6 @@ const OptionsMenu = ({
   const assignMemberButtonReference = useRef(null);
   const [isOpen, openPopover] = useState(false);
   const Button = CustomButtonComponent || StyledButton;
-  const menuClasses = useMenuStyles();
 
   return (
     <OptionsMenuContainer>
@@ -44,7 +42,7 @@ const OptionsMenu = ({
         type="button"
         ref={assignMemberButtonReference}
         disabled={isDisabled}
-        onClick={event => {
+        onClick={(event) => {
           event.stopPropagation();
           openPopover(true);
         }}
@@ -56,7 +54,7 @@ const OptionsMenu = ({
         placement={placement}
         disablePortal={disablePortal}
         open={isOpen}
-        onClose={event => {
+        onClose={(event) => {
           event.stopPropagation();
           openPopover(false);
         }}
@@ -67,7 +65,7 @@ const OptionsMenu = ({
         {isOpen && (
           <ClickAwayListener onClickAway={() => openPopover(false)}>
             <Paper>
-              <MenuList classes={menuClasses}>
+              <MenuList>
                 {options
                   ?.filter(prop('name'))
                   ?.map(
@@ -88,7 +86,7 @@ const OptionsMenu = ({
                         <div>
                           <MenuItem
                             color={color}
-                            onClick={event => {
+                            onClick={(event) => {
                               openPopover(false);
                               onClick(event);
                             }}

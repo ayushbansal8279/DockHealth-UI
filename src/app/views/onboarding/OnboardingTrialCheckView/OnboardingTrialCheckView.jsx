@@ -1,4 +1,4 @@
-import { Grid } from '@material-ui/core';
+import { Grid } from '@mui/material';
 import React from 'react';
 import { useHistory } from 'react-router-dom';
 import palette from 'styles/palette';
@@ -11,7 +11,7 @@ import {
   OnboardingSpacing5,
 } from '../OnboardingTemplate.Components';
 
-const subscribeNow = history => {
+const subscribeNow = (history) => {
   history.push('subscriptions');
 };
 

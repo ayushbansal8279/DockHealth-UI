@@ -16,11 +16,13 @@ const initialState = {
 
 const TemplateReducer = (state = initialState, action) => {
   switch (action.type) {
-    case HIDE_NAVBAR:
+    case HIDE_NAVBAR: {
       return { ...state, isNavbarVisible: false };
+    }
 
-    case SHOW_NAVBAR:
+    case SHOW_NAVBAR: {
       return { ...state, isNavbarVisible: true };
+    }
 
     case SHOW_SUB_MENU: {
       return { ...state, subMenuKey: action.subMenuKey };
@@ -42,8 +44,9 @@ const TemplateReducer = (state = initialState, action) => {
       return { ...state, notificationsOpen: false, notificationsPage: '' };
     }
 
-    default:
+    default: {
       return state;
+    }
   }
 };
 

@@ -1,7 +1,7 @@
 import Pusher from 'pusher-js';
 
-const APP_KEY = process.env.PUSHER_APP_KEY;
-const APP_CLUSTER = process.env.PUSHER_CLUSTER_NAME;
+const APP_KEY = import.meta.env.VITE_PUSHER_APP_KEY;
+const APP_CLUSTER = import.meta.env.VITE_PUSHER_CLUSTER_NAME;
 
 let pusherInstance = null;
 
@@ -10,7 +10,9 @@ export const initializePusher = () => {
   if (currentAccessToken && !pusherInstance) {
     pusherInstance = new Pusher(APP_KEY, {
       cluster: APP_CLUSTER,
-      authEndpoint: `${process.env.HEYDOC_SERVICES_BASE_URL}pusher/auth`,
+      authEndpoint: `${
+        import.meta.env.VITE_HEYDOC_SERVICES_BASE_URL
+      }pusher/auth`,
       auth: {
         headers: { Authorization: `Bearer ${currentAccessToken}` },
       },
@@ -26,7 +28,9 @@ export const initializePusherForPresence = () => {
   if (currentAccessToken && !pusherInstanceForPresence) {
     pusherInstanceForPresence = new Pusher(APP_KEY, {
       cluster: APP_CLUSTER,
-      authEndpoint: `${process.env.HEYDOC_SERVICES_BASE_URL}pusher/auth?presence=true`,
+      authEndpoint: `${
+        import.meta.env.VITE_HEYDOC_SERVICES_BASE_URL
+      }pusher/auth?presence=true`,
       auth: {
         headers: { Authorization: `Bearer ${currentAccessToken}` },
       },

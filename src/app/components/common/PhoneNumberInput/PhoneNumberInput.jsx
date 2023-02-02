@@ -3,12 +3,15 @@ import React from 'react';
 import PhoneInput from 'react-phone-input-2';
 import 'react-phone-input-2/lib/style.css';
 import palette from 'styles/palette';
-import { makeStyles } from '@material-ui/core/styles';
 import Input from '../Input/Input';
 
-const phoneCountryCodes = process.env.PHONE_COUNTRY_CODES.split(',');
+const phoneCountryCodes = import.meta.env.VITE_PHONE_COUNTRY_CODES.split(',');
+const browserLang = navigator?.language?.slice(0, 2).toLowerCase();
+const defaultLang = phoneCountryCodes.includes(browserLang)
+  ? browserLang
+  : 'us';
 
-export const usePhoneNumberStyles = makeStyles({
+export const usePhoneNumberStyles = {
   dropdown: {
     left: '-12px !important',
     padding: '8px 0 !important',
@@ -53,14 +56,10 @@ export const usePhoneNumberStyles = makeStyles({
       cursor: 'initial !important',
     },
   },
-});
+};
 
-const browserLang = navigator?.language?.slice(0, 2).toLowerCase();
-const defaultLang = phoneCountryCodes.includes(browserLang)
-  ? browserLang
-  : 'us';
 const CustomPhoneNumberInput = ({ readOnly, inputRef, ...otherProps }) => {
-  const classes = usePhoneNumberStyles();
+  const classes = usePhoneNumberStyles;
   return (
     <PhoneInput
       {...otherProps}
@@ -78,7 +77,7 @@ const CustomPhoneNumberInput = ({ readOnly, inputRef, ...otherProps }) => {
   );
 };
 
-const PhoneNumberInput = props => (
+const PhoneNumberInput = (props) => (
   <Input {...props} shrink customInputComponent={CustomPhoneNumberInput} />
 );
 

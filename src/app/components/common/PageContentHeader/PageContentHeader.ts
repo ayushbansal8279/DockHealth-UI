@@ -4,7 +4,7 @@ import palette from 'styles/palette';
 const PageContentHeader = styled.div<{ paneled?: boolean }>`
   align-items: center;
   color: ${palette.coolGrey1};
-  ${props =>
+  ${(props) =>
     props.paneled
       ? `border: 0.125rem solid ${palette.unknownGrey2}; margin-bottom: 1.5rem;`
       : `border-bottom: 0.0625rem solid ${palette.coolGrey3};`}

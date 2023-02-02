@@ -161,9 +161,9 @@ export const ProgressBar = styled.div`
   height: 4px;
   background: linear-gradient(
     to right,
-    ${palette.brightBlue} 0% ${props => props.fileProgress}%,
-    ${palette.coolGrey2} ${props => props.fileProgress}%
-      ${props => props.inverseProgress}%
+    ${palette.brightBlue} 0% ${(props) => props.fileProgress}%,
+    ${palette.coolGrey2} ${(props) => props.fileProgress}%
+      ${(props) => props.inverseProgress}%
   );
   border-radius: 4px;
   display: inline-block;

@@ -41,7 +41,7 @@ export function getCurrentTaskListFilterOptions() {
   };
 }
 
-export const refreshListDetailsGroupedTasks = withLoader => ({
+export const refreshListDetailsGroupedTasks = (withLoader) => ({
   type: ActionTypes.REFRESH_LIST_DETAILS_GROUPED_TASKS,
   payload: {
     withLoader,
@@ -148,17 +148,17 @@ export const getTasksGroupsList = () => ({
   type: ActionTypes.GET_TASKS_GROUPS_LIST,
 });
 
-export const getTasksForTaskGroups = payload => ({
+export const getTasksForTaskGroups = (payload) => ({
   type: ActionTypes.GET_TASKS_FOR_TASK_GROUP,
   ...payload,
 });
 
-export const createTaskListGroup = groupName => ({
+export const createTaskListGroup = (groupName) => ({
   type: ActionTypes.CREATE_TASK_LIST_GROUP,
   groupName,
 });
 
-export const createTaskListGroupSuccess = group => ({
+export const createTaskListGroupSuccess = (group) => ({
   type: ActionTypes.CREATE_TASK_LIST_GROUP_SUCCESS,
   group,
 });

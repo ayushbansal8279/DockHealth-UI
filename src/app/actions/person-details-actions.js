@@ -69,9 +69,9 @@ export function sortUserTasks(key, order) {
 }
 
 export function quickAddTask(newTask) {
-  return dispatch => {
-    return TaskApi.addTask(newTask)
-      .then(task => {
+  return (dispatch) =>
+    TaskApi.addTask(newTask)
+      .then((task) => {
         dispatch({ type: ActionTypes.ADD_TASK_SUCCESS, task });
         dispatch({
           type: ActionTypes.CHANGE_ADDING_NEW_TASK,
@@ -81,10 +81,9 @@ export function quickAddTask(newTask) {
         dispatch(AlertActions.showGlobalAlert(AlertMessages.TASK_CREATED));
         return task;
       })
-      .catch(error => {
+      .catch((error) => {
         throw error;
       });
-  };
 }
 
 export function updateUser(user) {

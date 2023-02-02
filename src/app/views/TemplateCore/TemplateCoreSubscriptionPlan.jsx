@@ -61,7 +61,7 @@ const TemplateCoreSubscriptionPlan = ({
         <NavigationTemplate>
           <Switch>
             {isLoaded &&
-              childRoutes?.map(route => (
+              childRoutes?.map((route) => (
                 <RouteWrapper
                   permissions={route.permissions}
                   allowedToRoles={route.allowedToRoles}

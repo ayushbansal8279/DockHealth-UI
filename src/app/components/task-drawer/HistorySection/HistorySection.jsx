@@ -10,9 +10,8 @@ import EmptyHistoryLabel from 'components/drawer-common/EmptyHistoryLabel/EmptyH
 import { userProfileSelector } from 'selectors/user-selectors';
 
 const HistorySection = () => {
-  const [isHistoryLoading, setHistoryLoading, unsetHistoryLoading] = useBoolean(
-    false,
-  );
+  const [isHistoryLoading, setHistoryLoading, unsetHistoryLoading] =
+    useBoolean(false);
   const [history, setHistory] = useState(null);
   const selectedTask = useSelector(selectedTaskSelector);
   const selectedTaskIdentifier = selectedTask?.taskIdentifier;
@@ -25,7 +24,7 @@ const HistorySection = () => {
   const handleHistoryOpen = () => {
     setHistoryLoading();
     TaskApi.getTaskHistory(selectedTaskIdentifier)
-      .then(historyDetails => {
+      .then((historyDetails) => {
         setHistory(historyDetails);
         unsetHistoryLoading();
       })
@@ -65,8 +64,9 @@ const HistorySection = () => {
                 }) => (
                   <HistoryItem
                     key={auditId}
-                    description={`${user?.userName ??
-                      ''} ${taskHistoryDetails}`}
+                    description={`${
+                      user?.userName ?? ''
+                    } ${taskHistoryDetails}`}
                     date={createdDateTime}
                     type={taskHistoryType}
                   />

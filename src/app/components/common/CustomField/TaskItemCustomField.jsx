@@ -48,12 +48,12 @@ const TaskItemCustomField = ({
     }
   }, [dispatch, field.identifier, onClick, patientType, task]);
 
-  const handleChange = async newValue => {
+  const handleChange = async (newValue) => {
     if (patientType) {
       if (task?.patient) {
         const patientMetaData = (task?.patient?.patientMetaData || [])
-          ?.filter(tmd => tmd.customFieldIdentifier !== field.identifier)
-          ?.map(tmd => createMetaDataObjectToSend(tmd));
+          ?.filter((tmd) => tmd.customFieldIdentifier !== field.identifier)
+          ?.map((tmd) => createMetaDataObjectToSend(tmd));
         if (Array.isArray(newValue)) {
           patientMetaData.push({
             customFieldIdentifier: field.identifier,
@@ -71,8 +71,8 @@ const TaskItemCustomField = ({
     } else {
       const taskMetaData =
         task.taskMetaData
-          ?.filter(tmd => tmd.customFieldIdentifier !== field.identifier)
-          ?.map(tmd => createMetaDataObjectToSend(tmd)) ?? [];
+          ?.filter((tmd) => tmd.customFieldIdentifier !== field.identifier)
+          ?.map((tmd) => createMetaDataObjectToSend(tmd)) ?? [];
       if (Array.isArray(newValue)) {
         taskMetaData.push({
           customFieldIdentifier: field.identifier,

@@ -7,7 +7,7 @@ export const validationSchema = object().shape({
   lastName: string().required(REQUIRED_MESSAGE),
   email: string()
     .nullable()
-    .transform(value => (!value ? null : value))
+    .transform((value) => value || null)
     .email('This field requires a valid email address'),
   phoneWork: string().nullable(),
   phoneMobile: string().nullable(),

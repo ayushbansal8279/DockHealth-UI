@@ -25,11 +25,11 @@ export const UploadBar = styled.div`
   position: absolute;
   top: 0;
   transition: all 0.25s ease-out;
-  width: ${props => props.progress ?? 0}%;
+  width: ${(props) => props.progress ?? 0}%;
   z-index: 1;
 
   &::after {
-    content: '${props => props.progress ?? 0}%';
+    content: '${(props) => props.progress ?? 0}%';
     color: ${palette.darkGrey};
     font-family: 'Roboto Condensed', sans-serif;
     font-size: ${fontSizes.small};

@@ -1,7 +1,7 @@
 import { UserGroupType } from 'helpers/user-groups-helper';
 import { createSelector } from 'reselect';
 
-export const userGroupsStateSelector = state => state.userGroups;
+export const userGroupsStateSelector = (state) => state.userGroups;
 
 export const userGroupsSelector = createSelector(
   userGroupsStateSelector,
@@ -24,7 +24,7 @@ export const isFetchingUserGroupsSelector = createSelector(
   ({ isFetchingGroups }) => isFetchingGroups,
 );
 
-export const getUserGroupDetailsSelector = userGroupIdentifier =>
+export const getUserGroupDetailsSelector = (userGroupIdentifier) =>
   createSelector(
     userGroupsStateSelector,
     ({ groupsDetails }) => groupsDetails[userGroupIdentifier] ?? null,
@@ -45,14 +45,14 @@ export const creatingUserGroupsErrorSelector = createSelector(
   ({ creatingError }) => creatingError,
 );
 
-export const isSavingUserGroupSelector = userGroupIdentifier =>
+export const isSavingUserGroupSelector = (userGroupIdentifier) =>
   createSelector(
     userGroupsStateSelector,
     ({ groupsDetails }) =>
       groupsDetails[userGroupIdentifier]?.isSaving ?? false,
   );
 
-export const userGroupErrorSelector = userGroupIdentifier =>
+export const userGroupErrorSelector = (userGroupIdentifier) =>
   createSelector(
     userGroupsStateSelector,
     ({ groupsDetails }) => groupsDetails[userGroupIdentifier]?.error ?? false,

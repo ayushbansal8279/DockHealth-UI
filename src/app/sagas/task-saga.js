@@ -63,7 +63,7 @@ function* reorderSubtasks(payload) {
 function* addTaskDependencyLink({ sourceTask, targetTaskIdentifier }) {
   try {
     const link = sourceTask.taskLinks?.find(
-      t => t.targetTaskIdentifier === targetTaskIdentifier,
+      (t) => t.targetTaskIdentifier === targetTaskIdentifier,
     );
     if (link) {
       yield put(TaskActions.updateTasksLink({ ...link, isDependent: true }));
@@ -130,7 +130,7 @@ function* markTaskAsRead(task) {
       type: ActionTypes.MARK_TASK_AS_READ_SUCCESS,
       task: updatedTask,
     });
-  } catch (error) {
+  } catch {
     yield put({ type: ActionTypes.MARK_TASK_AS_READ_FAILURE });
     yield put(showGlobalErrorAlert());
   }
@@ -147,7 +147,7 @@ function* markTaskAsUnRead(task) {
       type: ActionTypes.MARK_TASK_AS_UNREAD_SUCCESS,
       task: updatedTask,
     });
-  } catch (error) {
+  } catch {
     yield put({ type: ActionTypes.MARK_TASK_AS_UNREAD_FAILURE });
     yield put(showGlobalErrorAlert());
   }

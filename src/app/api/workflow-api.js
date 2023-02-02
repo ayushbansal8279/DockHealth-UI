@@ -1,9 +1,7 @@
 import axios from './axios-heydoc';
 
 export function getWorkflow(identifier) {
-  return axios.get(`task/workflow/${identifier}`).then(({ data }) => {
-    return data;
-  });
+  return axios.get(`task/workflow/${identifier}`).then(({ data }) => data);
 }
 
 export function duplicateWorkflow(identifier, includeAttachments = false) {
@@ -17,9 +15,7 @@ export function duplicateWorkflow(identifier, includeAttachments = false) {
         },
       },
     )
-    .then(({ data }) => {
-      return data;
-    });
+    .then(({ data }) => data);
 }
 
 export function deleteWorkflow(identifier) {
@@ -29,9 +25,7 @@ export function deleteWorkflow(identifier) {
 export function addWorkflowComment(workflowIdentifier, comment) {
   return axios
     .post(`task/comment/${workflowIdentifier}`, comment)
-    .then(({ data }) => {
-      return data;
-    });
+    .then(({ data }) => data);
 }
 
 export function updateWorkflowComment(identifier, commentText) {
@@ -40,17 +34,13 @@ export function updateWorkflowComment(identifier, commentText) {
       commentIdentifier: identifier,
       comment: commentText,
     })
-    .then(({ data }) => {
-      return data;
-    });
+    .then(({ data }) => data);
 }
 
 export function deleteWorkflowComment(identifier) {
   return axios
     .delete(`task/comment/deleteCommentById/${identifier}`)
-    .then(({ data }) => {
-      return data;
-    });
+    .then(({ data }) => data);
 }
 
 export function getWorkflowAttachment(attachmentIdentifier) {
@@ -61,9 +51,7 @@ export function getWorkflowAttachment(attachmentIdentifier) {
     headers: {
       Accept: 'application/octet-stream',
     },
-  }).then(({ data }) => {
-    return data;
-  });
+  }).then(({ data }) => data);
 }
 
 export function addWorkflowAttachment(
@@ -81,17 +69,13 @@ export function addWorkflowAttachment(
       },
       onUploadProgress,
     })
-    .then(({ data }) => {
-      return data;
-    });
+    .then(({ data }) => data);
 }
 
 export function deleteWorkflowAttachment(attachmentIdentifier) {
   return axios
     .delete(`task/attachment/${attachmentIdentifier}`)
-    .then(({ data }) => {
-      return data;
-    });
+    .then(({ data }) => data);
 }
 
 export function getWorkflowHistory(workflowIdentifier) {

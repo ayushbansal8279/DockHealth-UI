@@ -52,7 +52,7 @@ const StandardTaskItemContainer = ({
   );
 
   const toggleCompleteTaskStatus = useCallback(
-    task => {
+    (task) => {
       taskActions
         .toggleCompleteTask(task, currentUser, isBundleTask)
         .then(() => {
@@ -73,7 +73,7 @@ const StandardTaskItemContainer = ({
   );
 
   const handleToggleTaskCompletedStatus = useCallback(
-    task => {
+    (task) => {
       const incompleteRequiredFields = findIncompleteRequiredFields(
         templates,
         task,
@@ -90,7 +90,7 @@ const StandardTaskItemContainer = ({
 
       const hasIncompletedSubtasks =
         task.subtasks?.length > 0
-          ? task.subtasks.find(subtask => subtask.status === 'INCOMPLETE')
+          ? task.subtasks.find((subtask) => subtask.status === 'INCOMPLETE')
           : task.subTasksCount - task.subTasksCompletedCount > 0;
 
       if (task.status === 'INCOMPLETE' && hasIncompletedSubtasks) {

@@ -2,7 +2,7 @@ import React, { useMemo } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { currentTaskTemplateIdentifierSelector } from 'selectors/task-template-selectors';
 import * as TaskTemplateActions from 'actions/task-template-actions';
-import { AnimatePresence } from 'framer-motion/dist/framer-motion';
+import { AnimatePresence } from 'framer-motion';
 import { BulkEditOptionsConfig } from 'helpers/bulk-edit-helpers';
 import BulkEditOptionsBar from 'components/tasklist/BulkEditSection/BulkEditOptionsBar/BulkEditOptionsBar';
 import { AnimatedContainer } from './styled';
@@ -17,7 +17,7 @@ const SMARTFLOW_BULK_EDIT_CONFIG = {
   [BulkEditOptionsConfig.DELETE_OPTION]: true,
 };
 
-const BulkEditContainer = props => {
+const BulkEditContainer = (props) => {
   const { selectedTasks, onClose } = props;
 
   const dispatch = useDispatch();

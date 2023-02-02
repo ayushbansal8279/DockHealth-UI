@@ -1,7 +1,7 @@
 import React from 'react';
-import InfoOutlinedIcon from '@material-ui/icons/InfoOutlined';
-import { Typography } from '@material-ui/core';
-import { MuiThemeProvider } from '@material-ui/core/styles';
+import InfoOutlinedIcon from '@mui/icons-material/InfoOutlined';
+import { Typography } from '@mui/material';
+import { ThemeProvider as MuiThemeProvider } from '@mui/material/styles';
 import { redTheme } from '../../themes/red-theme';
 
 import {

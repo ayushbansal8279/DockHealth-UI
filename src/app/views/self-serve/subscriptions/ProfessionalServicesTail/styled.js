@@ -1,8 +1,7 @@
 import styled from 'styled-components';
 import { fontSizes, fontWeights } from 'styles/font';
 import palette from 'styles/palette';
-import { withStyles } from '@material-ui/core/styles';
-import MuiCheckIcon from '@material-ui/icons/Check';
+import MuiCheckIcon from '@mui/icons-material/Check';
 
 export const Container = styled.div`
   display: grid;
@@ -55,17 +54,19 @@ export const PurchaseButton = styled.button`
   color: ${({ active, color }) => (active ? color : palette.white)};
   font-size: ${fontSizes.smallPlus};
   font-weight: ${fontWeights.bold};
-  ${({ active }) => (!active ? 'text-transform: uppercase;' : '')}
+  ${({ active }) => (active ? '' : 'text-transform: uppercase;')}
 `;
 
-export const CheckIcon = withStyles({
-  root: {
-    position: 'absolute',
-    left: -30,
-    top: '50%',
-    transform: 'translateY(-50%)',
-  },
-})(MuiCheckIcon);
+export const CheckIcon = styled(MuiCheckIcon)`
+  &&& {
+    &.MuiCheckIcon-root {
+      position: absolute;
+      left: -30px;
+      top: 50%;
+      transform: translateY(-50%);
+    }
+  }
+`;
 
 export const Level = styled.p`
   margin-top: 10px;

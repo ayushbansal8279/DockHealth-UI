@@ -24,11 +24,10 @@ export const approveOrDenyInvitation = ({
   });
 };
 
-export const sendUserOnboardingAnswers = ({ answers }) => {
-  return UserApi.sendUserOnboardingAnswers({
+export const sendUserOnboardingAnswers = ({ answers }) =>
+  UserApi.sendUserOnboardingAnswers({
     answers,
   });
-};
 
 export function getCurrentUserNotificationPreferences() {
   return {

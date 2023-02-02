@@ -42,7 +42,7 @@ const sendEvent = async (data: SendEventProps) => {
         url: '/usage/event',
         data,
       });
-    } catch (error) {
+    } catch {
       // do nothing
     }
   }

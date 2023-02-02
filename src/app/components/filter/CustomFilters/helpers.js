@@ -5,11 +5,11 @@ export const getUniqueQuickFilterLabelName = (
 ) => {
   const name = `${prefix} ${startCounter}`;
   let isExistingSameName = false;
-  list.forEach(element => {
+  for (const element of list) {
     if (element.name === name) {
       isExistingSameName = true;
     }
-  });
+  }
   return isExistingSameName
     ? getUniqueQuickFilterLabelName(list, prefix, startCounter + 1)
     : name;

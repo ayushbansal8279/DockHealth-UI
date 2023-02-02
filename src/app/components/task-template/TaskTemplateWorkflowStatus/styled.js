@@ -6,7 +6,7 @@ export const StatusWrapper = styled.div`
 `;
 
 export const StatusBar = styled.div`
-  background-color: ${props => props.color};
+  background-color: ${(props) => props.color};
   height: calc(100% - 2px);
   top: 0;
   left: 0;

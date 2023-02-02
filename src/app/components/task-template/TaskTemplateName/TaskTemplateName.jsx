@@ -1,6 +1,6 @@
 /* eslint-disable react-hooks/rules-of-hooks */
 import React, { useState } from 'react';
-import { Fade, Popper } from '@material-ui/core';
+import { Fade, Popper } from '@mui/material';
 import { openDrawer } from 'actions/workflow-drawer-actions';
 import { checkIfShouldDisplayTooltip } from 'components/task/OverflowTooltip/OverflowTooltip';
 import { useDispatch } from 'react-redux';
@@ -41,7 +41,7 @@ const TaskTemplateName = ({
             ref={nameInputReference}
             readOnly={!isEditing}
             error={nameInputError}
-            onChange={event => {
+            onChange={(event) => {
               setNameInputValue(event.target?.value);
               setNameInputError(false);
             }}
@@ -51,7 +51,7 @@ const TaskTemplateName = ({
             }}
             onKeyDown={handleNameInputKeyDown}
             value={nameInputValue}
-            onClick={event => {
+            onClick={(event) => {
               if (isEditing) {
                 event.stopPropagation();
               }

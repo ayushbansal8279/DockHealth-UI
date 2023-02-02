@@ -1,14 +1,14 @@
 import React, { useCallback, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { selectedTaskSelector } from 'selectors/task-drawer-selectors';
-import { EditorState } from 'draft-js';
+// import { EditorState } from 'draft-js';
 import {
   convertFromEditorStateToOutput,
-  addStylesToText,
+  // addStylesToText,
 } from 'components/common/TextEditor/helpers';
-import { createMentionEntities } from 'components/common/TextEditor/create-mention-entities';
-import { IconButton } from '@material-ui/core';
-import { Replay } from '@material-ui/icons';
+// import { createMentionEntities } from 'components/common/TextEditor/create-mention-entities';
+import { IconButton } from '@mui/material';
+import { Replay } from '@mui/icons-material';
 import palette from 'styles/palette';
 import Button from 'components/common/Button/Button';
 import { closeModal } from 'modal/actions';
@@ -41,29 +41,30 @@ function SendEmrNoteFromTaskModal() {
   const { taskMentions, taskIdentifier } = selectedTask;
   const dispatch = useDispatch();
   const [noteType, setNoteType] = useState(null);
-  const [isTaskDescriptionIncluded, setIsTaskDescriptionIncluded] = useState(
-    false,
-  );
+  const [isTaskDescriptionIncluded, setIsTaskDescriptionIncluded] =
+    useState(false);
   const [isTaskDetailsIncluded, setIsTaskDetailsIncluded] = useState(false);
 
   const [isTaskCommentsIncluded, setIsTaskCommentsIncluded] = useState(false);
 
   const [detailsState, setDetailsState] = useState(() =>
-    EditorState.createEmpty(),
+    // EditorState.createEmpty(),
+    {},
   );
 
   const insertTextFromTask = useCallback(
-    meta => {
-      const currentState = convertFromEditorStateToOutput(detailsState, true);
-      const newState = createMentionEntities(
-        `${currentState.meta}\n ${meta.meta}`,
-        `${currentState.tokenizedText}\n${meta.tokenized}`,
-        [...currentState.mentions, taskMentions],
-        true,
-      );
-
-      setDetailsState(EditorState.push(detailsState, newState));
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    (meta) => {
+      // const currentState = convertFromEditorStateToOutput(detailsState, true);
+      // const newState = createMentionEntities(
+      //   `${currentState.meta}\n ${meta.meta}`,
+      //   `${currentState.tokenizedText}\n${meta.tokenized}`,
+      //   [...currentState.mentions, taskMentions],
+      //   true,
+      // );
+      // setDetailsState(EditorState.push(detailsState, newState));
     },
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     [detailsState, taskMentions],
   );
 
@@ -71,15 +72,15 @@ function SendEmrNoteFromTaskModal() {
     setIsTaskCommentsIncluded(false);
     setIsTaskDescriptionIncluded(false);
     setIsTaskDetailsIncluded(false);
-    setDetailsState(EditorState.createEmpty());
+    // setDetailsState(EditorState.createEmpty());
   }, []);
 
-  const handleOptionChange = event => {
+  const handleOptionChange = (event) => {
     const { value } = event.target;
     setNoteType(value);
   };
 
-  const EmrOptions = Object.keys(EmrNoteTypeOptions).map(option => ({
+  const EmrOptions = Object.keys(EmrNoteTypeOptions).map((option) => ({
     label: EmrNoteTypeOptions[option],
     value: option,
   }));
@@ -107,10 +108,11 @@ function SendEmrNoteFromTaskModal() {
           <TemplateAutoComplete
             type={CommunicationType.EMR}
             placeholder="Pick template"
+            // eslint-disable-next-line @typescript-eslint/no-unused-vars
             onChange={(_event, newValue) => {
               handleReset();
-              const text = addStylesToText(newValue?.body ?? '');
-              setDetailsState(EditorState.push(detailsState, text));
+              // const text = addStylesToText(newValue?.body ?? '');
+              // setDetailsState(EditorState.push(detailsState, text));
               // setSubject(newValue?.value ?? '');
             }}
             // disabled={show}

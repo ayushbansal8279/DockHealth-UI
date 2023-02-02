@@ -1,14 +1,15 @@
-import { withStyles } from '@material-ui/core/styles';
-import { ButtonGroup } from '@material-ui/core';
+import { ButtonGroup } from '@mui/material';
 import styled from 'styled-components';
 
-export const ButtonGroupFlexStyled = withStyles({
-  root: {
-    display: 'flex',
-    justifyContent: 'center',
-    gap: '50px',
-  },
-})(ButtonGroup);
+export const ButtonGroupFlexStyled = styled(ButtonGroup)`
+  &&& {
+    &.MuiButtonGroup-root {
+      display: flex;
+      justify-content: center;
+      gap: 50px;
+    }
+  }
+`;
 
 export const ContactStepFormStyled = styled.form`
   width: 100%;

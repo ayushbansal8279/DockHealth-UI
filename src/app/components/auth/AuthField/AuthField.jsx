@@ -9,11 +9,13 @@ import {
   StyledPasswordSwitch,
 } from './styled';
 
-const onCrossIconClick = ({ onChange, hasError }) => () => {
-  if (hasError) {
-    onChange('');
-  }
-};
+const onCrossIconClick =
+  ({ onChange, hasError }) =>
+  () => {
+    if (hasError) {
+      onChange('');
+    }
+  };
 
 const AuthField = ({
   input,
@@ -41,7 +43,7 @@ const AuthField = ({
 
   const { onChange: oldOnChange, ...otherInput } = input;
 
-  const onChange = event => {
+  const onChange = (event) => {
     oldOnChange(event);
     setCustomError('');
   };

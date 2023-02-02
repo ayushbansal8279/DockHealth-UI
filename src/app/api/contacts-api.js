@@ -8,7 +8,7 @@ export const getAllContacts = async () => {
   return [];
 };
 
-export const saveContact = async contact => {
+export const saveContact = async (contact) => {
   const response = await axios.post('/contact', contact);
   if (response.status === 200 && response.data) {
     return response.data;
@@ -16,7 +16,7 @@ export const saveContact = async contact => {
   return null;
 };
 
-export const editContact = async contact => {
+export const editContact = async (contact) => {
   const response = await axios.put('/contact', contact);
   if (response.status === 200 && response.data) {
     return response.data;
@@ -24,7 +24,7 @@ export const editContact = async contact => {
   return null;
 };
 
-export const deleteContact = async id => {
+export const deleteContact = async (id) => {
   const response = await axios.delete(`/contact/${id}`);
   if (response.status === 200 && response.data) {
     return response.data;

@@ -6,7 +6,7 @@ import spacing from 'styles/spacing';
 export const NonEmptyListTable = styled.div`
   color: ${palette.unknownGrey1};
   margin: 0.2rem;
-  ${props =>
+  ${(props) =>
     props.highlightedPatientIdentifier ? 'margin-right: 0.25rem;' : ''}
 `;
 
@@ -24,7 +24,7 @@ export const BulkContainer = styled.div`
 `;
 
 export const Text = styled.span`
-  width: ${props => (props.width ? `${props.width}px;` : '')}
+  width: ${(props) => (props.width ? `${props.width}px;` : '')}
   display: block;
   overflow: hidden;
   text-overflow: ellipsis;

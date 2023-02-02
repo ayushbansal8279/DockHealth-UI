@@ -44,6 +44,7 @@ import {
 import { closeModal } from 'modal/actions';
 import { showGlobalAlert, showGlobalErrorAlert } from 'alert/actions';
 import { TaskStatus } from 'helpers/task-helpers';
+import { log } from 'helpers/log';
 import { PATIENTS_LIST_ALL } from '../routing/helpers/paths';
 
 export const DO_TOGGLE_PATIENT_TASK_STATUS = 'DO_TOGGLE_PATIENT_TASK_STATUS';
@@ -70,7 +71,7 @@ export const DO_CHANGE_PATIENT_NOTE_PIN = 'DO_CHANGE_PATIENT_NOTE_PIN';
 export const DO_ARCHIVE_PATIENT = 'DO_ARCHIVE_PATIENT';
 export const DO_UNARCHIVE_PATIENT = 'DO_UNARCHIVE_PATIENT';
 
-export const togglePatientTaskStatus = task => ({
+export const togglePatientTaskStatus = (task) => ({
   type: DO_TOGGLE_PATIENT_TASK_STATUS,
   payload: {
     task,
@@ -101,12 +102,12 @@ export const updatePatientTaskInList = (taskIdentifier, dataToUpdate) => ({
   },
 });
 
-export const initializeSavedFilters = patientIdentifier => ({
+export const initializeSavedFilters = (patientIdentifier) => ({
   type: DO_INITIALIZE_SAVED_FILTERS_FOR_PATIENT,
   patientIdentifier,
 });
 
-export const setPatientTaskSearch = value => ({
+export const setPatientTaskSearch = (value) => ({
   type: DO_SET_PATIENT_TASK_SEARCH_VALUE,
   payload: {
     value,
@@ -154,7 +155,7 @@ export const sortPatientTasks = (key, order) => ({
   },
 });
 
-export const updatePatientNote = note => ({
+export const updatePatientNote = (note) => ({
   type: DO_UPDATE_PATIENT_NOTE,
   note,
 });
@@ -165,7 +166,7 @@ export const addPatientNote = (patientIdentifier, note) => ({
   note,
 });
 
-export const removePatientNote = patientNoteIdentifier => ({
+export const removePatientNote = (patientNoteIdentifier) => ({
   type: DO_REMOVE_PATIENT_NOTE,
   patientNoteIdentifier,
 });
@@ -279,30 +280,26 @@ function* getCurrentPatientTasks({ payload }) {
     const sort = yield select(patientTasksSortSelector);
     const patientIdentifier = yield select(currentPatientIdentifierSelector);
 
-    let lists;
-
-    if (selectedFilters && !isEmpty(selectedFilters)) {
-      lists = yield call(
-        PatientTasksApi.fetchPatientTasksByPatientIdentifierWithFilters,
-        patientIdentifier,
-        sort,
-        selectedFilters,
-        status,
-      );
-    } else {
-      lists = yield call(
-        PatientTasksApi.fetchPatientTasksByPatientIdentifier,
-        patientIdentifier,
-        sort,
-        status,
-      );
-    }
+    const lists = yield selectedFilters && !isEmpty(selectedFilters)
+      ? call(
+          PatientTasksApi.fetchPatientTasksByPatientIdentifierWithFilters,
+          patientIdentifier,
+          sort,
+          selectedFilters,
+          status,
+        )
+      : call(
+          PatientTasksApi.fetchPatientTasksByPatientIdentifier,
+          patientIdentifier,
+          sort,
+          status,
+        );
 
     yield put({
       type: ActionTypes.GET_CURRENT_PATIENT_TASKS_SUCCESS,
       lists,
     });
-  } catch (error) {
+  } catch {
     yield put({
       type: ActionTypes.GET_CURRENT_PATIENT_TASKS_FAILURE,
     });
@@ -327,7 +324,7 @@ function* getPatientFilterOptions() {
       type: ActionTypes.GET_PATIENT_FILTER_OPTIONS_SUCCESS,
       filters,
     });
-  } catch (error) {
+  } catch {
     yield put({
       type: ActionTypes.GET_PATIENT_FILTER_OPTIONS_FAILURE,
       patientIdentifier,
@@ -344,17 +341,17 @@ function* getPatientTasksStats() {
     );
     const successPayload = {};
     successPayload.incompleteTasksCount = stats.find(
-      stat => stat.metricName === 'INCOMPLETE_TASKS_COUNT',
+      (stat) => stat.metricName === 'INCOMPLETE_TASKS_COUNT',
     )?.metricValue;
     successPayload.completeTasksCount = stats.find(
-      stat => stat.metricName === 'COMPLETE_TASKS_COUNT',
+      (stat) => stat.metricName === 'COMPLETE_TASKS_COUNT',
     )?.metricValue;
 
     yield put({
       type: ActionTypes.GET_PATIENT_TASKS_STATS_SUCCESS,
       payload: successPayload,
     });
-  } catch (error) {
+  } catch {
     yield put({ type: ActionTypes.GET_PATIENT_TASKS_STATS_FAILURE });
   }
 }
@@ -386,7 +383,7 @@ function* doToggleTaskCompleteStatus({ payload }) {
     if (!task.parentTaskIdentifier) {
       yield put(PatientDetailsActions.getCurrentPatientTasks());
     }
-  } catch (error) {
+  } catch {
     yield put(PatientDetailsActions.getCurrentPatientTasks());
   }
 }
@@ -404,7 +401,7 @@ function* doUpdatePatientTaskWorkflowStatus({ payload }) {
     );
     yield put(AlertActions.showGlobalAlert(AlertMessages.UPDATED));
     yield put(PatientDetailsActions.getCurrentPatientTasks());
-  } catch (error) {
+  } catch {
     yield put(PatientDetailsActions.getCurrentPatientTasks());
   }
 }
@@ -416,7 +413,7 @@ function* doUpdatePatientTaskInList({ payload }) {
     yield put(updateTaskData(taskIdentifier, dataToUpdate));
     yield call(TaskApi.partialUpdateTask, taskIdentifier, dataToUpdate);
     yield put(PatientDetailsActions.getCurrentPatientTasks());
-  } catch (error) {
+  } catch {
     yield put(PatientDetailsActions.getCurrentPatientTasks());
   }
 }
@@ -438,7 +435,7 @@ function* changePatientTasksFilters({ selectedFilters }) {
     );
     yield put(PatientDetailsActions.getCurrentPatientTasks());
   } catch (error) {
-    console.log(error);
+    log(error);
   }
 }
 
@@ -453,7 +450,7 @@ function* doInitializeSavedFiltersForPatient({ patientIdentifier }) {
       ),
     );
   } catch (error) {
-    console.log(error);
+    log(error);
   }
 }
 
@@ -461,7 +458,7 @@ function* doSetPatientTaskSearch({ payload }) {
   try {
     yield put({ type: ActionTypes.SET_PATIENT_TASK_SEARCH_VALUE, payload });
   } catch (error) {
-    console.log(error);
+    log(error);
   }
 }
 
@@ -478,7 +475,7 @@ function* doInviteUserToTaskList({ payload }) {
     );
     yield put(AlertActions.showGlobalAlert(AlertMessages.UPDATED));
     yield put(PatientDetailsActions.getCurrentPatientTasks());
-  } catch (error) {
+  } catch {
     yield put(PatientDetailsActions.getCurrentPatientTasks());
   }
 }
@@ -489,7 +486,7 @@ function* doRemoveUserFromTaskList({ payload }) {
     yield call(TaskListApi.removeUserFromTaskList, taskListIdentifier, member);
     yield put(AlertActions.showGlobalAlert(AlertMessages.UPDATED));
     yield put(PatientDetailsActions.getCurrentPatientTasks());
-  } catch (error) {
+  } catch {
     yield put(PatientDetailsActions.getCurrentPatientTasks());
   }
 }
@@ -504,7 +501,7 @@ function* doCancelUserInviteToTaskList({ payload }) {
     );
     yield put(AlertActions.showGlobalAlert(AlertMessages.UPDATED));
     yield put(PatientDetailsActions.getCurrentPatientTasks());
-  } catch (error) {
+  } catch {
     yield put(PatientDetailsActions.getCurrentPatientTasks());
   }
 }
@@ -520,7 +517,7 @@ function* doChangeMemberRole({ payload }) {
     );
     yield put(AlertActions.showGlobalAlert(AlertMessages.UPDATED));
     yield put(PatientDetailsActions.getCurrentPatientTasks());
-  } catch (error) {
+  } catch {
     yield put(PatientDetailsActions.getCurrentPatientTasks());
   }
 }
@@ -539,7 +536,7 @@ function* doSortPatientTasks({ payload }) {
     });
     yield put(PatientDetailsActions.getCurrentPatientTasks());
   } catch (error) {
-    console.log(error);
+    log(error);
   }
 }
 
@@ -573,15 +570,13 @@ function* createPatientAttachment({
       folderIdentifier,
     });
 
-    if (error.response && error.response.status === 413) {
-      yield put(
-        AlertActions.showGlobalErrorAlert(
-          'File exceeded the allowed size of 100 MB',
-        ),
-      );
-    } else {
-      yield put(AlertActions.showGlobalErrorAlert());
-    }
+    yield error.response && error.response.status === 413
+      ? put(
+          AlertActions.showGlobalErrorAlert(
+            'File exceeded the allowed size of 100 MB',
+          ),
+        )
+      : put(AlertActions.showGlobalErrorAlert());
   }
 }
 
@@ -642,7 +637,7 @@ function* doUpdatePatientDetails({ payload: { patientIdentifier, details } }) {
       payload: { details: { ...updatedPatientDetails } },
     });
     yield put(AlertActions.showGlobalAlert(AlertMessages.UPDATED));
-  } catch (error) {
+  } catch {
     yield put(AlertActions.showGlobalErrorAlert());
     yield put(PatientDetailsActions.getCurrentPatient());
   }
@@ -654,7 +649,7 @@ function* doArchivePatient({ payload: { patientIdentifier, history } }) {
     yield put(closeModal());
     yield put(showGlobalAlert(AlertMessages.PATIENT_ARCHIVED));
     history.push(PATIENTS_LIST_ALL);
-  } catch (error) {
+  } catch {
     yield put(showGlobalErrorAlert());
     yield put(closeModal());
   }
@@ -666,7 +661,7 @@ function* doUnarchivePatient({ payload: { patientIdentifier, history } }) {
     yield put(closeModal());
     yield put(showGlobalAlert(AlertMessages.PATIENT_UNARCHIVED));
     history.push(PATIENTS_LIST_ALL);
-  } catch (error) {
+  } catch {
     yield put(showGlobalErrorAlert());
     yield put(closeModal());
   }

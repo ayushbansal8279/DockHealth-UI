@@ -35,7 +35,7 @@ const CreatedCommentsChart = () => {
         )
       : AnalyticsApi.getTrendsByDate(TrendType.COMMENTS_CREATED)
     )
-      .then(responseData => {
+      .then((responseData) => {
         compose(
           setData,
           map(({ date, metricValue }) => ({
@@ -58,7 +58,7 @@ const CreatedCommentsChart = () => {
           <XAxis
             dataKey="date"
             tick={{ fontSize: 12 }}
-            tickFormatter={value => moment(value).format('MM/DD/YY')}
+            tickFormatter={(value) => moment(value).format('MM/DD/YY')}
           />
 
           <YAxis
@@ -66,7 +66,7 @@ const CreatedCommentsChart = () => {
             label={{ value: 'Comments', angle: -90, position: 'insideLeft' }}
           />
           <Tooltip
-            labelFormatter={value => moment(value).format('MM/DD/YYYY')}
+            labelFormatter={(value) => moment(value).format('MM/DD/YYYY')}
           />
           <Legend verticalAlign="bottom" />
           <Line

@@ -69,7 +69,7 @@ export const getLastMessageCreatedAt = (channel, locale) => {
   return format(createdAt, 'MMM dd', optionalParameter);
 };
 
-export const getTotalMembers = channel =>
+export const getTotalMembers = (channel) =>
   channel && channel.memberCount ? channel.memberCount : 0;
 
 const getPrettyLastMessage = (message = {}) => {
@@ -81,10 +81,10 @@ const getPrettyLastMessage = (message = {}) => {
   return message.message;
 };
 
-export const getLastMessage = channel =>
+export const getLastMessage = (channel) =>
   channel && channel.lastMessage
     ? getPrettyLastMessage(channel.lastMessage)
     : '';
 
-export const getChannelUnreadMessageCount = channel =>
+export const getChannelUnreadMessageCount = (channel) =>
   channel && channel.unreadMessageCount ? channel.unreadMessageCount : 0;

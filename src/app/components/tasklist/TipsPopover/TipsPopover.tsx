@@ -39,7 +39,7 @@ const HeaderArrow = styled.div<{ left: number }>`
   border: 1rem solid transparent;
   border-bottom-color: #00a2e5;
   height: 0;
-  left: ${props => props.left}px;
+  left: ${(props) => props.left}px;
   position: absolute;
   top: 0;
   transform: translate(-100%, -100%) scaleY(0.8);

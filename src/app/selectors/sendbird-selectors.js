@@ -1,17 +1,13 @@
 import { createSelector } from 'reselect';
 
-const sendbirdStateSelector = state => state.sendbird;
+const sendbirdStateSelector = (state) => state.sendbird;
 
 export const showChatPopoverSelector = createSelector(
   sendbirdStateSelector,
-  ({ showPopover }) => {
-    return showPopover;
-  },
+  ({ showPopover }) => showPopover,
 );
 
 export const selectedChatChannelSelector = createSelector(
   sendbirdStateSelector,
-  ({ channel }) => {
-    return channel;
-  },
+  ({ channel }) => channel,
 );

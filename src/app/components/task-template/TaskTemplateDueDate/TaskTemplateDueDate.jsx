@@ -9,13 +9,13 @@ import { ReminderType } from 'helpers/task-helpers';
 import { isWorkflowDueDateOverdue } from 'helpers/workflow-helpers';
 import { useDispatch } from 'react-redux';
 
-const TaskTemplateDueDate = props => {
+const TaskTemplateDueDate = (props) => {
   const { workflow, disabled = false } = props;
   const { identifier, dueDateTime, reminderType } = workflow || {};
   const dispatch = useDispatch();
 
   const handleDueDateChange = useCallback(
-    updatedDueDateTime => {
+    (updatedDueDateTime) => {
       const payload = { dueDateTime: updatedDueDateTime };
 
       if (!updatedDueDateTime) payload.dueDateTimeCleared = true;

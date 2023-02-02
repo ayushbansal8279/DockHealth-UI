@@ -1,19 +1,21 @@
-import { Grid } from '@material-ui/core';
-import { withStyles } from '@material-ui/core/styles';
+import { Grid } from '@mui/material';
 import React from 'react';
 import ViewLayout from 'components/template/ViewLayout/ViewLayout';
 import BasicLayoutHeader from 'components/template/BasicLayoutHeader/BasicLayoutHeader';
 import Spacing from 'components/common/Spacing';
+import styled from 'styled-components';
 import SupportSectionViewFaq from './SupportView.Faq';
 import SupportSectionViewVideos from './SupportView.Videos';
 
-const SupportViewContainer = withStyles({
-  container: {
-    maxWidth: 1150,
-    margin: '0 auto',
-    padding: '2rem 1rem',
-  },
-})(Grid);
+const SupportViewContainer = styled(Grid)`
+  &&& {
+    &.MuiGrid-container {
+      max-width: 1150px;
+      margin: 0 auto;
+      padding: 2rem 1rem;
+    }
+  }
+`;
 
 const SupportSectionView = () => {
   return (

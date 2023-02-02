@@ -1,7 +1,7 @@
 import React, { useCallback } from 'react';
 import LayoutHeader from 'components/template/LayoutHeader/LayoutHeader';
-import ArrowBackIcon from '@material-ui/icons/ArrowBack';
-import { Box, Typography, Button } from '@material-ui/core';
+import ArrowBackIcon from '@mui/icons-material/ArrowBack';
+import { Box, Typography, Button } from '@mui/material';
 import BlueButton from 'components/common/Button/Button';
 import { useHistory } from 'react-router-dom';
 import { HOME_PATH } from 'routing/helpers/paths';

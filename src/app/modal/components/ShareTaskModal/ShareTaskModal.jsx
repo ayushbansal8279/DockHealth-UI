@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Box } from '@material-ui/core';
+import { Box } from '@mui/material';
 import { useDispatch } from 'react-redux';
 import Button from 'components/common/Button/Button';
 import * as TaskActions from 'actions/task-actions';
@@ -15,43 +15,38 @@ import { MessageTextarea } from './styled';
 import AddExternalUser from './AddExternalUser/AddExternalUser';
 import UsersSelect from './UsersSelect/UsersSelect';
 
-const ShareTaskModal = props => {
+const ShareTaskModal = (props) => {
   const { taskIdentifier, closeModal } = props;
   const dispatch = useDispatch();
-  const [externalUserInitialValues, setExternalUserInitialValues] = useState(
-    null,
-  );
+  const [externalUserInitialValues, setExternalUserInitialValues] =
+    useState(null);
   const [selectedUsers, setSelectedUsers] = useState([]);
   const [messageValue, setMessageValue] = useState('');
 
-  const addSelectedUser = user => {
-    setSelectedUsers(u => [...u, user]);
+  const addSelectedUser = (user) => {
+    setSelectedUsers((u) => [...u, user]);
   };
 
-  const deleteSelectedUser = userId => {
-    setSelectedUsers(previousSelectedUsers =>
-      previousSelectedUsers.filter(se => se.identifier !== userId),
+  const deleteSelectedUser = (userId) => {
+    setSelectedUsers((previousSelectedUsers) =>
+      previousSelectedUsers.filter((se) => se.identifier !== userId),
     );
   };
 
-  const handleAddExternalUser = user => {
+  const handleAddExternalUser = (user) => {
     // TODO: use backend external flag
     addSelectedUser({ ...user, external: true });
     setExternalUserInitialValues(null);
   };
 
-  const handleMoveToExternalForm = userSearchText => {
+  const handleMoveToExternalForm = (userSearchText) => {
     const text = userSearchText.trim();
     const formValues = {
       firstName: '',
       lastName: '',
       email: '',
     };
-    if (
-      string()
-        .email()
-        .isValidSync(text)
-    ) {
+    if (string().email().isValidSync(text)) {
       formValues.email = text;
     } else {
       const names = text.split(' ');
@@ -115,7 +110,7 @@ const ShareTaskModal = props => {
             <MessageTextarea
               placeholder="Add a message to your invitation and copy instructions here"
               value={messageValue}
-              onChange={event => setMessageValue(event?.target?.value || '')}
+              onChange={(event) => setMessageValue(event?.target?.value || '')}
             />
           )}
           <Box display="flex" width="100%" justifyContent="flex-end" mt="16px">

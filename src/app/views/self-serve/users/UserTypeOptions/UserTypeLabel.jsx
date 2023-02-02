@@ -41,9 +41,10 @@ const UserTypeLabel = ({
 }) => {
   const labelReference = useRef(null);
   const dispatch = useDispatch();
-  const reloadUsers = useCallback(() => dispatch(getOrganizationUsers()), [
-    dispatch,
-  ]);
+  const reloadUsers = useCallback(
+    () => dispatch(getOrganizationUsers()),
+    [dispatch],
+  );
 
   const PopoverComponent = (() => {
     if (userStatus === 'PENDING') {

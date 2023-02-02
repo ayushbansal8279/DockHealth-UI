@@ -19,7 +19,7 @@ const EmptyListContainer = styled.div`
   font-weight: ${fontWeights.bold};
 `;
 
-const BulkEditCreateTask = iconColorActive => {
+const BulkEditCreateTask = (iconColorActive) => {
   const patientContext = useContext(PatientEditContext);
   const dispatch = useDispatch();
 
@@ -27,7 +27,7 @@ const BulkEditCreateTask = iconColorActive => {
 
   const quickAddTask = useCallback(
     ({ description }) => {
-      const assignedPatients = selectedPatients?.map(patient => {
+      const assignedPatients = selectedPatients?.map((patient) => {
         return patient.patientIdentifier;
       });
 
@@ -56,8 +56,8 @@ const BulkEditCreateTask = iconColorActive => {
     <EmptyListContainer>
       <QuickAddTaskInput
         quickAddTask={quickAddTask}
-        validator={value => {
-          if ([...value]?.filter(char => char !== ' ').length < 2)
+        validator={(value) => {
+          if ([...value]?.filter((char) => char !== ' ').length < 2)
             return 'The task description is too short (min. 2 characters)';
           return null;
         }}

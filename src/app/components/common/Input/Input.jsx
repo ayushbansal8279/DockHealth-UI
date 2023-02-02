@@ -1,6 +1,6 @@
 /* eslint-disable react/jsx-no-duplicate-props */
 import React from 'react';
-import { TextField } from '@material-ui/core';
+import { TextField } from '@mui/material';
 import clsx from 'clsx';
 
 const Input = React.forwardRef(
@@ -28,7 +28,6 @@ const Input = React.forwardRef(
     reference,
   ) => (
     <TextField
-      sx={{ input: { color: 'red' } }}
       ref={reference}
       inputRef={inputRef}
       id={id}

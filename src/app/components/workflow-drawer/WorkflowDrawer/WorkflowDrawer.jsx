@@ -1,7 +1,7 @@
 import React, { useEffect, useMemo } from 'react';
 import ReactDOM from 'react-dom';
 import { useHistory } from 'react-router-dom';
-import { Grid } from '@material-ui/core';
+import { Grid } from '@mui/material';
 import * as WorkflowDrawerActions from 'actions/workflow-drawer-actions';
 import compose from 'ramda/src/compose';
 import { useDispatch, useSelector } from 'react-redux';

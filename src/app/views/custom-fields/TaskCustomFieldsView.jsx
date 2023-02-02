@@ -4,10 +4,10 @@ import { useDispatch } from 'react-redux';
 import map from 'ramda/src/map';
 import pluck from 'ramda/src/pluck';
 import move from 'ramda/src/move';
-import { Box, IconButton } from '@material-ui/core';
-import { Skeleton } from '@material-ui/lab';
-import DeleteIcon from '@material-ui/icons/Delete';
-import EditIcon from '@material-ui/icons/Edit';
+import { Box, IconButton } from '@mui/material';
+import Skeleton from '@mui/material/Skeleton';
+import DeleteIcon from '@mui/icons-material/Delete';
+import EditIcon from '@mui/icons-material/Edit';
 import { showGlobalErrorAlert } from 'alert/actions';
 import * as CustomFieldsApi from 'api/custom-fields-api';
 import { FieldTypeLabel } from 'helpers/field-type-helpers';
@@ -44,9 +44,9 @@ const TaskCustomFieldsView = ({ taskListIdentifier, editable = false }) => {
 
   const fetchTaskCustomFields = () => {
     CustomFieldsApi.getAllTaskListCustomFields(taskListIdentifier)
-      .then(data => {
+      .then((data) => {
         const customFieldsData = data?.filter(
-          cf => cf.contextType === 'CUSTOM',
+          (cf) => cf.contextType === 'CUSTOM',
         );
         setCustomFields(customFieldsData);
         setIsFetching(false);
@@ -61,23 +61,23 @@ const TaskCustomFieldsView = ({ taskListIdentifier, editable = false }) => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  const handleEditClick = field => {
+  const handleEditClick = (field) => {
     dispatch(
       openModal('EditCustomField', {
         options: {
           type: 'TASK',
         },
         customField: field,
-        onUpdated: updatedField => {
-          setColumnsToState([
-            ...columns.map(f =>
+        onUpdated: (updatedField) => {
+          setColumnsToState(
+            columns.map((f) =>
               f.identifier === updatedField.identifier
                 ? { ...f, ...updatedField }
                 : f,
             ),
-          ]);
+          );
           setCustomFields(
-            map(f =>
+            map((f) =>
               updatedField.identifier === f.identifier
                 ? { ...f, ...updatedField }
                 : f,
@@ -88,17 +88,17 @@ const TaskCustomFieldsView = ({ taskListIdentifier, editable = false }) => {
     );
   };
 
-  const handleRemoveClick = id => {
+  const handleRemoveClick = (id) => {
     dispatch(
       openModal('DeleteConfirmation', {
         title: 'Delete field',
         description:
           'Are you sure you want to delete this custom task field? This action cannot be undone.',
         confirm: () => {
-          setColumnsToState([...columns.filter(f => f.identifier !== id)]);
+          setColumnsToState(columns.filter((f) => f.identifier !== id));
           CustomFieldsApi.deleteCustomField(id)
             .then(() =>
-              setCustomFields(previousValue =>
+              setCustomFields((previousValue) =>
                 previousValue.filter(({ identifier }) => id !== identifier),
               ),
             )
@@ -113,9 +113,9 @@ const TaskCustomFieldsView = ({ taskListIdentifier, editable = false }) => {
   const moveElementByIDs = (originID, destinationID, fields) => {
     if (!originID || !destinationID) return fields;
     const idents = pluck('identifier', fields);
-    const idxFrom = idents.indexOf(originID);
-    const idxTo = idents.indexOf(destinationID);
-    return move(idxFrom, idxTo, fields).map((field, index) => ({
+    const indexFrom = idents.indexOf(originID);
+    const indexTo = idents.indexOf(destinationID);
+    return move(indexFrom, indexTo, fields).map((field, index) => ({
       ...field,
       sortIndex: index,
     }));
@@ -129,14 +129,14 @@ const TaskCustomFieldsView = ({ taskListIdentifier, editable = false }) => {
 
   const handleOnDragEnd = async (originID, destinationID) => {
     const result = moveElementByIDs(originID, destinationID, sortedFields);
-    const lastWorkingOrder = customFields.slice();
+    const lastWorkingOrder = [...customFields];
     setCustomFields(result);
     try {
       await CustomFieldsApi.sortTaskCustomFields(
         pluck('identifier', result),
         taskListIdentifier,
       );
-    } catch (error) {
+    } catch {
       dispatch(showGlobalErrorAlert());
       setCustomFields(lastWorkingOrder);
     }
@@ -149,11 +149,10 @@ const TaskCustomFieldsView = ({ taskListIdentifier, editable = false }) => {
           type: 'TASK',
         },
         taskListIdentifier,
-        onAdded: async customField => {
+        onAdded: async (customField) => {
           setColumnsToState([...columns, customField]);
-          const newFields = (sortedFields
-            ? [...sortedFields, customField]
-            : [customField]
+          const newFields = (
+            sortedFields ? [...sortedFields, customField] : [customField]
           ).map((field, index) => {
             return { ...field, sortIndex: index };
           });
@@ -173,7 +172,16 @@ const TaskCustomFieldsView = ({ taskListIdentifier, editable = false }) => {
 
   return (
     <>
-      {!isFetching ? (
+      {isFetching ? (
+        Array.from({ length: 4 })
+          .fill()
+          .map((_, index) => (
+            // eslint-disable-next-line react/no-array-index-key
+            <Box key={index} pb="2px">
+              <Skeleton variant="rect" width="100%" height={35} />
+            </Box>
+          ))
+      ) : (
         <>
           {customFields?.length > 0 ? (
             <>
@@ -201,7 +209,7 @@ const TaskCustomFieldsView = ({ taskListIdentifier, editable = false }) => {
                 }
               >
                 <SortableContext items={pluck('identifier', sortedFields)}>
-                  {sortedFields.map(field => (
+                  {sortedFields.map((field) => (
                     <SortableItem
                       key={field.identifier}
                       itemId={field.identifier}
@@ -269,13 +277,6 @@ const TaskCustomFieldsView = ({ taskListIdentifier, editable = false }) => {
             <EmptyListPlaceholder>List is empty</EmptyListPlaceholder>
           )}
         </>
-      ) : (
-        new Array(4).fill().map((_, index) => (
-          // eslint-disable-next-line react/no-array-index-key
-          <Box key={index} pb="2px">
-            <Skeleton variant="rect" width="100%" height={35} />
-          </Box>
-        ))
       )}
       <Box p={1} />
       <CenterBox>

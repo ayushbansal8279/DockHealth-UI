@@ -1,5 +1,5 @@
 import React from 'react';
-import { Box } from '@material-ui/core';
+import { Box } from '@mui/material';
 import { useBoolean } from 'hooks/useBoolean';
 import { Handle, Position } from 'react-flow-renderer';
 import palette from 'styles/palette';
@@ -15,7 +15,7 @@ function validateConnection({ source, target }) {
   return true;
 }
 
-const TaskNodeHandles = props => {
+const TaskNodeHandles = (props) => {
   const { children, isConnectable, isConnecting, onTargetHandleHover } = props;
   const [isHovered, setHovered, unsetHovered] = useBoolean(false);
 

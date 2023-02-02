@@ -1,6 +1,6 @@
 import styled from 'styled-components';
 import palette from 'styles/palette';
-import { Close } from '@material-ui/icons';
+import { Close } from '@mui/icons-material';
 
 // eslint-disable-next-line import/prefer-default-export
 export const AdornmentClear = styled(Close)`

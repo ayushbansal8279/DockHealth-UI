@@ -1,11 +1,11 @@
-import { Grid } from '@material-ui/core';
+import { Grid } from '@mui/material';
 import React from 'react';
 import { useHistory } from 'react-router-dom';
 import Button from 'components/common/Button/Button';
 import Spacing from 'components/common/Spacing';
 import { MontserratTypography } from 'styles/theme-montserrat';
 
-const redirectToLogin = history => {
+const redirectToLogin = (history) => {
   history.push('login');
 };
 

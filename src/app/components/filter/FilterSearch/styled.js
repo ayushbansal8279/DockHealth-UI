@@ -35,6 +35,6 @@ export const FilterClearIcon = styled.img`
   position: absolute;
   top: 4px;
   right: 0;
-  opacity: ${props => (props.isInputFocused ? '1' : '0')};
-  cursor: ${props => (props.isInputFocused ? 'pointer' : 'default')};
+  opacity: ${(props) => (props.isInputFocused ? '1' : '0')};
+  cursor: ${(props) => (props.isInputFocused ? 'pointer' : 'default')};
 `;

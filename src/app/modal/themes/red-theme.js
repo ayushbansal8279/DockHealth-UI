@@ -1,5 +1,5 @@
 import palette from 'styles/palette';
-import { createTheme } from '@material-ui/core/styles';
+import { createTheme } from '@mui/material/styles';
 import { fontSizes, fontWeights } from 'styles/font';
 import spacing from 'styles/spacing';
 

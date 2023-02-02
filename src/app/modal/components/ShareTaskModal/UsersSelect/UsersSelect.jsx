@@ -2,7 +2,6 @@
 import React, { useCallback, useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { userProfileSelector } from 'selectors/user-selectors';
-import { Autocomplete } from '@material-ui/lab';
 import { isUserGroup } from 'helpers/user-helper';
 import GroupAvatar from 'components/user/GroupAvatar/GroupAvatar';
 import UserAvatar from 'components/user/UserAvatar/UserAvatar';
@@ -10,20 +9,20 @@ import OptionsMenu from 'components/common/OptionsMenu/OptionsMenu';
 import AddRecordOption from 'components/common/AddRecordOption/AddRecordOption';
 import filter from 'ramda/src/filter';
 import prop from 'ramda/src/prop';
-import { Box, ListItemText, IconButton } from '@material-ui/core';
-import MoreVertIcon from '@material-ui/icons/MoreVert';
+import { Box, ListItemText, IconButton } from '@mui/material';
+import MoreVertIcon from '@mui/icons-material/MoreVert';
 import * as AlertActions from 'alert/actions';
 import debounce from 'lodash.debounce';
 import { getUsersByName } from 'api/user-api';
 import {
-  useAutocompleteStyles,
+  Autocomplete,
   SelectedUsersContainer,
   SelectedUserItem,
   SelectedUserText,
   ExternalUserLabel,
 } from './styled';
 
-const UsersSelect = props => {
+const UsersSelect = (props) => {
   const { selectedUsers, onAdd, onDelete, onMoveToExternalUserForm } = props;
 
   const dispatch = useDispatch();
@@ -33,13 +32,12 @@ const UsersSelect = props => {
   const [options, setOptions] = useState([]);
   const [isLoadingOptions, setLoadingOptions] = useState(false);
 
-  const classes = useAutocompleteStyles();
-
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   const getUsersWithDebounce = useCallback(
-    debounce(searchValue => {
+    debounce((searchValue) => {
       // TODO: change endpoint for the one with external users
       getUsersByName(searchValue)
-        .then(users => {
+        .then((users) => {
           setOptions(users);
           setLoadingOptions(false);
         })
@@ -60,11 +58,11 @@ const UsersSelect = props => {
     }
   }, [inputValue, getUsersWithDebounce, setOptions]);
 
-  const handleInputChange = event => {
+  const handleInputChange = (event) => {
     setInputValue(event?.target?.value || '');
   };
 
-  const renderUserOptionAvatar = user => {
+  const renderUserOptionAvatar = (user) => {
     if (isUserGroup(user)) {
       return <GroupAvatar group={user} size={38} />;
     }
@@ -78,7 +76,7 @@ const UsersSelect = props => {
         autoHighlight
         inputValue={inputValue}
         getOptionLabel={prop('userName')}
-        renderOption={option => (
+        renderOption={(option) => (
           <Box
             width="100%"
             display="flex"
@@ -96,17 +94,16 @@ const UsersSelect = props => {
           </Box>
         )}
         filterOptions={filter(
-          option =>
+          (option) =>
             option.identifier !== currentUser.identifier &&
-            !selectedUsers.find(
-              su =>
+            !selectedUsers.some(
+              (su) =>
                 su.identifier === option.identifier ||
                 su.email === option.email,
             ),
         )}
         loading={isLoadingOptions}
         options={options}
-        classes={classes}
         onInputChange={handleInputChange}
         onChange={(_, selectedOption) => {
           onAdd(selectedOption);
@@ -115,7 +112,7 @@ const UsersSelect = props => {
           <div {...rootProps}>
             <input
               placeholder="Type the name of the person or group  to invite"
-              onKeyDown={event => {
+              onKeyDown={(event) => {
                 if (
                   event.key === 'Enter' &&
                   inputValue &&
@@ -145,7 +142,7 @@ const UsersSelect = props => {
       {selectedUsers.length > 0 && (
         <>
           <SelectedUsersContainer>
-            {selectedUsers.map(u => (
+            {selectedUsers.map((u) => (
               <SelectedUserItem key={u.identifier}>
                 {renderUserOptionAvatar(u)}
                 <SelectedUserText>

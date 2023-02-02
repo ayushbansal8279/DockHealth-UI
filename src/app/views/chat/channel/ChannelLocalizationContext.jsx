@@ -15,7 +15,7 @@ const LocalizationContext = createContext({
   dateLocale: null,
 });
 
-const LocalizationProvider = props => {
+const LocalizationProvider = (props) => {
   const { children } = props;
   return (
     <LocalizationContext.Provider value={props}>

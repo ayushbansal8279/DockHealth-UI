@@ -11,7 +11,7 @@ import ChannelSettingsContext from './ChannelSettingsContext';
 import { Typography, Colors } from './LabelTypography';
 import ChannelProfile from './ChannelProfile';
 
-const CustomChannelSettingsUI = props => {
+const CustomChannelSettingsUI = (props) => {
   const state = useSendbirdStateContext();
   const [showLeaveChannelModal, setShowLeaveChannelModal] = useState(false);
 

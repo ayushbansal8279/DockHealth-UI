@@ -1,11 +1,5 @@
-import PresenceIndicatorsStep from './PresenceIndicatorsStep';
-import PeopleMentionsStep from './PeopleMentionsStep';
-import PatientsMentionsStep from './PatientsMentionsStep';
-import MentionsCards from './MentionsCards';
+export { default as PresenceIndicatorsStep } from './PresenceIndicatorsStep';
+export { default as PatientsMentionsStep } from './PatientsMentionsStep';
+export { default as PeopleMentionsStep } from './PeopleMentionsStep';
 
-export {
-  PresenceIndicatorsStep,
-  PeopleMentionsStep,
-  PatientsMentionsStep,
-  MentionsCards,
-};
+export { default as MentionsCards } from './MentionsCards';

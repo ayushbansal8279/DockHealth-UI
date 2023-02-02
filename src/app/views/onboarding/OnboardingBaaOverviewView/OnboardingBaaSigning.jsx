@@ -1,4 +1,4 @@
-import { Grid } from '@material-ui/core';
+import { Grid } from '@mui/material';
 import React, { useCallback, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useMount } from 'react-use';
@@ -20,10 +20,8 @@ import { userProfileSelector } from 'selectors/user-selectors';
 import { OnboardingAnchorDiv } from '../OnboardingTemplate.Components';
 import InvitationForm from './OnboardingBaaOverviewView.InvitationForm';
 
-const {
-  HELLOSIGN_CLIENT_ID,
-  HELLOSIGN_DOMAIN_VERIFICATION_ENABLED,
-} = process.env;
+const { VITE_HELLOSIGN_CLIENT_ID, VITE_HELLOSIGN_DOMAIN_VERIFICATION_ENABLED } =
+  import.meta.env;
 
 const helloSignClient = new HelloSign();
 
@@ -90,11 +88,8 @@ const getPanelDetails = ({
 const OnboardingBaaSigning = ({ mainDisplayOption }) => {
   const dispatch = useDispatch();
   const history = useHistory();
-  const [
-    isInvitationFormShown,
-    showInvitationForm,
-    hideInvitationForm,
-  ] = useBoolean(false);
+  const [isInvitationFormShown, showInvitationForm, hideInvitationForm] =
+    useBoolean(false);
 
   const [isProcessing, setProcessing] = useState(false);
 
@@ -105,15 +100,15 @@ const OnboardingBaaSigning = ({ mainDisplayOption }) => {
   });
 
   const openHelloSign = useCallback(
-    signingUrl => {
+    (signingUrl) => {
       const skipDomainVerification =
-        HELLOSIGN_DOMAIN_VERIFICATION_ENABLED !== 'true';
+        VITE_HELLOSIGN_DOMAIN_VERIFICATION_ENABLED !== 'true';
 
       setProcessing(true);
 
       // eslint-disable-next-line no-unused-expressions
       helloSignClient.open(signingUrl, {
-        clientId: HELLOSIGN_CLIENT_ID,
+        clientId: VITE_HELLOSIGN_CLIENT_ID,
         allowCancel: true,
         skipDomainVerification,
       });
@@ -131,7 +126,7 @@ const OnboardingBaaSigning = ({ mainDisplayOption }) => {
         setProcessing(false);
       });
 
-      helloSignClient.on('sign', signatureId => {
+      helloSignClient.on('sign', (signatureId) => {
         storeSignatureResult({
           signatureIdentifier: signatureId.signatureId,
           signatureResult: 'signed',
@@ -141,6 +136,7 @@ const OnboardingBaaSigning = ({ mainDisplayOption }) => {
           setProcessing(false);
 
           const { updatedByUser } = await checkBAASignedStatus()(dispatch);
+          // eslint-disable-next-line unicorn/prefer-ternary
           if (updatedByUser) {
             // window.location.href = '/#/onboarding/team-setup';
             window.location.href = '/#/core/home/my-tasks';
@@ -159,7 +155,7 @@ const OnboardingBaaSigning = ({ mainDisplayOption }) => {
       'Error getting BAA document to sign, please try later';
 
     signOrganizationBAADocument({ legalEntityName: null })
-      .then(data => {
+      .then((data) => {
         if (data.statusCode === 'SUCCESS') {
           openHelloSign(data.statusMessage);
         } else {
@@ -170,7 +166,7 @@ const OnboardingBaaSigning = ({ mainDisplayOption }) => {
           });
         }
       })
-      .catch(error => {
+      .catch((error) => {
         showAlert({
           status: 'error',
           title: 'Error',

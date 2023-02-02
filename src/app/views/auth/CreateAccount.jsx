@@ -1,4 +1,4 @@
-import { Grid, Typography } from '@material-ui/core';
+import { Grid, Typography } from '@mui/material';
 import queryString from 'query-string';
 import React, { useState } from 'react';
 import { FormProvider, useForm } from 'react-hook-form';
@@ -29,8 +29,8 @@ import palette from 'styles/palette';
 import { MontserratTypography } from 'styles/theme-montserrat';
 import ConfirmEmailHeaderCheck from 'img/checked-circle.svg';
 import Button from 'components/common/Button/Button';
-import { MuiThemeProvider } from '@material-ui/core/styles';
-import envelope from 'img/modals/envelope-red';
+import { ThemeProvider as MuiThemeProvider } from '@mui/material/styles';
+import envelope from 'img/modals/envelope-red.svg';
 import { redTheme } from 'modal/themes/red-theme';
 import {
   ModalWrapper,
@@ -54,11 +54,9 @@ const validationSchema = object().shape({
   email: string()
     .required(REQUIRED_MESSAGE)
     .email('Please enter a valid email address'),
-  password: string()
-    .required(REQUIRED_MESSAGE)
-    .concat(validPasswordSchema),
+  password: string().required(REQUIRED_MESSAGE).concat(validPasswordSchema),
   mobilePhoneNumber: string()
-    .transform(value => value.replace(/\D/g, ''))
+    .transform((value) => value.replace(/\D/g, ''))
     .required(REQUIRED_MESSAGE)
     .matches(/\d{10}/, 'Please enter a valid phone number'),
 });
@@ -69,61 +67,59 @@ const externalUserValidationSchema = object().shape({
   email: string()
     .required(REQUIRED_MESSAGE)
     .email('Please enter a valid email address'),
-  password: string()
-    .required(REQUIRED_MESSAGE)
-    .concat(validPasswordSchema),
+  password: string().required(REQUIRED_MESSAGE).concat(validPasswordSchema),
   mobilePhoneNumber: string()
-    .transform(value => value?.replace(/\D/g, ''))
+    .transform((value) => value?.replace(/\D/g, ''))
     .matches(/\d{10}/, 'Please enter a valid phone number'),
 });
 
-const onSubmit = ({
-  showDialog,
-  showUserExistsDialog,
-  setDialogTitle,
-  setDialogMessage,
-  locationParameters,
-}) => async ({ email, password, mobilePhoneNumber, lastName, firstName }) => {
-  const referral = locationParameters.referral
-    ? locationParameters.referral
-    : '';
-  try {
-    await registerAction({
-      username: email,
-      password,
-      email,
-      phone_number: mobilePhoneNumber
-        ? `+${mobilePhoneNumber.replace(/\D/g, '')}`
-        : null,
-      family_name: lastName,
-      given_name: firstName,
-      'custom:referral': referral,
-      'custom:app_environment': process.env.APP_ENV,
-    });
-    setDialogTitle(`Please confirm your email.`);
-    setDialogMessage(
-      `We just sent an email to ${email}. Please go to your email and click on the link so that we can confirm your email address.`,
-    );
-    showDialog();
-  } catch (error) {
-    if (error?.code === 'UsernameExistsException') {
-      setDialogTitle(`Email already associated with an account`);
+const onSubmit =
+  ({
+    showDialog,
+    showUserExistsDialog,
+    setDialogTitle,
+    setDialogMessage,
+    locationParameters,
+  }) =>
+  async ({ email, password, mobilePhoneNumber, lastName, firstName }) => {
+    const referral = locationParameters.referral ?? '';
+    try {
+      await registerAction({
+        username: email,
+        password,
+        email,
+        phone_number: mobilePhoneNumber
+          ? `+${mobilePhoneNumber.replace(/\D/g, '')}`
+          : null,
+        family_name: lastName,
+        given_name: firstName,
+        'custom:referral': referral,
+        'custom:app_environment': import.meta.env.VITE_APP_ENV,
+      });
+      setDialogTitle(`Please confirm your email.`);
       setDialogMessage(
-        `${email} is already being used for a Dock Health account. If you haven't already, please go to your email and click on the link to confirm your email address.`,
+        `We just sent an email to ${email}. Please go to your email and click on the link so that we can confirm your email address.`,
       );
-      showUserExistsDialog();
-      return;
+      showDialog();
+    } catch (error) {
+      if (error?.code === 'UsernameExistsException') {
+        setDialogTitle(`Email already associated with an account`);
+        setDialogMessage(
+          `${email} is already being used for a Dock Health account. If you haven't already, please go to your email and click on the link to confirm your email address.`,
+        );
+        showUserExistsDialog();
+        return;
+      }
+      showAlert({
+        status: 'error',
+        title: 'Error',
+        text:
+          error?.message ?? 'Could not create account, please try again later',
+      });
     }
-    showAlert({
-      status: 'error',
-      title: 'Error',
-      text:
-        error?.message ?? 'Could not create account, please try again later',
-    });
-  }
-};
+  };
 
-const resendEmail = async email => {
+const resendEmail = async (email) => {
   try {
     await resendConfirmationCode({
       username: email,
@@ -166,13 +162,10 @@ const StyledForm = styled.form`
 `;
 
 // eslint-disable-next-line sonarjs/cognitive-complexity
-const CreateAccount = props => {
+const CreateAccount = (props) => {
   const [isDialogShown, showDialog, hideDialog] = useBoolean(false);
-  const [
-    isUserExistsDialogShown,
-    showUserExistsDialog,
-    hideUserExistsDialog,
-  ] = useBoolean(false);
+  const [isUserExistsDialogShown, showUserExistsDialog, hideUserExistsDialog] =
+    useBoolean(false);
   const [externalUserMode, setExternalUserMode] = useState(false);
   const [dialogTitle, setDialogTitle] = useState('');
   const [dialogMessage, setDialogMessage] = useState('');

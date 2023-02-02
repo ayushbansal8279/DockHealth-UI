@@ -24,7 +24,7 @@ export const slideOut = keyframes`
 
 export const ActivityAlertsToastContainer = styled.div`
   position: absolute;
-  top: ${props => props.topSpacing};
+  top: ${(props) => props.topSpacing};
   right: -500;
   z-index: 2000;
   width: 467px;
@@ -34,7 +34,7 @@ export const ActivityAlertsToastContainer = styled.div`
   -o-animation-fill-mode: forwards;
   -ms-animation-fill-mode: forwards;
   animation-fill-mode: forwards;
-  ${props =>
+  ${(props) =>
     props.isCleared
       ? css`
           animation: ${slideOut} 0.55s ease-in-out;

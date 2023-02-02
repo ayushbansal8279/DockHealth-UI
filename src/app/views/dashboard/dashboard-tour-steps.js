@@ -1,10 +1,10 @@
-import PlaceCalledHomeImage from 'img/tour/dashboard/place-called-home';
-import OrganizedForYouImage from 'img/tour/dashboard/organized-for-you';
-import MoveThingsAroundImage from 'img/tour/dashboard/move-things-around';
-import OpenDrawerImage from 'img/tour/dashboard/open-drawer';
-import CreateANewListImage from 'img/tour/dashboard/create-a-new-list';
-import GettingAroundImage from 'img/tour/dashboard/getting-around';
-import BlueDotImage from 'img/tour/dashboard/blue-dot';
+import PlaceCalledHomeImage from 'img/tour/dashboard/place-called-home.svg';
+import OrganizedForYouImage from 'img/tour/dashboard/organized-for-you.svg';
+import MoveThingsAroundImage from 'img/tour/dashboard/move-things-around.svg';
+import OpenDrawerImage from 'img/tour/dashboard/open-drawer.svg';
+import CreateANewListImage from 'img/tour/dashboard/create-a-new-list.svg';
+import GettingAroundImage from 'img/tour/dashboard/getting-around.svg';
+import BlueDotImage from 'img/tour/dashboard/blue-dot.svg';
 
 export const FIRST_TOUR_STEPS = [
   {

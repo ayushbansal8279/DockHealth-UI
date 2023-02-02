@@ -1,12 +1,12 @@
 import React, { useMemo, useState } from 'react';
-import { Grid } from '@material-ui/core';
+import { Grid } from '@mui/material';
 import moment from 'moment';
 import filter from 'ramda/src/filter';
 import includes from 'ramda/src/includes';
 import isEmpty from 'ramda/src/isEmpty';
 import reject from 'ramda/src/reject';
 import ListSkeletonLoader from 'components/common/ListSkeletonLoader/ListSkeletonLoader';
-import Spacing from 'components/common/Spacing.tsx';
+import Spacing from 'components/common/Spacing';
 import Search from 'components/task-view/Search/Search';
 import UserAvatar from 'components/user/UserAvatar/UserAvatar';
 import Tooltip from 'components/common/Tooltip/Tooltip';
@@ -54,21 +54,21 @@ const getFilteredOrganizationUsers = ({
   }
 
   return currentSearch
-    ? filteredOrganizationUsers.filter(memberData => {
+    ? filteredOrganizationUsers.filter((memberData) => {
         const { firstName, lastName, email } = new Proxy(memberData || {}, {
           get(target, path) {
             return target[path]?.toLowerCase() ?? '';
           },
         });
 
-        return [firstName, lastName, email].some(value =>
+        return [firstName, lastName, email].some((value) =>
           value.includes(currentSearch.toLowerCase()),
         );
       })
     : filteredOrganizationUsers;
 };
 
-const renderListNames = listNames => {
+const renderListNames = (listNames) => {
   if (listNames.length === 0) return '';
 
   const title = listNames.map(({ fullName }, index) =>
@@ -82,7 +82,7 @@ const renderListNames = listNames => {
   );
 };
 
-const renderColumnHeader = props => {
+const renderColumnHeader = (props) => {
   const { colDef } = props;
   const { headerName } = colDef;
 
@@ -145,13 +145,8 @@ const UsersTable = ({
         flex: 0.5,
         renderHeader: renderColumnHeader,
         renderCell: ({ row }) => {
-          const {
-            firstName,
-            lastName,
-            email,
-            userIdentifier,
-            userStatus,
-          } = row;
+          const { firstName, lastName, email, userIdentifier, userStatus } =
+            row;
           const key = `${firstName}${lastName}${userIdentifier}${email}`;
 
           return (
@@ -286,7 +281,7 @@ const UsersTable = ({
                         : `${listName.slice(0, 14)}...`,
                   }))
                   // eslint-disable-next-line func-names
-                  .sort(function(a, b) {
+                  .sort(function (a, b) {
                     if (a.fullName < b.fullName) {
                       return -1;
                     }
@@ -343,7 +338,7 @@ const UsersTable = ({
 
   const filteredOrganizationUsersWithId = useMemo(
     () =>
-      filteredOrganizationUsers.map(member => ({
+      filteredOrganizationUsers.map((member) => ({
         id: member.userIdentifier,
         ...member,
       })),
@@ -377,7 +372,7 @@ const UsersTable = ({
                 wrap="nowrap"
               >
                 <Search
-                  onChange={event =>
+                  onChange={(event) =>
                     setCurrentSearch(event?.target?.value ?? '')
                   }
                   value={currentSearch}

@@ -1,10 +1,10 @@
 import React from 'react';
 import { useHistory } from 'react-router-dom';
-import { Grid } from '@material-ui/core';
+import { Grid } from '@mui/material';
 import { createFilter } from 'react-search-input';
 import isEmpty from 'ramda/src/isEmpty';
 import { capitalize } from 'helpers/capitalize';
-import Spacing from 'components/common/Spacing.tsx';
+import Spacing from 'components/common/Spacing';
 import { RobotoTypography } from 'styles/theme';
 import UserAvatar from 'components/user/UserAvatar/UserAvatar';
 import {
@@ -14,7 +14,7 @@ import {
   UsersListContainer,
 } from './styled';
 
-const renderColumnHeader = props => {
+const renderColumnHeader = (props) => {
   const { colDef } = props;
   const { headerName } = colDef;
 
@@ -27,7 +27,7 @@ const renderColumnHeader = props => {
   );
 };
 
-const UsersList = props => {
+const UsersList = (props) => {
   const { users, searchTerm } = props;
   const history = useHistory();
 
@@ -79,7 +79,7 @@ const UsersList = props => {
     'workPhoneNumber',
   ];
 
-  const usersWithId = users.map(user => ({
+  const usersWithId = users.map((user) => ({
     id: user?.userIdentifier,
     ...user,
   }));

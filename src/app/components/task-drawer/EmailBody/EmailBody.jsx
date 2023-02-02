@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import ReactHtmlParser from 'react-html-parser';
+import ReactHtmlParser from 'html-react-parser';
 import * as TaskListApi from 'api/task-list-api';
 import Spacing from 'components/common/Spacing';
 import { mentionifyAndLinkifyTaskText } from 'helpers/utility-functions';
@@ -17,7 +17,7 @@ const EmailBody = () => {
   useEffect(() => {
     if (taskListIdentifier && emailBody) {
       TaskListApi.getMembersByTaskListId(taskListIdentifier, 'ALL').then(
-        data => {
+        (data) => {
           setEmailBodyMembers(data);
         },
       );

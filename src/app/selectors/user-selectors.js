@@ -1,7 +1,7 @@
 import { createSelector } from 'reselect';
 
-export const userStateSelector = state => state.userState;
-export const userViewSetupSelector = state => state.userState.userViewSetup;
+export const userStateSelector = (state) => state.userState;
+export const userViewSetupSelector = (state) => state.userState.userViewSetup;
 
 export const userProfileSelector = createSelector(
   userStateSelector,

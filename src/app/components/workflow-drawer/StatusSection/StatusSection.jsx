@@ -37,7 +37,7 @@ const StatusSection = ({ disabled }) => {
     }
   }, [autoFocusFieldName]);
 
-  const updateWorkflowStatus = newWorkflowStatus => {
+  const updateWorkflowStatus = (newWorkflowStatus) => {
     const clearStatus = true;
     const donotClearStatus = false;
     dispatch(
@@ -51,7 +51,7 @@ const StatusSection = ({ disabled }) => {
   };
 
   const handleUpdateWorkflowStatus = useCallback(
-    newWorkflowStatus => {
+    (newWorkflowStatus) => {
       setStatus(newWorkflowStatus);
       updateWorkflowStatus(newWorkflowStatus);
     },

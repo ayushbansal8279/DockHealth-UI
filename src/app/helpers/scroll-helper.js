@@ -10,19 +10,14 @@ export const isOutsideScrollViewAtTheBottom = (
   itemElement,
 ) => {
   const { offsetTop: itemOffsetTop, offsetHeight: itemHeight } = itemElement;
-  const {
-    scrollTop: containerScrollTop,
-    offsetHeight: containerHeight,
-  } = containerElement;
+  const { scrollTop: containerScrollTop, offsetHeight: containerHeight } =
+    containerElement;
 
   return itemOffsetTop + itemHeight > containerScrollTop + containerHeight;
 };
 
-export const isOutsideScrollView = (containerElement, itemElement) => {
-  return (
-    isOutsideScrollViewAtTheTop(containerElement, itemElement) ||
-    isOutsideScrollViewAtTheBottom(containerElement, itemElement)
-  );
-};
+export const isOutsideScrollView = (containerElement, itemElement) =>
+  isOutsideScrollViewAtTheTop(containerElement, itemElement) ||
+  isOutsideScrollViewAtTheBottom(containerElement, itemElement);
 
 export default isOutsideScrollView;

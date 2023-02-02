@@ -1,6 +1,6 @@
 import React, { useRef } from 'react';
-import { Box } from '@material-ui/core';
-import SearchIcon from '@material-ui/icons/Search';
+import { Box } from '@mui/material';
+import SearchIcon from '@mui/icons-material/Search';
 import { useBoolean } from 'hooks/useBoolean';
 import {
   SearchInput,
@@ -9,7 +9,7 @@ import {
   ClearButton,
 } from './styled';
 
-const HeaderSearch = props => {
+const HeaderSearch = (props) => {
   const { value, onChange } = props;
   const inputReference = useRef(null);
   const [focused, setFocused, unsetFocused] = useBoolean(false);
@@ -27,7 +27,7 @@ const HeaderSearch = props => {
         ref={inputReference}
         value={value}
         placeholder="Search"
-        onChange={event => onChange(event.target?.value || '')}
+        onChange={(event) => onChange(event.target?.value || '')}
         onFocus={setFocused}
         onBlur={unsetFocused}
       />

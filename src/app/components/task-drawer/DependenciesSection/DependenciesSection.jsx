@@ -1,6 +1,6 @@
 import React from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import CloseIcon from '@material-ui/icons/Close';
+import CloseIcon from '@mui/icons-material/Close';
 import { userProfileSelector } from 'selectors/user-selectors';
 import { updateTasksLink } from 'actions/task-actions';
 import { selectedTaskSelector } from 'selectors/task-drawer-selectors';
@@ -15,7 +15,7 @@ const DependenciesSection = () => {
   const dispatch = useDispatch();
   const currentUser = useSelector(userProfileSelector);
 
-  const removeHardDependency = dependencyIdentifier => {
+  const removeHardDependency = (dependencyIdentifier) => {
     dispatch(
       updateTasksLink({
         sourceTaskIdentifier: dependencyIdentifier,
@@ -33,7 +33,7 @@ const DependenciesSection = () => {
         <DrawerTaskLoader rows={dependencyTasksCount || 4} />
       ) : (
         <>
-          {taskDependencies?.map(task => (
+          {taskDependencies?.map((task) => (
             <TaskContainer key={task.taskIdentifier}>
               <DeleteButton
                 type="button"

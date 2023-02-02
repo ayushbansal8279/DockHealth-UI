@@ -4,8 +4,8 @@ import GroupAvatar from 'components/user/GroupAvatar/GroupAvatar';
 import Spacing from 'components/common/Spacing';
 import { isUserGroup } from 'helpers/user-helper';
 import OptionsMenu from 'components/common/OptionsMenu/OptionsMenu';
-import MoreVert from '@material-ui/icons/MoreVert';
-import { Box } from '@material-ui/core';
+import MoreVert from '@mui/icons-material/MoreVert';
+import { Box } from '@mui/material';
 import { MemberName, MemberRow } from './styled';
 
 const MemberListItem = ({
@@ -17,8 +17,9 @@ const MemberListItem = ({
 }) => {
   const menuOptions = useMemo(
     () =>
-      channelMember?.role !== 'operator'
-        ? [
+      channelMember?.role === 'operator'
+        ? []
+        : [
             {
               name: 'Make Admin',
               onClick: async () => {
@@ -26,8 +27,7 @@ const MemberListItem = ({
                 await channel.addOperators([identifier]);
               },
             },
-          ]
-        : [],
+          ],
     [channel, member, channelMember],
   );
 
@@ -35,7 +35,7 @@ const MemberListItem = ({
     <MemberRow
       key={member?.userIdentifier}
       isSelected={isSelected}
-      onClick={event => handleOptionClick(event, member)}
+      onClick={(event) => handleOptionClick(event, member)}
     >
       <Spacing horizontal={3} />
       {isUserGroup(member) ? (

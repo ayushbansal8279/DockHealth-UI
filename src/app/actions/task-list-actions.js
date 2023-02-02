@@ -32,68 +32,61 @@ export const updateUserListViewSetup = (
   taskListIdentifier,
   setup,
   currentUserIdentifier,
-) => {
-  return {
-    type: ActionTypes.UPDATE_LIST_VIEW_SETUP,
-    payload: { taskListIdentifier, setup, currentUserIdentifier },
-  };
-};
+) => ({
+  type: ActionTypes.UPDATE_LIST_VIEW_SETUP,
+  payload: { taskListIdentifier, setup, currentUserIdentifier },
+});
 
-export const updateUserPageViewSetup = setup => {
-  return {
-    type: ActionTypes.UPDATE_USER_VIEW_SETUP,
-    payload: { setup },
-  };
-};
+export const updateUserPageViewSetup = (setup) => ({
+  type: ActionTypes.UPDATE_USER_VIEW_SETUP,
+  payload: { setup },
+});
 
 export function getTaskListForUser() {
-  return dispatch => {
-    return TaskListApi.getTaskListForUser()
-      .then(taskLists => {
+  return (dispatch) =>
+    TaskListApi.getTaskListForUser()
+      .then((taskLists) => {
         dispatch({ type: ActionTypes.GET_TASKLIST_SUCCESS, taskLists });
       })
       .catch(noop);
-  };
 }
 
 export function getArchivedTaskListForUser() {
-  return dispatch => {
-    return TaskListApi.getArchivedTaskListForUser()
-      .then(taskLists => {
+  return (dispatch) =>
+    TaskListApi.getArchivedTaskListForUser()
+      .then((taskLists) => {
         dispatch({
           type: ActionTypes.GET_ARCHIVED_TASKLIST_SUCCESS,
           taskLists,
         });
       })
-      .catch(error => {
+      .catch((error) => {
         throw error;
       });
-  };
 }
 
 export function getPendingTaskListsForUser() {
-  return dispatch => {
-    return TaskListApi.getPendingTaskListsForUser()
-      .then(taskLists => {
+  return (dispatch) =>
+    TaskListApi.getPendingTaskListsForUser()
+      .then((taskLists) => {
         dispatch({ type: ActionTypes.GET_PENDING_TASKLIST_SUCCESS, taskLists });
       })
-      .catch(error => {
+      .catch((error) => {
         throw error;
       });
-  };
 }
 
 export function loading() {
-  return dispatch => {
+  return (dispatch) => {
     dispatch({ type: ActionTypes.REQUEST_LISTS });
   };
 }
 
 export function saveTaskList(formProps) {
   if (formProps.taskListIdentifier) {
-    return dispatch =>
+    return (dispatch) =>
       TaskListApi.updateTaskList(formProps)
-        .then(updatedTasklist => {
+        .then((updatedTasklist) => {
           dispatch({
             type: ActionTypes.UPDATE_TASKLIST_SUCCESS,
             updatedTasklist,
@@ -103,7 +96,7 @@ export function saveTaskList(formProps) {
           );
           return updatedTasklist;
         })
-        .catch(error => {
+        .catch((error) => {
           dispatch(
             AlertActions.showGlobalAlert(
               'Error in saving Task List details',
@@ -114,9 +107,9 @@ export function saveTaskList(formProps) {
         });
   }
 
-  return dispatch =>
+  return (dispatch) =>
     TaskListApi.addTaskList(formProps)
-      .then(taskList => {
+      .then((taskList) => {
         dispatch({
           type: ActionTypes.ADD_TASKLIST_SUCCESS,
           // set the default role for now
@@ -127,7 +120,7 @@ export function saveTaskList(formProps) {
         );
         return taskList;
       })
-      .catch(error => {
+      .catch((error) => {
         dispatch(
           AlertActions.showGlobalAlert(
             'Error in creating Task List details',
@@ -139,9 +132,9 @@ export function saveTaskList(formProps) {
 }
 
 export function getMembersByTaskListId(taskListIdentifier, memberStatus) {
-  return dispatch =>
+  return (dispatch) =>
     TaskListApi.getMembersByTaskListId(taskListIdentifier, memberStatus)
-      .then(tasklistmembers => {
+      .then((tasklistmembers) => {
         dispatch({
           type: ActionTypes.GET_TASKLISTMEMBERS_SUCCESS,
           taskListIdentifier,
@@ -152,9 +145,9 @@ export function getMembersByTaskListId(taskListIdentifier, memberStatus) {
 }
 
 export function getActiveMembersByTaskListId(taskListIdentifier) {
-  return dispatch =>
+  return (dispatch) =>
     TaskListApi.getMembersByTaskListId(taskListIdentifier, 'ACTIVE')
-      .then(tasklistactivemembers => {
+      .then((tasklistactivemembers) => {
         dispatch({
           type: ActionTypes.GET_TASKLISTACTIVEMEMBERS_SUCCESS,
           tasklistactivemembers,
@@ -174,9 +167,9 @@ export function invitePersonToTaskList(
     lastName: formProps.lastName,
   };
 
-  return dispatch =>
+  return (dispatch) =>
     TaskListApi.invitePersonToTaskList(taskListIdentifier, personInfo).then(
-      response => {
+      (response) => {
         dispatch({
           type: ActionTypes.INVITE_PERSON_TASKLIST_SUCCESS,
           addedUser: response,
@@ -191,7 +184,7 @@ export function invitePersonToTaskList(
 }
 
 export function clearMembersInTaskList() {
-  return dispatch => {
+  return (dispatch) => {
     dispatch({
       type: ActionTypes.GET_TASKLISTMEMBERS_SUCCESS,
       users: [],
@@ -199,7 +192,7 @@ export function clearMembersInTaskList() {
   };
 }
 
-export const inviteUserToTaskList = (taskListIdentifier, user) => dispatch =>
+export const inviteUserToTaskList = (taskListIdentifier, user) => (dispatch) =>
   TaskListApi.inviteUserToTaskList(taskListIdentifier, user.userIdentifier)
     .then(() => {
       dispatch({
@@ -207,7 +200,7 @@ export const inviteUserToTaskList = (taskListIdentifier, user) => dispatch =>
         user,
       });
     })
-    .catch(error => {
+    .catch((error) => {
       dispatch(
         AlertActions.showGlobalAlert(
           error?.errorMessage ??
@@ -223,12 +216,12 @@ export function inviteMultipleUsersToTaskList(
   taskListIdentifier,
   invitedUsersIdentifier,
 ) {
-  return dispatch =>
+  return (dispatch) =>
     TaskListApi.inviteMultipleUsersToTaskList(
       taskListIdentifier,
       invitedUsersIdentifier,
     )
-      .then(response => {
+      .then((response) => {
         dispatch({
           type: ActionTypes.INVITEMULUSERS_TASKLIST_SUCCESS,
           response,
@@ -236,7 +229,7 @@ export function inviteMultipleUsersToTaskList(
         });
         dispatch(AlertActions.showGlobalAlert('Invitations sent!'));
       })
-      .catch(error => {
+      .catch((error) => {
         dispatch(
           AlertActions.showGlobalAlert('Error in sending invitation', 'error'),
         );
@@ -245,9 +238,9 @@ export function inviteMultipleUsersToTaskList(
 }
 
 export function getNonOrgUsersByTaskList(taskListIdentifier) {
-  return dispatch =>
+  return (dispatch) =>
     TaskListApi.getNonOrgUsersByTaskList(taskListIdentifier)
-      .then(users => {
+      .then((users) => {
         dispatch({
           type: ActionTypes.GET_NONORGUSERSINTASKLIST_SUCCESS,
           users,
@@ -264,13 +257,13 @@ export function getNonOrgUsersByTaskList(taskListIdentifier) {
  * @returns {Promise}
  */
 export function changeUserRoleForList(taskListIdentifier, markedUser, role) {
-  return dispatch =>
+  return (dispatch) =>
     TaskListApi.changeUserRoleForList(
       taskListIdentifier,
       markedUser.userIdentifier,
       role,
     )
-      .then(response => {
+      .then((response) => {
         dispatch({
           type: ActionTypes.CHANGEUSERROLE_TASKLIST_SUCCESS,
           response,
@@ -279,7 +272,7 @@ export function changeUserRoleForList(taskListIdentifier, markedUser, role) {
         });
         dispatch(AlertActions.showGlobalAlert(AlertMessages.UPDATED));
       })
-      .catch(error => {
+      .catch((error) => {
         dispatch(
           AlertActions.showGlobalAlert('Error in updating user role', 'error'),
         );
@@ -288,9 +281,9 @@ export function changeUserRoleForList(taskListIdentifier, markedUser, role) {
 }
 
 export function deleteTaskListById(taskListIdentifier) {
-  return dispatch =>
+  return (dispatch) =>
     TaskListApi.deleteTaskListById(taskListIdentifier)
-      .then(response => {
+      .then((response) => {
         dispatch({
           type: ActionTypes.DELETE_TASKLIST_SUCCESS,
           response,
@@ -298,7 +291,7 @@ export function deleteTaskListById(taskListIdentifier) {
         });
         dispatch(AlertActions.showGlobalAlert('Task List deleted'));
       })
-      .catch(error => {
+      .catch((error) => {
         dispatch(
           AlertActions.showGlobalAlert('Error in deleting Task List', 'error'),
         );
@@ -307,9 +300,9 @@ export function deleteTaskListById(taskListIdentifier) {
 }
 
 export function archiveTaskListById(taskListIdentifier) {
-  return dispatch => {
-    return TaskListApi.archiveTaskListById(taskListIdentifier, true)
-      .then(response => {
+  return (dispatch) =>
+    TaskListApi.archiveTaskListById(taskListIdentifier, true)
+      .then((response) => {
         dispatch({
           type: ActionTypes.ARCHIVE_TASKLIST_SUCCESS,
           response,
@@ -322,13 +315,12 @@ export function archiveTaskListById(taskListIdentifier) {
           AlertActions.showGlobalAlert('Error in archiving Task List', 'error'),
         );
       });
-  };
 }
 
 export function unarchiveTaskListById(taskListIdentifier) {
-  return dispatch =>
+  return (dispatch) =>
     TaskListApi.archiveTaskListById(taskListIdentifier, false)
-      .then(response => {
+      .then((response) => {
         dispatch({
           type: ActionTypes.UNARCHIVE_TASKLIST_SUCCESS,
           response,
@@ -350,12 +342,12 @@ export function removeUserFromTaskList(
   taskListIdentifier,
   removedUserIdentifier,
 ) {
-  return dispatch =>
+  return (dispatch) =>
     TaskListApi.removeUserFromTaskList(
       taskListIdentifier,
       removedUserIdentifier,
     )
-      .then(response => {
+      .then((response) => {
         dispatch({
           type: ActionTypes.REMOVEUSER_TASKLIST_SUCCESS,
           response,
@@ -363,7 +355,7 @@ export function removeUserFromTaskList(
         });
         dispatch(AlertActions.showGlobalAlert('User removed successfully'));
       })
-      .catch(error => {
+      .catch((error) => {
         dispatch(
           AlertActions.showGlobalAlert(
             'Error in removing User from Task List',
@@ -378,12 +370,12 @@ export function cancelInviteToTaskList(
   taskListIdentifier,
   cancelledUserIdentifier,
 ) {
-  return dispatch =>
+  return (dispatch) =>
     TaskListApi.cancelInviteToTaskList(
       taskListIdentifier,
       cancelledUserIdentifier,
     )
-      .then(response => {
+      .then((response) => {
         dispatch({
           type: ActionTypes.CANCEL_TASKLIST_INVITE_SUCCESS,
           response,
@@ -393,7 +385,7 @@ export function cancelInviteToTaskList(
           AlertActions.showGlobalAlert('Invitation canceled successfully'),
         );
       })
-      .catch(error => {
+      .catch((error) => {
         dispatch(
           AlertActions.showGlobalAlert(
             'Error in canceling invitation',
@@ -405,18 +397,18 @@ export function cancelInviteToTaskList(
 }
 
 export function findAuditsByTaskList(taskListIdentifier, queryStartPosition) {
-  return dispatch =>
+  return (dispatch) =>
     TaskListApi.findAuditsByTaskList(taskListIdentifier, queryStartPosition)
-      .then(audits => {
+      .then((audits) => {
         dispatch({ type: ActionTypes.GET_AUDITS_BY_TASKLIST_SUCCESS, audits });
       })
       .catch(noop);
 }
 
 export function findAuditsForAllTaskListsByUserId(queryStartPosition) {
-  return dispatch =>
+  return (dispatch) =>
     TaskListApi.findAuditsForAllTaskListsByUserId(queryStartPosition)
-      .then(auditsForAllUserList => {
+      .then((auditsForAllUserList) => {
         dispatch({
           type: ActionTypes.GET_AUDITS_BY_ALLUSERLIST_SUCCESS,
           auditsForAllUserList,
@@ -426,9 +418,9 @@ export function findAuditsForAllTaskListsByUserId(queryStartPosition) {
 }
 
 export function findActivityFeedForAllTaskListsByUserId(queryStartPosition) {
-  return dispatch =>
+  return (dispatch) =>
     TaskListApi.findActivityFeedForAllTaskListsByUserId(queryStartPosition)
-      .then(activityFeedForAllUserList => {
+      .then((activityFeedForAllUserList) => {
         dispatch({
           type: ActionTypes.GET_ACTIVITYFEED_BY_ALLUSERLIST_SUCCESS,
           activityFeedForAllUserList,
@@ -441,7 +433,7 @@ export function toggleListNotifications(
   taskListIdentifier,
   receiveNotifications,
 ) {
-  return dispatch =>
+  return (dispatch) =>
     TaskListApi.toggleListNotifications(
       taskListIdentifier,
       receiveNotifications,
@@ -453,7 +445,7 @@ export function toggleListNotifications(
           receiveNotifications,
         });
       })
-      .catch(error => {
+      .catch((error) => {
         dispatch(
           AlertActions.showGlobalAlert(
             'Error in toggling notification for Task List',
@@ -465,13 +457,13 @@ export function toggleListNotifications(
 }
 
 export function isInbox(boolean) {
-  return dispatch => {
+  return (dispatch) => {
     dispatch({ type: ActionTypes.IS_INBOX, boolean });
   };
 }
 
 export function leaveList(taskListIdentifier) {
-  return dispatch =>
+  return (dispatch) =>
     TaskListApi.leaveList(taskListIdentifier)
       .then(() => {
         dispatch({
@@ -485,33 +477,37 @@ export function leaveList(taskListIdentifier) {
 export function downloadPDF(taskListIdentifier) {
   return TaskListApi.downloadPDF(taskListIdentifier)
     .then(() => 'success')
-    .catch(error => {
+    .catch((error) => {
       throw error;
     });
 }
 
 // eslint-disable-next-line unicorn/consistent-function-scoping
-export const getTaskListStats = ({ taskListIdentifier }) => async dispatch => {
-  try {
-    const { data } = await TaskListApi.getTaskListStats({ taskListIdentifier });
-    dispatch({
-      type: ActionTypes.GET_TASKLIST_STATS_SUCCESS,
-      taskListStats: data,
-    });
-  } catch (error) {
-    dispatch({ type: ActionTypes.GET_TASKLIST_STATS_FAILURE });
-  }
-};
+export const getTaskListStats =
+  ({ taskListIdentifier }) =>
+  async (dispatch) => {
+    try {
+      const { data } = await TaskListApi.getTaskListStats({
+        taskListIdentifier,
+      });
+      dispatch({
+        type: ActionTypes.GET_TASKLIST_STATS_SUCCESS,
+        taskListStats: data,
+      });
+    } catch {
+      dispatch({ type: ActionTypes.GET_TASKLIST_STATS_FAILURE });
+    }
+  };
 
 // eslint-disable-next-line unicorn/consistent-function-scoping
-export const resetTasklistStats = () => dispatch => {
+export const resetTasklistStats = () => (dispatch) => {
   dispatch({
     type: ActionTypes.RESET_TASKLIST_STATS,
   });
 };
 
 // eslint-disable-next-line unicorn/consistent-function-scoping
-export const getPersonTasklistAccumulatedStats = () => dispatch => {
+export const getPersonTasklistAccumulatedStats = () => (dispatch) => {
   // TODO - implement API endpoint for downloading accumulated stats
 
   dispatch({
@@ -520,9 +516,9 @@ export const getPersonTasklistAccumulatedStats = () => dispatch => {
 };
 
 export function acceptInviteToTaskList(taskList) {
-  return dispatch => {
-    return TaskListApi.acceptInviteToTaskList(taskList.taskListIdentifier)
-      .then(response => {
+  return (dispatch) =>
+    TaskListApi.acceptInviteToTaskList(taskList.taskListIdentifier)
+      .then((response) => {
         onTaskListInvitationAccepted();
         dispatch({
           type: ActionTypes.ACCEPT_INVITE_TOTASKLIST_SUCCESS,
@@ -530,26 +526,24 @@ export function acceptInviteToTaskList(taskList) {
           taskList,
         });
       })
-      .catch(error => {
+      .catch((error) => {
         throw error;
       });
-  };
 }
 
 export function rejectInviteToTaskList(taskList) {
-  return dispatch => {
-    return TaskListApi.rejectInviteToTaskList(taskList.taskListIdentifier)
-      .then(response => {
+  return (dispatch) =>
+    TaskListApi.rejectInviteToTaskList(taskList.taskListIdentifier)
+      .then((response) => {
         dispatch({
           type: ActionTypes.REJECT_INVITE_TOTASKLIST_SUCCESS,
           res: response,
           taskList,
         });
       })
-      .catch(error => {
+      .catch((error) => {
         throw error;
       });
-  };
 }
 
 export const updateListPreferences = (

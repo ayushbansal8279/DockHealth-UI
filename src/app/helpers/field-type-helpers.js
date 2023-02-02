@@ -1,9 +1,9 @@
-import FieldTypeToggleImg from 'img/patient/field-type-toggle';
-import FieldTypeNumberImg from 'img/patient/field-type-number';
-import FieldTypeDateImg from 'img/patient/field-type-date';
-import FieldTypeTextImg from 'img/patient/field-type-text';
-import FieldTypeDropdownImg from 'img/patient/field-type-dropdown';
-import FieldTypeLink from 'img/patient/field-type-link';
+import FieldTypeToggleImg from 'img/patient/field-type-toggle.svg';
+import FieldTypeNumberImg from 'img/patient/field-type-number.svg';
+import FieldTypeDateImg from 'img/patient/field-type-date.svg';
+import FieldTypeTextImg from 'img/patient/field-type-text.svg';
+import FieldTypeDropdownImg from 'img/patient/field-type-dropdown.svg';
+import FieldTypeLink from 'img/patient/field-type-link.svg';
 
 export const FieldType = {
   DATE: 'DATE',

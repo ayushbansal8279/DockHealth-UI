@@ -1,6 +1,6 @@
 import { createSelector } from 'reselect';
 
-export const taskListStateSelector = state => state.taskList;
+export const taskListStateSelector = (state) => state.taskList;
 
 export const currentTaskListIdentifierSelector = createSelector(
   taskListStateSelector,
@@ -36,11 +36,10 @@ export const archivedTaskListsSelector = createSelector(
   ({ archivedTaskLists }) => archivedTaskLists,
 );
 
-export const currentTaskListCustomFieldsPreferencesSelector = identifier => {
-  return createSelector(taskListStateSelector, ({ currentTaskList }) =>
+export const currentTaskListCustomFieldsPreferencesSelector = (identifier) =>
+  createSelector(taskListStateSelector, ({ currentTaskList }) =>
     currentTaskList?.listType === 'PUBLIC'
       ? currentTaskList?.customFieldDisplayColumns
-      : currentTaskList?.listUsers.find(u => u.identifier === identifier)
+      : currentTaskList?.listUsers.find((u) => u.identifier === identifier)
           ?.customFieldDisplayColumns,
   );
-};

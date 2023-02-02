@@ -26,14 +26,14 @@ const InviteUsers = ({ onCancel }) => {
     parameters.isEphemeral = false;
     parameters.isDistinct = true;
     parameters.addUserIds(
-      selectedMembers.map(member => {
+      selectedMembers.map((member) => {
         return member.identifier;
       }),
     );
     parameters.operatorUserIds = [currentUserId];
     parameters.name = '';
 
-    createChannel(parameters).then(channel => {
+    createChannel(parameters).then((channel) => {
       dispatch(selectChannel(channel));
     });
 
@@ -57,7 +57,7 @@ const InviteUsers = ({ onCancel }) => {
     >
       <MultiAssignChatInviteMembersList
         selectedMembers={[]}
-        onSelect={selected => {
+        onSelect={(selected) => {
           setSelectedMembers(selected);
         }}
       />

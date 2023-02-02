@@ -1,5 +1,5 @@
 import React from 'react';
-import { Popover } from '@material-ui/core';
+import { Popover } from '@mui/material';
 import {
   UpgradePlanPopupContainer,
   Header,

@@ -12,8 +12,8 @@ export const ReminderLabel = {
 };
 
 export const REMINDER_TYPE_OPTIONS = Object.values(ReminderType)
-  .filter(value => value !== ReminderType.NONE)
-  .map(value => ({
+  .filter((value) => value !== ReminderType.NONE)
+  .map((value) => ({
     value,
     label: ReminderLabel[value],
   }));

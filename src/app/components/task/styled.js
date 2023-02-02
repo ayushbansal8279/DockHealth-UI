@@ -2,7 +2,7 @@
 import React from 'react';
 import styled, { keyframes, css } from 'styled-components';
 import { Link } from 'react-router-dom';
-import { Grid } from '@material-ui/core';
+import { Grid } from '@mui/material';
 import spacing from 'styles/spacing';
 import { fontWeights, fontSizes } from 'styles/font';
 import palette, { featurePalette } from 'styles/palette';
@@ -35,8 +35,7 @@ export const DecisionSelect = styled(Select)`
     display: none;
   }
   & .switchIcon > path {
-    fill: ${props =>
-      props.iconColorActive ? props.iconColorActive : palette.dirtyBanana};
+    fill: ${(props) => props.iconColorActive ?? palette.dirtyBanana};
   },
 `;
 
@@ -64,10 +63,10 @@ export const ListLink = styled(ListItemLink)`
 export const CompletedBy = styled.div`
   align-items: flex-end;
   display: flex;
-  height: ${props => (props.isCompleted ? 0.8 : 0)}rem;
+  height: ${(props) => (props.isCompleted ? 0.8 : 0)}rem;
   overflow: hidden;
   transition: all 0.1s ease-out;
-  transition-delay: ${props => (props.isCompleted ? '0' : '0.4')}s;
+  transition-delay: ${(props) => (props.isCompleted ? '0' : '0.4')}s;
   font-size: ${fontSizes.small};
   padding-left: 5px;
   padding-bottom: 2px;
@@ -77,8 +76,8 @@ export const CompletedBy = styled.div`
     font-weight: ${fontWeights.regular};
     line-height: 1;
     transition: transform 0.4s ease-out;
-    transition-delay: ${props => (props.isCompleted ? 0.1 : 0)}s;
-    transform: translateX(${props => (props.isCompleted ? 0 : -100)}%);
+    transition-delay: ${(props) => (props.isCompleted ? 0.1 : 0)}s;
+    transform: translateX(${(props) => (props.isCompleted ? 0 : -100)}%);
   }
 `;
 
@@ -100,7 +99,7 @@ export const TaskContext = styled.div`
 export const PrioritySwitch = styled.button`
   position: absolute;
   top: 50%;
-  left: ${props => props.left || '-12px'};
+  left: ${(props) => props.left || '-12px'};
   transform: translateY(-50%);
   cursor: ${({ isClickable = true }) => (isClickable ? 'pointer' : 'initial')};
 `;
@@ -165,14 +164,14 @@ export const Description = styled.div`
   width: 100%;
   margin-right: 4px;
   overflow-wrap: anywhere;
-  ${props => (props.isCrossedOut ? 'text-decoration: line-through;' : '')}
+  ${(props) => (props.isCrossedOut ? 'text-decoration: line-through;' : '')}
   cursor: pointer;
   text-overflow: ellipsis;
   white-space: initial;
   max-width: 480px;
   font-weight: 400;
   font-size: 14px;
-  ${props => (props.isUnread ? 'font-weight: 900; font-size: 15px;' : '')};
+  ${(props) => (props.isUnread ? 'font-weight: 900; font-size: 15px;' : '')};
   overflow: hidden;
 
   @media screen and (max-width: 1300px) {
@@ -285,10 +284,10 @@ export const SubtasksGroupLabel = styled.span`
 export const StandardTaskItemCell = styled.div`
   align-items: ${({ alignItems }) => alignItems || 'center'};
   border-right: 1px solid ${palette.coolGrey3};
-  color: ${props => props.color || palette.mediumGrey};
+  color: ${(props) => props.color || palette.mediumGrey};
   display: flex;
   font-size: ${fontSizes.smallPlus};
-  font-weight: ${props =>
+  font-weight: ${(props) =>
     props.bolded ? fontWeights.regular : fontWeights.light};
   color: ${palette.mediumGrey};
   min-width: ${({ width, isSubtask, order }) =>
@@ -296,11 +295,11 @@ export const StandardTaskItemCell = styled.div`
   max-width: ${({ width, isSubtask, order }) =>
     isSubtask && order === 0 ? +width - 0 : width}px;
   padding: ${spacing.small} 0;
-  padding: ${props => props.padding || `${spacing.small} 0`};
+  padding: ${(props) => props.padding || `${spacing.small} 0`};
   padding-left: ${spacing.small};
   padding-right: ${spacing.small};
-  width: ${props => (!props.width ? '100%' : '')};
-  justify-content: ${props => props.justify || 'flex-start'};
+  width: ${(props) => (props.width ? '' : '100%')};
+  justify-content: ${(props) => props.justify || 'flex-start'};
   position: relative;
 `;
 
@@ -312,7 +311,7 @@ export const MainStandardTaskItemCell = styled(StandardTaskItemCell)`
     visibility: visible;
   }
   @media print {
-    min-width: ${props => props.printWidth};
+    min-width: ${(props) => props.printWidth};
     height: 100%;
   }
 `;
@@ -327,7 +326,7 @@ export const ClickablePatient = styled.span`
 
 export const StandardTaskItemContainer = styled.div`
   position: relative;
-  background-color: ${props =>
+  background-color: ${(props) =>
     props.isSelected
       ? palette.brightBlueWithAlpha
       : // eslint-disable-next-line unicorn/no-nested-ternary
@@ -337,13 +336,14 @@ export const StandardTaskItemContainer = styled.div`
   border: 1px solid ${palette.coolGrey3};
   border-right: none;
   display: flex;
-  justify-content: ${props => (props.isAddingTask ? 'flex-end' : 'flex-start')};
+  justify-content: ${(props) =>
+    props.isAddingTask ? 'flex-end' : 'flex-start'};
   width: 100%;
   height: ${({ height }) => height || 35}px;
   border-top: none;
   border-left: none;
   transition: background-color 0.3s ease-out;
-  animation: ${props =>
+  animation: ${(props) =>
     props.newlyCreated
       ? css`
           ${highlight} 6s ease-out;
@@ -359,7 +359,7 @@ export const StandardTaskItemContainer = styled.div`
 `;
 
 export const StatusBar = styled.div`
-  background-color: ${props => props.color};
+  background-color: ${(props) => props.color};
   height: calc(100% - 2px);
   top: 0;
   left: 0;
@@ -398,7 +398,7 @@ export const StandardTaskThreeDots = styled(ThreeDots)`
 
 export const StandardTaskItemPanel = styled.div`
   position: relative;
-  ${props =>
+  ${(props) =>
     props.isDragging
       ? 'box-shadow: 0px 0px 11px rgba(204, 204, 204, 0.8)'
       : ''};

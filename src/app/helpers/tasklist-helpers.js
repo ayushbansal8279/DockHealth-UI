@@ -20,6 +20,7 @@ export function checkIfTasksHaveSubtasksOrComments(tasks) {
   });
 }
 
+// eslint-disable-next-line sonarjs/cognitive-complexity
 export function extractTasksAndSubtasks(listOfTasks) {
   if (!listOfTasks) {
     return { parentTasks: [], subtasks: [] };
@@ -30,21 +31,26 @@ export function extractTasksAndSubtasks(listOfTasks) {
       if (task.itemType === TaskItemType.BUNDLE) {
         // eslint-disable-next-line no-unused-expressions
         accumulator.parentTasks.push(task);
-        task.tasks?.forEach(t => {
-          if (t.parentTaskIdentifier) {
-            accumulator.parentTasks.push(t);
-          } else {
-            accumulator.parentTasks.push(t);
-            // eslint-disable-next-line no-unused-expressions
-            t.subtasks?.forEach(subtask => accumulator.subtasks.push(subtask));
+        if (task.tasks)
+          for (const t of task.tasks) {
+            if (t.parentTaskIdentifier) {
+              accumulator.parentTasks.push(t);
+            } else {
+              accumulator.parentTasks.push(t);
+              // eslint-disable-next-line no-unused-expressions
+              if (t.subtasks)
+                for (const subtask of t.subtasks)
+                  accumulator.subtasks.push(subtask);
+            }
           }
-        });
       } else if (task.parentTaskIdentifier) {
         accumulator.subtasks.push(task);
       } else {
         accumulator.parentTasks.push(task);
         // eslint-disable-next-line no-unused-expressions
-        task.subtasks?.forEach(subtask => accumulator.subtasks.push(subtask));
+        if (task.subtasks)
+          for (const subtask of task.subtasks)
+            accumulator.subtasks.push(subtask);
       }
 
       return accumulator;
@@ -63,7 +69,7 @@ export function updateBundleInList(
     ({ identifier }) => identifier === bundleIdentifier,
   );
   if (existingBundle) {
-    return listOfTasks?.map(t =>
+    return listOfTasks?.map((t) =>
       t.itemType === TaskItemType.BUNDLE && t.identifier === bundleIdentifier
         ? { ...t, ...dataToUpdate }
         : t,

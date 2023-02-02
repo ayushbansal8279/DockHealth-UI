@@ -82,11 +82,10 @@ export const BillingFrequency = {
   ANNUAL: 'ANNUAL',
 };
 
-export const getSubscriptionPlanLabel = ({ subscription }) => {
-  return subscription?.subscriptionPlanName;
-};
+export const getSubscriptionPlanLabel = ({ subscription }) =>
+  subscription?.subscriptionPlanName;
 
-export const priceFormatter = price => {
+export const priceFormatter = (price) => {
   const priceAmount = `${(Number(price) || 0).toFixed(2)}`;
   const formattedPrice = `${priceAmount}`.replace(
     /(\d)(?=(\d{3})+(?!\d))/g,

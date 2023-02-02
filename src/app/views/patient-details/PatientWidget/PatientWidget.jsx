@@ -1,6 +1,7 @@
 /* eslint-disable sonarjs/cognitive-complexity */
 import React, { useRef, useEffect, useState } from 'react';
 
+import { log } from 'helpers/log';
 import { PatientWidgetsWrapper } from './styled';
 import initializeWidgetSectionHooks from './hooks';
 
@@ -19,19 +20,19 @@ const PatientWidget = ({ url, height, width }) => {
   const widgetDomain = widgetUrl
     ? widgetUrl.slice(0, Math.max(0, widgetUrl.indexOf('/', 8)))
     : '';
-  console.log(`widgetDomain: ${widgetDomain}`);
+  log(`widgetDomain: ${widgetDomain}`);
 
   const frameReference = useRef(null);
 
   const sdk = useRef(null);
 
-  const handleOnReady = parameters => {
-    console.log(`handleOnReady: ${JSON.stringify(parameters, null, 2)}`);
+  const handleOnReady = (parameters) => {
+    log(`handleOnReady: ${JSON.stringify(parameters, null, 2)}`);
     setWidgetReady(true);
   };
 
-  const handleOnNavigate = location => {
-    console.log(`handleOnNavigate: ${JSON.stringify(location, null, 2)}`);
+  const handleOnNavigate = (location) => {
+    log(`handleOnNavigate: ${JSON.stringify(location, null, 2)}`);
   };
 
   // const onStateChangeClicked = () => {
@@ -58,9 +59,7 @@ const PatientWidget = ({ url, height, width }) => {
 
   useEffect(() => {
     if (widgetReady) {
-      console.log(
-        'firing state change for userIdentifier and patientIdentifier',
-      );
+      log('firing state change for userIdentifier and patientIdentifier');
       if (userProfile?.userIdentifier) {
         sdk.current.fireStateChanged({
           name: 'userIdentifier',

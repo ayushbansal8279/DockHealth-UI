@@ -1,5 +1,5 @@
-import { reducer as formReducer } from 'redux-form';
+// import { reducer as formReducer } from 'redux-form';
 
-const FormReducer = formReducer.plugin({});
+// const FormReducer = formReducer.plugin({});
 
-export default FormReducer;
+export default {};

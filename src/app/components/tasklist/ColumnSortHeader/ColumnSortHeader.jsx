@@ -3,7 +3,7 @@ import React, { useCallback, useState, useRef, useEffect } from 'react';
 import SortArrow from 'components/common/SortArrow/SortArrow';
 import { SortOrderType } from 'helpers/sorting-helper';
 import { checkIfShouldDisplayTooltip } from 'components/task/OverflowTooltip/OverflowTooltip';
-import { Box, Fade, Popper } from '@material-ui/core';
+import { Box, Fade, Popper } from '@mui/material';
 import { Draggable } from 'react-beautiful-dnd';
 import ThreeDotsIcon from 'img/three-dots.svg';
 import { Resizable } from 'react-resizable';
@@ -62,18 +62,22 @@ const ColumnSortHeader = ({
       onSortChange(id, SortOrderType.ASC);
     } else {
       switch (order) {
-        case null:
+        case null: {
           onSortChange(id, SortOrderType.ASC);
           break;
-        case SortOrderType.ASC:
+        }
+        case SortOrderType.ASC: {
           onSortChange(id, SortOrderType.DESC);
           break;
-        case SortOrderType.DESC:
+        }
+        case SortOrderType.DESC: {
           onSortChange(id, SortOrderType.DEFAULT);
           break;
-        default:
+        }
+        default: {
           onSortChange(id, SortOrderType.DEFAULT);
           break;
+        }
       }
     }
   }, [isResizing, disabled, onSortChange, isDraggingOver, sort, id]);
@@ -91,7 +95,7 @@ const ColumnSortHeader = ({
   );
 
   const randerContent = useCallback(
-    tasksHeaderTextColor => {
+    (tasksHeaderTextColor) => {
       return (
         <div>
           <LabelWrapper
@@ -145,7 +149,8 @@ const ColumnSortHeader = ({
             }
             style={{
               zIndex: 115,
-              maxWidth: descriptionTextReference?.current?.offsetWidth || '650px',
+              maxWidth:
+                descriptionTextReference?.current?.offsetWidth || '650px',
             }}
             transition
           >
@@ -184,7 +189,7 @@ const ColumnSortHeader = ({
         axis={typeof onResize === 'function' ? 'x' : 'none'}
         handle={
           <Box
-            onClick={event => {
+            onClick={(event) => {
               event.stopPropagation();
               event.preventDefault();
             }}
@@ -220,7 +225,7 @@ const ColumnSortHeader = ({
       axis={typeof onResize === 'function' ? 'x' : 'none'}
       handle={
         <Box
-          onClick={event => {
+          onClick={(event) => {
             event.stopPropagation();
             event.preventDefault();
           }}
@@ -246,7 +251,7 @@ const ColumnSortHeader = ({
           draggableId={id}
           index={index}
         >
-          {provided => (
+          {(provided) => (
             <div
               ref={provided.innerRef}
               {...provided.draggableProps}

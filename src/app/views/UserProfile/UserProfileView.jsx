@@ -1,9 +1,9 @@
 import React, { useEffect, useCallback, useMemo, useState } from 'react';
-import { Box, Grid } from '@material-ui/core';
+import { Box, Grid } from '@mui/material';
 import { useDispatch, useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
 import isEmpty from 'ramda/src/isEmpty';
-import MobileDevices from 'img/devices';
+import MobileDevices from 'img/devices.svg';
 import * as UserAuthApi from 'api/user-auth-api';
 import * as OrganizationApi from 'api/organization-api';
 import OrganizationAvatar from 'components/org/OrganizationAvatar/OrganizationAvatar';
@@ -56,9 +56,8 @@ const UserProfileView = () => {
 
   const refreshNotificationSettings = useCallback(() => {
     (async function fetchData() {
-      const {
-        notificationSettings: notificationSettingsData,
-      } = await getNotificationSettings();
+      const { notificationSettings: notificationSettingsData } =
+        await getNotificationSettings();
       setNotificationSettings(notificationSettingsData);
     })();
   }, []);
@@ -110,15 +109,16 @@ const UserProfileView = () => {
 
   const renderOrganizationActionButton = () => {
     switch (userProfile.orgUserRole) {
-      case 'GUEST':
+      case 'GUEST': {
         return (
           <ActionButton type="button" onClick={handleLeaveOrganiztion}>
             Leave organization
           </ActionButton>
         );
+      }
 
       case 'OWNER':
-      case 'ADMIN':
+      case 'ADMIN': {
         return (
           <ActionButton
             type="button"
@@ -134,9 +134,11 @@ const UserProfileView = () => {
             Edit organization
           </ActionButton>
         );
+      }
 
-      default:
+      default: {
         return null;
+      }
     }
   };
 

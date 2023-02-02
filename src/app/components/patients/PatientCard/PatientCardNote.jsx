@@ -36,7 +36,7 @@ const PatientCardNote = ({ note, patientName, index }) => {
             disableMentions
             isDrawerEditor
             state={noteState}
-            onChange={newState => setNoteState(newState)}
+            onChange={(newState) => setNoteState(newState)}
           />
         </NoteDescription>
         <NoteInfo>

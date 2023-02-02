@@ -6,17 +6,17 @@ export const getAdditionalPatientOptions = ({
     label: 'Include on Patient Header',
     key: 'PATIENT_HEADER',
     value: !!displayOptionsState?.displayOptions?.find(
-      option => option === 'PATIENT_HEADER',
+      (option) => option === 'PATIENT_HEADER',
     ),
-    onChange: value => handleDisplayOptionChange(value, 'PATIENT_HEADER'),
+    onChange: (value) => handleDisplayOptionChange(value, 'PATIENT_HEADER'),
   },
   {
     label: 'Include for Patient Search',
     key: 'PATIENT_SEARCH',
     value: !!displayOptionsState?.displayOptions?.find(
-      option => option === 'PATIENT_SEARCH',
+      (option) => option === 'PATIENT_SEARCH',
     ),
-    onChange: value => handleDisplayOptionChange(value, 'PATIENT_SEARCH'),
+    onChange: (value) => handleDisplayOptionChange(value, 'PATIENT_SEARCH'),
   },
   // {
   //   label: 'Include on Patient List',
@@ -36,17 +36,17 @@ export const getAdditionalUserOptions = ({
     label: 'Include on User Profile Header',
     key: 'PROVIDER_HEADER',
     value: !!displayOptionsState?.displayOptions?.find(
-      option => option === 'PROVIDER_HEADER',
+      (option) => option === 'PROVIDER_HEADER',
     ),
-    onChange: value => handleDisplayOptionChange(value, 'PROVIDER_HEADER'),
+    onChange: (value) => handleDisplayOptionChange(value, 'PROVIDER_HEADER'),
   },
   {
     label: 'Include on User List',
     key: 'PROVIDER_LIST',
     value: !!displayOptionsState?.displayOptions?.find(
-      option => option === 'PROVIDER_LIST',
+      (option) => option === 'PROVIDER_LIST',
     ),
-    onChange: value => handleDisplayOptionChange(value, 'PROVIDER_LIST'),
+    onChange: (value) => handleDisplayOptionChange(value, 'PROVIDER_LIST'),
   },
 ];
 
@@ -58,9 +58,9 @@ export const getAdditionalTaskOptions = ({
     label: 'Required for Task completion',
     key: 'TASK_REQUIRED',
     value: !!displayOptionsState?.displayOptions?.find(
-      option => option === 'TASK_REQUIRED',
+      (option) => option === 'TASK_REQUIRED',
     ),
-    onChange: value => handleDisplayOptionChange(value, 'TASK_REQUIRED'),
+    onChange: (value) => handleDisplayOptionChange(value, 'TASK_REQUIRED'),
   },
 ];
 
@@ -70,25 +70,29 @@ export const getAdditionalOptions = ({
   type,
 }) => {
   switch (type) {
-    case 'PATIENT':
+    case 'PATIENT': {
       return getAdditionalPatientOptions({
         displayOptionsState,
         handleDisplayOptionChange,
       });
+    }
 
-    case 'PROVIDER':
+    case 'PROVIDER': {
       return getAdditionalUserOptions({
         displayOptionsState,
         handleDisplayOptionChange,
       });
+    }
 
-    case 'TASK':
+    case 'TASK': {
       return getAdditionalTaskOptions({
         displayOptionsState,
         handleDisplayOptionChange,
       });
+    }
 
-    default:
+    default: {
       return null;
+    }
   }
 };

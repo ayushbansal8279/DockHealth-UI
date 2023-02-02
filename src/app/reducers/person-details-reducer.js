@@ -18,29 +18,28 @@ const initialState = {
   },
 };
 
-const mapTasksSuccess = task => ({
+const mapTasksSuccess = (task) => ({
   ...task,
-  subtasks: task.subtasks?.map(subtask => ({
+  subtasks: task.subtasks?.map((subtask) => ({
     ...subtask,
     patient: task.patient,
   })),
 });
 
-const updateTasksStateCallback = (state, updateTaskFromAction) => {
-  return {
-    ...state,
-    tasks: mapWithRemove(updateTaskFromAction, state.tasks),
-    completedTasks: mapWithRemove(updateTaskFromAction, state.completedTasks),
-  };
-};
+const updateTasksStateCallback = (state, updateTaskFromAction) => ({
+  ...state,
+  tasks: mapWithRemove(updateTaskFromAction, state.tasks),
+  completedTasks: mapWithRemove(updateTaskFromAction, state.completedTasks),
+});
 
 const PersonDetailsReducer = (state = initialState, action) => {
   switch (action.type) {
-    case ActionTypes.UPDATE_USER:
+    case ActionTypes.UPDATE_USER: {
       return {
         ...state,
         userDetails: { ...state.userDetails, ...action.user },
       };
+    }
 
     case ActionTypes.INITIALIZE_USER_DETAILS_STATE: {
       const { userIdentifier, currentTasksStatus } = action;
@@ -52,10 +51,11 @@ const PersonDetailsReducer = (state = initialState, action) => {
       };
     }
 
-    case ActionTypes.CLEAR_USER_DETAILS_STATE:
+    case ActionTypes.CLEAR_USER_DETAILS_STATE: {
       return {
         ...initialState,
       };
+    }
 
     case ActionTypes.CHANGE_CURRENT_TASKS_STATUS: {
       const { status } = action;
@@ -66,32 +66,36 @@ const PersonDetailsReducer = (state = initialState, action) => {
       };
     }
 
-    case ActionTypes.GET_USER_DETAILS:
+    case ActionTypes.GET_USER_DETAILS: {
       return {
         ...state,
         isFetchingUserDetails: true,
       };
+    }
 
-    case ActionTypes.GET_USER_DETAILS_SUCCESS:
+    case ActionTypes.GET_USER_DETAILS_SUCCESS: {
       return {
         ...state,
         userIdentifier: action.user.userIdentifier,
         userDetails: action.user,
         isFetchingUserDetails: false,
       };
+    }
 
-    case ActionTypes.GET_USER_DETAILS_FAILURE:
+    case ActionTypes.GET_USER_DETAILS_FAILURE: {
       return {
         ...state,
         userDetails: null,
         isFetchingUserDetails: false,
       };
+    }
 
-    case ActionTypes.GET_USER_TASKS:
+    case ActionTypes.GET_USER_TASKS: {
       return {
         ...state,
         isFetching: true,
       };
+    }
 
     case ActionTypes.GET_USER_TASKS_SUCCESS: {
       const { tasks } = action;
@@ -99,11 +103,12 @@ const PersonDetailsReducer = (state = initialState, action) => {
       return { ...state, tasks: tasks.map(mapTasksSuccess), isFetching: false };
     }
 
-    case ActionTypes.GET_USER_COMPLETED_TASKS:
+    case ActionTypes.GET_USER_COMPLETED_TASKS: {
       return {
         ...state,
         isCompletedTasksFetching: true,
       };
+    }
 
     case ActionTypes.GET_USER_COMPLETED_TASKS_SUCCESS: {
       const { tasks } = action;
@@ -116,11 +121,12 @@ const PersonDetailsReducer = (state = initialState, action) => {
       };
     }
 
-    case ActionTypes.GET_USER_TASK_COUNTERS_SUCCESS:
+    case ActionTypes.GET_USER_TASK_COUNTERS_SUCCESS: {
       return {
         ...state,
         taskCounters: action.taskCounters,
       };
+    }
 
     case ActionTypes.SORT_USER_TASKS: {
       const { key, order } = action.payload || {};
@@ -145,8 +151,9 @@ const PersonDetailsReducer = (state = initialState, action) => {
       };
     }
 
-    default:
+    default: {
       return TaskBaseReducer(state, action, updateTasksStateCallback);
+    }
   }
 };
 

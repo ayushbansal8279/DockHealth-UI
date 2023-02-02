@@ -16,16 +16,16 @@ export async function collectJoinedListMembers(taskListIdentifiers) {
       listId,
       'ALL',
     );
-    if (listMemembers.length === 0) {
-      listMemembers = listMemembers.concat(responseMembers);
-    } else {
-      listMemembers = innerJoin(
-        (existingRecord, newRecord) =>
-          existingRecord.identifier === newRecord.identifier,
-        listMemembers,
-        responseMembers,
-      );
-    }
+    listMemembers =
+      listMemembers.length === 0
+        ? // eslint-disable-next-line unicorn/prefer-spread
+          listMemembers.concat(responseMembers)
+        : innerJoin(
+            (existingRecord, newRecord) =>
+              existingRecord.identifier === newRecord.identifier,
+            listMemembers,
+            responseMembers,
+          );
   }
   return convert(listMemembers);
 }

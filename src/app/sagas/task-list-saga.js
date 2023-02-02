@@ -64,7 +64,7 @@ function* reorderTaskLists({ payload }) {
 
     yield call(TaskListApi.sortTasksListsForUser, identifiers);
     yield put(showGlobalAlert(AlertMessages.UPDATED));
-  } catch (error) {
+  } catch {
     yield put(showGlobalErrorAlert());
   }
 }

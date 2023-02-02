@@ -1,4 +1,4 @@
-import { ClickAwayListener, Popper } from '@material-ui/core';
+import { ClickAwayListener, Popper } from '@mui/material';
 import { useBoolean } from 'hooks/useBoolean';
 import moment from 'moment';
 import React, { useCallback, useRef } from 'react';
@@ -28,7 +28,7 @@ const SecondaryDateInput = ({
       : null;
 
   const handleDatepickerDateSelection = useCallback(
-    newDate => {
+    (newDate) => {
       const inputFormatNewDate = moment(newDate, DATE_ISO_FORMAT).format(
         INPUT_DATE_FORMAT,
       );
@@ -39,7 +39,7 @@ const SecondaryDateInput = ({
   );
 
   const handleInputKeyDown = useCallback(
-    event => {
+    (event) => {
       if (event.key === 'Enter') {
         event.preventDefault();
         event.stopPropagation();
@@ -59,15 +59,15 @@ const SecondaryDateInput = ({
           maskChar="_"
           placeholder="mm/dd/yyyy"
           formatChars={{
-            '1': '[0-1]',
-            '2': '[0-3]',
-            '8': '[1-9]',
-            '9': '[0-9]',
+            1: '[0-1]',
+            2: '[0-3]',
+            8: '[1-9]',
+            9: '[0-9]',
           }}
           value={value}
           onBlur={typeof onBlur === 'function' && onBlur}
           onClick={!disabled && openPopover}
-          onChange={event => onChange(event.target?.value)}
+          onChange={(event) => onChange(event.target?.value)}
           error={error}
           autoComplete="off"
           disabled={disabled}

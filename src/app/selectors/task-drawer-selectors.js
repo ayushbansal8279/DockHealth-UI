@@ -1,6 +1,6 @@
 import { createSelector } from 'reselect';
 
-export const taskDrawerSelector = state => state.taskDrawerState;
+export const taskDrawerSelector = (state) => state.taskDrawerState;
 
 export const selectedTaskSelector = createSelector(
   taskDrawerSelector,

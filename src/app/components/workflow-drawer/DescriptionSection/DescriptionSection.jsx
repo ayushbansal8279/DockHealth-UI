@@ -34,14 +34,15 @@ const DescriptionSection = ({ readOnly }) => {
 
   const isTemplateWorkflow = checkIfTemplateTask(selectedWorkflow);
 
-  const isEmptyDetailsState = useMemo(() => isEditorStateEmpty(detailsState), [
-    detailsState,
-  ]);
+  const isEmptyDetailsState = useMemo(
+    () => isEditorStateEmpty(detailsState),
+    [detailsState],
+  );
 
   const previousIsFocused = usePrevious(isFocused);
 
   const updateDetails = useCallback(
-    state => {
+    (state) => {
       const { tokenizedText } = convertFromEditorStateToOutput(state, true);
       if (
         selectedWorkflow &&
@@ -61,7 +62,7 @@ const DescriptionSection = ({ readOnly }) => {
   );
 
   const onDebouncedChange = useCallback(
-    debounce(newState => {
+    debounce((newState) => {
       updateDetails(newState);
     }, DEBOUNCE_TIME),
     [updateDetails],
@@ -76,7 +77,7 @@ const DescriptionSection = ({ readOnly }) => {
   }, [isFocused]);
 
   const onChangeDetailsEditor = useCallback(
-    state => {
+    (state) => {
       setDetailsState(state);
       onDebouncedChange(state);
     },

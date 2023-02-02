@@ -1,4 +1,5 @@
 import { fixList } from 'helpers/inbox-fix';
+import { log } from 'helpers/log';
 import { noop, showAlert } from 'helpers/utility-functions';
 
 import axios from './axios-heydoc';
@@ -6,27 +7,27 @@ import axios from './axios-heydoc';
 export function getAllPatients() {
   return axios
     .get('patient/getAllPatients?active=true')
-    .then(response => response.data)
-    .catch(error => {
-      console.log(error);
+    .then((response) => response.data)
+    .catch((error) => {
+      log(error);
       throw new Error(error?.response?.data?.errorMessage);
     });
 }
 export function getSharedPatients() {
   return axios
     .get('patient/getSharedPatients?active=true')
-    .then(response => response.data)
-    .catch(error => {
-      console.log(error);
+    .then((response) => response.data)
+    .catch((error) => {
+      log(error);
       throw new Error(error?.response?.data?.errorMessage);
     });
 }
 export function getMyPatientsAll() {
   return axios
     .get('patient/getPatientsForCurrentUser')
-    .then(response => response.data)
-    .catch(error => {
-      console.log(error);
+    .then((response) => response.data)
+    .catch((error) => {
+      log(error);
       throw new Error(error?.response?.data?.errorMessage);
     });
 }
@@ -34,9 +35,9 @@ export function getMyPatientsAll() {
 export function getMyPatientsActive() {
   return axios
     .get('patient/getPatientsForCurrentUser?taskStatus=INCOMPLETE')
-    .then(response => response.data)
-    .catch(error => {
-      console.log(error);
+    .then((response) => response.data)
+    .catch((error) => {
+      log(error);
       throw new Error(error?.response?.data?.errorMessage);
     });
 }
@@ -44,9 +45,9 @@ export function getMyPatientsActive() {
 export function getPatientsByTaskList(taskListIdentifier) {
   return axios
     .get(`patient/getPatientsByTaskList/${taskListIdentifier}`)
-    .then(response => response.data)
-    .catch(error => {
-      console.log(error);
+    .then((response) => response.data)
+    .catch((error) => {
+      log(error);
       throw new Error(error?.response?.data?.errorMessage);
     });
 }
@@ -54,9 +55,9 @@ export function getPatientsByTaskList(taskListIdentifier) {
 export function getPatientsByName(searchedPatientName) {
   return axios
     .get(`patient/getPatientsByName?inputStr=${searchedPatientName}`)
-    .then(response => response.data)
-    .catch(error => {
-      console.log(error);
+    .then((response) => response.data)
+    .catch((error) => {
+      log(error);
       throw new Error(error?.response?.data?.errorMessage);
     });
 }
@@ -64,9 +65,9 @@ export function getPatientsByName(searchedPatientName) {
 export function getPatientById(patientIdentifier) {
   return axios
     .get(`patient/${patientIdentifier}`)
-    .then(response => response.data)
-    .catch(error => {
-      console.log(error);
+    .then((response) => response.data)
+    .catch((error) => {
+      log(error);
       throw new Error(error?.response?.data?.errorMessage);
     });
 }
@@ -74,9 +75,9 @@ export function getPatientById(patientIdentifier) {
 export function lookupEMRPatient(patientId) {
   return axios
     .get(`patient/lookupEMRPatient/${patientId}`)
-    .then(response => response.data)
-    .catch(error => {
-      console.log(error);
+    .then((response) => response.data)
+    .catch((error) => {
+      log(error);
       throw new Error(error?.response?.data?.errorMessage);
     });
 }
@@ -84,9 +85,9 @@ export function lookupEMRPatient(patientId) {
 export function removePatient(patientIdentifier) {
   return axios
     .delete(`patient/${patientIdentifier}`)
-    .then(response => response)
-    .catch(error => {
-      console.log(error);
+    .then((response) => response)
+    .catch((error) => {
+      log(error);
       throw new Error(error?.response?.data?.errorMessage);
     });
 }
@@ -94,11 +95,9 @@ export function removePatient(patientIdentifier) {
 export function addPatient(patient) {
   return axios
     .post('patient', patient)
-    .then(response => {
-      return response.data;
-    })
-    .catch(error => {
-      console.log(error);
+    .then((response) => response.data)
+    .catch((error) => {
+      log(error);
       showAlert({
         status: 'error',
         title: 'Error',
@@ -122,11 +121,9 @@ export function updatePatient(patientIdentifier, details) {
 
   return axios
     .patch(`patient/${patientIdentifier}`, patientDetails)
-    .then(response => {
-      return response.data;
-    })
-    .catch(error => {
-      console.log(error);
+    .then((response) => response.data)
+    .catch((error) => {
+      log(error);
       showAlert({
         status: 'error',
         title: 'Error',
@@ -141,9 +138,9 @@ export function addPatientToTask(patientIdentifier, taskIdentifier) {
     .put(
       `patient/addPatientToTaskById/${taskIdentifier}?patientId=${patientIdentifier}`,
     )
-    .then(response => response.data)
-    .catch(error => {
-      console.log(error);
+    .then((response) => response.data)
+    .catch((error) => {
+      log(error);
       throw new Error(error?.response?.data?.errorMessage);
     });
 }
@@ -151,9 +148,9 @@ export function addPatientToTask(patientIdentifier, taskIdentifier) {
 export function lookupEMRPatients(searchToken) {
   return axios
     .get(`patient/lookupEMRPatients?searchToken=${searchToken}`)
-    .then(response => response.data)
-    .catch(error => {
-      console.log(error);
+    .then((response) => response.data)
+    .catch((error) => {
+      log(error);
       throw new Error(error?.response?.data?.errorMessage);
     });
 }
@@ -162,9 +159,9 @@ export function lookupEMRPatients(searchToken) {
 export function deletePatient(patientIdentifier) {
   return axios
     .get(`patient/deletePatient/${patientIdentifier}`)
-    .then(response => response)
-    .catch(error => {
-      console.log(error);
+    .then((response) => response)
+    .catch((error) => {
+      log(error);
     });
 }
 
@@ -177,19 +174,17 @@ export function deletePatient(patientIdentifier) {
 export const findUserTasksByPatient = (patientIdentifier, status) =>
   axios
     .get(`/task/findUserTasksByPatient/${patientIdentifier}?status=${status}`)
-    .then(response => {
-      return fixList(response.data);
-    })
-    .catch(error => {
-      console.error(error);
+    .then((response) => fixList(response.data))
+    .catch((error) => {
+      error(error);
       throw new Error(error?.response?.data?.errorMessage);
     });
 
 export const createPatientNote = (patientIdentifier, note) =>
   axios
     .post(`/patient/note/${patientIdentifier}`, note)
-    .then(response => response.data)
-    .catch(error => {
+    .then((response) => response.data)
+    .catch((error) => {
       showAlert({
         status: 'error',
         title: 'Error',
@@ -198,11 +193,11 @@ export const createPatientNote = (patientIdentifier, note) =>
       throw new Error(error?.response?.data?.errorMessage);
     });
 
-export const updatePatientNote = note =>
+export const updatePatientNote = (note) =>
   axios
     .put('/patient/note', note)
-    .then(response => response.data)
-    .catch(error => {
+    .then((response) => response.data)
+    .catch((error) => {
       showAlert({
         status: 'error',
         title: 'Error',
@@ -211,11 +206,11 @@ export const updatePatientNote = note =>
       throw new Error(error?.response?.data?.errorMessage);
     });
 
-export const deletePatientNote = patientNoteIdentifier =>
+export const deletePatientNote = (patientNoteIdentifier) =>
   axios
     .delete(`/patient/note/deletePatientNoteById/${patientNoteIdentifier}`)
-    .then(response => response.data)
-    .catch(error => {
+    .then((response) => response.data)
+    .catch((error) => {
       showAlert({
         status: 'error',
         title: 'Error',
@@ -224,11 +219,11 @@ export const deletePatientNote = patientNoteIdentifier =>
       throw new Error(error?.response?.data?.errorMessage);
     });
 
-export const archivePatient = patientNoteIdentifier =>
+export const archivePatient = (patientNoteIdentifier) =>
   axios
     .delete(`/patient/archivePatient/${patientNoteIdentifier}`)
-    .then(response => response.data)
-    .catch(error => {
+    .then((response) => response.data)
+    .catch((error) => {
       showAlert({
         status: 'error',
         title: 'Error',
@@ -246,7 +241,7 @@ export function downloadPatientImportTemplate() {
       Accept: 'application/octet-stream',
     },
   })
-    .then(response => {
+    .then((response) => {
       const url = window.URL.createObjectURL(new Blob([response.data]));
       const link = document.createElement('a');
       link.style.display = 'none';
@@ -267,7 +262,7 @@ export function downloadPatientListData(listIdentifier, filename) {
       Accept: 'application/octet-stream',
     },
   })
-    .then(response => {
+    .then((response) => {
       const url = window.URL.createObjectURL(new Blob([response.data]));
       const link = document.createElement('a');
       link.style.display = 'none';
@@ -290,10 +285,8 @@ export function uploadPatientData(fileData, additionalConfig = {}) {
       },
       ...additionalConfig,
     })
-    .then(response => {
-      return response;
-    })
-    .catch(error => {
+    .then((response) => response)
+    .catch((error) => {
       if (error.response && error.response.status === 413) {
         showAlert({
           status: 'error',
@@ -314,9 +307,9 @@ export function uploadPatientData(fileData, additionalConfig = {}) {
 export function getLatestPatientImportDetails() {
   return axios
     .get('patient/getLatestPatientImportProcessStatus')
-    .then(response => response.data)
-    .catch(error => {
-      console.log(error);
+    .then((response) => response.data)
+    .catch((error) => {
+      log(error);
       throw new Error(error?.response?.data?.errorMessage);
     });
 }
@@ -334,9 +327,9 @@ export function changePatientNotePinnedFlag(patientNoteIdentifier, pinnedFlag) {
 export function getPatientWidgets() {
   return axios
     .get('widget/getAll/PATIENT')
-    .then(response => response.data)
-    .catch(error => {
-      console.log(error);
+    .then((response) => response.data)
+    .catch((error) => {
+      log(error);
       throw new Error(error?.response?.data?.errorMessage);
     });
 }

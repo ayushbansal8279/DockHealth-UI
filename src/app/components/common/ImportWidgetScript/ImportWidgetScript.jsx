@@ -1,6 +1,6 @@
 import { useEffect } from 'react';
 
-const ImportWidgetScript = resourceUrl => {
+const ImportWidgetScript = (resourceUrl) => {
   useEffect(() => {
     const script = document.createElement('script');
     script.src = resourceUrl;

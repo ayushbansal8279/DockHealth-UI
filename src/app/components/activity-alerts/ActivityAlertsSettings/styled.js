@@ -1,6 +1,5 @@
 import styled from 'styled-components';
-import { withStyles } from '@material-ui/core/styles';
-import { Checkbox } from '@material-ui/core';
+import { Checkbox } from '@mui/material';
 import spacing from 'styles/spacing';
 import { fontWeights, fontSizes } from 'styles/font';
 import palette from 'styles/palette';
@@ -54,16 +53,13 @@ export const ActivityAlertsSettingsItemsHeaderBlueLabel = styled.div`
   margin-left: ${spacing.smallPlus};
 `;
 
-export const BlueCheckbox = withStyles({
-  root: {
-    color: palette.brightBlue,
-    '&$checked': {
-      color: palette.brightBlue,
-    },
-  },
-  checked: {},
-})(Checkbox);
-
+export const BlueCheckbox = styled(Checkbox)`
+  &&& {
+    &.MuiCheckbox-root {
+      color: ${palette.brightBlue};
+    }
+  }
+`;
 export const CheckboxContainer = styled.div`
   display: flex;
   flex: 1;

@@ -19,7 +19,7 @@ export const ActivityAlertsItemContainer = styled.div`
 `;
 
 export const ActivityAlertsItemOrganizationAvatar = styled.div`
-  background-color: ${props => props.organizationProfileColor};
+  background-color: ${(props) => props.organizationProfileColor};
   font-size: 15px; // per design
   font-weight: ${fontWeights.bold};
   width: 25px;

@@ -1,11 +1,11 @@
 import React from 'react';
 import palette from 'styles/palette';
-import CompleteTasksVisibleIcon from 'img/complete-tasks-visible-icon';
-import CompleteTasksHiddenIcon from 'img/complete-tasks-hidden-icon';
+import CompleteTasksVisibleIcon from 'img/complete-tasks-visible-icon.svg';
+import CompleteTasksHiddenIcon from 'img/complete-tasks-hidden-icon.svg';
 import ToolbarButton from 'components/tasklist/ToolbarButton/ToolbarButton';
 import { VisibilityImg } from './styled';
 
-const CompleteTasksVisibilitySwitch = props => {
+const CompleteTasksVisibilitySwitch = (props) => {
   const { visible, onChange, iconColorFilterActive } = props;
   return (
     <ToolbarButton

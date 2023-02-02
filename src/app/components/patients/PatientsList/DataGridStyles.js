@@ -1,6 +1,6 @@
 /* eslint-disable unicorn/filename-case */
 import styled from 'styled-components';
-import { DataGrid } from '@material-ui/data-grid';
+import { DataGrid } from '@mui/x-data-grid';
 import { fontWeights, fontSizes } from 'styles/font';
 import palette from 'styles/palette';
 import spacing from 'styles/spacing';
@@ -10,7 +10,7 @@ export const StyledDataGrid = styled(DataGrid)`
     // max-width: 1179px;
   }
   && {
-    .MuiDataGrid-sortIcon {
+    &.MuiDataGrid-sortIcon {
       background: ${palette.brightBlue};
       color: ${palette.white};
       padding: 1px;
@@ -18,13 +18,13 @@ export const StyledDataGrid = styled(DataGrid)`
     }
   }
 
-  .MuiDataGrid-columnHeaderTitleContainer {
+  &.MuiDataGrid-columnHeaderTitleContainer {
     display: flex;
     align-items: left;
     margin-left: -15px;
   }
 
-  .MuiDataGrid-columnHeader {
+  &.MuiDataGrid-columnHeader {
     &--sorted {
       color: ${palette.brightBlue};
     }
@@ -33,23 +33,23 @@ export const StyledDataGrid = styled(DataGrid)`
     }
   }
 
-  .MuiDataGrid-cell {
+  &.MuiDataGrid-cell {
     font-family: Roboto Condensed;
     font-weight: ${fontWeights.light};
     font-size: ${fontSizes.smallPlus};
   }
 
-  .MuiDataGrid-colCell {
+  &.MuiDataGrid-colCell {
     outline: none !important;
     padding: 0 !important;
   }
 
-  .MuiDataGrid-cell {
+  &.MuiDataGrid-cell {
     outline: none !important;
     color: ${palette.darkGrey};
   }
 
-  .MuiDataGrid-colCellTitle {
+  &.MuiDataGrid-colCellTitle {
     background-color: white;
     font-family: Roboto Condensed;
     font-size: ${fontSizes.small};
@@ -63,15 +63,15 @@ export const StyledDataGrid = styled(DataGrid)`
     }
   }
 
-  .MuiDataGrid-columnSeparator {
+  &.MuiDataGrid-columnSeparator {
     visibility: hidden;
   }
 
-  .MuiDataGrid-columnHeaderWrapper {
+  &.MuiDataGrid-columnHeaderWrapper {
     background-color: white;
   }
 
-  .MuiDataGrid-row {
+  &.MuiDataGrid-row {
     background-color: white;
     cursor: default;
 
@@ -88,7 +88,7 @@ export const StyledDataGrid = styled(DataGrid)`
     }
   }
 
-  .Sorting-Arrow {
+  &.Sorting-Arrow {
     opacity: 0;
 
     &:hover {
@@ -97,11 +97,11 @@ export const StyledDataGrid = styled(DataGrid)`
     }
   }
 
-  .MuiTablePagination-caption:nth-of-type(1) {
+  &.MuiTablePagination-caption:nth-of-type(1) {
     display: none;
   }
 
-  .MuiTablePagination-input {
+  &.MuiTablePagination-input {
     display: none;
   }
 `;

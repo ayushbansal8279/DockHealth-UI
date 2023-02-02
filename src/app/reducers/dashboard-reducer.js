@@ -21,19 +21,17 @@ const initialState = {
 };
 
 const updateTaskInList = (lists, updateTaskCallback) =>
-  lists.map(group => {
+  lists.map((group) => {
     const updatedTasks = group.tasks
       ? mapWithRemove(updateTaskCallback, group.tasks)
       : [];
     return { ...group, tasks: updatedTasks };
   });
 
-const updateTasksStateCallback = (state, updateTaskFromAction) => {
-  return {
-    ...state,
-    tasksList: updateTaskInList(state.tasksList, updateTaskFromAction),
-  };
-};
+const updateTasksStateCallback = (state, updateTaskFromAction) => ({
+  ...state,
+  tasksList: updateTaskInList(state.tasksList, updateTaskFromAction),
+});
 
 const addTask = (list, taskToAdd) => {
   const { tasks = [] } = list;
@@ -41,7 +39,7 @@ const addTask = (list, taskToAdd) => {
 };
 
 const findAndAddTask = ({ lists, groupType: type, task: taskToAdd }) =>
-  lists.map(list =>
+  lists.map((list) =>
     list.groupType === type ? addTask(list, taskToAdd) : list,
   );
 
@@ -62,22 +60,23 @@ const DashboardTasksReducer = (state = initialState, action) => {
       };
     }
 
-    case ActionTypes.CLEAR_DASHBOARD_STATE:
+    case ActionTypes.CLEAR_DASHBOARD_STATE: {
       return {
         ...initialState,
       };
+    }
 
     case ActionTypes.SELECT_DASHBOARD_FILTERS: {
       const { selectedFilters } = action;
 
-      if (!selectedFilters) {
-        sessionStorageHelper.removeItem(
-          getDashboardFiltersStorageKey(state.tabName),
-        );
-      } else {
+      if (selectedFilters) {
         sessionStorageHelper.setItem(
           getDashboardFiltersStorageKey(state.tabName),
           selectedFilters,
+        );
+      } else {
+        sessionStorageHelper.removeItem(
+          getDashboardFiltersStorageKey(state.tabName),
         );
       }
 
@@ -87,49 +86,54 @@ const DashboardTasksReducer = (state = initialState, action) => {
       };
     }
 
-    case ActionTypes.GET_DASHBOARD_FILTERS:
+    case ActionTypes.GET_DASHBOARD_FILTERS: {
       return {
         ...state,
         isFetchingFilters: true,
         filterOptionsError: false,
       };
+    }
 
-    case ActionTypes.GET_DASHBOARD_FILTERS_SUCCESS:
+    case ActionTypes.GET_DASHBOARD_FILTERS_SUCCESS: {
       return {
         ...state,
         filterOptions: action.filters,
         isFetchingFilters: false,
         filterOptionsError: false,
       };
+    }
 
-    case ActionTypes.GET_DASHBOARD_FILTERS_FAILURE:
+    case ActionTypes.GET_DASHBOARD_FILTERS_FAILURE: {
       return {
         ...state,
         filterOptions: null,
         isFetchingFilters: false,
         filterOptionsError: true,
       };
+    }
 
     case ActionTypes.GET_DASHBOARD_GROUPS:
-    case ActionTypes.GET_DASHBOARD_TASKS:
+    case ActionTypes.GET_DASHBOARD_TASKS: {
       return {
         ...state,
         isLoading: true,
       };
+    }
 
-    case ActionTypes.SEARCH_DASHBOARD_TASKS:
+    case ActionTypes.SEARCH_DASHBOARD_TASKS: {
       return {
         ...state,
         isLoading: true,
         searchValue: action.searchTerm,
       };
+    }
 
-    case ActionTypes.GET_DASHBOARD_GROUP_STATS_SUCCESS:
+    case ActionTypes.GET_DASHBOARD_GROUP_STATS_SUCCESS: {
       return {
         ...state,
-        tasksList: state.tasksList?.map(g => {
+        tasksList: state.tasksList?.map((g) => {
           const matchingGroup = tasksList?.filter(
-            tg => tg.groupType === g.groupType,
+            (tg) => tg.groupType === g.groupType,
           );
           return {
             ...g,
@@ -138,24 +142,27 @@ const DashboardTasksReducer = (state = initialState, action) => {
         }),
         isLoading: false,
       };
+    }
 
     case ActionTypes.GET_DASHBOARD_GROUPS_SUCCESS:
     case ActionTypes.SEARCH_DASHBOARD_TASKS_SUCCESS:
-    case ActionTypes.GET_DASHBOARD_TASKS_SUCCESS:
+    case ActionTypes.GET_DASHBOARD_TASKS_SUCCESS: {
       return {
         ...state,
         tasksList,
         isLoading: false,
       };
+    }
 
     case ActionTypes.GET_DASHBOARD_GROUPS_FAILURE:
     case ActionTypes.SEARCH_DASHBOARD_TASKS_FAILURE:
-    case ActionTypes.GET_DASHBOARD_TASKS_FAILURE:
+    case ActionTypes.GET_DASHBOARD_TASKS_FAILURE: {
       return {
         ...state,
         error,
         isLoading: false,
       };
+    }
 
     case ActionTypes.GET_DASHBOARD_TASKS_FOR_GROUP: {
       const groupToUpdate = state?.tasksList?.find(
@@ -179,7 +186,7 @@ const DashboardTasksReducer = (state = initialState, action) => {
       const { groupType, group } = action;
 
       const groupToUpdate = state?.tasksList?.find(
-        g => g.groupType === groupType,
+        (g) => g.groupType === groupType,
       );
       const groupToUpdateIndex = state?.tasksList?.indexOf(groupToUpdate);
       const newTasksList = [...state?.tasksList];
@@ -217,7 +224,7 @@ const DashboardTasksReducer = (state = initialState, action) => {
       const { groupType, group } = action;
 
       const groupToUpdate = state?.tasksList?.find(
-        g => g.groupType === groupType,
+        (g) => g.groupType === groupType,
       );
       const groupToUpdateIndex = state?.tasksList?.indexOf(groupToUpdate);
       const newTasksList = [...state?.tasksList];
@@ -244,7 +251,7 @@ const DashboardTasksReducer = (state = initialState, action) => {
 
       return {
         ...state,
-        tasksList: state.tasksList?.map(g => {
+        tasksList: state.tasksList?.map((g) => {
           if (
             g.groupType === groupType &&
             !g.tasks.some(
@@ -267,7 +274,7 @@ const DashboardTasksReducer = (state = initialState, action) => {
 
       return {
         ...state,
-        tasksList: state.tasksList.map(g => {
+        tasksList: state.tasksList.map((g) => {
           const newTasks = g.tasks?.filter(
             ({ identifier }) => identifier !== taskIdentifier,
           );
@@ -293,8 +300,9 @@ const DashboardTasksReducer = (state = initialState, action) => {
       };
     }
 
-    default:
+    default: {
       return TaskBaseReducer(state, action, updateTasksStateCallback);
+    }
   }
 };
 

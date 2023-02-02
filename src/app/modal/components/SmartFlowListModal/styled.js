@@ -1,4 +1,4 @@
-import { DataGrid } from '@material-ui/data-grid';
+import { DataGrid } from '@mui/x-data-grid';
 import styled from 'styled-components';
 import spacing from 'styles/spacing';
 
@@ -56,17 +56,17 @@ export const DataGridStyled = styled(DataGrid)`
     outline: none;
   }
 
-  .MuiDataGrid-columnSeparator {
+  &.MuiDataGrid-columnSeparator {
     visibility: hidden;
   }
 
-  .MuiDataGrid-row {
+  &.MuiDataGrid-row {
     cursor: pointer;
   }
-  .Mui-even {
+  &.Mui-even {
     background-color: #ffffff;
   }
-  .Mui-odd {
+  &.Mui-odd {
     background-color: #f9fafc;
   }
 `;

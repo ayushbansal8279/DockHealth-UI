@@ -59,9 +59,9 @@ const StatusEditor = ({ onClose }) => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [statuses]);
 
-  const handleInputChange = event => {
+  const handleInputChange = (event) => {
     const newValue = event.target?.value;
-    setCurrentlyEditedStatus(previousState => ({
+    setCurrentlyEditedStatus((previousState) => ({
       ...previousState,
       name: newValue,
     }));
@@ -69,7 +69,7 @@ const StatusEditor = ({ onClose }) => {
 
   const updateStatus = (identifier, dataToUpdate) => {
     const previousStatusData = statuses.find(
-      status => status.identifier === identifier,
+      (status) => status.identifier === identifier,
     );
 
     if (
@@ -100,13 +100,13 @@ const StatusEditor = ({ onClose }) => {
     }
   };
 
-  const handlePickColor = color => {
+  const handlePickColor = (color) => {
     if (isAddingNewStatus) return;
 
     if (!currentlyEditedStatus) {
       setDefaultColor(color);
     } else {
-      setCurrentlyEditedStatus(previousState => ({
+      setCurrentlyEditedStatus((previousState) => ({
         ...previousState,
         color,
       }));
@@ -149,7 +149,7 @@ const StatusEditor = ({ onClose }) => {
               status={RESET_STATUS}
               colorBorder
             />
-            {statuses?.map(status => {
+            {statuses?.map((status) => {
               const displayedStatus =
                 status.identifier === currentlyEditedStatus?.identifier
                   ? currentlyEditedStatus
@@ -206,7 +206,7 @@ const StatusEditor = ({ onClose }) => {
       </DndContext>
       <Divider />
       <ColorPickerWrapper>
-        {Object.values(StatusColor).map(color => (
+        {Object.values(StatusColor).map((color) => (
           <ColorButton
             key={color}
             color={color}

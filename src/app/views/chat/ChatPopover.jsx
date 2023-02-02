@@ -1,8 +1,8 @@
 import React, { useState, useCallback, useMemo } from 'react';
-import { Box } from '@material-ui/core';
-import ArrowBack from '@material-ui/icons/ArrowBack';
-import CloseIcon from '@material-ui/icons/Close';
-import OpenInNewIcon from '@material-ui/icons/OpenInNew';
+import { Box } from '@mui/material';
+import ArrowBack from '@mui/icons-material/ArrowBack';
+import CloseIcon from '@mui/icons-material/Close';
+import OpenInNewIcon from '@mui/icons-material/OpenInNew';
 import { CHAT_PATH } from 'routing/helpers/paths';
 import { userProfileSelector } from 'selectors/user-selectors';
 import { useDispatch, useSelector } from 'react-redux';
@@ -25,10 +25,10 @@ const ChatPopover = () => {
   const dispatch = useDispatch();
 
   const [showSettings, setShowSettings] = useState(false);
-  const showSettingsValue = useMemo(() => ({ showSettings, setShowSettings }), [
-    showSettings,
-    setShowSettings,
-  ]);
+  const showSettingsValue = useMemo(
+    () => ({ showSettings, setShowSettings }),
+    [showSettings, setShowSettings],
+  );
 
   const handleClose = useCallback(() => {
     dispatch(closePopover(selectedChannel));

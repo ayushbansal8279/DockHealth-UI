@@ -1,8 +1,8 @@
-import { Popover } from '@material-ui/core';
+import { Popover } from '@mui/material';
 import React from 'react';
 import { FilterContainer } from './styled';
 
-const FilterPopover = props => {
+const FilterPopover = (props) => {
   const { anchorEl, open, onClose, children } = props;
   return (
     <Popover

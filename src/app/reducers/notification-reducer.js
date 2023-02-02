@@ -10,19 +10,22 @@ const reducer = (state = initialState, action) => {
     case 'notification/info':
     case 'notification/success':
     case 'notification/error':
-    case 'notification/default':
+    case 'notification/default': {
       return {
         hidden: false,
         message: action.message,
         type: action.type.replace('notification/', ''),
         stay: action.stay,
       };
+    }
 
-    case 'notification/hide':
-      return ({ ...state, hidden: true });
+    case 'notification/hide': {
+      return { ...state, hidden: true };
+    }
 
-    default:
+    default: {
       return state;
+    }
   }
 };
 

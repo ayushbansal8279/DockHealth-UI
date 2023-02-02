@@ -49,7 +49,7 @@ const SubscriptionStatusSwitcher = ({
         }}
         open={isDropdownOpen}
         onClose={closeDropdown}
-        items={Object.values(UserSubscriptionStatus).map(status => ({
+        items={Object.values(UserSubscriptionStatus).map((status) => ({
           key: status.toString(),
           button: true,
           onClick: () => {

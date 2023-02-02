@@ -1,6 +1,6 @@
 import styled from 'styled-components';
 import palette from 'styles/palette';
-import PinIcon from 'img/pin';
+import PinIcon from 'img/pin.svg';
 import spacing from 'styles/spacing';
 
 export const PatientNotesWrapper = styled.div`

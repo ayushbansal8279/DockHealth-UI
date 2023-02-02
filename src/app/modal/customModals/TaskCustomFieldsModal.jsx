@@ -1,6 +1,6 @@
 import React, { useCallback, useState } from 'react';
 import TaskCustomFieldsView from 'views/custom-fields/TaskCustomFieldsView';
-import { Box, Tabs, Tab } from '@material-ui/core';
+import { Box, Tabs, Tab } from '@mui/material';
 import {
   ListModalWrapper,
   Header,
@@ -21,7 +21,7 @@ const TaskCustomFieldsModal = ({
   const hasMainListEditPermission = isOrganizationAdmin;
   const hasSpecificListEditPermission = isOrganizationAdmin || isListAdmin;
   const [selectedTab, setSelectedTab] = useState(1);
-  const applyProps = useCallback(index => {
+  const applyProps = useCallback((index) => {
     return {
       id: `full-width-tab-${index}`,
       'aria-controls': `full-width-tabpanel-${index}`,

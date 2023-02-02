@@ -80,7 +80,7 @@ export const SortingIconImage = styled.img`
   height: 100%;
   object-fit: contain;
   object-position: center;
-  transform: rotate(${props => (props.rotated ? 180 : 0)}deg);
+  transform: rotate(${(props) => (props.rotated ? 180 : 0)}deg);
   transition: all 0.25s ease-out;
   width: 100%;
 `;

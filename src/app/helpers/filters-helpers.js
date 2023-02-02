@@ -6,38 +6,32 @@ const TASK_DUE_DATE_FORMAT = 'YYYY-MM-DDTHH:mm:ss.SSSZ';
 const checkIfDueDateOptionsMatch = (options, taskDueDate) => {
   const momentDueDate = moment(taskDueDate, TASK_DUE_DATE_FORMAT);
 
-  return options.some(dueDateOption => {
-    return (
+  return options.some(
+    (dueDateOption) =>
       (dueDateOption === 'OVERDUE' && moment().isAfter(momentDueDate)) ||
       (dueDateOption === 'DUE_TODAY' &&
         moment().isSame(momentDueDate, 'day')) ||
       (dueDateOption === 'DUE_TOMORROW' &&
-        moment()
-          .add(1, 'day')
-          .isSame(momentDueDate, 'day')) ||
+        moment().add(1, 'day').isSame(momentDueDate, 'day')) ||
       (dueDateOption === 'DUE_THIS_WEEK' &&
         moment().isSame(momentDueDate, 'week')) ||
       (dueDateOption === 'DUE_THIS_MONTH' &&
-        moment().isSame(momentDueDate, 'month'))
-    );
-  });
+        moment().isSame(momentDueDate, 'month')),
+  );
 };
 const checkIfCustomDueDateMatch = (
   customDueDateStart,
   customDueDateEnd,
   taskDueDate,
-) => {
-  return (
-    (!customDueDateStart ||
-      moment(taskDueDate, TASK_DUE_DATE_FORMAT).isSameOrAfter(
-        moment(customDueDateStart, 'YYYY-MM-DD'),
-      )) &&
-    (!customDueDateEnd ||
-      moment(taskDueDate, TASK_DUE_DATE_FORMAT).isSameOrBefore(
-        moment(customDueDateEnd, 'YYYY-MM-DD'),
-      ))
-  );
-};
+) =>
+  (!customDueDateStart ||
+    moment(taskDueDate, TASK_DUE_DATE_FORMAT).isSameOrAfter(
+      moment(customDueDateStart, 'YYYY-MM-DD'),
+    )) &&
+  (!customDueDateEnd ||
+    moment(taskDueDate, TASK_DUE_DATE_FORMAT).isSameOrBefore(
+      moment(customDueDateEnd, 'YYYY-MM-DD'),
+    ));
 
 const checkIfMatchesDueDateCriteria = (
   customDueDateStart,
@@ -101,7 +95,7 @@ export const checkIfTaskMatchesFilters = (task, filters) => {
       !filters.priorityOptions.options ||
       isEmpty(filters.priorityOptions.options) ||
       filters.priorityOptions.options.some(
-        priorityOption =>
+        (priorityOption) =>
           priorityOption === priority ||
           (priorityOption === 'LOW' && !priority),
       )) &&
@@ -109,7 +103,7 @@ export const checkIfTaskMatchesFilters = (task, filters) => {
         !filters.workflowStatusOptions.options ||
         isEmpty(filters.workflowStatusOptions.options) ||
         filters.workflowStatusOptions.options.some(
-          workflowStatusOption =>
+          (workflowStatusOption) =>
             workflowStatusOption === workflowStatus ||
             (workflowStatusOption === 'NO_STATUS' && !workflowStatus),
         )) &&
@@ -117,7 +111,7 @@ export const checkIfTaskMatchesFilters = (task, filters) => {
         !filters.assignedTo.options ||
         isEmpty(filters.assignedTo.options) ||
         filters.assignedTo.options.some(
-          assignedToOption =>
+          (assignedToOption) =>
             ((!assignedToUsers || isEmpty(assignedToUsers)) &&
               assignedToOption === 'UNASSIGNED') ||
             assignedToUsers.some(
@@ -128,7 +122,7 @@ export const checkIfTaskMatchesFilters = (task, filters) => {
         !filters.assignedBy.options ||
         isEmpty(filters.assignedBy.options) ||
         filters.assignedBy.options.some(
-          assignedByOption =>
+          (assignedByOption) =>
             assignedByOption === assignedBy?.userIdentifier ||
             (assignedByOption === 'UNASSIGNED' && !assignedBy),
         )) &&
@@ -136,20 +130,18 @@ export const checkIfTaskMatchesFilters = (task, filters) => {
         !filters.patients.options ||
         isEmpty(filters.patients.options) ||
         filters.patients.options.some(
-          patientOption =>
+          (patientOption) =>
             patientOption === patient?.patientIdentifier ||
             (patientOption === 'UNASSIGNED' && !patient),
         )) &&
       (!filters.taskLists ||
         !filters.taskLists.options ||
         isEmpty(filters.taskLists.options) ||
-        filters.taskLists.options.some(
-          taskListOption => taskListOption === taskList?.taskListIdentifier,
-        )) &&
+        filters.taskLists.options.includes(taskList?.taskListIdentifier)) &&
       (!filters.labels ||
         !filters.labels.options ||
         isEmpty(filters.labels.options) ||
-        filters.labels.options.some(labelOption =>
+        filters.labels.options.some((labelOption) =>
           labels?.some(
             ({ labelIdentifier }) => labelIdentifier === labelOption,
           ),

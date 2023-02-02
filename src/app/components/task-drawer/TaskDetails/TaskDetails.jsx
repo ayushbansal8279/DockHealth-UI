@@ -43,20 +43,18 @@ const TaskDetails = ({ readOnly, disableMentions }) => {
   );
   const isTemplateTask = checkIfTemplateTask(selectedTask);
 
-  const isEmptyDetailsState = useMemo(() => isEditorStateEmpty(detailsState), [
-    detailsState,
-  ]);
+  const isEmptyDetailsState = useMemo(
+    () => isEditorStateEmpty(detailsState),
+    [detailsState],
+  );
 
   const previousIsFocused = usePrevious(isFocused);
 
   const updateDetails = useCallback(
-    state => {
+    (state) => {
       if (selectedTask) {
-        const {
-          tokenizedText,
-          rawText,
-          mentions,
-        } = convertFromEditorStateToOutput(state, true);
+        const { tokenizedText, rawText, mentions } =
+          convertFromEditorStateToOutput(state, true);
         const isChangedText = tokenizedText?.trim() !== rawTextState?.trim();
         if (!rawTextState && tokenizedText.length === 0) return;
         if (isChangedText) {
@@ -78,7 +76,7 @@ const TaskDetails = ({ readOnly, disableMentions }) => {
   );
 
   const onDebouncedChange = useCallback(
-    debounce(newState => {
+    debounce((newState) => {
       updateDetails(newState);
     }, DEBOUNCE_TIME),
     [updateDetails],
@@ -93,7 +91,7 @@ const TaskDetails = ({ readOnly, disableMentions }) => {
   }, [isFocused]);
 
   const onChangeDetailsEditor = useCallback(
-    state => {
+    (state) => {
       setDetailsState(state);
       onDebouncedChange(state);
     },

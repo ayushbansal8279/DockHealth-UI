@@ -1,12 +1,6 @@
 /* eslint-disable import/extensions */
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
-import {
-  MenuItem,
-  ListItemText,
-  Checkbox,
-  Input,
-  Select,
-} from '@material-ui/core';
+import { MenuItem, ListItemText, Checkbox, Input, Select } from '@mui/material';
 import zIndex from 'styles/z-index';
 import { DropdownBox } from './styled';
 
@@ -63,15 +57,16 @@ const TaskItemMultiDropdown = ({
           value={value ?? []}
           input={<Input />}
           IconComponent={() => <></>}
-          renderValue={selectedValue =>
+          renderValue={(selectedValue) =>
             selectedValue
-              .map(selected => {
-                return options.find(option => option.value === selected)?.label;
+              .map((selected) => {
+                return options.find((option) => option.value === selected)
+                  ?.label;
               })
               .join(', ')
           }
         >
-          {options?.map(option => {
+          {options?.map((option) => {
             return (
               <MenuItem key={option.value} value={option.value}>
                 {value.includes(option.value) ? (

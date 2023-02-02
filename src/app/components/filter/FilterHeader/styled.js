@@ -22,7 +22,7 @@ export const HeaderButton = styled.button`
   padding: 0 ${spacing.regular};
   color: ${palette.brightBlue};
   font-size: ${fontSizes.smallPlus};
-  cursor: ${props => (props.disabled ? 'initial' : 'pointer')};
+  cursor: ${(props) => (props.disabled ? 'initial' : 'pointer')};
   text-transform: uppercase;
   height: fit-content;
   :not(:first-of-type) {

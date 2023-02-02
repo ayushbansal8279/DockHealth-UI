@@ -1,5 +1,6 @@
 import { all, put, takeEvery } from 'redux-saga/effects';
 import * as TemplateActions from 'actions/template-actions';
+import { log } from 'helpers/log';
 
 const INITIALIZE_HIDDEN_NAVBAR_TEMPLATE = 'INITIALIZE_HIDDEN_NAVBAR_TEMPLATE';
 const REMOVE_HIDDEN_NAVBAR_TEMPLATE = 'REMOVE_HIDDEN_NAVBAR_TEMPLATE';
@@ -16,7 +17,7 @@ function* doInitializeHiddenNavbarTemplate() {
   try {
     yield all([put(TemplateActions.hideNavbar())]);
   } catch (error) {
-    console.log(error);
+    log(error);
   }
 }
 
@@ -24,7 +25,7 @@ function* doRemoveHiddenNavbarTemplate() {
   try {
     yield all([put(TemplateActions.showNavbar())]);
   } catch (error) {
-    console.log(error);
+    log(error);
   }
 }
 

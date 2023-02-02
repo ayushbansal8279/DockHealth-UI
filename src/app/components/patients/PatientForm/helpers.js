@@ -27,9 +27,9 @@ export function formatMetaDataOutput(outputData) {
 
   // remove metadata with no values - only keep UUID keys
   const filteredMetaDataKeys = Object.keys(metadata).filter(
-    key => key.length === 36,
+    (key) => key.length === 36,
   );
-  const formattedMetadata = filteredMetaDataKeys.map(key => {
+  const formattedMetadata = filteredMetaDataKeys.map((key) => {
     if (Array.isArray(metadata[key])) {
       return {
         customFieldIdentifier: key,
@@ -53,7 +53,7 @@ export const validationSchema = object().shape({
   gender: string().nullable(),
   dob: mixed()
     .nullable()
-    .transform(newValue => {
+    .transform((newValue) => {
       const dobMoment = moment(newValue, DATE_FORMAT);
 
       if (!newValue) {
@@ -84,18 +84,20 @@ export const validationSchema = object().shape({
         return true;
       },
     )
-    .test('pastDate', `Date of birth is in the future`, function pastDate(
-      value,
-    ) {
-      if (moment(value, DATE_FORMAT).isAfter(moment())) {
-        this.createError();
-        return false;
-      }
-      return true;
-    }),
+    .test(
+      'pastDate',
+      `Date of birth is in the future`,
+      function pastDate(value) {
+        if (moment(value, DATE_FORMAT).isAfter(moment())) {
+          this.createError();
+          return false;
+        }
+        return true;
+      },
+    ),
   email: string()
     .nullable()
-    .transform(value => (!value ? null : value))
+    .transform((value) => value || null)
     .email('This field requires a valid email address'),
   phoneHome: string().nullable(),
   phoneMobile: string().nullable(),

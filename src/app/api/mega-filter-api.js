@@ -10,12 +10,12 @@ export function getQuickFilters(quickFilters) {
     .get(`task/quickFilter/search`, {
       params: { ...quickFilters },
     })
-    .then(({ data }) => {
-      return data.map(f => ({
+    .then(({ data }) =>
+      data.map((f) => ({
         ...f,
         selectedOptions: mapRequestSelectedOptionsToStore(f.selectedOptions),
-      }));
-    });
+      })),
+    );
 }
 export function createQuickFilter(quickFilters, viewSpecificData) {
   return axios
@@ -26,12 +26,10 @@ export function createQuickFilter(quickFilters, viewSpecificData) {
         quickFilters.selectedOptions,
       ),
     })
-    .then(({ data }) => {
-      return {
-        ...data,
-        selectedOptions: mapRequestSelectedOptionsToStore(data.selectedOptions),
-      };
-    });
+    .then(({ data }) => ({
+      ...data,
+      selectedOptions: mapRequestSelectedOptionsToStore(data.selectedOptions),
+    }));
 }
 export function updateQuickFilter(quickFilterIdentifier, quickFilters) {
   return axios
@@ -42,12 +40,10 @@ export function updateQuickFilter(quickFilterIdentifier, quickFilters) {
         quickFilters.selectedOptions,
       ),
     })
-    .then(({ data }) => {
-      return {
-        ...data,
-        selectedOptions: mapRequestSelectedOptionsToStore(data.selectedOptions),
-      };
-    });
+    .then(({ data }) => ({
+      ...data,
+      selectedOptions: mapRequestSelectedOptionsToStore(data.selectedOptions),
+    }));
 }
 
 export function deleteQuickFilter(identifier) {

@@ -1,7 +1,7 @@
 /* eslint-disable sonarjs/cognitive-complexity */
 import React, { useState, forwardRef, useEffect, useCallback } from 'react';
 import { useSelector } from 'react-redux';
-import { Box } from '@material-ui/core';
+import { Box } from '@mui/material';
 import { useHistory } from 'react-router-dom';
 import { CUSTOM_FIELDS_SETTINGS_PATH } from 'routing/helpers/paths';
 import { userProfileSelector } from 'selectors/user-selectors';
@@ -37,7 +37,7 @@ const PersonForm = forwardRef(
       CustomFieldsApi.getAllProviderCustomFields(
         true,
         user?.userIdentifier || undefined,
-      ).then(data => {
+      ).then((data) => {
         setCustomFields(data);
       });
       // eslint-disable-next-line react-hooks/exhaustive-deps

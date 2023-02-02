@@ -1,5 +1,5 @@
 import styled from 'styled-components';
-import MaterialCloseIcon from '@material-ui/icons/Close';
+import MaterialCloseIcon from '@mui/icons-material/Close';
 import { fontSizes, fontWeights } from 'styles/font';
 import palette from 'styles/palette';
 import spacing from 'styles/spacing';

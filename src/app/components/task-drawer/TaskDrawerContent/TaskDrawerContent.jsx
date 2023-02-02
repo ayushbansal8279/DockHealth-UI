@@ -1,6 +1,6 @@
 /* eslint-disable sonarjs/cognitive-complexity */
 import React, { useCallback, useRef, useState } from 'react';
-import { Box, Chip, Grid, Typography, useMediaQuery } from '@material-ui/core';
+import { Box, Chip, Grid, Typography, useMediaQuery } from '@mui/material';
 import { checkIfBundleTask } from 'helpers/task-helpers';
 import Spacing from 'components/common/Spacing';
 import TextEditor from 'components/common/TextEditor/TextEditor';
@@ -38,7 +38,7 @@ import SubtasksSection from '../SubtasksSection/SubtasksSection';
 import TaskDetails from '../TaskDetails/TaskDetails';
 import {
   TaskDrawerContainer,
-  TaskDrawerBackground,
+  // TaskDrawerBackground,
   styleTaskDrawerContainer,
   styleFullRow,
   styleEmailRow,
@@ -57,7 +57,7 @@ import {
 
 const { DISABLED, READ_ONLY } = SINGLE_TASK_RESTRICTIONS_OPTIONS;
 
-const TaskDrawerContent = props => {
+const TaskDrawerContent = (props) => {
   const {
     isInbox,
     onTaskUpdate = () => {},
@@ -150,7 +150,7 @@ const TaskDrawerContent = props => {
     setSubscriptionListOpen(false);
   };
 
-  const isMobile = useMediaQuery(theme => theme.breakpoints.down('sm'));
+  const isMobile = useMediaQuery((theme) => theme.breakpoints.down('sm'));
 
   return (
     <TaskDrawerContainer
@@ -174,7 +174,7 @@ const TaskDrawerContent = props => {
             onDelete={onDelete}
             onDuplicate={onDuplicate}
             closeTaskDrawer={closeTaskDrawer}
-            setTourTaskMenuReference={element => {
+            setTourTaskMenuReference={(element) => {
               taskMenuReference.current = element;
             }}
           />
@@ -324,13 +324,14 @@ const TaskDrawerContent = props => {
             <CustomFieldsSection fieldCategoryType="TASK_CORE" />
           </Grid>
         )}
-        {restrictions?.labels !== DISABLED && taskLabelsLocation === 'default' && (
-          <Grid item xs={12} style={styleFullRow(isMobile)}>
-            <div ref={labelsSectionReference}>
-              <LabelsSection onTaskUpdate={onTaskUpdate} />
-            </div>
-          </Grid>
-        )}
+        {restrictions?.labels !== DISABLED &&
+          taskLabelsLocation === 'default' && (
+            <Grid item xs={12} style={styleFullRow(isMobile)}>
+              <div ref={labelsSectionReference}>
+                <LabelsSection onTaskUpdate={onTaskUpdate} />
+              </div>
+            </Grid>
+          )}
         {!taskAttachmentsDisabled && (
           <Grid item xs={12} style={styleFullRow(isMobile)}>
             <AttachmentsSection
@@ -362,13 +363,14 @@ const TaskDrawerContent = props => {
             <CustomFieldsSection fieldCategoryType="TASK_OTHER" />
           </Grid>
         )}
-        {restrictions?.labels !== DISABLED && taskLabelsLocation === 'bottom' && (
-          <Grid item xs={12} style={styleFullRow(isMobile)}>
-            <div ref={labelsSectionReference}>
-              <LabelsSection onTaskUpdate={onTaskUpdate} />
-            </div>
-          </Grid>
-        )}
+        {restrictions?.labels !== DISABLED &&
+          taskLabelsLocation === 'bottom' && (
+            <Grid item xs={12} style={styleFullRow(isMobile)}>
+              <div ref={labelsSectionReference}>
+                <LabelsSection onTaskUpdate={onTaskUpdate} />
+              </div>
+            </Grid>
+          )}
       </Grid>
       <TaskDrawerDivider />
       {restrictions?.history !== DISABLED && (
@@ -381,7 +383,7 @@ const TaskDrawerContent = props => {
         </Grid>
       )}
       {renderExistingUserTourPopover()}
-      <TaskDrawerBackground onClick={closeTaskDrawer} />
+      {/* <TaskDrawerBackground onClick={closeTaskDrawer} /> */}
       <WatchersPopover
         open={isSubscriptionListOpen}
         anchorEl={watchersReference.current}

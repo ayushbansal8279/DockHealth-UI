@@ -15,9 +15,7 @@ export const addLabel = ({
       taskIdentifier,
       taskWorkflowIdentifier,
     },
-  }).then(({ data }) => {
-    return data;
-  });
+  }).then(({ data }) => data);
 
 export const editLabel = ({
   labelIdentifier,
@@ -34,9 +32,7 @@ export const editLabel = ({
       taskIdentifier,
       taskWorkflowIdentifier,
     },
-  }).then(({ data }) => {
-    return data;
-  });
+  }).then(({ data }) => data);
 
 export const removeLabelForTask = ({
   labelIdentifier,
@@ -51,23 +47,19 @@ export const removeLabelForTask = ({
       taskIdentifier,
       taskWorkflowIdentifier,
     },
-  }).then(({ data }) => {
-    return data;
-  });
+  }).then(({ data }) => data);
 
 export const getTaskListLabels = ({ taskListIdentifier }) =>
   axios({
     method: 'get',
     url: `/task/label/getLabelsForTaskList/${taskListIdentifier}`,
-  }).then(({ data }) => {
-    return data;
-  });
+  }).then(({ data }) => data);
 
 export function getTemplateLabels() {
   return axios
     .get(`task/label/getLabelsForTemplateTaskList`)
-    .then(response => response.data)
-    .catch(error => {
+    .then((response) => response.data)
+    .catch((error) => {
       throw error;
     });
 }
@@ -76,6 +68,4 @@ export const removeLabelFromDatabase = ({ labelIdentifier }) =>
   axios({
     method: 'delete',
     url: `/task/label/${labelIdentifier}`,
-  }).then(({ data }) => {
-    return data;
-  });
+  }).then(({ data }) => data);

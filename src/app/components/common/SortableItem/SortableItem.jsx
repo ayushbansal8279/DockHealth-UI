@@ -8,15 +8,10 @@ const SortableItemWrapper = styled.div`
 `;
 
 const SortableItem = ({ itemId, children, overflowHidden = false }) => {
-  const {
-    attributes,
-    listeners,
-    setNodeRef,
-    transform,
-    transition,
-  } = useSortable({
-    id: itemId,
-  });
+  const { attributes, listeners, setNodeRef, transform, transition } =
+    useSortable({
+      id: itemId,
+    });
   const style = {
     transform: CSS.Translate.toString(transform),
     transition,

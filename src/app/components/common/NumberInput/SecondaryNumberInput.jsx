@@ -24,10 +24,10 @@ const SecondaryNumberInput = ({ name, value, onChange, onBlur }) => {
         name={name}
         type="number"
         value={value}
-        onChange={event => {
+        onChange={(event) => {
           if (typeof onChange === 'function') onChange(event.target?.value);
         }}
-        onBlur={event => {
+        onBlur={(event) => {
           if (typeof onBlur === 'function') onBlur(event);
         }}
       />

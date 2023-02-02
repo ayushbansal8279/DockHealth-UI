@@ -1,4 +1,4 @@
-import linkifyString from 'linkifyjs/string';
+import * as linkifyString from 'linkifyjs';
 import escape from 'lodash.escape';
 import escapeRegExp from 'lodash.escaperegexp';
 import curry from 'ramda/src/curry';
@@ -23,27 +23,28 @@ export function mapWithRemove(mapFunction, array) {
   }, []);
 }
 
-export const getPatientName = patientData => {
+export const getPatientName = (patientData) => {
   const { withMrn = true, ...patient } = patientData || {};
   const { mrn, firstName, middleName, lastName } = patient || {};
 
-  return `${lastName || ''}, ${firstName || ''} ${middleName ||
-    ''} ${(withMrn && mrn) || ''}`
+  return `${lastName || ''}, ${firstName || ''} ${middleName || ''} ${
+    (withMrn && mrn) || ''
+  }`
     .replace(/\s{2,}/g, ' ')
     .trim()
     .replace(/^,$|^,|,$/, '');
 };
 
 // eslint-disable-next-line unicorn/prevent-abbreviations
-export const mergeRefs = refs => value => {
-  refs.forEach(reference => {
+export const mergeRefs = (refs) => (value) => {
+  for (const reference of refs) {
     if (typeof reference === 'function') {
       reference(value);
-    } else if (reference != null) {
+    } else if (reference !== undefined) {
       // eslint-disable-next-line no-param-reassign
       reference.current = value;
     }
-  });
+  }
 };
 
 export const isTaskArchivable = curry(
@@ -71,14 +72,14 @@ export const targetLinkify = (href, type) => {
   return '_blank';
 };
 
-const getDescriptionMentionRegex = name =>
+const getDescriptionMentionRegex = (name) =>
   new RegExp(`(^|\\s)(@${escapeRegExp(name)})`, 'gi');
 
 export const mentionifyDescription = ({ members, value }) => {
   let newValue = value;
 
   if (members && Array.isArray(members)) {
-    members.forEach(({ userIdentifier, firstName, lastName, userName }) => {
+    for (const { userIdentifier, firstName, lastName, userName } of members) {
       const sanitizedFirstName = escape(firstName);
       const sanitizedLastName = escape(lastName);
       const sanitizedUserName = escape(userName);
@@ -98,7 +99,7 @@ export const mentionifyDescription = ({ members, value }) => {
           getDescriptionMentionRegex(sanitizedLastName),
           mentionNameReplacer,
         );
-    });
+    }
   }
 
   return newValue;
@@ -144,7 +145,7 @@ export const showToast = ({
     ...otherOptions,
   });
   // fix z-index for drawer container
-  Swal.getContainer().style.zIndex = 10000;
+  Swal.getContainer().style.zIndex = 10_000;
 
   return swalPromise;
 };
@@ -167,22 +168,21 @@ export const showAlert = ({
     }
   });
   // fix z-index for drawer container
-  Swal.getContainer().style.zIndex = 10000;
+  Swal.getContainer().style.zIndex = 10_000;
 
   return swalPromise;
 };
 
-export const setCurrentPageInSessionStorage = currentPathname => {
+export const setCurrentPageInSessionStorage = (currentPathname) => {
   sessionStorage.setItem('next-page', currentPathname);
 };
 
-export const setCurrentPageAfterLogin = currentPathname => {
+export const setCurrentPageAfterLogin = (currentPathname) => {
   setCurrentPageInSessionStorage(currentPathname);
 };
 
-export const useSmallScreen = () => {
-  return window?.innerWidth <= 960 && window?.innerHeight <= 960;
-};
+export const useSmallScreen = () =>
+  window?.innerWidth <= 960 && window?.innerHeight <= 960;
 
 export const useMobile = () =>
   navigator?.userAgent?.toLowerCase()?.includes?.('mobi') ?? false;
@@ -191,6 +191,6 @@ export const useIOS = () => /ipad|iphone|ipod/i.test(navigator.userAgent);
 
 export function trunc(text, maxLength = 30) {
   return text?.length > maxLength
-    ? `${text?.substring(0, maxLength)}...`
+    ? `${text?.slice(0, Math.max(0, maxLength))}...`
     : text;
 }

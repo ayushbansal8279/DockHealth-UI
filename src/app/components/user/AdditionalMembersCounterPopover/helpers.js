@@ -4,11 +4,11 @@ export const getHiddenMembersWithStatusContent = (
   hiddenMembers,
   activeUsersList,
 ) =>
-  hiddenMembers?.map(hiddenMember => {
+  hiddenMembers?.map((hiddenMember) => {
     const onlineActiveUser =
-      activeUsersList?.find(({ userIdentifier }) => {
-        return userIdentifier === hiddenMember?.userIdentifier;
-      }) || {};
+      activeUsersList?.find(
+        ({ userIdentifier }) => userIdentifier === hiddenMember?.userIdentifier,
+      ) || {};
 
     if (!isEmpty(onlineActiveUser) && !onlineActiveUser.idle) {
       return { ...hiddenMember, userStatusLabel: 'Online' };

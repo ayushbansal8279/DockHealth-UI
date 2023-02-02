@@ -55,7 +55,7 @@ const Avatar = React.forwardRef(
 
     return (
       <BackgroundContainer
-        onClick={event => {
+        onClick={(event) => {
           if (isOnClickFunction) onClick(event);
         }}
       >

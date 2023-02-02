@@ -3,24 +3,17 @@ const checkIfAssignNameMatch = (searchValue, assignedUser = {}) => {
 
   const { firstName, lastName } = assignedUser;
 
-  if (
-    `${firstName} ${lastName}`
-      .toLowerCase()
-      .includes(searchValue?.toLowerCase())
-  ) {
-    return true;
-  }
-  return false;
+  return !!`${firstName} ${lastName}`
+    .toLowerCase()
+    .includes(searchValue?.toLowerCase());
 };
 
 const checkIfWorkflowMatch = (searchValue, workflowStatus) => {
   if (!workflowStatus) return false;
 
-  if (`${workflowStatus}`.toLowerCase().includes(searchValue?.toLowerCase())) {
-    return true;
-  }
-
-  return false;
+  return !!`${workflowStatus}`
+    .toLowerCase()
+    .includes(searchValue?.toLowerCase());
 };
 
 export const checkIfTaskMatchesSearch = (task, searchValue) => {

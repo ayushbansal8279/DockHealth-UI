@@ -1,6 +1,6 @@
 import React from 'react';
-import { Box } from '@material-ui/core';
-import { Skeleton } from '@material-ui/lab';
+import { Box } from '@mui/material';
+import Skeleton from '@mui/material/Skeleton';
 import { Container } from './styled';
 
 const HistoryItemLoader = () => (

@@ -29,7 +29,7 @@ const TaskLabelStatisticsChart = () => {
         )
       : AnalyticsApi.getGroupedStatistics(StatisticsGroupType.TASK_TASKLABEL)
     )
-      .then(responseMetrics => {
+      .then((responseMetrics) => {
         setData(getTopMetrics(responseMetrics, 14));
       })
       .catch(() => {
