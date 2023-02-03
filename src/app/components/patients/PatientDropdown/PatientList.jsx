@@ -15,18 +15,17 @@ import { getCustomerTypeLabel } from 'helpers/customer-type-helper';
 import { onTaskDrawerPatientAdded } from 'helpers/ga-event-helper';
 import { noop } from 'helpers/utility-functions';
 import AddRecordOption from 'components/common/AddRecordOption/AddRecordOption';
-// import { List } from 'react-virtualized';
 
 import { userProfileSelector } from 'selectors/user-selectors';
 import {
   Input,
   InputBox,
   ListContainer,
-  // Row,
+  Row,
   LoaderItem,
   LoaderContainer,
-  // UnassignRowContainer,
-  // UnassignRow,
+  UnassignRowContainer,
+  UnassignRow,
   RefineSearchRow,
 } from './styled';
 
@@ -231,41 +230,38 @@ const PatientList = ({
     }
   };
 
-  // const renderRow = ({ index, key, style }) => {
-  //   const option = patients[index];
-  //   return option.unassignOption ? (
-  //     <UnassignRowContainer
-  //       key={key}
-  //       style={style}
-  //       withBorder={displayUnassignedOption}
-  //     >
-  //       <UnassignRow
-  //         key="UNASSIGNED"
-  //         type="button"
-  //         onClick={() => {
-  //           clearInput();
-  //           onSelect(null);
-  //         }}
-  //         isHovered={hoveredItemIndex === index}
-  //       >
-  //         Unassign
-  //       </UnassignRow>
-  //     </UnassignRowContainer>
-  //   ) : (
-  //     <Row
-  //       key={key}
-  //       style={style}
-  //       type="button"
-  //       isHovered={hoveredItemIndex === index}
-  //       onClick={() => {
-  //         clearInput();
-  //         onSelect(option.patient);
-  //       }}
-  //     >
-  //       {option.label({ searchValue })}
-  //     </Row>
-  //   );
-  // };
+  const renderRow = (option, index) => {
+    return option.unassignOption ? (
+      <UnassignRowContainer
+        key={option.key}
+        withBorder={displayUnassignedOption}
+      >
+        <UnassignRow
+          key="UNASSIGNED"
+          type="button"
+          onClick={() => {
+            clearInput();
+            onSelect(null);
+          }}
+          isHovered={hoveredItemIndex === index}
+        >
+          Unassign
+        </UnassignRow>
+      </UnassignRowContainer>
+    ) : (
+      <Row
+        key={option.key}
+        type="button"
+        isHovered={hoveredItemIndex === index}
+        onClick={() => {
+          clearInput();
+          onSelect(option.patient);
+        }}
+      >
+        {option.label({ searchValue })}
+      </Row>
+    );
+  };
 
   return (
     <>
@@ -305,17 +301,9 @@ const PatientList = ({
               refine search!
             </RefineSearchRow>
           )}
-          {!isLoadingPatients && patients?.length !== 0 && (
-            <div />
-            // <List
-            //   scrollToIndex={hoveredItemIndex}
-            //   width={600}
-            //   height={patients.length > 6 ? 248 : patients.length * 40}
-            //   rowHeight={40}
-            //   rowRenderer={renderRow}
-            //   rowCount={patients.length}
-            // />
-          )}
+          {!isLoadingPatients &&
+            patients?.length !== 0 &&
+            patients.map(renderRow)}
         </ListContainer>
       )}
     </>
