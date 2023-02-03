@@ -56,7 +56,7 @@ const TaskItemPatient = ({
   );
 
   const openPopoverWhenNotCompleted = (open) =>
-    !isCompleted ? setPopoverOpen(open) : () => {};
+    isCompleted ? () => {} : setPopoverOpen(open);
 
   const patientName = patient?.middleName
     ? `${patient?.lastName}, ${patient?.firstName} ${patient?.middleName?.slice(
@@ -69,7 +69,7 @@ const TaskItemPatient = ({
   const PatientLabelComponent = isCompleted
     ? DisabledPatientLabel
     : PatientLabel;
-  const properOnPatientClick = !isCompleted ? onPatientClick : () => {};
+  const properOnPatientClick = isCompleted ? () => {} : onPatientClick;
 
   const customerTypeLabel = getCustomerTypeLabel(currentUser);
   const customerTypeLabelCapitalized = capitalize(customerTypeLabel);
