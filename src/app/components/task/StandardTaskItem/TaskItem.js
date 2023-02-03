@@ -55,6 +55,7 @@ import {
 } from 'restrictions/task-restrictions';
 import { CUSTOM_FIELD_TYPES } from 'helpers/custom-fields-helpers';
 import { Box } from '@material-ui/core';
+import { closeModal, openModal } from 'modal/actions';
 import { getSubtaskStylingLink } from './helpers';
 import TaskItemContextMenu from '../TaskItemContextMenu/TaskItemContextMenu';
 import TaskItemBulkEdit from './TaskItemComponents/TaskItemBulkEdit';
@@ -525,8 +526,39 @@ const TaskItem = React.memo(
                     >
                       <TaskItemDecision
                         outcomes={task.taskOutcomes}
-                        dispatch={dispatch}
-                        onSelect={chooseTaskDecisionOutcome}
+                        onSelect={(
+                          targetValue,
+                          taskItem,
+                          templateBundleIdentifierItem,
+                        ) => {
+                          if (
+                            taskItem.subTasksCompletedCount !==
+                            taskItem.subTasksCount
+                          ) {
+                            dispatch(
+                              openModal('CompleteAllTasks', {
+                                confirm: () => {
+                                  dispatch(closeModal());
+                                  dispatch(
+                                    chooseTaskDecisionOutcome(
+                                      targetValue,
+                                      taskItem,
+                                      templateBundleIdentifierItem,
+                                    ),
+                                  );
+                                },
+                              }),
+                            );
+                          } else {
+                            dispatch(
+                              chooseTaskDecisionOutcome(
+                                targetValue,
+                                taskItem,
+                                templateBundleIdentifierItem,
+                              ),
+                            );
+                          }
+                        }}
                         task={task}
                         templateBundleIdentifier={templateBundleIdentifier}
                         disabled={isCompleted || !isDependencyEmptyOrCompleted}

@@ -5,7 +5,6 @@ import { DecisionBox, DecisionSelect } from '../../styled';
 const TaskItemDecision = ({
   outcomes,
   onSelect,
-  dispatch,
   task,
   templateBundleIdentifier,
   disabled,
@@ -34,9 +33,9 @@ const TaskItemDecision = ({
     ({ target }) => {
       clearError();
       setValue(target.value);
-      dispatch(onSelect(target.value, task, templateBundleIdentifier));
+      onSelect(target.value, task, templateBundleIdentifier);
     },
-    [dispatch, onSelect, task, templateBundleIdentifier, clearError],
+    [onSelect, task, templateBundleIdentifier, clearError],
   );
 
   return (
