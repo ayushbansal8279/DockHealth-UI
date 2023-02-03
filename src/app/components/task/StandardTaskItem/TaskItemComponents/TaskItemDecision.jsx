@@ -1,55 +1,48 @@
-/* eslint-disable import/extensions */
-import React, { useState, useCallback, useMemo } from 'react';
+import React, { useState } from 'react';
 import { DecisionBox, DecisionSelect } from '../../styled';
 
 const TaskItemDecision = ({
-  outcomes,
-  onSelect,
   task,
   templateBundleIdentifier,
+  iconColorActive,
+  outcomes = [],
   disabled,
   error = false,
+  onSelect,
   clearError,
-  iconColorActive,
 }) => {
-  const initialOptions = useMemo(
-    () =>
-      outcomes?.map(({ taskOutcomeIdentifier, name }) => ({
-        label: name,
-        value: taskOutcomeIdentifier,
-      })),
-    [outcomes],
-  );
-  const initialValue = useMemo(() => {
-    const initialOutcome = outcomes?.filter(({ isSelected }) => isSelected);
-    return initialOutcome.length > 0
-      ? initialOutcome[0].taskOutcomeIdentifier
-      : null;
-  }, [outcomes]);
-  const [value, setValue] = useState(initialValue);
-  const [options] = useState(initialOptions);
+  const options = outcomes
+    .map(outcome => ({
+      label: outcome.name,
+      value: outcome.taskOutcomeIdentifier,
+    }))
+    .sort((a, b) => a.label.localeCompare(b.label));
 
-  const handleChange = useCallback(
-    ({ target }) => {
-      clearError();
-      setValue(target.value);
-      onSelect(target.value, task, templateBundleIdentifier);
-    },
-    [onSelect, task, templateBundleIdentifier, clearError],
+  const [value, setValue] = useState(
+    outcomes.find(outcome => outcome.isSelected)?.taskOutcomeIdentifier ?? null,
   );
+
+  const handleValueChange = event => {
+    clearError();
+    const { value: newValue } = event.target;
+    onSelect(newValue, task, templateBundleIdentifier, () =>
+      setValue(newValue),
+    );
+  };
 
   return (
     <DecisionBox>
       <DecisionSelect
         name="decision"
         value={value}
-        onChange={handleChange}
-        error={error}
-        options={options.sort((a, b) => a.label.localeCompare(b.label))}
+        options={options}
+        onChange={handleValueChange}
         disabled={disabled}
+        error={error}
         iconColorActive={iconColorActive}
       />
     </DecisionBox>
   );
 };
+
 export default TaskItemDecision;

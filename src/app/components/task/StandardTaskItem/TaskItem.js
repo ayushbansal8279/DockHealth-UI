@@ -530,6 +530,7 @@ const TaskItem = React.memo(
                           targetValue,
                           taskItem,
                           templateBundleIdentifierItem,
+                          onSuccess,
                         ) => {
                           if (
                             taskItem.subTasksCompletedCount !==
@@ -546,6 +547,7 @@ const TaskItem = React.memo(
                                       templateBundleIdentifierItem,
                                     ),
                                   );
+                                  onSuccess();
                                 },
                               }),
                             );
@@ -557,6 +559,7 @@ const TaskItem = React.memo(
                                 templateBundleIdentifierItem,
                               ),
                             );
+                            onSuccess();
                           }
                         }}
                         task={task}
