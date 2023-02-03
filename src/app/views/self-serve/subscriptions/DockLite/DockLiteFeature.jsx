@@ -12,25 +12,16 @@ import {
   Description,
   PriceContainer,
   Price,
-  SubscribeButton,
   Divider,
   UnitContainer,
   UnitText,
   FeatureText,
-  ContactUsAnchor,
-  CheckIcon,
 } from './styled';
+
 import SubscriptionPlanFeature from '../SubscriptionPlanFeature/SubscriptionPlanFeature';
 
-const SubscriptionPlanTail = props => {
-  const {
-    active,
-    selected,
-    plan,
-    hasExistingSubscription,
-    billingFrequency,
-    onSelect,
-  } = props;
+const DockLiteFeature = props => {
+  const { plan, billingFrequency } = props;
   const {
     key,
     mostPopular,
@@ -42,12 +33,7 @@ const SubscriptionPlanTail = props => {
     featuresDescription,
     features,
     comingSoonFeatures,
-    subscriptionPlan,
   } = plan;
-
-  const upgradeLabel =
-    plan?.subscriptionPlan === SubscriptionPlan.STANDARD ? 'Change' : 'Upgrade';
-  const subscribeLabel = hasExistingSubscription ? upgradeLabel : 'Subscribe';
 
   return (
     <Container color={color}>
@@ -59,7 +45,7 @@ const SubscriptionPlanTail = props => {
       <PriceContainer>
         {(annualMonthlyPrice || monthlyPrice) && (
           <>
-            <Price color="#000000">
+            <Price color={color}>
               $
               {billingFrequency === BillingFrequency.ANNUAL
                 ? annualMonthlyPrice
@@ -79,30 +65,6 @@ const SubscriptionPlanTail = props => {
           </>
         )}
       </PriceContainer>
-      {(annualMonthlyPrice || monthlyPrice) &&
-      key !== SubscriptionPlan.ENTERPRISE ? (
-        <SubscribeButton
-          type="button"
-          active={active}
-          color="#0e244a"
-          disabled={active}
-          onClick={() => onSelect(subscriptionPlan)}
-        >
-          <Box component="span" position="relative">
-            {!active && selected && <CheckIcon />}
-            {active ? 'Active' : subscribeLabel}
-          </Box>
-        </SubscribeButton>
-      ) : (
-        <ContactUsAnchor
-          color="#0e244a"
-          onClick={() => {
-            window.Intercom('show');
-          }}
-        >
-          Contact Us
-        </ContactUsAnchor>
-      )}
       <Divider />
       <FeatureText>{featuresDescription}</FeatureText>
       <Box m={2} />
@@ -116,4 +78,4 @@ const SubscriptionPlanTail = props => {
   );
 };
 
-export default SubscriptionPlanTail;
+export default DockLiteFeature;

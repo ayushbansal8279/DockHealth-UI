@@ -1,15 +1,24 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
-import { Box, Grid } from '@material-ui/core';
+import {
+  Accordion,
+  AccordionSummary,
+  AccordionDetails,
+  Box,
+  Grid,
+} from '@material-ui/core';
 import usePrevious from 'hooks/use-previous';
 import equals from 'ramda/src/equals';
+import RotatableChevron from 'components/common/RotatableChevron/RotatableChevron';
 import {
   BillingFrequency,
   SUBSCRIPTION_PLANS,
   isPlanTrial,
   priceFormatter,
   PROFESSIONAL_SERVICES_PRICE,
+  DockLite,
+  ProfessionalServices,
 } from 'helpers/subscription-helper';
 import {
   SUBS_PAYMENT_PATH,
@@ -30,11 +39,11 @@ import {
   isSavingNewPlanSelector,
 } from 'selectors/organization-selectors';
 import { getUserByEmail } from 'api/user-auth-api';
+import ProfessionalServicesAddOn from './ProfessionalServicesAddOn/ProfessionalServicesAddOn';
 import CurrentPlan from './CurrentPlan/CurrentPlan';
 import SubscriptionPlanTail from './SubscriptionPlanTail/SubscriptionPlanTail';
 // import ProfessionalServicesTail from './ProfessionalServicesTail/ProfessionalServicesTail';
 import {
-  SubscriptionsViewContainer,
   SubscriptionsViewOuterContainer,
   SubscriptionPlansContainer,
   SubscriptionsTitle,
@@ -51,7 +60,9 @@ import {
   BillingTableHeaderCell,
   BillingTableCell,
   BillingTableSummaryRow,
+  StyledGrid,
 } from './styled';
+import DockLiteFeature from './DockLite/DockLiteFeature';
 
 // eslint-disable-next-line sonarjs/cognitive-complexity
 const SubscriptionsView = () => {
@@ -169,7 +180,7 @@ const SubscriptionsView = () => {
   return (
     <ViewLayout header={<BasicLayoutHeader title="Subscriptions" />}>
       <SubscriptionsViewOuterContainer>
-        <SubscriptionsViewContainer>
+        <StyledGrid container>
           {currentSubscriptionPlan && (
             <CurrentPlan currentSubscriptionPlan={currentSubscriptionPlan} />
           )}
@@ -256,6 +267,16 @@ const SubscriptionsView = () => {
                 />
               </>
             )} */}
+            <Box p={2} width="100%" alignItems="center">
+              <DockLiteFeature
+                key={DockLite.key}
+                active={subscriptionPlan === DockLite.subscriptionPlan}
+                selected={selectedPlan === DockLite.subscriptionPlan}
+                plan={DockLite}
+                hasExistingSubscription={hasExistingSubscription}
+                billingFrequency={selectedBillingFrequency}
+              />
+            </Box>
             <Box p={1} />
             <Title>
               Billing <SubTitleDescription>Est</SubTitleDescription>
@@ -322,8 +343,29 @@ const SubscriptionsView = () => {
               )}
             </Grid>
             <div ref={scrollReference} />
+            <Box p={3} />
+            <Accordion>
+              <AccordionSummary
+                // expandIcon={<ExpandMoreIcon />}
+                expandIcon={<RotatableChevron height={14} width={20} />}
+                aria-controls="panel1a-content"
+                id="panel1a-header"
+              >
+                {/* <Typography>Click To Expand</Typography> */}
+                <Box p={1} />
+                <Title>Professional Add-Ons</Title>
+              </AccordionSummary>
+              <AccordionDetails>
+                <Box display="block" justifyContent="space-between">
+                  {ProfessionalServices.map(service => (
+                    <ProfessionalServicesAddOn service={service} />
+                  ))}
+                </Box>
+              </AccordionDetails>
+            </Accordion>
+            <Box p={3} />
           </SubscriptionPlansContainer>
-        </SubscriptionsViewContainer>
+        </StyledGrid>
       </SubscriptionsViewOuterContainer>
     </ViewLayout>
   );

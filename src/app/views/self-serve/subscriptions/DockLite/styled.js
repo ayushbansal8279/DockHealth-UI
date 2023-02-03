@@ -5,12 +5,13 @@ import MuiCheckIcon from '@material-ui/icons/Check';
 import { withStyles } from '@material-ui/core/styles';
 
 export const Container = styled.div`
-  width: 279px;
+  width: 100%;
   padding: 60px 18px 18px;
   border-radius: 10px;
   box-shadow: 0px 6px 9px rgba(0, 0, 0, 0.17);
   border-top: 10px solid ${({ color }) => color};
   font-family: 'Roboto', sans-serif;
+  margin-top: 10px;
 `;
 
 export const MostPopularText = styled.p`
@@ -41,7 +42,6 @@ export const Description = styled.p`
   font-size: ${fontSizes.smallPlus};
   font-weight: ${fontWeights.light};
   color: ${palette.black};
-  min-height: 126px;
 `;
 
 export const PriceContainer = styled.div`

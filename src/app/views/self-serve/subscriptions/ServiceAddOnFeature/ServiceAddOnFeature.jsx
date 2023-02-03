@@ -1,0 +1,20 @@
+import React from 'react';
+import { Box } from '@material-ui/core';
+import FeatureCheckmark from 'img/subscription-feature-checkmark.svg';
+import { FeatureContainer, FeatureText, ComingSoonText } from './styled';
+
+const ServiceAddOnFeature = props => {
+  const { feature, color, comingSoon } = props;
+  return (
+    <FeatureContainer>
+      <img src={FeatureCheckmark} alt="checkmark" />
+      <Box m={0.5} />
+      <FeatureText color={color}>
+        {feature}
+        {comingSoon && <ComingSoonText>Coming soon</ComingSoonText>}
+      </FeatureText>
+    </FeatureContainer>
+  );
+};
+
+export default ServiceAddOnFeature;
