@@ -5,12 +5,14 @@ import MuiCheckIcon from '@material-ui/icons/Check';
 import { withStyles } from '@material-ui/core/styles';
 
 export const Container = styled.div`
-  width: 279px;
+  display: flex;
+  column-gap: 50px;
+  width: 100%;
   padding: 60px 18px 18px;
-  border-radius: 10px;
   box-shadow: 0px 6px 9px rgba(0, 0, 0, 0.17);
   border-top: 10px solid ${({ color }) => color};
   font-family: 'Roboto', sans-serif;
+  margin-top: 30px;
 `;
 
 export const MostPopularText = styled.p`
@@ -23,9 +25,14 @@ export const MostPopularText = styled.p`
   font-weight: ${fontWeights.light};
 `;
 
-export const TopContainer = styled.div`
+export const LeftContainer = styled.div`
   position: relative;
-  width: 100%;
+  width: 50%;
+  margin-bottom: 50px;
+`;
+export const RightContainer = styled.div`
+  position: relative;
+  width: 50%;
   margin-bottom: 50px;
 `;
 
