@@ -436,6 +436,21 @@ export function toggleCompleteTask(
   };
 }
 
+export function makeTaskDisappear(taskObject) {
+  const { ...task } = taskObject;
+  return dispatch => {
+    setTimeout(
+      // eslint-disable-next-line sonarjs/no-identical-functions
+      () =>
+        dispatch({
+          type: ActionTypes.DELETE_TASK,
+          taskIdentifier: task.taskIdentifier,
+        }),
+      TASK_DISAPPEAR_DELAY,
+    );
+  };
+}
+
 export function updateTaskDescription(task, descriptionState) {
   return {
     type: ActionTypes.UPDATE_TASK_DESCRIPTION,
