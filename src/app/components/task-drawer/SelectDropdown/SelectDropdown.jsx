@@ -1,7 +1,6 @@
 /* eslint-disable react/jsx-no-duplicate-props */
 import React, { useEffect, useRef, useState } from 'react';
 import { Grid } from '@mui/material';
-// import { List } from 'react-virtualized';
 import Loader, { LoaderSizes } from 'components/common/Loader/Loader';
 import Spacing from 'components/common/Spacing';
 import { useBoolean } from 'hooks/useBoolean';
@@ -20,7 +19,7 @@ import AddRecordOption from 'components/common/AddRecordOption/AddRecordOption';
 import {
   ListContainer,
   ListItem,
-  // ListItemButton,
+  ListItemButton,
   ListItemRefineButton,
 } from './styled';
 import { AdornmentClear } from '../styled';
@@ -174,23 +173,22 @@ const SelectDropdown = React.forwardRef(
       (!options || options.length === 0) &&
       currentSelectedOption?.displayLabel !== inputValue;
 
-    // const renderOptionRow = ({ key, index, style }) => {
-    //   const option = options[index];
-    //   return (
-    //     <ListItem key={key} style={style}>
-    //       <ListItemButton
-    //         type="button"
-    //         isHovered={hoveredItemIndex === index}
-    //         onMouseDown={() => handleOptionSelect(option)}
-    //         onMouseEnter={() => setHoveredItemIndex(index)}
-    //       >
-    //         {typeof option.label === 'function'
-    //           ? option.label({ searchValue: inputValue })
-    //           : option.label}
-    //       </ListItemButton>
-    //     </ListItem>
-    //   );
-    // };
+    const renderOptionRow = (option, index) => {
+      return (
+        <ListItem key={option.key}>
+          <ListItemButton
+            type="button"
+            isHovered={hoveredItemIndex === index}
+            onMouseDown={() => handleOptionSelect(option)}
+            onMouseEnter={() => setHoveredItemIndex(index)}
+          >
+            {typeof option.label === 'function'
+              ? option.label({ searchValue: inputValue })
+              : option.label}
+          </ListItemButton>
+        </ListItem>
+      );
+    };
 
     return (
       <>
@@ -254,21 +252,7 @@ const SelectDropdown = React.forwardRef(
                     </ListItemRefineButton>
                   </ListItem>
                 )}
-                {options?.length > 0 && (
-                  <div />
-                  // <List
-                  //   scrollToIndex={hoveredItemIndex}
-                  //   width={
-                  //     width ||
-                  //     inputContainerReference?.current?.clientWidth ||
-                  //     300
-                  //   }
-                  //   height={options.length > 5 ? 208 : options.length * 40}
-                  //   rowHeight={40}
-                  //   rowRenderer={renderOptionRow}
-                  //   rowCount={options.length}
-                  // />
-                )}
+                {options?.length > 0 && options.map(renderOptionRow)}
                 {showAddRecordOption && (
                   <ListItem key="addRecordButton">
                     <AddRecordOption
