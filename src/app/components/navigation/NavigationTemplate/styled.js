@@ -40,7 +40,7 @@ export const MaterialDrawer = styled(Drawer)`
   }
 
   &&& {
-    &.MuiDrawer-drawer {
+    &.MuiDrawer-docked {
       position: relative;
       z-index: 10;
       flex-shrink: 0;
