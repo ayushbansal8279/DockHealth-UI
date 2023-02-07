@@ -102,7 +102,7 @@ const Comment = ({
         <CommentContent>
           <CommentText>
             <TextEditor
-              showToolbar
+              showToolbar={isEditing}
               ref={commentEditorReference}
               taskListIdentifier={taskListIdentifier}
               disableMentions={disableMentions}
@@ -110,6 +110,9 @@ const Comment = ({
               withEditedLabel={dateCreated !== dateUpdated}
               state={commentState}
               onChange={setCommentState}
+              onBlur={() => {
+                onCommentEdited();
+              }}
               keyBindingFn={event => {
                 if (event.keyCode === 13 && event.shiftKey) {
                   return undefined;
