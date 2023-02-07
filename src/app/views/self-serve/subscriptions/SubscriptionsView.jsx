@@ -10,7 +10,7 @@ import {
 } from '@material-ui/core';
 import usePrevious from 'hooks/use-previous';
 import equals from 'ramda/src/equals';
-import RotatableChevron from 'components/common/RotatableChevron/RotatableChevron';
+import ProfessionalServicesChevron from 'img/professional-services-chevron';
 import {
   BillingFrequency,
   SUBSCRIPTION_PLANS,
@@ -347,7 +347,9 @@ const SubscriptionsView = () => {
             <Accordion>
               <AccordionSummary
                 // expandIcon={<ExpandMoreIcon />}
-                expandIcon={<RotatableChevron height={14} width={20} />}
+                expandIcon={
+                  <ProfessionalServicesChevron height={14} width={20} />
+                }
                 aria-controls="panel1a-content"
                 id="panel1a-header"
               >
