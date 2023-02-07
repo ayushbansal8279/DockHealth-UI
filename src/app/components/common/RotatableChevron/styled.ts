@@ -14,8 +14,8 @@ export const ListSwitchContainer = styled.div<
   justify-content: center;
   transition: all 0.25s ease-out;
   transform: scaleY(${props => (props.rotated ? -1 : 1)});
-  height: 100%;
-  width: 100%;
+  height: 7px;
+  width: 10px;
   cursor: pointer;
 
   & svg {
