@@ -12,6 +12,8 @@ import { createRoot } from 'react-dom/client';
 import ReactGA from 'react-ga';
 import { Provider } from 'react-redux';
 import { getTheme } from 'styles/theme';
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
 import configureStore from './ConfigureStore';
 import ErrorBoundary from './ErrorBoundary';
 // import flags, { FlagsProvider } from './helpers/flags';
@@ -74,26 +76,35 @@ ReactGA.initialize(
   },
 );
 
-// const stripeProps = VITE_SUBSCRIPTION_TOKEN_API_KEY
-//   ? { apiKey: VITE_SUBSCRIPTION_TOKEN_API_KEY }
-//   : { apiKey: 'NON_EXISTENT_API_KEY' };
+const queryClient = new QueryClient({
+  defaultOptions: {
+    queries: {
+      staleTime: Number.POSITIVE_INFINITY,
+      refetchOnMount: false,
+      refetchOnWindowFocus: false,
+    },
+  },
+});
 
 const Index = () => (
-  <MuiThemeProvider theme={getTheme()}>
-    <MuiPickersUtilsProvider dateAdapter={AdapterDateFns}>
-      {/* <FlagsProvider flags={flags}> */}
-      <Provider store={store}>
-        <ErrorBoundary>
-          <HashRouter forceRefresh>
-            <App>
-              <Routes />
-            </App>
-          </HashRouter>
-        </ErrorBoundary>
-      </Provider>
-      {/* </FlagsProvider> */}
-    </MuiPickersUtilsProvider>
-  </MuiThemeProvider>
+  <QueryClientProvider client={queryClient}>
+    <MuiThemeProvider theme={getTheme()}>
+      <MuiPickersUtilsProvider dateAdapter={AdapterDateFns}>
+        {/* <FlagsProvider flags={flags}> */}
+        <Provider store={store}>
+          <ErrorBoundary>
+            <HashRouter forceRefresh>
+              <App>
+                <Routes />
+              </App>
+            </HashRouter>
+            <ReactQueryDevtools initialIsOpen={false} />
+          </ErrorBoundary>
+        </Provider>
+        {/* </FlagsProvider> */}
+      </MuiPickersUtilsProvider>
+    </MuiThemeProvider>
+  </QueryClientProvider>
 );
 
 const container = document.querySelector('#app');
