@@ -6,12 +6,24 @@ import { withStyles } from '@material-ui/core/styles';
 
 export const Container = styled.div`
   width: 100%;
-  padding: 60px 18px 18px;
-  border-radius: 10px;
-  box-shadow: 0px 6px 9px rgba(0, 0, 0, 0.17);
-  border-top: 10px solid ${({ color }) => color};
+  padding: 3rem;
+  padding-top: 10px;
+  padding-bottom: 1rem;
+  border-radius: 0.25rem;
+  border: 1.5px solid #0e244a;
+  box-shadow: 0 0.5rem 1.5rem -0.5rem rgba(0, 0, 0, 0.1);
   font-family: 'Roboto', sans-serif;
   margin-top: 10px;
+`;
+
+export const LeftContainer = styled.div`
+  width: 100%;
+  padding: 3rem;
+  border-radius: 0.25rem;
+  box-shadow: 0 0.5rem 1.5rem -0.5rem rgba(0, 0, 0, 0.1);
+  font-family: 'Roboto', sans-serif;
+  margin-top: 10px;
+  optimizeLegibility !important;
 `;
 
 export const MostPopularText = styled.p`
@@ -27,7 +39,7 @@ export const MostPopularText = styled.p`
 export const TopContainer = styled.div`
   position: relative;
   width: 100%;
-  margin-bottom: 50px;
+  margin-bottom: 0px;
 `;
 
 export const Name = styled.p`
@@ -35,6 +47,13 @@ export const Name = styled.p`
   font-size: ${fontSizes.largePlus};
   font-weight: ${fontWeights.bold};
   color: ${({ color }) => color};
+`;
+
+export const Title = styled.h2`
+  font-size: ${fontSizes.large};
+  font-weight: ${fontWeights.bold};
+  color: ${({ color }) => color};
+  margin: 1rem 0;
 `;
 
 export const Description = styled.p`
@@ -48,7 +67,7 @@ export const PriceContainer = styled.div`
   display: flex;
   height: 54px;
   width: 100%;
-  margin-bottom: 24px;
+  margin-bottom: 0px;
 `;
 
 export const Price = styled.p`
@@ -91,9 +110,9 @@ export const ContactUsAnchor = styled.a`
   width: 100%;
   padding: 14px;
   border-radius: 16px;
-  background-color: ${({ active, color }) => (active ? 'transparent' : color)};
+  background-color: ${({ active, color }) => (active ? color : palette.white)};
   border: 2px solid ${({ color }) => color};
-  color: ${({ active, color }) => (active ? color : palette.white)};
+  color: ${({ active, color }) => (active ? 'transparent' : color)};
   font-size: ${fontSizes.smallPlus};
   font-weight: ${fontWeights.bold};
   text-transform: uppercase;
@@ -102,12 +121,13 @@ export const ContactUsAnchor = styled.a`
 
   &:hover {
     color: ${palette.white};
+    background-color: #0e244a;
   }
 `;
 
 export const Divider = styled.hr`
   width: 100%;
-  margin: 30px 0;
+  margin: 15px 0;
   border: 1px solid ${palette.coolGrey3};
 `;
 
