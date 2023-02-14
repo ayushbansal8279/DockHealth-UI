@@ -15,6 +15,7 @@ import InviteToListModal from './components/InviteToListModal/InviteToListModal'
 import ChangePasswordModal from './components/ChangePasswordModal/ChangePasswordModal';
 import LeaveOrganizationModal from './components/LeaveOrganizationModal/LeaveOrganizationModal';
 import ChangeMobileNumberModal from './components/ChangeMobileNumberModal/ChangeMobileNumberModal';
+import ChangeEmailModal from './components/ChangeEmailModal/ChangeEmailModal';
 import ConfirmationModal from './components/ConfirmationModal/ConfirmationModal';
 import OnboardingInviteConfirmationModal from './components/OnboardingInviteConfirmationModal/OnboardingInviteConfirmationModal';
 import ArchiveUserModal from './components/ArchiveUserModal/ArchiveUserModal';
@@ -92,6 +93,7 @@ const MODAL_MAP = {
   InviteToList: InviteToListModal,
   ChangePassword: ChangePasswordModal,
   ChangeMobileNumber: ChangeMobileNumberModal,
+  ChangeEmail: ChangeEmailModal,
   Confirmation: ConfirmationModal,
   OnboardingInviteConfirmation: OnboardingInviteConfirmationModal,
   ArchiveUser: ArchiveUserModal,
