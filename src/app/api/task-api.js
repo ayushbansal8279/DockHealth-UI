@@ -68,6 +68,7 @@ export function updateTask(task) {
       showAlert({
         status: 'error',
         title: 'Error',
+        // eslint-disable-next-line sonarjs/no-duplicate-string
         text: error?.response?.data?.errorMessage ?? 'Error in updating task.',
       });
       throw error;
@@ -77,6 +78,40 @@ export function updateTask(task) {
 export function partialUpdateTask(taskIdentifier, dataToUpdate) {
   return axios
     .patch(`task/${taskIdentifier}`, dataToUpdate)
+    .then(({ data }) => {
+      return data;
+    })
+    .catch(error => {
+      showAlert({
+        status: 'error',
+        title: 'Error',
+        text: error?.response?.data?.errorMessage ?? 'Error in updating task.',
+      });
+      throw error;
+    });
+}
+
+export function updateTaskAssignment(taskIdentifier, dataToUpdate) {
+  return axios
+    .patch(`task/assign/${taskIdentifier}`, dataToUpdate)
+    .then(({ data }) => {
+      return data;
+    })
+    .catch(error => {
+      showAlert({
+        status: 'error',
+        title: 'Error',
+        text:
+          error?.response?.data?.errorMessage ??
+          'Error in updating task assignment.',
+      });
+      throw error;
+    });
+}
+
+export function updateTaskMetaData(taskIdentifier, dataToUpdate) {
+  return axios
+    .patch(`task/metadata/${taskIdentifier}`, dataToUpdate)
     .then(({ data }) => {
       return data;
     })
@@ -260,7 +295,16 @@ export const updateWorkflowStatus = (taskIdentifier, workflowStatus) =>
     .put(
       `task/updateTaskWorkflowStatus/${taskIdentifier}?workflowStatus=${workflowStatus}`,
     )
-    .catch(error => error?.response?.data);
+    .catch(error => {
+      showAlert({
+        status: 'error',
+        title: 'Error',
+        text:
+          error?.response?.data?.errorMessage ??
+          'Error updating status. Please try again.',
+      });
+      throw error;
+    });
 
 export function assignOrReassignTask(task, assignedToUserIdentifier) {
   const { taskIdentifier } = task;
