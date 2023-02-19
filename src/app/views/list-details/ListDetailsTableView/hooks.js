@@ -179,11 +179,9 @@ const initializeListDetailsViewHooks = () => {
         sort?.key
       ) {
         refreshTab();
-      } else {
-        refreshFilters();
       }
     },
-    [refreshFilters, refreshTab, selectedFilters, sort],
+    [refreshTab, selectedFilters, sort],
   );
 
   const handleTaskDelete = useCallback(() => {
@@ -191,11 +189,10 @@ const initializeListDetailsViewHooks = () => {
 
     dispatch(ListDetailsActions.getListDetailsTaskCounters(taskListIdentifier));
     dispatch(ListDetailsActions.getTasksGroupsList());
-    refreshFilters();
     if (selectedFilters && !isEmpty(selectedFilters)) {
       refreshTab();
     }
-  }, [dispatch, params, refreshFilters, refreshTab, selectedFilters]);
+  }, [dispatch, params, refreshTab, selectedFilters]);
 
   const changeSearchValue = useCallback(
     searchQuery =>
