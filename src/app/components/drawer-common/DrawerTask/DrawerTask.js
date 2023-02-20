@@ -128,11 +128,10 @@ const DrawerTask = props => {
         partialUpdateTask(task.taskIdentifier, {
           assignedToUsers: selectedMembers,
           assignedToIdentifiers: pluck('userIdentifier', selectedMembers),
-          assignedBy: selectedMembers?.length ? currentUser : null,
         }),
       );
     },
-    [currentUser, dispatch, task.taskIdentifier],
+    [dispatch, task.taskIdentifier],
   );
 
   const handleCommentIconClick = () => {
