@@ -11,7 +11,6 @@ const TaskTemplateMembers = ({
   multipleAssigneesContext,
   workflow = {},
   onWorkflowUpdate,
-  currentUser,
   readOnly,
 }) => {
   const {
@@ -26,10 +25,9 @@ const TaskTemplateMembers = ({
       onWorkflowUpdate(identifier, {
         assignedToUsers: selectedMembers,
         assignedToIdentifiers: pluck('userIdentifier', selectedMembers),
-        assignedBy: selectedMembers?.length ? currentUser : null,
       });
     },
-    [currentUser, identifier, onWorkflowUpdate],
+    [identifier, onWorkflowUpdate],
   );
 
   return (

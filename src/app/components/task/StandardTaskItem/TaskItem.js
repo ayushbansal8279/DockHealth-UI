@@ -312,11 +312,10 @@ const TaskItem = React.memo(
         onTaskUpdate(taskIdentifier, {
           assignedToUsers: selectedMembers,
           assignedToIdentifiers: pluck('userIdentifier', selectedMembers),
-          assignedBy: selectedMembers?.length ? currentUser : null,
         });
         onTaskAssigned();
       },
-      [currentUser, onTaskUpdate, taskIdentifier],
+      [onTaskUpdate, taskIdentifier],
     );
 
     const handleUpdateWorkflowStatus = useCallback(

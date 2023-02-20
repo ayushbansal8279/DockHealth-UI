@@ -184,8 +184,80 @@ export function partialUpdateTask(taskIdentifier, dataToUpdate) {
         taskIdentifier,
       },
     });
+    if (dataToUpdate.assignedToIdentifiers) {
+      return (
+        TaskApi.updateTaskAssignment(taskIdentifier, dataToUpdate)
+          // eslint-disable-next-line sonarjs/no-identical-functions
+          .then(task => {
+            dispatch(AlertActions.showGlobalAlert(AlertMessages.UPDATED));
+            return task;
+          })
+          .catch(error => {
+            throw error;
+          })
+      );
+    }
+    if (dataToUpdate.taskMetaData) {
+      return (
+        TaskApi.updateTaskMetaData(taskIdentifier, dataToUpdate)
+          // eslint-disable-next-line sonarjs/no-identical-functions
+          .then(task => {
+            dispatch(AlertActions.showGlobalAlert(AlertMessages.UPDATED));
+            return task;
+          })
+          .catch(error => {
+            throw error;
+          })
+      );
+    }
     return (
       TaskApi.partialUpdateTask(taskIdentifier, dataToUpdate)
+        // eslint-disable-next-line sonarjs/no-identical-functions
+        .then(task => {
+          dispatch(AlertActions.showGlobalAlert(AlertMessages.UPDATED));
+          return task;
+        })
+        .catch(error => {
+          throw error;
+        })
+    );
+  };
+}
+
+export function updateTaskAssignment(taskIdentifier, dataToUpdate) {
+  return dispatch => {
+    dispatch({
+      type: ActionTypes.UPDATE_TASK_SUCCESS,
+      task: {
+        ...dataToUpdate,
+        taskIdentifier,
+      },
+    });
+    return (
+      TaskApi.updateTaskAssignment(taskIdentifier, dataToUpdate)
+        // eslint-disable-next-line sonarjs/no-identical-functions
+        .then(task => {
+          dispatch(AlertActions.showGlobalAlert(AlertMessages.UPDATED));
+          return task;
+        })
+        .catch(error => {
+          throw error;
+        })
+    );
+  };
+}
+
+export function updateTaskMetaData(taskIdentifier, dataToUpdate) {
+  return dispatch => {
+    dispatch({
+      type: ActionTypes.UPDATE_TASK_SUCCESS,
+      task: {
+        ...dataToUpdate,
+        taskIdentifier,
+      },
+    });
+    return (
+      TaskApi.updateTaskMetaData(taskIdentifier, dataToUpdate)
         // eslint-disable-next-line sonarjs/no-identical-functions
         .then(task => {
           dispatch(AlertActions.showGlobalAlert(AlertMessages.UPDATED));
