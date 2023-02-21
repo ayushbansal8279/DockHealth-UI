@@ -90,7 +90,16 @@ export const TaskDrawerDivider = styled(Divider)`
   }
 `;
 
-export const FiledInListName = styled.a`
+// export const FiledInListName = styled.a`
+//   display: inline-block;
+//   vertical-align: bottom;
+//   color: ${palette.brightBlue};
+//   overflow: hidden;
+//   white-space: nowrap;
+//   text-overflow: ellipsis;
+//   max-width: 250px;
+// `;
+export const FiledInListName = styled.div`
   display: inline-block;
   vertical-align: bottom;
   color: ${palette.brightBlue};
@@ -98,6 +107,7 @@ export const FiledInListName = styled.a`
   white-space: nowrap;
   text-overflow: ellipsis;
   max-width: 250px;
+  cursor: pointer;
 `;
 
 export const SubscriptionBadge = styled.div`
