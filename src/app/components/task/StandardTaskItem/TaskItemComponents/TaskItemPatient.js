@@ -21,7 +21,7 @@ const TaskItemPatient = ({
   highlightedValue,
   taskStatus,
   isSubtask,
-  hasParentTaskLabel,
+  // hasParentTaskLabel,
   matchPatientMRN,
   patient,
   matchPatient,
@@ -104,7 +104,7 @@ const TaskItemPatient = ({
         openPatientPopover && (
           <AddPlaceholder>+ Add {customerTypeLabelCapitalized}</AddPlaceholder>
         )}
-      {patient && (openPatientPopover || hasParentTaskLabel) && (
+      {patient && openPatientPopover && (
         <PatientCard
           disableLink={readOnly}
           patientIdentifier={patient.patientIdentifier}
