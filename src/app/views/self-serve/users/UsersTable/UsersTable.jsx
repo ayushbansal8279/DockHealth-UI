@@ -34,23 +34,26 @@ const getFilteredOrganizationUsers = ({
   let filteredOrganizationUsers;
 
   switch (userSubscriptionStatus) {
-    case UserSubscriptionStatus.SUBSCRIBED:
+    case UserSubscriptionStatus.SUBSCRIBED: {
       filteredOrganizationUsers = filter(
         ({ userIdentifier, email }) =>
           includes({ userIdentifier, email }, selectedUsers),
         organizationUsers,
       );
       break;
-    case UserSubscriptionStatus.UNSUBSCRIBED:
+    }
+    case UserSubscriptionStatus.UNSUBSCRIBED: {
       filteredOrganizationUsers = reject(
         ({ userIdentifier, email }) =>
           includes({ userIdentifier, email }, selectedUsers),
         organizationUsers,
       );
       break;
-    default:
+    }
+    default: {
       filteredOrganizationUsers = organizationUsers;
       break;
+    }
   }
 
   return currentSearch
@@ -117,6 +120,7 @@ const UsersTable = ({
   );
 
   const columns = useMemo(
+    // eslint-disable-next-line sonarjs/cognitive-complexity
     () => [
       {
         field: 'userName',
@@ -281,7 +285,7 @@ const UsersTable = ({
                         : `${listName.slice(0, 14)}...`,
                   }))
                   // eslint-disable-next-line func-names
-                  .sort(function (a, b) {
+                  .sort((a, b) => {
                     if (a.fullName < b.fullName) {
                       return -1;
                     }

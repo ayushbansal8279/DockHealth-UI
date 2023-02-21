@@ -160,15 +160,15 @@ const TextEditor = React.forwardRef(
 
     const customerTypeLabel = getCustomerTypeLabel(currentUser);
     // const showPlaceholder = useMemo(() => {
-    // const rawState = convertToRaw(currentState.getCurrentContent());
-    // const firstBlock = rawState?.blocks?.[0];
-    // if (firstBlock) {
-    //   const { type } = firstBlock;
-    //   const containOnlyList =
-    //     type === 'ordered-list-item' || type === 'unordered-list-item';
-    //   return !containOnlyList;
-    // }
-    // return false;
+    //   const rawState = convertToRaw(currentState.getCurrentContent());
+    //   const firstBlock = rawState?.blocks?.[0];
+    //   if (firstBlock) {
+    //     const { type } = firstBlock;
+    //     const containOnlyList =
+    //       type === 'ordered-list-item' || type === 'unordered-list-item';
+    //     return !containOnlyList;
+    //   }
+    //   return false;
     // }, [currentState]);
 
     // const handleFocus = (event) => {
@@ -513,7 +513,7 @@ const TextEditor = React.forwardRef(
               //     createPlaceholderDecorator,
               //   ]}
               // />
-              <div />
+              <input ref={reference} />
             )}
 
             <Spacing horizontal={4} />
