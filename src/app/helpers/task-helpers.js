@@ -430,7 +430,7 @@ export function findIncompleteRequiredFields(customFields, task) {
   return customFields?.filter(field => {
     const { taskMetaData } = task;
     const taskFieldIdentifier = field?.identifier;
-    const matchingMetaData = taskMetaData.find(
+    const matchingMetaData = taskMetaData?.find(
       ({ customFieldIdentifier }) =>
         customFieldIdentifier === taskFieldIdentifier,
     );
