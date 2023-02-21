@@ -16,7 +16,7 @@ import {
   SINGLE_TASK_RESTRICTIONS_OPTIONS,
   TASK_LIST_RESTRICTIONS_PROFILES,
 } from 'restrictions/task-restrictions';
-import StartDateSection from 'components/workflow-drawer/StartDateSection/StartDateSection';
+import StartDateSection from 'components/task-drawer/StartDateSection/StartDateSection';
 // import WatchersPopover from 'components/task-drawer/TaskDrawerContent/WatchersPopover/WatchersPopover';
 import AttachmentsSection from '../AttachmentsSection/AttachmentsSection';
 import CommentSection from '../CommentSection/CommentSection';
