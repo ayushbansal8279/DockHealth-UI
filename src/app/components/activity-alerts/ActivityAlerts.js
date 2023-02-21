@@ -64,11 +64,10 @@ const getIconsConfig = variant => {
 const listenRealTimeAlerts = (
   currentUser,
   setHasUnreadAlertsState,
-  enabledAlerts,
   isOpen,
   getActivityAlerts,
 ) => {
-  if (!currentUser || !currentUser.userIdentifier || !enabledAlerts) {
+  if (!currentUser || !currentUser.userIdentifier) {
     return;
   }
 
