@@ -51,9 +51,14 @@ const TaskItemCustomField = ({
   const handleChange = async newValue => {
     if (patientType) {
       if (task?.patient) {
-        const patientMetaData = (task?.patient?.patientMetaData || [])
-          ?.filter(tmd => tmd.customFieldIdentifier !== field.identifier)
-          ?.map(tmd => createMetaDataObjectToSend(tmd));
+        const patientMetaData =
+          (task?.patient?.patientMetaData || [])
+            ?.filter(
+              pmd =>
+                pmd?.customFieldIdentifier !== field.identifier &&
+                (pmd?.value || pmd?.values),
+            )
+            ?.map(pmd => createMetaDataObjectToSend(pmd)) ?? [];
         if (Array.isArray(newValue)) {
           patientMetaData.push({
             customFieldIdentifier: field.identifier,
@@ -70,8 +75,8 @@ const TaskItemCustomField = ({
       }
     } else {
       const taskMetaData =
-        task.taskMetaData
-          ?.filter(tmd => tmd.customFieldIdentifier !== field.identifier)
+        task?.taskMetaData
+          ?.filter(tmd => tmd?.customFieldIdentifier !== field.identifier)
           ?.map(tmd => createMetaDataObjectToSend(tmd)) ?? [];
       if (Array.isArray(newValue)) {
         taskMetaData.push({

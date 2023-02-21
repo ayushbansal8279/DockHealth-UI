@@ -431,8 +431,7 @@ export function findIncompleteRequiredFields(customFields, task) {
     const { taskMetaData } = task;
     const taskFieldIdentifier = field?.identifier;
     const matchingMetaData = taskMetaData?.find(
-      ({ customFieldIdentifier }) =>
-        customFieldIdentifier === taskFieldIdentifier,
+      tmd => tmd?.customFieldIdentifier === taskFieldIdentifier,
     );
     return (
       field?.displayOptions.includes('TASK_REQUIRED') &&
