@@ -4,7 +4,12 @@ import { useParams } from 'react-router-dom';
 import isEmpty from 'ramda/src/isEmpty';
 import pluck from 'ramda/src/pluck';
 import { bulkEditTasks as bulkEditTasksApi } from 'api/task-api';
-import { checkIfTemplateTask } from 'helpers/task-helpers';
+import * as ModalActions from 'modal/actions';
+import {
+  checkIfTemplateTask,
+  findIncompleteRequiredFields,
+} from 'helpers/task-helpers';
+import useActions from 'hooks/use-actions';
 import { BulkEditOptionsConfig } from 'helpers/bulk-edit-helpers';
 import palette from 'styles/palette';
 import { useDispatch, useSelector } from 'react-redux';
@@ -32,6 +37,8 @@ import {
   getListDetailsTaskCounters,
   getTasksGroupsList,
 } from 'actions/list-details-actions';
+import { organizationCustomFieldsSelector } from 'selectors/organization-selectors';
+import { listCustomFieldsSelector } from 'selectors/list-details-selectors';
 import BulkEditOption from 'components/bulk-edit/BulkEditOption/BulkEditOption';
 import { selectedFiltersInMegaFilterSelector } from 'selectors/mega-filter-selectors';
 import BulkEditBar from 'components/bulk-edit/BulkEditBar/BulkEditBar';
@@ -69,6 +76,7 @@ const BulkEditOptionsBar = ({
   const { taskListIdentifier } = useParams();
   const filters = useSelector(selectedFiltersInMegaFilterSelector);
   const { parentTasks = [], subtasks = [] } = selectedTasks;
+  const modalActions = useActions(ModalActions);
 
   const allTasksSameType = useMemo(
     () =>
@@ -89,6 +97,31 @@ const BulkEditOptionsBar = ({
             )?.length,
       ),
     [parentTasks, subtasks],
+  );
+
+  const organizationCustomFields = useSelector(
+    organizationCustomFieldsSelector,
+  );
+  const listCustomFields = useSelector(listCustomFieldsSelector);
+  const allTaskCustomFields = organizationCustomFields?.concat(
+    listCustomFields,
+  );
+
+  const allRequiredFieldsExist = useMemo(
+    () =>
+      parentTasks.every(parentTask => {
+        const incompleteRequiredFields = findIncompleteRequiredFields(
+          allTaskCustomFields,
+          parentTask,
+        );
+        const isRequiredFieldsAreIncomplete =
+          incompleteRequiredFields.length > 0;
+        if (isRequiredFieldsAreIncomplete) {
+          return false;
+        }
+        return true;
+      }),
+    [allTaskCustomFields, parentTasks],
   );
 
   const allTasksAreRelated = useMemo(
@@ -630,6 +663,14 @@ const BulkEditOptionsBar = ({
       onMultiSelectAction('Status changed');
     };
 
+    if (!allRequiredFieldsExist) {
+      const modalProps = {
+        incompleteFields: [],
+      };
+      modalActions.openModal('CompleteAllFields', modalProps);
+      return;
+    }
+
     if (allParentTasksHaveRelatedSubtasks) {
       confirmAction();
     } else {
@@ -640,6 +681,7 @@ const BulkEditOptionsBar = ({
       );
     }
   }, [
+    allRequiredFieldsExist,
     allParentTasksHaveRelatedSubtasks,
     allSelectedTasksIdentifiers,
     currentUser,
@@ -654,6 +696,7 @@ const BulkEditOptionsBar = ({
     searchValue,
     updateTasks,
     addTasks,
+    modalActions,
   ]);
 
   const handleDeleteTasks = useCallback(() => {
