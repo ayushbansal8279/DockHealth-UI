@@ -98,15 +98,17 @@ const TaskTemplateGroup = ({
     [dispatch, identifier, taskListIdentifier, patient],
   );
 
-  const filteredTasks = useMemo(
-    () =>
-      tasks.filter(
-        isCompletedTab
-          ? (task) => showIncompleteTasks || task.status === TaskStatus.COMPLETE
-          : (task) => showCompletedTasks || task.status !== TaskStatus.COMPLETE,
-      ),
-    [showCompletedTasks, showIncompleteTasks, tasks, isCompletedTab],
-  );
+  // const filteredTasks = useMemo(
+  //   () =>
+  //     tasks.filter(
+  //       isCompletedTab
+  //         ? (task) => showIncompleteTasks || task.status === TaskStatus.COMPLETE
+  //         : (task) => showCompletedTasks || task.status !== TaskStatus.COMPLETE,
+  //     ),
+  //   [showCompletedTasks, showIncompleteTasks, tasks, isCompletedTab],
+  // );
+
+  const filteredTasks = tasks;
 
   return (
     <TaskTemplateGroupContainer ref={innerRef} {...draggableProps}>

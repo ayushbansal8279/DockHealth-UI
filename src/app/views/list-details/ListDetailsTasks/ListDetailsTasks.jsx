@@ -36,9 +36,8 @@ import { BulkEditContext } from 'components/tasklist/BulkEditSection/BulkEditSec
 import LoadMoreButton, {
   LoadMoreSection,
 } from 'components/common/LoadMoreButton/LoadMoreButton';
-import { TaskItemType, TaskStatus } from 'helpers/task-helpers';
+import { TaskStatus } from 'helpers/task-helpers';
 import StandardTaskItem from 'components/task/StandardTaskItem/StandardTaskItem';
-import TaskTemplateGroup from 'components/task-template/TaskTemplateGroup/TaskTemplateGroup';
 import TasksSkeletonLoader from 'components/task/TasksSkeletonLoader/TasksSkeletonLoader';
 import { useParams } from 'react-router-dom';
 import StickyContainer from 'components/common/HorizontalScroll/StickyContainer';
@@ -359,8 +358,8 @@ const ListDetailsTasks = ({
                               // eslint-disable-next-line no-shadow
                               tasks?.map((task, index) => (
                                 <Draggable
-                                  key={task.identifier}
-                                  draggableId={String(task.identifier)}
+                                  key={task}
+                                  draggableId={String(task)}
                                   index={index}
                                   isDragDisabled={
                                     isCompletedGroup ||
@@ -370,77 +369,50 @@ const ListDetailsTasks = ({
                                 >
                                   {(draggableProvided, { isDragging }) => (
                                     <>
-                                      {task?.itemType === TaskItemType.TASK ? (
-                                        <StandardTaskItem
-                                          key={task.identifier}
-                                          isFullView={isFullView}
-                                          isDragging={isDragging}
-                                          isStartedDnD={
-                                            draggedId === task.taskIdentifier
-                                          }
-                                          task={task}
-                                          draggableProvided={draggableProvided}
-                                          isCompletedGroup={isCompletedGroup}
-                                          toggleCompleteTask={
-                                            toggleCompleteTask
-                                          }
-                                          onTaskUpdate={onTaskUpdate}
-                                          updateWorkflowStatus={
-                                            updateWorkflowStatus
-                                          }
-                                          dragAndDropDisabled={
-                                            isCompletedGroup ||
-                                            dragAndDropDisabled
-                                          }
-                                          isDraggable
-                                          addingNewSubtask={
-                                            addingNewSubtaskParentId ===
-                                            task.identifier
-                                          }
-                                          subtasksDisabled={isListFlattened}
-                                          areFiltersApplied={areFiltersApplied}
-                                          isSearchApplied={isSearchApplied}
-                                          shouldShowBlockModalOnDrag={
-                                            isSortApplied
-                                          }
-                                          showClearSortFiltersModal={
-                                            showClearSortFiltersModal
-                                          }
-                                          multipleAssigneesContext={
-                                            groupHasMultipleAssignees
-                                          }
-                                          highlightedTasksParentIdentifier={
-                                            highlightedTasksParentIdentifier
-                                          }
-                                          highlightTasksOfTheSameParent={
-                                            highlightTasksOfTheSameParent
-                                          }
-                                          iconColorActive={
-                                            iconColorActiveItem?.value
-                                          }
-                                        />
-                                      ) : (
-                                        <TaskTemplateGroup
-                                          isCompletedTab={isCompletedView}
-                                          viewSetup={viewSetup}
-                                          isStartedDnD={
-                                            draggedId === task.identifier
-                                          }
-                                          draggableProvided={draggableProvided}
-                                          templateGroup={task}
-                                          groupHasMultipleAssignees={
-                                            groupHasMultipleAssignees
-                                          }
-                                          isFullView={isFullView}
-                                          dragAndDropDisabled={
-                                            isCompletedGroup ||
-                                            dragAndDropDisabled
-                                          }
-                                          iconColorActive={
-                                            iconColorActiveItem?.value
-                                          }
-                                        />
-                                      )}
+                                      <StandardTaskItem
+                                        key={task}
+                                        isFullView={isFullView}
+                                        isDragging={isDragging}
+                                        isStartedDnD={draggedId === task}
+                                        task={task}
+                                        draggableProvided={draggableProvided}
+                                        isCompletedGroup={isCompletedGroup}
+                                        toggleCompleteTask={toggleCompleteTask}
+                                        onTaskUpdate={onTaskUpdate}
+                                        updateWorkflowStatus={
+                                          updateWorkflowStatus
+                                        }
+                                        dragAndDropDisabled={
+                                          isCompletedGroup ||
+                                          dragAndDropDisabled
+                                        }
+                                        isDraggable
+                                        addingNewSubtask={
+                                          addingNewSubtaskParentId ===
+                                          task.identifier
+                                        }
+                                        subtasksDisabled={isListFlattened}
+                                        areFiltersApplied={areFiltersApplied}
+                                        isSearchApplied={isSearchApplied}
+                                        shouldShowBlockModalOnDrag={
+                                          isSortApplied
+                                        }
+                                        showClearSortFiltersModal={
+                                          showClearSortFiltersModal
+                                        }
+                                        multipleAssigneesContext={
+                                          groupHasMultipleAssignees
+                                        }
+                                        highlightedTasksParentIdentifier={
+                                          highlightedTasksParentIdentifier
+                                        }
+                                        highlightTasksOfTheSameParent={
+                                          highlightTasksOfTheSameParent
+                                        }
+                                        iconColorActive={
+                                          iconColorActiveItem?.value
+                                        }
+                                      />
                                     </>
                                   )}
                                 </Draggable>
@@ -496,7 +468,6 @@ const ListDetailsTasks = ({
       restrictions?.createGroup,
       DISABLED,
       showClearSortFiltersModal,
-      viewSetup,
     ],
   );
 

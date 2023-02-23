@@ -15,6 +15,8 @@ const dedupe = pipe(uniqBy(prop('identifier')));
 const initialState = {
   taskListIdentifier: null,
   groupedTasks: {},
+  tasksIdentifiers: [],
+  tasksMap: {},
   completedGroupedTasks: {},
   newlyAddedTaskIds: [],
   isFetching: false,
@@ -247,44 +249,74 @@ const ListDetailsReducer = (state = initialState, action) => {
     case ActionTypes.REQUEST_TASKLIST_GROUP_TASKS_SUCCESS: {
       const { groupOfTasks, refresh, startPosition = 0 } = action;
 
-      const groupsToUpdate = groupOfTasks.taskGroups;
+      const newGroup = {
+        ...groupOfTasks?.taskGroups[0],
+        tasks: groupOfTasks?.taskGroups[0].tasks.map((task) => task.identifier),
+      };
+      const newGroups = [...state.groupedTasks.taskGroups];
+      const index = newGroups.findIndex((group) => {
+        return group.groupIdentifier === newGroup.groupIdentifier;
+      });
+      if (typeof index === 'number') {
+        newGroups[index] = newGroup;
+      } else {
+        newGroups.push(newGroup);
+      }
 
-      let updatedTaskGroups = state.groupedTasks?.taskGroups || [];
-
-      for (const group of groupsToUpdate) {
-        let groupExists = false;
-        updatedTaskGroups = updatedTaskGroups?.map((taskGroup) => {
-          if (taskGroup.groupIdentifier === group?.groupIdentifier) {
-            groupExists = true;
-            return {
-              ...taskGroup,
-              tasks: refresh
-                ? group.tasks
-                : startPosition === 0
-                ? dedupe(group.tasks.concat(taskGroup.tasks))
-                : dedupe(taskGroup.tasks.concat(group.tasks)),
-              hasMore: group.hasMore,
-              moreTasksIndex: group.moreTasksIndex,
-              isLoadingGroup: false,
-              isFetchingMoreTasks: false,
-            };
+      const tasks = groupOfTasks?.taskGroups[0]?.tasks;
+      const newMap = {};
+      for (const task of tasks) {
+        if (task.itemType === TaskItemType.TASK) {
+          newMap[task.identifier] = task;
+        } else {
+          newMap[task.identifier] = task;
+          for (const subtask of task.tasks) {
+            newMap[subtask.identifier] = subtask;
           }
-
-          return taskGroup;
-        });
-
-        if (!groupExists) {
-          const groupToAdd = { ...group };
-          groupToAdd.isLoadingGroup = false;
-          updatedTaskGroups = [...(updatedTaskGroups || []), groupToAdd];
         }
       }
+
+      // const groupsToUpdate = groupOfTasks.taskGroups;
+
+      // let updatedTaskGroups = state.groupedTasks?.taskGroups || [];
+
+      // for (const group of groupsToUpdate) {
+      //   let groupExists = false;
+      //   updatedTaskGroups = updatedTaskGroups?.map((taskGroup) => {
+      //     if (taskGroup.groupIdentifier === group?.groupIdentifier) {
+      //       groupExists = true;
+      //       return {
+      //         ...taskGroup,
+      //         tasks: refresh
+      //           ? group.tasks
+      //           : startPosition === 0
+      //           ? dedupe(group.tasks.concat(taskGroup.tasks))
+      //           : dedupe(taskGroup.tasks.concat(group.tasks)),
+      //         hasMore: group.hasMore,
+      //         moreTasksIndex: group.moreTasksIndex,
+      //         isLoadingGroup: false,
+      //         isFetchingMoreTasks: false,
+      //       };
+      //     }
+
+      //     return taskGroup;
+      //   });
+
+      //   if (!groupExists) {
+      //     const groupToAdd = { ...group };
+      //     groupToAdd.isLoadingGroup = false;
+      //     updatedTaskGroups = [...(updatedTaskGroups || []), groupToAdd];
+      //   }
+      // }
 
       return {
         ...state,
         groupedTasks: {
-          ...state.groupedTasks,
-          taskGroups: updatedTaskGroups,
+          taskGroups: newGroups,
+        },
+        tasksMap: {
+          ...state.tasksMap,
+          ...newMap,
         },
         listGroups: state.listGroups.map((g) => {
           if (

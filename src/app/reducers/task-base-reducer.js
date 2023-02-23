@@ -250,15 +250,29 @@ const TaskBaseReducer = (state, action, updateStateCallback) => {
     case ActionTypes.UPDATE_TASK_DUE_DATE_FAILURE: {
       const { task, dueDate } = action;
 
-      const updateTaskFromAction = (t) => {
-        if (t.taskIdentifier === task.taskIdentifier) {
-          return { ...t, dueDate };
-        }
-
-        return updateNestedTask({ dueDate }, task.taskIdentifier, t);
+      return {
+        ...state,
+        tasksMap: {
+          ...state.tasksMap,
+          [task.identifier]: {
+            ...task,
+            dueDate,
+          },
+        },
       };
 
-      return updateStateCallback(state, updateTaskFromAction);
+      // const updateTaskFromAction = (t) => {
+      //   console.log('t', t);
+      //   console.log('task', task);
+
+      //   if (t.taskIdentifier === task.taskIdentifier) {
+      //     return { ...t, dueDate };
+      //   }
+
+      //   // return updateNestedTask({ dueDate }, task.taskIdentifier, t);
+      // };
+
+      // return updateStateCallback(state, updateTaskFromAction);
     }
 
     case ActionTypes.CHANGE_TASK_PRIORITY:

@@ -6,16 +6,20 @@ import React, {
   useRef,
   useCallback,
   useContext,
+  useMemo,
 } from 'react';
 import pluck from 'ramda/src/pluck';
 import { useDispatch, useSelector } from 'react-redux';
 import { isTaskSelectedSelector } from 'selectors/task-drawer-selectors';
 import { openTaskDrawerWithContent } from 'actions/task-drawer-actions';
+import { useParams } from 'react-router-dom';
 import {
   selectTask,
   storeAsCurrentTask,
   chooseTaskDecisionOutcome,
 } from 'actions/task-actions';
+// eslint-disable-next-line import/no-cycle
+import TaskTemplateGroup from 'components/task-template/TaskTemplateGroup/TaskTemplateGroup';
 import Circle from 'img/circle.svg';
 import CircleCompleted from 'img/circle-completed.svg';
 import ThreeDotsIcon from 'img/three-dots.svg';
@@ -39,6 +43,8 @@ import {
   getPriorityColor,
   TaskItemColumnWidth,
   isColumnChecked,
+  TaskItemType,
+  TaskStatus,
 } from 'helpers/task-helpers';
 import DependencyIcon from 'img/dependency-icon.svg';
 import DependencyListPopover from 'components/common/DependencyListPopover/DependencyListPopover';
@@ -55,6 +61,7 @@ import {
 } from 'restrictions/task-restrictions';
 import { CUSTOM_FIELD_TYPES } from 'helpers/custom-fields-helpers';
 import { Box } from '@mui/material';
+import { taskDetailsSelector } from 'selectors/list-details-selectors';
 import { getSubtaskStylingLink } from './helpers';
 import TaskItemContextMenu from '../TaskItemContextMenu/TaskItemContextMenu';
 import TaskItemBulkEdit from './TaskItemComponents/TaskItemBulkEdit';
@@ -101,7 +108,7 @@ const TaskItem = React.memo(
     isOpen,
     switchOpen,
     toggleCompleteTask,
-    task,
+    task: taskId,
     dragHandleProps,
     isDragging,
     isCompletedGroup,
@@ -128,6 +135,10 @@ const TaskItem = React.memo(
     patient: parentPatient,
     iconColorActive,
   }) => {
+    // console.log('taskId', taskId);
+    const task = useSelector((state) => taskDetailsSelector(state, taskId));
+    // console.log('task', task);
+
     const {
       taskIdentifier,
       assignedToUsers,
@@ -420,6 +431,36 @@ const TaskItem = React.memo(
     );
 
     const descriptionColumnOrder = getColumnOrder(TaskItemColumn.DESCRIPTION);
+    const { tabName } = useParams();
+    const isCompletedView = tabName?.toUpperCase() === TaskStatus.COMPLETE;
+
+    const iconColorActiveItem = useMemo(
+      () =>
+        selectedOrganization?.themeSettings?.find(
+          ({ name }) => name === 'icon.active.color',
+        ) || {},
+      [selectedOrganization?.themeSettings],
+    );
+
+    if (task?.itemType !== TaskItemType.TASK) {
+      return (
+        <TaskTemplateGroup
+          isCompletedTab={isCompletedView}
+          // viewSetup={viewSetup}
+          viewSetup={() => {}}
+          // isStartedDnD={draggedId === task.identifier}
+          isStartedDnD={false}
+          // draggableProvided={draggableProvided}
+          draggableProvided={{}}
+          templateGroup={task}
+          groupHasMultipleAssignees={false}
+          isFullView={false}
+          dragAndDropDisabled={isCompletedGroup || dragAndDropDisabled}
+          iconColorActive={iconColorActiveItem?.value}
+        />
+      );
+    }
+
     return (
       <>
         <StandardTaskItemPanel
