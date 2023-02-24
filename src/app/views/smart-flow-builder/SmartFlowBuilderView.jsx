@@ -54,11 +54,7 @@ import { openDrawer } from 'actions/workflow-drawer-actions';
 import { Box, ClickAwayListener, Paper, Popper } from '@mui/material';
 import DecisionTaskElementIcon from 'img/template/decision-task-icon';
 import Tooltip from 'components/common/Tooltip/Tooltip';
-import ReactFlow, {
-  Controls,
-  Position,
-  ReactFlowProvider,
-} from 'react-flow-renderer';
+import { Controls, Position, ReactFlowProvider } from 'react-flow-renderer';
 import TaskDrawer from 'components/task-drawer/TaskDrawer/TaskDrawer';
 import {
   NodeType,
@@ -72,6 +68,7 @@ import { useBoolean } from 'hooks/useBoolean';
 import palette from 'styles/palette';
 import * as AlertActions from 'alert/actions';
 import EditIcon from '@mui/icons-material/Edit';
+import ReactFlowAdapter from 'views/smart-flow-builder/ReactFlowAdapter';
 import NewTaskNode from './NewTaskNode/NewTaskNode';
 import TaskNode from './TaskNode/TaskNode';
 import TaskLink from './TaskLink/TaskLink';
@@ -391,9 +388,8 @@ const SmartFlowBuilderView = () => {
 
   const handleNodeDragStop = () => {
     const selectedNodes = reactFlowInstance.current
-      .getElements()
+      .getNodes()
       .filter((element) => selectedElements.find((se) => se.id === element.id));
-
     updateSelectedElementsPosition(selectedNodes);
   };
 
@@ -667,7 +663,7 @@ const SmartFlowBuilderView = () => {
               </button>
             </BuilderHeader>
             {mergedElementsWithActions && (
-              <ReactFlow
+              <ReactFlowAdapter
                 connectionLineComponent={ConnectionLineComponent}
                 elements={mergedElementsWithActions}
                 onConnect={onConnect}
@@ -697,7 +693,7 @@ const SmartFlowBuilderView = () => {
                 elementsSelectable={isCurrentUserEditor}
               >
                 <Controls showInteractive={isCurrentUserEditor} />
-              </ReactFlow>
+              </ReactFlowAdapter>
             )}
             <BulkEditContainer
               selectedTasks={selectedTasks}

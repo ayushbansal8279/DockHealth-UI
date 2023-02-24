@@ -7,7 +7,7 @@ import { deleteTasksLink, updateTasksLink } from 'actions/task-actions';
 import HardDependencyIcon from 'img/template/hard-dependency';
 import CalendarIcon from 'img/template/calendar-icon';
 import DeleteOutlineIcon from '@mui/icons-material/DeleteOutline';
-import { getEdgeCenter, useStoreState } from 'react-flow-renderer';
+import { getEdgeCenter, useStore } from 'react-flow-renderer';
 import { openModal } from 'modal/actions';
 import LinkPath from '../LinkPath/LinkPath';
 import { LabelsWrapper, HardDependencyLabel } from './styled';
@@ -37,7 +37,7 @@ const TaskLink = (props) => {
     sourcePosition,
     targetPosition,
   });
-  const { 2: zoom } = useStoreState((store) => store.transform);
+  const { 2: zoom } = useStore((store) => store.transform);
   const labelWrapperReference = useRef(null);
   const [isDelayPopoverOpen, openDelayPopover, closeDelayPopover] =
     useBoolean(false);

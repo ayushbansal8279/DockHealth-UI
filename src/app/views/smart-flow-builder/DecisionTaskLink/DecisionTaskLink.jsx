@@ -11,7 +11,7 @@ import {
 import { useBoolean } from 'hooks/useBoolean';
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteOutlineIcon from '@mui/icons-material/DeleteOutline';
-import { getEdgeCenter, useStoreState } from 'react-flow-renderer';
+import { getEdgeCenter, useStore } from 'react-flow-renderer';
 import { useDispatch } from 'react-redux';
 import { openModal } from 'modal/actions';
 import LinkPath from '../LinkPath/LinkPath';
@@ -53,7 +53,7 @@ const DecisionTaskLink = (props) => {
   const [isEdited, setEdited, unsetEdited] = useBoolean(!outcome);
   const [isFocused, setFocused, unsetFocused] = useBoolean(false);
   const dispatch = useDispatch();
-  const { 2: zoom } = useStoreState((store) => store.transform);
+  const { 2: zoom } = useStore((store) => store.transform);
 
   const delayOptionsVisible = !isNil(delayPeriod) && delayPeriodUnit;
 

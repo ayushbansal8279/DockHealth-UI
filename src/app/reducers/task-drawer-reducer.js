@@ -78,7 +78,9 @@ const TaskReducer = (state = initialState, action) => {
         ...state,
         selectedTask: action.task,
         selectedTaskId:
-          action.task === undefined ? null : action.task.taskIdentifier,
+          action.task === undefined || action.task === null
+            ? null
+            : action.task.taskIdentifier,
         error: false,
       };
     }
