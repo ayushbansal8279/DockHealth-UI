@@ -1,12 +1,12 @@
 /* eslint-disable react-hooks/rules-of-hooks */
-import React, { useState, useMemo, useCallback, useEffect } from 'react';
+import React, { useState, useCallback, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import usePrevious from 'hooks/use-previous';
 import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd';
 import * as TaskActions from 'actions/task-actions';
 import * as TemplateBundleActions from 'actions/template-bundle-actions';
 import * as WorkflowActions from 'actions/workflow-actions';
-import { TaskStatus } from 'helpers/task-helpers';
+import { taskDetailsSelector } from 'selectors/list-details-selectors';
 import TasksSkeletonLoader from 'components/task/TasksSkeletonLoader/TasksSkeletonLoader';
 import StandardTaskItemContainer from 'components/task/StandardTaskItemContainer/StandardTaskItemContainer';
 import QuickAddTaskInput from 'components/tasklist/QuickAddTaskInput/QuickAddTaskInput';
@@ -23,7 +23,7 @@ import {
 } from './styled';
 
 const TaskTemplateGroup = ({
-  templateGroup = {},
+  templateGroup: pullGroup = {},
   groupHasMultipleAssignees,
   isFullView,
   isCompletedGroup,
@@ -38,6 +38,9 @@ const TaskTemplateGroup = ({
   iconColorActive,
   // eslint-disable-next-line sonarjs/cognitive-complexity
 }) => {
+  const templateGroup = useSelector((state) =>
+    taskDetailsSelector(state, pullGroup.identifier),
+  );
   const {
     tasks,
     identifier,
@@ -46,6 +49,7 @@ const TaskTemplateGroup = ({
     taskListIdentifier,
     isFetchingTasks,
   } = templateGroup;
+
   const { SHOW_WORKFLOW_DETAILS, SHOW_WORKFLOW_COMPLETED_TASKS } = viewSetup;
   const { innerRef, draggableProps } = draggableProvided;
   const [isOpen, setOpen] = useState(false);

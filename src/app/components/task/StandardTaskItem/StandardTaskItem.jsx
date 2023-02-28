@@ -1,3 +1,4 @@
+/* eslint-disable import/no-cycle */
 /* eslint-disable sonarjs/cognitive-complexity */
 import React, {
   useState,
@@ -40,7 +41,6 @@ const Task = React.memo(
     const parentTaskReference = useRef(null);
     const [areSubtasksOpen, setAreSubtasksOpen] = useState(false);
 
-    console.log('task', task);
     const pulledTask = useSelector((state) => taskDetailsSelector(state, task));
     if (typeof task === 'string') {
       // eslint-disable-next-line no-param-reassign
@@ -62,6 +62,7 @@ const Task = React.memo(
     const { highlightedValue } = restProps;
     const { matchingCommentIdentifiers = [] } = searchMetaData;
 
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     const renderedSubtasks = addingNewSubtask ? [...subtasks, {}] : subtasks;
 
     const dispatch = useDispatch();

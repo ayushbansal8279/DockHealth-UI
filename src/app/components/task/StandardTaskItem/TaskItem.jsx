@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/rules-of-hooks */
 /* eslint-disable no-underscore-dangle */
 /* eslint-disable sonarjs/cognitive-complexity */
 import React, {
@@ -135,9 +136,13 @@ const TaskItem = React.memo(
     patient: parentPatient,
     iconColorActive,
   }) => {
-    // console.log('taskId', taskId);
-    const task = useSelector((state) => taskDetailsSelector(state, taskId));
-    // console.log('task', task);
+    const task = useSelector((state) =>
+      taskDetailsSelector(
+        state,
+        typeof taskId === 'string' ? taskId : taskId.taskIdentifier,
+      ),
+    );
+    if (!task) return;
 
     const {
       taskIdentifier,
@@ -214,12 +219,10 @@ const TaskItem = React.memo(
     const showContextMenu = [move, duplicate, subtasks, del].reduce(
       (accumulator, element) => {
         if (accumulator) return accumulator;
-        if (
+        return !(
           restrictions?.[element] === DISABLED ||
           restrictions?.[element] === READ_ONLY
-        )
-          return false;
-        return true;
+        );
       },
       false,
     );
@@ -236,6 +239,7 @@ const TaskItem = React.memo(
             task.parentTaskIdentifier || task.taskIdentifier,
           );
         } else if (isOpen) {
+          // eslint-disable-next-line sonarjs/no-gratuitous-expressions
           switchOpen(!isOpen);
         } else {
           switchOpen(true);

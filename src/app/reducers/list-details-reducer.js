@@ -1,8 +1,8 @@
 /* eslint-disable unicorn/no-nested-ternary */
 import * as ActionTypes from 'actions/action-types';
-import pipe from 'ramda/src/pipe';
-import prop from 'ramda/src/prop';
-import uniqBy from 'ramda/src/uniqBy';
+// import pipe from 'ramda/src/pipe';
+// import prop from 'ramda/src/prop';
+// import uniqBy from 'ramda/src/uniqBy';
 import move from 'ramda/src/move';
 import { mapWithRemove } from 'helpers/utility-functions';
 import { reorderTasksForWorkflow } from 'helpers/workflow-helpers';
@@ -10,7 +10,7 @@ import { TaskGroupType, TaskItemType } from 'helpers/task-helpers';
 import { updateBundleInList } from 'helpers/tasklist-helpers';
 import TaskBaseReducer from './task-base-reducer';
 
-const dedupe = pipe(uniqBy(prop('identifier')));
+// const dedupe = pipe(uniqBy(prop('identifier')));
 
 const initialState = {
   taskListIdentifier: null,
@@ -247,6 +247,7 @@ const ListDetailsReducer = (state = initialState, action) => {
     }
 
     case ActionTypes.REQUEST_TASKLIST_GROUP_TASKS_SUCCESS: {
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
       const { groupOfTasks, refresh, startPosition = 0 } = action;
 
       const newGroup = {
@@ -493,63 +494,83 @@ const ListDetailsReducer = (state = initialState, action) => {
     case ActionTypes.GET_TASKS_FOR_WORKFLOW: {
       const { workflowIdentifier } = action;
 
+      const newMap = { ...state.tasksMap };
+      newMap[workflowIdentifier].isFetchingTasks = true;
+
       return {
         ...state,
-        groupedTasks: {
-          ...state.groupedTasks,
-          taskGroups: state.groupedTasks?.taskGroups?.map((g) => ({
-            ...g,
-            tasks: updateBundleInList(
-              { isFetchingTasks: true },
-              workflowIdentifier,
-              g.tasks,
-            ),
-          })),
-        },
-        completedGroupedTasks: {
-          ...state.completedGroupedTasks,
-          // eslint-disable-next-line sonarjs/no-identical-functions
-          taskGroups: state.completedGroupedTasks?.taskGroups?.map((g) => ({
-            ...g,
-            tasks: updateBundleInList(
-              { isFetchingTasks: true },
-              workflowIdentifier,
-              g.tasks,
-            ),
-          })),
-        },
+        tasksMap: newMap,
       };
+
+      // return {
+      //   ...state,
+      //   groupedTasks: {
+      //     ...state.groupedTasks,
+      //     taskGroups: state.groupedTasks?.taskGroups?.map((g) => ({
+      //       ...g,
+      //       tasks: updateBundleInList(
+      //         { isFetchingTasks: true },
+      //         workflowIdentifier,
+      //         g.tasks,
+      //       ),
+      //     })),
+      //   },
+      //   completedGroupedTasks: {
+      //     ...state.completedGroupedTasks,
+      //     // eslint-disable-next-line sonarjs/no-identical-functions
+      //     taskGroups: state.completedGroupedTasks?.taskGroups?.map((g) => ({
+      //       ...g,
+      //       tasks: updateBundleInList(
+      //         { isFetchingTasks: true },
+      //         workflowIdentifier,
+      //         g.tasks,
+      //       ),
+      //     })),
+      //   },
+      // };
     }
 
     case ActionTypes.GET_TASKS_FOR_WORKFLOW_SUCCESS: {
       const { workflowIdentifier, tasks } = action;
 
+      const newMap = { ...state.tasksMap };
+      for (const task of tasks) {
+        newMap[task.identifier] = task;
+      }
+      newMap[workflowIdentifier].tasks = tasks.map((task) => task.identifier);
+      newMap[workflowIdentifier].isFetchingTasks = false;
+
       return {
         ...state,
-        groupedTasks: {
-          ...state.groupedTasks,
-          taskGroups: state.groupedTasks?.taskGroups?.map((g) => ({
-            ...g,
-            tasks: updateBundleInList(
-              { isFetchingTasks: false, tasks },
-              workflowIdentifier,
-              g.tasks,
-            ),
-          })),
-        },
-        completedGroupedTasks: {
-          ...state.completedGroupedTasks,
-          // eslint-disable-next-line sonarjs/no-identical-functions
-          taskGroups: state.completedGroupedTasks?.taskGroups?.map((g) => ({
-            ...g,
-            tasks: updateBundleInList(
-              { isFetchingTasks: false, tasks },
-              workflowIdentifier,
-              g.tasks,
-            ),
-          })),
-        },
+        tasksMap: newMap,
       };
+
+      // return {
+      //   ...state,
+      //   groupedTasks: {
+      //     ...state.groupedTasks,
+      //     taskGroups: state.groupedTasks?.taskGroups?.map((g) => ({
+      //       ...g,
+      //       tasks: updateBundleInList(
+      //         { isFetchingTasks: false, tasks },
+      //         workflowIdentifier,
+      //         g.tasks,
+      //       ),
+      //     })),
+      //   },
+      //   completedGroupedTasks: {
+      //     ...state.completedGroupedTasks,
+      //     // eslint-disable-next-line sonarjs/no-identical-functions
+      //     taskGroups: state.completedGroupedTasks?.taskGroups?.map((g) => ({
+      //       ...g,
+      //       tasks: updateBundleInList(
+      //         { isFetchingTasks: false, tasks },
+      //         workflowIdentifier,
+      //         g.tasks,
+      //       ),
+      //     })),
+      //   },
+      // };
     }
 
     case ActionTypes.UPDATE_PATIENT_DETAILS: {
