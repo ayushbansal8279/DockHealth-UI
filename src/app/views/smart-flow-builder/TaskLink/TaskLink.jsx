@@ -7,7 +7,7 @@ import { deleteTasksLink, updateTasksLink } from 'actions/task-actions';
 import HardDependencyIcon from 'img/template/hard-dependency';
 import CalendarIcon from 'img/template/calendar-icon';
 import DeleteOutlineIcon from '@mui/icons-material/DeleteOutline';
-import { getEdgeCenter, useStore } from 'react-flow-renderer';
+import { getBezierPath, useStore } from 'reactflow';
 import { openModal } from 'modal/actions';
 import LinkPath from '../LinkPath/LinkPath';
 import { LabelsWrapper, HardDependencyLabel } from './styled';
@@ -29,7 +29,7 @@ const TaskLink = (props) => {
     data: { link },
   } = props;
   const { isDependent, delayPeriod, delayPeriodUnit } = link || {};
-  const [edgeCenterX, edgeCenterY] = getEdgeCenter({
+  const [, edgeCenterX, edgeCenterY] = getBezierPath({
     sourceX,
     sourceY,
     targetX,
@@ -129,7 +129,7 @@ const TaskLink = (props) => {
 
   return (
     <>
-      <LinkPath {...props} onClick={!isDependent && openOptions} />
+      <LinkPath {...props} onClick={isDependent ? undefined : openOptions} />
       <foreignObject
         width={180}
         height={32}
@@ -138,7 +138,7 @@ const TaskLink = (props) => {
         className="edgebutton-foreignobject"
         requiredExtensions="http://www.w3.org/1999/xhtml"
         style={{ overflow: 'visible' }}
-        onMouseEnter={!isDependent && openOptions}
+        onMouseEnter={isDependent ? undefined : openOptions}
         onMouseLeave={closeOptions}
       >
         <LabelsWrapper ref={labelWrapperReference}>

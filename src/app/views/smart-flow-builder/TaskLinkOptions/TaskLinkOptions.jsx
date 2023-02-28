@@ -1,6 +1,6 @@
 import React from 'react';
 import { MenuItem, Paper, Popper, ClickAwayListener } from '@mui/material';
-import { useStore } from 'react-flow-renderer';
+import { useStore } from 'reactflow';
 import { MenuItemIconWrapper, MenuList } from './styled';
 
 const TaskLinkOptions = (props) => {

@@ -1,5 +1,5 @@
 import React from 'react';
-import { getSmoothStepPath, getMarkerEnd, Position } from 'react-flow-renderer';
+import { getSmoothStepPath, getMarkerEnd, Position } from 'reactflow';
 import palette from 'styles/palette';
 
 const LinkPath = (props) => {
@@ -24,7 +24,7 @@ const LinkPath = (props) => {
     targetPos = sourcePosition;
   }
 
-  const edgePath = getSmoothStepPath({
+  const [edgePath] = getSmoothStepPath({
     sourceX,
     sourceY,
     sourcePosition: sourcePos,

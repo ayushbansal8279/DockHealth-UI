@@ -1,14 +1,12 @@
 import React, { useCallback, useEffect, useState } from 'react';
-import ReactFlow, {
-  applyEdgeChanges,
-  applyNodeChanges,
-} from 'react-flow-renderer';
+import ReactFlow, { applyEdgeChanges, applyNodeChanges } from 'reactflow';
 import { NodeType } from 'helpers/smart-flow-builder-helpers';
 
 const ReactFlowAdapter = ({
   elements,
   onSelectionChange,
   onLoad,
+  extraNodes,
   ...props
 }) => {
   const [nodes, setNodes] = useState([]);
@@ -38,7 +36,7 @@ const ReactFlowAdapter = ({
     }
     setNodes(nodesArray);
     setEdges(edgesArray);
-  }, [elements]);
+  }, [elements, extraNodes]);
 
   return (
     <ReactFlow

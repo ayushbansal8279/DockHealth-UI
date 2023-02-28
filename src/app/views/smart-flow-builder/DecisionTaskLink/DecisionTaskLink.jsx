@@ -11,7 +11,7 @@ import {
 import { useBoolean } from 'hooks/useBoolean';
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteOutlineIcon from '@mui/icons-material/DeleteOutline';
-import { getEdgeCenter, useStore } from 'react-flow-renderer';
+import { getBezierPath, useStore } from 'reactflow';
 import { useDispatch } from 'react-redux';
 import { openModal } from 'modal/actions';
 import LinkPath from '../LinkPath/LinkPath';
@@ -36,7 +36,7 @@ const DecisionTaskLink = (props) => {
   const { outcome, link } = data;
   const { taskOutcomeIdentifier, name: outcomeName } = outcome || {};
   const { delayPeriod, delayPeriodUnit } = link || {};
-  const [edgeCenterX, edgeCenterY] = getEdgeCenter({
+  const [, edgeCenterX, edgeCenterY] = getBezierPath({
     sourceX,
     sourceY,
     targetX,
@@ -199,7 +199,7 @@ const DecisionTaskLink = (props) => {
       >
         <LabelsWrapper>
           <div
-            onMouseEnter={outcome && openOptions}
+            onMouseEnter={outcome ? openOptions : undefined}
             onMouseLeave={closeOptions}
           >
             <OutcomeInputLabel

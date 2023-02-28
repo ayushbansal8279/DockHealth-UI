@@ -1,7 +1,7 @@
 import React from 'react';
 import { Box } from '@mui/material';
 import { useBoolean } from 'hooks/useBoolean';
-import { Handle, Position } from 'react-flow-renderer';
+import { Handle, Position } from 'reactflow';
 import palette from 'styles/palette';
 import {
   NodeSourceHandle,
