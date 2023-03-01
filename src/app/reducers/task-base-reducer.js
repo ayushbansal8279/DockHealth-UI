@@ -15,6 +15,7 @@ const TaskBaseReducer = (state, action, updateStateCallback) => {
       const {
         payload: { patientIdentifier, details },
       } = action;
+
       const updateTaskFromAction = (task) => {
         if (task.patient?.patientIdentifier === patientIdentifier) {
           return {
@@ -111,23 +112,19 @@ const TaskBaseReducer = (state, action, updateStateCallback) => {
     case ActionTypes.OPEN_QUICK_ADD_SUBTASK_INPUT: {
       const { taskIdentifier } = action;
 
-      const updateTaskFromAction = (task) =>
-        task.taskIdentifier === taskIdentifier
-          ? { ...task, subtaskQuickAddOpen: true }
-          : task;
-
-      return updateStateCallback(state, updateTaskFromAction);
+      return updateStateCallback(state, {
+        identifier: taskIdentifier,
+        subtaskQuickAddOpen: true,
+      });
     }
 
     case ActionTypes.CLOSE_QUICK_ADD_SUBTASK_INPUT: {
       const { taskIdentifier } = action;
 
-      const updateTaskFromAction = (task) =>
-        task.taskIdentifier === taskIdentifier
-          ? { ...task, subtaskQuickAddOpen: false }
-          : task;
-
-      return updateStateCallback(state, updateTaskFromAction);
+      return updateStateCallback(state, {
+        identifier: taskIdentifier,
+        subtaskQuickAddOpen: false,
+      });
     }
 
     case ActionTypes.TASK_ATTACHMENT_ADDED: {
@@ -183,34 +180,21 @@ const TaskBaseReducer = (state, action, updateStateCallback) => {
     }
 
     case ActionTypes.REQUEST_LOAD_SUBTASKS: {
-      const {
-        task: { taskIdentifier },
-      } = action;
+      const { task } = action;
 
-      const updateTaskFromAction = (t) =>
-        t.taskIdentifier === taskIdentifier
-          ? {
-              ...t,
-              isFetchingSubTasks: true,
-            }
-          : t;
-
-      return updateStateCallback(state, updateTaskFromAction);
+      return updateStateCallback(state, {
+        ...task,
+        isFetchingSubTasks: true,
+      });
     }
 
     case ActionTypes.LOAD_SUBTASKS_SUCCESS: {
       const { task } = action;
 
-      const updateTaskFromAction = (t) =>
-        t.taskIdentifier === task.taskIdentifier
-          ? {
-              ...t,
-              ...task,
-              isFetchingSubTasks: false,
-            }
-          : t;
-
-      return updateStateCallback(state, updateTaskFromAction);
+      return updateStateCallback(state, {
+        ...task,
+        isFetchingSubTasks: false,
+      });
     }
     case ActionTypes.MARK_TASK_AS_READ_SUCCESS:
     case ActionTypes.MARK_TASK_AS_UNREAD_SUCCESS:
@@ -220,35 +204,32 @@ const TaskBaseReducer = (state, action, updateStateCallback) => {
     case ActionTypes.REFRESH_TASK_SUCCESS: {
       const { task } = action;
 
-      const updateTaskFromAction = (t) => {
-        if (t.taskIdentifier === task.taskIdentifier) {
-          return { ...t, ...task };
-        }
-
-        return updateNestedTask(task, task.taskIdentifier, t);
-      };
-
-      return updateStateCallback(state, updateTaskFromAction);
+      return updateStateCallback(state, task);
     }
 
     case ActionTypes.UPDATE_TASK_START_DATE:
     case ActionTypes.UPDATE_TASK_START_DATE_FAILURE: {
       const { task, startDate } = action;
 
-      const updateTaskFromAction = (t) => {
-        if (t.taskIdentifier === task.taskIdentifier) {
-          return { ...t, startDate };
-        }
-
-        return updateNestedTask({ startDate }, task.taskIdentifier, t);
-      };
-
-      return updateStateCallback(state, updateTaskFromAction);
+      return updateStateCallback(state, {
+        ...task,
+        startDate,
+      });
     }
 
     case ActionTypes.UPDATE_TASK_DUE_DATE:
     case ActionTypes.UPDATE_TASK_DUE_DATE_FAILURE: {
       const { task, dueDate } = action;
+
+      return updateStateCallback(state, {
+        ...task,
+        dueDate,
+      });
+    }
+
+    case ActionTypes.CHANGE_TASK_PRIORITY:
+    case ActionTypes.CHANGE_TASK_PRIORITY_FAILURE: {
+      const { task, priority } = action;
 
       return {
         ...state,
@@ -256,38 +237,10 @@ const TaskBaseReducer = (state, action, updateStateCallback) => {
           ...state.tasksMap,
           [task.identifier]: {
             ...task,
-            dueDate,
+            priority,
           },
         },
       };
-
-      // const updateTaskFromAction = (t) => {
-      //   console.log('t', t);
-      //   console.log('task', task);
-
-      //   if (t.taskIdentifier === task.taskIdentifier) {
-      //     return { ...t, dueDate };
-      //   }
-
-      //   // return updateNestedTask({ dueDate }, task.taskIdentifier, t);
-      // };
-
-      // return updateStateCallback(state, updateTaskFromAction);
-    }
-
-    case ActionTypes.CHANGE_TASK_PRIORITY:
-    case ActionTypes.CHANGE_TASK_PRIORITY_FAILURE: {
-      const { task, priority } = action;
-
-      const updateTaskFromAction = (t) => {
-        if (t.taskIdentifier === task.taskIdentifier) {
-          return { ...t, priority };
-        }
-
-        return updateNestedTask({ priority }, task.taskIdentifier, t);
-      };
-
-      return updateStateCallback(state, updateTaskFromAction);
     }
 
     case ActionTypes.SET_COMPLETE_STATUS: {
@@ -591,15 +544,10 @@ const TaskBaseReducer = (state, action, updateStateCallback) => {
     case ActionTypes.CHANGE_TASK_INTENT_TYPE: {
       const { taskIdentifier, intentType } = action;
 
-      const updateTaskFromAction = (t) => {
-        if (t.taskIdentifier === taskIdentifier) {
-          return { ...t, intentType };
-        }
-
-        return t;
-      };
-
-      return updateStateCallback(state, updateTaskFromAction);
+      return updateStateCallback(state, {
+        identifier: taskIdentifier,
+        intentType,
+      });
     }
 
     case ActionTypes.ADD_TASK_OUTCOME_SUCCESS: {

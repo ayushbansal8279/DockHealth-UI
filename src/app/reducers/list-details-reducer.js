@@ -80,23 +80,34 @@ const updateTaskInList = (taskGroups, updateTaskCallback) =>
     }, group.tasks),
   }));
 
-const updateTasksStateCallback = (state, updateTaskFromAction) => ({
-  ...state,
-  groupedTasks: {
-    ...state.groupedTasks,
-    taskGroups: updateTaskInList(
-      state.groupedTasks?.taskGroups,
-      updateTaskFromAction,
-    ),
-  },
-  completedGroupedTasks: {
-    ...state.completedGroupedTasks,
-    taskGroups: updateTaskInList(
-      state.completedGroupedTasks?.taskGroups,
-      updateTaskFromAction,
-    ),
-  },
-});
+const updateTasksStateCallback = (state, newTask) => {
+  if (typeof newTask === 'function') return state;
+
+  return {
+    ...state,
+    tasksMap: {
+      ...state.tasksMap,
+      [newTask.identifier]: {
+        ...state.tasksMap[newTask.identifier],
+        ...newTask,
+      },
+    },
+    // groupedTasks: {
+    //   ...state.groupedTasks,
+    //   taskGroups: updateTaskInList(
+    //     state.groupedTasks?.taskGroups,
+    //     updateTaskFromAction,
+    //   ),
+    // },
+    // completedGroupedTasks: {
+    //   ...state.completedGroupedTasks,
+    //   taskGroups: updateTaskInList(
+    //     state.completedGroupedTasks?.taskGroups,
+    //     updateTaskFromAction,
+    //   ),
+    // },
+  };
+};
 
 // eslint-disable-next-line sonarjs/cognitive-complexity
 const ListDetailsReducer = (state = initialState, action) => {

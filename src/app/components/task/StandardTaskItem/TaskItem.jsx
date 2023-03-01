@@ -1135,7 +1135,9 @@ const TaskItem = React.memo(
                               field={field}
                               customFieldValue={customFieldValue}
                               task={task}
-                              readOnly
+                              readOnly={
+                                restrictions?.customFields === READ_ONLY
+                              }
                             />
                           )}
                         </TaskItemCell>,
