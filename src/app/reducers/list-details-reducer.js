@@ -303,7 +303,7 @@ const ListDetailsReducer = (state = initialState, action) => {
               }, 0);
             return {
               ...g,
-              metricValue: taskCount + taskInWorkflowsCount,
+              // metricValue: taskCount + taskInWorkflowsCount,
             };
           }
           return g;
