@@ -39,6 +39,7 @@ import * as ActionTypes from 'actions/action-types';
 import { storeAsCurrentTask } from 'actions/task-actions';
 import { selectedFiltersInMegaFilterSelector } from 'selectors/mega-filter-selectors';
 import { taskIsSelectedSelector } from 'selectors/task-drawer-selectors';
+import { selectedUserOrganizationSelector } from 'selectors/user-selectors';
 import {
   listDetailsGroupsSelector,
   groupTasksSelector,
@@ -147,6 +148,14 @@ function* getCurrentListTasks() {
     const searchTerm = yield select(searchTermSelector);
     const status = yield select(currentTaskListTasksStatusSelector);
 
+    const currentOrganization = yield select(selectedUserOrganizationSelector);
+    const taskGroupsToLoadItem =
+      currentOrganization?.themeSettings?.find(
+        ({ name }) => name === 'list.taskgroup.default.load.count',
+      ) || {};
+    const taskGroupsToLoad =
+      taskGroupsToLoadItem?.value || DEFAULT_TASK_GROUPS_TO_LOAD;
+
     if (searchTerm) {
       const groupedTasks = yield call(
         ListDetailsApi.searchTasksByTaskList,
@@ -169,7 +178,7 @@ function* getCurrentListTasks() {
       }
       const groupsToGet = compose(
         filter(g => g.metricValue > 0),
-        takeFirst(DEFAULT_TASK_GROUPS_TO_LOAD),
+        takeFirst(taskGroupsToLoad),
       )(groups);
 
       yield all([
