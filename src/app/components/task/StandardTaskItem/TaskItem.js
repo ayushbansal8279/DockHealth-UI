@@ -85,6 +85,7 @@ import {
   DecisionCellContainer,
   ActionIconsContainer,
 } from '../styled';
+import TaskItemPriority from './TaskItemComponents/TaskItemPriority/TaskItemPriority';
 
 const { DISABLED, READ_ONLY } = SINGLE_TASK_RESTRICTIONS_OPTIONS;
 
@@ -278,6 +279,15 @@ const TaskItem = React.memo(
           ),
         ),
       [dispatch, parentTaskGroupIdentifier, task, templateBundleIdentifier],
+    );
+
+    const handlePriorityChange = useCallback(
+      priority => {
+        onTaskUpdate(taskIdentifier, {
+          priority: priority.toUpperCase(),
+        });
+      },
+      [onTaskUpdate, taskIdentifier],
     );
 
     const onCircleClick = useCallback(
@@ -639,6 +649,37 @@ const TaskItem = React.memo(
                     />
                   </TaskItemCell>,
                   getColumnOrder(TaskItemColumn.PATIENT),
+                )}
+              </>
+            )}
+            {isColumnChecked(columns, TaskItemColumn.PRIORITY) && (
+              <>
+                {randerFirstColumnCoverIfNecessary(
+                  <TaskItemCell
+                    isSubtask={isSubtask}
+                    key={`priority_${taskIdentifier}`}
+                    width={
+                      columns?.find(
+                        ({ identifier }) =>
+                          identifier === TaskItemColumn.PRIORITY,
+                      )?.columnWidth
+                    }
+                    order={getColumnOrder(TaskItemColumn.PRIORITY)}
+                  >
+                    <TaskItemPriority
+                      value={task.priority}
+                      onChange={handlePriorityChange}
+                      field={{
+                        options: [
+                          { identifier: 'HIGH', name: 'High', color: 'red' },
+                          { identifier: 'NONE', name: 'No Priority' },
+                        ],
+                        displayOptions: [],
+                      }}
+                      readOnly={false}
+                    />
+                  </TaskItemCell>,
+                  getColumnOrder(TaskItemColumn.PRIORITY),
                 )}
               </>
             )}

@@ -20,6 +20,7 @@ export const TaskHeaderColumn = {
   ANCHOR_DATE: 'ANCHOR_DT',
   ASSIGNED: 'ASSIGNED_TO',
   LIST_NAME: 'LIST_NAME',
+  PRIORITY: 'PRIORITY',
 };
 
 const { DISABLED } = SINGLE_TASK_RESTRICTIONS_OPTIONS;
@@ -54,6 +55,11 @@ export const getTaskHeaderOptions = (
     {
       identifier: TaskHeaderColumn.WORKFLOW_STATUS,
       label: 'Status',
+      draggable: true,
+    },
+    {
+      identifier: TaskHeaderColumn.PRIORITY,
+      label: 'Priority',
       draggable: true,
     },
     {
