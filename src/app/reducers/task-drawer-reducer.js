@@ -165,14 +165,12 @@ const TaskReducer = (state = initialState, action) => {
 
     default: {
       if (state.selectedTask) {
-        return TaskBaseReducer(
-          state,
-          action,
-          (reducerState, updateTaskFromAction) => ({
+        return TaskBaseReducer(state, action, (reducerState, newTask) => {
+          return {
             ...reducerState,
-            selectedTask: updateTaskFromAction(state.selectedTask),
-          }),
-        );
+            selectedTask: newTask,
+          };
+        });
       }
 
       return state;
