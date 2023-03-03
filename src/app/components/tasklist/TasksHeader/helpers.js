@@ -20,6 +20,13 @@ export const TaskHeaderColumn = {
   ANCHOR_DATE: 'ANCHOR_DT',
   ASSIGNED: 'ASSIGNED_TO',
   LIST_NAME: 'LIST_NAME',
+  PATIENT_FIRST_NAME: 'PATIENT_FIRST_NAME',
+  PATIENT_LAST_NAME: 'PATIENT_LAST_NAME',
+  PATIENT_MIDDLE_NAME: 'PATIENT_MIDDLE_NAME',
+  PATIENT_GENDER: 'PATIENT_GENDER',
+  PATIENT_DOB: 'PATIENT_DOB',
+  PATIENT_EMAIL: 'PATIENT_EMAIL',
+  PATIENT_MRN: 'PATIENT_MRN',
 };
 
 const { DISABLED } = SINGLE_TASK_RESTRICTIONS_OPTIONS;
@@ -49,6 +56,55 @@ export const getTaskHeaderOptions = (
       identifier: TaskHeaderColumn.PATIENT,
       label:
         customerTypeLabel.charAt(0).toUpperCase() + customerTypeLabel.slice(1),
+      draggable: true,
+    },
+    {
+      identifier: TaskHeaderColumn.PATIENT_FIRST_NAME,
+      label: `${customerTypeLabel
+        .charAt(0)
+        .toUpperCase()}${customerTypeLabel.slice(1)} First Name`,
+      draggable: true,
+    },
+    {
+      identifier: TaskHeaderColumn.PATIENT_LAST_NAME,
+      label: `${customerTypeLabel
+        .charAt(0)
+        .toUpperCase()}${customerTypeLabel.slice(1)} Last Name`,
+      draggable: true,
+    },
+    {
+      identifier: TaskHeaderColumn.PATIENT_MIDDLE_NAME,
+      label: `${customerTypeLabel
+        .charAt(0)
+        .toUpperCase()}${customerTypeLabel.slice(1)} Middle Name`,
+      draggable: true,
+    },
+    {
+      identifier: TaskHeaderColumn.PATIENT_GENDER,
+      label: `${customerTypeLabel
+        .charAt(0)
+        .toUpperCase()}${customerTypeLabel.slice(1)} Gender`,
+      draggable: true,
+    },
+    {
+      identifier: TaskHeaderColumn.PATIENT_DOB,
+      label: `${customerTypeLabel
+        .charAt(0)
+        .toUpperCase()}${customerTypeLabel.slice(1)} DOB`,
+      draggable: true,
+    },
+    {
+      identifier: TaskHeaderColumn.PATIENT_EMAIL,
+      label: `${customerTypeLabel
+        .charAt(0)
+        .toUpperCase()}${customerTypeLabel.slice(1)} Email`,
+      draggable: true,
+    },
+    {
+      identifier: TaskHeaderColumn.PATIENT_MRN,
+      label: `${customerTypeLabel
+        .charAt(0)
+        .toUpperCase()}${customerTypeLabel.slice(1)} MRN`,
       draggable: true,
     },
     {
