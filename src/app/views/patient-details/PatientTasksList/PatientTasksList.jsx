@@ -27,6 +27,7 @@ import {
   patientTaskSearchSelector,
   patientTasksSortSelector,
   patientSelector,
+  currentListTasksStatusSelector,
 } from 'selectors/patient-details-selectors';
 import { addingNewSubtaskParentIdSelector } from 'selectors/task-drawer-selectors';
 import { organizationCustomFieldsSelector } from 'selectors/organization-selectors';
@@ -53,6 +54,7 @@ import {
   TaskItemType,
   TASK_ITEM_BASE_COLUMN_CONFIG,
   findIncompleteRequiredFields,
+  TaskStatus,
 } from 'helpers/task-helpers';
 import { getCustomerTypeLabel } from 'helpers/customer-type-helper';
 import { checkIfAllTasksSelected } from 'helpers/bulk-edit-helpers';
@@ -98,6 +100,8 @@ const PatientTasksListView = () => {
   const addingNewSubtaskParentId = useSelector(
     addingNewSubtaskParentIdSelector,
   );
+  const tasksStatus =
+    useSelector(currentListTasksStatusSelector) || TaskStatus.INCOMPLETE;
   const customerTypeLabel = getCustomerTypeLabel(currentUser);
   const {
     setCurrentList,
@@ -388,6 +392,7 @@ const PatientTasksListView = () => {
                 groupDragAndDropDisabled
                 disablePatientAssignment
                 iconColorActive={iconColorActiveItem?.value}
+                isCompletedTab={tasksStatus !== TaskStatus.INCOMPLETE}
               />
             ),
           )}
@@ -398,6 +403,7 @@ const PatientTasksListView = () => {
       completeTasksVisible,
       activeList,
       quickAddTask,
+      iconColorActiveItem,
       sort,
       sortPatientTasks,
       groupHasMultipleAssignees,
@@ -408,7 +414,7 @@ const PatientTasksListView = () => {
       updatePatientTaskWorkflowStatus,
       addingNewSubtaskParentId,
       viewSetup,
-      iconColorActiveItem,
+      tasksStatus,
     ],
   );
 
