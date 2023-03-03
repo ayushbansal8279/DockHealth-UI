@@ -11,7 +11,7 @@ import {
   userHasPatientCustomFieldsFeatureSelector,
 } from 'selectors/user-selectors';
 import { useSelector } from 'react-redux';
-import { TaskItemColumn } from 'helpers/task-helpers';
+import { TaskItemColumn, PatientTaskItemColumn } from 'helpers/task-helpers';
 import { capitalize } from 'helpers/capitalize';
 import { getCustomerTypeLabel } from 'helpers/customer-type-helper';
 import UpgradePlan from 'components/common/UpgradePlan/UpgradePlan';
@@ -70,6 +70,16 @@ const CustomizeToolbarButton = ({
     [TaskItemColumn.TASK_DETAILS]: 'Details',
     [TaskItemColumn.PRIORITY]: 'Priority',
     [TaskItemColumn.PATIENT]: capitalize(getCustomerTypeLabel(userProfile)),
+  };
+
+  const PatientColumnOptionNames = {
+    [PatientTaskItemColumn.FIRST_NAME]: 'First name',
+    [PatientTaskItemColumn.MIDDLE_NAME]: 'Middle name',
+    [PatientTaskItemColumn.LAST_NAME]: 'Last name',
+    [PatientTaskItemColumn.GENDER]: 'Gender',
+    [PatientTaskItemColumn.DOB]: 'DOB',
+    [PatientTaskItemColumn.EMAIL]: 'Email',
+    [PatientTaskItemColumn.MRN]: 'MRN',
   };
 
   const customerTypeLabel = capitalize(getCustomerTypeLabel(userProfile));
@@ -160,7 +170,7 @@ const CustomizeToolbarButton = ({
           <List>
             {sort(
               (a, b) =>
-                ColumnOptionNames[a?.identifier].localeCompare(
+                TaskItemColumn[a?.identifier]?.localeCompare(
                   ColumnOptionNames[b?.identifier],
                 ),
               columnsConfigToDisplay,
@@ -169,6 +179,26 @@ const CustomizeToolbarButton = ({
               return optionName && renderElement(column, optionName);
             })}
           </List>
+          <>
+            <Box display="flex" justifyContent="space-between" mt={1}>
+              <Box mx={0.5} />
+              <ListItemText>
+                <b>Patient Default Columns</b>
+              </ListItemText>
+            </Box>
+            <List>
+              {sort(
+                (a, b) =>
+                  PatientColumnOptionNames[a?.identifier]?.localeCompare(
+                    PatientColumnOptionNames[b?.identifier],
+                  ),
+                columnsConfigToDisplay,
+              ).map(column => {
+                const optionName = PatientColumnOptionNames[column.identifier];
+                return optionName && renderElement(column, optionName);
+              })}
+            </List>
+          </>
           {userHasTaskCustomFieldsFeature && (
             <>
               <Spacer />
