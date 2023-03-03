@@ -60,58 +60,51 @@ export const getTaskHeaderOptions = (
     },
     {
       identifier: TaskHeaderColumn.PATIENT_FIRST_NAME,
-      label:
-        customerTypeLabel.charAt(0).toUpperCase() +
-        customerTypeLabel.slice(1) +
-        [' First Name'],
+      label: `${customerTypeLabel
+        .charAt(0)
+        .toUpperCase()}${customerTypeLabel.slice(1)} First Name`,
       draggable: true,
     },
     {
       identifier: TaskHeaderColumn.PATIENT_LAST_NAME,
-      label:
-        customerTypeLabel.charAt(0).toUpperCase() +
-        customerTypeLabel.slice(1) +
-        [' Last Name'],
+      label: `${customerTypeLabel
+        .charAt(0)
+        .toUpperCase()}${customerTypeLabel.slice(1)} Last Name`,
       draggable: true,
     },
     {
       identifier: TaskHeaderColumn.PATIENT_MIDDLE_NAME,
-      label:
-        customerTypeLabel.charAt(0).toUpperCase() +
-        customerTypeLabel.slice(1) +
-        [' Middle Name'],
+      label: `${customerTypeLabel
+        .charAt(0)
+        .toUpperCase()}${customerTypeLabel.slice(1)} Middle Name`,
       draggable: true,
     },
     {
       identifier: TaskHeaderColumn.PATIENT_GENDER,
-      label:
-        customerTypeLabel.charAt(0).toUpperCase() +
-        customerTypeLabel.slice(1) +
-        [' Gender'],
+      label: `${customerTypeLabel
+        .charAt(0)
+        .toUpperCase()}${customerTypeLabel.slice(1)} Gender`,
       draggable: true,
     },
     {
       identifier: TaskHeaderColumn.PATIENT_DOB,
-      label:
-        customerTypeLabel.charAt(0).toUpperCase() +
-        customerTypeLabel.slice(1) +
-        [' DOB'],
+      label: `${customerTypeLabel
+        .charAt(0)
+        .toUpperCase()}${customerTypeLabel.slice(1)} DOB`,
       draggable: true,
     },
     {
       identifier: TaskHeaderColumn.PATIENT_EMAIL,
-      label:
-        customerTypeLabel.charAt(0).toUpperCase() +
-        customerTypeLabel.slice(1) +
-        [' Email'],
+      label: `${customerTypeLabel
+        .charAt(0)
+        .toUpperCase()}${customerTypeLabel.slice(1)} Email`,
       draggable: true,
     },
     {
       identifier: TaskHeaderColumn.PATIENT_MRN,
-      label:
-        customerTypeLabel.charAt(0).toUpperCase() +
-        customerTypeLabel.slice(1) +
-        [' MRN'],
+      label: `${customerTypeLabel
+        .charAt(0)
+        .toUpperCase()}${customerTypeLabel.slice(1)} MRN`,
       draggable: true,
     },
     {

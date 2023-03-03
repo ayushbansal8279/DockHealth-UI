@@ -252,58 +252,10 @@ const TaskItem = React.memo(
 
     const [isPatientDataReadOnly] = useState(true);
 
-    const handleUpdatePatientFirstName = useCallback(
-      name => {
+    const handlePatientUpdate = useCallback(
+      field => value => {
         const { patientIdentifier } = patient;
-        dispatch(updatePatientDetails(patientIdentifier, { firstName: name }));
-      },
-      [patient, dispatch],
-    );
-
-    const handleUpdatePatientLastName = useCallback(
-      name => {
-        const { patientIdentifier } = patient;
-        dispatch(updatePatientDetails(patientIdentifier, { lastName: name }));
-      },
-      [dispatch, patient],
-    );
-
-    const handleUpdatePatientMiddleName = useCallback(
-      name => {
-        const { patientIdentifier } = patient;
-        dispatch(updatePatientDetails(patientIdentifier, { middleName: name }));
-      },
-      [dispatch, patient],
-    );
-
-    const handleUpdatePatientGender = useCallback(
-      gender => {
-        const { patientIdentifier } = patient;
-        dispatch(updatePatientDetails(patientIdentifier, { gender }));
-      },
-      [dispatch, patient],
-    );
-
-    const handleupdatePatientDob = useCallback(
-      dob => {
-        const { patientIdentifier } = patient;
-        dispatch(updatePatientDetails(patientIdentifier, { dob }));
-      },
-      [dispatch, patient],
-    );
-
-    const handleupdatePatientMRN = useCallback(
-      mrn => {
-        const { patientIdentifier } = patient;
-        dispatch(updatePatientDetails(patientIdentifier, { mrn }));
-      },
-      [dispatch, patient],
-    );
-
-    const handleupdatePatientEmail = useCallback(
-      email => {
-        const { patientIdentifier } = patient;
-        dispatch(updatePatientDetails(patientIdentifier, { email }));
+        dispatch(updatePatientDetails(patientIdentifier, { [field]: value }));
       },
       [dispatch, patient],
     );
@@ -724,7 +676,7 @@ const TaskItem = React.memo(
                     <TaskItemText
                       readOnly={isPatientDataReadOnly}
                       value={patient?.firstName}
-                      onChange={handleUpdatePatientFirstName}
+                      onChange={handlePatientUpdate('firstName')}
                     />
                   </TaskItemCell>,
                   getColumnOrder(PatientTaskItemColumn.FIRST_NAME),
@@ -748,7 +700,7 @@ const TaskItem = React.memo(
                     <TaskItemText
                       readOnly={isPatientDataReadOnly}
                       value={patient?.lastName}
-                      onChange={handleUpdatePatientLastName}
+                      onChange={handlePatientUpdate('lastName')}
                     />
                   </TaskItemCell>,
                   getColumnOrder(PatientTaskItemColumn.LAST_NAME),
@@ -772,7 +724,7 @@ const TaskItem = React.memo(
                     <TaskItemText
                       readOnly={isPatientDataReadOnly}
                       value={patient?.middleName}
-                      onChange={handleUpdatePatientMiddleName}
+                      onChange={handlePatientUpdate('middleName')}
                     />
                   </TaskItemCell>,
                   getColumnOrder(PatientTaskItemColumn.MIDDLE_NAME),
@@ -796,7 +748,7 @@ const TaskItem = React.memo(
                     <TaskItemDropdown
                       readOnly={isPatientDataReadOnly}
                       value={patient?.gender}
-                      onChange={handleUpdatePatientGender}
+                      onChange={handlePatientUpdate('gender')}
                       field={{
                         options: [
                           {
@@ -834,7 +786,7 @@ const TaskItem = React.memo(
                   >
                     <TaskItemDate
                       value={patient?.dob}
-                      onChange={handleupdatePatientDob}
+                      onChange={handlePatientUpdate('dob')}
                       readOnly={isPatientDataReadOnly}
                     />
                   </TaskItemCell>,
@@ -859,7 +811,7 @@ const TaskItem = React.memo(
                     <TaskItemText
                       readOnly={isPatientDataReadOnly}
                       value={patient?.email}
-                      onChange={handleupdatePatientEmail}
+                      onChange={handlePatientUpdate('email')}
                     />
                   </TaskItemCell>,
                   getColumnOrder(PatientTaskItemColumn.EMAIL),
@@ -883,7 +835,7 @@ const TaskItem = React.memo(
                     <TaskItemText
                       readOnly={isPatientDataReadOnly}
                       value={patient?.mrn}
-                      onChange={handleupdatePatientMRN}
+                      onChange={handlePatientUpdate('mrn')}
                     />
                   </TaskItemCell>,
                   getColumnOrder(PatientTaskItemColumn.MRN),
