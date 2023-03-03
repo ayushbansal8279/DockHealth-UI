@@ -93,6 +93,18 @@ const UserProfileForm = ({ userProfile }) => {
     );
   };
 
+  const openChangeEmailModal = () => {
+    dispatch(
+      openModal('ChangeEmail', {
+        userProfile,
+        onUpdateSuccess: updatedPhoneNumber => {
+          setValue('accountPhoneNumber', updatedPhoneNumber);
+          dispatch(getCurrentUser());
+        },
+      }),
+    );
+  };
+
   return (
     <FormProvider {...formMethods}>
       <StyledForm
@@ -184,7 +196,20 @@ const UserProfileForm = ({ userProfile }) => {
                   </Grid>
                 </Grid>
                 <Grid item xs={12}>
-                  <FormInput readOnly type="email" name="email" label="Email" />
+                  <FormInput
+                    readOnly
+                    type="email"
+                    name="email"
+                    label="Email"
+                    endAdornment={
+                      <InputActionButton
+                        type="button"
+                        onClick={openChangeEmailModal}
+                      >
+                        Change
+                      </InputActionButton>
+                    }
+                  />
                 </Grid>
                 <Grid item xs={12}>
                   <FormInput
