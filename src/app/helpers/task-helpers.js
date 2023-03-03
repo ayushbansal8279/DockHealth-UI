@@ -170,6 +170,7 @@ export const TaskItemColumn = {
   COMMENTS: 'COMMENTS',
   LABELS: 'LABELS',
   FILES: 'FILES',
+  PRIORITY: 'PRIORITY',
 };
 
 export const PatientTaskItemColumn = {
@@ -227,6 +228,7 @@ export const TaskItemColumnWidth = {
   },
   [TaskItemColumn.SUBTASKS_COUNT]: 60,
   [TaskItemColumn.WORKFLOW_STATUS]: 120,
+  [TaskItemColumn.PRIORITY]: 120,
 };
 
 export const TASK_ITEM_BASE_COLUMN_CONFIG = {
@@ -255,6 +257,7 @@ export const TASK_ITEM_BASE_COLUMN_CONFIG = {
   [TaskItemColumn.ANCHOR_DATE]: true,
   [TaskItemColumn.ASSIGNED]: true,
   [TaskItemColumn.LIST_NAME]: false,
+  [TaskItemColumn.PRIORITY]: true,
 };
 
 export const SHOW_COLUMNS_CONFIG = {
@@ -274,6 +277,7 @@ export const SHOW_COLUMNS_CONFIG = {
   [TaskItemColumn.PATIENT]: true,
   [TaskItemColumn.LIST_NAME]: true,
   [TaskItemColumn.TASK_DETAILS]: true,
+  [TaskItemColumn.PRIORITY]: true,
   [PatientTaskItemColumn.FIRST_NAME]: true,
   [PatientTaskItemColumn.LAST_NAME]: true,
   [PatientTaskItemColumn.MIDDLE_NAME]: true,
@@ -303,6 +307,16 @@ export const TASK_ITEM_SORT_METHODS = {
     ascend(
       pipe(
         prop('workflowStatus'),
+        unless(isNil, prop('name')),
+        defaultTo('~'),
+        toLower,
+      ),
+    ),
+  ]),
+  [TaskItemColumn.PRIORITY]: sortWith([
+    ascend(
+      pipe(
+        prop('priority'),
         unless(isNil, prop('name')),
         defaultTo('~'),
         toLower,
@@ -384,6 +398,16 @@ export const TASK_ITEM_SORT_DESC_METHODS = {
         prop('workflowStatus'),
         unless(isNil, prop('name')),
         defaultTo(' '),
+        toLower,
+      ),
+    ),
+  ]),
+  [TaskItemColumn.PRIORITY]: sortWith([
+    ascend(
+      pipe(
+        prop('priority'),
+        unless(isNil, prop('name')),
+        defaultTo('~'),
         toLower,
       ),
     ),

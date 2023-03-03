@@ -433,6 +433,18 @@ const TaskTemplateGroupHeader = ({
     TASK_LIST_RESTRICTIONS_PROFILES[currentUser?.orgUserRole];
   const { DISABLED, READ_ONLY } = SINGLE_TASK_RESTRICTIONS_OPTIONS;
 
+  const taskPriority = (templateGroup || workFlowData).priority;
+
+  const handleUpdateTaskPriority = useCallback(
+    priority => {
+      dispatch(
+        updatePartialWorkflow(identifier, {
+          priority: priority.toUpperCase(),
+        }),
+      );
+    },
+    [dispatch, identifier],
+  );
   const { patient } = templateGroup ?? workFlowData;
 
   const [isPatientDataReadOnly] = useState(true);
@@ -863,7 +875,39 @@ const TaskTemplateGroupHeader = ({
           )}
         </>
       )}
-
+      {isColumnChecked(columns, TaskItemColumn.PRIORITY) && (
+        <>
+          {randerFirstColumnCoverIfNecessary(
+            <TaskItemCell
+              key={`priority_${identifier}`}
+              width={
+                columns?.find(
+                  ({ identifier: id }) => id === TaskItemColumn.PRIORITY,
+                )?.columnWidth
+              }
+              justify="center"
+              order={getColumnOrder(TaskItemColumn.PRIORITY)}
+            >
+              <TaskItemDropdown
+                value={taskPriority}
+                onChange={handleUpdateTaskPriority}
+                field={{
+                  options: [
+                    { identifier: 'HIGH', name: 'High', color: 'red' },
+                    { identifier: 'NONE', name: 'No Priority' },
+                  ],
+                  displayOptions: [],
+                }}
+                readOnly={false}
+              />
+            </TaskItemCell>,
+            getColumnOrder(TaskItemColumn.PRIORITY),
+            columns?.find(
+              ({ identifier: id }) => id === TaskItemColumn.PRIORITY,
+            )?.columnWidth,
+          )}
+        </>
+      )}
       {isColumnChecked(columns, TaskItemColumn.ACTIVITY) && (
         <>
           {randerFirstColumnCoverIfNecessary(

@@ -297,6 +297,15 @@ const TaskItem = React.memo(
       [dispatch, parentTaskGroupIdentifier, task, templateBundleIdentifier],
     );
 
+    const handlePriorityChange = useCallback(
+      priority => {
+        onTaskUpdate(taskIdentifier, {
+          priority: priority.toUpperCase(),
+        });
+      },
+      [onTaskUpdate, taskIdentifier],
+    );
+
     const onCircleClick = useCallback(
       event => {
         if (!isTaskStatusTogglingDisabled && isDependencyEmptyOrCompleted) {
@@ -659,6 +668,40 @@ const TaskItem = React.memo(
                 )}
               </>
             )}
+            
+            {isColumnChecked(columns, TaskItemColumn.PRIORITY) && (
+              <>
+                {randerFirstColumnCoverIfNecessary(
+                  <TaskItemCell
+                    isSubtask={isSubtask}
+
+                    key={`priority_${taskIdentifier}`}
+                    width={
+                      columns?.find(
+                        ({ identifier }) =>
+                          identifier === TaskItemColumn.PRIORITY,
+                      )?.columnWidth
+                    }
+                    order={getColumnOrder(TaskItemColumn.PRIORITY)}
+                  >
+                    <TaskItemDropdown
+                      value={task.priority}
+                      onChange={handlePriorityChange}
+                      field={{
+                        options: [
+                          { identifier: 'HIGH', name: 'High', color: 'red' },
+                          { identifier: 'NONE', name: 'No Priority' },
+                        ],
+                        displayOptions: [],
+                      }}
+                      readOnly={false}
+                    />
+                  </TaskItemCell>,
+                  getColumnOrder(TaskItemColumn.PRIORITY),
+                )}
+              </>
+            )}
+            
             {isColumnChecked(columns, PatientTaskItemColumn.FIRST_NAME) && (
               <>
                 {randerFirstColumnCoverIfNecessary(
