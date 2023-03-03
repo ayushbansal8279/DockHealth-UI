@@ -55,7 +55,7 @@ import {
   SINGLE_TASK_RESTRICTIONS_PROFILES,
   TASK_LIST_RESTRICTIONS_PROFILES,
 } from 'restrictions/task-restrictions';
-import TaskItemPriority from 'components/task/StandardTaskItem/TaskItemComponents/TaskItemPriority/TaskItemPriority';
+import TaskItemDropdown from 'components/task/StandardTaskItem/customFieldsTaskItemComponents/TaskItemDropdown/TaskItemDropdown';
 import TaskTemplateCreatedByMembers from '../TaskTemplateMembers/TaskTemplateCreatedBy';
 import TemplateHeaderName from '../TaskTemplateName/TaskTemplateName';
 import TaskHeaderPatient from '../TaskTemplatePatient/TaskTemplatePatient';
@@ -650,11 +650,7 @@ const TaskTemplateGroupHeader = ({
               justify="center"
               order={getColumnOrder(TaskItemColumn.PRIORITY)}
             >
-              {/* <TaskTemplateStartDate
-                workflow={templateGroup}
-                disabled={restrictions?.startDate === DISABLED}
-              /> */}
-              <TaskItemPriority
+              <TaskItemDropdown
                 value={taskPriority}
                 onChange={handleUpdateTaskPriority}
                 field={{

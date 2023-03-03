@@ -85,7 +85,7 @@ import {
   DecisionCellContainer,
   ActionIconsContainer,
 } from '../styled';
-import TaskItemPriority from './TaskItemComponents/TaskItemPriority/TaskItemPriority';
+import TaskItemDropdown from './customFieldsTaskItemComponents/TaskItemDropdown/TaskItemDropdown';
 
 const { DISABLED, READ_ONLY } = SINGLE_TASK_RESTRICTIONS_OPTIONS;
 
@@ -666,7 +666,7 @@ const TaskItem = React.memo(
                     }
                     order={getColumnOrder(TaskItemColumn.PRIORITY)}
                   >
-                    <TaskItemPriority
+                    <TaskItemDropdown
                       value={task.priority}
                       onChange={handlePriorityChange}
                       field={{
