@@ -18,6 +18,8 @@ import {
 } from 'restrictions/task-restrictions';
 import StartDateSection from 'components/task-drawer/StartDateSection/StartDateSection';
 // import WatchersPopover from 'components/task-drawer/TaskDrawerContent/WatchersPopover/WatchersPopover';
+import { createTaskListPath } from 'routing/helpers/paths';
+import { useHistory } from 'react-router-dom';
 import AttachmentsSection from '../AttachmentsSection/AttachmentsSection';
 import CommentSection from '../CommentSection/CommentSection';
 import LabelsSection from '../LabelsSection/LabelsSection';
@@ -118,6 +120,8 @@ const TaskDrawerContent = props => {
     clearFormStates();
   }, [clearFormStates, handleCloseTaskDrawer]);
 
+  const history = useHistory();
+
   const { orgUserRole } = useSelector(userProfileSelector);
   const currentOrganization = useSelector(selectedUserOrganizationSelector);
   const taskAttachmentsDisabled =
@@ -191,7 +195,15 @@ const TaskDrawerContent = props => {
         >
           <Typography component="span">
             List:{' '}
-            <FiledInListName>
+            <FiledInListName
+              onClick={() => {
+                history.push(
+                  createTaskListPath(
+                    selectedTask?.taskList?.taskListIdentifier,
+                  ),
+                );
+              }}
+            >
               {selectedTask?.taskList?.listName}
             </FiledInListName>
           </Typography>
