@@ -242,27 +242,6 @@ const TaskTemplateGroupHeader = ({
         onClick: handleMoveGroupTask,
       },
       {
-        name: 'Move to organization',
-        onClick: () =>
-          dispatch(
-            ModalActions.openModal('SelectOrganization', {
-              confirmText: 'Move',
-              confirm: ({
-                taskListIdentifier: listIdentifier,
-                taskGroupIdentifier,
-              }) => {
-                dispatch(
-                  TemplateBundleActions.moveWorkflowToList(
-                    identifier,
-                    listIdentifier,
-                    taskGroupIdentifier,
-                  ),
-                );
-              },
-            }),
-          ),
-      },
-      {
         name: 'Move to group',
         onClick: handleMoveGroupTask,
       },
