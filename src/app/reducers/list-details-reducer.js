@@ -4,7 +4,6 @@ import * as ActionTypes from 'actions/action-types';
 // import prop from 'ramda/src/prop';
 // import uniqBy from 'ramda/src/uniqBy';
 import move from 'ramda/src/move';
-import { mapWithRemove } from 'helpers/utility-functions';
 import { reorderTasksForWorkflow } from 'helpers/workflow-helpers';
 import { TaskGroupType, TaskItemType } from 'helpers/task-helpers';
 import { updateBundleInList } from 'helpers/tasklist-helpers';
@@ -66,19 +65,19 @@ function updateBundleInState(updateCallback, bundleIdentifier, state) {
   };
 }
 
-const updateTaskInList = (taskGroups, updateTaskCallback) =>
-  taskGroups?.map((group) => ({
-    ...group,
-    tasks: mapWithRemove((t) => {
-      if (t.itemType === TaskItemType.BUNDLE) {
-        return updateTaskCallback({
-          ...t,
-          tasks: mapWithRemove(updateTaskCallback, t.tasks),
-        });
-      }
-      return updateTaskCallback(t);
-    }, group.tasks),
-  }));
+// const updateTaskInList = (taskGroups, updateTaskCallback) =>
+//   taskGroups?.map((group) => ({
+//     ...group,
+//     tasks: mapWithRemove((t) => {
+//       if (t.itemType === TaskItemType.BUNDLE) {
+//         return updateTaskCallback({
+//           ...t,
+//           tasks: mapWithRemove(updateTaskCallback, t.tasks),
+//         });
+//       }
+//       return updateTaskCallback(t);
+//     }, group.tasks),
+//   }));
 
 const updateTasksStateCallback = (state, newTask) => {
   if (typeof newTask === 'function') return state;
