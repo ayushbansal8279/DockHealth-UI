@@ -894,7 +894,7 @@ const TaskTemplateGroupHeader = ({
                 field={{
                   options: [
                     { identifier: 'HIGH', name: 'High', color: 'red' },
-                    { identifier: 'NONE', name: 'No Priority' },
+                    { identifier: 'LOW', name: 'Low' },
                   ],
                   displayOptions: [],
                 }}
