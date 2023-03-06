@@ -58,6 +58,7 @@ import { CUSTOM_FIELD_TYPES } from 'helpers/custom-fields-helpers';
 import { Box } from '@material-ui/core';
 import { closeModal, openModal } from 'modal/actions';
 import { updatePatientDetails } from 'actions/patient-details-actions';
+import { formatPhoneNumber } from 'helpers/utility-functions';
 import { getSubtaskStylingLink } from './helpers';
 import TaskItemContextMenu from '../TaskItemContextMenu/TaskItemContextMenu';
 import TaskItemBulkEdit from './TaskItemComponents/TaskItemBulkEdit';
@@ -668,13 +669,11 @@ const TaskItem = React.memo(
                 )}
               </>
             )}
-            
             {isColumnChecked(columns, TaskItemColumn.PRIORITY) && (
               <>
                 {randerFirstColumnCoverIfNecessary(
                   <TaskItemCell
                     isSubtask={isSubtask}
-
                     key={`priority_${taskIdentifier}`}
                     width={
                       columns?.find(
@@ -701,7 +700,6 @@ const TaskItem = React.memo(
                 )}
               </>
             )}
-            
             {isColumnChecked(columns, PatientTaskItemColumn.FIRST_NAME) && (
               <>
                 {randerFirstColumnCoverIfNecessary(
@@ -882,6 +880,54 @@ const TaskItem = React.memo(
                     />
                   </TaskItemCell>,
                   getColumnOrder(PatientTaskItemColumn.MRN),
+                )}
+              </>
+            )}
+            {isColumnChecked(columns, PatientTaskItemColumn.MOBILE_PHONE) && (
+              <>
+                {randerFirstColumnCoverIfNecessary(
+                  <TaskItemCell
+                    isSubtask={isSubtask}
+                    key={`patient_mobile_phone_${taskIdentifier}`}
+                    width={
+                      columns?.find(
+                        ({ identifier }) =>
+                          identifier === PatientTaskItemColumn.MOBILE_PHONE,
+                      )?.columnWidth
+                    }
+                    order={getColumnOrder(PatientTaskItemColumn.MOBILE_PHONE)}
+                  >
+                    <TaskItemText
+                      readOnly={isPatientDataReadOnly}
+                      value={formatPhoneNumber(patient?.phoneMobile ?? '')}
+                      onChange={handlePatientUpdate('phoneMobile')}
+                    />
+                  </TaskItemCell>,
+                  getColumnOrder(PatientTaskItemColumn.MOBILE_PHONE),
+                )}
+              </>
+            )}
+            {isColumnChecked(columns, PatientTaskItemColumn.HOME_PHONE) && (
+              <>
+                {randerFirstColumnCoverIfNecessary(
+                  <TaskItemCell
+                    isSubtask={isSubtask}
+                    key={`patient_home_phone_${taskIdentifier}`}
+                    width={
+                      columns?.find(
+                        ({ identifier }) =>
+                          identifier === PatientTaskItemColumn.HOME_PHONE,
+                      )?.columnWidth
+                    }
+                    order={getColumnOrder(PatientTaskItemColumn.HOME_PHONE)}
+                  >
+                    <TaskItemText
+                      readOnly={isPatientDataReadOnly}
+                      value={formatPhoneNumber(patient?.phoneHome ?? '')}
+                      onChange={handlePatientUpdate('phoneHome')}
+                    />
+                  </TaskItemCell>,
+                  getColumnOrder(PatientTaskItemColumn.HOME_PHONE),
                 )}
               </>
             )}

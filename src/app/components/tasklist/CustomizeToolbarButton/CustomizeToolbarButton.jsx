@@ -80,6 +80,8 @@ const CustomizeToolbarButton = ({
     [PatientTaskItemColumn.DOB]: 'DOB',
     [PatientTaskItemColumn.EMAIL]: 'Email',
     [PatientTaskItemColumn.MRN]: 'MRN',
+    [PatientTaskItemColumn.MOBILE_PHONE]: 'Mobile Phone',
+    [PatientTaskItemColumn.HOME_PHONE]: 'Home Phone',
   };
 
   const customerTypeLabel = capitalize(getCustomerTypeLabel(userProfile));

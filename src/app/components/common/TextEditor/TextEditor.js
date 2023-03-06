@@ -409,7 +409,7 @@ const TextEditor = React.forwardRef(
 
     return (
       <ClickAwayListener onClickAway={handleClickAway}>
-        <div style={{ width: '75%' }}>
+        <div style={{ width: '85%' }}>
           <StyledEditorContainer
             withEditedLabel={withEditedLabel && readOnly}
             isReadOnly={readOnly}

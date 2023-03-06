@@ -181,6 +181,8 @@ export const PatientTaskItemColumn = {
   DOB: 'PATIENT_DOB',
   EMAIL: 'PATIENT_EMAIL',
   MRN: 'PATIENT_MRN',
+  MOBILE_PHONE: 'PATIENT_MOBILE_PHONE',
+  HOME_PHONE: 'PATIENT_HOME_PHONE',
 };
 
 export const TaskItemColumnWidth = {
@@ -216,6 +218,8 @@ export const TaskItemColumnWidth = {
   [PatientTaskItemColumn.DOB]: 164,
   [PatientTaskItemColumn.EMAIL]: 164,
   [PatientTaskItemColumn.MRN]: 164,
+  [PatientTaskItemColumn.HOME_PHONE]: 164,
+  [PatientTaskItemColumn.MOBILE_PHONE]: 164,
   [TaskItemColumn.DESCRIPTION]: {
     DEFAULT: 500,
     WIDE: 475,
@@ -243,6 +247,8 @@ export const TASK_ITEM_BASE_COLUMN_CONFIG = {
   [PatientTaskItemColumn.DOB]: true,
   [PatientTaskItemColumn.EMAIL]: true,
   [PatientTaskItemColumn.MRN]: true,
+  [PatientTaskItemColumn.HOME_PHONE]: true,
+  [PatientTaskItemColumn.MOBILE_PHONE]: true,
   [TaskItemColumn.WORKFLOW_STATUS]: true,
   [TaskItemColumn.COMMENTS]: true,
   [TaskItemColumn.LABELS]: true,
@@ -285,6 +291,8 @@ export const SHOW_COLUMNS_CONFIG = {
   [PatientTaskItemColumn.DOB]: true,
   [PatientTaskItemColumn.EMAIL]: true,
   [PatientTaskItemColumn.MRN]: true,
+  [PatientTaskItemColumn.HOME_PHONE]: true,
+  [PatientTaskItemColumn.MOBILE_PHONE]: true,
 };
 
 export const TASK_ITEM_SORT_METHODS = {
@@ -373,6 +381,12 @@ export const TASK_ITEM_SORT_METHODS = {
   ]),
   [PatientTaskItemColumn.MRN]: sortWith([
     ascend(pipe(prop('mrn'), defaultTo('~'), toLower)),
+  ]),
+  [PatientTaskItemColumn.HOME_PHONE]: sortWith([
+    ascend(pipe(prop('phoneHome'), defaultTo('~'), toLower)),
+  ]),
+  [PatientTaskItemColumn.MOBILE_PHONE]: sortWith([
+    ascend(pipe(prop('phoneMobile'), defaultTo('~'), toLower)),
   ]),
 };
 
@@ -464,6 +478,12 @@ export const TASK_ITEM_SORT_DESC_METHODS = {
   ]),
   [PatientTaskItemColumn.MRN]: sortWith([
     ascend(pipe(prop('mrn'), defaultTo('~'), toLower)),
+  ]),
+  [PatientTaskItemColumn.HOME_PHONE]: sortWith([
+    ascend(pipe(prop('phoneHome'), defaultTo('~'), toLower)),
+  ]),
+  [PatientTaskItemColumn.MOBILE_PHONE]: sortWith([
+    ascend(pipe(prop('phoneMobile'), defaultTo('~'), toLower)),
   ]),
 };
 
