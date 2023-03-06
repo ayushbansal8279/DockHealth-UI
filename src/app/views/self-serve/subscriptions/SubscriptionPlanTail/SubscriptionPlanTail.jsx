@@ -7,6 +7,7 @@ import React from 'react';
 import {
   Container,
   MostPopularText,
+  NewText,
   TopContainer,
   Name,
   Description,
@@ -34,6 +35,7 @@ const SubscriptionPlanTail = props => {
   const {
     key,
     mostPopular,
+    showNewHeader,
     color,
     label,
     description,
@@ -53,6 +55,7 @@ const SubscriptionPlanTail = props => {
     <Container color={color}>
       <TopContainer>
         {mostPopular && <MostPopularText>Most Popular</MostPopularText>}
+        {showNewHeader && <NewText>New</NewText>}
         <Name color={color}>{label}</Name>
         <Description>{description}</Description>
       </TopContainer>
@@ -69,10 +72,16 @@ const SubscriptionPlanTail = props => {
               /
               <Box m={0.2} />
               <div>
-                <UnitText>user</UnitText>
-                <UnitText>month</UnitText>
-                {key === SubscriptionPlan.ENTERPRISE && (
-                  <UnitText>+ Pro per user</UnitText>
+                {key === SubscriptionPlan.ENTERPRISE ? (
+                  <>
+                    <UnitText>month</UnitText>
+                    <UnitText>+ Pro per user</UnitText>
+                  </>
+                ) : (
+                  <>
+                    <UnitText>user</UnitText>
+                    <UnitText>month</UnitText>
+                  </>
                 )}
               </div>
             </UnitContainer>
