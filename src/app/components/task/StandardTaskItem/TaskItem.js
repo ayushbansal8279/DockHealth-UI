@@ -231,7 +231,8 @@ const TaskItem = React.memo(
       selectedOrganization?.themeSettings?.find(
         ({ name }) => name === 'list.tasks.priority.highlighting.enabled',
       ) || {};
-    const hasPriorityHighlight = hasPriorityHighlightItem?.value !== 'true';
+    const hasPriorityHighlight =
+      hasPriorityHighlightItem && hasPriorityHighlightItem?.value === 'true';
 
     const customHighlight =
       customHighlightColor !== ''
