@@ -49,14 +49,6 @@ ${({ customWidthExists }) => (customWidthExists ? '' : 'flex: 1;')}
   &::after {
     content: '';
     display: block;
-    background-color: ${props =>
-      props.isSelected
-        ? palette.dockBlueLight
-        : // eslint-disable-next-line unicorn/no-nested-ternary
-        props.hasEscalations
-        ? palette.oPlusRedLight
-        : palette.white};
-    transition: background-color 0.3s ease-out;
     position: absolute;
     left: 0px;
     top: 50%;

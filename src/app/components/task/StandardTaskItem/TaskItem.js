@@ -55,6 +55,7 @@ import {
 } from 'restrictions/task-restrictions';
 import { CUSTOM_FIELD_TYPES } from 'helpers/custom-fields-helpers';
 import { Box } from '@material-ui/core';
+import { opacify } from 'styles/palette';
 import { getSubtaskStylingLink } from './helpers';
 import TaskItemContextMenu from '../TaskItemContextMenu/TaskItemContextMenu';
 import TaskItemBulkEdit from './TaskItemComponents/TaskItemBulkEdit';
@@ -102,6 +103,7 @@ const TaskItem = React.memo(
     switchOpen,
     toggleCompleteTask,
     task,
+    taskGroupIdentifier,
     dragHandleProps,
     isDragging,
     isCompletedGroup,
@@ -149,6 +151,7 @@ const TaskItem = React.memo(
       dependencyTasksCompletedCount,
       dependencyTasksCount,
       hasEscalations,
+      priority,
     } = task;
 
     const { columns } = useTaskListColumnsConfig();
@@ -216,6 +219,27 @@ const TaskItem = React.memo(
     const { bulkEditEnabled } = useContext(BulkEditContext);
 
     const selectedOrganization = useSelector(selectedUserOrganizationSelector);
+
+    const customHighlightItem =
+      selectedOrganization?.themeSettings?.find(
+        ({ name }) =>
+          name === `list.taskgroup.highlight.color-${taskGroupIdentifier}`,
+      ) || {};
+    const customHighlightColor = customHighlightItem?.value || '';
+
+    const hasPriorityHighlightItem =
+      selectedOrganization?.themeSettings?.find(
+        ({ name }) => name === 'list.tasks.priority.highlighting.enabled',
+      ) || {};
+    const hasPriorityHighlight = hasPriorityHighlightItem?.value !== 'true';
+
+    const customHighlight =
+      customHighlightColor !== ''
+        ? opacify(customHighlightColor, 0.25)
+        : // eslint-disable-next-line unicorn/no-nested-ternary
+        hasPriorityHighlight
+        ? opacify(getPriorityColor(priority), 0.25)
+        : undefined;
 
     const onSubtaskLabelClick = useCallback(
       event => {
@@ -357,6 +381,7 @@ const TaskItem = React.memo(
             backgroundColor={pageBackground}
             isSelected={isSelected || selected}
             hasEscalations={hasEscalations}
+            customHighlight={customHighlight}
             isEditingDescription={isEditingDescription}
           >
             {taskListRestrictions?.createTask !== DISABLED && (
@@ -404,6 +429,7 @@ const TaskItem = React.memo(
         isLast,
         isSelected,
         hasEscalations,
+        customHighlight,
         isTaskStatusTogglingDisabled,
         newlyCreated,
         onCircleClick,
@@ -429,6 +455,7 @@ const TaskItem = React.memo(
             newlyCreated={newlyCreated}
             isSelected={isSelected || selected}
             hasEscalations={hasEscalations}
+            customHighlight={customHighlight}
             height={
               hasParentTaskLabel || isCompletedGroup
                 ? EXTENDED_TASK_HEIGHT
