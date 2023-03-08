@@ -23,6 +23,16 @@ export const MostPopularText = styled.p`
   font-weight: ${fontWeights.light};
 `;
 
+export const NewText = styled.p`
+  position: absolute;
+  top: -20px;
+  left: 0;
+  margin-bottom;
+  color: ${palette.red};
+  font-size: ${fontSizes.smallPlus};
+  font-weight: ${fontWeights.light};
+`;
+
 export const TopContainer = styled.div`
   position: relative;
   width: 100%;

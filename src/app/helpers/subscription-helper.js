@@ -26,6 +26,7 @@ export const SUBSCRIPTION_PLANS = [
     subscriptionPlan: SubscriptionPlan.STANDARD,
     isFreeTrialPlan: true,
     mostPopular: false,
+    showNewHeader: false,
     featuresDescription: 'Included with subscription',
     features: [
       'HIPAA-compliant task management',
@@ -56,6 +57,7 @@ export const SUBSCRIPTION_PLANS = [
     subscriptionPlan: SubscriptionPlan.PREMIUM,
     isFreeTrialPlan: true,
     mostPopular: true,
+    showNewHeader: false,
     featuresDescription: 'Everyhting in Basic, plus',
     features: [
       '24/7 customer support',
@@ -81,7 +83,8 @@ export const SUBSCRIPTION_PLANS = [
     subscriptionPlan: SubscriptionPlan.PRO,
     isFreeTrialPlan: true,
     mostPopular: false,
-    featuresDescription: 'Everything in premium, plus',
+    showNewHeader: true,
+    featuresDescription: 'Everything in Premium, plus',
     features: [
       'HIPAA-compliant Dock Chat',
       'Email tasks',
@@ -109,6 +112,7 @@ export const SUBSCRIPTION_PLANS = [
     selectable: false,
     isPlanTriisFreeTrialPlan: false,
     mostPopular: false,
+    showNewHeader: false,
     featuresDescription: 'Everything in Premium plus:',
     features: [
       'API platform access',
@@ -137,6 +141,7 @@ export const DockLite = {
   subscriptionPlan: 'DOCK_LITE',
   isFreeTrialPlan: true,
   mostPopular: false,
+  showNewHeader: false,
   featuresDescription: 'Included with subscription',
   features: [
     'HIPAA-compliant task-management for outside collaborators and limited-use colleagues',

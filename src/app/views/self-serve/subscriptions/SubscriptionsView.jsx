@@ -355,7 +355,7 @@ const SubscriptionsView = () => {
               >
                 {/* <Typography>Click To Expand</Typography> */}
                 <Box p={1} />
-                <Title>Professional Add-Ons</Title>
+                <Title>Professional Services Add-Ons</Title>
               </AccordionSummary>
               <AccordionDetails>
                 <Box display="block" justifyContent="space-between">
