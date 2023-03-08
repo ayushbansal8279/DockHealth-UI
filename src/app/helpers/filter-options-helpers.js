@@ -178,6 +178,24 @@ function clearEmptyFilterOptions(selectedFilters) {
   );
 }
 
+export function setFilterRangeDate(
+  optionCategoryIdentifier,
+  startDate,
+  endDate,
+  selectedFilters,
+) {
+  const newSelectedFilters = {
+    ...(selectedFilters || {}),
+    [optionCategoryIdentifier]: {
+      ...(selectedFilters?.[optionCategoryIdentifier] || {}),
+      dateStart: startDate,
+      dateEnd: endDate,
+    },
+  };
+
+  return clearEmptyFilterOptions(newSelectedFilters);
+}
+
 export function setFilterRangeStartDate(
   optionCategoryIdentifier,
   rangeValue,
