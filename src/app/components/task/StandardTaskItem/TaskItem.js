@@ -324,7 +324,7 @@ const TaskItem = React.memo(
     const handlePriorityChange = useCallback(
       taskPriority => {
         onTaskUpdate(taskIdentifier, {
-          priority: taskPriority.toUpperCase(),
+          priority: taskPriority?.toUpperCase() || TaskPriority.LOW,
         });
       },
       [onTaskUpdate, taskIdentifier],

@@ -25,6 +25,7 @@ import {
   PatientTaskItemColumn,
   TaskItemColumnWidth,
   TaskStatus,
+  TaskPriority,
   getPriorityColor,
 } from 'helpers/task-helpers';
 import * as TaskTemplateApi from 'api/task-template-api';
@@ -440,7 +441,7 @@ const TaskTemplateGroupHeader = ({
     priority => {
       dispatch(
         updatePartialWorkflow(identifier, {
-          priority: priority.toUpperCase(),
+          priority: priority?.toUpperCase() || TaskPriority.LOW,
         }),
       );
     },
