@@ -668,13 +668,11 @@ const TaskItem = React.memo(
                 )}
               </>
             )}
-            
             {isColumnChecked(columns, TaskItemColumn.PRIORITY) && (
               <>
                 {randerFirstColumnCoverIfNecessary(
                   <TaskItemCell
                     isSubtask={isSubtask}
-
                     key={`priority_${taskIdentifier}`}
                     width={
                       columns?.find(
@@ -690,7 +688,7 @@ const TaskItem = React.memo(
                       field={{
                         options: [
                           { identifier: 'HIGH', name: 'High', color: 'red' },
-                          { identifier: 'NONE', name: 'No Priority' },
+                          { identifier: 'LOW', name: 'Low' },
                         ],
                         displayOptions: [],
                       }}
@@ -701,7 +699,6 @@ const TaskItem = React.memo(
                 )}
               </>
             )}
-            
             {isColumnChecked(columns, PatientTaskItemColumn.FIRST_NAME) && (
               <>
                 {randerFirstColumnCoverIfNecessary(
