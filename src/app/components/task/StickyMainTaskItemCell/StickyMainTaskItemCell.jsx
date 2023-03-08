@@ -50,11 +50,15 @@ ${({ customWidthExists }) => (customWidthExists ? '' : 'flex: 1;')}
     content: '';
     display: block;
     background-color: ${props =>
+      // eslint-disable-next-line unicorn/no-nested-ternary
       props.isSelected
-        ? palette.dockBlueLight
+        ? palette.brightBlueWithAlpha
         : // eslint-disable-next-line unicorn/no-nested-ternary
         props.hasEscalations
         ? palette.oPlusRedLight
+        : // eslint-disable-next-line unicorn/no-nested-ternary
+        props.customHighlight
+        ? props.customHighlight
         : palette.white};
     transition: background-color 0.3s ease-out;
     position: absolute;

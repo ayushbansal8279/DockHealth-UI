@@ -110,17 +110,36 @@ const PatientsToolbar = () => {
 
   return listIdentifier === DefaultPatientsListType.ALL_PATIENTS &&
     emrIntegrationEnabled ? (
-    <Box width="100%">
-      <InputWrapper hasValue={searchValue}>
-        <SearchInput value={searchValue} onValueChange={handleSearchChange} />
-        {!searchValue && (
-          <SearchHelperText>
-            Dock is connected to your EHR. Please search by name or medical
-            record number to find a patient.
-          </SearchHelperText>
-        )}
-      </InputWrapper>
-    </Box>
+    <>
+      <Box display="flex" flex={0.2} alignItems="center">
+        <Box width="800px">
+          <InputWrapper hasValue={searchValue}>
+            <SearchInput
+              value={searchValue}
+              onValueChange={handleSearchChange}
+            />
+          </InputWrapper>
+        </Box>
+        <Box display="flex" flex={1} alignItems="center">
+          <CustomizeToolbarButton
+            iconColorFilterActive={iconColorFilterActiveItem?.value}
+          />
+          <Box m={1} />
+          <FilterButton
+            ref={filterButtonReference}
+            active={filtersActive}
+            onClick={toggleFilter}
+            onClear={() => dispatch(PatientsActions.clearPatientsFilters())}
+          />
+        </Box>
+      </Box>
+      {!searchValue && (
+        <SearchHelperText>
+          Dock is connected to your EHR. Please search by name or medical record
+          number to find a patient.
+        </SearchHelperText>
+      )}
+    </>
   ) : (
     <>
       <Box p="16px">

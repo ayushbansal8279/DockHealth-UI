@@ -5,7 +5,10 @@ import { useSelector } from 'react-redux';
 import Checkbox from 'components/common/Checkbox/Checkbox';
 import { SortHeaderRow } from 'components/tasklist/ColumnSortHeader/styled';
 import { TaskItemColumnWidth } from 'helpers/task-helpers';
-import { getCustomerTypeLabel } from 'helpers/customer-type-helper';
+import {
+  getCustomerTypeLabel,
+  getCustomerUniqueIDShortLabel,
+} from 'helpers/customer-type-helper';
 import { useTaskListColumnsConfig } from 'context-api/columns-config-context';
 import { CustomFieldWidthConfig } from 'helpers/field-type-helpers';
 import { DragDropContext, Droppable } from 'react-beautiful-dnd';
@@ -50,6 +53,11 @@ const TasksHeader = ({
     SINGLE_TASK_RESTRICTIONS_PROFILES[currentUser?.orgUserRole];
   const restrictCustomizationFeatures =
     taskList?.restrictCustomization && !isListAdmin;
+
+  const uniqueIdentifierLabel = getCustomerUniqueIDShortLabel(
+    currentUser,
+    currentOrganization,
+  );
 
   const tasksHeaderTextTransformItem =
     currentOrganization?.themeSettings?.find(
@@ -170,6 +178,7 @@ const TasksHeader = ({
               {renderColumn(
                 getTaskHeaderOptions(
                   customerTypeLabel,
+                  uniqueIdentifierLabel,
                   columns.filter(f => f.isChecked)?.[0],
                   restrictions,
                 ),
@@ -182,7 +191,12 @@ const TasksHeader = ({
               .filter((_, index) => index !== 0)
               .map(c =>
                 c._customFieldType === CUSTOM_FIELD_TYPES.REGULAR
-                  ? getTaskHeaderOptions(customerTypeLabel, c, restrictions)
+                  ? getTaskHeaderOptions(
+                      customerTypeLabel,
+                      uniqueIdentifierLabel,
+                      c,
+                      restrictions,
+                    )
                   : c,
               )
               .map((c, index) => renderColumn(c, index + 1, snapshot))}

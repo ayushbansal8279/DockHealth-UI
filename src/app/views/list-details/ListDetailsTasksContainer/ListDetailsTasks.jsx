@@ -311,6 +311,9 @@ const ListDetailsTasks = ({
                                           draggedId === task.taskIdentifier
                                         }
                                         task={task}
+                                        taskGroupIdentifier={
+                                          taskGroupIdentifier
+                                        }
                                         draggableProvided={draggableProvided}
                                         isCompletedGroup={isCompletedGroup}
                                         toggleCompleteTask={toggleCompleteTask}

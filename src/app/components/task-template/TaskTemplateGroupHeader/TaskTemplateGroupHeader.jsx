@@ -25,6 +25,8 @@ import {
   PatientTaskItemColumn,
   TaskItemColumnWidth,
   TaskStatus,
+  TaskPriority,
+  getPriorityColor,
 } from 'helpers/task-helpers';
 import * as TaskTemplateApi from 'api/task-template-api';
 import { workflowSelector } from 'selectors/workflow-drawer-selectors';
@@ -439,7 +441,7 @@ const TaskTemplateGroupHeader = ({
     priority => {
       dispatch(
         updatePartialWorkflow(identifier, {
-          priority: priority.toUpperCase(),
+          priority: priority?.toUpperCase() || TaskPriority.LOW,
         }),
       );
     },
@@ -518,60 +520,12 @@ const TaskTemplateGroupHeader = ({
     ],
   );
 
-  const handleUpdatePatientFirstName = useCallback(
-    firstName => {
+  const handlePatientUpdate = useCallback(
+    field => value => {
       const { patientIdentifier } = patient;
-      dispatch(updatePatientDetails(patientIdentifier, { firstName }));
+      dispatch(updatePatientDetails(patientIdentifier, { [field]: value }));
     },
     [patient, dispatch],
-  );
-
-  const handleUpdatePatientLastName = useCallback(
-    lastName => {
-      const { patientIdentifier } = patient;
-      dispatch(updatePatientDetails(patientIdentifier, { lastName }));
-    },
-    [dispatch, patient],
-  );
-
-  const handleUpdatePatientMiddleName = useCallback(
-    middleName => {
-      const { patientIdentifier } = patient;
-      dispatch(updatePatientDetails(patientIdentifier, { middleName }));
-    },
-    [dispatch, patient],
-  );
-
-  const handleUpdatePatientGender = useCallback(
-    gender => {
-      const { patientIdentifier } = patient;
-      dispatch(updatePatientDetails(patientIdentifier, { gender }));
-    },
-    [dispatch, patient],
-  );
-
-  const handleupdatePatientDob = useCallback(
-    dob => {
-      const { patientIdentifier } = patient;
-      dispatch(updatePatientDetails(patientIdentifier, { dob }));
-    },
-    [dispatch, patient],
-  );
-
-  const handleupdatePatientMRN = useCallback(
-    mrn => {
-      const { patientIdentifier } = patient;
-      dispatch(updatePatientDetails(patientIdentifier, { mrn }));
-    },
-    [dispatch, patient],
-  );
-
-  const handleupdatePatientEmail = useCallback(
-    email => {
-      const { patientIdentifier } = patient;
-      dispatch(updatePatientDetails(patientIdentifier, { email }));
-    },
-    [dispatch, patient],
   );
 
   return (
@@ -669,75 +623,6 @@ const TaskTemplateGroupHeader = ({
           )}
         </>
       )}
-      {isColumnChecked(columns, PatientTaskItemColumn.FIRST_NAME) && (
-        <>
-          {randerFirstColumnCoverIfNecessary(
-            <TaskItemCell
-              key={`patient_first_name_${identifier}`}
-              width={
-                columns?.find(
-                  ({ identifier: id }) =>
-                    id === PatientTaskItemColumn.FIRST_NAME,
-                )?.columnWidth
-              }
-              order={getColumnOrder(PatientTaskItemColumn.FIRST_NAME)}
-            >
-              <TaskItemText
-                readOnly={isPatientDataReadOnly}
-                value={patient?.firstName}
-                onChange={handleUpdatePatientFirstName}
-              />
-            </TaskItemCell>,
-            getColumnOrder(PatientTaskItemColumn.FIRST_NAME),
-          )}
-        </>
-      )}
-      {isColumnChecked(columns, PatientTaskItemColumn.LAST_NAME) && (
-        <>
-          {randerFirstColumnCoverIfNecessary(
-            <TaskItemCell
-              key={`patient_last_name_${identifier}`}
-              width={
-                columns?.find(
-                  ({ identifier: id }) =>
-                    id === PatientTaskItemColumn.LAST_NAME,
-                )?.columnWidth
-              }
-              order={getColumnOrder(PatientTaskItemColumn.LAST_NAME)}
-            >
-              <TaskItemText
-                readOnly={isPatientDataReadOnly}
-                value={patient?.lastName}
-                onChange={handleUpdatePatientLastName}
-              />
-            </TaskItemCell>,
-            getColumnOrder(PatientTaskItemColumn.LAST_NAME),
-          )}
-        </>
-      )}
-      {isColumnChecked(columns, PatientTaskItemColumn.MIDDLE_NAME) && (
-        <>
-          {randerFirstColumnCoverIfNecessary(
-            <TaskItemCell
-              key={`patient_middle_name_${identifier}`}
-              width={
-                columns?.find(
-                  ({ identifier: id }) =>
-                    id === PatientTaskItemColumn.MIDDLE_NAME,
-                )?.columnWidth
-              }
-              order={getColumnOrder(PatientTaskItemColumn.MIDDLE_NAME)}
-            >
-              <TaskItemText
-                readOnly={isPatientDataReadOnly}
-                value={patient?.middleName}
-                onChange={handleUpdatePatientMiddleName}
-              />
-            </TaskItemCell>,
-            getColumnOrder(PatientTaskItemColumn.MIDDLE_NAME),
-          )}
-        </>
-      )}
       {isColumnChecked(columns, PatientTaskItemColumn.GENDER) && (
         <>
           {randerFirstColumnCoverIfNecessary(
@@ -753,7 +638,7 @@ const TaskTemplateGroupHeader = ({
               <TaskItemDropdown
                 readOnly={isPatientDataReadOnly}
                 value={patient?.gender}
-                onChange={handleUpdatePatientGender}
+                onChange={handlePatientUpdate('gender')}
                 field={{
                   options: [
                     {
@@ -790,7 +675,7 @@ const TaskTemplateGroupHeader = ({
             >
               <TaskItemDate
                 value={patient?.dob}
-                onChange={handleupdatePatientDob}
+                onChange={handlePatientUpdate('dob')}
                 readOnly={isPatientDataReadOnly}
               />
             </TaskItemCell>,
@@ -814,7 +699,7 @@ const TaskTemplateGroupHeader = ({
               <TaskItemText
                 readOnly={isPatientDataReadOnly}
                 value={patient?.email}
-                onChange={handleupdatePatientEmail}
+                onChange={handlePatientUpdate('email')}
               />
             </TaskItemCell>,
             getColumnOrder(PatientTaskItemColumn.EMAIL),
@@ -837,7 +722,7 @@ const TaskTemplateGroupHeader = ({
               <TaskItemText
                 readOnly={isPatientDataReadOnly}
                 value={patient?.mrn}
-                onChange={handleupdatePatientMRN}
+                onChange={handlePatientUpdate('mrn')}
               />
             </TaskItemCell>,
             getColumnOrder(PatientTaskItemColumn.MRN),
@@ -893,8 +778,11 @@ const TaskTemplateGroupHeader = ({
                 onChange={handleUpdateTaskPriority}
                 field={{
                   options: [
-                    { identifier: 'HIGH', name: 'High', color: 'red' },
-                    { identifier: 'LOW', name: 'Low' },
+                    {
+                      identifier: 'HIGH',
+                      name: 'High',
+                      color: getPriorityColor('HIGH'),
+                    },
                   ],
                   displayOptions: [],
                 }}

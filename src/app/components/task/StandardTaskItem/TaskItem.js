@@ -37,6 +37,7 @@ import {
   TaskItemColumn,
   TaskPriority,
   getPriorityColor,
+  getPriorityHighlighColor,
   TaskItemColumnWidth,
   isColumnChecked,
   PatientTaskItemColumn,
@@ -108,6 +109,7 @@ const TaskItem = React.memo(
     switchOpen,
     toggleCompleteTask,
     task,
+    taskGroupIdentifier,
     dragHandleProps,
     isDragging,
     isCompletedGroup,
@@ -155,6 +157,7 @@ const TaskItem = React.memo(
       dependencyTasksCompletedCount,
       dependencyTasksCount,
       hasEscalations,
+      priority,
     } = task;
 
     const patient = taskPatient ?? parentTask?.patient ?? parentPatient;
@@ -224,6 +227,28 @@ const TaskItem = React.memo(
     const { bulkEditEnabled } = useContext(BulkEditContext);
 
     const selectedOrganization = useSelector(selectedUserOrganizationSelector);
+
+    const customHighlightItem =
+      selectedOrganization?.themeSettings?.find(
+        ({ name }) =>
+          name === `list.taskgroup.highlight.color-${taskGroupIdentifier}`,
+      ) || {};
+    const customHighlightColor = customHighlightItem?.value || '';
+
+    const hasPriorityHighlightItem =
+      selectedOrganization?.themeSettings?.find(
+        ({ name }) => name === 'list.tasks.priority.highlighting.enabled',
+      ) || {};
+    const hasPriorityHighlight =
+      hasPriorityHighlightItem && hasPriorityHighlightItem?.value === 'true';
+
+    const customHighlight =
+      customHighlightColor !== ''
+        ? customHighlightColor
+        : // eslint-disable-next-line unicorn/no-nested-ternary
+        hasPriorityHighlight
+        ? getPriorityHighlighColor(priority)
+        : undefined;
 
     const onSubtaskLabelClick = useCallback(
       event => {
@@ -298,9 +323,9 @@ const TaskItem = React.memo(
     );
 
     const handlePriorityChange = useCallback(
-      priority => {
+      taskPriority => {
         onTaskUpdate(taskIdentifier, {
-          priority: priority.toUpperCase(),
+          priority: taskPriority?.toUpperCase() || TaskPriority.LOW,
         });
       },
       [onTaskUpdate, taskIdentifier],
@@ -384,6 +409,7 @@ const TaskItem = React.memo(
             backgroundColor={pageBackground}
             isSelected={isSelected || selected}
             hasEscalations={hasEscalations}
+            customHighlight={customHighlight}
             isEditingDescription={isEditingDescription}
           >
             {taskListRestrictions?.createTask !== DISABLED && (
@@ -431,6 +457,7 @@ const TaskItem = React.memo(
         isLast,
         isSelected,
         hasEscalations,
+        customHighlight,
         isTaskStatusTogglingDisabled,
         newlyCreated,
         onCircleClick,
@@ -456,6 +483,7 @@ const TaskItem = React.memo(
             newlyCreated={newlyCreated}
             isSelected={isSelected || selected}
             hasEscalations={hasEscalations}
+            customHighlight={customHighlight}
             height={
               hasParentTaskLabel || isCompletedGroup
                 ? EXTENDED_TASK_HEIGHT
@@ -668,109 +696,6 @@ const TaskItem = React.memo(
                 )}
               </>
             )}
-            {isColumnChecked(columns, TaskItemColumn.PRIORITY) && (
-              <>
-                {randerFirstColumnCoverIfNecessary(
-                  <TaskItemCell
-                    isSubtask={isSubtask}
-                    key={`priority_${taskIdentifier}`}
-                    width={
-                      columns?.find(
-                        ({ identifier }) =>
-                          identifier === TaskItemColumn.PRIORITY,
-                      )?.columnWidth
-                    }
-                    order={getColumnOrder(TaskItemColumn.PRIORITY)}
-                  >
-                    <TaskItemDropdown
-                      value={task.priority}
-                      onChange={handlePriorityChange}
-                      field={{
-                        options: [
-                          { identifier: 'HIGH', name: 'High', color: 'red' },
-                          { identifier: 'LOW', name: 'Low' },
-                        ],
-                        displayOptions: [],
-                      }}
-                      readOnly={false}
-                    />
-                  </TaskItemCell>,
-                  getColumnOrder(TaskItemColumn.PRIORITY),
-                )}
-              </>
-            )}
-            {isColumnChecked(columns, PatientTaskItemColumn.FIRST_NAME) && (
-              <>
-                {randerFirstColumnCoverIfNecessary(
-                  <TaskItemCell
-                    isSubtask={isSubtask}
-                    key={`patient_first_name_${taskIdentifier}`}
-                    width={
-                      columns?.find(
-                        ({ identifier }) =>
-                          identifier === PatientTaskItemColumn.FIRST_NAME,
-                      )?.columnWidth
-                    }
-                    order={getColumnOrder(PatientTaskItemColumn.FIRST_NAME)}
-                  >
-                    <TaskItemText
-                      readOnly={isPatientDataReadOnly}
-                      value={patient?.firstName}
-                      onChange={handlePatientUpdate('firstName')}
-                    />
-                  </TaskItemCell>,
-                  getColumnOrder(PatientTaskItemColumn.FIRST_NAME),
-                )}
-              </>
-            )}
-            {isColumnChecked(columns, PatientTaskItemColumn.LAST_NAME) && (
-              <>
-                {randerFirstColumnCoverIfNecessary(
-                  <TaskItemCell
-                    isSubtask={isSubtask}
-                    key={`patient_last_name_${taskIdentifier}`}
-                    width={
-                      columns?.find(
-                        ({ identifier }) =>
-                          identifier === PatientTaskItemColumn.LAST_NAME,
-                      )?.columnWidth
-                    }
-                    order={getColumnOrder(PatientTaskItemColumn.LAST_NAME)}
-                  >
-                    <TaskItemText
-                      readOnly={isPatientDataReadOnly}
-                      value={patient?.lastName}
-                      onChange={handlePatientUpdate('lastName')}
-                    />
-                  </TaskItemCell>,
-                  getColumnOrder(PatientTaskItemColumn.LAST_NAME),
-                )}
-              </>
-            )}
-            {isColumnChecked(columns, PatientTaskItemColumn.MIDDLE_NAME) && (
-              <>
-                {randerFirstColumnCoverIfNecessary(
-                  <TaskItemCell
-                    isSubtask={isSubtask}
-                    key={`patient_middle_name_${taskIdentifier}`}
-                    width={
-                      columns?.find(
-                        ({ identifier }) =>
-                          identifier === PatientTaskItemColumn.MIDDLE_NAME,
-                      )?.columnWidth
-                    }
-                    order={getColumnOrder(PatientTaskItemColumn.MIDDLE_NAME)}
-                  >
-                    <TaskItemText
-                      readOnly={isPatientDataReadOnly}
-                      value={patient?.middleName}
-                      onChange={handlePatientUpdate('middleName')}
-                    />
-                  </TaskItemCell>,
-                  getColumnOrder(PatientTaskItemColumn.MIDDLE_NAME),
-                )}
-              </>
-            )}
             {isColumnChecked(columns, PatientTaskItemColumn.GENDER) && (
               <>
                 {randerFirstColumnCoverIfNecessary(
@@ -882,6 +807,42 @@ const TaskItem = React.memo(
                 )}
               </>
             )}
+
+            {isColumnChecked(columns, TaskItemColumn.PRIORITY) && (
+              <>
+                {randerFirstColumnCoverIfNecessary(
+                  <TaskItemCell
+                    isSubtask={isSubtask}
+                    key={`priority_${taskIdentifier}`}
+                    width={
+                      columns?.find(
+                        ({ identifier }) =>
+                          identifier === TaskItemColumn.PRIORITY,
+                      )?.columnWidth
+                    }
+                    order={getColumnOrder(TaskItemColumn.PRIORITY)}
+                  >
+                    <TaskItemDropdown
+                      value={task.priority}
+                      onChange={handlePriorityChange}
+                      field={{
+                        options: [
+                          {
+                            identifier: 'HIGH',
+                            name: 'High',
+                            color: getPriorityColor('HIGH'),
+                          },
+                        ],
+                        displayOptions: [],
+                      }}
+                      readOnly={false}
+                    />
+                  </TaskItemCell>,
+                  getColumnOrder(TaskItemColumn.PRIORITY),
+                )}
+              </>
+            )}
+
             {isColumnChecked(columns, TaskItemColumn.WORKFLOW_STATUS) && (
               <>
                 {randerFirstColumnCoverIfNecessary(
