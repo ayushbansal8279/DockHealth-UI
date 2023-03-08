@@ -145,7 +145,8 @@ const ColumnSortHeader = ({
             }
             style={{
               zIndex: 115,
-              maxWidth: descriptionTextReference?.current?.offsetWidth || '650px',
+              maxWidth:
+                descriptionTextReference?.current?.offsetWidth || '650px',
             }}
             transition
           >

@@ -39,6 +39,7 @@ import {
   getPriorityColor,
   TaskItemColumnWidth,
   isColumnChecked,
+  PatientTaskItemColumn,
 } from 'helpers/task-helpers';
 import DependencyIcon from 'img/dependency-icon.svg';
 import DependencyListPopover from 'components/common/DependencyListPopover/DependencyListPopover';
@@ -56,6 +57,7 @@ import {
 import { CUSTOM_FIELD_TYPES } from 'helpers/custom-fields-helpers';
 import { Box } from '@material-ui/core';
 import { opacify } from 'styles/palette';
+import { updatePatientDetails } from 'actions/patient-details-actions';
 import { getSubtaskStylingLink } from './helpers';
 import TaskItemContextMenu from '../TaskItemContextMenu/TaskItemContextMenu';
 import TaskItemBulkEdit from './TaskItemComponents/TaskItemBulkEdit';
@@ -85,6 +87,9 @@ import {
   DecisionCellContainer,
   ActionIconsContainer,
 } from '../styled';
+import TaskItemText from './customFieldsTaskItemComponents/TaskItemText/TaskItemText';
+import TaskItemDropdown from './customFieldsTaskItemComponents/TaskItemDropdown/TaskItemDropdown';
+import TaskItemDate from './customFieldsTaskItemComponents/TaskItemDate';
 
 const { DISABLED, READ_ONLY } = SINGLE_TASK_RESTRICTIONS_OPTIONS;
 
@@ -139,7 +144,7 @@ const TaskItem = React.memo(
       attachments,
       comments,
       labels,
-      patient,
+      patient: taskPatient,
       workflowStatus,
       taskList = {},
       parentTaskIdentifier,
@@ -153,6 +158,8 @@ const TaskItem = React.memo(
       hasEscalations,
       priority,
     } = task;
+
+    const patient = taskPatient ?? parentTask?.patient ?? parentPatient;
 
     const { columns } = useTaskListColumnsConfig();
     const { listName, taskListIdentifier } = taskList || {};
@@ -241,6 +248,16 @@ const TaskItem = React.memo(
         hasPriorityHighlight
         ? opacify(getPriorityColor(priority), 0.25)
         : undefined;
+
+    const [isPatientDataReadOnly] = useState(true);
+
+    const handlePatientUpdate = useCallback(
+      field => value => {
+        const { patientIdentifier } = patient;
+        dispatch(updatePatientDetails(patientIdentifier, { [field]: value }));
+      },
+      [dispatch, patient],
+    );
 
     const onSubtaskLabelClick = useCallback(
       event => {
@@ -632,6 +649,117 @@ const TaskItem = React.memo(
                     />
                   </TaskItemCell>,
                   getColumnOrder(TaskItemColumn.PATIENT),
+                )}
+              </>
+            )}
+            {isColumnChecked(columns, PatientTaskItemColumn.GENDER) && (
+              <>
+                {randerFirstColumnCoverIfNecessary(
+                  <TaskItemCell
+                    isSubtask={isSubtask}
+                    key={`gender_${taskIdentifier}`}
+                    width={
+                      columns?.find(
+                        ({ identifier }) =>
+                          identifier === PatientTaskItemColumn.GENDER,
+                      )?.columnWidth
+                    }
+                    order={getColumnOrder(PatientTaskItemColumn.GENDER)}
+                  >
+                    <TaskItemDropdown
+                      readOnly={isPatientDataReadOnly}
+                      value={patient?.gender}
+                      onChange={handlePatientUpdate('gender')}
+                      field={{
+                        options: [
+                          {
+                            identifier: 'male',
+                            name: 'male',
+                            color: '#00A2E5',
+                          },
+                          {
+                            identifier: 'female',
+                            name: 'female',
+                            color: '#00A2E5',
+                          },
+                        ],
+                        displayOptions: ['TASK_REQUIRED'],
+                      }}
+                    />
+                  </TaskItemCell>,
+                  getColumnOrder(PatientTaskItemColumn.GENDER),
+                )}
+              </>
+            )}
+            {isColumnChecked(columns, PatientTaskItemColumn.DOB) && (
+              <>
+                {randerFirstColumnCoverIfNecessary(
+                  <TaskItemCell
+                    isSubtask={isSubtask}
+                    key={`patient_dob_${taskIdentifier}`}
+                    width={
+                      columns?.find(
+                        ({ identifier }) =>
+                          identifier === PatientTaskItemColumn.DOB,
+                      )?.columnWidth
+                    }
+                    order={getColumnOrder(PatientTaskItemColumn.DOB)}
+                  >
+                    <TaskItemDate
+                      value={patient?.dob}
+                      onChange={handlePatientUpdate('dob')}
+                      readOnly={isPatientDataReadOnly}
+                    />
+                  </TaskItemCell>,
+                  getColumnOrder(PatientTaskItemColumn.DOB),
+                )}
+              </>
+            )}
+            {isColumnChecked(columns, PatientTaskItemColumn.EMAIL) && (
+              <>
+                {randerFirstColumnCoverIfNecessary(
+                  <TaskItemCell
+                    isSubtask={isSubtask}
+                    key={`patient_email_${taskIdentifier}`}
+                    width={
+                      columns?.find(
+                        ({ identifier }) =>
+                          identifier === PatientTaskItemColumn.EMAIL,
+                      )?.columnWidth
+                    }
+                    order={getColumnOrder(PatientTaskItemColumn.EMAIL)}
+                  >
+                    <TaskItemText
+                      readOnly={isPatientDataReadOnly}
+                      value={patient?.email}
+                      onChange={handlePatientUpdate('email')}
+                    />
+                  </TaskItemCell>,
+                  getColumnOrder(PatientTaskItemColumn.EMAIL),
+                )}
+              </>
+            )}
+            {isColumnChecked(columns, PatientTaskItemColumn.MRN) && (
+              <>
+                {randerFirstColumnCoverIfNecessary(
+                  <TaskItemCell
+                    isSubtask={isSubtask}
+                    key={`patient_MRN_${taskIdentifier}`}
+                    width={
+                      columns?.find(
+                        ({ identifier }) =>
+                          identifier === PatientTaskItemColumn.MRN,
+                      )?.columnWidth
+                    }
+                    order={getColumnOrder(PatientTaskItemColumn.MRN)}
+                  >
+                    <TaskItemText
+                      readOnly={isPatientDataReadOnly}
+                      value={patient?.mrn}
+                      onChange={handlePatientUpdate('mrn')}
+                    />
+                  </TaskItemCell>,
+                  getColumnOrder(PatientTaskItemColumn.MRN),
                 )}
               </>
             )}

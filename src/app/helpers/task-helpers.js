@@ -172,6 +172,13 @@ export const TaskItemColumn = {
   FILES: 'FILES',
 };
 
+export const PatientTaskItemColumn = {
+  GENDER: 'PATIENT_GENDER',
+  DOB: 'PATIENT_DOB',
+  EMAIL: 'PATIENT_EMAIL',
+  MRN: 'PATIENT_MRN',
+};
+
 export const TaskItemColumnWidth = {
   [TaskItemColumn.DUE_DATE]: 78,
   [TaskItemColumn.CREATED_DATE]: 115,
@@ -198,6 +205,10 @@ export const TaskItemColumnWidth = {
     PRINT: 170,
   },
   [TaskItemColumn.PATIENT]: 164,
+  [PatientTaskItemColumn.GENDER]: 164,
+  [PatientTaskItemColumn.DOB]: 164,
+  [PatientTaskItemColumn.EMAIL]: 164,
+  [PatientTaskItemColumn.MRN]: 164,
   [TaskItemColumn.DESCRIPTION]: {
     DEFAULT: 500,
     WIDE: 475,
@@ -217,6 +228,10 @@ export const TASK_ITEM_BASE_COLUMN_CONFIG = {
   [TaskItemColumn.TASK_DETAILS]: true,
   [TaskItemColumn.SUBTASKS_COUNT]: true,
   [TaskItemColumn.PATIENT]: true,
+  [PatientTaskItemColumn.GENDER]: true,
+  [PatientTaskItemColumn.DOB]: true,
+  [PatientTaskItemColumn.EMAIL]: true,
+  [PatientTaskItemColumn.MRN]: true,
   [TaskItemColumn.WORKFLOW_STATUS]: true,
   [TaskItemColumn.COMMENTS]: true,
   [TaskItemColumn.LABELS]: true,
@@ -250,6 +265,10 @@ export const SHOW_COLUMNS_CONFIG = {
   [TaskItemColumn.PATIENT]: true,
   [TaskItemColumn.LIST_NAME]: true,
   [TaskItemColumn.TASK_DETAILS]: true,
+  [PatientTaskItemColumn.GENDER]: true,
+  [PatientTaskItemColumn.DOB]: true,
+  [PatientTaskItemColumn.EMAIL]: true,
+  [PatientTaskItemColumn.MRN]: true,
 };
 
 export const TASK_ITEM_SORT_METHODS = {
@@ -307,6 +326,18 @@ export const TASK_ITEM_SORT_METHODS = {
   ]),
   [TaskItemColumn.SUBTASKS_COUNT]: sortWith([
     ascend(pipe(prop('subTasksCount'), defaultTo(-1))),
+  ]),
+  [PatientTaskItemColumn.GENDER]: sortWith([
+    ascend(pipe(prop('gender'), defaultTo('~'), toLower)),
+  ]),
+  [PatientTaskItemColumn.DOB]: sortWith([
+    ascend(pipe(prop('dob'), defaultTo('~'), toLower)),
+  ]),
+  [PatientTaskItemColumn.EMAIL]: sortWith([
+    ascend(pipe(prop('email'), defaultTo('~'), toLower)),
+  ]),
+  [PatientTaskItemColumn.MRN]: sortWith([
+    ascend(pipe(prop('mrn'), defaultTo('~'), toLower)),
   ]),
 };
 
@@ -367,6 +398,18 @@ export const TASK_ITEM_SORT_DESC_METHODS = {
   ]),
   [TaskItemColumn.SUBTASKS_COUNT]: sortWith([
     descend(pipe(prop('subTasksCount'), defaultTo(-1))),
+  ]),
+  [PatientTaskItemColumn.GENDER]: sortWith([
+    ascend(pipe(prop('gender'), defaultTo('~'), toLower)),
+  ]),
+  [PatientTaskItemColumn.DOB]: sortWith([
+    ascend(pipe(prop('dob'), defaultTo('~'), toLower)),
+  ]),
+  [PatientTaskItemColumn.EMAIL]: sortWith([
+    ascend(pipe(prop('email'), defaultTo('~'), toLower)),
+  ]),
+  [PatientTaskItemColumn.MRN]: sortWith([
+    ascend(pipe(prop('mrn'), defaultTo('~'), toLower)),
   ]),
 };
 
