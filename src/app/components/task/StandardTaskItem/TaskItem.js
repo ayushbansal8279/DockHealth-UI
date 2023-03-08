@@ -37,6 +37,7 @@ import {
   TaskItemColumn,
   TaskPriority,
   getPriorityColor,
+  getPriorityHighlighColor,
   TaskItemColumnWidth,
   isColumnChecked,
   PatientTaskItemColumn,
@@ -56,7 +57,6 @@ import {
 } from 'restrictions/task-restrictions';
 import { CUSTOM_FIELD_TYPES } from 'helpers/custom-fields-helpers';
 import { Box } from '@material-ui/core';
-import { opacify } from 'styles/palette';
 import { updatePatientDetails } from 'actions/patient-details-actions';
 import { getSubtaskStylingLink } from './helpers';
 import TaskItemContextMenu from '../TaskItemContextMenu/TaskItemContextMenu';
@@ -243,10 +243,10 @@ const TaskItem = React.memo(
 
     const customHighlight =
       customHighlightColor !== ''
-        ? opacify(customHighlightColor, 0.25)
+        ? customHighlightColor
         : // eslint-disable-next-line unicorn/no-nested-ternary
         hasPriorityHighlight
-        ? opacify(getPriorityColor(priority), 0.25)
+        ? getPriorityHighlighColor(priority)
         : undefined;
 
     const [isPatientDataReadOnly] = useState(true);
@@ -319,6 +319,15 @@ const TaskItem = React.memo(
           ),
         ),
       [dispatch, parentTaskGroupIdentifier, task, templateBundleIdentifier],
+    );
+
+    const handlePriorityChange = useCallback(
+      taskPriority => {
+        onTaskUpdate(taskIdentifier, {
+          priority: taskPriority.toUpperCase(),
+        });
+      },
+      [onTaskUpdate, taskIdentifier],
     );
 
     const onCircleClick = useCallback(
@@ -763,6 +772,42 @@ const TaskItem = React.memo(
                 )}
               </>
             )}
+
+            {isColumnChecked(columns, TaskItemColumn.PRIORITY) && (
+              <>
+                {randerFirstColumnCoverIfNecessary(
+                  <TaskItemCell
+                    isSubtask={isSubtask}
+                    key={`priority_${taskIdentifier}`}
+                    width={
+                      columns?.find(
+                        ({ identifier }) =>
+                          identifier === TaskItemColumn.PRIORITY,
+                      )?.columnWidth
+                    }
+                    order={getColumnOrder(TaskItemColumn.PRIORITY)}
+                  >
+                    <TaskItemDropdown
+                      value={task.priority}
+                      onChange={handlePriorityChange}
+                      field={{
+                        options: [
+                          {
+                            identifier: 'HIGH',
+                            name: 'High',
+                            color: getPriorityColor('HIGH'),
+                          },
+                        ],
+                        displayOptions: [],
+                      }}
+                      readOnly={false}
+                    />
+                  </TaskItemCell>,
+                  getColumnOrder(TaskItemColumn.PRIORITY),
+                )}
+              </>
+            )}
+
             {isColumnChecked(columns, TaskItemColumn.WORKFLOW_STATUS) && (
               <>
                 {randerFirstColumnCoverIfNecessary(

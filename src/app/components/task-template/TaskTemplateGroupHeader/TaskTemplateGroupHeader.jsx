@@ -25,6 +25,7 @@ import {
   PatientTaskItemColumn,
   TaskItemColumnWidth,
   TaskStatus,
+  getPriorityColor,
 } from 'helpers/task-helpers';
 import * as TaskTemplateApi from 'api/task-template-api';
 import { workflowSelector } from 'selectors/workflow-drawer-selectors';
@@ -433,6 +434,19 @@ const TaskTemplateGroupHeader = ({
     TASK_LIST_RESTRICTIONS_PROFILES[currentUser?.orgUserRole];
   const { DISABLED, READ_ONLY } = SINGLE_TASK_RESTRICTIONS_OPTIONS;
 
+  const taskPriority = (templateGroup || workFlowData).priority;
+
+  const handleUpdateTaskPriority = useCallback(
+    priority => {
+      dispatch(
+        updatePartialWorkflow(identifier, {
+          priority: priority.toUpperCase(),
+        }),
+      );
+    },
+    [dispatch, identifier],
+  );
+
   const { patient } = templateGroup ?? workFlowData;
 
   const [isPatientDataReadOnly] = useState(true);
@@ -742,6 +756,43 @@ const TaskTemplateGroupHeader = ({
             getColumnOrder(TaskItemColumn.WORKFLOW_STATUS),
             columns?.find(
               ({ identifier: id }) => id === TaskItemColumn.WORKFLOW_STATUS,
+            )?.columnWidth,
+          )}
+        </>
+      )}
+
+      {isColumnChecked(columns, TaskItemColumn.PRIORITY) && (
+        <>
+          {randerFirstColumnCoverIfNecessary(
+            <TaskItemCell
+              key={`priority_${identifier}`}
+              width={
+                columns?.find(
+                  ({ identifier: id }) => id === TaskItemColumn.PRIORITY,
+                )?.columnWidth
+              }
+              justify="center"
+              order={getColumnOrder(TaskItemColumn.PRIORITY)}
+            >
+              <TaskItemDropdown
+                value={taskPriority}
+                onChange={handleUpdateTaskPriority}
+                field={{
+                  options: [
+                    {
+                      identifier: 'HIGH',
+                      name: 'High',
+                      color: getPriorityColor('HIGH'),
+                    },
+                  ],
+                  displayOptions: [],
+                }}
+                readOnly={false}
+              />
+            </TaskItemCell>,
+            getColumnOrder(TaskItemColumn.PRIORITY),
+            columns?.find(
+              ({ identifier: id }) => id === TaskItemColumn.PRIORITY,
             )?.columnWidth,
           )}
         </>
