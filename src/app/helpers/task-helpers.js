@@ -69,7 +69,7 @@ export function getPriorityHighlighColor(priority) {
       return palette.tomatoInYoFaceLight;
     case TaskPriority.LOW:
     default:
-      return 'transparent';
+      return 'white'; // neeeded for sticky column
   }
 }
 
