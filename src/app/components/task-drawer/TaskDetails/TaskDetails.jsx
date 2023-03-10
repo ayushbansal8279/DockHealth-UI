@@ -21,6 +21,7 @@ import {
 import { selectedTaskSelector } from 'selectors/task-drawer-selectors';
 import debounce from 'lodash.debounce';
 import { DetailsContainer } from './styled';
+import RichTextEditor from "components/RichTextEditorV2/RichTextEditor";
 
 const TaskDetails = ({ readOnly, disableMentions }) => {
   const DEBOUNCE_TIME = 10000;
@@ -100,26 +101,27 @@ const TaskDetails = ({ readOnly, disableMentions }) => {
 
   return (
     <DetailsContainer>
-      <CustomTextEditor
-        key={selectedTask?.identifier}
-        empty={isEmptyDetailsState}
-        focused={isFocused}
-        label="details"
-        richTextEnabled
-      >
-        <TextEditor
-          readOnly={readOnly}
-          minHeight={100}
-          ref={detailsReference}
-          taskListIdentifier={taskListIdentifier}
-          disableMentions={disableMentions || isTemplateTask}
-          showToolbar
-          onFocus={setFocused}
-          onBlur={unsetFocused}
-          state={detailsState}
-          onChange={onChangeDetailsEditor}
-        />
-      </CustomTextEditor>
+        <RichTextEditor />
+      {/*<CustomTextEditor*/}
+      {/*  key={selectedTask?.identifier}*/}
+      {/*  empty={isEmptyDetailsState}*/}
+      {/*  focused={isFocused}*/}
+      {/*  label="details2"*/}
+      {/*  richTextEnabled*/}
+      {/*>*/}
+      {/*  <TextEditor*/}
+      {/*    readOnly={readOnly}*/}
+      {/*    minHeight={100}*/}
+      {/*    ref={detailsReference}*/}
+      {/*    taskListIdentifier={taskListIdentifier}*/}
+      {/*    disableMentions={disableMentions || isTemplateTask}*/}
+      {/*    showToolbar*/}
+      {/*    onFocus={setFocused}*/}
+      {/*    onBlur={unsetFocused}*/}
+      {/*    state={detailsState}*/}
+      {/*    onChange={onChangeDetailsEditor}*/}
+      {/*  />*/}
+      {/*</CustomTextEditor>*/}
     </DetailsContainer>
   );
 };
