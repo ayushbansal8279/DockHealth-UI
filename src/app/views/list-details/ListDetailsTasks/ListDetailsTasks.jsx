@@ -49,20 +49,13 @@ import {
   TASK_LIST_RESTRICTIONS_OPTIONS,
   TASK_LIST_RESTRICTIONS_PROFILES,
 } from 'restrictions/task-restrictions';
-import { currentTaskListSelector } from 'selectors/task-list-selectors';
 import { hasFiltersAppliedSelector } from 'selectors/mega-filter-selectors';
 import {
   TaskGroupsContainer,
   DroppablePlaceholder,
 } from '../ListDetailsTableView/styled';
 
-const VIEW_LIST_OPTIONS_CONFIG = {
-  SHOW_WORKFLOW_DETAILS: false,
-  SHOW_WORKFLOW_COMPLETED_TASKS: false,
-};
-
 const ListDetailsTasks = ({
-  toggleCompleteTask,
   onTaskUpdate,
   updateWorkflowStatus,
   loadTasksForTaskGroup,
@@ -83,8 +76,6 @@ const ListDetailsTasks = ({
   const isCompletedView = tabName?.toUpperCase() === TaskStatus.COMPLETE;
 
   const currentUser = useSelector(userProfileSelector);
-  const { userIdentifier: currentUserIdentifier } = currentUser || {};
-  const taskList = useSelector(currentTaskListSelector);
   const taskCounters = useSelector(taskCountersSelector);
 
   const createTaskGroupList = useCallback(
@@ -116,22 +107,6 @@ const ListDetailsTasks = ({
   const resetSort = useCallback(() => {
     dispatch(ListDetailsActions.sortListDetailsTasks(null, null));
   }, [dispatch]);
-
-  const viewSetup = useMemo(() => {
-    const { displayOptions = [] } =
-      taskList?.listType === 'PUBLIC'
-        ? taskList
-        : taskList?.listUsers?.find(
-            (user) => user.identifier === currentUserIdentifier,
-          ) ||
-          taskList ||
-          {};
-
-    return displayOptions.reduce(
-      (accumulator, value) => ({ ...accumulator, [value]: true }),
-      VIEW_LIST_OPTIONS_CONFIG,
-    );
-  }, [currentUserIdentifier, taskList]);
 
   const restrictions =
     TASK_LIST_RESTRICTIONS_PROFILES[currentUser?.orgUserRole];
@@ -299,7 +274,6 @@ const ListDetailsTasks = ({
               taskGroupIdentifier={taskGroupIdentifier}
               onTaskUpdate={onTaskUpdate}
               draggedId={draggedId}
-              toggleCompleteTask={toggleCompleteTask}
               updateWorkflowStatus={updateWorkflowStatus}
               isSearchApplied={isSearchApplied}
               listUniqueKey={listUniqueKey}
@@ -377,7 +351,6 @@ const ListDetailsTasks = ({
                                         task={task}
                                         draggableProvided={draggableProvided}
                                         isCompletedGroup={isCompletedGroup}
-                                        toggleCompleteTask={toggleCompleteTask}
                                         onTaskUpdate={onTaskUpdate}
                                         updateWorkflowStatus={
                                           updateWorkflowStatus
@@ -451,7 +424,6 @@ const ListDetailsTasks = ({
       groupList?.length,
       onTaskUpdate,
       draggedId,
-      toggleCompleteTask,
       updateWorkflowStatus,
       isSearchApplied,
       listUniqueKey,

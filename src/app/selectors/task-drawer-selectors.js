@@ -22,6 +22,14 @@ export const taskCustomFieldsSelector = createSelector(
   ({ customFields }) => customFields,
 );
 
+export const singleTaskCustomFieldsSelector = createSelector(
+  taskDrawerSelector,
+  (_, taskId) => taskId,
+  ({ templatesMap }, taskId) => {
+    return templatesMap[taskId] ?? [];
+  },
+);
+
 export const selectedTaskIdentifierSelector = createSelector(
   taskDrawerSelector,
   ({ selectedTask }) => selectedTask?.taskIdentifier,

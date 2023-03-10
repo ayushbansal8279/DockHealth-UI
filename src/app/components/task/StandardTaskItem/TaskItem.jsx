@@ -11,9 +11,17 @@ import React, {
 } from 'react';
 import pluck from 'ramda/src/pluck';
 import { useDispatch, useSelector } from 'react-redux';
-import { isTaskSelectedSelector } from 'selectors/task-drawer-selectors';
+import * as ListDetailsActions from 'actions/list-details-actions';
+import {
+  isTaskSelectedSelector,
+  singleTaskCustomFieldsSelector,
+} from 'selectors/task-drawer-selectors';
+import { TASK_DISAPPEAR_DELAY } from 'helpers/task-update-helper';
 import { openTaskDrawerWithContent } from 'actions/task-drawer-actions';
 import { useParams } from 'react-router-dom';
+import * as ModalActions from 'modal/actions';
+import * as TaskActions from 'actions/task-actions';
+import useActions from 'hooks/use-actions';
 import {
   selectTask,
   storeAsCurrentTask,
@@ -46,6 +54,7 @@ import {
   isColumnChecked,
   TaskItemType,
   TaskStatus,
+  findIncompleteRequiredFields,
 } from 'helpers/task-helpers';
 import DependencyIcon from 'img/dependency-icon.svg';
 import DependencyListPopover from 'components/common/DependencyListPopover/DependencyListPopover';
@@ -108,7 +117,6 @@ const TaskItem = React.memo(
   ({
     isOpen,
     switchOpen,
-    toggleCompleteTask,
     task: taskId,
     dragHandleProps,
     isDragging,
@@ -177,6 +185,9 @@ const TaskItem = React.memo(
       (accumulator, currentValue) => accumulator || currentValue.isSelected,
       false,
     );
+
+    const actions = useActions(TaskActions);
+    const modalActions = useActions(ModalActions);
 
     const isTaskStatusTogglingDisabled =
       isTemplateTask ||
@@ -290,6 +301,79 @@ const TaskItem = React.memo(
           ),
         ),
       [dispatch, parentTaskGroupIdentifier, task, templateBundleIdentifier],
+    );
+
+    const templates = useSelector((state) =>
+      singleTaskCustomFieldsSelector(state, task.taskIdentifier),
+    );
+
+    const refreshTab = useCallback(
+      (withLoader = false) => {
+        dispatch(ListDetailsActions.getCurrentTaskListFilterOptions());
+        dispatch(
+          ListDetailsActions.getListDetailsTaskCounters(taskListIdentifier),
+        );
+        dispatch(ListDetailsActions.refreshListDetailsGroupedTasks(withLoader));
+      },
+      [dispatch, taskListIdentifier],
+    );
+
+    const invokeToggleCompleteAction = useCallback(
+      // eslint-disable-next-line no-shadow
+      (task) => {
+        actions
+          .toggleCompleteTask(task, currentUser)
+          .then(() => {
+            setTimeout(() => {
+              dispatch(
+                ListDetailsActions.getListDetailsTaskCounters(
+                  taskListIdentifier,
+                ),
+              );
+              dispatch(ListDetailsActions.getTasksGroupsList());
+            }, TASK_DISAPPEAR_DELAY);
+          })
+          .catch(() => refreshTab());
+      },
+      [actions, currentUser, dispatch, taskListIdentifier, refreshTab],
+    );
+
+    const toggleCompleteTask = useCallback(
+      // eslint-disable-next-line no-shadow
+      (task) => {
+        const incompleteRequiredFields = findIncompleteRequiredFields(
+          templates,
+          task,
+        );
+        const isRequiredFieldsAreIncomplete =
+          incompleteRequiredFields.length > 0;
+
+        if (isRequiredFieldsAreIncomplete) {
+          const modalProps = {
+            incompleteFields: incompleteRequiredFields,
+          };
+          modalActions.openModal('CompleteAllFields', modalProps);
+          return;
+        }
+
+        const hasIncompletedSubtasks =
+          task.subtasks?.length > 0
+            ? task.subtasks.find((subtask) => subtask.status === 'INCOMPLETE')
+            : task.subTasksCount - task.subTasksCompletedCount > 0;
+
+        if (task.status === 'INCOMPLETE' && hasIncompletedSubtasks) {
+          const modalProps = {
+            confirm: () => {
+              modalActions.closeModal();
+              invokeToggleCompleteAction(task);
+            },
+          };
+          modalActions.openModal('CompleteAllTasks', modalProps);
+        } else {
+          invokeToggleCompleteAction(task);
+        }
+      },
+      [invokeToggleCompleteAction, modalActions, templates],
     );
 
     const onCircleClick = useCallback(
