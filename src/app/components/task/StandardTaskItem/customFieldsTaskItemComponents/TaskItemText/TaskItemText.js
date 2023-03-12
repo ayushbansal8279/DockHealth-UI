@@ -75,7 +75,7 @@ const TaskItemText = ({ value = '', onChange, readOnly = false }) => {
 
   return (
     <Tooltip placement="top" title={value} hideTooltip={isEditing}>
-      <TextContainer onClick={handleClick}>
+      <TextContainer onClick={handleClick} shouldHover={readOnly}>
         <TextEditor
           ref={editorReference}
           readOnly={readOnly || !isEditing}
