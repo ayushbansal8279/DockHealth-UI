@@ -22,7 +22,6 @@ import usePrevious from 'hooks/use-previous';
 import localStorageHelper from 'helpers/local-storage-helper';
 import { updateUserListViewSetup } from 'actions/task-list-actions';
 import { checkIfTaskMatchesFilters } from 'helpers/filters-helpers';
-import { TASK_DISAPPEAR_DELAY } from 'helpers/task-update-helper';
 import {
   completedTasksIsFetchingSelector,
   tasksIsFetchingSelector,
@@ -39,13 +38,10 @@ import {
   pendingTaskListsSelector,
   archivedTaskListsSelector,
 } from 'selectors/task-list-selectors';
-import { taskCustomFieldsSelector } from 'selectors/task-drawer-selectors';
-import { findIncompleteRequiredFields } from 'helpers/task-helpers';
 import { userProfileSelector } from 'selectors/user-selectors';
 import { selectedFiltersInMegaFilterSelector } from 'selectors/mega-filter-selectors';
 import { useTaskListColumnsConfig } from 'context-api/columns-config-context';
 import * as TaskActions from 'actions/task-actions';
-import * as ModalActions from 'modal/actions';
 import * as UserAuthApi from 'api/user-auth-api';
 import { TaskViewContainer } from './styled';
 import ListDetailsToolbar from '../ListDetailsToolbar/ListDetailsToolbar';
@@ -84,7 +80,6 @@ const ListDetailsTableView = () => {
   const selectedFilters = useSelector(selectedFiltersInMegaFilterSelector);
 
   const actions = useActions(TaskActions);
-  const modalActions = useActions(ModalActions);
 
   const [isTourOpen, setIsTourOpen] = useState(false);
   const [tourConditionChecked, setTourConditionChecked] = useState(false);
@@ -99,7 +94,6 @@ const ListDetailsTableView = () => {
 
   const dispatch = useDispatch();
   const { taskListIdentifier, tabName } = params;
-  const { templates } = useSelector(taskCustomFieldsSelector);
 
   useEffect(() => {
     if (currentTaskListIdentifier)
@@ -204,23 +198,6 @@ const ListDetailsTableView = () => {
     [dispatch],
   );
 
-  const invokeToggleCompleteAction = useCallback(
-    (task) => {
-      actions
-        .toggleCompleteTask(task, currentUser)
-        .then(() => {
-          setTimeout(() => {
-            dispatch(
-              ListDetailsActions.getListDetailsTaskCounters(taskListIdentifier),
-            );
-            dispatch(ListDetailsActions.getTasksGroupsList());
-          }, TASK_DISAPPEAR_DELAY);
-        })
-        .catch(() => refreshTab());
-    },
-    [actions, currentUser, dispatch, taskListIdentifier, refreshTab],
-  );
-
   const handleTaskUpdate = useCallback(
     (taskIdentifier, dataToUpdate) => {
       actions
@@ -254,42 +231,6 @@ const ListDetailsTableView = () => {
       dispatch(ListDetailsActions.getTasksForTaskGroups(payload));
     },
     [dispatch, params.tabName, sort],
-  );
-
-  const toggleTaskCompletedStatus = useCallback(
-    (task) => {
-      const incompleteRequiredFields = findIncompleteRequiredFields(
-        templates,
-        task,
-      );
-      const isRequiredFieldsAreIncomplete = incompleteRequiredFields.length > 0;
-
-      if (isRequiredFieldsAreIncomplete) {
-        const modalProps = {
-          incompleteFields: incompleteRequiredFields,
-        };
-        modalActions.openModal('CompleteAllFields', modalProps);
-        return;
-      }
-
-      const hasIncompletedSubtasks =
-        task.subtasks?.length > 0
-          ? task.subtasks.find((subtask) => subtask.status === 'INCOMPLETE')
-          : task.subTasksCount - task.subTasksCompletedCount > 0;
-
-      if (task.status === 'INCOMPLETE' && hasIncompletedSubtasks) {
-        const modalProps = {
-          confirm: () => {
-            modalActions.closeModal();
-            invokeToggleCompleteAction(task);
-          },
-        };
-        modalActions.openModal('CompleteAllTasks', modalProps);
-      } else {
-        invokeToggleCompleteAction(task);
-      }
-    },
-    [invokeToggleCompleteAction, modalActions, templates],
   );
 
   useEffect(() => {
@@ -538,7 +479,6 @@ const ListDetailsTableView = () => {
               />
             </StickyContainer>
             <TasksView
-              toggleCompleteTask={toggleTaskCompletedStatus}
               onTaskUpdate={handleTaskUpdate}
               updateWorkflowStatus={handleUpdateWorkflowStatus}
               loadTasksForTaskGroup={loadTasksForTaskGroup}
