@@ -13,6 +13,7 @@ import {
 } from 'selectors/global-search-selectors';
 import { selectedTaskSelector } from 'selectors/task-drawer-selectors';
 // import EmptyGlobalSearch from 'img/empty-global-search.png';
+import { ColumnsConfigProvider } from 'context-api/columns-config-context';
 import { userProfileSelector } from 'selectors/user-selectors';
 import * as TaskActions from 'actions/task-actions';
 import { GlobalSearchSagaActions } from 'sagas/global-search-saga';
@@ -91,28 +92,30 @@ const GlobalSearchView = ({
             {isLoadingView ? (
               <GroupedListSkeletonLoader />
             ) : (
-              <VerticalScrollContainer>
-                <Spacing vertical={5} />
-                {!isEmpty(lists)
-                  ? lists?.map(list =>
-                      list.tasks?.length > 0 ? (
-                        <GlobalSearchList
-                          list={list}
-                          currentUser={currentUser}
-                          selectedTask={selectedTask}
-                          storeAsCurrentTask={storeAsCurrentTask}
-                          toggleTaskStatus={toggleTaskStatus}
-                          onTaskUpdate={updateTask}
-                          updateWorkflowStatus={setWorkflowStatus}
-                          highlightedValue={searchValue}
-                          isCompletedList={isSearchingCompletedTasks}
-                          getMoreTasksForTaskList={getMoreTasksForTaskList}
-                          isLoadingMore={isLoadingMore}
-                        />
-                      ) : null,
-                    )
-                  : renderEmptyState()}
-              </VerticalScrollContainer>
+              <ColumnsConfigProvider>
+                <VerticalScrollContainer>
+                  <Spacing vertical={5} />
+                  {!isEmpty(lists)
+                    ? lists?.map(list =>
+                        list.tasks?.length > 0 ? (
+                          <GlobalSearchList
+                            list={list}
+                            currentUser={currentUser}
+                            selectedTask={selectedTask}
+                            storeAsCurrentTask={storeAsCurrentTask}
+                            toggleTaskStatus={toggleTaskStatus}
+                            onTaskUpdate={updateTask}
+                            updateWorkflowStatus={setWorkflowStatus}
+                            highlightedValue={searchValue}
+                            isCompletedList={isSearchingCompletedTasks}
+                            getMoreTasksForTaskList={getMoreTasksForTaskList}
+                            isLoadingMore={isLoadingMore}
+                          />
+                        ) : null,
+                      )
+                    : renderEmptyState()}
+                </VerticalScrollContainer>
+              </ColumnsConfigProvider>
             )}
           </ViewSidePadding>
           <TaskDrawer />
