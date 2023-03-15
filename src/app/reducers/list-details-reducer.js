@@ -64,6 +64,7 @@ function updateBundleInState(updateCallback, bundleIdentifier, state) {
   };
 }
 
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 const updateTaskInList = (taskGroups, updateTaskCallback) =>
   taskGroups?.map((group) => ({
     ...group,
@@ -78,23 +79,34 @@ const updateTaskInList = (taskGroups, updateTaskCallback) =>
     }, group.tasks),
   }));
 
-const updateTasksStateCallback = (state, updateTaskFromAction) => ({
-  ...state,
-  groupedTasks: {
-    ...state.groupedTasks,
-    taskGroups: updateTaskInList(
-      state.groupedTasks?.taskGroups,
-      updateTaskFromAction,
-    ),
-  },
-  completedGroupedTasks: {
-    ...state.completedGroupedTasks,
-    taskGroups: updateTaskInList(
-      state.completedGroupedTasks?.taskGroups,
-      updateTaskFromAction,
-    ),
-  },
-});
+const updateTasksStateCallback = (state, newTask) => {
+  if (typeof newTask === 'function') return state;
+
+  return {
+    ...state,
+    tasksMap: {
+      ...state.tasksMap,
+      [newTask.identifier ?? newTask.taskIdentifier]: {
+        ...state.tasksMap[newTask.identifier ?? newTask.taskIdentifier],
+        ...newTask,
+      },
+    },
+    // groupedTasks: {
+    //   ...state.groupedTasks,
+    //   taskGroups: updateTaskInList(
+    //     state.groupedTasks?.taskGroups,
+    //     updateTaskFromAction,
+    //   ),
+    // },
+    // completedGroupedTasks: {
+    //   ...state.completedGroupedTasks,
+    //   taskGroups: updateTaskInList(
+    //     state.completedGroupedTasks?.taskGroups,
+    //     updateTaskFromAction,
+    //   ),
+    // },
+  };
+};
 
 // eslint-disable-next-line sonarjs/cognitive-complexity
 const ListDetailsReducer = (state = initialState, action) => {
@@ -525,24 +537,24 @@ const ListDetailsReducer = (state = initialState, action) => {
         payload: { patientIdentifier, details },
       } = action;
 
-      // eslint-disable-next-line sonarjs/prefer-immediate-return
-      const updatedState = {
-        ...state,
-        groupedTasks: {
-          ...state.groupedTasks,
-          taskGroups: state.groupedTasks?.taskGroups?.map((g) => ({
-            ...g,
-            tasks: g.tasks.map((t) =>
-              t?.itemType === 'BUNDLE' &&
-              t?.patient?.patientIdentifier === patientIdentifier
-                ? { ...t, patient: { ...t.patient, ...details } }
-                : t,
-            ),
-          })),
-        },
-      };
+      if (!state.tasksMap) {
+        return state;
+      }
 
-      return TaskBaseReducer(updatedState, action, updateTasksStateCallback);
+      const newMap = { ...state.tasksMap };
+      for (const [key, task] of Object.entries(newMap)) {
+        if (task.patient?.patientIdentifier === patientIdentifier) {
+          newMap[key] = {
+            ...task,
+            patient: { ...task.patient, ...details },
+          };
+        }
+      }
+
+      return {
+        ...state,
+        tasksMap: newMap,
+      };
     }
 
     case ActionTypes.UPDATE_PARTIAL_WORKFLOW_SUCCESS: {

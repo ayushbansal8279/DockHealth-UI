@@ -42,12 +42,15 @@ const CustomField = ({
   const [wasChanged, setWasChanged] = useState(false);
   const [descriptionErrorState, setDescriptionErrorState] = useState(false);
 
-  const errorContextValue = {
-    identifier,
-    descriptionErrorState,
-    setDescriptionErrorState,
-    isRequired,
-  };
+  const errorContextValue = useMemo(
+    () => ({
+      identifier,
+      descriptionErrorState,
+      setDescriptionErrorState,
+      isRequired,
+    }),
+    [descriptionErrorState, identifier, isRequired],
+  );
 
   const isWorkflow =
     task &&
@@ -101,7 +104,7 @@ const CustomField = ({
 
   const renderCustomField = useCallback(() => {
     switch (fieldType) {
-      case FieldType.TEXT:
+      case FieldType.TEXT: {
         return (
           <CustomFieldTextEditor
             oneline
@@ -118,7 +121,8 @@ const CustomField = ({
             onChange={() => setWasChanged(true)}
           />
         );
-      case FieldType.LONG_TEXT:
+      }
+      case FieldType.LONG_TEXT: {
         return (
           <CustomFieldTextEditor
             characterLimit={FieldCharakterLimit.LONG_TEXT}
@@ -135,7 +139,8 @@ const CustomField = ({
             enableRichText
           />
         );
-      case FieldType.NUMBER:
+      }
+      case FieldType.NUMBER: {
         return (
           <FormInput
             type="number"
@@ -150,7 +155,8 @@ const CustomField = ({
             required={isRequired}
           />
         );
-      case FieldType.BOOL:
+      }
+      case FieldType.BOOL: {
         return (
           <FormSelect
             readOnly={readOnly}
@@ -164,7 +170,8 @@ const CustomField = ({
             onChange={() => setWasChanged(true)}
           />
         );
-      case FieldType.DATE:
+      }
+      case FieldType.DATE: {
         return (
           <FormInput
             readOnly={readOnly}
@@ -182,6 +189,7 @@ const CustomField = ({
             required={isRequired}
           />
         );
+      }
       case FieldType.DROPDOWN: {
         const value = watch(fieldName) || '';
         const colorIndicator = dropdownOptions?.find(
@@ -221,7 +229,7 @@ const CustomField = ({
           </Box>
         );
       }
-      case FieldType.HYPERLINK:
+      case FieldType.HYPERLINK: {
         return (
           <CustomFieldTextEditor
             identifier={identifier}
@@ -237,9 +245,11 @@ const CustomField = ({
             onChange={() => setWasChanged(true)}
           />
         );
+      }
 
-      default:
+      default: {
         return <div>{field.name}</div>;
+      }
     }
   }, [
     clearErrors,
