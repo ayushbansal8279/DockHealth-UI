@@ -231,10 +231,6 @@ export function updateOrganizationStatus(identifier, dataToUpdate) {
   };
 }
 
-export function getOrganizationUsers() {
-  return { type: ActionTypes.GET_ORGANIZATION_USERS };
-}
-
 export function changeUserOrganizationRole(userIdentifier, role) {
   return {
     type: ActionTypes.CHANGE_USER_ORGANIZATION_ROLE,

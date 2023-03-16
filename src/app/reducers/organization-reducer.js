@@ -26,8 +26,6 @@ import {
   DELETE_ORGANIZATION_STATUS,
   ADD_ORGANIZATION_STATUS,
   UPDATE_ORGANIZATION_STATUS,
-  GET_ORGANIZATION_USERS_SUCCESS,
-  GET_ORGANIZATION_USERS,
   GET_ORGANIZATION_CUSTOM_FIELDS_SUCCESS,
   GET_ORGANIZATION_CUSTOM_FIELDS_FAILURE,
   UPDATE_SUBSCRIPTION_PLAN_SUCCESS,
@@ -300,21 +298,6 @@ const reducer = (state = initialState, action) => {
             ? { ...status, ...omit('identifier', dataToUpdate) }
             : status,
         ),
-      };
-    }
-
-    case GET_ORGANIZATION_USERS: {
-      return {
-        ...state,
-        isFetchingOrganizationUsers: !state.organizationUsers,
-      };
-    }
-
-    case GET_ORGANIZATION_USERS_SUCCESS: {
-      return {
-        ...state,
-        organizationUsers: action.users ?? state.organizationUsers,
-        isFetchingOrganizationUsers: false,
       };
     }
 

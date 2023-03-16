@@ -9,6 +9,7 @@ import { onSubtaskOrderChanged } from 'helpers/ga-event-helper';
 import TasksSkeletonLoader from 'components/task/TasksSkeletonLoader/TasksSkeletonLoader';
 import TaskComments from 'components/tasklist/TaskComments/TaskComments';
 import { Tasks as SubtasksContainer } from 'components/tasklist/TasksGroup/styled';
+// eslint-disable-next-line import/no-cycle
 import TaskItem from './TaskItem';
 import { getMatchedComments } from './helpers';
 import { SubtaskItemWrapper } from '../styled';
@@ -57,11 +58,15 @@ const Subtasks = ({
 
   return (
     <SubtasksContainer in={isOpen}>
-      {!isFetchingSubTasks ? (
+      {isFetchingSubTasks ? (
+        <Box pl={2}>
+          <TasksSkeletonLoader rows={subTasksCount} />
+        </Box>
+      ) : (
         <DragDropContext
           onBeforeCapture={onBeforeCapture}
           onBeforeDragStart={showClearSortFiltersModal}
-          onDragEnd={!shouldShowBlockModalOnDrag ? onDragEnd : () => {}}
+          onDragEnd={shouldShowBlockModalOnDrag ? () => {} : onDragEnd}
         >
           <Droppable droppableId={parentTask.taskIdentifier}>
             {(provided) => (
@@ -137,10 +142,6 @@ const Subtasks = ({
             )}
           </Droppable>
         </DragDropContext>
-      ) : (
-        <Box pl={2}>
-          <TasksSkeletonLoader rows={subTasksCount} />
-        </Box>
       )}
     </SubtasksContainer>
   );

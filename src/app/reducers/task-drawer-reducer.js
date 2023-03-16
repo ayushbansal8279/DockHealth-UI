@@ -29,8 +29,9 @@ const initialState = {
   focusField: null,
   customFields: {
     isFetching: false,
-    templates: [],
+    templates: [], // for backward compatibility
   },
+  templatesMap: {},
 };
 
 const requestHistory = (state) => ({ ...state, isHistoryFetching: true });
@@ -146,6 +147,12 @@ const TaskReducer = (state = initialState, action) => {
       };
     }
     case GET_TASK_CUSTOM_FIELDS_SUCCESS: {
+      const newMap = { ...state.templatesMap };
+
+      if (action.taskIdentifier) {
+        newMap[action.taskIdentifier] = action.customFieldsList;
+      }
+
       return {
         ...state,
         customFields: {
@@ -153,6 +160,7 @@ const TaskReducer = (state = initialState, action) => {
           isFetching: false,
           templates: action.customFieldsList,
         },
+        templatesMap: newMap,
       };
     }
     case GET_TASK_CUSTOM_FIELDS_FAILURE: {
@@ -167,14 +175,12 @@ const TaskReducer = (state = initialState, action) => {
 
     default: {
       if (state.selectedTask) {
-        return TaskBaseReducer(
-          state,
-          action,
-          (reducerState, updateTaskFromAction) => ({
+        return TaskBaseReducer(state, action, (reducerState, newTask) => {
+          return {
             ...reducerState,
-            selectedTask: updateTaskFromAction(state.selectedTask),
-          }),
-        );
+            selectedTask: newTask,
+          };
+        });
       }
 
       return state;

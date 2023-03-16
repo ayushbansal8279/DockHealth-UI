@@ -93,7 +93,7 @@ const TaskItemCustomField = ({
     }
   };
   switch (field.fieldType) {
-    case FieldType.BOOL:
+    case FieldType.BOOL: {
       return (
         <TaskItemBoolean
           readOnly={readOnly}
@@ -102,7 +102,8 @@ const TaskItemCustomField = ({
           field={field}
         />
       );
-    case FieldType.DATE:
+    }
+    case FieldType.DATE: {
       return (
         <TaskItemDate
           value={value}
@@ -111,6 +112,7 @@ const TaskItemCustomField = ({
           readOnly={readOnly}
         />
       );
+    }
     case FieldType.DROPDOWN_MULTI: {
       return (
         <TaskItemMultiDropdown
@@ -131,7 +133,7 @@ const TaskItemCustomField = ({
         />
       );
     }
-    case FieldType.TEXT:
+    case FieldType.TEXT: {
       return (
         <TaskItemText
           readOnly={readOnly}
@@ -140,17 +142,19 @@ const TaskItemCustomField = ({
           field={field}
         />
       );
-    case FieldType.LONG_TEXT:
+    }
+    case FieldType.LONG_TEXT: {
       return (
         <TaskItemLongText
           readOnly={readOnly}
           value={value}
           onChange={handleChange}
-          openDrawer={!patientType ? handleClick : undefined}
+          openDrawer={patientType ? undefined : handleClick}
           field={field}
         />
       );
-    case FieldType.NUMBER:
+    }
+    case FieldType.NUMBER: {
       return (
         <TaskItemNumber
           readOnly={readOnly}
@@ -159,7 +163,8 @@ const TaskItemCustomField = ({
           field={field}
         />
       );
-    case FieldType.HYPERLINK:
+    }
+    case FieldType.HYPERLINK: {
       return (
         <StyledHyperLink
           href={value?.startsWith('http') ? value : `//${value}`}
@@ -168,8 +173,10 @@ const TaskItemCustomField = ({
           {trunc(value, 15)}
         </StyledHyperLink>
       );
-    default:
+    }
+    default: {
       return <div>{field.name}</div>;
+    }
   }
 };
 

@@ -48,16 +48,6 @@ export const fetchingOrganizationStatusesSelector = createSelector(
   prop('isFetchingStatuses'),
 );
 
-export const organizationUsersSelector = createSelector(
-  organizationStateSelector,
-  prop('organizationUsers'),
-);
-
-export const isFetchingOrganizationUsersSelector = createSelector(
-  organizationStateSelector,
-  prop('isFetchingOrganizationUsers'),
-);
-
 export const organizationCustomFieldsSelector = createSelector(
   organizationStateSelector,
   prop('organizationCustomFields'),

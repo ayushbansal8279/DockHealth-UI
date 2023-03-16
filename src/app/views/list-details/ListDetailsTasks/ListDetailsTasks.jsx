@@ -5,12 +5,24 @@ import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd';
 import isEmpty from 'ramda/src/isEmpty';
 import { openModal as openModalAction } from 'modal/actions';
 import { onTaskOrderChanged } from 'helpers/ga-event-helper';
+import * as ListDetailsActions from 'actions/list-details-actions';
+import {
+  taskCountersSelector,
+  taskDetailsSortSelector,
+  groupTasksSelector,
+  isFetchingGroupsSelector,
+  areGroupsInitialized as areGroupsInitializedSelector,
+  listDetailsGroupsSelector,
+  searchTermSelector,
+} from 'selectors/list-details-selectors';
+import compose from 'ramda/src/compose';
 import {
   applyTaskTemplate,
   reorderTaskListGroups,
   reorderTasksInGroup,
   reassignTasksToAnotherGroup,
 } from 'actions/list-details-actions';
+import { createTask } from 'sagas/list-details-saga';
 import NoSearchResultsView from 'components/tasklist/EmptyListView/NoSearchResultsView';
 import EmptyListView from 'components/tasklist/EmptyListView/EmptyListView';
 import NoFilterResultsView from 'components/tasklist/EmptyListView/NoFilterResultsView';
@@ -24,9 +36,8 @@ import { BulkEditContext } from 'components/tasklist/BulkEditSection/BulkEditSec
 import LoadMoreButton, {
   LoadMoreSection,
 } from 'components/common/LoadMoreButton/LoadMoreButton';
-import { TaskItemType, TaskStatus } from 'helpers/task-helpers';
+import { TaskStatus } from 'helpers/task-helpers';
 import StandardTaskItem from 'components/task/StandardTaskItem/StandardTaskItem';
-import TaskTemplateGroup from 'components/task-template/TaskTemplateGroup/TaskTemplateGroup';
 import TasksSkeletonLoader from 'components/task/TasksSkeletonLoader/TasksSkeletonLoader';
 import { useParams } from 'react-router-dom';
 import StickyContainer from 'components/common/HorizontalScroll/StickyContainer';
@@ -38,50 +49,84 @@ import {
   TASK_LIST_RESTRICTIONS_OPTIONS,
   TASK_LIST_RESTRICTIONS_PROFILES,
 } from 'restrictions/task-restrictions';
+import { hasFiltersAppliedSelector } from 'selectors/mega-filter-selectors';
 import {
   TaskGroupsContainer,
   DroppablePlaceholder,
 } from '../ListDetailsTableView/styled';
 
 const ListDetailsTasks = ({
-  createTaskGroupList,
-  toggleCompleteTask,
-  groupedTasks,
-  groupList,
-  quickAddTask,
   onTaskUpdate,
-  isFetchingData,
   updateWorkflowStatus,
-  isSearchApplied,
-  areFiltersApplied,
-  listUniqueKey,
-  taskCounters,
   loadTasksForTaskGroup,
-  taskListIdentifier,
-  sort,
-  onSortChange,
-  resetSort,
-  viewSetup,
 }) => {
+  const groupedTasks = useSelector(groupTasksSelector);
+  const areFiltersApplied = useSelector(hasFiltersAppliedSelector);
+  const groupList = useSelector(listDetailsGroupsSelector);
+  const areGroupsInitialized = useSelector(areGroupsInitializedSelector);
+  const isFetchingGroups = useSelector(isFetchingGroupsSelector);
+  const searchValue = useSelector(searchTermSelector);
+  const isFetchingData = isFetchingGroups && !areGroupsInitialized;
+  const isSearchApplied = !!searchValue;
+
   const [draggedId, setDraggableId] = useState(null);
   const dispatch = useDispatch();
-  const { tabName } = useParams();
+  const { taskListIdentifier, tabName } = useParams();
+  const listUniqueKey = taskListIdentifier;
   const isCompletedView = tabName?.toUpperCase() === TaskStatus.COMPLETE;
 
   const currentUser = useSelector(userProfileSelector);
+  const taskCounters = useSelector(taskCountersSelector);
+
+  const createTaskGroupList = useCallback(
+    (groupName) => {
+      dispatch(ListDetailsActions?.createTaskListGroup(groupName));
+    },
+    [dispatch],
+  );
+
+  const quickAddTask = useCallback(
+    (task) => {
+      if (task?.description) {
+        const payload = {
+          ...task,
+          autoOpenDrawer: taskCounters?.incomplete === 0,
+        };
+
+        dispatch(createTask(payload));
+      }
+    },
+    [dispatch, taskCounters],
+  );
+
+  const sort = useSelector(taskDetailsSortSelector);
+  const onSortChange = compose(
+    dispatch,
+    ListDetailsActions.sortListDetailsTasks,
+  );
+  const resetSort = useCallback(() => {
+    dispatch(ListDetailsActions.sortListDetailsTasks(null, null));
+  }, [dispatch]);
+
   const restrictions =
     TASK_LIST_RESTRICTIONS_PROFILES[currentUser?.orgUserRole];
   const { DISABLED } = TASK_LIST_RESTRICTIONS_OPTIONS;
 
   const currentOrganization = useSelector(selectedUserOrganizationSelector);
-  const iconColorActiveItem =
-    currentOrganization?.themeSettings?.find(
-      ({ name }) => name === 'icon.active.color',
-    ) || {};
-  const defaultGroupNameItem =
-    currentOrganization?.themeSettings?.find(
-      ({ name }) => name === 'content.label.default.group',
-    ) || {};
+  const iconColorActiveItem = useMemo(
+    () =>
+      currentOrganization?.themeSettings?.find(
+        ({ name }) => name === 'icon.active.color',
+      ) || {},
+    [currentOrganization?.themeSettings],
+  );
+  const defaultGroupNameItem = useMemo(
+    () =>
+      currentOrganization?.themeSettings?.find(
+        ({ name }) => name === 'content.label.default.group',
+      ) || {},
+    [currentOrganization?.themeSettings],
+  );
 
   const renderEmptyState = () => {
     if (isSearchApplied) return <NoSearchResultsView />;
@@ -179,16 +224,29 @@ const ListDetailsTasks = ({
     [dispatch, taskListIdentifier],
   );
 
+  const tasksToMap = useMemo(
+    () =>
+      groupList?.filter(
+        ({ taskGroupIdentifier }) =>
+          (!isSearchApplied && !areFiltersApplied) ||
+          groupedTasks?.find((g) => g.groupIdentifier === taskGroupIdentifier)
+            ?.tasks?.length > 0,
+      ),
+    [areFiltersApplied, groupList, groupedTasks, isSearchApplied],
+  );
+
+  const moveGroup = useCallback(
+    (index, direction) => {
+      const factor = direction === 'up' ? -1 : 1;
+      dispatch(reorderTaskListGroups(index, index + factor));
+    },
+    [dispatch],
+  );
+
   const renderTasks = useCallback(
     () =>
-      groupList
-        ?.filter(
-          ({ taskGroupIdentifier }) =>
-            (!isSearchApplied && !areFiltersApplied) ||
-            groupedTasks?.find((g) => g.groupIdentifier === taskGroupIdentifier)
-              ?.tasks?.length > 0,
-        )
-        .map(({ groupName, taskGroupIdentifier, metricValue }, i) => {
+      tasksToMap.map(
+        ({ groupName, taskGroupIdentifier, metricValue }, index) => {
           const group = groupedTasks?.find(
             (g) => g.groupIdentifier === taskGroupIdentifier,
           );
@@ -206,17 +264,16 @@ const ListDetailsTasks = ({
               }
               groupTaskCounts={metricValue}
               quickAddTask={quickAddTask}
-              moveGroupUp={() => dispatch(reorderTaskListGroups(i, i - 1))}
-              moveGroupDown={() => dispatch(reorderTaskListGroups(i, i + 1))}
-              isFirstGroup={i === 0}
-              isLastGroup={i === groupList?.length - 1}
+              moveGroupUp={() => moveGroup(index, 'up')}
+              moveGroupDown={() => moveGroup(index, 'down')}
+              isFirstGroup={index === 0}
+              isLastGroup={index === groupList?.length - 1}
               tasks={group?.tasks || []}
               isLoadingGroup={isLoadingGroup}
               isFetchingMoreTasks={group?.isFetchingMoreTasks || false}
               taskGroupIdentifier={taskGroupIdentifier}
               onTaskUpdate={onTaskUpdate}
               draggedId={draggedId}
-              toggleCompleteTask={toggleCompleteTask}
               updateWorkflowStatus={updateWorkflowStatus}
               isSearchApplied={isSearchApplied}
               listUniqueKey={listUniqueKey}
@@ -271,31 +328,29 @@ const ListDetailsTasks = ({
                             ref={providedDroppable.innerRef}
                             {...providedDroppable.droppableProps}
                           >
-                            {tasks?.map((task, index) => (
-                              <Draggable
-                                key={task.identifier}
-                                draggableId={String(task.identifier)}
-                                index={index}
-                                isDragDisabled={
-                                  isCompletedGroup ||
-                                  dragAndDropDisabled ||
-                                  restrictions?.createGroup === DISABLED
-                                }
-                              >
-                                {(draggableProvided, { isDragging }) => (
-                                  <>
-                                    {task?.itemType === TaskItemType.TASK ? (
+                            {
+                              // eslint-disable-next-line no-shadow
+                              tasks?.map((task, index) => (
+                                <Draggable
+                                  key={task}
+                                  draggableId={String(task)}
+                                  index={index}
+                                  isDragDisabled={
+                                    isCompletedGroup ||
+                                    dragAndDropDisabled ||
+                                    restrictions?.createGroup === DISABLED
+                                  }
+                                >
+                                  {(draggableProvided, { isDragging }) => (
+                                    <>
                                       <StandardTaskItem
-                                        key={task.identifier}
+                                        key={task}
                                         isFullView={isFullView}
                                         isDragging={isDragging}
-                                        isStartedDnD={
-                                          draggedId === task.taskIdentifier
-                                        }
+                                        isStartedDnD={draggedId === task}
                                         task={task}
                                         draggableProvided={draggableProvided}
                                         isCompletedGroup={isCompletedGroup}
-                                        toggleCompleteTask={toggleCompleteTask}
                                         onTaskUpdate={onTaskUpdate}
                                         updateWorkflowStatus={
                                           updateWorkflowStatus
@@ -331,32 +386,11 @@ const ListDetailsTasks = ({
                                           iconColorActiveItem?.value
                                         }
                                       />
-                                    ) : (
-                                      <TaskTemplateGroup
-                                        isCompletedTab={isCompletedView}
-                                        viewSetup={viewSetup}
-                                        isStartedDnD={
-                                          draggedId === task.identifier
-                                        }
-                                        draggableProvided={draggableProvided}
-                                        templateGroup={task}
-                                        groupHasMultipleAssignees={
-                                          groupHasMultipleAssignees
-                                        }
-                                        isFullView={isFullView}
-                                        dragAndDropDisabled={
-                                          isCompletedGroup ||
-                                          dragAndDropDisabled
-                                        }
-                                        iconColorActive={
-                                          iconColorActiveItem?.value
-                                        }
-                                      />
-                                    )}
-                                  </>
-                                )}
-                              </Draggable>
-                            ))}
+                                    </>
+                                  )}
+                                </Draggable>
+                              ))
+                            }
                             {providedDroppable.placeholder}
                           </DroppablePlaceholder>
                         );
@@ -379,33 +413,33 @@ const ListDetailsTasks = ({
               )}
             </TasksGroup>
           );
-        }),
+        },
+      ),
     [
-      groupList,
-      isSearchApplied,
-      areFiltersApplied,
+      tasksToMap,
       groupedTasks,
       isCompletedView,
-      defaultGroupNameItem,
+      defaultGroupNameItem?.value,
       quickAddTask,
+      groupList?.length,
       onTaskUpdate,
       draggedId,
-      toggleCompleteTask,
       updateWorkflowStatus,
+      isSearchApplied,
       listUniqueKey,
+      areFiltersApplied,
       taskListIdentifier,
       sort,
       onSortChange,
       applyTemplate,
-      iconColorActiveItem,
-      dispatch,
+      iconColorActiveItem?.value,
+      moveGroup,
       loadTasksForTaskGroup,
       isSortApplied,
       dragAndDropDisabled,
-      restrictions,
+      restrictions?.createGroup,
       DISABLED,
       showClearSortFiltersModal,
-      viewSetup,
     ],
   );
 
@@ -421,7 +455,7 @@ const ListDetailsTasks = ({
           <DragDropContext
             onBeforeCapture={onBeforeCapture}
             onBeforeDragStart={showClearSortFiltersModal}
-            onDragEnd={!isSortApplied ? onDragEnd : () => {}}
+            onDragEnd={isSortApplied ? () => {} : onDragEnd}
           >
             {renderTasks()}
             {!!createTaskGroupList &&
@@ -430,9 +464,9 @@ const ListDetailsTasks = ({
                 <StickyContainer left={24} decreaseWidth={2 * 24}>
                   <GroupNameSection
                     onEnterClick={
-                      restrictions?.createGroup !== DISABLED
-                        ? onGroupNameClick
-                        : () => undefined
+                      restrictions?.createGroup === DISABLED
+                        ? () => {}
+                        : onGroupNameClick
                     }
                     placeholder={messages.placeholder}
                     closeOnEnter

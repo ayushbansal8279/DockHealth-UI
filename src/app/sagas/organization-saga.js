@@ -138,16 +138,6 @@ function* doReorderOrganizationStatuses({ sourceId, destinationId }) {
   }
 }
 
-function* getOrganizationUsers() {
-  try {
-    const users = yield call(OrganizationApi.findAllUsersForOrganization);
-    yield put({ type: ActionTypes.GET_ORGANIZATION_USERS_SUCCESS, users });
-  } catch {
-    yield put({ type: ActionTypes.GET_ORGANIZATION_USERS_FAILURE });
-    yield put(showGlobalErrorAlert());
-  }
-}
-
 function* changeUserOrganizationRole({ userIdentifier, role }) {
   try {
     yield call(
@@ -201,7 +191,6 @@ export default function* watchOrganization() {
     REORDER_ORGANIZATION_STATUSES,
     doReorderOrganizationStatuses,
   );
-  yield takeLatest(ActionTypes.GET_ORGANIZATION_USERS, getOrganizationUsers);
   yield takeEvery(
     ActionTypes.CHANGE_USER_ORGANIZATION_ROLE,
     changeUserOrganizationRole,
