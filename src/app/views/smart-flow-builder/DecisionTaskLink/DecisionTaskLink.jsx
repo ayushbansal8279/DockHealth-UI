@@ -11,7 +11,7 @@ import {
 import { useBoolean } from 'hooks/useBoolean';
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteOutlineIcon from '@mui/icons-material/DeleteOutline';
-import { getEdgeCenter, useStoreState } from 'react-flow-renderer';
+import { getBezierPath, useStore } from 'reactflow';
 import { useDispatch } from 'react-redux';
 import { openModal } from 'modal/actions';
 import LinkPath from '../LinkPath/LinkPath';
@@ -36,7 +36,7 @@ const DecisionTaskLink = (props) => {
   const { outcome, link } = data;
   const { taskOutcomeIdentifier, name: outcomeName } = outcome || {};
   const { delayPeriod, delayPeriodUnit } = link || {};
-  const [edgeCenterX, edgeCenterY] = getEdgeCenter({
+  const [, edgeCenterX, edgeCenterY] = getBezierPath({
     sourceX,
     sourceY,
     targetX,
@@ -53,7 +53,7 @@ const DecisionTaskLink = (props) => {
   const [isEdited, setEdited, unsetEdited] = useBoolean(!outcome);
   const [isFocused, setFocused, unsetFocused] = useBoolean(false);
   const dispatch = useDispatch();
-  const { 2: zoom } = useStoreState((store) => store.transform);
+  const { 2: zoom } = useStore((store) => store.transform);
 
   const delayOptionsVisible = !isNil(delayPeriod) && delayPeriodUnit;
 
@@ -199,7 +199,7 @@ const DecisionTaskLink = (props) => {
       >
         <LabelsWrapper>
           <div
-            onMouseEnter={outcome && openOptions}
+            onMouseEnter={outcome ? openOptions : undefined}
             onMouseLeave={closeOptions}
           >
             <OutcomeInputLabel

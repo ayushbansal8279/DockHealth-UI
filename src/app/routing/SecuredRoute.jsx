@@ -15,7 +15,7 @@ const SecureRoute = ({ required = [], ...props }) => {
     return null;
   }
 
-  if (required.every((permission) => orgUserPermissions[permission])) {
+  if (required.every((permission) => orgUserPermissions?.[permission])) {
     return <Route {...props} />;
   }
 

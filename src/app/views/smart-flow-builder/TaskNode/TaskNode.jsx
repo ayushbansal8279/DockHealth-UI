@@ -1,5 +1,6 @@
 /* eslint-disable sonarjs/cognitive-complexity */
 import React, { useState, useRef, useEffect } from 'react';
+import 'reactflow/dist/style.css';
 import { useBoolean } from 'hooks/useBoolean';
 import SubtaskIcon from 'img/SubtaskIcon';
 import { Box, IconButton } from '@mui/material';

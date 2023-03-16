@@ -54,11 +54,7 @@ import { openDrawer } from 'actions/workflow-drawer-actions';
 import { Box, ClickAwayListener, Paper, Popper } from '@mui/material';
 import DecisionTaskElementIcon from 'img/template/decision-task-icon';
 import Tooltip from 'components/common/Tooltip/Tooltip';
-import ReactFlow, {
-  Controls,
-  Position,
-  ReactFlowProvider,
-} from 'react-flow-renderer';
+import { Controls, Position, ReactFlowProvider } from 'reactflow';
 import TaskDrawer from 'components/task-drawer/TaskDrawer/TaskDrawer';
 import {
   NodeType,
@@ -72,6 +68,7 @@ import { useBoolean } from 'hooks/useBoolean';
 import palette from 'styles/palette';
 import * as AlertActions from 'alert/actions';
 import EditIcon from '@mui/icons-material/Edit';
+import ReactFlowAdapter from 'views/smart-flow-builder/ReactFlowAdapter';
 import NewTaskNode from './NewTaskNode/NewTaskNode';
 import TaskNode from './TaskNode/TaskNode';
 import TaskLink from './TaskLink/TaskLink';
@@ -96,7 +93,6 @@ import {
   AutoAlignButton,
   EditIconWrapper,
 } from './styled';
-import ConnectionLink from './ConnectionLink/ConnectionLink';
 import TaskLinkDelayForm from './TaskLinkDelayForm/TaskLinkDelayForm';
 import TemporaryDecisionTaskLink from './TemporaryDecisionTaskLink/TemporaryDecisionTaskLink';
 import BulkEditContainer from './BulkEditContainer/BulkEditContainer';
@@ -127,7 +123,7 @@ const SmartFlowBuilderView = () => {
   const [elements, setElements] = useState(null);
   const [selectedElements, setSelectedElements] = useState(null);
   const [draggedEdgeSourceId, setDraggedEdgeSourceId] = useState(null);
-  const [hoveredTargetHandle, setHoveredTargetHandle] = useState(Position.Top);
+  const [, setHoveredTargetHandle] = useState(Position.Top);
   const [isDelayPopoverOpen, openDelayPopover, closeDelayPopover] =
     useBoolean(false);
   const { identifier } = useParams();
@@ -365,21 +361,23 @@ const SmartFlowBuilderView = () => {
     openDelayPopover,
   ]);
 
+  const [extraNodes, setExtraNodes] = useState([]);
+
   const updateSelectedElementsPosition = (selectedNodes) => {
     let updatedElements = elements;
     let shouldUpdate = false;
 
     for (const node of selectedNodes) {
       const isExistingTask = !!node.data.task;
-
       if (isExistingTask) {
         if (!shouldUpdate) shouldUpdate = true;
-
         updatedElements = updateNodePosition(
           node.id,
           node.position,
           updatedElements,
         );
+      } else {
+        setExtraNodes([node]);
       }
     }
 
@@ -391,9 +389,8 @@ const SmartFlowBuilderView = () => {
 
   const handleNodeDragStop = () => {
     const selectedNodes = reactFlowInstance.current
-      .getElements()
+      .getNodes()
       .filter((element) => selectedElements.find((se) => se.id === element.id));
-
     updateSelectedElementsPosition(selectedNodes);
   };
 
@@ -496,13 +493,6 @@ const SmartFlowBuilderView = () => {
       );
     }
   };
-
-  const ConnectionLineComponent = useCallback(
-    (props) => (
-      <ConnectionLink {...props} targetPosition={hoveredTargetHandle} />
-    ),
-    [hoveredTargetHandle],
-  );
 
   // eslint-disable-next-line unicorn/consistent-function-scoping
   const handleDragOver = (event) => {
@@ -667,9 +657,10 @@ const SmartFlowBuilderView = () => {
               </button>
             </BuilderHeader>
             {mergedElementsWithActions && (
-              <ReactFlow
-                connectionLineComponent={ConnectionLineComponent}
+              <ReactFlowAdapter
+                // connectionLineComponent={ConnectionLineComponent}
                 elements={mergedElementsWithActions}
+                extraNodes={extraNodes}
                 onConnect={onConnect}
                 connectionLineType="step"
                 nodeTypes={nodeTypes}
@@ -697,7 +688,7 @@ const SmartFlowBuilderView = () => {
                 elementsSelectable={isCurrentUserEditor}
               >
                 <Controls showInteractive={isCurrentUserEditor} />
-              </ReactFlow>
+              </ReactFlowAdapter>
             )}
             <BulkEditContainer
               selectedTasks={selectedTasks}
