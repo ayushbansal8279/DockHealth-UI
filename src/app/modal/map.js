@@ -72,6 +72,7 @@ import SendEmrNoteFromTaskModal from './components/SendMessageFromTaskModals/Sen
 import SendSmsFromTaskModal from './components/SendMessageFromTaskModals/SendSmsFromTaskModal/SendSmsFromTaskModal';
 import SendSecureMessageFromTaskModal from './components/SendMessageFromTaskModals/SendSecureMessageFromTaskModal/SendSecureMessageFromTaskModal';
 import EditContactModal from './components/EditContactModal/EditContactModal';
+import EditPatientModal from './components/EditPatientModal/EditPatientModal';
 import AnchorDateChangeConfirmationModal from './components/AnchorDateChangeConfirmationModal/AnchorDateChangeConfirmationModal';
 
 const MODAL_MAP = {
@@ -150,6 +151,7 @@ const MODAL_MAP = {
   SendSecureMessageFromTask: SendSecureMessageFromTaskModal,
   EditContact: EditContactModal,
   AnchorDateChangeConfirmation: AnchorDateChangeConfirmationModal,
+  EditPatient: EditPatientModal,
 };
 
 export default MODAL_MAP;
