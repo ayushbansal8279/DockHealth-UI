@@ -89,6 +89,8 @@ const CustomizeToolbarButton = ({
     [PatientTaskItemColumn.GENDER]: 'Gender',
     [PatientTaskItemColumn.DOB]: 'DOB',
     [PatientTaskItemColumn.EMAIL]: 'Email',
+    [PatientTaskItemColumn.MOBILE_PHONE]: 'Mobile Phone',
+    [PatientTaskItemColumn.HOME_PHONE]: 'Home Phone',
     [PatientTaskItemColumn.MRN]: uniqueIdentifierLabel,
   };
 

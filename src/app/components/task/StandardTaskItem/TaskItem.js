@@ -59,6 +59,7 @@ import { CUSTOM_FIELD_TYPES } from 'helpers/custom-fields-helpers';
 import { Box } from '@material-ui/core';
 import { closeModal, openModal } from 'modal/actions';
 import { updatePatientDetails } from 'actions/patient-details-actions';
+import { formatPhoneNumber } from 'helpers/utility-functions';
 import { getSubtaskStylingLink } from './helpers';
 import TaskItemContextMenu from '../TaskItemContextMenu/TaskItemContextMenu';
 import TaskItemBulkEdit from './TaskItemComponents/TaskItemBulkEdit';
@@ -696,6 +697,37 @@ const TaskItem = React.memo(
                 )}
               </>
             )}
+            {isColumnChecked(columns, TaskItemColumn.PRIORITY) && (
+              <>
+                {randerFirstColumnCoverIfNecessary(
+                  <TaskItemCell
+                    isSubtask={isSubtask}
+                    key={`priority_${taskIdentifier}`}
+                    width={
+                      columns?.find(
+                        ({ identifier }) =>
+                          identifier === TaskItemColumn.PRIORITY,
+                      )?.columnWidth
+                    }
+                    order={getColumnOrder(TaskItemColumn.PRIORITY)}
+                  >
+                    <TaskItemDropdown
+                      value={task.priority}
+                      onChange={handlePriorityChange}
+                      field={{
+                        options: [
+                          { identifier: 'HIGH', name: 'High', color: 'red' },
+                          { identifier: 'NONE', name: 'No Priority' },
+                        ],
+                        displayOptions: [],
+                      }}
+                      readOnly={false}
+                    />
+                  </TaskItemCell>,
+                  getColumnOrder(TaskItemColumn.PRIORITY),
+                )}
+              </>
+            )}
             {isColumnChecked(columns, PatientTaskItemColumn.GENDER) && (
               <>
                 {randerFirstColumnCoverIfNecessary(
@@ -807,42 +839,54 @@ const TaskItem = React.memo(
                 )}
               </>
             )}
-
-            {isColumnChecked(columns, TaskItemColumn.PRIORITY) && (
+            {isColumnChecked(columns, PatientTaskItemColumn.MOBILE_PHONE) && (
               <>
                 {randerFirstColumnCoverIfNecessary(
                   <TaskItemCell
                     isSubtask={isSubtask}
-                    key={`priority_${taskIdentifier}`}
+                    key={`patient_mobile_phone_${taskIdentifier}`}
                     width={
                       columns?.find(
                         ({ identifier }) =>
-                          identifier === TaskItemColumn.PRIORITY,
+                          identifier === PatientTaskItemColumn.MOBILE_PHONE,
                       )?.columnWidth
                     }
-                    order={getColumnOrder(TaskItemColumn.PRIORITY)}
+                    order={getColumnOrder(PatientTaskItemColumn.MOBILE_PHONE)}
                   >
-                    <TaskItemDropdown
-                      value={task.priority}
-                      onChange={handlePriorityChange}
-                      field={{
-                        options: [
-                          {
-                            identifier: 'HIGH',
-                            name: 'High',
-                            color: getPriorityColor('HIGH'),
-                          },
-                        ],
-                        displayOptions: [],
-                      }}
-                      readOnly={false}
+                    <TaskItemText
+                      readOnly={isPatientDataReadOnly}
+                      value={formatPhoneNumber(patient?.phoneMobile ?? '')}
+                      onChange={handlePatientUpdate('phoneMobile')}
                     />
                   </TaskItemCell>,
-                  getColumnOrder(TaskItemColumn.PRIORITY),
+                  getColumnOrder(PatientTaskItemColumn.MOBILE_PHONE),
                 )}
               </>
             )}
-
+            {isColumnChecked(columns, PatientTaskItemColumn.HOME_PHONE) && (
+              <>
+                {randerFirstColumnCoverIfNecessary(
+                  <TaskItemCell
+                    isSubtask={isSubtask}
+                    key={`patient_home_phone_${taskIdentifier}`}
+                    width={
+                      columns?.find(
+                        ({ identifier }) =>
+                          identifier === PatientTaskItemColumn.HOME_PHONE,
+                      )?.columnWidth
+                    }
+                    order={getColumnOrder(PatientTaskItemColumn.HOME_PHONE)}
+                  >
+                    <TaskItemText
+                      readOnly={isPatientDataReadOnly}
+                      value={formatPhoneNumber(patient?.phoneHome ?? '')}
+                      onChange={handlePatientUpdate('phoneHome')}
+                    />
+                  </TaskItemCell>,
+                  getColumnOrder(PatientTaskItemColumn.HOME_PHONE),
+                )}
+              </>
+            )}
             {isColumnChecked(columns, TaskItemColumn.WORKFLOW_STATUS) && (
               <>
                 {randerFirstColumnCoverIfNecessary(
