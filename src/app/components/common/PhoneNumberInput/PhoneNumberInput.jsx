@@ -24,7 +24,7 @@ export const usePhoneNumberStyles = makeStyles({
     },
   },
   container: {
-    margin: '22px 12 2px 12px',
+    margin: '0px',
     fontSize: 'inherit !important',
     fontWeight: 'inherit !important',
     fontFamily: 'inherit !important',
