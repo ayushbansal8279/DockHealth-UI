@@ -16,6 +16,7 @@ function* getTaskCustomFields({ taskIdentifier, taskListIdentifier }) {
     yield put({
       type: ActionTypes.GET_TASK_CUSTOM_FIELDS_SUCCESS,
       customFieldsList,
+      taskIdentifier,
     });
   } catch {
     yield put({ type: ActionTypes.GET_TASK_CUSTOM_FIELDS_FAILURE });

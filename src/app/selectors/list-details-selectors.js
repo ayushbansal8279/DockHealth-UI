@@ -27,6 +27,12 @@ export const searchTermSelector = createSelector(
   ({ searchTerm }) => searchTerm,
 );
 
+export const taskDetailsSelector = createSelector(
+  listTasksSelector,
+  (_, taskId) => taskId,
+  (listDetails, taskId) => listDetails.tasksMap[taskId],
+);
+
 export const groupTasksSelector = createSelector(
   listTasksSelector,
   ({ groupedTasks }) => groupedTasks?.taskGroups,
