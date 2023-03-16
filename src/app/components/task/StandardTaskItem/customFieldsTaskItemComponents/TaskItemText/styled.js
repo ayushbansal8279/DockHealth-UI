@@ -8,10 +8,13 @@ export const TextContainer = styled.div`
   cursor: text;
   padding: 0 2px;
   border-color: transparent;
-  &:hover {
+  ${props =>
+    props.shouldHover
+      ? `  &:hover {
     border-radius: 2px;
     border-width: 1px;
     border-style: solid;
     border-color: ${palette.coolGrey2};
-  }
+  }`
+      : ''}
 `;

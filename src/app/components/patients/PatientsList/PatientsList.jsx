@@ -22,6 +22,7 @@ import { PatientColumn } from 'helpers/patient-list-helpers';
 
 import { patientsListSelector } from 'selectors/patients-selectors';
 import moment from 'moment';
+import { formatPhoneNumber } from 'helpers/utility-functions';
 import PatientImportPopover from '../PatientImportPopover/PatientImportPopover';
 import TaskItemBulkEdit from '../../task/StandardTaskItem/TaskItemComponents/TaskItemBulkEdit';
 import EmptyFilteredPatientsList from '../EmptyFilteredPatientsList/EmptyFilteredPatientsList';
@@ -287,12 +288,22 @@ const PatientsList = ({
       headerName: 'MOBILE',
       renderHeader: renderColumnHeader,
       // flex: 0.5,
+      renderCell: ({ row }) => (
+        <Tooltip placement="top" title={formatPhoneNumber(row.phoneMobile)}>
+          <Text width="120">{formatPhoneNumber(row.phoneMobile)}</Text>
+        </Tooltip>
+      ),
       width: 140,
     },
     {
       field: 'phoneHome',
       headerName: 'HOME',
       renderHeader: renderColumnHeader,
+      renderCell: ({ row }) => (
+        <Tooltip placement="top" title={formatPhoneNumber(row.phoneHome)}>
+          <Text width="120">{formatPhoneNumber(row.phoneHome)}</Text>
+        </Tooltip>
+      ),
       // flex: 0.5,
       width: 140,
     },

@@ -28,6 +28,7 @@ const DateInput = React.forwardRef(
       inputRef: outerTextInputReference,
       setError,
       clearErrors,
+      showCalanderIcon = true,
       ...otherProps
     },
     reference,
@@ -99,9 +100,11 @@ const DateInput = React.forwardRef(
           error={error}
           endAdornment={
             <Box display="flex">
-              <IconButton disabled={readOnly || disabled} onClick={setOpen}>
-                <CalendarTodayIcon />
-              </IconButton>
+              {showCalanderIcon && (
+                <IconButton disabled={readOnly || disabled} onClick={setOpen}>
+                  <CalendarTodayIcon />
+                </IconButton>
+              )}
               <Box mx={0.5} />
               <IconButton disabled={readOnly || disabled} onClick={handleClear}>
                 <CloseIcon />

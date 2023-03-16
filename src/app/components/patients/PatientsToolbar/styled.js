@@ -19,14 +19,14 @@ export const InputWrapper = styled.div`
   width: 66.67%;
   max-width: 1147px;
   margin: 0 auto;
-  padding-top: ${({ hasValue }) => (hasValue ? 16 : 32)}px;
+  // padding-top: ${({ hasValue }) => (hasValue ? 16 : 32)}px;
   transition: padding 0.3s ease-out;
 `;
 
 export const SearchHelperText = styled.p`
   /* max-width: 700px; */
   margin: 0 auto;
-  padding-top: ${spacing.huge};
+  // padding-top: ${spacing.huge};
   text-align: center;
   font-family: 'Montserrat', sans-serif;
 `;

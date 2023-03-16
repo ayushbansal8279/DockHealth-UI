@@ -63,6 +63,16 @@ export function getPriorityColor(priority) {
   }
 }
 
+export function getPriorityHighlighColor(priority) {
+  switch (priority) {
+    case TaskPriority.HIGH:
+      return palette.tomatoInYoFaceLight;
+    case TaskPriority.LOW:
+    default:
+      return 'white'; // neeeded for sticky column
+  }
+}
+
 export const TaskGroupType = {
   TASKLIST_DEFAULT: 'TASKLIST_DEFAULT',
   TASKLIST: 'TASKLIST',
@@ -174,9 +184,6 @@ export const TaskItemColumn = {
 };
 
 export const PatientTaskItemColumn = {
-  FIRST_NAME: 'PATIENT_FIRST_NAME',
-  LAST_NAME: 'PATIENT_LAST_NAME',
-  MIDDLE_NAME: 'PATIENT_MIDDLE_NAME',
   GENDER: 'PATIENT_GENDER',
   DOB: 'PATIENT_DOB',
   EMAIL: 'PATIENT_EMAIL',
@@ -211,9 +218,6 @@ export const TaskItemColumnWidth = {
     PRINT: 170,
   },
   [TaskItemColumn.PATIENT]: 164,
-  [PatientTaskItemColumn.FIRST_NAME]: 164,
-  [PatientTaskItemColumn.LAST_NAME]: 164,
-  [PatientTaskItemColumn.MIDDLE_NAME]: 164,
   [PatientTaskItemColumn.GENDER]: 164,
   [PatientTaskItemColumn.DOB]: 164,
   [PatientTaskItemColumn.EMAIL]: 164,
@@ -240,9 +244,6 @@ export const TASK_ITEM_BASE_COLUMN_CONFIG = {
   [TaskItemColumn.TASK_DETAILS]: true,
   [TaskItemColumn.SUBTASKS_COUNT]: true,
   [TaskItemColumn.PATIENT]: true,
-  [PatientTaskItemColumn.FIRST_NAME]: true,
-  [PatientTaskItemColumn.MIDDLE_NAME]: true,
-  [PatientTaskItemColumn.LAST_NAME]: true,
   [PatientTaskItemColumn.GENDER]: true,
   [PatientTaskItemColumn.DOB]: true,
   [PatientTaskItemColumn.EMAIL]: true,
@@ -284,9 +285,6 @@ export const SHOW_COLUMNS_CONFIG = {
   [TaskItemColumn.LIST_NAME]: true,
   [TaskItemColumn.TASK_DETAILS]: true,
   [TaskItemColumn.PRIORITY]: true,
-  [PatientTaskItemColumn.FIRST_NAME]: true,
-  [PatientTaskItemColumn.LAST_NAME]: true,
-  [PatientTaskItemColumn.MIDDLE_NAME]: true,
   [PatientTaskItemColumn.GENDER]: true,
   [PatientTaskItemColumn.DOB]: true,
   [PatientTaskItemColumn.EMAIL]: true,
@@ -361,15 +359,6 @@ export const TASK_ITEM_SORT_METHODS = {
   [TaskItemColumn.SUBTASKS_COUNT]: sortWith([
     ascend(pipe(prop('subTasksCount'), defaultTo(-1))),
   ]),
-  [PatientTaskItemColumn.FIRST_NAME]: sortWith([
-    ascend(pipe(prop('firstName'), defaultTo('~'), toLower)),
-  ]),
-  [PatientTaskItemColumn.LAST_NAME]: sortWith([
-    ascend(pipe(prop('lastName'), defaultTo('~'), toLower)),
-  ]),
-  [PatientTaskItemColumn.MIDDLE_NAME]: sortWith([
-    ascend(pipe(prop('lastName'), defaultTo('~'), toLower)),
-  ]),
   [PatientTaskItemColumn.GENDER]: sortWith([
     ascend(pipe(prop('gender'), defaultTo('~'), toLower)),
   ]),
@@ -417,7 +406,7 @@ export const TASK_ITEM_SORT_DESC_METHODS = {
     ),
   ]),
   [TaskItemColumn.PRIORITY]: sortWith([
-    ascend(
+    descend(
       pipe(
         prop('priority'),
         unless(isNil, prop('name')),
@@ -457,15 +446,6 @@ export const TASK_ITEM_SORT_DESC_METHODS = {
   ]),
   [TaskItemColumn.SUBTASKS_COUNT]: sortWith([
     descend(pipe(prop('subTasksCount'), defaultTo(-1))),
-  ]),
-  [PatientTaskItemColumn.FIRST_NAME]: sortWith([
-    descend(pipe(prop('firstName'), defaultTo('~'), toLower)),
-  ]),
-  [PatientTaskItemColumn.LAST_NAME]: sortWith([
-    descend(pipe(prop('lastName'), defaultTo('~'), toLower)),
-  ]),
-  [PatientTaskItemColumn.MIDDLE_NAME]: sortWith([
-    ascend(pipe(prop('lastName'), defaultTo('~'), toLower)),
   ]),
   [PatientTaskItemColumn.GENDER]: sortWith([
     ascend(pipe(prop('gender'), defaultTo('~'), toLower)),

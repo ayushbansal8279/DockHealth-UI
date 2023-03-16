@@ -9,11 +9,15 @@ import {
   userProfileSelector,
   userHasTaskCustomFieldsFeatureSelector,
   userHasPatientCustomFieldsFeatureSelector,
+  selectedUserOrganizationSelector,
 } from 'selectors/user-selectors';
+import {
+  getCustomerUniqueIDShortLabel,
+  getCustomerTypeLabel,
+} from 'helpers/customer-type-helper';
 import { useSelector } from 'react-redux';
 import { TaskItemColumn, PatientTaskItemColumn } from 'helpers/task-helpers';
 import { capitalize } from 'helpers/capitalize';
-import { getCustomerTypeLabel } from 'helpers/customer-type-helper';
 import UpgradePlan from 'components/common/UpgradePlan/UpgradePlan';
 import UpgradePlanPopup from 'components/common/UpgradePlanPopup/UpgradePlanPopup';
 import CustomFieldsIcon from 'img/premium/custom-fields';
@@ -46,10 +50,19 @@ const CustomizeToolbarButton = ({
   const buttonReference = useRef(null);
   const addColumnButtonReference = useRef(null);
   const userProfile = useSelector(userProfileSelector);
+  const currentOrganization = useSelector(selectedUserOrganizationSelector);
+
   const userHasTaskCustomFieldsFeature = useSelector(
     userHasTaskCustomFieldsFeatureSelector,
   );
   const { columns, setColumns } = useTaskListColumnsConfig();
+
+  const customerTypeLabel = capitalize(getCustomerTypeLabel(userProfile));
+
+  const uniqueIdentifierLabel = getCustomerUniqueIDShortLabel(
+    userProfile,
+    currentOrganization,
+  );
 
   const ColumnOptionNames = {
     [TaskItemColumn.COMMENTS]: 'Comments',
@@ -69,22 +82,17 @@ const CustomizeToolbarButton = ({
     [TaskItemColumn.LIST_NAME]: 'List name',
     [TaskItemColumn.TASK_DETAILS]: 'Details',
     [TaskItemColumn.PRIORITY]: 'Priority',
-    [TaskItemColumn.PATIENT]: capitalize(getCustomerTypeLabel(userProfile)),
+    [TaskItemColumn.PATIENT]: customerTypeLabel,
   };
 
   const PatientColumnOptionNames = {
-    [PatientTaskItemColumn.FIRST_NAME]: 'First name',
-    [PatientTaskItemColumn.MIDDLE_NAME]: 'Middle name',
-    [PatientTaskItemColumn.LAST_NAME]: 'Last name',
     [PatientTaskItemColumn.GENDER]: 'Gender',
     [PatientTaskItemColumn.DOB]: 'DOB',
     [PatientTaskItemColumn.EMAIL]: 'Email',
-    [PatientTaskItemColumn.MRN]: 'MRN',
     [PatientTaskItemColumn.MOBILE_PHONE]: 'Mobile Phone',
     [PatientTaskItemColumn.HOME_PHONE]: 'Home Phone',
+    [PatientTaskItemColumn.MRN]: uniqueIdentifierLabel,
   };
-
-  const customerTypeLabel = capitalize(getCustomerTypeLabel(userProfile));
 
   const onClickCheckbox = useCallback(
     column => {
@@ -172,7 +180,7 @@ const CustomizeToolbarButton = ({
           <List>
             {sort(
               (a, b) =>
-                TaskItemColumn[a?.identifier]?.localeCompare(
+                ColumnOptionNames[a?.identifier]?.localeCompare(
                   ColumnOptionNames[b?.identifier],
                 ),
               columnsConfigToDisplay,
