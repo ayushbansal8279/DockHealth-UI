@@ -11,6 +11,9 @@ import {$createMentionNode} from "../nodes/MentionNode";
 import Paper from "@mui/material/Paper";
 import MenuList from "@mui/material/MenuList";
 import MenuItem from "@mui/material/MenuItem";
+import debounce from "lodash.debounce";
+import {getListMembersByName} from "api/task-list-api";
+import {mapUsersToSuggestions, SUGGESTIONS_PLACEHOLDER} from "components/common/TextEditor/helpers";
 
 const PUNCTUATION = "\\.,\\+\\*\\?\\$\\@\\|#{}\\(\\)\\^\\-\\[\\]\\\\/!%'\"~=<>_:;";
 const NAME = "\\b[A-Z][^\\s" + PUNCTUATION + "]";
@@ -61,30 +64,37 @@ const dummyLookupService = {
     }
 };
 
-function useMentionLookupService(mentionString) {
+function useMentionLookupService(taskListIdentifier, mentionString) {
     const [results, setResults] = useState([]);
 
+    // useEffect(() => {
+    //     const cachedResults = mentionsCache.get(mentionString);
+    //
+    //     if (mentionString == null) {
+    //         setResults([]);
+    //         return;
+    //     }
+    //
+    //     if (cachedResults === null) {
+    //         return;
+    //     } else if (cachedResults !== undefined) {
+    //         setResults(cachedResults);
+    //         return;
+    //     }
+    //
+    //     mentionsCache.set(mentionString, null);
+    //     dummyLookupService.search(mentionString, (newResults) => {
+    //         mentionsCache.set(mentionString, newResults);
+    //         setResults(newResults);
+    //     });
+    // }, [mentionString]);
+
     useEffect(() => {
-        const cachedResults = mentionsCache.get(mentionString);
-
-        if (mentionString == null) {
-            setResults([]);
-            return;
-        }
-
-        if (cachedResults === null) {
-            return;
-        } else if (cachedResults !== undefined) {
-            setResults(cachedResults);
-            return;
-        }
-
-        mentionsCache.set(mentionString, null);
-        dummyLookupService.search(mentionString, (newResults) => {
-            mentionsCache.set(mentionString, newResults);
-            setResults(newResults);
+        getListMembersByName(taskListIdentifier, mentionString).then((fetchedUsers) => {
+            console.log(fetchedUsers);
+            setResults(fetchedUsers)
         });
-    }, [mentionString]);
+    }, [mentionString, taskListIdentifier]);
 
     return results;
 }
@@ -167,24 +177,24 @@ function MentionsTypeaheadMenuItem({
     </MenuItem>);
 }
 
-export default function MentionsPlugin() {
+export default function MentionsPlugin({ taskListIdentifier }) {
     const [editor] = useLexicalComposerContext();
 
     const [queryString, setQueryString] = useState(null);
 
-    const results = useMentionLookupService(queryString);
+    const results = useMentionLookupService(taskListIdentifier, queryString);
 
     const checkForSlashTriggerMatch = useBasicTypeaheadTriggerMatch("/", {
         minLength: 0
     });
 
     const options = useMemo(() => results
-        .map((result) => new MentionTypeaheadOption(result, <i/>))
+        // .map((result) => new MentionTypeaheadOption(result.name, <i/>))
         .slice(0, SUGGESTION_LIST_LENGTH_LIMIT), [results]);
 
     const onSelectOption = useCallback((selectedOption, nodeToReplace, closeMenu) => {
         editor.update(() => {
-            const mentionNode = $createMentionNode(selectedOption.name);
+            const mentionNode = $createMentionNode(selectedOption);
             if (nodeToReplace) {
                 nodeToReplace.replace(mentionNode);
             }
@@ -199,6 +209,30 @@ export default function MentionsPlugin() {
         return !slashMatch && mentionMatch ? mentionMatch : null;
     }, [checkForSlashTriggerMatch, editor]);
 
+    const [suggestions, setSuggestions] = useState([])
+
+    // const handleQueryChange = (queryString) => {
+    //     setQueryString(queryString)
+    //     fetchUsersWithDebounce(queryString)
+    // }
+
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    const fetchUsersWithDebounce =
+        debounce((value) => {
+            getListMembersByName(taskListIdentifier, value).then((fetchedUsers) => {
+                console.log("fetchedUsers", fetchedUsers);
+                // if (areUsersSuggestionsOpened.current) {
+                //     const formattedUsers = mapUsersToSuggestions(fetchedUsers);
+                //     setUsersSuggestions(
+                //         formattedUsers.length > 0
+                //             ? formattedUsers
+                //             : [SUGGESTIONS_PLACEHOLDER],
+                //     );
+                // }
+                // setIsFetchingUsersSuggestions(false);
+            });
+        }, 300);
+
     return (<LexicalTypeaheadMenuPlugin
             onQueryChange={setQueryString}
             onSelectOption={onSelectOption}
@@ -208,25 +242,31 @@ export default function MentionsPlugin() {
                 selectedIndex,
                 selectOptionAndCleanUp,
                 setHighlightedIndex
-            }) => anchorElementRef && results.length ? ReactDOM.createPortal(<div
-                className="typeahead-popover mentions-menu">
-                <Paper sx={{ width: 230 }}>
-                    <MenuList>
-                    {options.map((option, i) => (<MentionsTypeaheadMenuItem
-                            index={i}
-                            isSelected={selectedIndex === i}
-                            onClick={() => {
-                                setHighlightedIndex(i);
-                                selectOptionAndCleanUp(option);
-                            }}
-                            onMouseEnter={() => {
-                                setHighlightedIndex(i);
-                            }}
-                            key={option.key}
-                            option={option}
-                        />))}
-                    </MenuList>
-                </Paper>
-            </div>, anchorElementRef.current) : null}
+            }) => anchorElementRef && results.length ? ReactDOM.createPortal(
+                <div className="typeahead-popover mentions-menu">
+                    <Paper sx={{ width: 230 }}>
+                        <MenuList>
+                        {options.map((option, i) => {
+                            //.map((result) => new MentionTypeaheadOption(result.name, <i/>))
+                            const mention = new MentionTypeaheadOption(option.name, <i/>)
+                            return (
+                                <MentionsTypeaheadMenuItem
+                                    index={i}
+                                    isSelected={selectedIndex === i}
+                                    onClick={() => {
+                                        setHighlightedIndex(i);
+                                        selectOptionAndCleanUp(option);
+                                    }}
+                                    onMouseEnter={() => {
+                                        setHighlightedIndex(i);
+                                    }}
+                                    key={mention.key}
+                                    option={mention}
+                                />
+                            );
+                        })}
+                        </MenuList>
+                    </Paper>
+                </div>, anchorElementRef.current) : null}
         />);
 }
