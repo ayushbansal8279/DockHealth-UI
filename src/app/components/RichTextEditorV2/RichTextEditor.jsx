@@ -118,7 +118,7 @@ export default function Editor({ value = null, onChange = () => undefined, taskL
                         placeholder={<Placeholder />}
                         ErrorBoundary={LexicalErrorBoundary}
                     />
-                    <MentionsPlugin taskListIdentifier={taskListIdentifier}/>
+                    {/*<MentionsPlugin taskListIdentifier={taskListIdentifier}/>*/}
                     <HistoryPlugin />
                     {/*<TreeViewPlugin />*/}
                     <AutoFocusPlugin />
