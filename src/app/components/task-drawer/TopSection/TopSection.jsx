@@ -161,10 +161,7 @@ const TopSection = ({
   );
 
   const allowedOptions = useMemo(
-    () =>
-      options.filter(
-        o => o.restriction !== SINGLE_TASK_RESTRICTIONS_OPTIONS.DISABLED,
-      ),
+    () => options.filter(o => !o.restriction || o.restriction === false),
     [options],
   );
 
