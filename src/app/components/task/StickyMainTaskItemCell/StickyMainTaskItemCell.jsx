@@ -55,7 +55,7 @@ ${({ customWidthExists }) => (customWidthExists ? '' : 'flex: 1;')}
         ? palette.brightBlueWithAlpha
         : // eslint-disable-next-line unicorn/no-nested-ternary
         props.hasEscalations
-        ? palette.oPlusRedLight
+        ? palette.bananaHammockLight
         : // eslint-disable-next-line unicorn/no-nested-ternary
         props.customHighlight
         ? props.customHighlight

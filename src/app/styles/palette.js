@@ -72,6 +72,7 @@ const palette = {
   oPlusRedLight: '#fad3cf',
   tomatoInYoFaceLight: '#f9d4d2',
   orangeJuliusLight: '#fee6cd',
+  bananaHammockLight: '#fff4cc',
 };
 
 export const featurePalette = {
