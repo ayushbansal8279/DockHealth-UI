@@ -6,9 +6,11 @@ import React, {
   useRef,
   useCallback,
   useContext,
+  useMemo,
 } from 'react';
 import pluck from 'ramda/src/pluck';
 import { useDispatch, useSelector } from 'react-redux';
+import { currentTaskListSelector } from 'selectors/task-list-selectors';
 import { isTaskSelectedSelector } from 'selectors/task-drawer-selectors';
 import { openTaskDrawerWithContent } from 'actions/task-drawer-actions';
 import {
@@ -42,6 +44,7 @@ import {
   isColumnChecked,
   PatientTaskItemColumn,
 } from 'helpers/task-helpers';
+import { isMemberAdmin } from 'helpers/list-members-helper';
 import DependencyIcon from 'img/dependency-icon.svg';
 import DependencyListPopover from 'components/common/DependencyListPopover/DependencyListPopover';
 import useBooleanWithTimeout from 'hooks/use-boolean-with-timeout';
@@ -191,7 +194,7 @@ const TaskItem = React.memo(
     } = searchMetaData;
 
     const currentUser = useSelector(userProfileSelector);
-    const restrictions =
+    let restrictions =
       SINGLE_TASK_RESTRICTIONS_PROFILES[currentUser?.orgUserRole];
     const taskListRestrictions =
       TASK_LIST_RESTRICTIONS_PROFILES[currentUser?.orgUserRole];
@@ -226,20 +229,52 @@ const TaskItem = React.memo(
     const { bulkEditEnabled } = useContext(BulkEditContext);
 
     const selectedOrganization = useSelector(selectedUserOrganizationSelector);
+    const currentTasklist = useSelector(currentTaskListSelector);
 
-    const customHighlightItem =
-      selectedOrganization?.themeSettings?.find(
-        ({ name }) =>
-          name === `list.taskgroup.highlight.color-${taskGroupIdentifier}`,
-      ) || {};
-    const customHighlightColor = customHighlightItem?.value || '';
+    const customHighlightColor = useMemo(() => {
+      const customHighlightItem =
+        selectedOrganization?.themeSettings?.find(
+          ({ name }) =>
+            name === `list.taskgroup.highlight.color-${taskGroupIdentifier}`,
+        ) || {};
+      return customHighlightItem?.value || '';
+    }, [selectedOrganization, taskGroupIdentifier]);
 
-    const hasPriorityHighlightItem =
-      selectedOrganization?.themeSettings?.find(
-        ({ name }) => name === 'list.tasks.priority.highlighting.enabled',
-      ) || {};
-    const hasPriorityHighlight =
-      hasPriorityHighlightItem && hasPriorityHighlightItem?.value === 'true';
+    const hasPriorityHighlight = useMemo(() => {
+      const hasPriorityHighlightItem =
+        selectedOrganization?.themeSettings?.find(
+          ({ name }) => name === 'list.tasks.priority.highlighting.enabled',
+        ) || {};
+      return (
+        hasPriorityHighlightItem && hasPriorityHighlightItem?.value === 'true'
+      );
+    }, [selectedOrganization]);
+
+    const isListAdmin = useMemo(() => {
+      const currentUserMember = currentTasklist?.listUsers?.find(
+        u => u.identifier === currentUser?.identifier,
+      );
+      return isMemberAdmin(currentUserMember);
+    }, [currentUser, currentTasklist]);
+
+    const taskDeleteDisabled = useMemo(() => {
+      const deleteDisabledItem =
+        selectedOrganization?.themeSettings?.find(
+          ({ name }) => name === 'list.tasks.member.delete.enabled',
+        ) || {};
+      return (
+        deleteDisabledItem &&
+        deleteDisabledItem?.value === 'false' &&
+        !isListAdmin
+      );
+    }, [selectedOrganization, isListAdmin]);
+
+    if (taskDeleteDisabled) {
+      if (!restrictions) {
+        restrictions = {};
+      }
+      restrictions.delete = DISABLED;
+    }
 
     const customHighlight =
       customHighlightColor !== ''

@@ -1,6 +1,6 @@
 /* eslint-disable sonarjs/cognitive-complexity */
-import React, { useCallback, useRef, useState } from 'react';
-import { Box, Chip, Grid, Typography, useMediaQuery } from '@material-ui/core';
+import React, { useCallback, useMemo } from 'react';
+import { Box, Grid, Typography, useMediaQuery } from '@material-ui/core';
 import { checkIfBundleTask } from 'helpers/task-helpers';
 import Spacing from 'components/common/Spacing';
 import TextEditor from 'components/common/TextEditor/TextEditor';
@@ -16,10 +16,12 @@ import {
   SINGLE_TASK_RESTRICTIONS_OPTIONS,
   TASK_LIST_RESTRICTIONS_PROFILES,
 } from 'restrictions/task-restrictions';
+import { isMemberAdmin } from 'helpers/list-members-helper';
 import StartDateSection from 'components/task-drawer/StartDateSection/StartDateSection';
 // import WatchersPopover from 'components/task-drawer/TaskDrawerContent/WatchersPopover/WatchersPopover';
 import { createTaskListPath } from 'routing/helpers/paths';
 import { useHistory } from 'react-router-dom';
+import { currentTaskListSelector } from 'selectors/task-list-selectors';
 import AttachmentsSection from '../AttachmentsSection/AttachmentsSection';
 import CommentSection from '../CommentSection/CommentSection';
 import LabelsSection from '../LabelsSection/LabelsSection';
@@ -143,7 +145,7 @@ const TaskDrawerContent = props => {
     ) || {};
   const quickAddPatientEnabled = quickAddPatientEnabledItem?.value !== 'false';
 
-  const restrictions = SINGLE_TASK_RESTRICTIONS_PROFILES[orgUserRole];
+  let restrictions = SINGLE_TASK_RESTRICTIONS_PROFILES[orgUserRole];
   const taskListRestrictions = TASK_LIST_RESTRICTIONS_PROFILES[orgUserRole];
 
   const restrictMentions = restrictions?.mentions === DISABLED;
@@ -160,6 +162,36 @@ const TaskDrawerContent = props => {
   // };
 
   const isMobile = useMediaQuery(theme => theme.breakpoints.down('sm'));
+
+  const currentUser = useSelector(userProfileSelector);
+  const selectedOrganization = useSelector(selectedUserOrganizationSelector);
+  const currentTasklist = useSelector(currentTaskListSelector);
+
+  const isListAdmin = useMemo(() => {
+    const currentUserMember = currentTasklist?.listUsers?.find(
+      u => u.identifier === currentUser?.identifier,
+    );
+    return isMemberAdmin(currentUserMember);
+  }, [currentUser, currentTasklist]);
+
+  const taskDeleteDisabled = useMemo(() => {
+    const deleteDisabledItem =
+      selectedOrganization?.themeSettings?.find(
+        ({ name }) => name === 'list.tasks.member.delete.enabled',
+      ) || {};
+    return (
+      deleteDisabledItem &&
+      deleteDisabledItem?.value === 'false' &&
+      !isListAdmin
+    );
+  }, [selectedOrganization, isListAdmin]);
+
+  if (taskDeleteDisabled) {
+    if (!restrictions) {
+      restrictions = {};
+    }
+    restrictions.delete = DISABLED;
+  }
 
   return (
     <TaskDrawerContainer
