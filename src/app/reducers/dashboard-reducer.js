@@ -3,14 +3,15 @@ import {
   getDashboardFiltersStorageKey,
   getGroupByDueDate,
 } from 'helpers/dashboard-helpers';
-import { mapWithRemove } from 'helpers/utility-functions';
 import sessionStorageHelper from 'helpers/session-storage-helper';
+import { TaskItemType } from 'helpers/task-helpers';
 import TaskBaseReducer from './task-base-reducer';
 
 const initialState = {
   tabName: null,
   searchValue: '',
   tasksList: [],
+  tasksMap: {},
   isLoading: false,
   error: '',
   lastCreatedTaskIdentifier: null,
@@ -20,18 +21,47 @@ const initialState = {
   filterOptionsError: false,
 };
 
-const updateTaskInList = (lists, updateTaskCallback) =>
-  lists.map((group) => {
-    const updatedTasks = group.tasks
-      ? mapWithRemove(updateTaskCallback, group.tasks)
-      : [];
-    return { ...group, tasks: updatedTasks };
-  });
+// const updateTaskInList = (lists, updateTaskCallback) =>
+//   lists.map((group) => {
+//     const updatedTasks = group.tasks
+//       ? mapWithRemove(updateTaskCallback, group.tasks)
+//       : [];
+//     return { ...group, tasks: updatedTasks };
+//   });
 
-const updateTasksStateCallback = (state, updateTaskFromAction) => ({
-  ...state,
-  tasksList: updateTaskInList(state.tasksList, updateTaskFromAction),
-});
+// const updateTasksStateCallback = (state, updateTaskFromAction) => ({
+//   ...state,
+//   tasksList: updateTaskInList(state.tasksList, updateTaskFromAction),
+// });
+
+const updateTasksStateCallback = (state, newTask) => {
+  if (typeof newTask === 'function') return state;
+
+  return {
+    ...state,
+    tasksMap: {
+      ...state.tasksMap,
+      [newTask.identifier]: {
+        ...state.tasksMap[newTask.identifier],
+        ...newTask,
+      },
+    },
+    // groupedTasks: {
+    //   ...state.groupedTasks,
+    //   taskGroups: updateTaskInList(
+    //     state.groupedTasks?.taskGroups,
+    //     updateTaskFromAction,
+    //   ),
+    // },
+    // completedGroupedTasks: {
+    //   ...state.completedGroupedTasks,
+    //   taskGroups: updateTaskInList(
+    //     state.completedGroupedTasks?.taskGroups,
+    //     updateTaskFromAction,
+    //   ),
+    // },
+  };
+};
 
 const addTask = (list, taskToAdd) => {
   const { tasks = [] } = list;
@@ -185,6 +215,19 @@ const DashboardTasksReducer = (state = initialState, action) => {
     case ActionTypes.GET_DASHBOARD_TASKS_FOR_GROUP_SUCCESS: {
       const { groupType, group } = action;
 
+      const { tasks } = group;
+      const newMap = {};
+      for (const task of tasks) {
+        if (task.itemType === TaskItemType.TASK) {
+          newMap[task.identifier] = task;
+        } else {
+          newMap[task.identifier] = task;
+          for (const subtask of task.tasks) {
+            newMap[subtask.identifier] = subtask;
+          }
+        }
+      }
+
       const groupToUpdate = state?.tasksList?.find(
         (g) => g.groupType === groupType,
       );
@@ -193,13 +236,19 @@ const DashboardTasksReducer = (state = initialState, action) => {
       newTasksList[groupToUpdateIndex] = {
         ...groupToUpdate,
         ...group,
+        tasks: group.tasks.map((task) => task.identifier),
         isLoading: false,
-        tasks: group.tasks,
       };
+
+      // group.tasks = group.tasks.map((task) => task.identifier);
 
       return {
         ...state,
         tasksList: newTasksList,
+        tasksMap: {
+          ...state.tasksMap,
+          ...newMap,
+        },
       };
     }
 
@@ -223,6 +272,19 @@ const DashboardTasksReducer = (state = initialState, action) => {
     case ActionTypes.LOAD_MORE_DASHBOARD_TASKS_FOR_GROUP_SUCCESS: {
       const { groupType, group } = action;
 
+      const { tasks } = group;
+      const newMap = {};
+      for (const task of tasks) {
+        if (task.itemType === TaskItemType.TASK) {
+          newMap[task.identifier] = task;
+        } else {
+          newMap[task.identifier] = task;
+          for (const subtask of task.tasks) {
+            newMap[subtask.identifier] = subtask;
+          }
+        }
+      }
+
       const groupToUpdate = state?.tasksList?.find(
         (g) => g.groupType === groupType,
       );
@@ -238,6 +300,10 @@ const DashboardTasksReducer = (state = initialState, action) => {
       return {
         ...state,
         tasksList: newTasksList,
+        tasksMap: {
+          ...state.tasksMap,
+          ...newMap,
+        },
       };
     }
 

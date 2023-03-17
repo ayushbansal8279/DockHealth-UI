@@ -45,7 +45,7 @@ import OptionsMenu from 'components/common/OptionsMenu/OptionsMenu';
 import { MoreVert } from '@mui/icons-material';
 import { updateCurrentUserPreferences } from 'actions/user-actions';
 import { taskCustomFieldsSelector } from 'selectors/task-drawer-selectors';
-import { findIncompleteRequiredFields } from 'helpers/task-helpers';
+import { findIncompleteRequiredFields, TaskOrigin } from 'helpers/task-helpers';
 import {
   DashboardTasksGroupContainer,
   DashboardTasksGroupLabel,
@@ -188,6 +188,7 @@ const DashboardTasksGroup = ({
 
   const isCompletedGroup = !!GROUPS_WITH_COMPLETED_TASKS.includes(groupType);
 
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   const handleUpdateTask = useCallback(
     compose(dispatch, TaskActions.partialUpdateTask),
     [dispatch],
@@ -400,6 +401,7 @@ const DashboardTasksGroup = ({
                                     subtasksDisabled
                                     isDashboardTask
                                     iconColorActive={iconColorActive}
+                                    origin={TaskOrigin.DASHBOARD}
                                   />
                                 </DashboardTaskItemContainer>
                               </div>

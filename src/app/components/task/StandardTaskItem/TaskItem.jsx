@@ -55,6 +55,7 @@ import {
   TaskItemType,
   TaskStatus,
   findIncompleteRequiredFields,
+  TaskOrigin,
 } from 'helpers/task-helpers';
 import DependencyIcon from 'img/dependency-icon.svg';
 import DependencyListPopover from 'components/common/DependencyListPopover/DependencyListPopover';
@@ -72,6 +73,7 @@ import {
 import { CUSTOM_FIELD_TYPES } from 'helpers/custom-fields-helpers';
 import { Box } from '@mui/material';
 import { taskDetailsSelector } from 'selectors/list-details-selectors';
+import { dashboardTaskDetailsSelector } from 'selectors/dashboard-selectors';
 import { getSubtaskStylingLink } from './helpers';
 import TaskItemContextMenu from '../TaskItemContextMenu/TaskItemContextMenu';
 import TaskItemBulkEdit from './TaskItemComponents/TaskItemBulkEdit';
@@ -117,7 +119,7 @@ const TaskItem = React.memo(
   ({
     isOpen,
     switchOpen,
-    task: taskId,
+    task: temporaryTask,
     dragHandleProps,
     isDragging,
     isCompletedGroup,
@@ -143,13 +145,25 @@ const TaskItem = React.memo(
     parentContainerReference,
     patient: parentPatient,
     iconColorActive,
+    origin,
   }) => {
-    const task = useSelector((state) =>
-      taskDetailsSelector(
+    const task = useSelector((state) => {
+      if (origin === TaskOrigin.DASHBOARD) {
+        return dashboardTaskDetailsSelector(
+          state,
+          typeof temporaryTask === 'string'
+            ? temporaryTask
+            : temporaryTask.identifier,
+        );
+      }
+      return taskDetailsSelector(
         state,
-        typeof taskId === 'string' ? taskId : taskId.taskIdentifier,
-      ),
-    );
+        typeof temporaryTask === 'string'
+          ? temporaryTask
+          : temporaryTask.identifier,
+      );
+    });
+
     if (!task) return;
 
     const {

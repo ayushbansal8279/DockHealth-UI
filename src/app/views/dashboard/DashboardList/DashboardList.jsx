@@ -89,7 +89,7 @@ const DashboardList = ({
     key: null,
     order: null,
   });
-  const [completeTaskCount, setCompleteTaskCount] = useState(undefined);
+  const [completeTaskCount, setCompleteTaskCount] = useState();
   const { usageState } = currentUser;
   const isSortApplied = !!currentSort?.key;
   const { key: sortKey, order: sortOrder } = currentSort;
@@ -116,7 +116,7 @@ const DashboardList = ({
         .map((groupType) =>
           filteredDashboardTasks.find((g) => g.groupType === groupType),
         )
-        .filter((element) => element);
+        .filter(Boolean);
     };
     return dashboardGroupsPreferences ? sorted() : filteredDashboardTasks;
   }, [dashboardGroupsPreferences, filteredDashboardTasks]);
@@ -337,7 +337,9 @@ const DashboardList = ({
             <GroupedListSkeletonLoader numberOfGroups={3} />
           ) : (
             <DashboardTaskGroupsWrapper>
-              {!isEmpty(orderedDashboardTasks) ? (
+              {isEmpty(orderedDashboardTasks) ? (
+                <EmptyStateContainer>{renderEmptyState()}</EmptyStateContainer>
+              ) : (
                 orderedDashboardTasks?.map(
                   (item, index) =>
                     item && (
@@ -365,8 +367,6 @@ const DashboardList = ({
                       />
                     ),
                 )
-              ) : (
-                <EmptyStateContainer>{renderEmptyState()}</EmptyStateContainer>
               )}
             </DashboardTaskGroupsWrapper>
           )}
@@ -382,6 +382,8 @@ const DashboardList = ({
 };
 
 const mapStateToProps = (state) => ({
+  // allDashboardTasks: ['1'],
+  // dashboardTasks: ['1'],
   allDashboardTasks: dashboardAllTaskItemsSelector(state),
   dashboardTasks: dashboardTasksSelector(state),
   dashboardTasksIsLoading: dashboardTasksIsLoadingSelector(state),
