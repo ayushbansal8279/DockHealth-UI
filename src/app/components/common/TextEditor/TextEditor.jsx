@@ -89,6 +89,7 @@ const fetchPatientsWithDebounce = debounce(
 const TextEditor = React.forwardRef(
   (
     {
+      value,
       maxHeight,
       showToolbar = false,
       fullHeight,
@@ -114,6 +115,7 @@ const TextEditor = React.forwardRef(
     },
     outerReference,
   ) => {
+    /*
     const [showCounter] = useState(false);
     const [linkPopoverOpen, setLinkPopoverOpen] = useState(false);
     const linkButtonReference = useRef();
@@ -409,88 +411,91 @@ const TextEditor = React.forwardRef(
     //   },
     //   [linkPopoverOpen, onBlur, showToolbar, currentState],
     // );
+    */
 
-    return (
-      <ClickAwayListener onClickAway={handleClickAway}>
-        <div>
-          <StyledEditorContainer
-            withEditedLabel={withEditedLabel && readOnly}
-            isReadOnly={readOnly}
-            isOneline={oneline}
-            onClick={focus}
-            minHeight={minHeight}
-            fullHeight={fullHeight}
-            ref={StyledEditorContainerReference}
-          >
-            {showToolbar && isFocused && (
-              <ToolbarContainer>
-                {/* <Toolbar> */}
-                {(externalProps) => {
-                  const currentProps = {
-                    ...externalProps,
-                    getEditorState: () => currentState,
-                  };
-                  return (
-                    <div>
-                      {/* <BoldButton {...currentProps} />
-                      <ItalicButton {...currentProps} />
-                      <UnderlineButton {...currentProps} />
-                      <ThroughLineButton {...currentProps} />
-                      <Separator
-                        {...currentProps}
-                        className={separaterClass.root}
-                      />
-                      <UnorderedListButton {...currentProps} />
-                      <OrderedListButton {...currentProps} />
-                      <Separator
-                        {...currentProps}
-                        className={separaterClass.root}
-                      />
-                      <HeadlineOneButton {...currentProps} />
-                      <HeadlineTwoButton {...currentProps} />
-                      <HeadlineThreeButton {...currentProps} />
-                      <Separator
-                        {...currentProps}
-                        className={separaterClass.root}
-                      /> */}
-                      <LinkButton
-                        buttonReference={linkButtonReference}
-                        popoverOpen={linkPopoverOpen}
-                        handleOpen={handleLinkPopoverOpen}
-                        {...currentProps}
-                      />
-                    </div>
-                  );
-                }}
-                {/* </Toolbar> */}
-              </ToolbarContainer>
-            )}
-            {maxHeight ? (
-              <Box maxHeight={maxHeight} overflow="auto">
-                {/* <Editor
-                  handleBeforeInput={handleAllowType}
-                  handlePastedText={handleAllowPaste}
-                  customStyleMap={styleMap}
-                  ref={reference}
-                  plugins={plugins}
-                  editorState={currentState}
-                  readOnly={readOnly}
-                  placeholder={showPlaceholder ? placeholder : ''}
-                  // onFocus={handleFocus}
-                  onBlur={handleEditorBlur}
-                  onChange={handleChange}
-                  keyBindingFn={keyBindingFn}
-                  handleKeyCommand={handleKeyCommand}
-                  decorators={[
-                    ...(highlightedValues?.length > 0
-                      ? [createHighlightDecorator(highlightedValues)]
-                      : []),
-                    createLinkDecorator,
-                    createPlaceholderDecorator,
-                  ]}
-                /> */}
-              </Box>
-            ) : (
+    return <span>Task {value}</span>;
+
+    // return (
+    // <ClickAwayListener onClickAway={handleClickAway}>
+    //   <div>
+    //     <StyledEditorContainer
+    //       withEditedLabel={withEditedLabel && readOnly}
+    //       isReadOnly={readOnly}
+    //       isOneline={oneline}
+    //       onClick={focus}
+    //       minHeight={minHeight}
+    //       fullHeight={fullHeight}
+    //       ref={StyledEditorContainerReference}
+    //     >
+    //       {showToolbar && isFocused && (
+    //         <ToolbarContainer>         
+                // {/* <Toolbar> */}
+                // {(externalProps) => {
+                //   const currentProps = {
+                //     ...externalProps,
+                //     getEditorState: () => currentState,
+                //   };
+                //   return (
+                //     <div>
+                      // {/* <BoldButton {...currentProps} />
+                      // <ItalicButton {...currentProps} />
+                      // <UnderlineButton {...currentProps} />
+                      // <ThroughLineButton {...currentProps} />
+                      // <Separator
+                      //   {...currentProps}
+                      //   className={separaterClass.root}
+                      // />
+                      // <UnorderedListButton {...currentProps} />
+                      // <OrderedListButton {...currentProps} />
+                      // <Separator
+                      //   {...currentProps}
+                      //   className={separaterClass.root}
+                      // />
+                      // <HeadlineOneButton {...currentProps} />
+                      // <HeadlineTwoButton {...currentProps} />
+                      // <HeadlineThreeButton {...currentProps} />
+                      // <Separator
+                      //   {...currentProps}
+                      //   className={separaterClass.root}
+                      // /> */}
+                //       <LinkButton
+                //         buttonReference={linkButtonReference}
+                //         popoverOpen={linkPopoverOpen}
+                //         handleOpen={handleLinkPopoverOpen}
+                //         {...currentProps}
+                //       />
+                //     </div>
+                //   );
+                // }}
+                // {/* </Toolbar> */}
+            //   </ToolbarContainer>
+            // )}
+            // {maxHeight ? (
+            //   <Box maxHeight={maxHeight} overflow="auto">
+                // {/* <Editor
+                //   handleBeforeInput={handleAllowType}
+                //   handlePastedText={handleAllowPaste}
+                //   customStyleMap={styleMap}
+                //   ref={reference}
+                //   plugins={plugins}
+                //   editorState={currentState}
+                //   readOnly={readOnly}
+                //   placeholder={showPlaceholder ? placeholder : ''}
+                //   // onFocus={handleFocus}
+                //   onBlur={handleEditorBlur}
+                //   onChange={handleChange}
+                //   keyBindingFn={keyBindingFn}
+                //   handleKeyCommand={handleKeyCommand}
+                //   decorators={[
+                //     ...(highlightedValues?.length > 0
+                //       ? [createHighlightDecorator(highlightedValues)]
+                //       : []),
+                //     createLinkDecorator,
+                //     createPlaceholderDecorator,
+                //   ]}
+                // /> */}
+            //   </Box>
+            // ) : (
               // <Editor
               //   handleBeforeInput={handleAllowType}
               //   handlePastedText={handleAllowPaste}
@@ -513,71 +518,71 @@ const TextEditor = React.forwardRef(
               //     createPlaceholderDecorator,
               //   ]}
               // />
-              <input ref={reference} />
-            )}
+            //   <input ref={reference} />
+            // )}
 
-            <Spacing horizontal={4} />
-            {/* {!disableMentions && taskListIdentifier && (
-              <UsersMentionSuggestions
-                onSearchChange={onUsersSearchChange}
-                suggestions={usersSuggestions}
-                onAddMention={onAddMention}
-                entryComponent={UserSuggestionItem}
-                popoverComponent={
-                  <UsersSuggestionsPopover
-                    searchValue={usersSearchValue}
-                    isFetching={isFetchingUsersSuggestions}
-                  />
-                }
-                onOpen={() => {
-                  areUsersSuggestionsOpened.current = true;
-                  setUsersSearchValue('');
-                }}
-                onClose={() => {
-                  areUsersSuggestionsOpened.current = false;
-                  setUsersSearchValue(null);
-                }}
-              />
-            )}
-            {!disableMentions && (
-              <PatientsMentionSuggestions
-                onSearchChange={onPatientSearchChange}
-                suggestions={patientSuggestions}
-                onAddMention={onAddMention}
-                entryComponent={PatientSuggestionItem}
-                popoverComponent={
-                  <PatientsSuggestionsPopover
-                    searchValue={patientSearchValue}
-                    customerTypeLabel={customerTypeLabel}
-                  />
-                }
-                onOpen={() => {
-                  arePatientSuggestionsOpened.current = true;
-                  setPatientSearchValue('');
-                }}
-                onClose={() => {
-                  arePatientSuggestionsOpened.current = false;
-                  setPatientSearchValue(null);
-                }}
-              />
-            )} */}
-          </StyledEditorContainer>
-          {!!characterLimit && (getFocusFromParent ?? showCounter) && (
-            <Counter alert={counter >= characterLimit}>
-              {`${counter}/${characterLimit}`}
-            </Counter>
-          )}
-          <LinkPopover
-            initText={initText}
-            initLink={initLink}
-            anchorElement={linkButtonReference}
-            isPopoverOpen={linkPopoverOpen}
-            close={() => handleLinkPopoverOpen(false)}
-            onSave={handleLinkPopoverConfirm}
-          />
-        </div>
-      </ClickAwayListener>
-    );
+            // <Spacing horizontal={4} />
+            // {/* {!disableMentions && taskListIdentifier && (
+            //   <UsersMentionSuggestions
+            //     onSearchChange={onUsersSearchChange}
+            //     suggestions={usersSuggestions}
+            //     onAddMention={onAddMention}
+            //     entryComponent={UserSuggestionItem}
+            //     popoverComponent={
+            //       <UsersSuggestionsPopover
+            //         searchValue={usersSearchValue}
+            //         isFetching={isFetchingUsersSuggestions}
+            //       />
+            //     }
+            //     onOpen={() => {
+            //       areUsersSuggestionsOpened.current = true;
+            //       setUsersSearchValue('');
+            //     }}
+            //     onClose={() => {
+            //       areUsersSuggestionsOpened.current = false;
+            //       setUsersSearchValue(null);
+            //     }}
+            //   />
+            // )}
+            // {!disableMentions && (
+            //   <PatientsMentionSuggestions
+            //     onSearchChange={onPatientSearchChange}
+            //     suggestions={patientSuggestions}
+            //     onAddMention={onAddMention}
+            //     entryComponent={PatientSuggestionItem}
+            //     popoverComponent={
+            //       <PatientsSuggestionsPopover
+            //         searchValue={patientSearchValue}
+            //         customerTypeLabel={customerTypeLabel}
+            //       />
+            //     }
+            //     onOpen={() => {
+            //       arePatientSuggestionsOpened.current = true;
+            //       setPatientSearchValue('');
+            //     }}
+            //     onClose={() => {
+            //       arePatientSuggestionsOpened.current = false;
+            //       setPatientSearchValue(null);
+            //     }}
+            //   />
+            // )} */}
+    //       </StyledEditorContainer>
+    //       {!!characterLimit && (getFocusFromParent ?? showCounter) && (
+    //         <Counter alert={counter >= characterLimit}>
+    //           {`${counter}/${characterLimit}`}
+    //         </Counter>
+    //       )}
+    //       <LinkPopover
+    //         initText={initText}
+    //         initLink={initLink}
+    //         anchorElement={linkButtonReference}
+    //         isPopoverOpen={linkPopoverOpen}
+    //         close={() => handleLinkPopoverOpen(false)}
+    //         onSave={handleLinkPopoverConfirm}
+    //       />
+    //     </div>
+    //   </ClickAwayListener>
+    // );
   },
 );
 

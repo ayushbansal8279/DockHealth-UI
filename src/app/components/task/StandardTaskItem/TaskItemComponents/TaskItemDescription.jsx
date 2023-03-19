@@ -178,6 +178,7 @@ const TaskItemDescription = ({
         >
           <DescriptionBorder disabled={disabled} isEdited={isEditing}>
             <TextEditor
+              value={description}
               ref={descriptionReference}
               readOnly={disabled || !isEditing}
               oneline
