@@ -173,6 +173,9 @@ export const Description = styled.div`
   font-size: 14px;
   ${(props) => (props.isUnread ? 'font-weight: 900; font-size: 15px;' : '')};
   overflow: hidden;
+  &:hover > div > div > button {
+    visibility: visible;
+  }
 
   @media screen and (max-width: 1300px) {
     max-width: 300px;
@@ -604,6 +607,7 @@ export const DescriptionEditButton = styled.div`
   max-height: 18px;
   background-color: ${({ active }) => (active ? palette.coolGrey3 : '')};
   display: ${({ active }) => (active ? 'none' : 'block')};
+  visibility: hidden;
 
   &:hover {
     background-color: ${palette.coolGrey3};
