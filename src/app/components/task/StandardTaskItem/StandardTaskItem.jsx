@@ -53,7 +53,7 @@ const Task = React.memo(
       subtasks,
       patient,
       searchMetaData = {},
-      subTasksCount,
+      subTasksCount = 0,
       taskList,
       subtaskQuickAddOpen,
     } = task || {};
