@@ -62,7 +62,7 @@ const MegaFilter = ({
       >
         <>
           <FilterHeader
-            title="Filter active tasks"
+            title="Filter tasks"
             filterActive={isFilterApplied}
             filteredItemsCount={tasksAndSubTasksCount}
             allItemsCount={activeItemsAmount}
