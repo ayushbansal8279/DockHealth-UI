@@ -96,7 +96,7 @@ const GlobalSearchList = ({
         </ListDetailsHeader>
       </StickyContainer>
       <TasksHeader
-        bulkEditEnabled={false}
+        bulkEditEnabled
         sort={false}
         groupHasMultipleAssignees={containsMultipleAssignees}
         isGroupSelected={false}

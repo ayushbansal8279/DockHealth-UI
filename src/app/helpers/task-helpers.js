@@ -242,7 +242,7 @@ export const TaskItemColumnWidth = {
 export const TASK_ITEM_BASE_COLUMN_CONFIG = {
   [TaskItemColumn.DESCRIPTION]: true,
   [TaskItemColumn.TASK_DETAILS]: true,
-  [TaskItemColumn.SUBTASKS_COUNT]: true,
+  // [TaskItemColumn.SUBTASKS_COUNT]: true,
   [TaskItemColumn.PATIENT]: true,
   [PatientTaskItemColumn.GENDER]: true,
   [PatientTaskItemColumn.DOB]: true,
