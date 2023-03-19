@@ -37,7 +37,6 @@ const ColumnSortHeader = ({
   // eslint-disable-next-line sonarjs/cognitive-complexity
 }) => {
   const descriptionTextReference = useRef();
-  const [isHovered, setIsHovered] = useState(false);
   const [columnWidth, setcolumnWidth] = useState(+width);
   const [isResizing, setIsResizing] = useState(false);
   const previousWidth = usePrevious(width);
@@ -104,13 +103,10 @@ const ColumnSortHeader = ({
             ref={descriptionTextReference}
           >
             <Box display="flex">
-              <Box p="0 5px 0 10px" position="relative">
+              <Box p="0 5px 0 5px" position="relative">
                 <Box position="absolute" left="5px" top="0px">
                   {draggable && (
-                    <ThreeDots
-                      hideIcon={!isHovered || isDraggingOver}
-                      src={ThreeDotsIcon}
-                    />
+                    <ThreeDots hideIcon={isDraggingOver} src={ThreeDotsIcon} />
                   )}
                 </Box>
               </Box>
@@ -140,13 +136,10 @@ const ColumnSortHeader = ({
               </Box>
             </Box>
           </LabelWrapper>
-          <Popper
+          {/* <Popper
             anchorEl={descriptionTextReference.current}
             placement="bottom-start"
-            open={
-              checkIfShouldDisplayTooltip(descriptionTextReference.current) &&
-              isHovered
-            }
+            open={checkIfShouldDisplayTooltip(descriptionTextReference.current)}
             style={{
               zIndex: 115,
               maxWidth:
@@ -159,7 +152,7 @@ const ColumnSortHeader = ({
                 <DescriptionTooltipWrapper>{label}</DescriptionTooltipWrapper>
               </Fade>
             )}
-          </Popper>
+          </Popper> */}
         </div>
       );
     },
@@ -168,7 +161,6 @@ const ColumnSortHeader = ({
       draggable,
       id,
       isDraggingOver,
-      isHovered,
       label,
       onSortChange,
       sort,
@@ -204,8 +196,6 @@ const ColumnSortHeader = ({
           type="button"
           width={columnWidth}
           onClick={switchSort}
-          onMouseEnter={() => setIsHovered(true)}
-          onMouseLeave={() => setIsHovered(false)}
           tasksHeaderTextTransform={tasksHeaderTextTransform}
         >
           {randerContent(tasksHeaderTextColor)}
@@ -240,8 +230,6 @@ const ColumnSortHeader = ({
         type="button"
         width={snapshot?.draggingOverWith === id ? 0 : columnWidth}
         onClick={switchSort}
-        onMouseEnter={() => setIsHovered(true)}
-        onMouseLeave={() => setIsHovered(false)}
         printWidth={printWidth}
         tasksHeaderTextTransform={tasksHeaderTextTransform}
       >
