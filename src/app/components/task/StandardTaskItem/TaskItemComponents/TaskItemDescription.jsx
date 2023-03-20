@@ -164,8 +164,8 @@ const TaskItemDescription = ({
     <DescriptionBox width={width}>
       <Box display="flex" flex={1}>
         <Description
-          onMouseEnter={() => setIsHovered(true)}
-          onMouseLeave={() => setIsHovered(false)}
+          // onMouseEnter={() => setIsHovered(true)}
+          // onMouseLeave={() => setIsHovered(false)}
           ref={(reference) => {
             if (reference) {
               descriptionTextReference.current = reference.querySelector(

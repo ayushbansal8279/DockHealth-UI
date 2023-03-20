@@ -30,8 +30,8 @@ const TaskTemplateName = ({
   return (
     <>
       <NameContainer
-        onMouseEnter={() => setIsHoverVisible(true)}
-        onMouseLeave={() => setIsHoverVisible(false)}
+        // onMouseEnter={() => setIsHoverVisible(true)}
+        // onMouseLeave={() => setIsHoverVisible(false)}
         onClick={() => {
           dispatch(openDrawer(identifier, templateGroup));
         }}
