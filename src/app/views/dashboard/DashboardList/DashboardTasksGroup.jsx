@@ -11,8 +11,6 @@ import pluck from 'ramda/src/pluck';
 import moment from 'moment';
 import { useDispatch, useSelector } from 'react-redux';
 import * as TaskActions from 'actions/task-actions';
-import * as ModalActions from 'modal/actions';
-import useActions from 'hooks/use-actions';
 import { Collapse } from '@mui/material';
 import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd';
 import { getSharedTaskListsWithCurrentUser } from 'api/task-list-api';
@@ -44,8 +42,7 @@ import { usePrevious } from 'react-use';
 import OptionsMenu from 'components/common/OptionsMenu/OptionsMenu';
 import { MoreVert } from '@mui/icons-material';
 import { updateCurrentUserPreferences } from 'actions/user-actions';
-import { taskCustomFieldsSelector } from 'selectors/task-drawer-selectors';
-import { findIncompleteRequiredFields } from 'helpers/task-helpers';
+import { TaskOrigin } from 'helpers/task-helpers';
 import {
   DashboardTasksGroupContainer,
   DashboardTasksGroupLabel,
@@ -100,11 +97,8 @@ const DashboardTasksGroup = ({
   const parentContainerReference = useRef(null);
   const dispatch = useDispatch();
 
-  const modalActions = useActions(ModalActions);
-
   const currentTaskLength = dashboardTasks?.length || 0;
   const previousTaskLength = usePrevious(currentTaskLength) || 0;
-  const { templates } = useSelector(taskCustomFieldsSelector);
 
   useEffect(() => {
     if (currentTaskLength > 0 && previousTaskLength === 0) {
@@ -188,45 +182,10 @@ const DashboardTasksGroup = ({
 
   const isCompletedGroup = !!GROUPS_WITH_COMPLETED_TASKS.includes(groupType);
 
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   const handleUpdateTask = useCallback(
     compose(dispatch, TaskActions.partialUpdateTask),
     [dispatch],
-  );
-
-  const handleToggleCompletedTask = useCallback(
-    (task) => {
-      const incompleteRequiredFields = findIncompleteRequiredFields(
-        templates,
-        task,
-      );
-      const isRequiredFieldsAreIncomplete = incompleteRequiredFields.length > 0;
-
-      if (isRequiredFieldsAreIncomplete) {
-        const modalProps = {
-          incompleteFields: incompleteRequiredFields,
-        };
-        modalActions.openModal('CompleteAllFields', modalProps);
-        return;
-      }
-
-      const hasIncompletedSubtasks =
-        task.subtasks?.length > 0
-          ? task.subtasks.find((subtask) => subtask.status === 'INCOMPLETE')
-          : task.subTasksCount - task.subTasksCompletedCount > 0;
-
-      if (task.status === 'INCOMPLETE' && hasIncompletedSubtasks) {
-        const modalProps = {
-          confirm: () => {
-            modalActions.closeModal();
-            dispatch(TaskActions.toggleCompleteTask(task));
-          },
-        };
-        modalActions.openModal('CompleteAllTasks', modalProps);
-      } else {
-        dispatch(TaskActions.toggleCompleteTask(task));
-      }
-    },
-    [dispatch, modalActions, templates],
   );
 
   const isDragAndDropDisabled = !tasks || tasks.length < 2;
@@ -383,9 +342,6 @@ const DashboardTasksGroup = ({
                                     }
                                     pageBackground={palette.white}
                                     task={task}
-                                    toggleCompleteTask={
-                                      handleToggleCompletedTask
-                                    }
                                     isCompletedGroup={isCompletedGroup}
                                     isDragging={isDragging}
                                     dragHandleProps={
@@ -400,6 +356,7 @@ const DashboardTasksGroup = ({
                                     subtasksDisabled
                                     isDashboardTask
                                     iconColorActive={iconColorActive}
+                                    origin={TaskOrigin.DASHBOARD}
                                   />
                                 </DashboardTaskItemContainer>
                               </div>

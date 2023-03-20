@@ -57,6 +57,9 @@ export const LabelWrapper = styled.div<{
   white-space: nowrap;
   color: ${({ ordered, tasksHeaderTextColor }) =>
     ordered ? palette.brightBlue : tasksHeaderTextColor || palette.coolGrey1};
+  &:hover > div > div > div > img {
+    visibility: visible;
+  }
 `;
 
 export const SortButton = styled.button<{
@@ -101,10 +104,10 @@ export const ThreeDots = styled.img<{ hideIcon: boolean }>`
   cursor: pointer;
   transition: all 0.3s ease-in-out;
   ${({ hideIcon }) => `opacity: ${hideIcon ? 0 : 1};`}
-
   &:active {
     opacity: 1;
   }
+  visibility: hidden;
 `;
 
 export const SortHeaderRow = styled.div`

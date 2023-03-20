@@ -1,3 +1,4 @@
+/* eslint-disable import/no-cycle */
 /* eslint-disable sonarjs/cognitive-complexity */
 import React, {
   useState,
@@ -7,10 +8,11 @@ import React, {
   useRef,
 } from 'react';
 import isEmpty from 'ramda/src/isEmpty';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { openDrawer } from 'actions/task-drawer-actions';
 import { storeAsCurrentTask, loadSubTasks } from 'actions/task-actions';
 import TaskComments from 'components/tasklist/TaskComments/TaskComments';
+import { taskDetailsSelector } from 'selectors/list-details-selectors';
 import TaskItem from './TaskItem';
 import Subtasks from './Subtasks';
 import { getMatchedComments } from './helpers';
@@ -39,13 +41,19 @@ const Task = React.memo(
     const parentTaskReference = useRef(null);
     const [areSubtasksOpen, setAreSubtasksOpen] = useState(false);
 
+    const pulledTask = useSelector((state) => taskDetailsSelector(state, task));
+    if (typeof task === 'string') {
+      // eslint-disable-next-line no-param-reassign
+      task = pulledTask;
+    }
+
     const {
       taskIdentifier,
       comments,
       subtasks,
       patient,
       searchMetaData = {},
-      subTasksCount,
+      subTasksCount = 0,
       taskList,
       subtaskQuickAddOpen,
     } = task || {};
@@ -54,6 +62,7 @@ const Task = React.memo(
     const { highlightedValue } = restProps;
     const { matchingCommentIdentifiers = [] } = searchMetaData;
 
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     const renderedSubtasks = addingNewSubtask ? [...subtasks, {}] : subtasks;
 
     const dispatch = useDispatch();
@@ -155,7 +164,7 @@ const Task = React.memo(
       >
         <div ref={innerRef}>
           <TaskItem
-            task={task}
+            task={task.identifier}
             isOpen={areSubtasksOpen}
             switchOpen={handleSetSubtasksOpen}
             dragHandleProps={dragHandleProps}

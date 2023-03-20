@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/rules-of-hooks */
 /* eslint-disable no-underscore-dangle */
 /* eslint-disable sonarjs/cognitive-complexity */
 import React, {
@@ -6,16 +7,28 @@ import React, {
   useRef,
   useCallback,
   useContext,
+  useMemo,
 } from 'react';
 import pluck from 'ramda/src/pluck';
 import { useDispatch, useSelector } from 'react-redux';
-import { isTaskSelectedSelector } from 'selectors/task-drawer-selectors';
+import * as ListDetailsActions from 'actions/list-details-actions';
+import {
+  isTaskSelectedSelector,
+  singleTaskCustomFieldsSelector,
+} from 'selectors/task-drawer-selectors';
+import { TASK_DISAPPEAR_DELAY } from 'helpers/task-update-helper';
 import { openTaskDrawerWithContent } from 'actions/task-drawer-actions';
+import { useParams } from 'react-router-dom';
+import * as ModalActions from 'modal/actions';
+import * as TaskActions from 'actions/task-actions';
+import useActions from 'hooks/use-actions';
 import {
   selectTask,
   storeAsCurrentTask,
   chooseTaskDecisionOutcome,
 } from 'actions/task-actions';
+// eslint-disable-next-line import/no-cycle
+import TaskTemplateGroup from 'components/task-template/TaskTemplateGroup/TaskTemplateGroup';
 import Circle from 'img/circle.svg';
 import CircleCompleted from 'img/circle-completed.svg';
 import ThreeDotsIcon from 'img/three-dots.svg';
@@ -39,6 +52,10 @@ import {
   getPriorityColor,
   TaskItemColumnWidth,
   isColumnChecked,
+  TaskItemType,
+  TaskStatus,
+  findIncompleteRequiredFields,
+  TaskOrigin,
 } from 'helpers/task-helpers';
 import DependencyIcon from 'img/dependency-icon.svg';
 import DependencyListPopover from 'components/common/DependencyListPopover/DependencyListPopover';
@@ -55,6 +72,8 @@ import {
 } from 'restrictions/task-restrictions';
 import { CUSTOM_FIELD_TYPES } from 'helpers/custom-fields-helpers';
 import { Box } from '@mui/material';
+import { taskDetailsSelector } from 'selectors/list-details-selectors';
+import { dashboardTaskDetailsSelector } from 'selectors/dashboard-selectors';
 import { getSubtaskStylingLink } from './helpers';
 import TaskItemContextMenu from '../TaskItemContextMenu/TaskItemContextMenu';
 import TaskItemBulkEdit from './TaskItemComponents/TaskItemBulkEdit';
@@ -100,8 +119,7 @@ const TaskItem = React.memo(
   ({
     isOpen,
     switchOpen,
-    toggleCompleteTask,
-    task,
+    task: temporaryTask,
     dragHandleProps,
     isDragging,
     isCompletedGroup,
@@ -127,7 +145,27 @@ const TaskItem = React.memo(
     parentContainerReference,
     patient: parentPatient,
     iconColorActive,
+    origin,
   }) => {
+    const task = useSelector((state) => {
+      if (origin === TaskOrigin.DASHBOARD) {
+        return dashboardTaskDetailsSelector(
+          state,
+          typeof temporaryTask === 'string'
+            ? temporaryTask
+            : temporaryTask.identifier,
+        );
+      }
+      return taskDetailsSelector(
+        state,
+        typeof temporaryTask === 'string'
+          ? temporaryTask
+          : temporaryTask.identifier,
+      );
+    });
+
+    if (!task) return;
+
     const {
       taskIdentifier,
       assignedToUsers,
@@ -161,6 +199,9 @@ const TaskItem = React.memo(
       (accumulator, currentValue) => accumulator || currentValue.isSelected,
       false,
     );
+
+    const actions = useActions(TaskActions);
+    const modalActions = useActions(ModalActions);
 
     const isTaskStatusTogglingDisabled =
       isTemplateTask ||
@@ -203,12 +244,10 @@ const TaskItem = React.memo(
     const showContextMenu = [move, duplicate, subtasks, del].reduce(
       (accumulator, element) => {
         if (accumulator) return accumulator;
-        if (
+        return !(
           restrictions?.[element] === DISABLED ||
           restrictions?.[element] === READ_ONLY
-        )
-          return false;
-        return true;
+        );
       },
       false,
     );
@@ -225,6 +264,7 @@ const TaskItem = React.memo(
             task.parentTaskIdentifier || task.taskIdentifier,
           );
         } else if (isOpen) {
+          // eslint-disable-next-line sonarjs/no-gratuitous-expressions
           switchOpen(!isOpen);
         } else {
           switchOpen(true);
@@ -275,6 +315,79 @@ const TaskItem = React.memo(
           ),
         ),
       [dispatch, parentTaskGroupIdentifier, task, templateBundleIdentifier],
+    );
+
+    const templates = useSelector((state) =>
+      singleTaskCustomFieldsSelector(state, task.taskIdentifier),
+    );
+
+    const refreshTab = useCallback(
+      (withLoader = false) => {
+        dispatch(ListDetailsActions.getCurrentTaskListFilterOptions());
+        dispatch(
+          ListDetailsActions.getListDetailsTaskCounters(taskListIdentifier),
+        );
+        dispatch(ListDetailsActions.refreshListDetailsGroupedTasks(withLoader));
+      },
+      [dispatch, taskListIdentifier],
+    );
+
+    const invokeToggleCompleteAction = useCallback(
+      // eslint-disable-next-line no-shadow
+      (task) => {
+        actions
+          .toggleCompleteTask(task, currentUser)
+          .then(() => {
+            setTimeout(() => {
+              dispatch(
+                ListDetailsActions.getListDetailsTaskCounters(
+                  taskListIdentifier,
+                ),
+              );
+              dispatch(ListDetailsActions.getTasksGroupsList());
+            }, TASK_DISAPPEAR_DELAY);
+          })
+          .catch(() => refreshTab());
+      },
+      [actions, currentUser, dispatch, taskListIdentifier, refreshTab],
+    );
+
+    const toggleCompleteTask = useCallback(
+      // eslint-disable-next-line no-shadow
+      (task) => {
+        const incompleteRequiredFields = findIncompleteRequiredFields(
+          templates,
+          task,
+        );
+        const isRequiredFieldsAreIncomplete =
+          incompleteRequiredFields.length > 0;
+
+        if (isRequiredFieldsAreIncomplete) {
+          const modalProps = {
+            incompleteFields: incompleteRequiredFields,
+          };
+          modalActions.openModal('CompleteAllFields', modalProps);
+          return;
+        }
+
+        const hasIncompletedSubtasks =
+          task.subtasks?.length > 0
+            ? task.subtasks.find((subtask) => subtask.status === 'INCOMPLETE')
+            : task.subTasksCount - task.subTasksCompletedCount > 0;
+
+        if (task.status === 'INCOMPLETE' && hasIncompletedSubtasks) {
+          const modalProps = {
+            confirm: () => {
+              modalActions.closeModal();
+              invokeToggleCompleteAction(task);
+            },
+          };
+          modalActions.openModal('CompleteAllTasks', modalProps);
+        } else {
+          invokeToggleCompleteAction(task);
+        }
+      },
+      [invokeToggleCompleteAction, modalActions, templates],
     );
 
     const onCircleClick = useCallback(
@@ -343,8 +456,6 @@ const TaskItem = React.memo(
         columns?.findIndex((c) => c.identifier === TaskItemColumnType),
       [columns],
     );
-
-    const [isEditButtonVisible, setEditButtonVisible] = useState(false);
 
     const randerFirstColumnCoverIfNecessary = useCallback(
       (content, order) => {
@@ -420,13 +531,41 @@ const TaskItem = React.memo(
     );
 
     const descriptionColumnOrder = getColumnOrder(TaskItemColumn.DESCRIPTION);
+    const { tabName } = useParams();
+    const isCompletedView = tabName?.toUpperCase() === TaskStatus.COMPLETE;
+
+    const iconColorActiveItem = useMemo(
+      () =>
+        selectedOrganization?.themeSettings?.find(
+          ({ name }) => name === 'icon.active.color',
+        ) || {},
+      [selectedOrganization?.themeSettings],
+    );
+
+    if (task?.itemType !== TaskItemType.TASK) {
+      return (
+        <TaskTemplateGroup
+          isCompletedTab={isCompletedView}
+          // viewSetup={viewSetup}
+          viewSetup={() => {}}
+          // isStartedDnD={draggedId === task.identifier}
+          isStartedDnD={false}
+          // draggableProvided={draggableProvided}
+          draggableProvided={{}}
+          templateGroup={task}
+          groupHasMultipleAssignees={false}
+          isFullView={false}
+          dragAndDropDisabled={isCompletedGroup || dragAndDropDisabled}
+          iconColorActive={iconColorActiveItem?.value}
+        />
+      );
+    }
+
     return (
       <>
         <StandardTaskItemPanel
           onContextMenu={handleTaskItemRightClick}
           isDragging={isDragging}
-          onMouseEnter={() => setEditButtonVisible(true)}
-          onMouseLeave={() => setEditButtonVisible(false)}
         >
           <StandardTaskItemContainer
             newlyCreated={newlyCreated}
@@ -492,7 +631,7 @@ const TaskItem = React.memo(
                     isSubtask={isSubtask}
                     isEditing={isEditingDescription}
                     setEditing={setEditingDescription}
-                    isEditButtonVisible={isEditButtonVisible}
+                    isEditButtonVisible
                     hasParentTaskLabel={hasParentTaskLabel}
                     width={
                       columns?.find(
@@ -1090,7 +1229,9 @@ const TaskItem = React.memo(
                               field={field}
                               customFieldValue={customFieldValue}
                               task={task}
-                              readOnly
+                              readOnly={
+                                restrictions?.customFields === READ_ONLY
+                              }
                             />
                           )}
                         </TaskItemCell>,

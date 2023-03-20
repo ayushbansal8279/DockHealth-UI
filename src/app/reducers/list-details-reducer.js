@@ -1,20 +1,21 @@
 /* eslint-disable unicorn/no-nested-ternary */
 import * as ActionTypes from 'actions/action-types';
-import pipe from 'ramda/src/pipe';
-import prop from 'ramda/src/prop';
-import uniqBy from 'ramda/src/uniqBy';
+// import pipe from 'ramda/src/pipe';
+// import prop from 'ramda/src/prop';
+// import uniqBy from 'ramda/src/uniqBy';
 import move from 'ramda/src/move';
-import { mapWithRemove } from 'helpers/utility-functions';
 import { reorderTasksForWorkflow } from 'helpers/workflow-helpers';
 import { TaskGroupType, TaskItemType } from 'helpers/task-helpers';
 import { updateBundleInList } from 'helpers/tasklist-helpers';
 import TaskBaseReducer from './task-base-reducer';
 
-const dedupe = pipe(uniqBy(prop('identifier')));
+// const dedupe = pipe(uniqBy(prop('identifier')));
 
 const initialState = {
   taskListIdentifier: null,
   groupedTasks: {},
+  tasksIdentifiers: [],
+  tasksMap: {},
   completedGroupedTasks: {},
   newlyAddedTaskIds: [],
   isFetching: false,
@@ -64,6 +65,7 @@ function updateBundleInState(updateCallback, bundleIdentifier, state) {
   };
 }
 
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 const updateTaskInList = (taskGroups, updateTaskCallback) =>
   taskGroups?.map((group) => ({
     ...group,
@@ -78,23 +80,35 @@ const updateTaskInList = (taskGroups, updateTaskCallback) =>
     }, group.tasks),
   }));
 
-const updateTasksStateCallback = (state, updateTaskFromAction) => ({
-  ...state,
-  groupedTasks: {
-    ...state.groupedTasks,
-    taskGroups: updateTaskInList(
-      state.groupedTasks?.taskGroups,
-      updateTaskFromAction,
-    ),
-  },
-  completedGroupedTasks: {
-    ...state.completedGroupedTasks,
-    taskGroups: updateTaskInList(
-      state.completedGroupedTasks?.taskGroups,
-      updateTaskFromAction,
-    ),
-  },
-});
+
+const updateTasksStateCallback = (state, newTask) => {
+  if (typeof newTask === 'function') return state;
+
+  return {
+    ...state,
+    tasksMap: {
+      ...state.tasksMap,
+      [newTask.identifier ?? newTask.taskIdentifier]: {
+        ...state.tasksMap[newTask.identifier ?? newTask.taskIdentifier],
+        ...newTask,
+      },
+    },
+    // groupedTasks: {
+    //   ...state.groupedTasks,
+    //   taskGroups: updateTaskInList(
+    //     state.groupedTasks?.taskGroups,
+    //     updateTaskFromAction,
+    //   ),
+    // },
+    // completedGroupedTasks: {
+    //   ...state.completedGroupedTasks,
+    //   taskGroups: updateTaskInList(
+    //     state.completedGroupedTasks?.taskGroups,
+    //     updateTaskFromAction,
+    //   ),
+    // },
+  };
+};
 
 // eslint-disable-next-line sonarjs/cognitive-complexity
 const ListDetailsReducer = (state = initialState, action) => {
@@ -245,46 +259,77 @@ const ListDetailsReducer = (state = initialState, action) => {
     }
 
     case ActionTypes.REQUEST_TASKLIST_GROUP_TASKS_SUCCESS: {
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
       const { groupOfTasks, refresh, startPosition = 0 } = action;
 
-      const groupsToUpdate = groupOfTasks.taskGroups;
+      const newGroup = {
+        ...groupOfTasks?.taskGroups[0],
+        tasks: groupOfTasks?.taskGroups[0].tasks.map((task) => task.identifier),
+      };
+      const newGroups = [...state.groupedTasks.taskGroups];
+      const index = newGroups.findIndex((group) => {
+        return group.groupIdentifier === newGroup.groupIdentifier;
+      });
+      if (typeof index === 'number') {
+        newGroups[index] = newGroup;
+      } else {
+        newGroups.push(newGroup);
+      }
 
-      let updatedTaskGroups = state.groupedTasks?.taskGroups || [];
-
-      for (const group of groupsToUpdate) {
-        let groupExists = false;
-        updatedTaskGroups = updatedTaskGroups?.map((taskGroup) => {
-          if (taskGroup.groupIdentifier === group?.groupIdentifier) {
-            groupExists = true;
-            return {
-              ...taskGroup,
-              tasks: refresh
-                ? group.tasks
-                : startPosition === 0
-                ? dedupe(group.tasks.concat(taskGroup.tasks))
-                : dedupe(taskGroup.tasks.concat(group.tasks)),
-              hasMore: group.hasMore,
-              moreTasksIndex: group.moreTasksIndex,
-              isLoadingGroup: false,
-              isFetchingMoreTasks: false,
-            };
+      const tasks = groupOfTasks?.taskGroups[0]?.tasks;
+      const newMap = {};
+      for (const task of tasks) {
+        if (task.itemType === TaskItemType.TASK) {
+          newMap[task.identifier] = task;
+        } else {
+          newMap[task.identifier] = task;
+          for (const subtask of task.tasks) {
+            newMap[subtask.identifier] = subtask;
           }
-
-          return taskGroup;
-        });
-
-        if (!groupExists) {
-          const groupToAdd = { ...group };
-          groupToAdd.isLoadingGroup = false;
-          updatedTaskGroups = [...(updatedTaskGroups || []), groupToAdd];
         }
       }
+
+      // const groupsToUpdate = groupOfTasks.taskGroups;
+
+      // let updatedTaskGroups = state.groupedTasks?.taskGroups || [];
+
+      // for (const group of groupsToUpdate) {
+      //   let groupExists = false;
+      //   updatedTaskGroups = updatedTaskGroups?.map((taskGroup) => {
+      //     if (taskGroup.groupIdentifier === group?.groupIdentifier) {
+      //       groupExists = true;
+      //       return {
+      //         ...taskGroup,
+      //         tasks: refresh
+      //           ? group.tasks
+      //           : startPosition === 0
+      //           ? dedupe(group.tasks.concat(taskGroup.tasks))
+      //           : dedupe(taskGroup.tasks.concat(group.tasks)),
+      //         hasMore: group.hasMore,
+      //         moreTasksIndex: group.moreTasksIndex,
+      //         isLoadingGroup: false,
+      //         isFetchingMoreTasks: false,
+      //       };
+      //     }
+
+      //     return taskGroup;
+      //   });
+
+      //   if (!groupExists) {
+      //     const groupToAdd = { ...group };
+      //     groupToAdd.isLoadingGroup = false;
+      //     updatedTaskGroups = [...(updatedTaskGroups || []), groupToAdd];
+      //   }
+      // }
 
       return {
         ...state,
         groupedTasks: {
-          ...state.groupedTasks,
-          taskGroups: updatedTaskGroups,
+          taskGroups: newGroups,
+        },
+        tasksMap: {
+          ...state.tasksMap,
+          ...newMap,
         },
         listGroups: state.listGroups.map((g) => {
           if (
@@ -461,63 +506,83 @@ const ListDetailsReducer = (state = initialState, action) => {
     case ActionTypes.GET_TASKS_FOR_WORKFLOW: {
       const { workflowIdentifier } = action;
 
+      const newMap = { ...state.tasksMap };
+      newMap[workflowIdentifier].isFetchingTasks = true;
+
       return {
         ...state,
-        groupedTasks: {
-          ...state.groupedTasks,
-          taskGroups: state.groupedTasks?.taskGroups?.map((g) => ({
-            ...g,
-            tasks: updateBundleInList(
-              { isFetchingTasks: true },
-              workflowIdentifier,
-              g.tasks,
-            ),
-          })),
-        },
-        completedGroupedTasks: {
-          ...state.completedGroupedTasks,
-          // eslint-disable-next-line sonarjs/no-identical-functions
-          taskGroups: state.completedGroupedTasks?.taskGroups?.map((g) => ({
-            ...g,
-            tasks: updateBundleInList(
-              { isFetchingTasks: true },
-              workflowIdentifier,
-              g.tasks,
-            ),
-          })),
-        },
+        tasksMap: newMap,
       };
+
+      // return {
+      //   ...state,
+      //   groupedTasks: {
+      //     ...state.groupedTasks,
+      //     taskGroups: state.groupedTasks?.taskGroups?.map((g) => ({
+      //       ...g,
+      //       tasks: updateBundleInList(
+      //         { isFetchingTasks: true },
+      //         workflowIdentifier,
+      //         g.tasks,
+      //       ),
+      //     })),
+      //   },
+      //   completedGroupedTasks: {
+      //     ...state.completedGroupedTasks,
+      //     // eslint-disable-next-line sonarjs/no-identical-functions
+      //     taskGroups: state.completedGroupedTasks?.taskGroups?.map((g) => ({
+      //       ...g,
+      //       tasks: updateBundleInList(
+      //         { isFetchingTasks: true },
+      //         workflowIdentifier,
+      //         g.tasks,
+      //       ),
+      //     })),
+      //   },
+      // };
     }
 
     case ActionTypes.GET_TASKS_FOR_WORKFLOW_SUCCESS: {
       const { workflowIdentifier, tasks } = action;
 
+      const newMap = { ...state.tasksMap };
+      for (const task of tasks) {
+        newMap[task.identifier] = task;
+      }
+      newMap[workflowIdentifier].tasks = tasks.map((task) => task.identifier);
+      newMap[workflowIdentifier].isFetchingTasks = false;
+
       return {
         ...state,
-        groupedTasks: {
-          ...state.groupedTasks,
-          taskGroups: state.groupedTasks?.taskGroups?.map((g) => ({
-            ...g,
-            tasks: updateBundleInList(
-              { isFetchingTasks: false, tasks },
-              workflowIdentifier,
-              g.tasks,
-            ),
-          })),
-        },
-        completedGroupedTasks: {
-          ...state.completedGroupedTasks,
-          // eslint-disable-next-line sonarjs/no-identical-functions
-          taskGroups: state.completedGroupedTasks?.taskGroups?.map((g) => ({
-            ...g,
-            tasks: updateBundleInList(
-              { isFetchingTasks: false, tasks },
-              workflowIdentifier,
-              g.tasks,
-            ),
-          })),
-        },
+        tasksMap: newMap,
       };
+
+      // return {
+      //   ...state,
+      //   groupedTasks: {
+      //     ...state.groupedTasks,
+      //     taskGroups: state.groupedTasks?.taskGroups?.map((g) => ({
+      //       ...g,
+      //       tasks: updateBundleInList(
+      //         { isFetchingTasks: false, tasks },
+      //         workflowIdentifier,
+      //         g.tasks,
+      //       ),
+      //     })),
+      //   },
+      //   completedGroupedTasks: {
+      //     ...state.completedGroupedTasks,
+      //     // eslint-disable-next-line sonarjs/no-identical-functions
+      //     taskGroups: state.completedGroupedTasks?.taskGroups?.map((g) => ({
+      //       ...g,
+      //       tasks: updateBundleInList(
+      //         { isFetchingTasks: false, tasks },
+      //         workflowIdentifier,
+      //         g.tasks,
+      //       ),
+      //     })),
+      //   },
+      // };
     }
 
     case ActionTypes.UPDATE_PATIENT_DETAILS: {
@@ -525,24 +590,24 @@ const ListDetailsReducer = (state = initialState, action) => {
         payload: { patientIdentifier, details },
       } = action;
 
-      // eslint-disable-next-line sonarjs/prefer-immediate-return
-      const updatedState = {
-        ...state,
-        groupedTasks: {
-          ...state.groupedTasks,
-          taskGroups: state.groupedTasks?.taskGroups?.map((g) => ({
-            ...g,
-            tasks: g.tasks.map((t) =>
-              t?.itemType === 'BUNDLE' &&
-              t?.patient?.patientIdentifier === patientIdentifier
-                ? { ...t, patient: { ...t.patient, ...details } }
-                : t,
-            ),
-          })),
-        },
-      };
+      if (!state.tasksMap) {
+        return state;
+      }
 
-      return TaskBaseReducer(updatedState, action, updateTasksStateCallback);
+      const newMap = { ...state.tasksMap };
+      for (const [key, task] of Object.entries(newMap)) {
+        if (task.patient?.patientIdentifier === patientIdentifier) {
+          newMap[key] = {
+            ...task,
+            patient: { ...task.patient, ...details },
+          };
+        }
+      }
+
+      return {
+        ...state,
+        tasksMap: newMap,
+      };
     }
 
     case ActionTypes.UPDATE_PARTIAL_WORKFLOW_SUCCESS: {

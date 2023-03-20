@@ -92,7 +92,7 @@ export const TasksGroupLabelCounter = styled.span`
 `;
 
 export const Tasks = styled(Collapse)`
-  height: 300px;
+  // height: 300px;
 `;
 
 export const GroupNameSectionWrapper = styled.div`

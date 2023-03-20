@@ -23,15 +23,11 @@ import {
   searchTasksForOrganizationGroupedByImplicitGroups,
   getCalendarTasks,
 } from 'api/dashboard-api';
-import {
-  DashboardTasksTab,
-  getGroupByDueDate,
-} from 'helpers/dashboard-helpers';
+import { DashboardTasksTab } from 'helpers/dashboard-helpers';
 import { calendarDateRangeSelector } from 'selectors/calendar-tasks-selectors';
 import {
   dashboardGroupTasksCountSelector,
   dashboardTabNameSelector,
-  dashboardTasksSelector,
   dashboardSelectedFiltersSelector,
 } from 'selectors/dashboard-selectors';
 import { showGlobalErrorAlert } from 'alert/actions';
@@ -247,62 +243,60 @@ function* reorderDashboardTasks({ taskGroupImplicitType, tasksOrder }) {
   }
 }
 
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 function* updateTaskStartDateSuccess({ task: taskToChange, startDate }) {
-  const tabName = yield select(dashboardTabNameSelector);
-  const task = { ...taskToChange, startDate };
-  if (tabName) {
-    const groups = yield select(dashboardTasksSelector);
-    yield all(
-      groups
-        .filter(
-          ({ groupType }) =>
-            groupType === getGroupByDueDate(task.startDate, tabName) ||
-            groupType === getGroupByDueDate(taskToChange.startDate, tabName),
-        )
-        .map(({ groupType }) =>
-          put(DashboardActions.getDashboardTasksForGroup(groupType)),
-        ),
-    );
-
-    const dashboardGroups = yield call(
-      getDashboardTaskStasForImplicitGroups,
-      tabName,
-    );
-
-    yield put({
-      type: ActionTypes.GET_DASHBOARD_GROUP_STATS_SUCCESS,
-      tasksList: dashboardGroups,
-    });
-  }
+  // const tabName = yield select(dashboardTabNameSelector);
+  // const task = { ...taskToChange, startDate };
+  // if (tabName) {
+  //   const groups = yield select(dashboardTasksSelector);
+  //   yield all(
+  //     groups
+  //       .filter(
+  //         ({ groupType }) =>
+  //           groupType === getGroupByDueDate(task.startDate, tabName) ||
+  //           groupType === getGroupByDueDate(taskToChange.startDate, tabName),
+  //       )
+  //       .map(({ groupType }) =>
+  //         put(DashboardActions.getDashboardTasksForGroup(groupType)),
+  //       ),
+  //   );
+  //   const dashboardGroups = yield call(
+  //     getDashboardTaskStasForImplicitGroups,
+  //     tabName,
+  //   );
+  // yield put({
+  //   type: ActionTypes.GET_DASHBOARD_GROUP_STATS_SUCCESS,
+  //   tasksList: dashboardGroups,
+  // });
+  // }
 }
 
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 function* updateTaskDueDateSuccess({ task: taskToChange, dueDate }) {
-  const tabName = yield select(dashboardTabNameSelector);
-  const task = { ...taskToChange, dueDate };
-  if (tabName) {
-    const groups = yield select(dashboardTasksSelector);
-    yield all(
-      groups
-        .filter(
-          ({ groupType }) =>
-            groupType === getGroupByDueDate(task.dueDate, tabName) ||
-            groupType === getGroupByDueDate(taskToChange.dueDate, tabName),
-        )
-        .map(({ groupType }) =>
-          put(DashboardActions.getDashboardTasksForGroup(groupType)),
-        ),
-    );
-
-    const dashboardGroups = yield call(
-      getDashboardTaskStasForImplicitGroups,
-      tabName,
-    );
-
-    yield put({
-      type: ActionTypes.GET_DASHBOARD_GROUP_STATS_SUCCESS,
-      tasksList: dashboardGroups,
-    });
-  }
+  // const tabName = yield select(dashboardTabNameSelector);
+  // const task = { ...taskToChange, dueDate };
+  // if (tabName) {
+  //   const groups = yield select(dashboardTasksSelector);
+  //   yield all(
+  //     groups
+  //       .filter(
+  //         ({ groupType }) =>
+  //           groupType === getGroupByDueDate(task.dueDate, tabName) ||
+  //           groupType === getGroupByDueDate(taskToChange.dueDate, tabName),
+  //       )
+  //       .map(({ groupType }) =>
+  //         put(DashboardActions.getDashboardTasksForGroup(groupType)),
+  //       ),
+  //   );
+  //   const dashboardGroups = yield call(
+  //     getDashboardTaskStasForImplicitGroups,
+  //     tabName,
+  //   );
+  //   yield put({
+  //     type: ActionTypes.GET_DASHBOARD_GROUP_STATS_SUCCESS,
+  //     tasksList: dashboardGroups,
+  //   });
+  // }
 }
 
 function* selectDashboardFilters() {

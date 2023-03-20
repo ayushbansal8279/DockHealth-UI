@@ -5,7 +5,7 @@ import {
   editTemporaryElement,
 } from 'actions/task-template-actions';
 import { useBoolean } from 'hooks/useBoolean';
-import { getEdgeCenter } from 'react-flow-renderer';
+import { getBezierPath } from 'reactflow';
 import DeleteOutlineIcon from '@mui/icons-material/DeleteOutline';
 import LinkPath from '../LinkPath/LinkPath';
 import TaskLinkOptions from '../TaskLinkOptions/TaskLinkOptions';
@@ -24,7 +24,7 @@ const TemporaryDecisionTaskLink = (props) => {
   const centerReference = useRef(null);
   const [inputValue, setInputValue] = useState('');
   const [areOptionsOpen, openOptions, closeOptions] = useBoolean(false);
-  const [edgeCenterX, edgeCenterY] = getEdgeCenter({
+  const [, edgeCenterX, edgeCenterY] = getBezierPath({
     sourceX,
     sourceY,
     targetX,
