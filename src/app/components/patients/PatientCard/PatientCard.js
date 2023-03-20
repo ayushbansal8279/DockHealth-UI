@@ -17,10 +17,7 @@ import { Link, useLocation } from 'react-router-dom';
 import * as PatientApi from 'api/patient-api';
 import useBooleanWithTimeout from 'hooks/use-boolean-with-timeout';
 import Spacing from 'components/common/Spacing';
-import {
-  getCustomerTypeLabel,
-  getCustomerUniqueIDShortLabel,
-} from 'helpers/customer-type-helper';
+import { getCustomerUniqueIDShortLabel } from 'helpers/customer-type-helper';
 import {
   userProfileSelector,
   selectedUserOrganizationSelector,
@@ -49,7 +46,6 @@ import {
 import PatientCardDetailsLoader from './PatientCardDetailsLoader';
 import PatientCardNotesLoader from './PatientCardNotesLoader';
 import PatientCardNote from './PatientCardNote';
-import PatientsIcon from 'img/navigation/PatientsIcon';
 
 const renderPatientNotes = (
   unpinnedNotes,
@@ -115,7 +111,6 @@ const PatientCard = ({
   const genderIdentityDisabled =
     currentOrganization?.disabledFeatures?.includes('PATIENT_GENDER') || false;
 
-  const customerTypeLabel = getCustomerTypeLabel(currentUser);
   const uniqueIdentifierLabel = getCustomerUniqueIDShortLabel(
     currentUser,
     currentOrganization,
@@ -217,7 +212,7 @@ const PatientCard = ({
                       .toUpperCase()}
                   </PatientName>
                   {!disableLink && (
-                    <div>
+                    <div style={{ display: 'flex' }}>
                       <Link
                         to={{
                           pathname: `/core/patient/${patientIdentifier}`,
@@ -227,10 +222,10 @@ const PatientCard = ({
                         }}
                       >
                         <PatientLinkText>
-                          <PatientsIcon />
+                          <LaunchIcon />
                         </PatientLinkText>
                       </Link>
-                      <Spacing vertical={3} />
+                      <Spacing horizontal={3} />
                       <EditPatientButton onClick={handleEditPatientClick}>
                         <EditIcon />
                       </EditPatientButton>
