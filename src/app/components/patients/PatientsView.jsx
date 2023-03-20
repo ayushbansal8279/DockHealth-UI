@@ -4,9 +4,11 @@ import { useDispatch, useSelector } from 'react-redux';
 import { Grid, Box, Dialog } from '@material-ui/core';
 import {
   getPatientListIdentifierByUrlParameter,
+  getPatientsListFiltersStorageKey,
   DefaultPatientsListType,
 } from 'helpers/patient-list-helpers';
 import { useBoolean } from 'hooks/useBoolean';
+import sessionStorageHelper from 'helpers/session-storage-helper';
 import {
   patientsListDetailsSelector,
   patientsSelector,
@@ -256,7 +258,14 @@ const PatientsView = () => {
 
   const handleDownloadPatientListData = useCallback(async () => {
     const filename = `Dock ${listName}.csv`;
-    const { data } = await downloadPatientListData(listIdentifier, filename);
+    const selectedFilters = sessionStorageHelper.getItem(
+      getPatientsListFiltersStorageKey(listIdentifier),
+    );
+    const { data } = await downloadPatientListData(
+      listIdentifier,
+      selectedFilters,
+      filename,
+    );
     const url = window.URL.createObjectURL(new Blob([data]));
     const link = document.createElement('a');
     link.href = url;
