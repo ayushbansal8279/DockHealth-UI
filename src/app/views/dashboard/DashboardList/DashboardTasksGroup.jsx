@@ -90,6 +90,8 @@ const DashboardTasksGroup = ({
   } = dashboardTasksGroup;
   const { userIdentifier } = currentUser;
 
+  console.log('DashboardTasksGroup 🚫');
+
   const lastCreatedTaskId = useSelector(
     dashboardLastCreatedTaskIdentifierSelector,
   );

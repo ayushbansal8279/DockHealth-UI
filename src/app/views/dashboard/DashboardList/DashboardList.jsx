@@ -6,18 +6,16 @@ import React, {
   useCallback,
   useContext,
 } from 'react';
-import { connect, useDispatch, useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { useLocation } from 'react-router-dom';
 import identity from 'ramda/src/identity';
 import isEmpty from 'ramda/src/isEmpty';
-import { bindActionCreators } from 'redux';
 import Spacing from 'components/common/Spacing';
 import * as ModalActions from 'modal/actions';
 import { getUserTaskStats } from 'api/user-api';
 import {
   dashboardTasksSelector,
   dashboardTasksIsLoadingSelector,
-  dashboardAllTaskItemsSelector,
   dashboardTabNameSelector,
   dashboardSearchValueSelector,
 } from 'selectors/dashboard-selectors';
@@ -25,23 +23,18 @@ import { taskDrawerOpenSelector } from 'selectors/task-drawer-selectors';
 import DashboardNewUserInfo from 'views/dashboard/DashboardNewUserInfo/DashboardNewUserInfo';
 import NoSearchResultsView from 'components/tasklist/EmptyListView/NoSearchResultsView';
 import EmptyListView from 'components/tasklist/EmptyListView/EmptyListView';
-import {
-  getDashboardFilters,
-  getDashboardTasks,
-} from 'actions/dashboard-actions';
+import { getDashboardFilters } from 'actions/dashboard-actions';
 import {
   TASK_ITEM_SORT_METHODS,
   TASK_ITEM_SORT_DESC_METHODS,
 } from 'helpers/task-helpers';
 import * as TaskActions from 'actions/task-actions';
 import * as TaskDrawerActions from 'actions/task-drawer-actions';
-import { showNavbar as showNavbarAction } from 'actions/template-actions';
 import TaskDrawer from 'components/task-drawer/TaskDrawer/TaskDrawer';
 import NoFilterResultsView from 'components/tasklist/EmptyListView/NoFilterResultsView';
 import { hasFiltersAppliedSelector } from 'selectors/mega-filter-selectors';
 import { onSortChanged } from 'helpers/ga-event-helper';
 import { SortOrderType } from 'helpers/sorting-helper';
-import BulkEditSection from 'components/tasklist/BulkEditSection/BulkEditSection';
 import { DashboardTasksTab } from 'helpers/dashboard-helpers';
 
 import { ViewType, getViewTypeFromQueryString } from 'helpers/view-type-helper';
@@ -53,6 +46,7 @@ import {
 } from 'selectors/user-selectors';
 import { updateCurrentUserPreferences } from 'actions/user-actions';
 import { Context } from 'components/common/HorizontalScroll/HorizontalScrollContainer';
+import useActions from 'hooks/use-actions';
 import DashboardTasksGroup from './DashboardTasksGroup';
 import DashboardToolbar from '../DashboardToolbar/DashboardToolbar';
 import {
@@ -63,28 +57,26 @@ import {
 } from './styled';
 import DashboardCalendar from '../DashboardCalendar/DashboardCalendar';
 
-const DashboardList = ({
-  allDashboardTasks,
-  dashboardTasks,
-  dashboardTasksIsLoading,
-  currentUser,
-  modalActions,
-  taskDrawerActions,
-  taskActions,
-  isTaskDrawerOpen,
-  areFiltersApplied,
-  tourModalIsOpen,
-  openTourModal,
-}) => {
+const DashboardList = ({ currentUser, tourModalIsOpen, openTourModal }) => {
   const searchValue = useSelector(dashboardSearchValueSelector);
   const dispatch = useDispatch();
   const { search } = useLocation();
   const viewType = getViewTypeFromQueryString(search);
-  const { openModal } = modalActions;
   const tabName = useSelector(dashboardTabNameSelector);
   const dashboardGroupsPreferences = useSelector(
     dashboardGroupsPreferencesSelector,
   );
+
+  const taskDrawerActions = useActions(TaskDrawerActions);
+  const modalActions = useActions(ModalActions);
+  const taskActions = useActions(TaskActions);
+  const { openModal } = modalActions;
+
+  const dashboardTasks = useSelector(dashboardTasksSelector);
+  const dashboardTasksIsLoading = useSelector(dashboardTasksIsLoadingSelector);
+  const areFiltersApplied = useSelector(hasFiltersAppliedSelector);
+  const isTaskDrawerOpen = useSelector(taskDrawerOpenSelector);
+
   const [currentSort, setCurrentSort] = useState({
     key: null,
     order: null,
@@ -218,10 +210,10 @@ const DashboardList = ({
     dispatch(getDashboardFilters());
   }, [dispatch]);
 
-  const handleRefreshForBulkEdit = useCallback(() => {
-    dispatch(getDashboardFilters());
-    dispatch(getDashboardTasks());
-  }, [dispatch]);
+  // const handleRefreshForBulkEdit = useCallback(() => {
+  //   dispatch(getDashboardFilters());
+  //   dispatch(getDashboardTasks());
+  // }, [dispatch]);
 
   const groupOrder = useMemo(() => {
     const defaultGroupOrder = dashboardTasks.map((g) => g.groupType);
@@ -312,11 +304,12 @@ const DashboardList = ({
   const parentContainerWidth = useContext(Context);
 
   return (
-    <BulkEditSection
-      allTasks={allDashboardTasks}
-      refreshTasks={handleRefreshForBulkEdit}
-      searchValue={searchValue}
-    >
+    // <BulkEditSection
+    //   allTasks={allDashboardTasks}
+    //   refreshTasks={handleRefreshForBulkEdit}
+    //   searchValue={searchValue}
+    // >
+    <>
       <StickyContainer stickyTop zIndex={101}>
         <StickyHeader>
           {parentContainerWidth !== 0 && (
@@ -377,28 +370,9 @@ const DashboardList = ({
         onTaskCreation={handleTaskUpdate}
         onTaskDelete={() => dispatch(getDashboardFilters())}
       />
-    </BulkEditSection>
+    </>
+    // </BulkEditSection>
   );
 };
 
-const mapStateToProps = (state) => ({
-  // allDashboardTasks: ['1'],
-  // dashboardTasks: ['1'],
-  allDashboardTasks: dashboardAllTaskItemsSelector(state),
-  dashboardTasks: dashboardTasksSelector(state),
-  dashboardTasksIsLoading: dashboardTasksIsLoadingSelector(state),
-  areFiltersApplied: hasFiltersAppliedSelector(state),
-  isTaskDrawerOpen: taskDrawerOpenSelector(state),
-});
-
-const mapDispatchToProps = (dispatch) => ({
-  modalActions: bindActionCreators(ModalActions, dispatch),
-  taskDrawerActions: bindActionCreators(TaskDrawerActions, dispatch),
-  showNavbar: bindActionCreators(showNavbarAction, dispatch),
-  taskActions: bindActionCreators(TaskActions, dispatch),
-});
-
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps,
-)(React.memo(DashboardList));
+export default React.memo(DashboardList);
