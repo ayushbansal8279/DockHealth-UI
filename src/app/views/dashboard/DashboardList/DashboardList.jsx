@@ -19,7 +19,6 @@ import {
   dashboardTabNameSelector,
   dashboardSearchValueSelector,
 } from 'selectors/dashboard-selectors';
-import { taskDrawerOpenSelector } from 'selectors/task-drawer-selectors';
 import DashboardNewUserInfo from 'views/dashboard/DashboardNewUserInfo/DashboardNewUserInfo';
 import NoSearchResultsView from 'components/tasklist/EmptyListView/NoSearchResultsView';
 import EmptyListView from 'components/tasklist/EmptyListView/EmptyListView';
@@ -75,7 +74,6 @@ const DashboardList = ({ currentUser, tourModalIsOpen, openTourModal }) => {
   const dashboardTasks = useSelector(dashboardTasksSelector);
   const dashboardTasksIsLoading = useSelector(dashboardTasksIsLoadingSelector);
   const areFiltersApplied = useSelector(hasFiltersAppliedSelector);
-  const isTaskDrawerOpen = useSelector(taskDrawerOpenSelector);
 
   const [currentSort, setCurrentSort] = useState({
     key: null,
@@ -340,7 +338,6 @@ const DashboardList = ({ currentUser, tourModalIsOpen, openTourModal }) => {
                         key={item?.groupType}
                         dashboardTasksGroup={item}
                         storeAsCurrentTask={taskActions.storeAsCurrentTask}
-                        isTaskDrawerOpen={isTaskDrawerOpen}
                         currentSortMethod={currentSortMethodWithOrder}
                         currentSort={currentSort}
                         onSortChange={handleSortChange}
