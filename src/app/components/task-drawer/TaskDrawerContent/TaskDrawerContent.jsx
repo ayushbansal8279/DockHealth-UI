@@ -225,20 +225,42 @@ const TaskDrawerContent = props => {
           padding={isMobile ? '8px 16px' : '8px 32px'}
           sx={{ width: '100%' }}
         >
-          <Typography component="span">
-            List:{' '}
-            <FiledInListName
-              onClick={() => {
-                history.push(
-                  createTaskListPath(
-                    selectedTask?.taskList?.taskListIdentifier,
-                  ),
-                );
-              }}
-            >
-              {selectedTask?.taskList?.listName}
-            </FiledInListName>
-          </Typography>
+          <Grid container spacing={2}>
+            <Grid item>
+              <Typography sx={{ fontWeight: 'bold' }} component="span">
+                List:{' '}
+                <FiledInListName
+                  onClick={() => {
+                    history.push(
+                      createTaskListPath(
+                        selectedTask?.taskList?.taskListIdentifier,
+                      ),
+                    );
+                  }}
+                >
+                  {selectedTask?.taskList?.listName}
+                </FiledInListName>
+              </Typography>
+            </Grid>
+            {!isSubtask && (parentBundle || taskTemplate) && (
+              <Grid item>
+                <Typography sx={{ fontWeight: 'bold' }} component="span">
+                  WorkFlow:{' '}
+                </Typography>
+                <ReferenceParentButton
+                  type="button"
+                  onClick={handleWorkflowReferenceClick}
+                >
+                  <ReferenceParentName>
+                    {isTemplateTask
+                      ? taskTemplate.name
+                      : parentBundle.groupName}
+                  </ReferenceParentName>
+                </ReferenceParentButton>
+              </Grid>
+            )}
+          </Grid>
+
           {/* <SubscriptionBadge>
             <Chip
               label={12}
@@ -270,9 +292,10 @@ const TaskDrawerContent = props => {
             )}
           </Grid>
         )}
-        {!isSubtask && (parentBundle || taskTemplate) && (
-          <Grid item xs={12} style={styleFullRowThin(isMobile)}>
-            <Spacing vertical={2} />
+        {/* {!isSubtask && (parentBundle || taskTemplate) && (
+          <Grid item xs={6} style={styleFullRowThin(isMobile)}>
+            <Spacing horizontal={2} />
+            <Typography component="span">WorkFlow: </Typography>
             <ReferenceParentButton
               type="button"
               onClick={handleWorkflowReferenceClick}
@@ -282,7 +305,7 @@ const TaskDrawerContent = props => {
               </ReferenceParentName>
             </ReferenceParentButton>
           </Grid>
-        )}
+        )} */}
         <Grid item xs={12} style={styleFullRow(isMobile)}>
           <TaskDescription
             readOnly={restrictions?.description === READ_ONLY}
