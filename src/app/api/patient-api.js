@@ -1,6 +1,6 @@
 import { fixList } from 'helpers/inbox-fix';
 import { noop, showAlert } from 'helpers/utility-functions';
-
+import { mapSelectedOptionsToRequestPayload } from 'helpers/filter-options-helpers';
 import axios from './axios-heydoc';
 
 export function getAllPatients() {
@@ -258,14 +258,21 @@ export function downloadPatientImportTemplate() {
     .catch(noop);
 }
 
-export function downloadPatientListData(listIdentifier, filename) {
+export function downloadPatientListData(
+  listIdentifier,
+  selectedFilters,
+  filename,
+) {
   return axios({
     url: `/patient/list/download/${listIdentifier}`,
-    method: 'GET',
+    method: 'POST',
     responseType: 'blob',
     headers: {
       Accept: 'application/octet-stream',
     },
+    data: selectedFilters
+      ? mapSelectedOptionsToRequestPayload(selectedFilters)
+      : {},
   })
     .then(response => {
       const url = window.URL.createObjectURL(new Blob([response.data]));
