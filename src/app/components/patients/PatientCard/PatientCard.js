@@ -28,6 +28,8 @@ import {
 import { organizationSelector } from 'selectors/organization-selectors';
 import { FieldType } from 'helpers/field-type-helpers';
 import { openModal } from 'modal/actions';
+import EditIcon from '@material-ui/icons/Edit';
+import LaunchIcon from '@material-ui/icons/Launch';
 import {
   PatientCardContainer,
   PatientInfoSection,
@@ -47,6 +49,7 @@ import {
 import PatientCardDetailsLoader from './PatientCardDetailsLoader';
 import PatientCardNotesLoader from './PatientCardNotesLoader';
 import PatientCardNote from './PatientCardNote';
+import PatientsIcon from 'img/navigation/PatientsIcon';
 
 const renderPatientNotes = (
   unpinnedNotes,
@@ -224,11 +227,12 @@ const PatientCard = ({
                         }}
                       >
                         <PatientLinkText>
-                          view {customerTypeLabel}
+                          <PatientsIcon />
                         </PatientLinkText>
                       </Link>
+                      <Spacing vertical={3} />
                       <EditPatientButton onClick={handleEditPatientClick}>
-                        edit {customerTypeLabel}
+                        <EditIcon />
                       </EditPatientButton>
                     </div>
                   )}
