@@ -21,6 +21,7 @@ import {
 import { selectedTaskSelector } from 'selectors/task-drawer-selectors';
 import debounce from 'lodash.debounce';
 import { DetailsContainer } from './styled';
+import RichTextEditor from "components/RichTextEditorV2/RichTextEditor";
 
 const TaskDetails = ({ readOnly, disableMentions }) => {
   const DEBOUNCE_TIME = 10000;
@@ -30,7 +31,7 @@ const TaskDetails = ({ readOnly, disableMentions }) => {
   const dispatch = useDispatch();
   const detailsReference = useRef(null);
   const [isFocused, setFocused, unsetFocused] = useBoolean();
-  const [detailsState, setDetailsState] = useMentionsEditorState(
+  const [detailsState, setDetailsState] = useState(
     convertToEditorState({
       rawText: selectedTask?.details,
       tokenizedText: selectedTask?.tokenizedDetails,
@@ -52,37 +53,33 @@ const TaskDetails = ({ readOnly, disableMentions }) => {
 
   const updateDetails = useCallback(
     (state) => {
+        console.log(3)
       if (selectedTask) {
-        const { tokenizedText, rawText, mentions } =
-          convertFromEditorStateToOutput(state, true);
-        const isChangedText = tokenizedText?.trim() !== rawTextState?.trim();
-        if (!rawTextState && tokenizedText.length === 0) return;
-        if (isChangedText) {
-          setRawTextState(tokenizedText);
+        //   console.log(4)
+        // const { tokenizedText, rawText, mentions } =
+        //   convertFromEditorStateToOutput(state, true);
+        // const isChangedText = tokenizedText?.trim() !== rawTextState?.trim();
+        // if (!rawTextState && tokenizedText.length === 0) return;
+        // if (isChangedText) {
+        //   setRawTextState(tokenizedText);
           dispatch(
             updateTaskDetails(selectedTask, {
-              tokenizedDetails: tokenizedText || '',
-              details: rawText || '',
-              taskMentions: [
-                ...(selectedTask.taskMentions || []),
-                ...(mentions || []),
-              ],
+              tokenizedDetails: state || ''
             }),
           );
-        }
+        // }
       }
     },
     [dispatch, rawTextState, selectedTask],
   );
 
-  const onDebouncedChange = useCallback(
-    debounce((newState) => {
+  const onDebouncedChange =
+    (newState) => {
+        console.log(2)
       updateDetails(newState);
-    }, DEBOUNCE_TIME),
-    [updateDetails],
-  );
+    }
 
-  useEffect(() => {
+    useEffect(() => {
     if (previousIsFocused && !isFocused) {
       onDebouncedChange.cancel();
       updateDetails(detailsState);
@@ -92,34 +89,36 @@ const TaskDetails = ({ readOnly, disableMentions }) => {
 
   const onChangeDetailsEditor = useCallback(
     (state) => {
-      setDetailsState(state);
-      onDebouncedChange(state);
+        console.log("ON_CHANGE!")
+        setDetailsState(state);
+        onDebouncedChange(state);
     },
     [onDebouncedChange, setDetailsState],
   );
 
   return (
     <DetailsContainer>
-      <CustomTextEditor
-        key={selectedTask?.identifier}
-        empty={isEmptyDetailsState}
-        focused={isFocused}
-        label="details"
-        richTextEnabled
-      >
-        <TextEditor
-          readOnly={readOnly}
-          minHeight={100}
-          ref={detailsReference}
-          taskListIdentifier={taskListIdentifier}
-          disableMentions={disableMentions || isTemplateTask}
-          showToolbar
-          onFocus={setFocused}
-          onBlur={unsetFocused}
-          state={detailsState}
-          onChange={onChangeDetailsEditor}
-        />
-      </CustomTextEditor>
+        <RichTextEditor onChange={onChangeDetailsEditor} value={rawTextState} taskListIdentifier={taskListIdentifier} />
+      {/*<CustomTextEditor*/}
+      {/*  key={selectedTask?.identifier}*/}
+      {/*  empty={isEmptyDetailsState}*/}
+      {/*  focused={isFocused}*/}
+      {/*  label="details2"*/}
+      {/*  richTextEnabled*/}
+      {/*>*/}
+      {/*  <TextEditor*/}
+      {/*    readOnly={readOnly}*/}
+      {/*    minHeight={100}*/}
+      {/*    ref={detailsReference}*/}
+      {/*    taskListIdentifier={taskListIdentifier}*/}
+      {/*    disableMentions={disableMentions || isTemplateTask}*/}
+      {/*    showToolbar*/}
+      {/*    onFocus={setFocused}*/}
+      {/*    onBlur={unsetFocused}*/}
+      {/*    state={detailsState}*/}
+      {/*    onChange={onChangeDetailsEditor}*/}
+      {/*  />*/}
+      {/*</CustomTextEditor>*/}
     </DetailsContainer>
   );
 };
