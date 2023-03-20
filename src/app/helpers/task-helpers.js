@@ -25,6 +25,10 @@ export const TaskItemType = {
   TEMPLATE: 'TEMPLATE',
 };
 
+export const TaskOrigin = {
+  DASHBOARD: 'DASHBOARD',
+};
+
 export const TaskPriority = {
   NONE: 'NONE',
   LOW: 'LOW',

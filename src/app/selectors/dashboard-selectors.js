@@ -22,6 +22,12 @@ export const dashboardTasksIsLoadingSelector = createSelector(
   ({ isLoading }) => isLoading,
 );
 
+export const dashboardTaskDetailsSelector = createSelector(
+  dashboardTasksStateSelector,
+  (_, taskId) => taskId,
+  (dashboardTasks, taskId) => dashboardTasks.tasksMap[taskId],
+);
+
 export const dashboardGroupTasksCountSelector = createSelector(
   dashboardTasksStateSelector,
   (_, groupType) => groupType,
