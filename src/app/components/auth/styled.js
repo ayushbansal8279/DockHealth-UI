@@ -42,9 +42,9 @@ export const AthenaHealthImage = styled.img.attrs({
 export const SSOButton = styled.div`
   display: flex;
   height: 64px;
-  padding: 4px 4px;
   align-items: center;
-  border-radius: 5px;
+  border: 1px solid rgba(82, 82, 128, 0.09);
+  border-radius: 16px;
   color: ${({ color }) => color || palette.darkGrey};
   ${({ disableButton }) => `opacity: ${disableButton ? 0.5 : 1};`}
 
@@ -60,6 +60,10 @@ export const PopoverContainer = styled.div`
   max-height: 800px;
   overflow-x: hidden;
   overflow-y: auto;
+
+  & > div:hover {
+    background-color: ${palette.brightBlueWithAlpha};
+  }
 `;
 
 export const Spacer = styled.hr`

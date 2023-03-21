@@ -41,7 +41,7 @@ const SSOOptions = () => {
     <>
       <Spacing vertical={4} />
       <MontserratTypography variant="h4">Or sign in with</MontserratTypography>
-      <Spacing vertical={2} />
+      <Spacing vertical={3} />
       <SSOOptionsBar>
         {ssoURLGoogle && (
           <>
@@ -53,8 +53,10 @@ const SSOOptions = () => {
                 <SSOButton>
                   <GoogleLogoImage />
                 </SSOButton>
-                <Spacing vertical={1} />
-                <MontserratTypography variant="h4">Google</MontserratTypography>
+                <Spacing vertical={2} />
+                <MontserratTypography variant="h4" weight="400">
+                  Google
+                </MontserratTypography>
               </Box>
             </a>
             <Box mx={1} />
@@ -72,8 +74,10 @@ const SSOOptions = () => {
             >
               <SSOIcon style={{ width: '60px' }} />
             </SSOButton>
-            <Spacing vertical={1} />
-            <MontserratTypography variant="h4">SSO</MontserratTypography>
+            <Spacing vertical={2} />
+            <MontserratTypography variant="h4" weight="400">
+              SSO
+            </MontserratTypography>
           </Box>
         </StyledHyperLink>
         <Box mx={1} />
@@ -92,11 +96,12 @@ const SSOOptions = () => {
           }}
         >
           <PopoverContainer>
-            <Box display="flex" justifyContent="space-between" mt={1}>
+            <Box display="flex" justifyContent="space-between">
               <Box mx={0.5} />
               <ListItemText>
+                <Spacing vertical={2} />
                 <DrChronoLogoImage />
-                <Spacing horizontal={2} />
+                <Spacing horizontal={3} />
                 <StyledHyperLink onClick={drChronoLogin}>
                   DrChrono
                 </StyledHyperLink>
@@ -104,13 +109,14 @@ const SSOOptions = () => {
               </ListItemText>
             </Box>
             <Spacer />
-            <Box display="flex" justifyContent="space-between" mt={1}>
+            <Box display="flex" justifyContent="space-between">
               <Box mx={0.5} />
               <ListItemText>
+                <Spacing vertical={2} />
                 <AthenaHealthImage />
-                <Spacing horizontal={2} />
+                <Spacing horizontal={3} />
                 <StyledHyperLink onClick={athenaLogin}>
-                  Athenahealth
+                  athenahealth
                 </StyledHyperLink>
                 <Spacing vertical={2} />
               </ListItemText>
