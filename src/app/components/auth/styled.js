@@ -2,6 +2,8 @@ import styled from 'styled-components';
 import palette from 'styles/palette';
 import GoogleLogo from 'img/google_btn_light_normal_ios';
 // import DrChronoLogo from 'img/drchrono-button';
+import DrChronoLogo from 'img/drchrono_icon';
+import AthenHealthLogo from 'img/athenahealth_icon';
 
 export const SSOOptionsBar = styled.div`
   width: 100%;
@@ -21,13 +23,21 @@ export const GoogleLogoImage = styled.img.attrs({
   height: 60px;
 `;
 
-// export const DrChronoLogoImage = styled.img.attrs({
-//   alt: 'DrChrono',
-//   src: DrChronoLogo,
-// })`
-//   width: 147px;
-//   height: 40px;
-// `;
+export const DrChronoLogoImage = styled.img.attrs({
+  alt: 'DrChrono',
+  src: DrChronoLogo,
+})`
+  width: 30px;
+  height: 30px;
+`;
+
+export const AthenaHealthImage = styled.img.attrs({
+  alt: 'Athenahealth',
+  src: AthenHealthLogo,
+})`
+  width: 30px;
+  height: 30px;
+`;
 
 export const SSOButton = styled.div`
   display: flex;

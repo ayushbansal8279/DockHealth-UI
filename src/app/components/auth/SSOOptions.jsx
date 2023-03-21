@@ -11,6 +11,8 @@ import {
   GoogleLogoImage,
   PopoverContainer,
   Spacer,
+  DrChronoLogoImage,
+  AthenaHealthImage,
 } from './styled';
 import { StyledHyperLink } from './AuthComponents.styled';
 
@@ -93,19 +95,25 @@ const SSOOptions = () => {
             <Box display="flex" justifyContent="space-between" mt={1}>
               <Box mx={0.5} />
               <ListItemText>
+                <DrChronoLogoImage />
+                <Spacing horizontal={2} />
                 <StyledHyperLink onClick={drChronoLogin}>
                   DrChrono
                 </StyledHyperLink>
+                <Spacing vertical={2} />
               </ListItemText>
-              <Box mx={0.5} />
             </Box>
             <Spacer />
             <Box display="flex" justifyContent="space-between" mt={1}>
               <Box mx={0.5} />
               <ListItemText>
-                <StyledHyperLink onClick={athenaLogin}>Athenahealth</StyledHyperLink>
+                <AthenaHealthImage />
+                <Spacing horizontal={2} />
+                <StyledHyperLink onClick={athenaLogin}>
+                  Athenahealth
+                </StyledHyperLink>
+                <Spacing vertical={2} />
               </ListItemText>
-              <Box mx={0.5} />
             </Box>
           </PopoverContainer>
         </Popover>
