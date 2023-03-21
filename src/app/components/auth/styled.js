@@ -1,6 +1,7 @@
 import styled from 'styled-components';
 import palette from 'styles/palette';
 import GoogleLogo from 'img/google_btn_light_normal_ios';
+// import DrChronoLogo from 'img/drchrono-button';
 
 export const SSOOptionsBar = styled.div`
   width: 100%;
@@ -20,6 +21,14 @@ export const GoogleLogoImage = styled.img.attrs({
   height: 60px;
 `;
 
+// export const DrChronoLogoImage = styled.img.attrs({
+//   alt: 'DrChrono',
+//   src: DrChronoLogo,
+// })`
+//   width: 147px;
+//   height: 40px;
+// `;
+
 export const SSOButton = styled.div`
   display: flex;
   height: 64px;
@@ -32,4 +41,20 @@ export const SSOButton = styled.div`
   &:hover {
     background: ${palette.coolGrey3};
   }
+`;
+
+export const PopoverContainer = styled.div`
+  background-color: ${palette.white};
+  min-width: 233px;
+  box-shadow: 0px 4px 11px grey;
+  max-height: 800px;
+  overflow-x: hidden;
+  overflow-y: auto;
+`;
+
+export const Spacer = styled.hr`
+  margin: 0;
+  width: 100%;
+  border-color: ${palette.coolGrey3};
+  height: 0.5px;
 `;
