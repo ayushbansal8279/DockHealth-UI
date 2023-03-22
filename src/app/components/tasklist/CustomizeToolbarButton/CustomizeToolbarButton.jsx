@@ -1,7 +1,15 @@
 /* eslint-disable sonarjs/cognitive-complexity */
 /* eslint-disable no-underscore-dangle */
 import React, { useState, useRef, useMemo, useCallback } from 'react';
-import { Box, List, ListItemText, MenuItem, Popover } from '@material-ui/core';
+import {
+  Box,
+  List,
+  ListItemText,
+  MenuItem,
+  Popover,
+  Tabs,
+  Tab,
+} from '@material-ui/core';
 import CustomizeIcon from 'img/customize-icon';
 import Checkbox from 'components/common/Checkbox/Checkbox';
 import { useTaskListColumnsConfig } from 'context-api/columns-config-context';
@@ -44,6 +52,7 @@ const CustomizeToolbarButton = ({
   additionalOptionsTitle = 'Display Options',
   disableButton = false,
   iconColorFilterActive,
+  isDashboard = false,
 }) => {
   const [open, setOpen] = useState(false);
   const [openUpgradePopup, setOpenUpgradePopup] = useState(false);
@@ -94,6 +103,8 @@ const CustomizeToolbarButton = ({
     [PatientTaskItemColumn.MRN]: uniqueIdentifierLabel,
   };
 
+  const [selectedTab, setSelectedTab] = useState(0);
+
   const onClickCheckbox = useCallback(
     column => {
       const newSetup = columns.map(c =>
@@ -136,6 +147,13 @@ const CustomizeToolbarButton = ({
     [onClickCheckbox],
   );
 
+  const applyProps = useCallback(index => {
+    return {
+      id: `full-width-tab-${index}`,
+      'aria-controls': `full-width-tabpanel-${index}`,
+    };
+  }, []);
+
   return (
     <>
       <ToolbarButton
@@ -171,94 +189,176 @@ const CustomizeToolbarButton = ({
         }}
       >
         <PopoverContainer>
-          <Box display="flex" justifyContent="space-between" mt={1}>
-            <Box mx={0.5} />
-            <ListItemText>
-              <b>Default Columns</b>
-            </ListItemText>
-          </Box>
-          <List>
-            {sort(
-              (a, b) =>
-                ColumnOptionNames[a?.identifier]?.localeCompare(
-                  ColumnOptionNames[b?.identifier],
-                ),
-              columnsConfigToDisplay,
-            ).map(column => {
-              const optionName = ColumnOptionNames[column.identifier];
-              return optionName && renderElement(column, optionName);
-            })}
-          </List>
-          <>
-            <Box display="flex" justifyContent="space-between" mt={1}>
-              <Box mx={0.5} />
-              <ListItemText>
-                <b>Patient Default Columns</b>
-              </ListItemText>
-            </Box>
-            <List>
-              {sort(
-                (a, b) =>
-                  PatientColumnOptionNames[a?.identifier]?.localeCompare(
-                    PatientColumnOptionNames[b?.identifier],
-                  ),
-                columnsConfigToDisplay,
-              ).map(column => {
-                const optionName = PatientColumnOptionNames[column.identifier];
-                return optionName && renderElement(column, optionName);
-              })}
-            </List>
-          </>
-          {userHasTaskCustomFieldsFeature && (
+          <Tabs
+            value={selectedTab}
+            onChange={(event, index) => setSelectedTab(index)}
+            indicatorColor="secondary"
+            textColor="inherit"
+            variant="fullWidth"
+            tabItemContainerStyle={{ position: 'fixed', top: '0' }}
+          >
+            <Tab
+              label="Default"
+              {...applyProps(0)}
+              style={{ minWidth: '25%' }}
+            />
+            <Tab label="Task" {...applyProps(1)} style={{ minWidth: '25%' }} />
+            <Tab
+              label={customerTypeLabel}
+              {...applyProps(2)}
+              style={{ minWidth: '25%' }}
+            />
+            {isDashboard && (
+              <Tab
+                label={additionalOptionsTitle}
+                {...applyProps(3)}
+                style={{ minWidth: '25%' }}
+              />
+            )}
+          </Tabs>
+          <Box p={1} />
+          {selectedTab === 0 && (
             <>
-              <Spacer />
               <Box display="flex" justifyContent="space-between" mt={1}>
                 <Box mx={0.5} />
                 <ListItemText>
-                  <b>Task Custom Columns</b>
+                  <b>Default Columns</b>
                 </ListItemText>
               </Box>
               <List>
-                {sortAlphabetical(
-                  columns.filter(
-                    c =>
-                      c._customFieldType === CUSTOM_FIELD_TYPES.TASK_LIST ||
-                      c._customFieldType === CUSTOM_FIELD_TYPES.ORGANIZATION,
-                  ),
-                ).map(column => renderElement(column))}
-                {showCustomColumnCreate && (
-                  <MenuItem
-                    onClick={handleAddColumnClick}
-                    ref={addColumnButtonReference}
-                  >
-                    <PlusIcon>+</PlusIcon>
+                {sort(
+                  (a, b) =>
+                    ColumnOptionNames[a?.identifier]?.localeCompare(
+                      ColumnOptionNames[b?.identifier],
+                    ),
+                  columnsConfigToDisplay,
+                ).map(column => {
+                  const optionName = ColumnOptionNames[column.identifier];
+                  return optionName && renderElement(column, optionName);
+                })}
+              </List>
+              <Spacer />
+            </>
+          )}
+          {selectedTab === 1 && (
+            <>
+              {userHasTaskCustomFieldsFeature && (
+                <>
+                  <Spacer />
+                  <Box display="flex" justifyContent="space-between" mt={1}>
                     <Box mx={0.5} />
-                    <ListItemText>Create/Edit Custom Column</ListItemText>
-                  </MenuItem>
-                )}
-              </List>
+                    <ListItemText>
+                      <b>Task Custom Columns</b>
+                    </ListItemText>
+                  </Box>
+                  <List>
+                    {showCustomColumnCreate && (
+                      <MenuItem
+                        onClick={handleAddColumnClick}
+                        ref={addColumnButtonReference}
+                      >
+                        <PlusIcon>+</PlusIcon>
+                        <Box mx={0.5} />
+                        <ListItemText>Create/Edit Custom Column</ListItemText>
+                      </MenuItem>
+                    )}
+                    {sortAlphabetical(
+                      columns.filter(
+                        c =>
+                          c._customFieldType === CUSTOM_FIELD_TYPES.TASK_LIST ||
+                          c._customFieldType ===
+                            CUSTOM_FIELD_TYPES.ORGANIZATION,
+                      ),
+                    ).map(column => renderElement(column))}
+                  </List>
+                </>
+              )}
+              {!isDashboard && (
+                <>
+                  <Box display="flex" justifyContent="space-between" mt={1}>
+                    <Box mx={0.5} />
+                    <ListItemText>
+                      <b>{additionalOptionsTitle}</b>
+                    </ListItemText>
+                  </Box>
+                  <List>
+                    {additionalOptions.map(option => {
+                      const {
+                        name,
+                        checked = false,
+                        disabled,
+                        onClick,
+                      } = option;
+                      return (
+                        name && (
+                          <MenuItem
+                            key={name}
+                            onClick={() => {
+                              if (typeof onClick === 'function' && !disabled)
+                                onClick();
+                            }}
+                          >
+                            <Checkbox
+                              isDisabled={disabled}
+                              isChecked={checked}
+                            />
+                            <Box mx={0.5} />
+                            <ListItemText>{name}</ListItemText>
+                          </MenuItem>
+                        )
+                      );
+                    })}
+                  </List>
+                </>
+              )}
             </>
           )}
-          {userHasPatientCustomFieldsFeatureSelector && columns?.length > 0 && (
+          {selectedTab === 2 &&
+            additionalOptions &&
+            additionalOptions.length > 0 && (
+              <>
+                <Box display="flex" justifyContent="space-between" mt={1}>
+                  <Box mx={0.5} />
+                  <ListItemText>
+                    <b>{customerTypeLabel} Default Columns</b>
+                  </ListItemText>
+                </Box>
+                <List>
+                  {sort(
+                    (a, b) =>
+                      PatientColumnOptionNames[a?.identifier]?.localeCompare(
+                        PatientColumnOptionNames[b?.identifier],
+                      ),
+                    columnsConfigToDisplay,
+                  ).map(column => {
+                    const optionName =
+                      PatientColumnOptionNames[column.identifier];
+                    return optionName && renderElement(column, optionName);
+                  })}
+                </List>
+                {userHasPatientCustomFieldsFeatureSelector &&
+                  columns?.length > 0 && (
+                    <>
+                      <Box display="flex" justifyContent="space-between" mt={1}>
+                        <Box mx={0.5} />
+                        <ListItemText>
+                          <b>{customerTypeLabel} Custom Columns</b>
+                        </ListItemText>
+                      </Box>
+                      <List>
+                        {sortAlphabetical(
+                          columns.filter(
+                            c =>
+                              c._customFieldType === CUSTOM_FIELD_TYPES.PATIENT,
+                          ),
+                        ).map(column => renderElement(column))}
+                      </List>
+                    </>
+                  )}
+              </>
+            )}
+          {selectedTab === 3 && isDashboard && (
             <>
-              <Box display="flex" justifyContent="space-between" mt={1}>
-                <Box mx={0.5} />
-                <ListItemText>
-                  <b>{customerTypeLabel} Custom Columns</b>
-                </ListItemText>
-              </Box>
-              <List>
-                {sortAlphabetical(
-                  columns.filter(
-                    c => c._customFieldType === CUSTOM_FIELD_TYPES.PATIENT,
-                  ),
-                ).map(column => renderElement(column))}
-              </List>
-            </>
-          )}
-          {additionalOptions && additionalOptions.length > 0 && (
-            <>
-              <Spacer />
               <Box display="flex" justifyContent="space-between" mt={1}>
                 <Box mx={0.5} />
                 <ListItemText>
@@ -287,6 +387,7 @@ const CustomizeToolbarButton = ({
               </List>
             </>
           )}
+
           {!userHasTaskCustomFieldsFeature && (
             <UpgradePlanContainer>
               <UpgradePlan

@@ -13,6 +13,7 @@ export const CustomizeImg = styled.img`
 export const PopoverContainer = styled.div`
   background-color: ${palette.white};
   min-width: 233px;
+  max-width: 500px;
   box-shadow: 0px 4px 11px grey;
   max-height: 800px;
   overflow-x: hidden;
