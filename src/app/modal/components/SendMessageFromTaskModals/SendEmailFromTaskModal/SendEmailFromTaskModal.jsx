@@ -18,7 +18,7 @@ import { validateEmail } from 'helpers/validation-helper';
 import CustomTextEditor from 'components/common/CustomTextEditor/CustomTextEditor';
 import { createMentionEntities } from 'components/common/TextEditor/create-mention-entities';
 import ReactModal from 'react-modal';
-
+import { getTemplateDetails } from 'api/template-api';
 import { CommunicationType } from 'helpers/task-helpers';
 import ContactsAutoComplete from 'components/common/ContactsAutoComplete/ContactsAutocomplete';
 import TemplateAutoComplete from 'components/common/TemplateAutoComplete/TemplateAutoComplete';
@@ -160,6 +160,7 @@ const SendEmailFromTaskModal = () => {
             disabled={show}
             label="Email"
             errorMessage="Incorrect email"
+            patient={selectedTask?.patient}
           />
           <ContactInfoRow>
             {contact?.identifier && (
@@ -181,9 +182,13 @@ const SendEmailFromTaskModal = () => {
                 setSubject('');
                 return;
               }
-              const text = addStylesToText(newValue?.body ?? '');
-              setDetailsState(EditorState.push(detailsState, text));
-              setSubject(newValue?.value ?? '');
+              getTemplateDetails(newValue?.identifier, identifier).then(
+                data => {
+                  const text = addStylesToText(data?.details ?? '');
+                  setDetailsState(EditorState.push(detailsState, text));
+                  setSubject(data?.shortMessage ?? '');
+                },
+              );
             }}
             disabled={show}
           />
