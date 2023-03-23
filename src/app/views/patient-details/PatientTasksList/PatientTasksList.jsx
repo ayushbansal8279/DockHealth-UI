@@ -15,7 +15,7 @@ import {
   getPatientFilterOptions,
   getCurrentPatientTasks,
 } from 'actions/patient-details-actions';
-import { openModal, closeModal } from 'modal/actions';
+import { openModal } from 'modal/actions';
 import { PatientTasksSagaActions } from 'sagas/patient-details-saga';
 import { checkIfTaskMatchesFilters } from 'helpers/filters-helpers';
 import TasksHeader from 'components/tasklist/TasksHeader/TasksHeader';
@@ -28,10 +28,7 @@ import {
   patientTasksSortSelector,
   patientSelector,
 } from 'selectors/patient-details-selectors';
-import {
-  addingNewSubtaskParentIdSelector,
-  taskCustomFieldsSelector,
-} from 'selectors/task-drawer-selectors';
+import { addingNewSubtaskParentIdSelector } from 'selectors/task-drawer-selectors';
 import {
   hasFiltersAppliedSelector,
   selectedFiltersInMegaFilterSelector,
@@ -54,7 +51,6 @@ import {
   TaskItemColumn,
   TaskItemType,
   TASK_ITEM_BASE_COLUMN_CONFIG,
-  findIncompleteRequiredFields,
   TaskOrigin,
 } from 'helpers/task-helpers';
 import { getCustomerTypeLabel } from 'helpers/customer-type-helper';
@@ -93,7 +89,6 @@ const PatientTasksListView = () => {
   const viewSetup = useSelector(userSetupClientViewSelector);
   const sort = useSelector(patientTasksSortSelector);
   const lists = useSelector(patientTaskListsSelector);
-  console.log('lll', lists);
   const completeTasksVisible = useSelector(completeTasksVisibilitySelector);
   const currentUser = useSelector(userProfileSelector);
   const taskSearch = useSelector(patientTaskSearchSelector);
@@ -108,7 +103,6 @@ const PatientTasksListView = () => {
   const dispatch = useDispatch();
   const history = useHistory();
   const {
-    togglePatientTaskStatus,
     updatePatientTaskInList,
     updatePatientTaskWorkflowStatus,
     sortPatientTasks,
@@ -116,7 +110,7 @@ const PatientTasksListView = () => {
   } = useActions(PatientTasksSagaActions);
   const patient = useSelector(patientSelector);
   const isAllTasksView = taskListIdentifierParameter === ListViewType.ALL_TASKS;
-  const { templates } = useSelector(taskCustomFieldsSelector);
+
   const currentOrganization = useSelector(selectedUserOrganizationSelector);
   // eslint-disable-next-line react-hooks/exhaustive-deps
   const iconColorActiveItem =
@@ -258,37 +252,6 @@ const PatientTasksListView = () => {
       </EmptyListViewWithQuickAddTask>
     );
   };
-  const handleToggleTaskStatus = useCallback(
-    (task) => {
-      const incompleteRequiredFields = findIncompleteRequiredFields(
-        templates,
-        task,
-      );
-      const isRequiredFieldsAreIncomplete = incompleteRequiredFields.length > 0;
-      if (isRequiredFieldsAreIncomplete) {
-        const modalProps = {
-          incompleteFields: incompleteRequiredFields,
-        };
-        dispatch(openModal('CompleteAllFields', modalProps));
-        return;
-      }
-      const hasIncompletedSubtasks = task.subtasks.find(
-        (subtask) => subtask.status === 'INCOMPLETE',
-      );
-      if (task.status === 'INCOMPLETE' && hasIncompletedSubtasks) {
-        const modalProps = {
-          confirm: () => {
-            dispatch(closeModal());
-            togglePatientTaskStatus(task);
-          },
-        };
-        dispatch(openModal('CompleteAllTasks', modalProps));
-      } else {
-        togglePatientTaskStatus(task);
-      }
-    },
-    [dispatch, templates, togglePatientTaskStatus],
-  );
   const groupedTasks = useMemo(() => {
     if (isAllTasksView) return;
     return groupTasks(activeList?.tasks);
@@ -344,7 +307,6 @@ const PatientTasksListView = () => {
                 isFullView={isFullView}
                 task={task}
                 isCompletedGroup={completeTasksVisible}
-                toggleCompleteTask={handleToggleTaskStatus}
                 onTaskUpdate={updatePatientTaskInList}
                 updateWorkflowStatus={updatePatientTaskWorkflowStatus}
                 dragAndDropDisabled
@@ -379,7 +341,6 @@ const PatientTasksListView = () => {
       groupHasMultipleAssignees,
       isGroupSelected,
       handleGroupSelect,
-      handleToggleTaskStatus,
       updatePatientTaskInList,
       updatePatientTaskWorkflowStatus,
       addingNewSubtaskParentId,
