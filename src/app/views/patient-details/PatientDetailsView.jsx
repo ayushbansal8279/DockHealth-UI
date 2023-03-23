@@ -194,6 +194,7 @@ const PatientDetailsView = () => {
     history.push(`${url}/${newTabValue}`);
   };
 
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   const onSearchChangedWithDebounce = useCallback(
     debounce((value) => {
       dispatch(setPatientTaskSearch(value));

@@ -27,6 +27,7 @@ export const TaskItemType = {
 
 export const TaskOrigin = {
   DASHBOARD: 'DASHBOARD',
+  PATIENT: 'PATIENT',
 };
 
 export const TaskPriority = {

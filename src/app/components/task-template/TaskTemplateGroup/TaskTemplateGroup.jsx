@@ -15,12 +15,15 @@ import {
   TASK_LIST_RESTRICTIONS_OPTIONS,
   TASK_LIST_RESTRICTIONS_PROFILES,
 } from 'restrictions/task-restrictions';
-import TaskTemplateGroupHeader from '../TaskTemplateGroupHeader/TaskTemplateGroupHeader';
+import { dashboardTaskDetailsSelector } from 'selectors/dashboard-selectors';
+import { patientTaskDetailsSelector } from 'selectors/patient-details-selectors';
+import { TaskOrigin } from 'helpers/task-helpers';
 import {
   TaskTemplateGroupContainer,
   TaskTemplateGroupList,
   QuickAddInputWrapper,
 } from './styled';
+import TaskTemplateGroupHeader from '../TaskTemplateGroupHeader/TaskTemplateGroupHeader';
 
 const TaskTemplateGroup = ({
   templateGroup: pullGroup = {},
@@ -36,11 +39,28 @@ const TaskTemplateGroup = ({
   viewSetup,
   showTasksWithGroup = true,
   iconColorActive,
+  origin,
   // eslint-disable-next-line sonarjs/cognitive-complexity
 }) => {
-  const templateGroup = useSelector((state) =>
-    taskDetailsSelector(state, pullGroup.identifier),
-  );
+  const templateGroup = useSelector((state) => {
+    if (origin === TaskOrigin.DASHBOARD) {
+      return dashboardTaskDetailsSelector(
+        state,
+        typeof pullGroup === 'string' ? pullGroup : pullGroup.identifier,
+      );
+    }
+    if (origin === TaskOrigin.PATIENT) {
+      return patientTaskDetailsSelector(
+        state,
+        typeof pullGroup === 'string' ? pullGroup : pullGroup.identifier,
+      );
+    }
+    return taskDetailsSelector(
+      state,
+      typeof pullGroup === 'string' ? pullGroup : pullGroup.identifier,
+    );
+  });
+
   const {
     tasks,
     identifier,

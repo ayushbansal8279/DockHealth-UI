@@ -2,7 +2,6 @@
 import * as ActionTypes from 'actions/action-types';
 import { TaskGroupType, TaskItemType, TaskStatus } from 'helpers/task-helpers';
 import { reorderTasksForWorkflow } from 'helpers/workflow-helpers';
-import { mapWithRemove } from 'helpers/utility-functions';
 import { updateTaskOrSubtaskInListsArray } from 'helpers/task-update-helper';
 import { updateBundleInList } from 'helpers/tasklist-helpers';
 import TaskBaseReducer from './task-base-reducer';
@@ -18,6 +17,7 @@ const INITIAL_STATE = {
   completeTasksVisible: false,
   currentTasksStatus: TaskStatus.INCOMPLETE,
   lists: null,
+  tasksMap: {},
   taskSearch: null,
   incompleteTasksCount: null,
   completeTasksCount: null,
@@ -29,25 +29,35 @@ const INITIAL_STATE = {
   },
 };
 
-const updateTaskInList = (lists, updateTaskCallback) =>
-  lists?.map((list) => ({
-    ...list,
-    tasks: mapWithRemove((t) => {
-      if (t.itemType === TaskItemType.BUNDLE) {
-        return updateTaskCallback({
-          ...t,
-          tasks: mapWithRemove(updateTaskCallback, t.tasks),
-        });
-      }
+// const updateTaskInList = (lists, updateTaskCallback) =>
+//   lists?.map((list) => ({
+//     ...list,
+//     tasks: mapWithRemove((t) => {
+//       if (t.itemType === TaskItemType.BUNDLE) {
+//         return updateTaskCallback({
+//           ...t,
+//           tasks: mapWithRemove(updateTaskCallback, t.tasks),
+//         });
+//       }
 
-      return updateTaskCallback(t);
-    }, list.tasks),
-  }));
+//       return updateTaskCallback(t);
+//     }, list.tasks),
+//   }));
 
-const updateTasksStateCallback = (state, updateTaskFromAction) => ({
-  ...state,
-  lists: updateTaskInList(state.lists, updateTaskFromAction),
-});
+const updateTasksStateCallback = (state, newTask) => {
+  if (typeof newTask === 'function') return state;
+
+  return {
+    ...state,
+    tasksMap: {
+      ...state.tasksMap,
+      [newTask.identifier ?? newTask.taskIdentifier]: {
+        ...state.tasksMap[newTask.identifier ?? newTask.taskIdentifier],
+        ...newTask,
+      },
+    },
+  };
+};
 
 function updateWorkflowInState(updateCallback, workflowIdentifier, state) {
   return {
@@ -251,9 +261,26 @@ export default (state = INITIAL_STATE, action = {}) => {
     }
 
     case ActionTypes.GET_CURRENT_PATIENT_TASKS_SUCCESS: {
+      const tasks = action.lists;
+      const newMap = {};
+      for (const task of tasks) {
+        if (task.itemType === TaskItemType.TASK) {
+          newMap[task.identifier] = task;
+        } else {
+          newMap[task.identifier] = task;
+          for (const subtask of task.tasks) {
+            newMap[subtask.identifier] = subtask;
+          }
+        }
+      }
+
       return {
         ...state,
         lists: action.lists,
+        tasksMap: {
+          ...state.tasksMap,
+          ...newMap,
+        },
         isFetching: false,
       };
     }
