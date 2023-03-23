@@ -36,6 +36,7 @@ const Task = React.memo(
     showClearSortFiltersModal,
     highlightedTasksParentIdentifier,
     noMargin,
+    origin,
     ...restProps
   }) => {
     const parentTaskReference = useRef(null);
@@ -172,6 +173,7 @@ const Task = React.memo(
             isDraggable={isDraggable}
             isCompletedGroup={isCompletedGroup}
             subtasksDisabled={subtasksDisabled}
+            origin={origin}
             isSelectedByHighlighted={
               highlightedTasksParentIdentifier &&
               (highlightedTasksParentIdentifier === task.taskIdentifier ||
