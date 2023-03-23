@@ -160,6 +160,7 @@ const SendEmailFromTaskModal = () => {
             disabled={show}
             label="Email"
             errorMessage="Incorrect email"
+            setShow={setShow}
           />
           <ContactInfoRow>
             {contact?.identifier && (
@@ -286,11 +287,12 @@ const SendEmailFromTaskModal = () => {
       </ModalFooterStyled>
       <ReactModal
         isOpen={show}
-        overlayClassName="modal-overlay"
+        overlayClassName="bring-to-front modal-overlay"
         className="modal-content"
         onRequestClose={() => {
           setShow(false);
         }}
+        style={{ zIndex: '6001 !important' }}
       >
         <AddContactStep
           type={CommunicationType.EMAIL}
