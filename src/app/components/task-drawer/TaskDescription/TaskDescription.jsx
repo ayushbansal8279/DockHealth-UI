@@ -23,6 +23,7 @@ import CustomTextEditor from 'components/common/CustomTextEditor/CustomTextEdito
 import { useMentionsEditorState } from 'components/common/TextEditor/use-mentions-editor-state';
 import { selectedTaskSelector } from 'selectors/task-drawer-selectors';
 import { DescriptionTextContainer, DescriptionError } from './styled';
+import RichTextEditor from "components/RichTextEditorV2/RichTextEditor";
 
 const TaskDescription = ({ readOnly, disableMentions }) => {
   const selectedTask = useSelector(selectedTaskSelector);
@@ -146,45 +147,7 @@ const TaskDescription = ({ readOnly, disableMentions }) => {
   return (
     <>
       <DescriptionTextContainer isCrossed={status === TaskStatus.COMPLETE}>
-        <CustomTextEditor
-          hasError={descriptionErrorState}
-          empty={isEmptyDescriptionState}
-          focused={isFocused}
-          required
-          isSelectedTaskComplete={status === TaskStatus.COMPLETE}
-          label={isSubtask ? 'Subtask' : 'Task'}
-          selectedTask={selectedTask}
-        >
-          <TextEditor
-            value={description}
-            characterLimit={false}
-            readOnly={readOnly}
-            ref={descriptionReference}
-            taskListIdentifier={taskListIdentifier}
-            disableMentions={disableMentions || isTemplateTask}
-            placeholder={
-              isSubtask ? 'What is the subtask?' : 'What is the task?'
-            }
-            onFocus={setFocused}
-            onBlur={handleBlur}
-            state={descriptionState}
-            onChange={handleChange}
-            keyBindingFn={(event) => {
-              if (event.key === 'Enter') {
-                return 'enter-command';
-              }
-            }}
-            handleKeyCommand={(command) => {
-              if (command === 'enter-command') {
-                // eslint-disable-next-line no-unused-expressions
-                descriptionReference.current?.blur();
-                return 'handled';
-              }
-
-              return 'not-handled';
-            }}
-          />
-        </CustomTextEditor>
+        <RichTextEditor readOnly/>
       </DescriptionTextContainer>
       {descriptionErrorState && (
         <DescriptionError>Task description is required</DescriptionError>

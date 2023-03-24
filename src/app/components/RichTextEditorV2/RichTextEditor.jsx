@@ -29,7 +29,9 @@ import {
     $convertToMarkdownString,
     TRANSFORMERS,
 } from "@lexical/markdown";
-import {useState} from "react";
+import {useEffect, useMemo, useState} from "react";
+import {useLexicalComposerContext} from "@lexical/react/LexicalComposerContext";
+import {COMMAND_PRIORITY_LOW, KEY_ENTER_COMMAND} from "lexical";
 
 function Placeholder() {
     return <div className="editor-placeholder">Enter some rich text...</div>;
@@ -68,7 +70,9 @@ const traverse = (node, callback) => {
     }
 }
 
-export default function Editor({ value = null, onChange = () => undefined, taskListIdentifier }) {
+export default function Editor({ value = null, noStyle = false, readOnly = false, textArea = false,
+                                   onChange = () => undefined, isToolbarActive = false, onSubmit = () => undefined,
+                               onClick = () => undefined }) {
     const [initialized, setInitialized] = useState(false)
 
     const handleChange = debounce((state, editor) => {
@@ -88,8 +92,14 @@ export default function Editor({ value = null, onChange = () => undefined, taskL
         })
     }, 1000)
 
+    const handleSubmit = debounce((e) => {
+        console.log("!");
+        onSubmit(e)
+    }, 250)
+
     return (
         <LexicalComposer initialConfig={{
+            editable: !readOnly,
             editorState: () => $convertFromMarkdownString(value || "", TRANSFORMERS),
             theme: ExampleTheme,
             onError(error) {
@@ -110,13 +120,14 @@ export default function Editor({ value = null, onChange = () => undefined, taskL
                 MentionNode
             ]
         }}>
-            <div className="editor-container">
-                <ToolbarPlugin />
+            <div className={noStyle ? "noStyle" : ("editor-container" + (textArea ? " editor-container-textarea" : ""))}
+            onClick={(e) => { e.stopPropagation() }}>
+                {isToolbarActive && <ToolbarPlugin />}
                 <div className="editor-inner">
                     <RichTextPlugin
                         contentEditable={<ContentEditable className="editor-input" />}
-                        placeholder={<Placeholder />}
                         ErrorBoundary={LexicalErrorBoundary}
+                        placeholder={""}
                     />
                     {/*<MentionsPlugin taskListIdentifier={taskListIdentifier}/>*/}
                     <HistoryPlugin />
@@ -129,8 +140,92 @@ export default function Editor({ value = null, onChange = () => undefined, taskL
                     <ListMaxIndentLevelPlugin maxDepth={7} />
                     <MarkdownShortcutPlugin transformers={TRANSFORMERS} />
                     <OnChangePlugin onChange={handleChange} ignoreHistoryMergeTagChange ignoreSelectionChange />
+                    <Foobar onSubmit={handleSubmit}/>
                 </div>
             </div>
         </LexicalComposer>
     );
 }
+
+
+const Foobar = ({ onSubmit }) => {
+    const [editor] = useLexicalComposerContext();
+
+    editor.registerCommand(
+        KEY_ENTER_COMMAND,
+        (payload) => {
+            onSubmit(payload);
+            return false
+        },
+        COMMAND_PRIORITY_LOW,
+    );
+
+    return (
+        null
+    )
+}
+
+
+// const noop = () => undefined
+//
+//
+// const RichTextEditor = ({
+//     value,
+//     readOnly
+// }) => {
+//     const initial = useMemo(() => ({
+//         editable: !readOnly,
+//         nodes: [
+//             HeadingNode,
+//             ListNode,
+//             ListItemNode,
+//             QuoteNode,
+//             CodeNode,
+//             CodeHighlightNode,
+//             TableNode,
+//             TableCellNode,
+//             TableRowNode,
+//             AutoLinkNode,
+//             LinkNode,
+//             MentionNode
+//         ],
+//         editorState() {
+//             $convertFromMarkdownString(value ?? "", TRANSFORMERS)
+//         },
+//         onError(error) {
+//             throw error
+//         }
+//     }), [ value, readOnly ])
+//
+//     return (
+//         <LexicalComposer initialConfig={initial}>
+//             <ContentEditor>
+//                 <HistoryPlugin />
+//                 <ListPlugin />
+//                 <ListMaxIndentLevelPlugin maxDepth={7} />
+//                 <LinkPlugin />
+//                 <AutoLinkPlugin />
+//                 <AutoFocusPlugin />
+//                 <CodeHighlightPlugin />
+//                 <MarkdownShortcutPlugin transformers={TRANSFORMERS} />
+//             </ContentEditor>
+//         </LexicalComposer>
+//     )
+// }
+//
+//
+//
+// import * as S from "./styled"
+//
+// const ContentEditor = ({ children, placeholder, value, readOnly }) => {
+//     return (
+//         <S.ContentEditorWrapper>
+//             <RichTextPlugin
+//                 placeholder={placeholder}
+//                 contentEditable={<ContentEditable className="editor-input" />}
+//                 ErrorBoundary={LexicalErrorBoundary}
+//             />
+//             {children}
+//         </S.ContentEditorWrapper>
+//     )
+// }

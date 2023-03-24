@@ -38,6 +38,7 @@ import {
   TaskContext,
   DescriptionEditButton,
 } from '../../styled';
+import RichTextEditor from "components/RichTextEditorV2/RichTextEditor";
 
 const TaskItemDescription = ({
   task,
@@ -163,62 +164,10 @@ const TaskItemDescription = ({
   return (
     <DescriptionBox width={width}>
       <Box display="flex" flex={1}>
-        <Description
-          // onMouseEnter={() => setIsHovered(true)}
-          // onMouseLeave={() => setIsHovered(false)}
-          ref={(reference) => {
-            if (reference) {
-              descriptionTextReference.current = reference.querySelector(
-                '.public-DraftStyleDefault-block',
-              );
-            }
-          }}
-          isCrossedOut={isCompleted}
-          isUnread={!read}
-        >
-          <DescriptionBorder disabled={disabled} isEdited={isEditing}>
-            <TextEditor
-              value={description}
-              ref={descriptionReference}
-              readOnly={disabled || !isEditing}
-              oneline
-              state={descriptionState}
-              onChange={setDescriptionState}
-              taskListIdentifier={taskListIdentifier}
-              highlightedValues={
-                matchDescription && highlightedValue?.toLowerCase().split(/\s+/)
-              }
-              keyBindingFn={handleKeyBindingFunction}
-              handleKeyCommand={handleKeyCommand}
-              onBlur={handleBlur}
-              disableMentions={disableMentions}
-            />
-            <Popper
-              anchorEl={descriptionTextReference.current}
-              placement="bottom-start"
-              open={
-                checkIfShouldDisplayTooltip(descriptionTextReference.current) &&
-                isHovered &&
-                !isEditing
-              }
-              style={{
-                zIndex: 115,
-                maxWidth:
-                  descriptionTextReference?.current?.offsetWidth || '650px',
-              }}
-              transition
-            >
-              {({ TransitionProps }) => (
-                <Fade {...TransitionProps} timeout={250}>
-                  <DescriptionTooltipWrapper>
-                    {convertedDescriptionState?.rawText}
-                  </DescriptionTooltipWrapper>
-                </Fade>
-              )}
-            </Popper>
-            {isEditButtonVisible && !isCompleted && (
-              <DescriptionEditButton active={isEditing}>
-                <IconButton
+        <RichTextEditor noStyle value={description} readOnly={!isEditing}/>
+        {isEditButtonVisible && !isCompleted && (
+            <DescriptionEditButton active={isEditing}>
+              <IconButton
                   onClick={(event) => {
                     if (!disabled) {
                       event.stopPropagation();
@@ -226,13 +175,11 @@ const TaskItemDescription = ({
                       setEditing(true);
                     }
                   }}
-                >
-                  <EditIcon />
-                </IconButton>
-              </DescriptionEditButton>
-            )}
-          </DescriptionBorder>
-        </Description>
+              >
+                <EditIcon />
+              </IconButton>
+            </DescriptionEditButton>
+        )}
       </Box>
       <TaskItemDescriptionIndicators>
         {isCompleted && (
