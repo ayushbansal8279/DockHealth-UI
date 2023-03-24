@@ -56,7 +56,8 @@ const SendEmailFromTaskModal = () => {
   const { attachments, identifier, taskMentions } = selectedTask;
   const dispatch = useDispatch();
   const [subject, setSubject] = useState('');
-  const [contact, setContact] = useState(null);
+  const [contacts, setContacts] = useState([]);
+  const [newContact, setNewContact] = useState([]);
   const [error, setError] = useState(false);
   const [show, setShow] = useState(false);
   const [isTaskDescriptionIncluded, setIsTaskDescriptionIncluded] = useState(
@@ -92,17 +93,20 @@ const SendEmailFromTaskModal = () => {
 
       if (!validateEmail(emailValue)) {
         setError(true);
-        setContact(null);
+        setContacts([]);
       } else {
-        if (!contact) {
-          setContact({
-            value: emailValue,
-          });
+        if (contacts.length === 0) {
+          setContacts([
+            ...contacts,
+            {
+              value: emailValue,
+            },
+          ]);
         }
         setError(false);
       }
     },
-    [contact],
+    [contacts],
   );
 
   const handleTextEditorReset = useCallback(() => {
@@ -143,17 +147,17 @@ const SendEmailFromTaskModal = () => {
             onBlur={handleEmailBlur}
             onChange={(_event, newValue, reason) => {
               if (reason === 'clear') {
-                setContact(null);
+                setContacts([]);
                 return;
               }
               if (typeof newValue === 'string') {
                 if (validateEmail(newValue)) {
-                  setContact({ value: newValue });
+                  setContacts([...contacts, { value: newValue }]);
                 } else {
                   setError(true);
                 }
               } else {
-                setContact(newValue);
+                setContacts([...newValue]);
               }
             }}
             error={error}
@@ -161,16 +165,21 @@ const SendEmailFromTaskModal = () => {
             label="Email"
             errorMessage="Incorrect email"
             setShow={setShow}
+            newContact={newContact}
+            setNewContact={setNewContact}
           />
           <ContactInfoRow>
-            {contact?.identifier && (
-              <div>
-                <LabelName>Recipient: </LabelName>
-                <LabelValue>{contact.label}</LabelValue>
-              </div>
-            )}
+            <div>
+              <LabelName>Recipient: </LabelName>
+              {contacts.map(
+                contact =>
+                  contact?.identifier && (
+                    <LabelValue>{contact.label}</LabelValue>
+                  ),
+              )}
+            </div>
             <AddEditContactLink>
-              {renderAddOrEdit(contact, setShow)}
+              {renderAddOrEdit(null, setShow)}
             </AddEditContactLink>
           </ContactInfoRow>
           <TemplateAutoComplete
@@ -265,8 +274,8 @@ const SendEmailFromTaskModal = () => {
           width="150px"
           variant="primary"
           disabled={
-            !validateEmail(contact?.value) ||
-            !detailsState.getCurrentContent().hasText()
+            // !validateEmail(contact?.value) ||
+            contacts.length === 0 || !detailsState.getCurrentContent().hasText()
           }
           onClick={() => {
             dispatch(
@@ -274,7 +283,8 @@ const SendEmailFromTaskModal = () => {
                 message: subject,
                 details: convertFromEditorStateToOutput(detailsState, true)
                   .tokenizedText,
-                recipientContact: contact.value,
+                // api needed for contacts array
+                recipientContact: contacts,
                 taskAttachmentIdentifiers: attachmentsToSend,
                 taskIdentifier: identifier,
               }),
@@ -297,11 +307,14 @@ const SendEmailFromTaskModal = () => {
         <AddContactStep
           type={CommunicationType.EMAIL}
           show={show}
-          setContactData={setContact}
+          setContactData={contact => {
+            setContacts([...contacts, contact]);
+            setNewContact(contact);
+          }}
           handleShow={setShow}
-          email={contact?.value}
-          name={contact?.label}
-          identifier={contact?.identifier}
+          email={newContact?.value}
+          name={newContact?.label}
+          identifier={newContact?.identifier}
         />
       </ReactModal>
     </ModalWrapper>

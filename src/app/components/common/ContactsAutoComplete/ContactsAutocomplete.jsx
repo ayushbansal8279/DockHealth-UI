@@ -36,12 +36,11 @@ const ContactsAutoComplete = ({
   error,
   errorMessage,
   setShow,
+  setNewContact,
   ...restProps
 }) => {
   const [open, setOpen] = useState(false);
-  const [contacts, setContacts] = useState([
-    { value: 'Zach', labelName: 'label' },
-  ]);
+  const [contacts, setContacts] = useState([]);
 
   const dataLoaded = useRef(false);
 
@@ -140,7 +139,7 @@ const ContactsAutoComplete = ({
               event.stopPropagation();
               event.preventDefault();
               if (setShow) {
-                console.log('click fired');
+                setNewContact({ value: inputState });
                 setShow(true);
               }
             }
@@ -157,7 +156,7 @@ const ContactsAutoComplete = ({
         </NoOptionContainer>
       </div>
     ),
-    [inputState, setShow],
+    [inputState, setNewContact, setShow],
   );
 
   return (
