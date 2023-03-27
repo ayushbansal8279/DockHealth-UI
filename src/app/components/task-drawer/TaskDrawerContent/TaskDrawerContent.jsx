@@ -38,7 +38,7 @@ import SubtasksSection from '../SubtasksSection/SubtasksSection';
 import TaskDetails from '../TaskDetails/TaskDetails';
 import {
   TaskDrawerContainer,
-  // TaskDrawerBackground,
+  TaskDrawerBackground,
   styleTaskDrawerContainer,
   styleFullRow,
   styleEmailRow,
@@ -383,7 +383,7 @@ const TaskDrawerContent = (props) => {
         </Grid>
       )}
       {renderExistingUserTourPopover()}
-      {/* <TaskDrawerBackground onClick={closeTaskDrawer} /> */}
+      {taskDrawerOpen && <TaskDrawerBackground onClick={closeTaskDrawer} />}
       <WatchersPopover
         open={isSubscriptionListOpen}
         anchorEl={watchersReference.current}
