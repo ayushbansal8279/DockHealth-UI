@@ -85,7 +85,7 @@ export function ColumnsConfigProvider({
   const currentWidthPreferences = useMemo(() => {
     if (currentList) {
       let displayColumns =
-        currentList?.listType === 'PUBLIC'
+        currentList?.listType === 'PUBLIC' || currentList?.restrictCustomization
           ? currentList?.listDisplayColumnPrefs
           : currentList?.listUsers?.find(u => u.identifier === userIdentifier)
               ?.listDisplayColumnPrefs;
