@@ -20,8 +20,8 @@ import { createMentionEntities } from 'components/common/TextEditor/create-menti
 import ReactModal from 'react-modal';
 
 import { CommunicationType } from 'helpers/task-helpers';
-import ContactsAutoComplete from 'components/common/ContactsAutoComplete/ContactsAutocomplete';
 import TemplateAutoComplete from 'components/common/TemplateAutoComplete/TemplateAutoComplete';
+import EmailContactsAutoComplete from 'components/common/EmailContactsAutoComplete/EmailContactsAutoComplete';
 import {
   CloseIcon,
   CloseIconButton,
@@ -91,20 +91,15 @@ const SendEmailFromTaskModal = () => {
     event => {
       const emailValue = event.target.value;
 
-      if (!validateEmail(emailValue)) {
-        setError(true);
-        setContacts([]);
-      } else {
-        if (contacts.length === 0) {
-          setContacts([
-            ...contacts,
-            {
-              value: emailValue,
-            },
-          ]);
-        }
-        setError(false);
+      if (contacts.length === 0) {
+        setContacts([
+          ...contacts,
+          {
+            value: emailValue,
+          },
+        ]);
       }
+      setError(false);
     },
     [contacts],
   );
@@ -141,7 +136,7 @@ const SendEmailFromTaskModal = () => {
       </ModalHeaderContainerStyled>
       <ModalDescriptionContainer>
         <InputContainerStyled>
-          <ContactsAutoComplete
+          <EmailContactsAutoComplete
             type={CommunicationType.EMAIL}
             placeholder="Type the email address or name of the contact"
             onBlur={handleEmailBlur}
