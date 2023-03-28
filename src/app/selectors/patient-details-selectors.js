@@ -23,6 +23,12 @@ export const currentListTasksStatusSelector = createSelector(
   ({ currentTasksStatus }) => currentTasksStatus,
 );
 
+export const patientTaskDetailsSelector = createSelector(
+  patientDetailsStateSelector,
+  (_, taskId) => taskId,
+  (patientDetails, taskId) => patientDetails.tasksMap[taskId],
+);
+
 export const patientListHasTasksSelector = createSelector(
   patientDetailsStateSelector,
   ({ lists }) => lists?.length > 0,

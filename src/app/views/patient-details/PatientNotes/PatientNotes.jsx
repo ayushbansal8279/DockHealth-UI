@@ -79,12 +79,12 @@ const PatientNotes = () => {
 
   const isEmpty = useMemo(() => {
     const { tokenizedText } = convertFromEditorStateToOutput(noteState, true);
-    return tokenizedText.trim().length === 0;
+    return tokenizedText?.trim()?.length === 0;
   }, [noteState]);
 
   const saveNote = useCallback(() => {
     const { tokenizedText } = convertFromEditorStateToOutput(noteState, true);
-    if (tokenizedText.trim().length > 0) {
+    if (tokenizedText?.trim()?.length > 0) {
       dispatch(addPatientNote(patientIdentifier, tokenizedText));
       clearNote();
       if (typeof addNoteInputReference.current.clear === 'function')

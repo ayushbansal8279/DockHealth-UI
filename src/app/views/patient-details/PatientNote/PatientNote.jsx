@@ -56,7 +56,7 @@ const PatientNote = ({
 
   const isEmpty = useMemo(() => {
     const { tokenizedText } = convertFromEditorStateToOutput(noteState, true);
-    return tokenizedText.trim().length === 0;
+    return tokenizedText?.trim()?.length === 0;
   }, [noteState]);
 
   useEffect(() => {

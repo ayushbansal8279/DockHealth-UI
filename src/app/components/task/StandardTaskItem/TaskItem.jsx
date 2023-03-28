@@ -74,6 +74,7 @@ import { CUSTOM_FIELD_TYPES } from 'helpers/custom-fields-helpers';
 import { Box } from '@mui/material';
 import { taskDetailsSelector } from 'selectors/list-details-selectors';
 import { dashboardTaskDetailsSelector } from 'selectors/dashboard-selectors';
+import { patientTaskDetailsSelector } from 'selectors/patient-details-selectors';
 import { getSubtaskStylingLink } from './helpers';
 import TaskItemContextMenu from '../TaskItemContextMenu/TaskItemContextMenu';
 import TaskItemBulkEdit from './TaskItemComponents/TaskItemBulkEdit';
@@ -150,6 +151,14 @@ const TaskItem = React.memo(
     const task = useSelector((state) => {
       if (origin === TaskOrigin.DASHBOARD) {
         return dashboardTaskDetailsSelector(
+          state,
+          typeof temporaryTask === 'string'
+            ? temporaryTask
+            : temporaryTask.identifier,
+        );
+      }
+      if (origin === TaskOrigin.PATIENT) {
+        return patientTaskDetailsSelector(
           state,
           typeof temporaryTask === 'string'
             ? temporaryTask
