@@ -23,7 +23,6 @@ import {
   isColumnChecked,
   TaskItemColumn,
   TaskItemColumnWidth,
-  TaskStatus,
 } from 'helpers/task-helpers';
 import * as TaskTemplateApi from 'api/task-template-api';
 import { workflowSelector } from 'selectors/workflow-drawer-selectors';

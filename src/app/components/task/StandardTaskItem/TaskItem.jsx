@@ -235,9 +235,10 @@ const TaskItem = React.memo(
       SINGLE_TASK_RESTRICTIONS_PROFILES[currentUser?.orgUserRole];
     const taskListRestrictions =
       TASK_LIST_RESTRICTIONS_PROFILES[currentUser?.orgUserRole];
-    const isSelected = useSelector(
-      isTaskSelectedSelector(taskIdentifier, isSelectedByHighlighted),
-    );
+    const isSelected =
+      useSelector((state) => isTaskSelectedSelector(state, taskIdentifier)) ||
+      isSelectedByHighlighted;
+
     const [taskDecisionError, setTaskDecisionError] = useState(false);
     const [contextMenu, setContextMenu] = useState(null);
     const dispatch = useDispatch();
