@@ -147,8 +147,8 @@ const EmailContactsAutoComplete = ({
         >
           {inputState ? (
             <>
-              No results - Create{' '}
-              <NoOptionTextLabel>{inputState}</NoOptionTextLabel> label
+              No results - Click to create new contact:{' '}
+              <NoOptionTextLabel>{inputState}</NoOptionTextLabel>
             </>
           ) : (
             <>No results</>
