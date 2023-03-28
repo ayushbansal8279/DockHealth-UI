@@ -17,10 +17,7 @@ import { Link, useLocation } from 'react-router-dom';
 import * as PatientApi from 'api/patient-api';
 import useBooleanWithTimeout from 'hooks/use-boolean-with-timeout';
 import Spacing from 'components/common/Spacing';
-import {
-  getCustomerTypeLabel,
-  getCustomerUniqueIDShortLabel,
-} from 'helpers/customer-type-helper';
+import { getCustomerUniqueIDShortLabel } from 'helpers/customer-type-helper';
 import {
   userProfileSelector,
   selectedUserOrganizationSelector,
@@ -28,6 +25,8 @@ import {
 import { organizationSelector } from 'selectors/organization-selectors';
 import { FieldType } from 'helpers/field-type-helpers';
 import { openModal } from 'modal/actions';
+import EditIcon from '@material-ui/icons/Edit';
+import LaunchIcon from '@material-ui/icons/Launch';
 import {
   PatientCardContainer,
   PatientInfoSection,
@@ -112,7 +111,6 @@ const PatientCard = ({
   const genderIdentityDisabled =
     currentOrganization?.disabledFeatures?.includes('PATIENT_GENDER') || false;
 
-  const customerTypeLabel = getCustomerTypeLabel(currentUser);
   const uniqueIdentifierLabel = getCustomerUniqueIDShortLabel(
     currentUser,
     currentOrganization,
@@ -214,7 +212,7 @@ const PatientCard = ({
                       .toUpperCase()}
                   </PatientName>
                   {!disableLink && (
-                    <div>
+                    <div style={{ display: 'flex' }}>
                       <Link
                         to={{
                           pathname: `/core/patient/${patientIdentifier}`,
@@ -224,11 +222,12 @@ const PatientCard = ({
                         }}
                       >
                         <PatientLinkText>
-                          view {customerTypeLabel}
+                          <LaunchIcon />
                         </PatientLinkText>
                       </Link>
+                      <Spacing horizontal={3} />
                       <EditPatientButton onClick={handleEditPatientClick}>
-                        edit {customerTypeLabel}
+                        <EditIcon />
                       </EditPatientButton>
                     </div>
                   )}
