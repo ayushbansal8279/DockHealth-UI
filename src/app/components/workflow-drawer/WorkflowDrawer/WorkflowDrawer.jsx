@@ -1,6 +1,6 @@
 import React, { useEffect, useMemo } from 'react';
 import { useHistory } from 'react-router-dom';
-import { Grid } from '@material-ui/core';
+import { Grid, Typography } from '@material-ui/core';
 import * as WorkflowDrawerActions from 'actions/workflow-drawer-actions';
 import { AnimatePresence } from 'framer-motion/dist/framer-motion';
 import compose from 'ramda/src/compose';
@@ -19,6 +19,9 @@ import {
   SINGLE_WORKFLOW_RESTRICTIONS_PROFILES,
   WORKFLOW_LIST_RESTRICTIONS_OPTIONS,
 } from 'restrictions/task-restrictions';
+import { FiledInListName } from 'components/task-drawer/TaskDrawerContent/styled';
+import { createTaskListPath } from 'routing/helpers/paths';
+import { currentTaskListSelector } from 'selectors/task-list-selectors';
 import NameSection from '../NameSection/NameSection';
 import DescriptionSection from '../DescriptionSection/DescriptionSection';
 import PatientSection from '../PatientSection/PatientSection';
@@ -54,6 +57,9 @@ const WorkflowDrawer = () => {
     () => checkIfTemplateWorkflow(selectedWorkflow),
     [selectedWorkflow],
   );
+
+  const taskList = useSelector(currentTaskListSelector);
+  const { listName, taskListIdentifier } = taskList || {};
 
   const { orgUserRole } = useSelector(userProfileSelector);
   const restrictions = SINGLE_WORKFLOW_RESTRICTIONS_PROFILES[orgUserRole];
@@ -94,6 +100,18 @@ const WorkflowDrawer = () => {
               <WorkflowDrawerHeader />
               <SectionContainer>
                 <Grid container spacing={4}>
+                  <Grid item xs={12}>
+                    <Typography sx={{ fontWeight: 'bold' }} component="span">
+                      List:{' '}
+                      <FiledInListName
+                        onClick={() => {
+                          history.push(createTaskListPath(taskListIdentifier));
+                        }}
+                      >
+                        {listName}
+                      </FiledInListName>
+                    </Typography>
+                  </Grid>
                   <Grid item xs={12}>
                     <NameSection readOnly={restrictions?.name === DISABLED} />
                   </Grid>
