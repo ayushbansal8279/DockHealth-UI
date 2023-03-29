@@ -122,7 +122,7 @@ const initializeTaskDrawerHooks = ({
   useLayoutEffect(() => {
     if (taskIdentifier !== previousTaskIdentifierValue.current) {
       // eslint-disable-next-line no-unused-expressions
-      taskDrawerReference?.current.scrollTo({ top: 0, behavior: 'smooth' });
+      taskDrawerReference?.current?.scrollTo({ top: 0, behavior: 'smooth' });
     }
   }, [taskIdentifier]);
 
