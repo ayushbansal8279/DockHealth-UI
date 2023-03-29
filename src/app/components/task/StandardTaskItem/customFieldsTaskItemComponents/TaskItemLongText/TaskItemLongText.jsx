@@ -16,6 +16,7 @@ import {
 import PopoverBottomBar from 'components/task/PopoverBottomBar/PopoverBottomBar';
 import { FieldCharakterLimit } from 'helpers/field-type-helpers';
 import { Text, LongTextBox, Divider } from './styled';
+import RichTextEditor from "components/RichTextEditorV2/RichTextEditor";
 
 const TaskItemLongText = ({
   value = '',
@@ -89,26 +90,30 @@ const TaskItemLongText = ({
             alignItems="center"
             style={{ padding: '5px' }}
           >
-            <CustomTextEditor
-              key={field?.identifier}
-              empty={false}
-              focused
-              label={field.name}
-              richTextEnabled
-            >
-              <TextEditor
-                characterLimit={FieldCharakterLimit.LONG_TEXT}
-                readOnly={readOnly}
-                minHeight={100}
-                ref={detailsReference}
-                disableMentions
-                showToolbar
-                onFocus={setFocused}
-                onBlur={unsetFocused}
-                state={detailsState}
-                onChange={onChangeDetailsEditor}
-              />
-            </CustomTextEditor>
+              <RichTextEditor isToolbarActive value={value} onSubmit={(description) => {
+                  onChange(description.trim())
+                  closePopover()
+              }}/>
+            {/*<CustomTextEditor*/}
+            {/*  key={field?.identifier}*/}
+            {/*  empty={false}*/}
+            {/*  focused*/}
+            {/*  label={field.name}*/}
+            {/*  richTextEnabled*/}
+            {/*>*/}
+            {/*  <TextEditor*/}
+            {/*    characterLimit={FieldCharakterLimit.LONG_TEXT}*/}
+            {/*    readOnly={readOnly}*/}
+            {/*    minHeight={100}*/}
+            {/*    ref={detailsReference}*/}
+            {/*    disableMentions*/}
+            {/*    showToolbar*/}
+            {/*    onFocus={setFocused}*/}
+            {/*    onBlur={unsetFocused}*/}
+            {/*    state={detailsState}*/}
+            {/*    onChange={onChangeDetailsEditor}*/}
+            {/*  />*/}
+            {/*</CustomTextEditor>*/}
             <Divider />
             <PopoverBottomBar align="spread">
               <PopoverBottomBar.Button type="button" onClick={closePopover}>

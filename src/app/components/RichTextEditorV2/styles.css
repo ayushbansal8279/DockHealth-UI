@@ -45,6 +45,13 @@ h1 {
     background-color: rgb(247, 250, 251) !important;
 }
 
+.simple-input {
+    background-color: white;
+    border-radius: 4px;
+    padding: 4px 8px;
+    border: 1px solid rgb(193, 204, 218);
+}
+
 .editor-container-textarea .editor-input {
     min-height: 150px;
 }
@@ -52,6 +59,7 @@ h1 {
 .noStyle {
     width: 100%;
     height: 100%;
+    padding: 4px 8px;
 }
 
 .noStyle .editor-input {

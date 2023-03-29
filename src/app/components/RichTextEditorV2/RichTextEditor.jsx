@@ -31,7 +31,14 @@ import {
 } from "@lexical/markdown";
 import {useEffect, useMemo, useState} from "react";
 import {useLexicalComposerContext} from "@lexical/react/LexicalComposerContext";
-import {COMMAND_PRIORITY_LOW, KEY_ENTER_COMMAND} from "lexical";
+import {
+    COMMAND_PRIORITY_EDITOR,
+    COMMAND_PRIORITY_LOW,
+    INSERT_PARAGRAPH_COMMAND,
+    KEY_ENTER_COMMAND,
+    LineBreakNode,
+    TextNode
+} from "lexical";
 
 function Placeholder() {
     return <div className="editor-placeholder">Enter some rich text...</div>;
@@ -70,7 +77,7 @@ const traverse = (node, callback) => {
     }
 }
 
-export default function Editor({ value = null, noStyle = false, readOnly = false, textArea = false,
+export default function Editor({ value = null, isSingleLine, className, noStyle = false, readOnly = false, textArea = false,
                                    onChange = () => undefined, isToolbarActive = false, onSubmit = () => undefined,
                                onClick = () => undefined }) {
     const [initialized, setInitialized] = useState(false)
@@ -93,7 +100,6 @@ export default function Editor({ value = null, noStyle = false, readOnly = false
     }, 1000)
 
     const handleSubmit = debounce((e) => {
-        console.log("!");
         onSubmit(e)
     }, 250)
 
@@ -120,7 +126,7 @@ export default function Editor({ value = null, noStyle = false, readOnly = false
                 MentionNode
             ]
         }}>
-            <div className={noStyle ? "noStyle" : ("editor-container" + (textArea ? " editor-container-textarea" : ""))}
+            <div className={`${noStyle ? "noStyle" : ("editor-container" + (textArea ? " editor-container-textarea" : ""))} ${className}`}
             onClick={(e) => { e.stopPropagation() }}>
                 {isToolbarActive && <ToolbarPlugin />}
                 <div className="editor-inner">
@@ -140,7 +146,8 @@ export default function Editor({ value = null, noStyle = false, readOnly = false
                     <ListMaxIndentLevelPlugin maxDepth={7} />
                     <MarkdownShortcutPlugin transformers={TRANSFORMERS} />
                     <OnChangePlugin onChange={handleChange} ignoreHistoryMergeTagChange ignoreSelectionChange />
-                    <Foobar onSubmit={handleSubmit}/>
+                    <Foobar value={value} readOnly={readOnly} isSingleLine={isSingleLine}/>
+                    <GlobalEventsPlugin onSubmit={handleSubmit}/>
                 </div>
             </div>
         </LexicalComposer>
@@ -148,21 +155,95 @@ export default function Editor({ value = null, noStyle = false, readOnly = false
 }
 
 
-const Foobar = ({ onSubmit }) => {
+const Foobar = ({ readOnly, isSingleLine, value }) => {
     const [editor] = useLexicalComposerContext();
 
-    editor.registerCommand(
-        KEY_ENTER_COMMAND,
-        (payload) => {
-            onSubmit(payload);
-            return false
-        },
-        COMMAND_PRIORITY_LOW,
-    );
+    useEffect(() => {
+        editor.update(() => {
+            $convertFromMarkdownString(value || "", TRANSFORMERS)
+        })
+    }, [value])
+
+    useEffect(() => {
+        console.log("readOnly", readOnly)
+        editor.setEditable(!readOnly)
+    }, [readOnly])
+
+    useEffect(() => {
+        // if (isSingleLine) {
+        //     console.log("isSingleLine", isSingleLine);
+            editor.registerNodeTransform(LineBreakNode, (node) => {
+                // console.log(node);
+                node.remove();
+            });
+        // }
+    }, [])
+
+    useEffect(() => {
+        // if (isSingleLine) {
+            return editor.registerCommand(
+                INSERT_PARAGRAPH_COMMAND,
+                () => {
+                    return true;
+                },
+                COMMAND_PRIORITY_EDITOR
+            );
+        // }
+    }, [editor]);
+
+    // editor.registerCommand(
+    //     KEY_ENTER_COMMAND,
+    //     (payload) => {
+    //         onSubmit(payload);
+    //         return false
+    //     },
+    //     COMMAND_PRIORITY_LOW,
+    // );
+
+    // useEffect(() => {
+    //     editor.registerNodeTransform(TextNode, (textNode) => {
+    //         textNode.setTextContent(textNode.getTextContent().replace(/\r\n|\r|\n/g, ""))
+    //     });
+    // })
 
     return (
         null
     )
+}
+
+
+// GlobalEventsPlugin.tsx
+import { useLayoutEffect } from 'react'
+import { LexicalCommand, createCommand } from 'lexical'
+
+export const SAVE_COMMAND = createCommand('SAVE_COMMAND')
+
+const GlobalEventsPlugin = ({ onSubmit, value }) => {
+    const [editor] = useLexicalComposerContext()
+
+    useLayoutEffect(() => {
+        const onKeyDown = (event) => {
+            if (event.key === "Enter") {
+                editor.update(() => {
+                    const markdown = $convertToMarkdownString(TRANSFORMERS)
+                    console.log(markdown);
+                    onSubmit(markdown)
+                })
+                editor.dispatchCommand(SAVE_COMMAND, event)
+            }
+        }
+
+        return editor.registerRootListener((rootElement, prevRootElement) => {
+            if (prevRootElement !== null) {
+                prevRootElement.removeEventListener('keydown', onKeyDown)
+            }
+            if (rootElement !== null) {
+                rootElement.addEventListener('keydown', onKeyDown)
+            }
+        })
+    }, [editor])
+
+    return null
 }
 
 
