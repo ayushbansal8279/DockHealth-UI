@@ -33,7 +33,6 @@ import TaskDrawerEmailBodyContainer from '../EmailBody/EmailBody';
 import ReminderSection from '../ReminderSection/ReminderSection';
 import PatientSection from '../PatientSection/PatientSection';
 import initializeTaskDrawerHooks from './hooks';
-import existingUserTaskDrawerTourHooks from './existing-user-tour-hooks';
 import AssignedToSection from '../AssignedToSection/AssignedToSection';
 import DueDateSection from '../DueDateSection/DueDateSection';
 import CustomFieldsSection from '../CustomFieldsSection/CustomFieldsSection';
@@ -85,7 +84,6 @@ const TaskDrawerContent = props => {
     selectedTask,
     setParentDescriptionState,
     taskDrawerFocusField,
-    taskDrawerOpen,
     taskDrawerReference,
     taskListIdentifier,
     parentBundle,
@@ -99,21 +97,6 @@ const TaskDrawerContent = props => {
     onTaskCreation,
     onTaskDelete,
     fromFirstAddTask,
-    hideTour,
-  });
-
-  const {
-    taskMenuReference,
-    dueDateSectionReference,
-    statusSectionReference,
-    labelsSectionReference,
-    commentsSectionReference,
-    historySectionReference,
-    renderExistingUserTourPopover,
-  } = existingUserTaskDrawerTourHooks({
-    taskDrawerOpen,
-    fromFirstAddTask,
-    taskDrawerReference,
     hideTour,
   });
 
@@ -215,9 +198,6 @@ const TaskDrawerContent = props => {
             onDelete={onDelete}
             onDuplicate={onDuplicate}
             closeTaskDrawer={closeTaskDrawer}
-            setTourTaskMenuReference={element => {
-              taskMenuReference.current = element;
-            }}
           />
         </Grid>
         {selectedTask && <TaskDrawerDivider />}
@@ -349,7 +329,7 @@ const TaskDrawerContent = props => {
         </Grid>
         {!taskStartDateDisabled && (
           <Grid item xs={12} md={6} style={styleLeftColumn(isMobile)}>
-            <div ref={dueDateSectionReference}>
+            <div>
               <StartDateSection
                 disabled={restrictions?.startDate === DISABLED}
               />
@@ -362,7 +342,7 @@ const TaskDrawerContent = props => {
           </Grid>
         )}
         <Grid item xs={12} md={6} style={styleLeftColumn(isMobile)}>
-          <div ref={dueDateSectionReference}>
+          <div>
             <DueDateSection disabled={restrictions?.dueDate === DISABLED} />
           </div>
         </Grid>
@@ -381,7 +361,7 @@ const TaskDrawerContent = props => {
           />
         </Grid>
         <Grid item xs={12} md={6} style={styleRightColumn(isMobile)}>
-          <div ref={statusSectionReference}>
+          <div>
             <StatusSection
               onTaskUpdate={onTaskUpdate}
               disabled={restrictions?.status === DISABLED}
@@ -396,7 +376,7 @@ const TaskDrawerContent = props => {
         )}
         {restrictions?.labels !== DISABLED && taskLabelsLocation === 'default' && (
           <Grid item xs={12} style={styleFullRow(isMobile)}>
-            <div ref={labelsSectionReference}>
+            <div>
               <LabelsSection onTaskUpdate={onTaskUpdate} />
             </div>
           </Grid>
@@ -410,7 +390,7 @@ const TaskDrawerContent = props => {
           </Grid>
         )}
         <Grid item xs={12} style={styleCommentRow}>
-          <div ref={commentsSectionReference}>
+          <div>
             <CommentSection />
           </div>
         </Grid>
@@ -434,7 +414,7 @@ const TaskDrawerContent = props => {
         )}
         {restrictions?.labels !== DISABLED && taskLabelsLocation === 'bottom' && (
           <Grid item xs={12} style={styleFullRow(isMobile)}>
-            <div ref={labelsSectionReference}>
+            <div>
               <LabelsSection onTaskUpdate={onTaskUpdate} />
             </div>
           </Grid>
@@ -445,12 +425,11 @@ const TaskDrawerContent = props => {
         <Grid container item xs={12} style={styleFullRow(isMobile)}>
           <div>
             <Spacing horizontal={5} />
-            <span ref={historySectionReference} />
+            <span />
           </div>
           <HistorySection />
         </Grid>
       )}
-      {renderExistingUserTourPopover()}
       <TaskDrawerBackground onClick={closeTaskDrawer} />
       {/* <WatchersPopover
         open={isSubscriptionListOpen}

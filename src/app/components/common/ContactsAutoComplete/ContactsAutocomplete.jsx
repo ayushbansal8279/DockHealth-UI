@@ -30,6 +30,7 @@ const ContactsAutoComplete = ({
   placeholder,
   error,
   errorMessage,
+  patient,
   ...restProps
 }) => {
   const [open, setOpen] = useState(false);
@@ -45,6 +46,11 @@ const ContactsAutoComplete = ({
     }
     (async () => {
       const response = await getAllContacts();
+      response.push({
+        name: `(Patient) ${patient?.firstName} ${patient?.lastName}`,
+        email: patient?.email,
+        identifier: patient?.patientIdentifier,
+      });
       if (active) {
         switch (type) {
           case CommunicationType.EMAIL:
