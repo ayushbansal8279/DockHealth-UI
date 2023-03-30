@@ -262,9 +262,10 @@ export function downloadPatientListData(
   listIdentifier,
   selectedFilters,
   filename,
+  includeAllAttributes,
 ) {
   return axios({
-    url: `/patient/list/download/${listIdentifier}`,
+    url: `/patient/list/download/${listIdentifier}?includeAllAttributes=${includeAllAttributes}`,
     method: 'POST',
     responseType: 'blob',
     headers: {

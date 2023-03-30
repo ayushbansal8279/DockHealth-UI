@@ -256,23 +256,27 @@ const PatientsView = () => {
     [dispatch, selectedPatients],
   );
 
-  const handleDownloadPatientListData = useCallback(async () => {
-    const filename = `Dock ${listName}.csv`;
-    const selectedFilters = sessionStorageHelper.getItem(
-      getPatientsListFiltersStorageKey(listIdentifier),
-    );
-    const { data } = await downloadPatientListData(
-      listIdentifier,
-      selectedFilters,
-      filename,
-    );
-    const url = window.URL.createObjectURL(new Blob([data]));
-    const link = document.createElement('a');
-    link.href = url;
-    link.setAttribute('download', filename);
-    document.body.append(link);
-    link.click();
-  }, [listIdentifier, listName]);
+  const handleDownloadPatientListData = useCallback(
+    async includeAllAttributes => {
+      const filename = `Dock ${listName}.csv`;
+      const selectedFilters = sessionStorageHelper.getItem(
+        getPatientsListFiltersStorageKey(listIdentifier),
+      );
+      const { data } = await downloadPatientListData(
+        listIdentifier,
+        selectedFilters,
+        filename,
+        includeAllAttributes,
+      );
+      const url = window.URL.createObjectURL(new Blob([data]));
+      const link = document.createElement('a');
+      link.href = url;
+      link.setAttribute('download', filename);
+      document.body.append(link);
+      link.click();
+    },
+    [listIdentifier, listName],
+  );
 
   return (
     <PatientListColumnsConfigProvider>
@@ -302,7 +306,14 @@ const PatientsView = () => {
                       !isViewOnly && {
                         name: 'Export to CSV',
                         onClick: () => {
-                          handleDownloadPatientListData();
+                          handleDownloadPatientListData(false);
+                        },
+                      },
+                    !isGuest &&
+                      !isViewOnly && {
+                        name: 'Export to CSV (All Attributes)',
+                        onClick: () => {
+                          handleDownloadPatientListData(true);
                         },
                       },
                   ]}

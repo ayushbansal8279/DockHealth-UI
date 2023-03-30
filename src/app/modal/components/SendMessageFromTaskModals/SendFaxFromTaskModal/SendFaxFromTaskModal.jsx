@@ -7,7 +7,7 @@ import { sendFaxForTask } from 'actions/task-actions';
 import Button from 'components/common/Button/Button';
 import { selectedTaskSelector } from 'selectors/task-drawer-selectors';
 import Checkbox from 'components/common/Checkbox/Checkbox';
-
+import { getTemplateDetails } from 'api/template-api';
 import { closeModal } from 'modal/actions';
 import { CommunicationType } from 'helpers/task-helpers';
 import ContactsAutoComplete from 'components/common/ContactsAutoComplete/ContactsAutocomplete';
@@ -148,8 +148,12 @@ const SendFaxFromTaskModal = () => {
                 setMessage(() => EditorState.createEmpty());
                 return;
               }
-              const text = addStylesToText(newValue?.body ?? '');
-              setMessage(EditorState.push(message, text));
+              getTemplateDetails(newValue?.identifier, identifier).then(
+                data => {
+                  const text = addStylesToText(data?.details ?? '');
+                  setMessage(EditorState.push(message, text));
+                },
+              );
             }}
             disabled={show}
           />
