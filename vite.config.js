@@ -15,6 +15,7 @@ export default defineConfig({
   resolve: {
     alias: {
       '@mui/styled-engine': '@mui/styled-engine-sc',
+      './runtimeConfig': './runtimeConfig.browser',
       restrictions: path.resolve(__dirname, 'src/app/restrictions'),
       actions: path.resolve(__dirname, 'src/app/actions'),
       api: path.resolve(__dirname, 'src/app/api'),
