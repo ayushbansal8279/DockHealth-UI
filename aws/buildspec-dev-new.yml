@@ -1,0 +1,48 @@
+version: 0.2
+env:
+  parameter-store:
+    VITE_AWS_REGION: /DOCK_WEB/DEV/AWS_REGION
+    VITE_AWS_USERPOOLID: /DOCK_WEB/DEV/AWS_USERPOOLID
+    VITE_AWS_CLIENTAPP: /DOCK_WEB/DEV/AWS_CLIENTAPP
+    VITE_HEYDOC_SERVICES_BASE_URL: /DOCK_WEB/DEV/HEYDOC_SERVICES_BASE_URL
+    VITE_SYSTEM_TIMEOUT: /DOCK_WEB/DEV/SYSTEM_TIMEOUT
+    VITE_HEALTHCHECK_INTERVAL: /DOCK_WEB/DEV/HEALTHCHECK_INTERVAL
+    VITE_BRANCH_IO_APP_LINK: /DOCK_WEB/DEV/BRANCH_IO_APP_LINK
+    VITE_PUSHER_APP_KEY: /DOCK_WEB/DEV/PUSHER_APP_KEY
+    VITE_PUSHER_CLUSTER_NAME: /DOCK_WEB/DEV/PUSHER_CLUSTER_NAME
+    VITE_SUBSCRIPTION_TOKEN_API_KEY: /DOCK_WEB/DEV/SUBSCRIPTION_TOKEN_API_KEY
+    VITE_GA_TRACKING_CODE: /DOCK_WEB/DEV/GA_TRACKING_CODE
+    VITE_GA_TRACKING_CODE_ROLLUP: /DOCK_WEB/DEV/GA_TRACKING_CODE_ROLLUP
+    VITE_HELLOSIGN_CLIENT_ID: /DOCK_WEB/DEV/HELLOSIGN_CLIENT_ID
+    VITE_HELLOSIGN_DOMAIN_VERIFICATION_ENABLED: /DOCK_WEB/DEV/HELLOSIGN_DOMAIN_VERIFICATION_ENABLED
+    VITE_INTERCOM_APP_CODE: /DOCK_WEB/DEV/INTERCOM_APP_CODE
+    VITE_PHONE_COUNTRY_CODES: /DOCK_WEB/DEV/PHONE_COUNTRY_CODES
+    DYNATRACE_SCRIPT: /DOCK_WEB/DEV/DYNATRACE_SCRIPT
+    VITE_GOOGLE_DRIVE_API_CLIENT_ID: /DOCK_WEB/DEV/GOOGLE_DRIVE_API_CLIENT_ID
+    VITE_GOOGLE_DRIVE_API_KEY: /DOCK_WEB/DEV/GOOGLE_DRIVE_API_KEY
+    VITE_SSO_LAUNCH_URL_GOOGLE: /DOCK_WEB/DEV/SSO_LAUNCH_URL_GOOGLE
+    VITE_SENDBIRD_APP_ID: /DOCK_WEB/DEV/SENDBIRD_APP_ID
+    VITE_APP_ENV: /DOCK_WEB/DEV/APP_ENV
+phases:
+  install:
+    runtime-versions:
+      nodejs: 14
+  pre_build:
+    commands:
+      - echo Installing source NPM dependencies...
+      - npm install
+      - npm audit fix
+  build:
+    commands:
+      - echo Build started on `date`
+      - npm run build
+  post_build:
+    commands:
+      - aws s3 cp --recursive --acl public-read ./dist s3://$DeployBucketName/
+      - aws s3 cp --acl public-read --cache-control='max-age=0, no-cache, no-store, must-revalidate' ./dist/index.html s3://$DeployBucketName/
+      - aws s3 cp --acl public-read --cache-control='max-age=0, no-cache, no-store, must-revalidate' ./dist/bundle.js s3://$DeployBucketName/
+      - aws cloudfront create-invalidation --distribution-id $CloudFrontDistributionID --paths /index.html /static /assets /*.js /bundle.js
+artifacts:
+  files:
+    - '**/*'
+  base-directory: dist
