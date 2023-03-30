@@ -238,41 +238,6 @@ const CustomizeToolbarButton = ({
                 })}
               </List>
               <Spacer />
-            </>
-          )}
-          {selectedTab === 1 && (
-            <>
-              {userHasTaskCustomFieldsFeature && (
-                <>
-                  <Spacer />
-                  <Box display="flex" justifyContent="space-between" mt={1}>
-                    <Box mx={0.5} />
-                    <ListItemText>
-                      <b>Task Custom Columns</b>
-                    </ListItemText>
-                  </Box>
-                  <List>
-                    {showCustomColumnCreate && (
-                      <MenuItem
-                        onClick={handleAddColumnClick}
-                        ref={addColumnButtonReference}
-                      >
-                        <PlusIcon>+</PlusIcon>
-                        <Box mx={0.5} />
-                        <ListItemText>Create/Edit Custom Column</ListItemText>
-                      </MenuItem>
-                    )}
-                    {sortAlphabetical(
-                      columns.filter(
-                        c =>
-                          c._customFieldType === CUSTOM_FIELD_TYPES.TASK_LIST ||
-                          c._customFieldType ===
-                            CUSTOM_FIELD_TYPES.ORGANIZATION,
-                      ),
-                    ).map(column => renderElement(column))}
-                  </List>
-                </>
-              )}
               {!isDashboard && (
                 <>
                   <Box display="flex" justifyContent="space-between" mt={1}>
@@ -308,6 +273,41 @@ const CustomizeToolbarButton = ({
                         )
                       );
                     })}
+                  </List>
+                </>
+              )}
+            </>
+          )}
+          {selectedTab === 1 && (
+            <>
+              {userHasTaskCustomFieldsFeature && (
+                <>
+                  <Spacer />
+                  <Box display="flex" justifyContent="space-between" mt={1}>
+                    <Box mx={0.5} />
+                    <ListItemText>
+                      <b>Task Custom Columns</b>
+                    </ListItemText>
+                  </Box>
+                  <List>
+                    {showCustomColumnCreate && (
+                      <MenuItem
+                        onClick={handleAddColumnClick}
+                        ref={addColumnButtonReference}
+                      >
+                        <PlusIcon>+</PlusIcon>
+                        <Box mx={0.5} />
+                        <ListItemText>Create/Edit Custom Column</ListItemText>
+                      </MenuItem>
+                    )}
+                    {sortAlphabetical(
+                      columns.filter(
+                        c =>
+                          c._customFieldType === CUSTOM_FIELD_TYPES.TASK_LIST ||
+                          c._customFieldType ===
+                            CUSTOM_FIELD_TYPES.ORGANIZATION,
+                      ),
+                    ).map(column => renderElement(column))}
                   </List>
                 </>
               )}
