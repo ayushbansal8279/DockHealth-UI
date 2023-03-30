@@ -1,6 +1,6 @@
 import React, { useState, useCallback, useEffect } from 'react';
 import useSendbirdStateContext from '@sendbird/uikit-react/useSendbirdStateContext';
-import sendBirdSelectors from '@sendbird/uikit-react/sendBirdSelectors';
+import sendbirdSelectors from '@sendbird/uikit-react/sendbirdSelectors';
 import ChatMessageIcon from './ChatImageIcon';
 import { Wrapper, NewLabel } from './styled';
 
@@ -8,7 +8,7 @@ const ChatIcon = ({ height = 25 }) => {
   const [unreadMessageCount, setUnreadMessageCount] = useState(null);
 
   const context = useSendbirdStateContext();
-  const sdkInstance = sendBirdSelectors.getSdk(context);
+  const sdkInstance = sendbirdSelectors.getSdk(context);
 
   const onTotalUnreadMessageCountUpdated = useCallback(
     (count) => {

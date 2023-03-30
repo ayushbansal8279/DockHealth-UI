@@ -7,7 +7,7 @@ import Label from '@sendbird/uikit-react/ui/Label';
 import { InputLabel } from '@mui/material';
 import TextButton from '@sendbird/uikit-react/ui/TextButton';
 import ChannelAvatar from '@sendbird/uikit-react/ui/ChannelAvatar';
-import sendBirdSelectors from '@sendbird/uikit-react/sendBirdSelectors';
+import sendbirdSelectors from '@sendbird/uikit-react/sendbirdSelectors';
 import ChannelSettingsContext from './ChannelSettingsContext';
 import { LocalizationContext } from '../channel/ChannelLocalizationContext';
 import { Colors, Typography } from './LabelTypography';
@@ -33,7 +33,7 @@ const EditDetails = (props) => {
   const { stringSet } = useContext(LocalizationContext);
 
   const globalStore = useSendbirdStateContext();
-  const sdkInstance = sendBirdSelectors.getSdk(globalStore);
+  const sdkInstance = sendbirdSelectors.getSdk(globalStore);
 
   const handleSubmit = useCallback(async () => {
     if (title !== '' && !inputReference.current.value) {

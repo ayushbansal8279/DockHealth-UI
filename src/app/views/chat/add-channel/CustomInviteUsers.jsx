@@ -1,7 +1,7 @@
 import React, { useState, useCallback } from 'react';
 import { useCreateChannelContext } from '@sendbird/uikit-react/CreateChannel/context';
 import useSendbirdStateContext from '@sendbird/uikit-react/useSendbirdStateContext';
-import sendBirdSelectors from '@sendbird/uikit-react/sendBirdSelectors';
+import sendbirdSelectors from '@sendbird/uikit-react/sendbirdSelectors';
 import Modal from '@sendbird/uikit-react/ui/Modal';
 import { useDispatch, useSelector } from 'react-redux';
 import { selectChannel } from 'actions/sendbird-actions';
@@ -12,7 +12,7 @@ const InviteUsers = ({ onCancel }) => {
   const { createChannel } = useCreateChannelContext();
 
   const globalStore = useSendbirdStateContext();
-  const sdkInstance = sendBirdSelectors.getSdk(globalStore);
+  const sdkInstance = sendbirdSelectors.getSdk(globalStore);
 
   const { identifier: currentUserId } = useSelector(userProfileSelector);
 

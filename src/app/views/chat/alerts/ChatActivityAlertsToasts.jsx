@@ -2,7 +2,7 @@ import React, { useState, useEffect, useCallback } from 'react';
 import isEmpty from 'ramda/src/isEmpty';
 import { ActivityAlertsToastsContainer } from 'components/activity-alerts/styled';
 import { useSendbirdStateContext } from '@sendbird/uikit-react';
-import sendBirdSelectors from '@sendbird/uikit-react/sendBirdSelectors';
+import sendbirdSelectors from '@sendbird/uikit-react/sendbirdSelectors';
 import ShipBellSound from 'components/../sounds/ship_bell_single.mp3';
 import ChatActivityAlertsToast from './ChatActivityAlertsToast';
 
@@ -15,7 +15,7 @@ const ChatActivityAlertsToasts = () => {
   const [channel, setChannel] = useState(null);
   const context = useSendbirdStateContext();
 
-  const sdkInstance = sendBirdSelectors.getSdk(context);
+  const sdkInstance = sendbirdSelectors.getSdk(context);
 
   const [audio] = useState(new Audio(ShipBellSound));
 
