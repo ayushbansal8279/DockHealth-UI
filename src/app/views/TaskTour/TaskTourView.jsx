@@ -1,7 +1,8 @@
+/* eslint-disable import/no-unresolved */
 import React, { useEffect, useState } from 'react';
 import { useHistory, useParams } from 'react-router-dom';
-import TaskTourNarrow from 'img/tour/task-tour/task-tour-narrow';
-import TaskTourWide from 'img/tour/task-tour/task-tour-wide';
+// import TaskTourNarrow from 'img/tour/task-tour/task-tour-narrow';
+// import TaskTourWide from 'img/tour/task-tour/task-tour-wide';
 import * as TaskListApi from 'api/task-list-api';
 import ViewLayout from 'components/template/ViewLayout/ViewLayout';
 import BasicLayoutHeader from 'components/template/BasicLayoutHeader/BasicLayoutHeader';
@@ -11,8 +12,8 @@ import {
   TaskTourWrapper,
   Title,
   Description,
-  TaskTourImgWide,
-  TaskTourImgNarrow,
+  // TaskTourImgWide,
+  // TaskTourImgNarrow,
   ImageWrapper,
   ButtonWrapper,
 } from './styled';
@@ -56,11 +57,11 @@ const TaskTourView = () => {
           features on your to-do list.
         </Description>
         <ImageWrapper>
-          {windowWidth > 1199 ? (
+          {/* {windowWidth > 1199 ? (
             <TaskTourImgWide src={TaskTourWide} alt="Task tour" />
           ) : (
             <TaskTourImgNarrow src={TaskTourNarrow} alt="Task tour" />
-          )}
+          )} */}
         </ImageWrapper>
         <ButtonWrapper>
           <Button
