@@ -38,6 +38,7 @@ import {
   TaskContext,
   DescriptionEditButton,
 } from '../../styled';
+import RichTextEditor from "components/RichTextEditorV2/RichTextEditor";
 
 const TaskItemDescription = ({
   task,
@@ -64,20 +65,22 @@ const TaskItemDescription = ({
     linkedTaskTemplate,
     read,
   } = task;
+  const [descriptionState, setDescriptionState] = useState(description)
+
   const { taskListIdentifier } = taskList || {};
   const { matchDescription } = searchMetaData || {};
   const previousDescription = useRef(null);
   const descriptionTextReference = useRef(null);
   const [isHovered, setIsHovered] = useState(false);
   const dispatch = useDispatch();
-  const [descriptionState, setDescriptionState] = useMentionsEditorState(
-    convertToEditorState({
-      rawText: description,
-      tokenizedText: tokenizedDescription,
-      mentions: taskMentions,
-      handleRichText: false,
-    }),
-  );
+  // const [descriptionState, setDescriptionState] = useMentionsEditorState(
+  //   convertToEditorState({
+  //     rawText: description,
+  //     tokenizedText: tokenizedDescription,
+  //     mentions: taskMentions,
+  //     handleRichText: false,
+  //   }),
+  // );
   const descriptionReference = useRef(null);
   const isCompleted = status === TaskStatus.COMPLETE;
   const isDecisionTask = task?.intentType === 'DECISION';
@@ -160,65 +163,24 @@ const TaskItemDescription = ({
     [descriptionReference],
   );
 
+
   return (
     <DescriptionBox width={width}>
       <Box display="flex" flex={1}>
-        <Description
-          // onMouseEnter={() => setIsHovered(true)}
-          // onMouseLeave={() => setIsHovered(false)}
-          ref={(reference) => {
-            if (reference) {
-              descriptionTextReference.current = reference.querySelector(
-                '.public-DraftStyleDefault-block',
-              );
-            }
-          }}
-          isCrossedOut={isCompleted}
-          isUnread={!read}
-        >
-          <DescriptionBorder disabled={disabled} isEdited={isEditing}>
-            <TextEditor
-              value={description}
-              ref={descriptionReference}
-              readOnly={disabled || !isEditing}
-              oneline
-              state={descriptionState}
-              onChange={setDescriptionState}
-              taskListIdentifier={taskListIdentifier}
-              highlightedValues={
-                matchDescription && highlightedValue?.toLowerCase().split(/\s+/)
-              }
-              keyBindingFn={handleKeyBindingFunction}
-              handleKeyCommand={handleKeyCommand}
-              onBlur={handleBlur}
-              disableMentions={disableMentions}
-            />
-            <Popper
-              anchorEl={descriptionTextReference.current}
-              placement="bottom-start"
-              open={
-                checkIfShouldDisplayTooltip(descriptionTextReference.current) &&
-                isHovered &&
-                !isEditing
-              }
-              style={{
-                zIndex: 115,
-                maxWidth:
-                  descriptionTextReference?.current?.offsetWidth || '650px',
-              }}
-              transition
-            >
-              {({ TransitionProps }) => (
-                <Fade {...TransitionProps} timeout={250}>
-                  <DescriptionTooltipWrapper>
-                    {convertedDescriptionState?.rawText}
-                  </DescriptionTooltipWrapper>
-                </Fade>
-              )}
-            </Popper>
-            {isEditButtonVisible && !isCompleted && (
-              <DescriptionEditButton active={isEditing}>
-                <IconButton
+        <RichTextEditor noStyle value={descriptionState} onChange={setDescriptionState} readOnly={!isEditing} className={isEditing ? "simple-input" : ""} onSubmit={(description) => {
+          dispatch(
+              updateTaskDescription(task, {
+                tokenizedDescription: description.trim(),
+                description: description.trim(),
+                taskMentions: [],
+              }),
+          );
+          setDescriptionState(description.trim())
+          setEditing(false)
+        }}/>
+        {!isEditing && !isCompleted && (
+            <DescriptionEditButton active={false}>
+              <IconButton
                   onClick={(event) => {
                     if (!disabled) {
                       event.stopPropagation();
@@ -226,13 +188,11 @@ const TaskItemDescription = ({
                       setEditing(true);
                     }
                   }}
-                >
-                  <EditIcon />
-                </IconButton>
-              </DescriptionEditButton>
-            )}
-          </DescriptionBorder>
-        </Description>
+              >
+                <EditIcon />
+              </IconButton>
+            </DescriptionEditButton>
+        )}
       </Box>
       <TaskItemDescriptionIndicators>
         {isCompleted && (

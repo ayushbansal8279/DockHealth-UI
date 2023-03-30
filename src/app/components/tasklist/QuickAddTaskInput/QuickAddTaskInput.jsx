@@ -16,6 +16,7 @@ import {
   ErrorLabel,
   QuickAddHint,
 } from './styled';
+import RichTextEditor from "components/RichTextEditorV2/RichTextEditor";
 
 const { DISABLED } = TASK_LIST_RESTRICTIONS_OPTIONS;
 
@@ -99,64 +100,70 @@ const QuickAddTaskInput = React.forwardRef(
       return null;
     }
 
+    const [description, setDescription] = useState("")
+
     return (
       <>
         <AddTaskInputWrapper hasError={!!error} iconColor={iconColorActive}>
-          <MentionsEditorContainer>
-            <TextEditor
-              ref={reference || quickAddTaskInputReference}
-              taskListIdentifier={taskListIdentifier}
-              disableMentions={disableMentions}
-              placeholder={
-                small
-                  ? 'Add a task'
-                  : 'Add a task and press enter on your keyboard'
-              }
-              onFocus={() => {
-                setIsFocused(true);
-                if (typeof onFocus === 'function') onFocus();
-              }}
-              onBlur={() => {
-                const { tokenizedText } = convertFromEditorStateToOutput(
-                  newTaskDescription,
-                  false,
-                );
-                setIsFocused(false);
-                if (typeof onBlur === 'function') onBlur(tokenizedText);
-              }}
-              state={newTaskDescription}
-              onChange={handleOnChange}
-              keyBindingFn={(event) => {
-                if (event.keyCode === 13) {
-                  return 'enter-command';
-                }
-                if (event.keyCode === 27) {
-                  return 'escape-command';
-                }
-              }}
-              handleKeyCommand={(command) => {
-                if (command === 'enter-command') {
-                  handleInputEnterDown();
-                  return 'handled';
-                }
+          <RichTextEditor noStyle value={description} onChange={setDescription} onSubmit={(description) => {
+            setDescription("")
+            quickAddTask({ description: description.trim(), taskListIdentifier: taskListIdentifier })
+          }} isSingleLine/>
+          {/*<MentionsEditorContainer>*/}
+          {/*  <TextEditor*/}
+          {/*    ref={reference || quickAddTaskInputReference}*/}
+          {/*    taskListIdentifier={taskListIdentifier}*/}
+          {/*    disableMentions={disableMentions}*/}
+          {/*    placeholder={*/}
+          {/*      small*/}
+          {/*        ? 'Add a task'*/}
+          {/*        : 'Add a task and press enter on your keyboard'*/}
+          {/*    }*/}
+          {/*    onFocus={() => {*/}
+          {/*      setIsFocused(true);*/}
+          {/*      if (typeof onFocus === 'function') onFocus();*/}
+          {/*    }}*/}
+          {/*    onBlur={() => {*/}
+          {/*      const { tokenizedText } = convertFromEditorStateToOutput(*/}
+          {/*        newTaskDescription,*/}
+          {/*        false,*/}
+          {/*      );*/}
+          {/*      setIsFocused(false);*/}
+          {/*      if (typeof onBlur === 'function') onBlur(tokenizedText);*/}
+          {/*    }}*/}
+          {/*    state={newTaskDescription}*/}
+          {/*    onChange={handleOnChange}*/}
+          {/*    keyBindingFn={(event) => {*/}
+          {/*      if (event.keyCode === 13) {*/}
+          {/*        return 'enter-command';*/}
+          {/*      }*/}
+          {/*      if (event.keyCode === 27) {*/}
+          {/*        return 'escape-command';*/}
+          {/*      }*/}
+          {/*    }}*/}
+          {/*    handleKeyCommand={(command) => {*/}
+          {/*      if (command === 'enter-command') {*/}
+          {/*        handleInputEnterDown();*/}
+          {/*        return 'handled';*/}
+          {/*      }*/}
 
-                if (command === 'escape-command') {
-                  resetInput();
-                  // eslint-disable-next-line no-unused-expressions
-                  (reference || quickAddTaskInputReference)?.current?.blur();
-                  return 'handled';
-                }
+          {/*      if (command === 'escape-command') {*/}
+          {/*        resetInput();*/}
+          {/*        // eslint-disable-next-line no-unused-expressions*/}
+          {/*        (reference || quickAddTaskInputReference)?.current?.blur();*/}
+          {/*        return 'handled';*/}
+          {/*      }*/}
 
-                return 'not-handled';
-              }}
-            />
-          </MentionsEditorContainer>
-          {!small && hasInputValue && isFocused && (
-            <>
-              <Spacing horizontal={4} />
-              <QuickAddHint>Press enter to save this task</QuickAddHint>
-            </>
-          )}
+          {/*      return 'not-handled';*/}
+          {/*    }}*/}
+          {/*  />*/}
+          {/*</MentionsEditorContainer>*/}
+          {/*{!small && hasInputValue && isFocused && (*/}
+          {/*  <>*/}
+          {/*    <Spacing horizontal={4} />*/}
+          {/*    <QuickAddHint>Press enter to save this task</QuickAddHint>*/}
+          {/*  </>*/}
+          {/*)}*/}
         </AddTaskInputWrapper>
         {error && <ErrorLabel>{error}</ErrorLabel>}
       </>

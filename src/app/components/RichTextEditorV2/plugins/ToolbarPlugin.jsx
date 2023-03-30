@@ -681,15 +681,6 @@ export default function ToolbarPlugin() {
 
     return (
         <div className="toolbar" ref={toolbarRef} style={{ position: "relative" }}>
-            <button style={{ position: "absolute", bottom: 0, right: 0 }} onClick={() => {
-                const editorState = editor.getEditorState();
-                const json = editorState.toJSON();
-                console.log("editorState", json);
-                editor.update(() => {
-                    const markdown = $convertToMarkdownString(TRANSFORMERS)
-                    console.log("markdown", markdown);
-                })
-            }}>Export</button>
             <button
                 disabled={!canUndo}
                 onClick={() => {

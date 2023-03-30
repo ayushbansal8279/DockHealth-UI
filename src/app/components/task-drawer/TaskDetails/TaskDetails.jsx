@@ -98,7 +98,7 @@ const TaskDetails = ({ readOnly, disableMentions }) => {
 
   return (
     <DetailsContainer>
-        <RichTextEditor onChange={onChangeDetailsEditor} value={rawTextState} taskListIdentifier={taskListIdentifier} />
+        <RichTextEditor onChange={onChangeDetailsEditor} value={rawTextState} textArea isToolbarActive />
       {/*<CustomTextEditor*/}
       {/*  key={selectedTask?.identifier}*/}
       {/*  empty={isEmptyDetailsState}*/}

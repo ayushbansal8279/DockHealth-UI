@@ -23,6 +23,7 @@ import {
   CommentActionsSection,
   EditCommentButton,
 } from './styled';
+import RichTextEditor from "components/RichTextEditorV2/RichTextEditor";
 
 const Comment = ({
   comment,
@@ -101,32 +102,7 @@ const Comment = ({
       <CommentContainer isEditing={isEditing}>
         <CommentContent>
           <CommentText>
-            <TextEditor
-              showToolbar
-              ref={commentEditorReference}
-              taskListIdentifier={taskListIdentifier}
-              disableMentions={disableMentions}
-              readOnly={!isEditing}
-              withEditedLabel={dateCreated !== dateUpdated}
-              state={commentState}
-              onChange={setCommentState}
-              keyBindingFn={(event) => {
-                if (event.keyCode === 13 && event.shiftKey) {
-                  return;
-                }
-                if (event.keyCode === 13) {
-                  return 'enter-command';
-                }
-              }}
-              handleKeyCommand={(command) => {
-                if (command === 'enter-command') {
-                  onCommentEdited();
-                  return 'handled';
-                }
-
-                return 'not-handled';
-              }}
-            />
+            <RichTextEditor noStyle textArea readOnly value={commentContent}/>
           </CommentText>
           <CommentDetails>{commentDetails}</CommentDetails>
         </CommentContent>

@@ -12,6 +12,7 @@ import {
   AddCommentLoaderContainer,
   AddCommentInputContainer,
 } from './styled';
+import RichTextEditor from "components/RichTextEditorV2/RichTextEditor";
 
 const AddComment = ({
   autoFocus,
@@ -77,45 +78,55 @@ const AddComment = ({
     }
   }, [autoFocus]);
 
+  const [description, setDescription] = useState(null)
+
+  const handleSubmit = (...varargs) => {
+    console.log("varargs", varargs, description);
+    if (description) {
+      onAdd(description)
+    }
+  }
+
   return (
     <AddCommentContainer ref={addCommentContainerReference}>
       <UserAvatar user={currentUser} size={34} />
       <AddCommentInputContainer isFocused={isFocused}>
-        <TextEditor
-          showToolbar
-          ref={addCommentReference}
-          taskListIdentifier={taskListIdentifier}
-          disableMentions={disableMentions}
-          placeholder="Leave a comment and press enter on your keyboard to save"
-          fullHeight
-          getFocusFromParent={isFocused}
-          onFocus={() => {
-            setIsFocused(true);
-          }}
-          onBlur={() => {
-            saveComment();
-            setIsFocused(false);
-          }}
-          state={commentState}
-          onChange={onCommentChange}
-          keyBindingFn={(event) => {
-            if (event.keyCode === 13 && event.shiftKey) {
-              return undefined;
-            }
-            if (event.keyCode === 13) {
-              return 'enter-command';
-            }
-            return undefined;
-          }}
-          handleKeyCommand={(command) => {
-            if (command === 'enter-command') {
-              addCommentReference.current.blur();
-              return 'handled';
-            }
+        <RichTextEditor noStyle textArea isToolbarActive onSubmit={handleSubmit} value={description} onChange={setDescription}/>
+        {/*<TextEditor*/}
+        {/*  showToolbar*/}
+        {/*  ref={addCommentReference}*/}
+        {/*  taskListIdentifier={taskListIdentifier}*/}
+        {/*  disableMentions={disableMentions}*/}
+        {/*  placeholder="Leave a comment and press enter on your keyboard to save"*/}
+        {/*  fullHeight*/}
+        {/*  getFocusFromParent={isFocused}*/}
+        {/*  onFocus={() => {*/}
+        {/*    setIsFocused(true);*/}
+        {/*  }}*/}
+        {/*  onBlur={() => {*/}
+        {/*    saveComment();*/}
+        {/*    setIsFocused(false);*/}
+        {/*  }}*/}
+        {/*  state={commentState}*/}
+        {/*  onChange={onCommentChange}*/}
+        {/*  keyBindingFn={(event) => {*/}
+        {/*    if (event.keyCode === 13 && event.shiftKey) {*/}
+        {/*      return undefined;*/}
+        {/*    }*/}
+        {/*    if (event.keyCode === 13) {*/}
+        {/*      return 'enter-command';*/}
+        {/*    }*/}
+        {/*    return undefined;*/}
+        {/*  }}*/}
+        {/*  handleKeyCommand={(command) => {*/}
+        {/*    if (command === 'enter-command') {*/}
+        {/*      addCommentReference.current.blur();*/}
+        {/*      return 'handled';*/}
+        {/*    }*/}
 
-            return 'not-handled';
-          }}
-        />
+        {/*    return 'not-handled';*/}
+        {/*  }}*/}
+        {/*/>*/}
       </AddCommentInputContainer>
       {isAddingComment && (
         <AddCommentLoaderContainer>
