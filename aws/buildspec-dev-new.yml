@@ -42,8 +42,7 @@ phases:
     commands:
       - aws s3 cp --recursive --acl public-read ./dist s3://$DeployBucketName/
       - aws s3 cp --acl public-read --cache-control='max-age=0, no-cache, no-store, must-revalidate' ./dist/index.html s3://$DeployBucketName/
-      - aws s3 cp --acl public-read --cache-control='max-age=0, no-cache, no-store, must-revalidate' ./dist/bundle.js s3://$DeployBucketName/
-      - aws cloudfront create-invalidation --distribution-id $CloudFrontDistributionID --paths /index.html /static /assets /*.js /bundle.js
+      - aws cloudfront create-invalidation --distribution-id $CloudFrontDistributionID --paths /index.html /static /assets /*.js
 artifacts:
   files:
     - '**/*'
