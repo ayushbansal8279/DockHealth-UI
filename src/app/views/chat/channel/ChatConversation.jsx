@@ -1,5 +1,5 @@
 import React, { useState, useContext } from 'react';
-import withSendBird from '@sendbird/uikit-react/withSendBird';
+import withSendbird from '@sendbird/uikit-react/withSendbird';
 import { ChannelProvider } from '@sendbird/uikit-react/Channel/context';
 import ChannelUI from '@sendbird/uikit-react/Channel/components/ChannelUI';
 import ChatChannelSettings from '../channel-settings/ChatChannelSettings';
@@ -36,4 +36,4 @@ const ChatChannelConversation = (props) => {
   );
 };
 
-export default withSendBird(ChatChannelConversation);
+export default withSendbird(ChatChannelConversation);

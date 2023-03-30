@@ -2,7 +2,7 @@ import React, { useMemo, useState } from 'react';
 import { useHistory } from 'react-router-dom';
 import ViewLayout from 'components/template/ViewLayout/ViewLayout';
 import BasicLayoutHeader from 'components/template/BasicLayoutHeader/BasicLayoutHeader';
-import withSendBird from '@sendbird/uikit-react/withSendBird';
+import withSendbird from '@sendbird/uikit-react/withSendbird';
 import { ChannelListProvider } from '@sendbird/uikit-react/ChannelList/context';
 import { useSelector } from 'react-redux';
 import { selectedChatChannelSelector } from 'selectors/sendbird-selectors';
@@ -48,4 +48,4 @@ const ChatView = () => {
   );
 };
 
-export default withSendBird(ChatView);
+export default withSendbird(ChatView);
