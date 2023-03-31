@@ -85,7 +85,7 @@ const TaskItemLongText = ({
         // eslint-disable-next-line react/no-unstable-nested-components
         content={({ closePopover }) => (
           <Box
-            width="450px"
+            width="100%"
             height="100%"
             alignItems="center"
             style={{ padding: '5px' }}

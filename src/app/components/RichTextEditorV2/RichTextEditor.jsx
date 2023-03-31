@@ -126,7 +126,7 @@ export default function Editor({ value = null, isSingleLine, className, noStyle 
                 MentionNode
             ]
         }}>
-            <div className={`${noStyle ? "noStyle" : ("editor-container" + (textArea ? " editor-container-textarea" : ""))} ${className}`}
+            <div className={`${noStyle ? "noStyle" : ("editor-container" + (textArea ? " editor-container-textarea" : ""))} ${className} ${isSingleLine ? "single-line" : ""}`}
             onClick={(e) => { e.stopPropagation() }}>
                 {isToolbarActive && <ToolbarPlugin />}
                 <div className="editor-inner">

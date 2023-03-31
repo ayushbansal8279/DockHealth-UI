@@ -167,7 +167,7 @@ const TaskItemDescription = ({
   return (
     <DescriptionBox width={width}>
       <Box display="flex" flex={1}>
-        <RichTextEditor noStyle value={descriptionState} onChange={setDescriptionState} readOnly={!isEditing} className={isEditing ? "simple-input" : ""} onSubmit={(description) => {
+        <RichTextEditor noStyle isSingleLine value={descriptionState} onChange={setDescriptionState} readOnly={!isEditing} className={isEditing ? "simple-input" : ""} onSubmit={(description) => {
           dispatch(
               updateTaskDescription(task, {
                 tokenizedDescription: description.trim(),

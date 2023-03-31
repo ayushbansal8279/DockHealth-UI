@@ -32,6 +32,7 @@ import {
   ButtonContainer,
   ButtonWrapper,
 } from './styled';
+import RichTextEditor from "components/RichTextEditorV2/RichTextEditor";
 
 const PatientNotes = () => {
   const addNoteInputReference = useRef(null);
@@ -68,7 +69,7 @@ const PatientNotes = () => {
     [],
   );
 
-  const [noteState, setNoteState] = useMentionsEditorState();
+  const [noteState, setNoteState] = useState("");
   const onNoteChange = (state) => setNoteState(state);
   // eslint-disable-next-line react-hooks/exhaustive-deps
   const clearNote = useCallback(
@@ -170,6 +171,12 @@ const PatientNotes = () => {
     );
   };
 
+  const handleNoteChange = (value) => {
+    setNoteState(value)
+    setEditMode(true)
+    // dispatch(addPatientNote(patientIdentifier, value))
+  }
+
   return (
     <PatientNotesWrapper>
       {isFetching ? (
@@ -182,44 +189,73 @@ const PatientNotes = () => {
             </PinnedNotesWrapper>
           )}
           {unpinnedNotes?.sort(descend(prop('dateUpdated')))?.map(renderNote)}
-          <ClickAwayListener onClickAway={handleClickAway}>
-            <RichTextInputContainer>
-              <TextEditor
-                getFocusFromParent={editMode}
-                showToolbar
-                ref={addNoteInputReference}
-                taskListIdentifier={patientIdentifier}
-                disableMentions
-                placeholder="Leave a note and press enter on your keyboard to save"
-                state={noteState}
-                onChange={onNoteChange}
-                onFocus={handleFocus}
-              />
-              {editMode && (
-                <ButtonContainer>
-                  <ButtonWrapper>
-                    <Button
-                      color="secondary"
-                      variant="secondary"
-                      onClick={handleCancel}
-                      size="small"
-                    >
-                      Cancel
-                    </Button>
-                    <Spacing horizontal={4} />
-                    <Button
-                      color="primary"
-                      disabled={isEmpty}
-                      size="small"
-                      onClick={saveNote}
-                    >
-                      Save
-                    </Button>
-                  </ButtonWrapper>
-                </ButtonContainer>
-              )}
-            </RichTextInputContainer>
-          </ClickAwayListener>
+          <RichTextEditor isToolbarActive onChange={handleNoteChange} value={noteState}/>
+          {editMode && (
+            <ButtonContainer>
+              <ButtonWrapper>
+                <Button
+                  color="secondary"
+                  variant="secondary"
+                  onClick={() => {
+                    setEditMode(false)
+                    setNoteState("")
+                  }}
+                  size="small"
+                >
+                  Cancel
+                </Button>
+                <Spacing horizontal={4} />
+                <Button
+                  color="primary"
+                  disabled={isEmpty}
+                  size="small"
+                  onClick={() => {
+                    dispatch(addPatientNote(patientIdentifier, noteState))
+                  }}
+                >
+                  Save
+                </Button>
+              </ButtonWrapper>
+            </ButtonContainer>
+          )}
+          {/*<ClickAwayListener onClickAway={handleClickAway}>*/}
+          {/*  <RichTextInputContainer>*/}
+          {/*    <TextEditor*/}
+          {/*      getFocusFromParent={editMode}*/}
+          {/*      showToolbar*/}
+          {/*      ref={addNoteInputReference}*/}
+          {/*      taskListIdentifier={patientIdentifier}*/}
+          {/*      disableMentions*/}
+          {/*      placeholder="Leave a note and press enter on your keyboard to save"*/}
+          {/*      state={noteState}*/}
+          {/*      onChange={onNoteChange}*/}
+          {/*      onFocus={handleFocus}*/}
+          {/*    />*/}
+          {/*    {editMode && (*/}
+          {/*      <ButtonContainer>*/}
+          {/*        <ButtonWrapper>*/}
+          {/*          <Button*/}
+          {/*            color="secondary"*/}
+          {/*            variant="secondary"*/}
+          {/*            onClick={handleCancel}*/}
+          {/*            size="small"*/}
+          {/*          >*/}
+          {/*            Cancel*/}
+          {/*          </Button>*/}
+          {/*          <Spacing horizontal={4} />*/}
+          {/*          <Button*/}
+          {/*            color="primary"*/}
+          {/*            disabled={isEmpty}*/}
+          {/*            size="small"*/}
+          {/*            onClick={saveNote}*/}
+          {/*          >*/}
+          {/*            Save*/}
+          {/*          </Button>*/}
+          {/*        </ButtonWrapper>*/}
+          {/*      </ButtonContainer>*/}
+          {/*    )}*/}
+          {/*  </RichTextInputContainer>*/}
+          {/*</ClickAwayListener>*/}
         </>
       )}
     </PatientNotesWrapper>

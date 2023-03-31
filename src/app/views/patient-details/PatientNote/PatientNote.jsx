@@ -27,6 +27,7 @@ import {
   ButtonContainer,
   ButtonWrapper,
 } from './styled';
+import RichTextEditor from "components/RichTextEditorV2/RichTextEditor";
 
 const PatientNote = ({
   note,
@@ -148,19 +149,22 @@ const PatientNote = ({
           <UserAvatar user={creator} />
           <Box m={2} />
           <PatientNoteInformation>
-            <TextEditor
-              getFocusFromParent={isEdited}
-              readOnly={!isEdited}
-              showToolbar
-              taskListIdentifier={patientNoteIdentifier}
-              disableMentions
-              ref={editNoteInputReference}
-              placeholder="Leave a note and press enter on your keyboard to save"
-              isDrawerEditor
-              onFocus={handleFocus}
-              state={noteState}
-              onChange={(newState) => setNoteState(newState)}
-            />
+            <RichTextEditor readOnly={!isEdited} noStyle={!isEdited} value={description} onChange={(value) => {
+              setNoteState(value)
+            }} />
+            {/*<TextEditor*/}
+            {/*  getFocusFromParent={isEdited}*/}
+            {/*  readOnly={!isEdited}*/}
+            {/*  showToolbar*/}
+            {/*  taskListIdentifier={patientNoteIdentifier}*/}
+            {/*  disableMentions*/}
+            {/*  ref={editNoteInputReference}*/}
+            {/*  placeholder="Leave a note and press enter on your keyboard to save"*/}
+            {/*  isDrawerEditor*/}
+            {/*  onFocus={handleFocus}*/}
+            {/*  state={noteState}*/}
+            {/*  onChange={(newState) => setNoteState(newState)}*/}
+            {/*/>*/}
             <PatientNoteAuthor>
               {creator.firstName} {creator.lastName}{' '}
               {moment(dateUpdated).format('h:mma M/DD/YY')}
@@ -191,7 +195,13 @@ const PatientNote = ({
                 color="primary"
                 disabled={isEmpty}
                 size="small"
-                onClick={updateNote}
+                onClick={() => {
+                  onSave({
+                    ...note,
+                    description: noteState,
+                  })
+                  setIsEdited(false)
+                }}
               >
                 Save
               </Button>
