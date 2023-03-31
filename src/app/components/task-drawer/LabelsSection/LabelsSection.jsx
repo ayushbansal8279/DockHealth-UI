@@ -10,10 +10,7 @@ import { Chip } from '@mui/material';
 import Autocomplete from 'components/common/Autocomplete/Autocomplete';
 import { DrawerFieldEnum } from 'helpers/task-drawer-helpers';
 import { useSelector } from 'react-redux';
-import {
-  selectedTaskSelector,
-  taskDrawerFocusFieldSelector,
-} from 'selectors/task-drawer-selectors';
+import { taskDrawerFocusFieldSelector } from 'selectors/task-drawer-selectors';
 import { useForm, FormProvider } from 'react-hook-form';
 import usePrevious from 'hooks/use-previous';
 import initializeLabelsSectionHooks from './hooks';
@@ -86,7 +83,7 @@ const renderOption = ({
   </OptionContainer>
 );
 
-const LabelsSection = ({ onTaskUpdate }) => {
+const LabelsSection = ({ selectedTask, onTaskUpdate }) => {
   const formMethods = useForm();
   const {
     labels,
@@ -100,8 +97,7 @@ const LabelsSection = ({ onTaskUpdate }) => {
     onTaskUpdate,
     formMethods,
   });
-  const { labels: selectedLabelsFromStore = [] } =
-    useSelector(selectedTaskSelector) || {};
+  const { labels: selectedLabelsFromStore = [] } = selectedTask || {};
   const [inputState, setInputState] = useState();
   const [currentEditableOption, setCurrentEditableOption] = useState(null);
   const [selectedLabels, setSelectedLabels] = useState([]);

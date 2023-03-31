@@ -66,6 +66,7 @@ const PatientSection = ({
   }, [autofocus, patientInputReference]);
 
   const savePatient = useCallback(
+    // eslint-disable-next-line sonarjs/cognitive-complexity
     async (patientToSave) => {
       try {
         const onSavePatient = async (skipModals) => {
@@ -185,23 +186,20 @@ const PatientSection = ({
     [],
   );
 
-  const fetchPatientsWithDebounce = useCallback(
-    debounce((value) => {
-      fetchPatients(value).then(() => {
-        setIsLoadingPatients(false);
-      });
-    }, 750),
-    [],
-  );
+  const fetchPatientsWithDebounce = debounce((value) => {
+    fetchPatients(value).then(() => {
+      setIsLoadingPatients(false);
+    });
+  }, 750);
 
   const onPatientInputChange = useCallback(
     (value) => {
-      if (value !== '') {
-        setIsLoadingPatients(true);
-        fetchPatientsWithDebounce(value);
-      } else {
+      if (value === '') {
         fetchPatientsWithDebounce.cancel();
         setPatients([]);
+      } else {
+        setIsLoadingPatients(true);
+        fetchPatientsWithDebounce(value);
       }
     },
     [fetchPatientsWithDebounce],

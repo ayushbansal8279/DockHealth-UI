@@ -29,7 +29,6 @@ import TaskDrawerEmailBodyContainer from '../EmailBody/EmailBody';
 import ReminderSection from '../ReminderSection/ReminderSection';
 import PatientSection from '../PatientSection/PatientSection';
 import initializeTaskDrawerHooks from './hooks';
-import existingUserTaskDrawerTourHooks from './existing-user-tour-hooks';
 import AssignedToSection from '../AssignedToSection/AssignedToSection';
 import DueDateSection from '../DueDateSection/DueDateSection';
 import CustomFieldsSection from '../CustomFieldsSection/CustomFieldsSection';
@@ -38,7 +37,7 @@ import SubtasksSection from '../SubtasksSection/SubtasksSection';
 import TaskDetails from '../TaskDetails/TaskDetails';
 import {
   TaskDrawerContainer,
-  // TaskDrawerBackground,
+  TaskDrawerBackground,
   styleTaskDrawerContainer,
   styleFullRow,
   styleEmailRow,
@@ -57,17 +56,16 @@ import {
 
 const { DISABLED, READ_ONLY } = SINGLE_TASK_RESTRICTIONS_OPTIONS;
 
-const TaskDrawerContent = (props) => {
-  const {
-    isInbox,
-    onTaskUpdate = () => {},
-    onTaskCreation = () => {},
-    onTaskDelete = () => {},
-    disabledFields = [],
-    fromFirstAddTask = false,
-    hideTour = false,
-    hideCloseIcon,
-  } = props;
+const TaskDrawerContent = ({
+  isInbox,
+  onTaskUpdate = () => {},
+  onTaskCreation = () => {},
+  onTaskDelete = () => {},
+  disabledFields = [],
+  fromFirstAddTask = false,
+  hideTour = false,
+  hideCloseIcon,
+}) => {
   const {
     closeTaskDrawer: handleCloseTaskDrawer,
     handleUpdateTask,
@@ -95,21 +93,6 @@ const TaskDrawerContent = (props) => {
     onTaskCreation,
     onTaskDelete,
     fromFirstAddTask,
-    hideTour,
-  });
-
-  const {
-    taskMenuReference,
-    dueDateSectionReference,
-    statusSectionReference,
-    labelsSectionReference,
-    commentsSectionReference,
-    historySectionReference,
-    renderExistingUserTourPopover,
-  } = existingUserTaskDrawerTourHooks({
-    taskDrawerOpen,
-    fromFirstAddTask,
-    taskDrawerReference,
     hideTour,
   });
 
@@ -174,9 +157,6 @@ const TaskDrawerContent = (props) => {
             onDelete={onDelete}
             onDuplicate={onDuplicate}
             closeTaskDrawer={closeTaskDrawer}
-            setTourTaskMenuReference={(element) => {
-              taskMenuReference.current = element;
-            }}
           />
         </Grid>
         {selectedTask && <TaskDrawerDivider />}
@@ -241,6 +221,7 @@ const TaskDrawerContent = (props) => {
           <TaskDescription
             readOnly={restrictions?.description === READ_ONLY}
             disableMentions={restrictMentions}
+            selectedTask={selectedTask}
           />
         </Grid>
         {selectedTask?.sourceMessage && (
@@ -275,13 +256,15 @@ const TaskDrawerContent = (props) => {
           <AssignedToSection
             onSave={handleUpdateTask}
             disabled={restrictions?.assigment === READ_ONLY}
+            selectedTask={selectedTask}
           />
         </Grid>
         {!taskStartDateDisabled && (
           <Grid item xs={12} m={6} style={styleLeftColumn(isMobile)}>
-            <div ref={dueDateSectionReference}>
+            <div>
               <StartDateSection
                 disabled={restrictions?.startDate === DISABLED}
+                selectedTask={selectedTask}
               />
             </div>
           </Grid>
@@ -292,8 +275,11 @@ const TaskDrawerContent = (props) => {
           </Grid>
         )}
         <Grid item xs={12} m={6} style={styleLeftColumn(isMobile)}>
-          <div ref={dueDateSectionReference}>
-            <DueDateSection disabled={restrictions?.dueDate === DISABLED} />
+          <div>
+            <DueDateSection
+              disabled={restrictions?.dueDate === DISABLED}
+              selectedTask={selectedTask}
+            />
           </div>
         </Grid>
         <Grid item xs={12} m={6} style={styleRightColumn(isMobile)}>
@@ -301,6 +287,7 @@ const TaskDrawerContent = (props) => {
             <ReminderSection
               onSave={handleUpdateTask}
               disabled={restrictions?.reminder === DISABLED}
+              selectedTask={selectedTask}
             />
           )}
         </Grid>
@@ -308,13 +295,15 @@ const TaskDrawerContent = (props) => {
           <PrioritySection
             onTaskUpdate={onTaskUpdate}
             disabled={restrictions?.priority === DISABLED}
+            selectedTask={selectedTask}
           />
         </Grid>
         <Grid item xs={12} m={6} style={styleRightColumn(isMobile)}>
-          <div ref={statusSectionReference}>
+          <div>
             <StatusSection
               onTaskUpdate={onTaskUpdate}
               disabled={restrictions?.status === DISABLED}
+              selectedTask={selectedTask}
             />
           </div>
         </Grid>
@@ -327,8 +316,11 @@ const TaskDrawerContent = (props) => {
         {restrictions?.labels !== DISABLED &&
           taskLabelsLocation === 'default' && (
             <Grid item xs={12} style={styleFullRow(isMobile)}>
-              <div ref={labelsSectionReference}>
-                <LabelsSection onTaskUpdate={onTaskUpdate} />
+              <div>
+                <LabelsSection
+                  onTaskUpdate={onTaskUpdate}
+                  selectedTask={selectedTask}
+                />
               </div>
             </Grid>
           )}
@@ -337,17 +329,21 @@ const TaskDrawerContent = (props) => {
             <AttachmentsSection
               restrictions={restrictions?.attachments}
               disabled={restrictions?.attachments === DISABLED}
+              selectedTask={selectedTask}
             />
           </Grid>
         )}
         <Grid item xs={12} style={styleCommentRow}>
-          <div ref={commentsSectionReference}>
-            <CommentSection />
+          <div>
+            <CommentSection selectedTask={selectedTask} />
           </div>
         </Grid>
         {selectedTask && !isSubtask && !subTasksDisabled && (
           <Grid item xs={12}>
-            <SubtasksSection restrictions={restrictions?.subtasks} />
+            <SubtasksSection
+              restrictions={restrictions?.subtasks}
+              selectedTask={selectedTask}
+            />
           </Grid>
         )}
         {restrictions?.dependencies !== DISABLED &&
@@ -355,7 +351,7 @@ const TaskDrawerContent = (props) => {
           !isSubtask &&
           (isTemplateTask || checkIfBundleTask(selectedTask)) && (
             <Grid item xs={12}>
-              <DependenciesSection />
+              <DependenciesSection selectedTask={selectedTask} />
             </Grid>
           )}
         {restrictions?.customFields !== DISABLED && (
@@ -366,8 +362,11 @@ const TaskDrawerContent = (props) => {
         {restrictions?.labels !== DISABLED &&
           taskLabelsLocation === 'bottom' && (
             <Grid item xs={12} style={styleFullRow(isMobile)}>
-              <div ref={labelsSectionReference}>
-                <LabelsSection onTaskUpdate={onTaskUpdate} />
+              <div>
+                <LabelsSection
+                  onTaskUpdate={onTaskUpdate}
+                  selectedTask={selectedTask}
+                />
               </div>
             </Grid>
           )}
@@ -377,13 +376,15 @@ const TaskDrawerContent = (props) => {
         <Grid container item xs={12} style={styleFullRow(isMobile)}>
           <div>
             <Spacing horizontal={5} />
-            <span ref={historySectionReference} />
+            <span />
           </div>
-          <HistorySection />
+          <HistorySection
+            selectedTask={selectedTask}
+            selectedTaskIdentifier={selectedTask?.identifier}
+          />
         </Grid>
       )}
-      {renderExistingUserTourPopover()}
-      {/* <TaskDrawerBackground onClick={closeTaskDrawer} /> */}
+      {taskDrawerOpen && <TaskDrawerBackground onClick={closeTaskDrawer} />}
       <WatchersPopover
         open={isSubscriptionListOpen}
         anchorEl={watchersReference.current}

@@ -225,7 +225,8 @@ const TopSection = ({
             >
               <MoreHoriz
                 ref={(element) => {
-                  if (element) setTourTaskMenuReference(element);
+                  if (element && setTourTaskMenuReference)
+                    setTourTaskMenuReference(element);
                 }}
                 color="primary"
               />

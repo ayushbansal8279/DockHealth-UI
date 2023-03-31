@@ -16,7 +16,7 @@ import {
   DownloadAllLink,
 } from './styled';
 
-const AttachmentsSection = ({ disabled = false }) => {
+const AttachmentsSection = ({ selectedTask, disabled = false }) => {
   const {
     attachmentsSources,
     currentTaskAttachments,
@@ -31,7 +31,7 @@ const AttachmentsSection = ({ disabled = false }) => {
     previewedAttachment,
     dropzone: { getRootProps, getInputProps, isDragActive },
     downloadAllFiles,
-  } = initializeAttachmentsSectionHooks();
+  } = initializeAttachmentsSectionHooks(selectedTask);
 
   return (
     <AttachmentsContainer isDragActive={isDragActive}>
