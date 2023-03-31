@@ -52,6 +52,11 @@ h1 {
     border: 1px solid rgb(193, 204, 218);
 }
 
+.single-line {
+    max-height: 1.4rem;
+    overflow: hidden;
+}
+
 .editor-container-textarea .editor-input {
     min-height: 150px;
 }
@@ -59,7 +64,7 @@ h1 {
 .noStyle {
     width: 100%;
     height: 100%;
-    padding: 4px 8px;
+    /*padding: 4px 8px;*/
 }
 
 .noStyle .editor-input {

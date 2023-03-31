@@ -31,6 +31,7 @@ const PatientCardNote = ({ note, patientName, index }) => {
     return (
       <>
         <NoteDescription>
+            woah
           <TextEditor
             readOnly
             disableMentions
