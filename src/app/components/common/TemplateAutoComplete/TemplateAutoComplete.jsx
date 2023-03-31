@@ -3,7 +3,7 @@ import Autocomplete from '@material-ui/lab/Autocomplete';
 import CircularProgress from '@material-ui/core/CircularProgress';
 import { withStyles } from '@material-ui/core/styles';
 import { matchSorter } from 'match-sorter';
-import { getAllTemplates } from 'api/template-api';
+import { getAllTemplateNames } from 'api/template-api';
 import Input from '../Input/Input';
 
 const filterOptions = (options, { inputValue }) =>
@@ -43,7 +43,7 @@ const TemplateAutoComplete = ({
       return undefined;
     }
 
-    getAllTemplates().then(data => {
+    getAllTemplateNames(type).then(data => {
       if (active) {
         setTemplates(
           data

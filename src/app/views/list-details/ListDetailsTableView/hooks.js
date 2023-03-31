@@ -17,7 +17,6 @@ import { organizationCustomFieldsSelector } from 'selectors/organization-selecto
 import {
   completedTasksIsFetchingSelector,
   tasksIsFetchingSelector,
-  groupCompletedTasksSelector,
   groupTasksSelector,
   taskDetailsSortSelector,
   taskCountersSelector,
@@ -65,7 +64,6 @@ const initializeListDetailsViewHooks = () => {
     completedTasksIsFetchingSelector,
   );
   const groupedTasks = useSelector(groupTasksSelector);
-  const completedGroupedTasks = useSelector(groupCompletedTasksSelector);
   const taskCounters = useSelector(taskCountersSelector);
   const selectedFilters = useSelector(selectedFiltersInMegaFilterSelector);
 
@@ -357,9 +355,9 @@ const initializeListDetailsViewHooks = () => {
   const completedTasks = useMemo(
     () =>
       selectedTab === TaskListTabName.COMPLETE
-        ? completedGroupedTasks?.tasks || []
+        ? groupedTasks?.flatMap(({ tasks }) => tasks) || []
         : [],
-    [completedGroupedTasks, selectedTab],
+    [groupedTasks, selectedTab],
   );
 
   const bulkEditTasks = useMemo(

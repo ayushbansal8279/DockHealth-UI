@@ -33,7 +33,6 @@ const TopSection = ({
   onDelete,
   onDuplicate,
   closeTaskDrawer,
-  setTourTaskMenuReference,
   hideCloseIcon,
   handleCopyLink,
 }) => {
@@ -220,12 +219,7 @@ const TopSection = ({
               options={allowedOptions}
               customButtonComponent={IconButton}
             >
-              <MoreHoriz
-                ref={element => {
-                  if (element) setTourTaskMenuReference(element);
-                }}
-                color="primary"
-              />
+              <MoreHoriz color="primary" />
             </OptionsMenu>
           )}
         {!hideCloseIcon && (
