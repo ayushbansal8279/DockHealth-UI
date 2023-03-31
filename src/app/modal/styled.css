@@ -17,3 +17,7 @@
   max-height: 100vh;
   outline: none;
 }
+
+.bring-to-front {
+  z-index: 7000;
+}
