@@ -15,15 +15,15 @@ import moment from 'moment';
 // import { EditorState } from 'draft-js';
 import { useMentionsEditorState } from 'components/common/TextEditor/use-mentions-editor-state';
 // import { createMentionEntities } from 'components/common/TextEditor/create-mention-entities';
-import * as TaskApi from 'api/task-api';
+// import * as TaskApi from 'api/task-api';
 import {
   partialUpdateTask,
   storeAsCurrentTask,
   deleteTask,
   duplicateTask,
-  markTaskAsRead,
+  // markTaskAsRead,
 } from 'actions/task-actions';
-import { UPDATE_TASK_SUCCESS } from 'actions/action-types';
+// import { UPDATE_TASK_SUCCESS } from 'actions/action-types';
 import { openDrawer, closeDrawer } from 'actions/task-drawer-actions';
 import * as WorkflowDrawerActions from 'actions/workflow-drawer-actions';
 import {
@@ -108,10 +108,10 @@ const initializeTaskDrawerHooks = ({
         taskIdentifier !== previousTaskIdentifierValue.current) ||
       (subtasks?.length === 0 && subTasksCount > 0)
     ) {
-      TaskApi.getTaskDetails(taskIdentifier).then((task) => {
-        setSelectedParentTask(task.parentTask || null);
-        dispatch({ type: UPDATE_TASK_SUCCESS, task });
-      });
+      // TaskApi.getTaskDetails(taskIdentifier).then((task) => {
+      //   setSelectedParentTask(task.parentTask || null);
+      //   dispatch({ type: UPDATE_TASK_SUCCESS, task });
+      // });
     }
     previousTaskIdentifierValue.current = taskIdentifier;
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -151,7 +151,7 @@ const initializeTaskDrawerHooks = ({
       taskListIdentifier &&
       selectedTask?.taskIdentifier
     ) {
-      dispatch(markTaskAsRead(selectedTask?.taskIdentifier));
+      // dispatch(markTaskAsRead(selectedTask?.taskIdentifier));
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [selectedTaskIdentifier, taskDrawerOpen]);
