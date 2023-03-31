@@ -3,15 +3,13 @@ import { useEffect, useState, useCallback, useRef, useReducer } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { useDropzone } from 'react-dropzone';
 import isEmpty from 'ramda/src/isEmpty';
-import { selectedTaskSelector } from 'selectors/task-drawer-selectors';
 import { removeTaskAttachment, addTaskAttachment } from 'actions/task-actions';
 import { useBoolean } from 'hooks/useBoolean';
 import { userProfileSelector } from 'selectors/user-selectors';
 import { getMemoTaskAttachment } from './helpers';
 
-const initializeAttachmentsSectionHooks = () => {
+const initializeAttachmentsSectionHooks = (selectedTask) => {
   const attachmentFileInputReference = useRef(null);
-  const selectedTask = useSelector(selectedTaskSelector);
   const { attachments = [], taskIdentifier: selectedTaskIdentifier } =
     selectedTask || {};
   const currentUser = useSelector(userProfileSelector);

@@ -15,7 +15,7 @@ import {
   Title,
 } from './styled';
 
-const CommentSection = () => {
+const CommentSection = ({ selectedTask }) => {
   const {
     comments,
     currentUser,
@@ -24,7 +24,7 @@ const CommentSection = () => {
     addComment,
     taskListIdentifier,
     taskDrawerFocusField,
-  } = initializeCommentSectionHooks();
+  } = initializeCommentSectionHooks(selectedTask);
 
   const { orgUserRole } = useSelector(userProfileSelector);
   const restrictions = SINGLE_TASK_RESTRICTIONS_PROFILES[orgUserRole];
