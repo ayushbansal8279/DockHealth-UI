@@ -23,7 +23,6 @@ const initialState = {
   historyError: null,
   currentTaskHistory: null,
   selectedTask: null,
-  selectedTaskId: null,
   addingNewTask: false,
   open: false,
   focusField: null,
@@ -80,10 +79,6 @@ const TaskReducer = (state = initialState, action) => {
       return {
         ...state,
         selectedTask: action.task,
-        selectedTaskId:
-          action.task === undefined || action.task === null
-            ? null
-            : action.task.taskIdentifier,
         error: false,
       };
     }
@@ -99,7 +94,6 @@ const TaskReducer = (state = initialState, action) => {
       return {
         ...state,
         selectedTask: action.initialTaskState,
-        selectedTaskId: action.initialTaskState.taskIdentifier || null,
         open: true,
       };
     }
@@ -139,7 +133,6 @@ const TaskReducer = (state = initialState, action) => {
         open,
         focusField,
         selectedTask: task,
-        selectedTaskId: task === undefined ? null : task.taskIdentifier,
       };
     }
     case GET_TASK_CUSTOM_FIELDS: {
