@@ -165,6 +165,27 @@ const TaskTemplate = ({
             }),
           ),
       },
+      {
+        name: 'Move to organization',
+        onClick: () =>
+          dispatch(
+            ModalActions.openModal('SelectOrganization', {
+              confirmText: 'Move',
+              confirm: ({
+                taskListIdentifier: listIdentifier,
+                taskGroupIdentifier,
+              }) => {
+                dispatch(
+                  moveWorkflowToFolder(
+                    identifier,
+                    listIdentifier,
+                    taskGroupIdentifier,
+                  ),
+                );
+              },
+            }),
+          ),
+      },
       isCurrentUserEditor && {
         name: publicAccess ? 'Make Private' : 'Make Public',
         onClick: () => {

@@ -248,6 +248,10 @@ const TaskTemplateGroupHeader = ({
         name: 'Move to group',
         onClick: handleMoveGroupTask,
       },
+      {
+        name: 'Move to group',
+        onClick: handleMoveGroupTask,
+      },
     ];
 
     if (isCompletedTab ? !showIncompleteTasks : !showCompletedTasks) {
