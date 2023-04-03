@@ -6,6 +6,7 @@ import { getAllContacts } from 'api/contacts-api';
 import { matchSorter } from 'match-sorter';
 import { CommunicationType } from 'helpers/task-helpers';
 import { Chip } from '@material-ui/core';
+import Checkbox from 'components/common/Checkbox/Checkbox';
 import Input from '../Input/Input';
 import {
   RenderOptionStyled,
@@ -179,12 +180,17 @@ const EmailContactsAutoComplete = ({
       multiple
       getOptionSelected={(option, value) => option.value === value.value}
       getOptionLabel={option => option.value ?? option}
-      renderOption={option => (
-        <RenderOptionStyled>
-          {option.label}
-          <span>({option.value})</span>
-        </RenderOptionStyled>
+      renderOption={(option, { selected }) => (
+        <>
+          <span style={{ width: '10px' }} />
+          <Checkbox isChecked={selected} />
+          <RenderOptionStyled>
+            {option.label}
+            <span>({option.value})</span>
+          </RenderOptionStyled>
+        </>
       )}
+      disableCloseOnSelect
       options={contacts}
       loading={loading}
       renderTags={renderTagsCallback}
