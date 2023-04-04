@@ -7,7 +7,7 @@ import EmailIcon from 'img/email-icon.svg';
 import PhoneIcon from 'img/phone-icon.svg';
 import MobileIcon from 'img/mobile-icon.svg';
 import ArrowLeftIcon from 'img/arrow-left.svg';
-import { Box, Chip, Grid, Typography } from '@material-ui/core';
+import { Box, Chip, Grid } from '@material-ui/core';
 import { getCustomerUniqueIDShortLabel } from 'helpers/customer-type-helper';
 import Tooltip from 'components/common/Tooltip/Tooltip';
 import {
@@ -98,6 +98,30 @@ const PatientDetailsHeader = () => {
     if (location?.state?.from) setCameFrom(location.state.from);
   }, [location]);
 
+  const addressStreet =
+    patient?.patientMetaData?.find(
+      pmd => pmd.customFieldName === 'Home Street Address',
+    )?.value || '';
+  const addressCity =
+    patient?.patientMetaData?.find(pmd => pmd.customFieldName === 'City')
+      ?.value || '';
+  const addressState =
+    patient?.patientMetaData?.find(
+      pmd => pmd.customFieldName === 'State / Province',
+    )?.value || '';
+  const addressZipCode =
+    patient?.patientMetaData?.find(
+      pmd => pmd.customFieldName === 'Zip / Postal Code',
+    )?.value || '';
+  const insuranceName =
+    patient?.patientMetaData?.find(
+      pmd => pmd.customFieldName === 'Insurance Name',
+    )?.value || '';
+  const insuranceNumber =
+    patient?.patientMetaData?.find(
+      pmd => pmd.customFieldName === 'Insurance Number',
+    )?.value || '';
+
   return (
     <PatientDetailsContainer>
       {!isLoadingDetails ? (
@@ -144,23 +168,26 @@ const PatientDetailsHeader = () => {
             <ContactContainer>
               {email && (
                 <Tooltip title={email} placement="bottom">
-                  {patientContactsActionable ? (
-                    <IconWrapper href={`mailto:${email}`}>
-                      <img
-                        src={EmailIcon}
-                        alt="email"
-                        style={{ height: '16px' }}
-                      />
-                    </IconWrapper>
-                  ) : (
-                    <IconWrapper>
-                      <img
-                        src={EmailIcon}
-                        alt="email"
-                        style={{ height: '16px' }}
-                      />
-                    </IconWrapper>
-                  )}
+                  <>
+                    <span>{email}</span>
+                    {patientContactsActionable ? (
+                      <IconWrapper href={`mailto:${email}`}>
+                        <img
+                          src={EmailIcon}
+                          alt="email"
+                          style={{ height: '16px' }}
+                        />
+                      </IconWrapper>
+                    ) : (
+                      <IconWrapper>
+                        <img
+                          src={EmailIcon}
+                          alt="email"
+                          style={{ height: '16px' }}
+                        />
+                      </IconWrapper>
+                    )}
+                  </>
                 </Tooltip>
               )}
               {phoneHome && (
@@ -261,34 +288,34 @@ const PatientDetailsHeader = () => {
                     displayNames,
                     fieldType,
                     customFieldIdentifier,
-                  }) => {
-                    return (
-                      <React.Fragment key={customFieldIdentifier}>
-                        {fieldType === FieldType.HYPERLINK ? (
-                          <PatientInfo>
-                            <a href={value} target="_blank" rel="noreferrer">
-                              {customFieldName}
-                            </a>
-                          </PatientInfo>
-                        ) : (
-                          <PatientInfo>
-                            <Typography>{customFieldName}: </Typography>
-                            <Box ml={1} />
+                  }) => (
+                    <React.Fragment key={customFieldIdentifier}>
+                      {fieldType === FieldType.HYPERLINK ? (
+                        <PatientInfo>
+                          <a href={value} target="_blank" rel="noreferrer">
+                            {customFieldName}
+                          </a>
+                        </PatientInfo>
+                      ) : (
+                        <PatientInfo>
+                          <span>{customFieldName}: </span>
+                          <Box ml={1} />
+                          <span style={{ fontWeight: '900' }}>
                             {fieldType === FieldType.DROPDOWN_MULTI
                               ? `${displayNames?.join(',') || ''}`
                               : `${displayName || value}`}
-                          </PatientInfo>
-                        )}
-                        <PatientInfoDivider />
-                      </React.Fragment>
-                    );
-                  },
+                          </span>
+                        </PatientInfo>
+                      )}
+                      <PatientInfoDivider />
+                    </React.Fragment>
+                  ),
                 )}
             </PatientDetailsInformation>
           </PatientDetails>
           <PatientDetails>
             <PatientDetailsInformation>
-              {patient?.patientMetaData?.map(
+              {/* {patient?.patientMetaData?.map(
                 ({
                   customFieldName,
                   displayName,
@@ -307,7 +334,24 @@ const PatientDetailsHeader = () => {
                     )}
                   </React.Fragment>
                 ),
-              )}
+              )} */}
+              <PatientInfo>
+                Address:
+                <span style={{ fontWeight: '900', marginLeft: '5px' }}>
+                  {addressStreet ? `${addressStreet}, ` : ''}{' '}
+                  {addressCity ? `${addressCity}, ` : ''}{' '}
+                  {addressState ? `${addressState} - ` : ''} {addressZipCode}
+                </span>
+              </PatientInfo>
+              <PatientInfoDivider />
+              <PatientInfo>
+                Insurance:{' '}
+                <span style={{ fontWeight: '900', marginLeft: '5px' }}>
+                  {insuranceName ? `${insuranceName} - ` : ''} {insuranceNumber}
+                  {insuranceNumber}
+                </span>
+              </PatientInfo>
+              <PatientInfoDivider />
             </PatientDetailsInformation>
           </PatientDetails>
           <PatientDetailsDrawer
