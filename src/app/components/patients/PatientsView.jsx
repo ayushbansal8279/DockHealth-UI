@@ -51,7 +51,7 @@ import {
   ContentWrapper,
 } from './styled';
 
-const MAX_PATIENT_ALL_RESULTS = 1000;
+const MAX_PATIENT_ALL_RESULTS = 5000;
 
 // eslint-disable-next-line sonarjs/cognitive-complexity
 const PatientsView = () => {

@@ -128,6 +128,7 @@ const SendFaxFromTaskModal = () => {
             errorMessage="Incorrect fax number"
             disabled={show}
             value={contact?.value ?? ''}
+            patient={selectedTask?.patient}
           />
           <ContactInfoRow>
             {contact?.identifier && (

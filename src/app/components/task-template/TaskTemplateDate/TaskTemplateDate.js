@@ -15,6 +15,9 @@ const TaskTemplateDate = ({ dateTime, title, workflow }) => {
           isOverdue={false}
           hasReminder={reminderType && reminderType !== ReminderType.NONE}
           hasRecurringSchedule={false}
+          format="MM/DD/YY"
+          showTime
+          timeFormat="HH:mm"
         />
       ) : (
         <div>

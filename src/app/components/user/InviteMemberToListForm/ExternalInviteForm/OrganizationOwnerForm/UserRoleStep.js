@@ -1,8 +1,10 @@
 import React from 'react';
+import { useSelector } from 'react-redux';
 import { useFormContext } from 'react-hook-form';
 import { Grid } from '@material-ui/core';
 import Button from 'components/common/Button/Button';
 import { UserOrganizationRole } from 'helpers/user-helper';
+import { userHasViewOnlyFeatureSelector } from 'selectors/user-selectors';
 import {
   RoleFormWrapper,
   RoleSelectionHeader,
@@ -21,6 +23,7 @@ const UserRoleStep = ({ navigateToPreviousStep, disabled }) => {
   const { watch, setValue } = useFormContext();
 
   const roleValue = watch('userRole');
+  const viewOnlyRoleAvailable = useSelector(userHasViewOnlyFeatureSelector);
 
   return (
     <RoleFormWrapper container direction="column" justify="space-between">
@@ -96,27 +99,33 @@ const UserRoleStep = ({ navigateToPreviousStep, disabled }) => {
           </RoleOptionDescription>
         </RoleOptionLabel>
         <Divider />
-        <input
-          id="ViewOnly"
-          type="radio"
-          name="userRole"
-          value={VIEW_ONLY}
-          checked={roleValue === VIEW_ONLY}
-          onChange={event => setValue(event.target.name, event.target.value)}
-        />
-        <RoleOptionLabel
-          isSelected={roleValue === VIEW_ONLY}
-          htmlFor="ViewOnly"
-        >
-          <RoleOptionHeaderWrapper>
-            <RoleOptionHeader>View Only</RoleOptionHeader>
-            <RoleOptionHeaderAdditionalInfo>
-              *Limited Access
-            </RoleOptionHeaderAdditionalInfo>
-          </RoleOptionHeaderWrapper>
-          <RoleOptionDescription />
-        </RoleOptionLabel>
-        <Divider />
+        {viewOnlyRoleAvailable && (
+          <>
+            <input
+              id="ViewOnly"
+              type="radio"
+              name="userRole"
+              value={VIEW_ONLY}
+              checked={roleValue === VIEW_ONLY}
+              onChange={event =>
+                setValue(event.target.name, event.target.value)
+              }
+            />
+            <RoleOptionLabel
+              isSelected={roleValue === VIEW_ONLY}
+              htmlFor="ViewOnly"
+            >
+              <RoleOptionHeaderWrapper>
+                <RoleOptionHeader>View Only</RoleOptionHeader>
+                <RoleOptionHeaderAdditionalInfo>
+                  *Limited Access
+                </RoleOptionHeaderAdditionalInfo>
+              </RoleOptionHeaderWrapper>
+              <RoleOptionDescription />
+            </RoleOptionLabel>
+            <Divider />
+          </>
+        )}
       </RoleSelectionWrapper>
       <Grid container item direction="row" justify="center" spacing={2}>
         <Grid item xs={3}>

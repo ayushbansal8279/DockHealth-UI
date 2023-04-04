@@ -1,47 +1,24 @@
 import React from 'react';
-import AssignMemberIcon from 'components/user/AssignMemberIcon/AssingMemberIcon';
 import MemberGroup from 'components/user/MemberGroup/MemberGroup';
 import Tooltip from 'components/common/Tooltip/Tooltip';
-import TaskItemPopover from 'components/task/TaskItemPopover/TaskItemPopover';
-import MultiAssignMembersList from 'components/task/MultiAssignPopover/MultiAssignMembersList';
 import { AssigneeMatchingWrapper } from './styled';
 
-const TaskTemplateCompletedByMembers = ({
-  multipleAssigneesContext,
-  workflow = {},
-}) => {
-  const { assignedToUsers = [], searchMetaData, taskListIdentifier } = workflow;
+const TaskTemplateCompletedByMembers = ({ workflow = {} }) => {
+  const { completedBy, searchMetaData } = workflow;
 
   return (
-    <TaskItemPopover
-      contentWidth={230}
-      content={({ closePopover }) => (
-        <MultiAssignMembersList
-          taskListIdentifiers={taskListIdentifier}
-          selectedMembers={assignedToUsers}
-          // onSelect={handleWorkflowUpdate}
-          onError={closePopover}
-          enableLazyLoading={
-            workflow?.taskList?.listType === 'PUBLIC' ||
-            workflow?.taskList?.listType === 'TEMPLATE'
-          }
-        />
-      )}
-      fullWidth={multipleAssigneesContext}
-    >
-      {assignedToUsers?.length ? (
+    <>
+      {completedBy ? (
         <>
           <AssigneeMatchingWrapper matched={searchMetaData?.matchAssignedTo} />
-          <MemberGroup members={assignedToUsers} />
+          <MemberGroup members={[completedBy]} />
         </>
       ) : (
-        <Tooltip placement="top" title="Assign to">
-          <div>
-            <AssignMemberIcon />
-          </div>
+        <Tooltip placement="top" title="Completed by">
+          <div />
         </Tooltip>
       )}
-    </TaskItemPopover>
+    </>
   );
 };
 

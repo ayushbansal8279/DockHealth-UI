@@ -49,6 +49,7 @@ const ContactsAutoComplete = ({
       response.push({
         name: `(Patient) ${patient?.firstName} ${patient?.lastName}`,
         email: patient?.email,
+        mobilePhoneNumber: patient?.phoneMobile?.replace('+1', ''),
         identifier: patient?.patientIdentifier,
       });
       if (active) {
@@ -97,7 +98,7 @@ const ContactsAutoComplete = ({
       active = false;
       dataLoaded.current = false;
     };
-  }, [loading, type]);
+  }, [loading, patient, type]);
 
   React.useEffect(() => {
     if (!open) {

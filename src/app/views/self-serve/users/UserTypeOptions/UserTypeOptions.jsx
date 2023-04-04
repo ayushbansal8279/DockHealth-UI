@@ -1,8 +1,9 @@
 /* eslint-disable sonarjs/no-identical-functions */
 import React, { useMemo } from 'react';
-import { connect } from 'react-redux';
+import { connect, useSelector } from 'react-redux';
 import { useBoolean } from 'hooks/useBoolean';
 import { openModal as openModalAction } from 'modal/actions';
+import { userHasViewOnlyFeatureSelector } from 'selectors/user-selectors';
 import UserTypeLabel from './UserTypeLabel';
 import { getUserTypeLabel, USER_TYPES } from '../helpers';
 
@@ -28,6 +29,7 @@ const UserTypeOptions = ({
   );
 
   const displayName = `${firstName} ${lastName}`;
+  const viewOnlyRoleAvailable = useSelector(userHasViewOnlyFeatureSelector);
 
   const removeSubscription = () => {
     openRemoveSubscriptionModal({
@@ -75,6 +77,10 @@ const UserTypeOptions = ({
       !!user?.subscription &&
       user?.userIdentifier !== sessionStorage.userIdentifier,
   );
+
+  if (!viewOnlyRoleAvailable) {
+    delete USER_TYPES.VIEW_ONLY;
+  }
 
   return (
     <UserTypeLabel

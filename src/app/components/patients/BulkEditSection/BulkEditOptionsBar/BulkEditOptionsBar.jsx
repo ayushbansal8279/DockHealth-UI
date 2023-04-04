@@ -7,6 +7,7 @@ import DuplicateIcon from 'img/bulk-edit/DuplicateIcon';
 import CompleteIcon from 'img/bulk-edit/CompleteIcon';
 import StatusIcon from 'img/bulk-edit/StatusIcon';
 import DeleteIcon from 'img/bulk-edit/DeleteIcon';
+import DownloadIcon from 'img/bulk-edit/DownloadIcon';
 
 import palette from 'styles/palette';
 import { PatientEditContext } from 'context-api/patient-edit-context';
@@ -32,6 +33,10 @@ const BulkEditOptionsBar = ({ selectedPatients = {}, onClose }) => {
   }, [toggleCreateWorkflowOption]);
 
   const addLabelHandler = useCallback(() => {
+    toggleAddLabelOption();
+  }, [toggleAddLabelOption]);
+
+  const downloadFilesHandler = useCallback(() => {
     toggleAddLabelOption();
   }, [toggleAddLabelOption]);
 
@@ -70,6 +75,14 @@ const BulkEditOptionsBar = ({ selectedPatients = {}, onClose }) => {
             wideView
           />
         </Button>
+        {/* <Button type="button" onClick={downloadFilesHandler} disabled={false}>
+          <BulkEditOption
+            iconComponent={DownloadIcon}
+            title="Download Files"
+            isDisabled={false}
+            wideView
+          />
+        </Button> */}
         <Button type="button" onClick={deleteHandler} disabled={false}>
           <BulkEditOption
             iconComponent={DeleteIcon}

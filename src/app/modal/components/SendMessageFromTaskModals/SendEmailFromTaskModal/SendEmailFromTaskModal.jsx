@@ -283,8 +283,7 @@ const SendEmailFromTaskModal = () => {
                 message: subject,
                 details: convertFromEditorStateToOutput(detailsState, true)
                   .tokenizedText,
-                // api needed for contacts array
-                recipientContact: contacts,
+                recipientContacts: contacts.map(c => c.value),
                 taskAttachmentIdentifiers: attachmentsToSend,
                 taskIdentifier: identifier,
               }),

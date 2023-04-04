@@ -66,6 +66,13 @@ export const USER_TYPES = new Proxy(
   },
   {
     get: (object, path) => object[path?.toUpperCase()] || object.DEFAULT,
+    delete: (target, property) => {
+      if (property in target) {
+        // eslint-disable-next-line no-param-reassign
+        delete target[property];
+        // console.log(`property removed: ${property}`);
+      }
+    },
   },
 );
 

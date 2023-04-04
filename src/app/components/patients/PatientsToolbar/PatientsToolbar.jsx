@@ -10,6 +10,7 @@ import ToolbarSelect from 'components/tasklist/ToolbarSelect/ToolbarSelect';
 import TasksStatusSwitchIcon from 'img/tasks-status-switch-icon';
 import {
   PATIENTS_LIST_ALL,
+  PATIENTS_LIST_WITH_TASKS,
   PATIENTS_LIST_ARCHIVED,
   createPatientDetailsPath,
 } from 'routing/helpers/paths';
@@ -47,7 +48,7 @@ const OPTIONS = [
   {
     label: 'Active (with Tasks)',
     value: DefaultPatientsListType.ACTIVE_PATIENTS,
-    url: PATIENTS_LIST_ARCHIVED,
+    url: PATIENTS_LIST_WITH_TASKS,
   },
   {
     label: 'Archived',

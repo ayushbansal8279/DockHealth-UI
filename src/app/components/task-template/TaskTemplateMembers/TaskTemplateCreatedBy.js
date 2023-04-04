@@ -3,18 +3,18 @@ import MemberGroup from 'components/user/MemberGroup/MemberGroup';
 import Tooltip from 'components/common/Tooltip/Tooltip';
 import { AssigneeMatchingWrapper } from './styled';
 
-const TaskTemplateCreatedByMembers = ({ workflow = {}, assignedToUsers }) => {
-  const { searchMetaData } = workflow;
+const TaskTemplateCreatedByMembers = ({ workflow = {} }) => {
+  const { searchMetaData, creator } = workflow;
 
   return (
     <>
-      {assignedToUsers?.length > 0 ? (
+      {creator ? (
         <>
           <AssigneeMatchingWrapper matched={searchMetaData?.matchAssignedTo} />
-          <MemberGroup members={assignedToUsers} />
+          <MemberGroup members={[creator]} />
         </>
       ) : (
-        <Tooltip placement="top" title="Assign to">
+        <Tooltip placement="top" title="Created by">
           <div />
         </Tooltip>
       )}
