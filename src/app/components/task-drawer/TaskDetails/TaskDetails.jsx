@@ -19,9 +19,11 @@ import {
   isEditorStateEmpty,
 } from 'components/common/TextEditor/helpers';
 import { selectedTaskSelector } from 'selectors/task-drawer-selectors';
-import debounce from 'lodash.debounce';
 import { DetailsContainer } from './styled';
 import RichTextEditor from "components/RichTextEditorV2/RichTextEditor";
+import Editor from "../../../../ui-toolkit/Form/TextEditor/TextEditor";
+import TextArea from "../../../../ui-toolkit/Form/TextArea/TextArea";
+import debounce from "lodash.debounce"
 
 const TaskDetails = ({ readOnly, disableMentions }) => {
   const DEBOUNCE_TIME = 10000;
@@ -88,17 +90,29 @@ const TaskDetails = ({ readOnly, disableMentions }) => {
   }, [isFocused]);
 
   const onChangeDetailsEditor = useCallback(
-    (state) => {
-        console.log("ON_CHANGE!")
-        setDetailsState(state);
-        onDebouncedChange(state);
+    (state, { value }) => {
+        setDetailsState(value);
+        onDebouncedChange(value);
     },
     [onDebouncedChange, setDetailsState],
   );
 
+  const handleTextAreaChange = debounce((_, { value }) => {
+      dispatch(
+          updateTaskDetails(selectedTask, {
+              tokenizedDetails: value || ''
+          })
+      );
+  }, 1000)
+
   return (
     <DetailsContainer>
-        <RichTextEditor onChange={onChangeDetailsEditor} value={rawTextState} textArea isToolbarActive />
+        <TextArea
+            value={rawTextState}
+            placeholder="Task's details"
+            onChange={handleTextAreaChange}
+        />
+        {/*<RichTextEditor onChange={onChangeDetailsEditor} value={rawTextState} textArea isToolbarActive />*/}
       {/*<CustomTextEditor*/}
       {/*  key={selectedTask?.identifier}*/}
       {/*  empty={isEmptyDetailsState}*/}

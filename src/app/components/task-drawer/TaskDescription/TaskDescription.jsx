@@ -24,6 +24,8 @@ import { useMentionsEditorState } from 'components/common/TextEditor/use-mention
 import { selectedTaskSelector } from 'selectors/task-drawer-selectors';
 import { DescriptionTextContainer, DescriptionError } from './styled';
 import RichTextEditor from "components/RichTextEditorV2/RichTextEditor";
+import Input from "../../../../ui-toolkit/Form/Input/Input";
+import debounce from "lodash.debounce";
 
 const TaskDescription = ({ readOnly, disableMentions }) => {
   const selectedTask = useSelector(selectedTaskSelector);
@@ -144,10 +146,23 @@ const TaskDescription = ({ readOnly, disableMentions }) => {
     [descriptionErrorState, setDescriptionState],
   );
 
+  const handleInputChange = debounce((_, { value }) => {
+    dispatch(
+        updateTaskDescription(selectedTask, {
+          tokenizedDescription: value
+        })
+    )
+  }, 1000)
+
   return (
     <>
       <DescriptionTextContainer isCrossed={status === TaskStatus.COMPLETE}>
-        <RichTextEditor readOnly/>
+        {/*<RichTextEditor readOnly/>*/}
+        <Input
+          value={description}
+          placeholder="Task's description"
+          onChange={handleInputChange}
+        />
       </DescriptionTextContainer>
       {descriptionErrorState && (
         <DescriptionError>Task description is required</DescriptionError>
