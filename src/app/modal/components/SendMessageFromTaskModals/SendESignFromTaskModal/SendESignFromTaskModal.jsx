@@ -96,6 +96,7 @@ const SendESignFromTaskModal = () => {
             disabled={show}
             label="Email"
             errorMessage="Incorrect email"
+            patient={selectedTask?.patient}
           />
           <ContactInfoRow>
             {contact?.identifier && (

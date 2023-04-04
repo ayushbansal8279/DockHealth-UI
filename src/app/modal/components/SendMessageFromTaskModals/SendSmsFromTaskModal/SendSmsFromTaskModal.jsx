@@ -94,6 +94,7 @@ const SendSmsFromTaskModal = () => {
             label="Phone"
             errorMessage="Incorrect phone number"
             value={contact?.value ?? ''}
+            patient={selectedTask?.patient}
           />
           <TemplateAutoComplete
             type={CommunicationType.SMS}
