@@ -143,7 +143,7 @@ const TaskItem = React.memo(
       assignedToUsers,
       creator,
       completedBy,
-      completedDate,
+      completedDt,
       attachments,
       comments,
       labels,
@@ -1189,7 +1189,7 @@ const TaskItem = React.memo(
                     }
                   >
                     <>
-                      {completedDate && completedBy && (
+                      {completedDt && completedBy && (
                         <TaskItemMembers
                           readOnly
                           multipleAssigneesContext={multipleAssigneesContext}

@@ -63,6 +63,7 @@ import { updatePatientDetails } from 'actions/patient-details-actions';
 import TaskItemDropdown from 'components/task/StandardTaskItem/customFieldsTaskItemComponents/TaskItemDropdown/TaskItemDropdown';
 import TaskItemDate from 'components/task/StandardTaskItem/customFieldsTaskItemComponents/TaskItemDate';
 import TaskTemplateCreatedByMembers from '../TaskTemplateMembers/TaskTemplateCreatedBy';
+import TaskTemplateCompletedByMembers from '../TaskTemplateMembers/TaskTemplateCompletedByMembers';
 import TemplateHeaderName from '../TaskTemplateName/TaskTemplateName';
 import TaskHeaderPatient from '../TaskTemplatePatient/TaskTemplatePatient';
 import TemplateItemWorkflowStatus from '../TaskTemplateWorkflowStatus/TaskTemplateWorkflowStatus';
@@ -1105,12 +1106,9 @@ const TaskTemplateGroupHeader = ({
             >
               <TaskTemplateCreatedByMembers
                 workflow={
-                  templateGroup.creator || !workFlowData
+                  templateGroup?.creator || !workFlowData
                     ? templateGroup
                     : workFlowData
-                }
-                assignedToUsers={
-                  templateGroup?.creator ?? [templateGroup?.creator]
                 }
               />
             </TaskItemCell>,
@@ -1196,12 +1194,11 @@ const TaskTemplateGroupHeader = ({
               }
             >
               <>
-                <TaskTemplateCreatedByMembers
-                  workflow={templateGroup}
-                  assignedToUsers={
-                    templateGroup?.completedBy
-                      ? [templateGroup.completedBy]
-                      : []
+                <TaskTemplateCompletedByMembers
+                  workflow={
+                    templateGroup?.creator || !workFlowData
+                      ? templateGroup
+                      : workFlowData
                   }
                 />
               </>
