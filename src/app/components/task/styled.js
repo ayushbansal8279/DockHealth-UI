@@ -202,12 +202,38 @@ export const AssignMemberIconContainer = styled.div`
   cursor: pointer;
 `;
 
+export const DescriptionEditButton = styled.div`
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  margin-left: 8px;
+  border-radius: 3px;
+  opacity: 0;
+ 
+  & .MuiIconButton-root {
+    max-height: 24px;
+    margin: 0;
+    color: ${palette.brightBlue};
+  }
+
+  & .MuiSvgIcon-root {
+    width: 14px;
+    height: 14px;
+  }
+`;
+
 export const DescriptionBox = styled.div`
   display: flex;
   flex-direction: column;
   flex: 1;
   cursor: pointer;
   width: ${({ width }) => (width ? `${width}px` : '100%')};
+  
+  &:hover {
+    ${DescriptionEditButton} {
+      opacity: 1;
+    }
+  }
 `;
 
 export const DecisionBox = styled.div`
@@ -599,29 +625,6 @@ export const DescriptionBorder = styled.div`
   width: 100%;
   ${({ disabled }) => (disabled ? 'border: 0px;' : '')}
   ${({ isEdited }) => isEdited && `border-color: ${palette.coolGrey2};`}
-`;
-
-export const DescriptionEditButton = styled.div`
-  margin-left: 8px;
-  border-radius: 3px;
-  max-height: 18px;
-  background-color: ${({ active }) => (active ? palette.coolGrey3 : '')};
-  display: ${({ active }) => (active ? 'none' : 'block')};
-  visibility: hidden;
-
-  &:hover {
-    background-color: ${palette.coolGrey3};
-  }
-
-  & .MuiIconButton-root {
-    color: ${palette.brightBlue};
-    margin: 0;
-  }
-
-  & .MuiSvgIcon-root {
-    height: 14px;
-    width: 14px;
-  }
 `;
 
 export const PatientPrintAdditionalInfo = styled.div`
