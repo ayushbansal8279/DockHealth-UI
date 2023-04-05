@@ -12,6 +12,9 @@ const StyledPopover = styled(Popover)`
       min-height: 2rem;
       overflow-y: ${({ maxItems }) => (maxItems ? 'auto' : undefined)};
     }
+    .MuiBackdrop-root {
+      opacity: 0 !important;
+    }
   }
 `;
 

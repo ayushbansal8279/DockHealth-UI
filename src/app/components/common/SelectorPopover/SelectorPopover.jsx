@@ -14,6 +14,9 @@ const Popover = styled(MuiPopover)`
       box-shadow: 4px 2px 2px 0px rgba(0, 0, 0, 0.1),
         4px 2px 3px 4px rgba(0, 0, 0, 0.07), 4px 2px 6px 4px rgba(0, 0, 0, 0.06);
     }
+    .MuiBackdrop-root {
+      opacity: 0 !important;
+    }
   }
 `;
 

@@ -9,6 +9,9 @@ export const StyledPopover = styled(Popover)`
       width: ${({ width }) => width};
       overflow: visible;
     }
+    .MuiBackdrop-root {
+      opacity: 0 !important;
+    }
   }
 `;
 
