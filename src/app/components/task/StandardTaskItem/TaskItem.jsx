@@ -370,7 +370,7 @@ const TaskItem = React.memo(
           task,
         );
         const isRequiredFieldsAreIncomplete =
-          incompleteRequiredFields.length > 0;
+          incompleteRequiredFields?.length > 0;
 
         if (isRequiredFieldsAreIncomplete) {
           const modalProps = {
