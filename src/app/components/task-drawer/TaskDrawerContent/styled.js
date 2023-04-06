@@ -27,7 +27,8 @@ export const TaskDrawerBackground = styled.div`
 export const rowHeight = 'fit-content';
 
 export const styleTaskDrawerContainer = {
-  padding: '1rem 0rem 0.5rem  0rem',
+  // padding: '1rem 0rem 0.5rem  0rem',
+  width: '100%',
 };
 
 export const styleFullRow = (isMobile) => ({
