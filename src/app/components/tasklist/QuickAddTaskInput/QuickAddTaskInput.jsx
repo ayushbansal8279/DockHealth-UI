@@ -1,6 +1,5 @@
 /* eslint-disable import/extensions */
 import { convertFromEditorStateToOutput } from 'components/common/TextEditor/helpers';
-import TextEditor from 'components/common/TextEditor/TextEditor';
 import { useMentionsEditorState } from 'components/common/TextEditor/use-mentions-editor-state';
 import Spacing from 'components/common/Spacing';
 import React, { useEffect, useRef, useState } from 'react';
@@ -17,6 +16,7 @@ import {
   QuickAddHint,
 } from './styled';
 import RichTextEditor from "components/RichTextEditorV2/RichTextEditor";
+import TextEditor from "../../../../ui-toolkit/Form/TextEditor/TextEditor";
 
 const { DISABLED } = TASK_LIST_RESTRICTIONS_OPTIONS;
 
@@ -102,13 +102,39 @@ const QuickAddTaskInput = React.forwardRef(
 
     const [description, setDescription] = useState("")
 
+    const handleTextEditorChange = (_, { value }) => {
+      setDescription(value)
+    }
+
+    const handleTextEditorBlur = (editor, {  value }) => {
+      quickAddTask({ description: value, taskListIdentifier })
+      setDescription("")
+      setTimeout(() => {
+        editor.blur()
+      }, 250)
+    }
+
+    const handleTextEditorKeyDown = (_, { key, value }) => {
+      if (key === "Enter") {
+        quickAddTask({ description: value, taskListIdentifier })
+        setDescription("")
+      }
+    }
+
     return (
       <>
         <AddTaskInputWrapper hasError={!!error} iconColor={iconColorActive}>
-          <RichTextEditor noStyle value={description} onChange={setDescription} onSubmit={(description) => {
-            setDescription("")
-            quickAddTask({ description: description.trim(), taskListIdentifier: taskListIdentifier })
-          }} isSingleLine/>
+          <TextEditor
+            type="input"
+            value={description}
+            onChange={handleTextEditorChange}
+            onBlur={handleTextEditorBlur}
+            onKeyDown={handleTextEditorKeyDown}
+          />
+          {/*<RichTextEditor noStyle value={description} onChange={setDescription} onSubmit={(description) => {*/}
+          {/*  setDescription("")*/}
+          {/*  quickAddTask({ description: description.trim(), taskListIdentifier: taskListIdentifier })*/}
+          {/*}} isSingleLine/>*/}
           {/*<MentionsEditorContainer>*/}
           {/*  <TextEditor*/}
           {/*    ref={reference || quickAddTaskInputReference}*/}

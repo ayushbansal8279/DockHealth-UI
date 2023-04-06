@@ -1,4 +1,4 @@
-import React, {useLayoutEffect, useMemo} from "react"
+import React, {useEffect, useLayoutEffect, useMemo} from "react"
 import { ParagraphNode } from "lexical"
 import { useLexicalComposerContext } from "@lexical/react/LexicalComposerContext"
 import { LexicalComposer } from "@lexical/react/LexicalComposer"
@@ -26,6 +26,7 @@ import { MentionNode } from "./internals/nodes/MentionNode"
 import { noop } from "../../utilities"
 import EventHandlerPlugin from "./internals/plugins/EventHandlerPlugin"
 import * as S from "./styled"
+import MentionsPlugin from "./internals/plugins/MentionsPlugin";
 
 
 export default function TextEditor(props) {
@@ -100,6 +101,12 @@ function EditableContent({
         });
     }, [ editor, type ])
 
+    useEffect(() => {
+        editor.update(() => {
+            $convertFromMarkdownString(value ?? "", TRANSFORMERS)
+        })
+    }, [ editor, value ])
+
     return (
         <S.Container type={type} className={className}>
             {type === "textarea" && <ToolbarPlugin/>}
@@ -116,6 +123,7 @@ function EditableContent({
                 onBlur={onBlur}
                 onKeyDown={onKeyDown}
             />
+            <MentionsPlugin />
             <HistoryPlugin />
             <ListPlugin />
             <ListMaxIndentLevelPlugin maxDepth={7} />

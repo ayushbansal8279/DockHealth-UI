@@ -97,7 +97,8 @@ const TaskDetails = ({ readOnly, disableMentions }) => {
     [onDebouncedChange, setDetailsState],
   );
 
-  const handleTextAreaChange = debounce((_, { value }) => {
+  const handleTextAreaChange = debounce((_, { value, mentions }) => {
+      console.log("mentions", mentions)
       dispatch(
           updateTaskDetails(selectedTask, {
               tokenizedDetails: value || ''

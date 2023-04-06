@@ -7,6 +7,7 @@ export const Container = styled(Box)`
   position: relative;
   font-family: 'Roboto Condensed', sans-serif;
   font-size: 15px;
+  width: 100%;
   min-height: ${props => props.type === "textarea" ? "125px" : "100%"};
   padding-bottom: ${props => props.type === "textarea" ? "5px" : "0"};
 `
@@ -17,7 +18,6 @@ export const Content = styled(Box)`
 
 export const Input = styled(ContentEditable)`
   font: inherit;
-  padding: 10px 15px;
   outline: none;
   
   p {
@@ -26,9 +26,10 @@ export const Input = styled(ContentEditable)`
 `
 
 export const Placeholder = styled(Box)`
+  pointer-events: none;
   position: absolute;
-  top: 10px;
-  left: 15px;
+  top: 0;
+  left: 0;
   font: inherit;
   color: rgb(132, 146, 164);
 `

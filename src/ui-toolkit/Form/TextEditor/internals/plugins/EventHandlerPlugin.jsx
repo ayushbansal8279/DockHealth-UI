@@ -30,14 +30,14 @@ export default function EventHandlerPlugin({
     const handleFocus = (state) => {
         editor.update(() => {
             const value = $convertToMarkdownString(TRANSFORMERS)
-            onFocus(state, { value })
+            onFocus(editor, { value })
         })
     }
 
     const handleBlur = (state) => {
         editor.update(() => {
             const value = $convertToMarkdownString(TRANSFORMERS)
-            onBlur(state, { value })
+            onBlur(editor, { value })
         })
     }
 
@@ -45,14 +45,21 @@ export default function EventHandlerPlugin({
         const { key } = event
         editor.update(() => {
             const value = $convertToMarkdownString(TRANSFORMERS)
-            onKeyDown(editor.getEditorState(), { key, value })
+            onKeyDown(editor, { key, value })
         })
     }
 
     const handleChange = (state) => {
         editor.update(() => {
+            const state = editor.getEditorState().toJSON()
             const value = $convertToMarkdownString(TRANSFORMERS)
-            onChange(state, { value })
+            const mentions = []
+            traverse(state.root, (node) => {
+                if (node.type === "mention") {
+                    mentions.push(node)
+                }
+            })
+            onChange(editor, { value, mentions })
         })
     }
 
@@ -87,4 +94,15 @@ export default function EventHandlerPlugin({
             />
         </>
     )
+}
+
+
+
+const traverse = (node, callback) => {
+    callback(node)
+    if (node.children) {
+        for (const child of node.children) {
+            traverse(child, callback)
+        }
+    }
 }
