@@ -38,7 +38,9 @@ import ImportPatientsModal from 'modal/components/ImportPatientsModal/ImportPati
 import {
   downloadPatientImportTemplate,
   downloadPatientListData,
+  getAllPatientAttachments,
 } from 'api/patient-api';
+import initializeAttachmentsSectionHooks from 'views/patient-details/PatientAttachments/hooks';
 import PatientsList from './PatientsList/PatientsList';
 import PatientsToolbar from './PatientsToolbar/PatientsToolbar';
 import BulkEditCreateTask from './BulkEditSection/BulkEditOptionsBar/BulkEditCreateTask';
@@ -198,6 +200,25 @@ const PatientsView = () => {
     setDeleteOption(previous => !previous);
   }, [turnOffAllOptions, openDeleteConfirmationModal]);
 
+  const { getMemoPatientAttachment } = initializeAttachmentsSectionHooks();
+
+  const downloadFiles = useCallback(
+    async patientIdentifiers => {
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
+      const attachments = await getAllPatientAttachments(patientIdentifiers);
+      attachments.map(async ({ attachmentIdentifier, fileName }) => {
+        const { data } = await getMemoPatientAttachment(attachmentIdentifier);
+        const url = window.URL.createObjectURL(new Blob([data]));
+        const link = document.createElement('a');
+        link.href = url;
+        link.setAttribute('download', fileName);
+        document.body.append(link);
+        link.click();
+      });
+    },
+    [getMemoPatientAttachment],
+  );
+
   const providerValue = useMemo(
     () => ({
       bulkEditIsActive,
@@ -214,6 +235,7 @@ const PatientsView = () => {
         toggleAddLabelOption,
         toggleDeleteOption,
         turnOffAllOptions,
+        downloadFiles,
       },
     }),
     [
@@ -228,6 +250,7 @@ const PatientsView = () => {
       toggleCreateWorkflowOption,
       toggleDeleteOption,
       turnOffAllOptions,
+      downloadFiles,
     ],
   );
 

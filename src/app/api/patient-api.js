@@ -362,3 +362,18 @@ export function unarchivePatient(identifier) {
     .patch(`patient/unarchivePatient/${identifier}`)
     .then(({ data }) => data);
 }
+
+export const getAllPatientAttachments = patientIdentifiers =>
+  axios
+    .post(`/patient/attachment/getAllPatientAttachments`, {
+      patientIdentifiers,
+    })
+    .then(response => response.data)
+    .catch(error => {
+      showAlert({
+        status: 'error',
+        title: 'Error',
+        text: 'Error getting patient attachments. Please try again.',
+      });
+      throw new Error(error?.response?.data?.errorMessage);
+    });

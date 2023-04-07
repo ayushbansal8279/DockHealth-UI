@@ -397,7 +397,7 @@ const initializeListDetailsViewHooks = () => {
           }
         } else if (
           data.eventType?.startsWith('MARK_COMPLETE') &&
-          data.initiatedByIdentifier !== currentUserIdentifier &&
+          // data.initiatedByIdentifier !== currentUserIdentifier &&
           !data.workflowIdentifier // not part of workflow
         ) {
           actions.refreshTask(data.task.identifier);
