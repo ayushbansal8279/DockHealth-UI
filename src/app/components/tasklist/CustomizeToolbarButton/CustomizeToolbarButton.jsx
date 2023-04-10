@@ -133,6 +133,7 @@ const CustomizeToolbarButton = ({
             ? 'Customization is restricted by list admin'
             : 'Customize your list'
         }
+        style={{ height: 'auto' }}
       >
         Customize
       </ToolbarButton>
