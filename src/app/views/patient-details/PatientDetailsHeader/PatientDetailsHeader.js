@@ -348,7 +348,6 @@ const PatientDetailsHeader = () => {
                 Insurance:{' '}
                 <span style={{ fontWeight: '900', marginLeft: '5px' }}>
                   {insuranceName ? `${insuranceName} - ` : ''} {insuranceNumber}
-                  {insuranceNumber}
                 </span>
               </PatientInfo>
               <PatientInfoDivider />
