@@ -114,25 +114,25 @@ const TaskTemplateGroupHeader = ({
   const [workFlowData, setWorkFlowData] = useState();
   const selectedWorkflow = useSelector(workflowSelector);
 
-  // const [completedTasksAmount, allTasksAmount] = useMemo(
-  //   () =>
-  //     tasks.reduce(
-  //       (accumulator, currentTask) => {
-  //         if (currentTask.status === TaskStatus.COMPLETE) {
-  //           accumulator[0] += 1;
-  //         }
+  const [completedTasksAmount, allTasksAmount] = useMemo(
+    () =>
+      tasks.reduce(
+        (accumulator, currentTask) => {
+          if (currentTask.status === 'COMPLETE') {
+            accumulator[0] += 1;
+          }
 
-  //         accumulator[0] += currentTask?.subTasksCompletedCount;
-  //         accumulator[1] =
-  //           accumulator[1] + (currentTask?.subTasksCount || 0) + 1;
+          accumulator[0] += currentTask?.subTasksCompletedCount || 0;
+          accumulator[1] =
+            accumulator[1] + (currentTask?.subTasksCount || 0) + 1;
 
-  //         return accumulator;
-  //       },
-  //       [0, 0],
-  //     ),
-  //   [tasks],
-  // );
-  const [completedTasksAmount, allTasksAmount] = [-1, -1];
+          return accumulator;
+        },
+        [0, 0],
+      ),
+    [tasks],
+  );
+  // const [completedTasksAmount, allTasksAmount] = [-1, -1];
 
   const completedTasksAmountFinal = tasksCompletedCount || completedTasksAmount;
   const allTasksAmountFinal = tasksCount || allTasksAmount;
