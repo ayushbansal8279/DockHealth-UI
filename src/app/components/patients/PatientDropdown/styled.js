@@ -13,6 +13,9 @@ export const StyledPopover = styled(Popover)`
       min-width: 230px;
       width: ${({ width }) => `${width || 230}px`};
     }
+    .MuiBackdrop-root {
+      opacity: 0 !important;
+    }
   }
 `;
 

@@ -68,6 +68,9 @@ export const ActivityAlertsPopover = styled(Popover)`
       border-radius: '8px';
       background-color: ${palette.coolGrey4};
     }
+    .MuiBackdrop-root {
+      opacity: 0 !important;
+    }
   }
 `;
 
