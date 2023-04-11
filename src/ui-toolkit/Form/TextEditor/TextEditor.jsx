@@ -1,4 +1,6 @@
-import React, {useLayoutEffect, useMemo} from "react"
+import React, {useEffect, useLayoutEffect, useMemo} from "react"
+import { ParagraphNode } from "lexical"
+import { useLexicalComposerContext } from "@lexical/react/LexicalComposerContext"
 import { LexicalComposer } from "@lexical/react/LexicalComposer"
 import { RichTextPlugin } from "@lexical/react/LexicalRichTextPlugin"
 import { HistoryPlugin } from "@lexical/react/LexicalHistoryPlugin"
@@ -13,7 +15,6 @@ import ToolbarPlugin from "./internals/plugins/ToolbarPlugin"
 import LexicalErrorBoundary from "@lexical/react/LexicalErrorBoundary"
 import {
     $convertFromMarkdownString,
-    $convertToMarkdownString,
     TRANSFORMERS,
 } from "@lexical/markdown"
 import { HeadingNode, QuoteNode } from "@lexical/rich-text"
@@ -21,16 +22,14 @@ import { TableCellNode, TableNode, TableRowNode } from "@lexical/table"
 import { ListItemNode, ListNode } from "@lexical/list"
 import { CodeHighlightNode, CodeNode } from "@lexical/code"
 import { AutoLinkNode, LinkNode } from "@lexical/link"
-import { MentionNode } from "components/RichTextEditorV2/nodes/MentionNode"
+import { MentionNode } from "./internals/nodes/MentionNode"
 import { noop } from "../../utilities"
+import EventHandlerPlugin from "./internals/plugins/EventHandlerPlugin"
 import * as S from "./styled"
-import Box from "../../Primitive/Box/Box";
-import EventHandlerPlugin from "./internals/plugins/EventHandlerPlugin";
-import {ParagraphNode} from "lexical";
-import {useLexicalComposerContext} from "@lexical/react/LexicalComposerContext";
+import MentionsPlugin from "./internals/plugins/MentionsPlugin";
 
 
-export default function Editor(props) {
+export default function TextEditor(props) {
     const { value, readOnly } = props
     const initial = useMemo(() => ({
         editable: !readOnly,
@@ -68,10 +67,12 @@ export default function Editor(props) {
 
 function EditableContent({
     children,
+    className,
     value = "",
-    placeholder = "test",
+    placeholder = "",
     type = "textarea",
     readonly = false,
+    autofocus = false,
     onChange = noop,
     onFocus = noop,
     onBlur = noop,
@@ -84,6 +85,12 @@ function EditableContent({
     }, [ editor, readonly ])
 
     useLayoutEffect(() => {
+        if (autofocus) {
+            editor.focus()
+        }
+    }, [ editor, autofocus ])
+
+    useLayoutEffect(() => {
         // Hint: I'm not using LineBreakNode here as at the time I've implemented this it was broken,
         //          so I've used ParagraphNode as a workaround.
         return editor.registerNodeTransform(ParagraphNode, (node) => {
@@ -94,8 +101,14 @@ function EditableContent({
         });
     }, [ editor, type ])
 
+    useEffect(() => {
+        editor.update(() => {
+            $convertFromMarkdownString(value ?? "", TRANSFORMERS)
+        })
+    }, [ editor, value ])
+
     return (
-        <S.Container type={type}>
+        <S.Container type={type} className={className}>
             {type === "textarea" && <ToolbarPlugin/>}
             <S.Content>
                 <RichTextPlugin
@@ -110,6 +123,7 @@ function EditableContent({
                 onBlur={onBlur}
                 onKeyDown={onKeyDown}
             />
+            <MentionsPlugin />
             <HistoryPlugin />
             <ListPlugin />
             <ListMaxIndentLevelPlugin maxDepth={7} />

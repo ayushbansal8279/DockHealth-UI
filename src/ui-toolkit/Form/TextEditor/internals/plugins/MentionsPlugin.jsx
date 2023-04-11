@@ -14,6 +14,8 @@ import MenuItem from "@mui/material/MenuItem";
 import debounce from "lodash.debounce";
 import {getListMembersByName} from "api/task-list-api";
 import {mapUsersToSuggestions, SUGGESTIONS_PLACEHOLDER} from "components/common/TextEditor/helpers";
+import {currentTaskListIdentifierSelector} from "selectors/task-list-selectors";
+import {useSelector} from "react-redux";
 
 const PUNCTUATION = "\\.,\\+\\*\\?\\$\\@\\|#{}\\(\\)\\^\\-\\[\\]\\\\/!%'\"~=<>_:;";
 const NAME = "\\b[A-Z][^\\s" + PUNCTUATION + "]";
@@ -91,7 +93,6 @@ function useMentionLookupService(taskListIdentifier, mentionString) {
 
     useEffect(() => {
         getListMembersByName(taskListIdentifier, mentionString).then((fetchedUsers) => {
-            console.log(fetchedUsers);
             setResults(fetchedUsers)
         });
     }, [mentionString, taskListIdentifier]);
@@ -177,8 +178,9 @@ function MentionsTypeaheadMenuItem({
     </MenuItem>);
 }
 
-export default function MentionsPlugin({ taskListIdentifier }) {
+export default function MentionsPlugin() {
     const [editor] = useLexicalComposerContext();
+    const taskListIdentifier = useSelector(currentTaskListIdentifierSelector)
 
     const [queryString, setQueryString] = useState(null);
 
@@ -193,8 +195,9 @@ export default function MentionsPlugin({ taskListIdentifier }) {
         .slice(0, SUGGESTION_LIST_LENGTH_LIMIT), [results]);
 
     const onSelectOption = useCallback((selectedOption, nodeToReplace, closeMenu) => {
+        const { identifier, name } = selectedOption
         editor.update(() => {
-            const mentionNode = $createMentionNode(selectedOption);
+            const mentionNode = $createMentionNode({ identifier, name });
             if (nodeToReplace) {
                 nodeToReplace.replace(mentionNode);
             }
@@ -220,7 +223,6 @@ export default function MentionsPlugin({ taskListIdentifier }) {
     const fetchUsersWithDebounce =
         debounce((value) => {
             getListMembersByName(taskListIdentifier, value).then((fetchedUsers) => {
-                console.log("fetchedUsers", fetchedUsers);
                 // if (areUsersSuggestionsOpened.current) {
                 //     const formattedUsers = mapUsersToSuggestions(fetchedUsers);
                 //     setUsersSuggestions(

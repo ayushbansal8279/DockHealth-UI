@@ -1,4 +1,4 @@
-import React, {useLayoutEffect} from "react"
+import React, {useLayoutEffect, useState} from "react"
 import { OnChangePlugin } from "@lexical/react/LexicalOnChangePlugin"
 import { noop } from "../../../../utilities"
 import { useLexicalComposerContext } from "@lexical/react/LexicalComposerContext"
@@ -28,22 +28,38 @@ export default function EventHandlerPlugin({
     const [ editor ] = useLexicalComposerContext()
 
     const handleFocus = (state) => {
-        onFocus(state, {})
+        editor.update(() => {
+            const value = $convertToMarkdownString(TRANSFORMERS)
+            onFocus(editor, { value })
+        })
     }
 
     const handleBlur = (state) => {
-        onBlur(state, {})
+        editor.update(() => {
+            const value = $convertToMarkdownString(TRANSFORMERS)
+            onBlur(editor, { value })
+        })
     }
 
     const handleKeyDown = (event) => {
         const { key } = event
-        onKeyDown(editor.getEditorState(), { key })
+        editor.update(() => {
+            const value = $convertToMarkdownString(TRANSFORMERS)
+            onKeyDown(editor, { key, value })
+        })
     }
 
     const handleChange = (state) => {
         editor.update(() => {
+            const state = editor.getEditorState().toJSON()
             const value = $convertToMarkdownString(TRANSFORMERS)
-            onChange(state, { value })
+            const mentions = []
+            traverse(state.root, (node) => {
+                if (node.type === "mention") {
+                    mentions.push(node)
+                }
+            })
+            onChange(editor, { value, mentions })
         })
     }
 
@@ -78,4 +94,15 @@ export default function EventHandlerPlugin({
             />
         </>
     )
+}
+
+
+
+const traverse = (node, callback) => {
+    callback(node)
+    if (node.children) {
+        for (const child of node.children) {
+            traverse(child, callback)
+        }
+    }
 }

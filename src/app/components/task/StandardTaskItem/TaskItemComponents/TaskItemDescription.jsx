@@ -16,7 +16,6 @@ import {
 } from 'actions/task-actions';
 import { TaskStatus } from 'helpers/task-helpers';
 import { openDrawer } from 'actions/task-drawer-actions';
-import TextEditor from 'components/common/TextEditor/TextEditor';
 import Spacing from 'components/common/Spacing';
 import { checkIfShouldDisplayTooltip } from 'components/task/OverflowTooltip/OverflowTooltip';
 import {
@@ -39,6 +38,7 @@ import {
   DescriptionEditButton,
 } from '../../styled';
 import RichTextEditor from "components/RichTextEditorV2/RichTextEditor";
+import TextEditor from "../../../../../ui-toolkit/Form/TextEditor/TextEditor";
 
 const TaskItemDescription = ({
   task,
@@ -163,36 +163,59 @@ const TaskItemDescription = ({
     [descriptionReference],
   );
 
+  const handleTextEditorBlur = (_, { value }) => {
+    dispatch(updateTaskDescription(task, {
+      tokenizedDescription: value,
+      taskMentions: []
+    }))
+    setEditing(false)
+  }
+
+  const handleTextEditorKeyDown = (_, { key, value }) => {
+    if (key === "Enter") {
+      dispatch(updateTaskDescription(task, {
+        tokenizedDescription: value,
+        taskMentions: []
+      }))
+      setEditing(false)
+    }
+  }
 
   return (
-    <DescriptionBox width={width}>
+    <DescriptionBox width={width} data-test={"foo"}>
       <Box display="flex" flex={1}>
-        <RichTextEditor noStyle isSingleLine value={descriptionState} onChange={setDescriptionState} readOnly={!isEditing} className={isEditing ? "simple-input" : ""} onSubmit={(description) => {
-          dispatch(
-              updateTaskDescription(task, {
-                tokenizedDescription: description.trim(),
-                description: description.trim(),
-                taskMentions: [],
-              }),
-          );
-          setDescriptionState(description.trim())
-          setEditing(false)
-        }}/>
-        {!isEditing && !isCompleted && (
-            <DescriptionEditButton active={false}>
-              <IconButton
-                  onClick={(event) => {
-                    if (!disabled) {
-                      event.stopPropagation();
-                      event.preventDefault();
-                      setEditing(true);
-                    }
-                  }}
-              >
-                <EditIcon />
-              </IconButton>
-            </DescriptionEditButton>
-        )}
+        <TextEditor
+            type="input"
+            readonly={!isEditing}
+            autofocus={isEditing}
+            value={description}
+            onBlur={handleTextEditorBlur}
+            onKeyDown={handleTextEditorKeyDown}
+        />
+        {/*<RichTextEditor noStyle isSingleLine value={descriptionState} onChange={setDescriptionState} readOnly={!isEditing} className={isEditing ? "simple-input" : ""} onSubmit={(description) => {*/}
+        {/*  dispatch(*/}
+        {/*      updateTaskDescription(task, {*/}
+        {/*        tokenizedDescription: description.trim(),*/}
+        {/*        description: description.trim(),*/}
+        {/*        taskMentions: [],*/}
+        {/*      }),*/}
+        {/*  );*/}
+        {/*  setDescriptionState(description.trim())*/}
+        {/*  setEditing(false)*/}
+        {/*}}/>*/}
+        <DescriptionEditButton>
+          <IconButton
+              onClick={(event) => {
+                if (!disabled) {
+                  event.stopPropagation();
+                  event.preventDefault();
+                  setEditing(!isEditing);
+                }
+              }}
+          >
+            <EditIcon />
+          </IconButton>
+        </DescriptionEditButton>
       </Box>
       <TaskItemDescriptionIndicators>
         {isCompleted && (
