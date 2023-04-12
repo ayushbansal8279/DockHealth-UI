@@ -28,8 +28,8 @@ import {
   TaskPriority,
   getPriorityColor,
 } from 'helpers/task-helpers';
-import * as TaskTemplateApi from 'api/task-template-api';
-import { workflowSelector } from 'selectors/workflow-drawer-selectors';
+// import * as TaskTemplateApi from 'api/task-template-api';
+// import { workflowSelector } from 'selectors/workflow-drawer-selectors';
 import Checkbox from 'components/common/Checkbox/Checkbox';
 import ProgressBar from 'components/common/ProgressBar/ProgressBar';
 import RotatableChevron from 'components/common/RotatableChevron/RotatableChevron';
@@ -127,7 +127,7 @@ const TaskTemplateGroupHeader = ({
   }, [name]);
 
   const [workFlowData, setWorkFlowData] = useState(undefined);
-  const selectedWorkflow = useSelector(workflowSelector);
+  // const selectedWorkflow = useSelector(workflowSelector);
 
   const [completedTasksAmount, allTasksAmount] = useMemo(
     () =>
@@ -425,14 +425,14 @@ const TaskTemplateGroupHeader = ({
     [columns],
   );
 
-  const getWorkflowData = useCallback(async id => {
-    setWorkFlowData(await TaskTemplateApi.getTemplateBasicDetails(id));
-  }, []);
+  // const getWorkflowData = useCallback(async id => {
+  //   setWorkFlowData(await TaskTemplateApi.getTemplateBasicDetails(id));
+  // }, []);
 
-  useEffect(() => {
-    // eslint-disable-next-line no-unused-expressions
-    !selectedWorkflow ? getWorkflowData(identifier) : setWorkFlowData(null);
-  }, [getWorkflowData, identifier, selectedWorkflow]);
+  // useEffect(() => {
+  //   // eslint-disable-next-line no-unused-expressions
+  //   !selectedWorkflow ? getWorkflowData(identifier) : setWorkFlowData(null);
+  // }, [getWorkflowData, identifier, selectedWorkflow]);
 
   const restrictions =
     SINGLE_TASK_RESTRICTIONS_PROFILES[currentUser?.orgUserRole];
