@@ -68,6 +68,7 @@ import store from '../store';
 
 export const DO_CREATE_TASK = 'DO_CREATE_TASK';
 export const DEFAULT_TASK_GROUPS_TO_LOAD = 3;
+export const DEFAULT_TASK_GROUPS_TO_LOAD_COMPLETED = 2;
 
 export const createTask = payload => ({
   type: DO_CREATE_TASK,
@@ -154,7 +155,9 @@ function* getCurrentListTasks() {
         ({ name }) => name === 'list.taskgroup.default.load.count',
       ) || {};
     const taskGroupsToLoad =
-      taskGroupsToLoadItem?.value || DEFAULT_TASK_GROUPS_TO_LOAD;
+      status === TaskStatus.COMPLETE
+        ? DEFAULT_TASK_GROUPS_TO_LOAD_COMPLETED
+        : taskGroupsToLoadItem?.value || DEFAULT_TASK_GROUPS_TO_LOAD;
 
     if (searchTerm) {
       const groupedTasks = yield call(
