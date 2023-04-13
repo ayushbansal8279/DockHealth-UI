@@ -1,12 +1,14 @@
 /* eslint-disable react/jsx-no-duplicate-props */
 import React, { useEffect, useRef, useState } from 'react';
-import { Grid } from '@material-ui/core';
+import { Grid, Box } from '@material-ui/core';
 import { List } from 'react-virtualized';
 import Loader, { LoaderSizes } from 'components/common/Loader/Loader';
 import Spacing from 'components/common/Spacing';
 import { useBoolean } from 'hooks/useBoolean';
 import { isOutsideScrollView } from 'helpers/scroll-helper';
 import Input from 'components/common/Input/Input';
+import { useLocation, Link } from 'react-router-dom';
+import LaunchIcon from '@material-ui/icons/Launch';
 import {
   arrayOf,
   bool,
@@ -23,7 +25,7 @@ import {
   ListItemButton,
   ListItemRefineButton,
 } from './styled';
-import { AdornmentClear } from '../styled';
+import { AdornmentClear, PatientLinkText } from '../styled';
 
 const SelectDropdown = React.forwardRef(
   (
@@ -53,8 +55,12 @@ const SelectDropdown = React.forwardRef(
     const [currentSelectedOption, setCurrentSelectedOption] = useState(
       selectedOption,
     );
+
     const [isFocused, setIsFocused, unsetIsFocused] = useBoolean(false);
     const [hoveredItemIndex, setHoveredItemIndex] = useState(0);
+
+    const [patientIdentifier, setPatientIdentifier] = useState(null);
+    const { pathname } = useLocation();
 
     const handleInputChange = event => {
       const newValue = event.target.value;
@@ -72,8 +78,15 @@ const SelectDropdown = React.forwardRef(
 
     useEffect(() => {
       setCurrentSelectedOption(selectedOption || null);
+      if (selectedOption) {
+        setPatientIdentifier(selectedOption.patient.patientIdentifier);
+      }
       // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [value]);
+
+    useEffect(() => {
+      console.log(`patientIdentifier: ${patientIdentifier}`)
+    }, [patientIdentifier]);
 
     useEffect(() => {
       if (isFocused) onInputChange(inputValue);
@@ -218,6 +231,24 @@ const SelectDropdown = React.forwardRef(
             InputProps={{
               endAdornment: !disabled ? (
                 <>
+                  {patientIdentifier && (
+                    <div style={{ display: 'flex' }}>
+                      <Link
+                        to={{
+                          pathname: `/core/patient/${patientIdentifier}`,
+                          state: {
+                            from: pathname,
+                          },
+                        }}
+                      >
+                        <PatientLinkText>
+                          <LaunchIcon />
+                        </PatientLinkText>
+                      </Link>
+                      <Spacing horizontal={3} />
+                    </div>
+                  )}
+                  <Box mx={0.5} />
                   {currentSelectedOption?.displayLabel === inputValue && (
                     <AdornmentClear
                       onClick={() => {
