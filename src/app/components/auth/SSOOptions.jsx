@@ -1,10 +1,20 @@
 // eslint-disable-next-line unicorn/filename-case
-import React from 'react';
-import Spacing from 'components/common/Spacing';
+import React, { useState, useRef } from 'react';
+import { Box, ListItemText, Popover } from '@material-ui/core';
 import { MontserratTypography } from 'styles/theme-montserrat';
-import { Box } from '@material-ui/core';
+import Spacing from 'components/common/Spacing';
 import palette from 'styles/palette';
-import { SSOOptionsBar, SSOButton, GoogleLogoImage } from './styled';
+import SSOIcon from '@material-ui/icons/Security';
+import {
+  SSOOptionsBar,
+  SSOButton,
+  GoogleLogoImage,
+  PopoverContainer,
+  Spacer,
+  DrChronoLogoImage,
+  AthenaHealthImage,
+} from './styled';
+import { StyledHyperLink } from './AuthComponents.styled';
 
 // eslint-disable-next-line sonarjs/cognitive-complexity
 const SSOOptions = () => {
@@ -16,16 +26,25 @@ const SSOOptions = () => {
     ssoURLGoogle = process.env.SSO_LAUNCH_URL_GOOGLE;
   }
 
+  const drChronoLogin = () => {
+    window.sessionStorage.setItem('iss', 'drchrono.com');
+    window.location.href = `${process.env.HEYDOC_SERVICES_BASE_URL}oidc/authorize?iss=client1-drchrono.com`;
+  };
+  const athenaLogin = () => {
+    window.sessionStorage.setItem('iss', 'athenahealth');
+    window.location.href = `${process.env.HEYDOC_SERVICES_BASE_URL}oidc/authorize?iss=athenahealth`;
+  };
+  const buttonReference = useRef(null);
+  const [open, setOpen] = useState(false);
+
   return (
     <>
-      {ssoURLGoogle && (
-        <>
-          <Spacing vertical={4} />
-          <MontserratTypography variant="h4">
-            Or sign in with
-          </MontserratTypography>
-          <Spacing vertical={2} />
-          <SSOOptionsBar>
+      <Spacing vertical={4} />
+      <MontserratTypography variant="h4">Or sign in with</MontserratTypography>
+      <Spacing vertical={3} />
+      <SSOOptionsBar>
+        {ssoURLGoogle && (
+          <>
             <a href={ssoURLGoogle} target="_self">
               <Box
                 mx={1}
@@ -34,14 +53,77 @@ const SSOOptions = () => {
                 <SSOButton>
                   <GoogleLogoImage />
                 </SSOButton>
-                <Spacing vertical={1} />
-                <MontserratTypography variant="h5">Google</MontserratTypography>
+                <Spacing vertical={2} />
+                <MontserratTypography variant="h4" weight="400">
+                  Google
+                </MontserratTypography>
               </Box>
             </a>
             <Box mx={1} />
-          </SSOOptionsBar>
-        </>
-      )}
+          </>
+        )}
+        <StyledHyperLink>
+          <Box
+            mx={1}
+            style={{ textAlign: 'center', color: palette.mediumGrey }}
+          >
+            <SSOButton
+              ref={buttonReference}
+              onClick={() => setOpen(!open)}
+              tooltip="Select EMR for Single Sign On"
+            >
+              <SSOIcon style={{ width: '60px' }} />
+            </SSOButton>
+            <Spacing vertical={2} />
+            <MontserratTypography variant="h4" weight="400">
+              SSO
+            </MontserratTypography>
+          </Box>
+        </StyledHyperLink>
+        <Box mx={1} />
+        <Box mx={1} />
+        <Popover
+          anchorEl={buttonReference?.current}
+          open={open}
+          onClose={() => setOpen(false)}
+          anchorOrigin={{
+            vertical: 'bottom',
+            horizontal: 'left',
+          }}
+          transformOrigin={{
+            vertical: 'top',
+            horizontal: 'left',
+          }}
+        >
+          <PopoverContainer>
+            <Box display="flex" justifyContent="space-between">
+              <Box mx={0.5} />
+              <ListItemText>
+                <Spacing vertical={2} />
+                <DrChronoLogoImage />
+                <Spacing horizontal={3} />
+                <StyledHyperLink onClick={drChronoLogin}>
+                  DrChrono
+                </StyledHyperLink>
+                <Spacing vertical={2} />
+              </ListItemText>
+            </Box>
+            <Spacer />
+            <Box display="flex" justifyContent="space-between">
+              <Box mx={0.5} />
+              <ListItemText>
+                <Spacing vertical={2} />
+                <AthenaHealthImage />
+                <Spacing horizontal={3} />
+                <StyledHyperLink onClick={athenaLogin}>
+                  athenahealth
+                </StyledHyperLink>
+                <Spacing vertical={2} />
+              </ListItemText>
+            </Box>
+          </PopoverContainer>
+        </Popover>
+      </SSOOptionsBar>
     </>
   );
 };
