@@ -164,6 +164,7 @@ const TaskItemDescription = ({
   );
 
   const handleTextEditorBlur = (_, { value }) => {
+    console.log("handleTextEditorBlur");
     dispatch(updateTaskDescription(task, {
       tokenizedDescription: value,
       taskMentions: []
@@ -184,14 +185,24 @@ const TaskItemDescription = ({
   return (
     <DescriptionBox width={width} data-test={"foo"}>
       <Box display="flex" flex={1}>
-        <TextEditor
-            type="input"
-            readonly={!isEditing}
-            autofocus={isEditing}
+        <input
+            readOnly
             value={description}
-            onBlur={handleTextEditorBlur}
-            onKeyDown={handleTextEditorKeyDown}
+            style={{
+              outline: "none",
+              border: "none",
+              background: "transparent"
+            }}
         />
+        {/*<TextEditor*/}
+        {/*    type="input"*/}
+        {/*    readonly={!isEditing}*/}
+        {/*    autofocus={isEditing}*/}
+        {/*    value={description}*/}
+        {/*    onBlur={handleTextEditorBlur}*/}
+        {/*    onKeyDown={handleTextEditorKeyDown}*/}
+        {/*    mentions={taskMentions}*/}
+        {/*/>*/}
         {/*<RichTextEditor noStyle isSingleLine value={descriptionState} onChange={setDescriptionState} readOnly={!isEditing} className={isEditing ? "simple-input" : ""} onSubmit={(description) => {*/}
         {/*  dispatch(*/}
         {/*      updateTaskDescription(task, {*/}

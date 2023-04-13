@@ -112,6 +112,10 @@ const TaskDetails = ({ readOnly, disableMentions }) => {
             value={rawTextState}
             placeholder="Task's details"
             onChange={handleTextAreaChange}
+            mentions={selectedTask?.taskMentions}
+            enabled={{
+                mentions: true
+            }}
         />
         {/*<RichTextEditor onChange={onChangeDetailsEditor} value={rawTextState} textArea isToolbarActive />*/}
       {/*<CustomTextEditor*/}

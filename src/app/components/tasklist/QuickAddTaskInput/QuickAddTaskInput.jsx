@@ -128,7 +128,7 @@ const QuickAddTaskInput = React.forwardRef(
             type="input"
             value={description}
             onChange={handleTextEditorChange}
-            onBlur={handleTextEditorBlur}
+            // onBlur={handleTextEditorBlur}
             onKeyDown={handleTextEditorKeyDown}
           />
           {/*<RichTextEditor noStyle value={description} onChange={setDescription} onSubmit={(description) => {*/}
