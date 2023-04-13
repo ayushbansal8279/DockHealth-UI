@@ -26,14 +26,16 @@ const SelectPatientFolderModal = ({ closeModal, onMove }) => {
 
   useEffect(() => {
     setFoldersList(null);
-    PatientAttachmentApi.getPatientAttachments(
-      patientIdentifier,
-      currentFolder?.attachmentIdentifier ?? null,
-    ).then(a => {
-      setFoldersList(
-        a.filter(({ type }) => type === PatientAttachmentType.FOLDER),
-      );
-    });
+    if (patientIdentifier) {
+      PatientAttachmentApi.getPatientAttachments(
+        patientIdentifier,
+        currentFolder?.attachmentIdentifier ?? null,
+      ).then(a => {
+        setFoldersList(
+          a.filter(({ type }) => type === PatientAttachmentType.FOLDER),
+        );
+      });
+    }
   }, [currentFolder, patientIdentifier]);
 
   const handleMoveClick = () => {

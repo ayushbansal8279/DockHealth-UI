@@ -22,6 +22,7 @@ const BulkEditOptionsBar = ({ selectedPatients = {}, onClose }) => {
     toggleCreateWorkflowOption,
     toggleAddLabelOption,
     toggleDeleteOption,
+    downloadFiles,
   } = selectedOptionsHandler;
 
   const createTaskHandler = useCallback(() => {
@@ -37,8 +38,11 @@ const BulkEditOptionsBar = ({ selectedPatients = {}, onClose }) => {
   }, [toggleAddLabelOption]);
 
   const downloadFilesHandler = useCallback(() => {
-    toggleAddLabelOption();
-  }, [toggleAddLabelOption]);
+    const selectedPatientIdentifiers = selectedPatients?.map(patient => {
+      return patient.patientIdentifier;
+    });
+    downloadFiles(selectedPatientIdentifiers);
+  }, [downloadFiles, selectedPatients]);
 
   const deleteHandler = useCallback(() => {
     toggleDeleteOption();
@@ -75,14 +79,14 @@ const BulkEditOptionsBar = ({ selectedPatients = {}, onClose }) => {
             wideView
           />
         </Button>
-        {/* <Button type="button" onClick={downloadFilesHandler} disabled={false}>
+        <Button type="button" onClick={downloadFilesHandler} disabled={false}>
           <BulkEditOption
             iconComponent={DownloadIcon}
             title="Download Files"
             isDisabled={false}
             wideView
           />
-        </Button> */}
+        </Button>
         <Button type="button" onClick={deleteHandler} disabled={false}>
           <BulkEditOption
             iconComponent={DeleteIcon}

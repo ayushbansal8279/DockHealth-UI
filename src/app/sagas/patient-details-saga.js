@@ -250,15 +250,17 @@ function* getCurrentPatientAttachments() {
   const folderIdentifier = yield select(currentFolderIdentifierSelector);
 
   try {
-    const attachments = yield call(
-      PatientAttachmentApi.getPatientAttachments,
-      patientIdentifier,
-      folderIdentifier,
-    );
-    yield put({
-      type: ActionTypes.GET_CURRENT_PATIENT_ATTACHMENTS_SUCCESS,
-      attachments,
-    });
+    if (patientIdentifier) {
+      const attachments = yield call(
+        PatientAttachmentApi.getPatientAttachments,
+        patientIdentifier,
+        folderIdentifier,
+      );
+      yield put({
+        type: ActionTypes.GET_CURRENT_PATIENT_ATTACHMENTS_SUCCESS,
+        attachments,
+      });
+    }
   } catch {
     yield put({
       type: ActionTypes.GET_CURRENT_PATIENT_ATTACHMENTS_FAILURE,

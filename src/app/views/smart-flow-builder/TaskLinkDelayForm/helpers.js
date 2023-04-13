@@ -17,6 +17,7 @@ export const TIME_REFERENCE = {
   NEXT_TASK_DUE_DATE_TIME: 'Next task due date',
   PREV_TASK_COMPLETION_DATE_TIME: 'Previous task complete',
   WORKFLOW_ANCHOR_DATE: 'Workflow anchor date',
+  WORKFLOW_DEPLOY_DATE: 'Workflow deploy date',
 };
 
 export const TIME_REFERENCE_OPTIONS = Object.keys(TIME_REFERENCE).map(
