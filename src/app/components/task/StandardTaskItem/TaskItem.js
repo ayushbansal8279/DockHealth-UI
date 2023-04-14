@@ -307,6 +307,84 @@ const TaskItem = React.memo(
       );
     }, [selectedOrganization, isListAdmin, isCreator]);
 
+    const editDescriptionDisabled = useMemo(() => {
+      const editDescriptionDisabledItem =
+        selectedOrganization?.themeSettings?.find(
+          ({ name }) => name === 'list.tasks.member.edit.description.enabled',
+        ) || {};
+      return (
+        editDescriptionDisabledItem &&
+        editDescriptionDisabledItem?.value === 'false' &&
+        !isListAdmin &&
+        !isCreator
+      );
+    }, [selectedOrganization, isListAdmin, isCreator]);
+
+    const editPatientDisabled = useMemo(() => {
+      const editPatientDisabledItem =
+        selectedOrganization?.themeSettings?.find(
+          ({ name }) => name === 'list.tasks.member.edit.patient.enabled',
+        ) || {};
+      return (
+        editPatientDisabledItem &&
+        editPatientDisabledItem?.value === 'false' &&
+        !isListAdmin &&
+        !isCreator
+      );
+    }, [selectedOrganization, isListAdmin, isCreator]);
+
+    const editStatusDisabled = useMemo(() => {
+      const editStatusDisabledItem =
+        selectedOrganization?.themeSettings?.find(
+          ({ name }) => name === 'list.tasks.member.edit.status.enabled',
+        ) || {};
+      return (
+        editStatusDisabledItem &&
+        editStatusDisabledItem?.value === 'false' &&
+        !isListAdmin &&
+        !isCreator
+      );
+    }, [selectedOrganization, isListAdmin, isCreator]);
+
+    const editPriorityDisabled = useMemo(() => {
+      const editPriorityDisabledItem =
+        selectedOrganization?.themeSettings?.find(
+          ({ name }) => name === 'list.tasks.member.edit.priority.enabled',
+        ) || {};
+      return (
+        editPriorityDisabledItem &&
+        editPriorityDisabledItem?.value === 'false' &&
+        !isListAdmin &&
+        !isCreator
+      );
+    }, [selectedOrganization, isListAdmin, isCreator]);
+
+    const editLabelsDisabled = useMemo(() => {
+      const editLabelsDisabledItem =
+        selectedOrganization?.themeSettings?.find(
+          ({ name }) => name === 'list.tasks.member.edit.labels.enabled',
+        ) || {};
+      return (
+        editLabelsDisabledItem &&
+        editLabelsDisabledItem?.value === 'false' &&
+        !isListAdmin &&
+        !isCreator
+      );
+    }, [selectedOrganization, isListAdmin, isCreator]);
+
+    const editSubTasksDisabled = useMemo(() => {
+      const editSubTasksDisabledItem =
+        selectedOrganization?.themeSettings?.find(
+          ({ name }) => name === 'list.tasks.member.edit.subtasks.enabled',
+        ) || {};
+      return (
+        editSubTasksDisabledItem &&
+        editSubTasksDisabledItem?.value === 'false' &&
+        !isListAdmin &&
+        !isCreator
+      );
+    }, [selectedOrganization, isListAdmin, isCreator]);
+
     const nonAssigneeCompleteDisabled = useMemo(() => {
       const nonAssigneeCompleteDisabledItem =
         selectedOrganization?.themeSettings?.find(
@@ -325,15 +403,30 @@ const TaskItem = React.memo(
     if (taskDeleteDisabled) {
       restrictions.delete = DISABLED;
     }
-
     if (editAssignmentDisabled) {
       restrictions.assigment = READ_ONLY;
     }
-
     if (editDueDateDisabled) {
       restrictions.dueDate = DISABLED;
     }
-
+    if (editDescriptionDisabled) {
+      restrictions.description = DISABLED;
+    }
+    if (editPatientDisabled) {
+      restrictions.patient = DISABLED;
+    }
+    if (editStatusDisabled) {
+      restrictions.status = DISABLED;
+    }
+    if (editPriorityDisabled) {
+      restrictions.priority = DISABLED;
+    }
+    if (editLabelsDisabled) {
+      restrictions.labels = DISABLED;
+    }
+    if (editSubTasksDisabled) {
+      restrictions.subtasks = DISABLED;
+    }
     if (nonAssigneeCompleteDisabled) {
       taskListRestrictions.completeTask = DISABLED;
     }
