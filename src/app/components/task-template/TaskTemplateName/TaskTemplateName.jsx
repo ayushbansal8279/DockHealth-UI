@@ -1,12 +1,10 @@
 /* eslint-disable react-hooks/rules-of-hooks */
-import React, { useRef } from 'react';
+import React from 'react';
 import { Fade, Popper } from '@material-ui/core';
 import { openDrawer } from 'actions/workflow-drawer-actions';
 import { checkIfShouldDisplayTooltip } from 'components/task/OverflowTooltip/OverflowTooltip';
 import { useDispatch } from 'react-redux';
-import TextEditor from 'components/common/TextEditor/TextEditor';
-import { useMentionsEditorState } from 'components/common/TextEditor/use-mentions-editor-state';
-import { convertToEditorState } from 'components/common/TextEditor/helpers';
+import Highlighter from 'react-highlight-words';
 import {
   NameContainer,
   NameTooltip,
@@ -21,25 +19,7 @@ const TaskTemplateName = ({
   highlightedValue,
 }) => {
   const dispatch = useDispatch();
-  const {
-    name,
-    identifier,
-    tokenizedDescription,
-    taskMentions,
-    taskListIdentifier,
-    searchMetaData,
-  } = templateGroup;
-
-  const descriptionReference = useRef(null);
-  const { matchDescription } = searchMetaData || {};
-  const [descriptionState, setDescriptionState] = useMentionsEditorState(
-    convertToEditorState({
-      rawText: nameInputValue,
-      tokenizedText: tokenizedDescription,
-      mentions: taskMentions,
-      handleRichText: false,
-    }),
-  );
+  const { name, identifier } = templateGroup;
 
   return (
     <>
@@ -49,40 +29,11 @@ const TaskTemplateName = ({
         }}
       >
         <>
-          {/* <TaskTemplateNameInput
-            ref={nameInputReference}
-            readOnly={!isEditing}
-            error={nameInputError}
-            onChange={event => {
-              setNameInputValue(event.target?.value);
-              setNameInputError(false);
-            }}
-            onBlur={() => {
-              setIsEditing(false);
-              setNameInputValue(name);
-            }}
-            onKeyDown={handleNameInputKeyDown}
-            value={nameInputValue}
-            onClick={event => {
-              if (isEditing) {
-                event.stopPropagation();
-              }
-            }}
-          /> */}
-          <TextEditor
-            ref={descriptionReference}
-            readOnly
-            oneline
-            state={descriptionState}
-            onChange={setDescriptionState}
-            taskListIdentifier={taskListIdentifier}
-            highlightedValues={
-              matchDescription && highlightedValue?.toLowerCase().split(/\s+/)
-            }
-            // keyBindingFn={handleKeyBindingFn}
-            // handleKeyCommand={handleKeyCommand}
-            // onBlur={handleBlur}
-            // disableMentions={disableMentions}
+          <Highlighter
+            highlightClassName="list-highlight"
+            searchWords={highlightedValue?.toLowerCase().split(/\s+/)}
+            autoEscape
+            textToHighlight={nameInputValue}
           />
           {templateGroup?.sourceTaskBundleTemplate && (
             <TaskTemplateDescriptionIndicators>
