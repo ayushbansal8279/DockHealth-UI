@@ -257,6 +257,10 @@ const TaskItem = React.memo(
       return isMemberAdmin(currentUserMember);
     }, [currentUser, currentTasklist]);
 
+    const isCreator = useMemo(() => {
+      return creator?.identifier === currentUser?.identifier;
+    }, [currentUser, creator]);
+
     if (!restrictions) {
       restrictions = {};
     }
@@ -272,9 +276,10 @@ const TaskItem = React.memo(
       return (
         deleteDisabledItem &&
         deleteDisabledItem?.value === 'false' &&
-        !isListAdmin
+        !isListAdmin &&
+        !isCreator
       );
-    }, [selectedOrganization, isListAdmin]);
+    }, [selectedOrganization, isListAdmin, isCreator]);
 
     const editAssignmentDisabled = useMemo(() => {
       const editAssignmentDisabledItem =
@@ -284,9 +289,10 @@ const TaskItem = React.memo(
       return (
         editAssignmentDisabledItem &&
         editAssignmentDisabledItem?.value === 'false' &&
-        !isListAdmin
+        !isListAdmin &&
+        !isCreator
       );
-    }, [selectedOrganization, isListAdmin]);
+    }, [selectedOrganization, isListAdmin, isCreator]);
 
     const editDueDateDisabled = useMemo(() => {
       const editDueDateDisabledItem =
@@ -296,9 +302,10 @@ const TaskItem = React.memo(
       return (
         editDueDateDisabledItem &&
         editDueDateDisabledItem?.value === 'false' &&
-        !isListAdmin
+        !isListAdmin &&
+        !isCreator
       );
-    }, [selectedOrganization, isListAdmin]);
+    }, [selectedOrganization, isListAdmin, isCreator]);
 
     const nonAssigneeCompleteDisabled = useMemo(() => {
       const nonAssigneeCompleteDisabledItem =
@@ -310,9 +317,10 @@ const TaskItem = React.memo(
         nonAssigneeCompleteDisabledItem?.value === 'false' &&
         assignedToUsers.filter(
           user => user.identifier === currentUser.identifier,
-        ).length === 0
+        ).length === 0 &&
+        !isCreator
       );
-    }, [assignedToUsers, currentUser, selectedOrganization]);
+    }, [assignedToUsers, currentUser, selectedOrganization, isCreator]);
 
     if (taskDeleteDisabled) {
       restrictions.delete = DISABLED;
