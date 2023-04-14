@@ -45,7 +45,6 @@ import {
   styleTaskDrawerContainer,
   styleFullRow,
   styleEmailRow,
-  styleFirstRow,
   styleLeftColumn,
   styleRightColumn,
   styleCommentRow,
@@ -188,7 +187,14 @@ const TaskDrawerContent = props => {
           xs={12}
           alignItems="center"
           justify="space-between"
-          style={{ position: 'fixed', width: '100%', zIndex: '1000000' }}
+          style={{
+            paddingTop: '0',
+            marginTop: '0',
+            height: '60px',
+            position: 'fixed',
+            width: '100%',
+            zIndex: '1000000',
+          }}
         >
           <TopSection
             handleCopyLink={handleCopyLink}

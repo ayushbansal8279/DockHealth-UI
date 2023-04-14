@@ -165,12 +165,13 @@ const TopSection = ({
   );
 
   return (
-    <Paper elevation={3} style={{ width: '100%' }}>
+    <Paper elevation={3} style={{ width: '100%', height: '60px' }}>
       <Box
         width="100%"
         display="flex"
         justifyContent="space-between"
         alignItems="center"
+        height="60px"
       >
         <Box display="flex">
           {selectedTask && !checkIfTemplateTask(selectedTask) && (
