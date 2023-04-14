@@ -560,6 +560,7 @@ const TaskTemplateGroupHeader = ({
               setIsEditing={setIsEditing}
               handleNameInputKeyDown={handleNameInputKeyDown}
               nameInputValue={nameInputValue}
+              highlightedValue={highlightedValue}
             />
             <TaskTemplateOptionsContainer
               groupHasMultipleAssignees={groupHasMultipleAssignees}

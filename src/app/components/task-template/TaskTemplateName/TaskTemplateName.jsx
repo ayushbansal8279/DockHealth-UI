@@ -1,11 +1,13 @@
 /* eslint-disable react-hooks/rules-of-hooks */
-import React from 'react';
+import React, { useRef } from 'react';
 import { Fade, Popper } from '@material-ui/core';
 import { openDrawer } from 'actions/workflow-drawer-actions';
 import { checkIfShouldDisplayTooltip } from 'components/task/OverflowTooltip/OverflowTooltip';
 import { useDispatch } from 'react-redux';
+import TextEditor from 'components/common/TextEditor/TextEditor';
+import { useMentionsEditorState } from 'components/common/TextEditor/use-mentions-editor-state';
+import { convertToEditorState } from 'components/common/TextEditor/helpers';
 import {
-  TaskTemplateNameInput,
   NameContainer,
   NameTooltip,
   TaskTemplateDescriptionIndicators,
@@ -15,16 +17,29 @@ import {
 const TaskTemplateName = ({
   nameInputReference,
   templateGroup,
-  isEditing,
-  nameInputError,
-  setNameInputValue,
-  setNameInputError,
-  setIsEditing,
-  handleNameInputKeyDown,
   nameInputValue,
+  highlightedValue,
 }) => {
   const dispatch = useDispatch();
-  const { name, identifier } = templateGroup;
+  const {
+    name,
+    identifier,
+    tokenizedDescription,
+    taskMentions,
+    taskListIdentifier,
+    searchMetaData,
+  } = templateGroup;
+
+  const descriptionReference = useRef(null);
+  const { matchDescription } = searchMetaData || {};
+  const [descriptionState, setDescriptionState] = useMentionsEditorState(
+    convertToEditorState({
+      rawText: nameInputValue,
+      tokenizedText: tokenizedDescription,
+      mentions: taskMentions,
+      handleRichText: false,
+    }),
+  );
 
   return (
     <>
@@ -34,7 +49,7 @@ const TaskTemplateName = ({
         }}
       >
         <>
-          <TaskTemplateNameInput
+          {/* <TaskTemplateNameInput
             ref={nameInputReference}
             readOnly={!isEditing}
             error={nameInputError}
@@ -53,6 +68,21 @@ const TaskTemplateName = ({
                 event.stopPropagation();
               }
             }}
+          /> */}
+          <TextEditor
+            ref={descriptionReference}
+            readOnly
+            oneline
+            state={descriptionState}
+            onChange={setDescriptionState}
+            taskListIdentifier={taskListIdentifier}
+            highlightedValues={
+              matchDescription && highlightedValue?.toLowerCase().split(/\s+/)
+            }
+            // keyBindingFn={handleKeyBindingFn}
+            // handleKeyCommand={handleKeyCommand}
+            // onBlur={handleBlur}
+            // disableMentions={disableMentions}
           />
           {templateGroup?.sourceTaskBundleTemplate && (
             <TaskTemplateDescriptionIndicators>
