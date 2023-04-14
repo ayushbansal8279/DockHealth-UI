@@ -129,9 +129,193 @@ const TaskDrawerContent = props => {
   const quickAddPatientEnabled = quickAddPatientEnabledItem?.value !== 'false';
 
   let restrictions = SINGLE_TASK_RESTRICTIONS_PROFILES[orgUserRole];
-  const taskListRestrictions = TASK_LIST_RESTRICTIONS_PROFILES[orgUserRole];
+  let taskListRestrictions = TASK_LIST_RESTRICTIONS_PROFILES[orgUserRole];
 
   const restrictMentions = restrictions?.mentions === DISABLED;
+
+  const selectedOrganization = useSelector(selectedUserOrganizationSelector);
+  const currentTasklist = useSelector(currentTaskListSelector);
+  const currentUser = useSelector(userProfileSelector);
+  const isListAdmin = useMemo(() => {
+    const currentUserMember = currentTasklist?.listUsers?.find(
+      u => u.identifier === currentUser?.identifier,
+    );
+    return isMemberAdmin(currentUserMember);
+  }, [currentUser, currentTasklist]);
+
+  const isCreator = useMemo(() => {
+    return selectedTask?.creator?.identifier === currentUser?.identifier;
+  }, [currentUser, selectedTask]);
+
+  if (!restrictions) {
+    restrictions = {};
+  }
+  if (!taskListRestrictions) {
+    taskListRestrictions = {};
+  }
+
+  const taskDeleteDisabled = useMemo(() => {
+    const deleteDisabledItem =
+      selectedOrganization?.themeSettings?.find(
+        ({ name }) => name === 'list.tasks.member.delete.enabled',
+      ) || {};
+    return (
+      deleteDisabledItem &&
+      deleteDisabledItem?.value === 'false' &&
+      !isListAdmin &&
+      !isCreator
+    );
+  }, [selectedOrganization, isListAdmin, isCreator]);
+
+  const editAssignmentDisabled = useMemo(() => {
+    const editAssignmentDisabledItem =
+      selectedOrganization?.themeSettings?.find(
+        ({ name }) => name === 'list.tasks.member.edit.assignment.enabled',
+      ) || {};
+    return (
+      editAssignmentDisabledItem &&
+      editAssignmentDisabledItem?.value === 'false' &&
+      !isListAdmin &&
+      !isCreator
+    );
+  }, [selectedOrganization, isListAdmin, isCreator]);
+
+  const editDueDateDisabled = useMemo(() => {
+    const editDueDateDisabledItem =
+      selectedOrganization?.themeSettings?.find(
+        ({ name }) => name === 'list.tasks.member.edit.duedate.enabled',
+      ) || {};
+    return (
+      editDueDateDisabledItem &&
+      editDueDateDisabledItem?.value === 'false' &&
+      !isListAdmin &&
+      !isCreator
+    );
+  }, [selectedOrganization, isListAdmin, isCreator]);
+
+  const editDescriptionDisabled = useMemo(() => {
+    const editDescriptionDisabledItem =
+      selectedOrganization?.themeSettings?.find(
+        ({ name }) => name === 'list.tasks.member.edit.description.enabled',
+      ) || {};
+    return (
+      editDescriptionDisabledItem &&
+      editDescriptionDisabledItem?.value === 'false' &&
+      !isListAdmin &&
+      !isCreator
+    );
+  }, [selectedOrganization, isListAdmin, isCreator]);
+
+  const editPatientDisabled = useMemo(() => {
+    const editPatientDisabledItem =
+      selectedOrganization?.themeSettings?.find(
+        ({ name }) => name === 'list.tasks.member.edit.patient.enabled',
+      ) || {};
+    return (
+      editPatientDisabledItem &&
+      editPatientDisabledItem?.value === 'false' &&
+      !isListAdmin &&
+      !isCreator
+    );
+  }, [selectedOrganization, isListAdmin, isCreator]);
+
+  const editStatusDisabled = useMemo(() => {
+    const editStatusDisabledItem =
+      selectedOrganization?.themeSettings?.find(
+        ({ name }) => name === 'list.tasks.member.edit.status.enabled',
+      ) || {};
+    return (
+      editStatusDisabledItem &&
+      editStatusDisabledItem?.value === 'false' &&
+      !isListAdmin &&
+      !isCreator
+    );
+  }, [selectedOrganization, isListAdmin, isCreator]);
+
+  const editPriorityDisabled = useMemo(() => {
+    const editPriorityDisabledItem =
+      selectedOrganization?.themeSettings?.find(
+        ({ name }) => name === 'list.tasks.member.edit.priority.enabled',
+      ) || {};
+    return (
+      editPriorityDisabledItem &&
+      editPriorityDisabledItem?.value === 'false' &&
+      !isListAdmin &&
+      !isCreator
+    );
+  }, [selectedOrganization, isListAdmin, isCreator]);
+
+  const editLabelsDisabled = useMemo(() => {
+    const editLabelsDisabledItem =
+      selectedOrganization?.themeSettings?.find(
+        ({ name }) => name === 'list.tasks.member.edit.labels.enabled',
+      ) || {};
+    return (
+      editLabelsDisabledItem &&
+      editLabelsDisabledItem?.value === 'false' &&
+      !isListAdmin &&
+      !isCreator
+    );
+  }, [selectedOrganization, isListAdmin, isCreator]);
+
+  const editSubTasksDisabled = useMemo(() => {
+    const editSubTasksDisabledItem =
+      selectedOrganization?.themeSettings?.find(
+        ({ name }) => name === 'list.tasks.member.edit.subtasks.enabled',
+      ) || {};
+    return (
+      editSubTasksDisabledItem &&
+      editSubTasksDisabledItem?.value === 'false' &&
+      !isListAdmin &&
+      !isCreator
+    );
+  }, [selectedOrganization, isListAdmin, isCreator]);
+
+  const nonAssigneeCompleteDisabled = useMemo(() => {
+    const nonAssigneeCompleteDisabledItem =
+      selectedOrganization?.themeSettings?.find(
+        ({ name }) => name === 'list.tasks.non-assignee.complete.enabled',
+      ) || {};
+    return (
+      nonAssigneeCompleteDisabledItem &&
+      nonAssigneeCompleteDisabledItem?.value === 'false' &&
+      selectedTask?.assignedToUsers.filter(
+        user => user.identifier === currentUser.identifier,
+      ).length === 0 &&
+      !isCreator
+    );
+  }, [selectedTask, currentUser, selectedOrganization, isCreator]);
+
+  if (taskDeleteDisabled) {
+    restrictions.delete = DISABLED;
+  }
+  if (editAssignmentDisabled) {
+    restrictions.assigment = READ_ONLY;
+  }
+  if (editDueDateDisabled) {
+    restrictions.dueDate = DISABLED;
+  }
+  if (editDescriptionDisabled) {
+    restrictions.description = DISABLED;
+  }
+  if (editPatientDisabled) {
+    restrictions.patient = DISABLED;
+  }
+  if (editStatusDisabled) {
+    restrictions.status = DISABLED;
+  }
+  if (editPriorityDisabled) {
+    restrictions.priority = DISABLED;
+  }
+  if (editLabelsDisabled) {
+    restrictions.labels = DISABLED;
+  }
+  if (editSubTasksDisabled) {
+    restrictions.subtasks = DISABLED;
+  }
+  if (nonAssigneeCompleteDisabled) {
+    taskListRestrictions.completeTask = DISABLED;
+  }
 
   // const watchersReference = useRef(null);
   // const [isSubscriptionListOpen, setSubscriptionListOpen] = useState(false);
@@ -145,29 +329,6 @@ const TaskDrawerContent = props => {
   // };
 
   const isMobile = useMediaQuery(theme => theme.breakpoints.down('sm'));
-
-  const currentUser = useSelector(userProfileSelector);
-  const selectedOrganization = useSelector(selectedUserOrganizationSelector);
-  const currentTasklist = useSelector(currentTaskListSelector);
-
-  const isListAdmin = useMemo(() => {
-    const currentUserMember = currentTasklist?.listUsers?.find(
-      u => u.identifier === currentUser?.identifier,
-    );
-    return isMemberAdmin(currentUserMember);
-  }, [currentUser, currentTasklist]);
-
-  const taskDeleteDisabled = useMemo(() => {
-    const deleteDisabledItem =
-      selectedOrganization?.themeSettings?.find(
-        ({ name }) => name === 'list.tasks.member.delete.enabled',
-      ) || {};
-    return (
-      deleteDisabledItem &&
-      deleteDisabledItem?.value === 'false' &&
-      !isListAdmin
-    );
-  }, [selectedOrganization, isListAdmin]);
 
   if (taskDeleteDisabled) {
     if (!restrictions) {
