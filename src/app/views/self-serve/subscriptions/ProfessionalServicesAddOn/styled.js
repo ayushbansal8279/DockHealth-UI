@@ -27,12 +27,12 @@ export const MostPopularText = styled.p`
 
 export const LeftContainer = styled.div`
   position: relative;
-  width: 50%;
+  width: 30%;
   margin-bottom: 50px;
 `;
 export const RightContainer = styled.div`
   position: relative;
-  width: 50%;
+  width: 70%;
   margin-bottom: 50px;
 `;
 
@@ -83,7 +83,7 @@ export const UnitText = styled.p`
 export const SubscribeButton = styled.button`
   width: 100%;
   padding: 14px;
-  border-radius: 16px;
+  border-radius: 4px;
   background-color: ${({ active, color }) => (active ? 'transparent' : color)};
   border: 2px solid ${({ color }) => color};
   color: ${({ active, color }) => (active ? color : palette.white)};
@@ -97,7 +97,7 @@ export const ContactUsAnchor = styled.a`
   box-sizing: border-box;
   width: 100%;
   padding: 14px;
-  border-radius: 16px;
+  border-radius: 4px;
   background-color: ${({ active, color }) => (active ? 'transparent' : color)};
   border: 2px solid ${({ color }) => color};
   color: ${({ active, color }) => (active ? color : palette.white)};
