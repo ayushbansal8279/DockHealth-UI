@@ -6,13 +6,14 @@ import { useBoolean } from 'hooks/useBoolean';
 import { userProfileSelector } from 'selectors/user-selectors';
 import Loader, { LoaderSizes } from 'components/common/Loader/Loader';
 import UserAvatar from 'components/user/UserAvatar/UserAvatar';
-import TextEditor from 'components/common/TextEditor/TextEditor';
 import {
   AddCommentContainer,
   AddCommentLoaderContainer,
   AddCommentInputContainer,
 } from './styled';
 import RichTextEditor from "components/RichTextEditorV2/RichTextEditor";
+import TextEditor from "../../../../ui-toolkit/Form/TextEditor/TextEditor";
+import {selectedTaskSelector} from "selectors/task-drawer-selectors";
 
 const AddComment = ({
   autoFocus,
@@ -80,18 +81,35 @@ const AddComment = ({
 
   const [description, setDescription] = useState(null)
 
-  const handleSubmit = (...varargs) => {
-    console.log("varargs", varargs, description);
-    if (description) {
-      onAdd(description)
+  const handleTextEditorChange = (_, { value }) => {
+    setDescription(value)
+  }
+
+  const handleTextEditorKeyDown = (editor, { value, key }) => {
+    if (key === "Enter") {
+      onAdd(value)
+      console.log(editor);
+      // setDescription("")
     }
   }
+
+  const selectedTask = useSelector(selectedTaskSelector);
 
   return (
     <AddCommentContainer ref={addCommentContainerReference}>
       <UserAvatar user={currentUser} size={34} />
       <AddCommentInputContainer isFocused={isFocused}>
-        <RichTextEditor noStyle textArea isToolbarActive onSubmit={handleSubmit} value={description} onChange={setDescription}/>
+        {/*<RichTextEditor noStyle textArea isToolbarActive onSubmit={handleSubmit} value={description} onChange={setDescription}/>*/}
+        <TextEditor
+          type="textarea"
+          // value={description}
+          // onChange={handleTextEditorChange}
+          onKeyDown={handleTextEditorKeyDown}
+          mentions={selectedTask?.taskMentions}
+          enabled={{
+            mentions: true
+          }}
+        />
         {/*<TextEditor*/}
         {/*  showToolbar*/}
         {/*  ref={addCommentReference}*/}

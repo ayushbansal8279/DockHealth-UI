@@ -607,7 +607,6 @@ const TaskItem = React.memo(
                   bolded
                   paddingLeft="smallPlus"
                   paddingRight="small"
-                  onClick={onClickTaskItem}
                   position="static"
                   isSubtask={isSubtask}
                   isSticky
@@ -670,7 +669,9 @@ const TaskItem = React.memo(
                       readOnly={restrictions?.subtasks === READ_ONLY}
                     />
                   )}
-                  <DetailsButton>Details</DetailsButton>
+                  <DetailsButton
+                      onClick={onClickTaskItem}
+                  >Details</DetailsButton>
                   {showDecisionRow && (
                     <DecisionCellContainer
                       onClick={(event) => event.stopPropagation()}

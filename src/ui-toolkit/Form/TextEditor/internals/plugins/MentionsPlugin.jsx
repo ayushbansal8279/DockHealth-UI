@@ -178,7 +178,7 @@ function MentionsTypeaheadMenuItem({
     </MenuItem>);
 }
 
-export default function MentionsPlugin() {
+export default function MentionsPlugin({ initialized, active, onActiveChange }) {
     const [editor] = useLexicalComposerContext();
     const taskListIdentifier = useSelector(currentTaskListIdentifierSelector)
 
@@ -202,8 +202,8 @@ export default function MentionsPlugin() {
                 nodeToReplace.replace(mentionNode);
             }
             mentionNode.select();
-            closeMenu();
         });
+        closeMenu();
     }, [editor]);
 
     const checkForMentionMatch = useCallback((text) => {

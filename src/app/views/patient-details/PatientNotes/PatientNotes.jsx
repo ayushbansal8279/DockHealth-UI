@@ -16,7 +16,6 @@ import {
   changePatientNotePin,
 } from 'sagas/patient-details-saga';
 import { openModal, closeModal } from 'modal/actions';
-import TextEditor from 'components/common/TextEditor/TextEditor';
 // import { EditorState } from 'draft-js';
 import { convertFromEditorStateToOutput } from 'components/common/TextEditor/helpers';
 import { useMentionsEditorState } from 'components/common/TextEditor/use-mentions-editor-state';
@@ -33,6 +32,8 @@ import {
   ButtonWrapper,
 } from './styled';
 import RichTextEditor from "components/RichTextEditorV2/RichTextEditor";
+import TextEditor from "../../../../ui-toolkit/Form/TextEditor/TextEditor";
+import TextArea from "../../../../ui-toolkit/Form/TextArea/TextArea";
 
 const PatientNotes = () => {
   const addNoteInputReference = useRef(null);
@@ -177,6 +178,11 @@ const PatientNotes = () => {
     // dispatch(addPatientNote(patientIdentifier, value))
   }
 
+  const handleTextEditorChange = (_, { value }) => {
+    setNoteState(value)
+    setEditMode(true)
+  }
+
   return (
     <PatientNotesWrapper>
       {isFetching ? (
@@ -189,7 +195,11 @@ const PatientNotes = () => {
             </PinnedNotesWrapper>
           )}
           {unpinnedNotes?.sort(descend(prop('dateUpdated')))?.map(renderNote)}
-          <RichTextEditor isToolbarActive onChange={handleNoteChange} value={noteState}/>
+          {/*<RichTextEditor isToolbarActive onChange={handleNoteChange} value={noteState}/>*/}
+          <TextArea
+              value={noteState}
+              onChange={handleTextEditorChange}
+          />
           {editMode && (
             <ButtonContainer>
               <ButtonWrapper>

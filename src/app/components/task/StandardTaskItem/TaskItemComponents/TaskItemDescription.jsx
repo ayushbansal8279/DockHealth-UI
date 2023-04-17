@@ -164,6 +164,7 @@ const TaskItemDescription = ({
   );
 
   const handleTextEditorBlur = (_, { value }) => {
+    console.log("handleTextEditorBlur");
     dispatch(updateTaskDescription(task, {
       tokenizedDescription: value,
       taskMentions: []
@@ -184,14 +185,33 @@ const TaskItemDescription = ({
   return (
     <DescriptionBox width={width} data-test={"foo"}>
       <Box display="flex" flex={1}>
-        <TextEditor
-            type="input"
-            readonly={!isEditing}
-            autofocus={isEditing}
-            value={description}
-            onBlur={handleTextEditorBlur}
-            onKeyDown={handleTextEditorKeyDown}
+        <input
+            readOnly={!isEditing}
+            value={descriptionState}
+            onChange={(event) => setDescriptionState(event.target.value)}
+            onBlur={(event) => {
+              dispatch(updateTaskDescription(task, {
+                tokenizedDescription: event.target.value,
+                taskMentions: []
+              }))
+              setEditing(false)
+            }}
+            style={{
+              outline: "none",
+              border: isEditing ? "1px solid #00a2e5" : "none",
+              borderRadius: "4px",
+              background: "transparent"
+            }}
         />
+        {/*<TextEditor*/}
+        {/*    type="input"*/}
+        {/*    readonly={!isEditing}*/}
+        {/*    autofocus={isEditing}*/}
+        {/*    value={description}*/}
+        {/*    onBlur={handleTextEditorBlur}*/}
+        {/*    onKeyDown={handleTextEditorKeyDown}*/}
+        {/*    mentions={taskMentions}*/}
+        {/*/>*/}
         {/*<RichTextEditor noStyle isSingleLine value={descriptionState} onChange={setDescriptionState} readOnly={!isEditing} className={isEditing ? "simple-input" : ""} onSubmit={(description) => {*/}
         {/*  dispatch(*/}
         {/*      updateTaskDescription(task, {*/}

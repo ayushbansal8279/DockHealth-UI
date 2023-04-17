@@ -1,5 +1,5 @@
-import React, {useEffect, useLayoutEffect, useMemo} from "react"
-import { ParagraphNode } from "lexical"
+import React, {useEffect, useLayoutEffect, useMemo, useState} from "react"
+import {ParagraphNode, TextNode, LineBreakNode, $isLineBreakNode} from "lexical"
 import { useLexicalComposerContext } from "@lexical/react/LexicalComposerContext"
 import { LexicalComposer } from "@lexical/react/LexicalComposer"
 import { RichTextPlugin } from "@lexical/react/LexicalRichTextPlugin"
@@ -26,7 +26,8 @@ import { MentionNode } from "./internals/nodes/MentionNode"
 import { noop } from "../../utilities"
 import EventHandlerPlugin from "./internals/plugins/EventHandlerPlugin"
 import * as S from "./styled"
-import MentionsPlugin from "./internals/plugins/MentionsPlugin";
+import MentionsPlugin from "./internals/plugins/MentionsPlugin"
+import { MENTION } from "./internals/transformers"
 
 
 export default function TextEditor(props) {
@@ -48,7 +49,7 @@ export default function TextEditor(props) {
             MentionNode
         ],
         editorState() {
-            $convertFromMarkdownString(value ?? "", TRANSFORMERS)
+            $convertFromMarkdownString(value ?? "", [ ...TRANSFORMERS, MENTION(props.mentions) ])
         },
         onError(error) {
             throw error
@@ -76,8 +77,16 @@ function EditableContent({
     onChange = noop,
     onFocus = noop,
     onBlur = noop,
-    onKeyDown = noop
+    onKeyDown = noop,
+    mentions = [],
+    enabled = {}
 }) {
+    enabled = {
+        toolbar: true,
+        mentions: false,
+        ...enabled
+    }
+
     const [ editor ] = useLexicalComposerContext()
 
     useLayoutEffect(() => {
@@ -101,15 +110,31 @@ function EditableContent({
         });
     }, [ editor, type ])
 
-    useEffect(() => {
+    useLayoutEffect(() => {
         editor.update(() => {
-            $convertFromMarkdownString(value ?? "", TRANSFORMERS)
+            $convertFromMarkdownString(value ?? "", [ ...TRANSFORMERS, MENTION(mentions) ])
         })
     }, [ editor, value ])
 
+    const [ isActive, setActive ] = useState(false)
+    const [ isInitialized, setInitialized ] = useState(true)
+
+    const handleInitialize = () => {
+        setInitialized(true)
+    }
+
+    const handleActiveChange = (value) => {
+        console.log("handleActiveChange", value)
+        requestAnimationFrame(() => {
+            requestAnimationFrame(() => {
+                setActive(value)
+            })
+        })
+    }
+
     return (
         <S.Container type={type} className={className}>
-            {type === "textarea" && <ToolbarPlugin/>}
+            {type === "textarea" && enabled.toolbar && <ToolbarPlugin/>}
             <S.Content>
                 <RichTextPlugin
                     contentEditable={<S.Input />}
@@ -118,12 +143,18 @@ function EditableContent({
                 />
             </S.Content>
             <EventHandlerPlugin
+                initialized={isInitialized}
+                active={isActive}
+                onInitialize={handleInitialize}
+                onActiveChange={handleActiveChange}
                 onChange={onChange}
                 onFocus={onFocus}
                 onBlur={onBlur}
                 onKeyDown={onKeyDown}
             />
-            <MentionsPlugin />
+            {enabled.mentions && (
+                <MentionsPlugin />
+            )}
             <HistoryPlugin />
             <ListPlugin />
             <ListMaxIndentLevelPlugin maxDepth={7} />

@@ -11,7 +11,6 @@ import { Box, ClickAwayListener } from '@mui/material';
 import { MoreVert } from '@mui/icons-material';
 import moment from 'moment';
 import UserAvatar from 'components/user/UserAvatar/UserAvatar';
-import TextEditor from 'components/common/TextEditor/TextEditor';
 import {
   convertFromEditorStateToOutput,
   convertToEditorState,
@@ -28,6 +27,7 @@ import {
   ButtonWrapper,
 } from './styled';
 import RichTextEditor from "components/RichTextEditorV2/RichTextEditor";
+import TextEditor from "../../../../ui-toolkit/Form/TextEditor/TextEditor";
 
 const PatientNote = ({
   note,
@@ -142,6 +142,10 @@ const PatientNote = ({
     });
   }, [note, noteState, onSave]);
 
+  const handleTextEditorChange = (_, { value }) => {
+    setNoteState(value)
+  }
+
   return (
     <ClickAwayListener onClickAway={handleClickAway}>
       <div>
@@ -149,9 +153,18 @@ const PatientNote = ({
           <UserAvatar user={creator} />
           <Box m={2} />
           <PatientNoteInformation>
-            <RichTextEditor readOnly={!isEdited} noStyle={!isEdited} value={description} onChange={(value) => {
-              setNoteState(value)
-            }} />
+            {/*<RichTextEditor readOnly={!isEdited} noStyle={!isEdited} value={description} onChange={(value) => {*/}
+            {/*  setNoteState(value)*/}
+            {/*}} />*/}
+            <TextEditor
+                type="textarea"
+                readonly={!isEdited}
+                value={description}
+                onChange={handleTextEditorChange}
+                enabled={{
+                  toolbar: isEdited
+                }}
+            />
             {/*<TextEditor*/}
             {/*  getFocusFromParent={isEdited}*/}
             {/*  readOnly={!isEdited}*/}

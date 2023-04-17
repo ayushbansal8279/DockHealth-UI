@@ -144,22 +144,33 @@ const TaskDescription = ({ selectedTask, readOnly, disableMentions }) => {
     [descriptionErrorState, setDescriptionState],
   );
 
-  const handleInputChange = debounce((_, { value }) => {
+  // const handleInputChange = debounce((_, { value }) => {
+  //   dispatch(
+  //       updateTaskDescription(selectedTask, {
+  //         tokenizedDescription: value
+  //       })
+  //   )
+  // }, 1000)
+
+  const handleInputBlur = (_, { value }) => {
     dispatch(
         updateTaskDescription(selectedTask, {
           tokenizedDescription: value
         })
     )
-  }, 1000)
+  }
 
   return (
     <>
       <DescriptionTextContainer isCrossed={status === TaskStatus.COMPLETE}>
-        {/*<RichTextEditor readOnly/>*/}
         <Input
           value={description}
           placeholder="Task's description"
-          onChange={handleInputChange}
+          onBlur={handleInputBlur}
+          mentions={taskMentions}
+          enabled={{
+            mentions: false
+          }}
         />
       </DescriptionTextContainer>
       {descriptionErrorState && (
