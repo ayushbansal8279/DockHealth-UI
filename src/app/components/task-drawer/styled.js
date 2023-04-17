@@ -1,7 +1,7 @@
 import styled from 'styled-components';
 import palette from 'styles/palette';
 import { Close } from '@material-ui/icons';
-import { fontWeights } from 'styles/font';
+import { fontWeights, fontSizes } from 'styles/font';
 
 export const EndAdornmentContainer = styled.div`
   align-items: center;
@@ -32,4 +32,12 @@ export const HorizontalLabel = styled.span`
     font-size: 1rem;
     margin-right: 5px;
   }
+`;
+
+export const PatientLinkText = styled.p`
+  margin-bottom: 0;
+  font-size: ${fontSizes.regular};
+  font-weight: ${fontWeights.light};
+  color: ${palette.brightBlue};
+  white-space: nowrap;
 `;
