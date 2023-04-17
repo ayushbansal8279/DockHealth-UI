@@ -17,6 +17,7 @@ import {
 } from './styled';
 import RichTextEditor from "components/RichTextEditorV2/RichTextEditor";
 import TextEditor from "../../../../ui-toolkit/Form/TextEditor/TextEditor";
+import {selectedTaskSelector} from "selectors/task-drawer-selectors";
 
 const { DISABLED } = TASK_LIST_RESTRICTIONS_OPTIONS;
 
@@ -42,6 +43,7 @@ const QuickAddTaskInput = React.forwardRef(
     const [error, setError] = useState(null);
     const [isFocused, setIsFocused] = useState(false);
     const quickAddTaskInputReference = useRef(null);
+    const selectedTask = useSelector(selectedTaskSelector);
 
     const currentUser = useSelector(userProfileSelector);
     const taskListRestrictions =
@@ -126,10 +128,14 @@ const QuickAddTaskInput = React.forwardRef(
         <AddTaskInputWrapper hasError={!!error} iconColor={iconColorActive}>
           <TextEditor
             type="input"
-            value={description}
-            onChange={handleTextEditorChange}
+            // value={description}
+            // onChange={handleTextEditorChange}
             // onBlur={handleTextEditorBlur}
             onKeyDown={handleTextEditorKeyDown}
+            mentions={selectedTask?.taskMentions}
+            enabled={{
+              mentions: true
+            }}
           />
           {/*<RichTextEditor noStyle value={description} onChange={setDescription} onSubmit={(description) => {*/}
           {/*  setDescription("")*/}

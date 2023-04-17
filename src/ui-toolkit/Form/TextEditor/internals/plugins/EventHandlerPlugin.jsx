@@ -81,7 +81,6 @@ export default function EventHandlerPlugin({
             const mentions = []
             traverse(state.root, (node) => {
                 if (node.type === "mention") {
-                    console.log("mentions2", node);
                     mentions.push(node.mention)
                 }
             })

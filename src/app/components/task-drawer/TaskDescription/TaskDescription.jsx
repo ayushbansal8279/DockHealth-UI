@@ -167,9 +167,9 @@ const TaskDescription = ({ selectedTask, readOnly, disableMentions }) => {
           value={description}
           placeholder="Task's description"
           onBlur={handleInputBlur}
-          mentions={[]}
+          mentions={taskMentions}
           enabled={{
-            mentions: true
+            mentions: false
           }}
         />
       </DescriptionTextContainer>

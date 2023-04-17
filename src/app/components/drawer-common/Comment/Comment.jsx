@@ -6,7 +6,6 @@ import UserAvatar from 'components/user/UserAvatar/UserAvatar';
 import { RobotoTypography } from 'styles/theme';
 // eslint-disable-next-line import/no-named-as-default
 import { useBoolean } from 'hooks/useBoolean';
-import TextEditor from 'components/common/TextEditor/TextEditor';
 import {
   convertFromEditorStateToOutput,
   convertToEditorState,
@@ -24,6 +23,7 @@ import {
   EditCommentButton,
 } from './styled';
 import RichTextEditor from "components/RichTextEditorV2/RichTextEditor";
+import TextEditor from "../../../../ui-toolkit/Form/TextEditor/TextEditor";
 
 const Comment = ({
   comment,
@@ -102,7 +102,15 @@ const Comment = ({
       <CommentContainer isEditing={isEditing}>
         <CommentContent>
           <CommentText>
-            <RichTextEditor noStyle textArea readOnly value={commentContent}/>
+            {/*<RichTextEditor noStyle textArea readOnly value={commentContent}/>*/}
+            <TextEditor
+                type="textarea"
+                readonly={!isEditing}
+                value={commentContent}
+                enabled={{
+                  toolbar: isEditing
+                }}
+            />
           </CommentText>
           <CommentDetails>{commentDetails}</CommentDetails>
         </CommentContent>

@@ -186,11 +186,20 @@ const TaskItemDescription = ({
     <DescriptionBox width={width} data-test={"foo"}>
       <Box display="flex" flex={1}>
         <input
-            readOnly
-            value={description}
+            readOnly={!isEditing}
+            value={descriptionState}
+            onChange={(event) => setDescriptionState(event.target.value)}
+            onBlur={(event) => {
+              dispatch(updateTaskDescription(task, {
+                tokenizedDescription: event.target.value,
+                taskMentions: []
+              }))
+              setEditing(false)
+            }}
             style={{
               outline: "none",
-              border: "none",
+              border: isEditing ? "1px solid #00a2e5" : "none",
+              borderRadius: "4px",
               background: "transparent"
             }}
         />

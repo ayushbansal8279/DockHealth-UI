@@ -9,8 +9,8 @@ export const MENTION = (mentions = []) => ({
             return `@{${node.__mention.identifier}}`
         }
     },
-    importRegExp: /@{(.*)}/,
-    regExp: /@{(.*)}/,
+    importRegExp: /@{(.+?)}/,
+    regExp: /@{(.+?)}/,
     replace: (node, match) => {
         const [ , identifier ] = match
         const mention = $createMentionNode({

@@ -1,5 +1,5 @@
 import React, {useEffect, useLayoutEffect, useMemo, useState} from "react"
-import { ParagraphNode } from "lexical"
+import {ParagraphNode, TextNode, LineBreakNode, $isLineBreakNode} from "lexical"
 import { useLexicalComposerContext } from "@lexical/react/LexicalComposerContext"
 import { LexicalComposer } from "@lexical/react/LexicalComposer"
 import { RichTextPlugin } from "@lexical/react/LexicalRichTextPlugin"
@@ -79,10 +79,14 @@ function EditableContent({
     onBlur = noop,
     onKeyDown = noop,
     mentions = [],
-    enabled = {
-        mentions: false
-    }
+    enabled = {}
 }) {
+    enabled = {
+        toolbar: true,
+        mentions: false,
+        ...enabled
+    }
+
     const [ editor ] = useLexicalComposerContext()
 
     useLayoutEffect(() => {
@@ -115,18 +119,6 @@ function EditableContent({
     const [ isActive, setActive ] = useState(false)
     const [ isInitialized, setInitialized ] = useState(true)
 
-    // const handleFocus = (...varargs) => {
-    //     console.log("handleFocus");
-    //     onFocus(...varargs)
-    //     setActive(true)
-    // }
-    //
-    // const handleBlur = (...varargs) => {
-    //     console.log("handleBlur");
-    //     onBlur(...varargs)
-    //     setActive(false)
-    // }
-
     const handleInitialize = () => {
         setInitialized(true)
     }
@@ -142,7 +134,7 @@ function EditableContent({
 
     return (
         <S.Container type={type} className={className}>
-            {type === "textarea" && <ToolbarPlugin/>}
+            {type === "textarea" && enabled.toolbar && <ToolbarPlugin/>}
             <S.Content>
                 <RichTextPlugin
                     contentEditable={<S.Input />}
