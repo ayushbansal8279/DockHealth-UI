@@ -10,13 +10,20 @@ import {
   NameTooltip,
   TaskTemplateDescriptionIndicators,
   TaskTemplateContext,
+  TaskTemplateNameInput,
 } from './styled';
 
 const TaskTemplateName = ({
   nameInputReference,
   templateGroup,
+  isEditing,
+  nameInputError,
+  setNameInputValue,
+  setNameInputError,
+  setIsEditing,
+  handleNameInputKeyDown,
   nameInputValue,
-  highlightedValue,
+  highlightedValue = '',
 }) => {
   const dispatch = useDispatch();
   const { name, identifier } = templateGroup;
@@ -29,12 +36,36 @@ const TaskTemplateName = ({
         }}
       >
         <>
-          <Highlighter
-            highlightClassName="list-highlight"
-            searchWords={highlightedValue?.toLowerCase().split(/\s+/)}
-            autoEscape
-            textToHighlight={nameInputValue}
-          />
+          {isEditing && (
+            <TaskTemplateNameInput
+              ref={nameInputReference}
+              readOnly={!isEditing}
+              error={nameInputError}
+              onChange={event => {
+                setNameInputValue(event.target?.value);
+                setNameInputError(false);
+              }}
+              onBlur={() => {
+                setIsEditing(false);
+                setNameInputValue(name);
+              }}
+              onKeyDown={handleNameInputKeyDown}
+              value={nameInputValue}
+              onClick={event => {
+                if (isEditing) {
+                  event.stopPropagation();
+                }
+              }}
+            />
+          )}
+          {!isEditing && (
+            <Highlighter
+              highlightClassName="list-highlight"
+              searchWords={highlightedValue?.toLowerCase().split(/\s+/)}
+              autoEscape
+              textToHighlight={nameInputValue}
+            />
+          )}
           {templateGroup?.sourceTaskBundleTemplate && (
             <TaskTemplateDescriptionIndicators>
               <TaskTemplateContext>
