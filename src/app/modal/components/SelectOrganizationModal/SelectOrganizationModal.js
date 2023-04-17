@@ -1,10 +1,6 @@
-import React, { useState, useCallback, useRef } from 'react';
+import React, { useState, useCallback } from 'react';
 import { Box, Grid } from '@material-ui/core';
 import Button from 'components/common/Button/Button';
-import { useDispatch, useSelector } from 'react-redux';
-import { userProfileSelector } from 'selectors/user-selectors';
-import { getTaskListForUser } from 'actions/task-list-actions';
-import { addTaskList } from 'api/task-list-api';
 import OrganizationSelectStep from './Steps/OrganizationSelectStep';
 import { Container, StepsContainer } from './styled';
 import {
@@ -13,106 +9,33 @@ import {
   CloseIcon,
   FlexButtonWrapper,
 } from '../styled';
-// import ListSelectStep from '../ListPickerModal/ListSelectStep';
-// import GroupSelectStep from '../SelectDestinationModal/Steps/GroupSelectStep';
-// import ParentTaskSelectStep from '../SelectDestinationModal/Steps/ParentTaskSelectStep';
 
 const SelectOrganizationModal = ({
   closeModal,
   confirm,
   confirmText,
   preventClosingModal = false,
-  selectParentTask,
   // eslint-disable-next-line sonarjs/cognitive-complexity
 }) => {
-  const dispatch = useDispatch();
-  const [stepIndex, setStepIndex] = useState(0);
-  const [selectedList, setSelectedList] = useState(null);
-  const [selectedGroup, setSelectedGroup] = useState(null);
-  const [selectedParentTask, setSelectedParentTask] = useState(null);
+  // const dispatch = useDispatch();
+  const [selectedOrganization, setSelectedOrganization] = useState(null);
 
-  const addListInput = useRef(null);
-  const [lists, setLists] = useState(null);
-  const [savingList, setSavingList] = useState(false);
-  const currentUser = useSelector(userProfileSelector);
+  const handleConfirm = useCallback(() => {
+    const responseData = {
+      organization: selectedOrganization,
+    };
 
-  const handleAddNewList = useCallback(
-    async (listName, callback) => {
-      if (savingList || !listName) return;
-
-      setSavingList(true);
-      // eslint-disable-next-line sonarjs/prefer-immediate-return
-      await addTaskList({
-        adminIdentifiers: [currentUser.userIdentifier],
-        listName,
-      })
-        .then(createdList => {
-          setSavingList(false);
-          setSelectedList(createdList);
-          setLists(previousLists => setLists([...previousLists, createdList]));
-          addListInput.current.value = '';
-          dispatch(getTaskListForUser());
-          callback(createdList);
-        })
-        .catch(() => {
-          setSavingList(false);
-        });
-    },
-    [currentUser.userIdentifier, dispatch, savingList],
-  );
-
-  const handleConfirm = useCallback(
-    createdList => {
-      const taskList = createdList || selectedList;
-
-      if (!taskList) return;
-
-      const responseData = {
-        taskListIdentifier: taskList?.taskListIdentifier,
-        listName: taskList?.listName,
-      };
-
-      if (selectedGroup) {
-        responseData.taskGroupIdentifier = selectedGroup.taskGroupIdentifier;
-        responseData.groupName = selectedGroup.groupName;
-      }
-
-      if (selectedParentTask) {
-        responseData.parentTaskIdentifier = selectedParentTask.taskIdentifier;
-      }
-
-      if (typeof confirm === 'function') {
-        confirm(responseData);
-        if (!preventClosingModal) closeModal();
-      } else {
-        console.warn('You have to provide confirm callback');
-      }
-    },
-    [
-      selectedList,
-      selectedGroup,
-      confirm,
-      selectedParentTask,
-      preventClosingModal,
-      closeModal,
-    ],
-  );
+    if (typeof confirm === 'function') {
+      confirm(responseData);
+      if (!preventClosingModal) closeModal();
+    } else {
+      console.warn('You have to provide confirm callback');
+    }
+  }, [selectedOrganization, confirm, preventClosingModal, closeModal]);
 
   const handleConfirmWrapper = useCallback(async () => {
-    if (addListInput?.current?.value) {
-      await handleAddNewList(addListInput?.current?.value, handleConfirm);
-    } else {
-      handleConfirm();
-    }
-  }, [handleAddNewList, handleConfirm]);
-
-  const handleNextStep = useCallback(() => {
-    setStepIndex(previousStepIndex => previousStepIndex + 1);
-  }, []);
-
-  const handlePreviousStep = useCallback(() => {
-    setStepIndex(previousStepIndex => previousStepIndex - 1);
-  }, []);
+    handleConfirm();
+  }, [handleConfirm]);
 
   return (
     <ModalWrapperWithPadding>
@@ -120,48 +43,12 @@ const SelectOrganizationModal = ({
         <CloseIcon />
       </CloseIconButton>
       <Container>
-        <StepsContainer stepIndex={stepIndex}>
+        <StepsContainer stepIndex={0}>
           <OrganizationSelectStep
-            selectedList={selectedList}
-            setSelectedOrganization={setSelectedList}
-            setNextStep={handleNextStep}
+            selectedOrganization={selectedOrganization}
+            setSelectedOrganization={setSelectedOrganization}
             closeModal={closeModal}
-            addListInput={addListInput}
-            lists={lists}
-            setLists={setLists}
-            onAddList={handleAddNewList}
-            savingList={savingList}
           />
-          {/* <ListSelectStep
-            selectedList={selectedList}
-            setSelectedList={setSelectedList}
-            setNextStep={handleNextStep}
-            closeModal={closeModal}
-            addListInput={addListInput}
-            lists={lists}
-            setLists={setLists}
-            onAddList={handleAddNewList}
-            savingList={savingList}
-          />
-          <GroupSelectStep
-            selectedList={selectedList}
-            setSelectedList={setSelectedList}
-            selectedGroup={selectedGroup}
-            setSelectedGroup={setSelectedGroup}
-            setPreviousStep={handlePreviousStep}
-            selectParentTask={selectParentTask}
-            setNextStep={handleNextStep}
-          />
-          {selectParentTask && (
-            <ParentTaskSelectStep
-              selectedList={selectedList}
-              selectedGroup={selectedGroup}
-              setSelectedGroup={setSelectedGroup}
-              selectedParentTask={selectedParentTask}
-              setSelectedParentTask={setSelectedParentTask}
-              setPreviousStep={handlePreviousStep}
-            />
-          )} */}
         </StepsContainer>
       </Container>
       <Box m={2} />
@@ -180,11 +67,7 @@ const SelectOrganizationModal = ({
         <FlexButtonWrapper>
           <Button
             fullWidth
-            disabled={
-              selectParentTask
-                ? !selectedList || !selectedGroup || !selectedParentTask
-                : !selectedList
-            }
+            disabled={!selectedOrganization}
             onClick={handleConfirmWrapper}
             size="small"
           >

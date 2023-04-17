@@ -470,7 +470,7 @@ const TaskTemplateGroupHeader = ({
         >
           {!groupDragAndDropDisabled &&
             !bulkEditIsActive &&
-            taskListRestrictions?.createTask !== DISABLED && (
+            taskListRestrictions?.completeTask !== DISABLED && (
               <TemplateHandle
                 src={ThreeDotsIcon}
                 alt="Handle"
@@ -478,7 +478,7 @@ const TaskTemplateGroupHeader = ({
               />
             )}
           <ActionIconsContainer>
-            {taskListRestrictions?.createTask !== DISABLED && (
+            {taskListRestrictions?.completeTask !== DISABLED && (
               <Checkbox
                 isChecked={selected || isBundleSelected}
                 onClick={handleBundleSelect}

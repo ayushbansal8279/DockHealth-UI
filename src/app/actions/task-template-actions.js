@@ -21,6 +21,17 @@ export function moveWorkflowToFolder(identifier, parentTaskWorkflowIdentifier) {
   };
 }
 
+export function copyWorkflowToOrganization(
+  identifier,
+  targetOrganizationIdentifier,
+) {
+  return {
+    type: ActionTypes.COPY_WORKFLOW_TO_ORGANIZATION,
+    identifier,
+    targetOrganizationIdentifier,
+  };
+}
+
 export function addTemplate(template) {
   return {
     type: ActionTypes.ADD_TASK_TEMPLATE,

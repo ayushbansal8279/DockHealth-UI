@@ -13,6 +13,7 @@ import equals from 'ramda/src/equals';
 import ProfessionalServicesChevron from 'img/professional-services-chevron';
 import {
   BillingFrequency,
+  SubscriptionPlan,
   SUBSCRIPTION_PLANS,
   isPlanTrial,
   priceFormatter,
@@ -30,7 +31,10 @@ import {
   updateSubscriptionDetails,
 } from 'actions/organization-actions';
 import { checkIfUserIsOrganizationAdmin } from 'helpers/user-helper';
-import { userProfileSelector } from 'selectors/user-selectors';
+import {
+  userProfileSelector,
+  userHasDockLiteFeatureSelector,
+} from 'selectors/user-selectors';
 import Button from 'components/common/Button/Button';
 import ViewLayout from 'components/template/ViewLayout/ViewLayout';
 import BasicLayoutHeader from 'components/template/BasicLayoutHeader/BasicLayoutHeader';
@@ -123,8 +127,16 @@ const SubscriptionsView = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [subscriptionDetails]);
 
+  const dockLiteAvailable = useSelector(userHasDockLiteFeatureSelector);
+
   const selectedPlanDetails = SUBSCRIPTION_PLANS.find(
     ({ subscriptionPlan: sp }) => sp === selectedPlan,
+  );
+
+  const availableSubscriptionPlans = SUBSCRIPTION_PLANS.filter(
+    ({ subscriptionPlan: sp }) =>
+      sp !== SubscriptionPlan.PRO ||
+      (sp === SubscriptionPlan.PRO && dockLiteAvailable),
   );
 
   const isCurrentPlanChanged =
@@ -222,7 +234,7 @@ const SubscriptionsView = () => {
           <Box p={1} />
           <SubscriptionPlansContainer>
             <Box display="flex" justifyContent="space-between">
-              {SUBSCRIPTION_PLANS.map(plan => (
+              {availableSubscriptionPlans.map(plan => (
                 <SubscriptionPlanTail
                   key={plan.key}
                   active={subscriptionPlan === plan.subscriptionPlan}
@@ -267,16 +279,18 @@ const SubscriptionsView = () => {
                 />
               </>
             )} */}
-            <Box p={2} width="100%" alignItems="center">
-              <DockLiteFeature
-                key={DockLite.key}
-                active={subscriptionPlan === DockLite.subscriptionPlan}
-                selected={selectedPlan === DockLite.subscriptionPlan}
-                plan={DockLite}
-                hasExistingSubscription={hasExistingSubscription}
-                billingFrequency={selectedBillingFrequency}
-              />
-            </Box>
+            {dockLiteAvailable && (
+              <Box p={2} width="100%" alignItems="center">
+                <DockLiteFeature
+                  key={DockLite.key}
+                  active={subscriptionPlan === DockLite.subscriptionPlan}
+                  selected={selectedPlan === DockLite.subscriptionPlan}
+                  plan={DockLite}
+                  hasExistingSubscription={hasExistingSubscription}
+                  billingFrequency={selectedBillingFrequency}
+                />
+              </Box>
+            )}
             <Box p={1} />
             <Title>
               Billing <SubTitleDescription>Est</SubTitleDescription>
@@ -355,7 +369,7 @@ const SubscriptionsView = () => {
               >
                 {/* <Typography>Click To Expand</Typography> */}
                 <Box p={1} />
-                <Title>Professional Services Add-Ons</Title>
+                <Title>Professional Service Add-Ons</Title>
               </AccordionSummary>
               <AccordionDetails>
                 <Box display="block" justifyContent="space-between">

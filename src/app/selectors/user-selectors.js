@@ -129,6 +129,12 @@ export const userHasViewOnlyFeatureSelector = createSelector(
     organizationAvailableFeatures?.includes('VIEW_ONLY'),
 );
 
+export const userHasDockLiteFeatureSelector = createSelector(
+  userProfileSelector,
+  ({ organizationAvailableFeatures }) =>
+    organizationAvailableFeatures?.includes('DOCK_LITE'),
+);
+
 export const userSetupClientViewSelector = createSelector(
   userViewSetupSelector,
   ({ mainSetup }) => mainSetup,

@@ -72,6 +72,25 @@ function* moveWorkflowToFolder({ parentTaskWorkflowIdentifier, identifier }) {
   }
 }
 
+function* copyWorkflowToOrganization({
+  targetOrganizationIdentifier,
+  identifier,
+}) {
+  try {
+    yield put({
+      type: ActionTypes.COPY_WORKFLOW_TO_ORGANIZATION_SUCCESS,
+      identifier,
+    });
+    yield put(showGlobalAlert(AlertMessages.COPIED));
+  } catch {
+    yield put({
+      type: ActionTypes.COPY_WORKFLOW_TO_ORGANIZATION_FAILURE,
+      identifier,
+      targetOrganizationIdentifier,
+    });
+  }
+}
+
 function* getWorkflowFolder({ searchPhrase }) {
   try {
     const folderIdentifier = yield select(currentFolderIdentifierSelector);
@@ -837,6 +856,10 @@ export default function* watchTaskTemplate() {
     initializeWorkflowLibraryState,
   );
   yield takeEvery(ActionTypes.MOVE_WORKFLOW_TO_FOLDER, moveWorkflowToFolder);
+  yield takeEvery(
+    ActionTypes.COPY_WORKFLOW_TO_ORGANIZATION,
+    copyWorkflowToOrganization,
+  );
   yield takeEvery(ActionTypes.ADD_TASK_TEMPLATE, addTemplate);
   yield takeEvery(ActionTypes.ADD_TASK_TEMPLATE_FOLDER, addTemplate);
   yield takeLatest(ActionTypes.GET_WORKFLOW_FOLDER, getWorkflowFolder);

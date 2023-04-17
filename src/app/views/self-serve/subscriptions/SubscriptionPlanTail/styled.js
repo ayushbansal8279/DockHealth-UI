@@ -86,7 +86,7 @@ export const UnitText = styled.p`
 export const SubscribeButton = styled.button`
   width: 100%;
   padding: 14px;
-  border-radius: 16px;
+  border-radius: 4px;
   background-color: ${({ active, color }) => (active ? 'transparent' : color)};
   border: 2px solid ${({ color }) => color};
   color: ${({ active, color }) => (active ? color : palette.white)};
@@ -100,7 +100,7 @@ export const ContactUsAnchor = styled.a`
   box-sizing: border-box;
   width: 100%;
   padding: 14px;
-  border-radius: 16px;
+  border-radius: 4px;
   background-color: ${({ active, color }) => (active ? 'transparent' : color)};
   border: 2px solid ${({ color }) => color};
   color: ${({ active, color }) => (active ? color : palette.white)};
