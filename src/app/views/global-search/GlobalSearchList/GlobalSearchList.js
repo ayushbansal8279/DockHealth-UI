@@ -165,6 +165,7 @@ const GlobalSearchList = ({
                   dragAndDropDisabled
                   showTasksWithGroup={false}
                   iconColorActive={iconColorActiveItem?.value}
+                  highlightedValue={highlightedValue}
                 />
               )}
             </>

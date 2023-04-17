@@ -4,8 +4,8 @@ import { Fade, Popper } from '@material-ui/core';
 import { openDrawer } from 'actions/workflow-drawer-actions';
 import { checkIfShouldDisplayTooltip } from 'components/task/OverflowTooltip/OverflowTooltip';
 import { useDispatch } from 'react-redux';
+import Highlighter from 'react-highlight-words';
 import {
-  TaskTemplateNameInput,
   NameContainer,
   NameTooltip,
   TaskTemplateDescriptionIndicators,
@@ -15,13 +15,8 @@ import {
 const TaskTemplateName = ({
   nameInputReference,
   templateGroup,
-  isEditing,
-  nameInputError,
-  setNameInputValue,
-  setNameInputError,
-  setIsEditing,
-  handleNameInputKeyDown,
   nameInputValue,
+  highlightedValue,
 }) => {
   const dispatch = useDispatch();
   const { name, identifier } = templateGroup;
@@ -34,25 +29,11 @@ const TaskTemplateName = ({
         }}
       >
         <>
-          <TaskTemplateNameInput
-            ref={nameInputReference}
-            readOnly={!isEditing}
-            error={nameInputError}
-            onChange={event => {
-              setNameInputValue(event.target?.value);
-              setNameInputError(false);
-            }}
-            onBlur={() => {
-              setIsEditing(false);
-              setNameInputValue(name);
-            }}
-            onKeyDown={handleNameInputKeyDown}
-            value={nameInputValue}
-            onClick={event => {
-              if (isEditing) {
-                event.stopPropagation();
-              }
-            }}
+          <Highlighter
+            highlightClassName="list-highlight"
+            searchWords={highlightedValue?.toLowerCase().split(/\s+/)}
+            autoEscape
+            textToHighlight={nameInputValue}
           />
           {templateGroup?.sourceTaskBundleTemplate && (
             <TaskTemplateDescriptionIndicators>
