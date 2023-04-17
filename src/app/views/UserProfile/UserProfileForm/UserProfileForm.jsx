@@ -201,14 +201,14 @@ const UserProfileForm = ({ userProfile }) => {
                     type="email"
                     name="email"
                     label="Email"
-                    endAdornment={
-                      <InputActionButton
-                        type="button"
-                        onClick={openChangeEmailModal}
-                      >
-                        Change
-                      </InputActionButton>
-                    }
+                    // endAdornment={
+                    //   <InputActionButton
+                    //     type="button"
+                    //     onClick={openChangeEmailModal}
+                    //   >
+                    //     Change
+                    //   </InputActionButton>
+                    // }
                   />
                 </Grid>
                 <Grid item xs={12}>
