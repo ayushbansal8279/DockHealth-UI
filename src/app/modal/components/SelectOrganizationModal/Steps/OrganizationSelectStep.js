@@ -1,5 +1,5 @@
 import React, { useMemo } from 'react';
-import { Box, IconButton } from '@material-ui/core';
+import { Box } from '@material-ui/core';
 import { useSelector } from 'react-redux';
 import { userOrganizationsSelector } from 'selectors/user-selectors';
 import {
@@ -8,11 +8,13 @@ import {
   EmptyMessage,
   ListsWrapper,
   ListItemTextButton,
-  NextArrow,
   Step,
 } from '../styled';
 
-const OrganizationSelectStep = ({ setSelectedOrganization }) => {
+const OrganizationSelectStep = ({
+  selectedOrganization,
+  setSelectedOrganization,
+}) => {
   const userOrganizations = useSelector(userOrganizationsSelector);
 
   const currentOrganizationIdentifier = sessionStorage.getItem(
@@ -40,7 +42,7 @@ const OrganizationSelectStep = ({ setSelectedOrganization }) => {
                 <ListItem
                   key={list.organizationIdentifier}
                   isSelected={
-                    currentOrganizationIdentifier ===
+                    selectedOrganization?.organizationIdentifier ===
                     list.organizationIdentifier
                   }
                 >
@@ -50,19 +52,12 @@ const OrganizationSelectStep = ({ setSelectedOrganization }) => {
                     }}
                     type="button"
                     isSelected={
-                      currentOrganizationIdentifier ===
+                      selectedOrganization?.organizationIdentifier ===
                       list.organizationIdentifier
                     }
                   >
                     {list.organizationName}
                   </ListItemTextButton>
-                  <IconButton
-                    onClick={() => {
-                      setSelectedOrganization(list);
-                    }}
-                  >
-                    <NextArrow />
-                  </IconButton>
                 </ListItem>
               ))
             ) : (
