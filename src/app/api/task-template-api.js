@@ -11,6 +11,20 @@ export function moveTemplateToFolder(identifier, parentTaskWorkflowIdentifier) {
     });
 }
 
+export function copyWorkflowToOrganization(
+  identifier,
+  targetOrganizationIdentifier,
+) {
+  return axios
+    .patch(`task/template/copyToOrg`, {
+      targetOrganizationIdentifiers: [targetOrganizationIdentifier],
+      identifier,
+    })
+    .then(response => {
+      return response.data;
+    });
+}
+
 export function getAllTemplatesForOrganization() {
   return axios
     .get(`task/template/getTemplatesForOrganization`)

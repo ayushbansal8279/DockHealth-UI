@@ -77,6 +77,11 @@ function* copyWorkflowToOrganization({
   identifier,
 }) {
   try {
+    yield call(
+      TaskTemplateApi.copyWorkflowToOrganization,
+      identifier,
+      targetOrganizationIdentifier,
+    );
     yield put({
       type: ActionTypes.COPY_WORKFLOW_TO_ORGANIZATION_SUCCESS,
       identifier,
