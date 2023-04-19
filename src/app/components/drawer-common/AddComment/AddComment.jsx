@@ -89,7 +89,7 @@ const AddComment = ({
     if (key === "Enter") {
       onAdd(value)
       console.log(editor);
-      // setDescription("")
+      setDescription("")
     }
   }
 
@@ -102,8 +102,8 @@ const AddComment = ({
         {/*<RichTextEditor noStyle textArea isToolbarActive onSubmit={handleSubmit} value={description} onChange={setDescription}/>*/}
         <TextEditor
           type="textarea"
-          // value={description}
-          // onChange={handleTextEditorChange}
+          value={description}
+          onChange={handleTextEditorChange}
           onKeyDown={handleTextEditorKeyDown}
           mentions={selectedTask?.taskMentions}
           enabled={{

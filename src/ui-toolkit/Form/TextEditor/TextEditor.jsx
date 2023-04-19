@@ -1,5 +1,8 @@
 import React, {useEffect, useLayoutEffect, useMemo, useState} from "react"
-import {ParagraphNode, TextNode, LineBreakNode, $isLineBreakNode} from "lexical"
+import {
+    ParagraphNode,
+    $getSelection
+} from "lexical"
 import { useLexicalComposerContext } from "@lexical/react/LexicalComposerContext"
 import { LexicalComposer } from "@lexical/react/LexicalComposer"
 import { RichTextPlugin } from "@lexical/react/LexicalRichTextPlugin"
@@ -31,9 +34,9 @@ import { MENTION } from "./internals/transformers"
 
 
 export default function TextEditor(props) {
-    const { value, readOnly } = props
+    const { value, readonly } = props
     const initial = useMemo(() => ({
-        editable: !readOnly,
+        editable: !readonly,
         nodes: [
             HeadingNode,
             ListNode,
@@ -54,7 +57,7 @@ export default function TextEditor(props) {
         onError(error) {
             throw error
         }
-    }), [ value, readOnly ])
+    }), [ value, readonly ])
 
     return (
         <LexicalComposer initialConfig={initial}>
@@ -113,6 +116,12 @@ function EditableContent({
     useLayoutEffect(() => {
         editor.update(() => {
             $convertFromMarkdownString(value ?? "", [ ...TRANSFORMERS, MENTION(mentions) ])
+            if (value && value[value.length - 1] === " ") {
+                const selection = $getSelection()
+                if (selection) {
+                    selection.insertText(" ")
+                }
+            }
         })
     }, [ editor, value ])
 

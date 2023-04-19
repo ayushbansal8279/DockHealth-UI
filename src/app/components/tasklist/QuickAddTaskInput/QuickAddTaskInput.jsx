@@ -109,7 +109,6 @@ const QuickAddTaskInput = React.forwardRef(
     }
 
     const handleTextEditorBlur = (editor, {  value }) => {
-      quickAddTask({ description: value, taskListIdentifier })
       setDescription("")
       setTimeout(() => {
         editor.blur()
@@ -128,9 +127,9 @@ const QuickAddTaskInput = React.forwardRef(
         <AddTaskInputWrapper hasError={!!error} iconColor={iconColorActive}>
           <TextEditor
             type="input"
-            // value={description}
-            // onChange={handleTextEditorChange}
-            // onBlur={handleTextEditorBlur}
+            value={description}
+            onChange={handleTextEditorChange}
+            onBlur={handleTextEditorBlur}
             onKeyDown={handleTextEditorKeyDown}
             mentions={selectedTask?.taskMentions}
             enabled={{
