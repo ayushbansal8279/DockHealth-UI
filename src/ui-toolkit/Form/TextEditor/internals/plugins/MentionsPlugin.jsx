@@ -16,6 +16,9 @@ import {getListMembersByName} from "api/task-list-api";
 import {mapUsersToSuggestions, SUGGESTIONS_PLACEHOLDER} from "components/common/TextEditor/helpers";
 import {currentTaskListIdentifierSelector} from "selectors/task-list-selectors";
 import {useSelector} from "react-redux";
+import ExternalIcon from "img/external.svg";
+import {getUserAvatarThumbnailUrl, getUserAvatarUrl, isUserGroup} from "helpers/user-helper";
+import {Avatar} from "../../styled";
 
 const PUNCTUATION = "\\.,\\+\\*\\?\\$\\@\\|#{}\\(\\)\\^\\-\\[\\]\\\\/!%'\"~=<>_:;";
 const NAME = "\\b[A-Z][^\\s" + PUNCTUATION + "]";
@@ -68,6 +71,7 @@ const dummyLookupService = {
 
 function useMentionLookupService(taskListIdentifier, mentionString) {
     const [results, setResults] = useState([]);
+    const [avatars, setAvatars] = useState([]);
 
     // useEffect(() => {
     //     const cachedResults = mentionsCache.get(mentionString);
@@ -92,12 +96,20 @@ function useMentionLookupService(taskListIdentifier, mentionString) {
     // }, [mentionString]);
 
     useEffect(() => {
-        getListMembersByName(taskListIdentifier, mentionString).then((fetchedUsers) => {
-            setResults(fetchedUsers)
+        const images = {}
+        getListMembersByName(taskListIdentifier, mentionString)
+            .then((fetchedUsers) => {
+                fetchedUsers.map(user => {
+                    images[user.identifier] = getUserAvatarThumbnailUrl(user) || (isUserGroup(user)
+                        ? user.initials?.[0].toUpperCase()
+                        : user.initials?.toLowerCase())
+                })
+                setResults(fetchedUsers)
+                setAvatars(images)
         });
     }, [mentionString, taskListIdentifier]);
 
-    return results;
+    return { results, avatars };
 }
 
 function checkForCapitalizedNameMentions(text, minMatchLength) {
@@ -146,13 +158,17 @@ function getPossibleQueryMatch(text) {
 }
 
 class MentionTypeaheadOption extends TypeaheadOption {
+    id;
     name;
     picture;
+    color;
 
-    constructor(name, picture) {
+    constructor(id, name, picture, color) {
         super(name);
+        this.id = id;
         this.name = name;
         this.picture = picture;
+        this.color = color;
     }
 }
 
@@ -173,7 +189,9 @@ function MentionsTypeaheadMenuItem({
             onMouseEnter={onMouseEnter}
             onClick={onClick}
         >
-            {option.picture}
+            <Avatar $color={option.color}>
+                {option.picture.length > 2 ? <img src={option.picture} alt="avatar" /> : option.picture}
+            </Avatar>
             <span className="text">{option.name}</span>
     </MenuItem>);
 }
@@ -184,7 +202,7 @@ export default function MentionsPlugin({ initialized, active, onActiveChange }) 
 
     const [queryString, setQueryString] = useState(null);
 
-    const results = useMentionLookupService(taskListIdentifier, queryString);
+    const {results, avatars} = useMentionLookupService(taskListIdentifier, queryString);
 
     const checkForSlashTriggerMatch = useBasicTypeaheadTriggerMatch("/", {
         minLength: 0
@@ -249,8 +267,7 @@ export default function MentionsPlugin({ initialized, active, onActiveChange }) 
                     <Paper sx={{ width: 230 }}>
                         <MenuList>
                         {options.map((option, i) => {
-                            //.map((result) => new MentionTypeaheadOption(result.name, <i/>))
-                            const mention = new MentionTypeaheadOption(option.name, <i/>)
+                            const mention = new MentionTypeaheadOption(option.identifier, option.name, avatars[option.identifier], option.bubbleColor)
                             return (
                                 <MentionsTypeaheadMenuItem
                                     index={i}
@@ -262,7 +279,7 @@ export default function MentionsPlugin({ initialized, active, onActiveChange }) 
                                     onMouseEnter={() => {
                                         setHighlightedIndex(i);
                                     }}
-                                    key={mention.key}
+                                    key={mention.id}
                                     option={mention}
                                 />
                             );
