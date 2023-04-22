@@ -97,16 +97,18 @@ function useMentionLookupService(taskListIdentifier, mentionString) {
 
     useEffect(() => {
         const images = {}
-        getListMembersByName(taskListIdentifier, mentionString)
-            .then((fetchedUsers) => {
-                fetchedUsers.map(user => {
-                    images[user.identifier] = getUserAvatarThumbnailUrl(user) || (isUserGroup(user)
-                        ? user.initials?.[0].toUpperCase()
-                        : user.initials?.toLowerCase())
-                })
-                setResults(fetchedUsers)
-                setAvatars(images)
-        });
+        if(taskListIdentifier && mentionString){
+            getListMembersByName(taskListIdentifier, mentionString)
+                .then((fetchedUsers) => {
+                    fetchedUsers.map(user => {
+                        images[user.identifier] = getUserAvatarThumbnailUrl(user) || (isUserGroup(user)
+                            ? user.initials?.[0].toUpperCase()
+                            : user.initials?.toLowerCase())
+                    })
+                    setResults(fetchedUsers)
+                    setAvatars(images)
+            });
+        }
     }, [mentionString, taskListIdentifier]);
 
     return { results, avatars };
