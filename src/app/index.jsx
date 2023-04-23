@@ -98,7 +98,9 @@ const Index = () => (
                 <Routes />
               </App>
             </HashRouter>
-            <ReactQueryDevtools initialIsOpen={false} />
+            {import.meta.env.VITE_APP_ENV === 'local' && (
+              <ReactQueryDevtools initialIsOpen={false} />
+            )}
           </ErrorBoundary>
         </Provider>
         {/* </FlagsProvider> */}
