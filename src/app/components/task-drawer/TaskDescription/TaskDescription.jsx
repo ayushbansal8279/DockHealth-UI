@@ -153,23 +153,25 @@ const TaskDescription = ({ selectedTask, readOnly, disableMentions }) => {
   // }, 1000)
 
   const handleInputBlur = (_, { value }) => {
-    dispatch(
+    if (value && value !== '' && value !== selectedTask?.tokenizedDescription) {
+      dispatch(
         updateTaskDescription(selectedTask, {
-          tokenizedDescription: value
-        })
-    )
-  }
+          tokenizedDescription: value,
+        }),
+      );
+    }
+  };
 
   return (
     <>
       <DescriptionTextContainer isCrossed={status === TaskStatus.COMPLETE}>
         <Input
           value={description}
-          placeholder="Task's description"
+          placeholder="Task description"
           onBlur={handleInputBlur}
           mentions={taskMentions}
           enabled={{
-            mentions: false
+            mentions: false,
           }}
         />
       </DescriptionTextContainer>

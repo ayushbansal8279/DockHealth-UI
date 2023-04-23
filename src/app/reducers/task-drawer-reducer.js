@@ -74,8 +74,6 @@ const TaskReducer = (state = initialState, action) => {
     }
 
     case SET_AS_CURRENT_TASK: {
-      if (!action.task) return state;
-
       return {
         ...state,
         selectedTask: action.task,

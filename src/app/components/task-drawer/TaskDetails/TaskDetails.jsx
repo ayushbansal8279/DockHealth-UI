@@ -110,7 +110,7 @@ const TaskDetails = ({ readOnly, disableMentions }) => {
     <DetailsContainer>
         <TextArea
             value={rawTextState}
-            placeholder="Task's details"
+            placeholder="Task details"
             onChange={handleTextAreaChange}
             mentions={selectedTask?.taskMentions}
             enabled={{
