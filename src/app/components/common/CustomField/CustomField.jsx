@@ -17,7 +17,7 @@ import { useSelector } from 'react-redux';
 import { TaskItemType } from 'helpers/task-helpers';
 import { workflowAutofocusFieldSelector } from 'selectors/workflow-drawer-selectors';
 import { Box } from '@mui/material';
-import CustomFieldTextEditor from './CustomFieldTextEditor';
+import CustomFieldRichTextEditor from './CustomFieldRichTextEditor';
 import { ColorIndicator } from './styled';
 import MultiFormSelect from '../MultiSelect/MultiFormSelect';
 import CustomFieldErrorContext from './CustomFieldErrorContext';
@@ -106,25 +106,24 @@ const CustomField = ({
     switch (fieldType) {
       case FieldType.TEXT: {
         return (
-          <CustomFieldTextEditor
-            oneline
-            characterLimit={FieldCharakterLimit.TEXT}
-            identifier={identifier}
+          <FormInput
+            type="text"
             readOnly={readOnly}
             label={name}
             name={fieldName}
             placeholder={placeholder}
-            taskIdentifier={taskIdentifier}
-            task={task}
-            fieldsGroupKey={fieldsGroupKey}
+            onBlur={handleBlur}
             inputRef={inputReference}
+            ref={componentReference}
             onChange={() => setWasChanged(true)}
+            required={isRequired}
+            characterLimit={FieldCharakterLimit.TEXT}
           />
         );
       }
       case FieldType.LONG_TEXT: {
         return (
-          <CustomFieldTextEditor
+          <CustomFieldRichTextEditor
             characterLimit={FieldCharakterLimit.LONG_TEXT}
             identifier={identifier}
             readOnly={readOnly}
@@ -231,18 +230,17 @@ const CustomField = ({
       }
       case FieldType.HYPERLINK: {
         return (
-          <CustomFieldTextEditor
-            identifier={identifier}
+          <FormInput
+            type="text"
             readOnly={readOnly}
             label={name}
             name={fieldName}
+            placeholder={placeholder}
             onBlur={handleBlur}
             inputRef={inputReference}
-            taskIdentifier={taskIdentifier}
-            task={task}
-            fieldsGroupKey={fieldsGroupKey}
             ref={componentReference}
             onChange={() => setWasChanged(true)}
+            required={isRequired}
           />
         );
       }
