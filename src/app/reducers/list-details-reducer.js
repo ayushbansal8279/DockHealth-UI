@@ -80,7 +80,6 @@ const updateTaskInList = (taskGroups, updateTaskCallback) =>
     }, group.tasks),
   }));
 
-
 const updateTasksStateCallback = (state, newTask) => {
   if (typeof newTask === 'function') return state;
 
@@ -649,14 +648,16 @@ const ListDetailsReducer = (state = initialState, action) => {
             groupType === TaskGroupType.TASKLIST_DEFAULT,
         ) || {};
 
-      return updateGroupInState(
+      const updatedState = updateGroupInState(
         (group) => ({
           ...group,
-          tasks: [addedTask, ...(group.tasks || [])],
+          tasks: [addedTask?.identifier, ...(group.tasks || [])],
         }),
         taskGroupIdentifier,
         state,
       );
+
+      return updateTasksStateCallback(updatedState, addedTask);
     }
 
     case ActionTypes.ADD_TEMPLATE_BUNDLE: {
