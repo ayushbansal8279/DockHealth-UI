@@ -49,6 +49,7 @@ export const TaskTemplateGroupHeaderContainer = styled.div`
   font-family: 'Roboto Condensed', sans-serif;
   font-size: ${fontSizes.smallPlus};
   width: 100%;
+  height: 35px;
   border-top: 1px solid ${palette.coolGrey3};
   border-bottom: 1px solid ${palette.coolGrey3};
   background-color: ${(props) =>
