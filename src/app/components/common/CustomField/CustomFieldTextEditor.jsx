@@ -14,7 +14,8 @@ import { showGlobalAlert } from 'alert/actions';
 import AlertMessages from 'alert/AlertMessages';
 import { formatMetaDataOutput } from 'components/task-drawer/CustomFieldsSection/helpers';
 import CustomTextEditor from 'components/common/CustomTextEditor/CustomTextEditor';
-import TextEditor from '../TextEditor/TextEditor';
+import { TextField } from '@mui/material';
+import TextInput from '../TextInput/TextInput';
 import { CustomTextEditorContainer } from './styled';
 // import { createMentionEntities } from '../TextEditor/create-mention-entities';
 import CustomFieldErrorContext from './CustomFieldErrorContext';
@@ -32,8 +33,6 @@ const CustomFieldTextEditor = React.forwardRef(
       fieldsGroupKey,
       inputRef,
       characterLimit,
-      oneline,
-      enableRichText = false,
     },
     reference,
   ) => {
@@ -43,7 +42,7 @@ const CustomFieldTextEditor = React.forwardRef(
     const value = watch(name);
     const [isFocused, setIsFocused] = useState(false);
     const [updatedValue, setUpdatedValue] = useState(value);
-    const [state, setState] = useMentionsEditorState(convertToEditorState());
+    // const [state, setState] = useMentionsEditorState(convertToEditorState());
 
     const { descriptionErrorState, setDescriptionErrorState, isRequired } =
       useContext(CustomFieldErrorContext);
@@ -57,9 +56,7 @@ const CustomFieldTextEditor = React.forwardRef(
 
     useEffect(() => {
       if (value !== null && value !== updatedValue) {
-        // const newContent = createMentionEntities(value, value, [], true);
         setUpdatedValue(value);
-        // setState(EditorState.push(state, newContent));
       }
       // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [value]);
@@ -73,8 +70,8 @@ const CustomFieldTextEditor = React.forwardRef(
 
         setDescriptionErrorState(false);
         const values = getValues(fieldsGroupKey);
-        if (text === updatedValue) return;
         values[identifier] = text;
+
         if (taskIdentifier) {
           const formattedValue = formatMetaDataOutput({
             taskMetaData: values,
@@ -108,7 +105,6 @@ const CustomFieldTextEditor = React.forwardRef(
         isRequired,
         getValues,
         fieldsGroupKey,
-        updatedValue,
         identifier,
         taskIdentifier,
         setDescriptionErrorState,
@@ -120,13 +116,9 @@ const CustomFieldTextEditor = React.forwardRef(
     );
 
     const handleBlur = useCallback(() => {
-      const { tokenizedText } = convertFromEditorStateToOutput(
-        state,
-        enableRichText,
-      );
-      updateCustomFields(tokenizedText);
+      updateCustomFields(updatedValue);
       setIsFocused(false);
-    }, [enableRichText, state, updateCustomFields]);
+    }, [updatedValue, updateCustomFields]);
 
     return (
       <CustomTextEditor
@@ -138,18 +130,16 @@ const CustomFieldTextEditor = React.forwardRef(
         ref={reference}
       >
         <CustomTextEditorContainer>
-          <TextEditor
-            characterLimit={characterLimit}
+          <TextInput
+            // characterLimit={characterLimit}
             readOnly={readOnly}
             placeholder={placeholder}
-            state={state}
-            onChange={setState}
+            defaultValue={updatedValue}
+            // state={state}
+            onChange={setUpdatedValue}
             onBlur={handleBlur}
-            disableMentions
-            oneline={oneline}
             ref={inputRef}
             onFocus={() => setIsFocused(true)}
-            showToolbar={enableRichText}
           />
         </CustomTextEditorContainer>
       </CustomTextEditor>

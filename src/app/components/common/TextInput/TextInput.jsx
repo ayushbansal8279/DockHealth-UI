@@ -2,25 +2,26 @@
 import { any, bool, func, objectOf, string } from 'prop-types';
 import React, { useEffect, useState } from 'react';
 import { useFormContext } from 'react-hook-form';
-import { TextField } from '@mui/material';
+// import { TextField } from '@mui/material';
 import Spacing from 'components/common/Spacing';
-import palette from 'styles/palette';
-import styled from 'styled-components';
+import { StyledTextField } from './styled';
 
 const TextInput = React.forwardRef(
   (
     {
       label,
-      placeholder,
       name,
+      placeholder,
+      defaultValue,
       required,
       className,
       onFocus,
       onBlur,
+      onChange,
       InputLabelProps,
       inputProps,
       InputProps,
-      parentType,
+      // parentType,
       multiple,
       disabled,
       autoFocusEnabled,
@@ -46,15 +47,17 @@ const TextInput = React.forwardRef(
 
     return (
       <>
-        <TextField
+        <StyledTextField
           ref={reference}
           name={name}
           placeholder={placeholder}
+          defaultValue={defaultValue}
+          variant="filled"
           className={[
-            classes.root,
-            isFocused ? classes.focused : '',
+            classes?.root,
+            isFocused ? classes?.focused : '',
             className,
-            hasError ? classes.error : '',
+            hasError ? classes?.error : '',
           ].join(' ')}
           label={
             <>
@@ -72,7 +75,7 @@ const TextInput = React.forwardRef(
             margin: 'dense',
             disableUnderline: true,
             classes: {
-              input: classes.input,
+              input: classes?.input,
             },
             ...InputProps,
           }}
@@ -86,12 +89,15 @@ const TextInput = React.forwardRef(
             onBlur(event);
             setIsFocused(false);
           }}
+          onChange={(event) => {
+            onChange(event.target.value);
+          }}
           inputProps={inputProps}
-          inputRef={parentType === 'text' ? register : null}
+          // inputRef={parentType === 'text' ? register : null}
           disabled={disabled}
           autoFocus={autoFocusEnabled}
         />
-        <span className={classes.errorMessage}>{error}</span>
+        <span className={classes?.errorMessage}>{error}</span>
       </>
     );
   },
@@ -101,12 +107,14 @@ TextInput.propTypes = {
   label: string.isRequired,
   name: string.isRequired,
   placeholder: string,
+  defaultValue: string,
   className: string,
   required: bool,
   multiple: bool,
-  parentType: string,
+  // parentType: string,
   onFocus: func,
   onBlur: func,
+  onChange: func,
   // eslint-disable-next-line react/forbid-prop-types
   inputProps: objectOf(any),
   // eslint-disable-next-line react/forbid-prop-types
@@ -117,121 +125,16 @@ TextInput.propTypes = {
 TextInput.defaultProps = {
   placeholder: '',
   className: '',
+  defaultValue: '',
   required: false,
   multiple: false,
-  parentType: 'text',
+  // parentType: 'text',
   onFocus: () => {},
   onBlur: () => {},
+  onChange: () => {},
   inputProps: {},
   InputProps: {},
   disabled: false,
 };
 
-const FONT_FAMILY = '"Roboto Condensed", sans-serif';
-const BORDER = '0.0625rem solid transparent';
-const ANIMATION = 'all 0.2s ease-out';
-
-export default styled(TextInput)`
-  &&& {
-    &.MuiTextInput-root {
-      border: ${BORDER};
-      border-radius: 0;
-      font-family: ${FONT_FAMILY};
-      height: 100%;
-      transition: ${ANIMATION};
-      z-index: 1;
-      box-shadow: none;
-      border-bottom-color: ${(props) =>
-        props.disabled ? palette.coolGrey2 : palette.coolGrey1};
-
-      & label {
-        color: ${palette.coolGrey1};
-      }
-      & label.Mui-disabled {
-        color: ${palette.coolGrey2};
-      }
-      & label.Mui-focused {
-        color: ${palette.coolGrey1};
-      }
-      & .MuiInput-underline:after {
-        border-bottom-color: ${palette.coolGrey1};
-      }
-      & .MuiInput-input {
-        box-shadow: none;
-      }
-      & label + .MuiInput-formControl {
-        margin-top: 16px;
-      }
-      & .MuiInputBase-inputMultiline {
-        height: 19px;
-        min-height: 0;
-      }
-      & .MuiInputBase-multiline {
-        padding-top: 0;
-        padding-bottom: 0;
-      }
-      & .MuiInputBase-root {
-        flex-wrap: ${(props) =>
-          props.parentType === 'selectTag' ? 'wrap' : ''};
-        padding-right: ${(props) =>
-          props.parentType === 'selectTag' ? '30px' : '0px'};
-      }
-    }
-
-    &.MuiTextInput-label {
-      color: ${palette.oPlusRed};
-    }
-
-    &.MuiTextInput-error {
-      border: ${BORDER};
-      border-bottom-color: ${palette.error};
-    }
-
-    &.MuiTextInput-errorMessage {
-      color: ${palette.error};
-      font-family: ${FONT_FAMILY};
-      font-size: 14px;
-    }
-
-    &.MuiTextInput-focused {
-      border: ${BORDER};
-      border-bottom-color: ${palette.coolGrey1};
-      & .error {
-        border: ${BORDER};
-        border-bottom-color: ${palette.error};
-      }
-    }
-
-    &.MuiTextInput-input {
-      border-radius: 0;
-      box-shadow: none;
-      color: ${palette.mediumGrey};
-      font-family: ${FONT_FAMILY};
-      font-weight: bold;
-      padding: 0.75rem 0;
-      padding-bottom: 5px;
-      &::placeholder {
-        opacity: 1;
-        color: ${palette.coolGrey1};
-        font-weight: normal;
-      }
-      &:focus {
-        background-color: transparent;
-        border: 0;
-        box-shadow: none;
-      }
-      &[readonly] {
-        background-color: transparent;
-        cursor: pointer;
-      }
-      &[disabled] {
-        background-color: transparent;
-        cursor: initial;
-
-        &::placeholder {
-          color: ${palette.coolGrey2};
-        }
-      }
-    }
-  }
-`;
+export default TextInput;
