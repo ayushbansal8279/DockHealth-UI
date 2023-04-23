@@ -67,11 +67,11 @@ const themeCommonOverrides = () => ({
     },
   },
   MuiBackdrop: {
-    styleOverrides: {
-      root: {
-        backgroundColor: opacify(palette.midnightBlue, 0.5),
-      },
-    },
+    // styleOverrides: {
+    //   root: {
+    //     backgroundColor: opacify(palette.midnightBlue, 0.5),
+    //   },
+    // },
   },
   MuiCollapse: {
     styleOverrides: {

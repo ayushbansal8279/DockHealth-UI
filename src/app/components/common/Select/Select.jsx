@@ -69,7 +69,6 @@ const Select = React.forwardRef(
               horizontal: 'left',
             },
             getContentAnchorEl: null,
-            hideBackdrop: true,
             style: { zIndex: zIndex.optionsMenu },
           }}
           ref={reference}
