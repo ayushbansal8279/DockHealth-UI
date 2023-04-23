@@ -10,6 +10,7 @@ import { useMentionsEditorState } from 'components/common/TextEditor/use-mention
 import { validateNewSubtask } from 'helpers/validation-helper';
 import { onTaskDrawerSubtaskAdd } from 'helpers/ga-event-helper';
 import { selectedTaskSelector } from 'selectors/task-drawer-selectors';
+import Spacing from 'components/common/Spacing';
 import QuickAddTaskInputWrapper from '../QuickAddTaskInputWrapper/QuickAddTaskInputWrapper';
 
 const QuickAddSubtask = () => {
@@ -70,6 +71,7 @@ const QuickAddSubtask = () => {
       hasInputValue={hasInputValue}
     >
       <Box flex={1} overflow="hidden">
+        <Spacing vertical={6} />
         <TextEditor
           ref={editorReference}
           taskListIdentifier={taskListIdentifier}

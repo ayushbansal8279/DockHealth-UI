@@ -166,20 +166,15 @@ const TaskDrawerContent = ({
             </FiledInListName>
           </Typography>
           <SubscriptionBadge>
-            <Chip
+            {/* <Chip
               label={12}
               color="primary"
               onClick={handleSubscriptionCountClick}
-            />{' '}
-            <span ref={watchersReference}>Watchers</span>{' '}
+            />{' '} */}
+            {/* <span ref={watchersReference}>Watchers</span>{' '} */}
             {/* eslint-disable-next-line jsx-a11y/anchor-is-valid */}
-            <a type="button">Unwatch</a>
+            {/* <a type="button">Unwatch</a> */}
           </SubscriptionBadge>
-        </Box>
-        <Box display="flex" padding={isMobile ? '0 16px' : '0 32px'}>
-          <Typography>List: </Typography>
-          <Spacing horizontal={3} />
-          <FiledInListName>{selectedTask?.taskList?.listName}</FiledInListName>
         </Box>
         {isSubtask && (
           <Grid item xs={12} style={styleFullRowThin(isMobile)}>
