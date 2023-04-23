@@ -23,7 +23,7 @@ const ChangeMobileNumberModal = ({
 
   const renderCurrentStep = () => {
     switch (currentStep) {
-      case ModalStep.CHANGE_MOBILE_PHONE:
+      case ModalStep.CHANGE_MOBILE_PHONE: {
         return (
           <ChangeNumberStep
             userProfile={userProfile}
@@ -32,8 +32,9 @@ const ChangeMobileNumberModal = ({
             setNewPhoneNumber={setNewPhoneNumber}
           />
         );
+      }
 
-      case ModalStep.CONFIRM:
+      case ModalStep.CONFIRM: {
         return (
           <ConfirmNumberStep
             closeModal={closeModal}
@@ -44,9 +45,11 @@ const ChangeMobileNumberModal = ({
             onUpdateSuccess={onUpdateSuccess}
           />
         );
+      }
 
-      default:
+      default: {
         return null;
+      }
     }
   };
 
