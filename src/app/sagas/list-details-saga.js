@@ -6,7 +6,6 @@ import insert from 'ramda/src/insert';
 import pluck from 'ramda/src/pluck';
 import filter from 'ramda/src/filter';
 import compose from 'ramda/src/compose';
-import * as takeFirst from 'ramda/src/take';
 
 import {
   put,
@@ -146,7 +145,6 @@ function* getCurrentListTasks() {
     const sort = yield select(taskDetailsSortSelector);
     const searchTerm = yield select(searchTermSelector);
     const status = yield select(currentTaskListTasksStatusSelector);
-
     if (searchTerm) {
       const groupedTasks = yield call(
         ListDetailsApi.searchTasksByTaskList,
@@ -167,10 +165,8 @@ function* getCurrentListTasks() {
         );
         groups = action.groups;
       }
-      const groupsToGet = compose(
-        filter((g) => g.metricValue > 0),
-        takeFirst(5),
-      )(groups);
+      const groupsWithTasks = compose(filter((g) => g.metricValue > 0))(groups);
+      const groupsToGet = groupsWithTasks.slice(0, 5);
 
       yield all(
         groupsToGet.map(({ taskGroupIdentifier }) =>
@@ -198,7 +194,8 @@ function* getCurrentListTasks() {
         groupedTasks,
       });
     }
-  } catch {
+  } catch (error) {
+    log(error);
     yield put(showGlobalErrorAlert());
     yield put({ type: ActionTypes.GET_CURRENT_LIST_TASKS_FAILURE });
   }
