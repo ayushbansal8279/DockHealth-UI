@@ -31,6 +31,10 @@ import EventHandlerPlugin from "./internals/plugins/EventHandlerPlugin"
 import * as S from "./styled"
 import MentionsPlugin from "./internals/plugins/MentionsPlugin"
 import { MENTION } from "./internals/transformers"
+import {getListMembersByName} from "api/task-list-api";
+import {mapUsersToSuggestions} from "components/common/TextEditor/helpers";
+import {useSelector} from "react-redux";
+import {selectedTaskSelector} from "selectors/task-drawer-selectors";
 
 
 export default function TextEditor(props) {
@@ -114,15 +118,17 @@ function EditableContent({
     }, [ editor, type ])
 
     useLayoutEffect(() => {
-        editor.update(() => {
-            $convertFromMarkdownString(value ?? "", [ ...TRANSFORMERS, MENTION(mentions) ])
-            if (value && value[value.length - 1] === " ") {
-                const selection = $getSelection()
-                if (selection) {
-                    selection.insertText(" ")
+        if (!isInitialized) {
+            editor.update(() => {
+                $convertFromMarkdownString(value ?? "", [...TRANSFORMERS, MENTION(mentions)])
+                if (value && value[value.length - 1] === " ") {
+                    const selection = $getSelection()
+                    if (selection) {
+                        selection.insertText(" ")
+                    }
                 }
-            }
-        })
+            })
+        }
     }, [ editor, value ])
 
     const [ isActive, setActive ] = useState(false)
