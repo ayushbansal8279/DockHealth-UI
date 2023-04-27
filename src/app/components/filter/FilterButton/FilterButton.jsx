@@ -15,7 +15,7 @@ const FilterButton = React.forwardRef(
       ref={reference}
       display="flex"
       width="fit-content"
-      borderRadius={4}
+      borderRadius={1}
       overflow="hidden"
     >
       <FilterButtonWrapper
