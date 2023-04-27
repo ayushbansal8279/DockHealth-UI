@@ -1,5 +1,5 @@
 /* eslint-disable react-hooks/rules-of-hooks */
-import React, { useRef, useState, useCallback } from 'react';
+import React, { useRef, useState, useCallback, useEffect } from 'react';
 import { useBoolean } from 'hooks/useBoolean';
 // import palette from 'styles/palette';
 import Spacing from 'components/common/Spacing';
@@ -57,18 +57,24 @@ const TaskTemplateApplicator = ({
     [setTaskTemplatesIsLoading],
   );
 
-  const getRootTemplatesList = useCallback(() => {
-    setTaskTemplatesIsLoading(true);
-    setParentList([]);
-    getTemplates()
-      .then((templatesList) => {
-        setTaskTemplatesList(templatesList);
-        setTaskTemplatesIsLoading(false);
-      })
-      .catch(() => {
-        setTaskTemplatesIsLoading(false);
-      });
-  }, [setTaskTemplatesIsLoading]);
+  const getRootTemplatesList = () => {
+      setTaskTemplatesIsLoading(true);
+      setParentList([]);
+      getTemplates()
+          .then((templatesList) => {
+              setTaskTemplatesList(templatesList);
+              setTaskTemplatesIsLoading(false);
+          })
+          .catch(() => {
+              setTaskTemplatesIsLoading(false);
+          })
+  }
+
+  useEffect(() => {
+      if (isPopoverOpen) {
+          getRootTemplatesList()
+      }
+  }, [isPopoverOpen]);
 
   const handleTemplateSelect = useCallback(
     (template) => {
