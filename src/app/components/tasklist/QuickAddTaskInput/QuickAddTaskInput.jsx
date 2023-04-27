@@ -1,7 +1,6 @@
 /* eslint-disable import/extensions */
 import { convertFromEditorStateToOutput } from 'components/common/TextEditor/helpers';
 import { useMentionsEditorState } from 'components/common/TextEditor/use-mentions-editor-state';
-import Spacing from 'components/common/Spacing';
 import React, { useEffect, useRef, useState } from 'react';
 import { useSelector } from 'react-redux';
 import { userProfileSelector } from 'selectors/user-selectors';
@@ -11,11 +10,8 @@ import {
 } from 'restrictions/task-restrictions';
 import {
   AddTaskInputWrapper,
-  MentionsEditorContainer,
   ErrorLabel,
-  QuickAddHint,
 } from './styled';
-import RichTextEditor from "components/RichTextEditorV2/RichTextEditor";
 import TextEditor from "../../../../ui-toolkit/Form/TextEditor/TextEditor";
 import {selectedTaskSelector} from "selectors/task-drawer-selectors";
 

@@ -35,7 +35,7 @@ const renderOption = ({
   <OptionContainer key={option?.labelIdentifier} isEditable={isEditable}>
     <OptionButtonsInput
       ref={registerOption}
-      defaultValue={option?.labelName}
+      defaultValue={option?.key}
       onBlur={(event) => {
         event.stopPropagation();
         onBlur();
@@ -183,7 +183,7 @@ const LabelsSection = ({ selectedTask, onTaskUpdate }) => {
             if (inputState) {
               event.stopPropagation();
               event.preventDefault();
-              saveAddLabel({ labelName: inputState });
+              handleSave({ labelName: inputState });
             }
           }}
         >
