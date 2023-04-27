@@ -29,6 +29,10 @@ export const BooleanSelect = styled(Select)`
     & .MuiSelect-root:before {
       display: none;
     }
+    & .MuiSelect-select {
+      padding: 0px;
+      background-color: white;
+    }
   }
 `;
 
