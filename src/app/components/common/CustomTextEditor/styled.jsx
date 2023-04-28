@@ -22,13 +22,11 @@ export const TextEditorFormStyleContainer = styled.div`
 export const TextEditorInputLabel = styled(
   ({ richTextEnabled, hasError, ...props }) => <InputLabel {...props} />,
 )`
-  margin-bottom: ${({ richTextEnabled, focused }) =>
-    richTextEnabled && focused ? '20px' : '0px'};
+
 `;
 
 export const DescriptionLabel = styled.label`
   display: block;
-  margin-bottom: ${spacing.small};
   font-family: 'Roboto Condensed', sans-serif;
   font-size: ${fontSizes.small};
   font-weight: ${fontWeights.light};
