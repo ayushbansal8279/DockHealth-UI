@@ -6,7 +6,6 @@ import usePrevious from 'hooks/use-previous';
 import Tooltip from 'components/common/Tooltip/Tooltip';
 import TaskItemPopover from 'components/task/TaskItemPopover/TaskItemPopover';
 import CustomTextEditor from 'components/common/CustomTextEditor/CustomTextEditor';
-import TextEditor from 'components/common/TextEditor/TextEditor';
 // import { createMentionEntities } from 'components/common/TextEditor/create-mention-entities';
 import { useMentionsEditorState } from 'components/common/TextEditor/use-mentions-editor-state';
 import {
@@ -17,6 +16,7 @@ import PopoverBottomBar from 'components/task/PopoverBottomBar/PopoverBottomBar'
 import { FieldCharakterLimit } from 'helpers/field-type-helpers';
 import { Text, LongTextBox, Divider } from './styled';
 import RichTextEditor from "components/RichTextEditorV2/RichTextEditor";
+import TextEditor from "../../../../../../ui-toolkit/Form/TextEditor/TextEditor";
 
 const TaskItemLongText = ({
   value = '',
@@ -78,6 +78,11 @@ const TaskItemLongText = ({
     [setDetailsState],
   );
 
+  const handleTextEditorBlur = (closePopover) => (_, { value }) => {
+      onChange(value)
+      closePopover()
+  }
+
   return (
     <Box width="100%" height="100%" display="flex" alignItems="center">
       <TaskItemPopover
@@ -90,30 +95,10 @@ const TaskItemLongText = ({
             alignItems="center"
             style={{ padding: '5px' }}
           >
-              <RichTextEditor isToolbarActive value={value} onSubmit={(description) => {
-                  onChange(description.trim())
-                  closePopover()
-              }}/>
-            {/*<CustomTextEditor*/}
-            {/*  key={field?.identifier}*/}
-            {/*  empty={false}*/}
-            {/*  focused*/}
-            {/*  label={field.name}*/}
-            {/*  richTextEnabled*/}
-            {/*>*/}
-            {/*  <TextEditor*/}
-            {/*    characterLimit={FieldCharakterLimit.LONG_TEXT}*/}
-            {/*    readOnly={readOnly}*/}
-            {/*    minHeight={100}*/}
-            {/*    ref={detailsReference}*/}
-            {/*    disableMentions*/}
-            {/*    showToolbar*/}
-            {/*    onFocus={setFocused}*/}
-            {/*    onBlur={unsetFocused}*/}
-            {/*    state={detailsState}*/}
-            {/*    onChange={onChangeDetailsEditor}*/}
-            {/*  />*/}
-            {/*</CustomTextEditor>*/}
+              <TextEditor
+                  value={value}
+                  onBlur={handleTextEditorBlur(closePopover)}
+              />
             <Divider />
             <PopoverBottomBar align="spread">
               <PopoverBottomBar.Button type="button" onClick={closePopover}>
