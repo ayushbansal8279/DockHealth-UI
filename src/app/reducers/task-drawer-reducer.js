@@ -171,7 +171,9 @@ const TaskReducer = (state = initialState, action) => {
         return TaskBaseReducer(state, action, (reducerState, newTask) => {
           return {
             ...reducerState,
-            selectedTask: newTask,
+            // I've commented out this line below as a fix to: https://dock-health.atlassian.net/browse/DHWV-56
+            // There's a possibility this fix may have broken something else
+            // selectedTask: newTask,
           };
         });
       }
