@@ -9,7 +9,6 @@ import usePrevious from 'hooks/use-previous';
 import Tooltip from 'components/common/Tooltip/Tooltip';
 import TaskItemPopover from 'components/task/TaskItemPopover/TaskItemPopover';
 import CustomTextEditor from 'components/common/CustomTextEditor/CustomTextEditor';
-import TextEditor from 'components/common/TextEditor/TextEditor';
 import { TaskItemType } from 'helpers/task-helpers';
 // import { createMentionEntities } from 'components/common/TextEditor/create-mention-entities';
 import { useMentionsEditorState } from 'components/common/TextEditor/use-mentions-editor-state';
@@ -25,6 +24,7 @@ import {
   LongTextBox,
   Divider,
 } from '../customFieldsTaskItemComponents/TaskItemLongText/styled';
+import TextEditor from "../../../../../ui-toolkit/Form/TextEditor/TextEditor";
 
 const TaskItemDetails = ({ task, onClick, readOnly }) => {
   const detailsReference = useRef(null);
@@ -108,6 +108,11 @@ const TaskItemDetails = ({ task, onClick, readOnly }) => {
     [setDetailsState],
   );
 
+  const handleTextEditorBlur = (closePopover) => (_, { value }) => {
+      dispatch(partialUpdateTask(identifier, { details: value }));
+      closePopover();
+  };
+
   return (
     <Box width="100%" height="100%" display="flex" alignItems="center">
       <TaskItemPopover
@@ -115,10 +120,9 @@ const TaskItemDetails = ({ task, onClick, readOnly }) => {
         // eslint-disable-next-line react/no-unstable-nested-components
         content={({ closePopover }) => (
           <Box
-            width="450px"
             height="100%"
             alignItems="center"
-            style={{ padding: '5px' }}
+            // style={{ padding: '5px' }}
           >
             <CustomTextEditor
               key="TASK_DETAILS"
@@ -128,16 +132,10 @@ const TaskItemDetails = ({ task, onClick, readOnly }) => {
               richTextEnabled
             >
               <TextEditor
-                characterLimit={FieldCharakterLimit.LONG_TEXT}
-                readOnly={readOnly}
-                minHeight={100}
-                ref={detailsReference}
-                disableMentions
-                showToolbar
-                onFocus={setFocused}
-                onBlur={unsetFocused}
-                state={detailsState}
-                onChange={onChangeDetailsEditor}
+                autofocus
+                readonly={readOnly}
+                value={details}
+                onBlur={handleTextEditorBlur(closePopover)}
               />
             </CustomTextEditor>
             <Divider />
