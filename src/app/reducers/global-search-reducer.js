@@ -9,6 +9,7 @@ const initialState = {
   lists: [],
   isLoading: false,
   isLoadingMore: false,
+  searchPerformed: false,
   error: '',
 };
 
@@ -46,12 +47,14 @@ const GlobalSearchReducer = (state = initialState, action) => {
       return {
         ...state,
         searchValue: payload?.value,
+        searchPerformed: false,
       };
 
     case types.GLOBAL_SEARCH_REQUEST:
       return {
         ...state,
         isLoading: true,
+        searchPerformed: false,
       };
 
     case types.GLOBAL_SEARCH_REQUEST_SUCCESS:
@@ -59,6 +62,7 @@ const GlobalSearchReducer = (state = initialState, action) => {
         ...state,
         lists: payload?.lists,
         isLoading: false,
+        searchPerformed: true,
       };
 
     case types.GLOBAL_SEARCH_MORE_REQUEST:
@@ -107,6 +111,8 @@ const GlobalSearchReducer = (state = initialState, action) => {
       return {
         ...state,
         ...initialState,
+        searchPerformed: false,
+        lists: [],
       };
 
     default:

@@ -10,6 +10,7 @@ import {
   globalSearchListsSelector,
   searchValueSelector,
   isSearchingCompletedTasksSelector,
+  searchPerformedSelector,
 } from 'selectors/global-search-selectors';
 import { selectedTaskSelector } from 'selectors/task-drawer-selectors';
 // import EmptyGlobalSearch from 'img/empty-global-search.png';
@@ -39,6 +40,7 @@ const GlobalSearchView = ({
   isLoadingView,
   isLoadingMore,
   isSearchingCompletedTasks,
+  searchPerformed,
   lists,
   searchValue,
   currentUser,
@@ -58,7 +60,7 @@ const GlobalSearchView = ({
     return (
       <EmptyGlobaSearchWrapper>
         <Box m={4} />
-        {searchValue ? (
+        {searchValue && searchPerformed ? (
           <>
             <EmptyResultsText>
               Sorry, we couldn&apos;t find anything for your search
@@ -137,6 +139,7 @@ const mapStateToProps = store => ({
   isLoadingView: isLoadingGlobalSearchSelector(store),
   isLoadingMore: isLoadingMoreGlobalSearchSelector(store),
   isSearchingCompletedTasks: isSearchingCompletedTasksSelector(store),
+  searchPerformed: searchPerformedSelector(store),
   lists: globalSearchListsSelector(store),
   searchValue: searchValueSelector(store),
   currentUser: userProfileSelector(store),

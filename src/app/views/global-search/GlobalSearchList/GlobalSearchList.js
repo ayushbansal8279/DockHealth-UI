@@ -17,10 +17,7 @@ import palette from 'styles/palette';
 import StickyContainer from 'components/common/HorizontalScroll/StickyContainer';
 import { TaskItemType } from 'helpers/task-helpers';
 import TaskTemplateGroup from 'components/task-template/TaskTemplateGroup/TaskTemplateGroup';
-import {
-  userSetupClientViewSelector,
-  selectedUserOrganizationSelector,
-} from 'selectors/user-selectors';
+import { selectedUserOrganizationSelector } from 'selectors/user-selectors';
 import BulkEditSection from 'components/tasklist/BulkEditSection/BulkEditSection';
 import TasksHeader from 'components/tasklist/TasksHeader/TasksHeader';
 import RotatableChevron from 'components/common/RotatableChevron/RotatableChevron';
@@ -48,7 +45,10 @@ const GlobalSearchList = ({
   const addingNewSubtaskParentId = useSelector(
     addingNewSubtaskParentIdSelector,
   );
-  const viewSetup = useSelector(userSetupClientViewSelector);
+  const viewSetup = {
+    SHOW_WORKFLOW_DETAILS: false,
+    HOW_WORKFLOW_COMPLETED_TASKS: false,
+  };
   const dispatch = useDispatch();
 
   const currentOrganization = useSelector(selectedUserOrganizationSelector);
