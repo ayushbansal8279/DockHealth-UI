@@ -25,3 +25,14 @@ export const CheckboxContainer = styled.div`
   flex-direction: row;
   align-items: center;
 `;
+
+export const ButtonWrapper = styled.div`
+  display: flex;
+  width: 130px;
+  height: 56px;
+  padding: 0 ${spacing.smallPlus};
+  box-sizing: border-box;
+  justify-content: center;
+  align-items: center;
+  background: ${palette.coolGrey4};
+`;

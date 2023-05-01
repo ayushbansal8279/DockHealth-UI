@@ -11,10 +11,12 @@ import Spacing from 'components/common/Spacing';
 import Checkbox from 'components/common/Checkbox/Checkbox';
 import SearchInput from 'components/common/SearchInput/SearchInput';
 import { useHistory } from 'react-router-dom';
+import Button from 'components/common/Button/Button';
 
 import {
   TopSectionGrid,
   InputWrapper,
+  ButtonWrapper,
   CheckboxDescription,
   CheckboxContainer,
 } from './styled';
@@ -24,6 +26,7 @@ const GlobalSearchHeader = ({
   searchValue,
   setSearchValue,
   setSearchCompletedTasks,
+  searchTasks,
 }) => {
   const history = useHistory();
 
@@ -43,26 +46,33 @@ const GlobalSearchHeader = ({
   }, [history, setSearchValue, setSearchCompletedTasks]);
 
   return (
-    <TopSectionGrid
-      container
-      direction="row"
-      justify="flex-start"
-      alignItems="center"
-    >
-      <InputWrapper>
-        <SearchInput value={searchValue} onValueChange={setSearchValue} />
-      </InputWrapper>
-      <Spacing horizontal={5} />
-      <CheckboxContainer>
-        <Checkbox
-          size={16}
-          onClick={() => setSearchCompletedTasks(!isSearchingCompletedTasks)}
-          isChecked={isSearchingCompletedTasks}
-        />
-        <Spacing horizontal={3} />
-        <CheckboxDescription>Search completed tasks</CheckboxDescription>
-      </CheckboxContainer>
-    </TopSectionGrid>
+    <>
+      <TopSectionGrid
+        container
+        direction="row"
+        justify="flex-start"
+        alignItems="center"
+      >
+        <InputWrapper>
+          <SearchInput value={searchValue} onValueChange={setSearchValue} />
+        </InputWrapper>
+        <Spacing horizontal={5} />
+        <CheckboxContainer>
+          <Checkbox
+            size={16}
+            onClick={() => setSearchCompletedTasks(!isSearchingCompletedTasks)}
+            isChecked={isSearchingCompletedTasks}
+          />
+          <Spacing horizontal={3} />
+          <CheckboxDescription>Include completed tasks</CheckboxDescription>
+        </CheckboxContainer>
+        <ButtonWrapper>
+          <Button fullWidth onClick={searchTasks} size="small">
+            Search
+          </Button>
+        </ButtonWrapper>
+      </TopSectionGrid>
+    </>
   );
 };
 
@@ -70,6 +80,7 @@ const mapDispatchToProps = {
   showNavbar: TemplateActions.showNavbar,
   setSearchValue: GlobalSearchSagaActions.setSearchValue,
   setSearchCompletedTasks: GlobalSearchSagaActions.setSearchCompletedTasks,
+  searchTasks: GlobalSearchSagaActions.searchTasks,
 };
 
 const mapStateToProps = store => ({

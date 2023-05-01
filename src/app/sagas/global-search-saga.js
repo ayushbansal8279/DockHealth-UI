@@ -174,7 +174,9 @@ function* doSetSearchValue({ payload }) {
 
   try {
     yield put(GlobalSearchActions.setSearchValue(value));
-    yield put(searchTasks());
+    if (value === '') {
+      yield put(GlobalSearchActions.requestGlobalSearchSuccess([]));
+    }
   } catch (error) {
     console.log(error);
   }
@@ -183,7 +185,7 @@ function* doSetSearchValue({ payload }) {
 function* doClearSearchValue() {
   try {
     yield put(GlobalSearchActions.setSearchValue(''));
-    yield put(searchTasks());
+    yield put(GlobalSearchActions.requestGlobalSearchSuccess([]));
   } catch (error) {
     console.log(error);
   }
