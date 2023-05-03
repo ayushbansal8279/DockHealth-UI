@@ -13,6 +13,8 @@ import {
   userHasSendSecureMessageFeatureSelector,
   userHasPostEMRNoteFeatureSelector,
 } from 'selectors/user-selectors';
+import { organizationSelector } from 'selectors/organization-selectors';
+import { isPlanTrial } from 'helpers/subscription-helper';
 import { SubMenuLink } from './styled';
 
 const { ADMIN, OWNER } = UserOrganizationRole;
@@ -32,10 +34,16 @@ const SettingsSubmenu = () => {
   );
   const postToEMRAvailable = useSelector(userHasPostEMRNoteFeatureSelector);
 
+  const organization = useSelector(organizationSelector);
+  const subscription = organization?.subscriptionDetails;
+  const isInTrial = isPlanTrial(subscription);
+
   return (
     <Box widht={1}>
       <Box m={2} />
-      <SubMenuLink to="/settings/billing">Billing &amp; Invoices</SubMenuLink>
+      {!isInTrial && (
+        <SubMenuLink to="/settings/billing">Billing &amp; Invoices</SubMenuLink>
+      )}
       <SubMenuLink to={SUBS_SETTINGS_PATH}>Subscriptions</SubMenuLink>
       <SubMenuLink to={USERS_SETTINGS_PATH}>Users</SubMenuLink>
       {(patientCustomFieldsAvailable || taskCustomFieldsAvailable) && (
