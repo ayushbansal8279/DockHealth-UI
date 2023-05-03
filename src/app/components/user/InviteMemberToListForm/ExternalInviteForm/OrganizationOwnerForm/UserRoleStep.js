@@ -53,15 +53,15 @@ const UserRoleStep = ({ navigateToPreviousStep, disabled }) => {
           </RoleOptionDescription>
         </RoleOptionLabel>
         <Divider />
-        <input
+        {/* <input
           id="Guest"
           type="radio"
           name="userRole"
           value="GUEST"
           checked={roleValue === 'GUEST'}
           onChange={event => setValue(event.target.name, event.target.value)}
-        />
-        <RoleOptionLabel isSelected={roleValue === 'GUEST'} htmlFor="Guest">
+        /> */}
+        {/* <RoleOptionLabel isSelected={roleValue === 'GUEST'} htmlFor="Guest">
           <RoleOptionHeaderWrapper>
             <RoleOptionHeader>Guests</RoleOptionHeader>
             <RoleOptionHeaderAdditionalInfo>
@@ -74,7 +74,7 @@ const UserRoleStep = ({ navigateToPreviousStep, disabled }) => {
             part of those lists.
           </RoleOptionDescription>
         </RoleOptionLabel>
-        <Divider />
+        <Divider /> */}
         <input
           id="DockPro"
           type="radio"
