@@ -38,7 +38,7 @@ export const USER_TYPES = new Proxy(
     },
     GUEST: {
       label: 'Guest',
-      selectable: true,
+      selectable: false,
       changeable: true,
       isLimitedAccess: true,
       description:
