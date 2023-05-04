@@ -4,7 +4,7 @@ import PhoneInput from 'react-phone-input-2';
 import 'react-phone-input-2/lib/style.css';
 import palette from 'styles/palette';
 import Input from '../Input/Input';
-import {styled} from "@mui/material/styles";
+// import {styled} from "@mui/material/styles";
 
 const phoneCountryCodes = import.meta.env.VITE_PHONE_COUNTRY_CODES.split(',');
 const browserLang = navigator?.language?.slice(0, 2).toLowerCase();
@@ -59,30 +59,30 @@ export const usePhoneNumberStyles = {
   },
 };
 
-const StyledPhoneInput = styled(PhoneInput)`
-  & input {
-    color: inherit !important;
-    &[readonly], &:disabled {
-      cursor: initial !important;
-    }
-    background: transparent !important;
-    border: none !important;
-    box-shadow: none !important;
-  }
-  
-  & .flag-dropdown {
-    background: transparent !important;
-    border: none !important;
-    box-shadow: none !important;
-    & .selected-flag:hover {
-      background: transparent !important;
-    }
-  }
-`;
+// const StyledPhoneInput = styled(PhoneInput)`
+//   & input {
+//     color: inherit !important;
+//     &[readonly], &:disabled {
+//       cursor: initial !important;
+//     }
+//     background: transparent !important;
+//     border: none !important;
+//     box-shadow: none !important;
+//   }
+//   & .flag-dropdown {
+//     background: transparent !important;
+//     border: none !important;
+//     box-shadow: none !important;
+//     & .selected-flag:hover {
+//       background: transparent !important;
+//     }
+//   }
+// `;
 
 const CustomPhoneNumberInput = ({ readOnly, inputRef, ...otherProps }) => {
   return (
-    <StyledPhoneInput
+    // <StyledPhoneInput
+    <PhoneInput
       {...otherProps}
       ref={inputRef}
       inputProps={{ readOnly }}
