@@ -36,7 +36,11 @@ export const DecisionSelect = styled(Select)`
   }
   & .switchIcon > path {
     fill: ${(props) => props.iconColorActive ?? palette.dirtyBanana};
-  },
+  }
+  & .MuiSelect-select {
+    padding: 0px;
+    background-color: white;
+  }
 `;
 
 export const ListItemLink = styled(Link)`
