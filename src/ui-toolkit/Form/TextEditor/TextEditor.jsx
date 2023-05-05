@@ -31,10 +31,6 @@ import EventHandlerPlugin from "./internals/plugins/EventHandlerPlugin"
 import * as S from "./styled"
 import MentionsPlugin from "./internals/plugins/MentionsPlugin"
 import { MENTION } from "./internals/transformers"
-import {getListMembersByName} from "api/task-list-api";
-import {mapUsersToSuggestions} from "components/common/TextEditor/helpers";
-import {useSelector} from "react-redux";
-import {selectedTaskSelector} from "selectors/task-drawer-selectors";
 
 
 export default function TextEditor(props) {
@@ -95,6 +91,7 @@ function EditableContent({
     }
 
     const [ editor ] = useLexicalComposerContext()
+    const [ isInteractive, setInteractive ] = useState(false)
 
     useLayoutEffect(() => {
         editor.setEditable(!readonly)
@@ -118,37 +115,27 @@ function EditableContent({
     }, [ editor, type ])
 
     useLayoutEffect(() => {
-        if (!isInitialized) {
-            editor.update(() => {
-                $convertFromMarkdownString(value ?? "", [...TRANSFORMERS, MENTION(mentions)])
-                if (value && value[value.length - 1] === " ") {
-                    const selection = $getSelection()
-                    if (selection) {
-                        selection.insertText(" ")
-                    }
+        editor.update(() => {
+            $convertFromMarkdownString(value ?? "", [...TRANSFORMERS, MENTION(mentions)])
+            if (value && value[value.length - 1] === " ") {
+                const selection = $getSelection()
+                if (selection) {
+                    selection.insertText(" ")
                 }
-            })
-        }
+            }
+        })
     }, [ editor, value ])
 
-    const [ isActive, setActive ] = useState(false)
-    const [ isInitialized, setInitialized ] = useState(true)
-
-    const handleInitialize = () => {
-        setInitialized(true)
-    }
-
-    const handleActiveChange = (value) => {
-        console.log("handleActiveChange", value)
-        requestAnimationFrame(() => {
-            requestAnimationFrame(() => {
-                setActive(value)
-            })
-        })
+    const handleInteraction = () => {
+        setInteractive(true)
     }
 
     return (
-        <S.Container type={type} className={className}>
+        <S.Container
+            type={type}
+            className={className}
+            onClick={handleInteraction}
+        >
             {type === "textarea" && enabled.toolbar && <ToolbarPlugin/>}
             <S.Content>
                 <RichTextPlugin
@@ -157,16 +144,14 @@ function EditableContent({
                     placeholder={<S.Placeholder type={type}>{placeholder}</S.Placeholder>}
                 />
             </S.Content>
-            <EventHandlerPlugin
-                initialized={isInitialized}
-                active={isActive}
-                onInitialize={handleInitialize}
-                onActiveChange={handleActiveChange}
-                onChange={onChange}
-                onFocus={onFocus}
-                onBlur={onBlur}
-                onKeyDown={onKeyDown}
-            />
+            {isInteractive && (
+                <EventHandlerPlugin
+                    onChange={onChange}
+                    onFocus={onFocus}
+                    onBlur={onBlur}
+                    onKeyDown={onKeyDown}
+                />
+            )}
             {enabled.mentions && (
                 <MentionsPlugin />
             )}
