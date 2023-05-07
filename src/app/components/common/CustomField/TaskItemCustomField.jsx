@@ -71,7 +71,7 @@ const TaskItemCustomField = ({
     } else {
       const taskMetaData =
         task.taskMetaData
-          ?.filter((tmd) => tmd.customFieldIdentifier !== field.identifier)
+          ?.filter((tmd) => tmd?.customFieldIdentifier !== field.identifier)
           ?.map((tmd) => createMetaDataObjectToSend(tmd)) ?? [];
       if (Array.isArray(newValue)) {
         taskMetaData.push({

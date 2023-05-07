@@ -26,13 +26,13 @@ export const sortAlphabetical = (array, propertyName = 'name') =>
   sort((a, b) => a?.[propertyName].localeCompare(b?.[propertyName]), array);
 
 export const createMetaDataObjectToSend = (metaDataField) => {
-  if (metaDataField.value) {
+  if (metaDataField?.value) {
     return {
       customFieldIdentifier: metaDataField.customFieldIdentifier,
       value: metaDataField.value,
     };
   }
-  if (metaDataField.values) {
+  if (metaDataField?.values) {
     return {
       customFieldIdentifier: metaDataField.customFieldIdentifier,
       values: metaDataField.values,
