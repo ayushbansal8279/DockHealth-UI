@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useRef } from 'react';
 import { useFormContext } from 'react-hook-form';
 import { useMount, useUnmount } from 'react-use';
 import PhoneNumberInput from './PhoneNumberInput';
@@ -14,6 +14,7 @@ const FormPhoneNumberInput = ({ name, ...restProps }) => {
   } = useFormContext();
   const error = errors?.[name]?.message;
   const value = watch(name);
+  const inputReference = useRef({});
 
   useMount(() => {
     register(name);
@@ -25,7 +26,8 @@ const FormPhoneNumberInput = ({ name, ...restProps }) => {
 
   return (
     <PhoneNumberInput
-      value={value}
+      inputRef={inputReference}
+      value={value || ''}
       error={error}
       onKeyUp={() => clearErrors(name)}
       onChange={(phone) => {

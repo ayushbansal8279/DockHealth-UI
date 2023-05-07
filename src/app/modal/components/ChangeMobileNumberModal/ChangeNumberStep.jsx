@@ -2,6 +2,7 @@ import React from 'react';
 import { Grid } from '@mui/material';
 import { FormProvider, useForm } from 'react-hook-form';
 import { object, string } from 'yup';
+import 'yup-phone';
 import { yupResolver } from '@hookform/resolvers/yup';
 import * as UserAuthApi from 'api/user-auth-api';
 import FormPhoneNumberInput from 'components/common/PhoneNumberInput/FormPhoneNumberInput';
@@ -10,9 +11,8 @@ import Button from 'components/common/Button/Button';
 import { StyledForm, HelperText, GridMaxHeight } from './styled';
 import { REQUIRED_MESSAGE } from './helpers';
 
-const PHONE_MASK = /^\d{10,15}$/;
-const MASK_MESSAGE =
-  'Phone number has incorrect format. (NNN) NNN-NNNN or NNN-NNN-NNN is required.';
+// const PHONE_MASK = /^(\+?\d{10,15})$/;
+const MASK_MESSAGE = 'Phone number has incorrect format.';
 
 export const matchEmptyNumber = (value) =>
   value.replace(/_/g, '').replace(/^-+$/, '');
@@ -26,7 +26,8 @@ const validationSchema = object({
       }
       return this.isType(value) && matchEmptyNumber(value);
     })
-    .matches(PHONE_MASK, MASK_MESSAGE)
+    .phone(null, null, MASK_MESSAGE)
+    // .matches(PHONE_MASK, MASK_MESSAGE)
     .required(REQUIRED_MESSAGE),
 });
 

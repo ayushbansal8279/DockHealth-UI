@@ -1,9 +1,9 @@
 import { object, string } from 'yup';
+import 'yup-phone';
 
 const REQUIRED_MESSAGE = 'This field is required';
-const PHONE_MASK = /^$|^\d{10,15}$/;
-const MASK_MESSAGE =
-  'Phone number has incorrect format. 10 or 9 digits (for international) are required.';
+// const PHONE_MASK = /^(\+?\d{10,15})$/;
+const MASK_MESSAGE = 'Phone number has incorrect format.';
 
 export const matchEmptyNumber = (value) =>
   value.replace(/_/g, '').replace(/^-+$/, '');
@@ -22,6 +22,7 @@ export default object().shape({
       }
       return matchEmptyNumber(value);
     })
-    .matches(PHONE_MASK, MASK_MESSAGE)
+    .phone(null, null, MASK_MESSAGE)
+    // .matches(PHONE_MASK, MASK_MESSAGE)
     .notRequired(),
 });

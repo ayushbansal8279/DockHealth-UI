@@ -2,13 +2,13 @@
 import React from 'react';
 import { TextField } from '@mui/material';
 import clsx from 'clsx';
-import {styled} from "@mui/material/styles";
+import { styled } from '@mui/material/styles';
 
 const StyledTextField = styled(TextField)`
   & .MuiInputBase-formControl:before {
     border: none !important;
   }
-`
+`;
 
 const Input = React.forwardRef(
   (
