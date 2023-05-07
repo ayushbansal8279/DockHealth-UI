@@ -1,11 +1,11 @@
-import TextEditor from "../TextEditor/TextEditor"
-import * as S from "./styled"
-
+import React from 'react';
+import TextEditor from '../TextEditor/TextEditor';
+import { Container } from './styled';
 
 export default function Input(props) {
-    return (
-        <S.Container>
-            <TextEditor type="input" {...props} />
-        </S.Container>
-    )
+  return (
+    <Container>
+      <TextEditor type="input" {...props} />
+    </Container>
+  );
 }

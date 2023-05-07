@@ -26,8 +26,7 @@ import {
   ButtonContainer,
   ButtonWrapper,
 } from './styled';
-import RichTextEditor from "components/RichTextEditorV2/RichTextEditor";
-import TextEditor from "../../../../ui-toolkit/Form/TextEditor/TextEditor";
+import TextEditor from '../../../../ui-toolkit/Form/TextEditor/TextEditor';
 
 const PatientNote = ({
   note,
@@ -157,13 +156,13 @@ const PatientNote = ({
             {/*  setNoteState(value)*/}
             {/*}} />*/}
             <TextEditor
-                type="textarea"
-                readonly={!isEdited}
-                value={description}
-                onChange={handleTextEditorChange}
-                enabled={{
-                  toolbar: isEdited
-                }}
+              type="textarea"
+              readonly={!isEdited}
+              value={description}
+              onChange={handleTextEditorChange}
+              enabled={{
+                toolbar: isEdited
+              }}
             />
             {/*<TextEditor*/}
             {/*  getFocusFromParent={isEdited}*/}
@@ -212,8 +211,8 @@ const PatientNote = ({
                   onSave({
                     ...note,
                     description: noteState,
-                  })
-                  setIsEdited(false)
+                  }),
+                  setIsEdited(false),
                 }}
               >
                 Save

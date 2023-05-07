@@ -1,11 +1,11 @@
-import TextEditor from "../TextEditor/TextEditor"
-import * as S from "./styled"
-
+import React from 'react';
+import TextEditor from '../TextEditor/TextEditor';
+import { Container } from './styled';
 
 export default function TextArea(props) {
-    return (
-        <S.Container>
-            <TextEditor type="textarea" {...props} />
-        </S.Container>
-    )
+  return (
+    <Container>
+      <TextEditor type="textarea" {...props} />
+    </Container>
+  );
 }

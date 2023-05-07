@@ -22,23 +22,22 @@ import {
   CommentActionsSection,
   EditCommentButton,
 } from './styled';
-import RichTextEditor from "components/RichTextEditorV2/RichTextEditor";
-import TextEditor from "../../../../ui-toolkit/Form/TextEditor/TextEditor";
+import TextEditor from '../../../../ui-toolkit/Form/TextEditor/TextEditor';
 
 const Comment = ({
   comment,
   onDelete,
   onUpdate,
   currentUser,
-  taskListIdentifier,
-  disableMentions,
+  // taskListIdentifier,
+  // disableMentions,
 }) => {
   const {
     comment: commentContent,
     commentMentions,
     tokenizedComment,
     creator,
-    dateCreated,
+    // dateCreated,
     dateUpdated,
     commentIdentifier,
   } = comment;
@@ -102,14 +101,13 @@ const Comment = ({
       <CommentContainer isEditing={isEditing}>
         <CommentContent>
           <CommentText>
-            {/*<RichTextEditor noStyle textArea readOnly value={commentContent}/>*/}
             <TextEditor
-                type="textarea"
-                readonly={!isEditing}
-                value={commentContent}
-                enabled={{
-                  toolbar: isEditing
-                }}
+              type="textarea"
+              readonly={!isEditing}
+              value={commentContent}
+              enabled={{
+                toolbar: isEditing,
+              }}
             />
           </CommentText>
           <CommentDetails>{commentDetails}</CommentDetails>

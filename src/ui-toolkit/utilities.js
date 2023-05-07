@@ -1,2 +1,1 @@
-export const noop = (...varargs) =>
-    undefined
+export const noop = (...varargs) => undefined;

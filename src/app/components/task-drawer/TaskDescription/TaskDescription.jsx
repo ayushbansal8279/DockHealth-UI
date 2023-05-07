@@ -1,30 +1,28 @@
 /* eslint-disable sonarjs/cognitive-complexity */
 import React, {
-  useCallback,
+  // useCallback,
   useEffect,
   useLayoutEffect,
-  useMemo,
+  // useMemo,
   useRef,
   useState,
 } from 'react';
 // import { EditorState } from 'draft-js';
 import { useDispatch } from 'react-redux';
 import { addTask, updateTaskDescription } from 'actions/task-actions';
-import { useBoolean } from 'hooks/useBoolean';
+// import { useBoolean } from 'hooks/useBoolean';
 import { checkIfTemplateTask, TaskStatus } from 'helpers/task-helpers';
-import TextEditor from 'components/common/TextEditor/TextEditor';
 import {
-  convertFromEditorStateToOutput,
+  // convertFromEditorStateToOutput,
   convertToEditorState,
-  isEditorStateEmpty,
+  // isEditorStateEmpty,
 } from 'components/common/TextEditor/helpers';
 // import { createMentionEntities } from 'components/common/TextEditor/create-mention-entities';
-import CustomTextEditor from 'components/common/CustomTextEditor/CustomTextEditor';
+// import CustomTextEditor from 'components/common/CustomTextEditor/CustomTextEditor';
 import { useMentionsEditorState } from 'components/common/TextEditor/use-mentions-editor-state';
+// import debounce from 'lodash.debounce';
 import { DescriptionTextContainer, DescriptionError } from './styled';
-import RichTextEditor from "components/RichTextEditorV2/RichTextEditor";
-import Input from "../../../../ui-toolkit/Form/Input/Input";
-import debounce from "lodash.debounce";
+import Input from '../../../../ui-toolkit/Form/Input/Input';
 
 const TaskDescription = ({ selectedTask, readOnly, disableMentions }) => {
   const {
@@ -32,15 +30,15 @@ const TaskDescription = ({ selectedTask, readOnly, disableMentions }) => {
     tokenizedDescription,
     taskMentions,
     status,
-    parentTaskIdentifier,
-    taskList,
+    // parentTaskIdentifier,
+    // taskList,
   } = selectedTask || {};
-  const { taskListIdentifier } = taskList || {};
+  // const { taskListIdentifier } = taskList || {};
 
   const dispatch = useDispatch();
   const firstRender = useRef(true);
   const descriptionReference = useRef(null);
-  const [isFocused, setFocused, unsetFocused] = useBoolean(false);
+  // const [isFocused, setFocused, unsetFocused] = useBoolean(false);
   const [descriptionState, setDescriptionState] = useMentionsEditorState(
     description
       ? convertToEditorState({
@@ -52,9 +50,9 @@ const TaskDescription = ({ selectedTask, readOnly, disableMentions }) => {
   );
   const [descriptionErrorState, setDescriptionErrorState] = useState(false);
 
-  const isSubtask = !!parentTaskIdentifier;
+  // const isSubtask = !!parentTaskIdentifier;
 
-  const isTemplateTask = checkIfTemplateTask(selectedTask);
+  // const isTemplateTask = checkIfTemplateTask(selectedTask);
 
   useLayoutEffect(() => {
     if (!firstRender.current && selectedTask) {
@@ -83,66 +81,66 @@ const TaskDescription = ({ selectedTask, readOnly, disableMentions }) => {
     }
   }, [descriptionReference, selectedTask]);
 
-  const isEmptyDescriptionState = useMemo(
-    () => isEditorStateEmpty(descriptionState),
-    [descriptionState],
-  );
+  // const isEmptyDescriptionState = useMemo(
+  //   () => isEditorStateEmpty(descriptionState),
+  //   [descriptionState],
+  // );
 
-  const handleBlur = useCallback(() => {
-    const { tokenizedText, rawText, mentions } = convertFromEditorStateToOutput(
-      descriptionState,
-      false,
-    );
+  // const handleBlur = useCallback(() => {
+  //   const { tokenizedText, rawText, mentions } = convertFromEditorStateToOutput(
+  //     descriptionState,
+  //     false,
+  //   );
 
-    if (!tokenizedText) {
-      setDescriptionErrorState(true);
-    } else if (selectedTask.taskIdentifier) {
-      if (tokenizedDescription !== tokenizedText)
-        dispatch(
-          updateTaskDescription(selectedTask, {
-            tokenizedDescription: tokenizedText,
-            description: rawText,
-            taskMentions: [
-              ...(selectedTask.taskMentions || []),
-              ...(mentions || []),
-            ],
-          }),
-        );
-    } else {
-      dispatch(
-        addTask({
-          ...selectedTask,
-          tokenizedDescription: tokenizedText,
-          description: rawText,
-          taskMentions: [
-            ...(selectedTask.taskMentions || []),
-            ...(mentions || []),
-          ],
-        }),
-      );
-    }
+  //   if (!tokenizedText) {
+  //     setDescriptionErrorState(true);
+  //   } else if (selectedTask.taskIdentifier) {
+  //     if (tokenizedDescription !== tokenizedText)
+  //       dispatch(
+  //         updateTaskDescription(selectedTask, {
+  //           tokenizedDescription: tokenizedText,
+  //           description: rawText,
+  //           taskMentions: [
+  //             ...(selectedTask.taskMentions || []),
+  //             ...(mentions || []),
+  //           ],
+  //         }),
+  //       );
+  //   } else {
+  //     dispatch(
+  //       addTask({
+  //         ...selectedTask,
+  //         tokenizedDescription: tokenizedText,
+  //         description: rawText,
+  //         taskMentions: [
+  //           ...(selectedTask.taskMentions || []),
+  //           ...(mentions || []),
+  //         ],
+  //       }),
+  //     );
+  //   }
 
-    unsetFocused();
-  }, [
-    descriptionState,
-    dispatch,
-    selectedTask,
-    tokenizedDescription,
-    unsetFocused,
-  ]);
+  //   unsetFocused();
+  // }, [
+  //   descriptionState,
+  //   dispatch,
+  //   selectedTask,
+  //   tokenizedDescription,
+  //   unsetFocused,
+  // ]);
 
-  const handleChange = useCallback(
-    (state) => {
-      if (descriptionErrorState) {
-        const { tokenizedText } = convertFromEditorStateToOutput(state, false);
-        if (tokenizedText) {
-          setDescriptionErrorState(false);
-        }
-      }
-      setDescriptionState(state);
-    },
-    [descriptionErrorState, setDescriptionState],
-  );
+  // const handleChange = useCallback(
+  //   (state) => {
+  //     if (descriptionErrorState) {
+  //       const { tokenizedText } = convertFromEditorStateToOutput(state, false);
+  //       if (tokenizedText) {
+  //         setDescriptionErrorState(false);
+  //       }
+  //     }
+  //     setDescriptionState(state);
+  //   },
+  //   [descriptionErrorState, setDescriptionState],
+  // );
 
   // const handleInputChange = debounce((_, { value }) => {
   //   dispatch(

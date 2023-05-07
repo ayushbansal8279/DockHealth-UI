@@ -21,19 +21,16 @@ import { convertFromEditorStateToOutput } from 'components/common/TextEditor/hel
 import { useMentionsEditorState } from 'components/common/TextEditor/use-mentions-editor-state';
 import Button from 'components/common/Button/Button';
 import Spacing from 'components/common/Spacing';
-import { ClickAwayListener } from '@mui/material';
+// import { ClickAwayListener } from '@mui/material';
 import PatientNote from '../PatientNote/PatientNote';
 import PatientNotesLoader from '../PatientNotesLoader/PatientNotesLoader';
 import {
   PatientNotesWrapper,
   PinnedNotesWrapper,
-  RichTextInputContainer,
   ButtonContainer,
   ButtonWrapper,
 } from './styled';
-import RichTextEditor from "components/RichTextEditorV2/RichTextEditor";
-import TextEditor from "../../../../ui-toolkit/Form/TextEditor/TextEditor";
-import TextArea from "../../../../ui-toolkit/Form/TextArea/TextArea";
+import TextArea from '../../../../ui-toolkit/Form/TextArea/TextArea';
 
 const PatientNotes = () => {
   const addNoteInputReference = useRef(null);
@@ -70,7 +67,7 @@ const PatientNotes = () => {
     [],
   );
 
-  const [noteState, setNoteState] = useState("");
+  const [noteState, setNoteState] = useState('');
   const onNoteChange = (state) => setNoteState(state);
   // eslint-disable-next-line react-hooks/exhaustive-deps
   const clearNote = useCallback(
@@ -196,10 +193,7 @@ const PatientNotes = () => {
           )}
           {unpinnedNotes?.sort(descend(prop('dateUpdated')))?.map(renderNote)}
           {/*<RichTextEditor isToolbarActive onChange={handleNoteChange} value={noteState}/>*/}
-          <TextArea
-              value={noteState}
-              onChange={handleTextEditorChange}
-          />
+          <TextArea value={noteState} onChange={handleTextEditorChange} />
           {editMode && (
             <ButtonContainer>
               <ButtonWrapper>
@@ -207,8 +201,8 @@ const PatientNotes = () => {
                   color="secondary"
                   variant="secondary"
                   onClick={() => {
-                    setEditMode(false)
-                    setNoteState("")
+                    setEditMode(false);
+                    setNoteState('');
                   }}
                   size="small"
                 >

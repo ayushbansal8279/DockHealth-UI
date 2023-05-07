@@ -6,20 +6,19 @@ import { useBoolean } from 'hooks/useBoolean';
 import { userProfileSelector } from 'selectors/user-selectors';
 import Loader, { LoaderSizes } from 'components/common/Loader/Loader';
 import UserAvatar from 'components/user/UserAvatar/UserAvatar';
+import { selectedTaskSelector } from 'selectors/task-drawer-selectors';
 import {
   AddCommentContainer,
   AddCommentLoaderContainer,
   AddCommentInputContainer,
 } from './styled';
-import RichTextEditor from "components/RichTextEditorV2/RichTextEditor";
-import TextEditor from "../../../../ui-toolkit/Form/TextEditor/TextEditor";
-import {selectedTaskSelector} from "selectors/task-drawer-selectors";
+import TextEditor from '../../../../ui-toolkit/Form/TextEditor/TextEditor';
 
 const AddComment = ({
   autoFocus,
-  disableMentions,
+  // disableMentions,
   onAdd,
-  taskListIdentifier,
+  // taskListIdentifier,
 }) => {
   const addCommentReference = useRef();
   const addCommentContainerReference = useRef();
@@ -86,10 +85,10 @@ const AddComment = ({
   }
 
   const handleTextEditorKeyDown = (editor, { value, key }) => {
-    if (key === "Enter") {
-      onAdd(value)
-      console.log(editor);
-      setDescription("")
+    if (key === 'Enter') {
+      onAdd(value);
+      // console.log(editor);
+      setDescription('');
     }
   }
 
@@ -107,7 +106,7 @@ const AddComment = ({
           onKeyDown={handleTextEditorKeyDown}
           mentions={selectedTask?.taskMentions}
           enabled={{
-            mentions: true
+            mentions: true,
           }}
         />
         {/*<TextEditor*/}

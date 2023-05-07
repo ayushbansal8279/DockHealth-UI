@@ -13,10 +13,9 @@ import {
   convertToEditorState,
 } from 'components/common/TextEditor/helpers';
 import PopoverBottomBar from 'components/task/PopoverBottomBar/PopoverBottomBar';
-import { FieldCharakterLimit } from 'helpers/field-type-helpers';
+// import { FieldCharakterLimit } from 'helpers/field-type-helpers';
 import { Text, LongTextBox, Divider } from './styled';
-import RichTextEditor from "components/RichTextEditorV2/RichTextEditor";
-import TextEditor from "../../../../../../ui-toolkit/Form/TextEditor/TextEditor";
+import TextEditor from '../../../../../../ui-toolkit/Form/TextEditor/TextEditor';
 
 const TaskItemLongText = ({
   value = '',
@@ -95,10 +94,10 @@ const TaskItemLongText = ({
             alignItems="center"
             style={{ padding: '5px' }}
           >
-              <TextEditor
-                  value={value}
-                  onBlur={handleTextEditorBlur(closePopover)}
-              />
+            <TextEditor
+              value={value}
+              onBlur={handleTextEditorBlur(closePopover)}
+            />
             <Divider />
             <PopoverBottomBar align="spread">
               <PopoverBottomBar.Button type="button" onClick={closePopover}>
