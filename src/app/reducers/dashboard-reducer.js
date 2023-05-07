@@ -41,25 +41,11 @@ const updateTasksStateCallback = (state, newTask) => {
     ...state,
     tasksMap: {
       ...state.tasksMap,
-      [newTask.identifier]: {
-        ...state.tasksMap[newTask.identifier],
+      [newTask.identifier ?? newTask.taskIdentifier]: {
+        ...state.tasksMap[newTask.identifier ?? newTask.taskIdentifier],
         ...newTask,
       },
     },
-    // groupedTasks: {
-    //   ...state.groupedTasks,
-    //   taskGroups: updateTaskInList(
-    //     state.groupedTasks?.taskGroups,
-    //     updateTaskFromAction,
-    //   ),
-    // },
-    // completedGroupedTasks: {
-    //   ...state.completedGroupedTasks,
-    //   taskGroups: updateTaskInList(
-    //     state.completedGroupedTasks?.taskGroups,
-    //     updateTaskFromAction,
-    //   ),
-    // },
   };
 };
 

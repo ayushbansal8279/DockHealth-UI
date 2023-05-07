@@ -236,7 +236,9 @@ const TaskBaseReducer = (state, action, updateStateCallback) => {
     case ActionTypes.REFRESH_TASK_SUCCESS: {
       const { task } = action;
 
-      return updateStateCallback(state, task);
+      return updateStateCallback(state, {
+        ...task,
+      });
     }
 
     case ActionTypes.UPDATE_TASK_START_DATE:

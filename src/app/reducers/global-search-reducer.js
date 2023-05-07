@@ -1,27 +1,44 @@
 import * as types from 'actions/action-types';
 import { updateTaskOrSubtaskInListsArray } from 'helpers/task-update-helper';
-import { mapWithRemove } from 'helpers/utility-functions';
+import { TaskItemType } from 'helpers/task-helpers';
+// import { mapWithRemove } from 'helpers/utility-functions';
 import TaskBaseReducer from './task-base-reducer';
 
 const initialState = {
   isSearchingCompletedTasks: false,
   searchValue: '',
   lists: [],
+  tasksMap: {},
   isLoading: false,
   isLoadingMore: false,
   error: '',
 };
 
-const updateTaskInList = (lists, updateTaskCallback) =>
-  lists.map((list) => ({
-    ...list,
-    tasks: mapWithRemove(updateTaskCallback, list.tasks),
-  }));
+// const updateTaskInList = (lists, updateTaskCallback) =>
+//   lists.map((list) => ({
+//     ...list,
+//     tasks: mapWithRemove(updateTaskCallback, list.tasks),
+//   }));
 
-const updateTasksStateCallback = (state, updateTaskFromAction) => ({
-  ...state,
-  lists: updateTaskInList(state.lists, updateTaskFromAction),
-});
+// const updateTasksStateCallback = (state, updateTaskFromAction) => ({
+//   ...state,
+//   lists: updateTaskInList(state.lists, updateTaskFromAction),
+// });
+
+const updateTasksStateCallback = (state, newTask) => {
+  if (typeof newTask === 'function') return state;
+
+  return {
+    ...state,
+    tasksMap: {
+      ...state.tasksMap,
+      [newTask.identifier ?? newTask.taskIdentifier]: {
+        ...state.tasksMap[newTask.identifier ?? newTask.taskIdentifier],
+        ...newTask,
+      },
+    },
+  };
+};
 
 const GlobalSearchReducer = (state = initialState, action) => {
   const { type, payload } = action;
@@ -55,9 +72,26 @@ const GlobalSearchReducer = (state = initialState, action) => {
     }
 
     case types.GLOBAL_SEARCH_REQUEST_SUCCESS: {
+      const tasks = action.lists;
+      const newMap = {};
+      for (const task of tasks) {
+        if (task.itemType === TaskItemType.TASK) {
+          newMap[task.identifier] = task;
+        } else {
+          newMap[task.identifier] = task;
+          for (const subtask of task.tasks) {
+            newMap[subtask.identifier] = subtask;
+          }
+        }
+      }
+
       return {
         ...state,
         lists: payload?.lists,
+        tasksMap: {
+          ...state.tasksMap,
+          ...newMap,
+        },
         isLoading: false,
       };
     }

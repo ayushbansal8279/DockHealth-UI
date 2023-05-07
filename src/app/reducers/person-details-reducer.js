@@ -1,5 +1,6 @@
 import * as ActionTypes from 'actions/action-types';
-import { mapWithRemove } from 'helpers/utility-functions';
+import { TaskItemType } from 'helpers/task-helpers';
+// import { mapWithRemove } from 'helpers/utility-functions';
 import TaskBaseReducer from './task-base-reducer';
 
 const initialState = {
@@ -9,6 +10,7 @@ const initialState = {
   isFetchingUserDetails: false,
   completedTasks: null,
   tasks: null,
+  tasksMap: {},
   isFetching: false,
   isCompletedTasksFetching: false,
   taskCounters: {},
@@ -26,11 +28,26 @@ const mapTasksSuccess = (task) => ({
   })),
 });
 
-const updateTasksStateCallback = (state, updateTaskFromAction) => ({
-  ...state,
-  tasks: mapWithRemove(updateTaskFromAction, state.tasks),
-  completedTasks: mapWithRemove(updateTaskFromAction, state.completedTasks),
-});
+// const updateTasksStateCallback = (state, updateTaskFromAction) => ({
+//   ...state,
+//   tasks: mapWithRemove(updateTaskFromAction, state.tasks),
+//   completedTasks: mapWithRemove(updateTaskFromAction, state.completedTasks),
+// });
+
+const updateTasksStateCallback = (state, newTask) => {
+  if (typeof newTask === 'function') return state;
+
+  return {
+    ...state,
+    tasksMap: {
+      ...state.tasksMap,
+      [newTask.identifier ?? newTask.taskIdentifier]: {
+        ...state.tasksMap[newTask.identifier ?? newTask.taskIdentifier],
+        ...newTask,
+      },
+    },
+  };
+};
 
 const PersonDetailsReducer = (state = initialState, action) => {
   switch (action.type) {
@@ -99,8 +116,27 @@ const PersonDetailsReducer = (state = initialState, action) => {
 
     case ActionTypes.GET_USER_TASKS_SUCCESS: {
       const { tasks } = action;
+      const newMap = {};
+      for (const task of tasks) {
+        if (task.itemType === TaskItemType.TASK) {
+          newMap[task.identifier] = task;
+        } else {
+          newMap[task.identifier] = task;
+          for (const subtask of task.tasks) {
+            newMap[subtask.identifier] = subtask;
+          }
+        }
+      }
+      return {
+        ...state,
+        tasksMap: {
+          ...state.tasksMap,
+          ...newMap,
+        },
+        isFetching: false,
+      };
 
-      return { ...state, tasks: tasks.map(mapTasksSuccess), isFetching: false };
+      // return { ...state, tasks: tasks.map(mapTasksSuccess), isFetching: false };
     }
 
     case ActionTypes.GET_USER_COMPLETED_TASKS: {
