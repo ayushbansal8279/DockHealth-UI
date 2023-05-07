@@ -4,6 +4,7 @@ import escapeRegExp from 'lodash.escaperegexp';
 import curry from 'ramda/src/curry';
 import Swal from 'sweetalert2';
 import parsePhoneNumber from 'libphonenumber-js';
+import palette from 'styles/palette';
 
 export const noop = () => {};
 
@@ -135,6 +136,7 @@ export const showToast = ({
 }) => {
   const swalPromise = Swal.fire({
     icon,
+    confirmButtonColor: palette.darkBlue,
     title,
     text,
     toast: true,
@@ -159,6 +161,7 @@ export const showAlert = ({
 }) => {
   const swalPromise = Swal.fire({
     icon,
+    confirmButtonColor: palette.darkBlue,
     title,
     text,
     ...otherOptions,
