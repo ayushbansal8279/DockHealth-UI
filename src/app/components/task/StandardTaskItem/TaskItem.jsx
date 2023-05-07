@@ -200,7 +200,7 @@ const TaskItem = React.memo(
 
     const { columns } = useTaskListColumnsConfig();
     const { listName, taskListIdentifier } = taskList || {};
-    const isCompleted = task.status === 'COMPLETE';
+    const [isCompleted, setIsCompleted] = useState(task.status === 'COMPLETE');
     const isTemplateTask = checkIfTemplateTask(task);
     const isSubtask = !!parentTaskIdentifier;
     const isDecisionTask = task.intentType === 'DECISION';
@@ -394,10 +394,11 @@ const TaskItem = React.memo(
           };
           modalActions.openModal('CompleteAllTasks', modalProps);
         } else {
+          setIsCompleted(!isCompleted);
           invokeToggleCompleteAction(task);
         }
       },
-      [invokeToggleCompleteAction, modalActions, templates],
+      [invokeToggleCompleteAction, isCompleted, modalActions, templates],
     );
 
     const onCircleClick = useCallback(
@@ -669,9 +670,9 @@ const TaskItem = React.memo(
                       readOnly={restrictions?.subtasks === READ_ONLY}
                     />
                   )}
-                  <DetailsButton
-                      onClick={onClickTaskItem}
-                  >Details</DetailsButton>
+                  <DetailsButton onClick={onClickTaskItem}>
+                    Details
+                  </DetailsButton>
                   {showDecisionRow && (
                     <DecisionCellContainer
                       onClick={(event) => event.stopPropagation()}
