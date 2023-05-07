@@ -35,6 +35,7 @@ import {
 } from './styled';
 import GlobalSearchHeader from './GlobalSearchHeader/GlobalSearchHeader';
 import GlobalSearchList from './GlobalSearchList/GlobalSearchList';
+import GlobalSearchToolbar from './GlobalSearchToolBar/GlobalSearchToolBar';
 
 const GlobalSearchView = ({
   isLoadingView,
