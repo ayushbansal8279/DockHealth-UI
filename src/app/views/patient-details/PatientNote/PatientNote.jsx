@@ -211,8 +211,8 @@ const PatientNote = ({
                   onSave({
                     ...note,
                     description: noteState,
-                  }),
-                  setIsEdited(false),
+                  });
+                  setIsEdited(false);
                 }}
               >
                 Save
