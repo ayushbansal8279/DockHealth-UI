@@ -21,9 +21,9 @@ export const LongTextBox = styled.div`
   margin-bottom: 0;
   color: ${palette.mediumGrey};
   cursor: pointer;
-  @media not print {
-    height: 28px;
-  }
+  // @media not print {
+  //   height: 28px;
+  // }
 `;
 
 export const Divider = styled.hr`
