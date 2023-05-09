@@ -416,7 +416,11 @@ const TaskDrawerContent = props => {
           <Grid item xs={12} style={styleFullRowThin(isMobile)}>
             <Spacing vertical={2} />
             {selectedParentTask ? (
-              <ReferenceParentButton type="button" onClick={onClickParentTask}>
+              <ReferenceParentButton
+                type="button"
+                onClick={onClickParentTask}
+                style={{ width: '100%' }}
+              >
                 <ReferenceParentName>
                   <TextEditor
                     readOnly
