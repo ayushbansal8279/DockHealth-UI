@@ -17,6 +17,7 @@ import {
 import { TaskStatus } from 'helpers/task-helpers';
 import { openDrawer } from 'actions/task-drawer-actions';
 import Spacing from 'components/common/Spacing';
+import { checkIfShouldDisplayTooltip } from 'components/task/OverflowTooltip/OverflowTooltip';
 import {
   convertToEditorState,
   convertFromEditorStateToOutput,
@@ -31,12 +32,13 @@ import {
   CompletedBy,
   TaskItemParentTaskLabel,
   TaskItemDescriptionIndicators,
+  DescriptionTooltipWrapper,
   DescriptionBorder,
   TaskContext,
   DescriptionEditButton,
 } from '../../styled';
-import RichTextEditor from "components/RichTextEditorV2/RichTextEditor";
-import TextEditor from "../../../../../ui-toolkit/Form/TextEditor/TextEditor";
+import RichTextEditor from 'components/RichTextEditorV2/RichTextEditor';
+import TextEditor from '../../../../../ui-toolkit/Form/TextEditor/TextEditor';
 
 const TaskItemDescription = ({
   task,
@@ -47,6 +49,7 @@ const TaskItemDescription = ({
   setEditing,
   disabled,
   disableMentions,
+  isEditButtonVisible = false,
   width,
 }) => {
   const {
@@ -62,7 +65,7 @@ const TaskItemDescription = ({
     linkedTaskTemplate,
     read,
   } = task;
-  const [descriptionState, setDescriptionState] = useState(description)
+  const [descriptionState, setDescriptionState] = useState(description);
 
   const { taskListIdentifier } = taskList || {};
   const { matchDescription } = searchMetaData || {};
@@ -155,44 +158,50 @@ const TaskItemDescription = ({
   );
 
   const handleTextEditorBlur = (_, { value }) => {
-    console.log("handleTextEditorBlur");
-    dispatch(updateTaskDescription(task, {
-      tokenizedDescription: value,
-      taskMentions: []
-    }))
-    setEditing(false)
-  }
+    console.log('handleTextEditorBlur');
+    dispatch(
+      updateTaskDescription(task, {
+        tokenizedDescription: value,
+        taskMentions: [],
+      }),
+    );
+    setEditing(false);
+  };
 
   const handleTextEditorKeyDown = (_, { key, value }) => {
-    if (key === "Enter") {
-      dispatch(updateTaskDescription(task, {
-        tokenizedDescription: value,
-        taskMentions: []
-      }))
-      setEditing(false)
+    if (key === 'Enter') {
+      dispatch(
+        updateTaskDescription(task, {
+          tokenizedDescription: value,
+          taskMentions: [],
+        }),
+      );
+      setEditing(false);
     }
-  }
+  };
 
   return (
-    <DescriptionBox width={width} data-test={"foo"}>
+    <DescriptionBox width={width} data-test={'foo'}>
       <Box display="flex" flex={1}>
         <input
-            readOnly={!isEditing}
-            value={descriptionState}
-            onChange={(event) => setDescriptionState(event.target.value)}
-            onBlur={(event) => {
-              dispatch(updateTaskDescription(task, {
+          readOnly={!isEditing}
+          value={descriptionState}
+          onChange={(event) => setDescriptionState(event.target.value)}
+          onBlur={(event) => {
+            dispatch(
+              updateTaskDescription(task, {
                 tokenizedDescription: event.target.value,
-                taskMentions: []
-              }))
-              setEditing(false)
-            }}
-            style={{
-              outline: "none",
-              border: isEditing ? "1px solid #00a2e5" : "none",
-              borderRadius: "4px",
-              background: "transparent"
-            }}
+                taskMentions: [],
+              }),
+            );
+            setEditing(false);
+          }}
+          style={{
+            outline: 'none',
+            border: isEditing ? '1px solid #00a2e5' : 'none',
+            borderRadius: '4px',
+            background: 'transparent',
+          }}
         />
         {/*<TextEditor*/}
         {/*    type="input"*/}

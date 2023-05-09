@@ -206,7 +206,7 @@ export const AssignMemberIconContainer = styled.div`
   cursor: pointer;
 `;
 
-export const DescriptionEditButtonOther = styled.div`
+export const DescriptionEditButton = styled.div`
   display: flex;
   flex-direction: row;
   align-items: center;
@@ -232,8 +232,10 @@ export const DescriptionBox = styled.div`
   flex: 1;
   cursor: pointer;
   width: ${({ width }) => (width ? `${width}px` : '100%')};
-  &:hover > button {
-    visibility: visible;
+  &:hover {
+    ${DescriptionEditButton} {
+      opacity: 1;
+    }
   }
 `;
 
@@ -629,28 +631,6 @@ export const DescriptionBorder = styled.div`
   width: 100%;
   ${({ disabled }) => (disabled ? 'border: 0px;' : '')}
   ${({ isEdited }) => isEdited && `border-color: ${palette.coolGrey2};`}
-`;
-
-export const DescriptionEditButton = styled.div`
-  margin-left: 8px;
-  border-radius: 3px;
-  max-height: 18px;
-  background-color: ${({ active }) => (active ? palette.coolGrey3 : '')};
-  display: ${({ active }) => (active ? 'none' : 'block')};
-
-  &:hover {
-    background-color: ${palette.coolGrey3};
-  }
-
-  & .MuiIconButton-root {
-    color: ${palette.brightBlue};
-    margin: 0;
-  }
-
-  & .MuiSvgIcon-root {
-    height: 14px;
-    width: 14px;
-  }
 `;
 
 export const PatientPrintAdditionalInfo = styled.div`

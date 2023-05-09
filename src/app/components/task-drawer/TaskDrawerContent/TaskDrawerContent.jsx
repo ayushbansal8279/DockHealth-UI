@@ -82,6 +82,7 @@ const TaskDrawerContent = ({
     selectedTask,
     setParentDescriptionState,
     taskDrawerFocusField,
+    taskDrawerOpen,
     taskDrawerReference,
     taskListIdentifier,
     parentBundle,
@@ -557,7 +558,10 @@ const TaskDrawerContent = ({
         {restrictions?.labels !== DISABLED && taskLabelsLocation === 'default' && (
           <Grid item xs={12} style={styleFullRow(isMobile)}>
             <div>
-              <LabelsSection onTaskUpdate={onTaskUpdate} />
+              <LabelsSection
+                  onTaskUpdate={onTaskUpdate}
+                  selectedTask={selectedTask}
+                />
             </div>
           </Grid>
         )}
@@ -572,7 +576,7 @@ const TaskDrawerContent = ({
         )}
         <Grid item xs={12} style={styleCommentRow}>
           <div>
-            <CommentSection />
+            <CommentSection selectedTask={selectedTask} />
           </div>
         </Grid>
         {selectedTask && !isSubtask && !subTasksDisabled && (
@@ -617,7 +621,7 @@ const TaskDrawerContent = ({
           />
         </Grid>
       )}
-      <TaskDrawerBackground onClick={closeTaskDrawer} />
+      {taskDrawerOpen && <TaskDrawerBackground onClick={closeTaskDrawer} />}
       {/* <WatchersPopover
         open={isSubscriptionListOpen}
         anchorEl={watchersReference.current}
