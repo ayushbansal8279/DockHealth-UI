@@ -1,8 +1,6 @@
 import React, { useCallback, useEffect, useState, useContext } from 'react';
 import { useFormContext } from 'react-hook-form';
-// import { EditorState } from 'draft-js';
 import {
-  convertFromEditorStateToOutput,
   convertToEditorState,
 } from 'components/common/TextEditor/helpers';
 import { useMentionsEditorState } from 'components/common/TextEditor/use-mentions-editor-state';
@@ -14,10 +12,9 @@ import { showGlobalAlert } from 'alert/actions';
 import AlertMessages from 'alert/AlertMessages';
 import { formatMetaDataOutput } from 'components/task-drawer/CustomFieldsSection/helpers';
 import CustomTextEditor from 'components/common/CustomTextEditor/CustomTextEditor';
-import TextEditor from '../TextEditor/TextEditor';
 import { CustomTextEditorContainer } from './styled';
-// import { createMentionEntities } from '../TextEditor/create-mention-entities';
 import CustomFieldErrorContext from './CustomFieldErrorContext';
+import TextEditor from "ui-toolkit/Form/TextEditor/TextEditor";
 
 const CustomFieldRichTextEditor = React.forwardRef(
   (
@@ -119,14 +116,10 @@ const CustomFieldRichTextEditor = React.forwardRef(
       ],
     );
 
-    const handleBlur = useCallback(() => {
-      const { tokenizedText } = convertFromEditorStateToOutput(
-        state,
-        enableRichText,
-      );
-      updateCustomFields(tokenizedText);
-      setIsFocused(false);
-    }, [enableRichText, state, updateCustomFields]);
+    const handleBlur = () => {
+        updateCustomFields(state);
+        setIsFocused(false)
+    }
 
     return (
       <CustomTextEditor
@@ -139,17 +132,12 @@ const CustomFieldRichTextEditor = React.forwardRef(
       >
         <CustomTextEditorContainer>
           <TextEditor
-            characterLimit={characterLimit}
-            readOnly={readOnly}
+            type="input"
+            readonly={readOnly}
             placeholder={placeholder}
-            state={state}
-            onChange={setState}
+            value={state}
+            onChange={(_, { value }) => setState(value)}
             onBlur={handleBlur}
-            disableMentions
-            oneline={oneline}
-            ref={inputRef}
-            onFocus={() => setIsFocused(true)}
-            showToolbar={enableRichText}
           />
         </CustomTextEditorContainer>
       </CustomTextEditor>
