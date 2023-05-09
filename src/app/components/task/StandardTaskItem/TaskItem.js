@@ -395,12 +395,19 @@ const TaskItem = React.memo(
       return (
         nonAssigneeCompleteDisabledItem &&
         nonAssigneeCompleteDisabledItem?.value === 'false' &&
-        assignedToUsers.filter(
+        assignedToUsers?.filter(
           user => user.identifier === currentUser.identifier,
         ).length === 0 &&
+        !isListAdmin &&
         !isCreator
       );
-    }, [assignedToUsers, currentUser, selectedOrganization, isCreator]);
+    }, [
+      assignedToUsers,
+      currentUser,
+      selectedOrganization,
+      isListAdmin,
+      isCreator,
+    ]);
 
     if (taskDeleteDisabled) {
       restrictions.delete = DISABLED;

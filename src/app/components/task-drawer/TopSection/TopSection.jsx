@@ -181,7 +181,9 @@ const TopSection = ({
                   : Circle
               }
               isClickable={
-                !isTaskStatusTogglingDisabled && isDependencyEmptyOrCompleted
+                !isTaskStatusTogglingDisabled &&
+                isDependencyEmptyOrCompleted &&
+                taskListRestrictions?.completeTask !== DISABLED
               }
               isCompleted={selectedTask?.status === TaskStatus.COMPLETE}
               onClick={
