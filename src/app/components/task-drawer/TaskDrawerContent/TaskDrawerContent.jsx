@@ -1,6 +1,6 @@
 /* eslint-disable sonarjs/cognitive-complexity */
-import React, { useCallback, useRef, useState } from 'react';
-import { Box, Chip, Grid, Typography, useMediaQuery } from '@mui/material';
+import React, { useCallback, useMemo } from 'react';
+import { Box, Grid, Typography, useMediaQuery } from '@mui/material';
 import { checkIfBundleTask } from 'helpers/task-helpers';
 import Spacing from 'components/common/Spacing';
 import TextEditor from 'components/common/TextEditor/TextEditor';
@@ -16,8 +16,12 @@ import {
   SINGLE_TASK_RESTRICTIONS_OPTIONS,
   TASK_LIST_RESTRICTIONS_PROFILES,
 } from 'restrictions/task-restrictions';
-import StartDateSection from 'components/workflow-drawer/StartDateSection/StartDateSection';
-import WatchersPopover from 'components/task-drawer/TaskDrawerContent/WatchersPopover/WatchersPopover';
+import { isMemberAdmin } from 'helpers/list-members-helper';
+import StartDateSection from 'components/task-drawer/StartDateSection/StartDateSection';
+// import WatchersPopover from 'components/task-drawer/TaskDrawerContent/WatchersPopover/WatchersPopover';
+import { createTaskListPath } from 'routing/helpers/paths';
+import { useHistory } from 'react-router-dom';
+import { currentTaskListSelector } from 'selectors/task-list-selectors';
 import AttachmentsSection from '../AttachmentsSection/AttachmentsSection';
 import CommentSection from '../CommentSection/CommentSection';
 import LabelsSection from '../LabelsSection/LabelsSection';
@@ -41,7 +45,8 @@ import {
   styleTaskDrawerContainer,
   styleFullRow,
   styleEmailRow,
-  styleFirstRow,
+  styleLeftColumn,
+  styleRightColumn,
   styleCommentRow,
   ReferenceParentNamePlaceholder,
   TaskDrawerDivider,
@@ -49,7 +54,7 @@ import {
   ReferenceParentButton,
   ReferenceParentName,
   FiledInListName,
-  SubscriptionBadge,
+  // SubscriptionBadge,
 } from './styled';
 
 const { DISABLED, READ_ONLY } = SINGLE_TASK_RESTRICTIONS_OPTIONS;
@@ -77,7 +82,6 @@ const TaskDrawerContent = ({
     selectedTask,
     setParentDescriptionState,
     taskDrawerFocusField,
-    taskDrawerOpen,
     taskDrawerReference,
     taskListIdentifier,
     parentBundle,
@@ -99,6 +103,8 @@ const TaskDrawerContent = ({
     clearFormStates();
   }, [clearFormStates, handleCloseTaskDrawer]);
 
+  const history = useHistory();
+
   const { orgUserRole } = useSelector(userProfileSelector);
   const currentOrganization = useSelector(selectedUserOrganizationSelector);
   const taskAttachmentsDisabled =
@@ -114,24 +120,227 @@ const TaskDrawerContent = ({
       ({ name }) => name === 'task.labels.location',
     ) || {};
   const taskLabelsLocation = taskLabelsLocationItem?.value || 'default';
+  const quickAddPatientEnabledItem =
+    currentOrganization?.themeSettings?.find(
+      ({ name }) => name === 'patient.quickadd.enabled',
+    ) || {};
+  const quickAddPatientEnabled = quickAddPatientEnabledItem?.value !== 'false';
 
-  const restrictions = SINGLE_TASK_RESTRICTIONS_PROFILES[orgUserRole];
-  const taskListRestrictions = TASK_LIST_RESTRICTIONS_PROFILES[orgUserRole];
+  let restrictions = SINGLE_TASK_RESTRICTIONS_PROFILES[orgUserRole];
+  let taskListRestrictions = TASK_LIST_RESTRICTIONS_PROFILES[orgUserRole];
 
   const restrictMentions = restrictions?.mentions === DISABLED;
 
-  const watchersReference = useRef(null);
-  const [isSubscriptionListOpen, setSubscriptionListOpen] = useState(false);
+  const selectedOrganization = useSelector(selectedUserOrganizationSelector);
+  const currentTasklist = useSelector(currentTaskListSelector);
+  const currentUser = useSelector(userProfileSelector);
+  const isListAdmin = useMemo(() => {
+    const currentUserMember = currentTasklist?.listUsers?.find(
+      u => u.identifier === currentUser?.identifier,
+    );
+    return isMemberAdmin(currentUserMember);
+  }, [currentUser, currentTasklist]);
 
-  const handleSubscriptionCountClick = () => {
-    setSubscriptionListOpen(!isSubscriptionListOpen);
-  };
+  const isCreator = useMemo(() => {
+    return selectedTask?.creator?.identifier === currentUser?.identifier;
+  }, [currentUser, selectedTask]);
 
-  const handleSubscriptionListClose = () => {
-    setSubscriptionListOpen(false);
-  };
+  if (!restrictions) {
+    restrictions = {};
+  }
+  if (!taskListRestrictions) {
+    taskListRestrictions = {};
+  }
+
+  const taskDeleteDisabled = useMemo(() => {
+    const deleteDisabledItem =
+      selectedOrganization?.themeSettings?.find(
+        ({ name }) => name === 'list.tasks.member.delete.enabled',
+      ) || {};
+    return (
+      deleteDisabledItem &&
+      deleteDisabledItem?.value === 'false' &&
+      !isListAdmin &&
+      !isCreator
+    );
+  }, [selectedOrganization, isListAdmin, isCreator]);
+
+  const editAssignmentDisabled = useMemo(() => {
+    const editAssignmentDisabledItem =
+      selectedOrganization?.themeSettings?.find(
+        ({ name }) => name === 'list.tasks.member.edit.assignment.enabled',
+      ) || {};
+    return (
+      editAssignmentDisabledItem &&
+      editAssignmentDisabledItem?.value === 'false' &&
+      !isListAdmin &&
+      !isCreator
+    );
+  }, [selectedOrganization, isListAdmin, isCreator]);
+
+  const editDueDateDisabled = useMemo(() => {
+    const editDueDateDisabledItem =
+      selectedOrganization?.themeSettings?.find(
+        ({ name }) => name === 'list.tasks.member.edit.duedate.enabled',
+      ) || {};
+    return (
+      editDueDateDisabledItem &&
+      editDueDateDisabledItem?.value === 'false' &&
+      !isListAdmin &&
+      !isCreator
+    );
+  }, [selectedOrganization, isListAdmin, isCreator]);
+
+  const editDescriptionDisabled = useMemo(() => {
+    const editDescriptionDisabledItem =
+      selectedOrganization?.themeSettings?.find(
+        ({ name }) => name === 'list.tasks.member.edit.description.enabled',
+      ) || {};
+    return (
+      editDescriptionDisabledItem &&
+      editDescriptionDisabledItem?.value === 'false' &&
+      !isListAdmin &&
+      !isCreator
+    );
+  }, [selectedOrganization, isListAdmin, isCreator]);
+
+  const editPatientDisabled = useMemo(() => {
+    const editPatientDisabledItem =
+      selectedOrganization?.themeSettings?.find(
+        ({ name }) => name === 'list.tasks.member.edit.patient.enabled',
+      ) || {};
+    return (
+      editPatientDisabledItem &&
+      editPatientDisabledItem?.value === 'false' &&
+      !isListAdmin &&
+      !isCreator
+    );
+  }, [selectedOrganization, isListAdmin, isCreator]);
+
+  const editStatusDisabled = useMemo(() => {
+    const editStatusDisabledItem =
+      selectedOrganization?.themeSettings?.find(
+        ({ name }) => name === 'list.tasks.member.edit.status.enabled',
+      ) || {};
+    return (
+      editStatusDisabledItem &&
+      editStatusDisabledItem?.value === 'false' &&
+      !isListAdmin &&
+      !isCreator
+    );
+  }, [selectedOrganization, isListAdmin, isCreator]);
+
+  const editPriorityDisabled = useMemo(() => {
+    const editPriorityDisabledItem =
+      selectedOrganization?.themeSettings?.find(
+        ({ name }) => name === 'list.tasks.member.edit.priority.enabled',
+      ) || {};
+    return (
+      editPriorityDisabledItem &&
+      editPriorityDisabledItem?.value === 'false' &&
+      !isListAdmin &&
+      !isCreator
+    );
+  }, [selectedOrganization, isListAdmin, isCreator]);
+
+  const editLabelsDisabled = useMemo(() => {
+    const editLabelsDisabledItem =
+      selectedOrganization?.themeSettings?.find(
+        ({ name }) => name === 'list.tasks.member.edit.labels.enabled',
+      ) || {};
+    return (
+      editLabelsDisabledItem &&
+      editLabelsDisabledItem?.value === 'false' &&
+      !isListAdmin &&
+      !isCreator
+    );
+  }, [selectedOrganization, isListAdmin, isCreator]);
+
+  const editSubTasksDisabled = useMemo(() => {
+    const editSubTasksDisabledItem =
+      selectedOrganization?.themeSettings?.find(
+        ({ name }) => name === 'list.tasks.member.edit.subtasks.enabled',
+      ) || {};
+    return (
+      editSubTasksDisabledItem &&
+      editSubTasksDisabledItem?.value === 'false' &&
+      !isListAdmin &&
+      !isCreator
+    );
+  }, [selectedOrganization, isListAdmin, isCreator]);
+
+  const nonAssigneeCompleteDisabled = useMemo(() => {
+    const nonAssigneeCompleteDisabledItem =
+      selectedOrganization?.themeSettings?.find(
+        ({ name }) => name === 'list.tasks.non-assignee.complete.enabled',
+      ) || {};
+    return (
+      nonAssigneeCompleteDisabledItem &&
+      nonAssigneeCompleteDisabledItem?.value === 'false' &&
+      selectedTask?.assignedToUsers.filter(
+        user => user.identifier === currentUser.identifier,
+      ).length === 0 &&
+      !isCreator
+    );
+  }, [selectedTask, currentUser, selectedOrganization, isCreator]);
+
+  if (taskDeleteDisabled) {
+    restrictions.delete = DISABLED;
+  }
+  if (editAssignmentDisabled) {
+    restrictions.assigment = READ_ONLY;
+  }
+  if (editDueDateDisabled) {
+    restrictions.dueDate = DISABLED;
+  }
+  if (editDescriptionDisabled) {
+    restrictions.description = DISABLED;
+  }
+  if (editPatientDisabled) {
+    restrictions.patient = DISABLED;
+  }
+  if (editStatusDisabled) {
+    restrictions.status = DISABLED;
+  }
+  if (editPriorityDisabled) {
+    restrictions.priority = DISABLED;
+  }
+  if (editLabelsDisabled) {
+    restrictions.labels = DISABLED;
+  }
+  if (editSubTasksDisabled) {
+    restrictions.subtasks = DISABLED;
+  }
+  if (nonAssigneeCompleteDisabled) {
+    taskListRestrictions.completeTask = DISABLED;
+  }
+
+  // const watchersReference = useRef(null);
+  // const [isSubscriptionListOpen, setSubscriptionListOpen] = useState(false);
+
+  // const handleSubscriptionCountClick = () => {
+  //   setSubscriptionListOpen(!isSubscriptionListOpen);
+  // };
+
+  // const handleSubscriptionListClose = () => {
+  //   setSubscriptionListOpen(false);
+  // };
 
   const isMobile = useMediaQuery((theme) => theme.breakpoints.down('sm'));
+
+  if (taskDeleteDisabled) {
+    if (!restrictions) {
+      restrictions = {};
+    }
+    restrictions.delete = DISABLED;
+  }
+
+  if (taskDeleteDisabled) {
+    if (!restrictions) {
+      restrictions = {};
+    }
+    restrictions.delete = DISABLED;
+  }
 
   return (
     <TaskDrawerContainer
@@ -144,8 +353,15 @@ const TaskDrawerContent = ({
           item
           xs={12}
           alignItems="center"
-          justifyContent="space-between"
-          style={styleFirstRow(isMobile)}
+          justify="space-between"
+          style={{
+            paddingTop: '0',
+            marginTop: '0',
+            height: '60px',
+            position: 'fixed',
+            width: '100%',
+            zIndex: '1000000',
+          }}
         >
           <TopSection
             handleCopyLink={handleCopyLink}
@@ -155,26 +371,59 @@ const TaskDrawerContent = ({
             onDelete={onDelete}
             onDuplicate={onDuplicate}
             closeTaskDrawer={closeTaskDrawer}
+            style={{ position: 'sticky' }}
           />
         </Grid>
-        {selectedTask && <TaskDrawerDivider />}
-        <Box padding="0 32px" sx={{ width: '100%' }}>
-          <Typography component="span">
-            List:{' '}
-            <FiledInListName>
-              {selectedTask?.taskList?.listName}
-            </FiledInListName>
-          </Typography>
-          <SubscriptionBadge>
-            {/* <Chip
+        {selectedTask && <TaskDrawerDivider style={{ marginTop: '60px' }} />}
+        <Box
+          padding={isMobile ? '8px 16px' : '8px 32px'}
+          sx={{ width: '100%' }}
+        >
+          <Grid container spacing={2}>
+            <Grid item>
+              <Typography sx={{ fontWeight: 'bold' }} component="span">
+                List:{' '}
+                <FiledInListName
+                  onClick={() => {
+                    history.push(
+                      createTaskListPath(
+                        selectedTask?.taskList?.taskListIdentifier,
+                      ),
+                    );
+                  }}
+                >
+                  {selectedTask?.taskList?.listName}
+                </FiledInListName>
+              </Typography>
+            </Grid>
+            {!isSubtask && (parentBundle || taskTemplate) && (
+              <Grid item>
+                <Typography sx={{ fontWeight: 'bold' }} component="span">
+                  WorkFlow:{' '}
+                </Typography>
+                <ReferenceParentButton
+                  type="button"
+                  onClick={handleWorkflowReferenceClick}
+                >
+                  <ReferenceParentName>
+                    {isTemplateTask
+                      ? taskTemplate.name
+                      : parentBundle.groupName}
+                  </ReferenceParentName>
+                </ReferenceParentButton>
+              </Grid>
+            )}
+          </Grid>
+
+          {/* <SubscriptionBadge>
+            <Chip
               label={12}
               color="primary"
               onClick={handleSubscriptionCountClick}
-            />{' '} */}
-            {/* <span ref={watchersReference}>Watchers</span>{' '} */}
-            {/* eslint-disable-next-line jsx-a11y/anchor-is-valid */}
-            {/* <a type="button">Unwatch</a> */}
-          </SubscriptionBadge>
+            />{' '}
+            <span ref={watchersReference}>Watchers</span>{' '}
+            <a type="button">Unwatch</a>
+          </SubscriptionBadge> */}
         </Box>
         {isSubtask && (
           <Grid item xs={12} style={styleFullRowThin(isMobile)}>
@@ -197,9 +446,10 @@ const TaskDrawerContent = ({
             )}
           </Grid>
         )}
-        {!isSubtask && (parentBundle || taskTemplate) && (
-          <Grid item xs={12} style={styleFullRowThin(isMobile)}>
-            <Spacing vertical={2} />
+        {/* {!isSubtask && (parentBundle || taskTemplate) && (
+          <Grid item xs={6} style={styleFullRowThin(isMobile)}>
+            <Spacing horizontal={2} />
+            <Typography component="span">WorkFlow: </Typography>
             <ReferenceParentButton
               type="button"
               onClick={handleWorkflowReferenceClick}
@@ -209,7 +459,7 @@ const TaskDrawerContent = ({
               </ReferenceParentName>
             </ReferenceParentButton>
           </Grid>
-        )}
+        )} */}
         <Grid item xs={12} style={styleFullRow(isMobile)}>
           <TaskDescription
             readOnly={restrictions?.description === READ_ONLY}
@@ -228,7 +478,7 @@ const TaskDrawerContent = ({
             disableMentions={restrictMentions}
           />
         </Grid>
-        <Grid item xs={6} style={styleFullRow(isMobile)}>
+        <Grid item xs={12} md={6} style={styleLeftColumn(isMobile)}>
           <PatientSection
             selectedPatient={
               selectedTask?.patient || selectedParentTask?.patient || null
@@ -243,9 +493,10 @@ const TaskDrawerContent = ({
             }
             autofocus={taskDrawerFocusField === DrawerFieldEnum.PATIENT}
             onSave={handleUpdateTask}
+            quickAddPatientEnabled={quickAddPatientEnabled}
           />
         </Grid>
-        <Grid item xs={6} style={styleFullRow(isMobile)}>
+        <Grid item xs={12} md={6} style={styleRightColumn(isMobile)}>
           <AssignedToSection
             onSave={handleUpdateTask}
             disabled={restrictions?.assigment === READ_ONLY}
@@ -253,7 +504,7 @@ const TaskDrawerContent = ({
           />
         </Grid>
         {!taskStartDateDisabled && (
-          <Grid item xs={6} style={styleFullRow(isMobile)}>
+          <Grid item xs={12} md={6} style={styleLeftColumn(isMobile)}>
             <div>
               <StartDateSection
                 disabled={restrictions?.startDate === DISABLED}
@@ -263,19 +514,16 @@ const TaskDrawerContent = ({
           </Grid>
         )}
         {!taskStartDateDisabled && (
-          <Grid item xs={6} style={styleFullRow(isMobile)}>
+          <Grid item xs={12} md={6} style={styleRightColumn(isMobile)}>
             <div />
           </Grid>
         )}
-        <Grid item xs={6} style={styleFullRow(isMobile)}>
+        <Grid item xs={12} md={6} style={styleLeftColumn(isMobile)}>
           <div>
-            <DueDateSection
-              disabled={restrictions?.dueDate === DISABLED}
-              selectedTask={selectedTask}
-            />
+            <DueDateSection disabled={restrictions?.dueDate === DISABLED} />
           </div>
         </Grid>
-        <Grid item xs={6} style={styleFullRow(isMobile)}>
+        <Grid item xs={12} md={6} style={styleRightColumn(isMobile)}>
           {!isTemplateTask && (
             <ReminderSection
               onSave={handleUpdateTask}
@@ -284,14 +532,14 @@ const TaskDrawerContent = ({
             />
           )}
         </Grid>
-        <Grid item xs={6} style={styleFullRow(isMobile)}>
+        <Grid item xs={12} md={6} style={styleLeftColumn(isMobile)}>
           <PrioritySection
             onTaskUpdate={onTaskUpdate}
             disabled={restrictions?.priority === DISABLED}
             selectedTask={selectedTask}
           />
         </Grid>
-        <Grid item xs={6} style={styleFullRow(isMobile)}>
+        <Grid item xs={12} md={6} style={styleRightColumn(isMobile)}>
           <div>
             <StatusSection
               onTaskUpdate={onTaskUpdate}
@@ -306,17 +554,13 @@ const TaskDrawerContent = ({
             <CustomFieldsSection fieldCategoryType="TASK_CORE" />
           </Grid>
         )}
-        {restrictions?.labels !== DISABLED &&
-          taskLabelsLocation === 'default' && (
-            <Grid item xs={12} style={styleFullRow(isMobile)}>
-              <div>
-                <LabelsSection
-                  onTaskUpdate={onTaskUpdate}
-                  selectedTask={selectedTask}
-                />
-              </div>
-            </Grid>
-          )}
+        {restrictions?.labels !== DISABLED && taskLabelsLocation === 'default' && (
+          <Grid item xs={12} style={styleFullRow(isMobile)}>
+            <div>
+              <LabelsSection onTaskUpdate={onTaskUpdate} />
+            </div>
+          </Grid>
+        )}
         {!taskAttachmentsDisabled && (
           <Grid item xs={12} style={styleFullRow(isMobile)}>
             <AttachmentsSection
@@ -328,7 +572,7 @@ const TaskDrawerContent = ({
         )}
         <Grid item xs={12} style={styleCommentRow}>
           <div>
-            <CommentSection selectedTask={selectedTask} />
+            <CommentSection />
           </div>
         </Grid>
         {selectedTask && !isSubtask && !subTasksDisabled && (
@@ -352,17 +596,13 @@ const TaskDrawerContent = ({
             <CustomFieldsSection fieldCategoryType="TASK_OTHER" />
           </Grid>
         )}
-        {restrictions?.labels !== DISABLED &&
-          taskLabelsLocation === 'bottom' && (
-            <Grid item xs={12} style={styleFullRow(isMobile)}>
-              <div>
-                <LabelsSection
-                  onTaskUpdate={onTaskUpdate}
-                  selectedTask={selectedTask}
-                />
-              </div>
-            </Grid>
-          )}
+        {restrictions?.labels !== DISABLED && taskLabelsLocation === 'bottom' && (
+          <Grid item xs={12} style={styleFullRow(isMobile)}>
+            <div>
+              <LabelsSection onTaskUpdate={onTaskUpdate} />
+            </div>
+          </Grid>
+        )}
       </Grid>
       <TaskDrawerDivider />
       {restrictions?.history !== DISABLED && (
@@ -377,12 +617,12 @@ const TaskDrawerContent = ({
           />
         </Grid>
       )}
-      {taskDrawerOpen && <TaskDrawerBackground onClick={closeTaskDrawer} />}
-      <WatchersPopover
+      <TaskDrawerBackground onClick={closeTaskDrawer} />
+      {/* <WatchersPopover
         open={isSubscriptionListOpen}
         anchorEl={watchersReference.current}
         onClose={handleSubscriptionListClose}
-      />
+      /> */}
     </TaskDrawerContainer>
   );
 };

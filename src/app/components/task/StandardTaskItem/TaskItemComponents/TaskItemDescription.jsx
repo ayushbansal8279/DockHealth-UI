@@ -17,7 +17,6 @@ import {
 import { TaskStatus } from 'helpers/task-helpers';
 import { openDrawer } from 'actions/task-drawer-actions';
 import Spacing from 'components/common/Spacing';
-import { checkIfShouldDisplayTooltip } from 'components/task/OverflowTooltip/OverflowTooltip';
 import {
   convertToEditorState,
   convertFromEditorStateToOutput,
@@ -32,7 +31,6 @@ import {
   CompletedBy,
   TaskItemParentTaskLabel,
   TaskItemDescriptionIndicators,
-  DescriptionTooltipWrapper,
   DescriptionBorder,
   TaskContext,
   DescriptionEditButton,
@@ -49,7 +47,6 @@ const TaskItemDescription = ({
   setEditing,
   disabled,
   disableMentions,
-  isEditButtonVisible = false,
   width,
 }) => {
   const {
@@ -71,7 +68,6 @@ const TaskItemDescription = ({
   const { matchDescription } = searchMetaData || {};
   const previousDescription = useRef(null);
   const descriptionTextReference = useRef(null);
-  const [isHovered, setIsHovered] = useState(false);
   const dispatch = useDispatch();
   // const [descriptionState, setDescriptionState] = useMentionsEditorState(
   //   convertToEditorState({
@@ -90,11 +86,6 @@ const TaskItemDescription = ({
         .trim()
         .replace(/^\.$/, '') || 'Unknown'
     : 'Unknown';
-
-  const convertedDescriptionState = useMemo(
-    () => convertFromEditorStateToOutput(descriptionState, false),
-    [descriptionState],
-  );
 
   useEffect(() => {
     if (isEditing && descriptionReference.current) {
@@ -223,8 +214,9 @@ const TaskItemDescription = ({
         {/*  setDescriptionState(description.trim())*/}
         {/*  setEditing(false)*/}
         {/*}}/>*/}
-        <DescriptionEditButton>
-          <IconButton
+        {!isCompleted && (
+          <DescriptionEditButton>
+            <IconButton
               onClick={(event) => {
                 if (!disabled) {
                   event.stopPropagation();
@@ -232,10 +224,11 @@ const TaskItemDescription = ({
                   setEditing(!isEditing);
                 }
               }}
-          >
-            <EditIcon />
-          </IconButton>
-        </DescriptionEditButton>
+            >
+              <EditIcon />
+            </IconButton>
+          </DescriptionEditButton>
+        )}
       </Box>
       <TaskItemDescriptionIndicators>
         {isCompleted && (

@@ -2,7 +2,7 @@ import React, { useEffect, useRef, useState } from 'react';
 import Autocomplete from '@mui/lab/Autocomplete';
 import CircularProgress from '@mui/material/CircularProgress';
 import { matchSorter } from 'match-sorter';
-import { getAllTemplates } from 'api/template-api';
+import { getAllTemplateNames } from 'api/template-api';
 import styled from 'styled-components';
 import Input from '../Input/Input';
 
@@ -45,7 +45,7 @@ const TemplateAutoComplete = ({
       return;
     }
 
-    getAllTemplates().then((data) => {
+    getAllTemplateNames(type).then((data) => {
       if (active) {
         setTemplates(
           data

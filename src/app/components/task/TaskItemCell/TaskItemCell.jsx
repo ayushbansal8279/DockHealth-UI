@@ -17,7 +17,7 @@ const TaskItemCell = styled.div`
     props.bolded ? fontWeights.regular : fontWeights.light};
   color: ${palette.mediumGrey};
   min-width: ${({ width, isSubtask, order }) =>
-    isSubtask && order === 0 ? +width - 36 : width}px;
+    order === 0 ? +width : width}px;
   max-width: ${({ width, isSubtask, order }) =>
     isSubtask && order === 0 ? +width - 36 : width}px;
   padding: ${(props) => props.padding || `${spacing.tiny} 0`};

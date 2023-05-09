@@ -27,8 +27,10 @@ import {
   patientTaskSearchSelector,
   patientTasksSortSelector,
   patientSelector,
+  currentListTasksStatusSelector,
 } from 'selectors/patient-details-selectors';
 import { addingNewSubtaskParentIdSelector } from 'selectors/task-drawer-selectors';
+import { organizationCustomFieldsSelector } from 'selectors/organization-selectors';
 import {
   hasFiltersAppliedSelector,
   selectedFiltersInMegaFilterSelector,
@@ -52,6 +54,7 @@ import {
   TaskItemType,
   TASK_ITEM_BASE_COLUMN_CONFIG,
   TaskOrigin,
+  TaskStatus,
 } from 'helpers/task-helpers';
 import { getCustomerTypeLabel } from 'helpers/customer-type-helper';
 import { checkIfAllTasksSelected } from 'helpers/bulk-edit-helpers';
@@ -97,12 +100,15 @@ const PatientTasksListView = () => {
   const addingNewSubtaskParentId = useSelector(
     addingNewSubtaskParentIdSelector,
   );
+  const tasksStatus =
+    useSelector(currentListTasksStatusSelector) || TaskStatus.INCOMPLETE;
   const customerTypeLabel = getCustomerTypeLabel(currentUser);
   const { setCurrentList, currentList, setViewSpecificConfig } =
     useTaskListColumnsConfig();
   const dispatch = useDispatch();
   const history = useHistory();
   const {
+    togglePatientTaskStatus,
     updatePatientTaskInList,
     updatePatientTaskWorkflowStatus,
     sortPatientTasks,
@@ -110,6 +116,11 @@ const PatientTasksListView = () => {
   } = useActions(PatientTasksSagaActions);
   const patient = useSelector(patientSelector);
   const isAllTasksView = taskListIdentifierParameter === ListViewType.ALL_TASKS;
+
+  const organizationCustomFields = useSelector(
+    organizationCustomFieldsSelector,
+  );
+  const taskCustomFields = organizationCustomFields;
 
   const currentOrganization = useSelector(selectedUserOrganizationSelector);
   // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -252,6 +263,42 @@ const PatientTasksListView = () => {
       </EmptyListViewWithQuickAddTask>
     );
   };
+
+  const handleToggleTaskStatus = useCallback(
+    task => {
+      const incompleteRequiredFields = findIncompleteRequiredFields(
+        taskCustomFields,
+        task,
+      );
+      const isRequiredFieldsAreIncomplete =
+        incompleteRequiredFields?.length > 0;
+
+      if (isRequiredFieldsAreIncomplete) {
+        const modalProps = {
+          incompleteFields: incompleteRequiredFields,
+        };
+        dispatch(openModal('CompleteAllFields', modalProps));
+        return;
+      }
+
+      const hasIncompletedSubtasks = task.subtasks.find(
+        subtask => subtask.status === 'INCOMPLETE',
+      );
+      if (task.status === 'INCOMPLETE' && hasIncompletedSubtasks) {
+        const modalProps = {
+          confirm: () => {
+            dispatch(closeModal());
+            togglePatientTaskStatus(task);
+          },
+        };
+        dispatch(openModal('CompleteAllTasks', modalProps));
+      } else {
+        togglePatientTaskStatus(task);
+      }
+    },
+    [dispatch, taskCustomFields, togglePatientTaskStatus],
+  );
+
   const groupedTasks = useMemo(() => {
     if (isAllTasksView) return;
     return groupTasks(activeList?.tasks);
@@ -306,6 +353,7 @@ const PatientTasksListView = () => {
                 key={task.identifier}
                 isFullView={isFullView}
                 task={task}
+                taskGroupIdentifier={taskGroupIdentifier}
                 isCompletedGroup={completeTasksVisible}
                 onTaskUpdate={updatePatientTaskInList}
                 updateWorkflowStatus={updatePatientTaskWorkflowStatus}
@@ -325,6 +373,7 @@ const PatientTasksListView = () => {
                 groupDragAndDropDisabled
                 disablePatientAssignment
                 iconColorActive={iconColorActiveItem?.value}
+                isCompletedTab={tasksStatus !== TaskStatus.INCOMPLETE}
                 origin={TaskOrigin.PATIENT}
               />
             );
@@ -336,6 +385,7 @@ const PatientTasksListView = () => {
       completeTasksVisible,
       activeList,
       quickAddTask,
+      iconColorActiveItem,
       sort,
       sortPatientTasks,
       groupHasMultipleAssignees,
@@ -345,7 +395,7 @@ const PatientTasksListView = () => {
       updatePatientTaskWorkflowStatus,
       addingNewSubtaskParentId,
       viewSetup,
-      iconColorActiveItem,
+      tasksStatus,
     ],
   );
   return (

@@ -4,9 +4,11 @@ import { useDispatch, useSelector } from 'react-redux';
 import { Grid, Box, Dialog } from '@mui/material';
 import {
   getPatientListIdentifierByUrlParameter,
+  getPatientsListFiltersStorageKey,
   DefaultPatientsListType,
 } from 'helpers/patient-list-helpers';
 import { useBoolean } from 'hooks/useBoolean';
+import sessionStorageHelper from 'helpers/session-storage-helper';
 import {
   patientsListDetailsSelector,
   patientsSelector,
@@ -17,6 +19,7 @@ import {
   userProfileSelector,
   selectedUserOrganizationSelector,
 } from 'selectors/user-selectors';
+import { isUserGuest, isUserViewOnly } from 'helpers/user-helper';
 import { organizationSelector } from 'selectors/organization-selectors';
 import { PatientEditContext } from 'context-api/patient-edit-context';
 import * as PatientsActions from 'actions/patients-actions';
@@ -35,7 +38,9 @@ import ImportPatientsModal from 'modal/components/ImportPatientsModal/ImportPati
 import {
   downloadPatientImportTemplate,
   downloadPatientListData,
+  getAllPatientAttachments,
 } from 'api/patient-api';
+import initializeAttachmentsSectionHooks from 'views/patient-details/PatientAttachments/hooks';
 import PatientsList from './PatientsList/PatientsList';
 import PatientsToolbar from './PatientsToolbar/PatientsToolbar';
 import BulkEditCreateTask from './BulkEditSection/BulkEditOptionsBar/BulkEditCreateTask';
@@ -48,7 +53,7 @@ import {
   ContentWrapper,
 } from './styled';
 
-const MAX_PATIENT_ALL_RESULTS = 1000;
+const MAX_PATIENT_ALL_RESULTS = 5000;
 
 // eslint-disable-next-line sonarjs/cognitive-complexity
 const PatientsView = () => {
@@ -83,8 +88,9 @@ const PatientsView = () => {
       ({ name }) => name === 'icon.active.color',
     ) || {};
 
-  const { orgUserRole } = currentUser || {};
-  const isGuest = orgUserRole === 'GUEST';
+  const isGuest = isUserGuest(currentUser);
+  const isViewOnly = isUserViewOnly(currentUser);
+
   const { emrIntegrationEnabled } = useSelector(organizationSelector) || {};
 
   useEffect(() => {
@@ -193,6 +199,29 @@ const PatientsView = () => {
     setDeleteOption((previous) => !previous);
   }, [turnOffAllOptions, openDeleteConfirmationModal]);
 
+  const { getMemoPatientAttachment } = initializeAttachmentsSectionHooks();
+
+  const downloadFiles = useCallback(
+    async patientIdentifiers => {
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
+      const attachments = await getAllPatientAttachments(patientIdentifiers);
+      let timeout = 0;
+      attachments.map(async ({ attachmentIdentifier, fileName }) => {
+        timeout += 500;
+        setTimeout(async () => {
+          const { data } = await getMemoPatientAttachment(attachmentIdentifier);
+          const url = window.URL.createObjectURL(new Blob([data]));
+          const link = document.createElement('a');
+          link.href = url;
+          link.setAttribute('download', fileName);
+          document.body.append(link);
+          link.click();
+        }, timeout);
+      });
+    },
+    [getMemoPatientAttachment],
+  );
+
   const providerValue = useMemo(
     () => ({
       bulkEditIsActive,
@@ -209,6 +238,7 @@ const PatientsView = () => {
         toggleAddLabelOption,
         toggleDeleteOption,
         turnOffAllOptions,
+        downloadFiles,
       },
     }),
     [
@@ -223,6 +253,7 @@ const PatientsView = () => {
       toggleCreateWorkflowOption,
       toggleDeleteOption,
       turnOffAllOptions,
+      downloadFiles,
     ],
   );
 
@@ -251,16 +282,27 @@ const PatientsView = () => {
     [dispatch, selectedPatients],
   );
 
-  const handleDownloadPatientListData = useCallback(async () => {
-    const filename = `Dock ${listName}.csv`;
-    const { data } = await downloadPatientListData(listIdentifier, filename);
-    const url = window.URL.createObjectURL(new Blob([data]));
-    const link = document.createElement('a');
-    link.href = url;
-    link.setAttribute('download', filename);
-    document.body.append(link);
-    link.click();
-  }, [listIdentifier, listName]);
+  const handleDownloadPatientListData = useCallback(
+    async includeAllAttributes => {
+      const filename = `Dock ${listName}.csv`;
+      const selectedFilters = sessionStorageHelper.getItem(
+        getPatientsListFiltersStorageKey(listIdentifier),
+      );
+      const { data } = await downloadPatientListData(
+        listIdentifier,
+        selectedFilters,
+        filename,
+        includeAllAttributes,
+      );
+      const url = window.URL.createObjectURL(new Blob([data]));
+      const link = document.createElement('a');
+      link.href = url;
+      link.setAttribute('download', filename);
+      document.body.append(link);
+      link.click();
+    },
+    [listIdentifier, listName],
+  );
 
   return (
     <PatientListColumnsConfigProvider>
@@ -277,6 +319,7 @@ const PatientsView = () => {
                   disablePortal
                   options={[
                     !isGuest &&
+                      !isViewOnly &&
                       !emrIntegrationEnabled &&
                       listIdentifier ===
                         DefaultPatientsListType.ALL_PATIENTS && {
@@ -285,12 +328,20 @@ const PatientsView = () => {
                           setImportPopupOpen(true);
                         },
                       },
-                    !isGuest && {
-                      name: 'Export to CSV',
-                      onClick: () => {
-                        handleDownloadPatientListData();
+                    !isGuest &&
+                      !isViewOnly && {
+                        name: 'Export to CSV',
+                        onClick: () => {
+                          handleDownloadPatientListData(false);
+                        },
                       },
-                    },
+                    !isGuest &&
+                      !isViewOnly && {
+                        name: 'Export to CSV (All Attributes)',
+                        onClick: () => {
+                          handleDownloadPatientListData(true);
+                        },
+                      },
                   ]}
                 >
                   <MoreVert color="primary" />

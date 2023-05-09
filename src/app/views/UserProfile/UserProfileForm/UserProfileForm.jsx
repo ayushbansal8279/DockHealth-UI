@@ -73,6 +73,8 @@ const UserProfileForm = ({ userProfile }) => {
   const initialsValue = watch('initials');
   const avatarValue = watch('avatar');
 
+  const embeddedMode = sessionStorage.getItem('EmbeddedMode') || false;
+
   const openChangePasswordModal = () => {
     dispatch(openModal('ChangePassword'));
   };
@@ -82,6 +84,18 @@ const UserProfileForm = ({ userProfile }) => {
       openModal('ChangeMobileNumber', {
         userProfile,
         onUpdateSuccess: (updatedPhoneNumber) => {
+          setValue('accountPhoneNumber', updatedPhoneNumber);
+          dispatch(getCurrentUser());
+        },
+      }),
+    );
+  };
+
+  const openChangeEmailModal = () => {
+    dispatch(
+      openModal('ChangeEmail', {
+        userProfile,
+        onUpdateSuccess: updatedPhoneNumber => {
           setValue('accountPhoneNumber', updatedPhoneNumber);
           dispatch(getCurrentUser());
         },
@@ -159,81 +173,98 @@ const UserProfileForm = ({ userProfile }) => {
               }}
             />
             <Spacing vertical={4} />
-            <Grid container item spacing={2}>
-              <Grid item xs={12} md={6}>
-                <FormInput
-                  required
-                  type="text"
-                  name="firstName"
-                  label="First name"
-                />
-              </Grid>
-              <Grid item xs={12} md={6}>
-                <FormInput
-                  required
-                  type="text"
-                  name="lastName"
-                  label="Last name"
-                />
-              </Grid>
-            </Grid>
-            <Grid item xs={12}>
-              <FormInput readOnly type="email" name="email" label="Email" />
-            </Grid>
-            <Grid item xs={12}>
-              <FormInput
-                type="password"
-                label="Password"
-                readOnly
-                value="password"
-                endAdornment={
-                  <InputActionButton
-                    type="button"
-                    onClick={openChangePasswordModal}
-                  >
-                    Change
-                  </InputActionButton>
-                }
-              />
-            </Grid>
-            <Grid item xs={12}>
-              <FormInfoText>
-                A valid mobile phone number is required to send an
-                authentication code for HIPAA compliance
-              </FormInfoText>
-            </Grid>
-            <Grid container item direction="row" spacing={2}>
-              <Grid item md={6} xs={12}>
-                <FormPhoneNumberInput
-                  name="accountPhoneNumber"
-                  label="Your Mobile Phone Number"
-                  required
-                  readOnly
-                  endAdornment={
-                    <InputActionButton
-                      type="button"
-                      onClick={openChangeMobileNumberModal}
-                    >
-                      Change
-                    </InputActionButton>
-                  }
-                />
-              </Grid>
-              <Grid item md={6} xs={12}>
-                <FormPhoneNumberInput
-                  name="workPhoneNumber"
-                  label="Additional Phone Number"
-                />
-              </Grid>
-            </Grid>
-            <Grid container item direction="row" spacing={2}>
-              <Grid item md={6} xs={12}>
-                <FormInput name="title" label="Title" />
-              </Grid>
-              <Grid item md={6} xs={12}>
-                <FormInput name="department" label="Department" />
-              </Grid>
-            </Grid>
+            {!embeddedMode && (
+              <>
+                <Grid container item spacing={2}>
+                  <Grid item xs={12} md={6}>
+                    <FormInput
+                      required
+                      type="text"
+                      name="firstName"
+                      label="First name"
+                    />
+                  </Grid>
+                  <Grid item xs={12} md={6}>
+                    <FormInput
+                      required
+                      type="text"
+                      name="lastName"
+                      label="Last name"
+                    />
+                  </Grid>
+                </Grid>
+                <Grid item xs={12}>
+                  <FormInput
+                    readOnly
+                    type="email"
+                    name="email"
+                    label="Email"
+                    // endAdornment={
+                    //   <InputActionButton
+                    //     type="button"
+                    //     onClick={openChangeEmailModal}
+                    //   >
+                    //     Change
+                    //   </InputActionButton>
+                    // }
+                  />
+                </Grid>
+                <Grid item xs={12}>
+                  <FormInput
+                    type="password"
+                    label="Password"
+                    readOnly
+                    value="password"
+                    endAdornment={
+                      <InputActionButton
+                        type="button"
+                        onClick={openChangePasswordModal}
+                      >
+                        Change
+                      </InputActionButton>
+                    }
+                  />
+                </Grid>
+                <Grid item xs={12}>
+                  <FormInfoText>
+                    A valid mobile phone number is required to send an
+                    authentication code for HIPAA compliance
+                  </FormInfoText>
+                </Grid>
+                <Grid container item direction="row" spacing={2}>
+                  <Grid item md={6} xs={12}>
+                    <FormPhoneNumberInput
+                      name="accountPhoneNumber"
+                      label="Your Mobile Phone Number"
+                      required
+                      readOnly
+                      endAdornment={
+                        <InputActionButton
+                          type="button"
+                          onClick={openChangeMobileNumberModal}
+                        >
+                          Change
+                        </InputActionButton>
+                      }
+                    />
+                  </Grid>
+                  <Grid item md={6} xs={12}>
+                    <FormPhoneNumberInput
+                      name="workPhoneNumber"
+                      label="Additional Phone Number"
+                    />
+                  </Grid>
+                </Grid>
+                <Grid container item direction="row" spacing={2}>
+                  <Grid item md={6} xs={12}>
+                    <FormInput name="title" label="Title" />
+                  </Grid>
+                  <Grid item md={6} xs={12}>
+                    <FormInput name="department" label="Department" />
+                  </Grid>
+                </Grid>
+              </>
+            )}
           </Grid>
         </SettingsSection>
         <Grid container>

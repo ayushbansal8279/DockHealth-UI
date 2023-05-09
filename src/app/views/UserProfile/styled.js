@@ -12,7 +12,7 @@ export const ProfileSettingsWrapper = styled.div`
   max-width: 798px;
   width: 100%;
   margin: 0 auto;
-  padding: 50px ${spacing.regularPlus};
+  padding: 10px ${spacing.regularPlus};
   color: ${palette.mediumGrey};
   font-family: 'Montserrat', sans-serif;
 `;
@@ -72,7 +72,7 @@ export const ActionButton = styled.button`
 `;
 
 export const SettingsSection = styled.section`
-  ${({ noMarginTop }) => !noMarginTop && `margin-top: ${spacing.giga};`}
+  ${({ noMarginTop }) => !noMarginTop && `margin-top: ${spacing.regular};`}
   ${({ noMarginBottom }) =>
     !noMarginBottom && `margin-bottom: ${spacing.largePlus};`}
 `;

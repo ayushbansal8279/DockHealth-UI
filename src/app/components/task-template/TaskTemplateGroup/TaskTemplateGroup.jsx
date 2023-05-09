@@ -40,6 +40,7 @@ const TaskTemplateGroup = ({
   showTasksWithGroup = true,
   iconColorActive,
   origin,
+  highlightedValue,
   // eslint-disable-next-line sonarjs/cognitive-complexity
 }) => {
   const templateGroup = useSelector((state) => {
@@ -154,6 +155,7 @@ const TaskTemplateGroup = ({
         setShowIncompleteTasks={setShowIncompleteTasks}
         showTasksWithGroup={showTasksWithGroup}
         iconColorActive={iconColorActive}
+        highlightedValue={highlightedValue}
       />
       {!isStartedDnD && (
         <TaskTemplateGroupList timeout={150} in={isOpen && !isStartedDnD}>

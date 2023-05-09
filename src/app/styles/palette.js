@@ -6,12 +6,11 @@ const palette = {
   midnightBlue: '#213a56',
   brightBlue: '#00a2e5',
   darkBlue: '#074a86',
-  brightBlueWithAlpha: '#00a2e520',
+  // brightBlueWithAlpha: '#00a2e520',
+  brightBlueWithAlpha: '#e6f7ff',
   accentYellow: '#feb52b',
   orange: '#ef8a23',
   darkOrange: '#d97e22',
-  dockBlueLight: '#e0eff9',
-  oPlusRedLight: '#fad3cf',
 
   // secondary
   purplePassion: '#553bbe',
@@ -67,6 +66,13 @@ const palette = {
   lightBlue: '#5ccced',
   skeletonLoader: '#e5e9f2',
   selectedBlue: '#05ADEC',
+
+  // lighter ones - 90%
+  dockBlueLight: '#e0eff9',
+  oPlusRedLight: '#fad3cf',
+  tomatoInYoFaceLight: '#f9d4d2',
+  orangeJuliusLight: '#fee6cd',
+  bananaHammockLight: '#fff4cc',
 };
 
 export const featurePalette = {

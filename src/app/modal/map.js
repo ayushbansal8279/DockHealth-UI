@@ -15,6 +15,7 @@ import InviteToListModal from './components/InviteToListModal/InviteToListModal'
 import ChangePasswordModal from './components/ChangePasswordModal/ChangePasswordModal';
 import LeaveOrganizationModal from './components/LeaveOrganizationModal/LeaveOrganizationModal';
 import ChangeMobileNumberModal from './components/ChangeMobileNumberModal/ChangeMobileNumberModal';
+import ChangeEmailModal from './components/ChangeEmailModal/ChangeEmailModal';
 import ConfirmationModal from './components/ConfirmationModal/ConfirmationModal';
 import OnboardingInviteConfirmationModal from './components/OnboardingInviteConfirmationModal/OnboardingInviteConfirmationModal';
 import ArchiveUserModal from './components/ArchiveUserModal/ArchiveUserModal';
@@ -42,6 +43,7 @@ import CreateTemplateFolderModal from './components/CreateTemplateFolderModal/Cr
 import HomeScreenDragDropModal from './components/HomeScreenDragDropModal/HomeScreenDragDropModal';
 import SelectTaskDestinationModal from './components/SelectDestinationModal/SelectTaskDestinationModal';
 import SelectDestinationModal from './components/SelectDestinationModal/SelectDestinationModal';
+import SelectOrganizationModal from './components/SelectOrganizationModal/SelectOrganizationModal';
 import SelectWorkflowDestinationModal from './components/SelectWorkflowDestinationModal/SelectWorkflowDestinationModal';
 import AssignPatientModal from './components/AssignPatientModal/AssignPatientModal';
 import UnassignPatientModal from './components/UnassignPatientModal/UnassignPatientModal';
@@ -71,6 +73,7 @@ import SendEmrNoteFromTaskModal from './components/SendMessageFromTaskModals/Sen
 import SendSmsFromTaskModal from './components/SendMessageFromTaskModals/SendSmsFromTaskModal/SendSmsFromTaskModal';
 import SendSecureMessageFromTaskModal from './components/SendMessageFromTaskModals/SendSecureMessageFromTaskModal/SendSecureMessageFromTaskModal';
 import EditContactModal from './components/EditContactModal/EditContactModal';
+import EditPatientModal from './components/EditPatientModal/EditPatientModal';
 import AnchorDateChangeConfirmationModal from './components/AnchorDateChangeConfirmationModal/AnchorDateChangeConfirmationModal';
 
 const MODAL_MAP = {
@@ -92,6 +95,7 @@ const MODAL_MAP = {
   InviteToList: InviteToListModal,
   ChangePassword: ChangePasswordModal,
   ChangeMobileNumber: ChangeMobileNumberModal,
+  ChangeEmail: ChangeEmailModal,
   Confirmation: ConfirmationModal,
   OnboardingInviteConfirmation: OnboardingInviteConfirmationModal,
   ArchiveUser: ArchiveUserModal,
@@ -120,6 +124,7 @@ const MODAL_MAP = {
   SelectTaskDestination: SelectTaskDestinationModal,
   SelectDestinationGroup: SelectDestinationGroupModal,
   SelectDestination: SelectDestinationModal,
+  SelectOrganization: SelectOrganizationModal,
   SelectWorkflowDestination: SelectWorkflowDestinationModal,
   AssignPatient: AssignPatientModal,
   UnassignPatient: UnassignPatientModal,
@@ -148,6 +153,7 @@ const MODAL_MAP = {
   SendSecureMessageFromTask: SendSecureMessageFromTaskModal,
   EditContact: EditContactModal,
   AnchorDateChangeConfirmation: AnchorDateChangeConfirmationModal,
+  EditPatient: EditPatientModal,
 };
 
 export default MODAL_MAP;

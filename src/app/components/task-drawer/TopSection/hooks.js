@@ -11,7 +11,11 @@ import {
   selectedTaskSelector,
   taskCustomFieldsSelector,
 } from 'selectors/task-drawer-selectors';
-import { toggleCompleteTask, moveTask } from 'actions/task-actions';
+import {
+  toggleCompleteTask,
+  moveTask,
+  makeTaskDisappear,
+} from 'actions/task-actions';
 import { useParams, useHistory } from 'react-router-dom';
 import { HOME_PATH } from 'routing/helpers/paths';
 
@@ -181,6 +185,7 @@ const initializeTaskDrawerTopSectionHooks = ({
               )(dispatch);
               if (!identifier) {
                 setTimeout(() => {
+                  dispatch(makeTaskDisappear(selectedTask));
                   closeTaskDrawer();
                 }, 1000);
               }
@@ -195,6 +200,7 @@ const initializeTaskDrawerTopSectionHooks = ({
           )(dispatch);
           if (!identifier) {
             setTimeout(() => {
+              dispatch(makeTaskDisappear(selectedTask));
               closeTaskDrawer();
             }, 1000);
           }

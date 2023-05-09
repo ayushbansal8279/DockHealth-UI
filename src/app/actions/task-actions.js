@@ -198,6 +198,52 @@ export function partialUpdateTask(taskIdentifier, dataToUpdate) {
   };
 }
 
+export function updateTaskAssignment(taskIdentifier, dataToUpdate) {
+  return (dispatch) => {
+    dispatch({
+      type: ActionTypes.UPDATE_TASK_SUCCESS,
+      task: {
+        ...dataToUpdate,
+        taskIdentifier,
+      },
+    });
+    return (
+      TaskApi.updateTaskAssignment(taskIdentifier, dataToUpdate)
+        // eslint-disable-next-line sonarjs/no-identical-functions
+        .then((task) => {
+          dispatch(AlertActions.showGlobalAlert(AlertMessages.UPDATED));
+          return task;
+        })
+        .catch((error) => {
+          throw error;
+        })
+    );
+  };
+}
+
+export function updateTaskMetaData(taskIdentifier, dataToUpdate) {
+  return (dispatch) => {
+    dispatch({
+      type: ActionTypes.UPDATE_TASK_SUCCESS,
+      task: {
+        ...dataToUpdate,
+        taskIdentifier,
+      },
+    });
+    return (
+      TaskApi.updateTaskMetaData(taskIdentifier, dataToUpdate)
+        // eslint-disable-next-line sonarjs/no-identical-functions
+        .then((task) => {
+          dispatch(AlertActions.showGlobalAlert(AlertMessages.UPDATED));
+          return task;
+        })
+        .catch((error) => {
+          throw error;
+        })
+    );
+  };
+}
+
 export const moveTask =
   (task, taskList, taskGroupIdentifier = null, parentTaskIdentifier = null) =>
   (dispatch) => {
@@ -267,7 +313,7 @@ export const moveTask =
 
 export function addComment(task, taskComment) {
   return (dispatch) =>
-    TaskApi.addComment(task.taskIdentifier, taskComment)
+    TaskApi.addComment(task?.taskIdentifier, taskComment)
       .then((comment) => {
         dispatch({
           type: ActionTypes.ADD_TASK_COMMENT_SUCCESS,
@@ -430,6 +476,21 @@ export function toggleCompleteTask(
       .catch((error) => {
         throw error;
       });
+  };
+}
+
+export function makeTaskDisappear(taskObject) {
+  const { ...task } = taskObject;
+  return (dispatch) => {
+    setTimeout(
+      // eslint-disable-next-line sonarjs/no-identical-functions
+      () =>
+        dispatch({
+          type: ActionTypes.DELETE_TASK,
+          taskIdentifier: task.taskIdentifier,
+        }),
+      TASK_DISAPPEAR_DELAY,
+    );
   };
 }
 

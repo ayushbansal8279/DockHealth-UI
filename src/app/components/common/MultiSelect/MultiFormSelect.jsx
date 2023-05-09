@@ -4,7 +4,7 @@ import { useMount, useUnmount } from 'react-use';
 import MultiSelect from './MultiSelect';
 
 const MultiFormSelect = React.forwardRef(
-  ({ name, onChange, ...restProps }, reference) => {
+  ({ name, label, onChange, required, ...restProps }, reference) => {
     const {
       register,
       clearErrors,
@@ -33,6 +33,7 @@ const MultiFormSelect = React.forwardRef(
     return (
       <MultiSelect
         name={name}
+        label={label + (required ? ' *' : '')}
         value={value}
         onChange={handleChange}
         error={error}

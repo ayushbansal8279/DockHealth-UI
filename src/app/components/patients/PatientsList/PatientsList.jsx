@@ -21,6 +21,8 @@ import { usePatientListColumnsConfig } from 'context-api/patients-columns-config
 import { PatientColumn } from 'helpers/patient-list-helpers';
 
 import { patientsListSelector } from 'selectors/patients-selectors';
+import moment from 'moment';
+import { formatPhoneNumber } from 'helpers/utility-functions';
 import PatientImportPopover from '../PatientImportPopover/PatientImportPopover';
 import TaskItemBulkEdit from '../../task/StandardTaskItem/TaskItemComponents/TaskItemBulkEdit';
 import EmptyFilteredPatientsList from '../EmptyFilteredPatientsList/EmptyFilteredPatientsList';
@@ -285,12 +287,22 @@ const PatientsList = ({
       headerName: 'MOBILE',
       renderHeader: renderColumnHeader,
       // flex: 0.5,
+      renderCell: ({ row }) => (
+        <Tooltip placement="top" title={formatPhoneNumber(row.phoneMobile)}>
+          <Text width="120">{formatPhoneNumber(row.phoneMobile)}</Text>
+        </Tooltip>
+      ),
       width: 140,
     },
     {
       field: 'phoneHome',
       headerName: 'HOME',
       renderHeader: renderColumnHeader,
+      renderCell: ({ row }) => (
+        <Tooltip placement="top" title={formatPhoneNumber(row.phoneHome)}>
+          <Text width="120">{formatPhoneNumber(row.phoneHome)}</Text>
+        </Tooltip>
+      ),
       // flex: 0.5,
       width: 140,
     },
@@ -318,6 +330,39 @@ const PatientsList = ({
               <Text width="120">{row[column.identifier]}</Text>
             </Tooltip>
           ),
+          sortComparator: (v1, v2, parameters1, parameters2) => {
+            const { api } = parameters2;
+            const sortModel = api.getSortModel();
+            const compareValue1 = v1 || '';
+            const compareValue2 = v2 || '';
+            // eslint-disable-next-line sonarjs/no-collapsible-if
+            if (column.fieldType === 'DATE') {
+              if (compareValue1 !== '' && compareValue2 !== '') {
+                const parameter1Date = moment(compareValue1);
+                const parameter2Date = moment(compareValue2);
+                if (sortModel[0]?.sort === 'desc') {
+                  if (parameter1Date.isAfter(parameter2Date)) {
+                    return 1;
+                  }
+                  if (parameter1Date.isBefore(parameter2Date)) {
+                    return -1;
+                  }
+                  return 0;
+                }
+                if (parameter1Date.isBefore(parameter2Date)) {
+                  return -1;
+                }
+                if (parameter1Date.isAfter(parameter2Date)) {
+                  return 1;
+                }
+                return 0;
+              }
+            }
+            if (sortModel[0]?.sort === 'desc') {
+              return compareValue2.localeCompare(compareValue1);
+            }
+            return compareValue1.localeCompare(compareValue2);
+          },
         })),
     );
 

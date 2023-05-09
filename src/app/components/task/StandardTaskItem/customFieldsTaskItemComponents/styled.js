@@ -247,11 +247,16 @@ export const ClickablePatient = styled.span`
 export const StandardTaskItemContainer = styled.div`
   position: relative;
   background-color: ${(props) =>
+  background-color: ${props =>
+    // eslint-disable-next-line unicorn/no-nested-ternary
     props.isSelected
       ? palette.brightBlueWithAlpha
       : // eslint-disable-next-line unicorn/no-nested-ternary
       props.hasEscalations
-      ? palette.oPlusRedLight
+      ? palette.bananaHammockLight
+      : // eslint-disable-next-line unicorn/no-nested-ternary
+      props.customHighlight
+      ? props.customHighlight
       : palette.white};
   border: 1px solid ${palette.coolGrey3};
   display: flex;

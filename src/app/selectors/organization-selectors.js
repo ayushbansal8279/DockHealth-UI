@@ -28,6 +28,16 @@ export const billingDetailsSelector = createSelector(
   ({ billingDetails }) => billingDetails,
 );
 
+export const invoiceDetailsSelector = createSelector(
+  organizationStateSelector,
+  ({ invoiceDetails }) => invoiceDetails,
+);
+
+export const referralConfigSelector = createSelector(
+  organizationStateSelector,
+  ({ referralConfig }) => referralConfig,
+);
+
 export const messageBannerBarSelector = createSelector(
   organizationStateSelector,
   ({ referralConfig }) => referralConfig?.messageBannerBar,
@@ -51,4 +61,9 @@ export const fetchingOrganizationStatusesSelector = createSelector(
 export const organizationCustomFieldsSelector = createSelector(
   organizationStateSelector,
   prop('organizationCustomFields'),
+);
+
+export const newPaymentPlanSelector = createSelector(
+  organizationStateSelector,
+  ({ newPaymentPlan }) => newPaymentPlan,
 );

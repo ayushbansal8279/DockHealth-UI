@@ -123,6 +123,18 @@ export const userHasBoardViewFeatureSelector = createSelector(
     organizationAvailableFeatures?.includes('BOARD_VIEW'),
 );
 
+export const userHasViewOnlyFeatureSelector = createSelector(
+  userProfileSelector,
+  ({ organizationAvailableFeatures }) =>
+    organizationAvailableFeatures?.includes('VIEW_ONLY'),
+);
+
+export const userHasDockLiteFeatureSelector = createSelector(
+  userProfileSelector,
+  ({ organizationAvailableFeatures }) =>
+    organizationAvailableFeatures?.includes('DOCK_LITE'),
+);
+
 export const userSetupClientViewSelector = createSelector(
   userViewSetupSelector,
   ({ mainSetup }) => mainSetup,

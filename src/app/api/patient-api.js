@@ -1,7 +1,7 @@
 import { fixList } from 'helpers/inbox-fix';
 import { log } from 'helpers/log';
 import { noop, showAlert } from 'helpers/utility-functions';
-
+import { mapSelectedOptionsToRequestPayload } from 'helpers/filter-options-helpers';
 import axios from './axios-heydoc';
 
 export function getAllPatients() {
@@ -253,14 +253,22 @@ export function downloadPatientImportTemplate() {
     .catch(noop);
 }
 
-export function downloadPatientListData(listIdentifier, filename) {
+export function downloadPatientListData(
+  listIdentifier,
+  selectedFilters,
+  filename,
+  includeAllAttributes,
+) {
   return axios({
-    url: `/patient/list/download/${listIdentifier}`,
-    method: 'GET',
+    url: `/patient/list/download/${listIdentifier}?includeAllAttributes=${includeAllAttributes}`,
+    method: 'POST',
     responseType: 'blob',
     headers: {
       Accept: 'application/octet-stream',
     },
+    data: selectedFilters
+      ? mapSelectedOptionsToRequestPayload(selectedFilters)
+      : {},
   })
     .then((response) => {
       const url = window.URL.createObjectURL(new Blob([response.data]));
@@ -347,3 +355,18 @@ export function unarchivePatient(identifier) {
     .patch(`patient/unarchivePatient/${identifier}`)
     .then(({ data }) => data);
 }
+
+export const getAllPatientAttachments = patientIdentifiers =>
+  axios
+    .post(`/patient/attachment/getAllPatientAttachments`, {
+      patientIdentifiers,
+    })
+    .then(response => response.data)
+    .catch(error => {
+      showAlert({
+        status: 'error',
+        title: 'Error',
+        text: 'Error getting patient attachments. Please try again.',
+      });
+      throw new Error(error?.response?.data?.errorMessage);
+    });

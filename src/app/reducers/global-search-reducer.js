@@ -11,6 +11,7 @@ const initialState = {
   tasksMap: {},
   isLoading: false,
   isLoadingMore: false,
+  searchPerformed: false,
   error: '',
 };
 
@@ -61,6 +62,7 @@ const GlobalSearchReducer = (state = initialState, action) => {
       return {
         ...state,
         searchValue: payload?.value,
+        searchPerformed: false,
       };
     }
 
@@ -68,6 +70,7 @@ const GlobalSearchReducer = (state = initialState, action) => {
       return {
         ...state,
         isLoading: true,
+        searchPerformed: false,
       };
     }
 
@@ -93,6 +96,7 @@ const GlobalSearchReducer = (state = initialState, action) => {
           ...newMap,
         },
         isLoading: false,
+        searchPerformed: true,
       };
     }
 
@@ -144,6 +148,8 @@ const GlobalSearchReducer = (state = initialState, action) => {
       return {
         ...state,
         ...initialState,
+        searchPerformed: false,
+        lists: [],
       };
     }
 

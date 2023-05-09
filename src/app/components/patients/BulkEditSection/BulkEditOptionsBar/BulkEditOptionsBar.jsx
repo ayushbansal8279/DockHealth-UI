@@ -7,6 +7,7 @@ import DuplicateIcon from 'img/bulk-edit/DuplicateIcon';
 import CompleteIcon from 'img/bulk-edit/CompleteIcon';
 import StatusIcon from 'img/bulk-edit/StatusIcon';
 import DeleteIcon from 'img/bulk-edit/DeleteIcon';
+import DownloadIcon from 'img/bulk-edit/DownloadIcon';
 
 import palette from 'styles/palette';
 import { PatientEditContext } from 'context-api/patient-edit-context';
@@ -21,6 +22,7 @@ const BulkEditOptionsBar = ({ selectedPatients = {}, onClose }) => {
     toggleCreateWorkflowOption,
     toggleAddLabelOption,
     toggleDeleteOption,
+    downloadFiles,
   } = selectedOptionsHandler;
 
   const createTaskHandler = useCallback(() => {
@@ -34,6 +36,13 @@ const BulkEditOptionsBar = ({ selectedPatients = {}, onClose }) => {
   const addLabelHandler = useCallback(() => {
     toggleAddLabelOption();
   }, [toggleAddLabelOption]);
+
+  const downloadFilesHandler = useCallback(() => {
+    const selectedPatientIdentifiers = selectedPatients?.map(patient => {
+      return patient.patientIdentifier;
+    });
+    downloadFiles(selectedPatientIdentifiers);
+  }, [downloadFiles, selectedPatients]);
 
   const deleteHandler = useCallback(() => {
     toggleDeleteOption();
@@ -66,6 +75,14 @@ const BulkEditOptionsBar = ({ selectedPatients = {}, onClose }) => {
           <BulkEditOption
             iconComponent={StatusIcon}
             title="Add Label"
+            isDisabled={false}
+            wideView
+          />
+        </Button>
+        <Button type="button" onClick={downloadFilesHandler} disabled={false}>
+          <BulkEditOption
+            iconComponent={DownloadIcon}
+            title="Download Files"
             isDisabled={false}
             wideView
           />

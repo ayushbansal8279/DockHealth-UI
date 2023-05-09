@@ -5,10 +5,12 @@ import { useBoolean } from 'hooks/useBoolean';
 import { useHistory, useParams } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import * as PatientsActions from 'actions/patients-actions';
+import { isUserGuest, isUserViewOnly } from 'helpers/user-helper';
 import ToolbarSelect from 'components/tasklist/ToolbarSelect/ToolbarSelect';
 import TasksStatusSwitchIcon from 'img/tasks-status-switch-icon.svg';
 import {
   PATIENTS_LIST_ALL,
+  PATIENTS_LIST_WITH_TASKS,
   PATIENTS_LIST_ARCHIVED,
   createPatientDetailsPath,
 } from 'routing/helpers/paths';
@@ -46,7 +48,7 @@ const OPTIONS = [
   {
     label: 'Active (with Tasks)',
     value: DefaultPatientsListType.ACTIVE_PATIENTS,
-    url: PATIENTS_LIST_ARCHIVED,
+    url: PATIENTS_LIST_WITH_TASKS,
   },
   {
     label: 'Archived',
@@ -68,11 +70,11 @@ const PatientsToolbar = () => {
   const listIdentifier = useSelector(currentPatientsListIdentifierSelector);
   const currentUser = useSelector(userProfileSelector);
   const currentOrganization = useSelector(selectedUserOrganizationSelector);
-  const { orgUserRole } = currentUser || {};
   const customerTypeLabel = getCustomerTypeLabel(currentUser).toUpperCase();
   const { listIdentifier: listIdentifierParameter } = useParams();
 
-  const isGuest = orgUserRole === 'GUEST';
+  const isGuest = isUserGuest(currentUser);
+  const isViewOnly = isUserViewOnly(currentUser);
 
   // const [importPopupOpen, setImportPopupOpen] = useState(false);
 
@@ -108,17 +110,36 @@ const PatientsToolbar = () => {
 
   return listIdentifier === DefaultPatientsListType.ALL_PATIENTS &&
     emrIntegrationEnabled ? (
-    <Box width="100%">
-      <InputWrapper hasValue={searchValue}>
-        <SearchInput value={searchValue} onValueChange={handleSearchChange} />
-        {!searchValue && (
-          <SearchHelperText>
-            Dock is connected to your EHR. Please search by name or medical
-            record number to find a patient.
-          </SearchHelperText>
-        )}
-      </InputWrapper>
-    </Box>
+    <>
+      <Box display="flex" flex={0.2} alignItems="center">
+        <Box width="800px">
+          <InputWrapper hasValue={searchValue}>
+            <SearchInput
+              value={searchValue}
+              onValueChange={handleSearchChange}
+            />
+          </InputWrapper>
+        </Box>
+        <Box display="flex" flex={1} alignItems="center">
+          <CustomizeToolbarButton
+            iconColorFilterActive={iconColorFilterActiveItem?.value}
+          />
+          <Box m={1} />
+          <FilterButton
+            ref={filterButtonReference}
+            active={filtersActive}
+            onClick={toggleFilter}
+            onClear={() => dispatch(PatientsActions.clearPatientsFilters())}
+          />
+        </Box>
+      </Box>
+      {!searchValue && (
+        <SearchHelperText>
+          Dock is connected to your EHR. Please search by name or medical record
+          number to find a patient.
+        </SearchHelperText>
+      )}
+    </>
   ) : (
     <>
       <Box p="16px">
@@ -160,6 +181,7 @@ const PatientsToolbar = () => {
           </Box>
           <Box display="flex" alignItems="center">
             {!isGuest &&
+              !isViewOnly &&
               !emrIntegrationEnabled &&
               listIdentifier === DefaultPatientsListType.ALL_PATIENTS && (
                 <>

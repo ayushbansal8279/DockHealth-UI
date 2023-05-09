@@ -25,6 +25,7 @@ import {
   userHasSmartFlowsSelector,
   userProfileSelector,
 } from 'selectors/user-selectors';
+import { checkIfUserIsOrganizationAdmin } from 'helpers/user-helper';
 import * as WorkflowActions from 'actions/workflow-actions';
 import * as ModalActions from 'modal/actions';
 import * as TaskActions from 'actions/task-actions';
@@ -38,6 +39,7 @@ import OptionsMenu from 'components/common/OptionsMenu/OptionsMenu';
 import QuickAddTaskInput from 'components/tasklist/QuickAddTaskInput/QuickAddTaskInput';
 import {
   moveWorkflowToFolder,
+  copyWorkflowToOrganization,
   switchTemplatePublic,
   updatePartialWorkflow,
   addTaskToTemplate,
@@ -87,6 +89,8 @@ const TaskTemplate = ({
   const isCurrentUserEditor =
     members?.find(({ user }) => user.identifier === currentUser.identifier)
       ?.memberPermission === 'EDITOR';
+
+  const isAdmin = checkIfUserIsOrganizationAdmin(currentUser);
 
   useEffect(() => {
     if (nameInputReference?.current && highlighted) {
@@ -171,6 +175,23 @@ const TaskTemplate = ({
           dispatch(switchTemplatePublic(identifier, !publicAccess));
         },
       },
+      isAdmin && {
+        name: 'Copy to another organization',
+        onClick: () =>
+          dispatch(
+            ModalActions.openModal('SelectOrganization', {
+              confirmText: 'Copy',
+              confirm: selectedItem => {
+                dispatch(
+                  copyWorkflowToOrganization(
+                    identifier,
+                    selectedItem?.organization?.organizationIdentifier,
+                  ),
+                );
+              },
+            }),
+          ),
+      },
       isCurrentUserEditor && {
         name: 'Delete Workflow',
         color: palette.oPlusRed,
@@ -197,6 +218,7 @@ const TaskTemplate = ({
       folderIdentifier,
       publicAccess,
       isCurrentUserEditor,
+      isAdmin,
     ],
   );
 

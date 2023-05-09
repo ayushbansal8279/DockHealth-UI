@@ -1,23 +1,40 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
-import { Box, Grid } from '@mui/material';
+import {
+  Accordion,
+  AccordionSummary,
+  AccordionDetails,
+  Box,
+  Grid,
+} from '@mui/material';
 import usePrevious from 'hooks/use-previous';
 import equals from 'ramda/src/equals';
+import ProfessionalServicesChevron from 'img/professional-services-chevron';
 import {
   BillingFrequency,
+  SubscriptionPlan,
   SUBSCRIPTION_PLANS,
   isPlanTrial,
   priceFormatter,
   PROFESSIONAL_SERVICES_PRICE,
+  DockLite,
+  ProfessionalServices,
 } from 'helpers/subscription-helper';
+import {
+  SUBS_PAYMENT_PATH,
+  SUBS_PAYMENT_FINISHED_PATH,
+} from 'routing/helpers/paths';
 import {
   getBillingEstimate,
   setPaymentNewPlan,
   updateSubscriptionDetails,
 } from 'actions/organization-actions';
 import { checkIfUserIsOrganizationAdmin } from 'helpers/user-helper';
-import { userProfileSelector } from 'selectors/user-selectors';
+import {
+  userProfileSelector,
+  userHasDockLiteFeatureSelector,
+} from 'selectors/user-selectors';
 import Button from 'components/common/Button/Button';
 import ViewLayout from 'components/template/ViewLayout/ViewLayout';
 import BasicLayoutHeader from 'components/template/BasicLayoutHeader/BasicLayoutHeader';
@@ -26,16 +43,18 @@ import {
   isSavingNewPlanSelector,
 } from 'selectors/organization-selectors';
 import { getUserByEmail } from 'api/user-auth-api';
+import ProfessionalServicesAddOn from './ProfessionalServicesAddOn/ProfessionalServicesAddOn';
 import CurrentPlan from './CurrentPlan/CurrentPlan';
 import SubscriptionPlanTail from './SubscriptionPlanTail/SubscriptionPlanTail';
+// import ProfessionalServicesTail from './ProfessionalServicesTail/ProfessionalServicesTail';
 import {
-  SubscriptionsViewContainer,
   SubscriptionsViewOuterContainer,
   SubscriptionPlansContainer,
   SubscriptionsTitle,
   SwitchContainer,
   Switch,
   SwitchLabel,
+  // ProfessionalServicesTitle,
   Title,
   TitleDescription,
   SubTitleDescription,
@@ -45,7 +64,9 @@ import {
   BillingTableHeaderCell,
   BillingTableCell,
   BillingTableSummaryRow,
+  StyledGrid,
 } from './styled';
+import DockLiteFeature from './DockLite/DockLiteFeature';
 
 // eslint-disable-next-line sonarjs/cognitive-complexity
 const SubscriptionsView = () => {
@@ -99,13 +120,21 @@ const SubscriptionsView = () => {
       !equals(subscriptionDetails, previousSubscriptionDetails)
     ) {
       getUserByEmail(currentUser.email, currentUser);
-      history.push('subscription-payment-finished');
+      history.push(SUBS_PAYMENT_FINISHED_PATH);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [subscriptionDetails]);
 
+  const dockLiteAvailable = useSelector(userHasDockLiteFeatureSelector);
+
   const selectedPlanDetails = SUBSCRIPTION_PLANS.find(
     ({ subscriptionPlan: sp }) => sp === selectedPlan,
+  );
+
+  const availableSubscriptionPlans = SUBSCRIPTION_PLANS.filter(
+    ({ subscriptionPlan: sp }) =>
+      sp !== SubscriptionPlan.PRO ||
+      (sp === SubscriptionPlan.PRO && dockLiteAvailable),
   );
 
   const isCurrentPlanChanged =
@@ -149,7 +178,7 @@ const SubscriptionsView = () => {
           newPlan,
         }),
       );
-      history.push('/subscription-payment');
+      history.push(SUBS_PAYMENT_PATH);
     } else {
       dispatch(updateSubscriptionDetails(newPlan));
     }
@@ -161,7 +190,7 @@ const SubscriptionsView = () => {
   return (
     <ViewLayout header={<BasicLayoutHeader title="Subscriptions" />}>
       <SubscriptionsViewOuterContainer>
-        <SubscriptionsViewContainer>
+        <StyledGrid container>
           {currentSubscriptionPlan && (
             <CurrentPlan currentSubscriptionPlan={currentSubscriptionPlan} />
           )}
@@ -203,7 +232,7 @@ const SubscriptionsView = () => {
           <Box p={1} />
           <SubscriptionPlansContainer>
             <Box display="flex" justifyContent="space-between">
-              {SUBSCRIPTION_PLANS.map((plan) => (
+              {availableSubscriptionPlans.map(plan => (
                 <SubscriptionPlanTail
                   key={plan.key}
                   active={subscriptionPlan === plan.subscriptionPlan}
@@ -248,6 +277,18 @@ const SubscriptionsView = () => {
                 />
               </>
             )} */}
+            {dockLiteAvailable && (
+              <Box p={2} width="100%" alignItems="center">
+                <DockLiteFeature
+                  key={DockLite.key}
+                  active={subscriptionPlan === DockLite.subscriptionPlan}
+                  selected={selectedPlan === DockLite.subscriptionPlan}
+                  plan={DockLite}
+                  hasExistingSubscription={hasExistingSubscription}
+                  billingFrequency={selectedBillingFrequency}
+                />
+              </Box>
+            )}
             <Box p={1} />
             <Title>
               Billing <SubTitleDescription>Est</SubTitleDescription>
@@ -314,8 +355,31 @@ const SubscriptionsView = () => {
               )}
             </Grid>
             <div ref={scrollReference} />
+            <Box p={3} />
+            <Accordion>
+              <AccordionSummary
+                // expandIcon={<ExpandMoreIcon />}
+                expandIcon={
+                  <ProfessionalServicesChevron height={14} width={20} />
+                }
+                aria-controls="panel1a-content"
+                id="panel1a-header"
+              >
+                {/* <Typography>Click To Expand</Typography> */}
+                <Box p={1} />
+                <Title>Professional Service Add-Ons</Title>
+              </AccordionSummary>
+              <AccordionDetails>
+                <Box display="block" justifyContent="space-between">
+                  {ProfessionalServices.map(service => (
+                    <ProfessionalServicesAddOn service={service} />
+                  ))}
+                </Box>
+              </AccordionDetails>
+            </Accordion>
+            <Box p={3} />
           </SubscriptionPlansContainer>
-        </SubscriptionsViewContainer>
+        </StyledGrid>
       </SubscriptionsViewOuterContainer>
     </ViewLayout>
   );

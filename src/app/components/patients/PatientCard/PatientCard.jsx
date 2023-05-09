@@ -1,8 +1,14 @@
 /* eslint-disable import/no-cycle */
 /* eslint-disable import/extensions */
 /* eslint-disable sonarjs/cognitive-complexity */
-import React, { useMemo, useState, useEffect, useRef } from 'react';
-import { useSelector } from 'react-redux';
+import React, {
+  useMemo,
+  useState,
+  useEffect,
+  useRef,
+  useCallback,
+} from 'react';
+import { useSelector, useDispatch } from 'react-redux';
 import descend from 'ramda/src/descend';
 import prop from 'ramda/src/prop';
 import moment from 'moment';
@@ -11,16 +17,16 @@ import { Link, useLocation } from 'react-router-dom';
 import * as PatientApi from 'api/patient-api';
 import useBooleanWithTimeout from 'hooks/use-boolean-with-timeout';
 import Spacing from 'components/common/Spacing';
-import {
-  getCustomerTypeLabel,
-  getCustomerUniqueIDShortLabel,
-} from 'helpers/customer-type-helper';
+import { getCustomerUniqueIDShortLabel } from 'helpers/customer-type-helper';
 import {
   userProfileSelector,
   selectedUserOrganizationSelector,
 } from 'selectors/user-selectors';
 import { organizationSelector } from 'selectors/organization-selectors';
 import { FieldType } from 'helpers/field-type-helpers';
+import { openModal } from 'modal/actions';
+import EditIcon from '@mui/icons-material/Edit';
+import LaunchIcon from '@mui/icons-material/Launch';
 import {
   PatientCardContainer,
   PatientInfoSection,
@@ -35,6 +41,7 @@ import {
   PatientCellWrapper,
   PatientMRNAnchor,
   CustomFieldPatientInfo,
+  EditPatientButton,
 } from './styled';
 import PatientCardDetailsLoader from './PatientCardDetailsLoader';
 import PatientCardNotesLoader from './PatientCardNotesLoader';
@@ -104,7 +111,6 @@ const PatientCard = ({
   const genderIdentityDisabled =
     currentOrganization?.disabledFeatures?.includes('PATIENT_GENDER') || false;
 
-  const customerTypeLabel = getCustomerTypeLabel(currentUser);
   const uniqueIdentifierLabel = getCustomerUniqueIDShortLabel(
     currentUser,
     currentOrganization,
@@ -112,6 +118,8 @@ const PatientCard = ({
 
   const organization = useSelector(organizationSelector);
   const emrPatientLink = organization?.emrPatientLink;
+
+  const dispatch = useDispatch();
 
   useEffect(() => {
     if (cardOpen && patientIdentifier !== patientData?.patientIdentifier) {
@@ -165,6 +173,17 @@ const PatientCard = ({
     (patientStreetState ? `, ${patientStreetState}` : '') +
     (patientPostalCode ? ` - ${patientPostalCode}` : '');
 
+  const handleEditPatientClick = useCallback(() => {
+    dispatch(
+      openModal('EditPatient', {
+        patient: patientData,
+        onAdded: newPatientData => {
+          setPatientData(newPatientData);
+        },
+      }),
+    );
+  }, [dispatch, patientData]);
+
   return (
     <PatientCellWrapper
       ref={reference}
@@ -193,18 +212,24 @@ const PatientCard = ({
                       .toUpperCase()}
                   </PatientName>
                   {!disableLink && (
-                    <Link
-                      to={{
-                        pathname: `/core/patient/${patientIdentifier}`,
-                        state: {
-                          from: pathname,
-                        },
-                      }}
-                    >
-                      <PatientLinkText>
-                        view {customerTypeLabel}
-                      </PatientLinkText>
-                    </Link>
+                    <div style={{ display: 'flex' }}>
+                      <Link
+                        to={{
+                          pathname: `/core/patient/${patientIdentifier}`,
+                          state: {
+                            from: pathname,
+                          },
+                        }}
+                      >
+                        <PatientLinkText>
+                          <LaunchIcon />
+                        </PatientLinkText>
+                      </Link>
+                      <Spacing horizontal={3} />
+                      <EditPatientButton onClick={handleEditPatientClick}>
+                        <EditIcon />
+                      </EditPatientButton>
+                    </div>
                   )}
                 </TopSection>
                 {(dob ||

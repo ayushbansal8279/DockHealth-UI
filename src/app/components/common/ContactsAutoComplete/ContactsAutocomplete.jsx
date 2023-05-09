@@ -33,6 +33,7 @@ const ContactsAutoComplete = ({
   placeholder,
   error,
   errorMessage,
+  patient,
   ...restProps
 }) => {
   const [open, setOpen] = useState(false);
@@ -48,6 +49,12 @@ const ContactsAutoComplete = ({
     }
     (async () => {
       const response = await getAllContacts();
+      response.push({
+        name: `(Patient) ${patient?.firstName} ${patient?.lastName}`,
+        email: patient?.email,
+        mobilePhoneNumber: patient?.phoneMobile?.replace('+1', ''),
+        identifier: patient?.patientIdentifier,
+      });
       if (active) {
         switch (type) {
           case CommunicationType.EMAIL: {
@@ -98,7 +105,7 @@ const ContactsAutoComplete = ({
       active = false;
       dataLoaded.current = false;
     };
-  }, [loading, type]);
+  }, [loading, patient, type]);
 
   React.useEffect(() => {
     if (!open) {

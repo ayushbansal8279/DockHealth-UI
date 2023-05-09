@@ -22,7 +22,10 @@ import CardMastercardIcon from 'img/cards/mastercard.png';
 import CardVisaIcon from 'img/cards/visa.png';
 import { MontserratTypography } from 'styles/theme-montserrat';
 import Loader, { LoaderSizes } from 'components/common/Loader/Loader';
-import { organizationSelector } from 'selectors/organization-selectors';
+import {
+  billingDetailsSelector,
+  referralConfigSelector,
+} from 'selectors/organization-selectors';
 import BillingInformation from '../BillingInformation/BillingInformation';
 import {
   AcceptedCardsContainer,

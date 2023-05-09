@@ -66,7 +66,12 @@ const checkUserAccountState = async ({
       return UNENROLLED_USER;
     }
 
-    if (data && !data.eulaAcknowledged && pathname !== EULA_PATH) {
+    if (
+      data &&
+      !data.eulaAcknowledged &&
+      pathname !== EULA_PATH &&
+      !orgData?.whiteLabelEnabled
+    ) {
       return EULA_PATH;
     }
 

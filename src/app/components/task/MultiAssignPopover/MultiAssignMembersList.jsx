@@ -14,7 +14,10 @@ import MagnifierIcon from 'img/magnifier.svg';
 import Checkbox from 'components/common/Checkbox/Checkbox';
 import Spacing from 'components/common/Spacing';
 import { useSelector } from 'react-redux';
-import { userProfileSelector } from 'selectors/user-selectors';
+import {
+  userProfileSelector,
+  selectedUserOrganizationSelector,
+} from 'selectors/user-selectors';
 import AssignMemberIcon from 'components/user/AssignMemberIcon/AssingMemberIcon';
 import { isUserGroup } from 'helpers/user-helper';
 import GroupAvatar from 'components/user/GroupAvatar/GroupAvatar';
@@ -48,12 +51,18 @@ const MultiAssignMembersList = ({
 }) => {
   const { emrIntegrationEnabled } = useSelector(organizationSelector);
   const currentUser = useSelector(userProfileSelector);
+  const currentOrganization = useSelector(selectedUserOrganizationSelector);
   const [membersOptions, setMembersOptions] = useState([]);
   const [selectedMembers, setSelectedMembers] = useState([]);
   const [isFetchingMembers, setIsFetchingMembers] = useState(false);
   const [searchValue, setSearchValue] = useState('');
   const enableLazyLoading = emrIntegrationEnabled && enabled;
   const isValueSendable = searchValue?.trim()?.length > 2;
+  const memberAssignAllEnabledItem =
+    currentOrganization?.themeSettings?.find(
+      ({ name }) => name === 'member.assignall.enabled',
+    ) || {};
+  const memberAssignAllEnabled = memberAssignAllEnabledItem?.value !== 'false';
 
   const filteredMembers = useMemo(
     () =>
@@ -203,7 +212,9 @@ const MultiAssignMembersList = ({
     searchValue.toLowerCase(),
   );
   const displayAssignAllOption =
-    'assign all'.includes(searchValue.toLowerCase()) && !enableLazyLoading;
+    memberAssignAllEnabled &&
+    'assign all'.includes(searchValue.toLowerCase()) &&
+    !enableLazyLoading;
 
   const displayUsersList = useMemo(() => {
     if (enableLazyLoading) return isValueSendable;
@@ -267,6 +278,18 @@ const MultiAssignMembersList = ({
       <ListContainer>
         {(displayAssignAllOption || displayUnassignedOption) && (
           <ListContentSection>
+            {displayCurrentUser &&
+              (function renderCurrentUserOption() {
+                const isSelected = !!selectedMembers.find(
+                  ({ identifier }) =>
+                    identifier === currentUserMember?.identifier,
+                );
+                return (
+                  <ListContentSection>
+                    {renderSelectOption(currentUserMember, isSelected)}
+                  </ListContentSection>
+                );
+              })()}
             {displayUnassignedOption && (
               <MemberRow
                 key={UNASSIGNED_KEY}
@@ -320,17 +343,6 @@ const MultiAssignMembersList = ({
             )}
           </ListContentSection>
         )}
-        {displayCurrentUser &&
-          (function renderCurrentUserOption() {
-            const isSelected = !!selectedMembers.find(
-              ({ identifier }) => identifier === currentUserMember?.identifier,
-            );
-            return (
-              <ListContentSection>
-                {renderSelectOption(currentUserMember, isSelected)}
-              </ListContentSection>
-            );
-          })()}
         {!isValueSendable && (
           <ListContentSection>
             {filteredSelectedMembers?.map((member) => {

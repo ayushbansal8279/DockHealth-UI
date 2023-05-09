@@ -1,10 +1,14 @@
 import React from 'react';
 import palette from 'styles/palette';
 
-const ListSwitchChevron = ({ color = palette.dirtyBanana }) => (
+const ListSwitchChevron = ({
+  color = palette.dirtyBananam,
+  height = 7,
+  width = 10,
+}) => (
   <svg
-    width="10"
-    height="7"
+    width={`${width}px`}
+    height={`${height}px`}
     viewBox="0 0 10 7"
     fill="none"
     xmlns="http://www.w3.org/2000/svg"

@@ -70,6 +70,16 @@ export function getPriorityColor(priority) {
   }
 }
 
+export function getPriorityHighlighColor(priority) {
+  switch (priority) {
+    case TaskPriority.HIGH:
+      return palette.tomatoInYoFaceLight;
+    case TaskPriority.LOW:
+    default:
+      return 'white'; // neeeded for sticky column
+  }
+}
+
 export const TaskGroupType = {
   TASKLIST_DEFAULT: 'TASKLIST_DEFAULT',
   TASKLIST: 'TASKLIST',
@@ -178,6 +188,16 @@ export const TaskItemColumn = {
   COMMENTS: 'COMMENTS',
   LABELS: 'LABELS',
   FILES: 'FILES',
+  PRIORITY: 'PRIORITY',
+};
+
+export const PatientTaskItemColumn = {
+  GENDER: 'PATIENT_GENDER',
+  DOB: 'PATIENT_DOB',
+  EMAIL: 'PATIENT_EMAIL',
+  MRN: 'PATIENT_MRN',
+  MOBILE_PHONE: 'PATIENT_MOBILE_PHONE',
+  HOME_PHONE: 'PATIENT_HOME_PHONE',
 };
 
 export const TaskItemColumnWidth = {
@@ -206,6 +226,12 @@ export const TaskItemColumnWidth = {
     PRINT: 170,
   },
   [TaskItemColumn.PATIENT]: 164,
+  [PatientTaskItemColumn.GENDER]: 164,
+  [PatientTaskItemColumn.DOB]: 164,
+  [PatientTaskItemColumn.EMAIL]: 164,
+  [PatientTaskItemColumn.MRN]: 164,
+  [PatientTaskItemColumn.HOME_PHONE]: 164,
+  [PatientTaskItemColumn.MOBILE_PHONE]: 164,
   [TaskItemColumn.DESCRIPTION]: {
     DEFAULT: 500,
     WIDE: 475,
@@ -218,13 +244,20 @@ export const TaskItemColumnWidth = {
   },
   [TaskItemColumn.SUBTASKS_COUNT]: 60,
   [TaskItemColumn.WORKFLOW_STATUS]: 120,
+  [TaskItemColumn.PRIORITY]: 120,
 };
 
 export const TASK_ITEM_BASE_COLUMN_CONFIG = {
   [TaskItemColumn.DESCRIPTION]: true,
   [TaskItemColumn.TASK_DETAILS]: true,
-  [TaskItemColumn.SUBTASKS_COUNT]: true,
+  // [TaskItemColumn.SUBTASKS_COUNT]: true,
   [TaskItemColumn.PATIENT]: true,
+  [PatientTaskItemColumn.GENDER]: true,
+  [PatientTaskItemColumn.DOB]: true,
+  [PatientTaskItemColumn.EMAIL]: true,
+  [PatientTaskItemColumn.MRN]: true,
+  [PatientTaskItemColumn.HOME_PHONE]: true,
+  [PatientTaskItemColumn.MOBILE_PHONE]: true,
   [TaskItemColumn.WORKFLOW_STATUS]: true,
   [TaskItemColumn.COMMENTS]: true,
   [TaskItemColumn.LABELS]: true,
@@ -239,6 +272,7 @@ export const TASK_ITEM_BASE_COLUMN_CONFIG = {
   [TaskItemColumn.ANCHOR_DATE]: true,
   [TaskItemColumn.ASSIGNED]: true,
   [TaskItemColumn.LIST_NAME]: false,
+  [TaskItemColumn.PRIORITY]: true,
 };
 
 export const SHOW_COLUMNS_CONFIG = {
@@ -258,6 +292,13 @@ export const SHOW_COLUMNS_CONFIG = {
   [TaskItemColumn.PATIENT]: true,
   [TaskItemColumn.LIST_NAME]: true,
   [TaskItemColumn.TASK_DETAILS]: true,
+  [TaskItemColumn.PRIORITY]: true,
+  [PatientTaskItemColumn.GENDER]: true,
+  [PatientTaskItemColumn.DOB]: true,
+  [PatientTaskItemColumn.EMAIL]: true,
+  [PatientTaskItemColumn.MRN]: true,
+  [PatientTaskItemColumn.HOME_PHONE]: true,
+  [PatientTaskItemColumn.MOBILE_PHONE]: true,
 };
 
 export const TASK_ITEM_SORT_METHODS = {
@@ -280,6 +321,16 @@ export const TASK_ITEM_SORT_METHODS = {
     ascend(
       pipe(
         prop('workflowStatus'),
+        unless(isNil, prop('name')),
+        defaultTo('~'),
+        toLower,
+      ),
+    ),
+  ]),
+  [TaskItemColumn.PRIORITY]: sortWith([
+    ascend(
+      pipe(
+        prop('priority'),
         unless(isNil, prop('name')),
         defaultTo('~'),
         toLower,
@@ -316,6 +367,24 @@ export const TASK_ITEM_SORT_METHODS = {
   [TaskItemColumn.SUBTASKS_COUNT]: sortWith([
     ascend(pipe(prop('subTasksCount'), defaultTo(-1))),
   ]),
+  [PatientTaskItemColumn.GENDER]: sortWith([
+    ascend(pipe(prop('gender'), defaultTo('~'), toLower)),
+  ]),
+  [PatientTaskItemColumn.DOB]: sortWith([
+    ascend(pipe(prop('dob'), defaultTo('~'), toLower)),
+  ]),
+  [PatientTaskItemColumn.EMAIL]: sortWith([
+    ascend(pipe(prop('email'), defaultTo('~'), toLower)),
+  ]),
+  [PatientTaskItemColumn.MRN]: sortWith([
+    ascend(pipe(prop('mrn'), defaultTo('~'), toLower)),
+  ]),
+  [PatientTaskItemColumn.HOME_PHONE]: sortWith([
+    ascend(pipe(prop('phoneHome'), defaultTo('~'), toLower)),
+  ]),
+  [PatientTaskItemColumn.MOBILE_PHONE]: sortWith([
+    ascend(pipe(prop('phoneMobile'), defaultTo('~'), toLower)),
+  ]),
 };
 
 export const TASK_ITEM_SORT_DESC_METHODS = {
@@ -340,6 +409,16 @@ export const TASK_ITEM_SORT_DESC_METHODS = {
         prop('workflowStatus'),
         unless(isNil, prop('name')),
         defaultTo(' '),
+        toLower,
+      ),
+    ),
+  ]),
+  [TaskItemColumn.PRIORITY]: sortWith([
+    descend(
+      pipe(
+        prop('priority'),
+        unless(isNil, prop('name')),
+        defaultTo('~'),
         toLower,
       ),
     ),
@@ -375,6 +454,24 @@ export const TASK_ITEM_SORT_DESC_METHODS = {
   ]),
   [TaskItemColumn.SUBTASKS_COUNT]: sortWith([
     descend(pipe(prop('subTasksCount'), defaultTo(-1))),
+  ]),
+  [PatientTaskItemColumn.GENDER]: sortWith([
+    ascend(pipe(prop('gender'), defaultTo('~'), toLower)),
+  ]),
+  [PatientTaskItemColumn.DOB]: sortWith([
+    ascend(pipe(prop('dob'), defaultTo('~'), toLower)),
+  ]),
+  [PatientTaskItemColumn.EMAIL]: sortWith([
+    ascend(pipe(prop('email'), defaultTo('~'), toLower)),
+  ]),
+  [PatientTaskItemColumn.MRN]: sortWith([
+    ascend(pipe(prop('mrn'), defaultTo('~'), toLower)),
+  ]),
+  [PatientTaskItemColumn.HOME_PHONE]: sortWith([
+    ascend(pipe(prop('phoneHome'), defaultTo('~'), toLower)),
+  ]),
+  [PatientTaskItemColumn.MOBILE_PHONE]: sortWith([
+    ascend(pipe(prop('phoneMobile'), defaultTo('~'), toLower)),
   ]),
 };
 
@@ -435,19 +532,26 @@ export const EmrNoteTypeOptions = {
 };
 
 export function findIncompleteRequiredFields(customFields, task) {
+  const requiredFieldLabels = task?.labels
+    ?.filter(lbl => lbl.labelName.indexOf('Required_') === 0)
+    .map(lbl => lbl.labelName.replace('Required_', ''));
+
   return customFields?.filter((field) => {
     const { taskMetaData } = task;
-    const { identifier: taskFieldIdentifier } = field;
-    const matchingMetaData = taskMetaData.find(
-      ({ customFieldIdentifier }) =>
-        customFieldIdentifier === taskFieldIdentifier,
+    const taskFieldIdentifier = field?.identifier;
+    const matchingMetaData = taskMetaData?.find(
+      tmd => tmd?.customFieldIdentifier === taskFieldIdentifier,
     );
+
     return (
-      field.displayOptions.includes('TASK_REQUIRED') &&
+      (field?.displayOptions.includes('TASK_REQUIRED') ||
+        requiredFieldLabels.includes(field?.name)) &&
       (matchingMetaData === undefined ||
         matchingMetaData?.length === 0 ||
-        matchingMetaData?.value === undefined ||
-        matchingMetaData?.value === '')
+        !(
+          (matchingMetaData?.value && matchingMetaData?.value !== '') ||
+          (matchingMetaData?.values && matchingMetaData?.values.length > 0)
+        ))
     );
   });
 }

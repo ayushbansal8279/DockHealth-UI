@@ -1,7 +1,7 @@
 import React, { useEffect, useMemo } from 'react';
 import ReactDOM from 'react-dom';
 import { useHistory } from 'react-router-dom';
-import { Grid } from '@mui/material';
+import { Grid, Typography } from '@mui/material';
 import * as WorkflowDrawerActions from 'actions/workflow-drawer-actions';
 import compose from 'ramda/src/compose';
 import { useDispatch, useSelector } from 'react-redux';
@@ -11,11 +11,17 @@ import {
 } from 'selectors/workflow-drawer-selectors';
 import WorkflowDrawerHeader from 'components/workflow-drawer/DrawerHeader/DrawerHeader';
 import { checkIfTemplateWorkflow } from 'helpers/workflow-helpers';
-import { userProfileSelector } from 'selectors/user-selectors';
+import {
+  userProfileSelector,
+  selectedUserOrganizationSelector,
+} from 'selectors/user-selectors';
 import {
   SINGLE_WORKFLOW_RESTRICTIONS_PROFILES,
   WORKFLOW_LIST_RESTRICTIONS_OPTIONS,
 } from 'restrictions/task-restrictions';
+import { FiledInListName } from 'components/task-drawer/TaskDrawerContent/styled';
+import { createTaskListPath } from 'routing/helpers/paths';
+import { currentTaskListSelector } from 'selectors/task-list-selectors';
 import NameSection from '../NameSection/NameSection';
 import DescriptionSection from '../DescriptionSection/DescriptionSection';
 import PatientSection from '../PatientSection/PatientSection';
@@ -52,8 +58,18 @@ const WorkflowDrawer = () => {
     [selectedWorkflow],
   );
 
+  const taskList = useSelector(currentTaskListSelector);
+  const { listName, taskListIdentifier } = taskList || {};
+
   const { orgUserRole } = useSelector(userProfileSelector);
   const restrictions = SINGLE_WORKFLOW_RESTRICTIONS_PROFILES[orgUserRole];
+
+  const currentOrganization = useSelector(selectedUserOrganizationSelector);
+  const quickAddPatientEnabledItem =
+    currentOrganization?.themeSettings?.find(
+      ({ name }) => name === 'patient.quickadd.enabled',
+    ) || {};
+  // const quickAddPatientEnabled = quickAddPatientEnabledItem?.value !== 'false';
 
   useEffect(() => {
     const unlisten = history.listen(
@@ -78,6 +94,18 @@ const WorkflowDrawer = () => {
             <WorkflowDrawerHeader />
             <SectionContainer>
               <Grid container spacing={4}>
+                <Grid item xs={12}>
+                  <Typography sx={{ fontWeight: 'bold' }} component="span">
+                    List:{' '}
+                    <FiledInListName
+                      onClick={() => {
+                        history.push(createTaskListPath(taskListIdentifier));
+                      }}
+                    >
+                      {listName}
+                    </FiledInListName>
+                  </Typography>
+                </Grid>
                 <Grid item xs={12}>
                   <NameSection readOnly={restrictions?.name === DISABLED} />
                 </Grid>

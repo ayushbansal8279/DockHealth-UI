@@ -9,14 +9,14 @@ export const validationSchema = object()
     type: string().required(getRequiredMessage),
     name: string().required(getRequiredMessage),
     email: string().email('Please enter a valid email address'),
-    faxPhoneNumber: string()
-      .transform((value) => value.replace(/\D/g, ''))
+    mobilePhoneNumber: string()
+      .transform(value => value.replace(/\D/g, ''))
       .matches(/\d{10}/, {
-        message: 'Please enter a valid fax number',
+        message: 'Please enter a valid phone number',
         excludeEmptyString: true,
       }),
-    mobilePhoneNumber: string()
-      .transform((value) => value.replace(/\D/g, ''))
+    faxPhoneNumber: string()
+      .transform(value => value.replace(/\D/g, ''))
       .matches(/\d{10}/, {
         message: 'Please enter a valid fax number',
         excludeEmptyString: true,

@@ -104,6 +104,15 @@ const ListDetailsHeader = (props) => {
     [quickFiltersList, selectedFilters, selectedQuickFilter],
   );
 
+  const isDefaultDateFilterApplied =
+    currentTasksStatus === 'COMPLETE' &&
+    !selectedFilters?.taskCreatedDateOptions?.options &&
+    !selectedFilters?.taskCreatedDateOptions?.dateStart &&
+    !selectedFilters?.taskCreatedDateOptions?.dateSEnd &&
+    !selectedFilters?.taskCompletedDateOptions?.options &&
+    !selectedFilters?.taskCompletedDateOptions?.dateStart &&
+    !selectedFilters?.taskCompletedDateOptions?.dateSEnd;
+
   const handleSaveAsQuickFilter = useCallback(
     () => dispatch(showAddQuickFilterOption()),
     [dispatch],
@@ -192,6 +201,7 @@ const ListDetailsHeader = (props) => {
         onQuickFilterCreate={handleQuickFilterCreate}
         onQuickFilterUpdate={handleQuickFilterUpdate}
         onQuickFilterDelete={handleQuickFilterDelete}
+        isDefaultDateFilterApplied={isDefaultDateFilterApplied}
       />
       <LayoutHeader.Spacer />
       {shownUsers && listType !== 'PUBLIC' && (

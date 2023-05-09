@@ -49,12 +49,16 @@ const StickyMainTaskItemCell = styled.div`
   &::after {
     content: '';
     display: block;
-    background-color: ${(props) =>
+    background-color: ${props =>
+      // eslint-disable-next-line unicorn/no-nested-ternary
       props.isSelected
-        ? palette.dockBlueLight
+        ? palette.brightBlueWithAlpha
         : // eslint-disable-next-line unicorn/no-nested-ternary
         props.hasEscalations
-        ? palette.oPlusRedLight
+        ? palette.bananaHammockLight
+        : // eslint-disable-next-line unicorn/no-nested-ternary
+        props.customHighlight
+        ? props.customHighlight
         : palette.white};
     transition: background-color 0.3s ease-out;
     position: absolute;

@@ -7,6 +7,7 @@ import React from 'react';
 import {
   Container,
   MostPopularText,
+  NewText,
   TopContainer,
   Name,
   Description,
@@ -32,7 +33,9 @@ const SubscriptionPlanTail = (props) => {
     onSelect,
   } = props;
   const {
+    key,
     mostPopular,
+    showNewHeader,
     color,
     label,
     description,
@@ -52,13 +55,14 @@ const SubscriptionPlanTail = (props) => {
     <Container color={color}>
       <TopContainer>
         {mostPopular && <MostPopularText>Most Popular</MostPopularText>}
+        {showNewHeader && <NewText>New</NewText>}
         <Name color={color}>{label}</Name>
         <Description>{description}</Description>
       </TopContainer>
       <PriceContainer>
         {(annualMonthlyPrice || monthlyPrice) && (
           <>
-            <Price color={color}>
+            <Price color="#000000">
               $
               {billingFrequency === BillingFrequency.ANNUAL
                 ? annualMonthlyPrice
@@ -68,18 +72,28 @@ const SubscriptionPlanTail = (props) => {
               /
               <Box m={0.2} />
               <div>
-                <UnitText>user</UnitText>
-                <UnitText>mo</UnitText>
+                {key === SubscriptionPlan.ENTERPRISE ? (
+                  <>
+                    <UnitText>month</UnitText>
+                    <UnitText>+ Pro per user</UnitText>
+                  </>
+                ) : (
+                  <>
+                    <UnitText>user</UnitText>
+                    <UnitText>month</UnitText>
+                  </>
+                )}
               </div>
             </UnitContainer>
           </>
         )}
       </PriceContainer>
-      {annualMonthlyPrice || monthlyPrice ? (
+      {(annualMonthlyPrice || monthlyPrice) &&
+      key !== SubscriptionPlan.ENTERPRISE ? (
         <SubscribeButton
           type="button"
           active={active}
-          color={color}
+          color="#0e244a"
           disabled={active}
           onClick={() => onSelect(subscriptionPlan)}
         >
@@ -90,7 +104,7 @@ const SubscriptionPlanTail = (props) => {
         </SubscribeButton>
       ) : (
         <ContactUsAnchor
-          color={color}
+          color="#0e244a"
           onClick={() => {
             window.Intercom('show');
           }}

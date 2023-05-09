@@ -38,6 +38,7 @@ import * as ActionTypes from 'actions/action-types';
 import { storeAsCurrentTask } from 'actions/task-actions';
 import { selectedFiltersInMegaFilterSelector } from 'selectors/mega-filter-selectors';
 import { taskIsSelectedSelector } from 'selectors/task-drawer-selectors';
+import { selectedUserOrganizationSelector } from 'selectors/user-selectors';
 import {
   listDetailsGroupsSelector,
   groupTasksSelector,
@@ -66,6 +67,8 @@ import { log } from 'helpers/log';
 import store from '../store';
 
 export const DO_CREATE_TASK = 'DO_CREATE_TASK';
+export const DEFAULT_TASK_GROUPS_TO_LOAD = 3;
+export const DEFAULT_TASK_GROUPS_TO_LOAD_COMPLETED = 2;
 
 export const createTask = (payload) => ({
   type: DO_CREATE_TASK,
@@ -145,6 +148,17 @@ function* getCurrentListTasks() {
     const sort = yield select(taskDetailsSortSelector);
     const searchTerm = yield select(searchTermSelector);
     const status = yield select(currentTaskListTasksStatusSelector);
+
+    const currentOrganization = yield select(selectedUserOrganizationSelector);
+    const taskGroupsToLoadItem =
+      currentOrganization?.themeSettings?.find(
+        ({ name }) => name === 'list.taskgroup.default.load.count',
+      ) || {};
+    const taskGroupsToLoad =
+      status === TaskStatus.COMPLETE
+        ? DEFAULT_TASK_GROUPS_TO_LOAD_COMPLETED
+        : taskGroupsToLoadItem?.value || DEFAULT_TASK_GROUPS_TO_LOAD;
+
     if (searchTerm) {
       const groupedTasks = yield call(
         ListDetailsApi.searchTasksByTaskList,

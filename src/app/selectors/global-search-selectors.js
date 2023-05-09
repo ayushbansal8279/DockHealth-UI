@@ -26,3 +26,8 @@ export const globalSearchListsSelector = createSelector(
   globalSearchStateSelector,
   ({ lists }) => lists,
 );
+
+export const searchPerformedSelector = createSelector(
+  globalSearchStateSelector,
+  ({ searchPerformed }) => searchPerformed,
+);

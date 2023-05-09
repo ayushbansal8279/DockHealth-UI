@@ -98,7 +98,7 @@ const existingUserTaskDrawerTourHooks = ({
         tourSteps[openedTourStep];
 
       // eslint-disable-next-line no-unused-expressions
-      reference?.current.scrollIntoView({
+      reference?.current?.scrollIntoView({
         behavior: 'smooth',
         block: afterScrollPosition || 'center',
       });

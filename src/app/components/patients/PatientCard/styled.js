@@ -37,7 +37,14 @@ export const PatientName = styled.p`
 
 export const PatientLinkText = styled.p`
   margin-bottom: 0;
-  margin-left: ${spacing.smallPlus};
+  font-size: ${fontSizes.regular};
+  font-weight: ${fontWeights.light};
+  color: ${palette.brightBlue};
+  white-space: nowrap;
+`;
+
+export const EditPatientButton = styled.button`
+  margin-bottom: 0;
   font-size: ${fontSizes.regular};
   font-weight: ${fontWeights.light};
   color: ${palette.brightBlue};

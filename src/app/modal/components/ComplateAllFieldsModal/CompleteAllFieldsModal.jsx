@@ -16,19 +16,13 @@ import {
 } from '../styled';
 
 const CompleteAllFieldsModal = ({ closeModal, incompleteFields }) => {
-  const formattedIncompleteFields = incompleteFields
-    .map(({ name }) => {
-      return name;
-    })
-    .join(', ');
-
   return (
     <MuiThemeProvider theme={redTheme}>
       <ModalWrapper>
         <ModalIconContainer>
           <ModalMainIcon src={CircleCompletedGrey} alt="completed" />
           <Typography color="textSecondary" variant="h2">
-            A Required Field IS INCOMPLETE
+            A Required Field Is INCOMPLETE
           </Typography>
         </ModalIconContainer>
         <ModalDescriptionContainer>
@@ -36,7 +30,15 @@ const CompleteAllFieldsModal = ({ closeModal, incompleteFields }) => {
             You’re about to complete a task which has required fields that are
             incomplete.
           </Typography>
-          <Typography variant="h6">{`${formattedIncompleteFields}`}</Typography>
+          <ul>
+            {incompleteFields?.map(field => {
+              return (
+                <li>
+                  <Typography variant="textPrimary">- {field?.name}</Typography>
+                </li>
+              );
+            })}
+          </ul>
         </ModalDescriptionContainer>
         <ButtonsContainer>
           <FlexButtonWrapper>

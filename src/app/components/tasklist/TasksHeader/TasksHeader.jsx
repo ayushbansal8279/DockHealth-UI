@@ -5,16 +5,21 @@ import { useSelector } from 'react-redux';
 import Checkbox from 'components/common/Checkbox/Checkbox';
 import { SortHeaderRow } from 'components/tasklist/ColumnSortHeader/styled';
 import { TaskItemColumnWidth } from 'helpers/task-helpers';
-import { getCustomerTypeLabel } from 'helpers/customer-type-helper';
+import {
+  getCustomerTypeLabel,
+  getCustomerUniqueIDShortLabel,
+} from 'helpers/customer-type-helper';
 import { useTaskListColumnsConfig } from 'context-api/columns-config-context';
 import { CustomFieldWidthConfig } from 'helpers/field-type-helpers';
 import { DragDropContext, Droppable } from 'react-beautiful-dnd';
 import { SINGLE_TASK_RESTRICTIONS_PROFILES } from 'restrictions/task-restrictions';
 import { CUSTOM_FIELD_TYPES } from 'helpers/custom-fields-helpers';
 import { currentTaskListSelector } from 'selectors/task-list-selectors';
-import { selectedUserOrganizationSelector } from 'selectors/user-selectors';
+import {
+  selectedUserOrganizationSelector,
+  userProfileSelector,
+} from 'selectors/user-selectors';
 import { isMemberAdmin } from 'helpers/list-members-helper';
-import { userProfileSelector } from 'selectors/user-selectors';
 import { BulkContainer, StickyColumnContainer } from './styled';
 import {
   getTaskHeaderOptions,
@@ -48,6 +53,11 @@ const TasksHeader = ({
     SINGLE_TASK_RESTRICTIONS_PROFILES[currentUser?.orgUserRole];
   const restrictCustomizationFeatures =
     taskList?.restrictCustomization && !isListAdmin;
+
+  const uniqueIdentifierLabel = getCustomerUniqueIDShortLabel(
+    currentUser,
+    currentOrganization,
+  );
 
   const tasksHeaderTextTransformItem =
     currentOrganization?.themeSettings?.find(
@@ -126,8 +136,8 @@ const TasksHeader = ({
           label={isRegular ? f.label : f.name}
           width={+f.columnWidth}
           snapshot={snapshot}
-          sort={isRegular ? sort : null}
-          onSortChange={isRegular ? onSortChange : null}
+          sort={sort}
+          onSortChange={onSortChange}
           printWidth={+customPrintWidth}
           tasksHeaderTextTransform={tasksHeaderTextTransformItem?.value}
           tasksHeaderTextColor={tasksHeaderTextColorItem?.value}
@@ -168,7 +178,8 @@ const TasksHeader = ({
               {renderColumn(
                 getTaskHeaderOptions(
                   customerTypeLabel,
-                  columns.filter((f) => f.isChecked)?.[0],
+                  uniqueIdentifierLabel,
+                  columns.filter(f => f.isChecked)?.[0],
                   restrictions,
                 ),
                 0,
@@ -180,7 +191,12 @@ const TasksHeader = ({
               .filter((_, index) => index !== 0)
               .map((c) =>
                 c._customFieldType === CUSTOM_FIELD_TYPES.REGULAR
-                  ? getTaskHeaderOptions(customerTypeLabel, c, restrictions)
+                  ? getTaskHeaderOptions(
+                      customerTypeLabel,
+                      uniqueIdentifierLabel,
+                      c,
+                      restrictions,
+                    )
                   : c,
               )
               .map((c, index) => renderColumn(c, index + 1, snapshot))}

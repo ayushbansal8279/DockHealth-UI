@@ -81,8 +81,8 @@ const AddComment = ({
   const [description, setDescription] = useState(null)
 
   const handleTextEditorChange = (_, { value }) => {
-    setDescription(value)
-  }
+    setDescription(value);
+  };
 
   const handleTextEditorKeyDown = (editor, { value, key }) => {
     if (key === 'Enter') {
@@ -90,7 +90,7 @@ const AddComment = ({
       // console.log(editor);
       setDescription('');
     }
-  }
+  };
 
   const selectedTask = useSelector(selectedTaskSelector);
 

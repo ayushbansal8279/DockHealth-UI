@@ -5,6 +5,7 @@ import { sendSmsForTask } from 'actions/task-actions';
 import Button from 'components/common/Button/Button';
 import { selectedTaskSelector } from 'selectors/task-drawer-selectors';
 import { closeModal } from 'modal/actions';
+import { getTemplateDetails } from 'api/template-api';
 import { CommunicationType } from 'helpers/task-helpers';
 import ContactsAutoComplete from 'components/common/ContactsAutoComplete/ContactsAutocomplete';
 import TemplateAutoComplete from 'components/common/TemplateAutoComplete/TemplateAutoComplete';
@@ -92,6 +93,7 @@ const SendSmsFromTaskModal = () => {
             label="Phone"
             errorMessage="Incorrect phone number"
             value={contact?.value ?? ''}
+            patient={selectedTask?.patient}
           />
           <TemplateAutoComplete
             type={CommunicationType.SMS}
@@ -101,7 +103,11 @@ const SendSmsFromTaskModal = () => {
                 setMessage('');
                 return;
               }
-              setMessage(newValue?.value || '');
+              getTemplateDetails(newValue?.identifier, identifier).then(
+                data => {
+                  setMessage(data?.shortMessage || '');
+                },
+              );
             }}
           />
           <IncludeContainerStyled>

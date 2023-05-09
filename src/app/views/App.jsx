@@ -226,6 +226,7 @@ class App extends PureComponent {
     }
   };
 
+  // eslint-disable-next-line sonarjs/cognitive-complexity
   render() {
     // eslint-disable-next-line react-hooks/rules-of-hooks
     const isMobile = useMobile();
@@ -236,7 +237,23 @@ class App extends PureComponent {
       userState: { userProfile },
     } = this.props;
 
-    // const systemTimeout = Number.parseInt(import.meta.env.VITE_SYSTEM_TIMEOUT, 10);
+    // const userOrganizations = userProfile?.userOrganizations;
+    // const selectedOrgIdentifier = userProfile?.organizationIdentifier;
+    // const currentOrganization =
+    //   userOrganizations?.find(
+    //     ({ organizationIdentifier }) =>
+    //       organizationIdentifier === selectedOrgIdentifier,
+    //   ) || null;
+    // const logoutTimeoutItem =
+    //   currentOrganization?.themeSettings?.find(
+    //     ({ name }) => name === 'logout.timeout',
+    //   ) || {};
+    // const logoutTimeout = parseInt(logoutTimeoutItem?.value, 10);
+
+    // const systemTimeout =
+    //   logoutTimeout > 0
+    //     ? logoutTimeout
+    //     : parseInt(process.env.SYSTEM_TIMEOUT, 10);
     // const idleTimeout = systemTimeout / 2;
 
     const { children } = this.props;
@@ -249,11 +266,19 @@ class App extends PureComponent {
     //   );
     const showRotateScreenPage = false;
 
-    // const mountIdleTimer = userProfile && !isEmpty(userProfile);
+    // const mountIdleTimer =
+    //   userProfile &&
+    //   !isEmpty(userProfile) &&
+    //   userOrganizations &&
+    //   !isEmpty(userOrganizations);
     // eslint-disable-next-line unicorn/consistent-function-scoping
     // const idleTimerReference = (reference) => {
     //   this.idleTimerForPresence = reference;
     // };
+    const organizationAvailableFeatures =
+      userProfile?.organizationAvailableFeatures;
+    const dockChatAvailable =
+      organizationAvailableFeatures?.includes('DOCK_CHAT');
 
     return (
       <AppContainer id="appHome">
@@ -262,43 +287,45 @@ class App extends PureComponent {
         ) : showRotateScreenPage ? (
           <RotateScreen />
         ) : (
-          <SendbirdProvider
-            appId={this.appId}
-            userId={userProfile?.identifier ?? ''}
-            nickname={userProfile?.name}
-            colorSet={sendbirdColorSet}
-          >
-            <div id="portal" />
-            <Modal />
-            <WorkflowDrawer />
-            <ActivityAlertsToasts />
+          <>
+            <SendbirdProvider
+              appId={dockChatAvailable ? this.appId : ''}
+              userId={dockChatAvailable ? userProfile?.identifier : ''}
+              nickname={dockChatAvailable ? userProfile?.name : ''}
+              colorSet={sendbirdColorSet}
+            >
+              <div id="portal" />
+              <Modal />
+              <WorkflowDrawer />
+              <ActivityAlertsToasts />
 
-            <ChatActivityAlertsToasts />
-            <div className="new-task" />
-            {/* {mountIdleTimer && (
+              <ChatActivityAlertsToasts />
+              <div className="new-task" />
+              {/* {mountIdleTimer && (
+                <IdleTimer
+                  ref={(reference) => {
+                    this.idleTimer = reference;
+                  }}
+                  element={document}
+                  onActive={this.onActive}
+                  onIdle={this.onIdle}
+                  onAction={this.onAction}
+                  debounce={250}
+                  timeout={systemTimeout}
+                />
+              )}
               <IdleTimer
-                ref={(reference) => {
-                  this.idleTimer = reference;
-                }}
+                ref={idleTimerReference}
                 element={document}
-                onActive={this.onActive}
-                onIdle={this.onIdle}
-                onAction={this.onAction}
+                onActive={this.onActiveForPresence}
+                onIdle={this.onIdleForPresence}
                 debounce={250}
-                timeout={systemTimeout}
-              />
-            )}
-            <IdleTimer
-              ref={idleTimerReference}
-              element={document}
-              onActive={this.onActiveForPresence}
-              onIdle={this.onIdleForPresence}
-              debounce={250}
-              timeout={idleTimeout}
-            /> */}
-            <MainContainer>{children}</MainContainer>
-            <Notification />
-          </SendbirdProvider>
+                timeout={idleTimeout}
+              /> */}
+              <MainContainer>{children}</MainContainer>
+              <Notification />
+            </SendbirdProvider>
+          </>
         )}
       </AppContainer>
     );

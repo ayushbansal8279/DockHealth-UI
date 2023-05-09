@@ -41,7 +41,6 @@ const AssignedToSection = ({ selectedTask = {}, onSave, disabled }) => {
 
     onTaskDrawerTaskAssigned();
     onSave({
-      assignedBy: null,
       assignedToUsers: [],
       assignedToIdentifiers: [],
     });
@@ -52,12 +51,11 @@ const AssignedToSection = ({ selectedTask = {}, onSave, disabled }) => {
       setAssignedToUsersValue(selectedMembers);
       onTaskDrawerTaskAssigned();
       onSave({
-        assignedBy: selectedMembers?.length ? currentUser : null,
         assignedToUsers: selectedMembers,
         assignedToIdentifiers: pluck('userIdentifier', selectedMembers),
       });
     },
-    [currentUser, onSave],
+    [onSave],
   );
 
   return (

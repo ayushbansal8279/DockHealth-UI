@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState, useCallback } from 'react';
 import { useSelector } from 'react-redux';
 import { userProfileSelector } from 'selectors/user-selectors';
 import { capitalize } from 'helpers/capitalize';
@@ -7,8 +7,7 @@ import {
   extractSelectedOptions,
   FilterOptionsCategory,
   selectFilterOption,
-  setFilterRangeEndDate,
-  setFilterRangeStartDate,
+  setFilterRangeDate,
   unselectFilterOption,
 } from 'helpers/filter-options-helpers';
 import FilterScrollableRow from 'components/filter/FilterScrollableRow/FilterScrollableRow';
@@ -19,7 +18,8 @@ import DateRangeOptions from 'components/filter/DateRangeOptions/DateRangeOption
 import FilterOptionByCategory from 'components/filter/FilterOptionByCategory/FilterOptionByCategory';
 import FilterOptionsGroup from 'components/filter/FilterOptionsGroup/FilterOptionsGroup';
 
-const FilterTable = (props) => {
+// eslint-disable-next-line sonarjs/cognitive-complexity
+const FilterTable = props => {
   const {
     isLoading,
     searchValue,
@@ -37,23 +37,49 @@ const FilterTable = (props) => {
     );
   };
 
+  const [startDate, setStartDate] = useState(() => {
+    if (selectedFilters) {
+      return selectedFilters[FilterOptionsCategory.DUE_DATE]?.dateStart;
+    }
+    return null;
+  });
+
+  const [endDate, setEndDate] = useState(() => {
+    if (selectedFilters) {
+      return selectedFilters[FilterOptionsCategory.DUE_DATE]?.dateEnd;
+    }
+    return null;
+  });
+
   const handleFilterOptionUnselect = (categoryId, optionId) => {
     onSelectedFiltersChange(
       unselectFilterOption(categoryId, optionId, selectedFilters),
     );
   };
 
-  const handleRangeDateStartChange = (categoryId, value) => {
-    onSelectedFiltersChange(
-      setFilterRangeStartDate(categoryId, value, selectedFilters),
-    );
-  };
+  const handleRangeDateStartChange = useCallback(
+    (categoryId, value) => {
+      setStartDate(value);
+      if (endDate) {
+        onSelectedFiltersChange(
+          setFilterRangeDate(categoryId, value, endDate, selectedFilters),
+        );
+      }
+    },
+    [endDate, onSelectedFiltersChange, selectedFilters],
+  );
 
-  const handleRangeDateEndChange = (categoryId, value) => {
-    onSelectedFiltersChange(
-      setFilterRangeEndDate(categoryId, value, selectedFilters),
-    );
-  };
+  const handleRangeDateEndChange = useCallback(
+    (categoryId, value) => {
+      setEndDate(value);
+      if (startDate) {
+        onSelectedFiltersChange(
+          setFilterRangeDate(categoryId, startDate, value, selectedFilters),
+        );
+      }
+    },
+    [onSelectedFiltersChange, selectedFilters, startDate],
+  );
 
   return !isLoading && filters ? (
     <FilterScrollableRow>

@@ -8,9 +8,10 @@ import innerJoin from 'ramda/src/innerJoin';
 const convert = pipe(sortBy(prop('userName')), uniqBy(prop('identifier')));
 
 export async function collectJoinedListMembers(taskListIdentifiers) {
+  const uniqueTaskListIdentifiers = [...new Set(taskListIdentifiers)];
   let listMemembers = [];
   // eslint-disable-next-line no-restricted-syntax
-  for (const listId of taskListIdentifiers) {
+  for (const listId of uniqueTaskListIdentifiers) {
     // eslint-disable-next-line no-await-in-loop
     const responseMembers = await TaskListApi.getMembersByTaskListId(
       listId,

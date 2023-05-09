@@ -3,7 +3,9 @@ import { capitalize } from 'helpers/capitalize';
 import { CommunicationType } from 'helpers/task-helpers';
 import { string, object } from 'yup';
 
-const stringContainsNumber = (testedString) => /\d/.test(testedString);
+// const stringContainsNumber = testedString => {
+//   return /\d/.test(testedString);
+// };
 
 // eslint-disable-next-line import/prefer-default-export
 export const mailValidationSchema = object({
@@ -11,30 +13,38 @@ export const mailValidationSchema = object({
   name: string().required((d) => `${capitalize(d.path)} is required`),
   email: string()
     .email('Please provide valid email')
-    .required((d) => `${capitalize(d.path)} is required`),
-  phone: string(),
-  fax: string().test(
-    'valid-fax',
-    (d) => `${capitalize(d.path)} is not valid`,
-    (value) =>
-      value === null ||
-      (!value?.includes('_') && !stringContainsNumber(!value)),
-  ),
+    .required(d => `${capitalize(d.path)} is required`),
+  phone: string()
+    .transform(value => value.replace(/\D/g, ''))
+    .matches(/\d{10}/, {
+      message: 'Please enter a valid phone number',
+      excludeEmptyString: true,
+    }),
+  fax: string()
+    .transform(value => value.replace(/\D/g, ''))
+    .matches(/\d{10}/, {
+      message: 'Please enter a valid fax number',
+      excludeEmptyString: true,
+    }),
   notes: string(),
 });
 
 export const faxValidationSchema = object({
-  type: string().required((d) => `${capitalize(d.path)} is required`),
-  name: string().required((d) => `${capitalize(d.path)} is required`),
-  email: string().email('Please provide valid email'),
-  phone: string(),
+  type: string().required(d => `${capitalize(d.path)} is required`),
+  name: string().required(d => `${capitalize(d.path)} is required`),
+  email: string().email('Please enter a valid email address'),
+  phone: string()
+    .transform(value => value.replace(/\D/g, ''))
+    .matches(/\d{10}/, {
+      message: 'Please enter a valid phone number',
+      excludeEmptyString: true,
+    }),
   fax: string()
-    .test(
-      'valid-fax',
-      (d) => `${capitalize(d.path)} is not valid`,
-      (value) => value === null || !value?.includes('_'),
-    )
-    .required((d) => `${capitalize(d.path)} is required`),
+    .transform(value => value.replace(/\D/g, ''))
+    .matches(/\d{10}/, {
+      message: 'Please enter a valid fax number',
+      excludeEmptyString: true,
+    }),
   notes: string(),
 });
 export const resolveSchema = (type) => {

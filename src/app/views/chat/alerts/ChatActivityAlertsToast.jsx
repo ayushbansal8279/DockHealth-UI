@@ -41,11 +41,6 @@ const ChatActivityAlertsToast = ({
           isCleared={isCleared}
           topSpacing={topSpacing}
         >
-          {/* <ActivityAlertsItem
-            onClearAlert={() => setIsCleared(true)}
-            itemAlert={itemAlert}
-            withCrossIcon
-          /> */}
           <ChatActivityAlertsItem
             // onClearAlert={() => setIsCleared(true)}
             closeAlerts={() => setIsCleared(true)}

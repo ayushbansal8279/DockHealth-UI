@@ -21,6 +21,16 @@ export const MostPopularText = styled.p`
   font-weight: ${fontWeights.light};
 `;
 
+export const NewText = styled.p`
+  position: absolute;
+  top: -20px;
+  left: 0;
+  margin-bottom;
+  color: ${palette.red};
+  font-size: ${fontSizes.smallPlus};
+  font-weight: ${fontWeights.light};
+`;
+
 export const TopContainer = styled.div`
   position: relative;
   width: 100%;
@@ -39,6 +49,7 @@ export const Description = styled.p`
   font-size: ${fontSizes.smallPlus};
   font-weight: ${fontWeights.light};
   color: ${palette.black};
+  min-height: 126px;
 `;
 
 export const PriceContainer = styled.div`
@@ -73,7 +84,7 @@ export const UnitText = styled.p`
 export const SubscribeButton = styled.button`
   width: 100%;
   padding: 14px;
-  border-radius: 16px;
+  border-radius: 4px;
   background-color: ${({ active, color }) => (active ? 'transparent' : color)};
   border: 2px solid ${({ color }) => color};
   color: ${({ active, color }) => (active ? color : palette.white)};
@@ -87,7 +98,7 @@ export const ContactUsAnchor = styled.a`
   box-sizing: border-box;
   width: 100%;
   padding: 14px;
-  border-radius: 16px;
+  border-radius: 4px;
   background-color: ${({ active, color }) => (active ? 'transparent' : color)};
   border: 2px solid ${({ color }) => color};
   color: ${({ active, color }) => (active ? color : palette.white)};

@@ -27,6 +27,7 @@ import {
   userHasPatientCustomListsFeatureSelector,
 } from 'selectors/user-selectors';
 import { locationParametersSelector } from 'location/selectors';
+import { isUserGuest, isUserViewOnly } from 'helpers/user-helper';
 import { getCustomerTypeLabel } from 'helpers/customer-type-helper';
 import { capitalize } from 'helpers/capitalize';
 import UpgradePlan from 'components/common/UpgradePlan/UpgradePlan';
@@ -47,14 +48,15 @@ const PatientsSubmenu = () => {
   const defaultPatientsLists = useSelector(defaultPatientsListsSelector);
   const customPatientsLists = useSelector(customPatientsListsSelector);
   const isFetching = useSelector(isFetchingPatientsListsSelector);
-  const { orgUserRole } = useSelector(userProfileSelector);
   const { listIdentifier: listIdentifierUrlParameter } = useSelector(
     locationParametersSelector,
   );
-  const isGuest = orgUserRole === 'GUEST';
+  const currentUser = useSelector(userProfileSelector);
+  const isGuest = isUserGuest(currentUser);
+  const isViewOnly = isUserViewOnly(currentUser);
+
   const isInitialListFetching = isFetching && !defaultPatientsLists;
 
-  const currentUser = useSelector(userProfileSelector);
   const customerTypeLabel = getCustomerTypeLabel(currentUser);
   const customerTypeLabelCapitalized = capitalize(customerTypeLabel);
   const customListsAvailable = useSelector(
@@ -147,7 +149,9 @@ const PatientsSubmenu = () => {
           <Box m={6} flexShrink={0} />
           <DrawerMyListsLabel>
             <div>Custom Lists</div>
-            <AddButton onClick={handleAddCustomListClick}>Add</AddButton>
+            {!isViewOnly && (
+              <AddButton onClick={handleAddCustomListClick}>Add</AddButton>
+            )}
           </DrawerMyListsLabel>
           <DrawerListsList>
             {isInitialListFetching ? (

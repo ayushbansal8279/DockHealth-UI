@@ -40,7 +40,18 @@ const PatientNote = ({
   const dispatch = useDispatch();
   const [modalIsOpened, setModalIsOpened] = useState(false);
   const [isEdited, setIsEdited] = useState(false);
-  const { patientNoteIdentifier, dateUpdated, creator, pinned } = note;
+  const {
+    patientNoteIdentifier,
+    dateCreated,
+    dateUpdated,
+    creator,
+    lastEditor,
+    pinned,
+  } = note;
+
+  const dateNoteCreated = moment(dateCreated).format('h:mma M/DD/YY');
+  const dateNoteUpdated = moment(dateUpdated).format('h:mma M/DD/YY');
+
   const initialState = useMemo(
     () =>
       convertToEditorState({
@@ -178,9 +189,14 @@ const PatientNote = ({
             {/*  onChange={(newState) => setNoteState(newState)}*/}
             {/*/>*/}
             <PatientNoteAuthor>
-              {creator.firstName} {creator.lastName}{' '}
-              {moment(dateUpdated).format('h:mma M/DD/YY')}
+              {creator?.firstName} {creator?.lastName} {dateNoteCreated}
             </PatientNoteAuthor>
+            {dateNoteCreated !== dateNoteUpdated && (
+              <PatientNoteAuthor>
+                Updated By: {lastEditor?.firstName} {lastEditor?.lastName}{' '}
+                {dateNoteUpdated}
+              </PatientNoteAuthor>
+            )}
           </PatientNoteInformation>
           {menuOptions.length > 0 && (
             <>

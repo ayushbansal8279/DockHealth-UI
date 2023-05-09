@@ -85,6 +85,7 @@ const TasksGroup = ({
   hasMoreTasks,
   children,
   iconColorActive,
+  restrictCustomizationFeatures,
 }) => {
   const addingNewSubtaskParentId = useSelector(
     addingNewSubtaskParentIdSelector,
@@ -264,7 +265,9 @@ const TasksGroup = ({
           name: 'Delete',
           color: palette.red,
           onClick: handleDeleteGroup,
-          disabled: restrictions?.editSettings === DISABLED,
+          disabled:
+            restrictions?.editSettings === DISABLED ||
+            restrictCustomizationFeatures,
         },
       ].filter((o) => typeof o !== 'boolean'),
     [
@@ -276,6 +279,7 @@ const TasksGroup = ({
       moveGroupDown,
       isDefaultGroup,
       handleDeleteGroup,
+      restrictCustomizationFeatures,
     ],
   );
 
@@ -283,7 +287,7 @@ const TasksGroup = ({
     <TasksGroupContainer>
       <StickyContainer left={24} decreaseWidth={2 * 24}>
         <TasksGroupHeader>
-          {!isCompletedGroup && (
+          {!isCompletedGroup && !restrictCustomizationFeatures && (
             <GroupOptionsContainer>
               <OptionsMenu options={options} placement="bottom-start">
                 <MoreVert color="primary" />
@@ -303,7 +307,12 @@ const TasksGroup = ({
               initialValue={groupName}
               onEnterClick={handleEditGroupName}
               closeOnEnter
-              disabled={isDefaultGroup || isCompletedGroup}
+              disabled={
+                isDefaultGroup ||
+                isCompletedGroup ||
+                restrictions?.editSettings === DISABLED ||
+                restrictCustomizationFeatures
+              }
             >
               <TasksGroupLabel>
                 <TasksGroupLabelName>{groupName}</TasksGroupLabelName>

@@ -5,6 +5,7 @@ import ChatView from 'views/chat/ChatView';
 import { DashboardTasksTab } from 'helpers/dashboard-helpers';
 import { PERMISSIONS } from 'helpers/permission-mapper';
 import { onLeaveGlobalSearch } from './TemplateCoreSubscriptionPlan/GlobalSearch';
+import DrChronoLaunch from '../views/auth/DrChronoLaunch';
 import {
   onEnterListDetailsView,
   onLeaveListDetailsView,
@@ -421,6 +422,10 @@ export const AUTH_ROUTES = [
   {
     path: '/inviteRequest/:requestIdentifier/:decisionType/:userIdentifier',
     RouteComponent: ApproveDisapproveUser,
+  },
+  {
+    path: '/drchrono',
+    RouteComponent: DrChronoLaunch,
   },
   // {
   //   path: '/embedded',

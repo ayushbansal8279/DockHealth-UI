@@ -56,9 +56,7 @@ const ProfileSubmenu = () => {
               </UserInitialCircle>
             )}
             <Box m={2} />
-            {!embeddedMode && (
-              <SubMenuLink to="/settings/userprofile">Profile</SubMenuLink>
-            )}
+            <SubMenuLink to="/settings/userprofile">Profile</SubMenuLink>
             {!whiteLabelEnabled && (
               <SubMenuLink to="/settings/documents">Agreements</SubMenuLink>
             )}

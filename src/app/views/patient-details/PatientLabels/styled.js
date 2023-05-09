@@ -38,6 +38,8 @@ export const OptionContainer = styled.div`
   width: 100%;
   padding: ${spacing.small};
 
+  ${({ isEdited }) => isEdited && `border: 1px solid ${palette.coolGrey2};`}
+
   &:hover {
     ${OptionButton} {
       opacity: 1;

@@ -47,7 +47,7 @@ AdditionalMembersCounterPopover.propTypes = {
     }),
   ).isRequired,
   onSelectFilters: func.isRequired,
-  selectedFilters: objectOf(arrayOf(string)).isRequired,
+  selectedFilters: objectOf(arrayOf(string)),
 };
 
 export default AdditionalMembersCounterPopover;

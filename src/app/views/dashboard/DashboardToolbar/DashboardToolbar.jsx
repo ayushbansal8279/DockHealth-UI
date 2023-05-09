@@ -203,6 +203,7 @@ const DashboardToolbar = ({ iconColorFilterActive, iconColorActive }) => {
                 additionalOptionsTitle="Groups"
                 additionalOptions={additionalOptions}
                 iconColorFilterActive={iconColorFilterActive}
+                isDashboard
               />
             </AccessRestrictor>
           </>

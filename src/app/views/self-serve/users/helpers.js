@@ -38,7 +38,7 @@ export const USER_TYPES = new Proxy(
     },
     GUEST: {
       label: 'Guest',
-      selectable: true,
+      selectable: false,
       changeable: true,
       isLimitedAccess: true,
       description:
@@ -66,23 +66,28 @@ export const USER_TYPES = new Proxy(
   },
   {
     get: (object, path) => object[path?.toUpperCase()] || object.DEFAULT,
+    delete: (target, property) => {
+      if (property in target) {
+        // eslint-disable-next-line no-param-reassign
+        delete target[property];
+        // console.log(`property removed: ${property}`);
+      }
+    },
   },
 );
 
 export const getUserTypeLabel = ({
   userStatus,
-  eulaAcknowledged,
+  // eulaAcknowledged,
   orgUserRole,
 }) => {
   let userType = null;
   if (['CANCELLED', 'INACTIVE', 'PENDING'].includes(userStatus)) {
     userType = USER_STATUS_TYPES[userStatus];
   } else {
-    const derivedOrgUserRole =
-      ['ACTIVE', 'INACTIVE'].includes(userStatus) && eulaAcknowledged
-        ? orgUserRole
-        : '';
-
+    const derivedOrgUserRole = ['ACTIVE', 'INACTIVE'].includes(userStatus)
+      ? orgUserRole
+      : '';
     userType = USER_TYPES[derivedOrgUserRole];
   }
 

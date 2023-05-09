@@ -44,12 +44,17 @@ const EmbeddedSso = (props) => {
         if (queryValues.targetId) {
           targetIdentifier = queryValues.targetId.replace('#/', '');
         }
+        let orgIdentifier = '';
+        if (queryValues.dockOrganizationId) {
+          orgIdentifier = queryValues.dockOrganizationId.replace('#/', '');
+        }
 
         UserAuthApi.getEnterpriseAccessTokensForEmbeddedSSO(
           authToken,
           userIdentifier,
           targetType,
           targetIdentifier,
+          orgIdentifier,
         )
           .then(() => {
             sessionStorage.setItem('EmbeddedMode', true);

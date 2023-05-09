@@ -25,17 +25,17 @@ export const CUSTOM_FIELD_TYPES = {
 export const sortAlphabetical = (array, propertyName = 'name') =>
   sort((a, b) => a?.[propertyName].localeCompare(b?.[propertyName]), array);
 
-export const createMetaDataObjectToSend = (metaDataField) => {
+export const createMetaDataObjectToSend = metaDataField => {
   if (metaDataField?.value) {
     return {
-      customFieldIdentifier: metaDataField.customFieldIdentifier,
-      value: metaDataField.value,
+      customFieldIdentifier: metaDataField?.customFieldIdentifier,
+      value: metaDataField?.value,
     };
   }
   if (metaDataField?.values) {
     return {
-      customFieldIdentifier: metaDataField.customFieldIdentifier,
-      values: metaDataField.values,
+      customFieldIdentifier: metaDataField?.customFieldIdentifier,
+      values: metaDataField?.values,
     };
   }
 

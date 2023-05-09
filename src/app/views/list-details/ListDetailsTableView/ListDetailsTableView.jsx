@@ -479,6 +479,7 @@ const ListDetailsTableView = () => {
               />
             </StickyContainer>
             <TasksView
+              viewSetup={displayListPreferences}
               onTaskUpdate={handleTaskUpdate}
               updateWorkflowStatus={handleUpdateWorkflowStatus}
               loadTasksForTaskGroup={loadTasksForTaskGroup}

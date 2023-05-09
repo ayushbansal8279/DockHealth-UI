@@ -135,7 +135,7 @@ const DecisionTaskLink = (props) => {
   };
 
   const saveTaskOutcome = () => {
-    if (inputValue.length > 1) {
+    if (inputValue.length > 0) {
       if (outcome) {
         if (outcome.name !== inputValue) {
           dispatch(

@@ -17,6 +17,7 @@ import {
   singleTaskCustomFieldsSelector,
 } from 'selectors/task-drawer-selectors';
 import { TASK_DISAPPEAR_DELAY } from 'helpers/task-update-helper';
+import { currentTaskListSelector } from 'selectors/task-list-selectors';
 import { openTaskDrawerWithContent } from 'actions/task-drawer-actions';
 import { useParams } from 'react-router-dom';
 import * as ModalActions from 'modal/actions';
@@ -50,13 +51,16 @@ import {
   TaskItemColumn,
   TaskPriority,
   getPriorityColor,
+  getPriorityHighlighColor,
   TaskItemColumnWidth,
   isColumnChecked,
   TaskItemType,
   TaskStatus,
   findIncompleteRequiredFields,
   TaskOrigin,
+  PatientTaskItemColumn,
 } from 'helpers/task-helpers';
+import { isMemberAdmin } from 'helpers/list-members-helper';
 import DependencyIcon from 'img/dependency-icon.svg';
 import DependencyListPopover from 'components/common/DependencyListPopover/DependencyListPopover';
 import useBooleanWithTimeout from 'hooks/use-boolean-with-timeout';
@@ -75,6 +79,9 @@ import { Box } from '@mui/material';
 import { taskDetailsSelector } from 'selectors/list-details-selectors';
 import { dashboardTaskDetailsSelector } from 'selectors/dashboard-selectors';
 import { patientTaskDetailsSelector } from 'selectors/patient-details-selectors';
+import { closeModal, openModal } from 'modal/actions';
+import { updatePatientDetails } from 'actions/patient-details-actions';
+import { formatPhoneNumber } from 'helpers/utility-functions';
 import { getSubtaskStylingLink } from './helpers';
 import TaskItemContextMenu from '../TaskItemContextMenu/TaskItemContextMenu';
 import TaskItemBulkEdit from './TaskItemComponents/TaskItemBulkEdit';
@@ -104,6 +111,9 @@ import {
   DecisionCellContainer,
   ActionIconsContainer,
 } from '../styled';
+import TaskItemText from './customFieldsTaskItemComponents/TaskItemText/TaskItemText';
+import TaskItemDropdown from './customFieldsTaskItemComponents/TaskItemDropdown/TaskItemDropdown';
+import TaskItemDate from './customFieldsTaskItemComponents/TaskItemDate';
 
 const { DISABLED, READ_ONLY } = SINGLE_TASK_RESTRICTIONS_OPTIONS;
 
@@ -121,6 +131,8 @@ const TaskItem = React.memo(
     isOpen,
     switchOpen,
     task: temporaryTask,
+    // toggleCompleteTask,
+    taskGroupIdentifier,
     dragHandleProps,
     isDragging,
     isCompletedGroup,
@@ -180,11 +192,11 @@ const TaskItem = React.memo(
       assignedToUsers,
       creator,
       completedBy,
-      completedDate,
+      completedDt,
       attachments,
       comments,
       labels,
-      patient,
+      patient: taskPatient,
       workflowStatus,
       taskList = {},
       parentTaskIdentifier,
@@ -196,7 +208,10 @@ const TaskItem = React.memo(
       dependencyTasksCompletedCount,
       dependencyTasksCount,
       hasEscalations,
+      priority,
     } = task;
+
+    const patient = taskPatient ?? parentTask?.patient ?? parentPatient;
 
     const { columns } = useTaskListColumnsConfig();
     const { listName, taskListIdentifier } = taskList || {};
@@ -231,9 +246,9 @@ const TaskItem = React.memo(
     } = searchMetaData;
 
     const currentUser = useSelector(userProfileSelector);
-    const restrictions =
+    let restrictions =
       SINGLE_TASK_RESTRICTIONS_PROFILES[currentUser?.orgUserRole];
-    const taskListRestrictions =
+    let taskListRestrictions =
       TASK_LIST_RESTRICTIONS_PROFILES[currentUser?.orgUserRole];
     const isSelected =
       useSelector((state) => isTaskSelectedSelector(state, taskIdentifier)) ||
@@ -265,6 +280,215 @@ const TaskItem = React.memo(
     const { bulkEditEnabled } = useContext(BulkEditContext);
 
     const selectedOrganization = useSelector(selectedUserOrganizationSelector);
+    const currentTasklist = useSelector(currentTaskListSelector);
+
+    const customHighlightColor = useMemo(() => {
+      const customHighlightItem =
+        selectedOrganization?.themeSettings?.find(
+          ({ name }) =>
+            name === `list.taskgroup.highlight.color-${taskGroupIdentifier}`,
+        ) || {};
+      return customHighlightItem?.value || '';
+    }, [selectedOrganization, taskGroupIdentifier]);
+
+    const hasPriorityHighlight = useMemo(() => {
+      const hasPriorityHighlightItem =
+        selectedOrganization?.themeSettings?.find(
+          ({ name }) => name === 'list.tasks.priority.highlighting.enabled',
+        ) || {};
+      return (
+        hasPriorityHighlightItem && hasPriorityHighlightItem?.value === 'true'
+      );
+    }, [selectedOrganization]);
+
+    const isListAdmin = useMemo(() => {
+      const currentUserMember = currentTasklist?.listUsers?.find(
+        u => u.identifier === currentUser?.identifier,
+      );
+      return isMemberAdmin(currentUserMember);
+    }, [currentUser, currentTasklist]);
+
+    const isCreator = useMemo(() => {
+      return creator?.identifier === currentUser?.identifier;
+    }, [currentUser, creator]);
+
+    if (!restrictions) {
+      restrictions = {};
+    }
+    if (!taskListRestrictions) {
+      taskListRestrictions = {};
+    }
+
+    const taskDeleteDisabled = useMemo(() => {
+      const deleteDisabledItem =
+        selectedOrganization?.themeSettings?.find(
+          ({ name }) => name === 'list.tasks.member.delete.enabled',
+        ) || {};
+      return (
+        deleteDisabledItem &&
+        deleteDisabledItem?.value === 'false' &&
+        !isListAdmin &&
+        !isCreator
+      );
+    }, [selectedOrganization, isListAdmin, isCreator]);
+
+    const editAssignmentDisabled = useMemo(() => {
+      const editAssignmentDisabledItem =
+        selectedOrganization?.themeSettings?.find(
+          ({ name }) => name === 'list.tasks.member.edit.assignment.enabled',
+        ) || {};
+      return (
+        editAssignmentDisabledItem &&
+        editAssignmentDisabledItem?.value === 'false' &&
+        !isListAdmin &&
+        !isCreator
+      );
+    }, [selectedOrganization, isListAdmin, isCreator]);
+
+    const editDueDateDisabled = useMemo(() => {
+      const editDueDateDisabledItem =
+        selectedOrganization?.themeSettings?.find(
+          ({ name }) => name === 'list.tasks.member.edit.duedate.enabled',
+        ) || {};
+      return (
+        editDueDateDisabledItem &&
+        editDueDateDisabledItem?.value === 'false' &&
+        !isListAdmin &&
+        !isCreator
+      );
+    }, [selectedOrganization, isListAdmin, isCreator]);
+
+    const editDescriptionDisabled = useMemo(() => {
+      const editDescriptionDisabledItem =
+        selectedOrganization?.themeSettings?.find(
+          ({ name }) => name === 'list.tasks.member.edit.description.enabled',
+        ) || {};
+      return (
+        editDescriptionDisabledItem &&
+        editDescriptionDisabledItem?.value === 'false' &&
+        !isListAdmin &&
+        !isCreator
+      );
+    }, [selectedOrganization, isListAdmin, isCreator]);
+
+    const editPatientDisabled = useMemo(() => {
+      const editPatientDisabledItem =
+        selectedOrganization?.themeSettings?.find(
+          ({ name }) => name === 'list.tasks.member.edit.patient.enabled',
+        ) || {};
+      return (
+        editPatientDisabledItem &&
+        editPatientDisabledItem?.value === 'false' &&
+        !isListAdmin &&
+        !isCreator
+      );
+    }, [selectedOrganization, isListAdmin, isCreator]);
+
+    const editStatusDisabled = useMemo(() => {
+      const editStatusDisabledItem =
+        selectedOrganization?.themeSettings?.find(
+          ({ name }) => name === 'list.tasks.member.edit.status.enabled',
+        ) || {};
+      return (
+        editStatusDisabledItem &&
+        editStatusDisabledItem?.value === 'false' &&
+        !isListAdmin &&
+        !isCreator
+      );
+    }, [selectedOrganization, isListAdmin, isCreator]);
+
+    const editPriorityDisabled = useMemo(() => {
+      const editPriorityDisabledItem =
+        selectedOrganization?.themeSettings?.find(
+          ({ name }) => name === 'list.tasks.member.edit.priority.enabled',
+        ) || {};
+      return (
+        editPriorityDisabledItem &&
+        editPriorityDisabledItem?.value === 'false' &&
+        !isListAdmin &&
+        !isCreator
+      );
+    }, [selectedOrganization, isListAdmin, isCreator]);
+
+    const editLabelsDisabled = useMemo(() => {
+      const editLabelsDisabledItem =
+        selectedOrganization?.themeSettings?.find(
+          ({ name }) => name === 'list.tasks.member.edit.labels.enabled',
+        ) || {};
+      return (
+        editLabelsDisabledItem &&
+        editLabelsDisabledItem?.value === 'false' &&
+        !isListAdmin &&
+        !isCreator
+      );
+    }, [selectedOrganization, isListAdmin, isCreator]);
+
+    const editSubTasksDisabled = useMemo(() => {
+      const editSubTasksDisabledItem =
+        selectedOrganization?.themeSettings?.find(
+          ({ name }) => name === 'list.tasks.member.edit.subtasks.enabled',
+        ) || {};
+      return (
+        editSubTasksDisabledItem &&
+        editSubTasksDisabledItem?.value === 'false' &&
+        !isListAdmin &&
+        !isCreator
+      );
+    }, [selectedOrganization, isListAdmin, isCreator]);
+
+    const nonAssigneeCompleteDisabled = useMemo(() => {
+      const nonAssigneeCompleteDisabledItem =
+        selectedOrganization?.themeSettings?.find(
+          ({ name }) => name === 'list.tasks.non-assignee.complete.enabled',
+        ) || {};
+      return (
+        nonAssigneeCompleteDisabledItem &&
+        nonAssigneeCompleteDisabledItem?.value === 'false' &&
+        assignedToUsers.filter(
+          user => user.identifier === currentUser.identifier,
+        ).length === 0 &&
+        !isCreator
+      );
+    }, [assignedToUsers, currentUser, selectedOrganization, isCreator]);
+
+    if (taskDeleteDisabled) {
+      restrictions.delete = DISABLED;
+    }
+    if (editAssignmentDisabled) {
+      restrictions.assigment = READ_ONLY;
+    }
+    if (editDueDateDisabled) {
+      restrictions.dueDate = DISABLED;
+    }
+    if (editDescriptionDisabled) {
+      restrictions.description = DISABLED;
+    }
+    if (editPatientDisabled) {
+      restrictions.patient = DISABLED;
+    }
+    if (editStatusDisabled) {
+      restrictions.status = DISABLED;
+    }
+    if (editPriorityDisabled) {
+      restrictions.priority = DISABLED;
+    }
+    if (editLabelsDisabled) {
+      restrictions.labels = DISABLED;
+    }
+    if (editSubTasksDisabled) {
+      restrictions.subtasks = DISABLED;
+    }
+    if (nonAssigneeCompleteDisabled) {
+      taskListRestrictions.completeTask = DISABLED;
+    }
+
+    const customHighlight =
+      customHighlightColor !== ''
+        ? customHighlightColor
+        : // eslint-disable-next-line unicorn/no-nested-ternary
+        hasPriorityHighlight
+        ? getPriorityHighlighColor(priority)
+        : undefined;
 
     const onSubtaskLabelClick = useCallback(
       (event) => {
@@ -288,6 +512,16 @@ const TaskItem = React.memo(
         task.parentTaskIdentifier,
         task.taskIdentifier,
       ],
+    );
+
+    const [isPatientDataReadOnly] = useState(true);
+
+    const handlePatientUpdate = useCallback(
+      field => value => {
+        const { patientIdentifier } = patient;
+        dispatch(updatePatientDetails(patientIdentifier, { [field]: value }));
+      },
+      [dispatch, patient],
     );
 
     const handleTaskItemRightClick = useCallback(
@@ -400,6 +634,15 @@ const TaskItem = React.memo(
       },
       [invokeToggleCompleteAction, isCompleted, modalActions, templates],
     );
+    
+    const handlePriorityChange = useCallback(
+      taskPriority => {
+        onTaskUpdate(taskIdentifier, {
+          priority: taskPriority?.toUpperCase() || TaskPriority.LOW,
+        });
+      },
+      [onTaskUpdate, taskIdentifier],
+    );
 
     const onCircleClick = useCallback(
       (event) => {
@@ -434,11 +677,10 @@ const TaskItem = React.memo(
         onTaskUpdate(taskIdentifier, {
           assignedToUsers: selectedMembers,
           assignedToIdentifiers: pluck('userIdentifier', selectedMembers),
-          assignedBy: selectedMembers?.length ? currentUser : null,
         });
         onTaskAssigned();
       },
-      [currentUser, onTaskUpdate, taskIdentifier],
+      [onTaskUpdate, taskIdentifier],
     );
 
     const handleUpdateWorkflowStatus = useCallback(
@@ -480,6 +722,7 @@ const TaskItem = React.memo(
             backgroundColor={pageBackground}
             isSelected={isSelected || selected}
             hasEscalations={hasEscalations}
+            customHighlight={customHighlight}
             isEditingDescription={isEditingDescription}
           >
             {taskListRestrictions?.createTask !== DISABLED && (
@@ -504,13 +747,15 @@ const TaskItem = React.memo(
               <CircleIcon
                 src={isCompleted ? CircleCompleted : Circle}
                 isClickable={
-                  !isTaskStatusTogglingDisabled && isDependencyEmptyOrCompleted
+                  !isTaskStatusTogglingDisabled &&
+                  isDependencyEmptyOrCompleted &&
+                  taskListRestrictions?.completeTask !== DISABLED
                 }
                 isCompleted={isCompleted}
                 onClick={
-                  taskListRestrictions?.createTask === DISABLED
-                    ? () => {}
-                    : onCircleClick
+                  taskListRestrictions?.completeTask !== DISABLED
+                    ? onCircleClick
+                    : () => {}
                 }
               />
             </ActionIconsContainer>
@@ -527,6 +772,7 @@ const TaskItem = React.memo(
         isLast,
         isSelected,
         hasEscalations,
+        customHighlight,
         isTaskStatusTogglingDisabled,
         newlyCreated,
         onCircleClick,
@@ -582,6 +828,7 @@ const TaskItem = React.memo(
             newlyCreated={newlyCreated}
             isSelected={isSelected || selected}
             hasEscalations={hasEscalations}
+            customHighlight={customHighlight}
             height={
               hasParentTaskLabel || isCompletedGroup
                 ? EXTENDED_TASK_HEIGHT
@@ -679,8 +926,42 @@ const TaskItem = React.memo(
                     >
                       <TaskItemDecision
                         outcomes={task.taskOutcomes}
-                        dispatch={dispatch}
-                        onSelect={chooseTaskDecisionOutcome}
+                        onSelect={(
+                          targetValue,
+                          taskItem,
+                          templateBundleIdentifierItem,
+                          onSuccess,
+                        ) => {
+                          if (
+                            taskItem.subTasksCompletedCount !==
+                            taskItem.subTasksCount
+                          ) {
+                            dispatch(
+                              openModal('CompleteAllTasks', {
+                                confirm: () => {
+                                  dispatch(closeModal());
+                                  dispatch(
+                                    chooseTaskDecisionOutcome(
+                                      targetValue,
+                                      taskItem,
+                                      templateBundleIdentifierItem,
+                                    ),
+                                  );
+                                  onSuccess();
+                                },
+                              }),
+                            );
+                          } else {
+                            dispatch(
+                              chooseTaskDecisionOutcome(
+                                targetValue,
+                                taskItem,
+                                templateBundleIdentifierItem,
+                              ),
+                            );
+                            onSuccess();
+                          }
+                        }}
                         task={task}
                         templateBundleIdentifier={templateBundleIdentifier}
                         disabled={isCompleted || !isDependencyEmptyOrCompleted}
@@ -759,6 +1040,196 @@ const TaskItem = React.memo(
                     />
                   </TaskItemCell>,
                   getColumnOrder(TaskItemColumn.PATIENT),
+                )}
+              </>
+            )}
+            {isColumnChecked(columns, TaskItemColumn.PRIORITY) && (
+              <>
+                {randerFirstColumnCoverIfNecessary(
+                  <TaskItemCell
+                    isSubtask={isSubtask}
+                    key={`priority_${taskIdentifier}`}
+                    width={
+                      columns?.find(
+                        ({ identifier }) =>
+                          identifier === TaskItemColumn.PRIORITY,
+                      )?.columnWidth
+                    }
+                    order={getColumnOrder(TaskItemColumn.PRIORITY)}
+                  >
+                    <TaskItemDropdown
+                      value={task.priority}
+                      onChange={handlePriorityChange}
+                      field={{
+                        options: [
+                          { identifier: 'HIGH', name: 'High', color: 'red' },
+                          { identifier: 'NONE', name: 'No Priority' },
+                        ],
+                        displayOptions: [],
+                      }}
+                      readOnly={false}
+                    />
+                  </TaskItemCell>,
+                  getColumnOrder(TaskItemColumn.PRIORITY),
+                )}
+              </>
+            )}
+            {isColumnChecked(columns, PatientTaskItemColumn.GENDER) && (
+              <>
+                {randerFirstColumnCoverIfNecessary(
+                  <TaskItemCell
+                    isSubtask={isSubtask}
+                    key={`gender_${taskIdentifier}`}
+                    width={
+                      columns?.find(
+                        ({ identifier }) =>
+                          identifier === PatientTaskItemColumn.GENDER,
+                      )?.columnWidth
+                    }
+                    order={getColumnOrder(PatientTaskItemColumn.GENDER)}
+                  >
+                    <TaskItemDropdown
+                      readOnly={isPatientDataReadOnly}
+                      value={patient?.gender}
+                      onChange={handlePatientUpdate('gender')}
+                      field={{
+                        options: [
+                          {
+                            identifier: 'male',
+                            name: 'male',
+                            color: '#00A2E5',
+                          },
+                          {
+                            identifier: 'female',
+                            name: 'female',
+                            color: '#00A2E5',
+                          },
+                        ],
+                        displayOptions: ['TASK_REQUIRED'],
+                      }}
+                    />
+                  </TaskItemCell>,
+                  getColumnOrder(PatientTaskItemColumn.GENDER),
+                )}
+              </>
+            )}
+            {isColumnChecked(columns, PatientTaskItemColumn.DOB) && (
+              <>
+                {randerFirstColumnCoverIfNecessary(
+                  <TaskItemCell
+                    isSubtask={isSubtask}
+                    key={`patient_dob_${taskIdentifier}`}
+                    width={
+                      columns?.find(
+                        ({ identifier }) =>
+                          identifier === PatientTaskItemColumn.DOB,
+                      )?.columnWidth
+                    }
+                    order={getColumnOrder(PatientTaskItemColumn.DOB)}
+                  >
+                    <TaskItemDate
+                      value={patient?.dob}
+                      onChange={handlePatientUpdate('dob')}
+                      readOnly={isPatientDataReadOnly}
+                    />
+                  </TaskItemCell>,
+                  getColumnOrder(PatientTaskItemColumn.DOB),
+                )}
+              </>
+            )}
+            {isColumnChecked(columns, PatientTaskItemColumn.EMAIL) && (
+              <>
+                {randerFirstColumnCoverIfNecessary(
+                  <TaskItemCell
+                    isSubtask={isSubtask}
+                    key={`patient_email_${taskIdentifier}`}
+                    width={
+                      columns?.find(
+                        ({ identifier }) =>
+                          identifier === PatientTaskItemColumn.EMAIL,
+                      )?.columnWidth
+                    }
+                    order={getColumnOrder(PatientTaskItemColumn.EMAIL)}
+                  >
+                    <TaskItemText
+                      readOnly={isPatientDataReadOnly}
+                      value={patient?.email}
+                      onChange={handlePatientUpdate('email')}
+                    />
+                  </TaskItemCell>,
+                  getColumnOrder(PatientTaskItemColumn.EMAIL),
+                )}
+              </>
+            )}
+            {isColumnChecked(columns, PatientTaskItemColumn.MRN) && (
+              <>
+                {randerFirstColumnCoverIfNecessary(
+                  <TaskItemCell
+                    isSubtask={isSubtask}
+                    key={`patient_MRN_${taskIdentifier}`}
+                    width={
+                      columns?.find(
+                        ({ identifier }) =>
+                          identifier === PatientTaskItemColumn.MRN,
+                      )?.columnWidth
+                    }
+                    order={getColumnOrder(PatientTaskItemColumn.MRN)}
+                  >
+                    <TaskItemText
+                      readOnly={isPatientDataReadOnly}
+                      value={patient?.mrn}
+                      onChange={handlePatientUpdate('mrn')}
+                    />
+                  </TaskItemCell>,
+                  getColumnOrder(PatientTaskItemColumn.MRN),
+                )}
+              </>
+            )}
+            {isColumnChecked(columns, PatientTaskItemColumn.MOBILE_PHONE) && (
+              <>
+                {randerFirstColumnCoverIfNecessary(
+                  <TaskItemCell
+                    isSubtask={isSubtask}
+                    key={`patient_mobile_phone_${taskIdentifier}`}
+                    width={
+                      columns?.find(
+                        ({ identifier }) =>
+                          identifier === PatientTaskItemColumn.MOBILE_PHONE,
+                      )?.columnWidth
+                    }
+                    order={getColumnOrder(PatientTaskItemColumn.MOBILE_PHONE)}
+                  >
+                    <TaskItemText
+                      readOnly={isPatientDataReadOnly}
+                      value={formatPhoneNumber(patient?.phoneMobile ?? '')}
+                      onChange={handlePatientUpdate('phoneMobile')}
+                    />
+                  </TaskItemCell>,
+                  getColumnOrder(PatientTaskItemColumn.MOBILE_PHONE),
+                )}
+              </>
+            )}
+            {isColumnChecked(columns, PatientTaskItemColumn.HOME_PHONE) && (
+              <>
+                {randerFirstColumnCoverIfNecessary(
+                  <TaskItemCell
+                    isSubtask={isSubtask}
+                    key={`patient_home_phone_${taskIdentifier}`}
+                    width={
+                      columns?.find(
+                        ({ identifier }) =>
+                          identifier === PatientTaskItemColumn.HOME_PHONE,
+                      )?.columnWidth
+                    }
+                    order={getColumnOrder(PatientTaskItemColumn.HOME_PHONE)}
+                  >
+                    <TaskItemText
+                      readOnly={isPatientDataReadOnly}
+                      value={formatPhoneNumber(patient?.phoneHome ?? '')}
+                      onChange={handlePatientUpdate('phoneHome')}
+                    />
+                  </TaskItemCell>,
+                  getColumnOrder(PatientTaskItemColumn.HOME_PHONE),
                 )}
               </>
             )}
@@ -1108,7 +1579,7 @@ const TaskItem = React.memo(
                     }
                   >
                     <>
-                      {completedDate && completedBy && (
+                      {completedDt && completedBy && (
                         <TaskItemMembers
                           readOnly
                           multipleAssigneesContext={multipleAssigneesContext}

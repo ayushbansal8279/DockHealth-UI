@@ -53,7 +53,6 @@ const AssignedToSection = ({ disabled }) => {
     setAssignedToUsersValue([]);
     dispatch(
       updatePartialWorkflow(selectedWorkflow?.identifier, {
-        assignedBy: null,
         assignedToUsers: [],
         assignedToIdentifiers: [],
       }),
@@ -65,13 +64,12 @@ const AssignedToSection = ({ disabled }) => {
       setAssignedToUsersValue(selectedMembers);
       dispatch(
         updatePartialWorkflow(selectedWorkflow?.identifier, {
-          assignedBy: selectedMembers?.length ? currentUser : null,
           assignedToUsers: selectedMembers,
           assignedToIdentifiers: pluck('userIdentifier', selectedMembers),
         }),
       );
     },
-    [currentUser, dispatch, selectedWorkflow],
+    [dispatch, selectedWorkflow],
   );
 
   return (

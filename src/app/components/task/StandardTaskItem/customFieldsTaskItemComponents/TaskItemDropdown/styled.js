@@ -15,6 +15,9 @@ export const DropdownSelect = styled(Select)`
     padding: 0px;
     background: white;
   }
+  & .MuiSelect-filled.MuiSelect-filled {
+    padding-right: 0;
+  }
   & .MuiSelect-root:before {
     display: none;
   }

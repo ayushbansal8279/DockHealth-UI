@@ -9,6 +9,7 @@ import { UserOrganizationRole } from 'helpers/user-helper';
 import TrialBanner from 'components/navigation/TrialBanner/TrialBanner';
 import AccessRestrictor from 'components/access/AccessRestrictor/AccessRestrictor';
 import { selectedUserOrganizationSelector } from 'selectors/user-selectors';
+import { patientDetailsStateSelector } from 'selectors/patient-details-selectors';
 import {
   HeaderContainer,
   MainHeader,
@@ -26,6 +27,8 @@ const LayoutHeader = (props) => {
   const currentOrganization = useSelector(selectedUserOrganizationSelector);
   const whiteLabelEnabled = currentOrganization?.whiteLabelEnabled || false;
 
+  const patientDetails = useSelector(patientDetailsStateSelector);
+
   return (
     <HeaderContainer horizontalSticky={horizontalSticky}>
       <MainHeader>
@@ -42,7 +45,9 @@ const LayoutHeader = (props) => {
         <AccessRestrictor
           allowedToRoles={[ADMIN, OWNER, MEMBER, GUEST, EXTERNAL]}
         >
-          <ActivityAlerts />
+          <ActivityAlerts
+            patientIdentifier={patientDetails?.patientIdentifier}
+          />
         </AccessRestrictor>
         <Box mx={1} />
         {!whiteLabelEnabled && (

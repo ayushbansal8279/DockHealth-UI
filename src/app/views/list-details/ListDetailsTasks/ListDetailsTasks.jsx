@@ -36,8 +36,9 @@ import { BulkEditContext } from 'components/tasklist/BulkEditSection/BulkEditSec
 import LoadMoreButton, {
   LoadMoreSection,
 } from 'components/common/LoadMoreButton/LoadMoreButton';
-import { TaskStatus } from 'helpers/task-helpers';
+import { TaskItemType, TaskStatus } from 'helpers/task-helpers';
 import StandardTaskItem from 'components/task/StandardTaskItem/StandardTaskItem';
+import TaskTemplateGroup from 'components/task-template/TaskTemplateGroup/TaskTemplateGroup';
 import TasksSkeletonLoader from 'components/task/TasksSkeletonLoader/TasksSkeletonLoader';
 import { useParams } from 'react-router-dom';
 import StickyContainer from 'components/common/HorizontalScroll/StickyContainer';
@@ -45,6 +46,8 @@ import {
   userProfileSelector,
   selectedUserOrganizationSelector,
 } from 'selectors/user-selectors';
+import { currentTaskListSelector } from 'selectors/task-list-selectors';
+import { isMemberAdmin } from 'helpers/list-members-helper';
 import {
   TASK_LIST_RESTRICTIONS_OPTIONS,
   TASK_LIST_RESTRICTIONS_PROFILES,
@@ -56,6 +59,7 @@ import {
 } from '../ListDetailsTableView/styled';
 
 const ListDetailsTasks = ({
+  viewSetup,
   onTaskUpdate,
   updateWorkflowStatus,
   loadTasksForTaskGroup,
@@ -112,7 +116,16 @@ const ListDetailsTasks = ({
     TASK_LIST_RESTRICTIONS_PROFILES[currentUser?.orgUserRole];
   const { DISABLED } = TASK_LIST_RESTRICTIONS_OPTIONS;
 
+  const taskList = useSelector(currentTaskListSelector);
+  const { restrictCustomization } = taskList || {};
+  const currentUserMember = taskList?.listUsers.find(
+    u => u.identifier === currentUser?.identifier,
+  );
+  const isListAdmin = isMemberAdmin(currentUserMember);
+  const restrictCustomizationFeatures = restrictCustomization && !isListAdmin;
+
   const currentOrganization = useSelector(selectedUserOrganizationSelector);
+
   const iconColorActiveItem = useMemo(
     () =>
       currentOrganization?.themeSettings?.find(
@@ -127,6 +140,15 @@ const ListDetailsTasks = ({
       ) || {},
     [currentOrganization?.themeSettings],
   );
+  const userSortingSupportEnabledItem = useMemo(
+    () =>
+      currentOrganization?.themeSettings?.find(
+        ({ name }) => name === 'list.tasks.user.sort.enabled',
+      ) || {},
+    [currentOrganization?.themeSettings],
+  );
+  const userSortingSupportEnabled =
+    userSortingSupportEnabledItem?.value !== 'false';
 
   const renderEmptyState = () => {
     if (isSearchApplied) return <NoSearchResultsView />;
@@ -194,7 +216,7 @@ const ListDetailsTasks = ({
 
   const { bulkEditIsActive } = useContext(BulkEditContext);
 
-  const dragAndDropDisabled = bulkEditIsActive;
+  const dragAndDropDisabled = bulkEditIsActive || !userSortingSupportEnabled;
 
   const isSortApplied = !!sort?.key && !!sort?.order;
 
@@ -300,6 +322,7 @@ const ListDetailsTasks = ({
               onSortChange={onSortChange}
               applyTemplate={applyTemplate}
               iconColorActive={iconColorActiveItem?.value}
+              restrictCustomizationFeatures={restrictCustomizationFeatures}
             >
               {({
                 isFetchingMoreTasks,
@@ -342,13 +365,17 @@ const ListDetailsTasks = ({
                                   }
                                 >
                                   {(draggableProvided, { isDragging }) => (
-                                    <>
+                                  <>
+                                    {/* {task?.itemType === TaskItemType.TASK ? ( */}
                                       <StandardTaskItem
                                         key={task}
                                         isFullView={isFullView}
                                         isDragging={isDragging}
                                         isStartedDnD={draggedId === task}
                                         task={task}
+                                        taskGroupIdentifier={
+                                          taskGroupIdentifier
+                                        }
                                         draggableProvided={draggableProvided}
                                         isCompletedGroup={isCompletedGroup}
                                         onTaskUpdate={onTaskUpdate}
@@ -386,11 +413,32 @@ const ListDetailsTasks = ({
                                           iconColorActiveItem?.value
                                         }
                                       />
-                                    </>
-                                  )}
-                                </Draggable>
-                              ))
-                            }
+                                    {/* ) : (
+                                      <TaskTemplateGroup
+                                        isCompletedTab={isCompletedView}
+                                        viewSetup={viewSetup}
+                                        isStartedDnD={
+                                          draggedId === task.identifier
+                                        }
+                                        draggableProvided={draggableProvided}
+                                        templateGroup={task}
+                                        groupHasMultipleAssignees={
+                                          groupHasMultipleAssignees
+                                        }
+                                        isFullView={isFullView}
+                                        groupDragAndDropDisabled={
+                                          isCompletedGroup ||
+                                          dragAndDropDisabled
+                                        }
+                                        iconColorActive={
+                                          iconColorActiveItem?.value
+                                        }
+                                      />
+                                    )} */}
+                                  </>
+                                )}
+                              </Draggable>
+                            ))}
                             {providedDroppable.placeholder}
                           </DroppablePlaceholder>
                         );
@@ -440,6 +488,8 @@ const ListDetailsTasks = ({
       restrictions?.createGroup,
       DISABLED,
       showClearSortFiltersModal,
+      viewSetup,
+      restrictCustomizationFeatures,
     ],
   );
 
@@ -464,16 +514,16 @@ const ListDetailsTasks = ({
                 <StickyContainer left={24} decreaseWidth={2 * 24}>
                   <GroupNameSection
                     onEnterClick={
-                      restrictions?.createGroup === DISABLED
-                        ? () => {}
-                        : onGroupNameClick
+                      restrictions?.createGroup !== DISABLED &&
+                      !restrictCustomizationFeatures
+                        ? onGroupNameClick
+                        : () => undefined
                     }
                     placeholder={messages.placeholder}
                     closeOnEnter
                   >
-                    {restrictions?.createGroup !== DISABLED && (
-                      <AddGroupNameButton />
-                    )}
+                    {restrictions?.createGroup !== DISABLED &&
+                      !restrictCustomizationFeatures && <AddGroupNameButton />}
                   </GroupNameSection>
                 </StickyContainer>
               )}

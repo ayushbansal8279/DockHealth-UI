@@ -28,6 +28,7 @@ const MegaFilter = ({
   wasChangedFilters,
   onQuickFilterCreate,
   onQuickFilterDelete,
+  isDefaultDateFilterApplied = false,
 }) => {
   const [isOpen, openPopover] = useState(false);
   const [searchedFilterQuery, setSearchedFilterQuery] = useState('');
@@ -62,7 +63,7 @@ const MegaFilter = ({
       >
         <>
           <FilterHeader
-            title="Filter active tasks"
+            title="Filter tasks"
             filterActive={isFilterApplied}
             filteredItemsCount={tasksAndSubTasksCount}
             allItemsCount={activeItemsAmount}
@@ -79,6 +80,12 @@ const MegaFilter = ({
             <MegaFilterNoResultsLabel>
               There are no results for your filter criteria.
             </MegaFilterNoResultsLabel>
+          )}
+          {isDefaultDateFilterApplied && (
+            <span>
+              Displaying tasks completed in last 7 days. Adjust date criteria as
+              needed.
+            </span>
           )}
           <Box p={2} />
           <FilterTable

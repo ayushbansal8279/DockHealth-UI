@@ -309,6 +309,7 @@ const useInitializeAttachmentsSectionHooks = () => {
       isDragActive,
     },
     downloadAllFiles,
+    getMemoPatientAttachment,
   };
 };
 

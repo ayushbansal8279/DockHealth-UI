@@ -75,6 +75,10 @@ const checkIfMatchesDueDateCriteria = (
 
 // eslint-disable-next-line sonarjs/cognitive-complexity
 export const checkIfTaskMatchesFilters = (task, filters) => {
+  if (!task) {
+    return false;
+  }
+
   const {
     priority,
     workflowStatus,

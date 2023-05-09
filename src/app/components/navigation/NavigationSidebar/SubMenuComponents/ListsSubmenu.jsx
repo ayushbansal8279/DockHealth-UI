@@ -25,7 +25,7 @@ import palette from 'styles/palette';
 import { createTaskListPath } from 'routing/helpers/paths';
 import ListOptionsMenu from 'components/tasklist/ListOptionsMenu/ListOptionsMenu';
 import LabeledCollapse from 'components/common/LabeledCollapse/LabeledCollapse';
-import { UserOrganizationRole } from 'helpers/user-helper';
+import { isUserGuest, isUserViewOnly } from 'helpers/user-helper';
 import { Box } from '@mui/material';
 import { useBoolean } from 'hooks/useBoolean';
 import move from 'ramda/src/move';
@@ -62,9 +62,11 @@ const ListsSubmenu = () => {
   const hoveredItemReference = useRef(null);
   const [popoverLabel, setPopoverLabel] = useState(null);
   const { 0: archivedVisible, 3: toggleArchived } = useBoolean(false);
-  const { orgUserRole } = useSelector(userProfileSelector);
-  const isGuest = orgUserRole === UserOrganizationRole.GUEST;
-  const isViewOnly = orgUserRole === UserOrganizationRole.VIEW_ONLY;
+
+  const currentUser = useSelector(userProfileSelector);
+  const isGuest = isUserGuest(currentUser);
+  const isViewOnly = isUserViewOnly(currentUser);
+
   const [activeLists, setActiveLists] = useState(null);
 
   useEffect(() => {

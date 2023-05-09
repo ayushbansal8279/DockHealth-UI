@@ -2,6 +2,7 @@ import MuiSwitch from '@mui/material/Switch';
 import styled from 'styled-components';
 import { fontSizes, fontWeights } from 'styles/font';
 import palette from 'styles/palette';
+import { Grid } from '@mui/material';
 
 export const SubscriptionsViewOuterContainer = styled.div`
   background-color: ${palette.white};
@@ -24,8 +25,8 @@ export const SubscriptionsViewContainer = styled.div`
 `;
 
 export const SubscriptionPlansContainer = styled.div`
-  width: 881px;
-  margin: 0 auto;
+  width: 100%;
+  margin: 0;
 `;
 
 export const SubscriptionsTitle = styled.h2`
@@ -135,5 +136,12 @@ export const BillingTableSummaryRow = styled.tr`
     padding-bottom: 4px;
     font-size: ${fontSizes.huge};
     font-weight: ${fontWeights.bold};
+  }
+`;
+
+export const StyledGrid = styled(Grid)`
+  && {
+    padding: 3rem 2rem;
+    max-width: 1200px;
   }
 `;

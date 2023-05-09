@@ -14,6 +14,9 @@ export const UNENROLLED_USER = '/auth/unEnrolledUser';
 export const DEFAULT_REDIRECT_PATH = '/auth/login';
 export const SUBS_SETTINGS_PATH = '/settings/subscriptions';
 export const SUBS_EXPIRED_PATH = '/settings/subscription-expired';
+export const SUBS_PAYMENT_PATH = '/settings/subscription-payment';
+export const SUBS_PAYMENT_FINISHED_PATH =
+  '/settings/subscription-payment-finished';
 export const USERS_SETTINGS_PATH = '/settings/users';
 export const CUSTOM_FIELDS_SETTINGS_PATH = '/settings/custom-fields';
 export const WORKFLOW_LIBRARY_PATH = '/core/workflows/library';
@@ -23,6 +26,7 @@ export const SINGLE_TASK_PATH = '/core/task';
 
 export const TASK_LIST_PATH = '/core/tasks';
 export const PATIENTS_LIST_ALL = '/core/patients/list/all';
+export const PATIENTS_LIST_WITH_TASKS = '/core/patients/list/active';
 export const PATIENTS_LIST_ARCHIVED = '/core/patients/list/archived';
 export const PATIENTS_LIST = '/core/patients/list';
 

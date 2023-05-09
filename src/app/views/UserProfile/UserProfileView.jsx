@@ -3,7 +3,7 @@ import { Box, Grid } from '@mui/material';
 import { useDispatch, useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
 import isEmpty from 'ramda/src/isEmpty';
-import MobileDevices from 'img/devices.svg';
+// import MobileDevices from 'img/devices';
 import * as UserAuthApi from 'api/user-auth-api';
 import * as OrganizationApi from 'api/organization-api';
 import OrganizationAvatar from 'components/org/OrganizationAvatar/OrganizationAvatar';
@@ -30,8 +30,8 @@ import { getNotificationSettings } from 'api/user-api';
 import UserProfileForm from './UserProfileForm/UserProfileForm';
 import {
   ProfileSettingsWrapper,
-  ViewHeader,
-  ViewDescription,
+  // ViewHeader,
+  // ViewDescription,
   Divider,
   SectionHeader,
   OrganizationDetails,
@@ -39,11 +39,11 @@ import {
   ActionButton,
   SettingsSection,
   ViewContainer,
-  AppVersionInfoWrapper,
-  AppVersionInfoIcon,
-  AppVersionInfoTextWrapper,
-  AppVersionInfoText,
-  AppVersionInfoHeader,
+  // AppVersionInfoWrapper,
+  // AppVersionInfoIcon,
+  // AppVersionInfoTextWrapper,
+  // AppVersionInfoText,
+  // AppVersionInfoHeader,
 } from './styled';
 
 const UserProfileView = () => {
@@ -152,7 +152,7 @@ const UserProfileView = () => {
       <ViewContainer>
         {!isEmpty(userProfile) && (
           <ProfileSettingsWrapper>
-            <SettingsSection noMarginTop>
+            {/* <SettingsSection noMarginTop>
               <ViewHeader>Manage Your Profile</ViewHeader>
               <ViewDescription>
                 This is where you can make changes to your profile information.
@@ -166,8 +166,8 @@ const UserProfileView = () => {
                 </a>
                 .
               </ViewDescription>
-            </SettingsSection>
-            <Divider />
+            </SettingsSection> */}
+            {/* <Divider /> */}
             <SettingsSection>
               <SectionHeader>My Organization</SectionHeader>
               <Spacing vertical={5} />
@@ -204,7 +204,7 @@ const UserProfileView = () => {
             </Box>
             <Spacing vertical={6} />
             <Divider />
-            <AppVersionInfoWrapper>
+            {/* <AppVersionInfoWrapper>
               <AppVersionInfoIcon src={MobileDevices} alt="Mobile app" />
               <AppVersionInfoTextWrapper>
                 <AppVersionInfoHeader>
@@ -223,7 +223,7 @@ const UserProfileView = () => {
                   on your rounds.
                 </AppVersionInfoText>
               </AppVersionInfoTextWrapper>
-            </AppVersionInfoWrapper>
+            </AppVersionInfoWrapper> */}
           </ProfileSettingsWrapper>
         )}
       </ViewContainer>
