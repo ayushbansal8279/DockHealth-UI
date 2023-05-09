@@ -21,8 +21,8 @@ import {
   currentTaskListTasksStatusSelector,
 } from 'selectors/task-list-selectors';
 import { isMemberAdmin } from 'helpers/list-members-helper';
+import TaskCustomFieldsModal from 'modal/customModals/TaskCustomFieldsModal';
 import { ToolbarContainer } from './styled';
-import TaskCustomFieldsModal from '../../../modal/customModals/TaskCustomFieldsModal';
 
 const TASKS_VISIBILITY_KEY = 'SHOW_WORKFLOW_COMPLETED_TASKS';
 

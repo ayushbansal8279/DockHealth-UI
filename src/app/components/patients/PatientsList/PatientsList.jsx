@@ -23,8 +23,8 @@ import { PatientColumn } from 'helpers/patient-list-helpers';
 import { patientsListSelector } from 'selectors/patients-selectors';
 import moment from 'moment';
 import { formatPhoneNumber } from 'helpers/utility-functions';
+import TaskItemBulkEdit from 'components/task/StandardTaskItem/TaskItemComponents/TaskItemBulkEdit';
 import PatientImportPopover from '../PatientImportPopover/PatientImportPopover';
-import TaskItemBulkEdit from '../../task/StandardTaskItem/TaskItemComponents/TaskItemBulkEdit';
 import EmptyFilteredPatientsList from '../EmptyFilteredPatientsList/EmptyFilteredPatientsList';
 import {
   NonEmptyListTable,

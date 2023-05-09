@@ -19,6 +19,7 @@ import { useDispatch } from 'react-redux';
 import Button from 'components/common/Button/Button';
 import Spacing from 'components/common/Spacing';
 import { closeModal, openModal } from 'modal/actions';
+import TextEditor from 'ui-toolkit/Form/TextEditor/TextEditor';
 import {
   NoteContainer,
   PatientNoteAuthor,
@@ -26,7 +27,6 @@ import {
   ButtonContainer,
   ButtonWrapper,
 } from './styled';
-import TextEditor from '../../../../ui-toolkit/Form/TextEditor/TextEditor';
 
 const PatientNote = ({
   note,

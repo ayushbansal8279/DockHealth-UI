@@ -10,7 +10,7 @@ import Spacing from 'components/common/Spacing';
 import Button from 'components/common/Button/Button';
 import { useHistory } from 'react-router-dom';
 import Checkbox from 'components/common/Checkbox/Checkbox';
-import { createTaskListPath } from '../../../../routing/helpers/paths';
+import { createTaskListPath } from 'routing/helpers/paths';
 import { Title, ButtonWrapper, Header } from '../styled';
 import messages from './messages';
 import { CheckboxContainer, CheckboxDescription, StyledForm } from './styled';

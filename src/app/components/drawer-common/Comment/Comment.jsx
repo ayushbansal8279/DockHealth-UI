@@ -11,6 +11,7 @@ import {
   convertToEditorState,
 } from 'components/common/TextEditor/helpers';
 import { useMentionsEditorState } from 'components/common/TextEditor/use-mentions-editor-state';
+import TextEditor from 'ui-toolkit/Form/TextEditor/TextEditor';
 import {
   CommentActionLabel,
   CommentContainer,
@@ -22,7 +23,6 @@ import {
   CommentActionsSection,
   EditCommentButton,
 } from './styled';
-import TextEditor from '../../../../ui-toolkit/Form/TextEditor/TextEditor';
 
 const Comment = ({
   comment,

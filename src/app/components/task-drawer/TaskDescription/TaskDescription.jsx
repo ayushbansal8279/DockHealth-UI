@@ -21,8 +21,8 @@ import {
 // import CustomTextEditor from 'components/common/CustomTextEditor/CustomTextEditor';
 import { useMentionsEditorState } from 'components/common/TextEditor/use-mentions-editor-state';
 // import debounce from 'lodash.debounce';
+import Input from 'ui-toolkit/Form/Input/Input';
 import { DescriptionTextContainer, DescriptionError } from './styled';
-import Input from '../../../../ui-toolkit/Form/Input/Input';
 
 const TaskDescription = ({ selectedTask, readOnly, disableMentions }) => {
   const {

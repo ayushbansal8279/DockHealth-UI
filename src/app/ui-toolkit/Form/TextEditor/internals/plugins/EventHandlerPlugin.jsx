@@ -1,9 +1,8 @@
 import React, { useEffect, useLayoutEffect, useState } from 'react';
 import { OnChangePlugin } from '@lexical/react/LexicalOnChangePlugin';
-import { noop } from '../../../../utilities';
+import { noop } from 'ui-toolkit/utilities';
 import { useLexicalComposerContext } from '@lexical/react/LexicalComposerContext';
 import { mergeRegister } from '@lexical/utils';
-import { MENTION } from '../transformers';
 import {
   FOCUS_COMMAND,
   BLUR_COMMAND,
@@ -18,6 +17,7 @@ import {
   $convertToMarkdownString,
   TRANSFORMERS,
 } from '@lexical/markdown';
+import { MENTION } from '../transformers';
 
 export default function EventHandlerPlugin({
   onChange = noop,

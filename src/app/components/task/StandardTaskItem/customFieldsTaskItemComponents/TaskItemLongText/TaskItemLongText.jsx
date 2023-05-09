@@ -14,9 +14,9 @@ import TaskItemPopover from 'components/task/TaskItemPopover/TaskItemPopover';
 // } from 'components/common/TextEditor/helpers';
 import PopoverBottomBar from 'components/task/PopoverBottomBar/PopoverBottomBar';
 // import { FieldCharakterLimit } from 'helpers/field-type-helpers';
+import TextEditor from 'ui-toolkit/Form/TextEditor/TextEditor';
+import { convertToSimpleString } from 'ui-toolkit/Form/TextEditor/helpers';
 import { Text, LongTextBox, Divider } from './styled';
-import TextEditor from '../../../../../../ui-toolkit/Form/TextEditor/TextEditor';
-import { convertToSimpleString } from '../../../../../../ui-toolkit/Form/TextEditor/helpers';
 
 const TaskItemLongText = ({
   value = '',

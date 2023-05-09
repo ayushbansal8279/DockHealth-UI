@@ -37,7 +37,7 @@ import LabelsSection from '../LabelsSection/LabelsSection';
 import CommentSection from '../CommentSection/CommentSection';
 import AttachmentSection from '../AttachmentSection/AttachmentSection';
 import TasksSection from '../TasksSection/TasksSection';
-import CustomFieldsSection from '../../task-drawer/CustomFieldsSection/CustomFieldsSection';
+import CustomFieldsSection from 'components/task-drawer/CustomFieldsSection/CustomFieldsSection';
 import {
   Backdrop,
   AnimatedContainer,

@@ -6,8 +6,8 @@ import {
 } from 'components/common/TextEditor/helpers';
 import { useMentionsEditorState } from 'components/common/TextEditor/use-mentions-editor-state';
 import { useBoolean } from 'hooks/useBoolean';
+import TextEditor from 'ui-toolkit/Form/TextEditor/TextEditor';
 import { TextContainer } from './styled';
-import TextEditor from '../../../../../../ui-toolkit/Form/TextEditor/TextEditor';
 
 const TaskItemText = ({ value = '', onChange, readOnly = false }) => {
   // const editorReference = useRef(null);

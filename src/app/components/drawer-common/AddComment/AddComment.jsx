@@ -7,12 +7,12 @@ import { userProfileSelector } from 'selectors/user-selectors';
 import Loader, { LoaderSizes } from 'components/common/Loader/Loader';
 import UserAvatar from 'components/user/UserAvatar/UserAvatar';
 import { selectedTaskSelector } from 'selectors/task-drawer-selectors';
+import TextEditor from 'ui-toolkit/Form/TextEditor/TextEditor';
 import {
   AddCommentContainer,
   AddCommentLoaderContainer,
   AddCommentInputContainer,
 } from './styled';
-import TextEditor from '../../../../ui-toolkit/Form/TextEditor/TextEditor';
 
 const AddComment = ({
   autoFocus,

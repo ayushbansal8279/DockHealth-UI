@@ -17,6 +17,7 @@ import {
   convertFromEditorStateToOutput,
 } from 'components/common/TextEditor/helpers';
 import TemplateAutoComplete from 'components/common/TemplateAutoComplete/TemplateAutoComplete';
+import AddContactStep from 'modal/components/AddContactModal/AddContactModal';
 import {
   CloseIcon,
   CloseIconButton,
@@ -40,7 +41,6 @@ import {
   AddEditContactLink,
 } from '../styled';
 import { makeFaxNumber, renderAddOrEdit, validateFaxInput } from '../helpers';
-import AddContactStep from '../../AddContactModal/AddContactModal';
 
 const SendFaxFromTaskModal = () => {
   const dispatch = useDispatch();

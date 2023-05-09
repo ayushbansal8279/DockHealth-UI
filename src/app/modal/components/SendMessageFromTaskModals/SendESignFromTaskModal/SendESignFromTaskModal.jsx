@@ -10,6 +10,7 @@ import ContactsAutoComplete from 'components/common/ContactsAutoComplete/Contact
 import ReactModal from 'react-modal';
 import ESignatureTemplateAutoComplete from 'components/integration/ESignatureTemplateAutoComplete/ESignatureTemplateAutoComplete';
 import { validateEmail } from 'helpers/validation-helper';
+import AddContactStep from 'modal/components/AddContactModal/AddContactModal';
 import {
   CloseIcon,
   CloseIconButton,
@@ -29,7 +30,6 @@ import {
   AddEditContactLink,
 } from '../styled';
 import { renderAddOrEdit } from '../helpers';
-import AddContactStep from '../../AddContactModal/AddContactModal';
 
 const SendESignFromTaskModal = () => {
   const dispatch = useDispatch();

@@ -22,6 +22,8 @@ import { getTemplateDetails } from 'api/template-api';
 import { CommunicationType } from 'helpers/task-helpers';
 import TemplateAutoComplete from 'components/common/TemplateAutoComplete/TemplateAutoComplete';
 import EmailContactsAutoComplete from 'components/common/EmailContactsAutoComplete/EmailContactsAutoComplete';
+import { closeModal } from 'modal/actions';
+import AddContactStep from 'modal/components/AddContactModal/AddContactModal';
 import {
   CloseIcon,
   CloseIconButton,
@@ -33,7 +35,7 @@ import {
   ModalWrapper,
   TextWaringStyled,
 } from '../../styled';
-import { closeModal } from '../../../actions';
+
 import {
   AttachmentContainerStyled,
   AttachmentsContainerStyled,
@@ -47,7 +49,6 @@ import {
   ContactInfoRow,
   AddEditContactLink,
 } from '../styled';
-import AddContactStep from '../../AddContactModal/AddContactModal';
 import TaskCheckBoxes from '../TaskCheckBoxes';
 import { renderAddOrEdit } from '../helpers';
 
@@ -169,7 +170,7 @@ const SendEmailFromTaskModal = () => {
             <div>
               <LabelName>Recipient: </LabelName>
               {contacts.map(
-                contact =>
+                (contact) =>
                   contact?.identifier && (
                     <LabelValue>{contact.label}</LabelValue>
                   ),
@@ -189,7 +190,7 @@ const SendEmailFromTaskModal = () => {
                 return;
               }
               getTemplateDetails(newValue?.identifier, identifier).then(
-                data => {
+                (data) => {
                   const text = addStylesToText(data?.details ?? '');
                   setDetailsState(EditorState.push(detailsState, text));
                   setSubject(data?.shortMessage ?? '');
@@ -284,7 +285,7 @@ const SendEmailFromTaskModal = () => {
                 message: subject,
                 details: convertFromEditorStateToOutput(detailsState, true)
                   .tokenizedText,
-                recipientContacts: contacts.map(c => c.value),
+                recipientContacts: contacts.map((c) => c.value),
                 taskAttachmentIdentifiers: attachmentsToSend,
                 taskIdentifier: identifier,
               }),
@@ -307,7 +308,7 @@ const SendEmailFromTaskModal = () => {
         <AddContactStep
           type={CommunicationType.EMAIL}
           show={show}
-          setContactData={contact => {
+          setContactData={(contact) => {
             setContacts([...contacts, contact]);
             setNewContact(contact);
           }}

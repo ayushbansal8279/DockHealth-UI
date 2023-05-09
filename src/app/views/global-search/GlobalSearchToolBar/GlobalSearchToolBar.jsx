@@ -12,8 +12,8 @@ import {
 import { useSelector } from 'react-redux';
 import { currentTaskListSelector } from 'selectors/task-list-selectors';
 import { isMemberAdmin } from 'helpers/list-members-helper';
+import TaskCustomFieldsModal from 'modal/customModals/TaskCustomFieldsModal';
 import { ToolbarContainer } from './styled';
-import TaskCustomFieldsModal from '../../../modal/customModals/TaskCustomFieldsModal';
 
 const GlobalSearchToolbar = ({ additionalOptions, children }) => {
   const { search } = useLocation();

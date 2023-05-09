@@ -22,6 +22,7 @@ import {
 } from 'helpers/custom-fields-helpers';
 import { getCustomerTypeLabel } from 'helpers/customer-type-helper';
 import { capitalize } from 'helpers/capitalize';
+import ToolbarButton from 'components/tasklist/ToolbarButton/ToolbarButton';
 import {
   PlusIcon,
   PopoverContainer,
@@ -30,7 +31,6 @@ import {
   UpgradePlanContainer,
   UpgradePlanPopupHeader,
 } from './styled';
-import ToolbarButton from '../../tasklist/ToolbarButton/ToolbarButton';
 
 const CustomizeToolbarButton = ({
   additionalOptions,

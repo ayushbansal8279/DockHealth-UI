@@ -18,8 +18,8 @@ import {
 } from 'components/common/TextEditor/helpers';
 import { selectedTaskSelector } from 'selectors/task-drawer-selectors';
 import debounce from 'lodash.debounce';
+import TextArea from 'ui-toolkit/Form/TextArea/TextArea';
 import { DetailsContainer } from './styled';
-import TextArea from '../../../../ui-toolkit/Form/TextArea/TextArea';
 
 const TaskDetails = ({ readOnly, disableMentions }) => {
   // const DEBOUNCE_TIME = 10000;

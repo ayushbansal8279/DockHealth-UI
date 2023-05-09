@@ -8,12 +8,9 @@ import {
   TASK_LIST_RESTRICTIONS_PROFILES,
   TASK_LIST_RESTRICTIONS_OPTIONS,
 } from 'restrictions/task-restrictions';
-import {
-  AddTaskInputWrapper,
-  ErrorLabel,
-} from './styled';
-import TextEditor from "../../../../ui-toolkit/Form/TextEditor/TextEditor";
-import {selectedTaskSelector} from "selectors/task-drawer-selectors";
+import TextEditor from 'ui-toolkit/Form/TextEditor/TextEditor';
+import { selectedTaskSelector } from 'selectors/task-drawer-selectors';
+import { AddTaskInputWrapper, ErrorLabel } from './styled';
 
 const { DISABLED } = TASK_LIST_RESTRICTIONS_OPTIONS;
 
@@ -98,25 +95,25 @@ const QuickAddTaskInput = React.forwardRef(
       return null;
     }
 
-    const [description, setDescription] = useState("")
+    const [description, setDescription] = useState('');
 
     const handleTextEditorChange = (_, { value }) => {
-      setDescription(value)
-    }
+      setDescription(value);
+    };
 
-    const handleTextEditorBlur = (editor, {  value }) => {
-      setDescription("")
+    const handleTextEditorBlur = (editor, { value }) => {
+      setDescription('');
       setTimeout(() => {
-        editor.blur()
-      }, 250)
-    }
+        editor.blur();
+      }, 250);
+    };
 
     const handleTextEditorKeyDown = (_, { key, value }) => {
-      if (key === "Enter") {
-        quickAddTask({ description: value, taskListIdentifier })
-        setDescription("")
+      if (key === 'Enter') {
+        quickAddTask({ description: value, taskListIdentifier });
+        setDescription('');
       }
-    }
+    };
 
     return (
       <>
@@ -129,7 +126,7 @@ const QuickAddTaskInput = React.forwardRef(
             onKeyDown={handleTextEditorKeyDown}
             mentions={selectedTask?.taskMentions}
             enabled={{
-              mentions: true
+              mentions: true,
             }}
           />
           {/*<RichTextEditor noStyle value={description} onChange={setDescription} onSubmit={(description) => {*/}

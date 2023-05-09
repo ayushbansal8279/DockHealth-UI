@@ -14,7 +14,7 @@ import PatientList from 'components/patients/PatientDropdown/PatientList';
 import { getCustomerTypeLabel } from 'helpers/customer-type-helper';
 import { capitalize } from 'helpers/capitalize';
 import { userProfileSelector } from 'selectors/user-selectors';
-import { createPatientListPath } from '../../../routing/helpers/paths';
+import { createPatientListPath } from 'routing/helpers/paths';
 import { CloseIconButton, CloseIcon } from '../styled';
 import {
   AddPatientModalWrapper,

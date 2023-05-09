@@ -12,8 +12,8 @@ import CustomizeToolbarButton from 'components/tasklist/CustomizeToolbarButton/C
 import { userProfileSelector } from 'selectors/user-selectors';
 import { currentTaskListSelector } from 'selectors/task-list-selectors';
 import { checkIfUserIsOrganizationAdmin } from 'helpers/user-helper';
+import TaskCustomFieldsModal from 'modal/customModals/TaskCustomFieldsModal';
 import { ToolbarContainer } from './styled';
-import TaskCustomFieldsModal from '../../../modal/customModals/TaskCustomFieldsModal';
 
 const UserTasksToolbar = () => {
   const history = useHistory();

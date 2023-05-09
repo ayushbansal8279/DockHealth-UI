@@ -19,13 +19,13 @@ import { openDrawer } from 'actions/workflow-drawer-actions';
 // } from 'components/common/TextEditor/helpers';
 import PopoverBottomBar from 'components/task/PopoverBottomBar/PopoverBottomBar';
 // import { FieldCharakterLimit } from 'helpers/field-type-helpers';
+import TextEditor from 'ui-toolkit/Form/TextEditor/TextEditor';
+import { convertToSimpleString } from 'ui-toolkit/Form/TextEditor/helpers';
 import {
   Text,
   LongTextBox,
   Divider,
 } from '../customFieldsTaskItemComponents/TaskItemLongText/styled';
-import TextEditor from '../../../../../ui-toolkit/Form/TextEditor/TextEditor';
-import { convertToSimpleString } from '../../../../../ui-toolkit/Form/TextEditor/helpers';
 
 const TaskItemDetails = ({ task, onClick, readOnly }) => {
   // const detailsReference = useRef(null);
@@ -38,7 +38,7 @@ const TaskItemDetails = ({ task, onClick, readOnly }) => {
   const dispatch = useDispatch();
 
   const [rawDetails, setRawDetails] = useState(null);
-  const [currentDetails, setCurrentDetails] = useState(details);
+  // const [currentDetails, setCurrentDetails] = useState(details);
 
   // const [detailsState, setDetailsState] = useMentionsEditorState(
   //   convertToEditorState({

@@ -18,11 +18,12 @@ import {
 import { openModal, closeModal } from 'modal/actions';
 // import { EditorState } from 'draft-js';
 import { convertFromEditorStateToOutput } from 'components/common/TextEditor/helpers';
-import { useMentionsEditorState } from 'components/common/TextEditor/use-mentions-editor-state';
+// import { useMentionsEditorState } from 'components/common/TextEditor/use-mentions-editor-state';
 import Button from 'components/common/Button/Button';
 import Spacing from 'components/common/Spacing';
 // import { ClickAwayListener } from '@mui/material';
 import { checkIfUserIsOrganizationAdmin } from 'helpers/user-helper';
+import TextArea from 'ui-toolkit/Form/TextArea/TextArea';
 import PatientNote from '../PatientNote/PatientNote';
 import PatientNotesLoader from '../PatientNotesLoader/PatientNotesLoader';
 import {
@@ -31,7 +32,6 @@ import {
   ButtonContainer,
   ButtonWrapper,
 } from './styled';
-import TextArea from '../../../../ui-toolkit/Form/TextArea/TextArea';
 
 const PatientNotes = () => {
   const addNoteInputReference = useRef(null);
