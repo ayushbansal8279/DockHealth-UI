@@ -11,7 +11,10 @@ import React, {
 import pluck from 'ramda/src/pluck';
 import { useDispatch, useSelector } from 'react-redux';
 import { currentTaskListSelector } from 'selectors/task-list-selectors';
-import { isTaskSelectedSelector } from 'selectors/task-drawer-selectors';
+import {
+  isTaskSelectedSelector,
+  taskCustomFieldsSelector,
+} from 'selectors/task-drawer-selectors';
 import { openTaskDrawerWithContent } from 'actions/task-drawer-actions';
 import {
   selectTask,
@@ -43,6 +46,7 @@ import {
   TaskItemColumnWidth,
   isColumnChecked,
   PatientTaskItemColumn,
+  findIncompleteRequiredFields,
 } from 'helpers/task-helpers';
 import { isMemberAdmin } from 'helpers/list-members-helper';
 import DependencyIcon from 'img/dependency-icon.svg';
@@ -214,6 +218,7 @@ const TaskItem = React.memo(
       closeDependencyPopover,
     ] = useBooleanWithTimeout(false);
     const { move, duplicate, subtasks, delete: del } = SINGLE_TASK_FEATURES;
+    const { templates } = useSelector(taskCustomFieldsSelector);
 
     const showContextMenu = [move, duplicate, subtasks, del].reduce(
       (accumulator, element) => {
@@ -595,6 +600,53 @@ const TaskItem = React.memo(
       [columns],
     );
 
+    const handleDecisionOutcomeSelection = useCallback(
+      (targetValue, taskItem, templateBundleIdentifierItem, onSuccess) => {
+        const incompleteRequiredFields = findIncompleteRequiredFields(
+          templates,
+          task,
+        );
+        const isRequiredFieldsAreIncomplete =
+          incompleteRequiredFields.length > 0;
+
+        if (isRequiredFieldsAreIncomplete) {
+          const modalProps = {
+            incompleteFields: incompleteRequiredFields,
+          };
+          dispatch(openModal('CompleteAllFields', modalProps));
+          return;
+        }
+
+        if (taskItem.subTasksCompletedCount !== taskItem.subTasksCount) {
+          dispatch(
+            openModal('CompleteAllTasks', {
+              confirm: () => {
+                dispatch(closeModal());
+                dispatch(
+                  chooseTaskDecisionOutcome(
+                    targetValue,
+                    taskItem,
+                    templateBundleIdentifierItem,
+                  ),
+                );
+                onSuccess();
+              },
+            }),
+          );
+        } else {
+          dispatch(
+            chooseTaskDecisionOutcome(
+              targetValue,
+              taskItem,
+              templateBundleIdentifierItem,
+            ),
+          );
+          onSuccess();
+        }
+      },
+      [dispatch, task, templates],
+    );
+
     const randerFirstColumnCoverIfNecessary = useCallback(
       (content, order) => {
         if (order !== 0) return content;
@@ -779,42 +831,7 @@ const TaskItem = React.memo(
                     >
                       <TaskItemDecision
                         outcomes={task.taskOutcomes}
-                        onSelect={(
-                          targetValue,
-                          taskItem,
-                          templateBundleIdentifierItem,
-                          onSuccess,
-                        ) => {
-                          if (
-                            taskItem.subTasksCompletedCount !==
-                            taskItem.subTasksCount
-                          ) {
-                            dispatch(
-                              openModal('CompleteAllTasks', {
-                                confirm: () => {
-                                  dispatch(closeModal());
-                                  dispatch(
-                                    chooseTaskDecisionOutcome(
-                                      targetValue,
-                                      taskItem,
-                                      templateBundleIdentifierItem,
-                                    ),
-                                  );
-                                  onSuccess();
-                                },
-                              }),
-                            );
-                          } else {
-                            dispatch(
-                              chooseTaskDecisionOutcome(
-                                targetValue,
-                                taskItem,
-                                templateBundleIdentifierItem,
-                              ),
-                            );
-                            onSuccess();
-                          }
-                        }}
+                        onSelect={handleDecisionOutcomeSelection}
                         task={task}
                         templateBundleIdentifier={templateBundleIdentifier}
                         disabled={isCompleted || !isDependencyEmptyOrCompleted}
