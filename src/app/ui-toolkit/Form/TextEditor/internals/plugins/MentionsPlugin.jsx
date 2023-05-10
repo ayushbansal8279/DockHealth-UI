@@ -362,9 +362,11 @@ export default function MentionsPlugin({
 
   const checkForMentionMatch = useCallback(
     (text) => {
-      const mentionMatch = getPossibleQueryMatch(text);
-      const slashMatch = checkForSlashTriggerMatch(text, editor);
-      return !slashMatch && mentionMatch ? mentionMatch : null;
+      if (text[0] === "@") {
+        const mentionMatch = getPossibleQueryMatch(text);
+        const slashMatch = checkForSlashTriggerMatch(text, editor);
+        return !slashMatch && mentionMatch ? mentionMatch : null;
+      }
     },
     [checkForSlashTriggerMatch, editor],
   );
