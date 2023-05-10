@@ -1,19 +1,8 @@
-import React, { useCallback, useEffect, useRef, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Box } from '@mui/material';
-// import { EditorState } from 'draft-js';
-// import { useBoolean } from 'hooks/useBoolean';
-// import usePrevious from 'hooks/use-previous';
 import Tooltip from 'components/common/Tooltip/Tooltip';
 import TaskItemPopover from 'components/task/TaskItemPopover/TaskItemPopover';
-// import CustomTextEditor from 'components/common/CustomTextEditor/CustomTextEditor';
-// import { createMentionEntities } from 'components/common/TextEditor/create-mention-entities';
-// import { useMentionsEditorState } from 'components/common/TextEditor/use-mentions-editor-state';
-// import {
-//   convertFromEditorStateToOutput,
-//   convertToEditorState,
-// } from 'components/common/TextEditor/helpers';
 import PopoverBottomBar from 'components/task/PopoverBottomBar/PopoverBottomBar';
-// import { FieldCharakterLimit } from 'helpers/field-type-helpers';
 import TextEditor from 'ui-toolkit/Form/TextEditor/TextEditor';
 import { convertToSimpleString } from 'ui-toolkit/Form/TextEditor/helpers';
 import { Text, LongTextBox, Divider } from './styled';
@@ -22,73 +11,19 @@ const TaskItemLongText = ({
   value = '',
   onChange,
   openDrawer,
-  // field,
-  readOnly = false,
 }) => {
   const [rawDetails, setRawDetails] = useState(null);
 
-  // const detailsReference = useRef(null);
-  // const [detailsState, setDetailsState] = useMentionsEditorState(
-  //   convertToEditorState({
-  //     rawText: value,
-  //     tokenizedText: value,
-  //     mentions: [],
-  //     handleRichText: true,
-  //   }),
-  // );
-
   useEffect(() => {
-    // const { tokenizedText } = convertFromEditorStateToOutput(
-    //   detailsState,
-    //   true,
-    // );
-    // if (value !== tokenizedText) {
-    //   // const newContent = createMentionEntities(value, value, [], true);
-    //   // setDetailsState(EditorState.push(detailsState, newContent));
-    // }
     const rawTextUnFormatted = convertToSimpleString(value);
     setRawDetails(rawTextUnFormatted);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [value]);
 
-  // const { rawText: rawTextUnFormatted } = convertFromEditorStateToOutput(
-  //   detailsState,
-  //   false,
-  // );
-
-  // const [isFocused, setFocused, unsetFocused] = useBoolean();
-
-  // const previousIsFocused = usePrevious(isFocused);
-
-  // const updateDetails = useCallback(
-  //   (state) => {
-  //     const { tokenizedText } = convertFromEditorStateToOutput(state, true);
-  //     onChange(tokenizedText);
-  //   },
-  //   [onChange],
-  // );
-
-  // useEffect(() => {
-  //   if (previousIsFocused && !isFocused) {
-  //     updateDetails(detailsState);
-  //   }
-  //   // eslint-disable-next-line react-hooks/exhaustive-deps
-  // }, [isFocused]);
-
-  // const onChangeDetailsEditor = useCallback(
-  //   (state) => {
-  //     setDetailsState(state);
-  //   },
-  //   [setDetailsState],
-  // );
-
-  const handleTextEditorBlur =
-    (closePopover) =>
-    // eslint-disable-next-line no-shadow
-    (_, { value }) => {
-      onChange(value);
-      closePopover();
-  }
+  const handleTextEditorBlur = (closePopover) => (_, { value }) => {
+    closePopover();
+    onChange(value);
+  };
 
   return (
     <Box width="100%" height="100%" display="flex" alignItems="center">
@@ -103,6 +38,7 @@ const TaskItemLongText = ({
             style={{ padding: '5px' }}
           >
             <TextEditor
+              autofocus
               value={value}
               onBlur={handleTextEditorBlur(closePopover)}
             />

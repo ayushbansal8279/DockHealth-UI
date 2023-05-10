@@ -97,6 +97,7 @@ function EditableContent({
   useLayoutEffect(() => {
     if (autofocus) {
       editor.focus();
+      initialize();
     }
   }, [editor, autofocus]);
 
@@ -126,12 +127,12 @@ function EditableContent({
     });
   }, [editor, mentions, value]);
 
-  const handleInteraction = () => {
+  const initialize = () => {
     setInteractive(true);
   };
 
   return (
-    <S.Container type={type} className={className} onClick={handleInteraction}>
+    <S.Container type={type} className={className} onClick={initialize}>
       {type === 'textarea' && enabled.toolbar && <ToolbarPlugin />}
       <S.Content>
         <RichTextPlugin

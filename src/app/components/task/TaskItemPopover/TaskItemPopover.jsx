@@ -15,6 +15,7 @@ const TaskItemPopover = React.forwardRef(
       fullWidth,
       disabled,
       placement = 'bottom-end',
+      onClose,
     },
     reference,
   ) => {
@@ -42,7 +43,10 @@ const TaskItemPopover = React.forwardRef(
             : children}
         </Button>
         {isPopoverOpen && (
-          <ClickAwayListener onClickAway={closePopover}>
+          <ClickAwayListener onClickAway={() => {
+              onClose && onClose();
+              closePopover();
+          }}>
             <Popper
               style={{ zIndex: zIndex.taskPopover }}
               anchorEl={elementReference?.current}
