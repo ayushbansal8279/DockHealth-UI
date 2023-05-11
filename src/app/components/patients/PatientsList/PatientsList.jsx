@@ -359,9 +359,6 @@ const PatientsList = ({
                 return 0;
               }
             }
-            if (sortModel[0]?.sort === 'desc') {
-              return compareValue2.localeCompare(compareValue1);
-            }
             return compareValue1.localeCompare(compareValue2);
           },
         })),
