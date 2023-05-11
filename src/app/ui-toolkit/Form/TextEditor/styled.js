@@ -22,6 +22,14 @@ export const Input = styled(ContentEditable)`
   p {
     margin-bottom: 0;
   }
+  
+  ul li {
+    list-style: disc;
+  }
+
+  ol li {
+    list-style: decimal;
+  }
 `;
 
 export const Placeholder = styled(Box)`
