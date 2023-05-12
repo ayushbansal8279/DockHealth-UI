@@ -98,14 +98,21 @@ const TaskDetails = ({ readOnly, disableMentions }) => {
   //   [onDebouncedChange, setDetailsState],
   // );
 
-  const handleTextAreaChange = debounce((_, { value, mentions }) => {
-    // console.log("mentions", mentions)
+  const handleTextAreaChange = debounce((_, { value }) => {
     dispatch(
       updateTaskDetails(selectedTask, {
         tokenizedDetails: value || '',
       }),
     );
-  }, 1000);
+  }, 5000);
+
+  const handleTextAreaBlur = (_, { value }) => {
+    dispatch(
+      updateTaskDetails(selectedTask, {
+        tokenizedDetails: value || '',
+      }),
+    );
+  };
 
   return (
     <DetailsContainer>
@@ -113,6 +120,7 @@ const TaskDetails = ({ readOnly, disableMentions }) => {
         value={rawTextState}
         placeholder="Task details"
         onChange={handleTextAreaChange}
+        onBlur={handleTextAreaBlur}
         mentions={selectedTask?.taskMentions}
         enabled={{
           mentions: true,

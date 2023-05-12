@@ -5,13 +5,13 @@ import { useDispatch, useSelector } from 'react-redux';
 import { addSubtask } from 'actions/task-actions';
 import { useBoolean } from 'hooks/useBoolean';
 import { convertFromEditorStateToOutput } from 'components/common/TextEditor/helpers';
-import TextEditor from 'components/common/TextEditor/TextEditor';
 import { useMentionsEditorState } from 'components/common/TextEditor/use-mentions-editor-state';
 import { validateNewSubtask } from 'helpers/validation-helper';
 import { onTaskDrawerSubtaskAdd } from 'helpers/ga-event-helper';
 import { selectedTaskSelector } from 'selectors/task-drawer-selectors';
 import Spacing from 'components/common/Spacing';
 import QuickAddTaskInputWrapper from '../QuickAddTaskInputWrapper/QuickAddTaskInputWrapper';
+import TextEditor from "ui-toolkit/Form/TextEditor/TextEditor";
 
 const QuickAddSubtask = () => {
   const selectedTask = useSelector(selectedTaskSelector) || {};
@@ -24,6 +24,7 @@ const QuickAddSubtask = () => {
   const [isFocused, setFocused, unsetFocused] = useBoolean(false);
   const [isDisabled, setDisabled] = useState(false);
   const dispatch = useDispatch();
+  const [currentValue, setCurrentValue] = useState("")
 
   const resetInputState = () => {
     setDisabled(false);
@@ -63,6 +64,19 @@ const QuickAddSubtask = () => {
     setHasInputValue(!!convertFromEditorStateToOutput(state, false).rawText);
   };
 
+  const handleTextEditorChange = (_, { value }) => {
+    setCurrentValue(value)
+  }
+
+  const handleTextEditorKeyDown = (_, { value, key }) => {
+    if (key === "Enter") {
+      dispatch(
+        addSubtask(taskIdentifier, { description: value })
+      );
+      setCurrentValue("")
+    }
+  };
+
   return (
     <QuickAddTaskInputWrapper
       placeholder="Add a subtask"
@@ -73,27 +87,10 @@ const QuickAddSubtask = () => {
       <Box flex={1} overflow="hidden">
         <Spacing vertical={6} />
         <TextEditor
-          ref={editorReference}
-          taskListIdentifier={taskListIdentifier}
-          disabled={isDisabled}
-          onFocus={setFocused}
-          onBlur={unsetFocused}
-          state={newTaskDescription}
-          onChange={handleOnChange}
-          keyBindingFn={(event) => {
-            if (event.keyCode === 13) {
-              return 'enter-command';
-            }
-            return undefined;
-          }}
-          handleKeyCommand={(command) => {
-            if (command === 'enter-command') {
-              handleInputEnterDown();
-              return 'handled';
-            }
-
-            return 'not-handled';
-          }}
+          type="input"
+          value={currentValue}
+          onChange={handleTextEditorChange}
+          onKeyDown={handleTextEditorKeyDown}
         />
       </Box>
     </QuickAddTaskInputWrapper>
