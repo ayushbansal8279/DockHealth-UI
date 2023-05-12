@@ -266,7 +266,8 @@ function checkForAtSignMentions(text, minMatchLength) {
 
 function getPossibleQueryMatch(text) {
   const match = checkForAtSignMentions(text, 1);
-  return match === null ? checkForCapitalizedNameMentions(text, 3) : match;
+  // return match === null ? checkForCapitalizedNameMentions(text, 3) : match;
+  return match;
 }
 
 class MentionTypeaheadOption extends TypeaheadOption {
@@ -362,11 +363,9 @@ export default function MentionsPlugin({
 
   const checkForMentionMatch = useCallback(
     (text) => {
-      if (text[0] === "@") {
-        const mentionMatch = getPossibleQueryMatch(text);
-        const slashMatch = checkForSlashTriggerMatch(text, editor);
-        return !slashMatch && mentionMatch ? mentionMatch : null;
-      }
+      const mentionMatch = getPossibleQueryMatch(text);
+      const slashMatch = checkForSlashTriggerMatch(text, editor);
+      return !slashMatch && mentionMatch ? mentionMatch : null;
     },
     [checkForSlashTriggerMatch, editor],
   );
