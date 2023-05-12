@@ -116,10 +116,12 @@ const CustomFieldRichTextEditor = React.forwardRef(
       ],
     );
 
-    const handleBlur = () => {
-        updateCustomFields(state);
-        setIsFocused(false)
-    }
+    const [currentValue, setCurrentValue] = useState(value);
+
+    const handleBlur = (_, { value }) => {
+        updateCustomFields(value);
+        setIsFocused(false);
+    };
 
     return (
       <CustomTextEditor
@@ -132,11 +134,11 @@ const CustomFieldRichTextEditor = React.forwardRef(
       >
         <CustomTextEditorContainer>
           <TextEditor
-            type="input"
+            type="textarea"
             readonly={readOnly}
             placeholder={placeholder}
-            value={state}
-            onChange={(_, { value }) => setState(value)}
+            value={currentValue}
+            onChange={(_, { value }) => setCurrentValue(value)}
             onBlur={handleBlur}
           />
         </CustomTextEditorContainer>

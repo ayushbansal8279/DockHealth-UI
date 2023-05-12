@@ -1,5 +1,5 @@
 /* eslint-disable sonarjs/cognitive-complexity */
-import React, { useCallback, useRef, useEffect } from 'react';
+import React, { useRef, useEffect, useState } from "react";
 import moment from 'moment';
 import Spacing from 'components/common/Spacing';
 import UserAvatar from 'components/user/UserAvatar/UserAvatar';
@@ -77,21 +77,20 @@ const Comment = ({
     creator.lastName
   }, ${dateLabel} @ ${moment(dateUpdated).format('h:mma')}`;
 
-  const onCommentEdited = useCallback(() => {
-    unsetEditing();
-    const updatedComment = convertFromEditorStateToOutput(commentState, true);
-    const commentTokenizedText = updatedComment.tokenizedText;
+  const [currentValue, setCurrentValue] = useState(commentContent);
 
-    if (!commentTokenizedText) {
-      return;
-    }
+  const handleTextEditorChange = (_, { value }) => {
+    console.log("handleTextEditorChange", value);
+    setCurrentValue(value)
+  }
 
+  const handleSave = () => {
     onUpdate({
       commentIdentifier,
-      comment: commentTokenizedText,
-    });
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [commentIdentifier, unsetEditing, onUpdate, commentState]);
+      comment: currentValue,
+    })
+    unsetEditing();
+  }
 
   return (
     <CommentWrapper>
@@ -104,7 +103,8 @@ const Comment = ({
             <TextEditor
               type="textarea"
               readonly={!isEditing}
-              value={commentContent}
+              value={currentValue}
+              onChange={handleTextEditorChange}
               enabled={{
                 toolbar: isEditing,
               }}
@@ -122,7 +122,7 @@ const Comment = ({
                     onClick={(event) => {
                       event.preventDefault();
                       event.stopPropagation();
-                      onCommentEdited();
+                      handleSave();
                     }}
                   >
                     Save
