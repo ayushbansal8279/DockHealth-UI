@@ -24,7 +24,7 @@ import {
   TaskItemColumn,
   PatientTaskItemColumn,
   TaskItemColumnWidth,
-  TaskStatus,
+  // TaskStatus,
   TaskPriority,
   getPriorityColor,
 } from 'helpers/task-helpers';
@@ -436,10 +436,10 @@ const TaskTemplateGroupHeader = ({
     TASK_LIST_RESTRICTIONS_PROFILES[currentUser?.orgUserRole];
   const { DISABLED, READ_ONLY } = SINGLE_TASK_RESTRICTIONS_OPTIONS;
 
-  const taskPriority = (templateGroup || workFlowData).priority;
+  const taskPriority = templateGroup.priority;
 
   const handleUpdateTaskPriority = useCallback(
-    priority => {
+    (priority) => {
       dispatch(
         updatePartialWorkflow(identifier, {
           priority: priority?.toUpperCase() || TaskPriority.LOW,
@@ -522,7 +522,7 @@ const TaskTemplateGroupHeader = ({
   );
 
   const handlePatientUpdate = useCallback(
-    field => value => {
+    (field) => (value) => {
       const { patientIdentifier } = patient;
       dispatch(updatePatientDetails(patientIdentifier, { [field]: value }));
     },
@@ -542,7 +542,7 @@ const TaskTemplateGroupHeader = ({
             }
             paddingLeft="smallPlus"
             paddingRight="tiny"
-            onContextMenu={event => {
+            onContextMenu={(event) => {
               event.stopPropagation();
             }}
             order={getColumnOrder(TaskItemColumn.DESCRIPTION)}

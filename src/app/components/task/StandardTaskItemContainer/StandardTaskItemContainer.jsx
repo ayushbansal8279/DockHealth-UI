@@ -8,7 +8,8 @@ import AlertMessages from 'alert/AlertMessages';
 import { userProfileSelector } from 'selectors/user-selectors';
 import { taskCustomFieldsSelector } from 'selectors/task-drawer-selectors';
 import { findIncompleteRequiredFields } from 'helpers/task-helpers';
-import StandardTaskItem from '../StandardTaskItem/StandardTaskItem';
+// eslint-disable-next-line import/no-cycle
+import StandardTaskItem from 'components/task/StandardTaskItem/StandardTaskItem';
 
 const StandardTaskItemContainer = ({
   currentUser,

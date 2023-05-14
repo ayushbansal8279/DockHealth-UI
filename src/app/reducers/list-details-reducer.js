@@ -547,7 +547,6 @@ const ListDetailsReducer = (state = initialState, action) => {
     case ActionTypes.GET_TASKS_FOR_WORKFLOW_SUCCESS: {
       const { workflowIdentifier, tasks } = action;
 
-
       const newTasks = {};
       for (const task of tasks) {
         newTasks[task.identifier] = task;

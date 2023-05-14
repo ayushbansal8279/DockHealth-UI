@@ -8,6 +8,7 @@ import * as TemplateBundleActions from 'actions/template-bundle-actions';
 import * as WorkflowActions from 'actions/workflow-actions';
 import { taskDetailsSelector } from 'selectors/list-details-selectors';
 import TasksSkeletonLoader from 'components/task/TasksSkeletonLoader/TasksSkeletonLoader';
+// eslint-disable-next-line import/no-cycle
 import StandardTaskItemContainer from 'components/task/StandardTaskItemContainer/StandardTaskItemContainer';
 import QuickAddTaskInput from 'components/tasklist/QuickAddTaskInput/QuickAddTaskInput';
 import { userProfileSelector } from 'selectors/user-selectors';
