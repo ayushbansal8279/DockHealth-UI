@@ -365,8 +365,8 @@ const ListDetailsTasks = ({
                                   }
                                 >
                                   {(draggableProvided, { isDragging }) => (
-                                  <>
-                                    {/* {task?.itemType === TaskItemType.TASK ? ( */}
+                                    <>
+                                      {/* {task?.itemType === TaskItemType.TASK ? ( */}
                                       <StandardTaskItem
                                         key={task}
                                         isFullView={isFullView}
@@ -413,32 +413,33 @@ const ListDetailsTasks = ({
                                           iconColorActiveItem?.value
                                         }
                                       />
-                                    {/* ) : (
-                                      <TaskTemplateGroup
-                                        isCompletedTab={isCompletedView}
-                                        viewSetup={viewSetup}
-                                        isStartedDnD={
-                                          draggedId === task.identifier
-                                        }
-                                        draggableProvided={draggableProvided}
-                                        templateGroup={task}
-                                        groupHasMultipleAssignees={
-                                          groupHasMultipleAssignees
-                                        }
-                                        isFullView={isFullView}
-                                        groupDragAndDropDisabled={
-                                          isCompletedGroup ||
-                                          dragAndDropDisabled
-                                        }
-                                        iconColorActive={
-                                          iconColorActiveItem?.value
-                                        }
-                                      />
-                                    )} */}
-                                  </>
-                                )}
-                              </Draggable>
-                            ))}
+                                      {/* ) : (
+                                        <TaskTemplateGroup
+                                          isCompletedTab={isCompletedView}
+                                          viewSetup={viewSetup}
+                                          isStartedDnD={
+                                            draggedId === task.identifier
+                                          }
+                                          draggableProvided={draggableProvided}
+                                          templateGroup={task}
+                                          groupHasMultipleAssignees={
+                                            groupHasMultipleAssignees
+                                          }
+                                          isFullView={isFullView}
+                                          groupDragAndDropDisabled={
+                                            isCompletedGroup ||
+                                            dragAndDropDisabled
+                                          }
+                                          iconColorActive={
+                                            iconColorActiveItem?.value
+                                          }
+                                        />
+                                      )} */}
+                                    </>
+                                  )}
+                                </Draggable>
+                              ))
+                            }
                             {providedDroppable.placeholder}
                           </DroppablePlaceholder>
                         );
@@ -488,7 +489,6 @@ const ListDetailsTasks = ({
       restrictions?.createGroup,
       DISABLED,
       showClearSortFiltersModal,
-      viewSetup,
       restrictCustomizationFeatures,
     ],
   );

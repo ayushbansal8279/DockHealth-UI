@@ -68,7 +68,7 @@ const Subtasks = ({
           onBeforeDragStart={showClearSortFiltersModal}
           onDragEnd={shouldShowBlockModalOnDrag ? () => {} : onDragEnd}
         >
-          <Droppable droppableId={parentTask.taskIdentifier}>
+          <Droppable droppableId={parentTask?.taskIdentifier}>
             {(provided) => (
               <div ref={provided.innerRef} {...provided.droppableProps}>
                 {shouldRenderSubtasks &&

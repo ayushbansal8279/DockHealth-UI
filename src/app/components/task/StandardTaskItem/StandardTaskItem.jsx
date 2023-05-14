@@ -21,7 +21,7 @@ import QuickAddSubtask from './QuickAddSubtask';
 
 const Task = React.memo(
   ({
-    task,
+    task: taskItemIdentifier,
     isCompletedGroup,
     isFullView,
     isStartedDnD,
@@ -42,11 +42,10 @@ const Task = React.memo(
     const parentTaskReference = useRef(null);
     const [areSubtasksOpen, setAreSubtasksOpen] = useState(false);
 
-    const pulledTask = useSelector((state) => taskDetailsSelector(state, task));
-    if (typeof task === 'string') {
-      // eslint-disable-next-line no-param-reassign
-      task = pulledTask;
-    }
+    const pulledTask = useSelector((state) =>
+      taskDetailsSelector(state, taskItemIdentifier),
+    );
+    const task = pulledTask;
 
     const {
       taskIdentifier,
@@ -165,7 +164,7 @@ const Task = React.memo(
       >
         <div ref={innerRef}>
           <TaskItem
-            task={task.identifier}
+            task={task?.identifier}
             isOpen={areSubtasksOpen}
             switchOpen={handleSetSubtasksOpen}
             dragHandleProps={dragHandleProps}
@@ -176,8 +175,8 @@ const Task = React.memo(
             origin={origin}
             isSelectedByHighlighted={
               highlightedTasksParentIdentifier &&
-              (highlightedTasksParentIdentifier === task.taskIdentifier ||
-                highlightedTasksParentIdentifier === task.parentTaskIdentifier)
+              (highlightedTasksParentIdentifier === task?.taskIdentifier ||
+                highlightedTasksParentIdentifier === task?.parentTaskIdentifier)
             }
             {...restProps}
           />

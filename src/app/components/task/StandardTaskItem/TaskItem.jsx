@@ -166,7 +166,7 @@ const TaskItem = React.memo(
           state,
           typeof temporaryTask === 'string'
             ? temporaryTask
-            : temporaryTask.identifier,
+            : temporaryTask?.identifier,
         );
       }
       if (origin === TaskOrigin.PATIENT) {
@@ -174,14 +174,14 @@ const TaskItem = React.memo(
           state,
           typeof temporaryTask === 'string'
             ? temporaryTask
-            : temporaryTask.identifier,
+            : temporaryTask?.identifier,
         );
       }
       return taskDetailsSelector(
         state,
         typeof temporaryTask === 'string'
           ? temporaryTask
-          : temporaryTask.identifier,
+          : temporaryTask?.identifier,
       );
     });
 
@@ -800,6 +800,7 @@ const TaskItem = React.memo(
     );
 
     if (task?.itemType !== TaskItemType.TASK) {
+      const taskGroup = task;
       return (
         <TaskTemplateGroup
           isCompletedTab={isCompletedView}
@@ -809,7 +810,7 @@ const TaskItem = React.memo(
           isStartedDnD={false}
           // draggableProvided={draggableProvided}
           draggableProvided={{}}
-          templateGroup={task}
+          templateGroup={taskGroup}
           groupHasMultipleAssignees={false}
           isFullView={false}
           dragAndDropDisabled={isCompletedGroup || dragAndDropDisabled}
