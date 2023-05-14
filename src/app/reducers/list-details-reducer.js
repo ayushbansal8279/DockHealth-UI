@@ -505,12 +505,15 @@ const ListDetailsReducer = (state = initialState, action) => {
     case ActionTypes.GET_TASKS_FOR_WORKFLOW: {
       const { workflowIdentifier } = action;
 
-      const newMap = { ...state.tasksMap };
-      newMap[workflowIdentifier].isFetchingTasks = true;
-
       return {
         ...state,
-        tasksMap: newMap,
+        tasksMap: {
+          ...state.tasksMap,
+          [workflowIdentifier]: {
+            ...state.tasksMap[workflowIdentifier],
+            isFetchingTasks: true,
+          },
+        },
       };
 
       // return {
@@ -544,16 +547,23 @@ const ListDetailsReducer = (state = initialState, action) => {
     case ActionTypes.GET_TASKS_FOR_WORKFLOW_SUCCESS: {
       const { workflowIdentifier, tasks } = action;
 
-      const newMap = { ...state.tasksMap };
+
+      const newTasks = {};
       for (const task of tasks) {
-        newMap[task.identifier] = task;
+        newTasks[task.identifier] = task;
       }
-      newMap[workflowIdentifier].tasks = tasks.map((task) => task.identifier);
-      newMap[workflowIdentifier].isFetchingTasks = false;
 
       return {
         ...state,
-        tasksMap: newMap,
+        tasksMap: {
+          ...state.tasksMap,
+          [workflowIdentifier]: {
+            ...state.tasksMap[workflowIdentifier],
+            isFetchingTasks: false,
+            tasks: tasks.map((task) => task.identifier),
+          },
+          ...newTasks,
+        },
       };
 
       // return {
