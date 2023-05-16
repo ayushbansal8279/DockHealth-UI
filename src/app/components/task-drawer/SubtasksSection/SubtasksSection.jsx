@@ -1,4 +1,4 @@
-import React, { useCallback } from 'react';
+import React, { useCallback, useEffect, useState } from "react";
 import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd';
 import ReactDOM from 'react-dom';
 import * as TaskActions from 'actions/task-actions';
@@ -14,13 +14,13 @@ import {
 } from 'restrictions/task-restrictions';
 import { Container, Title } from './styled';
 import QuickAddSubtask from '../QuickAddSubtask/QuickAddSubtask';
+import { loadSubTasks } from 'actions/task-actions';
 
 const { READ_ONLY } = SINGLE_TASK_RESTRICTIONS_OPTIONS;
 
 const SubtasksSection = ({ selectedTask, restrictions: isReadOnly }) => {
   const dispatch = useDispatch();
   const currentUser = useSelector(userProfileSelector);
-  const tasks = selectedTask.subtasks;
   const tasksCount = selectedTask.subTasksCount;
   const readOnly = isReadOnly === READ_ONLY;
 
@@ -61,10 +61,17 @@ const SubtasksSection = ({ selectedTask, restrictions: isReadOnly }) => {
     </div>
   );
 
+  const [subtasks, setSubtasks] = useState([]);
+
+  useEffect(() => {
+    dispatch(loadSubTasks(selectedTask))
+      .then(task => setSubtasks(task.subtasks))
+  }, []);
+
   return (
     <Container>
       <Title>Subtasks</Title>
-      {tasksCount > 0 && (!tasks || tasks.length === 0) ? (
+      {tasksCount > 0 && subtasks.length === 0 ? (
         <DrawerTaskLoader rows={tasksCount || 4} />
       ) : (
         <>
@@ -72,7 +79,7 @@ const SubtasksSection = ({ selectedTask, restrictions: isReadOnly }) => {
             <Droppable droppableId={selectedTask.identifier}>
               {(provided) => (
                 <div ref={provided.innerRef} {...provided.droppableProps}>
-                  {tasks?.map((task, index) => (
+                  {subtasks.map((task, index) => (
                     <Draggable
                       key={task.identifier}
                       draggableId={String(task.identifier)}

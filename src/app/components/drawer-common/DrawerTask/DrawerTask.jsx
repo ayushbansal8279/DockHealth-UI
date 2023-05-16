@@ -182,12 +182,7 @@ const DrawerTask = (props) => {
         }}
       >
         <Description isCrossedOut={isCompleted}>
-          <TextEditor
-            readOnly
-            oneline
-            state={descriptionState}
-            onChange={setDescriptionState}
-          />
+          <span>{description}</span>
         </Description>
       </DescriptionContainer>
       <IconsSection>
