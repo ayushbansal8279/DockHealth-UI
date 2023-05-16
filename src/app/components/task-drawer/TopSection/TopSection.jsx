@@ -189,7 +189,7 @@ const TopSection = ({
                 }
                 isCompleted={selectedTask?.status === TaskStatus.COMPLETE}
                 onClick={
-                  taskListRestrictions?.createTask !== DISABLED
+                  taskListRestrictions?.completeTask !== DISABLED
                     ? onCompleteToggle
                     : () => {}
                 }
