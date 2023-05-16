@@ -79,15 +79,15 @@ const QuickAddSubtask = () => {
 
   return (
     <QuickAddTaskInputWrapper
-      placeholder="Add a subtask"
+      placeholder=""
       isFocused={isFocused}
       error={error}
       hasInputValue={hasInputValue}
     >
       <Box flex={1} overflow="hidden">
-        <Spacing vertical={6} />
         <TextEditor
           type="input"
+          placeholder="Add a subtask"
           value={currentValue}
           onChange={handleTextEditorChange}
           onKeyDown={handleTextEditorKeyDown}
