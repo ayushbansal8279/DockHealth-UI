@@ -1,5 +1,5 @@
 import { useLexicalComposerContext } from '@lexical/react/LexicalComposerContext';
-import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import {
   CAN_REDO_COMMAND,
   CAN_UNDO_COMMAND,
@@ -7,11 +7,9 @@ import {
   UNDO_COMMAND,
   SELECTION_CHANGE_COMMAND,
   FORMAT_TEXT_COMMAND,
-  FORMAT_ELEMENT_COMMAND,
   $getSelection,
   $isRangeSelection,
   $createParagraphNode,
-  $getNodeByKey,
 } from 'lexical';
 import { $isLinkNode, TOGGLE_LINK_COMMAND } from '@lexical/link';
 import {
@@ -34,91 +32,27 @@ import {
   $isHeadingNode,
 } from '@lexical/rich-text';
 import {
-  $createCodeNode,
   $isCodeNode,
   getDefaultCodeLanguage,
-  getCodeLanguages,
 } from '@lexical/code';
-import {
-  $convertFromMarkdownString,
-  $convertToMarkdownString,
-  TRANSFORMERS,
-} from '@lexical/markdown';
 import FormatBoldIcon from '@mui/icons-material/FormatBold';
 import FormatItalicIcon from '@mui/icons-material/FormatItalic';
 import FormatUnderlinedIcon from '@mui/icons-material/FormatUnderlined';
 import StrikethroughSIcon from '@mui/icons-material/StrikethroughS';
-import FormatAlignLeftIcon from '@mui/icons-material/FormatAlignLeft';
-import FormatAlignRightIcon from '@mui/icons-material/FormatAlignRight';
-import FormatAlignCenterIcon from '@mui/icons-material/FormatAlignCenter';
-import FormatAlignJustifyIcon from '@mui/icons-material/FormatAlignJustify';
 import CodeIcon from '@mui/icons-material/Code';
 import InsertLinkIcon from '@mui/icons-material/InsertLink';
 import UndoIcon from '@mui/icons-material/Undo';
 import RedoIcon from '@mui/icons-material/Redo';
 import FormatSizeIcon from '@mui/icons-material/FormatSize';
-import ExpandLessIcon from '@mui/icons-material/ExpandLess';
-import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
-import Stack from '@mui/material/Stack';
-import Typography from '@mui/material/Typography';
-import Box from '@mui/material/Box';
-import InputLabel from '@mui/material/InputLabel';
-import FormControl from '@mui/material/FormControl';
-import Select from '@mui/material/Select';
 import Paper from '@mui/material/Paper';
-import MenuList from '@mui/material/MenuList';
-import MenuItem from '@mui/material/MenuItem';
-import ListItemText from '@mui/material/ListItemText';
-import ListItemIcon from '@mui/material/ListItemIcon';
-import { Menu } from '@mui/material';
 import FormatListBulletedIcon from '@mui/icons-material/FormatListBulleted';
 import FormatListNumberedIcon from '@mui/icons-material/FormatListNumbered';
 import FormatQuoteIcon from '@mui/icons-material/FormatQuote';
 import FormatClearIcon from '@mui/icons-material/FormatClear';
-import TextIncreaseIcon from '@mui/icons-material/TextIncrease';
 import EditIcon from '@mui/icons-material/Edit';
-
-function BasicSelect({ value, options, onChange, className }) {
-  return (
-    <Box sx={{ minWidth: 120 }}>
-      <FormControl fullWidth>
-        <Select className={className} value={value} onChange={onChange}>
-          <MenuItem hidden={true} />
-          {options.map((option) => (
-            <MenuItem key={option} value={option}>
-              {option}
-            </MenuItem>
-          ))}
-        </Select>
-      </FormControl>
-    </Box>
-  );
-}
+import * as S from "ui-toolkit/Form/TextEditor/styled";
 
 const LowPriority = 1;
-
-const supportedBlockTypes = new Set([
-  'paragraph',
-  'quote',
-  'code',
-  'h1',
-  'h2',
-  'ul',
-  'ol',
-]);
-
-const blockTypeToBlockName = {
-  code: 'Code Block',
-  h1: 'Large Heading',
-  h2: 'Small Heading',
-  h3: 'Heading',
-  h4: 'Heading',
-  h5: 'Heading',
-  ol: 'Numbered List',
-  paragraph: 'Normal',
-  quote: 'Quote',
-  ul: 'Bulleted List',
-};
 
 function Divider() {
   return <div className="divider" />;
@@ -307,178 +241,7 @@ function getSelectedNode(selection) {
   }
 }
 
-function BlockOptionsDropdownList({
-  open,
-  editor,
-  blockType,
-  toolbarRef,
-  anchorRef,
-  setShowBlockOptionsDropDown,
-}) {
-  const dropDownRef = useRef(null);
-
-  useEffect(() => {
-    const toolbar = toolbarRef.current;
-    const dropDown = dropDownRef.current;
-
-    if (toolbar !== null && dropDown !== null) {
-      const { top, left } = toolbar.getBoundingClientRect();
-      dropDown.style.top = `${top + 40}px`;
-      dropDown.style.left = `${left}px`;
-    }
-  }, [dropDownRef, toolbarRef]);
-
-  useEffect(() => {
-    const dropDown = dropDownRef.current;
-    const toolbar = toolbarRef.current;
-
-    if (dropDown !== null && toolbar !== null) {
-      const handle = (event) => {
-        const target = event.target;
-
-        if (!dropDown.contains(target) && !toolbar.contains(target)) {
-          setShowBlockOptionsDropDown(false);
-        }
-      };
-      document.addEventListener('click', handle);
-
-      return () => {
-        document.removeEventListener('click', handle);
-      };
-    }
-  }, [dropDownRef, setShowBlockOptionsDropDown, toolbarRef]);
-
-  const formatParagraph = () => {
-    if (blockType !== 'paragraph') {
-      editor.update(() => {
-        const selection = $getSelection();
-
-        if ($isRangeSelection(selection)) {
-          $wrapNodes(selection, () => $createParagraphNode());
-        }
-      });
-    }
-    setShowBlockOptionsDropDown(false);
-  };
-
-  const formatLargeHeading = () => {
-    if (blockType !== 'h1') {
-      editor.update(() => {
-        const selection = $getSelection();
-
-        if ($isRangeSelection(selection)) {
-          $wrapNodes(selection, () => $createHeadingNode('h1'));
-        }
-      });
-    }
-    setShowBlockOptionsDropDown(false);
-  };
-
-  const formatSmallHeading = () => {
-    if (blockType !== 'h2') {
-      editor.update(() => {
-        const selection = $getSelection();
-
-        if ($isRangeSelection(selection)) {
-          $wrapNodes(selection, () => $createHeadingNode('h2'));
-        }
-      });
-    }
-    setShowBlockOptionsDropDown(false);
-  };
-
-  const formatBulletList = () => {
-    if (blockType !== 'ul') {
-      editor.dispatchCommand(INSERT_UNORDERED_LIST_COMMAND);
-    } else {
-      editor.dispatchCommand(REMOVE_LIST_COMMAND);
-    }
-    setShowBlockOptionsDropDown(false);
-  };
-
-  const formatNumberedList = () => {
-    if (blockType !== 'ol') {
-      editor.dispatchCommand(INSERT_ORDERED_LIST_COMMAND);
-    } else {
-      editor.dispatchCommand(REMOVE_LIST_COMMAND);
-    }
-    setShowBlockOptionsDropDown(false);
-  };
-
-  const formatQuote = () => {
-    if (blockType !== 'quote') {
-      editor.update(() => {
-        const selection = $getSelection();
-
-        if ($isRangeSelection(selection)) {
-          $wrapNodes(selection, () => $createQuoteNode());
-        }
-      });
-    }
-    setShowBlockOptionsDropDown(false);
-  };
-
-  const formatCode = () => {
-    if (blockType !== 'code') {
-      editor.update(() => {
-        const selection = $getSelection();
-
-        if ($isRangeSelection(selection)) {
-          $wrapNodes(selection, () => $createCodeNode());
-        }
-      });
-    }
-    setShowBlockOptionsDropDown(false);
-  };
-
-  useEffect(() => {
-    console.log('anchorRef', anchorRef);
-  }, [anchorRef]);
-
-  return (
-    <Menu anchorReference={anchorRef.current} open={open}>
-      <div ref={dropDownRef}>
-        <MenuItem className="item" onClick={formatParagraph}>
-          <span className="icon paragraph" />
-          <span className="text">Normal</span>
-          {blockType === 'paragraph' && <span className="active" />}
-        </MenuItem>
-        <MenuItem className="item" onClick={formatLargeHeading}>
-          <span className="icon large-heading" />
-          <span className="text">Large Heading</span>
-          {blockType === 'h1' && <span className="active" />}
-        </MenuItem>
-        <MenuItem className="item" onClick={formatSmallHeading}>
-          <span className="icon small-heading" />
-          <span className="text">Small Heading</span>
-          {blockType === 'h2' && <span className="active" />}
-        </MenuItem>
-        <MenuItem className="item" onClick={formatBulletList}>
-          <span className="icon bullet-list" />
-          <span className="text">Bullet List</span>
-          {blockType === 'ul' && <span className="active" />}
-        </MenuItem>
-        <MenuItem className="item" onClick={formatNumberedList}>
-          <span className="icon numbered-list" />
-          <span className="text">Numbered List</span>
-          {blockType === 'ol' && <span className="active" />}
-        </MenuItem>
-        <MenuItem className="item" onClick={formatQuote}>
-          <span className="icon quote" />
-          <span className="text">Quote</span>
-          {blockType === 'quote' && <span className="active" />}
-        </MenuItem>
-        <MenuItem className="item" onClick={formatCode}>
-          <span className="icon code" />
-          <span className="text">Code Block</span>
-          {blockType === 'code' && <span className="active" />}
-        </MenuItem>
-      </div>
-    </Menu>
-  );
-}
-
-export default function ToolbarPlugin() {
+export default function ToolbarPlugin({ open }) {
   const [editor] = useLexicalComposerContext();
   const toolbarRef = useRef(null);
   const [canUndo, setCanUndo] = useState(false);
@@ -550,7 +313,7 @@ export default function ToolbarPlugin() {
       }),
       editor.registerCommand(
         SELECTION_CHANGE_COMMAND,
-        (_payload, newEditor) => {
+        (_payload) => {
           updateToolbar();
           return false;
         },
@@ -575,23 +338,6 @@ export default function ToolbarPlugin() {
     );
   }, [editor, updateToolbar]);
 
-  const codeLanguages = useMemo(() => getCodeLanguages(), []);
-  const onCodeLanguageSelect = useCallback(
-    (e) => {
-      editor.update(() => {
-        if (selectedElementKey !== null) {
-          const node = $getNodeByKey(selectedElementKey);
-          if ($isCodeNode(node)) {
-            node.setLanguage(e.target.value);
-          }
-        }
-      });
-    },
-    [editor, selectedElementKey],
-  );
-
-  const blockControlsRef = useRef(null);
-
   const insertLink = useCallback(() => {
     if (!isLink) {
       editor.dispatchCommand(TOGGLE_LINK_COMMAND, 'https://');
@@ -607,19 +353,6 @@ export default function ToolbarPlugin() {
 
         if ($isRangeSelection(selection)) {
           $wrapNodes(selection, () => $createParagraphNode());
-        }
-      });
-    }
-    setShowBlockOptionsDropDown(false);
-  };
-
-  const formatLargeHeading = () => {
-    if (blockType !== 'h1') {
-      editor.update(() => {
-        const selection = $getSelection();
-
-        if ($isRangeSelection(selection)) {
-          $wrapNodes(selection, () => $createHeadingNode('h1'));
         }
       });
     }
@@ -671,7 +404,7 @@ export default function ToolbarPlugin() {
   };
 
   return (
-    <div className="toolbar" ref={toolbarRef} style={{ position: 'relative' }}>
+    <S.Toolbar ref={toolbarRef} data-id="hereufool2" $open={open}>
       <button
         disabled={!canUndo}
         onClick={() => {
@@ -792,6 +525,6 @@ export default function ToolbarPlugin() {
       </button>
       {isLink &&
         createPortal(<FloatingLinkEditor editor={editor} />, document.body)}
-    </div>
+    </S.Toolbar>
   );
 }
