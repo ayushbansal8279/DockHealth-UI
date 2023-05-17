@@ -57,6 +57,7 @@ import {
   DashboardTaskItemContainer,
   StickyElement,
   GroupOptionsContainer,
+  GroupOpenContainer,
 } from './styled';
 
 const DashboardTasksGroup = ({
@@ -277,13 +278,14 @@ const DashboardTasksGroup = ({
               </OptionsMenu>
             </GroupOptionsContainer>
             <Spacing horizontal={2} />
-            <RotatableChevron
-              alt="arrow"
-              rotated={!groupIsOpen}
-              onClick={onSwitchGroup}
-              color={iconColorActive}
-            />
-            <Spacing horizontal={3} />
+            <GroupOpenContainer onClick={onSwitchGroup}>
+              <RotatableChevron
+                alt="arrow"
+                rotated={!groupIsOpen}
+                color={iconColorActive}
+              />
+            </GroupOpenContainer>
+            <Spacing horizontal={1} />
             <GroupNameSectionWrapper>
               <DashboardTasksGroupLabel>
                 <DashboardTasksGroupLabelName>

@@ -11,6 +11,16 @@ export const GroupOptionsContainer = styled.div`
   transform: translateY(-80%);
 `;
 
+export const GroupOpenContainer = styled.div`
+  height: 30px;
+  width: 30px;
+  display: flex;
+  align-items: center;
+  flex-basis: content;
+  padding-left: 10px;
+  padding-right: 10px;
+`;
+
 export const TasksGroupActionButtonsContainer = styled.div`
   display: flex;
   justify-content: flex-end;
