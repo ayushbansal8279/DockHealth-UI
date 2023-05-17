@@ -88,7 +88,8 @@ function EditableContent({
   };
 
   const [editor] = useLexicalComposerContext();
-  const [isInteractive, setInteractive] = useState(false);
+  const [isInitialized, setInitialized] = useState(false);
+  const [isActive, setActive] = useState(false);
 
   useLayoutEffect(() => {
     editor.setEditable(!readonly);
@@ -128,12 +129,28 @@ function EditableContent({
   }, [editor, mentions, value]);
 
   const initialize = () => {
-    setInteractive(true);
+    setInitialized(true);
   };
+
+  const handleInputFocus = (...xs) => {
+    console.log("!!: handleInputFocus")
+    setActive(true);
+    onFocus(...xs);
+  }
+
+  const handleInputBlur = (...xs) => {
+    console.log("!!: handleInputBlur")
+    setActive(false);
+    onBlur(...xs);
+  }
 
   return (
     <S.Container type={type} className={className} onClick={initialize}>
-      {type === 'textarea' && enabled.toolbar && <ToolbarPlugin />}
+      {type === 'textarea' && enabled.toolbar && (
+        <ToolbarPlugin
+          open={isActive}
+        />
+      )}
       <S.Content>
         <RichTextPlugin
           contentEditable={<S.Input />}
@@ -141,11 +158,11 @@ function EditableContent({
           placeholder={<S.Placeholder type={type}>{placeholder}</S.Placeholder>}
         />
       </S.Content>
-      {isInteractive && (
+      {isInitialized && (
         <EventHandlerPlugin
           onChange={onChange}
-          onFocus={onFocus}
-          onBlur={onBlur}
+          onFocus={handleInputFocus}
+          onBlur={handleInputBlur}
           onKeyDown={onKeyDown}
         />
       )}
