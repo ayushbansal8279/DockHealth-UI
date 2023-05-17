@@ -53,6 +53,15 @@ import {
 } from 'selectors/user-selectors';
 import { updateCurrentUserPreferences } from 'actions/user-actions';
 import { Context } from 'components/common/HorizontalScroll/HorizontalScrollContainer';
+import pipe from 'ramda/src/pipe';
+import prop from 'ramda/src/prop';
+// import path from 'ramda/src/path';
+import sortWith from 'ramda/src/sortWith';
+import ascend from 'ramda/src/ascend';
+import descend from 'ramda/src/descend';
+import toLower from 'ramda/src/toLower';
+import defaultTo from 'ramda/src/defaultTo';
+// import ifElse from 'ramda/src/ifElse';
 import DashboardTasksGroup from './DashboardTasksGroup';
 import DashboardToolbar from '../DashboardToolbar/DashboardToolbar';
 import {
@@ -123,11 +132,21 @@ const DashboardList = ({
 
   const currentSortMethod = useMemo(() => {
     if (!sortKey) return identity;
+    if (sortKey.length === 36) {
+      return sortWith([
+        ascend(pipe(prop('description'), defaultTo(' '), toLower)),
+      ]);
+    }
     return TASK_ITEM_SORT_METHODS[sortKey];
   }, [sortKey]);
 
   const currentSortDescMethod = useMemo(() => {
     if (!sortKey) return identity;
+    if (sortKey.length === 36) {
+      return sortWith([
+        descend(pipe(prop('description'), defaultTo(' '), toLower)),
+      ]);
+    }
     return TASK_ITEM_SORT_DESC_METHODS[sortKey];
   }, [sortKey]);
 

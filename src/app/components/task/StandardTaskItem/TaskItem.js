@@ -49,6 +49,7 @@ import {
   findIncompleteRequiredFields,
 } from 'helpers/task-helpers';
 import { isMemberAdmin } from 'helpers/list-members-helper';
+import { checkIfUserIsOrganizationAdmin } from 'helpers/user-helper';
 import DependencyIcon from 'img/dependency-icon.svg';
 import DependencyListPopover from 'components/common/DependencyListPopover/DependencyListPopover';
 import useBooleanWithTimeout from 'hooks/use-boolean-with-timeout';
@@ -261,7 +262,8 @@ const TaskItem = React.memo(
       const currentUserMember = currentTasklist?.listUsers?.find(
         u => u.identifier === currentUser?.identifier,
       );
-      return isMemberAdmin(currentUserMember);
+      const isOwnerOrAdmin = checkIfUserIsOrganizationAdmin(currentUser);
+      return isMemberAdmin(currentUserMember) || isOwnerOrAdmin;
     }, [currentUser, currentTasklist]);
 
     const isCreator = useMemo(() => {

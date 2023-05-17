@@ -17,6 +17,7 @@ import {
   TASK_LIST_RESTRICTIONS_PROFILES,
 } from 'restrictions/task-restrictions';
 import { isMemberAdmin } from 'helpers/list-members-helper';
+import { checkIfUserIsOrganizationAdmin } from 'helpers/user-helper';
 import StartDateSection from 'components/task-drawer/StartDateSection/StartDateSection';
 // import WatchersPopover from 'components/task-drawer/TaskDrawerContent/WatchersPopover/WatchersPopover';
 import { createTaskListPath } from 'routing/helpers/paths';
@@ -139,7 +140,8 @@ const TaskDrawerContent = props => {
     const currentUserMember = currentTasklist?.listUsers?.find(
       u => u.identifier === currentUser?.identifier,
     );
-    return isMemberAdmin(currentUserMember);
+    const isOwnerOrAdmin = checkIfUserIsOrganizationAdmin(currentUser);
+    return isMemberAdmin(currentUserMember) || isOwnerOrAdmin;
   }, [currentUser, currentTasklist]);
 
   const isCreator = useMemo(() => {

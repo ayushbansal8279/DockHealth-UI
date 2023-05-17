@@ -99,3 +99,13 @@ export const GroupOptionsContainer = styled.div`
   top: 50%;
   transform: translateY(-50%);
 `;
+
+export const GroupOpenContainer = styled.div`
+  height: 30px;
+  width: 30px;
+  display: flex;
+  align-items: center;
+  flex-basis: content;
+  padding-left: 10px;
+  padding-right: 10px;
+`;
