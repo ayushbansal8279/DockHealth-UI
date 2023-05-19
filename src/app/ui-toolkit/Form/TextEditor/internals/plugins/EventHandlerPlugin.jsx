@@ -1,105 +1,95 @@
-import React, { useEffect, useLayoutEffect, useState } from 'react';
+import React, { useContext, useLayoutEffect, useState } from "react";
+import debounce from "lodash.debounce"
 import { OnChangePlugin } from '@lexical/react/LexicalOnChangePlugin';
 import { noop } from 'ui-toolkit/utilities';
 import { useLexicalComposerContext } from '@lexical/react/LexicalComposerContext';
 import { mergeRegister } from '@lexical/utils';
 import {
-  FOCUS_COMMAND,
   BLUR_COMMAND,
-  COMMAND_PRIORITY_CRITICAL,
-  LineBreakNode,
-  TextNode,
-  ParagraphNode,
-  ElementNode,
+  COMMAND_PRIORITY_CRITICAL
 } from 'lexical';
 import {
-  $convertFromMarkdownString,
   $convertToMarkdownString,
   TRANSFORMERS,
 } from '@lexical/markdown';
 import { MENTION } from '../transformers';
+import { StateContext } from "ui-toolkit/Form/TextEditor/TextEditor";
+import { traverse } from "ui-toolkit/Form/TextEditor/helpers";
 
 export default function EventHandlerPlugin({
   onChange = noop,
-  onFocus = noop,
   onBlur = noop,
   onKeyDown = noop,
 }) {
   const [editor] = useLexicalComposerContext();
+  const [state] = useContext(StateContext);
+  const [isDirty, setDirty] = useState(false);
 
-  const handleFocus = (state) => {
-    editor.update(() => {
-      const value = $convertToMarkdownString([...TRANSFORMERS, MENTION([])]);
-      const state = editor.getEditorState().toJSON();
-      const mentions = [];
-      traverse(state.root, (node) => {
-        if (node.type === 'mention') {
-          mentions.push(node.mention);
-        }
+  const handleBlur = debounce(() => {
+    if (state.isActive) {
+      console.log("#$# handleBlur", state.isActive);
+      state.setActive(false);
+      editor.update(() => {
+        const value = $convertToMarkdownString([...TRANSFORMERS, MENTION([])]);
+        const editorState = editor.getEditorState().toJSON();
+        const mentions = [];
+        traverse(editorState.root, (node) => {
+          if (node.type === 'mention') {
+            mentions.push(node.mention);
+          }
+        });
+        onBlur(editor, { value, mentions });
+        setDirty(false);
       });
-      onFocus(editor, { value, mentions });
-    });
-  };
+    }
+  });
 
-  const handleBlur = (state) => {
-    editor.update(() => {
-      const value = $convertToMarkdownString([...TRANSFORMERS, MENTION([])]);
-      const state = editor.getEditorState().toJSON();
-      const mentions = [];
-      traverse(state.root, (node) => {
-        if (node.type === 'mention') {
-          mentions.push(node.mention);
-        }
+  const handleKeyDown = debounce((event) => {
+    if (state.isActive) {
+      const { key } = event;
+      editor.update(() => {
+        const value = $convertToMarkdownString([...TRANSFORMERS, MENTION([])]);
+        const editorState = editor.getEditorState().toJSON();
+        const mentions = [];
+        traverse(editorState.root, (node) => {
+          if (node.type === 'mention') {
+            mentions.push(node.mention);
+          }
+        });
+        onKeyDown(editor, { key, value, mentions });
+        setDirty(true);
       });
-      onBlur(editor, { value, mentions });
-    });
-  };
+    }
+  });
 
-  const handleKeyDown = (event) => {
-    const { key } = event;
-    editor.update(() => {
-      const value = $convertToMarkdownString([...TRANSFORMERS, MENTION([])]);
-      const state = editor.getEditorState().toJSON();
-      const mentions = [];
-      traverse(state.root, (node) => {
-        if (node.type === 'mention') {
-          mentions.push(node.mention);
-        }
+  const handleChange = debounce(() => {
+    if (state.isActive && isDirty) {
+      editor.update(() => {
+        const value = $convertToMarkdownString([...TRANSFORMERS, MENTION([])]);
+        const editorState = editor.getEditorState().toJSON();
+        const mentions = [];
+        traverse(editorState.root, (node) => {
+          if (node.type === 'mention') {
+            mentions.push(node.mention);
+          }
+        });
+        console.log("#$# handleChange");
+        onChange(editor, { value, mentions });
       });
-      onKeyDown(editor, { key, value, mentions });
-    });
-  };
-
-  const handleChange = (state) => {
-    editor.update(() => {
-      const value = $convertToMarkdownString([...TRANSFORMERS, MENTION([])]);
-      const state = editor.getEditorState().toJSON();
-      const mentions = [];
-      traverse(state.root, (node) => {
-        if (node.type === 'mention') {
-          mentions.push(node.mention);
-        }
-      });
-      onChange(editor, { value, mentions });
-    });
-  };
+    }
+    setDirty(true);
+  });
 
   useLayoutEffect(() => {
     return mergeRegister(
       editor.registerCommand(
-        FOCUS_COMMAND,
-        (_, editor) => {
-          handleFocus(editor.getEditorState());
-        },
-        COMMAND_PRIORITY_CRITICAL,
-      ),
-      editor.registerCommand(
         BLUR_COMMAND,
         (_, editor) => {
           handleBlur(editor.getEditorState());
+          return true;
         },
         COMMAND_PRIORITY_CRITICAL,
-      ),
+      )
     );
   }, [editor]);
 
@@ -124,32 +114,3 @@ export default function EventHandlerPlugin({
     </>
   );
 }
-
-const traverse = (node, callback) => {
-  callback(node);
-  if (node.children) {
-    for (const child of node.children) {
-      traverse(child, callback);
-    }
-  }
-};
-
-const filter = (graph, predicate) => {
-  const array = [];
-  traverse(graph, (node) => {
-    if (predicate(node)) {
-      array.push(node);
-    }
-  });
-
-  return array;
-};
-
-const map = (graph, mapper) => {
-  const array = [];
-  traverse(graph, (node) => {
-    array.push(mapper(node));
-  });
-
-  return array;
-};

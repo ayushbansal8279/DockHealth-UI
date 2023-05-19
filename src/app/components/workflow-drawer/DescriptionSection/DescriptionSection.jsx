@@ -1,10 +1,8 @@
-import React, { useCallback, useEffect, useMemo, useRef } from 'react';
+import React, { useCallback, useEffect, useMemo, useState } from "react";
 import { useDispatch, useSelector } from 'react-redux';
 import { useBoolean } from 'hooks/useBoolean';
 import usePrevious from 'hooks/use-previous';
-import { checkIfTemplateTask } from 'helpers/task-helpers';
 import CustomTextEditor from 'components/common/CustomTextEditor/CustomTextEditor';
-import TextEditor from 'components/common/TextEditor/TextEditor';
 import { useMentionsEditorState } from 'components/common/TextEditor/use-mentions-editor-state';
 import {
   convertFromEditorStateToOutput,
@@ -14,16 +12,14 @@ import {
 import debounce from 'lodash.debounce';
 import { workflowSelector } from 'selectors/workflow-drawer-selectors';
 import { updatePartialWorkflow } from 'actions/task-template-actions';
+import TextEditor from "ui-toolkit/Form/TextEditor/TextEditor";
 
 const DescriptionSection = ({ readOnly }) => {
   const DEBOUNCE_TIME = 10000;
   const selectedWorkflow = useSelector(workflowSelector);
-  const { taskList } = selectedWorkflow || {};
-  const { taskListIdentifier } = taskList || {};
   const dispatch = useDispatch();
-  const detailsReference = useRef(null);
-  const [isFocused, setFocused, unsetFocused] = useBoolean();
-  const [detailsState, setDetailsState] = useMentionsEditorState(
+  const [isFocused] = useBoolean();
+  const [detailsState] = useMentionsEditorState(
     convertToEditorState({
       rawText: selectedWorkflow?.description,
       tokenizedText: selectedWorkflow?.tokenizedDescription,
@@ -31,8 +27,6 @@ const DescriptionSection = ({ readOnly }) => {
       handleRichText: true,
     }),
   );
-
-  const isTemplateWorkflow = checkIfTemplateTask(selectedWorkflow);
 
   const isEmptyDetailsState = useMemo(
     () => isEditorStateEmpty(detailsState),
@@ -76,33 +70,44 @@ const DescriptionSection = ({ readOnly }) => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isFocused]);
 
-  const onChangeDetailsEditor = useCallback(
-    (state) => {
-      setDetailsState(state);
-      onDebouncedChange(state);
-    },
-    [onDebouncedChange, setDetailsState],
-  );
+  const [description, setDescription] = useState(selectedWorkflow?.description)
+
+  const handleTextEditorChange = debounce((_, { value }) => {
+    setDescription(value)
+    if (value !== description) {
+      dispatch(
+        updatePartialWorkflow(selectedWorkflow?.identifier, {
+          description: value,
+          descriptionCleared: !value,
+        }),
+      );
+    }
+  }, 3000);
+
+  const handleTextEditorBlur = (_, { value }) => {
+    if (value !== description) {
+      dispatch(
+        updatePartialWorkflow(selectedWorkflow?.identifier, {
+          description: description,
+          descriptionCleared: !description.length,
+        }),
+      );
+    }
+  };
 
   return (
     <CustomTextEditor
-      key={selectedWorkflow?.identifier}
       empty={isEmptyDetailsState}
       focused={isFocused}
       label="description"
       richTextEnabled
     >
       <TextEditor
-        minHeight={100}
-        ref={detailsReference}
-        taskListIdentifier={taskListIdentifier}
-        disableMentions={isTemplateWorkflow}
-        showToolbar
-        onFocus={setFocused}
-        onBlur={unsetFocused}
-        state={detailsState}
-        onChange={onChangeDetailsEditor}
-        readOnly={readOnly}
+        type="textarea"
+        readonly={readOnly}
+        value={description}
+        onChange={handleTextEditorChange}
+        onBlur={handleTextEditorBlur}
       />
     </CustomTextEditor>
   );
