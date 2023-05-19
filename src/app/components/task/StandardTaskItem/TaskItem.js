@@ -11,10 +11,9 @@ import React, {
 import pluck from 'ramda/src/pluck';
 import { useDispatch, useSelector } from 'react-redux';
 import { currentTaskListSelector } from 'selectors/task-list-selectors';
-import {
-  isTaskSelectedSelector,
-  taskCustomFieldsSelector,
-} from 'selectors/task-drawer-selectors';
+import { isTaskSelectedSelector } from 'selectors/task-drawer-selectors';
+import { organizationCustomFieldsSelector } from 'selectors/organization-selectors';
+import { listCustomFieldsSelector } from 'selectors/list-details-selectors';
 import { openTaskDrawerWithContent } from 'actions/task-drawer-actions';
 import {
   selectTask,
@@ -219,7 +218,13 @@ const TaskItem = React.memo(
       closeDependencyPopover,
     ] = useBooleanWithTimeout(false);
     const { move, duplicate, subtasks, delete: del } = SINGLE_TASK_FEATURES;
-    const { templates } = useSelector(taskCustomFieldsSelector);
+    const organizationCustomFields = useSelector(
+      organizationCustomFieldsSelector,
+    );
+    const { listCustomFields } = useSelector(listCustomFieldsSelector);
+    const taskCustomFields = organizationCustomFields
+      ? organizationCustomFields.concat(listCustomFields)
+      : listCustomFields;
 
     const showContextMenu = [move, duplicate, subtasks, del].reduce(
       (accumulator, element) => {
@@ -276,123 +281,93 @@ const TaskItem = React.memo(
     if (!taskListRestrictions) {
       taskListRestrictions = {};
     }
-
-    const taskDeleteDisabled = useMemo(() => {
-      const deleteDisabledItem =
+    const setConfig = (
+      themeSettingName,
+      restrictionsConfig,
+      configName,
+      configValue,
+    ) => {
+      const enabledItem =
         selectedOrganization?.themeSettings?.find(
-          ({ name }) => name === 'list.tasks.member.delete.enabled',
+          ({ name }) => name === themeSettingName,
         ) || {};
-      return (
-        deleteDisabledItem &&
-        deleteDisabledItem?.value === 'false' &&
+      const enabledValue =
+        enabledItem &&
+        enabledItem?.value === 'false' &&
         !isListAdmin &&
-        !isCreator
-      );
-    }, [selectedOrganization, isListAdmin, isCreator]);
+        !isCreator;
 
-    const editAssignmentDisabled = useMemo(() => {
-      const editAssignmentDisabledItem =
-        selectedOrganization?.themeSettings?.find(
-          ({ name }) => name === 'list.tasks.member.edit.assignment.enabled',
-        ) || {};
-      return (
-        editAssignmentDisabledItem &&
-        editAssignmentDisabledItem?.value === 'false' &&
-        !isListAdmin &&
-        !isCreator
-      );
-    }, [selectedOrganization, isListAdmin, isCreator]);
-
-    const editDueDateDisabled = useMemo(() => {
-      const editDueDateDisabledItem =
-        selectedOrganization?.themeSettings?.find(
-          ({ name }) => name === 'list.tasks.member.edit.duedate.enabled',
-        ) || {};
-      return (
-        editDueDateDisabledItem &&
-        editDueDateDisabledItem?.value === 'false' &&
-        !isListAdmin &&
-        !isCreator
-      );
-    }, [selectedOrganization, isListAdmin, isCreator]);
-
-    const editDescriptionDisabled = useMemo(() => {
-      const editDescriptionDisabledItem =
-        selectedOrganization?.themeSettings?.find(
-          ({ name }) => name === 'list.tasks.member.edit.description.enabled',
-        ) || {};
-      return (
-        editDescriptionDisabledItem &&
-        editDescriptionDisabledItem?.value === 'false' &&
-        !isListAdmin &&
-        !isCreator
-      );
-    }, [selectedOrganization, isListAdmin, isCreator]);
-
-    const editPatientDisabled = useMemo(() => {
-      const editPatientDisabledItem =
-        selectedOrganization?.themeSettings?.find(
-          ({ name }) => name === 'list.tasks.member.edit.patient.enabled',
-        ) || {};
-      return (
-        editPatientDisabledItem &&
-        editPatientDisabledItem?.value === 'false' &&
-        !isListAdmin &&
-        !isCreator
-      );
-    }, [selectedOrganization, isListAdmin, isCreator]);
-
-    const editStatusDisabled = useMemo(() => {
-      const editStatusDisabledItem =
-        selectedOrganization?.themeSettings?.find(
-          ({ name }) => name === 'list.tasks.member.edit.status.enabled',
-        ) || {};
-      return (
-        editStatusDisabledItem &&
-        editStatusDisabledItem?.value === 'false' &&
-        !isListAdmin &&
-        !isCreator
-      );
-    }, [selectedOrganization, isListAdmin, isCreator]);
-
-    const editPriorityDisabled = useMemo(() => {
-      const editPriorityDisabledItem =
-        selectedOrganization?.themeSettings?.find(
-          ({ name }) => name === 'list.tasks.member.edit.priority.enabled',
-        ) || {};
-      return (
-        editPriorityDisabledItem &&
-        editPriorityDisabledItem?.value === 'false' &&
-        !isListAdmin &&
-        !isCreator
-      );
-    }, [selectedOrganization, isListAdmin, isCreator]);
-
-    const editLabelsDisabled = useMemo(() => {
-      const editLabelsDisabledItem =
-        selectedOrganization?.themeSettings?.find(
-          ({ name }) => name === 'list.tasks.member.edit.labels.enabled',
-        ) || {};
-      return (
-        editLabelsDisabledItem &&
-        editLabelsDisabledItem?.value === 'false' &&
-        !isListAdmin &&
-        !isCreator
-      );
-    }, [selectedOrganization, isListAdmin, isCreator]);
-
-    const editSubTasksDisabled = useMemo(() => {
-      const editSubTasksDisabledItem =
-        selectedOrganization?.themeSettings?.find(
-          ({ name }) => name === 'list.tasks.member.edit.subtasks.enabled',
-        ) || {};
-      return (
-        editSubTasksDisabledItem &&
-        editSubTasksDisabledItem?.value === 'false' &&
-        !isListAdmin &&
-        !isCreator
-      );
-    }, [selectedOrganization, isListAdmin, isCreator]);
+      if (enabledValue) {
+        // eslint-disable-next-line no-param-reassign
+        restrictionsConfig[configName] = configValue;
+      }
+    };
+    setConfig(
+      'list.tasks.member.delete.enabled',
+      restrictions,
+      'delete',
+      DISABLED,
+    );
+    setConfig(
+      'list.tasks.member.move.list.enabled',
+      restrictions,
+      'move',
+      DISABLED,
+    );
+    setConfig(
+      'list.tasks.member.duplicate.enabled',
+      restrictions,
+      'duplicate',
+      DISABLED,
+    );
+    setConfig(
+      'list.tasks.member.edit.assignment.enabled',
+      restrictions,
+      'assigment',
+      READ_ONLY,
+    );
+    setConfig(
+      'list.tasks.member.edit.duedate.enabled',
+      restrictions,
+      'dueDate',
+      DISABLED,
+    );
+    setConfig(
+      'list.tasks.member.edit.description.enabled',
+      restrictions,
+      'description',
+      DISABLED,
+    );
+    setConfig(
+      'list.tasks.member.edit.patient.enabled',
+      restrictions,
+      'patient',
+      DISABLED,
+    );
+    setConfig(
+      'list.tasks.member.edit.status.enabled',
+      restrictions,
+      'status',
+      DISABLED,
+    );
+    setConfig(
+      'list.tasks.member.edit.priority.enabled',
+      restrictions,
+      'priority',
+      DISABLED,
+    );
+    setConfig(
+      'list.tasks.member.edit.labels.enabled',
+      restrictions,
+      'labels',
+      DISABLED,
+    );
+    setConfig(
+      'list.tasks.member.edit.subtasks.enabled',
+      restrictions,
+      'subtasks',
+      DISABLED,
+    );
 
     const nonAssigneeCompleteDisabled = useMemo(() => {
       const nonAssigneeCompleteDisabledItem =
@@ -415,34 +390,6 @@ const TaskItem = React.memo(
       isListAdmin,
       isCreator,
     ]);
-
-    if (taskDeleteDisabled) {
-      restrictions.delete = DISABLED;
-    }
-    if (editAssignmentDisabled) {
-      restrictions.assigment = READ_ONLY;
-    }
-    if (editDueDateDisabled) {
-      restrictions.dueDate = DISABLED;
-    }
-    if (editDescriptionDisabled) {
-      restrictions.description = DISABLED;
-    }
-    if (editPatientDisabled) {
-      restrictions.patient = DISABLED;
-    }
-    if (editStatusDisabled) {
-      restrictions.status = DISABLED;
-    }
-    if (editPriorityDisabled) {
-      restrictions.priority = DISABLED;
-    }
-    if (editLabelsDisabled) {
-      restrictions.labels = DISABLED;
-    }
-    if (editSubTasksDisabled) {
-      restrictions.subtasks = DISABLED;
-    }
     if (nonAssigneeCompleteDisabled) {
       taskListRestrictions.completeTask = DISABLED;
     }
@@ -605,7 +552,7 @@ const TaskItem = React.memo(
     const handleDecisionOutcomeSelection = useCallback(
       (targetValue, taskItem, templateBundleIdentifierItem, onSuccess) => {
         const incompleteRequiredFields = findIncompleteRequiredFields(
-          templates,
+          taskCustomFields,
           task,
         );
         const isRequiredFieldsAreIncomplete =
@@ -646,7 +593,7 @@ const TaskItem = React.memo(
           onSuccess();
         }
       },
-      [dispatch, task, templates],
+      [dispatch, task, taskCustomFields],
     );
 
     const randerFirstColumnCoverIfNecessary = useCallback(
