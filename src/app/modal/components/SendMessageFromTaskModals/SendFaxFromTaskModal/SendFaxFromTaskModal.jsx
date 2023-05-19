@@ -1,4 +1,4 @@
-import TextEditor from 'components/common/TextEditor/TextEditor';
+import TextEditor from 'ui-toolkit/Form/TextEditor/TextEditor';
 // import { EditorState } from 'draft-js';
 import CustomTextEditor from 'components/common/CustomTextEditor/CustomTextEditor';
 import React, { useCallback, useState } from 'react';
@@ -41,6 +41,7 @@ import {
   AddEditContactLink,
 } from '../styled';
 import { makeFaxNumber, renderAddOrEdit, validateFaxInput } from '../helpers';
+import { Message } from '@mui/icons-material';
 
 const SendFaxFromTaskModal = () => {
   const dispatch = useDispatch();
@@ -150,7 +151,7 @@ const SendFaxFromTaskModal = () => {
                 // setMessage(() => EditorState.createEmpty());
               }
               getTemplateDetails(newValue?.identifier, identifier).then(
-                data => {
+                (data) => {
                   const text = addStylesToText(data?.details ?? '');
                   setMessage(EditorState.push(message, text));
                 },
@@ -160,13 +161,23 @@ const SendFaxFromTaskModal = () => {
           />
           <TextEditorContainerStyled>
             <CustomTextEditor label="Fax Cover Message">
-              <TextEditor
+              {/* <TextEditor
                 readOnly={false}
                 minHeight={100}
                 disableMentions
                 showToolbar
                 state={message}
                 onChange={setMessage}
+              /> */}
+              <TextEditor
+                value={Message}
+                placeholder="Fax Message"
+                onChange={setMessage}
+                onBlur={setMessage}
+                // mentions={selectedTask?.taskMentions}
+                enabled={{
+                  mentions: false,
+                }}
               />
             </CustomTextEditor>
           </TextEditorContainerStyled>

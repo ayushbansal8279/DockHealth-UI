@@ -5,13 +5,14 @@ import styled from 'styled-components';
 import { getAllContacts } from 'api/contacts-api';
 import { matchSorter } from 'match-sorter';
 import { CommunicationType } from 'helpers/task-helpers';
-import { Chip } from '@mui/material';
+import { Chip, TextField } from '@mui/material';
 import Checkbox from 'components/common/Checkbox/Checkbox';
 import Input from '../Input/Input';
 import {
   RenderOptionStyled,
   NoOptionContainer,
   NoOptionTextLabel,
+  RenderLabelStyled,
 } from './styled';
 
 const filterOptions = (options, { inputValue }) =>
@@ -193,15 +194,17 @@ const EmailContactsAutoComplete = ({
       multiple
       getOptionSelected={(option, value) => option.value === value.value}
       getOptionLabel={(option) => option.value ?? option}
-      renderOption={(option, { selected }) => (
-        <>
-          <span style={{ width: '10px' }} />
-          <Checkbox isChecked={selected} />
-          <RenderOptionStyled>
+      renderOption={(parameters, option, { selected }) => (
+        <RenderOptionStyled {...parameters} key={option.identifier}>
+          {/* <Checkbox
+            isChecked={selected}
+            // onClick={(123) => state.setSelected(!state.selected)}
+          /> */}
+          <RenderLabelStyled>
             {option.label}
             <span>({option.value})</span>
-          </RenderOptionStyled>
-        </>
+          </RenderLabelStyled>
+        </RenderOptionStyled>
       )}
       disableCloseOnSelect
       options={contacts}
@@ -222,6 +225,11 @@ const EmailContactsAutoComplete = ({
       }}
       renderInput={(parameters) => {
         return (
+          // <TextField
+          //   {...parameters}
+          //   label="Checkboxes"
+          //   placeholder="Favorites"
+          // />
           <Input
             {...parameters}
             helperText={error ? errorMessage : null}

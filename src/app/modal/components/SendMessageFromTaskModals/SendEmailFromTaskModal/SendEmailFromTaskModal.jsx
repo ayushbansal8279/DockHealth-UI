@@ -1,9 +1,8 @@
 import Button from 'components/common/Button/Button';
 import Checkbox from 'components/common/Checkbox/Checkbox';
 import Input from 'components/common/Input/Input';
-import TextEditor from 'components/common/TextEditor/TextEditor';
+import TextEditor from 'ui-toolkit/Form/TextEditor/TextEditor';
 import React, { useCallback, useState } from 'react';
-// import { EditorState } from 'draft-js';
 import { useDispatch, useSelector } from 'react-redux';
 import {
   // addStylesToText,
@@ -67,9 +66,12 @@ const SendEmailFromTaskModal = () => {
 
   const [isTaskCommentsIncluded, setIsTaskCommentsIncluded] = useState(false);
 
-  const [detailsState, setDetailsState] = useState(() =>
-    // EditorState.createEmpty(),
-    {},
+  // const [detailsState, setDetailsState] = useState(() =>
+  //   // EditorState.createEmpty(),
+  //   {},
+  // );
+  const [detailsState, setDetailsState] = useState(
+    selectedTask?.tokenizedDetails,
   );
 
   const [attachmentsToSend, setAttachmentsToSend] = useState([]);
@@ -191,8 +193,9 @@ const SendEmailFromTaskModal = () => {
               }
               getTemplateDetails(newValue?.identifier, identifier).then(
                 (data) => {
-                  const text = addStylesToText(data?.details ?? '');
-                  setDetailsState(EditorState.push(detailsState, text));
+                  // const text = addStylesToText(data?.details ?? '');
+                  // setDetailsState(EditorState.push(detailsState, text));
+                  setDetailsState(data?.details ?? '');
                   setSubject(data?.shortMessage ?? '');
                 },
               );
@@ -228,13 +231,13 @@ const SendEmailFromTaskModal = () => {
         <TextEditorContainerStyled>
           <CustomTextEditor label="Email body">
             <TextEditor
-              readOnly={false}
-              minHeight={100}
-              disableMentions
-              showToolbar
-              state={detailsState}
+              value={detailsState}
+              placeholder="Email Body"
               onChange={setDetailsState}
-              maxHeight={200}
+              onBlur={setDetailsState}
+              enabled={{
+                mentions: false,
+              }}
             />
           </CustomTextEditor>
         </TextEditorContainerStyled>
@@ -277,7 +280,7 @@ const SendEmailFromTaskModal = () => {
           variant="primary"
           disabled={
             // !validateEmail(contact?.value) ||
-            contacts.length === 0 || !detailsState.getCurrentContent().hasText()
+            contacts.length === 0 // || !detailsState.getCurrentContent().hasText()
           }
           onClick={() => {
             dispatch(
