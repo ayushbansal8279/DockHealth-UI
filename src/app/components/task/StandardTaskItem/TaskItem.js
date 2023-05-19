@@ -11,10 +11,9 @@ import React, {
 import pluck from 'ramda/src/pluck';
 import { useDispatch, useSelector } from 'react-redux';
 import { currentTaskListSelector } from 'selectors/task-list-selectors';
-import {
-  isTaskSelectedSelector,
-  taskCustomFieldsSelector,
-} from 'selectors/task-drawer-selectors';
+import { isTaskSelectedSelector } from 'selectors/task-drawer-selectors';
+import { organizationCustomFieldsSelector } from 'selectors/organization-selectors';
+import { listCustomFieldsSelector } from 'selectors/list-details-selectors';
 import { openTaskDrawerWithContent } from 'actions/task-drawer-actions';
 import {
   selectTask,
@@ -219,7 +218,13 @@ const TaskItem = React.memo(
       closeDependencyPopover,
     ] = useBooleanWithTimeout(false);
     const { move, duplicate, subtasks, delete: del } = SINGLE_TASK_FEATURES;
-    const { templates } = useSelector(taskCustomFieldsSelector);
+    const organizationCustomFields = useSelector(
+      organizationCustomFieldsSelector,
+    );
+    const { listCustomFields } = useSelector(listCustomFieldsSelector);
+    const taskCustomFields = organizationCustomFields
+      ? organizationCustomFields.concat(listCustomFields)
+      : listCustomFields;
 
     const showContextMenu = [move, duplicate, subtasks, del].reduce(
       (accumulator, element) => {
@@ -547,7 +552,7 @@ const TaskItem = React.memo(
     const handleDecisionOutcomeSelection = useCallback(
       (targetValue, taskItem, templateBundleIdentifierItem, onSuccess) => {
         const incompleteRequiredFields = findIncompleteRequiredFields(
-          templates,
+          taskCustomFields,
           task,
         );
         const isRequiredFieldsAreIncomplete =
@@ -588,7 +593,7 @@ const TaskItem = React.memo(
           onSuccess();
         }
       },
-      [dispatch, task, templates],
+      [dispatch, task, taskCustomFields],
     );
 
     const randerFirstColumnCoverIfNecessary = useCallback(

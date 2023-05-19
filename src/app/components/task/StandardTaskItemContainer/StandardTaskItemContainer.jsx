@@ -6,7 +6,8 @@ import * as ModalActions from 'modal/actions';
 import * as AlertActions from 'alert/actions';
 import AlertMessages from 'alert/AlertMessages';
 import { userProfileSelector } from 'selectors/user-selectors';
-import { taskCustomFieldsSelector } from 'selectors/task-drawer-selectors';
+import { organizationCustomFieldsSelector } from 'selectors/organization-selectors';
+import { listCustomFieldsSelector } from 'selectors/list-details-selectors';
 import { findIncompleteRequiredFields } from 'helpers/task-helpers';
 import StandardTaskItem from '../StandardTaskItem/StandardTaskItem';
 
@@ -20,7 +21,13 @@ const StandardTaskItemContainer = ({
   isBundleTask,
   ...restProps
 }) => {
-  const { templates } = useSelector(taskCustomFieldsSelector);
+  const organizationCustomFields = useSelector(
+    organizationCustomFieldsSelector,
+  );
+  const { listCustomFields } = useSelector(listCustomFieldsSelector);
+  const taskCustomFields = organizationCustomFields
+    ? organizationCustomFields.concat(listCustomFields)
+    : listCustomFields;
   const handleTaskUpdate = useCallback(
     (taskIdentifier, dataToUpdate) => {
       taskActions
@@ -75,7 +82,7 @@ const StandardTaskItemContainer = ({
   const handleToggleTaskCompletedStatus = useCallback(
     task => {
       const incompleteRequiredFields = findIncompleteRequiredFields(
-        templates,
+        taskCustomFields,
         task,
       );
       const isRequiredFieldsAreIncomplete = incompleteRequiredFields.length > 0;
@@ -105,7 +112,7 @@ const StandardTaskItemContainer = ({
         toggleCompleteTaskStatus(task);
       }
     },
-    [modalActions, templates, toggleCompleteTaskStatus],
+    [modalActions, taskCustomFields, toggleCompleteTaskStatus],
   );
 
   return (
