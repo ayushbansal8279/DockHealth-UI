@@ -19,6 +19,7 @@ export const Content = styled(Box)`
 export const Toolbar = styled(Box)`
   position: relative;
   display: flex;
+  height: ${props => props.$open ? "50px" : "0"};
   margin: -5px -5px;
   padding: 4px;
   vertical-align: middle;
@@ -26,7 +27,8 @@ export const Toolbar = styled(Box)`
   transform: translate(0%, ${props => props.$open ? "0%" : "-100%"});
   opacity: ${props => props.$open ? "1" : "0"};
   transition: transform 175ms cubic-bezier(0.85, 0, 0.15, 1),
-              opacity 125ms cubic-bezier(0.45, 0, 0.55, 1);
+              opacity 125ms cubic-bezier(0.45, 0, 0.55, 1),
+              height 175ms cubic-bezier(0.85, 0, 0.15, 1);
 
   svg {
     fill: #888;

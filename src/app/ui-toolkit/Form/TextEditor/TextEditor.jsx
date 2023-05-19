@@ -1,4 +1,4 @@
-import React, { useLayoutEffect, useMemo, useState } from 'react';
+import React, { createContext, useContext, useEffect, useLayoutEffect, useMemo, useState } from "react";
 import { ParagraphNode, $getSelection } from 'lexical';
 import { useLexicalComposerContext } from '@lexical/react/LexicalComposerContext';
 import { LexicalComposer } from '@lexical/react/LexicalComposer';
@@ -9,7 +9,7 @@ import { LinkPlugin } from '@lexical/react/LexicalLinkPlugin';
 import { AutoFocusPlugin } from '@lexical/react/LexicalAutoFocusPlugin';
 import { MarkdownShortcutPlugin } from '@lexical/react/LexicalMarkdownShortcutPlugin';
 import LexicalErrorBoundary from '@lexical/react/LexicalErrorBoundary';
-import { $convertFromMarkdownString, TRANSFORMERS } from '@lexical/markdown';
+import { $convertFromMarkdownString, $convertToMarkdownString, TRANSFORMERS } from '@lexical/markdown';
 import { HeadingNode, QuoteNode } from '@lexical/rich-text';
 import { TableCellNode, TableNode, TableRowNode } from '@lexical/table';
 import { ListItemNode, ListNode } from '@lexical/list';
@@ -21,13 +21,23 @@ import AutoLinkPlugin from './internals/plugins/AutoLinkPlugin';
 import CodeHighlightPlugin from './internals/plugins/CodeHighlightPlugin';
 import { MentionNode } from './internals/nodes/MentionNode';
 import { noop } from '../../utilities';
-import EventHandlerPlugin from './internals/plugins/EventHandlerPlugin';
+import EventHandlerPlugin from "./internals/plugins/EventHandlerPlugin";
 import * as S from './styled';
 import MentionsPlugin from './internals/plugins/MentionsPlugin';
 import { MENTION } from './internals/transformers';
+import { traverse } from "ui-toolkit/Form/TextEditor/helpers";
+
+export const StateContext = createContext([{
+  isInitialized: false,
+  setInitialized: noop,
+  isActive: false,
+  setActive: noop,
+  previousValue: '',
+  setPreviousValue: noop
+}]);
 
 export default function TextEditor(props) {
-  const { value, readonly } = props;
+  const { value, readonly, mentions } = props;
   const initial = useMemo(
     () => ({
       editable: !readonly,
@@ -48,19 +58,34 @@ export default function TextEditor(props) {
       editorState() {
         $convertFromMarkdownString(value ?? '', [
           ...TRANSFORMERS,
-          MENTION(props?.mentions),
+          MENTION(mentions),
         ]);
       },
       onError(error) {
         throw error;
       },
     }),
-    [readonly, value, props?.mentions],
+    [readonly, value, mentions],
   );
+
+  const [isInitialized, setInitialized] = useState(false);
+  const [isActive, setActive] = useState(false);
+  const [previousValue, setPreviousValue] = useState(value);
+
+  const state = {
+    isInitialized,
+    setInitialized,
+    isActive,
+    setActive,
+    previousValue,
+    setPreviousValue
+  }
 
   return (
     <LexicalComposer initialConfig={initial}>
-      <EditableContent {...props}>{null}</EditableContent>
+      <StateContext.Provider value={[state]}>
+        <EditableContent {...props}>{null}</EditableContent>
+      </StateContext.Provider>
     </LexicalComposer>
   );
 }
@@ -88,8 +113,18 @@ function EditableContent({
   };
 
   const [editor] = useLexicalComposerContext();
-  const [isInitialized, setInitialized] = useState(false);
-  const [isActive, setActive] = useState(false);
+  const [state] = useContext(StateContext);
+  const [doForceUpdate, setForceUpdate] = useState(false);
+
+  useEffect(() => {
+    setForceUpdate(true);
+  }, [state.isActive]);
+
+  useEffect(() => {
+    if (doForceUpdate) {
+      setForceUpdate(false);
+    }
+  }, [doForceUpdate]);
 
   useLayoutEffect(() => {
     editor.setEditable(!readonly);
@@ -98,7 +133,7 @@ function EditableContent({
   useLayoutEffect(() => {
     if (autofocus) {
       editor.focus();
-      initialize();
+      state.setInitialized(true);
     }
   }, [editor, autofocus]);
 
@@ -128,41 +163,48 @@ function EditableContent({
     });
   }, [editor, mentions, value]);
 
-  const initialize = () => {
-    setInitialized(true);
+  const handleFocus = () => {
+    if (!state.isActive) {
+      console.log("#$# handleFocus", state.isActive);
+      editor.update(() => {
+        const value = $convertToMarkdownString([...TRANSFORMERS, MENTION([])]);
+        const editorState = editor.getEditorState().toJSON();
+        const mentions = [];
+        traverse(editorState.root, (node) => {
+          if (node.type === 'mention') {
+            mentions.push(node.mention);
+          }
+        });
+        onFocus(editor, { value, mentions });
+      });
+    }
   };
 
-  const handleInputFocus = (...xs) => {
-    console.log("!!: handleInputFocus")
-    setActive(true);
-    onFocus(...xs);
-  }
-
-  const handleInputBlur = (...xs) => {
-    console.log("!!: handleInputBlur")
-    setActive(false);
-    onBlur(...xs);
-  }
+  const handleContentClick = () => {
+    state.setInitialized(true);
+    state.setActive(true);
+    handleFocus();
+  };
 
   return (
-    <S.Container type={type} className={className} onClick={initialize}>
+    <S.Container type={type} className={className}>
       {type === 'textarea' && enabled.toolbar && (
         <ToolbarPlugin
-          open={isActive}
+          open={state.isActive}
         />
       )}
-      <S.Content>
+      <S.Content onClick={handleContentClick}>
         <RichTextPlugin
           contentEditable={<S.Input />}
           ErrorBoundary={LexicalErrorBoundary}
           placeholder={<S.Placeholder type={type}>{placeholder}</S.Placeholder>}
         />
       </S.Content>
-      {isInitialized && (
+      {!doForceUpdate && state.isInitialized && (
         <EventHandlerPlugin
           onChange={onChange}
-          onFocus={handleInputFocus}
-          onBlur={handleInputBlur}
+          onFocus={onFocus}
+          onBlur={onBlur}
           onKeyDown={onKeyDown}
         />
       )}
@@ -179,67 +221,3 @@ function EditableContent({
     </S.Container>
   );
 }
-
-// const noop = () => undefined
-//
-//
-// const RichTextEditor = ({
-//     value,
-//     readOnly
-// }) => {
-//     const initial = useMemo(() => ({
-//         editable: !readOnly,
-//         nodes: [
-//             HeadingNode,
-//             ListNode,
-//             ListItemNode,
-//             QuoteNode,
-//             CodeNode,
-//             CodeHighlightNode,
-//             TableNode,
-//             TableCellNode,
-//             TableRowNode,
-//             AutoLinkNode,
-//             LinkNode,
-//             MentionNode
-//         ],
-//         editorState() {
-//             $convertFromMarkdownString(value ?? "", TRANSFORMERS)
-//         },
-//         onError(error) {
-//             throw error
-//         }
-//     }), [ value, readOnly ])
-//
-//     return (
-//         <LexicalComposer initialConfig={initial}>
-//             <ContentEditor>
-//                 <HistoryPlugin />
-//                 <ListPlugin />
-//                 <ListMaxIndentLevelPlugin maxDepth={7} />
-//                 <LinkPlugin />
-//                 <AutoLinkPlugin />
-//                 <AutoFocusPlugin />
-//                 <CodeHighlightPlugin />
-//                 <MarkdownShortcutPlugin transformers={TRANSFORMERS} />
-//             </ContentEditor>
-//         </LexicalComposer>
-//     )
-// }
-//
-//
-//
-// import * as S from "./styled"
-//
-// const ContentEditor = ({ children, placeholder, value, readOnly }) => {
-//     return (
-//         <S.ContentEditorWrapper>
-//             <RichTextPlugin
-//                 placeholder={placeholder}
-//                 contentEditable={<ContentEditable className="editor-input" />}
-//                 ErrorBoundary={LexicalErrorBoundary}
-//             />
-//             {children}
-//         </S.ContentEditorWrapper>
-//     )
-// }
