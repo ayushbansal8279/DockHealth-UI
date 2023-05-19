@@ -86,7 +86,7 @@ const initializeListDetailsViewHooks = () => {
   const organizationCustomFields = useSelector(
     organizationCustomFieldsSelector,
   );
-  const { listCustomFields } = useSelector(listCustomFieldsSelector);
+  const listCustomFields = useSelector(listCustomFieldsSelector);
   const taskCustomFields = organizationCustomFields
     ? organizationCustomFields.concat(listCustomFields)
     : listCustomFields;
