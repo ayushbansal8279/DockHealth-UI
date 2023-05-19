@@ -28,6 +28,8 @@ import {
   TaskPriority,
   getPriorityColor,
 } from 'helpers/task-helpers';
+import { isMemberAdmin } from 'helpers/list-members-helper';
+import { checkIfUserIsOrganizationAdmin } from 'helpers/user-helper';
 // import * as TaskTemplateApi from 'api/task-template-api';
 // import { workflowSelector } from 'selectors/workflow-drawer-selectors';
 import Checkbox from 'components/common/Checkbox/Checkbox';
@@ -52,7 +54,10 @@ import {
 import { currentTaskListSelector } from 'selectors/task-list-selectors';
 import { openDrawer } from 'actions/workflow-drawer-actions';
 import { CUSTOM_FIELD_TYPES } from 'helpers/custom-fields-helpers';
-import { userProfileSelector } from 'selectors/user-selectors';
+import {
+  userProfileSelector,
+  selectedUserOrganizationSelector,
+} from 'selectors/user-selectors';
 import {
   SINGLE_TASK_RESTRICTIONS_OPTIONS,
   SINGLE_TASK_RESTRICTIONS_PROFILES,
@@ -110,6 +115,7 @@ const TaskTemplateGroupHeader = ({
     tasksCount,
     tasksCompletedCount,
     selected,
+    creator,
   } = templateGroup;
 
   const { dragHandleProps } = draggableProvided;
@@ -128,6 +134,103 @@ const TaskTemplateGroupHeader = ({
 
   const [workFlowData, setWorkFlowData] = useState(undefined);
   // const selectedWorkflow = useSelector(workflowSelector);
+
+  let restrictions =
+    SINGLE_TASK_RESTRICTIONS_PROFILES[currentUser?.orgUserRole];
+  let taskListRestrictions =
+    TASK_LIST_RESTRICTIONS_PROFILES[currentUser?.orgUserRole];
+  const { DISABLED, READ_ONLY } = SINGLE_TASK_RESTRICTIONS_OPTIONS;
+
+  const selectedOrganization = useSelector(selectedUserOrganizationSelector);
+  const currentTasklist = useSelector(currentTaskListSelector);
+
+  const isListAdmin = useMemo(() => {
+    const currentUserMember = currentTasklist?.listUsers?.find(
+      u => u.identifier === currentUser?.identifier,
+    );
+    const isOwnerOrAdmin = checkIfUserIsOrganizationAdmin(currentUser);
+    return isMemberAdmin(currentUserMember) || isOwnerOrAdmin;
+  }, [currentUser, currentTasklist]);
+
+  const isCreator = useMemo(() => {
+    return creator?.identifier === currentUser?.identifier;
+  }, [currentUser, creator]);
+
+  if (!restrictions) {
+    restrictions = {};
+  }
+  if (!taskListRestrictions) {
+    taskListRestrictions = {};
+  }
+
+  const taskDeleteDisabled = useMemo(() => {
+    const disabledSettingItem =
+      selectedOrganization?.themeSettings?.find(
+        ({ name: themeName }) =>
+          themeName === 'list.tasks.member.delete.enabled',
+      ) || {};
+    return (
+      disabledSettingItem &&
+      disabledSettingItem?.value === 'false' &&
+      !isListAdmin &&
+      !isCreator
+    );
+  }, [selectedOrganization, isListAdmin, isCreator]);
+
+  const taskMoveListDisabled = useMemo(() => {
+    const disabledSettingItem =
+      selectedOrganization?.themeSettings?.find(
+        ({ name: themeName }) =>
+          themeName === 'list.tasks.member.move.list.enabled',
+      ) || {};
+    return (
+      disabledSettingItem &&
+      disabledSettingItem?.value === 'false' &&
+      !isListAdmin &&
+      !isCreator
+    );
+  }, [selectedOrganization, isListAdmin, isCreator]);
+
+  const workflowEditDisabled = useMemo(() => {
+    const disabledSettingItem =
+      selectedOrganization?.themeSettings?.find(
+        ({ name: themeName }) =>
+          themeName === 'list.tasks.member.workflow.edit.enabled',
+      ) || {};
+    return (
+      disabledSettingItem &&
+      disabledSettingItem?.value === 'false' &&
+      !isListAdmin &&
+      !isCreator
+    );
+  }, [selectedOrganization, isListAdmin, isCreator]);
+
+  const workflowAddTaskDisabled = useMemo(() => {
+    const disabledSettingItem =
+      selectedOrganization?.themeSettings?.find(
+        ({ name: themeName }) =>
+          themeName === 'list.tasks.member.workflow.addtask.enabled',
+      ) || {};
+    return (
+      disabledSettingItem &&
+      disabledSettingItem?.value === 'false' &&
+      !isListAdmin &&
+      !isCreator
+    );
+  }, [selectedOrganization, isListAdmin, isCreator]);
+
+  if (taskDeleteDisabled) {
+    restrictions.delete = DISABLED;
+  }
+  if (taskMoveListDisabled) {
+    restrictions.move = DISABLED;
+  }
+  if (workflowEditDisabled) {
+    restrictions.name = DISABLED;
+  }
+  if (workflowAddTaskDisabled) {
+    taskListRestrictions.workflowAddTask = DISABLED;
+  }
 
   const [completedTasksAmount, allTasksAmount] = useMemo(
     () =>
@@ -193,71 +296,102 @@ const TaskTemplateGroupHeader = ({
 
   const menuOptions = useMemo(() => {
     // eslint-disable-next-line unicorn/prevent-abbreviations
-    let opts = [
-      {
-        name: 'Add task',
-        onClick: () => {
-          setIsAddingTask(true);
-        },
-      },
-      {
-        name: 'Edit name',
-        onClick: () => {
-          setIsEditing(true);
-          setTimeout(() => {
-            // eslint-disable-next-line no-unused-expressions
-            nameInputReference.current?.focus();
-          }, 0);
-        },
-      },
-      {
-        name: 'Duplicate',
-        onClick: () =>
-          dispatch(
-            ModalActions.openModal('AttachmentsDuplicate', {
-              confirm: () => {
-                dispatch(WorkflowActions.duplicateWorkflow(identifier, true));
-              },
-              skip: () => {
-                dispatch(WorkflowActions.duplicateWorkflow(identifier, false));
-              },
-            }),
-          ),
-      },
-      {
-        name: 'Move to list',
-        onClick: () =>
-          dispatch(
-            ModalActions.openModal('SelectDestination', {
-              confirmText: 'Move',
-              confirm: ({
-                taskListIdentifier: listIdentifier,
-                taskGroupIdentifier,
-              }) => {
-                dispatch(
-                  TemplateBundleActions.moveWorkflowToList(
-                    identifier,
-                    listIdentifier,
-                    taskGroupIdentifier,
-                  ),
-                );
-              },
-            }),
-          ),
-      },
-      {
-        name: 'Move to group',
-        onClick: handleMoveGroupTask,
-      },
+
+    let options = [
       {
         name: 'Move to group',
         onClick: handleMoveGroupTask,
       },
     ];
 
+    if (taskListRestrictions?.workflowAddTask !== DISABLED) {
+      options = [
+        ...options,
+        {
+          name: 'Add task',
+          onClick: () => {
+            setIsAddingTask(true);
+          },
+        },
+      ];
+    }
+
+    if (restrictions?.name !== DISABLED) {
+      options = [
+        ...options,
+        {
+          name: 'Edit name',
+          onClick: () => {
+            setIsEditing(true);
+            setTimeout(() => {
+              // eslint-disable-next-line no-unused-expressions
+              nameInputReference.current?.focus();
+            }, 0);
+          },
+        },
+      ];
+    }
+
+    if (restrictions?.duplicate !== DISABLED) {
+      options = [
+        ...options,
+        {
+          name: 'Duplicate',
+          onClick: () =>
+            dispatch(
+              ModalActions.openModal('AttachmentsDuplicate', {
+                confirm: () => {
+                  dispatch(WorkflowActions.duplicateWorkflow(identifier, true));
+                },
+                skip: () => {
+                  dispatch(
+                    WorkflowActions.duplicateWorkflow(identifier, false),
+                  );
+                },
+              }),
+            ),
+        },
+      ];
+    }
+
+    options = [
+      ...options,
+      {
+        name: 'Move to group',
+        onClick: handleMoveGroupTask,
+      },
+    ];
+
+    if (restrictions?.move !== DISABLED) {
+      options = [
+        ...options,
+        {
+          name: 'Move to list',
+          onClick: () =>
+            dispatch(
+              ModalActions.openModal('SelectDestination', {
+                confirmText: 'Move',
+                confirm: ({
+                  taskListIdentifier: listIdentifier,
+                  taskGroupIdentifier,
+                }) => {
+                  dispatch(
+                    TemplateBundleActions.moveWorkflowToList(
+                      identifier,
+                      listIdentifier,
+                      taskGroupIdentifier,
+                    ),
+                  );
+                },
+              }),
+            ),
+        },
+      ];
+    }
+
     if (isCompletedTab ? !showIncompleteTasks : !showCompletedTasks) {
-      opts = [
-        ...opts,
+      options = [
+        ...options,
         {
           name: isCompletedTab
             ? 'Show incomplete tasks'
@@ -268,8 +402,8 @@ const TaskTemplateGroupHeader = ({
     }
 
     if (isCompletedTab ? showIncompleteTasks : showCompletedTasks) {
-      opts = [
-        ...opts,
+      options = [
+        ...options,
         {
           name: isCompletedTab
             ? 'Hide incomplete tasks'
@@ -279,32 +413,39 @@ const TaskTemplateGroupHeader = ({
       ];
     }
 
-    return [
-      ...opts,
-      {
-        name: 'Delete',
-        onClick: () =>
-          dispatch(
-            ModalActions.openModal('DeleteConfirmation', {
-              title: 'Delete workflow',
-              description:
-                'Are you sure you want to delete this workflow? This action cannot be undone.',
-              confirm: () => {
-                dispatch(WorkflowActions.deleteWorkflow(identifier));
-                dispatch(ModalActions.closeModal());
-              },
-            }),
-          ),
-      },
-    ];
+    if (restrictions?.delete !== DISABLED) {
+      options = [
+        ...options,
+        {
+          name: 'Delete',
+          onClick: () =>
+            dispatch(
+              ModalActions.openModal('DeleteConfirmation', {
+                title: 'Delete workflow',
+                description:
+                  'Are you sure you want to delete this workflow? This action cannot be undone.',
+                confirm: () => {
+                  dispatch(WorkflowActions.deleteWorkflow(identifier));
+                  dispatch(ModalActions.closeModal());
+                },
+              }),
+            ),
+        },
+      ];
+    }
+
+    return options;
   }, [
+    handleMoveGroupTask,
     isCompletedTab,
     showIncompleteTasks,
     showCompletedTasks,
+    restrictions,
+    taskListRestrictions,
+    DISABLED,
     setIsAddingTask,
     dispatch,
     identifier,
-    handleMoveGroupTask,
     toggleTasksVisibility,
   ]);
 
@@ -433,12 +574,6 @@ const TaskTemplateGroupHeader = ({
   //   // eslint-disable-next-line no-unused-expressions
   //   !selectedWorkflow ? getWorkflowData(identifier) : setWorkFlowData(null);
   // }, [getWorkflowData, identifier, selectedWorkflow]);
-
-  const restrictions =
-    SINGLE_TASK_RESTRICTIONS_PROFILES[currentUser?.orgUserRole];
-  const taskListRestrictions =
-    TASK_LIST_RESTRICTIONS_PROFILES[currentUser?.orgUserRole];
-  const { DISABLED, READ_ONLY } = SINGLE_TASK_RESTRICTIONS_OPTIONS;
 
   const taskPriority = (templateGroup || workFlowData).priority;
 
