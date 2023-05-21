@@ -22,9 +22,14 @@ import {
   deleteTask,
   duplicateTask,
   // markTaskAsRead,
+  refreshTask,
 } from 'actions/task-actions';
 // import { UPDATE_TASK_SUCCESS } from 'actions/action-types';
-import { openDrawer, closeDrawer } from 'actions/task-drawer-actions';
+import {
+  openDrawer,
+  closeDrawer,
+  getTaskCustomFields,
+} from 'actions/task-drawer-actions';
 import * as WorkflowDrawerActions from 'actions/workflow-drawer-actions';
 import {
   selectedTaskSelector,
@@ -112,10 +117,17 @@ const initializeTaskDrawerHooks = ({
       //   setSelectedParentTask(task.parentTask || null);
       //   dispatch({ type: UPDATE_TASK_SUCCESS, task });
       // });
+      dispatch(refreshTask(taskIdentifier));
     }
     previousTaskIdentifierValue.current = taskIdentifier;
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [taskIdentifier, subtasks]);
+
+  useEffect(() => {
+    if (taskIdentifier) {
+      dispatch(getTaskCustomFields(taskIdentifier, taskListIdentifier));
+    }
+  }, [dispatch, taskIdentifier, taskListIdentifier]);
 
   useLayoutEffect(() => {
     if (taskIdentifier !== previousTaskIdentifierValue.current) {

@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useState } from "react";
+import React, { useCallback } from 'react';
 import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd';
 import ReactDOM from 'react-dom';
 import * as TaskActions from 'actions/task-actions';
@@ -14,13 +14,14 @@ import {
 } from 'restrictions/task-restrictions';
 import { Container, Title } from './styled';
 import QuickAddSubtask from '../QuickAddSubtask/QuickAddSubtask';
-import { loadSubTasks } from 'actions/task-actions';
 
 const { READ_ONLY } = SINGLE_TASK_RESTRICTIONS_OPTIONS;
 
 const SubtasksSection = ({ selectedTask, restrictions: isReadOnly }) => {
   const dispatch = useDispatch();
+
   const currentUser = useSelector(userProfileSelector);
+  const subtasks = selectedTask?.subtasks;
   const tasksCount = selectedTask.subTasksCount;
   const readOnly = isReadOnly === READ_ONLY;
 
@@ -60,13 +61,6 @@ const SubtasksSection = ({ selectedTask, restrictions: isReadOnly }) => {
       />
     </div>
   );
-
-  const [subtasks, setSubtasks] = useState([]);
-
-  useEffect(() => {
-    dispatch(loadSubTasks(selectedTask))
-      .then(task => setSubtasks(task.subtasks))
-  }, []);
 
   return (
     <Container>

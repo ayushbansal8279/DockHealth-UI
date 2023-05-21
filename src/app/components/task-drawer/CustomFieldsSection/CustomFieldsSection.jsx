@@ -3,7 +3,6 @@
 import React, { useEffect, useCallback, useMemo } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { Grid } from '@mui/material';
-import { getTaskCustomFields } from 'actions/task-drawer-actions';
 import CustomField from 'components/common/CustomField/CustomField';
 import { useBoolean } from 'hooks/useBoolean';
 import { useForm, FormProvider } from 'react-hook-form';
@@ -62,14 +61,6 @@ const CustomFieldsSection = ({ disabled, fieldCategoryType }) => {
   }, [fieldCategoryType, unfilteredTemplates]);
 
   const { 0: emptyVisible, 3: toggleEmptyVisible } = useBoolean(false);
-  useEffect(() => {
-    if (task) {
-      const { identifier, taskList } = task;
-      const taskListIdentifier = taskList?.taskListIdentifier;
-      dispatch(getTaskCustomFields(identifier, taskListIdentifier));
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [dispatch, task?.identifier]);
 
   const updateCustomFields = useCallback(
     ({ taskMetaData }) => {

@@ -76,7 +76,7 @@ const TaskDescription = ({ selectedTask, readOnly, disableMentions }) => {
   useEffect(() => {
     if (selectedTask && !selectedTask.description) {
       setTimeout(() => {
-        descriptionReference.current.focus();
+        descriptionReference.current?.focus();
       }, 0);
     }
   }, [descriptionReference, selectedTask]);
