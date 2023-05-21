@@ -181,20 +181,22 @@ const TaskItemDescription = ({
   };
 
   return (
-    <DescriptionBox width={width} data-test={'foo'}>
+    <DescriptionBox width={width}>
       <Box display="flex" flex={1}>
         <input
           readOnly={!isEditing}
           value={descriptionState}
           onChange={(event) => setDescriptionState(event.target.value)}
           onBlur={(event) => {
-            dispatch(
-              updateTaskDescription(task, {
-                tokenizedDescription: event.target.value,
-                taskMentions: [],
-              }),
-            );
-            setEditing(false);
+            if (task?.description !== event.target.value) {
+              dispatch(
+                updateTaskDescription(task, {
+                  tokenizedDescription: event.target.value,
+                  taskMentions: [],
+                }),
+              );
+              setEditing(false);
+            }
           }}
           style={{
             outline: 'none',
