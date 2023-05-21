@@ -11,6 +11,14 @@ export const RenderOptionStyled = styled.div`
   align-items: center;
   display: flex;
   justify-content: space-between;
+  gap: 10px;
+`;
+
+export const RenderLabelStyled = styled.div`
+  display: flex;
+  justify-content: space-between;
+  flex: 2;
+  width: 100%;
 `;
 
 export const NoOptionTextLabel = styled.span`

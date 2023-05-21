@@ -45,16 +45,16 @@ const SendESignFromTaskModal = () => {
     (event) => {
       const emailValue = event.target.value;
 
-      if (!validateEmail(emailValue)) {
-        setError(true);
-        setContact(null);
-      } else {
+      if (validateEmail(emailValue)) {
         if (!contact) {
           setContact({
             value: emailValue,
           });
         }
         setError(false);
+      } else {
+        setError(true);
+        setContact(null);
       }
     },
     [contact],

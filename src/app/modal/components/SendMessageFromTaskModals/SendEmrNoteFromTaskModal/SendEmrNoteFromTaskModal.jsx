@@ -13,7 +13,7 @@ import palette from 'styles/palette';
 import Button from 'components/common/Button/Button';
 import { closeModal } from 'modal/actions';
 import CustomTextEditor from 'components/common/CustomTextEditor/CustomTextEditor';
-import TextEditor from 'components/common/TextEditor/TextEditor';
+import TextEditor from 'ui-toolkit/Form/TextEditor/TextEditor';
 import Select from 'components/common/Select/Select';
 import { EmrNoteTypeOptions, CommunicationType } from 'helpers/task-helpers';
 import TemplateAutoComplete from 'components/common/TemplateAutoComplete/TemplateAutoComplete';
@@ -47,10 +47,7 @@ function SendEmrNoteFromTaskModal() {
 
   const [isTaskCommentsIncluded, setIsTaskCommentsIncluded] = useState(false);
 
-  const [detailsState, setDetailsState] = useState(() =>
-    // EditorState.createEmpty(),
-    {},
-  );
+  const [detailsState, setDetailsState] = useState('');
 
   const insertTextFromTask = useCallback(
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -137,12 +134,13 @@ function SendEmrNoteFromTaskModal() {
         <TextEditorContainerStyled>
           <CustomTextEditor label="EHR note">
             <TextEditor
-              readOnly={false}
-              minHeight={100}
-              disableMentions
-              showToolbar
-              state={detailsState}
+              value={detailsState}
+              placeholder="EHR note"
               onChange={setDetailsState}
+              onBlur={setDetailsState}
+              enabled={{
+                mentions: false,
+              }}
             />
           </CustomTextEditor>
         </TextEditorContainerStyled>

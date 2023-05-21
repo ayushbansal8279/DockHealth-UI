@@ -104,7 +104,7 @@ const SendSmsFromTaskModal = () => {
                 return;
               }
               getTemplateDetails(newValue?.identifier, identifier).then(
-                data => {
+                (data) => {
                   setMessage(data?.shortMessage || '');
                 },
               );
