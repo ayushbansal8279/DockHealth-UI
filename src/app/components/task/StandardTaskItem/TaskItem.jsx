@@ -303,7 +303,7 @@ const TaskItem = React.memo(
 
     const isListAdmin = useMemo(() => {
       const currentUserMember = currentTasklist?.listUsers?.find(
-        u => u.identifier === currentUser?.identifier,
+        (u) => u.identifier === currentUser?.identifier,
       );
       return isMemberAdmin(currentUserMember);
     }, [currentUser, currentTasklist]);
@@ -445,7 +445,7 @@ const TaskItem = React.memo(
         nonAssigneeCompleteDisabledItem &&
         nonAssigneeCompleteDisabledItem?.value === 'false' &&
         assignedToUsers.filter(
-          user => user.identifier === currentUser.identifier,
+          (user) => user.identifier === currentUser.identifier,
         ).length === 0 &&
         !isCreator
       );
@@ -634,9 +634,8 @@ const TaskItem = React.memo(
       },
       [invokeToggleCompleteAction, isCompleted, modalActions, templates],
     );
-    
     const handlePriorityChange = useCallback(
-      taskPriority => {
+      (taskPriority) => {
         onTaskUpdate(taskIdentifier, {
           priority: taskPriority?.toUpperCase() || TaskPriority.LOW,
         });
@@ -856,6 +855,7 @@ const TaskItem = React.memo(
                   bolded
                   paddingLeft="smallPlus"
                   paddingRight="small"
+                  onClick={onClickTaskItem}
                   position="static"
                   isSubtask={isSubtask}
                   isSticky
