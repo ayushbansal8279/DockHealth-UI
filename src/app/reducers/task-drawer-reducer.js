@@ -169,11 +169,18 @@ const TaskReducer = (state = initialState, action) => {
     default: {
       if (state.selectedTask) {
         return TaskBaseReducer(state, action, (reducerState, newTask) => {
+          if (state.selectedTask.taskIdentifier === newTask.taskIdentifier) {
+            return {
+              ...reducerState,
+              selectedTask: {
+                ...state.selectedTask,
+                ...newTask,
+              },
+            };
+          }
           return {
             ...reducerState,
-            // I've commented out this line below as a fix to: https://dock-health.atlassian.net/browse/DHWV-56
-            // There's a possibility this fix may have broken something else
-            // selectedTask: newTask,
+            selectedTask: newTask,
           };
         });
       }

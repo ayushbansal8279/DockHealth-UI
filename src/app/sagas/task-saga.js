@@ -349,7 +349,7 @@ function* updateTaskDueDate({ task, dueDate }) {
     yield put({
       type: ActionTypes.UPDATE_TASK_DUE_DATE_FAILURE,
       task,
-      dueDate: task.dueDate,
+      dueDate: task?.dueDate,
     });
     yield put(showGlobalErrorAlert());
   }

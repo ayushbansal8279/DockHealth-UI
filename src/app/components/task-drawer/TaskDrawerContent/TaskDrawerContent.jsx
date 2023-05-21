@@ -137,7 +137,7 @@ const TaskDrawerContent = ({
   const currentUser = useSelector(userProfileSelector);
   const isListAdmin = useMemo(() => {
     const currentUserMember = currentTasklist?.listUsers?.find(
-      u => u.identifier === currentUser?.identifier,
+      (u) => u.identifier === currentUser?.identifier,
     );
     return isMemberAdmin(currentUserMember);
   }, [currentUser, currentTasklist]);
@@ -278,8 +278,8 @@ const TaskDrawerContent = ({
     return (
       nonAssigneeCompleteDisabledItem &&
       nonAssigneeCompleteDisabledItem?.value === 'false' &&
-      selectedTask?.assignedToUsers.filter(
-        user => user.identifier === currentUser.identifier,
+      selectedTask?.assignedToUsers?.filter(
+        (user) => user.identifier === currentUser.identifier,
       ).length === 0 &&
       !isCreator
     );
@@ -521,7 +521,10 @@ const TaskDrawerContent = ({
         )}
         <Grid item xs={12} md={6} style={styleLeftColumn(isMobile)}>
           <div>
-            <DueDateSection disabled={restrictions?.dueDate === DISABLED} />
+            <DueDateSection
+              disabled={restrictions?.dueDate === DISABLED}
+              selectedTask={selectedTask}
+            />
           </div>
         </Grid>
         <Grid item xs={12} md={6} style={styleRightColumn(isMobile)}>
@@ -555,16 +558,17 @@ const TaskDrawerContent = ({
             <CustomFieldsSection fieldCategoryType="TASK_CORE" />
           </Grid>
         )}
-        {restrictions?.labels !== DISABLED && taskLabelsLocation === 'default' && (
-          <Grid item xs={12} style={styleFullRow(isMobile)}>
-            <div>
-              <LabelsSection
+        {restrictions?.labels !== DISABLED &&
+          taskLabelsLocation === 'default' && (
+            <Grid item xs={12} style={styleFullRow(isMobile)}>
+              <div>
+                <LabelsSection
                   onTaskUpdate={onTaskUpdate}
                   selectedTask={selectedTask}
                 />
-            </div>
-          </Grid>
-        )}
+              </div>
+            </Grid>
+          )}
         {!taskAttachmentsDisabled && (
           <Grid item xs={12} style={styleFullRow(isMobile)}>
             <AttachmentsSection
@@ -600,13 +604,14 @@ const TaskDrawerContent = ({
             <CustomFieldsSection fieldCategoryType="TASK_OTHER" />
           </Grid>
         )}
-        {restrictions?.labels !== DISABLED && taskLabelsLocation === 'bottom' && (
-          <Grid item xs={12} style={styleFullRow(isMobile)}>
-            <div>
-              <LabelsSection onTaskUpdate={onTaskUpdate} />
-            </div>
-          </Grid>
-        )}
+        {restrictions?.labels !== DISABLED &&
+          taskLabelsLocation === 'bottom' && (
+            <Grid item xs={12} style={styleFullRow(isMobile)}>
+              <div>
+                <LabelsSection onTaskUpdate={onTaskUpdate} />
+              </div>
+            </Grid>
+          )}
       </Grid>
       <TaskDrawerDivider />
       {restrictions?.history !== DISABLED && (
