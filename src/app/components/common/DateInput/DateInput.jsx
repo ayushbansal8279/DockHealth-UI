@@ -43,7 +43,7 @@ const DateInput = React.forwardRef(
 
     const handleClose = useCallback(() => {
       unsetOpen();
-      if (textInputReference.current) textInputReference.current.focus();
+      if (textInputReference?.current) textInputReference?.current?.focus();
     }, [textInputReference, unsetOpen]);
 
     const momentDate =
