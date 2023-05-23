@@ -53,7 +53,7 @@ const LoginPassword = () => {
 
             const nextPathname = sessionStorage.getItem('next-page');
             if (nextPathname && nextPathname !== '') {
-              sessionStorage.setItem('next-page', '');
+              sessionStorage.removeItem('next-page');
               history.push(nextPathname);
             } else {
               history.push('/core/home/my-tasks');

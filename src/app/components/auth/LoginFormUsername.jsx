@@ -51,6 +51,15 @@ const LoginFormUsername = props => {
             const patientIdentifier = sessionStorage.getItem(
               'PatientIdentifier',
             );
+
+            sessionStorage.setItem('sessionStartTime', new Date().getTime());
+            const nextPathname = sessionStorage.getItem('next-page');
+            if (nextPathname && nextPathname !== '') {
+              sessionStorage.removeItem('next-page');
+              window.location.href = `/#${nextPathname}`;
+              return;
+            }
+
             if (
               patientIdentifier &&
               patientIdentifier !== '' &&
