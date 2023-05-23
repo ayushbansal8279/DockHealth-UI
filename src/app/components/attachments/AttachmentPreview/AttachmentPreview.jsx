@@ -124,7 +124,11 @@ const AttachmentPreview = React.memo(props => {
         {displayType === PREVIEW_DISPLAY_TYPES.PDF && (
           <StyledPdfDocument file={fileSource} onLoadSuccess={onPdfLoadSuccess}>
             {range(0, numberOfPdfPages).map(pageIndex => (
-              <StyledPdfPage key={pageIndex} pageNumber={pageIndex + 1} />
+              <StyledPdfPage
+                key={pageIndex}
+                pageNumber={pageIndex + 1}
+                scale="1.5"
+              />
             ))}
           </StyledPdfDocument>
         )}
