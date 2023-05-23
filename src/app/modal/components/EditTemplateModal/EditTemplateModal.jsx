@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { FormProvider, useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { Box, Grid } from '@mui/material';
@@ -8,10 +8,7 @@ import FormInput from 'components/common/Input/FormInput';
 import Button from 'components/common/Button/Button';
 import FormSelect from 'components/common/Select/FormSelect';
 import { createTemplate, editTemplate } from 'api/template-api';
-import TextEditor from 'components/common/TextEditor/TextEditor';
 import CustomTextEditor from 'components/common/CustomTextEditor/CustomTextEditor';
-// import { createMentionEntities } from 'components/common/TextEditor/create-mention-entities';
-// import { EditorState } from 'draft-js';
 import AlertMessages from 'alert/AlertMessages';
 import { CloseIconButton, CloseIcon } from '../styled';
 import {
@@ -25,6 +22,7 @@ import {
   TEMPLATE_TYPE_OPTIONS,
   validationSchema,
 } from './helpers';
+import TextEditor from 'ui-toolkit/Form/TextEditor/TextEditor';
 
 // eslint-disable-next-line sonarjs/cognitive-complexity
 const EditTemplateModal = ({ closeModal, template, onAdded, onUpdated }) => {
@@ -92,35 +90,9 @@ const EditTemplateModal = ({ closeModal, template, onAdded, onUpdated }) => {
       });
   };
 
-  const initialSubjectData = useMemo(() => {
-    // if (!template?.shortMessage) return;
-    // const newContent = createMentionEntities(
-    //   template.shortMessage,
-    //   template.shortMessage,
-    //   [],
-    //   false,
-    // );
-    // eslint-disable-next-line consistent-return
-    // return EditorState.push(EditorState.createEmpty(), newContent);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [template]);
-
-  const initialMessageData = useMemo(() => {
-    // if (!template?.details) return;
-    // const enableRichText =
-    //   templateTypeValue === TEMPLATE_TYPES.EMAIL ||
-    //   templateTypeValue === TEMPLATE_TYPES.EMR_NOTE ||
-    //   templateTypeValue === TEMPLATE_TYPES.FAX;
-    // const newContent = createMentionEntities(
-    //   template.details,
-    //   template.details,
-    //   [],
-    //   enableRichText,
-    // );
-    // eslint-disable-next-line consistent-return
-    // return EditorState.push(EditorState.createEmpty(), newContent);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [template, templateTypeValue]);
+  useEffect(() => {
+    console.log("!!!:", template);
+  }, [template])
 
   return (
     <AddPatientFieldModalWrapper>
@@ -167,9 +139,9 @@ const EditTemplateModal = ({ closeModal, template, onAdded, onUpdated }) => {
                         }
                       >
                         <TextEditor
-                          initialState={initialSubjectData}
-                          disableMentions
-                          onBlur={(_, text) => setValue('shortMessage', text)}
+                          type="input"
+                          initialValue={template?.shortMessage}
+                          onBlur={(_, { value }) => setValue('shortMessage', value)}
                         />
                       </CustomTextEditor>
                     </Grid>
@@ -178,11 +150,9 @@ const EditTemplateModal = ({ closeModal, template, onAdded, onUpdated }) => {
                     <Grid item xs={12}>
                       <CustomTextEditor label="Message">
                         <TextEditor
-                          initialState={initialMessageData}
-                          showToolbar
-                          disableMentions
-                          isDrawerEditor
-                          onBlur={(_, text) => setValue('details', text)}
+                          type="textarea"
+                          initialValue={template?.details}
+                          onBlur={(_, { value }) => setValue('details', value)}
                         />
                       </CustomTextEditor>
                     </Grid>

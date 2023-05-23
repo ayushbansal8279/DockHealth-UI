@@ -37,7 +37,7 @@ export const StateContext = createContext([{
 }]);
 
 export default function TextEditor(props) {
-  const { value, readonly, mentions } = props;
+  const { value, initialValue, readonly, mentions } = props;
   const initial = useMemo(
     () => ({
       editable: !readonly,
@@ -56,7 +56,7 @@ export default function TextEditor(props) {
         MentionNode,
       ],
       editorState() {
-        $convertFromMarkdownString(value ?? '', [
+       $convertFromMarkdownString(value || initialValue || '', [
           ...TRANSFORMERS,
           MENTION(mentions),
         ]);
@@ -65,12 +65,12 @@ export default function TextEditor(props) {
         throw error;
       },
     }),
-    [readonly, value, mentions],
+    [value, initialValue, readonly, mentions],
   );
 
   const [isInitialized, setInitialized] = useState(false);
   const [isActive, setActive] = useState(false);
-  const [previousValue, setPreviousValue] = useState(value);
+  const [previousValue, setPreviousValue] = useState(value || initialValue);
 
   const state = {
     isInitialized,
@@ -84,7 +84,7 @@ export default function TextEditor(props) {
   return (
     <LexicalComposer initialConfig={initial}>
       <StateContext.Provider value={[state]}>
-        <EditableContent {...props}>{null}</EditableContent>
+        <EditableContent {...props} value={value || initialValue} />
       </StateContext.Provider>
     </LexicalComposer>
   );
@@ -150,10 +150,6 @@ function EditableContent({
 
   useLayoutEffect(() => {
     editor.update(() => {
-      $convertFromMarkdownString(value ?? '', [
-        ...TRANSFORMERS,
-        MENTION(mentions),
-      ]);
       if (value && value[value.length - 1] === ' ') {
         const selection = $getSelection();
         if (selection) {
@@ -161,7 +157,7 @@ function EditableContent({
         }
       }
     });
-  }, [editor, mentions, value]);
+  }, [editor, value, mentions]);
 
   const handleFocus = () => {
     if (!state.isActive) {
@@ -180,7 +176,7 @@ function EditableContent({
     }
   };
 
-  const handleContentClick = () => {
+  const handleClick = () => {
     state.setInitialized(true);
     state.setActive(true);
     handleFocus();
@@ -193,7 +189,7 @@ function EditableContent({
           open={state.isActive}
         />
       )}
-      <S.Content onClick={handleContentClick}>
+      <S.Content onClick={handleClick}>
         <RichTextPlugin
           contentEditable={<S.Input />}
           ErrorBoundary={LexicalErrorBoundary}
