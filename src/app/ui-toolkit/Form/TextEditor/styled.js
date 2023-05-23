@@ -8,8 +8,8 @@ export const Container = styled(Box)`
   font-family: 'Roboto Condensed', sans-serif;
   font-size: 15px;
   width: 100%;
-  min-height: ${(props) => (props.type === 'textarea' ? '75px' : '100%')};
-  padding-bottom: ${(props) => (props.type === 'textarea' ? '5px' : '0')};
+  min-height: ${(props) => (props.$type === 'textarea' ? '75px' : '100%')};
+  padding-bottom: ${(props) => (props.$type === 'textarea' ? '5px' : '0')};
 `;
 
 export const Content = styled(Box)`
