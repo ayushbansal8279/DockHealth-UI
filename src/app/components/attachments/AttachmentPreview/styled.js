@@ -7,7 +7,7 @@ import palette from 'styles/palette';
 export const AttachmentPreviewDialog = withStyles({
   paper: {
     borderRadius: 0,
-    maxWidth: '60.5rem',
+    maxWidth: '85%',
     overflowY: 'hidden',
   },
 })(Dialog);

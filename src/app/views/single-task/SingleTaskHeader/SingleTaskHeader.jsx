@@ -23,7 +23,7 @@ const SingleTaskHeader = () => {
   return (
     <LayoutHeader horizontalSticky>
       <SingleTaskHeaderNav>
-        <LayoutHeader.Title
+        {/* <LayoutHeader.Title
           title={
             <Box width="100px" onClick={goBack}>
               <Button disabled={history.length === 0} variant="text" fullWidth>
@@ -35,10 +35,10 @@ const SingleTaskHeader = () => {
               </Button>
             </Box>
           }
-        />
+        /> */}
         <LayoutHeader.Spacer />
         <Box>
-          <BlueButton onClick={goToDashboard}>view my dashboard</BlueButton>
+          <BlueButton onClick={goToDashboard}>Back to Home</BlueButton>
         </Box>
         <LayoutHeader.Spacer />
       </SingleTaskHeaderNav>
