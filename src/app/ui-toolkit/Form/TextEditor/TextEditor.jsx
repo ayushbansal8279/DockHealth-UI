@@ -160,8 +160,12 @@ function EditableContent({
   }, [editor, value, mentions]);
 
   const handleFocus = () => {
+    if (!state.isInitialized) {
+      state.setInitialized(true);
+    }
     if (!state.isActive) {
       console.log("#$# handleFocus", state.isActive);
+      state.setActive(true);
       editor.update(() => {
         const value = $convertToMarkdownString([...TRANSFORMERS, MENTION([])]);
         const editorState = editor.getEditorState().toJSON();
@@ -171,25 +175,24 @@ function EditableContent({
             mentions.push(node.mention);
           }
         });
+        editor.focus();
         onFocus(editor, { value, mentions });
       });
     }
   };
 
-  const handleClick = () => {
-    state.setInitialized(true);
-    state.setActive(true);
-    handleFocus();
-  };
-
   return (
-    <S.Container type={type} className={className}>
+    <S.Container
+      $type={type}
+      className={className}
+      onClick={handleFocus}
+    >
       {type === 'textarea' && enabled.toolbar && (
         <ToolbarPlugin
-          open={state.isActive}
+          open={true /* state.isActive 8 */}
         />
       )}
-      <S.Content onClick={handleClick}>
+      <S.Content>
         <RichTextPlugin
           contentEditable={<S.Input />}
           ErrorBoundary={LexicalErrorBoundary}

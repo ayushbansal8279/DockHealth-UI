@@ -1,11 +1,11 @@
 import React from 'react';
 import TextEditor from '../TextEditor/TextEditor';
-import { Container } from './styled';
+import * as S from './styled';
 
 export default function TextArea(props) {
   return (
-    <Container>
+    <S.Container>
       <TextEditor type="textarea" {...props} />
-    </Container>
+    </S.Container>
   );
 }

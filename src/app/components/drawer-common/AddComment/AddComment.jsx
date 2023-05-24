@@ -1,7 +1,5 @@
-import React, { useEffect, useRef, useState, useCallback } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { useSelector } from 'react-redux';
-import { useMentionsEditorState } from 'components/common/TextEditor/use-mentions-editor-state';
-import { convertFromEditorStateToOutput } from 'components/common/TextEditor/helpers';
 import { useBoolean } from 'hooks/useBoolean';
 import { userProfileSelector } from 'selectors/user-selectors';
 import Loader, { LoaderSizes } from 'components/common/Loader/Loader';
@@ -22,46 +20,10 @@ const AddComment = ({
 }) => {
   const addCommentReference = useRef();
   const addCommentContainerReference = useRef();
-  const [isFocused, setIsFocused] = useState(false);
+  const [isFocused] = useState(false);
   const currentUser = useSelector(userProfileSelector);
-  const [commentState, setCommentState] = useMentionsEditorState();
-  const [isAddingComment, setAddingComment, unsetAddingComment] =
+  const [isAddingComment] =
     useBoolean(false);
-
-  const onCommentChange = useCallback(
-    (state) => {
-      if (!isAddingComment) {
-        setCommentState(state);
-      }
-    },
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-    [isAddingComment],
-  );
-
-  const onSubmit = useCallback(() => {
-    setAddingComment();
-
-    const newComment = convertFromEditorStateToOutput(commentState, true);
-    const commentTokenizedText = newComment.tokenizedText;
-
-    if (commentTokenizedText !== undefined && commentTokenizedText === '') {
-      unsetAddingComment();
-      return;
-    }
-
-    onAdd(commentTokenizedText);
-    setTimeout(() => {
-      unsetAddingComment();
-      setCommentState();
-    }, 0);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [onAdd, commentState, setAddingComment, unsetAddingComment]);
-
-  const saveComment = useCallback(() => {
-    if (!isAddingComment) {
-      onSubmit();
-    }
-  }, [isAddingComment, onSubmit]);
 
   useEffect(() => {
     if (autoFocus && addCommentReference?.current) {
@@ -78,16 +40,15 @@ const AddComment = ({
     }
   }, [autoFocus]);
 
-  const [description, setDescription] = useState(null)
+  const [description, setDescription] = useState(null);
 
   const handleTextEditorChange = (_, { value }) => {
     setDescription(value);
   };
 
-  const handleTextEditorKeyDown = (editor, { value, key }) => {
-    if (key === 'Enter') {
+  const handleTextEditorKeyDown = (_, { value, key, shiftKey }) => {
+    if (key === 'Enter' && !shiftKey) {
       onAdd(value);
-      // console.log(editor);
       setDescription('');
     }
   };
@@ -98,7 +59,6 @@ const AddComment = ({
     <AddCommentContainer ref={addCommentContainerReference}>
       <UserAvatar user={currentUser} size={34} />
       <AddCommentInputContainer isFocused={isFocused}>
-        {/*<RichTextEditor noStyle textArea isToolbarActive onSubmit={handleSubmit} value={description} onChange={setDescription}/>*/}
         <TextEditor
           type="textarea"
           value={description}
@@ -109,41 +69,6 @@ const AddComment = ({
             mentions: true,
           }}
         />
-        {/*<TextEditor*/}
-        {/*  showToolbar*/}
-        {/*  ref={addCommentReference}*/}
-        {/*  taskListIdentifier={taskListIdentifier}*/}
-        {/*  disableMentions={disableMentions}*/}
-        {/*  placeholder="Leave a comment and press enter on your keyboard to save"*/}
-        {/*  fullHeight*/}
-        {/*  getFocusFromParent={isFocused}*/}
-        {/*  onFocus={() => {*/}
-        {/*    setIsFocused(true);*/}
-        {/*  }}*/}
-        {/*  onBlur={() => {*/}
-        {/*    saveComment();*/}
-        {/*    setIsFocused(false);*/}
-        {/*  }}*/}
-        {/*  state={commentState}*/}
-        {/*  onChange={onCommentChange}*/}
-        {/*  keyBindingFn={(event) => {*/}
-        {/*    if (event.keyCode === 13 && event.shiftKey) {*/}
-        {/*      return undefined;*/}
-        {/*    }*/}
-        {/*    if (event.keyCode === 13) {*/}
-        {/*      return 'enter-command';*/}
-        {/*    }*/}
-        {/*    return undefined;*/}
-        {/*  }}*/}
-        {/*  handleKeyCommand={(command) => {*/}
-        {/*    if (command === 'enter-command') {*/}
-        {/*      addCommentReference.current.blur();*/}
-        {/*      return 'handled';*/}
-        {/*    }*/}
-
-        {/*    return 'not-handled';*/}
-        {/*  }}*/}
-        {/*/>*/}
       </AddCommentInputContainer>
       {isAddingComment && (
         <AddCommentLoaderContainer>

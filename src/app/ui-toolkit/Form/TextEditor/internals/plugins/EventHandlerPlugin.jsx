@@ -46,7 +46,7 @@ export default function EventHandlerPlugin({
 
   const handleKeyDown = debounce((event) => {
     if (state.isActive) {
-      const { key } = event;
+      const { key, shiftKey } = event;
       editor.update(() => {
         const value = $convertToMarkdownString([...TRANSFORMERS, MENTION([])]);
         const editorState = editor.getEditorState().toJSON();
@@ -56,7 +56,7 @@ export default function EventHandlerPlugin({
             mentions.push(node.mention);
           }
         });
-        onKeyDown(editor, { key, value, mentions });
+        onKeyDown(editor, { key, value, mentions, shiftKey });
         setDirty(true);
       });
     }
