@@ -185,7 +185,6 @@ const TaskItem = React.memo(
       );
     });
 
-    if (!task) return;
 
     const {
       taskIdentifier,
@@ -817,6 +816,8 @@ const TaskItem = React.memo(
         />
       );
     }
+
+    if (!task) return;
 
     return (
       <>
