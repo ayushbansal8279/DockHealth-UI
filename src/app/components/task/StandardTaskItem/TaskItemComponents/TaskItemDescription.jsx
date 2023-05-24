@@ -168,18 +168,6 @@ const TaskItemDescription = ({
     setEditing(false);
   };
 
-  const handleTextEditorKeyDown = (_, { key, value }) => {
-    if (key === 'Enter') {
-      dispatch(
-        updateTaskDescription(task, {
-          tokenizedDescription: value,
-          taskMentions: [],
-        }),
-      );
-      setEditing(false);
-    }
-  };
-
   return (
     <DescriptionBox width={width}>
       <Box display="flex" flex={1}>

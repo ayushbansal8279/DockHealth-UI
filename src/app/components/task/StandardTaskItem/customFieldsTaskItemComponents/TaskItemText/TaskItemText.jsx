@@ -42,8 +42,8 @@ const TaskItemText = ({ value = '', onChange, readOnly = false }) => {
   };
 
   // eslint-disable-next-line no-shadow
-  const handleTextEditorKeyDown = (_, { value, key }) => {
-    if (key === 'Enter') {
+  const handleTextEditorKeyDown = (_, { value, key, shiftKey }) => {
+    if (key === 'Enter' && !shiftKey) {
       onChange(value);
     }
   };

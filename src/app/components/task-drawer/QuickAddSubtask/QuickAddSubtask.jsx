@@ -69,7 +69,7 @@ const QuickAddSubtask = () => {
   }
 
   const handleTextEditorKeyDown = (_, { value, key }) => {
-    if (key === "Enter") {
+    if (key === 'Enter') {
       dispatch(
         addSubtask(taskIdentifier, { description: value })
       );
