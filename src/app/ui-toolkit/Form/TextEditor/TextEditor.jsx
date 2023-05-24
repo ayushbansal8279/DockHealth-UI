@@ -150,6 +150,15 @@ function EditableContent({
 
   useLayoutEffect(() => {
     editor.update(() => {
+      $convertFromMarkdownString(value ?? '', [
+        ...TRANSFORMERS,
+        MENTION(mentions),
+      ]);
+    });
+  }, [value]);
+
+  useLayoutEffect(() => {
+    editor.update(() => {
       if (value && value[value.length - 1] === ' ') {
         const selection = $getSelection();
         if (selection) {
