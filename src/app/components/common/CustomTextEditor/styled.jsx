@@ -4,13 +4,13 @@ import React from 'react';
 import palette from 'styles/palette';
 import { InputLabel } from '@mui/material';
 import { fontSizes, fontWeights } from 'styles/font';
-import spacing from 'styles/spacing';
 
 export const TextEditorFormStyleContainer = styled.div`
   background-color: #f7fafb !important;
   border-top-left-radius: 4px;
   border-top-right-radius: 4px;
   padding: 10px;
+  height: 100%;
   border-bottom: ${({ focused, hasError }) => {
     if (!hasError) {
       return focused ? '2px solid #0ca1c7' : '1px solid #8492a4';
