@@ -16,16 +16,19 @@ export const DropdownSelect = styled(Select)`
   & .MuiSelect-root {
     padding: 0px;
     background: white;
+    height: 40px;
   }
   & .MuiSelect-filled.MuiSelect-filled {
     padding-right: 0;
+    height: 40px;
   }
   & .MuiSelect-root:before {
     display: none;
   }
   & .MuiSelect-select {
     padding: 0px;
-    background-color: cream
+    background-color: cream;
+    height: 40px;
   }
 `;
 
