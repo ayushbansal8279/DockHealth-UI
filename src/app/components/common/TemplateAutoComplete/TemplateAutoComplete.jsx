@@ -58,8 +58,8 @@ const TemplateAutoComplete = ({
             })),
         );
       }
+      dataLoaded.current = true;
     });
-    dataLoaded.current = true;
 
     return () => {
       active = false;

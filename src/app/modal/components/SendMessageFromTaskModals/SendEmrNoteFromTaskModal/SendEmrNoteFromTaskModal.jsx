@@ -52,14 +52,7 @@ function SendEmrNoteFromTaskModal() {
   const insertTextFromTask = useCallback(
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     (meta) => {
-      // const currentState = convertFromEditorStateToOutput(detailsState, true);
-      // const newState = createMentionEntities(
-      //   `${currentState.meta}\n ${meta.meta}`,
-      //   `${currentState.tokenizedText}\n${meta.tokenized}`,
-      //   [...currentState.mentions, taskMentions],
-      //   true,
-      // );
-      // setDetailsState(EditorState.push(detailsState, newState));
+      setDetailsState((previous) => `${previous} ${meta.tokenized}`);
     },
     // eslint-disable-next-line react-hooks/exhaustive-deps
     [detailsState, taskMentions],
@@ -71,6 +64,13 @@ function SendEmrNoteFromTaskModal() {
     setIsTaskDetailsIncluded(false);
     // setDetailsState(EditorState.createEmpty());
   }, []);
+
+  const handleDetailsChange = useCallback(
+    (paramters, { value }) => {
+      setDetailsState(value);
+    },
+    [setDetailsState],
+  );
 
   const handleOptionChange = (event) => {
     const { value } = event.target;
@@ -136,8 +136,8 @@ function SendEmrNoteFromTaskModal() {
             <TextEditor
               value={detailsState}
               placeholder="EHR note"
-              onChange={setDetailsState}
-              onBlur={setDetailsState}
+              onChange={handleDetailsChange}
+              onBlur={handleDetailsChange}
               enabled={{
                 mentions: false,
               }}
@@ -150,7 +150,7 @@ function SendEmrNoteFromTaskModal() {
           uppercase
           width="150px"
           variant="primary"
-          disabled={!detailsState.getCurrentContent().hasText()}
+          disabled={!detailsState || detailsState === ''}
           onClick={() => {
             dispatch(
               sendEmrForTask({

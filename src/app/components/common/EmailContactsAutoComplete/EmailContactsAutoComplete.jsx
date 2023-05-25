@@ -225,11 +225,6 @@ const EmailContactsAutoComplete = ({
       }}
       renderInput={(parameters) => {
         return (
-          // <TextField
-          //   {...parameters}
-          //   label="Checkboxes"
-          //   placeholder="Favorites"
-          // />
           <Input
             {...parameters}
             helperText={error ? errorMessage : null}
