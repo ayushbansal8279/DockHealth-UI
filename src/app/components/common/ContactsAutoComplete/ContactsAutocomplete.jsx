@@ -130,7 +130,7 @@ const ContactsAutoComplete = ({
       getOptionSelected={(option, value) => option.value === value.value}
       getOptionLabel={(option) => option.value ?? option}
       renderOption={(props, option) => (
-        <RenderOptionStyled>
+        <RenderOptionStyled {...props}>
           {option.label}
           <span>({option.value})</span>
         </RenderOptionStyled>

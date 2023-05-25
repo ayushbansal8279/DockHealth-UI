@@ -41,12 +41,10 @@ import {
   AddEditContactLink,
 } from '../styled';
 import { makeFaxNumber, renderAddOrEdit, validateFaxInput } from '../helpers';
-import { Message } from '@mui/icons-material';
 
 const SendFaxFromTaskModal = () => {
   const dispatch = useDispatch();
-  // const [message, setMessage] = useState(() => EditorState.createEmpty());
-  const [message, setMessage] = useState({});
+  const [message, setMessage] = useState('');
   const [faxError, setFaxError] = useState(false);
   const [contact, setContact] = useState(null);
   const [show, setShow] = useState(false);
@@ -90,7 +88,15 @@ const SendFaxFromTaskModal = () => {
   };
   const isValidToSend = !!(
     validateFaxInput(contact?.value ?? '') &&
-    message.getCurrentContent().hasText()
+    message &&
+    message !== ''
+  );
+
+  const handleMessageChange = useCallback(
+    (paramters, { value }) => {
+      setMessage(value);
+    },
+    [setMessage],
   );
 
   return (
@@ -148,12 +154,11 @@ const SendFaxFromTaskModal = () => {
             placeholder="Pick template"
             onChange={(event, newValue, reason) => {
               if (reason === 'clear') {
-                // setMessage(() => EditorState.createEmpty());
+                setMessage('');
               }
               getTemplateDetails(newValue?.identifier, identifier).then(
                 (data) => {
-                  const text = addStylesToText(data?.details ?? '');
-                  setMessage(EditorState.push(message, text));
+                  setMessage((previous) => `${previous} ${data?.details}`);
                 },
               );
             }}
@@ -161,20 +166,11 @@ const SendFaxFromTaskModal = () => {
           />
           <TextEditorContainerStyled>
             <CustomTextEditor label="Fax Cover Message">
-              {/* <TextEditor
-                readOnly={false}
-                minHeight={100}
-                disableMentions
-                showToolbar
-                state={message}
-                onChange={setMessage}
-              /> */}
               <TextEditor
-                value={Message}
+                value={message}
                 placeholder="Fax Message"
-                onChange={setMessage}
-                onBlur={setMessage}
-                // mentions={selectedTask?.taskMentions}
+                onChange={handleMessageChange}
+                onBlur={handleMessageChange}
                 enabled={{
                   mentions: false,
                 }}
