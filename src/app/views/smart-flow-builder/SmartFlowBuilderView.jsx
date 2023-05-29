@@ -54,7 +54,7 @@ import { openDrawer } from 'actions/workflow-drawer-actions';
 import { Box, ClickAwayListener, Paper, Popper } from '@mui/material';
 import DecisionTaskElementIcon from 'img/template/decision-task-icon';
 import Tooltip from 'components/common/Tooltip/Tooltip';
-import { Controls, Position, ReactFlowProvider } from 'reactflow';
+import { Controls, Position, ReactFlowProvider, MarkerType } from 'reactflow';
 import TaskDrawer from 'components/task-drawer/TaskDrawer/TaskDrawer';
 import {
   NodeType,
@@ -114,6 +114,19 @@ const linkTypes = {
   [LinkType.DECISION]: DecisionTaskLink,
   [LinkType.TEMPORARY]: TemporaryTaskLink,
   [LinkType.TEMPORARY_DECISION]: TemporaryDecisionTaskLink,
+};
+
+const DEFAULT_EDGE = {
+  type: 'REGULAR',
+  style: {
+    strokeWidth: 1
+  },
+  markerEnd: {
+    type: MarkerType.ArrowClosed,
+    width: 8,
+    height: 8,
+    strokeWidth: 1
+  },
 };
 
 const SmartFlowBuilderView = () => {
@@ -686,6 +699,7 @@ const SmartFlowBuilderView = () => {
                 nodesDraggable={isCurrentUserEditor}
                 nodesConnectable={isCurrentUserEditor}
                 elementsSelectable={isCurrentUserEditor}
+                defaultEdgeOptions={DEFAULT_EDGE}
               >
                 <Controls showInteractive={isCurrentUserEditor} />
               </ReactFlowAdapter>
