@@ -6,9 +6,13 @@ import palette from 'styles/palette';
 import spacing from 'styles/spacing';
 
 export const StyledDataGrid = styled(DataGrid)`
+  margin-bottom: 48px;
+  
   &.MuiDataGrid-root {
     // max-width: 1179px;
+    background-color: white;
   }
+  
   && {
     &.MuiDataGrid-sortIcon {
       background: ${palette.brightBlue};
@@ -16,6 +20,23 @@ export const StyledDataGrid = styled(DataGrid)`
       padding: 1px;
       border-radius: 50%;
     }
+  }
+  
+  & .MuiDataGrid-footerContainer {
+    p {
+      margin-bottom: 0;
+    }
+  }
+  
+  & .MuiSelect-select {
+    font-family: "Roboto Condensed", sans-serif;
+    font-weight: 400;
+    font-size: 0.875rem;
+    line-height: 1.43;
+    flex-shrink: 0;
+    margin-top: 2px;
+    padding-right: 0 !important;
+    padding-left: 0;
   }
 
   &.MuiDataGrid-columnHeaderTitleContainer {

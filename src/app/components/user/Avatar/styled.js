@@ -9,8 +9,10 @@ const getScaledSize = ({ normalSize, propSize }) =>
   );
 
 export const BackgroundContainer = styled.div`
+  display: inline-block;
   background-color: ${palette.white};
   border-radius: 50%;
+  width: min-content;
 `;
 
 export const AvatarContainer = styled.div`
