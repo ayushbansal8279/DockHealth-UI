@@ -136,10 +136,17 @@ const PatientsToolbar = () => {
       </Box>
       {!searchValue && (
         <SearchHelperText>
-          Dock is connected to your EHR. Please search by name or medical record
-          number to find a patient.
+          Dock is connected to your EHR. Please search by first name or last
+          name or medical record number to find a patient.
         </SearchHelperText>
       )}
+      <FilterPopover
+        anchorEl={filterButtonReference.current}
+        open={filterOpen}
+        onClose={closeFilter}
+      >
+        <PatientsFilter />
+      </FilterPopover>
     </>
   ) : (
     <>
@@ -198,6 +205,12 @@ const PatientsToolbar = () => {
           </Box>
         </Box>
       </Box>
+      {!searchValue && (
+        <SearchHelperText>
+          Please search by first name or last name or medical record number to
+          find a patient.
+        </SearchHelperText>
+      )}
       <FilterPopover
         anchorEl={filterButtonReference.current}
         open={filterOpen}
