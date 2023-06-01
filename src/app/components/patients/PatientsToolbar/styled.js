@@ -2,7 +2,7 @@
 import styled from 'styled-components';
 import palette from 'styles/palette';
 import { fontWeights, fontSizes } from 'styles/font';
-import spacing from 'styles/spacing';
+// import spacing from 'styles/spacing';
 
 export const ImportButton = styled.button`
   color: ${palette.brightBlue};
@@ -26,7 +26,7 @@ export const InputWrapper = styled.div`
 export const SearchHelperText = styled.p`
   /* max-width: 700px; */
   margin: 0 auto;
-  // padding-top: ${spacing.huge};
+  margin-left: 20px;
   text-align: center;
   font-family: 'Montserrat', sans-serif;
 `;
