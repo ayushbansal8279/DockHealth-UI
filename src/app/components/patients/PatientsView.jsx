@@ -53,7 +53,7 @@ import {
   ContentWrapper,
 } from './styled';
 
-const MAX_PATIENT_ALL_RESULTS = 5000;
+const MAX_PATIENT_ALL_RESULTS = 1000;
 
 // eslint-disable-next-line sonarjs/cognitive-complexity
 const PatientsView = () => {
@@ -104,7 +104,7 @@ const PatientsView = () => {
     dispatch(PatientsActions.getCurrentPatients());
   }, [dispatch]);
 
-  const refreshPatientList = useCallback(
+  const refreshPatientListOnUpload = useCallback(
     async counter => {
       const importDetails = await PatientApi.getLatestPatientImportDetails();
       setPatientImportDetails(importDetails);
@@ -122,7 +122,7 @@ const PatientsView = () => {
       ) {
         setTimeout(() => {
           refreshCounter += 1;
-          refreshPatientList(refreshCounter);
+          refreshPatientListOnUpload(refreshCounter);
         }, 1000);
       } else if (
         refreshCounter === 15 &&
@@ -357,7 +357,8 @@ const PatientsView = () => {
         >
           <PatientsViewContainer>
             <PatientsToolbar
-              refreshPatientList={refreshPatientList}
+              refreshPatients={refreshPatients}
+              refreshPatientListOnUpload={refreshPatientListOnUpload}
               setImportPopoverOpen={setImportPopoverOpen}
             />
             <PatientsListContainer>
@@ -365,18 +366,19 @@ const PatientsView = () => {
                 {listIdentifier === DefaultPatientsListType.ALL_PATIENTS &&
                   patients?.length >= MAX_PATIENT_ALL_RESULTS && (
                     <RefineSearchText>
-                      Only displaying limited number of patient profiles. Please
-                      further refine search!
+                      Only displaying limited number of profiles. Please further
+                      refine search!
                     </RefineSearchText>
                   )}
                 <PatientsList
-                  isFiltered={searchValue}
+                  isFiltered={searchValue && searchValue !== ''}
                   patients={patients}
                   patientImportDetails={patientImportDetails}
                   importPopoverOpen={importPopoverOpen}
                   setImportPopoverOpen={setImportPopoverOpen}
                   hasImportErrors={hasImportErrors}
                   isFetching={isFetchingPatients && !patients}
+                  refreshPatients={refreshPatients}
                 />
               </Grid>
             </PatientsListContainer>
@@ -422,7 +424,7 @@ const PatientsView = () => {
             }}
             downloadTemplate={downloadPatientImportTemplate}
             setImportPopoverOpen={setImportPopoverOpen}
-            refreshPatientList={refreshPatientList}
+            refreshPatientListOnUpload={refreshPatientListOnUpload}
             step={1}
           />
         </Dialog>

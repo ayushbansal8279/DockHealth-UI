@@ -27,7 +27,7 @@ const ImportPatientsModal = ({
   closeModal,
   downloadTemplate,
   setImportPopoverOpen,
-  refreshPatientList,
+  refreshPatientListOnUpload,
 }) => {
   const inputFileReference = useRef(null);
 
@@ -47,12 +47,12 @@ const ImportPatientsModal = ({
           if (loaded === total) {
             closeModal();
             setImportPopoverOpen(true);
-            refreshPatientList();
+            refreshPatientListOnUpload();
           }
         },
       });
     }
-  }, [closeModal, refreshPatientList, setImportPopoverOpen]);
+  }, [closeModal, refreshPatientListOnUpload, setImportPopoverOpen]);
 
   const onDrop = useCallback(
     acceptedFiles => {
@@ -62,13 +62,13 @@ const ImportPatientsModal = ({
             if (loaded === total) {
               closeModal();
               setImportPopoverOpen(true);
-              refreshPatientList();
+              refreshPatientListOnUpload();
             }
           },
         });
       });
     },
-    [closeModal, refreshPatientList, setImportPopoverOpen],
+    [closeModal, refreshPatientListOnUpload, setImportPopoverOpen],
   );
   const { getRootProps, getInputProps, isDragActive } = useDropzone({ onDrop });
 

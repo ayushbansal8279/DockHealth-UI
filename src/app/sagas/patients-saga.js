@@ -17,7 +17,10 @@ import {
 } from 'selectors/patients-selectors';
 import { showGlobalAlert, showGlobalErrorAlert } from 'alert/actions';
 import * as ActionTypes from 'actions/action-types';
-import { PatientsListType } from 'helpers/patient-list-helpers';
+import {
+  PatientsListType,
+  DefaultPatientsListType,
+} from 'helpers/patient-list-helpers';
 import AlertMessages from 'alert/AlertMessages';
 
 function* getPatientsLists() {
@@ -99,11 +102,21 @@ function* updatePatientsListPreferences({ payload }) {
   }
 }
 
-function* initializePatientsListState() {
-  yield all([
-    put(PatientsActions.getCurrentPatientsListDetails()),
-    put(PatientsActions.getCurrentPatients()),
-  ]);
+function* initializePatientsListState({ patientsListIdentifier }) {
+  if (
+    !(
+      patientsListIdentifier === DefaultPatientsListType.ALL_PATIENTS ||
+      patientsListIdentifier === DefaultPatientsListType.ACTIVE_PATIENTS ||
+      patientsListIdentifier === DefaultPatientsListType.ARCHIVED_PATIENTS
+    )
+  ) {
+    yield all([
+      put(PatientsActions.getCurrentPatientsListDetails()),
+      put(PatientsActions.getCurrentPatients()),
+    ]);
+  } else {
+    yield all([put(PatientsActions.getCurrentPatientsListDetails())]);
+  }
 }
 
 function* getCurrentPatientsListFilterOptions() {
@@ -231,6 +244,23 @@ function* filtersChange() {
   yield put(PatientsActions.getCurrentPatientsListFilterOptions());
 }
 
+function* clearPatients() {
+  const patients = [];
+  yield put({
+    type: ActionTypes.GET_CURRENT_PATIENTS_SUCCESS,
+    patients,
+  });
+}
+
+function* clearFilters() {
+  const patients = [];
+  yield put({
+    type: ActionTypes.GET_CURRENT_PATIENTS_SUCCESS,
+    patients,
+  });
+  yield put(PatientsActions.getCurrentPatientsListFilterOptions());
+}
+
 function* addBulkTask({ payload }) {
   try {
     yield call(PatientsApi.patientBulkCreateTask, payload);
@@ -331,18 +361,14 @@ export default function* watchPatients() {
     getCurrentPatientsListDetails,
   );
   yield takeLatest(ActionTypes.GET_CURRENT_PATIENTS, getCurrentPatients);
+  yield takeLatest(ActionTypes.CLEAR_PATIENTS, clearPatients);
   yield takeLatest(
     ActionTypes.GET_CURRENT_PATIENTS_LIST_FILTER_OPTIONS,
     getCurrentPatientsListFilterOptions,
   );
-  yield debounce(300, ActionTypes.CHANGE_PATIENTS_SEARCH_TERM, searchPatients);
-  yield takeLatest(
-    [
-      ActionTypes.SET_PATIENTS_SELECTED_FILTERS,
-      ActionTypes.CLEAR_PATIENTS_FILTERS,
-    ],
-    filtersChange,
-  );
+  yield debounce(300, ActionTypes.SEARCH_PATIENTS, searchPatients);
+  yield takeLatest([ActionTypes.SET_PATIENTS_SELECTED_FILTERS], filtersChange);
+  yield takeLatest([ActionTypes.CLEAR_PATIENTS_FILTERS], clearFilters);
   yield takeEvery(ActionTypes.PATIENT_BULK_CREATE_TASK, addBulkTask);
   yield takeEvery(ActionTypes.PATIENT_BULK_ADD_LABEL, addBulkLabel);
   yield takeEvery(ActionTypes.PATIENT_BULK_DELETE_LABEL, deleteBulkLabel);
