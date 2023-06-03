@@ -1,7 +1,7 @@
 import React from 'react';
 import { useSelector } from 'react-redux';
 import { getCustomerTypeLabel } from 'helpers/customer-type-helper';
-import PatientsEmptyIcon from 'img/patients-empty.svg';
+// import PatientsEmptyIcon from 'img/patients-empty.svg';
 import { userProfileSelector } from 'selectors/user-selectors';
 import { EmptyListContainer, EmptyListIcon, ActionButton } from './styled';
 
@@ -16,12 +16,12 @@ const EmptyFilteredPatientsList = ({
   return (
     <>
       <EmptyListContainer>
-        <EmptyListIcon>
+        {/* <EmptyListIcon>
           <img
             src={PatientsEmptyIcon}
             alt={`Empty ${customerTypeLabel}s list`}
           />
-        </EmptyListIcon>
+        </EmptyListIcon> */}
         {isFiltered && !isFetching && (
           <p>
             <strong>There are no matching {customerTypeLabel}s.</strong>

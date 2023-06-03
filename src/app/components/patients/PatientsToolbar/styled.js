@@ -26,8 +26,7 @@ export const InputWrapper = styled.div`
 export const SearchHelperText = styled.p`
   /* max-width: 700px; */
   margin: 0 auto;
-  margin-left: 20px;
-  text-align: left;
+  text-align: center;
   font-family: 'Montserrat', sans-serif;
 `;
 

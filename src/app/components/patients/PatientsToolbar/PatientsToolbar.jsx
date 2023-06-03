@@ -192,7 +192,7 @@ const PatientsToolbar = () => {
       </Box>
       {emrEntegrationExperience && !searchValue && (
         <SearchHelperText>
-          Dock is connected to your EHR. Search by first name or last name or
+          Dock is connected to your EHR. Search by first name, last name or
           medical record number. You may filter to retrieve specific patients in
           Dock.
         </SearchHelperText>
@@ -200,7 +200,7 @@ const PatientsToolbar = () => {
       {!emrEntegrationExperience && !searchValue && (
         <>
           <SearchHelperText>
-            Search by first name or last name or medical record number. You may
+            Search by first name, last name or medical record number. You may
             filter to retrieve specific {customerTypeLabel.toLowerCase()}s in
             Dock.
           </SearchHelperText>
