@@ -95,6 +95,7 @@ import {
   DetailsButton,
   DecisionCellContainer,
   ActionIconsContainer,
+  PatientMRNAnchor,
 } from '../styled';
 import TaskItemText from './customFieldsTaskItemComponents/TaskItemText/TaskItemText';
 import TaskItemDropdown from './customFieldsTaskItemComponents/TaskItemDropdown/TaskItemDropdown';
@@ -243,6 +244,7 @@ const TaskItem = React.memo(
 
     const selectedOrganization = useSelector(selectedUserOrganizationSelector);
     const currentTasklist = useSelector(currentTaskListSelector);
+    const emrPatientLink = selectedOrganization?.emrPatientLink;
 
     const customHighlightColor = useMemo(() => {
       const customHighlightItem =
@@ -994,11 +996,13 @@ const TaskItem = React.memo(
                     }
                     order={getColumnOrder(PatientTaskItemColumn.MRN)}
                   >
-                    <TaskItemText
-                      readOnly={isPatientDataReadOnly}
-                      value={patient?.mrn}
-                      onChange={handlePatientUpdate('mrn')}
-                    />
+                    <PatientMRNAnchor
+                      href={emrPatientLink.replace('{mrn}', patient?.mrn)}
+                      target="_blank"
+                      rel="noreferrer"
+                    >
+                      {patient?.mrn}
+                    </PatientMRNAnchor>
                   </TaskItemCell>,
                   getColumnOrder(PatientTaskItemColumn.MRN),
                 )}
