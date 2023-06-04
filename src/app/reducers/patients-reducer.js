@@ -9,6 +9,7 @@ const initialState = {
   isFetching: false,
   currentPatientsListIdentifier: null,
   currentPatientsList: null,
+  searchPerformed: false,
 };
 
 const PatientsReducer = (state = initialState, action) => {
@@ -58,6 +59,22 @@ const PatientsReducer = (state = initialState, action) => {
         currentPatientsList: {
           ...state.currentPatientsList,
           isFetchingListDetails: false,
+        },
+      };
+
+    case ActionTypes.SEARCH_PATIENTS:
+      return {
+        ...state,
+        currentPatientsList: {
+          searchPerformed: true,
+        },
+      };
+
+    case ActionTypes.CLEAR_PATIENT_SEARCH:
+      return {
+        ...state,
+        currentPatientsList: {
+          searchPerformed: false,
         },
       };
 
