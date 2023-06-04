@@ -46,7 +46,6 @@ import {
   styleTaskDrawerContainer,
   styleFullRow,
   styleEmailRow,
-  styleFirstRow,
   styleLeftColumn,
   styleRightColumn,
   styleCommentRow,
@@ -71,6 +70,7 @@ const TaskDrawerContent = props => {
     fromFirstAddTask = false,
     hideTour = false,
     hideCloseIcon,
+    stickyHeader = false,
   } = props;
   const {
     closeTaskDrawer: handleCloseTaskDrawer,
@@ -285,7 +285,14 @@ const TaskDrawerContent = props => {
           xs={12}
           alignItems="center"
           justify="space-between"
-          style={styleFirstRow(isMobile)}
+          style={{
+            paddingTop: '0',
+            marginTop: '0',
+            height: '60px',
+            position: stickyHeader ? 'fixed' : 'relative',
+            width: '800px',
+            zIndex: '1000000',
+          }}
         >
           <TopSection
             handleCopyLink={handleCopyLink}
@@ -295,9 +302,10 @@ const TaskDrawerContent = props => {
             onDelete={onDelete}
             onDuplicate={onDuplicate}
             closeTaskDrawer={closeTaskDrawer}
+            style={{ position: 'sticky' }}
           />
         </Grid>
-        {selectedTask && <TaskDrawerDivider />}
+        {selectedTask && <TaskDrawerDivider style={{ marginTop: '60px' }} />}
         <Box
           padding={isMobile ? '8px 16px' : '8px 32px'}
           sx={{ width: '100%' }}

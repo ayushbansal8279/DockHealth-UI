@@ -26,6 +26,7 @@ import * as TaskActions from 'actions/task-actions';
 import { extractTasksAndSubtasks } from 'helpers/tasklist-helpers';
 import { pluck } from 'ramda';
 import { checkIfAllTasksSelected } from 'helpers/bulk-edit-helpers';
+import GlobalSearchToolbar from '../GlobalSearchToolBar/GlobalSearchToolBar';
 
 const GlobalSearchList = ({
   list,
@@ -101,6 +102,7 @@ const GlobalSearchList = ({
     >
       <ListDetailsContainer>
         <StickyContainer left={24} decreaseWidth={2 * 24}>
+          <GlobalSearchToolbar />
           <ListDetailsHeader>
             <ListNameContainer
               container
@@ -165,6 +167,7 @@ const GlobalSearchList = ({
                   dragAndDropDisabled
                   showTasksWithGroup={false}
                   iconColorActive={iconColorActiveItem?.value}
+                  highlightedValue={highlightedValue}
                 />
               )}
             </>

@@ -1,5 +1,6 @@
 import React, { useMemo, useState } from 'react';
 import { Grid } from '@material-ui/core';
+import { useHistory } from 'react-router-dom';
 import moment from 'moment';
 import filter from 'ramda/src/filter';
 import includes from 'ramda/src/includes';
@@ -116,6 +117,8 @@ const UsersTable = ({
     UserSubscriptionStatus.ALL,
   );
 
+  const history = useHistory();
+
   const columns = useMemo(
     () => [
       {
@@ -128,7 +131,18 @@ const UsersTable = ({
             <>
               <UserAvatar size={22} user={row} />
               <Spacing horizontal={4} />
-              <span className="member-cell">{row?.userName}</span>
+              <span
+                className="member-cell"
+                onClick={() =>
+                  history.push(
+                    `/core/assignedToPerson/${encodeURIComponent(
+                      row.userIdentifier,
+                    )}`,
+                  )
+                }
+              >
+                {row?.userName}
+              </span>
             </>
           );
         },
@@ -324,6 +338,7 @@ const UsersTable = ({
       },
     ],
     [
+      history,
       isUserSelected,
       organizationUsers,
       selectedUsers,

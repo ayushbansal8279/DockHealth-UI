@@ -84,6 +84,7 @@ import {
   TemplateHandle,
   TaskTemplateOptionsContainer,
   ActionIconsContainer,
+  PatientMRNAnchor,
 } from './styled';
 import TaskTemplateDetails from '../TaskTemplateDetails/TaskTemplateDetails';
 
@@ -143,6 +144,7 @@ const TaskTemplateGroupHeader = ({
 
   const selectedOrganization = useSelector(selectedUserOrganizationSelector);
   const currentTasklist = useSelector(currentTaskListSelector);
+  const emrPatientLink = selectedOrganization?.emrPatientLink;
 
   const isListAdmin = useMemo(() => {
     const currentUserMember = currentTasklist?.listUsers?.find(
@@ -601,7 +603,7 @@ const TaskTemplateGroupHeader = ({
           isSelected={isBundleSelected}
           isEditingDescription={isEditing}
           order={0}
-          width={+width + 26 + 54}
+          width={+width + 25 + 54}
         >
           {!groupDragAndDropDisabled &&
             !bulkEditIsActive &&
@@ -695,6 +697,7 @@ const TaskTemplateGroupHeader = ({
               setIsEditing={setIsEditing}
               handleNameInputKeyDown={handleNameInputKeyDown}
               nameInputValue={nameInputValue}
+              highlightedValue={highlightedValue}
             />
             <TaskTemplateOptionsContainer
               groupHasMultipleAssignees={groupHasMultipleAssignees}
@@ -859,11 +862,13 @@ const TaskTemplateGroupHeader = ({
               }
               order={getColumnOrder(PatientTaskItemColumn.MRN)}
             >
-              <TaskItemText
-                readOnly={isPatientDataReadOnly}
-                value={patient?.mrn}
-                onChange={handlePatientUpdate('mrn')}
-              />
+              <PatientMRNAnchor
+                href={emrPatientLink.replace('{mrn}', patient?.mrn)}
+                target="_blank"
+                rel="noreferrer"
+              >
+                {patient?.mrn}
+              </PatientMRNAnchor>
             </TaskItemCell>,
             getColumnOrder(PatientTaskItemColumn.MRN),
           )}
