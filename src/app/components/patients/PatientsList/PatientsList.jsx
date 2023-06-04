@@ -56,13 +56,14 @@ const renderCheckboxColumnHeader = ({ isListChecked, onListSelect }) => (
 );
 
 const PatientsList = ({
-  isFiltered,
+  isFiltered = false,
   patients,
   patientImportDetails,
   importPopoverOpen,
   setImportPopoverOpen,
   hasImportErrors,
   isFetching,
+  refreshPatients,
 }) => {
   const { pathname } = useLocation();
   const history = useHistory();
@@ -468,7 +469,11 @@ const PatientsList = ({
               </Grid>
             </Grid>
           ) : (
-            <EmptyFilteredPatientsList isFiltered={isFiltered} />
+            <EmptyFilteredPatientsList
+              isFiltered={isFiltered}
+              isFetching={isFetching}
+              refreshPatients={refreshPatients}
+            />
           )}
         </>
       )}
