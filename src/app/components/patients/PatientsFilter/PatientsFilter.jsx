@@ -88,7 +88,7 @@ const PatientsFilter = () => {
         searchValue={searchValue}
         onSearchValueChange={setSearchValue}
         onClear={handleClear}
-        onSaveAsNew={handleSaveAsQuickFilter}
+        // onSaveAsNew={handleSaveAsQuickFilter}
       />
       <Box p={2} />
       <FilterTable
