@@ -996,13 +996,16 @@ const TaskItem = React.memo(
                     }
                     order={getColumnOrder(PatientTaskItemColumn.MRN)}
                   >
-                    <PatientMRNAnchor
-                      href={emrPatientLink.replace('{mrn}', patient?.mrn)}
-                      target="_blank"
-                      rel="noreferrer"
-                    >
-                      {patient?.mrn}
-                    </PatientMRNAnchor>
+                    {emrPatientLink && (
+                      <PatientMRNAnchor
+                        href={emrPatientLink?.replace('{mrn}', patient?.mrn)}
+                        target="_blank"
+                        rel="noreferrer"
+                      >
+                        {patient?.mrn}
+                      </PatientMRNAnchor>
+                    )}
+                    {!emrPatientLink && <span>{patient?.mrn}</span>}
                   </TaskItemCell>,
                   getColumnOrder(PatientTaskItemColumn.MRN),
                 )}
