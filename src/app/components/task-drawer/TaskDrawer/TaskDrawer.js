@@ -19,7 +19,7 @@ const TaskDrawer = props => {
             exit={{ translateX: '100%' }}
             transition={{ duration: 0.1, bounce: 0 }}
           >
-            <TaskDrawerContent {...props} />
+            <TaskDrawerContent {...props} stickyHeader />
           </AnimatedContainer>
         )}
       </AnimatePresence>

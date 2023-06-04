@@ -70,6 +70,7 @@ const TaskDrawerContent = props => {
     fromFirstAddTask = false,
     hideTour = false,
     hideCloseIcon,
+    stickyHeader = false,
   } = props;
   const {
     closeTaskDrawer: handleCloseTaskDrawer,
@@ -288,8 +289,8 @@ const TaskDrawerContent = props => {
             paddingTop: '0',
             marginTop: '0',
             height: '60px',
-            position: 'fixed',
-            width: '100%',
+            position: stickyHeader ? 'fixed' : 'relative',
+            width: '800px',
             zIndex: '1000000',
           }}
         >
