@@ -97,14 +97,16 @@ const PatientsToolbar = () => {
 
   const handleSearchChange = searchTerm => {
     setSearchValue(searchTerm);
+    dispatch(PatientsActions.changePatientsSearchTerm(searchTerm));
+    dispatch(PatientsActions.clearPatients());
     if (searchTerm === '') {
-      dispatch(PatientsActions.clearPatients());
+      dispatch(PatientsActions.clearPatientSearch());
     }
   };
 
-  const handleSearch = () => {
+  const handleSearch = useCallback(() => {
     dispatch(PatientsActions.searchPatients(searchValue));
-  };
+  }, [dispatch, searchValue]);
 
   const optionBasedUrl = useMemo(
     () =>

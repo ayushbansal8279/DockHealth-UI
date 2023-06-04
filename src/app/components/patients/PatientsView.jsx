@@ -13,7 +13,8 @@ import {
   patientsListDetailsSelector,
   patientsSelector,
   isFetchingPatientsSelector,
-  patientsListSearchTermSelector,
+  patientsListSearchPerformedSelector,
+  // patientsListSearchTermSelector,
 } from 'selectors/patients-selectors';
 import {
   userProfileSelector,
@@ -63,7 +64,8 @@ const PatientsView = () => {
   const listIdentifier = getPatientListIdentifierByUrlParameter(
     listIdentifierParameter,
   );
-  const searchValue = useSelector(patientsListSearchTermSelector);
+  // const searchValue = useSelector(patientsListSearchTermSelector);
+  const searchPerformed = useSelector(patientsListSearchPerformedSelector);
   const listDetails = useSelector(patientsListDetailsSelector);
   const isFetchingPatients = useSelector(isFetchingPatientsSelector);
   const patients = useSelector(patientsSelector);
@@ -357,7 +359,6 @@ const PatientsView = () => {
         >
           <PatientsViewContainer>
             <PatientsToolbar
-              refreshPatients={refreshPatients}
               refreshPatientListOnUpload={refreshPatientListOnUpload}
               setImportPopoverOpen={setImportPopoverOpen}
             />
@@ -371,7 +372,7 @@ const PatientsView = () => {
                     </RefineSearchText>
                   )}
                 <PatientsList
-                  isFiltered={searchValue && searchValue !== ''}
+                  isFiltered={searchPerformed}
                   patients={patients}
                   patientImportDetails={patientImportDetails}
                   importPopoverOpen={importPopoverOpen}

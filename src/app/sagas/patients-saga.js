@@ -5,7 +5,7 @@ import {
   takeLatest,
   takeEvery,
   select,
-  debounce,
+  // debounce,
 } from 'redux-saga/effects';
 import * as PatientsApi from 'api/patients-api';
 import { addLabel, removeLabelForPatient } from 'api/patient-label-api';
@@ -235,8 +235,15 @@ function* getCurrentPatients() {
   }
 }
 
-function* searchPatients() {
-  yield put(PatientsActions.getCurrentPatients());
+function* searchPatients({ searchTerm }) {
+  yield put({
+    type: ActionTypes.CHANGE_PATIENTS_SEARCH_TERM,
+    searchTerm,
+  });
+  yield put({
+    type: ActionTypes.GET_CURRENT_PATIENTS,
+    searchTerm,
+  });
 }
 
 function* filtersChange() {
@@ -366,7 +373,8 @@ export default function* watchPatients() {
     ActionTypes.GET_CURRENT_PATIENTS_LIST_FILTER_OPTIONS,
     getCurrentPatientsListFilterOptions,
   );
-  yield debounce(300, ActionTypes.SEARCH_PATIENTS, searchPatients);
+  // yield debounce(300, ActionTypes.SEARCH_PATIENTS, searchPatients);
+  yield takeLatest(ActionTypes.SEARCH_PATIENTS, searchPatients);
   yield takeLatest([ActionTypes.SET_PATIENTS_SELECTED_FILTERS], filtersChange);
   yield takeLatest([ActionTypes.CLEAR_PATIENTS_FILTERS], clearFilters);
   yield takeEvery(ActionTypes.PATIENT_BULK_CREATE_TASK, addBulkTask);

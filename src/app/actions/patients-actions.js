@@ -38,6 +38,13 @@ export function searchPatients(searchTerm) {
   };
 }
 
+export function clearPatientSearch(searchTerm) {
+  return {
+    type: ActionTypes.CLEAR_PATIENT_SEARCH,
+    searchTerm,
+  };
+}
+
 export function changePatientsSearchTerm(searchTerm) {
   return {
     type: ActionTypes.CHANGE_PATIENTS_SEARCH_TERM,
