@@ -404,6 +404,7 @@ const initializeListDetailsViewHooks = () => {
           if (data.task) {
             actions.makeTaskDisappear(data.task);
           }
+          dispatch(ListDetailsActions.getTasksGroupsList());
         } else if (data.task?.taskIdentifier) {
           actions.refreshTask(data.task?.identifier);
         }
