@@ -183,6 +183,14 @@ const TaskCustomFieldsView = ({ taskListIdentifier, editable = false }) => {
           ))
       ) : (
         <>
+          <CenterBox>
+            {editable && (
+              <AddButton onClick={handleAddFieldClick}>
+                Add custom field
+              </AddButton>
+            )}
+          </CenterBox>
+          <Box p={1} />
           {customFields?.length > 0 ? (
             <>
               <CustomFieldItem editable={editable} type="TASK">
@@ -278,12 +286,6 @@ const TaskCustomFieldsView = ({ taskListIdentifier, editable = false }) => {
           )}
         </>
       )}
-      <Box p={1} />
-      <CenterBox>
-        {editable && (
-          <AddButton onClick={handleAddFieldClick}>Add custom field</AddButton>
-        )}
-      </CenterBox>
     </>
   );
 };

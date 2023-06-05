@@ -170,6 +170,12 @@ const PatientCustomFieldsView = () => {
           ))
       ) : (
         <>
+          <CenterBox>
+            <AddButton onClick={handleAddFieldClick}>
+              Add custom field
+            </AddButton>
+          </CenterBox>
+          <Box p={1} />
           {customFields?.length > 0 ? (
             <>
               <CustomFieldItem>
@@ -278,10 +284,6 @@ const PatientCustomFieldsView = () => {
           )}
         </>
       )}
-      <Box p={1} />
-      <CenterBox>
-        <AddButton onClick={handleAddFieldClick}>Add custom field</AddButton>
-      </CenterBox>
     </>
   );
 };
