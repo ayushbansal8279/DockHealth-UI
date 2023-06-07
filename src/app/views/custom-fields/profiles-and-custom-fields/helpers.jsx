@@ -33,24 +33,26 @@ export const getTemplateColumns = ({
     width: 60,
     renderCell: (data) => {
       const contextMenuOptions = [
-        data.id !== 'users' && data.id !== 'patients'
-          ? [
-              {
-                name: 'Configure Custom Fields',
-                onClick: () => onConfigureCustomFields(data),
-              },
-            ]
-          : [],
         {
-          name: 'Edit',
-          onClick: () => onEditProfile(data),
-        },
-        {
-          name: 'Delete',
-          color: palette.red,
-          onClick: () => onDeleteProfile(data),
+          name: 'Configure Custom Fields',
+          onClick: () => onConfigureCustomFields(data),
         },
       ];
+
+      if (data.id !== 'users' && data.id !== 'patient') {
+        contextMenuOptions.push(
+          {
+            name: 'Edit',
+            onClick: () => onEditProfile(data),
+          },
+          {
+            name: 'Delete',
+            color: palette.red,
+            onClick: () => onDeleteProfile(data),
+          },
+        );
+      }
+
       return (
         <MoreActionsWrapper>
           <OptionsMenu

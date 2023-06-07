@@ -52,9 +52,9 @@ const SettingsSubmenu = () => {
       <SubMenuLink to={SUBS_SETTINGS_PATH}>Subscriptions</SubMenuLink>
       <SubMenuLink to={POFILES_SETTINGS_PATH}>Profiles</SubMenuLink>
       <SubMenuLink to={USERS_SETTINGS_PATH}>Users</SubMenuLink>
-      {(patientCustomFieldsAvailable || taskCustomFieldsAvailable) && (
+      {/* {(patientCustomFieldsAvailable || taskCustomFieldsAvailable) && (
         <SubMenuLink to="/settings/custom-fields">Custom Fields</SubMenuLink>
-      )}
+      )} */}
       {(sendEmailAvailable ||
         sendFaxAvailable ||
         sendSmsAvailable ||
@@ -65,7 +65,7 @@ const SettingsSubmenu = () => {
         </AccessRestrictor>
       )}
       <SubMenuLink to={TASK_CUSTOMIZATIONS_PATH}>
-        Task Field Customizations
+        Task Custom Fields
       </SubMenuLink>
     </Box>
   );

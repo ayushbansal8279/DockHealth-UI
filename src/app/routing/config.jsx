@@ -130,9 +130,7 @@ const TaskTourView = lazy(() => import('views/TaskTour/TaskTourView'));
 const PatientsView = lazy(() => import('components/patients/PatientsView'));
 
 const ProfilesAndCustomFieldsView = lazy(() =>
-  import(
-    'views/custom-fields/profiles-and-custom-fields/ProfilesAndCustomFieldsView'
-  ),
+  import('views/custom-fields/profiles-and-custom-fields/ProfilesView'),
 );
 const TaskCustomizationsView = lazy(() =>
   import('views/custom-fields/task-customizations/TaskCustomizationsView'),

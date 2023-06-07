@@ -36,8 +36,14 @@ import {
 } from '../EditTemplateModal/helpers';
 
 // eslint-disable-next-line sonarjs/cognitive-complexity
-const CreateProfileModal = ({ closeModal, template, onAdded, onUpdated }) => {
-  const isCreatingNewField = !template;
+const CreateProfileModal = ({
+  closeModal,
+  template,
+  onAdded,
+  onUpdated,
+  isCreatingNewField,
+}) => {
+  // const isCreatingNewField = !template;
   const [isSaving, setIsSaving] = useState(false);
   const dispatch = useDispatch();
 

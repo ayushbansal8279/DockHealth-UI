@@ -1,3 +1,4 @@
+/* eslint-disable sonarjs/cognitive-complexity */
 import React, { useEffect, useMemo, useState } from 'react';
 import { useDispatch } from 'react-redux';
 import map from 'ramda/src/map';
@@ -10,7 +11,6 @@ import EditIcon from '@mui/icons-material/Edit';
 import { showGlobalErrorAlert } from 'alert/actions';
 import * as CustomFieldsApi from 'api/custom-fields-api';
 import { FieldTypeLabel } from 'helpers/field-type-helpers';
-import { CategoryLabel } from 'helpers/patient-details-helpers';
 import { openModal } from 'modal/actions';
 import AddButton from 'components/common/AddButton/AddButton';
 import {
@@ -23,6 +23,7 @@ import {
 import { SortableContext } from '@dnd-kit/sortable';
 import DragHandleIcon from 'img/drag-handle';
 import SortableItem from 'components/common/SortableItem/SortableItem';
+import { useTaskListColumnsConfig } from 'context-api/columns-config-context';
 import {
   EmptyListPlaceholder,
   CustomFieldItem,
@@ -33,20 +34,18 @@ import {
   CenterBox,
 } from './styled';
 
-// eslint-disable-next-line sonarjs/cognitive-complexity
-const PatientCustomFieldsView = () => {
-  console.log(`NOT`);
+const ProfilesCustomFieldsView = () => {
   const dispatch = useDispatch();
   const [customFields, setCustomFields] = useState(null);
   const [isFetching, setIsFetching] = useState(true);
+  const { columns, setColumnsToState } = useTaskListColumnsConfig();
   const sensors = useSensors(useSensor(MouseSensor), useSensor(TouchSensor));
 
-  const fetchPatientCustomFields = () => {
-    CustomFieldsApi.getAllPatientCustomFields()
+  const fetchUserCustomFields = () => {
+    CustomFieldsApi.getAllProviderCustomFields()
       .then((data) => {
         const customFieldsData = data?.filter(
-          (cf) =>
-            cf.contextType === 'CUSTOM' || cf.contextType === 'PREDEFINED',
+          (cf) => cf.contextType === 'CUSTOM',
         );
         setCustomFields(customFieldsData);
         setIsFetching(false);
@@ -57,7 +56,7 @@ const PatientCustomFieldsView = () => {
   };
 
   useEffect(() => {
-    fetchPatientCustomFields();
+    fetchUserCustomFields();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
@@ -65,10 +64,17 @@ const PatientCustomFieldsView = () => {
     dispatch(
       openModal('EditCustomField', {
         options: {
-          type: 'PATIENT',
+          type: 'PROVIDER',
         },
         customField: field,
         onUpdated: (updatedField) => {
+          setColumnsToState(
+            columns.map((f) =>
+              f.identifier === updatedField.identifier
+                ? { ...f, ...updatedField }
+                : f,
+            ),
+          );
           setCustomFields(
             map((f) =>
               updatedField.identifier === f.identifier
@@ -86,8 +92,9 @@ const PatientCustomFieldsView = () => {
       openModal('DeleteConfirmation', {
         title: 'Delete field',
         description:
-          'Are you sure you want to delete this custom patient field? This action cannot be undone.',
+          'Are you sure you want to delete this custom user / provider field? This action cannot be undone.',
         confirm: () => {
+          setColumnsToState(columns.filter((f) => f.identifier !== id));
           CustomFieldsApi.deleteCustomField(id)
             .then(() =>
               setCustomFields((previousValue) =>
@@ -124,9 +131,7 @@ const PatientCustomFieldsView = () => {
     const lastWorkingOrder = [...customFields];
     setCustomFields(result);
     try {
-      await CustomFieldsApi.sortPatientCustomFields(
-        pluck('identifier', result),
-      );
+      await CustomFieldsApi.sortUserCustomFields(pluck('identifier', result));
     } catch {
       dispatch(showGlobalErrorAlert());
       setCustomFields(lastWorkingOrder);
@@ -137,20 +142,21 @@ const PatientCustomFieldsView = () => {
     dispatch(
       openModal('EditCustomField', {
         options: {
-          type: 'PATIENT',
+          type: 'PROVIDER',
         },
         onAdded: async (customField) => {
+          setColumnsToState([...columns, customField]);
           const newFields = (
             sortedFields ? [...sortedFields, customField] : [customField]
           ).map((field, index) => {
             return { ...field, sortIndex: index };
           });
           try {
-            await CustomFieldsApi.sortPatientCustomFields(
+            await CustomFieldsApi.sortUserCustomFields(
               pluck('identifier', newFields),
             );
           } catch {
-            fetchPatientCustomFields();
+            fetchUserCustomFields();
           }
           setCustomFields(newFields);
         },
@@ -171,31 +177,20 @@ const PatientCustomFieldsView = () => {
           ))
       ) : (
         <>
-          <CenterBox>
-            <AddButton onClick={handleAddFieldClick}>
-              Add custom field
-            </AddButton>
-          </CenterBox>
-          <Box p={1} />
           {customFields?.length > 0 ? (
             <>
-              <CustomFieldItem>
+              <CenterBox>
+                <AddButton onClick={handleAddFieldClick}>
+                  Add custom field
+                </AddButton>
+              </CenterBox>
+              <Box p={1} />
+              <CustomFieldItem editable type="PROVIDER">
                 <CustomFieldCell>
                   <CustomFieldHeaderText>Field label</CustomFieldHeaderText>
                 </CustomFieldCell>
                 <CustomFieldCell>
                   <CustomFieldHeaderText>Field type</CustomFieldHeaderText>
-                </CustomFieldCell>
-                <CustomFieldCell>
-                  <CustomFieldHeaderText>Field category</CustomFieldHeaderText>
-                </CustomFieldCell>
-                <CustomFieldCell>
-                  <CustomFieldHeaderText>Show on Header</CustomFieldHeaderText>
-                </CustomFieldCell>
-                <CustomFieldCell>
-                  <CustomFieldHeaderText>
-                    Include in Search
-                  </CustomFieldHeaderText>
                 </CustomFieldCell>
                 <CustomFieldCell>
                   <Box width="68px" />
@@ -208,61 +203,33 @@ const PatientCustomFieldsView = () => {
                 }
               >
                 <SortableContext items={pluck('identifier', sortedFields)}>
-                  {sortedFields
-                    .filter((field) => field.contextType !== 'PREDEFINED')
-                    .map((field) => (
-                      <SortableItem
-                        key={field.identifier}
-                        itemId={field.identifier}
-                      >
-                        {({ dragHandleProps }) => (
-                          <div>
-                            <CustomFieldItem>
-                              <DragHandle {...dragHandleProps}>
-                                <DragHandleIcon />
-                              </DragHandle>
-                              <CustomFieldCell>
-                                <CustomFieldText>{field.name}</CustomFieldText>
-                              </CustomFieldCell>
-                              <CustomFieldCell>
-                                <CustomFieldText>
-                                  {FieldTypeLabel[field.fieldType]}
-                                </CustomFieldText>
-                              </CustomFieldCell>
-                              <CustomFieldCell>
-                                <CustomFieldText>
-                                  {CategoryLabel[field.fieldCategoryType]}
-                                </CustomFieldText>
-                              </CustomFieldCell>
-                              <CustomFieldCell>
-                                <CustomFieldText>
-                                  {field.displayOptions &&
-                                  field.displayOptions?.includes(
-                                    'PATIENT_HEADER',
-                                  )
-                                    ? 'Yes'
-                                    : ''}
-                                </CustomFieldText>
-                              </CustomFieldCell>
-                              <CustomFieldCell>
-                                <CustomFieldText>
-                                  {field.displayOptions &&
-                                  field.displayOptions?.includes(
-                                    'PATIENT_SEARCH',
-                                  )
-                                    ? 'Yes'
-                                    : ''}
-                                </CustomFieldText>
-                              </CustomFieldCell>
-                              <CustomFieldCell>
+                  {sortedFields.map((field) => (
+                    <SortableItem
+                      key={field.identifier}
+                      itemId={field.identifier}
+                    >
+                      {({ dragHandleProps }) => (
+                        <div>
+                          <CustomFieldItem editable type="PROVIDER">
+                            <DragHandle {...dragHandleProps}>
+                              <DragHandleIcon />
+                            </DragHandle>
+                            <CustomFieldCell>
+                              <CustomFieldText>{field.name}</CustomFieldText>
+                            </CustomFieldCell>
+                            <CustomFieldCell>
+                              <CustomFieldText>
+                                {FieldTypeLabel[field.fieldType]}
+                              </CustomFieldText>
+                            </CustomFieldCell>
+                            <>
+                              <Box padding="0px 4px" justifySelf="flex-end">
                                 <IconButton
                                   size="small"
                                   onClick={() => handleEditClick(field)}
                                 >
                                   <EditIcon />
                                 </IconButton>
-                              </CustomFieldCell>
-                              <CustomFieldCell>
                                 <IconButton
                                   size="small"
                                   onClick={() =>
@@ -271,12 +238,13 @@ const PatientCustomFieldsView = () => {
                                 >
                                   <DeleteIcon />
                                 </IconButton>
-                              </CustomFieldCell>
-                            </CustomFieldItem>
-                          </div>
-                        )}
-                      </SortableItem>
-                    ))}
+                              </Box>
+                            </>
+                          </CustomFieldItem>
+                        </div>
+                      )}
+                    </SortableItem>
+                  ))}
                 </SortableContext>
               </DndContext>
             </>
@@ -289,4 +257,4 @@ const PatientCustomFieldsView = () => {
   );
 };
 
-export default PatientCustomFieldsView;
+export default ProfilesCustomFieldsView;

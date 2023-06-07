@@ -287,16 +287,18 @@ const EditCustomFieldModal = ({
                         />
                       </Grid>
                     )}
-                    {type !== 'PROVIDER' && type !== 'PATIENT' && (
-                      <Grid item xs={6}>
-                        <FormSelect
-                          required
-                          label="Profile Type"
-                          name="fieldProfileType"
-                          options={TASK_CATEGORY_OPTIONS}
-                        />
-                      </Grid>
-                    )}
+                    {type !== 'PROVIDER' &&
+                      type !== 'PATIENT' &&
+                      fieldTypeValue === FieldType.RELATIONSHIP && (
+                        <Grid item xs={6}>
+                          <FormSelect
+                            required
+                            label="Profile Type"
+                            name="fieldProfileType"
+                            options={TASK_CATEGORY_OPTIONS}
+                          />
+                        </Grid>
+                      )}
 
                     {optionsValue?.length > 0 && (
                       <>

@@ -58,16 +58,21 @@ const ProfilesAndCustomFieldsView = () => {
         onAdded: (newTemplate) => {
           setTemplates((s) => [newTemplate, ...s]);
         },
+        isCreatingNewField: true,
       }),
     );
   }, [dispatch]);
 
-  const onEditProfile = useCallback(
-    ({ row: { link } }) => {
-      history.push(`/settings/custom-fields/${link}`);
-    },
-    [history],
-  );
+  const onEditProfile = useCallback(() => {
+    dispatch(
+      openModal('CreateProfile', {
+        onAdded: (newTemplate) => {
+          setTemplates((s) => [newTemplate, ...s]);
+        },
+        isCreatingNewField: false,
+      }),
+    );
+  }, [dispatch]);
 
   const onConfigureCustomFields = useCallback(
     ({ row: { link } }) => {
@@ -117,7 +122,7 @@ const ProfilesAndCustomFieldsView = () => {
             { id: 'users', name: 'Users', link: 'provider' },
             { id: 'patient', name: 'Patients', link: 'patient' },
             { id: 'provider', name: 'Providers', link: 'provider' },
-            { id: 'faculty', name: 'Faculties', link: 'provider' },
+            { id: 'faculty', name: 'Faculties', link: 'faculty' },
           ]}
           rowHeight={55}
           headerHeight={25}

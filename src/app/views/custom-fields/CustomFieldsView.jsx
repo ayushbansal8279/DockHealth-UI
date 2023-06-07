@@ -24,8 +24,9 @@ const CustomFieldsView = () => {
   const { tabName } = useParams();
 
   const initial = Object.entries(TABS).find(([, name]) => name === tabName);
-
-  const [selectedTab] = useState(initial ? Number(initial[0]) : 0);
+  console.log(`tabname: ${tabName}`);
+  console.log(`official: ${initial}`);
+  const [selectedTab] = useState(initial ? Number(initial[0]) : null);
 
   useEffect(() => {
     if (!checkIfUserIsOrganizationAdmin(userProfile)) {
@@ -39,11 +40,11 @@ const CustomFieldsView = () => {
       <ViewLayout
         header={
           <BasicLayoutHeader
-            title={`Custom Fields ${
+            title={`${
               tabName
                 ? tabName?.charAt(0).toUpperCase() + tabName?.slice(1)
                 : ''
-            }`}
+            } Custom Fields`}
           />
         }
       >
@@ -52,6 +53,7 @@ const CustomFieldsView = () => {
           {selectedTab === 0 && <PatientCustomFieldsView />}
           {selectedTab === 1 && <TaskCustomFieldsView editable />}
           {selectedTab === 2 && <UserCustomFieldsView editable />}
+          {!selectedTab && <PatientCustomFieldsView editable />}
         </ViewContainer>
       </ViewLayout>
     </ColumnsConfigProvider>
