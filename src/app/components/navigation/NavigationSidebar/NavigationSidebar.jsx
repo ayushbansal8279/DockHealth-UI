@@ -7,8 +7,8 @@ import {
   WORKFLOW_LIBRARY_PATH,
   USERS_PATH,
   SUBS_SETTINGS_PATH,
-  USERS_SETTINGS_PATH,
-} from 'routing/helpers/paths';
+  USERS_SETTINGS_PATH, CUSTOM_PROFILES_PATH
+} from "routing/helpers/paths";
 import Spacing from 'components/common/Spacing';
 import {
   userProfileSelector,
@@ -53,6 +53,7 @@ import ChatIcon from 'views/chat/Icons/ChatIcon';
 import { openPopover } from 'actions/sendbird-actions';
 import OrganizationSubmenu from './SubMenuComponents/OrganizationSubmenu';
 import ProfileSubmenu from './SubMenuComponents/ProfileSubmenu';
+import CustomProfilesSubmenu from './SubMenuComponents/CustomProfilesSubmenu';
 import EducationCenterSubmenu from './SubMenuComponents/EducationCenterSubmenu';
 import SettingsSubmenu from './SubMenuComponents/SettingsSubmenu';
 import ListsSubmenu from './SubMenuComponents/ListsSubmenu';
@@ -74,6 +75,7 @@ export const SubmenuKey = {
   ORGANIZATION: 'ORGANIZATION',
   PROFILE: 'PROFILE',
   LISTS: 'LISTS',
+  CUSTOM_PROFILES: 'CUSTOM_PROFILES',
   PATIENTS: 'PATIENTS',
   USER_GROUPS: 'USER_GROUPS',
   SETTINGS: 'SETTINGS',
@@ -86,6 +88,7 @@ const SubmenuComponents = {
   [SubmenuKey.ORGANIZATION]: OrganizationSubmenu,
   [SubmenuKey.PROFILE]: ProfileSubmenu,
   [SubmenuKey.LISTS]: ListsSubmenu,
+  [SubmenuKey.CUSTOM_PROFILES]: CustomProfilesSubmenu,
   [SubmenuKey.USER_GROUPS]: UserGroupsSubmenu,
   [SubmenuKey.PATIENTS]: PatientsSubmenu,
   [SubmenuKey.SETTINGS]: SettingsSubmenu,
@@ -237,6 +240,17 @@ const NavigationSidebar = () => {
                 icon={ListsIcon}
                 subMenuOpen={openedSubMenuKey === SubmenuKey.LISTS}
                 path="/core/tasks"
+                onItemClick={handleNavigationItemClick}
+                navSelectedColor={navSelectedColorItem?.value}
+              />
+            </AccessRestrictor>
+            <AccessRestrictor>
+              <IconNavigationItem
+                name="Custom Profiles"
+                icon={PeopleIcon}
+                path={CUSTOM_PROFILES_PATH}
+                subMenuKey={SubmenuKey.CUSTOM_PROFILES}
+                subMenuOpen={openedSubMenuKey === SubmenuKey.CUSTOM_PROFILES}
                 onItemClick={handleNavigationItemClick}
                 navSelectedColor={navSelectedColorItem?.value}
               />

@@ -21,6 +21,7 @@ export const USERS_SETTINGS_PATH = '/settings/users';
 export const CUSTOM_FIELDS_SETTINGS_PATH = '/settings/custom-fields';
 export const WORKFLOW_LIBRARY_PATH = '/core/workflows/library';
 export const WORKFLOW_BUILDER_PATH = '/core/workflows/builder';
+export const CUSTOM_PROFILES_PATH = '/core/custom-profiles';
 export const USERS_PATH = '/core/people';
 export const SINGLE_TASK_PATH = '/core/task';
 
