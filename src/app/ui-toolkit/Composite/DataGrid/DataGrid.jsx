@@ -1,6 +1,6 @@
 import React, { createContext, useEffect, useMemo, useState } from 'react';
 import * as MUI from '@mui/x-data-grid';
-import { noop } from "ui-toolkit/utilities";
+import { noop } from 'ui-toolkit/utilities';
 import * as Sc from './styled';
 
 export const Context  = createContext({
@@ -14,13 +14,17 @@ const MemoizedRow = React.memo(MUI.GridRow);
  * @param multiselect
  * @param dataset
  * @param children
+ * @param onRecordClick
+ * @param props
  * @returns {JSX.Element}
  * @constructor
  */
 export default function DataGrid({
   multiselect = false,
   dataset = [],
-  children
+  children,
+  onRecordClick = noop,
+  ...props
 }) {
   const [definitions, setDefinitions] = useState([]);
 
@@ -66,6 +70,11 @@ export default function DataGrid({
     );
   }, [definitions]);
 
+  const handleRowClick = (rowInstance, event) => {
+    const { row } = rowInstance;
+    onRecordClick(event, row);
+  };
+
   return (
     <div style={{
       padding: "30px",
@@ -81,6 +90,8 @@ export default function DataGrid({
         onColumnVisibilityModelChange={setColumnVisibilityModel}
         disableRowSelectionOnClick
         checkboxSelection={multiselect}
+        onRowClick={handleRowClick}
+        {...props}
       />
       <Context.Provider value={{ register }}>
         {children}
