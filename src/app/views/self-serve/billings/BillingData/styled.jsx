@@ -13,7 +13,7 @@ export const StyledFormControl = styled(FormControl)`
   &&& {
     &.MuiFormControl-root {
       background-color: ${palette.lightGrey};
-      height: 4rem;
+      height: 2rem;
     }
   }
 `;
