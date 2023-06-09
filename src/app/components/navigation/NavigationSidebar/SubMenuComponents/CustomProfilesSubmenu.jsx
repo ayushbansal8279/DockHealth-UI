@@ -112,17 +112,17 @@ const CustomProfilesSubmenu = () => {
           <>
             <DrawerListsItem>
               <ListNameText>
-                <MenuLink to="/custom-profiles/facilities">Facilities</MenuLink>
+                <MenuLink to="/custom-profiles">Facilities</MenuLink>
               </ListNameText>
             </DrawerListsItem>
             <DrawerListsItem>
               <ListNameText>
-                <MenuLink to="/custom-profiles/providers">Providers</MenuLink>
+                <MenuLink to="/custom-profiles">Providers</MenuLink>
               </ListNameText>
             </DrawerListsItem>
             <DrawerListsItem>
               <ListNameText>
-                <MenuLink to="/custom-profiles/users">Users</MenuLink>
+                <MenuLink to="/custom-profiles">Users</MenuLink>
               </ListNameText>
             </DrawerListsItem>
           </>
