@@ -11,6 +11,7 @@ import Spacing from 'components/common/Spacing';
 import Button from 'components/common/Button/Button';
 import { MontserratTypography } from 'styles/theme-montserrat';
 import { showAlert } from 'helpers/utility-functions';
+import palette from 'styles/palette';
 import { StyledForm, StyledHyperLink } from './AuthComponents.styled';
 import SSOOptions from './SSOOptions';
 
@@ -50,15 +51,12 @@ const LoginFormUsername = (props) => {
           .then(() => {
             const patientIdentifier =
               sessionStorage.getItem('PatientIdentifier');
-            if (
+            window.location.href =
               patientIdentifier &&
               patientIdentifier !== '' &&
               patientIdentifier !== 'null'
-            ) {
-              window.location.href = `/#/core/patient/${patientIdentifier}`;
-            } else {
-              window.location.href = '/#/core/home';
-            }
+                ? `/#/core/patient/${patientIdentifier}`
+                : '/#/core/home';
             // setShowLoginMessage(false);
           })
           .catch((error) => {
@@ -77,7 +75,7 @@ const LoginFormUsername = (props) => {
       <FormProvider {...formMethods}>
         {!showLoginMessage && (
           <>
-            <MontserratTypography variant="h2">
+            <MontserratTypography variant="h2" weight="bold">
               {titleContent}
             </MontserratTypography>
             <Spacing vertical={4} />
@@ -96,7 +94,14 @@ const LoginFormUsername = (props) => {
               }
             />
             <Spacing vertical={5} />
-            <Button id="loginButton" fullWidth size="large" type="submit">
+            <Button
+              id="loginButton"
+              fullWidth
+              size="large"
+              type="submit"
+              color={palette.brightOrange}
+              secondaryColor={palette.oPlusRed}
+            >
               Continue
             </Button>
             <Spacing vertical={2} />

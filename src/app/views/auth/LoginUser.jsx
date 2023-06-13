@@ -8,6 +8,10 @@ import LoginFormUsername from 'components/auth/LoginFormUsername';
 import { AUTH_BASE_STATES } from 'reducers/auth-base-reducer';
 import * as UserAuthApi from 'api/user-auth-api';
 import { log } from 'helpers/log';
+import DockHeaderLogo from 'img/dock-header-logo.svg';
+import styled from 'styled-components';
+import { Grid } from '@mui/material';
+import Spacing from 'components/common/Spacing';
 
 const onSubmit = (form, history) => {
   const { username } = form;
@@ -48,13 +52,23 @@ const LoginUser = (props) => {
   const dispatch = useDispatch();
   const history = useHistory();
 
+  const DockLogoImage = styled.img.attrs({
+    src: DockHeaderLogo,
+    alt: 'Dock Health logo',
+  })`
+    align: center;
+    width: 100%;
+    object-fit: contain;
+    height: 69px;
+  `;
+
   const confirmStatus = sessionStorage.getItem('confirmStatus');
 
   const setConfirmationBaseState = useCallback(() => {
     setAuthBaseState({
       authBaseState: confirmStatus
         ? AUTH_BASE_STATES.DAILY_HUB
-        : AUTH_BASE_STATES.DEFAULT,
+        : AUTH_BASE_STATES.LOGIN,
     })(dispatch);
   }, [confirmStatus, dispatch]);
 
@@ -73,7 +87,17 @@ const LoginUser = (props) => {
     setConfirmationBaseState();
   }, [confirmStatus, setConfirmationBaseState]);
 
-  return <LoginFormUsername onSubmit={(form) => onSubmit(form, history)} />;
+  return (
+    <Grid container>
+      <Grid item xs={12} alignItems="center" alignContent="center">
+        <DockLogoImage />
+        <Spacing vertical={5} />
+      </Grid>
+      <Grid item xs={12} alignItems="center" alignContent="center">
+        <LoginFormUsername onSubmit={(form) => onSubmit(form, history)} />;
+      </Grid>
+    </Grid>
+  );
 };
 
 export default LoginUser;

@@ -1,6 +1,6 @@
 // eslint-disable-next-line unicorn/filename-case
 import React, { useState, useRef } from 'react';
-import { Box, ListItemText, Popover } from '@mui/material';
+import { Box, ListItemText, Popover, Divider } from '@mui/material';
 import { MontserratTypography } from 'styles/theme-montserrat';
 import Spacing from 'components/common/Spacing';
 import palette from 'styles/palette';
@@ -40,7 +40,8 @@ const SSOOptions = () => {
   return (
     <>
       <Spacing vertical={4} />
-      <MontserratTypography variant="h4">Or sign in with</MontserratTypography>
+      {/* <MontserratTypography variant="h4">Or sign in with</MontserratTypography> */}
+      <Divider>Or</Divider>
       <Spacing vertical={3} />
       <SSOOptionsBar>
         {ssoURLGoogle && (
@@ -65,7 +66,12 @@ const SSOOptions = () => {
         <StyledHyperLink>
           <Box
             mx={1}
-            style={{ textAlign: 'center', color: palette.mediumGrey }}
+            style={{
+              alignItems: 'center',
+              justifyContent: 'center',
+              textAlign: 'center',
+              color: palette.mediumGrey,
+            }}
           >
             <SSOButton
               ref={buttonReference}

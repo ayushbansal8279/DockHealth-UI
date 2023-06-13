@@ -17,6 +17,7 @@ import {
   RightSideMainContainer,
   RightSideMaxWidthContainer,
 } from './TemplateAuthBase.styled';
+import TemplateAuthBaseLoginContent from './TemplateAuthBase.Login';
 
 const { VITE_INTERCOM_APP_CODE } = import.meta.env;
 
@@ -33,6 +34,9 @@ const getLeftSideContent = ({ currentAuthBaseState }) => {
     }
     case AUTH_BASE_STATES.APPROVE_DISAPPROVE: {
       return <TemplateAuthBaseApproveDisapproveContent />;
+    }
+    case AUTH_BASE_STATES.LOGIN: {
+      return <TemplateAuthBaseLoginContent />;
     }
     default: {
       return null;

@@ -10,8 +10,10 @@ import { MontserratTypography } from 'styles/theme-montserrat';
 import Button from 'components/common/Button/Button';
 import FormInput from 'components/common/Input/FormInput';
 import Spacing from 'components/common/Spacing';
+import palette from 'styles/palette';
 import { StyledForm, StyledLink } from './AuthComponents.styled';
 import SSOOptions from './SSOOptions';
+import { fontWeights } from 'styles/font';
 
 const validationSchema = object().shape({
   username: string()
@@ -54,7 +56,7 @@ const LoginFormPassword = ({
 
   const titleContent = window.sessionStorage.getItem('confirmStatus')
     ? 'Your email is confirmed'
-    : 'Welcome back!';
+    : 'Sign in';
 
   const handleUsernameChange = (event) => {
     setValue('username', event.target?.value?.trim() || '');
@@ -70,10 +72,18 @@ const LoginFormPassword = ({
       )}
     >
       <FormProvider {...formMethods}>
-        <MontserratTypography variant="h2">{titleContent}</MontserratTypography>
+        <MontserratTypography variant="h2" weight="bold" align="center">
+          {titleContent}
+        </MontserratTypography>
         <Spacing vertical={4} />
-        <MontserratTypography variant="h3">Please sign in</MontserratTypography>
-        <Spacing vertical={4} />
+        <MontserratTypography align="center" variant="h4">
+          New to Dock?{' '}
+          <a style={{ fontWeight: 600, color: 'black' }} href="/create-account">
+            {' '}
+            Sign up for free{' '}
+          </a>
+        </MontserratTypography>
+        <Spacing vertical={5} />
         <FormInput
           name="username"
           type="text"
@@ -98,14 +108,37 @@ const LoginFormPassword = ({
           }
         />
         <Spacing vertical={5} />
-        <Button id="loginButton" fullWidth size="large" type="submit">
+        <Button
+          id="loginButton"
+          fullWidth
+          size="large"
+          type="submit"
+          color={palette.brightOrange}
+          secondaryColor={palette.oPlusRed}
+        >
           {unconfirmedUserFlag ? 'Resend confirmation Email' : 'Continue'}
         </Button>
         <Spacing vertical={4} />
-        <MontserratTypography variant="h4">
+        <MontserratTypography variant="h5" weight="bold">
           <StyledLink to="/auth/forgotPassword">FORGOT PASSWORD?</StyledLink>
         </MontserratTypography>
         <SSOOptions />
+        <Spacing vertical={5} />
+        <MontserratTypography
+          variant="p"
+          align="center"
+          alignContent="center"
+          alignItems="center"
+        >
+          Dock can save you 20 hours a month{' '}
+          <a
+            style={{ color: 'black', fontWeight: 800, paddingLeft: '5px' }}
+            to="/auth/welcome"
+          >
+            {' '}
+            Learn More
+          </a>
+        </MontserratTypography>
       </FormProvider>
     </StyledForm>
   );

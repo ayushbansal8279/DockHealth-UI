@@ -72,11 +72,13 @@ const StyledButton = styled(MuiButton)`
 
     &.MuiButton-containedPrimary {
       color: ${palette.white};
-      background-color: ${palette.darkBlue};
+      background-color: ${({ backgroundColor }) =>
+        `${backgroundColor ?? palette.darkBlue}`};
       border-radius: 4px;
 
       &:hover:not(:disabled) {
-        background-color: ${palette.darkBlue};
+        background-color: ${({ secondaryColor }) =>
+          `${secondaryColor ?? palette.darkBlue}`};
         opacity: 0.8;
       }
 
@@ -192,6 +194,8 @@ const Button = ({
   uppercase,
   onClick,
   size,
+  color,
+  secondaryColor,
   type,
   width,
   disabled,
@@ -239,6 +243,8 @@ const Button = ({
       ref={reference}
       variant={muiVariant}
       color={muiColor}
+      backgroundColor={color}
+      secondaryColor={secondaryColor}
       uppercase={`${uppercase}`}
       onClick={onClick}
       size={size}

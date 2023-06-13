@@ -6,6 +6,11 @@ import { yupResolver } from '@hookform/resolvers/yup';
 import Spacing from 'components/common/Spacing';
 import FormInput from 'components/common/Input/FormInput';
 import { MontserratTypography } from 'styles/theme-montserrat';
+import { Grid } from '@mui/material';
+import DockHeaderLogo from 'img/dock-header-logo.svg';
+import styled from 'styled-components';
+import palette from 'styles/palette';
+
 import Button from '../common/Button/Button';
 
 const validationSchema = object().shape({
@@ -30,37 +35,61 @@ const ForgotPasswordForm = ({
     setValue('username', sessionStorage.getItem('username') ?? '');
   });
 
+  const DockLogoImage = styled.img.attrs({
+    src: DockHeaderLogo,
+    alt: 'Dock Health logo',
+  })`
+    align: center;
+    width: 100%;
+    object-fit: contain;
+    height: 69px;
+  `;
+
   return (
-    <form
-      onSubmit={handleSubmit(
-        unconfirmedUserFlag
-          ? onResendCode({ setError })
-          : onSubmit({ setError }),
-      )}
-      style={{
-        width: '100%',
-      }}
-    >
-      <FormProvider {...formMethods}>
-        <MontserratTypography variant="h2">
-          Forgot your password?
-        </MontserratTypography>
-        <Spacing vertical={4} />
-        <MontserratTypography variant="h4">
-          Don’t worry, it happens to the best of us. Enter the email associated
-          with your account.
-        </MontserratTypography>
+    <Grid container>
+      <Grid item xs={12} alignItems="center" alignContent="center">
+        <DockLogoImage />
         <Spacing vertical={5} />
-        <FormInput name="username" type="text" label="Email" autoFocus />
-        <Spacing vertical={5} />
-        <Button type="submit" fullWidth size="large">
-          {unconfirmedUserFlag
-            ? 'Resend confirmation Email'
-            : 'Send me a recovery code'}
-        </Button>
-        <Spacing vertical={6} />
-      </FormProvider>
-    </form>
+      </Grid>
+      <Grid item>
+        <form
+          onSubmit={handleSubmit(
+            unconfirmedUserFlag
+              ? onResendCode({ setError })
+              : onSubmit({ setError }),
+          )}
+          style={{
+            width: '100%',
+          }}
+        >
+          <FormProvider {...formMethods}>
+            <MontserratTypography weight="bold" variant="h2" align="center">
+              Forgot your password?
+            </MontserratTypography>
+            <Spacing vertical={4} />
+            <MontserratTypography variant="h4" align="center">
+              Don’t worry, it happens to the best of us. Enter the email
+              associated with your account.
+            </MontserratTypography>
+            <Spacing vertical={5} />
+            <FormInput name="username" type="text" label="Email" autoFocus />
+            <Spacing vertical={5} />
+            <Button
+              type="submit"
+              fullWidth
+              size="large"
+              color={palette.brightOrange}
+              secondaryColor={palette.oPlusRed}
+            >
+              {unconfirmedUserFlag
+                ? 'Resend confirmation Email'
+                : 'Send me a recovery code'}
+            </Button>
+            <Spacing vertical={6} />
+          </FormProvider>
+        </form>
+      </Grid>
+    </Grid>
   );
 };
 

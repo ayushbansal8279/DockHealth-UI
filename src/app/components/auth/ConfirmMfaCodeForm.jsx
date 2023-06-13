@@ -7,6 +7,7 @@ import { MontserratTypography } from 'styles/theme-montserrat';
 import FormInput from 'components/common/Input/FormInput';
 import Spacing from 'components/common/Spacing';
 import Button from 'components/common/Button/Button';
+import palette from 'styles/palette';
 
 const validationSchema = object().shape({
   mfaCode: string().required('This field is required'),
@@ -41,7 +42,12 @@ const ConfirmMFACodeForm = (props) => {
         <Spacing vertical={5} />
         <FormInput name="mfaCode" label="Authorization code" autoFocus />
         <Spacing vertical={5} />
-        <Button type="submit" size="large">
+        <Button
+          type="submit"
+          size="large"
+          color={palette.brightOrange}
+          secondaryColor={palette.oPlusRed}
+        >
           CONTINUE
         </Button>
       </FormProvider>

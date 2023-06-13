@@ -38,27 +38,27 @@ const TemplateAuthBaseRegainControlContent = () => {
         Regain Control
       </MontserratTypography>
       <Spacing vertical={5} />
-      <MontserratTypography variant="h3" weight="600">
+      <MontserratTypography variant="h3" weight="600" color="black">
         Consolidate
       </MontserratTypography>
-      <MontserratTypography variant="h4" weight="500">
+      <MontserratTypography variant="h4" weight="500" color="black">
         Prioritize and delegate. Assign tasks to the right people and know the
         status of each important step. Stay on top of the moving parts and
         pieces.
       </MontserratTypography>
       <Spacing vertical={5} />
-      <MontserratTypography variant="h3" weight="600">
+      <MontserratTypography variant="h3" weight="600" color="black">
         Simplify
       </MontserratTypography>
-      <MontserratTypography variant="h4" weight="500">
+      <MontserratTypography variant="h4" weight="500" color="black">
         Healthcare is complicated and a team sport. Dock is how to concentrate
         on the things that matter most.
       </MontserratTypography>
       <Spacing vertical={5} />
-      <MontserratTypography variant="h3" weight="600">
+      <MontserratTypography variant="h3" weight="600" color="black">
         Care
       </MontserratTypography>
-      <MontserratTypography variant="h4" weight="500">
+      <MontserratTypography variant="h4" weight="500" color="black">
         Dock puts what’s important front and center and keeps track of the
         millions of small but important details. Dock makes it easier to do what
         you love.

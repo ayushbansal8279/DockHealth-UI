@@ -60,13 +60,13 @@ export const StyledAnchorDiv = styled.div`
 `;
 
 export const StyledLink = styled(Link)`
-  color: ${palette.darkBlue};
+  color: ${palette.black};
   filter: brightness(1);
-  text-decoration: underline;
   transition: all 0.25s ease-out;
-
+  display: flex;
+  flex-direction: row-reverse;
   &:hover {
-    color: ${palette.darkBlue};
+    color: ${palette.black};
     filter: brightness(1.25);
   }
 `;

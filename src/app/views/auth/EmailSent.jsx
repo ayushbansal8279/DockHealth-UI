@@ -5,7 +5,7 @@ import { MontserratTypography } from 'styles/theme-montserrat';
 
 export default () => (
   <Grid container>
-    <MontserratTypography variant="h2">
+    <MontserratTypography variant="h2" weight="bold">
       Reset your password
     </MontserratTypography>
     <Spacing vertical={4} />
