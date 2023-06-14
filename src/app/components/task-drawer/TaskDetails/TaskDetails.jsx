@@ -1,7 +1,7 @@
 import React, {
   useCallback,
   useEffect,
-  // useMemo,
+  useMemo,
   // useRef,
   useState,
 } from 'react';
@@ -14,12 +14,22 @@ import { updateTaskDetails } from 'actions/task-actions';
 import {
   // convertFromEditorStateToOutput,
   convertToEditorState,
-  // isEditorStateEmpty,
+  isEditorStateEmpty,
 } from 'components/common/TextEditor/helpers';
+import RichTextEditor from 'components/common/RichTextEditor/RichTextEditor';
 import { selectedTaskSelector } from 'selectors/task-drawer-selectors';
 import debounce from 'lodash.debounce';
-import TextArea from 'ui-toolkit/Form/TextArea/TextArea';
+// import TextArea from 'ui-toolkit/Form/TextArea/TextArea';
+import CustomTextEditor from 'components/common/CustomTextEditor/CustomTextEditor';
 import { DetailsContainer } from './styled';
+
+// import FroalaEditor from 'react-froala-wysiwyg';
+
+// import MarkdownIt from 'markdown-it';
+// import TurndownService from 'turndown';
+
+// const md = new MarkdownIt();
+// const turndownService = new TurndownService();
 
 const TaskDetails = ({ readOnly, disableMentions }) => {
   // const DEBOUNCE_TIME = 10000;
@@ -37,15 +47,21 @@ const TaskDetails = ({ readOnly, disableMentions }) => {
       handleRichText: true,
     }),
   );
-  const [rawTextState, setRawTextState] = useState(
-    selectedTask?.tokenizedDetails,
-  );
+  // const [rawTextState, setRawTextState] = useState(
+  //   selectedTask?.tokenizedDetails,
+  // );
+
+  // const [editorState, setEditorState] = useState(
+  //   // rawTextState,
+  //   md.render(rawTextState || ''),
+  // );
+
   // const isTemplateTask = checkIfTemplateTask(selectedTask);
 
-  // const isEmptyDetailsState = useMemo(
-  //   () => isEditorStateEmpty(detailsState),
-  //   [detailsState],
-  // );
+  const isEmptyDetailsState = useMemo(
+    () => isEditorStateEmpty(detailsState),
+    [detailsState],
+  );
 
   const previousIsFocused = usePrevious(isFocused);
 
@@ -59,11 +75,11 @@ const TaskDetails = ({ readOnly, disableMentions }) => {
         // if (!rawTextState && tokenizedText.length === 0) return;
         // if (isChangedText) {
         //   setRawTextState(tokenizedText);
-        dispatch(
-          updateTaskDetails(selectedTask, {
-            tokenizedDetails: state || '',
-          }),
-        );
+        // dispatch(
+        //   updateTaskDetails(selectedTask, {
+        //     tokenizedDetails: state || '',
+        //   }),
+        // );
         // }
       }
     },
@@ -78,10 +94,10 @@ const TaskDetails = ({ readOnly, disableMentions }) => {
   );
 
   useEffect(() => {
-    if (previousIsFocused && !isFocused) {
-      onDebouncedChange.cancel();
-      updateDetails(detailsState);
-    }
+    // if (previousIsFocused && !isFocused) {
+    //   onDebouncedChange.cancel();
+    //   updateDetails(detailsState);
+    // }
   }, [
     detailsState,
     isFocused,
@@ -106,17 +122,65 @@ const TaskDetails = ({ readOnly, disableMentions }) => {
     );
   }, 5000);
 
-  const handleTextAreaBlur = (_, { value }) => {
-    dispatch(
-      updateTaskDetails(selectedTask, {
-        tokenizedDetails: value || '',
-      }),
-    );
+  const handleBlur = (value) => {
+    if (selectedTask?.tokenizedDetails !== value) {
+      dispatch(
+        updateTaskDetails(selectedTask, {
+          tokenizedDetails: value || '',
+        }),
+      );
+    }
   };
+
+  // const config = {
+  //   placeholder: 'Edit task details',
+  //   listAdvancedTypes: true,
+  //   toolbarButtons: [
+  //     'bold',
+  //     'italic',
+  //     'underline',
+  //     'strikeThrough',
+  //     'subscript',
+  //     'superscript',
+  //     '|',
+  //     'formatOL',
+  //     'formatUL',
+  //     'outdent',
+  //     'indent',
+  //     'quote',
+  //     'insertLink',
+  //     '|',
+  //     'undo',
+  //     'redo',
+  //     'trackChanges',
+  //     'markdown',
+  //   ],
+  //   events: {
+  //     // eslint-disable-next-line func-names, object-shorthand, prettier/prettier
+  //     'focus': function () {
+  //       // eslint-disable-next-line react/no-this-in-sfc
+  //       const value = this.html.get();
+  //       console.log(`focus: ${value}`);
+  //     },
+  //     // eslint-disable-next-line func-names, object-shorthand, prettier/prettier
+  //     // 'blur': function (e, editor) {
+  //     'blur': function () {
+  //       // eslint-disable-next-line react/no-this-in-sfc
+  //       const value = this.html.get();
+  //       console.log(`blur: ${value}`);
+  //       const markdown = turndownService.turndown(value);
+  //       dispatch(
+  //         updateTaskDetails(selectedTask, {
+  //           tokenizedDetails: markdown || '',
+  //         }),
+  //       );
+  //     },
+  //   },
+  // };
 
   return (
     <DetailsContainer>
-      <TextArea
+      {/* <TextArea
         value={rawTextState}
         placeholder="Task details"
         onChange={handleTextAreaChange}
@@ -125,28 +189,21 @@ const TaskDetails = ({ readOnly, disableMentions }) => {
         enabled={{
           mentions: true,
         }}
-      />
-      {/*<RichTextEditor onChange={onChangeDetailsEditor} value={rawTextState} textArea isToolbarActive />*/}
-      {/*<CustomTextEditor*/}
-      {/*  key={selectedTask?.identifier}*/}
-      {/*  empty={isEmptyDetailsState}*/}
-      {/*  focused={isFocused}*/}
-      {/*  label="details2"*/}
-      {/*  richTextEnabled*/}
-      {/*>*/}
-      {/*  <TextEditor*/}
-      {/*    readOnly={readOnly}*/}
-      {/*    minHeight={100}*/}
-      {/*    ref={detailsReference}*/}
-      {/*    taskListIdentifier={taskListIdentifier}*/}
-      {/*    disableMentions={disableMentions || isTemplateTask}*/}
-      {/*    showToolbar*/}
-      {/*    onFocus={setFocused}*/}
-      {/*    onBlur={unsetFocused}*/}
-      {/*    state={detailsState}*/}
-      {/*    onChange={onChangeDetailsEditor}*/}
-      {/*  />*/}
-      {/*</CustomTextEditor>*/}
+      /> */}
+      <CustomTextEditor
+        key={selectedTask?.identifier}
+        // empty={isEmptyDetailsState}
+        focused={isFocused}
+        label="Details"
+        richTextEnabled
+      >
+        <RichTextEditor
+          value={selectedTask?.tokenizedDetails}
+          onBlur={handleBlur}
+          initOnClick={false}
+          showCharCount
+        />
+      </CustomTextEditor>
     </DetailsContainer>
   );
 };

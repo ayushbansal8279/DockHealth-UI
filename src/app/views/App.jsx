@@ -5,6 +5,26 @@
 import 'normalize.css/normalize.css';
 import 'simplebar/dist/simplebar.min.css';
 
+// Require Editor JS files.
+import 'froala-editor/js/froala_editor.pkgd.min.js';
+
+// Require Editor CSS files.
+import 'froala-editor/css/froala_style.min.css';
+import 'froala-editor/css/froala_editor.pkgd.min.css';
+
+// Import a third-party plugin.
+import 'froala-editor/js/plugins/char_counter.min.js';
+import 'froala-editor/js/plugins/emoticons.min.js';
+import 'froala-editor/js/plugins/font_size.min.js';
+import 'froala-editor/js/plugins/line_height.min.js';
+import 'froala-editor/js/plugins/link.min.js';
+import 'froala-editor/js/plugins/lists.min.js';
+import 'froala-editor/js/plugins/paragraph_format.min.js';
+import 'froala-editor/js/plugins/url.min.js';
+
+// Require Font Awesome.
+// import 'font-awesome/css/font-awesome.css';
+
 import { node } from 'prop-types';
 import React, { PureComponent } from 'react';
 import isEmpty from 'ramda/src/isEmpty';

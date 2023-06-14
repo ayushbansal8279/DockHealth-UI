@@ -1,0 +1,13 @@
+.editor-links {
+    text-decoration: underline;
+    color: blue;
+}
+
+.fr-element > p {
+    margin-bottom: 0.2rem;
+}
+
+.fr-element > ul,li {
+  /* text-indent: 0; */
+  list-style: inherit;
+}
