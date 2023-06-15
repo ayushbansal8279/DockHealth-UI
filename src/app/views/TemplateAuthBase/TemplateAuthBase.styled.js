@@ -27,6 +27,13 @@ export const LeftSideMainContainer = styled.div`
   padding-bottom: 0;
   width: 50%;
 
+  @media screen and (max-width: 600px) {
+    && {
+      display: none;
+      padding: 0;
+    }
+  }
+
   @media screen and (max-width: ${mdBreakpoint}px) {
     max-width: unset;
     padding: 1.5rem;
@@ -46,7 +53,7 @@ export const LeftSideContentContainer = styled.div`
   @media screen and (min-width: ${mdBreakpoint}px) {
     max-width: 525px;
   }
-  
+
 `;
 
 export const RightSideMainContainer = styled.div`

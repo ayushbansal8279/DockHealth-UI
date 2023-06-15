@@ -13,7 +13,6 @@ import Spacing from 'components/common/Spacing';
 import palette from 'styles/palette';
 import { StyledForm, StyledLink } from './AuthComponents.styled';
 import SSOOptions from './SSOOptions';
-import { fontWeights } from 'styles/font';
 
 const validationSchema = object().shape({
   username: string()
@@ -133,7 +132,7 @@ const LoginFormPassword = ({
           Dock can save you 20 hours a month{' '}
           <a
             style={{ color: 'black', fontWeight: 800, paddingLeft: '5px' }}
-            to="/auth/welcome"
+            href="https://help.dock.health/"
           >
             {' '}
             Learn More

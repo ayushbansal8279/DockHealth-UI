@@ -1,50 +1,88 @@
-import React, { useState } from 'react';
-import { Link } from 'react-router-dom';
-import AuthField from 'components/auth/AuthField/AuthField';
+import React from 'react';
+import { useMount } from 'react-use';
+import { MontserratTypography } from 'styles/theme-montserrat';
+import FormInput from 'components/common/Input/FormInput';
+import { object, string } from 'yup';
+import { yupResolver } from '@hookform/resolvers/yup';
+import { FormProvider, useForm } from 'react-hook-form';
+import { Grid } from '@mui/material';
+import DockHeaderLogo from 'img/dock-header-logo.svg';
+import styled from 'styled-components';
+import palette from 'styles/palette';
+import Spacing from 'components/common/Spacing';
+import Button from '../common/Button/Button';
+import { StyledLink } from './AuthComponents.styled';
+
+const validationSchema = object().shape({
+  username: string()
+    .required('Please enter an email address')
+    .email('Please enter a valid email address'),
+});
 
 const ResendCodeForm = (props) => {
-  const { handleSubmit, invalid, pristine, submitting } = props;
+  const { onSubmit, invalid, pristine, submitting } = props;
 
-  const [username, setUsername] = useState('');
+  const formMethods = useForm({
+    resolver: yupResolver(validationSchema),
+    reValidateMode: 'onSubmit',
+  });
 
-  const errors = {};
-  if (!username) {
-    errors.username = 'Required';
-  } else if (!/^[\w%+-.]+@[\d-.a-z]+\.[a-z]{2,10}$/i.test(username)) {
-    errors.username = 'Please enter a valid email address';
-  }
+  const { handleSubmit, setValue, setError } = formMethods;
+
+  useMount(() => {
+    setValue('username', '');
+  });
+
+  const DockLogoImage = styled.img.attrs({
+    src: DockHeaderLogo,
+    alt: 'Dock Health logo',
+  })`
+    align: center;
+    width: 100%;
+    object-fit: contain;
+    height: 69px;
+  `;
 
   return (
-    <form className="inline-label top-buffer" onSubmit={handleSubmit}>
-      <div className="row expanded">
-        <AuthField
-          input={{
-            value: username,
-            onChange: (event) => {
-              setUsername(event.target.value);
-            },
+    <Grid container>
+      <Grid item xs={12} alignItems="center" alignContent="center">
+        <DockLogoImage />
+        <Spacing vertical={5} />
+      </Grid>
+      <Grid item xs={12} alignItems="center" alignContent="center">
+        <form
+          onSubmit={handleSubmit(onSubmit({ setError }))}
+          style={{
+            width: '100%',
           }}
-          name="username"
-          type="text"
-          label="Email"
-          meta={{ error: errors.username }}
-        />
-        <div className="columns small-12 text-center top-buffer">
-          <button
-            className={`button secondary expand${
-              submitting ? ' is-loading' : ''
-            }`}
-            type="submit"
-            disabled={invalid || pristine || submitting}
-          >
-            Resend code
-          </button>
-        </div>
-        <div className="columns small-12 top-buffer text-right details">
-          <Link to="/auth/confirmRegistration">Confirm registration</Link>
-        </div>
-      </div>
-    </form>
+        >
+          <FormProvider {...formMethods}>
+            <MontserratTypography weight="bold" variant="h3" align="center">
+              Resend confirmation code
+            </MontserratTypography>
+            <Spacing vertical={5} />
+            <FormInput name="username" type="text" label="Email" autoFocus />
+            <Spacing vertical={5} />
+            <Button
+              type="submit"
+              fullWidth
+              size="large"
+              color={palette.brightOrange}
+              secondaryColor={palette.oPlusRed}
+              disabled={invalid || pristine || submitting}
+            >
+              Resend Code
+            </Button>
+            <Spacing vertical={4} />
+            <MontserratTypography variant="h4" weight="bold" align="center">
+              <StyledLink to="/auth/confirmRegistration">
+                Confirm registration
+              </StyledLink>
+            </MontserratTypography>
+          </FormProvider>
+        </form>
+      </Grid>
+    </Grid>
   );
 };
 
