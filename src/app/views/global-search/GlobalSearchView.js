@@ -3,7 +3,7 @@ import isEmpty from 'ramda/src/isEmpty';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import { Box } from '@material-ui/core';
-import Spacing from 'components/common/Spacing';
+// import Spacing from 'components/common/Spacing';
 import {
   isLoadingGlobalSearchSelector,
   isLoadingMoreGlobalSearchSelector,
@@ -97,7 +97,10 @@ const GlobalSearchView = ({
             ) : (
               <ColumnsConfigProvider>
                 <VerticalScrollContainer>
-                  <Spacing vertical={5} />
+                  <StickyContainer left={24} decreaseWidth={2 * 24}>
+                    {!isEmpty(lists) && <GlobalSearchToolbar />}
+                  </StickyContainer>
+                  {/* <Spacing vertical={5} /> */}
                   {!isEmpty(lists)
                     ? lists?.map(list =>
                         list.tasks?.length > 0 ? (
