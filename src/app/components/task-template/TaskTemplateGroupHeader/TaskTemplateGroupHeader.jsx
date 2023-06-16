@@ -13,6 +13,7 @@ import { checkIfAllTasksSelected } from 'helpers/bulk-edit-helpers';
 import pluck from 'ramda/src/pluck';
 import { extractTasksAndSubtasks } from 'helpers/tasklist-helpers';
 import { useDispatch, useSelector } from 'react-redux';
+import { formatPhoneNumber } from 'helpers/utility-functions';
 import ThreeDotsIcon from 'img/three-dots';
 import { MoreVert } from '@material-ui/icons';
 import * as ModalActions from 'modal/actions';
@@ -874,6 +875,52 @@ const TaskTemplateGroupHeader = ({
               {!emrPatientLink && <span>{patient?.mrn}</span>}
             </TaskItemCell>,
             getColumnOrder(PatientTaskItemColumn.MRN),
+          )}
+        </>
+      )}
+      {isColumnChecked(columns, PatientTaskItemColumn.MOBILE_PHONE) && (
+        <>
+          {randerFirstColumnCoverIfNecessary(
+            <TaskItemCell
+              isSubtask={false}
+              key={`patient_mobile_phone_${identifier}`}
+              width={
+                columns?.find(
+                  ({ identifier: id }) => id === PatientTaskItemColumn.MOBILE_PHONE,
+                )?.columnWidth
+              }
+              order={getColumnOrder(PatientTaskItemColumn.MOBILE_PHONE)}
+            >
+              <TaskItemText
+                readOnly={isPatientDataReadOnly}
+                value={formatPhoneNumber(patient?.phoneMobile ?? '')}
+                onChange={handlePatientUpdate('phoneMobile')}
+              />
+            </TaskItemCell>,
+            getColumnOrder(PatientTaskItemColumn.MOBILE_PHONE),
+          )}
+        </>
+      )}
+      {isColumnChecked(columns, PatientTaskItemColumn.HOME_PHONE) && (
+        <>
+          {randerFirstColumnCoverIfNecessary(
+            <TaskItemCell
+              isSubtask={false}
+              key={`patient_home_phone_${identifier}`}
+              width={
+                columns?.find(
+                  ({ identifier: id }) => id === PatientTaskItemColumn.HOME_PHONE,
+                )?.columnWidth
+              }
+              order={getColumnOrder(PatientTaskItemColumn.HOME_PHONE)}
+            >
+              <TaskItemText
+                readOnly={isPatientDataReadOnly}
+                value={formatPhoneNumber(patient?.phoneHome ?? '')}
+                onChange={handlePatientUpdate('phoneHome')}
+              />
+            </TaskItemCell>,
+            getColumnOrder(PatientTaskItemColumn.HOME_PHONE),
           )}
         </>
       )}

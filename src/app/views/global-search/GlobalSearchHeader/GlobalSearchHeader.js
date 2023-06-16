@@ -54,7 +54,11 @@ const GlobalSearchHeader = ({
         alignItems="center"
       >
         <InputWrapper>
-          <SearchInput value={searchValue} onValueChange={setSearchValue} />
+          <SearchInput
+            value={searchValue}
+            onValueChange={setSearchValue}
+            onKeyEnter={searchTasks}
+          />
         </InputWrapper>
         <Spacing horizontal={5} />
         <CheckboxContainer>

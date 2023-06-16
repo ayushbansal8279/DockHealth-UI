@@ -18,7 +18,7 @@ export const VerticalScrollContainer = styled.div`
 
 export const GlobalSearchWrapper = styled.div`
   position: relative;
-  padding: 30px 0; // per design
+  padding: 10px 0; // per design
 `;
 
 export const TopSectionGrid = styled(Grid)`

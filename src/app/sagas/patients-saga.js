@@ -116,6 +116,10 @@ function* initializePatientsListState({ patientsListIdentifier }) {
     ]);
   } else {
     yield all([put(PatientsActions.getCurrentPatientsListDetails())]);
+    const selectedFilters = yield select(patientsSelectedFiltersSelector);
+    if (selectedFilters) {
+      yield all([put(PatientsActions.getCurrentPatients())]);
+    }
   }
 }
 
