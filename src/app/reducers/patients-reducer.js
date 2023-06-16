@@ -66,6 +66,7 @@ const PatientsReducer = (state = initialState, action) => {
       return {
         ...state,
         currentPatientsList: {
+          ...state.currentPatientsList,
           searchPerformed: true,
         },
       };
@@ -74,6 +75,7 @@ const PatientsReducer = (state = initialState, action) => {
       return {
         ...state,
         currentPatientsList: {
+          ...state.currentPatientsList,
           searchPerformed: false,
         },
       };
