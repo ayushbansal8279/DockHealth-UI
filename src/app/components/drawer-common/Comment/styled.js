@@ -49,7 +49,7 @@ export const CommentContent = styled.div`
 export const CommentText = styled.div`
   color: ${palette.mediumGrey};
   font-weight: normal;
-  max-width: 475px;
+  // max-width: 475px;
   width: 100%;
 `;
 

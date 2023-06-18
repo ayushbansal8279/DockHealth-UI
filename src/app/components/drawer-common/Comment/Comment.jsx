@@ -7,11 +7,12 @@ import { RobotoTypography } from 'styles/theme';
 // eslint-disable-next-line import/no-named-as-default
 import { useBoolean } from 'hooks/useBoolean';
 import {
-  convertFromEditorStateToOutput,
+  // convertFromEditorStateToOutput,
   convertToEditorState,
 } from 'components/common/TextEditor/helpers';
 import { useMentionsEditorState } from 'components/common/TextEditor/use-mentions-editor-state';
-import TextEditor from 'ui-toolkit/Form/TextEditor/TextEditor';
+// import TextEditor from 'ui-toolkit/Form/TextEditor/TextEditor';
+import RichTextEditor from 'components/common/RichTextEditor/RichTextEditor';
 import {
   CommentActionLabel,
   CommentContainer,
@@ -79,18 +80,23 @@ const Comment = ({
 
   const [currentValue, setCurrentValue] = useState(commentContent);
 
-  const handleTextEditorChange = (_, { value }) => {
-    console.log("handleTextEditorChange", value);
-    setCurrentValue(value)
-  }
+  // const handleTextEditorChange = (_, { value }) => {
+  //   console.log("handleTextEditorChange", value);
+  //   setCurrentValue(value);
+  // }
+
+  const handleTextEditorChange = (value) => {
+    console.log('handleTextEditorChange:', value);
+    setCurrentValue(value);
+  };
 
   const handleSave = () => {
     onUpdate({
       commentIdentifier,
       comment: currentValue,
-    })
+    });
     unsetEditing();
-  }
+  };
 
   return (
     <CommentWrapper>
@@ -100,7 +106,7 @@ const Comment = ({
       <CommentContainer isEditing={isEditing}>
         <CommentContent>
           <CommentText>
-            <TextEditor
+            {/* <TextEditor
               type="textarea"
               readonly={!isEditing}
               value={currentValue}
@@ -108,6 +114,14 @@ const Comment = ({
               enabled={{
                 toolbar: isEditing,
               }}
+            /> */}
+            <RichTextEditor
+              height={60}
+              readonly={!isEditing}
+              value={currentValue}
+              onChange={handleTextEditorChange}
+              initOnClick
+              showCharCount
             />
           </CommentText>
           <CommentDetails>{commentDetails}</CommentDetails>

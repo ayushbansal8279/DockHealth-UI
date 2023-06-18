@@ -81,20 +81,48 @@ const FROALA_PRODUCT_KEY =
 //     300,
 //   );
 
+const toolbarOptions = [
+  'bold',
+  'italic',
+  'underline',
+  'strikeThrough',
+  // 'subscript',
+  // 'superscript',
+  // 'fontSize',
+  'paragraphFormat',
+  '|',
+  'formatOLSimple',
+  'formatUL',
+  'outdent',
+  'indent',
+  'insertLink',
+  // 'lineHeight',
+  '|',
+  // 'emoticons',
+  // 'undo',
+  // 'redo',
+  // 'trackChanges',
+  // 'markdown',
+];
+
 const RichTextEditor = React.forwardRef(
   (
     {
       value,
+      height = 100,
       // maxHeight,
       showToolbar = true,
+      showToolbarOnEdit = true,
+      // showToolbarInline = false,
       // fullHeight,
-      // readOnly,
+      readonly,
       // withEditedLabel,
       // keyBindingFn,
       // handleKeyCommand,
-      onBlur = () => {},
       // onFocus = () => {},
-      // onChange = () => {},
+      onBlur = () => {},
+      onChange = () => {},
+      onKeyEnter = () => {},
       // onAddMention = () => {},
       // placeholder = '',
       // initialState,
@@ -120,6 +148,37 @@ const RichTextEditor = React.forwardRef(
       md.render(rawTextState || ''),
     );
 
+    const [editor, setEditor] = useState(null);
+
+    useEffect(() => {
+      if (editor) {
+        if (readonly) {
+          editor.edit.off();
+          if (showToolbarOnEdit) {
+            editor.toolbar.hide();
+            editor.$second_tb.hide();
+          }
+        } else {
+          editor.edit.on();
+          if (showToolbarOnEdit) {
+            editor.toolbar.show();
+            editor.$second_tb.show();
+          }
+        }
+      }
+    }, [editor, readonly, showToolbarOnEdit]);
+
+    useEffect(() => {
+      if (editor) {
+        if (showToolbar) {
+          editor.toolbar.show();
+          editor.events.focus();
+        } else {
+          editor.toolbar.hide();
+        }
+      }
+    }, [editor, showToolbar]);
+
     const showToolbarInline = !showToolbar;
 
     const config = {
@@ -128,51 +187,61 @@ const RichTextEditor = React.forwardRef(
       placeholder: 'Edit task details',
       multiLine: { multiline },
       charCounterCount: false,
-      //   initOnClick: { initOnClick },
+      initOnClick: { initOnClick },
       toolbarInline: showToolbarInline,
-      toolbarVisibleWithoutSelection: false,
-      height: multiline ? 100 : 30,
+      toolbarVisibleWithoutSelection: true,
+      height: multiline ? { height } : 30,
       heightMax: multiline ? 150 : 30,
-      toolbarButtons: showToolbar
-        ? [
-            'bold',
-            'italic',
-            'underline',
-            'strikeThrough',
-            // 'subscript',
-            // 'superscript',
-            // 'fontSize',
-            'paragraphFormat',
-            '|',
-            'formatOLSimple',
-            'formatUL',
-            'outdent',
-            'indent',
-            // 'lineHeight',
-            '|',
-            'insertLink',
-            // 'emoticons',
-            // 'undo',
-            // 'redo',
-            // 'trackChanges',
-            // 'markdown',
-          ]
-        : [],
+      toolbarButtons: showToolbar ? toolbarOptions : [],
       events: {
-        // eslint-disable-next-line func-names, object-shorthand, prettier/prettier
+        // eslint-disable-next-line prettier/prettier, func-names
+        'initialized' : function() {
+          if (readonly) {
+            // eslint-disable-next-line react/no-this-in-sfc, no-shadow
+            this.edit.off();
+          }
+          setEditor(this);
+        },
+        // eslint-disable-next-line prettier/prettier, func-names
+        'edit.off': function () {
+        },
+        // eslint-disable-next-line prettier/prettier, func-names
         'focus': function () {
           // eslint-disable-next-line react/no-this-in-sfc, no-shadow
-          const value = this.html.get();
-          //   console.log(`focus: ${value}`);
+          // const value = this.html.get();
+          // console.log(`focus: ${value}`);
         },
-        // eslint-disable-next-line func-names, object-shorthand, prettier/prettier
-        // 'blur': function (e, editor) {
+        // eslint-disable-next-line prettier/prettier, func-names
         'blur': function () {
           // eslint-disable-next-line react/no-this-in-sfc, no-shadow
           const value = this.html.get();
-          //   console.log(`blur: ${value}`);
+          // console.log(`blur: ${value}`);
           const markdown = turndownService.turndown(value);
           onBlur(markdown);
+        },
+        // eslint-disable-next-line prettier/prettier, func-names
+        'contentChanged': function () {
+          // eslint-disable-next-line react/no-this-in-sfc, no-shadow
+          const value = this.html.get();
+          // console.log(`change: ${value}`);
+          if (onChange) {
+            const markdown = turndownService.turndown(value);
+            onChange(markdown);
+          }
+        },
+        // eslint-disable-next-line prettier/prettier, func-names
+        'keydown': function (keydownEvent) {
+          if (keydownEvent.keyCode === 13) {
+            if (!keydownEvent.shiftKey && onKeyEnter) {
+              // eslint-disable-next-line react/no-this-in-sfc, no-shadow
+              const value = this.html.get();
+              const markdown = turndownService.turndown(value);
+              onKeyEnter(markdown);
+              setEditorState('');
+            } else {
+              // do nothing
+            }
+          }
         },
       },
       linkNoReferrer: false,

@@ -5,7 +5,8 @@ import { userProfileSelector } from 'selectors/user-selectors';
 import Loader, { LoaderSizes } from 'components/common/Loader/Loader';
 import UserAvatar from 'components/user/UserAvatar/UserAvatar';
 import { selectedTaskSelector } from 'selectors/task-drawer-selectors';
-import TextEditor from 'ui-toolkit/Form/TextEditor/TextEditor';
+// import TextEditor from 'ui-toolkit/Form/TextEditor/TextEditor';
+import RichTextEditor from 'components/common/RichTextEditor/RichTextEditor';
 import {
   AddCommentContainer,
   AddCommentLoaderContainer,
@@ -22,8 +23,7 @@ const AddComment = ({
   const addCommentContainerReference = useRef();
   const [isFocused] = useState(false);
   const currentUser = useSelector(userProfileSelector);
-  const [isAddingComment] =
-    useBoolean(false);
+  const [isAddingComment] = useBoolean(false);
 
   useEffect(() => {
     if (autoFocus && addCommentReference?.current) {
@@ -42,16 +42,26 @@ const AddComment = ({
 
   const [description, setDescription] = useState(null);
 
-  const handleTextEditorChange = (_, { value }) => {
-    setDescription(value);
+  // const handleTextEditorChange = (_, { value }) => {
+  //   setDescription(value);
+  // };
+
+  const handleTextEditorBlur = (value) => {
+    // onAdd(value);
+    setDescription('');
   };
 
-  const handleTextEditorKeyDown = (_, { value, key, shiftKey }) => {
-    if (key === 'Enter' && !shiftKey) {
-      onAdd(value);
-      setDescription('');
-    }
+  const handleTextEditorKeyEnter = (value) => {
+    onAdd(value);
+    setDescription('');
   };
+
+  // const handleTextEditorKeyDown = (_, { value, key, shiftKey }) => {
+  //   if (key === 'Enter' && !shiftKey) {
+  //     onAdd(value);
+  //     setDescription('');
+  //   }
+  // };
 
   const selectedTask = useSelector(selectedTaskSelector);
 
@@ -59,7 +69,7 @@ const AddComment = ({
     <AddCommentContainer ref={addCommentContainerReference}>
       <UserAvatar user={currentUser} size={34} />
       <AddCommentInputContainer isFocused={isFocused}>
-        <TextEditor
+        {/* <TextEditor
           type="textarea"
           value={description}
           onChange={handleTextEditorChange}
@@ -68,6 +78,15 @@ const AddComment = ({
           enabled={{
             mentions: true,
           }}
+        /> */}
+        <RichTextEditor
+          height={120}
+          value={description}
+          onBlur={handleTextEditorBlur}
+          onKeyEnter={handleTextEditorKeyEnter}
+          mentions={selectedTask?.taskMentions}
+          initOnClick={false}
+          showCharCount
         />
       </AddCommentInputContainer>
       {isAddingComment && (
