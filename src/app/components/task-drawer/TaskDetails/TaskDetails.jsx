@@ -1,24 +1,24 @@
 import React, {
   useCallback,
-  useEffect,
-  useMemo,
+  // useEffect,
+  // useMemo,
   // useRef,
-  useState,
+  // useState,
 } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useBoolean } from 'hooks/useBoolean';
-import usePrevious from 'hooks/use-previous';
+// import usePrevious from 'hooks/use-previous';
 import { updateTaskDetails } from 'actions/task-actions';
 // import { checkIfTemplateTask } from 'helpers/task-helpers';
 // import { useMentionsEditorState } from 'components/common/TextEditor/use-mentions-editor-state';
-import {
-  // convertFromEditorStateToOutput,
-  convertToEditorState,
-  isEditorStateEmpty,
-} from 'components/common/TextEditor/helpers';
+// import {
+//   convertFromEditorStateToOutput,
+//   convertToEditorState,
+//   isEditorStateEmpty,
+// } from 'components/common/TextEditor/helpers';
 import RichTextEditor from 'components/common/RichTextEditor/RichTextEditor';
 import { selectedTaskSelector } from 'selectors/task-drawer-selectors';
-import debounce from 'lodash.debounce';
+// import debounce from 'lodash.debounce';
 // import TextArea from 'ui-toolkit/Form/TextArea/TextArea';
 import CustomTextEditor from 'components/common/CustomTextEditor/CustomTextEditor';
 import { DetailsContainer } from './styled';
@@ -39,14 +39,14 @@ const TaskDetails = ({ readOnly, disableMentions }) => {
   const dispatch = useDispatch();
   // const detailsReference = useRef(null);
   const [isFocused, setFocused, unsetFocused] = useBoolean();
-  const [detailsState, setDetailsState] = useState(
-    convertToEditorState({
-      rawText: selectedTask?.details,
-      tokenizedText: selectedTask?.tokenizedDetails,
-      mentions: selectedTask?.taskMentions,
-      handleRichText: true,
-    }),
-  );
+  // const [detailsState, setDetailsState] = useState(
+  //   convertToEditorState({
+  //     rawText: selectedTask?.details,
+  //     tokenizedText: selectedTask?.tokenizedDetails,
+  //     mentions: selectedTask?.taskMentions,
+  //     handleRichText: true,
+  //   }),
+  // );
   // const [rawTextState, setRawTextState] = useState(
   //   selectedTask?.tokenizedDetails,
   // );
@@ -58,12 +58,12 @@ const TaskDetails = ({ readOnly, disableMentions }) => {
 
   // const isTemplateTask = checkIfTemplateTask(selectedTask);
 
-  const isEmptyDetailsState = useMemo(
-    () => isEditorStateEmpty(detailsState),
-    [detailsState],
-  );
+  // const isEmptyDetailsState = useMemo(
+  //   () => isEditorStateEmpty(detailsState),
+  //   [detailsState],
+  // );
 
-  const previousIsFocused = usePrevious(isFocused);
+  // const previousIsFocused = usePrevious(isFocused);
 
   const updateDetails = useCallback(
     (state) => {
@@ -86,25 +86,25 @@ const TaskDetails = ({ readOnly, disableMentions }) => {
     [dispatch, selectedTask],
   );
 
-  const onDebouncedChange = useCallback(
-    (newState) => {
-      updateDetails(newState);
-    },
-    [updateDetails],
-  );
+  // const onDebouncedChange = useCallback(
+  //   (newState) => {
+  //     updateDetails(newState);
+  //   },
+  //   [updateDetails],
+  // );
 
-  useEffect(() => {
-    // if (previousIsFocused && !isFocused) {
-    //   onDebouncedChange.cancel();
-    //   updateDetails(detailsState);
-    // }
-  }, [
-    detailsState,
-    isFocused,
-    onDebouncedChange,
-    previousIsFocused,
-    updateDetails,
-  ]);
+  // useEffect(() => {
+  //   if (previousIsFocused && !isFocused) {
+  //     onDebouncedChange.cancel();
+  //     updateDetails(detailsState);
+  //   }
+  // }, [
+  //   detailsState,
+  //   isFocused,
+  //   onDebouncedChange,
+  //   previousIsFocused,
+  //   updateDetails,
+  // ]);
 
   // const onChangeDetailsEditor = useCallback(
   //   (state, { value }) => {
@@ -114,13 +114,13 @@ const TaskDetails = ({ readOnly, disableMentions }) => {
   //   [onDebouncedChange, setDetailsState],
   // );
 
-  const handleTextAreaChange = debounce((_, { value }) => {
-    dispatch(
-      updateTaskDetails(selectedTask, {
-        tokenizedDetails: value || '',
-      }),
-    );
-  }, 5000);
+  // const handleTextAreaChange = debounce((_, { value }) => {
+  //   dispatch(
+  //     updateTaskDetails(selectedTask, {
+  //       tokenizedDetails: value || '',
+  //     }),
+  //   );
+  // }, 5000);
 
   const handleBlur = (value) => {
     if (selectedTask?.tokenizedDetails !== value) {
@@ -200,7 +200,7 @@ const TaskDetails = ({ readOnly, disableMentions }) => {
         <RichTextEditor
           value={selectedTask?.tokenizedDetails}
           onBlur={handleBlur}
-          initOnClick={false}
+          initOnClick
           showCharCount
         />
       </CustomTextEditor>

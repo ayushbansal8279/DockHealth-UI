@@ -5,7 +5,7 @@ import React, {
   useLayoutEffect,
   // useMemo,
   useRef,
-  useState,
+  // useState,
 } from 'react';
 // import { EditorState } from 'draft-js';
 import { useDispatch } from 'react-redux';
@@ -13,11 +13,11 @@ import { useBoolean } from 'hooks/useBoolean';
 import { addTask, updateTaskDescription } from 'actions/task-actions';
 // import { useBoolean } from 'hooks/useBoolean';
 import { checkIfTemplateTask, TaskStatus } from 'helpers/task-helpers';
-import {
-  // convertFromEditorStateToOutput,
-  convertToEditorState,
-  // isEditorStateEmpty,
-} from 'components/common/TextEditor/helpers';
+// import {
+// convertFromEditorStateToOutput,
+// convertToEditorState,
+// isEditorStateEmpty,
+// } from 'components/common/TextEditor/helpers';
 // import { createMentionEntities } from 'components/common/TextEditor/create-mention-entities';
 // import CustomTextEditor from 'components/common/CustomTextEditor/CustomTextEditor';
 import { useMentionsEditorState } from 'components/common/TextEditor/use-mentions-editor-state';
@@ -42,16 +42,16 @@ const TaskDescription = ({ selectedTask, readOnly, disableMentions }) => {
   const firstRender = useRef(true);
   const descriptionReference = useRef(null);
   const [isFocused, setFocused, unsetFocused] = useBoolean(false);
-  const [descriptionState, setDescriptionState] = useMentionsEditorState(
-    description
-      ? convertToEditorState({
-          rawText: description,
-          tokenizedText: tokenizedDescription,
-          mentions: taskMentions,
-        })
-      : null,
-  );
-  const [descriptionErrorState, setDescriptionErrorState] = useState(false);
+  // const [descriptionState, setDescriptionState] = useMentionsEditorState(
+  //   description
+  //     ? convertToEditorState({
+  //         rawText: description,
+  //         tokenizedText: tokenizedDescription,
+  //         mentions: taskMentions,
+  //       })
+  //     : null,
+  // );
+  // const [descriptionErrorState, setDescriptionErrorState] = useState(false);
 
   // const isSubtask = !!parentTaskIdentifier;
 
@@ -68,7 +68,7 @@ const TaskDescription = ({ selectedTask, readOnly, disableMentions }) => {
         // );
         // setDescriptionState(EditorState.push(descriptionState, newContent));
       } else {
-        setDescriptionState();
+        // setDescriptionState();
       }
     }
 
@@ -153,15 +153,15 @@ const TaskDescription = ({ selectedTask, readOnly, disableMentions }) => {
   //   )
   // }, 1000)
 
-  const handleInputBlur = (_, { value }) => {
-    if (value && value !== '' && value !== selectedTask?.tokenizedDescription) {
-      dispatch(
-        updateTaskDescription(selectedTask, {
-          tokenizedDescription: value,
-        }),
-      );
-    }
-  };
+  // const handleInputBlur = (_, { value }) => {
+  //   if (value && value !== '' && value !== selectedTask?.tokenizedDescription) {
+  //     dispatch(
+  //       updateTaskDescription(selectedTask, {
+  //         tokenizedDescription: value,
+  //       }),
+  //     );
+  //   }
+  // };
 
   const handleBlur = (value) => {
     if (selectedTask?.description !== value) {
@@ -200,9 +200,9 @@ const TaskDescription = ({ selectedTask, readOnly, disableMentions }) => {
           />
         </CustomTextEditor>
       </DescriptionTextContainer>
-      {descriptionErrorState && (
+      {/* {descriptionErrorState && (
         <DescriptionError>Task description is required</DescriptionError>
-      )}
+      )} */}
     </>
   );
 };
