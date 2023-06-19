@@ -6,6 +6,7 @@ import { MontserratTypography } from 'styles/theme-montserrat';
 import Button from 'components/common/Button/Button';
 import FormInput from 'components/common/Input/FormInput';
 import Spacing from 'components/common/Spacing';
+import palette from 'styles/palette';
 
 const MIN_PASSWORD_LENGTH = 8;
 
@@ -32,7 +33,7 @@ const ResetPasswordForm = ({ authTokenReceived, onSubmit }) => {
   return (
     <form style={{ width: '100%' }} onSubmit={handleSubmit(onSubmit)}>
       <FormProvider {...formMethods}>
-        <MontserratTypography variant="h2">
+        <MontserratTypography variant="h2" weight="bold" align="center">
           Let’s set a new password
         </MontserratTypography>
         {!authTokenReceived && (
@@ -63,7 +64,14 @@ const ResetPasswordForm = ({ authTokenReceived, onSubmit }) => {
           label="Enter a new password"
         />
         <Spacing vertical={5} />
-        <Button active id="loginButton" size="large" type="submit">
+        <Button
+          active
+          id="loginButton"
+          size="large"
+          type="submit"
+          color={palette.brightOrange}
+          secondaryColor={palette.oPlusRed}
+        >
           Continue
         </Button>
       </FormProvider>

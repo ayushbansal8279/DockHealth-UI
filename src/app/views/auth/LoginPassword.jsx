@@ -13,7 +13,6 @@ import DockHeaderLogo from 'img/dock-header-logo.svg';
 import styled from 'styled-components';
 import { Grid } from '@mui/material';
 import Spacing from 'components/common/Spacing';
-import { MontserratTypography } from 'styles/theme-montserrat';
 
 const LoginPassword = () => {
   const [unconfirmedUserFlag, setUnconfirmedUserFlag] = useState(false);
