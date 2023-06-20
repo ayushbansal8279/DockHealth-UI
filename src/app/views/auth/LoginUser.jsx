@@ -94,7 +94,7 @@ const LoginUser = (props) => {
         <Spacing vertical={5} />
       </Grid>
       <Grid item xs={12} alignItems="center" alignContent="center">
-        <LoginFormUsername onSubmit={(form) => onSubmit(form, history)} />;
+        <LoginFormUsername onSubmit={(form) => onSubmit(form, history)} />
       </Grid>
     </Grid>
   );
