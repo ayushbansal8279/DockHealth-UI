@@ -425,11 +425,18 @@ const DashboardTasksGroup = ({
             {!isLoadingMore && dashboardTasksGroup?.hasMore && (
               <StickyContainer left={24} decreaseWidth={2 * 24}>
                 <LoadMoreSection>
-                  <LoadMoreButton
-                    onClick={() =>
-                      dispatch(loadMoreDashboardTasksForGroup(groupType))
-                    }
-                  />
+                  {dashboardTasksGroup?.moreTasksIndex &&
+                    dashboardTasksGroup?.moreTasksIndex !== 0 && (
+                      <LoadMoreButton
+                        onClick={() =>
+                          dispatch(loadMoreDashboardTasksForGroup(groupType))
+                        }
+                      />
+                    )}
+                  {(!dashboardTasksGroup?.moreTasksIndex ||
+                    dashboardTasksGroup?.moreTasksIndex === 0) && (
+                    <span>Limiting results. Please refine filter.</span>
+                  )}
                 </LoadMoreSection>
               </StickyContainer>
             )}
