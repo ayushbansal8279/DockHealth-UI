@@ -135,6 +135,13 @@ const CustomProfileView = lazy(() =>
   import('components/patients/CustomProfilesList/CustomProfileView'),
 );
 
+const ProfilesAndCustomFieldsView = lazy(() =>
+  import('views/custom-fields/profiles-and-custom-fields/ProfilesView'),
+);
+const TaskCustomizationsView = lazy(() =>
+  import('views/custom-fields/task-customizations/TaskCustomizationsView'),
+);
+
 const {
   CAN_ACCESS_HOME_PAGE,
   CAN_ACCESS_SEARCH_PAGE,
@@ -196,6 +203,16 @@ export const SETTINGS_ROUTES = [
   {
     path: '/custom-fields/:tabName?',
     RouteComponent: CustomFieldsView,
+    permissions: [CAN_ACCESS_SETTINGS_PAGE],
+  },
+  {
+    path: '/profiles',
+    RouteComponent: ProfilesAndCustomFieldsView,
+    permissions: [CAN_ACCESS_SETTINGS_PAGE],
+  },
+  {
+    path: '/task-customizations',
+    RouteComponent: TaskCustomizationsView,
     permissions: [CAN_ACCESS_SETTINGS_PAGE],
   },
   {
