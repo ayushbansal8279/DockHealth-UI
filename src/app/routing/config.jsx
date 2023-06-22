@@ -128,6 +128,9 @@ const GlobalSearchView = lazy(() =>
 );
 const TaskTourView = lazy(() => import('views/TaskTour/TaskTourView'));
 const PatientsView = lazy(() => import('components/patients/PatientsView'));
+const CustomPatientsView = lazy(() =>
+  import('components/patients/CustomProfilesList/PatientsList'),
+);
 
 const {
   CAN_ACCESS_HOME_PAGE,
@@ -229,6 +232,12 @@ export const TEMPLATE_CORE_SUBSCRIPTION_PLAN_ROUTES = [
   {
     path: '/search',
     RouteComponent: GlobalSearchView,
+    onLeave: onLeaveGlobalSearch,
+    permissions: [CAN_ACCESS_SEARCH_PAGE],
+  },
+  {
+    path: '/custom-profiles',
+    RouteComponent: CustomPatientsView,
     onLeave: onLeaveGlobalSearch,
     permissions: [CAN_ACCESS_SEARCH_PAGE],
   },

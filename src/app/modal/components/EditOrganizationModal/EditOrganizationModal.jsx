@@ -1,7 +1,7 @@
 import React, { useEffect } from 'react';
 import { Grid } from '@mui/material';
 import OfficeIcon from 'img/modals/office.svg';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { openModal } from 'modal/actions';
 import { updateOrganization } from 'actions/organization-actions';
 import Button from 'components/common/Button/Button';
@@ -10,6 +10,9 @@ import ColorPicker from 'components/common/ColorPicker/ColorPicker';
 import Spacing from 'components/common/Spacing';
 import FormInput from 'components/common/Input/FormInput';
 import { FormProvider, useForm } from 'react-hook-form';
+import { userProfileSelector } from 'selectors/user-selectors';
+import { getCustomerTypeLabel } from 'helpers/customer-type-helper';
+import { updateOrganizationCallType } from 'api/organization-api';
 import {
   EditOrganizationModalWrapper,
   Header,
@@ -21,6 +24,7 @@ import {
   SaveButtonWrapper,
 } from './styled';
 import { CloseIconButton, CloseIcon } from '../styled';
+import CustomerTypeDropDown from './CustomerTypeDropDown/CustomerTypeDropDown';
 
 const validateOrganizationName = (value) => {
   if (![...value]?.filter((char) => char !== ' ').length > 0) {
@@ -32,13 +36,39 @@ const validateOrganizationName = (value) => {
 
 const onSubmit =
   ({ dispatch, onSuccess, organizationIdentifier }) =>
-  ({ organizationName, organizationInitials, organizationProfileColor }) => {
-    updateOrganization({
-      organizationIdentifier,
-      organizationName,
-      organizationInitials,
-      organizationProfileColor,
-    })(dispatch).then(() => {
+  ({
+    organizationName,
+    organizationInitials,
+    organizationProfileColor,
+    customerType,
+  }) => {
+    const selectedType = [
+      { name: 'Patients', key: 'PATIENT' },
+      { name: 'Clients', key: 'CLIENT' },
+      { name: 'Members', key: 'MEMBER' },
+      { name: 'Customers', key: 'CUSTOMER' },
+    ].find((element) => element.key === customerType.toUpperCase());
+
+    const type = {
+      selectedRecord: selectedType,
+    };
+
+    console.log(`type: ${JSON.stringify(type)}`);
+
+    Promise.all([
+      (updateOrganizationCallType({
+        type,
+        organizationIdentifier,
+      }),
+      // history.push('/onboarding/team-setup');
+
+      updateOrganization({
+        organizationIdentifier,
+        organizationName,
+        organizationInitials,
+        organizationProfileColor,
+      })(dispatch)),
+    ]).then(() => {
       onSuccess();
       dispatch(
         openModal('Confirmation', {
@@ -47,17 +77,29 @@ const onSubmit =
           altIcon: 'Organization',
         }),
       );
+      window.location.reload(false);
     });
   };
 
 const EditOrganizationModal = ({ closeModal, userProfile, onSuccess }) => {
   const dispatch = useDispatch();
 
+  const currentUser = useSelector(userProfileSelector);
+  const customerTypeLabel = getCustomerTypeLabel(currentUser);
+
+  const customerTypesList = [
+    { name: 'Patients', identifier: 'PATIENT' },
+    { name: 'Clients', identifier: 'CLIENT' },
+    { name: 'Members', identifier: 'MEMBER' },
+    { name: 'Customers', identifier: 'CUSTOMER' },
+  ];
+
   const formMethods = useForm({
     defaultValues: {
       organizationName: userProfile.organizationName,
       organizationInitials: userProfile.organizationInitials,
       organizationProfileColor: userProfile.organizationProfileColor,
+      customerType: customerTypeLabel,
     },
     revalidationMode: 'onChange',
   });
@@ -82,11 +124,13 @@ const EditOrganizationModal = ({ closeModal, userProfile, onSuccess }) => {
       },
     });
     register('organizationProfileColor');
+    register('customerType');
 
     return () => {
       unregister('organizationName');
       unregister('organizationInitials');
       unregister('organizationProfileColor');
+      unregister('customerType');
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
@@ -152,6 +196,17 @@ const EditOrganizationModal = ({ closeModal, userProfile, onSuccess }) => {
             value={organizationProfileColorValue}
           />
           <Spacing vertical={6} />
+          <CustomerTypeDropDown
+            name="clientType"
+            value={customerTypeLabel.toUpperCase()}
+            onChange={(event) => {
+              setValue('customerType', event);
+            }}
+            field={{
+              options: customerTypesList,
+            }}
+          />
+          <Spacing vertical={3} />
           <Grid
             container
             direction="row"
