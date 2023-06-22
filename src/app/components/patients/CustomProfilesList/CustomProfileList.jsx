@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import DataGrid, { Data } from 'ui-toolkit/Composite/DataGrid';
 import { useDispatch, useSelector } from "react-redux";
 import { getCurrentUserGroupDetailsSelector } from "selectors/user-groups-selectors";
-import { useParams } from "react-router-dom";
+import { useParams, useHistory, useLocation } from "react-router-dom";
 import { getUserGroupIdentifierByUrlParameter } from "helpers/user-groups-helper";
 import { setCurrentUserGroup, unsetCurrentUserGroup } from "actions/user-groups-actions";
 import Drawer from "ui-toolkit/Navigation/Drawer/Drawer";
@@ -19,7 +19,7 @@ import MoreVertIcon from "@mui/icons-material/MoreVert";
 import CloseIcon from "@mui/icons-material/Close";
 import Fieldset from "ui-toolkit/Form_v2/Fieldset";
 
-const PatientsList = () => {
+const CustomProfileList = () => {
   const dispatch = useDispatch();
   const { groupIdentifier: groupIdentifierUrlParameter } = useParams();
   const groupIdentifier = getUserGroupIdentifierByUrlParameter(
@@ -33,10 +33,13 @@ const PatientsList = () => {
     };
   }, [dispatch, groupIdentifier]);
   const { users, name } = useSelector(getCurrentUserGroupDetailsSelector) || {};
-  console.log(users, name, groupIdentifierUrlParameter, groupIdentifier);
+
+  const location = useLocation();
+  const history = useHistory();
 
   const handleRecordClick = (event, { id }) => {
     setOpen(id);
+    history.push(`${location.pathname}/${id}`);
   }
 
   const handleClose = () => {
@@ -149,4 +152,4 @@ const PatientsList = () => {
   );
 };
 
-export default PatientsList;
+export default CustomProfileList;
