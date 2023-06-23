@@ -6,18 +6,17 @@ import Button from 'components/common/Button/Button';
 import Spacing from 'components/common/Spacing';
 import { MontserratTypography } from 'styles/theme-montserrat';
 import palette from 'styles/palette';
+import { Title, Subtitle } from 'components/auth/Title';
 
 const LoginWelcome = () => (
   <Grid container direction="column">
-    <MontserratTypography variant="h2" weight="bold">
-      Welcome to Dock Health
-    </MontserratTypography>
+    <Title>Welcome to Dock Health</Title>
     <Spacing vertical={4} />
-    <MontserratTypography variant="h4" weight="normal">
+    <Subtitle>
       Dock Health is a simple, HIPAA-compliant platform for managing clinical
       tasks as a team. Our mission is to offer a better way <b>to&#8209;do</b>{' '}
       healthcare.
-    </MontserratTypography>
+    </Subtitle>
     <Spacing vertical={5} />
     <Button
       size="large"

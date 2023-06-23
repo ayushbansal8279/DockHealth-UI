@@ -1,16 +1,14 @@
 import { Grid } from '@mui/material';
 import React from 'react';
 import Spacing from 'components/common/Spacing';
-import { MontserratTypography } from 'styles/theme-montserrat';
+import { Title, Subtitle } from 'components/auth/Title';
 
 export default () => (
   <Grid container>
-    <MontserratTypography variant="h2" weight="bold">
-      Reset your password
-    </MontserratTypography>
+    <Title>Reset your password</Title>
     <Spacing vertical={4} />
-    <MontserratTypography variant="h4">
+    <Subtitle>
       Go to your email and click on the link to reset your password.
-    </MontserratTypography>
+    </Subtitle>
   </Grid>
 );

@@ -4,6 +4,7 @@ import GoogleLogo from 'img/google_btn_light_normal_ios.svg';
 // import DrChronoLogo from 'img/drchrono-button';
 import DrChronoLogo from 'img/drchrono_icon.png';
 import AthenHealthLogo from 'img/athenahealth_icon.png';
+import { Paper } from '@mui/material';
 
 export const SSOOptionsBar = styled.div`
   width: 100%;
@@ -19,8 +20,8 @@ export const GoogleLogoImage = styled.img.attrs({
   alt: 'Google',
   src: GoogleLogo,
 })`
-  width: 60px;
-  height: 60px;
+  width: 30px;
+  height: 30px;
 `;
 
 export const DrChronoLogoImage = styled.img.attrs({
@@ -71,4 +72,8 @@ export const Spacer = styled.hr`
   width: 100%;
   border-color: ${palette.coolGrey3};
   height: 0.5px;
+`;
+
+export const StyledPaper = styled(Paper)`
+  border-radius: 4px;
 `;

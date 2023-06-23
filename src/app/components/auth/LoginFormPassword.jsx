@@ -7,12 +7,13 @@ import { yupResolver } from '@hookform/resolvers/yup';
 import EyeClose from 'img/auth/eye-close.svg';
 import EyeOpen from 'img/auth/eye-open.svg';
 import { MontserratTypography } from 'styles/theme-montserrat';
-import Button from 'components/common/Button/Button';
-import FormInput from 'components/common/Input/FormInput';
+import Button from 'components/common/v2/Button/Button';
+import FormInput from 'components/common/v2/Input/FormInput';
 import Spacing from 'components/common/Spacing';
 import palette from 'styles/palette';
 import { StyledForm, StyledLink } from './AuthComponents.styled';
 import SSOOptions from './SSOOptions';
+import { Title } from './Title';
 
 const validationSchema = object().shape({
   username: string()
@@ -71,9 +72,7 @@ const LoginFormPassword = ({
       )}
     >
       <FormProvider {...formMethods}>
-        <MontserratTypography variant="h2" weight="bold" align="center">
-          {titleContent}
-        </MontserratTypography>
+        <Title>{titleContent}</Title>
         <Spacing vertical={4} />
         <MontserratTypography align="center" variant="h4">
           New to Dock?{' '}

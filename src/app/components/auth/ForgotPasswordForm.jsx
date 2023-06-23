@@ -4,14 +4,14 @@ import { useMount } from 'react-use';
 import { object, string } from 'yup';
 import { yupResolver } from '@hookform/resolvers/yup';
 import Spacing from 'components/common/Spacing';
-import FormInput from 'components/common/Input/FormInput';
-import { MontserratTypography } from 'styles/theme-montserrat';
+import FormInput from 'components/common/v2/Input/FormInput';
 import { Grid } from '@mui/material';
 import DockHeaderLogo from 'img/dock-header-logo.svg';
 import styled from 'styled-components';
 import palette from 'styles/palette';
 
-import Button from '../common/Button/Button';
+import Button from '../common/v2/Button/Button';
+import { Title, Subtitle } from './Title';
 
 const validationSchema = object().shape({
   username: string()
@@ -63,14 +63,12 @@ const ForgotPasswordForm = ({
           }}
         >
           <FormProvider {...formMethods}>
-            <MontserratTypography weight="bold" variant="h2" align="center">
-              Forgot your password?
-            </MontserratTypography>
+            <Title>Forgot your password?</Title>
             <Spacing vertical={4} />
-            <MontserratTypography variant="h4" align="center">
+            <Subtitle>
               Don’t worry, it happens to the best of us. Enter the email
               associated with your account.
-            </MontserratTypography>
+            </Subtitle>
             <Spacing vertical={5} />
             <FormInput name="username" type="text" label="Email" autoFocus />
             <Spacing vertical={5} />

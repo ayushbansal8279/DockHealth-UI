@@ -12,8 +12,7 @@ const ConfirmRegistrationSuccess = () => {
   const handleSubmit = useCallback(() => {
     history.push(branchAppLink);
     window.location.href = branchAppLink;
-    // history.push('/auth/login');
-  }, [history]);
+  }, [branchAppLink, history]);
 
   return (
     <div className="columns large-12">
@@ -27,11 +26,6 @@ const ConfirmRegistrationSuccess = () => {
       <Spacing vertical={4} />
       <div className="row expanded">
         <div className="columns large-12 top-buffer text-center">
-          {/* <MontserratTypography variant="h4" weight="bold">
-            <a href={branchAppLink} className="button secondary expand">
-              Login
-            </a>
-          </MontserratTypography> */}
           <Button
             type="submit"
             fullWidth
