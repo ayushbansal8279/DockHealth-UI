@@ -193,21 +193,9 @@ const CustomField = ({
         const value = watch(fieldName) || '';
         const colorIndicator = dropdownOptions?.find(o => o.value === value)
           ?.color;
-
         return (
           <Box position="relative">
             {colorIndicator && <ColorIndicator color={colorIndicator} />}
-            <FormSelect
-              readOnly={readOnly}
-              label={name}
-              options={dropdownOptions}
-              name={fieldName}
-              onBlur={handleBlur}
-              inputRef={inputReference}
-              ref={componentReference}
-              onChange={() => setWasChanged(true)}
-              required={isRequired}
-            />
           </Box>
         );
       }
