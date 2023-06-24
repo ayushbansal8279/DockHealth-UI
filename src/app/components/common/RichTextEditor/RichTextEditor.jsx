@@ -156,13 +156,13 @@ const RichTextEditor = React.forwardRef(
           editor.edit.off();
           if (showToolbarOnEdit) {
             editor.toolbar.hide();
-            editor.$second_tb.hide();
+            editor.$second_tb?.hide();
           }
         } else {
           editor.edit.on();
           if (showToolbarOnEdit) {
             editor.toolbar.show();
-            editor.$second_tb.show();
+            editor.$second_tb?.show();
           }
         }
       }
@@ -232,7 +232,7 @@ const RichTextEditor = React.forwardRef(
         // eslint-disable-next-line prettier/prettier, func-names
         'keydown': function (keydownEvent) {
           if (keydownEvent.keyCode === 13) {
-            if (!keydownEvent.shiftKey && onKeyEnter) {
+            if (!keydownEvent.shiftKey && onKeyEnter?.length > 0) {
               // eslint-disable-next-line react/no-this-in-sfc, no-shadow
               const value = this.html.get();
               const markdown = turndownService.turndown(value);
