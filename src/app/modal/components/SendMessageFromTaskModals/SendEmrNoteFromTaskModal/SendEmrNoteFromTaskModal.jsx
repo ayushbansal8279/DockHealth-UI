@@ -1,19 +1,13 @@
 import React, { useCallback, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { selectedTaskSelector } from 'selectors/task-drawer-selectors';
-// import { EditorState } from 'draft-js';
-import {
-  convertFromEditorStateToOutput,
-  // addStylesToText,
-} from 'components/common/TextEditor/helpers';
-// import { createMentionEntities } from 'components/common/TextEditor/create-mention-entities';
 import { IconButton } from '@mui/material';
 import { Replay } from '@mui/icons-material';
 import palette from 'styles/palette';
 import Button from 'components/common/Button/Button';
 import { closeModal } from 'modal/actions';
 import CustomTextEditor from 'components/common/CustomTextEditor/CustomTextEditor';
-import TextEditor from 'ui-toolkit/Form/TextEditor/TextEditor';
+import RichTextEditor from 'components/common/RichTextEditor/RichTextEditor';
 import Select from 'components/common/Select/Select';
 import { EmrNoteTypeOptions, CommunicationType } from 'helpers/task-helpers';
 import TemplateAutoComplete from 'components/common/TemplateAutoComplete/TemplateAutoComplete';
@@ -133,14 +127,13 @@ function SendEmrNoteFromTaskModal() {
         />
         <TextEditorContainerStyled>
           <CustomTextEditor label="EHR note">
-            <TextEditor
+            <RichTextEditor
               value={detailsState}
               placeholder="EHR note"
               onChange={setDetailsState}
               onBlur={setDetailsState}
-              enabled={{
-                mentions: false,
-              }}
+              initOnClick
+              showCharCount
             />
           </CustomTextEditor>
         </TextEditorContainerStyled>
@@ -150,13 +143,12 @@ function SendEmrNoteFromTaskModal() {
           uppercase
           width="150px"
           variant="primary"
-          disabled={!detailsState.getCurrentContent().hasText()}
+          disabled={detailsState === ''}
           onClick={() => {
             dispatch(
               sendEmrForTask({
                 noteType,
-                details: convertFromEditorStateToOutput(detailsState, true)
-                  .tokenizedText,
+                details: detailsState,
                 taskIdentifier,
               }),
             );

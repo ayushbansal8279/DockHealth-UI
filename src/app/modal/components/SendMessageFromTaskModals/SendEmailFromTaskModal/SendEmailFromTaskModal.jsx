@@ -1,13 +1,10 @@
 import Button from 'components/common/Button/Button';
 import Checkbox from 'components/common/Checkbox/Checkbox';
 import Input from 'components/common/Input/Input';
-import TextEditor from 'ui-toolkit/Form/TextEditor/TextEditor';
+import RichTextEditor from 'components/common/RichTextEditor/RichTextEditor';
 import React, { useCallback, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import {
-  // addStylesToText,
-  convertFromEditorStateToOutput,
-} from 'components/common/TextEditor/helpers';
+import { convertFromEditorStateToOutput } from 'components/common/TextEditor/helpers';
 import { selectedTaskSelector } from 'selectors/task-drawer-selectors';
 import { sendEmailForTask } from 'actions/task-actions';
 import { IconButton } from '@mui/material';
@@ -15,7 +12,6 @@ import { Replay } from '@mui/icons-material';
 import palette from 'styles/palette';
 import { validateEmail } from 'helpers/validation-helper';
 import CustomTextEditor from 'components/common/CustomTextEditor/CustomTextEditor';
-// import { createMentionEntities } from 'components/common/TextEditor/create-mention-entities';
 import ReactModal from 'react-modal';
 import { getTemplateDetails } from 'api/template-api';
 import { CommunicationType } from 'helpers/task-helpers';
@@ -66,10 +62,6 @@ const SendEmailFromTaskModal = () => {
 
   const [isTaskCommentsIncluded, setIsTaskCommentsIncluded] = useState(false);
 
-  // const [detailsState, setDetailsState] = useState(() =>
-  //   // EditorState.createEmpty(),
-  //   {},
-  // );
   const [detailsState, setDetailsState] = useState(
     selectedTask?.tokenizedDetails,
   );
@@ -230,14 +222,13 @@ const SendEmailFromTaskModal = () => {
         />
         <TextEditorContainerStyled>
           <CustomTextEditor label="Email body">
-            <TextEditor
+            <RichTextEditor
               value={detailsState}
               placeholder="Email Body"
               onChange={setDetailsState}
               onBlur={setDetailsState}
-              enabled={{
-                mentions: false,
-              }}
+              initOnClick
+              showCharCount
             />
           </CustomTextEditor>
         </TextEditorContainerStyled>

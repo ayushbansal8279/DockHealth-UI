@@ -1,5 +1,3 @@
-import TextEditor from 'ui-toolkit/Form/TextEditor/TextEditor';
-// import { EditorState } from 'draft-js';
 import CustomTextEditor from 'components/common/CustomTextEditor/CustomTextEditor';
 import React, { useCallback, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
@@ -12,12 +10,9 @@ import { closeModal } from 'modal/actions';
 import { CommunicationType } from 'helpers/task-helpers';
 import ContactsAutoComplete from 'components/common/ContactsAutoComplete/ContactsAutocomplete';
 import ReactModal from 'react-modal';
-import {
-  // addStylesToText,
-  convertFromEditorStateToOutput,
-} from 'components/common/TextEditor/helpers';
 import TemplateAutoComplete from 'components/common/TemplateAutoComplete/TemplateAutoComplete';
 import AddContactStep from 'modal/components/AddContactModal/AddContactModal';
+import RichTextEditor from 'components/common/RichTextEditor/RichTextEditor';
 import {
   CloseIcon,
   CloseIconButton,
@@ -41,12 +36,10 @@ import {
   AddEditContactLink,
 } from '../styled';
 import { makeFaxNumber, renderAddOrEdit, validateFaxInput } from '../helpers';
-import { Message } from '@mui/icons-material';
 
 const SendFaxFromTaskModal = () => {
   const dispatch = useDispatch();
-  // const [message, setMessage] = useState(() => EditorState.createEmpty());
-  const [message, setMessage] = useState({});
+  const [message, setMessage] = useState(null);
   const [faxError, setFaxError] = useState(false);
   const [contact, setContact] = useState(null);
   const [show, setShow] = useState(false);
@@ -89,8 +82,7 @@ const SendFaxFromTaskModal = () => {
     }
   };
   const isValidToSend = !!(
-    validateFaxInput(contact?.value ?? '') &&
-    message.getCurrentContent().hasText()
+    validateFaxInput(contact?.value ?? '') && message !== ''
   );
 
   return (
@@ -148,12 +140,11 @@ const SendFaxFromTaskModal = () => {
             placeholder="Pick template"
             onChange={(event, newValue, reason) => {
               if (reason === 'clear') {
-                // setMessage(() => EditorState.createEmpty());
+                setMessage('');
               }
               getTemplateDetails(newValue?.identifier, identifier).then(
                 (data) => {
-                  const text = addStylesToText(data?.details ?? '');
-                  setMessage(EditorState.push(message, text));
+                  setMessage(data?.shortMessage ?? data?.details ?? '');
                 },
               );
             }}
@@ -161,23 +152,13 @@ const SendFaxFromTaskModal = () => {
           />
           <TextEditorContainerStyled>
             <CustomTextEditor label="Fax Cover Message">
-              {/* <TextEditor
-                readOnly={false}
-                minHeight={100}
-                disableMentions
-                showToolbar
-                state={message}
-                onChange={setMessage}
-              /> */}
-              <TextEditor
-                value={Message}
+              <RichTextEditor
+                value={message}
                 placeholder="Fax Message"
                 onChange={setMessage}
                 onBlur={setMessage}
-                // mentions={selectedTask?.taskMentions}
-                enabled={{
-                  mentions: false,
-                }}
+                initOnClick
+                showCharCount
               />
             </CustomTextEditor>
           </TextEditorContainerStyled>
@@ -223,8 +204,7 @@ const SendFaxFromTaskModal = () => {
           onClick={() => {
             dispatch(
               sendFaxForTask({
-                message: convertFromEditorStateToOutput(message, true)
-                  .tokenizedText,
+                message,
                 recipientContact: contact?.value.replace(/\D/g, ''),
                 // taskAttachmentIdentifiers: attachments,
                 taskAttachmentIdentifiers: attachmentsToSend,

@@ -151,6 +151,10 @@ const RichTextEditor = React.forwardRef(
     const [editor, setEditor] = useState(null);
 
     useEffect(() => {
+      setEditorState(md.render(value || ''));
+    }, [value]);
+
+    useEffect(() => {
       if (editor) {
         if (readonly) {
           editor.edit.off();
