@@ -17,6 +17,7 @@ export const TextEditorFormStyleContainer = styled.div`
     }
     return '2px solid #e40909';
   }};
+  font-family: 'Roboto Condensed', sans-serif;
 `;
 
 export const TextEditorInputLabel = styled(
