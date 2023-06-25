@@ -371,8 +371,7 @@ export const StandardTaskItemContainer = styled.div`
   border: 1px solid ${palette.coolGrey3};
   border-right: none;
   display: flex;
-  justify-content: ${(props) =>
-    props.isAddingTask ? 'flex-end' : 'flex-start'};
+  justify-content: ${(props) => props.isAddingTask ? 'flex-end' : 'flex-start'};
   width: 100%;
   height: ${({ height }) => height || 35}px;
   border-top: none;

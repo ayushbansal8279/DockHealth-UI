@@ -124,7 +124,7 @@ const RichTextEditor = React.forwardRef(
       onChange = () => {},
       onKeyEnter = () => {},
       // onAddMention = () => {},
-      // placeholder = '',
+      placeholder = '',
       // initialState,
       // state,
       // highlightedValues,
@@ -188,10 +188,9 @@ const RichTextEditor = React.forwardRef(
     const config = {
       key: FROALA_PRODUCT_KEY,
       attribution: false,
-      placeholder: 'Edit task details',
-      multiLine: { multiline },
+      placeholderText: placeholder,
+      multiLine: multiline,
       charCounterCount: false,
-      initOnClick: { initOnClick },
       toolbarInline: showToolbarInline,
       toolbarVisibleWithoutSelection: true,
       height: multiline ? { height } : 30,
@@ -264,6 +263,10 @@ const RichTextEditor = React.forwardRef(
         H3: 'Heading 3',
       },
     };
+
+    if (initOnClick) {
+      config.initOnClick = true;
+    }
 
     return (
       // <ClickAwayListener onClickAway={handleClickAway}>

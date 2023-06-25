@@ -443,7 +443,7 @@ const TaskItem = React.memo(
       return (
         nonAssigneeCompleteDisabledItem &&
         nonAssigneeCompleteDisabledItem?.value === 'false' &&
-        assignedToUsers.filter(
+        assignedToUsers?.filter(
           (user) => user.identifier === currentUser.identifier,
         ).length === 0 &&
         !isCreator
@@ -516,9 +516,11 @@ const TaskItem = React.memo(
     const [isPatientDataReadOnly] = useState(true);
 
     const handlePatientUpdate = useCallback(
-      field => value => {
-        const { patientIdentifier } = patient;
-        dispatch(updatePatientDetails(patientIdentifier, { [field]: value }));
+      (field) => (value) => {
+        if (patient) {
+          const patientIdentifier = patient?.patientIdentifier;
+          dispatch(updatePatientDetails(patientIdentifier, { [field]: value }));
+        }
       },
       [dispatch, patient],
     );
