@@ -29,14 +29,23 @@ const initialState = {
 const updateTasksStateCallback = (state, newTask) => {
   if (typeof newTask === 'function') return state;
 
+  const newMap = {};
+  if (newTask.itemType === TaskItemType.TASK) {
+    newMap[newTask.identifier ?? newTask.taskIdentifier] = newTask;
+    for (const subTask of newTask.subtasks) {
+      newMap[subTask.identifier] = subTask;
+    }
+  }
+
   return {
     ...state,
     tasksMap: {
       ...state.tasksMap,
-      [newTask.identifier ?? newTask.taskIdentifier]: {
-        ...state.tasksMap[newTask.identifier ?? newTask.taskIdentifier],
-        ...newTask,
-      },
+      // [newTask.identifier ?? newTask.taskIdentifier]: {
+      //   ...state.tasksMap[newTask.identifier ?? newTask.taskIdentifier],
+      //   ...newTask,
+      // },
+      ...newMap,
     },
   };
 };
@@ -82,8 +91,8 @@ const GlobalSearchReducer = (state = initialState, action) => {
           newMap[task.identifier] = task;
         } else {
           newMap[task.identifier] = task;
-          for (const subtask of task.tasks) {
-            newMap[subtask.identifier] = subtask;
+          for (const grpTask of task.tasks) {
+            newMap[grpTask.identifier] = grpTask;
           }
         }
       }

@@ -83,14 +83,23 @@ const updateTaskInList = (taskGroups, updateTaskCallback) =>
 const updateTasksStateCallback = (state, newTask) => {
   if (typeof newTask === 'function') return state;
 
+  const newMap = {};
+  if (newTask.itemType === TaskItemType.TASK) {
+    newMap[newTask.identifier ?? newTask.taskIdentifier] = newTask;
+    for (const subTask of newTask.subtasks) {
+      newMap[subTask.identifier] = subTask;
+    }
+  }
+
   return {
     ...state,
     tasksMap: {
       ...state.tasksMap,
-      [newTask.identifier ?? newTask.taskIdentifier]: {
-        ...state.tasksMap[newTask.identifier ?? newTask.taskIdentifier],
-        ...newTask,
-      },
+      // [newTask.identifier ?? newTask.taskIdentifier]: {
+      //   ...state.tasksMap[newTask.identifier ?? newTask.taskIdentifier],
+      //   ...newTask,
+      // },
+      ...newMap,
     },
     // groupedTasks: {
     //   ...state.groupedTasks,
@@ -280,10 +289,14 @@ const ListDetailsReducer = (state = initialState, action) => {
       for (const task of tasks) {
         if (task.itemType === TaskItemType.TASK) {
           newMap[task.identifier] = task;
+          for (const subTask of task.subtasks) {
+            newMap[subTask.identifier] = subTask;
+          }
         } else {
+          // task bundle
           newMap[task.identifier] = task;
-          for (const subtask of task.tasks) {
-            newMap[subtask.identifier] = subtask;
+          for (const grpTask of task.tasks) {
+            newMap[grpTask.identifier] = grpTask;
           }
         }
       }
