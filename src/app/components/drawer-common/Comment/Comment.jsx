@@ -1,17 +1,11 @@
 /* eslint-disable sonarjs/cognitive-complexity */
-import React, { useRef, useEffect, useState } from "react";
+import React, { useRef, useEffect, useState } from 'react';
 import moment from 'moment';
 import Spacing from 'components/common/Spacing';
 import UserAvatar from 'components/user/UserAvatar/UserAvatar';
 import { RobotoTypography } from 'styles/theme';
 // eslint-disable-next-line import/no-named-as-default
 import { useBoolean } from 'hooks/useBoolean';
-import {
-  // convertFromEditorStateToOutput,
-  convertToEditorState,
-} from 'components/common/TextEditor/helpers';
-import { useMentionsEditorState } from 'components/common/TextEditor/use-mentions-editor-state';
-// import TextEditor from 'ui-toolkit/Form/TextEditor/TextEditor';
 import RichTextEditor from 'components/common/RichTextEditor/RichTextEditor';
 import {
   CommentActionLabel,
@@ -25,18 +19,9 @@ import {
   EditCommentButton,
 } from './styled';
 
-const Comment = ({
-  comment,
-  onDelete,
-  onUpdate,
-  currentUser,
-  // taskListIdentifier,
-  // disableMentions,
-}) => {
+const Comment = ({ comment, onDelete, onUpdate, currentUser }) => {
   const {
     comment: commentContent,
-    commentMentions,
-    tokenizedComment,
     creator,
     // dateCreated,
     dateUpdated,
@@ -45,14 +30,6 @@ const Comment = ({
 
   const commentEditorReference = useRef();
   const [isEditing, setEditing, unsetEditing] = useBoolean(false);
-  const [commentState, setCommentState] = useMentionsEditorState(
-    convertToEditorState({
-      rawText: commentContent,
-      tokenizedText: tokenizedComment,
-      mentions: commentMentions,
-      handleRichText: true,
-    }),
-  );
 
   useEffect(() => {
     if (isEditing) {
@@ -80,13 +57,7 @@ const Comment = ({
 
   const [currentValue, setCurrentValue] = useState(commentContent);
 
-  // const handleTextEditorChange = (_, { value }) => {
-  //   console.log("handleTextEditorChange", value);
-  //   setCurrentValue(value);
-  // }
-
   const handleTextEditorChange = (value) => {
-    console.log('handleTextEditorChange:', value);
     setCurrentValue(value);
   };
 
@@ -106,15 +77,6 @@ const Comment = ({
       <CommentContainer isEditing={isEditing}>
         <CommentContent>
           <CommentText>
-            {/* <TextEditor
-              type="textarea"
-              readonly={!isEditing}
-              value={currentValue}
-              onChange={handleTextEditorChange}
-              enabled={{
-                toolbar: isEditing,
-              }}
-            /> */}
             <RichTextEditor
               height={60}
               readonly={!isEditing}
@@ -151,14 +113,7 @@ const Comment = ({
                       event.preventDefault();
                       event.stopPropagation();
                       unsetEditing();
-                      setCommentState(
-                        convertToEditorState({
-                          rawText: commentContent,
-                          tokenizedText: tokenizedComment,
-                          mentions: commentMentions,
-                          handleRichText: true,
-                        }),
-                      );
+                      setCurrentValue('');
                     }}
                   >
                     Cancel

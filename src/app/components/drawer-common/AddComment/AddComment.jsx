@@ -5,7 +5,6 @@ import { userProfileSelector } from 'selectors/user-selectors';
 import Loader, { LoaderSizes } from 'components/common/Loader/Loader';
 import UserAvatar from 'components/user/UserAvatar/UserAvatar';
 import { selectedTaskSelector } from 'selectors/task-drawer-selectors';
-// import TextEditor from 'ui-toolkit/Form/TextEditor/TextEditor';
 import RichTextEditor from 'components/common/RichTextEditor/RichTextEditor';
 import {
   AddCommentContainer,
@@ -13,12 +12,7 @@ import {
   AddCommentInputContainer,
 } from './styled';
 
-const AddComment = ({
-  autoFocus,
-  // disableMentions,
-  onAdd,
-  // taskListIdentifier,
-}) => {
+const AddComment = ({ autoFocus, onAdd }) => {
   const addCommentReference = useRef();
   const addCommentContainerReference = useRef();
   const [isFocused] = useState(false);
@@ -47,7 +41,7 @@ const AddComment = ({
   // };
 
   const handleTextEditorBlur = (value) => {
-    // onAdd(value);
+    onAdd(value);
     setDescription('');
   };
 
@@ -56,36 +50,20 @@ const AddComment = ({
     setDescription('');
   };
 
-  // const handleTextEditorKeyDown = (_, { value, key, shiftKey }) => {
-  //   if (key === 'Enter' && !shiftKey) {
-  //     onAdd(value);
-  //     setDescription('');
-  //   }
-  // };
-
   const selectedTask = useSelector(selectedTaskSelector);
 
   return (
     <AddCommentContainer ref={addCommentContainerReference}>
       <UserAvatar user={currentUser} size={34} />
       <AddCommentInputContainer isFocused={isFocused}>
-        {/* <TextEditor
-          type="textarea"
-          value={description}
-          onChange={handleTextEditorChange}
-          onKeyDown={handleTextEditorKeyDown}
-          mentions={selectedTask?.taskMentions}
-          enabled={{
-            mentions: true,
-          }}
-        /> */}
         <RichTextEditor
+          placeholder="New comment"
           height={120}
           value={description}
           onBlur={handleTextEditorBlur}
           onKeyEnter={handleTextEditorKeyEnter}
           mentions={selectedTask?.taskMentions}
-          initOnClick={false}
+          initOnClick
           showCharCount
         />
       </AddCommentInputContainer>
