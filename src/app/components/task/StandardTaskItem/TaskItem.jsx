@@ -185,6 +185,9 @@ const TaskItem = React.memo(
       );
     });
 
+    if (!task) {
+      return;
+    }
 
     const {
       taskIdentifier,
@@ -214,7 +217,7 @@ const TaskItem = React.memo(
 
     const { columns } = useTaskListColumnsConfig();
     const { listName, taskListIdentifier } = taskList || {};
-    const [isCompleted, setIsCompleted] = useState(task.status === 'COMPLETE');
+    const [isCompleted, setIsCompleted] = useState(task?.status === 'COMPLETE');
     const isTemplateTask = checkIfTemplateTask(task);
     const isSubtask = !!parentTaskIdentifier;
     const isDecisionTask = task.intentType === 'DECISION';
