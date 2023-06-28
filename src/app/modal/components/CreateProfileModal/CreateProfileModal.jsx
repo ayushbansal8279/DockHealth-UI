@@ -6,31 +6,17 @@ import { useDispatch } from 'react-redux';
 import { showGlobalAlert, showGlobalErrorAlert } from 'alert/actions';
 import FormInput from 'components/common/Input/FormInput';
 import Button from 'components/common/Button/Button';
-import FormSelect from 'components/common/Select/FormSelect';
-import { createTemplate, editTemplate } from 'api/template-api';
-import CustomTextEditor from 'components/common/CustomTextEditor/CustomTextEditor';
+import { createProfileType, editProfileType } from 'api/profile-type-api';
 import AlertMessages from 'alert/AlertMessages';
-import TextEditor from 'ui-toolkit/Form/TextEditor/TextEditor';
 import { CloseIconButton, CloseIcon } from '../styled';
-// import {
-//   AddPatientFieldModalWrapper,
-//   Title,
-//   TemplateForm,
-//   FormScrollingContainer,
-// } from './styled';
+
 import {
   AddPatientFieldModalWrapper,
   Title,
   FormScrollingContainer,
 } from './styled';
 import { TemplateForm } from '../EditTemplateModal/styled';
-// import {
-//   TEMPLATE_TYPES,
-//   TEMPLATE_TYPE_OPTIONS,
-//   validationSchema,
-// } from './helpers';
 import {
-  TEMPLATE_TYPES,
   TEMPLATE_TYPE_OPTIONS,
   validationSchema,
 } from '../EditTemplateModal/helpers';
@@ -44,7 +30,7 @@ const CreateProfileModal = ({
   isCreatingNewField,
 }) => {
   // const isCreatingNewField = !template;
-  const [isSaving, setIsSaving] = useState(false);
+  const [, setIsSaving] = useState(false);
   const dispatch = useDispatch();
 
   const formMethods = useForm({
@@ -53,7 +39,7 @@ const CreateProfileModal = ({
     defaultValues: template,
   });
 
-  const { register, unregister, handleSubmit, setValue, watch } = formMethods;
+  const { register, unregister, handleSubmit, setValue } = formMethods;
 
   useEffect(() => {
     register('type');
@@ -63,8 +49,6 @@ const CreateProfileModal = ({
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
-
-  const templateTypeValue = watch('type');
 
   useEffect(() => {
     if (isCreatingNewField) {
@@ -79,7 +63,7 @@ const CreateProfileModal = ({
       ...template,
       ...data,
     };
-    editTemplate(updatedField)
+    editProfileType(template.identifier, updatedField)
       .then(() => {
         if (typeof onUpdated === 'function') onUpdated(updatedField);
         dispatch(showGlobalAlert(AlertMessages.SAVED));
@@ -94,7 +78,7 @@ const CreateProfileModal = ({
 
   const handleAddSubmit = (data) => {
     setIsSaving(true);
-    createTemplate(data)
+    createProfileType(data)
       .then((addedField) => {
         dispatch(showGlobalAlert(AlertMessages.CREATED));
         if (typeof onAdded === 'function') onAdded(addedField);
@@ -136,46 +120,9 @@ const CreateProfileModal = ({
                       label="Profile name"
                     />
                   </Grid>
-                  {/* <Grid item xs={12}>
-                    <FormSelect
-                      readOnly={!!template}
-                      required
-                      label="Template type"
-                      name="type"
-                      options={TEMPLATE_TYPE_OPTIONS}
-                    />
-                  </Grid> */}
-                  {/* {(templateTypeValue === TEMPLATE_TYPES.EMAIL ||
-                    templateTypeValue === TEMPLATE_TYPES.SMS) && (
-                    <Grid item xs={12}>
-                      <CustomTextEditor
-                        label={
-                          templateTypeValue === TEMPLATE_TYPES.EMAIL
-                            ? 'Subject'
-                            : 'Message'
-                        }
-                      >
-                        <TextEditor
-                          type="input"
-                          initialValue={template?.shortMessage}
-                          onBlur={(_, { value }) =>
-                            setValue('shortMessage', value)
-                          }
-                        />
-                      </CustomTextEditor>
-                    </Grid>
-                  )} */}
-                  {/* {templateTypeValue !== TEMPLATE_TYPES.SMS && (
-                    <Grid item xs={12}>
-                      <CustomTextEditor label="Message">
-                        <TextEditor
-                          type="textarea"
-                          initialValue={template?.details}
-                          onBlur={(_, { value }) => setValue('details', value)}
-                        />
-                      </CustomTextEditor>
-                    </Grid>
-                  )} */}
+                  <Grid item xs={12}>
+                    <FormInput name="description" label="Description" />
+                  </Grid>
                 </Grid>
               </Box>
             </FormScrollingContainer>
@@ -185,8 +132,8 @@ const CreateProfileModal = ({
                 Cancel
               </Button>
               <Box m={1} />
-              <Button type="submit" width="auto" disabled={isSaving}>
-                Create
+              <Button type="submit" width="auto" disabled={false}>
+                {isCreatingNewField ? `Create` : 'Update'}
               </Button>
             </Grid>
           </TemplateForm>

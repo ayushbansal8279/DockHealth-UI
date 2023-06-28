@@ -23,7 +23,13 @@ export const getTemplateColumns = ({
 }) => [
   {
     field: 'name',
-    headerName: '',
+    headerName: 'name',
+    flex: 0.25,
+    renderHeader: renderColumnHeader,
+  },
+  {
+    field: 'description',
+    headerName: 'description',
     flex: 1,
     renderHeader: renderColumnHeader,
   },

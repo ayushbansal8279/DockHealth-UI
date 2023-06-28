@@ -11,6 +11,7 @@ import TaskCustomFieldsView from './TaskCustomFieldsView';
 import PatientCustomFieldsView from './PatientCustomFieldsView';
 import { ViewContainer } from './styled';
 import UserCustomFieldsView from './UserCustomFieldsView';
+import ProfilesCustomFieldsView from './ProfilesCustomFieldView';
 
 const TABS = {
   0: 'patient',
@@ -21,11 +22,10 @@ const TABS = {
 const CustomFieldsView = () => {
   const userProfile = useSelector(userProfileSelector);
   const history = useHistory();
-  const { tabName } = useParams();
+  const { tabName, identifier } = useParams();
 
   const initial = Object.entries(TABS).find(([, name]) => name === tabName);
-  console.log(`tabname: ${tabName}`);
-  console.log(`official: ${initial}`);
+
   const [selectedTab] = useState(initial ? Number(initial[0]) : null);
 
   useEffect(() => {
@@ -53,7 +53,12 @@ const CustomFieldsView = () => {
           {selectedTab === 0 && <PatientCustomFieldsView />}
           {selectedTab === 1 && <TaskCustomFieldsView editable />}
           {selectedTab === 2 && <UserCustomFieldsView editable />}
-          {!selectedTab && <PatientCustomFieldsView editable />}
+          {!selectedTab && (
+            <ProfilesCustomFieldsView
+              editable
+              profileTypeIdentifier={identifier}
+            />
+          )}
         </ViewContainer>
       </ViewLayout>
     </ColumnsConfigProvider>

@@ -201,7 +201,7 @@ export const SETTINGS_ROUTES = [
     permissions: [CAN_ACCESS_SETTINGS_PAGE],
   },
   {
-    path: '/custom-fields/:tabName?',
+    path: '/custom-fields/:tabName?/:identifier?',
     RouteComponent: CustomFieldsView,
     permissions: [CAN_ACCESS_SETTINGS_PAGE],
   },
