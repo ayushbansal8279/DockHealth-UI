@@ -44,11 +44,7 @@ const ProfilesCustomFieldsView = ({ profileTypeIdentifier }) => {
   const fetchUserCustomFields = () => {
     ProfileTypeFieldApi.getAllProfileFieldTypes(profileTypeIdentifier)
       .then((data) => {
-        // const customFieldsData = data?.filter(
-        //   (cf) => cf.contextType === 'CUSTOM',
-        // );
-        const customFieldsData = data?.map((context) => context.customField);
-        setCustomFields(customFieldsData);
+        setCustomFields(data);
         setIsFetching(false);
       })
       .catch(() => {
@@ -147,7 +143,7 @@ const ProfilesCustomFieldsView = ({ profileTypeIdentifier }) => {
         options: {
           type: 'CUSTOM',
         },
-        onAdded: async ({ customField }) => {
+        onAdded: async (customField) => {
           setColumnsToState([...columns, customField]);
           const newFields = (
             sortedFields ? [...sortedFields, customField] : [customField]

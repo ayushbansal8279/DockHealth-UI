@@ -106,7 +106,7 @@ const EditCustomFieldModal = ({
     resolver: yupResolver(validationSchema),
     mode: 'onSubmit',
     defaultValues: isCreatingNewField
-      ? { fieldCategoryType: Category.OTHER_INFO }
+      ? { fieldCategoryType: Category.PROFILE }
       : customField,
   });
   const { register, unregister, handleSubmit, setValue, watch, errors } =
@@ -186,15 +186,21 @@ const EditCustomFieldModal = ({
 
   const handleEditSubmit = (data) => {
     setIsSaving(true);
+    // const updatedField = {
+    //   ...customField,
+    //   ...data,
+    //   ...displayOptionsState,
+    // };
+
+    const { identifier } = data;
+
     const updatedField = {
-      ...customField,
+      contextType: 'CUSTOM',
       ...data,
-      ...displayOptionsState,
+      fieldCategoryType: 'PROFILE',
     };
-    ProfileTypeFieldsApi.editProfileFieldType(
-      profileTypeIdentifier,
-      updatedField,
-    )
+
+    ProfileTypeFieldsApi.editProfileFieldType(identifier, updatedField)
       .then(() => {
         onUpdated(updatedField);
         setIsSaving(false);
@@ -209,15 +215,13 @@ const EditCustomFieldModal = ({
   const handleAddSubmit = (data) => {
     setIsSaving(true);
     ProfileTypeFieldsApi.createProfileFieldType({
-      customField: {
-        contextType: 'CUSTOM',
-        fieldCategoryType: 'PROFILE',
-        targetType: 'PROFILE',
-        ...data,
-      },
+      contextType: 'CUSTOM',
+      fieldCategoryType: 'PROFILE',
+      targetType: 'PROFILE',
       profileType: {
         identifier: profileTypeIdentifier,
       },
+      ...data,
       ...displayOptionsState,
     })
       .then((addedField) => {

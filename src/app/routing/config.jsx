@@ -255,14 +255,20 @@ export const TEMPLATE_CORE_SUBSCRIPTION_PLAN_ROUTES = [
     onLeave: onLeaveGlobalSearch,
     permissions: [CAN_ACCESS_SEARCH_PAGE],
   },
+  // {
+  //   path: '/custom-profiles/:profileIdentifier',
+  //   RouteComponent: CustomProfileView,
+  //   onLeave: onLeaveGlobalSearch,
+  //   permissions: [CAN_ACCESS_SEARCH_PAGE],
+  // },
+  // {
+  //   path: '/custom-profiles',
+  //   RouteComponent: CustomPatientsView,
+  //   onLeave: onLeaveGlobalSearch,
+  //   permissions: [CAN_ACCESS_SEARCH_PAGE],
+  // },
   {
-    path: '/custom-profiles/:profileIdentifier',
-    RouteComponent: CustomProfileView,
-    onLeave: onLeaveGlobalSearch,
-    permissions: [CAN_ACCESS_SEARCH_PAGE],
-  },
-  {
-    path: '/custom-profiles',
+    path: '/custom-profiles/:name/:profileIdentifier',
     RouteComponent: CustomPatientsView,
     onLeave: onLeaveGlobalSearch,
     permissions: [CAN_ACCESS_SEARCH_PAGE],
