@@ -123,9 +123,12 @@ const TaskTemplateGroupHeader = ({
   const [workFlowData, setWorkFlowData] = useState(undefined);
   // const selectedWorkflow = useSelector(workflowSelector);
 
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  const templateTasks = tasks || [];
+
   const [completedTasksAmount, allTasksAmount] = useMemo(
     () =>
-      tasks.reduce(
+      templateTasks?.reduce(
         (accumulator, currentTask) => {
           if (currentTask.status === 'COMPLETE') {
             accumulator[0] += 1;
@@ -139,7 +142,7 @@ const TaskTemplateGroupHeader = ({
         },
         [0, 0],
       ),
-    [tasks],
+    [templateTasks],
   );
   // const [completedTasksAmount, allTasksAmount] = [-1, -1];
 

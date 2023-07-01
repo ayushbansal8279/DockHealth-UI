@@ -191,7 +191,7 @@ const TaskTemplateGroup = ({
                       ref={templateDroppableProvided.innerRef}
                       {...templateDroppableProvided.droppableProps}
                     >
-                      {filteredTasks.map((task, index) => (
+                      {filteredTasks?.map((task, index) => (
                         <Draggable
                           key={task.taskIdentifier}
                           draggableId={task.taskIdentifier}
