@@ -6,7 +6,7 @@ import palette from 'styles/palette';
 export const AddTaskInputWrapper = styled.div`
   position: relative;
   height: auto;
-  padding: ${spacing.tiny} ${spacing.huge};
+  padding: ${spacing.small} ${spacing.huge} ${spacing.none} ${spacing.huge};
   border: 1px solid
     ${(props) => (props.hasError ? palette.red : palette.coolGrey3)};
   font-size: ${fontSizes.smallPlus};

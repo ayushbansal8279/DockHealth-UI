@@ -110,17 +110,17 @@ const QuickAddTaskInput = React.forwardRef(
     return (
       <>
         <AddTaskInputWrapper hasError={!!error} iconColor={iconColorActive}>
-          <div style={{ marginTop: '8px' }}>
-            <RichTextEditor
-              ref={reference || quickAddTaskInputReference}
-              value={description}
-              onChange={handleTextEditorChange}
-              onKeyEnter={handleTextEditorKeyEnter}
-              showToolbar={false}
-              multiline={false}
-              initOnClick
-            />
-          </div>
+          <RichTextEditor
+            ref={reference || quickAddTaskInputReference}
+            value={description}
+            onChange={handleTextEditorChange}
+            onKeyEnter={handleTextEditorKeyEnter}
+            showToolbar={false}
+            multiline={false}
+            disableToolbar
+            showToolbarInline
+            initOnClick
+          />
           {/*<RichTextEditor noStyle value={description} onChange={setDescription} onSubmit={(description) => {*/}
           {/*  setDescription("")*/}
           {/*  quickAddTask({ description: description.trim(), taskListIdentifier: taskListIdentifier })*/}
