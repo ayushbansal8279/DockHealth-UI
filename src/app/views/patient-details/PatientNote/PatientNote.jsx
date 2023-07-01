@@ -19,7 +19,7 @@ import { useDispatch } from 'react-redux';
 import Button from 'components/common/Button/Button';
 import Spacing from 'components/common/Spacing';
 import { closeModal, openModal } from 'modal/actions';
-import TextEditor from 'ui-toolkit/Form/TextEditor/TextEditor';
+import RichTextEditor from 'components/common/RichTextEditor/RichTextEditor';
 import {
   NoteContainer,
   PatientNoteAuthor,
@@ -147,14 +147,13 @@ const PatientNote = ({
     setIsEdited(false);
     await onSave({
       ...note,
-      description: convertFromEditorStateToOutput(noteState, true)
-        .tokenizedText,
+      description: noteState,
     });
   }, [note, noteState, onSave]);
 
-  const handleTextEditorChange = (_, { value }) => {
-    setNoteState(value)
-  }
+  const handleTextEditorChange = (value) => {
+    setNoteState(value);
+  };
 
   return (
     <ClickAwayListener onClickAway={handleClickAway}>
@@ -163,31 +162,15 @@ const PatientNote = ({
           <UserAvatar user={creator} />
           <Box m={2} />
           <PatientNoteInformation>
-            {/*<RichTextEditor readOnly={!isEdited} noStyle={!isEdited} value={description} onChange={(value) => {*/}
-            {/*  setNoteState(value)*/}
-            {/*}} />*/}
-            <TextEditor
-              type="textarea"
+            <RichTextEditor
               readonly={!isEdited}
+              showToolbar={isEdited}
               value={description}
               onChange={handleTextEditorChange}
-              enabled={{
-                toolbar: isEdited
-              }}
+              onFocus={handleFocus}
+              initOnClick
+              showCharCount
             />
-            {/*<TextEditor*/}
-            {/*  getFocusFromParent={isEdited}*/}
-            {/*  readOnly={!isEdited}*/}
-            {/*  showToolbar*/}
-            {/*  taskListIdentifier={patientNoteIdentifier}*/}
-            {/*  disableMentions*/}
-            {/*  ref={editNoteInputReference}*/}
-            {/*  placeholder="Leave a note and press enter on your keyboard to save"*/}
-            {/*  isDrawerEditor*/}
-            {/*  onFocus={handleFocus}*/}
-            {/*  state={noteState}*/}
-            {/*  onChange={(newState) => setNoteState(newState)}*/}
-            {/*/>*/}
             <PatientNoteAuthor>
               {creator?.firstName} {creator?.lastName} {dateNoteCreated}
             </PatientNoteAuthor>
@@ -223,13 +206,7 @@ const PatientNote = ({
                 color="primary"
                 disabled={isEmpty}
                 size="small"
-                onClick={() => {
-                  onSave({
-                    ...note,
-                    description: noteState,
-                  });
-                  setIsEdited(false);
-                }}
+                onClick={updateNote}
               >
                 Save
               </Button>
