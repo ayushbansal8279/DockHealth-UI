@@ -196,6 +196,8 @@ const TaskDescription = ({ selectedTask, readOnly, disableMentions }) => {
             value={description}
             onBlur={handleBlur}
             showToolbar={false}
+            disableToolbar
+            showToolbarInline
             multiline={false}
           />
         </CustomTextEditor>

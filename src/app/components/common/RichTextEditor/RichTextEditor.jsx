@@ -108,11 +108,16 @@ const toolbarOptions = [
 const RichTextEditor = React.forwardRef(
   (
     {
-      value,
+      value: initialValue, // initial value
       height = 100,
       // maxHeight,
-      showToolbar = true,
-      showToolbarOnEdit = true,
+      disableToolbar = false,
+      showToolbar = true, // dynamic show/hide toolbar
+      showToolbarInline = false,
+      focus = false,
+      clearValue = false,
+      // manualInitialize = false,
+      // showToolbarOnEdit = true,
       // showToolbarInline = false,
       // fullHeight,
       readonly,
@@ -141,7 +146,7 @@ const RichTextEditor = React.forwardRef(
     },
     outerReference,
   ) => {
-    const [rawTextState, setRawTextState] = useState(value);
+    const [rawTextState, setRawTextState] = useState(initialValue);
 
     const [editorState, setEditorState] = useState(
       // rawTextState,
@@ -149,41 +154,28 @@ const RichTextEditor = React.forwardRef(
     );
 
     const [editor, setEditor] = useState(null);
+    // const [initControls, setInitControls] = useState(null);
 
     useEffect(() => {
-      setEditorState(md.render(value || ''));
-    }, [value]);
+      setEditorState(md.render(initialValue || ''));
+    }, [initialValue]);
 
     useEffect(() => {
-      if (editor) {
-        if (readonly) {
-          editor.edit.off();
-          if (showToolbarOnEdit) {
-            editor.toolbar.hide();
-            editor.$second_tb?.hide();
-          }
-        } else {
-          editor.edit.on();
-          if (showToolbarOnEdit) {
-            editor.toolbar.show();
-            editor.$second_tb?.show();
-          }
-        }
+      if (clearValue) {
+        setEditorState('');
       }
-    }, [editor, readonly, showToolbarOnEdit]);
+    }, [clearValue]);
 
-    useEffect(() => {
-      if (editor) {
-        if (showToolbar) {
-          editor.toolbar.show();
-          editor.events.focus();
-        } else {
-          editor.toolbar.hide();
-        }
-      }
-    }, [editor, showToolbar]);
+    // const handleController = useCallback(
+    //   (initControls_) => {
+    //     if (manualInitialize) {
+    //       setInitControls(initControls_);
+    //     }
+    //   },
+    //   [manualInitialize],
+    // );
 
-    const showToolbarInline = !showToolbar;
+    // const showToolbarInline = !showToolbar;
 
     const config = {
       key: FROALA_PRODUCT_KEY,
@@ -195,7 +187,7 @@ const RichTextEditor = React.forwardRef(
       toolbarVisibleWithoutSelection: true,
       height: multiline ? { height } : 30,
       heightMax: multiline ? 150 : 30,
-      toolbarButtons: showToolbar ? toolbarOptions : [],
+      toolbarButtons: disableToolbar ? [] : toolbarOptions,
       events: {
         // eslint-disable-next-line prettier/prettier, func-names
         'initialized' : function() {
@@ -268,6 +260,34 @@ const RichTextEditor = React.forwardRef(
       config.initOnClick = true;
     }
 
+    useEffect(() => {
+      if (editor) {
+        if (readonly) {
+          editor.edit.off();
+        } else {
+          editor.edit.on();
+        }
+      }
+    }, [editor, readonly]);
+
+    useEffect(() => {
+      if (editor) {
+        if (showToolbar) {
+          editor.toolbar.show();
+          editor.$second_tb?.show();
+        } else {
+          editor.toolbar.hide();
+          editor.$second_tb?.hide();
+        }
+      }
+    }, [editor, showToolbar]);
+
+    // useEffect(() => {
+    //   if (editor && focus) {
+    //     editor.events.focus();
+    //   }
+    // }, [editor, focus]);
+
     return (
       // <ClickAwayListener onClickAway={handleClickAway}>
       <FroalaEditor
@@ -275,6 +295,7 @@ const RichTextEditor = React.forwardRef(
         config={config}
         model={editorState}
         onModelChange={setEditorState}
+        // onManualControllerReady={handleController}
       />
       // </ClickAwayListener>
     );

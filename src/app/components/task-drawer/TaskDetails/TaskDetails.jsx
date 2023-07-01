@@ -24,7 +24,8 @@ const TaskDetails = ({ readOnly }) => {
         }),
       );
     }
-  }, 3000);
+    // eslint-disable-next-line unicorn/numeric-separators-style
+  }, 10000);
 
   const handleBlur = useCallback(
     (value) => {
