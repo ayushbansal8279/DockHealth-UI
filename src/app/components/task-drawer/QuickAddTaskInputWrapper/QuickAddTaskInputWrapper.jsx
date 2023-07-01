@@ -13,12 +13,12 @@ const QuickAddTaskInputWrapper = (props) => {
       hasError={error}
     >
       {children}
-      {hasInputValue && isFocused && !error && (
+      {/* {hasInputValue && isFocused && !error && (
         <>
           <Spacing horizontal={4} />
           <QuickAddHint>Hit enter to save</QuickAddHint>
         </>
-      )}
+      )} */}
       {error && <ErrorLabel>{error}</ErrorLabel>}
     </AddSubtaskInputWrapper>
   );

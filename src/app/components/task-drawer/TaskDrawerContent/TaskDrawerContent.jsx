@@ -3,7 +3,7 @@ import React, { useCallback, useMemo } from 'react';
 import { Box, Grid, Typography, useMediaQuery } from '@mui/material';
 import { checkIfBundleTask } from 'helpers/task-helpers';
 import Spacing from 'components/common/Spacing';
-import TextEditor from 'components/common/TextEditor/TextEditor';
+import RichTextEditor from 'components/common/RichTextEditor/RichTextEditor';
 import TaskDescription from 'components/task-drawer/TaskDescription/TaskDescription';
 import { DrawerFieldEnum } from 'helpers/task-drawer-helpers';
 import { useSelector } from 'react-redux';
@@ -80,11 +80,11 @@ const TaskDrawerContent = ({
     parentDescriptionState,
     selectedParentTask,
     selectedTask,
-    setParentDescriptionState,
+    // setParentDescriptionState,
     taskDrawerFocusField,
     taskDrawerOpen,
     taskDrawerReference,
-    taskListIdentifier,
+    // taskListIdentifier,
     parentBundle,
     taskTemplate,
     handleWorkflowReferenceClick,
@@ -432,13 +432,13 @@ const TaskDrawerContent = ({
             {selectedParentTask ? (
               <ReferenceParentButton type="button" onClick={onClickParentTask}>
                 <ReferenceParentName>
-                  <TextEditor
-                    readOnly
-                    withEditedLabel={selectedParentTask.edited}
-                    state={parentDescriptionState}
-                    onChange={setParentDescriptionState}
-                    taskListIdentifier={taskListIdentifier}
-                    disableMentions={isTemplateTask}
+                  <RichTextEditor
+                    height={60}
+                    readonly
+                    showToolbar={false}
+                    value={selectedParentTask?.description}
+                    initOnClick
+                    showCharCount
                   />
                 </ReferenceParentName>
               </ReferenceParentButton>
