@@ -30,6 +30,7 @@ const Comment = ({ comment, onDelete, onUpdate, currentUser }) => {
 
   const commentEditorReference = useRef();
   const [isEditing, setEditing, unsetEditing] = useBoolean(false);
+  const [isFocused, setFocused, unsetFocused] = useBoolean(false);
 
   useEffect(() => {
     if (isEditing) {
@@ -80,7 +81,9 @@ const Comment = ({ comment, onDelete, onUpdate, currentUser }) => {
             <RichTextEditor
               height={60}
               readonly={!isEditing}
-              value={currentValue}
+              showToolbar={isEditing}
+              focus={isFocused}
+              value={commentContent}
               onChange={handleTextEditorChange}
               initOnClick
               showCharCount
@@ -99,6 +102,7 @@ const Comment = ({ comment, onDelete, onUpdate, currentUser }) => {
                       event.preventDefault();
                       event.stopPropagation();
                       handleSave();
+                      unsetFocused();
                     }}
                   >
                     Save
@@ -113,7 +117,6 @@ const Comment = ({ comment, onDelete, onUpdate, currentUser }) => {
                       event.preventDefault();
                       event.stopPropagation();
                       unsetEditing();
-                      setCurrentValue('');
                     }}
                   >
                     Cancel
@@ -133,6 +136,7 @@ const Comment = ({ comment, onDelete, onUpdate, currentUser }) => {
                           event.preventDefault();
                           event.stopPropagation();
                           setEditing();
+                          setFocused();
                         }}
                       >
                         Edit

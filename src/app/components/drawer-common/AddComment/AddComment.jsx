@@ -41,12 +41,16 @@ const AddComment = ({ autoFocus, onAdd }) => {
   // };
 
   const handleTextEditorBlur = (value) => {
-    onAdd(value);
+    if (value !== '') {
+      onAdd(value);
+    }
     setDescription('');
   };
 
   const handleTextEditorKeyEnter = (value) => {
-    onAdd(value);
+    if (value !== '') {
+      onAdd(value);
+    }
     setDescription('');
   };
 
