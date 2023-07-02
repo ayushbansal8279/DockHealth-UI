@@ -4,6 +4,7 @@ import { TaskGroupType, TaskItemType, TaskStatus } from 'helpers/task-helpers';
 import { reorderTasksForWorkflow } from 'helpers/workflow-helpers';
 import { updateTaskOrSubtaskInListsArray } from 'helpers/task-update-helper';
 import { updateBundleInList } from 'helpers/tasklist-helpers';
+import { updateTasksStateCallback } from './reducer-helper';
 import TaskBaseReducer from './task-base-reducer';
 
 const INITIAL_STATE = {
@@ -27,45 +28,6 @@ const INITIAL_STATE = {
     key: null,
     order: null,
   },
-};
-
-// const updateTaskInList = (lists, updateTaskCallback) =>
-//   lists?.map((list) => ({
-//     ...list,
-//     tasks: mapWithRemove((t) => {
-//       if (t.itemType === TaskItemType.BUNDLE) {
-//         return updateTaskCallback({
-//           ...t,
-//           tasks: mapWithRemove(updateTaskCallback, t.tasks),
-//         });
-//       }
-
-//       return updateTaskCallback(t);
-//     }, list.tasks),
-//   }));
-
-const updateTasksStateCallback = (state, newTask) => {
-  if (typeof newTask === 'function') return state;
-
-  const newMap = {};
-  if (newTask.itemType === TaskItemType.TASK) {
-    newMap[newTask.identifier ?? newTask.taskIdentifier] = newTask;
-    for (const subTask of newTask.subtasks) {
-      newMap[subTask.identifier] = subTask;
-    }
-  }
-
-  return {
-    ...state,
-    tasksMap: {
-      ...state.tasksMap,
-      // [newTask.identifier ?? newTask.taskIdentifier]: {
-      //   ...state.tasksMap[newTask.identifier ?? newTask.taskIdentifier],
-      //   ...newTask,
-      // },
-      ...newMap,
-    },
-  };
 };
 
 function updateWorkflowInState(updateCallback, workflowIdentifier, state) {

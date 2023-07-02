@@ -7,6 +7,7 @@ import move from 'ramda/src/move';
 import { reorderTasksForWorkflow } from 'helpers/workflow-helpers';
 import { TaskGroupType, TaskItemType } from 'helpers/task-helpers';
 import { updateBundleInList } from 'helpers/tasklist-helpers';
+import { updateTasksStateCallback } from './reducer-helper';
 import TaskBaseReducer from './task-base-reducer';
 
 // const dedupe = pipe(uniqBy(prop('identifier')));
@@ -64,59 +65,6 @@ function updateBundleInState(updateCallback, bundleIdentifier, state) {
     },
   };
 }
-
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
-const updateTaskInList = (taskGroups, updateTaskCallback) =>
-  taskGroups?.map((group) => ({
-    ...group,
-    tasks: mapWithRemove((t) => {
-      if (t.itemType === TaskItemType.BUNDLE) {
-        return updateTaskCallback({
-          ...t,
-          tasks: mapWithRemove(updateTaskCallback, t.tasks),
-        });
-      }
-      return updateTaskCallback(t);
-    }, group.tasks),
-  }));
-
-const updateTasksStateCallback = (state, newTask) => {
-  if (typeof newTask === 'function') return state;
-
-  const newMap = {};
-  if (newTask.itemType === TaskItemType.TASK) {
-    newMap[newTask.identifier ?? newTask.taskIdentifier] = newTask;
-    for (const subTask of newTask.subtasks) {
-      newMap[subTask.identifier] = subTask;
-    }
-  }
-
-  return {
-    ...state,
-    tasksMap: {
-      ...state.tasksMap,
-      // [newTask.identifier ?? newTask.taskIdentifier]: {
-      //   ...state.tasksMap[newTask.identifier ?? newTask.taskIdentifier],
-      //   ...newTask,
-      // },
-      ...newMap,
-    },
-    // groupedTasks: {
-    //   ...state.groupedTasks,
-    //   taskGroups: updateTaskInList(
-    //     state.groupedTasks?.taskGroups,
-    //     updateTaskFromAction,
-    //   ),
-    // },
-    // completedGroupedTasks: {
-    //   ...state.completedGroupedTasks,
-    //   taskGroups: updateTaskInList(
-    //     state.completedGroupedTasks?.taskGroups,
-    //     updateTaskFromAction,
-    //   ),
-    // },
-  };
-};
 
 // eslint-disable-next-line sonarjs/cognitive-complexity
 const ListDetailsReducer = (state = initialState, action) => {

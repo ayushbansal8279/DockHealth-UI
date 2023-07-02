@@ -5,6 +5,7 @@ import {
 } from 'helpers/dashboard-helpers';
 import sessionStorageHelper from 'helpers/session-storage-helper';
 import { TaskItemType } from 'helpers/task-helpers';
+import { updateTasksStateCallback } from './reducer-helper';
 import TaskBaseReducer from './task-base-reducer';
 
 const initialState = {
@@ -19,43 +20,6 @@ const initialState = {
   filterOptions: null,
   isFetchingFilters: false,
   filterOptionsError: false,
-};
-
-// const updateTaskInList = (lists, updateTaskCallback) =>
-//   lists.map((group) => {
-//     const updatedTasks = group.tasks
-//       ? mapWithRemove(updateTaskCallback, group.tasks)
-//       : [];
-//     return { ...group, tasks: updatedTasks };
-//   });
-
-// const updateTasksStateCallback = (state, updateTaskFromAction) => ({
-//   ...state,
-//   tasksList: updateTaskInList(state.tasksList, updateTaskFromAction),
-// });
-
-const updateTasksStateCallback = (state, newTask) => {
-  if (typeof newTask === 'function') return state;
-
-  const newMap = {};
-  if (newTask.itemType === TaskItemType.TASK) {
-    newMap[newTask.identifier ?? newTask.taskIdentifier] = newTask;
-    for (const subTask of newTask.subtasks) {
-      newMap[subTask.identifier] = subTask;
-    }
-  }
-
-  return {
-    ...state,
-    tasksMap: {
-      ...state.tasksMap,
-      // [newTask.identifier ?? newTask.taskIdentifier]: {
-      //   ...state.tasksMap[newTask.identifier ?? newTask.taskIdentifier],
-      //   ...newTask,
-      // },
-      ...newMap,
-    },
-  };
 };
 
 const addTask = (list, taskToAdd) => {
