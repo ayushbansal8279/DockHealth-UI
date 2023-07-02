@@ -11,10 +11,10 @@ import { Box, ClickAwayListener } from '@mui/material';
 import { MoreVert } from '@mui/icons-material';
 import moment from 'moment';
 import UserAvatar from 'components/user/UserAvatar/UserAvatar';
-import {
-  convertFromEditorStateToOutput,
-  convertToEditorState,
-} from 'components/common/TextEditor/helpers';
+// import {
+//   convertFromEditorStateToOutput,
+//   convertToEditorState,
+// } from 'components/common/TextEditor/helpers';
 import { useDispatch } from 'react-redux';
 import Button from 'components/common/Button/Button';
 import Spacing from 'components/common/Spacing';
@@ -52,22 +52,24 @@ const PatientNote = ({
   const dateNoteCreated = moment(dateCreated).format('h:mma M/DD/YY');
   const dateNoteUpdated = moment(dateUpdated).format('h:mma M/DD/YY');
 
-  const initialState = useMemo(
-    () =>
-      convertToEditorState({
-        tokenizedText: description,
-        rawText: description,
-        mentions,
-        handleRichText: true,
-      }),
-    [description, mentions],
-  );
-  const [noteState, setNoteState] = useState(initialState);
+  // const initialState = useMemo(
+  //   () =>
+  //     convertToEditorState({
+  //       tokenizedText: description,
+  //       rawText: description,
+  //       mentions,
+  //       handleRichText: true,
+  //     }),
+  //   [description, mentions],
+  // );
+
+  const [noteState, setNoteState] = useState(description);
   const editNoteInputReference = useRef(null);
 
   const isEmpty = useMemo(() => {
-    const { tokenizedText } = convertFromEditorStateToOutput(noteState, true);
-    return tokenizedText?.trim()?.length === 0;
+    // const { tokenizedText } = convertFromEditorStateToOutput(noteState, true);
+    // return tokenizedText?.trim()?.length === 0;
+    return noteState?.trim()?.length === 0;
   }, [noteState]);
 
   useEffect(() => {
@@ -100,8 +102,8 @@ const PatientNote = ({
 
   const handleCancel = useCallback(() => {
     setIsEdited(false);
-    setNoteState(initialState);
-  }, [initialState]);
+    setNoteState(description);
+  }, [description]);
 
   const openDeleteConfirmationModal = useCallback(() => {
     const modalProps = {
@@ -141,6 +143,7 @@ const PatientNote = ({
 
   const handleFocus = useCallback(() => {
     setIsEdited(true);
+    setResetEditor(false);
   }, []);
 
   const updateNote = useCallback(async () => {
@@ -168,6 +171,7 @@ const PatientNote = ({
               value={description}
               onChange={handleTextEditorChange}
               onFocus={handleFocus}
+              reset={!isEdited}
               initOnClick
               showCharCount
             />

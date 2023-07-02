@@ -47,7 +47,7 @@ const QuickAddSubtask = ({
     if (error) {
       setError(null);
     }
-    // setCurrentValue(value);
+    setCurrentValue(value);
   };
 
   const handleTextEditorKeyEnter = (value) => {

@@ -84,6 +84,7 @@ const Comment = ({ comment, onDelete, onUpdate, currentUser }) => {
               showToolbar={isEditing}
               focus={isFocused}
               value={commentContent}
+              reset={!isEditing}
               onChange={handleTextEditorChange}
               initOnClick
               showCharCount

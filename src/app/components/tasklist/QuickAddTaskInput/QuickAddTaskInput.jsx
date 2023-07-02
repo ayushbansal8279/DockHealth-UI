@@ -98,9 +98,8 @@ const QuickAddTaskInput = React.forwardRef(
       if (error) {
         setError(null);
       }
-      // setDescription(value);
+      setDescription(value);
     };
-
 
     const handleTextEditorKeyEnter = (value) => {
       quickAddTask({ description: value, taskListIdentifier });

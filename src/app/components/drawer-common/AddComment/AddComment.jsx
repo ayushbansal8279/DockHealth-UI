@@ -36,22 +36,22 @@ const AddComment = ({ autoFocus, onAdd }) => {
 
   const [description, setDescription] = useState(null);
 
-  // const handleTextEditorChange = (_, { value }) => {
-  //   setDescription(value);
-  // };
+  const handleTextEditorChange = (value) => {
+    setDescription(value);
+  };
 
   const handleTextEditorBlur = (value) => {
     if (value !== '') {
       onAdd(value);
+      setDescription('');
     }
-    setDescription('');
   };
 
   const handleTextEditorKeyEnter = (value) => {
     if (value !== '') {
       onAdd(value);
+      setDescription('');
     }
-    setDescription('');
   };
 
   const selectedTask = useSelector(selectedTaskSelector);
@@ -64,6 +64,7 @@ const AddComment = ({ autoFocus, onAdd }) => {
           placeholder="New comment"
           height={120}
           value={description}
+          onChange={handleTextEditorChange}
           onBlur={handleTextEditorBlur}
           onKeyEnter={handleTextEditorKeyEnter}
           mentions={selectedTask?.taskMentions}

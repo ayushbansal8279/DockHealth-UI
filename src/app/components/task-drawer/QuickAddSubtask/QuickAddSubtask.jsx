@@ -28,8 +28,7 @@ const QuickAddSubtask = () => {
     setDisabled(false);
     setHasInputValue(false);
 
-    // reset cursor position inside draft editor
-    editorReference.current?.blur();
+    setCurrentValue('');
     editorReference.current?.focus();
   };
 
@@ -57,7 +56,7 @@ const QuickAddSubtask = () => {
     if (error) {
       setError(null);
     }
-    // setCurrentValue(value);
+    setCurrentValue(value);
   };
 
   const handleTextEditorKeyEnter = (value) => {
@@ -65,7 +64,6 @@ const QuickAddSubtask = () => {
     dispatch(addSubtask(taskIdentifier, { description: value }))
       .then(resetInputState)
       .catch(resetInputState);
-    setCurrentValue('');
   };
 
   return (

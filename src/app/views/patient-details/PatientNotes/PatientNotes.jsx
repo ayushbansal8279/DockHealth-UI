@@ -71,7 +71,6 @@ const PatientNotes = () => {
 
   // const onNoteChange = (state) => setNoteState(state);
   // eslint-disable-next-line react-hooks/exhaustive-deps
-  const clearNote = useCallback(() => setNoteState(''));
 
   const isEmpty = useMemo(() => {
     // const { tokenizedText } = convertFromEditorStateToOutput(noteState, true);
@@ -80,9 +79,9 @@ const PatientNotes = () => {
   }, [noteState]);
 
   const handleCancel = useCallback(() => {
-    clearNote();
+    setNoteState('');
     setEditMode(false);
-  }, [clearNote]);
+  }, []);
 
   const openDeleteConfirmationModal = useCallback(() => {
     const modalProps = {
@@ -181,7 +180,7 @@ const PatientNotes = () => {
               <RichTextEditor
                 placeholder="Add a new note"
                 showToolbar
-                clearValue={!editMode}
+                value={noteState}
                 onChange={handleTextEditorChange}
                 onFocus={handleFocus}
                 initOnClick={false}

@@ -115,7 +115,7 @@ const RichTextEditor = React.forwardRef(
       showToolbar = true, // dynamic show/hide toolbar
       showToolbarInline = false,
       focus = false,
-      clearValue = false,
+      reset = false,
       // manualInitialize = false,
       // showToolbarOnEdit = true,
       // showToolbarInline = false,
@@ -149,22 +149,23 @@ const RichTextEditor = React.forwardRef(
     const [rawTextState, setRawTextState] = useState(initialValue);
 
     const [editorState, setEditorState] = useState(
-      // rawTextState,
       md.render(rawTextState || ''),
     );
 
-    const [editor, setEditor] = useState(null);
-    // const [initControls, setInitControls] = useState(null);
-
     useEffect(() => {
-      setEditorState(md.render(initialValue || ''));
-    }, [initialValue]);
-
-    useEffect(() => {
-      if (clearValue) {
+      if (editorState !== '' && initialValue === '') {
         setEditorState('');
       }
-    }, [clearValue]);
+    }, [initialValue, editorState]);
+
+    useEffect(() => {
+      if (reset) {
+        setEditorState(initialValue);
+      }
+    }, [reset, initialValue]);
+
+    const [editor, setEditor] = useState(null);
+    // const [initControls, setInitControls] = useState(null);
 
     // const handleController = useCallback(
     //   (initControls_) => {
