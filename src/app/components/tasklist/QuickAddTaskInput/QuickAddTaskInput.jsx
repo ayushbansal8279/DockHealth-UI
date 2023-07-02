@@ -120,6 +120,7 @@ const QuickAddTaskInput = React.forwardRef(
             disableToolbar
             showToolbarInline
             initOnClick
+            taskListIdentifier={taskListIdentifier}
           />
           {/*<RichTextEditor noStyle value={description} onChange={setDescription} onSubmit={(description) => {*/}
           {/*  setDescription("")*/}

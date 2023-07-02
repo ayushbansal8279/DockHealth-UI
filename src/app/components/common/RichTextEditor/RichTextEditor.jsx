@@ -8,10 +8,16 @@ import React, {
   useMemo,
   useEffect,
 } from 'react';
-import { useSelector } from 'react-redux';
-//   import debounce from 'lodash.debounce';
-//   import { getPatientsByCriteria } from 'api/patients-api';
-//   import { getListMembersByName } from 'api/task-list-api';
+// import { useSelector } from 'react-redux';
+// import debounce from 'lodash.debounce';
+// import MenuList from '@mui/material/MenuList';
+// import MenuItem from '@mui/material/MenuItem';
+import palette from 'styles/palette';
+import { fontSizes, fontWeights } from 'styles/font';
+// import { renderToString } from 'react-dom/server';
+import { getPatientsByCriteria } from 'api/patients-api';
+import { getListMembersByName } from 'api/task-list-api';
+// import UserMention from 'components/common/TextEditor/UserMention/UserMention';
 //   import Spacing from 'components/common/Spacing';
 //   import { Box, ClickAwayListener } from '@mui/material';
 // import {
@@ -57,6 +63,9 @@ import { useSelector } from 'react-redux';
 import FroalaEditor from 'react-froala-wysiwyg';
 import MarkdownIt from 'markdown-it';
 import TurndownService from 'turndown';
+import Tribute from 'tributejs';
+// import { Avatar } from './styled';
+import 'tributejs/dist/tribute.css';
 import './styles.css';
 
 const md = new MarkdownIt();
@@ -143,6 +152,7 @@ const RichTextEditor = React.forwardRef(
       // characterLimit = showToolbar ? FieldCharakterLimit.RICH_TEXT : false,
       showCharCount = false,
       initOnClick = false,
+      taskListIdentifier,
     },
     outerReference,
   ) => {
@@ -178,6 +188,90 @@ const RichTextEditor = React.forwardRef(
 
     // const showToolbarInline = !showToolbar;
 
+    const tribute = new Tribute({
+      trigger: '@',
+      // eslint-disable-next-line func-names, object-shorthand, unicorn/prevent-abbreviations
+      values: function (mentionString, cb) {
+        if (taskListIdentifier && mentionString) {
+          getListMembersByName(taskListIdentifier, mentionString).then(
+            (fetchedUsers) => {
+              // fetchedUsers.map((user) => {
+              //   images[user.identifier] =
+              //     getUserAvatarThumbnailUrl(user) ||
+              //     (isUserGroup(user)
+              //       ? user.initials?.[0].toUpperCase()
+              //       : user.initials?.toLowerCase());
+              // });
+              cb(fetchedUsers);
+            },
+          );
+        }
+      },
+      menuShowMinLength: 0,
+      allowSpaces: true,
+      requireLeadingSpace: false,
+      lookup: 'name',
+      searchOpts: {
+        skip: true, // true will skip local search, useful if doing server-side search
+      },
+      containerClass: 'tribute-container', // class added to the menu container
+      itemClass: '', // class added to each list item
+      selectClass: 'highlight', // class added in the flyout menu for active item
+      // eslint-disable-next-line func-names, object-shorthand
+      menuItemTemplate: function (item) {
+        const option = item.original;
+        // return `<span className="text">${option.name}</span>`;
+        // return renderToString(
+        //   <MenuItem
+        //     key={option.identifier}
+        //     ref={option.setRefElement}
+        //     role="option"
+        //     // aria-selected={isSelected}
+        //     // id={`typeahead-item-${index}`}
+        //   >
+        //     {/* <Avatar $color={option.color}>
+        //       {option.picture?.length > 2 ? (
+        //         <img src={option.picture} alt="avatar" />
+        //       ) : (
+        //         option.picture
+        //       )}
+        //     </Avatar> */}
+        //     {/* <span className="text">
+        //       {option.name} - {option.identifier}
+        //     </span> */}
+        //     <UserMention mention={option} />
+        //   </MenuItem>,
+        // );
+        return `<div>
+          <div class="profile">
+              <img src=${
+                import.meta.env.VITE_HEYDOC_SERVICES_BASE_URL
+              }user/profilePicture/${
+          option.identifier
+        }?UserPictureType=PROFILE_THUMBNAIL alt="" />
+          </div>
+          <p 
+            style="margin-bottom: 0;
+            color: ${palette.mediumGrey};
+            font-size: ${fontSizes.regular};
+            font-weight: ${fontWeights.light};
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;">
+            ${option.name}
+          </p>
+        </div>`;
+      },
+      // eslint-disable-next-line func-names, object-shorthand
+      noMatchTemplate: function () {
+        return '<span>@People</span>';
+      },
+      // eslint-disable-next-line func-names, object-shorthand
+      selectTemplate: function (item) {
+        return `<span class="fr-deletable fr-tribute"><a>@${item.original.name}</a></span>`;
+      },
+    });
+
     const config = {
       key: FROALA_PRODUCT_KEY,
       attribution: false,
@@ -197,6 +291,19 @@ const RichTextEditor = React.forwardRef(
             this.edit.off();
           }
           setEditor(this);
+          // eslint-disable-next-line @typescript-eslint/no-this-alias, unicorn/no-this-assignment
+          const froalaEditor = this;
+          tribute.attach(froalaEditor.el);
+          froalaEditor.events.on(
+            'keydown',
+            // eslint-disable-next-line unicorn/prevent-abbreviations
+            (e) => {
+              if ((e.which === 13 || e.which === 10) && tribute.isActive) {
+                return false;
+              }
+            },
+            true,
+          );
         },
         // eslint-disable-next-line prettier/prettier, func-names
         'edit.off': function () {
