@@ -20,7 +20,6 @@ import {
   Step,
   NextArrow,
 } from '../styled';
-import RichTextEditor from "components/RichTextEditorV2/RichTextEditor";
 
 const GroupSelectStep = ({
   selectedList,
@@ -141,18 +140,17 @@ const GroupSelectStep = ({
             )}
           </ListsWrapper>
           <QuickAddInputWrapper isFocused={groupInputFocused}>
-            {/*<QuickAddInput*/}
-            {/*  ref={addGroupReference}*/}
-            {/*  type="text"*/}
-            {/*  placeholder="Add group"*/}
-            {/*  onFocus={setGroupInputFocused}*/}
-            {/*  onBlur={unsetGroupInputFocused}*/}
-            {/*  disabled={savingGroup || isFetchingGroups}*/}
-            {/*  onKeyDown={(event) =>*/}
-            {/*    event.key === 'Enter' && handleAddNewGroup(event.target.value)*/}
-            {/*  }*/}
-            {/*/>*/}
-            <RichTextEditor/>
+            <QuickAddInput
+              ref={addGroupReference}
+              type="text"
+              placeholder="Add group"
+              onFocus={setGroupInputFocused}
+              onBlur={unsetGroupInputFocused}
+              disabled={savingGroup || isFetchingGroups}
+              onKeyDown={(event) =>
+                event.key === 'Enter' && handleAddNewGroup(event.target.value)
+              }
+            />
           </QuickAddInputWrapper>
         </>
       )}
