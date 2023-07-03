@@ -3,15 +3,11 @@ import { Box } from '@mui/material';
 import Tooltip from 'components/common/Tooltip/Tooltip';
 import TaskItemPopover from 'components/task/TaskItemPopover/TaskItemPopover';
 import PopoverBottomBar from 'components/task/PopoverBottomBar/PopoverBottomBar';
-import TextEditor from 'ui-toolkit/Form/TextEditor/TextEditor';
-import { convertToSimpleString } from 'ui-toolkit/Form/TextEditor/helpers';
+import RichTextEditor from 'components/common/RichTextEditor/RichTextEditor';
+import { convertToSimpleString } from 'helpers/markdown-helper.js';
 import { Text, LongTextBox, Divider } from './styled';
 
-const TaskItemLongText = ({
-  value = '',
-  onChange,
-  openDrawer,
-}) => {
+const TaskItemLongText = ({ value = '', onChange, openDrawer }) => {
   const [rawDetails, setRawDetails] = useState(null);
 
   useEffect(() => {
@@ -20,9 +16,10 @@ const TaskItemLongText = ({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [value]);
 
-  const handleTextEditorBlur = (closePopover) => (_, { value }) => {
-    closePopover();
+  // eslint-disable-next-line no-shadow
+  const handleTextEditorBlur = (closePopover) => (value) => {
     onChange(value);
+    closePopover();
   };
 
   return (
@@ -37,10 +34,13 @@ const TaskItemLongText = ({
             alignItems="center"
             style={{ padding: '5px' }}
           >
-            <TextEditor
-              autofocus
+            <RichTextEditor
               value={value}
               onBlur={handleTextEditorBlur(closePopover)}
+              initOnClick={false}
+              showToolbar
+              multiline
+              showCharCount
             />
             <Divider />
             <PopoverBottomBar align="spread">

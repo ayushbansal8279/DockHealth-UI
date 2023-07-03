@@ -291,7 +291,7 @@ const TaskItemContextMenu = ({
         {restrictions?.move !== DISABLED &&
           !isTemplateTask &&
           !isBundleTask && (
-            <li>
+            <div>
               <MenuItemButton
                 tabIndex="0"
                 type="button"
@@ -299,19 +299,19 @@ const TaskItemContextMenu = ({
               >
                 Move to list
               </MenuItemButton>
-            </li>
+            </div>
           )}
         {restrictions?.move !== DISABLED &&
           !isTemplateTask &&
           !isBundleTask && (
-            <li>
+            <div>
               <MenuItemButton type="button" onClick={handleMoveGroupTask}>
                 Move to group
               </MenuItemButton>
-            </li>
+            </div>
           )}
         {!task.read && !isTemplateTask && (
-          <li>
+          <div>
             <MenuItemButton
               tabIndex="0"
               type="button"
@@ -319,10 +319,10 @@ const TaskItemContextMenu = ({
             >
               Mark as read
             </MenuItemButton>
-          </li>
+          </div>
         )}
         {task.read && !isTemplateTask && (
-          <li>
+          <div>
             <MenuItemButton
               tabIndex="0"
               type="button"
@@ -330,19 +330,19 @@ const TaskItemContextMenu = ({
             >
               Mark as unread
             </MenuItemButton>
-          </li>
+          </div>
         )}
         {restrictions?.duplicate !== DISABLED && (
-          <li>
+          <div>
             <MenuItemButton type="button" onClick={handleDuplicateTask}>
               Duplicate {isSubtask ? 'subtask' : 'task'}
             </MenuItemButton>
-          </li>
+          </div>
         )}
         {restrictions?.subtasks !== READ_ONLY &&
           !isSubtask &&
           !subtasksDisabled && (
-            <li>
+            <div>
               <MenuItemButton
                 type="button"
                 onClick={() => {
@@ -352,19 +352,19 @@ const TaskItemContextMenu = ({
               >
                 Create subtask
               </MenuItemButton>
-            </li>
+            </div>
           )}
         {shareTaskAvailable && !isTemplateTask && (
-          <li>
+          <div>
             <MenuItemButton type="button" onClick={handleShareTask}>
               Share Task
             </MenuItemButton>
-          </li>
+          </div>
         )}
         {restrictions?.delete !== DISABLED && (
           <>
             <Divider />
-            <li>
+            <div>
               <MenuItemButton
                 type="button"
                 color={palette.oPlusRed}
@@ -372,7 +372,7 @@ const TaskItemContextMenu = ({
               >
                 Delete {isSubtask ? 'subtask' : 'task'}
               </MenuItemButton>
-            </li>
+            </div>
           </>
         )}
       </MenuContainer>

@@ -5,23 +5,24 @@ import React, {
   useLayoutEffect,
   // useMemo,
   useRef,
-  useState,
+  // useState,
 } from 'react';
 // import { EditorState } from 'draft-js';
 import { useDispatch } from 'react-redux';
+import { useBoolean } from 'hooks/useBoolean';
 import { addTask, updateTaskDescription } from 'actions/task-actions';
 // import { useBoolean } from 'hooks/useBoolean';
 import { checkIfTemplateTask, TaskStatus } from 'helpers/task-helpers';
-import {
-  // convertFromEditorStateToOutput,
-  convertToEditorState,
-  // isEditorStateEmpty,
-} from 'components/common/TextEditor/helpers';
+// import {
+// convertFromEditorStateToOutput,
+// convertToEditorState,
+// isEditorStateEmpty,
+// } from 'components/common/TextEditor/helpers';
 // import { createMentionEntities } from 'components/common/TextEditor/create-mention-entities';
-// import CustomTextEditor from 'components/common/CustomTextEditor/CustomTextEditor';
-import { useMentionsEditorState } from 'components/common/TextEditor/use-mentions-editor-state';
+// import { useMentionsEditorState } from 'components/common/TextEditor/use-mentions-editor-state';
 // import debounce from 'lodash.debounce';
-import Input from 'ui-toolkit/Form/Input/Input';
+import RichTextEditor from 'components/common/RichTextEditor/RichTextEditor';
+import CustomTextEditor from 'components/common/CustomTextEditor/CustomTextEditor';
 import { DescriptionTextContainer, DescriptionError } from './styled';
 
 const TaskDescription = ({ selectedTask, readOnly, disableMentions }) => {
@@ -38,17 +39,17 @@ const TaskDescription = ({ selectedTask, readOnly, disableMentions }) => {
   const dispatch = useDispatch();
   const firstRender = useRef(true);
   const descriptionReference = useRef(null);
-  // const [isFocused, setFocused, unsetFocused] = useBoolean(false);
-  const [descriptionState, setDescriptionState] = useMentionsEditorState(
-    description
-      ? convertToEditorState({
-          rawText: description,
-          tokenizedText: tokenizedDescription,
-          mentions: taskMentions,
-        })
-      : null,
-  );
-  const [descriptionErrorState, setDescriptionErrorState] = useState(false);
+  const [isFocused, setFocused, unsetFocused] = useBoolean(false);
+  // const [descriptionState, setDescriptionState] = useMentionsEditorState(
+  //   description
+  //     ? convertToEditorState({
+  //         rawText: description,
+  //         tokenizedText: tokenizedDescription,
+  //         mentions: taskMentions,
+  //       })
+  //     : null,
+  // );
+  // const [descriptionErrorState, setDescriptionErrorState] = useState(false);
 
   // const isSubtask = !!parentTaskIdentifier;
 
@@ -65,7 +66,7 @@ const TaskDescription = ({ selectedTask, readOnly, disableMentions }) => {
         // );
         // setDescriptionState(EditorState.push(descriptionState, newContent));
       } else {
-        setDescriptionState();
+        // setDescriptionState();
       }
     }
 
@@ -142,19 +143,11 @@ const TaskDescription = ({ selectedTask, readOnly, disableMentions }) => {
   //   [descriptionErrorState, setDescriptionState],
   // );
 
-  // const handleInputChange = debounce((_, { value }) => {
-  //   dispatch(
-  //       updateTaskDescription(selectedTask, {
-  //         tokenizedDescription: value
-  //       })
-  //   )
-  // }, 1000)
-
-  const handleInputBlur = (_, { value }) => {
-    if (value && value !== '' && value !== selectedTask?.tokenizedDescription) {
+  const handleBlur = (value) => {
+    if (selectedTask?.description !== value) {
       dispatch(
         updateTaskDescription(selectedTask, {
-          tokenizedDescription: value,
+          tokenizedDescription: value || '',
         }),
       );
     }
@@ -163,19 +156,26 @@ const TaskDescription = ({ selectedTask, readOnly, disableMentions }) => {
   return (
     <>
       <DescriptionTextContainer isCrossed={status === TaskStatus.COMPLETE}>
-        <Input
-          value={description}
-          placeholder="Task description"
-          onBlur={handleInputBlur}
-          mentions={taskMentions}
-          enabled={{
-            mentions: false,
-          }}
-        />
+        <CustomTextEditor
+          key={selectedTask?.identifier}
+          // empty={isEmptyDetailsState}
+          focused={isFocused}
+          label="Description"
+          richTextEnabled
+        >
+          <RichTextEditor
+            value={description}
+            onBlur={handleBlur}
+            showToolbar={false}
+            disableToolbar
+            showToolbarInline
+            multiline={false}
+          />
+        </CustomTextEditor>
       </DescriptionTextContainer>
-      {descriptionErrorState && (
+      {/* {descriptionErrorState && (
         <DescriptionError>Task description is required</DescriptionError>
-      )}
+      )} */}
     </>
   );
 };

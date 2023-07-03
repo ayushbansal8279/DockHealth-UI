@@ -2,7 +2,6 @@
 /* eslint-disable sonarjs/max-switch-cases */
 import * as ActionTypes from 'actions/action-types';
 import omit from 'ramda/src/omit';
-import { mapWithRemove } from 'helpers/utility-functions';
 import {
   createDecisionTaskNodes,
   createTemporaryTaskNode,
@@ -36,19 +35,25 @@ const templateDetailsInitialState = {
   isOpen: false,
 };
 
-function updateTasksStateCallback(state, updateTaskFromAction) {
-  return {
+function updateTasksStateCallback(state, newTask) {
+  if (typeof newTask === 'function') return state;
+
+  // eslint-disable-next-line sonarjs/prefer-immediate-return
+  const newState = {
     ...state,
     taskTemplateDetails: Object.fromEntries(
       Object.entries(state.taskTemplateDetails).map(([key, value]) => [
         key,
         {
           ...value,
-          tasks: mapWithRemove(updateTaskFromAction, value.tasks),
+          tasks: value.tasks.map((t) =>
+            t.identifier === newTask.identifier ? { ...t, ...newTask } : t,
+          ),
         },
       ]),
     ),
   };
+  return newState;
 }
 
 function updateTaskTemplateDetailsState(identifier, currentState, newState) {

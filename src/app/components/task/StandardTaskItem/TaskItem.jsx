@@ -185,6 +185,9 @@ const TaskItem = React.memo(
       );
     });
 
+    if (!task) {
+      return;
+    }
 
     const {
       taskIdentifier,
@@ -214,7 +217,7 @@ const TaskItem = React.memo(
 
     const { columns } = useTaskListColumnsConfig();
     const { listName, taskListIdentifier } = taskList || {};
-    const [isCompleted, setIsCompleted] = useState(task.status === 'COMPLETE');
+    const [isCompleted, setIsCompleted] = useState(task?.status === 'COMPLETE');
     const isTemplateTask = checkIfTemplateTask(task);
     const isSubtask = !!parentTaskIdentifier;
     const isDecisionTask = task.intentType === 'DECISION';
@@ -443,7 +446,7 @@ const TaskItem = React.memo(
       return (
         nonAssigneeCompleteDisabledItem &&
         nonAssigneeCompleteDisabledItem?.value === 'false' &&
-        assignedToUsers.filter(
+        assignedToUsers?.filter(
           (user) => user.identifier === currentUser.identifier,
         ).length === 0 &&
         !isCreator
@@ -516,9 +519,11 @@ const TaskItem = React.memo(
     const [isPatientDataReadOnly] = useState(true);
 
     const handlePatientUpdate = useCallback(
-      field => value => {
-        const { patientIdentifier } = patient;
-        dispatch(updatePatientDetails(patientIdentifier, { [field]: value }));
+      (field) => (value) => {
+        if (patient) {
+          const patientIdentifier = patient?.patientIdentifier;
+          dispatch(updatePatientDetails(patientIdentifier, { [field]: value }));
+        }
       },
       [dispatch, patient],
     );

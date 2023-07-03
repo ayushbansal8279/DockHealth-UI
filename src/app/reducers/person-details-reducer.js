@@ -1,6 +1,6 @@
 import * as ActionTypes from 'actions/action-types';
 import { TaskItemType } from 'helpers/task-helpers';
-// import { mapWithRemove } from 'helpers/utility-functions';
+import { updateTasksStateCallback } from './reducer-helper';
 import TaskBaseReducer from './task-base-reducer';
 
 const initialState = {
@@ -27,27 +27,6 @@ const mapTasksSuccess = (task) => ({
     patient: task.patient,
   })),
 });
-
-// const updateTasksStateCallback = (state, updateTaskFromAction) => ({
-//   ...state,
-//   tasks: mapWithRemove(updateTaskFromAction, state.tasks),
-//   completedTasks: mapWithRemove(updateTaskFromAction, state.completedTasks),
-// });
-
-const updateTasksStateCallback = (state, newTask) => {
-  if (typeof newTask === 'function') return state;
-
-  return {
-    ...state,
-    tasksMap: {
-      ...state.tasksMap,
-      [newTask.identifier ?? newTask.taskIdentifier]: {
-        ...state.tasksMap[newTask.identifier ?? newTask.taskIdentifier],
-        ...newTask,
-      },
-    },
-  };
-};
 
 const PersonDetailsReducer = (state = initialState, action) => {
   switch (action.type) {
@@ -122,8 +101,8 @@ const PersonDetailsReducer = (state = initialState, action) => {
           newMap[task.identifier] = task;
         } else {
           newMap[task.identifier] = task;
-          for (const subtask of task.tasks) {
-            newMap[subtask.identifier] = subtask;
+          for (const grpTask of task.tasks) {
+            newMap[grpTask.identifier] = grpTask;
           }
         }
       }

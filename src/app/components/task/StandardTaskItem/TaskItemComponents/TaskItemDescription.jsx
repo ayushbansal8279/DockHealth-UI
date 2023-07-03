@@ -37,8 +37,6 @@ import {
   TaskContext,
   DescriptionEditButton,
 } from '../../styled';
-// import RichTextEditor from 'components/RichTextEditorV2/RichTextEditor';
-// import TextEditor from 'ui-toolkit/Form/TextEditor/TextEditor';
 
 const TaskItemDescription = ({
   task,

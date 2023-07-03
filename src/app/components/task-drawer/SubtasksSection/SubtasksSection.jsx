@@ -73,7 +73,7 @@ const SubtasksSection = ({ selectedTask, restrictions: isReadOnly }) => {
             <Droppable droppableId={selectedTask.identifier}>
               {(provided) => (
                 <div ref={provided.innerRef} {...provided.droppableProps}>
-                  {subtasks.map((task, index) => (
+                  {subtasks?.map((task, index) => (
                     <Draggable
                       key={task.identifier}
                       draggableId={String(task.identifier)}

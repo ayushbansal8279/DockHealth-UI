@@ -529,24 +529,7 @@ const TaskBaseReducer = (state, action, updateStateCallback) => {
 
     case ActionTypes.ADD_SUBTASK: {
       const { subtask } = action;
-      const { parentTaskIdentifier } = subtask;
-
-      const updateStateFromAction = (task) => {
-        if (parentTaskIdentifier === task.taskIdentifier) {
-          let updatedSubtasks = task.subtasks || [];
-          updatedSubtasks = [...updatedSubtasks, subtask];
-
-          return {
-            ...task,
-            subtasks: updatedSubtasks,
-            subTasksCount: updatedSubtasks.length,
-          };
-        }
-
-        return task;
-      };
-
-      return updateStateCallback(state, updateStateFromAction);
+      return updateStateCallback(state, subtask);
     }
 
     case ActionTypes.UPDATE_WORKFLOW_STATUS_FOR_TASKS: {

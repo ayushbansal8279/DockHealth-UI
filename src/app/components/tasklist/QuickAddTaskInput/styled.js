@@ -5,12 +5,8 @@ import palette from 'styles/palette';
 
 export const AddTaskInputWrapper = styled.div`
   position: relative;
-  display: flex;
-  flex-direction: row;
-  align-items: center;
   height: auto;
-  margin-bottom: ${spacing.small};
-  padding: ${spacing.small} ${spacing.huge};
+  padding: ${spacing.small} ${spacing.huge} ${spacing.none} ${spacing.huge};
   border: 1px solid
     ${(props) => (props.hasError ? palette.red : palette.coolGrey3)};
   font-size: ${fontSizes.smallPlus};
@@ -27,10 +23,6 @@ export const AddTaskInputWrapper = styled.div`
     transform: translateY(-50%);
     color: ${(props) => props.iconColor || palette.orange};
     font-size: ${fontSizes.regular};
-  }
-
-  &:focus-within:before {
-    visibility: hidden;
   }
 
   @media print {

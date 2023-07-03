@@ -9,13 +9,14 @@ export const AddSubtaskInputWrapper = styled.div`
   flex-direction: row;
   align-items: center;
   height: auto;
+  margin-top: ${spacing.small};
   margin-bottom: ${spacing.small};
-  padding: 6px ${spacing.huge} 6px ${spacing.regular};
+  padding: ${spacing.small} ${spacing.regular} ${spacing.none} ${spacing.regular};
   font-size: ${fontSizes.smallPlus};
   background-color: ${palette.white};
   text-align: left;
   border: 1px solid;
-  border-color: transparent;
+  border-color: ${palette.coolGrey3};
 
   @media print {
     display: none;
@@ -30,6 +31,7 @@ export const AddSubtaskInputWrapper = styled.div`
     transform: translateY(-50%);
     color: ${palette.brightBlue};
     font-size: ${fontSizes.regular};
+    padding-left: ${spacing.tiny};
   }
 
   ${({ isFocused, hasError }) =>

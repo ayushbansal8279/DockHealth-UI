@@ -1,21 +1,17 @@
 import Button from 'components/common/Button/Button';
 import Checkbox from 'components/common/Checkbox/Checkbox';
 import Input from 'components/common/Input/Input';
-import TextEditor from 'ui-toolkit/Form/TextEditor/TextEditor';
+import RichTextEditor from 'components/common/RichTextEditor/RichTextEditor';
 import React, { useCallback, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import {
-  // addStylesToText,
-  convertFromEditorStateToOutput,
-} from 'components/common/TextEditor/helpers';
+import { convertFromEditorStateToOutput } from 'components/common/TextEditor/helpers';
 import { selectedTaskSelector } from 'selectors/task-drawer-selectors';
 import { sendEmailForTask } from 'actions/task-actions';
 import { IconButton } from '@mui/material';
 import { Replay } from '@mui/icons-material';
 import palette from 'styles/palette';
-import { validateEmail } from 'helpers/validation-helper';
+// import { validateEmail } from 'helpers/validation-helper';
 import CustomTextEditor from 'components/common/CustomTextEditor/CustomTextEditor';
-// import { createMentionEntities } from 'components/common/TextEditor/create-mention-entities';
 import ReactModal from 'react-modal';
 import { getTemplateDetails } from 'api/template-api';
 import { CommunicationType } from 'helpers/task-helpers';
@@ -66,14 +62,9 @@ const SendEmailFromTaskModal = () => {
 
   const [isTaskCommentsIncluded, setIsTaskCommentsIncluded] = useState(false);
 
-  // const [detailsState, setDetailsState] = useState(() =>
-  //   // EditorState.createEmpty(),
-  //   {},
-  // );
-  // const [detailsState, setDetailsState] = useState(
-  //   selectedTask?.tokenizedDetails,
-  // );
-  const [detailsState, setDetailsState] = useState('');
+  const [detailsState, setDetailsState] = useState(
+    selectedTask?.tokenizedDetails,
+  );
 
   const [attachmentsToSend, setAttachmentsToSend] = useState([]);
   const insertTextFromTask = useCallback(
@@ -231,19 +222,14 @@ const SendEmailFromTaskModal = () => {
         />
         <TextEditorContainerStyled>
           <CustomTextEditor label="Email body">
-            <TextEditor
+            <RichTextEditor
               value={detailsState}
               readOnly={false}
               placeholder="Email Body"
-              onChange={(paramters, { value }) => {
-                setDetailsState(value);
-              }}
-              onBlur={(paramters, { value }) => {
-                setDetailsState(value);
-              }}
-              enabled={{
-                mentions: false,
-              }}
+              onChange={setDetailsState}
+              onBlur={setDetailsState}
+              initOnClick
+              showCharCount
             />
           </CustomTextEditor>
         </TextEditorContainerStyled>

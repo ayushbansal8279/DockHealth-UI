@@ -17,6 +17,7 @@ export const TextEditorFormStyleContainer = styled.div`
     }
     return '2px solid #e40909';
   }};
+  font-family: 'Roboto Condensed', sans-serif;
 `;
 
 export const TextEditorInputLabel = styled(
@@ -28,7 +29,7 @@ export const TextEditorInputLabel = styled(
 export const DescriptionLabel = styled.label`
   display: block;
   font-family: 'Roboto Condensed', sans-serif;
-  font-size: ${fontSizes.small};
+  font-size: ${fontSizes.smallPlus};
   font-weight: ${fontWeights.light};
   color: ${palette.coolGrey1};
   text-transform: uppercase;

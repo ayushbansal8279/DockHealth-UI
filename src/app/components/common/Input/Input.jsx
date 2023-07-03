@@ -26,6 +26,7 @@ const Input = React.forwardRef(
       startAdornment,
       endAdornment,
       shrink,
+      hiddenLabel,
       readOnly,
       inputRef,
       required = false,
@@ -57,6 +58,7 @@ const Input = React.forwardRef(
       InputLabelProps={{
         shrink: readOnly || shrink,
       }}
+      hiddenLabel={hiddenLabel}
       variant={variant}
       {...restProps}
     />

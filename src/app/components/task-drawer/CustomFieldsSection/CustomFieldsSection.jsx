@@ -21,7 +21,7 @@ import {
   workflowAutofocusFieldSelector,
 } from 'selectors/workflow-drawer-selectors';
 import { FieldType } from 'helpers/field-type-helpers';
-import { log } from 'helpers/log';
+// import { log } from 'helpers/log';
 import { formatMetaDataOutput } from './helpers';
 import {
   CustomFieldsSectionContainer,
@@ -49,14 +49,12 @@ const CustomFieldsSection = ({ disabled, fieldCategoryType }) => {
   );
 
   const templates = useMemo(() => {
-    log(`unfilteredTemplates: ${JSON.stringify(unfilteredTemplates)}`);
+    // eslint-disable-next-line sonarjs/prefer-immediate-return
     const filtered = unfilteredTemplates.filter((unfilteredTemplate) => {
-      log(`field category type: ${unfilteredTemplate?.fieldCategoryType}`);
       if (fieldCategoryType)
         return unfilteredTemplate?.fieldCategoryType === fieldCategoryType;
       return true;
     });
-    log(`filtered templates: ${filtered}`);
     return filtered;
   }, [fieldCategoryType, unfilteredTemplates]);
 

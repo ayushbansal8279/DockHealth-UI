@@ -12,7 +12,7 @@ const ToolbarSelect = ({ options, name, value, icon, ...restProps }) => {
             document.activeElement.blur();
           }, 0);
         }}
-        iconColorActive={restProps.iconColorActive}
+        iconcoloractive={restProps.iconColorActive}
         MenuProps={{
           anchorOrigin: {
             vertical: 'bottom',

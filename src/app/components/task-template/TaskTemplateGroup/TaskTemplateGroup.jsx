@@ -44,24 +44,25 @@ const TaskTemplateGroup = ({
   highlightedValue,
   // eslint-disable-next-line sonarjs/cognitive-complexity
 }) => {
-  const templateGroup = useSelector((state) => {
-    if (origin === TaskOrigin.DASHBOARD) {
-      return dashboardTaskDetailsSelector(
+  const templateGroup =
+    useSelector((state) => {
+      if (origin === TaskOrigin.DASHBOARD) {
+        return dashboardTaskDetailsSelector(
+          state,
+          typeof pullGroup === 'string' ? pullGroup : pullGroup.identifier,
+        );
+      }
+      if (origin === TaskOrigin.PATIENT) {
+        return patientTaskDetailsSelector(
+          state,
+          typeof pullGroup === 'string' ? pullGroup : pullGroup.identifier,
+        );
+      }
+      return taskDetailsSelector(
         state,
         typeof pullGroup === 'string' ? pullGroup : pullGroup.identifier,
       );
-    }
-    if (origin === TaskOrigin.PATIENT) {
-      return patientTaskDetailsSelector(
-        state,
-        typeof pullGroup === 'string' ? pullGroup : pullGroup.identifier,
-      );
-    }
-    return taskDetailsSelector(
-      state,
-      typeof pullGroup === 'string' ? pullGroup : pullGroup.identifier,
-    );
-  });
+    }) || {};
 
   const {
     tasks,
@@ -190,7 +191,7 @@ const TaskTemplateGroup = ({
                       ref={templateDroppableProvided.innerRef}
                       {...templateDroppableProvided.droppableProps}
                     >
-                      {filteredTasks.map((task, index) => (
+                      {filteredTasks?.map((task, index) => (
                         <Draggable
                           key={task.taskIdentifier}
                           draggableId={task.taskIdentifier}

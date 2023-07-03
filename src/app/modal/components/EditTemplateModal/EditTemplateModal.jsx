@@ -10,6 +10,7 @@ import FormSelect from 'components/common/Select/FormSelect';
 import { createTemplate, editTemplate } from 'api/template-api';
 import CustomTextEditor from 'components/common/CustomTextEditor/CustomTextEditor';
 import AlertMessages from 'alert/AlertMessages';
+import RichTextEditor from 'components/common/RichTextEditor/RichTextEditor';
 import { CloseIconButton, CloseIcon } from '../styled';
 import {
   AddPatientFieldModalWrapper,
@@ -22,7 +23,6 @@ import {
   TEMPLATE_TYPE_OPTIONS,
   validationSchema,
 } from './helpers';
-import TextEditor from 'ui-toolkit/Form/TextEditor/TextEditor';
 
 // eslint-disable-next-line sonarjs/cognitive-complexity
 const EditTemplateModal = ({ closeModal, template, onAdded, onUpdated }) => {
@@ -90,10 +90,6 @@ const EditTemplateModal = ({ closeModal, template, onAdded, onUpdated }) => {
       });
   };
 
-  useEffect(() => {
-    console.log("!!!:", template);
-  }, [template])
-
   return (
     <AddPatientFieldModalWrapper>
       <CloseIconButton onClick={closeModal} size="small" color="secondary">
@@ -138,10 +134,15 @@ const EditTemplateModal = ({ closeModal, template, onAdded, onUpdated }) => {
                             : 'Message'
                         }
                       >
-                        <TextEditor
-                          type="input"
-                          initialValue={template?.shortMessage}
-                          onBlur={(_, { value }) => setValue('shortMessage', value)}
+                        <RichTextEditor
+                          value={template?.shortMessage}
+                          onBlur={(value) => setValue('shortMessage', value)}
+                          showToolbar={
+                            templateTypeValue !== TEMPLATE_TYPES.EMAIL
+                          }
+                          multiline={templateTypeValue !== TEMPLATE_TYPES.EMAIL}
+                          initOnClick
+                          showCharCount
                         />
                       </CustomTextEditor>
                     </Grid>
@@ -149,10 +150,11 @@ const EditTemplateModal = ({ closeModal, template, onAdded, onUpdated }) => {
                   {templateTypeValue !== TEMPLATE_TYPES.SMS && (
                     <Grid item xs={12}>
                       <CustomTextEditor label="Message">
-                        <TextEditor
-                          type="textarea"
-                          initialValue={template?.details}
-                          onBlur={(_, { value }) => setValue('details', value)}
+                        <RichTextEditor
+                          value={template?.details}
+                          onBlur={(value) => setValue('details', value)}
+                          initOnClick
+                          showCharCount
                         />
                       </CustomTextEditor>
                     </Grid>

@@ -24,21 +24,21 @@ const SingleTaskHeader = () => {
     <LayoutHeader horizontalSticky>
       <SingleTaskHeaderNav>
         <LayoutHeader.Title
-          title={
-            <Box width="100px" onClick={goBack}>
-              <Button disabled={history.length === 0} variant="text" fullWidth>
-                <Box display="flex" alignItems="centes" p="0 10px">
-                  <ArrowBackIcon />
-                  <Box ml={1} />
-                  <Typography>BACK</Typography>
-                </Box>
-              </Button>
-            </Box>
-          }
+        // title={
+        //   <Box width="100px" onClick={goBack}>
+        //     <Button disabled={history.length === 0} variant="text" fullWidth>
+        //       <Box display="flex" alignItems="centes" p="0 10px">
+        //         <ArrowBackIcon />
+        //         <Box ml={1} />
+        //         <Typography>BACK</Typography>
+        //       </Box>
+        //     </Button>
+        //   </Box>
+        // }
         />
         <LayoutHeader.Spacer />
         <Box>
-          <BlueButton onClick={goToDashboard}>view my dashboard</BlueButton>
+          <BlueButton onClick={goToDashboard}>Go to Home</BlueButton>
         </Box>
         <LayoutHeader.Spacer />
       </SingleTaskHeaderNav>
