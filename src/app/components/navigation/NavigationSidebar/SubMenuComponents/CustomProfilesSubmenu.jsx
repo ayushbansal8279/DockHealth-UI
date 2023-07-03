@@ -1,4 +1,4 @@
-import React, { useEffect, useCallback, useMemo } from 'react';
+import React, { useEffect, useState, useCallback, useMemo } from 'react';
 import { useHistory, useRouteMatch } from 'react-router-dom';
 import { useSelector, useDispatch } from 'react-redux';
 import { openModal, closeModal } from 'modal/actions';
@@ -29,6 +29,7 @@ import {
   DefaultUserGroupUrl,
   getUserGroupIdentifierByUrlParameter,
 } from 'helpers/user-groups-helper';
+import { getAllProfileTypes } from 'api/profile-type-api';
 import {
   DrawerMyListsLabel,
   DrawerListsItem,
@@ -37,6 +38,17 @@ import {
   DrawerListsItemLoader,
   MenuLink,
 } from './styled';
+
+const renderListItems = (list) =>
+  list?.map(({ name, identifier }) => (
+    <DrawerListsItem>
+      <ListNameText>
+        <MenuLink to={`/custom-profiles/${name}/${identifier}`}>
+          {name}
+        </MenuLink>
+      </ListNameText>
+    </DrawerListsItem>
+  ));
 
 // eslint-disable-next-line sonarjs/cognitive-complexity
 const CustomProfilesSubmenu = () => {
@@ -61,9 +73,20 @@ const CustomProfilesSubmenu = () => {
   const isOrganizationAdmin = checkIfUserIsOrganizationAdmin(currentUser);
   const isInitialListFetching = isFetching && !defaultGroups;
 
+  const [profileTypes, setProfileTypes] = useState();
+
   useEffect(() => {
-    dispatch(getUserGroups());
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+    async function fetchData() {
+      try {
+        const response = await getAllProfileTypes();
+        setProfileTypes(
+          response?.map((type) => ({ ...type, id: type.identifier })),
+        );
+      } catch {
+        setProfileTypes([]);
+      }
+    }
+    fetchData();
   }, []);
 
   const handleAddCustomListClick = () => {
@@ -109,23 +132,7 @@ const CustomProfilesSubmenu = () => {
             <DrawerListsItemLoader />
           </>
         ) : (
-          <>
-            <DrawerListsItem>
-              <ListNameText>
-                <MenuLink to="/custom-profiles">Facilities</MenuLink>
-              </ListNameText>
-            </DrawerListsItem>
-            <DrawerListsItem>
-              <ListNameText>
-                <MenuLink to="/custom-profiles">Providers</MenuLink>
-              </ListNameText>
-            </DrawerListsItem>
-            <DrawerListsItem>
-              <ListNameText>
-                <MenuLink to="/custom-profiles">Users</MenuLink>
-              </ListNameText>
-            </DrawerListsItem>
-          </>
+          <>{profileTypes && renderListItems(profileTypes)}</>
         )}
       </DrawerListsList>
     </>

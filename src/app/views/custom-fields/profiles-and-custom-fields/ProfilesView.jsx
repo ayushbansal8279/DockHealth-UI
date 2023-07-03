@@ -3,7 +3,7 @@ import ViewLayout from 'components/template/ViewLayout/ViewLayout';
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { useHistory } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
-import { getAllTemplates, deleteTemplate } from 'api/template-api';
+import { getAllProfileTypes, deleteProfileType } from 'api/profile-type-api';
 import { Box, Button } from '@mui/material';
 import { openModal, closeModal } from 'modal/actions';
 import {
@@ -21,7 +21,7 @@ const PAGE_SIZE = 30;
 
 const ProfilesAndCustomFieldsView = () => {
   const history = useHistory();
-  const [templates, setTemplates] = useState([]);
+  const [profileTypes, setProfileTypes] = useState([]);
   const [page, setPage] = useState(0);
   const dispatch = useDispatch();
 
@@ -49,34 +49,45 @@ const ProfilesAndCustomFieldsView = () => {
   }, []);
 
   useEffect(() => {
-    getAllTemplates().then((list) => setTemplates(list));
+    getAllProfileTypes().then((list) => {
+      const typeList = list.map((type) => ({ ...type, id: type.identifier }));
+      setProfileTypes(typeList);
+    });
   }, []);
 
   const onAddProfile = useCallback(() => {
     dispatch(
       openModal('CreateProfile', {
         onAdded: (newTemplate) => {
-          setTemplates((s) => [newTemplate, ...s]);
+          const { identifier } = newTemplate;
+          setProfileTypes((s) => [...s, { id: identifier, ...newTemplate }]);
         },
         isCreatingNewField: true,
       }),
     );
   }, [dispatch]);
 
-  const onEditProfile = useCallback(() => {
-    dispatch(
-      openModal('CreateProfile', {
-        onAdded: (newTemplate) => {
-          setTemplates((s) => [newTemplate, ...s]);
-        },
-        isCreatingNewField: false,
-      }),
-    );
-  }, [dispatch]);
+  const onEditProfile = useCallback(
+    ({ row: { name, description, id } }) => {
+      dispatch(
+        openModal('CreateProfile', {
+          onUpdated: (newTemplate) => {
+            const { identifier } = newTemplate;
+            setProfileTypes((s) => [...s, { id: identifier, ...newTemplate }]);
+          },
+          isCreatingNewField: false,
+          template: { name, description, identifier: id },
+        }),
+      );
+    },
+    [dispatch],
+  );
 
   const onConfigureCustomFields = useCallback(
-    ({ row: { link } }) => {
-      history.push(`/settings/custom-fields/${link}`);
+    ({ row: { name, identifier } }) => {
+      history.push(
+        `/settings/custom-fields/${name.toLowerCase()}/${identifier}`,
+      );
     },
     [history],
   );
@@ -89,8 +100,8 @@ const ProfilesAndCustomFieldsView = () => {
           'Are you sure you want to delete this profile? This action cannot be undone.',
         confirm: () => {
           dispatch(closeModal());
-          deleteTemplate(id);
-          setTemplates((s) => s.filter((t) => t.identifier !== id));
+          deleteProfileType(id);
+          setProfileTypes((s) => s.filter((t) => t.identifier !== id));
         },
       };
       dispatch(openModal('DeleteConfirmation', modalProps));
@@ -121,8 +132,7 @@ const ProfilesAndCustomFieldsView = () => {
           rows={[
             { id: 'users', name: 'Users', link: 'provider' },
             { id: 'patient', name: 'Patients', link: 'patient' },
-            { id: 'provider', name: 'Providers', link: 'provider' },
-            { id: 'faculty', name: 'Faculties', link: 'faculty' },
+            ...profileTypes,
           ]}
           rowHeight={55}
           headerHeight={25}

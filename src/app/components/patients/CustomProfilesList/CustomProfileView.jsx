@@ -1,20 +1,28 @@
-import React, { useEffect, useState } from "react";
-import CustomProfileDetailsHeader from "components/patients/CustomProfilesList/CustomProfileDetailsHeader/CustomProfileDetailsHeader";
-import { ContentWrapper, MoreActinsWrapper, StickyHeader, TitleName } from "components/patients/PatientDrawer/styled";
-import OptionsMenu from "components/common/OptionsMenu/OptionsMenu";
-import { IconButton, Stack } from "@mui/material";
-import MoreVertIcon from "@mui/icons-material/MoreVert";
-import CloseIcon from "@mui/icons-material/Close";
-import Fieldset from "ui-toolkit/Form_v2/Fieldset";
-import Input from "ui-toolkit/Form_v2/Input";
-import Drawer from "ui-toolkit/Navigation/Drawer/Drawer";
-import * as CustomFieldsApi from "api/custom-fields-api";
-import { showGlobalErrorAlert } from "alert/actions";
+import React, { useEffect, useState } from 'react';
+import CustomProfileDetailsHeader from 'components/patients/CustomProfilesList/CustomProfileDetailsHeader/CustomProfileDetailsHeader';
+import {
+  ContentWrapper,
+  MoreActinsWrapper,
+  StickyHeader,
+  TitleName,
+} from 'components/patients/PatientDrawer/styled';
+import OptionsMenu from 'components/common/OptionsMenu/OptionsMenu';
+import { IconButton, Stack } from '@mui/material';
+import MoreVertIcon from '@mui/icons-material/MoreVert';
+import CloseIcon from '@mui/icons-material/Close';
+import Fieldset from 'ui-toolkit/Form_v2/Fieldset';
+import Input from 'ui-toolkit/Form_v2/Input';
+import Drawer from 'ui-toolkit/Navigation/Drawer/Drawer';
+import * as CustomFieldsApi from 'api/custom-fields-api';
+import { showGlobalErrorAlert } from 'alert/actions';
+import { useDispatch } from 'react-redux';
 
 const CustomProfileView = () => {
   const [isDrawerVisible, setDrawerVisibility] = useState(false);
 
   const [customFields, setCustomFields] = useState([]);
+
+  const dispatch = useDispatch();
 
   const fetchUserCustomFields = () => {
     CustomFieldsApi.getAllProviderCustomFields()
@@ -44,13 +52,8 @@ const CustomProfileView = () => {
 
   return (
     <>
-      <CustomProfileDetailsHeader
-        onViewDetailsClick={handleDrawerOpen}
-      />
-      <Drawer
-        open={isDrawerVisible}
-        onClose={handleDrawerClose}
-      >
+      <CustomProfileDetailsHeader onViewDetailsClick={handleDrawerOpen} />
+      <Drawer open={isDrawerVisible} onClose={handleDrawerClose}>
         <StickyHeader>
           <TitleName>{null}</TitleName>
           <MoreActinsWrapper>
@@ -65,19 +68,19 @@ const CustomProfileView = () => {
         <ContentWrapper>
           <Stack>
             <Fieldset legend="Default">
-              {customFields.map((field) =>
+              {customFields.map((field) => (
                 <Input
                   name={field.name}
                   label={field.name}
                   placeholder={field.placeholder}
                 />
-              )}
+              ))}
             </Fieldset>
           </Stack>
         </ContentWrapper>
       </Drawer>
     </>
-  )
+  );
 };
 
 export default CustomProfileView;

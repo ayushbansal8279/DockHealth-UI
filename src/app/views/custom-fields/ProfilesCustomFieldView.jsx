@@ -3,13 +3,13 @@ import React, { useEffect, useMemo, useState } from 'react';
 import { useDispatch } from 'react-redux';
 import map from 'ramda/src/map';
 import pluck from 'ramda/src/pluck';
-import move from 'ramda/src/move';
+// import move from 'ramda/src/move';
 import { Box, IconButton } from '@mui/material';
 import Skeleton from '@mui/material/Skeleton';
 import DeleteIcon from '@mui/icons-material/Delete';
 import EditIcon from '@mui/icons-material/Edit';
 import { showGlobalErrorAlert } from 'alert/actions';
-import * as CustomFieldsApi from 'api/custom-fields-api';
+import * as ProfileTypeFieldApi from 'api/profile-type-field-api';
 import { FieldTypeLabel } from 'helpers/field-type-helpers';
 import { openModal } from 'modal/actions';
 import AddButton from 'components/common/AddButton/AddButton';
@@ -34,7 +34,7 @@ import {
   CenterBox,
 } from './styled';
 
-const ProfilesCustomFieldsView = () => {
+const ProfilesCustomFieldsView = ({ profileTypeIdentifier }) => {
   const dispatch = useDispatch();
   const [customFields, setCustomFields] = useState(null);
   const [isFetching, setIsFetching] = useState(true);
@@ -42,12 +42,9 @@ const ProfilesCustomFieldsView = () => {
   const sensors = useSensors(useSensor(MouseSensor), useSensor(TouchSensor));
 
   const fetchUserCustomFields = () => {
-    CustomFieldsApi.getAllProviderCustomFields()
+    ProfileTypeFieldApi.getAllProfileFieldTypes(profileTypeIdentifier)
       .then((data) => {
-        const customFieldsData = data?.filter(
-          (cf) => cf.contextType === 'CUSTOM',
-        );
-        setCustomFields(customFieldsData);
+        setCustomFields(data);
         setIsFetching(false);
       })
       .catch(() => {
@@ -62,9 +59,10 @@ const ProfilesCustomFieldsView = () => {
 
   const handleEditClick = (field) => {
     dispatch(
-      openModal('EditCustomField', {
+      openModal('EditProfileCustomField', {
+        profileTypeIdentifier,
         options: {
-          type: 'PROVIDER',
+          type: 'CUSTOM',
         },
         customField: field,
         onUpdated: (updatedField) => {
@@ -95,7 +93,7 @@ const ProfilesCustomFieldsView = () => {
           'Are you sure you want to delete this custom user / provider field? This action cannot be undone.',
         confirm: () => {
           setColumnsToState(columns.filter((f) => f.identifier !== id));
-          CustomFieldsApi.deleteCustomField(id)
+          ProfileTypeFieldApi.deleteProfileFieldType(id)
             .then(() =>
               setCustomFields((previousValue) =>
                 previousValue.filter(({ identifier }) => id !== identifier),
@@ -109,16 +107,16 @@ const ProfilesCustomFieldsView = () => {
     );
   };
 
-  const moveElementByIDs = (originID, destinationID, fields) => {
-    if (!originID || !destinationID) return fields;
-    const idents = pluck('identifier', fields);
-    const indexFrom = idents.indexOf(originID);
-    const indexTo = idents.indexOf(destinationID);
-    return move(indexFrom, indexTo, fields).map((field, index) => ({
-      ...field,
-      sortIndex: index,
-    }));
-  };
+  // const moveElementByIDs = (originID, destinationID, fields) => {
+  //   if (!originID || !destinationID) return fields;
+  //   const idents = pluck('identifier', fields);
+  //   const indexFrom = idents.indexOf(originID);
+  //   const indexTo = idents.indexOf(destinationID);
+  //   return move(indexFrom, indexTo, fields).map((field, index) => ({
+  //     ...field,
+  //     sortIndex: index,
+  //   }));
+  // };
 
   const sortedFields = useMemo(() => {
     return customFields?.slice().sort((a, b) => {
@@ -126,23 +124,24 @@ const ProfilesCustomFieldsView = () => {
     });
   }, [customFields]);
 
-  const handleOnDragEnd = async (originID, destinationID) => {
-    const result = moveElementByIDs(originID, destinationID, sortedFields);
-    const lastWorkingOrder = [...customFields];
-    setCustomFields(result);
-    try {
-      await CustomFieldsApi.sortUserCustomFields(pluck('identifier', result));
-    } catch {
-      dispatch(showGlobalErrorAlert());
-      setCustomFields(lastWorkingOrder);
-    }
-  };
+  // const handleOnDragEnd = async (originID, destinationID) => {
+  //   const result = moveElementByIDs(originID, destinationID, sortedFields);
+  //   const lastWorkingOrder = [...customFields];
+  //   setCustomFields(result);
+  //   try {
+  //     await ProfileTypeFieldApi.sortUserCustomFields(pluck('identifier', result));
+  //   } catch {
+  //     dispatch(showGlobalErrorAlert());
+  //     setCustomFields(lastWorkingOrder);
+  //   }
+  // };
 
   const handleAddFieldClick = () => {
     dispatch(
-      openModal('EditCustomField', {
+      openModal('EditProfileCustomField', {
+        profileTypeIdentifier,
         options: {
-          type: 'PROVIDER',
+          type: 'CUSTOM',
         },
         onAdded: async (customField) => {
           setColumnsToState([...columns, customField]);
@@ -151,13 +150,13 @@ const ProfilesCustomFieldsView = () => {
           ).map((field, index) => {
             return { ...field, sortIndex: index };
           });
-          try {
-            await CustomFieldsApi.sortUserCustomFields(
-              pluck('identifier', newFields),
-            );
-          } catch {
-            fetchUserCustomFields();
-          }
+          // try {
+          //   await CustomFieldsApi.sortUserCustomFields(
+          //     pluck('identifier', newFields),
+          //   );
+          // } catch {
+          //   fetchUserCustomFields();
+          // }
           setCustomFields(newFields);
         },
       }),
@@ -198,8 +197,9 @@ const ProfilesCustomFieldsView = () => {
               </CustomFieldItem>
               <DndContext
                 sensors={sensors}
-                onDragEnd={({ active, over }) =>
-                  handleOnDragEnd(active.id, over.id)
+                onDragEnd={
+                  ({ active, over }) => {}
+                  // handleOnDragEnd(active.id, over.id)
                 }
               >
                 <SortableContext items={pluck('identifier', sortedFields)}>

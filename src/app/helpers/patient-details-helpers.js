@@ -2,6 +2,7 @@ export const Category = {
   PERSONAL_INFO: 'PATIENT_PERSONAL',
   CONTACT_INFO: 'PATIENT_CONTACT',
   OTHER_INFO: 'PATIENT_OTHER',
+  PROFILE: 'PROFILE',
 };
 
 export const CategoryLabel = {
