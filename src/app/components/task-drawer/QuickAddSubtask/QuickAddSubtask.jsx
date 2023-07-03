@@ -7,7 +7,6 @@ import { useBoolean } from 'hooks/useBoolean';
 // import { validateNewSubtask } from 'helpers/validation-helper';
 import { onTaskDrawerSubtaskAdd } from 'helpers/ga-event-helper';
 import { selectedTaskSelector } from 'selectors/task-drawer-selectors';
-// import Spacing from 'components/common/Spacing';
 import RichTextEditor from 'components/common/RichTextEditor/RichTextEditor';
 import QuickAddTaskInputWrapper from '../QuickAddTaskInputWrapper/QuickAddTaskInputWrapper';
 
@@ -16,7 +15,6 @@ const QuickAddSubtask = () => {
   const { taskIdentifier, taskList } = selectedTask;
   // const taskListIdentifier = taskList?.taskListIdentifier;
   const editorReference = useRef(null);
-  // const [newTaskDescription, setNewTaskDescription] = useMentionsEditorState();
   const [currentValue, setCurrentValue] = useState('');
   const [hasInputValue, setHasInputValue] = useState(false);
   const [error, setError] = useState(null);

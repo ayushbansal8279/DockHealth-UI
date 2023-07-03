@@ -31,7 +31,6 @@ import {
 } from './styled';
 
 const PatientNotes = () => {
-  // const addNoteInputReference = useRef(null);
   const dispatch = useDispatch();
   const patient = useSelector(patientSelector);
   const isFetching = useSelector(isFetchingNotesSelector);
@@ -68,9 +67,6 @@ const PatientNotes = () => {
   );
 
   const [noteState, setNoteState] = useState('');
-
-  // const onNoteChange = (state) => setNoteState(state);
-  // eslint-disable-next-line react-hooks/exhaustive-deps
 
   const isEmpty = useMemo(() => {
     // const { tokenizedText } = convertFromEditorStateToOutput(noteState, true);

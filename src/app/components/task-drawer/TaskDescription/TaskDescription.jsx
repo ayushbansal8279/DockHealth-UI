@@ -19,10 +19,8 @@ import { checkIfTemplateTask, TaskStatus } from 'helpers/task-helpers';
 // isEditorStateEmpty,
 // } from 'components/common/TextEditor/helpers';
 // import { createMentionEntities } from 'components/common/TextEditor/create-mention-entities';
-// import CustomTextEditor from 'components/common/CustomTextEditor/CustomTextEditor';
-import { useMentionsEditorState } from 'components/common/TextEditor/use-mentions-editor-state';
+// import { useMentionsEditorState } from 'components/common/TextEditor/use-mentions-editor-state';
 // import debounce from 'lodash.debounce';
-// import Input from 'ui-toolkit/Form/Input/Input';
 import RichTextEditor from 'components/common/RichTextEditor/RichTextEditor';
 import CustomTextEditor from 'components/common/CustomTextEditor/CustomTextEditor';
 import { DescriptionTextContainer, DescriptionError } from './styled';
@@ -145,24 +143,6 @@ const TaskDescription = ({ selectedTask, readOnly, disableMentions }) => {
   //   [descriptionErrorState, setDescriptionState],
   // );
 
-  // const handleInputChange = debounce((_, { value }) => {
-  //   dispatch(
-  //       updateTaskDescription(selectedTask, {
-  //         tokenizedDescription: value
-  //       })
-  //   )
-  // }, 1000)
-
-  // const handleInputBlur = (_, { value }) => {
-  //   if (value && value !== '' && value !== selectedTask?.tokenizedDescription) {
-  //     dispatch(
-  //       updateTaskDescription(selectedTask, {
-  //         tokenizedDescription: value,
-  //       }),
-  //     );
-  //   }
-  // };
-
   const handleBlur = (value) => {
     if (selectedTask?.description !== value) {
       dispatch(
@@ -176,15 +156,6 @@ const TaskDescription = ({ selectedTask, readOnly, disableMentions }) => {
   return (
     <>
       <DescriptionTextContainer isCrossed={status === TaskStatus.COMPLETE}>
-        {/* <Input
-          value={description}
-          placeholder="Task description"
-          onBlur={handleInputBlur}
-          mentions={taskMentions}
-          enabled={{
-            mentions: false,
-          }}
-        /> */}
         <CustomTextEditor
           key={selectedTask?.identifier}
           // empty={isEmptyDetailsState}

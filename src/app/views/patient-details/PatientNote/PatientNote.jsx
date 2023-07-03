@@ -34,7 +34,7 @@ const PatientNote = ({
   onSave,
   onRemove,
   onPinChange,
-  mentions,
+  // mentions,
   description,
 }) => {
   const dispatch = useDispatch();
@@ -143,7 +143,6 @@ const PatientNote = ({
 
   const handleFocus = useCallback(() => {
     setIsEdited(true);
-    setResetEditor(false);
   }, []);
 
   const updateNote = useCallback(async () => {

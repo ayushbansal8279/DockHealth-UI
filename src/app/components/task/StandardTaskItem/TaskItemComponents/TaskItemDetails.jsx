@@ -1,10 +1,8 @@
 import React, { useCallback, useEffect, useState } from 'react';
 import { Box } from '@mui/material';
-// import { useBoolean } from 'hooks/useBoolean';
 import { useDispatch } from 'react-redux';
 import { partialUpdateTask, storeAsCurrentTask } from 'actions/task-actions';
 import { updatePartialWorkflow } from 'actions/task-template-actions';
-// import usePrevious from 'hooks/use-previous';
 import Tooltip from 'components/common/Tooltip/Tooltip';
 import TaskItemPopover from 'components/task/TaskItemPopover/TaskItemPopover';
 import CustomTextEditor from 'components/common/CustomTextEditor/CustomTextEditor';
@@ -13,7 +11,7 @@ import { openDrawer } from 'actions/workflow-drawer-actions';
 import PopoverBottomBar from 'components/task/PopoverBottomBar/PopoverBottomBar';
 // import { FieldCharakterLimit } from 'helpers/field-type-helpers';
 import RichTextEditor from 'components/common/RichTextEditor/RichTextEditor';
-import { convertToSimpleString } from 'ui-toolkit/Form/TextEditor/helpers';
+import { convertToSimpleString } from 'helpers/markdown-helper.js';
 import {
   Text,
   LongTextBox,

@@ -4,7 +4,7 @@ import Tooltip from 'components/common/Tooltip/Tooltip';
 import TaskItemPopover from 'components/task/TaskItemPopover/TaskItemPopover';
 import PopoverBottomBar from 'components/task/PopoverBottomBar/PopoverBottomBar';
 import RichTextEditor from 'components/common/RichTextEditor/RichTextEditor';
-import { convertToSimpleString } from 'ui-toolkit/Form/TextEditor/helpers';
+import { convertToSimpleString } from 'helpers/markdown-helper.js';
 import { Text, LongTextBox, Divider } from './styled';
 
 const TaskItemLongText = ({ value = '', onChange, openDrawer }) => {
