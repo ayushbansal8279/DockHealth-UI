@@ -94,9 +94,7 @@ const UsersList = (props) => {
         <ListContainer>
           <ListEntryContainer>
             <Grid container justifyContent="center" alignItems="center">
-              <RobotoTypography variant="h4">
-                No providers found
-              </RobotoTypography>
+              <RobotoTypography variant="h4">No users found</RobotoTypography>
             </Grid>
           </ListEntryContainer>
         </ListContainer>
@@ -110,6 +108,8 @@ const UsersList = (props) => {
           autoHeight
           disableSelectionOnClick
           disableColumnMenu
+          showColumnRightBorder
+          showCellRightBorder
         />
       )}
     </UsersListContainer>

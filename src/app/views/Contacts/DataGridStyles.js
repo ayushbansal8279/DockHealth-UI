@@ -4,55 +4,46 @@ import { fontWeights, fontSizes } from 'styles/font';
 import palette from 'styles/palette';
 import spacing from 'styles/spacing';
 
-const ROW_HEIGHT = 35;
 const HEADER_HEIGHT = 35;
-const ROW_MARGIN = 2;
 const ROW_BORDER = 1;
 
 export const StyledDataGrid = styled(DataGrid)`
+  margin-bottom: 48px;
+
   &.MuiDataGrid-root {
     max-width: 1180px;
-    border: 0 !important;
+    // border: 0 !important;
+    background-color: white;
+  }
 
-    // calculating a height of a table is a workaround - MUI v4 doesn't support space beetween rows
-    height: ${({ rows, pageSize, page }) => {
-      const rowsLength =
-        rows.length - page * pageSize > pageSize
-          ? pageSize
-          : rows.length - page * pageSize;
-
-      return (
-        (rowsLength + 1) * (ROW_HEIGHT + ROW_MARGIN + ROW_BORDER) +
-        HEADER_HEIGHT
-      );
-    }};
-
-    &.MuiDataGrid-renderingZone {
-      ${({ rows, pageSize, page }) => {
-        const rowsLength =
-          rows.length - page * pageSize > pageSize
-            ? pageSize
-            : rows.length - page * pageSize;
-        return `max-height: ${
-          (rowsLength + 1) * (ROW_HEIGHT + ROW_MARGIN + ROW_BORDER) +
-          HEADER_HEIGHT
-        }px !important`;
-      }}
-    }
-
-    &.MuiDataGrid-window {
-      top: 35px !important;
-    }
-    &.MuiDataGrid-columnsContainer {
-      top: ${`-${ROW_MARGIN}px`};
+  & .MuiDataGrid-footerContainer {
+    p {
+      margin-bottom: 0;
     }
   }
+
+  & .MuiSelect-select {
+    font-family: "Roboto Condensed", sans-serif;
+    font-weight: 400;
+    font-size: 0.875rem;
+    line-height: 1.43;
+    flex-shrink: 0;
+    margin-top: 2px;
+    padding-right: 0 !important;
+    padding-left: 0;
+  }
+
   && {
     &.MuiDataGrid-sortIcon {
       background: ${palette.brightBlue};
       color: ${palette.white};
       padding: 1px;
       border-radius: 50%;
+    }
+  }
+  & .MuiDataGrid-footerContainer {
+    p {
+      margin-bottom: 0;
     }
   }
   &.MuiDataGrid-columnHeaderTitleContainer {
@@ -81,7 +72,7 @@ export const StyledDataGrid = styled(DataGrid)`
     background-color: #ffffff;
     font-size: 0.875rem;
     text-align: left;
-    height: 35px;
+    // height: 35px;
     text-transform: uppercase;
   }
 
@@ -137,12 +128,12 @@ export const StyledDataGrid = styled(DataGrid)`
     width: 100% !important;
     background-color: white;
     cursor: default;
-    margin-bottom: 2px;
-    border: ${`${ROW_BORDER}px solid #e5e9f2`};
-    background-color: #ffffff !important;
+    // margin-bottom: 2px;
+    // border: ${`${ROW_BORDER}px solid #e5e9f2`};
+    // background-color: #ffffff !important;
     font-size: 0.875rem;
     text-align: left;
-    height: ${HEADER_HEIGHT}px;
+    // height: ${HEADER_HEIGHT}px;
 
     &:hover {
       * > .patient-cell {

@@ -32,6 +32,7 @@ export const getTemplateColumns = ({ onEditTemplate, onDeteleTemplate }) => [
   {
     field: '',
     type: 'actions',
+    headerName: '...',
     width: 60,
     renderCell: (data) => {
       const contextMenuOptions = [

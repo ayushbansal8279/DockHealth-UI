@@ -49,8 +49,10 @@ export const getContactColumns = ({ onEditContact, onDeteleContact }) => [
   },
   {
     field: '',
+    headerName: '...',
     type: 'actions',
     width: 60,
+    renderHeader: renderColumnHeader,
     renderCell: (data) => {
       const contextMenuOptions = [
         {

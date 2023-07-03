@@ -46,9 +46,9 @@ export const MemberContainer = styled(Grid).attrs({ item: true })`
 
 export const StyledDataGrid = styled(DataGrid)`
   margin-bottom: 48px;
-  
+
   &.MuiDataGrid-root {
-    max-width: 1179px;
+    max-width: 1180px;
     background-color: white;
   }
 

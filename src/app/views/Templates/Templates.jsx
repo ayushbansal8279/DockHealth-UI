@@ -17,12 +17,12 @@ import { StyledDataGrid } from './DataGridStyles';
 import { getTemplateColumns } from './helpers';
 import { ViewContainer, AddTemplateWrapper } from './styled';
 
-const PAGE_SIZE = 30;
+// const PAGE_SIZE = 30;
 
 const Templates = () => {
   const history = useHistory();
   const [templates, setTemplates] = useState([]);
-  const [page, setPage] = useState(0);
+  // const [page, setPage] = useState(0);
   const dispatch = useDispatch();
 
   const sendEmailAvailable = useSelector(userHasSendEmailFeatureSelector);
@@ -115,11 +115,15 @@ const Templates = () => {
           rows={templates.map((t) => ({ ...t, id: t.identifier }))}
           rowHeight={35}
           headerHeight={45}
-          page={page}
-          onPageChange={({ page: p }) => setPage(p)}
-          pageSize={PAGE_SIZE}
+          // page={page}
+          // onPageChange={({ page: p }) => setPage(p)}
+          // pageSize={PAGE_SIZE}
+          hideFooterSelectedRowCount
+          autoHeight
           disableColumnMenu
           disableSelectionOnClick
+          showColumnRightBorder
+          showCellRightBorder
         />
       </ViewContainer>
     </ViewLayout>
