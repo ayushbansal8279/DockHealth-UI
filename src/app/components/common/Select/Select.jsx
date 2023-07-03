@@ -35,6 +35,7 @@ const Select = React.forwardRef(
       inputRef,
       required,
       disabled = false,
+      className,
       ...restProps
     },
     reference,
@@ -50,13 +51,16 @@ const Select = React.forwardRef(
         error={error}
         placeholder={placeholder}
         disabled={disabled}
+        className={className}
         {...restProps}
       />
     ) : (
-      <FormControl error={error}>
-        <InputLabel shrink={!!value} variant={variant} required={required}>
-          {label}
-        </InputLabel>
+      <FormControl error={error} className={className}>
+        {label && (
+          <InputLabel shrink={!!value} variant={variant} required={required}>
+            {label}
+          </InputLabel>
+        )}
         <MuiSelect
           disabled={disabled}
           MenuProps={{
@@ -70,6 +74,9 @@ const Select = React.forwardRef(
             },
             getContentAnchorEl: null,
             style: { zIndex: zIndex.optionsMenu },
+            PaperProps: {
+              style: { minWidth: 'auto' },
+            },
           }}
           ref={reference}
           placeholder={placeholder}

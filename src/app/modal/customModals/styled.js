@@ -5,6 +5,7 @@ import palette from 'styles/palette';
 import spacing from 'styles/spacing';
 import { fontSizes } from 'styles/font';
 import { Close } from '@material-ui/icons';
+import Select from 'components/common/Select/Select';
 
 export const CustomModal = styled(Modal)``;
 
@@ -59,3 +60,29 @@ export const CloseIcon = withStyles({
     height: 16,
   },
 })(Close);
+
+export const SelectOptionColor = styled(Select)`
+  &.MuiFormControl-root {
+    width: 48px;
+  }
+
+  & .MuiInputBase-root {
+    //background-color: transparent !important;
+
+    &.MuiFilledInput-underline:before {
+      //border-bottom: none;
+    }
+  }
+`;
+
+export const SelectParentDropdown = styled(Select)`
+  &.MuiFormControl-root {
+    width: 176px;
+  }
+`;
+
+export const SelectParentOption = styled(Select)`
+  &.MuiFormControl-root {
+    width: 176px;
+  }
+`;
