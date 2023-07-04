@@ -24,6 +24,12 @@ export const taskTemplateDetailsSelector = (taskTemplateIdentifier) =>
     ({ taskTemplateDetails }) => taskTemplateDetails[taskTemplateIdentifier],
   );
 
+export const templateTaskDetailsSelector = createSelector(
+  taskTemplateStateSelector,
+  (_, taskId) => taskId,
+  (details, taskId) => details.tasksMap[taskId],
+);
+
 export const taskTemplateSelector = (taskTemplateIdentifier) =>
   createSelector(taskTemplateStateSelector, ({ taskTemplates }) =>
     taskTemplates.find(

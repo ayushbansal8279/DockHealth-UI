@@ -19,6 +19,8 @@ const StandardTaskItemContainer = ({
   onTaskChanged,
   onTaskCompletedStatusChanged,
   isBundleTask,
+  task,
+  origin,
   ...restProps
 }) => {
   const { templates } = useSelector(taskCustomFieldsSelector);
@@ -114,6 +116,8 @@ const StandardTaskItemContainer = ({
       updateWorkflowStatus={handleUpdateWorkflowStatus}
       toggleCompleteTask={handleToggleTaskCompletedStatus}
       onTaskUpdate={handleTaskUpdate}
+      task={task?.taskIdentifier}
+      origin={origin}
       {...restProps}
     />
   );

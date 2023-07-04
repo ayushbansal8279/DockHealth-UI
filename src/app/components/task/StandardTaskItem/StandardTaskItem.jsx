@@ -12,7 +12,8 @@ import { useDispatch, useSelector } from 'react-redux';
 import { openDrawer } from 'actions/task-drawer-actions';
 import { storeAsCurrentTask, loadSubTasks } from 'actions/task-actions';
 import TaskComments from 'components/tasklist/TaskComments/TaskComments';
-import { taskDetailsSelector } from 'selectors/list-details-selectors';
+import { taskLookupSelector } from 'selectors/task-details-selectors';
+// import { taskDetailsSelector } from 'selectors/list-details-selectors';
 import TaskItem from './TaskItem';
 import Subtasks from './Subtasks';
 import { getMatchedComments } from './helpers';
@@ -42,9 +43,13 @@ const Task = React.memo(
     const parentTaskReference = useRef(null);
     const [areSubtasksOpen, setAreSubtasksOpen] = useState(false);
 
-    const pulledTask = useSelector((state) =>
-      taskDetailsSelector(state, taskItemIdentifier),
-    );
+    // const pulledTask = useSelector((state) =>
+    //   taskDetailsSelector(state, taskItemIdentifier),
+    // );
+    const pulledTask = useSelector((state) => {
+      return taskLookupSelector(state, origin, taskItemIdentifier);
+    });
+
     const task = pulledTask;
 
     const {
@@ -211,6 +216,7 @@ const Task = React.memo(
                   taskListIdentifier={taskList?.taskListIdentifier}
                   parentTaskIdentifier={taskIdentifier}
                   onFocus={handleQuickAddOnFocus}
+                  origin={origin}
                 />
               )}
           </SubtasksWrapper>

@@ -57,7 +57,6 @@ import {
   TaskItemType,
   TaskStatus,
   findIncompleteRequiredFields,
-  TaskOrigin,
   PatientTaskItemColumn,
 } from 'helpers/task-helpers';
 import { isMemberAdmin } from 'helpers/list-members-helper';
@@ -76,9 +75,7 @@ import {
 } from 'restrictions/task-restrictions';
 import { CUSTOM_FIELD_TYPES } from 'helpers/custom-fields-helpers';
 import { Box } from '@mui/material';
-import { taskDetailsSelector } from 'selectors/list-details-selectors';
-import { dashboardTaskDetailsSelector } from 'selectors/dashboard-selectors';
-import { patientTaskDetailsSelector } from 'selectors/patient-details-selectors';
+import { taskLookupSelector } from 'selectors/task-details-selectors';
 import { closeModal, openModal } from 'modal/actions';
 import { updatePatientDetails } from 'actions/patient-details-actions';
 import { formatPhoneNumber } from 'helpers/utility-functions';
@@ -161,28 +158,7 @@ const TaskItem = React.memo(
     origin,
   }) => {
     const task = useSelector((state) => {
-      if (origin === TaskOrigin.DASHBOARD) {
-        return dashboardTaskDetailsSelector(
-          state,
-          typeof temporaryTask === 'string'
-            ? temporaryTask
-            : temporaryTask?.identifier,
-        );
-      }
-      if (origin === TaskOrigin.PATIENT) {
-        return patientTaskDetailsSelector(
-          state,
-          typeof temporaryTask === 'string'
-            ? temporaryTask
-            : temporaryTask?.identifier,
-        );
-      }
-      return taskDetailsSelector(
-        state,
-        typeof temporaryTask === 'string'
-          ? temporaryTask
-          : temporaryTask?.identifier,
-      );
+      return taskLookupSelector(state, origin, temporaryTask);
     });
 
     if (!task) {
@@ -818,6 +794,7 @@ const TaskItem = React.memo(
           isFullView={false}
           dragAndDropDisabled={isCompletedGroup || dragAndDropDisabled}
           iconColorActive={iconColorActiveItem?.value}
+          origin={origin}
         />
       );
     }
@@ -842,6 +819,7 @@ const TaskItem = React.memo(
             }
             isAddingTask={false}
             iconColorActive={iconColorActive}
+            origin={origin}
           >
             {randerFirstColumnCoverIfNecessary(
               <>

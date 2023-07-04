@@ -36,7 +36,7 @@ import { BulkEditContext } from 'components/tasklist/BulkEditSection/BulkEditSec
 import LoadMoreButton, {
   LoadMoreSection,
 } from 'components/common/LoadMoreButton/LoadMoreButton';
-import { TaskItemType, TaskStatus } from 'helpers/task-helpers';
+import { TaskItemType, TaskStatus, TaskOrigin } from 'helpers/task-helpers';
 import StandardTaskItem from 'components/task/StandardTaskItem/StandardTaskItem';
 import TaskTemplateGroup from 'components/task-template/TaskTemplateGroup/TaskTemplateGroup';
 import TasksSkeletonLoader from 'components/task/TasksSkeletonLoader/TasksSkeletonLoader';
@@ -412,6 +412,7 @@ const ListDetailsTasks = ({
                                         iconColorActive={
                                           iconColorActiveItem?.value
                                         }
+                                        origin={TaskOrigin.LIST}
                                       />
                                       {/* ) : (
                                         <TaskTemplateGroup
@@ -433,6 +434,7 @@ const ListDetailsTasks = ({
                                           iconColorActive={
                                             iconColorActiveItem?.value
                                           }
+                                          origin={TaskOrigin.LIST}
                                         />
                                       )} */}
                                     </>

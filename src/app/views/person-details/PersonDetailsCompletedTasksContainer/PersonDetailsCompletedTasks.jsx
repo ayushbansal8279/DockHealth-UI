@@ -18,6 +18,7 @@ import TasksGroup from 'components/tasklist/TasksGroup/TasksGroup';
 import GroupedListSkeletonLoader from 'components/tasklist/GroupedListSkeletonLoader/GroupedListSkeletonLoader';
 import StandardTaskItem from 'components/task/StandardTaskItem/StandardTaskItem';
 import { useTaskListColumnsConfig } from 'context-api/columns-config-context';
+import { TaskOrigin } from 'helpers/task-helpers';
 import { TaskGroupsContainer } from '../styled';
 
 const PersonDetailsCompletedTasks = ({
@@ -133,6 +134,7 @@ const PersonDetailsCompletedTasks = ({
                         }
                         dragAndDropDisabled
                         iconColorActive={iconColorActive}
+                        origin={TaskOrigin.PERSON}
                       />
                     ))}
                   </>

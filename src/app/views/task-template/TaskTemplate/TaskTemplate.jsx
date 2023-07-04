@@ -31,6 +31,7 @@ import * as ModalActions from 'modal/actions';
 import * as TaskActions from 'actions/task-actions';
 import { openDrawer } from 'actions/workflow-drawer-actions';
 import { extractTasksAndSubtasks } from 'helpers/tasklist-helpers';
+import { TaskOrigin } from 'helpers/task-helpers';
 import Tooltip from 'components/common/Tooltip/Tooltip';
 import RotatableChevron from 'components/common/RotatableChevron/RotatableChevron';
 import StandardTaskItemContainer from 'components/task/StandardTaskItemContainer/StandardTaskItemContainer';
@@ -420,6 +421,7 @@ const TaskTemplate = ({
                                 }
                                 noMargin
                                 iconColorActive={iconColorActive}
+                                origin={TaskOrigin.TEMPLATE}
                               />
                             )}
                           </Draggable>

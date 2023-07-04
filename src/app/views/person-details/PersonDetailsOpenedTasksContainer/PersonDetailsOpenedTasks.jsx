@@ -33,6 +33,7 @@ import TasksHeader from 'components/tasklist/TasksHeader/TasksHeader';
 import QuickAddTaskInput from 'components/tasklist/QuickAddTaskInput/QuickAddTaskInput';
 import { checkIfAllTasksSelected } from 'helpers/bulk-edit-helpers';
 import { extractTasksAndSubtasks } from 'helpers/tasklist-helpers';
+import { TaskOrigin } from 'helpers/task-helpers';
 import { changeTasksSelectedState } from 'actions/task-actions';
 import { useTaskListColumnsConfig } from 'context-api/columns-config-context';
 import StickyContainer from 'components/common/HorizontalScroll/StickyContainer';
@@ -186,6 +187,7 @@ const PersonDetailsOpenedTasks = ({
                       multipleAssigneesContext
                       dragAndDropDisabled
                       iconColorActive={iconColorActive}
+                      origin={TaskOrigin.PERSON}
                     />
                   ))}
                 </>

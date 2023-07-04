@@ -46,3 +46,9 @@ export const sortSelector = createSelector(
   personStateSelector,
   ({ sort }) => sort,
 );
+
+export const userTaskDetailsSelector = createSelector(
+  personStateSelector,
+  (_, taskId) => taskId,
+  (details, taskId) => details.tasksMap[taskId],
+);

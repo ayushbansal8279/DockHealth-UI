@@ -15,7 +15,7 @@ import TasksSkeletonLoader from 'components/task/TasksSkeletonLoader/TasksSkelet
 import { addingNewSubtaskParentIdSelector } from 'selectors/task-drawer-selectors';
 import palette from 'styles/palette';
 import StickyContainer from 'components/common/HorizontalScroll/StickyContainer';
-import { TaskItemType } from 'helpers/task-helpers';
+import { TaskItemType, TaskOrigin } from 'helpers/task-helpers';
 import TaskTemplateGroup from 'components/task-template/TaskTemplateGroup/TaskTemplateGroup';
 import {
   userSetupClientViewSelector,
@@ -123,6 +123,7 @@ const GlobalSearchList = ({
                 subtasksDisabled
                 multipleAssigneesContext={containsMultipleAssignees}
                 iconColorActive={iconColorActiveItem?.value}
+                origin={TaskOrigin.TEMPLATE}
               />
             ) : (
               <TaskTemplateGroup
@@ -134,6 +135,7 @@ const GlobalSearchList = ({
                 dragAndDropDisabled
                 showTasksWithGroup={false}
                 iconColorActive={iconColorActiveItem?.value}
+                origin={TaskOrigin.TEMPLATE}
               />
             )}
           </>

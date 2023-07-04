@@ -14,6 +14,7 @@ import TaskBaseReducer from './task-base-reducer';
 const initialWorkflowLibraryState = {
   folderIdentifier: null,
   taskTemplates: null,
+  tasksMap: {},
   isFetching: false,
   isError: false,
   breadcrumbs: null,
@@ -196,6 +197,11 @@ const TaskTemplateReducer = (state = initialState, action) => {
     case ActionTypes.LOAD_TASKS_FOR_TASK_TEMPLATE: {
       const { taskTemplateIdentifier, tasks } = action;
 
+      const newTasks = {};
+      for (const task of tasks) {
+        newTasks[task.identifier] = task;
+      }
+
       return {
         ...state,
         taskTemplateDetails: updateTaskTemplateDetailsState(
@@ -204,8 +210,13 @@ const TaskTemplateReducer = (state = initialState, action) => {
           {
             isFetching: false,
             tasks,
+            // taskIdentifiers: tasks.map((task) => task.identifier),
           },
         ),
+        tasksMap: {
+          ...state.tasksMap,
+          ...newTasks,
+        },
       };
     }
 
