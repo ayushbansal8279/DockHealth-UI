@@ -41,6 +41,7 @@ const UsersList = (props) => {
         return (
           <div
             className="people-cell-container"
+            style={{ display: 'flex' }}
             onClick={() =>
               history.push(
                 `/core/assignedToPerson/${encodeURIComponent(

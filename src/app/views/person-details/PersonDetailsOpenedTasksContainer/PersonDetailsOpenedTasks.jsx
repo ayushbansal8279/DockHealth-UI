@@ -60,10 +60,10 @@ const PersonDetailsOpenedTasks = ({
   );
   const { setViewSpecificConfig } = useTaskListColumnsConfig();
   const quickAddTaskInputReference = useRef(null);
-  const filteredTasks = useMemo(
-    () => (!searchValue ? tasks : filterTasksBySearchValue(tasks, searchValue)),
-    [searchValue, tasks],
-  );
+  // const filteredTasks = useMemo(
+  //   () => (!searchValue ? tasks : filterTasksBySearchValue(tasks, searchValue)),
+  //   [searchValue, tasks],
+  // );
 
   useEffect(() => {
     setViewSpecificConfig(taskItemConfig);
@@ -142,7 +142,7 @@ const PersonDetailsOpenedTasks = ({
         <GroupedListSkeletonLoader numberOfGroups={1} />
       ) : (
         <TaskGroupsContainer>
-          {!isEmpty(filteredTasks) ? (
+          {!isEmpty(tasks) ? (
             <TaskListGroupCollapse
               group={{ groupName: 'All tasks' }}
               stickyHeader
@@ -170,7 +170,7 @@ const PersonDetailsOpenedTasks = ({
                     isGroupSelected={isGroupSelected}
                     onGroupSelect={handleGroupSelect}
                   />
-                  {filteredTasks?.map((task) => (
+                  {tasks?.map((task) => (
                     <StandardTaskItem
                       key={task.identifier}
                       isFullView={isFullView}

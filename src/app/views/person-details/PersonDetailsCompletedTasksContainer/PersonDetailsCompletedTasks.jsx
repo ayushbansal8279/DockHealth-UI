@@ -45,10 +45,10 @@ const PersonDetailsCompletedTasks = ({
     setViewSpecificConfig(taskItemConfig);
   }, [setViewSpecificConfig, taskItemConfig]);
 
-  const filteredTasks = useMemo(
-    () => (!searchValue ? tasks : filterTasksBySearchValue(tasks, searchValue)),
-    [searchValue, tasks],
-  );
+  // const filteredTasks = useMemo(
+  //   () => (!searchValue ? tasks : filterTasksBySearchValue(tasks, searchValue)),
+  //   [searchValue, tasks],
+  // );
 
   const renderEmptyState = () => {
     if (searchValue) return <NoSearchResultsView />;
@@ -80,14 +80,14 @@ const PersonDetailsCompletedTasks = ({
         <GroupedListSkeletonLoader numberOfGroups={1} />
       ) : (
         <>
-          {filteredTasks?.length > 0 ? (
+          {tasks?.length > 0 ? (
             <TaskGroupsContainer>
               <TasksGroup
                 onOrderChange={onOrderChange}
                 groupName="Completed"
                 storeAsCurrentTask={storeAsCurrentTask}
                 toggleCompleteTask={toggleCompleteTask}
-                tasks={filteredTasks}
+                tasks={tasks}
                 isCompletedGroup
                 hasMoreTasks={tasksAndSubTasks < taskCounters.complete}
                 isFetchingMoreTasks={isFetchingMoreTasks}
@@ -113,7 +113,7 @@ const PersonDetailsCompletedTasks = ({
                   <>
                     {tasks?.map((task) => (
                       <StandardTaskItem
-                        key={task.identifier}
+                        key={task}
                         isFullView={isFullView}
                         task={task}
                         isCompletedGroup={isCompletedGroup}

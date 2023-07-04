@@ -112,6 +112,7 @@ const PersonDetailsReducer = (state = initialState, action) => {
           ...state.tasksMap,
           ...newMap,
         },
+        tasks: tasks.map((task) => task.identifier),
         isFetching: false,
       };
 
@@ -128,12 +129,34 @@ const PersonDetailsReducer = (state = initialState, action) => {
     case ActionTypes.GET_USER_COMPLETED_TASKS_SUCCESS: {
       const { tasks } = action;
 
+      const newMap = {};
+      for (const task of tasks) {
+        if (task.itemType === TaskItemType.TASK) {
+          newMap[task.identifier] = task;
+        } else {
+          newMap[task.identifier] = task;
+          for (const grpTask of task.tasks) {
+            newMap[grpTask.identifier] = grpTask;
+          }
+        }
+      }
       return {
         ...state,
-        completedTasks: tasks.map(mapTasksSuccess),
+        tasksMap: {
+          ...state.tasksMap,
+          ...newMap,
+        },
+        completedTasks: tasks.map((task) => task.identifier),
         isCompletedTasksFetching: false,
         isFetching: false,
       };
+
+      // return {
+      //   ...state,
+      //   completedTasks: tasks.map(mapTasksSuccess),
+      //   isCompletedTasksFetching: false,
+      //   isFetching: false,
+      // };
     }
 
     case ActionTypes.GET_USER_TASK_COUNTERS_SUCCESS: {
