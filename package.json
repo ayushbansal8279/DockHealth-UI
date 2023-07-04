@@ -54,6 +54,7 @@
     "html-react-parser": "^3.0.8",
     "lexical": "^0.8.1",
     "libphonenumber-js": "1.10.18",
+    "linkify-string": "^4.1.1",
     "linkifyjs": "4.1.0",
     "load-script": "2.0.0",
     "lodash.debounce": "4.0.8",
