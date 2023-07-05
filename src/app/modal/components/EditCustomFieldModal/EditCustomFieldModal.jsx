@@ -23,6 +23,7 @@ import Input from 'components/common/Input/Input';
 import Button from 'components/common/Button/Button';
 import FormSelect from 'components/common/Select/FormSelect';
 import ColorPicker from 'components/common/ColorPicker/ColorPicker';
+import { getAllProfileTypes } from 'api/profile-type-api';
 import FiledTypeStep from './FieldTypeStep';
 import { CloseIconButton, CloseIcon } from '../styled';
 import {
@@ -96,6 +97,8 @@ const EditCustomFieldModal = ({
           }),
         )
         .nullable(),
+
+      profileTypeIdentifier: string().nullable(),
       ...(type === 'TASK'
         ? {}
         : { fieldCategoryType: string().required(REQUIRED_MESSAGE) }),
@@ -184,12 +187,32 @@ const EditCustomFieldModal = ({
     );
   };
 
+  const [profileTypeOptions, setProfileTypeOptions] = useState([]);
+
+  useEffect(() => {
+    async function fetchData() {
+      // You can await here
+      const response = await getAllProfileTypes();
+      const profileTypes = response.map(({ identifier, name }) => ({
+        label: name,
+        value: identifier,
+      }));
+      setProfileTypeOptions(profileTypes);
+    }
+    fetchData();
+  }, []); // Or [] if effect doesn't need props or state
+
   const handleEditSubmit = (data) => {
     setIsSaving(true);
     const updatedField = {
       ...customField,
       ...data,
       ...displayOptionsState,
+      targetType: type,
+      contextType: 'CUSTOM',
+      profileTypeIdentifier: {
+        identifier: data.profileTypeIdentifier,
+      },
     };
     CustomFieldsApi.updateCustomField(updatedField, type, taskListIdentifier)
       .then(() => {
@@ -206,7 +229,15 @@ const EditCustomFieldModal = ({
   const handleAddSubmit = (data) => {
     setIsSaving(true);
     CustomFieldsApi.addCustomField(
-      { ...data, ...displayOptionsState },
+      {
+        ...data,
+        ...displayOptionsState,
+        targetType: type,
+        contextType: 'CUSTOM',
+        profileTypeIdentifier: {
+          identifier: data.profileTypeIdentifier,
+        },
+      },
       type,
       taskListIdentifier,
     )
@@ -267,16 +298,18 @@ const EditCustomFieldModal = ({
                         options={FIELD_TYPE_OPTIONS}
                       />
                     </Grid>
-                    {type !== 'TASK' && type !== 'PROVIDER' && (
-                      <Grid item xs={6}>
-                        <FormSelect
-                          required
-                          label="Category"
-                          name="fieldCategoryType"
-                          options={CATEGORY_OPTIONS}
-                        />
-                      </Grid>
-                    )}
+                    {type !== 'TASK' &&
+                      type !== 'PROVIDER' &&
+                      fieldTypeValue !== FieldType.RELATIONSHIP && (
+                        <Grid item xs={6}>
+                          <FormSelect
+                            required
+                            label="Category"
+                            name="fieldCategoryType"
+                            options={CATEGORY_OPTIONS}
+                          />
+                        </Grid>
+                      )}
                     {type !== 'PROVIDER' && type !== 'PATIENT' && (
                       <Grid item xs={6}>
                         <FormSelect
@@ -287,18 +320,16 @@ const EditCustomFieldModal = ({
                         />
                       </Grid>
                     )}
-                    {type !== 'PROVIDER' &&
-                      type !== 'PATIENT' &&
-                      fieldTypeValue === FieldType.RELATIONSHIP && (
-                        <Grid item xs={6}>
-                          <FormSelect
-                            required
-                            label="Profile Type"
-                            name="fieldProfileType"
-                            options={TASK_CATEGORY_OPTIONS}
-                          />
-                        </Grid>
-                      )}
+                    {fieldTypeValue === FieldType.RELATIONSHIP && (
+                      <Grid item xs={6}>
+                        <FormSelect
+                          required
+                          label="Profile Type"
+                          name="profileType"
+                          options={profileTypeOptions}
+                        />
+                      </Grid>
+                    )}
 
                     {optionsValue?.length > 0 && (
                       <>

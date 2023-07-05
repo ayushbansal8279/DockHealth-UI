@@ -23,6 +23,7 @@ import Input from 'components/common/Input/Input';
 import Button from 'components/common/Button/Button';
 import FormSelect from 'components/common/Select/FormSelect';
 import ColorPicker from 'components/common/ColorPicker/ColorPicker';
+import { getAllProfileTypes } from 'api/profile-type-api';
 import FiledTypeStep from './FieldTypeStep';
 import { CloseIconButton, CloseIcon } from '../styled';
 import {
@@ -96,7 +97,7 @@ const EditCustomFieldModal = ({
           }),
         )
         .nullable(),
-      ...(type === 'TASK'
+      ...(type === 'CUSTOM'
         ? {}
         : { fieldCategoryType: string().required(REQUIRED_MESSAGE) }),
     });
@@ -105,12 +106,25 @@ const EditCustomFieldModal = ({
   const formMethods = useForm({
     resolver: yupResolver(validationSchema),
     mode: 'onSubmit',
-    defaultValues: isCreatingNewField
-      ? { fieldCategoryType: Category.PROFILE }
-      : customField,
+    defaultValues: customField,
   });
   const { register, unregister, handleSubmit, setValue, watch, errors } =
     formMethods;
+
+  const [profileTypeOptions, setProfileTypeOptions] = useState([]);
+
+  useEffect(() => {
+    async function fetchData() {
+      // You can await here
+      const response = await getAllProfileTypes();
+      const profileTypes = response.map(({ identifier, name }) => ({
+        label: name,
+        value: identifier,
+      }));
+      setProfileTypeOptions(profileTypes);
+    }
+    fetchData();
+  }, []); // Or [] if effect doesn't need props or state
 
   useEffect(() => {
     register('fieldType');
@@ -218,7 +232,7 @@ const EditCustomFieldModal = ({
       contextType: 'CUSTOM',
       fieldCategoryType: 'PROFILE',
       targetType: 'PROFILE',
-      profileType: {
+      relatedProfileType: {
         identifier: profileTypeIdentifier,
       },
       ...data,
@@ -281,26 +295,30 @@ const EditCustomFieldModal = ({
                         options={FIELD_TYPE_OPTIONS}
                       />
                     </Grid>
-                    {type !== 'TASK' && type !== 'PROVIDER' && (
-                      <Grid item xs={6}>
-                        <FormSelect
-                          required
-                          label="Category"
-                          name="fieldCategoryType"
-                          options={CATEGORY_OPTIONS}
-                        />
-                      </Grid>
-                    )}
-                    {type !== 'PROVIDER' && type !== 'PATIENT' && (
-                      <Grid item xs={6}>
-                        <FormSelect
-                          required
-                          label="Category"
-                          name="fieldCategoryType"
-                          options={TASK_CATEGORY_OPTIONS}
-                        />
-                      </Grid>
-                    )}
+                    {type !== 'TASK' &&
+                      type !== 'PROVIDER' &&
+                      fieldTypeValue !== FieldType.RELATIONSHIP && (
+                        <Grid item xs={6}>
+                          <FormSelect
+                            required
+                            label="Category"
+                            name="fieldCategoryType"
+                            options={CATEGORY_OPTIONS}
+                          />
+                        </Grid>
+                      )}
+                    {type !== 'PROVIDER' &&
+                      type !== 'PATIENT' &&
+                      fieldTypeValue !== FieldType.RELATIONSHIP && (
+                        <Grid item xs={6}>
+                          <FormSelect
+                            required
+                            label="Category"
+                            name="fieldCategoryType"
+                            options={TASK_CATEGORY_OPTIONS}
+                          />
+                        </Grid>
+                      )}
                     {type !== 'PROVIDER' &&
                       type !== 'PATIENT' &&
                       fieldTypeValue === FieldType.RELATIONSHIP && (
@@ -309,7 +327,7 @@ const EditCustomFieldModal = ({
                             required
                             label="Profile Type"
                             name="fieldProfileType"
-                            options={TASK_CATEGORY_OPTIONS}
+                            options={profileTypeOptions}
                           />
                         </Grid>
                       )}
