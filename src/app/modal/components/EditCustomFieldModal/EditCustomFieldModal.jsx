@@ -22,7 +22,7 @@ import FormInput from 'components/common/Input/FormInput';
 import Input from 'components/common/Input/Input';
 import Button from 'components/common/Button/Button';
 import FormSelect from 'components/common/Select/FormSelect';
-import ColorPicker from 'components/common/ColorPicker/ColorPicker';
+import { ORGANIZATION_TILE_COLORS } from 'styles/organization-tile-colors';
 import FiledTypeStep from './FieldTypeStep';
 import { CloseIconButton, CloseIcon } from '../styled';
 import {
@@ -34,6 +34,12 @@ import {
 } from './styled';
 import AdditionalOptions from './AdditionalOptions';
 import { getAdditionalOptions } from './helpers';
+import { getAllTaskListCustomFields } from '../../../api/custom-fields-api';
+import {
+  SelectOptionColor,
+  SelectParentDropdown,
+  SelectParentOption,
+} from '../../customModals/styled';
 
 const REQUIRED_MESSAGE = 'This field is required';
 
@@ -112,6 +118,14 @@ const EditCustomFieldModal = ({
   const { register, unregister, handleSubmit, setValue, watch, errors } =
     formMethods;
 
+  const [customFields, setCustomFields] = useState([]);
+
+  useEffect(() => {
+    getAllTaskListCustomFields().then(response => {
+      setCustomFields(response.filter(item => item.fieldType === 'PICK_LIST'));
+    });
+  }, []);
+
   useEffect(() => {
     register('fieldType');
     register('options');
@@ -161,11 +175,37 @@ const EditCustomFieldModal = ({
     );
   };
 
-  const handleOptionColorChange = (optionId, event) => {
+  // eslint-disable-next-line unicorn/consistent-function-scoping,sonarjs/no-identical-functions
+  const handleOptionColorChange = optionId => event => {
     setValue(
       'options',
       optionsValue.map((o) =>
         o.identifier === optionId ? { ...o, color: event.target.value } : o,
+      ),
+    );
+  };
+
+  // eslint-disable-next-line unicorn/consistent-function-scoping
+  const handleParentDropdownChange = optionId => event => {
+    setValue(
+      'options',
+      optionsValue.map(o =>
+        o.identifier === optionId
+          ? { ...o, linkedCustomFieldIdentifier: event.target.value }
+          : o,
+      ),
+    );
+  };
+
+  // eslint-disable-next-line unicorn/consistent-function-scoping
+  const handleParentOptionChange = optionId => event => {
+    setValue(
+      'options',
+      // eslint-disable-next-line sonarjs/no-identical-functions
+      optionsValue.map(o =>
+        o.identifier === optionId
+          ? { ...o, linkedCustomFieldOptionIdentifier: event.target.value }
+          : o,
       ),
     );
   };
@@ -295,7 +335,13 @@ const EditCustomFieldModal = ({
                           <InfoText>Dropdown options</InfoText>
                         </Grid>
                         {optionsValue.map((option, index) => {
-                          const { identifier, name, color } = option;
+                          const {
+                            identifier,
+                            name,
+                            color,
+                            linkedCustomFieldIdentifier,
+                            linkedCustomFieldOptionIdentifier,
+                          } = option;
                           return (
                             <Grid key={identifier} item xs={12}>
                               <Input
@@ -322,13 +368,69 @@ const EditCustomFieldModal = ({
                               />
                               <Box m={2} />
                               {fieldTypeValue === FieldType.DROPDOWN && (
-                                <ColorPicker
-                                  name={`selectOptionColor[${identifier}]`}
-                                  value={color}
-                                  onChange={partial(handleOptionColorChange, [
-                                    identifier,
-                                  ])}
-                                />
+                                <Box
+                                  style={{
+                                    display: 'flex',
+                                    justifyContent: 'space-evenly',
+                                  }}
+                                >
+                                  <SelectOptionColor
+                                    required
+                                    name={`selectOptionColor[${identifier}]`}
+                                    value={color}
+                                    onChange={handleOptionColorChange(
+                                      identifier,
+                                    )}
+                                    options={ORGANIZATION_TILE_COLORS.map(
+                                      ({ hex }) => ({
+                                        label: (
+                                          <div
+                                            style={{
+                                              background: hex,
+                                              width: '24px',
+                                              height: '24px',
+                                            }}
+                                          />
+                                        ),
+                                        value: hex,
+                                      }),
+                                    )}
+                                  />
+                                  <SelectParentDropdown
+                                    required
+                                    label="Parent Dropdown"
+                                    name={`selectParentDropdown[${identifier}]`}
+                                    value={linkedCustomFieldIdentifier}
+                                    onChange={handleParentDropdownChange(
+                                      identifier,
+                                    )}
+                                    options={customFields.map(field => ({
+                                      label: field.name,
+                                      value: field.identifier,
+                                    }))}
+                                  />
+                                  <SelectParentOption
+                                    required
+                                    label="Parent Option"
+                                    name={`selectParentOption[${identifier}]`}
+                                    value={linkedCustomFieldOptionIdentifier}
+                                    onChange={handleParentOptionChange(
+                                      identifier,
+                                    )}
+                                    options={
+                                      customFields
+                                        .find(
+                                          field =>
+                                            field.identifier ===
+                                            linkedCustomFieldIdentifier,
+                                        )
+                                        ?.options?.map(fieldOption => ({
+                                          label: fieldOption.name,
+                                          value: fieldOption.identifier,
+                                        })) ?? []
+                                    }
+                                  />
+                                </Box>
                               )}
                             </Grid>
                           );

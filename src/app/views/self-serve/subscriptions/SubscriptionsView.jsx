@@ -138,10 +138,9 @@ const SubscriptionsView = () => {
   );
 
   const isCurrentPlanChanged =
-    isPlanTrial(subscriptionDetails) ||
-    selectedBillingFrequency !== billingFrequency ||
-    professionalServicesIncluded !== selectedProfessionalServices ||
-    subscriptionPlan !== selectedPlan;
+    (billingFrequency && selectedBillingFrequency !== billingFrequency) ||
+    // professionalServicesIncluded !== selectedProfessionalServices ||
+    selectedPlan !== subscriptionPlan;
 
   const includeProfessionalServices =
     !professionalServicesIncluded && selectedProfessionalServices;

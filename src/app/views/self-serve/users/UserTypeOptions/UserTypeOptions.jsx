@@ -3,7 +3,10 @@ import React, { useMemo } from 'react';
 import { connect, useSelector } from 'react-redux';
 import { useBoolean } from 'hooks/useBoolean';
 import { openModal as openModalAction } from 'modal/actions';
-import { userHasViewOnlyFeatureSelector } from 'selectors/user-selectors';
+import {
+  userHasViewOnlyFeatureSelector,
+  userHasDockGuestFeatureSelector,
+} from 'selectors/user-selectors';
 import UserTypeLabel from './UserTypeLabel';
 import { getUserTypeLabel, USER_TYPES } from '../helpers';
 
@@ -30,6 +33,7 @@ const UserTypeOptions = ({
 
   const displayName = `${firstName} ${lastName}`;
   const viewOnlyRoleAvailable = useSelector(userHasViewOnlyFeatureSelector);
+  const guestRoleAvailable = useSelector(userHasDockGuestFeatureSelector);
 
   const removeSubscription = () => {
     openRemoveSubscriptionModal({
@@ -80,6 +84,10 @@ const UserTypeOptions = ({
 
   if (!viewOnlyRoleAvailable) {
     delete USER_TYPES.VIEW_ONLY;
+  }
+
+  if (!guestRoleAvailable) {
+    delete USER_TYPES.GUEST;
   }
 
   return (

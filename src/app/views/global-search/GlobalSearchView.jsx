@@ -2,7 +2,7 @@ import React from 'react';
 import isEmpty from 'ramda/src/isEmpty';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
-import { Box } from '@mui/material';
+import { Box } from '@material-ui/core';
 import Spacing from 'components/common/Spacing';
 import {
   isLoadingGlobalSearchSelector,
@@ -10,9 +10,11 @@ import {
   globalSearchListsSelector,
   searchValueSelector,
   isSearchingCompletedTasksSelector,
+  searchPerformedSelector,
 } from 'selectors/global-search-selectors';
 import { selectedTaskSelector } from 'selectors/task-drawer-selectors';
 // import EmptyGlobalSearch from 'img/empty-global-search.png';
+import { ColumnsConfigProvider } from 'context-api/columns-config-context';
 import { userProfileSelector } from 'selectors/user-selectors';
 import * as TaskActions from 'actions/task-actions';
 import { GlobalSearchSagaActions } from 'sagas/global-search-saga';
@@ -33,11 +35,13 @@ import {
 } from './styled';
 import GlobalSearchHeader from './GlobalSearchHeader/GlobalSearchHeader';
 import GlobalSearchList from './GlobalSearchList/GlobalSearchList';
+import GlobalSearchToolbar from './GlobalSearchToolBar/GlobalSearchToolBar';
 
 const GlobalSearchView = ({
   isLoadingView,
   isLoadingMore,
   isSearchingCompletedTasks,
+  searchPerformed,
   lists,
   searchValue,
   currentUser,
@@ -57,7 +61,7 @@ const GlobalSearchView = ({
     return (
       <EmptyGlobaSearchWrapper>
         <Box m={4} />
-        {searchValue ? (
+        {searchValue && searchPerformed ? (
           <>
             <EmptyResultsText>
               Sorry, we couldn&apos;t find anything for your search
@@ -91,28 +95,30 @@ const GlobalSearchView = ({
             {isLoadingView ? (
               <GroupedListSkeletonLoader />
             ) : (
-              <VerticalScrollContainer>
-                <Spacing vertical={5} />
-                {isEmpty(lists)
-                  ? renderEmptyState()
-                  : lists?.map((list) =>
-                      list.tasks?.length > 0 ? (
-                        <GlobalSearchList
-                          list={list}
-                          currentUser={currentUser}
-                          selectedTask={selectedTask}
-                          storeAsCurrentTask={storeAsCurrentTask}
-                          toggleTaskStatus={toggleTaskStatus}
-                          onTaskUpdate={updateTask}
-                          updateWorkflowStatus={setWorkflowStatus}
-                          highlightedValue={searchValue}
-                          isCompletedList={isSearchingCompletedTasks}
-                          getMoreTasksForTaskList={getMoreTasksForTaskList}
-                          isLoadingMore={isLoadingMore}
-                        />
-                      ) : null,
-                    )}
-              </VerticalScrollContainer>
+              <ColumnsConfigProvider>
+                <VerticalScrollContainer>
+                  <Spacing vertical={5} />
+                  {!isEmpty(lists)
+                    ? lists?.map(list =>
+                        list.tasks?.length > 0 ? (
+                          <GlobalSearchList
+                            list={list}
+                            currentUser={currentUser}
+                            selectedTask={selectedTask}
+                            storeAsCurrentTask={storeAsCurrentTask}
+                            toggleTaskStatus={toggleTaskStatus}
+                            onTaskUpdate={updateTask}
+                            updateWorkflowStatus={setWorkflowStatus}
+                            highlightedValue={searchValue}
+                            isCompletedList={isSearchingCompletedTasks}
+                            getMoreTasksForTaskList={getMoreTasksForTaskList}
+                            isLoadingMore={isLoadingMore}
+                          />
+                        ) : null,
+                      )
+                    : renderEmptyState()}
+                </VerticalScrollContainer>
+              </ColumnsConfigProvider>
             )}
           </ViewSidePadding>
           <TaskDrawer />
@@ -122,7 +128,7 @@ const GlobalSearchView = ({
   );
 };
 
-const mapDispatchToProps = (dispatch) => ({
+const mapDispatchToProps = dispatch => ({
   taskActions: bindActionCreators(TaskActions, dispatch),
   globalSearchSagaActions: bindActionCreators(
     GlobalSearchSagaActions,
@@ -130,10 +136,11 @@ const mapDispatchToProps = (dispatch) => ({
   ),
 });
 
-const mapStateToProps = (store) => ({
+const mapStateToProps = store => ({
   isLoadingView: isLoadingGlobalSearchSelector(store),
   isLoadingMore: isLoadingMoreGlobalSearchSelector(store),
   isSearchingCompletedTasks: isSearchingCompletedTasksSelector(store),
+  searchPerformed: searchPerformedSelector(store),
   lists: globalSearchListsSelector(store),
   searchValue: searchValueSelector(store),
   currentUser: userProfileSelector(store),

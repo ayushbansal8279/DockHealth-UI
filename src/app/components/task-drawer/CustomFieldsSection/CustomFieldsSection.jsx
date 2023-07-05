@@ -121,6 +121,7 @@ const CustomFieldsSection = ({ disabled, fieldCategoryType }) => {
             <CustomField
               readOnly={disabled}
               field={field}
+              selected={getValues('taskMetaData')}
               onBlur={(data, wasChanged) =>
                 handleBlur(data, wasChanged, field.fieldType)
               }

@@ -665,3 +665,7 @@ export const ActionIconsContainer = styled.div`
     height: 36px;
   }
 `;
+
+export const PatientMRNAnchor = styled.a`
+  color: ${palette.brightBlue} !important;
+`;

@@ -454,8 +454,20 @@ const ListDetailsTasks = ({
                   {groupPagination && hasMoreTasks && !areFiltersApplied && (
                     <StickyContainer left={24} decreaseWidth={2 * 24}>
                       <LoadMoreSection>
-                        {!isLoadingGroup && (
-                          <LoadMoreButton onClick={showMoreTasks} />
+                        {group?.moreTasksIndex &&
+                          group?.moreTasksIndex !== 0 &&
+                          !isLoadingGroup && (
+                            <LoadMoreButton onClick={showMoreTasks} />
+                          )}
+                      </LoadMoreSection>
+                    </StickyContainer>
+                  )}
+                  {groupPagination && hasMoreTasks && areFiltersApplied && (
+                    <StickyContainer left={24} decreaseWidth={2 * 24}>
+                      <LoadMoreSection>
+                        {(!group?.moreTasksIndex ||
+                          group?.moreTasksIndex === 0) && (
+                          <span>Limiting results. Please refine filter.</span>
                         )}
                       </LoadMoreSection>
                     </StickyContainer>

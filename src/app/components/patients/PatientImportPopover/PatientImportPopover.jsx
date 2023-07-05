@@ -101,11 +101,15 @@ const PatientImportPopover = ({
           </FileDisplayArea>
           {fileProgress < 100 && (
             <ProgressDisplayArea>
-              <ProgressBar
+              {/* <ProgressBar
                 fileProgress={fileProgress}
                 inverseProgress={inverseProgress}
               />
-              <ProgressMessage>{fileProgress}% Complete</ProgressMessage>
+              <ProgressMessage>{fileProgress}% Complete</ProgressMessage> */}
+              <ProgressMessage>
+                Patient records are being upload. Please refresh page after some
+                time.
+              </ProgressMessage>
             </ProgressDisplayArea>
           )}
 

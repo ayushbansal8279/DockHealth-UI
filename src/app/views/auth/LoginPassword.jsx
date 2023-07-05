@@ -52,13 +52,13 @@ const LoginPassword = () => {
             } else {
               sessionStorage.setItem('sessionStartTime', new Date().getTime());
 
-              const nextPathname = sessionStorage.getItem('next-page');
-              if (nextPathname && nextPathname !== '') {
-                sessionStorage.setItem('next-page', '');
-                history.push(nextPathname);
-              } else {
-                history.push('/core/home/my-tasks');
-              }
+            const nextPathname = sessionStorage.getItem('next-page');
+            if (nextPathname && nextPathname !== '') {
+              sessionStorage.removeItem('next-page');
+              history.push(nextPathname);
+            } else {
+              history.push('/core/home/my-tasks');
+            }
 
               success('Logged in.');
             }

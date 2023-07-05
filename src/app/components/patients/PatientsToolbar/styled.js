@@ -25,7 +25,6 @@ export const InputWrapper = styled.div`
 export const SearchHelperText = styled.p`
   /* max-width: 700px; */
   margin: 0 auto;
-  // padding-top: ${spacing.huge};
   text-align: center;
   font-family: 'Montserrat', sans-serif;
 `;
@@ -36,4 +35,15 @@ export const PatientsListImg = styled.img`
     iconColorFilterActive
       ? `filter: ${iconColorFilterActive}; `
       : 'filter: invert(60%) sepia(60%) saturate(1790%) hue-rotate(348deg) brightness(100%) contrast(88%);'}
+`;
+
+export const ButtonWrapper = styled.div`
+  display: flex;
+  width: 130px;
+  height: 56px;
+  padding: 0 ${spacing.smallPlus};
+  box-sizing: border-box;
+  justify-content: center;
+  align-items: center;
+  background: ${palette.coolGrey4};
 `;
