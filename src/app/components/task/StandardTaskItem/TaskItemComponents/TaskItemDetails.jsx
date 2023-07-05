@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { Box } from '@mui/material';
 import { useDispatch } from 'react-redux';
 import { partialUpdateTask, storeAsCurrentTask } from 'actions/task-actions';
@@ -11,6 +11,7 @@ import { openDrawer } from 'actions/workflow-drawer-actions';
 import PopoverBottomBar from 'components/task/PopoverBottomBar/PopoverBottomBar';
 // import { FieldCharakterLimit } from 'helpers/field-type-helpers';
 import RichTextEditor from 'components/common/RichTextEditor/RichTextEditor';
+import debounce from 'lodash.debounce';
 import { convertToSimpleString } from 'helpers/markdown-helper.js';
 import {
   Text,
@@ -19,17 +20,17 @@ import {
 } from '../customFieldsTaskItemComponents/TaskItemLongText/styled';
 
 const TaskItemDetails = ({ task, onClick, readOnly }) => {
-  // const detailsReference = useRef(null);
+  const detailsReference = useRef(null);
 
   const isWorkflow =
     task.itemType === TaskItemType.BUNDLE ||
     task.itemType === TaskItemType.TEMPLATE;
 
-  const { identifier, details } = task;
+  const { identifier } = task;
   const dispatch = useDispatch();
 
+  const [details, setDetails] = useState(task?.details);
   const [rawDetails, setRawDetails] = useState(null);
-  // const [currentDetails, setCurrentDetails] = useState(details);
 
   const handleOpenDrawer = useCallback(() => {
     dispatch(openDrawer());
@@ -42,15 +43,37 @@ const TaskItemDetails = ({ task, onClick, readOnly }) => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [details]);
 
+  const handleAutoSave = debounce((value) => {
+    if (value !== '' || (details && value !== details)) {
+      if (isWorkflow) {
+        dispatch(
+          updatePartialWorkflow(identifier, {
+            details: value,
+          }),
+        );
+      } else {
+        dispatch(partialUpdateTask(identifier, { details: value }));
+      }
+    }
+    // eslint-disable-next-line unicorn/numeric-separators-style
+  }, 10000);
+
+  const handleChange = (value) => {
+    setDetails(value);
+    handleAutoSave();
+  };
+
   const handleTextEditorBlur = (closePopover) => (value) => {
-    if (isWorkflow) {
-      dispatch(
-        updatePartialWorkflow(identifier, {
-          details: value,
-        }),
-      );
-    } else {
-      dispatch(partialUpdateTask(identifier, { details: value }));
+    if (value !== '' || (details && value !== details)) {
+      if (isWorkflow) {
+        dispatch(
+          updatePartialWorkflow(identifier, {
+            details: value,
+          }),
+        );
+      } else {
+        dispatch(partialUpdateTask(identifier, { details: value }));
+      }
     }
     closePopover();
   };
@@ -68,9 +91,9 @@ const TaskItemDetails = ({ task, onClick, readOnly }) => {
         content={({ closePopover }) => (
           <Box
             width="550px"
-            // height="100%"
-            height="250px"
+            height="100%"
             alignItems="center"
+            style={{ padding: '5px' }}
           >
             <CustomTextEditor
               key="TASK_DETAILS"
@@ -80,12 +103,14 @@ const TaskItemDetails = ({ task, onClick, readOnly }) => {
               richTextEnabled
             >
               <RichTextEditor
+                ref={detailsReference}
                 readonly={readOnly}
                 value={details}
+                onChange={handleChange}
                 onBlur={handleTextEditorBlur(closePopover)}
-                initOnClick={false}
-                showToolbar
-                multiline
+                initOnClick
+                // showToolbar
+                // multiline
                 showCharCount
               />
             </CustomTextEditor>

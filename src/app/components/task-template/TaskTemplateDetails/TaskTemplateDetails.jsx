@@ -33,9 +33,8 @@ const TaskTemplateDetails = ({ workflow, readOnly }) => {
     );
   }, [dispatch, workflow]);
 
-  const handleChange = debounce((value) => {
-    setDetails(value);
-    if (value !== details) {
+  const handleAutoSave = debounce((value) => {
+    if (value !== '' || (details && value !== details)) {
       dispatch(
         updatePartialWorkflow(workflow?.identifier, {
           description: value,
@@ -43,20 +42,26 @@ const TaskTemplateDetails = ({ workflow, readOnly }) => {
         }),
       );
     }
-  }, 3000);
+    // eslint-disable-next-line unicorn/numeric-separators-style
+  }, 10000);
+
+  const handleChange = (value) => {
+    setDetails(value);
+    handleAutoSave();
+  };
 
   const handleBlur = useCallback(
     (value) => {
-      if (value !== details) {
+      if (value !== '' || (details && value !== details)) {
         dispatch(
-          updatePartialWorkflow(value?.identifier, {
+          updatePartialWorkflow(workflow?.identifier, {
             description: value,
             descriptionCleared: !value,
           }),
         );
       }
     },
-    [dispatch, details],
+    [details, dispatch, workflow?.identifier],
   );
 
   return (
@@ -66,7 +71,7 @@ const TaskTemplateDetails = ({ workflow, readOnly }) => {
         // eslint-disable-next-line react/no-unstable-nested-components
         content={({ closePopover }) => (
           <Box
-            width="450px"
+            width="550px"
             height="100%"
             alignItems="center"
             style={{ padding: '5px' }}

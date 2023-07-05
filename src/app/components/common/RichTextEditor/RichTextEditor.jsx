@@ -163,7 +163,7 @@ const RichTextEditor = React.forwardRef(
     );
 
     useEffect(() => {
-      if (editorState !== '' && initialValue === '') {
+      if (editorState !== '' && initialValue && initialValue === '') {
         setEditorState('');
       }
     }, [initialValue, editorState]);

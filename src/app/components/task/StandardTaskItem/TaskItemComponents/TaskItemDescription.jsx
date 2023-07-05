@@ -5,7 +5,7 @@ import React, {
   useRef,
   useState,
   useEffect,
-  useMemo,
+  // useMemo,
 } from 'react';
 import { Box, Fade, IconButton, Popper } from '@mui/material';
 import { useDispatch } from 'react-redux';
@@ -17,23 +17,23 @@ import {
 import { TaskStatus } from 'helpers/task-helpers';
 import { openDrawer } from 'actions/task-drawer-actions';
 import Spacing from 'components/common/Spacing';
-import { checkIfShouldDisplayTooltip } from 'components/task/OverflowTooltip/OverflowTooltip';
-import {
-  convertToEditorState,
-  convertFromEditorStateToOutput,
-} from 'components/common/TextEditor/helpers';
-import { useMentionsEditorState } from 'components/common/TextEditor/use-mentions-editor-state';
+// import { checkIfShouldDisplayTooltip } from 'components/task/OverflowTooltip/OverflowTooltip';
+// import {
+//   convertToEditorState,
+//   convertFromEditorStateToOutput,
+// } from 'components/common/TextEditor/helpers';
+// import { useMentionsEditorState } from 'components/common/TextEditor/use-mentions-editor-state';
 // import { EditorState } from 'draft-js';
 // import { createMentionEntities } from 'components/common/TextEditor/create-mention-entities';
 import EditIcon from '@mui/icons-material/Edit';
 import {
-  Description,
+  // Description,
   DescriptionBox,
   CompletedBy,
   TaskItemParentTaskLabel,
   TaskItemDescriptionIndicators,
-  DescriptionTooltipWrapper,
-  DescriptionBorder,
+  // DescriptionTooltipWrapper,
+  // DescriptionBorder,
   TaskContext,
   DescriptionEditButton,
 } from '../../styled';
@@ -41,34 +41,35 @@ import {
 const TaskItemDescription = ({
   task,
   // isCompletedGroup,
-  highlightedValue,
+  // highlightedValue,
   hasParentTaskLabel,
   isEditing,
   setEditing,
   disabled,
-  disableMentions,
-  isEditButtonVisible = false,
+  // disableMentions,
+  // isEditButtonVisible = false,
   width,
 }) => {
   const {
     description,
-    tokenizedDescription,
-    taskMentions,
+    // tokenizedDescription,
+    // taskMentions,
     status,
     parentTask,
-    searchMetaData,
+    // searchMetaData,
     completedBy,
     completedDt,
-    taskList,
+    // taskList,
     linkedTaskTemplate,
-    read,
+    // read,
   } = task;
+
   const [descriptionState, setDescriptionState] = useState(description);
 
-  const { taskListIdentifier } = taskList || {};
-  const { matchDescription } = searchMetaData || {};
-  const previousDescription = useRef(null);
-  const descriptionTextReference = useRef(null);
+  // const { taskListIdentifier } = taskList || {};
+  // const { matchDescription } = searchMetaData || {};
+  // const previousDescription = useRef(null);
+  // const descriptionTextReference = useRef(null);
   const dispatch = useDispatch();
   // const [descriptionState, setDescriptionState] = useMentionsEditorState(
   //   convertToEditorState({
@@ -89,24 +90,28 @@ const TaskItemDescription = ({
     : 'Unknown';
 
   useEffect(() => {
+    setDescriptionState(description);
+  }, [description]);
+
+  useEffect(() => {
     if (isEditing && descriptionReference.current) {
       setTimeout(descriptionReference.current.focus, 0);
     }
   }, [isEditing, descriptionReference]);
 
-  useEffect(() => {
-    if (previousDescription.current !== null) {
-      // const newContent = createMentionEntities(
-      //   tokenizedDescription,
-      //   description,
-      //   taskMentions,
-      //   false,
-      // );
-      // setDescriptionState(EditorState.push(descriptionState, newContent));
-    }
-    previousDescription.current = description;
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [description]);
+  // useEffect(() => {
+  //   if (previousDescription.current !== null) {
+  //     // const newContent = createMentionEntities(
+  //     //   tokenizedDescription,
+  //     //   description,
+  //     //   taskMentions,
+  //     //   false,
+  //     // );
+  //     // setDescriptionState(EditorState.push(descriptionState, newContent));
+  //   }
+  //   previousDescription.current = description;
+  //   // eslint-disable-next-line react-hooks/exhaustive-deps
+  // }, [description]);
 
   const onParentLabelClick = useCallback(
     (event) => {
@@ -119,52 +124,52 @@ const TaskItemDescription = ({
     [parentTask],
   );
 
-  const handleKeyBindingFunction = useCallback((event) => {
-    if (event.key === 'Enter') {
-      return 'enter-command';
-    }
-  }, []);
+  // const handleKeyBindingFunction = useCallback((event) => {
+  //   if (event.key === 'Enter') {
+  //     return 'enter-command';
+  //   }
+  // }, []);
 
-  const handleBlur = useCallback(() => {
-    const { tokenizedText, rawText, mentions } = convertFromEditorStateToOutput(
-      descriptionState,
-      false,
-    );
-    if (rawText !== description) {
-      dispatch(
-        updateTaskDescription(task, {
-          tokenizedDescription: tokenizedText,
-          description: rawText,
-          taskMentions: [...(task.taskMentions || []), ...(mentions || [])],
-        }),
-      );
-    }
-    setEditing(false);
-  }, [description, descriptionState, dispatch, setEditing, task]);
+  // const handleBlur = useCallback(() => {
+  //   const { tokenizedText, rawText, mentions } = convertFromEditorStateToOutput(
+  //     descriptionState,
+  //     false,
+  //   );
+  //   if (rawText !== description) {
+  //     dispatch(
+  //       updateTaskDescription(task, {
+  //         tokenizedDescription: tokenizedText,
+  //         description: rawText,
+  //         taskMentions: [...(task.taskMentions || []), ...(mentions || [])],
+  //       }),
+  //     );
+  //   }
+  //   setEditing(false);
+  // }, [description, descriptionState, dispatch, setEditing, task]);
 
-  const handleKeyCommand = useCallback(
-    (command) => {
-      if (command === 'enter-command') {
-        // eslint-disable-next-line no-unused-expressions
-        descriptionReference.current?.blur();
-        return 'handled';
-      }
+  // const handleKeyCommand = useCallback(
+  //   (command) => {
+  //     if (command === 'enter-command') {
+  //       // eslint-disable-next-line no-unused-expressions
+  //       descriptionReference.current?.blur();
+  //       return 'handled';
+  //     }
 
-      return 'not-handled';
-    },
-    [descriptionReference],
-  );
+  //     return 'not-handled';
+  //   },
+  //   [descriptionReference],
+  // );
 
-  const handleTextEditorBlur = (_, { value }) => {
-    console.log('handleTextEditorBlur');
-    dispatch(
-      updateTaskDescription(task, {
-        tokenizedDescription: value,
-        taskMentions: [],
-      }),
-    );
-    setEditing(false);
-  };
+  // const handleTextEditorBlur = (_, { value }) => {
+  //   console.log('handleTextEditorBlur');
+  //   dispatch(
+  //     updateTaskDescription(task, {
+  //       tokenizedDescription: value,
+  //       taskMentions: [],
+  //     }),
+  //   );
+  //   setEditing(false);
+  // };
 
   return (
     <DescriptionBox width={width}>
@@ -189,6 +194,8 @@ const TaskItemDescription = ({
             border: isEditing ? '1px solid #00a2e5' : 'none',
             borderRadius: '4px',
             background: 'transparent',
+            width: '1005',
+            textOverflow: 'ellipsis',
           }}
         />
         {/*<TextEditor*/}
@@ -200,17 +207,6 @@ const TaskItemDescription = ({
         {/*    onKeyDown={handleTextEditorKeyDown}*/}
         {/*    mentions={taskMentions}*/}
         {/*/>*/}
-        {/*<RichTextEditor noStyle isSingleLine value={descriptionState} onChange={setDescriptionState} readOnly={!isEditing} className={isEditing ? "simple-input" : ""} onSubmit={(description) => {*/}
-        {/*  dispatch(*/}
-        {/*      updateTaskDescription(task, {*/}
-        {/*        tokenizedDescription: description.trim(),*/}
-        {/*        description: description.trim(),*/}
-        {/*        taskMentions: [],*/}
-        {/*      }),*/}
-        {/*  );*/}
-        {/*  setDescriptionState(description.trim())*/}
-        {/*  setEditing(false)*/}
-        {/*}}/>*/}
         {!isCompleted && (
           <DescriptionEditButton>
             <IconButton
