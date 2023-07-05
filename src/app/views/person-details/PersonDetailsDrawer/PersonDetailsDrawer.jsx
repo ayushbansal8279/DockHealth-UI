@@ -70,7 +70,9 @@ const PersonDetailsDrawer = ({ user, isOpenedDetails, closeDrawer }) => {
         openModal('InterruptEdit', {
           isWorkflowModal: true,
           confirm: () => {
-            formReference.current.dispatchEvent(new Event('submit'));
+            formReference.current.dispatchEvent(
+              new Event('submit', { cancelable: true, bubbles: true }),
+            );
             dispatch(closeModal());
           },
           onClose: close,
