@@ -172,10 +172,12 @@ const TaskTemplateGroup = ({
                       ref={templateDroppableProvided.innerRef}
                       {...templateDroppableProvided.droppableProps}
                     >
-                      {filteredTasks?.map((taskIdentifier, index) => (
+                      {filteredTasks?.map((taskOrIdentifier, index) => (
                         <Draggable
-                          key={taskIdentifier}
-                          draggableId={taskIdentifier}
+                          key={taskOrIdentifier?.identifier || taskOrIdentifier}
+                          draggableId={
+                            taskOrIdentifier?.identifier || taskOrIdentifier
+                          }
                           index={index}
                           isDragDisabled={restrictions?.createTask === DISABLED}
                         >
@@ -185,11 +187,15 @@ const TaskTemplateGroup = ({
                           ) => (
                             <StandardTaskItemContainer
                               isStartedDnD={
-                                draggedTaskIdentifier === taskIdentifier
+                                draggedTaskIdentifier ===
+                                (taskOrIdentifier?.identifier ||
+                                  taskOrIdentifier)
                               }
                               isDragging={draggableSnapshot.isDragging}
                               draggableProvided={templateTaskDraggableProvided}
-                              taskIdentifier={taskIdentifier}
+                              taskIdentifier={
+                                taskOrIdentifier?.identifier || taskOrIdentifier
+                              }
                               isFullView={isFullView}
                               isCompletedGroup={isCompletedGroup}
                               multipleAssigneesContext={

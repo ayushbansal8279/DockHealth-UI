@@ -133,7 +133,7 @@ const PatientTasksListView = () => {
       const { patientMetaData } = patient;
       return lists?.map((l) => ({
         ...l,
-        tasks: l.tasks.map((t) => ({
+        tasks: l.tasks?.map((t) => ({
           ...t,
           patient: { ...t.patient, patientMetaData },
         })),

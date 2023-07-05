@@ -232,15 +232,33 @@ export default (state = INITIAL_STATE, action = {}) => {
     }
 
     case ActionTypes.GET_CURRENT_PATIENT_TASKS_SUCCESS: {
-      const tasks = action.lists;
+      const { lists } = action;
       const newMap = {};
-      for (const task of tasks) {
-        if (task.itemType === TaskItemType.TASK) {
-          newMap[task.identifier] = task;
-        } else {
-          newMap[task.identifier] = task;
-          for (const grpTask of task.tasks) {
-            newMap[grpTask.identifier] = grpTask;
+      for (const list of lists) {
+        for (const taskItem of list?.tasks) {
+          if (taskItem.itemType === TaskItemType.TASK) {
+            newMap[taskItem.identifier] = taskItem;
+            for (const subtask of taskItem?.subtasks) {
+              newMap[subtask.identifier] = {
+                ...newMap[subtask.identifier],
+                ...subtask,
+              };
+            }
+          } else {
+            for (const grpTask of taskItem.tasks) {
+              newMap[grpTask.identifier] = grpTask;
+              // for (const subtask of grpTask?.subtasks) {
+              //   newMap[subtask.identifier] = {
+              //     ...newMap[subtask.identifier],
+              //     ...subtask,
+              //   };
+              // }
+            }
+            // newMap[task.identifier] = task;
+            newMap[taskItem.identifier] = {
+              ...taskItem,
+              tasks: taskItem.tasks.map((t) => t.identifier),
+            };
           }
         }
       }
@@ -248,6 +266,16 @@ export default (state = INITIAL_STATE, action = {}) => {
       return {
         ...state,
         lists: action.lists,
+        // lists: action.lists?.map((l) => ({
+        //   ...l,
+        //   tasks: l.tasks?.lists?.map((t) => ({
+        //     ...t,
+        //     tasks:
+        //       t.itemType === 'BUNDLE'
+        //         ? t.tasks?.map((task) => task.identifier)
+        //         : [],
+        //   })),
+        // })),
         tasksMap: {
           ...state.tasksMap,
           ...newMap,
