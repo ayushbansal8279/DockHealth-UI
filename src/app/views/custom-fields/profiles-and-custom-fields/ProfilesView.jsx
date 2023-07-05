@@ -85,10 +85,6 @@ const ProfilesAndCustomFieldsView = () => {
 
   const onConfigureCustomFields = useCallback(
     ({ row: { name, identifier } }) => {
-      if (name.toLowerCase() === 'users' || name.toLowerCase() === 'patients') {
-        history.push(`/settings/custom-fields/${name.toLowerCase()}`);
-        return;
-      }
       history.push(
         `/settings/custom-fields/${name.toLowerCase()}/${identifier}`,
       );

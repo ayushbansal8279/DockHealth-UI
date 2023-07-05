@@ -80,10 +80,6 @@ export const FIELD_TYPE_OPTIONS = [
     value: FieldType.BOOL,
     label: FieldTypeLabel[FieldType.BOOL],
   },
-  {
-    value: FieldType.RELATIONSHIP,
-    label: FieldTypeLabel[FieldType.RELATIONSHIP],
-  },
 ];
 
 export const FIELD_TYPES = [

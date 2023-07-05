@@ -10,6 +10,7 @@ import {
   onEnterListDetailsView,
   onLeaveListDetailsView,
 } from './TemplateCoreSubscriptionPlan/ListDetails';
+
 const UsersView = lazy(() => import('views/self-serve/users/UsersView'));
 const Contacts = lazy(() => import('views/Contacts/Contacts'));
 const Templates = lazy(() => import('views/Templates/Templates'));
@@ -127,7 +128,7 @@ const GlobalSearchView = lazy(() =>
 );
 const TaskTourView = lazy(() => import('views/TaskTour/TaskTourView'));
 const PatientsView = lazy(() => import('components/patients/PatientsView'));
-const CustomProfileList = lazy(() =>
+const CustomPatientsView = lazy(() =>
   import('components/patients/CustomProfilesList/CustomProfileList'),
 );
 const CustomProfileView = lazy(() =>
@@ -200,7 +201,7 @@ export const SETTINGS_ROUTES = [
     permissions: [CAN_ACCESS_SETTINGS_PAGE],
   },
   {
-    path: '/custom-fields/:tabName/:identifier?',
+    path: '/custom-fields/:tabName?/:identifier?',
     RouteComponent: CustomFieldsView,
     permissions: [CAN_ACCESS_SETTINGS_PAGE],
   },
@@ -268,7 +269,7 @@ export const TEMPLATE_CORE_SUBSCRIPTION_PLAN_ROUTES = [
   // },
   {
     path: '/custom-profiles/:name/:profileIdentifier',
-    RouteComponent: CustomProfileList,
+    RouteComponent: CustomPatientsView,
     onLeave: onLeaveGlobalSearch,
     permissions: [CAN_ACCESS_SEARCH_PAGE],
   },
