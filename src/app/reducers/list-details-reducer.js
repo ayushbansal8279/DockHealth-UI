@@ -36,7 +36,33 @@ const initialState = {
   searchTerm: '',
 };
 
-function updateGroupInState(updateCallback, taskGroupIdentifier, state) {
+function updateGroupInState(
+  updateCallback,
+  taskGroupIdentifier,
+  taskItem,
+  state,
+) {
+  const updatedMap = {
+    [taskItem?.identifier]: {
+      ...state.tasksMap[taskItem?.identifier],
+      tasks: [taskItem].concat(state.tasksMap[taskItem?.identifier]),
+    },
+  };
+
+  // add tasks and subtasks in the bundle
+  for (const task of taskItem?.tasks) {
+    updatedMap[task.identifier] = {
+      ...updatedMap[task.identifier],
+      ...task,
+    };
+    for (const subtask of task?.subtasks) {
+      updatedMap[subtask.identifier] = {
+        ...updatedMap[subtask.identifier],
+        ...subtask,
+      };
+    }
+  }
+
   return {
     ...state,
     groupedTasks: {
@@ -48,20 +74,41 @@ function updateGroupInState(updateCallback, taskGroupIdentifier, state) {
           : g,
       ),
     },
+    tasksMap: {
+      ...state.tasksMap,
+      ...updatedMap,
+    },
   };
 }
 
-function updateBundleInState(updateCallback, bundleIdentifier, state) {
+function updateBundleInState(bundleIdentifier, updatedData, state) {
+  const updatedMap = {
+    [bundleIdentifier]: {
+      ...state.tasksMap[bundleIdentifier],
+      ...updatedData,
+      tasks: updatedData?.tasks.map((task) => task.identifier),
+    },
+  };
+
+  // add tasks and subtasks in the bundle
+  for (const task of updatedData?.tasks) {
+    updatedMap[task.identifier] = {
+      ...updatedMap[task.identifier],
+      ...task,
+    };
+    for (const subtask of task?.subtasks) {
+      updatedMap[subtask.identifier] = {
+        ...updatedMap[subtask.identifier],
+        ...subtask,
+      };
+    }
+  }
+
   return {
     ...state,
-    groupedTasks: {
-      ...state.groupedTasks,
-      taskGroups: state.groupedTasks?.taskGroups?.map((g) => ({
-        ...g,
-        tasks: g.tasks?.map((t) =>
-          t.identifier === bundleIdentifier ? updateCallback(t) : t,
-        ),
-      })),
+    tasksMap: {
+      ...state.tasksMap,
+      ...updatedMap,
     },
   };
 }
@@ -249,39 +296,6 @@ const ListDetailsReducer = (state = initialState, action) => {
         }
       }
 
-      // const groupsToUpdate = groupOfTasks.taskGroups;
-
-      // let updatedTaskGroups = state.groupedTasks?.taskGroups || [];
-
-      // for (const group of groupsToUpdate) {
-      //   let groupExists = false;
-      //   updatedTaskGroups = updatedTaskGroups?.map((taskGroup) => {
-      //     if (taskGroup.groupIdentifier === group?.groupIdentifier) {
-      //       groupExists = true;
-      //       return {
-      //         ...taskGroup,
-      //         tasks: refresh
-      //           ? group.tasks
-      //           : startPosition === 0
-      //           ? dedupe(group.tasks.concat(taskGroup.tasks))
-      //           : dedupe(taskGroup.tasks.concat(group.tasks)),
-      //         hasMore: group.hasMore,
-      //         moreTasksIndex: group.moreTasksIndex,
-      //         isLoadingGroup: false,
-      //         isFetchingMoreTasks: false,
-      //       };
-      //     }
-
-      //     return taskGroup;
-      //   });
-
-      //   if (!groupExists) {
-      //     const groupToAdd = { ...group };
-      //     groupToAdd.isLoadingGroup = false;
-      //     updatedTaskGroups = [...(updatedTaskGroups || []), groupToAdd];
-      //   }
-      // }
-
       return {
         ...state,
         groupedTasks: {
@@ -394,21 +408,26 @@ const ListDetailsReducer = (state = initialState, action) => {
     case ActionTypes.UPDATE_TEMPLATE_BUNDLE_SUCCESS: {
       const { bundleIdentifier, dataToUpdate } = action;
 
-      return {
-        ...state,
-        groupedTasks: {
-          ...state.groupedTasks,
-          taskGroups: state.groupedTasks?.taskGroups?.map((g) => ({
-            ...g,
-            tasks: updateBundleInList(
-              dataToUpdate,
-              bundleIdentifier,
-              g.tasks,
-              g.groupIdentifier,
-            ),
-          })),
+      const updatedMap = {
+        [bundleIdentifier]: {
+          ...state.tasksMap[bundleIdentifier],
+          ...dataToUpdate,
+          tasks: dataToUpdate?.tasks.map((task) => task.identifier),
         },
       };
+
+      const newMap = {
+        ...state.tasksMap,
+        ...updatedMap,
+      };
+
+      // eslint-disable-next-line sonarjs/prefer-immediate-return
+      const updatedState = {
+        ...state,
+        // tasksMap: newMap,
+      };
+
+      return updatedState;
     }
 
     case ActionTypes.REORDER_WORKFLOW_TASKS: {
@@ -476,33 +495,6 @@ const ListDetailsReducer = (state = initialState, action) => {
           },
         },
       };
-
-      // return {
-      //   ...state,
-      //   groupedTasks: {
-      //     ...state.groupedTasks,
-      //     taskGroups: state.groupedTasks?.taskGroups?.map((g) => ({
-      //       ...g,
-      //       tasks: updateBundleInList(
-      //         { isFetchingTasks: true },
-      //         workflowIdentifier,
-      //         g.tasks,
-      //       ),
-      //     })),
-      //   },
-      //   completedGroupedTasks: {
-      //     ...state.completedGroupedTasks,
-      //     // eslint-disable-next-line sonarjs/no-identical-functions
-      //     taskGroups: state.completedGroupedTasks?.taskGroups?.map((g) => ({
-      //       ...g,
-      //       tasks: updateBundleInList(
-      //         { isFetchingTasks: true },
-      //         workflowIdentifier,
-      //         g.tasks,
-      //       ),
-      //     })),
-      //   },
-      // };
     }
 
     case ActionTypes.GET_TASKS_FOR_WORKFLOW_SUCCESS: {
@@ -525,33 +517,6 @@ const ListDetailsReducer = (state = initialState, action) => {
           ...newTasks,
         },
       };
-
-      // return {
-      //   ...state,
-      //   groupedTasks: {
-      //     ...state.groupedTasks,
-      //     taskGroups: state.groupedTasks?.taskGroups?.map((g) => ({
-      //       ...g,
-      //       tasks: updateBundleInList(
-      //         { isFetchingTasks: false, tasks },
-      //         workflowIdentifier,
-      //         g.tasks,
-      //       ),
-      //     })),
-      //   },
-      //   completedGroupedTasks: {
-      //     ...state.completedGroupedTasks,
-      //     // eslint-disable-next-line sonarjs/no-identical-functions
-      //     taskGroups: state.completedGroupedTasks?.taskGroups?.map((g) => ({
-      //       ...g,
-      //       tasks: updateBundleInList(
-      //         { isFetchingTasks: false, tasks },
-      //         workflowIdentifier,
-      //         g.tasks,
-      //       ),
-      //     })),
-      //   },
-      // };
     }
 
     case ActionTypes.UPDATE_PATIENT_DETAILS: {
@@ -581,8 +546,8 @@ const ListDetailsReducer = (state = initialState, action) => {
 
     case ActionTypes.UPDATE_PARTIAL_WORKFLOW_SUCCESS: {
       return updateBundleInState(
-        () => ({ ...action.newData }),
         action.taskWorkflowIdentifier,
+        action.newData,
         state,
       );
     }
@@ -596,17 +561,20 @@ const ListDetailsReducer = (state = initialState, action) => {
         return state;
       }
 
-      const bundleIdentifier = addedTask.taskGroups?.find(
-        ({ groupType }) => groupType === TaskGroupType.BUNDLE,
-      )?.taskGroupIdentifier;
+      const bundle =
+        addedTask.taskGroups?.find(
+          ({ groupType }) => groupType === TaskGroupType.BUNDLE,
+        ) || {};
+
+      const bundleIdentifier = bundle?.taskGroupIdentifier;
 
       if (bundleIdentifier) {
         return updateBundleInState(
-          (bundle) => ({
+          bundleIdentifier,
+          {
             ...bundle,
             tasks: [...(bundle.tasks || []), addedTask],
-          }),
-          bundleIdentifier,
+          },
           state,
         );
       }
@@ -624,6 +592,7 @@ const ListDetailsReducer = (state = initialState, action) => {
           tasks: [addedTask?.identifier, ...(group.tasks || [])],
         }),
         taskGroupIdentifier,
+        addedTask,
         state,
       );
 
@@ -648,6 +617,7 @@ const ListDetailsReducer = (state = initialState, action) => {
           tasks: [addedBundle, ...(group.tasks || [])],
         }),
         taskGroupIdentifier,
+        addedBundle,
         state,
       );
     }
@@ -670,6 +640,7 @@ const ListDetailsReducer = (state = initialState, action) => {
           tasks: [workflow, ...(group.tasks || [])],
         }),
         taskGroupIdentifier,
+        workflow,
         state,
       );
     }

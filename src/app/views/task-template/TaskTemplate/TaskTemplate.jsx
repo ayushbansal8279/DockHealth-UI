@@ -399,22 +399,20 @@ const TaskTemplate = ({
                       {...droppableProvided.droppableProps}
                       ref={droppableProvided.innerRef}
                     >
-                      {tasks?.map((task, index) => {
+                      {tasks?.map((taskIdentifier, index) => {
                         return (
                           <Draggable
-                            key={task.taskIdentifier}
-                            draggableId={task.taskIdentifier}
+                            key={taskIdentifier}
+                            draggableId={taskIdentifier}
                             index={index}
                           >
                             {(draggableProvided, draggableSnapshot) => (
                               <StandardTaskItemContainer
-                                isStartedDnD={
-                                  draggableId === task.taskIdentifier
-                                }
+                                isStartedDnD={draggableId === taskIdentifier}
                                 isDragging={draggableSnapshot.isDragging}
                                 draggableProvided={draggableProvided}
                                 isDraggable
-                                task={task}
+                                taskIdentifier={taskIdentifier}
                                 isFullView={isFullView}
                                 multipleAssigneesContext={
                                   containsMultipleAssignees

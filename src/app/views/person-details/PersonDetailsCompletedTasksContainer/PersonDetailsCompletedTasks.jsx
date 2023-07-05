@@ -10,7 +10,7 @@ import {
 } from 'selectors/person-details-selectors';
 import { hasFiltersAppliedSelector } from 'selectors/mega-filter-selectors';
 import { sortUserTasks } from 'actions/person-details-actions';
-import { filterTasksBySearchValue } from 'helpers/task-search-helper';
+// import { filterTasksBySearchValue } from 'helpers/task-search-helper';
 import NoSearchResultsView from 'components/tasklist/EmptyListView/NoSearchResultsView';
 import EmptyListView from 'components/tasklist/EmptyListView/EmptyListView';
 import NoFilterResultsView from 'components/tasklist/EmptyListView/NoFilterResultsView';
@@ -113,9 +113,9 @@ const PersonDetailsCompletedTasks = ({
                   <>
                     {tasks?.map((task) => (
                       <StandardTaskItem
-                        key={task}
+                        key={task.identifier}
                         isFullView={isFullView}
-                        task={task}
+                        taskIdentifier={task.identifier}
                         isCompletedGroup={isCompletedGroup}
                         toggleCompleteTask={toggleCompleteTask}
                         onTaskUpdate={onTaskUpdate}

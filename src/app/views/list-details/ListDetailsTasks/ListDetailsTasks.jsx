@@ -353,10 +353,10 @@ const ListDetailsTasks = ({
                           >
                             {
                               // eslint-disable-next-line no-shadow
-                              tasks?.map((task, index) => (
+                              tasks?.map((taskIdentifier, index) => (
                                 <Draggable
-                                  key={task}
-                                  draggableId={String(task)}
+                                  key={taskIdentifier}
+                                  draggableId={taskIdentifier}
                                   index={index}
                                   isDragDisabled={
                                     isCompletedGroup ||
@@ -368,11 +368,11 @@ const ListDetailsTasks = ({
                                     <>
                                       {/* {task?.itemType === TaskItemType.TASK ? ( */}
                                       <StandardTaskItem
-                                        key={task}
+                                        key={taskIdentifier}
                                         isFullView={isFullView}
                                         isDragging={isDragging}
-                                        isStartedDnD={draggedId === task}
-                                        task={task}
+                                        isStartedDnD={draggedId === taskIdentifier}
+                                        taskIdentifier={taskIdentifier}
                                         taskGroupIdentifier={
                                           taskGroupIdentifier
                                         }
@@ -389,7 +389,7 @@ const ListDetailsTasks = ({
                                         isDraggable
                                         addingNewSubtask={
                                           addingNewSubtaskParentId ===
-                                          task.identifier
+                                          taskIdentifier
                                         }
                                         subtasksDisabled={isListFlattened}
                                         areFiltersApplied={areFiltersApplied}

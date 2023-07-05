@@ -46,13 +46,13 @@ const TaskTemplateGroup = ({
   });
 
   const {
-    tasks,
+    tasks, // task identifiers
     identifier,
     patient,
     parentTaskGroupIdentifier,
     taskListIdentifier,
     isFetchingTasks,
-  } = templateGroup;
+  } = templateGroup || {};
 
   const { SHOW_WORKFLOW_DETAILS, SHOW_WORKFLOW_COMPLETED_TASKS } = viewSetup;
   const { innerRef, draggableProps } = draggableProvided;
@@ -166,16 +166,16 @@ const TaskTemplateGroup = ({
                   }
                 }}
               >
-                <Droppable droppableId={templateGroup.identifier}>
+                <Droppable droppableId={templateGroup?.identifier}>
                   {(templateDroppableProvided) => (
                     <div
                       ref={templateDroppableProvided.innerRef}
                       {...templateDroppableProvided.droppableProps}
                     >
-                      {filteredTasks?.map((task, index) => (
+                      {filteredTasks?.map((taskIdentifier, index) => (
                         <Draggable
-                          key={task.taskIdentifier}
-                          draggableId={task.taskIdentifier}
+                          key={taskIdentifier}
+                          draggableId={taskIdentifier}
                           index={index}
                           isDragDisabled={restrictions?.createTask === DISABLED}
                         >
@@ -185,11 +185,11 @@ const TaskTemplateGroup = ({
                           ) => (
                             <StandardTaskItemContainer
                               isStartedDnD={
-                                draggedTaskIdentifier === task.taskIdentifier
+                                draggedTaskIdentifier === taskIdentifier
                               }
                               isDragging={draggableSnapshot.isDragging}
                               draggableProvided={templateTaskDraggableProvided}
-                              task={task}
+                              taskIdentifier={taskIdentifier}
                               isFullView={isFullView}
                               isCompletedGroup={isCompletedGroup}
                               multipleAssigneesContext={

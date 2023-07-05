@@ -20,7 +20,7 @@ import {
 } from 'actions/person-details-actions';
 import { onSortChanged } from 'helpers/ga-event-helper';
 import { getSharedTaskListsWithCurrentUser } from 'api/task-list-api';
-import { filterTasksBySearchValue } from 'helpers/task-search-helper';
+// import { filterTasksBySearchValue } from 'helpers/task-search-helper';
 import NoSearchResultsView from 'components/tasklist/EmptyListView/NoSearchResultsView';
 import EmptyListViewWithQuickAddTask from 'components/tasklist/EmptyListView/EmptyListViewWithQuickAddTask';
 import EmptyListView from 'components/tasklist/EmptyListView/EmptyListView';
@@ -76,6 +76,7 @@ const PersonDetailsOpenedTasks = ({
         fetchMethod: () => getSharedTaskListsWithCurrentUser(userIdentifier),
         listCreationPayload: {
           adminIdentifiers:
+            // eslint-disable-next-line unicorn/no-negated-condition
             currentUser.userIdentifier !== userIdentifier
               ? [userIdentifier]
               : [],
@@ -174,7 +175,7 @@ const PersonDetailsOpenedTasks = ({
                     <StandardTaskItem
                       key={task.identifier}
                       isFullView={isFullView}
-                      task={task}
+                      taskIdentifier={task.identifier}
                       isCompletedGroup={false}
                       toggleCompleteTask={toggleCompleteTask}
                       onTaskUpdate={onTaskUpdate}

@@ -341,7 +341,7 @@ const DashboardTasksGroup = ({
                                       task.identifier === lastCreatedTaskId
                                     }
                                     pageBackground={palette.white}
-                                    task={task}
+                                    taskItemIdentifier={task}
                                     isCompletedGroup={isCompletedGroup}
                                     isDragging={isDragging}
                                     dragHandleProps={

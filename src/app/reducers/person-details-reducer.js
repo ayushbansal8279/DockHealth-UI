@@ -8,8 +8,8 @@ const initialState = {
   currentTasksStatus: null,
   userDetails: null,
   isFetchingUserDetails: false,
-  completedTasks: null,
-  tasks: null,
+  taskIdentifiers: null,
+  completedTaskIdentifiers: null,
   tasksMap: {},
   isFetching: false,
   isCompletedTasksFetching: false,
@@ -112,7 +112,7 @@ const PersonDetailsReducer = (state = initialState, action) => {
           ...state.tasksMap,
           ...newMap,
         },
-        tasks: tasks.map((task) => task.identifier),
+        taskIdentifiers: tasks.map((task) => task.identifier),
         isFetching: false,
       };
 
@@ -146,7 +146,7 @@ const PersonDetailsReducer = (state = initialState, action) => {
           ...state.tasksMap,
           ...newMap,
         },
-        completedTasks: tasks.map((task) => task.identifier),
+        completedTaskIdentifiers: tasks.map((task) => task.identifier),
         isCompletedTasksFetching: false,
         isFetching: false,
       };
@@ -176,7 +176,7 @@ const PersonDetailsReducer = (state = initialState, action) => {
           order,
         },
         completedTasks: null,
-        tasks: null,
+        taskIdentifiers: null,
       };
     }
 
@@ -185,7 +185,14 @@ const PersonDetailsReducer = (state = initialState, action) => {
 
       return {
         ...state,
-        tasks: [addedTask, ...(state.tasks || [])],
+        tasksMap: {
+          ...state.tasksMap,
+          [addedTask.identifier]: addedTask,
+        },
+        taskIdentifiers: [
+          addedTask.identifier,
+          ...(state.taskIdentifiers || []),
+        ],
       };
     }
 

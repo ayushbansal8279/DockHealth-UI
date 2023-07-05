@@ -108,7 +108,7 @@ const Subtasks = ({
                             <TaskItem
                               dragHandleProps={dragHandleProps}
                               key={subtask.taskIdentifier}
-                              task={{ ...subtask, taskList }}
+                              taskItemIdentifier={subtask.taskIdentifier}
                               isDragging={isDraggingSubtask}
                               parentHasPatient={parentHasPatient}
                               isDraggable={isDraggable && subtasks?.length > 1}

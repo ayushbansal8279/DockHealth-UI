@@ -127,7 +127,7 @@ const TaskItem = React.memo(
   ({
     isOpen,
     switchOpen,
-    task: temporaryTask,
+    taskItemIdentifier,
     // toggleCompleteTask,
     taskGroupIdentifier,
     dragHandleProps,
@@ -158,12 +158,8 @@ const TaskItem = React.memo(
     origin,
   }) => {
     const task = useSelector((state) => {
-      return taskLookupSelector(state, origin, temporaryTask);
+      return taskLookupSelector(state, origin, taskItemIdentifier);
     });
-
-    if (!task) {
-      return;
-    }
 
     const {
       taskIdentifier,
@@ -187,20 +183,26 @@ const TaskItem = React.memo(
       dependencyTasksCount,
       hasEscalations,
       priority,
-    } = task;
+    } = task || {};
 
     const patient = taskPatient ?? parentTask?.patient ?? parentPatient;
 
     const { columns } = useTaskListColumnsConfig();
     const { listName, taskListIdentifier } = taskList || {};
-    const [isCompleted, setIsCompleted] = useState(task?.status === 'COMPLETE');
     const isTemplateTask = checkIfTemplateTask(task);
     const isSubtask = !!parentTaskIdentifier;
-    const isDecisionTask = task.intentType === 'DECISION';
-    const isDecisionSelected = task.taskOutcomes?.reduce(
+    const isDecisionTask = task?.intentType === 'DECISION';
+    const isDecisionSelected = task?.taskOutcomes?.reduce(
       (accumulator, currentValue) => accumulator || currentValue.isSelected,
       false,
     );
+
+    const [isCompleted, setIsCompleted] = useState(false);
+    useEffect(() => {
+      if (task?.status === 'COMPLETE') {
+        setIsCompleted(true);
+      }
+    }, [task]);
 
     const actions = useActions(TaskActions);
     const modalActions = useActions(ModalActions);
@@ -473,7 +475,7 @@ const TaskItem = React.memo(
         event.stopPropagation();
         if (subtasksDisabled) {
           highlightTasksOfTheSameParent(
-            task.parentTaskIdentifier || task.taskIdentifier,
+            task?.parentTaskIdentifier || task?.taskIdentifier,
           );
         } else if (isOpen) {
           // eslint-disable-next-line sonarjs/no-gratuitous-expressions
@@ -487,8 +489,8 @@ const TaskItem = React.memo(
         isOpen,
         switchOpen,
         highlightTasksOfTheSameParent,
-        task.parentTaskIdentifier,
-        task.taskIdentifier,
+        task?.parentTaskIdentifier,
+        task?.taskIdentifier,
       ],
     );
 
@@ -542,7 +544,7 @@ const TaskItem = React.memo(
     );
 
     const templates = useSelector((state) =>
-      singleTaskCustomFieldsSelector(state, task.taskIdentifier),
+      singleTaskCustomFieldsSelector(state, task?.taskIdentifier),
     );
 
     const refreshTab = useCallback(
@@ -595,11 +597,11 @@ const TaskItem = React.memo(
         }
 
         const hasIncompletedSubtasks =
-          task.subtasks?.length > 0
-            ? task.subtasks.find((subtask) => subtask.status === 'INCOMPLETE')
-            : task.subTasksCount - task.subTasksCompletedCount > 0;
+          task?.subtasks?.length > 0
+            ? task?.subtasks.find((subtask) => subtask.status === 'INCOMPLETE')
+            : task?.subTasksCount - task?.subTasksCompletedCount > 0;
 
-        if (task.status === 'INCOMPLETE' && hasIncompletedSubtasks) {
+        if (task?.status === 'INCOMPLETE' && hasIncompletedSubtasks) {
           const modalProps = {
             confirm: () => {
               modalActions.closeModal();
@@ -671,8 +673,8 @@ const TaskItem = React.memo(
     );
 
     const showDraggableDots = !dragAndDropDisabled && isDraggable;
-    const showPriority = task.priority && task.priority !== TaskPriority.NONE;
-    const showDecisionRow = task.intentType === 'DECISION' && !isTemplateTask;
+    const showPriority = task?.priority && task?.priority !== TaskPriority.NONE;
+    const showDecisionRow = task?.intentType === 'DECISION' && !isTemplateTask;
     const hasParentTaskLabel = isSubtask && !isNestedTask && !!parentTask;
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -711,7 +713,7 @@ const TaskItem = React.memo(
               />
             )}
             {showPriority && (
-              <PriorityIndicator color={getPriorityColor(task.priority)} />
+              <PriorityIndicator color={getPriorityColor(task?.priority)} />
             )}
             {showSubtaskStylingLink && getSubtaskStylingLink(isLast)}
             <ActionIconsContainer>
@@ -761,7 +763,7 @@ const TaskItem = React.memo(
         showDraggableDots,
         showPriority,
         showSubtaskStylingLink,
-        task.priority,
+        task?.priority,
         taskListRestrictions,
       ],
     );
@@ -785,7 +787,7 @@ const TaskItem = React.memo(
           isCompletedTab={isCompletedView}
           // viewSetup={viewSetup}
           viewSetup={() => {}}
-          // isStartedDnD={draggedId === task.identifier}
+          // isStartedDnD={draggedId === task?.identifier}
           isStartedDnD={false}
           // draggableProvided={draggableProvided}
           draggableProvided={{}}
@@ -798,8 +800,6 @@ const TaskItem = React.memo(
         />
       );
     }
-
-    if (!task) return;
 
     return (
       <>
@@ -819,6 +819,7 @@ const TaskItem = React.memo(
             }
             isAddingTask={false}
             iconColorActive={iconColorActive}
+            taskIdentifier={task?.identifier}
             origin={origin}
           >
             {randerFirstColumnCoverIfNecessary(
@@ -910,7 +911,7 @@ const TaskItem = React.memo(
                       onClick={(event) => event.stopPropagation()}
                     >
                       <TaskItemDecision
-                        outcomes={task.taskOutcomes}
+                        outcomes={task?.taskOutcomes}
                         onSelect={(
                           targetValue,
                           taskItem,
@@ -1043,7 +1044,7 @@ const TaskItem = React.memo(
                     order={getColumnOrder(TaskItemColumn.PRIORITY)}
                   >
                     <TaskItemDropdown
-                      value={task.priority}
+                      value={task?.priority}
                       onChange={handlePriorityChange}
                       field={{
                         options: [
@@ -1627,7 +1628,7 @@ const TaskItem = React.memo(
                     <TaskItemList
                       listName={listName}
                       taskListIdentifier={taskListIdentifier}
-                      taskStatus={task.status}
+                      taskStatus={task?.status}
                     />
                   </TaskItemCell>,
                   getColumnOrder(TaskItemColumn.LIST_NAME),

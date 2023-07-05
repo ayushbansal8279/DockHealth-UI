@@ -19,15 +19,15 @@ const StandardTaskItemContainer = ({
   onTaskChanged,
   onTaskCompletedStatusChanged,
   isBundleTask,
-  task,
+  taskIdentifier,
   origin,
   ...restProps
 }) => {
   const { templates } = useSelector(taskCustomFieldsSelector);
   const handleTaskUpdate = useCallback(
-    (taskIdentifier, dataToUpdate) => {
+    (taskId, dataToUpdate) => {
       taskActions
-        .partialUpdateTask(taskIdentifier, dataToUpdate)
+        .partialUpdateTask(taskId, dataToUpdate)
         .then(() => {
           if (typeof onTaskChenged === 'function') onTaskChanged();
           alertActions.showGlobalAlert(AlertMessages.UPDATED);
@@ -116,7 +116,7 @@ const StandardTaskItemContainer = ({
       updateWorkflowStatus={handleUpdateWorkflowStatus}
       toggleCompleteTask={handleToggleTaskCompletedStatus}
       onTaskUpdate={handleTaskUpdate}
-      task={task?.taskIdentifier}
+      taskIdentifier={taskIdentifier}
       origin={origin}
       {...restProps}
     />

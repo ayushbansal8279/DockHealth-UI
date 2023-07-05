@@ -352,7 +352,7 @@ const PatientTasksListView = () => {
               <StandardTaskItem
                 key={task.identifier}
                 isFullView={isFullView}
-                task={task}
+                taskIdentifier={task.identifier}
                 taskGroupIdentifier={taskGroupIdentifier}
                 isCompletedGroup={completeTasksVisible}
                 onTaskUpdate={updatePatientTaskInList}
