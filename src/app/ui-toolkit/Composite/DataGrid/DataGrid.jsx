@@ -27,12 +27,34 @@ export default function DataGrid({
   ...props
 }) {
   const [definitions, setDefinitions] = useState([]);
+  const [columnVisibilityModel, setColumnVisibilityModel] = useState({});
 
   const register = (data) => {
     if (!definitions.some(header => header.name === data.name)) {
       setDefinitions(currentValue => [...currentValue, data]);
     }
   };
+
+  useEffect(() => {
+    register(
+      {
+        field: 'id',
+        name: 'Identifier',
+        hidden: true,
+        value: ({ identifier }) => identifier
+      }
+    );
+    // dataset[0]?.fields
+    //   .map(({ profileTypeField }, index) =>
+    //     register({
+    //       field: profileTypeField.identifier,
+    //       name: profileTypeField.name,
+    //       value: ({ fields }) => {
+    //         const value = fields[index].values[0]
+    //         return value.value ?? value.customFieldOption.name;
+    //       }
+    //     }));
+  }, [dataset]);
 
   const columns = useMemo(() =>
     definitions
@@ -42,7 +64,7 @@ export default function DataGrid({
         headerName: name,
         sortable: !unsortable,
         editable: editable,
-        flex: 1
+        // flex: 1
       })),
     [definitions]
   );
@@ -59,8 +81,6 @@ export default function DataGrid({
       return [];
     }
   }, [definitions, dataset]);
-
-  const [columnVisibilityModel, setColumnVisibilityModel] = useState({});
 
   useEffect(() => {
     setColumnVisibilityModel(
