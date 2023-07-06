@@ -148,7 +148,7 @@ const PatientLabels = ({ isPatientBulk, disableFocusOnRender = false }) => {
     inputReference.current = element;
   };
   const renderOptionCallback = useCallback(
-    (option) =>
+    (_, option) =>
       renderOption({
         option,
         registerOption: (element) => {
