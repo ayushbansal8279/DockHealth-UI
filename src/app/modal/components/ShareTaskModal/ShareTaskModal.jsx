@@ -88,7 +88,7 @@ const ShareTaskModal = (props) => {
       <ModalDescription>
         {externalUserInitialValues
           ? 'Enter the details of the outside collaborator'
-          : 'Copy here about what happens when you share the task'}
+          : 'Share this task with another user'}
       </ModalDescription>
       <Box m={2} />
       {externalUserInitialValues ? (

@@ -131,13 +131,18 @@ function* getDashboardGroups() {
     const tabName = yield select(dashboardTabNameSelector);
 
     if (tabName === DashboardTasksTab.SHARED_TASKS) {
-      const data = yield call(
-        getTasksForOrganizationByImplicitGroup,
-        'SHARED_TASKS',
-      );
+      const data = yield call(getTasksAssignedToUserByImplicitGroup, 'SHARED');
+      // yield put({
+      //   type: ActionTypes.GET_DASHBOARD_GROUPS_SUCCESS,
+      //   tasksList: data,
+      // });
+      const groupType = 'SHARED';
+      const group = data?.taskGroups.find((g) => g.groupType === groupType);
+
       yield put({
-        type: ActionTypes.GET_DASHBOARD_GROUPS_SUCCESS,
-        tasksList: data,
+        type: ActionTypes.LOAD_MORE_DASHBOARD_TASKS_FOR_GROUP_SUCCESS,
+        groupType,
+        group,
       });
     } else {
       const dashboardGroups = yield call(

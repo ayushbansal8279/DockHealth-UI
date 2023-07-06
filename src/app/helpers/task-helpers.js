@@ -179,6 +179,7 @@ export const TaskItemColumn = {
   ANCHOR_DATE: 'ANCHOR_DT',
   LIST_NAME: 'LIST_NAME',
   ASSIGNED: 'ASSIGNED_TO',
+  SHARED: 'SHARED',
   PATIENT: 'PATIENT',
   CREATED_DATE: 'CREATED_DT',
   CREATED_BY: 'CREATED_BY',
@@ -218,6 +219,12 @@ export const TaskItemColumnWidth = {
   [TaskItemColumn.ACTIVITY]: 150,
   [TaskItemColumn.LIST_NAME]: 168,
   [TaskItemColumn.ASSIGNED]: {
+    DEFAULT: 90,
+    WIDE: 90,
+    NARROW: 60,
+    PRINT: 170,
+  },
+  [TaskItemColumn.SHARED]: {
     DEFAULT: 90,
     WIDE: 90,
     NARROW: 60,
@@ -275,6 +282,7 @@ export const TASK_ITEM_BASE_COLUMN_CONFIG = {
   [TaskItemColumn.CREATED_BY]: true,
   [TaskItemColumn.ANCHOR_DATE]: true,
   [TaskItemColumn.ASSIGNED]: true,
+  [TaskItemColumn.SHARED]: true,
   [TaskItemColumn.LIST_NAME]: false,
   [TaskItemColumn.PRIORITY]: true,
 };
@@ -282,6 +290,7 @@ export const TASK_ITEM_BASE_COLUMN_CONFIG = {
 export const SHOW_COLUMNS_CONFIG = {
   [TaskItemColumn.WORKFLOW_STATUS]: true,
   [TaskItemColumn.ASSIGNED]: true,
+  [TaskItemColumn.SHARED]: true,
   [TaskItemColumn.COMMENTS]: true,
   [TaskItemColumn.LABELS]: true,
   [TaskItemColumn.FILES]: true,

@@ -1127,6 +1127,45 @@ const TaskTemplateGroupHeader = ({
           )}
         </>
       )}
+      {isColumnChecked(columns, TaskItemColumn.ASSIGNED) && (
+        <>
+          {randerFirstColumnCoverIfNecessary(
+            <TaskItemCell
+              key={`assigned_${identifier}`}
+              width={
+                columns?.find(
+                  ({ identifier: id }) => id === TaskItemColumn.SHARED,
+                )?.columnWidth
+              }
+              // eslint-disable-next-line sonarjs/no-all-duplicated-branches
+              justify={groupHasMultipleAssignees ? 'center' : 'center'}
+              paddingLeft="small"
+              paddingRight="small"
+              onContextMenu={(event) => {
+                event.stopPropagation();
+              }}
+              order={getColumnOrder(TaskItemColumn.SHARED)}
+              printWidth={TaskItemColumnWidth[TaskItemColumn.SHARED].PRINT}
+            >
+              <TaskTemplateMembers
+                readOnly={restrictions?.assigment === READ_ONLY}
+                currentUser={currentUser}
+                multipleAssigneesContext={groupHasMultipleAssignees}
+                workflow={
+                  templateGroup.assignedToUsers || !workFlowData
+                    ? templateGroup
+                    : workFlowData
+                }
+                onWorkflowUpdate={compose(dispatch, updatePartialWorkflow)}
+              />
+            </TaskItemCell>,
+            getColumnOrder(TaskItemColumn.SHARED),
+            columns?.find(
+              ({ identifier: id }) => id === TaskItemColumn.SHARED,
+            )?.columnWidth,
+          )}
+        </>
+      )}
       {isColumnChecked(columns, TaskItemColumn.LIST_NAME) && (
         <>
           {randerFirstColumnCoverIfNecessary(

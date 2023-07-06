@@ -14,6 +14,7 @@ import MoreVertIcon from '@mui/icons-material/MoreVert';
 import * as AlertActions from 'alert/actions';
 import debounce from 'lodash.debounce';
 import { getUsersByName } from 'api/user-api';
+// import Autocomplete from 'components/common/Autocomplete/Autocomplete';
 import {
   Autocomplete,
   SelectedUsersContainer,
@@ -76,12 +77,13 @@ const UsersSelect = (props) => {
         autoHighlight
         inputValue={inputValue}
         getOptionLabel={prop('userName')}
-        renderOption={(option) => (
+        renderOption={(props_, option) => (
           <Box
             width="100%"
             display="flex"
             justifyContent="space-between"
-            alignItems="center"
+            alignItems="left"
+            {...props_}
           >
             <ListItemText>
               {option.userName}

@@ -19,6 +19,7 @@ export const TaskHeaderColumn = {
   COMPLETED_BY: 'COMPLETED_BY',
   ANCHOR_DATE: 'ANCHOR_DT',
   ASSIGNED: 'ASSIGNED_TO',
+  SHARED: 'SHARED',
   LIST_NAME: 'LIST_NAME',
   PRIORITY: 'PRIORITY',
   PATIENT_GENDER: 'PATIENT_GENDER',
@@ -173,6 +174,12 @@ export const getTaskHeaderOptions = (
     {
       identifier: TaskHeaderColumn.ASSIGNED,
       label: 'Assign',
+      draggable: true,
+      printWidth: TaskItemColumnWidth[TaskHeaderColumn.ASSIGNED].PRINT,
+    },
+    {
+      identifier: TaskHeaderColumn.SHARED,
+      label: 'Shared',
       draggable: true,
       printWidth: TaskItemColumnWidth[TaskHeaderColumn.ASSIGNED].PRINT,
     },
