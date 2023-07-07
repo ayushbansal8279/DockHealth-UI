@@ -15,7 +15,6 @@ export const StyledDropdownInput = styled(DropdownInput)`
   width: ${({ width }) => (width ? `${width}px` : '100%')};
   border: none;
   transition: none;
-  
   & .MuiInput-root {
     margintop: 0 !important;
     backgroundcolor: palette.blueGrey;
