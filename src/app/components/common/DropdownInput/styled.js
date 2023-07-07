@@ -21,6 +21,7 @@ export const StyledDropdownInput = styled(DropdownInput)`
   padding: ${spacing.tiny} ${spacing.small} ${spacing.tiny} ${spacing.small};
   borderRadius: 4;
   fontFamily: 'Roboto Condensed', sans-serif;
+  font-size: 1rem;
   color: palette.mediumGrey;
 
   &[readonly] {

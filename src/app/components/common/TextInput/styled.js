@@ -50,22 +50,22 @@ export const StyledTextField = styled(TextField)`
     //   //   props.parentType === 'selectTag' ? '30px' : '0px',
     // },
 
-    // & .MuiInputBase-input {
-    //   height: 100%;
-    //   border: none;
-    //   box-shadow: none;
-    //   background: none;
-    //   font-size: 0.875rem;
-    //   font-weight: ${fontWeights.regular};
-    //   padding: 0;
+    & .MuiInputBase-input {
+      height: 100%;
+      border: none;
+      box-shadow: none;
+      background: none;
+      font-size: 0.875rem;
+      font-weight: ${fontWeights.regular};
+      padding: 0;
 
-    //   // &::placeholder {
-    //   //   color: ${palette.coolGrey1};
-    //   //   font-size: 1rem;
-    //   //   font-weight: ${fontWeights.regular};
-    //   //   opacity: 0.8;
-    //   //   text-transform: uppercase;
-    //   // }
+      // &::placeholder {
+      //   color: ${palette.coolGrey1};
+      //   font-size: 1rem;
+      //   font-weight: ${fontWeights.regular};
+      //   opacity: 0.8;
+      //   text-transform: uppercase;
+      // }
     // }
   }
 `;
