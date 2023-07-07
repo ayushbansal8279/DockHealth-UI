@@ -4,44 +4,43 @@ import palette from 'styles/palette';
 import spacing from 'styles/spacing';
 import { fontWeights } from 'styles/font';
 
+import DropdownInput from './DropdownInput';
+
 export const SelectArrowImg = styled.img`
   pointer-events: none;
   height: 7px;
 `;
 
-export const useSecondaryTypeInputStyles = undefined;
-// makeStyles({
-//   root: {
-//     marginTop: '0 !important',
-//     backgroundColor: palette.blueGrey,
-//     paddingRight: `${spacing.small} !important`,
-//   },
-//   input: {
-//     padding: `${spacing.tiny} ${spacing.small} ${spacing.tiny} ${spacing.small}`,
-//     borderRadius: 4,
-//     fontFamily: "'Roboto Condensed', sans-serif",
-//     color: palette.mediumGrey,
-//     '&[readonly]': {
-//       cursor: 'pointer',
-//       backgroundColor: palette.blueGrey,
-//     },
-//     '&:focus': {
-//       border: 'none',
-//     },
-//     '&:disabled': {
-//       cursor: 'initial',
-//     },
-//   },
-// });
+export const StyledDropdownInput = styled(DropdownInput)`
+& .MuiInput-root {
+  marginTop: 0 !important;
+  backgroundColor: palette.blueGrey;
+  paddingRight: ${spacing.small} !important;
+}
+& .MuiInputBase-input {
+  padding: ${spacing.tiny} ${spacing.small} ${spacing.tiny} ${spacing.small};
+  borderRadius: 4;
+  fontFamily: 'Roboto Condensed', sans-serif;
+  color: palette.mediumGrey;
 
-export const useSecondaryTypeTextFieldStyles = undefined;
-// makeStyles({
-//   root: {
-//     border: 'none',
-//     transition: 'none',
-//     width: (props) => (props.width ? `${props.width}px` : '100%'),
-//   },
-// });
+  &[readonly] {
+    cursor: pointer;
+    backgroundColor: palette.blueGrey;
+  },
+  &:focus {
+    border: none;
+  }
+  &:disabled {
+    cursor: initial;
+  }
+
+  & .MuiTextField-root {
+    border: none;
+    transition: none;
+    width: ${({width}) => (width ? `${width}px` : '100%')};
+  }
+}
+`
 
 export const SelectOption = styled.div`
   width: 100%;
