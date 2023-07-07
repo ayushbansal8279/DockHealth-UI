@@ -4,7 +4,7 @@ import { useDispatch } from "react-redux";
 import { useParams } from "react-router-dom";
 import { getUserGroupIdentifierByUrlParameter } from "helpers/user-groups-helper";
 import { setCurrentUserGroup, unsetCurrentUserGroup } from "actions/user-groups-actions";
-import { Box, Button } from "@mui/material";
+import { Box, Stack } from "@mui/material";
 import { getAllProfiles } from "api/profile-api";
 import { getAllProfileFieldTypes } from "api/profile-type-field-api";
 import { showGlobalErrorAlert } from "alert/actions";
@@ -13,6 +13,8 @@ import OptionsMenu from "components/common/OptionsMenu/OptionsMenu";
 import MoreVert from "@mui/icons-material/MoreVert";
 import ViewLayout from "components/template/ViewLayout/ViewLayout";
 import ProfileDrawer from "components/patients/CustomProfilesList/ProfileDrawer";
+import { Add as AddIcon } from "@mui/icons-material";
+import AdornedButton from "components/common/AdornedButton/AdornedButton";
 
 const CustomProfileList = () => {
   const dispatch = useDispatch();
@@ -102,13 +104,17 @@ const CustomProfileList = () => {
           fields={customFields}
           onClose={handleClose}
         />
-        <Button
-          type="submit"
-          variant="text"
-          onClick={handleProfileAddClick}
-        >
-          ADD A PROVIDER
-        </Button>
+        <Stack direction="row-reverse" sx={{ m: "16px 32px" }}>
+          <Box display="flex" alignItems="center">
+              <Box m={1} />
+              <AdornedButton
+                adornment={<AddIcon />}
+                onClick={handleProfileAddClick}
+              >
+                ADD A PROVIDER
+              </AdornedButton>
+          </Box>
+        </Stack>
         <DataGrid
           dataset={profiles}
           onRecordClick={handleRecordClick}

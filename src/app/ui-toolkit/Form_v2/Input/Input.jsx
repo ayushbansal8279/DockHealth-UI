@@ -1,10 +1,11 @@
 import React from 'react';
 import * as Sc from './styled';
 
-export default function Input({ ...props }) {
-  return (
-    <Sc.Input
-      {...props}
-    />
-  );
-}
+export const Input = React.forwardRef(({ ...props }, ref) => (
+  <Sc.Input
+    ref={ref}
+    {...props}
+  />
+));
+
+export default Input;
