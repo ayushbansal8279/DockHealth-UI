@@ -98,7 +98,7 @@ const EditCustomFieldModal = ({
         )
         .nullable(),
 
-      profileTypeIdentifier: string().nullable(),
+      // profileTypeIdentifier: string().nullable(),
       ...(type === 'TASK'
         ? {}
         : { fieldCategoryType: string().required(REQUIRED_MESSAGE) }),
@@ -108,9 +108,22 @@ const EditCustomFieldModal = ({
   const formMethods = useForm({
     resolver: yupResolver(validationSchema),
     mode: 'onSubmit',
-    defaultValues: isCreatingNewField
-      ? { fieldCategoryType: Category.OTHER_INFO }
-      : customField,
+    defaultValues: useMemo(() => {
+      const baseCustomField = isCreatingNewField
+        ? { fieldCategoryType: Category.OTHER_INFO }
+        : {
+            ...customField,
+            relatedProfileType: customField.relatedProfileType?.identifier,
+          };
+      if (customField?.relatedProfileType) {
+        const {
+          relatedProfileType: { identifier: value },
+        } = customField;
+
+        return { ...baseCustomField, relatedProfileType: value };
+      }
+      return baseCustomField;
+    }, [customField, isCreatingNewField]),
   });
   const { register, unregister, handleSubmit, setValue, watch, errors } =
     formMethods;
@@ -200,7 +213,7 @@ const EditCustomFieldModal = ({
       setProfileTypeOptions(profileTypes);
     }
     fetchData();
-  }, []); // Or [] if effect doesn't need props or state
+  }, []);
 
   const handleEditSubmit = (data) => {
     setIsSaving(true);
@@ -212,6 +225,9 @@ const EditCustomFieldModal = ({
       contextType: 'CUSTOM',
       profileTypeIdentifier: {
         identifier: data.profileTypeIdentifier,
+      },
+      relatedProfileType: {
+        identifier: data.relatedProfileType,
       },
     };
     CustomFieldsApi.updateCustomField(updatedField, type, taskListIdentifier)
@@ -236,6 +252,9 @@ const EditCustomFieldModal = ({
         contextType: 'CUSTOM',
         profileTypeIdentifier: {
           identifier: data.profileTypeIdentifier,
+        },
+        relatedProfileType: {
+          identifier: data.relatedProfileType,
         },
       },
       type,
@@ -298,18 +317,16 @@ const EditCustomFieldModal = ({
                         options={FIELD_TYPE_OPTIONS}
                       />
                     </Grid>
-                    {type !== 'TASK' &&
-                      type !== 'PROVIDER' &&
-                      fieldTypeValue !== FieldType.RELATIONSHIP && (
-                        <Grid item xs={6}>
-                          <FormSelect
-                            required
-                            label="Category"
-                            name="fieldCategoryType"
-                            options={CATEGORY_OPTIONS}
-                          />
-                        </Grid>
-                      )}
+                    {type !== 'TASK' && type !== 'PROVIDER' && (
+                      <Grid item xs={6}>
+                        <FormSelect
+                          required
+                          label="Category"
+                          name="fieldCategoryType"
+                          options={CATEGORY_OPTIONS}
+                        />
+                      </Grid>
+                    )}
                     {type !== 'PROVIDER' && type !== 'PATIENT' && (
                       <Grid item xs={6}>
                         <FormSelect
@@ -323,9 +340,8 @@ const EditCustomFieldModal = ({
                     {fieldTypeValue === FieldType.RELATIONSHIP && (
                       <Grid item xs={6}>
                         <FormSelect
-                          required
                           label="Profile Type"
-                          name="profileType"
+                          name="relatedProfileType"
                           options={profileTypeOptions}
                         />
                       </Grid>
