@@ -12,36 +12,35 @@ export const SelectArrowImg = styled.img`
 `;
 
 export const StyledDropdownInput = styled(DropdownInput)`
-& .MuiInput-root {
-  marginTop: 0 !important;
-  backgroundColor: palette.blueGrey;
-  paddingRight: ${spacing.small} !important;
-}
-& .MuiInputBase-input {
-  padding: ${spacing.tiny} ${spacing.small} ${spacing.tiny} ${spacing.small};
-  borderRadius: 4;
-  fontFamily: 'Roboto Condensed', sans-serif;
-  font-size: 1rem;
-  color: palette.mediumGrey;
+  width: ${({ width }) => (width ? `${width}px` : '100%')};
+  border: none;
+  transition: none;
+  
+  & .MuiInput-root {
+    margintop: 0 !important;
+    backgroundcolor: palette.blueGrey;
+    paddingright: ${spacing.small} !important;
+  }
+  & .MuiInputBase-input {
+    padding: ${spacing.tiny} ${spacing.small} ${spacing.tiny} ${spacing.small};
+    borderradius: 4;
+    fontfamily: 'Roboto Condensed', sans-serif;
+    font-size: 1rem;
+    color: palette.mediumGrey;
 
-  &[readonly] {
-    cursor: pointer;
-    backgroundColor: palette.blueGrey;
-  },
-  &:focus {
-    border: none;
+    &[readonly] {
+      cursor: pointer;
+      backgroundcolor: palette.blueGrey;
+    }
+    ,
+    &:focus {
+      border: none;
+    }
+    &:disabled {
+      cursor: initial;
+    }
   }
-  &:disabled {
-    cursor: initial;
-  }
-
-  & .MuiTextField-root {
-    border: none;
-    transition: none;
-    width: ${({width}) => (width ? `${width}px` : '100%')};
-  }
-}
-`
+`;
 
 export const SelectOption = styled.div`
   width: 100%;
