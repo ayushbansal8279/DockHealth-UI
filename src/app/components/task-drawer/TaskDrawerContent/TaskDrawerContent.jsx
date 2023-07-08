@@ -517,7 +517,7 @@ const TaskDrawerContent = props => {
         </Grid>
         {/* Put custom fields here */}
         {restrictions?.customFields !== DISABLED && (
-          <Grid item xs={12} style={styleFullRow(isMobile)}>
+          <Grid item xs={12}>
             <CustomFieldsSection fieldCategoryType="TASK_CORE" />
           </Grid>
         )}

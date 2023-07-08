@@ -73,7 +73,7 @@ export const CompletedBy = styled.div`
   transition-delay: ${(props) => (props.isCompleted ? '0' : '0.4')}s;
   font-size: ${fontSizes.small};
   padding-left: 5px;
-  padding-bottom: 2px;
+  padding-bottom: 0px;
 
   > span {
     color: ${palette.brightBlue};
@@ -237,6 +237,7 @@ export const DescriptionBox = styled.div`
       opacity: 1;
     }
   }
+  font-family: 'Roboto Condensed', sans-serif;
 `;
 
 export const DecisionBox = styled.div`
