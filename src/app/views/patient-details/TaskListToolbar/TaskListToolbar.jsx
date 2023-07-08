@@ -163,8 +163,9 @@ const TaskListToolbar = (props) => {
   );
 
   const onPrintClick = useCallback(() => {
-    closeMorePopover();
     onPrint();
+    window.print();
+    // closeMorePopover();
     // const title = isAllTasksView
     //   ? 'All Tasks'
     //   : listOptions.find(
@@ -176,14 +177,7 @@ const TaskListToolbar = (props) => {
     //   tasks: tasksToPrint,
     //   taskListMembers: listUsers,
     // });
-  }, [
-    closeMorePopover,
-    // isAllTasksView,
-    // listOptions,
-    // taskListIdentifierParameter,
-    // listUsers,
-    // tasksToPrint,
-  ]);
+  }, []);
 
   return (
     <ListsToolbarContainer>
