@@ -93,7 +93,7 @@ const InactiveRoleSelectionPopover = (props) => {
     <>
       <Header>Inactive User</Header>
       <RoleSelectionDescriptionOne>
-        You can reactive or archive this user. Which would you like to do?
+        You can reactivate or archive this user. Which would you like to do?
       </RoleSelectionDescriptionOne>
       <RoleSelectionButtonsContainer>
         <DenyButtonContainer>
