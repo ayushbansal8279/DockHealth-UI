@@ -463,6 +463,7 @@ const TaskItem = React.memo(
     }
 
     const customHighlight =
+      // eslint-disable-next-line unicorn/no-negated-condition
       customHighlightColor !== ''
         ? customHighlightColor
         : // eslint-disable-next-line unicorn/no-nested-ternary
@@ -734,6 +735,7 @@ const TaskItem = React.memo(
                 }
                 isCompleted={isCompleted}
                 onClick={
+                  // eslint-disable-next-line unicorn/no-negated-condition
                   taskListRestrictions?.completeTask !== DISABLED
                     ? onCircleClick
                     : () => {}
@@ -881,13 +883,19 @@ const TaskItem = React.memo(
                         ({ identifier }) =>
                           identifier === TaskItemColumn.DESCRIPTION,
                       )?.columnWidth -
+                      100 -
                       (isSubtask &&
                       !hasParentTaskLabel &&
                       descriptionColumnOrder === 0
-                        ? 106
-                        : 70)
+                        ? 50
+                        : 0) -
+                      (isSubtask ? 0 : 50) -
+                      (showDecisionRow ? 200 : 0)
                     }
                   />
+                  <DetailsButton onClick={onClickTaskItem}>
+                    Details
+                  </DetailsButton>
                   {!isSubtask && (
                     <TaskItemSubtasks
                       isSubtask={isSubtask}
@@ -903,9 +911,6 @@ const TaskItem = React.memo(
                       readOnly={restrictions?.subtasks === READ_ONLY}
                     />
                   )}
-                  <DetailsButton onClick={onClickTaskItem}>
-                    Details
-                  </DetailsButton>
                   {showDecisionRow && (
                     <DecisionCellContainer
                       onClick={(event) => event.stopPropagation()}
