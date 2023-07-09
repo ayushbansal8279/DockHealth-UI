@@ -1,12 +1,11 @@
 /* eslint-disable react/jsx-no-duplicate-props */
-// import { TextField } from '@mui/material';
-import { Input } from '@mui/material';
+import { TextField } from '@mui/material';
 // import Spacing from 'components/common/Spacing';
 import palette from 'styles/palette';
 import styled from 'styled-components';
 import { fontWeights } from 'styles/font';
 
-export const StyledTextField = styled(Input)`
+export const StyledTextField = styled(TextField)`
   & {
     border: none;
     height: 100%;
@@ -34,6 +33,6 @@ export const StyledTextField = styled(Input)`
       //   opacity: 0.8;
       //   text-transform: uppercase;
       // }
-    }
+    // }
   }
 `;
