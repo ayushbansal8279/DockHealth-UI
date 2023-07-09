@@ -2,7 +2,6 @@
 import { any, bool, func, objectOf, string } from 'prop-types';
 import React, { useEffect, useState } from 'react';
 import { useFormContext } from 'react-hook-form';
-// import { TextField } from '@mui/material';
 import Spacing from 'components/common/Spacing';
 import { StyledTextField } from './styled';
 
@@ -54,7 +53,6 @@ const TextInput = React.forwardRef(
           defaultValue={defaultValue}
           variant="filled"
           className={[
-            classes?.root,
             isFocused ? classes?.focused : '',
             className,
             hasError ? classes?.error : '',
@@ -74,9 +72,6 @@ const TextInput = React.forwardRef(
           InputProps={{
             margin: 'dense',
             disableUnderline: true,
-            classes: {
-              input: classes?.input,
-            },
             ...InputProps,
           }}
           fullWidth
