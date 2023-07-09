@@ -10,8 +10,7 @@ export const StyledPopover = styled(Popover)`
     &.MuiPopover-paper {
       border: none;
       box-shadow: 0px 0px 11px rgba(0, 0, 0, 0.15);
-      min-width: 230px;
-      width: ${({ width }) => `${width || 230}px`};
+      width: ${({ width }) => width};
     }
     .MuiBackdrop-root {
       opacity: 0 !important;
@@ -33,7 +32,7 @@ export const Input = styled.input`
 
 export const InputBox = styled.div`
   display: flex;
-  width: 100%;
+  width: 300px;
   padding: ${spacing.smallPlus} ${spacing.smallPlus};
   color: ${palette.mediumGrey};
   font-size: ${fontSizes.smallPlus};
