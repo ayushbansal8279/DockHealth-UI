@@ -133,7 +133,7 @@ export const EmptyActivityAlerts = styled.div`
   box-shadow: 0px 0px 11px rgba(0, 0, 0, 0.15); // per design
   border-radius: 8px;
   padding: ${spacing.regularPlus};
-  font-family: Roboto Condensed;
+  font-family: 'Roboto Condensed', sans-serif;;
   font-weight: ${fontWeights.bold};
 `;
 

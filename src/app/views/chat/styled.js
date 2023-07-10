@@ -57,7 +57,7 @@ export const HeaderContainer = styled.div`
   padding: 0 20px;
   background-color: ${palette.midnightBlue};
   color: ${palette.white};
-  font-family: Roboto Condensed;
+  font-family: 'Roboto Condensed', sans-serif;;
 `;
 
 export const ChatContainer = styled.div`

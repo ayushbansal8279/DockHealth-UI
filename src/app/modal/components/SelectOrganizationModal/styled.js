@@ -92,7 +92,7 @@ export const Title = styled.h2`
   margin: 0;
   font-size: ${fontSizes.regularPlus};
   color: ${palette.brightBlue};
-  font-family: Roboto Condensed;
+  font-family: 'Roboto Condensed', sans-serif;;
   text-align: left;
   overflow: hidden;
   text-overflow: ellipsis;
