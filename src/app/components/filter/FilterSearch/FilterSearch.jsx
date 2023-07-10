@@ -26,15 +26,17 @@ const FilterSearch = ({ value, onValueChange }) => {
           value={value}
           placeholder="SEARCH"
         />
-        <FilterClearIcon
-          alt="clear"
-          src={SearchClearIcon}
-          isInputFocused={isInputFocused}
-          onClick={() => {
-            onValueChange('');
-            setInputFocus(false);
-          }}
-        />
+        {value !== '' && (
+          <FilterClearIcon
+            alt="clear"
+            src={SearchClearIcon}
+            isInputFocused={isInputFocused}
+            onClick={() => {
+              onValueChange('');
+              setInputFocus(false);
+            }}
+          />
+        )}
       </FilterSearchInputContainer>
     </FilterSearchContainer>
   );
