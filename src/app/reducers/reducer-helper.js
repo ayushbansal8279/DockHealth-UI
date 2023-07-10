@@ -1,29 +1,44 @@
 import { TaskItemType } from 'helpers/task-helpers';
 
-export function updateTasksStateCallback(state, newTask) {
-  if (typeof newTask === 'function') return state;
+function updateTaskItemSunTasks(state, tasksMap, taskItem) {
+  const updatedMap = tasksMap;
+  if (taskItem.subtasks) {
+    for (const subTask of taskItem.subtasks) {
+      updatedMap[subTask.identifier] = subTask;
+    }
+  }
+  if (taskItem?.parentTaskIdentifier && !state.tasksMap[taskItem.identifier]) {
+    // if subtask is added
+    const parentTask = state.tasksMap[taskItem.parentTaskIdentifier];
+    updatedMap[taskItem.parentTaskIdentifier] = {
+      ...parentTask,
+      subtasks: parentTask?.subtasks.concat([taskItem]),
+    };
+  }
+  return updatedMap;
+}
 
+// taskData -- is either task data to update or a finction to get the updated task
+// eslint-disable-next-line sonarjs/cognitive-complexity
+export function updateTasksStateCallback(state, taskData) {
+  let taskItem = taskData;
+  if (typeof taskData === 'function') {
+    taskItem = taskData(state.tasksMap);
+  }
   const newMap = {};
-  if (newTask.itemType === TaskItemType.TASK) {
-    newMap[newTask.identifier ?? newTask.taskIdentifier] = newTask;
-    if (newTask.subtasks) {
-      for (const subTask of newTask.subtasks) {
-        newMap[subTask.identifier] = subTask;
+  if (taskItem) {
+    if (taskItem?.itemType === TaskItemType.TASK) {
+      newMap[taskItem.identifier ?? taskItem.taskIdentifier] = taskItem;
+      updateTaskItemSunTasks(state, newMap, taskItem);
+    } else {
+      newMap[taskItem.identifier] = {
+        ...state.tasksMap[taskItem.identifier],
+        ...taskItem,
+      };
+      for (const bundleTask of taskItem.tasks) {
+        updateTaskItemSunTasks(state, newMap, bundleTask);
       }
     }
-    if (newTask.parentTaskIdentifier && !state.tasksMap[newTask.identifier]) {
-      // if subtask is added
-      const parentTask = state.tasksMap[newTask.parentTaskIdentifier];
-      newMap[newTask.parentTaskIdentifier] = {
-        ...parentTask,
-        subtasks: parentTask.subtasks.concat([newTask]),
-      };
-    }
-  } else {
-    newMap[newTask.identifier] = {
-      ...state.tasksMap[newTask.identifier],
-      ...newTask,
-    };
   }
 
   return {
