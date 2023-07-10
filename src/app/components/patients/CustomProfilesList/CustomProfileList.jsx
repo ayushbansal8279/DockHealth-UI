@@ -1,5 +1,18 @@
 import React, { useEffect, useState } from 'react';
 import DataGrid, { Data } from 'ui-toolkit/Composite/DataGrid';
+import { useParams } from "react-router-dom";
+import { setCurrentUserGroup, unsetCurrentUserGroup } from "actions/user-groups-actions";
+import { Box, Stack } from "@mui/material";
+import { getAllProfiles } from "api/profile-api";
+import { getAllProfileFieldTypes } from "api/profile-type-field-api";
+import { showGlobalErrorAlert } from "alert/actions";
+import LayoutHeader from "components/template/LayoutHeader/LayoutHeader";
+import OptionsMenu from "components/common/OptionsMenu/OptionsMenu";
+import MoreVert from "@mui/icons-material/MoreVert";
+import ViewLayout from "components/template/ViewLayout/ViewLayout";
+import ProfileDrawer from "components/patients/CustomProfilesList/ProfileDrawer";
+import { Add as AddIcon } from "@mui/icons-material";
+import AdornedButton from "components/common/AdornedButton/AdornedButton";
 import { useDispatch, useSelector } from 'react-redux';
 import { getCurrentUserGroupDetailsSelector } from 'selectors/user-groups-selectors';
 import { useParams, useHistory, useLocation } from 'react-router-dom';
@@ -29,7 +42,7 @@ import Fieldset from 'ui-toolkit/Form_v2/Fieldset';
 
 const CustomProfileList = () => {
   const dispatch = useDispatch();
-  const { groupIdentifier: groupIdentifierUrlParameter } = useParams();
+  const { groupIdentifier: groupIdentifierUrlParameter, profileIdentifier } = useParams();
   const groupIdentifier = getUserGroupIdentifierByUrlParameter(
     groupIdentifierUrlParameter,
   );
@@ -40,6 +53,7 @@ const CustomProfileList = () => {
       dispatch(unsetCurrentUserGroup());
     };
   }, [dispatch, groupIdentifier]);
+
   const { users } = useSelector(getCurrentUserGroupDetailsSelector) || {};
 
   const location = useLocation();
@@ -47,7 +61,7 @@ const CustomProfileList = () => {
 
   const handleRecordClick = (event, { id }) => {
     setOpen(id);
-    history.push(`${location.pathname}/${id}`);
+    //history.push(`${location.pathname}/${id}`);
   };
 
   const handleClose = () => {
@@ -57,24 +71,37 @@ const CustomProfileList = () => {
   const [open, setOpen] = useState(null);
 
   const [customFields, setCustomFields] = useState([]);
+  const [profiles, setProfiles] = useState([]);
 
   const fetchUserCustomFields = () => {
-    CustomFieldsApi.getAllProviderCustomFields()
+    getAllProfileFieldTypes(profileIdentifier)
       .then((data) => {
-        const customFieldsData = data?.filter(
-          (cf) => cf.contextType === 'CUSTOM',
-        );
-        setCustomFields(customFieldsData);
+        setCustomFields(data);
       })
       .catch(() => {
         dispatch(showGlobalErrorAlert());
       });
   };
 
+  const fetchCustomProfiles = () => {
+    getAllProfiles(profileIdentifier)
+      .then((data) => {
+        setProfiles(data)
+      })
+      .catch(() => {
+        dispatch(showGlobalErrorAlert());
+      })
+  };
+
   useEffect(() => {
     fetchUserCustomFields();
+    fetchCustomProfiles();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
+
+  const handleProfileAddClick = () => {
+    setOpen(true);
+  }
 
   return (
     <>
@@ -93,47 +120,52 @@ const CustomProfileList = () => {
           </LayoutHeader>
         }
       >
-        <Drawer open={open} onClose={handleClose}>
-          <StickyHeader>
-            <TitleName>
-              {users?.find((user) => user.id === open)?.name}
-            </TitleName>
-            <MoreActinsWrapper>
-              <OptionsMenu options={[]} customButtonComponent={IconButton}>
-                <MoreVertIcon />
-              </OptionsMenu>
-              <IconButton onClick={handleClose}>
-                <CloseIcon />
-              </IconButton>
-            </MoreActinsWrapper>
-          </StickyHeader>
-          <ContentWrapper>
-            <Stack>
-              <Fieldset legend="Default">
-                {customFields.map((field) => (
-                  <Input
-                    name={field.name}
-                    label={field.name}
-                    placeholder={field.placeholder}
-                  />
-                ))}
-              </Fieldset>
-            </Stack>
-          </ContentWrapper>
-        </Drawer>
-        <DataGrid dataset={users} onRecordClick={handleRecordClick}>
-          <Data hidden field="id" name="ID" value={({ id }) => id} />
-          <Data
-            field="user"
-            name="USER"
-            value={({ name: username }) => username}
-          />
-          <Data field="email" name="EMAIL" value={({ email }) => email} />
-          <Data
-            field="user_status"
-            name="USER STATUS"
-            value={({ orgUserRole }) => orgUserRole}
-          />
+        <ProfileDrawer
+          open={open}
+          profileIdentifier={profileIdentifier}
+          profile={profiles.find(profile => profile.identifier === open)}
+          fields={customFields}
+          onClose={handleClose}
+        />
+        <Stack direction="row-reverse" sx={{ m: "16px 32px" }}>
+          <Box display="flex" alignItems="center">
+              <Box m={1} />
+              <AdornedButton
+                adornment={<AddIcon />}
+                onClick={handleProfileAddClick}
+              >
+                ADD A PROVIDER
+              </AdornedButton>
+          </Box>
+        </Stack>
+        <DataGrid
+          dataset={profiles}
+          onRecordClick={handleRecordClick}
+        >
+          {customFields.map(field => (
+            <Data
+              name={field.name}
+              value={(data) => {
+                const record = data.fields
+                  .find(({ profileTypeField }) =>
+                    field.identifier === profileTypeField.identifier);
+
+                if (record) {
+                  switch (field.fieldType) {
+                    case "TEXT":
+                      return record.values[0]?.value;
+                    case "PICK_LIST":
+                      return record.values[0]?.customFieldOption.name;
+                    default:
+                      return ""
+                  }
+                }
+
+                return "";
+              }}
+            />
+          ))}
+
         </DataGrid>
       </ViewLayout>
     </>
