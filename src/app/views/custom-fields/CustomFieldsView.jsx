@@ -14,9 +14,9 @@ import UserCustomFieldsView from './UserCustomFieldsView';
 import ProfilesCustomFieldsView from './ProfilesCustomFieldView';
 
 const TABS = {
-  0: 'patient',
+  0: 'patients',
   1: 'task',
-  2: 'provider',
+  2: 'users',
 };
 
 const CustomFieldsView = () => {

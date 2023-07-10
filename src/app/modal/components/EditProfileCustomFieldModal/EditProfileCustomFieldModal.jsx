@@ -16,13 +16,14 @@ import { useDispatch } from 'react-redux';
 import { showGlobalErrorAlert } from 'alert/actions';
 import * as ProfileTypeFieldsApi from 'api/profile-type-field-api';
 import { FieldType, FIELD_TYPE_OPTIONS } from 'helpers/field-type-helpers';
-import { CATEGORY_OPTIONS, Category } from 'helpers/patient-details-helpers';
+import { CATEGORY_OPTIONS } from 'helpers/patient-details-helpers';
 import { CATEGORY_OPTIONS as TASK_CATEGORY_OPTIONS } from 'helpers/task-details-helpers';
 import FormInput from 'components/common/Input/FormInput';
 import Input from 'components/common/Input/Input';
 import Button from 'components/common/Button/Button';
 import FormSelect from 'components/common/Select/FormSelect';
 import ColorPicker from 'components/common/ColorPicker/ColorPicker';
+import { getAllProfileTypes } from 'api/profile-type-api';
 import FiledTypeStep from './FieldTypeStep';
 import { CloseIconButton, CloseIcon } from '../styled';
 import {
@@ -42,7 +43,7 @@ const EditCustomFieldModal = ({
   customField,
   onAdded,
   onUpdated,
-  options: { type },
+  options: { type = 'PROFILE' },
   profileTypeIdentifier,
 }) => {
   const [displayOptionsState, setDisplayOptionsState] = useState({
@@ -96,21 +97,41 @@ const EditCustomFieldModal = ({
           }),
         )
         .nullable(),
-      ...(type === 'TASK'
-        ? {}
-        : { fieldCategoryType: string().required(REQUIRED_MESSAGE) }),
     });
-  }, [type]);
+  }, []);
 
   const formMethods = useForm({
     resolver: yupResolver(validationSchema),
     mode: 'onSubmit',
-    defaultValues: isCreatingNewField
-      ? { fieldCategoryType: Category.PROFILE }
-      : customField,
+    defaultValues: useMemo(() => {
+      if (customField?.relatedProfileType) {
+        const {
+          relatedProfileType: { identifier: value },
+        } = customField;
+
+        return { ...customField, relatedProfileType: value };
+      }
+      return customField;
+    }, [customField]),
   });
+
   const { register, unregister, handleSubmit, setValue, watch, errors } =
     formMethods;
+
+  const [profileTypeOptions, setProfileTypeOptions] = useState([]);
+
+  useEffect(() => {
+    async function fetchData() {
+      // You can await here
+      const response = await getAllProfileTypes();
+      const profileTypes = response.map(({ identifier, name }) => ({
+        label: name,
+        value: identifier,
+      }));
+      setProfileTypeOptions(profileTypes);
+    }
+    fetchData();
+  }, []); // Or [] if effect doesn't need props or state
 
   useEffect(() => {
     register('fieldType');
@@ -186,27 +207,34 @@ const EditCustomFieldModal = ({
 
   const handleEditSubmit = (data) => {
     setIsSaving(true);
-    // const updatedField = {
-    //   ...customField,
-    //   ...data,
-    //   ...displayOptionsState,
-    // };
-
-    const { identifier } = data;
 
     const updatedField = {
       contextType: 'CUSTOM',
       ...data,
+      ...displayOptionsState,
       fieldCategoryType: 'PROFILE',
+      relatedProfileType: {
+        identifier: profileTypeIdentifier,
+      },
+      profileType: {
+        identifier: data.identifier,
+      },
     };
 
-    ProfileTypeFieldsApi.editProfileFieldType(identifier, updatedField)
+    delete updatedField.updatedDateTime;
+    delete updatedField.active;
+    delete updatedField.createdDateTime;
+    delete updatedField.identifier;
+    delete updatedField.sortIndex;
+
+    ProfileTypeFieldsApi.editProfileFieldType(data.identifier, updatedField)
       .then(() => {
         onUpdated(updatedField);
         setIsSaving(false);
         closeModal();
       })
-      .catch(() => {
+      .catch((error) => {
+        console.error(error);
         dispatch(showGlobalErrorAlert());
         setIsSaving(false);
       });
@@ -215,14 +243,17 @@ const EditCustomFieldModal = ({
   const handleAddSubmit = (data) => {
     setIsSaving(true);
     ProfileTypeFieldsApi.createProfileFieldType({
+      ...data,
+      ...displayOptionsState,
       contextType: 'CUSTOM',
       fieldCategoryType: 'PROFILE',
       targetType: 'PROFILE',
-      profileType: {
+      relatedProfileType: {
+        identifier: data.relatedProfileType,
+      },
+      profileTypeIdentifier: {
         identifier: profileTypeIdentifier,
       },
-      ...data,
-      ...displayOptionsState,
     })
       .then((addedField) => {
         onAdded(addedField);
@@ -281,37 +312,45 @@ const EditCustomFieldModal = ({
                         options={FIELD_TYPE_OPTIONS}
                       />
                     </Grid>
-                    {type !== 'TASK' && type !== 'PROVIDER' && (
-                      <Grid item xs={6}>
-                        <FormSelect
-                          required
-                          label="Category"
-                          name="fieldCategoryType"
-                          options={CATEGORY_OPTIONS}
-                        />
-                      </Grid>
-                    )}
-                    {type !== 'PROVIDER' && type !== 'PATIENT' && (
-                      <Grid item xs={6}>
-                        <FormSelect
-                          required
-                          label="Category"
-                          name="fieldCategoryType"
-                          options={TASK_CATEGORY_OPTIONS}
-                        />
-                      </Grid>
-                    )}
-                    {type !== 'PROVIDER' &&
-                      type !== 'PATIENT' &&
-                      fieldTypeValue === FieldType.RELATIONSHIP && (
+                    {type !== 'TASK' &&
+                      type !== 'PROVIDER' &&
+                      fieldTypeValue !== FieldType.RELATIONSHIP && (
                         <Grid item xs={6}>
                           <FormSelect
                             required
-                            label="Profile Type"
-                            name="fieldProfileType"
+                            label="Category"
+                            name="fieldCategoryType"
+                            options={CATEGORY_OPTIONS}
+                          />
+                        </Grid>
+                      )}
+                    {type !== 'PROVIDER' &&
+                      type !== 'PATIENT' &&
+                      fieldTypeValue !== FieldType.RELATIONSHIP && (
+                        <Grid item xs={6}>
+                          <FormSelect
+                            required
+                            label="Category"
+                            name="fieldCategoryType"
                             options={TASK_CATEGORY_OPTIONS}
                           />
                         </Grid>
+                      )}
+
+                    {type !== 'PROVIDER' &&
+                      type !== 'PATIENT' &&
+                      fieldTypeValue === FieldType.RELATIONSHIP && (
+                        <>
+                          <Grid item xs={6} />
+                          <Grid item xs={6}>
+                            <FormSelect
+                              required
+                              label="Profile Type"
+                              name="relatedProfileType"
+                              options={profileTypeOptions}
+                            />
+                          </Grid>
+                        </>
                       )}
 
                     {optionsValue?.length > 0 && (

@@ -3,14 +3,13 @@ import React, { useEffect, useMemo, useState } from 'react';
 import { useDispatch } from 'react-redux';
 import map from 'ramda/src/map';
 import pluck from 'ramda/src/pluck';
-// import move from 'ramda/src/move';
 import { Box, IconButton } from '@mui/material';
 import Skeleton from '@mui/material/Skeleton';
 import DeleteIcon from '@mui/icons-material/Delete';
 import EditIcon from '@mui/icons-material/Edit';
 import { showGlobalErrorAlert } from 'alert/actions';
 import * as ProfileTypeFieldApi from 'api/profile-type-field-api';
-import { FieldTypeLabel } from 'helpers/field-type-helpers';
+import { FieldType, FieldTypeLabel } from 'helpers/field-type-helpers';
 import { openModal } from 'modal/actions';
 import AddButton from 'components/common/AddButton/AddButton';
 import {
@@ -62,13 +61,13 @@ const ProfilesCustomFieldsView = ({ profileTypeIdentifier }) => {
       openModal('EditProfileCustomField', {
         profileTypeIdentifier,
         options: {
-          type: 'CUSTOM',
+          type: 'PROFILE',
         },
         customField: field,
         onUpdated: (updatedField) => {
           setColumnsToState(
             columns.map((f) =>
-              f.identifier === updatedField.identifier
+              f.identifier === updatedField.relatedProfileType.identifier
                 ? { ...f, ...updatedField }
                 : f,
             ),
@@ -107,41 +106,18 @@ const ProfilesCustomFieldsView = ({ profileTypeIdentifier }) => {
     );
   };
 
-  // const moveElementByIDs = (originID, destinationID, fields) => {
-  //   if (!originID || !destinationID) return fields;
-  //   const idents = pluck('identifier', fields);
-  //   const indexFrom = idents.indexOf(originID);
-  //   const indexTo = idents.indexOf(destinationID);
-  //   return move(indexFrom, indexTo, fields).map((field, index) => ({
-  //     ...field,
-  //     sortIndex: index,
-  //   }));
-  // };
-
   const sortedFields = useMemo(() => {
     return customFields?.slice().sort((a, b) => {
       return a?.sortIndex - b?.sortIndex;
     });
   }, [customFields]);
 
-  // const handleOnDragEnd = async (originID, destinationID) => {
-  //   const result = moveElementByIDs(originID, destinationID, sortedFields);
-  //   const lastWorkingOrder = [...customFields];
-  //   setCustomFields(result);
-  //   try {
-  //     await ProfileTypeFieldApi.sortUserCustomFields(pluck('identifier', result));
-  //   } catch {
-  //     dispatch(showGlobalErrorAlert());
-  //     setCustomFields(lastWorkingOrder);
-  //   }
-  // };
-
   const handleAddFieldClick = () => {
     dispatch(
       openModal('EditProfileCustomField', {
         profileTypeIdentifier,
         options: {
-          type: 'CUSTOM',
+          type: 'PROFILE',
         },
         onAdded: async (customField) => {
           setColumnsToState([...columns, customField]);
@@ -150,13 +126,6 @@ const ProfilesCustomFieldsView = ({ profileTypeIdentifier }) => {
           ).map((field, index) => {
             return { ...field, sortIndex: index };
           });
-          // try {
-          //   await CustomFieldsApi.sortUserCustomFields(
-          //     pluck('identifier', newFields),
-          //   );
-          // } catch {
-          //   fetchUserCustomFields();
-          // }
           setCustomFields(newFields);
         },
       }),
@@ -198,6 +167,7 @@ const ProfilesCustomFieldsView = ({ profileTypeIdentifier }) => {
               <DndContext
                 sensors={sensors}
                 onDragEnd={
+                  // eslint-disable-next-line @typescript-eslint/no-unused-vars
                   ({ active, over }) => {}
                   // handleOnDragEnd(active.id, over.id)
                 }
@@ -219,7 +189,11 @@ const ProfilesCustomFieldsView = ({ profileTypeIdentifier }) => {
                             </CustomFieldCell>
                             <CustomFieldCell>
                               <CustomFieldText>
-                                {FieldTypeLabel[field.fieldType]}
+                                {field.fieldType === FieldType.RELATIONSHIP
+                                  ? `${FieldTypeLabel[field.fieldType]} - ${
+                                      field.name
+                                    }`
+                                  : FieldTypeLabel[field.fieldType]}
                               </CustomFieldText>
                             </CustomFieldCell>
                             <>
@@ -249,7 +223,7 @@ const ProfilesCustomFieldsView = ({ profileTypeIdentifier }) => {
               </DndContext>
             </>
           ) : (
-            <EmptyListPlaceholder>List is empty</EmptyListPlaceholder>
+            <EmptyListPlaceholder />
           )}
         </>
       )}
