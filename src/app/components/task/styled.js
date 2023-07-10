@@ -240,6 +240,22 @@ export const DescriptionBox = styled.div`
   font-family: 'Roboto Condensed', sans-serif;
 `;
 
+export const DescriptionInput = styled.input`
+  outline: 'none';
+  background-color: transparent !important;
+  border: ${({ isEditing }) =>
+    isEditing ? `1px solid ${palette.brightBlue}` : 'none'};
+  border-radius: '4px';
+  color: ${palette.mediumGrey};
+  width: 1005px;
+  text-overflow: 'ellipsis';
+
+  &:focus {
+    outline: none !important;
+    border: none;
+  }
+`;
+
 export const DecisionBox = styled.div`
   display: flex;
   flex-direction: column;

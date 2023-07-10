@@ -36,6 +36,7 @@ import {
   // DescriptionBorder,
   TaskContext,
   DescriptionEditButton,
+  DescriptionInput,
 } from '../../styled';
 
 const TaskItemDescription = ({
@@ -174,7 +175,7 @@ const TaskItemDescription = ({
   return (
     <DescriptionBox width={width}>
       <Box display="flex" flex={1}>
-        <input
+        <DescriptionInput
           readOnly={!isEditing}
           value={descriptionState}
           onChange={(event) => setDescriptionState(event.target.value)}
@@ -188,14 +189,6 @@ const TaskItemDescription = ({
               );
               setEditing(false);
             }
-          }}
-          style={{
-            outline: 'none',
-            border: isEditing ? '1px solid #00a2e5' : 'none',
-            borderRadius: '4px',
-            background: 'transparent',
-            width: '1005',
-            textOverflow: 'ellipsis',
           }}
         />
         {/*<TextEditor*/}
