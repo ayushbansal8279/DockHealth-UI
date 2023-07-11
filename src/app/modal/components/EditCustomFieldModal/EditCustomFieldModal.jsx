@@ -121,8 +121,10 @@ const EditCustomFieldModal = ({
   const [customFields, setCustomFields] = useState([]);
 
   useEffect(() => {
-    getAllTaskListCustomFields().then(response => {
-      setCustomFields(response.filter(item => item.fieldType === 'PICK_LIST'));
+    getAllTaskListCustomFields().then((response) => {
+      setCustomFields(
+        response.filter((item) => item.fieldType === 'PICK_LIST'),
+      );
     });
   }, []);
 
@@ -186,7 +188,7 @@ const EditCustomFieldModal = ({
   };
 
   // eslint-disable-next-line unicorn/consistent-function-scoping
-  const handleParentDropdownChange = optionId => event => {
+  const handleParentDropdownChange = (optionId) => (event) => {
     setValue(
       'options',
       optionsValue.map(o =>
@@ -198,7 +200,7 @@ const EditCustomFieldModal = ({
   };
 
   // eslint-disable-next-line unicorn/consistent-function-scoping
-  const handleParentOptionChange = optionId => event => {
+  const handleParentOptionChange = (optionId) => (event) => {
     setValue(
       'options',
       // eslint-disable-next-line sonarjs/no-identical-functions
@@ -420,11 +422,11 @@ const EditCustomFieldModal = ({
                                     options={
                                       customFields
                                         .find(
-                                          field =>
+                                          (field) =>
                                             field.identifier ===
                                             linkedCustomFieldIdentifier,
                                         )
-                                        ?.options?.map(fieldOption => ({
+                                        ?.options?.map((fieldOption) => ({
                                           label: fieldOption.name,
                                           value: fieldOption.identifier,
                                         })) ?? []

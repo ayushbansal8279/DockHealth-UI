@@ -95,6 +95,7 @@ const PatientsToolbar = () => {
     ) || {};
 
   const handleSearchChange = searchTerm => {
+    setSearchValue(searchTerm);
     dispatch(PatientsActions.changePatientsSearchTerm(searchTerm));
     dispatch(PatientsActions.clearPatients());
     if (searchTerm === '') {

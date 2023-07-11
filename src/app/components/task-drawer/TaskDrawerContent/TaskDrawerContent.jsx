@@ -295,13 +295,6 @@ const TaskDrawerContent = props => {
     restrictions.delete = DISABLED;
   }
 
-  if (taskDeleteDisabled) {
-    if (!restrictions) {
-      restrictions = {};
-    }
-    restrictions.delete = DISABLED;
-  }
-
   return (
     <TaskDrawerContainer
       key={selectedTask?.identifier}
