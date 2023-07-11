@@ -1,6 +1,6 @@
 import { TaskItemType } from 'helpers/task-helpers';
 
-function updateTaskItemSunTasks(state, tasksMap, taskItem) {
+function updateTaskItemSubTasks(state, tasksMap, taskItem) {
   const updatedMap = tasksMap;
   if (taskItem.subtasks) {
     for (const subTask of taskItem.subtasks) {
@@ -27,17 +27,25 @@ export function updateTasksStateCallback(state, taskData) {
   }
   const newMap = {};
   if (taskItem) {
-    if (taskItem?.itemType === TaskItemType.TASK) {
-      newMap[taskItem.identifier ?? taskItem.taskIdentifier] = taskItem;
-      updateTaskItemSunTasks(state, newMap, taskItem);
-    } else {
-      newMap[taskItem.identifier] = {
-        ...state.tasksMap[taskItem.identifier],
+    if (taskItem?.itemType) {
+      if (taskItem?.itemType === TaskItemType.TASK) {
+        newMap[taskItem.identifier ?? taskItem.taskIdentifier] = taskItem;
+        updateTaskItemSubTasks(state, newMap, taskItem);
+      } else {
+        newMap[taskItem.identifier] = {
+          ...state.tasksMap[taskItem.identifier],
+          ...taskItem,
+        };
+        for (const bundleTask of taskItem.tasks) {
+          updateTaskItemSubTasks(state, newMap, bundleTask);
+        }
+      }
+    } else if (taskItem.taskIdentifier) {
+      newMap[taskItem.taskIdentifier] = {
+        ...state.tasksMap[taskItem.taskIdentifier],
         ...taskItem,
       };
-      for (const bundleTask of taskItem.tasks) {
-        updateTaskItemSunTasks(state, newMap, bundleTask);
-      }
+      updateTaskItemSubTasks(state, newMap, newMap[taskItem.taskIdentifier]);
     }
   }
 
