@@ -1,15 +1,13 @@
 import { Dialog } from '@mui/material';
-// import { Document, Page } from 'react-pdf/dist/esm/entry.webpack';
+import { Document, Page } from 'react-pdf';
 import styled from 'styled-components';
 import palette from 'styles/palette';
 
 export const AttachmentPreviewDialog = styled(Dialog)`
-  &&& {
-    &.MuiDialog-paper {
-      border-radius: 0;
-      max-width: 85%;
-      overflow-y: 'hidden';
-    }
+  .MuiDialog-paper {
+    border-radius: 5px;
+    max-width: 85%;
+    overflow-y: 'hidden';
   }
 `;
 
@@ -114,14 +112,14 @@ export const StyledPdfDocument = styled(Document)`
   flex-flow: column nowrap;
 `;
 
-// export const StyledPdfPage = styled(Page)`
-//   overflow-x: hidden;
-//   position: relative;
+export const StyledPdfPage = styled(Page)`
+  overflow-x: hidden;
+  position: relative;
 
-//   &:not(:last-child) {
-//     margin-bottom: 0.5rem;
-//   }
-// `;
+  &:not(:last-child) {
+    margin-bottom: 0.5rem;
+  }
+`;
 
 export const UnsupportedFileContainer = styled.div`
   align-items: center;
