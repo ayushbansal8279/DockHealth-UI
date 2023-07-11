@@ -62,9 +62,11 @@ const Search = ({
             disablePointerEvents={false}
             visible={Boolean(value)}
           >
-            <ClearButton onClick={onClearClick}>
-              <img alt="clear" src={SearchClearIcon} />
-            </ClearButton>
+            {value !== '' && (
+              <ClearButton onClick={onClearClick}>
+                <img alt="clear" src={SearchClearIcon} />
+              </ClearButton>
+            )}
           </StyledAdornment>
         ),
         'aria-label': 'Search',
