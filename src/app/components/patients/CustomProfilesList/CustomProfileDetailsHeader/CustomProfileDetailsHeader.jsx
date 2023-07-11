@@ -6,9 +6,7 @@ import PhoneIcon from 'img/phone-icon.svg';
 import MobileIcon from 'img/mobile-icon.svg';
 import { Box, Grid } from '@mui/material';
 import Tooltip from 'components/common/Tooltip/Tooltip';
-import {
-  userProfileSelector,
-} from 'selectors/user-selectors';
+import { userProfileSelector } from 'selectors/user-selectors';
 import {
   PatientDetailsContainer,
   PatientName,
@@ -20,10 +18,14 @@ import {
   ButtonContainer,
   IconWrapper,
   ContactContainer,
-  PatientMRNAnchor,
 } from './styled';
 
-const CustomProfileDetailsHeader = ({ onViewDetailsClick = () => undefined}) => {
+const CustomProfileDetailsHeader = ({
+  onViewDetailsClick = () => {},
+  firstName: firstNameProperty,
+  lastName: lastNameProperty,
+  middleName: middleNameProperty,
+}) => {
   const {
     firstName,
     middleName,
@@ -35,7 +37,6 @@ const CustomProfileDetailsHeader = ({ onViewDetailsClick = () => undefined}) => 
     email,
     phoneHome,
     phoneMobile,
-    mrn
   } = useSelector(userProfileSelector);
 
   const handleViewDetailsClick = () => {
@@ -49,7 +50,11 @@ const CustomProfileDetailsHeader = ({ onViewDetailsClick = () => undefined}) => 
           <Box flex="1 0 0" display="flex" alignItems="center">
             <Grid container alignItems="center">
               <PatientName>
-                {[`${lastName},`, firstName, middleName].join(' ')}
+                {[
+                  `${lastNameProperty || lastName},`,
+                  firstNameProperty || firstName,
+                  middleNameProperty || middleName,
+                ].join(' ')}
               </PatientName>
               <Box mx={1} />
               <ButtonContainer onClick={handleViewDetailsClick}>
@@ -102,33 +107,11 @@ const CustomProfileDetailsHeader = ({ onViewDetailsClick = () => undefined}) => 
                   {age && `${age} | `}
                   {gender && `${gender?.charAt(0)?.toUpperCase()}`}
                 </PatientInfo>
-                {!genderIdentityDisabled && genderIdentity && (
+                {!genderIdentity && (
                   <>
                     <PatientInfoDivider />
                     <PatientInfo>Gender: {genderIdentity}</PatientInfo>
                   </>
-                )}
-                <PatientInfoDivider />
-              </>
-            )}
-            {mrn && (
-              <>
-                {!emrPatientLink && (
-                  <PatientInfo>
-                    {uniqueIdentifierLabel}# {mrn}
-                  </PatientInfo>
-                )}
-                {emrPatientLink && (
-                  <PatientInfo>
-                    {uniqueIdentifierLabel}#{' '}
-                    <PatientMRNAnchor
-                      href={emrPatientLink.replace('{mrn}', mrn)}
-                      target="_blank"
-                      rel="noreferrer"
-                    >
-                      {mrn}
-                    </PatientMRNAnchor>
-                  </PatientInfo>
                 )}
                 <PatientInfoDivider />
               </>

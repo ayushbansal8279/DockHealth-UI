@@ -31,6 +31,7 @@ const Select = React.forwardRef(
       variant,
       readOnly,
       value,
+      defaultValue,
       placeholder,
       inputRef,
       required,
@@ -82,7 +83,8 @@ const Select = React.forwardRef(
           placeholder={placeholder}
           inputProps={{ name, shrink: 1, placeholder, inputRef }}
           variant={variant}
-          value={value || ''}
+          value={value}
+          defaultValue={defaultValue}
           renderValue={(selectedValue) =>
             options.find((option) => option.value === selectedValue)?.label
           }
