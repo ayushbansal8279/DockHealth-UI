@@ -46,19 +46,21 @@ function updateTasksMap(state, taskItem) {
 
   if (taskItem?.itemType === TaskItemType.BUNDLE) {
     // add tasks and subtasks in the bundle
-    for (const task of taskItem?.tasks) {
-      updatedMap[task.identifier] = {
-        ...updatedMap[task.identifier],
-        ...task,
-      };
-      for (const subtask of task?.subtasks) {
-        updatedMap[subtask.identifier] = {
-          ...updatedMap[subtask.identifier],
-          ...subtask,
+    if (taskItem?.tasks) {
+      for (const task of taskItem?.tasks) {
+        updatedMap[task.identifier] = {
+          ...updatedMap[task.identifier],
+          ...task,
         };
+        for (const subtask of task?.subtasks) {
+          updatedMap[subtask.identifier] = {
+            ...updatedMap[subtask.identifier],
+            ...subtask,
+          };
+        }
       }
     }
-  } else {
+  } else if (taskItem?.subtasks) {
     for (const subtask of taskItem?.subtasks) {
       updatedMap[subtask.identifier] = {
         ...updatedMap[subtask.identifier],
@@ -424,7 +426,11 @@ const ListDetailsReducer = (state = initialState, action) => {
       //       : state.tasksMap[bundleIdentifier]?.tasks,
       //   },
       // };
-      const updatedMap = updateTasksMap(state, dataToUpdate);
+      const updatedMap = updateTasksMap(state, {
+        itemType: TaskItemType.BUNDLE,
+        identifier: bundleIdentifier,
+        ...dataToUpdate,
+      });
 
       const newMap = {
         ...state.tasksMap,
