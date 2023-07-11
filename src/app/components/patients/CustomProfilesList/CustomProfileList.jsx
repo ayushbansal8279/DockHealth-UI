@@ -1,6 +1,12 @@
 import React, { useEffect, useState } from 'react';
 import DataGrid, { Data } from 'ui-toolkit/Composite/DataGrid';
-import { useParams, useHistory, useLocation } from 'react-router-dom';
+import { useDispatch } from 'react-redux';
+import { useParams, useHistory } from 'react-router-dom';
+import { getUserGroupIdentifierByUrlParameter } from 'helpers/user-groups-helper';
+import {
+  setCurrentUserGroup,
+  unsetCurrentUserGroup,
+} from 'actions/user-groups-actions';
 import { Box, Stack } from '@mui/material';
 import { getAllProfiles } from 'api/profile-api';
 import { getAllProfileFieldTypes } from 'api/profile-type-field-api';
@@ -9,19 +15,18 @@ import LayoutHeader from 'components/template/LayoutHeader/LayoutHeader';
 import OptionsMenu from 'components/common/OptionsMenu/OptionsMenu';
 import MoreVert from '@mui/icons-material/MoreVert';
 import ViewLayout from 'components/template/ViewLayout/ViewLayout';
-import ProfileDrawer from 'components/patients/CustomProfilesList/ProfileDrawer';
 import { Add as AddIcon } from '@mui/icons-material';
 import AdornedButton from 'components/common/AdornedButton/AdornedButton';
-import { useDispatch, useSelector } from 'react-redux';
-import { getUserGroupIdentifierByUrlParameter } from 'helpers/user-groups-helper';
-import {
-  setCurrentUserGroup,
-  unsetCurrentUserGroup,
-} from 'actions/user-groups-actions';
+import ProfileDrawer from 'components/patients/CustomProfilesList/ProfileDrawer';
 
 const CustomProfileList = () => {
   const dispatch = useDispatch();
-  const { groupIdentifier: groupIdentifierUrlParameter, profileIdentifier } = useParams();
+  const history = useHistory();
+  const {
+    groupIdentifier: groupIdentifierUrlParameter,
+    name,
+    profileTypeIdentifier,
+  } = useParams();
   const groupIdentifier = getUserGroupIdentifierByUrlParameter(
     groupIdentifierUrlParameter,
   );
@@ -33,52 +38,49 @@ const CustomProfileList = () => {
     };
   }, [dispatch, groupIdentifier]);
 
-  const location = useLocation();
-  const history = useHistory();
+  const handleRecordClick = (event, { id }) => {
+    // setOpen(id);
+    history.push(`/custom-profiles/${name}/${profileTypeIdentifier}/${id}`);
+  };
 
   const [open, setOpen] = useState(null);
-
-  const [customFields, setCustomFields] = useState([]);
-  const [profiles, setProfiles] = useState([]);
-
-  const handleRecordClick = (event, { id }) => {
-    setOpen(id);
-    //history.push(`${location.pathname}/${id}`);
-  };
 
   const handleClose = () => {
     setOpen(null);
   };
-  
-  const fetchUserCustomFields = () => {
-    getAllProfileFieldTypes(profileIdentifier)
+
+  const [profileTypes, setProfileTypes] = useState([]);
+  const [profiles, setProfiles] = useState([]);
+
+  const fetchProfileTypes = () => {
+    getAllProfileFieldTypes(profileTypeIdentifier)
       .then((data) => {
-        setCustomFields(data);
+        setProfileTypes(data);
       })
       .catch(() => {
         dispatch(showGlobalErrorAlert());
       });
   };
 
-  const fetchCustomProfiles = () => {
-    getAllProfiles(profileIdentifier)
+  const fetchProfiles = () => {
+    getAllProfiles(profileTypeIdentifier)
       .then((data) => {
-        setProfiles(data)
+        setProfiles(data);
       })
       .catch(() => {
         dispatch(showGlobalErrorAlert());
-      })
+      });
   };
 
   useEffect(() => {
-    fetchUserCustomFields();
-    fetchCustomProfiles();
+    fetchProfileTypes();
+    fetchProfiles();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const handleProfileAddClick = () => {
     setOpen(true);
-  }
+  };
 
   return (
     <>
@@ -99,12 +101,11 @@ const CustomProfileList = () => {
       >
         <ProfileDrawer
           open={open}
-          profileIdentifier={profileIdentifier}
-          profile={profiles.find(profile => profile.identifier === open)}
-          fields={customFields}
+          profileTypeIdentifier={profileTypeIdentifier}
+          types={profileTypes}
           onClose={handleClose}
         />
-        <Stack direction="row-reverse" sx={{ m: "16px 32px" }}>
+        <Stack direction="row-reverse" sx={{ m: '16px 32px' }}>
           <Box display="flex" alignItems="center">
             <Box m={1} />
             <AdornedButton
@@ -116,22 +117,26 @@ const CustomProfileList = () => {
           </Box>
         </Stack>
         <DataGrid dataset={profiles} onRecordClick={handleRecordClick}>
-          {customFields.map((field) => (
+          {profileTypes.map((field) => (
             <Data
               name={field.name}
               value={(data) => {
                 const record = data.fields.find(
                   ({ profileTypeField }) =>
-                    field.identifier === profileTypeField.identifier);
+                    field.identifier === profileTypeField.identifier,
+                );
 
                 if (record) {
                   switch (field.fieldType) {
-                    case "TEXT":
+                    case 'TEXT': {
                       return record.values[0]?.value;
-                    case "PICK_LIST":
+                    }
+                    case 'PICK_LIST': {
                       return record.values[0]?.customFieldOption.name;
-                    default:
+                    }
+                    default: {
                       return '';
+                    }
                   }
                 }
 

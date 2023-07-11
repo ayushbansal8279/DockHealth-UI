@@ -1,84 +1,73 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useMemo } from 'react';
 import CustomProfileDetailsHeader from 'components/patients/CustomProfilesList/CustomProfileDetailsHeader/CustomProfileDetailsHeader';
-import {
-  ContentWrapper,
-  MoreActinsWrapper,
-  StickyHeader,
-  TitleName,
-} from 'components/patients/PatientDrawer/styled';
-import OptionsMenu from 'components/common/OptionsMenu/OptionsMenu';
-import { IconButton, Stack } from '@mui/material';
-import MoreVertIcon from '@mui/icons-material/MoreVert';
-import CloseIcon from '@mui/icons-material/Close';
-import Fieldset from 'ui-toolkit/Form_v2/Fieldset';
-import Input from 'ui-toolkit/Form_v2/Input';
-import Drawer from 'ui-toolkit/Navigation/Drawer/Drawer';
-import * as CustomFieldsApi from 'api/custom-fields-api';
 import { showGlobalErrorAlert } from 'alert/actions';
 import { useDispatch } from 'react-redux';
+import ProfileDrawer from 'components/patients/CustomProfilesList/ProfileDrawer';
+import { useParams } from 'react-router-dom';
+import { getAllProfiles } from 'api/profile-api';
+import { getAllProfileFieldTypes } from 'api/profile-type-field-api';
 
 const CustomProfileView = () => {
-  const [isDrawerVisible, setDrawerVisibility] = useState(false);
-
-  const [customFields, setCustomFields] = useState([]);
-
   const dispatch = useDispatch();
+  const { profileTypeIdentifier, profileIdentifier } = useParams();
+  const [profileTypes, setProfileTypes] = useState([]);
+  const [profiles, setProfiles] = useState([]);
 
-  const fetchUserCustomFields = () => {
-    CustomFieldsApi.getAllProviderCustomFields()
+  const fetchProfileTypes = () => {
+    getAllProfileFieldTypes(profileTypeIdentifier)
       .then((data) => {
-        const customFieldsData = data?.filter(
-          (cf) => cf.contextType === 'CUSTOM',
-        );
-        setCustomFields(customFieldsData);
+        setProfileTypes(data);
       })
       .catch(() => {
         dispatch(showGlobalErrorAlert());
       });
   };
 
+  const fetchProfiles = () => {
+    getAllProfiles(profileTypeIdentifier)
+      .then((data) => {
+        setProfiles(data);
+      })
+      .catch(() => {
+        dispatch(showGlobalErrorAlert());
+      });
+  };
+
+  const profile = useMemo(
+    () => profiles.find(({ identifier }) => identifier === profileIdentifier),
+    [profiles, profileIdentifier],
+  );
+
   useEffect(() => {
-    fetchUserCustomFields();
+    fetchProfileTypes();
+    fetchProfiles();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
+  const [open, setOpen] = useState(null);
+
   const handleDrawerOpen = () => {
-    setDrawerVisibility(true);
+    setOpen(true);
   };
 
   const handleDrawerClose = () => {
-    setDrawerVisibility(false);
+    setOpen(false);
   };
 
   return (
     <>
-      <CustomProfileDetailsHeader onViewDetailsClick={handleDrawerOpen} />
-      <Drawer open={isDrawerVisible} onClose={handleDrawerClose}>
-        <StickyHeader>
-          <TitleName>{null}</TitleName>
-          <MoreActinsWrapper>
-            <OptionsMenu options={[]} customButtonComponent={IconButton}>
-              <MoreVertIcon />
-            </OptionsMenu>
-            <IconButton onClick={handleDrawerClose}>
-              <CloseIcon />
-            </IconButton>
-          </MoreActinsWrapper>
-        </StickyHeader>
-        <ContentWrapper>
-          <Stack>
-            <Fieldset legend="Default">
-              {customFields.map((field) => (
-                <Input
-                  name={field.name}
-                  label={field.name}
-                  placeholder={field.placeholder}
-                />
-              ))}
-            </Fieldset>
-          </Stack>
-        </ContentWrapper>
-      </Drawer>
+      <CustomProfileDetailsHeader
+        firstName="First Name"
+        lastName="Last Name"
+        onViewDetailsClick={handleDrawerOpen}
+      />
+      <ProfileDrawer
+        open={open}
+        profileTypeIdentifier={profileTypeIdentifier}
+        profile={profile}
+        types={profileTypes}
+        onClose={handleDrawerClose}
+      />
     </>
   );
 };

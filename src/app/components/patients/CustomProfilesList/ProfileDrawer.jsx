@@ -1,64 +1,78 @@
-import OptionsMenu from "components/common/OptionsMenu/OptionsMenu";
-import { Box, IconButton, Stack } from "@mui/material";
-import React from "react";
-import Drawer from "ui-toolkit/Navigation/Drawer/Drawer";
-import { createProfile, editProfileType } from "api/profile-api";
-import { useForm } from "react-hook-form"
-import { ContentWrapper, MoreActinsWrapper, StickyHeader, TitleName } from "components/patients/PatientDrawer/styled";
-import MoreVertIcon from "@mui/icons-material/MoreVert";
-import CloseIcon from "@mui/icons-material/Close";
-import Input from "components/common/Input/Input";
-import LabeledCollapse from "components/common/LabeledCollapse/LabeledCollapse";
-import Button from "components/common/Button/Button";
+import OptionsMenu from 'components/common/OptionsMenu/OptionsMenu';
+import { Box, IconButton, Stack } from '@mui/material';
+import React from 'react';
+import Drawer from 'ui-toolkit/Navigation/Drawer/Drawer';
+import { createProfile, editProfileType } from 'api/profile-api';
+import { useForm } from 'react-hook-form';
+import {
+  ContentWrapper,
+  MoreActinsWrapper,
+  StickyHeader,
+  TitleName,
+} from 'components/patients/PatientDrawer/styled';
+import MoreVertIcon from '@mui/icons-material/MoreVert';
+import CloseIcon from '@mui/icons-material/Close';
+import Input from 'components/common/Input/Input';
+import LabeledCollapse from 'components/common/LabeledCollapse/LabeledCollapse';
+import Button from 'components/common/Button/Button';
+import Select from 'components/common/Select/Select';
 
-const ProfileDrawer = ({ open, profileIdentifier, profile, fields, onClose }) => {
-  const {
-    register,
-    handleSubmit
-  } = useForm();
+const ProfileDrawer = ({
+  open,
+  profileTypeIdentifier,
+  profile,
+  types,
+  onClose,
+}) => {
+  const { register, handleSubmit } = useForm();
   const onSubmit = (data) => {
     if (profile) {
       editProfileType(profile.identifier, {
-        fields: profile.fields.map(field => {
+        fields: Object.entries(data).map(([identifier, value]) => {
+          const type = types.find(
+            (fieldType) => fieldType.identifier === identifier,
+          );
           return {
             profileTypeField: {
-              identifier: field.profileTypeField.identifier
+              identifier,
             },
             values: [
-              {
-                value: field.values[0]?.value
-              }
-            ]
-          }
-        })
+              type.fieldType === 'TEXT'
+                ? {
+                    value,
+                  }
+                : {
+                    customFieldOption: {
+                      name: value,
+                    },
+                  },
+            ],
+          };
+        }),
       });
     } else {
       createProfile({
-        fields: Object.entries(data)
-          .map(([ identifier, value ]) => {
-            return {
-              profileTypeField: {
-                identifier: identifier
+        fields: Object.entries(data).map(([identifier, value]) => {
+          return {
+            profileTypeField: {
+              identifier,
+            },
+            values: [
+              {
+                value,
               },
-              values: [
-                {
-                  value: value
-                }
-              ]
-            }
-          }),
+            ],
+          };
+        }),
         profileType: {
-          identifier: profileIdentifier
-        }
-      })
+          identifier: profileTypeIdentifier,
+        },
+      });
     }
   };
 
   return (
-    <Drawer
-      open={open}
-      onClose={onClose}
-    >
+    <Drawer open={open} onClose={onClose}>
       <StickyHeader>
         <TitleName>{profile?.name}</TitleName>
         <MoreActinsWrapper>
@@ -72,39 +86,56 @@ const ProfileDrawer = ({ open, profileIdentifier, profile, fields, onClose }) =>
       </StickyHeader>
       <ContentWrapper>
         <Stack>
-          <form onClick={handleSubmit(onSubmit)}>
+          <form onSubmit={handleSubmit(onSubmit)}>
             <LabeledCollapse name="Default" isOpened>
-              {fields?.map((field) => {
-                const record = profile?.fields
-                  .find(({ profileTypeField }) =>
-                    field.identifier === profileTypeField.identifier);
+              {types?.map((field) => {
+                const record = profile?.fields.find(
+                  ({ profileTypeField }) =>
+                    field.identifier === profileTypeField.identifier,
+                );
 
                 const render = () => {
                   switch (field.fieldType) {
-                    case "TEXT":
+                    case 'TEXT': {
                       return (
                         <Input
                           key={field.identifier}
                           name={field.identifier}
                           label={field.name}
-                          defaultValue={record ? record.values[0]?.value : ""}
+                          defaultValue={record ? record.values[0]?.value : ''}
                           placeholder={field.placeholder}
                           {...register(field.identifier)}
                         />
                       );
-                    case "PICK_LIST":
-                    default:
+                    }
+                    case 'PICK_LIST': {
+                      return (
+                        <Select
+                          name={field.identifier}
+                          label={field.name}
+                          defaultValue={
+                            record
+                              ? record.values[0]?.customFieldOption.name
+                              : ''
+                          }
+                          options={field.options.map((option) => ({
+                            label: option.name,
+                            value: option.name,
+                          }))}
+                          {...register(field.identifier)}
+                        />
+                      );
+                    }
+                    default: {
                       return null;
+                    }
                   }
-                }
+                };
 
-                return (
-                  <Box style={{ margin: '8px 4px' }}>
-                    {render()}
-                  </Box>
-                )
-              })
-              }
+                return record ? (
+                  <Box style={{ margin: '8px 4px' }}>{render()}</Box>
+                ) : null;
+              })}
             </LabeledCollapse>
             <Stack sx={{ m: '8px 4px' }} direction="row">
               <Button
@@ -120,7 +151,7 @@ const ProfileDrawer = ({ open, profileIdentifier, profile, fields, onClose }) =>
         </Stack>
       </ContentWrapper>
     </Drawer>
-  )
+  );
 };
 
 export default ProfileDrawer;
