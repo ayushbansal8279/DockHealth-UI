@@ -320,17 +320,15 @@ const OnboardingDialogComponent = ({
 };
 
 export const OnboardingDialog = styled(OnboardingDialogComponent)`
-  &&& {
-    &.MuiDialog-paper {
-      border-radius: 0;
-      padding: -1rem 0rem;
-      width: 500px;
-    }
+  .MuiDialog-paper {
+    border-radius: 0;
+    padding: -1rem 0rem;
+    width: 500px;
+  }
 
-    &.MuiDialog-smallPaper {
-      border-radius: 0;
-      padding: 1rem;
-    }
+  &.MuiDialog-smallPaper {
+    border-radius: 0;
+    padding: 1rem;
   }
 `;
 

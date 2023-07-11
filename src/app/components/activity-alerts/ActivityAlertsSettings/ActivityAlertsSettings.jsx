@@ -34,7 +34,6 @@ const ActivityAlertsSettingsRow = ({
           <CheckboxContainer>
             <BlueCheckbox
               checked={pushNotificationEnabled}
-              color="secondary"
               onChange={() =>
                 updateNotificationSettings([
                   {

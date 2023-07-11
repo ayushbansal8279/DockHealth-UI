@@ -261,9 +261,9 @@ const ListUsersAndGroupsSelect = ({
                             <UserNameText>{userOrGroup.name}</UserNameText>
                           </UserName>
                           {isUserGroup(userOrGroup) ? (
-                            <GroupAvatar size={38} group={userOrGroup} />
+                            <GroupAvatar size={35} group={userOrGroup} />
                           ) : (
-                            <UserAvatar size={38} user={userOrGroup} />
+                            <UserAvatar size={35} user={userOrGroup} />
                           )}
                         </AvailablePeopleItemButton>
                       ),

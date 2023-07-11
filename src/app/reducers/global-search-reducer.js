@@ -1,7 +1,7 @@
 import * as types from 'actions/action-types';
 import { updateTaskOrSubtaskInListsArray } from 'helpers/task-update-helper';
 import { TaskItemType } from 'helpers/task-helpers';
-import { updateTasksStateCallback } from './reducer-helper';
+import { updateTasksStateCallback, updateTasksMap } from './reducer-helper';
 import TaskBaseReducer from './task-base-reducer';
 
 const initialState = {
@@ -49,15 +49,16 @@ const GlobalSearchReducer = (state = initialState, action) => {
     }
 
     case types.GLOBAL_SEARCH_REQUEST_SUCCESS: {
-      const tasks = action.lists;
-      const newMap = {};
-      for (const task of tasks) {
-        if (task.itemType === TaskItemType.TASK) {
-          newMap[task.identifier] = task;
-        } else {
-          newMap[task.identifier] = task;
-          for (const grpTask of task.tasks) {
-            newMap[grpTask.identifier] = grpTask;
+      const { payload } = action;
+      
+      var newMap = {};
+      if(payload?.lists) {
+        for(const list of payload?.lists) {
+          for (const taskItem of list?.tasks) {
+            newMap = {
+              ...newMap,
+              ...updateTasksMap(state, taskItem),
+            };
           }
         }
       }

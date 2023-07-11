@@ -44,18 +44,16 @@ export const CalendarDayLabel = styled.div`
 `;
 
 export const CalendarIconButton = styled(IconButton)`
-  &&& {
-    &.MuiIconButton-root {
-      height: 1.75rem;
-      width: 1.75rem;
-    }
+  &.MuiIconButton-root {
+    height: 1.75rem;
+    width: 1.75rem;
+  }
 
-    &.MuiIconButton-colorPrimary {
-      background-color: ${palette.brightBlue};
+  &.MuiIconButton-colorPrimary {
+    background-color: ${palette.brightBlue};
 
-      &:hover {
-        background-color: ${opacify(palette.brightBlue, 0.8)};
-      }
+    &:hover {
+      background-color: ${opacify(palette.brightBlue, 0.8)};
     }
   }
 `;

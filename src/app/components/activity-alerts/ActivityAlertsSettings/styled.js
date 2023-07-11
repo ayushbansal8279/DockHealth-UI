@@ -54,10 +54,8 @@ export const ActivityAlertsSettingsItemsHeaderBlueLabel = styled.div`
 `;
 
 export const BlueCheckbox = styled(Checkbox)`
-  &&& {
-    &.MuiCheckbox-root {
-      color: ${palette.brightBlue};
-    }
+  &.MuiCheckbox-root {
+    color: ${palette.brightBlue};
   }
 `;
 export const CheckboxContainer = styled.div`

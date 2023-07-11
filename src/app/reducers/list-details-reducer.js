@@ -7,7 +7,7 @@ import move from 'ramda/src/move';
 import { reorderTasksForWorkflow } from 'helpers/workflow-helpers';
 import { TaskGroupType, TaskItemType } from 'helpers/task-helpers';
 import { updateBundleInList } from 'helpers/tasklist-helpers';
-import { updateTasksStateCallback } from './reducer-helper';
+import { updateTasksStateCallback, updateTasksMap } from './reducer-helper';
 import TaskBaseReducer from './task-base-reducer';
 
 // const dedupe = pipe(uniqBy(prop('identifier')));
@@ -36,39 +36,6 @@ const initialState = {
   searchTerm: '',
 };
 
-function updateTasksMap(state, taskItem) {
-  const updatedMap = {
-    [taskItem?.identifier]: {
-      ...state.tasksMap[taskItem?.identifier],
-      ...taskItem,
-    },
-  };
-
-  if (taskItem?.itemType === TaskItemType.BUNDLE) {
-    // add tasks and subtasks in the bundle
-    for (const task of taskItem?.tasks) {
-      updatedMap[task.identifier] = {
-        ...updatedMap[task.identifier],
-        ...task,
-      };
-      for (const subtask of task?.subtasks) {
-        updatedMap[subtask.identifier] = {
-          ...updatedMap[subtask.identifier],
-          ...subtask,
-        };
-      }
-    }
-  } else {
-    for (const subtask of taskItem?.subtasks) {
-      updatedMap[subtask.identifier] = {
-        ...updatedMap[subtask.identifier],
-        ...subtask,
-      };
-    }
-  }
-
-  return updatedMap;
-}
 
 function updateGroupInState(
   updateCallback,
@@ -424,7 +391,11 @@ const ListDetailsReducer = (state = initialState, action) => {
       //       : state.tasksMap[bundleIdentifier]?.tasks,
       //   },
       // };
-      const updatedMap = updateTasksMap(state, dataToUpdate);
+      const updatedMap = updateTasksMap(state, {
+        itemType: TaskItemType.BUNDLE,
+        identifier: bundleIdentifier,
+        ...dataToUpdate,
+      });
 
       const newMap = {
         ...state.tasksMap,

@@ -123,7 +123,7 @@ const GlobalSearchList = ({
                 subtasksDisabled
                 multipleAssigneesContext={containsMultipleAssignees}
                 iconColorActive={iconColorActiveItem?.value}
-                origin={TaskOrigin.TEMPLATE}
+                origin={TaskOrigin.GLOBAL}
               />
             ) : (
               <TaskTemplateGroup
@@ -135,7 +135,7 @@ const GlobalSearchList = ({
                 dragAndDropDisabled
                 showTasksWithGroup={false}
                 iconColorActive={iconColorActiveItem?.value}
-                origin={TaskOrigin.TEMPLATE}
+                origin={TaskOrigin.GLOBAL}
               />
             )}
           </>
