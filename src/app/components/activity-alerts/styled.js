@@ -60,17 +60,15 @@ export const ActivityAlertsImg = styled.img`
 `;
 
 export const ActivityAlertsPopover = styled(Popover)`
-  &&& {
-    &.MuiPopover-paper {
-      border: 'none';
-      box-shadow: '0px 0px 11px rgba(0, 0, 0, 0.15)'; // per design
-      width: '515px';
-      border-radius: '8px';
-      background-color: ${palette.coolGrey4};
-    }
-    .MuiBackdrop-root {
-      opacity: 0 !important;
-    }
+  .MuiPopover-paper {
+    border: 'none';
+    box-shadow: '0px 0px 11px rgba(0, 0, 0, 0.15)'; // per design
+    width: '515px';
+    border-radius: '8px';
+    background-color: ${palette.coolGrey4};
+  }
+  .MuiBackdrop-root {
+    opacity: 0 !important;
   }
 `;
 

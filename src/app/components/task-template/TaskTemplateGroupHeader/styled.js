@@ -70,6 +70,7 @@ export const TaskTemplateGroupHeaderContainer = styled.div`
 `;
 
 export const TaskTemplateProgressCircle = styled.div`
+  margin-left: ${spacing.small};
   margin-right: ${spacing.small};
 `;
 

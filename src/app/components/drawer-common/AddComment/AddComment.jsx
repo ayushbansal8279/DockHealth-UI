@@ -58,7 +58,7 @@ const AddComment = ({ autoFocus, onAdd }) => {
 
   return (
     <AddCommentContainer ref={addCommentContainerReference}>
-      <UserAvatar user={currentUser} size={34} />
+      <UserAvatar user={currentUser} size={35} />
       <AddCommentInputContainer isFocused={isFocused}>
         <RichTextEditor
           placeholder="New comment"
