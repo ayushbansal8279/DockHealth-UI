@@ -9,6 +9,11 @@ export const AdditionalOptionLabel = styled.span`
   cursor: pointer;
 `;
 
+export const SelectArrowImg = styled.img`
+  pointer-events: none;
+  height: 7px;
+`;
+
 export const AddPatientFieldModalWrapper = styled(ModalWrapper)`
   display: flex;
   flex-direction: column;
