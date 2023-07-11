@@ -304,7 +304,7 @@ export const DrawerListsItemNewLabel = styled.div`
   color: ${palette.brightBlue};
   font-size: 10px;
   font-weight: 400;
-  font-family: Roboto Condensed;
+  font-family: 'Roboto Condensed', sans-serif;;
 `;
 
 export const DrawerListsNewLabel = styled.div`

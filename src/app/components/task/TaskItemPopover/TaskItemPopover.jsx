@@ -12,7 +12,7 @@ const TaskItemPopover = React.forwardRef(
       children,
       content,
       contentWidth = 'auto',
-      fullWidth,
+      fullWidth = false,
       disabled,
       placement = 'bottom-end',
       onClose,

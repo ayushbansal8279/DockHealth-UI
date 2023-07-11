@@ -197,7 +197,6 @@ export const SETTINGS_ROUTES = [
   {
     path: '/subscription-expired',
     RouteComponent: SubscriptionExpiredView,
-    permissions: [CAN_ACCESS_SETTINGS_PAGE],
   },
   {
     path: '/custom-fields/:tabName/:identifier?',

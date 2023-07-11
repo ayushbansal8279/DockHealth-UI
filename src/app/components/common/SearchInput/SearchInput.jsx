@@ -10,7 +10,7 @@ import {
 
 const SearchInput = React.forwardRef(
   (
-    { value, onValueChange, onFocus, onBlur, placeholder = null },
+    { value, onValueChange, onFocus, onBlur, onKeyEnter, placeholder = null },
     reference,
   ) => {
     const innerInputReference = useRef(null);
@@ -28,12 +28,19 @@ const SearchInput = React.forwardRef(
       onValueChange(inputValue);
     };
 
+    const onKeyDown = event => {
+      if (event.key === 'Enter') {
+        onKeyEnter();
+      }
+    };
+
     const inputProps = {
       value,
       onChange: onInputChange,
       placeholder: placeholder || 'Search',
       onFocus,
       onBlur,
+      onKeyDown,
     };
 
     return (

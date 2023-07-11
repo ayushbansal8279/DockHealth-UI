@@ -20,7 +20,7 @@ import {
 } from 'actions/person-details-actions';
 import { onSortChanged } from 'helpers/ga-event-helper';
 import { getSharedTaskListsWithCurrentUser } from 'api/task-list-api';
-import { filterTasksBySearchValue } from 'helpers/task-search-helper';
+// import { filterTasksBySearchValue } from 'helpers/task-search-helper';
 import NoSearchResultsView from 'components/tasklist/EmptyListView/NoSearchResultsView';
 import EmptyListViewWithQuickAddTask from 'components/tasklist/EmptyListView/EmptyListViewWithQuickAddTask';
 import EmptyListView from 'components/tasklist/EmptyListView/EmptyListView';
@@ -33,6 +33,7 @@ import TasksHeader from 'components/tasklist/TasksHeader/TasksHeader';
 import QuickAddTaskInput from 'components/tasklist/QuickAddTaskInput/QuickAddTaskInput';
 import { checkIfAllTasksSelected } from 'helpers/bulk-edit-helpers';
 import { extractTasksAndSubtasks } from 'helpers/tasklist-helpers';
+import { TaskOrigin } from 'helpers/task-helpers';
 import { changeTasksSelectedState } from 'actions/task-actions';
 import { useTaskListColumnsConfig } from 'context-api/columns-config-context';
 import StickyContainer from 'components/common/HorizontalScroll/StickyContainer';
@@ -59,10 +60,10 @@ const PersonDetailsOpenedTasks = ({
   );
   const { setViewSpecificConfig } = useTaskListColumnsConfig();
   const quickAddTaskInputReference = useRef(null);
-  const filteredTasks = useMemo(
-    () => (!searchValue ? tasks : filterTasksBySearchValue(tasks, searchValue)),
-    [searchValue, tasks],
-  );
+  // const filteredTasks = useMemo(
+  //   () => (!searchValue ? tasks : filterTasksBySearchValue(tasks, searchValue)),
+  //   [searchValue, tasks],
+  // );
 
   useEffect(() => {
     setViewSpecificConfig(taskItemConfig);
@@ -75,6 +76,7 @@ const PersonDetailsOpenedTasks = ({
         fetchMethod: () => getSharedTaskListsWithCurrentUser(userIdentifier),
         listCreationPayload: {
           adminIdentifiers:
+            // eslint-disable-next-line unicorn/no-negated-condition
             currentUser.userIdentifier !== userIdentifier
               ? [userIdentifier]
               : [],
@@ -141,7 +143,7 @@ const PersonDetailsOpenedTasks = ({
         <GroupedListSkeletonLoader numberOfGroups={1} />
       ) : (
         <TaskGroupsContainer>
-          {!isEmpty(filteredTasks) ? (
+          {!isEmpty(tasks) ? (
             <TaskListGroupCollapse
               group={{ groupName: 'All tasks' }}
               stickyHeader
@@ -169,11 +171,11 @@ const PersonDetailsOpenedTasks = ({
                     isGroupSelected={isGroupSelected}
                     onGroupSelect={handleGroupSelect}
                   />
-                  {filteredTasks?.map((task) => (
+                  {tasks?.map((task) => (
                     <StandardTaskItem
                       key={task.identifier}
                       isFullView={isFullView}
-                      task={task}
+                      taskIdentifier={task.identifier}
                       isCompletedGroup={false}
                       toggleCompleteTask={toggleCompleteTask}
                       onTaskUpdate={onTaskUpdate}
@@ -186,6 +188,7 @@ const PersonDetailsOpenedTasks = ({
                       multipleAssigneesContext
                       dragAndDropDisabled
                       iconColorActive={iconColorActive}
+                      origin={TaskOrigin.PERSON}
                     />
                   ))}
                 </>

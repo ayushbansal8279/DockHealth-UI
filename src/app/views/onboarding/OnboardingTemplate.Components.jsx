@@ -306,7 +306,7 @@ const OnboardingDialogComponent = ({
   PaperProps,
   ...props
 }) => {
-  const paperClassName = isSmallScreen ? classes.smallPaper : classes.paper;
+  const paperClassName = isSmallScreen ? classes?.smallPaper : classes?.paper;
 
   return (
     <Dialog

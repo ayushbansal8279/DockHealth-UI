@@ -1,46 +1,27 @@
-import React, { useCallback, useEffect, useRef } from 'react';
+import React, { useCallback, useRef, useState } from 'react';
 import { Box } from '@mui/material';
-// import { EditorState } from 'draft-js';
-import { useBoolean } from 'hooks/useBoolean';
 import { useDispatch } from 'react-redux';
-import { partialUpdateTask } from 'actions/task-actions';
 import { updatePartialWorkflow } from 'actions/task-template-actions';
-import usePrevious from 'hooks/use-previous';
 import Tooltip from 'components/common/Tooltip/Tooltip';
 import TaskItemPopover from 'components/task/TaskItemPopover/TaskItemPopover';
 import CustomTextEditor from 'components/common/CustomTextEditor/CustomTextEditor';
-import TextEditor from 'components/common/TextEditor/TextEditor';
-import { TaskItemType } from 'helpers/task-helpers';
-// import { createMentionEntities } from 'components/common/TextEditor/create-mention-entities';
-import { useMentionsEditorState } from 'components/common/TextEditor/use-mentions-editor-state';
+import RichTextEditor from 'components/common/RichTextEditor/RichTextEditor';
+import debounce from 'lodash.debounce';
+// import { TaskItemType } from 'helpers/task-helpers';
 import { openDrawer } from 'actions/workflow-drawer-actions';
 import { WorkflowDrawerFieldNames } from 'helpers/workflow-drawer-helpers';
-import {
-  convertFromEditorStateToOutput,
-  convertToEditorState,
-} from 'components/common/TextEditor/helpers';
 import PopoverBottomBar from 'components/task/PopoverBottomBar/PopoverBottomBar';
-import { FieldCharakterLimit } from 'helpers/field-type-helpers';
 import { Text, LongTextBox, Divider } from './styled';
 
 const TaskTemplateDetails = ({ workflow, readOnly }) => {
   const detailsReference = useRef(null);
 
-  const isWorkflow =
-    workflow.itemType === TaskItemType.BUNDLE ||
-    workflow.itemType === TaskItemType.TEMPLATE;
+  // const isWorkflow =
+  //   workflow.itemType === TaskItemType.BUNDLE ||
+  //   workflow.itemType === TaskItemType.TEMPLATE;
 
-  const { identifier, description: details } = workflow;
   const dispatch = useDispatch();
-
-  const [detailsState, setDetailsState] = useMentionsEditorState(
-    convertToEditorState({
-      rawText: details,
-      tokenizedText: details,
-      mentions: [],
-      handleRichText: true,
-    }),
-  );
+  const [details, setDetails] = useState(workflow?.tokenizedDescription);
 
   const handleOpenDrawer = useCallback(() => {
     dispatch(
@@ -52,62 +33,35 @@ const TaskTemplateDetails = ({ workflow, readOnly }) => {
     );
   }, [dispatch, workflow]);
 
-  const handleChange = useCallback(
-    (tokenizedDetails) => {
-      if (isWorkflow) {
+  const handleAutoSave = debounce((value) => {
+    if (value !== '' || (details && value !== details)) {
+      dispatch(
+        updatePartialWorkflow(workflow?.identifier, {
+          description: value,
+          descriptionCleared: !value,
+        }),
+      );
+    }
+    // eslint-disable-next-line unicorn/numeric-separators-style
+  }, 10000);
+
+  const handleChange = (value) => {
+    setDetails(value);
+    handleAutoSave();
+  };
+
+  const handleBlur = useCallback(
+    (value) => {
+      if (value !== '' || (details && value !== details)) {
         dispatch(
-          updatePartialWorkflow(identifier, {
-            description: tokenizedDetails,
+          updatePartialWorkflow(workflow?.identifier, {
+            description: value,
+            descriptionCleared: !value,
           }),
         );
-      } else {
-        dispatch(partialUpdateTask(identifier, { details: tokenizedDetails }));
       }
     },
-    [dispatch, identifier, isWorkflow],
-  );
-
-  useEffect(() => {
-    const { tokenizedText } = convertFromEditorStateToOutput(
-      detailsState,
-      true,
-    );
-    if (details !== tokenizedText) {
-      // const newContent = createMentionEntities(details, details, [], true);
-      // setDetailsState(EditorState.push(detailsState, newContent));
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [details]);
-
-  const { rawText: rawTextUnFormatted } = convertFromEditorStateToOutput(
-    detailsState,
-    false,
-  );
-
-  const [isFocused, setFocused, unsetFocused] = useBoolean();
-
-  const previousIsFocused = usePrevious(isFocused);
-
-  const updateDetails = useCallback(
-    (state) => {
-      const { tokenizedText } = convertFromEditorStateToOutput(state, true);
-      handleChange(tokenizedText);
-    },
-    [handleChange],
-  );
-
-  useEffect(() => {
-    if (previousIsFocused && !isFocused) {
-      updateDetails(detailsState);
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [isFocused]);
-
-  const onChangeDetailsEditor = useCallback(
-    (state) => {
-      setDetailsState(state);
-    },
-    [setDetailsState],
+    [details, dispatch, workflow?.identifier],
   );
 
   return (
@@ -117,7 +71,7 @@ const TaskTemplateDetails = ({ workflow, readOnly }) => {
         // eslint-disable-next-line react/no-unstable-nested-components
         content={({ closePopover }) => (
           <Box
-            width="450px"
+            width="550px"
             height="100%"
             alignItems="center"
             style={{ padding: '5px' }}
@@ -129,17 +83,14 @@ const TaskTemplateDetails = ({ workflow, readOnly }) => {
               label="Details"
               richTextEnabled
             >
-              <TextEditor
-                characterLimit={FieldCharakterLimit.LONG_TEXT}
-                readOnly={readOnly}
-                minHeight={100}
+              <RichTextEditor
                 ref={detailsReference}
-                disableMentions
-                showToolbar
-                onFocus={setFocused}
-                onBlur={unsetFocused}
-                state={detailsState}
-                onChange={onChangeDetailsEditor}
+                readonly={readOnly}
+                value={details}
+                onChange={handleChange}
+                onBlur={handleBlur}
+                initOnClick
+                showCharCount
               />
             </CustomTextEditor>
             <Divider />
@@ -174,11 +125,11 @@ const TaskTemplateDetails = ({ workflow, readOnly }) => {
                   wordBreak: 'keep-all',
                 }}
               >
-                {rawTextUnFormatted}
+                {details}
               </pre>
             }
           >
-            <Text>{rawTextUnFormatted}</Text>
+            <Text>{details}</Text>
           </Tooltip>
         </LongTextBox>
       </TaskItemPopover>

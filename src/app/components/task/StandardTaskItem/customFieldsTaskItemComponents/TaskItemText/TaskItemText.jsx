@@ -1,62 +1,48 @@
-import React, { useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import Tooltip from 'components/common/Tooltip/Tooltip';
-import {
-  convertToEditorState,
-  // convertFromEditorStateToOutput,
-} from 'components/common/TextEditor/helpers';
-import { useMentionsEditorState } from 'components/common/TextEditor/use-mentions-editor-state';
 import { useBoolean } from 'hooks/useBoolean';
-import TextEditor from 'ui-toolkit/Form/TextEditor/TextEditor';
+import Input from 'components/common/Input/Input';
 import { TextContainer } from './styled';
 
-const TaskItemText = ({ value = '', onChange, readOnly = false }) => {
-  // const editorReference = useRef(null);
-  const [textValue, setTextValue] = useState(value);
-  const [isEditing, setEditing, unsetEditing] = useBoolean(false);
-  const [state, setState] = useMentionsEditorState(
-    convertToEditorState({
-      rawText: value,
-      tokenizedText: value,
-      mentions: [],
-      handleRichText: false,
-    }),
-  );
+const TaskItemText = ({
+  value: initialValue = '',
+  onChange,
+  readOnly = false,
+  placeholder,
+}) => {
+  const [value, setValue] = useState(initialValue);
 
   useEffect(() => {
-    if (textValue !== value) {
-      setState(
-        convertToEditorState({
-          rawText: value,
-          tokenizedText: value,
-          mentions: [],
-          handleRichText: false,
-        }),
-      );
-      setTextValue(value);
-    }
-  }, [setState, textValue, value]);
+    setValue(initialValue);
+  }, [initialValue]);
 
-  // eslint-disable-next-line no-shadow
-  const handleTextEditorBlur = (_, { value }) => {
-    onChange(value);
-  };
+  const [isEditing, setEditing, unsetEditing] = useBoolean(false);
 
-  // eslint-disable-next-line no-shadow
-  const handleTextEditorKeyDown = (_, { value, key, shiftKey }) => {
-    if (key === 'Enter' && !shiftKey) {
-      onChange(value);
-    }
-  };
+  const handleOnChange = useCallback((event) => {
+    setValue(event.target.value);
+  }, []);
+
+  const handleBlur = useCallback(
+    (event) => {
+      if (!readOnly) {
+        onChange(event.target.value);
+      }
+    },
+    [onChange, readOnly],
+  );
 
   return (
     <Tooltip placement="top" title={value} hideTooltip={isEditing}>
       <TextContainer>
-        <TextEditor
-          type="input"
-          readonly={false}
+        <Input
+          hiddenLabel
+          // characterLimit={characterLimit}
+          readOnly={readOnly}
+          placeholder={placeholder}
           value={value}
-          onBlur={handleTextEditorBlur}
-          onKeyDown={handleTextEditorKeyDown}
+          onChange={handleOnChange}
+          onBlur={handleBlur}
+          style={{ padding: '0px' }}
         />
       </TextContainer>
     </Tooltip>

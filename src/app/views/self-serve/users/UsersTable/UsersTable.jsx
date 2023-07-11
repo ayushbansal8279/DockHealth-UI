@@ -417,6 +417,8 @@ const UsersTable = ({
                 autoHeight
                 disableColumnMenu
                 disableSelectionOnClick
+                showColumnRightBorder
+                showCellRightBorder
               />
             )}
           </StyledUsersTable>

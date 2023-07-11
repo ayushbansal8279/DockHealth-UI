@@ -561,7 +561,8 @@ function* doCreateTask(payload) {
       );
       yield put(showGlobalAlert(AlertMessages.TASK_CREATED));
     }
-  } catch {
+  } catch (error) {
+    console.log(error);
     yield put(showGlobalErrorAlert());
   }
 }

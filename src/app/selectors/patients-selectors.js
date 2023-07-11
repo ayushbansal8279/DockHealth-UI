@@ -53,6 +53,11 @@ export const filterOptionsSelector = createSelector(
   ({ currentPatientsList }) => currentPatientsList?.filterOptions || null,
 );
 
+export const patientsListSearchPerformedSelector = createSelector(
+  patientsStateSelector,
+  ({ currentPatientsList }) => currentPatientsList?.searchPerformed,
+);
+
 export const patientsListSearchTermSelector = createSelector(
   patientsStateSelector,
   ({ currentPatientsList }) => currentPatientsList?.searchTerm || '',

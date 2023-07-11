@@ -11,10 +11,12 @@ import Spacing from 'components/common/Spacing';
 import Checkbox from 'components/common/Checkbox/Checkbox';
 import SearchInput from 'components/common/SearchInput/SearchInput';
 import { useHistory } from 'react-router-dom';
+import Button from 'components/common/Button/Button';
 
 import {
   TopSectionGrid,
   InputWrapper,
+  ButtonWrapper,
   CheckboxDescription,
   CheckboxContainer,
 } from './styled';
@@ -24,6 +26,7 @@ const GlobalSearchHeader = ({
   searchValue,
   setSearchValue,
   setSearchCompletedTasks,
+  searchTasks,
 }) => {
   const history = useHistory();
 
@@ -50,7 +53,11 @@ const GlobalSearchHeader = ({
       alignItems="center"
     >
       <InputWrapper>
-        <SearchInput value={searchValue} onValueChange={setSearchValue} />
+        <SearchInput
+          value={searchValue}
+          onValueChange={setSearchValue}
+          onKeyEnter={searchTasks}
+        />
       </InputWrapper>
       <Spacing horizontal={5} />
       <CheckboxContainer>
@@ -62,6 +69,11 @@ const GlobalSearchHeader = ({
         <Spacing horizontal={3} />
         <CheckboxDescription>Search completed tasks</CheckboxDescription>
       </CheckboxContainer>
+      <ButtonWrapper>
+        <Button fullWidth onClick={searchTasks} size="small">
+          Search
+        </Button>
+      </ButtonWrapper>
     </TopSectionGrid>
   );
 };
@@ -70,6 +82,7 @@ const mapDispatchToProps = {
   showNavbar: TemplateActions.showNavbar,
   setSearchValue: GlobalSearchSagaActions.setSearchValue,
   setSearchCompletedTasks: GlobalSearchSagaActions.setSearchCompletedTasks,
+  searchTasks: GlobalSearchSagaActions.searchTasks,
 };
 
 const mapStateToProps = (store) => ({

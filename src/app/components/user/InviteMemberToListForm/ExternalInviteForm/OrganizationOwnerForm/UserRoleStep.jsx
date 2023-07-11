@@ -4,6 +4,10 @@ import { Grid } from '@mui/material';
 import Button from 'components/common/Button/Button';
 import { UserOrganizationRole } from 'helpers/user-helper';
 import {
+  userHasViewOnlyFeatureSelector,
+  userHasDockGuestFeatureSelector,
+} from 'selectors/user-selectors';
+import {
   RoleFormWrapper,
   RoleSelectionHeader,
   Divider,
@@ -21,6 +25,8 @@ const UserRoleStep = ({ navigateToPreviousStep, disabled }) => {
   const { watch, setValue } = useFormContext();
 
   const roleValue = watch('userRole');
+  const viewOnlyRoleAvailable = useSelector(userHasViewOnlyFeatureSelector);
+  const guestRoleAvailable = useSelector(userHasDockGuestFeatureSelector);
 
   return (
     <RoleFormWrapper
@@ -54,28 +60,34 @@ const UserRoleStep = ({ navigateToPreviousStep, disabled }) => {
           </RoleOptionDescription>
         </RoleOptionLabel>
         <Divider />
-        <input
-          id="Guest"
-          type="radio"
-          name="userRole"
-          value="GUEST"
-          checked={roleValue === 'GUEST'}
-          onChange={(event) => setValue(event.target.name, event.target.value)}
-        />
-        <RoleOptionLabel isSelected={roleValue === 'GUEST'} htmlFor="Guest">
-          <RoleOptionHeaderWrapper>
-            <RoleOptionHeader>Guests</RoleOptionHeader>
-            <RoleOptionHeaderAdditionalInfo>
-              *Limited Access
-            </RoleOptionHeaderAdditionalInfo>
-          </RoleOptionHeaderWrapper>
-          <RoleOptionDescription>
-            An outside collaborator you can invite into selected lists, who will
-            only have access to the tasks, patients/clients and people who are
-            part of those lists.
-          </RoleOptionDescription>
-        </RoleOptionLabel>
-        <Divider />
+        {guestRoleAvailable && (
+          <>
+            <input
+              id="Guest"
+              type="radio"
+              name="userRole"
+              value="GUEST"
+              checked={roleValue === 'GUEST'}
+              onChange={event =>
+                setValue(event.target.name, event.target.value)
+              }
+            />
+            <RoleOptionLabel isSelected={roleValue === 'GUEST'} htmlFor="Guest">
+              <RoleOptionHeaderWrapper>
+                <RoleOptionHeader>Guests</RoleOptionHeader>
+                <RoleOptionHeaderAdditionalInfo>
+                  *Limited Access
+                </RoleOptionHeaderAdditionalInfo>
+              </RoleOptionHeaderWrapper>
+              <RoleOptionDescription>
+                An outside collaborator you can invite into selected lists, who
+                will only have access to the tasks, patients/clients and people
+                who are part of those lists.
+              </RoleOptionDescription>
+            </RoleOptionLabel>
+            <Divider />
+          </>
+        )}
         <input
           id="DockPro"
           type="radio"

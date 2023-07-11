@@ -54,6 +54,7 @@ import {
   TasksGroupLabelName,
   TasksGroupLabelCounter,
   GroupOptionsContainer,
+  GroupOpenContainer,
 } from './styled';
 import TasksHeader from '../TasksHeader/TasksHeader';
 
@@ -104,8 +105,7 @@ const TasksGroup = ({
   });
   const highlightTimeoutReference = useRef(null);
 
-  const isFullView =
-    viewType === ViewType.FULL_VIEW || areFiltersApplied || isSearchApplied;
+  const isFullView = viewType === ViewType.FULL_VIEW;
 
   const onSwitchOpen = useCallback(() => {
     if (isOpen) {
@@ -295,13 +295,14 @@ const TasksGroup = ({
             </GroupOptionsContainer>
           )}
           <Spacing horizontal={2} />
-          <RotatableChevron
-            alt="arrow"
-            rotated={!isOpen}
-            onClick={onToggleGroupOpen}
-            color={iconColorActive}
-          />
-          <Spacing horizontal={3} />
+          <GroupOpenContainer onClick={onToggleGroupOpen}>
+            <RotatableChevron
+              alt="arrow"
+              rotated={!isOpen}
+              color={iconColorActive}
+            />
+          </GroupOpenContainer>
+          <Spacing horizontal={1} />
           <GroupNameSectionWrapper>
             <GroupNameSection
               initialValue={groupName}

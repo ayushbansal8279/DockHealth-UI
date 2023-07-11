@@ -70,7 +70,10 @@ const PatientDetailsDrawer = ({ patient, isOpenedDetails, closeDetails }) => {
         openModal('InterruptEdit', {
           isWorkflowModal: true,
           confirm: () => {
-            formReference.current.dispatchEvent(new Event('submit'));
+            formReference.current.dispatchEvent(
+              new Event('submit', { cancelable: true, bubbles: true }),
+            );
+            // formReference.current.requestSubmit(); -- alternative
             dispatch(closeModal());
           },
           onClose: close,

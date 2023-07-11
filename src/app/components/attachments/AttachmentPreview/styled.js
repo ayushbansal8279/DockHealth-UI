@@ -7,7 +7,7 @@ export const AttachmentPreviewDialog = styled(Dialog)`
   &&& {
     &.MuiDialog-paper {
       border-radius: 0;
-      max-width: '60.5rem';
+      max-width: 85%;
       overflow-y: 'hidden';
     }
   }

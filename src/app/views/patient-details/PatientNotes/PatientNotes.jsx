@@ -1,5 +1,5 @@
 /* eslint-disable sonarjs/cognitive-complexity */
-import React, { useCallback, useMemo, useRef, useState } from 'react';
+import React, { useCallback, useMemo, useState } from 'react';
 import compose from 'ramda/src/compose';
 import descend from 'ramda/src/descend';
 import prop from 'ramda/src/prop';
@@ -16,14 +16,11 @@ import {
   changePatientNotePin,
 } from 'sagas/patient-details-saga';
 import { openModal, closeModal } from 'modal/actions';
-// import { EditorState } from 'draft-js';
-import { convertFromEditorStateToOutput } from 'components/common/TextEditor/helpers';
-// import { useMentionsEditorState } from 'components/common/TextEditor/use-mentions-editor-state';
 import Button from 'components/common/Button/Button';
 import Spacing from 'components/common/Spacing';
-// import { ClickAwayListener } from '@mui/material';
+import { ClickAwayListener } from '@mui/material';
 import { checkIfUserIsOrganizationAdmin } from 'helpers/user-helper';
-import TextArea from 'ui-toolkit/Form/TextArea/TextArea';
+import RichTextEditor from 'components/common/RichTextEditor/RichTextEditor';
 import PatientNote from '../PatientNote/PatientNote';
 import PatientNotesLoader from '../PatientNotesLoader/PatientNotesLoader';
 import {
@@ -34,7 +31,6 @@ import {
 } from './styled';
 
 const PatientNotes = () => {
-  const addNoteInputReference = useRef(null);
   const dispatch = useDispatch();
   const patient = useSelector(patientSelector);
   const isFetching = useSelector(isFetchingNotesSelector);
@@ -71,34 +67,17 @@ const PatientNotes = () => {
   );
 
   const [noteState, setNoteState] = useState('');
-  const onNoteChange = (state) => setNoteState(state);
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  const clearNote = useCallback(
-    () =>
-      // () => setNoteState(EditorState.createEmpty()),
-      undefined[setNoteState],
-  );
 
   const isEmpty = useMemo(() => {
-    const { tokenizedText } = convertFromEditorStateToOutput(noteState, true);
-    return tokenizedText?.trim()?.length === 0;
+    // const { tokenizedText } = convertFromEditorStateToOutput(noteState, true);
+    // return tokenizedText?.trim()?.length === 0;
+    return noteState?.trim()?.length === 0;
   }, [noteState]);
 
-  const saveNote = useCallback(() => {
-    const { tokenizedText } = convertFromEditorStateToOutput(noteState, true);
-    if (tokenizedText?.trim()?.length > 0) {
-      dispatch(addPatientNote(patientIdentifier, tokenizedText));
-      clearNote();
-      if (typeof addNoteInputReference.current.clear === 'function')
-        addNoteInputReference.current.clear();
-      setEditMode(false);
-    }
-  }, [clearNote, dispatch, noteState, patientIdentifier]);
-
   const handleCancel = useCallback(() => {
-    clearNote();
+    setNoteState('');
     setEditMode(false);
-  }, [clearNote]);
+  }, []);
 
   const openDeleteConfirmationModal = useCallback(() => {
     const modalProps = {
@@ -175,16 +154,10 @@ const PatientNotes = () => {
     );
   };
 
-  const handleNoteChange = (value) => {
-    setNoteState(value)
-    setEditMode(true)
-    // dispatch(addPatientNote(patientIdentifier, value))
-  }
-
-  const handleTextEditorChange = (_, { value }) => {
-    setNoteState(value)
-    setEditMode(true)
-  }
+  const handleTextEditorChange = (value) => {
+    setNoteState(value);
+    setEditMode(true);
+  };
 
   return (
     <PatientNotesWrapper>
@@ -198,8 +171,19 @@ const PatientNotes = () => {
             </PinnedNotesWrapper>
           )}
           {unpinnedNotes?.sort(descend(prop('dateUpdated')))?.map(renderNote)}
-          {/*<RichTextEditor isToolbarActive onChange={handleNoteChange} value={noteState}/>*/}
-          <TextArea value={noteState} onChange={handleTextEditorChange} />
+          <ClickAwayListener onClickAway={handleClickAway}>
+            <div style={{ paddingTop: '10px', paddingBottom: '10px' }}>
+              <RichTextEditor
+                placeholder="Add a new note"
+                showToolbar
+                value={noteState}
+                onChange={handleTextEditorChange}
+                onFocus={handleFocus}
+                initOnClick={false}
+                showCharCount
+              />
+            </div>
+          </ClickAwayListener>
           {editMode && (
             <ButtonContainer>
               <ButtonWrapper>
@@ -207,8 +191,8 @@ const PatientNotes = () => {
                   color="secondary"
                   variant="secondary"
                   onClick={() => {
-                    setEditMode(false);
                     setNoteState('');
+                    setEditMode(false);
                   }}
                   size="small"
                 >
@@ -220,7 +204,9 @@ const PatientNotes = () => {
                   disabled={isEmpty}
                   size="small"
                   onClick={() => {
-                    dispatch(addPatientNote(patientIdentifier, noteState))
+                    dispatch(addPatientNote(patientIdentifier, noteState));
+                    setNoteState('');
+                    setEditMode(false);
                   }}
                 >
                   Save
@@ -228,44 +214,6 @@ const PatientNotes = () => {
               </ButtonWrapper>
             </ButtonContainer>
           )}
-          {/*<ClickAwayListener onClickAway={handleClickAway}>*/}
-          {/*  <RichTextInputContainer>*/}
-          {/*    <TextEditor*/}
-          {/*      getFocusFromParent={editMode}*/}
-          {/*      showToolbar*/}
-          {/*      ref={addNoteInputReference}*/}
-          {/*      taskListIdentifier={patientIdentifier}*/}
-          {/*      disableMentions*/}
-          {/*      placeholder="Leave a note and press enter on your keyboard to save"*/}
-          {/*      state={noteState}*/}
-          {/*      onChange={onNoteChange}*/}
-          {/*      onFocus={handleFocus}*/}
-          {/*    />*/}
-          {/*    {editMode && (*/}
-          {/*      <ButtonContainer>*/}
-          {/*        <ButtonWrapper>*/}
-          {/*          <Button*/}
-          {/*            color="secondary"*/}
-          {/*            variant="secondary"*/}
-          {/*            onClick={handleCancel}*/}
-          {/*            size="small"*/}
-          {/*          >*/}
-          {/*            Cancel*/}
-          {/*          </Button>*/}
-          {/*          <Spacing horizontal={4} />*/}
-          {/*          <Button*/}
-          {/*            color="primary"*/}
-          {/*            disabled={isEmpty}*/}
-          {/*            size="small"*/}
-          {/*            onClick={saveNote}*/}
-          {/*          >*/}
-          {/*            Save*/}
-          {/*          </Button>*/}
-          {/*        </ButtonWrapper>*/}
-          {/*      </ButtonContainer>*/}
-          {/*    )}*/}
-          {/*  </RichTextInputContainer>*/}
-          {/*</ClickAwayListener>*/}
         </>
       )}
     </PatientNotesWrapper>

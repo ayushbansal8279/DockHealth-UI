@@ -1,6 +1,6 @@
 import * as ActionTypes from 'actions/action-types';
 import { TaskItemType } from 'helpers/task-helpers';
-// import { mapWithRemove } from 'helpers/utility-functions';
+import { updateTasksStateCallback } from './reducer-helper';
 import TaskBaseReducer from './task-base-reducer';
 
 const initialState = {
@@ -8,8 +8,8 @@ const initialState = {
   currentTasksStatus: null,
   userDetails: null,
   isFetchingUserDetails: false,
-  completedTasks: null,
-  tasks: null,
+  taskIdentifiers: null,
+  completedTaskIdentifiers: null,
   tasksMap: {},
   isFetching: false,
   isCompletedTasksFetching: false,
@@ -27,27 +27,6 @@ const mapTasksSuccess = (task) => ({
     patient: task.patient,
   })),
 });
-
-// const updateTasksStateCallback = (state, updateTaskFromAction) => ({
-//   ...state,
-//   tasks: mapWithRemove(updateTaskFromAction, state.tasks),
-//   completedTasks: mapWithRemove(updateTaskFromAction, state.completedTasks),
-// });
-
-const updateTasksStateCallback = (state, newTask) => {
-  if (typeof newTask === 'function') return state;
-
-  return {
-    ...state,
-    tasksMap: {
-      ...state.tasksMap,
-      [newTask.identifier ?? newTask.taskIdentifier]: {
-        ...state.tasksMap[newTask.identifier ?? newTask.taskIdentifier],
-        ...newTask,
-      },
-    },
-  };
-};
 
 const PersonDetailsReducer = (state = initialState, action) => {
   switch (action.type) {
@@ -122,8 +101,8 @@ const PersonDetailsReducer = (state = initialState, action) => {
           newMap[task.identifier] = task;
         } else {
           newMap[task.identifier] = task;
-          for (const subtask of task.tasks) {
-            newMap[subtask.identifier] = subtask;
+          for (const grpTask of task.tasks) {
+            newMap[grpTask.identifier] = grpTask;
           }
         }
       }
@@ -133,6 +112,7 @@ const PersonDetailsReducer = (state = initialState, action) => {
           ...state.tasksMap,
           ...newMap,
         },
+        taskIdentifiers: tasks.map((task) => task.identifier),
         isFetching: false,
       };
 
@@ -149,12 +129,34 @@ const PersonDetailsReducer = (state = initialState, action) => {
     case ActionTypes.GET_USER_COMPLETED_TASKS_SUCCESS: {
       const { tasks } = action;
 
+      const newMap = {};
+      for (const task of tasks) {
+        if (task.itemType === TaskItemType.TASK) {
+          newMap[task.identifier] = task;
+        } else {
+          newMap[task.identifier] = task;
+          for (const grpTask of task.tasks) {
+            newMap[grpTask.identifier] = grpTask;
+          }
+        }
+      }
       return {
         ...state,
-        completedTasks: tasks.map(mapTasksSuccess),
+        tasksMap: {
+          ...state.tasksMap,
+          ...newMap,
+        },
+        completedTaskIdentifiers: tasks.map((task) => task.identifier),
         isCompletedTasksFetching: false,
         isFetching: false,
       };
+
+      // return {
+      //   ...state,
+      //   completedTasks: tasks.map(mapTasksSuccess),
+      //   isCompletedTasksFetching: false,
+      //   isFetching: false,
+      // };
     }
 
     case ActionTypes.GET_USER_TASK_COUNTERS_SUCCESS: {
@@ -174,7 +176,7 @@ const PersonDetailsReducer = (state = initialState, action) => {
           order,
         },
         completedTasks: null,
-        tasks: null,
+        taskIdentifiers: null,
       };
     }
 
@@ -183,7 +185,14 @@ const PersonDetailsReducer = (state = initialState, action) => {
 
       return {
         ...state,
-        tasks: [addedTask, ...(state.tasks || [])],
+        tasksMap: {
+          ...state.tasksMap,
+          [addedTask.identifier]: addedTask,
+        },
+        taskIdentifiers: [
+          addedTask.identifier,
+          ...(state.taskIdentifiers || []),
+        ],
       };
     }
 

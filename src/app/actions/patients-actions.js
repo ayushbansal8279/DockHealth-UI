@@ -19,9 +19,29 @@ export function getCurrentPatients() {
   };
 }
 
+export function clearPatients() {
+  return {
+    type: ActionTypes.CLEAR_PATIENTS,
+  };
+}
+
 export function getCurrentPatientsListFilterOptions() {
   return {
     type: ActionTypes.GET_CURRENT_PATIENTS_LIST_FILTER_OPTIONS,
+  };
+}
+
+export function searchPatients(searchTerm) {
+  return {
+    type: ActionTypes.SEARCH_PATIENTS,
+    searchTerm,
+  };
+}
+
+export function clearPatientSearch(searchTerm) {
+  return {
+    type: ActionTypes.CLEAR_PATIENT_SEARCH,
+    searchTerm,
   };
 }
 

@@ -1,9 +1,5 @@
 import React, { useCallback, useEffect, useState, useContext } from 'react';
 import { useFormContext } from 'react-hook-form';
-import {
-  convertToEditorState,
-} from 'components/common/TextEditor/helpers';
-import { useMentionsEditorState } from 'components/common/TextEditor/use-mentions-editor-state';
 import { useDispatch } from 'react-redux';
 import { partialUpdateTask } from 'actions/task-actions';
 import { updatePartialWorkflow } from 'actions/task-template-actions';
@@ -12,9 +8,9 @@ import { showGlobalAlert } from 'alert/actions';
 import AlertMessages from 'alert/AlertMessages';
 import { formatMetaDataOutput } from 'components/task-drawer/CustomFieldsSection/helpers';
 import CustomTextEditor from 'components/common/CustomTextEditor/CustomTextEditor';
+import RichTextEditor from 'components/common/RichTextEditor/RichTextEditor';
 import { CustomTextEditorContainer } from './styled';
 import CustomFieldErrorContext from './CustomFieldErrorContext';
-import TextEditor from "ui-toolkit/Form/TextEditor/TextEditor";
 
 const CustomFieldRichTextEditor = React.forwardRef(
   (
@@ -27,10 +23,10 @@ const CustomFieldRichTextEditor = React.forwardRef(
       identifier,
       task,
       fieldsGroupKey,
-      inputRef,
-      characterLimit,
-      oneline,
-      enableRichText = false,
+      // inputRef,
+      // characterLimit,
+      // oneline,
+      // enableRichText = false,
     },
     reference,
   ) => {
@@ -40,7 +36,6 @@ const CustomFieldRichTextEditor = React.forwardRef(
     const value = watch(name);
     const [isFocused, setIsFocused] = useState(false);
     const [updatedValue, setUpdatedValue] = useState(value);
-    const [state, setState] = useMentionsEditorState(convertToEditorState());
 
     const { descriptionErrorState, setDescriptionErrorState, isRequired } =
       useContext(CustomFieldErrorContext);
@@ -56,7 +51,6 @@ const CustomFieldRichTextEditor = React.forwardRef(
       if (value !== null && value !== updatedValue) {
         // const newContent = createMentionEntities(value, value, [], true);
         setUpdatedValue(value);
-        // setState(EditorState.push(state, newContent));
       }
       // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [value]);
@@ -116,11 +110,9 @@ const CustomFieldRichTextEditor = React.forwardRef(
       ],
     );
 
-    const [currentValue, setCurrentValue] = useState(value);
-
-    const handleBlur = (_, { value }) => {
-        updateCustomFields(value);
-        setIsFocused(false);
+    const handleBlur = (textValue) => {
+      updateCustomFields(textValue);
+      setIsFocused(false);
     };
 
     return (
@@ -133,13 +125,13 @@ const CustomFieldRichTextEditor = React.forwardRef(
         ref={reference}
       >
         <CustomTextEditorContainer>
-          <TextEditor
-            type="textarea"
+          <RichTextEditor
+            value={updatedValue}
             readonly={readOnly}
             placeholder={placeholder}
-            value={currentValue}
-            onChange={(_, { value }) => setCurrentValue(value)}
             onBlur={handleBlur}
+            initOnClick
+            showCharCount
           />
         </CustomTextEditorContainer>
       </CustomTextEditor>

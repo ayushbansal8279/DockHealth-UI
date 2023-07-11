@@ -5,25 +5,19 @@ import { userProfileSelector } from 'selectors/user-selectors';
 import Loader, { LoaderSizes } from 'components/common/Loader/Loader';
 import UserAvatar from 'components/user/UserAvatar/UserAvatar';
 import { selectedTaskSelector } from 'selectors/task-drawer-selectors';
-import TextEditor from 'ui-toolkit/Form/TextEditor/TextEditor';
+import RichTextEditor from 'components/common/RichTextEditor/RichTextEditor';
 import {
   AddCommentContainer,
   AddCommentLoaderContainer,
   AddCommentInputContainer,
 } from './styled';
 
-const AddComment = ({
-  autoFocus,
-  // disableMentions,
-  onAdd,
-  // taskListIdentifier,
-}) => {
+const AddComment = ({ autoFocus, onAdd }) => {
   const addCommentReference = useRef();
   const addCommentContainerReference = useRef();
   const [isFocused] = useState(false);
   const currentUser = useSelector(userProfileSelector);
-  const [isAddingComment] =
-    useBoolean(false);
+  const [isAddingComment] = useBoolean(false);
 
   useEffect(() => {
     if (autoFocus && addCommentReference?.current) {
@@ -42,12 +36,19 @@ const AddComment = ({
 
   const [description, setDescription] = useState(null);
 
-  const handleTextEditorChange = (_, { value }) => {
+  const handleTextEditorChange = (value) => {
     setDescription(value);
   };
 
-  const handleTextEditorKeyDown = (_, { value, key, shiftKey }) => {
-    if (key === 'Enter' && !shiftKey) {
+  const handleTextEditorBlur = (value) => {
+    if (value !== '') {
+      onAdd(value);
+      setDescription('');
+    }
+  };
+
+  const handleTextEditorKeyEnter = (value) => {
+    if (value !== '') {
       onAdd(value);
       setDescription('');
     }
@@ -59,15 +60,16 @@ const AddComment = ({
     <AddCommentContainer ref={addCommentContainerReference}>
       <UserAvatar user={currentUser} size={34} />
       <AddCommentInputContainer isFocused={isFocused}>
-        <TextEditor
-          type="textarea"
+        <RichTextEditor
+          placeholder="New comment"
+          height={120}
           value={description}
           onChange={handleTextEditorChange}
-          onKeyDown={handleTextEditorKeyDown}
+          onBlur={handleTextEditorBlur}
+          onKeyEnter={handleTextEditorKeyEnter}
           mentions={selectedTask?.taskMentions}
-          enabled={{
-            mentions: true,
-          }}
+          initOnClick
+          showCharCount
         />
       </AddCommentInputContainer>
       {isAddingComment && (

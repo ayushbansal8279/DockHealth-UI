@@ -13,6 +13,7 @@ import { checkIfAllTasksSelected } from 'helpers/bulk-edit-helpers';
 import pluck from 'ramda/src/pluck';
 import { extractTasksAndSubtasks } from 'helpers/tasklist-helpers';
 import { useDispatch, useSelector } from 'react-redux';
+import { formatPhoneNumber } from 'helpers/utility-functions';
 import ThreeDotsIcon from 'img/three-dots.svg';
 import { MoreVert } from '@mui/icons-material';
 import * as ModalActions from 'modal/actions';
@@ -28,6 +29,8 @@ import {
   TaskPriority,
   getPriorityColor,
 } from 'helpers/task-helpers';
+import { isMemberAdmin } from 'helpers/list-members-helper';
+import { checkIfUserIsOrganizationAdmin } from 'helpers/user-helper';
 // import * as TaskTemplateApi from 'api/task-template-api';
 // import { workflowSelector } from 'selectors/workflow-drawer-selectors';
 import Checkbox from 'components/common/Checkbox/Checkbox';
@@ -52,7 +55,10 @@ import {
 import { currentTaskListSelector } from 'selectors/task-list-selectors';
 import { openDrawer } from 'actions/workflow-drawer-actions';
 import { CUSTOM_FIELD_TYPES } from 'helpers/custom-fields-helpers';
-import { userProfileSelector } from 'selectors/user-selectors';
+import {
+  userProfileSelector,
+  selectedUserOrganizationSelector,
+} from 'selectors/user-selectors';
 import {
   SINGLE_TASK_RESTRICTIONS_OPTIONS,
   SINGLE_TASK_RESTRICTIONS_PROFILES,
@@ -79,6 +85,7 @@ import {
   TemplateHandle,
   TaskTemplateOptionsContainer,
   ActionIconsContainer,
+  PatientMRNAnchor,
 } from './styled';
 import TaskTemplateDetails from '../TaskTemplateDetails/TaskTemplateDetails';
 
@@ -103,8 +110,15 @@ const TaskTemplateGroupHeader = ({
   iconColorActive,
   // eslint-disable-next-line sonarjs/cognitive-complexity
 }) => {
-  const { name, tasks, identifier, tasksCount, tasksCompletedCount, selected } =
-    templateGroup;
+  const {
+    name,
+    tasks,
+    identifier,
+    tasksCount,
+    tasksCompletedCount,
+    selected,
+    creator,
+  } = templateGroup;
 
   const { dragHandleProps } = draggableProvided;
   const { bulkEditIsActive } = useContext(BulkEditContext);
@@ -123,9 +137,110 @@ const TaskTemplateGroupHeader = ({
   const [workFlowData, setWorkFlowData] = useState(undefined);
   // const selectedWorkflow = useSelector(workflowSelector);
 
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  const templateTasks = tasks || [];
+  
+  let restrictions =
+    SINGLE_TASK_RESTRICTIONS_PROFILES[currentUser?.orgUserRole];
+  let taskListRestrictions =
+    TASK_LIST_RESTRICTIONS_PROFILES[currentUser?.orgUserRole];
+  const { DISABLED, READ_ONLY } = SINGLE_TASK_RESTRICTIONS_OPTIONS;
+
+  const selectedOrganization = useSelector(selectedUserOrganizationSelector);
+  const currentTasklist = useSelector(currentTaskListSelector);
+  const emrPatientLink = selectedOrganization?.emrPatientLink;
+
+  const isListAdmin = useMemo(() => {
+    const currentUserMember = currentTasklist?.listUsers?.find(
+      u => u.identifier === currentUser?.identifier,
+    );
+    const isOwnerOrAdmin = checkIfUserIsOrganizationAdmin(currentUser);
+    return isMemberAdmin(currentUserMember) || isOwnerOrAdmin;
+  }, [currentUser, currentTasklist]);
+
+  const isCreator = useMemo(() => {
+    return creator?.identifier === currentUser?.identifier;
+  }, [currentUser, creator]);
+
+  if (!restrictions) {
+    restrictions = {};
+  }
+  if (!taskListRestrictions) {
+    taskListRestrictions = {};
+  }
+
+  const taskDeleteDisabled = useMemo(() => {
+    const disabledSettingItem =
+      selectedOrganization?.themeSettings?.find(
+        ({ name: themeName }) =>
+          themeName === 'list.tasks.member.delete.enabled',
+      ) || {};
+    return (
+      disabledSettingItem &&
+      disabledSettingItem?.value === 'false' &&
+      !isListAdmin &&
+      !isCreator
+    );
+  }, [selectedOrganization, isListAdmin, isCreator]);
+
+  const taskMoveListDisabled = useMemo(() => {
+    const disabledSettingItem =
+      selectedOrganization?.themeSettings?.find(
+        ({ name: themeName }) =>
+          themeName === 'list.tasks.member.move.list.enabled',
+      ) || {};
+    return (
+      disabledSettingItem &&
+      disabledSettingItem?.value === 'false' &&
+      !isListAdmin &&
+      !isCreator
+    );
+  }, [selectedOrganization, isListAdmin, isCreator]);
+
+  const workflowEditDisabled = useMemo(() => {
+    const disabledSettingItem =
+      selectedOrganization?.themeSettings?.find(
+        ({ name: themeName }) =>
+          themeName === 'list.tasks.member.workflow.edit.enabled',
+      ) || {};
+    return (
+      disabledSettingItem &&
+      disabledSettingItem?.value === 'false' &&
+      !isListAdmin &&
+      !isCreator
+    );
+  }, [selectedOrganization, isListAdmin, isCreator]);
+
+  const workflowAddTaskDisabled = useMemo(() => {
+    const disabledSettingItem =
+      selectedOrganization?.themeSettings?.find(
+        ({ name: themeName }) =>
+          themeName === 'list.tasks.member.workflow.addtask.enabled',
+      ) || {};
+    return (
+      disabledSettingItem &&
+      disabledSettingItem?.value === 'false' &&
+      !isListAdmin &&
+      !isCreator
+    );
+  }, [selectedOrganization, isListAdmin, isCreator]);
+
+  if (taskDeleteDisabled) {
+    restrictions.delete = DISABLED;
+  }
+  if (taskMoveListDisabled) {
+    restrictions.move = DISABLED;
+  }
+  if (workflowEditDisabled) {
+    restrictions.name = DISABLED;
+  }
+  if (workflowAddTaskDisabled) {
+    taskListRestrictions.workflowAddTask = DISABLED;
+  }
+
   const [completedTasksAmount, allTasksAmount] = useMemo(
     () =>
-      tasks.reduce(
+      templateTasks?.reduce(
         (accumulator, currentTask) => {
           if (currentTask.status === 'COMPLETE') {
             accumulator[0] += 1;
@@ -139,7 +254,7 @@ const TaskTemplateGroupHeader = ({
         },
         [0, 0],
       ),
-    [tasks],
+    [templateTasks],
   );
   // const [completedTasksAmount, allTasksAmount] = [-1, -1];
 
@@ -188,71 +303,102 @@ const TaskTemplateGroupHeader = ({
 
   const menuOptions = useMemo(() => {
     // eslint-disable-next-line unicorn/prevent-abbreviations
-    let opts = [
-      {
-        name: 'Add task',
-        onClick: () => {
-          setIsAddingTask(true);
-        },
-      },
-      {
-        name: 'Edit name',
-        onClick: () => {
-          setIsEditing(true);
-          setTimeout(() => {
-            // eslint-disable-next-line no-unused-expressions
-            nameInputReference.current?.focus();
-          }, 0);
-        },
-      },
-      {
-        name: 'Duplicate',
-        onClick: () =>
-          dispatch(
-            ModalActions.openModal('AttachmentsDuplicate', {
-              confirm: () => {
-                dispatch(WorkflowActions.duplicateWorkflow(identifier, true));
-              },
-              skip: () => {
-                dispatch(WorkflowActions.duplicateWorkflow(identifier, false));
-              },
-            }),
-          ),
-      },
-      {
-        name: 'Move to list',
-        onClick: () =>
-          dispatch(
-            ModalActions.openModal('SelectDestination', {
-              confirmText: 'Move',
-              confirm: ({
-                taskListIdentifier: listIdentifier,
-                taskGroupIdentifier,
-              }) => {
-                dispatch(
-                  TemplateBundleActions.moveWorkflowToList(
-                    identifier,
-                    listIdentifier,
-                    taskGroupIdentifier,
-                  ),
-                );
-              },
-            }),
-          ),
-      },
-      {
-        name: 'Move to group',
-        onClick: handleMoveGroupTask,
-      },
+
+    let options = [
       {
         name: 'Move to group',
         onClick: handleMoveGroupTask,
       },
     ];
 
+    if (taskListRestrictions?.workflowAddTask !== DISABLED) {
+      options = [
+        ...options,
+        {
+          name: 'Add task',
+          onClick: () => {
+            setIsAddingTask(true);
+          },
+        },
+      ];
+    }
+
+    if (restrictions?.name !== DISABLED) {
+      options = [
+        ...options,
+        {
+          name: 'Edit name',
+          onClick: () => {
+            setIsEditing(true);
+            setTimeout(() => {
+              // eslint-disable-next-line no-unused-expressions
+              nameInputReference.current?.focus();
+            }, 0);
+          },
+        },
+      ];
+    }
+
+    if (restrictions?.duplicate !== DISABLED) {
+      options = [
+        ...options,
+        {
+          name: 'Duplicate',
+          onClick: () =>
+            dispatch(
+              ModalActions.openModal('AttachmentsDuplicate', {
+                confirm: () => {
+                  dispatch(WorkflowActions.duplicateWorkflow(identifier, true));
+                },
+                skip: () => {
+                  dispatch(
+                    WorkflowActions.duplicateWorkflow(identifier, false),
+                  );
+                },
+              }),
+            ),
+        },
+      ];
+    }
+
+    options = [
+      ...options,
+      {
+        name: 'Move to group',
+        onClick: handleMoveGroupTask,
+      },
+    ];
+
+    if (restrictions?.move !== DISABLED) {
+      options = [
+        ...options,
+        {
+          name: 'Move to list',
+          onClick: () =>
+            dispatch(
+              ModalActions.openModal('SelectDestination', {
+                confirmText: 'Move',
+                confirm: ({
+                  taskListIdentifier: listIdentifier,
+                  taskGroupIdentifier,
+                }) => {
+                  dispatch(
+                    TemplateBundleActions.moveWorkflowToList(
+                      identifier,
+                      listIdentifier,
+                      taskGroupIdentifier,
+                    ),
+                  );
+                },
+              }),
+            ),
+        },
+      ];
+    }
+
     if (isCompletedTab ? !showIncompleteTasks : !showCompletedTasks) {
-      opts = [
-        ...opts,
+      options = [
+        ...options,
         {
           name: isCompletedTab
             ? 'Show incomplete tasks'
@@ -263,8 +409,8 @@ const TaskTemplateGroupHeader = ({
     }
 
     if (isCompletedTab ? showIncompleteTasks : showCompletedTasks) {
-      opts = [
-        ...opts,
+      options = [
+        ...options,
         {
           name: isCompletedTab
             ? 'Hide incomplete tasks'
@@ -274,32 +420,39 @@ const TaskTemplateGroupHeader = ({
       ];
     }
 
-    return [
-      ...opts,
-      {
-        name: 'Delete',
-        onClick: () =>
-          dispatch(
-            ModalActions.openModal('DeleteConfirmation', {
-              title: 'Delete workflow',
-              description:
-                'Are you sure you want to delete this workflow? This action cannot be undone.',
-              confirm: () => {
-                dispatch(WorkflowActions.deleteWorkflow(identifier));
-                dispatch(ModalActions.closeModal());
-              },
-            }),
-          ),
-      },
-    ];
+    if (restrictions?.delete !== DISABLED) {
+      options = [
+        ...options,
+        {
+          name: 'Delete',
+          onClick: () =>
+            dispatch(
+              ModalActions.openModal('DeleteConfirmation', {
+                title: 'Delete workflow',
+                description:
+                  'Are you sure you want to delete this workflow? This action cannot be undone.',
+                confirm: () => {
+                  dispatch(WorkflowActions.deleteWorkflow(identifier));
+                  dispatch(ModalActions.closeModal());
+                },
+              }),
+            ),
+        },
+      ];
+    }
+
+    return options;
   }, [
+    handleMoveGroupTask,
     isCompletedTab,
     showIncompleteTasks,
     showCompletedTasks,
+    restrictions,
+    taskListRestrictions,
+    DISABLED,
     setIsAddingTask,
     dispatch,
     identifier,
-    handleMoveGroupTask,
     toggleTasksVisibility,
   ]);
 
@@ -430,13 +583,7 @@ const TaskTemplateGroupHeader = ({
   //   !selectedWorkflow ? getWorkflowData(identifier) : setWorkFlowData(null);
   // }, [getWorkflowData, identifier, selectedWorkflow]);
 
-  const restrictions =
-    SINGLE_TASK_RESTRICTIONS_PROFILES[currentUser?.orgUserRole];
-  const taskListRestrictions =
-    TASK_LIST_RESTRICTIONS_PROFILES[currentUser?.orgUserRole];
-  const { DISABLED, READ_ONLY } = SINGLE_TASK_RESTRICTIONS_OPTIONS;
-
-  const taskPriority = templateGroup.priority;
+  const taskPriority = (templateGroup || workFlowData).priority;
 
   const handleUpdateTaskPriority = useCallback(
     (priority) => {
@@ -462,7 +609,7 @@ const TaskTemplateGroupHeader = ({
           isSelected={isBundleSelected}
           isEditingDescription={isEditing}
           order={0}
-          width={+width + 26 + 54}
+          width={+width + 25 + 54}
         >
           {!groupDragAndDropDisabled &&
             !bulkEditIsActive &&
@@ -721,13 +868,64 @@ const TaskTemplateGroupHeader = ({
               }
               order={getColumnOrder(PatientTaskItemColumn.MRN)}
             >
-              <TaskItemText
-                readOnly={isPatientDataReadOnly}
-                value={patient?.mrn}
-                onChange={handlePatientUpdate('mrn')}
-              />
+              {emrPatientLink && (
+                <PatientMRNAnchor
+                  href={emrPatientLink?.replace('{mrn}', patient?.mrn)}
+                  target="_blank"
+                  rel="noreferrer"
+                >
+                  {patient?.mrn}
+                </PatientMRNAnchor>
+              )}
+              {!emrPatientLink && <span>{patient?.mrn}</span>}
             </TaskItemCell>,
             getColumnOrder(PatientTaskItemColumn.MRN),
+          )}
+        </>
+      )}
+      {isColumnChecked(columns, PatientTaskItemColumn.MOBILE_PHONE) && (
+        <>
+          {randerFirstColumnCoverIfNecessary(
+            <TaskItemCell
+              isSubtask={false}
+              key={`patient_mobile_phone_${identifier}`}
+              width={
+                columns?.find(
+                  ({ identifier: id }) => id === PatientTaskItemColumn.MOBILE_PHONE,
+                )?.columnWidth
+              }
+              order={getColumnOrder(PatientTaskItemColumn.MOBILE_PHONE)}
+            >
+              <TaskItemText
+                readOnly={isPatientDataReadOnly}
+                value={formatPhoneNumber(patient?.phoneMobile ?? '')}
+                onChange={handlePatientUpdate('phoneMobile')}
+              />
+            </TaskItemCell>,
+            getColumnOrder(PatientTaskItemColumn.MOBILE_PHONE),
+          )}
+        </>
+      )}
+      {isColumnChecked(columns, PatientTaskItemColumn.HOME_PHONE) && (
+        <>
+          {randerFirstColumnCoverIfNecessary(
+            <TaskItemCell
+              isSubtask={false}
+              key={`patient_home_phone_${identifier}`}
+              width={
+                columns?.find(
+                  ({ identifier: id }) => id === PatientTaskItemColumn.HOME_PHONE,
+                )?.columnWidth
+              }
+              order={getColumnOrder(PatientTaskItemColumn.HOME_PHONE)}
+            >
+              <TaskItemText
+                readOnly={isPatientDataReadOnly}
+                value={formatPhoneNumber(patient?.phoneHome ?? '')}
+                onChange={handlePatientUpdate('phoneHome')}
+              />
+            </TaskItemCell>,
+            getColumnOrder(PatientTaskItemColumn.HOME_PHONE),
           )}
         </>
       )}

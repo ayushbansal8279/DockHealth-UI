@@ -1,5 +1,5 @@
 /* eslint-disable sonarjs/cognitive-complexity */
-import React, { useCallback, useEffect } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { useHistory, useLocation } from 'react-router-dom';
 import { ascend, compose, propOr, sortWith, toLower } from 'ramda';
@@ -56,13 +56,14 @@ const renderCheckboxColumnHeader = ({ isListChecked, onListSelect }) => (
 );
 
 const PatientsList = ({
-  isFiltered,
+  isFiltered = false,
   patients,
   patientImportDetails,
   importPopoverOpen,
   setImportPopoverOpen,
   hasImportErrors,
   isFetching,
+  refreshPatients,
 }) => {
   const { pathname } = useLocation();
   const history = useHistory();
@@ -74,6 +75,8 @@ const PatientsList = ({
     currentUser,
     currentOrganization,
   );
+
+  const [dataGridSortModel, setDataGridSortModel] = useState();
 
   const selectedPatientsCount = patients?.filter((p) => p.isSelected).length;
   const patientsCount = patients?.length;
@@ -124,6 +127,7 @@ const PatientsList = ({
 
   useEffect(() => {
     setCurrentPatientList(patientsList?.listDetails);
+    setDataGridSortModel(undefined);
   }, [setCurrentPatientList, patientsList]);
 
   const columns = [
@@ -358,16 +362,58 @@ const PatientsList = ({
                 return 0;
               }
             }
-            if (sortModel[0]?.sort === 'desc') {
-              return compareValue2.localeCompare(compareValue1);
-            }
             return compareValue1.localeCompare(compareValue2);
           },
         })),
     );
 
-  const formattedPatients = patients?.map((patient) => {
-    const metaData = patient.patientMetaData?.map((pmd) => {
+  useEffect(() => {
+    const defaultSortField = localStorage.getItem('PATIENT_LIST_SORT_COLUMN');
+    const defaultSortOrder = localStorage.getItem('PATIENT_LIST_SORT_ORDER');
+
+    const defaultSortAvailable = columns.find(
+      column => column?.field === defaultSortField,
+    );
+
+    // set the model once on load
+    if (!dataGridSortModel) {
+      setDataGridSortModel(
+        defaultSortAvailable
+          ? [
+              {
+                field: defaultSortField,
+                sort: defaultSortOrder,
+              },
+            ]
+          : undefined,
+      );
+    }
+  }, [columns, dataGridSortModel]);
+
+  const handleSortChange = useCallback(
+    sortModel => {
+      if (
+        !dataGridSortModel ||
+        sortModel.length === 0 ||
+        dataGridSortModel[0]?.field !== sortModel[0]?.field ||
+        dataGridSortModel[0]?.sort !== sortModel[0]?.sort
+      ) {
+        setDataGridSortModel(sortModel);
+
+        if (sortModel.length > 0) {
+          localStorage.setItem('PATIENT_LIST_SORT_COLUMN', sortModel[0]?.field);
+          localStorage.setItem('PATIENT_LIST_SORT_ORDER', sortModel[0]?.sort);
+        } else {
+          localStorage.removeItem('PATIENT_LIST_SORT_COLUMN');
+          localStorage.removeItem('PATIENT_LIST_SORT_ORDER');
+        }
+      }
+    },
+    [dataGridSortModel],
+  );
+
+  const formattedPatients = patients?.map(patient => {
+    const metaData = patient.patientMetaData?.map(pmd => {
       return {
         key: pmd.customFieldIdentifier,
         value:
@@ -384,6 +430,7 @@ const PatientsList = ({
     });
     return patientDetails;
   });
+
   return (
     <>
       {isFetching ? (
@@ -407,12 +454,25 @@ const PatientsList = ({
                     disableSelectionOnClick
                     showColumnRightBorder
                     showCellRightBorder
+                    onSortModelChange={handleSortChange}
+                    sortModel={
+                      dataGridSortModel &&
+                      columns.find(
+                        column => column?.field === dataGridSortModel[0]?.field,
+                      )
+                        ? dataGridSortModel
+                        : undefined
+                    }
                   />
                 </NonEmptyListTable>
               </Grid>
             </Grid>
           ) : (
-            <EmptyFilteredPatientsList isFiltered={isFiltered} />
+            <EmptyFilteredPatientsList
+              isFiltered={isFiltered}
+              isFetching={isFetching}
+              refreshPatients={refreshPatients}
+            />
           )}
         </>
       )}

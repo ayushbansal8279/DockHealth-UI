@@ -25,6 +25,7 @@ import CustomFieldErrorContext from './CustomFieldErrorContext';
 const CustomField = ({
   readOnly,
   field,
+  selected,
   initialValue,
   onBlur,
   fieldsGroupKey,
@@ -65,6 +66,7 @@ const CustomField = ({
         label: option.name,
         value: option.identifier,
         color: option.color,
+        data: option,
       })) || [];
 
     if (o.length > 0 && fieldType !== FieldType.DROPDOWN_MULTI && !isRequired) {
@@ -196,13 +198,28 @@ const CustomField = ({
           (o) => o.value === value,
         )?.color;
 
+        const dependantOptions = dropdownOptions.filter((option) => {
+          if (option.data?.linkedCustomFieldIdentifier) {
+            const linkedCustomFieldOptionIdentifier =
+              selected?.[option.data.linkedCustomFieldIdentifier];
+            if (linkedCustomFieldOptionIdentifier) {
+              return (
+                option.data.linkedCustomFieldOptionIdentifier ===
+                linkedCustomFieldOptionIdentifier
+              );
+            }
+            return true;
+          }
+          return true;
+        });
+
         return (
           <Box position="relative">
             {colorIndicator && <ColorIndicator color={colorIndicator} />}
             <FormSelect
               readOnly={readOnly}
               label={name}
-              options={dropdownOptions}
+              options={dependantOptions}
               name={fieldName}
               onBlur={handleBlur}
               inputRef={inputReference}
@@ -252,22 +269,23 @@ const CustomField = ({
       }
     }
   }, [
-    clearErrors,
-    dropdownOptions,
-    field.name,
-    fieldName,
     fieldType,
+    identifier,
+    readOnly,
+    name,
+    fieldName,
+    placeholder,
+    taskIdentifier,
+    task,
     fieldsGroupKey,
     handleBlur,
-    identifier,
-    name,
-    placeholder,
-    readOnly,
-    setError,
-    task,
-    taskIdentifier,
-    watch,
     isRequired,
+    setError,
+    clearErrors,
+    field.name,
+    watch,
+    dropdownOptions,
+    selected,
   ]);
 
   return (

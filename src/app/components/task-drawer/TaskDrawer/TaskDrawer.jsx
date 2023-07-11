@@ -17,7 +17,7 @@ const TaskDrawer = (props) => {
         transform: taskDrawerOpen ? 'translateX(0%)' : 'translateX(100%)',
       }}
     >
-      <TaskDrawerContent {...props} />
+      <TaskDrawerContent {...props} stickyHeader />
     </AnimatedContainer>,
     // </AnimatePresence>,
     document.body,

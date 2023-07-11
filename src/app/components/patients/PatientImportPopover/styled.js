@@ -43,7 +43,7 @@ export const PopoverCloseButton = styled(CloseIconButton)`
   top: 11px !important;
 `;
 export const CloseButtonWord = styled(CloseIconButton)`
-  font-family: Roboto Condensed !important;
+  font-family: 'Roboto Condensed', sans-serif; !important;
   font-style: normal !important;
   font-weight: normal !important;
   font-size: 14px !important;
@@ -69,7 +69,7 @@ export const FileDisplayArea = styled.div`
 
 export const FileName = styled.p`
   text-align: left;
-  font-family: Roboto Condensed;
+  font-family: 'Roboto Condensed', sans-serif;;
   font-style: normal;
   font-weight: bold;
   font-size: ${fontSizes.regular};
@@ -87,7 +87,7 @@ export const PopoverHeader = styled.div`
   padding: ${spacing.small};
   color: ${palette.mediumGrey};
   text-align: left;
-  font-family: Roboto Condensed;
+  font-family: 'Roboto Condensed', sans-serif;;
   font-style: normal;
   font-weight: normal;
   font-size: ${fontSizes.smallPlus};
@@ -97,7 +97,7 @@ export const PopoverHeader = styled.div`
 export const ProgressDisplayArea = styled.div``;
 
 export const ProgressMessage = styled.p`
-  font-family: Roboto Condensed;
+  font-family: 'Roboto Condensed', sans-serif;;
   font-style: normal;
   font-weight: normal;
   font-size: ${fontSizes.small};
@@ -120,7 +120,7 @@ export const ErrorDisplayArea = styled.div``;
 
 export const ErrorAmount = styled.p`
   text-align: left;
-  font-family: Roboto Condensed;
+  font-family: 'Roboto Condensed', sans-serif;;
   font-style: normal;
   font-weight: ${fontWeights.bold};
   font-size: ${fontSizes.smallPlus};
@@ -131,7 +131,7 @@ export const ErrorAmount = styled.p`
 
 export const ErrorMessage = styled.p`
   text-align: left;
-  font-family: Roboto Condensed;
+  font-family: 'Roboto Condensed', sans-serif;;
   font-style: normal;
   font-weight: normal;
   font-size: 12px;
@@ -146,7 +146,7 @@ export const FixErrorContainer = styled.div`
 `;
 
 export const FixErrors = styled.a`
-  font-family: Roboto Condensed;
+  font-family: 'Roboto Condensed', sans-serif;;
   font-style: normal;
   font-weight: normal;
   font-size: 12px;

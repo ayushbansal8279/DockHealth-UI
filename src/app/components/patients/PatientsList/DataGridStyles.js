@@ -7,12 +7,11 @@ import spacing from 'styles/spacing';
 
 export const StyledDataGrid = styled(DataGrid)`
   margin-bottom: 48px;
-  
+
   &.MuiDataGrid-root {
-    // max-width: 1179px;
     background-color: white;
   }
-  
+
   && {
     &.MuiDataGrid-sortIcon {
       background: ${palette.brightBlue};
@@ -21,13 +20,13 @@ export const StyledDataGrid = styled(DataGrid)`
       border-radius: 50%;
     }
   }
-  
+
   & .MuiDataGrid-footerContainer {
     p {
       margin-bottom: 0;
     }
   }
-  
+
   & .MuiSelect-select {
     font-family: "Roboto Condensed", sans-serif;
     font-weight: 400;
@@ -55,7 +54,7 @@ export const StyledDataGrid = styled(DataGrid)`
   }
 
   &.MuiDataGrid-cell {
-    font-family: Roboto Condensed;
+    font-family: 'Roboto Condensed', sans-serif;;
     font-weight: ${fontWeights.light};
     font-size: ${fontSizes.smallPlus};
   }
@@ -72,7 +71,7 @@ export const StyledDataGrid = styled(DataGrid)`
 
   &.MuiDataGrid-colCellTitle {
     background-color: white;
-    font-family: Roboto Condensed;
+    font-family: 'Roboto Condensed', sans-serif;;
     font-size: ${fontSizes.small};
     font-weight: ${fontWeights.regularPlus} !important;
     padding-left: 0;

@@ -4,6 +4,7 @@ import { TaskGroupType, TaskItemType, TaskStatus } from 'helpers/task-helpers';
 import { reorderTasksForWorkflow } from 'helpers/workflow-helpers';
 import { updateTaskOrSubtaskInListsArray } from 'helpers/task-update-helper';
 import { updateBundleInList } from 'helpers/tasklist-helpers';
+import { updateTasksStateCallback } from './reducer-helper';
 import TaskBaseReducer from './task-base-reducer';
 
 const INITIAL_STATE = {
@@ -27,36 +28,6 @@ const INITIAL_STATE = {
     key: null,
     order: null,
   },
-};
-
-// const updateTaskInList = (lists, updateTaskCallback) =>
-//   lists?.map((list) => ({
-//     ...list,
-//     tasks: mapWithRemove((t) => {
-//       if (t.itemType === TaskItemType.BUNDLE) {
-//         return updateTaskCallback({
-//           ...t,
-//           tasks: mapWithRemove(updateTaskCallback, t.tasks),
-//         });
-//       }
-
-//       return updateTaskCallback(t);
-//     }, list.tasks),
-//   }));
-
-const updateTasksStateCallback = (state, newTask) => {
-  if (typeof newTask === 'function') return state;
-
-  return {
-    ...state,
-    tasksMap: {
-      ...state.tasksMap,
-      [newTask.identifier ?? newTask.taskIdentifier]: {
-        ...state.tasksMap[newTask.identifier ?? newTask.taskIdentifier],
-        ...newTask,
-      },
-    },
-  };
 };
 
 function updateWorkflowInState(updateCallback, workflowIdentifier, state) {
@@ -261,15 +232,33 @@ export default (state = INITIAL_STATE, action = {}) => {
     }
 
     case ActionTypes.GET_CURRENT_PATIENT_TASKS_SUCCESS: {
-      const tasks = action.lists;
+      const { lists } = action;
       const newMap = {};
-      for (const task of tasks) {
-        if (task.itemType === TaskItemType.TASK) {
-          newMap[task.identifier] = task;
-        } else {
-          newMap[task.identifier] = task;
-          for (const subtask of task.tasks) {
-            newMap[subtask.identifier] = subtask;
+      for (const list of lists) {
+        for (const taskItem of list?.tasks) {
+          if (taskItem.itemType === TaskItemType.TASK) {
+            newMap[taskItem.identifier] = taskItem;
+            for (const subtask of taskItem?.subtasks) {
+              newMap[subtask.identifier] = {
+                ...newMap[subtask.identifier],
+                ...subtask,
+              };
+            }
+          } else {
+            for (const grpTask of taskItem.tasks) {
+              newMap[grpTask.identifier] = grpTask;
+              // for (const subtask of grpTask?.subtasks) {
+              //   newMap[subtask.identifier] = {
+              //     ...newMap[subtask.identifier],
+              //     ...subtask,
+              //   };
+              // }
+            }
+            // newMap[task.identifier] = task;
+            newMap[taskItem.identifier] = {
+              ...taskItem,
+              tasks: taskItem.tasks.map((t) => t.identifier),
+            };
           }
         }
       }
@@ -277,6 +266,16 @@ export default (state = INITIAL_STATE, action = {}) => {
       return {
         ...state,
         lists: action.lists,
+        // lists: action.lists?.map((l) => ({
+        //   ...l,
+        //   tasks: l.tasks?.lists?.map((t) => ({
+        //     ...t,
+        //     tasks:
+        //       t.itemType === 'BUNDLE'
+        //         ? t.tasks?.map((task) => task.identifier)
+        //         : [],
+        //   })),
+        // })),
         tasksMap: {
           ...state.tasksMap,
           ...newMap,

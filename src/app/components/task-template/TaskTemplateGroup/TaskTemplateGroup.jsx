@@ -6,7 +6,6 @@ import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd';
 import * as TaskActions from 'actions/task-actions';
 import * as TemplateBundleActions from 'actions/template-bundle-actions';
 import * as WorkflowActions from 'actions/workflow-actions';
-import { taskDetailsSelector } from 'selectors/list-details-selectors';
 import TasksSkeletonLoader from 'components/task/TasksSkeletonLoader/TasksSkeletonLoader';
 // eslint-disable-next-line import/no-cycle
 import StandardTaskItemContainer from 'components/task/StandardTaskItemContainer/StandardTaskItemContainer';
@@ -16,9 +15,7 @@ import {
   TASK_LIST_RESTRICTIONS_OPTIONS,
   TASK_LIST_RESTRICTIONS_PROFILES,
 } from 'restrictions/task-restrictions';
-import { dashboardTaskDetailsSelector } from 'selectors/dashboard-selectors';
-import { patientTaskDetailsSelector } from 'selectors/patient-details-selectors';
-import { TaskOrigin } from 'helpers/task-helpers';
+import { taskLookupSelector } from 'selectors/task-details-selectors';
 import {
   TaskTemplateGroupContainer,
   TaskTemplateGroupList,
@@ -45,32 +42,17 @@ const TaskTemplateGroup = ({
   // eslint-disable-next-line sonarjs/cognitive-complexity
 }) => {
   const templateGroup = useSelector((state) => {
-    if (origin === TaskOrigin.DASHBOARD) {
-      return dashboardTaskDetailsSelector(
-        state,
-        typeof pullGroup === 'string' ? pullGroup : pullGroup.identifier,
-      );
-    }
-    if (origin === TaskOrigin.PATIENT) {
-      return patientTaskDetailsSelector(
-        state,
-        typeof pullGroup === 'string' ? pullGroup : pullGroup.identifier,
-      );
-    }
-    return taskDetailsSelector(
-      state,
-      typeof pullGroup === 'string' ? pullGroup : pullGroup.identifier,
-    );
+    return taskLookupSelector(state, origin, pullGroup);
   });
 
   const {
-    tasks,
+    tasks, // task identifiers
     identifier,
     patient,
     parentTaskGroupIdentifier,
     taskListIdentifier,
     isFetchingTasks,
-  } = templateGroup;
+  } = templateGroup || {};
 
   const { SHOW_WORKFLOW_DETAILS, SHOW_WORKFLOW_COMPLETED_TASKS } = viewSetup;
   const { innerRef, draggableProps } = draggableProvided;
@@ -184,16 +166,18 @@ const TaskTemplateGroup = ({
                   }
                 }}
               >
-                <Droppable droppableId={templateGroup.identifier}>
+                <Droppable droppableId={templateGroup?.identifier}>
                   {(templateDroppableProvided) => (
                     <div
                       ref={templateDroppableProvided.innerRef}
                       {...templateDroppableProvided.droppableProps}
                     >
-                      {filteredTasks.map((task, index) => (
+                      {filteredTasks?.map((taskOrIdentifier, index) => (
                         <Draggable
-                          key={task.taskIdentifier}
-                          draggableId={task.taskIdentifier}
+                          key={taskOrIdentifier?.identifier || taskOrIdentifier}
+                          draggableId={
+                            taskOrIdentifier?.identifier || taskOrIdentifier
+                          }
                           index={index}
                           isDragDisabled={restrictions?.createTask === DISABLED}
                         >
@@ -203,11 +187,15 @@ const TaskTemplateGroup = ({
                           ) => (
                             <StandardTaskItemContainer
                               isStartedDnD={
-                                draggedTaskIdentifier === task.taskIdentifier
+                                draggedTaskIdentifier ===
+                                (taskOrIdentifier?.identifier ||
+                                  taskOrIdentifier)
                               }
                               isDragging={draggableSnapshot.isDragging}
                               draggableProvided={templateTaskDraggableProvided}
-                              task={task}
+                              taskIdentifier={
+                                taskOrIdentifier?.identifier || taskOrIdentifier
+                              }
                               isFullView={isFullView}
                               isCompletedGroup={isCompletedGroup}
                               multipleAssigneesContext={
@@ -222,6 +210,7 @@ const TaskTemplateGroup = ({
                               }
                               noMargin
                               iconColorActive={iconColorActive}
+                              origin={origin}
                             />
                           )}
                         </Draggable>

@@ -47,7 +47,6 @@ export const styleFirstRow = (isMobile) => ({
 
 export const styleEmailRow = (isMobile) => ({
   padding: isMobile ? '0 1rem' : '0 2rem',
-  backgroundColor: palette.blueGrey,
 });
 
 export const styleCommentRow = {

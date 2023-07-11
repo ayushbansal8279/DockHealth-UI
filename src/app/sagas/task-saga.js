@@ -280,7 +280,8 @@ function* updateTaskDescription({ task, descriptionState }) {
       task: updatedTask,
     });
     yield put(showGlobalAlert(AlertMessages.UPDATED));
-  } catch {
+  } catch (error) {
+    console.log(error);
     yield put({
       type: ActionTypes.UPDATE_TASK_DESCRIPTION_FAILURE,
       task,
@@ -300,7 +301,8 @@ function* updateTaskDetails({ task, detailsState }) {
       task: updatedTask,
     });
     yield put(showGlobalAlert(AlertMessages.UPDATED));
-  } catch {
+  } catch (error) {
+    console.log(error);
     yield put({
       type: ActionTypes.UPDATE_TASK_DETAILS_FAILURE,
       task,

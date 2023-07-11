@@ -331,7 +331,7 @@ const RecurringSection = ({
                   placeholder="--"
                   value={recurringOptionValue}
                   onSelect={handleRecurringOptionSelect}
-                  width={150}
+                  width={180}
                   options={RECURRING_OPTIONS}
                 />
               )}

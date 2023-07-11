@@ -24,7 +24,7 @@ export const Select = styled(MuiSelect)`
     }
 
     & .switchIcon > path {
-      fill: ${(props) => props.iconColorActive ?? palette.dirtyBanana};
+      fill: ${(props) => props.iconcoloractive ?? palette.dirtyBanana};
     }
   }
 `;

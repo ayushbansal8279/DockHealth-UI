@@ -165,13 +165,15 @@ const TopSection = ({
   );
 
   return (
-    <Paper elevation={3} style={{ width: '100%', height: '60px' }}>
+    <Paper elevation={3} style={{ width: '800px', height: '60px' }}>
       <Box
         width="100%"
         display="flex"
         justifyContent="space-between"
         alignItems="center"
         height="60px"
+        paddingLeft="30px"
+        paddingRight="30px"
       >
         <Box display="flex">
           {selectedTask && !checkIfTemplateTask(selectedTask) && (
@@ -183,11 +185,13 @@ const TopSection = ({
                     : Circle
                 }
                 isClickable={
-                  !isTaskStatusTogglingDisabled && isDependencyEmptyOrCompleted
+                  !isTaskStatusTogglingDisabled &&
+                  isDependencyEmptyOrCompleted &&
+                  taskListRestrictions?.completeTask !== DISABLED
                 }
                 isCompleted={selectedTask?.status === TaskStatus.COMPLETE}
                 onClick={
-                  taskListRestrictions?.createTask !== DISABLED
+                  taskListRestrictions?.completeTask !== DISABLED
                     ? onCompleteToggle
                     : () => {}
                 }

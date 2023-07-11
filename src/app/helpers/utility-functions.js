@@ -1,4 +1,5 @@
-import * as linkifyString from 'linkifyjs';
+// import * as linkifyString from 'linkifyjs';
+import linkifyStr from 'linkify-string';
 import escape from 'lodash.escape';
 import escapeRegExp from 'lodash.escaperegexp';
 import curry from 'ramda/src/curry';
@@ -107,7 +108,7 @@ export const mentionifyDescription = ({ members, value }) => {
 };
 
 export const linkifyTaskText = ({ value }) =>
-  linkifyString(value, {
+  linkifyStr(value, {
     defaultProtocol: 'https',
     className: 'decorated-link',
     formatHref: formatLinkifyHref,

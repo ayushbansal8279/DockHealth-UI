@@ -111,7 +111,7 @@ function UserGroupView() {
         <Grid container xs={12} item justifyContent="center">
           <Grid item xs={12} sm={12} md={8}>
             <Spacing vertical={4} />
-            {isOrganizationAdmin && (
+            {isOrganizationAdmin && groupIdentifier === 'ALL' && (
               <ManageUsersContainer>
                 <Grid item xs={12} sm={12} md={8}>
                   <HeaderMessageContainer>

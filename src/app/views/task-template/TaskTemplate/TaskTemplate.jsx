@@ -31,6 +31,7 @@ import * as ModalActions from 'modal/actions';
 import * as TaskActions from 'actions/task-actions';
 import { openDrawer } from 'actions/workflow-drawer-actions';
 import { extractTasksAndSubtasks } from 'helpers/tasklist-helpers';
+import { TaskOrigin } from 'helpers/task-helpers';
 import Tooltip from 'components/common/Tooltip/Tooltip';
 import RotatableChevron from 'components/common/RotatableChevron/RotatableChevron';
 import StandardTaskItemContainer from 'components/task/StandardTaskItemContainer/StandardTaskItemContainer';
@@ -398,28 +399,27 @@ const TaskTemplate = ({
                       {...droppableProvided.droppableProps}
                       ref={droppableProvided.innerRef}
                     >
-                      {tasks?.map((task, index) => {
+                      {tasks?.map((taskIdentifier, index) => {
                         return (
                           <Draggable
-                            key={task.taskIdentifier}
-                            draggableId={task.taskIdentifier}
+                            key={taskIdentifier}
+                            draggableId={taskIdentifier}
                             index={index}
                           >
                             {(draggableProvided, draggableSnapshot) => (
                               <StandardTaskItemContainer
-                                isStartedDnD={
-                                  draggableId === task.taskIdentifier
-                                }
+                                isStartedDnD={draggableId === taskIdentifier}
                                 isDragging={draggableSnapshot.isDragging}
                                 draggableProvided={draggableProvided}
                                 isDraggable
-                                task={task}
+                                taskIdentifier={taskIdentifier}
                                 isFullView={isFullView}
                                 multipleAssigneesContext={
                                   containsMultipleAssignees
                                 }
                                 noMargin
                                 iconColorActive={iconColorActive}
+                                origin={TaskOrigin.TEMPLATE}
                               />
                             )}
                           </Draggable>

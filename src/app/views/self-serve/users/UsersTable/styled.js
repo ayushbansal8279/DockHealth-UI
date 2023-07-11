@@ -34,9 +34,26 @@ export const ListLoaderContainer = styled.div`
 export const StyledDataGrid = styled(DataGrid)`
   &.MuiDataGrid-root {
     max-width: 1179px;
-    background-color: ${palette.blueGrey};
+    background-color: white;
   }
 
+  & .MuiDataGrid-footerContainer {
+    p {
+      margin-bottom: 0;
+    }
+  }
+
+  & .MuiSelect-select {
+    font-family: "Roboto Condensed", sans-serif;
+    font-weight: 400;
+    font-size: 0.875rem;
+    line-height: 1.43;
+    flex-shrink: 0;
+    margin-top: 2px;
+    padding-right: 0 !important;
+    padding-left: 0;
+  }
+  
   &.MuiDataGrid-columnHeaderTitleContainer {
     display: flex;
     align-items: center;
@@ -53,7 +70,7 @@ export const StyledDataGrid = styled(DataGrid)`
   }
 
   &.MuiDataGrid-cell {
-    font-family: Roboto Condensed;
+    font-family: 'Roboto Condensed', sans-serif;;
     font-weight: ${fontWeights.light};
     font-size: ${fontSizes.smallPlus};
     padding-left: 24px !important;
@@ -71,7 +88,7 @@ export const StyledDataGrid = styled(DataGrid)`
 
   &.MuiDataGrid-colCellTitle {
     background-color: white;
-    font-family: Roboto Condensed;
+    font-family: 'Roboto Condensed', sans-serif;;
     font-size: ${fontSizes.small};
     font-weight: ${fontWeights.regularPlus} !important;
     padding-left: 0;

@@ -1,7 +1,7 @@
 import * as types from 'actions/action-types';
 import { updateTaskOrSubtaskInListsArray } from 'helpers/task-update-helper';
 import { TaskItemType } from 'helpers/task-helpers';
-// import { mapWithRemove } from 'helpers/utility-functions';
+import { updateTasksStateCallback } from './reducer-helper';
 import TaskBaseReducer from './task-base-reducer';
 
 const initialState = {
@@ -13,32 +13,6 @@ const initialState = {
   isLoadingMore: false,
   searchPerformed: false,
   error: '',
-};
-
-// const updateTaskInList = (lists, updateTaskCallback) =>
-//   lists.map((list) => ({
-//     ...list,
-//     tasks: mapWithRemove(updateTaskCallback, list.tasks),
-//   }));
-
-// const updateTasksStateCallback = (state, updateTaskFromAction) => ({
-//   ...state,
-//   lists: updateTaskInList(state.lists, updateTaskFromAction),
-// });
-
-const updateTasksStateCallback = (state, newTask) => {
-  if (typeof newTask === 'function') return state;
-
-  return {
-    ...state,
-    tasksMap: {
-      ...state.tasksMap,
-      [newTask.identifier ?? newTask.taskIdentifier]: {
-        ...state.tasksMap[newTask.identifier ?? newTask.taskIdentifier],
-        ...newTask,
-      },
-    },
-  };
 };
 
 const GlobalSearchReducer = (state = initialState, action) => {
@@ -82,8 +56,8 @@ const GlobalSearchReducer = (state = initialState, action) => {
           newMap[task.identifier] = task;
         } else {
           newMap[task.identifier] = task;
-          for (const subtask of task.tasks) {
-            newMap[subtask.identifier] = subtask;
+          for (const grpTask of task.tasks) {
+            newMap[grpTask.identifier] = grpTask;
           }
         }
       }

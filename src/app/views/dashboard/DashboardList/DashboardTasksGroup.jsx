@@ -54,6 +54,7 @@ import {
   DashboardTaskItemContainer,
   StickyElement,
   GroupOptionsContainer,
+  GroupOpenContainer,
 } from './styled';
 
 const DashboardTasksGroup = ({
@@ -228,13 +229,14 @@ const DashboardTasksGroup = ({
               </OptionsMenu>
             </GroupOptionsContainer>
             <Spacing horizontal={2} />
-            <RotatableChevron
-              alt="arrow"
-              rotated={!groupIsOpen}
-              onClick={onSwitchGroup}
-              color={iconColorActive}
-            />
-            <Spacing horizontal={3} />
+            <GroupOpenContainer onClick={onSwitchGroup}>
+              <RotatableChevron
+                alt="arrow"
+                rotated={!groupIsOpen}
+                color={iconColorActive}
+              />
+            </GroupOpenContainer>
+            <Spacing horizontal={1} />
             <GroupNameSectionWrapper>
               <DashboardTasksGroupLabel>
                 <DashboardTasksGroupLabelName>
@@ -341,7 +343,7 @@ const DashboardTasksGroup = ({
                                       task.identifier === lastCreatedTaskId
                                     }
                                     pageBackground={palette.white}
-                                    task={task}
+                                    taskItemIdentifier={task}
                                     isCompletedGroup={isCompletedGroup}
                                     isDragging={isDragging}
                                     dragHandleProps={
@@ -372,11 +374,18 @@ const DashboardTasksGroup = ({
             {!isLoadingMore && dashboardTasksGroup?.hasMore && (
               <StickyContainer left={24} decreaseWidth={2 * 24}>
                 <LoadMoreSection>
-                  <LoadMoreButton
-                    onClick={() =>
-                      dispatch(loadMoreDashboardTasksForGroup(groupType))
-                    }
-                  />
+                  {dashboardTasksGroup?.moreTasksIndex &&
+                    dashboardTasksGroup?.moreTasksIndex !== 0 && (
+                      <LoadMoreButton
+                        onClick={() =>
+                          dispatch(loadMoreDashboardTasksForGroup(groupType))
+                        }
+                      />
+                    )}
+                  {(!dashboardTasksGroup?.moreTasksIndex ||
+                    dashboardTasksGroup?.moreTasksIndex === 0) && (
+                    <span>Limiting results. Please refine filter.</span>
+                  )}
                 </LoadMoreSection>
               </StickyContainer>
             )}

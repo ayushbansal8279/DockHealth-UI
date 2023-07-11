@@ -26,8 +26,12 @@ export const TaskItemType = {
 };
 
 export const TaskOrigin = {
+  LIST: 'LIST',
   DASHBOARD: 'DASHBOARD',
   PATIENT: 'PATIENT',
+  PERSON: 'PERSON',
+  TEMPLATE: 'TEMPLATE',
+  GLOBAL: 'GLOBAL',
 };
 
 export const TaskPriority = {

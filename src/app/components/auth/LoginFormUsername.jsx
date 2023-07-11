@@ -48,8 +48,18 @@ const LoginFormUsername = (props) => {
 
         UserAuthApi.getEnterpriseAccessTokensByAuthCode(authCode, issValue)
           .then(() => {
-            const patientIdentifier =
-              sessionStorage.getItem('PatientIdentifier');
+            sessionStorage.setItem('sessionStartTime', new Date().getTime());
+            const nextPathname = sessionStorage.getItem('next-page');
+            console.log(nextPathname);
+            if (nextPathname && nextPathname !== '') {
+              sessionStorage.removeItem('next-page');
+              window.location.href = `/#${nextPathname}`;
+              return;
+            }
+            const patientIdentifier = sessionStorage.getItem(
+              'PatientIdentifier',
+            );
+            console.log(patientIdentifier);
             if (
               patientIdentifier &&
               patientIdentifier !== '' &&

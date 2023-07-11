@@ -10,13 +10,13 @@ export const TextEditorFormStyleContainer = styled.div`
   border-top-left-radius: 4px;
   border-top-right-radius: 4px;
   padding: 10px;
-  height: 100%;
   border-bottom: ${({ focused, hasError }) => {
     if (!hasError) {
       return focused ? '2px solid #0ca1c7' : '1px solid #8492a4';
     }
     return '2px solid #e40909';
   }};
+  font-family: 'Roboto Condensed', sans-serif;
 `;
 
 export const TextEditorInputLabel = styled(
@@ -28,7 +28,7 @@ export const TextEditorInputLabel = styled(
 export const DescriptionLabel = styled.label`
   display: block;
   font-family: 'Roboto Condensed', sans-serif;
-  font-size: ${fontSizes.small};
+  font-size: ${fontSizes.tinyPlus};
   font-weight: ${fontWeights.light};
   color: ${palette.coolGrey1};
   text-transform: uppercase;

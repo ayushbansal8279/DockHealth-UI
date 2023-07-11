@@ -5,6 +5,7 @@ import {
 } from 'helpers/dashboard-helpers';
 import sessionStorageHelper from 'helpers/session-storage-helper';
 import { TaskItemType } from 'helpers/task-helpers';
+import { updateTasksStateCallback } from './reducer-helper';
 import TaskBaseReducer from './task-base-reducer';
 
 const initialState = {
@@ -19,34 +20,6 @@ const initialState = {
   filterOptions: null,
   isFetchingFilters: false,
   filterOptionsError: false,
-};
-
-// const updateTaskInList = (lists, updateTaskCallback) =>
-//   lists.map((group) => {
-//     const updatedTasks = group.tasks
-//       ? mapWithRemove(updateTaskCallback, group.tasks)
-//       : [];
-//     return { ...group, tasks: updatedTasks };
-//   });
-
-// const updateTasksStateCallback = (state, updateTaskFromAction) => ({
-//   ...state,
-//   tasksList: updateTaskInList(state.tasksList, updateTaskFromAction),
-// });
-
-const updateTasksStateCallback = (state, newTask) => {
-  if (typeof newTask === 'function') return state;
-
-  return {
-    ...state,
-    tasksMap: {
-      ...state.tasksMap,
-      [newTask.identifier ?? newTask.taskIdentifier]: {
-        ...state.tasksMap[newTask.identifier ?? newTask.taskIdentifier],
-        ...newTask,
-      },
-    },
-  };
 };
 
 const addTask = (list, taskToAdd) => {
@@ -208,8 +181,8 @@ const DashboardTasksReducer = (state = initialState, action) => {
           newMap[task.identifier] = task;
         } else {
           newMap[task.identifier] = task;
-          for (const subtask of task.tasks) {
-            newMap[subtask.identifier] = subtask;
+          for (const grpTask of task.tasks) {
+            newMap[grpTask.identifier] = grpTask;
           }
         }
       }
@@ -265,8 +238,8 @@ const DashboardTasksReducer = (state = initialState, action) => {
           newMap[task.identifier] = task;
         } else {
           newMap[task.identifier] = task;
-          for (const subtask of task.tasks) {
-            newMap[subtask.identifier] = subtask;
+          for (const grpTask of task.tasks) {
+            newMap[grpTask.identifier] = grpTask;
           }
         }
       }

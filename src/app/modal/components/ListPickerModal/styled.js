@@ -61,7 +61,7 @@ export const Title = styled.h2`
   font-size: ${fontSizes.regularPlus};
   text-transform: uppercase;
   color: ${palette.brightBlue};
-  font-family: Roboto Condensed;
+  font-family: 'Roboto Condensed', sans-serif;;
 `;
 
 export const Description = styled.p`

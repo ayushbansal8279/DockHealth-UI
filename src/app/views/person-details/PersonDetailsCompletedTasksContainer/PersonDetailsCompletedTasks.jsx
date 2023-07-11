@@ -10,7 +10,7 @@ import {
 } from 'selectors/person-details-selectors';
 import { hasFiltersAppliedSelector } from 'selectors/mega-filter-selectors';
 import { sortUserTasks } from 'actions/person-details-actions';
-import { filterTasksBySearchValue } from 'helpers/task-search-helper';
+// import { filterTasksBySearchValue } from 'helpers/task-search-helper';
 import NoSearchResultsView from 'components/tasklist/EmptyListView/NoSearchResultsView';
 import EmptyListView from 'components/tasklist/EmptyListView/EmptyListView';
 import NoFilterResultsView from 'components/tasklist/EmptyListView/NoFilterResultsView';
@@ -18,6 +18,7 @@ import TasksGroup from 'components/tasklist/TasksGroup/TasksGroup';
 import GroupedListSkeletonLoader from 'components/tasklist/GroupedListSkeletonLoader/GroupedListSkeletonLoader';
 import StandardTaskItem from 'components/task/StandardTaskItem/StandardTaskItem';
 import { useTaskListColumnsConfig } from 'context-api/columns-config-context';
+import { TaskOrigin } from 'helpers/task-helpers';
 import { TaskGroupsContainer } from '../styled';
 
 const PersonDetailsCompletedTasks = ({
@@ -44,10 +45,10 @@ const PersonDetailsCompletedTasks = ({
     setViewSpecificConfig(taskItemConfig);
   }, [setViewSpecificConfig, taskItemConfig]);
 
-  const filteredTasks = useMemo(
-    () => (!searchValue ? tasks : filterTasksBySearchValue(tasks, searchValue)),
-    [searchValue, tasks],
-  );
+  // const filteredTasks = useMemo(
+  //   () => (!searchValue ? tasks : filterTasksBySearchValue(tasks, searchValue)),
+  //   [searchValue, tasks],
+  // );
 
   const renderEmptyState = () => {
     if (searchValue) return <NoSearchResultsView />;
@@ -79,14 +80,14 @@ const PersonDetailsCompletedTasks = ({
         <GroupedListSkeletonLoader numberOfGroups={1} />
       ) : (
         <>
-          {filteredTasks?.length > 0 ? (
+          {tasks?.length > 0 ? (
             <TaskGroupsContainer>
               <TasksGroup
                 onOrderChange={onOrderChange}
                 groupName="Completed"
                 storeAsCurrentTask={storeAsCurrentTask}
                 toggleCompleteTask={toggleCompleteTask}
-                tasks={filteredTasks}
+                tasks={tasks}
                 isCompletedGroup
                 hasMoreTasks={tasksAndSubTasks < taskCounters.complete}
                 isFetchingMoreTasks={isFetchingMoreTasks}
@@ -114,7 +115,7 @@ const PersonDetailsCompletedTasks = ({
                       <StandardTaskItem
                         key={task.identifier}
                         isFullView={isFullView}
-                        task={task}
+                        taskIdentifier={task.identifier}
                         isCompletedGroup={isCompletedGroup}
                         toggleCompleteTask={toggleCompleteTask}
                         onTaskUpdate={onTaskUpdate}
@@ -133,6 +134,7 @@ const PersonDetailsCompletedTasks = ({
                         }
                         dragAndDropDisabled
                         iconColorActive={iconColorActive}
+                        origin={TaskOrigin.PERSON}
                       />
                     ))}
                   </>

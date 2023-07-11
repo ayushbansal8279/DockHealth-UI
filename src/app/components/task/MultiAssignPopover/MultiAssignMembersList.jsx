@@ -335,7 +335,7 @@ const MultiAssignMembersList = ({
                         autoEscape
                         textToHighlight="Assign All"
                       />
-                      ({membersOptions.length})
+                      &nbsp;({+membersOptions.length})
                     </MemberName>
                   </MemberRow>
                 )}

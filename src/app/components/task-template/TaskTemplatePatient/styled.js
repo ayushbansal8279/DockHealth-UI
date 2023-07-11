@@ -1,5 +1,6 @@
 import styled from 'styled-components';
 import palette from 'styles/palette';
+import { fontWeights } from 'styles/font';
 
 export const ClickablePatient = styled.span`
   align-self: center;
@@ -11,6 +12,7 @@ export const ClickablePatient = styled.span`
 
 export const PatientLabel = styled.span`
   color: ${palette.mediumGrey};
+  font-weight: ${fontWeights.bold};
 
   &:hover {
     color: ${palette.brightBlue};

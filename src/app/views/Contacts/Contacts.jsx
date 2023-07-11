@@ -9,11 +9,11 @@ import { StyledDataGrid } from './DataGridStyles';
 import { getContactColumns } from './helpers';
 import { AddContactWrapper, ViewContainer } from './styled';
 
-const PAGE_SIZE = 30;
+// const PAGE_SIZE = 30;
 
 const Contacts = () => {
   const [contacts, setContacts] = useState([]);
-  const [page, setPage] = useState(0);
+  // const [page, setPage] = useState(0);
   const dispatch = useDispatch();
 
   useEffect(() => {
@@ -83,13 +83,17 @@ const Contacts = () => {
           rows={contacts.map((t) => ({ ...t, id: t.identifier }))}
           rowHeight={35}
           headerHeight={45}
-          page={page}
-          onPageChange={(p) => {
-            setPage(p);
-          }}
-          pageSize={PAGE_SIZE}
-          disableColumnMenu
+          // page={page}
+          // onPageChange={(p) => {
+          //   setPage(p);
+          // }}
+          // pageSize={PAGE_SIZE}
+          hideFooterSelectedRowCount
+          autoHeight
           disableSelectionOnClick
+          disableColumnMenu
+          showColumnRightBorder
+          showCellRightBorder
         />
       </ViewContainer>
     </ViewLayout>

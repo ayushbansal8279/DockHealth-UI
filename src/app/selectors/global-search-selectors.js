@@ -31,3 +31,9 @@ export const searchPerformedSelector = createSelector(
   globalSearchStateSelector,
   ({ searchPerformed }) => searchPerformed,
 );
+
+export const globalTaskDetailsSelector = createSelector(
+  globalSearchStateSelector,
+  (_, taskId) => taskId,
+  (details, taskId) => details.tasksMap[taskId],
+);

@@ -73,7 +73,7 @@ export const CompletedBy = styled.div`
   transition-delay: ${(props) => (props.isCompleted ? '0' : '0.4')}s;
   font-size: ${fontSizes.small};
   padding-left: 5px;
-  padding-bottom: 2px;
+  padding-bottom: 0px;
 
   > span {
     color: ${palette.brightBlue};
@@ -237,6 +237,23 @@ export const DescriptionBox = styled.div`
       opacity: 1;
     }
   }
+  font-family: 'Roboto Condensed', sans-serif;
+`;
+
+export const DescriptionInput = styled.input`
+  outline: 'none';
+  background-color: transparent !important;
+  border: ${({ isEditing }) =>
+    isEditing ? `1px solid ${palette.brightBlue}` : 'none'};
+  border-radius: '4px';
+  color: ${palette.mediumGrey};
+  width: 1005px;
+  text-overflow: 'ellipsis';
+
+  &:focus {
+    outline: none !important;
+    border: none;
+  }
 `;
 
 export const DecisionBox = styled.div`
@@ -371,8 +388,7 @@ export const StandardTaskItemContainer = styled.div`
   border: 1px solid ${palette.coolGrey3};
   border-right: none;
   display: flex;
-  justify-content: ${(props) =>
-    props.isAddingTask ? 'flex-end' : 'flex-start'};
+  justify-content: ${(props) => props.isAddingTask ? 'flex-end' : 'flex-start'};
   width: 100%;
   height: ${({ height }) => height || 35}px;
   border-top: none;
@@ -665,4 +681,8 @@ export const ActionIconsContainer = styled.div`
     width: 0px;
     height: 36px;
   }
+`;
+
+export const PatientMRNAnchor = styled.a`
+  color: ${palette.brightBlue} !important;
 `;

@@ -2,7 +2,6 @@
 /* eslint-disable sonarjs/max-switch-cases */
 import * as ActionTypes from 'actions/action-types';
 import omit from 'ramda/src/omit';
-import { mapWithRemove } from 'helpers/utility-functions';
 import {
   createDecisionTaskNodes,
   createTemporaryTaskNode,
@@ -15,6 +14,7 @@ import TaskBaseReducer from './task-base-reducer';
 const initialWorkflowLibraryState = {
   folderIdentifier: null,
   taskTemplates: null,
+  tasksMap: {},
   isFetching: false,
   isError: false,
   breadcrumbs: null,
@@ -36,19 +36,25 @@ const templateDetailsInitialState = {
   isOpen: false,
 };
 
-function updateTasksStateCallback(state, updateTaskFromAction) {
-  return {
+function updateTasksStateCallback(state, newTask) {
+  if (typeof newTask === 'function') return state;
+
+  // eslint-disable-next-line sonarjs/prefer-immediate-return
+  const newState = {
     ...state,
     taskTemplateDetails: Object.fromEntries(
       Object.entries(state.taskTemplateDetails).map(([key, value]) => [
         key,
         {
           ...value,
-          tasks: mapWithRemove(updateTaskFromAction, value.tasks),
+          tasks: value.tasks.map((t) =>
+            t.identifier === newTask.identifier ? { ...t, ...newTask } : t,
+          ),
         },
       ]),
     ),
   };
+  return newState;
 }
 
 function updateTaskTemplateDetailsState(identifier, currentState, newState) {
@@ -191,6 +197,11 @@ const TaskTemplateReducer = (state = initialState, action) => {
     case ActionTypes.LOAD_TASKS_FOR_TASK_TEMPLATE: {
       const { taskTemplateIdentifier, tasks } = action;
 
+      const newTasks = {};
+      for (const task of tasks) {
+        newTasks[task.identifier] = task;
+      }
+
       return {
         ...state,
         taskTemplateDetails: updateTaskTemplateDetailsState(
@@ -199,8 +210,13 @@ const TaskTemplateReducer = (state = initialState, action) => {
           {
             isFetching: false,
             tasks,
+            // taskIdentifiers: tasks.map((task) => task.identifier),
           },
         ),
+        tasksMap: {
+          ...state.tasksMap,
+          ...newTasks,
+        },
       };
     }
 

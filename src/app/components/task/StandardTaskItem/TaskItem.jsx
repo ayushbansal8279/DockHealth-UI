@@ -18,6 +18,8 @@ import {
 } from 'selectors/task-drawer-selectors';
 import { TASK_DISAPPEAR_DELAY } from 'helpers/task-update-helper';
 import { currentTaskListSelector } from 'selectors/task-list-selectors';
+import { organizationCustomFieldsSelector } from 'selectors/organization-selectors';
+import { listCustomFieldsSelector } from 'selectors/list-details-selectors';
 import { openTaskDrawerWithContent } from 'actions/task-drawer-actions';
 import { useParams } from 'react-router-dom';
 import * as ModalActions from 'modal/actions';
@@ -57,10 +59,10 @@ import {
   TaskItemType,
   TaskStatus,
   findIncompleteRequiredFields,
-  TaskOrigin,
   PatientTaskItemColumn,
 } from 'helpers/task-helpers';
 import { isMemberAdmin } from 'helpers/list-members-helper';
+import { checkIfUserIsOrganizationAdmin } from 'helpers/user-helper';
 import DependencyIcon from 'img/dependency-icon.svg';
 import DependencyListPopover from 'components/common/DependencyListPopover/DependencyListPopover';
 import useBooleanWithTimeout from 'hooks/use-boolean-with-timeout';
@@ -76,9 +78,7 @@ import {
 } from 'restrictions/task-restrictions';
 import { CUSTOM_FIELD_TYPES } from 'helpers/custom-fields-helpers';
 import { Box } from '@mui/material';
-import { taskDetailsSelector } from 'selectors/list-details-selectors';
-import { dashboardTaskDetailsSelector } from 'selectors/dashboard-selectors';
-import { patientTaskDetailsSelector } from 'selectors/patient-details-selectors';
+import { taskLookupSelector } from 'selectors/task-details-selectors';
 import { closeModal, openModal } from 'modal/actions';
 import { updatePatientDetails } from 'actions/patient-details-actions';
 import { formatPhoneNumber } from 'helpers/utility-functions';
@@ -110,6 +110,7 @@ import {
   DetailsButton,
   DecisionCellContainer,
   ActionIconsContainer,
+  PatientMRNAnchor,
 } from '../styled';
 import TaskItemText from './customFieldsTaskItemComponents/TaskItemText/TaskItemText';
 import TaskItemDropdown from './customFieldsTaskItemComponents/TaskItemDropdown/TaskItemDropdown';
@@ -130,7 +131,7 @@ const TaskItem = React.memo(
   ({
     isOpen,
     switchOpen,
-    task: temporaryTask,
+    taskItemIdentifier,
     // toggleCompleteTask,
     taskGroupIdentifier,
     dragHandleProps,
@@ -161,30 +162,8 @@ const TaskItem = React.memo(
     origin,
   }) => {
     const task = useSelector((state) => {
-      if (origin === TaskOrigin.DASHBOARD) {
-        return dashboardTaskDetailsSelector(
-          state,
-          typeof temporaryTask === 'string'
-            ? temporaryTask
-            : temporaryTask?.identifier,
-        );
-      }
-      if (origin === TaskOrigin.PATIENT) {
-        return patientTaskDetailsSelector(
-          state,
-          typeof temporaryTask === 'string'
-            ? temporaryTask
-            : temporaryTask?.identifier,
-        );
-      }
-      return taskDetailsSelector(
-        state,
-        typeof temporaryTask === 'string'
-          ? temporaryTask
-          : temporaryTask?.identifier,
-      );
+      return taskLookupSelector(state, origin, taskItemIdentifier);
     });
-
 
     const {
       taskIdentifier,
@@ -208,20 +187,26 @@ const TaskItem = React.memo(
       dependencyTasksCount,
       hasEscalations,
       priority,
-    } = task;
+    } = task || {};
 
     const patient = taskPatient ?? parentTask?.patient ?? parentPatient;
 
     const { columns } = useTaskListColumnsConfig();
     const { listName, taskListIdentifier } = taskList || {};
-    const [isCompleted, setIsCompleted] = useState(task.status === 'COMPLETE');
     const isTemplateTask = checkIfTemplateTask(task);
     const isSubtask = !!parentTaskIdentifier;
-    const isDecisionTask = task.intentType === 'DECISION';
-    const isDecisionSelected = task.taskOutcomes?.reduce(
+    const isDecisionTask = task?.intentType === 'DECISION';
+    const isDecisionSelected = task?.taskOutcomes?.reduce(
       (accumulator, currentValue) => accumulator || currentValue.isSelected,
       false,
     );
+
+    const [isCompleted, setIsCompleted] = useState(false);
+    useEffect(() => {
+      if (task?.status === 'COMPLETE') {
+        setIsCompleted(true);
+      }
+    }, [task]);
 
     const actions = useActions(TaskActions);
     const modalActions = useActions(ModalActions);
@@ -264,6 +249,13 @@ const TaskItem = React.memo(
       closeDependencyPopover,
     ] = useBooleanWithTimeout(false);
     const { move, duplicate, subtasks, delete: del } = SINGLE_TASK_FEATURES;
+    const organizationCustomFields = useSelector(
+      organizationCustomFieldsSelector,
+    );
+    const listCustomFields = useSelector(listCustomFieldsSelector);
+    const taskCustomFields = organizationCustomFields
+      ? organizationCustomFields.concat(listCustomFields)
+      : listCustomFields;
 
     const showContextMenu = [move, duplicate, subtasks, del].reduce(
       (accumulator, element) => {
@@ -280,6 +272,7 @@ const TaskItem = React.memo(
 
     const selectedOrganization = useSelector(selectedUserOrganizationSelector);
     const currentTasklist = useSelector(currentTaskListSelector);
+    const emrPatientLink = selectedOrganization?.emrPatientLink;
 
     const customHighlightColor = useMemo(() => {
       const customHighlightItem =
@@ -304,7 +297,8 @@ const TaskItem = React.memo(
       const currentUserMember = currentTasklist?.listUsers?.find(
         (u) => u.identifier === currentUser?.identifier,
       );
-      return isMemberAdmin(currentUserMember);
+      const isOwnerOrAdmin = checkIfUserIsOrganizationAdmin(currentUser);
+      return isMemberAdmin(currentUserMember) || isOwnerOrAdmin;
     }, [currentUser, currentTasklist]);
 
     const isCreator = useMemo(() => {
@@ -317,123 +311,93 @@ const TaskItem = React.memo(
     if (!taskListRestrictions) {
       taskListRestrictions = {};
     }
-
-    const taskDeleteDisabled = useMemo(() => {
-      const deleteDisabledItem =
+    const setConfig = (
+      themeSettingName,
+      restrictionsConfig,
+      configName,
+      configValue,
+    ) => {
+      const enabledItem =
         selectedOrganization?.themeSettings?.find(
-          ({ name }) => name === 'list.tasks.member.delete.enabled',
+          ({ name }) => name === themeSettingName,
         ) || {};
-      return (
-        deleteDisabledItem &&
-        deleteDisabledItem?.value === 'false' &&
+      const enabledValue =
+        enabledItem &&
+        enabledItem?.value === 'false' &&
         !isListAdmin &&
-        !isCreator
-      );
-    }, [selectedOrganization, isListAdmin, isCreator]);
+        !isCreator;
 
-    const editAssignmentDisabled = useMemo(() => {
-      const editAssignmentDisabledItem =
-        selectedOrganization?.themeSettings?.find(
-          ({ name }) => name === 'list.tasks.member.edit.assignment.enabled',
-        ) || {};
-      return (
-        editAssignmentDisabledItem &&
-        editAssignmentDisabledItem?.value === 'false' &&
-        !isListAdmin &&
-        !isCreator
-      );
-    }, [selectedOrganization, isListAdmin, isCreator]);
-
-    const editDueDateDisabled = useMemo(() => {
-      const editDueDateDisabledItem =
-        selectedOrganization?.themeSettings?.find(
-          ({ name }) => name === 'list.tasks.member.edit.duedate.enabled',
-        ) || {};
-      return (
-        editDueDateDisabledItem &&
-        editDueDateDisabledItem?.value === 'false' &&
-        !isListAdmin &&
-        !isCreator
-      );
-    }, [selectedOrganization, isListAdmin, isCreator]);
-
-    const editDescriptionDisabled = useMemo(() => {
-      const editDescriptionDisabledItem =
-        selectedOrganization?.themeSettings?.find(
-          ({ name }) => name === 'list.tasks.member.edit.description.enabled',
-        ) || {};
-      return (
-        editDescriptionDisabledItem &&
-        editDescriptionDisabledItem?.value === 'false' &&
-        !isListAdmin &&
-        !isCreator
-      );
-    }, [selectedOrganization, isListAdmin, isCreator]);
-
-    const editPatientDisabled = useMemo(() => {
-      const editPatientDisabledItem =
-        selectedOrganization?.themeSettings?.find(
-          ({ name }) => name === 'list.tasks.member.edit.patient.enabled',
-        ) || {};
-      return (
-        editPatientDisabledItem &&
-        editPatientDisabledItem?.value === 'false' &&
-        !isListAdmin &&
-        !isCreator
-      );
-    }, [selectedOrganization, isListAdmin, isCreator]);
-
-    const editStatusDisabled = useMemo(() => {
-      const editStatusDisabledItem =
-        selectedOrganization?.themeSettings?.find(
-          ({ name }) => name === 'list.tasks.member.edit.status.enabled',
-        ) || {};
-      return (
-        editStatusDisabledItem &&
-        editStatusDisabledItem?.value === 'false' &&
-        !isListAdmin &&
-        !isCreator
-      );
-    }, [selectedOrganization, isListAdmin, isCreator]);
-
-    const editPriorityDisabled = useMemo(() => {
-      const editPriorityDisabledItem =
-        selectedOrganization?.themeSettings?.find(
-          ({ name }) => name === 'list.tasks.member.edit.priority.enabled',
-        ) || {};
-      return (
-        editPriorityDisabledItem &&
-        editPriorityDisabledItem?.value === 'false' &&
-        !isListAdmin &&
-        !isCreator
-      );
-    }, [selectedOrganization, isListAdmin, isCreator]);
-
-    const editLabelsDisabled = useMemo(() => {
-      const editLabelsDisabledItem =
-        selectedOrganization?.themeSettings?.find(
-          ({ name }) => name === 'list.tasks.member.edit.labels.enabled',
-        ) || {};
-      return (
-        editLabelsDisabledItem &&
-        editLabelsDisabledItem?.value === 'false' &&
-        !isListAdmin &&
-        !isCreator
-      );
-    }, [selectedOrganization, isListAdmin, isCreator]);
-
-    const editSubTasksDisabled = useMemo(() => {
-      const editSubTasksDisabledItem =
-        selectedOrganization?.themeSettings?.find(
-          ({ name }) => name === 'list.tasks.member.edit.subtasks.enabled',
-        ) || {};
-      return (
-        editSubTasksDisabledItem &&
-        editSubTasksDisabledItem?.value === 'false' &&
-        !isListAdmin &&
-        !isCreator
-      );
-    }, [selectedOrganization, isListAdmin, isCreator]);
+      if (enabledValue) {
+        // eslint-disable-next-line no-param-reassign
+        restrictionsConfig[configName] = configValue;
+      }
+    };
+    setConfig(
+      'list.tasks.member.delete.enabled',
+      restrictions,
+      'delete',
+      DISABLED,
+    );
+    setConfig(
+      'list.tasks.member.move.list.enabled',
+      restrictions,
+      'move',
+      DISABLED,
+    );
+    setConfig(
+      'list.tasks.member.duplicate.enabled',
+      restrictions,
+      'duplicate',
+      DISABLED,
+    );
+    setConfig(
+      'list.tasks.member.edit.assignment.enabled',
+      restrictions,
+      'assigment',
+      READ_ONLY,
+    );
+    setConfig(
+      'list.tasks.member.edit.duedate.enabled',
+      restrictions,
+      'dueDate',
+      DISABLED,
+    );
+    setConfig(
+      'list.tasks.member.edit.description.enabled',
+      restrictions,
+      'description',
+      DISABLED,
+    );
+    setConfig(
+      'list.tasks.member.edit.patient.enabled',
+      restrictions,
+      'patient',
+      DISABLED,
+    );
+    setConfig(
+      'list.tasks.member.edit.status.enabled',
+      restrictions,
+      'status',
+      DISABLED,
+    );
+    setConfig(
+      'list.tasks.member.edit.priority.enabled',
+      restrictions,
+      'priority',
+      DISABLED,
+    );
+    setConfig(
+      'list.tasks.member.edit.labels.enabled',
+      restrictions,
+      'labels',
+      DISABLED,
+    );
+    setConfig(
+      'list.tasks.member.edit.subtasks.enabled',
+      restrictions,
+      'subtasks',
+      DISABLED,
+    );
 
     const nonAssigneeCompleteDisabled = useMemo(() => {
       const nonAssigneeCompleteDisabledItem =
@@ -443,45 +407,25 @@ const TaskItem = React.memo(
       return (
         nonAssigneeCompleteDisabledItem &&
         nonAssigneeCompleteDisabledItem?.value === 'false' &&
-        assignedToUsers.filter(
+        assignedToUsers?.filter(
           (user) => user.identifier === currentUser.identifier,
         ).length === 0 &&
+        !isListAdmin &&
         !isCreator
       );
-    }, [assignedToUsers, currentUser, selectedOrganization, isCreator]);
-
-    if (taskDeleteDisabled) {
-      restrictions.delete = DISABLED;
-    }
-    if (editAssignmentDisabled) {
-      restrictions.assigment = READ_ONLY;
-    }
-    if (editDueDateDisabled) {
-      restrictions.dueDate = DISABLED;
-    }
-    if (editDescriptionDisabled) {
-      restrictions.description = DISABLED;
-    }
-    if (editPatientDisabled) {
-      restrictions.patient = DISABLED;
-    }
-    if (editStatusDisabled) {
-      restrictions.status = DISABLED;
-    }
-    if (editPriorityDisabled) {
-      restrictions.priority = DISABLED;
-    }
-    if (editLabelsDisabled) {
-      restrictions.labels = DISABLED;
-    }
-    if (editSubTasksDisabled) {
-      restrictions.subtasks = DISABLED;
-    }
+    }, [
+      assignedToUsers,
+      currentUser,
+      selectedOrganization,
+      isListAdmin,
+      isCreator,
+    ]);
     if (nonAssigneeCompleteDisabled) {
       taskListRestrictions.completeTask = DISABLED;
     }
 
     const customHighlight =
+      // eslint-disable-next-line unicorn/no-negated-condition
       customHighlightColor !== ''
         ? customHighlightColor
         : // eslint-disable-next-line unicorn/no-nested-ternary
@@ -494,7 +438,7 @@ const TaskItem = React.memo(
         event.stopPropagation();
         if (subtasksDisabled) {
           highlightTasksOfTheSameParent(
-            task.parentTaskIdentifier || task.taskIdentifier,
+            task?.parentTaskIdentifier || task?.taskIdentifier,
           );
         } else if (isOpen) {
           // eslint-disable-next-line sonarjs/no-gratuitous-expressions
@@ -508,17 +452,19 @@ const TaskItem = React.memo(
         isOpen,
         switchOpen,
         highlightTasksOfTheSameParent,
-        task.parentTaskIdentifier,
-        task.taskIdentifier,
+        task?.parentTaskIdentifier,
+        task?.taskIdentifier,
       ],
     );
 
     const [isPatientDataReadOnly] = useState(true);
 
     const handlePatientUpdate = useCallback(
-      field => value => {
-        const { patientIdentifier } = patient;
-        dispatch(updatePatientDetails(patientIdentifier, { [field]: value }));
+      (field) => (value) => {
+        if (patient) {
+          const patientIdentifier = patient?.patientIdentifier;
+          dispatch(updatePatientDetails(patientIdentifier, { [field]: value }));
+        }
       },
       [dispatch, patient],
     );
@@ -561,7 +507,7 @@ const TaskItem = React.memo(
     );
 
     const templates = useSelector((state) =>
-      singleTaskCustomFieldsSelector(state, task.taskIdentifier),
+      singleTaskCustomFieldsSelector(state, task?.taskIdentifier),
     );
 
     const refreshTab = useCallback(
@@ -614,11 +560,11 @@ const TaskItem = React.memo(
         }
 
         const hasIncompletedSubtasks =
-          task.subtasks?.length > 0
-            ? task.subtasks.find((subtask) => subtask.status === 'INCOMPLETE')
-            : task.subTasksCount - task.subTasksCompletedCount > 0;
+          task?.subtasks?.length > 0
+            ? task?.subtasks.find((subtask) => subtask.status === 'INCOMPLETE')
+            : task?.subTasksCount - task?.subTasksCompletedCount > 0;
 
-        if (task.status === 'INCOMPLETE' && hasIncompletedSubtasks) {
+        if (task?.status === 'INCOMPLETE' && hasIncompletedSubtasks) {
           const modalProps = {
             confirm: () => {
               modalActions.closeModal();
@@ -690,8 +636,8 @@ const TaskItem = React.memo(
     );
 
     const showDraggableDots = !dragAndDropDisabled && isDraggable;
-    const showPriority = task.priority && task.priority !== TaskPriority.NONE;
-    const showDecisionRow = task.intentType === 'DECISION' && !isTemplateTask;
+    const showPriority = task?.priority && task?.priority !== TaskPriority.NONE;
+    const showDecisionRow = task?.intentType === 'DECISION' && !isTemplateTask;
     const hasParentTaskLabel = isSubtask && !isNestedTask && !!parentTask;
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -706,6 +652,53 @@ const TaskItem = React.memo(
       (TaskItemColumnType) =>
         columns?.findIndex((c) => c.identifier === TaskItemColumnType),
       [columns],
+    );
+
+    const handleDecisionOutcomeSelection = useCallback(
+      (targetValue, taskItem, templateBundleIdentifierItem, onSuccess) => {
+        const incompleteRequiredFields = findIncompleteRequiredFields(
+          taskCustomFields,
+          task,
+        );
+        const isRequiredFieldsAreIncomplete =
+          incompleteRequiredFields.length > 0;
+
+        if (isRequiredFieldsAreIncomplete) {
+          const modalProps = {
+            incompleteFields: incompleteRequiredFields,
+          };
+          dispatch(openModal('CompleteAllFields', modalProps));
+          return;
+        }
+
+        if (taskItem.subTasksCompletedCount !== taskItem.subTasksCount) {
+          dispatch(
+            openModal('CompleteAllTasks', {
+              confirm: () => {
+                dispatch(closeModal());
+                dispatch(
+                  chooseTaskDecisionOutcome(
+                    targetValue,
+                    taskItem,
+                    templateBundleIdentifierItem,
+                  ),
+                );
+                onSuccess();
+              },
+            }),
+          );
+        } else {
+          dispatch(
+            chooseTaskDecisionOutcome(
+              targetValue,
+              taskItem,
+              templateBundleIdentifierItem,
+            ),
+          );
+          onSuccess();
+        }
+      },
+      [dispatch, task, taskCustomFields],
     );
 
     const randerFirstColumnCoverIfNecessary = useCallback(
@@ -730,7 +723,7 @@ const TaskItem = React.memo(
               />
             )}
             {showPriority && (
-              <PriorityIndicator color={getPriorityColor(task.priority)} />
+              <PriorityIndicator color={getPriorityColor(task?.priority)} />
             )}
             {showSubtaskStylingLink && getSubtaskStylingLink(isLast)}
             <ActionIconsContainer>
@@ -751,6 +744,7 @@ const TaskItem = React.memo(
                 }
                 isCompleted={isCompleted}
                 onClick={
+                  // eslint-disable-next-line unicorn/no-negated-condition
                   taskListRestrictions?.completeTask !== DISABLED
                     ? onCircleClick
                     : () => {}
@@ -780,7 +774,7 @@ const TaskItem = React.memo(
         showDraggableDots,
         showPriority,
         showSubtaskStylingLink,
-        task.priority,
+        task?.priority,
         taskListRestrictions,
       ],
     );
@@ -804,7 +798,7 @@ const TaskItem = React.memo(
           isCompletedTab={isCompletedView}
           // viewSetup={viewSetup}
           viewSetup={() => {}}
-          // isStartedDnD={draggedId === task.identifier}
+          // isStartedDnD={draggedId === task?.identifier}
           isStartedDnD={false}
           // draggableProvided={draggableProvided}
           draggableProvided={{}}
@@ -813,11 +807,10 @@ const TaskItem = React.memo(
           isFullView={false}
           dragAndDropDisabled={isCompletedGroup || dragAndDropDisabled}
           iconColorActive={iconColorActiveItem?.value}
+          origin={origin}
         />
       );
     }
-
-    if (!task) return;
 
     return (
       <>
@@ -837,6 +830,8 @@ const TaskItem = React.memo(
             }
             isAddingTask={false}
             iconColorActive={iconColorActive}
+            taskIdentifier={task?.identifier}
+            origin={origin}
           >
             {randerFirstColumnCoverIfNecessary(
               <>
@@ -897,13 +892,19 @@ const TaskItem = React.memo(
                         ({ identifier }) =>
                           identifier === TaskItemColumn.DESCRIPTION,
                       )?.columnWidth -
+                      100 -
                       (isSubtask &&
                       !hasParentTaskLabel &&
                       descriptionColumnOrder === 0
-                        ? 106
-                        : 70)
+                        ? 50
+                        : 0) -
+                      (isSubtask ? 0 : 50) -
+                      (showDecisionRow ? 200 : 0)
                     }
                   />
+                  <DetailsButton onClick={onClickTaskItem}>
+                    Details
+                  </DetailsButton>
                   {!isSubtask && (
                     <TaskItemSubtasks
                       isSubtask={isSubtask}
@@ -919,51 +920,13 @@ const TaskItem = React.memo(
                       readOnly={restrictions?.subtasks === READ_ONLY}
                     />
                   )}
-                  <DetailsButton onClick={onClickTaskItem}>
-                    Details
-                  </DetailsButton>
                   {showDecisionRow && (
                     <DecisionCellContainer
                       onClick={(event) => event.stopPropagation()}
                     >
                       <TaskItemDecision
-                        outcomes={task.taskOutcomes}
-                        onSelect={(
-                          targetValue,
-                          taskItem,
-                          templateBundleIdentifierItem,
-                          onSuccess,
-                        ) => {
-                          if (
-                            taskItem.subTasksCompletedCount !==
-                            taskItem.subTasksCount
-                          ) {
-                            dispatch(
-                              openModal('CompleteAllTasks', {
-                                confirm: () => {
-                                  dispatch(closeModal());
-                                  dispatch(
-                                    chooseTaskDecisionOutcome(
-                                      targetValue,
-                                      taskItem,
-                                      templateBundleIdentifierItem,
-                                    ),
-                                  );
-                                  onSuccess();
-                                },
-                              }),
-                            );
-                          } else {
-                            dispatch(
-                              chooseTaskDecisionOutcome(
-                                targetValue,
-                                taskItem,
-                                templateBundleIdentifierItem,
-                              ),
-                            );
-                            onSuccess();
-                          }
-                        }}
+                        outcomes={task?.taskOutcomes}
+                        onSelect={handleDecisionOutcomeSelection}
                         task={task}
                         templateBundleIdentifier={templateBundleIdentifier}
                         disabled={isCompleted || !isDependencyEmptyOrCompleted}
@@ -1060,7 +1023,7 @@ const TaskItem = React.memo(
                     order={getColumnOrder(TaskItemColumn.PRIORITY)}
                   >
                     <TaskItemDropdown
-                      value={task.priority}
+                      value={task?.priority}
                       onChange={handlePriorityChange}
                       field={{
                         options: [
@@ -1177,11 +1140,16 @@ const TaskItem = React.memo(
                     }
                     order={getColumnOrder(PatientTaskItemColumn.MRN)}
                   >
-                    <TaskItemText
-                      readOnly={isPatientDataReadOnly}
-                      value={patient?.mrn}
-                      onChange={handlePatientUpdate('mrn')}
-                    />
+                    {emrPatientLink && (
+                      <PatientMRNAnchor
+                        href={emrPatientLink?.replace('{mrn}', patient?.mrn)}
+                        target="_blank"
+                        rel="noreferrer"
+                      >
+                        {patient?.mrn}
+                      </PatientMRNAnchor>
+                    )}
+                    {!emrPatientLink && <span>{patient?.mrn}</span>}
                   </TaskItemCell>,
                   getColumnOrder(PatientTaskItemColumn.MRN),
                 )}
@@ -1644,7 +1612,7 @@ const TaskItem = React.memo(
                     <TaskItemList
                       listName={listName}
                       taskListIdentifier={taskListIdentifier}
-                      taskStatus={task.status}
+                      taskStatus={task?.status}
                     />
                   </TaskItemCell>,
                   getColumnOrder(TaskItemColumn.LIST_NAME),

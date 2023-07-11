@@ -36,7 +36,7 @@ import { BulkEditContext } from 'components/tasklist/BulkEditSection/BulkEditSec
 import LoadMoreButton, {
   LoadMoreSection,
 } from 'components/common/LoadMoreButton/LoadMoreButton';
-import { TaskItemType, TaskStatus } from 'helpers/task-helpers';
+import { TaskItemType, TaskStatus, TaskOrigin } from 'helpers/task-helpers';
 import StandardTaskItem from 'components/task/StandardTaskItem/StandardTaskItem';
 import TaskTemplateGroup from 'components/task-template/TaskTemplateGroup/TaskTemplateGroup';
 import TasksSkeletonLoader from 'components/task/TasksSkeletonLoader/TasksSkeletonLoader';
@@ -353,10 +353,10 @@ const ListDetailsTasks = ({
                           >
                             {
                               // eslint-disable-next-line no-shadow
-                              tasks?.map((task, index) => (
+                              tasks?.map((taskIdentifier, index) => (
                                 <Draggable
-                                  key={task}
-                                  draggableId={String(task)}
+                                  key={taskIdentifier}
+                                  draggableId={taskIdentifier}
                                   index={index}
                                   isDragDisabled={
                                     isCompletedGroup ||
@@ -368,11 +368,11 @@ const ListDetailsTasks = ({
                                     <>
                                       {/* {task?.itemType === TaskItemType.TASK ? ( */}
                                       <StandardTaskItem
-                                        key={task}
+                                        key={taskIdentifier}
                                         isFullView={isFullView}
                                         isDragging={isDragging}
-                                        isStartedDnD={draggedId === task}
-                                        task={task}
+                                        isStartedDnD={draggedId === taskIdentifier}
+                                        taskIdentifier={taskIdentifier}
                                         taskGroupIdentifier={
                                           taskGroupIdentifier
                                         }
@@ -389,7 +389,7 @@ const ListDetailsTasks = ({
                                         isDraggable
                                         addingNewSubtask={
                                           addingNewSubtaskParentId ===
-                                          task.identifier
+                                          taskIdentifier
                                         }
                                         subtasksDisabled={isListFlattened}
                                         areFiltersApplied={areFiltersApplied}
@@ -412,6 +412,7 @@ const ListDetailsTasks = ({
                                         iconColorActive={
                                           iconColorActiveItem?.value
                                         }
+                                        origin={TaskOrigin.LIST}
                                       />
                                       {/* ) : (
                                         <TaskTemplateGroup
@@ -433,6 +434,7 @@ const ListDetailsTasks = ({
                                           iconColorActive={
                                             iconColorActiveItem?.value
                                           }
+                                          origin={TaskOrigin.LIST}
                                         />
                                       )} */}
                                     </>
@@ -452,8 +454,20 @@ const ListDetailsTasks = ({
                   {groupPagination && hasMoreTasks && !areFiltersApplied && (
                     <StickyContainer left={24} decreaseWidth={2 * 24}>
                       <LoadMoreSection>
-                        {!isLoadingGroup && (
-                          <LoadMoreButton onClick={showMoreTasks} />
+                        {group?.moreTasksIndex &&
+                          group?.moreTasksIndex !== 0 &&
+                          !isLoadingGroup && (
+                            <LoadMoreButton onClick={showMoreTasks} />
+                          )}
+                      </LoadMoreSection>
+                    </StickyContainer>
+                  )}
+                  {groupPagination && hasMoreTasks && areFiltersApplied && (
+                    <StickyContainer left={24} decreaseWidth={2 * 24}>
+                      <LoadMoreSection>
+                        {(!group?.moreTasksIndex ||
+                          group?.moreTasksIndex === 0) && (
+                          <span>Limiting results. Please refine filter.</span>
                         )}
                       </LoadMoreSection>
                     </StickyContainer>
