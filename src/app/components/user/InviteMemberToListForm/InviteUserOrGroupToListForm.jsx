@@ -241,9 +241,9 @@ const InviteUserOrGroupToListForm = ({
                 <ListItem key={userOrGroup.identifier}>
                   <ItemAvatarWrapper isPending={isMemberPending(userOrGroup)}>
                     {isUserGroup(userOrGroup) ? (
-                      <GroupAvatar size={38} group={userOrGroup} />
+                      <GroupAvatar size={35} group={userOrGroup} />
                     ) : (
-                      <UserAvatar size={38} user={userOrGroup} />
+                      <UserAvatar size={35} user={userOrGroup} />
                     )}
                   </ItemAvatarWrapper>
                   <ItemFullNameWrapper isPending={isMemberPending(userOrGroup)}>

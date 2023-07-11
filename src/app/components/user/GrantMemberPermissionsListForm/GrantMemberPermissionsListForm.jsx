@@ -191,9 +191,9 @@ const GrantMemberPermissionsListForm = ({ list, onMembersRefresh }) => {
                 <MemberListItem key={member.identifier}>
                   <MemberAvatarWrapper>
                     {isUserGroup(member) ? (
-                      <GroupAvatar group={member} size={38} />
+                      <GroupAvatar group={member} size={35} />
                     ) : (
-                      <UserAvatar user={member} size={38} />
+                      <UserAvatar user={member} size={35} />
                     )}
                   </MemberAvatarWrapper>
                   <MemberFullNameWrapper>

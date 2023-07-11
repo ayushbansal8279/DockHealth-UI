@@ -245,9 +245,9 @@ const ListMembersSelect = ({
                           <UserNameText>{person.name}</UserNameText>
                         </UserName>
                         {isUserGroup(person) ? (
-                          <GroupAvatar group={person} size={38} />
+                          <GroupAvatar group={person} size={35} />
                         ) : (
-                          <UserAvatar user={person} size={38} />
+                          <UserAvatar user={person} size={35} />
                         )}
                       </AvailablePeopleItemButton>
                     ))

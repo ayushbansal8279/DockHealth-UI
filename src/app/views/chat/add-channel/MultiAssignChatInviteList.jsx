@@ -200,9 +200,9 @@ const MultiAssignChatInviteMembersList = ({
           <Checkbox isChecked={isSelected} />
           <Spacing horizontal={3} />
           {isUserGroup(member) ? (
-            <GroupAvatar group={member} hideTooltip />
+            <GroupAvatar group={member} hideTooltip size={35}/>
           ) : (
-            <UserAvatar user={member} hideTooltip />
+            <UserAvatar user={member} hideTooltip size={35}/>
           )}
           <Spacing horizontal={3} />
           <MemberName>
