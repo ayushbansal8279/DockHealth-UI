@@ -8,3 +8,8 @@ export const ColorIndicator = styled.div`
   position: absolute;
   left: 0px;
 `;
+
+export const SelectArrowImg = styled.img`
+  pointer-events: none;
+  height: 7px;
+`;

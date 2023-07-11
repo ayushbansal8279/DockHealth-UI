@@ -27,7 +27,6 @@ import FiledTypeStep from './FieldTypeStep';
 import { CloseIconButton, CloseIcon } from '../styled';
 import {
   AddPatientFieldModalWrapper,
-  SelectArrowImg,
   Title,
   FieldForm,
   FormScrollingContainer,
@@ -41,6 +40,7 @@ import {
   SelectParentDropdown,
   SelectParentOption,
 } from '../../customModals/styled';
+
 import ArrowIcon from 'img/arrow.svg';
 
 
@@ -266,8 +266,6 @@ const EditCustomFieldModal = ({
       });
   };
 
-  const endAdornment =  <SelectArrowImg src={ArrowIcon} alt="arrow" />
-
   return (
     <AddPatientFieldModalWrapper>
       <CloseIconButton onClick={closeModal} size="small" color="secondary">
@@ -415,7 +413,6 @@ const EditCustomFieldModal = ({
                                       label: field.name,
                                       value: field.identifier,
                                     }))}
-                                    endAdornment={endAdornment}
                                   />
                                   <SelectParentOption
                                     required
@@ -437,7 +434,6 @@ const EditCustomFieldModal = ({
                                           value: fieldOption.identifier,
                                         })) ?? []
                                     }
-                                    endAdornment={endAdornment}
                                   />
                                 </Box>
                               )}

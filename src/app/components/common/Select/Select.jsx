@@ -19,7 +19,9 @@ import {
 } from 'prop-types';
 import zIndex from 'styles/z-index';
 import Input from '../Input/Input';
-import { ColorIndicator } from './styled';
+import { ColorIndicator, SelectArrowImg } from './styled';
+
+import ArrowIcon from 'img/arrow.svg';
 
 const Select = React.forwardRef(
   (
@@ -41,6 +43,7 @@ const Select = React.forwardRef(
     reference,
   ) => {
     const selectedOption = options?.find((element) => element.value === value);
+    const endAdornment =  <SelectArrowImg src={ArrowIcon} alt="arrow" />;
     return readOnly ? (
       <Input
         name={name}
@@ -52,6 +55,7 @@ const Select = React.forwardRef(
         placeholder={placeholder}
         disabled={disabled}
         className={className}
+        endAdornment={endAdornment}
         {...restProps}
       />
     ) : (
@@ -86,6 +90,7 @@ const Select = React.forwardRef(
           renderValue={(selectedValue) =>
             options.find((option) => option.value === selectedValue)?.label
           }
+          endAdornment={endAdornment}
           {...restProps}
         >
           {options?.map((option) => {
