@@ -57,3 +57,39 @@ export function updateTasksStateCallback(state, taskData) {
     },
   };
 }
+
+export function updateTasksMap(state, taskItem) {
+  const updatedMap = {
+    [taskItem?.identifier]: {
+      ...state.tasksMap[taskItem?.identifier],
+      ...taskItem,
+    },
+  };
+
+  if (taskItem?.itemType === TaskItemType.BUNDLE) {
+    // add tasks and subtasks in the bundle
+    if (taskItem?.tasks) {
+      for (const task of taskItem?.tasks) {
+        updatedMap[task.identifier] = {
+          ...updatedMap[task.identifier],
+          ...task,
+        };
+        for (const subtask of task?.subtasks) {
+          updatedMap[subtask.identifier] = {
+            ...updatedMap[subtask.identifier],
+            ...subtask,
+          };
+        }
+      }
+    }
+  } else if (taskItem?.subtasks) {
+    for (const subtask of taskItem?.subtasks) {
+      updatedMap[subtask.identifier] = {
+        ...updatedMap[subtask.identifier],
+        ...subtask,
+      };
+    }
+  }
+
+  return updatedMap;
+}
