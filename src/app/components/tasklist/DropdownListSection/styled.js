@@ -49,7 +49,6 @@ export const Arrow = styled.img`
 `;
 
 export const Tasks = styled(Collapse)`
-  height: 300px;
   padding-left: ${(props) => props.issubtasks && spacing.giga};
 `;
 
