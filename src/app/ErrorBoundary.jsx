@@ -21,8 +21,8 @@ class ErrorBoundary extends Component {
         'Could not complete your request, please try again later',
       showConfirmButton: true,
       confirmButtonText: 'Go to Home',
-      allowOutsideClick: false,
-      allowEscapeKey: false,
+      allowOutsideClick: true,
+      allowEscapeKey: true,
       confirmationCallback: () => {
         window.location.href = '/#/core/home';
         window.location.reload();
