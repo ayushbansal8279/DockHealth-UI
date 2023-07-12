@@ -1,22 +1,25 @@
 import React, { useEffect, useState, useMemo } from 'react';
+import { useDispatch } from 'react-redux';
+import { useParams } from 'react-router-dom';
 import CustomProfileDetailsHeader from 'components/patients/CustomProfilesList/CustomProfileDetailsHeader/CustomProfileDetailsHeader';
 import { showGlobalErrorAlert } from 'alert/actions';
-import { useDispatch } from 'react-redux';
 import ProfileDrawer from 'components/patients/CustomProfilesList/ProfileDrawer';
-import { useParams } from 'react-router-dom';
 import { getAllProfiles } from 'api/profile-api';
 import { getAllProfileFieldTypes } from 'api/profile-type-field-api';
+import ViewLayout from 'components/template/ViewLayout/ViewLayout';
+import LayoutHeader from 'components/template/LayoutHeader/LayoutHeader';
+import { Box } from '@mui/material';
 
 const CustomProfileView = () => {
   const dispatch = useDispatch();
-  const { profileTypeIdentifier, profileIdentifier } = useParams();
-  const [profileTypes, setProfileTypes] = useState([]);
+  const { name, profileTypeIdentifier, profileIdentifier } = useParams();
+  const [profileTypeFields, setProfileTypeFields] = useState([]);
   const [profiles, setProfiles] = useState([]);
 
   const fetchProfileTypes = () => {
     getAllProfileFieldTypes(profileTypeIdentifier)
       .then((data) => {
-        setProfileTypes(data);
+        setProfileTypeFields(data);
       })
       .catch(() => {
         dispatch(showGlobalErrorAlert());
@@ -56,24 +59,35 @@ const CustomProfileView = () => {
 
   return (
     <>
-      <CustomProfileDetailsHeader
-        firstName={
-          profile?.fields?.[0].values?.[0].name ||
-          profile?.fields?.[0].values?.[0].customFieldOption.name
+      <ViewLayout
+        header={
+          <LayoutHeader>
+            <Box position="absolute" top={27} left={10} />
+            <LayoutHeader.Title title={name} description="" />
+          </LayoutHeader>
         }
-        lastName={
-          profile?.fields?.[1].values?.[1].name ||
-          profile?.fields?.[1].values?.[1].customFieldOption.name
-        }
-        onViewDetailsClick={handleDrawerOpen}
-      />
-      <ProfileDrawer
-        open={open}
-        profileTypeIdentifier={profileTypeIdentifier}
-        profile={profile}
-        types={profileTypes}
-        onClose={handleDrawerClose}
-      />
+      >
+        <CustomProfileDetailsHeader
+          firstName={
+            profile?.fields?.[0].values?.[0].value ||
+            profile?.fields?.[0].values?.[0]?.customFieldOption.name
+          }
+          lastName={
+            profile?.fields?.[1].values?.[0].value ||
+            profile?.fields?.[1].values?.[0]?.customFieldOption.name
+          }
+          onViewDetailsClick={handleDrawerOpen}
+          profileTypeName={name}
+          profileTypeIdentifier={profileTypeIdentifier}
+        />
+        <ProfileDrawer
+          open={open}
+          profileTypeIdentifier={profileTypeIdentifier}
+          profile={profile}
+          types={profileTypeFields}
+          onClose={handleDrawerClose}
+        />
+      </ViewLayout>
     </>
   );
 };

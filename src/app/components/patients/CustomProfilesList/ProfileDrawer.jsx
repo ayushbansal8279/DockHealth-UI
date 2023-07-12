@@ -131,7 +131,7 @@ const ProfileDrawer = ({
                           }
                           options={field.options.map((option) => ({
                             label: option.name,
-                            value: option.name,
+                            value: option.identifier,
                           }))}
                           {...register(field.identifier)}
                         />

@@ -105,7 +105,7 @@ const CustomProfileList = () => {
           types={profileTypes}
           onClose={handleClose}
         />
-        <Stack direction="row-reverse" sx={{ m: '16px 32px' }}>
+        <Stack direction="row-reverse" sx={{ m: '16px 32px 0px 32px ' }}>
           <Box display="flex" alignItems="center">
             <Box m={1} />
             <AdornedButton
