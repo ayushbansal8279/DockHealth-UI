@@ -129,10 +129,10 @@ const CustomProfileList = () => {
                 if (record) {
                   switch (field.fieldType) {
                     case 'TEXT': {
-                      return record.values[0]?.value;
+                      return record.values?.[0].value;
                     }
                     case 'PICK_LIST': {
-                      return record.values[0]?.customFieldOption.name;
+                      return record.values?.[0].customFieldOption?.name;
                     }
                     default: {
                       return '';
