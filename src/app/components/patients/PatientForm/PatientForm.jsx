@@ -151,7 +151,6 @@ const PatientForm = forwardRef(
           </HidableContainer>
         );
       },
-
       [patient, edited],
     );
 

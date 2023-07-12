@@ -21,6 +21,7 @@ import CustomFieldRichTextEditor from './CustomFieldRichTextEditor';
 import { ColorIndicator } from './styled';
 import MultiFormSelect from '../MultiSelect/MultiFormSelect';
 import CustomFieldErrorContext from './CustomFieldErrorContext';
+import CustomFieldAutoComplete from './CustomFieldAutoComplete';
 
 const CustomField = ({
   readOnly,
@@ -120,6 +121,22 @@ const CustomField = ({
             onChange={() => setWasChanged(true)}
             required={isRequired}
             characterLimit={FieldCharakterLimit.TEXT}
+          />
+        );
+      }
+      case FieldType.RELATIONSHIP: {
+        return (
+          <CustomFieldAutoComplete
+            readOnly={readOnly}
+            label={name}
+            name={fieldName}
+            placeholder={placeholder}
+            onBlur={handleBlur}
+            inputRef={inputReference}
+            ref={componentReference}
+            onChange={() => setWasChanged(true)}
+            required={isRequired}
+            relatedProfileType={field.relatedProfileType}
           />
         );
       }
@@ -270,19 +287,20 @@ const CustomField = ({
     }
   }, [
     fieldType,
-    identifier,
     readOnly,
     name,
     fieldName,
     placeholder,
+    handleBlur,
+    isRequired,
+    field.relatedProfileType,
+    field.name,
+    identifier,
     taskIdentifier,
     task,
     fieldsGroupKey,
-    handleBlur,
-    isRequired,
     setError,
     clearErrors,
-    field.name,
     watch,
     dropdownOptions,
     selected,
