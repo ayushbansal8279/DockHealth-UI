@@ -114,7 +114,7 @@ const ListDetailsReducer = (state = initialState, action) => {
             ? {
                 ...taskGroup,
                 tasks: loadingMore
-                  ? taskGroup.tasks.concat(group.tasks)
+                  ? taskGroup.tasks.concat(group.tasks) // TODO - review
                   : group.tasks,
                 hasMore: group.hasMore,
                 moreTasksIndex: group.moreTasksIndex,
@@ -185,10 +185,27 @@ const ListDetailsReducer = (state = initialState, action) => {
     case ActionTypes.GET_CURRENT_LIST_TASKS_SUCCESS: {
       const { groupedTasks } = action;
 
+      let newMap = {};
+      if (groupedTasks) {
+        for (const taskGroup of groupedTasks) {
+          const taskItems = taskGroup?.tasks;
+          for (const taskItem of taskItems) {
+            newMap = {
+              ...newMap,
+              ...updateTasksMap(state, taskItem),
+            };
+          }
+        }
+      }
+
       return {
         ...state,
         groupedTasks: {
           taskGroups: groupedTasks,
+        },
+        tasksMap: {
+          ...state.tasksMap,
+          ...newMap,
         },
         isFetching: false,
       };
@@ -247,19 +264,33 @@ const ListDetailsReducer = (state = initialState, action) => {
       // eslint-disable-next-line @typescript-eslint/no-unused-vars
       const { groupOfTasks, refresh, startPosition = 0 } = action;
 
-      const newGroup = {
-        ...groupOfTasks?.taskGroups[0],
-        tasks: groupOfTasks?.taskGroups[0].tasks.map((task) => task.identifier),
-      };
-      const newGroups = [...state.groupedTasks.taskGroups];
-      const index = newGroups.findIndex((group) => {
-        return group.groupIdentifier === newGroup.groupIdentifier;
-      });
-      if (typeof index === 'number') {
-        newGroups[index] = newGroup;
-      } else {
-        newGroups.push(newGroup);
-      }
+      // const fetchedTaskGroup = {
+      //   ...groupOfTasks?.taskGroups[0],
+      //   tasks: groupOfTasks?.taskGroups[0].tasks.map((task) => task.identifier),
+      // };
+      // const listTaskGroups = [...state.groupedTasks.taskGroups];
+      // const index = listTaskGroups.findIndex((group) => {
+      //   return group.groupIdentifier === fetchedTaskGroup.groupIdentifier;
+      // });
+      // if (typeof index === 'number') {
+      //   listTaskGroups[index] = {
+      //     ...listTaskGroups[index],
+      //     ...fetchedTaskGroup,
+      //     // tasks: (listTaskGroups[index].tasks || []).concat(
+      //     //   fetchedTaskGroup.tasks,
+      //     // ),
+      //     tasks: [
+      //       ...new Set([
+      //         ...(listTaskGroups[index].tasks || []),
+      //         ...fetchedTaskGroup.tasks,
+      //       ]),
+      //     ],
+      //     isLoadingGroup: false,
+      //     isFetchingMoreTasks: false,
+      //   };
+      // } else {
+      //   listTaskGroups.push(fetchedTaskGroup);
+      // }
 
       const taskItems = groupOfTasks?.taskGroups[0]?.tasks;
       let newMap = {};
@@ -273,36 +304,63 @@ const ListDetailsReducer = (state = initialState, action) => {
       return {
         ...state,
         groupedTasks: {
-          taskGroups: newGroups,
+          // taskGroups: listTaskGroups,
+          taskGroups: state.groupedTasks.taskGroups.map((g) => {
+            if (
+              g.groupIdentifier ===
+              groupOfTasks.taskGroups?.[0]?.groupIdentifier
+            ) {
+              //
+              // eslint-disable-next-line sonarjs/prefer-immediate-return
+              const grpState = {
+                ...g,
+                ...groupOfTasks.taskGroups?.[0],
+                tasks: [
+                  ...new Set([
+                    ...(g.tasks || []),
+                    ...groupOfTasks.taskGroups?.[0]?.tasks.map(
+                      (task) => task.identifier,
+                    ),
+                  ]),
+                ],
+                isLoadingGroup: false,
+                isFetchingMoreTasks: false,
+              };
+              return grpState;
+            }
+            return g;
+          }),
         },
         tasksMap: {
           ...state.tasksMap,
           ...newMap,
         },
-        listGroups: state.listGroups.map((g) => {
-          if (
-            g.taskGroupIdentifier ===
-            groupOfTasks.taskGroups?.[0]?.groupIdentifier
-          ) {
-            const taskCount = groupOfTasks.taskGroups?.[0]?.tasks.filter(
-              (t) => t.itemType === 'TASK',
-            ).length;
-            const taskInWorkflowsCount = groupOfTasks.taskGroups?.[0]?.tasks
-              .filter((t) => t.itemType === 'BUNDLE')
-              .reduce(
-                (accumulator, current) =>
-                  accumulator +
-                  (current.tasksCount || 0) -
-                  (current.tasksCompletedCount || 0),
-                0,
-              );
-            return {
-              ...g,
-              // metricValue: taskCount + taskInWorkflowsCount,
-            };
-          }
-          return g;
-        }),
+        // listGroups: state.listGroups.map((g) => {
+        //   if (
+        //     g.taskGroupIdentifier ===
+        //     groupOfTasks.taskGroups?.[0]?.groupIdentifier
+        //   ) {
+        //     const taskCount = groupOfTasks.taskGroups?.[0]?.tasks.filter(
+        //       (t) => t.itemType === 'TASK',
+        //     ).length;
+        //     const taskInWorkflowsCount = groupOfTasks.taskGroups?.[0]?.tasks
+        //       .filter((t) => t.itemType === 'BUNDLE')
+        //       .reduce(
+        //         (accumulator, current) =>
+        //           accumulator +
+        //           (current.tasksCount || 0) -
+        //           (current.tasksCompletedCount || 0),
+        //         0,
+        //       );
+        //     const grpState = {
+        //       ...g,
+        //       tasks: [...(g.tasks || []), groupOfTasks.taskGroups?.[0]?.tasks.map((task) => task.identifier)],
+        //       // metricValue: taskCount + taskInWorkflowsCount,
+        //     };
+        //     return grpState;
+        //   }
+        //   return g;
+        // }),
       };
     }
 
