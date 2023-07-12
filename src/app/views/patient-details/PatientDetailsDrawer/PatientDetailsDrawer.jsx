@@ -190,7 +190,7 @@ const PatientDetailsDrawer = ({ patient, isOpenedDetails, closeDetails }) => {
       <PatientDrawer
         isOpen={isOpenedDetails}
         title={`${patient.lastName}, ${patient.firstName} ${
-          patient.middleName ? patient.middleName : ''
+          patient.middleName ?? ''
         }`}
         options={contextMenuOptions}
         onClose={handleClose}

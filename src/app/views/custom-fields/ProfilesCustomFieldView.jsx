@@ -191,7 +191,7 @@ const ProfilesCustomFieldsView = ({ profileTypeIdentifier }) => {
                               <CustomFieldText>
                                 {field.fieldType === FieldType.RELATIONSHIP
                                   ? `${FieldTypeLabel[field.fieldType]} - ${
-                                      field.name
+                                      field.relatedProfileType?.name
                                     }`
                                   : FieldTypeLabel[field.fieldType]}
                               </CustomFieldText>

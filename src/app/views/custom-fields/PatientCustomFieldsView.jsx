@@ -35,7 +35,6 @@ import {
 
 // eslint-disable-next-line sonarjs/cognitive-complexity
 const PatientCustomFieldsView = () => {
-  console.log(`NOT`);
   const dispatch = useDispatch();
   const [customFields, setCustomFields] = useState(null);
   const [isFetching, setIsFetching] = useState(true);
@@ -228,7 +227,7 @@ const PatientCustomFieldsView = () => {
                                 <CustomFieldText>
                                   {field.fieldType === FieldType.RELATIONSHIP
                                     ? `${FieldTypeLabel[field.fieldType]} - ${
-                                        field.name
+                                        field.relatedProfileType?.name
                                       }`
                                     : FieldTypeLabel[field.fieldType]}
                                 </CustomFieldText>
