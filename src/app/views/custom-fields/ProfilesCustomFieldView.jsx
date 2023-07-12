@@ -58,7 +58,7 @@ const ProfilesCustomFieldsView = ({ profileTypeIdentifier }) => {
 
   const handleEditClick = (field) => {
     dispatch(
-      openModal('EditProfileCustomField', {
+      openModal('EditCustomField', {
         profileTypeIdentifier,
         options: {
           type: 'PROFILE',
@@ -67,7 +67,7 @@ const ProfilesCustomFieldsView = ({ profileTypeIdentifier }) => {
         onUpdated: (updatedField) => {
           setColumnsToState(
             columns.map((f) =>
-              f.identifier === updatedField.relatedProfileType.identifier
+              f.identifier === updatedField.relatedProfileType?.identifier
                 ? { ...f, ...updatedField }
                 : f,
             ),
@@ -114,7 +114,7 @@ const ProfilesCustomFieldsView = ({ profileTypeIdentifier }) => {
 
   const handleAddFieldClick = () => {
     dispatch(
-      openModal('EditProfileCustomField', {
+      openModal('EditCustomField', {
         profileTypeIdentifier,
         options: {
           type: 'PROFILE',
