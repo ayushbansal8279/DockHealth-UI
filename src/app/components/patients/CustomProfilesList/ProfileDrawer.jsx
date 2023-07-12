@@ -1,6 +1,6 @@
 import OptionsMenu from 'components/common/OptionsMenu/OptionsMenu';
 import { Box, IconButton, Stack } from '@mui/material';
-import React from 'react';
+import React, { useState } from 'react';
 import Drawer from 'ui-toolkit/Navigation/Drawer/Drawer';
 import { createProfile, editProfileType } from 'api/profile-api';
 import { useForm } from 'react-hook-form';
@@ -25,6 +25,9 @@ const ProfileDrawer = ({
   onClose,
 }) => {
   const { register, handleSubmit } = useForm();
+
+  const [isCollapsed, setCollapsed] = useState(true);
+
   const onSubmit = (data) => {
     if (profile) {
       editProfileType(profile.identifier, {
@@ -71,6 +74,10 @@ const ProfileDrawer = ({
     }
   };
 
+  const handleCollapse = () => {
+    setCollapsed(!isCollapsed);
+  };
+
   return (
     <Drawer open={open} onClose={onClose}>
       <StickyHeader>
@@ -87,7 +94,11 @@ const ProfileDrawer = ({
       <ContentWrapper>
         <Stack>
           <form onSubmit={handleSubmit(onSubmit)}>
-            <LabeledCollapse name="Default" isOpened>
+            <LabeledCollapse
+              name="Default"
+              isOpened={isCollapsed}
+              onClick={handleCollapse}
+            >
               {types?.map((field) => {
                 const record = profile?.fields.find(
                   ({ profileTypeField }) =>
@@ -132,9 +143,7 @@ const ProfileDrawer = ({
                   }
                 };
 
-                return record ? (
-                  <Box style={{ margin: '8px 4px' }}>{render()}</Box>
-                ) : null;
+                return <Box style={{ margin: '8px 4px' }}>{render()}</Box>;
               })}
             </LabeledCollapse>
             <Stack sx={{ m: '8px 4px' }} direction="row">
