@@ -57,8 +57,14 @@ const CustomProfileView = () => {
   return (
     <>
       <CustomProfileDetailsHeader
-        firstName="First Name"
-        lastName="Last Name"
+        firstName={
+          profile?.fields?.[0].values?.[0].name ||
+          profile?.fields?.[0].values?.[0].customFieldOption.name
+        }
+        lastName={
+          profile?.fields?.[1].values?.[1].name ||
+          profile?.fields?.[1].values?.[1].customFieldOption.name
+        }
         onViewDetailsClick={handleDrawerOpen}
       />
       <ProfileDrawer
