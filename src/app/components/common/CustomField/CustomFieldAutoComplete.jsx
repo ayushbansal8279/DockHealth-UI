@@ -66,7 +66,13 @@ const CustomFieldAutoComplete = React.forwardRef(
           setProfiles(
             data.map((profile) => ({
               ...profile,
-              label: profile.identifier,
+              label: `${
+                profile?.fields?.[0].values?.[0].value ||
+                profile?.fields?.[0].values?.[0]?.customFieldOption.name
+              } ${
+                profile?.fields?.[1].values?.[0].value ||
+                profile?.fields?.[1].values?.[0]?.customFieldOption.name
+              }`,
             })),
           );
 
