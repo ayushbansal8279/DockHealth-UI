@@ -23,7 +23,7 @@ const TaskCustomizationsView = () => {
 
   return (
     <ColumnsConfigProvider>
-      <ViewLayout header={<BasicLayoutHeader title="Task Customizations" />}>
+      <ViewLayout header={<BasicLayoutHeader title="Task Custom Fields" />}>
         <ViewContainer>
           <Box p={1} />
           <TaskCustomFieldsView editable />

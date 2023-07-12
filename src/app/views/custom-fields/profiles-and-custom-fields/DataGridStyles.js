@@ -12,30 +12,12 @@ const ROW_BORDER = 1;
 export const StyledDataGrid = styled(DataGrid)`
   &.MuiDataGrid-root {
     max-width: 1180px;
-    border: 0 !important;
+    // border: 0 !important;
+    background-color: white;
 
     // calculating a height of a table is a workaround - MUI v4 doesn't support space beetween rows
     height: 500px;
 
-    &.MuiDataGrid-renderingZone {
-      ${({ rows, pageSize, page }) => {
-        const rowsLength =
-          rows.length - page * pageSize > pageSize
-            ? pageSize
-            : rows.length - page * pageSize;
-        return `max-height: ${
-          (rowsLength + 1) * (ROW_HEIGHT + ROW_MARGIN + ROW_BORDER) +
-          HEADER_HEIGHT
-        }px !important`;
-      }}
-    }
-
-    &.MuiDataGrid-window {
-      top: 35px !important;
-    }
-    &.MuiDataGrid-columnsContainer {
-      top: ${`-${ROW_MARGIN}px`};
-    }
   }
   && {
     &.MuiDataGrid-sortIcon {

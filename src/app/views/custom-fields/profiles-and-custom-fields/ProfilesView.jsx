@@ -138,13 +138,17 @@ const ProfilesAndCustomFieldsView = () => {
             { id: 'patient', name: 'Patients', link: 'patient' },
             ...profileTypes,
           ]}
-          rowHeight={55}
-          headerHeight={25}
+          rowHeight={35}
+          headerHeight={45}
           page={page}
           onPageChange={({ page: p }) => setPage(p)}
           pageSize={PAGE_SIZE}
+          hideFooterSelectedRowCount
+          autoHeight
           disableColumnMenu
           disableSelectionOnClick
+          showColumnRightBorder
+          showCellRightBorder
         />
       </ViewContainer>
     </ViewLayout>
