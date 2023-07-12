@@ -43,7 +43,7 @@ const Select = React.forwardRef(
   ) => {
     const selectedOption = options?.find((element) => element.value === value);
     const [isOpen, setIsOpen] = useState(false);
-    const toggleOpen = () => setIsOpen((prevIsOpen) => !prevIsOpen);
+    const toggleOpen = () => setIsOpen((wasOpen) => !wasOpen);
     const endAdornment = (
       <RotatableChevron onClick={toggleOpen} rotated={isOpen} />
     );
@@ -69,8 +69,8 @@ const Select = React.forwardRef(
         )}
         <MuiSelect
           open={isOpen}
-          onOpen={toggleOpen}
-          onClose={toggleOpen}
+          onOpen={() => setIsOpen(true)}
+          onClose={() => setIsOpen(false)}
           disabled={disabled}
           MenuProps={{
             anchorOrigin: {
