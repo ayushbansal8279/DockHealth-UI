@@ -66,7 +66,7 @@ export const CloseIcon = styled(Close)`
 
 export const SelectOptionColor = styled(Select)`
   &.MuiFormControl-root {
-    width: 60px;
+    width: 48px;
   }
 
   & .MuiInputBase-root {
