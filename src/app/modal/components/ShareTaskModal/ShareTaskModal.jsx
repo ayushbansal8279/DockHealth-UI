@@ -88,7 +88,7 @@ const ShareTaskModal = (props) => {
       <ModalDescription>
         {externalUserInitialValues
           ? 'Enter the details of the outside collaborator'
-          : 'Share this task with another user'}
+          : 'Share this task with another user from your organization'}
       </ModalDescription>
       <Box m={2} />
       {externalUserInitialValues ? (
@@ -106,13 +106,13 @@ const ShareTaskModal = (props) => {
             onDelete={deleteSelectedUser}
             onMoveToExternalUserForm={handleMoveToExternalForm}
           />
-          {selectedUsers?.length > 0 && (
+          {/* {selectedUsers?.length > 0 && (
             <MessageTextarea
               placeholder="Add a message to your invitation and copy instructions here"
               value={messageValue}
               onChange={(event) => setMessageValue(event?.target?.value || '')}
             />
-          )}
+          )} */}
           <Box display="flex" width="100%" justifyContent="flex-end" mt="16px">
             <Button
               type="button"
@@ -120,7 +120,7 @@ const ShareTaskModal = (props) => {
               disabled={!selectedUsers || selectedUsers?.length === 0}
               onClick={handleInvite}
             >
-              Invite
+              Share
             </Button>
           </Box>
         </>

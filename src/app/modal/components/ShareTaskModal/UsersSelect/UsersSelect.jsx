@@ -85,6 +85,7 @@ const UsersSelect = (props) => {
             alignItems="left"
             {...props_}
           >
+            {renderUserOptionAvatar(option)}&nbsp;&nbsp;
             <ListItemText>
               {option.userName}
               {/* TODO: use backend external flag */}
@@ -92,7 +93,6 @@ const UsersSelect = (props) => {
                 <ExternalUserLabel> (External)</ExternalUserLabel>
               )}
             </ListItemText>
-            {renderUserOptionAvatar(option)}
           </Box>
         )}
         filterOptions={filter(
