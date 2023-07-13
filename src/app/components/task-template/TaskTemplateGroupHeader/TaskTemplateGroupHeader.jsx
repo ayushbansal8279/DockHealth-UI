@@ -1127,11 +1127,11 @@ const TaskTemplateGroupHeader = ({
           )}
         </>
       )}
-      {isColumnChecked(columns, TaskItemColumn.ASSIGNED) && (
+      {isColumnChecked(columns, TaskItemColumn.SHARED) && (
         <>
           {randerFirstColumnCoverIfNecessary(
             <TaskItemCell
-              key={`assigned_${identifier}`}
+              key={`shared_${identifier}`}
               width={
                 columns?.find(
                   ({ identifier: id }) => id === TaskItemColumn.SHARED,
@@ -1147,17 +1147,7 @@ const TaskTemplateGroupHeader = ({
               order={getColumnOrder(TaskItemColumn.SHARED)}
               printWidth={TaskItemColumnWidth[TaskItemColumn.SHARED].PRINT}
             >
-              <TaskTemplateMembers
-                readOnly={restrictions?.assigment === READ_ONLY}
-                currentUser={currentUser}
-                multipleAssigneesContext={groupHasMultipleAssignees}
-                workflow={
-                  templateGroup.assignedToUsers || !workFlowData
-                    ? templateGroup
-                    : workFlowData
-                }
-                onWorkflowUpdate={compose(dispatch, updatePartialWorkflow)}
-              />
+              &nbsp;
             </TaskItemCell>,
             getColumnOrder(TaskItemColumn.SHARED),
             columns?.find(

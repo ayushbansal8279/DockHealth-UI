@@ -1435,7 +1435,7 @@ const TaskItem = React.memo(
                 {randerFirstColumnCoverIfNecessary(
                   <TaskItemCell
                     isSubtask={isSubtask}
-                    key={`assigned_${taskIdentifier}`}
+                    key={`shared_${taskIdentifier}`}
                     width={
                       columns?.find(
                         ({ identifier }) =>
