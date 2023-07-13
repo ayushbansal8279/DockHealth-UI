@@ -28,11 +28,15 @@ const SSOOptions = () => {
 
   const drChronoLogin = () => {
     window.sessionStorage.setItem('iss', 'drchrono.com');
-    window.location.href = `${process.env.HEYDOC_SERVICES_BASE_URL}oidc/authorize?iss=client1-drchrono.com`;
+    window.location.href = `${
+      import.meta.env.VITE_HEYDOC_SERVICES_BASE_URL
+    }oidc/authorize?iss=client1-drchrono.com`;
   };
   const athenaLogin = () => {
     window.sessionStorage.setItem('iss', 'athenahealth');
-    window.location.href = `${process.env.HEYDOC_SERVICES_BASE_URL}oidc/authorize?iss=athenahealth`;
+    window.location.href = `${
+      import.meta.env.VITE_HEYDOC_SERVICES_BASE_URL
+    }oidc/authorize?iss=athenahealth`;
   };
   const buttonReference = useRef(null);
   const [open, setOpen] = useState(false);

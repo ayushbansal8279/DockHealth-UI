@@ -127,7 +127,10 @@ const initializeListDetailsViewHooks = () => {
   }, [dispatch]);
 
   const refreshAccessToken = useCallback(user => {
-    const systemTimeout = parseInt(process.env.HEALTHCHECK_INTERVAL, 10);
+    const systemTimeout = parseInt(
+      import.meta.env.VITE_HEALTHCHECK_INTERVAL,
+      10,
+    );
 
     if (sessionStorage.refreshAccessTokenTimeoutId) {
       clearTimeout(sessionStorage.refreshAccessTokenTimeoutId);

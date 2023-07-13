@@ -273,7 +273,7 @@ class App extends PureComponent {
     // const systemTimeout =
     //   logoutTimeout > 0
     //     ? logoutTimeout
-    //     : parseInt(process.env.SYSTEM_TIMEOUT, 10);
+    //     : parseInt(import.meta.env.VITE_SYSTEM_TIMEOUT, 10);
     // const idleTimeout = systemTimeout / 2;
 
     const { children } = this.props;

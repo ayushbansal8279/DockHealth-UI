@@ -514,7 +514,7 @@ export function getEnterpriseAccessTokensForEmbeddedSSO(
   // eslint-disable-next-line consistent-return, sonarjs/cognitive-complexity
   return new Promise(async (resolve, reject) => {
     try {
-      const authUrl = `${process.env.HEYDOC_SERVICES_BASE_URL}oidc`;
+      const authUrl = `${import.meta.env.VITE_HEYDOC_SERVICES_BASE_URL}oidc`;
       const authData = `authToken=${authToken}&userIdentifier=${userIdentifier}&targetType=${targetType}&targetIdentifier=${targetIdentifier}&organizationIdentifier=${orgIdentifier}`;
 
       await axios
@@ -583,7 +583,7 @@ export const getCustomLaunchEnterpriseAccessTokensByAuthCode = (
 ) => {
   return new Promise((resolve, reject) => {
     try {
-      // const authUrl = `${process.env.REACT_APP_HEYDOC_SERVICES_BASE_URL}/launch/drchrono`;
+      // const authUrl = `${import.meta.env.VITE_HEYDOC_SERVICES_BASE_URL}/launch/drchrono`;
 
       return axios.post(requestAuthTokenURL, authData).then(response => {
         const userRefreshToken = response?.data.refresh_token;

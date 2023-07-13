@@ -26,7 +26,9 @@ const processLaunchContext = (history, queryValues) => {
 
     const data = `user_id=${userId}&doctor_id=${doctorId}&patient_id=${patientId}&practice_id=${practiceId}&jwt=${jwt}&iat=${iat}`;
 
-    const requestAuthTokenURL = `${process.env.HEYDOC_SERVICES_BASE_URL}auth/custom/token/drchrono`;
+    const requestAuthTokenURL = `${
+      import.meta.env.VITE_HEYDOC_SERVICES_BASE_URL
+    }auth/custom/token/drchrono`;
     console.log(`requestAuthTokenURL: ${requestAuthTokenURL}`);
 
     console.log('Exchanging temporary code and requesting Access token...');
