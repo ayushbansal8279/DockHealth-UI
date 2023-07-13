@@ -87,6 +87,7 @@ const ListDetailsForm = ({
       listName: list?.listName,
       listDescription: list?.listDescription,
       restrictCustomization: list ? !!list?.restrictCustomization : true,
+      sharingEnabled: list ? !!list?.sharingEnabled : true,
     },
     reValidateMode: 'onSubmit',
   });
@@ -94,6 +95,7 @@ const ListDetailsForm = ({
   const { handleSubmit, watch, setValue } = formMethods;
 
   const restrictCustomizationValue = watch('restrictCustomization');
+  const sharingEnabled = watch('sharingEnabled');
 
   return (
     <StyledForm
@@ -154,6 +156,16 @@ const ListDetailsForm = ({
               Note: You will need to reconfigure the columns displayed on the
               list when you change the above option.
             </span>
+            <Spacing vertical={4} />
+            <CheckboxContainer>
+              <Checkbox
+                size={16}
+                onClick={() => setValue('sharingEnabled', !sharingEnabled)}
+                isChecked={sharingEnabled}
+              />
+              <Spacing horizontal={3} />
+              <CheckboxDescription>Enable Task Sharing</CheckboxDescription>
+            </CheckboxContainer>
           </Grid>
           <Grid container direction="row" justifyContent="center">
             <ButtonWrapper>
