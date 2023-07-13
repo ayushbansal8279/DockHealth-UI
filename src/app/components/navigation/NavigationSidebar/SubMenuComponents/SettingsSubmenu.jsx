@@ -65,7 +65,7 @@ const SettingsSubmenu = () => {
         </AccessRestrictor>
       )}
       <SubMenuLink to={TASK_CUSTOMIZATIONS_PATH}>
-        Task Custom Fields
+        Task Settings
       </SubMenuLink>
     </Box>
   );

@@ -34,7 +34,7 @@ const TaskCustomFieldsModal = ({
           <CloseIcon />
         </CloseIconButton>
         <Header>
-          <Title>Task Custom Fields</Title>
+          <Title>Task Settings</Title>
         </Header>
         <Body>
           <Tabs
