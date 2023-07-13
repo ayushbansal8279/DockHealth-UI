@@ -2,7 +2,7 @@
 /* eslint-disable no-unused-expressions */
 import React, { useEffect, useCallback, useMemo } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { Grid } from '@mui/material';
+import { Grid, useMediaQuery } from '@mui/material';
 import CustomField from 'components/common/CustomField/CustomField';
 import { useBoolean } from 'hooks/useBoolean';
 import { useForm, FormProvider } from 'react-hook-form';
@@ -43,6 +43,8 @@ const CustomFieldsSection = ({ disabled, fieldCategoryType }) => {
   const taskDrawerFocusField = useSelector(
     isWorkflow ? workflowAutofocusFieldSelector : taskDrawerFocusFieldSelector,
   );
+
+  const isMobile = useMediaQuery((theme) => theme.breakpoints.down('sm'));
 
   const { templates: unfilteredTemplates } = useSelector(
     taskCustomFieldsSelector,
@@ -117,7 +119,7 @@ const CustomFieldsSection = ({ disabled, fieldCategoryType }) => {
         alwaysVisible || isFocused || emptyVisible || hasValue || isRequired;
       return (
         <HidableContainer key={field.identifier} visible={!visible}>
-          <Grid item xs={12} style={styleFullRow}>
+          <Grid item xs={12} style={styleFullRow(isMobile, alwaysVisible)}>
             <CustomField
               readOnly={disabled}
               field={field}
@@ -134,7 +136,15 @@ const CustomFieldsSection = ({ disabled, fieldCategoryType }) => {
         </HidableContainer>
       );
     },
-    [taskDrawerFocusField, getValues, emptyVisible, disabled, task, handleBlur],
+    [
+      taskDrawerFocusField,
+      getValues,
+      emptyVisible,
+      isMobile,
+      disabled,
+      task,
+      handleBlur,
+    ],
   );
 
   if (templates.length === 0) return null;

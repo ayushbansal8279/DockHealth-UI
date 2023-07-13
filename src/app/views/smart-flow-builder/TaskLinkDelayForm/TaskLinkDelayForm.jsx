@@ -44,8 +44,11 @@ const TaskLinkDelayForm = (props) => {
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
-  const delayPeriodValue = watch('delayPeriod');
-  const delayIsBusinessDaysValue = watch('delayIsBusinessDays');
+  const [delayPeriodValue, delayPeriodUnit, delayIsBusinessDaysValue] = watch([
+    'delayPeriod',
+    'delayPeriodUnit',
+    'delayIsBusinessDays',
+  ]);
   return (
     <FormProvider {...formMethods}>
       <DelayPeriodForm onSubmit={handleSubmit(onSubmit)}>
@@ -98,16 +101,18 @@ const TaskLinkDelayForm = (props) => {
             />
           </Box>
           <Box p={1} />
-          <Box width="100%" display="flex" alignItems="center">
-            <Checkbox
-              isChecked={delayIsBusinessDaysValue}
-              onClick={() =>
-                setValue('delayIsBusinessDays', !delayIsBusinessDaysValue)
-              }
-            />
-            <Box p={0.5} />
-            <CheckboxLabel>Business days only</CheckboxLabel>
-          </Box>
+          {delayPeriodUnit === DelayPeriodUnit.DAY && (
+            <Box width="100%" display="flex" alignItems="center">
+              <Checkbox
+                isChecked={delayIsBusinessDaysValue}
+                onClick={() =>
+                  setValue('delayIsBusinessDays', !delayIsBusinessDaysValue)
+                }
+              />
+              <Box p={0.5} />
+              <CheckboxLabel>Business days only</CheckboxLabel>
+            </Box>
+          )}
         </Box>
         <PopoverBottomBar>
           <PopoverBottomBar.Button

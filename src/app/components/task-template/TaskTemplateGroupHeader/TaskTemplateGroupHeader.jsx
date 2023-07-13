@@ -583,7 +583,7 @@ const TaskTemplateGroupHeader = ({
   //   !selectedWorkflow ? getWorkflowData(identifier) : setWorkFlowData(null);
   // }, [getWorkflowData, identifier, selectedWorkflow]);
 
-  const taskPriority = templateGroup.priority;
+  const taskPriority = (templateGroup || workFlowData).priority;
 
   const handleUpdateTaskPriority = useCallback(
     (priority) => {

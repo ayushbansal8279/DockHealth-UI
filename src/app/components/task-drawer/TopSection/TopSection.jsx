@@ -172,6 +172,8 @@ const TopSection = ({
         justifyContent="space-between"
         alignItems="center"
         height="60px"
+        paddingLeft="30px"
+        paddingRight="30px"
       >
         <Box display="flex">
           {selectedTask && !checkIfTemplateTask(selectedTask) && (

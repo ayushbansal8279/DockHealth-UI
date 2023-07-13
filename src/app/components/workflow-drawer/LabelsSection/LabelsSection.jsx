@@ -280,7 +280,7 @@ const LabelsSection = ({ disabled: disabledProperty }) => {
         >
           {inputState ? (
             <>
-              No results - Create
+              No results - Create{' '}
               <NoOptionTextLabel>{inputState}</NoOptionTextLabel> label
             </>
           ) : (

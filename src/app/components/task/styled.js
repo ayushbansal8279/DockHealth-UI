@@ -73,7 +73,7 @@ export const CompletedBy = styled.div`
   transition-delay: ${(props) => (props.isCompleted ? '0' : '0.4')}s;
   font-size: ${fontSizes.small};
   padding-left: 5px;
-  padding-bottom: 2px;
+  padding-bottom: 0px;
 
   > span {
     color: ${palette.brightBlue};
@@ -236,6 +236,23 @@ export const DescriptionBox = styled.div`
     ${DescriptionEditButton} {
       opacity: 1;
     }
+  }
+  font-family: 'Roboto Condensed', sans-serif;
+`;
+
+export const DescriptionInput = styled.input`
+  outline: 'none';
+  background-color: transparent !important;
+  border: ${({ isEditing }) =>
+    isEditing ? `1px solid ${palette.brightBlue}` : 'none'};
+  border-radius: '4px';
+  color: ${palette.mediumGrey};
+  width: 1005px;
+  text-overflow: 'ellipsis';
+
+  &:focus {
+    outline: none !important;
+    border: none;
   }
 `;
 

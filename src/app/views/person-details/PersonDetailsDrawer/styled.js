@@ -33,16 +33,14 @@ export const StickyHeader = styled.div`
 `;
 
 export const DrawerWrapper = styled(Drawer)`
-  &&& {
-    &.MuiDrawer-docked {
-      position: relative;
-      z-index: 10;
-      flex-shrink: 0;
-      white-space: nowrap;
-    }
+  &.MuiDrawer-docked {
+    position: relative;
+    z-index: 10;
+    flex-shrink: 0;
+    white-space: nowrap;
+  }
 
-    & .MuiDrawer-paper {
-      width: 500px;
-    }
+  .MuiDrawer-paper {
+    width: 500px;
   }
 `;

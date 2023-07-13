@@ -54,7 +54,7 @@ export const StyledDataGrid = styled(DataGrid)`
   }
 
   &.MuiDataGrid-cell {
-    font-family: Roboto Condensed;
+    font-family: 'Roboto Condensed', sans-serif;;
     font-weight: ${fontWeights.light};
     font-size: ${fontSizes.smallPlus};
   }
@@ -71,7 +71,7 @@ export const StyledDataGrid = styled(DataGrid)`
 
   &.MuiDataGrid-colCellTitle {
     background-color: white;
-    font-family: Roboto Condensed;
+    font-family: 'Roboto Condensed', sans-serif;;
     font-size: ${fontSizes.small};
     font-weight: ${fontWeights.regularPlus} !important;
     padding-left: 0;

@@ -198,7 +198,7 @@ const CustomField = ({
           (o) => o.value === value,
         )?.color;
 
-        const dependantOptions = dropdownOptions.filter(option => {
+        const dependantOptions = dropdownOptions.filter((option) => {
           if (option.data?.linkedCustomFieldIdentifier) {
             const linkedCustomFieldOptionIdentifier =
               selected?.[option.data.linkedCustomFieldIdentifier];

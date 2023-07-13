@@ -73,7 +73,7 @@ const Comment = ({ comment, onDelete, onUpdate, currentUser }) => {
   return (
     <CommentWrapper>
       <CommentMemberContainer>
-        <UserAvatar user={creator} size={34} />
+        <UserAvatar user={creator} size={35} />
       </CommentMemberContainer>
       <CommentContainer isEditing={isEditing}>
         <CommentContent>

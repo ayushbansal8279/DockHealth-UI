@@ -175,7 +175,7 @@ const DashboardTasksGroup = ({
               dueDate: dueDateForQuickAdd,
             }),
           );
-          quickAddTaskInputReference.current.focus();
+          quickAddTaskInputReference?.current?.focus();
         },
       }),
     );

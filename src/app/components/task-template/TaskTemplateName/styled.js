@@ -53,6 +53,11 @@ export const NameTooltip = styled.div`
 export const NameContainer = styled.div`
   display: flex;
   flex: 1;
+  flex-direction: column;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  padding-left: 2px;
 `;
 
 export const TaskTemplateDescriptionIndicators = styled.div`
@@ -76,6 +81,6 @@ export const TaskTemplateContext = styled.div`
     overflow: hidden;
     text-overflow: ellipsis;
     width: 100px;
-    padding-top: 10px;
+    // padding-top: 10px;
   }
 `;

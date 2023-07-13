@@ -175,6 +175,11 @@ const TasksHeader = ({
                   />
                 </BulkContainer>
               )}
+              {!bulkEditEnabled && (
+                <BulkContainer style={{width: '66px'}}>
+                  &nbsp;
+                </BulkContainer>
+              )}
               {renderColumn(
                 getTaskHeaderOptions(
                   customerTypeLabel,

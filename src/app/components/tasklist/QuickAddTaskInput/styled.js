@@ -15,6 +15,7 @@ export const AddTaskInputWrapper = styled.div`
   color: ${palette.mediumGrey};
 
   &:before {
+    margin-top: -2px;
     position: absolute;
     top: 50%;
     left: ${spacing.regularPlus};

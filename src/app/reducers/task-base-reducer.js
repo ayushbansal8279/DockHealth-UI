@@ -105,14 +105,19 @@ const TaskBaseReducer = (state, action, updateStateCallback) => {
     case ActionTypes.DELETE_TASK: {
       const { taskIdentifier } = action;
 
-      const updateTaskFromAction = (task) => {
-        if (task.taskIdentifier === taskIdentifier) {
+      const updateTaskFromAction = (tasksMap) => {
+        const task = tasksMap[taskIdentifier];
+        if (!task) {
+          return null;
+        }
+        if (task.identifier === taskIdentifier) {
+          // return null to remove the task
           return null;
         }
 
         if (task.subtasks?.length > 0) {
           const updatedSubtasks = task.subtasks?.filter(
-            (s) => s.taskIdentifier !== taskIdentifier,
+            (s) => s.identifier !== taskIdentifier,
           );
 
           return {
@@ -274,9 +279,13 @@ const TaskBaseReducer = (state, action, updateStateCallback) => {
     case ActionTypes.SET_COMPLETE_STATUS: {
       const { taskIdentifier, dataToUpdate } = action;
 
-      const updateTaskFromAction = (t) => {
-        if (t.taskIdentifier === taskIdentifier) {
-          if (dataToUpdate.status === TaskStatus.COMPLETE) {
+      const updateTaskFromAction = (tasksMap) => {
+        const t = tasksMap[taskIdentifier];
+        if (!t) {
+          return null;
+        }
+        if (t.identifier === taskIdentifier) {
+          if (dataToUpdate.status === TaskStatus.INCOMPLETE) {
             return {
               ...t,
               ...dataToUpdate,
@@ -288,30 +297,28 @@ const TaskBaseReducer = (state, action, updateStateCallback) => {
             };
           }
 
-          return {
-            ...t,
-            ...dataToUpdate,
-          };
+          if (t.subtasks?.length > 0 || t.taskDependencies?.length > 0) {
+            let updatedTask = updateNestedTask(dataToUpdate, taskIdentifier, t);
+
+            updatedTask = {
+              ...updatedTask,
+              dependencyTasksCompletedCount:
+                updatedTask.taskDependencies?.filter(
+                  (s) => s.status === TaskStatus.COMPLETE,
+                ).length || 0,
+              subTasksCompletedCount:
+                updatedTask.subtasks?.filter(
+                  (s) => s.status === TaskStatus.COMPLETE,
+                ).length || 0,
+            };
+            return updatedTask;
+          }
         }
 
-        if (t.subtasks?.length > 0 || t.taskDependencies?.length > 0) {
-          let updatedTask = updateNestedTask(dataToUpdate, taskIdentifier, t);
-
-          updatedTask = {
-            ...updatedTask,
-            dependencyTasksCompletedCount:
-              updatedTask.taskDependencies?.filter(
-                (s) => s.status === TaskStatus.COMPLETE,
-              ).length || 0,
-            subTasksCompletedCount:
-              updatedTask.subtasks?.filter(
-                (s) => s.status === TaskStatus.COMPLETE,
-              ).length || 0,
-          };
-          return updatedTask;
-        }
-
-        return t;
+        return {
+          ...t,
+          ...dataToUpdate,
+        };
       };
 
       return updateStateCallback(state, updateTaskFromAction);
@@ -323,7 +330,11 @@ const TaskBaseReducer = (state, action, updateStateCallback) => {
         comment,
       } = action;
 
-      const updateTaskFromAction = (t) => {
+      const updateTaskFromAction = (tasksMap) => {
+        const t = tasksMap[taskIdentifier];
+        if (!t) {
+          return null;
+        }
         // eslint-disable-next-line unicorn/consistent-function-scoping
         function updateCommentIfMatches(commentIdentifier, comments) {
           return comments?.map((c) =>
@@ -333,7 +344,7 @@ const TaskBaseReducer = (state, action, updateStateCallback) => {
           );
         }
 
-        if (t.taskIdentifier === taskIdentifier) {
+        if (t.identifier === taskIdentifier) {
           return {
             ...t,
             comments: updateCommentIfMatches(
@@ -570,8 +581,12 @@ const TaskBaseReducer = (state, action, updateStateCallback) => {
     case ActionTypes.ADD_TASK_OUTCOME_SUCCESS: {
       const { taskIdentifier, outcome, link } = action;
 
-      const updateTaskFromAction = (t) => {
-        if (t.taskIdentifier === taskIdentifier) {
+      const updateTaskFromAction = (tasksMap) => {
+        const t = tasksMap[taskIdentifier];
+        if (!t) {
+          return null;
+        }
+        if (t.identifier === taskIdentifier) {
           let { taskLinks } = t;
 
           if (link) {
@@ -603,8 +618,12 @@ const TaskBaseReducer = (state, action, updateStateCallback) => {
       const { link } = action;
       const { sourceTaskIdentifier } = link;
 
-      const updateTaskFromAction = (t) => {
-        if (t.taskIdentifier === sourceTaskIdentifier) {
+      const updateTaskFromAction = (tasksMap) => {
+        const t = tasksMap[sourceTaskIdentifier];
+        if (!t) {
+          return null;
+        }
+        if (t.identifier === sourceTaskIdentifier) {
           return {
             ...t,
             taskLinks: [

@@ -4,7 +4,7 @@ import palette from 'styles/palette';
 import spacing from 'styles/spacing';
 
 export const UpgradePlanContainer = styled.div`
-  font-family: Roboto Condensed;
+  font-family: 'Roboto Condensed', sans-serif;;
   position: relative;
   display: flex;
   width: 100%;

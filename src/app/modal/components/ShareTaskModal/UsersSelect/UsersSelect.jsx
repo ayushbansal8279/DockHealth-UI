@@ -68,7 +68,7 @@ const UsersSelect = (props) => {
       return <GroupAvatar group={user} size={38} />;
     }
 
-    return <UserAvatar user={user} size={38} />;
+    return <UserAvatar user={user} size={35} />;
   };
 
   return (

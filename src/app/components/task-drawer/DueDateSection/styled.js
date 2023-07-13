@@ -62,13 +62,11 @@ export const StyledButton = styled.button`
 `;
 
 export const StyledPopover = styled(Popover)`
-  &&& {
-    &.MuiPopover-paper {
-      border: none;
-      box-shadow: none;
-      width: ${({ width }) => width};
-      overflow: visible;
-    }
-    v
+  .MuiPopover-paper {
+    border: none;
+    box-shadow: none;
+    width: ${({ width }) => width};
+    overflow: visible;
   }
+  
 `;

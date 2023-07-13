@@ -38,24 +38,21 @@ export const MaterialDrawer = styled(Drawer)`
   @media screen and (max-width: 800px) {
     display: none;
   }
+  &.MuiDrawer-docked {
+    position: relative;
+    z-index: 10;
+    flex-shrink: 0;
+    white-space: nowrap;
+  }
 
-  &&& {
-    &.MuiDrawer-docked {
-      position: relative;
-      z-index: 10;
-      flex-shrink: 0;
-      white-space: nowrap;
-    }
-
-    & .MuiDrawer-paper {
-      position: static;
-      transform: ${({ $isNavbarVisible }) =>
-        $isNavbarVisible ? 'translateX(0px)' : 'translateX(-100%)'};
-      background-color: ${({ $navBackgroundColor }) =>
-        $navBackgroundColor || palette.midnightBlue};
-      border: 0;
-      overflow: initial;
-      width: auto;
-    }
+  .MuiDrawer-paper {
+    position: static;
+    transform: ${({ $isNavbarVisible }) =>
+      $isNavbarVisible ? 'translateX(0px)' : 'translateX(-100%)'};
+    background-color: ${({ $navBackgroundColor }) =>
+      $navBackgroundColor || palette.midnightBlue};
+    border: 0;
+    overflow: initial;
+    width: auto;
   }
 `;

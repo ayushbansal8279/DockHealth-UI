@@ -295,13 +295,6 @@ const TaskDrawerContent = props => {
     restrictions.delete = DISABLED;
   }
 
-  if (taskDeleteDisabled) {
-    if (!restrictions) {
-      restrictions = {};
-    }
-    restrictions.delete = DISABLED;
-  }
-
   return (
     <TaskDrawerContainer
       key={selectedTask?.identifier}
@@ -517,7 +510,7 @@ const TaskDrawerContent = props => {
         </Grid>
         {/* Put custom fields here */}
         {restrictions?.customFields !== DISABLED && (
-          <Grid item xs={12} style={styleFullRow(isMobile)}>
+          <Grid item xs={12}>
             <CustomFieldsSection fieldCategoryType="TASK_CORE" />
           </Grid>
         )}

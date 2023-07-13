@@ -1,4 +1,4 @@
-import React, { useRef, useCallback, useMemo } from 'react';
+import React, { useRef, useCallback, useMemo, useState } from 'react';
 import { Box } from '@mui/material';
 import { Add as AddIcon } from '@mui/icons-material';
 import { useBoolean } from 'hooks/useBoolean';
@@ -95,6 +95,7 @@ const PatientsToolbar = () => {
     ) || {};
 
   const handleSearchChange = searchTerm => {
+    setSearchValue(searchTerm);
     dispatch(PatientsActions.changePatientsSearchTerm(searchTerm));
     dispatch(PatientsActions.clearPatients());
     if (searchTerm === '') {

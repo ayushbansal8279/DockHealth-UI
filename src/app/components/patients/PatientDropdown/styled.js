@@ -6,16 +6,13 @@ import spacing from 'styles/spacing';
 import { fontSizes, fontWeights } from 'styles/font';
 
 export const StyledPopover = styled(Popover)`
-  &&& {
-    &.MuiPopover-paper {
-      border: none;
-      box-shadow: 0px 0px 11px rgba(0, 0, 0, 0.15);
-      min-width: 230px;
-      width: ${({ width }) => `${width || 230}px`};
-    }
-    .MuiBackdrop-root {
-      opacity: 0 !important;
-    }
+  .MuiPopover-paper {
+    border: none;
+    box-shadow: 0px 0px 11px rgba(0, 0, 0, 0.15);
+    width: ${({ width }) => width};
+  }
+  .MuiBackdrop-root {
+    opacity: 0 !important;
   }
 `;
 
@@ -33,7 +30,7 @@ export const Input = styled.input`
 
 export const InputBox = styled.div`
   display: flex;
-  width: 100%;
+  width: 300px;
   padding: ${spacing.smallPlus} ${spacing.smallPlus};
   color: ${palette.mediumGrey};
   font-size: ${fontSizes.smallPlus};
