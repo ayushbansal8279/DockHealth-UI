@@ -72,7 +72,7 @@ export const SelectOptionColor = styled(Select)`
   & .MuiInputBase-root {
     //responsible for endAdornment styles
     & svg {
-      width: 6.9px;
+      width: 7px;
     }
     //background-color: transparent !important;
 
