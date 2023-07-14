@@ -101,9 +101,10 @@ const CustomFieldAutoComplete = React.forwardRef(
     const getInputReference = () => inputRef;
     return (
       <Autocomplete
+        multiple
         name={name}
         autoFocus={false}
-        options={profiles}
+        options={profiles ?? []}
         label={label}
         // isInputDisabled={readOnly}
         placeholder={placeholder ?? `Are there any ${label} you'd like to add?`}

@@ -121,7 +121,7 @@ const CustomProfileList = () => {
             <Data
               name={field.name}
               value={(data) => {
-                const record = data.fields.find(
+                const record = data.fields?.find(
                   ({ profileTypeField }) =>
                     field.identifier === profileTypeField.identifier,
                 );

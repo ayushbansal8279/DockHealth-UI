@@ -197,7 +197,7 @@ const EditCustomFieldModal = ({
   };
 
   // eslint-disable-next-line unicorn/consistent-function-scoping,sonarjs/no-identical-functions
-  const handleOptionColorChange = optionId => event => {
+  const handleOptionColorChange = (optionId) => (event) => {
     setValue(
       'options',
       optionsValue.map((o) =>
@@ -210,7 +210,7 @@ const EditCustomFieldModal = ({
   const handleParentDropdownChange = (optionId) => (event) => {
     setValue(
       'options',
-      optionsValue.map(o =>
+      optionsValue.map((o) =>
         o.identifier === optionId
           ? { ...o, linkedCustomFieldIdentifier: event.target.value }
           : o,
@@ -223,7 +223,7 @@ const EditCustomFieldModal = ({
     setValue(
       'options',
       // eslint-disable-next-line sonarjs/no-identical-functions
-      optionsValue.map(o =>
+      optionsValue.map((o) =>
         o.identifier === optionId
           ? { ...o, linkedCustomFieldOptionIdentifier: event.target.value }
           : o,
@@ -246,6 +246,7 @@ const EditCustomFieldModal = ({
   };
 
   const [profileTypeOptions, setProfileTypeOptions] = useState([]);
+  const [selectedProfileType, setSelectedProfileType] = useState(null);
 
   useEffect(() => {
     async function fetchData() {
@@ -284,7 +285,10 @@ const EditCustomFieldModal = ({
 
       ProfileTypeFieldsApi.editProfileFieldType(data.identifier, updatedField)
         .then(() => {
-          onUpdated(updatedField);
+          onUpdated({
+            ...updatedField,
+            relatedProfileTypeName: selectedProfileType,
+          });
           setIsSaving(false);
           closeModal();
         })
@@ -309,7 +313,7 @@ const EditCustomFieldModal = ({
       };
       CustomFieldsApi.updateCustomField(updatedField, type, taskListIdentifier)
         .then(() => {
-          onUpdated(updatedField);
+          onUpdated({ ...updatedField, selectedProfileType });
           setIsSaving(false);
           closeModal();
         })
@@ -317,7 +321,7 @@ const EditCustomFieldModal = ({
           dispatch(showGlobalErrorAlert());
           setIsSaving(false);
         });
-      }
+    }
   };
 
   const handleAddSubmit = (data) => {
@@ -337,7 +341,7 @@ const EditCustomFieldModal = ({
         },
       })
         .then((addedField) => {
-          onAdded(addedField);
+          onAdded({ ...addedField, selectedProfileType });
           setIsSaving(false);
           closeModal();
         })
@@ -450,6 +454,13 @@ const EditCustomFieldModal = ({
                           label="Profile Type"
                           name="relatedProfileType"
                           options={profileTypeOptions}
+                          onChange={(event) =>
+                            setSelectedProfileType(
+                              profileTypeOptions.find(
+                                ({ value }) => value === event,
+                              ),
+                            )
+                          }
                         />
                       </Grid>
                     )}
@@ -529,7 +540,7 @@ const EditCustomFieldModal = ({
                                     onChange={handleParentDropdownChange(
                                       identifier,
                                     )}
-                                    options={customFields.map(field => ({
+                                    options={customFields.map((field) => ({
                                       label: field.name,
                                       value: field.identifier,
                                     }))}

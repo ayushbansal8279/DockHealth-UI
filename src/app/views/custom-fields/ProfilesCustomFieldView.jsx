@@ -145,14 +145,14 @@ const ProfilesCustomFieldsView = ({ profileTypeIdentifier }) => {
           ))
       ) : (
         <>
+          <CenterBox>
+            <AddButton onClick={handleAddFieldClick}>
+              Add custom field
+            </AddButton>
+          </CenterBox>
+          <Box p={1} />
           {customFields?.length > 0 ? (
             <>
-              <CenterBox>
-                <AddButton onClick={handleAddFieldClick}>
-                  Add custom field
-                </AddButton>
-              </CenterBox>
-              <Box p={1} />
               <CustomFieldItem editable type="PROVIDER">
                 <CustomFieldCell>
                   <CustomFieldHeaderText>Field label</CustomFieldHeaderText>
