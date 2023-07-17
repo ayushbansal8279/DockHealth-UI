@@ -72,6 +72,7 @@ const ProfileDrawer = ({
         },
       });
     }
+    onClose();
   };
 
   const handleCollapse = () => {
