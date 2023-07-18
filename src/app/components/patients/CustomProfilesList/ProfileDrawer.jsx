@@ -100,7 +100,7 @@ const ProfileDrawer = ({
               onClick={handleCollapse}
             >
               {types?.map((field) => {
-                const record = profile?.fields.find(
+                const record = profile?.fields?.find(
                   ({ profileTypeField }) =>
                     field.identifier === profileTypeField.identifier,
                 );
