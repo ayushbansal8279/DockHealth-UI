@@ -1,8 +1,9 @@
 import OptionsMenu from 'components/common/OptionsMenu/OptionsMenu';
 import { Box, IconButton, Stack } from '@mui/material';
-import React, { useState } from 'react';
+import { useDispatch } from 'react-redux';
+import React, { useCallback, useMemo, useState } from 'react';
 import Drawer from 'ui-toolkit/Navigation/Drawer/Drawer';
-import { createProfile, editProfileType } from 'api/profile-api';
+import { createProfile, editProfileType, deleteProfile } from 'api/profile-api';
 import { useForm } from 'react-hook-form';
 import {
   ContentWrapper,
@@ -16,6 +17,7 @@ import Input from 'components/common/Input/Input';
 import LabeledCollapse from 'components/common/LabeledCollapse/LabeledCollapse';
 import Button from 'components/common/Button/Button';
 import Select from 'components/common/Select/Select';
+import { closeModal, openModal } from 'modal/actions';
 
 const ProfileDrawer = ({
   open,
@@ -24,12 +26,14 @@ const ProfileDrawer = ({
   types,
   onClose,
 }) => {
-  const { register, handleSubmit } = useForm();
+  const dispatch = useDispatch();
+  const { register, handleSubmit, getValues } = useForm();
 
   const [isCollapsed, setCollapsed] = useState(true);
+  const [editMode, setEditMode] = useState(false);
 
-  const onSubmit = (data) => {
-    if (profile) {
+  const editProfile = useCallback(
+    (data) => {
       editProfileType(profile.identifier, {
         fields: Object.entries(data).map(([identifier, value]) => {
           const type = types.find(
@@ -53,6 +57,13 @@ const ProfileDrawer = ({
           };
         }),
       });
+    },
+    [profile?.identifier, types],
+  );
+
+  const onSubmit = (data) => {
+    if (profile && editMode) {
+      editProfile(data);
     } else {
       createProfile({
         fields: Object.entries(data).map(([identifier, value]) => {
@@ -79,12 +90,45 @@ const ProfileDrawer = ({
     setCollapsed(!isCollapsed);
   };
 
+  const handleClickAway = () => {
+    dispatch(
+      openModal('InterruptEdit', {
+        description: 'Are you sure to delete this profile?',
+        confirm: () => {
+          editProfile(getValues());
+          dispatch(closeModal());
+        },
+      }),
+    );
+  };
+
+  const menu = useMemo(
+    () => [
+      { name: 'Edit', onClick: () => setEditMode(true) },
+      {
+        name: 'Delete',
+        onClick: () => {
+          dispatch(
+            openModal('DeleteConfirmation', {
+              description: 'Are you sure to delete this profile?',
+              confirm: () => {
+                deleteProfile(profile.identifier);
+                dispatch(closeModal());
+              },
+            }),
+          );
+        },
+      },
+    ],
+    [dispatch, profile?.identifier],
+  );
+
   return (
-    <Drawer open={open} onClose={onClose}>
+    <Drawer open={open} onClickAway={handleClickAway}>
       <StickyHeader>
         <TitleName>{profile?.name}</TitleName>
         <MoreActinsWrapper>
-          <OptionsMenu options={[]} customButtonComponent={IconButton}>
+          <OptionsMenu options={menu} customButtonComponent={IconButton}>
             <MoreVertIcon />
           </OptionsMenu>
           <IconButton onClick={onClose}>
@@ -113,6 +157,7 @@ const ProfileDrawer = ({
                         <Input
                           key={field.identifier}
                           name={field.identifier}
+                          readOnly={profile && !editMode}
                           label={field.name}
                           defaultValue={record ? record.values[0]?.value : ''}
                           placeholder={field.placeholder}
@@ -124,6 +169,7 @@ const ProfileDrawer = ({
                       return (
                         <Select
                           name={field.identifier}
+                          readOnly={profile && !editMode}
                           label={field.name}
                           defaultValue={
                             record
@@ -150,6 +196,7 @@ const ProfileDrawer = ({
             <Stack sx={{ m: '8px 4px' }} direction="row">
               <Button
                 type="submit"
+                disabled={profile && !editMode}
                 width="170px"
                 variant="primary"
                 size="small"
