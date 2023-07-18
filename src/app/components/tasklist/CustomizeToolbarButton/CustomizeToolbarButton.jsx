@@ -203,17 +203,17 @@ const CustomizeToolbarButton = ({
               {...applyProps(0)}
               style={{ minWidth: '25%' }}
             />
-            <Tab label="Task" {...applyProps(1)} style={{ minWidth: '25%' }} />
+            <Tab label="Task" {...applyProps(1)} style={{ minWidth: '18%' }} />
             <Tab
               label={customerTypeLabel}
               {...applyProps(2)}
-              style={{ minWidth: '25%' }}
+              style={{ minWidth: '31%' }}
             />
             {isDashboard && (
               <Tab
                 label={additionalOptionsTitle}
                 {...applyProps(3)}
-                style={{ minWidth: '25%' }}
+                style={{ minWidth: '26%' }}
               />
             )}
           </Tabs>
