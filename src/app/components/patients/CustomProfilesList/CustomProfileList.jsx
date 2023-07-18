@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import DataGrid, { Data } from 'ui-toolkit/Composite/DataGrid';
+import DataGrid, { Data, getValues } from 'ui-toolkit/Composite/DataGrid';
 import { useDispatch } from 'react-redux';
 import { useParams, useHistory } from 'react-router-dom';
 import { getUserGroupIdentifierByUrlParameter } from 'helpers/user-groups-helper';
@@ -18,6 +18,7 @@ import ViewLayout from 'components/template/ViewLayout/ViewLayout';
 import { Add as AddIcon } from '@mui/icons-material';
 import AdornedButton from 'components/common/AdornedButton/AdornedButton';
 import ProfileDrawer from 'components/patients/CustomProfilesList/ProfileDrawer';
+import SearchInput from 'components/common/SearchInput/SearchInput';
 
 const CustomProfileList = () => {
   const dispatch = useDispatch();
@@ -51,6 +52,7 @@ const CustomProfileList = () => {
 
   const [profileTypes, setProfileTypes] = useState([]);
   const [profiles, setProfiles] = useState([]);
+  const [searchPhrase, setSearchPhrase] = useState('');
 
   const fetchProfileTypes = () => {
     getAllProfileFieldTypes(profileTypeIdentifier)
@@ -82,6 +84,10 @@ const CustomProfileList = () => {
     setOpen(true);
   };
 
+  const handleSearchInputChange = (value) => {
+    setSearchPhrase(value);
+  };
+
   return (
     <>
       <ViewLayout
@@ -92,10 +98,7 @@ const CustomProfileList = () => {
                 <MoreVert color="primary" />
               </OptionsMenu>
             </Box>
-            <LayoutHeader.Title
-              title="Custom Profiles"
-              description="Some description"
-            />
+            <LayoutHeader.Title title={name} description="Some description" />
           </LayoutHeader>
         }
       >
@@ -105,7 +108,15 @@ const CustomProfileList = () => {
           types={profileTypes}
           onClose={handleClose}
         />
-        <Stack direction="row-reverse" sx={{ m: '16px 32px 0px 32px ' }}>
+        <Stack
+          direction="row"
+          justifyContent="space-between"
+          sx={{ m: '16px 32px 0px 32px ' }}
+        >
+          <Box display="flex" alignItems="center">
+            <SearchInput onValueChange={handleSearchInputChange} />
+          </Box>
+          <Box m={1} />
           <Box display="flex" alignItems="center">
             <Box m={1} />
             <AdornedButton
@@ -116,7 +127,14 @@ const CustomProfileList = () => {
             </AdornedButton>
           </Box>
         </Stack>
-        <DataGrid dataset={profiles} onRecordClick={handleRecordClick}>
+        <DataGrid
+          dataset={profiles.filter((profile) =>
+            getValues(profile).some(
+              (value) => value && value.includes(searchPhrase),
+            ),
+          )}
+          onRecordClick={handleRecordClick}
+        >
           {profileTypes.map((field) => (
             <Data
               name={field.name}

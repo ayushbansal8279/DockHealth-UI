@@ -6,26 +6,28 @@ import * as Sc from './styled';
 export default function Modal({
   open = false,
   onClose = noop,
-  children
+  onClickAway = noop,
+  children,
 }) {
-  const handleClick = (event) => {
+  const handleBackdropClick = (event) => {
     if (event.target === event.currentTarget) {
-      onClose(event)
+      onClickAway(event);
+      onClose(event);
     } else {
       event.stopPropagation();
     }
-  }
+  };
 
   if (open) {
-    return ReactDOM.createPortal((
+    return ReactDOM.createPortal(
       <Sc.Backdrop
         data-component="[ui-toolkit/Modal]"
-        onClick={handleClick}
+        onClick={handleBackdropClick}
       >
         {children}
-      </Sc.Backdrop>
-    ), document.body)
-  } else {
-    return null;
+      </Sc.Backdrop>,
+      document.body,
+    );
   }
+  return null;
 }

@@ -10,6 +10,17 @@ export default defineConfig({
   plugins: [
     react({
       include: '**/*.{jsx,tsx}',
+      babel: {
+        plugins: [
+          [
+            'babel-plugin-styled-components',
+            {
+              displayName: true,
+              fileName: false,
+            },
+          ],
+        ],
+      },
     }),
   ],
   resolve: {
