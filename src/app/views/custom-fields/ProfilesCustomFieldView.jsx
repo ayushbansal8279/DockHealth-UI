@@ -54,7 +54,7 @@ const ProfilesCustomFieldsView = ({ profileTypeIdentifier }) => {
   useEffect(() => {
     fetchUserCustomFields();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [customFields]);
 
   const handleEditClick = (field) => {
     dispatch(
