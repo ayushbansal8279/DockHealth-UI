@@ -3,8 +3,9 @@ import { useFormContext } from 'react-hook-form';
 import { Grid } from '@mui/material';
 import Button from 'components/common/Button/Button';
 import { UserOrganizationRole } from 'helpers/user-helper';
+import { useSelector } from 'react-redux';
 import {
-  userHasViewOnlyFeatureSelector,
+  // userHasViewOnlyFeatureSelector,
   userHasDockGuestFeatureSelector,
 } from 'selectors/user-selectors';
 import {
@@ -25,7 +26,7 @@ const UserRoleStep = ({ navigateToPreviousStep, disabled }) => {
   const { watch, setValue } = useFormContext();
 
   const roleValue = watch('userRole');
-  const viewOnlyRoleAvailable = useSelector(userHasViewOnlyFeatureSelector);
+  // const viewOnlyRoleAvailable = useSelector(userHasViewOnlyFeatureSelector);
   const guestRoleAvailable = useSelector(userHasDockGuestFeatureSelector);
 
   return (
@@ -68,7 +69,7 @@ const UserRoleStep = ({ navigateToPreviousStep, disabled }) => {
               name="userRole"
               value="GUEST"
               checked={roleValue === 'GUEST'}
-              onChange={event =>
+              onChange={(event) =>
                 setValue(event.target.name, event.target.value)
               }
             />
