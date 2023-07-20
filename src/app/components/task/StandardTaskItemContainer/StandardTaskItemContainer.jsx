@@ -9,7 +9,8 @@ import { userProfileSelector } from 'selectors/user-selectors';
 import { organizationCustomFieldsSelector } from 'selectors/organization-selectors';
 import { listCustomFieldsSelector } from 'selectors/list-details-selectors';
 import { findIncompleteRequiredFields } from 'helpers/task-helpers';
-import StandardTaskItem from '../StandardTaskItem/StandardTaskItem';
+// eslint-disable-next-line import/no-cycle
+import StandardTaskItem from 'components/task/StandardTaskItem/StandardTaskItem';
 
 const StandardTaskItemContainer = ({
   currentUser,
@@ -19,6 +20,8 @@ const StandardTaskItemContainer = ({
   onTaskChanged,
   onTaskCompletedStatusChanged,
   isBundleTask,
+  taskIdentifier,
+  origin,
   ...restProps
 }) => {
   const organizationCustomFields = useSelector(
@@ -29,9 +32,9 @@ const StandardTaskItemContainer = ({
     ? organizationCustomFields.concat(listCustomFields)
     : listCustomFields;
   const handleTaskUpdate = useCallback(
-    (taskIdentifier, dataToUpdate) => {
+    (taskId, dataToUpdate) => {
       taskActions
-        .partialUpdateTask(taskIdentifier, dataToUpdate)
+        .partialUpdateTask(taskId, dataToUpdate)
         .then(() => {
           if (typeof onTaskChenged === 'function') onTaskChanged();
           alertActions.showGlobalAlert(AlertMessages.UPDATED);
@@ -59,7 +62,7 @@ const StandardTaskItemContainer = ({
   );
 
   const toggleCompleteTaskStatus = useCallback(
-    task => {
+    (task) => {
       taskActions
         .toggleCompleteTask(task, currentUser, isBundleTask)
         .then(() => {
@@ -80,7 +83,7 @@ const StandardTaskItemContainer = ({
   );
 
   const handleToggleTaskCompletedStatus = useCallback(
-    task => {
+    (task) => {
       const incompleteRequiredFields = findIncompleteRequiredFields(
         taskCustomFields,
         task,
@@ -97,7 +100,7 @@ const StandardTaskItemContainer = ({
 
       const hasIncompletedSubtasks =
         task.subtasks?.length > 0
-          ? task.subtasks.find(subtask => subtask.status === 'INCOMPLETE')
+          ? task.subtasks.find((subtask) => subtask.status === 'INCOMPLETE')
           : task.subTasksCount - task.subTasksCompletedCount > 0;
 
       if (task.status === 'INCOMPLETE' && hasIncompletedSubtasks) {
@@ -120,6 +123,8 @@ const StandardTaskItemContainer = ({
       updateWorkflowStatus={handleUpdateWorkflowStatus}
       toggleCompleteTask={handleToggleTaskCompletedStatus}
       onTaskUpdate={handleTaskUpdate}
+      taskIdentifier={taskIdentifier}
+      origin={origin}
       {...restProps}
     />
   );

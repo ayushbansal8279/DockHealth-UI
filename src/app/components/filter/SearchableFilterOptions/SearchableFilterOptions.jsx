@@ -1,13 +1,9 @@
 import FilterOptionsGroup from 'components/filter/FilterOptionsGroup/FilterOptionsGroup';
 import React from 'react';
 
-const SearchableFilterOptions = props => {
-  const {
-    selectedFilterOptions,
-    filterOptions,
-    searchValue,
-    renderOption,
-  } = props;
+const SearchableFilterOptions = (props) => {
+  const { selectedFilterOptions, filterOptions, searchValue, renderOption } =
+    props;
 
   const { searchedOptions, options } =
     filterOptions?.reduce(
@@ -35,7 +31,7 @@ const SearchableFilterOptions = props => {
         <FilterOptionsGroup>
           {searchedOptions
             ?.filter(({ key }) => selectedFilterOptions?.includes(key))
-            .map(o => renderOption({ ...o, selected: true }))}
+            .map((o) => renderOption({ ...o, selected: true }))}
           {searchedOptions
             ?.filter(({ key }) => !selectedFilterOptions?.includes(key))
             .map(renderOption)}
@@ -45,7 +41,7 @@ const SearchableFilterOptions = props => {
         <FilterOptionsGroup>
           {options
             ?.filter(({ key }) => selectedFilterOptions?.includes(key))
-            .map(o => renderOption({ ...o, selected: true }))}
+            .map((o) => renderOption({ ...o, selected: true }))}
           {options
             ?.filter(({ key }) => !selectedFilterOptions?.includes(key))
             .map(renderOption)}

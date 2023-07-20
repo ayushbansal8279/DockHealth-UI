@@ -1,7 +1,7 @@
 import React from 'react';
 import { OptionWrapper, IconBox } from './styled';
 
-const BulkEditOption = props => {
+const BulkEditOption = (props) => {
   const {
     iconComponent: IconComponent,
     title,

@@ -6,10 +6,8 @@ import Checkbox from 'components/common/Checkbox/Checkbox';
 import Spacing from 'components/common/Spacing';
 import TimeDropdownInput from 'components/common/TimeDropdownInput/TimeDropdownInput';
 import SecondaryDropdownInput from 'components/common/DropdownInput/SecondaryDropdownInput';
-import ArrowIcon from 'img/arrow';
+import ArrowIcon from 'img/arrow.svg';
 import { TIME_12H_FORMAT } from 'helpers/task-drawer-helpers';
-import { useSelector } from 'react-redux';
-import { selectedTaskSelector } from 'selectors/task-drawer-selectors';
 import { ReminderContainer, Description, SelectArrowImg } from './styled';
 import {
   REMINDER_TYPE_FIELD_NAME,
@@ -18,8 +16,7 @@ import {
 } from './helpers';
 
 // eslint-disable-next-line sonarjs/cognitive-complexity
-const ReminderSection = ({ onSave, disabled }) => {
-  const selectedTask = useSelector(selectedTaskSelector) || {};
+const ReminderSection = ({ onSave, disabled, selectedTask }) => {
   const { reminderType, reminderTime = null, dueDate } = selectedTask || {};
   const isDisabled = !dueDate;
   const reminderTypeDropdownReference = useRef(null);
@@ -65,7 +62,7 @@ const ReminderSection = ({ onSave, disabled }) => {
   }, [onSave, reminderTypeValue, setValue, setReminderTypeValue, isDisabled]);
 
   const handleSelectReminderType = useCallback(
-    value => {
+    (value) => {
       setValue(REMINDER_TYPE_FIELD_NAME, value);
       if (value === ReminderType.DAY_OF) {
         const defaultTime = undefined;
@@ -80,7 +77,7 @@ const ReminderSection = ({ onSave, disabled }) => {
   );
 
   const handleSelectReminderTime = useCallback(
-    value => {
+    (value) => {
       setValue(REMINDER_TIME_FIELD_NAME, value);
       onSave({ reminderTime: value });
     },
@@ -88,7 +85,7 @@ const ReminderSection = ({ onSave, disabled }) => {
   );
 
   const validateReminderTime = useCallback(
-    newValue => {
+    (newValue) => {
       const momentDueDate = moment(dueDate);
 
       if (
@@ -141,7 +138,7 @@ const ReminderSection = ({ onSave, disabled }) => {
               type="secondary"
               savedValue={reminderTime}
               value={watch(REMINDER_TIME_FIELD_NAME)}
-              onValueChange={newValue =>
+              onValueChange={(newValue) =>
                 setValue(REMINDER_TIME_FIELD_NAME, newValue)
               }
               onSave={handleSelectReminderTime}

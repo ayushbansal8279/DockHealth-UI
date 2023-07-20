@@ -1,7 +1,7 @@
 import BasicLayoutHeader from 'components/template/BasicLayoutHeader/BasicLayoutHeader';
 import ViewLayout from 'components/template/ViewLayout/ViewLayout';
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
-import { Box, Button } from '@material-ui/core';
+import { Box, Button } from '@mui/material';
 import { useDispatch } from 'react-redux';
 import { openModal, closeModal } from 'modal/actions';
 import { getAllContacts, deleteContact } from 'api/contacts-api';
@@ -9,22 +9,22 @@ import { StyledDataGrid } from './DataGridStyles';
 import { getContactColumns } from './helpers';
 import { AddContactWrapper, ViewContainer } from './styled';
 
-const PAGE_SIZE = 30;
+// const PAGE_SIZE = 30;
 
 const Contacts = () => {
   const [contacts, setContacts] = useState([]);
-  const [page, setPage] = useState(0);
+  // const [page, setPage] = useState(0);
   const dispatch = useDispatch();
 
   useEffect(() => {
-    getAllContacts().then(list => setContacts(list));
+    getAllContacts().then((list) => setContacts(list));
   }, []);
 
   const onAddContact = useCallback(() => {
     dispatch(
       openModal('EditContact', {
-        onAdded: newContact => {
-          setContacts(s => [newContact, ...s]);
+        onAdded: (newContact) => {
+          setContacts((s) => [newContact, ...s]);
         },
       }),
     );
@@ -34,10 +34,10 @@ const Contacts = () => {
     ({ id }) => {
       dispatch(
         openModal('EditContact', {
-          contact: contacts.find(t => t.identifier === id),
-          onUpdated: contact => {
-            setContacts(s => [
-              ...s.map(t =>
+          contact: contacts.find((t) => t.identifier === id),
+          onUpdated: (contact) => {
+            setContacts((s) => [
+              ...s.map((t) =>
                 t.identifier === contact.identifier ? contact : t,
               ),
             ]);
@@ -57,7 +57,7 @@ const Contacts = () => {
         confirm: () => {
           dispatch(closeModal());
           deleteContact(id);
-          setContacts(s => [...s.filter(t => t.identifier !== id)]);
+          setContacts((s) => [...s.filter((t) => t.identifier !== id)]);
         },
       };
       dispatch(openModal('DeleteConfirmation', modalProps));
@@ -80,16 +80,20 @@ const Contacts = () => {
         </Box>
         <StyledDataGrid
           columns={columns}
-          rows={contacts.map(t => ({ ...t, id: t.identifier }))}
+          rows={contacts.map((t) => ({ ...t, id: t.identifier }))}
           rowHeight={35}
           headerHeight={45}
-          page={page}
-          onPageChange={p => {
-            setPage(p);
-          }}
-          pageSize={PAGE_SIZE}
-          disableColumnMenu
+          // page={page}
+          // onPageChange={(p) => {
+          //   setPage(p);
+          // }}
+          // pageSize={PAGE_SIZE}
+          hideFooterSelectedRowCount
+          autoHeight
           disableSelectionOnClick
+          disableColumnMenu
+          showColumnRightBorder
+          showCellRightBorder
         />
       </ViewContainer>
     </ViewLayout>

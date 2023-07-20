@@ -1,18 +1,16 @@
-import React, { useEffect, useMemo, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { FormProvider, useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
-import { Box, Grid } from '@material-ui/core';
+import { Box, Grid } from '@mui/material';
 import { useDispatch } from 'react-redux';
 import { showGlobalAlert, showGlobalErrorAlert } from 'alert/actions';
 import FormInput from 'components/common/Input/FormInput';
 import Button from 'components/common/Button/Button';
 import FormSelect from 'components/common/Select/FormSelect';
 import { createTemplate, editTemplate } from 'api/template-api';
-import TextEditor from 'components/common/TextEditor/TextEditor';
 import CustomTextEditor from 'components/common/CustomTextEditor/CustomTextEditor';
-import { createMentionEntities } from 'components/common/TextEditor/create-mention-entities';
-import { EditorState } from 'draft-js';
 import AlertMessages from 'alert/AlertMessages';
+import RichTextEditor from 'components/common/RichTextEditor/RichTextEditor';
 import { CloseIconButton, CloseIcon } from '../styled';
 import {
   AddPatientFieldModalWrapper,
@@ -58,7 +56,7 @@ const EditTemplateModal = ({ closeModal, template, onAdded, onUpdated }) => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  const handleEditSubmit = data => {
+  const handleEditSubmit = (data) => {
     setIsSaving(true);
     const updatedField = {
       ...template,
@@ -77,10 +75,10 @@ const EditTemplateModal = ({ closeModal, template, onAdded, onUpdated }) => {
       });
   };
 
-  const handleAddSubmit = data => {
+  const handleAddSubmit = (data) => {
     setIsSaving(true);
     createTemplate(data)
-      .then(addedField => {
+      .then((addedField) => {
         dispatch(showGlobalAlert(AlertMessages.CREATED));
         if (typeof onAdded === 'function') onAdded(addedField);
         setIsSaving(false);
@@ -91,34 +89,6 @@ const EditTemplateModal = ({ closeModal, template, onAdded, onUpdated }) => {
         setIsSaving(false);
       });
   };
-
-  const initialSubjectData = useMemo(() => {
-    if (!template?.shortMessage) return;
-    const newContent = createMentionEntities(
-      template.shortMessage,
-      template.shortMessage,
-      [],
-      false,
-    );
-    // eslint-disable-next-line consistent-return
-    return EditorState.push(EditorState.createEmpty(), newContent);
-  }, [template]);
-
-  const initialMessageData = useMemo(() => {
-    if (!template?.details) return;
-    const enableRichText =
-      templateTypeValue === TEMPLATE_TYPES.EMAIL ||
-      templateTypeValue === TEMPLATE_TYPES.EMR_NOTE ||
-      templateTypeValue === TEMPLATE_TYPES.FAX;
-    const newContent = createMentionEntities(
-      template.details,
-      template.details,
-      [],
-      enableRichText,
-    );
-    // eslint-disable-next-line consistent-return
-    return EditorState.push(EditorState.createEmpty(), newContent);
-  }, [template, templateTypeValue]);
 
   return (
     <AddPatientFieldModalWrapper>
@@ -164,10 +134,15 @@ const EditTemplateModal = ({ closeModal, template, onAdded, onUpdated }) => {
                             : 'Message'
                         }
                       >
-                        <TextEditor
-                          initialState={initialSubjectData}
-                          disableMentions
-                          onBlur={(_, text) => setValue('shortMessage', text)}
+                        <RichTextEditor
+                          value={template?.shortMessage}
+                          onBlur={(value) => setValue('shortMessage', value)}
+                          showToolbar={
+                            templateTypeValue !== TEMPLATE_TYPES.EMAIL
+                          }
+                          multiline={templateTypeValue !== TEMPLATE_TYPES.EMAIL}
+                          initOnClick
+                          showCharCount
                         />
                       </CustomTextEditor>
                     </Grid>
@@ -175,12 +150,11 @@ const EditTemplateModal = ({ closeModal, template, onAdded, onUpdated }) => {
                   {templateTypeValue !== TEMPLATE_TYPES.SMS && (
                     <Grid item xs={12}>
                       <CustomTextEditor label="Message">
-                        <TextEditor
-                          initialState={initialMessageData}
-                          showToolbar
-                          disableMentions
-                          isDrawerEditor
-                          onBlur={(_, text) => setValue('details', text)}
+                        <RichTextEditor
+                          value={template?.details}
+                          onBlur={(value) => setValue('details', value)}
+                          initOnClick
+                          showCharCount
                         />
                       </CustomTextEditor>
                     </Grid>
@@ -189,7 +163,7 @@ const EditTemplateModal = ({ closeModal, template, onAdded, onUpdated }) => {
               </Box>
             </FormScrollingContainer>
             <Box m={2} />
-            <Grid container justify="flex-end">
+            <Grid container justifyContent="flex-end">
               <Button width="auto" variant="secondary" onClick={closeModal}>
                 Cancel
               </Button>

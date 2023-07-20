@@ -1,4 +1,3 @@
-/* eslint-disable import/prefer-default-export */
 import styled from 'styled-components';
 import palette from 'styles/palette';
 
@@ -8,10 +7,9 @@ export const NewTaskWrapper = styled.div`
   display: flex;
   justify-content: space-between;
   align-items: center;
-  
+
   & button {
     transition: opacity 0.3s linear;
-    opacity 0;
   }
 
   &:hover button {

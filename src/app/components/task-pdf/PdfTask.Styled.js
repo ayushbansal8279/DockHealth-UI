@@ -1,4 +1,4 @@
-import styled from '@react-pdf/styled-components';
+import styled from 'styled-components';
 import palette from 'styles/palette';
 
 const addWidth = ({ width }) => `
@@ -10,7 +10,7 @@ export const PdfTaskWrapper = styled.View`
   padding-top: 1px;
   padding-bottom: 1px;
 
-  ${props => props.isSubtask && 'padding-right: 45pt;'}
+  ${(props) => props.isSubtask && 'padding-right: 45pt;'}
 `;
 
 export const TaskContainer = styled.View`
@@ -20,7 +20,7 @@ export const TaskContainer = styled.View`
   flex-flow: row wrap;
   width: 100vw;
   padding-right: 33pt;
-  ${props => props.isSubtask && 'padding-right: 45pt;'}
+  ${(props) => props.isSubtask && 'padding-right: 45pt;'}
 `;
 
 export const TaskInnerContainer = styled.View`
@@ -69,7 +69,7 @@ export const TaskDescription = styled.Text`
   font-size: 8pt;
   font-weight: bold;
   max-height: 16pt;
-  ${props =>
+  ${(props) =>
     props.isEdited ? `max-width: ${props.mainContainerWidth - 36}pt;` : ''}
   text-overflow: ellipsis;
 `;
@@ -150,8 +150,8 @@ export const StyledClipIcon = styled.Image`
 `;
 
 export const MainInnerContainer = styled(InnerContainer)`
-  max-width: ${props => props.mainContainerWidth}pt;
-  width: ${props => props.mainContainerWidth}pt;
+  max-width: ${(props) => props.mainContainerWidth}pt;
+  width: ${(props) => props.mainContainerWidth}pt;
 `;
 
 export const PatientContainer = styled(InnerContainer)`
@@ -164,7 +164,7 @@ export const PatientContainer = styled(InnerContainer)`
 export const TextLabel = styled.Text`
   display: flex;
   flex: 1;
-  color: ${props => (props.isRed ? palette.error : palette.unknownGrey7)};
+  color: ${(props) => (props.isRed ? palette.error : palette.unknownGrey7)};
   font-family: 'Open Sans';
   font-size: 7pt;
   max-height: 14pt;

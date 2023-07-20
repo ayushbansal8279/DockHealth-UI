@@ -1,4 +1,3 @@
-/* eslint-disable import/prefer-default-export */
 import styled from 'styled-components';
 import palette from 'styles/palette';
 
@@ -18,6 +17,7 @@ export const StyledAssignMemberIcon = styled.div`
     left: 50%;
     transform: translate(-50%, -50%);
     color: ${palette.brightBlue};
+    margin-top: -1px;
   }
 
   @media print {

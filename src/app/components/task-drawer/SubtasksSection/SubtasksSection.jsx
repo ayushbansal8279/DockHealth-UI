@@ -5,7 +5,6 @@ import * as TaskActions from 'actions/task-actions';
 import { useSelector, useDispatch } from 'react-redux';
 import { onSubtaskOrderChanged } from 'helpers/ga-event-helper';
 import { userProfileSelector } from 'selectors/user-selectors';
-import { selectedTaskSelector } from 'selectors/task-drawer-selectors';
 import DrawerTask from 'components/drawer-common/DrawerTask/DrawerTask';
 import DrawerTaskLoader from 'components/drawer-common/DrawerTaskLoader/DrawerTaskLoader';
 import {
@@ -18,11 +17,11 @@ import QuickAddSubtask from '../QuickAddSubtask/QuickAddSubtask';
 
 const { READ_ONLY } = SINGLE_TASK_RESTRICTIONS_OPTIONS;
 
-const SubtasksSection = ({ restrictions: isReadOnly }) => {
+const SubtasksSection = ({ selectedTask, restrictions: isReadOnly }) => {
   const dispatch = useDispatch();
+
   const currentUser = useSelector(userProfileSelector);
-  const selectedTask = useSelector(selectedTaskSelector) || {};
-  const tasks = selectedTask.subtasks;
+  const subtasks = selectedTask?.subtasks;
   const tasksCount = selectedTask.subTasksCount;
   const readOnly = isReadOnly === READ_ONLY;
 
@@ -66,15 +65,15 @@ const SubtasksSection = ({ restrictions: isReadOnly }) => {
   return (
     <Container>
       <Title>Subtasks</Title>
-      {tasksCount > 0 && (!tasks || tasks.length === 0) ? (
+      {tasksCount > 0 && subtasks.length === 0 ? (
         <DrawerTaskLoader rows={tasksCount || 4} />
       ) : (
         <>
           <DragDropContext onDragEnd={handleDragEnd}>
             <Droppable droppableId={selectedTask.identifier}>
-              {provided => (
+              {(provided) => (
                 <div ref={provided.innerRef} {...provided.droppableProps}>
-                  {tasks?.map((task, index) => (
+                  {subtasks?.map((task, index) => (
                     <Draggable
                       key={task.identifier}
                       draggableId={String(task.identifier)}

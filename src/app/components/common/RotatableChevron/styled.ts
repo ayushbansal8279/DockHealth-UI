@@ -13,7 +13,7 @@ export const ListSwitchContainer = styled.div<
   display: flex;
   justify-content: center;
   transition: all 0.25s ease-out;
-  transform: scaleY(${props => (props.rotated ? -1 : 1)});
+  transform: scaleY(${(props) => (props.rotated ? -1 : 1)});
   height: 7px;
   width: 10px;
   cursor: pointer;

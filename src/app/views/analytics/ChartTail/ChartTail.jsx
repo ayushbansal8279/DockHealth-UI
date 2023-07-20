@@ -1,10 +1,10 @@
-import { Box } from '@material-ui/core';
-import { MoreVert } from '@material-ui/icons';
+import { Box } from '@mui/material';
+import { MoreVert } from '@mui/icons-material';
 import React, { useState } from 'react';
 import OptionsMenu from 'components/common/OptionsMenu/OptionsMenu';
 import { Container, Title } from './styled';
 
-const ChartTail = props => {
+const ChartTail = (props) => {
   const { name, children, onMaximize } = props;
   const [maximized, setMaximized] = useState(false);
 

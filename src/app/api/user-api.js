@@ -9,7 +9,7 @@ export function getUserAvatarBuffer(userIdentifier) {
     .get(`user/profilePicture/${userIdentifier}?UserPictureType=PROFILE`, {
       responseType: 'arraybuffer',
     })
-    .then(response => {
+    .then((response) => {
       const dataBuffer = Buffer.from(response.data);
 
       return {
@@ -17,23 +17,19 @@ export function getUserAvatarBuffer(userIdentifier) {
         // initial 2 bytes of data indicates image format -> backend returns invalid content type
         // FF D8 - JPEG
         // eslint-disable-next-line unicorn/number-literal-case
-        format: dataBuffer.readUInt16BE(0) === 0xffd8 ? 'jpg' : 'png',
+        format: dataBuffer.readUInt16BE(0) === 0xff_d8 ? 'jpg' : 'png',
       };
     });
 }
 
 export function getUserById(userIdentifier) {
-  return axios.get(`user/${userIdentifier}`).then(({ data }) => {
-    return data;
-  });
+  return axios.get(`user/${userIdentifier}`).then(({ data }) => data);
 }
 
 export function getUserByEmail(email) {
   return axios
     .get(`user/findUserByEmail?email=${encodeURIComponent(email)}`)
-    .then(({ data }) => {
-      return data;
-    });
+    .then(({ data }) => data);
 }
 
 export function sendUserOnboardingAnswers({ answers }) {
@@ -77,9 +73,7 @@ export function captureLocalTimezone() {
 }
 
 export function deleteCurrentUserAvatar() {
-  return axios.delete(`user/profilePicture`).then(({ data }) => {
-    return data;
-  });
+  return axios.delete(`user/profilePicture`).then(({ data }) => data);
 }
 
 export function saveCurrentUserAvatar(avatarData) {
@@ -89,9 +83,7 @@ export function saveCurrentUserAvatar(avatarData) {
         'Content-Type': 'application/octet-stream',
       },
     })
-    .then(({ data }) => {
-      return data;
-    });
+    .then(({ data }) => data);
 }
 
 export function updateCurrentUser(formProps) {
@@ -104,18 +96,14 @@ export function updateCurrentUser(formProps) {
     ];
   }
 
-  return axios.put(`user`, userProps).then(({ data }) => {
-    return data;
-  });
+  return axios.put(`user`, userProps).then(({ data }) => data);
 }
 
-export const updateUser = user =>
+export const updateUser = (user) =>
   axios.patch(`user`, user).then(({ data }) => data);
 
 export function getCurrentUserNotificationPreferences() {
-  return axios.get('user/userNotificationPreferences').then(({ data }) => {
-    return data;
-  });
+  return axios.get('user/userNotificationPreferences').then(({ data }) => data);
 }
 
 export function updateCurrentUserPreferences(preferences) {
@@ -149,7 +137,7 @@ export function getUserTasks(userIdentifier, sortBy, status) {
         sortDirection: sortBy?.order || undefined,
       },
     })
-    .then(response => response.data);
+    .then((response) => response.data);
 }
 
 // here
@@ -199,7 +187,7 @@ export function getUserTaskFilterOptions(
         })
         .then(({ data }) => data);
 
-  return request.then(options => mapFilterOptions(options));
+  return request.then((options) => mapFilterOptions(options));
 }
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars

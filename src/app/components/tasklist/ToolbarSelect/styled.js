@@ -1,31 +1,33 @@
-/* eslint-disable import/prefer-default-export */
-import { makeStyles } from '@material-ui/core/styles';
 import styled from 'styled-components';
 import palette from 'styles/palette';
+import { Select as MuiSelect } from '@mui/material';
 
-export const useStyles = makeStyles({
-  select: {
-    '& .MuiSelect-root': {
-      display: 'flex',
-      alignItems: 'center',
-      height: 46,
-      padding: '4px 32px 4px 12px',
-      boxSizing: 'border-box',
-      borderRadius: 5,
-      color: palette.darkGrey,
-    },
-    '&:hover .MuiSelect-root, &.Mui-focused .MuiSelect-root': {
-      background: palette.coolGrey3,
-    },
-    '& .MuiOutlinedInput-notchedOutline': {
-      border: 'none',
-    },
-    '& .switchIcon > path': {
-      fill: props =>
-        props.iconColorActive ? props.iconColorActive : palette.dirtyBanana,
-    },
-  },
-});
+export const Select = styled(MuiSelect)`
+  &&& {
+    &.MuiSelect-root {
+      display: flex;
+      align-items: center;
+      height: 46px;
+      padding: 4px 32px 4px 12px;
+      box-sizing: border-box;
+      border-radius: 5px;
+      color: ${palette.darkGrey};
+    }
+
+    &:hover .MuiSelect-root,
+    &.Mui-focused .MuiSelect-root {
+      background: ${palette.coolGrey3};
+    }
+
+    & .MuiOutlinedInput-notchedOutline {
+      border: none;
+    }
+
+    & .switchIcon > path {
+      fill: ${(props) => props.iconcoloractive ?? palette.dirtyBanana};
+    }
+  }
+`;
 
 export const SelectWrapper = styled.div`
   @media print {

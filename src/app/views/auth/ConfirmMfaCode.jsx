@@ -11,8 +11,9 @@ import {
 import * as UserAuthApi from 'api/user-auth-api';
 import ConfirmMFACodeForm from 'components/auth/ConfirmMfaCodeForm';
 import { AUTH_BASE_STATES } from 'reducers/auth-base-reducer';
+import { log } from 'helpers/log';
 
-const ConfirmMFACode = props => {
+const ConfirmMFACode = (props) => {
   const [username, setUsername] = useState('');
   const [customError, setCustomError] = useState('');
 
@@ -31,19 +32,19 @@ const ConfirmMFACode = props => {
   });
 
   const onSubmit = useCallback(
-    form => {
+    (form) => {
       return UserAuthApi.sendMFACode({
         username,
         mfaCode: form.mfaCode,
       })
         .then(() => {
-          UserAuthApi.rememberDevice().then(result => {
-            console.log(`added device to be remembered: ${result}`);
+          UserAuthApi.rememberDevice().then((result) => {
+            log(`added device to be remembered: ${result}`);
           });
           history.push('/core/home/my-tasks');
           success('Logged in.');
         })
-        .catch(error => {
+        .catch((error) => {
           setCustomError('Invalid authentication code.');
           errorNotification(error.message || 'An error occurred.');
         });

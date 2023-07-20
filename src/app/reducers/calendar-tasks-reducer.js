@@ -60,7 +60,7 @@ const CalendarTasksReducer = (state = initialState, action) => {
       return initialState;
     }
 
-    default:
+    default: {
       return TaskBaseReducer(
         state,
         action,
@@ -71,6 +71,7 @@ const CalendarTasksReducer = (state = initialState, action) => {
             : null,
         }),
       );
+    }
   }
 };
 

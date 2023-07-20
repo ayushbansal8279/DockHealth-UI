@@ -6,7 +6,7 @@ import {
   StartAdornmentWrapper,
 } from './styled';
 
-const FilterOption = props => {
+const FilterOption = (props) => {
   const { id, selected, label, count, color, startAdornment, onClick } = props;
 
   return (

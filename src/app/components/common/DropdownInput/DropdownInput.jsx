@@ -51,6 +51,7 @@ const DropdownInput = React.forwardRef(
     const inputReference = reference || innerInputReference;
 
     const [isPopoverOpen, openPopover, closePopover] =
+      // eslint-disable-next-line react-hooks/rules-of-hooks
       popoverStateArray ?? useBoolean(false);
 
     const [hoveredItem, setHoveredItem] = useState(0);
@@ -66,37 +67,42 @@ const DropdownInput = React.forwardRef(
       }
     };
 
-    const handleInputKeyDown = event => {
+    const handleInputKeyDown = (event) => {
       switch (event.key) {
-        case 'Escape':
+        case 'Escape': {
           // eslint-disable-next-line no-unused-expressions
           reference.current?.querySelector('input').blur();
           break;
+        }
 
-        case 'Enter':
+        case 'Enter': {
           event.preventDefault();
           event.stopPropagation();
           handleSelectOption(children[hoveredItem]);
           break;
+        }
 
-        case 'ArrowDown':
+        case 'ArrowDown': {
           event.preventDefault();
           event.stopPropagation();
-          setHoveredItem(selectedItem =>
+          setHoveredItem((selectedItem) =>
             children.length - 1 === selectedItem ? 0 : selectedItem + 1,
           );
           break;
+        }
 
-        case 'ArrowUp':
+        case 'ArrowUp': {
           event.preventDefault();
           event.stopPropagation();
-          setHoveredItem(selectedItem =>
+          setHoveredItem((selectedItem) =>
             selectedItem === 0 ? children.length - 1 : selectedItem - 1,
           );
           break;
+        }
 
-        default:
+        default: {
           break;
+        }
       }
     };
 
@@ -113,7 +119,7 @@ const DropdownInput = React.forwardRef(
           }}
           InputProps={{
             ...InputProps,
-            startAdornment: !displayLabel ? InputProps?.startAdornment : null,
+            startAdornment: displayLabel ? null : InputProps?.startAdornment,
           }}
           inputProps={{
             readOnly: true,
@@ -126,11 +132,11 @@ const DropdownInput = React.forwardRef(
           className={className}
           required={required}
           classes={textFieldClasses}
-          onFocus={event => {
+          onFocus={(event) => {
             openPopover();
             onFocus(event);
           }}
-          onBlur={event => {
+          onBlur={(event) => {
             closePopover();
             onBlur(event);
           }}

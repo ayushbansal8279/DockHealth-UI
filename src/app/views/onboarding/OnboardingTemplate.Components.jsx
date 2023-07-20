@@ -4,8 +4,7 @@ import {
   FormControl,
   InputBase,
   InputLabel,
-} from '@material-ui/core';
-import { withStyles } from '@material-ui/core/styles';
+} from '@mui/material';
 import React from 'react';
 import { useFormContext } from 'react-hook-form';
 import { Link } from 'react-router-dom';
@@ -42,7 +41,7 @@ export const OnboardingMainContainer = styled.main`
   box-sizing: content-box;
   margin: 0 auto;
   max-width: 946px;
-  padding: ${props => (props.isSmallScreen ? 0.5 : 3.25)}rem;
+  padding: ${(props) => (props.isSmallScreen ? 0.5 : 3.25)}rem;
 `;
 
 export const OnboardingH1 = styled.h1`
@@ -153,77 +152,91 @@ export const OnboardingHorizontalSpacing4 = styled(OnboardingHorizontalSpacing)`
   width: 2rem;
 `;
 
-export const OnboardingFormControl = withStyles({
-  root: {
-    backgroundColor: palette.lightGrey,
-    height: '4rem',
-  },
-})(FormControl);
+export const OnboardingFormControl = styled(FormControl)`
+  &&& {
+    &.MuiFormControl-root {
+      background-color: ${palette.lightGrey};
+      height: 4rem;
+    }
+  }
+`;
 
-export const OnboardingInputLabel = withStyles({
-  root: {
-    color: palette.greyBlue,
-    pointerEvents: 'none',
-    top: '50%',
-    transform: 'translate(1.5rem, -50%) scale(1)',
-    transition: 'all 200ms ease',
-    zIndex: 2,
-  },
-  required: {
-    '& > span': {
-      color: palette.error,
-    },
-  },
-  shrink: {
-    color: palette.unknownGrey5,
-    top: '5%',
-    transform: 'translate(1.5rem, 0) scale(0.65)',
-    transformOrigin: 'center left',
-    transition: 'all 200ms ease',
-  },
-  focused: {
-    color: `${palette.unknownGrey5} !important`,
-  },
-})(InputLabel);
+export const OnboardingInputLabel = styled(InputLabel)`
+  &&& {
+    &.MuiInputLabel-root {
+      color: ${palette.greyBlue};
+      pointer-events: none;
+      top: 50%;
+      transform: translate(1.5rem, -50%) scale(1);
+      transition: all 200ms ease;
+      z-index: 2;
+    }
 
-export const OnboardingInputBase = withStyles({
-  root: {
-    border: `0.0625rem solid ${opacify(palette.error, 0)}`,
-    height: '100%',
-    transition: 'all 0.2s ease-out',
-    zIndex: 1,
-  },
-  error: {
-    border: `0.0625rem solid ${palette.error}`,
-  },
-  input: {
-    borderRadius: '0.25rem',
-    boxShadow: 'none',
-    fontFamily: '"Open Sans", sans-serif',
-    paddingBottom: 0,
-    padding: '0.6rem 1.5rem',
-    '&:focus': {
-      backgroundColor: palette.lightGrey,
-      border: 0,
-      boxShadow: 'none',
-    },
-    '&[readonly], &[disabled]': {
-      backgroundColor: palette.lightGrey,
-      cursor: 'pointer',
-    },
-  },
-})(InputBase);
+    &.Mui-required {
+      & > span {
+        color: ${palette.error};
+      }
+    }
+
+    &.MuiInputLabel-shrink {
+      color: ${palette.unknownGrey5};
+      top: 5%;
+      transform: translate(1.5rem, 0) scale(0.65);
+      transform-origin: center left;
+      transition: all 200ms ease;
+    }
+
+    &.Mui-focused {
+      color: ${palette.unknownGrey5} !important;
+    }
+  }
+`;
+
+export const OnboardingInputBase = styled(InputBase)`
+  &&& {
+    &.MuiInputBase-root {
+      border: 0.0625rem solid ${opacify(palette.error, 0)};
+      height: 100%;
+      transition: all 0.2s ease-out;
+      z-index: 1;
+    }
+
+    &.Mui-error {
+      border: 0.0625rem solid ${palette.error};
+    }
+
+    &.MuiInputBase-input {
+      border-radius: 0.25rem;
+      box-shadow: none;
+      font-family: 'Open Sans', sans-serif;
+      padding-bottom: 0;
+      padding: 0.6rem 1.5rem;
+
+      &:focus {
+        background-color: ${palette.lightGrey};
+        border: 0;
+        box-shadow: none;
+      }
+
+      &[readonly],
+      &[disabled] {
+        background-color: ${palette.lightGrey};
+        cursor: pointer;
+      }
+    }
+  }
+`;
 
 export const OnboardingAdditionalFormControlText = styled.div`
-  padding: ${props => (props.isSmallScreen ? '0.5rem' : '0.5rem 1.5rem')};
-  ${props => props.isSmallScreen && 'font-size: 0.875rem;'}
-  ${props => props.thin && 'font-weight: 300;'}
+  padding: ${(props) => (props.isSmallScreen ? '0.5rem' : '0.5rem 1.5rem')};
+  ${(props) => props.isSmallScreen && 'font-size: 0.875rem;'}
+  ${(props) => props.thin && 'font-weight: 300;'}
 `;
 
 export const MobileInputComponent = ({ inputRef, ...otherProps }) => (
   <MaskedInput
     {...otherProps}
-    ref={reference => {
+    ref={(reference) => {
       inputRef(reference ? reference.inputElement : null);
     }}
     mask={[
@@ -250,8 +263,8 @@ export const OnboardingInput = ({
   label,
   name,
   placeholder,
-  inputContainerReference = undefined,
-  CustomComponent = undefined,
+  inputContainerReference,
+  CustomComponent,
   required = false,
   shrink,
   InputBaseProps = {},
@@ -293,12 +306,12 @@ const OnboardingDialogComponent = ({
   PaperProps,
   ...props
 }) => {
-  const paperClassName = isSmallScreen ? classes.smallPaper : classes.paper;
+  const paperClassName = isSmallScreen ? classes?.smallPaper : classes?.paper;
 
   return (
     <Dialog
       PaperProps={{
-        ...(PaperProps ?? {}),
+        ...PaperProps,
         className: paperClassName,
       }}
       {...props}
@@ -306,17 +319,18 @@ const OnboardingDialogComponent = ({
   );
 };
 
-export const OnboardingDialog = withStyles({
-  paper: {
-    borderRadius: 0,
-    padding: '-1rem 0rem',
-    width: '500px',
-  },
-  smallPaper: {
-    borderRadius: 0,
-    padding: '1rem',
-  },
-})(OnboardingDialogComponent);
+export const OnboardingDialog = styled(OnboardingDialogComponent)`
+  .MuiDialog-paper {
+    border-radius: 0;
+    padding: -1rem 0rem;
+    width: 500px;
+  }
+
+  &.MuiDialog-smallPaper {
+    border-radius: 0;
+    padding: 1rem;
+  }
+`;
 
 export const OnboardingDivider = styled.div`
   background-color: ${palette.brightBlue};
@@ -336,7 +350,7 @@ export const OnboardingHeader = styled.div`
 
 export const OnboardingTitle = styled.div`
   font-weight: 500;
-  line-hight: 20px;
+  line-height: 20px;
 `;
 
 export const OnboardingAnchorDiv = styled.div`

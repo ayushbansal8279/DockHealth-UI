@@ -2,7 +2,7 @@ import styled from 'styled-components';
 import spacing from 'styles/spacing';
 import { fontSizes, fontWeights } from 'styles/font';
 import palette from 'styles/palette';
-import Button from '@material-ui/core/Button';
+import Button from '@mui/material/Button';
 
 export const ButtonContainer = styled(Button)``;
 export const IconWrapper = styled.a`

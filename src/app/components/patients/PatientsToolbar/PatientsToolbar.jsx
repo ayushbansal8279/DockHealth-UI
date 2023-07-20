@@ -1,13 +1,13 @@
 import React, { useRef, useCallback, useMemo, useState } from 'react';
-import { Box } from '@material-ui/core';
-import { Add as AddIcon } from '@material-ui/icons';
+import { Box } from '@mui/material';
+import { Add as AddIcon } from '@mui/icons-material';
 import { useBoolean } from 'hooks/useBoolean';
 import { useHistory, useParams } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import * as PatientsActions from 'actions/patients-actions';
 import { isUserGuest, isUserViewOnly } from 'helpers/user-helper';
 import ToolbarSelect from 'components/tasklist/ToolbarSelect/ToolbarSelect';
-import TasksStatusSwitchIcon from 'img/tasks-status-switch-icon';
+import TasksStatusSwitchIcon from 'img/tasks-status-switch-icon.svg';
 import {
   PATIENTS_LIST_ALL,
   PATIENTS_LIST_WITH_TASKS,
@@ -64,9 +64,8 @@ const OPTIONS = [
 ];
 
 const PatientsToolbar = () => {
-  const [isSidebarOpen, setIsSidebarOpen, unsetIsSidebarOpen] = useBoolean(
-    false,
-  );
+  const [isSidebarOpen, setIsSidebarOpen, unsetIsSidebarOpen] =
+    useBoolean(false);
   const { 0: filterOpen, 2: closeFilter, 3: toggleFilter } = useBoolean(false);
   const filterButtonReference = useRef(null);
   const history = useHistory();
@@ -111,15 +110,15 @@ const PatientsToolbar = () => {
   const optionBasedUrl = useMemo(
     () =>
       Object.keys(DefaultPatientListUrl).find(
-        key => DefaultPatientListUrl[key] === listIdentifierParameter,
+        (key) => DefaultPatientListUrl[key] === listIdentifierParameter,
       ),
     [listIdentifierParameter],
   );
 
   const onListTypeChange = useCallback(
-    event => {
+    (event) => {
       const { value } = event.target;
-      const { url } = OPTIONS.find(o => o.value === value);
+      const { url } = OPTIONS.find((o) => o.value === value);
       if (url) history.push(url);
     },
     [history],

@@ -15,7 +15,7 @@ import AddAttachmentButton from 'components/attachments/AddAttachmentButton/AddA
 import AttachmentPreview from 'components/attachments/AttachmentPreview/AttachmentPreview';
 import AttachmentsDropzoneContainer from 'components/drawer-common/AttachmentsDropzoneContainer/AttachmentsDropzoneContainer';
 import DrawerSection from 'components/drawer-common/DrawerSection/DrawerSection';
-import { Box } from '@material-ui/core';
+import { Box } from '@mui/material';
 import { useDispatch, useSelector } from 'react-redux';
 import AttachmentButton from 'components/attachments/AttachmentButton/AttachmentButton';
 import AttachmentProgressBar from 'components/attachments/AttachmentProgressBar/AttachmentProgressBar';
@@ -37,11 +37,8 @@ const AttachmentSection = ({ disabled }) => {
   ] = useBoolean(false);
   const workflowIdentifier = useSelector(workflowIdentifierSelector);
   const attachments = useSelector(workflowAttachmentsSelector);
-  const [
-    attachmentLoading,
-    setAttachmentLoading,
-    unsetAttachmentLoading,
-  ] = useBoolean(false);
+  const [attachmentLoading, setAttachmentLoading, unsetAttachmentLoading] =
+    useBoolean(false);
   const [
     isUploadingAttachments,
     setUploadingAttachments,
@@ -62,7 +59,7 @@ const AttachmentSection = ({ disabled }) => {
   }, [autoFocusFieldName]);
 
   const addAttachment = useCallback(
-    files => {
+    (files) => {
       if (files && !isEmpty(files)) {
         const [newAttachment, ...restAttachments] = files;
 
@@ -76,7 +73,7 @@ const AttachmentSection = ({ disabled }) => {
             setUploadProgress(Math.round((loaded * 100) / total));
           },
         )
-          .then(addedAttachment => {
+          .then((addedAttachment) => {
             unsetUploadingAttachments();
             dispatch(
               addWorkflowAttachmentSuccess(workflowIdentifier, addedAttachment),
@@ -84,7 +81,7 @@ const AttachmentSection = ({ disabled }) => {
             dispatch(showGlobalAlert(AlertMessages.ATTACHMENT_ADDED));
             addAttachment(restAttachments);
           })
-          .catch(error => {
+          .catch((error) => {
             unsetUploadingAttachments();
             if (error.response && error.response.status === 413) {
               dispatch(
@@ -114,7 +111,7 @@ const AttachmentSection = ({ disabled }) => {
     onDrop: addAttachment,
   });
 
-  const handleDeleteAttachment = attachmentIdentifier => {
+  const handleDeleteAttachment = (attachmentIdentifier) => {
     dispatch(
       WorkflowActions.deleteWorkflowAttachment(
         workflowIdentifier,
@@ -123,7 +120,7 @@ const AttachmentSection = ({ disabled }) => {
     );
   };
 
-  const loadAttachmentContent = async attachment => {
+  const loadAttachmentContent = async (attachment) => {
     const { attachmentIdentifier, fileName, contentType } = attachment;
     const data = await WorkflowApi.getWorkflowAttachment(attachmentIdentifier);
     setAttachmentLoading();
@@ -155,7 +152,7 @@ const AttachmentSection = ({ disabled }) => {
     unsetAttachmentLoading();
   };
 
-  const handleAttachmentClick = attachment => {
+  const handleAttachmentClick = (attachment) => {
     setPreviewedAttachment(attachment);
     loadAttachmentContent(attachment).then(() => {
       showAttachmentPreview();
@@ -187,7 +184,7 @@ const AttachmentSection = ({ disabled }) => {
               <Box mx={2} />
             </>
           ) : (
-            attachments?.map(attachment => (
+            attachments?.map((attachment) => (
               <AttachmentButton
                 key={attachment.attachmentIdentifier}
                 attachment={attachment}

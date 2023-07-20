@@ -1,11 +1,11 @@
-import { Box, Collapse } from '@material-ui/core';
+import { Box, Collapse } from '@mui/material';
 import RotatableChevron from 'components/common/RotatableChevron/RotatableChevron';
 import { useBoolean } from 'hooks/useBoolean';
 import React, { useEffect } from 'react';
 import palette from 'styles/palette';
 import { SectionContainer, Title } from './styled';
 
-const DrawerSection = props => {
+const DrawerSection = (props) => {
   const { title, collapsable, onOpen, children } = props;
   const { 0: isOpen, 3: toggleOpen } = useBoolean(!collapsable);
 

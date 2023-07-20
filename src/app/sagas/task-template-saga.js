@@ -40,6 +40,7 @@ import {
   removeLabelFromDatabase,
 } from 'api/task-label-api';
 import { getLabels } from 'actions/workflow-drawer-actions';
+import { log } from 'helpers/log';
 
 function* initializeWorkflowLibraryState({ folderIdentifier }) {
   yield all([
@@ -217,10 +218,11 @@ function* addTemplate({ template, parentIdentifier = null, history }) {
         );
       }
     } catch (error) {
+      // eslint-disable-next-line no-console
       console.error(error);
     }
   } catch (error) {
-    console.log(error);
+    log(error);
     yield put(showGlobalErrorAlert());
   }
 }
@@ -361,9 +363,10 @@ function* addTaskToTemplate({ task, elementId, position }) {
       taskTemplateDetailsSelector(taskTemplateIdentifier),
     );
 
-    const linkConnectedToCreatedTask = templateDetails?.temporaryElements?.filter(
-      ({ source, target }) => source === elementId || target === elementId,
-    );
+    const linkConnectedToCreatedTask =
+      templateDetails?.temporaryElements?.filter(
+        ({ source, target }) => source === elementId || target === elementId,
+      );
 
     yield all([
       position &&
@@ -384,7 +387,7 @@ function* addTaskToTemplate({ task, elementId, position }) {
 
     if (linkConnectedToCreatedTask?.length > 0) {
       yield all(
-        linkConnectedToCreatedTask.map(link => {
+        linkConnectedToCreatedTask.map((link) => {
           const source = {
             id:
               elementId === link.source ? createdTask.identifier : link.source,
@@ -442,15 +445,13 @@ function* getTaskTemplateLayout({ identifier }) {
       layout,
     });
   } catch (error) {
-    if (error.response?.status === 404) {
-      yield put({
-        type: ActionTypes.GET_TASK_TEMPLATE_LAYOUT_SUCCESS,
-        identifier,
-        layout: [],
-      });
-    } else {
-      yield put(showGlobalErrorAlert());
-    }
+    yield error.response?.status === 404
+      ? put({
+          type: ActionTypes.GET_TASK_TEMPLATE_LAYOUT_SUCCESS,
+          identifier,
+          layout: [],
+        })
+      : put(showGlobalErrorAlert());
   }
 }
 
@@ -561,16 +562,13 @@ function* linkTasks({ source, target, options, outcomeName }) {
       ({ identifier }) => identifier === target.id,
     );
 
-    const checkIfTasksAreLinked = () => {
-      return (
-        sourceTask?.taskLinks?.some(
-          ({ targetTaskIdentifier }) => targetTaskIdentifier === target.id,
-        ) ||
-        targetTask?.taskLinks?.some(
-          ({ targetTaskIdentifier }) => targetTaskIdentifier === source.id,
-        )
+    const checkIfTasksAreLinked = () =>
+      sourceTask?.taskLinks?.some(
+        ({ targetTaskIdentifier }) => targetTaskIdentifier === target.id,
+      ) ||
+      targetTask?.taskLinks?.some(
+        ({ targetTaskIdentifier }) => targetTaskIdentifier === source.id,
       );
-    };
 
     if (!checkIfTasksAreLinked()) {
       const isSourceDecisionType = sourceTask
@@ -597,14 +595,14 @@ function* linkTasks({ source, target, options, outcomeName }) {
           yield put(TaskTemplateActions.addTaskOutcome(outcomeName, source.id));
 
           const { outcome } = yield take(
-            action =>
+            (action) =>
               action.type === ActionTypes.ADD_TASK_OUTCOME_SUCCESS &&
               action.taskIdentifier === source.id &&
               action.outcome.name === outcomeName,
           );
           // eslint-disable-next-line no-param-reassign
           options = {
-            ...(options || {}),
+            ...options,
             decisionOutcome: outcome.taskOutcomeIdentifier,
           };
         }
@@ -643,7 +641,7 @@ function* linkTasks({ source, target, options, outcomeName }) {
       }
     }
   } catch (error) {
-    console.log('errorrr', error);
+    log('errorrr', error);
     yield put(showGlobalErrorAlert());
   }
 }
@@ -672,7 +670,7 @@ function* addTaskOutcome({ outcomeName, taskIdentifier, link }) {
         link,
       }),
     ]);
-  } catch (error) {
+  } catch {
     yield put(showGlobalErrorAlert());
   }
 }
@@ -757,7 +755,7 @@ function* addWorkflowLabel({
     yield put({ type: ActionTypes.ADD_WORKFLOW_LABEL_SUCCESS, newLabel });
     yield put(getLabels({ isTemplateWorkflow, taskListIdentifier }));
     yield put(showGlobalAlert(AlertMessages.UPDATED));
-  } catch (error) {
+  } catch {
     yield put({ type: ActionTypes.ADD_WORKFLOW_LABEL_FAILURE, payload });
     yield put(showGlobalErrorAlert());
   }
@@ -776,7 +774,7 @@ function* updateWorkflowLabel({ labelName, labelIdentifier, identifier }) {
       updatedLabel,
     });
     yield put(showGlobalAlert(AlertMessages.UPDATED));
-  } catch (error) {
+  } catch {
     yield put({ type: ActionTypes.UPDATE_WORKFLOW_LABEL_FAILURE, payload });
     yield put(showGlobalErrorAlert());
   }
@@ -794,7 +792,7 @@ function* removeLabelFromWorkflow({ labelIdentifier, identifier }) {
       updatedLabel,
     });
     yield put(showGlobalAlert(AlertMessages.UPDATED));
-  } catch (error) {
+  } catch {
     yield put({
       type: ActionTypes.REMOVE_WORKFLOW_LABEL_FROM_TASK_FAILURE,
       payload,
@@ -810,12 +808,13 @@ function* removeLabel({ labelIdentifier }) {
       type: ActionTypes.REMOVE_WORKFLOW_LABEL_SUCCESS,
     });
     yield put(showGlobalAlert(AlertMessages.UPDATED));
-  } catch (error) {
+  } catch {
     yield put({ type: ActionTypes.REMOVE_WORKFLOW_LABEL_FAILURE });
     yield put(showGlobalErrorAlert());
   }
 }
 
+// eslint-disable-next-line sonarjs/cognitive-complexity
 function* bulkEditDuplicateTasksSuccess({ duplicatedTasks }) {
   try {
     const currentTaskTemplateIdentifier = yield select(
@@ -830,7 +829,7 @@ function* bulkEditDuplicateTasksSuccess({ duplicatedTasks }) {
       let xStart = null;
       let yStart = null;
 
-      layout.forEach(({ position }) => {
+      for (const { position } of layout) {
         if (position) {
           if (xStart === null || position.x > xStart) {
             xStart = position.x;
@@ -839,7 +838,7 @@ function* bulkEditDuplicateTasksSuccess({ duplicatedTasks }) {
             yStart = position.y;
           }
         }
-      });
+      }
 
       const autoLayout = yield getAutoLayout(
         duplicatedTasks,

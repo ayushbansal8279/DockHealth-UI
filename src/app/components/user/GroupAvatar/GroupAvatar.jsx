@@ -3,7 +3,7 @@ import React, { useMemo } from 'react';
 import { useSelector } from 'react-redux';
 import { activeUsersListSelector } from 'selectors/active-users-selector';
 import Tooltip from 'components/common/Tooltip/Tooltip';
-import { Box } from '@material-ui/core';
+import { Box } from '@mui/material';
 import { isNotEmptyArray } from 'helpers/utils-helpers';
 import { ActivityStatus } from 'helpers/user-helper';
 import {
@@ -37,9 +37,10 @@ const GroupAvatar = React.forwardRef(
       [hideStatus, group, activeUsersList],
     );
 
-    const pictureSource = useMemo(() => getUserGroupAvatarThumbnailUrl(group), [
-      group,
-    ]);
+    const pictureSource = useMemo(
+      () => getUserGroupAvatarThumbnailUrl(group),
+      [group],
+    );
 
     return (
       <>
@@ -56,12 +57,13 @@ const GroupAvatar = React.forwardRef(
               )}
               {isNotEmptyArray(users) && (
                 <Box mt={2}>
-                  {[...users]?.splice(0, displayUsersCount).map(u => (
+                  {[...users]?.splice(0, displayUsersCount).map((u) => (
                     <UserName key={u.identifier}>{u?.name}</UserName>
                   ))}
                   {users?.length > displayUsersCount && (
-                    <MoreText>{`${users?.length -
-                      displayUsersCount} more...`}</MoreText>
+                    <MoreText>{`${
+                      users?.length - displayUsersCount
+                    } more...`}</MoreText>
                   )}
                 </Box>
               )}

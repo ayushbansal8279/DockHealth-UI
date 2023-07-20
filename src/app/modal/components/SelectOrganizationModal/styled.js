@@ -1,6 +1,6 @@
 import styled from 'styled-components';
 import spacing from 'styles/spacing';
-import ChevronRightIcon from '@material-ui/icons/ChevronRight';
+import ChevronRightIcon from '@mui/icons-material/ChevronRight';
 import palette from 'styles/palette';
 import { fontSizes } from 'styles/font';
 
@@ -92,7 +92,7 @@ export const Title = styled.h2`
   margin: 0;
   font-size: ${fontSizes.regularPlus};
   color: ${palette.brightBlue};
-  font-family: Roboto Condensed;
+  font-family: 'Roboto Condensed', sans-serif;;
   text-align: left;
   overflow: hidden;
   text-overflow: ellipsis;

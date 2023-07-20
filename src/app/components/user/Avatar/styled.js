@@ -9,8 +9,10 @@ const getScaledSize = ({ normalSize, propSize }) =>
   );
 
 export const BackgroundContainer = styled.div`
+  display: inline-block;
   background-color: ${palette.white};
   border-radius: 50%;
+  width: min-content;
 `;
 
 export const AvatarContainer = styled.div`
@@ -18,22 +20,24 @@ export const AvatarContainer = styled.div`
   border: ${({ color, isSelected, size, isGroup }) => {
     if (!isGroup && !isSelected) return 'none';
     if (isSelected)
-      return `${getScaledSize({
-        normalSize: 3,
-        propSize: size,
-      }) + 2}px solid ${palette.selectedBlue}`;
+      return `${
+        getScaledSize({
+          normalSize: 3,
+          propSize: size,
+        }) + 2
+      }px solid ${palette.selectedBlue}`;
     return `1.5px solid ${color}`;
   }};
   border-radius: 50%;
   display: inline-flex;
-  min-height: ${props => props.size ?? 110}px;
-  min-width: ${props => props.size ?? 110}px;
-  height: ${props => props.size ?? 110}px;
+  min-height: ${(props) => props.size ?? 110}px;
+  min-width: ${(props) => props.size ?? 110}px;
+  height: ${(props) => props.size ?? 110}px;
   padding: 0;
   justify-content: center;
   position: relative;
-  width: ${props => props.size ?? 110}px;
-  opacity: ${props => (props.isBlurred ? '0.5' : '')};
+  width: ${(props) => props.size ?? 110}px;
+  opacity: ${(props) => (props.isBlurred ? '0.5' : '')};
   overflow: visible;
   cursor: ${({ clickable }) => (clickable ? 'pointer' : 'inherit')};
 `;

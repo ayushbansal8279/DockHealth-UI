@@ -79,16 +79,20 @@ export const featurePalette = {
   globalSearchHighlight: 'rgba(254, 205, 33, .5)',
 };
 
-export const getPriorityColor = priority => {
+export const getPriorityColor = (priority) => {
   switch (priority) {
-    case 'PLANNED':
+    case 'PLANNED': {
       return '#f6b039';
-    case 'ON_HOLD':
+    }
+    case 'ON_HOLD': {
       return '#dc143c';
-    case 'IN_PROGRESS':
+    }
+    case 'IN_PROGRESS': {
       return '#00a73c';
-    default:
+    }
+    default: {
       return '#808080';
+    }
   }
 };
 

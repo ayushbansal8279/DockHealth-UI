@@ -1,10 +1,10 @@
 import React, { useCallback, useEffect, useRef, useState } from 'react';
 import OptionsMenu from 'components/common/OptionsMenu/OptionsMenu';
-import MoreVertIcon from '@material-ui/icons/MoreVert';
+import MoreVertIcon from '@mui/icons-material/MoreVert';
 import Input from 'components/common/Input/Input';
 import { CustomFilterOptionWrapper } from './styled';
 
-const CustomFilterOption = props => {
+const CustomFilterOption = (props) => {
   const {
     identifier,
     label = '',
@@ -38,7 +38,7 @@ const CustomFilterOption = props => {
   }, [disabled]);
 
   const handleDelete = useCallback(
-    event => {
+    (event) => {
       event.preventDefault();
       event.stopPropagation();
       onDelete(identifier);
@@ -47,7 +47,7 @@ const CustomFilterOption = props => {
   );
 
   const handleEnableEditMode = useCallback(
-    event => {
+    (event) => {
       event.preventDefault();
       event.stopPropagation();
       onEditMode(identifier);
@@ -67,17 +67,20 @@ const CustomFilterOption = props => {
   }, [disabled, identifier, onOptionClick]);
 
   const handleKeyPress = useCallback(
-    event => {
+    (event) => {
       const { key } = event;
 
       switch (key) {
-        case 'Enter':
+        case 'Enter': {
           onBlur(identifier, value);
           break;
-        case 'Escape':
+        }
+        case 'Escape': {
           break;
-        default:
+        }
+        default: {
           break;
+        }
       }
     },
     [identifier, onBlur, value],
@@ -94,7 +97,7 @@ const CustomFilterOption = props => {
         inputRef={inputReference}
         disabled={disabled}
         value={value}
-        onChange={event => setValue(event.target.value)}
+        onChange={(event) => setValue(event.target.value)}
         InputProps={{ disableUnderline: true }}
         onBlur={() => onBlur(identifier, value)}
       />

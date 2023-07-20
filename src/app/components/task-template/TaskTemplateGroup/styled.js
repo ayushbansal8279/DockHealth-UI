@@ -1,10 +1,10 @@
 import styled from 'styled-components';
-import { Collapse } from '@material-ui/core';
+import { Collapse } from '@mui/material';
 import spacing from 'styles/spacing';
 
 export const TaskTemplateGroupContainer = styled.div`
   flex-direction: column;
-  margin: ${spacing.small} 0;
+  margin: 0 0 ${spacing.tiny} 0;
 `;
 
 export const TaskTemplateGroupList = styled(Collapse)``;

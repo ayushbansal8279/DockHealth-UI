@@ -1,4 +1,4 @@
-import { CircularProgress, Grid } from '@material-ui/core';
+import { CircularProgress, Grid } from '@mui/material';
 import Button from 'components/common/Button/Button';
 import FormInput from 'components/common/Input/FormInput';
 import FormInputWithMask from 'components/common/Input/FormInputWithMask';
@@ -48,7 +48,7 @@ function AddContactStep({
   const { dirtyFields } = useFormState({
     control,
   });
-  const onSubmit = async data => {
+  const onSubmit = async (data) => {
     setLoading(true);
 
     const apiData = mapToDTO(data);

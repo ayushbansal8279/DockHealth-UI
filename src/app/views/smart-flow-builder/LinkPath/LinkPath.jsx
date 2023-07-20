@@ -1,8 +1,8 @@
 import React from 'react';
-import { getSmoothStepPath, getMarkerEnd, Position } from 'react-flow-renderer';
+import { getSmoothStepPath, Position } from 'reactflow';
 import palette from 'styles/palette';
 
-const LinkPath = props => {
+const LinkPath = (props) => {
   const {
     id,
     selected,
@@ -12,7 +12,7 @@ const LinkPath = props => {
     targetX,
     targetY,
     targetPosition,
-    markerEndId,
+    markerEnd,
     onClick,
   } = props;
   let sourcePos = sourcePosition;
@@ -24,7 +24,7 @@ const LinkPath = props => {
     targetPos = sourcePosition;
   }
 
-  const edgePath = getSmoothStepPath({
+  const [edgePath] = getSmoothStepPath({
     sourceX,
     sourceY,
     sourcePosition: sourcePos,
@@ -32,7 +32,7 @@ const LinkPath = props => {
     targetY,
     targetPosition: targetPos,
   });
-  const markerEnd = getMarkerEnd('arrowclosed', markerEndId);
+  // const markerEnd = getMarkerEnd('arrowclosed', markerEndId);
 
   return (
     <path

@@ -1,8 +1,7 @@
-/* eslint-disable import/prefer-default-export */
 import { capitalize } from 'helpers/capitalize';
 import { string, object } from 'yup';
 
-const getRequiredMessage = d => `${capitalize(d.path)} is required`;
+const getRequiredMessage = (d) => `${capitalize(d.path)} is required`;
 
 export const validationSchema = object()
   .notRequired()

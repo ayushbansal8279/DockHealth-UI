@@ -1,7 +1,13 @@
 /* eslint-disable sonarjs/cognitive-complexity */
 /* eslint-disable import/extensions */
-import React, { useCallback, useRef, useEffect } from 'react';
-import { Box, IconButton } from '@material-ui/core';
+import React, {
+  useCallback,
+  useRef,
+  useState,
+  useEffect,
+  // useMemo,
+} from 'react';
+import { Box, Fade, IconButton, Popper } from '@mui/material';
 import { useDispatch } from 'react-redux';
 import moment from 'moment';
 import {
@@ -10,64 +16,70 @@ import {
 } from 'actions/task-actions';
 import { TaskStatus } from 'helpers/task-helpers';
 import { openDrawer } from 'actions/task-drawer-actions';
-import TextEditor from 'components/common/TextEditor/TextEditor';
 import Spacing from 'components/common/Spacing';
+// import { checkIfShouldDisplayTooltip } from 'components/task/OverflowTooltip/OverflowTooltip';
+// import {
+//   convertToEditorState,
+//   convertFromEditorStateToOutput,
+// } from 'components/common/TextEditor/helpers';
+// import { useMentionsEditorState } from 'components/common/TextEditor/use-mentions-editor-state';
+// import { EditorState } from 'draft-js';
+// import { createMentionEntities } from 'components/common/TextEditor/create-mention-entities';
+import EditIcon from '@mui/icons-material/Edit';
 import {
-  convertToEditorState,
-  convertFromEditorStateToOutput,
-} from 'components/common/TextEditor/helpers';
-import { useMentionsEditorState } from 'components/common/TextEditor/use-mentions-editor-state';
-import { EditorState } from 'draft-js';
-import { createMentionEntities } from 'components/common/TextEditor/create-mention-entities';
-import EditIcon from '@material-ui/icons/Edit';
-import {
-  Description,
+  // Description,
   DescriptionBox,
   CompletedBy,
   TaskItemParentTaskLabel,
   TaskItemDescriptionIndicators,
-  DescriptionBorder,
+  // DescriptionTooltipWrapper,
+  // DescriptionBorder,
   TaskContext,
   DescriptionEditButton,
+  DescriptionInput,
 } from '../../styled';
 
 const TaskItemDescription = ({
   task,
   // isCompletedGroup,
-  highlightedValue,
+  // highlightedValue,
   hasParentTaskLabel,
   isEditing,
   setEditing,
   disabled,
-  disableMentions,
+  // disableMentions,
+  // isEditButtonVisible = false,
   width,
 }) => {
   const {
     description,
-    tokenizedDescription,
-    taskMentions,
+    // tokenizedDescription,
+    // taskMentions,
     status,
     parentTask,
-    searchMetaData,
+    // searchMetaData,
     completedBy,
     completedDt,
-    taskList,
+    // taskList,
     linkedTaskTemplate,
-    read,
+    // read,
   } = task;
-  const { taskListIdentifier } = taskList || {};
-  const { matchDescription } = searchMetaData || {};
-  const previousDescription = useRef(null);
-  const descriptionTextReference = useRef(null);
+
+  const [descriptionState, setDescriptionState] = useState(description);
+
+  // const { taskListIdentifier } = taskList || {};
+  // const { matchDescription } = searchMetaData || {};
+  // const previousDescription = useRef(null);
+  // const descriptionTextReference = useRef(null);
   const dispatch = useDispatch();
-  const [descriptionState, setDescriptionState] = useMentionsEditorState(
-    convertToEditorState({
-      rawText: description,
-      tokenizedText: tokenizedDescription,
-      mentions: taskMentions,
-      handleRichText: false,
-    }),
-  );
+  // const [descriptionState, setDescriptionState] = useMentionsEditorState(
+  //   convertToEditorState({
+  //     rawText: description,
+  //     tokenizedText: tokenizedDescription,
+  //     mentions: taskMentions,
+  //     handleRichText: false,
+  //   }),
+  // );
   const descriptionReference = useRef(null);
   const isCompleted = status === TaskStatus.COMPLETE;
   const isDecisionTask = task?.intentType === 'DECISION';
@@ -79,27 +91,31 @@ const TaskItemDescription = ({
     : 'Unknown';
 
   useEffect(() => {
+    setDescriptionState(description);
+  }, [description]);
+
+  useEffect(() => {
     if (isEditing && descriptionReference.current) {
       setTimeout(descriptionReference.current.focus, 0);
     }
   }, [isEditing, descriptionReference]);
 
-  useEffect(() => {
-    if (previousDescription.current !== null) {
-      const newContent = createMentionEntities(
-        tokenizedDescription,
-        description,
-        taskMentions,
-        false,
-      );
-      setDescriptionState(EditorState.push(descriptionState, newContent));
-    }
-    previousDescription.current = description;
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [description]);
+  // useEffect(() => {
+  //   if (previousDescription.current !== null) {
+  //     // const newContent = createMentionEntities(
+  //     //   tokenizedDescription,
+  //     //   description,
+  //     //   taskMentions,
+  //     //   false,
+  //     // );
+  //     // setDescriptionState(EditorState.push(descriptionState, newContent));
+  //   }
+  //   previousDescription.current = description;
+  //   // eslint-disable-next-line react-hooks/exhaustive-deps
+  // }, [description]);
 
   const onParentLabelClick = useCallback(
-    event => {
+    (event) => {
       event.preventDefault();
       event.stopPropagation();
       dispatch(openDrawer());
@@ -109,99 +125,106 @@ const TaskItemDescription = ({
     [parentTask],
   );
 
-  const handleKeyBindingFn = useCallback(event => {
-    if (event.key === 'Enter') {
-      return 'enter-command';
-    }
+  // const handleKeyBindingFunction = useCallback((event) => {
+  //   if (event.key === 'Enter') {
+  //     return 'enter-command';
+  //   }
+  // }, []);
 
-    return undefined;
-  }, []);
+  // const handleBlur = useCallback(() => {
+  //   const { tokenizedText, rawText, mentions } = convertFromEditorStateToOutput(
+  //     descriptionState,
+  //     false,
+  //   );
+  //   if (rawText !== description) {
+  //     dispatch(
+  //       updateTaskDescription(task, {
+  //         tokenizedDescription: tokenizedText,
+  //         description: rawText,
+  //         taskMentions: [...(task.taskMentions || []), ...(mentions || [])],
+  //       }),
+  //     );
+  //   }
+  //   setEditing(false);
+  // }, [description, descriptionState, dispatch, setEditing, task]);
 
-  const handleBlur = useCallback(() => {
-    const { tokenizedText, rawText, mentions } = convertFromEditorStateToOutput(
-      descriptionState,
-      false,
-    );
-    if (rawText !== description) {
-      dispatch(
-        updateTaskDescription(task, {
-          tokenizedDescription: tokenizedText,
-          description: rawText,
-          taskMentions: [...(task.taskMentions || []), ...(mentions || [])],
-        }),
-      );
-    }
-    setEditing(false);
-  }, [description, descriptionState, dispatch, setEditing, task]);
+  // const handleKeyCommand = useCallback(
+  //   (command) => {
+  //     if (command === 'enter-command') {
+  //       // eslint-disable-next-line no-unused-expressions
+  //       descriptionReference.current?.blur();
+  //       return 'handled';
+  //     }
 
-  const handleKeyCommand = useCallback(
-    command => {
-      if (command === 'enter-command') {
-        // eslint-disable-next-line no-unused-expressions
-        descriptionReference.current?.blur();
-        return 'handled';
-      }
+  //     return 'not-handled';
+  //   },
+  //   [descriptionReference],
+  // );
 
-      return 'not-handled';
-    },
-    [descriptionReference],
-  );
+  // const handleTextEditorBlur = (_, { value }) => {
+  //   console.log('handleTextEditorBlur');
+  //   dispatch(
+  //     updateTaskDescription(task, {
+  //       tokenizedDescription: value,
+  //       taskMentions: [],
+  //     }),
+  //   );
+  //   setEditing(false);
+  // };
 
   return (
     <DescriptionBox width={width}>
       <Box display="flex" flex={1}>
-        <Description
-          ref={reference => {
-            if (reference) {
-              descriptionTextReference.current = reference.querySelector(
-                '.public-DraftStyleDefault-block',
+        <DescriptionInput
+          readOnly={!isEditing}
+          value={descriptionState}
+          onChange={(event) => setDescriptionState(event.target.value)}
+          onBlur={(event) => {
+            if (task?.description !== event.target.value) {
+              dispatch(
+                updateTaskDescription(task, {
+                  tokenizedDescription: event.target.value,
+                  taskMentions: [],
+                }),
               );
+              setEditing(false);
             }
           }}
-          isCrossedOut={isCompleted}
-          isUnread={!read}
-        >
-          <DescriptionBorder disabled={disabled} isEdited={isEditing}>
-            <TextEditor
-              ref={descriptionReference}
-              readOnly={disabled || !isEditing}
-              oneline
-              state={descriptionState}
-              onChange={setDescriptionState}
-              taskListIdentifier={taskListIdentifier}
-              highlightedValues={
-                matchDescription && highlightedValue?.toLowerCase().split(/\s+/)
-              }
-              keyBindingFn={handleKeyBindingFn}
-              handleKeyCommand={handleKeyCommand}
-              onBlur={handleBlur}
-              disableMentions={disableMentions}
-            />
-            {!isCompleted && (
-              <DescriptionEditButton active={isEditing}>
-                <IconButton
-                  onClick={event => {
-                    if (!disabled) {
-                      event.stopPropagation();
-                      event.preventDefault();
-                      setEditing(true);
-                    }
-                  }}
-                >
-                  <EditIcon />
-                </IconButton>
-              </DescriptionEditButton>
-            )}
-          </DescriptionBorder>
-        </Description>
+        />
+        {/*<TextEditor*/}
+        {/*    type="input"*/}
+        {/*    readonly={!isEditing}*/}
+        {/*    autofocus={isEditing}*/}
+        {/*    value={description}*/}
+        {/*    onBlur={handleTextEditorBlur}*/}
+        {/*    onKeyDown={handleTextEditorKeyDown}*/}
+        {/*    mentions={taskMentions}*/}
+        {/*/>*/}
+        {!isCompleted && (
+          <DescriptionEditButton>
+            <IconButton
+              onClick={(event) => {
+                if (!disabled) {
+                  event.stopPropagation();
+                  event.preventDefault();
+                  setEditing(!isEditing);
+                }
+              }}
+            >
+              <EditIcon />
+            </IconButton>
+          </DescriptionEditButton>
+        )}
       </Box>
       <TaskItemDescriptionIndicators>
         {isCompleted && (
           <CompletedBy isCompleted={isCompleted}>
-            <span>{`By ${completedByName} ${completedDt &&
+            <span>{`By ${completedByName} ${
+              completedDt &&
               ` on ${
                 completedDt ? `${moment(completedDt).format('MM/DD/YYYY')}` : ''
-              }`} ${
+              }`
+            } ${
               linkedTaskTemplate ? `, launched ${linkedTaskTemplate.name}` : ''
             }
             `}</span>

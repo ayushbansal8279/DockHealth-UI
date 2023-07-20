@@ -86,12 +86,12 @@ const PersonDetailsView = () => {
     dispatch(PersonDetailsActions.getUserTaskCounters());
   };
 
-  const handleSearchValueChange = newValue => {
+  const handleSearchValueChange = (newValue) => {
     setSearchValue(newValue);
     onSearchChanged();
   };
 
-  const invokeToggleCompleteAction = task => {
+  const invokeToggleCompleteAction = (task) => {
     dispatch(TaskActions.toggleCompleteTask(task, currentUser))
       .then(() => {
         setTimeout(() => {
@@ -101,7 +101,7 @@ const PersonDetailsView = () => {
       .catch(() => refreshTab());
   };
 
-  const toggleTaskCompletedStatus = task => {
+  const toggleTaskCompletedStatus = (task) => {
     const incompleteRequiredFields = findIncompleteRequiredFields(
       taskCustomFields,
       task,
@@ -117,7 +117,7 @@ const PersonDetailsView = () => {
     }
 
     const hasIncompletedSubtasks = task.subtasks.find(
-      subtask => subtask.status === 'INCOMPLETE',
+      (subtask) => subtask.status === 'INCOMPLETE',
     );
     if (task.status === 'INCOMPLETE' && hasIncompletedSubtasks) {
       const modalProps = {
@@ -145,7 +145,7 @@ const PersonDetailsView = () => {
   };
 
   const handleOrderChange = useCallback(
-    listDisplayColumns => {
+    (listDisplayColumns) => {
       dispatch(
         updateCurrentUserPreferences({
           listDisplayColumns,

@@ -35,7 +35,7 @@ export const CommentContainer = styled.div`
   margin-left: ${spacing.smallPlus};
   font-size: ${fontSizes.regular};
   transition: background-color 0.25s ease-out;
-  background-color: ${props => (props.isEditing ? 'white' : '')};
+  background-color: ${(props) => (props.isEditing ? 'white' : '')};
   justify-content: space-between;
 `;
 
@@ -49,7 +49,7 @@ export const CommentContent = styled.div`
 export const CommentText = styled.div`
   color: ${palette.mediumGrey};
   font-weight: normal;
-  max-width: 475px;
+  // max-width: 475px;
   width: 100%;
 `;
 

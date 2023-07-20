@@ -5,7 +5,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { selectedChatChannelSelector } from 'selectors/sendbird-selectors';
 import { selectChannel } from 'actions/sendbird-actions';
 
-const LeaveChannel = props => {
+const LeaveChannel = (props) => {
   const { onSubmit, onCancel } = props;
 
   const channel = useSelector(selectedChatChannelSelector);

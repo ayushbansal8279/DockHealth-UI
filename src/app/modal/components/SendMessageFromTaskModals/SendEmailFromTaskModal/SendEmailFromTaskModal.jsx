@@ -1,27 +1,24 @@
 import Button from 'components/common/Button/Button';
 import Checkbox from 'components/common/Checkbox/Checkbox';
 import Input from 'components/common/Input/Input';
-import TextEditor from 'components/common/TextEditor/TextEditor';
+import RichTextEditor from 'components/common/RichTextEditor/RichTextEditor';
 import React, { useCallback, useState } from 'react';
-import { EditorState } from 'draft-js';
 import { useDispatch, useSelector } from 'react-redux';
-import {
-  addStylesToText,
-  convertFromEditorStateToOutput,
-} from 'components/common/TextEditor/helpers';
+import { convertFromEditorStateToOutput } from 'components/common/TextEditor/helpers';
 import { selectedTaskSelector } from 'selectors/task-drawer-selectors';
 import { sendEmailForTask } from 'actions/task-actions';
-import { IconButton } from '@material-ui/core';
-import { Replay } from '@material-ui/icons';
+import { IconButton } from '@mui/material';
+import { Replay } from '@mui/icons-material';
 import palette from 'styles/palette';
-import { validateEmail } from 'helpers/validation-helper';
+// import { validateEmail } from 'helpers/validation-helper';
 import CustomTextEditor from 'components/common/CustomTextEditor/CustomTextEditor';
-import { createMentionEntities } from 'components/common/TextEditor/create-mention-entities';
 import ReactModal from 'react-modal';
 import { getTemplateDetails } from 'api/template-api';
 import { CommunicationType } from 'helpers/task-helpers';
 import TemplateAutoComplete from 'components/common/TemplateAutoComplete/TemplateAutoComplete';
 import EmailContactsAutoComplete from 'components/common/EmailContactsAutoComplete/EmailContactsAutoComplete';
+import { closeModal } from 'modal/actions';
+import AddContactStep from 'modal/components/AddContactModal/AddContactModal';
 import {
   CloseIcon,
   CloseIconButton,
@@ -33,7 +30,7 @@ import {
   ModalWrapper,
   TextWaringStyled,
 } from '../../styled';
-import { closeModal } from '../../../actions';
+
 import {
   AttachmentContainerStyled,
   AttachmentsContainerStyled,
@@ -47,7 +44,6 @@ import {
   ContactInfoRow,
   AddEditContactLink,
 } from '../styled';
-import AddContactStep from '../../AddContactModal/AddContactModal';
 import TaskCheckBoxes from '../TaskCheckBoxes';
 import { renderAddOrEdit } from '../helpers';
 
@@ -60,62 +56,54 @@ const SendEmailFromTaskModal = () => {
   const [newContact, setNewContact] = useState([]);
   const [error, setError] = useState(false);
   const [show, setShow] = useState(false);
-  const [isTaskDescriptionIncluded, setIsTaskDescriptionIncluded] = useState(
-    false,
-  );
+  const [isTaskDescriptionIncluded, setIsTaskDescriptionIncluded] =
+    useState(false);
   const [isTaskDetailsIncluded, setIsTaskDetailsIncluded] = useState(false);
 
   const [isTaskCommentsIncluded, setIsTaskCommentsIncluded] = useState(false);
 
-  const [detailsState, setDetailsState] = useState(() =>
-    EditorState.createEmpty(),
+  const [detailsState, setDetailsState] = useState(
+    selectedTask?.tokenizedDetails,
   );
 
   const [attachmentsToSend, setAttachmentsToSend] = useState([]);
   const insertTextFromTask = useCallback(
-    meta => {
-      const currentState = convertFromEditorStateToOutput(detailsState, true);
-      const newState = createMentionEntities(
-        `${currentState.meta}\n ${meta.meta}`,
-        `${currentState.tokenizedText}\n${meta.tokenized}`,
-        [...currentState.mentions, taskMentions],
-        true,
-      );
-
-      setDetailsState(EditorState.push(detailsState, newState));
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    (meta) => {
+      setDetailsState((previous) => `${previous} ${meta.tokenized}`);
     },
-    [detailsState, taskMentions],
+    [],
   );
 
-  const handleEmailBlur = useCallback(
-    event => {
-      const emailValue = event.target.value;
+  // const handleEmailBlur = useCallback(
+  //   (event) => {
+  //     const emailValue = event.target.value;
 
-      if (contacts.length === 0) {
-        setContacts([
-          ...contacts,
-          {
-            value: emailValue,
-          },
-        ]);
-      }
-      setError(false);
-    },
-    [contacts],
-  );
+  //     if (contacts.length === 0) {
+  //       setContacts([
+  //         ...contacts,
+  //         {
+  //           value: emailValue,
+  //         },
+  //       ]);
+  //     }
+  //     setError(false);
+  //   },
+  //   [contacts],
+  // );
 
   const handleTextEditorReset = useCallback(() => {
     setIsTaskCommentsIncluded(false);
     setIsTaskDescriptionIncluded(false);
     setIsTaskDetailsIncluded(false);
-    setDetailsState(EditorState.createEmpty());
+    // setDetailsState(EditorState.createEmpty());
   }, []);
 
   const addAttachmentHandler = useCallback(
-    id => {
+    (id) => {
       if (attachmentsToSend.includes(id)) {
         const newAttachments = attachmentsToSend.filter(
-          attachment => attachment !== id,
+          (attachment) => attachment !== id,
         );
         setAttachmentsToSend(newAttachments);
       } else {
@@ -124,6 +112,25 @@ const SendEmailFromTaskModal = () => {
     },
     [attachmentsToSend],
   );
+
+  // const handleContactsOnChange = useCallback(
+  //   (_event, newValue, reason) => {
+  //     if (reason === 'clear') {
+  //       setContacts([]);
+  //       return;
+  //     }
+  //     if (typeof newValue === 'string') {
+  //       if (validateEmail(newValue)) {
+  //         setContacts([...contacts, { value: newValue }]);
+  //       } else {
+  //         setError(true);
+  //       }
+  //     } else {
+  //       setContacts([...newValue]);
+  //     }
+  //   },
+  //   [contacts],
+  // );
 
   return (
     <ModalWrapper width="600px">
@@ -139,22 +146,8 @@ const SendEmailFromTaskModal = () => {
           <EmailContactsAutoComplete
             type={CommunicationType.EMAIL}
             placeholder="Type the email address or name of the contact"
-            onBlur={handleEmailBlur}
-            onChange={(_event, newValue, reason) => {
-              if (reason === 'clear') {
-                setContacts([]);
-                return;
-              }
-              if (typeof newValue === 'string') {
-                if (validateEmail(newValue)) {
-                  setContacts([...contacts, { value: newValue }]);
-                } else {
-                  setError(true);
-                }
-              } else {
-                setContacts([...newValue]);
-              }
-            }}
+            // onBlur={handleEmailBlur}
+            // onChange={handleContactsOnChange}
             error={error}
             disabled={show}
             label="Email"
@@ -168,7 +161,7 @@ const SendEmailFromTaskModal = () => {
             <div>
               <LabelName>Recipient: </LabelName>
               {contacts.map(
-                contact =>
+                (contact) =>
                   contact?.identifier && (
                     <LabelValue>{contact.label}</LabelValue>
                   ),
@@ -188,9 +181,13 @@ const SendEmailFromTaskModal = () => {
                 return;
               }
               getTemplateDetails(newValue?.identifier, identifier).then(
-                data => {
-                  const text = addStylesToText(data?.details ?? '');
-                  setDetailsState(EditorState.push(detailsState, text));
+                (data) => {
+                  // const text = addStylesToText(data?.details ?? '');
+                  // setDetailsState(EditorState.push(detailsState, text));
+                  console.log(`data.details: ${data?.details}`);
+                  setDetailsState(
+                    (previous) => `${previous} ${data?.details ?? ''}`,
+                  );
                   setSubject(data?.shortMessage ?? '');
                 },
               );
@@ -203,7 +200,7 @@ const SendEmailFromTaskModal = () => {
             name="email"
             placeholder="Type the email subject"
             shrink
-            onChange={event => setSubject(event.target.value)}
+            onChange={(event) => setSubject(event.target.value)}
             value={subject}
           />
         </InputContainerStyled>
@@ -225,14 +222,14 @@ const SendEmailFromTaskModal = () => {
         />
         <TextEditorContainerStyled>
           <CustomTextEditor label="Email body">
-            <TextEditor
+            <RichTextEditor
+              value={detailsState}
               readOnly={false}
-              minHeight={100}
-              disableMentions
-              showToolbar
-              state={detailsState}
+              placeholder="Email Body"
               onChange={setDetailsState}
-              maxHeight={200}
+              onBlur={setDetailsState}
+              initOnClick
+              showCharCount
             />
           </CustomTextEditor>
         </TextEditorContainerStyled>
@@ -242,7 +239,7 @@ const SendEmailFromTaskModal = () => {
               Select attachments to include
             </InfoHeaderAttachmentsTextStyled>
             <AttachmentsContainerStyled>
-              {attachments.map(attachment => {
+              {attachments.map((attachment) => {
                 return (
                   <AttachmentContainerStyled
                     key={attachment.attachmentIdentifier}
@@ -275,7 +272,7 @@ const SendEmailFromTaskModal = () => {
           variant="primary"
           disabled={
             // !validateEmail(contact?.value) ||
-            contacts.length === 0 || !detailsState.getCurrentContent().hasText()
+            contacts.length === 0 // || !detailsState.getCurrentContent().hasText()
           }
           onClick={() => {
             dispatch(
@@ -283,7 +280,7 @@ const SendEmailFromTaskModal = () => {
                 message: subject,
                 details: convertFromEditorStateToOutput(detailsState, true)
                   .tokenizedText,
-                recipientContacts: contacts.map(c => c.value),
+                recipientContacts: contacts.map((c) => c.value),
                 taskAttachmentIdentifiers: attachmentsToSend,
                 taskIdentifier: identifier,
               }),
@@ -306,7 +303,7 @@ const SendEmailFromTaskModal = () => {
         <AddContactStep
           type={CommunicationType.EMAIL}
           show={show}
-          setContactData={contact => {
+          setContactData={(contact) => {
             setContacts([...contacts, contact]);
             setNewContact(contact);
           }}

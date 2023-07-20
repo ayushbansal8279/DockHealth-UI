@@ -24,7 +24,7 @@ const MultiFormSelect = React.forwardRef(
       unregister(name);
     });
 
-    const handleChange = event => {
+    const handleChange = (event) => {
       if (error) clearErrors(name);
       setValue(name, event.target.value);
       if (typeof onChange === 'function') onChange(event.target.value);

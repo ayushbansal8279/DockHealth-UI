@@ -10,7 +10,7 @@ const PATIENTS_CATEGORY = 'Patients';
 const USER_AUTH_CATEGORY = 'User Auth';
 const USER_EDUCATION_CATEGORY = 'User education';
 
-const parseBooleanToLabel = value => (value ? 'On' : 'Off');
+const parseBooleanToLabel = (value) => (value ? 'On' : 'Off');
 
 // Task drawer
 

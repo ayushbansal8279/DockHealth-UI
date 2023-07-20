@@ -1,72 +1,72 @@
 /* eslint-disable sonarjs/cognitive-complexity */
 import React, {
-  useCallback,
+  // useCallback,
   useEffect,
   useLayoutEffect,
-  useMemo,
+  // useMemo,
   useRef,
-  useState,
+  // useState,
 } from 'react';
-import { EditorState } from 'draft-js';
-import { useDispatch, useSelector } from 'react-redux';
-import { addTask, updateTaskDescription } from 'actions/task-actions';
+// import { EditorState } from 'draft-js';
+import { useDispatch } from 'react-redux';
 import { useBoolean } from 'hooks/useBoolean';
+import { addTask, updateTaskDescription } from 'actions/task-actions';
+// import { useBoolean } from 'hooks/useBoolean';
 import { checkIfTemplateTask, TaskStatus } from 'helpers/task-helpers';
-import TextEditor from 'components/common/TextEditor/TextEditor';
-import {
-  convertFromEditorStateToOutput,
-  convertToEditorState,
-  isEditorStateEmpty,
-} from 'components/common/TextEditor/helpers';
-import { createMentionEntities } from 'components/common/TextEditor/create-mention-entities';
+// import {
+// convertFromEditorStateToOutput,
+// convertToEditorState,
+// isEditorStateEmpty,
+// } from 'components/common/TextEditor/helpers';
+// import { createMentionEntities } from 'components/common/TextEditor/create-mention-entities';
+// import { useMentionsEditorState } from 'components/common/TextEditor/use-mentions-editor-state';
+// import debounce from 'lodash.debounce';
+import RichTextEditor from 'components/common/RichTextEditor/RichTextEditor';
 import CustomTextEditor from 'components/common/CustomTextEditor/CustomTextEditor';
-import { useMentionsEditorState } from 'components/common/TextEditor/use-mentions-editor-state';
-import { selectedTaskSelector } from 'selectors/task-drawer-selectors';
 import { DescriptionTextContainer, DescriptionError } from './styled';
 
-const TaskDescription = ({ readOnly, disableMentions }) => {
-  const selectedTask = useSelector(selectedTaskSelector);
+const TaskDescription = ({ selectedTask, readOnly, disableMentions }) => {
   const {
     description,
     tokenizedDescription,
     taskMentions,
     status,
-    parentTaskIdentifier,
-    taskList,
+    // parentTaskIdentifier,
+    // taskList,
   } = selectedTask || {};
-  const { taskListIdentifier } = taskList || {};
+  // const { taskListIdentifier } = taskList || {};
 
   const dispatch = useDispatch();
   const firstRender = useRef(true);
   const descriptionReference = useRef(null);
   const [isFocused, setFocused, unsetFocused] = useBoolean(false);
-  const [descriptionState, setDescriptionState] = useMentionsEditorState(
-    description
-      ? convertToEditorState({
-          rawText: description,
-          tokenizedText: tokenizedDescription,
-          mentions: taskMentions,
-        })
-      : null,
-  );
-  const [descriptionErrorState, setDescriptionErrorState] = useState(false);
+  // const [descriptionState, setDescriptionState] = useMentionsEditorState(
+  //   description
+  //     ? convertToEditorState({
+  //         rawText: description,
+  //         tokenizedText: tokenizedDescription,
+  //         mentions: taskMentions,
+  //       })
+  //     : null,
+  // );
+  // const [descriptionErrorState, setDescriptionErrorState] = useState(false);
 
-  const isSubtask = !!parentTaskIdentifier;
+  // const isSubtask = !!parentTaskIdentifier;
 
-  const isTemplateTask = checkIfTemplateTask(selectedTask);
+  // const isTemplateTask = checkIfTemplateTask(selectedTask);
 
   useLayoutEffect(() => {
     if (!firstRender.current && selectedTask) {
       if (selectedTask.description) {
-        const newContent = createMentionEntities(
-          selectedTask.tokenizedDescription,
-          selectedTask.description,
-          selectedTask.taskMentions,
-          false,
-        );
-        setDescriptionState(EditorState.push(descriptionState, newContent));
+        // const newContent = createMentionEntities(
+        //   selectedTask.tokenizedDescription,
+        //   selectedTask.description,
+        //   selectedTask.taskMentions,
+        //   false,
+        // );
+        // setDescriptionState(EditorState.push(descriptionState, newContent));
       } else {
-        setDescriptionState();
+        // setDescriptionState();
       }
     }
 
@@ -77,119 +77,105 @@ const TaskDescription = ({ readOnly, disableMentions }) => {
   useEffect(() => {
     if (selectedTask && !selectedTask.description) {
       setTimeout(() => {
-        descriptionReference.current.focus();
+        descriptionReference.current?.focus();
       }, 0);
     }
   }, [descriptionReference, selectedTask]);
 
-  const isEmptyDescriptionState = useMemo(
-    () => isEditorStateEmpty(descriptionState),
-    [descriptionState],
-  );
+  // const isEmptyDescriptionState = useMemo(
+  //   () => isEditorStateEmpty(descriptionState),
+  //   [descriptionState],
+  // );
 
-  const handleBlur = useCallback(() => {
-    const { tokenizedText, rawText, mentions } = convertFromEditorStateToOutput(
-      descriptionState,
-      false,
-    );
+  // const handleBlur = useCallback(() => {
+  //   const { tokenizedText, rawText, mentions } = convertFromEditorStateToOutput(
+  //     descriptionState,
+  //     false,
+  //   );
 
-    if (!tokenizedText) {
-      setDescriptionErrorState(true);
-    } else if (selectedTask.taskIdentifier) {
-      if (tokenizedDescription !== tokenizedText)
-        dispatch(
-          updateTaskDescription(selectedTask, {
-            tokenizedDescription: tokenizedText,
-            description: rawText,
-            taskMentions: [
-              ...(selectedTask.taskMentions || []),
-              ...(mentions || []),
-            ],
-          }),
-        );
-    } else {
+  //   if (!tokenizedText) {
+  //     setDescriptionErrorState(true);
+  //   } else if (selectedTask.taskIdentifier) {
+  //     if (tokenizedDescription !== tokenizedText)
+  //       dispatch(
+  //         updateTaskDescription(selectedTask, {
+  //           tokenizedDescription: tokenizedText,
+  //           description: rawText,
+  //           taskMentions: [
+  //             ...(selectedTask.taskMentions || []),
+  //             ...(mentions || []),
+  //           ],
+  //         }),
+  //       );
+  //   } else {
+  //     dispatch(
+  //       addTask({
+  //         ...selectedTask,
+  //         tokenizedDescription: tokenizedText,
+  //         description: rawText,
+  //         taskMentions: [
+  //           ...(selectedTask.taskMentions || []),
+  //           ...(mentions || []),
+  //         ],
+  //       }),
+  //     );
+  //   }
+
+  //   unsetFocused();
+  // }, [
+  //   descriptionState,
+  //   dispatch,
+  //   selectedTask,
+  //   tokenizedDescription,
+  //   unsetFocused,
+  // ]);
+
+  // const handleChange = useCallback(
+  //   (state) => {
+  //     if (descriptionErrorState) {
+  //       const { tokenizedText } = convertFromEditorStateToOutput(state, false);
+  //       if (tokenizedText) {
+  //         setDescriptionErrorState(false);
+  //       }
+  //     }
+  //     setDescriptionState(state);
+  //   },
+  //   [descriptionErrorState, setDescriptionState],
+  // );
+
+  const handleBlur = (value) => {
+    if (selectedTask?.description !== value) {
       dispatch(
-        addTask({
-          ...selectedTask,
-          tokenizedDescription: tokenizedText,
-          description: rawText,
-          taskMentions: [
-            ...(selectedTask.taskMentions || []),
-            ...(mentions || []),
-          ],
+        updateTaskDescription(selectedTask, {
+          tokenizedDescription: value || '',
         }),
       );
     }
-
-    unsetFocused();
-  }, [
-    descriptionState,
-    dispatch,
-    selectedTask,
-    tokenizedDescription,
-    unsetFocused,
-  ]);
-
-  const handleChange = useCallback(
-    state => {
-      if (descriptionErrorState) {
-        const { tokenizedText } = convertFromEditorStateToOutput(state, false);
-        if (tokenizedText) {
-          setDescriptionErrorState(false);
-        }
-      }
-      setDescriptionState(state);
-    },
-    [descriptionErrorState, setDescriptionState],
-  );
+  };
 
   return (
     <>
       <DescriptionTextContainer isCrossed={status === TaskStatus.COMPLETE}>
         <CustomTextEditor
-          hasError={descriptionErrorState}
-          empty={isEmptyDescriptionState}
+          key={selectedTask?.identifier}
+          // empty={isEmptyDetailsState}
           focused={isFocused}
-          required
-          isSelectedTaskComplete={status === TaskStatus.COMPLETE}
-          label={isSubtask ? 'Subtask' : 'Task'}
-          selectedTask={selectedTask}
+          label="Description"
+          richTextEnabled
         >
-          <TextEditor
-            characterLimit={false}
-            readOnly={readOnly}
-            ref={descriptionReference}
-            taskListIdentifier={taskListIdentifier}
-            disableMentions={disableMentions || isTemplateTask}
-            placeholder={
-              isSubtask ? 'What is the subtask?' : 'What is the task?'
-            }
-            onFocus={setFocused}
+          <RichTextEditor
+            value={description}
             onBlur={handleBlur}
-            state={descriptionState}
-            onChange={handleChange}
-            keyBindingFn={event => {
-              if (event.key === 'Enter') {
-                return 'enter-command';
-              }
-
-              return undefined;
-            }}
-            handleKeyCommand={command => {
-              if (command === 'enter-command') {
-                // eslint-disable-next-line no-unused-expressions
-                descriptionReference.current?.blur();
-                return 'handled';
-              }
-
-              return 'not-handled';
-            }}
+            showToolbar={false}
+            disableToolbar
+            showToolbarInline
+            multiline={false}
           />
         </CustomTextEditor>
       </DescriptionTextContainer>
-      {descriptionErrorState && (
+      {/* {descriptionErrorState && (
         <DescriptionError>Task description is required</DescriptionError>
-      )}
+      )} */}
     </>
   );
 };

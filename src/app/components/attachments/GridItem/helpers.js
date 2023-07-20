@@ -1,7 +1,6 @@
-/* eslint-disable import/prefer-default-export */
-import { Image, Movie, Description, Audiotrack } from '@material-ui/icons';
+import { Image, Movie, Description, Audiotrack } from '@mui/icons-material';
 
-export const getIconFromContentType = contentType => {
+export const getIconFromContentType = (contentType) => {
   if (contentType.startsWith('image/')) {
     return Image;
   }

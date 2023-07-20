@@ -2,8 +2,7 @@ import styled from 'styled-components';
 import { fontSizes, fontWeights } from 'styles/font';
 import palette from 'styles/palette';
 import spacing from 'styles/spacing';
-import { withStyles } from '@material-ui/core/styles';
-import { ButtonGroup } from '@material-ui/core';
+import { ButtonGroup } from '@mui/material';
 import { ModalWrapper } from '../styled';
 
 export const AdditionalOptionLabel = styled.span`
@@ -27,13 +26,15 @@ export const Title = styled.p`
   margin-bottom: 0;
 `;
 
-export const ButtonGroupFlexStyled = withStyles({
-  root: {
-    display: 'flex',
-    justifyContent: 'center',
-    gap: '50px',
-  },
-})(ButtonGroup);
+export const ButtonGroupFlexStyled = styled(ButtonGroup)`
+  &&& {
+    &.MuiButtonGroup-root {
+      display: flex;
+      justify-content: center;
+      gap: 50px;
+    }
+  }
+`;
 
 export const ContactStepFormStyled = styled.form`
   width: 100%;

@@ -1,6 +1,5 @@
 import React from 'react';
-import { useDispatch, useSelector } from 'react-redux';
-import { selectedTaskSelector } from 'selectors/task-drawer-selectors';
+import { useDispatch } from 'react-redux';
 import Select from 'components/common/Select/Select';
 import PriorityFlag from 'img/priority-flag';
 import { changeTaskPriority } from 'actions/task-actions';
@@ -9,12 +8,11 @@ import { getPriorityColor, TaskPriority } from 'helpers/task-helpers';
 import { PriorityFieldContainer, PriorityFlagContainer } from './styled';
 import { PRIORITY_OPTIONS } from './helpers';
 
-const PrioritySection = ({ disabled = false }) => {
+const PrioritySection = ({ selectedTask, disabled = false }) => {
   const dispatch = useDispatch();
-  const selectedTask = useSelector(selectedTaskSelector);
   const { priority } = selectedTask || {};
 
-  const handleOptionChange = event => {
+  const handleOptionChange = (event) => {
     const { value } = event.target;
 
     onTaskDrawerTaskPriorityChanged(value);

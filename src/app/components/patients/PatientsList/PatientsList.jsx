@@ -4,7 +4,7 @@ import { useSelector, useDispatch } from 'react-redux';
 import { useHistory, useLocation } from 'react-router-dom';
 import { ascend, compose, propOr, sortWith, toLower } from 'ramda';
 import * as ActionTypes from 'actions/action-types';
-import { Grid } from '@material-ui/core';
+import { Grid } from '@mui/material';
 import Tooltip from 'components/common/Tooltip/Tooltip';
 import { lookupEMRPatient } from 'api/patient-api';
 import ListSkeletonLoader from 'components/common/ListSkeletonLoader/ListSkeletonLoader';
@@ -23,8 +23,8 @@ import { PatientColumn } from 'helpers/patient-list-helpers';
 import { patientsListSelector } from 'selectors/patients-selectors';
 import moment from 'moment';
 import { formatPhoneNumber } from 'helpers/utility-functions';
+import TaskItemBulkEdit from 'components/task/StandardTaskItem/TaskItemComponents/TaskItemBulkEdit';
 import PatientImportPopover from '../PatientImportPopover/PatientImportPopover';
-import TaskItemBulkEdit from '../../task/StandardTaskItem/TaskItemComponents/TaskItemBulkEdit';
 import EmptyFilteredPatientsList from '../EmptyFilteredPatientsList/EmptyFilteredPatientsList';
 import {
   NonEmptyListTable,
@@ -34,7 +34,7 @@ import {
 } from './styled';
 import { StyledDataGrid } from './DataGridStyles';
 
-const renderColumnHeader = props => {
+const renderColumnHeader = (props) => {
   const { colDef } = props;
   const { headerName } = colDef;
 
@@ -78,7 +78,7 @@ const PatientsList = ({
 
   const [dataGridSortModel, setDataGridSortModel] = useState();
 
-  const selectedPatientsCount = patients?.filter(p => p.isSelected).length;
+  const selectedPatientsCount = patients?.filter((p) => p.isSelected).length;
   const patientsCount = patients?.length;
   const isListChecked =
     patientsCount &&
@@ -88,7 +88,7 @@ const PatientsList = ({
   const patientsList = useSelector(patientsListSelector);
 
   const setSelectedPatient = useCallback(
-    data => {
+    (data) => {
       dispatch({
         type: ActionTypes.SET_SELECTED_PATIENT,
         identifier: data.patientIdentifier || data.id,
@@ -114,10 +114,8 @@ const PatientsList = ({
     };
   }, [dispatch]);
 
-  const {
-    columns: columnsData,
-    setCurrentPatientList,
-  } = usePatientListColumnsConfig();
+  const { columns: columnsData, setCurrentPatientList } =
+    usePatientListColumnsConfig();
 
   const columnsDataSorted = sortWith(
     [
@@ -189,9 +187,10 @@ const PatientsList = ({
       ),
       // flex: 1,
       width: 200,
-      valueGetter: parameters => {
-        return `${parameters.row.lastName || ''}, ${parameters.row.firstName ||
-          ''}`;
+      valueGetter: (parameters) => {
+        return `${parameters.row.lastName || ''}, ${
+          parameters.row.firstName || ''
+        }`;
       },
     },
     {
@@ -213,7 +212,7 @@ const PatientsList = ({
       // flex: 0.5,
       width: 100,
       type: 'date',
-      valueGetter: parameters => {
+      valueGetter: (parameters) => {
         return parameters.value
           ? new Date(`${parameters.value}T00:00:00`)
           : null;
@@ -312,10 +311,10 @@ const PatientsList = ({
       width: 140,
     },
   ]
-    .filter(column => {
+    .filter((column) => {
       return (
         columnsDataSorted.find(
-          data =>
+          (data) =>
             PatientColumn[data.identifier] === column.field ||
             column.field === 'isSelected',
         )?.isChecked ?? false
@@ -323,8 +322,8 @@ const PatientsList = ({
     })
     .concat(
       columnsDataSorted
-        .filter(column => column.targetType === 'PATIENT' && column.isChecked)
-        .map(column => ({
+        .filter((column) => column.targetType === 'PATIENT' && column.isChecked)
+        .map((column) => ({
           field: column.identifier,
           headerName: column.name,
           renderHeader: renderColumnHeader,
@@ -426,7 +425,7 @@ const PatientsList = ({
       ...patient,
     };
     // eslint-disable-next-line no-unused-expressions
-    metaData?.forEach(element => {
+    metaData?.forEach((element) => {
       patientDetails[element.key] = element.value;
     });
     return patientDetails;
@@ -441,7 +440,7 @@ const PatientsList = ({
       ) : (
         <>
           {patients?.length > 0 && formattedPatients ? (
-            <Grid container xs={12} item justify="center">
+            <Grid container xs={12} item justifyContent="center">
               <Grid item xs={12} xl={11} md={12} lg={11}>
                 <NonEmptyListTable listLength={patients?.length ?? 0}>
                   <StyledDataGrid

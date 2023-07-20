@@ -1,6 +1,6 @@
 import React, { useCallback, useEffect, useRef } from 'react';
 import moment from 'moment';
-import { Box } from '@material-ui/core';
+import { Box } from '@mui/material';
 import RecurringIcon from 'img/recurring-arrows';
 import { isWorkflowDueDateOverdue } from 'helpers/workflow-helpers';
 import DueDatePicker from 'components/task/DueDatePicker/DueDatePicker';
@@ -45,7 +45,7 @@ const DueDateSection = ({ disabled }) => {
   }, [autoFocusFieldName]);
 
   const handleDueDateSave = useCallback(
-    updatedDueDateTime => {
+    (updatedDueDateTime) => {
       const payload = {
         dueDateTime: updatedDueDateTime,
       };
@@ -105,9 +105,9 @@ const DueDateSection = ({ disabled }) => {
                 </DueDateContent>
               ) : (
                 <Placeholder>
-                  {!disabled
-                    ? 'Set a due date?'
-                    : 'Not available when creating a template'}
+                  {disabled
+                    ? 'Not available when creating a template'
+                    : 'Set a due date?'}
                 </Placeholder>
               )}
             </DueDateContentWrapper>

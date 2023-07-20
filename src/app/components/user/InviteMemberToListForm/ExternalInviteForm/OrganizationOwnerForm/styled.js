@@ -2,7 +2,7 @@ import styled from 'styled-components';
 import spacing from 'styles/spacing';
 import { fontSizes, fontWeights } from 'styles/font';
 import palette from 'styles/palette';
-import { Grid } from '@material-ui/core';
+import { Grid } from '@mui/material';
 
 export const FormWrapper = styled.form`
   width: 100%;
@@ -44,8 +44,7 @@ export const Step = styled.button`
   border-radius: 4px;
   outline: none;
   ${({ isCurrent }) => isCurrent && `background: ${palette.coolGrey2};`}
-  ${({ isDisabled }) =>
-    !isDisabled ? 'cursor: pointer;' : ''}
+  ${({ isDisabled }) => (isDisabled ? '' : 'cursor: pointer;')}
 
   &:not(:last-child) {
     margin-right: ${spacing.tiny};
@@ -55,7 +54,7 @@ export const Step = styled.button`
 export const RoleFormWrapper = styled(Grid)`
   height: 400px;
   padding: ${spacing.regular} 0 ${spacing.regularPlus} 0;
-  font-family: 'Roboto', sans-serif;
+  font-family: 'Roboto Condensed', sans-serif;
   color: ${palette.mediumGrey};
   flex-wrap: nowrap !important;
 `;

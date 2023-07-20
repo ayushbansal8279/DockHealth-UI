@@ -9,8 +9,8 @@ import {
   Popover,
   Tabs,
   Tab,
-} from '@material-ui/core';
-import CustomizeIcon from 'img/customize-icon';
+} from '@mui/material';
+import CustomizeIcon from 'img/customize-icon.svg';
 import Checkbox from 'components/common/Checkbox/Checkbox';
 import { useTaskListColumnsConfig } from 'context-api/columns-config-context';
 import {
@@ -28,7 +28,7 @@ import { TaskItemColumn, PatientTaskItemColumn } from 'helpers/task-helpers';
 import { capitalize } from 'helpers/capitalize';
 import UpgradePlan from 'components/common/UpgradePlan/UpgradePlan';
 import UpgradePlanPopup from 'components/common/UpgradePlanPopup/UpgradePlanPopup';
-import CustomFieldsIcon from 'img/premium/custom-fields';
+import CustomFieldsIcon from 'img/premium/custom-fields.svg';
 import {
   CUSTOM_FIELD_TYPES,
   sortAlphabetical,
@@ -106,8 +106,8 @@ const CustomizeToolbarButton = ({
   const [selectedTab, setSelectedTab] = useState(0);
 
   const onClickCheckbox = useCallback(
-    column => {
-      const newSetup = columns.map(c =>
+    (column) => {
+      const newSetup = columns.map((c) =>
         c.identifier === column.identifier
           ? { ...c, isChecked: !c.isChecked }
           : c,
@@ -128,7 +128,7 @@ const CustomizeToolbarButton = ({
 
   const columnsConfigToDisplay = useMemo(() => {
     return limitToConfigurableKeys(
-      columns.filter(c => c._customFieldType === CUSTOM_FIELD_TYPES.REGULAR),
+      columns.filter((c) => c._customFieldType === CUSTOM_FIELD_TYPES.REGULAR),
     );
   }, [columns]);
 
@@ -147,7 +147,7 @@ const CustomizeToolbarButton = ({
     [onClickCheckbox],
   );
 
-  const applyProps = useCallback(index => {
+  const applyProps = useCallback((index) => {
     return {
       id: `full-width-tab-${index}`,
       'aria-controls': `full-width-tabpanel-${index}`,
@@ -172,6 +172,7 @@ const CustomizeToolbarButton = ({
             ? 'Customization is restricted by list admin'
             : 'Customize your list'
         }
+        style={{ height: 'auto' }}
       >
         Customize
       </ToolbarButton>
@@ -202,17 +203,17 @@ const CustomizeToolbarButton = ({
               {...applyProps(0)}
               style={{ minWidth: '25%' }}
             />
-            <Tab label="Task" {...applyProps(1)} style={{ minWidth: '25%' }} />
+            <Tab label="Task" {...applyProps(1)} style={{ minWidth: '18%' }} />
             <Tab
               label={customerTypeLabel}
               {...applyProps(2)}
-              style={{ minWidth: '25%' }}
+              style={{ minWidth: '31%' }}
             />
             {isDashboard && (
               <Tab
                 label={additionalOptionsTitle}
                 {...applyProps(3)}
-                style={{ minWidth: '25%' }}
+                style={{ minWidth: '26%' }}
               />
             )}
           </Tabs>
@@ -232,7 +233,7 @@ const CustomizeToolbarButton = ({
                       ColumnOptionNames[b?.identifier],
                     ),
                   columnsConfigToDisplay,
-                ).map(column => {
+                ).map((column) => {
                   const optionName = ColumnOptionNames[column.identifier];
                   return optionName && renderElement(column, optionName);
                 })}
@@ -248,7 +249,7 @@ const CustomizeToolbarButton = ({
                   </Box>
                   <List>
                     {additionalOptions &&
-                      additionalOptions?.map(option => {
+                      additionalOptions?.map((option) => {
                         const {
                           name,
                           checked = false,
@@ -303,12 +304,12 @@ const CustomizeToolbarButton = ({
                     )}
                     {sortAlphabetical(
                       columns.filter(
-                        c =>
+                        (c) =>
                           c._customFieldType === CUSTOM_FIELD_TYPES.TASK_LIST ||
                           c._customFieldType ===
                             CUSTOM_FIELD_TYPES.ORGANIZATION,
                       ),
-                    ).map(column => renderElement(column))}
+                    ).map((column) => renderElement(column))}
                   </List>
                 </>
               )}
@@ -331,7 +332,7 @@ const CustomizeToolbarButton = ({
                         PatientColumnOptionNames[b?.identifier],
                       ),
                     columnsConfigToDisplay,
-                  ).map(column => {
+                  ).map((column) => {
                     const optionName =
                       PatientColumnOptionNames[column.identifier];
                     return optionName && renderElement(column, optionName);
@@ -349,10 +350,10 @@ const CustomizeToolbarButton = ({
                       <List>
                         {sortAlphabetical(
                           columns.filter(
-                            c =>
+                            (c) =>
                               c._customFieldType === CUSTOM_FIELD_TYPES.PATIENT,
                           ),
-                        ).map(column => renderElement(column))}
+                        ).map((column) => renderElement(column))}
                       </List>
                     </>
                   )}
@@ -368,7 +369,7 @@ const CustomizeToolbarButton = ({
               </Box>
               <List>
                 {additionalOptions &&
-                  additionalOptions?.map(option => {
+                  additionalOptions?.map((option) => {
                     const { name, checked = false, disabled, onClick } = option;
                     return (
                       name && (

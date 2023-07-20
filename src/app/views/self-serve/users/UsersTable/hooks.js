@@ -1,27 +1,22 @@
-/* eslint-disable react-hooks/rules-of-hooks */
 import equals from 'ramda/src/equals';
 import find from 'ramda/src/find';
 import uniq from 'ramda/src/uniq';
-import { useCallback, useEffect, useState } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import { useCallback, useEffect, useMemo, useState } from 'react';
+import { useDispatch } from 'react-redux';
 import { createBreakpoint, useToggle } from 'react-use';
 import { showGlobalAlert } from 'alert/actions';
+import * as OrganizationApi from 'api/organization-api';
 import {
   reactivateUserInOrganization,
   cancelInviteToOrganization,
   removeUserFromOrganization,
 } from 'api/organization-api';
-import { getOrganizationUsers } from 'actions/organization-actions';
-import {
-  organizationUsersSelector,
-  isFetchingOrganizationUsersSelector,
-} from 'selectors/organization-selectors';
+import { useQuery } from '@tanstack/react-query';
 
 const useBreakpoint = createBreakpoint({ sm: 600, md: 960 });
 
-const initializeMembersTableHooks = () => {
-  const organizationUsers = useSelector(organizationUsersSelector) || [];
-  const isFetching = useSelector(isFetchingOrganizationUsersSelector);
+const useInitializeMembersTableHooks = () => {
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   const currentBreakPoint = useBreakpoint();
   const dispatch = useDispatch();
 
@@ -29,17 +24,18 @@ const initializeMembersTableHooks = () => {
   const [isAllUsersSelected, toggleAllUsersSelectedRaw] = useToggle(false);
   const [selectedUsers, setSelectedUsers] = useState([]);
 
-  const getAllUsers = useCallback(() => {
-    dispatch(getOrganizationUsers());
-  }, [dispatch]);
-
-  useEffect(() => {
-    dispatch(getOrganizationUsers());
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  const {
+    data,
+    isLoading: isFetching,
+    refetch: getAllUsers,
+  } = useQuery(
+    ['getOrganizationUsers'],
+    OrganizationApi.findAllUsersForOrganization,
+  );
+  const organizationUsers = useMemo(() => data || [], [data]);
 
   const toggleAllUsersSelected = useCallback(
-    event => {
+    (event) => {
       const newAllUsersSelected = event.target.checked;
 
       if (newAllUsersSelected) {
@@ -59,7 +55,7 @@ const initializeMembersTableHooks = () => {
   );
 
   const setCurrentSearch = useCallback(
-    search => {
+    (search) => {
       setCurrentSearchRaw(search);
       toggleAllUsersSelectedRaw(false);
     },
@@ -77,7 +73,7 @@ const initializeMembersTableHooks = () => {
   }, [organizationUsers, setSelectedUsers]);
 
   const toggleSelectedUser = useCallback(
-    toggledUser => event => {
+    (toggledUser) => (event) => {
       const { checked } = event.target;
 
       if (checked) {
@@ -89,7 +85,7 @@ const initializeMembersTableHooks = () => {
       } else {
         setSelectedUsers(
           selectedUsers.filter(
-            selectedUser => !equals(selectedUser, toggledUser),
+            (selectedUser) => !equals(selectedUser, toggledUser),
           ),
         );
 
@@ -109,7 +105,7 @@ const initializeMembersTableHooks = () => {
   );
 
   const isUserSelected = useCallback(
-    selectedUser => find(equals(selectedUser), selectedUsers),
+    (selectedUser) => find(equals(selectedUser), selectedUsers),
     [selectedUsers],
   );
 
@@ -128,4 +124,4 @@ const initializeMembersTableHooks = () => {
   };
 };
 
-export default initializeMembersTableHooks;
+export default useInitializeMembersTableHooks;

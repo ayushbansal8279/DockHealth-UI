@@ -1,4 +1,4 @@
-import { Box } from '@material-ui/core';
+import { Box } from '@mui/material';
 import {
   BillingFrequency,
   SubscriptionPlan,
@@ -23,7 +23,7 @@ import {
 } from './styled';
 import SubscriptionPlanFeature from '../SubscriptionPlanFeature/SubscriptionPlanFeature';
 
-const SubscriptionPlanTail = props => {
+const SubscriptionPlanTail = (props) => {
   const {
     active,
     selected,
@@ -115,10 +115,10 @@ const SubscriptionPlanTail = props => {
       <Divider />
       <FeatureText>{featuresDescription}</FeatureText>
       <Box m={2} />
-      {features.map(feature => (
+      {features.map((feature) => (
         <SubscriptionPlanFeature feature={feature} />
       ))}
-      {comingSoonFeatures?.map(feature => (
+      {comingSoonFeatures?.map((feature) => (
         <SubscriptionPlanFeature comingSoon feature={feature} />
       ))}
     </Container>

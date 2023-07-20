@@ -3,7 +3,7 @@ import moment from 'moment';
 import Datepicker from 'components/common/Datepicker/Datepicker';
 import TimeDropdownInput from 'components/common/TimeDropdownInput/TimeDropdownInput';
 import PopoverBottomBar from 'components/task/PopoverBottomBar/PopoverBottomBar';
-import TimeIcon from 'img/time';
+import TimeIcon from 'img/time.svg';
 import { TIME_12H_FORMAT } from 'helpers/task-drawer-helpers';
 import {
   ContentWrapper,
@@ -23,7 +23,7 @@ const DatePicker = ({
   const momentSelectedDate = selectedDate ? moment(selectedDate) : null;
   const selectedTime = momentSelectedDate?.format(TIME_12H_FORMAT) || null;
 
-  const handleDatePick = pickedDate => {
+  const handleDatePick = (pickedDate) => {
     onDateChange(
       moment(
         `${pickedDate} ${selectedTime}`,
@@ -32,7 +32,7 @@ const DatePicker = ({
     );
   };
 
-  const handleTimePick = pickedTime => {
+  const handleTimePick = (pickedTime) => {
     onDateChange(
       moment(
         `${moment(selectedDate).format(DATE_ISO_FORMAT)} ${pickedTime}`,
@@ -55,11 +55,7 @@ const DatePicker = ({
           type="button"
           isSelected={momentSelectedDate?.isSame(moment().add(1, 'days'), 'd')}
           onClick={() =>
-            handleDatePick(
-              moment()
-                .add(1, 'days')
-                .format(DATE_ISO_FORMAT),
-            )
+            handleDatePick(moment().add(1, 'days').format(DATE_ISO_FORMAT))
           }
         >
           Tomorrow

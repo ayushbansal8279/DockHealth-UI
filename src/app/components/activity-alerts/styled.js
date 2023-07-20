@@ -1,6 +1,5 @@
 import styled, { keyframes, css } from 'styled-components';
-import { Popover } from '@material-ui/core';
-import { withStyles } from '@material-ui/core/styles';
+import { Popover } from '@mui/material';
 import spacing from 'styles/spacing';
 import { fontWeights, fontSizes } from 'styles/font';
 import palette from 'styles/palette';
@@ -49,7 +48,7 @@ export const rotateImg = keyframes`
 
 export const ActivityAlertsImg = styled.img`
   cursor: pointer;
-  animation: ${props =>
+  animation: ${(props) =>
     props.withAnimaton
       ? css`
           ${rotateImg} 0.55s ease-in-out 0.25s
@@ -60,15 +59,18 @@ export const ActivityAlertsImg = styled.img`
   }
 `;
 
-export const ActivityAlertsPopover = withStyles({
-  paper: () => ({
-    border: 'none',
-    boxShadow: '0px 0px 11px rgba(0, 0, 0, 0.15)', // per design
-    width: '515px',
-    borderRadius: '8px',
-    backgroundColor: palette.coolGrey4,
-  }),
-})(Popover);
+export const ActivityAlertsPopover = styled(Popover)`
+  .MuiPopover-paper {
+    border: 'none';
+    box-shadow: '0px 0px 11px rgba(0, 0, 0, 0.15)'; // per design
+    width: '515px';
+    border-radius: '8px';
+    background-color: ${palette.coolGrey4};
+  }
+  .MuiBackdrop-root {
+    opacity: 0 !important;
+  }
+`;
 
 export const ActivityAlertsPopoverLabel = styled.div`
   display: flex;
@@ -129,7 +131,7 @@ export const EmptyActivityAlerts = styled.div`
   box-shadow: 0px 0px 11px rgba(0, 0, 0, 0.15); // per design
   border-radius: 8px;
   padding: ${spacing.regularPlus};
-  font-family: Roboto Condensed;
+  font-family: 'Roboto Condensed', sans-serif;;
   font-weight: ${fontWeights.bold};
 `;
 

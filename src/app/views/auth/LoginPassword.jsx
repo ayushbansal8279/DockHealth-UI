@@ -35,21 +35,22 @@ const LoginPassword = () => {
   }, [confirmStatus, setConfirmationBaseState]);
 
   const onSubmit = useCallback(
-    ({ setError }) => form => {
-      login(form.username, form.password)
-        .then(data => {
-          if (data.challengeName === 'SMS_MFA') {
-            if (data.challengeParam) {
-              window.sessionStorage.setItem(
-                'SMS_PHONE',
-                data.challengeParam.CODE_DELIVERY_DESTINATION,
+    ({ setError }) =>
+      (form) => {
+        login(form.username, form.password)
+          .then((data) => {
+            if (data.challengeName === 'SMS_MFA') {
+              if (data.challengeParam) {
+                window.sessionStorage.setItem(
+                  'SMS_PHONE',
+                  data.challengeParam.CODE_DELIVERY_DESTINATION,
+                );
+              }
+              history.push(
+                `confirmMFACode?uname=${encodeURIComponent(form.username)}`,
               );
-            }
-            history.push(
-              `confirmMFACode?uname=${encodeURIComponent(form.username)}`,
-            );
-          } else {
-            sessionStorage.setItem('sessionStartTime', new Date().getTime());
+            } else {
+              sessionStorage.setItem('sessionStartTime', new Date().getTime());
 
             const nextPathname = sessionStorage.getItem('next-page');
             if (nextPathname && nextPathname !== '') {
@@ -59,32 +60,32 @@ const LoginPassword = () => {
               history.push('/core/home/my-tasks');
             }
 
-            success('Logged in.');
-          }
-        })
-        .catch(error => {
-          // let message = error?.message;
-          let message = null;
-          const errorCode = error?.code;
-          if (errorCode === 'UserNotConfirmedException') {
-            message =
-              'Email is not confirmed. Please check your email or click below to resend.'; // User is not confirmed.
-            setUnconfirmedUserFlag(true);
-          }
+              success('Logged in.');
+            }
+          })
+          .catch((error) => {
+            // let message = error?.message;
+            let message = null;
+            const errorCode = error?.code;
+            if (errorCode === 'UserNotConfirmedException') {
+              message =
+                'Email is not confirmed. Please check your email or click below to resend.'; // User is not confirmed.
+              setUnconfirmedUserFlag(true);
+            }
 
-          setError('password', {
-            type: 'custom',
-            message:
-              message ?? 'Incorrect email or password. Please try again.',
+            setError('password', {
+              type: 'custom',
+              message:
+                message ?? 'Incorrect email or password. Please try again.',
+            });
           });
-        });
-    },
+      },
     [history],
   );
 
   const onResendCode = useCallback(
     // eslint-disable-next-line unicorn/consistent-function-scoping
-    () => form => {
+    () => (form) => {
       resendConfirmationCode({
         username: form.username,
       })
@@ -95,7 +96,7 @@ const LoginPassword = () => {
           });
           setUnconfirmedUserFlag(false);
         })
-        .catch(error => {
+        .catch((error) => {
           showAlert({
             icon: 'error',
             title: 'Error',

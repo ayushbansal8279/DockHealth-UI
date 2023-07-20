@@ -7,7 +7,7 @@ import {
   FormHelperText,
   ListItemText,
   Checkbox,
-} from '@material-ui/core';
+} from '@mui/material';
 import {
   func,
   number,
@@ -37,8 +37,8 @@ const MultiSelect = React.forwardRef(
     },
     reference,
   ) => {
-    const renderedValues = value?.map(selected => {
-      return options.find(option => option.value === selected)?.label;
+    const renderedValues = value?.map((selected) => {
+      return options.find((option) => option.value === selected)?.label;
     });
     return readOnly ? (
       <Input
@@ -76,16 +76,17 @@ const MultiSelect = React.forwardRef(
           inputProps={{ name, shrink: 'true', placeholder, inputRef }}
           variant={variant}
           value={value ?? []}
-          renderValue={selectedValue =>
+          renderValue={(selectedValue) =>
             selectedValue
-              .map(selected => {
-                return options.find(option => option.value === selected)?.label;
+              .map((selected) => {
+                return options.find((option) => option.value === selected)
+                  ?.label;
               })
               .join(', ')
           }
           {...restProps}
         >
-          {options?.map(option => {
+          {options?.map((option) => {
             return (
               <MenuItem key={option.value} value={option.value}>
                 <Checkbox checked={value?.indexOf(option.value) > -1} />

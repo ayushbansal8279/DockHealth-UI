@@ -67,9 +67,10 @@ const PatientSection = ({
   }, [autofocus, patientInputReference]);
 
   const savePatient = useCallback(
-    async patientToSave => {
+    // eslint-disable-next-line sonarjs/cognitive-complexity
+    async (patientToSave) => {
       try {
-        const onSavePatient = async skipModals => {
+        const onSavePatient = async (skipModals) => {
           if (skipModals) {
             onTaskDrawerTaskPatientChanged();
             await onSave({
@@ -178,38 +179,35 @@ const PatientSection = ({
   );
 
   const fetchPatients = useCallback(
-    value =>
-      getPatientsByCriteria(value).then(fetchedPatients => {
+    (value) =>
+      getPatientsByCriteria(value).then((fetchedPatients) => {
         setPatients(fetchedPatients);
         return fetchedPatients;
       }),
     [],
   );
 
-  const fetchPatientsWithDebounce = useCallback(
-    debounce(value => {
-      fetchPatients(value).then(() => {
-        setIsLoadingPatients(false);
-      });
-    }, 750),
-    [],
-  );
+  const fetchPatientsWithDebounce = debounce((value) => {
+    fetchPatients(value).then(() => {
+      setIsLoadingPatients(false);
+    });
+  }, 750);
 
   const onPatientInputChange = useCallback(
-    value => {
-      if (value !== '') {
-        setIsLoadingPatients(true);
-        fetchPatientsWithDebounce(value);
-      } else {
+    (value) => {
+      if (value === '') {
         fetchPatientsWithDebounce.cancel();
         setPatients([]);
+      } else {
+        setIsLoadingPatients(true);
+        fetchPatientsWithDebounce(value);
       }
     },
     [fetchPatientsWithDebounce],
   );
 
   const handleClearSelectedPatient = useCallback(
-    async clearInput => {
+    async (clearInput) => {
       if (templateBundleIdentifier && selectedPatient) {
         dispatch(
           openModal('UnassignPatient', {
@@ -241,7 +239,7 @@ const PatientSection = ({
   );
 
   const handlePatientSelect = useCallback(
-    async selectedOption => {
+    async (selectedOption) => {
       const [lastName, names] = selectedOption.displayLabel.split(', ');
       const [firstName, middleName] = names.split(' ');
       const patient = {
@@ -260,7 +258,7 @@ const PatientSection = ({
   );
 
   const handleAddPatient = useCallback(
-    patient => {
+    (patient) => {
       if (currentOrganization.emrIntegrationEnabled) {
         return;
       }

@@ -46,7 +46,7 @@ const TasksHeader = ({
   } = useTaskListColumnsConfig();
   const customerTypeLabel = getCustomerTypeLabel(currentUser);
   const currentUserMember = taskList?.listUsers.find(
-    u => u.identifier === currentUser?.identifier,
+    (u) => u.identifier === currentUser?.identifier,
   );
   const isListAdmin = isMemberAdmin(currentUserMember);
   const restrictions =
@@ -69,7 +69,7 @@ const TasksHeader = ({
     ) || {};
 
   const handleClickCheckbox = useCallback(
-    event => {
+    (event) => {
       event.preventDefault();
       event.stopPropagation();
       onGroupSelect(event);
@@ -78,12 +78,12 @@ const TasksHeader = ({
   );
 
   const onDragEnd = useCallback(
-    column => {
+    (column) => {
       if (!column.destination) {
         return;
       }
       const newOrder = reorderColumns(
-        columns.filter(f => f.isChecked),
+        columns.filter((f) => f.isChecked),
         column.source.index,
         column.destination.index,
       );
@@ -175,6 +175,11 @@ const TasksHeader = ({
                   />
                 </BulkContainer>
               )}
+              {!bulkEditEnabled && (
+                <BulkContainer style={{width: '66px'}}>
+                  &nbsp;
+                </BulkContainer>
+              )}
               {renderColumn(
                 getTaskHeaderOptions(
                   customerTypeLabel,
@@ -187,9 +192,9 @@ const TasksHeader = ({
               )}
             </StickyColumnContainer>
             {columns
-              .filter(f => f.isChecked)
+              .filter((f) => f.isChecked)
               .filter((_, index) => index !== 0)
-              .map(c =>
+              .map((c) =>
                 c._customFieldType === CUSTOM_FIELD_TYPES.REGULAR
                   ? getTaskHeaderOptions(
                       customerTypeLabel,

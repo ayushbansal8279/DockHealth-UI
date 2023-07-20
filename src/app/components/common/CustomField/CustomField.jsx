@@ -16,8 +16,8 @@ import { taskDrawerFocusFieldSelector } from 'selectors/task-drawer-selectors';
 import { useSelector } from 'react-redux';
 import { TaskItemType } from 'helpers/task-helpers';
 import { workflowAutofocusFieldSelector } from 'selectors/workflow-drawer-selectors';
-import { Box } from '@material-ui/core';
-import CustomFieldTextEditor from './CustomFieldTextEditor';
+import { Box } from '@mui/material';
+import CustomFieldRichTextEditor from './CustomFieldRichTextEditor';
 import { ColorIndicator } from './styled';
 import MultiFormSelect from '../MultiSelect/MultiFormSelect';
 import CustomFieldErrorContext from './CustomFieldErrorContext';
@@ -25,6 +25,7 @@ import CustomFieldErrorContext from './CustomFieldErrorContext';
 const CustomField = ({
   readOnly,
   field,
+  selected,
   initialValue,
   onBlur,
   fieldsGroupKey,
@@ -33,14 +34,8 @@ const CustomField = ({
   // eslint-disable-next-line sonarjs/cognitive-complexity
 }) => {
   const containerReference = useRef(null);
-  const {
-    identifier,
-    name,
-    placeholder,
-    fieldType,
-    options,
-    displayOptions,
-  } = field;
+  const { identifier, name, placeholder, fieldType, options, displayOptions } =
+    field;
   const isRequired = displayOptions.includes('TASK_REQUIRED');
   const inputReference = useRef(null);
   const componentReference = useRef(null);
@@ -48,12 +43,15 @@ const CustomField = ({
   const [wasChanged, setWasChanged] = useState(false);
   const [descriptionErrorState, setDescriptionErrorState] = useState(false);
 
-  const errorContextValue = {
-    identifier,
-    descriptionErrorState,
-    setDescriptionErrorState,
-    isRequired,
-  };
+  const errorContextValue = useMemo(
+    () => ({
+      identifier,
+      descriptionErrorState,
+      setDescriptionErrorState,
+      isRequired,
+    }),
+    [descriptionErrorState, identifier, isRequired],
+  );
 
   const isWorkflow =
     task &&
@@ -64,10 +62,11 @@ const CustomField = ({
   );
   const dropdownOptions = useMemo(() => {
     const o =
-      options?.map(option => ({
+      options?.map((option) => ({
         label: option.name,
         value: option.identifier,
         color: option.color,
+        data: option,
       })) || [];
 
     if (o.length > 0 && fieldType !== FieldType.DROPDOWN_MULTI && !isRequired) {
@@ -77,7 +76,7 @@ const CustomField = ({
   }, [fieldType, isRequired, options]);
 
   const handleBlur = useCallback(
-    data => {
+    (data) => {
       if (onBlur) {
         onBlur(data, wasChanged);
       }
@@ -107,26 +106,26 @@ const CustomField = ({
 
   const renderCustomField = useCallback(() => {
     switch (fieldType) {
-      case FieldType.TEXT:
+      case FieldType.TEXT: {
         return (
-          <CustomFieldTextEditor
-            oneline
-            characterLimit={FieldCharakterLimit.TEXT}
-            identifier={identifier}
+          <FormInput
+            type="text"
             readOnly={readOnly}
             label={name}
             name={fieldName}
             placeholder={placeholder}
-            taskIdentifier={taskIdentifier}
-            task={task}
-            fieldsGroupKey={fieldsGroupKey}
+            onBlur={handleBlur}
             inputRef={inputReference}
+            ref={componentReference}
             onChange={() => setWasChanged(true)}
+            required={isRequired}
+            characterLimit={FieldCharakterLimit.TEXT}
           />
         );
-      case FieldType.LONG_TEXT:
+      }
+      case FieldType.LONG_TEXT: {
         return (
-          <CustomFieldTextEditor
+          <CustomFieldRichTextEditor
             characterLimit={FieldCharakterLimit.LONG_TEXT}
             identifier={identifier}
             readOnly={readOnly}
@@ -141,7 +140,8 @@ const CustomField = ({
             enableRichText
           />
         );
-      case FieldType.NUMBER:
+      }
+      case FieldType.NUMBER: {
         return (
           <FormInput
             type="number"
@@ -156,7 +156,8 @@ const CustomField = ({
             required={isRequired}
           />
         );
-      case FieldType.BOOL:
+      }
+      case FieldType.BOOL: {
         return (
           <FormSelect
             readOnly={readOnly}
@@ -171,7 +172,8 @@ const CustomField = ({
             required={isRequired}
           />
         );
-      case FieldType.DATE:
+      }
+      case FieldType.DATE: {
         return (
           <FormInput
             readOnly={readOnly}
@@ -189,10 +191,27 @@ const CustomField = ({
             required={isRequired}
           />
         );
+      }
       case FieldType.DROPDOWN: {
         const value = watch(fieldName) || '';
-        const colorIndicator = dropdownOptions?.find(o => o.value === value)
-          ?.color;
+        const colorIndicator = dropdownOptions?.find(
+          (o) => o.value === value,
+        )?.color;
+
+        const dependantOptions = dropdownOptions.filter((option) => {
+          if (option.data?.linkedCustomFieldIdentifier) {
+            const linkedCustomFieldOptionIdentifier =
+              selected?.[option.data.linkedCustomFieldIdentifier];
+            if (linkedCustomFieldOptionIdentifier) {
+              return (
+                option.data.linkedCustomFieldOptionIdentifier ===
+                linkedCustomFieldOptionIdentifier
+              );
+            }
+            return true;
+          }
+          return true;
+        });
 
         return (
           <Box position="relative">
@@ -200,7 +219,7 @@ const CustomField = ({
             <FormSelect
               readOnly={readOnly}
               label={name}
-              options={dropdownOptions}
+              options={dependantOptions}
               name={fieldName}
               onBlur={handleBlur}
               inputRef={inputReference}
@@ -228,43 +247,45 @@ const CustomField = ({
           </Box>
         );
       }
-      case FieldType.HYPERLINK:
+      case FieldType.HYPERLINK: {
         return (
-          <CustomFieldTextEditor
-            identifier={identifier}
+          <FormInput
+            type="text"
             readOnly={readOnly}
             label={name}
             name={fieldName}
+            placeholder={placeholder}
             onBlur={handleBlur}
             inputRef={inputReference}
-            taskIdentifier={taskIdentifier}
-            task={task}
-            fieldsGroupKey={fieldsGroupKey}
             ref={componentReference}
             onChange={() => setWasChanged(true)}
+            required={isRequired}
           />
         );
+      }
 
-      default:
+      default: {
         return <div>{field.name}</div>;
+      }
     }
   }, [
-    clearErrors,
-    dropdownOptions,
-    field.name,
-    fieldName,
     fieldType,
+    identifier,
+    readOnly,
+    name,
+    fieldName,
+    placeholder,
+    taskIdentifier,
+    task,
     fieldsGroupKey,
     handleBlur,
-    identifier,
-    name,
-    placeholder,
-    readOnly,
-    setError,
-    task,
-    taskIdentifier,
-    watch,
     isRequired,
+    setError,
+    clearErrors,
+    field.name,
+    watch,
+    dropdownOptions,
+    selected,
   ]);
 
   return (

@@ -6,7 +6,7 @@ import {
 import { useDispatch, useSelector } from 'react-redux';
 import * as PatientsActions from 'actions/patients-actions';
 import FilterHeader from 'components/filter/FilterHeader/FilterHeader';
-import { Box } from '@material-ui/core';
+import { Box } from '@mui/material';
 import FilterTable from 'components/filter/FilterTable/FilterTable';
 import {
   createQuickFilter,
@@ -40,7 +40,7 @@ const PatientsFilter = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  const handleSelectedFiltersChange = newSelectedFilters => {
+  const handleSelectedFiltersChange = (newSelectedFilters) => {
     dispatch(PatientsActions.setPatientsSelectedFilters(newSelectedFilters));
   };
 

@@ -31,7 +31,7 @@ const BoardContextProvider = ({ contextName, children }) => {
   const currentStatus = useSelector(currentTaskListTasksStatusSelector);
 
   const handleDeleteTask = useCallback(
-    task => {
+    (task) => {
       const modalProps = {
         isSubtask: !!task.parentTaskIdentifier,
         confirm: () => {
@@ -45,7 +45,7 @@ const BoardContextProvider = ({ contextName, children }) => {
   );
 
   const handleDeleteColumn = useCallback(
-    group => {
+    (group) => {
       const modalProps = {
         title: 'Delete user group',
         description:
@@ -76,7 +76,7 @@ const BoardContextProvider = ({ contextName, children }) => {
       taskList &&
       (!groupTasks || groupTasks?.length === 0)
     ) {
-      groupList.forEach(({ taskGroupIdentifier }) => {
+      for (const { taskGroupIdentifier } of groupList) {
         dispatch(
           ListDetailsActions.getTasksForTaskGroups({
             taskGroupIdentifier,
@@ -84,12 +84,12 @@ const BoardContextProvider = ({ contextName, children }) => {
             refresh: true,
           }),
         );
-      });
+      }
     }
   }, [contextName, currentStatus, dispatch, groupList, groupTasks, taskList]);
 
   const getTaskContextMenuOptionsArray = useCallback(
-    task => ({
+    (task) => ({
       [BOARD_CONTEXTS.TASKS_GROUPS]: [
         { name: 'Delete', onClick: () => handleDeleteTask(task) },
       ],
@@ -97,7 +97,7 @@ const BoardContextProvider = ({ contextName, children }) => {
     [handleDeleteTask],
   );
   const getColumnContextMenuOptionsArray = useCallback(
-    column => ({
+    (column) => ({
       [BOARD_CONTEXTS.TASKS_GROUPS]: [
         { name: 'Delete', onClick: () => handleDeleteColumn(column) },
       ],
@@ -148,9 +148,9 @@ const BoardContextProvider = ({ contextName, children }) => {
           );
         };
 
-        const columns = groupList?.map(g => {
+        const columns = groupList?.map((g) => {
           const foundGroup = groupTasks?.find(
-            gt => gt.groupIdentifier === g.taskGroupIdentifier,
+            (gt) => gt.groupIdentifier === g.taskGroupIdentifier,
           );
           return {
             identifier: g.taskGroupIdentifier,
@@ -165,15 +165,16 @@ const BoardContextProvider = ({ contextName, children }) => {
           handleReorderColumns,
           handleAddTask,
           handleAddWorkflow,
-          getTaskContextMenuOptionsArray: task =>
+          getTaskContextMenuOptionsArray: (task) =>
             getTaskContextMenuOptionsArray(task)?.[contextName],
-          getColumnContextMenuOptionsArray: task =>
+          getColumnContextMenuOptionsArray: (task) =>
             getColumnContextMenuOptionsArray(task)?.[contextName],
         };
       }
 
-      default:
+      default: {
         return null;
+      }
     }
   }, [
     contextName,

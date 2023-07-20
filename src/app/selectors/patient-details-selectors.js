@@ -1,7 +1,7 @@
 import { PatientAttachmentType } from 'helpers/patient-details-helpers';
 import { createSelector } from 'reselect';
 
-export const patientDetailsStateSelector = state => state.patientDetails;
+export const patientDetailsStateSelector = (state) => state.patientDetails;
 
 export const patientTaskListsSelector = createSelector(
   patientDetailsStateSelector,
@@ -21,6 +21,12 @@ export const completeTasksVisibilitySelector = createSelector(
 export const currentListTasksStatusSelector = createSelector(
   patientDetailsStateSelector,
   ({ currentTasksStatus }) => currentTasksStatus,
+);
+
+export const patientTaskDetailsSelector = createSelector(
+  patientDetailsStateSelector,
+  (_, taskId) => taskId,
+  (patientDetails, taskId) => patientDetails.tasksMap[taskId],
 );
 
 export const patientListHasTasksSelector = createSelector(

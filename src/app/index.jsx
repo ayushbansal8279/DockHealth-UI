@@ -1,28 +1,26 @@
 /* eslint-disable @typescript-eslint/no-var-requires */
-// eslint-disable-next-line @typescript-eslint/camelcase, import/no-extraneous-dependencies, @typescript-eslint/no-unused-vars
 // import Symbol_observable from 'symbol-observable';
 /* eslint-disable global-require */
-import MomentUtils from '@date-io/moment';
-import { MuiThemeProvider } from '@material-ui/core/styles';
-import { Font } from '@react-pdf/renderer';
-import { MuiPickersUtilsProvider } from 'material-ui-pickers';
+// import MomentUtils from '@date-io/moment';
+import { ThemeProvider as MuiThemeProvider } from '@mui/material/styles';
+import { LocalizationProvider as MuiPickersUtilsProvider } from '@mui/x-date-pickers';
+import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
 import { HashRouter } from 'react-router-dom';
 import moment from 'moment';
 import React from 'react';
-import { render } from 'react-dom';
+import { createRoot } from 'react-dom/client';
 import ReactGA from 'react-ga';
 import { Provider } from 'react-redux';
-import { StripeProvider } from 'react-stripe-elements';
 import { getTheme } from 'styles/theme';
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
 import configureStore from './ConfigureStore';
 import ErrorBoundary from './ErrorBoundary';
-import flags, { FlagsProvider } from './helpers/flags';
-import OpenSansBoldFontSource from './fonts/OpenSans-Bold.ttf';
-import OpenSansRegularFontSource from './fonts/OpenSans-Regular.ttf';
+// import flags, { FlagsProvider } from './helpers/flags';
 import Routes from './routing/routes';
 import App from './views/App';
 
-if (process.env.NODE_ENV === 'development') {
+if (import.meta.env.NODE_ENV === 'development') {
   const whyDidYouRender = require('@welldone-software/why-did-you-render');
   whyDidYouRender(React);
 }
@@ -52,21 +50,21 @@ moment.updateLocale('en', {
 const store = configureStore();
 
 const {
-  GA_TRACKING_CODE,
-  GA_TRACKING_CODE_ROLLUP,
-  SUBSCRIPTION_TOKEN_API_KEY,
-} = process.env;
+  VITE_GA_TRACKING_CODE,
+  VITE_GA_TRACKING_CODE_ROLLUP,
+  // VITE_SUBSCRIPTION_TOKEN_API_KEY,
+} = import.meta.env;
 
 ReactGA.initialize(
   [
     {
-      trackingId: GA_TRACKING_CODE,
+      trackingId: VITE_GA_TRACKING_CODE,
       gaOptions: {
         name: 'webapp',
       },
     },
     {
-      trackingId: GA_TRACKING_CODE_ROLLUP,
+      trackingId: VITE_GA_TRACKING_CODE_ROLLUP,
       gaOptions: {
         name: 'rollup',
       },
@@ -78,44 +76,39 @@ ReactGA.initialize(
   },
 );
 
-const stripeProps = SUBSCRIPTION_TOKEN_API_KEY
-  ? { apiKey: SUBSCRIPTION_TOKEN_API_KEY }
-  : { apiKey: 'NON_EXISTENT_API_KEY' };
+const queryClient = new QueryClient({
+  defaultOptions: {
+    queries: {
+      staleTime: Number.POSITIVE_INFINITY,
+      refetchOnMount: false,
+      refetchOnWindowFocus: false,
+    },
+  },
+});
 
-const Index = () => {
-  Font.register({
-    family: 'Open Sans',
-    fonts: [
-      {
-        src: OpenSansRegularFontSource,
-        fontWeight: 'normal',
-      },
-      {
-        src: OpenSansBoldFontSource,
-        fontWeight: 'bold',
-      },
-    ],
-  });
-
-  return (
+const Index = () => (
+  <QueryClientProvider client={queryClient}>
     <MuiThemeProvider theme={getTheme()}>
-      <MuiPickersUtilsProvider utils={MomentUtils}>
-        <FlagsProvider flags={flags}>
-          <Provider store={store}>
-            <StripeProvider {...stripeProps}>
-              <ErrorBoundary>
-                <HashRouter forceRefresh>
-                  <App>
-                    <Routes />
-                  </App>
-                </HashRouter>
-              </ErrorBoundary>
-            </StripeProvider>
-          </Provider>
-        </FlagsProvider>
+      <MuiPickersUtilsProvider dateAdapter={AdapterDateFns}>
+        {/* <FlagsProvider flags={flags}> */}
+        <Provider store={store}>
+          <ErrorBoundary>
+            <HashRouter forceRefresh>
+              <App>
+                <Routes />
+              </App>
+            </HashRouter>
+            {import.meta.env.VITE_APP_ENV === 'local' && (
+              <ReactQueryDevtools initialIsOpen={false} />
+            )}
+          </ErrorBoundary>
+        </Provider>
+        {/* </FlagsProvider> */}
       </MuiPickersUtilsProvider>
     </MuiThemeProvider>
-  );
-};
+  </QueryClientProvider>
+);
 
-render(<Index />, document.querySelector('#app'));
+const container = document.querySelector('#app');
+const root = createRoot(container);
+root.render(<Index />);

@@ -21,17 +21,17 @@ export const TIME_REFERENCE = {
 };
 
 export const TIME_REFERENCE_OPTIONS = Object.keys(TIME_REFERENCE).map(
-  value => ({
+  (value) => ({
     value,
     label: TIME_REFERENCE[value],
   }),
 );
 
-export const TIME_TYPE_OPTIONS = Object.values(TIME_TYPE).map(value => ({
+export const TIME_TYPE_OPTIONS = Object.values(TIME_TYPE).map((value) => ({
   value,
   label: capitalize(value.toLowerCase()),
 }));
 
-export const DELAY_PERIOD_UNIT_OPTIONS = Object.values(
-  DelayPeriodUnit,
-).map(value => ({ value, label: capitalize(value.toLowerCase()) }));
+export const DELAY_PERIOD_UNIT_OPTIONS = Object.values(DelayPeriodUnit).map(
+  (value) => ({ value, label: capitalize(value.toLowerCase()) }),
+);

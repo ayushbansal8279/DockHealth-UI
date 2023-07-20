@@ -1,5 +1,5 @@
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
-import { Box } from '@material-ui/core';
+import { Box } from '@mui/material';
 import { useHistory } from 'react-router-dom';
 import { checkIfUserIsOrganizationAdmin } from 'helpers/user-helper';
 import { userProfileSelector } from 'selectors/user-selectors';
@@ -56,7 +56,7 @@ const AnalyticsView = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  const handleSelectedFiltersChange = newSelectedFilters => {
+  const handleSelectedFiltersChange = (newSelectedFilters) => {
     dispatch(AnalyticsActions.setAnalyticsSelectedFilters(newSelectedFilters));
   };
 
@@ -99,14 +99,14 @@ const AnalyticsView = () => {
       !equals(
         selectedFilters,
         quickFiltersList?.find(
-          f => f.quickFilterIdentifier === selectedQuickFilter,
+          (f) => f.quickFilterIdentifier === selectedQuickFilter,
         )?.selectedOptions,
       ),
     [quickFiltersList, selectedFilters, selectedQuickFilter],
   );
 
   const handleQuickFilterCreate = useCallback(
-    name => dispatch(createQuickAnalyticsFilter(name, selectedFilters)),
+    (name) => dispatch(createQuickAnalyticsFilter(name, selectedFilters)),
     [dispatch, selectedFilters],
   );
 
@@ -117,13 +117,14 @@ const AnalyticsView = () => {
   );
 
   const handleQuickFilterDelete = useCallback(
-    quickFilterIdentifier => dispatch(deleteQuickFilter(quickFilterIdentifier)),
+    (quickFilterIdentifier) =>
+      dispatch(deleteQuickFilter(quickFilterIdentifier)),
     [dispatch],
   );
 
   const [maximizedChart, setMaximizedChart] = useState(null);
 
-  const handleMaximizedChart = name => {
+  const handleMaximizedChart = (name) => {
     setMaximizedChart(name);
   };
 

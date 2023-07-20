@@ -1,5 +1,4 @@
-/* eslint-disable @typescript-eslint/camelcase */
-import { Grid, Popover } from '@material-ui/core';
+import { Grid, Popover } from '@mui/material';
 import React, { useCallback, useState } from 'react';
 import { FormProvider, useForm } from 'react-hook-form';
 import { useDispatch, useSelector } from 'react-redux';
@@ -45,7 +44,7 @@ const InvitePeoplePopover = ({
   const isOwnerOrAdmin = checkIfUserIsOrganizationAdmin(currentUser);
 
   const closePopover = useCallback(
-    event => {
+    (event) => {
       // eslint-disable-next-line no-unused-expressions
       event?.preventDefault();
       toggleInvitePopover({ newInvitePopoverState: false });
@@ -55,7 +54,7 @@ const InvitePeoplePopover = ({
 
   const [isInviting, setIsInviting] = useState(false);
 
-  const onSubmit = data => {
+  const onSubmit = (data) => {
     setIsInviting(true);
     invitePersonToOrganization(data)
       .then(() => {
@@ -69,7 +68,7 @@ const InvitePeoplePopover = ({
         getAllUsers();
         setIsInviting(false);
       })
-      .catch(error => {
+      .catch((error) => {
         closePopover();
         showAlert({
           status: 'error',
@@ -101,7 +100,7 @@ const InvitePeoplePopover = ({
     >
       <InvitePeoplePopoverContainer>
         <InvitePeoplePopoverSection>
-          <Grid container justify="space-between" alignItems="center">
+          <Grid container justifyContent="space-between" alignItems="center">
             <InvitePopoverHeader>Invite User</InvitePopoverHeader>
             <InvitePopoverCloseButton onClick={closePopover} type="button">
               &times;

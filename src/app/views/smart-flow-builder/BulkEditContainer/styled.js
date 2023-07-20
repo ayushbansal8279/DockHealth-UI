@@ -1,6 +1,5 @@
-/* eslint-disable import/prefer-default-export */
 import styled from 'styled-components';
-import { motion } from 'framer-motion/dist/framer-motion';
+import { motion } from 'framer-motion';
 
 export const AnimatedContainer = styled(motion.div)`
   position: absolute;

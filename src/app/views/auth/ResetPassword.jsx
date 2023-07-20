@@ -10,7 +10,7 @@ import ResetPasswordForm from 'components/auth/ResetPasswordForm';
 import { showAlert } from 'helpers/utility-functions';
 import { AUTH_BASE_STATES } from 'reducers/auth-base-reducer';
 
-const ResetPassword = props => {
+const ResetPassword = (props) => {
   const dispatch = useDispatch();
   const history = useHistory();
 
@@ -21,7 +21,7 @@ const ResetPassword = props => {
   });
 
   const onSubmit = useCallback(
-    form => {
+    (form) => {
       const { location } = props;
       const queryValues = queryString.parse(location.search);
       const code = queryValues.code ?? form.code;
@@ -37,7 +37,7 @@ const ResetPassword = props => {
           success('Reset password. Please login');
           history.push('resetPasswordSuccess');
         })
-        .catch(error => {
+        .catch((error) => {
           const message = error.message || 'An error occurred.';
 
           showAlert({

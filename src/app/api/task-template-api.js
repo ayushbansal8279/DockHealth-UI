@@ -6,9 +6,7 @@ export function moveTemplateToFolder(identifier, parentTaskWorkflowIdentifier) {
       parentTaskWorkflowIdentifier,
       identifier,
     })
-    .then(response => {
-      return response.data;
-    });
+    .then((response) => response.data);
 }
 
 export function copyWorkflowToOrganization(
@@ -28,63 +26,47 @@ export function copyWorkflowToOrganization(
 export function getAllTemplatesForOrganization() {
   return axios
     .get(`task/template/getTemplatesForOrganization`)
-    .then(response => {
-      return response.data;
-    });
+    .then((response) => response.data);
 }
 
 export function getTemplates() {
   return axios
     .get(`task/template/getRootTemplatesForOrganization`)
-    .then(response => {
-      return response.data;
-    });
+    .then((response) => response.data);
 }
 
 export function searchTemplates(searchPhrase) {
   return axios
     .get(`task/template/searchTemplatesByName?searchTerm=${searchPhrase}`)
-    .then(response => {
-      return response.data;
-    });
+    .then((response) => response.data);
 }
 
 export function getTemplatesForSpecificFolder(taskTemplateIdentifier) {
   return axios
     .get(`task/template/findChildTemplates/${taskTemplateIdentifier}`)
-    .then(response => {
-      return response.data;
-    });
+    .then((response) => response.data);
 }
 
 export function getTasksForTemplate(taskTemplateIdentifier) {
   return axios
     .get(`task/template/findTasks/${taskTemplateIdentifier}`)
-    .then(response => {
-      return response.data;
-    });
+    .then((response) => response.data);
 }
 
 export function getTemplate(identifier) {
-  return axios.get(`task/workflow/${identifier}`).then(({ data }) => {
-    return data;
-  });
+  return axios.get(`task/workflow/${identifier}`).then(({ data }) => data);
 }
 
 export function getTemplateBasicDetails(identifier) {
   return axios
     .get(`task/workflow/${identifier}?basicDetails=true`)
-    .then(({ data }) => {
-      return data;
-    });
+    .then(({ data }) => data);
 }
 
 export function addTemplate(newTemplate, parentTaskWorkflowIdentifier) {
   return axios
     .post(`task/workflow`, { ...newTemplate, parentTaskWorkflowIdentifier })
-    .then(response => {
-      return response.data;
-    });
+    .then((response) => response.data);
 }
 
 export function updatePartialWorkflow(taskWorkflowIdentifier, dataToUpdate) {
@@ -98,10 +80,8 @@ export function updatePartialWorkflow(taskWorkflowIdentifier, dataToUpdate) {
   // ];
   return axios
     .patch(`task/workflow/${taskWorkflowIdentifier}`, dataToUpdate)
-    .then(response => {
-      return response.data;
-    })
-    .catch(error => {
+    .then((response) => response.data)
+    .catch((error) => {
       throw error;
     });
 }
@@ -111,10 +91,8 @@ export function switchTemplatePublic(taskTemplateIdentifier, flagPublic) {
     .patch(
       `task/template/${taskTemplateIdentifier}/public?flagPublic=${flagPublic}`,
     )
-    .then(response => {
-      return response.data;
-    })
-    .catch(error => {
+    .then((response) => response.data)
+    .catch((error) => {
       throw error;
     });
 }
@@ -124,10 +102,8 @@ export function removeUserFromWorkflow(taskTemplateIdentifier, userIdentifier) {
     .delete(
       `task/template/${taskTemplateIdentifier}/member?userIdentifier=${userIdentifier}`,
     )
-    .then(response => {
-      return response.data;
-    })
-    .catch(error => {
+    .then((response) => response.data)
+    .catch((error) => {
       throw error;
     });
 }
@@ -141,10 +117,8 @@ export function updateUserInWorkflowPermissions(
     .patch(
       `task/template/${taskTemplateIdentifier}/member?userIdentifier=${userIdentifier}&memberPermission=${memberPermission}`,
     )
-    .then(response => {
-      return response.data;
-    })
-    .catch(error => {
+    .then((response) => response.data)
+    .catch((error) => {
       throw error;
     });
 }
@@ -158,19 +132,19 @@ export function reorderTasksForTemplate(
       taskTemplateIdentifier,
       taskIdentifiers: orderedTaskIdentifiers,
     })
-    .then(response => response.data);
+    .then((response) => response.data);
 }
 
 export function getTemplateLayout(taskTemplateIdentifier) {
   return axios
     .get(`task/template/layout/${taskTemplateIdentifier}`)
-    .then(response => response.data);
+    .then((response) => response.data);
 }
 
 export function saveTemplateLayout(taskTemplateIdentifier, layout) {
   return axios
     .post(`task/template/layout/${taskTemplateIdentifier}`, layout)
-    .then(response => response.data);
+    .then((response) => response.data);
 }
 
 export function addTaskOutcome(taskIdentifier, name) {

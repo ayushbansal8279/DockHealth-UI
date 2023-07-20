@@ -1,9 +1,9 @@
 import styled from 'styled-components';
 import palette from 'styles/palette';
-import GoogleLogo from 'img/google_btn_light_normal_ios';
+import GoogleLogo from 'img/google_btn_light_normal_ios.svg';
 // import DrChronoLogo from 'img/drchrono-button';
-import DrChronoLogo from 'img/drchrono_icon';
-import AthenHealthLogo from 'img/athenahealth_icon';
+import DrChronoLogo from 'img/drchrono_icon.png';
+import AthenHealthLogo from 'img/athenahealth_icon.png';
 
 export const SSOOptionsBar = styled.div`
   width: 100%;

@@ -1,8 +1,8 @@
-import { Grid, Typography } from '@material-ui/core';
+import { Grid, Typography } from '@mui/material';
 import React, { useState } from 'react';
 import Highlighter from 'react-highlight-words';
 import styled from 'styled-components';
-import Spacing from 'components/common/Spacing.tsx';
+import Spacing from 'components/common/Spacing';
 import palette from 'styles/palette';
 import Search from 'components/task-view/Search/Search';
 
@@ -84,19 +84,21 @@ const FaqQuestion = ({ content, title, searchTerm }) => (
   </>
 );
 
-const questionFilter = ({ searchTerm }) => ({ content, title }) => {
-  if (!searchTerm) {
-    return true;
-  }
+const questionFilter =
+  ({ searchTerm }) =>
+  ({ content, title }) => {
+    if (!searchTerm) {
+      return true;
+    }
 
-  const searchTermArray = searchTerm.toLowerCase().split(/\s+/);
+    const searchTermArray = searchTerm.toLowerCase().split(/\s+/);
 
-  return searchTermArray.some(
-    word =>
-      content.toLowerCase().includes(word) ||
-      title.toLowerCase().includes(word),
-  );
-};
+    return searchTermArray.some(
+      (word) =>
+        content.toLowerCase().includes(word) ||
+        title.toLowerCase().includes(word),
+    );
+  };
 
 const SupportSectionViewFaq = () => {
   const [searchTerm, setSearchTerm] = useState('');
@@ -106,12 +108,18 @@ const SupportSectionViewFaq = () => {
       <Grid
         container
         alignItems="center"
-        justify="space-between"
+        justifyContent="space-between"
         wrap="nowrap"
         item
         xs={12}
       >
-        <Grid item xs={6} container alignItems="center" justify="flex-start">
+        <Grid
+          item
+          xs={6}
+          container
+          alignItems="center"
+          justifyContent="flex-start"
+        >
           <Typography variant="h2">
             <b>FAQs</b>
           </Typography>
@@ -119,7 +127,7 @@ const SupportSectionViewFaq = () => {
           <SupportSearchContainer>
             <Search
               fullWidth
-              onChange={event => setSearchTerm(event?.target?.value ?? '')}
+              onChange={(event) => setSearchTerm(event?.target?.value ?? '')}
               value={searchTerm}
             />
           </SupportSearchContainer>
@@ -128,7 +136,7 @@ const SupportSectionViewFaq = () => {
           item
           xs={6}
           container
-          justify="flex-end"
+          justifyContent="flex-end"
           direction="row"
           wrap="nowrap"
         >

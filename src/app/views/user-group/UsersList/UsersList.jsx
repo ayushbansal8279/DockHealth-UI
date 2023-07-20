@@ -1,10 +1,10 @@
 import React from 'react';
 import { useHistory } from 'react-router-dom';
-import { Grid } from '@material-ui/core';
+import { Grid } from '@mui/material';
 import { createFilter } from 'react-search-input';
 import isEmpty from 'ramda/src/isEmpty';
 import { capitalize } from 'helpers/capitalize';
-import Spacing from 'components/common/Spacing.tsx';
+import Spacing from 'components/common/Spacing';
 import { RobotoTypography } from 'styles/theme';
 import UserAvatar from 'components/user/UserAvatar/UserAvatar';
 import {
@@ -14,7 +14,7 @@ import {
   UsersListContainer,
 } from './styled';
 
-const renderColumnHeader = props => {
+const renderColumnHeader = (props) => {
   const { colDef } = props;
   const { headerName } = colDef;
 
@@ -27,7 +27,7 @@ const renderColumnHeader = props => {
   );
 };
 
-const UsersList = props => {
+const UsersList = (props) => {
   const { users, searchTerm } = props;
   const history = useHistory();
 
@@ -41,6 +41,7 @@ const UsersList = props => {
         return (
           <div
             className="people-cell-container"
+            style={{ display: 'flex' }}
             onClick={() =>
               history.push(
                 `/core/assignedToPerson/${encodeURIComponent(
@@ -79,7 +80,7 @@ const UsersList = props => {
     'workPhoneNumber',
   ];
 
-  const usersWithId = users.map(user => ({
+  const usersWithId = users.map((user) => ({
     id: user?.userIdentifier,
     ...user,
   }));
@@ -93,10 +94,8 @@ const UsersList = props => {
       {isEmpty(filteredUsers) ? (
         <ListContainer>
           <ListEntryContainer>
-            <Grid container justify="center" alignItems="center">
-              <RobotoTypography variant="h4">
-                No providers found
-              </RobotoTypography>
+            <Grid container justifyContent="center" alignItems="center">
+              <RobotoTypography variant="h4">No users found</RobotoTypography>
             </Grid>
           </ListEntryContainer>
         </ListContainer>
@@ -110,6 +109,8 @@ const UsersList = props => {
           autoHeight
           disableSelectionOnClick
           disableColumnMenu
+          showColumnRightBorder
+          showCellRightBorder
         />
       )}
     </UsersListContainer>

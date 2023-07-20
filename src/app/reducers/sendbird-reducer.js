@@ -1,4 +1,3 @@
-/* eslint-disable sonarjs/no-small-switch */
 import * as ActionTypes from 'actions/action-types';
 
 const initialState = {
@@ -25,8 +24,9 @@ const SendbirdReducer = (state = initialState, action) => {
       } = action;
       return { ...state, channel };
     }
-    default:
+    default: {
       return state;
+    }
   }
 };
 

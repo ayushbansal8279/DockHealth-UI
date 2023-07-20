@@ -1,4 +1,4 @@
-import { Grid } from '@material-ui/core';
+import { Grid } from '@mui/material';
 import identity from 'ramda/src/identity';
 import memoizeWith from 'ramda/src/memoizeWith';
 import range from 'ramda/src/range';
@@ -38,7 +38,7 @@ const BaaPreview = React.memo(({ isPreviewOpen, hidePreview }) => {
   const data = useAsync(async () => {
     const rawBase64Data = await new Promise((resolve, reject) =>
       memoizedDownloadSignedDocument()
-        .then(documentBlob => {
+        .then((documentBlob) => {
           const reader = new FileReader();
           reader.onloadend = () => {
             resolve(reader.result);
@@ -101,19 +101,19 @@ const BaaPreview = React.memo(({ isPreviewOpen, hidePreview }) => {
       </AttachmentPreviewHeader>
       <AttachmentPreviewContent>
         {data.loading && (
-          <Grid container justify="center" alignItems="center">
+          <Grid container justifyContent="center" alignItems="center">
             <Loader />
           </Grid>
         )}
         {!data.loading && !data.error && (
           <StyledPdfDocument file={fileSource} onLoadSuccess={onPdfLoadSuccess}>
-            {range(0, numberOfPdfPages).map(pageIndex => (
+            {range(0, numberOfPdfPages).map((pageIndex) => (
               <StyledPdfPage key={pageIndex} pageNumber={pageIndex + 1} />
             ))}
           </StyledPdfDocument>
         )}
         {data.error && (
-          <Grid container justify="center" alignItems="center">
+          <Grid container justifyContent="center" alignItems="center">
             {data.error?.message}
           </Grid>
         )}

@@ -1,9 +1,8 @@
-import { Checkbox } from '@material-ui/core';
+import { Checkbox } from '@mui/material';
 import styled from 'styled-components';
 import { fontSizes, fontWeights } from 'styles/font';
 import palette from 'styles/palette';
 import spacing from 'styles/spacing';
-import { withStyles } from '@material-ui/core/styles';
 import { ModalWrapper } from '../styled';
 
 export const AdditionalOptionLabel = styled.span`
@@ -48,7 +47,7 @@ export const FieldTypeImage = styled.img`
 export const FiledTypeDescription = styled.p`
   min-height: 72px;
   margin-bottom: 0;
-  font-family: 'Roboto', sans-serif;
+  font-family: 'Roboto Condensed', sans-serif;
   font-size: ${fontSizes.regular};
   font-weight: ${fontWeights.light};
   color: ${palette.coolGrey1};
@@ -56,7 +55,7 @@ export const FiledTypeDescription = styled.p`
 
 export const FiledTypeTitle = styled.p`
   margin-bottom: 8px;
-  font-family: 'Roboto', sans-serif;
+  font-family: 'Roboto Condensed', sans-serif;
   font-size: ${fontSizes.regular};
   font-weight: ${fontWeights.bold};
   color: ${palette.coolGrey1};
@@ -83,15 +82,16 @@ export const InfoText = styled.p`
   text-transform: uppercase;
 `;
 
-export const BlueCheckbox = withStyles({
-  root: {
-    color: palette.brightBlue,
-    '&$checked': {
-      color: palette.brightBlue,
-    },
-  },
-  checked: {},
-})(Checkbox);
+export const BlueCheckbox = styled(Checkbox)`
+  &&& {
+    &.MuiCheckbox-root {
+      color: ${palette.brightBlue};
+      & .checked {
+        color: ${palette.brightBlue};
+      }
+    }
+  }
+`;
 
 export const CheckboxContainer = styled.div`
   display: flex;

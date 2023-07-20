@@ -1,7 +1,7 @@
 import prop from 'ramda/src/prop';
 import { createSelector } from 'reselect';
 
-export const organizationStateSelector = state => state.organizationState;
+export const organizationStateSelector = (state) => state.organizationState;
 
 export const organizationSelector = createSelector(
   organizationStateSelector,
@@ -56,16 +56,6 @@ export const organizationStatusesErrorSelector = createSelector(
 export const fetchingOrganizationStatusesSelector = createSelector(
   organizationStateSelector,
   prop('isFetchingStatuses'),
-);
-
-export const organizationUsersSelector = createSelector(
-  organizationStateSelector,
-  prop('organizationUsers'),
-);
-
-export const isFetchingOrganizationUsersSelector = createSelector(
-  organizationStateSelector,
-  prop('isFetchingOrganizationUsers'),
 );
 
 export const organizationCustomFieldsSelector = createSelector(

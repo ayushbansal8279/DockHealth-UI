@@ -1,6 +1,5 @@
 import palette from 'styles/palette';
 
-/* eslint-disable import/prefer-default-export */
 export const StatusColor = {
   BROWN: '#7F4334',
   RED: '#BB3354',

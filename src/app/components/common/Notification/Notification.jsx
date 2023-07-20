@@ -46,14 +46,14 @@ class Notification extends React.Component {
   }
 }
 
-const mapStateToProps = store => ({
+const mapStateToProps = (store) => ({
   message: store.notification.message,
   type: store.notification.type,
   hidden: store.notification.hidden,
   stay: store.notification.stay,
 });
 
-const mapDispatchToProps = dispatch => ({
+const mapDispatchToProps = (dispatch) => ({
   actions: bindActionCreators(NotificationActions, dispatch),
 });
 

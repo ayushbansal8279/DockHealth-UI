@@ -61,14 +61,14 @@ const initializeTaskDrawerTopSectionHooks = ({
           parentTaskIdentifier || null,
         ),
       );
-      if (!identifier) {
-        closeTaskDrawer();
-      } else {
+      if (identifier) {
         history.push(HOME_PATH);
+      } else {
+        closeTaskDrawer();
       }
     };
 
-    const openMoveTasksWithSubtasksModal = destination =>
+    const openMoveTasksWithSubtasksModal = (destination) =>
       dispatch(
         openModal('MoveTasksWithSubtasks', {
           confirm: () => confirmAction(destination),
@@ -133,7 +133,7 @@ const initializeTaskDrawerTopSectionHooks = ({
     dispatch(openModal('AttachmentsDuplicate', modalProps));
   };
 
-  const duplicateTaskWithoutConfirmation = event => {
+  const duplicateTaskWithoutConfirmation = (event) => {
     onDuplicate({
       afterDuplicate: () => {
         closeTaskDrawer();
@@ -145,7 +145,7 @@ const initializeTaskDrawerTopSectionHooks = ({
 
   const onCompleteToggle = useCallback(
     // eslint-disable-next-line sonarjs/cognitive-complexity
-    event => {
+    (event) => {
       const incompleteRequiredFields = findIncompleteRequiredFields(
         templates,
         selectedTask,
@@ -156,7 +156,7 @@ const initializeTaskDrawerTopSectionHooks = ({
         const hasIncompletedSubtasks =
           selectedTask.subtasks?.length > 0
             ? selectedTask.subtasks.find(
-                subtask => subtask.status === 'INCOMPLETE',
+                (subtask) => subtask.status === 'INCOMPLETE',
               )
             : selectedTask.subTasksCount - selectedTask.subTasksCompletedCount >
               0;

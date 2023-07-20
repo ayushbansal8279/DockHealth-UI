@@ -1,13 +1,13 @@
 import React, { useEffect, useState } from 'react';
 import { useDispatch } from 'react-redux';
-import { IconButton, Typography } from '@material-ui/core';
+import { IconButton, Typography } from '@mui/material';
 import { openModal, closeModal } from 'modal/actions';
 import {
   addTaskToTemplate,
   deleteTemporaryElement,
 } from 'actions/task-template-actions';
 import { getTemplates } from 'api/task-template-api';
-import { Add, Delete } from '@material-ui/icons';
+import { Add, Delete } from '@mui/icons-material';
 import palette from 'styles/palette';
 import { NodeType } from 'helpers/smart-flow-builder-helpers';
 import ListsIcon from 'img/navigation/ListsIcon';
@@ -15,7 +15,7 @@ import TaskNodeWrapper from '../../TaskNodeWrapper/TaskNodeWrapper';
 import TaskNodeHandles from '../../TaskNodeHandles/TaskNodeHandles';
 import NestedFlowNodeStyled, { TaskLinks, TaskWrapper } from '../styled';
 
-const NewNestedFlowNode = React.memo(props => {
+const NewNestedFlowNode = React.memo((props) => {
   const { id, type, data, selected, xPos, yPos, isConnectable } = props;
   const [workflow, setWorkflow] = useState({});
   const { taskTemplateIdentifier } = data;
@@ -56,7 +56,7 @@ const NewNestedFlowNode = React.memo(props => {
   };
 
   useEffect(() => {
-    if (Object.keys(workflow).length !== 0) {
+    if (Object.keys(workflow).length > 0) {
       dispatch(
         addTaskToTemplate(
           {
@@ -93,9 +93,7 @@ const NewNestedFlowNode = React.memo(props => {
         <TaskNodeWrapper selected={selected} type={type} width={280}>
           <NestedFlowNodeStyled>
             <Typography component="p">
-              {workflow?.workflowName
-                ? workflow.workflowName
-                : 'Connect to Workflow'}
+              {workflow?.workflowName ?? 'Connect to Workflow'}
             </Typography>
             <IconButton onClick={() => dispatch(deleteTemporaryElement(id))}>
               <Delete htmlColor={palette.white} />

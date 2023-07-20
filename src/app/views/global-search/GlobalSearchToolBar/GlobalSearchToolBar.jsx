@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Box } from '@material-ui/core';
+import { Box } from '@mui/material';
 import InboxTips from 'components/tasklist/InboxTips/InboxTips';
 import { ViewType, getViewTypeFromQueryString } from 'helpers/view-type-helper';
 import { useLocation } from 'react-router-dom';
@@ -12,8 +12,8 @@ import {
 import { useSelector } from 'react-redux';
 import { currentTaskListSelector } from 'selectors/task-list-selectors';
 import { isMemberAdmin } from 'helpers/list-members-helper';
+import TaskCustomFieldsModal from 'modal/customModals/TaskCustomFieldsModal';
 import { ToolbarContainer } from './styled';
-import TaskCustomFieldsModal from '../../../modal/customModals/TaskCustomFieldsModal';
 
 const GlobalSearchToolbar = ({ additionalOptions, children }) => {
   const { search } = useLocation();

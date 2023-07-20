@@ -1,6 +1,6 @@
 /* eslint-disable react-hooks/rules-of-hooks */
 import React from 'react';
-import { Fade, Popper } from '@material-ui/core';
+import { Fade, Popper } from '@mui/material';
 import { openDrawer } from 'actions/workflow-drawer-actions';
 import { checkIfShouldDisplayTooltip } from 'components/task/OverflowTooltip/OverflowTooltip';
 import { useDispatch } from 'react-redux';
@@ -31,6 +31,8 @@ const TaskTemplateName = ({
   return (
     <>
       <NameContainer
+        // onMouseEnter={() => setIsHoverVisible(true)}
+        // onMouseLeave={() => setIsHoverVisible(false)}
         onClick={() => {
           dispatch(openDrawer(identifier, templateGroup));
         }}

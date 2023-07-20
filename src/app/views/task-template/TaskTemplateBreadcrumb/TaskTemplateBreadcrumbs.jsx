@@ -1,4 +1,3 @@
-/* eslint-disable jsx-a11y/anchor-is-valid */
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { useSelector } from 'react-redux';
@@ -7,10 +6,10 @@ import {
   createWorkflowFolderPath,
 } from 'routing/helpers/paths';
 import { taskTemplateBreadcrumbsSelector } from 'selectors/task-template-selectors';
-import Breadcrumbs from '@material-ui/core/Breadcrumbs';
-import Typography from '@material-ui/core/Typography';
-import NavigateNextIcon from '@material-ui/icons/NavigateNext';
-import { Box } from '@material-ui/core';
+import Breadcrumbs from '@mui/material/Breadcrumbs';
+import Typography from '@mui/material/Typography';
+import NavigateNextIcon from '@mui/icons-material/NavigateNext';
+import { Box } from '@mui/material';
 
 const TemplateBreadcrumbs = () => {
   const breadcrumbs = useSelector(taskTemplateBreadcrumbsSelector);

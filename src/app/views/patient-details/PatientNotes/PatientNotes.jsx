@@ -1,5 +1,5 @@
 /* eslint-disable sonarjs/cognitive-complexity */
-import React, { useCallback, useMemo, useRef, useState } from 'react';
+import React, { useCallback, useMemo, useState } from 'react';
 import compose from 'ramda/src/compose';
 import descend from 'ramda/src/descend';
 import prop from 'ramda/src/prop';
@@ -16,26 +16,21 @@ import {
   changePatientNotePin,
 } from 'sagas/patient-details-saga';
 import { openModal, closeModal } from 'modal/actions';
-import TextEditor from 'components/common/TextEditor/TextEditor';
-import { EditorState } from 'draft-js';
-import { convertFromEditorStateToOutput } from 'components/common/TextEditor/helpers';
-import { useMentionsEditorState } from 'components/common/TextEditor/use-mentions-editor-state';
 import Button from 'components/common/Button/Button';
 import Spacing from 'components/common/Spacing';
-import { ClickAwayListener } from '@material-ui/core';
+import { ClickAwayListener } from '@mui/material';
 import { checkIfUserIsOrganizationAdmin } from 'helpers/user-helper';
+import RichTextEditor from 'components/common/RichTextEditor/RichTextEditor';
 import PatientNote from '../PatientNote/PatientNote';
 import PatientNotesLoader from '../PatientNotesLoader/PatientNotesLoader';
 import {
   PatientNotesWrapper,
   PinnedNotesWrapper,
-  RichTextInputContainer,
   ButtonContainer,
   ButtonWrapper,
 } from './styled';
 
 const PatientNotes = () => {
-  const addNoteInputReference = useRef(null);
   const dispatch = useDispatch();
   const patient = useSelector(patientSelector);
   const isFetching = useSelector(isFetchingNotesSelector);
@@ -47,7 +42,7 @@ const PatientNotes = () => {
   const isOrganizationAdmin = checkIfUserIsOrganizationAdmin(currentUser);
 
   const handleRemoveNote = useCallback(
-    patientNoteIdentifier => {
+    (patientNoteIdentifier) => {
       const modalProps = {
         title: 'Delete note',
         description:
@@ -62,39 +57,27 @@ const PatientNotes = () => {
     [dispatch],
   );
 
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   const handleSaveNote = useCallback(compose(dispatch, updatePatientNote), []);
 
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   const handlePinChange = useCallback(
     compose(dispatch, changePatientNotePin),
     [],
   );
 
-  const [noteState, setNoteState] = useMentionsEditorState();
-  const onNoteChange = state => setNoteState(state);
-  const clearNote = useCallback(() => setNoteState(EditorState.createEmpty()), [
-    setNoteState,
-  ]);
+  const [noteState, setNoteState] = useState('');
 
   const isEmpty = useMemo(() => {
-    const { tokenizedText } = convertFromEditorStateToOutput(noteState, true);
-    return !tokenizedText.trim().length;
+    // const { tokenizedText } = convertFromEditorStateToOutput(noteState, true);
+    // return tokenizedText?.trim()?.length === 0;
+    return noteState?.trim()?.length === 0;
   }, [noteState]);
 
-  const saveNote = useCallback(() => {
-    const { tokenizedText } = convertFromEditorStateToOutput(noteState, true);
-    if (tokenizedText.trim().length > 0) {
-      dispatch(addPatientNote(patientIdentifier, tokenizedText));
-      clearNote();
-      if (typeof addNoteInputReference.current.clear === 'function')
-        addNoteInputReference.current.clear();
-      setEditMode(false);
-    }
-  }, [clearNote, dispatch, noteState, patientIdentifier]);
-
   const handleCancel = useCallback(() => {
-    clearNote();
+    setNoteState('');
     setEditMode(false);
-  }, [clearNote]);
+  }, []);
 
   const openDeleteConfirmationModal = useCallback(() => {
     const modalProps = {
@@ -151,7 +134,7 @@ const PatientNotes = () => {
       ) || [null, null],
     [notes],
   );
-  const renderNote = note => {
+  const renderNote = (note) => {
     const { description, mentions, ...restNotes } = note;
 
     return (
@@ -171,9 +154,16 @@ const PatientNotes = () => {
     );
   };
 
+  const handleTextEditorChange = (value) => {
+    setNoteState(value);
+    setEditMode(true);
+  };
+
   return (
     <PatientNotesWrapper>
-      {!isFetching ? (
+      {isFetching ? (
+        <PatientNotesLoader />
+      ) : (
         <>
           {pinnedNotes?.length > 0 && (
             <PinnedNotesWrapper>
@@ -182,46 +172,49 @@ const PatientNotes = () => {
           )}
           {unpinnedNotes?.sort(descend(prop('dateUpdated')))?.map(renderNote)}
           <ClickAwayListener onClickAway={handleClickAway}>
-            <RichTextInputContainer>
-              <TextEditor
-                getFocusFromParent={editMode}
+            <div style={{ paddingTop: '10px', paddingBottom: '10px' }}>
+              <RichTextEditor
+                placeholder="Add a new note"
                 showToolbar
-                ref={addNoteInputReference}
-                taskListIdentifier={patientIdentifier}
-                disableMentions
-                placeholder="Leave a note and press enter on your keyboard to save"
-                state={noteState}
-                onChange={onNoteChange}
+                value={noteState}
+                onChange={handleTextEditorChange}
                 onFocus={handleFocus}
+                initOnClick={false}
+                showCharCount
               />
-              {editMode && (
-                <ButtonContainer>
-                  <ButtonWrapper>
-                    <Button
-                      color="secondary"
-                      variant="secondary"
-                      onClick={handleCancel}
-                      size="small"
-                    >
-                      Cancel
-                    </Button>
-                    <Spacing horizontal={4} />
-                    <Button
-                      color="primary"
-                      disabled={isEmpty}
-                      size="small"
-                      onClick={saveNote}
-                    >
-                      Save
-                    </Button>
-                  </ButtonWrapper>
-                </ButtonContainer>
-              )}
-            </RichTextInputContainer>
+            </div>
           </ClickAwayListener>
+          {editMode && (
+            <ButtonContainer>
+              <ButtonWrapper>
+                <Button
+                  color="secondary"
+                  variant="secondary"
+                  onClick={() => {
+                    setNoteState('');
+                    setEditMode(false);
+                  }}
+                  size="small"
+                >
+                  Cancel
+                </Button>
+                <Spacing horizontal={4} />
+                <Button
+                  color="primary"
+                  disabled={isEmpty}
+                  size="small"
+                  onClick={() => {
+                    dispatch(addPatientNote(patientIdentifier, noteState));
+                    setNoteState('');
+                    setEditMode(false);
+                  }}
+                >
+                  Save
+                </Button>
+              </ButtonWrapper>
+            </ButtonContainer>
+          )}
         </>
-      ) : (
-        <PatientNotesLoader />
       )}
     </PatientNotesWrapper>
   );

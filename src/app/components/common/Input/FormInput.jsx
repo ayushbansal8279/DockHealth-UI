@@ -42,7 +42,7 @@ const FormInput = React.forwardRef(
       unregister(name);
     });
 
-    const handleChange = event => {
+    const handleChange = (event) => {
       setValue(name, event.target.value, { shouldDirty: true });
       if (typeof onChange === 'function') onChange(event);
     };

@@ -13,8 +13,8 @@ import palette from 'styles/palette';
 import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd';
 import Checkbox from 'components/common/Checkbox/Checkbox';
 import { createWorkflowBuilderPath } from 'routing/helpers/paths';
-import { Collapse } from '@material-ui/core';
-import { MoreVert } from '@material-ui/icons';
+import { Collapse } from '@mui/material';
+import { MoreVert } from '@mui/icons-material';
 import { onTaskOrderChanged } from 'helpers/ga-event-helper';
 import { checkIfAllTasksSelected } from 'helpers/bulk-edit-helpers';
 import {
@@ -31,6 +31,7 @@ import * as ModalActions from 'modal/actions';
 import * as TaskActions from 'actions/task-actions';
 import { openDrawer } from 'actions/workflow-drawer-actions';
 import { extractTasksAndSubtasks } from 'helpers/tasklist-helpers';
+import { TaskOrigin } from 'helpers/task-helpers';
 import Tooltip from 'components/common/Tooltip/Tooltip';
 import RotatableChevron from 'components/common/RotatableChevron/RotatableChevron';
 import StandardTaskItemContainer from 'components/task/StandardTaskItemContainer/StandardTaskItemContainer';
@@ -135,7 +136,7 @@ const TaskTemplate = ({
             dispatch(
               ModalActions.openModal('SelectWorkflowDestination', {
                 confirmText: 'Move',
-                confirm: parentTaskWorkflowIdentifier => {
+                confirm: (parentTaskWorkflowIdentifier) => {
                   dispatch(
                     moveWorkflowToFolder(
                       identifier,
@@ -143,7 +144,7 @@ const TaskTemplate = ({
                     ),
                   );
                 },
-                onAddFolderCallback: createdFolder => {
+                onAddFolderCallback: (createdFolder) => {
                   if (
                     folderIdentifier ===
                     createdFolder.parentTaskWorkflowIdentifier
@@ -223,7 +224,7 @@ const TaskTemplate = ({
   );
 
   const handleNameInputKeyDown = useCallback(
-    event => {
+    (event) => {
       const {
         key,
         target: { value },
@@ -248,7 +249,7 @@ const TaskTemplate = ({
   );
 
   const handleAddTaskToTemplate = useCallback(
-    task => {
+    (task) => {
       dispatch(
         addTaskToTemplate({
           ...task,
@@ -286,7 +287,6 @@ const TaskTemplate = ({
         ({ assignedToUsers, subtasks }) =>
           (assignedToUsers && assignedToUsers.length > 1) ||
           (subtasks &&
-            subtasks.length > 0 &&
             subtasks.some(
               ({ assignedToUsers: subtaskAssignedToUsers }) =>
                 subtaskAssignedToUsers && subtaskAssignedToUsers.length > 1,
@@ -295,9 +295,10 @@ const TaskTemplate = ({
     [tasks],
   );
 
-  const isTemplateSelected = useMemo(() => checkIfAllTasksSelected(tasks), [
-    tasks,
-  ]);
+  const isTemplateSelected = useMemo(
+    () => checkIfAllTasksSelected(tasks),
+    [tasks],
+  );
 
   const handleTemplateSelect = useCallback(() => {
     const { parentTasks, subtasks } = extractTasksAndSubtasks(tasks);
@@ -321,7 +322,7 @@ const TaskTemplate = ({
     history.push(createWorkflowBuilderPath(identifier));
   };
 
-  const onChangeName = event => {
+  const onChangeName = (event) => {
     setNameInputValue(event.target?.value);
     setNameInputError(false);
   };
@@ -384,40 +385,41 @@ const TaskTemplate = ({
       </TaskTemplateHeader>
       <Collapse in={isOpen}>
         <>
-          {!isFetching ? (
+          {isFetching ? (
+            <TasksSkeletonLoader rows={4} />
+          ) : (
             <>
               <DragDropContext
                 onBeforeCapture={onBeforeCapture}
                 onDragEnd={onDragEnd}
               >
                 <Droppable droppableId="droppable">
-                  {droppableProvided => (
+                  {(droppableProvided) => (
                     <div
                       {...droppableProvided.droppableProps}
                       ref={droppableProvided.innerRef}
                     >
-                      {tasks?.map((task, index) => {
+                      {tasks?.map((taskIdentifier, index) => {
                         return (
                           <Draggable
-                            key={task.taskIdentifier}
-                            draggableId={task.taskIdentifier}
+                            key={taskIdentifier}
+                            draggableId={taskIdentifier}
                             index={index}
                           >
                             {(draggableProvided, draggableSnapshot) => (
                               <StandardTaskItemContainer
-                                isStartedDnD={
-                                  draggableId === task.taskIdentifier
-                                }
+                                isStartedDnD={draggableId === taskIdentifier}
                                 isDragging={draggableSnapshot.isDragging}
                                 draggableProvided={draggableProvided}
                                 isDraggable
-                                task={task}
+                                taskIdentifier={taskIdentifier}
                                 isFullView={isFullView}
                                 multipleAssigneesContext={
                                   containsMultipleAssignees
                                 }
                                 noMargin
                                 iconColorActive={iconColorActive}
+                                origin={TaskOrigin.TEMPLATE}
                               />
                             )}
                           </Draggable>
@@ -436,8 +438,6 @@ const TaskTemplate = ({
                 />
               </QuickAddInputWrapper>
             </>
-          ) : (
-            <TasksSkeletonLoader rows={4} />
           )}
         </>
       </Collapse>

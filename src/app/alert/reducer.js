@@ -9,11 +9,11 @@ const initialState = {
   undoCallback: null,
 };
 
-export default function(state = initialState, action = {}) {
+export default (state = initialState, action = {}) => {
   const { type, payload } = action;
 
   switch (type) {
-    case SHOW_GLOBAL_ALERT:
+    case SHOW_GLOBAL_ALERT: {
       return {
         ...state,
         text: payload.text,
@@ -24,8 +24,9 @@ export default function(state = initialState, action = {}) {
         undoCallback: payload.undoCallback,
         options: payload.options,
       };
+    }
 
-    case SHOW_SIDEBAR_ALERT:
+    case SHOW_SIDEBAR_ALERT: {
       return {
         ...state,
         text: payload.text,
@@ -33,8 +34,9 @@ export default function(state = initialState, action = {}) {
         isSideBarAlert: true,
         type: payload.type,
       };
+    }
 
-    case CLOSE_GLOBAL_ALERT:
+    case CLOSE_GLOBAL_ALERT: {
       return {
         ...state,
         isGlobalOpen: false,
@@ -42,8 +44,10 @@ export default function(state = initialState, action = {}) {
         transactionIdentifier: null,
         undoCallback: null,
       };
+    }
 
-    default:
+    default: {
       return state;
+    }
   }
-}
+};

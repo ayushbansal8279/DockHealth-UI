@@ -21,8 +21,8 @@ import {
   taskCountersSelector,
   tasksIsFetchingSelector,
   completedTasksIsFetchingSelector,
-  tasksSelector,
-  completedTasksSelector,
+  taskIdentifiersSelector,
+  completedTaskIdentifiersSelector,
   currentTasksStatusSelector,
   userIdentifierSelector,
 } from 'selectors/person-details-selectors';
@@ -39,32 +39,35 @@ const UserDetailsFilters = () => {
   const isCompletedTasksFetching = useSelector(
     completedTasksIsFetchingSelector,
   );
-  const tasks = useSelector(tasksSelector);
-  const completedTasks = useSelector(completedTasksSelector);
+  const taskIdentifiers = useSelector(taskIdentifiersSelector);
+  const completedTaskIdentifiers = useSelector(
+    completedTaskIdentifiersSelector,
+  );
   const taskCounters = useSelector(taskCountersSelector);
   const quickFiltersList = useSelector(quickFiltersSelector);
   const addQuickFilterOption = useSelector(addQuickFilterOptionSelector);
   const selectedQuickFilter = useSelector(selectedQuickFilterSelector);
   const { filters, selectedFilters } = megaFilter || {};
 
+  // @TODO - fix this
   const tasksAndSubTasksCount =
     selectedTab === TaskStatus.INCOMPLETE
       ? determineTaskCounts({
           selectedFilters,
           isFetching,
-          tasks,
+          tasks: taskIdentifiers,
           tasksCount: taskCounters.incomplete,
           status: 'INCOMPLETE',
         })
       : determineTaskCounts({
           selectedFilters,
           isFetching,
-          tasks: completedTasks,
+          tasks: completedTaskIdentifiers,
           tasksCount: taskCounters.complete,
           status: 'COMPLETE',
         });
 
-  const handleFilterChange = updatedFilters => {
+  const handleFilterChange = (updatedFilters) => {
     dispatch(
       selectFiltersForMegaFilter(updatedFilters, userIdentifier, selectedTab),
     );
@@ -80,7 +83,7 @@ const UserDetailsFilters = () => {
       !equals(
         selectedFilters,
         quickFiltersList?.find(
-          f => f.quickFilterIdentifier === selectedQuickFilter,
+          (f) => f.quickFilterIdentifier === selectedQuickFilter,
         )?.selectedOptions,
       ),
     [quickFiltersList, selectedFilters, selectedQuickFilter],
@@ -116,7 +119,7 @@ const UserDetailsFilters = () => {
   );
 
   const handleQuickFilterCreate = useCallback(
-    name =>
+    (name) =>
       dispatch(
         createQuickFilter(
           name,
@@ -140,7 +143,8 @@ const UserDetailsFilters = () => {
   );
 
   const handleQuickFilterDelete = useCallback(
-    quickFilterIdentifier => dispatch(deleteQuickFilter(quickFilterIdentifier)),
+    (quickFilterIdentifier) =>
+      dispatch(deleteQuickFilter(quickFilterIdentifier)),
     [dispatch],
   );
 

@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import React from 'react';
 import styled, { css } from 'styled-components';
-import { Collapse } from '@material-ui/core';
+import { Collapse } from '@mui/material';
 import spacing from 'styles/spacing';
 import palette from 'styles/palette';
 import { fontSizes, fontWeights } from 'styles/font';
@@ -48,7 +48,7 @@ export const TaskCommentText = styled.div`
   max-width: 575px;
   overflow: hidden;
   max-height: ${({ wholeCommentVisible }) =>
-    !wholeCommentVisible ? `2.2rem` : 'auto'};
+    wholeCommentVisible ? 'auto' : `2.2rem`};
 `;
 
 export const MoreButton = styled.button`

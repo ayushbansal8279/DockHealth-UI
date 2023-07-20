@@ -1,8 +1,7 @@
 import styled from 'styled-components';
 import { fontSizes, fontWeights } from 'styles/font';
 import palette from 'styles/palette';
-import MuiCheckIcon from '@material-ui/icons/Check';
-import { withStyles } from '@material-ui/core/styles';
+import MuiCheckIcon from '@mui/icons-material/Check';
 
 export const Container = styled.div`
   width: 279px;
@@ -10,14 +9,13 @@ export const Container = styled.div`
   border-radius: 10px;
   box-shadow: 0px 6px 9px rgba(0, 0, 0, 0.17);
   border-top: 10px solid ${({ color }) => color};
-  font-family: 'Roboto', sans-serif;
+  font-family: 'Roboto Condensed', sans-serif;
 `;
 
 export const MostPopularText = styled.p`
   position: absolute;
   top: -20px;
   left: 0;
-  margin-bottom;
   color: ${palette.red};
   font-size: ${fontSizes.smallPlus};
   font-weight: ${fontWeights.light};
@@ -92,7 +90,7 @@ export const SubscribeButton = styled.button`
   color: ${({ active, color }) => (active ? color : palette.white)};
   font-size: ${fontSizes.smallPlus};
   font-weight: ${fontWeights.bold};
-  ${({ active }) => (!active ? 'text-transform: uppercase;' : '')}
+  ${({ active }) => (active ? '' : 'text-transform: uppercase;')}
 `;
 
 export const ContactUsAnchor = styled.a`
@@ -127,11 +125,13 @@ export const FeatureText = styled.p`
   font-size: ${fontSizes.smallPlus};
 `;
 
-export const CheckIcon = withStyles({
-  root: {
-    position: 'absolute',
-    left: -30,
-    top: '50%',
-    transform: 'translateY(-50%)',
-  },
-})(MuiCheckIcon);
+export const CheckIcon = styled(MuiCheckIcon)`
+  &&& {
+    &.MuiCheckIcon-root {
+      position: absolute;
+      left: -30px;
+      top: 50%;
+      transform: translateY(-50%);
+    }
+  }
+`;

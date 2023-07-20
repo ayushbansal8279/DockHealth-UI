@@ -21,7 +21,7 @@ const validationSchema = object().shape({
 });
 
 // eslint-disable-next-line sonarjs/cognitive-complexity
-const LoginFormUsername = props => {
+const LoginFormUsername = (props) => {
   const { onSubmit } = props;
   const [showLoginMessage, setShowLoginMessage] = useState(false);
 
@@ -71,7 +71,7 @@ const LoginFormUsername = props => {
             }
             // setShowLoginMessage(false);
           })
-          .catch(error => {
+          .catch((error) => {
             showAlert({ status: 'error', title: 'Error', text: error.message });
           });
       }
@@ -101,7 +101,7 @@ const LoginFormUsername = props => {
               label="Email"
               autoFocus
               value={usernameValue}
-              onChange={event =>
+              onChange={(event) =>
                 setValue('username', event.target?.value?.trim() || '')
               }
             />

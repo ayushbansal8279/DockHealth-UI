@@ -32,16 +32,16 @@ export const PATIENTS_LIST = '/core/patients/list';
 
 export const CHAT_PATH = '/core/chat';
 
-export const createSingleTaskPath = taskIdentifier =>
+export const createSingleTaskPath = (taskIdentifier) =>
   `${SINGLE_TASK_PATH}/${taskIdentifier}`;
 
-export const createTaskListPath = taskListIdentifier =>
+export const createTaskListPath = (taskListIdentifier) =>
   `${TASK_LIST_PATH}/${taskListIdentifier}`;
 
-export const createPatientListPath = patientListIdentifier =>
+export const createPatientListPath = (patientListIdentifier) =>
   `${PATIENTS_LIST}/${patientListIdentifier}`;
 
-export const createPatientDetailsPath = patientIdentifier =>
+export const createPatientDetailsPath = (patientIdentifier) =>
   `/core/patient/${patientIdentifier}`;
 
 export const createPatientAttachmentsPath = (
@@ -57,11 +57,11 @@ export const createPatientDetailsListPath = (
   taskListIdentifier,
 ) => `/core/patient/${patientIdentifier}/tasks/${taskListIdentifier}`;
 
-export const createWorkflowBuilderPath = workflowIdentifier =>
+export const createWorkflowBuilderPath = (workflowIdentifier) =>
   `${WORKFLOW_BUILDER_PATH}/${workflowIdentifier}`;
 
-export const createWorkflowFolderPath = folderIdentifier =>
+export const createWorkflowFolderPath = (folderIdentifier) =>
   `${WORKFLOW_LIBRARY_PATH}/${folderIdentifier}`;
 
-export const createUserGroupPath = groupIdentifier =>
+export const createUserGroupPath = (groupIdentifier) =>
   USERS_PATH + (groupIdentifier ? `/${groupIdentifier}` : '');

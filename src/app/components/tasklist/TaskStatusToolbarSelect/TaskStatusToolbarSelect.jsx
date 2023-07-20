@@ -1,6 +1,6 @@
 import React from 'react';
 import ToolbarSelect from 'components/tasklist/ToolbarSelect/ToolbarSelect';
-import TasksStatusSwitchIcon from 'img/tasks-status-switch-icon';
+import TasksStatusSwitchIcon from 'img/tasks-status-switch-icon.svg';
 import { TaskStatus } from 'helpers/task-helpers';
 import { ViewTypeImg } from './styled';
 

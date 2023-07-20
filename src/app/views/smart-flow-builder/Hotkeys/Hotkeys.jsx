@@ -1,6 +1,6 @@
 import React from 'react';
-import HelpOutlineIcon from '@material-ui/icons/HelpOutline';
-import { Box, Paper } from '@material-ui/core';
+import HelpOutlineIcon from '@mui/icons-material/HelpOutline';
+import { Box, Paper } from '@mui/material';
 import {
   HotkeysContainer,
   HotkeysPopover,

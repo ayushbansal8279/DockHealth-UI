@@ -10,7 +10,7 @@ import * as ActionTypes from './action-types';
 import AlertMessages from '../alert/AlertMessages';
 
 export function storeAsCurrentTask(task) {
-  return dispatch => {
+  return (dispatch) => {
     dispatch({ type: ActionTypes.SET_AS_CURRENT_TASK, task });
   };
 }
@@ -34,7 +34,7 @@ export function getListTasksGroupedByTaskGroup(
 ) {
   const action = getListWithGroupsAction({ status });
 
-  return dispatch => {
+  return (dispatch) => {
     if (loadingMore && status === 'COMPLETE') {
       dispatch({
         type: ActionTypes.GET_MORE_TASKS_REQUEST,
@@ -49,7 +49,7 @@ export function getListTasksGroupedByTaskGroup(
       endPosition,
       viewMode,
     )
-      .then(groupedTasks => {
+      .then((groupedTasks) => {
         dispatch({ type: action, groupedTasks, loadingMore });
 
         const selectedTaskIdentifier = sessionStorage.getItem(
@@ -57,11 +57,11 @@ export function getListTasksGroupedByTaskGroup(
         );
 
         const allTasks = [];
-        groupedTasks.forEach(taskGroup => {
+        for (const taskGroup of groupedTasks) {
           if (taskGroup.tasks) {
             allTasks.push(taskGroup.tasks);
           }
-        });
+        }
         const selectedTask = allTasks
           .reduce((allTasksArray, tasksArray) => [
             ...allTasksArray,
@@ -76,7 +76,7 @@ export function getListTasksGroupedByTaskGroup(
           dispatch(openDrawer());
           sessionStorage.removeItem('selectedTaskIdentifier');
         } else if (selectedTaskIdentifier) {
-          TaskApi.getTaskDetails(selectedTaskIdentifier).then(data => {
+          TaskApi.getTaskDetails(selectedTaskIdentifier).then((data) => {
             dispatch(storeAsCurrentTask(data));
             dispatch(openDrawer());
           });
@@ -84,7 +84,7 @@ export function getListTasksGroupedByTaskGroup(
 
         return groupedTasks;
       })
-      .catch(error => {
+      .catch((error) => {
         throw error;
       });
   };
@@ -106,7 +106,7 @@ export const chooseTaskDecisionOutcome = (
   payload: { taskOutcomeIdentifier, task, templateBundleIdentifier },
 });
 
-const shapeTask = task => {
+const shapeTask = (task) => {
   const { assignedTo, patient } = task;
 
   return {
@@ -119,7 +119,7 @@ const shapeTask = task => {
 // eslint-disable-next-line sonarjs/cognitive-complexity
 export function saveTask(newTask, shouldReloadGroups = false) {
   if (newTask.taskIdentifier) {
-    return dispatch =>
+    return (dispatch) =>
       TaskApi.updateTask(newTask)
         .then(({ task }) => {
           dispatch({
@@ -128,12 +128,12 @@ export function saveTask(newTask, shouldReloadGroups = false) {
           });
           return task;
         })
-        .catch(error => {
+        .catch((error) => {
           throw error;
         });
   }
 
-  return dispatch => {
+  return (dispatch) => {
     if (!newTask.taskIdentifier && !newTask.parentTaskIdentifier) {
       dispatch({
         type: ActionTypes.CHANGE_ADDING_NEW_TASK,
@@ -141,8 +141,17 @@ export function saveTask(newTask, shouldReloadGroups = false) {
       });
     }
     return TaskApi.addTask(newTask)
-      .then(task => {
-        if (!task.taskList) {
+      .then((task) => {
+        if (task.taskList) {
+          dispatch({ type: ActionTypes.ADD_TASK_SUCCESS, task });
+          dispatch({
+            type: ActionTypes.CHANGE_ADDING_NEW_TASK,
+            addingNewTask: false,
+          });
+          if (shouldReloadGroups) {
+            dispatch(getTasksGroupsList());
+          }
+        } else {
           dispatch({
             type: ActionTypes.ADD_TASK_SUCCESS,
             task: {
@@ -154,29 +163,20 @@ export function saveTask(newTask, shouldReloadGroups = false) {
             type: ActionTypes.CHANGE_ADDING_NEW_TASK,
             addingNewTask: false,
           });
-        } else {
-          dispatch({ type: ActionTypes.ADD_TASK_SUCCESS, task });
-          dispatch({
-            type: ActionTypes.CHANGE_ADDING_NEW_TASK,
-            addingNewTask: false,
-          });
-          if (shouldReloadGroups) {
-            dispatch(getTasksGroupsList());
-          }
         }
 
         dispatch(AlertActions.showGlobalAlert(AlertMessages.TASK_CREATED));
 
         return task;
       })
-      .catch(error => {
+      .catch((error) => {
         throw error;
       });
   };
 }
 
 export function partialUpdateTask(taskIdentifier, dataToUpdate) {
-  return dispatch => {
+  return (dispatch) => {
     dispatch({
       type: ActionTypes.UPDATE_TASK_SUCCESS,
       task: {
@@ -184,40 +184,14 @@ export function partialUpdateTask(taskIdentifier, dataToUpdate) {
         taskIdentifier,
       },
     });
-    if (dataToUpdate.assignedToIdentifiers) {
-      return (
-        TaskApi.updateTaskAssignment(taskIdentifier, dataToUpdate)
-          // eslint-disable-next-line sonarjs/no-identical-functions
-          .then(task => {
-            dispatch(AlertActions.showGlobalAlert(AlertMessages.UPDATED));
-            return task;
-          })
-          .catch(error => {
-            throw error;
-          })
-      );
-    }
-    if (dataToUpdate.taskMetaData) {
-      return (
-        TaskApi.updateTaskMetaData(taskIdentifier, dataToUpdate)
-          // eslint-disable-next-line sonarjs/no-identical-functions
-          .then(task => {
-            dispatch(AlertActions.showGlobalAlert(AlertMessages.UPDATED));
-            return task;
-          })
-          .catch(error => {
-            throw error;
-          })
-      );
-    }
     return (
       TaskApi.partialUpdateTask(taskIdentifier, dataToUpdate)
         // eslint-disable-next-line sonarjs/no-identical-functions
-        .then(task => {
+        .then((task) => {
           dispatch(AlertActions.showGlobalAlert(AlertMessages.UPDATED));
           return task;
         })
-        .catch(error => {
+        .catch((error) => {
           throw error;
         })
     );
@@ -225,7 +199,7 @@ export function partialUpdateTask(taskIdentifier, dataToUpdate) {
 }
 
 export function updateTaskAssignment(taskIdentifier, dataToUpdate) {
-  return dispatch => {
+  return (dispatch) => {
     dispatch({
       type: ActionTypes.UPDATE_TASK_SUCCESS,
       task: {
@@ -236,11 +210,11 @@ export function updateTaskAssignment(taskIdentifier, dataToUpdate) {
     return (
       TaskApi.updateTaskAssignment(taskIdentifier, dataToUpdate)
         // eslint-disable-next-line sonarjs/no-identical-functions
-        .then(task => {
+        .then((task) => {
           dispatch(AlertActions.showGlobalAlert(AlertMessages.UPDATED));
           return task;
         })
-        .catch(error => {
+        .catch((error) => {
           throw error;
         })
     );
@@ -248,7 +222,7 @@ export function updateTaskAssignment(taskIdentifier, dataToUpdate) {
 }
 
 export function updateTaskMetaData(taskIdentifier, dataToUpdate) {
-  return dispatch => {
+  return (dispatch) => {
     dispatch({
       type: ActionTypes.UPDATE_TASK_SUCCESS,
       task: {
@@ -259,91 +233,88 @@ export function updateTaskMetaData(taskIdentifier, dataToUpdate) {
     return (
       TaskApi.updateTaskMetaData(taskIdentifier, dataToUpdate)
         // eslint-disable-next-line sonarjs/no-identical-functions
-        .then(task => {
+        .then((task) => {
           dispatch(AlertActions.showGlobalAlert(AlertMessages.UPDATED));
           return task;
         })
-        .catch(error => {
+        .catch((error) => {
           throw error;
         })
     );
   };
 }
 
-export const moveTask = (
-  task,
-  taskList,
-  taskGroupIdentifier = null,
-  parentTaskIdentifier = null,
-) => dispatch => {
-  const taskToUpdate = {
-    refiled: true,
-    ...shapeTask(task),
-    taskList,
-    taskListIdentifier: taskList.taskListIdentifier,
+export const moveTask =
+  (task, taskList, taskGroupIdentifier = null, parentTaskIdentifier = null) =>
+  (dispatch) => {
+    const taskToUpdate = {
+      refiled: true,
+      ...shapeTask(task),
+      taskList,
+      taskListIdentifier: taskList.taskListIdentifier,
+    };
+
+    if (taskGroupIdentifier) {
+      taskToUpdate.taskGroupIdentifier = taskGroupIdentifier;
+    }
+    if (parentTaskIdentifier) {
+      taskToUpdate.parentTaskId = null;
+      taskToUpdate.parentTaskIdentifier = parentTaskIdentifier;
+    }
+
+    return TaskApi.updateTask(taskToUpdate)
+      .then((response) => {
+        const updatedTask = response.data;
+
+        dispatch({
+          type: ActionTypes.DELETE_TASK,
+          taskIdentifier: updatedTask.taskIdentifier,
+        });
+        if (updatedTask.parentTaskIdentifier) {
+          dispatch({
+            type: ActionTypes.ADD_SUBTASK,
+            subtask: updatedTask,
+          });
+        } else {
+          dispatch({
+            type: ActionTypes.ADD_TASK_SUCCESS,
+            task: updatedTask,
+          });
+        }
+
+        dispatch(
+          AlertActions.showGlobalAlertWithUndo(
+            AlertMessages.TASK_MOVED,
+            response?.headers?.['x-transaction-id'],
+            () => {
+              dispatch({
+                type: ActionTypes.DELETE_TASK,
+                taskIdentifier: task.taskIdentifier,
+              });
+              if (task.parentTaskIdentifier) {
+                dispatch({
+                  type: ActionTypes.ADD_SUBTASK,
+                  subtask: task,
+                });
+              } else {
+                dispatch({
+                  type: ActionTypes.ADD_TASK_SUCCESS,
+                  task,
+                });
+              }
+            },
+          ),
+        );
+      })
+      .catch((error) => {
+        throw error;
+      });
   };
 
-  if (taskGroupIdentifier) {
-    taskToUpdate.taskGroupIdentifier = taskGroupIdentifier;
-  }
-  if (parentTaskIdentifier) {
-    taskToUpdate.parentTaskId = null;
-    taskToUpdate.parentTaskIdentifier = parentTaskIdentifier;
-  }
-
-  return TaskApi.updateTask(taskToUpdate)
-    .then(response => {
-      const updatedTask = response.data;
-
-      dispatch({
-        type: ActionTypes.DELETE_TASK,
-        taskIdentifier: updatedTask.taskIdentifier,
-      });
-      if (updatedTask.parentTaskIdentifier) {
-        dispatch({
-          type: ActionTypes.ADD_SUBTASK,
-          subtask: updatedTask,
-        });
-      } else {
-        dispatch({
-          type: ActionTypes.ADD_TASK_SUCCESS,
-          task: updatedTask,
-        });
-      }
-
-      dispatch(
-        AlertActions.showGlobalAlertWithUndo(
-          AlertMessages.TASK_MOVED,
-          response?.headers?.['x-transaction-id'],
-          () => {
-            dispatch({
-              type: ActionTypes.DELETE_TASK,
-              taskIdentifier: task.taskIdentifier,
-            });
-            if (task.parentTaskIdentifier) {
-              dispatch({
-                type: ActionTypes.ADD_SUBTASK,
-                subtask: task,
-              });
-            } else {
-              dispatch({
-                type: ActionTypes.ADD_TASK_SUCCESS,
-                task,
-              });
-            }
-          },
-        ),
-      );
-    })
-    .catch(error => {
-      throw error;
-    });
-};
-
 export function addComment(task, taskComment) {
-  return dispatch =>
-    TaskApi.addComment(task.taskIdentifier, taskComment)
-      .then(comment => {
+  return (dispatch) =>
+    TaskApi.addComment(task?.taskIdentifier, taskComment)
+      .then((comment) => {
         dispatch({
           type: ActionTypes.ADD_TASK_COMMENT_SUCCESS,
           task,
@@ -351,7 +322,7 @@ export function addComment(task, taskComment) {
         });
         return comment;
       })
-      .catch(error => {
+      .catch((error) => {
         throw error;
       });
 }
@@ -360,7 +331,7 @@ export function deleteComment(task, comment) {
   const { commentIdentifier } = comment;
   const { taskIdentifier } = task;
 
-  return dispatch =>
+  return (dispatch) =>
     TaskApi.deleteComment(commentIdentifier)
       .then(() => {
         dispatch({
@@ -373,13 +344,13 @@ export function deleteComment(task, comment) {
           comment,
         };
       })
-      .catch(error => {
+      .catch((error) => {
         throw error;
       });
 }
 
 export function updateComment(task, comment) {
-  return dispatch =>
+  return (dispatch) =>
     TaskApi.updateComment(comment)
       .then(({ data }) => {
         dispatch({
@@ -392,15 +363,15 @@ export function updateComment(task, comment) {
           comment,
         };
       })
-      .catch(error => {
+      .catch((error) => {
         throw error;
       });
 }
 
 export function deleteTask(task) {
-  return dispatch =>
+  return (dispatch) =>
     TaskApi.deleteTask(task.taskIdentifier)
-      .then(response => {
+      .then((response) => {
         dispatch({
           type: ActionTypes.DELETE_TASK,
           taskIdentifier: task.taskIdentifier,
@@ -420,15 +391,15 @@ export function deleteTask(task) {
         dispatch(getTasksGroupsList());
         return task;
       })
-      .catch(error => {
+      .catch((error) => {
         throw error;
       });
 }
 
 export function duplicateTask(task, includeAttachments = false) {
-  return dispatch =>
+  return (dispatch) =>
     TaskApi.duplicateTask(task.taskIdentifier, includeAttachments)
-      .then(duplicatedTask => {
+      .then((duplicatedTask) => {
         if (duplicatedTask.parentTaskIdentifier) {
           dispatch({
             type: ActionTypes.ADD_SUBTASK,
@@ -445,7 +416,7 @@ export function duplicateTask(task, includeAttachments = false) {
 
         return duplicatedTask;
       })
-      .catch(error => {
+      .catch((error) => {
         throw error;
       });
 }
@@ -456,7 +427,7 @@ export function toggleCompleteTask(
   isBundleTask = false,
 ) {
   const { templateBundleIdentifier, ...task } = taskObject;
-  return dispatch => {
+  return (dispatch) => {
     const { apiEndpoint, newStatus, successMessage } =
       task.status === 'INCOMPLETE'
         ? {
@@ -502,7 +473,7 @@ export function toggleCompleteTask(
         }
         dispatch(AlertActions.showGlobalAlert(successMessage));
       })
-      .catch(error => {
+      .catch((error) => {
         throw error;
       });
   };
@@ -510,7 +481,7 @@ export function toggleCompleteTask(
 
 export function makeTaskDisappear(taskObject) {
   const { ...task } = taskObject;
-  return dispatch => {
+  return (dispatch) => {
     setTimeout(
       // eslint-disable-next-line sonarjs/no-identical-functions
       () =>
@@ -555,7 +526,7 @@ export function updateTaskDueDate(task, dueDate) {
   };
 }
 
-export const updatePatient = (task, patient) => dispatch =>
+export const updatePatient = (task, patient) => (dispatch) =>
   TaskApi.updateTask(shapeTask({ ...task, patient }))
     .then(({ task: updatedTask }) => {
       dispatch({
@@ -564,11 +535,11 @@ export const updatePatient = (task, patient) => dispatch =>
       });
       return updatedTask;
     })
-    .catch(error => {
+    .catch((error) => {
       throw error;
     });
 
-export const updateReminder = (task, reminderDt) => dispatch =>
+export const updateReminder = (task, reminderDt) => (dispatch) =>
   TaskApi.updateTask(shapeTask({ ...task, reminderDt }))
     .then(() => {
       const newTask = task;
@@ -578,11 +549,11 @@ export const updateReminder = (task, reminderDt) => dispatch =>
         task: newTask,
       });
     })
-    .catch(error => {
+    .catch((error) => {
       throw error;
     });
 
-export const updateWorkflowStatus = (task, workflowStatus) => dispatch => {
+export const updateWorkflowStatus = (task, workflowStatus) => (dispatch) => {
   const { taskIdentifier } = task;
 
   const updatedTask = {
@@ -598,11 +569,11 @@ export const updateWorkflowStatus = (task, workflowStatus) => dispatch => {
     taskIdentifier,
     workflowStatus?.identifier || null,
   )
-    .then(modifiedTask => {
+    .then((modifiedTask) => {
       dispatch(AlertActions.showGlobalAlert(AlertMessages.UPDATED));
       return modifiedTask;
     })
-    .catch(error => {
+    .catch((error) => {
       dispatch({
         type: ActionTypes.UPDATE_TASK_SUCCESS,
         task,
@@ -612,57 +583,54 @@ export const updateWorkflowStatus = (task, workflowStatus) => dispatch => {
 };
 
 export function getTaskHistory(task) {
-  return dispatch => {
+  return (dispatch) => {
     dispatch({ type: ActionTypes.REQUEST_HISTORY });
 
     return TaskApi.getTaskHistory(task.taskIdentifier)
-      .then(auditDetails => {
+      .then((auditDetails) => {
         dispatch({ type: ActionTypes.GET_TASK_HISTORY_SUCCESS, auditDetails });
         return auditDetails;
       })
-      .catch(error => {
+      .catch((error) => {
         dispatch({ type: ActionTypes.GET_TASK_HISTORY_ERROR, error });
         throw error;
       });
   };
 }
 
-export const addTaskAttachment = (
-  taskIdentifier,
-  fileData,
-  additionalConfig,
-) => dispatch =>
-  TaskApi.addTaskAttachment(taskIdentifier, fileData, additionalConfig)
-    .then(response => {
-      dispatch({
-        type: ActionTypes.TASK_ATTACHMENT_ADDED,
-        taskIdentifier,
-        taskAttachment: response.data,
-      });
-      dispatch(AlertActions.showGlobalAlert(AlertMessages.ATTACHMENT_ADDED));
+export const addTaskAttachment =
+  (taskIdentifier, fileData, additionalConfig) => (dispatch) =>
+    TaskApi.addTaskAttachment(taskIdentifier, fileData, additionalConfig)
+      .then((response) => {
+        dispatch({
+          type: ActionTypes.TASK_ATTACHMENT_ADDED,
+          taskIdentifier,
+          taskAttachment: response.data,
+        });
+        dispatch(AlertActions.showGlobalAlert(AlertMessages.ATTACHMENT_ADDED));
 
-      return response.data;
-    })
-    .catch(error => {
-      throw error;
-    });
-
-export const removeTaskAttachment = (
-  taskIdentifier,
-  taskAttachmentId,
-) => dispatch =>
-  TaskApi.removeTaskAttachment(taskAttachmentId)
-    .then(() => {
-      dispatch({
-        type: ActionTypes.TASK_ATTACHMENT_REMOVED,
-        taskIdentifier,
-        taskAttachmentId,
+        return response.data;
+      })
+      .catch((error) => {
+        throw error;
       });
-      dispatch(AlertActions.showGlobalAlert(AlertMessages.ATTACHMENT_REMOVED));
-    })
-    .catch(error => {
-      throw error;
-    });
+
+export const removeTaskAttachment =
+  (taskIdentifier, taskAttachmentId) => (dispatch) =>
+    TaskApi.removeTaskAttachment(taskAttachmentId)
+      .then(() => {
+        dispatch({
+          type: ActionTypes.TASK_ATTACHMENT_REMOVED,
+          taskIdentifier,
+          taskAttachmentId,
+        });
+        dispatch(
+          AlertActions.showGlobalAlert(AlertMessages.ATTACHMENT_REMOVED),
+        );
+      })
+      .catch((error) => {
+        throw error;
+      });
 
 export function refreshTask(taskIdentifier) {
   return {
@@ -678,48 +646,46 @@ export function insertCreatedTask(taskIdentifier) {
   };
 }
 
-export const refreshAndOpenAsCurrentTask = (
-  selectedTask,
-  shouldOpenDrawer = true,
-) => dispatch => {
-  return TaskApi.getTaskDetails(selectedTask.taskIdentifier)
-    .then(task => {
-      // explicitly mark task as updated so we can show the flag
-      task.updated = true; // eslint-disable-line no-param-reassign
-      dispatch({
-        type: ActionTypes.SET_AS_CURRENT_TASK,
-        task,
+export const refreshAndOpenAsCurrentTask =
+  (selectedTask, shouldOpenDrawer = true) =>
+  (dispatch) =>
+    TaskApi.getTaskDetails(selectedTask.taskIdentifier)
+      .then((task) => {
+        // explicitly mark task as updated so we can show the flag
+        task.updated = true; // eslint-disable-line no-param-reassign
+        dispatch({
+          type: ActionTypes.SET_AS_CURRENT_TASK,
+          task,
+        });
+        if (shouldOpenDrawer) dispatch(openDrawer());
+        return task;
+      })
+      .catch((error) => {
+        dispatch({
+          type: ActionTypes.SET_AS_CURRENT_TASK_ERROR,
+        });
+        throw error;
       });
-      if (shouldOpenDrawer) dispatch(openDrawer());
-      return task;
-    })
-    .catch(error => {
-      dispatch({
-        type: ActionTypes.SET_AS_CURRENT_TASK_ERROR,
-      });
-      throw error;
-    });
-};
 
 export function reassignTask(taskIdentifier, userId) {
-  return dispatch =>
+  return (dispatch) =>
     TaskApi.assignOrReassignTask({ taskIdentifier }, userId)
       .then(() => {
         dispatch(AlertActions.showGlobalAlert(AlertMessages.UPDATED));
       })
-      .catch(error => {
+      .catch((error) => {
         throw error;
       });
 }
 
-export const loadSubTasks = task => dispatch => {
+export const loadSubTasks = (task) => (dispatch) => {
   dispatch({
     type: ActionTypes.REQUEST_LOAD_SUBTASKS,
     task,
   });
 
   return TaskApi.getTaskDetails(task?.taskIdentifier)
-    .then(loadedtask => {
+    .then((loadedtask) => {
       // explicitly mark task as updated so we can show the flag
       loadedtask.updated = true; // eslint-disable-line no-param-reassign
       dispatch({
@@ -728,65 +694,54 @@ export const loadSubTasks = task => dispatch => {
       });
       return loadedtask;
     })
-    .catch(error => {
+    .catch((error) => {
       throw error;
     });
 };
 
-export const openQuickAddSubtask = taskIdentifier => ({
+export const openQuickAddSubtask = (taskIdentifier) => ({
   type: ActionTypes.OPEN_QUICK_ADD_SUBTASK_INPUT,
   taskIdentifier,
 });
 
-export const closeQuickAddSubtask = taskIdentifier => ({
+export const closeQuickAddSubtask = (taskIdentifier) => ({
   type: ActionTypes.CLOSE_QUICK_ADD_SUBTASK_INPUT,
   taskIdentifier,
 });
 
-export const bulkEditAssignUser = (
-  tasksToUpdate,
-  assignedToUsers,
-  filters,
-  searchValue,
-) => dispatch => {
-  dispatch({
-    type: ActionTypes.UPDATE_TASKS,
-    tasksToUpdate,
-    fields: {
-      assignedToUsers,
-    },
-    filters,
-    searchValue,
-  });
-};
+export const bulkEditAssignUser =
+  (tasksToUpdate, assignedToUsers, filters, searchValue) => (dispatch) => {
+    dispatch({
+      type: ActionTypes.UPDATE_TASKS,
+      tasksToUpdate,
+      fields: {
+        assignedToUsers,
+      },
+      filters,
+      searchValue,
+    });
+  };
 
-export const bulkEditWorkflowStatus = (
-  tasksToUpdate,
-  workflowStatus,
-  filters,
-  searchValue,
-) => dispatch => {
-  dispatch({
-    type: ActionTypes.UPDATE_TASKS,
-    tasksToUpdate,
-    fields: { workflowStatus },
-    filters,
-    searchValue,
-  });
-};
+export const bulkEditWorkflowStatus =
+  (tasksToUpdate, workflowStatus, filters, searchValue) => (dispatch) => {
+    dispatch({
+      type: ActionTypes.UPDATE_TASKS,
+      tasksToUpdate,
+      fields: { workflowStatus },
+      filters,
+      searchValue,
+    });
+  };
 
-export const bulkEditDueDate = (
-  tasksToUpdate,
-  dueDate,
-  filters,
-) => dispatch => {
-  dispatch({
-    type: ActionTypes.UPDATE_TASKS,
-    tasksToUpdate,
-    fields: { dueDate },
-    filters,
-  });
-};
+export const bulkEditDueDate =
+  (tasksToUpdate, dueDate, filters) => (dispatch) => {
+    dispatch({
+      type: ActionTypes.UPDATE_TASKS,
+      tasksToUpdate,
+      fields: { dueDate },
+      filters,
+    });
+  };
 
 export function bulkEditDueDateSuccess(tasksToUpdate, dueDate) {
   return {
@@ -796,7 +751,7 @@ export function bulkEditDueDateSuccess(tasksToUpdate, dueDate) {
   };
 }
 
-export const bulkEditDelete = tasksToDelete => dispatch => {
+export const bulkEditDelete = (tasksToDelete) => (dispatch) => {
   dispatch({
     type: ActionTypes.DELETE_TASKS_SUCCESS,
     tasksToDelete,
@@ -804,7 +759,7 @@ export const bulkEditDelete = tasksToDelete => dispatch => {
 };
 
 export function bulkEditComplete(taskToComplete, currentUser = null) {
-  return dispatch => {
+  return (dispatch) => {
     const newTaskData = {
       status: 'COMPLETE',
       completedBy: currentUser,
@@ -882,7 +837,7 @@ export function changeWorkflowSelectedState(newSelectedState, identifier) {
 export function addSubtask(parentTaskIdentifier, subtask) {
   return function addSubtaskDispatch(dispatch) {
     return TaskApi.addTask({ ...subtask, parentTaskIdentifier })
-      .then(newSubtask => {
+      .then((newSubtask) => {
         dispatch({
           type: ActionTypes.ADD_SUBTASK,
           subtask: newSubtask,
@@ -890,7 +845,7 @@ export function addSubtask(parentTaskIdentifier, subtask) {
         dispatch(AlertActions.showGlobalAlert(AlertMessages.TASK_CREATED));
         return newSubtask;
       })
-      .catch(error => {
+      .catch((error) => {
         dispatch(AlertActions.showGlobalErrorAlert());
         throw error;
       });

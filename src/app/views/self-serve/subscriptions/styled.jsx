@@ -1,9 +1,8 @@
-import { withStyles } from '@material-ui/core/styles';
-import MuiSwitch from '@material-ui/core/Switch';
+import MuiSwitch from '@mui/material/Switch';
 import styled from 'styled-components';
 import { fontSizes, fontWeights } from 'styles/font';
 import palette from 'styles/palette';
-import { Grid } from '@material-ui/core';
+import { Grid } from '@mui/material';
 
 export const SubscriptionsViewOuterContainer = styled.div`
   background-color: ${palette.white};
@@ -37,11 +36,13 @@ export const SubscriptionsTitle = styled.h2`
   font-weight: ${fontWeights.light};
 `;
 
-export const Switch = withStyles({
-  switchBase: {
-    color: `${palette.midnightBlue} !important`,
-  },
-})(MuiSwitch);
+export const Switch = styled(MuiSwitch)`
+  &&& {
+    &.MuiSwitch-switchBase {
+      color: ${palette.midnightBlue} !important;
+    }
+  }
+`;
 
 export const SwitchContainer = styled.div`
   display: flex;
@@ -112,7 +113,11 @@ export const BillingTable = styled.table`
     width: 250px;
   }
 
-  & ${BillingTableCell}:last-of-type, & ${BillingTableHeaderCell}:last-of-type {
+  &
+    ${BillingTableCell}:last-of-type,
+    &
+    ${BillingTableHeaderCell}
+    :last-of-type {
     width: 300px;
   }
 `;

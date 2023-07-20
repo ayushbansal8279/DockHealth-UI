@@ -37,7 +37,7 @@ const sortByName = sortBy(pipe(prop('listName'), defaultTo(''), toLower));
  */
 export const groupTasksByList = pipe(
   safeGroupBy(path(['taskList', 'taskListIdentifier'])),
-  map(tasks => ({ ...getTaskListFromTasks(tasks), tasks })),
+  map((tasks) => ({ ...getTaskListFromTasks(tasks), tasks })),
   values,
 );
 
@@ -53,7 +53,7 @@ export const groupTasksAndCompletedTasksByList = (tasks, completedTasks) => {
 
   const listNames = uniq(concat(keys(lists), keys(completedLists)));
 
-  const shape = listName => ({
+  const shape = (listName) => ({
     ...getTaskListFromTasks(propOr([], listName, lists)),
     ...getTaskListFromTasks(propOr([], listName, completedLists)),
     tasks: lists[listName],

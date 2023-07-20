@@ -1,18 +1,10 @@
-import { MenuItem } from '@material-ui/core';
-import ArrowForwardIcon from '@material-ui/icons/ArrowForwardIos';
+import ArrowForwardIcon from '@mui/icons-material/ArrowForwardIos';
 import { arrayOf, bool, func, shape, string } from 'prop-types';
 import React from 'react';
-import {
-  ListWrapper,
-  useMenuItemStyles,
-  IconWrapper,
-  EmptyListText,
-} from './styled';
+import { ListWrapper, MenuItem, IconWrapper, EmptyListText } from './styled';
 
-const SelectionList = props => {
+const SelectionList = (props) => {
   const { isLoading, list, onParentChange } = props;
-
-  const menuItemClasses = useMenuItemStyles();
 
   return (
     <ListWrapper>
@@ -20,10 +12,7 @@ const SelectionList = props => {
         <>
           {list.length > 0 ? (
             list.map(({ id, name }) => (
-              <MenuItem
-                classes={menuItemClasses}
-                onClick={() => onParentChange(id)}
-              >
+              <MenuItem onClick={() => onParentChange(id)}>
                 {name}
                 <IconWrapper>
                   <ArrowForwardIcon />

@@ -16,7 +16,7 @@ const OutcomeInputLabel = React.forwardRef((props, reference) => {
 
   const [isEditorActive, setEditorActive] = useState(false);
 
-  const handleClick = event => {
+  const handleClick = (event) => {
     setEditorActive(true);
     if (onClick) {
       onClick(event);
@@ -27,7 +27,7 @@ const OutcomeInputLabel = React.forwardRef((props, reference) => {
     }
   };
 
-  const handleBlur = event => {
+  const handleBlur = (event) => {
     setEditorActive(false);
     if (onBlur) {
       onBlur(event);

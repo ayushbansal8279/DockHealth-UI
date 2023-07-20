@@ -1,13 +1,15 @@
-import { makeStyles } from '@material-ui/core/styles';
+import { CircularProgress as MuiCircularProgress } from '@mui/material';
 import styled from 'styled-components';
 import { fontSizes } from 'styles/font';
 import palette from 'styles/palette';
 
-export const useProgressStyles = makeStyles({
-  colorPrimary: {
-    color: palette.midnightBlue,
-  },
-});
+export const CircularProgress = styled(MuiCircularProgress)`
+  &&& {
+    &.MuiCircularProgress-colorPrimary {
+      color: ${palette.midnightBlue};
+    }
+  }
+`;
 
 export const Container = styled.div`
   display: inline-flex;

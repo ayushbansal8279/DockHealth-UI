@@ -4,7 +4,7 @@ import Loader from 'components/common/Loader/Loader';
 import Spacing from 'components/common/Spacing';
 import { RobotoTypography } from 'styles/theme';
 
-import { Grid } from '@material-ui/core';
+import { Grid } from '@mui/material';
 import AttachmentPreview from 'components/attachments/AttachmentPreview/AttachmentPreview';
 import AttachmentButton from 'components/attachments/AttachmentButton/AttachmentButton';
 import AttachmentProgressBar from 'components/attachments/AttachmentProgressBar/AttachmentProgressBar';
@@ -16,7 +16,7 @@ import {
   DownloadAllLink,
 } from './styled';
 
-const AttachmentsSection = ({ disabled = false }) => {
+const AttachmentsSection = ({ selectedTask, disabled = false }) => {
   const {
     attachmentsSources,
     currentTaskAttachments,
@@ -31,7 +31,7 @@ const AttachmentsSection = ({ disabled = false }) => {
     previewedAttachment,
     dropzone: { getRootProps, getInputProps, isDragActive },
     downloadAllFiles,
-  } = initializeAttachmentsSectionHooks();
+  } = initializeAttachmentsSectionHooks(selectedTask);
 
   return (
     <AttachmentsContainer isDragActive={isDragActive}>
@@ -80,7 +80,7 @@ const AttachmentsSection = ({ disabled = false }) => {
               <Spacing horizontal={3} />
             </>
           ) : (
-            currentTaskAttachments.map(attachment => (
+            currentTaskAttachments.map((attachment) => (
               <AttachmentButton
                 key={attachment.attachmentIdentifier}
                 attachment={attachment}

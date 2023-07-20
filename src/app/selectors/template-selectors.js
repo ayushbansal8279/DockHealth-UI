@@ -1,6 +1,6 @@
 import { createSelector } from 'reselect';
 
-export const templateStateSelector = state => state.templateState;
+export const templateStateSelector = (state) => state.templateState;
 
 export const isNavbarVisibleSelector = createSelector(
   templateStateSelector,

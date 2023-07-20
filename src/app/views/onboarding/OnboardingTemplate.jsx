@@ -22,8 +22,7 @@ const OnboardingTemplate = ({ childRoutes, setRedirection }) => {
   const [isLoaded, setIsLoaded] = useState(false);
 
   useEffect(() => {
-    // eslint-disable-next-line func-names
-    (async function() {
+    (async () => {
       setIsLoading(true);
       const { redirectPath } = await checkUserAuthentication({
         history,
@@ -52,7 +51,7 @@ const OnboardingTemplate = ({ childRoutes, setRedirection }) => {
           <OnboardingMainContainer isSmallScreen={isSmallScreen}>
             <Switch>
               {isLoaded &&
-                childRoutes?.map(route => (
+                childRoutes?.map((route) => (
                   <RouteWrapper
                     permissions={route.permissions}
                     allowedToRoles={route.allowedToRoles}

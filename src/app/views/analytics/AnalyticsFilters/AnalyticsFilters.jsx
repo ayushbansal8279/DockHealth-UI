@@ -1,6 +1,6 @@
 import React, { useCallback, useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { Box } from '@material-ui/core';
+import { Box } from '@mui/material';
 import * as AnalyticsActions from 'actions/analytics-actions';
 import FilterHeader from 'components/filter/FilterHeader/FilterHeader';
 import {
@@ -22,7 +22,7 @@ const AnalyticsFilters = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  const handleSelectedFiltersChange = newSelectedFilters => {
+  const handleSelectedFiltersChange = (newSelectedFilters) => {
     dispatch(AnalyticsActions.setAnalyticsSelectedFilters(newSelectedFilters));
   };
 

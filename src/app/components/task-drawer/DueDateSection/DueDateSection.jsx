@@ -1,6 +1,6 @@
 import React, { useCallback, useRef } from 'react';
 import moment from 'moment';
-import { Box } from '@material-ui/core';
+import { Box } from '@mui/material';
 import RecurringIcon from 'img/recurring-arrows';
 import { checkIfTemplateTask, isDueDateOverdue } from 'helpers/task-helpers';
 import DueDatePicker from 'components/task/DueDatePicker/DueDatePicker';
@@ -8,8 +8,7 @@ import Spacing from 'components/common/Spacing';
 import Tooltip from 'components/common/Tooltip/Tooltip';
 import Input from 'components/common/Input/Input';
 import { updateTaskDueDate } from 'actions/task-actions';
-import { useDispatch, useSelector } from 'react-redux';
-import { selectedTaskSelector } from 'selectors/task-drawer-selectors';
+import { useDispatch } from 'react-redux';
 import { useBoolean } from 'hooks/useBoolean';
 import PopoverCard from 'components/common/PopoverCard/PopoverCard';
 import { formatDueTime } from './helpers';
@@ -24,9 +23,8 @@ import {
   StyledPopover,
 } from './styled';
 
-const DueDateSection = ({ disabled = false }) => {
+const DueDateSection = ({ selectedTask, disabled = false }) => {
   const dispatch = useDispatch();
-  const selectedTask = useSelector(selectedTaskSelector);
   const { taskIdentifier, dueDate, hasRecurringSchedule } = selectedTask || {};
   const momentDueDate = dueDate ? moment(dueDate) : null;
   const isTemplateTask = checkIfTemplateTask(selectedTask);
@@ -34,7 +32,7 @@ const DueDateSection = ({ disabled = false }) => {
   const buttonReference = useRef(null);
   const [isPopoverOpen, openPopover, closePopover] = useBoolean(false);
   const handleDueDateSave = useCallback(
-    updatedDueDateTime => {
+    (updatedDueDateTime) => {
       dispatch(updateTaskDueDate(selectedTask, updatedDueDateTime));
     },
     [dispatch, selectedTask],
@@ -49,7 +47,7 @@ const DueDateSection = ({ disabled = false }) => {
         customInputComponent={() => (
           <StyledButton
             type="button"
-            onClick={event => {
+            onClick={(event) => {
               event.stopPropagation();
               openPopover(true);
             }}
@@ -80,9 +78,9 @@ const DueDateSection = ({ disabled = false }) => {
                 </DueDateContent>
               ) : (
                 <Placeholder>
-                  {!isTemplateTask
-                    ? 'Set a due date?'
-                    : 'Not available when creating a template'}
+                  {isTemplateTask
+                    ? 'Not available when creating a template'
+                    : 'Set a due date?'}
                 </Placeholder>
               )}
             </DueDateContentWrapper>
@@ -100,7 +98,7 @@ const DueDateSection = ({ disabled = false }) => {
           horizontal: 'right',
         }}
         open={isPopoverOpen}
-        onClose={event => {
+        onClose={(event) => {
           event.stopPropagation();
           closePopover();
         }}

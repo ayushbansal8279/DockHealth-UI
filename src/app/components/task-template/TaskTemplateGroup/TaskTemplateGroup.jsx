@@ -1,13 +1,13 @@
 /* eslint-disable react-hooks/rules-of-hooks */
-import React, { useState, useMemo, useCallback, useEffect } from 'react';
+import React, { useState, useCallback, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import usePrevious from 'hooks/use-previous';
 import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd';
 import * as TaskActions from 'actions/task-actions';
 import * as TemplateBundleActions from 'actions/template-bundle-actions';
 import * as WorkflowActions from 'actions/workflow-actions';
-import { TaskStatus } from 'helpers/task-helpers';
 import TasksSkeletonLoader from 'components/task/TasksSkeletonLoader/TasksSkeletonLoader';
+// eslint-disable-next-line import/no-cycle
 import StandardTaskItemContainer from 'components/task/StandardTaskItemContainer/StandardTaskItemContainer';
 import QuickAddTaskInput from 'components/tasklist/QuickAddTaskInput/QuickAddTaskInput';
 import { userProfileSelector } from 'selectors/user-selectors';
@@ -15,15 +15,16 @@ import {
   TASK_LIST_RESTRICTIONS_OPTIONS,
   TASK_LIST_RESTRICTIONS_PROFILES,
 } from 'restrictions/task-restrictions';
-import TaskTemplateGroupHeader from '../TaskTemplateGroupHeader/TaskTemplateGroupHeader';
+import { taskLookupSelector } from 'selectors/task-details-selectors';
 import {
   TaskTemplateGroupContainer,
   TaskTemplateGroupList,
   QuickAddInputWrapper,
 } from './styled';
+import TaskTemplateGroupHeader from '../TaskTemplateGroupHeader/TaskTemplateGroupHeader';
 
 const TaskTemplateGroup = ({
-  templateGroup = {},
+  templateGroup: pullGroup = {},
   groupHasMultipleAssignees,
   isFullView,
   isCompletedGroup,
@@ -36,17 +37,23 @@ const TaskTemplateGroup = ({
   viewSetup,
   showTasksWithGroup = true,
   iconColorActive,
+  origin,
   highlightedValue,
   // eslint-disable-next-line sonarjs/cognitive-complexity
 }) => {
+  const templateGroup = useSelector((state) => {
+    return taskLookupSelector(state, origin, pullGroup);
+  });
+
   const {
-    tasks,
+    tasks, // task identifiers
     identifier,
     patient,
     parentTaskGroupIdentifier,
     taskListIdentifier,
     isFetchingTasks,
-  } = templateGroup;
+  } = templateGroup || {};
+
   const { SHOW_WORKFLOW_DETAILS, SHOW_WORKFLOW_COMPLETED_TASKS } = viewSetup;
   const { innerRef, draggableProps } = draggableProvided;
   const [isOpen, setOpen] = useState(false);
@@ -83,7 +90,7 @@ const TaskTemplateGroup = ({
   }, [isOpen, tasks]);
 
   const handleAddBundleTask = useCallback(
-    task => {
+    (task) => {
       const taskData = {
         ...task,
         taskGroupIdentifier: identifier,
@@ -99,15 +106,17 @@ const TaskTemplateGroup = ({
     [dispatch, identifier, taskListIdentifier, patient],
   );
 
-  const filteredTasks = useMemo(
-    () =>
-      tasks.filter(
-        isCompletedTab
-          ? task => showIncompleteTasks || task.status === TaskStatus.COMPLETE
-          : task => showCompletedTasks || task.status !== TaskStatus.COMPLETE,
-      ),
-    [showCompletedTasks, showIncompleteTasks, tasks, isCompletedTab],
-  );
+  // const filteredTasks = useMemo(
+  //   () =>
+  //     tasks.filter(
+  //       isCompletedTab
+  //         ? (task) => showIncompleteTasks || task.status === TaskStatus.COMPLETE
+  //         : (task) => showCompletedTasks || task.status !== TaskStatus.COMPLETE,
+  //     ),
+  //   [showCompletedTasks, showIncompleteTasks, tasks, isCompletedTab],
+  // );
+
+  const filteredTasks = tasks;
 
   return (
     <TaskTemplateGroupContainer ref={innerRef} {...draggableProps}>
@@ -157,16 +166,18 @@ const TaskTemplateGroup = ({
                   }
                 }}
               >
-                <Droppable droppableId={templateGroup.identifier}>
-                  {templateDroppableProvided => (
+                <Droppable droppableId={templateGroup?.identifier}>
+                  {(templateDroppableProvided) => (
                     <div
                       ref={templateDroppableProvided.innerRef}
                       {...templateDroppableProvided.droppableProps}
                     >
-                      {filteredTasks.map((task, index) => (
+                      {filteredTasks?.map((taskOrIdentifier, index) => (
                         <Draggable
-                          key={task.taskIdentifier}
-                          draggableId={task.taskIdentifier}
+                          key={taskOrIdentifier?.identifier || taskOrIdentifier}
+                          draggableId={
+                            taskOrIdentifier?.identifier || taskOrIdentifier
+                          }
                           index={index}
                           isDragDisabled={restrictions?.createTask === DISABLED}
                         >
@@ -176,11 +187,15 @@ const TaskTemplateGroup = ({
                           ) => (
                             <StandardTaskItemContainer
                               isStartedDnD={
-                                draggedTaskIdentifier === task.taskIdentifier
+                                draggedTaskIdentifier ===
+                                (taskOrIdentifier?.identifier ||
+                                  taskOrIdentifier)
                               }
                               isDragging={draggableSnapshot.isDragging}
                               draggableProvided={templateTaskDraggableProvided}
-                              task={task}
+                              taskIdentifier={
+                                taskOrIdentifier?.identifier || taskOrIdentifier
+                              }
                               isFullView={isFullView}
                               isCompletedGroup={isCompletedGroup}
                               multipleAssigneesContext={
@@ -195,6 +210,7 @@ const TaskTemplateGroup = ({
                               }
                               noMargin
                               iconColorActive={iconColorActive}
+                              origin={origin}
                             />
                           )}
                         </Draggable>
@@ -211,8 +227,8 @@ const TaskTemplateGroup = ({
                     disableMentions
                     quickAddTask={handleAddBundleTask}
                     onBlur={() => setIsAddingTask(false)}
-                    validator={value => {
-                      if ([...value]?.filter(char => char !== ' ').length < 2)
+                    validator={(value) => {
+                      if ([...value]?.filter((char) => char !== ' ').length < 2)
                         return 'The task description is too short (min. 2 characters)';
 
                       return null;

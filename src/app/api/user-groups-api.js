@@ -33,15 +33,11 @@ export function createUserGroupAvatar(userGroupIdentifier, avatarBuffer) {
         'Content-Type': 'application/octet-stream',
       },
     })
-    .then(({ data }) => {
-      return data;
-    });
+    .then(({ data }) => data);
 }
 
 export function deleteUserGroupAvatar(userGroupIdentifier) {
   return axios
     .delete(`user/profilePicture/${userGroupIdentifier}`)
-    .then(({ data }) => {
-      return data;
-    });
+    .then(({ data }) => data);
 }

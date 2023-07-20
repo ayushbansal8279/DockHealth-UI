@@ -1,9 +1,9 @@
 /* eslint-disable sonarjs/cognitive-complexity */
 import React, { useCallback, useMemo } from 'react';
-import { Box, Grid, Typography, useMediaQuery } from '@material-ui/core';
+import { Box, Grid, Typography, useMediaQuery } from '@mui/material';
 import { checkIfBundleTask } from 'helpers/task-helpers';
 import Spacing from 'components/common/Spacing';
-import TextEditor from 'components/common/TextEditor/TextEditor';
+import RichTextEditor from 'components/common/RichTextEditor/RichTextEditor';
 import TaskDescription from 'components/task-drawer/TaskDescription/TaskDescription';
 import { DrawerFieldEnum } from 'helpers/task-drawer-helpers';
 import { useSelector } from 'react-redux';
@@ -83,10 +83,11 @@ const TaskDrawerContent = props => {
     parentDescriptionState,
     selectedParentTask,
     selectedTask,
-    setParentDescriptionState,
+    // setParentDescriptionState,
     taskDrawerFocusField,
+    taskDrawerOpen,
     taskDrawerReference,
-    taskListIdentifier,
+    // taskListIdentifier,
     parentBundle,
     taskTemplate,
     handleWorkflowReferenceClick,
@@ -139,7 +140,7 @@ const TaskDrawerContent = props => {
   const currentUser = useSelector(userProfileSelector);
   const isListAdmin = useMemo(() => {
     const currentUserMember = currentTasklist?.listUsers?.find(
-      u => u.identifier === currentUser?.identifier,
+      (u) => u.identifier === currentUser?.identifier,
     );
     const isOwnerOrAdmin = checkIfUserIsOrganizationAdmin(currentUser);
     return isMemberAdmin(currentUserMember) || isOwnerOrAdmin;
@@ -250,8 +251,8 @@ const TaskDrawerContent = props => {
     return (
       nonAssigneeCompleteDisabledItem &&
       nonAssigneeCompleteDisabledItem?.value === 'false' &&
-      selectedTask?.assignedToUsers.filter(
-        user => user.identifier === currentUser.identifier,
+      selectedTask?.assignedToUsers?.filter(
+        (user) => user.identifier === currentUser.identifier,
       ).length === 0 &&
       !isCreator
     );
@@ -271,7 +272,28 @@ const TaskDrawerContent = props => {
   //   setSubscriptionListOpen(false);
   // };
 
-  const isMobile = useMediaQuery(theme => theme.breakpoints.down('sm'));
+  const taskDeleteDisabled = useMemo(() => {
+    const disabledSettingItem =
+      selectedOrganization?.themeSettings?.find(
+        ({ name: themeName }) =>
+          themeName === 'list.tasks.member.delete.enabled',
+      ) || {};
+    return (
+      disabledSettingItem &&
+      disabledSettingItem?.value === 'false' &&
+      !isListAdmin &&
+      !isCreator
+    );
+  }, [selectedOrganization, isListAdmin, isCreator]);
+
+  const isMobile = useMediaQuery((theme) => theme.breakpoints.down('sm'));
+
+  if (taskDeleteDisabled) {
+    if (!restrictions) {
+      restrictions = {};
+    }
+    restrictions.delete = DISABLED;
+  }
 
   return (
     <TaskDrawerContainer
@@ -366,13 +388,13 @@ const TaskDrawerContent = props => {
                 style={{ width: '100%' }}
               >
                 <ReferenceParentName>
-                  <TextEditor
-                    readOnly
-                    withEditedLabel={selectedParentTask.edited}
-                    state={parentDescriptionState}
-                    onChange={setParentDescriptionState}
-                    taskListIdentifier={taskListIdentifier}
-                    disableMentions={isTemplateTask}
+                  <RichTextEditor
+                    height={60}
+                    readonly
+                    showToolbar={false}
+                    value={selectedParentTask?.description}
+                    initOnClick
+                    showCharCount
                   />
                 </ReferenceParentName>
               </ReferenceParentButton>
@@ -399,6 +421,7 @@ const TaskDrawerContent = props => {
           <TaskDescription
             readOnly={restrictions?.description === READ_ONLY}
             disableMentions={restrictMentions}
+            selectedTask={selectedTask}
           />
         </Grid>
         {selectedTask?.sourceMessage && (
@@ -434,6 +457,7 @@ const TaskDrawerContent = props => {
           <AssignedToSection
             onSave={handleUpdateTask}
             disabled={restrictions?.assigment === READ_ONLY}
+            selectedTask={selectedTask}
           />
         </Grid>
         {!taskStartDateDisabled && (
@@ -441,6 +465,7 @@ const TaskDrawerContent = props => {
             <div>
               <StartDateSection
                 disabled={restrictions?.startDate === DISABLED}
+                selectedTask={selectedTask}
               />
             </div>
           </Grid>
@@ -452,7 +477,10 @@ const TaskDrawerContent = props => {
         )}
         <Grid item xs={12} md={6} style={styleLeftColumn(isMobile)}>
           <div>
-            <DueDateSection disabled={restrictions?.dueDate === DISABLED} />
+            <DueDateSection
+              disabled={restrictions?.dueDate === DISABLED}
+              selectedTask={selectedTask}
+            />
           </div>
         </Grid>
         <Grid item xs={12} md={6} style={styleRightColumn(isMobile)}>
@@ -460,6 +488,7 @@ const TaskDrawerContent = props => {
             <ReminderSection
               onSave={handleUpdateTask}
               disabled={restrictions?.reminder === DISABLED}
+              selectedTask={selectedTask}
             />
           )}
         </Grid>
@@ -467,6 +496,7 @@ const TaskDrawerContent = props => {
           <PrioritySection
             onTaskUpdate={onTaskUpdate}
             disabled={restrictions?.priority === DISABLED}
+            selectedTask={selectedTask}
           />
         </Grid>
         <Grid item xs={12} md={6} style={styleRightColumn(isMobile)}>
@@ -474,38 +504,47 @@ const TaskDrawerContent = props => {
             <StatusSection
               onTaskUpdate={onTaskUpdate}
               disabled={restrictions?.status === DISABLED}
+              selectedTask={selectedTask}
             />
           </div>
         </Grid>
         {/* Put custom fields here */}
         {restrictions?.customFields !== DISABLED && (
-          <Grid item xs={12} style={styleFullRow(isMobile)}>
+          <Grid item xs={12}>
             <CustomFieldsSection fieldCategoryType="TASK_CORE" />
           </Grid>
         )}
-        {restrictions?.labels !== DISABLED && taskLabelsLocation === 'default' && (
-          <Grid item xs={12} style={styleFullRow(isMobile)}>
-            <div>
-              <LabelsSection onTaskUpdate={onTaskUpdate} />
-            </div>
-          </Grid>
-        )}
+        {restrictions?.labels !== DISABLED &&
+          taskLabelsLocation === 'default' && (
+            <Grid item xs={12} style={styleFullRow(isMobile)}>
+              <div>
+                <LabelsSection
+                  onTaskUpdate={onTaskUpdate}
+                  selectedTask={selectedTask}
+                />
+              </div>
+            </Grid>
+          )}
         {!taskAttachmentsDisabled && (
           <Grid item xs={12} style={styleFullRow(isMobile)}>
             <AttachmentsSection
               restrictions={restrictions?.attachments}
               disabled={restrictions?.attachments === DISABLED}
+              selectedTask={selectedTask}
             />
           </Grid>
         )}
         <Grid item xs={12} style={styleCommentRow}>
           <div>
-            <CommentSection />
+            <CommentSection selectedTask={selectedTask} />
           </div>
         </Grid>
         {selectedTask && !isSubtask && !subTasksDisabled && (
           <Grid item xs={12}>
-            <SubtasksSection restrictions={restrictions?.subtasks} />
+            <SubtasksSection
+              restrictions={restrictions?.subtasks}
+              selectedTask={selectedTask}
+            />
           </Grid>
         )}
         {restrictions?.dependencies !== DISABLED &&
@@ -513,7 +552,7 @@ const TaskDrawerContent = props => {
           !isSubtask &&
           (isTemplateTask || checkIfBundleTask(selectedTask)) && (
             <Grid item xs={12}>
-              <DependenciesSection />
+              <DependenciesSection selectedTask={selectedTask} />
             </Grid>
           )}
         {restrictions?.customFields !== DISABLED && (
@@ -521,13 +560,14 @@ const TaskDrawerContent = props => {
             <CustomFieldsSection fieldCategoryType="TASK_OTHER" />
           </Grid>
         )}
-        {restrictions?.labels !== DISABLED && taskLabelsLocation === 'bottom' && (
-          <Grid item xs={12} style={styleFullRow(isMobile)}>
-            <div>
-              <LabelsSection onTaskUpdate={onTaskUpdate} />
-            </div>
-          </Grid>
-        )}
+        {restrictions?.labels !== DISABLED &&
+          taskLabelsLocation === 'bottom' && (
+            <Grid item xs={12} style={styleFullRow(isMobile)}>
+              <div>
+                <LabelsSection onTaskUpdate={onTaskUpdate} />
+              </div>
+            </Grid>
+          )}
       </Grid>
       <TaskDrawerDivider />
       {restrictions?.history !== DISABLED && (
@@ -536,10 +576,13 @@ const TaskDrawerContent = props => {
             <Spacing horizontal={5} />
             <span />
           </div>
-          <HistorySection />
+          <HistorySection
+            selectedTask={selectedTask}
+            selectedTaskIdentifier={selectedTask?.identifier}
+          />
         </Grid>
       )}
-      <TaskDrawerBackground onClick={closeTaskDrawer} />
+      {taskDrawerOpen && <TaskDrawerBackground onClick={closeTaskDrawer} />}
       {/* <WatchersPopover
         open={isSubscriptionListOpen}
         anchorEl={watchersReference.current}

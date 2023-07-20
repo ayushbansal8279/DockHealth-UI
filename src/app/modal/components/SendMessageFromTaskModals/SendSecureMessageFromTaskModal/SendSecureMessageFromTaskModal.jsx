@@ -63,7 +63,7 @@ const SendSecureMessageFromTaskModal = () => {
             type="text"
             label="Message"
             value={message}
-            onChange={event => {
+            onChange={(event) => {
               setMessage(event.target.value);
             }}
           />

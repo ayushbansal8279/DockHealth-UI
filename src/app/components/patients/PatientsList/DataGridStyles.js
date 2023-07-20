@@ -1,17 +1,19 @@
-/* eslint-disable import/prefer-default-export */
 /* eslint-disable unicorn/filename-case */
 import styled from 'styled-components';
-import { DataGrid } from '@material-ui/data-grid';
+import { DataGrid } from '@mui/x-data-grid';
 import { fontWeights, fontSizes } from 'styles/font';
 import palette from 'styles/palette';
 import spacing from 'styles/spacing';
 
 export const StyledDataGrid = styled(DataGrid)`
+  margin-bottom: 48px;
+
   &.MuiDataGrid-root {
-    // max-width: 1179px;
+    background-color: white;
   }
+
   && {
-    .MuiDataGrid-sortIcon {
+    &.MuiDataGrid-sortIcon {
       background: ${palette.brightBlue};
       color: ${palette.white};
       padding: 1px;
@@ -19,13 +21,30 @@ export const StyledDataGrid = styled(DataGrid)`
     }
   }
 
-  .MuiDataGrid-columnHeaderTitleContainer {
+  & .MuiDataGrid-footerContainer {
+    p {
+      margin-bottom: 0;
+    }
+  }
+
+  & .MuiSelect-select {
+    font-family: "Roboto Condensed", sans-serif;
+    font-weight: 400;
+    font-size: 0.875rem;
+    line-height: 1.43;
+    flex-shrink: 0;
+    margin-top: 2px;
+    padding-right: 0 !important;
+    padding-left: 0;
+  }
+
+  &.MuiDataGrid-columnHeaderTitleContainer {
     display: flex;
     align-items: left;
     margin-left: -15px;
   }
 
-  .MuiDataGrid-columnHeader {
+  &.MuiDataGrid-columnHeader {
     &--sorted {
       color: ${palette.brightBlue};
     }
@@ -34,25 +53,25 @@ export const StyledDataGrid = styled(DataGrid)`
     }
   }
 
-  .MuiDataGrid-cell {
-    font-family: Roboto Condensed;
+  &.MuiDataGrid-cell {
+    font-family: 'Roboto Condensed', sans-serif;;
     font-weight: ${fontWeights.light};
     font-size: ${fontSizes.smallPlus};
   }
 
-  .MuiDataGrid-colCell {
+  &.MuiDataGrid-colCell {
     outline: none !important;
     padding: 0 !important;
   }
 
-  .MuiDataGrid-cell {
+  &.MuiDataGrid-cell {
     outline: none !important;
     color: ${palette.darkGrey};
   }
 
-  .MuiDataGrid-colCellTitle {
+  &.MuiDataGrid-colCellTitle {
     background-color: white;
-    font-family: Roboto Condensed;
+    font-family: 'Roboto Condensed', sans-serif;;
     font-size: ${fontSizes.small};
     font-weight: ${fontWeights.regularPlus} !important;
     padding-left: 0;
@@ -64,15 +83,15 @@ export const StyledDataGrid = styled(DataGrid)`
     }
   }
 
-  .MuiDataGrid-columnSeparator {
+  &.MuiDataGrid-columnSeparator {
     visibility: hidden;
   }
 
-  .MuiDataGrid-columnHeaderWrapper {
+  &.MuiDataGrid-columnHeaderWrapper {
     background-color: white;
   }
 
-  .MuiDataGrid-row {
+  &.MuiDataGrid-row {
     background-color: white;
     cursor: default;
 
@@ -89,7 +108,7 @@ export const StyledDataGrid = styled(DataGrid)`
     }
   }
 
-  .Sorting-Arrow {
+  &.Sorting-Arrow {
     opacity: 0;
 
     &:hover {
@@ -98,11 +117,11 @@ export const StyledDataGrid = styled(DataGrid)`
     }
   }
 
-  .MuiTablePagination-caption:nth-of-type(1) {
+  &.MuiTablePagination-caption:nth-of-type(1) {
     display: none;
   }
 
-  .MuiTablePagination-input {
+  &.MuiTablePagination-input {
     display: none;
   }
 `;

@@ -21,7 +21,7 @@ const Search = ({
   const searchReference = useRef(null);
 
   const onClearClick = useCallback(
-    event => {
+    (event) => {
       event.preventDefault();
       event.stopPropagation();
       onChange({ target: { value: '' } });
@@ -62,9 +62,11 @@ const Search = ({
             disablePointerEvents={false}
             visible={Boolean(value)}
           >
-            <ClearButton onClick={onClearClick}>
-              <img alt="clear" src={SearchClearIcon} />
-            </ClearButton>
+            {value !== '' && (
+              <ClearButton onClick={onClearClick}>
+                <img alt="clear" src={SearchClearIcon} />
+              </ClearButton>
+            )}
           </StyledAdornment>
         ),
         'aria-label': 'Search',

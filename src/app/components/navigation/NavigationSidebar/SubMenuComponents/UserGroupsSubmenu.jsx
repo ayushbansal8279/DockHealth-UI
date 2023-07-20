@@ -5,11 +5,11 @@ import { openModal, closeModal } from 'modal/actions';
 import { hideSubMenu } from 'actions/template-actions';
 import { getUserGroups, deleteUserGroup } from 'actions/user-groups-actions';
 import palette from 'styles/palette';
-import { Box } from '@material-ui/core';
+import { Box } from '@mui/material';
 import { createUserGroupPath, USERS_PATH } from 'routing/helpers/paths';
-import AddButton from 'components/common/AddButton/AddButton.tsx';
+import AddButton from 'components/common/AddButton/AddButton';
 import OptionsMenu from 'components/common/OptionsMenu/OptionsMenu';
-import { MoreVert } from '@material-ui/icons';
+import { MoreVert } from '@mui/icons-material';
 import prop from 'ramda/src/prop';
 import sortBy from 'ramda/src/sortBy';
 import toLower from 'ramda/src/toLower';
@@ -35,7 +35,7 @@ import {
   getUserGroupIdentifierByUrlParameter,
 } from 'helpers/user-groups-helper';
 import UpgradePlan from 'components/common/UpgradePlan/UpgradePlan';
-import UserGroupsIcon from 'img/premium/user-groups';
+import UserGroupsIcon from 'img/premium/user-groups.svg';
 import {
   DrawerMyListsLabel,
   DrawerListsItem,
@@ -81,7 +81,7 @@ const UserGroupsSubmenu = () => {
   };
 
   const handleDeleteGroup = useCallback(
-    group => {
+    (group) => {
       const modalProps = {
         title: 'Delete user group',
         description:
@@ -111,7 +111,12 @@ const UserGroupsSubmenu = () => {
         <div>People</div>
       </DrawerMyListsLabel>
       <DrawerListsList flexShrink={0}>
-        {!isInitialListFetching ? (
+        {isInitialListFetching ? (
+          <>
+            <DrawerListsItemLoader />
+            <DrawerListsItemLoader />
+          </>
+        ) : (
           <>
             {defaultGroups?.map(({ identifier, name, usersCount }) => (
               <DrawerListsItem key={identifier}>
@@ -139,11 +144,6 @@ const UserGroupsSubmenu = () => {
               </ListNameText>
             </DrawerListsItem>
           </>
-        ) : (
-          <>
-            <DrawerListsItemLoader />
-            <DrawerListsItemLoader />
-          </>
         )}
       </DrawerListsList>
       {!isGuest && userGroupsAvailable && (
@@ -156,9 +156,14 @@ const UserGroupsSubmenu = () => {
             )}
           </DrawerMyListsLabel>
           <DrawerListsList>
-            {!isInitialListFetching ? (
+            {isInitialListFetching ? (
               <>
-                {sortedGroups?.map(group => (
+                <DrawerListsItemLoader />
+                <DrawerListsItemLoader />
+              </>
+            ) : (
+              <>
+                {sortedGroups?.map((group) => (
                   <DrawerListsItem key={group.identifier}>
                     <ListNameText
                       isActive={
@@ -203,11 +208,6 @@ const UserGroupsSubmenu = () => {
                     </DrawerItemOptions>
                   </DrawerListsItem>
                 ))}
-              </>
-            ) : (
-              <>
-                <DrawerListsItemLoader />
-                <DrawerListsItemLoader />
               </>
             )}
           </DrawerListsList>

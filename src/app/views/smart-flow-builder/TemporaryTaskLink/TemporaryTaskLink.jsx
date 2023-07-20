@@ -2,12 +2,12 @@ import React, { useRef } from 'react';
 import { useDispatch } from 'react-redux';
 import { deleteTemporaryElement } from 'actions/task-template-actions';
 import { useBoolean } from 'hooks/useBoolean';
-import { getEdgeCenter } from 'react-flow-renderer';
-import DeleteOutlineIcon from '@material-ui/icons/DeleteOutline';
+import { getSmoothStepPath } from 'reactflow';
+import DeleteOutlineIcon from '@mui/icons-material/DeleteOutline';
 import LinkPath from '../LinkPath/LinkPath';
 import TaskLinkOptions from '../TaskLinkOptions/TaskLinkOptions';
 
-const TemporaryTaskLink = props => {
+const TemporaryTaskLink = (props) => {
   const {
     id,
     sourceX,
@@ -19,7 +19,7 @@ const TemporaryTaskLink = props => {
   } = props;
   const centerReference = useRef(null);
   const [areOptionsOpen, openOptions, closeOptions] = useBoolean(false);
-  const [edgeCenterX, edgeCenterY] = getEdgeCenter({
+  const [, edgeCenterX, edgeCenterY] = getSmoothStepPath({
     sourceX,
     sourceY,
     targetX,

@@ -1,6 +1,6 @@
 import { createSelector } from 'reselect';
 
-const personStateSelector = state => state.personDetails;
+const personStateSelector = (state) => state.personDetails;
 
 export const userIdentifierSelector = createSelector(
   personStateSelector,
@@ -22,14 +22,40 @@ export const completedTasksIsFetchingSelector = createSelector(
   ({ isCompletedTasksFetching }) => isCompletedTasksFetching,
 );
 
+export const taskIdentifiersSelector = createSelector(
+  personStateSelector,
+  ({ taskIdentifiers }) => taskIdentifiers,
+);
+
+export const completedTaskIdentifiersSelector = createSelector(
+  personStateSelector,
+  ({ completedTaskIdentifiers }) => completedTaskIdentifiers,
+);
+
 export const tasksSelector = createSelector(
   personStateSelector,
-  ({ tasks }) => tasks,
+  ({ taskIdentifiers, tasksMap }) => {
+    const tasks = [];
+    if (taskIdentifiers) {
+      for (const taskId of taskIdentifiers) {
+        tasks.push(tasksMap[taskId]);
+      }
+    }
+    return tasks;
+  },
 );
 
 export const completedTasksSelector = createSelector(
   personStateSelector,
-  ({ completedTasks }) => completedTasks,
+  ({ completedTaskIdentifiers, tasksMap }) => {
+    const tasks = [];
+    if (completedTaskIdentifiers) {
+      for (const taskId of completedTaskIdentifiers) {
+        tasks.push(tasksMap[taskId]);
+      }
+    }
+    return tasks;
+  },
 );
 
 export const taskCountersSelector = createSelector(
@@ -45,4 +71,10 @@ export const userDetailsSelector = createSelector(
 export const sortSelector = createSelector(
   personStateSelector,
   ({ sort }) => sort,
+);
+
+export const userTaskDetailsSelector = createSelector(
+  personStateSelector,
+  (_, taskId) => taskId,
+  (details, taskId) => details.tasksMap[taskId],
 );

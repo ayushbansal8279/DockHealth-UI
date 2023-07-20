@@ -2,8 +2,7 @@
 /* eslint-disable no-unused-expressions */
 import React, { useEffect, useCallback, useMemo } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { Grid } from '@material-ui/core';
-import { getTaskCustomFields } from 'actions/task-drawer-actions';
+import { Grid, useMediaQuery } from '@mui/material';
 import CustomField from 'components/common/CustomField/CustomField';
 import { useBoolean } from 'hooks/useBoolean';
 import { useForm, FormProvider } from 'react-hook-form';
@@ -22,6 +21,7 @@ import {
   workflowAutofocusFieldSelector,
 } from 'selectors/workflow-drawer-selectors';
 import { FieldType } from 'helpers/field-type-helpers';
+// import { log } from 'helpers/log';
 import { formatMetaDataOutput } from './helpers';
 import {
   CustomFieldsSectionContainer,
@@ -35,6 +35,7 @@ const CustomFieldsSection = ({ disabled, fieldCategoryType }) => {
   const dispatch = useDispatch();
   const selectedTask = useSelector(selectedTaskSelector);
   const selectedWorkflow = useSelector(workflowSelector);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   const task = selectedTask || selectedWorkflow || {};
   const isWorkflow =
     task.itemType === TaskItemType.BUNDLE ||
@@ -43,27 +44,23 @@ const CustomFieldsSection = ({ disabled, fieldCategoryType }) => {
     isWorkflow ? workflowAutofocusFieldSelector : taskDrawerFocusFieldSelector,
   );
 
+  const isMobile = useMediaQuery((theme) => theme.breakpoints.down('sm'));
+
   const { templates: unfilteredTemplates } = useSelector(
     taskCustomFieldsSelector,
   );
 
   const templates = useMemo(() => {
-    return unfilteredTemplates.filter(unfilteredTemplate => {
+    // eslint-disable-next-line sonarjs/prefer-immediate-return
+    const filtered = unfilteredTemplates.filter((unfilteredTemplate) => {
       if (fieldCategoryType)
         return unfilteredTemplate?.fieldCategoryType === fieldCategoryType;
       return true;
     });
+    return filtered;
   }, [fieldCategoryType, unfilteredTemplates]);
 
   const { 0: emptyVisible, 3: toggleEmptyVisible } = useBoolean(false);
-  useEffect(() => {
-    if (task) {
-      const { identifier, taskList } = task;
-      const taskListIdentifier = taskList?.taskListIdentifier;
-      dispatch(getTaskCustomFields(identifier, taskListIdentifier));
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [dispatch, task?.identifier]);
 
   const updateCustomFields = useCallback(
     ({ taskMetaData }) => {
@@ -80,10 +77,10 @@ const CustomFieldsSection = ({ disabled, fieldCategoryType }) => {
   const { handleSubmit, setValue, getValues } = formMethods;
 
   useEffect(() => {
-    if (task?.taskMetaData) {
-      templates?.forEach(template => {
+    if (task?.taskMetaData && templates) {
+      for (const template of templates) {
         const cf = task?.taskMetaData?.find(
-          field => field?.customFieldIdentifier === template.identifier,
+          (field) => field?.customFieldIdentifier === template.identifier,
         );
         const fieldName = `taskMetaData.${template.identifier}`;
         const hasValue = !!getValues('taskMetaData')?.[template.identifier];
@@ -96,7 +93,7 @@ const CustomFieldsSection = ({ disabled, fieldCategoryType }) => {
             setValue(fieldName, null);
           }
         }
-      });
+      }
     }
   }, [getValues, setValue, task, templates]);
 
@@ -122,10 +119,11 @@ const CustomFieldsSection = ({ disabled, fieldCategoryType }) => {
         alwaysVisible || isFocused || emptyVisible || hasValue || isRequired;
       return (
         <HidableContainer key={field.identifier} visible={!visible}>
-          <Grid item xs={12} style={styleFullRow}>
+          <Grid item xs={12} style={styleFullRow(isMobile, alwaysVisible)}>
             <CustomField
               readOnly={disabled}
               field={field}
+              selected={getValues('taskMetaData')}
               onBlur={(data, wasChanged) =>
                 handleBlur(data, wasChanged, field.fieldType)
               }
@@ -138,7 +136,15 @@ const CustomFieldsSection = ({ disabled, fieldCategoryType }) => {
         </HidableContainer>
       );
     },
-    [taskDrawerFocusField, getValues, emptyVisible, disabled, task, handleBlur],
+    [
+      taskDrawerFocusField,
+      getValues,
+      emptyVisible,
+      isMobile,
+      disabled,
+      task,
+      handleBlur,
+    ],
   );
 
   if (templates.length === 0) return null;

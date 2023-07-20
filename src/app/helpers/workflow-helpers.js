@@ -10,8 +10,6 @@ import toLower from 'ramda/src/toLower';
 import move from 'ramda/src/move';
 import { TaskStatus } from 'helpers/task-helpers';
 
-/* eslint-disable import/prefer-default-export */
-
 export const TaskTemplateItemColumn = {
   NAME: 'NAME',
   CREATED_BY: 'CREATED_BY',

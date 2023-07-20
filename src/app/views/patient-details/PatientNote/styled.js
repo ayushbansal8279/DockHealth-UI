@@ -47,7 +47,7 @@ export const NoteContainer = styled.div`
   display: flex;
   align-items: flex-start;
   padding: ${spacing.regular} ${spacing.largePlus};
-  background-color: ${props => (props.isEdited ? '#F5F8FA' : 'transparent')};
+  background-color: ${(props) => (props.isEdited ? '#F5F8FA' : 'transparent')};
 `;
 
 export const PatientNoteAuthor = styled.div`
@@ -69,9 +69,9 @@ export const PatientNoteTextarea = styled.textarea`
   outline: none;
   border: none;
   padding: 5px;
-  min-height: ${props =>
+  min-height: ${(props) =>
     props.textareaHeight > 100 ? `${props.textareaHeight}px` : '100px'};
-  max-height: ${props =>
+  max-height: ${(props) =>
     props.textareaHeight > 180 ? '180px' : `${props.textareaHeight}px`};
   line-height: 24px;
   resize: none;

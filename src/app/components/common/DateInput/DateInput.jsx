@@ -3,9 +3,9 @@ import React, { useRef, useCallback, useEffect } from 'react';
 import moment from 'moment';
 import InputMask from 'react-input-mask';
 import Input from 'components/common/Input/Input';
-import { Box, IconButton, Popover } from '@material-ui/core';
-import CalendarTodayIcon from '@material-ui/icons/CalendarToday';
-import CloseIcon from '@material-ui/icons/Close';
+import { Box, IconButton, Popover } from '@mui/material';
+import CalendarTodayIcon from '@mui/icons-material/CalendarToday';
+import CloseIcon from '@mui/icons-material/Close';
 import Datepicker from 'components/common/Datepicker/Datepicker';
 import { useBoolean } from 'hooks/useBoolean';
 
@@ -43,7 +43,7 @@ const DateInput = React.forwardRef(
 
     const handleClose = useCallback(() => {
       unsetOpen();
-      if (textInputReference.current) textInputReference.current.focus();
+      if (textInputReference?.current) textInputReference?.current?.focus();
     }, [textInputReference, unsetOpen]);
 
     const momentDate =
@@ -65,7 +65,7 @@ const DateInput = React.forwardRef(
       }, 0);
     };
 
-    const handleDatepickerChange = isoDate => {
+    const handleDatepickerChange = (isoDate) => {
       const date = moment(isoDate).format(DEFAULT_DATE_FORMAT);
       handleChange({ target: { value: date } });
       setTimeout(() => {

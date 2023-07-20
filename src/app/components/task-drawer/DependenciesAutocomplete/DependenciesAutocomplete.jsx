@@ -1,6 +1,6 @@
 import React, { useState, useMemo } from 'react';
 import { useDispatch } from 'react-redux';
-import { Autocomplete } from '@material-ui/lab';
+import { Autocomplete } from '@mui/lab';
 import { useBoolean } from 'hooks/useBoolean';
 import { showGlobalErrorAlert } from 'alert/actions';
 import { addTaskDependencyLink } from 'actions/task-actions';
@@ -11,9 +11,8 @@ import { StyledInput } from './styled';
 
 const DependenciesAutocomplete = ({ taskIdentifier }) => {
   const [availableDependencies, setAvailableDependencies] = useState(null);
-  const { 0: isLoadingDependencies, 2: unsetLoadingDependencies } = useBoolean(
-    true,
-  );
+  const { 0: isLoadingDependencies, 2: unsetLoadingDependencies } =
+    useBoolean(true);
   const [isFocused, setFocused, unsetFocused] = useBoolean(false);
   const [inputValue, setInputValue] = useState('');
 
@@ -21,7 +20,7 @@ const DependenciesAutocomplete = ({ taskIdentifier }) => {
 
   const getAvailableDependencies = () => {
     getAvailableTaskDependencies(taskIdentifier)
-      .then(d => {
+      .then((d) => {
         setAvailableDependencies(d);
         unsetLoadingDependencies();
       })
@@ -31,7 +30,7 @@ const DependenciesAutocomplete = ({ taskIdentifier }) => {
       });
   };
 
-  const handleInputChange = event => {
+  const handleInputChange = (event) => {
     setInputValue(event?.target?.value || '');
   };
 
@@ -41,7 +40,7 @@ const DependenciesAutocomplete = ({ taskIdentifier }) => {
 
   const options = useMemo(
     () =>
-      availableDependencies?.map(task => ({
+      availableDependencies?.map((task) => ({
         id: task.identifier,
         label: task.description,
         task,
@@ -72,12 +71,12 @@ const DependenciesAutocomplete = ({ taskIdentifier }) => {
           >
             <StyledInput
               {...inputProps}
-              onFocus={event => {
+              onFocus={(event) => {
                 setFocused();
                 if (typeof inputProps.onFocus === 'function')
                   inputProps.onFocus(event);
               }}
-              onBlur={event => {
+              onBlur={(event) => {
                 unsetFocused();
                 if (typeof inputProps.onBlur === 'function')
                   inputProps.onBlur(event);

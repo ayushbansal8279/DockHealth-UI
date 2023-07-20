@@ -6,7 +6,7 @@ import { useState, useCallback } from 'react';
  * @param initialValue
  * @returns {[Boolean, Function, Function, Function]}
  */
-export const useBoolean = initialValue => {
+export const useBoolean = (initialValue) => {
   const [flag, setFlag] = useState(initialValue);
   const enable = useCallback(() => {
     setFlag(true);

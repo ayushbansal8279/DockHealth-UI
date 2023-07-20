@@ -1,13 +1,13 @@
 import React from 'react';
-import { Box, Grid } from '@material-ui/core';
+import { Box, Grid } from '@mui/material';
 import { FormProvider, useForm } from 'react-hook-form';
 import FormInput from 'components/common/Input/FormInput';
 import Button from 'components/common/Button/Button';
 import { CloseIconButton, CloseIcon } from '../styled';
 import { ListFormModalWrapper, Title, StyledForm } from './styled';
 
-const validateFolderName = value => {
-  if (!value || ![...value]?.filter(char => char !== ' ').length > 0) {
+const validateFolderName = (value) => {
+  if (!value || ![...value]?.filter((char) => char !== ' ').length > 0) {
     return 'This field is required';
   }
 
@@ -54,7 +54,7 @@ const PatientFolderModal = ({
             name="name"
             validate={validateFolderName}
           />
-          <Grid container direction="row" justify="flex-end">
+          <Grid container direction="row" justifyContent="flex-end">
             <Button
               width="auto"
               variant="secondary"

@@ -1,10 +1,10 @@
 // eslint-disable-next-line unicorn/filename-case
 import React, { useState, useRef } from 'react';
-import { Box, ListItemText, Popover } from '@material-ui/core';
+import { Box, ListItemText, Popover } from '@mui/material';
 import { MontserratTypography } from 'styles/theme-montserrat';
 import Spacing from 'components/common/Spacing';
 import palette from 'styles/palette';
-import SSOIcon from '@material-ui/icons/Security';
+import SSOIcon from '@mui/icons-material/Security';
 import {
   SSOOptionsBar,
   SSOButton,
@@ -20,19 +20,23 @@ import { StyledHyperLink } from './AuthComponents.styled';
 const SSOOptions = () => {
   let ssoURLGoogle;
   if (
-    process.env.SSO_LAUNCH_URL_GOOGLE &&
-    process.env.SSO_LAUNCH_URL_GOOGLE.length > 5
+    import.meta.env.VITE_SSO_LAUNCH_URL_GOOGLE &&
+    import.meta.env.VITE_SSO_LAUNCH_URL_GOOGLE.length > 5
   ) {
-    ssoURLGoogle = process.env.SSO_LAUNCH_URL_GOOGLE;
+    ssoURLGoogle = import.meta.env.VITE_SSO_LAUNCH_URL_GOOGLE;
   }
 
   const drChronoLogin = () => {
     window.sessionStorage.setItem('iss', 'drchrono.com');
-    window.location.href = `${process.env.HEYDOC_SERVICES_BASE_URL}oidc/authorize?iss=client1-drchrono.com`;
+    window.location.href = `${
+      import.meta.env.VITE_HEYDOC_SERVICES_BASE_URL
+    }oidc/authorize?iss=client1-drchrono.com`;
   };
   const athenaLogin = () => {
     window.sessionStorage.setItem('iss', 'athenahealth');
-    window.location.href = `${process.env.HEYDOC_SERVICES_BASE_URL}oidc/authorize?iss=athenahealth`;
+    window.location.href = `${
+      import.meta.env.VITE_HEYDOC_SERVICES_BASE_URL
+    }oidc/authorize?iss=athenahealth`;
   };
   const buttonReference = useRef(null);
   const [open, setOpen] = useState(false);

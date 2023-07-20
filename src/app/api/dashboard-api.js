@@ -5,14 +5,14 @@ import {
 import { TaskStatus } from 'helpers/task-helpers';
 import axios from './axios-heydoc';
 
-const includeCustomFieldsPatientsToEachTask = data => {
+const includeCustomFieldsPatientsToEachTask = (data) => {
   const { taskGroups } = data;
-  const updatedTaskGroups = taskGroups.map(g => ({
+  const updatedTaskGroups = taskGroups.map((g) => ({
     ...g,
-    tasks: (g?.tasks || []).map(t => {
-      const patient = (g.patients || []).find(p => {
-        return p?.patientIdentifier === t?.patient?.patientIdentifier;
-      });
+    tasks: (g?.tasks || []).map((t) => {
+      const patient = (g.patients || []).find(
+        (p) => p?.patientIdentifier === t?.patient?.patientIdentifier,
+      );
       const task = {
         ...t,
       };
@@ -28,8 +28,8 @@ const includeCustomFieldsPatientsToEachTask = data => {
 export function getDashboardMyTasks(status = 'INCOMPLETE') {
   return axios
     .get(`/task/findTasksAssignedToUserGroupedByDueDate?status=${status}`)
-    .then(response => response.data)
-    .catch(error => {
+    .then((response) => response.data)
+    .catch((error) => {
       throw new Error(error?.response?.data?.errorMessage);
     });
 }
@@ -44,44 +44,44 @@ export function reorderTasksInGroup({
       taskGroupImplicitType,
     })
     .then(({ data }) => data)
-    .catch(error => {
+    .catch((error) => {
       throw error;
     });
 }
 
 export function getDashboardMyTasksFilters(selectedFilters) {
-  const request = !selectedFilters
+  const request = selectedFilters
     ? axios
-        .get(`task/filter/filterOptionsForCurrentUser?status=INCOMPLETE`)
-        .then(({ data }) => data)
-    : axios
         .post(
           `task/filter/filterTasksByCriteriaForCurrentUser?status=INCOMPLETE&includeOptions=true`,
           mapSelectedOptionsToRequestPayload(selectedFilters),
         )
-        .then(({ data }) => data.taskFilterOptions);
+        .then(({ data }) => data.taskFilterOptions)
+    : axios
+        .get(`task/filter/filterOptionsForCurrentUser?status=INCOMPLETE`)
+        .then(({ data }) => data);
 
-  return request.then(options => mapFilterOptions(options));
+  return request.then((options) => mapFilterOptions(options));
 }
 
 export function getDashboardAllTasksFilters(selectedFilters) {
-  const request = !selectedFilters
+  const request = selectedFilters
     ? axios
-        .get(
-          `task/filter/filterOptionsForTasksInOrganization?status=INCOMPLETE`,
-        )
-        .then(({ data }) => data)
-    : axios
         .post(
           `task/filter/filterTasksByCriteriaForOrganization?status=INCOMPLETE&includeOptions=true`,
           mapSelectedOptionsToRequestPayload(selectedFilters),
         )
-        .then(({ data }) => data.taskFilterOptions);
+        .then(({ data }) => data.taskFilterOptions)
+    : axios
+        .get(
+          `task/filter/filterOptionsForTasksInOrganization?status=INCOMPLETE`,
+        )
+        .then(({ data }) => data);
 
-  return request.then(options => mapFilterOptions(options));
+  return request.then((options) => mapFilterOptions(options));
 }
 
-export const getDashboardMyTasksByCriteria = selectedFilters =>
+export const getDashboardMyTasksByCriteria = (selectedFilters) =>
   axios
     .post(
       `task/filter/filterTasksByCriteriaForCurrentUser?status=INCOMPLETE`,
@@ -91,7 +91,7 @@ export const getDashboardMyTasksByCriteria = selectedFilters =>
       ({ data }) => includeCustomFieldsPatientsToEachTask(data)?.taskGroups,
     );
 
-export const getDashboardAllTasksByCriteria = selectedFilters =>
+export const getDashboardAllTasksByCriteria = (selectedFilters) =>
   axios
     .post(
       `task/filter/filterTasksByCriteriaForOrganization?status=INCOMPLETE`,
@@ -108,10 +108,8 @@ export function getTasksAssignedToUserByImplicitGroup(
     .get(`/task/findTasksAssignedToUserByImplicitGroup`, {
       params: { groupType, startPosition, endPosition, status: 'INCOMPLETE' },
     })
-    .then(({ data }) => {
-      return includeCustomFieldsPatientsToEachTask(data);
-    })
-    .catch(error => {
+    .then(({ data }) => includeCustomFieldsPatientsToEachTask(data))
+    .catch((error) => {
       throw error;
     });
 }
@@ -125,10 +123,8 @@ export function getTasksForOrganizationByImplicitGroup(
     .get(
       `/task/findTasksForOrganizationByImplicitGroup?groupType=${groupType}&startPosition=${startPosition}&endPosition=${endPosition}&status=INCOMPLETE`,
     )
-    .then(({ data }) => {
-      return includeCustomFieldsPatientsToEachTask(data);
-    })
-    .catch(error => {
+    .then(({ data }) => includeCustomFieldsPatientsToEachTask(data))
+    .catch((error) => {
       throw error;
     });
 }
@@ -138,8 +134,8 @@ export function getDashboardTaskStasForImplicitGroups(tab) {
     .get(
       `/task/stats/getTaskStatsForImplicitGroupsForCurrentUser?viewName=${tab}`,
     )
-    .then(response => response.data)
-    .catch(error => {
+    .then((response) => response.data)
+    .catch((error) => {
       throw new Error(error?.response?.data?.errorMessage);
     });
 }
@@ -149,11 +145,11 @@ export function searchTasksByAssignedToUserGroupedByImplicitGroups(searchTerm) {
     .get(
       `/task/searchTasksByAssignedToUserGroupedByImplicitGroups?searchTerm=${searchTerm}&status=INCOMPLETE`,
     )
-    .then(({ data }) => {
-      return includeCustomFieldsPatientsToEachTask({ taskGroups: data })
-        ?.taskGroups;
-    })
-    .catch(error => {
+    .then(
+      ({ data }) =>
+        includeCustomFieldsPatientsToEachTask({ taskGroups: data })?.taskGroups,
+    )
+    .catch((error) => {
       throw new Error(error?.response?.data?.errorMessage);
     });
 }
@@ -163,11 +159,11 @@ export function searchTasksForOrganizationGroupedByImplicitGroups(searchTerm) {
     .get(
       `/task/searchTasksForOrganizationGroupedByImplicitGroups?searchTerm=${searchTerm}&status=INCOMPLETE`,
     )
-    .then(({ data }) => {
-      return includeCustomFieldsPatientsToEachTask({ taskGroups: data })
-        ?.taskGroups;
-    })
-    .catch(error => {
+    .then(
+      ({ data }) =>
+        includeCustomFieldsPatientsToEachTask({ taskGroups: data })?.taskGroups,
+    )
+    .catch((error) => {
       throw new Error(error?.response?.data?.errorMessage);
     });
 }

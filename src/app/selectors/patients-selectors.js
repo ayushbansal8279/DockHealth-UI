@@ -1,6 +1,6 @@
 import { createSelector } from 'reselect';
 
-export const patientsStateSelector = state => state.patients;
+export const patientsStateSelector = (state) => state.patients;
 
 export const defaultPatientsListsSelector = createSelector(
   patientsStateSelector,

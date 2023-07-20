@@ -8,7 +8,7 @@ import React, {
 } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useHistory, useParams } from 'react-router-dom';
-import { Grid } from '@material-ui/core';
+import { Grid } from '@mui/material';
 import { openModal } from 'modal/actions';
 import { ColumnsConfigProvider } from 'context-api/columns-config-context';
 import { TaskItemColumn } from 'helpers/task-helpers';
@@ -49,7 +49,7 @@ import Search from 'components/task-view/Search/Search';
 import debounce from 'lodash.debounce';
 import usePrevious from 'hooks/use-previous';
 import UpgradePlanPopup from 'components/common/UpgradePlanPopup/UpgradePlanPopup';
-import SmartFlowsIcon from 'img/premium/smartflows';
+import SmartFlowsIcon from 'img/premium/smartflows.svg';
 import {
   TaskTemplateViewContainer,
   SearchWrapper,
@@ -99,13 +99,13 @@ const TaskTemplateView = () => {
 
   const folders = useMemo(
     () =>
-      taskTemplates?.filter(template => template.templateType === 'FOLDER') ||
+      taskTemplates?.filter((template) => template.templateType === 'FOLDER') ||
       [],
     [taskTemplates],
   );
   const templates = useMemo(
     () =>
-      taskTemplates?.filter(template => template.templateType !== 'FOLDER') ||
+      taskTemplates?.filter((template) => template.templateType !== 'FOLDER') ||
       [],
     [taskTemplates],
   );
@@ -192,7 +192,7 @@ const TaskTemplateView = () => {
   }, [sort.order, currentSortMethod, currentSortDescMethod]);
 
   const handleGoToFolder = useCallback(
-    id => {
+    (id) => {
       history.push(createWorkflowFolderPath(id));
     },
     [history],
@@ -203,7 +203,7 @@ const TaskTemplateView = () => {
     [],
   );
 
-  const onSearchHandle = event => {
+  const onSearchHandle = (event) => {
     const searchPhraseValue = event.target.value;
     setSearchPhrase(searchPhraseValue);
     if (searchPhraseValue.length !== 1) {
@@ -268,7 +268,7 @@ const TaskTemplateView = () => {
                   />
                 )}
               </SearchWrapper>
-              <Grid container justify="flex-end" alignItems="center">
+              <Grid container justifyContent="flex-end" alignItems="center">
                 <AddButton onClick={handleCreateTemplate}>
                   Add Workflow
                 </AddButton>
@@ -291,9 +291,11 @@ const TaskTemplateView = () => {
               tasksHeaderTextTransform={tasksHeaderTextTransformItem?.value}
               tasksHeaderTextColor={tasksHeaderTextColorItem?.value}
             />
-            {!isFetchingTaskTemplates ? (
+            {isFetchingTaskTemplates ? (
+              <TaskTemplatesLoader />
+            ) : (
               <>
-                {currentSortMethodWithOrder(folders).map(template => (
+                {currentSortMethodWithOrder(folders).map((template) => (
                   <TaskTemplateFolder
                     highlighted={newlyCreatedTemplateId === template.identifier}
                     key={template.identifier}
@@ -309,7 +311,7 @@ const TaskTemplateView = () => {
                     />
                   </TaskTemplateFolder>
                 ))}
-                {currentSortMethodWithOrder(templates).map(template => (
+                {currentSortMethodWithOrder(templates).map((template) => (
                   <TaskTemplate
                     highlighted={newlyCreatedTemplateId === template.identifier}
                     key={template.identifier}
@@ -327,8 +329,6 @@ const TaskTemplateView = () => {
                   </TaskTemplate>
                 ))}
               </>
-            ) : (
-              <TaskTemplatesLoader />
             )}
             <TaskDrawer />
           </TaskTemplateViewContainer>

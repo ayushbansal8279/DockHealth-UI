@@ -8,9 +8,9 @@ export const TabsContainer = styled.div`
 `;
 
 export const TabButton = styled.button`
-  background-color: ${props =>
+  background-color: ${(props) =>
     props.isSelected ? palette.coolGrey4 : palette.white};
-  color: ${props =>
+  color: ${(props) =>
     props.isSelected ? palette.brightBlue : palette.coolGrey2};
   font-family: 'Montserrat', sans-serif;
   font-weight: ${fontWeights.regularPlus};
@@ -20,13 +20,13 @@ export const TabButton = styled.button`
   width: 200px;
 
   &:hover {
-    color: ${props =>
+    color: ${(props) =>
       props.isSelected ? palette.brightBlue : palette.lightGray};
     cursor: pointer;
   }
 
   &:after {
-    visibility: ${props => (props.isSelected ? 'visible' : 'hidden')};
+    visibility: ${(props) => (props.isSelected ? 'visible' : 'hidden')};
     background: ${palette.brightBlue};
     border-radius: 10px;
     bottom: 30%;

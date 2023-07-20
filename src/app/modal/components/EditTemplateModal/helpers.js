@@ -1,4 +1,3 @@
-/* eslint-disable import/prefer-default-export */
 import { capitalize } from 'helpers/capitalize';
 import { string, object } from 'yup';
 
@@ -34,8 +33,8 @@ export const TEMPLATE_TYPE_OPTIONS = [
 ];
 
 export const validationSchema = object().shape({
-  name: string().required(d => `${capitalize(d.path)} is required`),
-  type: string().required(d => `${capitalize(d.path)} is required`),
+  name: string().required((d) => `${capitalize(d.path)} is required`),
+  type: string().required((d) => `${capitalize(d.path)} is required`),
   shortMessage: string(),
   details: string(),
 });

@@ -1,10 +1,10 @@
-import { IconButton, Box, Modal } from '@material-ui/core';
-import { withStyles } from '@material-ui/core/styles';
+import { IconButton, Box, Modal } from '@mui/material';
 import styled from 'styled-components';
 import palette from 'styles/palette';
 import spacing from 'styles/spacing';
 import { fontSizes } from 'styles/font';
-import { Close } from '@material-ui/icons';
+import { Close } from '@mui/icons-material';
+import Select from 'components/common/Select/Select';
 
 export const CustomModal = styled(Modal)``;
 
@@ -44,18 +44,48 @@ export const Title = styled.h5`
   text-align: center;
 `;
 
-export const CloseIconButton = withStyles({
-  root: {
-    position: 'absolute',
-    top: 8,
-    right: 8,
-    display: 'block',
-  },
-})(IconButton);
+export const CloseIconButton = styled(IconButton)`
+  &&& {
+    &.MuiIconButton-root {
+      position: absolute;
+      top: 8px;
+      right: 8px;
+      display: block;
+    }
+  }
+`;
 
-export const CloseIcon = withStyles({
-  root: {
-    width: 16,
-    height: 16,
-  },
-})(Close);
+export const CloseIcon = styled(Close)`
+  &&& {
+    &.MuiClose-root {
+      width: 16px;
+      height: 16px;
+    }
+  }
+`;
+
+export const SelectOptionColor = styled(Select)`
+  &.MuiFormControl-root {
+    width: 48px;
+  }
+
+  & .MuiInputBase-root {
+    //background-color: transparent !important;
+
+    &.MuiFilledInput-underline:before {
+      //border-bottom: none;
+    }
+  }
+`;
+
+export const SelectParentDropdown = styled(Select)`
+  &.MuiFormControl-root {
+    width: 176px;
+  }
+`;
+
+export const SelectParentOption = styled(Select)`
+  &.MuiFormControl-root {
+    width: 176px;
+  }
+`;

@@ -1,6 +1,6 @@
 import React, { useCallback } from 'react';
 import Button from 'components/common/Button/Button';
-import { Link } from '@material-ui/core';
+import { Link } from '@mui/material';
 import { useHistory } from 'react-router-dom';
 import { SUBS_SETTINGS_PATH } from 'routing/helpers/paths';
 import Spacing from '../Spacing';

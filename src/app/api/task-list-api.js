@@ -9,8 +9,8 @@ export function getTaskListForUser() {
     url: 'list/findTaskListsForUser?basicDetails=true',
     method: 'get',
   })
-    .then(response => response?.data)
-    .catch(error => {
+    .then((response) => response?.data)
+    .catch((error) => {
       throw new Error(error?.response?.data?.errorMessage);
     });
 }
@@ -18,8 +18,8 @@ export function getTaskListForUser() {
 export function getArchivedTaskListForUser() {
   return axios
     .get('list/findArchivedTaskListsForUser?basicDetails=true')
-    .then(response => response?.data)
-    .catch(error => {
+    .then((response) => response?.data)
+    .catch((error) => {
       throw new Error(error?.response?.data?.errorMessage);
     });
 }
@@ -29,8 +29,8 @@ export function getSharedTaskListsWithCurrentUser(userIdentifier) {
     url: `list/findSharedTaskListsWithCurrentUser/${userIdentifier}?basicDetails=true`,
     method: 'get',
   })
-    .then(response => response?.data)
-    .catch(error => {
+    .then((response) => response?.data)
+    .catch((error) => {
       throw new Error(error?.response?.data?.errorMessage);
     });
 }
@@ -38,8 +38,8 @@ export function getSharedTaskListsWithCurrentUser(userIdentifier) {
 export function getPendingTaskListsForUser() {
   return axios
     .get('list/findPendingTaskListsForUser?basicDetails=true')
-    .then(response => response?.data)
-    .catch(error => {
+    .then((response) => response?.data)
+    .catch((error) => {
       throw new Error(error?.response?.data?.errorMessage);
     });
 }
@@ -47,10 +47,8 @@ export function getPendingTaskListsForUser() {
 export function addTaskList(tasklist) {
   return axios
     .post('list/', tasklist)
-    .then(response => {
-      return response?.data;
-    })
-    .catch(error => {
+    .then((response) => response?.data)
+    .catch((error) => {
       throw new Error(error?.response?.data?.errorMessage);
     });
 }
@@ -63,10 +61,8 @@ export function updateTaskList(taskList) {
   // userIdentifier - make sure authorized user can only update the task list
   return axios
     .put('list/', taskList)
-    .then(response => {
-      return response?.data;
-    })
-    .catch(error => {
+    .then((response) => response?.data)
+    .catch((error) => {
       throw new Error(error?.response?.data?.errorMessage);
     });
 }
@@ -76,8 +72,8 @@ export function getMembersByTaskListId(taskListIdentifier, memberStatus) {
     .get(
       `user/listAllUsersByTaskListId/${taskListIdentifier}?status=${memberStatus}`,
     )
-    .then(response => response?.data)
-    .catch(error => {
+    .then((response) => response?.data)
+    .catch((error) => {
       throw new Error(error?.response?.data?.errorMessage);
     });
 }
@@ -85,8 +81,8 @@ export function getMembersByTaskListId(taskListIdentifier, memberStatus) {
 export function invitePersonToTaskList(taskListIdentifier, personInfo) {
   return axios
     .put(`user/invitePersonToTaskList/${taskListIdentifier}`, personInfo)
-    .then(response => response?.data)
-    .catch(error => {
+    .then((response) => response?.data)
+    .catch((error) => {
       throw new Error(error?.response?.data?.errorMessage);
     });
 }
@@ -94,8 +90,8 @@ export function invitePersonToTaskList(taskListIdentifier, personInfo) {
 export function getOrganizationUsersNotInTaskList(taskListIdentifier) {
   return axios
     .get(`user/findOrganizationUsersNotInTaskList/${taskListIdentifier}`)
-    .then(response => response?.data)
-    .catch(error => {
+    .then((response) => response?.data)
+    .catch((error) => {
       throw new Error(error?.response?.data?.errorMessage);
     });
 }
@@ -105,8 +101,8 @@ export const inviteUserToTaskList = (taskListIdentifier, userIdentifier) =>
     .put(
       `/user/inviteUserToTaskList/${taskListIdentifier}/user/${userIdentifier}`,
     )
-    .then(response => response?.data)
-    .catch(error => {
+    .then((response) => response?.data)
+    .catch((error) => {
       throw new Error(error?.response?.data?.errorMessage);
     });
 
@@ -123,8 +119,8 @@ export function inviteMultipleUsersToTaskList(
       `user/inviteMultipleUsersToTaskList/${taskListIdentifier}`,
       multiUserInvitation,
     )
-    .then(response => response?.data)
-    .catch(error => {
+    .then((response) => response?.data)
+    .catch((error) => {
       throw new Error(error?.response?.data?.errorMessage);
     });
 }
@@ -132,8 +128,8 @@ export function inviteMultipleUsersToTaskList(
 export function getNonOrgUsersByTaskList(taskListIdentifier) {
   return axios
     .get(`user/findNonOrgUsersByTaskList/${taskListIdentifier}`)
-    .then(response => response?.data)
-    .catch(error => {
+    .then((response) => response?.data)
+    .catch((error) => {
       throw new Error(error?.response?.data?.errorMessage);
     });
 }
@@ -147,8 +143,8 @@ export function changeUserRoleForList(
     .put(
       `list/changeUserRoleForList/${taskListIdentifier}?markedUserId=${markedUserIdentifier}&role=${role}`,
     )
-    .then(response => response?.data)
-    .catch(error => {
+    .then((response) => response?.data)
+    .catch((error) => {
       throw new Error(error?.response?.data?.errorMessage);
     });
 }
@@ -156,11 +152,11 @@ export function changeUserRoleForList(
 export function deleteTaskListById(taskListIdentifier) {
   return axios
     .delete(`list/deleteTaskListById/${taskListIdentifier}`)
-    .then(response => {
+    .then((response) => {
       onTaskListDeleted();
       return response?.data;
     })
-    .catch(error => {
+    .catch((error) => {
       throw new Error(error?.response?.data?.errorMessage);
     });
 }
@@ -168,10 +164,8 @@ export function deleteTaskListById(taskListIdentifier) {
 export function archiveTaskListById(taskListIdentifier, archive) {
   return axios
     .put(`list/archive/${taskListIdentifier}?archive=${archive}`)
-    .then(response => {
-      return response?.data;
-    })
-    .catch(error => {
+    .then((response) => response?.data)
+    .catch((error) => {
       throw new Error(error?.response?.data?.errorMessage);
     });
 }
@@ -184,8 +178,8 @@ export function removeUserFromTaskList(
     .delete(
       `user/removeUserFromTaskList/${taskListIdentifier}?userIdentifier=${removedUserIdentifier}`,
     )
-    .then(response => response?.data)
-    .catch(error => {
+    .then((response) => response?.data)
+    .catch((error) => {
       throw new Error(error?.response?.data?.errorMessage);
     });
 }
@@ -198,8 +192,8 @@ export function cancelInviteToTaskList(
     .put(
       `list/cancelInviteToTaskList/${taskListIdentifier}?userIdentifier=${cancelledUserIdentifier}`,
     )
-    .then(response => response?.data)
-    .catch(error => {
+    .then((response) => response?.data)
+    .catch((error) => {
       throw new Error(error?.response?.data?.errorMessage);
     });
 }
@@ -209,8 +203,8 @@ export function findAuditsByTaskList(taskListIdentifier, queryStartPosition) {
     .get(
       `audit/findAuditsByTaskList/${taskListIdentifier}?queryStartPosition=${queryStartPosition}`,
     )
-    .then(response => response?.data)
-    .catch(error => {
+    .then((response) => response?.data)
+    .catch((error) => {
       throw new Error(error?.response?.data?.errorMessage);
     });
 }
@@ -218,11 +212,10 @@ export function findAuditsByTaskList(taskListIdentifier, queryStartPosition) {
 export function findAuditsForAllTaskListsByUserId(queryStartPosition) {
   return axios
     .get(
-      `${'audit/findAuditsForAllTaskListsByUserId/' +
-        '?queryStartPosition='}${queryStartPosition}`,
+      `${'audit/findAuditsForAllTaskListsByUserId/?queryStartPosition='}${queryStartPosition}`,
     )
-    .then(response => response?.data)
-    .catch(error => {
+    .then((response) => response?.data)
+    .catch((error) => {
       throw new Error(error?.response?.data?.errorMessage);
     });
 }
@@ -230,11 +223,13 @@ export function findAuditsForAllTaskListsByUserId(queryStartPosition) {
 export function findActivityFeedForAllTaskListsByUserId(queryStartPosition) {
   return axios
     .get(
-      `${'audit/findActivityFeedForAllTaskListsByUserId/' +
-        '?queryStartPosition='}${queryStartPosition}`,
+      `${
+        'audit/findActivityFeedForAllTaskListsByUserId/' +
+        '?queryStartPosition='
+      }${queryStartPosition}`,
     )
-    .then(response => response?.data)
-    .catch(error => {
+    .then((response) => response?.data)
+    .catch((error) => {
       throw new Error(error?.response?.data?.errorMessage);
     });
 }
@@ -247,8 +242,8 @@ export function toggleListNotifications(
     .put(
       `list/toggleUserNotificationsForTaskList/${taskListIdentifier}?notifications=${receiveNotifications}`,
     )
-    .then(response => response)
-    .catch(error => {
+    .then((response) => response)
+    .catch((error) => {
       throw new Error(error?.response?.data?.errorMessage);
     });
 }
@@ -256,8 +251,8 @@ export function toggleListNotifications(
 export function findGenericListCountsForUser() {
   return axios
     .get('list/getGenericListCountsForUser')
-    .then(response => response?.data)
-    .catch(error => {
+    .then((response) => response?.data)
+    .catch((error) => {
       throw new Error(error?.response?.data?.errorMessage);
     });
 }
@@ -268,7 +263,7 @@ export function downloadPDF(taskListIdentifier) {
     method: 'GET',
     responseType: 'blob', // important
   })
-    .then(response => {
+    .then((response) => {
       const url = window.URL.createObjectURL(new Blob([response?.data]));
       const link = document.createElement('a');
       link.href = url;
@@ -277,7 +272,7 @@ export function downloadPDF(taskListIdentifier) {
       link.click();
       return 'success';
     })
-    .catch(error => {
+    .catch((error) => {
       throw new Error(error?.response?.data?.errorMessage);
     });
 }
@@ -294,7 +289,7 @@ export function getListMembersByName(taskListIdentifier, name) {
   return axios
     .get(`/user/findListMembersByName/${taskListIdentifier}?name=${name}`)
     .then(({ data }) => data)
-    .catch(error => {
+    .catch((error) => {
       throw error;
     });
 }
@@ -302,10 +297,8 @@ export function getListMembersByName(taskListIdentifier, name) {
 export function acceptInviteToTaskList(taskListIdentifier) {
   return axios
     .put(`list/acceptInviteToTaskList/${taskListIdentifier}`)
-    .then(({ data }) => {
-      return data;
-    })
-    .catch(error => {
+    .then(({ data }) => data)
+    .catch((error) => {
       throw new Error(error?.response?.data?.errorMessage);
     });
 }
@@ -317,7 +310,7 @@ export function rejectInviteToTaskList(taskListIdentifier) {
       onTaskListInvitationRejected();
       return data;
     })
-    .catch(error => {
+    .catch((error) => {
       throw new Error(error?.response?.data?.errorMessage);
     });
 }
@@ -325,9 +318,7 @@ export function rejectInviteToTaskList(taskListIdentifier) {
 export function leaveList(taskListIdentifier) {
   return axios
     .delete(`user/userLeavesList/${taskListIdentifier}`)
-    .then(({ data }) => {
-      return data;
-    });
+    .then(({ data }) => data);
 }
 
 export function updateListPreferences(setup, taskListIdentifier) {

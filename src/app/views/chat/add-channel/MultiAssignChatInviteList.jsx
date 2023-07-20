@@ -10,7 +10,7 @@ import * as OrganizationApi from 'api/organization-api';
 import { arrayOf, func, shape, string } from 'prop-types';
 import debounce from 'lodash.debounce';
 import UserAvatar from 'components/user/UserAvatar/UserAvatar';
-import MagnifierIcon from 'img/magnifier';
+import MagnifierIcon from 'img/magnifier.svg';
 import Checkbox from 'components/common/Checkbox/Checkbox';
 import Spacing from 'components/common/Spacing';
 import { useSelector } from 'react-redux';
@@ -54,7 +54,7 @@ const MultiAssignChatInviteMembersList = ({
   const filteredMembers = useMemo(
     () =>
       enableLazyLoading
-        ? membersOptions.map(user => {
+        ? membersOptions.map((user) => {
             const { identifier } = user;
             const isSelected = !!selectedMembers.find(
               ({ identifier: id }) => id === identifier,
@@ -94,7 +94,7 @@ const MultiAssignChatInviteMembersList = ({
 
   useEffect(() => {
     if (savedSelectedMembers.length > 0 && selectedMembers.length === 0) {
-      const members = savedSelectedMembers.map(member => {
+      const members = savedSelectedMembers.map((member) => {
         return { identifier: member.userId, name: member.nickname };
       });
       setSelectedMembers([...members]);
@@ -104,8 +104,8 @@ const MultiAssignChatInviteMembersList = ({
   const inputReference = useRef(null);
 
   const selectMembersWithDebounce = useCallback(
-    debounce(selection => {
-      onSelect(selection.map(s => ({ ...s, userIdentifier: s.userId })));
+    debounce((selection) => {
+      onSelect(selection.map((s) => ({ ...s, userIdentifier: s.userId })));
       // eslint-disable-next-line no-unused-expressions
       inputReference.current?.focus();
     }, 700),
@@ -142,7 +142,8 @@ const MultiAssignChatInviteMembersList = ({
         setIsFetchingMembers(true);
         setMembersOptions([]);
         try {
-          const organizationMembers = await OrganizationApi.getOrganizationUsersAndUserGroups();
+          const organizationMembers =
+            await OrganizationApi.getOrganizationUsersAndUserGroups();
           setMembersOptions(organizationMembers);
         } catch (error) {
           if (typeof onError === 'function') onError(error);
@@ -180,7 +181,7 @@ const MultiAssignChatInviteMembersList = ({
 
   const displayUsersList = useMemo(() => {
     if (enableLazyLoading) return isValueSendable;
-    return !!filteredMembers.length || isFetchingMembers;
+    return filteredMembers.length > 0 || isFetchingMembers;
   }, [
     enableLazyLoading,
     filteredMembers.length,
@@ -194,14 +195,14 @@ const MultiAssignChatInviteMembersList = ({
         <MemberRow
           key={member?.identifier}
           isSelected={isSelected}
-          onClick={event => handleOptionClick(event, member)}
+          onClick={(event) => handleOptionClick(event, member)}
         >
           <Checkbox isChecked={isSelected} />
           <Spacing horizontal={3} />
           {isUserGroup(member) ? (
-            <GroupAvatar group={member} hideTooltip />
+            <GroupAvatar group={member} hideTooltip size={35}/>
           ) : (
-            <UserAvatar user={member} hideTooltip />
+            <UserAvatar user={member} hideTooltip size={35}/>
           )}
           <Spacing horizontal={3} />
           <MemberName>
@@ -225,36 +226,40 @@ const MultiAssignChatInviteMembersList = ({
         <Input
           ref={inputReference}
           placeholder="Search"
-          onChange={event => setSearchValue(event.target.value)}
+          onChange={(event) => setSearchValue(event.target.value)}
         />
       </InputBox>
       <ListContainer>
         {filteredSelectedMembers?.length > 0 && (
           <ListContentSection>
-            {filteredSelectedMembers?.map(member => {
+            {filteredSelectedMembers?.map((member) => {
               return renderSelectOption(member, true);
             })}
           </ListContentSection>
         )}
         {displayUsersList && (
           <ListContentSection>
-            {!isFetchingMembers ? (
-              filteredMembers?.map(member =>
+            {isFetchingMembers ? (
+              <>
+                {Array.from({ length: 4 })
+                  .fill()
+                  .map((_, index) => (
+                    // eslint-disable-next-line react/no-array-index-key
+                    <MemberRowSkeletonLoader key={index} />
+                  ))}
+              </>
+            ) : (
+              filteredMembers?.map((member) =>
                 renderSelectOption(member, member.isSelected),
               )
-            ) : (
-              <>
-                {new Array(4).fill().map((_, index) => (
-                  // eslint-disable-next-line react/no-array-index-key
-                  <MemberRowSkeletonLoader key={index} />
-                ))}
-              </>
             )}
           </ListContentSection>
         )}
-        {isValueSendable && !isFetchingMembers && !filteredMembers.length && (
-          <NoRecordsText>No users found</NoRecordsText>
-        )}
+        {isValueSendable &&
+          !isFetchingMembers &&
+          filteredMembers.length === 0 && (
+            <NoRecordsText>No users found</NoRecordsText>
+          )}
       </ListContainer>
     </>
   );

@@ -51,7 +51,7 @@ const TaskWorkflowStatus = ({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [error]);
 
-  const handleStatusSelect = status => {
+  const handleStatusSelect = (status) => {
     updateWorkflowStatus(status);
     onClose();
   };
@@ -71,7 +71,7 @@ const TaskWorkflowStatus = ({
                   status={RESET_STATUS}
                   colorBorder
                 />
-                {statuses?.map(status => (
+                {statuses?.map((status) => (
                   <WorkflowStatusItemButton
                     key={status.identifier}
                     selected={status.identifier === selectedStatusIdentifier}

@@ -1,6 +1,6 @@
 import { createSelector } from 'reselect';
 
-export const taskDrawerSelector = state => state.taskDrawerState;
+export const taskDrawerSelector = (state) => state.taskDrawerState;
 
 export const selectedTaskSelector = createSelector(
   taskDrawerSelector,
@@ -22,21 +22,24 @@ export const taskCustomFieldsSelector = createSelector(
   ({ customFields }) => customFields,
 );
 
+export const singleTaskCustomFieldsSelector = createSelector(
+  taskDrawerSelector,
+  (_, taskId) => taskId,
+  ({ templatesMap }, taskId) => {
+    return templatesMap[taskId];
+  },
+);
+
 export const selectedTaskIdentifierSelector = createSelector(
   taskDrawerSelector,
   ({ selectedTask }) => selectedTask?.taskIdentifier,
 );
 
-export const isTaskSelectedSelector = (
-  taskIdentifier,
-  isSelectedByHighlighted,
-) =>
-  createSelector(
-    taskDrawerSelector,
-    ({ selectedTask }) =>
-      selectedTask?.taskIdentifier === taskIdentifier ||
-      isSelectedByHighlighted,
-  );
+export const isTaskSelectedSelector = createSelector(
+  taskDrawerSelector,
+  (_, taskId) => taskId,
+  (state, taskId) => taskId && state.selectedTask?.taskIdentifier === taskId,
+);
 
 export const addingNewSubtaskSelector = createSelector(
   taskDrawerSelector,

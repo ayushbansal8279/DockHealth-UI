@@ -1,6 +1,4 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
-import { Grid } from '@material-ui/core';
-import palette from 'styles/palette';
+import { Grid } from '@mui/material';
 import React, { useMemo, useEffect } from 'react';
 import { FormProvider, useForm } from 'react-hook-form';
 import { useDispatch } from 'react-redux';
@@ -85,7 +83,7 @@ const UserProfileForm = ({ userProfile }) => {
     dispatch(
       openModal('ChangeMobileNumber', {
         userProfile,
-        onUpdateSuccess: updatedPhoneNumber => {
+        onUpdateSuccess: (updatedPhoneNumber) => {
           setValue('accountPhoneNumber', updatedPhoneNumber);
           dispatch(getCurrentUser());
         },
@@ -108,7 +106,7 @@ const UserProfileForm = ({ userProfile }) => {
   return (
     <FormProvider {...formMethods}>
       <StyledForm
-        onSubmit={handleSubmit(data =>
+        onSubmit={handleSubmit((data) =>
           dispatch(
             updateCurrentUser({
               ...data,
@@ -135,13 +133,13 @@ const UserProfileForm = ({ userProfile }) => {
                 <AvatarInput
                   name="userAvatar"
                   pictureSrc={
-                    avatarValue !== undefined
-                      ? avatarValue
-                      : getUserAvatarThumbnailUrl(userProfile)
+                    avatarValue === undefined
+                      ? getUserAvatarThumbnailUrl(userProfile)
+                      : avatarValue
                   }
                   initials={initialsValue}
                   color={avatarColorValue}
-                  onChange={newAvatar => {
+                  onChange={(newAvatar) => {
                     setValue('avatar', newAvatar);
                   }}
                 />
@@ -159,7 +157,7 @@ const UserProfileForm = ({ userProfile }) => {
               name="initials"
               placeholder="ab"
               value={initialsValue}
-              onChange={v => {
+              onChange={(v) => {
                 setValue('initials', v);
               }}
               maxChar={2}
@@ -169,7 +167,7 @@ const UserProfileForm = ({ userProfile }) => {
             <ColorPicker
               name="bubbleColor"
               value={avatarColorValue}
-              onChange={event => {
+              onChange={(event) => {
                 const { name, value } = event.target;
                 setValue(name, value);
               }}

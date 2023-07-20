@@ -30,7 +30,7 @@ const AssignedToStatisticsChart = () => {
         )
       : AnalyticsApi.getGroupedStatistics(StatisticsGroupType.TASK_ASSIGNEDTO)
     )
-      .then(responseMetrics => {
+      .then((responseMetrics) => {
         const mappedMetrics = responseMetrics.map(
           ({ metricName, metricValue, metricColor }) => ({
             metricName: metricName ?? 'Not assigned',

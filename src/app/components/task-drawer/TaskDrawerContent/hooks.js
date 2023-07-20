@@ -12,19 +12,24 @@ import {
 import { useHistory, useParams } from 'react-router-dom';
 import { useDispatch, useSelector, batch } from 'react-redux';
 import moment from 'moment';
-import { EditorState } from 'draft-js';
+// import { EditorState } from 'draft-js';
 import { useMentionsEditorState } from 'components/common/TextEditor/use-mentions-editor-state';
-import { createMentionEntities } from 'components/common/TextEditor/create-mention-entities';
-import * as TaskApi from 'api/task-api';
+// import { createMentionEntities } from 'components/common/TextEditor/create-mention-entities';
+// import * as TaskApi from 'api/task-api';
 import {
   partialUpdateTask,
   storeAsCurrentTask,
   deleteTask,
   duplicateTask,
-  markTaskAsRead,
+  // markTaskAsRead,
+  refreshTask,
 } from 'actions/task-actions';
-import { UPDATE_TASK_SUCCESS } from 'actions/action-types';
-import { openDrawer, closeDrawer } from 'actions/task-drawer-actions';
+// import { UPDATE_TASK_SUCCESS } from 'actions/action-types';
+import {
+  openDrawer,
+  closeDrawer,
+  getTaskCustomFields,
+} from 'actions/task-drawer-actions';
 import * as WorkflowDrawerActions from 'actions/workflow-drawer-actions';
 import {
   selectedTaskSelector,
@@ -76,17 +81,15 @@ const initializeTaskDrawerHooks = ({
   const parentBundle = useMemo(
     () =>
       selectedTask?.taskGroups?.find(
-        tg => tg.groupType === TaskGroupType.BUNDLE,
+        (tg) => tg.groupType === TaskGroupType.BUNDLE,
       ),
     [selectedTask],
   );
 
   const taskTemplate = selectedTask?.taskTemplate;
 
-  const [
-    parentDescriptionState,
-    setParentDescriptionState,
-  ] = useMentionsEditorState();
+  const [parentDescriptionState, setParentDescriptionState] =
+    useMentionsEditorState();
 
   useEffect(() => {
     const unlisten = history.listen(() => {
@@ -110,14 +113,21 @@ const initializeTaskDrawerHooks = ({
         taskIdentifier !== previousTaskIdentifierValue.current) ||
       (subtasks?.length === 0 && subTasksCount > 0)
     ) {
-      TaskApi.getTaskDetails(taskIdentifier).then(task => {
-        setSelectedParentTask(task.parentTask || null);
-        dispatch({ type: UPDATE_TASK_SUCCESS, task });
-      });
+      // TaskApi.getTaskDetails(taskIdentifier).then((task) => {
+      //   setSelectedParentTask(task.parentTask || null);
+      //   dispatch({ type: UPDATE_TASK_SUCCESS, task });
+      // });
+      dispatch(refreshTask(taskIdentifier));
     }
     previousTaskIdentifierValue.current = taskIdentifier;
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [taskIdentifier, subtasks]);
+
+  useEffect(() => {
+    if (taskIdentifier) {
+      dispatch(getTaskCustomFields(taskIdentifier, taskListIdentifier));
+    }
+  }, [dispatch, taskIdentifier, taskListIdentifier]);
 
   useLayoutEffect(() => {
     if (taskIdentifier !== previousTaskIdentifierValue.current) {
@@ -128,22 +138,19 @@ const initializeTaskDrawerHooks = ({
 
   useLayoutEffect(() => {
     if (selectedParentTask) {
-      const {
-        tokenizedDescription,
-        description,
-        taskMentions,
-      } = selectedParentTask;
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
+      const { tokenizedDescription, description, taskMentions } =
+        selectedParentTask;
       if (description) {
-        const newContent = createMentionEntities(
-          tokenizedDescription,
-          description,
-          taskMentions,
-          false,
-        );
-
-        setParentDescriptionState(
-          EditorState.push(parentDescriptionState, newContent),
-        );
+        // const newContent = createMentionEntities(
+        //   tokenizedDescription,
+        //   description,
+        //   taskMentions,
+        //   false,
+        // );
+        // setParentDescriptionState(
+        //   EditorState.push(parentDescriptionState, newContent),
+        // );
       }
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -156,7 +163,7 @@ const initializeTaskDrawerHooks = ({
       taskListIdentifier &&
       selectedTask?.taskIdentifier
     ) {
-      dispatch(markTaskAsRead(selectedTask?.taskIdentifier));
+      // dispatch(markTaskAsRead(selectedTask?.taskIdentifier));
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [selectedTaskIdentifier, taskDrawerOpen]);
@@ -196,32 +203,33 @@ const initializeTaskDrawerHooks = ({
   );
 
   const onDuplicate = useCallback(
-    ({ afterDuplicate, includeAttachments }) => async event => {
-      if (event) {
-        event.preventDefault();
-        event.stopPropagation();
-      }
-
-      if (selectedTask && selectedTask.taskIdentifier != null) {
-        try {
-          const newTask = await duplicateTask(
-            selectedTask,
-            includeAttachments,
-          )(dispatch);
-          onTaskCreation(newTask);
-          storeAsCurrentTask(newTask)(dispatch);
-          afterDuplicate({ newTask });
-          onTaskDrawerTaskDuplicated();
-        } catch {
-          noop();
+    ({ afterDuplicate, includeAttachments }) =>
+      async (event) => {
+        if (event) {
+          event.preventDefault();
+          event.stopPropagation();
         }
-      }
-    },
+
+        if (selectedTask && selectedTask.taskIdentifier !== undefined) {
+          try {
+            const newTask = await duplicateTask(
+              selectedTask,
+              includeAttachments,
+            )(dispatch);
+            onTaskCreation(newTask);
+            storeAsCurrentTask(newTask)(dispatch);
+            afterDuplicate({ newTask });
+            onTaskDrawerTaskDuplicated();
+          } catch {
+            noop();
+          }
+        }
+      },
     [dispatch, onTaskCreation, selectedTask],
   );
 
   const handleUpdateTask = useCallback(
-    async updatedTaskData => {
+    async (updatedTaskData) => {
       const updatedTask = await dispatch(
         partialUpdateTask(selectedTaskIdentifier, updatedTaskData),
       );
@@ -239,14 +247,17 @@ const initializeTaskDrawerHooks = ({
     return null;
   }, [selectedTaskDueDate]);
 
-  const isTemplateTask = useMemo(() => checkIfTemplateTask(selectedTask), [
-    selectedTask,
-  ]);
-  const onClickParentTask = useCallback(() => {
-    return identifier
-      ? history.push(createSingleTaskPath(selectedParentTask.identifier))
-      : dispatch(storeAsCurrentTask(selectedParentTask));
-  }, [dispatch, history, identifier, selectedParentTask]);
+  const isTemplateTask = useMemo(
+    () => checkIfTemplateTask(selectedTask),
+    [selectedTask],
+  );
+  const onClickParentTask = useCallback(
+    () =>
+      identifier
+        ? history.push(createSingleTaskPath(selectedParentTask.identifier))
+        : dispatch(storeAsCurrentTask(selectedParentTask)),
+    [dispatch, history, identifier, selectedParentTask],
+  );
 
   const handleWorkflowReferenceClick = useCallback(() => {
     dispatch(

@@ -1,5 +1,4 @@
-import { withStyles } from '@material-ui/core/styles';
-import { IconButton } from '@material-ui/core';
+import { IconButton } from '@mui/material';
 import styled from 'styled-components';
 import palette from 'styles/palette';
 
@@ -20,8 +19,10 @@ export const HeaderText = styled.p`
   text-transform: uppercase;
 `;
 
-export const StyledIconButton = withStyles({
-  root: {
-    color: 'inherit',
-  },
-})(IconButton);
+export const StyledIconButton = styled(IconButton)`
+  &&& {
+    &.MuiIconButton-root {
+      color: inherit;
+    }
+  }
+`;

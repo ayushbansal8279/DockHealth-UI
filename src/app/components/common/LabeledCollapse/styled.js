@@ -1,4 +1,3 @@
-/* eslint-disable import/prefer-default-export */
 import styled from 'styled-components';
 import spacing from 'styles/spacing';
 import palette from 'styles/palette';
@@ -6,7 +5,7 @@ import { fontSizes, fontWeights } from 'styles/font';
 
 export const LabeledCollapseWrapper = styled.div`
   padding: ${spacing.small};
-  border: ${props =>
+  border: ${(props) =>
     props.noBorder ? 'none' : `1px solid ${palette.coolGrey3}`};
   background: ${palette.white};
 

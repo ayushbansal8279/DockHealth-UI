@@ -1,5 +1,4 @@
 /* eslint-disable sonarjs/cognitive-complexity */
-/* eslint-disable unicorn/prevent-abbreviations */
 import React, {
   useState,
   useEffect,
@@ -15,7 +14,7 @@ import not from 'ramda/src/not';
 import path from 'ramda/src/path';
 import pluck from 'ramda/src/pluck';
 import { useDispatch, useSelector } from 'react-redux';
-import NavigateNextIcon from '@material-ui/icons/NavigateNext';
+import NavigateNextIcon from '@mui/icons-material/NavigateNext';
 import HardDependencyIcon from 'img/template/hard-dependency';
 import CalendarIcon from 'img/template/calendar-icon';
 import WorkflowLinkIcon from 'img/template/workflow-icon';
@@ -52,14 +51,10 @@ import {
   userProfileSelector,
 } from 'selectors/user-selectors';
 import { openDrawer } from 'actions/workflow-drawer-actions';
-import { Box, ClickAwayListener, Paper, Popper } from '@material-ui/core';
+import { Box, ClickAwayListener, Paper, Popper } from '@mui/material';
 import DecisionTaskElementIcon from 'img/template/decision-task-icon';
 import Tooltip from 'components/common/Tooltip/Tooltip';
-import ReactFlow, {
-  Controls,
-  Position,
-  ReactFlowProvider,
-} from 'react-flow-renderer';
+import { Controls, Position, ReactFlowProvider, MarkerType } from 'reactflow';
 import TaskDrawer from 'components/task-drawer/TaskDrawer/TaskDrawer';
 import {
   NodeType,
@@ -72,7 +67,8 @@ import AlertMessages from 'alert/AlertMessages';
 import { useBoolean } from 'hooks/useBoolean';
 import palette from 'styles/palette';
 import * as AlertActions from 'alert/actions';
-import EditIcon from '@material-ui/icons/Edit';
+import EditIcon from '@mui/icons-material/Edit';
+import ReactFlowAdapter from 'views/smart-flow-builder/ReactFlowAdapter';
 import NewTaskNode from './NewTaskNode/NewTaskNode';
 import TaskNode from './TaskNode/TaskNode';
 import TaskLink from './TaskLink/TaskLink';
@@ -97,7 +93,6 @@ import {
   AutoAlignButton,
   EditIconWrapper,
 } from './styled';
-import ConnectionLink from './ConnectionLink/ConnectionLink';
 import TaskLinkDelayForm from './TaskLinkDelayForm/TaskLinkDelayForm';
 import TemporaryDecisionTaskLink from './TemporaryDecisionTaskLink/TemporaryDecisionTaskLink';
 import BulkEditContainer from './BulkEditContainer/BulkEditContainer';
@@ -121,6 +116,19 @@ const linkTypes = {
   [LinkType.TEMPORARY_DECISION]: TemporaryDecisionTaskLink,
 };
 
+const DEFAULT_EDGE = {
+  type: 'REGULAR',
+  style: {
+    strokeWidth: 1
+  },
+  markerEnd: {
+    type: MarkerType.ArrowClosed,
+    width: 8,
+    height: 8,
+    strokeWidth: 1
+  },
+};
+
 const SmartFlowBuilderView = () => {
   const delayPeriodOptionReference = useRef(null);
   const builderWrapperReference = useRef(null);
@@ -128,10 +136,9 @@ const SmartFlowBuilderView = () => {
   const [elements, setElements] = useState(null);
   const [selectedElements, setSelectedElements] = useState(null);
   const [draggedEdgeSourceId, setDraggedEdgeSourceId] = useState(null);
-  const [hoveredTargetHandle, setHoveredTargetHandle] = useState(Position.Top);
-  const [isDelayPopoverOpen, openDelayPopover, closeDelayPopover] = useBoolean(
-    false,
-  );
+  const [, setHoveredTargetHandle] = useState(Position.Top);
+  const [isDelayPopoverOpen, openDelayPopover, closeDelayPopover] =
+    useBoolean(false);
   const { identifier } = useParams();
   const dispatch = useDispatch();
   const history = useHistory();
@@ -183,7 +190,7 @@ const SmartFlowBuilderView = () => {
     }
   }, [layout, tasks]);
 
-  const centerViewToElement = elementPosition => {
+  const centerViewToElement = (elementPosition) => {
     const { x, y } = elementPosition;
     const { offsetWidth, offsetHeight } = builderWrapperReference.current;
 
@@ -206,56 +213,55 @@ const SmartFlowBuilderView = () => {
   const handleMakeSelectionDependent = useCallback(() => {
     if (!selectedElements) return;
 
-    selectedElements
-      .filter(se => [NodeType.STANDARD, NodeType.DECISION].includes(se.type))
-      .forEach(selectedElement => {
-        const {
-          data: { task },
-        } = selectedElement;
+    for (const selectedElement of selectedElements.filter((se) =>
+      [NodeType.STANDARD, NodeType.DECISION].includes(se.type),
+    )) {
+      const {
+        data: { task },
+      } = selectedElement;
 
-        // eslint-disable-next-line no-unused-expressions
-        tasks
-          ?.filter(se => se.intentType === NodeType.STANDARD)
-          .forEach(({ taskLinks }) =>
-            taskLinks.forEach(link => {
-              if (link.targetTaskIdentifier === task.identifier) {
-                dispatch(
-                  updateTasksLink({
-                    ...link,
-                    isDependent: true,
-                  }),
-                );
-              }
-            }),
-          );
-      });
+      // eslint-disable-next-line no-unused-expressions
+      for (const { taskLinks } of tasks?.filter(
+        (se) => se.intentType === NodeType.STANDARD,
+      )) {
+        for (const link of taskLinks) {
+          if (link.targetTaskIdentifier === task.identifier) {
+            dispatch(
+              updateTasksLink({
+                ...link,
+                isDependent: true,
+              }),
+            );
+          }
+        }
+      }
+    }
   }, [dispatch, selectedElements, tasks]);
 
-  const handleDelayForSubmit = delayPeriodData => {
+  const handleDelayForSubmit = (delayPeriodData) => {
     if (!selectedElements) return;
 
-    selectedElements
-      .filter(se => [NodeType.STANDARD, NodeType.DECISION].includes(se.type))
-      .forEach(selectedElement => {
-        const {
-          data: { task },
-        } = selectedElement;
+    for (const selectedElement of selectedElements.filter((se) =>
+      [NodeType.STANDARD, NodeType.DECISION].includes(se.type),
+    )) {
+      const {
+        data: { task },
+      } = selectedElement;
 
-        // eslint-disable-next-line no-unused-expressions
-        tasks.forEach(({ taskLinks }) =>
-          taskLinks.forEach(link => {
-            if (link.targetTaskIdentifier === task.identifier) {
-              dispatch(
-                updateTasksLink({
-                  ...link,
-                  isDependent: true,
-                  ...delayPeriodData,
-                }),
-              );
-            }
-          }),
-        );
-      });
+      // eslint-disable-next-line no-unused-expressions
+      for (const { taskLinks } of tasks)
+        for (const link of taskLinks) {
+          if (link.targetTaskIdentifier === task.identifier) {
+            dispatch(
+              updateTasksLink({
+                ...link,
+                isDependent: true,
+                ...delayPeriodData,
+              }),
+            );
+          }
+        }
+    }
     closeDelayPopover();
   };
 
@@ -278,14 +284,13 @@ const SmartFlowBuilderView = () => {
         onClick: () => {
           if (
             selectedElements?.length > 0 &&
-            selectedElements.some(se => !!se.data?.task)
+            selectedElements.some((se) => !!se.data?.task)
           ) {
-            selectedElements.forEach(selectedElement => {
+            for (const selectedElement of selectedElements) {
               if (selectedElement?.data.task.taskLinks?.length > 0) {
                 dispatch(
                   openModal('Information', {
-                    text:
-                      'This task already has linkages to other tasks. If you want to change it to decision tree, please remove existing connections.',
+                    text: 'This task already has linkages to other tasks. If you want to change it to decision tree, please remove existing connections.',
                   }),
                 );
               } else {
@@ -295,7 +300,7 @@ const SmartFlowBuilderView = () => {
                 );
                 centerViewToElement(selectedElement.position);
               }
-            });
+            }
           } else {
             const position = calculateNewElementPosition(layout);
             dispatch(addNewDecisionTaskElement(position));
@@ -317,7 +322,7 @@ const SmartFlowBuilderView = () => {
 
     let actions = [...baseActions];
 
-    const selectedTasks = selectedElements?.filter(se =>
+    const selectedTasks = selectedElements?.filter((se) =>
       [NodeType.STANDARD, NodeType.DECISION].includes(se.type),
     );
 
@@ -369,19 +374,25 @@ const SmartFlowBuilderView = () => {
     openDelayPopover,
   ]);
 
-  const updateSelectedElementsPosition = selectedNodes => {
+  const [extraNodes, setExtraNodes] = useState([]);
+
+  const updateSelectedElementsPosition = (selectedNodes) => {
     let updatedElements = elements;
     let shouldUpdate = false;
 
-    selectedNodes.forEach(e => {
-      const isExistingTask = !!e.data.task;
-
+    for (const node of selectedNodes) {
+      const isExistingTask = !!node.data.task;
       if (isExistingTask) {
         if (!shouldUpdate) shouldUpdate = true;
-
-        updatedElements = updateNodePosition(e.id, e.position, updatedElements);
+        updatedElements = updateNodePosition(
+          node.id,
+          node.position,
+          updatedElements,
+        );
+      } else {
+        setExtraNodes([node]);
       }
-    });
+    }
 
     if (shouldUpdate) {
       const newLayout = mapElementsToLayout(updatedElements);
@@ -391,9 +402,8 @@ const SmartFlowBuilderView = () => {
 
   const handleNodeDragStop = () => {
     const selectedNodes = reactFlowInstance.current
-      .getElements()
-      .filter(e => selectedElements.find(se => se.id === e.id));
-
+      .getNodes()
+      .filter((element) => selectedElements.find((se) => se.id === element.id));
     updateSelectedElementsPosition(selectedNodes);
   };
 
@@ -404,23 +414,25 @@ const SmartFlowBuilderView = () => {
   const mergedElementsWithActions = useMemo(
     () =>
       elements || temporaryElements
-        ? [...(elements || []), ...(temporaryElements || [])]?.map(e => {
-            return {
-              ...e,
-              isConnectable: draggedEdgeSourceId !== e.id,
-              data: {
-                ...e.data,
-                draggedEdgeSourceId,
-                taskTemplateIdentifier: identifier,
-                onTargetHandleHover: setHoveredTargetHandle,
-              },
-            };
-          })
+        ? [...(elements || []), ...(temporaryElements || [])]?.map(
+            (element) => {
+              return {
+                ...element,
+                isConnectable: draggedEdgeSourceId !== element.id,
+                data: {
+                  ...element.data,
+                  draggedEdgeSourceId,
+                  taskTemplateIdentifier: identifier,
+                  onTargetHandleHover: setHoveredTargetHandle,
+                },
+              };
+            },
+          )
         : null,
     [elements, temporaryElements, draggedEdgeSourceId, identifier],
   );
 
-  const handleRemoveElement = elementsToDelete => {
+  const handleRemoveElement = (elementsToDelete) => {
     const tasksToDelete = elementsToDelete
       .filter(path(['data', 'task']))
       .map(path(['data', 'task']));
@@ -432,8 +444,8 @@ const SmartFlowBuilderView = () => {
         LinkType.TEMPORARY_DECISION,
       ].includes(type),
     );
-    const linksToDelete = elementsToDelete.filter(e => {
-      const { source, target, type } = e;
+    const linksToDelete = elementsToDelete.filter((element) => {
+      const { source, target, type } = element;
 
       if (![LinkType.DECISION, LinkType.STANDARD].includes(type)) {
         return false;
@@ -473,21 +485,21 @@ const SmartFlowBuilderView = () => {
             }
 
             if (temporaryElementsToDelete.length > 0) {
-              temporaryElementsToDelete.forEach(e => {
-                dispatch(deleteTemporaryElement(e.id));
-              });
+              for (const element of temporaryElementsToDelete) {
+                dispatch(deleteTemporaryElement(element.id));
+              }
             }
 
             if (linksToDelete.length > 0) {
-              linksToDelete.forEach(e => {
+              for (const link of linksToDelete) {
                 const {
                   source: sourceTaskIdentifier,
                   target: targetTaskIdentifier,
-                } = e;
+                } = link;
                 dispatch(
                   deleteTasksLink(sourceTaskIdentifier, targetTaskIdentifier),
                 );
-              });
+              }
             }
           },
         }),
@@ -495,21 +507,18 @@ const SmartFlowBuilderView = () => {
     }
   };
 
-  const ConnectionLineComponent = useCallback(
-    props => <ConnectionLink {...props} targetPosition={hoveredTargetHandle} />,
-    [hoveredTargetHandle],
-  );
-
-  const handleDragOver = event => {
+  // eslint-disable-next-line unicorn/consistent-function-scoping
+  const handleDragOver = (event) => {
     event.preventDefault();
     // eslint-disable-next-line no-param-reassign
     event.dataTransfer.dropEffect = 'move';
   };
 
-  const handleDrop = event => {
+  const handleDrop = (event) => {
     event.preventDefault();
 
-    const reactFlowBounds = builderWrapperReference.current.getBoundingClientRect();
+    const reactFlowBounds =
+      builderWrapperReference.current.getBoundingClientRect();
     const type = event.dataTransfer.getData('application/reactflow');
     const position = reactFlowInstance.current.project({
       x: event.clientX - reactFlowBounds.left,
@@ -517,32 +526,37 @@ const SmartFlowBuilderView = () => {
     });
 
     switch (type) {
-      case NodeType.NEW_STANDARD:
+      case NodeType.NEW_STANDARD: {
         dispatch(addNewTaskElement(position));
         break;
-      case NodeType.NEW_DECISION:
+      }
+      case NodeType.NEW_DECISION: {
         dispatch(addNewDecisionTaskElement(position));
         break;
-      case NodeType.NEW_WORKFLOW_LINK:
+      }
+      case NodeType.NEW_WORKFLOW_LINK: {
         dispatch(addNewNestedFlowElement(position));
         break;
-      default:
+      }
+      default: {
         // eslint-disable-next-line no-console
         console.error('UNHANDLED NODE TYPE');
         break;
+      }
     }
   };
 
-  const handleLoad = _reactFlowInstance => {
+  const handleLoad = (_reactFlowInstance) => {
     reactFlowInstance.current = _reactFlowInstance;
     setTimeout(_reactFlowInstance.fitView, 0);
   };
 
+  // eslint-disable-next-line unicorn/consistent-function-scoping
   const resetSelection = () => {
     // resetting selection by creating click event on react flow panel
-    const el = document.querySelector('.react-flow__pane');
+    const element = document.querySelector('.react-flow__pane');
     // eslint-disable-next-line no-unused-expressions
-    el?.click();
+    element?.click();
   };
 
   const handleAutoAlignClick = async () => {
@@ -583,7 +597,7 @@ const SmartFlowBuilderView = () => {
                       type="button"
                       ref={ref}
                       onClick={onClick}
-                      onDragStart={event => {
+                      onDragStart={(event) => {
                         event.dataTransfer.setData('application/reactflow', id);
                         // eslint-disable-next-line no-param-reassign
                         event.dataTransfer.effectAllowed = 'move';
@@ -656,9 +670,10 @@ const SmartFlowBuilderView = () => {
               </button>
             </BuilderHeader>
             {mergedElementsWithActions && (
-              <ReactFlow
-                connectionLineComponent={ConnectionLineComponent}
+              <ReactFlowAdapter
+                // connectionLineComponent={ConnectionLineComponent}
                 elements={mergedElementsWithActions}
+                extraNodes={extraNodes}
                 onConnect={onConnect}
                 connectionLineType="step"
                 nodeTypes={nodeTypes}
@@ -684,9 +699,10 @@ const SmartFlowBuilderView = () => {
                 nodesDraggable={isCurrentUserEditor}
                 nodesConnectable={isCurrentUserEditor}
                 elementsSelectable={isCurrentUserEditor}
+                defaultEdgeOptions={DEFAULT_EDGE}
               >
                 <Controls showInteractive={isCurrentUserEditor} />
-              </ReactFlow>
+              </ReactFlowAdapter>
             )}
             <BulkEditContainer
               selectedTasks={selectedTasks}

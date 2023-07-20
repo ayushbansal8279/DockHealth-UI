@@ -62,22 +62,22 @@ export const updatePatientDetails = (patientIdentifier, details) => ({
   payload: { patientIdentifier, details },
 });
 
-export const addPatientNote = note => ({
+export const addPatientNote = (note) => ({
   type: ActionTypes.ADD_PATIENT_NOTE,
   payload: { note },
 });
 
-export const deletePatientNote = patientNoteIdentifier => ({
+export const deletePatientNote = (patientNoteIdentifier) => ({
   type: ActionTypes.REMOVE_PATIENT_NOTE,
   payload: { patientNoteIdentifier },
 });
 
-export const pinPatientNote = patientNoteIdentifier => ({
+export const pinPatientNote = (patientNoteIdentifier) => ({
   type: ActionTypes.PIN_PATIENT_NOTE,
   payload: { patientNoteIdentifier },
 });
 
-export const unpinPatientNote = patientNoteIdentifier => ({
+export const unpinPatientNote = (patientNoteIdentifier) => ({
   type: ActionTypes.UNPIN_PATIENT_NOTE,
   payload: { patientNoteIdentifier },
 });
@@ -94,7 +94,7 @@ export function getPatientTasksStats() {
   };
 }
 
-export const setCurrentListTasksStatus = taskStatus => ({
+export const setCurrentListTasksStatus = (taskStatus) => ({
   type: ActionTypes.SELECT_PATIENT_LIST_TASK_STATUS,
   taskStatus,
 });

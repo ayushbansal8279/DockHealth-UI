@@ -1,5 +1,5 @@
 import React from 'react';
-import Spacing from 'components/common/Spacing.tsx';
+import Spacing from 'components/common/Spacing';
 import { MontserratTypography } from 'styles/theme-montserrat';
 import OnboardingBaaSigning from '../OnboardingBaaOverviewView/OnboardingBaaSigning';
 

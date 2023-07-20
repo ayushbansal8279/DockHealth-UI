@@ -8,17 +8,16 @@ import { onTaskDrawerTaskAssigned } from 'helpers/ga-event-helper';
 import TaskDrawerPopover from 'components/task-drawer/TaskDrawerPopover/TaskDrawerPopover';
 import MultiAssignMembersList from 'components/task/MultiAssignPopover/MultiAssignMembersList';
 import Input from 'components/common/Input/Input';
-import { selectedTaskSelector } from 'selectors/task-drawer-selectors';
 import { checkIfTemplateTask } from 'helpers/task-helpers';
 import { AdornmentClear } from '../styled';
 
-const AssignedToSection = ({ onSave, disabled }) => {
+const AssignedToSection = ({ selectedTask = {}, onSave, disabled }) => {
   const currentUser = useSelector(userProfileSelector);
-  const selectedTask = useSelector(selectedTaskSelector) || {};
-  const { assignedToUsers, taskList } = selectedTask;
-  const isTemplateTask = useMemo(() => checkIfTemplateTask(selectedTask), [
-    selectedTask,
-  ]);
+  const { assignedToUsers, taskList } = selectedTask || {};
+  const isTemplateTask = useMemo(
+    () => checkIfTemplateTask(selectedTask),
+    [selectedTask],
+  );
   const currentTaskListIdentifier = taskList?.taskListIdentifier;
   const taskListIdentifier = isTemplateTask ? null : currentTaskListIdentifier;
   const [assignedToUsersValue, setAssignedToUsersValue] = useState();
@@ -48,7 +47,7 @@ const AssignedToSection = ({ onSave, disabled }) => {
   }, [onSave]);
 
   const handleAssignToSelection = useCallback(
-    selectedMembers => {
+    (selectedMembers) => {
       setAssignedToUsersValue(selectedMembers);
       onTaskDrawerTaskAssigned();
       onSave({

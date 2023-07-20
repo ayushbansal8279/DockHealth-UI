@@ -1,33 +1,36 @@
 import React, { useEffect, useRef, useState } from 'react';
-import Autocomplete from '@material-ui/lab/Autocomplete';
-import CircularProgress from '@material-ui/core/CircularProgress';
-import { withStyles } from '@material-ui/core/styles';
+import { Autocomplete } from '@mui/lab';
+import CircularProgress from '@mui/material/CircularProgress';
+import styled from 'styled-components';
 import { getAllContacts } from 'api/contacts-api';
 import { matchSorter } from 'match-sorter';
 import { CommunicationType } from 'helpers/task-helpers';
-import { Chip } from '@material-ui/core';
+import { Chip, TextField } from '@mui/material';
 import Checkbox from 'components/common/Checkbox/Checkbox';
 import Input from '../Input/Input';
 import {
   RenderOptionStyled,
   NoOptionContainer,
   NoOptionTextLabel,
+  RenderLabelStyled,
 } from './styled';
 
 const filterOptions = (options, { inputValue }) =>
   matchSorter(options, inputValue, { keys: ['label', 'value'] });
 
-const StandardAutocompleteMUI = withStyles({
-  option: {
-    padding: 0,
-  },
-  listbox: {
-    padding: 0,
-  },
-  noOptions: {
-    padding: 0,
-  },
-})(Autocomplete);
+const StandardAutocompleteMUI = styled(Autocomplete)`
+  &&& {
+    &.MuiAutocomplete-option {
+      padding: 0;
+    }
+    &.MuiAutocomplete-listbox {
+      padding: 0;
+    }
+    &.MuiAutocomplete-noOption {
+      padding: 0;
+    }
+  }
+`;
 
 const EmailContactsAutoComplete = ({
   type,
@@ -52,7 +55,7 @@ const EmailContactsAutoComplete = ({
   useEffect(() => {
     let active = true;
     if (!loading) {
-      return undefined;
+      return;
     }
     (async () => {
       const response = await getAllContacts();
@@ -64,41 +67,45 @@ const EmailContactsAutoComplete = ({
       });
       if (active) {
         switch (type) {
-          case CommunicationType.EMAIL:
+          case CommunicationType.EMAIL: {
             setContacts(
               response
-                ?.filter(contact => contact.email)
-                .map(contact => ({
+                ?.filter((contact) => contact.email)
+                .map((contact) => ({
                   label: contact.name,
                   value: contact.email,
                   identifier: contact.identifier,
                 })),
             );
             break;
-          case CommunicationType.FAX:
+          }
+          case CommunicationType.FAX: {
             setContacts(
               response
-                ?.filter(contact => contact.faxPhoneNumber)
-                .map(contact => ({
+                ?.filter((contact) => contact.faxPhoneNumber)
+                .map((contact) => ({
                   label: contact.name,
                   value: contact.faxPhoneNumber,
                   identifier: contact.identifier,
                 })),
             );
             break;
-          case CommunicationType.SMS:
+          }
+          case CommunicationType.SMS: {
             setContacts(
               response
-                ?.filter(contact => contact.mobilePhoneNumber)
-                .map(contact => ({
+                ?.filter((contact) => contact.mobilePhoneNumber)
+                .map((contact) => ({
                   label: contact.name,
                   value: contact.mobilePhoneNumber,
                   identifier: contact.identifier,
                 })),
             );
             break;
-          default:
+          }
+          default: {
             setContacts([]);
+          }
         }
       }
     })();
@@ -137,12 +144,12 @@ const EmailContactsAutoComplete = ({
   const noOptionText = React.useMemo(
     () => (
       <div
-        onMouseDown={event => {
+        onMouseDown={(event) => {
           event.preventDefault();
         }}
       >
         <NoOptionContainer
-          onClick={event => {
+          onClick={(event) => {
             if (inputState) {
               event.stopPropagation();
               event.preventDefault();
@@ -186,16 +193,18 @@ const EmailContactsAutoComplete = ({
       }}
       multiple
       getOptionSelected={(option, value) => option.value === value.value}
-      getOptionLabel={option => option.value ?? option}
-      renderOption={(option, { selected }) => (
-        <>
-          <span style={{ width: '10px' }} />
-          <Checkbox isChecked={selected} />
-          <RenderOptionStyled>
+      getOptionLabel={(option) => option.value ?? option}
+      renderOption={(parameters, option, { selected }) => (
+        <RenderOptionStyled {...parameters} key={option.identifier}>
+          {/* <Checkbox
+            isChecked={selected}
+            // onClick={(123) => state.setSelected(!state.selected)}
+          /> */}
+          <RenderLabelStyled>
             {option.label}
             <span>({option.value})</span>
-          </RenderOptionStyled>
-        </>
+          </RenderLabelStyled>
+        </RenderOptionStyled>
       )}
       disableCloseOnSelect
       options={contacts}
@@ -205,7 +214,7 @@ const EmailContactsAutoComplete = ({
       noOptionsText={noOptionText}
       openOnFocus
       InputProps={{
-        onKeyDown: event => {
+        onKeyDown: (event) => {
           if (event.key === 'Enter' && event?.target.value !== '') {
             event.stopPropagation();
             event.preventDefault();
@@ -214,7 +223,7 @@ const EmailContactsAutoComplete = ({
           }
         },
       }}
-      renderInput={parameters => {
+      renderInput={(parameters) => {
         return (
           <Input
             {...parameters}

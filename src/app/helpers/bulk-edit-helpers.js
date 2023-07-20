@@ -1,11 +1,10 @@
-/* eslint-disable import/prefer-default-export */
 import isEmpty from 'ramda/src/isEmpty';
 import { TaskItemType } from './task-helpers';
 
 function checkIfTaskAndSubtasksSelected(task) {
   return (
     task.selected &&
-    (!task.subtasks || task.subtasks.every(subtask => subtask.selected))
+    (!task.subtasks || task.subtasks.every((subtask) => subtask.selected))
   );
 }
 
@@ -14,13 +13,13 @@ export function checkIfAllTasksSelected(tasks) {
     return false;
   }
 
-  return tasks.every(task => {
+  return tasks.every((task) => {
     if (task.itemType === TaskItemType.BUNDLE) {
       if (task.selected) return true;
       if (!task.tasks || isEmpty(task.tasks)) {
         return false;
       }
-      return task.tasks.every(bundleTask =>
+      return task.tasks.every((bundleTask) =>
         checkIfTaskAndSubtasksSelected(bundleTask),
       );
     }

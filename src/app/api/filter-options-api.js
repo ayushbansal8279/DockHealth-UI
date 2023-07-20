@@ -7,3 +7,4 @@
 //     .get(`task/filter/filterOptionsForTasksInOrganization?status=${status}`)
 //     .then(({ data }) => mapFilterOptions(data));
 // }
+// eslint-disable-next-line unicorn/no-empty-file

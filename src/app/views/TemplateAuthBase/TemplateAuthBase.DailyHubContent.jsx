@@ -1,9 +1,9 @@
 import React from 'react';
-import { Grid } from '@material-ui/core';
+import { Grid } from '@mui/material';
 import Spacing from 'components/common/Spacing';
 import { MontserratTypography } from 'styles/theme-montserrat';
 import { RobotoTypography } from 'styles/theme';
-import DailyHubImage from 'img/auth-daily-hub-content-new';
+import DailyHubImage from 'img/auth-daily-hub-content-new.svg';
 
 const hubStyles = {
   display: 'block',
@@ -14,7 +14,12 @@ const hubStyles = {
 
 const TemplateAuthBaseDailyHubContent = () => {
   return (
-    <Grid container direction="column" justify="center" alignItems="flex-start">
+    <Grid
+      container
+      direction="column"
+      justifyContent="center"
+      alignItems="flex-start"
+    >
       <img src={DailyHubImage} style={hubStyles} alt="Dock Health daily hub" />
       <Spacing vertical={4} />
       <RobotoTypography variant="h3" weight="bold">

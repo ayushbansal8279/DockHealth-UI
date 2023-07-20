@@ -5,7 +5,7 @@ import compose from 'ramda/src/compose';
 import pluck from 'ramda/src/pluck';
 import useActions from 'hooks/use-actions';
 import { useDispatch, useSelector } from 'react-redux';
-import { Box } from '@material-ui/core';
+import { Box } from '@mui/material';
 import { useParams, useHistory } from 'react-router-dom';
 import { DrawerFieldEnum } from 'helpers/task-drawer-helpers';
 import { changeTasksSelectedState, addTask } from 'actions/task-actions';
@@ -15,7 +15,7 @@ import {
   getPatientFilterOptions,
   getCurrentPatientTasks,
 } from 'actions/patient-details-actions';
-import { openModal, closeModal } from 'modal/actions';
+import { openModal } from 'modal/actions';
 import { PatientTasksSagaActions } from 'sagas/patient-details-saga';
 import { checkIfTaskMatchesFilters } from 'helpers/filters-helpers';
 import TasksHeader from 'components/tasklist/TasksHeader/TasksHeader';
@@ -53,7 +53,7 @@ import {
   TaskItemColumn,
   TaskItemType,
   TASK_ITEM_BASE_COLUMN_CONFIG,
-  findIncompleteRequiredFields,
+  TaskOrigin,
   TaskStatus,
 } from 'helpers/task-helpers';
 import { getCustomerTypeLabel } from 'helpers/customer-type-helper';
@@ -103,11 +103,8 @@ const PatientTasksListView = () => {
   const tasksStatus =
     useSelector(currentListTasksStatusSelector) || TaskStatus.INCOMPLETE;
   const customerTypeLabel = getCustomerTypeLabel(currentUser);
-  const {
-    setCurrentList,
-    currentList,
-    setViewSpecificConfig,
-  } = useTaskListColumnsConfig();
+  const { setCurrentList, currentList, setViewSpecificConfig } =
+    useTaskListColumnsConfig();
   const dispatch = useDispatch();
   const history = useHistory();
   const {
@@ -118,7 +115,6 @@ const PatientTasksListView = () => {
     initializeSavedFilters,
   } = useActions(PatientTasksSagaActions);
   const patient = useSelector(patientSelector);
-
   const isAllTasksView = taskListIdentifierParameter === ListViewType.ALL_TASKS;
 
   const organizationCustomFields = useSelector(
@@ -127,17 +123,17 @@ const PatientTasksListView = () => {
   const taskCustomFields = organizationCustomFields;
 
   const currentOrganization = useSelector(selectedUserOrganizationSelector);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   const iconColorActiveItem =
     currentOrganization?.themeSettings?.find(
       ({ name }) => name === 'icon.active.color',
     ) || {};
-
   const enrichedWithPatientMetaDataLists = useMemo(() => {
     if (patient?.patientMetaData) {
       const { patientMetaData } = patient;
-      return lists?.map(l => ({
+      return lists?.map((l) => ({
         ...l,
-        tasks: l.tasks.map(t => ({
+        tasks: l.tasks?.map((t) => ({
           ...t,
           patient: { ...t.patient, patientMetaData },
         })),
@@ -145,7 +141,6 @@ const PatientTasksListView = () => {
     }
     return lists;
   }, [lists, patient]);
-
   const filteredLists = useMemo(
     () =>
       taskSearch
@@ -153,7 +148,6 @@ const PatientTasksListView = () => {
         : enrichedWithPatientMetaDataLists,
     [enrichedWithPatientMetaDataLists, taskSearch],
   );
-
   const activeList = useMemo(
     () =>
       isAllTasksView
@@ -165,11 +159,10 @@ const PatientTasksListView = () => {
             { tasks: [] },
           )
         : filteredLists?.find(
-            l => l.taskListIdentifier === taskListIdentifierParameter,
+            (l) => l.taskListIdentifier === taskListIdentifierParameter,
           ),
     [filteredLists, isAllTasksView, taskListIdentifierParameter],
   );
-
   useEffect(() => {
     if (isAllTasksView) {
       setViewSpecificConfig(PATIENT_ALL_JOINED_LISTS_VIEW_COLUMNS_CONFIG);
@@ -177,7 +170,6 @@ const PatientTasksListView = () => {
       setViewSpecificConfig(PATIENT_SPECIFIC_LIST_VIEW_COLUMNS_CONFIG);
     }
   }, [isAllTasksView, setViewSpecificConfig]);
-
   useEffect(() => {
     if (isAllTasksView && currentList) {
       setCurrentList(null);
@@ -190,7 +182,6 @@ const PatientTasksListView = () => {
       setCurrentList(activeList);
     }
   }, [activeList, currentList, isAllTasksView, setCurrentList]);
-
   useEffect(() => {
     if (patientIdentifier) {
       initializeSavedFilters(patientIdentifier);
@@ -198,7 +189,6 @@ const PatientTasksListView = () => {
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [patientIdentifier]);
-
   useEffect(() => {
     if (
       filteredLists?.length > 0 &&
@@ -218,9 +208,8 @@ const PatientTasksListView = () => {
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [taskListIdentifierParameter, filteredLists]);
-
   const handleTaskUpdate = useCallback(
-    updatedTask => {
+    (updatedTask) => {
       dispatch(getPatientFilterOptions(patientIdentifier));
       if (!checkIfTaskMatchesFilters(updatedTask, selectedFilters)) {
         dispatch(getCurrentPatientTasks());
@@ -228,7 +217,6 @@ const PatientTasksListView = () => {
     },
     [dispatch, patientIdentifier, selectedFilters],
   );
-
   const quickAddTask = useCallback(
     ({ description, taskListIdentifier, taskGroupIdentifier }) => {
       if (taskListIdentifier) {
@@ -260,12 +248,9 @@ const PatientTasksListView = () => {
     },
     [dispatch, patientIdentifier],
   );
-
   const renderEmptyListView = () => {
     if (taskSearch) return <NoSearchResultsView />;
-
     if (areFiltersApplied) return <NoFilterResultsView />;
-
     return (
       <EmptyListViewWithQuickAddTask
         quickAddTask={quickAddTask}
@@ -315,20 +300,16 @@ const PatientTasksListView = () => {
   );
 
   const groupedTasks = useMemo(() => {
-    if (isAllTasksView) return undefined;
-
+    if (isAllTasksView) return;
     return groupTasks(activeList?.tasks);
   }, [activeList, isAllTasksView]);
-
   const groupHasMultipleAssignees = false;
-
   const isGroupSelected = useCallback(
-    tasks => checkIfAllTasksSelected(tasks),
+    (tasks) => checkIfAllTasksSelected(tasks),
     [],
   );
-
   const handleGroupSelect = useCallback(
-    tasks => {
+    (tasks) => {
       const { parentTasks, subtasks } = extractTasksAndSubtasks(tasks);
       const allTasks = [...parentTasks, ...subtasks];
       dispatch(
@@ -342,7 +323,6 @@ const PatientTasksListView = () => {
     },
     [dispatch, isGroupSelected],
   );
-
   const renderTasks = useCallback(
     (tasks, { isFullView, taskGroupIdentifier }) => (
       <>
@@ -367,21 +347,21 @@ const PatientTasksListView = () => {
               onGroupSelect={() => handleGroupSelect(tasks)}
             />
           )}
-          {tasks?.map(task =>
-            task.itemType === TaskItemType.TASK ? (
+          {tasks?.map((task) => {
+            return task.itemType === TaskItemType.TASK ? (
               <StandardTaskItem
                 key={task.identifier}
                 isFullView={isFullView}
-                task={task}
+                taskIdentifier={task.identifier}
                 taskGroupIdentifier={taskGroupIdentifier}
                 isCompletedGroup={completeTasksVisible}
-                toggleCompleteTask={handleToggleTaskStatus}
                 onTaskUpdate={updatePatientTaskInList}
                 updateWorkflowStatus={updatePatientTaskWorkflowStatus}
                 dragAndDropDisabled
                 addingNewSubtask={addingNewSubtaskParentId === task.identifier}
                 multipleAssigneesContext={groupHasMultipleAssignees}
                 iconColorActive={iconColorActiveItem?.value}
+                origin={TaskOrigin.PATIENT}
               />
             ) : (
               <TaskTemplateGroup
@@ -394,9 +374,10 @@ const PatientTasksListView = () => {
                 disablePatientAssignment
                 iconColorActive={iconColorActiveItem?.value}
                 isCompletedTab={tasksStatus !== TaskStatus.INCOMPLETE}
+                origin={TaskOrigin.PATIENT}
               />
-            ),
-          )}
+            );
+          })}
         </div>
       </>
     ),
@@ -410,7 +391,6 @@ const PatientTasksListView = () => {
       groupHasMultipleAssignees,
       isGroupSelected,
       handleGroupSelect,
-      handleToggleTaskStatus,
       updatePatientTaskInList,
       updatePatientTaskWorkflowStatus,
       addingNewSubtaskParentId,
@@ -418,7 +398,6 @@ const PatientTasksListView = () => {
       tasksStatus,
     ],
   );
-
   return (
     <>
       {filteredLists ? (
@@ -445,17 +424,16 @@ const PatientTasksListView = () => {
                       zIndex={13}
                     >
                       <TaskListHeader
-                        list={!isAllTasksView ? activeList : null}
+                        list={isAllTasksView ? null : activeList}
                         viewSetup={viewSetup}
                         refreshView={compose(dispatch, getCurrentPatientTasks)}
                       />
                     </StickyContainer>
-
                     {isAllTasksView ? (
                       renderTasks(activeList.tasks, { isFullView: false })
                     ) : (
                       <>
-                        {groupedTasks.map(group => (
+                        {groupedTasks.map((group) => (
                           <TaskListGroupCollapse group={group} stickyHeader>
                             {({ isFullView }) =>
                               renderTasks(group.tasks, {

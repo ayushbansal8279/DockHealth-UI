@@ -1,7 +1,7 @@
 import React from 'react';
 import DeleteConfirmationModal from '../DeleteConfirmationModal/DeleteConfirmationModal';
 
-const DeleteTaskConfirmationModal = props => {
+const DeleteTaskConfirmationModal = (props) => {
   const { isSubtask, ...restProps } = props;
 
   const title = `Delete ${isSubtask ? 'SUB' : ''}task`;

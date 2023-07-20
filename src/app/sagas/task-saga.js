@@ -63,7 +63,7 @@ function* reorderSubtasks(payload) {
 function* addTaskDependencyLink({ sourceTask, targetTaskIdentifier }) {
   try {
     const link = sourceTask.taskLinks?.find(
-      t => t.targetTaskIdentifier === targetTaskIdentifier,
+      (t) => t.targetTaskIdentifier === targetTaskIdentifier,
     );
     if (link) {
       yield put(TaskActions.updateTasksLink({ ...link, isDependent: true }));
@@ -130,7 +130,7 @@ function* markTaskAsRead(task) {
       type: ActionTypes.MARK_TASK_AS_READ_SUCCESS,
       task: updatedTask,
     });
-  } catch (error) {
+  } catch {
     yield put({ type: ActionTypes.MARK_TASK_AS_READ_FAILURE });
     yield put(showGlobalErrorAlert());
   }
@@ -147,7 +147,7 @@ function* markTaskAsUnRead(task) {
       type: ActionTypes.MARK_TASK_AS_UNREAD_SUCCESS,
       task: updatedTask,
     });
-  } catch (error) {
+  } catch {
     yield put({ type: ActionTypes.MARK_TASK_AS_UNREAD_FAILURE });
     yield put(showGlobalErrorAlert());
   }
@@ -280,7 +280,8 @@ function* updateTaskDescription({ task, descriptionState }) {
       task: updatedTask,
     });
     yield put(showGlobalAlert(AlertMessages.UPDATED));
-  } catch {
+  } catch (error) {
+    console.log(error);
     yield put({
       type: ActionTypes.UPDATE_TASK_DESCRIPTION_FAILURE,
       task,
@@ -300,7 +301,8 @@ function* updateTaskDetails({ task, detailsState }) {
       task: updatedTask,
     });
     yield put(showGlobalAlert(AlertMessages.UPDATED));
-  } catch {
+  } catch (error) {
+    console.log(error);
     yield put({
       type: ActionTypes.UPDATE_TASK_DETAILS_FAILURE,
       task,
@@ -349,7 +351,7 @@ function* updateTaskDueDate({ task, dueDate }) {
     yield put({
       type: ActionTypes.UPDATE_TASK_DUE_DATE_FAILURE,
       task,
-      dueDate: task.dueDate,
+      dueDate: task?.dueDate,
     });
     yield put(showGlobalErrorAlert());
   }

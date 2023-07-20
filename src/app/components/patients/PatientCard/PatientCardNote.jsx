@@ -1,9 +1,8 @@
 /* eslint-disable import/no-cycle */
 import Spacing from 'components/common/Spacing';
-import { convertToEditorState } from 'components/common/TextEditor/helpers';
-import TextEditor from 'components/common/TextEditor/TextEditor';
+import RichTextEditor from 'components/common/RichTextEditor/RichTextEditor';
 import moment from 'moment';
-import React, { useMemo, useState } from 'react';
+import React from 'react';
 import {
   PatientNote,
   NoteDivider,
@@ -15,28 +14,17 @@ import {
 
 const PatientCardNote = ({ note, patientName, index }) => {
   const { identifier, pinned, description, dateUpdated } = note;
-  const initialState = useMemo(
-    () =>
-      convertToEditorState({
-        tokenizedText: description,
-        rawText: description,
-        mentions: [],
-        handleRichText: true,
-      }),
-    [description],
-  );
-  const [noteState, setNoteState] = useState(initialState);
 
   const renderNoteDescription = () => {
     return (
       <>
         <NoteDescription>
-          <TextEditor
-            readOnly
-            disableMentions
-            isDrawerEditor
-            state={noteState}
-            onChange={newState => setNoteState(newState)}
+          <RichTextEditor
+            readonly
+            showToolbar={false}
+            value={description}
+            initOnClick
+            showCharCount
           />
         </NoteDescription>
         <NoteInfo>

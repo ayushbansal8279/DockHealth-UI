@@ -27,14 +27,15 @@ const PatientsReducer = (state = initialState, action) => {
       };
     }
 
-    case ActionTypes.CLEAR_PATIENTS_LIST_STATE:
+    case ActionTypes.CLEAR_PATIENTS_LIST_STATE: {
       return {
         ...state,
         currentPatientsListIdentifier: null,
         currentPatientsList: null,
       };
+    }
 
-    case ActionTypes.GET_CURRENT_PATIENTS_LIST_DETAILS:
+    case ActionTypes.GET_CURRENT_PATIENTS_LIST_DETAILS: {
       return {
         ...state,
         currentPatientsList: {
@@ -42,8 +43,9 @@ const PatientsReducer = (state = initialState, action) => {
           isFetchingListDetails: true,
         },
       };
+    }
 
-    case ActionTypes.GET_CURRENT_PATIENTS_LIST_DETAILS_SUCCESS:
+    case ActionTypes.GET_CURRENT_PATIENTS_LIST_DETAILS_SUCCESS: {
       return {
         ...state,
         currentPatientsList: {
@@ -52,8 +54,9 @@ const PatientsReducer = (state = initialState, action) => {
           listDetails: action.listDetails,
         },
       };
+    }
 
-    case ActionTypes.GET_CURRENT_PATIENTS_LIST_DETAILS_FAILURE:
+    case ActionTypes.GET_CURRENT_PATIENTS_LIST_DETAILS_FAILURE: {
       return {
         ...state,
         currentPatientsList: {
@@ -61,8 +64,9 @@ const PatientsReducer = (state = initialState, action) => {
           isFetchingListDetails: false,
         },
       };
+    }
 
-    case ActionTypes.SEARCH_PATIENTS:
+    case ActionTypes.SEARCH_PATIENTS: {
       return {
         ...state,
         currentPatientsList: {
@@ -70,8 +74,9 @@ const PatientsReducer = (state = initialState, action) => {
           searchPerformed: true,
         },
       };
+    }
 
-    case ActionTypes.CLEAR_PATIENT_SEARCH:
+    case ActionTypes.CLEAR_PATIENT_SEARCH: {
       return {
         ...state,
         currentPatientsList: {
@@ -79,8 +84,9 @@ const PatientsReducer = (state = initialState, action) => {
           searchPerformed: false,
         },
       };
+    }
 
-    case ActionTypes.GET_CURRENT_PATIENTS:
+    case ActionTypes.GET_CURRENT_PATIENTS: {
       return {
         ...state,
         currentPatientsList: {
@@ -88,8 +94,9 @@ const PatientsReducer = (state = initialState, action) => {
           isFetchingPatients: true,
         },
       };
+    }
 
-    case ActionTypes.GET_CURRENT_PATIENTS_SUCCESS:
+    case ActionTypes.GET_CURRENT_PATIENTS_SUCCESS: {
       return {
         ...state,
         currentPatientsList: {
@@ -98,8 +105,9 @@ const PatientsReducer = (state = initialState, action) => {
           patients: action.patients,
         },
       };
+    }
 
-    case ActionTypes.GET_CURRENT_PATIENTS_FAILURE:
+    case ActionTypes.GET_CURRENT_PATIENTS_FAILURE: {
       return {
         ...state,
         currentPatientsList: {
@@ -107,8 +115,9 @@ const PatientsReducer = (state = initialState, action) => {
           isFetchingPatients: false,
         },
       };
+    }
 
-    case ActionTypes.GET_CURRENT_PATIENTS_LIST_FILTER_OPTIONS:
+    case ActionTypes.GET_CURRENT_PATIENTS_LIST_FILTER_OPTIONS: {
       return {
         ...state,
         currentPatientsList: {
@@ -116,8 +125,9 @@ const PatientsReducer = (state = initialState, action) => {
           isFetchingFilterOptions: true,
         },
       };
+    }
 
-    case ActionTypes.GET_CURRENT_PATIENTS_LIST_FILTER_OPTIONS_SUCCESS:
+    case ActionTypes.GET_CURRENT_PATIENTS_LIST_FILTER_OPTIONS_SUCCESS: {
       return {
         ...state,
         currentPatientsList: {
@@ -126,8 +136,9 @@ const PatientsReducer = (state = initialState, action) => {
           filterOptions: action.options,
         },
       };
+    }
 
-    case ActionTypes.GET_CURRENT_PATIENTS_LIST_FILTER_OPTIONS_FAILURE:
+    case ActionTypes.GET_CURRENT_PATIENTS_LIST_FILTER_OPTIONS_FAILURE: {
       return {
         ...state,
         currentPatientsList: {
@@ -135,8 +146,9 @@ const PatientsReducer = (state = initialState, action) => {
           isFetchingFilterOptions: false,
         },
       };
+    }
 
-    case ActionTypes.CHANGE_PATIENTS_SEARCH_TERM:
+    case ActionTypes.CHANGE_PATIENTS_SEARCH_TERM: {
       return {
         ...state,
         currentPatientsList: {
@@ -145,6 +157,7 @@ const PatientsReducer = (state = initialState, action) => {
           selectedFilters: null,
         },
       };
+    }
 
     case ActionTypes.SET_PATIENTS_SELECTED_FILTERS: {
       const { selectedFilters } = action;
@@ -182,11 +195,12 @@ const PatientsReducer = (state = initialState, action) => {
       };
     }
 
-    case ActionTypes.GET_PATIENTS_LISTS:
+    case ActionTypes.GET_PATIENTS_LISTS: {
       return {
         ...state,
         isFetching: true,
       };
+    }
 
     case ActionTypes.GET_PATIENTS_LISTS_SUCCESS: {
       return {
@@ -212,7 +226,7 @@ const PatientsReducer = (state = initialState, action) => {
 
       return {
         ...state,
-        customPatientsLists: state.customPatientsLists?.map(patientsList =>
+        customPatientsLists: state.customPatientsLists?.map((patientsList) =>
           patientsList.patientListIdentifier === identifier
             ? {
                 ...patientsList,
@@ -230,7 +244,7 @@ const PatientsReducer = (state = initialState, action) => {
 
       return {
         ...state,
-        customPatientsLists: state.customPatientsLists?.map(patientsList =>
+        customPatientsLists: state.customPatientsLists?.map((patientsList) =>
           patientsList.patientListIdentifier === identifier
             ? { ...patientsList, ...dataToUpdate, isUpdating: false }
             : patientsList,
@@ -243,7 +257,7 @@ const PatientsReducer = (state = initialState, action) => {
 
       return {
         ...state,
-        customPatientsLists: state.customPatientsLists?.map(patientsList =>
+        customPatientsLists: state.customPatientsLists?.map((patientsList) =>
           patientsList.patientListIdentifier === identifier
             ? { ...patientsList, isUpdating: false, error: true }
             : patientsList,
@@ -257,7 +271,7 @@ const PatientsReducer = (state = initialState, action) => {
         ...state,
         currentPatientsList: {
           ...state.currentPatientsList,
-          patients: state.currentPatientsList.patients?.map(patient =>
+          patients: state.currentPatientsList.patients?.map((patient) =>
             patient.patientIdentifier === identifier
               ? { ...patient, isSelected }
               : patient,
@@ -271,7 +285,7 @@ const PatientsReducer = (state = initialState, action) => {
         ...state,
         currentPatientsList: {
           ...state.currentPatientsList,
-          patients: state.currentPatientsList?.patients?.map(patient => ({
+          patients: state.currentPatientsList?.patients?.map((patient) => ({
             ...patient,
             isSelected: false,
           })),
@@ -284,7 +298,7 @@ const PatientsReducer = (state = initialState, action) => {
         ...state,
         currentPatientsList: {
           ...state.currentPatientsList,
-          patients: state.currentPatientsList?.patients?.map(patient => ({
+          patients: state.currentPatientsList?.patients?.map((patient) => ({
             ...patient,
             isSelected: true,
           })),
@@ -307,8 +321,9 @@ const PatientsReducer = (state = initialState, action) => {
       };
     }
 
-    default:
+    default: {
       return state;
+    }
   }
 };
 

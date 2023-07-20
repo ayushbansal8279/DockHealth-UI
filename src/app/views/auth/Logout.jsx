@@ -20,7 +20,7 @@ class Logout extends PureComponent {
         // eslint-disable-next-line no-unused-expressions
         pusherForPresence?.unsubscribe(presenceChannelName);
       })
-      .catch(error_ => {
+      .catch((error_) => {
         error(error_ && error_.message ? error_.message : 'Could not logout.');
       });
   };
@@ -30,7 +30,7 @@ class Logout extends PureComponent {
   }
 }
 
-const mapStateToProps = store => ({
+const mapStateToProps = (store) => ({
   currentUser: store.userState.userProfile,
 });
 

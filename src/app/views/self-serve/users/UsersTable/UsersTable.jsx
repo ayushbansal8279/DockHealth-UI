@@ -1,5 +1,5 @@
 import React, { useMemo, useState } from 'react';
-import { Grid } from '@material-ui/core';
+import { Grid } from '@mui/material';
 import { useHistory } from 'react-router-dom';
 import moment from 'moment';
 import filter from 'ramda/src/filter';
@@ -7,7 +7,7 @@ import includes from 'ramda/src/includes';
 import isEmpty from 'ramda/src/isEmpty';
 import reject from 'ramda/src/reject';
 import ListSkeletonLoader from 'components/common/ListSkeletonLoader/ListSkeletonLoader';
-import Spacing from 'components/common/Spacing.tsx';
+import Spacing from 'components/common/Spacing';
 import Search from 'components/task-view/Search/Search';
 import UserAvatar from 'components/user/UserAvatar/UserAvatar';
 import Tooltip from 'components/common/Tooltip/Tooltip';
@@ -35,41 +35,44 @@ const getFilteredOrganizationUsers = ({
   let filteredOrganizationUsers;
 
   switch (userSubscriptionStatus) {
-    case UserSubscriptionStatus.SUBSCRIBED:
+    case UserSubscriptionStatus.SUBSCRIBED: {
       filteredOrganizationUsers = filter(
         ({ userIdentifier, email }) =>
           includes({ userIdentifier, email }, selectedUsers),
         organizationUsers,
       );
       break;
-    case UserSubscriptionStatus.UNSUBSCRIBED:
+    }
+    case UserSubscriptionStatus.UNSUBSCRIBED: {
       filteredOrganizationUsers = reject(
         ({ userIdentifier, email }) =>
           includes({ userIdentifier, email }, selectedUsers),
         organizationUsers,
       );
       break;
-    default:
+    }
+    default: {
       filteredOrganizationUsers = organizationUsers;
       break;
+    }
   }
 
   return currentSearch
-    ? filteredOrganizationUsers.filter(memberData => {
+    ? filteredOrganizationUsers.filter((memberData) => {
         const { firstName, lastName, email } = new Proxy(memberData || {}, {
           get(target, path) {
             return target[path]?.toLowerCase() ?? '';
           },
         });
 
-        return [firstName, lastName, email].some(value =>
+        return [firstName, lastName, email].some((value) =>
           value.includes(currentSearch.toLowerCase()),
         );
       })
     : filteredOrganizationUsers;
 };
 
-const renderListNames = listNames => {
+const renderListNames = (listNames) => {
   if (listNames.length === 0) return '';
 
   const title = listNames.map(({ fullName }, index) =>
@@ -83,7 +86,7 @@ const renderListNames = listNames => {
   );
 };
 
-const renderColumnHeader = props => {
+const renderColumnHeader = (props) => {
   const { colDef } = props;
   const { headerName } = colDef;
 
@@ -120,6 +123,7 @@ const UsersTable = ({
   const history = useHistory();
 
   const columns = useMemo(
+    // eslint-disable-next-line sonarjs/cognitive-complexity
     () => [
       {
         field: 'userName',
@@ -159,13 +163,8 @@ const UsersTable = ({
         flex: 0.5,
         renderHeader: renderColumnHeader,
         renderCell: ({ row }) => {
-          const {
-            firstName,
-            lastName,
-            email,
-            userIdentifier,
-            userStatus,
-          } = row;
+          const { firstName, lastName, email, userIdentifier, userStatus } =
+            row;
           const key = `${firstName}${lastName}${userIdentifier}${email}`;
 
           return (
@@ -300,7 +299,7 @@ const UsersTable = ({
                         : `${listName.slice(0, 14)}...`,
                   }))
                   // eslint-disable-next-line func-names
-                  .sort(function(a, b) {
+                  .sort((a, b) => {
                     if (a.fullName < b.fullName) {
                       return -1;
                     }
@@ -358,7 +357,7 @@ const UsersTable = ({
 
   const filteredOrganizationUsersWithId = useMemo(
     () =>
-      filteredOrganizationUsers.map(member => ({
+      filteredOrganizationUsers.map((member) => ({
         id: member.userIdentifier,
         ...member,
       })),
@@ -374,7 +373,7 @@ const UsersTable = ({
       ) : (
         <>
           {showTableHeader && (
-            <Grid container justify="space-between" alignItems="center">
+            <Grid container justifyContent="space-between" alignItems="center">
               <Grid item sm={12} md={3}>
                 <SubscriptionStatusSwitcher
                   isSmallScreen={isSmallScreen}
@@ -388,11 +387,11 @@ const UsersTable = ({
                 md={9}
                 container
                 alignItems="center"
-                justify="flex-end"
+                justifyContent="flex-end"
                 wrap="nowrap"
               >
                 <Search
-                  onChange={event =>
+                  onChange={(event) =>
                     setCurrentSearch(event?.target?.value ?? '')
                   }
                   value={currentSearch}
@@ -418,6 +417,8 @@ const UsersTable = ({
                 autoHeight
                 disableColumnMenu
                 disableSelectionOnClick
+                showColumnRightBorder
+                showCellRightBorder
               />
             )}
           </StyledUsersTable>

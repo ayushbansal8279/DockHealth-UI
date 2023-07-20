@@ -5,14 +5,14 @@ import { openModal, closeModal } from 'modal/actions';
 import { hideSubMenu } from 'actions/template-actions';
 import * as PatientsActions from 'actions/patients-actions';
 import palette from 'styles/palette';
-import { Box } from '@material-ui/core';
+import { Box } from '@mui/material';
 import {
   DefaultPatientListUrl,
   getPatientListIdentifierByUrlParameter,
 } from 'helpers/patient-list-helpers';
-import AddButton from 'components/common/AddButton/AddButton.tsx';
+import AddButton from 'components/common/AddButton/AddButton';
 import OptionsMenu from 'components/common/OptionsMenu/OptionsMenu';
-import { MoreVert } from '@material-ui/icons';
+import { MoreVert } from '@mui/icons-material';
 import {
   defaultPatientsListsSelector,
   customPatientsListsSelector,
@@ -31,7 +31,7 @@ import { isUserGuest, isUserViewOnly } from 'helpers/user-helper';
 import { getCustomerTypeLabel } from 'helpers/customer-type-helper';
 import { capitalize } from 'helpers/capitalize';
 import UpgradePlan from 'components/common/UpgradePlan/UpgradePlan';
-import PatientListsIcon from 'img/premium/patient-lists';
+import PatientListsIcon from 'img/premium/patient-lists.svg';
 import {
   DrawerMyListsLabel,
   DrawerListsItem,
@@ -74,7 +74,7 @@ const PatientsSubmenu = () => {
   };
 
   const openDeleteConfirmationModal = useCallback(
-    list => {
+    (list) => {
       const modalProps = {
         title: 'Delete list',
         description:
@@ -109,7 +109,12 @@ const PatientsSubmenu = () => {
         <div>{`${customerTypeLabelCapitalized}s`} </div>
       </DrawerMyListsLabel>
       <DrawerListsList flexShrink={0}>
-        {!isInitialListFetching ? (
+        {isInitialListFetching ? (
+          Array.from({ length: 2 })
+            .fill()
+            // eslint-disable-next-line react/no-array-index-key
+            .map((_, index) => <DrawerListsItemLoader key={index} />)
+        ) : (
           <>
             {defaultPatientsLists?.map(
               ({ patientListIdentifier, listName, patientsCount }) => (
@@ -137,9 +142,6 @@ const PatientsSubmenu = () => {
               ),
             )}
           </>
-        ) : (
-          // eslint-disable-next-line react/no-array-index-key
-          new Array(2).fill().map((_, i) => <DrawerListsItemLoader key={i} />)
         )}
       </DrawerListsList>
       {!isGuest && customListsAvailable && (
@@ -152,9 +154,14 @@ const PatientsSubmenu = () => {
             )}
           </DrawerMyListsLabel>
           <DrawerListsList>
-            {!isInitialListFetching ? (
+            {isInitialListFetching ? (
+              Array.from({ length: 5 })
+                .fill()
+                // eslint-disable-next-line react/no-array-index-key
+                .map((_, index) => <DrawerListsItemLoader key={index} />)
+            ) : (
               <>
-                {sortedCustomPatientsLists?.map(patientsList => (
+                {sortedCustomPatientsLists?.map((patientsList) => (
                   <DrawerListsItem key={patientsList.patientListIdentifier}>
                     <ListNameText
                       isActive={
@@ -199,11 +206,6 @@ const PatientsSubmenu = () => {
                   </DrawerListsItem>
                 ))}
               </>
-            ) : (
-              new Array(5)
-                .fill()
-                // eslint-disable-next-line react/no-array-index-key
-                .map((_, i) => <DrawerListsItemLoader key={i} />)
             )}
           </DrawerListsList>
         </>

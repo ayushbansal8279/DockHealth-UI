@@ -43,7 +43,7 @@ const TaskItemDropdown = ({
     [onChange],
   );
 
-  const colorIndicator = options?.find(o => o.value === value)?.color;
+  const colorIndicator = options?.find((o) => o.value === value)?.color;
 
   return (
     <>

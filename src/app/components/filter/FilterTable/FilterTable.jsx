@@ -117,7 +117,7 @@ const FilterTable = props => {
                   displayValue={displayValue}
                   count={count}
                   reference={reference}
-                  onClick={option =>
+                  onClick={(option) =>
                     (selected
                       ? handleFilterOptionUnselect
                       : handleFilterOptionSelect)(id, option)
@@ -130,8 +130,8 @@ const FilterTable = props => {
                 <DateRangeOptions
                   dateStart={selectedFilters?.[id]?.dateStart}
                   dateEnd={selectedFilters?.[id]?.dateEnd}
-                  onStartDateChange={v => handleRangeDateStartChange(id, v)}
-                  onEndDateChange={v => handleRangeDateEndChange(id, v)}
+                  onStartDateChange={(v) => handleRangeDateStartChange(id, v)}
+                  onEndDateChange={(v) => handleRangeDateEndChange(id, v)}
                 />
               </FilterOptionsGroup>
             )}

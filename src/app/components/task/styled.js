@@ -2,7 +2,7 @@
 import React from 'react';
 import styled, { keyframes, css } from 'styled-components';
 import { Link } from 'react-router-dom';
-import { Grid } from '@material-ui/core';
+import { Grid } from '@mui/material';
 import spacing from 'styles/spacing';
 import { fontWeights, fontSizes } from 'styles/font';
 import palette, { featurePalette } from 'styles/palette';
@@ -35,9 +35,12 @@ export const DecisionSelect = styled(Select)`
     display: none;
   }
   & .switchIcon > path {
-    fill: ${props =>
-      props.iconColorActive ? props.iconColorActive : palette.dirtyBanana};
-  },
+    fill: ${(props) => props.iconColorActive ?? palette.dirtyBanana};
+  }
+  & .MuiSelect-select {
+    padding: 0px;
+    background-color: white;
+  }
 `;
 
 export const ListItemLink = styled(Link)`
@@ -64,21 +67,21 @@ export const ListLink = styled(ListItemLink)`
 export const CompletedBy = styled.div`
   align-items: flex-end;
   display: flex;
-  height: ${props => (props.isCompleted ? 0.8 : 0)}rem;
+  height: ${(props) => (props.isCompleted ? 0.8 : 0)}rem;
   overflow: hidden;
   transition: all 0.1s ease-out;
-  transition-delay: ${props => (props.isCompleted ? '0' : '0.4')}s;
+  transition-delay: ${(props) => (props.isCompleted ? '0' : '0.4')}s;
   font-size: ${fontSizes.small};
   padding-left: 5px;
-  padding-bottom: 2px;
+  padding-bottom: 0px;
 
   > span {
     color: ${palette.brightBlue};
     font-weight: ${fontWeights.regular};
     line-height: 1;
     transition: transform 0.4s ease-out;
-    transition-delay: ${props => (props.isCompleted ? 0.1 : 0)}s;
-    transform: translateX(${props => (props.isCompleted ? 0 : -100)}%);
+    transition-delay: ${(props) => (props.isCompleted ? 0.1 : 0)}s;
+    transform: translateX(${(props) => (props.isCompleted ? 0 : -100)}%);
   }
 `;
 
@@ -100,7 +103,7 @@ export const TaskContext = styled.div`
 export const PrioritySwitch = styled.button`
   position: absolute;
   top: 50%;
-  left: ${props => props.left || '-12px'};
+  left: ${(props) => props.left || '-12px'};
   transform: translateY(-50%);
   cursor: ${({ isClickable = true }) => (isClickable ? 'pointer' : 'initial')};
 `;
@@ -165,15 +168,18 @@ export const Description = styled.div`
   width: 100%;
   margin-right: 4px;
   overflow-wrap: anywhere;
-  ${props => (props.isCrossedOut ? 'text-decoration: line-through;' : '')}
+  ${(props) => (props.isCrossedOut ? 'text-decoration: line-through;' : '')}
   cursor: pointer;
   text-overflow: ellipsis;
   white-space: initial;
   max-width: 480px;
   font-weight: 400;
   font-size: 14px;
-  ${props => (props.isUnread ? 'font-weight: 900; font-size: 15px;' : '')};
+  ${(props) => (props.isUnread ? 'font-weight: 900; font-size: 15px;' : '')};
   overflow: hidden;
+  &:hover > div > div > button {
+    visibility: visible;
+  }
 
   @media screen and (max-width: 1300px) {
     max-width: 300px;
@@ -200,14 +206,53 @@ export const AssignMemberIconContainer = styled.div`
   cursor: pointer;
 `;
 
+export const DescriptionEditButton = styled.div`
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  margin-left: 8px;
+  border-radius: 3px;
+  opacity: 0;
+
+  & .MuiIconButton-root {
+    max-height: 24px;
+    margin: 0;
+    color: ${palette.brightBlue};
+  }
+
+  & .MuiSvgIcon-root {
+    width: 14px;
+    height: 14px;
+  }
+`;
+
 export const DescriptionBox = styled.div`
   display: flex;
   flex-direction: column;
   flex: 1;
   cursor: pointer;
   width: ${({ width }) => (width ? `${width}px` : '100%')};
-  &:hover > button {
-    visibility: visible;
+  &:hover {
+    ${DescriptionEditButton} {
+      opacity: 1;
+    }
+  }
+  font-family: 'Roboto Condensed', sans-serif;
+`;
+
+export const DescriptionInput = styled.input`
+  outline: 'none';
+  background-color: transparent !important;
+  border: ${({ isEditing }) =>
+    isEditing ? `1px solid ${palette.brightBlue}` : 'none'};
+  border-radius: '4px';
+  color: ${palette.mediumGrey};
+  width: 1005px;
+  text-overflow: 'ellipsis';
+
+  &:focus {
+    outline: none !important;
+    border: none;
   }
 `;
 
@@ -288,10 +333,10 @@ export const SubtasksGroupLabel = styled.span`
 export const StandardTaskItemCell = styled.div`
   align-items: ${({ alignItems }) => alignItems || 'center'};
   border-right: 1px solid ${palette.coolGrey3};
-  color: ${props => props.color || palette.mediumGrey};
+  color: ${(props) => props.color || palette.mediumGrey};
   display: flex;
   font-size: ${fontSizes.smallPlus};
-  font-weight: ${props =>
+  font-weight: ${(props) =>
     props.bolded ? fontWeights.regular : fontWeights.light};
   color: ${palette.mediumGrey};
   min-width: ${({ width, isSubtask, order }) =>
@@ -299,11 +344,11 @@ export const StandardTaskItemCell = styled.div`
   max-width: ${({ width, isSubtask, order }) =>
     isSubtask && order === 0 ? +width - 0 : width}px;
   padding: ${spacing.small} 0;
-  padding: ${props => props.padding || `${spacing.small} 0`};
+  padding: ${(props) => props.padding || `${spacing.small} 0`};
   padding-left: ${spacing.small};
   padding-right: ${spacing.small};
-  width: ${props => (!props.width ? '100%' : '')};
-  justify-content: ${props => props.justify || 'flex-start'};
+  width: ${(props) => (props.width ? '' : '100%')};
+  justify-content: ${(props) => props.justify || 'flex-start'};
   position: relative;
 `;
 
@@ -315,7 +360,7 @@ export const MainStandardTaskItemCell = styled(StandardTaskItemCell)`
     visibility: visible;
   }
   @media print {
-    min-width: ${props => props.printWidth};
+    min-width: ${(props) => props.printWidth};
     height: 100%;
   }
 `;
@@ -330,8 +375,7 @@ export const ClickablePatient = styled.span`
 
 export const StandardTaskItemContainer = styled.div`
   position: relative;
-  background-color: ${props =>
-    // eslint-disable-next-line unicorn/no-nested-ternary
+  background-color: ${(props) =>
     props.isSelected
       ? palette.brightBlueWithAlpha
       : // eslint-disable-next-line unicorn/no-nested-ternary
@@ -344,13 +388,13 @@ export const StandardTaskItemContainer = styled.div`
   border: 1px solid ${palette.coolGrey3};
   border-right: none;
   display: flex;
-  justify-content: ${props => (props.isAddingTask ? 'flex-end' : 'flex-start')};
+  justify-content: ${(props) => props.isAddingTask ? 'flex-end' : 'flex-start'};
   width: 100%;
   height: ${({ height }) => height || 35}px;
   border-top: none;
   border-left: none;
   transition: background-color 0.3s ease-out;
-  animation: ${props =>
+  animation: ${(props) =>
     props.newlyCreated
       ? css`
           ${highlight} 6s ease-out;
@@ -366,7 +410,7 @@ export const StandardTaskItemContainer = styled.div`
 `;
 
 export const StatusBar = styled.div`
-  background-color: ${props => props.color};
+  background-color: ${(props) => props.color};
   height: calc(100% - 2px);
   top: 0;
   left: 0;
@@ -405,7 +449,7 @@ export const StandardTaskThreeDots = styled(ThreeDots)`
 
 export const StandardTaskItemPanel = styled.div`
   position: relative;
-  ${props =>
+  ${(props) =>
     props.isDragging
       ? 'box-shadow: 0px 0px 11px rgba(204, 204, 204, 0.8)'
       : ''};
@@ -603,29 +647,6 @@ export const DescriptionBorder = styled.div`
   width: 100%;
   ${({ disabled }) => (disabled ? 'border: 0px;' : '')}
   ${({ isEdited }) => isEdited && `border-color: ${palette.coolGrey2};`}
-`;
-
-export const DescriptionEditButton = styled.div`
-  margin-left: 8px;
-  border-radius: 3px;
-  max-height: 18px;
-  background-color: ${({ active }) => (active ? palette.coolGrey3 : '')};
-  display: ${({ active }) => (active ? 'none' : 'block')};
-  visibility: hidden;
-
-  &:hover {
-    background-color: ${palette.coolGrey3};
-  }
-
-  & .MuiIconButton-root {
-    color: ${palette.brightBlue};
-    margin: 0;
-  }
-
-  & .MuiSvgIcon-root {
-    height: 14px;
-    width: 14px;
-  }
 `;
 
 export const PatientPrintAdditionalInfo = styled.div`

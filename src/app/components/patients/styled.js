@@ -15,7 +15,7 @@ export const PatientsListContainer = styled.div`
 `;
 
 export const SidebarInnerContainer = styled.div`
-  max-height: ${props => props.height ?? 0}px;
+  max-height: ${(props) => props.height ?? 0}px;
   max-width: 100%;
   overflow-y: auto;
   position: sticky;

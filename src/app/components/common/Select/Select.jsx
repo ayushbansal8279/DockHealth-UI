@@ -6,7 +6,7 @@ import {
   MenuItem,
   FormHelperText,
   ListItemText,
-} from '@material-ui/core';
+} from '@mui/material';
 import {
   func,
   number,
@@ -35,11 +35,12 @@ const Select = React.forwardRef(
       inputRef,
       required,
       disabled = false,
+      className,
       ...restProps
     },
     reference,
   ) => {
-    const selectedOption = options?.find(element => element.value === value);
+    const selectedOption = options?.find((element) => element.value === value);
     return readOnly ? (
       <Input
         name={name}
@@ -50,13 +51,16 @@ const Select = React.forwardRef(
         error={error}
         placeholder={placeholder}
         disabled={disabled}
+        className={className}
         {...restProps}
       />
     ) : (
-      <FormControl error={error}>
-        <InputLabel shrink={!!value} variant={variant} required={required}>
-          {label}
-        </InputLabel>
+      <FormControl error={error} className={className}>
+        {label && (
+          <InputLabel shrink={!!value} variant={variant} required={required}>
+            {label}
+          </InputLabel>
+        )}
         <MuiSelect
           disabled={disabled}
           MenuProps={{
@@ -70,18 +74,21 @@ const Select = React.forwardRef(
             },
             getContentAnchorEl: null,
             style: { zIndex: zIndex.optionsMenu },
+            PaperProps: {
+              style: { minWidth: 'auto' },
+            },
           }}
           ref={reference}
           placeholder={placeholder}
           inputProps={{ name, shrink: 1, placeholder, inputRef }}
           variant={variant}
           value={value || ''}
-          renderValue={selectedValue =>
-            options.find(option => option.value === selectedValue)?.label
+          renderValue={(selectedValue) =>
+            options.find((option) => option.value === selectedValue)?.label
           }
           {...restProps}
         >
-          {options?.map(option => {
+          {options?.map((option) => {
             const { OptionIcon } = option;
             return (
               <MenuItem key={option.value} value={option.value}>

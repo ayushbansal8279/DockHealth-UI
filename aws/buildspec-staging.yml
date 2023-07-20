@@ -1,0 +1,49 @@
+version: 0.2
+env:
+  parameter-store:
+    VITE_AWS_REGION: /DOCK_WEB/STAGING/AWS_REGION
+    VITE_AWS_USERPOOLID: /DOCK_WEB/STAGING/AWS_USERPOOLID
+    VITE_AWS_CLIENTAPP: /DOCK_WEB/STAGING/AWS_CLIENTAPP
+    VITE_HEYDOC_SERVICES_BASE_URL: /DOCK_WEB/STAGING/HEYDOC_SERVICES_BASE_URL
+    VITE_SYSTEM_TIMEOUT: /DOCK_WEB/STAGING/SYSTEM_TIMEOUT
+    VITE_HEALTHCHECK_INTERVAL: /DOCK_WEB/STAGING/HEALTHCHECK_INTERVAL
+    VITE_BRANCH_IO_APP_LINK: /DOCK_WEB/STAGING/BRANCH_IO_APP_LINK
+    VITE_PUSHER_APP_KEY: /DOCK_WEB/STAGING/PUSHER_APP_KEY
+    VITE_PUSHER_CLUSTER_NAME: /DOCK_WEB/STAGING/PUSHER_CLUSTER_NAME
+    VITE_SUBSCRIPTION_TOKEN_API_KEY: /DOCK_WEB/STAGING/SUBSCRIPTION_TOKEN_API_KEY
+    VITE_GA_TRACKING_CODE: /DOCK_WEB/STAGING/GA_TRACKING_CODE
+    VITE_GA_TRACKING_CODE_ROLLUP: /DOCK_WEB/STAGING/GA_TRACKING_CODE_ROLLUP
+    VITE_HELLOSIGN_CLIENT_ID: /DOCK_WEB/STAGING/HELLOSIGN_CLIENT_ID
+    VITE_HELLOSIGN_DOMAIN_VERIFICATION_ENABLED: /DOCK_WEB/STAGING/HELLOSIGN_DOMAIN_VERIFICATION_ENABLED
+    VITE_INTERCOM_APP_CODE: /DOCK_WEB/STAGING/INTERCOM_APP_CODE
+    VITE_PHONE_COUNTRY_CODES: /DOCK_WEB/STAGING/PHONE_COUNTRY_CODES
+    DYNATRACE_SCRIPT: /DOCK_WEB/STAGING/DYNATRACE_SCRIPT
+    VITE_GOOGLE_DRIVE_API_CLIENT_ID: /DOCK_WEB/STAGING/GOOGLE_DRIVE_API_CLIENT_ID
+    VITE_GOOGLE_DRIVE_API_KEY: /DOCK_WEB/STAGING/GOOGLE_DRIVE_API_KEY
+    VITE_SSO_LAUNCH_URL_GOOGLE: /DOCK_WEB/STAGING/SSO_LAUNCH_URL_GOOGLE
+    VITE_SENDBIRD_APP_ID: /DOCK_WEB/STAGING/SENDBIRD_APP_ID
+    VITE_APP_ENV: /DOCK_WEB/STAGING/APP_ENV
+phases:
+  install:
+    runtime-versions:
+      nodejs: 14
+  pre_build:
+    commands:
+      - echo Installing source NPM dependencies...
+      - npm install
+      - npm audit fix
+      - node -e 'console.log(v8.getHeapStatistics().heap_size_limit/(1024*1024))'
+      - export NODE_OPTIONS="--max-old-space-size=4096"
+  build:
+    commands:
+      - echo Build started on `date`
+      - npm run build
+  post_build:
+    commands:
+      - aws s3 cp --recursive --acl public-read ./dist s3://$DeployBucketName/
+      - aws s3 cp --acl public-read --cache-control='max-age=0, no-cache, no-store, must-revalidate' ./dist/index.html s3://$DeployBucketName/
+      - aws cloudfront create-invalidation --distribution-id $CloudFrontDistributionID --paths /index.html /static /assets /*.js
+artifacts:
+  files:
+    - '**/*'
+  base-directory: dist

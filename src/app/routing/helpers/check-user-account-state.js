@@ -35,7 +35,7 @@ const checkUserAccountState = async ({
     const isOrganizationAdmin = ['ADMIN', 'OWNER'].includes(data.orgUserRole);
     try {
       captureLocalTimezone();
-    } catch (error) {
+    } catch {
       // do nothing
     }
 
@@ -105,7 +105,7 @@ const checkUserAccountState = async ({
       history,
       isHomePath: pathname === HOME_PATH,
     });
-  } catch (error) {
+  } catch {
     return DEFAULT_REDIRECT_PATH;
   }
 };

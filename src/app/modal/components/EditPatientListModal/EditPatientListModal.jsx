@@ -4,10 +4,10 @@ import { showGlobalAlert, showGlobalErrorAlert } from 'alert/actions';
 import AlertMessages from 'alert/AlertMessages';
 import * as PatientsApi from 'api/patients-api';
 import { FormProvider, useForm } from 'react-hook-form';
-import { Grid } from '@material-ui/core';
+import { Grid } from '@mui/material';
 import { openModal } from 'modal/actions';
 import FormInput from 'components/common/Input/FormInput';
-import Spacing from 'components/common/Spacing.tsx';
+import Spacing from 'components/common/Spacing';
 import Button from 'components/common/Button/Button';
 import { getCustomerTypeLabel } from 'helpers/customer-type-helper';
 import { capitalize } from 'helpers/capitalize';
@@ -21,52 +21,49 @@ import {
 } from './styled';
 import { CloseIconButton, CloseIcon } from '../styled';
 
-const validatePatientListName = value => {
-  if (![...value]?.filter(char => char !== ' ').length > 0) {
+const validatePatientListName = (value) => {
+  if (![...value]?.filter((char) => char !== ' ').length > 0) {
     return 'This field is required';
   }
 
   return true;
 };
 
-const onSubmit = ({
-  patientListIdentifier,
-  event,
-  dispatch,
-  setIsSaving,
-}) => data => {
-  event.stopPropagation();
-  event.preventDefault();
+const onSubmit =
+  ({ patientListIdentifier, event, dispatch, setIsSaving }) =>
+  (data) => {
+    event.stopPropagation();
+    event.preventDefault();
 
-  setIsSaving(true);
+    setIsSaving(true);
 
-  const errorCallback = () => {
-    dispatch(showGlobalErrorAlert());
-    setIsSaving(false);
+    const errorCallback = () => {
+      dispatch(showGlobalErrorAlert());
+      setIsSaving(false);
+    };
+
+    if (patientListIdentifier) {
+      PatientsApi.updatePatientsList(patientListIdentifier, data)
+        .then((updatedPatientList) => {
+          setIsSaving(false);
+          dispatch(showGlobalAlert(AlertMessages.UPDATED));
+          dispatch(
+            openModal('AddPatientToList', { patientsList: updatedPatientList }),
+          );
+        })
+        .catch(errorCallback);
+    } else {
+      PatientsApi.createPatientsList(data)
+        .then((createdPatientList) => {
+          setIsSaving(false);
+          dispatch(showGlobalAlert(AlertMessages.CREATED));
+          dispatch(
+            openModal('AddPatientToList', { patientsList: createdPatientList }),
+          );
+        })
+        .catch(errorCallback);
+    }
   };
-
-  if (!patientListIdentifier) {
-    PatientsApi.createPatientsList(data)
-      .then(createdPatientList => {
-        setIsSaving(false);
-        dispatch(showGlobalAlert(AlertMessages.CREATED));
-        dispatch(
-          openModal('AddPatientToList', { patientsList: createdPatientList }),
-        );
-      })
-      .catch(errorCallback);
-  } else {
-    PatientsApi.updatePatientsList(patientListIdentifier, data)
-      .then(updatedPatientList => {
-        setIsSaving(false);
-        dispatch(showGlobalAlert(AlertMessages.UPDATED));
-        dispatch(
-          openModal('AddPatientToList', { patientsList: updatedPatientList }),
-        );
-      })
-      .catch(errorCallback);
-  }
-};
 
 const EditPatientListModal = ({ closeModal, patientsList }) => {
   const dispatch = useDispatch();
@@ -92,7 +89,7 @@ const EditPatientListModal = ({ closeModal, patientsList }) => {
         <CloseIcon />
       </CloseIconButton>
       <StyledForm
-        onSubmit={event =>
+        onSubmit={(event) =>
           handleSubmit(
             onSubmit({
               event,
@@ -104,7 +101,7 @@ const EditPatientListModal = ({ closeModal, patientsList }) => {
         }
       >
         <FormProvider {...formMethods}>
-          <Grid container direction="column" justify="space-between">
+          <Grid container direction="column" justifyContent="space-between">
             <Grid item>
               <Header>
                 <Title>
@@ -129,7 +126,7 @@ const EditPatientListModal = ({ closeModal, patientsList }) => {
               />
               <Spacing vertical={4} />
             </Grid>
-            <Grid container direction="row" justify="center">
+            <Grid container direction="row" justifyContent="center">
               <ButtonWrapper>
                 <Button
                   fullWidth

@@ -1,70 +1,51 @@
-/* eslint-disable import/prefer-default-export */
-/* eslint-disable unicorn/filename-case */
 import styled from 'styled-components';
-import { DataGrid } from '@material-ui/data-grid';
+import { DataGrid } from '@mui/x-data-grid';
 import { fontWeights, fontSizes } from 'styles/font';
 import palette from 'styles/palette';
 import spacing from 'styles/spacing';
 
-const ROW_HEIGHT = 35;
 const HEADER_HEIGHT = 35;
-const ROW_MARGIN = 2;
 const ROW_BORDER = 1;
 
 export const StyledDataGrid = styled(DataGrid)`
   &.MuiDataGrid-root {
     max-width: 1180px;
-    border: 0 !important;
-
-    // calculating a height of a table is a workaround - MUI v4 doesn't support space beetween rows
-    height: ${({ rows, pageSize, page }) => {
-      let rowsLength;
-      if (rows.length - page * pageSize > pageSize) rowsLength = pageSize;
-      else {
-        rowsLength = rows.length - page * pageSize;
-      }
-
-      return (
-        (rowsLength + 1) * (ROW_HEIGHT + ROW_MARGIN + ROW_BORDER) +
-        HEADER_HEIGHT
-      );
-    }};
-
-    .MuiDataGrid-renderingZone {
-      ${({ rows, pageSize, page }) => {
-        let rowsLength;
-        if (rows.length - page * pageSize > pageSize) rowsLength = pageSize;
-        else {
-          rowsLength = rows.length - page * pageSize;
-        }
-        return `max-height: ${(rowsLength + 1) *
-          (ROW_HEIGHT + ROW_MARGIN + ROW_BORDER) +
-          HEADER_HEIGHT}px !important`;
-      }}
-    }
-
-    .MuiDataGrid-window {
-      top: 35px !important;
-    }
-    .MuiDataGrid-columnsContainer {
-      top: ${`-${ROW_MARGIN}px`};
-    }
+    // border: 0 !important;
+    background-color: white;
   }
   && {
-    .MuiDataGrid-sortIcon {
+    &.MuiDataGrid-sortIcon {
       background: ${palette.brightBlue};
       color: ${palette.white};
       padding: 1px;
       border-radius: 50%;
     }
   }
-  .MuiDataGrid-columnHeaderTitleContainer {
+
+  & .MuiDataGrid-footerContainer {
+    p {
+      margin-bottom: 0;
+    }
+  }
+
+  & .MuiSelect-select {
+    font-family: "Roboto Condensed", sans-serif;
+    font-weight: 400;
+    font-size: 0.875rem;
+    line-height: 1.43;
+    flex-shrink: 0;
+    margin-top: 2px;
+    padding-right: 0 !important;
+    padding-left: 0;
+  }
+
+  &.MuiDataGrid-columnHeaderTitleContainer {
     display: flex;
     align-items: center;
     margin-left: -15px;
   }
 
-  .MuiDataGrid-columnHeader {
+  &.MuiDataGrid-columnHeader {
     &--sorted {
       color: ${palette.brightBlue};
     }
@@ -73,14 +54,14 @@ export const StyledDataGrid = styled(DataGrid)`
     }
   }
 
-  .MuiDataGrid-colCellTitle {
+  &.MuiDataGrid-colCellTitle {
     color: #3d4858;
     font-family: 'Roboto Condensed', sans-serif;
     font-size: 0.875rem !important;
   }
 
-  .MuiDataGrid-columnHeaderWrapper {
-    border: ${`${ROW_BORDER}px solid #e5e9f2`};
+  &.MuiDataGrid-columnHeaderWrapper {
+    // border: ${`${ROW_BORDER}px solid #e5e9f2`};
     background-color: #ffffff;
     font-size: 0.875rem;
     text-align: left;
@@ -88,27 +69,27 @@ export const StyledDataGrid = styled(DataGrid)`
     text-transform: uppercase;
   }
 
-  .MuiDataGrid-cell {
-    font-family: Roboto Condensed;
+  &.MuiDataGrid-cell {
+    font-family: 'Roboto Condensed', sans-serif;;
     font-weight: ${fontWeights.light};
     font-size: ${fontSizes.smallPlus};
     padding-left: ${spacing.large} !important;
   }
 
-  .MuiDataGrid-colCell {
+  &.MuiDataGrid-colCell {
     outline: none !important;
     padding: 0 !important;
   }
 
-  .MuiDataGrid-cell {
+  &.MuiDataGrid-cell {
     outline: none !important;
     color: ${palette.darkGrey};
     border-bottom: none !important;
   }
 
-  .MuiDataGrid-colCellTitle {
+  &.MuiDataGrid-colCellTitle {
     background-color: white;
-    font-family: Roboto Condensed;
+    font-family: 'Roboto Condensed', sans-serif;;
     font-size: ${fontSizes.small};
     font-weight: ${fontWeights.regularPlus} !important;
     padding-left: 0;
@@ -120,10 +101,10 @@ export const StyledDataGrid = styled(DataGrid)`
     }
   }
 
-  .MuiDataGrid-columnSeparator {
+  &.MuiDataGrid-columnSeparator {
     visibility: hidden;
   }
-  .MuiDataGrid-columnsContainer {
+  &.MuiDataGrid-columnsContainer {
     border-bottom: 0 !important;
     border: 0 !important;
     min-height: 35px !important;
@@ -132,20 +113,20 @@ export const StyledDataGrid = styled(DataGrid)`
     height: 35px !important;
   }
 
-  .MuiDataGrid-columnHeaderWrapper {
+  &.MuiDataGrid-columnHeaderWrapper {
     background-color: white;
   }
 
-  .MuiDataGrid-row {
+  &.MuiDataGrid-row {
     width: 100% !important;
     background-color: white;
     cursor: default;
-    margin-bottom: 2px;
-    border: ${`${ROW_BORDER}px solid #e5e9f2`};
-    background-color: #ffffff !important;
+    // margin-bottom: 2px;
+    // border: ${`${ROW_BORDER}px solid #e5e9f2`};
+    // background-color: #ffffff !important;
     font-size: 0.875rem;
     text-align: left;
-    height: ${HEADER_HEIGHT}px;
+    // height: ${HEADER_HEIGHT}px;
 
     &:hover {
       * > .patient-cell {
@@ -160,7 +141,7 @@ export const StyledDataGrid = styled(DataGrid)`
     }
   }
 
-  .Sorting-Arrow {
+  &.Sorting-Arrow {
     opacity: 0;
 
     &:hover {
@@ -169,7 +150,7 @@ export const StyledDataGrid = styled(DataGrid)`
     }
   }
 
-  .MuiTablePagination-input {
+  &.MuiTablePagination-input {
     display: none;
   }
 `;

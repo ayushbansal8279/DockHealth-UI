@@ -1,5 +1,4 @@
-import { IconButton } from '@material-ui/core';
-import { withStyles } from '@material-ui/core/styles';
+import { IconButton } from '@mui/material';
 import styled from 'styled-components';
 import { fontSizes, fontWeights } from 'styles/font';
 import palette from 'styles/palette';
@@ -59,10 +58,12 @@ export const EditButton = styled.button`
   }
 `;
 
-export const CloseIconButton = withStyles({
-  root: {
-    position: 'absolute',
-    top: 5,
-    right: 5,
-  },
-})(IconButton);
+export const CloseIconButton = styled(IconButton)`
+  &&& {
+    &.MuiIconButton-root {
+      position: absolute;
+      top: 5px;
+      right: 5px;
+    }
+  }
+`;

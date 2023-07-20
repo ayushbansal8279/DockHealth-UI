@@ -1,11 +1,11 @@
 import isEmpty from 'ramda/src/isEmpty';
 import { createSelector } from 'reselect';
 
-export const megaFilterStateSelector = state => state.megaFilter;
+export const megaFilterStateSelector = (state) => state.megaFilter;
 
 export const megaFilterSelector = createSelector(
   megaFilterStateSelector,
-  megaFilter => megaFilter,
+  (megaFilter) => megaFilter,
 );
 
 export const selectedFiltersInMegaFilterSelector = createSelector(

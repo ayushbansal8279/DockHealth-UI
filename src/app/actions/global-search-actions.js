@@ -20,7 +20,7 @@ export const searchIncompletedTasks = () => ({
   type: SEARCH_INCOMPLETED_TASKS,
 });
 
-export const setSearchValue = value => ({
+export const setSearchValue = (value) => ({
   type: SET_SEARCH_VALUE,
   payload: { value },
 });
@@ -29,7 +29,7 @@ export const requestGlobalSearch = () => ({
   type: GLOBAL_SEARCH_REQUEST,
 });
 
-export const requestGlobalSearchSuccess = lists => ({
+export const requestGlobalSearchSuccess = (lists) => ({
   type: GLOBAL_SEARCH_REQUEST_SUCCESS,
   payload: { lists },
 });
@@ -42,7 +42,7 @@ export const resetGlobalSearch = () => ({
   type: RESET_GLOBAL_SEARCH,
 });
 
-export const updateGlobalSearchTask = task => ({
+export const updateGlobalSearchTask = (task) => ({
   type: UPDATE_GLOBAL_SEARCH_TASK,
   payload: { task },
 });
@@ -51,7 +51,7 @@ export const requestGlobalSearchMore = () => ({
   type: GLOBAL_SEARCH_MORE_REQUEST,
 });
 
-export const requestGlobalSearchMoreSuccess = lists => ({
+export const requestGlobalSearchMoreSuccess = (lists) => ({
   type: GLOBAL_SEARCH_MORE_REQUEST_SUCCESS,
   payload: { lists },
 });

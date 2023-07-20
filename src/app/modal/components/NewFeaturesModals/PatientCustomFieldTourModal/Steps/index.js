@@ -1,5 +1,5 @@
-import TaskDetailsStep from './TaskDetailsStep';
-import PatientCustomFieldsStep from './PatientCustomFieldsStep';
-
 // eslint-disable-next-line import/prefer-default-export
-export { TaskDetailsStep, PatientCustomFieldsStep };
+
+export { default as TaskDetailsStep } from './TaskDetailsStep';
+
+export { default as PatientCustomFieldsStep } from './PatientCustomFieldsStep';

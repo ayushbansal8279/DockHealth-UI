@@ -1,6 +1,6 @@
 import { createSelector } from 'reselect';
 
-export const globalSearchStateSelector = state => state.globalSearch;
+export const globalSearchStateSelector = (state) => state.globalSearch;
 
 export const isSearchingCompletedTasksSelector = createSelector(
   globalSearchStateSelector,
@@ -30,4 +30,10 @@ export const globalSearchListsSelector = createSelector(
 export const searchPerformedSelector = createSelector(
   globalSearchStateSelector,
   ({ searchPerformed }) => searchPerformed,
+);
+
+export const globalTaskDetailsSelector = createSelector(
+  globalSearchStateSelector,
+  (_, taskId) => taskId,
+  (details, taskId) => details.tasksMap[taskId],
 );

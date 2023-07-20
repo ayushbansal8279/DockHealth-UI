@@ -1,8 +1,8 @@
 /* eslint-disable sonarjs/cognitive-complexity */
 import React, { useMemo, useCallback } from 'react';
 import { CircleIcon } from 'components/task/styled';
-import { Box, IconButton, Paper } from '@material-ui/core';
-import { Close, MoreHoriz } from '@material-ui/icons';
+import { Box, IconButton, Paper } from '@mui/material';
+import { Close, MoreHoriz } from '@mui/icons-material';
 import { checkIfTemplateTask, TaskStatus } from 'helpers/task-helpers';
 import palette from 'styles/palette';
 import Circle from 'img/circle.svg';
@@ -136,7 +136,7 @@ const TopSection = ({
           onClick: openDeleteConfirmationModal,
           restriction: restrictions?.delete === DISABLED,
         },
-      ].filter(o => typeof o !== 'boolean'),
+      ].filter((o) => typeof o !== 'boolean'),
     [
       handleMoveTask,
       restrictions,
@@ -165,13 +165,15 @@ const TopSection = ({
   );
 
   return (
-    <Paper elevation={3} style={{ width: '100%', height: '60px' }}>
+    <Paper elevation={3} style={{ width: '800px', height: '60px' }}>
       <Box
         width="100%"
         display="flex"
         justifyContent="space-between"
         alignItems="center"
         height="60px"
+        paddingLeft="30px"
+        paddingRight="30px"
       >
         <Box display="flex">
           {selectedTask && !checkIfTemplateTask(selectedTask) && (

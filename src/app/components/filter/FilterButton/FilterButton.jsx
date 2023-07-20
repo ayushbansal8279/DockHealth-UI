@@ -1,5 +1,5 @@
 import React from 'react';
-import { Box } from '@material-ui/core';
+import { Box } from '@mui/material';
 import RotatableChevron from 'components/common/RotatableChevron/RotatableChevron';
 import palette from 'styles/palette';
 import {
@@ -15,7 +15,7 @@ const FilterButton = React.forwardRef(
       ref={reference}
       display="flex"
       width="fit-content"
-      borderRadius={4}
+      borderRadius={1}
       overflow="hidden"
     >
       <FilterButtonWrapper

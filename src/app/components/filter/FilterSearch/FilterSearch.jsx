@@ -18,7 +18,7 @@ const FilterSearch = ({ value, onValueChange }) => {
         <FilterSearchInput
           onFocus={() => setInputFocus(true)}
           onBlur={() => setInputFocus(false)}
-          onChange={event => {
+          onChange={(event) => {
             event.preventDefault();
             event.stopPropagation();
             onValueChange(event.target.value);
@@ -26,15 +26,17 @@ const FilterSearch = ({ value, onValueChange }) => {
           value={value}
           placeholder="SEARCH"
         />
-        <FilterClearIcon
-          alt="clear"
-          src={SearchClearIcon}
-          isInputFocused={isInputFocused}
-          onClick={() => {
-            onValueChange('');
-            setInputFocus(false);
-          }}
-        />
+        {value !== '' && (
+          <FilterClearIcon
+            alt="clear"
+            src={SearchClearIcon}
+            isInputFocused={isInputFocused}
+            onClick={() => {
+              onValueChange('');
+              setInputFocus(false);
+            }}
+          />
+        )}
       </FilterSearchInputContainer>
     </FilterSearchContainer>
   );

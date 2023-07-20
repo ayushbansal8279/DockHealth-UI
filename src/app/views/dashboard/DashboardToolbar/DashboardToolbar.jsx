@@ -12,7 +12,7 @@ import {
 } from 'selectors/dashboard-selectors';
 import { useHistory, useLocation } from 'react-router-dom';
 import { updateCurrentUserPreferences } from 'actions/user-actions';
-import { Grid } from '@material-ui/core';
+import { Grid } from '@mui/material';
 import DashboardTab from 'views/dashboard/DashboardTab/DashboardTab';
 import Spacing from 'components/common/Spacing';
 import {
@@ -49,7 +49,7 @@ const DASHBOARD_BASE_COLUMNS_CONFIG = {
   [TaskItemColumn.LIST_NAME]: true,
 };
 
-const { ADMIN, OWNER, MEMBER, GUEST, EXTERNAL } = UserOrganizationRole;
+const { ADMIN, OWNER, MEMBER, GUEST } = UserOrganizationRole;
 
 const DashboardToolbar = ({ iconColorFilterActive, iconColorActive }) => {
   const history = useHistory();
@@ -90,8 +90,8 @@ const DashboardToolbar = ({ iconColorFilterActive, iconColorActive }) => {
       !sentInitialSetup.current
     ) {
       const initialPreferences = groupList
-        .filter(g => g.defaultOpen)
-        .flatMap(g => g.groupType);
+        .filter((g) => g.defaultOpen)
+        .flatMap((g) => g.groupType);
       if (initialPreferences) {
         sentInitialSetup.current = true;
         setGroupsPreferences(initialPreferences);
@@ -105,9 +105,9 @@ const DashboardToolbar = ({ iconColorFilterActive, iconColorActive }) => {
   }, [groupList, dashboardGroupsPreferences, dispatch]);
 
   const updateGroupsPreferences = useCallback(
-    groupType => {
+    (groupType) => {
       const newSetup = groupsPreferences?.includes(groupType)
-        ? groupsPreferences.filter(option => option !== groupType)
+        ? groupsPreferences.filter((option) => option !== groupType)
         : [...groupsPreferences, groupType];
 
       setGroupsPreferences(newSetup);
@@ -116,7 +116,7 @@ const DashboardToolbar = ({ iconColorFilterActive, iconColorActive }) => {
     [dispatch, groupsPreferences],
   );
   const additionalOptions = useMemo(() => {
-    return groupList?.map(group => ({
+    return groupList?.map((group) => ({
       name: group.groupName,
       onClick: () => updateGroupsPreferences(group.groupType),
       key: group.key,
@@ -131,7 +131,7 @@ const DashboardToolbar = ({ iconColorFilterActive, iconColorActive }) => {
   }, [setViewSpecificConfig]);
 
   const handleChangeViewType = useCallback(
-    event => {
+    (event) => {
       const queryParameters = new URLSearchParams(search);
       const value = event?.target.value ?? ViewType.LIST_VIEW;
       if (value === ViewType.LIST_VIEW) {
@@ -145,7 +145,7 @@ const DashboardToolbar = ({ iconColorFilterActive, iconColorActive }) => {
   );
 
   return (
-    <ToolbarContainer container direction="row" justify="space-between">
+    <ToolbarContainer container direction="row" justifyContent="space-between">
       <Grid item md={4}>
         <DashboardTabsContainer>
           <AccessRestrictor allowedToRoles={[ADMIN, OWNER, MEMBER, GUEST]}>

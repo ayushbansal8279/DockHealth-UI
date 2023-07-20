@@ -1,5 +1,5 @@
-import { Grid, Typography } from '@material-ui/core';
-import { AnimatePresence, motion } from 'framer-motion/dist/framer-motion';
+import { Grid, Typography } from '@mui/material';
+import { AnimatePresence, motion } from 'framer-motion';
 import React from 'react';
 import styled from 'styled-components';
 import Loader from 'components/common/Loader/Loader';
@@ -107,8 +107,14 @@ const videos = [
 
 const SupportSectionViewVideos = () => (
   <>
-    <Grid container alignItems="center" justify="space-between" item xs={12}>
-      <Grid item xs={6} container justify="flex-start">
+    <Grid
+      container
+      alignItems="center"
+      justifyContent="space-between"
+      item
+      xs={12}
+    >
+      <Grid item xs={6} container justifyContent="flex-start">
         <Typography variant="h2">
           <b>HOW TO VIDEOS</b>
         </Typography>
@@ -117,7 +123,7 @@ const SupportSectionViewVideos = () => (
         item
         xs={6}
         container
-        justify="flex-end"
+        justifyContent="flex-end"
         direction="row"
         wrap="nowrap"
       >

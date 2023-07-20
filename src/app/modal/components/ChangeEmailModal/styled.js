@@ -2,7 +2,7 @@ import styled from 'styled-components';
 import palette from 'styles/palette';
 import spacing from 'styles/spacing';
 import { fontSizes, fontWeights } from 'styles/font';
-import { Grid } from '@material-ui/core';
+import { Grid } from '@mui/material';
 
 export const ChangeMobileNumberModalContainer = styled.div`
   display: flex;

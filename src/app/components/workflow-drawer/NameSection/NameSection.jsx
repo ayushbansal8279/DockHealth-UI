@@ -1,5 +1,5 @@
 import React, { useCallback, useRef, useState, useEffect } from 'react';
-import { Grid } from '@material-ui/core';
+import { Grid } from '@mui/material';
 import Input from 'components/common/Input/Input';
 import {
   workflowSelector,
@@ -49,7 +49,7 @@ const NameSection = ({ readOnly }) => {
   }, [dispatch, name, selectedWorkflow, value]);
 
   const handleChange = useCallback(
-    event => {
+    (event) => {
       const text = event.target.value;
       setValue(text);
       if (descriptionErrorState) setDescriptionErrorState(false);

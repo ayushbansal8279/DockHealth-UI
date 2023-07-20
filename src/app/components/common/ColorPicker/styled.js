@@ -1,12 +1,13 @@
 import styled from 'styled-components';
 import palette from 'styles/palette';
+// eslint-disable-next-line import/no-cycle
 import { Variants } from './ColorPicker';
 
 export const ColorPickerLabel = styled.label`
   display: inline-block;
   width: 20px;
   height: 20px;
-  background: ${props => props.color};
+  background: ${(props) => props.color};
   cursor: pointer;
 
   ${({ variant }) =>

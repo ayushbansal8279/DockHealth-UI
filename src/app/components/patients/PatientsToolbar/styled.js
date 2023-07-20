@@ -1,4 +1,3 @@
-/* eslint-disable import/prefer-default-export */
 import styled from 'styled-components';
 import palette from 'styles/palette';
 import { fontWeights, fontSizes } from 'styles/font';

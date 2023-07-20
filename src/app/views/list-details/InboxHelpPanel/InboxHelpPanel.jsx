@@ -1,4 +1,4 @@
-import { Grid } from '@material-ui/core';
+import { Grid } from '@mui/material';
 import React from 'react';
 import styled from 'styled-components';
 import Spacing from 'components/common/Spacing';
@@ -6,7 +6,7 @@ import TipsPencilIcon from 'img/tip-pencil-icon.svg';
 import InboxTip from 'img/tips/inbox/inbox-1.svg';
 import palette from 'styles/palette';
 import { MontserratTypography } from 'styles/theme-montserrat';
-import TipsDotsBackground from 'img/tips-dots-background';
+import TipsDotsBackground from 'img/tips-dots-background.svg';
 import { RobotoTypography } from 'styles/theme';
 
 const MainInboxContainer = styled.div`

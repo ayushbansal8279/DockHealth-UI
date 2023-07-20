@@ -1,7 +1,7 @@
 import React, { useCallback, useEffect, useState, useMemo } from 'react';
 import { useParams } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
-import { Grid, Box, Dialog } from '@material-ui/core';
+import { Grid, Box, Dialog } from '@mui/material';
 import {
   getPatientListIdentifierByUrlParameter,
   getPatientsListFiltersStorageKey,
@@ -34,7 +34,7 @@ import { getTaskListForUser } from 'api/task-list-api';
 import { openModal, closeModal } from 'modal/actions';
 import { PatientListColumnsConfigProvider } from 'context-api/patients-columns-config-context';
 import OptionsMenu from 'components/common/OptionsMenu/OptionsMenu';
-import MoreVert from '@material-ui/icons/MoreVert';
+import MoreVert from '@mui/icons-material/MoreVert';
 import ImportPatientsModal from 'modal/components/ImportPatientsModal/ImportPatientsModal';
 import {
   downloadPatientImportTemplate,
@@ -78,11 +78,8 @@ const PatientsView = () => {
 
   const [patientImportDetails, setPatientImportDetails] = useState(null);
   const [importPopoverOpen, setImportPopoverOpen] = useState(false);
-  const [
-    hasImportErrors,
-    setHasImportErrors,
-    unsetHasImportErrors,
-  ] = useBoolean(false);
+  const [hasImportErrors, setHasImportErrors, unsetHasImportErrors] =
+    useBoolean(false);
 
   const [importPopupOpen, setImportPopupOpen] = useState(false);
 
@@ -137,7 +134,7 @@ const PatientsView = () => {
   );
 
   const selectedPatients = useMemo(() => {
-    return patients?.filter(patient => patient?.isSelected);
+    return patients?.filter((patient) => patient?.isSelected);
   }, [patients]);
 
   const bulkEditIsActive = useMemo(() => {
@@ -145,7 +142,7 @@ const PatientsView = () => {
   }, [selectedPatients]);
 
   const handleConfirm = useCallback(() => {
-    const assignedPatients = selectedPatients?.map(patient => {
+    const assignedPatients = selectedPatients?.map((patient) => {
       return patient.patientIdentifier;
     });
     dispatch(
@@ -160,10 +157,12 @@ const PatientsView = () => {
     const selectedPatientsCount = selectedPatients?.length;
 
     const modalProps = {
-      title: `You want to delete ${selectedPatientsCount} patient${selectedPatientsCount >
-        1 && 's'}`,
-      description: `Are you sure you want to delete ${selectedPatientsCount} patient${selectedPatientsCount >
-        1 && 's'} ? This action cannot be undone.`,
+      title: `You want to delete ${selectedPatientsCount} patient${
+        selectedPatientsCount > 1 && 's'
+      }`,
+      description: `Are you sure you want to delete ${selectedPatientsCount} patient${
+        selectedPatientsCount > 1 && 's'
+      } ? This action cannot be undone.`,
       confirmButtonText: 'Delete',
       confirm: () => {
         handleConfirm();
@@ -186,20 +185,20 @@ const PatientsView = () => {
 
   const toggleCreateTaskOption = useCallback(() => {
     turnOffAllOptions();
-    setCreateTaskOption(previous => !previous);
+    setCreateTaskOption((previous) => !previous);
   }, [turnOffAllOptions]);
   const toggleCreateWorkflowOption = useCallback(() => {
     turnOffAllOptions();
-    setCreateWorkflowOption(previous => !previous);
+    setCreateWorkflowOption((previous) => !previous);
   }, [turnOffAllOptions]);
   const toggleAddLabelOption = useCallback(() => {
     turnOffAllOptions();
-    setAddLabelOption(previous => !previous);
+    setAddLabelOption((previous) => !previous);
   }, [turnOffAllOptions]);
   const toggleDeleteOption = useCallback(() => {
     turnOffAllOptions();
     openDeleteConfirmationModal();
-    setDeleteOption(previous => !previous);
+    setDeleteOption((previous) => !previous);
   }, [turnOffAllOptions, openDeleteConfirmationModal]);
 
   const { getMemoPatientAttachment } = initializeAttachmentsSectionHooks();
@@ -261,8 +260,8 @@ const PatientsView = () => {
   );
 
   const handleTemplateSelect = useCallback(
-    template => {
-      const assignedPatients = selectedPatients?.map(patient => {
+    (template) => {
+      const assignedPatients = selectedPatients?.map((patient) => {
         return patient.patientIdentifier;
       });
 

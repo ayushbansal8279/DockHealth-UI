@@ -1,5 +1,5 @@
 import React from 'react';
-import { Box, Grid } from '@material-ui/core';
+import { Box, Grid } from '@mui/material';
 import { useHistory } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { useMount } from 'react-use';
@@ -38,7 +38,7 @@ const SubscriptionPaymentFinishedView = () => {
           <Grid item sm={12}>
             <H2>Your purchase is complete</H2>
           </Grid>
-          <Grid item sm={12} container justify="flex-end">
+          <Grid item sm={12} container justifyContent="flex-end">
             <Box m={2} />
             <Grid item sm={12} container>
               <Button

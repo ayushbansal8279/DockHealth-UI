@@ -1,6 +1,6 @@
 import React, { useCallback, useRef } from 'react';
 import moment from 'moment';
-import { Box } from '@material-ui/core';
+import { Box } from '@mui/material';
 import { checkIfTemplateTask, isStartDateInPast } from 'helpers/task-helpers';
 import DueDatePicker from 'components/task/DueDatePicker/DueDatePicker';
 import Input from 'components/common/Input/Input';
@@ -32,7 +32,7 @@ const StartDateSection = () => {
   const buttonReference = useRef(null);
   const [isPopoverOpen, openPopover, closePopover] = useBoolean(false);
   const handleStartDateSave = useCallback(
-    updatedStartDateTime => {
+    (updatedStartDateTime) => {
       dispatch(updateTaskStartDate(selectedTask, updatedStartDateTime));
     },
     [dispatch, selectedTask],
@@ -47,7 +47,7 @@ const StartDateSection = () => {
         customInputComponent={() => (
           <StyledButton
             type="button"
-            onClick={event => {
+            onClick={(event) => {
               event.stopPropagation();
               openPopover(true);
             }}
@@ -88,7 +88,7 @@ const StartDateSection = () => {
           horizontal: 'right',
         }}
         open={isPopoverOpen}
-        onClose={event => {
+        onClose={(event) => {
           event.stopPropagation();
           closePopover();
         }}

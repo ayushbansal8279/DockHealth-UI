@@ -71,7 +71,7 @@ const initialState = {
 const DEFAULT_USER_STATUS = 'PENDING';
 const DEFAULT_USER_ROLE = 'MEMBER';
 
-const inviteUserMapper = user => ({
+const inviteUserMapper = (user) => ({
   ...user,
   status: DEFAULT_USER_STATUS,
   taskListUserRole: DEFAULT_USER_ROLE,
@@ -87,57 +87,59 @@ const inviteMultipleUsers = (state, { invitedUsersIdentifier }) => ({
   tasklistmembers: [
     ...state.tasklistmembers,
     ...state.orgusersnotintasklist
-      .filter(user =>
-        invitedUsersIdentifier.some(
-          userIdentifier => user.userIdentifier === userIdentifier,
-        ),
-      )
+      .filter((user) => invitedUsersIdentifier.includes(user.userIdentifier))
+      // eslint-disable-next-line unicorn/no-array-callback-reference
       .map(inviteUserMapper),
   ],
-  orgusersnotintasklist: state.orgusersnotintasklist.filter(user =>
+  orgusersnotintasklist: state.orgusersnotintasklist.filter((user) =>
     invitedUsersIdentifier.every(
-      userIdentifier => user.userIdentifier !== userIdentifier,
+      (userIdentifier) => user.userIdentifier !== userIdentifier,
     ),
   ),
 });
 
 const TaskListReducer = (state = initialState, action) => {
   switch (action.type) {
-    case INITIALIZE_TASK_LIST_STATE:
+    case INITIALIZE_TASK_LIST_STATE: {
       return {
         ...state,
         currentTaskListIdentifier: action.taskListIdentifier,
         currentTaskList: null,
         currentTasksStatus: action.currentTasksStatus,
       };
+    }
 
-    case CLEAR_TASK_LIST_STATE:
+    case CLEAR_TASK_LIST_STATE: {
       return {
         ...state,
         currentTaskListIdentifier: null,
         currentTaskList: null,
         currentTasksStatus: null,
       };
+    }
 
-    case GET_CURRENT_TASK_LIST:
+    case GET_CURRENT_TASK_LIST: {
       return {
         ...state,
         isFetchingCurrentTaskList: true,
       };
+    }
 
-    case GET_CURRENT_TASK_LIST_SUCCESS:
+    case GET_CURRENT_TASK_LIST_SUCCESS: {
       return {
         ...state,
         currentTaskList: action.taskList,
         isFetchingCurrentTaskList: false,
       };
+    }
 
-    case GET_CURRENT_TASK_LIST_FAILURE:
+    case GET_CURRENT_TASK_LIST_FAILURE: {
       return {
         ...state,
         currentTaskList: null,
         isFetchingCurrentTaskList: false,
       };
+    }
 
     case UPDATE_LIST_VIEW_SETUP: {
       const { setup, currentUserIdentifier } = action.payload;
@@ -151,7 +153,7 @@ const TaskListReducer = (state = initialState, action) => {
               }
             : {
                 ...state.currentTaskList,
-                listUsers: state.currentTaskList.listUsers.map(user =>
+                listUsers: state.currentTaskList.listUsers.map((user) =>
                   user.identifier === currentUserIdentifier
                     ? { ...user, displayOptions: setup }
                     : user,
@@ -160,51 +162,59 @@ const TaskListReducer = (state = initialState, action) => {
       };
     }
 
-    case INVITE_USER_TO_TASKLIST_SUCCESS:
+    case INVITE_USER_TO_TASKLIST_SUCCESS: {
       return inviteUser(state, action);
+    }
 
-    case INVITEMULUSERS_TASKLIST_SUCCESS:
+    case INVITEMULUSERS_TASKLIST_SUCCESS: {
       return inviteMultipleUsers(state, action);
+    }
 
-    case INVITE_PERSON_TASKLIST_SUCCESS:
+    case INVITE_PERSON_TASKLIST_SUCCESS: {
       return {
         ...state,
       };
+    }
 
-    case ADD_TASKLIST_SUCCESS:
+    case ADD_TASKLIST_SUCCESS: {
       return {
         ...state,
         taskLists: [action.taskList].concat(state.taskLists),
       };
+    }
 
-    case REQUEST_LISTS:
+    case REQUEST_LISTS: {
       return { ...state, isFetching: true };
+    }
 
-    case ACCEPT_INVITE_TOTASKLIST_SUCCESS:
+    case ACCEPT_INVITE_TOTASKLIST_SUCCESS: {
       return {
         ...state,
         taskLists: [action.taskList].concat(state.taskLists),
         pendingTaskLists: state.pendingTaskLists.filter(
-          taskList =>
+          (taskList) =>
             taskList.taskListIdentifier !== action.taskList.taskListIdentifier,
         ),
       };
+    }
 
-    case REJECT_INVITE_TOTASKLIST_SUCCESS:
+    case REJECT_INVITE_TOTASKLIST_SUCCESS: {
       return {
         ...state,
         pendingTaskLists: state.pendingTaskLists.filter(
-          taskList =>
+          (taskList) =>
             taskList.taskListIdentifier !== action.taskList.taskListIdentifier,
         ),
       };
+    }
 
-    case GET_TASKLIST_SUCCESS:
+    case GET_TASKLIST_SUCCESS: {
       return {
         ...state,
         taskLists: action.taskLists,
         isFetching: false,
       };
+    }
 
     case GET_TASKLISTMEMBERS_SUCCESS: {
       const { taskListIdentifier, tasklistmembers } = action;
@@ -215,7 +225,7 @@ const TaskListReducer = (state = initialState, action) => {
       };
 
       const currentTaskListMembersDetails = state.allTaskListMembers.filter(
-        details => details.taskListIdentifier === action.taskListIdentifier,
+        (details) => details.taskListIdentifier === action.taskListIdentifier,
       );
 
       if (
@@ -234,7 +244,7 @@ const TaskListReducer = (state = initialState, action) => {
       return {
         ...state,
         tasklistmembers,
-        allTaskListMembers: state.allTaskListMembers.map(listMembers =>
+        allTaskListMembers: state.allTaskListMembers.map((listMembers) =>
           listMembers.taskListIdentifier === action.taskListIdentifier
             ? { ...listMembers, listMembersDetails }
             : listMembers,
@@ -242,35 +252,40 @@ const TaskListReducer = (state = initialState, action) => {
       };
     }
 
-    case GET_NONORGUSERSINTASKLIST_SUCCESS:
+    case GET_NONORGUSERSINTASKLIST_SUCCESS: {
       return {
         ...state,
         nonorgusersintasklist: action.users,
       };
+    }
 
-    case GET_TASKLISTACTIVEMEMBERS_SUCCESS:
+    case GET_TASKLISTACTIVEMEMBERS_SUCCESS: {
       return {
         ...state,
         tasklistactivemembers: action.tasklistactivemembers,
       };
+    }
 
-    case GET_AUDITS_BY_TASKLIST_SUCCESS:
+    case GET_AUDITS_BY_TASKLIST_SUCCESS: {
       return {
         ...state,
         tasklistaudits: action.audits,
       };
+    }
 
-    case GET_AUDITS_BY_ALLUSERLIST_SUCCESS:
+    case GET_AUDITS_BY_ALLUSERLIST_SUCCESS: {
       return {
         ...state,
         auditsForAllUserList: action.auditsForAllUserList,
       };
+    }
 
-    case GET_ACTIVITYFEED_BY_ALLUSERLIST_SUCCESS:
+    case GET_ACTIVITYFEED_BY_ALLUSERLIST_SUCCESS: {
       return {
         ...state,
         activityFeedForAllUserList: action.activityFeedForAllUserList,
       };
+    }
 
     case TOGGLE_LIST_NOTIFICATIONS_SUCCESS: {
       const { taskListIdentifier, receiveNotifications } = action;
@@ -288,16 +303,16 @@ const TaskListReducer = (state = initialState, action) => {
       };
     }
 
-    case UPDATE_TASKLIST_SUCCESS:
+    case UPDATE_TASKLIST_SUCCESS: {
       return {
         ...state,
         taskLists: state.taskLists
-          ? state.taskLists.map(taskList =>
+          ? state.taskLists.map((taskList) =>
               taskList.taskListIdentifier ===
               action.updatedTasklist.taskListIdentifier
                 ? {
                     ...taskList,
-                    ...pickBy(value => !isNil(value), action.updatedTasklist),
+                    ...pickBy((value) => !isNil(value), action.updatedTasklist),
                   }
                 : taskList,
             )
@@ -308,107 +323,123 @@ const TaskListReducer = (state = initialState, action) => {
             ? { ...state.currentTaskList, ...action.updatedTasklist }
             : state.currentTaskList,
       };
+    }
 
-    case DELETE_TASKLIST_SUCCESS:
+    case DELETE_TASKLIST_SUCCESS: {
       return {
         ...state,
         taskLists: state.taskLists.filter(
-          taskList => taskList.taskListIdentifier !== action.taskListIdentifier,
+          (taskList) =>
+            taskList.taskListIdentifier !== action.taskListIdentifier,
         ),
       };
+    }
 
-    case ARCHIVE_TASKLIST_SUCCESS:
+    case ARCHIVE_TASKLIST_SUCCESS: {
       return {
         ...state,
         archivedTaskLists: [
           ...state.archivedTaskLists,
           state.taskLists.find(
-            taskList =>
+            (taskList) =>
               taskList.taskListIdentifier === action.taskListIdentifier,
           ),
         ],
         taskLists: state.taskLists.filter(
-          taskList => taskList.taskListIdentifier !== action.taskListIdentifier,
+          (taskList) =>
+            taskList.taskListIdentifier !== action.taskListIdentifier,
         ),
       };
+    }
 
-    case UNARCHIVE_TASKLIST_SUCCESS:
+    case UNARCHIVE_TASKLIST_SUCCESS: {
       return {
         ...state,
         taskLists: [
           ...state.taskLists,
           state.archivedTaskLists.find(
-            taskList =>
+            (taskList) =>
               taskList.taskListIdentifier === action.taskListIdentifier,
           ),
         ],
         archivedTaskLists: state.archivedTaskLists.filter(
-          taskList => taskList.taskListIdentifier !== action.taskListIdentifier,
+          (taskList) =>
+            taskList.taskListIdentifier !== action.taskListIdentifier,
         ),
       };
+    }
 
-    case REMOVEUSER_TASKLIST_SUCCESS:
+    case REMOVEUSER_TASKLIST_SUCCESS: {
       return {
         ...state,
         tasklistmembers: state.tasklistmembers.filter(
-          member => member.userIdentifier !== action.removedUserIdentifier,
+          (member) => member.userIdentifier !== action.removedUserIdentifier,
         ),
       };
+    }
 
     // eslint-disable-next-line sonarjs/no-duplicated-branches
-    case CANCEL_TASKLIST_INVITE_SUCCESS:
+    case CANCEL_TASKLIST_INVITE_SUCCESS: {
       return {
         ...state,
         tasklistmembers: state.tasklistmembers.filter(
-          member => member.userIdentifier !== action.removedUserIdentifier,
+          (member) => member.userIdentifier !== action.removedUserIdentifier,
         ),
       };
+    }
 
-    case CHANGEUSERROLE_TASKLIST_SUCCESS:
+    case CHANGEUSERROLE_TASKLIST_SUCCESS: {
       return {
         ...state,
-        tasklistmembers: state.tasklistmembers.map(member =>
+        tasklistmembers: state.tasklistmembers.map((member) =>
           member.userIdentifier === action.markedUser.userIdentifier
             ? { ...member, taskListUserRole: action.role }
             : member,
         ),
       };
+    }
 
-    case GET_TASKLIST_STATS_SUCCESS:
+    case GET_TASKLIST_STATS_SUCCESS: {
       return {
         ...state,
         taskListStats: action.taskListStats,
         taskListStatsOk: true,
       };
+    }
 
-    case GET_TASKLIST_STATS_FAILURE:
+    case GET_TASKLIST_STATS_FAILURE: {
       return {
         ...state,
         taskListStats: null,
         taskListStatsOk: false,
       };
+    }
 
-    case RESET_TASKLIST_STATS:
+    case RESET_TASKLIST_STATS: {
       return {
         ...state,
         taskListStats: null,
         taskListStatsOk: null,
       };
+    }
 
-    case GET_PENDING_TASKLIST_SUCCESS:
+    case GET_PENDING_TASKLIST_SUCCESS: {
       return {
         ...state,
         pendingTaskLists: action.taskLists,
       };
+    }
 
-    case GET_ARCHIVED_TASKLIST_SUCCESS:
+    case GET_ARCHIVED_TASKLIST_SUCCESS: {
       return {
         ...state,
         archivedTaskLists: action.taskLists,
       };
+    }
 
-    default:
+    default: {
       return state;
+    }
   }
 };
 

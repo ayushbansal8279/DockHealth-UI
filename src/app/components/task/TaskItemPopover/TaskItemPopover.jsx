@@ -3,7 +3,7 @@ import { useUpdate } from 'react-use';
 import { useBoolean } from 'hooks/useBoolean';
 import zIndex from 'styles/z-index';
 import PopoverCard from 'components/common/PopoverCard/PopoverCard';
-import { Box, ClickAwayListener, Popper } from '@material-ui/core';
+import { Box, ClickAwayListener, Popper } from '@mui/material';
 import { Button } from './styled';
 
 const TaskItemPopover = React.forwardRef(
@@ -12,9 +12,10 @@ const TaskItemPopover = React.forwardRef(
       children,
       content,
       contentWidth = 'auto',
-      fullWidth,
+      fullWidth = false,
       disabled,
       placement = 'bottom-end',
+      onClose,
     },
     reference,
   ) => {
@@ -22,12 +23,8 @@ const TaskItemPopover = React.forwardRef(
     const elementReference = reference || internalElementReference;
     const forceUpdate = useUpdate();
 
-    const [
-      isPopoverOpen,
-      openPopover,
-      closePopover,
-      togglePopover,
-    ] = useBoolean();
+    const [isPopoverOpen, openPopover, closePopover, togglePopover] =
+      useBoolean();
 
     return (
       <>
@@ -35,7 +32,7 @@ const TaskItemPopover = React.forwardRef(
           fullWidth={fullWidth}
           type="button"
           disabled={disabled}
-          onClick={event => {
+          onClick={(event) => {
             event.stopPropagation();
             togglePopover();
           }}
@@ -46,7 +43,10 @@ const TaskItemPopover = React.forwardRef(
             : children}
         </Button>
         {isPopoverOpen && (
-          <ClickAwayListener onClickAway={closePopover}>
+          <ClickAwayListener onClickAway={() => {
+              onClose && onClose();
+              closePopover();
+          }}>
             <Popper
               style={{ zIndex: zIndex.taskPopover }}
               anchorEl={elementReference?.current}

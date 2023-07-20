@@ -1,6 +1,6 @@
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { usePrevious } from 'react-use';
-import { Autocomplete } from '@material-ui/lab';
+import { Autocomplete } from '@mui/lab';
 import { useDispatch, useSelector } from 'react-redux';
 import Highlighter from 'react-highlight-words';
 import { getUserGroupDetailsSelector } from 'selectors/user-groups-selectors';
@@ -10,7 +10,7 @@ import differenceWith from 'ramda/src/differenceWith';
 import eqProps from 'ramda/src/eqProps';
 import pluck from 'ramda/src/pluck';
 import { openModal } from 'modal/actions';
-import { Grid } from '@material-ui/core';
+import { Grid } from '@mui/material';
 import Spacing from 'components/common/Spacing';
 import Button from 'components/common/Button/Button';
 import Input from 'components/common/Input/Input';
@@ -49,8 +49,14 @@ const AddUserToGroupModal = ({ closeModal, userGroupIdentifier }) => {
   const userGroupDetails = useSelector(
     getUserGroupDetailsSelector(userGroupIdentifier),
   );
-  const { name, description, isFetching, users: groupUsers, isSaving, error } =
-    userGroupDetails || {};
+  const {
+    name,
+    description,
+    isFetching,
+    users: groupUsers,
+    isSaving,
+    error,
+  } = userGroupDetails || {};
 
   const { isFetching: isFetchingAllUsers, users: allUsersInOrganization } =
     useSelector(getUserGroupDetailsSelector(DefaultUserGroup.ALL)) || {};
@@ -82,8 +88,8 @@ const AddUserToGroupModal = ({ closeModal, userGroupIdentifier }) => {
     setUnsavedChanges(true);
   }, []);
 
-  const deleteSelectedUser = identifier => {
-    setSelectedUsers(previousSelectedUsers =>
+  const deleteSelectedUser = (identifier) => {
+    setSelectedUsers((previousSelectedUsers) =>
       previousSelectedUsers.filter(
         ({ userIdentifier }) => userIdentifier !== identifier,
       ),
@@ -153,7 +159,7 @@ const AddUserToGroupModal = ({ closeModal, userGroupIdentifier }) => {
               autoHighlight
               options={availableUsers}
               loading={isFetchingAllUsers}
-              getOptionLabel={user => `${user.name} ${user.email}`}
+              getOptionLabel={(user) => `${user.name} ${user.email}`}
               renderOption={(option, { inputValue: searchValue }) => (
                 <OptionRow>
                   <OptionCell>
@@ -174,7 +180,9 @@ const AddUserToGroupModal = ({ closeModal, userGroupIdentifier }) => {
                   </OptionCell>
                 </OptionRow>
               )}
-              onInputChange={event => setInputValue(event?.target?.value || '')}
+              onInputChange={(event) =>
+                setInputValue(event?.target?.value || '')
+              }
               onChange={handleSelectUser}
               onOpen={() => dispatch(getUserGroupDetails(DefaultUserGroup.ALL))}
               clearOnBlur={false}
@@ -191,7 +199,7 @@ const AddUserToGroupModal = ({ closeModal, userGroupIdentifier }) => {
             <Header>Included users in the group</Header>
             <Spacing vertical={4} />
             <SelectedUsersWrapper>
-              {!isFetching ? (
+              {isFetching ? null : (
                 <>
                   {selectedUsers?.length > 0 ? (
                     selectedUsers.map(
@@ -225,13 +233,13 @@ const AddUserToGroupModal = ({ closeModal, userGroupIdentifier }) => {
                     <EmptyListText>List is empty</EmptyListText>
                   )}
                 </>
-              ) : null}
+              )}
             </SelectedUsersWrapper>
           </Column>
         </PatientsSection>
       </MainContentWrapper>
       <Spacing vertical={4} />
-      <Grid container direction="row" justify="flex-end">
+      <Grid container direction="row" justifyContent="flex-end">
         <Button
           variant="secondary"
           width="150px"

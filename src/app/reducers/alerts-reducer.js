@@ -1,4 +1,3 @@
-/* eslint-disable sonarjs/no-small-switch */
 const initialState = {
   alertsEnabled: false,
   alertToastHide: false,
@@ -15,8 +14,9 @@ const AlertsReducer = (state = initialState, action) => {
       return { ...state, alertToastHide };
     }
 
-    default:
+    default: {
       return state;
+    }
   }
 };
 

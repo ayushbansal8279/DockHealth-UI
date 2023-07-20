@@ -21,6 +21,10 @@ export const DropdownSelect = styled(Select)`
   & .MuiSelect-root:before {
     display: none;
   }
+  & .MuiSelect-select {
+    padding: 0px;
+    background-color: white;
+  }
 `;
 
 export const PlaceholderContainer = styled.div`
@@ -35,7 +39,7 @@ export const ColorIndicator = styled.div`
   display: block;
   width: 6px;
   height: 100%;
-  background: ${props => props.color};
+  background: ${(props) => props.color};
   position: absolute;
   left: 0px;
 `;

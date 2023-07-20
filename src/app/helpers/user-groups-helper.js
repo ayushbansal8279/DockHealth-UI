@@ -1,4 +1,3 @@
-/* eslint-disable import/prefer-default-export */
 import innerJoin from 'ramda/src/innerJoin';
 import { ActivityStatus } from './user-helper';
 
@@ -57,7 +56,11 @@ export function getUserGroupAvatarThumbnailUrl(userGroup) {
     userGroup.identifier &&
     userGroup.profileThumbnailPictureHash
   )
-    return `${process.env.HEYDOC_SERVICES_BASE_URL}user/profilePicture/${userGroup.identifier}/${userGroup.profileThumbnailPictureHash}`;
+    return `${
+      import.meta.env.VITE_HEYDOC_SERVICES_BASE_URL
+    }user/profilePicture/${userGroup.identifier}/${
+      userGroup.profileThumbnailPictureHash
+    }`;
 
   return null;
 }

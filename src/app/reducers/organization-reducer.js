@@ -26,8 +26,6 @@ import {
   DELETE_ORGANIZATION_STATUS,
   ADD_ORGANIZATION_STATUS,
   UPDATE_ORGANIZATION_STATUS,
-  GET_ORGANIZATION_USERS_SUCCESS,
-  GET_ORGANIZATION_USERS,
   GET_ORGANIZATION_CUSTOM_FIELDS_SUCCESS,
   GET_ORGANIZATION_CUSTOM_FIELDS_FAILURE,
   UPDATE_SUBSCRIPTION_PLAN_SUCCESS,
@@ -68,11 +66,12 @@ const reducer = (state = initialState, action) => {
         organizationCustomFields,
       };
     }
-    case GET_ORGANIZATION_CUSTOM_FIELDS_FAILURE:
+    case GET_ORGANIZATION_CUSTOM_FIELDS_FAILURE: {
       return {
         ...state,
         organizationCustomFields: [],
       };
+    }
     case REQUEST_SAVE_BILLING_DETAILS:
     case REQUEST_GET_ORGANIZATION: {
       return {
@@ -294,7 +293,7 @@ const reducer = (state = initialState, action) => {
 
       return {
         ...state,
-        statuses: state.statuses?.map(status =>
+        statuses: state.statuses?.map((status) =>
           status.identifier === identifier
             ? { ...status, ...omit('identifier', dataToUpdate) }
             : status,
@@ -302,21 +301,9 @@ const reducer = (state = initialState, action) => {
       };
     }
 
-    case GET_ORGANIZATION_USERS:
-      return {
-        ...state,
-        isFetchingOrganizationUsers: !state.organizationUsers,
-      };
-
-    case GET_ORGANIZATION_USERS_SUCCESS:
-      return {
-        ...state,
-        organizationUsers: action.users ?? state.organizationUsers,
-        isFetchingOrganizationUsers: false,
-      };
-
-    default:
+    default: {
       return state;
+    }
   }
 };
 

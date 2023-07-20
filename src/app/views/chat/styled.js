@@ -1,15 +1,16 @@
-import { withStyles } from '@material-ui/core/styles';
-import { IconButton } from '@material-ui/core';
+import { IconButton } from '@mui/material';
 import spacing from 'styles/spacing';
 import { fontSizes, fontWeights } from 'styles/font';
 import palette from 'styles/palette';
 import styled from 'styled-components';
 
-export const StyledIconButton = withStyles({
-  root: {
-    color: 'inherit',
-  },
-})(IconButton);
+export const StyledIconButton = styled(IconButton)`
+  &&& {
+    &.MuiIconButton-root {
+      color: inherit;
+    }
+  }
+`;
 
 export const ChatHeaderTitle = styled.h3`
   margin: 0;
@@ -35,7 +36,7 @@ export const Container = styled.div`
   height: 100%;
   margin: 0 auto;
   // padding: 16px 12px;
-  zindex: 0;
+  z-index: 0;
 `;
 
 export const ColorSet = {
@@ -56,7 +57,7 @@ export const HeaderContainer = styled.div`
   padding: 0 20px;
   background-color: ${palette.midnightBlue};
   color: ${palette.white};
-  font-family: Roboto Condensed;
+  font-family: 'Roboto Condensed', sans-serif;;
 `;
 
 export const ChatContainer = styled.div`

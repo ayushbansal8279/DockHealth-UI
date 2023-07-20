@@ -1,8 +1,8 @@
 /* eslint-disable sonarjs/cognitive-complexity */
 /* eslint-disable no-underscore-dangle */
 import React, { useState, useRef, useCallback } from 'react';
-import { Box, List, ListItemText, MenuItem, Popover } from '@material-ui/core';
-import CustomizeIcon from 'img/customize-icon';
+import { Box, List, ListItemText, MenuItem, Popover } from '@mui/material';
+import CustomizeIcon from 'img/customize-icon.svg';
 import Checkbox from 'components/common/Checkbox/Checkbox';
 import { usePatientListColumnsConfig } from 'context-api/patients-columns-config-context';
 import {
@@ -14,7 +14,7 @@ import { useSelector } from 'react-redux';
 import { PatientHeaderColumn } from 'helpers/patient-list-helpers';
 import UpgradePlan from 'components/common/UpgradePlan/UpgradePlan';
 import UpgradePlanPopup from 'components/common/UpgradePlanPopup/UpgradePlanPopup';
-import CustomFieldsIcon from 'img/premium/custom-fields';
+import CustomFieldsIcon from 'img/premium/custom-fields.svg';
 import sort from 'ramda/src/sort';
 import {
   CUSTOM_FIELD_TYPES,
@@ -22,6 +22,7 @@ import {
 } from 'helpers/custom-fields-helpers';
 import { getCustomerTypeLabel } from 'helpers/customer-type-helper';
 import { capitalize } from 'helpers/capitalize';
+import ToolbarButton from 'components/tasklist/ToolbarButton/ToolbarButton';
 import {
   PlusIcon,
   PopoverContainer,
@@ -30,7 +31,6 @@ import {
   UpgradePlanContainer,
   UpgradePlanPopupHeader,
 } from './styled';
-import ToolbarButton from '../../tasklist/ToolbarButton/ToolbarButton';
 
 const CustomizeToolbarButton = ({
   additionalOptions,
@@ -63,8 +63,8 @@ const CustomizeToolbarButton = ({
   const customerTypeLabel = capitalize(getCustomerTypeLabel(userProfile));
 
   const onClickCheckbox = useCallback(
-    column => {
-      const newSetup = columns.map(c =>
+    (column) => {
+      const newSetup = columns.map((c) =>
         c.identifier === column.identifier
           ? { ...c, isChecked: !c.isChecked }
           : c,
@@ -138,7 +138,7 @@ const CustomizeToolbarButton = ({
                   ColumnOptionNames[b.identifier],
                 ),
               columns,
-            ).map(column => {
+            ).map((column) => {
               const optionName = ColumnOptionNames[column.identifier];
               return optionName && renderElement(column, optionName);
             })}
@@ -186,9 +186,9 @@ const CustomizeToolbarButton = ({
               <List>
                 {sortAlphabetical(
                   columns.filter(
-                    c => c._customFieldType === CUSTOM_FIELD_TYPES.PATIENT,
+                    (c) => c._customFieldType === CUSTOM_FIELD_TYPES.PATIENT,
                   ),
-                ).map(column => renderElement(column))}
+                ).map((column) => renderElement(column))}
               </List>
             </>
           )}

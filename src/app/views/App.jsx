@@ -1,13 +1,35 @@
+/* eslint-disable class-methods-use-this */
+/* eslint-disable react/no-unused-class-component-methods */
 /* eslint-disable unicorn/no-nested-ternary */
 /* eslint-disable sonarjs/no-duplicate-string */
 import 'normalize.css/normalize.css';
 import 'simplebar/dist/simplebar.min.css';
 
+// Require Editor JS files.
+import 'froala-editor/js/froala_editor.pkgd.min.js';
+
+// Require Editor CSS files.
+import 'froala-editor/css/froala_style.min.css';
+import 'froala-editor/css/froala_editor.pkgd.min.css';
+
+// Import a third-party plugin.
+import 'froala-editor/js/plugins/char_counter.min.js';
+import 'froala-editor/js/plugins/emoticons.min.js';
+import 'froala-editor/js/plugins/font_size.min.js';
+import 'froala-editor/js/plugins/line_height.min.js';
+import 'froala-editor/js/plugins/link.min.js';
+import 'froala-editor/js/plugins/lists.min.js';
+import 'froala-editor/js/plugins/paragraph_format.min.js';
+import 'froala-editor/js/plugins/url.min.js';
+
+// Require Font Awesome.
+// import 'font-awesome/css/font-awesome.css';
+
 import { node } from 'prop-types';
 import React, { PureComponent } from 'react';
 import isEmpty from 'ramda/src/isEmpty';
 import { connect } from 'react-redux';
-import IdleTimer from 'react-idle-timer';
+// import IdleTimer from 'react-idle-timer';
 import { withRouter } from 'react-router-dom';
 import styled from 'styled-components';
 import ReactModal from 'react-modal';
@@ -28,7 +50,7 @@ import MobileSmallScreen from './MobileSmallScreen';
 import ChatActivityAlertsToasts from './chat/alerts/ChatActivityAlertsToasts';
 
 const AppContainer = styled.div`
-  font-family: 'Roboto', sans-serif;
+  font-family: 'Roboto Condensed', sans-serif;
   overflow-x: hidden;
   position: relative;
   @media print {
@@ -73,8 +95,6 @@ const sendbirdColorSet = {
 
 ReactModal.setAppElement('#app');
 
-const appId = process.env.SENDBIRD_APP_ID;
-
 class App extends PureComponent {
   idleTimer = null;
 
@@ -86,8 +106,9 @@ class App extends PureComponent {
 
   logoutTimeout = null;
 
-  // eslint-disable-next-line react/no-deprecated
-  componentWillMount() {
+  appId = import.meta.env.VITE_SENDBIRD_APP_ID;
+
+  componentDidMount() {
     const redirectToHome = JSON.parse(sessionStorage.getItem('redirectToHome'));
     const redirectToLink = sessionStorage.getItem('redirectToLink');
 
@@ -129,10 +150,8 @@ class App extends PureComponent {
       ) {
         presenceChannel = pusherForPresence?.subscribe(presenceChannelName);
 
-        presenceChannel.bind('pusher:subscription_succeeded', function({
-          members,
-        }) {
-          const formattedMembers = Object.keys(members)?.map(memberKey => ({
+        presenceChannel.bind('pusher:subscription_succeeded', ({ members }) => {
+          const formattedMembers = Object.keys(members)?.map((memberKey) => ({
             ...members[memberKey],
             userIdentifier: memberKey,
             idle: false,
@@ -141,7 +160,7 @@ class App extends PureComponent {
           setActiveUsers(formattedMembers);
         });
 
-        presenceChannel.bind('pusher:member_added', function(member) {
+        presenceChannel.bind('pusher:member_added', (member) => {
           addActiveUser({
             ...member,
             userIdentifier: member.id,
@@ -149,34 +168,34 @@ class App extends PureComponent {
           });
         });
 
-        presenceChannel.bind('pusher:member_removed', function(member) {
+        presenceChannel.bind('pusher:member_removed', (member) => {
           removeActiveUser({
             ...member,
             userIdentifier: member.id,
           });
         });
 
-        presenceChannel.bind('client-event-dock-user-idle', function(
-          data,
-          metadata,
-        ) {
-          // console.log('idle user:', presenceChannel.members.get(metadata.user_id).info);
-          if (data.idle) {
-            setIdleStateForUser(
-              {
-                userIdentifier: metadata.user_id,
-              },
-              true,
-            );
-          } else {
-            setIdleStateForUser(
-              {
-                userIdentifier: metadata.user_id,
-              },
-              false,
-            );
-          }
-        });
+        presenceChannel.bind(
+          'client-event-dock-user-idle',
+          (data, metadata) => {
+            // console.log('idle user:', presenceChannel.members.get(metadata.user_id).info);
+            if (data.idle) {
+              setIdleStateForUser(
+                {
+                  userIdentifier: metadata.user_id,
+                },
+                true,
+              );
+            } else {
+              setIdleStateForUser(
+                {
+                  userIdentifier: metadata.user_id,
+                },
+                false,
+              );
+            }
+          },
+        );
       }
     }
   }
@@ -199,7 +218,7 @@ class App extends PureComponent {
   onIdle = () => {
     const { openModal: openModalAction } = this.props;
     // log out after 5min from showing modal
-    const logoutTimeout = setTimeout(this.logout, 300000);
+    const logoutTimeout = setTimeout(this.logout, 300_000);
 
     openModalAction('AutoLogout', {
       onClose: () => {
@@ -229,6 +248,7 @@ class App extends PureComponent {
 
   // eslint-disable-next-line sonarjs/cognitive-complexity
   render() {
+    // eslint-disable-next-line react-hooks/rules-of-hooks
     const isMobile = useMobile();
     // const isSmall = useSmallScreen();
     const isSmall = false;
@@ -237,24 +257,24 @@ class App extends PureComponent {
       userState: { userProfile },
     } = this.props;
 
-    const userOrganizations = userProfile?.userOrganizations;
-    const selectedOrgIdentifier = userProfile?.organizationIdentifier;
-    const currentOrganization =
-      userOrganizations?.find(
-        ({ organizationIdentifier }) =>
-          organizationIdentifier === selectedOrgIdentifier,
-      ) || null;
-    const logoutTimeoutItem =
-      currentOrganization?.themeSettings?.find(
-        ({ name }) => name === 'logout.timeout',
-      ) || {};
-    const logoutTimeout = parseInt(logoutTimeoutItem?.value, 10);
+    // const userOrganizations = userProfile?.userOrganizations;
+    // const selectedOrgIdentifier = userProfile?.organizationIdentifier;
+    // const currentOrganization =
+    //   userOrganizations?.find(
+    //     ({ organizationIdentifier }) =>
+    //       organizationIdentifier === selectedOrgIdentifier,
+    //   ) || null;
+    // const logoutTimeoutItem =
+    //   currentOrganization?.themeSettings?.find(
+    //     ({ name }) => name === 'logout.timeout',
+    //   ) || {};
+    // const logoutTimeout = parseInt(logoutTimeoutItem?.value, 10);
 
-    const systemTimeout =
-      logoutTimeout > 0
-        ? logoutTimeout
-        : parseInt(process.env.SYSTEM_TIMEOUT, 10);
-    const idleTimeout = systemTimeout / 2;
+    // const systemTimeout =
+    //   logoutTimeout > 0
+    //     ? logoutTimeout
+    //     : parseInt(import.meta.env.VITE_SYSTEM_TIMEOUT, 10);
+    // const idleTimeout = systemTimeout / 2;
 
     const { children } = this.props;
     // const isLessThen1024 = window?.innerWidth < 1024;
@@ -266,29 +286,30 @@ class App extends PureComponent {
     //   );
     const showRotateScreenPage = false;
 
-    const mountIdleTimer =
-      userProfile &&
-      !isEmpty(userProfile) &&
-      userOrganizations &&
-      !isEmpty(userOrganizations);
+    // const mountIdleTimer =
+    //   userProfile &&
+    //   !isEmpty(userProfile) &&
+    //   userOrganizations &&
+    //   !isEmpty(userOrganizations);
     // eslint-disable-next-line unicorn/consistent-function-scoping
-    const idleTimerReference = reference => {
-      this.idleTimerForPresence = reference;
-    };
+    // const idleTimerReference = (reference) => {
+    //   this.idleTimerForPresence = reference;
+    // };
     const organizationAvailableFeatures =
       userProfile?.organizationAvailableFeatures;
-    const dockChatAvailable = organizationAvailableFeatures?.includes(
-      'DOCK_CHAT',
-    );
+    const dockChatAvailable =
+      organizationAvailableFeatures?.includes('DOCK_CHAT');
 
     return (
       <AppContainer id="appHome">
         {isMobile && isSmall ? (
           <MobileSmallScreen />
-        ) : !showRotateScreenPage ? (
+        ) : showRotateScreenPage ? (
+          <RotateScreen />
+        ) : (
           <>
             <SendbirdProvider
-              appId={dockChatAvailable ? appId : ''}
+              appId={dockChatAvailable ? this.appId : ''}
               userId={dockChatAvailable ? userProfile?.identifier : ''}
               nickname={dockChatAvailable ? userProfile?.name : ''}
               colorSet={sendbirdColorSet}
@@ -300,9 +321,9 @@ class App extends PureComponent {
 
               <ChatActivityAlertsToasts />
               <div className="new-task" />
-              {mountIdleTimer && (
+              {/* {mountIdleTimer && (
                 <IdleTimer
-                  ref={reference => {
+                  ref={(reference) => {
                     this.idleTimer = reference;
                   }}
                   element={document}
@@ -320,13 +341,11 @@ class App extends PureComponent {
                 onIdle={this.onIdleForPresence}
                 debounce={250}
                 timeout={idleTimeout}
-              />
+              /> */}
               <MainContainer>{children}</MainContainer>
               <Notification />
             </SendbirdProvider>
           </>
-        ) : (
-          <RotateScreen />
         )}
       </AppContainer>
     );
@@ -337,16 +356,16 @@ App.propTypes = {
   children: node.isRequired,
 };
 
-const mapStateToProps = state => ({
+const mapStateToProps = (state) => ({
   userState: state.userState,
 });
 
 const mapDispatchToProps = {
-  setActiveUsers: activeUsers => ({
+  setActiveUsers: (activeUsers) => ({
     type: 'active-users/setActiveUsers',
     activeUsers,
   }),
-  addActiveUser: user => ({
+  addActiveUser: (user) => ({
     type: 'active-users/addActiveUser',
     user,
   }),
@@ -355,7 +374,7 @@ const mapDispatchToProps = {
     user,
     idleStatus,
   }),
-  removeActiveUser: user => ({
+  removeActiveUser: (user) => ({
     type: 'active-users/removeActiveUser',
     user,
   }),

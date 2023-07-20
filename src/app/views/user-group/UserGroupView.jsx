@@ -1,4 +1,4 @@
-import { Grid } from '@material-ui/core';
+import { Grid } from '@mui/material';
 import queryString from 'query-string';
 import React, { useEffect, useState } from 'react';
 import isNil from 'ramda/src/isNil';
@@ -21,7 +21,7 @@ import ListSkeletonLoader from 'components/common/ListSkeletonLoader/ListSkeleto
 import PageContentHeader from 'components/common/PageContentHeader/PageContentHeader';
 import Spacing from 'components/common/Spacing';
 import Button from 'components/common/Button/Button';
-import LightbulbBig from 'img/lightbulb-big';
+import LightbulbBig from 'img/lightbulb-big.svg';
 import SearchInput from 'components/common/SearchInput/SearchInput';
 import UsersList from './UsersList/UsersList';
 import {
@@ -36,9 +36,8 @@ import {
 
 function UserGroupView() {
   const [searchTerm, setSearchTerm] = useState('');
-  const [isSearchFocused, setSearchFocused, unsetSearchFocused] = useBoolean(
-    false,
-  );
+  const [isSearchFocused, setSearchFocused, unsetSearchFocused] =
+    useBoolean(false);
 
   const { groupIdentifier: groupIdentifierUrlParameter } = useParams();
   const history = useHistory();
@@ -68,7 +67,7 @@ function UserGroupView() {
     }
   }, [search]);
 
-  const handleSearchTermChange = value => {
+  const handleSearchTermChange = (value) => {
     setSearchTerm(value);
 
     const parameters = queryString.parse(search) ?? {};
@@ -86,7 +85,7 @@ function UserGroupView() {
 
   return (
     <ViewLayout header={<BasicLayoutHeader title={name} />}>
-      <Grid container justify="center">
+      <Grid container justifyContent="center">
         <PageContentHeader>
           <Grid container wrap="nowrap">
             <Grid
@@ -96,7 +95,7 @@ function UserGroupView() {
               xl={6}
               md={5}
               lg={4}
-              justify="flex-start"
+              justifyContent="flex-start"
             >
               <SearchInputWrapper fullWidth={isSearchFocused || searchTerm}>
                 <SearchInput
@@ -109,10 +108,10 @@ function UserGroupView() {
             </Grid>
           </Grid>
         </PageContentHeader>
-        <Grid container xs={12} item justify="center">
+        <Grid container xs={12} item justifyContent="center">
           <Grid item xs={12} sm={12} md={8}>
             <Spacing vertical={4} />
-            {isOrganizationAdmin && (
+            {isOrganizationAdmin && groupIdentifier === 'ALL' && (
               <ManageUsersContainer>
                 <Grid item xs={12} sm={12} md={8}>
                   <HeaderMessageContainer>

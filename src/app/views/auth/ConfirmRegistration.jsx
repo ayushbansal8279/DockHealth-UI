@@ -1,4 +1,3 @@
-/* eslint-disable sonarjs/no-duplicate-string */
 import React, { useState } from 'react';
 import queryString from 'query-string';
 import { useHistory } from 'react-router-dom';
@@ -17,6 +16,8 @@ import {
   OnboardingHeader,
 } from '../onboarding/OnboardingTemplate.Components';
 
+const FONT_FAMILY_NAME = 'roboto condensed';
+
 const resendEmail = async (email, dispatch) => {
   try {
     await resendConfirmationCode({
@@ -32,7 +33,7 @@ const resendEmail = async (email, dispatch) => {
   }
 };
 
-const ConfirmRegistration = props => {
+const ConfirmRegistration = (props) => {
   const dispatch = useDispatch();
   const [isDialogShown, showDialog] = useBoolean(false);
   const [dialogTitle, setDialogTitle] = useState('');
@@ -40,7 +41,6 @@ const ConfirmRegistration = props => {
   const [userEmail, setUserEmail] = useState('');
   const history = useHistory();
 
-  // eslint-disable-next-line consistent-return
   useMount(() => {
     const { location } = props;
     const queryValues = queryString.parse(location.search);
@@ -56,16 +56,16 @@ const ConfirmRegistration = props => {
           success('Registration confirmed. Please Login');
           window.sessionStorage.setItem('confirmStatus', true);
           history.push(`login?uname=${encodeURIComponent(uname)}`);
-          // window.location.href = process.env.BRANCH_IO_APP_LINK;
+          // window.location.href = import.meta.env.VITE_BRANCH_IO_APP_LINK;
         })
-        .catch(error => {
+        .catch((error) => {
           const message = error.message || 'An error occurred.';
           if (
             message ===
             'User cannot confirm because user status is not UNCONFIRMED.'
           ) {
             history.push('login');
-            // window.location.href = process.env.BRANCH_IO_APP_LINK;
+            // window.location.href = import.meta.env.VITE_BRANCH_IO_APP_LINK;
             return;
           }
           setDialogTitle(`Email confirmation`);
@@ -77,14 +77,14 @@ const ConfirmRegistration = props => {
   });
 
   const onboardingDialogStyle = {
-    fontFamily: 'roboto condensed',
+    fontFamily: FONT_FAMILY_NAME,
     fontWeight: 300,
     fontSize: '18px',
     padding: '0rem 1rem',
   };
 
   const onboardingMessageStyle = {
-    fontFamily: 'roboto condensed',
+    fontFamily: FONT_FAMILY_NAME,
     fontWeight: 300,
     fontSize: '18px',
     padding: '0rem 1rem',
@@ -92,7 +92,7 @@ const ConfirmRegistration = props => {
   };
 
   const onboardingLinkStyle = {
-    fontFamily: 'roboto condensed',
+    fontFamily: FONT_FAMILY_NAME,
     fontWeight: 300,
     fontSize: '18px',
   };

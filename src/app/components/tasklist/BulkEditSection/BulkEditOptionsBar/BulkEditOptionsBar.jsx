@@ -88,11 +88,11 @@ const BulkEditOptionsBar = ({
   const allParentTasksHaveRelatedSubtasks = useMemo(
     () =>
       parentTasks.every(
-        parentTask =>
+        (parentTask) =>
           parentTask?.subTasksCount === parentTask?.subTasksCompletedCount ||
           parentTask?.subTasksCount ===
             subtasks?.filter(
-              subtask =>
+              (subtask) =>
                 subtask?.parentTaskIdentifier === parentTask?.taskIdentifier,
             )?.length,
       ),
@@ -126,11 +126,11 @@ const BulkEditOptionsBar = ({
 
   const allTasksAreRelated = useMemo(
     () =>
-      parentTasks.every(parentTask => {
+      parentTasks.every((parentTask) => {
         if (parentTask?.subTasksCount === 0) return true;
 
         const relatedCount = subtasks?.filter(
-          subtask =>
+          (subtask) =>
             subtask?.parentTaskIdentifier === parentTask?.taskIdentifier,
         )?.length;
 
@@ -138,9 +138,9 @@ const BulkEditOptionsBar = ({
 
         return relatedCount > 0;
       }) &&
-      subtasks?.every(subtask =>
+      subtasks?.every((subtask) =>
         parentTasks?.find(
-          parentTask =>
+          (parentTask) =>
             parentTask?.taskIdentifier === subtask.parentTaskIdentifier,
         ),
       ),
@@ -152,15 +152,15 @@ const BulkEditOptionsBar = ({
     [allTasksSameType, allTasksAreRelated],
   );
 
-  const allSelectedTasks = useMemo(() => [...parentTasks, ...subtasks], [
-    parentTasks,
-    subtasks,
-  ]);
+  const allSelectedTasks = useMemo(
+    () => [...parentTasks, ...subtasks],
+    [parentTasks, subtasks],
+  );
 
   const allSelectedTasksIdentifiers = useMemo(
     () => [
       ...parentTasks
-        ?.filter(t => t.itemType === 'TASK')
+        ?.filter((t) => t.itemType === 'TASK')
         ?.map(({ identifier }) => identifier),
       ...subtasks?.map(({ identifier }) => identifier),
     ],
@@ -170,7 +170,7 @@ const BulkEditOptionsBar = ({
   const allSelectedWorkflowIdentifiers = useMemo(
     () => [
       ...parentTasks
-        ?.filter(t => t.itemType === 'BUNDLE')
+        ?.filter((t) => t.itemType === 'BUNDLE')
         ?.map(({ identifier }) => identifier),
     ],
     [parentTasks],
@@ -191,52 +191,48 @@ const BulkEditOptionsBar = ({
   );
 
   const updateTasks = useCallback(
-    tasks => {
-      tasks.forEach(task =>
+    (tasks) => {
+      for (const task of tasks)
         dispatch({
           type: ActionTypes.UPDATE_TASK_SUCCESS,
           task,
-        }),
-      );
+        });
     },
     [dispatch],
   );
 
   const addTasks = useCallback(
-    tasks => {
-      tasks.reverse().forEach(task =>
+    (tasks) => {
+      for (const task of tasks.reverse())
         dispatch({
           type: ActionTypes.ADD_TASK_SUCCESS,
           task,
-        }),
-      );
+        });
     },
     [dispatch],
   );
 
   const deleteTasks = useCallback(
-    tasks => {
-      tasks.forEach(task =>
+    (tasks) => {
+      for (const task of tasks)
         dispatch({
           type: ActionTypes.DELETE_TASK,
           taskIdentifier: task.taskIdentifier,
-        }),
-      );
+        });
     },
     [dispatch],
   );
 
   const refreshTaskWorkflows = useCallback(
-    workflowIdentifiers => {
-      workflowIdentifiers.forEach(identifier =>
-        dispatch(refreshTaskBundle(identifier)),
-      );
+    (workflowIdentifiers) => {
+      for (const identifier of workflowIdentifiers)
+        dispatch(refreshTaskBundle(identifier));
     },
     [dispatch],
   );
 
   const handleChangeWorkflowStatusTasks = useCallback(
-    workflowStatus => {
+    (workflowStatus) => {
       bulkEditWorkflowStatus(
         allSelectedTasksIdentifiers,
         workflowStatus,
@@ -305,7 +301,7 @@ const BulkEditOptionsBar = ({
   );
 
   const handleChangeDateTasks = useCallback(
-    dueDate => {
+    (dueDate) => {
       bulkEditDueDate(allSelectedTasksIdentifiers, dueDate, filters)(dispatch);
 
       bulkEditTasksApi({
@@ -373,7 +369,7 @@ const BulkEditOptionsBar = ({
   );
 
   const handleChangeAssigneeTasks = useCallback(
-    selectedUsers => {
+    (selectedUsers) => {
       bulkEditAssignUser(
         allSelectedTasksIdentifiers,
         selectedUsers,
@@ -440,7 +436,7 @@ const BulkEditOptionsBar = ({
 
   const handleDuplicateTasks = useCallback(() => {
     const anyTaskHasAttachment = allSelectedTasks?.some(
-      task => task?.attachments?.length > 0,
+      (task) => task?.attachments?.length > 0,
     );
 
     // eslint-disable-next-line unicorn/consistent-function-scoping
@@ -511,7 +507,7 @@ const BulkEditOptionsBar = ({
 
   const handleMoveTasks = useCallback(async () => {
     // eslint-disable-next-line unicorn/consistent-function-scoping
-    const standardConfirmAction = selectedDestination => {
+    const standardConfirmAction = (selectedDestination) => {
       onMultiSelectAction('Moved');
 
       return bulkEditTasksApi({
@@ -542,11 +538,11 @@ const BulkEditOptionsBar = ({
     };
 
     // eslint-disable-next-line func-names
-    const moveTaskConfig = await (function() {
+    const moveTaskConfig = await (function () {
       if (
         parentTasks.length > 0 &&
         subtasks.length === 0 &&
-        parentTasks?.every(task => task?.subTasksCount === 0)
+        parentTasks?.every((task) => task?.subTasksCount === 0)
       ) {
         return { tasks: parentTasks, confirmAction: standardConfirmAction };
       }
@@ -554,22 +550,22 @@ const BulkEditOptionsBar = ({
         return { tasks: subtasks, confirmAction: standardConfirmAction };
       }
 
-      const formattedSelectedTasks = parentTasks.map(parentTask => ({
+      const formattedSelectedTasks = parentTasks.map((parentTask) => ({
         ...parentTasks,
         subtasks: subtasks?.filter(
-          subtask =>
+          (subtask) =>
             subtask?.parentTaskIdentifier === parentTask.taskIdentifier,
         ),
       }));
 
       const anyTaskIsIncomplete = formattedSelectedTasks?.some(
-        task => task?.subTasksCount !== task?.subtasks?.length,
+        (task) => task?.subTasksCount !== task?.subtasks?.length,
       );
 
       return {
         tasks: formattedSelectedTasks,
         confirmAction: anyTaskIsIncomplete
-          ? selectedDestination =>
+          ? (selectedDestination) =>
               dispatch(
                 openModal('MoveTasksWithSubtasks', {
                   confirm: () => standardConfirmAction(selectedDestination),
@@ -630,13 +626,12 @@ const BulkEditOptionsBar = ({
                 ) {
                   refreshTasks();
                 } else {
-                  tasks.forEach(task =>
+                  for (const task of tasks)
                     task.parentTaskIdentifier &&
                     (isEmpty(filters) || !filters) &&
                     !searchValue
                       ? updateTasks([task])
-                      : addTasks([task]),
-                  );
+                      : addTasks([task]);
                 }
               },
             ),
@@ -791,7 +786,7 @@ const BulkEditOptionsBar = ({
       numberOfSelectedItems={allSelectedTasksLength}
       isDisabled={isDisabled}
       onClose={onClose}
-      includedWorkflow={!!allSelectedTasks.find(t => t.itemType === 'BUNDLE')}
+      includedWorkflow={!!allSelectedTasks.find((t) => t.itemType === 'BUNDLE')}
     >
       <>
         {mergedConfig[BulkEditOptionsConfig.DUPLICATE_OPTION] && (

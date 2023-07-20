@@ -7,7 +7,7 @@ import React, {
 } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { useHistory } from 'react-router-dom';
-import { MoreVert } from '@material-ui/icons';
+import { MoreVert } from '@mui/icons-material';
 import { onTaskListInvitationAccepted } from 'helpers/ga-event-helper';
 import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd';
 import {
@@ -17,7 +17,7 @@ import {
   archivedTaskListsSelector,
 } from 'selectors/task-list-selectors';
 import { userProfileSelector } from 'selectors/user-selectors';
-import AddButton from 'components/common/AddButton/AddButton.tsx';
+import AddButton from 'components/common/AddButton/AddButton';
 import { openModal } from 'modal/actions';
 import { hideSubMenu } from 'actions/template-actions';
 import * as TaskListActions from 'actions/task-list-actions';
@@ -26,7 +26,7 @@ import { createTaskListPath } from 'routing/helpers/paths';
 import ListOptionsMenu from 'components/tasklist/ListOptionsMenu/ListOptionsMenu';
 import LabeledCollapse from 'components/common/LabeledCollapse/LabeledCollapse';
 import { isUserGuest, isUserViewOnly } from 'helpers/user-helper';
-import { Box } from '@material-ui/core';
+import { Box } from '@mui/material';
 import { useBoolean } from 'hooks/useBoolean';
 import move from 'ramda/src/move';
 import Spacing from 'components/common/Spacing';
@@ -77,9 +77,10 @@ const ListsSubmenu = () => {
     setActiveLists(lists);
   }, [taskLists, pendingTaskLists]);
 
-  const archivedLists = useMemo(() => [...(archivedTaskLists || [])], [
-    archivedTaskLists,
-  ]);
+  const archivedLists = useMemo(
+    () => [...(archivedTaskLists || [])],
+    [archivedTaskLists],
+  );
 
   useEffect(() => {
     dispatch(TaskListActions.getTaskListForUser());
@@ -121,7 +122,7 @@ const ListsSubmenu = () => {
     (listsList, archived = true) => {
       if (archived) {
         return listsList
-          ? listsList.map(list => (
+          ? listsList.map((list) => (
               <DrawerListsItem
                 key={`listsubmenu_${list.taskListIdentifier}`}
                 data-list-id={list.taskListIdentifier}
@@ -140,7 +141,7 @@ const ListsSubmenu = () => {
                   isActive={
                     activeTaskListIdentifier === list?.taskListIdentifier
                   }
-                  onMouseEnter={event =>
+                  onMouseEnter={(event) =>
                     handleMouseEnter(event, list?.listName)
                   }
                   onMouseLeave={() => setPopoverLabel(null)}
@@ -161,7 +162,7 @@ const ListsSubmenu = () => {
                   <DrawerListsItemNewLabel>New</DrawerListsItemNewLabel>
                 )}
                 <DrawerItemOptions>
-                  <div>{list?.numberOfTasks ? list?.numberOfTasks : 0}</div>
+                  <div>{list?.numberOfTasks ?? 0}</div>
                   {list.hasUpdatesForMember ? (
                     <Box m=" 0 5px">
                       <UpdatesForMemberIndicator />
@@ -172,10 +173,10 @@ const ListsSubmenu = () => {
                 </DrawerItemOptions>
               </DrawerListsItem>
             ))
-          : new Array(6)
+          : Array.from({ length: 6 })
               .fill()
               // eslint-disable-next-line react/no-array-index-key
-              .map((_, i) => <DrawerListsItemLoader key={i} />);
+              .map((_, index) => <DrawerListsItemLoader key={index} />);
       }
 
       return listsList
@@ -191,12 +192,12 @@ const ListsSubmenu = () => {
                       : `drawer-menu-list-item`
                   }
                 >
-                  {!['INBOX', 'PUBLIC'].includes(list?.listType) ? (
+                  {['INBOX', 'PUBLIC'].includes(list?.listType) ? (
+                    <Box m={2} />
+                  ) : (
                     <ListOptionsMenu list={list}>
                       <MoreVert color="primary" />
                     </ListOptionsMenu>
-                  ) : (
-                    <Box m={2} />
                   )}
                   {list.color && (
                     <Box mr={1}>
@@ -208,7 +209,7 @@ const ListsSubmenu = () => {
                     isActive={
                       activeTaskListIdentifier === list?.taskListIdentifier
                     }
-                    onMouseEnter={event =>
+                    onMouseEnter={(event) =>
                       handleMouseEnter(event, list?.listName)
                     }
                     onMouseLeave={() => setPopoverLabel(null)}
@@ -230,7 +231,7 @@ const ListsSubmenu = () => {
                     <DrawerListsItemNewLabel>New</DrawerListsItemNewLabel>
                   )}
                   <DrawerItemOptions>
-                    <div>{list?.numberOfTasks ? list?.numberOfTasks : 0}</div>
+                    <div>{list?.numberOfTasks ?? 0}</div>
                     {list.hasUpdatesForMember ? (
                       <Box m=" 0 5px">
                         <UpdatesForMemberIndicator />
@@ -248,7 +249,7 @@ const ListsSubmenu = () => {
                 draggableId={list.taskListIdentifier}
                 index={index}
               >
-                {provided => (
+                {(provided) => (
                   <DrawerListsItem
                     key={`listsubmenu_${list.taskListIdentifier}`}
                     data-list-id={list.taskListIdentifier}
@@ -262,12 +263,12 @@ const ListsSubmenu = () => {
                     {...provided.draggableProps}
                     {...provided.dragHandleProps}
                   >
-                    {!['INBOX', 'PUBLIC'].includes(list?.listType) ? (
+                    {['INBOX', 'PUBLIC'].includes(list?.listType) ? (
+                      <Box m={2} />
+                    ) : (
                       <ListOptionsMenu list={list}>
                         <MoreVert color="primary" />
                       </ListOptionsMenu>
-                    ) : (
-                      <Box m={2} />
                     )}
                     {list.color && (
                       <Box mr={1}>
@@ -279,7 +280,7 @@ const ListsSubmenu = () => {
                       isActive={
                         activeTaskListIdentifier === list?.taskListIdentifier
                       }
-                      onMouseEnter={event =>
+                      onMouseEnter={(event) =>
                         handleMouseEnter(event, list?.listName)
                       }
                       onMouseLeave={() => setPopoverLabel(null)}
@@ -307,7 +308,7 @@ const ListsSubmenu = () => {
                       <DrawerListsItemNewLabel>New</DrawerListsItemNewLabel>
                     )}
                     <DrawerItemOptions>
-                      <div>{list?.numberOfTasks ? list?.numberOfTasks : 0}</div>
+                      <div>{list?.numberOfTasks ?? 0}</div>
                       {list.hasUpdatesForMember ? (
                         <Box m=" 0 5px">
                           <UpdatesForMemberIndicator />
@@ -321,8 +322,10 @@ const ListsSubmenu = () => {
               </Draggable>
             );
           })
-        : // eslint-disable-next-line react/no-array-index-key
-          new Array(6).fill().map((_, i) => <DrawerListsItemLoader key={i} />);
+        : Array.from({ length: 6 })
+            .fill()
+            // eslint-disable-next-line react/no-array-index-key
+            .map((_, index) => <DrawerListsItemLoader key={index} />);
     },
     [activeTaskListIdentifier, dispatch, history],
   );
@@ -342,7 +345,7 @@ const ListsSubmenu = () => {
       <DrawerListsList>
         <DragDropContext onDragEnd={handleDragEnd}>
           <Droppable droppableId="droppable">
-            {provided => (
+            {(provided) => (
               <div {...provided.droppableProps} ref={provided.innerRef}>
                 {renderLists(activeLists, false)}
               </div>

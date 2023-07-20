@@ -1,5 +1,5 @@
 /* eslint-disable react-hooks/rules-of-hooks */
-import React, { useRef, useState, useCallback } from 'react';
+import React, { useRef, useState, useCallback, useEffect } from 'react';
 import { useBoolean } from 'hooks/useBoolean';
 // import palette from 'styles/palette';
 import Spacing from 'components/common/Spacing';
@@ -43,10 +43,10 @@ const TaskTemplateApplicator = ({
 
   const dispatch = useDispatch();
   const getNestedTemplatesList = useCallback(
-    identifier => {
+    (identifier) => {
       setTaskTemplatesIsLoading(true);
       getTemplatesForSpecificFolder(identifier)
-        .then(templatesList => {
+        .then((templatesList) => {
           setTaskTemplatesList(templatesList);
           setTaskTemplatesIsLoading(false);
         })
@@ -57,21 +57,27 @@ const TaskTemplateApplicator = ({
     [setTaskTemplatesIsLoading],
   );
 
-  const getRootTemplatesList = useCallback(() => {
-    setTaskTemplatesIsLoading(true);
-    setParentList([]);
-    getTemplates()
-      .then(templatesList => {
-        setTaskTemplatesList(templatesList);
-        setTaskTemplatesIsLoading(false);
-      })
-      .catch(() => {
-        setTaskTemplatesIsLoading(false);
-      });
-  }, [setTaskTemplatesIsLoading]);
+  const getRootTemplatesList = () => {
+      setTaskTemplatesIsLoading(true);
+      setParentList([]);
+      getTemplates()
+          .then((templatesList) => {
+              setTaskTemplatesList(templatesList);
+              setTaskTemplatesIsLoading(false);
+          })
+          .catch(() => {
+              setTaskTemplatesIsLoading(false);
+          })
+  }
+
+  useEffect(() => {
+      if (isPopoverOpen) {
+          getRootTemplatesList()
+      }
+  }, [isPopoverOpen]);
 
   const handleTemplateSelect = useCallback(
-    template => {
+    (template) => {
       onTemplateSelect(template);
       closePopover();
       if (bulkApply) {
@@ -90,7 +96,7 @@ const TaskTemplateApplicator = ({
   }, [closePopover, setSearchValue, setParentList]);
 
   const handleFolderClick = useCallback(
-    folder => {
+    (folder) => {
       setParentList([...(parentList || []), folder]);
       getNestedTemplatesList(folder.identifier);
     },
@@ -119,7 +125,7 @@ const TaskTemplateApplicator = ({
         setParentList([]);
         setTaskTemplatesIsLoading(true);
         searchTemplates(searchPhrase)
-          .then(templatesList => {
+          .then((templatesList) => {
             setTaskTemplatesList(templatesList);
             setTaskTemplatesIsLoading(false);
           })
@@ -134,7 +140,7 @@ const TaskTemplateApplicator = ({
   );
 
   const handleSearch = useCallback(
-    searchPhrase => {
+    (searchPhrase) => {
       setSearchValue(searchPhrase);
       debouncedSearch(searchPhrase);
     },

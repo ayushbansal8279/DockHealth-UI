@@ -12,7 +12,7 @@ export const highlightDescription = keyframes`
 `;
 
 const StickyMainTaskItemCell = styled.div`
-${({ customWidthExists }) => (customWidthExists ? '' : 'flex: 1;')}
+  ${({ customWidthExists }) => (customWidthExists ? '' : 'flex: 1;')}
   position: sticky;
   display: flex;
   width: ${({ width, isSubtask }) => {
@@ -40,7 +40,7 @@ ${({ customWidthExists }) => (customWidthExists ? '' : 'flex: 1;')}
     width: 100px;
     height: calc(100% + 2px);
     z-index: -1;
-    
+
     @media print {
       left: -102px;
     }
@@ -68,7 +68,7 @@ ${({ customWidthExists }) => (customWidthExists ? '' : 'flex: 1;')}
     height: calc(100% - 2px);
     z-index: -1;
     transform: translateY(-50%);
-    animation: ${props =>
+    animation: ${(props) =>
       props.newlyCreated
         ? css`
             ${highlightDescription} 6s ease-out;

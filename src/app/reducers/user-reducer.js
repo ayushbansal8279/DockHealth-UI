@@ -81,26 +81,28 @@ const UserReducer = (state = initialState, action) => {
         userPreference: {
           ...state.userPreference,
           ...preferences,
-          appFeaturesReviewed: state.userPreference?.appFeaturesReviewed?.concat(
-            preferences.appFeaturesReviewed,
-          ),
+          appFeaturesReviewed:
+            state.userPreference?.appFeaturesReviewed?.concat(
+              preferences.appFeaturesReviewed,
+            ),
         },
       };
     }
 
-    case ActionTypes.GET_CURRENT_USER:
+    case ActionTypes.GET_CURRENT_USER: {
       return {
         ...state,
         isFetchingProfile: true,
       };
+    }
 
     case ActionTypes.GET_CURRENT_USER_SUCCESS: {
       const { user } = action;
       const { displayOptions } = user.userPreference || {};
       const mainSetup = {};
-      Object.entries(state.userViewSetup.mainSetup).forEach(([key]) => {
+      for (const [key] of Object.entries(state.userViewSetup.mainSetup)) {
         mainSetup[key] = displayOptions?.includes(key);
-      });
+      }
 
       const { userPreference } = user;
       delete user.userPreference;
@@ -121,11 +123,12 @@ const UserReducer = (state = initialState, action) => {
       };
     }
 
-    case ActionTypes.GET_CURRENT_USER_FAILURE:
+    case ActionTypes.GET_CURRENT_USER_FAILURE: {
       return {
         ...state,
         isFetchingProfile: false,
       };
+    }
 
     case ActionTypes.GET_CURRENT_USER_ORGANIZATIONS_SUCCESS: {
       const { organizations } = action;
@@ -140,8 +143,9 @@ const UserReducer = (state = initialState, action) => {
       };
     }
 
-    default:
+    default: {
       return state;
+    }
   }
 };
 

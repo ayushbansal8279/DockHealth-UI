@@ -1,7 +1,7 @@
 import { createSelector } from 'reselect';
 // import prop from 'ramda/src/prop';
 
-export const listTasksSelector = state => state.listDetails;
+export const listTasksSelector = (state) => state.listDetails;
 
 export const tasksIsFetchingSelector = createSelector(
   listTasksSelector,
@@ -27,11 +27,15 @@ export const searchTermSelector = createSelector(
   ({ searchTerm }) => searchTerm,
 );
 
+export const taskDetailsSelector = createSelector(
+  listTasksSelector,
+  (_, taskId) => taskId,
+  (listDetails, taskId) => listDetails.tasksMap[taskId],
+);
+
 export const groupTasksSelector = createSelector(
   listTasksSelector,
-  ({ groupedTasks }) => {
-    return groupedTasks?.taskGroups;
-  },
+  ({ groupedTasks }) => groupedTasks?.taskGroups,
 );
 
 export const groupCompletedTasksSelector = createSelector(

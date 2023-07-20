@@ -1,12 +1,11 @@
 import styled from 'styled-components';
 import { Link } from 'react-router-dom';
-import { Popover } from '@material-ui/core';
-import { withStyles } from '@material-ui/core/styles';
-import NavigateBeforeIcon from '@material-ui/icons/NavigateBefore';
+import { Popover } from '@mui/material';
+import NavigateBeforeIcon from '@mui/icons-material/NavigateBefore';
 import spacing from 'styles/spacing';
 import palette from 'styles/palette';
 import { fontWeights, fontSizes } from 'styles/font';
-import { Skeleton } from '@material-ui/lab';
+import Skeleton from '@mui/material/Skeleton';
 import prop from 'ramda/src/prop';
 
 export const ColorIndicator = styled.span`
@@ -289,12 +288,14 @@ export const DrawerListsItem = styled.div`
       `}
 `;
 
-export const DrawerListsItemLoader = withStyles({
-  root: {
-    height: 24,
-    marginBottom: 10,
-  },
-})(Skeleton);
+export const DrawerListsItemLoader = styled(Skeleton)`
+  &&& {
+    &.MuiSkeleton-root {
+      height: 24px;
+      margin-bottom: 10px;
+    }
+  }
+`;
 
 export const DrawerListsItemNewLabel = styled.div`
   position: absolute;
@@ -303,7 +304,7 @@ export const DrawerListsItemNewLabel = styled.div`
   color: ${palette.brightBlue};
   font-size: 10px;
   font-weight: 400;
-  font-family: Roboto Condensed;
+  font-family: 'Roboto Condensed', sans-serif;;
 `;
 
 export const DrawerListsNewLabel = styled.div`

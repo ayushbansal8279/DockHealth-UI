@@ -1,5 +1,3 @@
-/* eslint-disable import/prefer-default-export */
-
 export const EDUCATION_CENTER_CATEGORIES = [
   {
     name: 'Getting Started',

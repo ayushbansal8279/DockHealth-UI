@@ -1,10 +1,10 @@
 import React from 'react';
-import { Box } from '@material-ui/core';
+import { Box } from '@mui/material';
 import FilterSearch from 'components/filter/FilterSearch/FilterSearch';
 import isEmpty from 'ramda/src/isEmpty';
 import { Container, Title, HeaderButton } from './styled';
 
-const FilterHeader = props => {
+const FilterHeader = (props) => {
   const {
     title,
     filterActive,

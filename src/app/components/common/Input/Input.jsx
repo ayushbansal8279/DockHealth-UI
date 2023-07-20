@@ -1,7 +1,14 @@
 /* eslint-disable react/jsx-no-duplicate-props */
 import React from 'react';
-import { TextField } from '@material-ui/core';
+import { TextField } from '@mui/material';
 import clsx from 'clsx';
+import { styled } from '@mui/material/styles';
+
+const StyledTextField = styled(TextField)`
+  & .MuiInputBase-formControl:before {
+    border: none !important;
+  }
+`;
 
 const Input = React.forwardRef(
   (
@@ -19,6 +26,7 @@ const Input = React.forwardRef(
       startAdornment,
       endAdornment,
       shrink,
+      hiddenLabel,
       readOnly,
       inputRef,
       required = false,
@@ -27,8 +35,7 @@ const Input = React.forwardRef(
     },
     reference,
   ) => (
-    <TextField
-      sx={{ input: { color: 'red' } }}
+    <StyledTextField
       ref={reference}
       inputRef={inputRef}
       id={id}
@@ -51,6 +58,7 @@ const Input = React.forwardRef(
       InputLabelProps={{
         shrink: readOnly || shrink,
       }}
+      hiddenLabel={hiddenLabel}
       variant={variant}
       {...restProps}
     />

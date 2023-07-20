@@ -4,8 +4,8 @@ import { useBoolean } from 'hooks/useBoolean';
 import palette from 'styles/palette';
 import Avatar from 'components/user/Avatar/Avatar';
 import Button from 'components/common/Button/Button';
-import { Box, Popover } from '@material-ui/core';
-import CloseIcon from '@material-ui/icons/Close';
+import { Box, Popover } from '@mui/material';
+import CloseIcon from '@mui/icons-material/Close';
 import CameraIcon from 'img/camera.svg';
 import {
   CloseIconButton,
@@ -17,7 +17,7 @@ import {
   EditButton,
 } from './styled';
 
-const AvatarInput = props => {
+const AvatarInput = (props) => {
   const { pictureSrc, name, disabled, onChange, ...restProps } = props;
   const [popoverOpen, openPopover, closePopover] = useBoolean(false);
   const [loadedImage, setLoadedImage] = useState(null);
@@ -25,7 +25,7 @@ const AvatarInput = props => {
   const avatarReference = useRef(null);
   const inputReference = useRef(null);
 
-  const handleFileChange = event => {
+  const handleFileChange = (event) => {
     const file = event.target?.files?.[0];
     const fileReader = new FileReader();
 
@@ -68,7 +68,7 @@ const AvatarInput = props => {
         open={popoverOpen}
         anchorEl={avatarReference.current}
         onClose={closePopover}
-        style={{ zIndex: 10000 }}
+        style={{ zIndex: 10_000 }}
         anchorOrigin={{
           vertical: 'center',
           horizontal: 'left',
@@ -122,11 +122,7 @@ const AvatarInput = props => {
                 </Box>
               </AvatarContainer>
               <Box p={1} />
-              {!pictureSrc ? (
-                <Button onClick={() => inputReference.current.click()}>
-                  Upload file
-                </Button>
-              ) : (
+              {pictureSrc ? (
                 <>
                   <Button onClick={closePopover}>I love it</Button>
                   <Box p={1} />
@@ -134,6 +130,10 @@ const AvatarInput = props => {
                     Use initials
                   </Button>
                 </>
+              ) : (
+                <Button onClick={() => inputReference.current.click()}>
+                  Upload file
+                </Button>
               )}
             </>
           )}

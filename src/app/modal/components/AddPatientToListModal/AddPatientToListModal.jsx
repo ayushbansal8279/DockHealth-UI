@@ -7,14 +7,14 @@ import { showGlobalAlert, showGlobalErrorAlert } from 'alert/actions';
 import AlertMessages from 'alert/AlertMessages';
 import { updatePatientsList, getPatientsByListId } from 'api/patients-api';
 import { openModal } from 'modal/actions';
-import { Grid } from '@material-ui/core';
+import { Grid } from '@mui/material';
 import Spacing from 'components/common/Spacing';
 import Button from 'components/common/Button/Button';
 import PatientList from 'components/patients/PatientDropdown/PatientList';
 import { getCustomerTypeLabel } from 'helpers/customer-type-helper';
 import { capitalize } from 'helpers/capitalize';
 import { userProfileSelector } from 'selectors/user-selectors';
-import { createPatientListPath } from '../../../routing/helpers/paths';
+import { createPatientListPath } from 'routing/helpers/paths';
 import { CloseIconButton, CloseIcon } from '../styled';
 import {
   AddPatientModalWrapper,
@@ -56,7 +56,7 @@ const AddPatientToListModal = ({
   useEffect(() => {
     setFetchingPatients(true);
     getPatientsByListId(patientListIdentifier)
-      .then(patients => {
+      .then((patients) => {
         setSelectedPatients(patients);
         setFetchingPatients(false);
       })
@@ -72,8 +72,8 @@ const AddPatientToListModal = ({
   };
 
   const handleSelectPatient = useCallback(
-    patient => {
-      setSelectedPatients(previousSelection => {
+    (patient) => {
+      setSelectedPatients((previousSelection) => {
         if (
           previousSelection.some(
             ({ patientIdentifier }) =>
@@ -90,8 +90,8 @@ const AddPatientToListModal = ({
     [edited],
   );
 
-  const deleteSelectedPatient = patientIdentifierToDelete => {
-    setSelectedPatients(previousSelection =>
+  const deleteSelectedPatient = (patientIdentifierToDelete) => {
+    setSelectedPatients((previousSelection) =>
       previousSelection.filter(
         ({ patientIdentifier }) =>
           patientIdentifier !== patientIdentifierToDelete,
@@ -106,7 +106,7 @@ const AddPatientToListModal = ({
     updatePatientsList(patientListIdentifier, {
       patientIdentifiers: pluck('patientIdentifier', selectedPatients),
     })
-      .then(updatedList => {
+      .then((updatedList) => {
         if (updatedList.patients) {
           setSelectedPatients(updatedList.patients);
         }
@@ -209,7 +209,7 @@ const AddPatientToListModal = ({
         </PatientsSection>
       </MainContentWrapper>
       <Spacing vertical={4} />
-      <Grid container direction="row" justify="flex-end">
+      <Grid container direction="row" justifyContent="flex-end">
         <Button
           variant="secondary"
           width="150px"

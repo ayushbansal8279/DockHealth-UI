@@ -1,6 +1,6 @@
 import { createSelector } from 'reselect';
 
-export const dashboardTasksStateSelector = state => state.dashboardTasks;
+export const dashboardTasksStateSelector = (state) => state.dashboardTasks;
 
 export const dashboardTasksSelector = createSelector(
   dashboardTasksStateSelector,
@@ -22,18 +22,24 @@ export const dashboardTasksIsLoadingSelector = createSelector(
   ({ isLoading }) => isLoading,
 );
 
+export const dashboardTaskDetailsSelector = createSelector(
+  dashboardTasksStateSelector,
+  (_, taskId) => taskId,
+  (dashboardTasks, taskId) => dashboardTasks.tasksMap[taskId],
+);
+
 export const dashboardGroupTasksCountSelector = createSelector(
   dashboardTasksStateSelector,
   (_, groupType) => groupType,
   ({ tasksList }, groupType) => {
-    const group = tasksList?.find(g => g.groupType === groupType);
+    const group = tasksList?.find((g) => g.groupType === groupType);
     return group?.tasks?.length || 0;
   },
 );
 
 export const dashboardAllTaskItemsSelector = createSelector(
   dashboardTasksStateSelector,
-  ({ tasksList }) => tasksList?.flatMap(l => l?.tasks || []) || [],
+  ({ tasksList }) => tasksList?.flatMap((l) => l?.tasks || []) || [],
 );
 
 export const dashboardTabNameSelector = createSelector(

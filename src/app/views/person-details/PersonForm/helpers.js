@@ -1,4 +1,3 @@
-/* eslint-disable import/prefer-default-export */
 import isEmpty from 'ramda/src/isEmpty';
 
 export function formatMetaDataOutput(outputData) {
@@ -8,10 +7,10 @@ export function formatMetaDataOutput(outputData) {
 
   // remove metadata with no values - only keep UUID keys
   const filteredMetaDataKeys = Object.keys(metadata).filter(
-    key => key.length === 36,
+    (key) => key.length === 36,
   );
 
-  const formattedMetadata = filteredMetaDataKeys.map(key => {
+  const formattedMetadata = filteredMetaDataKeys.map((key) => {
     if (Array.isArray(metadata[key])) {
       return {
         customFieldIdentifier: key,

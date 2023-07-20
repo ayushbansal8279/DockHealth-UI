@@ -1,45 +1,45 @@
 import styled from 'styled-components';
-import { makeStyles } from '@material-ui/core/styles';
+// import { makeStyles } from '@mui/styles';
 import palette from 'styles/palette';
 import spacing from 'styles/spacing';
 import { fontWeights } from 'styles/font';
+
+import DropdownInput from './DropdownInput';
 
 export const SelectArrowImg = styled.img`
   pointer-events: none;
   height: 7px;
 `;
 
-export const useSecondaryTypeInputStyles = makeStyles({
-  root: {
-    marginTop: '0 !important',
-    backgroundColor: palette.blueGrey,
-    paddingRight: `${spacing.small} !important`,
-  },
-  input: {
-    padding: `${spacing.tiny} ${spacing.small} ${spacing.tiny} ${spacing.small}`,
-    borderRadius: 4,
-    fontFamily: "'Roboto Condensed', sans-serif",
-    color: palette.mediumGrey,
-    '&[readonly]': {
-      cursor: 'pointer',
-      backgroundColor: palette.blueGrey,
-    },
-    '&:focus': {
-      border: 'none',
-    },
-    '&:disabled': {
-      cursor: 'initial',
-    },
-  },
-});
+export const StyledDropdownInput = styled(DropdownInput)`
+  width: ${({ width }) => (width ? `${width}px` : '100%')};
+  border: none;
+  transition: none;
+  & .MuiInput-root {
+    margintop: 0 !important;
+    backgroundcolor: palette.blueGrey;
+    paddingright: ${spacing.small} !important;
+  }
+  & .MuiInputBase-input {
+    padding: ${spacing.tiny} ${spacing.small} ${spacing.tiny} ${spacing.small};
+    borderradius: 4;
+    fontfamily: 'Roboto Condensed', sans-serif;
+    font-size: 1rem;
+    color: palette.mediumGrey;
 
-export const useSecondaryTypeTextFieldStyles = makeStyles({
-  root: {
-    border: 'none',
-    transition: 'none',
-    width: props => (props.width ? `${props.width}px` : '100%'),
-  },
-});
+    &[readonly] {
+      cursor: pointer;
+      backgroundcolor: palette.blueGrey;
+    }
+    ,
+    &:focus {
+      border: none;
+    }
+    &:disabled {
+      cursor: initial;
+    }
+  }
+`;
 
 export const SelectOption = styled.div`
   width: 100%;

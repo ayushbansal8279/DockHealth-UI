@@ -1,5 +1,5 @@
 import React, { useCallback, useMemo } from 'react';
-import MoreVert from '@material-ui/icons/MoreVert';
+import MoreVert from '@mui/icons-material/MoreVert';
 import MegaFilter from 'components/tasklist/MegaFilter/MegaFilter';
 import LayoutHeader from 'components/template/LayoutHeader/LayoutHeader';
 import { useDispatch, useSelector } from 'react-redux';
@@ -27,7 +27,7 @@ import AvatarFilterMember from 'components/user/AvatarFilterMember/AvatarFilterM
 import AdditionalMembersCounterPopover from 'components/user/AdditionalMembersCounterPopover/AdditionalMembersCounterPopover';
 import ListOptionsMenu from 'components/tasklist/ListOptionsMenu/ListOptionsMenu';
 import HeaderSearch from 'components/template/HeaderSearch/HeaderSearch';
-import { Box } from '@material-ui/core';
+import { Box } from '@mui/material';
 import InviteMemberButton from 'components/user/InviteMemberButton/InviteMemberButton';
 import { isUserGuest, isUserViewOnly } from 'helpers/user-helper';
 import {
@@ -41,7 +41,7 @@ import {
 import { determineTaskCounts } from './helpers';
 import { HeaderMembersContainer } from './styled';
 
-const ListDetailsHeader = props => {
+const ListDetailsHeader = (props) => {
   const {
     tasks,
     totalTasksAmount,
@@ -66,8 +66,10 @@ const ListDetailsHeader = props => {
     () =>
       listUsers?.length > 0
         ? listUsers
-            .filter(u => u?.userIdentifier === userIdentifier)
-            .concat(listUsers.filter(u => u?.userIdentifier !== userIdentifier))
+            .filter((u) => u?.userIdentifier === userIdentifier)
+            .concat(
+              listUsers.filter((u) => u?.userIdentifier !== userIdentifier),
+            )
         : [],
     [listUsers, userIdentifier],
   );
@@ -79,7 +81,7 @@ const ListDetailsHeader = props => {
     dispatch(getQuickFilters({ taskListIdentifier }));
   };
 
-  const handleFilterSelect = newFilters => {
+  const handleFilterSelect = (newFilters) => {
     dispatch(filterListDetailsTasks(newFilters));
   };
 
@@ -96,7 +98,7 @@ const ListDetailsHeader = props => {
       !equals(
         selectedFilters,
         quickFiltersList?.find(
-          f => f.quickFilterIdentifier === selectedQuickFilter,
+          (f) => f.quickFilterIdentifier === selectedQuickFilter,
         )?.selectedOptions,
       ),
     [quickFiltersList, selectedFilters, selectedQuickFilter],
@@ -139,7 +141,7 @@ const ListDetailsHeader = props => {
   );
 
   const handleQuickFilterCreate = useCallback(
-    name =>
+    (name) =>
       dispatch(
         createQuickFilter(name, { taskListIdentifier }, selectedFilters),
       ),
@@ -159,7 +161,8 @@ const ListDetailsHeader = props => {
   );
 
   const handleQuickFilterDelete = useCallback(
-    quickFilterIdentifier => dispatch(deleteQuickFilter(quickFilterIdentifier)),
+    (quickFilterIdentifier) =>
+      dispatch(deleteQuickFilter(quickFilterIdentifier)),
     [dispatch],
   );
 
@@ -209,7 +212,7 @@ const ListDetailsHeader = props => {
                 display="flex"
                 alignItems="center"
                 key={user.identifier}
-                pl={index !== 0 ? 0.5 : 0}
+                pl={index === 0 ? 0 : 0.5}
               >
                 <AvatarFilterMember
                   member={user}

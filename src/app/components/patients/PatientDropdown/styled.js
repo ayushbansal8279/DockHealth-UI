@@ -1,19 +1,20 @@
 import styled from 'styled-components';
-import { Skeleton } from '@material-ui/lab';
-import { Popover } from '@material-ui/core';
-import { withStyles } from '@material-ui/core/styles';
+import Skeleton from '@mui/material/Skeleton';
+import { Popover } from '@mui/material';
 import palette from 'styles/palette';
 import spacing from 'styles/spacing';
 import { fontSizes, fontWeights } from 'styles/font';
 
-export const StyledPopover = withStyles({
-  paper: {
-    border: 'none',
-    boxShadow: '0px 0px 11px rgba(0, 0, 0, 0.15)',
-    minWidth: 230,
-    width: ({ width }) => `${width || 230}px`,
-  },
-})(Popover);
+export const StyledPopover = styled(Popover)`
+  .MuiPopover-paper {
+    border: none;
+    box-shadow: 0px 0px 11px rgba(0, 0, 0, 0.15);
+    width: ${({ width }) => width};
+  }
+  .MuiBackdrop-root {
+    opacity: 0 !important;
+  }
+`;
 
 export const StyledButton = styled.button`
   width: ${({ fullWidth }) => (fullWidth ? '100%' : 'auto')};
@@ -29,7 +30,7 @@ export const Input = styled.input`
 
 export const InputBox = styled.div`
   display: flex;
-  width: 100%;
+  width: 300px;
   padding: ${spacing.smallPlus} ${spacing.smallPlus};
   color: ${palette.mediumGrey};
   font-size: ${fontSizes.smallPlus};
@@ -82,11 +83,13 @@ export const UnassignRowContainer = styled.div`
     withBorder ? `1px solid ${palette.coolGrey2}` : '0px'};
 `;
 
-export const LoaderItem = withStyles({
-  root: {
-    margin: `${spacing.regular} ${spacing.large}`,
-  },
-})(Skeleton);
+export const LoaderItem = styled(Skeleton)`
+  &&& {
+    &.MuiSkeleton-root {
+      margin: ${`${spacing.regular} ${spacing.large}`};
+    }
+  }
+`;
 
 export const LoaderContainer = styled.div`
   padding: ${spacing.smallPlus} 0;

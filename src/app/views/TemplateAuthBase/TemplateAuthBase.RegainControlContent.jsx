@@ -1,4 +1,4 @@
-import { Grid } from '@material-ui/core';
+import { Grid } from '@mui/material';
 import React from 'react';
 import styled from 'styled-components';
 import Spacing from 'components/common/Spacing';
@@ -24,7 +24,7 @@ const TemplateAuthBaseRegainControlContent = () => {
     <StyledGrid
       container
       direction="column"
-      justify="center"
+      justifyContent="center"
       alignItems="flex-start"
     >
       <a href="/#/core/home/my-tasks">

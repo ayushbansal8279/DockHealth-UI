@@ -2,7 +2,7 @@ import styled from 'styled-components';
 import spacing from 'styles/spacing';
 import palette from 'styles/palette';
 import { fontSizes } from 'styles/font';
-import ChevronRightIcon from '@material-ui/icons/ChevronRight';
+import ChevronRightIcon from '@mui/icons-material/ChevronRight';
 
 export const ListPickerModalWrapper = styled.div`
   display: flex;
@@ -61,7 +61,7 @@ export const Title = styled.h2`
   font-size: ${fontSizes.regularPlus};
   text-transform: uppercase;
   color: ${palette.brightBlue};
-  font-family: Roboto Condensed;
+  font-family: 'Roboto Condensed', sans-serif;;
 `;
 
 export const Description = styled.p`

@@ -1,6 +1,6 @@
 import styled from 'styled-components';
-import { DataGrid } from '@material-ui/data-grid';
-import { Grid } from '@material-ui/core';
+import { DataGrid } from '@mui/x-data-grid';
+import { Grid } from '@mui/material';
 import { fontWeights, fontSizes } from 'styles/font';
 import spacing from 'styles/spacing';
 import palette from 'styles/palette';
@@ -8,12 +8,11 @@ import palette from 'styles/palette';
 export const ListContainer = styled.div`
   background-color: ${palette.white};
   padding: 1rem;
-  }
 `;
 
 export const UsersListContainer = styled.div`
   && {
-    .MuiDataGrid-sortIcon {
+    &.MuiDataGrid-sortIcon {
       background: ${palette.brightBlue};
       color: ${palette.white};
       padding: 1px;
@@ -46,17 +45,37 @@ export const MemberContainer = styled(Grid).attrs({ item: true })`
 `;
 
 export const StyledDataGrid = styled(DataGrid)`
+  margin-bottom: 48px;
+
   &.MuiDataGrid-root {
-    max-width: 1179px;
+    max-width: 1180px;
+    background-color: white;
   }
 
-  .MuiDataGrid-columnHeaderTitleContainer {
+  & .MuiDataGrid-footerContainer {
+    p {
+      margin-bottom: 0;
+    }
+  }
+
+  & .MuiSelect-select {
+    font-family: "Roboto Condensed", sans-serif;
+    font-weight: 400;
+    font-size: 0.875rem;
+    line-height: 1.43;
+    flex-shrink: 0;
+    margin-top: 2px;
+    padding-right: 0 !important;
+    padding-left: 0;
+  }
+
+  &.MuiDataGrid-columnHeaderTitleContainer {
     display: flex;
     align-items: center;
     margin-left: -15px;
   }
 
-  .MuiDataGrid-columnHeader {
+  &.MuiDataGrid-columnHeader {
     &:focus {
       outline: none !important;
     }
@@ -65,26 +84,26 @@ export const StyledDataGrid = styled(DataGrid)`
     }
   }
 
-  .MuiDataGrid-cell {
-    font-family: Roboto Condensed;
+  &.MuiDataGrid-cell {
+    font-family: 'Roboto Condensed', sans-serif;;
     font-weight: ${fontWeights.light};
     font-size: ${fontSizes.smallPlus};
     padding-left: ${spacing.large} !important;
   }
 
-  .MuiDataGrid-colCell {
+  &.MuiDataGrid-colCell {
     outline: none !important;
     padding: 0 !important;
   }
 
-  .MuiDataGrid-cell {
+  &.MuiDataGrid-cell {
     outline: none !important;
     color: ${palette.darkGrey};
   }
 
-  .MuiDataGrid-colCellTitle {
+  &.MuiDataGrid-colCellTitle {
     background-color: white;
-    font-family: Roboto Condensed;
+    font-family: 'Roboto Condensed', sans-serif;;
     font-size: ${fontSizes.small};
     font-weight: ${fontWeights.regularPlus} !important;
     padding-left: 0;
@@ -96,15 +115,15 @@ export const StyledDataGrid = styled(DataGrid)`
     }
   }
 
-  .MuiDataGrid-columnSeparator {
+  &.MuiDataGrid-columnSeparator {
     visibility: hidden;
   }
 
-  .MuiDataGrid-columnHeaderWrapper {
+  &.MuiDataGrid-columnHeaderWrapper {
     background-color: white;
   }
 
-  .MuiDataGrid-row {
+  &.MuiDataGrid-row {
     background-color: white;
     cursor: default;
 
@@ -122,12 +141,12 @@ export const StyledDataGrid = styled(DataGrid)`
     }
   }
 
-  .people-cell-container {
+  &.people-cell-container {
     display: flex;
     align-items: center;
   }
 
-  .Sorting-Arrow {
+  &.Sorting-Arrow {
     opacity: 0;
 
     &:hover {
@@ -136,11 +155,11 @@ export const StyledDataGrid = styled(DataGrid)`
     }
   }
 
-  .MuiTablePagination-caption:nth-of-type(1) {
+  &.MuiTablePagination-caption:nth-of-type(1) {
     display: none;
   }
 
-  .MuiTablePagination-input {
+  &.MuiTablePagination-input {
     display: none;
   }
 `;

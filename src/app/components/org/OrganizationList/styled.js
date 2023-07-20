@@ -6,7 +6,7 @@ import { fontWeights } from 'styles/font';
 
 export const OrganizationsListDropdownContainer = styled.div`
   position: absolute;
-  height: ${props => (props.isOpen ? 'fit-content' : 0)};
+  height: ${(props) => (props.isOpen ? 'fit-content' : 0)};
   width: 100%;
   z-index: 1;
   cursor: pointer;
@@ -14,7 +14,7 @@ export const OrganizationsListDropdownContainer = styled.div`
 `;
 
 export const OrganizationIdentifiersList = styled.div`
-  height: ${props =>
+  height: ${(props) =>
     props.isOpen
       ? `calc(67px * ${props.organizationAmount})`
       : 0}; // single oraganization identifier height times visible list items limit
@@ -27,12 +27,12 @@ export const OrganizationIdentifiersList = styled.div`
 export const OrganizationIdentifiersListContainer = styled.div`
   margin: ${spacing.smallPlus} ${spacing.small} 0;
   position: relative;
-  background-color: ${props =>
+  background-color: ${(props) =>
     props.isOpen ? palette.coolGrey4 : 'transparent'};
-  color: ${props => (props.isOpen ? palette.mediumGrey : 'white')} !important;
+  color: ${(props) => (props.isOpen ? palette.mediumGrey : 'white')} !important;
   min-height: 67px;
-  ${props => !props.isOpen && `overflow: hidden;`}
-  ${props =>
+  ${(props) => !props.isOpen && `overflow: hidden;`}
+  ${(props) =>
     props.showShadowOnHover &&
     `
   &:hover {

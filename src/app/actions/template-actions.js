@@ -15,7 +15,7 @@ export const hideNavbar = () => ({
   type: HIDE_NAVBAR,
 });
 
-export const showSubMenu = subMenuKey => ({
+export const showSubMenu = (subMenuKey) => ({
   type: SHOW_SUB_MENU,
   subMenuKey,
 });
@@ -24,7 +24,7 @@ export const hideSubMenu = () => ({
   type: HIDE_SUB_MENU,
 });
 
-export const openNotifications = notificationsPage => ({
+export const openNotifications = (notificationsPage) => ({
   type: OPEN_NOTIFICATIONS,
   notificationsPage,
 });

@@ -47,7 +47,7 @@ const UserTypeOptions = ({
     });
   };
 
-  const removeSubscriptionWithNewOwnerFlow = openOwnerModal => {
+  const removeSubscriptionWithNewOwnerFlow = (openOwnerModal) => {
     openRemoveSubscriptionModal({
       userIdentifier,
       email,
@@ -77,7 +77,7 @@ const UserTypeOptions = ({
   const isDisabledRemovingSubscription = hasOneUserRemaining;
 
   const currentActiveUsers = organizationMembers?.filter(
-    user =>
+    (user) =>
       !!user?.subscription &&
       user?.userIdentifier !== sessionStorage.userIdentifier,
   );
@@ -120,7 +120,7 @@ const UserTypeOptions = ({
 };
 
 const mapDispatchToProps = {
-  openRemoveSubscriptionModal: props =>
+  openRemoveSubscriptionModal: (props) =>
     openModalAction('RemoveActiveUser', { ...props }),
 };
 

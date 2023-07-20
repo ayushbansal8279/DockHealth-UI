@@ -29,7 +29,7 @@ const PatientLabelStatisticsChart = () => {
         )
       : AnalyticsApi.getGroupedStatistics(StatisticsGroupType.TASK_PATIENTLABEL)
     )
-      .then(responseMetrics => {
+      .then((responseMetrics) => {
         setData(getTopMetrics(responseMetrics, 14));
       })
       .catch(() => {

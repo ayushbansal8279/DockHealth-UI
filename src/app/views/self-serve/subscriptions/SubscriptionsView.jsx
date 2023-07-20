@@ -7,7 +7,7 @@ import {
   AccordionDetails,
   Box,
   Grid,
-} from '@material-ui/core';
+} from '@mui/material';
 import usePrevious from 'hooks/use-previous';
 import equals from 'ramda/src/equals';
 import ProfessionalServicesChevron from 'img/professional-services-chevron';
@@ -76,10 +76,8 @@ const SubscriptionsView = () => {
   const [selectedBillingFrequency, setSelectedBillingFrequency] = useState(
     BillingFrequency.MONTHLY,
   );
-  const [
-    selectedProfessionalServices,
-    setSelectedProfessionalServices,
-  ] = useState(false);
+  const [selectedProfessionalServices, setSelectedProfessionalServices] =
+    useState(false);
   const [selectedPlan, setSelectedPlan] = useState(null);
   const currentUser = useSelector(userProfileSelector);
   const isSavingNewPlan = useSelector(isSavingNewPlanSelector);
@@ -185,8 +183,8 @@ const SubscriptionsView = () => {
     }
   };
 
-  const hasExistingSubscription = !currentSubscriptionPlan?.subscriptionDetails
-    ?.trialEndDate;
+  const hasExistingSubscription =
+    !currentSubscriptionPlan?.subscriptionDetails?.trialEndDate;
 
   return (
     <ViewLayout header={<BasicLayoutHeader title="Subscriptions" />}>
@@ -215,7 +213,7 @@ const SubscriptionsView = () => {
               </SwitchLabel>
               <Switch
                 checked={selectedBillingFrequency === BillingFrequency.MONTHLY}
-                onChange={event =>
+                onChange={(event) =>
                   setSelectedBillingFrequency(
                     event.target.checked
                       ? BillingFrequency.MONTHLY
@@ -241,7 +239,7 @@ const SubscriptionsView = () => {
                   plan={plan}
                   hasExistingSubscription={hasExistingSubscription}
                   billingFrequency={selectedBillingFrequency}
-                  onSelect={newPlan => {
+                  onSelect={(newPlan) => {
                     if (newPlan === selectedPlan) {
                       setSelectedPlan(subscriptionPlan);
                     } else {
@@ -342,7 +340,7 @@ const SubscriptionsView = () => {
               </BillingTableSummaryRow>
             </BillingTable>
             <Box p={1} />
-            <Grid container justify="flex-end">
+            <Grid container justifyContent="flex-end">
               {isCurrentPlanChanged && (
                 <Button
                   width="200px"

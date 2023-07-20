@@ -1,4 +1,3 @@
-/* eslint-disable import/prefer-default-export */
 import styled from 'styled-components';
 import palette, { opacify } from 'styles/palette';
 import spacing from 'styles/spacing';

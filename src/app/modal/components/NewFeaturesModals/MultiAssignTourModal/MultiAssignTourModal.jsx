@@ -1,0 +1,74 @@
+import React, { useState } from 'react';
+import Button from 'components/common/Button/Button';
+import {
+  ButtonWrapper,
+  ModalWrapper,
+  TopLabel,
+  StepsContainer,
+  Step,
+  StepContainer,
+} from '../styled';
+import { CloseIconButton, CloseIcon } from '../../styled';
+import {
+  MultiAssignStep,
+  UndoOptionStep,
+  RemindersStep,
+  PeopleMentionsStep,
+  PatientsMentionsStep,
+} from './Steps';
+
+const TOUR_STEPS_COMPONENTS = [
+  MultiAssignStep,
+  UndoOptionStep,
+  RemindersStep,
+  PeopleMentionsStep,
+  PatientsMentionsStep,
+];
+
+const MultiAssignTourModal = ({ closeModal }) => {
+  const [currentStep, setCurrentStep] = useState(0);
+
+  const CurrentStepComponent = TOUR_STEPS_COMPONENTS[currentStep];
+
+  return (
+    <ModalWrapper height={667}>
+      <CloseIconButton onClick={closeModal} size="small" color="secondary">
+        <CloseIcon />
+      </CloseIconButton>
+      {currentStep >= 0 && currentStep < 3 && (
+        <TopLabel>New features!</TopLabel>
+      )}
+      {currentStep >= 3 && <TopLabel>Did You Know?</TopLabel>}
+      <StepContainer>
+        <CurrentStepComponent />
+      </StepContainer>
+      <div>
+        <ButtonWrapper>
+          {currentStep === TOUR_STEPS_COMPONENTS.length - 1 ? (
+            <Button fullWidth onClick={closeModal}>
+              Got it
+            </Button>
+          ) : (
+            <Button
+              fullWidth
+              onClick={() => setCurrentStep((step) => step + 1)}
+            >
+              Next
+            </Button>
+          )}
+        </ButtonWrapper>
+        <StepsContainer>
+          {TOUR_STEPS_COMPONENTS.map((_, index) => (
+            <Step
+              type="button"
+              isActive={index === currentStep}
+              onClick={() => setCurrentStep(index)}
+            />
+          ))}
+        </StepsContainer>
+      </div>
+    </ModalWrapper>
+  );
+};
+
+export default MultiAssignTourModal;

@@ -21,7 +21,7 @@ const InviteUsersModal = ({ onCancel, onSubmit }) => {
     setSelectedMembers(channel.members);
 
     const memberUserListQuery = channel?.createMemberListQuery({ limit: 10 });
-    memberUserListQuery.next().then(returnedMembers => {
+    memberUserListQuery.next().then((returnedMembers) => {
       setMembers(returnedMembers);
       setHasNext(memberUserListQuery.hasNext);
     });
@@ -30,7 +30,7 @@ const InviteUsersModal = ({ onCancel, onSubmit }) => {
   const handleSubmit = useCallback(async () => {
     const currentChannelMembers = channel.members;
     const selectedIdentifiers = selectedMembers.map(
-      member => member.identifier,
+      (member) => member.identifier,
     );
 
     const bannedMembersQuery = channel.createBannedUserListQuery();
@@ -69,7 +69,7 @@ const InviteUsersModal = ({ onCancel, onSubmit }) => {
     >
       <MultiAssignChatInviteMembersList
         selectedMembers={selectedMembers}
-        onSelect={selected => {
+        onSelect={(selected) => {
           setSelectedMembers(selected);
         }}
       />

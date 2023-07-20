@@ -3,7 +3,7 @@ import React, { useCallback, useState, useRef, useEffect } from 'react';
 import SortArrow from 'components/common/SortArrow/SortArrow';
 import { SortOrderType } from 'helpers/sorting-helper';
 import { checkIfShouldDisplayTooltip } from 'components/task/OverflowTooltip/OverflowTooltip';
-import { Box, Fade, Popper } from '@material-ui/core';
+import { Box, Fade, Popper } from '@mui/material';
 import { Draggable } from 'react-beautiful-dnd';
 import ThreeDotsIcon from 'img/three-dots.svg';
 import { Resizable } from 'react-resizable';
@@ -37,7 +37,6 @@ const ColumnSortHeader = ({
   // eslint-disable-next-line sonarjs/cognitive-complexity
 }) => {
   const descriptionTextReference = useRef();
-  const [isHovered, setIsHovered] = useState(false);
   const [columnWidth, setcolumnWidth] = useState(+width);
   const [isResizing, setIsResizing] = useState(false);
   const previousWidth = usePrevious(width);
@@ -62,18 +61,22 @@ const ColumnSortHeader = ({
       onSortChange(id, SortOrderType.ASC);
     } else {
       switch (order) {
-        case null:
+        case null: {
           onSortChange(id, SortOrderType.ASC);
           break;
-        case SortOrderType.ASC:
+        }
+        case SortOrderType.ASC: {
           onSortChange(id, SortOrderType.DESC);
           break;
-        case SortOrderType.DESC:
+        }
+        case SortOrderType.DESC: {
           onSortChange(id, SortOrderType.DEFAULT);
           break;
-        default:
+        }
+        default: {
           onSortChange(id, SortOrderType.DEFAULT);
           break;
+        }
       }
     }
   }, [isResizing, disabled, onSortChange, isDraggingOver, sort, id]);
@@ -91,7 +94,7 @@ const ColumnSortHeader = ({
   );
 
   const randerContent = useCallback(
-    tasksHeaderTextColor => {
+    (tasksHeaderTextColor) => {
       return (
         <div>
           <LabelWrapper
@@ -100,13 +103,10 @@ const ColumnSortHeader = ({
             ref={descriptionTextReference}
           >
             <Box display="flex">
-              <Box p="0 5px 0 10px" position="relative">
+              <Box p="0 5px 0 5px" position="relative">
                 <Box position="absolute" left="5px" top="0px">
                   {draggable && (
-                    <ThreeDots
-                      hideIcon={!isHovered || isDraggingOver}
-                      src={ThreeDotsIcon}
-                    />
+                    <ThreeDots hideIcon={isDraggingOver} src={ThreeDotsIcon} />
                   )}
                 </Box>
               </Box>
@@ -136,13 +136,10 @@ const ColumnSortHeader = ({
               </Box>
             </Box>
           </LabelWrapper>
-          <Popper
+          {/* <Popper
             anchorEl={descriptionTextReference.current}
             placement="bottom-start"
-            open={
-              checkIfShouldDisplayTooltip(descriptionTextReference.current) &&
-              isHovered
-            }
+            open={checkIfShouldDisplayTooltip(descriptionTextReference.current)}
             style={{
               zIndex: 115,
               maxWidth:
@@ -155,7 +152,7 @@ const ColumnSortHeader = ({
                 <DescriptionTooltipWrapper>{label}</DescriptionTooltipWrapper>
               </Fade>
             )}
-          </Popper>
+          </Popper> */}
         </div>
       );
     },
@@ -164,7 +161,6 @@ const ColumnSortHeader = ({
       draggable,
       id,
       isDraggingOver,
-      isHovered,
       label,
       onSortChange,
       sort,
@@ -185,7 +181,7 @@ const ColumnSortHeader = ({
         axis={typeof onResize === 'function' ? 'x' : 'none'}
         handle={
           <Box
-            onClick={event => {
+            onClick={(event) => {
               event.stopPropagation();
               event.preventDefault();
             }}
@@ -200,8 +196,6 @@ const ColumnSortHeader = ({
           type="button"
           width={columnWidth}
           onClick={switchSort}
-          onMouseEnter={() => setIsHovered(true)}
-          onMouseLeave={() => setIsHovered(false)}
           tasksHeaderTextTransform={tasksHeaderTextTransform}
         >
           {randerContent(tasksHeaderTextColor)}
@@ -221,7 +215,7 @@ const ColumnSortHeader = ({
       axis={typeof onResize === 'function' ? 'x' : 'none'}
       handle={
         <Box
-          onClick={event => {
+          onClick={(event) => {
             event.stopPropagation();
             event.preventDefault();
           }}
@@ -236,8 +230,6 @@ const ColumnSortHeader = ({
         type="button"
         width={snapshot?.draggingOverWith === id ? 0 : columnWidth}
         onClick={switchSort}
-        onMouseEnter={() => setIsHovered(true)}
-        onMouseLeave={() => setIsHovered(false)}
         printWidth={printWidth}
         tasksHeaderTextTransform={tasksHeaderTextTransform}
       >
@@ -247,7 +239,7 @@ const ColumnSortHeader = ({
           draggableId={id}
           index={index}
         >
-          {provided => (
+          {(provided) => (
             <div
               ref={provided.innerRef}
               {...provided.draggableProps}

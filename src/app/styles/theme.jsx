@@ -1,5 +1,5 @@
-import { Typography } from '@material-ui/core';
-import { createTheme, ThemeProvider } from '@material-ui/core/styles';
+import { Typography } from '@mui/material';
+import { createTheme, ThemeProvider } from '@mui/material/styles';
 import React from 'react';
 import memoizeWith from 'ramda/src/memoizeWith';
 import palette from './palette';
@@ -55,14 +55,16 @@ const themeFactory = memoizeWith(
           fontWeight,
         },
       },
-      ...themeCommonOverrides(),
+      components: {
+        ...themeCommonOverrides(),
+      },
     }),
 );
 
-export const getTheme = ({ weight, condensed } = {}) =>
+export const getTheme = ({ weight } = {}) =>
   themeFactory({
     fontWeight: weight,
-    fontFamily: condensed ? 'Roboto Condensed' : 'Roboto',
+    fontFamily: 'Roboto Condensed',
   });
 
 export const RobotoTypography = ({

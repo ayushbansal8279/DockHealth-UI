@@ -4,19 +4,17 @@ import { useHistory } from 'react-router-dom';
 import { updateOrganization } from 'actions/organization-actions';
 import { useDispatch } from 'react-redux';
 
-const onSubmit = ({ dispatch, history }) => ({
-  organizationName,
-  organizationInitials,
-  organizationThemeColor,
-}) => {
-  updateOrganization({
-    organizationName,
-    organizationInitials,
-    organizationProfileColor: organizationThemeColor,
-  })(dispatch).then(() => {
-    history.push('/onboarding/customer-preference');
-  });
-};
+const onSubmit =
+  ({ dispatch, history }) =>
+  ({ organizationName, organizationInitials, organizationThemeColor }) => {
+    updateOrganization({
+      organizationName,
+      organizationInitials,
+      organizationProfileColor: organizationThemeColor,
+    })(dispatch).then(() => {
+      history.push('/onboarding/customer-preference');
+    });
+  };
 
 const OnboardingOrgSetupView = () => {
   const dispatch = useDispatch();

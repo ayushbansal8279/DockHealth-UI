@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import styled, { keyframes, css } from 'styled-components';
-import { Grid } from '@material-ui/core';
+import { Grid } from '@mui/material';
 import palette, { featurePalette } from 'styles/palette';
 
 export const GridImg = styled(Grid)`

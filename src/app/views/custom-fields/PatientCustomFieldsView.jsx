@@ -3,10 +3,10 @@ import { useDispatch } from 'react-redux';
 import map from 'ramda/src/map';
 import pluck from 'ramda/src/pluck';
 import move from 'ramda/src/move';
-import { Box, IconButton } from '@material-ui/core';
-import { Skeleton } from '@material-ui/lab';
-import DeleteIcon from '@material-ui/icons/Delete';
-import EditIcon from '@material-ui/icons/Edit';
+import { Box, IconButton } from '@mui/material';
+import Skeleton from '@mui/material/Skeleton';
+import DeleteIcon from '@mui/icons-material/Delete';
+import EditIcon from '@mui/icons-material/Edit';
 import { showGlobalErrorAlert } from 'alert/actions';
 import * as CustomFieldsApi from 'api/custom-fields-api';
 import { FieldTypeLabel } from 'helpers/field-type-helpers';
@@ -42,9 +42,10 @@ const PatientCustomFieldsView = () => {
 
   const fetchPatientCustomFields = () => {
     CustomFieldsApi.getAllPatientCustomFields()
-      .then(data => {
+      .then((data) => {
         const customFieldsData = data?.filter(
-          cf => cf.contextType === 'CUSTOM' || cf.contextType === 'PREDEFINED',
+          (cf) =>
+            cf.contextType === 'CUSTOM' || cf.contextType === 'PREDEFINED',
         );
         setCustomFields(customFieldsData);
         setIsFetching(false);
@@ -59,16 +60,16 @@ const PatientCustomFieldsView = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  const handleEditClick = field => {
+  const handleEditClick = (field) => {
     dispatch(
       openModal('EditCustomField', {
         options: {
           type: 'PATIENT',
         },
         customField: field,
-        onUpdated: updatedField => {
+        onUpdated: (updatedField) => {
           setCustomFields(
-            map(f =>
+            map((f) =>
               updatedField.identifier === f.identifier
                 ? { ...f, ...updatedField }
                 : f,
@@ -79,7 +80,7 @@ const PatientCustomFieldsView = () => {
     );
   };
 
-  const handleRemoveClick = id => {
+  const handleRemoveClick = (id) => {
     dispatch(
       openModal('DeleteConfirmation', {
         title: 'Delete field',
@@ -88,7 +89,7 @@ const PatientCustomFieldsView = () => {
         confirm: () => {
           CustomFieldsApi.deleteCustomField(id)
             .then(() =>
-              setCustomFields(previousValue =>
+              setCustomFields((previousValue) =>
                 previousValue.filter(({ identifier }) => id !== identifier),
               ),
             )
@@ -103,9 +104,9 @@ const PatientCustomFieldsView = () => {
   const moveElementByIDs = (originID, destinationID, fields) => {
     if (!originID || !destinationID) return fields;
     const idents = pluck('identifier', fields);
-    const idxFrom = idents.indexOf(originID);
-    const idxTo = idents.indexOf(destinationID);
-    return move(idxFrom, idxTo, fields).map((field, index) => ({
+    const indexFrom = idents.indexOf(originID);
+    const indexTo = idents.indexOf(destinationID);
+    return move(indexFrom, indexTo, fields).map((field, index) => ({
       ...field,
       sortIndex: index,
     }));
@@ -119,13 +120,13 @@ const PatientCustomFieldsView = () => {
 
   const handleOnDragEnd = async (originID, destinationID) => {
     const result = moveElementByIDs(originID, destinationID, sortedFields);
-    const lastWorkingOrder = customFields.slice();
+    const lastWorkingOrder = [...customFields];
     setCustomFields(result);
     try {
       await CustomFieldsApi.sortPatientCustomFields(
         pluck('identifier', result),
       );
-    } catch (error) {
+    } catch {
       dispatch(showGlobalErrorAlert());
       setCustomFields(lastWorkingOrder);
     }
@@ -137,10 +138,9 @@ const PatientCustomFieldsView = () => {
         options: {
           type: 'PATIENT',
         },
-        onAdded: async customField => {
-          const newFields = (sortedFields
-            ? [...sortedFields, customField]
-            : [customField]
+        onAdded: async (customField) => {
+          const newFields = (
+            sortedFields ? [...sortedFields, customField] : [customField]
           ).map((field, index) => {
             return { ...field, sortIndex: index };
           });
@@ -159,7 +159,16 @@ const PatientCustomFieldsView = () => {
 
   return (
     <>
-      {!isFetching ? (
+      {isFetching ? (
+        Array.from({ length: 4 })
+          .fill()
+          .map((_, index) => (
+            // eslint-disable-next-line react/no-array-index-key
+            <Box key={index} pb="2px">
+              <Skeleton variant="rect" width="100%" height={35} />
+            </Box>
+          ))
+      ) : (
         <>
           {customFields?.length > 0 ? (
             <>
@@ -193,8 +202,8 @@ const PatientCustomFieldsView = () => {
               >
                 <SortableContext items={pluck('identifier', sortedFields)}>
                   {sortedFields
-                    .filter(field => field.contextType !== 'PREDEFINED')
-                    .map(field => (
+                    .filter((field) => field.contextType !== 'PREDEFINED')
+                    .map((field) => (
                       <SortableItem
                         key={field.identifier}
                         itemId={field.identifier}
@@ -268,13 +277,6 @@ const PatientCustomFieldsView = () => {
             <EmptyListPlaceholder>List is empty</EmptyListPlaceholder>
           )}
         </>
-      ) : (
-        new Array(4).fill().map((_, index) => (
-          // eslint-disable-next-line react/no-array-index-key
-          <Box key={index} pb="2px">
-            <Skeleton variant="rect" width="100%" height={35} />
-          </Box>
-        ))
       )}
       <Box p={1} />
       <CenterBox>

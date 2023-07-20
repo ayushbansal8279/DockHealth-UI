@@ -1,4 +1,4 @@
-import { Collapse } from '@material-ui/core';
+import { Collapse } from '@mui/material';
 import styled from 'styled-components';
 import spacing from 'styles/spacing';
 import { fontWeights, fontSizes } from 'styles/font';
@@ -27,7 +27,7 @@ export const TasksGroupActionButtonsContainer = styled.div`
 `;
 
 export const TasksGroupActionButton = styled.button`
-  display: ${props => (props.isDisplayed ? 'flex' : 'none')};
+  display: ${(props) => (props.isDisplayed ? 'flex' : 'none')};
   align-items: center;
   cursor: pointer;
   padding: 0 ${spacing.smallPlus};
@@ -44,8 +44,8 @@ export const TasksGroupActionButton = styled.button`
 `;
 
 export const Arrow = styled.img`
-  transform: ${props => (props.isOpen ? 'rotateX(180deg)' : '')};
-  -webkit-transform: ${props => (props.isOpen ? 'rotateX(180deg)' : '')};
+  transform: ${(props) => (props.isOpen ? 'rotateX(180deg)' : '')};
+  -webkit-transform: ${(props) => (props.isOpen ? 'rotateX(180deg)' : '')};
   padding-left: ${spacing.tiny};
   padding-right: ${spacing.smallPlus};
   transition: all 0.5s ease-in-out;
@@ -102,7 +102,7 @@ export const TasksGroupLabelCounter = styled.span`
 `;
 
 export const Tasks = styled(Collapse)`
-  height: 300px;
+  // height: 300px;
 `;
 
 export const GroupNameSectionWrapper = styled.div`
@@ -119,9 +119,10 @@ export const PaginationButton = styled.button`
   align-items: center;
   margin-top: ${spacing.regular};
   margin-left: ${spacing.huge};
-  color: ${props => (props.disabled ? palette.coolGrey2 : palette.brightBlue)};
+  color: ${(props) =>
+    props.disabled ? palette.coolGrey2 : palette.brightBlue};
   font-size: ${fontSizes.regular};
-  cursor: ${props => (props.disabled ? 'initial' : 'pointer')};
+  cursor: ${(props) => (props.disabled ? 'initial' : 'pointer')};
 `;
 
 export const ShowMoreButton = styled.button`

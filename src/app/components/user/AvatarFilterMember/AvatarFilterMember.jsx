@@ -10,7 +10,7 @@ import {
   unselectFilterOption,
 } from 'helpers/filter-options-helpers';
 
-const AvatarFilterMember = props => {
+const AvatarFilterMember = (props) => {
   const { onSelectFilters, selectedFilters, member } = props;
   const { identifier } = member || {};
 

@@ -1,12 +1,11 @@
-/* eslint-disable import/prefer-default-export */
 import styled from 'styled-components';
 
 export const NumberInputContainer = styled.div`
-  && {
-    .MuiFilledInput-input {
+  &&& {
+    &.MuiFilledInput-input {
       padding: 0;
     }
-    .MuiFilledInput-root {
+    &.MuiFilledInput-root {
       background-color: transparent !important;
     }
   }

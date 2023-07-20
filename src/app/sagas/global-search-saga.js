@@ -21,6 +21,7 @@ import {
   setWorkflowStatus as setWorkflowStatusHelper,
   TASK_DISAPPEAR_DELAY,
 } from 'helpers/task-update-helper';
+import { log } from 'helpers/log';
 import { userProfileSelector } from '../selectors/user-selectors';
 
 const DO_SEARCH_TASKS = 'DO_SEARCH_TASKS';
@@ -45,7 +46,7 @@ const refreshTasks = () => ({
   type: DO_REFRESH_TASKS,
 });
 
-const setSearchValue = value => ({
+const setSearchValue = (value) => ({
   type: DO_SET_SEARCH_VALUE,
   payload: { value },
 });
@@ -54,12 +55,12 @@ const clearSearchValue = () => ({
   type: DO_CLEAR_SEARCH_VALUE,
 });
 
-const setSearchCompletedTasks = isSearchingCompletedTasks => ({
+const setSearchCompletedTasks = (isSearchingCompletedTasks) => ({
   type: DO_SET_SEARCH_COMPLETED_TASKS,
   payload: { isSearchingCompletedTasks },
 });
 
-const toggleTaskStatus = task => ({
+const toggleTaskStatus = (task) => ({
   type: DO_TOGGLE_GLOBAL_SEARCH_TASK_STATUS,
   payload: {
     task,
@@ -120,7 +121,7 @@ function* doRefreshTasks() {
     } else {
       yield put(GlobalSearchActions.requestGlobalSearchSuccess([]));
     }
-  } catch (error) {
+  } catch {
     yield put(GlobalSearchActions.requestGlobalSearchFailure());
   }
 }
@@ -130,7 +131,7 @@ function* doSearchTasks() {
     yield put(GlobalSearchActions.requestGlobalSearch());
     yield call(doRefreshTasks);
   } catch (error) {
-    console.log(error);
+    log(error);
   }
 }
 
@@ -164,7 +165,7 @@ function* doGetMoreTasksForTaskList({ payload }) {
         GlobalSearchActions.requestGlobalSearchMoreSuccess(response.taskLists),
       );
     }
-  } catch (error) {
+  } catch {
     yield put(GlobalSearchActions.requestGlobalSearchMoreFailure());
   }
 }
@@ -178,7 +179,7 @@ function* doSetSearchValue({ payload }) {
       yield put(GlobalSearchActions.requestGlobalSearchSuccess([]));
     }
   } catch (error) {
-    console.log(error);
+    log(error);
   }
 }
 
@@ -187,7 +188,7 @@ function* doClearSearchValue() {
     yield put(GlobalSearchActions.setSearchValue(''));
     yield put(GlobalSearchActions.requestGlobalSearchSuccess([]));
   } catch (error) {
-    console.log(error);
+    log(error);
   }
 }
 
@@ -195,15 +196,13 @@ function* doSetSearchCompletedTasks({ payload }) {
   try {
     const { isSearchingCompletedTasks } = payload;
 
-    if (isSearchingCompletedTasks) {
-      yield put(GlobalSearchActions.searchCompletedTasks());
-    } else {
-      yield put(GlobalSearchActions.searchIncompletedTasks());
-    }
+    yield isSearchingCompletedTasks
+      ? put(GlobalSearchActions.searchCompletedTasks())
+      : put(GlobalSearchActions.searchIncompletedTasks());
 
     yield put(searchTasks());
   } catch (error) {
-    console.log(error);
+    log(error);
   }
 }
 
@@ -237,7 +236,7 @@ function* doToggleTaskCompleteStatus({ payload }) {
     }
 
     yield put(AlertActions.showGlobalAlert(successMessage));
-  } catch (error) {
+  } catch {
     yield put(refreshTasks());
   }
 }
@@ -254,7 +253,7 @@ function* doSetWorkflowStatus({ payload }) {
       workflowStatus,
     );
     yield put(AlertActions.showGlobalAlert(AlertMessages.UPDATED));
-  } catch (error) {
+  } catch {
     yield put(refreshTasks);
   }
 }
@@ -269,7 +268,7 @@ function* doUpdateTask({ payload }) {
     );
     yield put(GlobalSearchActions.updateGlobalSearchTask(updatedTask));
     yield put(AlertActions.showGlobalAlert(AlertMessages.UPDATED));
-  } catch (error) {
+  } catch {
     yield put(refreshTasks());
   }
 }

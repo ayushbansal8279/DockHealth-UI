@@ -1,7 +1,7 @@
 import React from 'react';
-import { Box } from '@material-ui/core';
+import { Box } from '@mui/material';
 import { useBoolean } from 'hooks/useBoolean';
-import { Handle, Position } from 'react-flow-renderer';
+import { Handle, Position } from 'reactflow';
 import palette from 'styles/palette';
 import {
   NodeSourceHandle,
@@ -10,12 +10,10 @@ import {
 import { AddIcon, targetHandleStyles, TargetHandlesWrapper } from './styled';
 
 function validateConnection({ source, target }) {
-  if (source === target) return false;
-
-  return true;
+  return source !== target;
 }
 
-const TaskNodeHandles = props => {
+const TaskNodeHandles = (props) => {
   const { children, isConnectable, isConnecting, onTargetHandleHover } = props;
   const [isHovered, setHovered, unsetHovered] = useBoolean(false);
 
@@ -30,6 +28,12 @@ const TaskNodeHandles = props => {
     borderRadius: nodeHandleSize / 2,
     backgroundColor: palette.brightBlue,
     visibility: isHovered ? 'visible' : 'hidden',
+  };
+
+  const iconStyles = {
+    pointerEvents: 'none',
+    color: 'white',
+    width: '12px',
   };
 
   return (
@@ -105,7 +109,7 @@ const TaskNodeHandles = props => {
         isValidConnection={validateConnection}
         isConnectable={isConnectable}
       >
-        <AddIcon />
+        <AddIcon style={iconStyles} />
       </Handle>
       <Handle
         id={NodeSourceHandle.SOURCE_B}
@@ -119,7 +123,7 @@ const TaskNodeHandles = props => {
         isValidConnection={validateConnection}
         isConnectable={isConnectable}
       >
-        <AddIcon />
+        <AddIcon style={iconStyles} />
       </Handle>
       <Handle
         id={NodeSourceHandle.SOURCE_C}
@@ -133,7 +137,7 @@ const TaskNodeHandles = props => {
         isValidConnection={validateConnection}
         isConnectable={isConnectable}
       >
-        <AddIcon />
+        <AddIcon style={iconStyles} />
       </Handle>
     </Box>
   );

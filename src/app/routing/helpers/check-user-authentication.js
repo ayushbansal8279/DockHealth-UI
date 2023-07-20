@@ -9,6 +9,7 @@ import {
   setCurrentPageInSessionStorage,
   showAlert,
 } from 'helpers/utility-functions';
+import { log } from 'helpers/log';
 import { CREATE_ACCOUNT_PATH, DEFAULT_REDIRECT_PATH } from './paths';
 
 const checkUserAuthentication = async ({ history, isRequiredLogin }) => {
@@ -37,18 +38,15 @@ const checkUserAuthentication = async ({ history, isRequiredLogin }) => {
             return;
           }
           const patientIdentifier = sessionStorage.getItem('PatientIdentifier');
-          console.log(patientIdentifier);
-          if (
+          log(patientIdentifier);
+          window.location.href =
             patientIdentifier &&
             patientIdentifier !== '' &&
             patientIdentifier !== 'null'
-          ) {
-            window.location.href = `/#/core/patient/${patientIdentifier}`;
-          } else {
-            window.location.href = `/#/core/home`;
-          }
+              ? `/#/core/patient/${patientIdentifier}`
+              : `/#/core/home`;
         })
-        .catch(error => {
+        .catch((error) => {
           showAlert({ status: 'error', title: 'Error', text: error.message });
         });
     }
@@ -70,7 +68,7 @@ const checkUserAuthentication = async ({ history, isRequiredLogin }) => {
     }
 
     return { redirectPath: null, user };
-  } catch (error) {
+  } catch {
     history.push(DEFAULT_REDIRECT_PATH);
   }
 };

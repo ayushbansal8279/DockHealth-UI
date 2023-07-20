@@ -1,19 +1,19 @@
 import palette from 'styles/palette';
 import styled from 'styled-components';
-import MuiAddIcon from '@material-ui/icons/Add';
-import { withStyles } from '@material-ui/core/styles';
+import MuiAddIcon from '@mui/icons-material/Add';
 
 const NODE_HANDLE_SIZE = 14;
 
-export const AddIcon = withStyles({
-  root: {
-    width: 0.8 * NODE_HANDLE_SIZE,
-    height: 0.8 * NODE_HANDLE_SIZE,
-    color: palette.white,
-    pointerEvents: 'none',
-  },
-  colorPrimary: {},
-})(MuiAddIcon);
+export const AddIcon = styled(MuiAddIcon)`
+  &&& {
+    &.MuiAddIcon-root {
+      width: ${0.8 * NODE_HANDLE_SIZE}px;
+      height: ${0.8 * NODE_HANDLE_SIZE}px;
+      color: ${palette.white};
+      pointer-events: none;
+    }
+  }
+`;
 
 export const TargetHandlesWrapper = styled.div`
   position: absolute;

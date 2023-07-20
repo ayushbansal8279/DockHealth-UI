@@ -14,7 +14,7 @@ import {
   CheckboxContainer,
   ArrowContainer,
   ArrowIconWrapper,
-  EditedLabel,
+  // EditedLabel,
   InitialSpacing,
   InlineContainer,
   InnerContainer,
@@ -36,22 +36,21 @@ import {
   DueDateContainer,
 } from './PdfTask.Styled';
 
-const renderSubtask = ({
-  taskListMembers,
-  taskListMembersAvatars,
-  columnsWidth,
-}) => ({ taskIdentifier, ...props }) => (
-  <PdfTask
-    key={taskIdentifier}
-    taskListMembers={taskListMembers}
-    taskListMembersAvatars={taskListMembersAvatars}
-    taskIdentifier={taskIdentifier}
-    columnsWidth={columnsWidth}
-    {...props}
-  />
-);
+const renderSubtask =
+  ({ taskListMembers, taskListMembersAvatars, columnsWidth }) =>
+  ({ taskIdentifier, ...props }) =>
+    (
+      <PdfTask
+        key={taskIdentifier}
+        taskListMembers={taskListMembers}
+        taskListMembersAvatars={taskListMembersAvatars}
+        taskIdentifier={taskIdentifier}
+        columnsWidth={columnsWidth}
+        {...props}
+      />
+    );
 
-const PdfTask = props => {
+const PdfTask = (props) => {
   const {
     subtasks,
     description: descriptionName,
@@ -133,22 +132,16 @@ const PdfTask = props => {
               <TaskSubLabel color={palette.brightBlue}>
                 {completedByLabel}
               </TaskSubLabel>
-            ) : (
-              undefined
-            )}
+            ) : undefined}
             {bottomLabel ? (
               <TaskSubLabel>{bottomLabel}</TaskSubLabel>
-            ) : (
-              undefined
-            )}
+            ) : undefined}
           </MainInnerContainer>
           {columnsWidth.patient ? (
             <PatientContainer width={columnsWidth.patient}>
               <TextLabel>{patientName}</TextLabel>
             </PatientContainer>
-          ) : (
-            undefined
-          )}
+          ) : undefined}
           <StatusContainer>
             {!isComplete && (
               <StatusColorContainer color={workflowStatusColor} />
@@ -167,9 +160,7 @@ const PdfTask = props => {
             <ListNameContainer width={columnsWidth.listName}>
               <TextLabel>{listName}</TextLabel>
             </ListNameContainer>
-          ) : (
-            undefined
-          )}
+          ) : undefined}
         </TaskInnerContainer>
       </TaskContainer>
       {subtasks?.length > 0 && (

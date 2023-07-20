@@ -1,4 +1,3 @@
-/* eslint-disable import/prefer-default-export */
 import * as ActionTypes from 'actions/action-types';
 
 export function getAnalyticsFilterOptions() {

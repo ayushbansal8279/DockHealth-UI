@@ -1,13 +1,13 @@
 import React from 'react';
 import moment from 'moment';
 import { PatientAttachmentType } from 'helpers/patient-details-helpers';
-import GoogleDriveIcon from 'img/google-drive-icon';
-import { Box, IconButton } from '@material-ui/core';
+import GoogleDriveIcon from 'img/google-drive-icon.png';
+import { Box, IconButton } from '@mui/material';
 import OptionsMenu from 'components/common/OptionsMenu/OptionsMenu';
-import MoreVertIcon from '@material-ui/icons/MoreVert';
+import MoreVertIcon from '@mui/icons-material/MoreVert';
 import { Cell, Row } from './styled';
 
-const FileListItem = props => {
+const FileListItem = (props) => {
   const {
     file,
     options,
@@ -43,7 +43,7 @@ const FileListItem = props => {
       </Cell>
       <Cell>{creator?.name || ''}</Cell>
       <Cell>{moment(dateCreated).fromNow()}</Cell>
-      <Cell onClick={event => event.stopPropagation()}>
+      <Cell onClick={(event) => event.stopPropagation()}>
         <OptionsMenu customButtonComponent={IconButton} options={options}>
           <MoreVertIcon />
         </OptionsMenu>

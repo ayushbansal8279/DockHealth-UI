@@ -1,25 +1,27 @@
 import React, { useEffect, useRef, useState } from 'react';
-import Autocomplete from '@material-ui/lab/Autocomplete';
-import CircularProgress from '@material-ui/core/CircularProgress';
-import { withStyles } from '@material-ui/core/styles';
+import Autocomplete from '@mui/lab/Autocomplete';
+import CircularProgress from '@mui/material/CircularProgress';
 import { matchSorter } from 'match-sorter';
 import { getAllTemplateNames } from 'api/template-api';
+import styled from 'styled-components';
 import Input from '../Input/Input';
 
 const filterOptions = (options, { inputValue }) =>
   matchSorter(options, inputValue, { keys: ['label', 'value'] });
 
-const StandardAutocompleteMUI = withStyles({
-  option: {
-    padding: 0,
-  },
-  listbox: {
-    padding: 0,
-  },
-  noOptions: {
-    padding: 0,
-  },
-})(Autocomplete);
+const StandardAutocompleteMUI = styled(Autocomplete)`
+  &&& {
+    &.MuiAutocomplete-options {
+      padding: 0;
+    }
+    &.MuiAutocomplete-listbox {
+      padding: 0;
+    }
+    &.MuiAutocomplete-noOptions {
+      padding: 0;
+    }
+  }
+`;
 
 const TemplateAutoComplete = ({
   type,
@@ -40,15 +42,15 @@ const TemplateAutoComplete = ({
     let active = true;
 
     if (!loading) {
-      return undefined;
+      return;
     }
 
-    getAllTemplateNames(type).then(data => {
+    getAllTemplateNames(type).then((data) => {
       if (active) {
         setTemplates(
           data
-            .filter(t => t.type === type)
-            .map(t => ({
+            .filter((t) => t.type === type)
+            .map((t) => ({
               label: t.name,
               value: t.shortMessage,
               body: t.details,
@@ -56,8 +58,8 @@ const TemplateAutoComplete = ({
             })),
         );
       }
+      dataLoaded.current = true;
     });
-    dataLoaded.current = true;
 
     return () => {
       active = false;
@@ -89,12 +91,12 @@ const TemplateAutoComplete = ({
       getOptionSelected={(option, value) =>
         option.identifier === value.identifier
       }
-      getOptionLabel={option => option.label}
+      getOptionLabel={(option) => option.label}
       options={templates}
       loading={loading}
       handleHomeEndKeys
       openOnFocus
-      renderInput={parameters => {
+      renderInput={(parameters) => {
         return (
           <Input
             {...parameters}

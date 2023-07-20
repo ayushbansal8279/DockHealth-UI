@@ -25,6 +25,7 @@ import {
   UnsupportedFileContainer,
 } from './styled';
 
+
 const PREVIEW_DISPLAY_TYPES = {
   AUDIO: 'AUDIO',
   IMAGE: 'IMAGE',
@@ -33,7 +34,7 @@ const PREVIEW_DISPLAY_TYPES = {
   UNSUPPORTED: 'UNSUPPORTED',
 };
 
-const AttachmentPreview = React.memo(props => {
+const AttachmentPreview = React.memo((props) => {
   const {
     attachment,
     attachmentsSources,
@@ -43,6 +44,7 @@ const AttachmentPreview = React.memo(props => {
   } = props;
   const [numberOfPdfPages, setNumberOfPdfPages] = useState(0);
 
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const onPdfLoadSuccess = useCallback(({ numPages }) => {
     setNumberOfPdfPages(numPages);
   }, []);
@@ -123,7 +125,7 @@ const AttachmentPreview = React.memo(props => {
         )}
         {displayType === PREVIEW_DISPLAY_TYPES.PDF && (
           <StyledPdfDocument file={fileSource} onLoadSuccess={onPdfLoadSuccess}>
-            {range(0, numberOfPdfPages).map(pageIndex => (
+            {range(0, numberOfPdfPages).map((pageIndex) => (
               <StyledPdfPage
                 key={pageIndex}
                 pageNumber={pageIndex + 1}

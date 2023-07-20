@@ -1,6 +1,6 @@
 import moment from 'moment';
-import { Box, Grid, Typography } from '@material-ui/core';
-import { ThemeProvider } from '@material-ui/core/styles';
+import { Box, Grid, Typography } from '@mui/material';
+import { ThemeProvider } from '@mui/material/styles';
 import React from 'react';
 import {
   isPlanTrial,
@@ -62,7 +62,7 @@ const CurrentPlan = ({ currentSubscriptionPlan }) => {
           </ThemeProvider>
         )}
       </Grid>
-      <Grid container direction="column" justify="flex-end">
+      <Grid container direction="column" justifyContent="flex-end">
         {!isPlanFree(subscriptionDetails) && (
           <ThemeProvider theme={themeMontserratNormal}>
             <Typography variant="h6">

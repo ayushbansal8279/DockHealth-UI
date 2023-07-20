@@ -5,17 +5,13 @@ import HistoryItem from 'components/drawer-common/HistoryItem/HistoryItem';
 import HistoryItemLoader from 'components/drawer-common/HistoryItemLoader/HistoryItemLoader';
 import { useBoolean } from 'hooks/useBoolean';
 import * as TaskApi from 'api/task-api';
-import { selectedTaskSelector } from 'selectors/task-drawer-selectors';
 import EmptyHistoryLabel from 'components/drawer-common/EmptyHistoryLabel/EmptyHistoryLabel';
 import { userProfileSelector } from 'selectors/user-selectors';
 
-const HistorySection = () => {
-  const [isHistoryLoading, setHistoryLoading, unsetHistoryLoading] = useBoolean(
-    false,
-  );
+const HistorySection = ({ selectedTask, selectedTaskIdentifier }) => {
+  const [isHistoryLoading, setHistoryLoading, unsetHistoryLoading] =
+    useBoolean(false);
   const [history, setHistory] = useState(null);
-  const selectedTask = useSelector(selectedTaskSelector);
-  const selectedTaskIdentifier = selectedTask?.taskIdentifier;
   const currentUser = useSelector(userProfileSelector);
 
   useEffect(() => {
@@ -25,7 +21,7 @@ const HistorySection = () => {
   const handleHistoryOpen = () => {
     setHistoryLoading();
     TaskApi.getTaskHistory(selectedTaskIdentifier)
-      .then(historyDetails => {
+      .then((historyDetails) => {
         setHistory(historyDetails);
         unsetHistoryLoading();
       })
@@ -65,8 +61,9 @@ const HistorySection = () => {
                 }) => (
                   <HistoryItem
                     key={auditId}
-                    description={`${user?.userName ??
-                      ''} ${taskHistoryDetails}`}
+                    description={`${
+                      user?.userName ?? ''
+                    } ${taskHistoryDetails}`}
                     date={createdDateTime}
                     type={taskHistoryType}
                   />

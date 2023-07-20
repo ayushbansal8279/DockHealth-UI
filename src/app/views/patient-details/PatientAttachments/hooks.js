@@ -1,4 +1,3 @@
-/* eslint-disable react-hooks/rules-of-hooks */
 import { useState, useCallback, useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { useHistory, useParams } from 'react-router-dom';
@@ -21,13 +20,13 @@ import { PatientAttachmentType } from 'helpers/patient-details-helpers';
 
 export const getMemoPatientAttachment = memoizeWith(
   identity,
-  attachmentIdentifier =>
+  (attachmentIdentifier) =>
     attachmentIdentifier
       ? downloadPatientAttachment(attachmentIdentifier)
       : Promise.reject(),
 );
 
-const initializeAttachmentsSectionHooks = () => {
+const useInitializeAttachmentsSectionHooks = () => {
   const { folderIdentifier } = useParams();
   const dispatch = useDispatch();
   const history = useHistory();
@@ -44,20 +43,16 @@ const initializeAttachmentsSectionHooks = () => {
     }
   }, [dispatch, patientIdentifier, folderIdentifier]);
 
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   const attachments = useSelector(patientAttachmentsSelector) || [];
   const folders = useSelector(patientFoldersSelector) || [];
 
   const [attachmentsSources, setAttachmentSources] = useState([]);
-  const [
-    attachmentsLoading,
-    setAttachmentsLoading,
-    unsetAttachmentsLoading,
-  ] = useBoolean(false);
+  const [attachmentsLoading, setAttachmentsLoading, unsetAttachmentsLoading] =
+    useBoolean(false);
 
-  const [
-    currentlyUploadedAttachment,
-    setCurrentlyUploadedAttachment,
-  ] = useState(null);
+  const [currentlyUploadedAttachment, setCurrentlyUploadedAttachment] =
+    useState(null);
   const [uploadProgress, setUploadProgress] = useState(0);
 
   const [
@@ -68,7 +63,7 @@ const initializeAttachmentsSectionHooks = () => {
   const [previewedAttachment, setPreviewedAttachment] = useState(null);
 
   const onAttachmentFileInputChange = useCallback(
-    files => {
+    (files) => {
       if (files && !isEmpty(files)) {
         const [newAttachment, ...restAttachments] = files;
 
@@ -136,7 +131,7 @@ const initializeAttachmentsSectionHooks = () => {
             };
           },
         ),
-      ).then(downloadedAttachments => {
+      ).then((downloadedAttachments) => {
         unsetAttachmentsLoading();
         setAttachmentSources(downloadedAttachments);
       });
@@ -145,7 +140,7 @@ const initializeAttachmentsSectionHooks = () => {
   );
 
   const deleteAttachment = useCallback(
-    identifier => {
+    (identifier) => {
       dispatch(
         PatientDetailsActions.deletePatientAttachment(
           patientIdentifier,
@@ -157,7 +152,7 @@ const initializeAttachmentsSectionHooks = () => {
   );
 
   const openAttachmentPreview = useCallback(
-    attachment => {
+    (attachment) => {
       setPreviewedAttachment(attachment);
       loadAttachmentsContent({
         attachmentsToReload: [attachment],
@@ -172,7 +167,7 @@ const initializeAttachmentsSectionHooks = () => {
       openModal('PatientFolder', {
         title: 'Create folder',
         inputLabel: 'Folder name',
-        onChange: name => {
+        onChange: (name) => {
           dispatch(
             PatientDetailsActions.createPatientAttachmentFolder(
               patientIdentifier,
@@ -185,7 +180,7 @@ const initializeAttachmentsSectionHooks = () => {
     );
   };
 
-  const renameAttachment = fileOrFolder => {
+  const renameAttachment = (fileOrFolder) => {
     dispatch(
       openModal('PatientFolder', {
         title: `Rename ${
@@ -195,7 +190,7 @@ const initializeAttachmentsSectionHooks = () => {
           fileOrFolder.type === PatientAttachmentType.FOLDER ? 'Folder' : 'File'
         } name`,
         currentName: fileOrFolder.fileName,
-        onChange: name => {
+        onChange: (name) => {
           dispatch(
             PatientDetailsActions.updatePatientAttachment(fileOrFolder, {
               fileName: name,
@@ -207,7 +202,7 @@ const initializeAttachmentsSectionHooks = () => {
   };
 
   const navigateToFolder = useCallback(
-    folder => {
+    (folder) => {
       history.push(
         createPatientAttachmentsPath(
           patientIdentifier,
@@ -218,7 +213,7 @@ const initializeAttachmentsSectionHooks = () => {
     [history, patientIdentifier],
   );
 
-  const openFolderInNewTab = folder => {
+  const openFolderInNewTab = (folder) => {
     window.open(
       `#${createPatientAttachmentsPath(
         patientIdentifier,
@@ -228,10 +223,10 @@ const initializeAttachmentsSectionHooks = () => {
   };
 
   const moveFileOrFolder = useCallback(
-    attachment => {
+    (attachment) => {
       dispatch(
         openModal('SelectPatientFolder', {
-          onMove: destinationFolderId => {
+          onMove: (destinationFolderId) => {
             dispatch(
               PatientDetailsActions.movePatientAttachment(
                 attachment,
@@ -245,7 +240,7 @@ const initializeAttachmentsSectionHooks = () => {
     [dispatch],
   );
 
-  const handleAttachmentClick = attachment => {
+  const handleAttachmentClick = (attachment) => {
     if (attachment.type === PatientAttachmentType.FILE_GDRIVE) {
       // TODO: check property name for file url when backend will be done
       if (attachment.fileUrl) {
@@ -260,7 +255,7 @@ const initializeAttachmentsSectionHooks = () => {
 
   const handleGooglePickerChange = ({ docs }) => {
     if (docs?.length > 0) {
-      docs.forEach(({ name, url, mimeType }) => {
+      for (const { name, url, mimeType } of docs) {
         dispatch(
           PatientDetailsActions.createPatientAttachmentReference(
             patientIdentifier,
@@ -271,7 +266,7 @@ const initializeAttachmentsSectionHooks = () => {
             folderIdentifier ?? null,
           ),
         );
-      });
+      }
     }
   };
 
@@ -318,4 +313,4 @@ const initializeAttachmentsSectionHooks = () => {
   };
 };
 
-export default initializeAttachmentsSectionHooks;
+export default useInitializeAttachmentsSectionHooks;

@@ -10,11 +10,8 @@ import { BulkEditOptionsBarContainer } from './styled';
 const BulkEditSection = ({ children }) => {
   const PatientContext = useContext(PatientEditContext);
 
-  const {
-    bulkEditIsActive,
-    selectedPatients,
-    selectedOptionsHandler,
-  } = PatientContext;
+  const { bulkEditIsActive, selectedPatients, selectedOptionsHandler } =
+    PatientContext;
 
   const currentOrganization = useSelector(selectedUserOrganizationSelector);
   const restrictedConfig = {};

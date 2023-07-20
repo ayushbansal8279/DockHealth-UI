@@ -19,7 +19,7 @@ export const ActivityAlertsItemContainer = styled.div`
 `;
 
 export const ActivityAlertsItemOrganizationAvatar = styled.div`
-  background-color: ${props => props.organizationProfileColor};
+  background-color: ${(props) => props.organizationProfileColor};
   font-size: 15px; // per design
   font-weight: ${fontWeights.bold};
   width: 25px;
@@ -32,7 +32,7 @@ export const ActivityAlertsItemOrganizationAvatar = styled.div`
 `;
 
 export const ActivityAlertsItemOrganizationLabel = styled.div`
-  font-family: Roboto Condensed;
+  font-family: 'Roboto Condensed', sans-serif;;
   color: ${palette.mediumGrey};
   font-weight: ${fontWeights.regularPlus};
   padding-left: 10px; // per design
@@ -45,6 +45,7 @@ export const ActivityAlertsItemHeader = styled.div`
   display: flex;
   margin-bottom: ${spacing.regularPlus};
   justify-content: space-between;
+  font-family: Montserrat;
 
   & > div {
     display: flex;
@@ -69,14 +70,14 @@ export const ActivityAlertsItemClearLabel = styled.div`
 `;
 
 export const ActivityAlertItemTitle = styled.div`
-  font-family: Roboto Condensed;
+  font-family: 'Roboto Condensed', sans-serif;
   color: ${palette.mediumGrey};
   font-weight: ${fontWeights.bold};
   margin-right: ${spacing.huge};
 `;
 
 export const ActivityAlertItemSubTitle = styled.div`
-  font-family: Roboto Condensed;
+  font-family: 'Roboto Condensed', sans-serif;;
   color: ${palette.coolGrey1};
   font-size: ${fontSizes.smallPlus};
   margin-right: ${spacing.huge};
@@ -89,14 +90,14 @@ export const CompletedCircleIcon = styled.img`
 `;
 
 export const StyledDescriptionTaskLink = styled.span`
-  font-family: Roboto Condensed;
+  font-family: 'Roboto Condensed', sans-serif;;
   font-weight: ${fontWeights.bold};
   color: ${palette.brightBlue};
   cursor: pointer;
 `;
 
 export const StyledTaskLink = styled(StyledDescriptionTaskLink)`
-  font-family: Roboto Condensed;
+  font-family: 'Roboto Condensed', sans-serif;;
   font-weight: ${fontWeights.bold};
   font-size: ${fontSizes.regular};
   color: ${palette.brightBlue};

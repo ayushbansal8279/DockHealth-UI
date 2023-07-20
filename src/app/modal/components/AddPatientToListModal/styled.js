@@ -2,7 +2,7 @@ import styled from 'styled-components';
 import { fontSizes, fontWeights } from 'styles/font';
 import palette from 'styles/palette';
 import spacing from 'styles/spacing';
-import { Close } from '@material-ui/icons';
+import { Close } from '@mui/icons-material';
 import { ModalWrapper } from '../styled';
 
 export const AddPatientModalWrapper = styled(ModalWrapper)`

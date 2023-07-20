@@ -1,7 +1,7 @@
-import React, { useCallback, useRef } from 'react';
-import { useDispatch } from 'react-redux';
-import { getOrganizationUsers } from 'actions/organization-actions';
+import React, { useRef } from 'react';
 import Arrow from 'components/common/Arrow/Arrow';
+import { useQuery } from '@tanstack/react-query';
+import * as OrganizationApi from 'api/organization-api';
 import InvitationPopover from '../SubscriptionUserPopover/InvitationPopover';
 import RoleSelectionPopover from '../SubscriptionUserPopover/RoleSelectionPopover';
 import PendingApprovalPopover from '../SubscriptionUserPopover/PendingApprovalPopover';
@@ -40,10 +40,11 @@ const UserTypeLabel = ({
   currentActiveUsers,
 }) => {
   const labelReference = useRef(null);
-  const dispatch = useDispatch();
-  const reloadUsers = useCallback(() => dispatch(getOrganizationUsers()), [
-    dispatch,
-  ]);
+
+  const { refetch: reloadUsers } = useQuery(
+    ['getOrganizationUsers'],
+    OrganizationApi.findAllUsersForOrganization,
+  );
 
   const PopoverComponent = (() => {
     if (userStatus === 'PENDING') {

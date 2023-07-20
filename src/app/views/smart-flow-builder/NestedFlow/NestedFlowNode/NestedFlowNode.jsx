@@ -1,10 +1,10 @@
 import React, { useEffect, useState } from 'react';
 import { shallowEqual, useDispatch } from 'react-redux';
-import { IconButton, Typography } from '@material-ui/core';
+import { IconButton, Typography } from '@mui/material';
 import { openModal, closeModal } from 'modal/actions';
 import { deleteTask, partialUpdateTask } from 'actions/task-actions';
 import { getTemplates } from 'api/task-template-api';
-import { Edit, Delete } from '@material-ui/icons';
+import { Edit, Delete } from '@mui/icons-material';
 import palette from 'styles/palette';
 import ListsIcon from 'img/navigation/ListsIcon';
 

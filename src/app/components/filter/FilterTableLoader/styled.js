@@ -1,13 +1,15 @@
-/* eslint-disable import/prefer-default-export */
-import { Skeleton } from '@material-ui/lab';
-import { withStyles } from '@material-ui/core/styles';
+import Skeleton from '@mui/material/Skeleton';
+import styled from 'styled-components';
 
-export const FilterOptionLoader = withStyles({
-  root: {
-    height: 30,
-    borderRadius: 4,
-    '&:not(:last-of-type)': {
-      marginBottom: 4,
-    },
-  },
-})(Skeleton);
+export const FilterOptionLoader = styled(Skeleton)`
+  &&& {
+    &.MuiSkeleton-root {
+      height: 30px;
+      border-radius: 4px;
+
+      &:not(:last-of-type) {
+        margin-bottom: 4px;
+      }
+    }
+  }
+`;

@@ -46,12 +46,13 @@ export const TaskTemplateGroupHeaderContainer = styled.div`
   position: relative;
   display: flex;
   padding: 0;
-  font-family: 'Roboto', sans-serif;
+  font-family: 'Roboto Condensed', sans-serif;
   font-size: ${fontSizes.smallPlus};
   width: 100%;
+  height: 35px;
   border-top: 1px solid ${palette.coolGrey3};
   border-bottom: 1px solid ${palette.coolGrey3};
-  background-color: ${props =>
+  background-color: ${(props) =>
     props.isSelected ? palette.dockBlueLight : palette.white};
 
   &:hover {
@@ -69,6 +70,7 @@ export const TaskTemplateGroupHeaderContainer = styled.div`
 `;
 
 export const TaskTemplateProgressCircle = styled.div`
+  margin-left: ${spacing.small};
   margin-right: ${spacing.small};
 `;
 

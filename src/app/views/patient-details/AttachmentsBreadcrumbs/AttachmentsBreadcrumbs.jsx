@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
-import { Box } from '@material-ui/core';
+import { Box } from '@mui/material';
 import {
   currentFolderIdentifierSelector,
   currentPatientIdentifierSelector,
@@ -24,7 +24,7 @@ const AttachmentsBreadcrumbs = () => {
 
     if (currentFolderIdentifier) {
       getPatientFolderStructureHierarchy(currentFolderIdentifier).then(
-        folder => {
+        (folder) => {
           const formattedFoldersHierarchy = [];
           let currentFolder = folder;
           while (currentFolder) {

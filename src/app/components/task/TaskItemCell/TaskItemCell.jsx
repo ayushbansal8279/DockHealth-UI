@@ -6,21 +6,21 @@ import palette from 'styles/palette';
 const TaskItemCell = styled.div`
   ${({ order }) => (order ? `order: ${order};` : '')}
   position: relative;
-  justify-content: ${props => props.justify || 'flex-start'};
+  justify-content: ${(props) => props.justify || 'flex-start'};
   align-items: ${({ alignItems }) => alignItems || 'center'};
   border-right: ${({ order }) =>
     order === 0 ? 'none' : `1px solid ${palette.coolGrey3};`};
-  color: ${props => props.color || palette.mediumGrey};
+  color: ${(props) => props.color || palette.mediumGrey};
   display: flex;
   font-size: ${fontSizes.smallPlus};
-  font-weight: ${props =>
+  font-weight: ${(props) =>
     props.bolded ? fontWeights.regular : fontWeights.light};
   color: ${palette.mediumGrey};
   min-width: ${({ width, isSubtask, order }) =>
     order === 0 ? +width : width}px;
   max-width: ${({ width, isSubtask, order }) =>
-    order === 0 ? +width : width}px;
-  padding: ${props => props.padding || `${spacing.tiny} 0`};
+    isSubtask && order === 0 ? +width - 36 : width}px;
+  padding: ${(props) => props.padding || `${spacing.tiny} 0`};
   padding-left: ${spacing.small};
   padding-right: ${spacing.small};
   overflow: hidden;

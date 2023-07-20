@@ -2,8 +2,8 @@ import moment from 'moment';
 
 export const TASK_DISAPPEAR_DELAY = 1000;
 
-export const updateTaskOrSubtask = (tasks, taskIdentifier, newTaskData) => {
-  return tasks.map(task => {
+export const updateTaskOrSubtask = (tasks, taskIdentifier, newTaskData) =>
+  tasks.map((task) => {
     let updatedSubtasks = [];
     if (task.subtasks?.length > 0) {
       updatedSubtasks = updateTaskOrSubtask(
@@ -17,14 +17,13 @@ export const updateTaskOrSubtask = (tasks, taskIdentifier, newTaskData) => {
     }
     return { ...task, subtasks: updatedSubtasks };
   });
-};
 
 export const updateTaskOrSubtaskInListsArray = (
   lists,
   newTaskData,
   taskIdentifier,
 ) =>
-  lists.map(list => {
+  lists.map((list) => {
     const newTasks = updateTaskOrSubtask(
       list.tasks,
       taskIdentifier,
@@ -47,9 +46,7 @@ export const toggleTaskCompletedStatus = (task, currentUser) => {
   };
 };
 
-export const setWorkflowStatus = (task, workflowStatus) => {
-  return {
-    ...task,
-    workflowStatus,
-  };
-};
+export const setWorkflowStatus = (task, workflowStatus) => ({
+  ...task,
+  workflowStatus,
+});

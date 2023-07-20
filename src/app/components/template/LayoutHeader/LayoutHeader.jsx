@@ -3,7 +3,7 @@ import React from 'react';
 import { useSelector } from 'react-redux';
 import { HOME_PATH } from 'routing/helpers/paths';
 import { Link } from 'react-router-dom';
-import { Box } from '@material-ui/core';
+import { Box } from '@mui/material';
 import ActivityAlerts from 'components/activity-alerts/ActivityAlerts';
 import { UserOrganizationRole } from 'helpers/user-helper';
 import TrialBanner from 'components/navigation/TrialBanner/TrialBanner';
@@ -21,7 +21,7 @@ import {
 
 const { ADMIN, OWNER, MEMBER, GUEST, EXTERNAL } = UserOrganizationRole;
 
-const LayoutHeader = props => {
+const LayoutHeader = (props) => {
   const { children, horizontalSticky } = props;
 
   const currentOrganization = useSelector(selectedUserOrganizationSelector);
@@ -61,7 +61,7 @@ const LayoutHeader = props => {
   );
 };
 
-LayoutHeader.Title = props => {
+LayoutHeader.Title = (props) => {
   const { title, description, colorIndicator } = props;
 
   return (

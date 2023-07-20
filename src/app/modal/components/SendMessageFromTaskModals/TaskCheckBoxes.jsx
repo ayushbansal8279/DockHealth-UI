@@ -71,7 +71,7 @@ function TaskCheckBoxes({
         if (flag) {
           setIsTaskCommentsIncluded(flag);
           const commentsContent = comments
-            .map(comment => {
+            .map((comment) => {
               return `Comment by ${comment.creator.name} at ${formatDate(
                 comment.dateCreated,
               )} \n ${comment.tokenizedComment}`;
@@ -91,7 +91,7 @@ function TaskCheckBoxes({
     ? includeCheckBoxes.splice(0, 1)
     : includeCheckBoxes;
 
-  return includeCheckBoxes.map(checkbox => {
+  return includeCheckBoxes.map((checkbox) => {
     return (
       <CheckboxContainerStyled key={checkbox.label}>
         <Checkbox

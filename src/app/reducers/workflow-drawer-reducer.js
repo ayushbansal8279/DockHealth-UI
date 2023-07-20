@@ -16,7 +16,7 @@ const initialState = {
 
 const WorkflowDrawerReducer = (state = initialState, action) => {
   switch (action.type) {
-    case ActionTypes.OPEN_WORKFLOW_DRAWER:
+    case ActionTypes.OPEN_WORKFLOW_DRAWER: {
       return {
         ...state,
         open: true,
@@ -24,52 +24,60 @@ const WorkflowDrawerReducer = (state = initialState, action) => {
         workflow: { ...action.workflow },
         autoFocusFieldName: action.autoFocusFieldName,
       };
+    }
 
-    case ActionTypes.CLOSE_WORKFLOW_DRAWER:
+    case ActionTypes.CLOSE_WORKFLOW_DRAWER: {
       return {
         ...state,
         ...initialState,
       };
+    }
 
-    case ActionTypes.GET_WORKFLOW_DRAWER_DETAILS:
+    case ActionTypes.GET_WORKFLOW_DRAWER_DETAILS: {
       return {
         ...state,
         isFetchingDetails: true,
       };
+    }
 
-    case ActionTypes.GET_WORKFLOW_DRAWER_DETAILS_SUCCESS:
+    case ActionTypes.GET_WORKFLOW_DRAWER_DETAILS_SUCCESS: {
       return {
         ...state,
         isFetchingDetails: false,
         workflow: { ...state.workflow, ...action.workflow },
         error: false,
       };
+    }
 
-    case ActionTypes.GET_WORKFLOW_DRAWER_DETAILS_FAILURE:
+    case ActionTypes.GET_WORKFLOW_DRAWER_DETAILS_FAILURE: {
       return {
         ...state,
         isFetchingDetails: false,
         error: true,
       };
+    }
 
-    case ActionTypes.GET_WORKFLOW_DRAWER_HISTORY:
+    case ActionTypes.GET_WORKFLOW_DRAWER_HISTORY: {
       return {
         ...state,
         isFetchingHistory: true,
       };
+    }
 
-    case ActionTypes.GET_WORKFLOW_DRAWER_HISTORY_SUCCESS:
+    case ActionTypes.GET_WORKFLOW_DRAWER_HISTORY_SUCCESS: {
       return {
         ...state,
         isFetchingHistory: false,
         history: action.history,
       };
+    }
 
-    case ActionTypes.GET_WORKFLOW_DRAWER_HISTORY_FAILURE:
+    case ActionTypes.GET_WORKFLOW_DRAWER_HISTORY_FAILURE: {
       return {
         ...state,
         isFetchingHistory: false,
       };
+    }
 
     case ActionTypes.UPDATE_PARTIAL_WORKFLOW_SUCCESS: {
       if (action.taskWorkflowIdentifier === state.workflowIdentifier) {
@@ -112,7 +120,7 @@ const WorkflowDrawerReducer = (state = initialState, action) => {
         workflow: {
           ...state.workflow,
           comments:
-            state.workflow.comments?.map(c =>
+            state.workflow.comments?.map((c) =>
               c.commentIdentifier === commentIdentifier
                 ? { ...c, ...comment }
                 : c,
@@ -132,7 +140,7 @@ const WorkflowDrawerReducer = (state = initialState, action) => {
           ...state.workflow,
           comments:
             state.workflow.comments?.filter(
-              c => c.commentIdentifier !== commentIdentifier,
+              (c) => c.commentIdentifier !== commentIdentifier,
             ) || null,
         },
       };
@@ -167,7 +175,7 @@ const WorkflowDrawerReducer = (state = initialState, action) => {
           ...state.workflow,
           attachments:
             state.workflow.attachments?.filter(
-              a => a.attachmentIdentifier !== attachmentIdentifier,
+              (a) => a.attachmentIdentifier !== attachmentIdentifier,
             ) || null,
         },
       };
@@ -223,8 +231,9 @@ const WorkflowDrawerReducer = (state = initialState, action) => {
       };
     }
 
-    default:
+    default: {
       return state;
+    }
   }
 };
 

@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react';
-import { Box } from '@material-ui/core';
+import { Box } from '@mui/material';
 import Checkbox from 'components/common/Checkbox/Checkbox';
 import SecondaryDropdownInput from 'components/common/DropdownInput/SecondaryDropdownInput';
 import SecondaryNumberInput from 'components/common/NumberInput/SecondaryNumberInput';
@@ -15,7 +15,7 @@ import {
 } from './helpers';
 import { DelayPeriodForm, Title, CheckboxLabel } from './styled';
 
-const TaskLinkDelayForm = props => {
+const TaskLinkDelayForm = (props) => {
   const { link, onSubmit, onClose } = props;
   const formMethods = useForm({
     mode: 'onSubmit',
@@ -44,8 +44,11 @@ const TaskLinkDelayForm = props => {
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
-  const delayPeriodValue = watch('delayPeriod');
-  const delayIsBusinessDaysValue = watch('delayIsBusinessDays');
+  const [delayPeriodValue, delayPeriodUnit, delayIsBusinessDaysValue] = watch([
+    'delayPeriod',
+    'delayPeriodUnit',
+    'delayIsBusinessDays',
+  ]);
   return (
     <FormProvider {...formMethods}>
       <DelayPeriodForm onSubmit={handleSubmit(onSubmit)}>
@@ -56,7 +59,7 @@ const TaskLinkDelayForm = props => {
             <SecondaryNumberInput
               name="delayPeriod"
               value={delayPeriodValue}
-              onChange={newValue => {
+              onChange={(newValue) => {
                 if (newValue === '' || Number(newValue) > 0) {
                   setValue(
                     'delayPeriod',
@@ -73,7 +76,7 @@ const TaskLinkDelayForm = props => {
               placeholder="Select unit"
               value={watch('delayPeriodUnit')}
               width={207}
-              onSelect={newValue => setValue('delayPeriodUnit', newValue)}
+              onSelect={(newValue) => setValue('delayPeriodUnit', newValue)}
               options={DELAY_PERIOD_UNIT_OPTIONS}
             />
           </Box>
@@ -83,7 +86,7 @@ const TaskLinkDelayForm = props => {
               name="timeRelative"
               width={275}
               value={watch('timeRelative')}
-              onSelect={newValue => setValue('timeRelative', newValue)}
+              onSelect={(newValue) => setValue('timeRelative', newValue)}
               options={TIME_TYPE_OPTIONS}
             />
           </Box>
@@ -93,21 +96,23 @@ const TaskLinkDelayForm = props => {
               name="timeReference"
               width={275}
               value={watch('timeReference')}
-              onSelect={newValue => setValue('timeReference', newValue)}
+              onSelect={(newValue) => setValue('timeReference', newValue)}
               options={TIME_REFERENCE_OPTIONS}
             />
           </Box>
           <Box p={1} />
-          <Box width="100%" display="flex" alignItems="center">
-            <Checkbox
-              isChecked={delayIsBusinessDaysValue}
-              onClick={() =>
-                setValue('delayIsBusinessDays', !delayIsBusinessDaysValue)
-              }
-            />
-            <Box p={0.5} />
-            <CheckboxLabel>Business days only</CheckboxLabel>
-          </Box>
+          {delayPeriodUnit === DelayPeriodUnit.DAY && (
+            <Box width="100%" display="flex" alignItems="center">
+              <Checkbox
+                isChecked={delayIsBusinessDaysValue}
+                onClick={() =>
+                  setValue('delayIsBusinessDays', !delayIsBusinessDaysValue)
+                }
+              />
+              <Box p={0.5} />
+              <CheckboxLabel>Business days only</CheckboxLabel>
+            </Box>
+          )}
         </Box>
         <PopoverBottomBar>
           <PopoverBottomBar.Button

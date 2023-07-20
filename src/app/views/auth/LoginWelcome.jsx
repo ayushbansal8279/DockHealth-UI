@@ -1,9 +1,9 @@
-import { Grid } from '@material-ui/core';
+import { Grid } from '@mui/material';
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { StyledLink } from 'components/auth/AuthComponents.styled';
 import Button from 'components/common/Button/Button';
-import Spacing from 'components/common/Spacing.tsx';
+import Spacing from 'components/common/Spacing';
 import { MontserratTypography } from 'styles/theme-montserrat';
 
 const LoginWelcome = () => (

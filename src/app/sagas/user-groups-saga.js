@@ -72,7 +72,7 @@ function* createUserGroup({ userGroup, onSuccessCallback }) {
     onSuccessCallback(createdUserGroup.identifier);
     yield put(UserGroupsActions.createUserGroupSuccess(createdUserGroup));
     yield put(showGlobalAlert(AlertMessages.CREATED));
-  } catch (error) {
+  } catch {
     yield put(showGlobalErrorAlert());
     yield put(UserGroupsActions.createUserGroupFailure());
   }

@@ -1,6 +1,5 @@
 import styled from 'styled-components';
-import { withStyles } from '@material-ui/core/styles';
-import MuiBarChartIcon from '@material-ui/icons/BarChart';
+import MuiBarChartIcon from '@mui/icons-material/BarChart';
 import { fontSizes, fontWeights } from 'styles/font';
 import palette from 'styles/palette';
 
@@ -76,7 +75,7 @@ export const NavigationIconNewLabel = styled.div`
     align-items: center;
     height: 14px;
     font-size: 12px;
-    font-wwight: 700;
+    font-weight: 700;
     color: ${palette.brightBlue};
     margin-bottom: -10px;
   }
@@ -86,12 +85,14 @@ export const DockcoinIcon = styled.img`
   width: 48px;
 `;
 
-export const BarChartIcon = withStyles({
-  root: {
-    width: 32,
-    height: 32,
-  },
-})(MuiBarChartIcon);
+export const BarChartIcon = styled(MuiBarChartIcon)`
+  &&& {
+    &.MuiBarCharIcon-root {
+      width: 32px;
+      height: 32px;
+    }
+  }
+`;
 
 export const NewLabel = styled.div`
   position: absolute;

@@ -10,10 +10,10 @@ export const EmailBodyContainer = styled.div`
 `;
 
 export const EmailMessageContainer = styled.pre`
-  font-family: Roboto Condensed;
+  font-family: 'Roboto Condensed', sans-serif;
   font-style: normal;
   font-weight: normal;
-  font-size: 16px;
+  font-size: 14px;
   line-height: 20px;
 
   letter-spacing: 0.230769px;

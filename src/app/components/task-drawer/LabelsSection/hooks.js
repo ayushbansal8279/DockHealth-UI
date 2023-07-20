@@ -17,43 +17,41 @@ import AlertMessages from 'alert/AlertMessages';
 import * as AlertActions from 'alert/actions';
 import { getFormattedLabels } from './helpers';
 
-const labelAddOrRemovePromise = ({
-  taskIdentifier,
-  currentLabelsIdentifiers,
-  formattedLabelsIdentifiers,
-}) => ({ labelIdentifier, labelName }) => {
-  if (!labelName || labelName === null || labelName === '') {
+const labelAddOrRemovePromise =
+  ({ taskIdentifier, currentLabelsIdentifiers, formattedLabelsIdentifiers }) =>
+  ({ labelIdentifier, labelName }) => {
+    if (!labelName || labelName === null || labelName === '') {
+      return Promise.resolve();
+    }
+
+    if (labelIdentifier === null) {
+      return addLabel({ labelName, taskIdentifier });
+    }
+
+    if (
+      !currentLabelsIdentifiers.includes(labelIdentifier) &&
+      formattedLabelsIdentifiers.includes(labelIdentifier)
+    ) {
+      return addLabel({
+        labelName,
+        labelIdentifier,
+        taskIdentifier,
+      });
+    }
+
+    if (
+      currentLabelsIdentifiers.includes(labelIdentifier) &&
+      !formattedLabelsIdentifiers.includes(labelIdentifier)
+    ) {
+      return removeLabelForTask({
+        labelName,
+        labelIdentifier,
+        taskIdentifier,
+      });
+    }
+
     return Promise.resolve();
-  }
-
-  if (labelIdentifier === null) {
-    return addLabel({ labelName, taskIdentifier });
-  }
-
-  if (
-    !currentLabelsIdentifiers.includes(labelIdentifier) &&
-    formattedLabelsIdentifiers.includes(labelIdentifier)
-  ) {
-    return addLabel({
-      labelName,
-      labelIdentifier,
-      taskIdentifier,
-    });
-  }
-
-  if (
-    currentLabelsIdentifiers.includes(labelIdentifier) &&
-    !formattedLabelsIdentifiers.includes(labelIdentifier)
-  ) {
-    return removeLabelForTask({
-      labelName,
-      labelIdentifier,
-      taskIdentifier,
-    });
-  }
-
-  return Promise.resolve();
-};
+  };
 
 const initializeLabelsSectionHooks = ({
   onTaskUpdate,
@@ -88,7 +86,7 @@ const initializeLabelsSectionHooks = ({
     onTaskUpdate(refreshedTask);
   };
 
-  const saveAddOrRemoveLabel = async selectedLabels => {
+  const saveAddOrRemoveLabel = async (selectedLabels) => {
     const currentLabels = selectedTask?.labels ?? [];
     const currentLabelsIdentifiers = currentLabels.map(prop('labelIdentifier'));
 
@@ -119,7 +117,7 @@ const initializeLabelsSectionHooks = ({
     refreshLabels();
   };
 
-  const saveAddLabel = async selectedLabel => {
+  const saveAddLabel = async (selectedLabel) => {
     const labelIdentifier = selectedLabel?.labelIdentifier;
     const labelName = selectedLabel?.labelName;
     const taskIdentifier = selectedTask?.taskIdentifier;
@@ -138,7 +136,7 @@ const initializeLabelsSectionHooks = ({
     refreshLabels();
   };
 
-  const saveAddLabelWithNewValue = async newValue => {
+  const saveAddLabelWithNewValue = async (newValue) => {
     const labelIdentifier = undefined;
     const labelName = newValue;
     const taskIdentifier = selectedTask?.taskIdentifier;
@@ -175,7 +173,7 @@ const initializeLabelsSectionHooks = ({
     refreshLabels();
   };
 
-  const removeLabelFromTask = async selectedLabel => {
+  const removeLabelFromTask = async (selectedLabel) => {
     const labelIdentifier = selectedLabel?.labelIdentifier;
     const labelName = selectedLabel?.labelName;
     const taskIdentifier = selectedTask?.taskIdentifier;
@@ -190,7 +188,7 @@ const initializeLabelsSectionHooks = ({
     refreshLabels();
   };
 
-  const deleteLabel = async selectedLabel => {
+  const deleteLabel = async (selectedLabel) => {
     const labelIdentifier = selectedLabel?.labelIdentifier;
 
     await removeLabelFromDatabase({

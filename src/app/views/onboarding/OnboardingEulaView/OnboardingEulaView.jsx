@@ -1,10 +1,10 @@
-import { Grid } from '@material-ui/core';
+import { Grid } from '@mui/material';
 import React, { useCallback } from 'react';
 import { useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
 import { useToggle } from 'react-use';
 import { acknowledgeEula } from 'actions/user-actions';
-import Spacing from 'components/common/Spacing.tsx';
+import Spacing from 'components/common/Spacing';
 import Checkbox from 'components/common/Checkbox/Checkbox';
 import Button from 'components/common/Button/Button';
 import { useSmallScreen } from 'helpers/utility-functions';
@@ -96,7 +96,7 @@ const OnboardingEulaView = () => {
           </Grid>
         )}
         <Spacing vertical={isSmallScreen ? 4 : 6} />
-        <Grid item sm={12} container justify="flex-end">
+        <Grid item sm={12} container justifyContent="flex-end">
           <Grid item xs={12} sm={12} md={4}>
             <Button
               disabled={continueButtonDisabled}

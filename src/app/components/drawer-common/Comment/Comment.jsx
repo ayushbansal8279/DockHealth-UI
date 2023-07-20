@@ -1,17 +1,12 @@
 /* eslint-disable sonarjs/cognitive-complexity */
-import React, { useCallback, useRef, useEffect } from 'react';
+import React, { useRef, useEffect, useState } from 'react';
 import moment from 'moment';
-import Spacing from 'components/common/Spacing.tsx';
+import Spacing from 'components/common/Spacing';
 import UserAvatar from 'components/user/UserAvatar/UserAvatar';
 import { RobotoTypography } from 'styles/theme';
 // eslint-disable-next-line import/no-named-as-default
 import { useBoolean } from 'hooks/useBoolean';
-import TextEditor from 'components/common/TextEditor/TextEditor';
-import {
-  convertFromEditorStateToOutput,
-  convertToEditorState,
-} from 'components/common/TextEditor/helpers';
-import { useMentionsEditorState } from 'components/common/TextEditor/use-mentions-editor-state';
+import RichTextEditor from 'components/common/RichTextEditor/RichTextEditor';
 import {
   CommentActionLabel,
   CommentContainer,
@@ -24,34 +19,18 @@ import {
   EditCommentButton,
 } from './styled';
 
-const Comment = ({
-  comment,
-  onDelete,
-  onUpdate,
-  currentUser,
-  taskListIdentifier,
-  disableMentions,
-}) => {
+const Comment = ({ comment, onDelete, onUpdate, currentUser }) => {
   const {
     comment: commentContent,
-    commentMentions,
-    tokenizedComment,
     creator,
-    dateCreated,
+    // dateCreated,
     dateUpdated,
     commentIdentifier,
   } = comment;
 
   const commentEditorReference = useRef();
   const [isEditing, setEditing, unsetEditing] = useBoolean(false);
-  const [commentState, setCommentState] = useMentionsEditorState(
-    convertToEditorState({
-      rawText: commentContent,
-      tokenizedText: tokenizedComment,
-      mentions: commentMentions,
-      handleRichText: true,
-    }),
-  );
+  const [isFocused, setFocused, unsetFocused] = useBoolean(false);
 
   useEffect(() => {
     if (isEditing) {
@@ -77,59 +56,38 @@ const Comment = ({
     creator.lastName
   }, ${dateLabel} @ ${moment(dateUpdated).format('h:mma')}`;
 
-  const onCommentEdited = useCallback(() => {
-    unsetEditing();
-    const updatedComment = convertFromEditorStateToOutput(commentState, true);
-    const commentTokenizedText = updatedComment.tokenizedText;
+  const [currentValue, setCurrentValue] = useState(commentContent);
 
-    if (!commentTokenizedText) {
-      return;
-    }
+  const handleTextEditorChange = (value) => {
+    setCurrentValue(value);
+  };
 
+  const handleSave = () => {
     onUpdate({
       commentIdentifier,
-      comment: commentTokenizedText,
+      comment: currentValue,
     });
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [commentIdentifier, unsetEditing, onUpdate, commentState]);
+    unsetEditing();
+  };
 
   return (
     <CommentWrapper>
       <CommentMemberContainer>
-        <UserAvatar user={creator} size={34} />
+        <UserAvatar user={creator} size={35} />
       </CommentMemberContainer>
       <CommentContainer isEditing={isEditing}>
         <CommentContent>
           <CommentText>
-            <TextEditor
+            <RichTextEditor
+              height={60}
+              readonly={!isEditing}
               showToolbar={isEditing}
-              ref={commentEditorReference}
-              taskListIdentifier={taskListIdentifier}
-              disableMentions={disableMentions}
-              readOnly={!isEditing}
-              withEditedLabel={dateCreated !== dateUpdated}
-              state={commentState}
-              onChange={setCommentState}
-              onBlur={() => {
-                onCommentEdited();
-              }}
-              keyBindingFn={event => {
-                if (event.keyCode === 13 && event.shiftKey) {
-                  return undefined;
-                }
-                if (event.keyCode === 13) {
-                  return 'enter-command';
-                }
-                return undefined;
-              }}
-              handleKeyCommand={command => {
-                if (command === 'enter-command') {
-                  onCommentEdited();
-                  return 'handled';
-                }
-
-                return 'not-handled';
-              }}
+              focus={isFocused}
+              value={commentContent}
+              reset={!isEditing}
+              onChange={handleTextEditorChange}
+              initOnClick
+              showCharCount
             />
           </CommentText>
           <CommentDetails>{commentDetails}</CommentDetails>
@@ -141,10 +99,11 @@ const Comment = ({
               <EditCommentButton>
                 <RobotoTypography condensed variant="h5" color="inherit">
                   <CommentActionLabel
-                    onClick={event => {
+                    onClick={(event) => {
                       event.preventDefault();
                       event.stopPropagation();
-                      onCommentEdited();
+                      handleSave();
+                      unsetFocused();
                     }}
                   >
                     Save
@@ -155,18 +114,10 @@ const Comment = ({
               <EditCommentButton>
                 <RobotoTypography condensed variant="h5" color="inherit">
                   <CommentActionLabel
-                    onClick={event => {
+                    onClick={(event) => {
                       event.preventDefault();
                       event.stopPropagation();
                       unsetEditing();
-                      setCommentState(
-                        convertToEditorState({
-                          rawText: commentContent,
-                          tokenizedText: tokenizedComment,
-                          mentions: commentMentions,
-                          handleRichText: true,
-                        }),
-                      );
                     }}
                   >
                     Cancel
@@ -182,10 +133,11 @@ const Comment = ({
                   <EditCommentButton>
                     <RobotoTypography condensed variant="h5" color="inherit">
                       <CommentActionLabel
-                        onClick={event => {
+                        onClick={(event) => {
                           event.preventDefault();
                           event.stopPropagation();
                           setEditing();
+                          setFocused();
                         }}
                       >
                         Edit
@@ -199,7 +151,7 @@ const Comment = ({
                   <Spacing horizontal={3} />
                   <RobotoTypography condensed variant="h5" color="inherit">
                     <CommentActionLabel
-                      onClick={event => {
+                      onClick={(event) => {
                         event.preventDefault();
                         event.stopPropagation();
                         onDelete(comment);

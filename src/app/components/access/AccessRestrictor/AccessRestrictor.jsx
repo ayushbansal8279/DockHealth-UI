@@ -12,7 +12,7 @@ const RestrictAccess = ({ children, required = [], allowedToRoles }) => {
     return null;
   }
 
-  if (required.every(permission => orgUserPermissions[permission])) {
+  if (required.every((permission) => orgUserPermissions[permission])) {
     return children;
   }
 

@@ -44,13 +44,15 @@ export const RepeatUnitOptionLabel = {
   [RepeatUnitOption.MONTH]: 'Month',
 };
 
-export const RECURRING_OPTIONS = Object.values(RecurringOption).map(value => ({
-  value,
-  label: RecurringOptionLabel[value],
-}));
+export const RECURRING_OPTIONS = Object.values(RecurringOption).map(
+  (value) => ({
+    value,
+    label: RecurringOptionLabel[value],
+  }),
+);
 
 export const REPEAT_UNIT_OPTIONS = Object.values(RepeatUnitOption).map(
-  value => ({
+  (value) => ({
     value,
     label: RepeatUnitOptionLabel[value],
   }),
@@ -68,7 +70,7 @@ const EndsOptionLabel = {
   [EndsOption.AFTER_OCCURRENCES]: 'After occurrences',
 };
 
-export const ENDS_OPTIONS = Object.values(EndsOption).map(value => ({
+export const ENDS_OPTIONS = Object.values(EndsOption).map((value) => ({
   value,
   label: EndsOptionLabel[value],
 }));

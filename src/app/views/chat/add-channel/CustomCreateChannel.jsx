@@ -1,9 +1,7 @@
 import React from 'react';
 import CustomInviteUsers from './CustomInviteUsers';
 
-const CustomCreateChannel = props => {
-  const { onCancel } = props;
-
+const CustomCreateChannel = ({ onCancel }) => {
   return <CustomInviteUsers onCancel={onCancel} />;
 };
 

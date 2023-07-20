@@ -2,9 +2,9 @@ import React, { useMemo } from 'react';
 import palette from 'styles/palette';
 import { useDispatch, useSelector } from 'react-redux';
 import compose from 'ramda/src/compose';
-import { Box } from '@material-ui/core';
-import CloseIcon from '@material-ui/icons/Close';
-import MoreHoriz from '@material-ui/icons/MoreHoriz';
+import { Box } from '@mui/material';
+import CloseIcon from '@mui/icons-material/Close';
+import MoreHoriz from '@mui/icons-material/MoreHoriz';
 import { checkIfTemplateWorkflow } from 'helpers/workflow-helpers';
 import { workflowSelector } from 'selectors/workflow-drawer-selectors';
 import * as ModalActions from 'modal/actions';
@@ -20,9 +20,10 @@ const DrawerHeader = () => {
   const workflow = useSelector(workflowSelector);
   const { identifier } = workflow || {};
 
-  const isTemplateTask = useMemo(() => checkIfTemplateWorkflow(workflow), [
-    workflow,
-  ]);
+  const isTemplateTask = useMemo(
+    () => checkIfTemplateWorkflow(workflow),
+    [workflow],
+  );
 
   const menuOptions = useMemo(
     () => [
@@ -33,7 +34,7 @@ const DrawerHeader = () => {
             dispatch(
               ModalActions.openModal('SelectWorkflowDestination', {
                 confirmText: 'Move',
-                confirm: parentTaskWorkflowIdentifier => {
+                confirm: (parentTaskWorkflowIdentifier) => {
                   dispatch(
                     TaskTemplateActions.moveWorkflowToFolder(
                       identifier,

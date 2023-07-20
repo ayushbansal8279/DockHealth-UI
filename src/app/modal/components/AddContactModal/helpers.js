@@ -9,8 +9,8 @@ import { string, object } from 'yup';
 
 // eslint-disable-next-line import/prefer-default-export
 export const mailValidationSchema = object({
-  type: string().required(d => `${capitalize(d.path)} is required`),
-  name: string().required(d => `${capitalize(d.path)} is required`),
+  type: string().required((d) => `${capitalize(d.path)} is required`),
+  name: string().required((d) => `${capitalize(d.path)} is required`),
   email: string()
     .email('Please provide valid email')
     .required(d => `${capitalize(d.path)} is required`),
@@ -47,18 +47,21 @@ export const faxValidationSchema = object({
     }),
   notes: string(),
 });
-export const resolveSchema = type => {
+export const resolveSchema = (type) => {
   switch (type) {
-    case CommunicationType.EMAIL:
+    case CommunicationType.EMAIL: {
       return yupResolver(mailValidationSchema);
-    case CommunicationType.FAX:
+    }
+    case CommunicationType.FAX: {
       return yupResolver(faxValidationSchema);
-    default:
+    }
+    default: {
       return null;
+    }
   }
 };
 
-export const mapToDTO = data => {
+export const mapToDTO = (data) => {
   const { email, phone, type, name, fax } = data;
   return {
     email,

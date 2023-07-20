@@ -3,15 +3,13 @@ import { useEffect, useState, useCallback, useRef, useReducer } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { useDropzone } from 'react-dropzone';
 import isEmpty from 'ramda/src/isEmpty';
-import { selectedTaskSelector } from 'selectors/task-drawer-selectors';
 import { removeTaskAttachment, addTaskAttachment } from 'actions/task-actions';
 import { useBoolean } from 'hooks/useBoolean';
 import { userProfileSelector } from 'selectors/user-selectors';
 import { getMemoTaskAttachment } from './helpers';
 
-const initializeAttachmentsSectionHooks = () => {
+const initializeAttachmentsSectionHooks = (selectedTask) => {
   const attachmentFileInputReference = useRef(null);
-  const selectedTask = useSelector(selectedTaskSelector);
   const { attachments = [], taskIdentifier: selectedTaskIdentifier } =
     selectedTask || {};
   const currentUser = useSelector(userProfileSelector);
@@ -19,35 +17,32 @@ const initializeAttachmentsSectionHooks = () => {
   const [currentTaskAttachments, currentTaskAttachmentsDispatch] = useReducer(
     (state, action) => {
       switch (action.type) {
-        case 'SET_ATTACHMENTS':
+        case 'SET_ATTACHMENTS': {
           return [...action.attachments];
-        case 'ADD_ATTACHMENTS':
+        }
+        case 'ADD_ATTACHMENTS': {
           return [...state, ...action.attachments];
-        case 'REMOVE_ATTACHMENTS':
-          return [
-            ...state.filter(
-              ({ attachmentIdentifier: currentAttachmentIdentifier }) =>
-                action.attachmentIdentifier !== currentAttachmentIdentifier,
-            ),
-          ];
-        default:
+        }
+        case 'REMOVE_ATTACHMENTS': {
+          return state.filter(
+            ({ attachmentIdentifier: currentAttachmentIdentifier }) =>
+              action.attachmentIdentifier !== currentAttachmentIdentifier,
+          );
+        }
+        default: {
           return state;
+        }
       }
     },
     [],
   );
 
   const [attachmentsSources, setAttachmentSources] = useState([]);
-  const [
-    attachmentsLoading,
-    setAttachmentsLoading,
-    unsetAttachmentsLoading,
-  ] = useBoolean(false);
+  const [attachmentsLoading, setAttachmentsLoading, unsetAttachmentsLoading] =
+    useBoolean(false);
 
-  const [
-    currentlyUploadedAttachment,
-    setCurrentlyUploadedAttachment,
-  ] = useState(null);
+  const [currentlyUploadedAttachment, setCurrentlyUploadedAttachment] =
+    useState(null);
   const [uploadProgress, setUploadProgress] = useState(0);
 
   const [
@@ -60,7 +55,7 @@ const initializeAttachmentsSectionHooks = () => {
   const dispatch = useDispatch();
 
   const onAttachmentFileInputChange = useCallback(
-    files => {
+    (files) => {
       if (files && !isEmpty(files)) {
         const [newAttachment, ...restAttachments] = files;
 
@@ -71,7 +66,7 @@ const initializeAttachmentsSectionHooks = () => {
             setUploadProgress(Math.round((loaded * 100) / total));
           },
         })(dispatch)
-          .then(addedAttachment => {
+          .then((addedAttachment) => {
             setCurrentlyUploadedAttachment(null);
             currentTaskAttachmentsDispatch({
               type: 'ADD_ATTACHMENTS',
@@ -127,7 +122,7 @@ const initializeAttachmentsSectionHooks = () => {
             };
           },
         ),
-      ).then(downloadedAttachments => {
+      ).then((downloadedAttachments) => {
         unsetAttachmentsLoading();
         setAttachmentSources(downloadedAttachments);
       });
@@ -148,7 +143,7 @@ const initializeAttachmentsSectionHooks = () => {
   }, [selectedTaskIdentifier, currentTaskAttachmentsDispatch]);
 
   const boundRemoveTaskAttachment = useCallback(
-    attachmentIdentifier => {
+    (attachmentIdentifier) => {
       removeTaskAttachment(
         selectedTaskIdentifier,
         attachmentIdentifier,
@@ -163,7 +158,7 @@ const initializeAttachmentsSectionHooks = () => {
   );
 
   const openAttachmentPreview = useCallback(
-    attachment => {
+    (attachment) => {
       setPreviewedAttachment(attachment);
       loadAttachmentsContent({
         attachmentsToReload: [attachment],
