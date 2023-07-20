@@ -31,6 +31,7 @@ import {
   ListLoaderContainer,
   BulkContainer,
   Text,
+  PatientCell,
 } from './styled';
 import { StyledDataGrid } from './DataGridStyles';
 
@@ -155,7 +156,7 @@ const PatientsList = ({
       headerName: customerTypeLabel.toUpperCase(),
       renderHeader: renderColumnHeader,
       renderCell: ({ row }) => (
-        <span
+        <PatientCell
           onClick={async () => {
             const { fromEMR, patientIdentifier } = row;
             if (fromEMR) {
@@ -183,7 +184,7 @@ const PatientsList = ({
               {row.lastName}, {row.firstName}
             </Text>
           </Tooltip>
-        </span>
+        </PatientCell>
       ),
       // flex: 1,
       width: 200,
