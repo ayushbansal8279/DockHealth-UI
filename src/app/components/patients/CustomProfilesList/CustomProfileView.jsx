@@ -41,6 +41,38 @@ const CustomProfileView = () => {
     [profiles, profileIdentifier],
   );
 
+  const profileName = useMemo(
+    () =>
+      profile?.fields
+        .filter((field) =>
+          field?.profileTypeField?.displayOptions?.includes('PROFILE_NAME'),
+        )
+        .map(
+          (field) =>
+            field.values?.[0].value ||
+            field.values?.[0]?.customFieldOption.name,
+        ),
+    [profile],
+  );
+
+  const profileHeader = useMemo(
+    () =>
+      Object.fromEntries(
+        profile?.fields
+          .filter((field) =>
+            field?.profileTypeField?.displayOptions?.includes('PROFILE_HEADER'),
+          )
+          .map((field) => {
+            return [
+              field.profileTypeField.name,
+              field.values?.[0].value ||
+                field.values?.[0]?.customFieldOption.name,
+            ];
+          }) || [],
+      ),
+    [profile],
+  );
+
   useEffect(() => {
     fetchProfileTypes();
     fetchProfiles();
@@ -68,14 +100,9 @@ const CustomProfileView = () => {
         }
       >
         <CustomProfileDetailsHeader
-          firstName={
-            profile?.fields?.[0].values?.[0].value ||
-            profile?.fields?.[0].values?.[0]?.customFieldOption.name
-          }
-          lastName={
-            profile?.fields?.[1].values?.[0].value ||
-            profile?.fields?.[1].values?.[0]?.customFieldOption.name
-          }
+          firstName={profileName?.[0]}
+          lastName={profileName?.[1]}
+          header={profileHeader}
           onViewDetailsClick={handleDrawerOpen}
           profileTypeName={name}
           profileTypeIdentifier={profileTypeIdentifier}

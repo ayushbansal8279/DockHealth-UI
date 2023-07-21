@@ -1,11 +1,17 @@
-import React, { createContext, useEffect, useMemo, useState } from 'react';
+import React, {
+  createContext,
+  useEffect,
+  useMemo,
+  useCallback,
+  useState,
+} from 'react';
 import * as MUI from '@mui/x-data-grid';
 import { noop } from 'ui-toolkit/utilities';
 import * as Sc from './styled';
 
-export const Context  = createContext({
-  register: noop
-})
+export const Context = createContext({
+  register: noop,
+});
 
 const MemoizedRow = React.memo(MUI.GridRow);
 
@@ -29,64 +35,56 @@ export default function DataGrid({
   const [definitions, setDefinitions] = useState([]);
   const [columnVisibilityModel, setColumnVisibilityModel] = useState({});
 
-  const register = (data) => {
-    if (!definitions.some(header => header.name === data.name)) {
-      setDefinitions(currentValue => [...currentValue, data]);
-    }
-  };
+  const register = useCallback(
+    (data) => {
+      if (!definitions.some((header) => header.name === data.name)) {
+        setDefinitions((currentValue) => [...currentValue, data]);
+      }
+    },
+    [definitions],
+  );
 
   useEffect(() => {
-    register(
-      {
-        field: 'id',
-        name: 'Identifier',
-        hidden: true,
-        value: ({ identifier }) => identifier
-      }
-    );
-    // dataset[0]?.fields
-    //   .map(({ profileTypeField }, index) =>
-    //     register({
-    //       field: profileTypeField.identifier,
-    //       name: profileTypeField.name,
-    //       value: ({ fields }) => {
-    //         const value = fields[index].values[0]
-    //         return value.value ?? value.customFieldOption.name;
-    //       }
-    //     }));
-  }, [dataset]);
+    register({
+      field: 'id',
+      name: 'Identifier',
+      hidden: true,
+      value: ({ identifier }) => identifier,
+    });
+  }, [dataset, register]);
 
-  const columns = useMemo(() =>
-    definitions
-      .map(({ field, type, name, unsortable, editable }) => ({
-        type: type,
-        field: field,
+  const columns = useMemo(
+    () =>
+      definitions.map(({ field, type, name, unsortable, editable }) => ({
+        type,
+        field,
         headerName: name,
         sortable: !unsortable,
-        editable: editable,
+        editable,
         // flex: 1
       })),
-    [definitions]
+    [definitions],
   );
 
   const rows = useMemo(() => {
     if (definitions.length > 0) {
-      return dataset
-        .map(data =>
-          Object.fromEntries(
-            definitions.map(definition =>
-              [definition.field, definition.value(data)])
-          ))
-    } else {
-      return [];
+      return dataset.map((data) =>
+        Object.fromEntries(
+          definitions.map((definition) => [
+            definition.field,
+            definition.value(data),
+          ]),
+        ),
+      );
     }
+    return [];
   }, [definitions, dataset]);
 
   useEffect(() => {
     setColumnVisibilityModel(
       Object.fromEntries(
-        definitions.map(({ field, hidden }) => [field, !hidden])
-      )
+        definitions.map(({ field, hidden }) => [field, !hidden]),
+      ),
     );
   }, [definitions]);
 
@@ -96,15 +94,17 @@ export default function DataGrid({
   };
 
   return (
-    <div style={{
-      padding: "30px",
-      height: "100%"
-    }}>
+    <div
+      style={{
+        padding: '30px',
+        height: '100%',
+      }}
+    >
       <Sc.DataGrid
         columns={columns}
         rows={rows}
         components={{
-          Row: MemoizedRow
+          Row: MemoizedRow,
         }}
         columnVisibilityModel={columnVisibilityModel}
         onColumnVisibilityModelChange={setColumnVisibilityModel}
@@ -113,48 +113,8 @@ export default function DataGrid({
         onRowClick={handleRowClick}
         {...props}
       />
-      <Context.Provider value={{ register }}>
-        {children}
-      </Context.Provider>
+      {/* eslint-disable-next-line react/jsx-no-constructed-context-values */}
+      <Context.Provider value={{ register }}>{children}</Context.Provider>
     </div>
   );
 }
-
-
-
-/*
-
-  const ? = [
-    {
-
-    }
-  ]
-
-
-  const dataset = [
-    {
-        "patientId": 3186,
-        "patientIdentifier": "ca640e89-30f3-474b-b96d-015b3d0d448b",
-        "firstName": "Wanda",
-        "lastName": "Four",
-        "phoneHome": "",
-        "patientName": "Four, Wanda"
-    }
-  ]
-
-  <DataGrid
-    multiselect
-    dataset={}
-  >
-    <Data
-      type="string"
-      name="PATIENT"
-      enable={{ sticky, sortable, draggable }}
-      render={({ firstName, lastName }) =>
-        `{firstName} {lastName}`
-      }
-    />
-  </ DataGrid>
-
-
- */
