@@ -6,6 +6,7 @@ import isEmpty from 'ramda/src/isEmpty';
 import { capitalize } from 'helpers/capitalize';
 import Spacing from 'components/common/Spacing';
 import { RobotoTypography } from 'styles/theme';
+import DataGrid, { Data, getValues } from 'ui-toolkit/Composite/DataGrid';
 import UserAvatar from 'components/user/UserAvatar/UserAvatar';
 import {
   StyledDataGrid,
@@ -30,6 +31,7 @@ const renderColumnHeader = (props) => {
 const UsersList = (props) => {
   const { users, searchTerm } = props;
   const history = useHistory();
+  console.log(users);
 
   const columns = [
     {
@@ -100,18 +102,69 @@ const UsersList = (props) => {
           </ListEntryContainer>
         </ListContainer>
       ) : (
-        <StyledDataGrid
-          columns={columns}
-          rows={filteredUsers}
-          rowHeight={35}
-          headerHeight={45}
-          hideFooterSelectedRowCount
-          autoHeight
-          disableSelectionOnClick
-          disableColumnMenu
-          showColumnRightBorder
-          showCellRightBorder
-        />
+        // <StyledDataGrid
+        //   columns={columns}
+        //   rows={filteredUsers}
+        // rowHeight={35}
+        // headerHeight={45}
+        // hideFooterSelectedRowCount
+        // autoHeight
+        //   disableSelectionOnClick
+        //   disableColumnMenu
+        //   showColumnRightBorder
+        //   showCellRightBorder
+        // />
+        <DataGrid dataset={filteredUsers} hideFooterSelectedRowCount autoHeight>
+          {columns.map((column) => (
+            <Data
+              name={column.headerName}
+              renderHeader={column.renderHeader}
+              renderCell={(data) =>
+                column.field === 'name' && (
+                  <div
+                    className="people-cell-container"
+                    style={{ display: 'flex' }}
+                    onClick={() =>
+                      history.push(
+                        `/core/assignedToPerson/${encodeURIComponent(
+                          data.userIdentifier,
+                        )}`,
+                      )
+                    }
+                  >
+                    <UserAvatar size={22} user={data} />
+                    <Spacing horizontal={4} />
+                    <span className="people-cell">{data?.name}</span>
+                  </div>
+                )
+              }
+              value={(data) => {
+                switch (column.field) {
+                  case 'name':
+                    return (
+                      <div
+                        className="people-cell-container"
+                        style={{ display: 'flex' }}
+                        onClick={() =>
+                          history.push(
+                            `/core/assignedToPerson/${encodeURIComponent(
+                              data.userIdentifier,
+                            )}`,
+                          )
+                        }
+                      >
+                        <UserAvatar size={22} user={data} />
+                        <Spacing horizontal={4} />
+                        <span className="people-cell">{data?.name}</span>
+                      </div>
+                    );
+                  default:
+                    return data[column.field];
+                }
+              }}
+            ></Data>
+          ))}
+        </DataGrid>
       )}
     </UsersListContainer>
   );
