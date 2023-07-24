@@ -23,6 +23,7 @@ export default function Data({
   hidden = false,
   unsortable = false,
   editable = false,
+  flex = 1,
 }) {
   const { register } = useContext(Context);
 
@@ -40,6 +41,7 @@ export default function Data({
       hidden,
       unsortable,
       editable,
+      flex,
       renderCell(cell) {
         if (typeof cell.value === 'string') {
           return cell.value;
@@ -60,7 +62,7 @@ export default function Data({
         return data;
       },
     });
-  }, [editable, field, hidden, name, register, type, unsortable, value]);
+  }, [editable, flex, field, hidden, name, register, type, unsortable, value]);
 
   return null;
 }

@@ -3,76 +3,72 @@ import { useHistory } from 'react-router-dom';
 import { Grid } from '@mui/material';
 import { createFilter } from 'react-search-input';
 import isEmpty from 'ramda/src/isEmpty';
-import { capitalize } from 'helpers/capitalize';
 import Spacing from 'components/common/Spacing';
 import { RobotoTypography } from 'styles/theme';
-import DataGrid, { Data, getValues } from 'ui-toolkit/Composite/DataGrid';
+import DataGrid, { Data } from 'ui-toolkit/Composite/DataGrid';
 import UserAvatar from 'components/user/UserAvatar/UserAvatar';
 import {
-  StyledDataGrid,
   ListContainer,
   ListEntryContainer,
   UsersListContainer,
 } from './styled';
 
-const renderColumnHeader = (props) => {
-  const { colDef } = props;
-  const { headerName } = colDef;
+// const renderColumnHeader = (props) => {
+//   const { colDef } = props;
+//   const { headerName } = colDef;
 
-  return (
-    <>
-      <div className="MuiDataGrid-colCellTitle">
-        <span>{headerName}</span>
-      </div>
-    </>
-  );
-};
+//   return (
+//     <>
+//       <div className="MuiDataGrid-colCellTitle">
+//         <span>{headerName}</span>
+//       </div>
+//     </>
+//   );
+// };
 
 const UsersList = (props) => {
   const { users, searchTerm } = props;
   const history = useHistory();
-  console.log(users);
 
-  const columns = [
-    {
-      field: 'name',
-      headerName: 'USER',
-      flex: 1,
-      renderHeader: renderColumnHeader,
-      renderCell: ({ row }) => {
-        return (
-          <div
-            className="people-cell-container"
-            style={{ display: 'flex' }}
-            onClick={() =>
-              history.push(
-                `/core/assignedToPerson/${encodeURIComponent(
-                  row.userIdentifier,
-                )}`,
-              )
-            }
-          >
-            <UserAvatar size={22} user={row} />
-            <Spacing horizontal={4} />
-            <span className="people-cell">{row?.name}</span>
-          </div>
-        );
-      },
-    },
-    {
-      field: 'email',
-      headerName: 'EMAIL',
-      renderHeader: renderColumnHeader,
-      flex: 1,
-    },
-    {
-      field: 'orgUserRole',
-      headerName: 'USER STATUS',
-      renderHeader: renderColumnHeader,
-      flex: 0.5,
-      valueFormatter: ({ value }) => capitalize(value),
-    },
-  ];
+  // const columns = [
+  //   {
+  //     field: 'name',
+  //     headerName: 'USER',
+  //     renderHeader: renderColumnHeader,
+  //     renderCell: ({ row }) => {
+  //       return (
+  //         <div
+  //           className="people-cell-container"
+  //           style={{ display: 'flex' }}
+  //           onClick={() =>
+  //             history.push(
+  //               `/core/assignedToPerson/${encodeURIComponent(
+  //                 row.userIdentifier,
+  //               )}`,
+  //             )
+  //           }
+  //         >
+  //           <UserAvatar size={22} user={row} />
+  //           <Spacing horizontal={4} />
+  //           <span className="people-cell">{row?.name}</span>
+  //         </div>
+  //       );
+  //     },
+  //   },
+  //   {
+  //     field: 'email',
+  //     headerName: 'EMAIL',
+  //     renderHeader: renderColumnHeader,
+  //     flex: 1,
+  //   },
+  //   {
+  //     field: 'orgUserRole',
+  //     headerName: 'USER STATUS',
+  //     renderHeader: renderColumnHeader,
+  //     flex: 0.5,
+  //     valueFormatter: ({ value }) => capitalize(value),
+  //   },
+  // ];
 
   const KEYS_TO_FILTERS = [
     'name',
@@ -116,60 +112,36 @@ const UsersList = (props) => {
         // />
         <DataGrid
           dataset={filteredUsers}
-          flex={1}
           hideFooterSelectedRowCount
           autoHeight
+          fluid
         >
-          {columns.map((column) => (
-            <Data
-              name={column.headerName}
-              renderCell={(data) =>
-                column.field === 'name' && (
-                  <div
-                    className="people-cell-container"
-                    style={{ display: 'flex' }}
-                    onClick={() =>
-                      history.push(
-                        `/core/assignedToPerson/${encodeURIComponent(
-                          data.userIdentifier,
-                        )}`,
-                      )
-                    }
-                  >
-                    <UserAvatar size={22} user={data} />
-                    <Spacing horizontal={4} />
-                    <span className="people-cell">{data?.name}</span>
-                  </div>
-                )
-              }
-              value={(data) => {
-                switch (column.field) {
-                  case 'name': {
-                    return (
-                      <div
-                        className="people-cell-container"
-                        style={{ display: 'flex' }}
-                        onClick={() =>
-                          history.push(
-                            `/core/assignedToPerson/${encodeURIComponent(
-                              data.userIdentifier,
-                            )}`,
-                          )
-                        }
-                      >
-                        <UserAvatar size={22} user={data} />
-                        <Spacing horizontal={4} />
-                        <span className="people-cell">{data?.name}</span>
-                      </div>
-                    );
-                  }
-                  default: {
-                    return data[column.field];
-                  }
+          <Data
+            name="USER"
+            value={(data) => (
+              <div
+                className="people-cell-container"
+                style={{ display: 'flex' }}
+                onClick={() =>
+                  history.push(
+                    `/core/assignedToPerson/${encodeURIComponent(
+                      data.userIdentifier,
+                    )}`,
+                  )
                 }
-              }}
-            />
-          ))}
+              >
+                <UserAvatar size={22} user={data} />
+                <Spacing horizontal={4} />
+                <span className="people-cell">{data?.name}</span>
+              </div>
+            )}
+          />
+          <Data name="EMAIL" value={(data) => data.email} />
+          <Data
+            name="USER STATUS"
+            value={(data) => data.orgUserRole}
+            flex={0.5}
+          />
         </DataGrid>
       )}
     </UsersListContainer>

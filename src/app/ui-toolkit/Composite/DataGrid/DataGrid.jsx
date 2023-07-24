@@ -28,12 +28,11 @@ const MemoizedRow = React.memo(MUI.GridRow);
  * @constructor
  */
 export default function DataGrid({
-  fluid = false,
   multiselect = false,
   dataset = [],
   onRecordClick = noop,
   children,
-
+  fluid,
   ...props
 }) {
   const [definitions, setDefinitions] = useState([]);
@@ -74,14 +73,14 @@ export default function DataGrid({
   const columns = useMemo(
     () =>
       definitions.map(
-        ({ field, type, name, unsortable, editable, renderCell }) => ({
+        ({ field, type, name, unsortable, editable, flex, renderCell }) => ({
           type,
           field,
           headerName: name,
           sortable: !unsortable,
           editable,
           renderCell,
-          flex: fluid ? 1 : undefined,
+          flex: fluid ? flex : undefined,
         }),
       ),
     [definitions, fluid],
