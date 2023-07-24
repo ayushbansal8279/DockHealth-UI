@@ -114,11 +114,15 @@ const UsersList = (props) => {
         //   showColumnRightBorder
         //   showCellRightBorder
         // />
-        <DataGrid dataset={filteredUsers} hideFooterSelectedRowCount autoHeight>
+        <DataGrid
+          dataset={filteredUsers}
+          flex={1}
+          hideFooterSelectedRowCount
+          autoHeight
+        >
           {columns.map((column) => (
             <Data
               name={column.headerName}
-              renderHeader={column.renderHeader}
               renderCell={(data) =>
                 column.field === 'name' && (
                   <div
@@ -140,7 +144,7 @@ const UsersList = (props) => {
               }
               value={(data) => {
                 switch (column.field) {
-                  case 'name':
+                  case 'name': {
                     return (
                       <div
                         className="people-cell-container"
@@ -158,11 +162,13 @@ const UsersList = (props) => {
                         <span className="people-cell">{data?.name}</span>
                       </div>
                     );
-                  default:
+                  }
+                  default: {
                     return data[column.field];
+                  }
                 }
               }}
-            ></Data>
+            />
           ))}
         </DataGrid>
       )}

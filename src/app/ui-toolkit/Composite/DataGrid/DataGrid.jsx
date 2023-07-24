@@ -3,9 +3,9 @@ import * as MUI from '@mui/x-data-grid';
 import { noop } from 'ui-toolkit/utilities';
 import * as Sc from './styled';
 
-export const Context  = createContext({
-  register: noop
-})
+export const Context = createContext({
+  register: noop,
+});
 
 const MemoizedRow = React.memo(MUI.GridRow);
 
@@ -23,6 +23,7 @@ export default function DataGrid({
   multiselect = false,
   dataset = [],
   children,
+  flex,
   onRecordClick = noop,
   ...props
 }) {
@@ -30,20 +31,18 @@ export default function DataGrid({
   const [columnVisibilityModel, setColumnVisibilityModel] = useState({});
 
   const register = (data) => {
-    if (!definitions.some(header => header.name === data.name)) {
-      setDefinitions(currentValue => [...currentValue, data]);
+    if (!definitions.some((header) => header.name === data.name)) {
+      setDefinitions((currentValue) => [...currentValue, data]);
     }
   };
 
   useEffect(() => {
-    register(
-      {
-        field: 'id',
-        name: 'Identifier',
-        hidden: true,
-        value: ({ identifier }) => identifier
-      }
-    );
+    register({
+      field: 'id',
+      name: 'Identifier',
+      hidden: true,
+      value: ({ identifier }) => identifier,
+    });
     // dataset[0]?.fields
     //   .map(({ profileTypeField }, index) =>
     //     register({
@@ -56,37 +55,38 @@ export default function DataGrid({
     //     }));
   }, [dataset]);
 
-  const columns = useMemo(() =>
-    definitions
-      .map(({ field, type, name, unsortable, editable }) => ({
-        type: type,
-        field: field,
+  const columns = useMemo(
+    () =>
+      definitions.map(({ field, type, name, unsortable, editable }) => ({
+        type,
+        field,
         headerName: name,
         sortable: !unsortable,
-        editable: editable,
-        // flex: 1
+        editable,
+        flex,
       })),
-    [definitions]
+    [definitions],
   );
 
   const rows = useMemo(() => {
     if (definitions.length > 0) {
-      return dataset
-        .map(data =>
-          Object.fromEntries(
-            definitions.map(definition =>
-              [definition.field, definition.value(data)])
-          ))
-    } else {
-      return [];
+      return dataset.map((data) =>
+        Object.fromEntries(
+          definitions.map((definition) => [
+            definition.field,
+            definition.value(data),
+          ]),
+        ),
+      );
     }
+    return [];
   }, [definitions, dataset]);
 
   useEffect(() => {
     setColumnVisibilityModel(
       Object.fromEntries(
-        definitions.map(({ field, hidden }) => [field, !hidden])
-      )
+        definitions.map(({ field, hidden }) => [field, !hidden]),
+      ),
     );
   }, [definitions]);
 
@@ -96,15 +96,17 @@ export default function DataGrid({
   };
 
   return (
-    <div style={{
-      padding: "30px",
-      height: "100%"
-    }}>
+    <div
+      style={{
+        padding: '30px',
+        height: '100%',
+      }}
+    >
       <Sc.DataGrid
         columns={columns}
         rows={rows}
         components={{
-          Row: MemoizedRow
+          Row: MemoizedRow,
         }}
         columnVisibilityModel={columnVisibilityModel}
         onColumnVisibilityModelChange={setColumnVisibilityModel}
@@ -113,14 +115,10 @@ export default function DataGrid({
         onRowClick={handleRowClick}
         {...props}
       />
-      <Context.Provider value={{ register }}>
-        {children}
-      </Context.Provider>
+      <Context.Provider value={{ register }}>{children}</Context.Provider>
     </div>
   );
 }
-
-
 
 /*
 
