@@ -1,4 +1,10 @@
-import React, { createContext, useEffect, useMemo, useState } from 'react';
+import React, {
+  createContext,
+  useCallback,
+  useEffect,
+  useMemo,
+  useState,
+} from 'react';
 import * as MUI from '@mui/x-data-grid';
 import { noop } from 'ui-toolkit/utilities';
 import * as Sc from './styled';
@@ -10,31 +16,37 @@ export const Context = createContext({
 const MemoizedRow = React.memo(MUI.GridRow);
 
 /**
+ * A component for displaying dataset in form of a Grid.
  *
- * @param multiselect
- * @param dataset
- * @param children
- * @param onRecordClick
- * @param props
+ * @param fluid {boolean}             - is a flag whether columns should expand to their maximum width or not.
+ * @param multiselect {boolean}       - is a flag whether row should support multiselect or not.
+ * @param dataset {{}[]}              - is a dataset to display.
+ * @param onRecordClick {() => void}  - is a callback reacting to clicking on a single record.
+ * @param children {JSX.Element}
+ * @param props {any}
  * @returns {JSX.Element}
  * @constructor
  */
 export default function DataGrid({
+  fluid = false,
   multiselect = false,
   dataset = [],
-  children,
-  flex,
   onRecordClick = noop,
+  children,
+
   ...props
 }) {
   const [definitions, setDefinitions] = useState([]);
   const [columnVisibilityModel, setColumnVisibilityModel] = useState({});
 
-  const register = (data) => {
-    if (!definitions.some((header) => header.name === data.name)) {
-      setDefinitions((currentValue) => [...currentValue, data]);
-    }
-  };
+  const register = useCallback(
+    (data) => {
+      if (!definitions.some((header) => header.name === data.name)) {
+        setDefinitions((currentValue) => [...currentValue, data]);
+      }
+    },
+    [definitions],
+  );
 
   useEffect(() => {
     register({
@@ -43,30 +55,7 @@ export default function DataGrid({
       hidden: true,
       value: ({ identifier }) => identifier,
     });
-    // dataset[0]?.fields
-    //   .map(({ profileTypeField }, index) =>
-    //     register({
-    //       field: profileTypeField.identifier,
-    //       name: profileTypeField.name,
-    //       value: ({ fields }) => {
-    //         const value = fields[index].values[0]
-    //         return value.value ?? value.customFieldOption.name;
-    //       }
-    //     }));
-  }, [dataset]);
-
-  const columns = useMemo(
-    () =>
-      definitions.map(({ field, type, name, unsortable, editable }) => ({
-        type,
-        field,
-        headerName: name,
-        sortable: !unsortable,
-        editable,
-        flex,
-      })),
-    [definitions],
-  );
+  }, [register, dataset]);
 
   const rows = useMemo(() => {
     if (definitions.length > 0) {
@@ -81,6 +70,22 @@ export default function DataGrid({
     }
     return [];
   }, [definitions, dataset]);
+
+  const columns = useMemo(
+    () =>
+      definitions.map(
+        ({ field, type, name, unsortable, editable, renderCell }) => ({
+          type,
+          field,
+          headerName: name,
+          sortable: !unsortable,
+          editable,
+          renderCell,
+          flex: fluid ? 1 : undefined,
+        }),
+      ),
+    [definitions, fluid],
+  );
 
   useEffect(() => {
     setColumnVisibilityModel(
@@ -115,6 +120,7 @@ export default function DataGrid({
         onRowClick={handleRowClick}
         {...props}
       />
+      {/* eslint-disable-next-line react/jsx-no-constructed-context-values */}
       <Context.Provider value={{ register }}>{children}</Context.Provider>
     </div>
   );
