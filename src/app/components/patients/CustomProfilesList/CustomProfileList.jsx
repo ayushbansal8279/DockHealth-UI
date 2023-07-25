@@ -1,5 +1,9 @@
 import React, { useEffect, useState } from 'react';
-import DataGrid, { Data, getValues } from 'ui-toolkit/Composite/DataGrid';
+import DataGrid, {
+  Data,
+  useController,
+  getValues,
+} from 'ui-toolkit/Composite/DataGrid';
 import { useDispatch } from 'react-redux';
 import { useParams, useHistory } from 'react-router-dom';
 import { getUserGroupIdentifierByUrlParameter } from 'helpers/user-groups-helper';
@@ -87,7 +91,15 @@ const CustomProfileList = () => {
   const handleSearchInputChange = (value) => {
     setSearchPhrase(value);
   };
-  console.log(profiles)
+
+  const controller = useController();
+
+  // useEffect(() => {
+  //   if (controller) {
+  //     controller.column('RELATION').visilibity = false;
+  //     console.log('!!:', controller.ref.current);
+  //   }
+  // }, [controller]);
 
   return (
     <>
@@ -103,6 +115,17 @@ const CustomProfileList = () => {
           </LayoutHeader>
         }
       >
+        {/* eslint-disable-next-line react/button-has-type */}
+        <button
+          onClick={() => {
+            // controller.column('RELATION').visilibity = false;
+            // controller.ref.current.setColumnVisibility('RELATION', false);
+            // console.log(controller.column('RELATION').visibility);
+            controller.column('RELATION').visibility = false;
+          }}
+        >
+          TEST
+        </button>
         <ProfileDrawer
           open={open}
           profileTypeIdentifier={profileTypeIdentifier}
@@ -129,6 +152,7 @@ const CustomProfileList = () => {
           </Box>
         </Stack>
         <DataGrid
+          controller={controller}
           dataset={profiles.filter((profile) =>
             getValues(profile).some(
               (value) => value && value.includes(searchPhrase),
