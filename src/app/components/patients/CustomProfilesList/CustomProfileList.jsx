@@ -87,7 +87,6 @@ const CustomProfileList = () => {
   const handleSearchInputChange = (value) => {
     setSearchPhrase(value);
   };
-  console.log(profiles)
 
   return (
     <>

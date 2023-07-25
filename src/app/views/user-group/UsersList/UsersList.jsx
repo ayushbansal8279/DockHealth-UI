@@ -13,62 +13,9 @@ import {
   UsersListContainer,
 } from './styled';
 
-// const renderColumnHeader = (props) => {
-//   const { colDef } = props;
-//   const { headerName } = colDef;
-
-//   return (
-//     <>
-//       <div className="MuiDataGrid-colCellTitle">
-//         <span>{headerName}</span>
-//       </div>
-//     </>
-//   );
-// };
-
 const UsersList = (props) => {
   const { users, searchTerm } = props;
   const history = useHistory();
-
-  // const columns = [
-  //   {
-  //     field: 'name',
-  //     headerName: 'USER',
-  //     renderHeader: renderColumnHeader,
-  //     renderCell: ({ row }) => {
-  //       return (
-  //         <div
-  //           className="people-cell-container"
-  //           style={{ display: 'flex' }}
-  //           onClick={() =>
-  //             history.push(
-  //               `/core/assignedToPerson/${encodeURIComponent(
-  //                 row.userIdentifier,
-  //               )}`,
-  //             )
-  //           }
-  //         >
-  //           <UserAvatar size={22} user={row} />
-  //           <Spacing horizontal={4} />
-  //           <span className="people-cell">{row?.name}</span>
-  //         </div>
-  //       );
-  //     },
-  //   },
-  //   {
-  //     field: 'email',
-  //     headerName: 'EMAIL',
-  //     renderHeader: renderColumnHeader,
-  //     flex: 1,
-  //   },
-  //   {
-  //     field: 'orgUserRole',
-  //     headerName: 'USER STATUS',
-  //     renderHeader: renderColumnHeader,
-  //     flex: 0.5,
-  //     valueFormatter: ({ value }) => capitalize(value),
-  //   },
-  // ];
 
   const KEYS_TO_FILTERS = [
     'name',
@@ -98,24 +45,7 @@ const UsersList = (props) => {
           </ListEntryContainer>
         </ListContainer>
       ) : (
-        // <StyledDataGrid
-        //   columns={columns}
-        //   rows={filteredUsers}
-        // rowHeight={35}
-        // headerHeight={45}
-        // hideFooterSelectedRowCount
-        // autoHeight
-        //   disableSelectionOnClick
-        //   disableColumnMenu
-        //   showColumnRightBorder
-        //   showCellRightBorder
-        // />
-        <DataGrid
-          dataset={filteredUsers}
-          hideFooterSelectedRowCount
-          autoHeight
-          fluid
-        >
+        <DataGrid dataset={filteredUsers} hideFooterSelectedRowCount autoHeight>
           <Data
             name="USER"
             value={(data) => (

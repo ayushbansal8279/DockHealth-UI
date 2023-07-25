@@ -17,6 +17,7 @@ import { Context } from './DataGrid';
  */
 export default function Data({
   field,
+  width,
   type = 'string',
   name = `You must specify "name" property.`,
   value = null,
@@ -42,6 +43,7 @@ export default function Data({
       unsortable,
       editable,
       flex,
+      width,
       renderCell(cell) {
         if (typeof cell.value === 'string') {
           return cell.value;
@@ -62,7 +64,18 @@ export default function Data({
         return data;
       },
     });
-  }, [editable, flex, field, hidden, name, register, type, unsortable, value]);
+  }, [
+    editable,
+    flex,
+    width,
+    field,
+    hidden,
+    name,
+    register,
+    type,
+    unsortable,
+    value,
+  ]);
 
   return null;
 }

@@ -32,7 +32,6 @@ export default function DataGrid({
   dataset = [],
   onRecordClick = noop,
   children,
-  fluid,
   ...props
 }) {
   const [definitions, setDefinitions] = useState([]);
@@ -73,17 +72,27 @@ export default function DataGrid({
   const columns = useMemo(
     () =>
       definitions.map(
-        ({ field, type, name, unsortable, editable, flex, renderCell }) => ({
+        ({
+          field,
+          type,
+          name,
+          unsortable,
+          editable,
+          flex,
+          renderCell,
+          width,
+        }) => ({
           type,
           field,
           headerName: name,
           sortable: !unsortable,
           editable,
           renderCell,
-          flex: fluid ? flex : undefined,
+          flex: width ? undefined : flex,
+          width,
         }),
       ),
-    [definitions, fluid],
+    [definitions],
   );
 
   useEffect(() => {
