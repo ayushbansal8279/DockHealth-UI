@@ -53,6 +53,28 @@ export default function DataGrid({
       hidden: true,
       value: ({ identifier }) => identifier,
     });
+  }, [dataset, register]);
+
+  const columns = useMemo(
+    () =>
+      definitions.map(({ field, type, name, unsortable, editable }) => ({
+        type,
+        field,
+        headerName: name,
+        sortable: !unsortable,
+        editable,
+        // flex: 1
+      })),
+    [definitions],
+  );
+
+  useEffect(() => {
+    register({
+      field: 'id',
+      name: 'Identifier',
+      hidden: true,
+      value: ({ identifier }) => identifier,
+    });
   }, [register, dataset]);
 
   const rows = useMemo(() => {
