@@ -1,8 +1,8 @@
 import React, {
   createContext,
+  useCallback,
   useEffect,
   useMemo,
-  useCallback,
   useState,
 } from 'react';
 import * as MUI from '@mui/x-data-grid';
@@ -16,20 +16,22 @@ export const Context = createContext({
 const MemoizedRow = React.memo(MUI.GridRow);
 
 /**
+ * A component for displaying dataset in form of a Grid.
  *
- * @param multiselect
- * @param dataset
- * @param children
- * @param onRecordClick
- * @param props
+ * @param fluid {boolean}             - is a flag whether columns should expand to their maximum width or not.
+ * @param multiselect {boolean}       - is a flag whether row should support multiselect or not.
+ * @param dataset {{}[]}              - is a dataset to display.
+ * @param onRecordClick {() => void}  - is a callback reacting to clicking on a single record.
+ * @param children {JSX.Element}
+ * @param props {any}
  * @returns {JSX.Element}
  * @constructor
  */
 export default function DataGrid({
   multiselect = false,
   dataset = [],
-  children,
   onRecordClick = noop,
+  children,
   ...props
 }) {
   const [definitions, setDefinitions] = useState([]);
@@ -66,6 +68,15 @@ export default function DataGrid({
     [definitions],
   );
 
+  useEffect(() => {
+    register({
+      field: 'id',
+      name: 'Identifier',
+      hidden: true,
+      value: ({ identifier }) => identifier,
+    });
+  }, [register, dataset]);
+
   const rows = useMemo(() => {
     if (definitions.length > 0) {
       return dataset.map((data) =>
@@ -79,6 +90,32 @@ export default function DataGrid({
     }
     return [];
   }, [definitions, dataset]);
+
+  const columns = useMemo(
+    () =>
+      definitions.map(
+        ({
+          field,
+          type,
+          name,
+          unsortable,
+          editable,
+          flex,
+          renderCell,
+          width,
+        }) => ({
+          type,
+          field,
+          headerName: name,
+          sortable: !unsortable,
+          editable,
+          renderCell,
+          flex: width ? undefined : flex,
+          width,
+        }),
+      ),
+    [definitions],
+  );
 
   useEffect(() => {
     setColumnVisibilityModel(
@@ -118,3 +155,40 @@ export default function DataGrid({
     </div>
   );
 }
+
+/*
+
+  const ? = [
+    {
+
+    }
+  ]
+
+
+  const dataset = [
+    {
+        "patientId": 3186,
+        "patientIdentifier": "ca640e89-30f3-474b-b96d-015b3d0d448b",
+        "firstName": "Wanda",
+        "lastName": "Four",
+        "phoneHome": "",
+        "patientName": "Four, Wanda"
+    }
+  ]
+
+  <DataGrid
+    multiselect
+    dataset={}
+  >
+    <Data
+      type="string"
+      name="PATIENT"
+      enable={{ sticky, sortable, draggable }}
+      render={({ firstName, lastName }) =>
+        `{firstName} {lastName}`
+      }
+    />
+  </ DataGrid>
+
+
+ */

@@ -54,7 +54,7 @@ const ProfilesCustomFieldsView = ({ profileTypeIdentifier }) => {
   useEffect(() => {
     fetchUserCustomFields();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [customFields]);
 
   const handleEditClick = (field) => {
     dispatch(
@@ -145,14 +145,14 @@ const ProfilesCustomFieldsView = ({ profileTypeIdentifier }) => {
           ))
       ) : (
         <>
+          <CenterBox>
+            <AddButton onClick={handleAddFieldClick}>
+              Add custom field
+            </AddButton>
+          </CenterBox>
+          <Box p={1} />
           {customFields?.length > 0 ? (
             <>
-              <CenterBox>
-                <AddButton onClick={handleAddFieldClick}>
-                  Add custom field
-                </AddButton>
-              </CenterBox>
-              <Box p={1} />
               <CustomFieldItem editable type="PROVIDER">
                 <CustomFieldCell>
                   <CustomFieldHeaderText>Field label</CustomFieldHeaderText>

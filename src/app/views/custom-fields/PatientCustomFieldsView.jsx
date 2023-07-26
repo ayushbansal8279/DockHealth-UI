@@ -227,7 +227,9 @@ const PatientCustomFieldsView = () => {
                                 <CustomFieldText>
                                   {field.fieldType === FieldType.RELATIONSHIP
                                     ? `${FieldTypeLabel[field.fieldType]} - ${
-                                        field.relatedProfileType?.name
+                                        field.selectedProfileType?.label ??
+                                        field.relatedProfileType?.name ??
+                                        ''
                                       }`
                                     : FieldTypeLabel[field.fieldType]}
                                 </CustomFieldText>
