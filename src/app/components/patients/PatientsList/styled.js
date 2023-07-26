@@ -29,3 +29,7 @@ export const Text = styled.span`
   overflow: hidden;
   text-overflow: ellipsis;
 `;
+
+export const PatientCell = styled.span`
+  cursor: pointer;
+`;

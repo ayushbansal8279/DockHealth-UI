@@ -12,6 +12,7 @@ import {
   ListContainer,
   ListEntryContainer,
   UsersListContainer,
+  PeopleCell,
 } from './styled';
 
 const renderColumnHeader = (props) => {
@@ -39,9 +40,8 @@ const UsersList = (props) => {
       renderHeader: renderColumnHeader,
       renderCell: ({ row }) => {
         return (
-          <div
+          <PeopleCell
             className="people-cell-container"
-            style={{ display: 'flex' }}
             onClick={() =>
               history.push(
                 `/core/assignedToPerson/${encodeURIComponent(
@@ -53,7 +53,7 @@ const UsersList = (props) => {
             <UserAvatar size={22} user={row} />
             <Spacing horizontal={4} />
             <span className="people-cell">{row?.name}</span>
-          </div>
+          </PeopleCell>
         );
       },
     },

@@ -59,7 +59,7 @@ export const StyledDataGrid = styled(DataGrid)`
   }
 
   & .MuiSelect-select {
-    font-family: "Roboto Condensed", sans-serif;
+    font-family: 'Roboto Condensed', sans-serif;
     font-weight: 400;
     font-size: 0.875rem;
     line-height: 1.43;
@@ -85,7 +85,7 @@ export const StyledDataGrid = styled(DataGrid)`
   }
 
   &.MuiDataGrid-cell {
-    font-family: 'Roboto Condensed', sans-serif;;
+    font-family: 'Roboto Condensed', sans-serif;
     font-weight: ${fontWeights.light};
     font-size: ${fontSizes.smallPlus};
     padding-left: ${spacing.large} !important;
@@ -103,7 +103,7 @@ export const StyledDataGrid = styled(DataGrid)`
 
   &.MuiDataGrid-colCellTitle {
     background-color: white;
-    font-family: 'Roboto Condensed', sans-serif;;
+    font-family: 'Roboto Condensed', sans-serif;
     font-size: ${fontSizes.small};
     font-weight: ${fontWeights.regularPlus} !important;
     padding-left: 0;
@@ -162,4 +162,9 @@ export const StyledDataGrid = styled(DataGrid)`
   &.MuiTablePagination-input {
     display: none;
   }
+`;
+
+export const PeopleCell = styled.div`
+  display: flex;
+  cursor: pointer;
 `;
