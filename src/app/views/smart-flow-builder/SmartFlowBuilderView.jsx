@@ -135,31 +135,12 @@ const SmartFlowBuilderView = () => {
   const reactFlowInstance = useRef(null);
   const [elements, setElements] = useState(null);
   const [isSelection, setIsSelection] = useState(false);
-  // const s = () =>
-  //   reactFlowInstance.current
-  //     ? [
-  //         ...reactFlowInstance.current
-  //           .getNodes()
-  //           .filter((node) => node.selected),
-  //         ...reactFlowInstance.current
-  //           .getEdges()
-  //           .filter((edge) => edge.selected),
-  //       ]
-  //     : [];
-  const selectedElements = useMemo(
-    () =>
-      reactFlowInstance.current
-        ? [
-            ...reactFlowInstance.current
-              .getNodes()
-              .filter((node) => node.selected),
-            ...reactFlowInstance.current
-              .getEdges()
-              .filter((edge) => edge.selected),
-          ]
-        : [],
-    [isSelection],
-  );
+  const selectedElements = reactFlowInstance.current
+    ? [
+        ...reactFlowInstance.current.getNodes().filter((node) => node.selected),
+        ...reactFlowInstance.current.getEdges().filter((edge) => edge.selected),
+      ]
+    : [];
   const [draggedEdgeSourceId, setDraggedEdgeSourceId] = useState(null);
   const [, setHoveredTargetHandle] = useState(Position.Top);
   const [isDelayPopoverOpen, openDelayPopover, closeDelayPopover] =
@@ -210,7 +191,17 @@ const SmartFlowBuilderView = () => {
 
   useEffect(() => {
     if (tasks && !isNil(layout)) {
-      setElements(mapLayoutToElements(layout, tasks));
+      const selectedElementsMap = selectedElements
+        ? Object.fromEntries(
+            selectedElements.map((element) => [element.id, element]),
+          )
+        : [];
+      setElements(
+        mapLayoutToElements(layout, tasks).map((element) => ({
+          ...selectedElementsMap[element.id],
+          ...element,
+        })),
+      );
     }
   }, [layout, tasks]);
 
@@ -419,7 +410,6 @@ const SmartFlowBuilderView = () => {
     }
 
     if (shouldUpdate) {
-      console.log(updatedElements);
       const newLayout = mapElementsToLayout(updatedElements);
       dispatch(saveTaskTemplateLayout(newLayout));
     }
