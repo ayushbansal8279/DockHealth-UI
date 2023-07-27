@@ -135,13 +135,31 @@ const SmartFlowBuilderView = () => {
   const reactFlowInstance = useRef(null);
   const [elements, setElements] = useState(null);
   const [isSelection, setIsSelection] = useState(false);
-  const selectedElements = reactFlowInstance.current
-    ? [
-        ...reactFlowInstance.current.getNodes().filter((node) => node.selected),
-        ...reactFlowInstance.current.getEdges().filter((edge) => edge.selected),
-      ]
-    : [];
-  console.log(selectedElements);
+  // const s = () =>
+  //   reactFlowInstance.current
+  //     ? [
+  //         ...reactFlowInstance.current
+  //           .getNodes()
+  //           .filter((node) => node.selected),
+  //         ...reactFlowInstance.current
+  //           .getEdges()
+  //           .filter((edge) => edge.selected),
+  //       ]
+  //     : [];
+  const selectedElements = useMemo(
+    () =>
+      reactFlowInstance.current
+        ? [
+            ...reactFlowInstance.current
+              .getNodes()
+              .filter((node) => node.selected),
+            ...reactFlowInstance.current
+              .getEdges()
+              .filter((edge) => edge.selected),
+          ]
+        : [],
+    [isSelection],
+  );
   const [draggedEdgeSourceId, setDraggedEdgeSourceId] = useState(null);
   const [, setHoveredTargetHandle] = useState(Position.Top);
   const [isDelayPopoverOpen, openDelayPopover, closeDelayPopover] =
@@ -393,7 +411,6 @@ const SmartFlowBuilderView = () => {
         updatedElements = updateNodePosition(
           node.id,
           node.position,
-          node.selected,
           updatedElements,
         );
       } else {
@@ -402,13 +419,16 @@ const SmartFlowBuilderView = () => {
     }
 
     if (shouldUpdate) {
+      console.log(updatedElements);
       const newLayout = mapElementsToLayout(updatedElements);
       dispatch(saveTaskTemplateLayout(newLayout));
     }
   };
 
   const handleNodeDragStop = () => {
-    updateSelectedElementsPosition(selectedElements);
+    updateSelectedElementsPosition(
+      reactFlowInstance?.current.getNodes().filter((node) => node.selected),
+    );
   };
 
   const handleSelectionDragStop = (_, nodes) => {
