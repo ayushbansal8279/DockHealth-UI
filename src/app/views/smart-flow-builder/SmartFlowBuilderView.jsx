@@ -119,13 +119,13 @@ const linkTypes = {
 const DEFAULT_EDGE = {
   type: 'REGULAR',
   style: {
-    strokeWidth: 1
+    strokeWidth: 1,
   },
   markerEnd: {
     type: MarkerType.ArrowClosed,
     width: 8,
     height: 8,
-    strokeWidth: 1
+    strokeWidth: 1,
   },
 };
 
@@ -134,7 +134,14 @@ const SmartFlowBuilderView = () => {
   const builderWrapperReference = useRef(null);
   const reactFlowInstance = useRef(null);
   const [elements, setElements] = useState(null);
-  const [selectedElements, setSelectedElements] = useState(null);
+  const [isSelection, setIsSelection] = useState(false);
+  const selectedElements = reactFlowInstance.current
+    ? [
+        ...reactFlowInstance.current.getNodes().filter((node) => node.selected),
+        ...reactFlowInstance.current.getEdges().filter((edge) => edge.selected),
+      ]
+    : [];
+  console.log(selectedElements);
   const [draggedEdgeSourceId, setDraggedEdgeSourceId] = useState(null);
   const [, setHoveredTargetHandle] = useState(Position.Top);
   const [isDelayPopoverOpen, openDelayPopover, closeDelayPopover] =
@@ -166,7 +173,6 @@ const SmartFlowBuilderView = () => {
       setTimeout(reactFlowInstance.current.fitView, 0);
     }
 
-    setSelectedElements(null);
     previousNumberOfTasks.current = numberOfTasks;
   }, [numberOfTasks]);
 
@@ -387,6 +393,7 @@ const SmartFlowBuilderView = () => {
         updatedElements = updateNodePosition(
           node.id,
           node.position,
+          node.selected,
           updatedElements,
         );
       } else {
@@ -401,10 +408,7 @@ const SmartFlowBuilderView = () => {
   };
 
   const handleNodeDragStop = () => {
-    const selectedNodes = reactFlowInstance.current
-      .getNodes()
-      .filter((element) => selectedElements.find((se) => se.id === element.id));
-    updateSelectedElementsPosition(selectedNodes);
+    updateSelectedElementsPosition(selectedElements);
   };
 
   const handleSelectionDragStop = (_, nodes) => {
@@ -694,7 +698,7 @@ const SmartFlowBuilderView = () => {
                 onSelectionDragStop={handleSelectionDragStop}
                 onNodeDragStop={handleNodeDragStop}
                 onLoad={handleLoad}
-                onSelectionChange={setSelectedElements}
+                onSelectionChange={(isSelected) => setIsSelection(isSelected)}
                 multiSelectionKeyCode={91}
                 nodesDraggable={isCurrentUserEditor}
                 nodesConnectable={isCurrentUserEditor}
@@ -704,6 +708,7 @@ const SmartFlowBuilderView = () => {
                 <Controls showInteractive={isCurrentUserEditor} />
               </ReactFlowAdapter>
             )}
+
             <BulkEditContainer
               selectedTasks={selectedTasks}
               onClose={resetSelection}
