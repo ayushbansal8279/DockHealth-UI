@@ -77,6 +77,12 @@ export default function DataGrid({
     [definitions],
   );
 
+  const unregister = useCallback((field) => {
+    setDefinitions((currentValue) =>
+      currentValue.filter((value) => value.field !== field),
+    );
+  }, []);
+
   useEffect(() => {
     register({
       field: 'id',
@@ -151,7 +157,9 @@ export default function DataGrid({
         {...props}
       />
       {/* eslint-disable-next-line react/jsx-no-constructed-context-values */}
-      <Context.Provider value={{ register }}>{children}</Context.Provider>
+      <Context.Provider value={{ register, unregister }}>
+        {children}
+      </Context.Provider>
     </div>
   );
 }

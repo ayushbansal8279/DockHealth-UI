@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import DataGrid, {
   Data,
   useController,
@@ -11,7 +11,13 @@ import {
   setCurrentUserGroup,
   unsetCurrentUserGroup,
 } from 'actions/user-groups-actions';
-import { Box, Stack } from '@mui/material';
+import {
+  Box,
+  Checkbox,
+  FormControlLabel,
+  FormGroup,
+  Stack,
+} from '@mui/material';
 import { getAllProfiles } from 'api/profile-api';
 import { getAllProfileFieldTypes } from 'api/profile-type-field-api';
 import { showGlobalErrorAlert } from 'alert/actions';
@@ -23,6 +29,11 @@ import { Add as AddIcon } from '@mui/icons-material';
 import AdornedButton from 'components/common/AdornedButton/AdornedButton';
 import ProfileDrawer from 'components/patients/CustomProfilesList/ProfileDrawer';
 import SearchInput from 'components/common/SearchInput/SearchInput';
+import Popover from 'ui-toolkit/Element/Popover';
+import Toolbar from 'ui-toolkit/Composite/Toolbar';
+import { Paper } from 'ui-toolkit/Element';
+import CustomizeIcon from 'img/customize-icon.svg';
+import { CustomizeImg } from 'components/patients/CustomizeToolbarButton/styled';
 
 const CustomProfileList = () => {
   const dispatch = useDispatch();
@@ -55,6 +66,7 @@ const CustomProfileList = () => {
   };
 
   const [profileTypes, setProfileTypes] = useState([]);
+  const [filters, setFilters] = useState([]);
   const [profiles, setProfiles] = useState([]);
   const [searchPhrase, setSearchPhrase] = useState('');
 
@@ -62,6 +74,7 @@ const CustomProfileList = () => {
     getAllProfileFieldTypes(profileTypeIdentifier)
       .then((data) => {
         setProfileTypes(data);
+        setFilters(data.map((profileType) => profileType.identifier));
       })
       .catch(() => {
         dispatch(showGlobalErrorAlert());
@@ -93,13 +106,27 @@ const CustomProfileList = () => {
   };
 
   const controller = useController();
+  const buttonReference = useRef(null);
+  const [isPopoverOpen, setPopoverOpen] = useState(false);
 
-  // useEffect(() => {
-  //   if (controller) {
-  //     controller.column('RELATION').visilibity = false;
-  //     console.log('!!:', controller.ref.current);
-  //   }
-  // }, [controller]);
+  const handlePopoverOpen = () => {
+    setPopoverOpen(true);
+  };
+
+  const handlePopoverClose = () => {
+    setPopoverOpen(false);
+  };
+
+  const handleFilterChange = (field) => (event) => {
+    const checkbox = event.target;
+    if (checkbox) {
+      if (checkbox.checked) {
+        setFilters([...filters, field.identifier]);
+      } else {
+        setFilters(filters.filter((filter) => filter !== field.identifier));
+      }
+    }
+  };
 
   return (
     <>
@@ -115,17 +142,6 @@ const CustomProfileList = () => {
           </LayoutHeader>
         }
       >
-        {/* eslint-disable-next-line react/button-has-type */}
-        <button
-          onClick={() => {
-            // controller.column('RELATION').visilibity = false;
-            // controller.ref.current.setColumnVisibility('RELATION', false);
-            // console.log(controller.column('RELATION').visibility);
-            controller.column('RELATION').visibility = false;
-          }}
-        >
-          TEST
-        </button>
         <ProfileDrawer
           open={open}
           profileTypeIdentifier={profileTypeIdentifier}
@@ -139,6 +155,50 @@ const CustomProfileList = () => {
         >
           <Box display="flex" alignItems="center">
             <SearchInput onValueChange={handleSearchInputChange} />
+          </Box>
+          <Box m={1} />
+          <Box display="flex" alignItems="center">
+            <Toolbar>
+              <Toolbar.Button ref={buttonReference} onClick={handlePopoverOpen}>
+                <CustomizeImg
+                  src={CustomizeIcon}
+                  alt="view type icon"
+                  iconColorFilterActive={isPopoverOpen}
+                />
+                Customize
+              </Toolbar.Button>
+            </Toolbar>
+            <Popover
+              anchorEl={buttonReference?.current}
+              open={isPopoverOpen}
+              onClose={handlePopoverClose}
+              anchorOrigin={{
+                vertical: 'bottom',
+                horizontal: 'left',
+              }}
+              transformOrigin={{
+                vertical: 'top',
+                horizontal: 'left',
+              }}
+            >
+              <Paper>
+                <FormGroup>
+                  {profileTypes.map((field) => {
+                    return (
+                      <FormControlLabel
+                        control={
+                          <Checkbox
+                            checked={filters.includes(field.identifier)}
+                            onClick={handleFilterChange(field)}
+                          />
+                        }
+                        label={field.name}
+                      />
+                    );
+                  })}
+                </FormGroup>
+              </Paper>
+            </Popover>
           </Box>
           <Box m={1} />
           <Box display="flex" alignItems="center">
@@ -160,33 +220,35 @@ const CustomProfileList = () => {
           )}
           onRecordClick={handleRecordClick}
         >
-          {profileTypes.map((field) => (
-            <Data
-              name={field.name}
-              value={(data) => {
-                const record = data.fields?.find(
-                  ({ profileTypeField }) =>
-                    field.identifier === profileTypeField.identifier,
-                );
+          {profileTypes
+            .filter((profileType) => filters.includes(profileType.identifier))
+            .map((field) => (
+              <Data
+                name={field.name}
+                value={(data) => {
+                  const record = data.fields?.find(
+                    ({ profileTypeField }) =>
+                      field.identifier === profileTypeField.identifier,
+                  );
 
-                if (record) {
-                  switch (field.fieldType) {
-                    case 'TEXT': {
-                      return record.values?.[0].value;
-                    }
-                    case 'PICK_LIST': {
-                      return record.values?.[0].customFieldOption?.name;
-                    }
-                    default: {
-                      return '';
+                  if (record) {
+                    switch (field.fieldType) {
+                      case 'TEXT': {
+                        return record.values?.[0].value;
+                      }
+                      case 'PICK_LIST': {
+                        return record.values?.[0].customFieldOption?.name;
+                      }
+                      default: {
+                        return '';
+                      }
                     }
                   }
-                }
 
-                return '';
-              }}
-            />
-          ))}
+                  return '';
+                }}
+              />
+            ))}
         </DataGrid>
       </ViewLayout>
     </>

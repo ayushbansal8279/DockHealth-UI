@@ -24,7 +24,7 @@ export default function Data({
   unsortable = false,
   editable = false,
 }) {
-  const { register } = useContext(Context);
+  const { register, unregister } = useContext(Context);
 
   useEffect(() => {
     register({
@@ -61,6 +61,19 @@ export default function Data({
       },
     });
   }, [editable, field, hidden, name, register, type, unsortable, value]);
+
+  useEffect(() => {
+    return () => {
+      unregister(
+        field ??
+          name
+            .split(' ')
+            .join('_')
+            .replace(/[^\d:A-Za-z]/, '')
+            .toUpperCase(),
+      );
+    };
+  }, [field, name, unregister]);
 
   return null;
 }
