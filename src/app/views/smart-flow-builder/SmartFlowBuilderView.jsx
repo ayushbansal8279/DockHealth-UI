@@ -137,9 +137,9 @@ const SmartFlowBuilderView = () => {
   const [isSelection, setIsSelection] = useState(false);
   const selectedElements = reactFlowInstance.current
     ? [
-        ...reactFlowInstance.current.getNodes().filter((node) => node.selected),
-        ...reactFlowInstance.current.getEdges().filter((edge) => edge.selected),
-      ]
+        ...reactFlowInstance.current.getNodes(),
+        ...reactFlowInstance.current.getEdges(),
+      ].filter((element) => element.selected)
     : [];
   const [draggedEdgeSourceId, setDraggedEdgeSourceId] = useState(null);
   const [, setHoveredTargetHandle] = useState(Position.Top);
