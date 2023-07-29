@@ -21,7 +21,7 @@ const ReactFlowAdapter = ({
   );
 
   const handleSelectionChange = (payload) => {
-    onSelectionChange(!!payload.nodes.length);
+    onSelectionChange(payload.nodes.length + payload.edges.length);
   };
 
   useEffect(() => {

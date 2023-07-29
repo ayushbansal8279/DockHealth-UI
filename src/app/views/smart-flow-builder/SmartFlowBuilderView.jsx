@@ -134,7 +134,7 @@ const SmartFlowBuilderView = () => {
   const builderWrapperReference = useRef(null);
   const reactFlowInstance = useRef(null);
   const [elements, setElements] = useState(null);
-  const [isSelection, setIsSelection] = useState(false);
+  const [selectedElementsCount, setSelectedElementsCount] = useState(0);
   const selectedElements = reactFlowInstance.current
     ? [
         ...reactFlowInstance.current.getNodes(),
@@ -598,7 +598,6 @@ const SmartFlowBuilderView = () => {
         ?.map(path(['data', 'task'])),
     [selectedElements],
   );
-
   return (
     <div style={{ display: 'flex', width: '100vw', height: '100vh' }}>
       <ReactFlowProvider>
@@ -711,12 +710,14 @@ const SmartFlowBuilderView = () => {
                 onSelectionDragStop={handleSelectionDragStop}
                 onNodeDragStop={handleNodeDragStop}
                 onLoad={handleLoad}
-                onSelectionChange={(isSelected) => setIsSelection(isSelected)}
+                onSelectionChange={setSelectedElementsCount}
                 multiSelectionKeyCode={91}
                 nodesDraggable={isCurrentUserEditor}
                 nodesConnectable={isCurrentUserEditor}
                 elementsSelectable={isCurrentUserEditor}
                 defaultEdgeOptions={DEFAULT_EDGE}
+                selectionMode="partial"
+                selectNodesOnDrag={false}
               >
                 <Controls showInteractive={isCurrentUserEditor} />
               </ReactFlowAdapter>
