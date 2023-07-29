@@ -191,14 +191,17 @@ const SmartFlowBuilderView = () => {
 
   useEffect(() => {
     if (tasks && !isNil(layout)) {
-      const selectedElementsMap = selectedElements
+      const previousElementsMap = reactFlowInstance.current
         ? Object.fromEntries(
-            selectedElements.map((element) => [element.id, element]),
+            [
+              ...reactFlowInstance.current.getNodes(),
+              ...reactFlowInstance.current.getEdges(),
+            ].map((element) => [element.id, element]),
           )
         : [];
       setElements(
         mapLayoutToElements(layout, tasks).map((element) => ({
-          ...selectedElementsMap[element.id],
+          ...previousElementsMap[element.id],
           ...element,
         })),
       );
