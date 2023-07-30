@@ -15,9 +15,19 @@ export const Context = createContext({
 
 const MemoizedRow = React.memo(MUI.GridRow);
 
+const proxy = new Proxy(
+  { __EMPTY__: null },
+  {
+    get() {
+      return proxy;
+    },
+  },
+);
+
 /**
  * A component for displaying dataset in form of a Grid.
  *
+ * @param controller? {any}            - is an object containing an imperative API to manipulate state of the component.
  * @param fluid {boolean}             - is a flag whether columns should expand to their maximum width or not.
  * @param multiselect {boolean}       - is a flag whether row should support multiselect or not.
  * @param dataset {{}[]}              - is a dataset to display.
@@ -26,8 +36,29 @@ const MemoizedRow = React.memo(MUI.GridRow);
  * @param props {any}
  * @returns {JSX.Element}
  * @constructor
+ *
+ * @example
+ * ```
+ *    const controller = useController()
+ *
+ *    <DataGrid controller={controller} dataset={[
+ *      { firstName: "Laramy", lastName: "Fisk", age: 28 },
+ *      { firstName: "Gabriel", lastName: "Santiago", age: 42 },
+ *    ]}>
+ *      <Data
+ *        name="Name"
+ *        value={data => data.firstName + data.lastName}
+ *      />
+ *      <Data
+ *        name="Age"
+ *        value={data => data.age}
+ *      />
+ *    </DataGrid>
+ * ```
  */
 export default function DataGrid({
+  controller = proxy,
+  fluid = false,
   multiselect = false,
   dataset = [],
   onRecordClick = noop,
@@ -45,6 +76,12 @@ export default function DataGrid({
     },
     [definitions],
   );
+
+  const unregister = useCallback((field) => {
+    setDefinitions((currentValue) =>
+      currentValue.filter((value) => value.field !== field),
+    );
+  }, []);
 
   useEffect(() => {
     register({
@@ -138,6 +175,7 @@ export default function DataGrid({
       }}
     >
       <Sc.DataGrid
+        apiRef={controller.ref}
         columns={columns}
         rows={rows}
         components={{
@@ -151,10 +189,31 @@ export default function DataGrid({
         {...props}
       />
       {/* eslint-disable-next-line react/jsx-no-constructed-context-values */}
-      <Context.Provider value={{ register }}>{children}</Context.Provider>
+      <Context.Provider value={{ register, unregister }}>
+        {children}
+      </Context.Provider>
     </div>
   );
 }
+
+export const useController = () => {
+  const apiReference = MUI.useGridApiRef();
+  return {
+    column: (field) => {
+      return {
+        get visibility() {
+          return apiReference.current
+            .getVisibleColumns()
+            .some((column) => column.field === field);
+        },
+        set visibility(value) {
+          apiReference.current.setColumnVisibility(field, value);
+        },
+      };
+    },
+    ref: apiReference,
+  };
+};
 
 /*
 

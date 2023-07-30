@@ -33,6 +33,7 @@
     "@mui/material": "^5.11.6",
     "@mui/styled-engine-sc": "^5.11.0",
     "@mui/x-data-grid": "^5.17.20",
+    "@mui/x-data-grid-pro": "^6.10.1",
     "@mui/x-date-pickers": "^5.0.15",
     "@sendbird/uikit-react": "3.4.5",
     "@stripe/react-stripe-js": "^1.16.4",
