@@ -17,12 +17,14 @@ import { Context } from './DataGrid';
  */
 export default function Data({
   field,
+  width,
   type = 'string',
   name = `You must specify "name" property.`,
   value = null,
   hidden = false,
   unsortable = false,
   editable = false,
+  flex = 1,
 }) {
   const { register, unregister } = useContext(Context);
 
@@ -40,6 +42,8 @@ export default function Data({
       hidden,
       unsortable,
       editable,
+      flex,
+      width,
       renderCell(cell) {
         if (typeof cell.value === 'string') {
           return cell.value;
@@ -60,7 +64,18 @@ export default function Data({
         return data;
       },
     });
-  }, [editable, field, hidden, name, register, type, unsortable, value]);
+  }, [
+    editable,
+    flex,
+    width,
+    field,
+    hidden,
+    name,
+    register,
+    type,
+    unsortable,
+    value,
+  ]);
 
   useEffect(() => {
     return () => {
