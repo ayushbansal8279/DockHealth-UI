@@ -1127,6 +1127,35 @@ const TaskTemplateGroupHeader = ({
           )}
         </>
       )}
+      {isColumnChecked(columns, TaskItemColumn.SHARED) && (
+        <>
+          {randerFirstColumnCoverIfNecessary(
+            <TaskItemCell
+              key={`shared_${identifier}`}
+              width={
+                columns?.find(
+                  ({ identifier: id }) => id === TaskItemColumn.SHARED,
+                )?.columnWidth
+              }
+              // eslint-disable-next-line sonarjs/no-all-duplicated-branches
+              justify={groupHasMultipleAssignees ? 'center' : 'center'}
+              paddingLeft="small"
+              paddingRight="small"
+              onContextMenu={(event) => {
+                event.stopPropagation();
+              }}
+              order={getColumnOrder(TaskItemColumn.SHARED)}
+              printWidth={TaskItemColumnWidth[TaskItemColumn.SHARED].PRINT}
+            >
+              &nbsp;
+            </TaskItemCell>,
+            getColumnOrder(TaskItemColumn.SHARED),
+            columns?.find(
+              ({ identifier: id }) => id === TaskItemColumn.SHARED,
+            )?.columnWidth,
+          )}
+        </>
+      )}
       {isColumnChecked(columns, TaskItemColumn.LIST_NAME) && (
         <>
           {randerFirstColumnCoverIfNecessary(

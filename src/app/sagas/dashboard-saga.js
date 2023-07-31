@@ -131,13 +131,19 @@ function* getDashboardGroups() {
     const tabName = yield select(dashboardTabNameSelector);
 
     if (tabName === DashboardTasksTab.SHARED_TASKS) {
-      const data = yield call(
-        getTasksForOrganizationByImplicitGroup,
-        'SHARED_TASKS',
-      );
+      const dashboardGroups = [
+        {
+          groupName: 'Shared',
+          groupType: 'SHARED',
+          metricName: 'INCOMPLETE_TASKS_COUNT',
+          metricValue: 0,
+          defaultOpen: true,
+        },
+      ];
+
       yield put({
         type: ActionTypes.GET_DASHBOARD_GROUPS_SUCCESS,
-        tasksList: data,
+        tasksList: dashboardGroups,
       });
     } else {
       const dashboardGroups = yield call(

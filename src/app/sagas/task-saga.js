@@ -407,7 +407,7 @@ function* insertCreatedTask({ taskIdentifier }) {
 
 function* shareTask({
   taskIdentifier,
-  usersIdentifier,
+  userIdentifiers,
   externalUsers,
   message,
 }) {
@@ -415,7 +415,7 @@ function* shareTask({
     yield call(
       TaskApi.shareTask,
       taskIdentifier,
-      usersIdentifier,
+      userIdentifiers,
       externalUsers,
       message,
     );

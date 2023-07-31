@@ -79,6 +79,7 @@ const CustomizeToolbarButton = ({
     [TaskItemColumn.FILES]: 'Files',
     [TaskItemColumn.SUBTASKS_COUNT]: 'Subtasks',
     [TaskItemColumn.ASSIGNED]: 'Assigned',
+    [TaskItemColumn.SHARED]: 'Shared',
     [TaskItemColumn.WORKFLOW_STATUS]: 'Status',
     [TaskItemColumn.START_DATE]: 'Start date',
     [TaskItemColumn.DUE_DATE]: 'Due date',

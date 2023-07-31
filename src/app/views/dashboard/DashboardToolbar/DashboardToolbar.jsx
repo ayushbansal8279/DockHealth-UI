@@ -18,7 +18,7 @@ import Spacing from 'components/common/Spacing';
 import {
   HOME_ALL_TASKS_PATH,
   HOME_PATH,
-  // HOME_SHARED_PATH,
+  HOME_SHARED_PATH,
 } from 'routing/helpers/paths';
 import { DashboardTasksTab } from 'helpers/dashboard-helpers';
 import { ViewType, getViewTypeFromQueryString } from 'helpers/view-type-helper';
@@ -158,16 +158,16 @@ const DashboardToolbar = ({ iconColorFilterActive, iconColorActive }) => {
               isSelected={tabName === DashboardTasksTab.MY_TASKS}
             />
           </AccessRestrictor>
-          {/* <AccessRestrictor allowedToRoles={[EXTERNAL]}>
-            <DashboardTab
-              label="Shared with me"
-              setHighlightPosition={setHighlightPosition}
-              onClick={() => {
-                history.push(`${HOME_SHARED_PATH}`);
-              }}
-              isSelected={tabName === DashboardTasksTab.SHARED_TASKS}
-            />
-          </AccessRestrictor> */}
+          {/* <AccessRestrictor allowedToRoles={[EXTERNAL]}> */}
+          <DashboardTab
+            label="Shared with me"
+            setHighlightPosition={setHighlightPosition}
+            onClick={() => {
+              history.push(`${HOME_SHARED_PATH}`);
+            }}
+            isSelected={tabName === DashboardTasksTab.SHARED_TASKS}
+          />
+          {/* </AccessRestrictor> */}
           {!restrictAllTasksForMember && (
             <AccessRestrictor allowedToRoles={[ADMIN, OWNER, MEMBER]}>
               <DashboardTab

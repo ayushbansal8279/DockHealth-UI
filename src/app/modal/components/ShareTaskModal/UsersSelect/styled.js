@@ -8,12 +8,13 @@ export const Autocomplete = styled(MuiAutocomplete)`
       width: 100%;
     }
 
-    &.MuiAutocomplete-inputRoot {
-      width: 100%;
-      padding-right: 0 !important;
-    }
+    // &.MuiAutocomplete-inputRoot {
+    //   width: 100%;
+    //   padding-right: 0 !important;
+    // }
 
-    &.MuiAutocomplete-input {
+    // &.MuiAutocomplete-input {
+    & input {
       width: 100% !important;
       padding: 24px;
       background: ${palette.coolGrey4};

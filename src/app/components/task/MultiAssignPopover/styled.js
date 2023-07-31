@@ -28,6 +28,14 @@ export const ListContainer = styled.div`
   overflow-y: auto;
 `;
 
+export const SectionHeader = styled.div`
+  height: 36px;
+  color: ${palette.mediumGrey};
+  font-weight: ${fontWeights.bold};
+  padding-top: ${spacing.smallPlus};
+  padding-left: ${spacing.smallPlus};
+`;
+
 export const NoRecordsText = styled.div`
   height: 36px;
   color: ${palette.mediumGrey};

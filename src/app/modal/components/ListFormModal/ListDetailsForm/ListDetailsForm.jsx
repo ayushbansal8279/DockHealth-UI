@@ -87,6 +87,7 @@ const ListDetailsForm = ({
       listName: list?.listName,
       listDescription: list?.listDescription,
       restrictCustomization: list ? !!list?.restrictCustomization : true,
+      discoveryEnabled: list ? !!list?.discoveryEnabled : true,
     },
     reValidateMode: 'onSubmit',
   });
@@ -94,6 +95,7 @@ const ListDetailsForm = ({
   const { handleSubmit, watch, setValue } = formMethods;
 
   const restrictCustomizationValue = watch('restrictCustomization');
+  const discoveryEnabled = watch('discoveryEnabled');
 
   return (
     <StyledForm
@@ -153,6 +155,22 @@ const ListDetailsForm = ({
             <span>
               Note: You will need to reconfigure the columns displayed on the
               list when you change the above option.
+            </span>
+            <Spacing vertical={4} />
+            <CheckboxContainer>
+              <Checkbox
+                size={16}
+                onClick={() => setValue('discoveryEnabled', !discoveryEnabled)}
+                isChecked={discoveryEnabled}
+              />
+              <Spacing horizontal={3} />
+              <CheckboxDescription>
+                Enable Discovery for Task Sharing
+              </CheckboxDescription>
+            </CheckboxContainer>
+            <Spacing vertical={4} />
+            <span>
+              Enables this list to be listed for others to move or share tasks
             </span>
           </Grid>
           <Grid container direction="row" justifyContent="center">
