@@ -160,6 +160,7 @@ const SmartFlowBuilderView = () => {
     () => elements.filter((element) => element.selected),
     [elements],
   );
+
   useEffect(() => {
     if (
       reactFlowInstance.current &&
