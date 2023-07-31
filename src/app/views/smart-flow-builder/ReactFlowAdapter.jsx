@@ -4,7 +4,7 @@ import { NodeType } from 'helpers/smart-flow-builder-helpers';
 
 const ReactFlowAdapter = ({
   elements,
-  onSelectionChange,
+  onElementsChange,
   onLoad,
   extraNodes,
   ...props
@@ -12,17 +12,25 @@ const ReactFlowAdapter = ({
   const [nodes, setNodes] = useState([]);
   const [edges, setEdges] = useState([]);
   const onNodesChange = useCallback(
-    (changes) => setNodes((nds) => applyNodeChanges(changes, nds)),
-    [setNodes],
+    (changes) =>
+      onElementsChange((previousElements) => [
+        ...previousElements.filter(
+          (element) => !Object.values(NodeType).includes(element.type),
+        ),
+        ...applyNodeChanges(changes, nodes),
+      ]),
+    [onElementsChange, nodes],
   );
   const onEdgesChange = useCallback(
-    (changes) => setEdges((eds) => applyEdgeChanges(changes, eds)),
-    [setEdges],
+    (changes) =>
+      onElementsChange((previousElements) => [
+        ...previousElements.filter((element) =>
+          Object.values(NodeType).includes(element.type),
+        ),
+        ...applyEdgeChanges(changes, edges),
+      ]),
+    [onElementsChange, edges],
   );
-
-  const handleSelectionChange = (payload) => {
-    onSelectionChange(payload.nodes.length + payload.edges.length);
-  };
 
   useEffect(() => {
     const nodesArray = [];
@@ -42,7 +50,6 @@ const ReactFlowAdapter = ({
     <ReactFlow
       nodes={nodes}
       edges={edges}
-      onSelectionChange={handleSelectionChange}
       onInit={onLoad}
       {...props}
       onNodesChange={onNodesChange}

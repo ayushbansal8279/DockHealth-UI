@@ -133,15 +133,7 @@ const SmartFlowBuilderView = () => {
   const delayPeriodOptionReference = useRef(null);
   const builderWrapperReference = useRef(null);
   const reactFlowInstance = useRef(null);
-  const [elements, setElements] = useState(null);
-  const [_, setSelectedElementsCount] = useState(0);
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  const selectedElements = reactFlowInstance.current
-    ? [
-        ...reactFlowInstance.current.getNodes(),
-        ...reactFlowInstance.current.getEdges(),
-      ].filter((element) => element.selected)
-    : [];
+  const [elements, setElements] = useState([]);
   const [draggedEdgeSourceId, setDraggedEdgeSourceId] = useState(null);
   const [, setHoveredTargetHandle] = useState(Position.Top);
   const [isDelayPopoverOpen, openDelayPopover, closeDelayPopover] =
@@ -164,6 +156,10 @@ const SmartFlowBuilderView = () => {
     members?.find(({ user }) => user.identifier === currentUser.identifier)
       ?.memberPermission === 'EDITOR';
 
+  const selectedElements = useMemo(
+    () => elements.filter((element) => element.selected),
+    [elements],
+  );
   useEffect(() => {
     if (
       reactFlowInstance.current &&
@@ -192,14 +188,10 @@ const SmartFlowBuilderView = () => {
 
   useEffect(() => {
     if (tasks && !isNil(layout)) {
-      const previousElementsMap = reactFlowInstance.current
-        ? Object.fromEntries(
-            [
-              ...reactFlowInstance.current.getNodes(),
-              ...reactFlowInstance.current.getEdges(),
-            ].map((element) => [element.id, element]),
-          )
-        : [];
+      const previousElementsMap = Object.fromEntries(
+        elements.map((element) => [element.id, element]),
+      );
+
       setElements(
         mapLayoutToElements(layout, tasks).map((element) => ({
           ...previousElementsMap[element.id],
@@ -695,6 +687,7 @@ const SmartFlowBuilderView = () => {
                 edgeTypes={linkTypes}
                 minZoom={0.1}
                 maxZoom={1}
+                onElementsChange={setElements}
                 onDragOver={handleDragOver}
                 onDrop={handleDrop}
                 onElementsRemove={handleRemoveElement}
@@ -709,7 +702,6 @@ const SmartFlowBuilderView = () => {
                 onSelectionDragStop={handleSelectionDragStop}
                 onNodeDragStop={handleNodeDragStop}
                 onLoad={handleLoad}
-                onSelectionChange={setSelectedElementsCount}
                 multiSelectionKeyCode={91}
                 nodesDraggable={isCurrentUserEditor}
                 nodesConnectable={isCurrentUserEditor}
