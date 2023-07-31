@@ -134,7 +134,8 @@ const SmartFlowBuilderView = () => {
   const builderWrapperReference = useRef(null);
   const reactFlowInstance = useRef(null);
   const [elements, setElements] = useState(null);
-  const [selectedElementsCount, setSelectedElementsCount] = useState(0);
+  const [_, setSelectedElementsCount] = useState(0);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   const selectedElements = reactFlowInstance.current
     ? [
         ...reactFlowInstance.current.getNodes(),
