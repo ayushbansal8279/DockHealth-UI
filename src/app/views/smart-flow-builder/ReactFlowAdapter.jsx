@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useState, useMemo } from 'react';
 import ReactFlow, { applyEdgeChanges, applyNodeChanges } from 'reactflow';
 import { NodeType } from 'helpers/smart-flow-builder-helpers';
 
@@ -9,8 +9,19 @@ const ReactFlowAdapter = ({
   extraNodes,
   ...props
 }) => {
-  const [nodes, setNodes] = useState([]);
-  const [edges, setEdges] = useState([]);
+  const { nodes, edges } = useMemo(() => {
+    const nodesArray = [];
+    const edgesArray = [];
+    for (const element of elements) {
+      if (Object.values(NodeType).includes(element.type)) {
+        nodesArray.push(element);
+      } else {
+        edgesArray.push(element);
+      }
+    }
+    return { nodes: nodesArray, edges: edgesArray };
+  }, [elements]);
+
   const onNodesChange = useCallback(
     (changes) =>
       onElementsChange((previousElements) => [
@@ -31,20 +42,6 @@ const ReactFlowAdapter = ({
       ]),
     [onElementsChange, edges],
   );
-
-  useEffect(() => {
-    const nodesArray = [];
-    const edgesArray = [];
-    for (const element of elements) {
-      if (Object.values(NodeType).includes(element.type)) {
-        nodesArray.push(element);
-      } else {
-        edgesArray.push(element);
-      }
-    }
-    setNodes(nodesArray);
-    setEdges(edgesArray);
-  }, [elements, extraNodes]);
 
   return (
     <ReactFlow
