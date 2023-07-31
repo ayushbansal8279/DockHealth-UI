@@ -419,10 +419,8 @@ const SmartFlowBuilderView = () => {
     }
   };
 
-  const handleNodeDragStop = () => {
-    updateSelectedElementsPosition(
-      reactFlowInstance?.current.getNodes().filter((node) => node.selected),
-    );
+  const handleNodeDragStop = (_, node) => {
+    updateSelectedElementsPosition([node]);
   };
 
   const handleSelectionDragStop = (_, nodes) => {
