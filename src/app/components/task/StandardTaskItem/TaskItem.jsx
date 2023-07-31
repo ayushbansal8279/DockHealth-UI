@@ -96,6 +96,7 @@ import TaskItemElapsedTime from './TaskItemComponents/TaskItemElapsedTime';
 import TaskItemSubtasks from './TaskItemComponents/TaskItemSubtasks';
 import TaskItemIcons from './TaskItemComponents/TaskItemIcons';
 import TaskItemMembers from './TaskItemComponents/TaskItemMembers';
+import TaskItemSharedMembers from './TaskItemComponents/TaskItemSharedMembers';
 import TaskItemList from './TaskItemComponents/TaskItemList';
 import TaskItemWorkflowStatus from './TaskItemComponents/TaskItemWorkflowStatus';
 import TaskItemDecision from './TaskItemComponents/TaskItemDecision';
@@ -168,6 +169,7 @@ const TaskItem = React.memo(
     const {
       taskIdentifier,
       assignedToUsers,
+      sharedWithUsers,
       creator,
       completedBy,
       completedDt,
@@ -625,6 +627,14 @@ const TaskItem = React.memo(
         onTaskAssigned();
       },
       [onTaskUpdate, taskIdentifier],
+    );
+
+    const handleSharingTask = useCallback(
+      (selectedMembers) => {
+        const userIdentifiers = pluck('userIdentifier', selectedMembers);
+        dispatch(TaskActions.shareTask(taskIdentifier, userIdentifiers));
+      },
+      [dispatch, taskIdentifier],
     );
 
     const handleUpdateWorkflowStatus = useCallback(
@@ -1426,6 +1436,43 @@ const TaskItem = React.memo(
                     />
                   </TaskItemCell>,
                   getColumnOrder(TaskItemColumn.ASSIGNED),
+                )}
+              </>
+            )}
+            {isColumnChecked(columns, TaskItemColumn.SHARED) && (
+              <>
+                {randerFirstColumnCoverIfNecessary(
+                  <TaskItemCell
+                    isSubtask={isSubtask}
+                    key={`shared_${taskIdentifier}`}
+                    width={
+                      columns?.find(
+                        ({ identifier }) =>
+                          identifier === TaskItemColumn.SHARED,
+                      )?.columnWidth
+                    }
+                    // eslint-disable-next-line sonarjs/no-duplicate-string
+                    justify={multipleAssigneesContext ? 'flex-start' : 'center'}
+                    paddingLeft="small"
+                    paddingRight="small"
+                    onContextMenu={(event) => {
+                      event.stopPropagation();
+                    }}
+                    order={getColumnOrder(TaskItemColumn.SHARED)}
+                    printWidth={
+                      TaskItemColumnWidth[TaskItemColumn.SHARED].PRINT
+                    }
+                  >
+                    <TaskItemSharedMembers
+                      readOnly={restrictions?.assigment === READ_ONLY}
+                      multipleAssigneesContext={multipleAssigneesContext}
+                      task={task}
+                      sharedWithUsers={sharedWithUsers}
+                      handleSharingTask={handleSharingTask}
+                      matchAssignedTo={matchAssignedTo}
+                    />
+                  </TaskItemCell>,
+                  getColumnOrder(TaskItemColumn.SHARED),
                 )}
               </>
             )}

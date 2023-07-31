@@ -581,16 +581,23 @@ export function updateTasksLink(link) {
 
 export function shareTask(
   taskIdentifier,
-  usersIdentifier,
+  userIdentifiers,
   externalUsers,
   message,
 ) {
   // TODO: add sharing task endpoint
   log('taskIdentifier', taskIdentifier);
-  log('usersIdentifier', usersIdentifier);
+  log('usersIdentifiers', userIdentifiers);
   log('externalUsers', externalUsers);
   log('message', message);
-  return Promise.resolve();
+  // return Promise.resolve();
+  return axios
+    .post(`task/sharing`, {
+      taskIdentifier,
+      userIdentifiers,
+      externalCollaborators: externalUsers,
+    })
+    .then(({ data }) => data);
 }
 
 export function sendMessageForTask(task) {

@@ -986,14 +986,14 @@ export function bulkEditDuplicateTasksSuccess(duplicatedTasks) {
 
 export function shareTask(
   taskIdentifier,
-  usersIdentifier,
+  userIdentifiers,
   externalUsers,
   message,
 ) {
   return {
     type: ActionTypes.SHARE_TASK,
     taskIdentifier,
-    usersIdentifier,
+    userIdentifiers,
     externalUsers,
     message,
   };
