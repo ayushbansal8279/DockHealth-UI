@@ -169,6 +169,7 @@ const TaskItem = React.memo(
     const {
       taskIdentifier,
       assignedToUsers,
+      sharedWithUsers,
       creator,
       completedBy,
       completedDt,
@@ -626,6 +627,14 @@ const TaskItem = React.memo(
         onTaskAssigned();
       },
       [onTaskUpdate, taskIdentifier],
+    );
+
+    const handleSharingTask = useCallback(
+      (selectedMembers) => {
+        const userIdentifiers = pluck('userIdentifier', selectedMembers);
+        dispatch(TaskActions.shareTask(taskIdentifier, userIdentifiers));
+      },
+      [dispatch, taskIdentifier],
     );
 
     const handleUpdateWorkflowStatus = useCallback(
@@ -1458,8 +1467,8 @@ const TaskItem = React.memo(
                       readOnly={restrictions?.assigment === READ_ONLY}
                       multipleAssigneesContext={multipleAssigneesContext}
                       task={task}
-                      assignedToUsers={assignedToUsers}
-                      handleReasignTask={handleReasignTask}
+                      sharedWithUsers={sharedWithUsers}
+                      handleSharingTask={handleSharingTask}
                       matchAssignedTo={matchAssignedTo}
                     />
                   </TaskItemCell>,

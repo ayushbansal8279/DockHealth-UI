@@ -104,12 +104,18 @@ const DashboardList = ({ currentUser, tourModalIsOpen, openTourModal }) => {
     ) || {};
 
   const filteredDashboardTasks = useMemo(() => {
+    if (tabName === DashboardTasksTab.SHARED_TASKS) {
+      return dashboardTasks;
+    }
     return dashboardTasks?.filter((taskGroupInfo) =>
       dashboardGroupsPreferences?.includes(taskGroupInfo?.groupType),
     );
-  }, [dashboardGroupsPreferences, dashboardTasks]);
+  }, [dashboardGroupsPreferences, dashboardTasks, tabName]);
 
   const orderedDashboardTasks = useMemo(() => {
+    if (tabName === DashboardTasksTab.SHARED_TASKS) {
+      return filteredDashboardTasks;
+    }
     const sorted = () => {
       return dashboardGroupsPreferences
         .map((groupType) =>
@@ -118,7 +124,7 @@ const DashboardList = ({ currentUser, tourModalIsOpen, openTourModal }) => {
         .filter(Boolean);
     };
     return dashboardGroupsPreferences ? sorted() : filteredDashboardTasks;
-  }, [dashboardGroupsPreferences, filteredDashboardTasks]);
+  }, [dashboardGroupsPreferences, filteredDashboardTasks, tabName]);
 
   const currentSortMethod = useMemo(() => {
     if (!sortKey) return identity;
@@ -206,13 +212,23 @@ const DashboardList = ({ currentUser, tourModalIsOpen, openTourModal }) => {
 
     if (usageState?.loginCount < 5) return <DashboardNewUserInfo />;
 
-    if (completeTaskCount > 0 && tabName === DashboardTasksTab.MY_TASKS)
+    if (tabName === DashboardTasksTab.SHARED_TASKS) {
+      return (
+        <EmptyListView
+          title={['There are currently no tasks', 'shared with you.']}
+          description=""
+        />
+      );
+    }
+
+    if (completeTaskCount > 0 && tabName === DashboardTasksTab.MY_TASKS) {
       return (
         <EmptyListView
           title={['Way to go!', 'You’ve completed all of your tasks.']}
           description="Take a breather, tomorrow is a new day full of possibilities."
         />
       );
+    }
 
     return (
       <EmptyListView

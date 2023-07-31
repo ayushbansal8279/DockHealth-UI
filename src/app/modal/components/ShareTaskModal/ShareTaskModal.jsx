@@ -58,7 +58,7 @@ const ShareTaskModal = (props) => {
   };
 
   const handleInvite = () => {
-    const [usersIdentifier, externalUsers] = selectedUsers.reduce(
+    const [userIdentifiers, externalUsers] = selectedUsers.reduce(
       (accumulator, selectedUser) => {
         if (selectedUser.identifier) {
           return [[...accumulator[0], selectedUser.identifier], accumulator[1]];
@@ -72,7 +72,7 @@ const ShareTaskModal = (props) => {
     dispatch(
       TaskActions.shareTask(
         taskIdentifier,
-        usersIdentifier,
+        userIdentifiers,
         externalUsers,
         messageValue,
       ),

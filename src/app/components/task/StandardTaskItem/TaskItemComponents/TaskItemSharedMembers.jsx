@@ -11,8 +11,8 @@ import { AssigneeMatchingWrapper } from '../../styled';
 const TaskItemSharedMembers = ({
   multipleAssigneesContext,
   task,
-  assignedToUsers,
-  handleReasignTask,
+  sharedWithUsers,
+  handleSharingTask,
   matchAssignedTo,
   readOnly,
 }) => {
@@ -27,8 +27,8 @@ const TaskItemSharedMembers = ({
               ? task?.taskList?.taskListIdentifier
               : null
           }
-          selectedMembers={assignedToUsers}
-          onSelect={handleReasignTask}
+          selectedMembers={sharedWithUsers}
+          onSelect={handleSharingTask}
           onError={closePopover}
           enableLazyLoading={
             task?.taskList?.listType === 'PUBLIC' ||
@@ -38,12 +38,12 @@ const TaskItemSharedMembers = ({
       )}
       fullWidth={multipleAssigneesContext}
     >
-      {assignedToUsers?.length ? (
+      {sharedWithUsers?.length ? (
         <>
           {matchAssignedTo && (
             <AssigneeMatchingWrapper matched={matchAssignedTo} />
           )}
-          <MemberGroup members={assignedToUsers} />
+          <MemberGroup members={sharedWithUsers} />
         </>
       ) : (
         <Tooltip placement="top" title="Shared with">
