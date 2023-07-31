@@ -9,38 +9,39 @@ const ReactFlowAdapter = ({
   extraNodes,
   ...props
 }) => {
-  const { nodes, edges } = useMemo(() => {
+  const isNode = useCallback(
+    (element) => Object.values(NodeType).includes(element.type),
+    [],
+  );
+
+  const [nodes, edges] = useMemo(() => {
     const nodesArray = [];
     const edgesArray = [];
     for (const element of elements) {
-      if (Object.values(NodeType).includes(element.type)) {
+      if (isNode(element)) {
         nodesArray.push(element);
       } else {
         edgesArray.push(element);
       }
     }
-    return { nodes: nodesArray, edges: edgesArray };
-  }, [elements]);
+    return [nodesArray, edgesArray];
+  }, [elements, isNode]);
 
   const onNodesChange = useCallback(
     (changes) =>
       onElementsChange((previousElements) => [
-        ...previousElements.filter(
-          (element) => !Object.values(NodeType).includes(element.type),
-        ),
+        ...previousElements.filter((element) => !isNode(element)),
         ...applyNodeChanges(changes, nodes),
       ]),
-    [onElementsChange, nodes],
+    [onElementsChange, nodes, isNode],
   );
   const onEdgesChange = useCallback(
     (changes) =>
       onElementsChange((previousElements) => [
-        ...previousElements.filter((element) =>
-          Object.values(NodeType).includes(element.type),
-        ),
+        ...previousElements.filter((element) => isNode(element)),
         ...applyEdgeChanges(changes, edges),
       ]),
-    [onElementsChange, edges],
+    [onElementsChange, edges, isNode],
   );
 
   return (
