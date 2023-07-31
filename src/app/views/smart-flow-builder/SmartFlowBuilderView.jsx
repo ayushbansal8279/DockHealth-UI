@@ -189,13 +189,14 @@ const SmartFlowBuilderView = () => {
 
   useEffect(() => {
     if (tasks && !isNil(layout)) {
-      const previousElementsMap = Object.fromEntries(
-        elements.map((element) => [element.id, element]),
-      );
-
-      setElements(
+      setElements((previousElements) =>
         mapLayoutToElements(layout, tasks).map((element) => ({
-          ...previousElementsMap[element.id],
+          ...Object.fromEntries(
+            previousElements.map((previousElement) => [
+              previousElement.id,
+              previousElement,
+            ]),
+          )[element.id],
           ...element,
         })),
       );
