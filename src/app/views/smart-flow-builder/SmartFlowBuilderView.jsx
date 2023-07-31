@@ -709,6 +709,7 @@ const SmartFlowBuilderView = () => {
                 elementsSelectable={isCurrentUserEditor}
                 defaultEdgeOptions={DEFAULT_EDGE}
                 selectionMode="partial"
+                selectNodesOnDrag={false}
               >
                 <Controls showInteractive={isCurrentUserEditor} />
               </ReactFlowAdapter>
