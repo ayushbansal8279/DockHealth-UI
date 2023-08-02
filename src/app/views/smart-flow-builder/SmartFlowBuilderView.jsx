@@ -201,7 +201,7 @@ const SmartFlowBuilderView = () => {
         })),
       );
     }
-  }, [layout, tasks]);
+  }, [layout, tasks, temporaryElements]);
 
   const centerViewToElement = (elementPosition) => {
     const { x, y } = elementPosition;
