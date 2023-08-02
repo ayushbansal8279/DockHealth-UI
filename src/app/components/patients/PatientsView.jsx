@@ -220,11 +220,11 @@ const PatientsView = () => {
 
     const modalProps = {
       title: `You want to unarchive ${selectedPatientsCount} patient${
-        selectedPatientsCount > 1 && 's'
+        selectedPatientsCount > 1 ? 's' : ''
       }`,
       description: `Are you sure you want to unarchive ${selectedPatientsCount} patient${
-        selectedPatientsCount > 1 && 's'
-      } ?`,
+        selectedPatientsCount > 1 ? 's' : ''
+      }?`,
       confirmButtonText: 'Unarchive',
       confirm: () => {
         handleArchiveConfirm();
