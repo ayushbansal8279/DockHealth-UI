@@ -11,10 +11,17 @@ import DownloadIcon from 'img/bulk-edit/DownloadIcon';
 
 import palette from 'styles/palette';
 import { PatientEditContext } from 'context-api/patient-edit-context';
+import { useLocation } from 'react-router-dom';
+import MoveIcon from 'img/bulk-edit/MoveIcon';
 import { Button } from './styled';
+import UndoIcon from '@mui/icons-material/Undo';
 
 const BulkEditOptionsBar = ({ selectedPatients = {}, onClose }) => {
   const patientContext = useContext(PatientEditContext);
+
+  const { pathname } = useLocation();
+
+  const isArchivePage = pathname.includes('archived');
 
   const { selectedOptionsHandler } = patientContext;
   const {
@@ -22,6 +29,8 @@ const BulkEditOptionsBar = ({ selectedPatients = {}, onClose }) => {
     toggleCreateWorkflowOption,
     toggleAddLabelOption,
     toggleDeleteOption,
+    toggleArchiveOption,
+    toggleUnarchiveOption,
     downloadFiles,
   } = selectedOptionsHandler;
 
@@ -38,7 +47,7 @@ const BulkEditOptionsBar = ({ selectedPatients = {}, onClose }) => {
   }, [toggleAddLabelOption]);
 
   const downloadFilesHandler = useCallback(() => {
-    const selectedPatientIdentifiers = selectedPatients?.map(patient => {
+    const selectedPatientIdentifiers = selectedPatients?.map((patient) => {
       return patient.patientIdentifier;
     });
     downloadFiles(selectedPatientIdentifiers);
@@ -47,6 +56,14 @@ const BulkEditOptionsBar = ({ selectedPatients = {}, onClose }) => {
   const deleteHandler = useCallback(() => {
     toggleDeleteOption();
   }, [toggleDeleteOption]);
+
+  const archiveHandler = useCallback(() => {
+    toggleArchiveOption();
+  }, [toggleArchiveOption]);
+
+  const unArchiveHandler = useCallback(() => {
+    toggleUnarchiveOption();
+  }, [toggleUnarchiveOption]);
 
   return (
     <BulkEditBar
@@ -87,15 +104,38 @@ const BulkEditOptionsBar = ({ selectedPatients = {}, onClose }) => {
             wideView
           />
         </Button>
-        <Button type="button" onClick={deleteHandler} disabled={false}>
-          <BulkEditOption
-            iconComponent={DeleteIcon}
-            title="Delete"
-            color={palette.oPlusRed}
-            isDisabled={false}
-            wideView
-          />
-        </Button>
+        {isArchivePage && (
+          <Button type="button" onClick={deleteHandler} disabled={false}>
+            <BulkEditOption
+              iconComponent={DeleteIcon}
+              title="Delete"
+              color={palette.oPlusRed}
+              isDisabled={false}
+              wideView
+            />
+          </Button>
+        )}
+        {!isArchivePage && (
+          <Button type="button" onClick={archiveHandler} disabled={false}>
+            <BulkEditOption
+              iconComponent={DeleteIcon}
+              title="Archive"
+              color={palette.oPlusRed}
+              isDisabled={false}
+              wideView
+            />
+          </Button>
+        )}
+        {isArchivePage && (
+          <Button type="button" onClick={unArchiveHandler} disabled={false}>
+            <BulkEditOption
+              iconComponent={UndoIcon}
+              title="Restore"
+              isDisabled={false}
+              wideView
+            />
+          </Button>
+        )}
       </>
     </BulkEditBar>
   );

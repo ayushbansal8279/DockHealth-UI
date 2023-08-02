@@ -86,11 +86,14 @@ export function getPatientsListFilterOptions(
   return request.then((options) => mapFilterOptions(options));
 }
 
-const PatientBulkActions = {
+export const PatientBulkActions = {
   CREATE_TASK: 'CREATE_TASK',
   CREATE_WORKFLOW: 'CREATE_WORKFLOW',
   ADD_LABEL: 'ADD_LABEL',
   DELETE_PATIENT: 'DELETE_PATIENT',
+  ARCHIVE_PATIENT: 'ARCHIVE_PATIENT',
+  RESTORE_PATIENT: 'RESTORE_PATIENT',
+  UNARCHIVE_PATIENT: 'UNARCHIVE_PATIENT',
   DELETE_LABEL: 'DELETE_LABEL',
 };
 
@@ -134,6 +137,17 @@ export const patientBulkDeletePatient = (patientIdentifiers) => {
   axios.put(`patient/bulk`, body).then(({ data }) => data);
 };
 
+export const patientBulkUpdatePatient = (
+  patientIdentifiers,
+  bulkOperationType,
+) => {
+  const body = {
+    bulkOperationType,
+    patientIdentifiers,
+  };
+
+  axios.put(`patient/bulk`, body).then(({ data }) => data);
+};
 export const patientBulkAddLabel = (payload) => {
   const { labelIdentifier, labelName, assignedToUsers } = payload;
   const body = {

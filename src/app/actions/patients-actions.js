@@ -135,6 +135,13 @@ export function patientBulkDeletePatient(payload) {
   };
 }
 
+export function patientBulkUpdatePatient(payload) {
+  return {
+    type: ActionTypes.PATIENT_BULK_UPDATE_PATIENTS,
+    payload,
+  };
+}
+
 export const updateListPreferences = (
   setup,
   patientListIdentifier,

@@ -17,6 +17,7 @@ import { createPatientDetailsPath } from 'routing/helpers/paths';
 import {
   archivePatient as archivePatientAction,
   unarchivePatient as unarchivePatientAction,
+  deletePatientArchive as deletePatientArchiveAction,
 } from 'sagas/patient-details-saga';
 
 import {
@@ -34,7 +35,7 @@ import PatientLabels from '../PatientLabels/PatientLabels';
 
 const PatientDetailsDrawer = ({ patient, isOpenedDetails, closeDetails }) => {
   const history = useHistory();
-  const { patientIdentifier } = patient;
+  const { patientIdentifier, patientStatus } = patient;
   const formattedDob = patient?.dob
     ? moment(patient.dob).format('MM/DD/YYYY')
     : null;
@@ -114,6 +115,14 @@ const PatientDetailsDrawer = ({ patient, isOpenedDetails, closeDetails }) => {
     dispatch(openModal('UnarchivePatient', modalProps));
   }, [dispatch, history, patientIdentifier]);
 
+  const deletePatient = useCallback(() => {
+    const modalProps = {
+      confirm: () =>
+        dispatch(deletePatientArchiveAction(patientIdentifier, history)),
+    };
+    dispatch(openModal('deletePatient', modalProps));
+  }, [dispatch, history, patientIdentifier]);
+
   const handleFormSubmit = (data) => {
     unsetActive();
     const updateData = mergeDeepRight(patient, data);
@@ -163,22 +172,28 @@ const PatientDetailsDrawer = ({ patient, isOpenedDetails, closeDetails }) => {
           },
         },
       !emrIntegrationEnabled &&
-        !patient.archived && {
+        patientStatus === 'ACTIVE' && {
           name: 'Archive',
           onClick: archivePatient,
         },
-      patient.archived && {
+      patientStatus === 'ARCHIVED' && {
         name: 'Restore',
         onClick: unarchivePatient,
       },
+      patientStatus === 'ARCHIVED' && {
+        name: 'Delete',
+        onClick: deletePatient,
+      },
     ],
     [
+      isActive,
       setActive,
       emrIntegrationEnabled,
-      isActive,
-      archivePatient,
       patient,
+      archivePatient,
       unarchivePatient,
+      patientStatus,
+      deletePatient,
       dispatch,
       closeDetails,
       history,
@@ -190,7 +205,7 @@ const PatientDetailsDrawer = ({ patient, isOpenedDetails, closeDetails }) => {
       <PatientDrawer
         isOpen={isOpenedDetails}
         title={`${patient.lastName}, ${patient.firstName} ${
-          patient.middleName ? patient.middleName : ''
+          patient.middleName ?? ''
         }`}
         options={contextMenuOptions}
         onClose={handleClose}

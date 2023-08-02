@@ -359,6 +359,29 @@ function* deleteBulkPatient({ payload }) {
   }
 }
 
+function* bulkUpdatePatient({ payload }) {
+  const { assignedPatients, bulkOperationType } = payload;
+  try {
+    yield call(
+      PatientsApi.patientBulkUpdatePatient,
+      assignedPatients,
+      bulkOperationType,
+    );
+    yield all([
+      put({
+        type: ActionTypes.PATIENT_BULK_UPDATE_PATIENTS_SUCCESS,
+        patientIdentifiers: assignedPatients,
+      }),
+      put(showGlobalAlert(AlertMessages.UPDATED)),
+    ]);
+  } catch {
+    yield all([
+      put({ type: ActionTypes.PATIENT_BULK_UPDATE_PATIENTS_FAILURE }),
+      put(showGlobalErrorAlert()),
+    ]);
+  }
+}
+
 export default function* watchPatients() {
   yield takeLatest(ActionTypes.GET_PATIENTS_LISTS, getPatientsLists);
   yield takeEvery(ActionTypes.DELETE_PATIENTS_LIST, deletePatientsList);
@@ -388,6 +411,7 @@ export default function* watchPatients() {
   yield takeEvery(ActionTypes.PATIENT_DELETE_LABEL, deletePatientLabel);
   yield takeEvery(ActionTypes.PATIENT_BULK_CREATE_WORKFLOW, addBulkWorkflow);
   yield takeEvery(ActionTypes.PATIENT_BULK_DELETE_PATIENTS, deleteBulkPatient);
+  yield takeEvery(ActionTypes.PATIENT_BULK_UPDATE_PATIENTS, bulkUpdatePatient);
   yield takeEvery(
     ActionTypes.UPDATE_PATIENTS_LIST_PREFERENCES,
     updatePatientsListPreferences,
