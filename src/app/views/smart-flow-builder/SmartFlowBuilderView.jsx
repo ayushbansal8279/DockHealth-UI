@@ -397,8 +397,6 @@ const SmartFlowBuilderView = () => {
     openDelayPopover,
   ]);
 
-  const [extraNodes, setExtraNodes] = useState([]);
-
   const updateSelectedElementsPosition = (selectedNodes) => {
     let updatedElements = elements;
     let shouldUpdate = false;
@@ -412,8 +410,6 @@ const SmartFlowBuilderView = () => {
           node.position,
           updatedElements,
         );
-      } else {
-        setExtraNodes([node]);
       }
     }
 
@@ -671,7 +667,6 @@ const SmartFlowBuilderView = () => {
               <ReactFlowAdapter
                 // connectionLineComponent={ConnectionLineComponent}
                 elements={elements}
-                extraNodes={extraNodes}
                 onConnect={onConnect}
                 connectionLineType="step"
                 nodeTypes={nodeTypes}
