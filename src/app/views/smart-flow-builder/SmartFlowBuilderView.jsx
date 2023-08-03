@@ -190,7 +190,10 @@ const SmartFlowBuilderView = () => {
   useEffect(() => {
     if (tasks && !isNil(layout)) {
       setElements((previousElements) =>
-        mapLayoutToElements(layout, tasks).map((element) => ({
+        [
+          ...mapLayoutToElements(layout, tasks),
+          ...(temporaryElements || []),
+        ].map((element) => ({
           ...Object.fromEntries(
             previousElements.map((previousElement) => [
               previousElement.id,
@@ -198,6 +201,13 @@ const SmartFlowBuilderView = () => {
             ]),
           )[element.id],
           ...element,
+          isConnectable: draggedEdgeSourceId !== element.id,
+          data: {
+            ...element.data,
+            draggedEdgeSourceId,
+            taskTemplateIdentifier: identifier,
+            onTargetHandleHover: setHoveredTargetHandle,
+          },
         })),
       );
     }
@@ -420,27 +430,6 @@ const SmartFlowBuilderView = () => {
   const handleSelectionDragStop = (_, nodes) => {
     updateSelectedElementsPosition(nodes);
   };
-
-  const mergedElementsWithActions = useMemo(
-    () =>
-      elements || temporaryElements
-        ? [...(elements || []), ...(temporaryElements || [])]?.map(
-            (element) => {
-              return {
-                ...element,
-                isConnectable: draggedEdgeSourceId !== element.id,
-                data: {
-                  ...element.data,
-                  draggedEdgeSourceId,
-                  taskTemplateIdentifier: identifier,
-                  onTargetHandleHover: setHoveredTargetHandle,
-                },
-              };
-            },
-          )
-        : null,
-    [elements, temporaryElements, draggedEdgeSourceId, identifier],
-  );
 
   const handleRemoveElement = (elementsToDelete) => {
     const tasksToDelete = elementsToDelete
@@ -678,10 +667,10 @@ const SmartFlowBuilderView = () => {
                 </BuilderHeaderText>
               </button>
             </BuilderHeader>
-            {mergedElementsWithActions && (
+            {elements && (
               <ReactFlowAdapter
                 // connectionLineComponent={ConnectionLineComponent}
-                elements={mergedElementsWithActions}
+                elements={elements}
                 extraNodes={extraNodes}
                 onConnect={onConnect}
                 connectionLineType="step"
