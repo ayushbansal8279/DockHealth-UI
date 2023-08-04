@@ -1,13 +1,15 @@
 import BasicLayoutHeader from 'components/template/BasicLayoutHeader/BasicLayoutHeader';
 import ViewLayout from 'components/template/ViewLayout/ViewLayout';
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
-import { Box, Button } from '@mui/material';
 import { useDispatch } from 'react-redux';
 import { openModal, closeModal } from 'modal/actions';
 import { getAllContacts, deleteContact } from 'api/contacts-api';
+import AddButton, {
+  AddEntitiesContainer,
+} from 'components/common/AddButton/AddButton';
 import { StyledDataGrid } from './DataGridStyles';
 import { getContactColumns } from './helpers';
-import { AddContactWrapper, ViewContainer } from './styled';
+import { ViewContainer } from './styled';
 
 // const PAGE_SIZE = 30;
 
@@ -73,11 +75,9 @@ const Contacts = () => {
   return (
     <ViewLayout header={<BasicLayoutHeader title="Contacts" />}>
       <ViewContainer>
-        <Box display="flex" justifyContent="end">
-          <Button onClick={onAddContact}>
-            <AddContactWrapper>Create Contact</AddContactWrapper>
-          </Button>
-        </Box>
+        <AddEntitiesContainer>
+          <AddButton onClick={onAddContact}>Create Contact</AddButton>
+        </AddEntitiesContainer>
         <StyledDataGrid
           columns={columns}
           rows={contacts.map((t) => ({ ...t, id: t.identifier }))}
