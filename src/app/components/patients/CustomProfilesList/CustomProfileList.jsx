@@ -186,6 +186,7 @@ const CustomProfileList = () => {
                   {profileTypes.map((field) => {
                     return (
                       <FormControlLabel
+                        key={field.identifier}
                         control={
                           <Checkbox
                             checked={filters.includes(field.identifier)}
@@ -212,6 +213,7 @@ const CustomProfileList = () => {
           </Box>
         </Stack>
         <DataGrid
+          fluid
           controller={controller}
           dataset={profiles.filter((profile) =>
             getValues(profile).some(
@@ -224,6 +226,7 @@ const CustomProfileList = () => {
             .filter((profileType) => filters.includes(profileType.identifier))
             .map((field) => (
               <Data
+                key={field.identifier}
                 name={field.name}
                 value={(data) => {
                   const record = data.fields?.find(
