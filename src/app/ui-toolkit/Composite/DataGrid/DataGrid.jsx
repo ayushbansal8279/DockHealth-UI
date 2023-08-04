@@ -15,6 +15,18 @@ export const Context = createContext({
 
 const MemoizedRow = React.memo(MUI.GridRow);
 
+const CustomColumnMenu = ({ ...props }) => {
+  return (
+    <MUI.GridColumnMenu
+      {...props}
+      slots={{
+        columnMenuColumnsItem: null,
+        columnMenuFilterItem: null,
+      }}
+    />
+  );
+};
+
 /**
  * A component for displaying dataset in form of a Grid.
  *
@@ -145,6 +157,7 @@ export default function DataGrid({
         apiRef={controller ? controller.ref : null}
         columns={columns}
         rows={rows}
+        slots={{ columnMenu: CustomColumnMenu }}
         components={{
           Row: MemoizedRow,
         }}
