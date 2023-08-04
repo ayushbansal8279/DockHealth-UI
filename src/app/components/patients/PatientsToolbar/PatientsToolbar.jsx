@@ -1,8 +1,10 @@
 import React, { useRef, useCallback, useMemo, useState } from 'react';
 import { Box } from '@mui/material';
-import { Add as AddIcon } from '@mui/icons-material';
 import { useBoolean } from 'hooks/useBoolean';
 import { useHistory, useParams } from 'react-router-dom';
+import AddButton, {
+  AddEntitiesContainer,
+} from 'components/common/AddButton/AddButton';
 import { useDispatch, useSelector } from 'react-redux';
 import * as PatientsActions from 'actions/patients-actions';
 import { isUserGuest, isUserViewOnly } from 'helpers/user-helper';
@@ -30,7 +32,6 @@ import {
 } from 'selectors/patients-selectors';
 
 import FilterButton from 'components/filter/FilterButton/FilterButton';
-import AdornedButton from 'components/common/AdornedButton/AdornedButton';
 import SearchInput from 'components/common/SearchInput/SearchInput';
 import FilterPopover from 'components/filter/FilterPopover/FilterPopover';
 import { getCustomerTypeLabel } from 'helpers/customer-type-helper';
@@ -94,7 +95,7 @@ const PatientsToolbar = () => {
       ({ name }) => name === 'icon.active.color',
     ) || {};
 
-  const handleSearchChange = searchTerm => {
+  const handleSearchChange = (searchTerm) => {
     setSearchValue(searchTerm);
     dispatch(PatientsActions.changePatientsSearchTerm(searchTerm));
     dispatch(PatientsActions.clearPatients());
@@ -173,22 +174,11 @@ const PatientsToolbar = () => {
               onClear={() => dispatch(PatientsActions.clearPatientsFilters())}
             />
           </Box>
-          <Box display="flex" alignItems="center">
-            {!isGuest &&
-              !isViewOnly &&
-              !emrIntegrationEnabled &&
-              listIdentifier === DefaultPatientsListType.ALL_PATIENTS && (
-                <>
-                  <Box m={1} />
-                  <AdornedButton
-                    adornment={<AddIcon />}
-                    onClick={setIsSidebarOpen}
-                  >
-                    ADD A {customerTypeLabel.toUpperCase()}
-                  </AdornedButton>
-                </>
-              )}
-          </Box>
+          <AddEntitiesContainer>
+            <AddButton onClick={setIsSidebarOpen}>
+              ADD A {customerTypeLabel.toUpperCase()}
+            </AddButton>
+          </AddEntitiesContainer>
         </Box>
       </Box>
       {emrEntegrationExperience && !searchValue && (
