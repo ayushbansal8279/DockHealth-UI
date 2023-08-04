@@ -2,13 +2,7 @@ import React, { useCallback, useEffect, useState, useMemo } from 'react';
 import ReactFlow, { applyEdgeChanges, applyNodeChanges } from 'reactflow';
 import { NodeType } from 'helpers/smart-flow-builder-helpers';
 
-const ReactFlowAdapter = ({
-  elements,
-  onElementsChange,
-  onLoad,
-  extraNodes,
-  ...props
-}) => {
+const ReactFlowAdapter = ({ elements, onElementsChange, onLoad, ...props }) => {
   const isNode = useCallback(
     (element) => Object.values(NodeType).includes(element.type),
     [],

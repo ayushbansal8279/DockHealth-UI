@@ -190,14 +190,24 @@ const SmartFlowBuilderView = () => {
   useEffect(() => {
     if (tasks && !isNil(layout)) {
       setElements((previousElements) =>
-        mapLayoutToElements(layout, tasks).map((element) => ({
+        [
+          ...mapLayoutToElements(layout, tasks),
+          ...(temporaryElements || []),
+        ].map((element) => ({
+          ...element,
           ...Object.fromEntries(
             previousElements.map((previousElement) => [
               previousElement.id,
               previousElement,
             ]),
           )[element.id],
-          ...element,
+          isConnectable: draggedEdgeSourceId !== element.id,
+          data: {
+            ...element.data,
+            draggedEdgeSourceId,
+            taskTemplateIdentifier: identifier,
+            onTargetHandleHover: setHoveredTargetHandle,
+          },
         })),
       );
     }
@@ -387,8 +397,6 @@ const SmartFlowBuilderView = () => {
     openDelayPopover,
   ]);
 
-  const [extraNodes, setExtraNodes] = useState([]);
-
   const updateSelectedElementsPosition = (selectedNodes) => {
     let updatedElements = elements;
     let shouldUpdate = false;
@@ -402,8 +410,6 @@ const SmartFlowBuilderView = () => {
           node.position,
           updatedElements,
         );
-      } else {
-        setExtraNodes([node]);
       }
     }
 
@@ -419,102 +425,6 @@ const SmartFlowBuilderView = () => {
 
   const handleSelectionDragStop = (_, nodes) => {
     updateSelectedElementsPosition(nodes);
-  };
-
-  const mergedElementsWithActions = useMemo(
-    () =>
-      elements || temporaryElements
-        ? [...(elements || []), ...(temporaryElements || [])]?.map(
-            (element) => {
-              return {
-                ...element,
-                isConnectable: draggedEdgeSourceId !== element.id,
-                data: {
-                  ...element.data,
-                  draggedEdgeSourceId,
-                  taskTemplateIdentifier: identifier,
-                  onTargetHandleHover: setHoveredTargetHandle,
-                },
-              };
-            },
-          )
-        : null,
-    [elements, temporaryElements, draggedEdgeSourceId, identifier],
-  );
-
-  const handleRemoveElement = (elementsToDelete) => {
-    const tasksToDelete = elementsToDelete
-      .filter(path(['data', 'task']))
-      .map(path(['data', 'task']));
-    const temporaryElementsToDelete = elementsToDelete.filter(({ type }) =>
-      [
-        NodeType.NEW_DECISION,
-        NodeType.NEW_STANDARD,
-        LinkType.TEMPORARY,
-        LinkType.TEMPORARY_DECISION,
-      ].includes(type),
-    );
-    const linksToDelete = elementsToDelete.filter((element) => {
-      const { source, target, type } = element;
-
-      if (![LinkType.DECISION, LinkType.STANDARD].includes(type)) {
-        return false;
-      }
-
-      return !tasksToDelete.some(
-        ({ identifier: taskId }) => taskId === source || taskId === target,
-      );
-    });
-
-    if (
-      tasksToDelete.length > 0 ||
-      temporaryElementsToDelete.length > 0 ||
-      linksToDelete.length > 0
-    ) {
-      dispatch(
-        openModal('DeleteConfirmation', {
-          title: 'Delete elements',
-          description:
-            'Are you sure you want to delete these elements? This action cannot be undone.',
-          confirm: () => {
-            dispatch(closeModal());
-
-            if (tasksToDelete.length > 0) {
-              const taskIdentifiersToDelete = pluck(
-                'identifier',
-                tasksToDelete,
-              );
-
-              bulkEditTasks({
-                bulkEditType: 'DELETE',
-                taskIdentifiers: taskIdentifiersToDelete,
-              }).then(() => {
-                dispatch(bulkEditDelete(taskIdentifiersToDelete));
-                dispatch(showGlobalAlert(AlertMessages.DELETED));
-              });
-            }
-
-            if (temporaryElementsToDelete.length > 0) {
-              for (const element of temporaryElementsToDelete) {
-                dispatch(deleteTemporaryElement(element.id));
-              }
-            }
-
-            if (linksToDelete.length > 0) {
-              for (const link of linksToDelete) {
-                const {
-                  source: sourceTaskIdentifier,
-                  target: targetTaskIdentifier,
-                } = link;
-                dispatch(
-                  deleteTasksLink(sourceTaskIdentifier, targetTaskIdentifier),
-                );
-              }
-            }
-          },
-        }),
-      );
-    }
   };
 
   // eslint-disable-next-line unicorn/consistent-function-scoping
@@ -678,11 +588,10 @@ const SmartFlowBuilderView = () => {
                 </BuilderHeaderText>
               </button>
             </BuilderHeader>
-            {mergedElementsWithActions && (
+            {elements && (
               <ReactFlowAdapter
                 // connectionLineComponent={ConnectionLineComponent}
-                elements={mergedElementsWithActions}
-                extraNodes={extraNodes}
+                elements={elements}
                 onConnect={onConnect}
                 connectionLineType="step"
                 nodeTypes={nodeTypes}
@@ -692,7 +601,6 @@ const SmartFlowBuilderView = () => {
                 onElementsChange={setElements}
                 onDragOver={handleDragOver}
                 onDrop={handleDrop}
-                onElementsRemove={handleRemoveElement}
                 deleteKeyCode={46}
                 onConnectStart={(_, { nodeId }) =>
                   setDraggedEdgeSourceId(nodeId)
