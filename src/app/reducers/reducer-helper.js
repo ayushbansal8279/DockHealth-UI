@@ -18,7 +18,8 @@ function updateTaskItemSubTasks(state, tasksMap, taskItem) {
   return updatedMap;
 }
 
-// taskData -- is either task data to update or a finction to get the updated task
+// this helper method is used to update the state of the task in the map - also handles group or parent task
+// taskData -- is either task data to update or a function to get the updated task
 // eslint-disable-next-line sonarjs/cognitive-complexity
 export function updateTasksStateCallback(state, taskData) {
   let taskItem = taskData;

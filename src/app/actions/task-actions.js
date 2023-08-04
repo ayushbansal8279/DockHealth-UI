@@ -793,12 +793,21 @@ export function reorderSubtasks({ parentTask, source, destination }) {
 }
 
 export function selectTask(taskIdentifier, newSelectState) {
-  return {
-    type: ActionTypes.UPDATE_TASK_SUCCESS,
-    task: {
+  if (newSelectState) {
+    return {
+      type: ActionTypes.TASK_ITEM_SELECT,
       taskIdentifier,
-      selected: newSelectState,
-    },
+    };
+  }
+  return {
+    type: ActionTypes.TASK_ITEM_UNSELECT,
+    taskIdentifier,
+  };
+}
+
+export function unselectAllTasks() {
+  return {
+    type: ActionTypes.TASK_ITEM_UNSELECT_ALL,
   };
 }
 
@@ -809,12 +818,6 @@ export function setRecurringScheduleFlag(taskIdentifier, hasRecurringSchedule) {
       taskIdentifier,
       hasRecurringSchedule,
     },
-  };
-}
-
-export function unselectAllTasks() {
-  return {
-    type: ActionTypes.UNSELECT_ALL_TASKS,
   };
 }
 
