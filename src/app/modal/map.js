@@ -75,6 +75,7 @@ import SendSecureMessageFromTaskModal from './components/SendMessageFromTaskModa
 import EditContactModal from './components/EditContactModal/EditContactModal';
 import EditPatientModal from './components/EditPatientModal/EditPatientModal';
 import AnchorDateChangeConfirmationModal from './components/AnchorDateChangeConfirmationModal/AnchorDateChangeConfirmationModal';
+import DeleteArchivePatientModal from './components/DeleteArchivePatientModal/DeleteArchivePatientModal';
 
 const MODAL_MAP = {
   CompleteAllTasks: CompleteAllTasksModal,
@@ -83,6 +84,7 @@ const MODAL_MAP = {
   ListPicker: ListPickerModal,
   UnarchivePatient: UnarchivePatientModal,
   ArchivePatient: ArchivePatientModal,
+  deletePatient: DeleteArchivePatientModal,
   RemoveActiveUser: RemoveActiveUserModal,
   ArchivePerson: ArchivePersonModal,
   ClearSortFilters: ClearSortFiltersModal,

@@ -264,40 +264,40 @@ const PatientTasksListView = () => {
     );
   };
 
-  const handleToggleTaskStatus = useCallback(
-    task => {
-      const incompleteRequiredFields = findIncompleteRequiredFields(
-        taskCustomFields,
-        task,
-      );
-      const isRequiredFieldsAreIncomplete =
-        incompleteRequiredFields?.length > 0;
+  // const handleToggleTaskStatus = useCallback(
+  //   task => {
+  //     const incompleteRequiredFields = findIncompleteRequiredFields(
+  //       taskCustomFields,
+  //       task,
+  //     );
+  //     const isRequiredFieldsAreIncomplete =
+  //       incompleteRequiredFields?.length > 0;
 
-      if (isRequiredFieldsAreIncomplete) {
-        const modalProps = {
-          incompleteFields: incompleteRequiredFields,
-        };
-        dispatch(openModal('CompleteAllFields', modalProps));
-        return;
-      }
+  //     if (isRequiredFieldsAreIncomplete) {
+  //       const modalProps = {
+  //         incompleteFields: incompleteRequiredFields,
+  //       };
+  //       dispatch(openModal('CompleteAllFields', modalProps));
+  //       return;
+  //     }
 
-      const hasIncompletedSubtasks = task.subtasks.find(
-        subtask => subtask.status === 'INCOMPLETE',
-      );
-      if (task.status === 'INCOMPLETE' && hasIncompletedSubtasks) {
-        const modalProps = {
-          confirm: () => {
-            dispatch(closeModal());
-            togglePatientTaskStatus(task);
-          },
-        };
-        dispatch(openModal('CompleteAllTasks', modalProps));
-      } else {
-        togglePatientTaskStatus(task);
-      }
-    },
-    [dispatch, taskCustomFields, togglePatientTaskStatus],
-  );
+  //     const hasIncompletedSubtasks = task.subtasks.find(
+  //       subtask => subtask.status === 'INCOMPLETE',
+  //     );
+  //     if (task.status === 'INCOMPLETE' && hasIncompletedSubtasks) {
+  //       const modalProps = {
+  //         confirm: () => {
+  //           dispatch(closeModal());
+  //           togglePatientTaskStatus(task);
+  //         },
+  //       };
+  //       dispatch(openModal('CompleteAllTasks', modalProps));
+  //     } else {
+  //       togglePatientTaskStatus(task);
+  //     }
+  //   },
+  //   [dispatch, taskCustomFields, togglePatientTaskStatus],
+  // );
 
   const groupedTasks = useMemo(() => {
     if (isAllTasksView) return;

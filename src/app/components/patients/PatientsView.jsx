@@ -41,6 +41,7 @@ import {
   downloadPatientListData,
   getAllPatientAttachments,
 } from 'api/patient-api';
+import { PatientBulkActions } from 'api/patients-api';
 import initializeAttachmentsSectionHooks from 'views/patient-details/PatientAttachments/hooks';
 import PatientsList from './PatientsList/PatientsList';
 import PatientsToolbar from './PatientsToolbar/PatientsToolbar';
@@ -75,6 +76,8 @@ const PatientsView = () => {
   const [createWorkflowOption, setCreateWorkflowOption] = useState(false);
   const [addLabelOption, setAddLabelOption] = useState(false);
   const [deleteOption, setDeleteOption] = useState(false);
+  const [archiveOption, setArchiveOption] = useState(false);
+  const [unarchiveOption, setUnarchiveOption] = useState(false);
 
   const [patientImportDetails, setPatientImportDetails] = useState(null);
   const [importPopoverOpen, setImportPopoverOpen] = useState(false);
@@ -104,7 +107,7 @@ const PatientsView = () => {
   }, [dispatch]);
 
   const refreshPatientListOnUpload = useCallback(
-    async counter => {
+    async (counter) => {
       const importDetails = await PatientApi.getLatestPatientImportDetails();
       setPatientImportDetails(importDetails);
       let refreshCounter = 1;
@@ -141,7 +144,7 @@ const PatientsView = () => {
     return selectedPatients?.length > 0;
   }, [selectedPatients]);
 
-  const handleConfirm = useCallback(() => {
+  const handleDeleteConfirm = useCallback(() => {
     const assignedPatients = selectedPatients?.map((patient) => {
       return patient.patientIdentifier;
     });
@@ -149,6 +152,19 @@ const PatientsView = () => {
       PatientsActions.patientBulkDeletePatient({
         assignedPatients,
         listIdentifier,
+      }),
+    );
+  }, [dispatch, listIdentifier, selectedPatients]);
+
+  const handleArchiveConfirm = useCallback(() => {
+    const assignedPatients = selectedPatients?.map((patient) => {
+      return patient.patientIdentifier;
+    });
+    dispatch(
+      PatientsActions.patientBulkUpdatePatient({
+        assignedPatients,
+        listIdentifier,
+        bulkOperationType: PatientBulkActions.ARCHIVE_PATIENT,
       }),
     );
   }, [dispatch, listIdentifier, selectedPatients]);
@@ -165,7 +181,7 @@ const PatientsView = () => {
       } ? This action cannot be undone.`,
       confirmButtonText: 'Delete',
       confirm: () => {
-        handleConfirm();
+        handleDeleteConfirm();
         dispatch(closeModal());
       },
       onClose: () => {
@@ -174,13 +190,61 @@ const PatientsView = () => {
       },
     };
     dispatch(openModal('DeleteConfirmation', modalProps));
-  }, [dispatch, handleConfirm, selectedPatients]);
+  }, [dispatch, handleDeleteConfirm, selectedPatients]);
+
+  const openArchiveConfirmationModal = useCallback(() => {
+    const selectedPatientsCount = selectedPatients?.length;
+
+    const modalProps = {
+      title: `You want to archive ${selectedPatientsCount} patient${
+        selectedPatientsCount > 1 && 's'
+      }`,
+      description: `Are you sure you want to archive ${selectedPatientsCount} patient${
+        selectedPatientsCount > 1 && 's'
+      } ?`,
+      confirmButtonText: 'Archive',
+      confirm: () => {
+        handleArchiveConfirm();
+        dispatch(closeModal());
+      },
+      onClose: () => {
+        dispatch(closeModal());
+        setDeleteOption(false);
+      },
+    };
+    dispatch(openModal('DeleteConfirmation', modalProps));
+  }, [dispatch, handleArchiveConfirm, selectedPatients]);
+
+  const openUnarchiveConfirmationModal = useCallback(() => {
+    const selectedPatientsCount = selectedPatients?.length;
+
+    const modalProps = {
+      title: `You want to unarchive ${selectedPatientsCount} patient${
+        selectedPatientsCount > 1 ? 's' : ''
+      }`,
+      description: `Are you sure you want to unarchive ${selectedPatientsCount} patient${
+        selectedPatientsCount > 1 ? 's' : ''
+      }?`,
+      confirmButtonText: 'Unarchive',
+      confirm: () => {
+        handleArchiveConfirm();
+        dispatch(closeModal());
+      },
+      onClose: () => {
+        dispatch(closeModal());
+        setDeleteOption(false);
+      },
+    };
+    dispatch(openModal('DeleteConfirmation', modalProps));
+  }, [dispatch, handleArchiveConfirm, selectedPatients]);
 
   const turnOffAllOptions = useCallback(() => {
     setCreateTaskOption(false);
     setCreateWorkflowOption(false);
     setAddLabelOption(false);
     setDeleteOption(false);
+    setArchiveOption(false);
+    setUnarchiveOption(false);
   }, []);
 
   const toggleCreateTaskOption = useCallback(() => {
@@ -200,11 +264,20 @@ const PatientsView = () => {
     openDeleteConfirmationModal();
     setDeleteOption((previous) => !previous);
   }, [turnOffAllOptions, openDeleteConfirmationModal]);
-
+  const toggleArchiveOption = useCallback(() => {
+    turnOffAllOptions();
+    openArchiveConfirmationModal();
+    setArchiveOption((previous) => !previous);
+  }, [turnOffAllOptions, openArchiveConfirmationModal]);
+  const toggleUnarchiveOption = useCallback(() => {
+    turnOffAllOptions();
+    openUnarchiveConfirmationModal();
+    setUnarchiveOption((previous) => !previous);
+  }, [openUnarchiveConfirmationModal, turnOffAllOptions]);
   const { getMemoPatientAttachment } = initializeAttachmentsSectionHooks();
 
   const downloadFiles = useCallback(
-    async patientIdentifiers => {
+    async (patientIdentifiers) => {
       // eslint-disable-next-line @typescript-eslint/no-unused-vars
       const attachments = await getAllPatientAttachments(patientIdentifiers);
       let timeout = 0;
@@ -233,27 +306,35 @@ const PatientsView = () => {
         createWorkflowOption,
         addLabelOption,
         deleteOption,
+        archiveOption,
+        unarchiveOption,
       },
       selectedOptionsHandler: {
         toggleCreateTaskOption,
         toggleCreateWorkflowOption,
         toggleAddLabelOption,
         toggleDeleteOption,
+        toggleArchiveOption,
+        toggleUnarchiveOption,
         turnOffAllOptions,
         downloadFiles,
       },
     }),
     [
-      addLabelOption,
       bulkEditIsActive,
+      selectedPatients,
       createTaskOption,
       createWorkflowOption,
+      addLabelOption,
       deleteOption,
-      selectedPatients,
-      toggleAddLabelOption,
+      archiveOption,
+      unarchiveOption,
       toggleCreateTaskOption,
       toggleCreateWorkflowOption,
+      toggleAddLabelOption,
       toggleDeleteOption,
+      toggleArchiveOption,
+      toggleUnarchiveOption,
       turnOffAllOptions,
       downloadFiles,
     ],
@@ -285,7 +366,7 @@ const PatientsView = () => {
   );
 
   const handleDownloadPatientListData = useCallback(
-    async includeAllAttributes => {
+    async (includeAllAttributes) => {
       const filename = `Dock ${listName}.csv`;
       const selectedFilters = sessionStorageHelper.getItem(
         getPatientsListFiltersStorageKey(listIdentifier),
