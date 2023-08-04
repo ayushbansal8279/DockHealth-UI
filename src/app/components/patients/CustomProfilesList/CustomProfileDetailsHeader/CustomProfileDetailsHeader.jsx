@@ -7,6 +7,10 @@ import {
   ProfileName,
   ProfileDetailsLabel,
   ButtonContainer,
+  ProfileDetails,
+  ProfileDetailsInformation,
+  ProfileInfo,
+  ProfileInfoDivider,
 } from './styled';
 
 const CustomProfileDetailsHeader = ({
@@ -14,6 +18,7 @@ const CustomProfileDetailsHeader = ({
   firstName,
   lastName,
   middleName,
+  header,
   profileTypeName,
   profileTypeIdentifier,
 }) => {
@@ -53,6 +58,18 @@ const CustomProfileDetailsHeader = ({
             </Grid>
           </Box>
         </Box>
+        <ProfileDetails>
+          <ProfileDetailsInformation>
+            {Object.entries(header).map(([name, value]) => (
+              <>
+                <ProfileInfo key={name} display="inline-block" py="1px">
+                  {name}: {value}
+                </ProfileInfo>
+                <ProfileInfoDivider />
+              </>
+            ))}
+          </ProfileDetailsInformation>
+        </ProfileDetails>
       </>
     </ProfileDetailsContainer>
   );

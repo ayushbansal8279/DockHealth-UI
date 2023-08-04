@@ -9,6 +9,19 @@ import { getAllProfileFieldTypes } from 'api/profile-type-field-api';
 import ViewLayout from 'components/template/ViewLayout/ViewLayout';
 import LayoutHeader from 'components/template/LayoutHeader/LayoutHeader';
 import { Box } from '@mui/material';
+import { ColumnsConfigProvider } from 'context-api/columns-config-context';
+import {
+  TASK_ITEM_BASE_COLUMN_CONFIG,
+  TaskItemColumn,
+} from 'helpers/task-helpers';
+import PatientNotes from 'views/patient-details/PatientNotes/PatientNotes';
+import CustomProfileDetailsCompletedTasks from './CustomProfileDetailsCompletedTasks';
+import CustomProfileDetailsOpenedTasks from './CustomProfileDetailsOpenedTasks';
+
+const PERSON_VIEW_COLUMNS_CONFIG = {
+  ...TASK_ITEM_BASE_COLUMN_CONFIG,
+  [TaskItemColumn.LIST_NAME]: true,
+};
 
 const CustomProfileView = () => {
   const dispatch = useDispatch();
@@ -41,6 +54,38 @@ const CustomProfileView = () => {
     [profiles, profileIdentifier],
   );
 
+  const profileName = useMemo(
+    () =>
+      profile?.fields
+        .filter((field) =>
+          field?.profileTypeField?.displayOptions?.includes('PROFILE_NAME'),
+        )
+        .map(
+          (field) =>
+            field.values?.[0].value ||
+            field.values?.[0]?.customFieldOption.name,
+        ),
+    [profile],
+  );
+
+  const profileHeader = useMemo(
+    () =>
+      Object.fromEntries(
+        profile?.fields
+          .filter((field) =>
+            field?.profileTypeField?.displayOptions?.includes('PROFILE_HEADER'),
+          )
+          .map((field) => {
+            return [
+              field.profileTypeField.name,
+              field.values?.[0].value ||
+                field.values?.[0]?.customFieldOption.name,
+            ];
+          }) || [],
+      ),
+    [profile],
+  );
+
   useEffect(() => {
     fetchProfileTypes();
     fetchProfiles();
@@ -58,7 +103,7 @@ const CustomProfileView = () => {
   };
 
   return (
-    <>
+    <ColumnsConfigProvider>
       <ViewLayout
         header={
           <LayoutHeader>
@@ -68,14 +113,9 @@ const CustomProfileView = () => {
         }
       >
         <CustomProfileDetailsHeader
-          firstName={
-            profile?.fields?.[0].values?.[0].value ||
-            profile?.fields?.[0].values?.[0]?.customFieldOption.name
-          }
-          lastName={
-            profile?.fields?.[1].values?.[0].value ||
-            profile?.fields?.[1].values?.[0]?.customFieldOption.name
-          }
+          firstName={profileName?.[0]}
+          lastName={profileName?.[1]}
+          header={profileHeader}
           onViewDetailsClick={handleDrawerOpen}
           profileTypeName={name}
           profileTypeIdentifier={profileTypeIdentifier}
@@ -87,8 +127,15 @@ const CustomProfileView = () => {
           types={profileTypeFields}
           onClose={handleDrawerClose}
         />
+        <CustomProfileDetailsCompletedTasks
+          taskItemConfig={PERSON_VIEW_COLUMNS_CONFIG}
+        />
+        <CustomProfileDetailsOpenedTasks
+          taskItemConfig={PERSON_VIEW_COLUMNS_CONFIG}
+        />
+        <PatientNotes />
       </ViewLayout>
-    </>
+    </ColumnsConfigProvider>
   );
 };
 
