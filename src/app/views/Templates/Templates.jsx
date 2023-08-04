@@ -4,8 +4,10 @@ import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { useHistory } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { getAllTemplates, deleteTemplate } from 'api/template-api';
-import { Box, Button } from '@mui/material';
 import { openModal, closeModal } from 'modal/actions';
+import AddButton, {
+  AddEntitiesContainer,
+} from 'components/common/AddButton/AddButton';
 import {
   userHasSendEmailFeatureSelector,
   userHasSendFaxFeatureSelector,
@@ -15,7 +17,7 @@ import {
 } from 'selectors/user-selectors';
 import { StyledDataGrid } from './DataGridStyles';
 import { getTemplateColumns } from './helpers';
-import { ViewContainer, AddTemplateWrapper } from './styled';
+import { ViewContainer } from './styled';
 
 // const PAGE_SIZE = 30;
 
@@ -105,11 +107,9 @@ const Templates = () => {
   return (
     <ViewLayout header={<BasicLayoutHeader title="Templates" />}>
       <ViewContainer>
-        <Box display="flex" justifyContent="end">
-          <Button onClick={onAddTemplate}>
-            <AddTemplateWrapper>Create Template</AddTemplateWrapper>
-          </Button>
-        </Box>
+        <AddEntitiesContainer>
+          <AddButton onClick={onAddTemplate}>Create Template</AddButton>
+        </AddEntitiesContainer>
         <StyledDataGrid
           columns={columns}
           rows={templates.map((t) => ({ ...t, id: t.identifier }))}
