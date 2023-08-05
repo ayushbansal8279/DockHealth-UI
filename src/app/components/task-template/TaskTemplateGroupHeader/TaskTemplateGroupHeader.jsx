@@ -122,6 +122,7 @@ const TaskTemplateGroupHeader = ({
 
   const { dragHandleProps } = draggableProvided;
   const { bulkEditIsActive } = useContext(BulkEditContext);
+  const { bulkEditEnabled } = useContext(BulkEditContext);
   const [isEditing, setIsEditing] = useState(false);
   const [nameInputValue, setNameInputValue] = useState(name);
   const [nameInputError, setNameInputError] = useState(false);
@@ -621,12 +622,13 @@ const TaskTemplateGroupHeader = ({
               />
             )}
           <ActionIconsContainer>
-            {taskListRestrictions?.completeTask !== DISABLED && (
-              <Checkbox
-                isChecked={selected || isBundleSelected}
-                onClick={handleBundleSelect}
-              />
-            )}
+            {taskListRestrictions?.completeTask !== DISABLED &&
+              bulkEditEnabled && (
+                <Checkbox
+                  isChecked={selected || isBundleSelected}
+                  onClick={handleBundleSelect}
+                />
+              )}
             <Box m={1} />
             {showTasksWithGroup && (
               <RotatableChevron

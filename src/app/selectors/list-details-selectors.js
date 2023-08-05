@@ -74,20 +74,9 @@ export const listCustomFieldsSelector = createSelector(
   ({ listCustomFields }) => listCustomFields,
 );
 
-export const selectedTaskIdentifiersSelector = createSelector(
-  listTasksSelector,
-  ({ selectedTaskIdentifiers }) => selectedTaskIdentifiers,
-);
-
-export const selectedTasksSelector = createSelector(
-  listTasksSelector,
-  ({ selectedTaskIdentifiers, tasksMap }) =>
-    selectedTaskIdentifiers.map((taskId) => tasksMap[taskId]),
-);
-
-export const isTaskItemSelectedSelector = (taskIdentifier) =>
-  createSelector(listTasksSelector, ({ selectedTaskIdentifiers }) =>
-    selectedTaskIdentifiers?.includes(taskIdentifier),
+export const selectedTasksSelector = (state) =>
+  state?.taskItems?.selectedTaskIdentifiers.map(
+    (taskId) => state?.listDetails?.tasksMap[taskId],
   );
 
 export const groupFromGroupedTasksSelector = (taskGroupIdentifier) =>

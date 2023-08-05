@@ -7,6 +7,7 @@ import {
   tasksIsFetchingSelector,
   tasksSelector,
   sortSelector,
+  selectedTasksSelector,
 } from 'selectors/person-details-selectors';
 import { userProfileSelector } from 'selectors/user-selectors';
 import { hasFiltersAppliedSelector } from 'selectors/mega-filter-selectors';
@@ -133,10 +134,15 @@ const PersonDetailsOpenedTasks = ({
     );
   }, [dispatch, isGroupSelected, tasks]);
 
+  const bulkEditTasks = useSelector(selectedTasksSelector);
+
+  const bulkEditIsDisabled = false;
+
   return (
     <BulkEditSection
-      allTasks={tasks}
+      allTasks={bulkEditTasks}
       refreshTasks={() => dispatch(getUserTasks())}
+      disabled={bulkEditIsDisabled}
       searchValue={searchValue}
     >
       {isFetchingTasks && !tasks ? (

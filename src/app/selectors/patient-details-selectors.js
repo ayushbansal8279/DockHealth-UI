@@ -107,3 +107,8 @@ export const patientFoldersSelector = createSelector(
     attachments?.filter(({ type }) => type === PatientAttachmentType.FOLDER) ??
     null,
 );
+
+export const selectedTasksSelector = (state) =>
+  state?.taskItems?.selectedTaskIdentifiers.map(
+    (taskId) => state?.patientDetails?.tasksMap[taskId],
+  );

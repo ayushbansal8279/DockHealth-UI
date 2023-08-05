@@ -16,10 +16,8 @@ import {
   isTaskSelectedSelector,
   singleTaskCustomFieldsSelector,
 } from 'selectors/task-drawer-selectors';
-import {
-  isTaskItemSelectedSelector,
-  listCustomFieldsSelector,
-} from 'selectors/list-details-selectors';
+import { listCustomFieldsSelector } from 'selectors/list-details-selectors';
+import { isTaskItemSelectedSelector } from 'selectors/task-items-selectors';
 import { TASK_DISAPPEAR_DELAY } from 'helpers/task-update-helper';
 import { currentTaskListSelector } from 'selectors/task-list-selectors';
 import { organizationCustomFieldsSelector } from 'selectors/organization-selectors';

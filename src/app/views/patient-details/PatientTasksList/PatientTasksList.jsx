@@ -28,9 +28,10 @@ import {
   patientTasksSortSelector,
   patientSelector,
   currentListTasksStatusSelector,
+  selectedTasksSelector,
 } from 'selectors/patient-details-selectors';
 import { addingNewSubtaskParentIdSelector } from 'selectors/task-drawer-selectors';
-import { organizationCustomFieldsSelector } from 'selectors/organization-selectors';
+// import { organizationCustomFieldsSelector } from 'selectors/organization-selectors';
 import {
   hasFiltersAppliedSelector,
   selectedFiltersInMegaFilterSelector,
@@ -108,7 +109,7 @@ const PatientTasksListView = () => {
   const dispatch = useDispatch();
   const history = useHistory();
   const {
-    togglePatientTaskStatus,
+    // togglePatientTaskStatus,
     updatePatientTaskInList,
     updatePatientTaskWorkflowStatus,
     sortPatientTasks,
@@ -117,10 +118,10 @@ const PatientTasksListView = () => {
   const patient = useSelector(patientSelector);
   const isAllTasksView = taskListIdentifierParameter === ListViewType.ALL_TASKS;
 
-  const organizationCustomFields = useSelector(
-    organizationCustomFieldsSelector,
-  );
-  const taskCustomFields = organizationCustomFields;
+  // const organizationCustomFields = useSelector(
+  //   organizationCustomFieldsSelector,
+  // );
+  // const taskCustomFields = organizationCustomFields;
 
   const currentOrganization = useSelector(selectedUserOrganizationSelector);
   // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -398,6 +399,11 @@ const PatientTasksListView = () => {
       tasksStatus,
     ],
   );
+
+  const bulkEditTasks = useSelector(selectedTasksSelector);
+
+  const bulkEditIsDisabled = completeTasksVisible;
+
   return (
     <>
       {filteredLists ? (
@@ -414,8 +420,9 @@ const PatientTasksListView = () => {
               {activeList ? (
                 <ListDetailsContainer>
                   <BulkEditSection
-                    allTasks={activeList.tasks}
+                    allTasks={bulkEditTasks}
                     refreshTasks={handleTaskUpdate}
+                    disabled={bulkEditIsDisabled}
                     searchValue={taskSearch}
                   >
                     <StickyContainer

@@ -78,3 +78,8 @@ export const userTaskDetailsSelector = createSelector(
   (_, taskId) => taskId,
   (details, taskId) => details.tasksMap[taskId],
 );
+
+export const selectedTasksSelector = (state) =>
+  state?.taskItems?.selectedTaskIdentifiers.map(
+    (taskId) => state?.personDetails?.tasksMap[taskId],
+  );
