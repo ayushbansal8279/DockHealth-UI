@@ -61,16 +61,18 @@ const CalendarTasksReducer = (state = initialState, action) => {
     }
 
     default: {
-      return TaskBaseReducer(
-        state,
-        action,
-        (currentState, updateTaskCallback) => ({
-          ...currentState,
-          tasks: currentState.tasks
-            ? mapWithRemove(updateTaskCallback, currentState.tasks)
-            : null,
-        }),
-      );
+      return state.startDate && state.startDate !== ''
+        ? TaskBaseReducer(
+            state,
+            action,
+            (currentState, updateTaskCallback) => ({
+              ...currentState,
+              tasks: currentState.tasks
+                ? mapWithRemove(updateTaskCallback, currentState.tasks)
+                : null,
+            }),
+          )
+        : state;
     }
   }
 };

@@ -326,7 +326,9 @@ const DashboardTasksReducer = (state = initialState, action) => {
     }
 
     default: {
-      return TaskBaseReducer(state, action, updateTasksStateCallback);
+      return state.tabName && state.tabName !== ''
+        ? TaskBaseReducer(state, action, updateTasksStateCallback)
+        : state;
     }
   }
 };

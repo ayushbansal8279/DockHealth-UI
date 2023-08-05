@@ -631,7 +631,9 @@ const TaskTemplateReducer = (state = initialState, action) => {
     }
 
     default: {
-      return TaskBaseReducer(state, action, updateTasksStateCallback);
+      return state.taskTemplates && state.taskTemplates !== ''
+        ? TaskBaseReducer(state, action, updateTasksStateCallback)
+        : state;
     }
   }
 };

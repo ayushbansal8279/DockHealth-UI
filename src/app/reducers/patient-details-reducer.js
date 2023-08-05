@@ -653,7 +653,9 @@ export default (state = INITIAL_STATE, action = {}) => {
     }
 
     default: {
-      return TaskBaseReducer(state, action, updateTasksStateCallback);
+      return state.patientIdentifier && state.patientIdentifier !== ''
+        ? TaskBaseReducer(state, action, updateTasksStateCallback)
+        : state;
     }
   }
 };
