@@ -57,7 +57,10 @@ import {
   TaskStatus,
 } from 'helpers/task-helpers';
 import { getCustomerTypeLabel } from 'helpers/customer-type-helper';
-import { isTaskItemsSelectedSelector } from 'selectors/task-items-selectors';
+import {
+  isTaskItemsSelectedSelector,
+  selectedTaskIdentifiersSelector,
+} from 'selectors/task-items-selectors';
 import { useTaskListColumnsConfig } from 'context-api/columns-config-context';
 import { ListDetailsContainer } from 'components/tasklist/DropdownListSection/styled';
 import StickyContainer from 'components/common/HorizontalScroll/StickyContainer';
@@ -305,82 +308,98 @@ const PatientTasksListView = () => {
 
   const groupHasMultipleAssignees = false;
 
-  const isGroupSelected = useSelector(
+  const isTaskGroupSelected = useSelector(
     isTaskItemsSelectedSelector(activeList?.tasks),
   );
 
+  const selectedTaskIdentifiers = useSelector(selectedTaskIdentifiersSelector);
+
   const handleGroupSelect = useCallback(() => {
     const taskIdentifiers = activeList?.tasks;
-    dispatch(changeTasksSelectedState(!isGroupSelected, taskIdentifiers));
-  }, [activeList?.tasks, dispatch, isGroupSelected]);
+    dispatch(changeTasksSelectedState(!isTaskGroupSelected, taskIdentifiers));
+  }, [activeList?.tasks, dispatch, isTaskGroupSelected]);
 
   const renderTasks = useCallback(
-    (tasks, { isFullView, taskGroupIdentifier }) => (
-      <>
-        {!completeTasksVisible && (
-          <StickyContainer left={24} decreaseWidth={2 * 24} zIndex={13}>
-            <TasksToolbar
-              taskListIdentifier={activeList?.taskListIdentifier}
-              taskGroupIdentifier={taskGroupIdentifier}
-              onQuickAddTask={quickAddTask}
-              iconColorActive={iconColorActiveItem?.value}
-            />
-          </StickyContainer>
-        )}
-        <div className="IN" style={{ width: 'fit-content', minWidth: '100%' }}>
-          {tasks && tasks.length > 0 && (
-            <TasksHeader
-              bulkEditEnabled
-              sort={sort}
-              onSortChange={sortPatientTasks}
-              groupHasMultipleAssignees={groupHasMultipleAssignees}
-              isGroupSelected={isGroupSelected(tasks)}
-              onGroupSelect={() => handleGroupSelect(tasks)}
-            />
-          )}
-          {tasks?.map((task) => {
-            return task.itemType === TaskItemType.TASK ? (
-              <StandardTaskItem
-                key={task.identifier}
-                isFullView={isFullView}
-                taskIdentifier={task.identifier}
+    (tasks, { isFullView, taskGroupIdentifier }) => {
+      const taskIdentifiers = tasks;
+      const isGroupSelected =
+        taskIdentifiers?.length > 0 &&
+        taskIdentifiers?.every((taskId) =>
+          selectedTaskIdentifiers?.includes(taskId),
+        );
+
+      return (
+        <>
+          {!completeTasksVisible && (
+            <StickyContainer left={24} decreaseWidth={2 * 24} zIndex={13}>
+              <TasksToolbar
+                taskListIdentifier={activeList?.taskListIdentifier}
                 taskGroupIdentifier={taskGroupIdentifier}
-                isCompletedGroup={completeTasksVisible}
-                onTaskUpdate={updatePatientTaskInList}
-                updateWorkflowStatus={updatePatientTaskWorkflowStatus}
-                dragAndDropDisabled
-                addingNewSubtask={addingNewSubtaskParentId === task.identifier}
-                multipleAssigneesContext={groupHasMultipleAssignees}
+                onQuickAddTask={quickAddTask}
                 iconColorActive={iconColorActiveItem?.value}
-                origin={TaskOrigin.PATIENT}
               />
-            ) : (
-              <TaskTemplateGroup
-                viewSetup={viewSetup}
-                key={task.identifier}
-                templateGroup={task}
+            </StickyContainer>
+          )}
+          <div
+            className="IN"
+            style={{ width: 'fit-content', minWidth: '100%' }}
+          >
+            {tasks && tasks.length > 0 && (
+              <TasksHeader
+                bulkEditEnabled
+                sort={sort}
+                onSortChange={sortPatientTasks}
                 groupHasMultipleAssignees={groupHasMultipleAssignees}
-                isFullView={isFullView}
-                groupDragAndDropDisabled
-                disablePatientAssignment
-                iconColorActive={iconColorActiveItem?.value}
-                isCompletedTab={tasksStatus !== TaskStatus.INCOMPLETE}
-                origin={TaskOrigin.PATIENT}
+                isGroupSelected={isGroupSelected}
+                onGroupSelect={() => handleGroupSelect(tasks)}
               />
-            );
-          })}
-        </div>
-      </>
-    ),
+            )}
+            {tasks?.map((task) => {
+              return task.itemType === TaskItemType.TASK ? (
+                <StandardTaskItem
+                  key={task.identifier}
+                  isFullView={isFullView}
+                  taskIdentifier={task.identifier}
+                  taskGroupIdentifier={taskGroupIdentifier}
+                  isCompletedGroup={completeTasksVisible}
+                  onTaskUpdate={updatePatientTaskInList}
+                  updateWorkflowStatus={updatePatientTaskWorkflowStatus}
+                  dragAndDropDisabled
+                  addingNewSubtask={
+                    addingNewSubtaskParentId === task.identifier
+                  }
+                  multipleAssigneesContext={groupHasMultipleAssignees}
+                  iconColorActive={iconColorActiveItem?.value}
+                  origin={TaskOrigin.PATIENT}
+                />
+              ) : (
+                <TaskTemplateGroup
+                  viewSetup={viewSetup}
+                  key={task.identifier}
+                  templateGroup={task}
+                  groupHasMultipleAssignees={groupHasMultipleAssignees}
+                  isFullView={isFullView}
+                  groupDragAndDropDisabled
+                  disablePatientAssignment
+                  iconColorActive={iconColorActiveItem?.value}
+                  isCompletedTab={tasksStatus !== TaskStatus.INCOMPLETE}
+                  origin={TaskOrigin.PATIENT}
+                />
+              );
+            })}
+          </div>
+        </>
+      );
+    },
     [
       completeTasksVisible,
-      activeList,
+      activeList?.taskListIdentifier,
       quickAddTask,
-      iconColorActiveItem,
+      iconColorActiveItem?.value,
       sort,
       sortPatientTasks,
       groupHasMultipleAssignees,
-      isGroupSelected,
+      selectedTaskIdentifiers,
       handleGroupSelect,
       updatePatientTaskInList,
       updatePatientTaskWorkflowStatus,
