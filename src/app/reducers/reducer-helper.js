@@ -61,10 +61,17 @@ export function updateTasksStateCallback(state, taskData) {
 
 export function updateTasksMap(state, taskItem) {
   const updatedMap = {
-    [taskItem?.identifier]: {
-      ...state.tasksMap[taskItem?.identifier],
-      ...taskItem,
-    },
+    [taskItem?.identifier]:
+      taskItem?.itemType === TaskItemType.BUNDLE
+        ? {
+            ...state.tasksMap[taskItem?.identifier],
+            ...taskItem,
+            tasks: taskItem?.tasks.map((task) => task.identifier),
+          }
+        : {
+            ...state.tasksMap[taskItem?.identifier],
+            ...taskItem,
+          },
   };
 
   if (taskItem?.itemType === TaskItemType.BUNDLE) {
