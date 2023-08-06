@@ -4,10 +4,10 @@ import React, { useCallback } from 'react';
 import { Box } from '@mui/material';
 import { useSelector, useDispatch } from 'react-redux';
 import { useParams, useHistory } from 'react-router-dom';
-import { useBoolean } from 'hooks/useBoolean';
+// import { useBoolean } from 'hooks/useBoolean';
 import { onPrint } from 'helpers/ga-event-helper';
 import { createPatientDetailsListPath } from 'routing/helpers/paths';
-import OutlinedSelect from 'components/common/OutlinedSelect/OutlinedSelect';
+import ToolbarSelect from 'components/tasklist/ToolbarSelect/ToolbarSelect';
 import { currentListTasksStatusSelector } from 'selectors/patient-details-selectors';
 import { isUserViewOnly } from 'helpers/user-helper';
 import {
@@ -26,7 +26,12 @@ import TaskStatusToolbarSelect from 'components/tasklist/TaskStatusToolbarSelect
 import CustomizeToolbarButton from 'components/tasklist/CustomizeToolbarButton/CustomizeToolbarButton';
 import ToolbarButton from 'components/tasklist/ToolbarButton/ToolbarButton';
 // import { printTaskPdf } from 'components/task-pdf/TaskPdfDocument';
-import { ListsToolbarContainer, ListsTabsContainer } from './styled';
+import ViewTypeIcon from 'img/view-type-icon.svg';
+import {
+  ListsToolbarContainer,
+  ListsTabsContainer,
+  ListSelectionImg,
+} from './styled';
 import { ListViewType, LIST_TYPE_OPTIONS } from '../helpers';
 
 const TaskListToolbar = (props) => {
@@ -42,7 +47,7 @@ const TaskListToolbar = (props) => {
   const tasksStatus =
     useSelector(currentListTasksStatusSelector) || TaskStatus.INCOMPLETE;
   const viewSetup = useSelector(userSetupClientViewSelector);
-  const [closeMorePopover] = useBoolean(false);
+  // const [closeMorePopover] = useBoolean(false);
   const isAllTasksView = taskListIdentifierParameter === ListViewType.ALL_TASKS;
 
   const listOptions = lists?.map(
@@ -182,23 +187,37 @@ const TaskListToolbar = (props) => {
   return (
     <ListsToolbarContainer>
       <ListsTabsContainer>
-        <OutlinedSelect
-          width={170}
-          name="listType"
+        <ToolbarSelect
+          options={LIST_TYPE_OPTIONS}
           value={
             isAllTasksView ? ListViewType.ALL_TASKS : ListViewType.LIST_VIEW
           }
+          name="listType"
           onChange={handleListViewTypeChange}
-          options={LIST_TYPE_OPTIONS}
+          icon={
+            <ListSelectionImg
+              src={ViewTypeIcon}
+              alt="list type icon"
+              iconColorFilterActive={iconColorFilterActiveItem?.value}
+            />
+          }
           iconColorActive={iconColorActiveItem?.value}
+          width={170}
         />
         <Box px={2} />
         {taskListIdentifierParameter !== ListViewType.ALL_TASKS && (
-          <OutlinedSelect
-            name="currentList"
-            value={taskListIdentifierParameter}
-            onChange={handleListChange}
+          <ToolbarSelect
             options={listOptions}
+            value={taskListIdentifierParameter}
+            name="currentList"
+            onChange={handleListChange}
+            icon={
+              <ListSelectionImg
+                src={ViewTypeIcon}
+                alt="list type icon"
+                iconColorFilterActive={iconColorFilterActiveItem?.value}
+              />
+            }
             iconColorActive={iconColorActiveItem?.value}
           />
         )}
