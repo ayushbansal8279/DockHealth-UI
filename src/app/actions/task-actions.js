@@ -5,7 +5,7 @@ import { getTasksGroupsList } from 'actions/list-details-actions';
 import { openDrawer } from 'actions/task-drawer-actions';
 import { TASK_DISAPPEAR_DELAY } from 'helpers/task-update-helper';
 import * as ListDetailsApi from 'api/list-details-api';
-import { CommunicationType } from 'helpers/task-helpers';
+import { CommunicationType, TaskItemType } from 'helpers/task-helpers';
 import * as ActionTypes from './action-types';
 import AlertMessages from '../alert/AlertMessages';
 
@@ -455,6 +455,7 @@ export function toggleCompleteTask(
       dataToUpdate: newTaskData,
     });
 
+    // eslint-disable-next-line import/namespace
     return TaskApi[apiEndpoint](task)
       .then(() => {
         if (!task.parentTaskIdentifier && !isBundleTask) {
@@ -792,16 +793,71 @@ export function reorderSubtasks({ parentTask, source, destination }) {
   };
 }
 
-export function selectTask(taskIdentifier, newSelectState) {
-  if (newSelectState) {
-    return {
-      type: ActionTypes.TASK_ITEM_SELECT,
-      taskIdentifier,
-    };
+function getTasksMap(state) {
+  if (Object.keys(state.listDetails?.tasksMap)?.length > 0) {
+    return state.listDetails?.tasksMap;
   }
-  return {
-    type: ActionTypes.TASK_ITEM_UNSELECT,
-    taskIdentifier,
+  if (Object.keys(state.dashboardTasks?.tasksMap)?.length > 0) {
+    return state.dashboardTasks?.tasksMap;
+  }
+  if (Object.keys(state.globalSearch?.tasksMap)?.length > 0) {
+    return state.globalSearch?.tasksMap;
+  }
+  if (Object.keys(state.patientDetails?.tasksMap)?.length > 0) {
+    return state.patientDetails?.tasksMap;
+  }
+  if (Object.keys(state.personDetails?.tasksMap)?.length > 0) {
+    return state.personDetails?.tasksMap;
+  }
+  if (Object.keys(state.taskTemplate?.tasksMap)?.length > 0) {
+    return state.taskTemplate?.tasksMap;
+  }
+}
+
+function selectChildTaskItems(selectedTaskIdentifiers, task) {
+  let selectedIdentifiers = selectedTaskIdentifiers;
+  if (task?.itemType === TaskItemType.TASK) {
+    // check for subtasks
+    if (task.subtasks?.length > 0) {
+      selectedIdentifiers = selectedIdentifiers.concat(
+        task.subtasks?.map((st) => st.identifier),
+      );
+    }
+  } else if (
+    task?.itemType === TaskItemType.BUNDLE &&
+    task?.tasks?.length > 0
+  ) {
+    selectedIdentifiers = selectedIdentifiers.concat(task.tasks);
+    if (task.tasks) {
+      for (const t of task.tasks) {
+        if (t.subtasks?.length > 0) {
+          selectedIdentifiers = selectedIdentifiers.concat(
+            t.subtasks?.map((st) => st.identifier),
+          );
+        }
+      }
+    }
+  }
+
+  return selectedIdentifiers;
+}
+
+export function selectTask(taskIdentifier, newSelectState) {
+  return (dispatch, getState) => {
+    const tasksMap = getTasksMap(getState());
+    let selectedTaskIdentifiers = [taskIdentifier];
+
+    const task = tasksMap[taskIdentifier];
+    selectedTaskIdentifiers = selectChildTaskItems(
+      selectedTaskIdentifiers,
+      task,
+    );
+
+    dispatch({
+      type: ActionTypes.CHANGE_TASKS_SELECTED_STATE,
+      taskIdentifiers: selectedTaskIdentifiers,
+      isSelected: newSelectState,
+    });
   };
 }
 
@@ -821,19 +877,25 @@ export function setRecurringScheduleFlag(taskIdentifier, hasRecurringSchedule) {
   };
 }
 
-export function changeTasksSelectedState(newSelectedState, taskIdentifiers) {
-  return {
-    type: ActionTypes.CHANGE_TASKS_SELECTED_STATE,
-    newSelectedState,
-    taskIdentifiers,
-  };
-}
+export function changeTasksSelectedState(isSelected, taskIdentifiers) {
+  // eslint-disable-next-line sonarjs/cognitive-complexity
+  return (dispatch, getState) => {
+    const tasksMap = getTasksMap(getState());
+    let selectedTaskIdentifiers = taskIdentifiers;
 
-export function changeWorkflowSelectedState(newSelectedState, identifier) {
-  return {
-    type: ActionTypes.CHANGE_WORKFLOW_SELECTED_STATE,
-    identifier,
-    newSelectedState,
+    for (const taskId of taskIdentifiers) {
+      const task = tasksMap[taskId];
+      selectedTaskIdentifiers = selectChildTaskItems(
+        selectedTaskIdentifiers,
+        task,
+      );
+    }
+
+    dispatch({
+      type: ActionTypes.CHANGE_TASKS_SELECTED_STATE,
+      isSelected,
+      taskIdentifiers: selectedTaskIdentifiers,
+    });
   };
 }
 

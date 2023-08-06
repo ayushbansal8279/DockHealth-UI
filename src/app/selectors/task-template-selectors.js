@@ -30,6 +30,12 @@ export const templateTaskDetailsSelector = createSelector(
   (details, taskId) => details.tasksMap[taskId],
 );
 
+export const templateMultipleTaskDetailsSelector = createSelector(
+  taskTemplateStateSelector,
+  (_, taskIds) => taskIds,
+  (details, taskIds) => taskIds.map((taskId) => details.tasksMap[taskId]),
+);
+
 export const taskTemplateSelector = (taskTemplateIdentifier) =>
   createSelector(taskTemplateStateSelector, ({ taskTemplates }) =>
     taskTemplates.find(

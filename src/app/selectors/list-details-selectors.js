@@ -33,6 +33,13 @@ export const taskDetailsSelector = createSelector(
   (listDetails, taskId) => listDetails.tasksMap[taskId],
 );
 
+export const multipleTaskDetailsSelector = createSelector(
+  listTasksSelector,
+  (_, taskIds) => taskIds,
+  (listDetails, taskIds) =>
+    taskIds.map((taskId) => listDetails.tasksMap[taskId]),
+);
+
 export const groupTasksSelector = createSelector(
   listTasksSelector,
   ({ groupedTasks }) => groupedTasks?.taskGroups,

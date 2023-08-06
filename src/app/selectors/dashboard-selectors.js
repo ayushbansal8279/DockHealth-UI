@@ -28,6 +28,13 @@ export const dashboardTaskDetailsSelector = createSelector(
   (dashboardTasks, taskId) => dashboardTasks.tasksMap[taskId],
 );
 
+export const dashboardMultipleTaskDetailsSelector = createSelector(
+  dashboardTasksStateSelector,
+  (_, taskIds) => taskIds,
+  (dashboardTasks, taskIds) =>
+    taskIds.map((taskId) => dashboardTasks.tasksMap[taskId]),
+);
+
 export const dashboardGroupTasksCountSelector = createSelector(
   dashboardTasksStateSelector,
   (_, groupType) => groupType,

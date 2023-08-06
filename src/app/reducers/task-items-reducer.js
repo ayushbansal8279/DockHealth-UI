@@ -34,6 +34,23 @@ const TaskItemReducer = (state = INITIAL_STATE, action) => {
         selectedTaskIdentifiers: [],
       };
     }
+
+    case ActionTypes.CHANGE_TASKS_SELECTED_STATE: {
+      const { taskIdentifiers, isSelected } = action;
+      return isSelected
+        ? {
+            ...state,
+            selectedTaskIdentifiers:
+              state.selectedTaskIdentifiers.concat(taskIdentifiers),
+          }
+        : {
+            ...state,
+            selectedTaskIdentifiers: state.selectedTaskIdentifiers?.filter(
+              (taskId) => !taskIdentifiers?.includes(taskId),
+            ),
+          };
+    }
+
     default: {
       return state;
     }

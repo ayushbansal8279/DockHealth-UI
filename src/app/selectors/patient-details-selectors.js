@@ -29,6 +29,13 @@ export const patientTaskDetailsSelector = createSelector(
   (patientDetails, taskId) => patientDetails.tasksMap[taskId],
 );
 
+export const patientMultipleTaskDetailsSelector = createSelector(
+  patientDetailsStateSelector,
+  (_, taskIds) => taskIds,
+  (patientDetails, taskIds) =>
+    taskIds.map((taskId) => patientDetails.tasksMap[taskId]),
+);
+
 export const patientListHasTasksSelector = createSelector(
   patientDetailsStateSelector,
   ({ lists }) => lists?.length > 0,

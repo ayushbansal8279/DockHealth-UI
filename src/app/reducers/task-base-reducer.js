@@ -487,51 +487,6 @@ const TaskBaseReducer = (state, action, updateStateCallback) => {
       return updateStateCallback(state, updateTasksFromAction);
     }
 
-    case ActionTypes.CHANGE_TASKS_SELECTED_STATE: {
-      const { taskIdentifiers, newSelectedState } = action;
-
-      const updateStateFromAction = (task) => {
-        if (
-          taskIdentifiers.includes(task.taskIdentifier) ||
-          task.subtasks?.some(({ taskIdentifier }) =>
-            taskIdentifiers.includes(taskIdentifier),
-          )
-        ) {
-          return {
-            ...task,
-            selected: taskIdentifiers.includes(task.taskIdentifier)
-              ? newSelectedState
-              : task.selected,
-
-            subtasks: task.subtasks?.map((s) =>
-              taskIdentifiers.includes(s.taskIdentifier)
-                ? { ...s, selected: newSelectedState }
-                : s,
-            ),
-          };
-        }
-
-        return task;
-      };
-
-      return updateStateCallback(state, updateStateFromAction);
-    }
-
-    case ActionTypes.CHANGE_WORKFLOW_SELECTED_STATE: {
-      if (Array.isArray(action.identifier)) {
-        const identifiers = action.identifier;
-        return updateStateCallback(state, (task) =>
-          identifiers.includes(task.identifier)
-            ? { ...task, selected: action.newSelectedState }
-            : task,
-        );
-      }
-      return updateStateCallback(state, (task) =>
-        action.identifier === task.identifier
-          ? { ...task, selected: action.newSelectedState }
-          : task,
-      );
-    }
 
     case ActionTypes.ADD_SUBTASK: {
       const { subtask } = action;

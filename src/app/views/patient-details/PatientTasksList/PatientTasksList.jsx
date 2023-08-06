@@ -2,7 +2,6 @@
 /* eslint-disable sonarjs/cognitive-complexity */
 import React, { useCallback, useEffect, useMemo } from 'react';
 import compose from 'ramda/src/compose';
-import pluck from 'ramda/src/pluck';
 import useActions from 'hooks/use-actions';
 import { useDispatch, useSelector } from 'react-redux';
 import { Box } from '@mui/material';
@@ -58,8 +57,7 @@ import {
   TaskStatus,
 } from 'helpers/task-helpers';
 import { getCustomerTypeLabel } from 'helpers/customer-type-helper';
-import { checkIfAllTasksSelected } from 'helpers/bulk-edit-helpers';
-import { extractTasksAndSubtasks } from 'helpers/tasklist-helpers';
+import { isTaskItemsSelectedSelector } from 'selectors/task-items-selectors';
 import { useTaskListColumnsConfig } from 'context-api/columns-config-context';
 import { ListDetailsContainer } from 'components/tasklist/DropdownListSection/styled';
 import StickyContainer from 'components/common/HorizontalScroll/StickyContainer';
@@ -304,26 +302,18 @@ const PatientTasksListView = () => {
     if (isAllTasksView) return;
     return groupTasks(activeList?.tasks);
   }, [activeList, isAllTasksView]);
+
   const groupHasMultipleAssignees = false;
-  const isGroupSelected = useCallback(
-    (tasks) => checkIfAllTasksSelected(tasks),
-    [],
+
+  const isGroupSelected = useSelector(
+    isTaskItemsSelectedSelector(activeList?.tasks),
   );
-  const handleGroupSelect = useCallback(
-    (tasks) => {
-      const { parentTasks, subtasks } = extractTasksAndSubtasks(tasks);
-      const allTasks = [...parentTasks, ...subtasks];
-      dispatch(
-        dispatch(
-          changeTasksSelectedState(
-            !isGroupSelected(tasks),
-            pluck('identifier', allTasks),
-          ),
-        ),
-      );
-    },
-    [dispatch, isGroupSelected],
-  );
+
+  const handleGroupSelect = useCallback(() => {
+    const taskIdentifiers = activeList?.tasks;
+    dispatch(changeTasksSelectedState(!isGroupSelected, taskIdentifiers));
+  }, [activeList?.tasks, dispatch, isGroupSelected]);
+
   const renderTasks = useCallback(
     (tasks, { isFullView, taskGroupIdentifier }) => (
       <>

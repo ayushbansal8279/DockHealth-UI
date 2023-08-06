@@ -37,3 +37,9 @@ export const globalTaskDetailsSelector = createSelector(
   (_, taskId) => taskId,
   (details, taskId) => details.tasksMap[taskId],
 );
+
+export const globalMultipleTaskDetailsSelector = createSelector(
+  globalSearchStateSelector,
+  (_, taskIds) => taskIds,
+  (details, taskIds) => taskIds.map((taskId) => details.tasksMap[taskId]),
+);
