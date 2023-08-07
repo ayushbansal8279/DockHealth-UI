@@ -194,13 +194,13 @@ const SmartFlowBuilderView = () => {
           ...mapLayoutToElements(layout, tasks),
           ...(temporaryElements || []),
         ].map((element) => ({
-          ...element,
           ...Object.fromEntries(
             previousElements.map((previousElement) => [
               previousElement.id,
               previousElement,
             ]),
           )[element.id],
+          ...element,
           isConnectable: draggedEdgeSourceId !== element.id,
           data: {
             ...element.data,
