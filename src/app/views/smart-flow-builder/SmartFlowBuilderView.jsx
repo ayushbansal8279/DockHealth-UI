@@ -34,7 +34,7 @@ import {
   addNewDecisionTaskElement,
   addNewNestedFlowElement,
   addNewTaskElement,
-  deleteTemporaryElement,
+  editTemporaryElement,
   linkTasks,
   saveTaskTemplateLayout,
   saveTaskTemplateLayoutToHistory,
@@ -396,7 +396,6 @@ const SmartFlowBuilderView = () => {
     handleMakeSelectionDependent,
     openDelayPopover,
   ]);
-
   const updateSelectedElementsPosition = (selectedNodes) => {
     let updatedElements = elements;
     let shouldUpdate = false;
@@ -409,6 +408,12 @@ const SmartFlowBuilderView = () => {
           node.id,
           node.position,
           updatedElements,
+        );
+      } else {
+        dispatch(
+          editTemporaryElement(node.id, {
+            position: node.position,
+          }),
         );
       }
     }
