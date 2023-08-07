@@ -1,8 +1,11 @@
 import React, { useMemo, useState } from 'react';
 import { Grid, Box } from '@mui/material';
+import TasksStatusSwitchIcon from 'img/tasks-status-switch-icon.svg';
+import ToolbarSelect from 'components/tasklist/ToolbarSelect/ToolbarSelect';
 import SearchInput from 'components/common/SearchInput/SearchInput';
 import { useHistory } from 'react-router-dom';
 import moment from 'moment';
+import { PatientsListImg } from 'components/patients/PatientsToolbar/styled';
 import filter from 'ramda/src/filter';
 import includes from 'ramda/src/includes';
 import isEmpty from 'ramda/src/isEmpty';
@@ -122,6 +125,18 @@ const UsersTable = ({
   );
 
   const history = useHistory();
+
+  const USER_SUBSCRIPTION_VALUES = {
+    [UserSubscriptionStatus.ALL]: 'ALL',
+    [UserSubscriptionStatus.SUBSCRIBED]: 'SUBSCRIBED',
+    [UserSubscriptionStatus.UNSUBSCRIBED]: 'UNSUBSCRIBED',
+  };
+
+  const SUBSCRIPTION_OPTIONS = [
+    { value: 'ALL', label: 'All' },
+    { value: 'SUBSCRIBED', label: 'Subscribed' },
+    { value: 'UNSUBSCRIBED', label: 'Unsubscribed' },
+  ];
 
   const columns = useMemo(
     // eslint-disable-next-line sonarjs/cognitive-complexity
@@ -397,6 +412,22 @@ const UsersTable = ({
                     onValueChange={setCurrentSearch}
                   />
                 </Box>
+                <ToolbarSelect
+                  options={SUBSCRIPTION_OPTIONS}
+                  value={USER_SUBSCRIPTION_VALUES[userSubscriptionStatus]}
+                  name="user-list-type"
+                  onChange={(event) =>
+                    setUserSubscriptionStatus(
+                      UserSubscriptionStatus[event?.target?.value],
+                    )
+                  }
+                  icon={
+                    <PatientsListImg
+                      src={TasksStatusSwitchIcon}
+                      alt="list type icon"
+                    />
+                  }
+                />
                 <Spacing horizontal={3} />
                 <InviteButton
                   getAllUsers={getAllUsers}
