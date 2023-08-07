@@ -389,23 +389,8 @@ const UsersTable = ({
       ) : (
         <>
           {showTableHeader && (
-            <Grid container justifyContent="space-between" alignItems="center">
-              <Grid item sm={12} md={3}>
-                <SubscriptionStatusSwitcher
-                  isSmallScreen={isSmallScreen}
-                  userSubscriptionStatus={userSubscriptionStatus}
-                  setUserSubscriptionStatus={setUserSubscriptionStatus}
-                />
-              </Grid>
-              <Grid
-                item
-                sm={12}
-                md={9}
-                container
-                alignItems="center"
-                justifyContent="flex-end"
-                wrap="nowrap"
-              >
+            <Box p="16px" display="flex" width="100%">
+              <Box display="flex" flex={1} alignItems="center">
                 <Box width="300px">
                   <SearchInput
                     value={currentSearch}
@@ -433,8 +418,8 @@ const UsersTable = ({
                   getAllUsers={getAllUsers}
                   fullWidth={isSmallScreen}
                 />
-              </Grid>
-            </Grid>
+              </Box>
+            </Box>
           )}
           <StyledUsersTable isSmallScreen={isSmallScreen}>
             {isEmpty(filteredOrganizationUsers) ? (
