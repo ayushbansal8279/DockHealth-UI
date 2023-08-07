@@ -1,5 +1,6 @@
 import React, { useMemo, useState } from 'react';
-import { Grid } from '@mui/material';
+import { Grid, Box } from '@mui/material';
+import SearchInput from 'components/common/SearchInput/SearchInput';
 import { useHistory } from 'react-router-dom';
 import moment from 'moment';
 import filter from 'ramda/src/filter';
@@ -390,12 +391,12 @@ const UsersTable = ({
                 justifyContent="flex-end"
                 wrap="nowrap"
               >
-                <Search
-                  onChange={(event) =>
-                    setCurrentSearch(event?.target?.value ?? '')
-                  }
-                  value={currentSearch}
-                />
+                <Box width="300px">
+                  <SearchInput
+                    value={currentSearch}
+                    onValueChange={setCurrentSearch}
+                  />
+                </Box>
                 <Spacing horizontal={3} />
                 <InviteButton
                   getAllUsers={getAllUsers}
