@@ -55,6 +55,7 @@ const renderOption = ({
   onBlur,
   onSaveEdit,
   onDelete,
+  onClick,
 }) => (
   <OptionContainer key={option?.labelIdentifier} isEditable={isEditable}>
     <OptionButtonsInput
@@ -64,6 +65,7 @@ const renderOption = ({
         event.stopPropagation();
         onBlur();
       }}
+      onClick={onClick}
       onKeyDown={(event) => {
         if (event.key === 'Enter') {
           event?.target?.blur();
@@ -135,38 +137,17 @@ const PatientLabels = ({ isPatientBulk, disableFocusOnRender = false }) => {
   }, [selectedPatients, patient]);
 
   useEffect(() => {
-    if (!disableFocusOnRender) {
-      if (currentEditableOption) {
-        optionReferences?.current[currentEditableOption]?.focus();
-      } else {
-        inputReference.current?.focus();
-      }
+    if (currentEditableOption) {
+      console.log(optionReferences.current[currentEditableOption]);
+      optionReferences?.current[currentEditableOption]?.focus();
+    } else {
+      inputReference.current?.focus();
     }
   }, [currentEditableOption, inputReference, disableFocusOnRender]);
 
   const getInputReference = (element) => {
     inputReference.current = element;
   };
-  const renderOptionCallback = useCallback(
-    (_, option) =>
-      renderOption({
-        option,
-        registerOption: (element) => {
-          if (element) {
-            optionReferences.current[option?.labelIdentifier] = element;
-          }
-        },
-        onEdit: () => {
-          setCurrentEditableOption(option?.labelIdentifier);
-        },
-        onBlur: () => {
-          setCurrentEditableOption(null);
-        },
-        onSaveEdit: (value) => saveEditLabel(option?.labelIdentifier, value),
-        onDelete: () => deleteLabel(option),
-      }),
-    [deleteLabel, saveEditLabel],
-  );
 
   const removeHandler = useCallback(
     (value) => {
@@ -206,6 +187,31 @@ const PatientLabels = ({ isPatientBulk, disableFocusOnRender = false }) => {
       }
     },
     [selectedPatients, dispatch, patient],
+  );
+
+  const renderOptionCallback = useCallback(
+    (_, option) =>
+      renderOption({
+        option,
+        registerOption: (element) => {
+          if (element) {
+            optionReferences.current[option?.labelIdentifier] = element;
+          }
+        },
+        onEdit: () => {
+          setCurrentEditableOption(option?.labelIdentifier);
+        },
+        onBlur: () => {
+          setCurrentEditableOption(null);
+        },
+        onSaveEdit: (value) => saveEditLabel(option?.labelIdentifier, value),
+        onDelete: () => deleteLabel(option),
+        onClick: () => {
+          saveHandler(option);
+          setSelectedLabels((previousLabels) => [...previousLabels, option]);
+        },
+      }),
+    [deleteLabel, saveEditLabel, saveHandler],
   );
 
   const renderTagsCallback = useCallback(
@@ -266,7 +272,7 @@ const PatientLabels = ({ isPatientBulk, disableFocusOnRender = false }) => {
       disableCloseOnSelect={!!currentEditableOption}
       getInputReference={getInputReference}
       getOptionLabel={(option) => option?.labelName}
-      isDisabled={!!currentEditableOption}
+      // isDisabled={!!currentEditableOption}
       renderOption={renderOptionCallback}
       renderTags={renderTagsCallback}
       onInputChange={setInputValue}
@@ -284,6 +290,7 @@ const PatientLabels = ({ isPatientBulk, disableFocusOnRender = false }) => {
       onOpen={refreshLabels}
       isLoading={isFetchingLabels}
       onChange={(values, reason) => {
+        console.log(1);
         if (reason !== 'select-option') {
           return;
         }
