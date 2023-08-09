@@ -207,8 +207,17 @@ const PatientLabels = ({ isPatientBulk, disableFocusOnRender = false }) => {
         onSaveEdit: (value) => saveEditLabel(option?.labelIdentifier, value),
         onDelete: () => deleteLabel(option),
         onClick: () => {
-          saveHandler(option);
-          setSelectedLabels((previousLabels) => [...previousLabels, option]);
+          setSelectedLabels((previousLabels) => {
+            if (
+              previousLabels.some(
+                (label) => label.labelIdentifier === option.labelIdentifier,
+              )
+            ) {
+              return previousLabels;
+            }
+            saveHandler(option);
+            return [...previousLabels, option];
+          });
         },
       }),
     [deleteLabel, saveEditLabel, saveHandler],
@@ -269,7 +278,7 @@ const PatientLabels = ({ isPatientBulk, disableFocusOnRender = false }) => {
         return option.labelIdentifier === value.labelIdentifier;
       }}
       disablePortal={!isPatientBulk}
-      disableCloseOnSelect={!!currentEditableOption}
+      // disableCloseOnSelect={!!currentEditableOption}
       getInputReference={getInputReference}
       getOptionLabel={(option) => option?.labelName}
       // isDisabled={!!currentEditableOption}
@@ -289,22 +298,21 @@ const PatientLabels = ({ isPatientBulk, disableFocusOnRender = false }) => {
       noOptionsText={noOptionText}
       onOpen={refreshLabels}
       isLoading={isFetchingLabels}
-      onChange={(values, reason) => {
-        console.log(1);
-        if (reason !== 'select-option') {
-          return;
-        }
-        const selectedLabel = values.length - 1;
-        const labelToAdd = values[selectedLabel];
-        saveHandler(labelToAdd);
+      // onChange={(values, reason) => {
+      //   if (reason !== 'select-option') {
+      //     return;
+      //   }
+      //   const selectedLabel = values.length - 1;
+      //   const labelToAdd = values[selectedLabel];
+      //   saveHandler(labelToAdd);
 
-        if (currentEditableOption) {
-          setCurrentEditableOption(null);
-        }
-        setSelectedLabels((previousProps) => {
-          return [...previousProps, labelToAdd];
-        });
-      }}
+      //   if (currentEditableOption) {
+      //     setCurrentEditableOption(null);
+      //   }
+      //   setSelectedLabels((previousProps) => {
+      //     return [...previousProps, labelToAdd];
+      //   });
+      // }}
       multiple
       disableClearable
     />
