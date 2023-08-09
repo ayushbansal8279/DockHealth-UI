@@ -138,7 +138,6 @@ const PatientLabels = ({ isPatientBulk, disableFocusOnRender = false }) => {
 
   useEffect(() => {
     if (currentEditableOption) {
-      console.log(optionReferences.current[currentEditableOption]);
       optionReferences?.current[currentEditableOption]?.focus();
     } else {
       inputReference.current?.focus();
