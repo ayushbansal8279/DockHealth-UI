@@ -153,6 +153,12 @@ const LabelsSection = ({ selectedTask, onTaskUpdate }) => {
         onSaveEdit: (value) => saveEditLabel(option?.labelIdentifier, value),
         onDelete: () => {
           deleteLabel(option);
+          setSelectedLabels((previousSelectedLabels) =>
+            previousSelectedLabels.filter(
+              (selectedLabel) =>
+                selectedLabel.labelIdentifier !== option?.labelIdentifier,
+            ),
+          );
         },
         onClick: () => {
           setSelectedLabels((previousLabels) => {
@@ -163,13 +169,12 @@ const LabelsSection = ({ selectedTask, onTaskUpdate }) => {
             ) {
               return previousLabels;
             }
-            console.log(option)
             saveAddLabel(option);
             return [...previousLabels, option];
           });
         },
       }),
-    [deleteLabel, saveEditLabel],
+    [deleteLabel, saveEditLabel, saveAddLabel],
   );
 
   const renderTagsCallback = useCallback(
