@@ -45,7 +45,12 @@ const UsersList = (props) => {
           </ListEntryContainer>
         </ListContainer>
       ) : (
-        <DataGrid dataset={filteredUsers} hideFooterSelectedRowCount autoHeight>
+        <DataGrid
+          fluid
+          dataset={filteredUsers}
+          hideFooterSelectedRowCount
+          autoHeight
+        >
           <Data
             name="USER"
             value={(data) => (

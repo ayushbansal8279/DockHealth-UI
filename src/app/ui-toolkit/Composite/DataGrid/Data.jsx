@@ -6,24 +6,25 @@ import { Context } from './DataGrid';
  * Each instance of a <Data/> component corresponds to a single column.
  *
  * @param field {string}                - is an ID of a column.
+ * @param width {number}
  * @param type {'string' | 'number'}    - is a type of data related to this column to be displayed.
  * @param name {string}                 - is a name of a column to display.
  * @param value {string | (() => any)}  - is a value of a cell to display.
  * @param hidden {boolean}              - is a flag whether column should be visible or not.
- * @param unsortable {boolean}          - is a flag whether column should be sortable or not.
  * @param editable {boolean}            - is a flag whether column should be editable or not.
+ * @param unsortable {boolean}          - is a flag whether column should be sortable or not.
+ * @param flex
  * @returns {null}
  * @constructor
  */
 export default function Data({
   field,
-  width,
   type = 'string',
   name = `You must specify "name" property.`,
   value = null,
   hidden = false,
-  unsortable = false,
   editable = false,
+  unsortable = false,
   flex = 1,
 }) {
   const { register, unregister } = useContext(Context);
@@ -33,17 +34,16 @@ export default function Data({
       field:
         field ??
         name
+          .toLowerCase()
           .split(' ')
           .join('_')
-          .replace(/[^\d:A-Za-z]/, '')
-          .toUpperCase(),
+          .replace(/[^\d:A-Za-z]/, ''),
       type,
       name,
       hidden,
       unsortable,
       editable,
       flex,
-      width,
       renderCell(cell) {
         if (typeof cell.value === 'string') {
           return cell.value;
@@ -64,18 +64,7 @@ export default function Data({
         return data;
       },
     });
-  }, [
-    editable,
-    flex,
-    width,
-    field,
-    hidden,
-    name,
-    register,
-    type,
-    unsortable,
-    value,
-  ]);
+  }, [register, field, type, name, value, hidden, editable, unsortable, flex]);
 
   useEffect(() => {
     return () => {

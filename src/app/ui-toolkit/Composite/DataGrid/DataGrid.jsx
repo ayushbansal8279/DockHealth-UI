@@ -15,19 +15,22 @@ export const Context = createContext({
 
 const MemoizedRow = React.memo(MUI.GridRow);
 
-const proxy = new Proxy(
-  { __EMPTY__: null },
-  {
-    get() {
-      return proxy;
-    },
-  },
-);
+const CustomColumnMenu = ({ ...props }) => {
+  return (
+    <MUI.GridColumnMenu
+      {...props}
+      slots={{
+        columnMenuColumnsItem: null,
+        columnMenuFilterItem: null,
+      }}
+    />
+  );
+};
 
 /**
  * A component for displaying dataset in form of a Grid.
  *
- * @param controller? {any}            - is an object containing an imperative API to manipulate state of the component.
+ * @param controller? {any}           - is an object containing an imperative API to manipulate state of the component.
  * @param fluid {boolean}             - is a flag whether columns should expand to their maximum width or not.
  * @param multiselect {boolean}       - is a flag whether row should support multiselect or not.
  * @param dataset {{}[]}              - is a dataset to display.
@@ -57,7 +60,7 @@ const proxy = new Proxy(
  * ```
  */
 export default function DataGrid({
-  controller = proxy,
+  controller,
   fluid = false,
   multiselect = false,
   dataset = [],
@@ -84,35 +87,15 @@ export default function DataGrid({
   }, []);
 
   useEffect(() => {
-    register({
-      field: 'id',
-      name: 'Identifier',
-      hidden: true,
-      value: ({ identifier }) => identifier,
-    });
-  }, [dataset, register]);
-
-  // const columns = useMemo(
-  //   () =>
-  //     definitions.map(({ field, type, name, unsortable, editable }) => ({
-  //       type,
-  //       field,
-  //       headerName: name,
-  //       sortable: !unsortable,
-  //       editable,
-  //       // flex: 1
-  //     })),
-  //   [definitions],
-  // );
-
-  useEffect(() => {
-    register({
-      field: 'id',
-      name: 'Identifier',
-      hidden: true,
-      value: ({ identifier }) => identifier,
-    });
-  }, [register, dataset]);
+    if (!definitions.includes(({ field }) => field === 'id')) {
+      register({
+        field: 'id',
+        name: 'Identifier',
+        hidden: true,
+        value: ({ identifier }) => identifier,
+      });
+    }
+  }, [dataset, definitions, register]);
 
   const rows = useMemo(() => {
     if (definitions.length > 0) {
@@ -131,27 +114,23 @@ export default function DataGrid({
   const columns = useMemo(
     () =>
       definitions.map(
-        ({
-          field,
-          type,
-          name,
-          unsortable,
-          editable,
-          flex,
-          renderCell,
-          width,
-        }) => ({
-          type,
-          field,
-          headerName: name,
-          sortable: !unsortable,
-          editable,
-          renderCell,
-          flex: width ? undefined : flex,
-          width,
-        }),
+        ({ field, type, name, unsortable, editable, flex, renderCell }) => {
+          const optional = {};
+          if (fluid) {
+            optional.flex = flex ?? 1;
+          }
+          return {
+            type,
+            field,
+            headerName: name,
+            sortable: !unsortable,
+            editable,
+            renderCell,
+            ...optional,
+          };
+        },
       ),
-    [definitions],
+    [definitions, fluid],
   );
 
   useEffect(() => {
@@ -175,9 +154,10 @@ export default function DataGrid({
       }}
     >
       <Sc.DataGrid
-        apiRef={controller.ref}
+        apiRef={controller ? controller.ref : null}
         columns={columns}
         rows={rows}
+        slots={{ columnMenu: CustomColumnMenu }}
         components={{
           Row: MemoizedRow,
         }}

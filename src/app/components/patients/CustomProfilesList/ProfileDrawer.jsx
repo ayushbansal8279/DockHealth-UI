@@ -190,7 +190,11 @@ const ProfileDrawer = ({
                   }
                 };
 
-                return <Box style={{ margin: '8px 4px' }}>{render()}</Box>;
+                return (
+                  <Box key={field.identifier} style={{ margin: '8px 4px' }}>
+                    {render()}
+                  </Box>
+                );
               })}
             </LabeledCollapse>
             <Stack sx={{ m: '8px 4px' }} direction="row">
