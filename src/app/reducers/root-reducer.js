@@ -3,6 +3,7 @@ import { RESET_APP } from 'actions/action-types';
 import ModalReducer from 'modal/reducers';
 import LocationReducer from 'location/reducers';
 import AlertChipReducer from 'alert/reducer';
+// import { TaskOrigin } from 'helpers/task-helpers';
 import AuthBaseReducer from './auth-base-reducer';
 // import FormReducer from './form-reducer';
 import MegaFilterReducer from './mega-filter-reducer';
@@ -25,6 +26,17 @@ import AnalyticsReducer from './analytics-reducer';
 import WorkflowDrawerReducer from './workflow-drawer-reducer';
 import CalendarTasksReducer from './calendar-tasks-reducer';
 import SendbirdReducer from './sendbird-reducer';
+import TaskItemsReducer from './task-items-reducer';
+
+// function createNamedWrapperReducer(reducerFunction, reducerName) {
+//   return (state, action) => {
+//     const { origin } = action;
+//     const isInitializationCall = state === undefined;
+//     if (origin !== reducerName && !isInitializationCall) return state;
+
+//     return reducerFunction(state, action);
+//   };
+// }
 
 const appReducer = combineReducers({
   templateState: TemplateReducer,
@@ -52,6 +64,8 @@ const appReducer = combineReducers({
   workflowDrawer: WorkflowDrawerReducer,
   calendarTasks: CalendarTasksReducer,
   sendbird: SendbirdReducer,
+  // taskItemList: createNamedWrapperReducer(TaskItemReducer, TaskOrigin.LIST),
+  taskItems: TaskItemsReducer,
 });
 
 export default function rootReducer(state, action) {

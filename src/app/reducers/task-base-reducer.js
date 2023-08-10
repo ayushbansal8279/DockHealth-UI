@@ -377,65 +377,76 @@ const TaskBaseReducer = (state, action, updateStateCallback) => {
         filters,
         searchValue,
       } = action;
-      const updateTasksFromAction = (task) => {
-        let updatedTask = task;
+      // const updateTasksFromAction = (task) => {
+      //   let updatedTask = task;
 
-        if (tasksToUpdate.includes(task.taskIdentifier)) {
-          updatedTask = {
-            ...updatedTask,
+      //   if (tasksToUpdate.includes(task.taskIdentifier)) {
+      //     updatedTask = {
+      //       ...updatedTask,
+      //       ...dataToUpdate,
+      //     };
+
+      //     if (dataToUpdate.patient) {
+      //       updatedTask = {
+      //         ...updatedTask,
+      //         subtasks: updatedTask.subtasks?.map((s) => ({
+      //           ...s,
+      //           patient: dataToUpdate.patient,
+      //         })),
+      //       };
+      //     }
+
+      //     if (dataToUpdate.status === TaskStatus.COMPLETE) {
+      //       updatedTask = {
+      //         ...updatedTask,
+      //         subtasks: updatedTask.subtasks?.map((s) => ({
+      //           ...s,
+      //           patient: dataToUpdate.status,
+      //         })),
+      //       };
+      //     }
+      //   }
+
+      //   updatedTask = {
+      //     ...updatedTask,
+      //     subtasks: updatedTask.subtasks?.map((s) =>
+      //       tasksToUpdate.includes(s.taskIdentifier)
+      //         ? { ...s, ...dataToUpdate }
+      //         : s,
+      //     ),
+      //   };
+
+      //   if (dataToUpdate.status && updatedTask.subtasks?.length > 0) {
+      //     updatedTask = {
+      //       ...updatedTask,
+      //       subTasksCompletedCount: updatedTask.subtasks?.filter(
+      //         ({ status }) => status === TaskStatus.COMPLETE,
+      //       ).length,
+      //     };
+      //   }
+
+      //   if (
+      //     (!isEmpty(filters) &&
+      //       !checkIfTaskMatchesFilters(updatedTask, filters)) ||
+      //     (searchValue && !checkIfTaskMatchesSearch(updatedTask, searchValue))
+      //   ) {
+      //     return null;
+      //   }
+
+      //   return updatedTask;
+      // };
+      // return updateStateCallback(state, updateTasksFromAction);
+
+      let updatedState = state;
+      for (const taskId of tasksToUpdate) {
+        updatedState = updateStateCallback(updatedState, (tasksMap) => {
+          return {
+            ...tasksMap[taskId],
             ...dataToUpdate,
           };
-
-          if (dataToUpdate.patient) {
-            updatedTask = {
-              ...updatedTask,
-              subtasks: updatedTask.subtasks?.map((s) => ({
-                ...s,
-                patient: dataToUpdate.patient,
-              })),
-            };
-          }
-
-          if (dataToUpdate.status === TaskStatus.COMPLETE) {
-            updatedTask = {
-              ...updatedTask,
-              subtasks: updatedTask.subtasks?.map((s) => ({
-                ...s,
-                patient: dataToUpdate.status,
-              })),
-            };
-          }
-        }
-
-        updatedTask = {
-          ...updatedTask,
-          subtasks: updatedTask.subtasks?.map((s) =>
-            tasksToUpdate.includes(s.taskIdentifier)
-              ? { ...s, ...dataToUpdate }
-              : s,
-          ),
-        };
-
-        if (dataToUpdate.status && updatedTask.subtasks?.length > 0) {
-          updatedTask = {
-            ...updatedTask,
-            subTasksCompletedCount: updatedTask.subtasks?.filter(
-              ({ status }) => status === TaskStatus.COMPLETE,
-            ).length,
-          };
-        }
-
-        if (
-          (!isEmpty(filters) &&
-            !checkIfTaskMatchesFilters(updatedTask, filters)) ||
-          (searchValue && !checkIfTaskMatchesSearch(updatedTask, searchValue))
-        ) {
-          return null;
-        }
-
-        return updatedTask;
-      };
-      return updateStateCallback(state, updateTasksFromAction);
+        });
+      }
+      return updatedState;
     }
 
     case ActionTypes.DELETE_TASKS_SUCCESS: {
@@ -476,67 +487,6 @@ const TaskBaseReducer = (state, action, updateStateCallback) => {
       return updateStateCallback(state, updateTasksFromAction);
     }
 
-    case ActionTypes.UNSELECT_ALL_TASKS: {
-      const updateStateFromAction = (task) => {
-        if (task.selected || task.subtasks?.some(({ selected }) => selected)) {
-          return {
-            ...task,
-            selected: false,
-            subtasks: task.subtasks?.map((s) => ({ ...s, selected: false })),
-          };
-        }
-
-        return task;
-      };
-
-      return updateStateCallback(state, updateStateFromAction);
-    }
-
-    case ActionTypes.CHANGE_TASKS_SELECTED_STATE: {
-      const { taskIdentifiers, newSelectedState } = action;
-
-      const updateStateFromAction = (task) => {
-        if (
-          taskIdentifiers.includes(task.taskIdentifier) ||
-          task.subtasks?.some(({ taskIdentifier }) =>
-            taskIdentifiers.includes(taskIdentifier),
-          )
-        ) {
-          return {
-            ...task,
-            selected: taskIdentifiers.includes(task.taskIdentifier)
-              ? newSelectedState
-              : task.selected,
-
-            subtasks: task.subtasks?.map((s) =>
-              taskIdentifiers.includes(s.taskIdentifier)
-                ? { ...s, selected: newSelectedState }
-                : s,
-            ),
-          };
-        }
-
-        return task;
-      };
-
-      return updateStateCallback(state, updateStateFromAction);
-    }
-
-    case ActionTypes.CHANGE_WORKFLOW_SELECTED_STATE: {
-      if (Array.isArray(action.identifier)) {
-        const identifiers = action.identifier;
-        return updateStateCallback(state, (task) =>
-          identifiers.includes(task.identifier)
-            ? { ...task, selected: action.newSelectedState }
-            : task,
-        );
-      }
-      return updateStateCallback(state, (task) =>
-        action.identifier === task.identifier
-          ? { ...task, selected: action.newSelectedState }
-          : task,
-      );
-    }
 
     case ActionTypes.ADD_SUBTASK: {
       const { subtask } = action;

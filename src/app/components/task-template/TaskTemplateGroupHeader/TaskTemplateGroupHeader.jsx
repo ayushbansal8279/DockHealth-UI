@@ -9,9 +9,12 @@ import React, {
   useEffect,
 } from 'react';
 import { Box } from '@mui/material';
-import { checkIfAllTasksSelected } from 'helpers/bulk-edit-helpers';
 import pluck from 'ramda/src/pluck';
-import { extractTasksAndSubtasks } from 'helpers/tasklist-helpers';
+import {
+  isTaskItemSelectedSelector,
+  isTaskItemsSelectedSelector,
+} from 'selectors/task-items-selectors';
+import { multipleTaskLookupSelector } from 'selectors/task-details-selectors';
 import { useDispatch, useSelector } from 'react-redux';
 import { formatPhoneNumber } from 'helpers/utility-functions';
 import ThreeDotsIcon from 'img/three-dots.svg';
@@ -25,7 +28,7 @@ import {
   TaskItemColumn,
   PatientTaskItemColumn,
   TaskItemColumnWidth,
-  // TaskStatus,
+  TaskStatus,
   TaskPriority,
   getPriorityColor,
 } from 'helpers/task-helpers';
@@ -97,7 +100,6 @@ const TaskTemplateGroupHeader = ({
   disablePatientAssignment,
   isCompletedTab = false,
   setIsAddingTask,
-  highlightedValue,
   pageBackground,
   isOpen,
   setOpen,
@@ -108,11 +110,13 @@ const TaskTemplateGroupHeader = ({
   // isFetchingTasks,
   showTasksWithGroup = true,
   iconColorActive,
+  highlightedValue,
+  origin,
   // eslint-disable-next-line sonarjs/cognitive-complexity
 }) => {
   const {
     name,
-    tasks,
+    tasks: taskIdentifiers,
     identifier,
     tasksCount,
     tasksCompletedCount,
@@ -122,6 +126,7 @@ const TaskTemplateGroupHeader = ({
 
   const { dragHandleProps } = draggableProvided;
   const { bulkEditIsActive } = useContext(BulkEditContext);
+  const { bulkEditEnabled } = useContext(BulkEditContext);
   const [isEditing, setIsEditing] = useState(false);
   const [nameInputValue, setNameInputValue] = useState(name);
   const [nameInputError, setNameInputError] = useState(false);
@@ -134,12 +139,18 @@ const TaskTemplateGroupHeader = ({
     setNameInputValue(name);
   }, [name]);
 
-  const [workFlowData, setWorkFlowData] = useState(undefined);
+  const workFlowData = undefined;
+  // const [workFlowData, setWorkFlowData] = useState(undefined);
   // const selectedWorkflow = useSelector(workflowSelector);
 
   // eslint-disable-next-line react-hooks/exhaustive-deps
-  const templateTasks = tasks || [];
-  
+  // const templateTasks = taskIdentifiers || [];
+
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  const templateTasks = useSelector((state) => {
+    return multipleTaskLookupSelector(state, origin, taskIdentifiers);
+  });
+
   let restrictions =
     SINGLE_TASK_RESTRICTIONS_PROFILES[currentUser?.orgUserRole];
   let taskListRestrictions =
@@ -152,7 +163,7 @@ const TaskTemplateGroupHeader = ({
 
   const isListAdmin = useMemo(() => {
     const currentUserMember = currentTasklist?.listUsers?.find(
-      u => u.identifier === currentUser?.identifier,
+      (u) => u.identifier === currentUser?.identifier,
     );
     const isOwnerOrAdmin = checkIfUserIsOrganizationAdmin(currentUser);
     return isMemberAdmin(currentUserMember) || isOwnerOrAdmin;
@@ -486,63 +497,47 @@ const TaskTemplateGroupHeader = ({
     [dispatch, templateGroup],
   );
 
-  // const filteredTasks = useMemo(
-  //   () =>
-  //     tasks.filter(
-  //       isCompletedTab
-  //         ? (task) => showIncompleteTasks || task.status === TaskStatus.COMPLETE
-  //         : (task) => showCompletedTasks || task.status !== TaskStatus.COMPLETE,
-  //     ),
-  //   [showCompletedTasks, showIncompleteTasks, tasks, isCompletedTab],
-  // );
-  const filteredTasks = tasks;
-
-  const isBundleSelected = useMemo(
-    () => checkIfAllTasksSelected(filteredTasks),
-    [filteredTasks],
+  const filteredTasks = useMemo(
+    () =>
+      templateTasks.filter(
+        isCompletedTab
+          ? (task) => showIncompleteTasks || task.status === TaskStatus.COMPLETE
+          : (task) => showCompletedTasks || task.status !== TaskStatus.COMPLETE,
+      ),
+    [showCompletedTasks, showIncompleteTasks, templateTasks, isCompletedTab],
   );
+
+  const isBundlePreSelected = useSelector(
+    isTaskItemSelectedSelector(identifier),
+  );
+
+  const isBundleSelectedFromTasks = useSelector(
+    isTaskItemsSelectedSelector(
+      filteredTasks.length > 0
+        ? pluck('identifier', filteredTasks)
+        : taskIdentifiers,
+    ),
+  );
+
+  const isBundleSelected = isBundlePreSelected || isBundleSelectedFromTasks;
 
   const handleBundleSelect = useCallback(() => {
     if (filteredTasks.length > 0 && isOpen) {
-      const { parentTasks, subtasks } = extractTasksAndSubtasks(filteredTasks);
-      const allTasks = [...parentTasks, ...subtasks];
       dispatch(
         TaskActions.changeTasksSelectedState(
           !isBundleSelected,
-          pluck('identifier', allTasks),
+          pluck('identifier', filteredTasks),
         ),
       );
-      dispatch(
-        TaskActions.changeWorkflowSelectedState(!isBundleSelected, identifier),
-      );
     } else {
-      dispatch(TaskActions.changeWorkflowSelectedState(!selected, identifier));
+      dispatch(
+        TaskActions.changeTasksSelectedState(
+          !isBundleSelected,
+          taskIdentifiers,
+        ),
+      );
     }
-  }, [filteredTasks, isOpen, dispatch, isBundleSelected, identifier, selected]);
-
-  // useEffect(() => {
-  //   if (selected && isOpen && filteredTasks?.length > 0) {
-  //     const { parentTasks, subtasks } = extractTasksAndSubtasks(filteredTasks);
-  //     const allTasks = [...parentTasks, ...subtasks];
-  //     dispatch(
-  //       TaskActions.changeWorkflowSelectedState(!isBundleSelected, identifier),
-  //     );
-  //     dispatch(
-  //       TaskActions.changeTasksSelectedState(
-  //         !isBundleSelected,
-  //         pluck('identifier', allTasks),
-  //       ),
-  //     );
-  //   }
-  // }, [
-  //   dispatch,
-  //   filteredTasks,
-  //   identifier,
-  //   isBundleSelected,
-  //   isFetchingTasks,
-  //   isOpen,
-  //   selected,
-  // ]);
+  }, [filteredTasks, isOpen, dispatch, isBundleSelected, taskIdentifiers]);
 
   // useEffect(() => {
   //   if (!isOpen && isBundleSelected && !selected) {
@@ -621,12 +616,13 @@ const TaskTemplateGroupHeader = ({
               />
             )}
           <ActionIconsContainer>
-            {taskListRestrictions?.completeTask !== DISABLED && (
-              <Checkbox
-                isChecked={selected || isBundleSelected}
-                onClick={handleBundleSelect}
-              />
-            )}
+            {taskListRestrictions?.completeTask !== DISABLED &&
+              bulkEditEnabled && (
+                <Checkbox
+                  isChecked={selected || isBundleSelected}
+                  onClick={handleBundleSelect}
+                />
+              )}
             <Box m={1} />
             {showTasksWithGroup && (
               <RotatableChevron
@@ -650,21 +646,23 @@ const TaskTemplateGroupHeader = ({
       );
     },
     [
-      DISABLED,
-      bulkEditIsActive,
-      dragHandleProps,
-      groupDragAndDropDisabled,
-      handleBundleSelect,
+      pageBackground,
       isBundleSelected,
       isEditing,
-      isOpen,
-      menuOptions,
-      pageBackground,
-      taskListRestrictions,
+      groupDragAndDropDisabled,
+      bulkEditIsActive,
+      taskListRestrictions?.completeTask,
+      taskListRestrictions?.createTask,
+      DISABLED,
+      dragHandleProps,
+      bulkEditEnabled,
       selected,
-      setOpen,
+      handleBundleSelect,
       showTasksWithGroup,
+      isOpen,
       iconColorActive,
+      menuOptions,
+      setOpen,
     ],
   );
 
@@ -891,7 +889,8 @@ const TaskTemplateGroupHeader = ({
               key={`patient_mobile_phone_${identifier}`}
               width={
                 columns?.find(
-                  ({ identifier: id }) => id === PatientTaskItemColumn.MOBILE_PHONE,
+                  ({ identifier: id }) =>
+                    id === PatientTaskItemColumn.MOBILE_PHONE,
                 )?.columnWidth
               }
               order={getColumnOrder(PatientTaskItemColumn.MOBILE_PHONE)}
@@ -914,7 +913,8 @@ const TaskTemplateGroupHeader = ({
               key={`patient_home_phone_${identifier}`}
               width={
                 columns?.find(
-                  ({ identifier: id }) => id === PatientTaskItemColumn.HOME_PHONE,
+                  ({ identifier: id }) =>
+                    id === PatientTaskItemColumn.HOME_PHONE,
                 )?.columnWidth
               }
               order={getColumnOrder(PatientTaskItemColumn.HOME_PHONE)}
@@ -1150,9 +1150,8 @@ const TaskTemplateGroupHeader = ({
               &nbsp;
             </TaskItemCell>,
             getColumnOrder(TaskItemColumn.SHARED),
-            columns?.find(
-              ({ identifier: id }) => id === TaskItemColumn.SHARED,
-            )?.columnWidth,
+            columns?.find(({ identifier: id }) => id === TaskItemColumn.SHARED)
+              ?.columnWidth,
           )}
         </>
       )}

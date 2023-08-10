@@ -30,6 +30,7 @@ import {
   taskDetailsSortSelector,
   taskCountersSelector,
   searchTermSelector,
+  selectedTasksSelector,
 } from 'selectors/list-details-selectors';
 import {
   currentTaskListIdentifierSelector,
@@ -293,16 +294,12 @@ const ListDetailsTableView = () => {
     [completedGroupedTasks, selectedTab],
   );
 
-  const bulkEditTasks = useMemo(
-    () => (selectedTab === TaskListTabName.OPEN ? openedTasks : completedTasks),
-    [completedTasks, openedTasks, selectedTab],
-  );
+  const bulkEditTasks = useSelector(selectedTasksSelector);
 
-  const bulkEditIsDisabled = false;
-  // const bulkEditIsDisabled = useMemo(
-  //   () => selectedTab === TaskListTabName.COMPLETE,
-  //   [selectedTab],
-  // );
+  const bulkEditIsDisabled = useMemo(
+    () => selectedTab === TaskListTabName.COMPLETE,
+    [selectedTab],
+  );
 
   // eslint-disable-next-line sonarjs/cognitive-complexity
   useEffect(() => {

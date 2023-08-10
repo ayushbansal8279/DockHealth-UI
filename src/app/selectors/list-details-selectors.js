@@ -33,6 +33,13 @@ export const taskDetailsSelector = createSelector(
   (listDetails, taskId) => listDetails.tasksMap[taskId],
 );
 
+export const multipleTaskDetailsSelector = createSelector(
+  listTasksSelector,
+  (_, taskIds) => taskIds,
+  (listDetails, taskIds) =>
+    taskIds.map((taskId) => listDetails.tasksMap[taskId]),
+);
+
 export const groupTasksSelector = createSelector(
   listTasksSelector,
   ({ groupedTasks }) => groupedTasks?.taskGroups,
@@ -73,3 +80,25 @@ export const listCustomFieldsSelector = createSelector(
   // prop('listCustomFields'),
   ({ listCustomFields }) => listCustomFields,
 );
+
+export const selectedTasksSelector = (state) =>
+  state?.taskItems?.selectedTaskIdentifiers.map(
+    (taskId) => state?.listDetails?.tasksMap[taskId],
+  );
+
+export const groupFromGroupedTasksSelector = (taskGroupIdentifier) =>
+  createSelector(groupTasksSelector, (taskGroups) =>
+    taskGroups?.find((g) => g.groupIdentifier === taskGroupIdentifier),
+  );
+
+export const groupTasksCountSelector = (taskGroupIdentifier) =>
+  createSelector(
+    groupFromGroupedTasksSelector(taskGroupIdentifier),
+    (group) => group?.tasks?.length || 0,
+  );
+
+export const tasksForGroupSelector = (taskGroupIdentifier) =>
+  createSelector(
+    groupFromGroupedTasksSelector(taskGroupIdentifier),
+    (group) => group?.tasks || [],
+  );

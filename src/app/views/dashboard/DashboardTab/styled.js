@@ -8,6 +8,7 @@ export const StyledDashboardTab = styled.button`
   font-size: 1.125rem;
   font-weight: ${fontWeights.bold};
   color: ${(props) => props.isSelected && palette.brightBlue};
+  text-align: left;
 
   &:not(:last-of-type) {
     margin-right: ${spacing.giga};

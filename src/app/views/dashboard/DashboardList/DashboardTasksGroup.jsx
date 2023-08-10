@@ -7,7 +7,6 @@ import React, {
   useRef,
 } from 'react';
 import compose from 'ramda/src/compose';
-import pluck from 'ramda/src/pluck';
 import moment from 'moment';
 import { useDispatch, useSelector } from 'react-redux';
 import * as TaskActions from 'actions/task-actions';
@@ -24,7 +23,6 @@ import {
   loadMoreDashboardTasksForGroup,
   reorderDashboardTasks,
 } from 'actions/dashboard-actions';
-import { checkIfAllTasksSelected } from 'helpers/bulk-edit-helpers';
 import QuickAddTaskInput from 'components/tasklist/QuickAddTaskInput/QuickAddTaskInput';
 import LoadMoreButton, {
   LoadMoreSection,
@@ -32,7 +30,7 @@ import LoadMoreButton, {
 import TaskItem from 'components/task/StandardTaskItem/TaskItem';
 import TasksSkeletonLoader from 'components/task/TasksSkeletonLoader/TasksSkeletonLoader';
 import TasksHeader from 'components/tasklist/TasksHeader/TasksHeader';
-import { extractTasksAndSubtasks } from 'helpers/tasklist-helpers';
+import { isTaskItemsSelectedSelector } from 'selectors/task-items-selectors';
 import palette from 'styles/palette';
 import StickyContainer from 'components/common/HorizontalScroll/StickyContainer';
 import RotatableChevron from 'components/common/RotatableChevron/RotatableChevron';
@@ -113,19 +111,12 @@ const DashboardTasksGroup = ({
     }
   }, [dashboardTasks, isLoading, metricValue]);
 
-  const isGroupSelected = useMemo(
-    () => checkIfAllTasksSelected(tasks),
-    [tasks],
-  );
+  const isGroupSelected = useSelector(isTaskItemsSelectedSelector(tasks));
 
   const handleGroupSelect = useCallback(() => {
-    const { parentTasks, subtasks } = extractTasksAndSubtasks(tasks);
-    const allTasks = [...parentTasks, ...subtasks];
+    const taskIdentifiers = tasks;
     dispatch(
-      TaskActions.changeTasksSelectedState(
-        !isGroupSelected,
-        pluck('identifier', allTasks),
-      ),
+      TaskActions.changeTasksSelectedState(!isGroupSelected, taskIdentifiers),
     );
   }, [dispatch, isGroupSelected, tasks]);
 

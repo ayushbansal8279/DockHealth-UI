@@ -16,10 +16,11 @@ import {
   isTaskSelectedSelector,
   singleTaskCustomFieldsSelector,
 } from 'selectors/task-drawer-selectors';
+import { listCustomFieldsSelector } from 'selectors/list-details-selectors';
+import { isTaskItemSelectedSelector } from 'selectors/task-items-selectors';
 import { TASK_DISAPPEAR_DELAY } from 'helpers/task-update-helper';
 import { currentTaskListSelector } from 'selectors/task-list-selectors';
 import { organizationCustomFieldsSelector } from 'selectors/organization-selectors';
-import { listCustomFieldsSelector } from 'selectors/list-details-selectors';
 import { openTaskDrawerWithContent } from 'actions/task-drawer-actions';
 import { useParams } from 'react-router-dom';
 import * as ModalActions from 'modal/actions';
@@ -183,7 +184,7 @@ const TaskItem = React.memo(
       searchMetaData = {},
       parentTask,
       subtaskQuickAddOpen,
-      selected,
+      // selected,
       subTasksCount,
       dependencyTasksCompletedCount,
       dependencyTasksCount,
@@ -236,9 +237,13 @@ const TaskItem = React.memo(
       SINGLE_TASK_RESTRICTIONS_PROFILES[currentUser?.orgUserRole];
     let taskListRestrictions =
       TASK_LIST_RESTRICTIONS_PROFILES[currentUser?.orgUserRole];
+
+    const isTaskBulkSelected = useSelector(
+      isTaskItemSelectedSelector(taskIdentifier),
+    );
     const isSelected =
       useSelector((state) => isTaskSelectedSelector(state, taskIdentifier)) ||
-      isSelectedByHighlighted;
+      isSelectedByHighlighted || isTaskBulkSelected;
 
     const [taskDecisionError, setTaskDecisionError] = useState(false);
     const [contextMenu, setContextMenu] = useState(null);
@@ -652,7 +657,7 @@ const TaskItem = React.memo(
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
     const onClickBulkEdit = () =>
-      dispatch(selectTask(taskIdentifier, !selected));
+      dispatch(selectTask(taskIdentifier, !isTaskBulkSelected));
     const onCloseContextMenu = () => {
       setContextMenu(null);
       dispatch(storeAsCurrentTask(null));
@@ -681,7 +686,16 @@ const TaskItem = React.memo(
           return;
         }
 
-        if (taskItem.subTasksCompletedCount !== taskItem.subTasksCount) {
+        if (taskItem.subTasksCompletedCount === taskItem.subTasksCount) {
+          dispatch(
+            chooseTaskDecisionOutcome(
+              targetValue,
+              taskItem,
+              templateBundleIdentifierItem,
+            ),
+          );
+          onSuccess();
+        } else {
           dispatch(
             openModal('CompleteAllTasks', {
               confirm: () => {
@@ -697,15 +711,6 @@ const TaskItem = React.memo(
               },
             }),
           );
-        } else {
-          dispatch(
-            chooseTaskDecisionOutcome(
-              targetValue,
-              taskItem,
-              templateBundleIdentifierItem,
-            ),
-          );
-          onSuccess();
         }
       },
       [dispatch, task, taskCustomFields],
@@ -721,7 +726,7 @@ const TaskItem = React.memo(
             isSubtask={showSubtaskStylingLink}
             newlyCreated={newlyCreated}
             backgroundColor={pageBackground}
-            isSelected={isSelected || selected}
+            isSelected={isSelected}
             hasEscalations={hasEscalations}
             customHighlight={customHighlight}
             isEditingDescription={isEditingDescription}
@@ -740,7 +745,7 @@ const TaskItem = React.memo(
               {taskListRestrictions?.createTask !== DISABLED &&
                 bulkEditEnabled && (
                   <TaskItemBulkEdit
-                    isChecked={selected}
+                    isChecked={isSelected}
                     onClick={onClickBulkEdit}
                   />
                 )}
@@ -766,26 +771,26 @@ const TaskItem = React.memo(
         );
       },
       [
-        bulkEditEnabled,
-        dragHandleProps,
-        isCompleted,
-        isDependencyEmptyOrCompleted,
-        isEditingDescription,
-        isLast,
+        showSubtaskStylingLink,
+        newlyCreated,
+        pageBackground,
         isSelected,
         hasEscalations,
         customHighlight,
-        isTaskStatusTogglingDisabled,
-        newlyCreated,
-        onCircleClick,
-        onClickBulkEdit,
-        pageBackground,
-        selected,
+        isEditingDescription,
+        taskListRestrictions?.createTask,
+        taskListRestrictions?.completeTask,
         showDraggableDots,
+        dragHandleProps,
         showPriority,
-        showSubtaskStylingLink,
         task?.priority,
-        taskListRestrictions,
+        isLast,
+        bulkEditEnabled,
+        onClickBulkEdit,
+        isCompleted,
+        isTaskStatusTogglingDisabled,
+        isDependencyEmptyOrCompleted,
+        onCircleClick,
       ],
     );
 
@@ -830,7 +835,7 @@ const TaskItem = React.memo(
         >
           <StandardTaskItemContainer
             newlyCreated={newlyCreated}
-            isSelected={isSelected || selected}
+            isSelected={isSelected}
             hasEscalations={hasEscalations}
             customHighlight={customHighlight}
             height={

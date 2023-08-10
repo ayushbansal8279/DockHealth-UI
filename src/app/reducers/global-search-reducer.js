@@ -1,6 +1,5 @@
 import * as types from 'actions/action-types';
 import { updateTaskOrSubtaskInListsArray } from 'helpers/task-update-helper';
-import { TaskItemType } from 'helpers/task-helpers';
 import { updateTasksStateCallback, updateTasksMap } from './reducer-helper';
 import TaskBaseReducer from './task-base-reducer';
 
@@ -129,7 +128,9 @@ const GlobalSearchReducer = (state = initialState, action) => {
     }
 
     default: {
-      return TaskBaseReducer(state, action, updateTasksStateCallback);
+      return state.searchPerformed && state.searchPerformed !== ''
+        ? TaskBaseReducer(state, action, updateTasksStateCallback)
+        : state;
     }
   }
 };

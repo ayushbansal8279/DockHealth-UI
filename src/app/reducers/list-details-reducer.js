@@ -36,7 +36,6 @@ const initialState = {
   searchTerm: '',
 };
 
-
 function updateGroupInState(
   updateCallback,
   taskGroupIdentifier,
@@ -881,7 +880,9 @@ const ListDetailsReducer = (state = initialState, action) => {
     }
 
     default: {
-      return TaskBaseReducer(state, action, updateTasksStateCallback);
+      return state.taskListIdentifier && state.taskListIdentifier !== ''
+        ? TaskBaseReducer(state, action, updateTasksStateCallback)
+        : state;
     }
   }
 };

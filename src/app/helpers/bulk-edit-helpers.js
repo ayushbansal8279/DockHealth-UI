@@ -1,7 +1,7 @@
 import isEmpty from 'ramda/src/isEmpty';
 import { TaskItemType } from './task-helpers';
 
-function checkIfTaskAndSubtasksSelected(task) {
+export function checkIfTaskAndSubtasksSelected(task) {
   return (
     task.selected &&
     (!task.subtasks || task.subtasks.every((subtask) => subtask.selected))

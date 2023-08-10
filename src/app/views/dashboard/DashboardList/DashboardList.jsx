@@ -18,11 +18,15 @@ import {
   dashboardTasksIsLoadingSelector,
   dashboardTabNameSelector,
   dashboardSearchValueSelector,
+  selectedTasksSelector,
 } from 'selectors/dashboard-selectors';
 import DashboardNewUserInfo from 'views/dashboard/DashboardNewUserInfo/DashboardNewUserInfo';
 import NoSearchResultsView from 'components/tasklist/EmptyListView/NoSearchResultsView';
 import EmptyListView from 'components/tasklist/EmptyListView/EmptyListView';
-import { getDashboardFilters } from 'actions/dashboard-actions';
+import {
+  getDashboardFilters,
+  getDashboardTasks,
+} from 'actions/dashboard-actions';
 import {
   TASK_ITEM_SORT_METHODS,
   TASK_ITEM_SORT_DESC_METHODS,
@@ -55,6 +59,7 @@ import descend from 'ramda/src/descend';
 import toLower from 'ramda/src/toLower';
 import defaultTo from 'ramda/src/defaultTo';
 // import ifElse from 'ramda/src/ifElse';
+import BulkEditSection from 'components/tasklist/BulkEditSection/BulkEditSection';
 import DashboardTasksGroup from './DashboardTasksGroup';
 import DashboardToolbar from '../DashboardToolbar/DashboardToolbar';
 import {
@@ -243,10 +248,10 @@ const DashboardList = ({ currentUser, tourModalIsOpen, openTourModal }) => {
     dispatch(getDashboardFilters());
   }, [dispatch]);
 
-  // const handleRefreshForBulkEdit = useCallback(() => {
-  //   dispatch(getDashboardFilters());
-  //   dispatch(getDashboardTasks());
-  // }, [dispatch]);
+  const handleRefreshForBulkEdit = useCallback(() => {
+    dispatch(getDashboardFilters());
+    dispatch(getDashboardTasks());
+  }, [dispatch]);
 
   const groupOrder = useMemo(() => {
     const defaultGroupOrder = dashboardTasks.map((g) => g.groupType);
@@ -336,74 +341,82 @@ const DashboardList = ({ currentUser, tourModalIsOpen, openTourModal }) => {
 
   const parentContainerWidth = useContext(Context);
 
+  const bulkEditTasks = useSelector(selectedTasksSelector);
+
   return (
-    // <BulkEditSection
-    //   allTasks={allDashboardTasks}
-    //   refreshTasks={handleRefreshForBulkEdit}
-    //   searchValue={searchValue}
-    // >
-    <>
-      <StickyContainer stickyTop zIndex={101}>
-        <StickyHeader>
-          {parentContainerWidth !== 0 && (
-            <DashboardToolbar
-              tourModalIsOpen={tourModalIsOpen}
-              openTourModal={openTourModal}
-              iconColorFilterActive={iconColorFilterActiveItem?.value}
-              iconColorActive={iconColorActiveItem?.value}
-            />
-          )}
-        </StickyHeader>
-      </StickyContainer>
-      <Spacing vertical={1} />
-      {viewType === ViewType.CALENDAR_VIEW && <DashboardCalendar />}
-      {viewType === ViewType.LIST_VIEW && (
-        <VerticalScrollContainer>
-          {dashboardTasksIsLoading || completeTaskCount === undefined ? (
-            <GroupedListSkeletonLoader numberOfGroups={3} />
-          ) : (
-            <DashboardTaskGroupsWrapper>
-              {isEmpty(orderedDashboardTasks) ? (
-                <EmptyStateContainer>{renderEmptyState()}</EmptyStateContainer>
-              ) : (
-                orderedDashboardTasks?.map(
-                  (item, index) =>
-                    item && (
-                      <DashboardTasksGroup
-                        key={item?.groupType}
-                        dashboardTasksGroup={item}
-                        storeAsCurrentTask={taskActions.storeAsCurrentTask}
-                        currentSortMethod={currentSortMethodWithOrder}
-                        currentSort={currentSort}
-                        onSortChange={handleSortChange}
-                        showClearSortFiltersModal={showClearSortFiltersModal}
-                        isSortApplied={isSortApplied}
-                        areFiltersApplied={areFiltersApplied}
-                        currentUser={currentUser}
-                        updateWorkflowStatus={taskActions.updateWorkflowStatus}
-                        isSearching={!!searchValue}
-                        closeDrawer={taskDrawerActions.closeDrawer}
-                        openModal={openModal}
-                        isFirstGroup={index === 0}
-                        isLastGroup={index === orderedDashboardTasks.length - 1}
-                        moveGroupUp={() => moveGroupUp(item)}
-                        moveGroupDown={() => moveGroupDown(item)}
-                        iconColorActive={iconColorActiveItem?.value}
-                      />
-                    ),
-                )
-              )}
-            </DashboardTaskGroupsWrapper>
-          )}
-        </VerticalScrollContainer>
-      )}
-      <TaskDrawer
-        onTaskUpdate={handleTaskUpdate}
-        onTaskCreation={handleTaskUpdate}
-        onTaskDelete={() => dispatch(getDashboardFilters())}
-      />
-    </>
-    // </BulkEditSection>
+    <BulkEditSection
+      allTasks={bulkEditTasks}
+      refreshTasks={handleRefreshForBulkEdit}
+      searchValue={searchValue}
+    >
+      <>
+        <StickyContainer stickyTop zIndex={101}>
+          <StickyHeader>
+            {parentContainerWidth !== 0 && (
+              <DashboardToolbar
+                tourModalIsOpen={tourModalIsOpen}
+                openTourModal={openTourModal}
+                iconColorFilterActive={iconColorFilterActiveItem?.value}
+                iconColorActive={iconColorActiveItem?.value}
+              />
+            )}
+          </StickyHeader>
+        </StickyContainer>
+        <Spacing vertical={1} />
+        {viewType === ViewType.CALENDAR_VIEW && <DashboardCalendar />}
+        {viewType === ViewType.LIST_VIEW && (
+          <VerticalScrollContainer>
+            {dashboardTasksIsLoading || completeTaskCount === undefined ? (
+              <GroupedListSkeletonLoader numberOfGroups={3} />
+            ) : (
+              <DashboardTaskGroupsWrapper>
+                {isEmpty(orderedDashboardTasks) ? (
+                  <EmptyStateContainer>
+                    {renderEmptyState()}
+                  </EmptyStateContainer>
+                ) : (
+                  orderedDashboardTasks?.map(
+                    (item, index) =>
+                      item && (
+                        <DashboardTasksGroup
+                          key={item?.groupType}
+                          dashboardTasksGroup={item}
+                          storeAsCurrentTask={taskActions.storeAsCurrentTask}
+                          currentSortMethod={currentSortMethodWithOrder}
+                          currentSort={currentSort}
+                          onSortChange={handleSortChange}
+                          showClearSortFiltersModal={showClearSortFiltersModal}
+                          isSortApplied={isSortApplied}
+                          areFiltersApplied={areFiltersApplied}
+                          currentUser={currentUser}
+                          updateWorkflowStatus={
+                            taskActions.updateWorkflowStatus
+                          }
+                          isSearching={!!searchValue}
+                          closeDrawer={taskDrawerActions.closeDrawer}
+                          openModal={openModal}
+                          isFirstGroup={index === 0}
+                          isLastGroup={
+                            index === orderedDashboardTasks.length - 1
+                          }
+                          moveGroupUp={() => moveGroupUp(item)}
+                          moveGroupDown={() => moveGroupDown(item)}
+                          iconColorActive={iconColorActiveItem?.value}
+                        />
+                      ),
+                  )
+                )}
+              </DashboardTaskGroupsWrapper>
+            )}
+          </VerticalScrollContainer>
+        )}
+        <TaskDrawer
+          onTaskUpdate={handleTaskUpdate}
+          onTaskCreation={handleTaskUpdate}
+          onTaskDelete={() => dispatch(getDashboardFilters())}
+        />
+      </>
+    </BulkEditSection>
   );
 };
 

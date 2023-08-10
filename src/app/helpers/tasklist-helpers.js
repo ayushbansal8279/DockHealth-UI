@@ -39,18 +39,26 @@ export function extractTasksAndSubtasks(listOfTasks) {
               accumulator.parentTasks.push(t);
               // eslint-disable-next-line no-unused-expressions
               if (t.subtasks)
-                for (const subtask of t.subtasks)
-                  accumulator.subtasks.push(subtask);
+                for (const subtask of t.subtasks){
+                  if (!accumulator.subtasks.includes(subtask)) {
+                    accumulator.subtasks.push(subtask);
+                  }
+                }
             }
           }
       } else if (task.parentTaskIdentifier) {
-        accumulator.subtasks.push(task);
+        if (!accumulator.subtasks.includes(task)) {
+          accumulator.subtasks.push(task);
+        }
       } else {
         accumulator.parentTasks.push(task);
         // eslint-disable-next-line no-unused-expressions
         if (task.subtasks)
-          for (const subtask of task.subtasks)
-            accumulator.subtasks.push(subtask);
+          for (const subtask of task.subtasks){
+            if (!accumulator.subtasks.includes(subtask)) {
+              accumulator.subtasks.push(subtask);
+            }
+          }
       }
 
       return accumulator;

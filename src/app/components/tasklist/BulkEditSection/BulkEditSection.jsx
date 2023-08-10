@@ -103,10 +103,8 @@ const BulkEditSection = ({
     }
     const extractedTasks = extractTasksAndSubtasks(allTasks);
     return {
-      parentTasks: extractedTasks.parentTasks.filter(
-        ({ selected }) => selected,
-      ),
-      subtasks: extractedTasks.subtasks.filter(({ selected }) => selected),
+      parentTasks: extractedTasks.parentTasks,
+      subtasks: extractedTasks.subtasks,
     };
   }, [allTasks, disabled]);
 

@@ -29,6 +29,13 @@ export const patientTaskDetailsSelector = createSelector(
   (patientDetails, taskId) => patientDetails.tasksMap[taskId],
 );
 
+export const patientMultipleTaskDetailsSelector = createSelector(
+  patientDetailsStateSelector,
+  (_, taskIds) => taskIds,
+  (patientDetails, taskIds) =>
+    taskIds.map((taskId) => patientDetails.tasksMap[taskId]),
+);
+
 export const patientListHasTasksSelector = createSelector(
   patientDetailsStateSelector,
   ({ lists }) => lists?.length > 0,
@@ -107,3 +114,8 @@ export const patientFoldersSelector = createSelector(
     attachments?.filter(({ type }) => type === PatientAttachmentType.FOLDER) ??
     null,
 );
+
+export const selectedTasksSelector = (state) =>
+  state?.taskItems?.selectedTaskIdentifiers.map(
+    (taskId) => state?.patientDetails?.tasksMap[taskId],
+  );

@@ -146,7 +146,7 @@ const DashboardToolbar = ({ iconColorFilterActive, iconColorActive }) => {
 
   return (
     <ToolbarContainer container direction="row" justifyContent="space-between">
-      <Grid item md={4}>
+      <Grid item md={6} sm={12}>
         <DashboardTabsContainer>
           <AccessRestrictor allowedToRoles={[ADMIN, OWNER, MEMBER, GUEST]}>
             <DashboardTab
@@ -160,7 +160,7 @@ const DashboardToolbar = ({ iconColorFilterActive, iconColorActive }) => {
           </AccessRestrictor>
           {/* <AccessRestrictor allowedToRoles={[EXTERNAL]}> */}
           <DashboardTab
-            label="Shared with me"
+            label="Shared With Me"
             setHighlightPosition={setHighlightPosition}
             onClick={() => {
               history.push(`${HOME_SHARED_PATH}`);

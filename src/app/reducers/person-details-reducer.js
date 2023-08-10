@@ -197,7 +197,9 @@ const PersonDetailsReducer = (state = initialState, action) => {
     }
 
     default: {
-      return TaskBaseReducer(state, action, updateTasksStateCallback);
+      return state.userIdentifier && state.userIdentifier !== ''
+        ? TaskBaseReducer(state, action, updateTasksStateCallback)
+        : state;
     }
   }
 };
