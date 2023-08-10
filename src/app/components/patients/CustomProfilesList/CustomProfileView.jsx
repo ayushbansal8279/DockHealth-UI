@@ -9,6 +9,19 @@ import { getAllProfileFieldTypes } from 'api/profile-type-field-api';
 import ViewLayout from 'components/template/ViewLayout/ViewLayout';
 import LayoutHeader from 'components/template/LayoutHeader/LayoutHeader';
 import { Box } from '@mui/material';
+import { ColumnsConfigProvider } from 'context-api/columns-config-context';
+import {
+  TASK_ITEM_BASE_COLUMN_CONFIG,
+  TaskItemColumn,
+} from 'helpers/task-helpers';
+import PatientNotes from 'views/patient-details/PatientNotes/PatientNotes';
+import CustomProfileDetailsCompletedTasks from './CustomProfileDetailsCompletedTasks';
+import CustomProfileDetailsOpenedTasks from './CustomProfileDetailsOpenedTasks';
+
+const PERSON_VIEW_COLUMNS_CONFIG = {
+  ...TASK_ITEM_BASE_COLUMN_CONFIG,
+  [TaskItemColumn.LIST_NAME]: true,
+};
 
 const CustomProfileView = () => {
   const dispatch = useDispatch();
@@ -90,7 +103,7 @@ const CustomProfileView = () => {
   };
 
   return (
-    <>
+    <ColumnsConfigProvider>
       <ViewLayout
         header={
           <LayoutHeader>
@@ -114,8 +127,15 @@ const CustomProfileView = () => {
           types={profileTypeFields}
           onClose={handleDrawerClose}
         />
+        <CustomProfileDetailsCompletedTasks
+          taskItemConfig={PERSON_VIEW_COLUMNS_CONFIG}
+        />
+        <CustomProfileDetailsOpenedTasks
+          taskItemConfig={PERSON_VIEW_COLUMNS_CONFIG}
+        />
+        <PatientNotes />
       </ViewLayout>
-    </>
+    </ColumnsConfigProvider>
   );
 };
 
