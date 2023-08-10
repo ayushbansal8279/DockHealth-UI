@@ -6,13 +6,11 @@ import React, {
   useRef,
   useCallback,
 } from 'react';
-import { bulkEditTasks } from 'api/task-api';
 import { useParams, Link, useHistory } from 'react-router-dom';
 import compose from 'ramda/src/compose';
 import isNil from 'ramda/src/isNil';
 import not from 'ramda/src/not';
 import path from 'ramda/src/path';
-import pluck from 'ramda/src/pluck';
 import { useDispatch, useSelector } from 'react-redux';
 import NavigateNextIcon from '@mui/icons-material/NavigateNext';
 import HardDependencyIcon from 'img/template/hard-dependency';
@@ -23,18 +21,16 @@ import {
   WORKFLOW_LIBRARY_PATH,
 } from 'routing/helpers/paths';
 import {
-  deleteTasksLink,
   changeTaskIntentType,
   updateTasksLink,
-  bulkEditDelete,
 } from 'actions/task-actions';
-import { openModal, closeModal } from 'modal/actions';
+import { openModal } from 'modal/actions';
 import {
   addDecisionBranch,
   addNewDecisionTaskElement,
   addNewNestedFlowElement,
   addNewTaskElement,
-  deleteTemporaryElement,
+  editTemporaryElement,
   linkTasks,
   saveTaskTemplateLayout,
   saveTaskTemplateLayoutToHistory,
@@ -62,8 +58,6 @@ import {
   TASK_NODE_WIDTH,
   getAutoLayout,
 } from 'helpers/smart-flow-builder-helpers';
-import { showGlobalAlert } from 'alert/actions';
-import AlertMessages from 'alert/AlertMessages';
 import { useBoolean } from 'hooks/useBoolean';
 import palette from 'styles/palette';
 import * as AlertActions from 'alert/actions';
@@ -194,13 +188,13 @@ const SmartFlowBuilderView = () => {
           ...mapLayoutToElements(layout, tasks),
           ...(temporaryElements || []),
         ].map((element) => ({
-          ...element,
           ...Object.fromEntries(
             previousElements.map((previousElement) => [
               previousElement.id,
               previousElement,
             ]),
           )[element.id],
+          ...element,
           isConnectable: draggedEdgeSourceId !== element.id,
           data: {
             ...element.data,
@@ -396,7 +390,6 @@ const SmartFlowBuilderView = () => {
     handleMakeSelectionDependent,
     openDelayPopover,
   ]);
-
   const updateSelectedElementsPosition = (selectedNodes) => {
     let updatedElements = elements;
     let shouldUpdate = false;
@@ -409,6 +402,12 @@ const SmartFlowBuilderView = () => {
           node.id,
           node.position,
           updatedElements,
+        );
+      } else {
+        dispatch(
+          editTemporaryElement(node.id, {
+            position: node.position,
+          }),
         );
       }
     }
