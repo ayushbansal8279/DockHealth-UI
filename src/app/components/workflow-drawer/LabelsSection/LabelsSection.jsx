@@ -41,6 +41,7 @@ const renderOption = ({
   onBlur,
   onSaveEdit,
   onDelete,
+  onClick,
   disabled,
 }) => {
   return (
@@ -53,6 +54,7 @@ const renderOption = ({
         greyed={disabled}
         ref={registerOption}
         defaultValue={option?.labelName}
+        onClick={onClick}
         onBlur={(event) => {
           event.stopPropagation();
           onBlur();
@@ -208,7 +210,7 @@ const LabelsSection = ({ disabled: disabledProperty }) => {
   };
 
   const renderOptionCallback = useCallback(
-    (option) => {
+    (_, option) => {
       const disabled = !!selectedLabels.find(
         (label) => label.labelIdentifier === option.labelIdentifier,
       );
@@ -232,9 +234,22 @@ const LabelsSection = ({ disabled: disabledProperty }) => {
             labelName: value,
           }),
         onDelete: () => handleRemoveLabel(option),
+        onClick: () => {
+          setSelectedLabels((previousLabels) => {
+            if (
+              previousLabels.some(
+                (label) => label.labelIdentifier === option.labelIdentifier,
+              )
+            ) {
+              return previousLabels;
+            }
+            handleAddLabel(option?.labelIdentifier, option?.labelName);
+            return [...previousLabels, option];
+          });
+        },
       });
     },
-    [handleEditLabel, handleRemoveLabel, selectedLabels],
+    [handleEditLabel, handleRemoveLabel, handleAddLabel, selectedLabels],
   );
 
   const renderTagsCallback = useCallback(
