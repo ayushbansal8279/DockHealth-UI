@@ -131,7 +131,6 @@ export const BulkContainer = styled.div`
 `;
 
 export const AddPlaceholder = styled.div`
-  visibility: hidden;
   color: ${palette.lightGrey};
   opacity: 0;
   &::first-letter {
