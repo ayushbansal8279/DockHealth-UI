@@ -8,7 +8,6 @@ import React, {
 } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useHistory, useParams } from 'react-router-dom';
-import { Grid } from '@mui/material';
 import { openModal } from 'modal/actions';
 import { ColumnsConfigProvider } from 'context-api/columns-config-context';
 import { TaskItemColumn } from 'helpers/task-helpers';
@@ -22,7 +21,9 @@ import {
   userHasSmartFlowsSelector,
   selectedUserOrganizationSelector,
 } from 'selectors/user-selectors';
-import AddButton from 'components/common/AddButton/AddButton';
+import AddButton, {
+  AddEntitiesContainer,
+} from 'components/common/AddButton/AddButton';
 import Spacing from 'components/common/Spacing';
 import TaskDrawer from 'components/task-drawer/TaskDrawer/TaskDrawer';
 import ViewTypeSwitch, {
@@ -268,7 +269,7 @@ const TaskTemplateView = () => {
                   />
                 )}
               </SearchWrapper>
-              <Grid container justifyContent="flex-end" alignItems="center">
+              <AddEntitiesContainer>
                 <AddButton onClick={handleCreateTemplate}>
                   Add Workflow
                 </AddButton>
@@ -282,7 +283,7 @@ const TaskTemplateView = () => {
                   Add Folder
                 </AddButton>
                 <ViewTypeSwitch value={viewType} onChange={setViewType} />
-              </Grid>
+              </AddEntitiesContainer>
             </SearchAndFilterContainer>
             <Spacing vertical={4} />
             <TasksTemplatesHeader

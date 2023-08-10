@@ -1,7 +1,7 @@
 import { Add } from '@mui/icons-material';
 import React, { useCallback, useRef } from 'react';
 import { useToggle } from 'react-use';
-import AdornedButton from 'components/common/AdornedButton/AdornedButton';
+import AddButton from 'components/common/AddButton/AddButton';
 import InvitePeoplePopover from '../InvitePeoplePopover/InvitePeoplePopover';
 
 const InviteButton = ({ getAllUsers }) => {
@@ -17,13 +17,13 @@ const InviteButton = ({ getAllUsers }) => {
 
   return (
     <>
-      <AdornedButton
+      <AddButton
         adornment={<Add />}
         onClick={() => togglePopoverOpen(true)}
-        innerRef={invitePeopleButtonReference}
+        buttonRef={invitePeopleButtonReference}
       >
         ADD A USER
-      </AdornedButton>
+      </AddButton>
       <InvitePeoplePopover
         open={isPopoverOpen}
         toggleInvitePopover={toggleInvitePopover}
