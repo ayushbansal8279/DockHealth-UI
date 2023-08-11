@@ -148,7 +148,9 @@ const TaskTemplateGroupHeader = ({
 
   // eslint-disable-next-line react-hooks/exhaustive-deps
   const templateTasks = useSelector((state) => {
-    return multipleTaskLookupSelector(state, origin, taskIdentifiers);
+    return taskIdentifiers
+      ? multipleTaskLookupSelector(state, origin, taskIdentifiers)
+      : [];
   });
 
   let restrictions =
