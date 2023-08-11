@@ -11,6 +11,20 @@ import {
 
 const TaskBaseReducer = (state, action, updateStateCallback) => {
   switch (action.type) {
+    // case ActionTypes.FIND_TASKS_BY_PROFILE_GROUPED_BY_TASK_LIST_SUCCESS: {
+    //   console.log('FIND_TASKS_BY_PROFILE_GROUPED_BY_TASK_LIST_SUCCESS', action, state);
+    //
+    //   const newMap = { ...state.tasksMap };
+    //   for (const task of action.payload) {
+    //
+    //   }
+    //
+    //   return {
+    //     ...state,
+    //     tasks: [...(state.tasks || []), ...action.payload],
+    //   };
+    // }
+
     case ActionTypes.UPDATE_PATIENT_DETAILS: {
       const {
         payload: { patientIdentifier, details },

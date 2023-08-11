@@ -19,3 +19,31 @@ export function editProfileType(identifier, profile) {
 export function deleteProfile(identifier) {
   return axios.delete(`profile/${identifier}`).then(({ data }) => data);
 }
+
+export const note = {
+  getAll(profileIdentifier) {
+    return axios
+      .get(`/profile/note/getAll/${profileIdentifier}`)
+      .then(({ data }) => data);
+  },
+  getById(profileNoteIdentifier) {
+    return axios
+      .get(`/profile/note/${profileNoteIdentifier}`)
+      .then(({ data }) => data);
+  },
+  create(profileIdentifier, note) {
+    return axios
+      .post(`/profile/note/${profileIdentifier}`, note)
+      .then(({ data }) => data);
+  },
+  update(profileNoteIdentifier, note) {
+    return axios
+      .put(`/profile/note/${profileNoteIdentifier}`, note)
+      .then(({ data }) => data);
+  },
+  delete(profileNoteIdentifier) {
+    return axios
+      .delete(`/profile/note/${profileNoteIdentifier}`)
+      .then(({ data }) => data);
+  },
+};

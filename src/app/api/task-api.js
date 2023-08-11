@@ -72,6 +72,12 @@ export function updateTask(task) {
     });
 }
 
+export function findTasksByProfileGroupedByTaskList(profileIdentifier) {
+  return axios
+    .get(`/task/findTasksByProfileGroupedByTaskList/${profileIdentifier}`)
+    .then(({ data }) => data);
+}
+
 export function partialUpdateTask(taskIdentifier, dataToUpdate) {
   return axios
     .patch(`task/${taskIdentifier}`, dataToUpdate)

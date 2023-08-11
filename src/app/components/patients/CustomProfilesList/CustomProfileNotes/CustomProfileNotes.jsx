@@ -1,5 +1,5 @@
 /* eslint-disable sonarjs/cognitive-complexity */
-import React, { useCallback, useMemo, useState } from 'react';
+import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import compose from 'ramda/src/compose';
 import descend from 'ramda/src/descend';
 import prop from 'ramda/src/prop';
@@ -21,8 +21,10 @@ import Spacing from 'components/common/Spacing';
 import { ClickAwayListener } from '@mui/material';
 import { checkIfUserIsOrganizationAdmin } from 'helpers/user-helper';
 import RichTextEditor from 'components/common/RichTextEditor/RichTextEditor';
-// import PatientNote from '../PatientNote/PatientNote';
+// import ProfileNote from '../ProfileNote/ProfileNote';
 // import PatientNotesLoader from '../PatientNotesLoader/PatientNotesLoader';
+import ProfileNote from 'components/patients/CustomProfilesList/CustomProfileNotes/ProfileNote/ProfileNote';
+import { note } from 'api/profile-api';
 import {
   PatientNotesWrapper,
   PinnedNotesWrapper,
@@ -30,35 +32,44 @@ import {
   ButtonWrapper,
 } from './styled';
 
-const CustomProfileNotes = () => {
+const CustomProfileNotes = ({ profileIdentifier }) => {
   const dispatch = useDispatch();
-  const patient = useSelector(patientSelector);
   const isFetching = useSelector(isFetchingNotesSelector);
   const currentUser = useSelector(userProfileSelector);
-  const { patientIdentifier, allNotes: notes } = patient || {};
   const [editMode, setEditMode] = useState(false);
   const [modalIsOpened, setModalIsOpened] = useState(false);
 
   const isOrganizationAdmin = checkIfUserIsOrganizationAdmin(currentUser);
 
+  const [notes, setNotes] = useState([]);
+
+  useEffect(() => {
+    note.getAll(profileIdentifier).then((data) => setNotes(data));
+  }, [profileIdentifier]);
+
   const handleRemoveNote = useCallback(
-    (patientNoteIdentifier) => {
+    (profileNoteIdentifier) => {
       const modalProps = {
         title: 'Delete note',
         description:
           'Are you sure you want to delete this note? This action cannot be undone.',
         confirm: () => {
-          dispatch(removePatientNote(patientNoteIdentifier));
+          note.delete(profileNoteIdentifier);
+          setNotes(
+            notes.filter((note) => note.identifier !== profileIdentifier),
+          );
           dispatch(closeModal());
         },
       };
       dispatch(openModal('DeleteConfirmation', modalProps));
     },
-    [dispatch],
+    [dispatch, notes, profileIdentifier],
   );
 
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  const handleSaveNote = useCallback(compose(dispatch, updatePatientNote), []);
+  // eslint-disable-next-line react-hooks/exhaustive-deps,unicorn/consistent-function-scoping
+  const handleSaveNote = ({ identifier, description }) => {
+    note.update(identifier, { description });
+  };
 
   // eslint-disable-next-line react-hooks/exhaustive-deps
   const handlePinChange = useCallback(
@@ -138,20 +149,19 @@ const CustomProfileNotes = () => {
     const { description, mentions, ...restNotes } = note;
 
     return (
-      null
-      // <PatientNote
-      //   key={note.patientNoteIdentifier}
-      //   note={restNotes}
-      //   isEditable={
-      //     currentUser.userIdentifier === note.creator?.userIdentifier ||
-      //     isOrganizationAdmin
-      //   }
-      //   onSave={handleSaveNote}
-      //   onRemove={handleRemoveNote}
-      //   onPinChange={handlePinChange}
-      //   mentions={mentions}
-      //   description={description}
-      // />
+      <ProfileNote
+        key={note.profileNoteIdentifier}
+        note={restNotes}
+        isEditable={
+          currentUser.userIdentifier === note.creator?.userIdentifier ||
+          isOrganizationAdmin
+        }
+        onSave={handleSaveNote}
+        onRemove={handleRemoveNote}
+        onPinChange={handlePinChange}
+        mentions={mentions}
+        description={description}
+      />
     );
   };
 
@@ -162,9 +172,7 @@ const CustomProfileNotes = () => {
 
   return (
     <PatientNotesWrapper>
-      {isFetching ? (
-        <PatientNotesLoader />
-      ) : (
+      {isFetching ? null : ( // <PatientNotesLoader />
         <>
           {pinnedNotes?.length > 0 && (
             <PinnedNotesWrapper>
@@ -205,7 +213,7 @@ const CustomProfileNotes = () => {
                   disabled={isEmpty}
                   size="small"
                   onClick={() => {
-                    dispatch(addPatientNote(patientIdentifier, noteState));
+                    note.create(profileIdentifier, { description: noteState });
                     setNoteState('');
                     setEditMode(false);
                   }}
