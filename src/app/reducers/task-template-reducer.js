@@ -10,6 +10,7 @@ import {
   NodeType,
 } from 'helpers/smart-flow-builder-helpers';
 import TaskBaseReducer from './task-base-reducer';
+import { updateTasksStateCallback } from './reducer-helper';
 
 const initialWorkflowLibraryState = {
   folderIdentifier: null,
@@ -36,7 +37,7 @@ const templateDetailsInitialState = {
   isOpen: false,
 };
 
-function updateTasksStateCallback(state, newTask) {
+function updateTaskTemplateDetailsStateCallback(state, newTask) {
   if (typeof newTask === 'function') return state;
 
   // eslint-disable-next-line sonarjs/prefer-immediate-return
@@ -631,9 +632,17 @@ const TaskTemplateReducer = (state = initialState, action) => {
     }
 
     default: {
-      return state.taskTemplates && state.taskTemplates !== ''
-        ? TaskBaseReducer(state, action, updateTasksStateCallback)
-        : state;
+      if (state.taskTemplates && state.taskTemplates !== '') {
+        return TaskBaseReducer(state, action, updateTasksStateCallback);
+      }
+      if (state.taskTemplateDetails && state.taskTemplateDetails !== '') {
+        return TaskBaseReducer(
+          state,
+          action,
+          updateTaskTemplateDetailsStateCallback,
+        );
+      }
+      return state;
     }
   }
 };

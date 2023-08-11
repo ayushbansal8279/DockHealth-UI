@@ -75,3 +75,8 @@ export const currentFolderIdentifierSelector = createSelector(
   taskTemplateStateSelector,
   prop('folderIdentifier'),
 );
+
+export const selectedTasksSelector = (state) =>
+  state?.taskItems?.selectedTaskIdentifiers.map(
+    (taskId) => state?.taskTemplate?.tasksMap[taskId],
+  );
