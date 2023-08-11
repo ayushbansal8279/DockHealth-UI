@@ -44,7 +44,7 @@ export const OptionContainer = styled.div`
     ${OptionButton} {
       opacity: 1;
     }
-    background-color: ${palette.lightGrey2}
+    background-color: ${palette.blueGrey}
   }
 `;
 
