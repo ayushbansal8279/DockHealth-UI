@@ -2,12 +2,14 @@ import { TaskItemType } from 'helpers/task-helpers';
 
 function updateTaskItemSubTasks(state, tasksMap, taskItem) {
   const updatedMap = tasksMap;
+  const taskIdentifier = taskItem.identifier ?? taskItem.taskIdentifier;
+
   if (taskItem.subtasks) {
     for (const subTask of taskItem.subtasks) {
       updatedMap[subTask.identifier] = subTask;
     }
   }
-  if (taskItem?.parentTaskIdentifier && !state.tasksMap[taskItem.identifier]) {
+  if (taskItem?.parentTaskIdentifier && !state.tasksMap[taskIdentifier]) {
     // if subtask is added
     const parentTask = state.tasksMap[taskItem.parentTaskIdentifier];
     updatedMap[taskItem.parentTaskIdentifier] = {
@@ -26,27 +28,54 @@ export function updateTasksStateCallback(state, taskData) {
   if (typeof taskData === 'function') {
     taskItem = taskData(state.tasksMap);
   }
+  const taskIdentifier = taskItem.identifier ?? taskItem.taskIdentifier;
+
+  const updatedMetaData = state.tasksMap[taskIdentifier]?.taskMetaData?.map(
+    (tmd) => {
+      const matchedTaskMetaData = taskItem?.taskMetaData?.find(
+        (newtmd) =>
+          newtmd && newtmd.customFieldIdentifier === tmd.customFieldIdentifier,
+      );
+      return {
+        ...tmd,
+        ...matchedTaskMetaData,
+      };
+    },
+  );
+
+  const newMetaData = taskItem?.taskMetaData?.filter(
+    (newtmd) =>
+      state.tasksMap[taskIdentifier]?.taskMetaData?.find(
+        (tmd) =>
+          tmd && tmd.customFieldIdentifier !== newtmd.customFieldIdentifier,
+      ) === undefined,
+  );
+
+  const mergedTaskMetaData = updatedMetaData.concat(newMetaData);
+
   const newMap = {};
   if (taskItem) {
     if (taskItem?.itemType) {
       if (taskItem?.itemType === TaskItemType.TASK) {
-        newMap[taskItem.identifier ?? taskItem.taskIdentifier] = taskItem;
+        newMap[taskIdentifier] = taskItem;
         updateTaskItemSubTasks(state, newMap, taskItem);
       } else {
-        newMap[taskItem.identifier] = {
-          ...state.tasksMap[taskItem.identifier],
+        newMap[taskIdentifier] = {
+          ...state.tasksMap[taskIdentifier],
           ...taskItem,
+          taskMetaData: mergedTaskMetaData,
         };
         for (const bundleTask of taskItem.tasks) {
           updateTaskItemSubTasks(state, newMap, bundleTask);
         }
       }
-    } else if (taskItem.taskIdentifier) {
-      newMap[taskItem.taskIdentifier] = {
-        ...state.tasksMap[taskItem.taskIdentifier],
+    } else if (taskIdentifier) {
+      newMap[taskIdentifier] = {
+        ...state.tasksMap[taskIdentifier],
         ...taskItem,
+        taskMetaData: mergedTaskMetaData,
       };
-      updateTaskItemSubTasks(state, newMap, newMap[taskItem.taskIdentifier]);
+      updateTaskItemSubTasks(state, newMap, newMap[taskIdentifier]);
     }
   }
 

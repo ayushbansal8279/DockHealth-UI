@@ -12,10 +12,7 @@ import React, {
 import pluck from 'ramda/src/pluck';
 import { useDispatch, useSelector } from 'react-redux';
 import * as ListDetailsActions from 'actions/list-details-actions';
-import {
-  isTaskSelectedSelector,
-  singleTaskCustomFieldsSelector,
-} from 'selectors/task-drawer-selectors';
+import { isTaskSelectedSelector } from 'selectors/task-drawer-selectors';
 import { listCustomFieldsSelector } from 'selectors/list-details-selectors';
 import { isTaskItemSelectedSelector } from 'selectors/task-items-selectors';
 import { TASK_DISAPPEAR_DELAY } from 'helpers/task-update-helper';
@@ -513,10 +510,6 @@ const TaskItem = React.memo(
       [dispatch, parentTaskGroupIdentifier, task, templateBundleIdentifier],
     );
 
-    const templates = useSelector((state) =>
-      singleTaskCustomFieldsSelector(state, task?.taskIdentifier),
-    );
-
     const refreshTab = useCallback(
       (withLoader = false) => {
         dispatch(ListDetailsActions.getCurrentTaskListFilterOptions());
@@ -552,7 +545,7 @@ const TaskItem = React.memo(
       // eslint-disable-next-line no-shadow
       (task) => {
         const incompleteRequiredFields = findIncompleteRequiredFields(
-          templates,
+          taskCustomFields,
           task,
         );
         const isRequiredFieldsAreIncomplete =
@@ -584,7 +577,7 @@ const TaskItem = React.memo(
           invokeToggleCompleteAction(task);
         }
       },
-      [invokeToggleCompleteAction, isCompleted, modalActions, templates],
+      [invokeToggleCompleteAction, isCompleted, modalActions, taskCustomFields],
     );
     const handlePriorityChange = useCallback(
       (taskPriority) => {
