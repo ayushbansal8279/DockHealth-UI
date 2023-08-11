@@ -31,11 +31,17 @@ const renderOption = ({
   onBlur,
   onSaveEdit,
   onDelete,
+  onClick,
 }) => (
-  <OptionContainer key={option?.labelIdentifier} isEditable={isEditable}>
+  <OptionContainer
+    key={option?.labelIdentifier}
+    isEditable={isEditable}
+    labelIdentifier={option?.labelIdentifier}
+  >
     <OptionButtonsInput
       ref={registerOption}
-      defaultValue={option?.key}
+      defaultValue={option?.labelName}
+      onClick={onClick}
       onBlur={(event) => {
         event.stopPropagation();
         onBlur();
@@ -130,7 +136,7 @@ const LabelsSection = ({ selectedTask, onTaskUpdate }) => {
   const getInputReference = (element) => setInputReference(element);
 
   const renderOptionCallback = useCallback(
-    (option) =>
+    (_, option) =>
       renderOption({
         option,
         registerOption: (element) => {
@@ -147,9 +153,28 @@ const LabelsSection = ({ selectedTask, onTaskUpdate }) => {
         onSaveEdit: (value) => saveEditLabel(option?.labelIdentifier, value),
         onDelete: () => {
           deleteLabel(option);
+          setSelectedLabels((previousSelectedLabels) =>
+            previousSelectedLabels.filter(
+              (selectedLabel) =>
+                selectedLabel.labelIdentifier !== option?.labelIdentifier,
+            ),
+          );
+        },
+        onClick: () => {
+          setSelectedLabels((previousLabels) => {
+            if (
+              previousLabels.some(
+                (label) => label.labelIdentifier === option.labelIdentifier,
+              )
+            ) {
+              return previousLabels;
+            }
+            saveAddLabel(option);
+            return [...previousLabels, option];
+          });
         },
       }),
-    [deleteLabel, saveEditLabel],
+    [deleteLabel, saveEditLabel, saveAddLabel],
   );
 
   const renderTagsCallback = useCallback(
@@ -208,7 +233,6 @@ const LabelsSection = ({ selectedTask, onTaskUpdate }) => {
     },
     [saveAddLabel],
   );
-
   return (
     <FormProvider {...formMethods}>
       <Autocomplete
@@ -217,10 +241,10 @@ const LabelsSection = ({ selectedTask, onTaskUpdate }) => {
         label="Labels"
         placeholder="Are there labels you'd like to add?"
         value={selectedLabels}
-        disableCloseOnSelect={!!currentEditableOption}
+        // disableCloseOnSelect={!!currentEditableOption}
         getInputReference={getInputReference}
         getOptionLabel={(option) => option?.labelName}
-        isDisabled={!!currentEditableOption}
+        // isDisabled={!!currentEditableOption}
         renderOption={renderOptionCallback}
         renderTags={renderTagsCallback}
         onInputChange={setInputState}
