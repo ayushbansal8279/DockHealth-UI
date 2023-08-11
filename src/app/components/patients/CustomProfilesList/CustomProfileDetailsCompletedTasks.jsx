@@ -1,10 +1,9 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { onSortChanged } from 'helpers/ga-event-helper';
-import { completedTasksIsFetchingMoreSelector } from 'selectors/list-details-selectors';
+import { completedTasksIsFetchingMoreSelector, completedTasksSelector } from "selectors/list-details-selectors";
 import {
   completedTasksIsFetchingSelector,
-  completedTasksSelector,
   taskCountersSelector,
   sortSelector,
 } from 'selectors/person-details-selectors';
@@ -20,8 +19,10 @@ import StandardTaskItem from 'components/task/StandardTaskItem/StandardTaskItem'
 import { useTaskListColumnsConfig } from 'context-api/columns-config-context';
 import { TaskOrigin } from 'helpers/task-helpers';
 import { TaskGroupsContainer } from 'views/person-details/styled';
+import { findTasksByProfileGroupedByTaskList } from "actions/task-actions";
 
 const CustomProfileDetailsCompletedTasks = ({
+  profileIdentifier,
   storeAsCurrentTask,
   toggleCompleteTask,
   searchValue,
@@ -34,14 +35,16 @@ const CustomProfileDetailsCompletedTasks = ({
 }) => {
   const dispatch = useDispatch();
   const isFetchingTasks = useSelector(completedTasksIsFetchingSelector);
-  const tasks = useSelector(completedTasksSelector);
+  const tasks = useSelector((state) => state.tasks);
   const isFetchingMoreTasks = useSelector(completedTasksIsFetchingMoreSelector);
   const taskCounters = useSelector(taskCountersSelector);
   const sort = useSelector(sortSelector);
   const areFiltersApplied = useSelector(hasFiltersAppliedSelector);
   const { setViewSpecificConfig } = useTaskListColumnsConfig();
 
-  console.log(tasks);
+  useEffect(() => {
+    dispatch(findTasksByProfileGroupedByTaskList(profileIdentifier));
+  }, [dispatch, profileIdentifier]);
 
   useEffect(() => {
     setViewSpecificConfig(taskItemConfig);

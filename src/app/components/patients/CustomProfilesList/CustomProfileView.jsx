@@ -14,7 +14,7 @@ import {
   TASK_ITEM_BASE_COLUMN_CONFIG,
   TaskItemColumn,
 } from 'helpers/task-helpers';
-import PatientNotes from 'views/patient-details/PatientNotes/PatientNotes';
+import CustomProfileNotes from 'components/patients/CustomProfilesList/CustomProfileNotes/CustomProfileNotes';
 import CustomProfileDetailsCompletedTasks from './CustomProfileDetailsCompletedTasks';
 import CustomProfileDetailsOpenedTasks from './CustomProfileDetailsOpenedTasks';
 
@@ -128,12 +128,10 @@ const CustomProfileView = () => {
           onClose={handleDrawerClose}
         />
         <CustomProfileDetailsCompletedTasks
+          profileIdentifier={profileIdentifier}
           taskItemConfig={PERSON_VIEW_COLUMNS_CONFIG}
         />
-        <CustomProfileDetailsOpenedTasks
-          taskItemConfig={PERSON_VIEW_COLUMNS_CONFIG}
-        />
-        <PatientNotes />
+        <CustomProfileNotes profileIdentifier={profileIdentifier} />
       </ViewLayout>
     </ColumnsConfigProvider>
   );
