@@ -3,8 +3,11 @@ import FullCalendar from '@fullcalendar/react';
 import dayGridPlugin from '@fullcalendar/daygrid';
 import timeGridPlugin from '@fullcalendar/timegrid';
 import { useSelector, useDispatch } from 'react-redux';
-import { extractTasksAndSubtasks } from 'helpers/tasklist-helpers';
-import { calendarTasksSelector } from 'selectors/calendar-tasks-selectors';
+// import { extractTasksAndSubtasks } from 'helpers/tasklist-helpers';
+import {
+  calendarTasksSelector,
+  calendarMultipleTaskDetailsSelector,
+} from 'selectors/calendar-tasks-selectors';
 import * as CalendarTasksActions from 'actions/calendar-tasks-actions';
 import { openDrawer } from 'actions/task-drawer-actions';
 import * as TaskActions from 'actions/task-actions';
@@ -36,9 +39,14 @@ const Calendar = ({ taskListIdentifier }) => {
   const [isAddingTaskEnabled, setIsAddingTaskEnabled] = useState(true);
   const addTaskInputReference = useRef();
   const dispatch = useDispatch();
-  const tasks = useSelector(calendarTasksSelector);
-  const { parentTasks, subtasks } = extractTasksAndSubtasks(tasks);
-  const allTasks = [...parentTasks, ...subtasks];
+  const taskIdentifiers = useSelector(calendarTasksSelector);
+  const allTasks = useSelector((state) => {
+    return taskIdentifiers
+      ? calendarMultipleTaskDetailsSelector(state, taskIdentifiers)
+      : [];
+  });
+  // const { parentTasks, subtasks } = extractTasksAndSubtasks(tasks);
+  // const allTasks = [...parentTasks, ...subtasks];
 
   const transformedTasks = useMemo(
     () => allTasks.map(transformTaskToEvent),
@@ -73,7 +81,7 @@ const Calendar = ({ taskListIdentifier }) => {
           id: temporaryTaskId,
           start: selectInfo.startStr,
         });
-        addTaskInputReference.current.focus();
+        addTaskInputReference.current?.focus();
       }
     },
     [isAddingTaskEnabled],
@@ -84,7 +92,7 @@ const Calendar = ({ taskListIdentifier }) => {
       event.preventDefault();
       event.stopPropagation();
       if (isAddingTaskEnabled) {
-        addTaskInputReference.current.focus();
+        addTaskInputReference.current?.focus();
       }
     },
     [isAddingTaskEnabled],
@@ -169,7 +177,7 @@ const Calendar = ({ taskListIdentifier }) => {
       );
     }
 
-    const task = tasks?.find(
+    const task = allTasks?.find(
       ({ identifier }) => identifier === eventInfo?.event?.id,
     );
 
