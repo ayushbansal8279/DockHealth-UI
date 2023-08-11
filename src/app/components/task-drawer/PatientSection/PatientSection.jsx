@@ -68,7 +68,7 @@ const PatientSection = ({
       ),
       displayLabel: 'Name',
       patient: { name: 'Name', dob: 'Dob', mrn: 'Mrn' },
-      disabled,
+      readOnly: true,
     },
     ...formattedPatients,
   ];
