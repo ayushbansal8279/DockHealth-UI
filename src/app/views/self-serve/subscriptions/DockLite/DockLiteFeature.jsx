@@ -4,6 +4,7 @@ import {
   SubscriptionPlan,
 } from 'helpers/subscription-helper';
 import React from 'react';
+import palette from 'styles/palette';
 import {
   Container,
   MostPopularText,
@@ -20,10 +21,9 @@ import {
   LeftContainer,
   Title,
 } from './styled';
-
 import SubscriptionPlanFeature from '../SubscriptionPlanFeature/SubscriptionPlanFeature';
 
-const DockLiteFeature = props => {
+const DockLiteFeature = (props) => {
   const { plan, billingFrequency } = props;
   const {
     key,
@@ -57,7 +57,7 @@ const DockLiteFeature = props => {
           </Description>
           <Box m={4} />
           <ContactUsAnchor
-            color="#0e244a"
+            color={palette.newDarkBlue}
             onClick={() => {
               window.Intercom('show');
             }}
@@ -99,10 +99,10 @@ const DockLiteFeature = props => {
           <Divider />
           <FeatureText>{featuresDescription}</FeatureText>
           <Box m={0.5} />
-          {features.map(feature => (
+          {features.map((feature) => (
             <SubscriptionPlanFeature feature={feature} />
           ))}
-          {comingSoonFeatures?.map(feature => (
+          {comingSoonFeatures?.map((feature) => (
             <SubscriptionPlanFeature comingSoon feature={feature} />
           ))}
         </Container>

@@ -4,6 +4,7 @@ import {
   SubscriptionPlan,
 } from 'helpers/subscription-helper';
 import React from 'react';
+import palette from 'styles/palette';
 import {
   Container,
   MostPopularText,
@@ -93,18 +94,18 @@ const SubscriptionPlanTail = (props) => {
         <SubscribeButton
           type="button"
           active={active}
-          color="#0e244a"
+          color={palette.newDarkBlue}
           disabled={active}
           onClick={() => onSelect(subscriptionPlan)}
         >
+          {!active && selected && <CheckIcon />}
           <Box component="span" position="relative">
-            {!active && selected && <CheckIcon />}
             {active ? 'Active' : subscribeLabel}
           </Box>
         </SubscribeButton>
       ) : (
         <ContactUsAnchor
-          color="#0e244a"
+          color={palette.newDarkBlue}
           onClick={() => {
             window.Intercom('show');
           }}

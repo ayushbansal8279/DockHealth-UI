@@ -145,3 +145,15 @@ export const StyledGrid = styled(Grid)`
     max-width: 1200px;
   }
 `;
+
+export const BuyPlanButton = styled.button`
+  width: 200px;
+  padding: 14px;
+  border-radius: 4px;
+  background-color: ${({ color }) => color};
+  border: 2px solid ${({ color }) => color};
+  color: white;
+  font-size: ${fontSizes.regular};
+  font-weight: ${fontWeights.bold};
+  text-transform: uppercase;
+`;
