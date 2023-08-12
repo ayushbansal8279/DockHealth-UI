@@ -9,7 +9,7 @@ export const Container = styled.div`
   padding-top: 10px;
   padding-bottom: 1rem;
   border-radius: 0.25rem;
-  border: 1.5px solid #0e244a;
+  border: 1.5px solid ${palette.newDarkBlue};
   box-shadow: 0 0.5rem 1.5rem -0.5rem rgba(0, 0, 0, 0.1);
   font-family: 'Roboto', sans-serif;
   margin-top: 10px;
@@ -120,7 +120,7 @@ export const ContactUsAnchor = styled.a`
 
   &:hover {
     color: ${palette.white};
-    background-color: #0e244a;
+    background-color: ${palette.newDarkBlue};
   }
 `;
 

@@ -20,10 +20,7 @@ import {
   createWorkflowFolderPath,
   WORKFLOW_LIBRARY_PATH,
 } from 'routing/helpers/paths';
-import {
-  changeTaskIntentType,
-  updateTasksLink,
-} from 'actions/task-actions';
+import { changeTaskIntentType, updateTasksLink } from 'actions/task-actions';
 import { openModal } from 'modal/actions';
 import {
   addDecisionBranch,
@@ -205,7 +202,7 @@ const SmartFlowBuilderView = () => {
         })),
       );
     }
-  }, [layout, tasks, temporaryElements]);
+  }, [draggedEdgeSourceId, identifier, layout, tasks, temporaryElements]);
 
   const centerViewToElement = (elementPosition) => {
     const { x, y } = elementPosition;
@@ -592,7 +589,7 @@ const SmartFlowBuilderView = () => {
                 // connectionLineComponent={ConnectionLineComponent}
                 elements={elements}
                 onConnect={onConnect}
-                connectionLineType="step"
+                connectionLineType="default"
                 nodeTypes={nodeTypes}
                 edgeTypes={linkTypes}
                 minZoom={0.1}

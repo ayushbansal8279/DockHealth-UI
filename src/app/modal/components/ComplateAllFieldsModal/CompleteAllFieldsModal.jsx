@@ -31,10 +31,10 @@ const CompleteAllFieldsModal = ({ closeModal, incompleteFields }) => {
             incomplete.
           </Typography>
           <ul>
-            {incompleteFields?.map(field => {
+            {incompleteFields?.map((field) => {
               return (
                 <li>
-                  <Typography variant="textPrimary">- {field?.name}</Typography>
+                  <Typography variant="textPrimary">{field?.name}</Typography>
                 </li>
               );
             })}

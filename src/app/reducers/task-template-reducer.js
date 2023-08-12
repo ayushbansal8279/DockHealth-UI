@@ -10,6 +10,7 @@ import {
   NodeType,
 } from 'helpers/smart-flow-builder-helpers';
 import TaskBaseReducer from './task-base-reducer';
+import { updateTasksStateCallback } from './reducer-helper';
 
 const initialWorkflowLibraryState = {
   folderIdentifier: null,
@@ -36,8 +37,26 @@ const templateDetailsInitialState = {
   isOpen: false,
 };
 
-function updateTasksStateCallback(state, newTask) {
-  if (typeof newTask === 'function') return state;
+function updateTaskTemplateDetailsStateCallback(state, newTask) {
+  // if (typeof newTask === 'function') return state;
+  let taskItem = newTask;
+  if (typeof newTask === 'function') {
+    const tasksMap = {};
+    // add tasks and subtasks in the bundle
+    for (const templateId of Object.keys(state.taskTemplateDetails)) {
+      for (const task of state.taskTemplateDetails[templateId]?.tasks) {
+        tasksMap[task.identifier] = {
+          ...tasksMap[task.identifier],
+          ...task,
+        };
+      }
+    }
+    taskItem = newTask(tasksMap);
+  }
+
+  if (!taskItem) {
+    return state;
+  }
 
   // eslint-disable-next-line sonarjs/prefer-immediate-return
   const newState = {
@@ -48,7 +67,7 @@ function updateTasksStateCallback(state, newTask) {
         {
           ...value,
           tasks: value.tasks.map((t) =>
-            t.identifier === newTask.identifier ? { ...t, ...newTask } : t,
+            t.identifier === taskItem.identifier ? { ...t, ...taskItem } : t,
           ),
         },
       ]),
@@ -630,10 +649,51 @@ const TaskTemplateReducer = (state = initialState, action) => {
       return state;
     }
 
-    default: {
-      return state.taskTemplates && state.taskTemplates !== ''
-        ? TaskBaseReducer(state, action, updateTasksStateCallback)
+    case ActionTypes.DELETE_TASK: {
+      const { taskIdentifier } = action;
+
+      if (state.taskTemplates && state.taskTemplates !== '') {
+        return TaskBaseReducer(state, action, updateTasksStateCallback);
+      }
+
+      const updatedStateAfterRemovingTaskItem = {
+        ...state,
+        taskTemplateDetails: Object.fromEntries(
+          Object.entries(state.taskTemplateDetails).map(([key, value]) => [
+            key,
+            {
+              ...value,
+              tasks: value.tasks.filter((t) => t.identifier !== taskIdentifier),
+            },
+          ]),
+        ),
+      };
+
+      return state.taskTemplateDetails &&
+        state.taskTemplateDetails !== undefined
+        ? TaskBaseReducer(
+            updatedStateAfterRemovingTaskItem,
+            action,
+            updateTaskTemplateDetailsStateCallback,
+          )
         : state;
+    }
+
+    default: {
+      if (state.taskTemplates && state.taskTemplates !== '') {
+        return TaskBaseReducer(state, action, updateTasksStateCallback);
+      }
+      if (
+        state.taskTemplateDetails &&
+        state.taskTemplateDetails !== undefined
+      ) {
+        return TaskBaseReducer(
+          state,
+          action,
+          updateTaskTemplateDetailsStateCallback,
+        );
+      }
+      return state;
     }
   }
 };

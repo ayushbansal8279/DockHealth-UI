@@ -12,7 +12,7 @@ const MemberGroup = ({ members, max, size }) => {
   const currentUser = useSelector(userProfileSelector);
   const sortedUsersOrAndGroups = useMemo(
     () =>
-      members.slice().sort((a, b) => {
+      members?.slice().sort((a, b) => {
         if (a?.identifier === currentUser?.identifier) return -1;
 
         if (b?.identifier === currentUser?.identifier) return 1;

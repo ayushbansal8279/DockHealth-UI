@@ -15,6 +15,7 @@ import * as TaskTemplateActions from 'actions/task-template-actions';
 import {
   taskTemplatesSelector,
   isFetchingTaskTemplatesSelector,
+  selectedTasksSelector,
 } from 'selectors/task-template-selectors';
 import {
   userProfileSelector,
@@ -51,6 +52,7 @@ import debounce from 'lodash.debounce';
 import usePrevious from 'hooks/use-previous';
 import UpgradePlanPopup from 'components/common/UpgradePlanPopup/UpgradePlanPopup';
 import SmartFlowsIcon from 'img/premium/smartflows.svg';
+import BulkEditSection from 'components/tasklist/BulkEditSection/BulkEditSection';
 import {
   TaskTemplateViewContainer,
   SearchWrapper,
@@ -61,7 +63,7 @@ import {
 import TaskTemplate from './TaskTemplate/TaskTemplate';
 import TaskTemplatesLoader from './TaskTemplatesLoader/TaskTemplatesLoader';
 import TaskTemplateBanner from './TaskTemplateBanner/TaskTemplateBanner';
-import TaskTemplateBulkEditContainer from './TaskTemplateBulkEditContainer/TaskTemplateBulkEditContainer';
+// import TaskTemplateBulkEditContainer from './TaskTemplateBulkEditContainer/TaskTemplateBulkEditContainer';
 import TaskTemplateHeader from './TaskTemplateHeader/TaskTemplateHeader';
 import TaskTemplateFolder from './TaskTemplateFolder/TaskTemplateFolder';
 import TemplateBreadcrumbs from './TaskTemplateBreadcrumb/TaskTemplateBreadcrumbs';
@@ -212,6 +214,8 @@ const TaskTemplateView = () => {
     }
   };
 
+  const bulkEditTasks = useSelector(selectedTasksSelector);
+
   return (
     <ColumnsConfigProvider
       initialColumns={{
@@ -226,8 +230,9 @@ const TaskTemplateView = () => {
       hideCustomColumns
     >
       <ViewLayout header={<BasicLayoutHeader title="Workflow Library" />}>
-        <TaskTemplateBulkEditContainer
+        <BulkEditSection
           optionsConfig={BULK_EDIT_OPTIONS_CONFIG}
+          allTasks={bulkEditTasks}
           refreshTasks={() =>
             dispatch(TaskTemplateActions.reloadOpenedTemplateTasks())
           }
@@ -333,7 +338,7 @@ const TaskTemplateView = () => {
             )}
             <TaskDrawer />
           </TaskTemplateViewContainer>
-        </TaskTemplateBulkEditContainer>
+        </BulkEditSection>
         <UpgradePlanPopup
           header={
             <UpgradePlanPopupHeader>

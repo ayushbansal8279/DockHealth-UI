@@ -1,14 +1,17 @@
 import * as ActionTypes from 'actions/action-types';
-import { mapWithRemove } from 'helpers/utility-functions';
+import { TaskItemType } from 'helpers/task-helpers';
+import { updateTasksStateCallback } from './reducer-helper';
 import TaskBaseReducer from './task-base-reducer';
 
 const initialState = {
-  tasks: null,
+  taskIdentifiers: null,
+  tasksMap: {},
   isFetchingTasks: false,
   startDate: null,
   endDate: null,
 };
 
+// eslint-disable-next-line sonarjs/cognitive-complexity
 const CalendarTasksReducer = (state = initialState, action) => {
   switch (action.type) {
     case ActionTypes.GET_DASHBOARD_CALENDAR_TASKS:
@@ -16,16 +19,33 @@ const CalendarTasksReducer = (state = initialState, action) => {
       return {
         ...state,
         isFetchingTasks: true,
-        tasks: null,
+        tasksMap: {},
       };
     }
 
     case ActionTypes.GET_DASHBOARD_CALENDAR_TASKS_SUCCESS:
     case ActionTypes.GET_LIST_CALENDAR_TASKS_SUCCESS: {
+      const { tasks } = action;
+      const newMap = {};
+      for (const task of tasks) {
+        if (task.itemType === TaskItemType.TASK) {
+          newMap[task.identifier] = task;
+        } else {
+          newMap[task.identifier] = task;
+          for (const grpTask of task.tasks) {
+            newMap[grpTask.identifier] = grpTask;
+          }
+        }
+      }
+
       return {
         ...state,
         isFetchingTasks: false,
-        tasks: action.tasks,
+        taskIdentifiers: tasks.map((task) => task.identifier),
+        tasksMap: {
+          ...state.tasksMap,
+          ...newMap,
+        },
       };
     }
 
@@ -50,9 +70,18 @@ const CalendarTasksReducer = (state = initialState, action) => {
     case ActionTypes.ADD_TASK_SUCCESS: {
       const { task } = action;
 
+      const newMap = {};
+      newMap[task.identifier ?? task.taskIdentifier] = task;
+
       return {
         ...state,
-        tasks: state.tasks ? [...state.tasks, task] : null,
+        taskIdentifiers: state.taskIdentifiers
+          ? [...state.taskIdentifiers, task.identifier]
+          : null,
+        tasksMap: {
+          ...state.tasksMap,
+          ...newMap,
+        },
       };
     }
 
@@ -62,16 +91,7 @@ const CalendarTasksReducer = (state = initialState, action) => {
 
     default: {
       return state.startDate && state.startDate !== ''
-        ? TaskBaseReducer(
-            state,
-            action,
-            (currentState, updateTaskCallback) => ({
-              ...currentState,
-              tasks: currentState.tasks
-                ? mapWithRemove(updateTaskCallback, currentState.tasks)
-                : null,
-            }),
-          )
+        ? TaskBaseReducer(state, action, updateTasksStateCallback)
         : state;
     }
   }

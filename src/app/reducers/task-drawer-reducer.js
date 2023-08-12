@@ -170,11 +170,35 @@ const TaskReducer = (state = initialState, action) => {
       if (state.selectedTask) {
         return TaskBaseReducer(state, action, (reducerState, newTask) => {
           if (state.selectedTask.taskIdentifier === newTask.taskIdentifier) {
+            const updatedMetaData = state.selectedTask?.taskMetaData?.map(
+              (tmd) => {
+                const matchedTaskMetaData = newTask?.taskMetaData?.find(
+                  (newtmd) =>
+                    newtmd &&
+                    newtmd.customFieldIdentifier === tmd.customFieldIdentifier,
+                );
+                return {
+                  ...tmd,
+                  ...matchedTaskMetaData,
+                };
+              },
+            );
+            const newMetaData = newTask?.taskMetaData?.filter(
+              (newtmd) =>
+                state.selectedTask?.taskMetaData?.find(
+                  (tmd) =>
+                    tmd &&
+                    tmd.customFieldIdentifier !== newtmd.customFieldIdentifier,
+                ) === undefined,
+            );
+            const mergedTaskMetaData = updatedMetaData.concat(newMetaData);
+
             return {
               ...reducerState,
               selectedTask: {
                 ...state.selectedTask,
                 ...newTask,
+                taskMetaData: mergedTaskMetaData,
               },
             };
           }

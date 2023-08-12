@@ -35,7 +35,7 @@ import {
   userProfileSelector,
   userHasDockLiteFeatureSelector,
 } from 'selectors/user-selectors';
-import Button from 'components/common/Button/Button';
+// import Button from 'components/common/Button/Button';
 import ViewLayout from 'components/template/ViewLayout/ViewLayout';
 import BasicLayoutHeader from 'components/template/BasicLayoutHeader/BasicLayoutHeader';
 import {
@@ -43,6 +43,7 @@ import {
   isSavingNewPlanSelector,
 } from 'selectors/organization-selectors';
 import { getUserByEmail } from 'api/user-auth-api';
+import palette from 'styles/palette';
 import ProfessionalServicesAddOn from './ProfessionalServicesAddOn/ProfessionalServicesAddOn';
 import CurrentPlan from './CurrentPlan/CurrentPlan';
 import SubscriptionPlanTail from './SubscriptionPlanTail/SubscriptionPlanTail';
@@ -65,6 +66,7 @@ import {
   BillingTableCell,
   BillingTableSummaryRow,
   StyledGrid,
+  BuyPlanButton,
 } from './styled';
 import DockLiteFeature from './DockLite/DockLiteFeature';
 
@@ -231,7 +233,7 @@ const SubscriptionsView = () => {
           <Box p={1} />
           <SubscriptionPlansContainer>
             <Box display="flex" justifyContent="space-between">
-              {availableSubscriptionPlans.map(plan => (
+              {availableSubscriptionPlans.map((plan) => (
                 <SubscriptionPlanTail
                   key={plan.key}
                   active={subscriptionPlan === plan.subscriptionPlan}
@@ -342,15 +344,16 @@ const SubscriptionsView = () => {
             <Box p={1} />
             <Grid container justifyContent="flex-end">
               {isCurrentPlanChanged && (
-                <Button
-                  width="200px"
+                <BuyPlanButton
+                  type="button"
+                  color={palette.newDarkBlue}
                   disabled={isSavingNewPlan}
                   onClick={handleSubscriptionPlanBuy}
                 >
                   {isPlanTrial(subscriptionDetails)
                     ? 'Buy this plan'
                     : 'Update plan'}
-                </Button>
+                </BuyPlanButton>
               )}
             </Grid>
             <div ref={scrollReference} />
@@ -370,7 +373,7 @@ const SubscriptionsView = () => {
               </AccordionSummary>
               <AccordionDetails>
                 <Box display="block" justifyContent="space-between">
-                  {ProfessionalServices.map(service => (
+                  {ProfessionalServices.map((service) => (
                     <ProfessionalServicesAddOn service={service} />
                   ))}
                 </Box>
