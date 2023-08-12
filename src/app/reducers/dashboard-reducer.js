@@ -297,11 +297,11 @@ const DashboardTasksReducer = (state = initialState, action) => {
     case ActionTypes.DELETE_TASK: {
       const { taskIdentifier } = action;
 
-      return {
+      const updatedStateAfterRemovingTaskItem = {
         ...state,
         tasksList: state.tasksList.map((g) => {
           const newTasks = g.tasks?.filter(
-            ({ identifier }) => identifier !== taskIdentifier,
+            (taskId) => taskId !== taskIdentifier,
           );
           return {
             ...g,
@@ -313,16 +313,26 @@ const DashboardTasksReducer = (state = initialState, action) => {
           };
         }),
       };
+
+      return state.tabName && state.tabName !== ''
+        ? TaskBaseReducer(
+            updatedStateAfterRemovingTaskItem,
+            action,
+            updateTasksStateCallback,
+          )
+        : state;
     }
 
     case ActionTypes.ADD_TASK_SUCCESS: {
       const { task } = action;
       const groupType = getGroupByDueDate(task.dueDate, state.tabName);
-      return {
+      const updatedState = {
         ...state,
         lastCreatedTaskIdentifier: action?.task?.identifier,
         tasksList: findAndAddTask({ lists: state.tasksList, groupType, task }),
       };
+
+      return updateTasksStateCallback(updatedState, task);
     }
 
     default: {
