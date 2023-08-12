@@ -74,9 +74,9 @@ const Select = React.forwardRef(
             },
             getContentAnchorEl: null,
             style: { zIndex: zIndex.optionsMenu },
-            PaperProps: {
-              style: { minWidth: 'auto' },
-            },
+            // PaperProps: {
+            //   style: { minWidth: 'auto' },
+            // },
           }}
           ref={reference}
           placeholder={placeholder}
