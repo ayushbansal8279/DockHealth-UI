@@ -28,11 +28,8 @@ import { DescriptionTextContainer, DescriptionError } from './styled';
 const TaskDescription = ({ selectedTask, readOnly, disableMentions }) => {
   const {
     description,
-    tokenizedDescription,
-    taskMentions,
     status,
     // parentTaskIdentifier,
-    // taskList,
   } = selectedTask || {};
   // const { taskListIdentifier } = taskList || {};
 
@@ -170,6 +167,8 @@ const TaskDescription = ({ selectedTask, readOnly, disableMentions }) => {
             disableToolbar
             showToolbarInline
             multiline={false}
+            taskListIdentifier={selectedTask?.taskList?.taskListIdentifier}
+            mentions={selectedTask?.taskMentions}
           />
         </CustomTextEditor>
       </DescriptionTextContainer>

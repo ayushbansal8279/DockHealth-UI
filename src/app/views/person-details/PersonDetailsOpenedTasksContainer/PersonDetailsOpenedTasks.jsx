@@ -1,12 +1,12 @@
-import React, { useCallback, useMemo, useRef, useEffect } from 'react';
+import React, { useCallback, useRef, useEffect } from 'react';
 import isEmpty from 'ramda/src/isEmpty';
-import pluck from 'ramda/src/pluck';
 import { useDispatch, useSelector } from 'react-redux';
 import {
   userIdentifierSelector,
   tasksIsFetchingSelector,
   tasksSelector,
   sortSelector,
+  selectedTasksSelector,
 } from 'selectors/person-details-selectors';
 import { userProfileSelector } from 'selectors/user-selectors';
 import { hasFiltersAppliedSelector } from 'selectors/mega-filter-selectors';
@@ -31,8 +31,7 @@ import BulkEditSection from 'components/tasklist/BulkEditSection/BulkEditSection
 import TaskListGroupCollapse from 'views/patient-details/TaskListGroupCollapse/TaskListGroupCollapse';
 import TasksHeader from 'components/tasklist/TasksHeader/TasksHeader';
 import QuickAddTaskInput from 'components/tasklist/QuickAddTaskInput/QuickAddTaskInput';
-import { checkIfAllTasksSelected } from 'helpers/bulk-edit-helpers';
-import { extractTasksAndSubtasks } from 'helpers/tasklist-helpers';
+import { isTaskItemsSelectedSelector } from 'selectors/task-items-selectors';
 import { TaskOrigin } from 'helpers/task-helpers';
 import { changeTasksSelectedState } from 'actions/task-actions';
 import { useTaskListColumnsConfig } from 'context-api/columns-config-context';
@@ -120,23 +119,22 @@ const PersonDetailsOpenedTasks = ({
     dispatch(sortUserTasks(key, order));
   };
 
-  const isGroupSelected = useMemo(
-    () => checkIfAllTasksSelected(tasks),
-    [tasks],
-  );
+  const isGroupSelected = useSelector(isTaskItemsSelectedSelector(tasks));
 
   const handleGroupSelect = useCallback(() => {
-    const { parentTasks, subtasks } = extractTasksAndSubtasks(tasks);
-    const allTasks = [...parentTasks, ...subtasks];
-    dispatch(
-      changeTasksSelectedState(!isGroupSelected, pluck('identifier', allTasks)),
-    );
+    const taskIdentifiers = tasks;
+    dispatch(changeTasksSelectedState(!isGroupSelected, taskIdentifiers));
   }, [dispatch, isGroupSelected, tasks]);
+
+  const bulkEditTasks = useSelector(selectedTasksSelector);
+
+  const bulkEditIsDisabled = false;
 
   return (
     <BulkEditSection
-      allTasks={tasks}
+      allTasks={bulkEditTasks}
       refreshTasks={() => dispatch(getUserTasks())}
+      disabled={bulkEditIsDisabled}
       searchValue={searchValue}
     >
       {isFetchingTasks && !tasks ? (

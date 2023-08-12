@@ -221,6 +221,19 @@ export const deletePatientNote = (patientNoteIdentifier) =>
 
 export const archivePatient = (patientNoteIdentifier) =>
   axios
+    .patch(`/patient/archivePatient/${patientNoteIdentifier}`)
+    .then((response) => response.data)
+    .catch((error) => {
+      showAlert({
+        status: 'error',
+        title: 'Error',
+        text: 'Error archiving. Please try again.',
+      });
+      throw new Error(error?.response?.data?.errorMessage);
+    });
+
+export const deletePatientArchive = (patientNoteIdentifier) =>
+  axios
     .delete(`/patient/archivePatient/${patientNoteIdentifier}`)
     .then((response) => response.data)
     .catch((error) => {
@@ -356,13 +369,13 @@ export function unarchivePatient(identifier) {
     .then(({ data }) => data);
 }
 
-export const getAllPatientAttachments = patientIdentifiers =>
+export const getAllPatientAttachments = (patientIdentifiers) =>
   axios
     .post(`/patient/attachment/getAllPatientAttachments`, {
       patientIdentifiers,
     })
-    .then(response => response.data)
-    .catch(error => {
+    .then((response) => response.data)
+    .catch((error) => {
       showAlert({
         status: 'error',
         title: 'Error',

@@ -1,48 +1,47 @@
-import React, { useCallback, useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useState, useMemo } from 'react';
 import ReactFlow, { applyEdgeChanges, applyNodeChanges } from 'reactflow';
 import { NodeType } from 'helpers/smart-flow-builder-helpers';
 
-const ReactFlowAdapter = ({
-  elements,
-  onSelectionChange,
-  onLoad,
-  extraNodes,
-  ...props
-}) => {
-  const [nodes, setNodes] = useState([]);
-  const [edges, setEdges] = useState([]);
-  const onNodesChange = useCallback(
-    (changes) => setNodes((nds) => applyNodeChanges(changes, nds)),
-    [setNodes],
-  );
-  const onEdgesChange = useCallback(
-    (changes) => setEdges((eds) => applyEdgeChanges(changes, eds)),
-    [setEdges],
+const ReactFlowAdapter = ({ elements, onElementsChange, onLoad, ...props }) => {
+  const isNode = useCallback(
+    (element) => Object.values(NodeType).includes(element.type),
+    [],
   );
 
-  const handleSelectionChange = (payload) => {
-    onSelectionChange(payload.nodes.length + payload.edges.length);
-  };
-
-  useEffect(() => {
+  const [nodes, edges] = useMemo(() => {
     const nodesArray = [];
     const edgesArray = [];
     for (const element of elements) {
-      if (Object.values(NodeType).includes(element.type)) {
+      if (isNode(element)) {
         nodesArray.push(element);
       } else {
         edgesArray.push(element);
       }
     }
-    setNodes(nodesArray);
-    setEdges(edgesArray);
-  }, [elements, extraNodes]);
+    return [nodesArray, edgesArray];
+  }, [elements, isNode]);
+
+  const onNodesChange = useCallback(
+    (changes) =>
+      onElementsChange((previousElements) => [
+        ...previousElements.filter((element) => !isNode(element)),
+        ...applyNodeChanges(changes, nodes),
+      ]),
+    [onElementsChange, nodes, isNode],
+  );
+  const onEdgesChange = useCallback(
+    (changes) =>
+      onElementsChange((previousElements) => [
+        ...previousElements.filter((element) => isNode(element)),
+        ...applyEdgeChanges(changes, edges),
+      ]),
+    [onElementsChange, edges, isNode],
+  );
 
   return (
     <ReactFlow
       nodes={nodes}
       edges={edges}
-      onSelectionChange={handleSelectionChange}
       onInit={onLoad}
       {...props}
       onNodesChange={onNodesChange}

@@ -1,11 +1,10 @@
 import React, { useCallback, useEffect, useState, useContext } from 'react';
 import { useFormContext } from 'react-hook-form';
-// import { EditorState } from 'draft-js';
-import {
-  convertFromEditorStateToOutput,
-  convertToEditorState,
-} from 'components/common/TextEditor/helpers';
-import { useMentionsEditorState } from 'components/common/TextEditor/use-mentions-editor-state';
+// import {
+//   convertFromEditorStateToOutput,
+//   convertToEditorState,
+// } from 'components/common/TextEditor/helpers';
+// import { useMentionsEditorState } from 'components/common/TextEditor/use-mentions-editor-state';
 import { useDispatch } from 'react-redux';
 import { partialUpdateTask } from 'actions/task-actions';
 import { updatePartialWorkflow } from 'actions/task-template-actions';
@@ -14,7 +13,6 @@ import { showGlobalAlert } from 'alert/actions';
 import AlertMessages from 'alert/AlertMessages';
 import { formatMetaDataOutput } from 'components/task-drawer/CustomFieldsSection/helpers';
 import CustomTextEditor from 'components/common/CustomTextEditor/CustomTextEditor';
-import { TextField } from '@mui/material';
 import TextInput from '../TextInput/TextInput';
 import { CustomTextEditorContainer } from './styled';
 // import { createMentionEntities } from '../TextEditor/create-mention-entities';
@@ -32,7 +30,7 @@ const CustomFieldTextEditor = React.forwardRef(
       task,
       fieldsGroupKey,
       inputRef,
-      characterLimit,
+      // characterLimit,
     },
     reference,
   ) => {

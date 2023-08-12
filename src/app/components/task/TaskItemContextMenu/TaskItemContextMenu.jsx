@@ -357,7 +357,7 @@ const TaskItemContextMenu = ({
         {shareTaskAvailable && !isTemplateTask && (
           <div>
             <MenuItemButton type="button" onClick={handleShareTask}>
-              Share Task
+              Share task
             </MenuItemButton>
           </div>
         )}

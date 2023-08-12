@@ -1,20 +1,22 @@
 import React, { useMemo, useState } from 'react';
-import { Grid } from '@mui/material';
+import { Box } from '@mui/material';
+import TasksStatusSwitchIcon from 'img/tasks-status-switch-icon.svg';
+import ToolbarSelect from 'components/tasklist/ToolbarSelect/ToolbarSelect';
+import SearchInput from 'components/common/SearchInput/SearchInput';
 import { useHistory } from 'react-router-dom';
 import moment from 'moment';
+import { PatientsListImg } from 'components/patients/PatientsToolbar/styled';
 import filter from 'ramda/src/filter';
 import includes from 'ramda/src/includes';
 import isEmpty from 'ramda/src/isEmpty';
 import reject from 'ramda/src/reject';
 import ListSkeletonLoader from 'components/common/ListSkeletonLoader/ListSkeletonLoader';
 import Spacing from 'components/common/Spacing';
-import Search from 'components/task-view/Search/Search';
 import UserAvatar from 'components/user/UserAvatar/UserAvatar';
 import Tooltip from 'components/common/Tooltip/Tooltip';
 import { UserSubscriptionStatus } from 'helpers/subscription-helper';
 import { UserOrganizationRole, UserStatus } from 'helpers/user-helper';
 import InviteButton from '../InviteButton/InviteButton';
-import SubscriptionStatusSwitcher from '../SubscriptionStatusSwitcher/SubscriptionStatusSwitcher';
 import UserTypeOptions from '../UserTypeOptions/UserTypeOptions';
 import EmptyOrganizationMemberRow from '../EmptyOrganizationMemberRow/EmptyOrganizationMemberRow';
 import initializeMembersTableHooks from './hooks';
@@ -121,6 +123,18 @@ const UsersTable = ({
   );
 
   const history = useHistory();
+
+  const USER_SUBSCRIPTION_VALUES = {
+    [UserSubscriptionStatus.ALL]: 'ALL',
+    [UserSubscriptionStatus.SUBSCRIBED]: 'SUBSCRIBED',
+    [UserSubscriptionStatus.UNSUBSCRIBED]: 'UNSUBSCRIBED',
+  };
+
+  const SUBSCRIPTION_OPTIONS = [
+    { value: 'ALL', label: 'All' },
+    { value: 'SUBSCRIBED', label: 'Subscribed' },
+    { value: 'UNSUBSCRIBED', label: 'Unsubscribed' },
+  ];
 
   const columns = useMemo(
     // eslint-disable-next-line sonarjs/cognitive-complexity
@@ -373,36 +387,37 @@ const UsersTable = ({
       ) : (
         <>
           {showTableHeader && (
-            <Grid container justifyContent="space-between" alignItems="center">
-              <Grid item sm={12} md={3}>
-                <SubscriptionStatusSwitcher
-                  isSmallScreen={isSmallScreen}
-                  userSubscriptionStatus={userSubscriptionStatus}
-                  setUserSubscriptionStatus={setUserSubscriptionStatus}
-                />
-              </Grid>
-              <Grid
-                item
-                sm={12}
-                md={9}
-                container
-                alignItems="center"
-                justifyContent="flex-end"
-                wrap="nowrap"
-              >
-                <Search
+            <Box p="16px" display="flex" width="100%">
+              <Box display="flex" flex={1} alignItems="center">
+                <Box width="300px">
+                  <SearchInput
+                    value={currentSearch}
+                    onValueChange={setCurrentSearch}
+                  />
+                </Box>
+                <ToolbarSelect
+                  options={SUBSCRIPTION_OPTIONS}
+                  value={USER_SUBSCRIPTION_VALUES[userSubscriptionStatus]}
+                  name="user-list-type"
                   onChange={(event) =>
-                    setCurrentSearch(event?.target?.value ?? '')
+                    setUserSubscriptionStatus(
+                      UserSubscriptionStatus[event?.target?.value],
+                    )
                   }
-                  value={currentSearch}
+                  icon={
+                    <PatientsListImg
+                      src={TasksStatusSwitchIcon}
+                      alt="list type icon"
+                    />
+                  }
                 />
                 <Spacing horizontal={3} />
                 <InviteButton
                   getAllUsers={getAllUsers}
                   fullWidth={isSmallScreen}
                 />
-              </Grid>
-            </Grid>
+              </Box>
+            </Box>
           )}
           <StyledUsersTable isSmallScreen={isSmallScreen}>
             {isEmpty(filteredOrganizationUsers) ? (

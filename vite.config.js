@@ -34,6 +34,10 @@ export default defineConfig({
       location: path.resolve(__dirname, 'src/app/location'),
       'context-api': path.resolve(__dirname, 'src/app/context-api'),
       'ui-toolkit': path.resolve(__dirname, 'src/app/ui-toolkit'),
+      'script/dockhealth-widget-sdk-internal.js': path.resolve(
+        './public',
+        'script/dockhealth-widget-sdk-internal.js',
+      ),
     },
   },
 });

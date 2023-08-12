@@ -635,13 +635,14 @@ function* linkTasks({ source, target, options, outcomeName }) {
 
         yield all([
           put({ type: ActionTypes.LINK_TASKS_SUCCESS, link }),
+          put(TaskActions.refreshTask(sourceTaskIdentifier)),
           put(TaskActions.refreshTask(targetTaskIdentifier)),
           put(TaskTemplateActions.deleteTemporaryElement(linkId)),
         ]);
       }
     }
   } catch (error) {
-    log('errorrr', error);
+    log('error', error);
     yield put(showGlobalErrorAlert());
   }
 }

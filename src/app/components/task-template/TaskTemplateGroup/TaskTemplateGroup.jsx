@@ -139,6 +139,7 @@ const TaskTemplateGroup = ({
         showTasksWithGroup={showTasksWithGroup}
         iconColorActive={iconColorActive}
         highlightedValue={highlightedValue}
+        origin={origin}
       />
       {!isStartedDnD && (
         <TaskTemplateGroupList timeout={150} in={isOpen && !isStartedDnD}>

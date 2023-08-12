@@ -56,6 +56,8 @@ const TaskDetails = ({ readOnly }) => {
           onBlur={handleBlur}
           initOnClick
           showCharCount
+          taskListIdentifier={selectedTask?.taskList?.taskListIdentifier}
+          mentions={selectedTask?.taskMentions}
         />
       </CustomTextEditor>
     </DetailsContainer>

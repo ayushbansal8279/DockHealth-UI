@@ -40,6 +40,8 @@ import { makeFaxNumber, renderAddOrEdit, validateFaxInput } from '../helpers';
 const SendFaxFromTaskModal = () => {
   const dispatch = useDispatch();
   const [message, setMessage] = useState(null);
+  const [defaultValue, setDefaultValue] = useState('');
+
   const [faxError, setFaxError] = useState(false);
   const [contact, setContact] = useState(null);
   const [show, setShow] = useState(false);
@@ -69,30 +71,46 @@ const SendFaxFromTaskModal = () => {
     [attachmentsToSend],
   );
 
-  const handleFaxBlur = (event) => {
-    const faxNumber = event.target.value;
-    if (validateFaxInput(faxNumber)) {
-      if (!contact || contact.value !== faxNumber) {
-        const [first, middle, last] = makeFaxNumber(faxNumber);
-        setContact({ value: `${first}-${middle}-${last}` });
-      }
-      setFaxError(false);
-    } else {
-      setFaxError(true);
+  // const handleFaxBlur = (event) => {
+  //   const faxNumber = event.target.value;
+  //   if (validateFaxInput(faxNumber)) {
+  //     if (!contact || contact.value !== faxNumber) {
+  //       const [first, middle, last] = makeFaxNumber(faxNumber);
+  //       setContact({ value: `${first}-${middle}-${last}` });
+  //     }
+  //     setFaxError(false);
+  //   } else {
+  //     setFaxError(true);
+  //   }
+  // };
+
+  const handleContactsOnChange = useCallback((_event, newValue, reason) => {
+    if (reason === 'clear') {
+      setContact(null);
+      return;
     }
-  };
+    if (typeof newValue === 'string') {
+      // if (validateFaxInput(newValue)) {
+      //    const [first, middle, last] = makeFaxNumber(newValue);
+      //    setContact({ value: `${first}-${middle}-${last}` });
+      setContact({ value: newValue });
+      // } else {
+      //  setFaxError(true);
+      // }
+    } else {
+      setContact(newValue);
+    }
+  });
+
   const isValidToSend = !!(
     validateFaxInput(contact?.value ?? '') &&
     message &&
     message !== ''
   );
 
-  const handleMessageChange = useCallback(
-    (paramters, { value }) => {
-      setMessage(value);
-    },
-    [setMessage],
-  );
+  const handleTextEditorChange = (value) => {
+    setMessage(value);
+  };
 
   return (
     <ModalWrapper width="600px">
@@ -108,28 +126,14 @@ const SendFaxFromTaskModal = () => {
           <ContactsAutoComplete
             type={CommunicationType.FAX}
             placeholder="Type the fax number or name of the contact"
-            onBlur={handleFaxBlur}
-            onChange={(event, newValue, reason) => {
-              if (reason === 'clear') {
-                setContact(null);
-                return;
-              }
-              if (typeof newValue === 'string') {
-                if (validateFaxInput(newValue)) {
-                  const [first, middle, last] = makeFaxNumber(newValue);
-                  setContact({ value: `${first}-${middle}-${last}` });
-                } else {
-                  setFaxError(true);
-                }
-              } else {
-                setContact(newValue);
-              }
-            }}
+            // onBlur={handleFaxBlur}
+            onChange={handleContactsOnChange}
             error={faxError}
             autoFocus
             label="Fax"
             errorMessage="Incorrect fax number"
             disabled={show}
+            setShow={setShow}
             value={contact?.value ?? ''}
             patient={selectedTask?.patient}
           />
@@ -150,11 +154,15 @@ const SendFaxFromTaskModal = () => {
             onChange={(event, newValue, reason) => {
               if (reason === 'clear') {
                 setMessage('');
-                setMessage('');
+                return;
               }
               getTemplateDetails(newValue?.identifier, identifier).then(
                 (data) => {
-                  setMessage((previous) => `${previous} ${data?.details}`);
+                  const updatedValue = message
+                    ? `${message} ${data?.details ?? ''}`
+                    : data?.details ?? '';
+                  setDefaultValue(updatedValue);
+                  setMessage(updatedValue);
                 },
               );
             }}
@@ -164,9 +172,10 @@ const SendFaxFromTaskModal = () => {
             <CustomTextEditor label="Fax Cover Message">
               <RichTextEditor
                 value={message}
+                defaultValue={defaultValue}
+                readOnly={false}
                 placeholder="Fax Message"
-                onChange={setMessage}
-                onBlur={setMessage}
+                onChange={handleTextEditorChange}
                 initOnClick
                 showCharCount
               />

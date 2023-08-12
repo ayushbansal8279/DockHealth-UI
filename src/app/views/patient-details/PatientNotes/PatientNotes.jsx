@@ -191,8 +191,8 @@ const PatientNotes = () => {
                   color="secondary"
                   variant="secondary"
                   onClick={() => {
-                    setNoteState('');
                     setEditMode(false);
+                    setNoteState('');
                   }}
                   size="small"
                 >
@@ -205,8 +205,8 @@ const PatientNotes = () => {
                   size="small"
                   onClick={() => {
                     dispatch(addPatientNote(patientIdentifier, noteState));
-                    setNoteState('');
                     setEditMode(false);
+                    setNoteState('');
                   }}
                 >
                   Save

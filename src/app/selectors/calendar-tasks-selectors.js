@@ -10,5 +10,11 @@ export const calendarDateRangeSelector = createSelector(
 
 export const calendarTasksSelector = createSelector(
   calendarTasksStateSelector,
-  ({ tasks }) => tasks,
+  ({ taskIdentifiers }) => taskIdentifiers,
+);
+
+export const calendarMultipleTaskDetailsSelector = createSelector(
+  calendarTasksStateSelector,
+  (_, taskIds) => taskIds,
+  (state, taskIds) => taskIds.map((taskId) => state.tasksMap[taskId]),
 );

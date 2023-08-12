@@ -91,6 +91,9 @@ export const SubscribeButton = styled.button`
   font-size: ${fontSizes.smallPlus};
   font-weight: ${fontWeights.bold};
   ${({ active }) => (active ? '' : 'text-transform: uppercase;')}
+  display: flex;
+  align-items: center;
+  justify-content: center;
 `;
 
 export const ContactUsAnchor = styled.a`

@@ -2,7 +2,6 @@
 /* eslint-disable sonarjs/cognitive-complexity */
 import React, { useCallback, useEffect, useMemo } from 'react';
 import compose from 'ramda/src/compose';
-import pluck from 'ramda/src/pluck';
 import useActions from 'hooks/use-actions';
 import { useDispatch, useSelector } from 'react-redux';
 import { Box } from '@mui/material';
@@ -28,9 +27,10 @@ import {
   patientTasksSortSelector,
   patientSelector,
   currentListTasksStatusSelector,
+  selectedTasksSelector,
 } from 'selectors/patient-details-selectors';
 import { addingNewSubtaskParentIdSelector } from 'selectors/task-drawer-selectors';
-import { organizationCustomFieldsSelector } from 'selectors/organization-selectors';
+// import { organizationCustomFieldsSelector } from 'selectors/organization-selectors';
 import {
   hasFiltersAppliedSelector,
   selectedFiltersInMegaFilterSelector,
@@ -57,8 +57,10 @@ import {
   TaskStatus,
 } from 'helpers/task-helpers';
 import { getCustomerTypeLabel } from 'helpers/customer-type-helper';
-import { checkIfAllTasksSelected } from 'helpers/bulk-edit-helpers';
-import { extractTasksAndSubtasks } from 'helpers/tasklist-helpers';
+import {
+  isTaskItemsSelectedSelector,
+  selectedTaskIdentifiersSelector,
+} from 'selectors/task-items-selectors';
 import { useTaskListColumnsConfig } from 'context-api/columns-config-context';
 import { ListDetailsContainer } from 'components/tasklist/DropdownListSection/styled';
 import StickyContainer from 'components/common/HorizontalScroll/StickyContainer';
@@ -108,7 +110,7 @@ const PatientTasksListView = () => {
   const dispatch = useDispatch();
   const history = useHistory();
   const {
-    togglePatientTaskStatus,
+    // togglePatientTaskStatus,
     updatePatientTaskInList,
     updatePatientTaskWorkflowStatus,
     sortPatientTasks,
@@ -117,10 +119,10 @@ const PatientTasksListView = () => {
   const patient = useSelector(patientSelector);
   const isAllTasksView = taskListIdentifierParameter === ListViewType.ALL_TASKS;
 
-  const organizationCustomFields = useSelector(
-    organizationCustomFieldsSelector,
-  );
-  const taskCustomFields = organizationCustomFields;
+  // const organizationCustomFields = useSelector(
+  //   organizationCustomFieldsSelector,
+  // );
+  // const taskCustomFields = organizationCustomFields;
 
   const currentOrganization = useSelector(selectedUserOrganizationSelector);
   // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -264,132 +266,140 @@ const PatientTasksListView = () => {
     );
   };
 
-  const handleToggleTaskStatus = useCallback(
-    task => {
-      const incompleteRequiredFields = findIncompleteRequiredFields(
-        taskCustomFields,
-        task,
-      );
-      const isRequiredFieldsAreIncomplete =
-        incompleteRequiredFields?.length > 0;
+  // const handleToggleTaskStatus = useCallback(
+  //   task => {
+  //     const incompleteRequiredFields = findIncompleteRequiredFields(
+  //       taskCustomFields,
+  //       task,
+  //     );
+  //     const isRequiredFieldsAreIncomplete =
+  //       incompleteRequiredFields?.length > 0;
 
-      if (isRequiredFieldsAreIncomplete) {
-        const modalProps = {
-          incompleteFields: incompleteRequiredFields,
-        };
-        dispatch(openModal('CompleteAllFields', modalProps));
-        return;
-      }
+  //     if (isRequiredFieldsAreIncomplete) {
+  //       const modalProps = {
+  //         incompleteFields: incompleteRequiredFields,
+  //       };
+  //       dispatch(openModal('CompleteAllFields', modalProps));
+  //       return;
+  //     }
 
-      const hasIncompletedSubtasks = task.subtasks.find(
-        subtask => subtask.status === 'INCOMPLETE',
-      );
-      if (task.status === 'INCOMPLETE' && hasIncompletedSubtasks) {
-        const modalProps = {
-          confirm: () => {
-            dispatch(closeModal());
-            togglePatientTaskStatus(task);
-          },
-        };
-        dispatch(openModal('CompleteAllTasks', modalProps));
-      } else {
-        togglePatientTaskStatus(task);
-      }
-    },
-    [dispatch, taskCustomFields, togglePatientTaskStatus],
-  );
+  //     const hasIncompletedSubtasks = task.subtasks.find(
+  //       subtask => subtask.status === 'INCOMPLETE',
+  //     );
+  //     if (task.status === 'INCOMPLETE' && hasIncompletedSubtasks) {
+  //       const modalProps = {
+  //         confirm: () => {
+  //           dispatch(closeModal());
+  //           togglePatientTaskStatus(task);
+  //         },
+  //       };
+  //       dispatch(openModal('CompleteAllTasks', modalProps));
+  //     } else {
+  //       togglePatientTaskStatus(task);
+  //     }
+  //   },
+  //   [dispatch, taskCustomFields, togglePatientTaskStatus],
+  // );
 
   const groupedTasks = useMemo(() => {
     if (isAllTasksView) return;
     return groupTasks(activeList?.tasks);
   }, [activeList, isAllTasksView]);
+
   const groupHasMultipleAssignees = false;
-  const isGroupSelected = useCallback(
-    (tasks) => checkIfAllTasksSelected(tasks),
-    [],
+
+  const isTaskGroupSelected = useSelector(
+    isTaskItemsSelectedSelector(activeList?.tasks),
   );
-  const handleGroupSelect = useCallback(
-    (tasks) => {
-      const { parentTasks, subtasks } = extractTasksAndSubtasks(tasks);
-      const allTasks = [...parentTasks, ...subtasks];
-      dispatch(
-        dispatch(
-          changeTasksSelectedState(
-            !isGroupSelected(tasks),
-            pluck('identifier', allTasks),
-          ),
-        ),
+
+  const selectedTaskIdentifiers = useSelector(selectedTaskIdentifiersSelector);
+
+  const handleGroupSelect = useCallback(() => {
+    const taskIdentifiers = activeList?.tasks;
+    dispatch(changeTasksSelectedState(!isTaskGroupSelected, taskIdentifiers));
+  }, [activeList?.tasks, dispatch, isTaskGroupSelected]);
+
+  const renderTasks = useCallback(
+    (tasks, { isFullView, taskGroupIdentifier }) => {
+      const taskIdentifiers = tasks;
+      const isGroupSelected =
+        taskIdentifiers?.length > 0 &&
+        taskIdentifiers?.every((taskId) =>
+          selectedTaskIdentifiers?.includes(taskId),
+        );
+
+      return (
+        <>
+          {!completeTasksVisible && (
+            <StickyContainer left={24} decreaseWidth={2 * 24} zIndex={13}>
+              <TasksToolbar
+                taskListIdentifier={activeList?.taskListIdentifier}
+                taskGroupIdentifier={taskGroupIdentifier}
+                onQuickAddTask={quickAddTask}
+                iconColorActive={iconColorActiveItem?.value}
+              />
+            </StickyContainer>
+          )}
+          <div
+            className="IN"
+            style={{ width: 'fit-content', minWidth: '100%' }}
+          >
+            {tasks && tasks.length > 0 && (
+              <TasksHeader
+                bulkEditEnabled
+                sort={sort}
+                onSortChange={sortPatientTasks}
+                groupHasMultipleAssignees={groupHasMultipleAssignees}
+                isGroupSelected={isGroupSelected}
+                onGroupSelect={() => handleGroupSelect(tasks)}
+              />
+            )}
+            {tasks?.map((task) => {
+              return task.itemType === TaskItemType.TASK ? (
+                <StandardTaskItem
+                  key={task.identifier}
+                  isFullView={isFullView}
+                  taskIdentifier={task.identifier}
+                  taskGroupIdentifier={taskGroupIdentifier}
+                  isCompletedGroup={completeTasksVisible}
+                  onTaskUpdate={updatePatientTaskInList}
+                  updateWorkflowStatus={updatePatientTaskWorkflowStatus}
+                  dragAndDropDisabled
+                  addingNewSubtask={
+                    addingNewSubtaskParentId === task.identifier
+                  }
+                  multipleAssigneesContext={groupHasMultipleAssignees}
+                  iconColorActive={iconColorActiveItem?.value}
+                  origin={TaskOrigin.PATIENT}
+                />
+              ) : (
+                <TaskTemplateGroup
+                  viewSetup={viewSetup}
+                  key={task.identifier}
+                  templateGroup={task}
+                  groupHasMultipleAssignees={groupHasMultipleAssignees}
+                  isFullView={isFullView}
+                  groupDragAndDropDisabled
+                  disablePatientAssignment
+                  iconColorActive={iconColorActiveItem?.value}
+                  isCompletedTab={tasksStatus !== TaskStatus.INCOMPLETE}
+                  origin={TaskOrigin.PATIENT}
+                />
+              );
+            })}
+          </div>
+        </>
       );
     },
-    [dispatch, isGroupSelected],
-  );
-  const renderTasks = useCallback(
-    (tasks, { isFullView, taskGroupIdentifier }) => (
-      <>
-        {!completeTasksVisible && (
-          <StickyContainer left={24} decreaseWidth={2 * 24} zIndex={13}>
-            <TasksToolbar
-              taskListIdentifier={activeList?.taskListIdentifier}
-              taskGroupIdentifier={taskGroupIdentifier}
-              onQuickAddTask={quickAddTask}
-              iconColorActive={iconColorActiveItem?.value}
-            />
-          </StickyContainer>
-        )}
-        <div className="IN" style={{ width: 'fit-content', minWidth: '100%' }}>
-          {tasks && tasks.length > 0 && (
-            <TasksHeader
-              bulkEditEnabled
-              sort={sort}
-              onSortChange={sortPatientTasks}
-              groupHasMultipleAssignees={groupHasMultipleAssignees}
-              isGroupSelected={isGroupSelected(tasks)}
-              onGroupSelect={() => handleGroupSelect(tasks)}
-            />
-          )}
-          {tasks?.map((task) => {
-            return task.itemType === TaskItemType.TASK ? (
-              <StandardTaskItem
-                key={task.identifier}
-                isFullView={isFullView}
-                taskIdentifier={task.identifier}
-                taskGroupIdentifier={taskGroupIdentifier}
-                isCompletedGroup={completeTasksVisible}
-                onTaskUpdate={updatePatientTaskInList}
-                updateWorkflowStatus={updatePatientTaskWorkflowStatus}
-                dragAndDropDisabled
-                addingNewSubtask={addingNewSubtaskParentId === task.identifier}
-                multipleAssigneesContext={groupHasMultipleAssignees}
-                iconColorActive={iconColorActiveItem?.value}
-                origin={TaskOrigin.PATIENT}
-              />
-            ) : (
-              <TaskTemplateGroup
-                viewSetup={viewSetup}
-                key={task.identifier}
-                templateGroup={task}
-                groupHasMultipleAssignees={groupHasMultipleAssignees}
-                isFullView={isFullView}
-                groupDragAndDropDisabled
-                disablePatientAssignment
-                iconColorActive={iconColorActiveItem?.value}
-                isCompletedTab={tasksStatus !== TaskStatus.INCOMPLETE}
-                origin={TaskOrigin.PATIENT}
-              />
-            );
-          })}
-        </div>
-      </>
-    ),
     [
       completeTasksVisible,
-      activeList,
+      activeList?.taskListIdentifier,
       quickAddTask,
-      iconColorActiveItem,
+      iconColorActiveItem?.value,
       sort,
       sortPatientTasks,
       groupHasMultipleAssignees,
-      isGroupSelected,
+      selectedTaskIdentifiers,
       handleGroupSelect,
       updatePatientTaskInList,
       updatePatientTaskWorkflowStatus,
@@ -398,6 +408,11 @@ const PatientTasksListView = () => {
       tasksStatus,
     ],
   );
+
+  const bulkEditTasks = useSelector(selectedTasksSelector);
+
+  const bulkEditIsDisabled = completeTasksVisible;
+
   return (
     <>
       {filteredLists ? (
@@ -414,8 +429,9 @@ const PatientTasksListView = () => {
               {activeList ? (
                 <ListDetailsContainer>
                   <BulkEditSection
-                    allTasks={activeList.tasks}
+                    allTasks={bulkEditTasks}
                     refreshTasks={handleTaskUpdate}
+                    disabled={bulkEditIsDisabled}
                     searchValue={taskSearch}
                   >
                     <StickyContainer

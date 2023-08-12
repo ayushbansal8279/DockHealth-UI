@@ -7,7 +7,6 @@ import React, {
   useState,
 } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import pluck from 'ramda/src/pluck';
 import { useHistory } from 'react-router-dom';
 import palette from 'styles/palette';
 import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd';
@@ -16,7 +15,6 @@ import { createWorkflowBuilderPath } from 'routing/helpers/paths';
 import { Collapse } from '@mui/material';
 import { MoreVert } from '@mui/icons-material';
 import { onTaskOrderChanged } from 'helpers/ga-event-helper';
-import { checkIfAllTasksSelected } from 'helpers/bulk-edit-helpers';
 import {
   taskTemplateDetailsSelector,
   currentFolderIdentifierSelector,
@@ -30,7 +28,7 @@ import * as WorkflowActions from 'actions/workflow-actions';
 import * as ModalActions from 'modal/actions';
 import * as TaskActions from 'actions/task-actions';
 import { openDrawer } from 'actions/workflow-drawer-actions';
-import { extractTasksAndSubtasks } from 'helpers/tasklist-helpers';
+import { isTaskItemsSelectedSelector } from 'selectors/task-items-selectors';
 import { TaskOrigin } from 'helpers/task-helpers';
 import Tooltip from 'components/common/Tooltip/Tooltip';
 import RotatableChevron from 'components/common/RotatableChevron/RotatableChevron';
@@ -182,7 +180,7 @@ const TaskTemplate = ({
           dispatch(
             ModalActions.openModal('SelectOrganization', {
               confirmText: 'Copy',
-              confirm: selectedItem => {
+              confirm: (selectedItem) => {
                 dispatch(
                   copyWorkflowToOrganization(
                     identifier,
@@ -295,18 +293,14 @@ const TaskTemplate = ({
     [tasks],
   );
 
-  const isTemplateSelected = useMemo(
-    () => checkIfAllTasksSelected(tasks),
-    [tasks],
-  );
+  const isTemplateSelected = useSelector(isTaskItemsSelectedSelector(tasks));
 
   const handleTemplateSelect = useCallback(() => {
-    const { parentTasks, subtasks } = extractTasksAndSubtasks(tasks);
-    const allTasks = [...parentTasks, ...subtasks];
+    const taskIdentifiers = tasks;
     dispatch(
       TaskActions.changeTasksSelectedState(
         !isTemplateSelected,
-        pluck('identifier', allTasks),
+        taskIdentifiers,
       ),
     );
   }, [dispatch, isTemplateSelected, tasks]);

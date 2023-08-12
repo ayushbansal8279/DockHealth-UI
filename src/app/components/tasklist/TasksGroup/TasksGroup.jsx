@@ -9,11 +9,9 @@ import React, {
 } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import isNil from 'ramda/src/isNil';
-import pluck from 'ramda/src/pluck';
 import { Grid } from '@mui/material';
 import MoreVert from '@mui/icons-material/MoreVert';
 import * as TaskActions from 'actions/task-actions';
-import { checkIfAllTasksSelected } from 'helpers/bulk-edit-helpers';
 import { closeModal, openModal } from 'modal/actions';
 import {
   changeTaskListGroupName,
@@ -26,7 +24,7 @@ import {
 } from 'helpers/ga-event-helper';
 import QuickAddTaskInput from 'components/tasklist/QuickAddTaskInput/QuickAddTaskInput';
 import listSectionSavedState from 'helpers/list-section-saved-state';
-import { extractTasksAndSubtasks } from 'helpers/tasklist-helpers';
+import { isTaskItemsSelectedSelector } from 'selectors/task-items-selectors';
 import RotatableChevron from 'components/common/RotatableChevron/RotatableChevron';
 import Spacing from 'components/common/Spacing';
 import { BulkEditContext } from 'components/tasklist/BulkEditSection/BulkEditSection';
@@ -165,31 +163,12 @@ const TasksGroup = ({
 
   const groupHasMultipleAssignees = false;
 
-  const isGroupSelected = useMemo(
-    () => checkIfAllTasksSelected(tasks),
-    [tasks],
-  );
+  const isGroupSelected = useSelector(isTaskItemsSelectedSelector(tasks));
 
   const handleGroupSelect = useCallback(() => {
-    const { parentTasks, subtasks } = extractTasksAndSubtasks(
-      tasks.filter((t) => t.itemType === 'TASK'),
-    );
-    const allTasks = [...parentTasks, ...subtasks];
+    const taskIdentifiers = tasks;
     dispatch(
-      TaskActions.changeTasksSelectedState(
-        !isGroupSelected,
-        pluck('identifier', allTasks),
-      ),
-    );
-
-    dispatch(
-      TaskActions.changeWorkflowSelectedState(
-        !isGroupSelected,
-        pluck(
-          'identifier',
-          tasks.filter((t) => t.itemType === 'BUNDLE'),
-        ),
-      ),
+      TaskActions.changeTasksSelectedState(!isGroupSelected, taskIdentifiers),
     );
   }, [dispatch, isGroupSelected, tasks]);
 

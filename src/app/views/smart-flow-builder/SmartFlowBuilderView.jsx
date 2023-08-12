@@ -6,13 +6,11 @@ import React, {
   useRef,
   useCallback,
 } from 'react';
-import { bulkEditTasks } from 'api/task-api';
 import { useParams, Link, useHistory } from 'react-router-dom';
 import compose from 'ramda/src/compose';
 import isNil from 'ramda/src/isNil';
 import not from 'ramda/src/not';
 import path from 'ramda/src/path';
-import pluck from 'ramda/src/pluck';
 import { useDispatch, useSelector } from 'react-redux';
 import NavigateNextIcon from '@mui/icons-material/NavigateNext';
 import HardDependencyIcon from 'img/template/hard-dependency';
@@ -22,19 +20,14 @@ import {
   createWorkflowFolderPath,
   WORKFLOW_LIBRARY_PATH,
 } from 'routing/helpers/paths';
-import {
-  deleteTasksLink,
-  changeTaskIntentType,
-  updateTasksLink,
-  bulkEditDelete,
-} from 'actions/task-actions';
-import { openModal, closeModal } from 'modal/actions';
+import { changeTaskIntentType, updateTasksLink } from 'actions/task-actions';
+import { openModal } from 'modal/actions';
 import {
   addDecisionBranch,
   addNewDecisionTaskElement,
   addNewNestedFlowElement,
   addNewTaskElement,
-  deleteTemporaryElement,
+  editTemporaryElement,
   linkTasks,
   saveTaskTemplateLayout,
   saveTaskTemplateLayoutToHistory,
@@ -62,8 +55,6 @@ import {
   TASK_NODE_WIDTH,
   getAutoLayout,
 } from 'helpers/smart-flow-builder-helpers';
-import { showGlobalAlert } from 'alert/actions';
-import AlertMessages from 'alert/AlertMessages';
 import { useBoolean } from 'hooks/useBoolean';
 import palette from 'styles/palette';
 import * as AlertActions from 'alert/actions';
@@ -133,14 +124,7 @@ const SmartFlowBuilderView = () => {
   const delayPeriodOptionReference = useRef(null);
   const builderWrapperReference = useRef(null);
   const reactFlowInstance = useRef(null);
-  const [elements, setElements] = useState(null);
-  const [selectedElementsCount, setSelectedElementsCount] = useState(0);
-  const selectedElements = reactFlowInstance.current
-    ? [
-        ...reactFlowInstance.current.getNodes(),
-        ...reactFlowInstance.current.getEdges(),
-      ].filter((element) => element.selected)
-    : [];
+  const [elements, setElements] = useState([]);
   const [draggedEdgeSourceId, setDraggedEdgeSourceId] = useState(null);
   const [, setHoveredTargetHandle] = useState(Position.Top);
   const [isDelayPopoverOpen, openDelayPopover, closeDelayPopover] =
@@ -162,6 +146,11 @@ const SmartFlowBuilderView = () => {
   const isCurrentUserEditor =
     members?.find(({ user }) => user.identifier === currentUser.identifier)
       ?.memberPermission === 'EDITOR';
+
+  const selectedElements = useMemo(
+    () => elements.filter((element) => element.selected),
+    [elements],
+  );
 
   useEffect(() => {
     if (
@@ -191,22 +180,29 @@ const SmartFlowBuilderView = () => {
 
   useEffect(() => {
     if (tasks && !isNil(layout)) {
-      const previousElementsMap = reactFlowInstance.current
-        ? Object.fromEntries(
-            [
-              ...reactFlowInstance.current.getNodes(),
-              ...reactFlowInstance.current.getEdges(),
-            ].map((element) => [element.id, element]),
-          )
-        : [];
-      setElements(
-        mapLayoutToElements(layout, tasks).map((element) => ({
-          ...previousElementsMap[element.id],
+      setElements((previousElements) =>
+        [
+          ...mapLayoutToElements(layout, tasks),
+          ...(temporaryElements || []),
+        ].map((element) => ({
+          ...Object.fromEntries(
+            previousElements.map((previousElement) => [
+              previousElement.id,
+              previousElement,
+            ]),
+          )[element.id],
           ...element,
+          isConnectable: draggedEdgeSourceId !== element.id,
+          data: {
+            ...element.data,
+            draggedEdgeSourceId,
+            taskTemplateIdentifier: identifier,
+            onTargetHandleHover: setHoveredTargetHandle,
+          },
         })),
       );
     }
-  }, [layout, tasks]);
+  }, [draggedEdgeSourceId, identifier, layout, tasks, temporaryElements]);
 
   const centerViewToElement = (elementPosition) => {
     const { x, y } = elementPosition;
@@ -391,9 +387,6 @@ const SmartFlowBuilderView = () => {
     handleMakeSelectionDependent,
     openDelayPopover,
   ]);
-
-  const [extraNodes, setExtraNodes] = useState([]);
-
   const updateSelectedElementsPosition = (selectedNodes) => {
     let updatedElements = elements;
     let shouldUpdate = false;
@@ -408,7 +401,11 @@ const SmartFlowBuilderView = () => {
           updatedElements,
         );
       } else {
-        setExtraNodes([node]);
+        dispatch(
+          editTemporaryElement(node.id, {
+            position: node.position,
+          }),
+        );
       }
     }
 
@@ -418,110 +415,12 @@ const SmartFlowBuilderView = () => {
     }
   };
 
-  const handleNodeDragStop = () => {
-    updateSelectedElementsPosition(
-      reactFlowInstance?.current.getNodes().filter((node) => node.selected),
-    );
+  const handleNodeDragStop = (_, node) => {
+    updateSelectedElementsPosition([node]);
   };
 
   const handleSelectionDragStop = (_, nodes) => {
     updateSelectedElementsPosition(nodes);
-  };
-
-  const mergedElementsWithActions = useMemo(
-    () =>
-      elements || temporaryElements
-        ? [...(elements || []), ...(temporaryElements || [])]?.map(
-            (element) => {
-              return {
-                ...element,
-                isConnectable: draggedEdgeSourceId !== element.id,
-                data: {
-                  ...element.data,
-                  draggedEdgeSourceId,
-                  taskTemplateIdentifier: identifier,
-                  onTargetHandleHover: setHoveredTargetHandle,
-                },
-              };
-            },
-          )
-        : null,
-    [elements, temporaryElements, draggedEdgeSourceId, identifier],
-  );
-
-  const handleRemoveElement = (elementsToDelete) => {
-    const tasksToDelete = elementsToDelete
-      .filter(path(['data', 'task']))
-      .map(path(['data', 'task']));
-    const temporaryElementsToDelete = elementsToDelete.filter(({ type }) =>
-      [
-        NodeType.NEW_DECISION,
-        NodeType.NEW_STANDARD,
-        LinkType.TEMPORARY,
-        LinkType.TEMPORARY_DECISION,
-      ].includes(type),
-    );
-    const linksToDelete = elementsToDelete.filter((element) => {
-      const { source, target, type } = element;
-
-      if (![LinkType.DECISION, LinkType.STANDARD].includes(type)) {
-        return false;
-      }
-
-      return !tasksToDelete.some(
-        ({ identifier: taskId }) => taskId === source || taskId === target,
-      );
-    });
-
-    if (
-      tasksToDelete.length > 0 ||
-      temporaryElementsToDelete.length > 0 ||
-      linksToDelete.length > 0
-    ) {
-      dispatch(
-        openModal('DeleteConfirmation', {
-          title: 'Delete elements',
-          description:
-            'Are you sure you want to delete these elements? This action cannot be undone.',
-          confirm: () => {
-            dispatch(closeModal());
-
-            if (tasksToDelete.length > 0) {
-              const taskIdentifiersToDelete = pluck(
-                'identifier',
-                tasksToDelete,
-              );
-
-              bulkEditTasks({
-                bulkEditType: 'DELETE',
-                taskIdentifiers: taskIdentifiersToDelete,
-              }).then(() => {
-                dispatch(bulkEditDelete(taskIdentifiersToDelete));
-                dispatch(showGlobalAlert(AlertMessages.DELETED));
-              });
-            }
-
-            if (temporaryElementsToDelete.length > 0) {
-              for (const element of temporaryElementsToDelete) {
-                dispatch(deleteTemporaryElement(element.id));
-              }
-            }
-
-            if (linksToDelete.length > 0) {
-              for (const link of linksToDelete) {
-                const {
-                  source: sourceTaskIdentifier,
-                  target: targetTaskIdentifier,
-                } = link;
-                dispatch(
-                  deleteTasksLink(sourceTaskIdentifier, targetTaskIdentifier),
-                );
-              }
-            }
-          },
-        }),
-      );
-    }
   };
 
   // eslint-disable-next-line unicorn/consistent-function-scoping
@@ -685,20 +584,19 @@ const SmartFlowBuilderView = () => {
                 </BuilderHeaderText>
               </button>
             </BuilderHeader>
-            {mergedElementsWithActions && (
+            {elements && (
               <ReactFlowAdapter
                 // connectionLineComponent={ConnectionLineComponent}
-                elements={mergedElementsWithActions}
-                extraNodes={extraNodes}
+                elements={elements}
                 onConnect={onConnect}
-                connectionLineType="step"
+                connectionLineType="default"
                 nodeTypes={nodeTypes}
                 edgeTypes={linkTypes}
                 minZoom={0.1}
                 maxZoom={1}
+                onElementsChange={setElements}
                 onDragOver={handleDragOver}
                 onDrop={handleDrop}
-                onElementsRemove={handleRemoveElement}
                 deleteKeyCode={46}
                 onConnectStart={(_, { nodeId }) =>
                   setDraggedEdgeSourceId(nodeId)
@@ -710,7 +608,6 @@ const SmartFlowBuilderView = () => {
                 onSelectionDragStop={handleSelectionDragStop}
                 onNodeDragStop={handleNodeDragStop}
                 onLoad={handleLoad}
-                onSelectionChange={setSelectedElementsCount}
                 multiSelectionKeyCode={91}
                 nodesDraggable={isCurrentUserEditor}
                 nodesConnectable={isCurrentUserEditor}

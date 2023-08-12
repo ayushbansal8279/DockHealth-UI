@@ -26,6 +26,7 @@ import {
   dashboardGroupsPreferencesSelector,
   selectedUserOrganizationSelector,
   userProfileSelector,
+  userHasShareTaskFeatureSelector,
 } from 'selectors/user-selectors';
 import TaskViewTypeToolbarSelect from 'components/tasklist/TaskViewTypeToolbarSelect/TaskViewTypeToolbarSelect';
 import CustomizeToolbarButton from 'components/tasklist/CustomizeToolbarButton/CustomizeToolbarButton';
@@ -81,6 +82,7 @@ const DashboardToolbar = ({ iconColorFilterActive, iconColorActive }) => {
     (orgUserRole === 'MEMBER' &&
       allTasksForMemberEnabledItem?.value === 'false') ||
     false;
+  const shareTaskAvailable = useSelector(userHasShareTaskFeatureSelector);
 
   useEffect(() => {
     if (
@@ -146,7 +148,7 @@ const DashboardToolbar = ({ iconColorFilterActive, iconColorActive }) => {
 
   return (
     <ToolbarContainer container direction="row" justifyContent="space-between">
-      <Grid item md={4}>
+      <Grid item md={6} sm={12}>
         <DashboardTabsContainer>
           <AccessRestrictor allowedToRoles={[ADMIN, OWNER, MEMBER, GUEST]}>
             <DashboardTab
@@ -158,16 +160,16 @@ const DashboardToolbar = ({ iconColorFilterActive, iconColorActive }) => {
               isSelected={tabName === DashboardTasksTab.MY_TASKS}
             />
           </AccessRestrictor>
-          {/* <AccessRestrictor allowedToRoles={[EXTERNAL]}> */}
-          <DashboardTab
-            label="Shared with me"
-            setHighlightPosition={setHighlightPosition}
-            onClick={() => {
-              history.push(`${HOME_SHARED_PATH}`);
-            }}
-            isSelected={tabName === DashboardTasksTab.SHARED_TASKS}
-          />
-          {/* </AccessRestrictor> */}
+          {shareTaskAvailable && (
+            <DashboardTab
+              label="Shared With Me"
+              setHighlightPosition={setHighlightPosition}
+              onClick={() => {
+                history.push(`${HOME_SHARED_PATH}`);
+              }}
+              isSelected={tabName === DashboardTasksTab.SHARED_TASKS}
+            />
+          )}
           {!restrictAllTasksForMember && (
             <AccessRestrictor allowedToRoles={[ADMIN, OWNER, MEMBER]}>
               <DashboardTab

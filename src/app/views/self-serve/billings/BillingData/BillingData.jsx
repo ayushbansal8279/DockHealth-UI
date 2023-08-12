@@ -36,16 +36,18 @@ import { StyledCollapse, H3, Anchor } from '../styled';
 
 const CardNumberInput = ({ inputRef, onChange, ...restProps }) => {
   const [isEmpty, setIsEmpty] = useState(true);
-  <CardNumberElement
-    ref={inputRef}
-    showIcon={!isEmpty}
-    onChange={(event) => {
-      // eslint-disable-next-line no-unused-expressions
-      onChange?.(event);
-      if (isEmpty !== event.empty) setIsEmpty(event.empty);
-    }}
-    {...restProps}
-  />;
+  return (
+    <CardNumberElement
+      ref={inputRef}
+      showIcon={!isEmpty}
+      onChange={(event) => {
+        // eslint-disable-next-line no-unused-expressions
+        onChange?.(event);
+        if (isEmpty !== event.empty) setIsEmpty(event.empty);
+      }}
+      {...restProps}
+    />
+  );
 };
 
 const CardExpiryInput = ({ inputRef, ...restProps }) => {
@@ -112,6 +114,7 @@ const BillingElement = ({
   name,
   label,
   required,
+  shrink,
   endAdornment,
 }) => {
   const [isFocused, setFocused, unsetFocused] = useBoolean(false);
@@ -124,7 +127,7 @@ const BillingElement = ({
       label={label}
       required={required}
       disabled={disabled}
-      shrink={!isEmpty || isFocused}
+      shrink={shrink || !isEmpty || isFocused}
       onFocus={setFocused}
       onBlur={unsetFocused}
       placeholder=""
@@ -227,13 +230,14 @@ const CreditPaymentForm = ({
       <Grid item sm={12} md={6}>
         <FormInput required name="nameOnCard" label="Name on card" />
       </Grid>
-      <Grid item sm={12} md={6} style={{ placeSelf: 'flex-end' }}>
+      <Grid item sm={12} md={6}>
         <BillingElement
           id="card-number"
           name="cardNumber"
           Component={CardNumberInput}
           label="Card number"
           required
+          shrink
           onChange={() => {}}
           endAdornment={
             <AcceptedCardsContainer>
@@ -260,6 +264,7 @@ const CreditPaymentForm = ({
           Component={CardExpiryInput}
           label="Expiration date"
           required
+          shrink
         />
       </Grid>
       <Grid item sm={12} md={6}>
@@ -267,9 +272,10 @@ const CreditPaymentForm = ({
           id="card-cvc"
           name="cardCvc"
           Component={CardCvcInput}
-          label="CVC"
+          label="Verification code"
           disabled={!isUpdatingBilling}
           required
+          shrink
         />
       </Grid>
       <Spacing vertical={4} />
@@ -338,7 +344,8 @@ const BillingData = ({
 }) => {
   const stripe = useStripe();
 
-  const { billingDetails, referralConfig } = useSelector(organizationSelector);
+  const billingDetails = useSelector(billingDetailsSelector);
+  const referralConfig = useSelector(referralConfigSelector);
   const { hasDiscountCode } = referralConfig ?? {};
 
   const formMethods = useForm({

@@ -1,5 +1,6 @@
 import { Box } from '@mui/material';
 import React from 'react';
+import palette from 'styles/palette';
 import ServiceAddOnFeature from '../ServiceAddOnFeature/ServiceAddOnFeature';
 import {
   Container,
@@ -13,16 +14,16 @@ import {
   RightContainer,
 } from './styled';
 
-const ProfessionalServicesAddOn = props => {
+const ProfessionalServicesAddOn = (props) => {
   const { service } = props;
   const { label, description, features, price } = service;
 
   const featuresDescription = service.featuresDescription ?? null;
 
   return (
-    <Container color="#0e244a">
+    <Container color={palette.newDarkBlue}>
       <LeftContainer>
-        <Name color="#0e244a">{label}</Name>
+        <Name color={palette.newDarkBlue}>{label}</Name>
         <Description>{description}</Description>
         <PriceContainer>
           <>
@@ -30,7 +31,7 @@ const ProfessionalServicesAddOn = props => {
           </>
         </PriceContainer>
         <ContactUsAnchor
-          color="#0e244a"
+          color={palette.newDarkBlue}
           onClick={() => {
             window.Intercom('show');
           }}
@@ -41,7 +42,7 @@ const ProfessionalServicesAddOn = props => {
       <RightContainer>
         <FeatureText>{featuresDescription}</FeatureText>
         <Box m={2} />
-        {features.map(feature => (
+        {features.map((feature) => (
           <ServiceAddOnFeature feature={feature} />
         ))}
       </RightContainer>

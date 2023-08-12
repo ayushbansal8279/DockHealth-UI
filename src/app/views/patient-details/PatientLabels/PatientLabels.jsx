@@ -55,6 +55,7 @@ const renderOption = ({
   onBlur,
   onSaveEdit,
   onDelete,
+  onClick,
 }) => (
   <OptionContainer key={option?.labelIdentifier} isEditable={isEditable}>
     <OptionButtonsInput
@@ -64,6 +65,7 @@ const renderOption = ({
         event.stopPropagation();
         onBlur();
       }}
+      onClick={onClick}
       onKeyDown={(event) => {
         if (event.key === 'Enter') {
           event?.target?.blur();
@@ -135,38 +137,16 @@ const PatientLabels = ({ isPatientBulk, disableFocusOnRender = false }) => {
   }, [selectedPatients, patient]);
 
   useEffect(() => {
-    if (!disableFocusOnRender) {
-      if (currentEditableOption) {
-        optionReferences?.current[currentEditableOption]?.focus();
-      } else {
-        inputReference.current?.focus();
-      }
+    if (currentEditableOption) {
+      optionReferences?.current[currentEditableOption]?.focus();
+    } else {
+      inputReference.current?.focus();
     }
   }, [currentEditableOption, inputReference, disableFocusOnRender]);
 
   const getInputReference = (element) => {
     inputReference.current = element;
   };
-  const renderOptionCallback = useCallback(
-    (_, option) =>
-      renderOption({
-        option,
-        registerOption: (element) => {
-          if (element) {
-            optionReferences.current[option?.labelIdentifier] = element;
-          }
-        },
-        onEdit: () => {
-          setCurrentEditableOption(option?.labelIdentifier);
-        },
-        onBlur: () => {
-          setCurrentEditableOption(null);
-        },
-        onSaveEdit: (value) => saveEditLabel(option?.labelIdentifier, value),
-        onDelete: () => deleteLabel(option),
-      }),
-    [deleteLabel, saveEditLabel],
-  );
 
   const removeHandler = useCallback(
     (value) => {
@@ -206,6 +186,40 @@ const PatientLabels = ({ isPatientBulk, disableFocusOnRender = false }) => {
       }
     },
     [selectedPatients, dispatch, patient],
+  );
+
+  const renderOptionCallback = useCallback(
+    (_, option) =>
+      renderOption({
+        option,
+        registerOption: (element) => {
+          if (element) {
+            optionReferences.current[option?.labelIdentifier] = element;
+          }
+        },
+        onEdit: () => {
+          setCurrentEditableOption(option?.labelIdentifier);
+        },
+        onBlur: () => {
+          setCurrentEditableOption(null);
+        },
+        onSaveEdit: (value) => saveEditLabel(option?.labelIdentifier, value),
+        onDelete: () => deleteLabel(option),
+        onClick: () => {
+          setSelectedLabels((previousLabels) => {
+            if (
+              previousLabels.some(
+                (label) => label.labelIdentifier === option.labelIdentifier,
+              )
+            ) {
+              return previousLabels;
+            }
+            saveHandler(option);
+            return [...previousLabels, option];
+          });
+        },
+      }),
+    [deleteLabel, saveEditLabel, saveHandler],
   );
 
   const renderTagsCallback = useCallback(
@@ -263,10 +277,10 @@ const PatientLabels = ({ isPatientBulk, disableFocusOnRender = false }) => {
         return option.labelIdentifier === value.labelIdentifier;
       }}
       disablePortal={!isPatientBulk}
-      disableCloseOnSelect={!!currentEditableOption}
+      // disableCloseOnSelect={!!currentEditableOption}
       getInputReference={getInputReference}
       getOptionLabel={(option) => option?.labelName}
-      isDisabled={!!currentEditableOption}
+      // isDisabled={!!currentEditableOption}
       renderOption={renderOptionCallback}
       renderTags={renderTagsCallback}
       onInputChange={setInputValue}
@@ -283,21 +297,21 @@ const PatientLabels = ({ isPatientBulk, disableFocusOnRender = false }) => {
       noOptionsText={noOptionText}
       onOpen={refreshLabels}
       isLoading={isFetchingLabels}
-      onChange={(values, reason) => {
-        if (reason !== 'select-option') {
-          return;
-        }
-        const selectedLabel = values.length - 1;
-        const labelToAdd = values[selectedLabel];
-        saveHandler(labelToAdd);
+      // onChange={(values, reason) => {
+      //   if (reason !== 'select-option') {
+      //     return;
+      //   }
+      //   const selectedLabel = values.length - 1;
+      //   const labelToAdd = values[selectedLabel];
+      //   saveHandler(labelToAdd);
 
-        if (currentEditableOption) {
-          setCurrentEditableOption(null);
-        }
-        setSelectedLabels((previousProps) => {
-          return [...previousProps, labelToAdd];
-        });
-      }}
+      //   if (currentEditableOption) {
+      //     setCurrentEditableOption(null);
+      //   }
+      //   setSelectedLabels((previousProps) => {
+      //     return [...previousProps, labelToAdd];
+      //   });
+      // }}
       multiple
       disableClearable
     />
