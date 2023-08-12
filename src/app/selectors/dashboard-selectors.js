@@ -4,7 +4,7 @@ export const dashboardTasksStateSelector = (state) => state.dashboardTasks;
 
 export const dashboardTasksSelector = createSelector(
   dashboardTasksStateSelector,
-  ({ tasksList }) => tasksList,
+  ({ tasksList }) => tasksList || [],
 );
 
 export const dashboardSearchValueSelector = createSelector(

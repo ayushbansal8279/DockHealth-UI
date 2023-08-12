@@ -236,6 +236,7 @@ function* getDashboardTasks() {
     yield put({
       type: ActionTypes.GET_DASHBOARD_TASKS_FAILURE,
     });
+    yield put(showGlobalErrorAlert());
   }
 }
 
