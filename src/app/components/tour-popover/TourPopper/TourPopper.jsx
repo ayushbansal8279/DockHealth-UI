@@ -37,19 +37,19 @@ const TourPopper = ({ children, anchorEl, position, open, onClose }) => {
       placement={position}
       disablePortal={false}
       style={{ zIndex: 10000 }}
-      modifiers={{
-        flip: {
-          enabled: false,
-        },
-        preventOverflow: {
-          enabled: false,
-          boundariesElement: 'scrollParent',
-        },
-        arrow: {
-          enabled: true,
-          element: arrowReference,
-        },
-      }}
+      // modifiers={{
+      //   flip: {
+      //     enabled: false,
+      //   },
+      //   preventOverflow: {
+      //     enabled: false,
+      //     boundariesElement: 'scrollParent',
+      //   },
+      //   arrow: {
+      //     enabled: true,
+      //     element: arrowReference,
+      //   },
+      // }}
     >
       {isTopArrow && <PopperTopArrow ref={setReference} />}
       {isLeftArrow && <PopperLeftArrow ref={setReference} />}

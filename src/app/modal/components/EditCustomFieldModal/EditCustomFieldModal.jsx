@@ -368,7 +368,7 @@ const EditCustomFieldModal = ({
                                   ) : null
                                 }
                               />
-                              <Box m={2} />
+                              <Box m={0.5} />
                               {fieldTypeValue === FieldType.DROPDOWN && (
                                 <Box
                                   style={{

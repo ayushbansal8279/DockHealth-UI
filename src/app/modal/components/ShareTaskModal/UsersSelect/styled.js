@@ -1,6 +1,6 @@
 import styled from 'styled-components';
 import palette from 'styles/palette';
-import { Autocomplete as MuiAutocomplete } from '@mui/lab';
+import { Autocomplete as MuiAutocomplete } from '@mui/material';
 
 export const Autocomplete = styled(MuiAutocomplete)`
   &&& {

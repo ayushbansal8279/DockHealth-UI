@@ -27,7 +27,7 @@ const PrioritySection = ({ selectedTask, disabled = false }) => {
       <Select
         label="Priority"
         name="priority"
-        value={priority || TaskPriority.NONE}
+        value={priority || TaskPriority.LOW}
         onChange={handleOptionChange}
         options={PRIORITY_OPTIONS}
         disabled={disabled}

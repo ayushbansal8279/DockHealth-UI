@@ -305,7 +305,7 @@ const DashboardTasksGroup = ({
                 }
               }}
             >
-              <Droppable droppableId={groupName}>
+              <Droppable droppableId={groupName} key={groupName}>
                 {(providedDroppable) => {
                   return (
                     <DroppableBox

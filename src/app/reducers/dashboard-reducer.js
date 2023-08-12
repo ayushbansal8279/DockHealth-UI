@@ -32,6 +32,48 @@ const findAndAddTask = ({ lists, groupType: type, task: taskToAdd }) =>
     list.groupType === type ? addTask(list, taskToAdd) : list,
   );
 
+const getMapOfLoadedTasks = (group) => {
+  const { tasks } = group;
+  const newMap = {};
+  for (const task of tasks) {
+    if (task.itemType === TaskItemType.TASK) {
+      newMap[task.identifier] = task;
+    } else {
+      newMap[task.identifier] = task;
+      for (const grpTask of task.tasks) {
+        newMap[grpTask.identifier] = grpTask;
+      }
+    }
+  }
+  return newMap;
+};
+
+const updateGroupsWithGroupTasksLoad = (tasksList, group, groupType) => {
+  const groupToUpdate = tasksList?.find((g) => g.groupType === groupType);
+  const groupToUpdateIndex = tasksList?.indexOf(groupToUpdate);
+  const newTasksList = [...tasksList];
+  newTasksList[groupToUpdateIndex] = {
+    ...groupToUpdate,
+    ...group,
+    tasks: group.tasks.map((task) => task.identifier),
+    isLoading: false,
+  };
+  return newTasksList;
+};
+
+const updateGroupsWithGroupTasksLoadMore = (tasksList, group, groupType) => {
+  const groupToUpdate = tasksList?.find((g) => g.groupType === groupType);
+  const groupToUpdateIndex = tasksList?.indexOf(groupToUpdate);
+  const newTasksList = [...tasksList];
+  newTasksList[groupToUpdateIndex] = {
+    ...groupToUpdate,
+    ...group,
+    tasks: [...(groupToUpdate?.tasks || []), ...group.tasks],
+    isLoadingMore: false,
+  };
+  return newTasksList;
+};
+
 // eslint-disable-next-line sonarjs/cognitive-complexity
 const DashboardTasksReducer = (state = initialState, action) => {
   const { type, tasksList, error } = action;
@@ -133,12 +175,32 @@ const DashboardTasksReducer = (state = initialState, action) => {
       };
     }
 
-    case ActionTypes.GET_DASHBOARD_GROUPS_SUCCESS:
-    case ActionTypes.SEARCH_DASHBOARD_TASKS_SUCCESS:
-    case ActionTypes.GET_DASHBOARD_TASKS_SUCCESS: {
+    case ActionTypes.GET_DASHBOARD_GROUPS_SUCCESS: {
       return {
         ...state,
         tasksList,
+        isLoading: false,
+      };
+    }
+
+    case ActionTypes.SEARCH_DASHBOARD_TASKS_SUCCESS:
+    case ActionTypes.GET_DASHBOARD_TASKS_SUCCESS: {
+      let newMap = {};
+      for (const group of tasksList) {
+        const tasksMapForGroup = getMapOfLoadedTasks(group);
+        newMap = {
+          ...newMap,
+          ...tasksMapForGroup,
+        };
+      }
+
+      return {
+        ...state,
+        tasksList,
+        tasksMap: {
+          ...state.tasksMap,
+          ...newMap,
+        },
         isLoading: false,
       };
     }
@@ -174,32 +236,12 @@ const DashboardTasksReducer = (state = initialState, action) => {
     case ActionTypes.GET_DASHBOARD_TASKS_FOR_GROUP_SUCCESS: {
       const { groupType, group } = action;
 
-      const { tasks } = group;
-      const newMap = {};
-      for (const task of tasks) {
-        if (task.itemType === TaskItemType.TASK) {
-          newMap[task.identifier] = task;
-        } else {
-          newMap[task.identifier] = task;
-          for (const grpTask of task.tasks) {
-            newMap[grpTask.identifier] = grpTask;
-          }
-        }
-      }
-
-      const groupToUpdate = state?.tasksList?.find(
-        (g) => g.groupType === groupType,
+      const newMap = getMapOfLoadedTasks(group);
+      const newTasksList = updateGroupsWithGroupTasksLoad(
+        state?.tasksList,
+        group,
+        groupType,
       );
-      const groupToUpdateIndex = state?.tasksList?.indexOf(groupToUpdate);
-      const newTasksList = [...state?.tasksList];
-      newTasksList[groupToUpdateIndex] = {
-        ...groupToUpdate,
-        ...group,
-        tasks: group.tasks.map((task) => task.identifier),
-        isLoading: false,
-      };
-
-      // group.tasks = group.tasks.map((task) => task.identifier);
 
       return {
         ...state,
@@ -231,30 +273,12 @@ const DashboardTasksReducer = (state = initialState, action) => {
     case ActionTypes.LOAD_MORE_DASHBOARD_TASKS_FOR_GROUP_SUCCESS: {
       const { groupType, group } = action;
 
-      const { tasks } = group;
-      const newMap = {};
-      for (const task of tasks) {
-        if (task.itemType === TaskItemType.TASK) {
-          newMap[task.identifier] = task;
-        } else {
-          newMap[task.identifier] = task;
-          for (const grpTask of task.tasks) {
-            newMap[grpTask.identifier] = grpTask;
-          }
-        }
-      }
-
-      const groupToUpdate = state?.tasksList?.find(
-        (g) => g.groupType === groupType,
+      const newMap = getMapOfLoadedTasks(group);
+      const newTasksList = updateGroupsWithGroupTasksLoadMore(
+        state?.tasksList,
+        group,
+        groupType,
       );
-      const groupToUpdateIndex = state?.tasksList?.indexOf(groupToUpdate);
-      const newTasksList = [...state?.tasksList];
-      newTasksList[groupToUpdateIndex] = {
-        ...groupToUpdate,
-        ...group,
-        isLoadingMore: false,
-        tasks: [...(groupToUpdate?.tasks || []), ...group.tasks],
-      };
 
       return {
         ...state,
@@ -297,11 +321,11 @@ const DashboardTasksReducer = (state = initialState, action) => {
     case ActionTypes.DELETE_TASK: {
       const { taskIdentifier } = action;
 
-      return {
+      const updatedStateAfterRemovingTaskItem = {
         ...state,
         tasksList: state.tasksList.map((g) => {
           const newTasks = g.tasks?.filter(
-            ({ identifier }) => identifier !== taskIdentifier,
+            (taskId) => taskId !== taskIdentifier,
           );
           return {
             ...g,
@@ -313,16 +337,26 @@ const DashboardTasksReducer = (state = initialState, action) => {
           };
         }),
       };
+
+      return state.tabName && state.tabName !== ''
+        ? TaskBaseReducer(
+            updatedStateAfterRemovingTaskItem,
+            action,
+            updateTasksStateCallback,
+          )
+        : state;
     }
 
     case ActionTypes.ADD_TASK_SUCCESS: {
       const { task } = action;
       const groupType = getGroupByDueDate(task.dueDate, state.tabName);
-      return {
+      const updatedState = {
         ...state,
         lastCreatedTaskIdentifier: action?.task?.identifier,
         tasksList: findAndAddTask({ lists: state.tasksList, groupType, task }),
       };
+
+      return updateTasksStateCallback(updatedState, task);
     }
 
     default: {

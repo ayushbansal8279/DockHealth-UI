@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from 'react';
-import Autocomplete from '@mui/lab/Autocomplete';
+import Autocomplete from '@mui/material/Autocomplete';
 import CircularProgress from '@mui/material/CircularProgress';
 import { matchSorter } from 'match-sorter';
 import { getAllESignTemplates } from 'api/integration-api';

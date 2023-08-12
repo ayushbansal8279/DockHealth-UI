@@ -3,7 +3,7 @@
 /* eslint-disable no-unused-expressions */
 import React, { useEffect, useRef, useCallback } from 'react';
 import propTypes from 'prop-types';
-import { Autocomplete as AutocompleteMUI } from '@mui/lab';
+import { Autocomplete as AutocompleteMUI } from '@mui/material';
 import Input from 'components/common/Input/Input';
 import styled from 'styled-components';
 

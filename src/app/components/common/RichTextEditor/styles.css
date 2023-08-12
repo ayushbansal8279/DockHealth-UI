@@ -7,6 +7,10 @@
     margin-bottom: 0.2rem;
 }
 
+.fr-disabled {
+  user-select: auto !important;
+}
+
 .fr-element > ul,li {
   /* text-indent: 0; */
   list-style: inherit;
