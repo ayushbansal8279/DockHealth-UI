@@ -119,14 +119,14 @@ const CustomField = ({
             ref={componentReference}
             onChange={() => setWasChanged(true)}
             required={isRequired}
-            characterLimit={FieldCharakterLimit.TEXT}
+            // characterLimit={FieldCharakterLimit.TEXT}
           />
         );
       }
       case FieldType.LONG_TEXT: {
         return (
           <CustomFieldRichTextEditor
-            characterLimit={FieldCharakterLimit.LONG_TEXT}
+            // characterLimit={FieldCharakterLimit.LONG_TEXT}
             identifier={identifier}
             readOnly={readOnly}
             label={name}
