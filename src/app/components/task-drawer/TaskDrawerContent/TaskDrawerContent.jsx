@@ -395,6 +395,10 @@ const TaskDrawerContent = props => {
                     value={selectedParentTask?.description}
                     initOnClick
                     showCharCount
+                    taskListIdentifier={
+                      selectedParentTask?.taskList?.taskListIdentifier
+                    }
+                    mentions={selectedParentTask?.taskMentions}
                   />
                 </ReferenceParentName>
               </ReferenceParentButton>

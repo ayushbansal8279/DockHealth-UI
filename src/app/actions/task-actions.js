@@ -458,7 +458,11 @@ export function toggleCompleteTask(
     // eslint-disable-next-line import/namespace
     return TaskApi[apiEndpoint](task)
       .then(() => {
-        if (!task.parentTaskIdentifier && !isBundleTask) {
+        if (
+          !task.parentTaskIdentifier &&
+          !isBundleTask &&
+          newStatus === 'COMPLETE'
+        ) {
           setTimeout(
             () =>
               dispatch({

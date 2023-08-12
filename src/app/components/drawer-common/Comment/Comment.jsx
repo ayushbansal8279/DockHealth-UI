@@ -19,7 +19,13 @@ import {
   EditCommentButton,
 } from './styled';
 
-const Comment = ({ comment, onDelete, onUpdate, currentUser }) => {
+const Comment = ({
+  comment,
+  onDelete,
+  onUpdate,
+  currentUser,
+  selectedTask,
+}) => {
   const {
     comment: commentContent,
     creator,
@@ -88,6 +94,8 @@ const Comment = ({ comment, onDelete, onUpdate, currentUser }) => {
               onChange={handleTextEditorChange}
               initOnClick
               showCharCount
+              taskListIdentifier={selectedTask?.taskList?.taskListIdentifier}
+              mentions={selectedTask?.taskMentions}
             />
           </CommentText>
           <CommentDetails>{commentDetails}</CommentDetails>

@@ -1,8 +1,8 @@
 /* eslint-disable sonarjs/cognitive-complexity */
-import isEmpty from 'ramda/src/isEmpty';
+// import isEmpty from 'ramda/src/isEmpty';
 import * as ActionTypes from 'actions/action-types';
-import { checkIfTaskMatchesFilters } from 'helpers/filters-helpers';
-import { checkIfTaskMatchesSearch } from 'helpers/search-helpers';
+// import { checkIfTaskMatchesFilters } from 'helpers/filters-helpers';
+// import { checkIfTaskMatchesSearch } from 'helpers/search-helpers';
 import {
   TaskStatus,
   updateNestedTask,
@@ -374,8 +374,8 @@ const TaskBaseReducer = (state, action, updateStateCallback) => {
       const {
         tasksToUpdate,
         fields: dataToUpdate,
-        filters,
-        searchValue,
+        // filters,
+        // searchValue,
       } = action;
       // const updateTasksFromAction = (task) => {
       //   let updatedTask = task;
@@ -486,7 +486,6 @@ const TaskBaseReducer = (state, action, updateStateCallback) => {
 
       return updateStateCallback(state, updateTasksFromAction);
     }
-
 
     case ActionTypes.ADD_SUBTASK: {
       const { subtask } = action;
