@@ -132,6 +132,8 @@ const CustomFieldRichTextEditor = React.forwardRef(
             onBlur={handleBlur}
             initOnClick
             showCharCount
+            taskListIdentifier={task?.taskList?.taskListIdentifier}
+            mentions={task?.taskMentions}
           />
         </CustomTextEditorContainer>
       </CustomTextEditor>

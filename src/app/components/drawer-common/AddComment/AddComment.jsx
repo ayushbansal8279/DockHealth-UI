@@ -67,6 +67,7 @@ const AddComment = ({ autoFocus, onAdd }) => {
           onChange={handleTextEditorChange}
           onBlur={handleTextEditorBlur}
           onKeyEnter={handleTextEditorKeyEnter}
+          taskListIdentifier={selectedTask?.taskList?.taskListIdentifier}
           mentions={selectedTask?.taskMentions}
           initOnClick
           showCharCount
