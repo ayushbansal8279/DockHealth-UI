@@ -317,12 +317,7 @@ const TaskTemplateGroupHeader = ({
   const menuOptions = useMemo(() => {
     // eslint-disable-next-line unicorn/prevent-abbreviations
 
-    let options = [
-      {
-        name: 'Move to group',
-        onClick: handleMoveGroupTask,
-      },
-    ];
+    let options = [];
 
     if (taskListRestrictions?.workflowAddTask !== DISABLED) {
       options = [
@@ -352,36 +347,6 @@ const TaskTemplateGroupHeader = ({
       ];
     }
 
-    if (restrictions?.duplicate !== DISABLED) {
-      options = [
-        ...options,
-        {
-          name: 'Duplicate',
-          onClick: () =>
-            dispatch(
-              ModalActions.openModal('AttachmentsDuplicate', {
-                confirm: () => {
-                  dispatch(WorkflowActions.duplicateWorkflow(identifier, true));
-                },
-                skip: () => {
-                  dispatch(
-                    WorkflowActions.duplicateWorkflow(identifier, false),
-                  );
-                },
-              }),
-            ),
-        },
-      ];
-    }
-
-    options = [
-      ...options,
-      {
-        name: 'Move to group',
-        onClick: handleMoveGroupTask,
-      },
-    ];
-
     if (restrictions?.move !== DISABLED) {
       options = [
         ...options,
@@ -401,6 +366,36 @@ const TaskTemplateGroupHeader = ({
                       listIdentifier,
                       taskGroupIdentifier,
                     ),
+                  );
+                },
+              }),
+            ),
+        },
+      ];
+    }
+
+    options = [
+      ...options,
+      {
+        name: 'Move to group',
+        onClick: handleMoveGroupTask,
+      },
+    ];
+
+    if (restrictions?.duplicate !== DISABLED) {
+      options = [
+        ...options,
+        {
+          name: 'Duplicate',
+          onClick: () =>
+            dispatch(
+              ModalActions.openModal('AttachmentsDuplicate', {
+                confirm: () => {
+                  dispatch(WorkflowActions.duplicateWorkflow(identifier, true));
+                },
+                skip: () => {
+                  dispatch(
+                    WorkflowActions.duplicateWorkflow(identifier, false),
                   );
                 },
               }),

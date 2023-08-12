@@ -69,7 +69,16 @@ import 'tributejs/dist/tribute.css';
 import './styles.css';
 
 const md = new MarkdownIt();
-const turndownService = new TurndownService();
+let turndownService = new TurndownService();
+turndownService = turndownService.addRule('people-mention', {
+  filter: ['span'],
+  // eslint-disable-next-line func-names, object-shorthand
+  replacement: function (content, node, options) {
+    // eslint-disable-next-line sonarjs/prefer-immediate-return
+    const alteredValue = `@{${node.attributes.data.nodeValue}}`;
+    return alteredValue;
+  },
+});
 
 const FROALA_PRODUCT_KEY =
   'MZC1rE1D4D3I4A16B11D8jF1QUg1Xc2OZE1ABVJRDRNGGUH1ITrA1C7A6D5E1D4D4E1B10D7==';
@@ -114,6 +123,20 @@ const toolbarOptions = [
   // 'markdown',
 ];
 
+const processMarkdownValue = (value, mentions) => {
+  const htmlValue = md.render(value || '');
+  let processedValue = htmlValue;
+  if (mentions && value !== '') {
+    for (const mentionInfo of mentions) {
+      processedValue = processedValue.replace(
+        `@{${mentionInfo.identifier}}`,
+        `<span class="fr-deletable fr-tribute" data="${mentionInfo.identifier}"><a>@${mentionInfo.name}</a></span>`,
+      );
+    }
+  }
+  return processedValue || '';
+};
+
 const RichTextEditor = React.forwardRef(
   (
     {
@@ -154,13 +177,14 @@ const RichTextEditor = React.forwardRef(
       showCharCount = false,
       initOnClick = false,
       taskListIdentifier,
+      mentions,
     },
     outerReference,
   ) => {
     const [rawTextState, setRawTextState] = useState(initialValue);
 
     const [editorState, setEditorState] = useState(
-      md.render(rawTextState || ''),
+      processMarkdownValue(rawTextState || '', mentions),
     );
 
     useEffect(() => {
@@ -175,9 +199,9 @@ const RichTextEditor = React.forwardRef(
 
     useEffect(() => {
       if (defaultValue !== undefined && defaultValue !== '') {
-        setEditorState(md.render(defaultValue || ''));
+        setEditorState(processMarkdownValue(defaultValue || '', mentions));
       }
-    }, [defaultValue]);
+    }, [defaultValue, mentions]);
 
     useEffect(() => {
       if (reset) {
@@ -279,7 +303,7 @@ const RichTextEditor = React.forwardRef(
       },
       // eslint-disable-next-line func-names, object-shorthand
       selectTemplate: function (item) {
-        return `<span class="fr-deletable fr-tribute"><a>@${item.original.name}</a></span>`;
+        return `<span class="fr-deletable fr-tribute" data="${item.original.identifier}"><a>@${item.original.name}</a></span>`;
       },
     });
 

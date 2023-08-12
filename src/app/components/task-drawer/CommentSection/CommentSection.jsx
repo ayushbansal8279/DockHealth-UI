@@ -49,6 +49,7 @@ const CommentSection = ({ selectedTask }) => {
             onDelete={removeComment}
             onUpdate={updateComment}
             taskListIdentifier={taskListIdentifier}
+            selectedTask={selectedTask}
           />
         ))}
       </CommentsListContainer>

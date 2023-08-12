@@ -28,7 +28,7 @@ export function updateTasksStateCallback(state, taskData) {
   if (typeof taskData === 'function') {
     taskItem = taskData(state.tasksMap);
   }
-  const taskIdentifier = taskItem.identifier ?? taskItem.taskIdentifier;
+  const taskIdentifier = taskItem?.identifier ?? taskItem?.taskIdentifier;
 
   const updatedMetaData = state.tasksMap[taskIdentifier]?.taskMetaData?.map(
     (tmd) => {
@@ -51,9 +51,10 @@ export function updateTasksStateCallback(state, taskData) {
       ) === undefined,
   );
 
-  const mergedTaskMetaData = updatedMetaData.concat(newMetaData);
+  const mergedTaskMetaData = updatedMetaData?.concat(newMetaData);
 
   const newMap = {};
+  // taskItem is null incase task is removed
   if (taskItem) {
     if (taskItem?.itemType) {
       if (taskItem?.itemType === TaskItemType.TASK) {
