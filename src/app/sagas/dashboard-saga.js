@@ -23,9 +23,13 @@ import {
   searchTasksForOrganizationGroupedByImplicitGroups,
   getCalendarTasks,
 } from 'api/dashboard-api';
-import { DashboardTasksTab } from 'helpers/dashboard-helpers';
-import { calendarDateRangeSelector } from 'selectors/calendar-tasks-selectors';
 import {
+  DashboardTasksTab,
+  getGroupByDueDate,
+} from 'helpers/dashboard-helpers';
+import * as calendarTasksSelectors from 'selectors/calendar-tasks-selectors';
+import {
+  dashboardTasksSelector,
   dashboardGroupTasksCountSelector,
   dashboardTabNameSelector,
   dashboardSelectedFiltersSelector,
@@ -279,30 +283,30 @@ function* updateTaskStartDateSuccess({ task: taskToChange, startDate }) {
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 function* updateTaskDueDateSuccess({ task: taskToChange, dueDate }) {
-  // const tabName = yield select(dashboardTabNameSelector);
-  // const task = { ...taskToChange, dueDate };
-  // if (tabName) {
-  //   const groups = yield select(dashboardTasksSelector);
-  //   yield all(
-  //     groups
-  //       .filter(
-  //         ({ groupType }) =>
-  //           groupType === getGroupByDueDate(task.dueDate, tabName) ||
-  //           groupType === getGroupByDueDate(taskToChange.dueDate, tabName),
-  //       )
-  //       .map(({ groupType }) =>
-  //         put(DashboardActions.getDashboardTasksForGroup(groupType)),
-  //       ),
-  //   );
-  //   const dashboardGroups = yield call(
-  //     getDashboardTaskStasForImplicitGroups,
-  //     tabName,
-  //   );
-  //   yield put({
-  //     type: ActionTypes.GET_DASHBOARD_GROUP_STATS_SUCCESS,
-  //     tasksList: dashboardGroups,
-  //   });
-  // }
+  const tabName = yield select(dashboardTabNameSelector);
+  const task = { ...taskToChange, dueDate };
+  if (tabName) {
+    const groups = yield select(dashboardTasksSelector);
+    yield all(
+      groups
+        .filter(
+          ({ groupType }) =>
+            groupType === getGroupByDueDate(task.dueDate, tabName) ||
+            groupType === getGroupByDueDate(taskToChange.dueDate, tabName),
+        )
+        .map(({ groupType }) =>
+          put(DashboardActions.getDashboardTasksForGroup(groupType)),
+        ),
+    );
+    const dashboardGroups = yield call(
+      getDashboardTaskStasForImplicitGroups,
+      tabName,
+    );
+    yield put({
+      type: ActionTypes.GET_DASHBOARD_GROUP_STATS_SUCCESS,
+      tasksList: dashboardGroups,
+    });
+  }
 }
 
 function* selectDashboardFilters() {
@@ -325,7 +329,9 @@ function* updateTasksSuccess({ fields }) {
 function* getDashboardCalendarTasks() {
   try {
     const tabName = yield select(dashboardTabNameSelector);
-    const { startDate, endDate } = yield select(calendarDateRangeSelector);
+    const { startDate, endDate } = yield select(
+      calendarTasksSelectors.calendarDateRangeSelector,
+    );
     if (!tabName) return;
 
     const tasks = yield call(getCalendarTasks, tabName, startDate, endDate);
