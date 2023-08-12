@@ -118,6 +118,7 @@ const RichTextEditor = React.forwardRef(
   (
     {
       value: initialValue, // initial value
+      defaultValue,
       height = 100,
       // maxHeight,
       disableToolbar = false,
@@ -163,10 +164,20 @@ const RichTextEditor = React.forwardRef(
     );
 
     useEffect(() => {
-      if (editorState !== '' && initialValue && initialValue === '') {
+      if (
+        editorState !== '' &&
+        initialValue !== undefined &&
+        initialValue === ''
+      ) {
         setEditorState('');
       }
-    }, [initialValue, editorState]);
+    }, [editorState, initialValue]);
+
+    useEffect(() => {
+      if (defaultValue !== undefined && defaultValue !== '') {
+        setEditorState(md.render(defaultValue || ''));
+      }
+    }, [defaultValue]);
 
     useEffect(() => {
       if (reset) {
@@ -384,8 +395,8 @@ const RichTextEditor = React.forwardRef(
           editor.toolbar.show();
           editor.$second_tb?.show();
         } else {
-          editor.toolbar.hide();
-          editor.$second_tb?.hide();
+          // editor.toolbar.hide();
+          // editor.$second_tb?.hide();
         }
       }
     }, [editor, showToolbar]);

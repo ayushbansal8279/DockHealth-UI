@@ -7,6 +7,7 @@ import { selectedTaskSelector } from 'selectors/task-drawer-selectors';
 import { CommunicationType } from 'helpers/task-helpers';
 import TemplateAutoComplete from 'components/common/TemplateAutoComplete/TemplateAutoComplete';
 import { closeModal } from 'modal/actions';
+import { getTemplateDetails } from 'api/template-api';
 import {
   CloseIcon,
   CloseIconButton,
@@ -56,7 +57,11 @@ const SendSecureMessageFromTaskModal = () => {
                 setMessage('');
                 return;
               }
-              setMessage(newValue?.body || '');
+              getTemplateDetails(newValue?.identifier, identifier).then(
+                (data) => {
+                  setMessage(data?.details ?? '');
+                },
+              );
             }}
           />
           <Input
