@@ -1,6 +1,6 @@
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { usePrevious } from 'react-use';
-import { Autocomplete } from '@mui/lab';
+import { Autocomplete, Grid } from '@mui/material';
 import { useDispatch, useSelector } from 'react-redux';
 import Highlighter from 'react-highlight-words';
 import { getUserGroupDetailsSelector } from 'selectors/user-groups-selectors';
@@ -10,7 +10,6 @@ import differenceWith from 'ramda/src/differenceWith';
 import eqProps from 'ramda/src/eqProps';
 import pluck from 'ramda/src/pluck';
 import { openModal } from 'modal/actions';
-import { Grid } from '@mui/material';
 import Spacing from 'components/common/Spacing';
 import Button from 'components/common/Button/Button';
 import Input from 'components/common/Input/Input';

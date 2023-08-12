@@ -1,6 +1,6 @@
 import React, { useState, useMemo } from 'react';
 import { useDispatch } from 'react-redux';
-import { Autocomplete } from '@mui/lab';
+import { Autocomplete } from '@mui/material';
 import { useBoolean } from 'hooks/useBoolean';
 import { showGlobalErrorAlert } from 'alert/actions';
 import { addTaskDependencyLink } from 'actions/task-actions';

@@ -1,12 +1,11 @@
 import React, { useEffect, useRef, useState } from 'react';
-import { Autocomplete } from '@mui/lab';
+import { Autocomplete, Chip } from '@mui/material';
 import CircularProgress from '@mui/material/CircularProgress';
 import styled from 'styled-components';
 import { getAllContacts } from 'api/contacts-api';
 import { matchSorter } from 'match-sorter';
 import { CommunicationType } from 'helpers/task-helpers';
-import { Chip, TextField } from '@mui/material';
-import Checkbox from 'components/common/Checkbox/Checkbox';
+// import Checkbox from 'components/common/Checkbox/Checkbox';
 import Input from '../Input/Input';
 import {
   RenderOptionStyled,
