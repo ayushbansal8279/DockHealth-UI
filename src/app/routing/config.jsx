@@ -199,7 +199,7 @@ export const SETTINGS_ROUTES = [
   {
     path: '/contacts',
     RouteComponent: Contacts,
-    permissions: [CAN_ACCESS_SETTINGS_PAGE],
+    permissions: [CAN_ACCESS_PEOPLE_LIST_PAGE],
   },
 ];
 
