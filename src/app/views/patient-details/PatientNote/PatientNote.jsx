@@ -40,6 +40,7 @@ const PatientNote = ({
   const dispatch = useDispatch();
   const [modalIsOpened, setModalIsOpened] = useState(false);
   const [isEdited, setIsEdited] = useState(false);
+  const [isValueReset, setValueReset] = useState(false);
   const {
     patientNoteIdentifier,
     dateCreated,
@@ -89,7 +90,10 @@ const PatientNote = ({
     if (isEditable) {
       options.unshift({
         name: 'Edit',
-        onClick: () => setIsEdited(true),
+        onClick: () => {
+          setIsEdited(true);
+          setValueReset(false);
+        },
       });
       options.push({
         name: 'Delete',
@@ -102,6 +106,7 @@ const PatientNote = ({
 
   const handleCancel = useCallback(() => {
     setIsEdited(false);
+    setValueReset(true);
     setNoteState(description);
   }, [description]);
 
@@ -143,6 +148,7 @@ const PatientNote = ({
 
   const handleFocus = useCallback(() => {
     setIsEdited(true);
+    setValueReset(false);
   }, []);
 
   const updateNote = useCallback(async () => {
@@ -167,10 +173,10 @@ const PatientNote = ({
             <RichTextEditor
               readonly={!isEdited}
               showToolbar={isEdited}
-              value={description}
+              value={noteState}
               onChange={handleTextEditorChange}
               onFocus={handleFocus}
-              reset={!isEdited}
+              reset={isValueReset}
               initOnClick
               showCharCount
             />

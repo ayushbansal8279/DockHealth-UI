@@ -163,7 +163,11 @@ const RichTextEditor = React.forwardRef(
     );
 
     useEffect(() => {
-      if (editorState !== '' && initialValue && initialValue === '') {
+      if (
+        editorState !== '' &&
+        initialValue !== undefined &&
+        initialValue === ''
+      ) {
         setEditorState('');
       }
     }, [initialValue, editorState]);
@@ -384,8 +388,8 @@ const RichTextEditor = React.forwardRef(
           editor.toolbar.show();
           editor.$second_tb?.show();
         } else {
-          editor.toolbar.hide();
-          editor.$second_tb?.hide();
+          // editor.toolbar.hide();
+          // editor.$second_tb?.hide();
         }
       }
     }, [editor, showToolbar]);
