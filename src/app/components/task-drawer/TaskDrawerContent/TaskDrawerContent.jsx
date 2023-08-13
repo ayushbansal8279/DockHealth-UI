@@ -60,7 +60,7 @@ import {
 
 const { DISABLED, READ_ONLY } = SINGLE_TASK_RESTRICTIONS_OPTIONS;
 
-const TaskDrawerContent = props => {
+const TaskDrawerContent = (props) => {
   const {
     isInbox,
     onTaskUpdate = () => {},
@@ -80,7 +80,7 @@ const TaskDrawerContent = props => {
     onClickParentTask,
     onDelete,
     onDuplicate,
-    parentDescriptionState,
+    // parentDescriptionState,
     selectedParentTask,
     selectedTask,
     // setParentDescriptionState,
@@ -381,11 +381,14 @@ const TaskDrawerContent = props => {
         {isSubtask && (
           <Grid item xs={12} style={styleFullRowThin(isMobile)}>
             <Spacing vertical={2} />
+            <Typography sx={{ fontWeight: 'bold' }} component="span">
+              Parent Task:{' '}
+            </Typography>
             {selectedParentTask ? (
               <ReferenceParentButton
                 type="button"
                 onClick={onClickParentTask}
-                style={{ width: '100%' }}
+                style={{ width: '85%' }}
               >
                 <ReferenceParentName>
                   <RichTextEditor
@@ -407,20 +410,6 @@ const TaskDrawerContent = props => {
             )}
           </Grid>
         )}
-        {/* {!isSubtask && (parentBundle || taskTemplate) && (
-          <Grid item xs={6} style={styleFullRowThin(isMobile)}>
-            <Spacing horizontal={2} />
-            <Typography component="span">WorkFlow: </Typography>
-            <ReferenceParentButton
-              type="button"
-              onClick={handleWorkflowReferenceClick}
-            >
-              <ReferenceParentName>
-                {isTemplateTask ? taskTemplate.name : parentBundle.groupName}
-              </ReferenceParentName>
-            </ReferenceParentButton>
-          </Grid>
-        )} */}
         <Grid item xs={12} style={styleFullRow(isMobile)}>
           <TaskDescription
             readOnly={restrictions?.description === READ_ONLY}

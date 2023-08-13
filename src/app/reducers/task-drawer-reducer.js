@@ -202,9 +202,9 @@ const TaskReducer = (state = initialState, action) => {
               },
             };
           }
+          // donot update selected task for another task not already selected
           return {
             ...reducerState,
-            selectedTask: newTask,
           };
         });
       }

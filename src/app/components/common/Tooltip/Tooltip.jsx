@@ -1,6 +1,7 @@
 import React from 'react';
-import MuiTooltip from '@mui/material/Tooltip';
+// import MuiTooltip from '@mui/material/Tooltip';
 import { bool, node, oneOf, oneOfType, string } from 'prop-types';
+import { MuiTooltip } from './styled';
 
 const Tooltip = ({
   children,

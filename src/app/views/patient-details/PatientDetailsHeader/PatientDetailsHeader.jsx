@@ -103,7 +103,7 @@ const PatientDetailsHeader = () => {
             <Box flex="1 0 0" display="flex" alignItems="center">
               <Grid container alignItems="center">
                 <Box flexBasis={30}>
-                  {!embeddedMode && (
+                  {(!embeddedMode || cameFrom) && (
                     <button type="button" onClick={goBack}>
                       <img
                         src={ArrowLeftIcon}
