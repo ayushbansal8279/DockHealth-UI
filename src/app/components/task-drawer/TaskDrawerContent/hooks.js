@@ -12,19 +12,15 @@ import {
 import { useHistory, useParams } from 'react-router-dom';
 import { useDispatch, useSelector, batch } from 'react-redux';
 import moment from 'moment';
-// import { EditorState } from 'draft-js';
 import { useMentionsEditorState } from 'components/common/TextEditor/use-mentions-editor-state';
-// import { createMentionEntities } from 'components/common/TextEditor/create-mention-entities';
-// import * as TaskApi from 'api/task-api';
 import {
   partialUpdateTask,
   storeAsCurrentTask,
   deleteTask,
   duplicateTask,
-  // markTaskAsRead,
+  markTaskAsRead,
   refreshTask,
 } from 'actions/task-actions';
-// import { UPDATE_TASK_SUCCESS } from 'actions/action-types';
 import {
   openDrawer,
   closeDrawer,
@@ -36,6 +32,7 @@ import {
   taskDrawerOpenSelector,
   taskDrawerFocusFieldSelector,
 } from 'selectors/task-drawer-selectors';
+import { taskLookupSelector } from 'selectors/task-details-selectors';
 import {
   onTaskDrawerTaskDeleted,
   onTaskDrawerTaskDuplicated,
@@ -71,8 +68,14 @@ const initializeTaskDrawerHooks = ({
   const taskListIdentifier = taskList?.taskListIdentifier;
   const selectedTaskIdentifier = selectedTask?.taskIdentifier;
   const isSubtask = !!selectedTask?.parentTaskIdentifier;
-  const parentTask = selectedTask?.parentTask;
   const selectedTaskDueDate = selectedTask?.dueDate;
+  const parentTask = useSelector((state) => {
+    return taskLookupSelector(
+      state,
+      origin,
+      selectedTask?.parentTaskIdentifier,
+    );
+  });
 
   const clearFormStates = () => {
     setSelectedParentTask(null);
@@ -157,13 +160,23 @@ const initializeTaskDrawerHooks = ({
   }, [selectedParentTask]);
 
   useEffect(() => {
+    // eslint-disable-next-line sonarjs/no-collapsible-if
     if (
       taskDrawerOpen &&
       taskList !== undefined &&
       taskListIdentifier &&
       selectedTask?.taskIdentifier
     ) {
-      // dispatch(markTaskAsRead(selectedTask?.taskIdentifier));
+      // eslint-disable-next-line unicorn/no-lonely-if
+      if (
+        selectedTask?.updated ||
+        selectedTask?.updatedComment ||
+        selectedTask?.updatedLabel ||
+        selectedTask?.updatedAttachment ||
+        selectedTask?.updatedDueDate
+      ) {
+        dispatch(markTaskAsRead(selectedTask?.taskIdentifier));
+      }
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [selectedTaskIdentifier, taskDrawerOpen]);
