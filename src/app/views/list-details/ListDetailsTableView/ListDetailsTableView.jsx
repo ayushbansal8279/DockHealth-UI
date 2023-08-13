@@ -171,11 +171,9 @@ const ListDetailsTableView = () => {
         sort?.key
       ) {
         refreshTab();
-      } else {
-        refreshFilters();
       }
     },
-    [refreshFilters, refreshTab, selectedFilters, sort],
+    [refreshTab, selectedFilters, sort],
   );
 
   const handleTaskDelete = useCallback(() => {
@@ -309,9 +307,12 @@ const ListDetailsTableView = () => {
         data.task?.taskList.taskListIdentifier === taskListIdentifier
       ) {
         if (
-          (data.eventType?.startsWith('CREATE_TASK') ||
+          ((data.eventType?.startsWith('CREATE_TASK') ||
             data.eventType?.startsWith('DUPLICATE_TASK')) &&
-          data.task?.creator.userIdentifier !== currentUserIdentifier
+            data.task?.creator.userIdentifier !== currentUserIdentifier) ||
+          (data.eventType?.startsWith('MARK_INCOMPLETE') &&
+            data.initiatedByIdentifier !== currentUserIdentifier &&
+            !data.workflowIdentifier) // not part of workflow
         ) {
           if (data.task?.taskGroups && data.task?.taskGroups.length > 0) {
             loadTasksForTaskGroup({
@@ -322,8 +323,18 @@ const ListDetailsTableView = () => {
           } else {
             refreshTab();
           }
-        } else if (data.task.taskIdentifier) {
+        } else if (
+          data.eventType?.startsWith('MARK_COMPLETE') &&
+          // data.initiatedByIdentifier !== currentUserIdentifier &&
+          !data.workflowIdentifier // not part of workflow
+        ) {
           actions.refreshTask(data.task.identifier);
+          if (data.task) {
+            actions.makeTaskDisappear(data.task);
+          }
+          dispatch(ListDetailsActions.getTasksGroupsList());
+        } else if (data.task?.taskIdentifier) {
+          actions.refreshTask(data.task?.identifier);
         }
       }
     };
@@ -361,6 +372,7 @@ const ListDetailsTableView = () => {
     actions,
     dispatch,
     loadTasksForTaskGroup,
+    currentUser,
   ]);
 
   useEffect(() => {
