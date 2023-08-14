@@ -15,6 +15,18 @@ export const htmlToMarkdown = (html) => {
   return turndownService.turndown(html);
 };
 
-export const markdowntoHTML = (markdownText) => {
-  return md.render(markdownText || '');
+export const markdowntoHTML = (markdownText, mentions) => {
+  const htmlValue = md.render(markdownText || '');
+  let processedValue = htmlValue;
+  if (mentions && markdownText !== '') {
+    for (const mentionInfo of mentions) {
+      processedValue = processedValue.replace(
+        `@{${mentionInfo.identifier}}`,
+        `<span class="fr-deletable fr-tribute" data="${mentionInfo.identifier}"><a>**@${mentionInfo.name}</a></span>`,
+      );
+    }
+  }
+  processedValue = processedValue.replace('<p>', '');
+  processedValue = processedValue.replace('</p>', '');
+  return processedValue || '';
 };
