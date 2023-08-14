@@ -109,8 +109,6 @@ const TaskItemDetails = ({ task, onClick, readOnly }) => {
                 onChange={handleChange}
                 onBlur={handleTextEditorBlur(closePopover)}
                 initOnClick
-                // showToolbar
-                // multiline
                 showCharCount
               />
             </CustomTextEditor>

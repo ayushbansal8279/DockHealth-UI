@@ -73,9 +73,9 @@ const QuickAddSubtask = () => {
     >
       <Box flex={1} overflow="hidden">
         <RichTextEditor
+          placeholder="Add a subtask"
           ref={editorReference}
           value={currentValue}
-          placeholder="Add a subtask"
           onChange={handleTextEditorChange}
           onKeyEnter={handleTextEditorKeyEnter}
           showToolbar={false}
