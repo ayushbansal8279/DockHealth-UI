@@ -141,6 +141,12 @@ export const userHasDockLiteFeatureSelector = createSelector(
     organizationAvailableFeatures?.includes('DOCK_LITE'),
 );
 
+export const userHasCustomProfilesFeatureSelector = createSelector(
+  userProfileSelector,
+  ({ organizationAvailableFeatures }) =>
+    organizationAvailableFeatures?.includes('CUSTOM_PROFILES'),
+);
+
 export const userSetupClientViewSelector = createSelector(
   userViewSetupSelector,
   ({ mainSetup }) => mainSetup,
