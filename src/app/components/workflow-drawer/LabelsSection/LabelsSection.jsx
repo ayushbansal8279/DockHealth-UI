@@ -120,9 +120,8 @@ const LabelsSection = ({ disabled: disabledProperty }) => {
   const dispatch = useDispatch();
   const autoFocusFieldName = useSelector(workflowAutofocusFieldSelector);
   const selectedLabelsFromStoreLength = selectedLabelsFromStore?.length;
-  const previousSelectedLabelsFromStoreLength = usePrevious(
-    selectedLabelsFromStoreLength,
-  );
+  const previousSelectedLabelsFromStoreLength =
+    usePrevious(selectedLabelsFromStoreLength) || 0;
   const isTemplateWorkflow = checkIfTemplateWorkflow(selectedWorkflow);
 
   const getAllLabels = useCallback(async () => {
@@ -130,8 +129,12 @@ const LabelsSection = ({ disabled: disabledProperty }) => {
   }, [dispatch, isTemplateWorkflow, taskListIdentifier]);
 
   useEffect(() => {
-    setLabelsList(labels);
-  }, [labels]);
+    if (labels && labels?.length > 0) {
+      setLabelsList(labels);
+    } else {
+      setLabelsList(selectedLabelsFromStore);
+    }
+  }, [labels, selectedLabelsFromStore]);
 
   useEffect(() => {
     if (selectedLabelsFromStoreLength > previousSelectedLabelsFromStoreLength) {
@@ -243,7 +246,7 @@ const LabelsSection = ({ disabled: disabledProperty }) => {
             ) {
               return previousLabels;
             }
-            handleAddLabel(option?.labelIdentifier, option?.labelName);
+            handleAddLabel(option);
             return [...previousLabels, option];
           });
         },
