@@ -9,7 +9,7 @@ import DeleteIcon from '@mui/icons-material/Delete';
 import EditIcon from '@mui/icons-material/Edit';
 import { showGlobalErrorAlert } from 'alert/actions';
 import * as CustomFieldsApi from 'api/custom-fields-api';
-import { FieldTypeLabel } from 'helpers/field-type-helpers';
+import { FieldType, FieldTypeLabel } from 'helpers/field-type-helpers';
 import { CategoryLabel } from 'helpers/patient-details-helpers';
 import { openModal } from 'modal/actions';
 import AddButton from 'components/common/AddButton/AddButton';
@@ -170,6 +170,12 @@ const PatientCustomFieldsView = () => {
           ))
       ) : (
         <>
+          <CenterBox>
+            <AddButton onClick={handleAddFieldClick}>
+              Add custom field
+            </AddButton>
+          </CenterBox>
+          <Box p={1} />
           {customFields?.length > 0 ? (
             <>
               <CustomFieldItem>
@@ -219,7 +225,13 @@ const PatientCustomFieldsView = () => {
                               </CustomFieldCell>
                               <CustomFieldCell>
                                 <CustomFieldText>
-                                  {FieldTypeLabel[field.fieldType]}
+                                  {field.fieldType === FieldType.RELATIONSHIP
+                                    ? `${FieldTypeLabel[field.fieldType]} - ${
+                                        field.selectedProfileType?.label ??
+                                        field.relatedProfileType?.name ??
+                                        ''
+                                      }`
+                                    : FieldTypeLabel[field.fieldType]}
                                 </CustomFieldText>
                               </CustomFieldCell>
                               <CustomFieldCell>
@@ -278,10 +290,6 @@ const PatientCustomFieldsView = () => {
           )}
         </>
       )}
-      <Box p={1} />
-      <CenterBox>
-        <AddButton onClick={handleAddFieldClick}>Add custom field</AddButton>
-      </CenterBox>
     </>
   );
 };

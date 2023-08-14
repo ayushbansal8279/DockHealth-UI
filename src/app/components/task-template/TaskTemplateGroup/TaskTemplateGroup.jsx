@@ -52,7 +52,7 @@ const TaskTemplateGroup = ({
     parentTaskGroupIdentifier,
     taskListIdentifier,
     isFetchingTasks,
-  } = templateGroup || {};
+  } = templateGroup ?? {};
 
   const { SHOW_WORKFLOW_DETAILS, SHOW_WORKFLOW_COMPLETED_TASKS } = viewSetup;
   const { innerRef, draggableProps } = draggableProvided;

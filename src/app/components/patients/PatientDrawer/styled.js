@@ -11,7 +11,7 @@ export const MoreActinsWrapper = styled.div`
 `;
 
 export const ContentWrapper = styled.div`
-  padding: 0px 20px 48px 10px;
+  padding: 0px 10px 48px 10px;
   box-sizing: border-box;
 `;
 
@@ -27,7 +27,7 @@ export const StickyHeader = styled.div`
   position: sticky;
   top: 0;
   left: 0;
-  padding: 20px;
+  padding: 10px 10px;
   display: flex;
   justify-content: space-between;
   z-index: 2;
@@ -45,7 +45,6 @@ export const DrawerWrapper = styled(Drawer)`
   .MuiDrawer-paper {
     width: 500px;
   }
-  
 `;
 
 export const UpgradePlanContainer = styled.div`

@@ -127,7 +127,7 @@ const PatientDetailsHeader = () => {
                   {patient?.patientLabels?.map(
                     ({ labelIdentifier, labelName }) => (
                       <Box
-                        key={labelIdentifier}
+                        key={Math.random() + 1000}
                         display="inline-block"
                         py="1px"
                       >

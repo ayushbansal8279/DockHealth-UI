@@ -10,7 +10,7 @@ import DeleteIcon from '@mui/icons-material/Delete';
 import EditIcon from '@mui/icons-material/Edit';
 import { showGlobalErrorAlert } from 'alert/actions';
 import * as CustomFieldsApi from 'api/custom-fields-api';
-import { FieldTypeLabel } from 'helpers/field-type-helpers';
+import { FieldType, FieldTypeLabel } from 'helpers/field-type-helpers';
 import { CategoryLabel } from 'helpers/task-details-helpers';
 import { openModal } from 'modal/actions';
 import AddButton from 'components/common/AddButton/AddButton';
@@ -183,6 +183,14 @@ const TaskCustomFieldsView = ({ taskListIdentifier, editable = false }) => {
           ))
       ) : (
         <>
+          <CenterBox>
+            {editable && (
+              <AddButton onClick={handleAddFieldClick}>
+                Add custom field
+              </AddButton>
+            )}
+          </CenterBox>
+          <Box p={1} />
           {customFields?.length > 0 ? (
             <>
               <CustomFieldItem editable={editable} type="TASK">
@@ -227,7 +235,11 @@ const TaskCustomFieldsView = ({ taskListIdentifier, editable = false }) => {
                             </CustomFieldCell>
                             <CustomFieldCell>
                               <CustomFieldText>
-                                {FieldTypeLabel[field.fieldType]}
+                                {field.fieldType === FieldType.RELATIONSHIP
+                                  ? `${FieldTypeLabel[field.fieldType]} - ${
+                                      field.relatedProfileType?.name
+                                    }`
+                                  : FieldTypeLabel[field.fieldType]}
                               </CustomFieldText>
                             </CustomFieldCell>
                             <CustomFieldCell>
@@ -278,12 +290,6 @@ const TaskCustomFieldsView = ({ taskListIdentifier, editable = false }) => {
           )}
         </>
       )}
-      <Box p={1} />
-      <CenterBox>
-        {editable && (
-          <AddButton onClick={handleAddFieldClick}>Add custom field</AddButton>
-        )}
-      </CenterBox>
     </>
   );
 };

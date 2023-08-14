@@ -64,6 +64,27 @@ export const getAdditionalTaskOptions = ({
   },
 ];
 
+export const getAdditionalProfileOptions = ({
+  displayOptionsState,
+  handleDisplayOptionChange,
+}) => [
+  {
+    label: 'Profile Name',
+    key: 'PROFILE_NAME',
+    value: !!displayOptionsState?.displayOptions?.find(
+      (option) => option === 'PROFILE_NAME',
+    ),
+    onChange: (value) => handleDisplayOptionChange(value, 'PROFILE_NAME'),
+  },
+  {
+    label: 'Profile Header',
+    key: 'PROFILE_HEADER',
+    value: !!displayOptionsState?.displayOptions?.find(
+      (option) => option === 'PROFILE_HEADER',
+    ),
+    onChange: (value) => handleDisplayOptionChange(value, 'PROFILE_HEADER'),
+  },
+];
 export const getAdditionalOptions = ({
   displayOptionsState,
   handleDisplayOptionChange,
@@ -86,6 +107,13 @@ export const getAdditionalOptions = ({
 
     case 'TASK': {
       return getAdditionalTaskOptions({
+        displayOptionsState,
+        handleDisplayOptionChange,
+      });
+    }
+
+    case 'PROFILE': {
+      return getAdditionalProfileOptions({
         displayOptionsState,
         handleDisplayOptionChange,
       });

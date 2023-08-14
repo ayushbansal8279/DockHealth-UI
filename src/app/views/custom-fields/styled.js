@@ -23,7 +23,7 @@ export const EmptyListPlaceholder = styled.p`
   color: ${palette.coolGrey1};
 `;
 export const CenterBox = styled.div`
-  text-align: center;
+  text-align: right;
 `;
 
 export const CustomFieldItem = styled.div`

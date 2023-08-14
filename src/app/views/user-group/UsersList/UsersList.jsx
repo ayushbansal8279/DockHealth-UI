@@ -3,30 +3,16 @@ import { useHistory } from 'react-router-dom';
 import { Grid } from '@mui/material';
 import { createFilter } from 'react-search-input';
 import isEmpty from 'ramda/src/isEmpty';
-import { capitalize } from 'helpers/capitalize';
 import Spacing from 'components/common/Spacing';
 import { RobotoTypography } from 'styles/theme';
+import DataGrid, { Data } from 'ui-toolkit/Composite/DataGrid';
 import UserAvatar from 'components/user/UserAvatar/UserAvatar';
 import {
-  StyledDataGrid,
   ListContainer,
   ListEntryContainer,
   UsersListContainer,
   PeopleCell,
 } from './styled';
-
-const renderColumnHeader = (props) => {
-  const { colDef } = props;
-  const { headerName } = colDef;
-
-  return (
-    <>
-      <div className="MuiDataGrid-colCellTitle">
-        <span>{headerName}</span>
-      </div>
-    </>
-  );
-};
 
 const UsersList = (props) => {
   const { users, searchTerm } = props;
@@ -100,18 +86,39 @@ const UsersList = (props) => {
           </ListEntryContainer>
         </ListContainer>
       ) : (
-        <StyledDataGrid
-          columns={columns}
-          rows={filteredUsers}
-          rowHeight={35}
-          headerHeight={45}
+        <DataGrid
+          fluid
+          dataset={filteredUsers}
           hideFooterSelectedRowCount
           autoHeight
-          disableSelectionOnClick
-          disableColumnMenu
-          showColumnRightBorder
-          showCellRightBorder
-        />
+        >
+          <Data
+            name="USER"
+            value={(data) => (
+              <div
+                className="people-cell-container"
+                style={{ display: 'flex' }}
+                onClick={() =>
+                  history.push(
+                    `/core/assignedToPerson/${encodeURIComponent(
+                      data.userIdentifier,
+                    )}`,
+                  )
+                }
+              >
+                <UserAvatar size={22} user={data} />
+                <Spacing horizontal={4} />
+                <span className="people-cell">{data?.name}</span>
+              </div>
+            )}
+          />
+          <Data name="EMAIL" value={(data) => data.email} />
+          <Data
+            name="USER STATUS"
+            value={(data) => data.orgUserRole}
+            flex={0.5}
+          />
+        </DataGrid>
       )}
     </UsersListContainer>
   );

@@ -3,7 +3,12 @@ import AccessRestrictor from 'components/access/AccessRestrictor/AccessRestricto
 import { UserOrganizationRole } from 'helpers/user-helper';
 import React from 'react';
 import { useSelector } from 'react-redux';
-import { SUBS_SETTINGS_PATH, USERS_SETTINGS_PATH } from 'routing/helpers/paths';
+import {
+  SUBS_SETTINGS_PATH,
+  USERS_SETTINGS_PATH,
+  POFILES_SETTINGS_PATH,
+  TASK_CUSTOMIZATIONS_PATH,
+} from 'routing/helpers/paths';
 import {
   userHasPatientCustomFieldsFeatureSelector,
   userHasTaskCustomFieldsFeatureSelector,
@@ -45,10 +50,11 @@ const SettingsSubmenu = () => {
         <SubMenuLink to="/settings/billing">Billing &amp; Invoices</SubMenuLink>
       )}
       <SubMenuLink to={SUBS_SETTINGS_PATH}>Subscriptions</SubMenuLink>
+      <SubMenuLink to={POFILES_SETTINGS_PATH}>Profiles</SubMenuLink>
       <SubMenuLink to={USERS_SETTINGS_PATH}>Users</SubMenuLink>
-      {(patientCustomFieldsAvailable || taskCustomFieldsAvailable) && (
+      {/* {(patientCustomFieldsAvailable || taskCustomFieldsAvailable) && (
         <SubMenuLink to="/settings/custom-fields">Custom Fields</SubMenuLink>
-      )}
+      )} */}
       {(sendEmailAvailable ||
         sendFaxAvailable ||
         sendSmsAvailable ||
@@ -58,6 +64,9 @@ const SettingsSubmenu = () => {
           <SubMenuLink to="/settings/templates">Templates</SubMenuLink>
         </AccessRestrictor>
       )}
+      <SubMenuLink to={TASK_CUSTOMIZATIONS_PATH}>
+        Task Settings
+      </SubMenuLink>
     </Box>
   );
 };

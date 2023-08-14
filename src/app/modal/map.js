@@ -69,6 +69,7 @@ import SendEmailFromTaskModal from './components/SendMessageFromTaskModals/SendE
 import SendFaxFromTaskModal from './components/SendMessageFromTaskModals/SendFaxFromTaskModal/SendFaxFromTaskModal';
 import SendESignFromTaskModal from './components/SendMessageFromTaskModals/SendESignFromTaskModal/SendESignFromTaskModal';
 import EditTemplateModal from './components/EditTemplateModal/EditTemplateModal';
+import CreateProfileModal from './components/CreateProfileModal/CreateProfileModal';
 import SendEmrNoteFromTaskModal from './components/SendMessageFromTaskModals/SendEmrNoteFromTaskModal/SendEmrNoteFromTaskModal';
 import SendSmsFromTaskModal from './components/SendMessageFromTaskModals/SendSmsFromTaskModal/SendSmsFromTaskModal';
 import SendSecureMessageFromTaskModal from './components/SendMessageFromTaskModals/SendSecureMessageFromTaskModal/SendSecureMessageFromTaskModal';
@@ -150,6 +151,7 @@ const MODAL_MAP = {
   SendEmailFromTask: SendEmailFromTaskModal,
   SendESignFromTask: SendESignFromTaskModal,
   EditTemplate: EditTemplateModal,
+  CreateProfile: CreateProfileModal,
   SendEmrFromTask: SendEmrNoteFromTaskModal,
   SendSmsFromTask: SendSmsFromTaskModal,
   SendSecureMessageFromTask: SendSecureMessageFromTaskModal,
