@@ -5,6 +5,9 @@ import { useHistory } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { getAllProfileTypes, deleteProfileType } from 'api/profile-type-api';
 import { Box, Button } from '@mui/material';
+import AddButton, {
+  AddEntitiesContainer,
+} from 'components/common/AddButton/AddButton';
 import { openModal, closeModal } from 'modal/actions';
 import {
   userHasSendEmailFeatureSelector,
@@ -126,11 +129,14 @@ const ProfilesAndCustomFieldsView = () => {
   return (
     <ViewLayout header={<BasicLayoutHeader title="Profiles" />}>
       <ViewContainer>
-        <Box display="flex" justifyContent="end">
+        {/* <Box display="flex" justifyContent="end">
           <Button onClick={onAddProfile}>
             <AddTemplateWrapper>Create Profile</AddTemplateWrapper>
           </Button>
-        </Box>
+        </Box> */}
+        <AddEntitiesContainer>
+          <AddButton onClick={onAddProfile}>Create Profile</AddButton>
+        </AddEntitiesContainer>
         <StyledDataGrid
           columns={columns}
           rows={[

@@ -4,9 +4,7 @@ import { fontWeights, fontSizes } from 'styles/font';
 import palette from 'styles/palette';
 import spacing from 'styles/spacing';
 
-const ROW_HEIGHT = 35;
 const HEADER_HEIGHT = 35;
-const ROW_MARGIN = 2;
 const ROW_BORDER = 1;
 
 export const StyledDataGrid = styled(DataGrid)`
@@ -14,10 +12,6 @@ export const StyledDataGrid = styled(DataGrid)`
     max-width: 1180px;
     // border: 0 !important;
     background-color: white;
-
-    // calculating a height of a table is a workaround - MUI v4 doesn't support space beetween rows
-    height: 500px;
-
   }
   && {
     &.MuiDataGrid-sortIcon {
@@ -27,6 +21,24 @@ export const StyledDataGrid = styled(DataGrid)`
       border-radius: 50%;
     }
   }
+
+  & .MuiDataGrid-footerContainer {
+    p {
+      margin-bottom: 0;
+    }
+  }
+
+  & .MuiSelect-select {
+    font-family: "Roboto Condensed", sans-serif;
+    font-weight: 400;
+    font-size: 0.875rem;
+    line-height: 1.43;
+    flex-shrink: 0;
+    margin-top: 2px;
+    padding-right: 0 !important;
+    padding-left: 0;
+  }
+
   &.MuiDataGrid-columnHeaderTitleContainer {
     display: flex;
     align-items: center;
