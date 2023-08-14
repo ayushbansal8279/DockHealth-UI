@@ -4,7 +4,12 @@ import { useSelector, useDispatch } from 'react-redux';
 import { openModal, closeModal } from 'modal/actions';
 import { hideSubMenu } from 'actions/template-actions';
 import { getUserGroups, deleteUserGroup } from 'actions/user-groups-actions';
-import { USERS_PATH } from 'routing/helpers/paths';
+import palette from 'styles/palette';
+import { Box } from '@mui/material';
+import { createUserGroupPath, USERS_PATH } from 'routing/helpers/paths';
+import AddButton from 'components/common/AddButton/AddButton';
+import OptionsMenu from 'components/common/OptionsMenu/OptionsMenu';
+import { MoreVert } from '@mui/icons-material';
 import prop from 'ramda/src/prop';
 import sortBy from 'ramda/src/sortBy';
 import toLower from 'ramda/src/toLower';
@@ -30,12 +35,16 @@ import {
   getUserGroupIdentifierByUrlParameter,
 } from 'helpers/user-groups-helper';
 import { getAllProfileTypes } from 'api/profile-type-api';
+import UpgradePlan from 'components/common/UpgradePlan/UpgradePlan';
+import UserGroupsIcon from 'img/premium/user-groups.svg';
 import {
   DrawerMyListsLabel,
   DrawerListsItem,
   ListNameText,
   DrawerListsList,
+  DrawerItemOptions,
   DrawerListsItemLoader,
+  UpgradePlanContainer,
   MenuLink,
 } from './styled';
 
@@ -87,7 +96,8 @@ const CustomProfilesSubmenu = () => {
       }
     }
     fetchData();
-  }, []);
+    dispatch(getUserGroups());
+  }, [dispatch]);
 
   const handleAddCustomListClick = () => {
     dispatch(openModal('EditUserGroup'));
@@ -132,9 +142,112 @@ const CustomProfilesSubmenu = () => {
             <DrawerListsItemLoader />
           </>
         ) : (
-          <>{profileTypes && renderListItems(profileTypes)}</>
+          <>
+            {profileTypes && renderListItems(profileTypes)}
+            {defaultGroups?.map(({ identifier, name, usersCount }) => (
+              <DrawerListsItem key={identifier}>
+                <ListNameText
+                  isActive={
+                    isRouteActive && identifier === activeGroupIdentifier
+                  }
+                  onClick={() => {
+                    history.push(
+                      createUserGroupPath(DefaultUserGroupUrl[identifier]),
+                    );
+                  }}
+                >
+                  {name}
+                </ListNameText>
+                <DrawerItemOptions>
+                  <div>{usersCount ?? 0}</div>
+                  <Box m={1.5} />
+                </DrawerItemOptions>
+              </DrawerListsItem>
+            ))}
+            <DrawerListsItem>
+              <ListNameText>
+                <MenuLink to="/settings/contacts">Contacts</MenuLink>
+              </ListNameText>
+            </DrawerListsItem>
+          </>
         )}
       </DrawerListsList>
+      {!isGuest && userGroupsAvailable && (
+        <>
+          <Box m={6} flexShrink={0} />
+          <DrawerMyListsLabel>
+            <div>User Groups</div>
+            {isOrganizationAdmin && !isViewOnly && (
+              <AddButton onClick={handleAddCustomListClick}>Add</AddButton>
+            )}
+          </DrawerMyListsLabel>
+          <DrawerListsList>
+            {isInitialListFetching ? (
+              <>
+                <DrawerListsItemLoader />
+                <DrawerListsItemLoader />
+              </>
+            ) : (
+              <>
+                {sortedGroups?.map((group) => (
+                  <DrawerListsItem key={group.identifier}>
+                    <ListNameText
+                      isActive={
+                        isRouteActive &&
+                        group.identifier === activeGroupIdentifier
+                      }
+                      onClick={() => {
+                        history.push(createUserGroupPath(group.identifier));
+                      }}
+                    >
+                      {group.name}
+                    </ListNameText>
+                    <DrawerItemOptions>
+                      <div>{group.usersCount ?? 0}</div>
+                      {isOrganizationAdmin ? (
+                        <OptionsMenu
+                          disablePortal
+                          options={[
+                            {
+                              name: 'Edit',
+                              onClick: () => {
+                                dispatch(
+                                  openModal('AddUserToGroup', {
+                                    userGroupIdentifier: group.identifier,
+                                  }),
+                                );
+                                dispatch(hideSubMenu());
+                              },
+                            },
+                            {
+                              name: 'Delete',
+                              onClick: () => handleDeleteGroup(group),
+                              color: palette.oPlusRed,
+                            },
+                          ]}
+                        >
+                          <MoreVert color="primary" />
+                        </OptionsMenu>
+                      ) : (
+                        <Box m={1.5} />
+                      )}
+                    </DrawerItemOptions>
+                  </DrawerListsItem>
+                ))}
+              </>
+            )}
+          </DrawerListsList>
+        </>
+      )}
+      {!userGroupsAvailable && (
+        <UpgradePlanContainer>
+          <UpgradePlan
+            title="Custom user groups"
+            description="Build custom teams for group assignments, communication, and collaboration across workflows and care settings."
+            iconImage={<img src={UserGroupsIcon} alt="Custom User Groups" />}
+          />
+        </UpgradePlanContainer>
+      )}      
     </>
   );
 };

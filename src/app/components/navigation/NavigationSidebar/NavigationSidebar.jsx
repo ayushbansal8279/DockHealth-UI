@@ -5,10 +5,11 @@ import { useDispatch, useSelector } from 'react-redux';
 import { useHistory, useLocation } from 'react-router-dom';
 import {
   WORKFLOW_LIBRARY_PATH,
-  USERS_PATH,
+  // USERS_PATH,
   SUBS_SETTINGS_PATH,
-  USERS_SETTINGS_PATH, CUSTOM_PROFILES_PATH
-} from "routing/helpers/paths";
+  USERS_SETTINGS_PATH,
+  CUSTOM_PROFILES_PATH,
+} from 'routing/helpers/paths';
 import Spacing from 'components/common/Spacing';
 import {
   userProfileSelector,
@@ -42,7 +43,7 @@ import AccessRestrictor, {
   CAN_ACCESS_EDUCATION_CENTER_PAGE,
   CAN_ACCESS_HOME_PAGE,
   CAN_ACCESS_MEMBER_LIST_PAGE,
-  CAN_ACCESS_PEOPLE_LIST_PAGE,
+  // CAN_ACCESS_PEOPLE_LIST_PAGE,
   CAN_ACCESS_SEARCH_PAGE,
   CAN_ACCESS_SETTINGS_PAGE,
   CAN_ACCESS_TASK_LIST_PAGE,
@@ -244,18 +245,20 @@ const NavigationSidebar = () => {
                 navSelectedColor={navSelectedColorItem?.value}
               />
             </AccessRestrictor>
-            <AccessRestrictor>
-              <IconNavigationItem
-                name="Custom Profiles"
-                icon={PeopleIcon}
-                path={CUSTOM_PROFILES_PATH}
-                subMenuKey={SubmenuKey.CUSTOM_PROFILES}
-                subMenuOpen={openedSubMenuKey === SubmenuKey.CUSTOM_PROFILES}
-                onItemClick={handleNavigationItemClick}
-                navSelectedColor={navSelectedColorItem?.value}
-              />
-            </AccessRestrictor>
             {!embeddedMode && (
+              <AccessRestrictor>
+                <IconNavigationItem
+                  name="Profiles"
+                  icon={PeopleIcon}
+                  path={CUSTOM_PROFILES_PATH}
+                  subMenuKey={SubmenuKey.CUSTOM_PROFILES}
+                  subMenuOpen={openedSubMenuKey === SubmenuKey.CUSTOM_PROFILES}
+                  onItemClick={handleNavigationItemClick}
+                  navSelectedColor={navSelectedColorItem?.value}
+                />
+              </AccessRestrictor>
+            )}
+            {/* {!embeddedMode && (
               <AccessRestrictor required={[CAN_ACCESS_PEOPLE_LIST_PAGE]}>
                 <IconNavigationItem
                   name="People"
@@ -267,7 +270,7 @@ const NavigationSidebar = () => {
                   navSelectedColor={navSelectedColorItem?.value}
                 />
               </AccessRestrictor>
-            )}
+            )} */}
             {!embeddedMode && (
               <AccessRestrictor required={[CAN_ACCESS_MEMBER_LIST_PAGE]}>
                 <IconNavigationItem
