@@ -7,6 +7,7 @@ import {
 } from 'helpers/ga-event-helper';
 import * as AlertActions from 'alert/actions';
 import debounce from 'lodash.debounce';
+import PatientSelectItem from 'components/patients/PatientSelectItem/PatientSelectItem';
 import { openModal } from 'modal/actions';
 import { getPatientsByCriteria } from 'api/patients-api';
 import { addPatient } from 'api/patient-api';
@@ -58,6 +59,19 @@ const PatientSection = ({
     ) || {};
 
   const formattedPatients = getFormattedPatients({ patients });
+  const formattedPatientsWithHeaders = [
+    {
+      key: 'header-label',
+      value: 'header-label',
+      label: () => (
+        <PatientSelectItem patient={{ name: 'Name', dob: 'Dob', mrn: 'Mrn' }} />
+      ),
+      displayLabel: 'Name',
+      patient: { name: 'Name', dob: 'Dob', mrn: 'Mrn' },
+      readOnly: true,
+    },
+    ...formattedPatients,
+  ];
   const customerTypeLabel = getCustomerTypeLabel(currentUser);
   const customerTypeLabelCapitalized = capitalize(customerTypeLabel);
 
@@ -302,7 +316,7 @@ const PatientSection = ({
       }
       disabled={disabled}
       selectedOption={assignedPatient}
-      options={formattedPatients}
+      options={formattedPatientsWithHeaders}
       isLoadingOptions={isLoadingPatients}
       onInputChange={onPatientInputChange}
       onOptionSelect={handlePatientSelect}

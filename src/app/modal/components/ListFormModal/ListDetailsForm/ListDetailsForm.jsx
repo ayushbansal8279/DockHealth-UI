@@ -1,9 +1,10 @@
 import React, { useState } from 'react';
 import { FormProvider, useForm } from 'react-hook-form';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { showAlert } from 'helpers/utility-functions';
 import { onTaskListAdded, onTaskListEdited } from 'helpers/ga-event-helper';
 import * as TaskListActions from 'actions/task-list-actions';
+import { userHasShareTaskFeatureSelector } from 'selectors/user-selectors';
 import { Grid } from '@mui/material';
 import FormInput from 'components/common/Input/FormInput';
 import Spacing from 'components/common/Spacing';
@@ -97,6 +98,8 @@ const ListDetailsForm = ({
   const restrictCustomizationValue = watch('restrictCustomization');
   const discoveryEnabled = watch('discoveryEnabled');
 
+  const shareTaskAvailable = useSelector(userHasShareTaskFeatureSelector);
+
   return (
     <StyledForm
       onSubmit={(event) =>
@@ -157,21 +160,28 @@ const ListDetailsForm = ({
               list when you change the above option.
             </span>
             <Spacing vertical={4} />
-            <CheckboxContainer>
-              <Checkbox
-                size={16}
-                onClick={() => setValue('discoveryEnabled', !discoveryEnabled)}
-                isChecked={discoveryEnabled}
-              />
-              <Spacing horizontal={3} />
-              <CheckboxDescription>
-                Enable Discovery for Task Sharing
-              </CheckboxDescription>
-            </CheckboxContainer>
-            <Spacing vertical={4} />
-            <span>
-              Enables this list to be listed for others to move or share tasks
-            </span>
+            {shareTaskAvailable && (
+              <>
+                <CheckboxContainer>
+                  <Checkbox
+                    size={16}
+                    onClick={() =>
+                      setValue('discoveryEnabled', !discoveryEnabled)
+                    }
+                    isChecked={discoveryEnabled}
+                  />
+                  <Spacing horizontal={3} />
+                  <CheckboxDescription>
+                    Enable Discovery for Task Sharing
+                  </CheckboxDescription>
+                </CheckboxContainer>
+                <Spacing vertical={4} />
+                <span>
+                  Enables this list to be listed for others to move or share
+                  tasks
+                </span>
+              </>
+            )}
           </Grid>
           <Grid container direction="row" justifyContent="center">
             <ButtonWrapper>

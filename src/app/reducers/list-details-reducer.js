@@ -305,22 +305,19 @@ const ListDetailsReducer = (state = initialState, action) => {
         groupedTasks: {
           // taskGroups: listTaskGroups,
           taskGroups: state.groupedTasks.taskGroups.map((g) => {
-            if (
-              g.groupIdentifier ===
-              groupOfTasks.taskGroups?.[0]?.groupIdentifier
-            ) {
-              //
+            const matchedGroup = groupOfTasks.taskGroups.find(
+              (updatedGroup) =>
+                g.groupIdentifier === updatedGroup.groupIdentifier,
+            );
+            if (matchedGroup) {
               // eslint-disable-next-line sonarjs/prefer-immediate-return
               const grpState = {
                 ...g,
-                ...groupOfTasks.taskGroups?.[0],
+                ...matchedGroup,
                 tasks: [
-                  ...new Set([
-                    ...(g.tasks || []),
-                    ...groupOfTasks.taskGroups?.[0]?.tasks.map(
-                      (task) => task.identifier,
-                    ),
-                  ]),
+                  ...new Set(
+                    matchedGroup?.tasks.map((task) => task?.identifier || task),
+                  ),
                 ],
                 isLoadingGroup: false,
                 isFetchingMoreTasks: false,

@@ -29,7 +29,7 @@ const TaskTemplateGroup = ({
   isFullView,
   isCompletedGroup,
   isStartedDnD,
-  draggableProvided = {},
+  dragHandleProps = {},
   groupDragAndDropDisabled,
   tasksDragAndDropDisabled,
   disablePatientAssignment,
@@ -55,7 +55,7 @@ const TaskTemplateGroup = ({
   } = templateGroup ?? {};
 
   const { SHOW_WORKFLOW_DETAILS, SHOW_WORKFLOW_COMPLETED_TASKS } = viewSetup;
-  const { innerRef, draggableProps } = draggableProvided;
+  // const { innerRef, draggableProps } = draggableProvided;
   const [isOpen, setOpen] = useState(false);
   const [draggedTaskIdentifier, setDraggedTaskIdentifier] = useState(null);
   const [showCompletedTasks, setShowCompletedTasks] = useState(true);
@@ -119,12 +119,14 @@ const TaskTemplateGroup = ({
   const filteredTasks = tasks;
 
   return (
-    <TaskTemplateGroupContainer ref={innerRef} {...draggableProps}>
+    <TaskTemplateGroupContainer
+    // ref={innerRef} {...draggableProps}
+    >
       <TaskTemplateGroupHeader
         isFetchingTasks={isFetchingTasks}
         templateGroup={templateGroup}
         groupHasMultipleAssignees={groupHasMultipleAssignees}
-        draggableProvided={draggableProvided}
+        dragHandleProps={dragHandleProps}
         groupDragAndDropDisabled={groupDragAndDropDisabled}
         disablePatientAssignment={disablePatientAssignment}
         isCompletedTab={isCompletedTab}
@@ -167,7 +169,9 @@ const TaskTemplateGroup = ({
                   }
                 }}
               >
-                <Droppable droppableId={templateGroup?.identifier}>
+                <Droppable
+                  droppableId={templateGroup?.identifier || templateGroup}
+                >
                   {(templateDroppableProvided) => (
                     <div
                       ref={templateDroppableProvided.innerRef}

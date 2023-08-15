@@ -159,6 +159,7 @@ const TaskItem = React.memo(
     patient: parentPatient,
     iconColorActive,
     origin,
+    viewSetup,
   }) => {
     const task = useSelector((state) => {
       return taskLookupSelector(state, origin, taskItemIdentifier);
@@ -190,7 +191,7 @@ const TaskItem = React.memo(
     } = task || {};
 
     const patient = taskPatient ?? parentTask?.patient ?? parentPatient;
-
+    
     const { columns } = useTaskListColumnsConfig();
     const { listName, taskListIdentifier } = taskList || {};
     const isTemplateTask = checkIfTemplateTask(task);
@@ -804,12 +805,10 @@ const TaskItem = React.memo(
       return (
         <TaskTemplateGroup
           isCompletedTab={isCompletedView}
-          // viewSetup={viewSetup}
-          viewSetup={() => {}}
-          // isStartedDnD={draggedId === task?.identifier}
+          viewSetup={viewSetup}
+          // isStartedDnD={draggedId === taskGroup?.identifier}
           isStartedDnD={false}
-          // draggableProvided={draggableProvided}
-          draggableProvided={{}}
+          dragHandleProps={dragHandleProps}
           templateGroup={taskGroup}
           groupHasMultipleAssignees={false}
           isFullView={false}

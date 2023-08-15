@@ -121,6 +121,7 @@ const TaskTemplateDetails = ({ workflow, readOnly }) => {
               <pre
                 style={{
                   fontFamily: "'Roboto Condensed', sans-serif",
+                  fontSize: '16px',
                   whiteSpace: 'pre-wrap',
                   wordBreak: 'keep-all',
                 }}

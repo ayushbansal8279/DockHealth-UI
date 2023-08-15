@@ -17,6 +17,11 @@ const TaskItemLongText = ({ value = '', onChange, openDrawer }) => {
   }, [value]);
 
   // eslint-disable-next-line no-shadow
+  const handleChange = (value) => {
+    setRawDetails(value);
+  };
+
+  // eslint-disable-next-line no-shadow
   const handleTextEditorBlur = (closePopover) => (value) => {
     onChange(value);
     closePopover();
@@ -35,11 +40,10 @@ const TaskItemLongText = ({ value = '', onChange, openDrawer }) => {
             style={{ padding: '5px' }}
           >
             <RichTextEditor
-              value={value}
+              value={rawDetails}
+              onChange={handleChange}
               onBlur={handleTextEditorBlur(closePopover)}
               initOnClick={false}
-              showToolbar
-              multiline
               showCharCount
             />
             <Divider />
@@ -69,6 +73,7 @@ const TaskItemLongText = ({ value = '', onChange, openDrawer }) => {
               <pre
                 style={{
                   fontFamily: "'Roboto Condensed', sans-serif",
+                  fontSize: '16px',
                   whiteSpace: 'pre-wrap',
                   wordBreak: 'keep-all',
                 }}

@@ -185,11 +185,18 @@ function* reorderWorkflowTasks(payload) {
     yield call(
       TemplateBundleApi.reorderTasksInBundle,
       workflow.identifier,
-      pluck('identifier', reorderedTasks),
+      // pluck('identifier', reorderedTasks),
+      reorderedTasks,
     );
     yield all([
+      // put({
+      //   type: ActionTypes.REORDER_WORKFLOW_TASKS_SUCCESS,
+      // }),
       put({
-        type: ActionTypes.REORDER_WORKFLOW_TASKS_SUCCESS,
+        // type: ActionTypes.REFRESH_TASK_BUNDLE,
+        // templateBundleIdentifier: workflow.identifier,
+        type: ActionTypes.GET_TASKS_FOR_WORKFLOW,
+        workflowIdentifier: workflow.identifier,
       }),
       put(showGlobalAlert(AlertMessages.UPDATED)),
     ]);

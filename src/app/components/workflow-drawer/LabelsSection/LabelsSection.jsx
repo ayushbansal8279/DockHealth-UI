@@ -41,6 +41,7 @@ const renderOption = ({
   onBlur,
   onSaveEdit,
   onDelete,
+  onClick,
   disabled,
 }) => {
   return (
@@ -53,6 +54,7 @@ const renderOption = ({
         greyed={disabled}
         ref={registerOption}
         defaultValue={option?.labelName}
+        onClick={onClick}
         onBlur={(event) => {
           event.stopPropagation();
           onBlur();
@@ -118,9 +120,8 @@ const LabelsSection = ({ disabled: disabledProperty }) => {
   const dispatch = useDispatch();
   const autoFocusFieldName = useSelector(workflowAutofocusFieldSelector);
   const selectedLabelsFromStoreLength = selectedLabelsFromStore?.length;
-  const previousSelectedLabelsFromStoreLength = usePrevious(
-    selectedLabelsFromStoreLength,
-  );
+  const previousSelectedLabelsFromStoreLength =
+    usePrevious(selectedLabelsFromStoreLength) || 0;
   const isTemplateWorkflow = checkIfTemplateWorkflow(selectedWorkflow);
 
   const getAllLabels = useCallback(async () => {
@@ -128,8 +129,12 @@ const LabelsSection = ({ disabled: disabledProperty }) => {
   }, [dispatch, isTemplateWorkflow, taskListIdentifier]);
 
   useEffect(() => {
-    setLabelsList(labels);
-  }, [labels]);
+    if (labels && labels?.length > 0) {
+      setLabelsList(labels);
+    } else {
+      setLabelsList(selectedLabelsFromStore);
+    }
+  }, [labels, selectedLabelsFromStore]);
 
   useEffect(() => {
     if (selectedLabelsFromStoreLength > previousSelectedLabelsFromStoreLength) {
@@ -208,7 +213,7 @@ const LabelsSection = ({ disabled: disabledProperty }) => {
   };
 
   const renderOptionCallback = useCallback(
-    (option) => {
+    (_, option) => {
       const disabled = !!selectedLabels.find(
         (label) => label.labelIdentifier === option.labelIdentifier,
       );
@@ -232,9 +237,22 @@ const LabelsSection = ({ disabled: disabledProperty }) => {
             labelName: value,
           }),
         onDelete: () => handleRemoveLabel(option),
+        onClick: () => {
+          setSelectedLabels((previousLabels) => {
+            if (
+              previousLabels.some(
+                (label) => label.labelIdentifier === option.labelIdentifier,
+              )
+            ) {
+              return previousLabels;
+            }
+            handleAddLabel(option);
+            return [...previousLabels, option];
+          });
+        },
       });
     },
-    [handleEditLabel, handleRemoveLabel, selectedLabels],
+    [handleEditLabel, handleRemoveLabel, handleAddLabel, selectedLabels],
   );
 
   const renderTagsCallback = useCallback(

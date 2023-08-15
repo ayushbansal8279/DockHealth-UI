@@ -31,8 +31,12 @@ turndownService = turndownService.addRule('people-mention', {
   // eslint-disable-next-line func-names, object-shorthand
   replacement: function (content, node, options) {
     // eslint-disable-next-line sonarjs/prefer-immediate-return
-    const alteredValue = `@{${node.attributes.data.nodeValue}}`;
-    return alteredValue;
+    if (node.attributes['data-people-mention']) {
+      // eslint-disable-next-line sonarjs/prefer-immediate-return
+      const alteredValue = `@{${node.attributes['data-people-mention'].nodeValue}}`;
+      return alteredValue;
+    }
+    return content;
   },
 });
 
@@ -86,7 +90,7 @@ const processMarkdownValue = (value, mentions) => {
     for (const mentionInfo of mentions) {
       processedValue = processedValue.replace(
         `@{${mentionInfo.identifier}}`,
-        `<span class="fr-deletable fr-tribute" data="${mentionInfo.identifier}"><a>@${mentionInfo.name}</a></span>`,
+        `<span class="fr-deletable fr-tribute" data-people-mention="${mentionInfo.identifier}"><a>@${mentionInfo.name}</a></span>`,
       );
     }
   }
@@ -245,7 +249,7 @@ const RichTextEditor = React.forwardRef(
       },
       // eslint-disable-next-line func-names, object-shorthand
       selectTemplate: function (item) {
-        return `<span class="fr-deletable fr-tribute" data="${item.original.identifier}"><a>@${item.original.name}</a></span>`;
+        return `<span class="fr-deletable fr-tribute" data-people-mention="${item?.original.identifier}"><a>@${item?.original.name}</a></span>`;
       },
     });
 
@@ -323,15 +327,37 @@ const RichTextEditor = React.forwardRef(
             }
           }
         },
+        'url.linked': function (link) {
+          // Do something here.
+          // this is the editor instance.
+          // console.log('url.linked: '+this);
+        },
+        'click': function (clickEvent) {
+          // Do something here.
+          // this is the editor instance.
+          // console.log(this);
+          if (
+            clickEvent.currentTarget?.nodeName === 'A' &&
+            clickEvent.currentTarget?.href
+          ) {
+            window.open(clickEvent.currentTarget?.href, '_blank', 'noreferrer');
+          }
+        },
       },
       linkNoReferrer: false,
       linkText: true,
       linkStyles: {
         class1: 'editor-links',
       },
+      linkAlwaysBlank: true,
+      linkAlwaysNoFollow: false,
+      listAdvancedTypes: true,
+      linkAutoPrefix: 'https://',
+      linkConvertEmailAddress: false,
+      linkEditButtons: ['linkOpen', 'linkEdit'],
+      linkList: [],
       fontSizeSelection: false,
       paragraphFormatSelection: false,
-      listAdvancedTypes: true,
       lineBreakerOffset: 5,
       paragraphFormat: {
         N: 'Normal',

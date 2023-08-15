@@ -8,13 +8,14 @@ import { getAllProfiles } from 'api/profile-api';
 import { getAllProfileFieldTypes } from 'api/profile-type-field-api';
 import ViewLayout from 'components/template/ViewLayout/ViewLayout';
 import LayoutHeader from 'components/template/LayoutHeader/LayoutHeader';
-import { Box } from '@mui/material';
+import { Box, Tabs } from '@mui/material';
 import { ColumnsConfigProvider } from 'context-api/columns-config-context';
 import {
   TASK_ITEM_BASE_COLUMN_CONFIG,
   TaskItemColumn,
 } from 'helpers/task-helpers';
 import CustomProfileNotes from 'components/patients/CustomProfilesList/CustomProfileNotes/CustomProfileNotes';
+import { MainTab } from 'views/patient-details/styled';
 import CustomProfileDetailsCompletedTasks from './CustomProfileDetailsCompletedTasks';
 import CustomProfileDetailsOpenedTasks from './CustomProfileDetailsOpenedTasks';
 
@@ -102,6 +103,11 @@ const CustomProfileView = () => {
     setOpen(false);
   };
 
+  const [currentTab, setCurrentTab] = useState(0);
+  const handleTabChange = (_, value) => {
+    setCurrentTab(value);
+  };
+
   return (
     <ColumnsConfigProvider>
       <ViewLayout
@@ -119,7 +125,12 @@ const CustomProfileView = () => {
           onViewDetailsClick={handleDrawerOpen}
           profileTypeName={name}
           profileTypeIdentifier={profileTypeIdentifier}
-        />
+        >
+          <Tabs value={currentTab} onChange={handleTabChange}>
+            <MainTab label="All Tasks" />
+            <MainTab label="Notes" />
+          </Tabs>
+        </CustomProfileDetailsHeader>
         <ProfileDrawer
           open={open}
           profileTypeIdentifier={profileTypeIdentifier}
@@ -127,11 +138,15 @@ const CustomProfileView = () => {
           types={profileTypeFields}
           onClose={handleDrawerClose}
         />
-        <CustomProfileDetailsCompletedTasks
-          profileIdentifier={profileIdentifier}
-          taskItemConfig={PERSON_VIEW_COLUMNS_CONFIG}
-        />
-        <CustomProfileNotes profileIdentifier={profileIdentifier} />
+        {currentTab === 0 && (
+          <CustomProfileDetailsCompletedTasks
+            profileIdentifier={profileIdentifier}
+            taskItemConfig={PERSON_VIEW_COLUMNS_CONFIG}
+          />
+        )}
+        {currentTab === 1 && (
+          <CustomProfileNotes profileIdentifier={profileIdentifier} />
+        )}
       </ViewLayout>
     </ColumnsConfigProvider>
   );

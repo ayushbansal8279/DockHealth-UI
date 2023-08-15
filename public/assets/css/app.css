@@ -1046,7 +1046,7 @@ input[readonly],
 textarea:disabled,
 textarea[readonly] {
   background-color: #dedee2;
-  cursor: not-allowed;
+  /* cursor: not-allowed; */
 }
 
 [type='submit'],

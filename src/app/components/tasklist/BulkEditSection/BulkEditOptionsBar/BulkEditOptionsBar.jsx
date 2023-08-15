@@ -160,7 +160,7 @@ const BulkEditOptionsBar = ({
   const allSelectedTasksIdentifiers = useMemo(
     () => [
       ...parentTasks
-        ?.filter((t) => t.itemType === 'TASK')
+        ?.filter((t) => t?.itemType === 'TASK')
         ?.map(({ identifier }) => identifier),
       ...subtasks?.map(({ identifier }) => identifier),
     ],
@@ -170,7 +170,7 @@ const BulkEditOptionsBar = ({
   const allSelectedWorkflowIdentifiers = useMemo(
     () => [
       ...parentTasks
-        ?.filter((t) => t.itemType === 'BUNDLE')
+        ?.filter((t) => t?.itemType === 'BUNDLE')
         ?.map(({ identifier }) => identifier),
     ],
     [parentTasks],
@@ -182,8 +182,8 @@ const BulkEditOptionsBar = ({
     () =>
       [...(parentTasks || []), ...(subtasks || [])].reduce(
         (accumulator, task) =>
-          !checkIfTemplateTask(task) && task.taskList
-            ? [...accumulator, task.taskList.taskListIdentifier]
+          !checkIfTemplateTask(task) && task?.taskList
+            ? [...accumulator, task?.taskList.taskListIdentifier]
             : accumulator,
         [],
       ),
@@ -786,7 +786,7 @@ const BulkEditOptionsBar = ({
       numberOfSelectedItems={allSelectedTasksLength}
       isDisabled={isDisabled}
       onClose={onClose}
-      includedWorkflow={!!allSelectedTasks.find((t) => t.itemType === 'BUNDLE')}
+      includedWorkflow={!!allSelectedTasks.find((t) => t?.itemType === 'BUNDLE')}
     >
       <>
         {mergedConfig[BulkEditOptionsConfig.DUPLICATE_OPTION] && (
