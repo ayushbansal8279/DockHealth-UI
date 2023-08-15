@@ -10,55 +10,11 @@ import React, {
 } from 'react';
 // import { useSelector } from 'react-redux';
 // import debounce from 'lodash.debounce';
-// import MenuList from '@mui/material/MenuList';
-// import MenuItem from '@mui/material/MenuItem';
 import palette from 'styles/palette';
 import { fontSizes, fontWeights } from 'styles/font';
 // import { renderToString } from 'react-dom/server';
 import { getPatientsByCriteria } from 'api/patients-api';
 import { getListMembersByName } from 'api/task-list-api';
-// import UserMention from 'components/common/TextEditor/UserMention/UserMention';
-//   import Spacing from 'components/common/Spacing';
-//   import { Box, ClickAwayListener } from '@mui/material';
-// import {
-//   ItalicButton,
-//   BoldButton,
-//   UnderlineButton,
-//   UnorderedListButton,
-//   OrderedListButton,
-//   HeadlineOneButton,
-//   HeadlineTwoButton,
-//   HeadlineThreeButton,
-//   createInlineStyleButton,
-// } from '@draft-js-plugins/buttons';
-//   import { useMentionsEditorState } from 'components/common/TextEditor/use-mentions-editor-state';
-//   import { FieldCharakterLimit } from 'helpers/field-type-helpers';
-//   import { getCustomerTypeLabel } from 'helpers/customer-type-helper';
-//   import { userProfileSelector } from 'selectors/user-selectors';
-//   import UsersSuggestionsPopover from './UsersSuggestionsPopover/UsersSuggestionsPopover';
-//   import PatientsSuggestionsPopover from './PatientsSuggestionsPopover/PatientsSuggestionsPopover';
-//   import PatientSuggestionItem from './PatientSuggestionItem/PatientSuggestionItem';
-//   import UserSuggestionItem from './UserSuggestionItem/UserSuggestionItem';
-// import '@draft-js-plugins/static-toolbar/lib/plugin.css';
-// import {
-//   // initializeLinkifyPlugin,
-//   initializeUsersMentionPlugin,
-//   initializePatientMentionPlugin,
-// } from './plugin-config';
-//   import {
-//     SUGGESTIONS_PLACEHOLDER,
-//     mapPatientsToSuggestions,
-//     mapUsersToSuggestions,
-//     // createHighlightDecorator,
-//     // createLinkDecorator,
-//     // createPlaceholderDecorator,
-//     countCharakters,
-//     // convertFromEditorStateToOutput,
-//   } from './helpers';
-//   import { Counter, StyledEditorContainer, ToolbarContainer } from './styled';
-//   import LinkButton from './Link/LinkButton';
-//   import LinkPopover from './Link/LinkPopover';
-//   import { createLinkAtSelection, hasEntity } from './Link/helpers';
 
 import FroalaEditor from 'react-froala-wysiwyg';
 import MarkdownIt from 'markdown-it';
@@ -149,30 +105,16 @@ const RichTextEditor = React.forwardRef(
       showToolbarInline = false,
       focus = false,
       reset = false,
-      // manualInitialize = false,
-      // showToolbarOnEdit = true,
-      // showToolbarInline = false,
       // fullHeight,
       readonly,
-      // withEditedLabel,
-      // keyBindingFn,
-      // handleKeyCommand,
       // onFocus = () => {},
       onBlur = () => {},
       onChange = () => {},
       onKeyEnter = () => {},
       // onAddMention = () => {},
       placeholder = '',
-      // initialState,
-      // state,
       // highlightedValues,
-      // taskListIdentifier,
-      // oneline = false,
       multiline = true,
-      // disableNativeLinks = false,
-      // disableMentions = false,
-      // minHeight,
-      // getFocusFromParent,
       // characterLimit = showToolbar ? FieldCharakterLimit.RICH_TEXT : false,
       showCharCount = false,
       initOnClick = false,

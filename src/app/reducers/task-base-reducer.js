@@ -42,6 +42,15 @@ const TaskBaseReducer = (state, action, updateStateCallback) => {
       } = action;
 
       if (!state.tasksMap) {
+        if (state.selectedTask) {
+          return {
+            ...state,
+            selectedTask: {
+              ...state.selectedTask,
+              comments: [comment].concat(state.selectedTask?.comments),
+            },
+          };
+        }
         return state;
       }
 
@@ -72,6 +81,17 @@ const TaskBaseReducer = (state, action, updateStateCallback) => {
       const { taskIdentifier, commentIdentifier } = action;
 
       if (!state.tasksMap) {
+        if (state.selectedTask) {
+          return {
+            ...state,
+            selectedTask: {
+              ...state.selectedTask,
+              comments: state.selectedTask?.comments?.filter(
+                (comment) => comment.commentIdentifier !== commentIdentifier,
+              ),
+            },
+          };
+        }
         return state;
       }
 
@@ -329,6 +349,18 @@ const TaskBaseReducer = (state, action, updateStateCallback) => {
         task: { taskIdentifier },
         comment,
       } = action;
+
+      if (state.selectedTask) {
+        return {
+          ...state,
+          selectedTask: {
+            ...state.selectedTask,
+            comments: state.selectedTask?.comments.map((c) =>
+              c.commentIdentifier === comment.commentIdentifier ? comment : c,
+            ),
+          },
+        };
+      }
 
       const updateTaskFromAction = (tasksMap) => {
         const t = tasksMap[taskIdentifier];

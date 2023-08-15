@@ -2,7 +2,7 @@
 import { Box } from '@mui/material';
 import React, { useRef, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { addSubtask } from 'actions/task-actions';
+import { addSubtask, refreshTask } from 'actions/task-actions';
 import { useBoolean } from 'hooks/useBoolean';
 // import { validateNewSubtask } from 'helpers/validation-helper';
 import { onTaskDrawerSubtaskAdd } from 'helpers/ga-event-helper';
@@ -60,7 +60,10 @@ const QuickAddSubtask = () => {
   const handleTextEditorKeyEnter = (value) => {
     onTaskDrawerSubtaskAdd('Quick add input');
     dispatch(addSubtask(taskIdentifier, { description: value }))
-      .then(resetInputState)
+      .then(() => {
+        dispatch(refreshTask(taskIdentifier));
+        resetInputState();
+      })
       .catch(resetInputState);
   };
 

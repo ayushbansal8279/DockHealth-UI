@@ -349,7 +349,7 @@ export function flagUnread(taskIdentifier, unread) {
     .put(`task/flagUserTaskAsUnread/${taskIdentifier}?flagUnread=${unread}`)
     .then((response) => response.data)
     .catch((error) => {
-      throw error;
+      console.log(error);
     });
 }
 

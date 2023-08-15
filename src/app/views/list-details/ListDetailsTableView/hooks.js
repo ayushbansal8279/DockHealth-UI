@@ -1,3 +1,4 @@
+// NOT USED
 /* eslint-disable unicorn/prevent-abbreviations */
 /* eslint-disable react-hooks/rules-of-hooks */
 import { useEffect, useCallback, useState, useMemo, useRef } from 'react';
@@ -126,7 +127,7 @@ const initializeListDetailsViewHooks = () => {
     dispatch(ListDetailsActions.getCurrentTaskListFilterOptions());
   }, [dispatch]);
 
-  const refreshAccessToken = useCallback(user => {
+  const refreshAccessToken = useCallback((user) => {
     const systemTimeout = parseInt(
       import.meta.env.VITE_HEALTHCHECK_INTERVAL,
       10,
@@ -149,7 +150,7 @@ const initializeListDetailsViewHooks = () => {
   }, []);
 
   const navigateToTab = useCallback(
-    tab => {
+    (tab) => {
       history.push(
         `/core/tasks/${taskListIdentifierParam}${
           tab === TaskListTabName.OPEN ? '' : `/${TaskListTabName.COMPLETE}`
@@ -160,7 +161,7 @@ const initializeListDetailsViewHooks = () => {
   );
 
   const quickAddTask = useCallback(
-    task => {
+    (task) => {
       if (task?.description) {
         const payload = {
           ...task,
@@ -174,7 +175,7 @@ const initializeListDetailsViewHooks = () => {
   );
 
   const refreshTabAfterTaskUpdate = useCallback(
-    updatedTask => {
+    (updatedTask) => {
       if (
         !checkIfTaskMatchesFilters(updatedTask, selectedFilters) ||
         sort?.key
@@ -196,7 +197,7 @@ const initializeListDetailsViewHooks = () => {
   }, [dispatch, params, refreshTab, selectedFilters]);
 
   const changeSearchValue = useCallback(
-    searchQuery =>
+    (searchQuery) =>
       dispatch(ListDetailsActions.searchCurrentListTasks(searchQuery)),
     [dispatch],
   );
@@ -206,7 +207,7 @@ const initializeListDetailsViewHooks = () => {
   }, [dispatch]);
 
   const invokeToggleCompleteAction = useCallback(
-    task => {
+    (task) => {
       const { taskListIdentifier } = params;
 
       actions
@@ -245,7 +246,7 @@ const initializeListDetailsViewHooks = () => {
   );
 
   const handleCreateGroup = useCallback(
-    groupName => {
+    (groupName) => {
       dispatch(ListDetailsActions?.createTaskListGroup(groupName));
     },
     [dispatch],
@@ -267,7 +268,7 @@ const initializeListDetailsViewHooks = () => {
   );
 
   const toggleTaskCompletedStatus = useCallback(
-    task => {
+    (task) => {
       const incompleteRequiredFields = findIncompleteRequiredFields(
         taskCustomFields,
         task,
@@ -285,7 +286,7 @@ const initializeListDetailsViewHooks = () => {
 
       const hasIncompletedSubtasks =
         task.subtasks?.length > 0
-          ? task.subtasks.find(subtask => subtask.status === 'INCOMPLETE')
+          ? task.subtasks.find((subtask) => subtask.status === 'INCOMPLETE')
           : task.subTasksCount - task.subTasksCompletedCount > 0;
 
       if (task.status === 'INCOMPLETE' && hasIncompletedSubtasks) {
@@ -376,7 +377,7 @@ const initializeListDetailsViewHooks = () => {
 
   // eslint-disable-next-line sonarjs/cognitive-complexity
   useEffect(() => {
-    const taskCallback = data => {
+    const taskCallback = (data) => {
       if (
         data.task?.taskList &&
         data.task?.taskList.taskListIdentifier === taskListIdentifierParam
@@ -413,7 +414,7 @@ const initializeListDetailsViewHooks = () => {
         }
       }
     };
-    const taskBundleCallback = data => {
+    const taskBundleCallback = (data) => {
       // eslint-disable-next-line sonarjs/no-collapsible-if
       if (
         data.taskListIdentifier &&
@@ -481,7 +482,7 @@ const initializeListDetailsViewHooks = () => {
       taskList?.listType === 'PUBLIC'
         ? taskList
         : taskList?.listUsers?.find(
-            user => user.identifier === currentUserIdentifier,
+            (user) => user.identifier === currentUserIdentifier,
           ) ||
           taskList ||
           {};
@@ -493,7 +494,7 @@ const initializeListDetailsViewHooks = () => {
   }, [VIEW_LIST_OPTIONS_CONFIG, currentUserIdentifier, taskList]);
 
   const setDisplayListPreferences = useCallback(
-    columnKey => {
+    (columnKey) => {
       const newConfig = {
         ...displayListPreferences,
         [columnKey]: !displayListPreferences[columnKey],
