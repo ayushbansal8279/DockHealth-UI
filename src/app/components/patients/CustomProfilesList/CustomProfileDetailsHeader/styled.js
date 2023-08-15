@@ -11,7 +11,8 @@ export const ProfileDetailsContainer = styled.div`
   display: flex;
   flex-direction: column;
   justify-content: space-between;
-  padding: ${spacing.regular} ${spacing.regular};
+  // eslint-disable-next-line prettier/prettier
+  padding: ${spacing.regular} ${spacing.regular} 0 ${spacing.regular};
   font-family: 'Roboto Condensed', sans-serif;
   background-color: ${palette.white};
 `;

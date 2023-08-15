@@ -21,6 +21,7 @@ const CustomProfileDetailsHeader = ({
   header,
   profileTypeName,
   profileTypeIdentifier,
+  children
 }) => {
   const handleViewDetailsClick = () => {
     onViewDetailsClick();
@@ -70,6 +71,7 @@ const CustomProfileDetailsHeader = ({
             ))}
           </ProfileDetailsInformation>
         </ProfileDetails>
+        {children}
       </>
     </ProfileDetailsContainer>
   );
