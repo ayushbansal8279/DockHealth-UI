@@ -41,7 +41,7 @@ import {
 
 // eslint-disable-next-line sonarjs/cognitive-complexity
 const AddUserToGroupModal = ({ closeModal, userGroupIdentifier }) => {
-  const [inputValue, setInputValue] = useState(false);
+  const [inputValue, setInputValue] = useState('');
   const [hasUnsavedChanges, setUnsavedChanges] = useState(false);
   const dispatch = useDispatch();
 
@@ -158,27 +158,34 @@ const AddUserToGroupModal = ({ closeModal, userGroupIdentifier }) => {
               autoHighlight
               options={availableUsers}
               loading={isFetchingAllUsers}
-              getOptionLabel={(user) => `${user.name} ${user.email}`}
-              renderOption={(option, { inputValue: searchValue }) => (
-                <OptionRow>
-                  <OptionCell>
-                    <Highlighter
-                      highlightStyle={optionHighlightStyle}
-                      searchWords={searchValue?.toLowerCase().split(/\s+/)}
-                      autoEscape
-                      textToHighlight={option.name ?? '-'}
-                    />
-                  </OptionCell>
-                  <OptionCell>
-                    <Highlighter
-                      highlightStyle={optionHighlightStyle}
-                      searchWords={searchValue?.toLowerCase().split(/\s+/)}
-                      autoEscape
-                      textToHighlight={option.email ?? '-'}
-                    />
-                  </OptionCell>
-                </OptionRow>
-              )}
+              getOptionLabel={(user) => `${user.name} (${user.email})`}
+              isOptionEqualToValue={(option, value) =>
+                option.name === value.name
+              }
+              renderOption={(props, option, { inputValue: searchValue }) => {
+                return (
+                  <li {...props}>
+                    <OptionRow id={option?.identifier}>
+                      <OptionCell>
+                        <Highlighter
+                          highlightStyle={optionHighlightStyle}
+                          searchWords={searchValue?.toLowerCase().split(/\s+/)}
+                          autoEscape
+                          textToHighlight={option?.name ?? '-'}
+                        />
+                      </OptionCell>
+                      <OptionCell>
+                        <Highlighter
+                          highlightStyle={optionHighlightStyle}
+                          searchWords={searchValue?.toLowerCase().split(/\s+/)}
+                          autoEscape
+                          textToHighlight={option?.email ?? '-'}
+                        />
+                      </OptionCell>
+                    </OptionRow>
+                  </li>
+                );
+              }}
               onInputChange={(event) =>
                 setInputValue(event?.target?.value || '')
               }
