@@ -17,8 +17,7 @@ import {
 import { TaskStatus } from 'helpers/task-helpers';
 import { openDrawer } from 'actions/task-drawer-actions';
 import ReactHtmlParser from 'html-react-parser';
-// import { mentionifyAndLinkifyTaskText } from 'helpers/utility-functions';
-import { markdowntoHTML } from 'components/common/RichTextEditor/helpers';
+import { linkifyTextWithMentions } from 'components/common/RichTextEditor/helpers';
 import Spacing from 'components/common/Spacing';
 import EditIcon from '@mui/icons-material/Edit';
 import {
@@ -150,11 +149,9 @@ const TaskItemDescription = ({
               whiteSpace: 'nowrap',
             }}
           >
-            {/* {mentionifyAndLinkifyTaskText({
-              members: taskMentions,
-              value: descriptionState,
-            })} */}
-            {ReactHtmlParser(markdowntoHTML(descriptionState, taskMentions))}
+            {ReactHtmlParser(
+              linkifyTextWithMentions(descriptionState, taskMentions),
+            )}
           </div>
         )}
         {!isCompleted && (

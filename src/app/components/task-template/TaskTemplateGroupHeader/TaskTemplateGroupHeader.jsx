@@ -95,7 +95,7 @@ import TaskTemplateDetails from '../TaskTemplateDetails/TaskTemplateDetails';
 const TaskTemplateGroupHeader = ({
   templateGroup = {},
   groupHasMultipleAssignees,
-  draggableProvided = {},
+  dragHandleProps = {},
   groupDragAndDropDisabled,
   disablePatientAssignment,
   isCompletedTab = false,
@@ -124,7 +124,6 @@ const TaskTemplateGroupHeader = ({
     creator,
   } = templateGroup;
 
-  const { dragHandleProps } = draggableProvided;
   const { bulkEditIsActive } = useContext(BulkEditContext);
   const { bulkEditEnabled } = useContext(BulkEditContext);
   const [isEditing, setIsEditing] = useState(false);

@@ -36,9 +36,9 @@ import { BulkEditContext } from 'components/tasklist/BulkEditSection/BulkEditSec
 import LoadMoreButton, {
   LoadMoreSection,
 } from 'components/common/LoadMoreButton/LoadMoreButton';
-import { TaskItemType, TaskStatus, TaskOrigin } from 'helpers/task-helpers';
+import { TaskStatus, TaskOrigin } from 'helpers/task-helpers';
 import StandardTaskItem from 'components/task/StandardTaskItem/StandardTaskItem';
-import TaskTemplateGroup from 'components/task-template/TaskTemplateGroup/TaskTemplateGroup';
+// import TaskTemplateGroup from 'components/task-template/TaskTemplateGroup/TaskTemplateGroup';
 import TasksSkeletonLoader from 'components/task/TasksSkeletonLoader/TasksSkeletonLoader';
 import { useParams } from 'react-router-dom';
 import StickyContainer from 'components/common/HorizontalScroll/StickyContainer';
@@ -371,7 +371,9 @@ const ListDetailsTasks = ({
                                         key={taskIdentifier}
                                         isFullView={isFullView}
                                         isDragging={isDragging}
-                                        isStartedDnD={draggedId === taskIdentifier}
+                                        isStartedDnD={
+                                          draggedId === taskIdentifier
+                                        }
                                         taskIdentifier={taskIdentifier}
                                         taskGroupIdentifier={
                                           taskGroupIdentifier
@@ -413,6 +415,7 @@ const ListDetailsTasks = ({
                                           iconColorActiveItem?.value
                                         }
                                         origin={TaskOrigin.LIST}
+                                        viewSetup={viewSetup}
                                       />
                                       {/* ) : (
                                         <TaskTemplateGroup
@@ -496,6 +499,7 @@ const ListDetailsTasks = ({
       onSortChange,
       applyTemplate,
       iconColorActiveItem?.value,
+      restrictCustomizationFeatures,
       moveGroup,
       loadTasksForTaskGroup,
       isSortApplied,
@@ -503,7 +507,7 @@ const ListDetailsTasks = ({
       restrictions?.createGroup,
       DISABLED,
       showClearSortFiltersModal,
-      restrictCustomizationFeatures,
+      viewSetup,
     ],
   );
 
