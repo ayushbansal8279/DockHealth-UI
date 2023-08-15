@@ -263,34 +263,6 @@ const ListDetailsReducer = (state = initialState, action) => {
       // eslint-disable-next-line @typescript-eslint/no-unused-vars
       const { groupOfTasks, refresh, startPosition = 0 } = action;
 
-      // const fetchedTaskGroup = {
-      //   ...groupOfTasks?.taskGroups[0],
-      //   tasks: groupOfTasks?.taskGroups[0].tasks.map((task) => task.identifier),
-      // };
-      // const listTaskGroups = [...state.groupedTasks.taskGroups];
-      // const index = listTaskGroups.findIndex((group) => {
-      //   return group.groupIdentifier === fetchedTaskGroup.groupIdentifier;
-      // });
-      // if (typeof index === 'number') {
-      //   listTaskGroups[index] = {
-      //     ...listTaskGroups[index],
-      //     ...fetchedTaskGroup,
-      //     // tasks: (listTaskGroups[index].tasks || []).concat(
-      //     //   fetchedTaskGroup.tasks,
-      //     // ),
-      //     tasks: [
-      //       ...new Set([
-      //         ...(listTaskGroups[index].tasks || []),
-      //         ...fetchedTaskGroup.tasks,
-      //       ]),
-      //     ],
-      //     isLoadingGroup: false,
-      //     isFetchingMoreTasks: false,
-      //   };
-      // } else {
-      //   listTaskGroups.push(fetchedTaskGroup);
-      // }
-
       const taskItems = groupOfTasks?.taskGroups[0]?.tasks;
       let newMap = {};
       for (const taskItem of taskItems) {
@@ -314,11 +286,25 @@ const ListDetailsReducer = (state = initialState, action) => {
               const grpState = {
                 ...g,
                 ...matchedGroup,
-                tasks: [
-                  ...new Set(
-                    matchedGroup?.tasks.map((task) => task?.identifier || task),
-                  ),
-                ],
+                tasks:
+                  // initial loading of group, refresh, tasks are moved between groups
+                  startPosition === 0
+                    ? [
+                        ...new Set(
+                          matchedGroup?.tasks.map(
+                            (task) => task?.identifier || task,
+                          ),
+                        ),
+                      ]
+                    : [
+                        // when loading more tasks
+                        ...new Set([
+                          ...(g.tasks || []),
+                          ...matchedGroup?.tasks.map(
+                            (task) => task?.identifier || task,
+                          ),
+                        ]),
+                      ],
                 isLoadingGroup: false,
                 isFetchingMoreTasks: false,
               };
