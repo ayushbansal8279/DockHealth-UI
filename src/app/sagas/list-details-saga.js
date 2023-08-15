@@ -358,7 +358,8 @@ function* sortTasksInGroup(payload) {
     });
 
     yield call(reorderTasksInGroup, {
-      orderedTaskIds: pluck('identifier', reorderedTasks),
+      // orderedTaskIds: pluck('identifier', reorderedTasks),
+      orderedTaskIds: reorderedTasks,
       taskGroupIdentifier,
     });
     yield all([put(showGlobalAlert(AlertMessages.UPDATED))]);
@@ -426,10 +427,11 @@ function* reassignTasksToAnotherGroup(payload) {
     });
 
     yield call(reassignTasksToAnotherGroupApi, destinationGroupIdentifier, [
-      sourceTask.identifier,
+      sourceTask.identifier || sourceTask,
     ]);
     yield call(reorderTasksInGroup, {
-      orderedTaskIds: pluck('identifier', destinationTasks),
+      // orderedTaskIds: pluck('identifier', destinationTasks),
+      orderedTaskIds: destinationTasks,
       taskGroupIdentifier: destinationGroupIdentifier,
     });
     yield put(ListDetailsActions.getTasksGroupsList());
