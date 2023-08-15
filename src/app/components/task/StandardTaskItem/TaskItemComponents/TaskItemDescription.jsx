@@ -7,7 +7,7 @@ import React, {
   useEffect,
   // useMemo,
 } from 'react';
-import { Box, Fade, IconButton, Popper } from '@mui/material';
+import { Box, IconButton } from '@mui/material';
 import { useDispatch } from 'react-redux';
 import moment from 'moment';
 import {
@@ -16,15 +16,10 @@ import {
 } from 'actions/task-actions';
 import { TaskStatus } from 'helpers/task-helpers';
 import { openDrawer } from 'actions/task-drawer-actions';
+import ReactHtmlParser from 'html-react-parser';
+// import { mentionifyAndLinkifyTaskText } from 'helpers/utility-functions';
+import { markdowntoHTML } from 'components/common/RichTextEditor/helpers';
 import Spacing from 'components/common/Spacing';
-// import { checkIfShouldDisplayTooltip } from 'components/task/OverflowTooltip/OverflowTooltip';
-// import {
-//   convertToEditorState,
-//   convertFromEditorStateToOutput,
-// } from 'components/common/TextEditor/helpers';
-// import { useMentionsEditorState } from 'components/common/TextEditor/use-mentions-editor-state';
-// import { EditorState } from 'draft-js';
-// import { createMentionEntities } from 'components/common/TextEditor/create-mention-entities';
 import EditIcon from '@mui/icons-material/Edit';
 import {
   // Description,
@@ -54,7 +49,7 @@ const TaskItemDescription = ({
   const {
     description,
     // tokenizedDescription,
-    // taskMentions,
+    taskMentions,
     status,
     parentTask,
     // searchMetaData,
@@ -100,20 +95,6 @@ const TaskItemDescription = ({
     }
   }, [isEditing, descriptionReference]);
 
-  // useEffect(() => {
-  //   if (previousDescription.current !== null) {
-  //     // const newContent = createMentionEntities(
-  //     //   tokenizedDescription,
-  //     //   description,
-  //     //   taskMentions,
-  //     //   false,
-  //     // );
-  //     // setDescriptionState(EditorState.push(descriptionState, newContent));
-  //   }
-  //   previousDescription.current = description;
-  //   // eslint-disable-next-line react-hooks/exhaustive-deps
-  // }, [description]);
-
   const onParentLabelClick = useCallback(
     (event) => {
       event.preventDefault();
@@ -125,81 +106,57 @@ const TaskItemDescription = ({
     [parentTask],
   );
 
-  // const handleKeyBindingFunction = useCallback((event) => {
-  //   if (event.key === 'Enter') {
-  //     return 'enter-command';
-  //   }
-  // }, []);
-
-  // const handleBlur = useCallback(() => {
-  //   const { tokenizedText, rawText, mentions } = convertFromEditorStateToOutput(
-  //     descriptionState,
-  //     false,
-  //   );
-  //   if (rawText !== description) {
-  //     dispatch(
-  //       updateTaskDescription(task, {
-  //         tokenizedDescription: tokenizedText,
-  //         description: rawText,
-  //         taskMentions: [...(task.taskMentions || []), ...(mentions || [])],
-  //       }),
-  //     );
-  //   }
-  //   setEditing(false);
-  // }, [description, descriptionState, dispatch, setEditing, task]);
-
-  // const handleKeyCommand = useCallback(
-  //   (command) => {
-  //     if (command === 'enter-command') {
-  //       // eslint-disable-next-line no-unused-expressions
-  //       descriptionReference.current?.blur();
-  //       return 'handled';
-  //     }
-
-  //     return 'not-handled';
-  //   },
-  //   [descriptionReference],
-  // );
-
-  // const handleTextEditorBlur = (_, { value }) => {
-  //   console.log('handleTextEditorBlur');
-  //   dispatch(
-  //     updateTaskDescription(task, {
-  //       tokenizedDescription: value,
-  //       taskMentions: [],
-  //     }),
-  //   );
-  //   setEditing(false);
-  // };
+  const handleDescriptionChange = useCallback(
+    (event) => {
+      setEditing(false);
+      if (task?.description !== event.target.value) {
+        dispatch(
+          updateTaskDescription(task, {
+            tokenizedDescription: event.target.value,
+            taskMentions: [],
+          }),
+        );
+      }
+    },
+    [dispatch, setEditing, task],
+  );
 
   return (
     <DescriptionBox width={width}>
       <Box display="flex" flex={1}>
-        <DescriptionInput
-          readOnly={!isEditing}
-          value={descriptionState}
-          onChange={(event) => setDescriptionState(event.target.value)}
-          onBlur={(event) => {
-            if (task?.description !== event.target.value) {
-              dispatch(
-                updateTaskDescription(task, {
-                  tokenizedDescription: event.target.value,
-                  taskMentions: [],
-                }),
-              );
-              setEditing(false);
+        {isEditing && (
+          <DescriptionInput
+            readOnly={!isEditing}
+            value={descriptionState}
+            autofocus={isEditing}
+            onClick={(event) => {
+              event.stopPropagation();
+              event.preventDefault();
+            }}
+            onChange={(event) => setDescriptionState(event.target.value)}
+            onKeyDown={(event) =>
+              event.keyCode === 13 && handleDescriptionChange(event)
             }
-          }}
-        />
-        {/*<TextEditor*/}
-        {/*    type="input"*/}
-        {/*    readonly={!isEditing}*/}
-        {/*    autofocus={isEditing}*/}
-        {/*    value={description}*/}
-        {/*    onBlur={handleTextEditorBlur}*/}
-        {/*    onKeyDown={handleTextEditorKeyDown}*/}
-        {/*    mentions={taskMentions}*/}
-        {/*/>*/}
+            onBlur={(event) => {
+              handleDescriptionChange(event);
+            }}
+          />
+        )}
+        {!isEditing && (
+          <div
+            style={{
+              textOverflow: 'ellipsis',
+              overflow: 'hidden',
+              whiteSpace: 'nowrap',
+            }}
+          >
+            {/* {mentionifyAndLinkifyTaskText({
+              members: taskMentions,
+              value: descriptionState,
+            })} */}
+            {ReactHtmlParser(markdowntoHTML(descriptionState, taskMentions))}
+          </div>
+        )}
         {!isCompleted && (
           <DescriptionEditButton>
             <IconButton

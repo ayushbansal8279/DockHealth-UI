@@ -242,8 +242,8 @@ export const DescriptionBox = styled.div`
 export const DescriptionInput = styled.input`
   outline: 'none';
   background-color: transparent !important;
-  border: ${({ isEditing }) =>
-    isEditing ? `1px solid ${palette.brightBlue}` : 'none'};
+  border: ${({ readOnly }) =>
+    readOnly ? 'none' : `1px solid ${palette.brightBlue} !important`};
   border-radius: '4px';
   color: ${palette.mediumGrey};
   width: 1005px;
