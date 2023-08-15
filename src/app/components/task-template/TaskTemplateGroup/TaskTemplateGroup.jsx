@@ -54,7 +54,8 @@ const TaskTemplateGroup = ({
     isFetchingTasks,
   } = templateGroup || {};
 
-  const { SHOW_WORKFLOW_DETAILS, SHOW_WORKFLOW_COMPLETED_TASKS } = viewSetup;
+  const { SHOW_WORKFLOW_DETAILS, SHOW_WORKFLOW_COMPLETED_TASKS } =
+    viewSetup || {};
   // const { innerRef, draggableProps } = draggableProvided;
   const [isOpen, setOpen] = useState(false);
   const [draggedTaskIdentifier, setDraggedTaskIdentifier] = useState(null);
