@@ -15,8 +15,7 @@ const TaskDetails = ({ readOnly }) => {
 
   const [details, setDetails] = useState(selectedTask?.tokenizedDetails);
 
-  const handleChange = debounce((value) => {
-    setDetails(value);
+  const handleAutoSave = debounce((value) => {
     if (value !== details) {
       dispatch(
         updateTaskDetails(selectedTask, {
@@ -26,6 +25,11 @@ const TaskDetails = ({ readOnly }) => {
     }
     // eslint-disable-next-line unicorn/numeric-separators-style
   }, 10000);
+
+  const handleChange = (value) => {
+    setDetails(value);
+    handleAutoSave(value);
+  };
 
   const handleBlur = useCallback(
     (value) => {

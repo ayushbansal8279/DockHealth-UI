@@ -286,17 +286,17 @@ const DashboardTasksGroup = ({
                   if (destination) {
                     const { index: destinationIndex } = destination;
                     const { index: sourceIndex } = source;
-                    const newTasks = [...tasks];
-                    newTasks.splice(
+                    const newTaskIdentifiers = [...tasks];
+                    newTaskIdentifiers.splice(
                       destinationIndex,
                       0,
-                      newTasks.splice(sourceIndex, 1)[0],
+                      newTaskIdentifiers.splice(sourceIndex, 1)[0],
                     );
 
-                    setNewTasks(newTasks);
+                    setNewTasks(newTaskIdentifiers);
 
-                    const newTasksOrder = newTasks.map(
-                      ({ taskIdentifier }) => taskIdentifier,
+                    const newTasksOrder = newTaskIdentifiers.map(
+                      (taskIdentifier) => taskIdentifier,
                     );
                     dispatch(reorderDashboardTasks(groupType, newTasksOrder));
                   } else {
@@ -315,8 +315,8 @@ const DashboardTasksGroup = ({
                       {tasks &&
                         currentSortMethod(tasks)?.map((task, index) => (
                           <Draggable
-                            key={task.taskIdentifier}
-                            draggableId={String(task.taskIdentifier)}
+                            key={task?.taskIdentifier || task}
+                            draggableId={String(task?.taskIdentifier || task)}
                             index={index}
                             isDragDisabled={isDragAndDropDisabled}
                           >
@@ -331,7 +331,8 @@ const DashboardTasksGroup = ({
                                       parentContainerReference
                                     }
                                     newlyCreated={
-                                      task.identifier === lastCreatedTaskId
+                                      (task?.taskIdentifier || task) ===
+                                      lastCreatedTaskId
                                     }
                                     pageBackground={palette.white}
                                     taskItemIdentifier={task}

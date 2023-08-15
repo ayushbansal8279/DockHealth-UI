@@ -5,7 +5,7 @@ import React, {
   useLayoutEffect,
   // useMemo,
   useRef,
-  // useState,
+  useState,
 } from 'react';
 // import { EditorState } from 'draft-js';
 import { useDispatch } from 'react-redux';
@@ -28,6 +28,7 @@ import { DescriptionTextContainer, DescriptionError } from './styled';
 const TaskDescription = ({ selectedTask, readOnly, disableMentions }) => {
   const {
     description,
+    tokenizedDescription,
     status,
     // parentTaskIdentifier,
   } = selectedTask || {};
@@ -37,15 +38,7 @@ const TaskDescription = ({ selectedTask, readOnly, disableMentions }) => {
   const firstRender = useRef(true);
   const descriptionReference = useRef(null);
   const [isFocused, setFocused, unsetFocused] = useBoolean(false);
-  // const [descriptionState, setDescriptionState] = useMentionsEditorState(
-  //   description
-  //     ? convertToEditorState({
-  //         rawText: description,
-  //         tokenizedText: tokenizedDescription,
-  //         mentions: taskMentions,
-  //       })
-  //     : null,
-  // );
+  const [descriptionState, setDescriptionState] = useState(tokenizedDescription);
   // const [descriptionErrorState, setDescriptionErrorState] = useState(false);
 
   // const isSubtask = !!parentTaskIdentifier;
@@ -53,20 +46,6 @@ const TaskDescription = ({ selectedTask, readOnly, disableMentions }) => {
   // const isTemplateTask = checkIfTemplateTask(selectedTask);
 
   useLayoutEffect(() => {
-    if (!firstRender.current && selectedTask) {
-      if (selectedTask.description) {
-        // const newContent = createMentionEntities(
-        //   selectedTask.tokenizedDescription,
-        //   selectedTask.description,
-        //   selectedTask.taskMentions,
-        //   false,
-        // );
-        // setDescriptionState(EditorState.push(descriptionState, newContent));
-      } else {
-        // setDescriptionState();
-      }
-    }
-
     if (firstRender) firstRender.current = false;
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [selectedTask]);
@@ -140,6 +119,10 @@ const TaskDescription = ({ selectedTask, readOnly, disableMentions }) => {
   //   [descriptionErrorState, setDescriptionState],
   // );
 
+  const handleChange = (value) => {
+    setDescriptionState(value);
+  };
+
   const handleBlur = (value) => {
     if (selectedTask?.description !== value) {
       dispatch(
@@ -161,7 +144,8 @@ const TaskDescription = ({ selectedTask, readOnly, disableMentions }) => {
           richTextEnabled
         >
           <RichTextEditor
-            value={description}
+            value={descriptionState}
+            onChange={handleChange}
             onBlur={handleBlur}
             showToolbar={false}
             disableToolbar

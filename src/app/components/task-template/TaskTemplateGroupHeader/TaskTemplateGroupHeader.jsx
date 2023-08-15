@@ -95,7 +95,7 @@ import TaskTemplateDetails from '../TaskTemplateDetails/TaskTemplateDetails';
 const TaskTemplateGroupHeader = ({
   templateGroup = {},
   groupHasMultipleAssignees,
-  draggableProvided = {},
+  dragHandleProps = {},
   groupDragAndDropDisabled,
   disablePatientAssignment,
   isCompletedTab = false,
@@ -124,7 +124,6 @@ const TaskTemplateGroupHeader = ({
     creator,
   } = templateGroup;
 
-  const { dragHandleProps } = draggableProvided;
   const { bulkEditIsActive } = useContext(BulkEditContext);
   const { bulkEditEnabled } = useContext(BulkEditContext);
   const [isEditing, setIsEditing] = useState(false);
@@ -518,8 +517,10 @@ const TaskTemplateGroupHeader = ({
 
   const isBundleSelected = isBundlePreSelected || isBundleSelectedFromTasks;
 
-  const handleBundleSelect = useCallback(() => {
+  const handleBundleSelect = useCallback(async () => {
+    let selectedTaskIdentifiers = [templateGroup?.identifier];
     if (filteredTasks.length > 0 && isOpen) {
+      selectedTaskIdentifiers = selectedTaskIdentifiers.concat(filteredTasks);
       dispatch(
         TaskActions.changeTasksSelectedState(
           !isBundleSelected,
@@ -527,14 +528,25 @@ const TaskTemplateGroupHeader = ({
         ),
       );
     } else {
+      if (taskIdentifiers?.length > 0) {
+        selectedTaskIdentifiers =
+          selectedTaskIdentifiers.concat(taskIdentifiers);
+      }
       dispatch(
         TaskActions.changeTasksSelectedState(
           !isBundleSelected,
-          taskIdentifiers,
+          selectedTaskIdentifiers,
         ),
       );
     }
-  }, [filteredTasks, isOpen, dispatch, isBundleSelected, taskIdentifiers]);
+  }, [
+    filteredTasks,
+    isOpen,
+    dispatch,
+    isBundleSelected,
+    taskIdentifiers,
+    templateGroup,
+  ]);
 
   // useEffect(() => {
   //   if (!isOpen && isBundleSelected && !selected) {
