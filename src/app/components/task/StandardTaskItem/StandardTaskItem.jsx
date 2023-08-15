@@ -38,6 +38,7 @@ const Task = React.memo(
     highlightedTasksParentIdentifier,
     noMargin,
     origin,
+    viewSetup,
     ...restProps
   }) => {
     const parentTaskReference = useRef(null);
@@ -183,6 +184,7 @@ const Task = React.memo(
               (highlightedTasksParentIdentifier === task?.taskIdentifier ||
                 highlightedTasksParentIdentifier === task?.parentTaskIdentifier)
             }
+            viewSetup={viewSetup}
             {...restProps}
           />
         </div>
@@ -205,6 +207,7 @@ const Task = React.memo(
               isFullView={isFullView}
               parentHasPatient={!!patient}
               taskList={taskList}
+              draggableProvided={draggableProvided}
               isDraggable={isDraggable}
               showClearSortFiltersModal={showClearSortFiltersModal}
               shouldShowBlockModalOnDrag={shouldShowBlockModalOnDrag}
