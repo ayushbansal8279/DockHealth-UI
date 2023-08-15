@@ -211,6 +211,7 @@ const Task = React.memo(
               isDraggable={isDraggable}
               showClearSortFiltersModal={showClearSortFiltersModal}
               shouldShowBlockModalOnDrag={shouldShowBlockModalOnDrag}
+              origin={origin}
               {...restProps}
             />
             {subtaskQuickAddOpen &&

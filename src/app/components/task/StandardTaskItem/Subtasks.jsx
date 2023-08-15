@@ -20,12 +20,12 @@ const Subtasks = ({
   isFullView,
   parentTask,
   parentHasPatient,
-  taskList,
   isDraggable,
   subTasksCount,
   isFetchingSubTasks,
   shouldShowBlockModalOnDrag,
   showClearSortFiltersModal,
+  origin,
   ...restProps
 }) => {
   const dispatch = useDispatch();
@@ -117,6 +117,7 @@ const Subtasks = ({
                               isNestedTask
                               {...restProps}
                               patient={parentTask.patient}
+                              origin={origin}
                             />
                             {shouldRenderComments &&
                               (subtasks?.length > 0 || subTasksCount === 0) && (

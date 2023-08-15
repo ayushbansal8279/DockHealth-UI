@@ -219,6 +219,12 @@ const TaskTemplateReducer = (state = initialState, action) => {
       const newTasks = {};
       for (const task of tasks) {
         newTasks[task.identifier] = task;
+        for (const subtask of task?.subtasks) {
+          newTasks[subtask.identifier] = {
+            ...newTasks[subtask.identifier],
+            ...subtask,
+          };
+        }
       }
 
       return {
