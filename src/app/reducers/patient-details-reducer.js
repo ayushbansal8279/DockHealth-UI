@@ -343,16 +343,24 @@ export default (state = INITIAL_STATE, action = {}) => {
     case ActionTypes.UPDATE_TEMPLATE_BUNDLE_SUCCESS: {
       const { bundleIdentifier, dataToUpdate } = action;
 
-      return {
-        ...state,
-        lists: state.lists?.map((l) => ({
-          ...l,
-          tasks:
-            dataToUpdate.taskListIdentifier === l.taskListIdentifier
-              ? updateBundleInList(dataToUpdate, bundleIdentifier, l.tasks)
-              : l.tasks,
-        })),
+      const updatedMap = updateTasksMap(state, {
+        itemType: TaskItemType.BUNDLE,
+        identifier: bundleIdentifier,
+        ...dataToUpdate,
+      });
+
+      const newMap = {
+        ...state.tasksMap,
+        ...updatedMap,
       };
+
+      // eslint-disable-next-line sonarjs/prefer-immediate-return
+      const updatedState = {
+        ...state,
+        tasksMap: newMap,
+      };
+
+      return updatedState;
     }
 
     case ActionTypes.REORDER_WORKFLOW_TASKS: {
@@ -663,6 +671,40 @@ export default (state = INITIAL_STATE, action = {}) => {
           ),
         },
       };
+    }
+
+    case ActionTypes.DELETE_TASK: {
+      const { taskIdentifier } = action;
+      const taskItem = state.tasksMap[taskIdentifier];
+
+      const { taskListIdentifier } = taskItem?.taskList || {};
+
+      const updatedStateAfterRemovingTaskItem =
+        taskItem?.itemType === TaskItemType.BUNDLE
+          ? {
+              ...state,
+            }
+          : {
+              ...state,
+              lists: state.lists?.map((l) =>
+                l.taskListIdentifier === taskListIdentifier
+                  ? {
+                      ...l,
+                      tasks: l.tasks?.filter(
+                        (task) => task?.taskIdentifier !== taskIdentifier,
+                      ),
+                    }
+                  : l,
+              ),
+            };
+
+      return state.patientIdentifier && state.patientIdentifier !== ''
+        ? TaskBaseReducer(
+            updatedStateAfterRemovingTaskItem,
+            action,
+            updateTasksStateCallback,
+          )
+        : state;
     }
 
     default: {
