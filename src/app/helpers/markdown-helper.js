@@ -1,5 +1,5 @@
 import markdownToTxt from 'markdown-to-txt';
 
 export const convertToSimpleString = (source) => {
-  return source ? markdownToTxt(source) : '';
+  return source ? markdownToTxt(source, { gfm: false }) : '';
 };
