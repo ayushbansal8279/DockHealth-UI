@@ -4,7 +4,7 @@ import { TaskGroupType, TaskItemType, TaskStatus } from 'helpers/task-helpers';
 import { reorderTasksForWorkflow } from 'helpers/workflow-helpers';
 import { updateTaskOrSubtaskInListsArray } from 'helpers/task-update-helper';
 import { updateBundleInList } from 'helpers/tasklist-helpers';
-import { updateTasksStateCallback } from './reducer-helper';
+import { updateTasksStateCallback, updateTasksMap } from './reducer-helper';
 import TaskBaseReducer from './task-base-reducer';
 
 const INITIAL_STATE = {
@@ -424,7 +424,7 @@ export default (state = INITIAL_STATE, action = {}) => {
 
       const { taskListIdentifier } = addedTask.taskList || {};
 
-      return {
+      const updatedState = {
         ...state,
         lists: state.lists?.map((l) =>
           l.taskListIdentifier === taskListIdentifier
@@ -435,6 +435,8 @@ export default (state = INITIAL_STATE, action = {}) => {
             : l,
         ),
       };
+
+      return updateTasksStateCallback(updatedState, addedTask);
     }
 
     case ActionTypes.ADD_TEMPLATE_BUNDLE: {
@@ -598,7 +600,7 @@ export default (state = INITIAL_STATE, action = {}) => {
         return { ...state };
       }
 
-      return {
+      const updatedState = {
         ...state,
         lists: state.lists?.map((l) => {
           if (
@@ -613,11 +615,13 @@ export default (state = INITIAL_STATE, action = {}) => {
           return l;
         }),
       };
+
+      return updateTasksStateCallback(updatedState, task);
     }
 
     case ActionTypes.APPLY_TEMPLATE_SUCCESS: {
       const { template, taskListIdentifier } = action;
-      return {
+      const updatedState = {
         ...state,
         lists: state.lists?.map((l) =>
           taskListIdentifier === l.taskListIdentifier
@@ -627,6 +631,15 @@ export default (state = INITIAL_STATE, action = {}) => {
               }
             : l,
         ),
+      };
+
+      const updatedMap = updateTasksMap(updatedState, template);
+      return {
+        ...updatedState,
+        tasksMap: {
+          ...state.tasksMap,
+          ...updatedMap,
+        },
       };
     }
 
