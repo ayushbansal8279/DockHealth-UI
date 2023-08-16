@@ -11,20 +11,6 @@ import {
 
 const TaskBaseReducer = (state, action, updateStateCallback) => {
   switch (action.type) {
-    // case ActionTypes.FIND_TASKS_BY_PROFILE_GROUPED_BY_TASK_LIST_SUCCESS: {
-    //   console.log('FIND_TASKS_BY_PROFILE_GROUPED_BY_TASK_LIST_SUCCESS', action, state);
-    //
-    //   const newMap = { ...state.tasksMap };
-    //   for (const task of action.payload) {
-    //
-    //   }
-    //
-    //   return {
-    //     ...state,
-    //     tasks: [...(state.tasks || []), ...action.payload],
-    //   };
-    // }
-
     case ActionTypes.UPDATE_PATIENT_DETAILS: {
       const {
         payload: { patientIdentifier, details },
@@ -638,6 +624,30 @@ const TaskBaseReducer = (state, action, updateStateCallback) => {
       };
 
       return updateStateCallback(state, updateTaskFromAction);
+    }
+
+    case ActionTypes.FIND_TASKS_BY_PROFILE_GROUPED_BY_TASK_LIST_SUCCESS: {
+      // const newMap = { ...state.tasksMap };
+      // for (const task of action.payload.flatMap((taskList) => taskList.tasks)) {
+      //   newMap[task.identifier] = task;
+      // }
+      //
+      // console.log(
+      //   '!!! FIND_TASKS_BY_PROFILE_GROUPED_BY_TASK_LIST_SUCCESS',
+      //   action,
+      //   state,
+      //   state.tasksMap,
+      //   action.payload.flatMap((taskList) => taskList.tasks),
+      //   newMap,
+      // );
+      //
+      // return {
+      //   ...state,
+      //   tasks: [...(state.tasks || []), ...action.payload],
+      //   taskMap2: newMap,
+      // };
+
+      return { dupa: 1 };
     }
 
     default: {

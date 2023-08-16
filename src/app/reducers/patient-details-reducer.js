@@ -707,6 +707,19 @@ export default (state = INITIAL_STATE, action = {}) => {
         : state;
     }
 
+    case ActionTypes.FIND_TASKS_BY_PROFILE_GROUPED_BY_TASK_LIST_SUCCESS: {
+      const newMap = { ...state.tasksMap };
+      for (const task of action.payload.flatMap((taskList) => taskList.tasks)) {
+        newMap[task.identifier] = task;
+      }
+
+      return {
+        ...state,
+        tasks: [...(state.tasks || []), ...action.payload],
+        tasksMap: newMap,
+      };
+    }
+
     default: {
       return state.patientIdentifier && state.patientIdentifier !== ''
         ? TaskBaseReducer(state, action, updateTasksStateCallback)

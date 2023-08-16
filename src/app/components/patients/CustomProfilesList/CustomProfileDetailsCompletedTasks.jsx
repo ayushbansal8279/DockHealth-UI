@@ -1,7 +1,7 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { onSortChanged } from 'helpers/ga-event-helper';
-import { completedTasksIsFetchingMoreSelector, completedTasksSelector } from "selectors/list-details-selectors";
+import { completedTasksIsFetchingMoreSelector } from 'selectors/list-details-selectors';
 import {
   completedTasksIsFetchingSelector,
   taskCountersSelector,
@@ -9,7 +9,6 @@ import {
 } from 'selectors/person-details-selectors';
 import { hasFiltersAppliedSelector } from 'selectors/mega-filter-selectors';
 import { sortUserTasks } from 'actions/person-details-actions';
-// import { filterTasksBySearchValue } from 'helpers/task-search-helper';
 import NoSearchResultsView from 'components/tasklist/EmptyListView/NoSearchResultsView';
 import EmptyListView from 'components/tasklist/EmptyListView/EmptyListView';
 import NoFilterResultsView from 'components/tasklist/EmptyListView/NoFilterResultsView';
@@ -19,7 +18,7 @@ import StandardTaskItem from 'components/task/StandardTaskItem/StandardTaskItem'
 import { useTaskListColumnsConfig } from 'context-api/columns-config-context';
 import { TaskOrigin } from 'helpers/task-helpers';
 import { TaskGroupsContainer } from 'views/person-details/styled';
-import { findTasksByProfileGroupedByTaskList } from "actions/task-actions";
+import { findTasksByProfileGroupedByTaskList } from 'actions/task-actions';
 
 const CustomProfileDetailsCompletedTasks = ({
   profileIdentifier,
@@ -31,11 +30,15 @@ const CustomProfileDetailsCompletedTasks = ({
   taskItemConfig,
   onOrderChange,
   iconColorActive,
+  changingGroupOrderDisabled,
+  groupName,
   // eslint-disable-next-line sonarjs/cognitive-complexity
 }) => {
   const dispatch = useDispatch();
   const isFetchingTasks = useSelector(completedTasksIsFetchingSelector);
-  const tasks = useSelector((state) => state.tasks);
+  const tasks = Object.values(
+    useSelector((state) => state.patientDetails.tasksMap),
+  );
   const isFetchingMoreTasks = useSelector(completedTasksIsFetchingMoreSelector);
   const taskCounters = useSelector(taskCountersSelector);
   const sort = useSelector(sortSelector);
@@ -89,7 +92,7 @@ const CustomProfileDetailsCompletedTasks = ({
             <TaskGroupsContainer>
               <TasksGroup
                 onOrderChange={onOrderChange}
-                groupName="Completed"
+                groupName={groupName || 'Completed'}
                 storeAsCurrentTask={storeAsCurrentTask}
                 toggleCompleteTask={toggleCompleteTask}
                 tasks={tasks}
@@ -105,6 +108,7 @@ const CustomProfileDetailsCompletedTasks = ({
                 sort={sort}
                 onSortChange={handleSortChange}
                 disableBulkEdit
+                changingGroupOrderDisabled={changingGroupOrderDisabled}
               >
                 {({
                   isCompletedGroup,
@@ -139,7 +143,7 @@ const CustomProfileDetailsCompletedTasks = ({
                         }
                         dragAndDropDisabled
                         iconColorActive={iconColorActive}
-                        origin={TaskOrigin.PERSON}
+                        origin={TaskOrigin.CUSTOM_PROFILE}
                       />
                     ))}
                   </>

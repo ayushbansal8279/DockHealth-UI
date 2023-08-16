@@ -45,6 +45,12 @@ export const taskLookupSelector = (state, origin, task) => {
       typeof task === 'string' ? task : task?.identifier,
     );
   }
+  if (origin === TaskOrigin.CUSTOM_PROFILE) {
+    return patientTaskDetailsSelector(
+      state,
+      typeof task === 'string' ? task : task?.identifier,
+    );
+  }
   if (origin === TaskOrigin.TEMPLATE) {
     return templateTaskDetailsSelector(
       state,

@@ -17,7 +17,6 @@ import {
 import CustomProfileNotes from 'components/patients/CustomProfilesList/CustomProfileNotes/CustomProfileNotes';
 import { MainTab } from 'views/patient-details/styled';
 import CustomProfileDetailsCompletedTasks from './CustomProfileDetailsCompletedTasks';
-import CustomProfileDetailsOpenedTasks from './CustomProfileDetailsOpenedTasks';
 
 const PERSON_VIEW_COLUMNS_CONFIG = {
   ...TASK_ITEM_BASE_COLUMN_CONFIG,
@@ -141,7 +140,9 @@ const CustomProfileView = () => {
         {currentTab === 0 && (
           <CustomProfileDetailsCompletedTasks
             profileIdentifier={profileIdentifier}
+            groupName="Profile's Tasks"
             taskItemConfig={PERSON_VIEW_COLUMNS_CONFIG}
+            changingGroupOrderDisabled
           />
         )}
         {currentTab === 1 && (
