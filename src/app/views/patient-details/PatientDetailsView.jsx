@@ -129,7 +129,7 @@ const PatientDetailsView = () => {
 
   useEffect(() => {
     // eslint-disable-next-line unicorn/consistent-function-scoping
-    const taskCallback = ({ eventType, task }) => {
+    const taskCallback = ({ eventType, task, workflowIdentifier }) => {
       if (
         task?.patient &&
         task?.patient.patientIdentifier === patientIdentifier
@@ -142,6 +142,16 @@ const PatientDetailsView = () => {
         } else {
           dispatch(TaskActions.refreshTask(task.taskIdentifier));
         }
+      } else if (
+        eventType?.startsWith('MARK_COMPLETE') &&
+        !workflowIdentifier // not part of workflow
+      ) {
+        dispatch(TaskActions.refreshTask(task.taskIdentifier));
+        if (task) {
+          dispatch(TaskActions.makeTaskDisappear(task));
+        }
+      } else if (task?.taskIdentifier) {
+        dispatch(TaskActions.refreshTask(task.taskIdentifier));
       }
     };
 
