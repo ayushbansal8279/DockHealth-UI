@@ -70,6 +70,6 @@ export const isFetchingDashboardFiltersSelector = createSelector(
 );
 
 export const selectedTasksSelector = (state) =>
-  state?.taskItems?.selectedTaskIdentifiers.map(
-    (taskId) => state?.dashboardTasks?.tasksMap[taskId],
-  );
+  state?.taskItems?.selectedTaskIdentifiers
+    .filter((taskId) => state?.dashboardTasks?.tasksMap[taskId] !== undefined)
+    .map((taskId) => state?.dashboardTasks?.tasksMap[taskId]);
