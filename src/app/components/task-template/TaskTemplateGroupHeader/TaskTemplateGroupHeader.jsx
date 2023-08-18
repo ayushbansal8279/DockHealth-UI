@@ -1207,7 +1207,7 @@ const TaskTemplateGroupHeader = ({
                     ? templateGroup.matchComments
                     : workFlowData.matchComments
                 }
-                workfkow={
+                workflow={
                   templateGroup.comments || !workFlowData
                     ? templateGroup
                     : workFlowData

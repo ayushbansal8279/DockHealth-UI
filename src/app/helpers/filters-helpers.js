@@ -152,9 +152,9 @@ export const checkIfTaskMatchesFilters = (task, filters) => {
         )) &&
       !filters.taskDueDateOptions) ||
     checkIfMatchesDueDateCriteria(
-      filters.taskDueDateOptions.dateStart,
-      filters.taskDueDateOptions.dateEnd,
-      filters.taskDueDateOptions.options,
+      filters.taskDueDateOptions?.dateStart,
+      filters.taskDueDateOptions?.dateEnd,
+      filters.taskDueDateOptions?.options,
       dueDate,
     )
   );
