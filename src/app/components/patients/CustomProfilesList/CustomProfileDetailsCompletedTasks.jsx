@@ -19,6 +19,7 @@ import { useTaskListColumnsConfig } from 'context-api/columns-config-context';
 import { TaskOrigin } from 'helpers/task-helpers';
 import { TaskGroupsContainer } from 'views/person-details/styled';
 import { findTasksByProfileGroupedByTaskList } from 'actions/task-actions';
+import { profileAllTasksSelector } from 'selectors/custom-profile-details-selectors';
 
 const CustomProfileDetailsCompletedTasks = ({
   profileIdentifier,
@@ -36,9 +37,7 @@ const CustomProfileDetailsCompletedTasks = ({
 }) => {
   const dispatch = useDispatch();
   const isFetchingTasks = useSelector(completedTasksIsFetchingSelector);
-  const tasks = Object.values(
-    useSelector((state) => state.patientDetails.tasksMap),
-  );
+  const tasks = useSelector(profileAllTasksSelector);
   const isFetchingMoreTasks = useSelector(completedTasksIsFetchingMoreSelector);
   const taskCounters = useSelector(taskCountersSelector);
   const sort = useSelector(sortSelector);
@@ -52,11 +51,6 @@ const CustomProfileDetailsCompletedTasks = ({
   useEffect(() => {
     setViewSpecificConfig(taskItemConfig);
   }, [setViewSpecificConfig, taskItemConfig]);
-
-  // const filteredTasks = useMemo(
-  //   () => (!searchValue ? tasks : filterTasksBySearchValue(tasks, searchValue)),
-  //   [searchValue, tasks],
-  // );
 
   const renderEmptyState = () => {
     if (searchValue) return <NoSearchResultsView />;

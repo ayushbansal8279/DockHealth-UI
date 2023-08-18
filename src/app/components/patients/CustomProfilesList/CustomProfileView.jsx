@@ -1,5 +1,5 @@
-import React, { useEffect, useState, useMemo } from 'react';
-import { useDispatch } from 'react-redux';
+import React, { useEffect, useState, useMemo, useCallback } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
 import { useParams } from 'react-router-dom';
 import CustomProfileDetailsHeader from 'components/patients/CustomProfilesList/CustomProfileDetailsHeader/CustomProfileDetailsHeader';
 import { showGlobalErrorAlert } from 'alert/actions';
@@ -16,6 +16,14 @@ import {
 } from 'helpers/task-helpers';
 import CustomProfileNotes from 'components/patients/CustomProfilesList/CustomProfileNotes/CustomProfileNotes';
 import { MainTab } from 'views/patient-details/styled';
+import {
+  getCurrentPatientTasks,
+  getPatientFilterOptions,
+} from 'actions/patient-details-actions';
+import { DrawerFieldEnum } from 'helpers/task-drawer-helpers';
+import TaskDrawer from 'components/task-drawer/TaskDrawer/TaskDrawer';
+import checkIfTaskMatchesFilters from 'helpers/filters-helpers';
+import { selectedFiltersInMegaFilterSelector } from 'selectors/mega-filter-selectors';
 import CustomProfileDetailsCompletedTasks from './CustomProfileDetailsCompletedTasks';
 
 const PERSON_VIEW_COLUMNS_CONFIG = {
@@ -107,6 +115,18 @@ const CustomProfileView = () => {
     setCurrentTab(value);
   };
 
+  const selectedFilters = useSelector(selectedFiltersInMegaFilterSelector);
+
+  const handleTaskUpdate = useCallback(
+    (updatedTask) => {
+      dispatch(getPatientFilterOptions(profileIdentifier));
+      if (!checkIfTaskMatchesFilters(updatedTask, selectedFilters)) {
+        dispatch(getCurrentPatientTasks());
+      }
+    },
+    [dispatch, profileIdentifier, selectedFilters],
+  );
+
   return (
     <ColumnsConfigProvider>
       <ViewLayout
@@ -148,6 +168,14 @@ const CustomProfileView = () => {
         {currentTab === 1 && (
           <CustomProfileNotes profileIdentifier={profileIdentifier} />
         )}
+        <TaskDrawer
+          onTaskUpdate={handleTaskUpdate}
+          onTaskCreation={handleTaskUpdate}
+          onTaskDelete={() => {
+            dispatch(getPatientFilterOptions(profileIdentifier));
+          }}
+          disabledFields={[DrawerFieldEnum.PATIENT]}
+        />
       </ViewLayout>
     </ColumnsConfigProvider>
   );

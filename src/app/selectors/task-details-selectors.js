@@ -23,6 +23,7 @@ import {
   globalTaskDetailsSelector,
   globalMultipleTaskDetailsSelector,
 } from 'selectors/global-search-selectors';
+import { profileTaskDetailsSelector } from 'selectors/custom-profile-details-selectors';
 
 // eslint-disable-next-line sonarjs/cognitive-complexity
 export const taskLookupSelector = (state, origin, task) => {
@@ -46,7 +47,7 @@ export const taskLookupSelector = (state, origin, task) => {
     );
   }
   if (origin === TaskOrigin.CUSTOM_PROFILE) {
-    return patientTaskDetailsSelector(
+    return profileTaskDetailsSelector(
       state,
       typeof task === 'string' ? task : task?.identifier,
     );
