@@ -34,7 +34,7 @@ export function updateTasksStateCallback(state, taskData) {
     (tmd) => {
       const matchedTaskMetaData = taskItem?.taskMetaData?.find(
         (newtmd) =>
-          newtmd && newtmd.customFieldIdentifier === tmd.customFieldIdentifier,
+          newtmd && newtmd.customFieldIdentifier === tmd?.customFieldIdentifier,
       );
       return {
         ...tmd,
@@ -47,7 +47,7 @@ export function updateTasksStateCallback(state, taskData) {
     (newtmd) =>
       state.tasksMap[taskIdentifier]?.taskMetaData?.find(
         (tmd) =>
-          tmd && tmd.customFieldIdentifier === newtmd.customFieldIdentifier,
+          tmd && tmd.customFieldIdentifier === newtmd?.customFieldIdentifier,
       ) === undefined,
   );
 
