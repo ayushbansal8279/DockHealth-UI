@@ -82,9 +82,9 @@ export const listCustomFieldsSelector = createSelector(
 );
 
 export const selectedTasksSelector = (state) =>
-  state?.taskItems?.selectedTaskIdentifiers.map(
-    (taskId) => state?.listDetails?.tasksMap[taskId],
-  );
+  state?.taskItems?.selectedTaskIdentifiers
+    .filter((taskId) => state?.listDetails?.tasksMap[taskId] !== undefined)
+    .map((taskId) => state?.listDetails?.tasksMap[taskId]);
 
 export const groupFromGroupedTasksSelector = (taskGroupIdentifier) =>
   createSelector(groupTasksSelector, (taskGroups) =>

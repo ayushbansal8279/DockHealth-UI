@@ -197,10 +197,17 @@ const ListDetailsReducer = (state = initialState, action) => {
         }
       }
 
+      const updatedGroups = groupedTasks?.map((g) => ({
+        ...g,
+        tasks: [...new Set(g?.tasks.map((task) => task?.identifier || task))],
+        isLoadingGroup: false,
+        isFetchingMoreTasks: false,
+      }));
+
       return {
         ...state,
         groupedTasks: {
-          taskGroups: groupedTasks,
+          taskGroups: updatedGroups,
         },
         tasksMap: {
           ...state.tasksMap,
