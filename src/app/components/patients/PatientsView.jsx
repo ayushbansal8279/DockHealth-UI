@@ -169,6 +169,19 @@ const PatientsView = () => {
     );
   }, [dispatch, listIdentifier, selectedPatients]);
 
+  const handleUnArchiveConfirm = useCallback(() => {
+    const assignedPatients = selectedPatients?.map((patient) => {
+      return patient.patientIdentifier;
+    });
+    dispatch(
+      PatientsActions.patientBulkUpdatePatient({
+        assignedPatients,
+        listIdentifier,
+        bulkOperationType: PatientBulkActions.UNARCHIVE_PATIENT,
+      }),
+    );
+  }, [dispatch, listIdentifier, selectedPatients]);
+
   const openDeleteConfirmationModal = useCallback(() => {
     const selectedPatientsCount = selectedPatients?.length;
 
@@ -212,7 +225,7 @@ const PatientsView = () => {
         setDeleteOption(false);
       },
     };
-    dispatch(openModal('DeleteConfirmation', modalProps));
+    dispatch(openModal('ArchivePatient', modalProps));
   }, [dispatch, handleArchiveConfirm, selectedPatients]);
 
   const openUnarchiveConfirmationModal = useCallback(() => {
@@ -227,7 +240,7 @@ const PatientsView = () => {
       }?`,
       confirmButtonText: 'Unarchive',
       confirm: () => {
-        handleArchiveConfirm();
+        handleUnArchiveConfirm();
         dispatch(closeModal());
       },
       onClose: () => {
@@ -235,8 +248,8 @@ const PatientsView = () => {
         setDeleteOption(false);
       },
     };
-    dispatch(openModal('DeleteConfirmation', modalProps));
-  }, [dispatch, handleArchiveConfirm, selectedPatients]);
+    dispatch(openModal('UnarchivePatient', modalProps));
+  }, [dispatch, handleUnArchiveConfirm, selectedPatients]);
 
   const turnOffAllOptions = useCallback(() => {
     setCreateTaskOption(false);
