@@ -44,7 +44,7 @@ const TaskItemDetails = ({ task, onClick, readOnly }) => {
   }, [details]);
 
   const handleAutoSave = debounce((value) => {
-    if (value !== '' || (details && value !== details)) {
+    if (value !== (details || '')) {
       if (isWorkflow) {
         dispatch(
           updatePartialWorkflow(identifier, {
@@ -63,8 +63,8 @@ const TaskItemDetails = ({ task, onClick, readOnly }) => {
     handleAutoSave();
   };
 
-  const handleTextEditorBlur = (closePopover) => (value) => {
-    if (value !== '' || (details && value !== details)) {
+  const handleBlur = (closePopover) => (value) => {
+    if (value !== (details || '')) {
       if (isWorkflow) {
         dispatch(
           updatePartialWorkflow(identifier, {
@@ -107,7 +107,7 @@ const TaskItemDetails = ({ task, onClick, readOnly }) => {
                 readonly={readOnly}
                 value={details}
                 onChange={handleChange}
-                onBlur={handleTextEditorBlur(closePopover)}
+                onBlur={handleBlur(closePopover)}
                 initOnClick
                 showCharCount
               />

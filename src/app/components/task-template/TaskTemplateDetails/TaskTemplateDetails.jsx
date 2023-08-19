@@ -34,7 +34,7 @@ const TaskTemplateDetails = ({ workflow, readOnly }) => {
   }, [dispatch, workflow]);
 
   const handleAutoSave = debounce((value) => {
-    if (value !== '' || (details && value !== details)) {
+    if (value !== (details || '')) {
       dispatch(
         updatePartialWorkflow(workflow?.identifier, {
           description: value,
@@ -52,7 +52,7 @@ const TaskTemplateDetails = ({ workflow, readOnly }) => {
 
   const handleBlur = useCallback(
     (value) => {
-      if (value !== '' || (details && value !== details)) {
+      if (value !== (details || '')) {
         dispatch(
           updatePartialWorkflow(workflow?.identifier, {
             description: value,

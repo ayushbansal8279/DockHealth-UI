@@ -16,7 +16,7 @@ const TaskDetails = ({ readOnly }) => {
   const [details, setDetails] = useState(selectedTask?.tokenizedDetails);
 
   const handleAutoSave = debounce((value) => {
-    if (value !== details) {
+    if (value !== (selectedTask?.tokenizedDetails || '')) {
       dispatch(
         updateTaskDetails(selectedTask, {
           tokenizedDetails: value || '',
