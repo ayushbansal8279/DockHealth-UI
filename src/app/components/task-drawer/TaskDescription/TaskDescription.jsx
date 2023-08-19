@@ -13,13 +13,6 @@ import { useBoolean } from 'hooks/useBoolean';
 import { addTask, updateTaskDescription } from 'actions/task-actions';
 // import { useBoolean } from 'hooks/useBoolean';
 import { checkIfTemplateTask, TaskStatus } from 'helpers/task-helpers';
-// import {
-// convertFromEditorStateToOutput,
-// convertToEditorState,
-// isEditorStateEmpty,
-// } from 'components/common/TextEditor/helpers';
-// import { createMentionEntities } from 'components/common/TextEditor/create-mention-entities';
-// import { useMentionsEditorState } from 'components/common/TextEditor/use-mentions-editor-state';
 // import debounce from 'lodash.debounce';
 import RichTextEditor from 'components/common/RichTextEditor/RichTextEditor';
 import CustomTextEditor from 'components/common/CustomTextEditor/CustomTextEditor';
@@ -57,67 +50,6 @@ const TaskDescription = ({ selectedTask, readOnly, disableMentions }) => {
       }, 0);
     }
   }, [descriptionReference, selectedTask]);
-
-  // const isEmptyDescriptionState = useMemo(
-  //   () => isEditorStateEmpty(descriptionState),
-  //   [descriptionState],
-  // );
-
-  // const handleBlur = useCallback(() => {
-  //   const { tokenizedText, rawText, mentions } = convertFromEditorStateToOutput(
-  //     descriptionState,
-  //     false,
-  //   );
-
-  //   if (!tokenizedText) {
-  //     setDescriptionErrorState(true);
-  //   } else if (selectedTask.taskIdentifier) {
-  //     if (tokenizedDescription !== tokenizedText)
-  //       dispatch(
-  //         updateTaskDescription(selectedTask, {
-  //           tokenizedDescription: tokenizedText,
-  //           description: rawText,
-  //           taskMentions: [
-  //             ...(selectedTask.taskMentions || []),
-  //             ...(mentions || []),
-  //           ],
-  //         }),
-  //       );
-  //   } else {
-  //     dispatch(
-  //       addTask({
-  //         ...selectedTask,
-  //         tokenizedDescription: tokenizedText,
-  //         description: rawText,
-  //         taskMentions: [
-  //           ...(selectedTask.taskMentions || []),
-  //           ...(mentions || []),
-  //         ],
-  //       }),
-  //     );
-  //   }
-
-  //   unsetFocused();
-  // }, [
-  //   descriptionState,
-  //   dispatch,
-  //   selectedTask,
-  //   tokenizedDescription,
-  //   unsetFocused,
-  // ]);
-
-  // const handleChange = useCallback(
-  //   (state) => {
-  //     if (descriptionErrorState) {
-  //       const { tokenizedText } = convertFromEditorStateToOutput(state, false);
-  //       if (tokenizedText) {
-  //         setDescriptionErrorState(false);
-  //       }
-  //     }
-  //     setDescriptionState(state);
-  //   },
-  //   [descriptionErrorState, setDescriptionState],
-  // );
 
   const handleChange = (value) => {
     setDescriptionState(value);
