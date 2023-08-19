@@ -90,6 +90,7 @@ const CustomizeToolbarButton = ({
     [TaskItemColumn.COMPLETED_BY]: `Completed by`,
     [TaskItemColumn.ANCHOR_DATE]: 'Anchor date',
     [TaskItemColumn.LIST_NAME]: 'List name',
+    [TaskItemColumn.ORG_NAME]: 'Organization name',
     [TaskItemColumn.TASK_DETAILS]: 'Details',
     [TaskItemColumn.PRIORITY]: 'Priority',
     [TaskItemColumn.PATIENT]: customerTypeLabel,

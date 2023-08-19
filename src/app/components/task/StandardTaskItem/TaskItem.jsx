@@ -96,6 +96,7 @@ import TaskItemIcons from './TaskItemComponents/TaskItemIcons';
 import TaskItemMembers from './TaskItemComponents/TaskItemMembers';
 import TaskItemSharedMembers from './TaskItemComponents/TaskItemSharedMembers';
 import TaskItemList from './TaskItemComponents/TaskItemList';
+import TaskItemOrganization from './TaskItemComponents/TaskItemOrganization';
 import TaskItemWorkflowStatus from './TaskItemComponents/TaskItemWorkflowStatus';
 import TaskItemDecision from './TaskItemComponents/TaskItemDecision';
 import {
@@ -178,6 +179,7 @@ const TaskItem = React.memo(
       patient: taskPatient,
       workflowStatus,
       taskList = {},
+      organization = {},
       parentTaskIdentifier,
       searchMetaData = {},
       parentTask,
@@ -1660,6 +1662,33 @@ const TaskItem = React.memo(
                     />
                   </TaskItemCell>,
                   getColumnOrder(TaskItemColumn.LIST_NAME),
+                )}
+              </>
+            )}
+            {isColumnChecked(columns, TaskItemColumn.ORG_NAME) && (
+              <>
+                {randerFirstColumnCoverIfNecessary(
+                  <TaskItemCell
+                    isSubtask={isSubtask}
+                    key={`list_${taskIdentifier}`}
+                    width={
+                      columns?.find(
+                        ({ identifier }) =>
+                          identifier === TaskItemColumn.ORG_NAME,
+                      )?.columnWidth
+                    }
+                    order={getColumnOrder(TaskItemColumn.ORG_NAME)}
+                  >
+                    <TaskItemOrganization
+                      organizationName={organization?.organizationName}
+                      organizationIdentifier={organization?.organizationIdentifier}
+                      organizationInitials={organization?.organizationInitials}
+                      organizationProfileColor={
+                        organization?.organizationProfileColor
+                      }
+                    />
+                  </TaskItemCell>,
+                  getColumnOrder(TaskItemColumn.ORG_NAME),
                 )}
               </>
             )}

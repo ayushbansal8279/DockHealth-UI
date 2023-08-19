@@ -48,6 +48,7 @@ import {
 const DASHBOARD_BASE_COLUMNS_CONFIG = {
   ...TASK_ITEM_BASE_COLUMN_CONFIG,
   [TaskItemColumn.LIST_NAME]: true,
+  [TaskItemColumn.ORG_NAME]: true,
 };
 
 const { ADMIN, OWNER, MEMBER, GUEST } = UserOrganizationRole;

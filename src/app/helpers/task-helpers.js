@@ -178,6 +178,7 @@ export const TaskItemColumn = {
   START_DATE: 'START_DT',
   ANCHOR_DATE: 'ANCHOR_DT',
   LIST_NAME: 'LIST_NAME',
+  ORG_NAME: 'ORG_NAME',
   ASSIGNED: 'ASSIGNED_TO',
   SHARED: 'SHARED',
   PATIENT: 'PATIENT',
@@ -218,6 +219,7 @@ export const TaskItemColumnWidth = {
   [TaskItemColumn.COMPLETED_BY]: 150,
   [TaskItemColumn.ACTIVITY]: 150,
   [TaskItemColumn.LIST_NAME]: 168,
+  [TaskItemColumn.ORG_NAME]: 168,
   [TaskItemColumn.ASSIGNED]: {
     DEFAULT: 90,
     WIDE: 90,
@@ -284,6 +286,7 @@ export const TASK_ITEM_BASE_COLUMN_CONFIG = {
   [TaskItemColumn.ASSIGNED]: true,
   [TaskItemColumn.SHARED]: true,
   [TaskItemColumn.LIST_NAME]: false,
+  [TaskItemColumn.ORG_NAME]: false,
   [TaskItemColumn.PRIORITY]: true,
 };
 
@@ -304,6 +307,7 @@ export const SHOW_COLUMNS_CONFIG = {
   [TaskItemColumn.ANCHOR_DATE]: true,
   [TaskItemColumn.PATIENT]: true,
   [TaskItemColumn.LIST_NAME]: true,
+  [TaskItemColumn.ORG_NAME]: true,
   [TaskItemColumn.TASK_DETAILS]: true,
   [TaskItemColumn.PRIORITY]: true,
   [PatientTaskItemColumn.GENDER]: true,
@@ -376,6 +380,16 @@ export const TASK_ITEM_SORT_METHODS = {
   ]),
   [TaskItemColumn.LIST_NAME]: sortWith([
     ascend(pipe(path(['taskList', 'listName']), defaultTo('~'), toLower, trim)),
+  ]),
+  [TaskItemColumn.ORG_NAME]: sortWith([
+    ascend(
+      pipe(
+        path(['organization', 'organizationName']),
+        defaultTo('~'),
+        toLower,
+        trim,
+      ),
+    ),
   ]),
   [TaskItemColumn.SUBTASKS_COUNT]: sortWith([
     ascend(pipe(prop('subTasksCount'), defaultTo(-1))),
@@ -463,6 +477,16 @@ export const TASK_ITEM_SORT_DESC_METHODS = {
   [TaskItemColumn.LIST_NAME]: sortWith([
     descend(
       pipe(path(['taskList', 'listName']), defaultTo(' '), toLower, trim),
+    ),
+  ]),
+  [TaskItemColumn.ORG_NAME]: sortWith([
+    descend(
+      pipe(
+        path(['organization', 'organizationName']),
+        defaultTo(' '),
+        toLower,
+        trim,
+      ),
     ),
   ]),
   [TaskItemColumn.SUBTASKS_COUNT]: sortWith([
