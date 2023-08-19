@@ -12,7 +12,6 @@ import React, {
 // import debounce from 'lodash.debounce';
 import palette from 'styles/palette';
 import { fontSizes, fontWeights } from 'styles/font';
-// import { renderToString } from 'react-dom/server';
 import { getPatientsByCriteria } from 'api/patients-api';
 import { getListMembersByName } from 'api/task-list-api';
 
@@ -261,8 +260,8 @@ const RichTextEditor = React.forwardRef(
       charCounterCount: false,
       toolbarInline: showToolbarInline,
       toolbarVisibleWithoutSelection: true,
-      height: multiline ? { height } : 30,
-      heightMax: multiline ? 150 : 30,
+      // height: multiline ? { height } : 30,
+      heightMax: multiline ? 150 : 500,
       toolbarButtons: disableToolbar ? [] : toolbarOptions,
       events: {
         // eslint-disable-next-line prettier/prettier, func-names
@@ -300,8 +299,10 @@ const RichTextEditor = React.forwardRef(
           // eslint-disable-next-line react/no-this-in-sfc, no-shadow
           const value = this.html.get();
           // console.log(`blur: ${value}`);
-          const markdown = turndownService.turndown(value);
-          onBlur(markdown);
+          if (onBlur) {
+            const markdown = turndownService.turndown(value);
+            onBlur(markdown);
+          }
         },
         // eslint-disable-next-line prettier/prettier, func-names
         'contentChanged': function () {
@@ -400,7 +401,6 @@ const RichTextEditor = React.forwardRef(
     // }, [editor, focus]);
 
     return (
-      // <ClickAwayListener onClickAway={handleClickAway}>
       <FroalaEditor
         tag="textarea"
         config={config}
@@ -408,7 +408,6 @@ const RichTextEditor = React.forwardRef(
         onModelChange={setEditorState}
         // onManualControllerReady={handleController}
       />
-      // </ClickAwayListener>
     );
   },
 );
