@@ -1,4 +1,4 @@
-import React, { useCallback, useState } from 'react';
+import React, { useCallback, useState, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useBoolean } from 'hooks/useBoolean';
 import { updateTaskDetails } from 'actions/task-actions';
@@ -14,6 +14,10 @@ const TaskDetails = ({ readOnly }) => {
   const [isFocused] = useBoolean();
 
   const [details, setDetails] = useState(selectedTask?.tokenizedDetails);
+
+  useEffect(() => {
+    setDetails(selectedTask?.details);
+  }, [selectedTask]);
 
   const handleAutoSave = debounce((value) => {
     if (value !== (selectedTask?.tokenizedDetails || '')) {
