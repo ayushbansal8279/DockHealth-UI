@@ -16,9 +16,9 @@ import { getPatientsByCriteria } from 'api/patients-api';
 import { getListMembersByName } from 'api/task-list-api';
 import FroalaEditor from 'react-froala-wysiwyg';
 import MarkdownIt from 'markdown-it';
-import { markdownItUnderline } from './helpers';
 import TurndownService from 'turndown';
 import Tribute from 'tributejs';
+import { markdownItUnderline } from './helpers';
 // import { Avatar } from './styled';
 import 'tributejs/dist/tribute.css';
 import './styles.css';
@@ -338,7 +338,10 @@ const RichTextEditor = React.forwardRef(
         // eslint-disable-next-line prettier/prettier, func-names
         'keydown': function (keydownEvent) {
           if (keydownEvent.keyCode === 13) {
-            if (!keydownEvent.shiftKey && onKeyEnter?.length > 0) {
+            if (
+              !(keydownEvent.shiftKey || keydownEvent.ctrlKey) &&
+              onKeyEnter?.length > 0
+            ) {
               // eslint-disable-next-line react/no-this-in-sfc, no-shadow
               const value = this.html.get();
               const markdown = turndownService.turndown(value);
