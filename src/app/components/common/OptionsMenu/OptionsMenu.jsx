@@ -63,7 +63,11 @@ const OptionsMenu = ({
         }}
       >
         {isOpen && (
-          <ClickAwayListener onClickAway={() => openPopover(false)}>
+          <ClickAwayListener
+            mouseEvent="onMouseDown"
+            touchEvent="onTouchStart"
+            onClickAway={() => openPopover(false)}
+          >
             <Paper>
               <MenuList>
                 {options
