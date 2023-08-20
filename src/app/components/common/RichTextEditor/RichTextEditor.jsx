@@ -12,20 +12,24 @@ import React, {
 // import debounce from 'lodash.debounce';
 import palette from 'styles/palette';
 import { fontSizes, fontWeights } from 'styles/font';
-// import { renderToString } from 'react-dom/server';
 import { getPatientsByCriteria } from 'api/patients-api';
 import { getListMembersByName } from 'api/task-list-api';
-
 import FroalaEditor from 'react-froala-wysiwyg';
 import MarkdownIt from 'markdown-it';
 import TurndownService from 'turndown';
 import Tribute from 'tributejs';
+import { markdownItUnderline } from './helpers';
 // import { Avatar } from './styled';
 import 'tributejs/dist/tribute.css';
 import './styles.css';
 
-const md = new MarkdownIt();
+const md = new MarkdownIt({
+  breaks: true,
+  linkify: true,
+}).use(markdownItUnderline);
+
 let turndownService = new TurndownService();
+
 turndownService = turndownService.addRule('people-mention', {
   filter: ['span'],
   // eslint-disable-next-line func-names, object-shorthand
@@ -37,6 +41,22 @@ turndownService = turndownService.addRule('people-mention', {
       return alteredValue;
     }
     return content;
+  },
+});
+
+turndownService = turndownService.addRule('strikethrough', {
+  filter: ['del', 's', 'strike'],
+  // eslint-disable-next-line func-names, object-shorthand
+  replacement: function (content) {
+    return `~~${content}~~`;
+  },
+});
+
+turndownService = turndownService.addRule('underline', {
+  filter: ['u'],
+  // eslint-disable-next-line func-names, object-shorthand
+  replacement: function (content) {
+    return `__${content}__`;
   },
 });
 
@@ -261,8 +281,8 @@ const RichTextEditor = React.forwardRef(
       charCounterCount: false,
       toolbarInline: showToolbarInline,
       toolbarVisibleWithoutSelection: true,
-      height: multiline ? { height } : 30,
-      heightMax: multiline ? 150 : 30,
+      // height: multiline ? { height } : 30,
+      heightMax: multiline ? 150 : 500,
       toolbarButtons: disableToolbar ? [] : toolbarOptions,
       events: {
         // eslint-disable-next-line prettier/prettier, func-names
@@ -300,8 +320,10 @@ const RichTextEditor = React.forwardRef(
           // eslint-disable-next-line react/no-this-in-sfc, no-shadow
           const value = this.html.get();
           // console.log(`blur: ${value}`);
-          const markdown = turndownService.turndown(value);
-          onBlur(markdown);
+          if (onBlur) {
+            const markdown = turndownService.turndown(value);
+            onBlur(markdown);
+          }
         },
         // eslint-disable-next-line prettier/prettier, func-names
         'contentChanged': function () {
@@ -316,7 +338,10 @@ const RichTextEditor = React.forwardRef(
         // eslint-disable-next-line prettier/prettier, func-names
         'keydown': function (keydownEvent) {
           if (keydownEvent.keyCode === 13) {
-            if (!keydownEvent.shiftKey && onKeyEnter?.length > 0) {
+            if (
+              !(keydownEvent.shiftKey || keydownEvent.ctrlKey) &&
+              onKeyEnter?.length > 0
+            ) {
               // eslint-disable-next-line react/no-this-in-sfc, no-shadow
               const value = this.html.get();
               const markdown = turndownService.turndown(value);
@@ -400,7 +425,6 @@ const RichTextEditor = React.forwardRef(
     // }, [editor, focus]);
 
     return (
-      // <ClickAwayListener onClickAway={handleClickAway}>
       <FroalaEditor
         tag="textarea"
         config={config}
@@ -408,7 +432,6 @@ const RichTextEditor = React.forwardRef(
         onModelChange={setEditorState}
         // onManualControllerReady={handleController}
       />
-      // </ClickAwayListener>
     );
   },
 );

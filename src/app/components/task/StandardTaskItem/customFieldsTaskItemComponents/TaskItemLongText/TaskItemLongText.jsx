@@ -22,7 +22,7 @@ const TaskItemLongText = ({ value = '', onChange, openDrawer }) => {
   };
 
   // eslint-disable-next-line no-shadow
-  const handleTextEditorBlur = (closePopover) => (value) => {
+  const handleBlur = (closePopover) => (value) => {
     onChange(value);
     closePopover();
   };
@@ -42,7 +42,7 @@ const TaskItemLongText = ({ value = '', onChange, openDrawer }) => {
             <RichTextEditor
               value={rawDetails}
               onChange={handleChange}
-              onBlur={handleTextEditorBlur(closePopover)}
+              onBlur={handleBlur(closePopover)}
               initOnClick={false}
               showCharCount
             />

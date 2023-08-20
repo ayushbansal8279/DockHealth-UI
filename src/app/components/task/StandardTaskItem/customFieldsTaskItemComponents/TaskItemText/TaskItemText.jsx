@@ -1,8 +1,8 @@
-import React, { useCallback, useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useState, useRef } from 'react';
 import Tooltip from 'components/common/Tooltip/Tooltip';
 import { useBoolean } from 'hooks/useBoolean';
 import Input from 'components/common/Input/Input';
-import { TextContainer } from './styled';
+import { TextContainer, TextValue, AddPlaceholder } from './styled';
 
 const TaskItemText = ({
   value: initialValue = '',
@@ -12,40 +12,81 @@ const TaskItemText = ({
 }) => {
   const [value, setValue] = useState(initialValue);
 
+  const inputReference = useRef(null);
+
   useEffect(() => {
     setValue(initialValue);
   }, [initialValue]);
 
   const [isEditing, setEditing, unsetEditing] = useBoolean(false);
 
-  const handleOnChange = useCallback((event) => {
-    setValue(event.target.value);
-  }, []);
+  useEffect(() => {
+    if (isEditing) {
+      inputReference.current?.focus();
+    }
+  }, [isEditing]);
+
+  const handleClick = useCallback(
+    (event) => {
+      if (!readOnly) {
+        setEditing(true);
+      }
+    },
+    [readOnly, setEditing],
+  );
+
+  const handleOnChange = useCallback(
+    (event) => {
+      setValue(event.target.value);
+      setEditing(true);
+    },
+    [setEditing],
+  );
 
   const handleBlur = useCallback(
     (event) => {
-      if (!readOnly) {
+      if (!readOnly && initialValue !== event.target.value) {
         onChange(event.target.value);
       }
+      setEditing(false);
     },
-    [onChange, readOnly],
+    [onChange, readOnly, setEditing, initialValue],
   );
 
   return (
-    <Tooltip placement="top" title={value} hideTooltip={isEditing}>
-      <TextContainer>
-        <Input
-          hiddenLabel
-          // characterLimit={characterLimit}
-          readOnly={readOnly}
-          placeholder={placeholder}
-          value={value}
-          onChange={handleOnChange}
-          onBlur={handleBlur}
-          style={{ padding: '0px' }}
-        />
-      </TextContainer>
-    </Tooltip>
+    <>
+      {!isEditing && (
+        <>
+          {value && value !== '' && (
+            <Tooltip placement="top" title={value} hideTooltip={isEditing}>
+              <TextValue onClick={handleClick}>{value}</TextValue>
+            </Tooltip>
+          )}
+          {!(value && value !== '') && (
+            <TextValue onClick={handleClick}>
+              <AddPlaceholder>+ Add</AddPlaceholder>
+            </TextValue>
+          )}
+        </>
+      )}
+      {isEditing && (
+        <TextContainer>
+          <Input
+            hiddenLabel
+            // characterLimit={characterLimit}
+            readOnly={readOnly}
+            placeholder={placeholder}
+            value={value}
+            onChange={handleOnChange}
+            onBlur={handleBlur}
+            onClick={handleClick}
+            style={{ padding: '0px' }}
+            autofocus
+            inputRef={inputReference}
+          />
+        </TextContainer>
+      )}
+    </>
   );
 };
 

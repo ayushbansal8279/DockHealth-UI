@@ -120,7 +120,7 @@ const PatientDetailsDrawer = ({ patient, isOpenedDetails, closeDetails }) => {
       confirm: () =>
         dispatch(deletePatientArchiveAction(patientIdentifier, history)),
     };
-    dispatch(openModal('deletePatient', modalProps));
+    dispatch(openModal('DeletePatient', modalProps));
   }, [dispatch, history, patientIdentifier]);
 
   const handleFormSubmit = (data) => {

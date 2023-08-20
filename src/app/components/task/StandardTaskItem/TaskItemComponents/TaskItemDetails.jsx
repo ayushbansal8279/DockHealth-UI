@@ -38,13 +38,14 @@ const TaskItemDetails = ({ task, onClick, readOnly }) => {
   }, [dispatch, task]);
 
   useEffect(() => {
-    const rawTextUnFormatted = convertToSimpleString(details);
+    setDetails(task?.details);
+    const rawTextUnFormatted = convertToSimpleString(task?.details);
     setRawDetails(rawTextUnFormatted);
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [details]);
+  }, [task]);
 
   const handleAutoSave = debounce((value) => {
-    if (value !== '' || (details && value !== details)) {
+    if (value !== (details || '')) {
       if (isWorkflow) {
         dispatch(
           updatePartialWorkflow(identifier, {
@@ -63,8 +64,8 @@ const TaskItemDetails = ({ task, onClick, readOnly }) => {
     handleAutoSave();
   };
 
-  const handleTextEditorBlur = (closePopover) => (value) => {
-    if (value !== '' || (details && value !== details)) {
+  const handleBlur = (closePopover) => (value) => {
+    if (value !== (details || '')) {
       if (isWorkflow) {
         dispatch(
           updatePartialWorkflow(identifier, {
@@ -107,7 +108,7 @@ const TaskItemDetails = ({ task, onClick, readOnly }) => {
                 readonly={readOnly}
                 value={details}
                 onChange={handleChange}
-                onBlur={handleTextEditorBlur(closePopover)}
+                onBlur={handleBlur(closePopover)}
                 initOnClick
                 showCharCount
               />
