@@ -1,5 +1,6 @@
 import styled from 'styled-components';
 import palette from 'styles/palette';
+import { fontSizes } from 'styles/font';
 
 export const TextContainer = styled.div`
   width: 100%;
@@ -16,4 +17,27 @@ export const TextContainer = styled.div`
     border-color: ${palette.coolGrey2};
   }`
       : ''}
+`;
+
+export const AddPlaceholder = styled.div`
+  color: ${palette.lightGrey};
+  opacity: 0;
+  &::first-letter {
+    color: ${palette.orange};
+    font-size: ${fontSizes.regular};
+  }
+
+  &:hover {
+    color: ${palette.brightBlue};
+  }
+`;
+
+export const TextValue = styled.div`
+  font-family: 'Roboto Condensed', sans-serif;
+  width: 100%;
+  &:hover {
+    & ${AddPlaceholder} {
+      opacity: 1;
+    }
+  }
 `;
