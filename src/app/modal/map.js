@@ -85,7 +85,7 @@ const MODAL_MAP = {
   ListPicker: ListPickerModal,
   UnarchivePatient: UnarchivePatientModal,
   ArchivePatient: ArchivePatientModal,
-  deletePatient: DeleteArchivePatientModal,
+  DeletePatient: DeleteArchivePatientModal,
   RemoveActiveUser: RemoveActiveUserModal,
   ArchivePerson: ArchivePersonModal,
   ClearSortFilters: ClearSortFiltersModal,

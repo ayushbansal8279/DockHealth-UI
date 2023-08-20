@@ -12,10 +12,14 @@ const Tooltip = ({
 }) => {
   return title ? (
     <MuiTooltip
-      hideTooltip={hideTooltip || !title}
+      // hideTooltip={hideTooltip || !title}
+      enterDelay={hideTooltip ? 2000 : 100}
       title={title}
       placement={placement}
       arrow={arrow}
+      disableInteractive={hideTooltip}
+      disableFocusListener={hideTooltip}
+      disableHoverListener={hideTooltip}
     >
       {children}
     </MuiTooltip>

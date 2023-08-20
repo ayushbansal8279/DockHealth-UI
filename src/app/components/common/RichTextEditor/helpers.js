@@ -8,7 +8,7 @@ turndownService = turndownService.addRule('people-mention', {
   filter: ['del', 's', 'strike'],
   // eslint-disable-next-line func-names, object-shorthand
   replacement: function (content) {
-    return `~${content}~`;
+    return `~~${content}~~`;
   },
 });
 
@@ -49,4 +49,18 @@ export const linkifyTextWithMentions = (value, mentions) => {
     });
   }
   return value;
+};
+
+export const markdownItUnderline = (md) => {
+
+  function renderUnderline (tokens, idx, opts, _, slf) {
+    var token = tokens[idx];
+    if (token.markup === '__') {
+      token.tag = 'u';
+    }
+    return slf.renderToken(tokens, idx, opts);
+  }
+
+  md.renderer.rules.strong_open = renderUnderline;
+  md.renderer.rules.strong_close = renderUnderline;
 };
