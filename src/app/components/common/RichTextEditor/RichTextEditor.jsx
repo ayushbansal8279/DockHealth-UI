@@ -14,17 +14,22 @@ import palette from 'styles/palette';
 import { fontSizes, fontWeights } from 'styles/font';
 import { getPatientsByCriteria } from 'api/patients-api';
 import { getListMembersByName } from 'api/task-list-api';
-
 import FroalaEditor from 'react-froala-wysiwyg';
 import MarkdownIt from 'markdown-it';
+import { markdownItUnderline } from './helpers';
 import TurndownService from 'turndown';
 import Tribute from 'tributejs';
 // import { Avatar } from './styled';
 import 'tributejs/dist/tribute.css';
 import './styles.css';
 
-const md = new MarkdownIt();
+const md = new MarkdownIt({
+  breaks: true,
+  linkify: true,
+}).use(markdownItUnderline);
+
 let turndownService = new TurndownService();
+
 turndownService = turndownService.addRule('people-mention', {
   filter: ['span'],
   // eslint-disable-next-line func-names, object-shorthand
@@ -36,6 +41,22 @@ turndownService = turndownService.addRule('people-mention', {
       return alteredValue;
     }
     return content;
+  },
+});
+
+turndownService = turndownService.addRule('strikethrough', {
+  filter: ['del', 's', 'strike'],
+  // eslint-disable-next-line func-names, object-shorthand
+  replacement: function (content) {
+    return `~~${content}~~`;
+  },
+});
+
+turndownService = turndownService.addRule('underline', {
+  filter: ['u'],
+  // eslint-disable-next-line func-names, object-shorthand
+  replacement: function (content) {
+    return `__${content}__`;
   },
 });
 
