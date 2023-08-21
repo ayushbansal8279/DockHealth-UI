@@ -65,6 +65,7 @@ const TaskItemPopover = React.forwardRef(
                         openPopover,
                         closePopover,
                         togglePopover,
+                        onClose,
                         resetPosition: forceUpdate,
                       })
                     : content}
