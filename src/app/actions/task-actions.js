@@ -188,6 +188,12 @@ export function partialUpdateTask(taskIdentifier, dataToUpdate) {
       TaskApi.partialUpdateTask(taskIdentifier, dataToUpdate)
         // eslint-disable-next-line sonarjs/no-identical-functions
         .then((task) => {
+          if (dataToUpdate.details) {
+            dispatch({
+              type: ActionTypes.UPDATE_TASK_SUCCESS,
+              task,
+            });
+          }
           dispatch(AlertActions.showGlobalAlert(AlertMessages.UPDATED));
           return task;
         })
