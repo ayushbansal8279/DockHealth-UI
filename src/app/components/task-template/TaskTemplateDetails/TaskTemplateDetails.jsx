@@ -1,4 +1,4 @@
-import React, { useCallback, useRef, useState } from 'react';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { Box } from '@mui/material';
 import { useDispatch } from 'react-redux';
 import { updatePartialWorkflow } from 'actions/task-template-actions';
@@ -11,6 +11,7 @@ import debounce from 'lodash.debounce';
 import { openDrawer } from 'actions/workflow-drawer-actions';
 import { WorkflowDrawerFieldNames } from 'helpers/workflow-drawer-helpers';
 import PopoverBottomBar from 'components/task/PopoverBottomBar/PopoverBottomBar';
+import { convertToSimpleString } from 'helpers/markdown-helper.js';
 import { Text, LongTextBox, Divider } from './styled';
 
 const TaskTemplateDetails = ({ workflow, readOnly }) => {
@@ -22,6 +23,14 @@ const TaskTemplateDetails = ({ workflow, readOnly }) => {
 
   const dispatch = useDispatch();
   const [details, setDetails] = useState(workflow?.tokenizedDescription);
+  const [rawDetails, setRawDetails] = useState(null);
+
+  useEffect(() => {
+    setDetails(workflow?.tokenizedDescription);
+    const rawTextUnFormatted = convertToSimpleString(workflow?.description);
+    setRawDetails(rawTextUnFormatted);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [workflow]);
 
   const handleOpenDrawer = useCallback(() => {
     dispatch(
@@ -33,8 +42,9 @@ const TaskTemplateDetails = ({ workflow, readOnly }) => {
     );
   }, [dispatch, workflow]);
 
-  const handleAutoSave = debounce((value) => {
-    if (value !== (details || '')) {
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  const updateWorkflowDetails = useCallback((value) => {
+    if (value !== (workflow?.tokenizedDescription || '')) {
       dispatch(
         updatePartialWorkflow(workflow?.identifier, {
           description: value,
@@ -42,6 +52,10 @@ const TaskTemplateDetails = ({ workflow, readOnly }) => {
         }),
       );
     }
+  });
+
+  const handleAutoSave = debounce((value) => {
+    updateWorkflowDetails(value);
     // eslint-disable-next-line unicorn/numeric-separators-style
   }, 10000);
 
@@ -52,24 +66,29 @@ const TaskTemplateDetails = ({ workflow, readOnly }) => {
 
   const handleBlur = useCallback(
     (value) => {
-      if (value !== (details || '')) {
-        dispatch(
-          updatePartialWorkflow(workflow?.identifier, {
-            description: value,
-            descriptionCleared: !value,
-          }),
-        );
-      }
+      // updateWorkflowDetails(value);
     },
-    [details, dispatch, workflow?.identifier],
+    [updateWorkflowDetails],
   );
+
+  // eslint-disable-next-line unicorn/consistent-function-scoping
+  const handleOnClose = () => {
+    // console.log('handleOnClose');
+    updateWorkflowDetails(details);
+  };
+
+  // eslint-disable-next-line unicorn/consistent-function-scoping
+  const handlePopupClose = (closePopover, onClose) => () => {
+    onClose();
+    closePopover();
+  };
 
   return (
     <Box width="100%" height="100%" display="flex" alignItems="center">
       <TaskItemPopover
         fullWidth
         // eslint-disable-next-line react/no-unstable-nested-components
-        content={({ closePopover }) => (
+        content={({ closePopover, onClose }) => (
           <Box
             width="550px"
             height="100%"
@@ -89,13 +108,16 @@ const TaskTemplateDetails = ({ workflow, readOnly }) => {
                 value={details}
                 onChange={handleChange}
                 onBlur={handleBlur}
-                initOnClick
+                initOnClick={false}
                 showCharCount
               />
             </CustomTextEditor>
             <Divider />
             <PopoverBottomBar align="spread">
-              <PopoverBottomBar.Button type="button" onClick={closePopover}>
+              <PopoverBottomBar.Button
+                type="button"
+                onClick={handlePopupClose(closePopover, onClose)}
+              >
                 Close
               </PopoverBottomBar.Button>
               {handleOpenDrawer && (
@@ -113,6 +135,7 @@ const TaskTemplateDetails = ({ workflow, readOnly }) => {
             </PopoverBottomBar>
           </Box>
         )}
+        onClose={handleOnClose}
       >
         <LongTextBox>
           <Tooltip
@@ -126,7 +149,7 @@ const TaskTemplateDetails = ({ workflow, readOnly }) => {
                   wordBreak: 'keep-all',
                 }}
               >
-                {details}
+                {rawDetails}
               </pre>
             }
           >

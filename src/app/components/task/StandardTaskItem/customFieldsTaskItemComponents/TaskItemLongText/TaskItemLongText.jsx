@@ -23,7 +23,18 @@ const TaskItemLongText = ({ value = '', onChange, openDrawer }) => {
 
   // eslint-disable-next-line no-shadow
   const handleBlur = (closePopover) => (value) => {
-    onChange(value);
+    // onChange(value);
+    closePopover();
+  };
+
+  const handleOnClose = () => {
+    // console.log('handleOnClose');
+    onChange(rawDetails);
+  };
+
+  // eslint-disable-next-line unicorn/consistent-function-scoping
+  const handlePopupClose = (closePopover, onClose) => () => {
+    onClose();
     closePopover();
   };
 
@@ -32,7 +43,7 @@ const TaskItemLongText = ({ value = '', onChange, openDrawer }) => {
       <TaskItemPopover
         fullWidth
         // eslint-disable-next-line react/no-unstable-nested-components
-        content={({ closePopover }) => (
+        content={({ closePopover, onClose }) => (
           <Box
             width="100%"
             height="100%"
@@ -48,7 +59,10 @@ const TaskItemLongText = ({ value = '', onChange, openDrawer }) => {
             />
             <Divider />
             <PopoverBottomBar align="spread">
-              <PopoverBottomBar.Button type="button" onClick={closePopover}>
+              <PopoverBottomBar.Button
+                type="button"
+                onClick={handlePopupClose(closePopover, onClose)}
+              >
                 Close
               </PopoverBottomBar.Button>
               {openDrawer && (
@@ -65,6 +79,7 @@ const TaskItemLongText = ({ value = '', onChange, openDrawer }) => {
             </PopoverBottomBar>
           </Box>
         )}
+        onClose={handleOnClose}
       >
         <LongTextBox>
           <Tooltip
