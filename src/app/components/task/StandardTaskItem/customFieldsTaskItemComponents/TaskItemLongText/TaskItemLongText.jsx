@@ -23,7 +23,10 @@ const TaskItemLongText = ({ value = '', onChange, openDrawer }) => {
 
   // eslint-disable-next-line no-shadow
   const handleBlur = (closePopover) => (value) => {
-    // onChange(value);
+    // console.log(`handleBlur: ${value}`);
+    // blur not invoked if clicked outside popover
+    onChange(value);
+    // close the popover if blur is invoked when close button is clicked
     closePopover();
   };
 
@@ -34,6 +37,7 @@ const TaskItemLongText = ({ value = '', onChange, openDrawer }) => {
 
   // eslint-disable-next-line unicorn/consistent-function-scoping
   const handlePopupClose = (closePopover, onClose) => () => {
+    // console.log('handle popup close');
     onClose();
     closePopover();
   };

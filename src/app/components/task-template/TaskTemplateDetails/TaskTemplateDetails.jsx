@@ -65,15 +65,15 @@ const TaskTemplateDetails = ({ workflow, readOnly }) => {
   };
 
   const handleBlur = useCallback(
-    (value) => {
-      // updateWorkflowDetails(value);
+    (closePopover) => (value) => {
+      updateWorkflowDetails(value);
+      closePopover();
     },
     [updateWorkflowDetails],
   );
 
   // eslint-disable-next-line unicorn/consistent-function-scoping
   const handleOnClose = () => {
-    // console.log('handleOnClose');
     updateWorkflowDetails(details);
   };
 
@@ -107,7 +107,7 @@ const TaskTemplateDetails = ({ workflow, readOnly }) => {
                 readonly={readOnly}
                 value={details}
                 onChange={handleChange}
-                onBlur={handleBlur}
+                onBlur={handleBlur(closePopover)}
                 initOnClick={false}
                 showCharCount
               />
