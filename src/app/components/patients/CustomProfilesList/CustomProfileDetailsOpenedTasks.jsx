@@ -3,7 +3,6 @@ import isEmpty from 'ramda/src/isEmpty';
 import pluck from 'ramda/src/pluck';
 import { useDispatch, useSelector } from 'react-redux';
 import {
-  userIdentifierSelector,
   tasksIsFetchingSelector,
   tasksSelector,
   sortSelector,
@@ -16,11 +15,9 @@ import {
   getUserTasks,
   sortUserTasks,
   quickAddTask,
-  getUserTaskCounters,
 } from 'actions/person-details-actions';
 import { onSortChanged } from 'helpers/ga-event-helper';
 import { getSharedTaskListsWithCurrentUser } from 'api/task-list-api';
-// import { filterTasksBySearchValue } from 'helpers/task-search-helper';
 import NoSearchResultsView from 'components/tasklist/EmptyListView/NoSearchResultsView';
 import EmptyListViewWithQuickAddTask from 'components/tasklist/EmptyListView/EmptyListViewWithQuickAddTask';
 import EmptyListView from 'components/tasklist/EmptyListView/EmptyListView';
@@ -40,6 +37,7 @@ import StickyContainer from 'components/common/HorizontalScroll/StickyContainer'
 import { TaskGroupsContainer } from 'views/person-details/styled';
 
 const CustomProfileDetailsOpenedTasks = ({
+  profileIdentifier,
   taskItemConfig,
   searchValue,
   toggleCompleteTask,
@@ -49,7 +47,6 @@ const CustomProfileDetailsOpenedTasks = ({
   iconColorActive,
 }) => {
   const dispatch = useDispatch();
-  const userIdentifier = useSelector(userIdentifierSelector);
   const isFetchingTasks = useSelector(tasksIsFetchingSelector);
   const tasks = useSelector(tasksSelector);
   const sort = useSelector(sortSelector);
@@ -60,10 +57,6 @@ const CustomProfileDetailsOpenedTasks = ({
   );
   const { setViewSpecificConfig } = useTaskListColumnsConfig();
   const quickAddTaskInputReference = useRef(null);
-  // const filteredTasks = useMemo(
-  //   () => (!searchValue ? tasks : filterTasksBySearchValue(tasks, searchValue)),
-  //   [searchValue, tasks],
-  // );
 
   useEffect(() => {
     setViewSpecificConfig(taskItemConfig);
@@ -73,24 +66,25 @@ const CustomProfileDetailsOpenedTasks = ({
     dispatch(
       openModal('ListPicker', {
         enableSelectingGroupStep: true,
-        fetchMethod: () => getSharedTaskListsWithCurrentUser(userIdentifier),
+        fetchMethod: () =>
+          getSharedTaskListsWithCurrentUser(sessionStorage.userIdentifier),
         listCreationPayload: {
           adminIdentifiers:
             // eslint-disable-next-line unicorn/no-negated-condition
-            currentUser.userIdentifier !== userIdentifier
-              ? [userIdentifier]
+            currentUser.userIdentifier !== sessionStorage.userIdentifier
+              ? [sessionStorage.userIdentifier]
               : [],
         },
         confirm: (taskListIdentifier, taskGroupIdentifier) => {
           const payload = {
             ...task,
             taskListIdentifier,
-            assignedToIdentifier: userIdentifier,
+            assignedToIdentifier: profileIdentifier,
             taskGroupIdentifier,
           };
 
           dispatch(quickAddTask(payload)).then(() => {
-            dispatch(getUserTaskCounters(userIdentifier));
+            // dispatch(getUserTaskCounters(sessionStorage.userIdentifier));
           });
         },
       }),

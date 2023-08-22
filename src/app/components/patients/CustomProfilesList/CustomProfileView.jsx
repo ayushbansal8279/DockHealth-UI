@@ -24,7 +24,8 @@ import { DrawerFieldEnum } from 'helpers/task-drawer-helpers';
 import TaskDrawer from 'components/task-drawer/TaskDrawer/TaskDrawer';
 import checkIfTaskMatchesFilters from 'helpers/filters-helpers';
 import { selectedFiltersInMegaFilterSelector } from 'selectors/mega-filter-selectors';
-import CustomProfileDetailsCompletedTasks from './CustomProfileDetailsCompletedTasks';
+import { TaskGroupsContainer } from 'views/person-details/styled';
+import CustomProfileDetailsOpenedTasks from 'components/patients/CustomProfilesList/CustomProfileDetailsOpenedTasks';
 
 const PERSON_VIEW_COLUMNS_CONFIG = {
   ...TASK_ITEM_BASE_COLUMN_CONFIG,
@@ -158,7 +159,7 @@ const CustomProfileView = () => {
           onClose={handleDrawerClose}
         />
         {currentTab === 0 && (
-          <CustomProfileDetailsCompletedTasks
+          <CustomProfileDetailsOpenedTasks
             profileIdentifier={profileIdentifier}
             groupName="Profile's Tasks"
             taskItemConfig={PERSON_VIEW_COLUMNS_CONFIG}
@@ -166,7 +167,9 @@ const CustomProfileView = () => {
           />
         )}
         {currentTab === 1 && (
-          <CustomProfileNotes profileIdentifier={profileIdentifier} />
+          <TaskGroupsContainer>
+            <CustomProfileNotes profileIdentifier={profileIdentifier} />
+          </TaskGroupsContainer>
         )}
         <TaskDrawer
           onTaskUpdate={handleTaskUpdate}
