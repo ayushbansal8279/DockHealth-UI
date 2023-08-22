@@ -14,6 +14,7 @@ import { Provider } from 'react-redux';
 import { getTheme } from 'styles/theme';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
+import { IntercomProvider } from 'react-use-intercom';
 import configureStore from './ConfigureStore';
 import ErrorBoundary from './ErrorBoundary';
 // import flags, { FlagsProvider } from './helpers/flags';
@@ -24,6 +25,8 @@ if (import.meta.env.NODE_ENV === 'development') {
   const whyDidYouRender = require('@welldone-software/why-did-you-render');
   whyDidYouRender(React);
 }
+
+const { VITE_INTERCOM_APP_CODE } = import.meta.env;
 
 // disable all react-beautiful-dnd development warnings
 window['__react-beautiful-dnd-disable-dev-warnings'] = true;
@@ -94,9 +97,11 @@ const Index = () => (
         <Provider store={store}>
           <ErrorBoundary>
             <HashRouter forceRefresh>
-              <App>
-                <Routes />
-              </App>
+              <IntercomProvider appId={VITE_INTERCOM_APP_CODE} autoBoot>
+                <App>
+                  <Routes />
+                </App>
+              </IntercomProvider>
             </HashRouter>
             {import.meta.env.VITE_APP_ENV === 'local' && (
               <ReactQueryDevtools initialIsOpen={false} />
