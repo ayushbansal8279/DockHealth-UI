@@ -69,13 +69,12 @@ const TaskItemDetails = ({ task, onClick, readOnly }) => {
   };
 
   const handleBlur = (closePopover) => (value) => {
-    // updateTaskDetails(value);
+    updateTaskDetails(value);
     closePopover();
   };
 
   // eslint-disable-next-line unicorn/consistent-function-scoping
   const handleOnClose = () => {
-    // console.log('handleOnClose');
     updateTaskDetails(details);
   };
 
