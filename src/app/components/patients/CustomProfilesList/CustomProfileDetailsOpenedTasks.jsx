@@ -3,9 +3,7 @@ import isEmpty from 'ramda/src/isEmpty';
 import pluck from 'ramda/src/pluck';
 import { useDispatch, useSelector } from 'react-redux';
 import {
-  userIdentifierSelector,
   tasksIsFetchingSelector,
-  tasksSelector,
   sortSelector,
 } from 'selectors/person-details-selectors';
 import { userProfileSelector } from 'selectors/user-selectors';
@@ -16,11 +14,9 @@ import {
   getUserTasks,
   sortUserTasks,
   quickAddTask,
-  getUserTaskCounters,
 } from 'actions/person-details-actions';
 import { onSortChanged } from 'helpers/ga-event-helper';
 import { getSharedTaskListsWithCurrentUser } from 'api/task-list-api';
-// import { filterTasksBySearchValue } from 'helpers/task-search-helper';
 import NoSearchResultsView from 'components/tasklist/EmptyListView/NoSearchResultsView';
 import EmptyListViewWithQuickAddTask from 'components/tasklist/EmptyListView/EmptyListViewWithQuickAddTask';
 import EmptyListView from 'components/tasklist/EmptyListView/EmptyListView';
@@ -34,12 +30,17 @@ import QuickAddTaskInput from 'components/tasklist/QuickAddTaskInput/QuickAddTas
 import { checkIfAllTasksSelected } from 'helpers/bulk-edit-helpers';
 import { extractTasksAndSubtasks } from 'helpers/tasklist-helpers';
 import { TaskOrigin } from 'helpers/task-helpers';
-import { changeTasksSelectedState } from 'actions/task-actions';
+import {
+  changeTasksSelectedState,
+  findTasksByProfileGroupedByTaskList,
+} from 'actions/task-actions';
 import { useTaskListColumnsConfig } from 'context-api/columns-config-context';
 import StickyContainer from 'components/common/HorizontalScroll/StickyContainer';
 import { TaskGroupsContainer } from 'views/person-details/styled';
+import { profileAllTasksSelector } from 'selectors/custom-profile-details-selectors';
 
 const CustomProfileDetailsOpenedTasks = ({
+  profileIdentifier,
   taskItemConfig,
   searchValue,
   toggleCompleteTask,
@@ -49,9 +50,8 @@ const CustomProfileDetailsOpenedTasks = ({
   iconColorActive,
 }) => {
   const dispatch = useDispatch();
-  const userIdentifier = useSelector(userIdentifierSelector);
   const isFetchingTasks = useSelector(tasksIsFetchingSelector);
-  const tasks = useSelector(tasksSelector);
+  const tasks = useSelector(profileAllTasksSelector);
   const sort = useSelector(sortSelector);
   const areFiltersApplied = useSelector(hasFiltersAppliedSelector);
   const currentUser = useSelector(userProfileSelector);
@@ -60,10 +60,10 @@ const CustomProfileDetailsOpenedTasks = ({
   );
   const { setViewSpecificConfig } = useTaskListColumnsConfig();
   const quickAddTaskInputReference = useRef(null);
-  // const filteredTasks = useMemo(
-  //   () => (!searchValue ? tasks : filterTasksBySearchValue(tasks, searchValue)),
-  //   [searchValue, tasks],
-  // );
+
+  useEffect(() => {
+    dispatch(findTasksByProfileGroupedByTaskList(profileIdentifier));
+  }, [dispatch, profileIdentifier]);
 
   useEffect(() => {
     setViewSpecificConfig(taskItemConfig);
@@ -73,24 +73,25 @@ const CustomProfileDetailsOpenedTasks = ({
     dispatch(
       openModal('ListPicker', {
         enableSelectingGroupStep: true,
-        fetchMethod: () => getSharedTaskListsWithCurrentUser(userIdentifier),
+        fetchMethod: () =>
+          getSharedTaskListsWithCurrentUser(sessionStorage.userIdentifier),
         listCreationPayload: {
           adminIdentifiers:
             // eslint-disable-next-line unicorn/no-negated-condition
-            currentUser.userIdentifier !== userIdentifier
-              ? [userIdentifier]
+            currentUser.userIdentifier !== sessionStorage.userIdentifier
+              ? [sessionStorage.userIdentifier]
               : [],
         },
         confirm: (taskListIdentifier, taskGroupIdentifier) => {
           const payload = {
             ...task,
             taskListIdentifier,
-            assignedToIdentifier: userIdentifier,
+            assignedToIdentifier: profileIdentifier,
             taskGroupIdentifier,
           };
 
           dispatch(quickAddTask(payload)).then(() => {
-            dispatch(getUserTaskCounters(userIdentifier));
+            // dispatch(getUserTaskCounters(sessionStorage.userIdentifier));
           });
         },
       }),
