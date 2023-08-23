@@ -35,7 +35,7 @@ export function extractTasksAndSubtasks(listOfTasks) {
           for (const t of task.tasks) {
             if (t.parentTaskIdentifier) {
               accumulator.parentTasks.push(t);
-            } else {
+            } else if (t.identifier) {
               accumulator.parentTasks.push(t);
               // eslint-disable-next-line no-unused-expressions
               if (t.subtasks)
