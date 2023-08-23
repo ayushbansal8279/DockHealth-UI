@@ -11,52 +11,11 @@ import {
   ListContainer,
   ListEntryContainer,
   UsersListContainer,
-  PeopleCell,
 } from './styled';
 
 const UsersList = (props) => {
   const { users, searchTerm } = props;
   const history = useHistory();
-
-  const columns = [
-    {
-      field: 'name',
-      headerName: 'USER',
-      flex: 1,
-      renderHeader: renderColumnHeader,
-      renderCell: ({ row }) => {
-        return (
-          <PeopleCell
-            className="people-cell-container"
-            onClick={() =>
-              history.push(
-                `/core/assignedToPerson/${encodeURIComponent(
-                  row.userIdentifier,
-                )}`,
-              )
-            }
-          >
-            <UserAvatar size={22} user={row} />
-            <Spacing horizontal={4} />
-            <span className="people-cell">{row?.name}</span>
-          </PeopleCell>
-        );
-      },
-    },
-    {
-      field: 'email',
-      headerName: 'EMAIL',
-      renderHeader: renderColumnHeader,
-      flex: 1,
-    },
-    {
-      field: 'orgUserRole',
-      headerName: 'USER STATUS',
-      renderHeader: renderColumnHeader,
-      flex: 0.5,
-      valueFormatter: ({ value }) => capitalize(value),
-    },
-  ];
 
   const KEYS_TO_FILTERS = [
     'name',

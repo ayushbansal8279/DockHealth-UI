@@ -215,10 +215,12 @@ const CustomProfileList = () => {
         <DataGrid
           fluid
           controller={controller}
-          dataset={profiles.filter((profile) =>
-            getValues(profile).some(
-              (value) => value && value.includes(searchPhrase),
-            ),
+          dataset={profiles.filter(
+            (profile) =>
+              profile.fields &&
+              getValues(profile).some(
+                (value) => value && value?.includes(searchPhrase),
+              ),
           )}
           onRecordClick={handleRecordClick}
         >
