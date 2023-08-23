@@ -4,7 +4,6 @@ import { Switch, Redirect, useRouteMatch } from 'react-router-dom';
 
 import { RouteWrapper } from 'routing/components';
 import { AUTH_BASE_STATES } from 'reducers/auth-base-reducer';
-import Intercom from 'react-intercom';
 import TemplateAuthBaseDailyHubContent from './TemplateAuthBase.DailyHubContent';
 import TemplateAuthBaseApproveDisapproveContent from './TemplateAuthBase.ApproveDisapproveContent';
 import TemplateAuthBaseDefaultContent from './TemplateAuthBase.DefaultContent';
@@ -17,8 +16,6 @@ import {
   RightSideMainContainer,
   RightSideMaxWidthContainer,
 } from './TemplateAuthBase.styled';
-
-const { VITE_INTERCOM_APP_CODE } = import.meta.env;
 
 const getLeftSideContent = ({ currentAuthBaseState }) => {
   switch (currentAuthBaseState) {
@@ -72,7 +69,6 @@ const TemplateAuthBase = ({ childRoutes }) => {
                 to={`${path}/forgotPassword`}
               />
             </Switch>
-            <Intercom appID={VITE_INTERCOM_APP_CODE} />
           </RightSideMaxWidthContainer>
         </RightSideContentContainer>
       </RightSideMainContainer>

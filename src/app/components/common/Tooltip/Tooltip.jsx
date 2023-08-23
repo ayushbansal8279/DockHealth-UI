@@ -8,18 +8,14 @@ const Tooltip = ({
   title,
   placement,
   arrow = true,
-  hideTooltip = false,
+  // hideTooltip = false,
 }) => {
   return title ? (
     <MuiTooltip
-      // hideTooltip={hideTooltip || !title}
-      enterDelay={hideTooltip ? 2000 : 100}
+      // enterDelay={hideTooltip ? 200 : 100}
       title={title}
       placement={placement}
       arrow={arrow}
-      disableInteractive={hideTooltip}
-      disableFocusListener={hideTooltip}
-      disableHoverListener={hideTooltip}
     >
       {children}
     </MuiTooltip>

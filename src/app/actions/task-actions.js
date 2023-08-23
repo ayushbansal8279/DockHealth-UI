@@ -824,32 +824,17 @@ function getTasksMap(state) {
   }
 }
 
-function selectChildTaskItems(selectedTaskIdentifiers, task) {
-  let selectedIdentifiers = selectedTaskIdentifiers;
+function selectChildTaskItems(task) {
+  const childTaskIdentifiers = [];
+  // eslint-disable-next-line sonarjs/no-collapsible-if
   if (task?.itemType === TaskItemType.TASK) {
     // check for subtasks
+    // eslint-disable-next-line unicorn/no-lonely-if
     if (task.subtasks?.length > 0) {
-      selectedIdentifiers = selectedIdentifiers.concat(
-        task.subtasks?.map((st) => st.identifier),
-      );
-    }
-  } else if (
-    task?.itemType === TaskItemType.BUNDLE &&
-    task?.tasks?.length > 0
-  ) {
-    selectedIdentifiers = selectedIdentifiers.concat(task.tasks);
-    if (task.tasks) {
-      for (const t of task.tasks) {
-        if (t.subtasks?.length > 0) {
-          selectedIdentifiers = selectedIdentifiers.concat(
-            t.subtasks?.map((st) => st.identifier),
-          );
-        }
-      }
+      childTaskIdentifiers.concat(task.subtasks?.map((st) => st.identifier));
     }
   }
-
-  return selectedIdentifiers;
+  return childTaskIdentifiers;
 }
 
 export function selectTask(taskIdentifier, newSelectState) {
@@ -858,10 +843,9 @@ export function selectTask(taskIdentifier, newSelectState) {
     let selectedTaskIdentifiers = [taskIdentifier];
 
     const task = tasksMap[taskIdentifier];
-    selectedTaskIdentifiers = selectChildTaskItems(
-      selectedTaskIdentifiers,
-      task,
-    );
+    const childTaskIdentifiers = selectChildTaskItems(task);
+    selectedTaskIdentifiers =
+      selectedTaskIdentifiers.concat(childTaskIdentifiers);
 
     dispatch({
       type: ActionTypes.CHANGE_TASKS_SELECTED_STATE,
@@ -895,10 +879,9 @@ export function changeTasksSelectedState(isSelected, taskIdentifiers) {
 
     for (const taskId of taskIdentifiers) {
       const task = tasksMap[taskId];
-      selectedTaskIdentifiers = selectChildTaskItems(
-        selectedTaskIdentifiers,
-        task,
-      );
+      const childTaskIdentifiers = selectChildTaskItems(task);
+      selectedTaskIdentifiers =
+        selectedTaskIdentifiers.concat(childTaskIdentifiers);
     }
 
     dispatch({
