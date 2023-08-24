@@ -43,7 +43,7 @@ const TaskItemMembers = ({
           {matchAssignedTo && (
             <AssigneeMatchingWrapper matched={matchAssignedTo} />
           )}
-          <MemberGroup members={assignedToUsers} />
+          <MemberGroup members={assignedToUsers} size={28} />
         </>
       ) : (
         <Tooltip placement="top" title="Assign to">
