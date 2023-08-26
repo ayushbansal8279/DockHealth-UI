@@ -28,14 +28,6 @@ const NavigationTemplate = ({ children }) => {
   const whiteLabelEnabled = currentOrganization?.whiteLabelEnabled || false;
 
   const { boot, shutdown } = useIntercom();
-  boot(
-    currentUser.email && currentUser.firstName
-      ? {
-          email: currentUser?.email,
-          name: `${currentUser?.firstName} ${currentUser?.lastName}`,
-        }
-      : {},
-  );
 
   const history = useHistory();
   const { location } = history;
@@ -45,10 +37,20 @@ const NavigationTemplate = ({ children }) => {
   const embeddedModePatientView = isPatientView && embeddedMode;
 
   useEffect(() => {
-    if (whiteLabelEnabled) {
+    if (whiteLabelEnabled || embeddedMode) {
+      console.log('removing intercom widget');
       shutdown();
+    } else {
+      boot(
+        currentUser?.email && currentUser?.firstName
+          ? {
+              email: currentUser?.email,
+              name: `${currentUser?.firstName} ${currentUser?.lastName}`,
+            }
+          : {},
+      );
     }
-  }, [shutdown, whiteLabelEnabled]);
+  }, [boot, currentUser, embeddedMode, shutdown, whiteLabelEnabled]);
 
   return (
     <DrawerContainer>
