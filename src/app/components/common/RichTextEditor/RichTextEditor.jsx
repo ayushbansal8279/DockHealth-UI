@@ -171,9 +171,9 @@ const RichTextEditor = React.forwardRef(
 
     useEffect(() => {
       if (reset) {
-        setEditorState(initialValue);
+        setEditorState(processMarkdownValue(initialValue || '', mentions));
       }
-    }, [reset, initialValue]);
+    }, [reset, initialValue, mentions]);
 
     const [editor, setEditor] = useState(null);
     // const [initControls, setInitControls] = useState(null);
@@ -316,11 +316,13 @@ const RichTextEditor = React.forwardRef(
           // console.log(`focus: ${value}`);
         },
         // eslint-disable-next-line prettier/prettier, func-names
-        'blur': function () {
+        'blur': function (event) {
           // eslint-disable-next-line react/no-this-in-sfc, no-shadow
           const value = this.html.get();
           // console.log(`blur: ${value}`);
           if (onBlur) {
+            event.preventDefault();
+            event.stopPropagation();
             const markdown = turndownService.turndown(value);
             onBlur(markdown);
           }
@@ -342,11 +344,16 @@ const RichTextEditor = React.forwardRef(
               !(keydownEvent.shiftKey || keydownEvent.ctrlKey) &&
               onKeyEnter?.length > 0
             ) {
+              keydownEvent.preventDefault();
+              keydownEvent.stopPropagation();
               // eslint-disable-next-line react/no-this-in-sfc, no-shadow
               const value = this.html.get();
               const markdown = turndownService.turndown(value);
-              onKeyEnter(markdown);
               setEditorState('');
+              // eslint-disable-next-line react/no-this-in-sfc
+              this.html.set('');
+              // eslint-disable-next-line no-param-reassign
+              onKeyEnter(markdown);
             } else {
               // do nothing
             }
