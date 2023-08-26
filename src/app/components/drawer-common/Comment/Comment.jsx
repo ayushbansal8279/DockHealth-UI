@@ -35,15 +35,16 @@ const Comment = ({
   } = comment;
 
   const commentEditorReference = useRef();
-  const [isEditing, setEditing, unsetEditing] = useBoolean(false);
+  const [isEdited, setIsEdited] = useState(false);
+  const [isValueReset, setValueReset] = useState(false);
   const [isFocused, setFocused, unsetFocused] = useBoolean(false);
 
   useEffect(() => {
-    if (isEditing) {
+    if (isEdited) {
       // eslint-disable-next-line no-unused-expressions
       commentEditorReference?.current?.focus();
     }
-  }, [isEditing, commentEditorReference]);
+  }, [isEdited, commentEditorReference]);
 
   const isCommentAuthor =
     currentUser?.userIdentifier === creator.userIdentifier;
@@ -73,7 +74,8 @@ const Comment = ({
       commentIdentifier,
       comment: currentValue,
     });
-    unsetEditing();
+    setIsEdited(false);
+    setValueReset(true);
   };
 
   return (
@@ -81,16 +83,16 @@ const Comment = ({
       <CommentMemberContainer>
         <UserAvatar user={creator} size={35} />
       </CommentMemberContainer>
-      <CommentContainer isEditing={isEditing}>
+      <CommentContainer isEditing={isEdited}>
         <CommentContent>
           <CommentText>
             <RichTextEditor
               height={60}
-              readonly={!isEditing}
-              showToolbar={isEditing}
+              readonly={!isEdited}
+              showToolbar={isEdited}
               focus={isFocused}
-              value={commentContent}
-              reset={!isEditing}
+              value={currentValue}
+              reset={isValueReset}
               onChange={handleTextEditorChange}
               initOnClick
               showCharCount
@@ -101,7 +103,7 @@ const Comment = ({
           <CommentDetails>{commentDetails}</CommentDetails>
         </CommentContent>
         <CommentActionsSection>
-          {isEditing ? (
+          {isEdited ? (
             <>
               <Spacing horizontal={4} />
               <EditCommentButton>
@@ -125,7 +127,8 @@ const Comment = ({
                     onClick={(event) => {
                       event.preventDefault();
                       event.stopPropagation();
-                      unsetEditing();
+                      setIsEdited(false);
+                      setValueReset(true);
                     }}
                   >
                     Cancel
@@ -144,7 +147,8 @@ const Comment = ({
                         onClick={(event) => {
                           event.preventDefault();
                           event.stopPropagation();
-                          setEditing();
+                          setIsEdited(true);
+                          setValueReset(false);
                           setFocused();
                         }}
                       >
