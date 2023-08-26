@@ -2,7 +2,27 @@ import TurndownService from 'turndown';
 import MarkdownIt from 'markdown-it';
 import { mentionifyAndLinkifyTaskText } from 'helpers/utility-functions';
 
-const md = new MarkdownIt();
+// eslint-disable-next-line no-shadow
+export const markdownItUnderline = (md) => {
+  // eslint-disable-next-line unicorn/consistent-function-scoping, unicorn/prevent-abbreviations
+  function renderUnderline(tokens, idx, opts, _, slf) {
+    const token = tokens[idx];
+    if (token.markup === '__') {
+      token.tag = 'u';
+    }
+    return slf.renderToken(tokens, idx, opts);
+  }
+
+  // eslint-disable-next-line no-param-reassign
+  md.renderer.rules.strong_open = renderUnderline;
+  // eslint-disable-next-line no-param-reassign
+  md.renderer.rules.strong_close = renderUnderline;
+};
+
+const md = new MarkdownIt({
+  breaks: true,
+  linkify: true,
+}).use(markdownItUnderline);
 let turndownService = new TurndownService();
 turndownService = turndownService.addRule('people-mention', {
   filter: ['del', 's', 'strike'],
@@ -17,12 +37,14 @@ export const htmlToMarkdown = (html) => {
 };
 
 export const markdowntoHTML = (markdownText) => {
-  const htmlValue = md.render(markdownText || '');
+  let htmlValue = md.render(markdownText || '');
+  htmlValue = htmlValue.replace(/\n/g, '<p><br></p>');
   return htmlValue || '';
 };
 
 export const markdowntoHTMLWithMentions = (markdownText, mentions) => {
-  const htmlValue = md.render(markdownText || '');
+  let htmlValue = md.render(markdownText || '');
+  htmlValue = htmlValue.replace(/\n/g, '<p><br></p>');
   let processedValue = htmlValue;
   if (mentions && markdownText !== '') {
     for (const mentionInfo of mentions) {
@@ -49,18 +71,4 @@ export const linkifyTextWithMentions = (value, mentions) => {
     });
   }
   return value;
-};
-
-export const markdownItUnderline = (md) => {
-
-  function renderUnderline (tokens, idx, opts, _, slf) {
-    var token = tokens[idx];
-    if (token.markup === '__') {
-      token.tag = 'u';
-    }
-    return slf.renderToken(tokens, idx, opts);
-  }
-
-  md.renderer.rules.strong_open = renderUnderline;
-  md.renderer.rules.strong_close = renderUnderline;
 };

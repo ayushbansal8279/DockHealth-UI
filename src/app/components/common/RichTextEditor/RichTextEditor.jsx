@@ -104,7 +104,11 @@ const toolbarOptions = [
 ];
 
 const processMarkdownValue = (value, mentions) => {
-  const htmlValue = md.render(value || '');
+  if (!value || value === '') {
+    return value;
+  }
+  let htmlValue = md.render(value || '');
+  htmlValue = htmlValue.replace(/\n/g, '<p><br></p>');
   let processedValue = htmlValue;
   if (mentions && value !== '') {
     for (const mentionInfo of mentions) {
