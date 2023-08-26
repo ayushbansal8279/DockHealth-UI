@@ -264,9 +264,9 @@ const RichTextEditor = React.forwardRef(
         </div>`;
       },
       // eslint-disable-next-line func-names, object-shorthand
-      noMatchTemplate: function () {
-        return '<span>@People</span>';
-      },
+      // noMatchTemplate: function () {
+      //   return '<span>@People</span>';
+      // },
       // eslint-disable-next-line func-names, object-shorthand
       selectTemplate: function (item) {
         return `<span class="fr-deletable fr-tribute" data-people-mention="${item?.original.identifier}"><a>@${item?.original.name}</a></span>`;
