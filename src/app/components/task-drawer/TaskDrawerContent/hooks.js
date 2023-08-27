@@ -49,6 +49,7 @@ const initializeTaskDrawerHooks = ({
   onTaskUpdate,
   onTaskCreation,
   onTaskDelete,
+  origin,
 }) => {
   const history = useHistory();
   const { identifier } = useParams();
@@ -69,7 +70,7 @@ const initializeTaskDrawerHooks = ({
   const selectedTaskIdentifier = selectedTask?.taskIdentifier;
   const isSubtask = !!selectedTask?.parentTaskIdentifier;
   const selectedTaskDueDate = selectedTask?.dueDate;
-  const parentTask = useSelector((state) => {
+  const parentTaskFromMap = useSelector((state) => {
     return taskLookupSelector(
       state,
       origin,
@@ -107,6 +108,7 @@ const initializeTaskDrawerHooks = ({
   }, []);
 
   useEffect(() => {
+    const parentTask = selectedTask?.parentTask || parentTaskFromMap;
     if (parentTask && taskIdentifier !== previousTaskIdentifierValue.current) {
       setSelectedParentTask(parentTask);
     }
@@ -138,26 +140,6 @@ const initializeTaskDrawerHooks = ({
       taskDrawerReference?.current?.scrollTo({ top: 0, behavior: 'smooth' });
     }
   }, [taskIdentifier]);
-
-  useLayoutEffect(() => {
-    if (selectedParentTask) {
-      // eslint-disable-next-line @typescript-eslint/no-unused-vars
-      const { tokenizedDescription, description, taskMentions } =
-        selectedParentTask;
-      if (description) {
-        // const newContent = createMentionEntities(
-        //   tokenizedDescription,
-        //   description,
-        //   taskMentions,
-        //   false,
-        // );
-        // setParentDescriptionState(
-        //   EditorState.push(parentDescriptionState, newContent),
-        // );
-      }
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [selectedParentTask]);
 
   useEffect(() => {
     // eslint-disable-next-line sonarjs/no-collapsible-if

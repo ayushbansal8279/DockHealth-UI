@@ -71,6 +71,7 @@ const TaskDrawerContent = (props) => {
     hideTour = false,
     hideCloseIcon,
     stickyHeader = false,
+    origin,
   } = props;
   const {
     closeTaskDrawer: handleCloseTaskDrawer,
@@ -100,6 +101,7 @@ const TaskDrawerContent = (props) => {
     onTaskDelete,
     fromFirstAddTask,
     hideTour,
+    origin,
   });
 
   const closeTaskDrawer = useCallback(() => {
