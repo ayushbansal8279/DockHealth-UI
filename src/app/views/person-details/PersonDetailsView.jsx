@@ -14,6 +14,7 @@ import { TaskListTabName } from 'helpers/tasklist-helpers';
 import {
   TaskItemColumn,
   TaskStatus,
+  TaskOrigin,
   TASK_ITEM_BASE_COLUMN_CONFIG,
   findIncompleteRequiredFields,
 } from 'helpers/task-helpers';
@@ -208,6 +209,7 @@ const PersonDetailsView = () => {
         onTaskUpdate={refreshTabAfterTaskUpdate}
         onTaskDelete={handleTaskDelete}
         onTaskCreation={refreshTabAfterTaskUpdate}
+        origin={TaskOrigin.PERSON}
       />
     </ColumnsConfigProvider>
   );

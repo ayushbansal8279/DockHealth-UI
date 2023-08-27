@@ -10,6 +10,7 @@ import {
   currentTaskListSelector,
 } from 'selectors/task-list-selectors';
 import { calendarDateRangeSelector } from 'selectors/calendar-tasks-selectors';
+import { TaskOrigin } from 'helpers/task-helpers';
 import * as ListDetailsActions from 'actions/list-details-actions';
 import * as CalendarTasksActions from 'actions/calendar-tasks-actions';
 import ListOptionsMenu from 'components/tasklist/ListOptionsMenu/ListOptionsMenu';
@@ -62,7 +63,7 @@ const ListDetailsCalendarView = () => {
     >
       <ListDetailsToolbar />
       <Calendar taskListIdentifier={taskListIdentifier} />
-      <TaskDrawer />
+      <TaskDrawer origin={TaskOrigin.LIST} />
     </ViewLayout>
   );
 };

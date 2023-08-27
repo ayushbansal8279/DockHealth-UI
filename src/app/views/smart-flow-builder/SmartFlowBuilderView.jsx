@@ -55,6 +55,7 @@ import {
   TASK_NODE_WIDTH,
   getAutoLayout,
 } from 'helpers/smart-flow-builder-helpers';
+import { TaskOrigin } from 'helpers/task-helpers';
 import { useBoolean } from 'hooks/useBoolean';
 import palette from 'styles/palette';
 import * as AlertActions from 'alert/actions';
@@ -627,7 +628,7 @@ const SmartFlowBuilderView = () => {
           </Box>
         </Box>
       </ReactFlowProvider>
-      <TaskDrawer />
+      <TaskDrawer origin={TaskOrigin.TEMPLATE} />
     </div>
   );
 };

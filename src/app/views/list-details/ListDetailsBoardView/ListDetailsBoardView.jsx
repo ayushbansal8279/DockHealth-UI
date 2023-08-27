@@ -15,6 +15,7 @@ import {
   userHasBoardViewFeatureSelector,
   selectedUserOrganizationSelector,
 } from 'selectors/user-selectors';
+import { TaskOrigin } from 'helpers/task-helpers';
 import ListDetailsToolbar from '../ListDetailsToolbar/ListDetailsToolbar';
 import { BOARD_CONTEXTS_OPTIONS } from './helpers';
 import BoardContextProvider from './BoardContextProvider';
@@ -94,7 +95,7 @@ const ListDetailsBoardView = () => {
         )}
       </BoardContextProvider>
 
-      <TaskDrawer />
+      <TaskDrawer origin={TaskOrigin.LIST} />
     </ViewLayout>
   );
 };

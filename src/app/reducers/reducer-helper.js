@@ -11,26 +11,31 @@ function updateTaskItemSubTasks(state, tasksMap, taskItem) {
   }
   if (taskItem?.parentTaskIdentifier) {
     // if subtask is added
-    const parentTask = state.tasksMap[taskItem.parentTaskIdentifier];
+    let parentTask = state.tasksMap[taskItem.parentTaskIdentifier];
+    if (taskItem?.parentTask) {
+      parentTask = taskItem?.parentTask;
+      updatedMap[taskItem.parentTaskIdentifier] = parentTask;
+    }
+    if (parentTask) {
+      const updateSubtasks = parentTask?.subtasks?.map((st) =>
+        st?.identifier === taskItem?.identifier
+          ? {
+              ...st,
+              ...taskItem,
+            }
+          : st,
+      );
 
-    const updateSubtasks = parentTask?.subtasks.map((st) =>
-      st?.identifier === taskItem?.identifier
+      updatedMap[taskItem.parentTaskIdentifier] = state.tasksMap[taskIdentifier]
         ? {
-            ...st,
-            ...taskItem,
+            ...parentTask,
+            subtasks: updateSubtasks,
           }
-        : st,
-    );
-
-    updatedMap[taskItem.parentTaskIdentifier] = state.tasksMap[taskIdentifier]
-      ? {
-          ...parentTask,
-          subtasks: updateSubtasks,
-        }
-      : {
-          ...parentTask,
-          subtasks: parentTask?.subtasks.concat([taskItem]),
-        };
+        : {
+            ...parentTask,
+            subtasks: parentTask?.subtasks.concat([taskItem]),
+          };
+    }
   }
   return updatedMap;
 }
@@ -142,6 +147,8 @@ export function updateTasksMap(state, taskItem) {
         ...subtask,
       };
     }
+  } else if (taskItem?.parentTask) {
+    updatedMap[taskItem?.parentTask?.identifier] = taskItem?.parentTask;
   }
 
   return updatedMap;
