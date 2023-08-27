@@ -67,7 +67,7 @@ export const AssigneeContainer = styled.div`
   display: flex;
   justify-content: flex-start;
   align-items: center;
-  flex-basis: 90px;
+  flex-basis: 50px;
   margin: 0 ${spacing.smallPlus};
 `;
 
