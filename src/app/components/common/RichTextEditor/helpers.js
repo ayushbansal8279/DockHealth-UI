@@ -36,15 +36,23 @@ export const htmlToMarkdown = (html) => {
   return turndownService.turndown(html);
 };
 
-export const markdowntoHTML = (markdownText) => {
+export const markdowntoHTML = (markdownText, preserveNewLines) => {
   let htmlValue = md.render(markdownText || '');
-  htmlValue = htmlValue.replace(/\n/g, '<p><br></p>');
+  if (preserveNewLines) {
+    htmlValue = htmlValue.replace(/\n/g, '<p><br></p>');
+  }
   return htmlValue || '';
 };
 
-export const markdowntoHTMLWithMentions = (markdownText, mentions) => {
+export const markdowntoHTMLWithMentions = (
+  markdownText,
+  mentions,
+  preserveNewLines,
+) => {
   let htmlValue = md.render(markdownText || '');
-  htmlValue = htmlValue.replace(/\n/g, '<p><br></p>');
+  if (preserveNewLines) {
+    htmlValue = htmlValue.replace(/\n/g, '<p><br></p>');
+  }
   let processedValue = htmlValue;
   if (mentions && markdownText !== '') {
     for (const mentionInfo of mentions) {
@@ -62,7 +70,7 @@ export const markdowntoHTMLWithMentions = (markdownText, mentions) => {
 
 export const linkifyTextWithMentions = (value, mentions) => {
   if (value?.includes('[http')) {
-    return markdowntoHTMLWithMentions(value, mentions);
+    return markdowntoHTMLWithMentions(value, mentions, false);
   }
   if (value?.includes('http')) {
     return mentionifyAndLinkifyTaskText({
