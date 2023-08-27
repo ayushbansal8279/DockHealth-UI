@@ -34,7 +34,7 @@ import {
 } from 'helpers/subscription-helper';
 import { userProfileSelector } from 'selectors/user-selectors';
 import { log } from 'helpers/log';
-import BillingsViewBillingData from '../billings/BillingData/BillingData';
+import BillingData from '../billings/BillingData/BillingData';
 import {
   DarkBlueTextContainer,
   PricingGridContainer,
@@ -59,6 +59,7 @@ const goToSubscriptions = (history) => {
 
 /**
  * @param stripe - Stripe instance
+ * @param cardElement - Stripe CardElement instance
  */
 const onSubmit =
   ({
@@ -71,59 +72,51 @@ const onSubmit =
     currentUser,
     // eslint-disable-next-line unicorn/consistent-function-scoping
   }) =>
-  ({ stripe }) =>
+  ({ token }) =>
   (data) => {
     setProcessingPayment();
-
-    stripe
-      .createToken({ name: 'cardNumber' })
-      .then((token) => {
-        if (token.error) {
-          throw token.error;
-        }
-        const billingData = data;
-        billingData.subscriptionDetails = {
-          subscriptionPlan,
-          billingFrequency,
-          professionalServicesIncluded,
-        };
-        saveBillingDetails({
-          billingData,
-          token,
-        })
-          .then((response) => {
-            if (response.statusCode === 'SUCCESS') {
-              finishSubscriptionPayment(history, currentUser);
-            } else {
-              showAlert({
-                status: 'error',
-                title: 'Error',
-                text: response.errorMessage,
-              });
-            }
-            unsetProcessingPayment();
-          })
-          .catch((error) => {
-            log(error);
+    try {
+      const billingData = data;
+      billingData.subscriptionDetails = {
+        subscriptionPlan,
+        billingFrequency,
+        professionalServicesIncluded,
+      };
+      saveBillingDetails({
+        billingData,
+        token,
+      })
+        .then((response) => {
+          if (response.statusCode === 'SUCCESS') {
+            finishSubscriptionPayment(history, currentUser);
+          } else {
             showAlert({
               status: 'error',
               title: 'Error',
-              text: 'Could not save subscription details, please try again later',
+              text: response.errorMessage,
             });
-            unsetProcessingPayment();
+          }
+          unsetProcessingPayment();
+        })
+        .catch((error) => {
+          log(error);
+          showAlert({
+            status: 'error',
+            title: 'Error',
+            text: 'Could not save subscription details, please try again later',
           });
-      })
-      .catch((error) => {
-        showAlert({
-          status: 'error',
-          title: 'Error',
-          text:
-            error?.message ??
-            'Could not update subscription details, please try again later',
+          unsetProcessingPayment();
         });
-
-        unsetProcessingPayment();
+    } catch (error) {
+      showAlert({
+        status: 'error',
+        title: 'Error',
+        text:
+          error?.message ??
+          'Could not update subscription details, please try again later',
       });
+      unsetProcessingPayment();
+    }
   };
 
 const stripePromise = loadStripe(
@@ -287,7 +280,7 @@ const SubscriptionPaymentView = () => {
                 },
               ]}
             >
-              <BillingsViewBillingData
+              <BillingData
                 isUpdatingBilling
                 setUpdatingBilling={noop}
                 unsetUpdatingBilling={noop}

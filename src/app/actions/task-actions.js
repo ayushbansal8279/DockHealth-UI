@@ -326,6 +326,7 @@ export function addComment(task, taskComment) {
           task,
           comment,
         });
+        dispatch(AlertActions.showGlobalAlert(AlertMessages.COMMENT_ADDED));
         return comment;
       })
       .catch((error) => {
@@ -345,6 +346,7 @@ export function deleteComment(task, comment) {
           taskIdentifier,
           commentIdentifier,
         });
+        dispatch(AlertActions.showGlobalAlert(AlertMessages.DELETED));
         return {
           task,
           comment,
@@ -364,6 +366,7 @@ export function updateComment(task, comment) {
           task,
           comment: data,
         });
+        dispatch(AlertActions.showGlobalAlert(AlertMessages.UPDATED));
         return {
           task,
           comment,
