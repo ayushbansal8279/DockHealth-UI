@@ -31,7 +31,7 @@ import {
 const onSubmit =
   ({ setError, dispatch, organizationIdentifier }) =>
   ({
-    stripe,
+    token,
     unsetUpdatingBilling,
     setProcessingUpdate,
     unsetProcessingUpdate,
@@ -39,47 +39,40 @@ const onSubmit =
   (data) => {
     setError('');
     setProcessingUpdate();
-    return stripe
-      .createToken({ name: 'cardNumber' })
-      .then((token) => {
-        if (token.error) {
-          throw token.error;
-        }
-
-        saveBillingDetails({
-          billingData: data,
-          token,
-        })
-          .then(() => {
-            unsetUpdatingBilling();
-            unsetProcessingUpdate();
-            dispatch(
-              AlertActions.showGlobalAlert(
-                'Billing information updated successfully!',
-                'success',
-              ),
-            );
-            getBillingDetails({ organizationIdentifier })(dispatch);
-          })
-          .catch((error) => {
-            unsetProcessingUpdate();
-            setError('cardNumber', {
-              type: 'custom',
-              message:
-                error?.response?.data?.errorMessage ??
-                'Could not update billing information, please try again later',
-            });
-          });
+    try {
+      saveBillingDetails({
+        billingData: data,
+        token,
       })
-      .catch((error) => {
-        unsetProcessingUpdate();
-        setError('cardNumber', {
-          type: 'custom',
-          message:
-            error?.message ??
-            'Could not update billing information, please try again later',
+        .then(() => {
+          unsetUpdatingBilling();
+          unsetProcessingUpdate();
+          dispatch(
+            AlertActions.showGlobalAlert(
+              'Billing information updated successfully!',
+              'success',
+            ),
+          );
+          getBillingDetails({ organizationIdentifier })(dispatch);
+        })
+        .catch((error) => {
+          unsetProcessingUpdate();
+          setError('cardNumber', {
+            type: 'custom',
+            message:
+              error?.response?.data?.errorMessage ??
+              'Could not update billing information, please try again later',
+          });
         });
+    } catch (error) {
+      unsetProcessingUpdate();
+      setError('cardNumber', {
+        type: 'custom',
+        message:
+          error?.message ??
+          'Could not update billing information, please try again later',
       });
+    }
   };
 
 const stripePromise = loadStripe(

@@ -282,13 +282,12 @@ const SendEmailFromTaskModal = () => {
           variant="primary"
           disabled={
             // !validateEmail(contact?.value) ||
-            contacts.length === 0 // || !detailsState.getCurrentContent().hasText()
+            contacts.length === 0
           }
           onClick={() => {
             dispatch(
               sendEmailForTask({
                 message: subject,
-                // details: convertFromEditorStateToOutput(detailsState, true).tokenizedText,
                 details: detailsState,
                 recipientContacts: contacts.map((c) => c.value),
                 taskAttachmentIdentifiers: attachmentsToSend,

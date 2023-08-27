@@ -1,5 +1,5 @@
 import { Grid } from '@mui/material';
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useRef, useImperativeHandle } from 'react';
 import { FormProvider, useForm } from 'react-hook-form';
 import { useSelector } from 'react-redux';
 import {
@@ -7,6 +7,7 @@ import {
   CardExpiryElement,
   CardNumberElement,
   useStripe,
+  useElements,
 } from '@stripe/react-stripe-js';
 import { useEffectOnce, useToggle } from 'react-use';
 import { object, string } from 'yup';
@@ -34,29 +35,85 @@ import {
 } from './styled';
 import { StyledCollapse, H3, Anchor } from '../styled';
 
-const CardNumberInput = ({ inputRef, onChange, ...restProps }) => {
+// const CardNumberInput = React.forwardRef((props, reference) => {
+//   const { onChange, ...other } = props;
+//   const [isEmpty, setIsEmpty] = useState(true);
+//   const elementReference = useRef();
+//   useImperativeHandle(reference, () => ({
+//     focus: () => elementReference.current.focus,
+//   }));
+//   return (
+//     <CardNumberElement
+//       ref={elementReference}
+//       // eslint-disable-next-line no-return-assign
+//       onReady={(element) => (elementReference.current = element)}
+//       showIcon={!isEmpty}
+//       onChange={(event) => {
+//         // eslint-disable-next-line no-unused-expressions
+//         onChange?.(event);
+//         if (isEmpty !== event.empty) setIsEmpty(event.empty);
+//       }}
+//       {...other}
+//     />
+//   );
+// });
+
+// const CardExpiryInput = React.forwardRef((props, reference) => {
+//   const { ...other } = props;
+//   const elementReference = useRef();
+//   useImperativeHandle(reference, () => ({
+//     focus: () => elementReference.current.focus,
+//   }));
+//   return (
+//     <CardExpiryElement
+//       ref={elementReference}
+//       // eslint-disable-next-line no-return-assign
+//       onReady={(element) => (elementReference.current = element)}
+//       {...other}
+//     />
+//   );
+// });
+
+// const CardCvcInput = React.forwardRef((props, reference) => {
+//   const { ...other } = props;
+//   const elementReference = useRef();
+//   useImperativeHandle(reference, () => ({
+//     focus: () => elementReference.current.focus,
+//   }));
+//   return (
+//     <CardCvcElement
+//       ref={elementReference}
+//       // eslint-disable-next-line no-return-assign
+//       onReady={(element) => (elementReference.current = element)}
+//       {...other}
+//     />
+//   );
+// });
+
+const CardInputComponent = React.forwardRef((props, reference) => {
+  const { onChange, component: Component, ...other } = props;
   const [isEmpty, setIsEmpty] = useState(true);
+  const elementReference = useRef();
+  // implement `InputElement` interface
+  useImperativeHandle(reference, () => ({
+    focus: () => elementReference.current.focus,
+  }));
+
   return (
-    <CardNumberElement
-      ref={inputRef}
+    <Component
+      ref={elementReference}
+      // eslint-disable-next-line no-return-assign
+      onReady={(element) => (elementReference.current = element)}
       showIcon={!isEmpty}
       onChange={(event) => {
         // eslint-disable-next-line no-unused-expressions
         onChange?.(event);
         if (isEmpty !== event.empty) setIsEmpty(event.empty);
       }}
-      {...restProps}
+      {...other}
     />
   );
-};
-
-const CardExpiryInput = ({ inputRef, ...restProps }) => {
-  return <CardExpiryElement ref={inputRef} {...restProps} />;
-};
-
-const CardCvcInput = ({ inputRef, ...restProps }) => {
-  return <CardCvcElement ref={inputRef} {...restProps} />;
-};
+});
 
 const REQUIRED_MESSAGE = 'This field is required.';
 
@@ -110,6 +167,7 @@ const validationSchema = object().shape(
 
 const BillingElement = ({
   Component,
+  // InputComponent,
   disabled,
   name,
   label,
@@ -132,8 +190,14 @@ const BillingElement = ({
       onBlur={unsetFocused}
       placeholder=""
       error={fieldError}
-      customInputComponent={Component}
-      endAdornment={isEmpty && endAdornment}
+      InputProps={{
+        inputComponent: CardInputComponent,
+        // inputComponent: InputComponent,
+        endAdornment: isEmpty && endAdornment,
+        inputProps: {
+          component: Component,
+        },
+      }}
       onChange={({ empty, error }) => {
         if (empty !== isEmpty) setIsEmpty(empty);
 
@@ -234,7 +298,8 @@ const CreditPaymentForm = ({
         <BillingElement
           id="card-number"
           name="cardNumber"
-          Component={CardNumberInput}
+          Component={CardNumberElement}
+          // InputComponent={CardNumberInput}
           label="Card number"
           required
           shrink
@@ -261,7 +326,8 @@ const CreditPaymentForm = ({
         <BillingElement
           id="card-expiry"
           name="cardExpiration"
-          Component={CardExpiryInput}
+          Component={CardExpiryElement}
+          // InputComponent={CardExpiryInput}
           label="Expiration date"
           required
           shrink
@@ -271,7 +337,8 @@ const CreditPaymentForm = ({
         <BillingElement
           id="card-cvc"
           name="cardCvc"
-          Component={CardCvcInput}
+          Component={CardCvcElement}
+          // InputComponent={CardCvcInput}
           label="Verification code"
           disabled={!isUpdatingBilling}
           required
@@ -343,6 +410,8 @@ const BillingData = ({
   cancelSaveBillingClick,
 }) => {
   const stripe = useStripe();
+  const elements = useElements();
+  const [cardElement, setCardElement] = useState(null);
 
   const billingDetails = useSelector(billingDetailsSelector);
   const referralConfig = useSelector(referralConfigSelector);
@@ -399,19 +468,31 @@ const BillingData = ({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [billingDetails, isUpdatingBilling]);
 
+  useEffect(() => {
+    const cardElt = elements?.getElement(CardNumberElement);
+    setCardElement(cardElt);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [elements]);
+
   const [processingUpdate, setProcessingUpdate, unsetProcessingUpdate] =
     useBoolean(false);
 
   return (
     <form
-      onSubmit={handleSubmit(
-        onSubmit({
-          stripe,
-          unsetUpdatingBilling,
-          setProcessingUpdate,
-          unsetProcessingUpdate,
-        }),
-      )}
+      onSubmit={handleSubmit((data) => {
+        // console.log(data);
+        stripe.createToken(cardElement).then((token) => {
+          if (token.error) {
+            throw token.error;
+          }
+          onSubmit({
+            token,
+            unsetUpdatingBilling,
+            setProcessingUpdate,
+            unsetProcessingUpdate,
+          })(data);
+        });
+      })}
       autoComplete="off"
       autoCorrect="off"
     >
