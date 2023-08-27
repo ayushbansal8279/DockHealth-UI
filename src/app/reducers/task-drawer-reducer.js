@@ -198,7 +198,7 @@ const TaskReducer = (state = initialState, action) => {
                     tmd.customFieldIdentifier === newtmd.customFieldIdentifier,
                 ) === undefined,
             );
-            const mergedTaskMetaData = updatedMetaData.concat(newMetaData);
+            const mergedTaskMetaData = updatedMetaData?.concat(newMetaData);
 
             return {
               ...reducerState,
