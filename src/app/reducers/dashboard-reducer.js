@@ -38,6 +38,9 @@ const getMapOfLoadedTasks = (group) => {
   for (const task of tasks) {
     if (task.itemType === TaskItemType.TASK) {
       newMap[task.identifier] = task;
+      if (task?.parentTask) {
+        newMap[task?.parentTask?.identifier] = task?.parentTask;
+      }
     } else {
       newMap[task.identifier] = task;
       for (const grpTask of task.tasks) {

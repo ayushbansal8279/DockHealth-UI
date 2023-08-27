@@ -13,6 +13,7 @@ import {
   searchPerformedSelector,
 } from 'selectors/global-search-selectors';
 import { selectedTaskSelector } from 'selectors/task-drawer-selectors';
+import { TaskOrigin } from 'helpers/task-helpers';
 // import EmptyGlobalSearch from 'img/empty-global-search.png';
 import { ColumnsConfigProvider } from 'context-api/columns-config-context';
 import { userProfileSelector } from 'selectors/user-selectors';
@@ -124,7 +125,7 @@ const GlobalSearchView = ({
               </ColumnsConfigProvider>
             )}
           </ViewSidePadding>
-          <TaskDrawer />
+          <TaskDrawer origin={TaskOrigin.GLOBAL} />
         </GlobalSearchWrapper>
       </HorizontallyScrolledViewLayout>
     </>
