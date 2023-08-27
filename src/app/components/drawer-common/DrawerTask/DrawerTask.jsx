@@ -135,15 +135,15 @@ const DrawerTask = (props) => {
   );
 
   const handleCommentIconClick = () => {
-    dispatch(openDrawer(DrawerFieldEnum.COMMENT));
+    // dispatch(openDrawer(DrawerFieldEnum.COMMENT));
   };
 
   const handleLabelIconClick = () => {
-    dispatch(openDrawer(DrawerFieldEnum.LABEL));
+    // dispatch(openDrawer(DrawerFieldEnum.LABEL));
   };
 
   const handleAttachmentIconClick = () => {
-    dispatch(openDrawer(DrawerFieldEnum.ATTACHMENT));
+    // dispatch(openDrawer(DrawerFieldEnum.ATTACHMENT));
   };
 
   const handleDueDateChange = useCallback(

@@ -168,11 +168,18 @@ const TaskReducer = (state = initialState, action) => {
 
     default: {
       if (state.selectedTask) {
-        return TaskBaseReducer(state, action, (reducerState, newTask) => {
-          if (state.selectedTask.taskIdentifier === newTask.taskIdentifier) {
+        return TaskBaseReducer(state, action, (reducerState, taskData) => {
+          let taskItem = taskData;
+          if (typeof taskData === 'function') {
+            taskItem = {
+              taskIdentifier: action?.taskIdentifier,
+              ...action?.dataToUpdate,
+            };
+          }
+          if (state.selectedTask.taskIdentifier === taskItem?.taskIdentifier) {
             const updatedMetaData = state.selectedTask?.taskMetaData?.map(
               (tmd) => {
-                const matchedTaskMetaData = newTask?.taskMetaData?.find(
+                const matchedTaskMetaData = taskItem?.taskMetaData?.find(
                   (newtmd) =>
                     newtmd &&
                     newtmd.customFieldIdentifier === tmd.customFieldIdentifier,
@@ -183,7 +190,7 @@ const TaskReducer = (state = initialState, action) => {
                 };
               },
             );
-            const newMetaData = newTask?.taskMetaData?.filter(
+            const newMetaData = taskItem?.taskMetaData?.filter(
               (newtmd) =>
                 state.selectedTask?.taskMetaData?.find(
                   (tmd) =>
@@ -197,10 +204,33 @@ const TaskReducer = (state = initialState, action) => {
               ...reducerState,
               selectedTask: {
                 ...state.selectedTask,
-                ...newTask,
+                ...taskItem,
                 taskMetaData: mergedTaskMetaData,
               },
             };
+          }
+          if (
+            state.selectedTask?.subtasks.find(
+              (st) => st.identifier === taskItem?.taskIdentifier,
+            )
+          ) {
+            const updateSubtasks = state.selectedTask?.subtasks.map((st) =>
+              st?.identifier === taskItem?.taskIdentifier
+                ? {
+                    ...st,
+                    ...taskItem,
+                  }
+                : st,
+            );
+            // eslint-disable-next-line sonarjs/prefer-immediate-return
+            const updatedState = {
+              ...reducerState,
+              selectedTask: {
+                ...state.selectedTask,
+                subtasks: updateSubtasks,
+              },
+            };
+            return updatedState;
           }
           // donot update selected task for another task not already selected
           return {
