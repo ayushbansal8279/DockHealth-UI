@@ -30,15 +30,35 @@ const INITIAL_STATE = {
   },
 };
 
-function updateWorkflowInState(updateCallback, workflowIdentifier, state) {
+function updateWorkflowInState(workflowIdentifier, updatedData, state) {
+  const updatedMap = {
+    [workflowIdentifier]: {
+      ...state.tasksMap[workflowIdentifier],
+      ...updatedData,
+      tasks: updatedData?.tasks.map((task) => task.identifier),
+    },
+  };
+
+  // add tasks and subtasks in the bundle
+  for (const task of updatedData?.tasks) {
+    updatedMap[task.identifier] = {
+      ...updatedMap[task.identifier],
+      ...task,
+    };
+    for (const subtask of task?.subtasks) {
+      updatedMap[subtask.identifier] = {
+        ...updatedMap[subtask.identifier],
+        ...subtask,
+      };
+    }
+  }
+
   return {
     ...state,
-    lists: state?.lists?.map((list) => ({
-      ...list,
-      tasks: list.tasks.map((t) =>
-        t.identifier === workflowIdentifier ? updateCallback(t) : t,
-      ),
-    })),
+    tasksMap: {
+      ...state.tasksMap,
+      ...updatedMap,
+    },
   };
 }
 
@@ -48,8 +68,8 @@ export default (state = INITIAL_STATE, action = {}) => {
   switch (type) {
     case ActionTypes.UPDATE_PARTIAL_WORKFLOW_SUCCESS: {
       return updateWorkflowInState(
-        (workflow) => ({ ...workflow, ...action.newData }),
         action.taskWorkflowIdentifier,
+        action.newData,
         state,
       );
     }

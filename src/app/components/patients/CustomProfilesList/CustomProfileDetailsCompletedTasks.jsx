@@ -1,15 +1,14 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { onSortChanged } from 'helpers/ga-event-helper';
-import { completedTasksIsFetchingMoreSelector, completedTasksSelector } from "selectors/list-details-selectors";
+import { completedTasksIsFetchingMoreSelector } from 'selectors/list-details-selectors';
 import {
   completedTasksIsFetchingSelector,
   taskCountersSelector,
   sortSelector,
 } from 'selectors/person-details-selectors';
 import { hasFiltersAppliedSelector } from 'selectors/mega-filter-selectors';
-import { sortUserTasks } from 'actions/person-details-actions';
-// import { filterTasksBySearchValue } from 'helpers/task-search-helper';
+import { quickAddTask, sortUserTasks } from 'actions/person-details-actions';
 import NoSearchResultsView from 'components/tasklist/EmptyListView/NoSearchResultsView';
 import EmptyListView from 'components/tasklist/EmptyListView/EmptyListView';
 import NoFilterResultsView from 'components/tasklist/EmptyListView/NoFilterResultsView';
@@ -19,7 +18,11 @@ import StandardTaskItem from 'components/task/StandardTaskItem/StandardTaskItem'
 import { useTaskListColumnsConfig } from 'context-api/columns-config-context';
 import { TaskOrigin } from 'helpers/task-helpers';
 import { TaskGroupsContainer } from 'views/person-details/styled';
-import { findTasksByProfileGroupedByTaskList } from "actions/task-actions";
+import { findTasksByProfileGroupedByTaskList } from 'actions/task-actions';
+import { profileAllTasksSelector } from 'selectors/custom-profile-details-selectors';
+import { openModal } from 'modal/actions';
+import { getSharedTaskListsWithCurrentUser } from 'api/task-list-api';
+import { userProfileSelector } from 'selectors/user-selectors';
 
 const CustomProfileDetailsCompletedTasks = ({
   profileIdentifier,
@@ -31,16 +34,20 @@ const CustomProfileDetailsCompletedTasks = ({
   taskItemConfig,
   onOrderChange,
   iconColorActive,
+  changingGroupOrderDisabled,
+  groupName,
   // eslint-disable-next-line sonarjs/cognitive-complexity
 }) => {
+  const quickAddTaskInputReference = useRef(null);
   const dispatch = useDispatch();
   const isFetchingTasks = useSelector(completedTasksIsFetchingSelector);
-  const tasks = useSelector((state) => state.tasks);
+  const tasks = useSelector(profileAllTasksSelector);
   const isFetchingMoreTasks = useSelector(completedTasksIsFetchingMoreSelector);
   const taskCounters = useSelector(taskCountersSelector);
   const sort = useSelector(sortSelector);
   const areFiltersApplied = useSelector(hasFiltersAppliedSelector);
   const { setViewSpecificConfig } = useTaskListColumnsConfig();
+  const currentUser = useSelector(userProfileSelector);
 
   useEffect(() => {
     dispatch(findTasksByProfileGroupedByTaskList(profileIdentifier));
@@ -50,19 +57,12 @@ const CustomProfileDetailsCompletedTasks = ({
     setViewSpecificConfig(taskItemConfig);
   }, [setViewSpecificConfig, taskItemConfig]);
 
-  // const filteredTasks = useMemo(
-  //   () => (!searchValue ? tasks : filterTasksBySearchValue(tasks, searchValue)),
-  //   [searchValue, tasks],
-  // );
-
   const renderEmptyState = () => {
     if (searchValue) return <NoSearchResultsView />;
 
     if (areFiltersApplied) return <NoFilterResultsView />;
 
-    return (
-      <EmptyListView title="There are no completed tasks" description="" />
-    );
+    return <EmptyListView title="There are no tasks" description="" />;
   };
 
   const tasksAndSubTasks =
@@ -73,6 +73,35 @@ const CustomProfileDetailsCompletedTasks = ({
         1,
       0,
     ) || 0;
+
+  const handleQuickAddTask = (task) => {
+    dispatch(
+      openModal('ListPicker', {
+        enableSelectingGroupStep: true,
+        fetchMethod: () =>
+          getSharedTaskListsWithCurrentUser(sessionStorage.userIdentifier),
+        listCreationPayload: {
+          adminIdentifiers:
+            // eslint-disable-next-line unicorn/no-negated-condition
+            currentUser.userIdentifier !== sessionStorage.userIdentifier
+              ? [sessionStorage.userIdentifier]
+              : [],
+        },
+        confirm: (taskListIdentifier, taskGroupIdentifier) => {
+          const payload = {
+            ...task,
+            taskListIdentifier,
+            assignedToIdentifier: profileIdentifier,
+            taskGroupIdentifier,
+          };
+
+          dispatch(quickAddTask(payload)).then(() => {
+            // dispatch(getUserTaskCounters(sessionStorage.userIdentifier));
+          });
+        },
+      }),
+    );
+  };
 
   const handleSortChange = (key, order) => {
     onSortChanged(order ? key : null, order);
@@ -89,14 +118,18 @@ const CustomProfileDetailsCompletedTasks = ({
             <TaskGroupsContainer>
               <TasksGroup
                 onOrderChange={onOrderChange}
-                groupName="Completed"
+                groupName={groupName || 'Completed'}
                 storeAsCurrentTask={storeAsCurrentTask}
                 toggleCompleteTask={toggleCompleteTask}
                 tasks={tasks}
-                isCompletedGroup
                 hasMoreTasks={tasksAndSubTasks < taskCounters.complete}
                 isFetchingMoreTasks={isFetchingMoreTasks}
-                quickAddTaskVisible={false}
+                quickAddTask={(task) => {
+                  handleQuickAddTask(task);
+                  setTimeout(() => {
+                    quickAddTaskInputReference.current.focus();
+                  }, 0);
+                }}
                 listNameVisible
                 onTaskUpdate={onTaskUpdate}
                 areFiltersApplied={areFiltersApplied}
@@ -105,6 +138,7 @@ const CustomProfileDetailsCompletedTasks = ({
                 sort={sort}
                 onSortChange={handleSortChange}
                 disableBulkEdit
+                changingGroupOrderDisabled={changingGroupOrderDisabled}
               >
                 {({
                   isCompletedGroup,
@@ -139,7 +173,7 @@ const CustomProfileDetailsCompletedTasks = ({
                         }
                         dragAndDropDisabled
                         iconColorActive={iconColorActive}
-                        origin={TaskOrigin.PERSON}
+                        origin={TaskOrigin.CUSTOM_PROFILE}
                       />
                     ))}
                   </>

@@ -32,9 +32,14 @@ const MergePatientsModal = ({
         </ModalIconContainer>
         <ModalDescriptionContainer>
           <Typography variant="body1">
-            Please confirm to merge {fromPatient.firstName}{' '}
-            {fromPatient.lastName} to this selected patient{' '}
-            {toPatient.firstName} {toPatient.lastName}
+            Please confirm to merge{' '}
+            <span style={{ fontWeight: 'bold' }}>
+              {fromPatient.firstName} {fromPatient.lastName}
+            </span>{' '}
+            to this selected patient{' '}
+            <span style={{ fontWeight: 'bold' }}>
+              {toPatient.firstName} {toPatient.lastName}
+            </span>
           </Typography>
         </ModalDescriptionContainer>
         <ButtonsContainer>

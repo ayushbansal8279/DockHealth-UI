@@ -520,11 +520,13 @@ const TaskTemplateGroupHeader = ({
   const handleBundleSelect = useCallback(async () => {
     let selectedTaskIdentifiers = [templateGroup?.identifier];
     if (filteredTasks.length > 0 && isOpen) {
-      selectedTaskIdentifiers = selectedTaskIdentifiers.concat(filteredTasks);
+      selectedTaskIdentifiers = selectedTaskIdentifiers.concat(
+        pluck('identifier', filteredTasks),
+      );
       dispatch(
         TaskActions.changeTasksSelectedState(
           !isBundleSelected,
-          pluck('identifier', filteredTasks),
+          selectedTaskIdentifiers,
         ),
       );
     } else {

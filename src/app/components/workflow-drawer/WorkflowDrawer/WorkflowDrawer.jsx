@@ -22,6 +22,7 @@ import {
 import { FiledInListName } from 'components/task-drawer/TaskDrawerContent/styled';
 import { createTaskListPath } from 'routing/helpers/paths';
 import { currentTaskListSelector } from 'selectors/task-list-selectors';
+import CustomFieldsSection from 'components/task-drawer/CustomFieldsSection/CustomFieldsSection';
 import NameSection from '../NameSection/NameSection';
 import DescriptionSection from '../DescriptionSection/DescriptionSection';
 import PatientSection from '../PatientSection/PatientSection';
@@ -37,7 +38,6 @@ import LabelsSection from '../LabelsSection/LabelsSection';
 import CommentSection from '../CommentSection/CommentSection';
 import AttachmentSection from '../AttachmentSection/AttachmentSection';
 import TasksSection from '../TasksSection/TasksSection';
-import CustomFieldsSection from 'components/task-drawer/CustomFieldsSection/CustomFieldsSection';
 import {
   Backdrop,
   AnimatedContainer,
@@ -180,7 +180,7 @@ const WorkflowDrawer = () => {
               <CommentSection disabled={restrictions?.comments === DISABLED} />
             </SectionContainer>
             <SectionSpacer />
-            <SectionContainer withBackground>
+            <SectionContainer>
               <CustomFieldsSection
                 disabled={restrictions?.customFields === DISABLED}
               />

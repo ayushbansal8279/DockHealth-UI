@@ -481,6 +481,7 @@ const PatientTasksListView = () => {
           dispatch(getPatientFilterOptions(patientIdentifier));
         }}
         disabledFields={[DrawerFieldEnum.PATIENT]}
+        origin={TaskOrigin.PATIENT}
       />
     </>
   );

@@ -22,8 +22,23 @@ const TaskItemLongText = ({ value = '', onChange, openDrawer }) => {
   };
 
   // eslint-disable-next-line no-shadow
-  const handleTextEditorBlur = (closePopover) => (value) => {
+  const handleBlur = (closePopover) => (value) => {
+    // console.log(`handleBlur: ${value}`);
+    // blur not invoked if clicked outside popover
     onChange(value);
+    // close the popover if blur is invoked when close button is clicked
+    closePopover();
+  };
+
+  const handleOnClose = () => {
+    // console.log('handleOnClose');
+    onChange(rawDetails);
+  };
+
+  // eslint-disable-next-line unicorn/consistent-function-scoping
+  const handlePopupClose = (closePopover, onClose) => () => {
+    // console.log('handle popup close');
+    onClose();
     closePopover();
   };
 
@@ -32,7 +47,7 @@ const TaskItemLongText = ({ value = '', onChange, openDrawer }) => {
       <TaskItemPopover
         fullWidth
         // eslint-disable-next-line react/no-unstable-nested-components
-        content={({ closePopover }) => (
+        content={({ closePopover, onClose }) => (
           <Box
             width="100%"
             height="100%"
@@ -42,13 +57,16 @@ const TaskItemLongText = ({ value = '', onChange, openDrawer }) => {
             <RichTextEditor
               value={rawDetails}
               onChange={handleChange}
-              onBlur={handleTextEditorBlur(closePopover)}
+              onBlur={handleBlur(closePopover)}
               initOnClick={false}
               showCharCount
             />
             <Divider />
             <PopoverBottomBar align="spread">
-              <PopoverBottomBar.Button type="button" onClick={closePopover}>
+              <PopoverBottomBar.Button
+                type="button"
+                onClick={handlePopupClose(closePopover, onClose)}
+              >
                 Close
               </PopoverBottomBar.Button>
               {openDrawer && (
@@ -65,6 +83,7 @@ const TaskItemLongText = ({ value = '', onChange, openDrawer }) => {
             </PopoverBottomBar>
           </Box>
         )}
+        onClose={handleOnClose}
       >
         <LongTextBox>
           <Tooltip

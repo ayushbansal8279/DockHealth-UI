@@ -121,6 +121,8 @@ export const BillingButton = styled(InnerBillingButton)`
 export const FormContainer = styled(Grid)`
   && {
     display: ${(props) => (props.visible ? 'flex' : 'none')};
+    background-color: ${palette.coolGrey3};
+    padding-right: 30px;
   }
 `;
 

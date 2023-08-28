@@ -1,17 +1,15 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { useSelector } from 'react-redux';
 import { isNavbarVisibleSelector } from 'selectors/template-selectors';
 import {
   userProfileSelector,
   selectedUserOrganizationSelector,
 } from 'selectors/user-selectors';
-import Intercom from 'react-intercom';
+import { useIntercom } from 'react-use-intercom';
 import GlobalAlertChip from 'alert/GlobalAlertChip';
 import NavigationSidebar from 'components/navigation/NavigationSidebar/NavigationSidebar';
 import { useHistory } from 'react-router-dom';
 import { DrawerContainer, MainContainer, MaterialDrawer } from './styled';
-
-const { VITE_INTERCOM_APP_CODE } = import.meta.env;
 
 const NavigationTemplate = ({ children }) => {
   const currentUser = useSelector(userProfileSelector);
@@ -27,15 +25,9 @@ const NavigationTemplate = ({ children }) => {
       ({ name }) => name === 'global.alert.backgroundColor',
     ) || {};
 
-  const intercomUser =
-    currentUser.email && currentUser.firstName
-      ? {
-          email: currentUser.email,
-          name: `${currentUser.firstName} ${currentUser.lastName}`,
-        }
-      : undefined;
-
   const whiteLabelEnabled = currentOrganization?.whiteLabelEnabled || false;
+
+  const { boot, shutdown } = useIntercom();
 
   const history = useHistory();
   const { location } = history;
@@ -43,6 +35,22 @@ const NavigationTemplate = ({ children }) => {
   const isPatientView = pathname.includes('/core/patient');
   const embeddedMode = sessionStorage.getItem('EmbeddedMode') || false;
   const embeddedModePatientView = isPatientView && embeddedMode;
+
+  useEffect(() => {
+    if (whiteLabelEnabled || embeddedMode) {
+      console.log('removing intercom widget');
+      shutdown();
+    } else {
+      boot(
+        currentUser?.email && currentUser?.firstName
+          ? {
+              email: currentUser?.email,
+              name: `${currentUser?.firstName} ${currentUser?.lastName}`,
+            }
+          : {},
+      );
+    }
+  }, [boot, currentUser, embeddedMode, shutdown, whiteLabelEnabled]);
 
   return (
     <DrawerContainer>
@@ -61,9 +69,6 @@ const NavigationTemplate = ({ children }) => {
           backgroundColor={globalAlertBackgroundColorItem?.value}
         />
         {children}
-        {intercomUser && intercomUser.name && !whiteLabelEnabled && (
-          <Intercom appID={VITE_INTERCOM_APP_CODE} {...intercomUser} />
-        )}
       </MainContainer>
     </DrawerContainer>
   );

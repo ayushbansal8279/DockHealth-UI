@@ -13,7 +13,7 @@ import {
 const PatientPickerModal = ({
   // patientIdentifiersToExclude,
   closeModal,
-  // onSelect,
+  onSelect,
 }) => {
   return (
     <ModalWrapperWithPadding width="auto">
@@ -30,7 +30,7 @@ const PatientPickerModal = ({
           // eslint-disable-next-line @typescript-eslint/no-unused-vars
           onSelect={(patient) => {
             closeModal();
-            // onSelect(patient);
+            onSelect(patient);
           }}
         />
       </PatientListWrapper>

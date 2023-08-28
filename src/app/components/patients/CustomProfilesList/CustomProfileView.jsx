@@ -1,5 +1,5 @@
-import React, { useEffect, useState, useMemo } from 'react';
-import { useDispatch } from 'react-redux';
+import React, { useEffect, useState, useMemo, useCallback } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
 import { useParams } from 'react-router-dom';
 import CustomProfileDetailsHeader from 'components/patients/CustomProfilesList/CustomProfileDetailsHeader/CustomProfileDetailsHeader';
 import { showGlobalErrorAlert } from 'alert/actions';
@@ -16,8 +16,16 @@ import {
 } from 'helpers/task-helpers';
 import CustomProfileNotes from 'components/patients/CustomProfilesList/CustomProfileNotes/CustomProfileNotes';
 import { MainTab } from 'views/patient-details/styled';
-import CustomProfileDetailsCompletedTasks from './CustomProfileDetailsCompletedTasks';
-import CustomProfileDetailsOpenedTasks from './CustomProfileDetailsOpenedTasks';
+import {
+  getCurrentPatientTasks,
+  getPatientFilterOptions,
+} from 'actions/patient-details-actions';
+import { DrawerFieldEnum } from 'helpers/task-drawer-helpers';
+import TaskDrawer from 'components/task-drawer/TaskDrawer/TaskDrawer';
+import checkIfTaskMatchesFilters from 'helpers/filters-helpers';
+import { selectedFiltersInMegaFilterSelector } from 'selectors/mega-filter-selectors';
+import { TaskGroupsContainer } from 'views/person-details/styled';
+import CustomProfileDetailsCompletedTasks from 'components/patients/CustomProfilesList/CustomProfileDetailsCompletedTasks';
 
 const PERSON_VIEW_COLUMNS_CONFIG = {
   ...TASK_ITEM_BASE_COLUMN_CONFIG,
@@ -108,6 +116,18 @@ const CustomProfileView = () => {
     setCurrentTab(value);
   };
 
+  const selectedFilters = useSelector(selectedFiltersInMegaFilterSelector);
+
+  const handleTaskUpdate = useCallback(
+    (updatedTask) => {
+      dispatch(getPatientFilterOptions(profileIdentifier));
+      if (!checkIfTaskMatchesFilters(updatedTask, selectedFilters)) {
+        dispatch(getCurrentPatientTasks());
+      }
+    },
+    [dispatch, profileIdentifier, selectedFilters],
+  );
+
   return (
     <ColumnsConfigProvider>
       <ViewLayout
@@ -141,12 +161,24 @@ const CustomProfileView = () => {
         {currentTab === 0 && (
           <CustomProfileDetailsCompletedTasks
             profileIdentifier={profileIdentifier}
+            groupName="Profile's Tasks"
             taskItemConfig={PERSON_VIEW_COLUMNS_CONFIG}
+            changingGroupOrderDisabled
           />
         )}
         {currentTab === 1 && (
-          <CustomProfileNotes profileIdentifier={profileIdentifier} />
+          <TaskGroupsContainer>
+            <CustomProfileNotes profileIdentifier={profileIdentifier} />
+          </TaskGroupsContainer>
         )}
+        <TaskDrawer
+          onTaskUpdate={handleTaskUpdate}
+          onTaskCreation={handleTaskUpdate}
+          onTaskDelete={() => {
+            dispatch(getPatientFilterOptions(profileIdentifier));
+          }}
+          disabledFields={[DrawerFieldEnum.PATIENT]}
+        />
       </ViewLayout>
     </ColumnsConfigProvider>
   );

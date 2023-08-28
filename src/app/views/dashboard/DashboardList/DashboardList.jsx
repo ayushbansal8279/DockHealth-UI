@@ -30,6 +30,7 @@ import {
 import {
   TASK_ITEM_SORT_METHODS,
   TASK_ITEM_SORT_DESC_METHODS,
+  TaskOrigin,
 } from 'helpers/task-helpers';
 import * as TaskActions from 'actions/task-actions';
 import * as TaskDrawerActions from 'actions/task-drawer-actions';
@@ -414,6 +415,7 @@ const DashboardList = ({ currentUser, tourModalIsOpen, openTourModal }) => {
           onTaskUpdate={handleTaskUpdate}
           onTaskCreation={handleTaskUpdate}
           onTaskDelete={() => dispatch(getDashboardFilters())}
+          origin={TaskOrigin.DASHBOARD}
         />
       </>
     </BulkEditSection>

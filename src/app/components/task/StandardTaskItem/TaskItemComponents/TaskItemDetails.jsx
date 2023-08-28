@@ -29,7 +29,7 @@ const TaskItemDetails = ({ task, onClick, readOnly }) => {
   const { identifier } = task;
   const dispatch = useDispatch();
 
-  const [details, setDetails] = useState(task?.details);
+  const [details, setDetails] = useState(task?.tokenizedDetails);
   const [rawDetails, setRawDetails] = useState(null);
 
   const handleOpenDrawer = useCallback(() => {
@@ -38,13 +38,14 @@ const TaskItemDetails = ({ task, onClick, readOnly }) => {
   }, [dispatch, task]);
 
   useEffect(() => {
-    const rawTextUnFormatted = convertToSimpleString(details);
+    setDetails(task?.tokenizedDetails);
+    const rawTextUnFormatted = convertToSimpleString(task?.details);
     setRawDetails(rawTextUnFormatted);
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [details]);
+  }, [task]);
 
-  const handleAutoSave = debounce((value) => {
-    if (value !== '' || (details && value !== details)) {
+  const updateTaskDetails = (value) => {
+    if (value && value !== (task?.tokenizedDetails || '')) {
       if (isWorkflow) {
         dispatch(
           updatePartialWorkflow(identifier, {
@@ -55,6 +56,10 @@ const TaskItemDetails = ({ task, onClick, readOnly }) => {
         dispatch(partialUpdateTask(identifier, { details: value }));
       }
     }
+  };
+
+  const handleAutoSave = debounce((value) => {
+    updateTaskDetails(value);
     // eslint-disable-next-line unicorn/numeric-separators-style
   }, 10000);
 
@@ -63,23 +68,19 @@ const TaskItemDetails = ({ task, onClick, readOnly }) => {
     handleAutoSave();
   };
 
-  const handleTextEditorBlur = (closePopover) => (value) => {
-    if (value !== '' || (details && value !== details)) {
-      if (isWorkflow) {
-        dispatch(
-          updatePartialWorkflow(identifier, {
-            details: value,
-          }),
-        );
-      } else {
-        dispatch(partialUpdateTask(identifier, { details: value }));
-      }
-    }
+  const handleBlur = (closePopover) => (value) => {
+    updateTaskDetails(value);
     closePopover();
   };
 
   // eslint-disable-next-line unicorn/consistent-function-scoping
-  const handlePopupClose = (closePopover) => (_) => {
+  const handleOnClose = () => {
+    updateTaskDetails(details);
+  };
+
+  // eslint-disable-next-line unicorn/consistent-function-scoping
+  const handlePopupClose = (closePopover, onClose) => () => {
+    onClose();
     closePopover();
   };
 
@@ -88,7 +89,7 @@ const TaskItemDetails = ({ task, onClick, readOnly }) => {
       <TaskItemPopover
         fullWidth
         // eslint-disable-next-line react/no-unstable-nested-components
-        content={({ closePopover }) => (
+        content={({ closePopover, onClose }) => (
           <Box
             width="550px"
             height="100%"
@@ -107,8 +108,8 @@ const TaskItemDetails = ({ task, onClick, readOnly }) => {
                 readonly={readOnly}
                 value={details}
                 onChange={handleChange}
-                onBlur={handleTextEditorBlur(closePopover)}
-                initOnClick
+                onBlur={handleBlur(closePopover)}
+                initOnClick={false}
                 showCharCount
               />
             </CustomTextEditor>
@@ -116,7 +117,7 @@ const TaskItemDetails = ({ task, onClick, readOnly }) => {
             <PopoverBottomBar align="spread">
               <PopoverBottomBar.Button
                 type="button"
-                onClick={handlePopupClose(closePopover)}
+                onClick={handlePopupClose(closePopover, onClose)}
               >
                 Close
               </PopoverBottomBar.Button>
@@ -125,7 +126,6 @@ const TaskItemDetails = ({ task, onClick, readOnly }) => {
                   type="button"
                   onClick={() => {
                     onClick();
-                    handlePopupClose(closePopover);
                   }}
                 >
                   Open Drawer
@@ -134,6 +134,7 @@ const TaskItemDetails = ({ task, onClick, readOnly }) => {
             </PopoverBottomBar>
           </Box>
         )}
+        onClose={handleOnClose}
       >
         <LongTextBox>
           <Tooltip

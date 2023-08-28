@@ -8,11 +8,11 @@ const Tooltip = ({
   title,
   placement,
   arrow = true,
-  hideTooltip = false,
+  // hideTooltip = false,
 }) => {
   return title ? (
     <MuiTooltip
-      hideTooltip={hideTooltip || !title}
+      // enterDelay={hideTooltip ? 200 : 100}
       title={title}
       placement={placement}
       arrow={arrow}
