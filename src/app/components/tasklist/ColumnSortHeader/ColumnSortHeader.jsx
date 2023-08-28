@@ -2,7 +2,7 @@
 import React, { useCallback, useState, useRef, useEffect } from 'react';
 import SortArrow from 'components/common/SortArrow/SortArrow';
 import { SortOrderType } from 'helpers/sorting-helper';
-import { checkIfShouldDisplayTooltip } from 'components/task/OverflowTooltip/OverflowTooltip';
+// import { checkIfShouldDisplayTooltip } from 'components/task/OverflowTooltip/OverflowTooltip';
 import { Box, Fade, Popper } from '@mui/material';
 import { Draggable } from 'react-beautiful-dnd';
 import ThreeDotsIcon from 'img/three-dots.svg';
@@ -11,7 +11,7 @@ import usePrevious from 'hooks/use-previous';
 import {
   SortButton,
   LabelWrapper,
-  DescriptionTooltipWrapper,
+  // DescriptionTooltipWrapper,
   ThreeDots,
   ResizeHandler,
 } from './styled';
@@ -94,6 +94,7 @@ const ColumnSortHeader = ({
   );
 
   const randerContent = useCallback(
+    // eslint-disable-next-line no-shadow
     (tasksHeaderTextColor) => {
       return (
         <div>

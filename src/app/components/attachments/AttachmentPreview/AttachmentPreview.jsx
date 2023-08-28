@@ -129,7 +129,9 @@ const AttachmentPreview = React.memo((props) => {
               <StyledPdfPage
                 key={pageIndex}
                 pageNumber={pageIndex + 1}
-                scale="1.5"
+                scale={1.5}
+                renderTextLayer={false}
+                renderAnnotationLayer={false}
               />
             ))}
           </StyledPdfDocument>
