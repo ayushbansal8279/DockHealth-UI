@@ -71,7 +71,10 @@ const updateGroupsWithGroupTasksLoadMore = (tasksList, group, groupType) => {
   newTasksList[groupToUpdateIndex] = {
     ...groupToUpdate,
     ...group,
-    tasks: [...(groupToUpdate?.tasks || []), ...group.tasks],
+    tasks: [
+      ...(groupToUpdate?.tasks || []),
+      ...group.tasks?.map((task) => task.identifier),
+    ],
     isLoadingMore: false,
   };
   return newTasksList;
