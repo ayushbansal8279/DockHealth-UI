@@ -1,4 +1,6 @@
 import React from 'react';
+import { Grid } from '@mui/material';
+import OrganizationTile from 'components/org/OrganizationTile/OrganizationTile';
 import { ListLink } from '../../styled';
 
 const TaskItemOrganization = ({
@@ -9,7 +11,20 @@ const TaskItemOrganization = ({
 }) => {
   return organizationName && organizationIdentifier ? (
     <ListLink to={`/core/tasks/${organizationIdentifier}`}>
-      {organizationName}
+      <Grid
+        container
+        direction="row"
+        justifyContent="flex-end"
+        alignItems="center"
+      >
+        <OrganizationTile
+          size={30}
+          organizationProfileColor={organizationProfileColor}
+          organizationInitials={organizationInitials}
+        />
+        &nbsp;&nbsp;
+        {organizationName}
+      </Grid>
     </ListLink>
   ) : (
     'Unfiled'
