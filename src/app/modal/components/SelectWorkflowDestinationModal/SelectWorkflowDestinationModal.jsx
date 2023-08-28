@@ -53,7 +53,7 @@ const SelectDestinationModal = ({
         <FlexButtonWrapper>
           <Button
             fullWidth
-            disabled={!selectedFolder}
+            disabled={selectedFolder === null}
             onClick={handleConfirm}
             size="small"
           >

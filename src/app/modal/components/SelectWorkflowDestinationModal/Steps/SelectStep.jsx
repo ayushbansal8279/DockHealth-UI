@@ -71,16 +71,21 @@ const SelectStep = ({
   const clearBreadcrumbsList = () => {
     setBreadcrumbsIdList([]);
   };
-
   const getRootList = useCallback(() => {
     clearBreadcrumbsList();
     setIsFetchingFolders(true);
     setListId(null);
     getTemplates()
       .then((folders) => {
-        setFoldersList(
-          folders.filter(({ templateType }) => templateType === 'FOLDER'),
-        );
+        setFoldersList([
+          {
+            identifier: undefined,
+            name: 'Workflows',
+            templateType: 'FOLDER',
+            publicAccess: true,
+          },
+          ...folders.filter(({ templateType }) => templateType === 'FOLDER'),
+        ]);
         setIsFetchingFolders(false);
       })
       .catch(() => {
@@ -160,11 +165,13 @@ const SelectStep = ({
                     >
                       {folder.name}
                     </ListItemTextButton>
-                    <IconButton
-                      onClick={() => handleGoToFolder(folder.identifier)}
-                    >
-                      <NextArrow />
-                    </IconButton>
+                    {folder.identifier && (
+                      <IconButton
+                        onClick={() => handleGoToFolder(folder.identifier)}
+                      >
+                        <NextArrow />
+                      </IconButton>
+                    )}
                   </ListItem>
                 ))
               ) : (
