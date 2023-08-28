@@ -35,7 +35,10 @@ import palette from 'styles/palette';
 import StickyContainer from 'components/common/HorizontalScroll/StickyContainer';
 import RotatableChevron from 'components/common/RotatableChevron/RotatableChevron';
 import Spacing from 'components/common/Spacing';
-import { dashboardLastCreatedTaskIdentifierSelector } from 'selectors/dashboard-selectors';
+import {
+  dashboardLastCreatedTaskIdentifierSelector,
+  dashboardTasksMapSelector,
+} from 'selectors/dashboard-selectors';
 import { usePrevious } from 'react-use';
 import OptionsMenu from 'components/common/OptionsMenu/OptionsMenu';
 import { MoreVert } from '@mui/icons-material';
@@ -131,6 +134,19 @@ const DashboardTasksGroup = ({
   useEffect(() => {
     setNewTasks(dashboardTasks);
   }, [dashboardTasks]);
+
+  const tasksMap = useSelector((state) => dashboardTasksMapSelector(state));
+
+  useEffect(() => {
+    if (currentSort && currentSort.key && dashboardTasks) {
+      const tasksWithDetails = dashboardTasks?.map(
+        (taskId) => tasksMap[taskId || taskId?.identifier],
+      );
+      let renderedTasks = currentSortMethod(tasksWithDetails);
+      renderedTasks = renderedTasks.map((t) => t?.identifier);
+      setNewTasks(renderedTasks);
+    }
+  }, [currentSort, currentSortMethod, dashboardTasks, tasksMap]);
 
   const groupHasMultipleAssignees = false;
 
@@ -313,7 +329,7 @@ const DashboardTasksGroup = ({
                       {...providedDroppable.droppableProps}
                     >
                       {tasks &&
-                        currentSortMethod(tasks)?.map((task, index) => (
+                        tasks.map((task, index) => (
                           <Draggable
                             key={task?.taskIdentifier || task}
                             draggableId={String(task?.taskIdentifier || task)}

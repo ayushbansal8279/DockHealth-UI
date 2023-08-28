@@ -15,8 +15,8 @@ export const SortArrowContainer = styled.div`
 
 export const CircleContainer = styled.div`
   position: relative;
-  height: 22px;
-  width: 22px;
+  height: 18px;
+  width: 18px;
   cursor: pointer;
   background-color: ${({ ordered }) =>
     ordered ? palette.brightBlue : 'transparent'};
