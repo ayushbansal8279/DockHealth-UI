@@ -1,15 +1,17 @@
 import React, { useState, useCallback } from 'react';
-import { useCreateChannelContext } from '@sendbird/uikit-react/CreateChannel/context';
 import Modal from '@sendbird/uikit-react/ui/Modal';
 import { useDispatch, useSelector } from 'react-redux';
 import { selectChannel } from 'actions/sendbird-actions';
 import { userProfileSelector } from 'selectors/user-selectors';
+import { organizationSelector } from 'selectors/organization-selectors';
+import { useSendbirdStateContext } from '@sendbird/uikit-react';
 import MultiAssignChatInviteMembersList from './MultiAssignChatInviteList';
 
-const InviteUsers = ({ onCancel }) => {
-  const { createChannel } = useCreateChannelContext();
+const InviteUsersToChannelModal = ({ onClose }) => {
+  const sendBirdContext = useSendbirdStateContext();
 
   const { identifier: currentUserId } = useSelector(userProfileSelector);
+  const { organizationIdentifier } = useSelector(organizationSelector);
 
   const dispatch = useDispatch();
 
@@ -25,21 +27,33 @@ const InviteUsers = ({ onCancel }) => {
       }),
       operatorUserIds: [currentUserId],
       name: '',
+      customType: organizationIdentifier,
     };
 
-    createChannel(parameters).then((channel) => {
-      dispatch(selectChannel(channel));
-    });
+    sendBirdContext.stores.sdkStore.sdk.groupChannel
+      .createChannel(parameters)
+      .then((channel) => {
+        dispatch(selectChannel(channel));
+      });
 
-    onCancel();
-  }, [selectedMembers, currentUserId, createChannel, onCancel, dispatch]);
+    onClose();
+  }, [
+    selectedMembers,
+    currentUserId,
+    organizationIdentifier,
+    sendBirdContext.stores.sdkStore.sdk.groupChannel,
+    onClose,
+    dispatch,
+  ]);
 
   return (
     <Modal
       titleText="Create New Conversation"
       submitText="Submit"
       type="PRIMARY"
-      onCancel={onCancel}
+      onCancel={() => {
+        onClose();
+      }}
       onSubmit={onSubmit}
     >
       <MultiAssignChatInviteMembersList
@@ -52,4 +66,4 @@ const InviteUsers = ({ onCancel }) => {
   );
 };
 
-export default InviteUsers;
+export default InviteUsersToChannelModal;
