@@ -145,7 +145,7 @@ function* getFolderBreadcrumbs() {
       do {
         const workflowFolder = yield call(
           TaskTemplateApi.getTemplate,
-          folderIdentifier,
+          nextFolderIdentifier,
         );
         breadcrumbs.push({
           id: workflowFolder.identifier,
