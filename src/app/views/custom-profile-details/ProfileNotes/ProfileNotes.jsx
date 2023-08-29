@@ -4,35 +4,25 @@ import compose from 'ramda/src/compose';
 import descend from 'ramda/src/descend';
 import prop from 'ramda/src/prop';
 import { useDispatch, useSelector } from 'react-redux';
-import {
-  patientSelector,
-  isFetchingNotesSelector,
-} from 'selectors/patient-details-selectors';
+import { isFetchingNotesSelector } from 'selectors/patient-details-selectors';
 import { userProfileSelector } from 'selectors/user-selectors';
-import {
-  addPatientNote,
-  updatePatientNote,
-  removePatientNote,
-  changePatientNotePin,
-} from 'sagas/patient-details-saga';
+import { changePatientNotePin } from 'sagas/patient-details-saga';
 import { openModal, closeModal } from 'modal/actions';
 import Button from 'components/common/Button/Button';
 import Spacing from 'components/common/Spacing';
 import { ClickAwayListener } from '@mui/material';
 import { checkIfUserIsOrganizationAdmin } from 'helpers/user-helper';
 import RichTextEditor from 'components/common/RichTextEditor/RichTextEditor';
-// import ProfileNote from '../ProfileNote/ProfileNote';
-// import ProfileNotesLoader from '../ProfileNotesLoader/ProfileNotesLoader';
-import ProfileNote from 'components/patients/CustomProfilesList/CustomProfileNotes/ProfileNote/ProfileNote';
 import { note } from 'api/profile-api';
+import ProfileNote from 'components/patients/CustomProfilesList/CustomProfileNotes/ProfileNote/ProfileNote';
 import {
-  PatientNotesWrapper,
+  ProfileNotesWrapper,
   PinnedNotesWrapper,
   ButtonContainer,
   ButtonWrapper,
 } from './styled';
 
-const CustomProfileNotes = ({ profileIdentifier }) => {
+const ProfileNotes = ({ profileIdentifier }) => {
   const dispatch = useDispatch();
   const isFetching = useSelector(isFetchingNotesSelector);
   const currentUser = useSelector(userProfileSelector);
@@ -171,7 +161,7 @@ const CustomProfileNotes = ({ profileIdentifier }) => {
   };
 
   return (
-    <PatientNotesWrapper>
+    <ProfileNotesWrapper>
       {isFetching ? null : ( // <ProfileNotesLoader />
         <>
           {pinnedNotes?.length > 0 && (
@@ -225,8 +215,8 @@ const CustomProfileNotes = ({ profileIdentifier }) => {
           )}
         </>
       )}
-    </PatientNotesWrapper>
+    </ProfileNotesWrapper>
   );
 };
 
-export default CustomProfileNotes;
+export default ProfileNotes;
