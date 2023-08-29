@@ -55,6 +55,7 @@ export const LabelWrapper = styled.div<{
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
+  height: 18px;
   color: ${({ ordered, tasksHeaderTextColor }) =>
     ordered ? palette.brightBlue : tasksHeaderTextColor || palette.coolGrey1};
   &:hover > div > div > div > img {

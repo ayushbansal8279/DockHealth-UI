@@ -10,7 +10,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { useHistory, useParams } from 'react-router-dom';
 import { openModal } from 'modal/actions';
 import { ColumnsConfigProvider } from 'context-api/columns-config-context';
-import { TaskItemColumn } from 'helpers/task-helpers';
+import { TaskItemColumn, TaskOrigin } from 'helpers/task-helpers';
 import * as TaskTemplateActions from 'actions/task-template-actions';
 import {
   taskTemplatesSelector,
@@ -336,7 +336,7 @@ const TaskTemplateView = () => {
                 ))}
               </>
             )}
-            <TaskDrawer />
+            <TaskDrawer origin={TaskOrigin.TEMPLATE} />
           </TaskTemplateViewContainer>
         </BulkEditSection>
         <UpgradePlanPopup

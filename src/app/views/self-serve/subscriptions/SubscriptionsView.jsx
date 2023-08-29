@@ -374,7 +374,10 @@ const SubscriptionsView = () => {
               <AccordionDetails>
                 <Box display="block" justifyContent="space-between">
                   {ProfessionalServices.map((service) => (
-                    <ProfessionalServicesAddOn service={service} />
+                    <ProfessionalServicesAddOn
+                      service={service}
+                      key={service?.label}
+                    />
                   ))}
                 </Box>
               </AccordionDetails>

@@ -292,7 +292,6 @@ const SendEmailFromTaskModal = () => {
             dispatch(
               sendEmailForTask({
                 message: subject,
-                // details: convertFromEditorStateToOutput(detailsState, true).tokenizedText,
                 details: detailsState,
                 recipientContacts: selectedContacts.map((c) => c.value),
                 taskAttachmentIdentifiers: attachmentsToSend,
