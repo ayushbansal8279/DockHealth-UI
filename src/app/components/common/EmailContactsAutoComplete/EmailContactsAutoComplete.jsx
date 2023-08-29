@@ -1,5 +1,6 @@
 import React, { useEffect, useRef, useState } from 'react';
-import { Autocomplete, Chip } from '@mui/material';
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+import { Autocomplete, Chip, Checkbox } from '@mui/material';
 import CircularProgress from '@mui/material/CircularProgress';
 import styled from 'styled-components';
 import { getAllContacts } from 'api/contacts-api';
@@ -41,6 +42,7 @@ const EmailContactsAutoComplete = ({
   patient,
   setShow,
   setNewContact,
+  multiple = true,
   ...restProps
 }) => {
   const [open, setOpen] = useState(false);
@@ -190,9 +192,11 @@ const EmailContactsAutoComplete = ({
       onInputChange={(event, value) => {
         setInputState(value);
       }}
-      multiple
+      multiple={multiple}
+      disableCloseOnSelect={multiple}
       getOptionSelected={(option, value) => option.value === value.value}
-      getOptionLabel={(option) => option.value ?? option}
+      getOptionLabel={(option) => `${option.label} - ${option.value}` ?? option}
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
       renderOption={(parameters, option, { selected }) => (
         <RenderOptionStyled {...parameters} key={option.identifier}>
           {/* <Checkbox
@@ -205,7 +209,6 @@ const EmailContactsAutoComplete = ({
           </RenderLabelStyled>
         </RenderOptionStyled>
       )}
-      disableCloseOnSelect
       options={contacts}
       loading={loading}
       renderTags={renderTagsCallback}

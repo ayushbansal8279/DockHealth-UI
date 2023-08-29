@@ -49,12 +49,12 @@ import { renderAddOrEdit } from '../helpers';
 
 const SendEmailFromTaskModal = () => {
   const selectedTask = useSelector(selectedTaskSelector);
-  const { attachments, identifier, taskMentions } = selectedTask;
+  const { attachments, identifier } = selectedTask;
   const dispatch = useDispatch();
   const [subject, setSubject] = useState('');
-  const [contacts, setContacts] = useState([]);
+  const [selectedContacts, setSelectedContacts] = useState([]);
   const [newContact, setNewContact] = useState([]);
-  const [error, setError] = useState(false);
+  const [error] = useState(false);
   const [show, setShow] = useState(false);
   const [isTaskDescriptionIncluded, setIsTaskDescriptionIncluded] =
     useState(false);
@@ -120,21 +120,22 @@ const SendEmailFromTaskModal = () => {
 
   const handleContactsOnChange = useCallback(
     (_event, newValue, reason) => {
+      console.log(newValue);
       if (reason === 'clear') {
-        setContacts([]);
+        setSelectedContacts([]);
         return;
       }
       if (typeof newValue === 'string') {
         // if (validateEmail(newValue)) {
-        setContacts([...contacts, { value: newValue }]);
+        setSelectedContacts([...selectedContacts, { value: newValue }]);
         // } else {
         //   setError(true);
         // }
       } else {
-        setContacts([...newValue]);
+        setSelectedContacts([...newValue]);
       }
     },
-    [contacts],
+    [selectedContacts],
   );
 
   const handleTextEditorChange = (value) => {
@@ -169,10 +170,13 @@ const SendEmailFromTaskModal = () => {
           <ContactInfoRow>
             <div>
               <LabelName>Recipient: </LabelName>
-              {contacts.map(
-                (contact) =>
+              {selectedContacts.map(
+                (contact, index) =>
                   contact?.identifier && (
-                    <LabelValue>{contact.label}</LabelValue>
+                    <LabelValue>
+                      {contact.label}{' '}
+                      {index < selectedContacts.length - 1 ? ', ' : ' '}
+                    </LabelValue>
                   ),
               )}
             </div>
@@ -282,14 +286,14 @@ const SendEmailFromTaskModal = () => {
           variant="primary"
           disabled={
             // !validateEmail(contact?.value) ||
-            contacts.length === 0
+            selectedContacts.length === 0 // || !detailsState.getCurrentContent().hasText()
           }
           onClick={() => {
             dispatch(
               sendEmailForTask({
                 message: subject,
                 details: detailsState,
-                recipientContacts: contacts.map((c) => c.value),
+                recipientContacts: selectedContacts.map((c) => c.value),
                 taskAttachmentIdentifiers: attachmentsToSend,
                 taskIdentifier: identifier,
               }),
@@ -313,7 +317,7 @@ const SendEmailFromTaskModal = () => {
           type={CommunicationType.EMAIL}
           show={show}
           setContactData={(contact) => {
-            setContacts([...contacts, contact]);
+            setSelectedContacts([...selectedContacts, contact]);
             setNewContact(contact);
           }}
           handleShow={setShow}
