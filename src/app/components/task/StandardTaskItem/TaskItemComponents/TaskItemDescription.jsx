@@ -153,18 +153,26 @@ const TaskItemDescription = ({
               whiteSpace: 'nowrap',
             }}
           >
-            <Highlighter
-              highlightClassName="list-highlight"
-              searchWords={
-                highlightedValue
-                  ? highlightedValue?.toLowerCase().split(/\s+/)
-                  : []
-              }
-              autoEscape
-              textToHighlight={ReactHtmlParser(
-                linkifyTextWithMentions(descriptionState, taskMentions),
+            {descriptionState
+              .split(' ')
+              .map((word) =>
+                word.includes('[http') || word.includes('http') ? (
+                  ReactHtmlParser(
+                    linkifyTextWithMentions(`${word} `, taskMentions),
+                  )
+                ) : (
+                  <Highlighter
+                    highlightClassName="list-highlight"
+                    searchWords={
+                      highlightedValue
+                        ? highlightedValue?.toLowerCase().split(/\s+/)
+                        : []
+                    }
+                    autoEscape
+                    textToHighlight={`${word} `}
+                  />
+                ),
               )}
-            />
           </div>
         )}
         {!isCompleted && (
