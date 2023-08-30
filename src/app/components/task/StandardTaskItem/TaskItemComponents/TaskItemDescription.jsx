@@ -120,9 +120,6 @@ const TaskItemDescription = ({
     },
     [dispatch, setEditing, task],
   );
-  console.log(
-    ReactHtmlParser(linkifyTextWithMentions(descriptionState, taskMentions)),
-  );
 
   return (
     <DescriptionBox width={width}>
