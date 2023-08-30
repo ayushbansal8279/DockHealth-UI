@@ -10,6 +10,7 @@ import React, {
 import { Box, IconButton } from '@mui/material';
 import { useDispatch } from 'react-redux';
 import moment from 'moment';
+import Highlighter from 'react-highlight-words';
 import {
   storeAsCurrentTask,
   updateTaskDescription,
@@ -36,7 +37,7 @@ import {
 const TaskItemDescription = ({
   task,
   // isCompletedGroup,
-  // highlightedValue,
+  highlightedValue,
   hasParentTaskLabel,
   isEditing,
   setEditing,
@@ -119,6 +120,9 @@ const TaskItemDescription = ({
     },
     [dispatch, setEditing, task],
   );
+  console.log(
+    ReactHtmlParser(linkifyTextWithMentions(descriptionState, taskMentions)),
+  );
 
   return (
     <DescriptionBox width={width}>
@@ -149,9 +153,18 @@ const TaskItemDescription = ({
               whiteSpace: 'nowrap',
             }}
           >
-            {ReactHtmlParser(
-              linkifyTextWithMentions(descriptionState, taskMentions),
-            )}
+            <Highlighter
+              highlightClassName="list-highlight"
+              searchWords={
+                highlightedValue
+                  ? highlightedValue?.toLowerCase().split(/\s+/)
+                  : []
+              }
+              autoEscape
+              textToHighlight={ReactHtmlParser(
+                linkifyTextWithMentions(descriptionState, taskMentions),
+              )}
+            />
           </div>
         )}
         {!isCompleted && (
