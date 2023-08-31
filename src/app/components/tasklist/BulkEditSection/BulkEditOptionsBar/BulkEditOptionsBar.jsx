@@ -712,12 +712,11 @@ const BulkEditOptionsBar = ({
             .then(({ transactionIdentifier }) => {
               dispatch(getTasksGroupsList());
               dispatch(getListDetailsTaskCounters(taskListIdentifier));
-              if (
-                allSelectedWorkflowIdentifiers &&
-                allSelectedWorkflowIdentifiers.length > 0
-              ) {
+
+              if (refreshTasks && typeof refreshTasks === 'function') {
                 refreshTasks();
               }
+
               dispatch(
                 AlertActions.showGlobalAlertWithUndo(
                   allSelectedTasksLength > 1
@@ -737,14 +736,6 @@ const BulkEditOptionsBar = ({
                   },
                 ),
               );
-
-              if (
-                shouldRefreshTasksEveryTime &&
-                refreshTasks &&
-                typeof refreshTasks === 'function'
-              ) {
-                refreshTasks();
-              }
 
               dispatch(closeModal());
               if (onClose && typeof onClose === 'function') {
