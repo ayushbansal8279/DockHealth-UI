@@ -39,7 +39,6 @@ const TaskTemplateGroup = ({
   iconColorActive,
   origin,
   highlightedValue,
-  // eslint-disable-next-line sonarjs/cognitive-complexity
 }) => {
   const templateGroup = useSelector((state) => {
     return taskLookupSelector(state, origin, pullGroup);
