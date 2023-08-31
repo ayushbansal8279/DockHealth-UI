@@ -151,7 +151,7 @@ const TaskItemDescription = ({
             }}
           >
             {descriptionState
-              .split(' ')
+              .split('/s/')
               .map((word) =>
                 word.includes('[http') || word.includes('http') ? (
                   ReactHtmlParser(
