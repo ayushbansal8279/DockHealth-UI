@@ -49,7 +49,7 @@ export const SelectOptionsContainer = styled.div`
 export const TaskTemplateApplicatorContainer = styled.div`
   display: flex;
   width: 170px;
-  padding: ${spacing.small} 0 ${spacing.tiny} ${spacing.regular};
+  padding: ${spacing.small} 0 7px ${spacing.regular};
   background-color: white;
   border: 1px solid ${palette.coolGrey3};
   margin-bottom: ${spacing.small};

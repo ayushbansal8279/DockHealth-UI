@@ -795,26 +795,14 @@ const ListDetailsReducer = (state = initialState, action) => {
       const addedBundle = template;
 
       if (groupWithTasks) {
-        // const updatedState = {
-        //   ...state,
-        //   groupedTasks: {
-        //     ...state.groupedTasks,
-        //     taskGroups: state.groupedTasks?.taskGroups?.map((g) =>
-        //       g.groupIdentifier === taskGroupIdentifier
-        //         ? {
-        //             ...g,
-        //             tasks: [template, ...g.tasks],
-        //           }
-        //         : g,
-        //     ),
-        //   },
-        // };
-        // return updateTasksStateCallback(updatedState, template);
-
         return updateGroupInState(
           (group) => ({
             ...group,
-            tasks: [addedBundle?.identifier, ...(group.tasks || [])],
+            tasks: group.tasks?.find(
+              (taskId) => taskId === addedBundle?.identifier,
+            )
+              ? group.tasks
+              : [addedBundle?.identifier, ...(group.tasks || [])],
           }),
           taskGroupIdentifier,
           addedBundle,
@@ -828,7 +816,7 @@ const ListDetailsReducer = (state = initialState, action) => {
         {
           groupIdentifier: existingGroup.taskGroupIdentifier,
           groupName: existingGroup.groupName,
-          tasks: [template],
+          tasks: [],
         },
       ];
 
