@@ -16,32 +16,20 @@ const onSubmit = (form, history) => {
   window.sessionStorage.removeItem('SSO_ACCESSTOKEN');
   window.sessionStorage.removeItem('SSO_REFRESHTOKEN');
   window.sessionStorage.removeItem('SSO_USEREMAIL');
-  if (
-    username != null &&
-    (username.includes('@childrens.harvard.edu') ||
-      username.includes('@tch.harvard.edu') ||
-      username.includes('@chboston.org') ||
-      username.includes('@cardio.chboston.org'))
-  ) {
-    window.location.href = `${
-      import.meta.env.VITE_HEYDOC_SERVICES_BASE_URL
-    }oidc/authorize`;
-  } else {
-    UserAuthApi.checkSSO(username)
-      .then((issuer) => {
-        if (issuer) {
-          window.location.href = `${
-            import.meta.env.VITE_HEYDOC_SERVICES_BASE_URL
-          }oidc/authorize?iss=${issuer}`;
-        } else {
-          history.push('loginUser');
-        }
-      })
-      .catch((error) => {
-        log(error);
+  UserAuthApi.checkSSO(username)
+    .then((issuer) => {
+      if (issuer) {
+        window.location.href = `${
+          import.meta.env.VITE_HEYDOC_SERVICES_BASE_URL
+        }oidc/authorize?iss=${issuer}`;
+      } else {
         history.push('loginUser');
-      });
-  }
+      }
+    })
+    .catch((error) => {
+      log(error);
+      history.push('loginUser');
+    });
 };
 
 const LoginUser = (props) => {
