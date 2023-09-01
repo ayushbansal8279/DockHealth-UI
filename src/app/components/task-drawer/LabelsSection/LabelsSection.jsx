@@ -107,6 +107,7 @@ const LabelsSection = ({ selectedTask, onTaskUpdate }) => {
   const [inputState, setInputState] = useState();
   const [currentEditableOption, setCurrentEditableOption] = useState(null);
   const [selectedLabels, setSelectedLabels] = useState([]);
+  const [isOpen, setIsOpen] = useState(false);
   const optionReferences = useRef({});
   const [inputReference, setInputReference] = useState(null);
   const taskDrawerFocusField = useSelector(taskDrawerFocusFieldSelector);
@@ -161,6 +162,12 @@ const LabelsSection = ({ selectedTask, onTaskUpdate }) => {
           );
         },
         onClick: () => {
+          if (
+            currentEditableOption &&
+            currentEditableOption !== option?.labelIdentifier
+          ) {
+            setCurrentEditableOption(null);
+          }
           setSelectedLabels((previousLabels) => {
             if (
               previousLabels.some(
@@ -236,14 +243,17 @@ const LabelsSection = ({ selectedTask, onTaskUpdate }) => {
   return (
     <FormProvider {...formMethods}>
       <Autocomplete
+        isOpen={isOpen}
         autoFocus={taskDrawerFocusField === DrawerFieldEnum.LABEL}
         options={labels}
         label="Labels"
         placeholder="Are there labels you'd like to add?"
         value={selectedLabels}
-        // disableCloseOnSelect={!!currentEditableOption}
         getInputReference={getInputReference}
         getOptionLabel={(option) => option?.labelName}
+        isOptionEqualToValue={(option, value) =>
+          option.labelIdentifier === value.labelIdentifier
+        }
         // isDisabled={!!currentEditableOption}
         renderOption={renderOptionCallback}
         renderTags={renderTagsCallback}
@@ -260,7 +270,11 @@ const LabelsSection = ({ selectedTask, onTaskUpdate }) => {
           },
         }}
         noOptionsText={noOptionText}
-        onOpen={refreshLabels}
+        onOpen={() => {
+          refreshLabels();
+          setIsOpen(true);
+        }}
+        onClose={() => !currentEditableOption && setIsOpen(false)}
         isLoading={isLoadingLabels}
         onChange={(values) => {
           const valuesLength = values.length;
@@ -273,6 +287,7 @@ const LabelsSection = ({ selectedTask, onTaskUpdate }) => {
         }}
         multiple
         disableClearable
+        disableCloseOnSelect
       />
     </FormProvider>
   );
