@@ -1,6 +1,7 @@
 import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { userProfileSelector } from 'selectors/user-selectors';
+import { organizationSelector } from 'selectors/organization-selectors';
 import {
   onTaskDrawerPatientAdded,
   onTaskDrawerTaskPatientChanged,
@@ -46,6 +47,7 @@ const PatientSection = ({
   }, [selectedPatient]);
   const [isLoadingPatients, setIsLoadingPatients] = useState(true);
   const currentUser = useSelector(userProfileSelector);
+  const { emrIntegrationType } = useSelector(organizationSelector) || {};
   const { templateBundleIdentifier } = useSelector(selectedTaskSelector) || {};
 
   const currentOrganizationIdentifier = sessionStorage.getItem(
@@ -297,8 +299,10 @@ const PatientSection = ({
       name={PATIENT_IDENTIFIER_FIELD_NAME}
       label={customerTypeLabelCapitalized}
       placeholder={
-        placeholder ||
-        `Who is the ${customerTypeLabel}? (first last or last, first)`
+        emrIntegrationType === 'FHIR'
+          ? `Who is the ${customerTypeLabel}? (MRN #)`
+          : placeholder ||
+            `Who is the ${customerTypeLabel}? (first last or last, first)`
       }
       disabled={disabled}
       selectedOption={assignedPatient}

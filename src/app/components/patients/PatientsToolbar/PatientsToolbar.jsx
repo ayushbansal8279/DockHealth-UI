@@ -74,7 +74,7 @@ const PatientsToolbar = () => {
   // const searchValue = useSelector(patientsListSearchTermSelector);
   const [searchValue, setSearchValue] = useState(null);
   const filtersActive = useSelector(filtersActiveSelector);
-  const { emrIntegrationEnabled } = useSelector(organizationSelector) || {};
+  const { emrIntegrationEnabled, emrIntegrationType } = useSelector(organizationSelector) || {};
   const listIdentifier = useSelector(currentPatientsListIdentifierSelector);
   const currentUser = useSelector(userProfileSelector);
   const currentOrganization = useSelector(selectedUserOrganizationSelector);
@@ -181,13 +181,20 @@ const PatientsToolbar = () => {
           </AddEntitiesContainer>
         </Box>
       </Box>
-      {emrEntegrationExperience && !searchValue && (
-        <SearchHelperText>
-          Dock is connected to your EHR. Search by first name, last name or
-          medical record number. You may filter to retrieve specific patients in
-          Dock.
-        </SearchHelperText>
-      )}
+      {emrEntegrationExperience &&
+        !searchValue &&
+        (emrIntegrationType === 'FHIR' ? (
+          <SearchHelperText>
+            Dock is connected to your EHR. Search by medical record number. You
+            may filter to retrieve specific patients in Dock.
+          </SearchHelperText>
+        ) : (
+          <SearchHelperText>
+            Dock is connected to your EHR. Search by first name, last name or
+            medical record number. You may filter to retrieve specific patients
+            in Dock.
+          </SearchHelperText>
+        ))}
       {!emrEntegrationExperience && !searchValue && (
         <>
           <SearchHelperText>

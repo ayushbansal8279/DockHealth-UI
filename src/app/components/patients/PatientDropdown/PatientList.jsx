@@ -17,6 +17,7 @@ import { noop } from 'helpers/utility-functions';
 import AddRecordOption from 'components/common/AddRecordOption/AddRecordOption';
 
 import { userProfileSelector } from 'selectors/user-selectors';
+import { organizationSelector } from 'selectors/organization-selectors';
 import {
   Input,
   InputBox,
@@ -44,6 +45,7 @@ const PatientList = ({
   const inputReference = useRef(null);
   const [hoveredItemIndex, setHoveredItemIndex] = useState(0);
   const currentUser = useSelector(userProfileSelector);
+  const { emrIntegrationType } = useSelector(organizationSelector) || {};
   const currentOrganizationIdentifier = sessionStorage.getItem(
     'currentOrganizationIdentifier',
   );
@@ -269,7 +271,11 @@ const PatientList = ({
         <img src={MagnifierIcon} alt="magnifier" />
         <Input
           ref={inputReference}
-          placeholder={`Search ${customerTypeLabel} (first last or last, first)`}
+          placeholder={
+            emrIntegrationType === 'FHIR'
+              ? `Search ${customerTypeLabel} (MRN #)`
+              : `Search ${customerTypeLabel} (first last or last, first)`
+          }
           value={searchValue}
           onChange={onPatientInputChange}
           onKeyDown={handleInputKeyDown}
