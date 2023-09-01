@@ -44,6 +44,14 @@ const USER_TYPES = new Proxy(
       description:
         'An outside collaborator you can invite into selected lists, who will only have access to the tasks, patients/clients and people who are part of those lists.',
     },
+    DOCK_LITE: {
+      label: 'Dock Lite',
+      selectable: true,
+      changeable: true,
+      isLimitedAccess: true,
+      description:
+        'A limited use member of your organization or an outside collaborator you can invite into a single list, who will only have access to the tasks, patients/clients and people who are part of that list.',
+    },
     DOCK_PRO: {
       label: 'Dock Pro',
       selectable: true,

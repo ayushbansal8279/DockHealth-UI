@@ -6,6 +6,7 @@ import { openModal as openModalAction } from 'modal/actions';
 import {
   userHasViewOnlyFeatureSelector,
   userHasDockGuestFeatureSelector,
+  userHasDockLiteFeatureSelector,
 } from 'selectors/user-selectors';
 import UserTypeLabel from './UserTypeLabel';
 import { getUserTypeLabel, USER_TYPES } from '../helpers';
@@ -34,6 +35,7 @@ const UserTypeOptions = ({
   const displayName = `${firstName} ${lastName}`;
   const viewOnlyRoleAvailable = useSelector(userHasViewOnlyFeatureSelector);
   const guestRoleAvailable = useSelector(userHasDockGuestFeatureSelector);
+  const dockLiteAvailable = useSelector(userHasDockLiteFeatureSelector);
 
   const removeSubscription = () => {
     openRemoveSubscriptionModal({
@@ -88,6 +90,9 @@ const UserTypeOptions = ({
 
   if (!guestRoleAvailable) {
     delete USER_TYPES.GUEST;
+  }
+  if (!dockLiteAvailable) {
+    delete USER_TYPES.DOCK_LITE;
   }
 
   return (

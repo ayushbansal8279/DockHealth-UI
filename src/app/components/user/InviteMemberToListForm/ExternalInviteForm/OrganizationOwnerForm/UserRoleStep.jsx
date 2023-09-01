@@ -5,8 +5,9 @@ import Button from 'components/common/Button/Button';
 import { UserOrganizationRole } from 'helpers/user-helper';
 import { useSelector } from 'react-redux';
 import {
-  // userHasViewOnlyFeatureSelector,
+  userHasViewOnlyFeatureSelector,
   userHasDockGuestFeatureSelector,
+  userHasDockLiteFeatureSelector,
 } from 'selectors/user-selectors';
 import {
   RoleFormWrapper,
@@ -26,8 +27,9 @@ const UserRoleStep = ({ navigateToPreviousStep, disabled }) => {
   const { watch, setValue } = useFormContext();
 
   const roleValue = watch('userRole');
-  // const viewOnlyRoleAvailable = useSelector(userHasViewOnlyFeatureSelector);
+  const viewOnlyRoleAvailable = useSelector(userHasViewOnlyFeatureSelector);
   const guestRoleAvailable = useSelector(userHasDockGuestFeatureSelector);
+  const dockLiteAvailable = useSelector(userHasDockLiteFeatureSelector);
 
   return (
     <RoleFormWrapper
@@ -89,6 +91,37 @@ const UserRoleStep = ({ navigateToPreviousStep, disabled }) => {
             <Divider />
           </>
         )}
+        {dockLiteAvailable && (
+          <>
+            <input
+              id="DockLite"
+              type="radio"
+              name="userRole"
+              value="DOCK_LITE"
+              checked={roleValue === 'DOCK_LITE'}
+              onChange={(event) =>
+                setValue(event.target.name, event.target.value)
+              }
+            />
+            <RoleOptionLabel
+              isSelected={roleValue === 'DOCK_LITE'}
+              htmlFor="DockLite"
+            >
+              <RoleOptionHeaderWrapper>
+                <RoleOptionHeader>Dock Lite</RoleOptionHeader>
+                <RoleOptionHeaderAdditionalInfo>
+                  *Limited Access
+                </RoleOptionHeaderAdditionalInfo>
+              </RoleOptionHeaderWrapper>
+              <RoleOptionDescription>
+                A limited use member of your organization or an outside collaborator
+                you can invite into a single list, who will only have access to the
+                tasks, patients/clients and people who are part of that list.
+              </RoleOptionDescription>
+            </RoleOptionLabel>
+            <Divider />
+          </>
+        )}
         <input
           id="DockPro"
           type="radio"
@@ -113,27 +146,31 @@ const UserRoleStep = ({ navigateToPreviousStep, disabled }) => {
           </RoleOptionDescription>
         </RoleOptionLabel>
         <Divider />
-        <input
-          id="ViewOnly"
-          type="radio"
-          name="userRole"
-          value={VIEW_ONLY}
-          checked={roleValue === VIEW_ONLY}
-          onChange={(event) => setValue(event.target.name, event.target.value)}
-        />
-        <RoleOptionLabel
-          isSelected={roleValue === VIEW_ONLY}
-          htmlFor="ViewOnly"
-        >
-          <RoleOptionHeaderWrapper>
-            <RoleOptionHeader>View Only</RoleOptionHeader>
-            <RoleOptionHeaderAdditionalInfo>
-              *Limited Access
-            </RoleOptionHeaderAdditionalInfo>
-          </RoleOptionHeaderWrapper>
-          <RoleOptionDescription />
-        </RoleOptionLabel>
-        <Divider />
+        {viewOnlyRoleAvailable && (
+          <>
+            <input
+              id="ViewOnly"
+              type="radio"
+              name="userRole"
+              value={VIEW_ONLY}
+              checked={roleValue === VIEW_ONLY}
+              onChange={(event) => setValue(event.target.name, event.target.value)}
+            />
+            <RoleOptionLabel
+              isSelected={roleValue === VIEW_ONLY}
+              htmlFor="ViewOnly"
+            >
+              <RoleOptionHeaderWrapper>
+                <RoleOptionHeader>View Only</RoleOptionHeader>
+                <RoleOptionHeaderAdditionalInfo>
+                  *Limited Access
+                </RoleOptionHeaderAdditionalInfo>
+              </RoleOptionHeaderWrapper>
+              <RoleOptionDescription />
+            </RoleOptionLabel>
+            <Divider />
+          </>
+        )}
       </RoleSelectionWrapper>
       <Grid container item direction="row" justifyContent="center" spacing={2}>
         <Grid item xs={3}>
