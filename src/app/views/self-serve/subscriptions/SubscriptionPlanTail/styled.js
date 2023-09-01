@@ -34,7 +34,6 @@ export const NewText = styled.p`
 export const TopContainer = styled.div`
   position: relative;
   width: 100%;
-  margin-bottom: 50px;
 `;
 
 export const Name = styled.p`
@@ -49,7 +48,7 @@ export const Description = styled.p`
   font-size: ${fontSizes.smallPlus};
   font-weight: ${fontWeights.light};
   color: ${palette.black};
-  min-height: 126px;
+  min-height: 100px;
 `;
 
 export const PriceContainer = styled.div`
