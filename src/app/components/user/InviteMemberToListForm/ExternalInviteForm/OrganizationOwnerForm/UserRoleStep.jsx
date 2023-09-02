@@ -135,14 +135,14 @@ const UserRoleStep = ({ navigateToPreviousStep, disabled }) => {
           htmlFor="DockPro"
         >
           <RoleOptionHeaderWrapper>
-            <RoleOptionHeader>Dock Pro</RoleOptionHeader>
+            <RoleOptionHeader>Dock Crew</RoleOptionHeader>
             <RoleOptionHeaderAdditionalInfo>
               *Limited Access
             </RoleOptionHeaderAdditionalInfo>
           </RoleOptionHeaderWrapper>
           <RoleOptionDescription>
-            A Dock Pro user will only have access to the workflow library and
-            can help with building out Workflows and Smartflows for your team.
+            Dock Crew user will help configure your account and with building
+            out Workflows and Smartflows for your team.
           </RoleOptionDescription>
         </RoleOptionLabel>
         <Divider />

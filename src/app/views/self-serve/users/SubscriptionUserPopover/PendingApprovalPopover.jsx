@@ -53,12 +53,12 @@ const USER_TYPES = new Proxy(
         'A limited use member of your organization or an outside collaborator you can invite into a single list, who will only have access to the tasks, patients/clients and people who are part of that list.',
     },
     DOCK_PRO: {
-      label: 'Dock Pro',
+      label: 'Dock Crew',
       selectable: true,
       changeable: true,
       isLimitedAccess: true,
       description:
-        'A Dock Pro user will have admin access to setup the configurations and workflows for your team.',
+        'Dock Crew user will help configure your account and with building out Workflows and Smartflows for your team.',
     },
   },
   {

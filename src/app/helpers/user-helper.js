@@ -23,7 +23,7 @@ export const getOrgRole = (roleKey) => {
       return 'Guest';
     }
     case UserOrganizationRole.DOCK_PRO: {
-      return 'Dock Pro';
+      return 'Dock Crew';
     }
     default: {
       return '';
