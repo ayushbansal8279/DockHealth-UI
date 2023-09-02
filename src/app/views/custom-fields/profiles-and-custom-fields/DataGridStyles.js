@@ -45,6 +45,10 @@ export const StyledDataGrid = styled(DataGrid)`
     margin-left: -15px;
   }
 
+  .MuiDataGrid-columnHeaderTitleContainerContent {
+    font-weight: ${fontWeights.regularPlus} !important;
+  }
+
   &.MuiDataGrid-columnHeader {
     &--sorted {
       color: ${palette.brightBlue};
@@ -52,12 +56,6 @@ export const StyledDataGrid = styled(DataGrid)`
     &:focus {
       outline: none !important;
     }
-  }
-
-  &.MuiDataGrid-colCellTitle {
-    color: #3d4858;
-    font-family: 'Roboto Condensed', sans-serif;
-    font-size: 0.875rem !important;
   }
 
   &.MuiDataGrid-columnHeaderWrapper {
