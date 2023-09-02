@@ -48,9 +48,9 @@ export const getContactColumns = ({ onEditContact, onDeteleContact }) => [
     renderHeader: renderColumnHeader,
   },
   {
-    field: '',
-    headerName: '...',
+    field: '-',
     type: 'actions',
+    headerName: 'Option',
     width: 60,
     renderHeader: renderColumnHeader,
     renderCell: (data) => {

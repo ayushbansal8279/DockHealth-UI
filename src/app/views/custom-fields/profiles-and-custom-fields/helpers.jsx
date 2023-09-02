@@ -34,9 +34,11 @@ export const getTemplateColumns = ({
     renderHeader: renderColumnHeader,
   },
   {
-    field: '',
+    field: '-',
     type: 'actions',
+    headerName: 'Option',
     width: 60,
+    renderHeader: renderColumnHeader,
     renderCell: (data) => {
       const contextMenuOptions = [
         {
