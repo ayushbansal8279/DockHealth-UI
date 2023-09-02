@@ -23,7 +23,7 @@ export const USER_STATUS_TYPES = new Proxy(
 export const USER_TYPES = new Proxy(
   {
     OWNER: {
-      label: 'Owner',
+      label: 'Owner/Admin',
       selectable: true,
       changeable: true,
       description:

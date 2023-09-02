@@ -11,7 +11,7 @@ export const UserOrganizationRole = {
 export const getOrgRole = (roleKey) => {
   switch (roleKey) {
     case UserOrganizationRole.OWNER: {
-      return 'Owner';
+      return 'Owner/Admin';
     }
     case UserOrganizationRole.ADMIN: {
       return 'Admin';
