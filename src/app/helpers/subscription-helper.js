@@ -39,6 +39,8 @@ export const SUBSCRIPTION_PLANS = [
       'Patient labels/tags',
       'Create task from email',
     ],
+    comingSoonFeatures: [],
+    disclaimers: [],
   },
   {
     key: SubscriptionPlan.PREMIUM,
@@ -66,6 +68,7 @@ export const SUBSCRIPTION_PLANS = [
       'Calendar view',
     ],
     comingSoonFeatures: [],
+    disclaimers: [],
   },
   {
     key: SubscriptionPlan.PRO,
@@ -91,9 +94,9 @@ export const SUBSCRIPTION_PLANS = [
       'Advanced automations',
       'EHR-based event-triggers',
       'Enhanced support and implementation',
-      '',
-      '*Requires third-party source',
     ],
+    comingSoonFeatures: [],
+    disclaimers: ['*Requires third-party source'],
   },
   {
     key: SubscriptionPlan.ENTERPRISE,
@@ -118,6 +121,8 @@ export const SUBSCRIPTION_PLANS = [
       'Custom Tableau dashboard',
       'Unlimited Dock Lite users',
     ],
+    comingSoonFeatures: [],
+    disclaimers: [],
   },
 ];
 

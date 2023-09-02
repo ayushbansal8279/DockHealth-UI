@@ -6,7 +6,7 @@ export const FeatureContainer = styled.div`
   align-items: center;
 
   &:not(:last-of-type) {
-    margin-bottom: 22px;
+    margin-bottom: 12px;
   }
 `;
 

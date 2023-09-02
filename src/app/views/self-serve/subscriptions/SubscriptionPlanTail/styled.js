@@ -4,8 +4,8 @@ import palette from 'styles/palette';
 import MuiCheckIcon from '@mui/icons-material/Check';
 
 export const Container = styled.div`
-  width: 279px;
-  padding: 60px 18px 18px;
+  width: 260px;
+  padding: 40px 18px 18px;
   border-radius: 10px;
   box-shadow: 0px 6px 9px rgba(0, 0, 0, 0.17);
   border-top: 10px solid ${({ color }) => color};
