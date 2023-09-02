@@ -4,7 +4,6 @@ import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { useHistory } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { getAllProfileTypes, deleteProfileType } from 'api/profile-type-api';
-import { Box, Button } from '@mui/material';
 import AddButton, {
   AddEntitiesContainer,
 } from 'components/common/AddButton/AddButton';
@@ -15,10 +14,11 @@ import {
   userHasSendSmsFeatureSelector,
   userHasPostEMRNoteFeatureSelector,
   userHasSendSecureMessageFeatureSelector,
+  userHasCustomProfilesFeatureSelector,
 } from 'selectors/user-selectors';
 import { StyledDataGrid } from './DataGridStyles';
 import { getTemplateColumns } from './helpers';
-import { ViewContainer, AddTemplateWrapper } from './styled';
+import { ViewContainer } from './styled';
 
 const PAGE_SIZE = 30;
 
@@ -35,6 +35,9 @@ const ProfilesAndCustomFieldsView = () => {
     userHasSendSecureMessageFeatureSelector,
   );
   const postToEMRAvailable = useSelector(userHasPostEMRNoteFeatureSelector);
+  const userHasCustomProfilesAvailable = useSelector(
+    userHasCustomProfilesFeatureSelector,
+  );
 
   useEffect(() => {
     if (
@@ -126,29 +129,32 @@ const ProfilesAndCustomFieldsView = () => {
     [onDeleteProfile, onEditProfile, onConfigureCustomFields],
   );
 
+  let profileOptions = [
+    { id: 'users', name: 'Users', link: 'provider' },
+    { id: 'patient', name: 'Patients', link: 'patient' },
+  ];
+
+  if (userHasCustomProfilesAvailable) {
+    profileOptions = profileOptions.concat(profileTypes);
+  }
+
   return (
     <ViewLayout header={<BasicLayoutHeader title="Profiles" />}>
       <ViewContainer>
-        {/* <Box display="flex" justifyContent="end">
-          <Button onClick={onAddProfile}>
-            <AddTemplateWrapper>Create Profile</AddTemplateWrapper>
-          </Button>
-        </Box> */}
-        <AddEntitiesContainer>
-          <AddButton onClick={onAddProfile}>Create Profile</AddButton>
-        </AddEntitiesContainer>
+        {userHasCustomProfilesAvailable && (
+          <AddEntitiesContainer>
+            <AddButton onClick={onAddProfile}>Create Profile</AddButton>
+          </AddEntitiesContainer>
+        )}
         <StyledDataGrid
           columns={columns}
-          rows={[
-            { id: 'users', name: 'Users', link: 'provider' },
-            { id: 'patient', name: 'Patients', link: 'patient' },
-            ...profileTypes,
-          ]}
+          rows={profileOptions}
           rowHeight={35}
           headerHeight={45}
           page={page}
           onPageChange={({ page: p }) => setPage(p)}
           pageSize={PAGE_SIZE}
+          hideFooter
           hideFooterSelectedRowCount
           autoHeight
           disableColumnMenu

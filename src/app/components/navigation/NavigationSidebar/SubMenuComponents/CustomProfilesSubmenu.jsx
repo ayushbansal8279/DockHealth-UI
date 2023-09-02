@@ -23,6 +23,7 @@ import {
 import {
   userProfileSelector,
   userHasUserGroupsFeatureSelector,
+  userHasCustomProfilesFeatureSelector,
 } from 'selectors/user-selectors';
 import { locationParametersSelector } from 'location/selectors';
 import {
@@ -67,6 +68,9 @@ const CustomProfilesSubmenu = () => {
   const groups = useSelector(userGroupsSelector);
   const isFetching = useSelector(isFetchingUserGroupsSelector);
   const userGroupsAvailable = useSelector(userHasUserGroupsFeatureSelector);
+  const userHasCustomProfilesAvailable = useSelector(
+    userHasCustomProfilesFeatureSelector,
+  );
   const { groupIdentifier: groupIdentifierUrlParameter } = useSelector(
     locationParametersSelector,
   );
@@ -143,7 +147,9 @@ const CustomProfilesSubmenu = () => {
           </>
         ) : (
           <>
-            {profileTypes && renderListItems(profileTypes)}
+            {userHasCustomProfilesAvailable && (
+              <>{profileTypes && renderListItems(profileTypes)}</>
+            )}
             {defaultGroups?.map(({ identifier, name, usersCount }) => (
               <DrawerListsItem key={identifier}>
                 <ListNameText
@@ -247,7 +253,7 @@ const CustomProfilesSubmenu = () => {
             iconImage={<img src={UserGroupsIcon} alt="Custom User Groups" />}
           />
         </UpgradePlanContainer>
-      )}      
+      )}
     </>
   );
 };

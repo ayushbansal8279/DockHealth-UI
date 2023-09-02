@@ -50,7 +50,9 @@ const SettingsSubmenu = () => {
         <SubMenuLink to="/settings/billing">Billing &amp; Invoices</SubMenuLink>
       )}
       <SubMenuLink to={SUBS_SETTINGS_PATH}>Subscriptions</SubMenuLink>
-      <SubMenuLink to={POFILES_SETTINGS_PATH}>Profiles</SubMenuLink>
+      {patientCustomFieldsAvailable && (
+        <SubMenuLink to={POFILES_SETTINGS_PATH}>Profiles</SubMenuLink>
+      )}
       <SubMenuLink to={USERS_SETTINGS_PATH}>Users</SubMenuLink>
       {/* {(patientCustomFieldsAvailable || taskCustomFieldsAvailable) && (
         <SubMenuLink to="/settings/custom-fields">Custom Fields</SubMenuLink>
@@ -64,9 +66,9 @@ const SettingsSubmenu = () => {
           <SubMenuLink to="/settings/templates">Templates</SubMenuLink>
         </AccessRestrictor>
       )}
-      <SubMenuLink to={TASK_CUSTOMIZATIONS_PATH}>
-        Task Settings
-      </SubMenuLink>
+      {taskCustomFieldsAvailable && (
+        <SubMenuLink to={TASK_CUSTOMIZATIONS_PATH}>Task Settings</SubMenuLink>
+      )}
     </Box>
   );
 };
