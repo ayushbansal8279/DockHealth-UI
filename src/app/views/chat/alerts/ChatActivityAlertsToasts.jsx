@@ -2,8 +2,10 @@ import React, { useState, useEffect, useCallback } from 'react';
 import isEmpty from 'ramda/src/isEmpty';
 import { ActivityAlertsToastsContainer } from 'components/activity-alerts/styled';
 import { useSendbirdStateContext } from '@sendbird/uikit-react';
+import GroupChannelHandler from '@sendbird/uikit-react/handlers/GroupChannelHandler';
 import sendbirdSelectors from '@sendbird/uikit-react/sendbirdSelectors';
 import ShipBellSound from 'components/../sounds/ship_bell_single.mp3';
+import { v4 as uuidv4 } from 'uuid';
 import ChatActivityAlertsToast from './ChatActivityAlertsToast';
 
 const ChatActivityAlertsToasts = () => {
@@ -19,22 +21,10 @@ const ChatActivityAlertsToasts = () => {
 
   const [audio] = useState(new Audio(ShipBellSound));
 
-  const addGroupChannelEventHandler = useCallback(
-    (handler) => {
-      if (sdkInstance) {
-        const handlerId = 'messageRecieved';
-        sdkInstance.addChannelHandler(handlerId, handler);
-        return handlerId;
-      }
-      return null;
-    },
-    [sdkInstance],
-  );
-
   const removeGroupChannelEventHandler = useCallback(
     (handlerId) => {
-      if (sdkInstance && sdkInstance.removeGroupChannelHandler) {
-        sdkInstance.removeGroupChannelHandler(handlerId);
+      if (sdkInstance?.groupChannel?.removeChannelHandler) {
+        sdkInstance.groupChannel.removeChannelHandler(handlerId);
       }
     },
     [sdkInstance],
@@ -46,21 +36,23 @@ const ChatActivityAlertsToasts = () => {
       setMessage(message);
       setChannel(channel);
       setNewAlert({ message, channel });
-      audio.play();
+      // audio.play();
     },
     [audio],
   );
 
   useEffect(() => {
-    let handlerId;
+    const uuid = uuidv4();
 
-    if (sdkInstance && sdkInstance.ChannelHandler) {
-      const handler = new sdkInstance.ChannelHandler();
-      handler.onMessageReceived = onMessageRecieved;
-      handlerId = addGroupChannelEventHandler(handler);
+    if (sdkInstance?.groupChannel?.addGroupChannelHandler) {
+      // eslint-disable-next-line sonarjs/prefer-object-literal
+      const channelHandlerConstructor = {};
+      channelHandlerConstructor.onMessageReceived = onMessageRecieved;
+      const channelHandler = new GroupChannelHandler(channelHandlerConstructor);
+      sdkInstance.groupChannel.addGroupChannelHandler(uuid, channelHandler);
     }
     return () => {
-      removeGroupChannelEventHandler(handlerId);
+      removeGroupChannelEventHandler(uuid);
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [sdkInstance]);
