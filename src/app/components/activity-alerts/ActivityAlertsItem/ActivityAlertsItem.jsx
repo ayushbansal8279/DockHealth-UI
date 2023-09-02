@@ -9,6 +9,7 @@ import CrossIcon from 'img/notifications/cross.svg';
 import { useDispatch } from 'react-redux';
 import { openDrawer } from 'actions/task-drawer-actions';
 import { storeAsCurrentTask } from 'actions/task-actions';
+import { determineAlertTitle, determineAlertSubTitle } from '../helpers';
 import {
   ActivityAlertsItemContainer,
   ActivityAlertsItemHeader,
@@ -24,8 +25,6 @@ import {
 } from './styled';
 
 // eslint-disable-next-line unicorn/prevent-abbreviations
-const getInterpolatedText = (tpl, args) =>
-  tpl.replace(/\${(\w+)}/g, (_, v) => args[v]);
 
 const AlertItem = ({ itemAlert, onClearAlert, withCrossIcon, closeAlerts }) => {
   const history = useHistory();
@@ -106,17 +105,19 @@ const AlertItem = ({ itemAlert, onClearAlert, withCrossIcon, closeAlerts }) => {
     return null;
   }
 
-  const title = getInterpolatedText(activityAlertTitle, {
-    task_list_name: listName,
-    task_description: description,
-    comment_creator: userName,
-    due_time: !dueTime || dueTime === '12:00 AM' ? '' : `at ${dueTime}`,
-  });
+  const title = determineAlertTitle(
+    activityAlertTitle,
+    listName,
+    description,
+    userName,
+    dueTime,
+  );
 
-  const subtitle = getInterpolatedText(activityAlertSubTitle, {
-    task_description: description,
-    comment_description: comment,
-  });
+  const subtitle = determineAlertSubTitle(
+    activityAlertSubTitle,
+    description,
+    comment,
+  );
 
   const formattedTitle =
     title?.length > 65 ? `${title.slice(0, 65).replace(/\s*$/, '')}...` : title;

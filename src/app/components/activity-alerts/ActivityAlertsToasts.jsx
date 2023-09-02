@@ -10,6 +10,7 @@ import ShipBellSound from 'components/../sounds/ship_bell.mp3';
 import { userProfileSelector } from 'selectors/user-selectors';
 import ActivityAlertsToast from './ActivityAlertsToast/ActivityAlertsToast';
 import { ActivityAlertsToastsContainer } from './styled';
+import { triggerActivityAlertForDesktopNotification } from './helpers';
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 const listenRealTimeAlerts = (currentUser, showAlert, audio) => {
@@ -50,6 +51,7 @@ const ActivityAlertsToasts = () => {
     const alertDetails = await getActivityAlertDetails(
       alert.activityAlertIdentifier,
     );
+    triggerActivityAlertForDesktopNotification(alertDetails);
     setNewAlert(alertDetails);
   };
 

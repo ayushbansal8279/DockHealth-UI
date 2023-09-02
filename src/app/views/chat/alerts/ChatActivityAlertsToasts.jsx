@@ -6,6 +6,7 @@ import GroupChannelHandler from '@sendbird/uikit-react/handlers/GroupChannelHand
 import sendbirdSelectors from '@sendbird/uikit-react/sendbirdSelectors';
 import ShipBellSound from 'components/../sounds/ship_bell_single.mp3';
 import { v4 as uuidv4 } from 'uuid';
+import { triggerChatDesktopNotification } from 'components/activity-alerts/helpers';
 import ChatActivityAlertsToast from './ChatActivityAlertsToast';
 
 const ChatActivityAlertsToasts = () => {
@@ -36,6 +37,7 @@ const ChatActivityAlertsToasts = () => {
       setMessage(message);
       setChannel(channel);
       setNewAlert({ message, channel });
+      triggerChatDesktopNotification(message?.message);
       // audio.play();
     },
     [audio],
