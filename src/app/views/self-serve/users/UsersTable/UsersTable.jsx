@@ -338,6 +338,7 @@ const UsersTable = ({
 
           if (
             orgUserRole !== UserOrganizationRole.GUEST &&
+            orgUserRole !== UserOrganizationRole.DOCK_PRO &&
             userStatus !== UserStatus.PENDING &&
             userStatus !== UserStatus.CANCELLED &&
             userStatus !== UserStatus.INACTIVE &&
@@ -346,7 +347,7 @@ const UsersTable = ({
             return <span>Subscribed</span>;
           }
 
-          return <span>Free</span>;
+          return <span>-</span>;
         },
       },
     ],
