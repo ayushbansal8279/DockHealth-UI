@@ -303,7 +303,8 @@ const UsersTable = ({
           const { orgUserRole, taskLists } = row;
 
           const listsNames =
-            orgUserRole === 'GUEST' && taskLists?.length > 0
+            (orgUserRole === 'GUEST' || orgUserRole === 'DOCK_LITE') &&
+            taskLists?.length > 0
               ? taskLists
                   ?.map(({ listName }) => ({
                     fullName: listName,

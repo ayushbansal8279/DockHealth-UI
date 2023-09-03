@@ -28,7 +28,7 @@ import {
 import { locationParametersSelector } from 'location/selectors';
 import {
   checkIfUserIsOrganizationAdmin,
-  isUserGuest,
+  isUserGuestOrDockLite,
   isUserViewOnly,
 } from 'helpers/user-helper';
 import {
@@ -80,7 +80,7 @@ const CustomProfilesSubmenu = () => {
     groupIdentifierUrlParameter,
   );
   const currentUser = useSelector(userProfileSelector);
-  const isGuest = isUserGuest(currentUser);
+  const isGuestOrDockLite = isUserGuestOrDockLite(currentUser);
   const isViewOnly = isUserViewOnly(currentUser);
 
   const isOrganizationAdmin = checkIfUserIsOrganizationAdmin(currentUser);
@@ -170,15 +170,17 @@ const CustomProfilesSubmenu = () => {
                 </DrawerItemOptions>
               </DrawerListsItem>
             ))}
-            <DrawerListsItem>
-              <ListNameText>
-                <MenuLink to="/settings/contacts">Contacts</MenuLink>
-              </ListNameText>
-            </DrawerListsItem>
+            {!isGuestOrDockLite && (
+              <DrawerListsItem>
+                <ListNameText>
+                  <MenuLink to="/settings/contacts">Contacts</MenuLink>
+                </ListNameText>
+              </DrawerListsItem>
+            )}
           </>
         )}
       </DrawerListsList>
-      {!isGuest && userGroupsAvailable && (
+      {!isGuestOrDockLite && userGroupsAvailable && (
         <>
           <Box m={6} flexShrink={0} />
           <DrawerMyListsLabel>

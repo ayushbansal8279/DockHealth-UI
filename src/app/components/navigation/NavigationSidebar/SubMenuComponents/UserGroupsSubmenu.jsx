@@ -27,7 +27,7 @@ import {
 import { locationParametersSelector } from 'location/selectors';
 import {
   checkIfUserIsOrganizationAdmin,
-  isUserGuest,
+  isUserGuestOrDockLite,
   isUserViewOnly,
 } from 'helpers/user-helper';
 import {
@@ -64,7 +64,7 @@ const UserGroupsSubmenu = () => {
     groupIdentifierUrlParameter,
   );
   const currentUser = useSelector(userProfileSelector);
-  const isGuest = isUserGuest(currentUser);
+  const isGuestOrDockLite = isUserGuestOrDockLite(currentUser);
   const isViewOnly = isUserViewOnly(currentUser);
 
   const isOrganizationAdmin = checkIfUserIsOrganizationAdmin(currentUser);
@@ -146,7 +146,7 @@ const UserGroupsSubmenu = () => {
           </>
         )}
       </DrawerListsList>
-      {!isGuest && userGroupsAvailable && (
+      {!isGuestOrDockLite && userGroupsAvailable && (
         <>
           <Box m={6} flexShrink={0} />
           <DrawerMyListsLabel>

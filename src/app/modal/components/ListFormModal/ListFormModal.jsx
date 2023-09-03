@@ -1,4 +1,7 @@
 import React, { useState, useCallback } from 'react';
+import { useSelector } from 'react-redux';
+import { userProfileSelector } from 'selectors/user-selectors';
+import { isUserGuestOrDockLite } from 'helpers/user-helper';
 import { ListFormModalWrapper } from './styled';
 import { CloseIconButton, CloseIcon } from '../styled';
 import ListDetailsForm from './ListDetailsForm/ListDetailsForm';
@@ -10,6 +13,8 @@ const ModalSteps = {
 };
 
 const ListFormModal = ({ closeModal, onListCreationSuccess, list = null }) => {
+  const currentUser = useSelector(userProfileSelector);
+  const isGuestOrDockLite = isUserGuestOrDockLite(currentUser);
   const [editedList, setEditedList] = useState(list);
   const [currentStep, setCurrentStep] = useState(ModalSteps.LIST_DETAILS);
 
@@ -17,17 +22,23 @@ const ListFormModal = ({ closeModal, onListCreationSuccess, list = null }) => {
 
   const renderStep = useCallback(() => {
     switch (currentStep) {
+      // eslint-disable-next-line unicorn/switch-case-braces
       case ModalSteps.LIST_DETAILS:
         return (
           <ListDetailsForm
             list={editedList}
             setList={setEditedList}
             closeModal={closeModal}
-            nextStep={() => setCurrentStep(ModalSteps.INVITE_PEOPLE)}
+            nextStep={
+              isGuestOrDockLite
+                ? undefined
+                : () => setCurrentStep(ModalSteps.INVITE_PEOPLE)
+            }
             onListCreationSuccess={onListCreationSuccess}
           />
         );
 
+      // eslint-disable-next-line unicorn/switch-case-braces
       case ModalSteps.INVITE_PEOPLE:
         return (
           <InviteMembersForm
@@ -37,6 +48,7 @@ const ListFormModal = ({ closeModal, onListCreationSuccess, list = null }) => {
           />
         );
 
+      // eslint-disable-next-line unicorn/switch-case-braces
       default:
         return <></>;
     }

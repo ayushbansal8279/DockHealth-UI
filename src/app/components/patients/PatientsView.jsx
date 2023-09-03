@@ -20,7 +20,7 @@ import {
   userProfileSelector,
   selectedUserOrganizationSelector,
 } from 'selectors/user-selectors';
-import { isUserGuest, isUserViewOnly } from 'helpers/user-helper';
+import { isUserGuestOrDockLite, isUserViewOnly } from 'helpers/user-helper';
 import { organizationSelector } from 'selectors/organization-selectors';
 import { PatientEditContext } from 'context-api/patient-edit-context';
 import * as PatientsActions from 'actions/patients-actions';
@@ -93,7 +93,7 @@ const PatientsView = () => {
       ({ name }) => name === 'icon.active.color',
     ) || {};
 
-  const isGuest = isUserGuest(currentUser);
+  const isGuestOrDockLite = isUserGuestOrDockLite(currentUser);
   const isViewOnly = isUserViewOnly(currentUser);
 
   const { emrIntegrationEnabled } = useSelector(organizationSelector) || {};
@@ -414,7 +414,7 @@ const PatientsView = () => {
                 <OptionsMenu
                   disablePortal
                   options={[
-                    !isGuest &&
+                    !isGuestOrDockLite &&
                       !isViewOnly &&
                       !emrIntegrationEnabled &&
                       listIdentifier ===
@@ -424,14 +424,14 @@ const PatientsView = () => {
                           setImportPopupOpen(true);
                         },
                       },
-                    !isGuest &&
+                    !isGuestOrDockLite &&
                       !isViewOnly && {
                         name: 'Export to CSV',
                         onClick: () => {
                           handleDownloadPatientListData(false);
                         },
                       },
-                    !isGuest &&
+                    !isGuestOrDockLite &&
                       !isViewOnly && {
                         name: 'Export to CSV (All Attributes)',
                         onClick: () => {

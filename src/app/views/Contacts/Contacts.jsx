@@ -1,8 +1,9 @@
 import BasicLayoutHeader from 'components/template/BasicLayoutHeader/BasicLayoutHeader';
 import ViewLayout from 'components/template/ViewLayout/ViewLayout';
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { openModal, closeModal } from 'modal/actions';
+import { userProfileSelector } from 'selectors/user-selectors';
 import { getAllContacts, deleteContact } from 'api/contacts-api';
 import AddButton, {
   AddEntitiesContainer,
@@ -14,6 +15,7 @@ import { ViewContainer } from './styled';
 // const PAGE_SIZE = 30;
 
 const Contacts = () => {
+  const userProfile = useSelector(userProfileSelector);
   const [contacts, setContacts] = useState([]);
   // const [page, setPage] = useState(0);
   const dispatch = useDispatch();
@@ -21,6 +23,16 @@ const Contacts = () => {
   useEffect(() => {
     getAllContacts().then((list) => setContacts(list));
   }, []);
+
+  useEffect(() => {
+    if (
+      userProfile?.orgUserRole === 'GUEST' ||
+      userProfile?.orgUserRole === 'DOCK_LITE'
+    ) {
+      history.push('/');
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [userProfile]);
 
   const onAddContact = useCallback(() => {
     dispatch(

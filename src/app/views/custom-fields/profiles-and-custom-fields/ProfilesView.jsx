@@ -8,13 +8,10 @@ import AddButton, {
   AddEntitiesContainer,
 } from 'components/common/AddButton/AddButton';
 import { openModal, closeModal } from 'modal/actions';
+import { checkIfUserIsOrganizationAdmin } from 'helpers/user-helper';
 import {
-  userHasSendEmailFeatureSelector,
-  userHasSendFaxFeatureSelector,
-  userHasSendSmsFeatureSelector,
-  userHasPostEMRNoteFeatureSelector,
-  userHasSendSecureMessageFeatureSelector,
   userHasCustomProfilesFeatureSelector,
+  userProfileSelector,
 } from 'selectors/user-selectors';
 import { StyledDataGrid } from './DataGridStyles';
 import { getTemplateColumns } from './helpers';
@@ -24,35 +21,21 @@ const PAGE_SIZE = 30;
 
 const ProfilesAndCustomFieldsView = () => {
   const history = useHistory();
+  const userProfile = useSelector(userProfileSelector);
   const [profileTypes, setProfileTypes] = useState([]);
   const [page, setPage] = useState(0);
   const dispatch = useDispatch();
 
-  const sendEmailAvailable = useSelector(userHasSendEmailFeatureSelector);
-  const sendFaxAvailable = useSelector(userHasSendFaxFeatureSelector);
-  const sendSmsAvailable = useSelector(userHasSendSmsFeatureSelector);
-  const sendSecureMessageAvailable = useSelector(
-    userHasSendSecureMessageFeatureSelector,
-  );
-  const postToEMRAvailable = useSelector(userHasPostEMRNoteFeatureSelector);
   const userHasCustomProfilesAvailable = useSelector(
     userHasCustomProfilesFeatureSelector,
   );
 
   useEffect(() => {
-    if (
-      sendEmailAvailable ||
-      sendFaxAvailable ||
-      sendSmsAvailable ||
-      postToEMRAvailable ||
-      sendSecureMessageAvailable
-    ) {
-      // continue
-    } else {
+    if (!checkIfUserIsOrganizationAdmin(userProfile)) {
       history.push('/');
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [userProfile]);
 
   useEffect(() => {
     getAllProfileTypes().then((list) => {
