@@ -1,7 +1,7 @@
 export const SubscriptionPlan = {
   STANDARD: 'PLAN_STANDARD',
   PREMIUM: 'PLAN_PREMIUM',
-  PRO: 'PRO',
+  PRO: 'PLAN_PRO',
   ENTERPRISE: 'PLAN_ENTERPRISE',
 };
 
