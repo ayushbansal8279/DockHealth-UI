@@ -28,6 +28,8 @@ const UserRoleStep = ({ navigateToPreviousStep, disabled }) => {
   const roleValue = watch('userRole');
   const viewOnlyRoleAvailable = useSelector(userHasViewOnlyFeatureSelector);
   const guestRoleAvailable = useSelector(userHasDockGuestFeatureSelector);
+  const email = watch('email');
+  const dockProEnabled = !email.includes('@dock.health');
 
   return (
     <RoleFormWrapper
@@ -114,30 +116,36 @@ const UserRoleStep = ({ navigateToPreviousStep, disabled }) => {
           </RoleOptionDescription>
         </RoleOptionLabel>
         <Divider />
-        <input
-          id="DockPro"
-          type="radio"
-          name="userRole"
-          value={DOCK_PRO}
-          checked={roleValue === DOCK_PRO}
-          onChange={(event) => setValue(event.target.name, event.target.value)}
-        />
-        <RoleOptionLabel
-          isSelected={roleValue === 'DOCK_PRO'}
-          htmlFor="DockPro"
-        >
-          <RoleOptionHeaderWrapper>
-            <RoleOptionHeader>Dock Crew</RoleOptionHeader>
-            <RoleOptionHeaderAdditionalInfo>
-              *Limited Access
-            </RoleOptionHeaderAdditionalInfo>
-          </RoleOptionHeaderWrapper>
-          <RoleOptionDescription>
-            Dock Crew user will help configure your account and with building
-            out Workflows and Smartflows for your team.
-          </RoleOptionDescription>
-        </RoleOptionLabel>
-        <Divider />
+        {dockProEnabled && (
+          <>
+            <input
+              id="DockPro"
+              type="radio"
+              name="userRole"
+              value={DOCK_PRO}
+              checked={roleValue === DOCK_PRO}
+              onChange={(event) =>
+                setValue(event.target.name, event.target.value)
+              }
+            />
+            <RoleOptionLabel
+              isSelected={roleValue === 'DOCK_PRO'}
+              htmlFor="DockPro"
+            >
+              <RoleOptionHeaderWrapper>
+                <RoleOptionHeader>Dock Crew</RoleOptionHeader>
+                <RoleOptionHeaderAdditionalInfo>
+                  *Limited Access
+                </RoleOptionHeaderAdditionalInfo>
+              </RoleOptionHeaderWrapper>
+              <RoleOptionDescription>
+                Dock Crew user will help configure your account and with
+                building out Workflows and Smartflows for your team.
+              </RoleOptionDescription>
+            </RoleOptionLabel>
+            <Divider />
+          </>
+        )}
         {viewOnlyRoleAvailable && (
           <>
             <input
