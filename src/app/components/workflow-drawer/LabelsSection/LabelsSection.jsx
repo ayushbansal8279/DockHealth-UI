@@ -114,6 +114,7 @@ const LabelsSection = ({ disabled: disabledProperty }) => {
   const [inputState, setInputState] = useState();
   const [currentEditableOption, setCurrentEditableOption] = useState(null);
   const [selectedLabels, setSelectedLabels] = useState([]);
+  const [isOpen, setIsOpen] = useState(false);
   const [labelsList, setLabelsList] = useState([]);
   const optionReferences = useRef({});
   const [inputReference, setInputReference] = useState(null);
@@ -238,6 +239,12 @@ const LabelsSection = ({ disabled: disabledProperty }) => {
           }),
         onDelete: () => handleRemoveLabel(option),
         onClick: () => {
+          if (
+            currentEditableOption &&
+            currentEditableOption !== option?.labelIdentifier
+          ) {
+            setCurrentEditableOption(null);
+          }
           setSelectedLabels((previousLabels) => {
             if (
               previousLabels.some(
@@ -312,14 +319,17 @@ const LabelsSection = ({ disabled: disabledProperty }) => {
 
   return (
     <Autocomplete
+      isOpen={isOpen}
       autoFocus={autoFocusFieldName === WorkflowDrawerFieldNames.LABEL}
       options={labelsList}
       label="Labels"
       placeholder="Are there labels you'd like to add?"
       value={selectedLabels}
-      disableCloseOnSelect={!!currentEditableOption}
       getInputReference={getInputReference}
       getOptionLabel={(option) => option?.labelName}
+      isOptionEqualToValue={(option, value) =>
+        option.labelIdentifier === value.labelIdentifier
+      }
       isDisabled={disabledProperty}
       renderOption={renderOptionCallback}
       renderTags={renderTagsCallback}
@@ -335,7 +345,11 @@ const LabelsSection = ({ disabled: disabledProperty }) => {
         },
       }}
       noOptionsText={noOptionText}
-      onOpen={getAllLabels}
+      onOpen={() => {
+        getAllLabels();
+        setIsOpen(true);
+      }}
+      onClose={() => !currentEditableOption && setIsOpen(false)}
       onChange={(values) => {
         const valuesLength = values.length;
         const value = values[valuesLength - 1];
@@ -346,6 +360,7 @@ const LabelsSection = ({ disabled: disabledProperty }) => {
       }}
       multiple
       disableClearable
+      disableCloseOnSelect
     />
   );
 };
