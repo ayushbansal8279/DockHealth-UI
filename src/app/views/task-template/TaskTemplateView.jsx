@@ -134,7 +134,10 @@ const TaskTemplateView = () => {
     ) || {};
 
   useEffect(() => {
-    if (userProfile?.orgUserRole === 'GUEST') {
+    if (
+      userProfile?.orgUserRole === 'GUEST' ||
+      userProfile?.orgUserRole === 'DOCK_LITE'
+    ) {
       history.push('/');
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps

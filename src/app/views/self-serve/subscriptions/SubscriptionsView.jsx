@@ -31,11 +31,7 @@ import {
   updateSubscriptionDetails,
 } from 'actions/organization-actions';
 import { checkIfUserIsOrganizationAdmin } from 'helpers/user-helper';
-import {
-  userProfileSelector,
-  userHasDockLiteFeatureSelector,
-} from 'selectors/user-selectors';
-// import Button from 'components/common/Button/Button';
+import { userProfileSelector } from 'selectors/user-selectors';
 import ViewLayout from 'components/template/ViewLayout/ViewLayout';
 import BasicLayoutHeader from 'components/template/BasicLayoutHeader/BasicLayoutHeader';
 import {
@@ -44,7 +40,7 @@ import {
 } from 'selectors/organization-selectors';
 import { getUserByEmail } from 'api/user-auth-api';
 import palette from 'styles/palette';
-import ProfessionalServicesAddOn from './ProfessionalServicesAddOn/ProfessionalServicesAddOn';
+// import ProfessionalServicesAddOn from './ProfessionalServicesAddOn/ProfessionalServicesAddOn';
 import CurrentPlan from './CurrentPlan/CurrentPlan';
 import SubscriptionPlanTail from './SubscriptionPlanTail/SubscriptionPlanTail';
 // import ProfessionalServicesTail from './ProfessionalServicesTail/ProfessionalServicesTail';
@@ -76,7 +72,7 @@ const SubscriptionsView = () => {
   const history = useHistory();
   const scrollReference = useRef(null);
   const [selectedBillingFrequency, setSelectedBillingFrequency] = useState(
-    BillingFrequency.MONTHLY,
+    BillingFrequency.ANNUAL,
   );
   const [selectedProfessionalServices, setSelectedProfessionalServices] =
     useState(false);
@@ -84,7 +80,7 @@ const SubscriptionsView = () => {
   const currentUser = useSelector(userProfileSelector);
   const isSavingNewPlan = useSelector(isSavingNewPlanSelector);
   const currentSubscriptionPlan = useSelector(currentSubscriptionPlanSelector);
-  const { activeUserCount, subscriptionDetails } =
+  const { activeUserCount, activeDockLiteUserCount, subscriptionDetails } =
     currentSubscriptionPlan || {};
   const { subscriptionPlan, billingFrequency, professionalServicesIncluded } =
     subscriptionDetails || {};
@@ -127,17 +123,11 @@ const SubscriptionsView = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [subscriptionDetails]);
 
-  const dockLiteAvailable = useSelector(userHasDockLiteFeatureSelector);
-
   const selectedPlanDetails = SUBSCRIPTION_PLANS.find(
     ({ subscriptionPlan: sp }) => sp === selectedPlan,
   );
 
-  const availableSubscriptionPlans = SUBSCRIPTION_PLANS.filter(
-    ({ subscriptionPlan: sp }) =>
-      sp !== SubscriptionPlan.PRO ||
-      (sp === SubscriptionPlan.PRO && dockLiteAvailable),
-  );
+  const availableSubscriptionPlans = SUBSCRIPTION_PLANS;
 
   const isCurrentPlanChanged =
     (billingFrequency && selectedBillingFrequency !== billingFrequency) ||
@@ -155,6 +145,12 @@ const SubscriptionsView = () => {
       (selectedBillingFrequency === BillingFrequency.ANNUAL
         ? selectedPlanDetails?.annualMonthlyPrice * 12
         : selectedPlanDetails?.monthlyPrice || 0);
+
+    price +=
+      activeDockLiteUserCount *
+      (selectedBillingFrequency === BillingFrequency.ANNUAL
+        ? DockLite.annualMonthlyPrice * 12
+        : DockLite.monthlyPrice || 0);
 
     if (includeProfessionalServices) {
       price += PROFESSIONAL_SERVICES_PRICE;
@@ -195,7 +191,7 @@ const SubscriptionsView = () => {
           {currentSubscriptionPlan && (
             <CurrentPlan currentSubscriptionPlan={currentSubscriptionPlan} />
           )}
-          <Box p={2} />
+          <Box p={1} />
           <Box
             width="100%"
             display="flex"
@@ -278,18 +274,16 @@ const SubscriptionsView = () => {
                 />
               </>
             )} */}
-            {dockLiteAvailable && (
-              <Box p={2} width="100%" alignItems="center">
-                <DockLiteFeature
-                  key={DockLite.key}
-                  active={subscriptionPlan === DockLite.subscriptionPlan}
-                  selected={selectedPlan === DockLite.subscriptionPlan}
-                  plan={DockLite}
-                  hasExistingSubscription={hasExistingSubscription}
-                  billingFrequency={selectedBillingFrequency}
-                />
-              </Box>
-            )}
+            <Box p={2} width="100%" alignItems="center">
+              <DockLiteFeature
+                key={DockLite.key}
+                active={subscriptionPlan === DockLite.subscriptionPlan}
+                selected={selectedPlan === DockLite.subscriptionPlan}
+                plan={DockLite}
+                hasExistingSubscription={hasExistingSubscription}
+                billingFrequency={selectedBillingFrequency}
+              />
+            </Box>
             <Box p={1} />
             <Title>
               Billing <SubTitleDescription>Est</SubTitleDescription>
@@ -308,7 +302,9 @@ const SubscriptionsView = () => {
                     : 'Monthly'}{' '}
                   Plan
                 </BillingTableCell>
-                <BillingTableCell>{activeUserCount} users</BillingTableCell>
+                <BillingTableCell>
+                  {activeUserCount} standard user(s)
+                </BillingTableCell>
                 <BillingTableCell>
                   {priceFormatter(
                     selectedBillingFrequency === BillingFrequency.ANNUAL
@@ -321,6 +317,30 @@ const SubscriptionsView = () => {
                     : 'month'}
                 </BillingTableCell>
               </BillingTableRow>
+              {activeDockLiteUserCount > 0 && (
+                <BillingTableRow>
+                  <BillingTableCell>
+                    {selectedBillingFrequency === BillingFrequency.ANNUAL
+                      ? 'Annual'
+                      : 'Monthly'}{' '}
+                    Plan
+                  </BillingTableCell>
+                  <BillingTableCell>
+                    {activeDockLiteUserCount} Dock Lite user(s)
+                  </BillingTableCell>
+                  <BillingTableCell>
+                    {priceFormatter(
+                      selectedBillingFrequency === BillingFrequency.ANNUAL
+                        ? DockLite.annualPrice
+                        : DockLite.monthlyPrice,
+                    )}{' '}
+                    /{' '}
+                    {selectedBillingFrequency === BillingFrequency.ANNUAL
+                      ? 'year'
+                      : 'month'}
+                  </BillingTableCell>
+                </BillingTableRow>
+              )}
               {includeProfessionalServices && (
                 <BillingTableRow>
                   <BillingTableCell>Professional Services</BillingTableCell>
@@ -358,7 +378,7 @@ const SubscriptionsView = () => {
             </Grid>
             <div ref={scrollReference} />
             <Box p={3} />
-            <Accordion>
+            {/* <Accordion>
               <AccordionSummary
                 // expandIcon={<ExpandMoreIcon />}
                 expandIcon={
@@ -367,7 +387,6 @@ const SubscriptionsView = () => {
                 aria-controls="panel1a-content"
                 id="panel1a-header"
               >
-                {/* <Typography>Click To Expand</Typography> */}
                 <Box p={1} />
                 <Title>Professional Service Add-Ons</Title>
               </AccordionSummary>
@@ -381,8 +400,8 @@ const SubscriptionsView = () => {
                   ))}
                 </Box>
               </AccordionDetails>
-            </Accordion>
-            <Box p={3} />
+            </Accordion> */}
+            {/* <Box p={3} /> */}
           </SubscriptionPlansContainer>
         </StyledGrid>
       </SubscriptionsViewOuterContainer>

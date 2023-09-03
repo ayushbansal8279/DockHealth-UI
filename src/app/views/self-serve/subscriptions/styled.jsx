@@ -13,7 +13,7 @@ export const SubscriptionsViewOuterContainer = styled.div`
   top: 0;
   width: 100%;
   overflow-y: auto;
-  padding-bottom: 24px;
+  padding-bottom: 10px;
 `;
 
 export const SubscriptionsViewContainer = styled.div`
@@ -91,7 +91,7 @@ export const SubTitleDescription = styled.span`
 `;
 
 export const BillingTableCell = styled.td`
-  padding: 24px 48px;
+  padding: 12px 48px;
   text-align: left;
   font-weight: ${fontWeights.light};
 `;
@@ -132,8 +132,8 @@ export const BillingTableSummaryRow = styled.tr`
   background-color: rgba(193, 204, 218, 0.3);
 
   & ${BillingTableCell} {
-    padding-top: 4px;
-    padding-bottom: 4px;
+    padding-top: 1px;
+    padding-bottom: 1px;
     font-size: ${fontSizes.huge};
     font-weight: ${fontWeights.bold};
   }
@@ -141,7 +141,7 @@ export const BillingTableSummaryRow = styled.tr`
 
 export const StyledGrid = styled(Grid)`
   && {
-    padding: 3rem 2rem;
+    padding: 1rem 2rem;
     max-width: 1200px;
   }
 `;

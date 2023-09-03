@@ -8,12 +8,14 @@ import { openModal, closeModal } from 'modal/actions';
 import AddButton, {
   AddEntitiesContainer,
 } from 'components/common/AddButton/AddButton';
+import { checkIfUserIsOrganizationAdmin } from 'helpers/user-helper';
 import {
   userHasSendEmailFeatureSelector,
   userHasSendFaxFeatureSelector,
   userHasSendSmsFeatureSelector,
   userHasPostEMRNoteFeatureSelector,
   userHasSendSecureMessageFeatureSelector,
+  userProfileSelector,
 } from 'selectors/user-selectors';
 import { StyledDataGrid } from './DataGridStyles';
 import { getTemplateColumns } from './helpers';
@@ -23,6 +25,7 @@ import { ViewContainer } from './styled';
 
 const Templates = () => {
   const history = useHistory();
+  const userProfile = useSelector(userProfileSelector);
   const [templates, setTemplates] = useState([]);
   // const [page, setPage] = useState(0);
   const dispatch = useDispatch();
@@ -34,6 +37,13 @@ const Templates = () => {
     userHasSendSecureMessageFeatureSelector,
   );
   const postToEMRAvailable = useSelector(userHasPostEMRNoteFeatureSelector);
+
+  useEffect(() => {
+    if (!checkIfUserIsOrganizationAdmin(userProfile)) {
+      history.push('/');
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [userProfile]);
 
   useEffect(() => {
     if (

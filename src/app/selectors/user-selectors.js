@@ -135,11 +135,11 @@ export const userHasDockGuestFeatureSelector = createSelector(
     organizationAvailableFeatures?.includes('DOCK_GUEST'),
 );
 
-export const userHasDockLiteFeatureSelector = createSelector(
-  userProfileSelector,
-  ({ organizationAvailableFeatures }) =>
-    organizationAvailableFeatures?.includes('DOCK_LITE'),
-);
+// export const userHasDockLiteFeatureSelector = createSelector(
+//   userProfileSelector,
+//   ({ organizationAvailableFeatures }) =>
+//     organizationAvailableFeatures?.includes('DOCK_LITE'),
+// );
 
 export const userHasCustomProfilesFeatureSelector = createSelector(
   userProfileSelector,

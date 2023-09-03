@@ -54,7 +54,11 @@ const onSubmit =
               onListCreationSuccess(updatedList.taskListIdentifier);
             }
             onTaskListAdded();
-            nextStep();
+            if (nextStep) {
+              nextStep();
+            } else {
+              closeModal();
+            }
           } else {
             onTaskListEdited();
             closeModal();

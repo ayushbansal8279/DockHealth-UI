@@ -44,6 +44,10 @@ export const StyledDataGrid = styled(DataGrid)`
     margin-left: -15px;
   }
 
+  .MuiDataGrid-columnHeaderTitleContainerContent {
+    font-weight: ${fontWeights.regularPlus} !important;
+  }
+
   &.MuiDataGrid-columnHeader {
     &--sorted {
       color: ${palette.brightBlue};
@@ -71,7 +75,7 @@ export const StyledDataGrid = styled(DataGrid)`
 
   &.MuiDataGrid-colCellTitle {
     background-color: white;
-    font-family: 'Roboto Condensed', sans-serif;;
+    font-family: 'Roboto Condensed', sans-serif;
     font-size: ${fontSizes.small};
     font-weight: ${fontWeights.regularPlus} !important;
     padding-left: 0;

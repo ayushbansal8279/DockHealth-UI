@@ -40,7 +40,8 @@ import {
 import DashboardHeader from './DashboardHeader/DashboardHeader';
 import newUserTourHooks from './new-user-tour-hooks';
 
-const { ADMIN, OWNER, MEMBER, GUEST, EXTERNAL } = UserOrganizationRole;
+const { ADMIN, OWNER, MEMBER, GUEST, DOCK_LITE, EXTERNAL } =
+  UserOrganizationRole;
 
 const DashboardView = ({ tabName }) => {
   const pusher = useRef(initializePusher());
@@ -57,15 +58,15 @@ const DashboardView = ({ tabName }) => {
 
   const TAB_RESTRICTIONS = {
     [DashboardTasksTab.MY_TASKS]: {
-      allowedToRoles: [ADMIN, OWNER, MEMBER, GUEST],
+      allowedToRoles: [ADMIN, OWNER, MEMBER, GUEST, DOCK_LITE],
       path: HOME_PATH,
     },
     [DashboardTasksTab.SHARED_TASKS]: {
-      allowedToRoles: [ADMIN, OWNER, MEMBER, GUEST, EXTERNAL],
+      allowedToRoles: [ADMIN, OWNER, MEMBER, GUEST, DOCK_LITE, EXTERNAL],
       path: HOME_SHARED_PATH,
     },
     [DashboardTasksTab.ALL_TASKS]: {
-      allowedToRoles: [ADMIN, OWNER, MEMBER, GUEST],
+      allowedToRoles: [ADMIN, OWNER, MEMBER, GUEST, DOCK_LITE],
       path: HOME_ALL_TASKS_PATH,
     },
   };

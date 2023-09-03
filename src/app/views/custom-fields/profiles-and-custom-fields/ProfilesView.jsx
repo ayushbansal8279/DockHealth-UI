@@ -4,52 +4,38 @@ import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { useHistory } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { getAllProfileTypes, deleteProfileType } from 'api/profile-type-api';
-import { Box, Button } from '@mui/material';
 import AddButton, {
   AddEntitiesContainer,
 } from 'components/common/AddButton/AddButton';
 import { openModal, closeModal } from 'modal/actions';
+import { checkIfUserIsOrganizationAdmin } from 'helpers/user-helper';
 import {
-  userHasSendEmailFeatureSelector,
-  userHasSendFaxFeatureSelector,
-  userHasSendSmsFeatureSelector,
-  userHasPostEMRNoteFeatureSelector,
-  userHasSendSecureMessageFeatureSelector,
+  userHasCustomProfilesFeatureSelector,
+  userProfileSelector,
 } from 'selectors/user-selectors';
 import { StyledDataGrid } from './DataGridStyles';
 import { getTemplateColumns } from './helpers';
-import { ViewContainer, AddTemplateWrapper } from './styled';
+import { ViewContainer } from './styled';
 
 const PAGE_SIZE = 30;
 
 const ProfilesAndCustomFieldsView = () => {
   const history = useHistory();
+  const userProfile = useSelector(userProfileSelector);
   const [profileTypes, setProfileTypes] = useState([]);
   const [page, setPage] = useState(0);
   const dispatch = useDispatch();
 
-  const sendEmailAvailable = useSelector(userHasSendEmailFeatureSelector);
-  const sendFaxAvailable = useSelector(userHasSendFaxFeatureSelector);
-  const sendSmsAvailable = useSelector(userHasSendSmsFeatureSelector);
-  const sendSecureMessageAvailable = useSelector(
-    userHasSendSecureMessageFeatureSelector,
+  const userHasCustomProfilesAvailable = useSelector(
+    userHasCustomProfilesFeatureSelector,
   );
-  const postToEMRAvailable = useSelector(userHasPostEMRNoteFeatureSelector);
 
   useEffect(() => {
-    if (
-      sendEmailAvailable ||
-      sendFaxAvailable ||
-      sendSmsAvailable ||
-      postToEMRAvailable ||
-      sendSecureMessageAvailable
-    ) {
-      // continue
-    } else {
+    if (!checkIfUserIsOrganizationAdmin(userProfile)) {
       history.push('/');
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [userProfile]);
 
   useEffect(() => {
     getAllProfileTypes().then((list) => {
@@ -126,29 +112,32 @@ const ProfilesAndCustomFieldsView = () => {
     [onDeleteProfile, onEditProfile, onConfigureCustomFields],
   );
 
+  let profileOptions = [
+    { id: 'users', name: 'Users', link: 'provider' },
+    { id: 'patient', name: 'Patients', link: 'patient' },
+  ];
+
+  if (userHasCustomProfilesAvailable) {
+    profileOptions = profileOptions.concat(profileTypes);
+  }
+
   return (
     <ViewLayout header={<BasicLayoutHeader title="Profiles" />}>
       <ViewContainer>
-        {/* <Box display="flex" justifyContent="end">
-          <Button onClick={onAddProfile}>
-            <AddTemplateWrapper>Create Profile</AddTemplateWrapper>
-          </Button>
-        </Box> */}
-        <AddEntitiesContainer>
-          <AddButton onClick={onAddProfile}>Create Profile</AddButton>
-        </AddEntitiesContainer>
+        {userHasCustomProfilesAvailable && (
+          <AddEntitiesContainer>
+            <AddButton onClick={onAddProfile}>Create Profile</AddButton>
+          </AddEntitiesContainer>
+        )}
         <StyledDataGrid
           columns={columns}
-          rows={[
-            { id: 'users', name: 'Users', link: 'provider' },
-            { id: 'patient', name: 'Patients', link: 'patient' },
-            ...profileTypes,
-          ]}
+          rows={profileOptions}
           rowHeight={35}
           headerHeight={45}
           page={page}
           onPageChange={({ page: p }) => setPage(p)}
           pageSize={PAGE_SIZE}
+          hideFooter
           hideFooterSelectedRowCount
           autoHeight
           disableColumnMenu
