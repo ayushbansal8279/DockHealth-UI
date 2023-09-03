@@ -177,7 +177,15 @@ const BillingInformation = ({ setUpdatingBilling }) => {
         <MontserratTypography variant="h4">
           <span>{billingEstimateLabel}</span>
           <span> | </span>
-          <span>{currentSubscriptionPlan?.activeUserCount ?? 0} users </span>
+          <span>
+            {currentSubscriptionPlan?.activeDockLiteUserCount > 0
+              ? `(${
+                  currentSubscriptionPlan?.activeUserCount ?? 0
+                } standard user, ${
+                  currentSubscriptionPlan?.activeDockLiteUserCount
+                } Dock Lite user) `
+              : `(${currentSubscriptionPlan?.activeUserCount ?? 0} user) `}
+          </span>
           <LinkContainer onClick={() => goToUsersView(history)}>
             view users
           </LinkContainer>
