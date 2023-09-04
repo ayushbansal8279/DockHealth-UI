@@ -200,16 +200,11 @@ const SmartFlowBuilderView = () => {
   }, [draggedEdgeSourceId, identifier, layout, tasks, temporaryElements]);
 
   useEffect(() => {
-    if (nodesInitialized) {
+    if (reactFlowInstance && nodesInitialized && !reactFlowInitialized) {
+      reactFlowInstance.fitView();
       setReactFlowInitialized(true);
     }
-  }, [nodesInitialized]);
-
-  useEffect(() => {
-    if (reactFlowInitialized && reactFlowInstance) {
-      reactFlowInstance.fitView();
-    }
-  }, [reactFlowInitialized, reactFlowInstance]);
+  }, [reactFlowInstance, nodesInitialized, reactFlowInitialized]);
 
   const centerViewToElement = (elementPosition) => {
     const { x, y } = elementPosition;
