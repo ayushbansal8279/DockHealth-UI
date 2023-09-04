@@ -312,6 +312,13 @@ class App extends PureComponent {
               appId={dockChatAvailable ? this.appId : ''}
               userId={dockChatAvailable ? userProfile?.identifier : ''}
               nickname={dockChatAvailable ? userProfile?.name : ''}
+              profileUrl={
+                dockChatAvailable
+                  ? `${
+                      import.meta.env.VITE_HEYDOC_SERVICES_BASE_URL
+                    }user/profileThumbnail/${userProfile?.identifier}`
+                  : ''
+              }
               colorSet={sendbirdColorSet}
             >
               <div id="portal" />
